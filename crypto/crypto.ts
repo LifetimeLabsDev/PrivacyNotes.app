@@ -1,21 +1,10 @@
 /**
- * Privacy Notes — crypto core.
+ * Crypto core. From a 12-word BIP-39 phrase, two keys are derived via HKDF:
+ *   1. ed25519 signing keypair - public key is the user ID.
+ *   2. xchacha20poly1305 symmetric key - encrypts note contents.
  *
- * From a single 12-word BIP-39 phrase, we deterministically derive:
- *   1. An ed25519 signing keypair → the public key IS the user ID.
- *   2. A symmetric xchacha20poly1305 key → used to encrypt note contents.
- *
- * Two different keys derived from the same seed via HKDF with distinct
- * "info" strings. The user never sees either — they only see 12 words.
- *
- * The server only ever stores:
- *   - user_pubkey (ed25519 public key, hex) — identity
- *   - ciphertext (bytea)                    — encrypted note payload
- *   - nonce (bytea)                         — per-note random 24 bytes
- *
- * We never send the seed, the signing private key, or the encryption key
- * to the server. Losing the 12 words = losing the data, forever. That is
- * the whole point.
+ * Server stores only: user_pubkey (identity), ciphertext, nonce.
+ * Seed and private keys never leave the device.
  */
 
 import {
@@ -29,7 +18,7 @@ import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha256';
 import { randomBytes } from '@noble/hashes/utils';
 import * as ed from '@noble/ed25519';
-// Spec: CLAUDE.md §5 (xchacha20poly1305 via @noble/ciphers)
+// Spec: docs/THREAT_MODEL.md (xchacha20poly1305 via @noble/ciphers)
 import { xchacha20poly1305 } from '@noble/ciphers/chacha';
 
 import type { DecryptedNote } from './types.js';
@@ -41,7 +30,7 @@ const utf8Decoder = new TextDecoder();
 // BIP-39 phrase
 // ------------------------------------------------------------------
 
-// Spec: CLAUDE.md §5 (BIP-39 12-word phrase, client-generated, never touches server)
+// Spec: docs/THREAT_MODEL.md (BIP-39 12-word phrase, client-generated, never touches server)
 export function generatePhrase(): string {
   return generateMnemonic(wordlist, 128);
 }
@@ -51,10 +40,7 @@ export function isValidPhrase(phrase: string): boolean {
   return validateMnemonic(phrase.trim().toLowerCase(), wordlist);
 }
 
-/**
- * Turn a phrase into a 64-byte seed via the standard BIP-39 PBKDF2.
- * This is the single source of truth from which both keys are derived.
- */
+/** 64-byte BIP-39 seed - single source of truth for all key derivation. */
 export function phraseToSeed(phrase: string): Uint8Array {
   return mnemonicToSeedSync(phrase.trim().toLowerCase());
 }
@@ -63,10 +49,7 @@ export function phraseToSeed(phrase: string): Uint8Array {
 // Key derivation (HKDF with domain-separated info strings)
 // ------------------------------------------------------------------
 
-/**
- * Derive the ed25519 signing keypair from the seed.
- * Public key = user ID. Private key never leaves the device.
- */
+/** Derive the ed25519 signing keypair. Public key = user ID. */
 export async function deriveSigningKey(
   seed: Uint8Array
 ): Promise<{ privateKey: Uint8Array; publicKey: Uint8Array }> {
@@ -81,10 +64,7 @@ export async function deriveSigningKey(
   return { privateKey, publicKey };
 }
 
-/**
- * Derive the symmetric encryption key from the seed.
- * Same seed → same key on every device, so no key exchange is needed.
- */
+/** Derive the xchacha20poly1305 symmetric key. Same seed = same key on every device. */
 export function deriveEncryptionKey(seed: Uint8Array): Uint8Array {
   return hkdf(
     sha256,
@@ -95,19 +75,11 @@ export function deriveEncryptionKey(seed: Uint8Array): Uint8Array {
   );
 }
 
-// ------------------------------------------------------------------
-// Challenge signing — used to prove ownership of the pubkey to the
-// `link-pubkey` Edge Function, which then writes the pubkey into the
-// JWT's `app_metadata` (service-role only, not forgeable by the user).
-// ------------------------------------------------------------------
+// Challenge signing - proves pubkey ownership to link-pubkey edge function.
 
 /**
- * Sign the canonical link message `link:<authUid>` with the ed25519
- * private key. The server verifies this signature against the claimed
- * pubkey, and only then trusts the pubkey → uid binding.
- *
- * Binding the message to `authUid` prevents replay: a signature for
- * one user's uid can't be used to claim that pubkey for another user.
+ * Sign `link:<authUid>` with the ed25519 private key.
+ * Binding authUid prevents replay across different users.
  */
 export async function signLinkChallenge(
   privateKey: Uint8Array,
@@ -125,7 +97,7 @@ export async function signLinkChallenge(
 // (localStorage). The public deviceId is HKDF(deviceSecret, info=pubkey)
 // truncated to 16 bytes (32 hex chars). Including the pubkey in `info`
 // means the same local deviceSecret produces different deviceIds across
-// different phrases — accounts stay isolated if two users share a
+// different phrases - accounts stay isolated if two users share a
 // machine.
 //
 // The deviceSecret is not a cryptographic secret per se (losing it just
@@ -133,16 +105,12 @@ export async function signLinkChallenge(
 // reset behaviour on "clear site data"). But we store it in plain
 // localStorage rather than session storage so it survives tab close.
 
-/** 32 random bytes — generate once per install, keep forever. */
+/** 32 random bytes - generate once per install, keep forever. */
 export function generateDeviceSecret(): Uint8Array {
   return randomBytes(32);
 }
 
-/**
- * Derive a stable deviceId from (pubkey, deviceSecret). Returns 32 hex
- * chars (16 bytes). Same (pubkey, deviceSecret) always yields the same
- * id — so re-registering the same install is idempotent on the server.
- */
+/** Derive a stable 32-hex-char deviceId from (pubkey, deviceSecret). Idempotent on server. */
 export function deriveDeviceId(
   pubkey: string,
   deviceSecret: Uint8Array,
@@ -152,11 +120,7 @@ export function deriveDeviceId(
   return bytesToHex(bytes);
 }
 
-/**
- * Sign the device-registration challenge. Server verifies against the
- * master ed25519 public key. Binding in the authUid prevents a signed
- * registration from one session being replayed into another.
- */
+/** Sign the device-registration challenge. authUid binding prevents cross-session replay. */
 export async function signDeviceRegisterChallenge(
   privateKey: Uint8Array,
   authUid: string,
@@ -166,11 +130,7 @@ export async function signDeviceRegisterChallenge(
   return ed.signAsync(message, privateKey);
 }
 
-/**
- * Sign the device-revocation challenge. The caller signs with their
- * master key; anyone holding the phrase can revoke any of their own
- * devices (including ones they're not currently on).
- */
+/** Sign the device-revocation challenge. Any device holding the phrase can revoke others. */
 export async function signDeviceRevokeChallenge(
   privateKey: Uint8Array,
   authUid: string,
@@ -180,15 +140,30 @@ export async function signDeviceRevokeChallenge(
   return ed.signAsync(message, privateKey);
 }
 
-/**
- * Sign the account-deletion challenge. Proves the caller holds the
- * master key before the server permanently deletes all user data.
- */
+/** Sign the account-deletion challenge. Proves caller holds the master key. */
 export async function signDeleteAccountChallenge(
   privateKey: Uint8Array,
   authUid: string,
 ): Promise<Uint8Array> {
   const message = utf8.encode(`delete-account:${authUid}`);
+  return ed.signAsync(message, privateKey);
+}
+
+/**
+ * Sign the storage-subscription management challenge. Binds the action and
+ * (for a switch) the target price so a signature cannot be replayed against a
+ * different subscription, action, or package. priceId is empty for cancel.
+ */
+export async function signStorageManageChallenge(
+  privateKey: Uint8Array,
+  authUid: string,
+  subscriptionId: string,
+  action: string,
+  priceId: string,
+): Promise<Uint8Array> {
+  const message = utf8.encode(
+    `manage-storage-sub:${authUid}:${subscriptionId}:${action}:${priceId}`,
+  );
   return ed.signAsync(message, privateKey);
 }
 
@@ -244,11 +219,7 @@ function hmacFp(pepper: Uint8Array, prefix: string, value: string): string {
   return bytesToBase64(hmac(sha256, pepper, input));
 }
 
-/**
- * Compute the four per-field fingerprint hashes for a device. The
- * field prefix in the HMAC input prevents cross-field collisions
- * (e.g., a GPU named "10" hashing to the same value as cores=10).
- */
+/** Compute per-field fingerprint hashes. Field prefixes prevent cross-field collisions. */
 export function computeFpHashes(pepper: Uint8Array, fp: FpInput): FpHashes {
   const gpuAvailable = !!fp.gpu && fp.gpu !== 'unknown';
   return {
@@ -280,7 +251,7 @@ export function hexToBytes(hex: string): Uint8Array {
 }
 
 // ------------------------------------------------------------------
-// Base64 helpers — used at the Supabase boundary for ciphertext/nonce.
+// Base64 helpers - used at the Supabase boundary for ciphertext/nonce.
 // ------------------------------------------------------------------
 
 export function bytesToBase64(bytes: Uint8Array): string {
@@ -297,7 +268,7 @@ export function base64ToBytes(b64: string): Uint8Array {
 }
 
 // ------------------------------------------------------------------
-// Base64url helpers — URL-safe, no padding, no percent-encoding needed.
+// Base64url helpers - URL-safe, no padding, no percent-encoding needed.
 // Used for burn-after-reading links where URL length matters.
 // ------------------------------------------------------------------
 
@@ -317,7 +288,7 @@ export function base64urlToBytes(b64url: string): Uint8Array {
 }
 
 // ------------------------------------------------------------------
-// Symmetric encryption — xchacha20poly1305 with per-call random nonce.
+// Symmetric encryption - xchacha20poly1305 with per-call random nonce.
 // 24-byte nonces mean random nonces are safe forever (unlike AES-GCM).
 // ------------------------------------------------------------------
 
@@ -392,7 +363,7 @@ export function decryptNote(
 }
 
 // ------------------------------------------------------------------
-// Generic JSON blob encryption — used for anything that isn't a note
+// Generic JSON blob encryption - used for anything that isn't a note
 // but still needs to be end-to-end encrypted with the user's key.
 // Current caller: synced user settings (favorite tags, etc).
 //

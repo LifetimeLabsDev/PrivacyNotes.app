@@ -2,9 +2,10 @@
 -- PostgreSQL database dump
 --
 
+\restrict deAuXg6c3rkusCg6zsBtiMFzFUusqGV3PwMAqKa0gXH7beyPkhgFeBTf7G6xspD
 
 -- Dumped from database version 17.6
--- Dumped by pg_dump version 18.3
+-- Dumped by pg_dump version 18.4
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -399,7 +400,9 @@ BEGIN
     RAISE EXCEPTION 'not authorized' USING errcode = '42501';
   END IF;
 
-  SELECT count(*) INTO v_total FROM auth.users;
+  SELECT count(*) INTO v_total
+  FROM auth.users
+  WHERE (raw_app_meta_data ->> 'pubkey') IS NOT NULL;
 
   SELECT count(*) INTO v_linked
   FROM auth.users
@@ -467,51 +470,6 @@ $$;
 
 
 --
--- Name: admin_add_timeline_event(date, text, text, text); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION public.admin_add_timeline_event(occurred_at date, label text, description text DEFAULT NULL::text, url text DEFAULT NULL::text) RETURNS uuid
-    LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO 'public'
-    AS $$
-declare
-  new_id uuid;
-  caller_pubkey text;
-begin
-  if not public.is_admin() then
-    raise exception 'not authorized' using errcode = '42501';
-  end if;
-
-  if occurred_at is null then
-    raise exception 'occurred_at required' using errcode = '22023';
-  end if;
-  if label is null or length(trim(label)) = 0 then
-    raise exception 'label required' using errcode = '22023';
-  end if;
-
-  -- Best-effort: pull the calling admin's pubkey from the JWT so we can
-  -- track who added what. Falls back to null if absent.
-  caller_pubkey := nullif(
-    (auth.jwt() -> 'user_metadata' ->> 'pubkey'),
-    ''
-  );
-
-  insert into public.timeline_events (occurred_at, label, description, url, created_by)
-    values (
-      occurred_at,
-      trim(label),
-      nullif(trim(description), ''),
-      nullif(trim(url), ''),
-      caller_pubkey
-    )
-    returning id into new_id;
-
-  return new_id;
-end;
-$$;
-
-
---
 -- Name: admin_add_timeline_event(timestamp with time zone, text, text, text); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -534,7 +492,7 @@ begin
     raise exception 'label required' using errcode = '22023';
   end if;
 
-  -- Use app_metadata (not user_metadata) — app_metadata is server-writable only.
+  -- Use app_metadata (not user_metadata) - app_metadata is server-writable only.
   caller_pubkey := nullif(
     (auth.jwt() -> 'app_metadata' ->> 'pubkey'),
     ''
@@ -843,7 +801,7 @@ BEGIN
 
   -- Duplicate fingerprints: multiple active devices with identical
   -- (platform, gpu, cores) hashes for the same pubkey. Should not
-  -- happen after dedup — indicates a bug or manipulation.
+  -- happen after dedup - indicates a bug or manipulation.
   RETURN QUERY
   SELECT
     d.pubkey,
@@ -1249,8 +1207,8 @@ BEGIN
   SELECT jsonb_build_object(
     'pro_total',              (SELECT count(*) FROM public.pro_pubkeys),
     'revenue_cents',          (SELECT coalesce(sum(amount_cents), 0) FROM public.pro_pubkeys),
-    'early_supporters',       (SELECT count(*) FROM public.pro_pubkeys WHERE amount_cents IS NOT NULL AND amount_cents < 4800),
-    'early_supporters_remaining', (490 - (SELECT count(*) FROM public.pro_pubkeys WHERE amount_cents IS NOT NULL AND amount_cents < 4800)),
+    'early_supporters',       (SELECT count(*) FROM public.pro_pubkeys WHERE amount_cents IS NOT NULL AND amount_cents < 8900),
+    'early_supporters_remaining', (480 - (SELECT count(*) FROM public.pro_pubkeys WHERE amount_cents IS NOT NULL AND amount_cents < 8900)),
     'avg_order_cents',        (SELECT coalesce(avg(amount_cents), 0)::int FROM public.pro_pubkeys WHERE amount_cents IS NOT NULL),
     'last_purchase_at',       (SELECT max(created_at) FROM public.pro_pubkeys),
     'manual_grants',          (SELECT count(*) FROM public.pro_pubkeys WHERE source = 'admin')
@@ -1407,15 +1365,20 @@ CREATE FUNCTION public.admin_stats_overview() RETURNS json
     AS $$
 declare
   result json;
+  v_onboarded bigint;
 begin
   if not public.is_admin() then
     raise exception 'not authorized' using errcode = '42501';
   end if;
 
+  select count(*) into v_onboarded
+  from auth.users
+  where (raw_app_meta_data ->> 'pubkey') is not null;
+
   select json_build_object(
-    'users_total',          (select count(*) from auth.users),
-    'users_last_7d',        (select count(*) from auth.users where created_at > now() - interval '7 days'),
-    'users_last_30d',       (select count(*) from auth.users where created_at > now() - interval '30 days'),
+    'users_total',          v_onboarded,
+    'users_last_7d',        (select count(*) from auth.users where created_at > now() - interval '7 days' and (raw_app_meta_data ->> 'pubkey') is not null),
+    'users_last_30d',       (select count(*) from auth.users where created_at > now() - interval '30 days' and (raw_app_meta_data ->> 'pubkey') is not null),
     'notes_total',          (select count(*) from public.notes),
     'notes_bytes_total',    (select coalesce(sum(octet_length(ciphertext)), 0)::bigint from public.notes),
     'user_settings_total',  (select count(*) from public.user_settings),
@@ -1423,10 +1386,10 @@ begin
     'events_last_7d',       (select count(*) from public.admin_events where created_at > now() - interval '7 days'),
     'avg_notes_per_user',   (
       select case
-        when (select count(*) from auth.users) = 0 then 0
+        when v_onboarded = 0 then 0
         else round(
           (select count(*) from public.notes)::numeric
-          / (select count(*) from auth.users)::numeric,
+          / v_onboarded::numeric,
           2
         )
       end
@@ -1451,6 +1414,7 @@ DECLARE
   v_user_settings_count bigint := 0;
   v_note_versions_count bigint := 0;
   v_burn_notes_count bigint := 0;
+  v_onboarded_users bigint := 0;
 BEGIN
   IF NOT public.is_admin() THEN
     RAISE EXCEPTION 'not authorized' USING errcode = '42501';
@@ -1468,10 +1432,15 @@ BEGIN
     EXECUTE 'SELECT count(*) FROM public.burn_notes' INTO v_burn_notes_count;
   END IF;
 
+  -- Pre-compute onboarded user count (used in multiple subqueries)
+  SELECT count(*) INTO v_onboarded_users
+  FROM auth.users
+  WHERE (raw_app_meta_data ->> 'pubkey') IS NOT NULL;
+
   SELECT jsonb_build_object(
-    'users_total',          (SELECT count(*) FROM auth.users),
-    'users_last_7d',        (SELECT count(*) FROM auth.users WHERE created_at > now() - interval '7 days'),
-    'users_last_30d',       (SELECT count(*) FROM auth.users WHERE created_at > now() - interval '30 days'),
+    'users_total',          v_onboarded_users,
+    'users_last_7d',        (SELECT count(*) FROM auth.users WHERE created_at > now() - interval '7 days' AND (raw_app_meta_data ->> 'pubkey') IS NOT NULL),
+    'users_last_30d',       (SELECT count(*) FROM auth.users WHERE created_at > now() - interval '30 days' AND (raw_app_meta_data ->> 'pubkey') IS NOT NULL),
     'active_7d',            (SELECT count(DISTINCT pubkey) FROM public.devices WHERE last_seen_at > now() - interval '7 days'),
     'active_30d',           (SELECT count(DISTINCT pubkey) FROM public.devices WHERE last_seen_at > now() - interval '30 days'),
     'notes_total',          (SELECT count(*) FROM public.notes),
@@ -1479,10 +1448,10 @@ BEGIN
     'image_bytes_total',    (SELECT coalesce(sum(image_bytes), 0)::bigint FROM public.pubkey_quotas),
     'avg_notes_per_user',   (
       SELECT CASE
-        WHEN (SELECT count(*) FROM auth.users) = 0 THEN 0
+        WHEN v_onboarded_users = 0 THEN 0
         ELSE round(
           (SELECT count(*) FROM public.notes)::numeric
-          / (SELECT count(*) FROM auth.users)::numeric, 2
+          / v_onboarded_users::numeric, 2
         )
       END
     ),
@@ -1516,7 +1485,6 @@ begin
     raise exception 'not authorized' using errcode = '42501';
   end if;
 
-  -- Clamp the window so a caller can't ask for a 10-year scan.
   if days < 1  then days := 1;  end if;
   if days > 365 then days := 365; end if;
 
@@ -1530,6 +1498,7 @@ begin
   ) as d
   left join auth.users u
     on u.created_at::date = d::date
+    and (u.raw_app_meta_data ->> 'pubkey') is not null
   group by d
   order by d;
 end;
@@ -1621,6 +1590,7 @@ DECLARE
   v_version_count bigint := 0;
   v_is_banned boolean;
   v_ban_reason text;
+  v_extra_storage bigint := 0;
 BEGIN
   IF NOT public.is_admin() THEN
     RAISE EXCEPTION 'not authorized' USING errcode = '42501';
@@ -1641,10 +1611,16 @@ BEGIN
   WHERE pp.pubkey = target_pubkey;
 
   -- Quota
-  SELECT pq.note_count, pq.total_bytes, pq.image_bytes, pq.extra_storage_bytes
+  SELECT pq.note_count, pq.total_bytes, pq.image_bytes
   INTO v_quota
   FROM public.pubkey_quotas pq
   WHERE pq.user_pubkey = target_pubkey;
+
+  -- Extra storage from paddle_storage_subs (replaced dropped extra_storage_bytes column)
+  SELECT COALESCE(SUM(gb_count) * 1073741824, 0)::bigint INTO v_extra_storage
+    FROM public.paddle_storage_subs
+   WHERE pubkey = target_pubkey
+     AND status IN ('active','past_due');
 
   -- Devices
   SELECT count(*), max(last_seen_at)
@@ -1673,7 +1649,7 @@ BEGIN
     'note_count',         coalesce(v_quota.note_count, 0),
     'total_bytes',        coalesce(v_quota.total_bytes, 0),
     'image_bytes',        coalesce(v_quota.image_bytes, 0),
-    'extra_storage_bytes', coalesce(v_quota.extra_storage_bytes, 0),
+    'extra_storage_bytes', v_extra_storage,
     'device_count',       coalesce(v_device_count, 0),
     'last_active',        v_last_active,
     'days_since_active',  CASE WHEN v_last_active IS NOT NULL THEN extract(day FROM now() - v_last_active)::int ELSE NULL END,
@@ -1727,7 +1703,7 @@ $$;
 -- Name: FUNCTION burn_note_exists(p_id uuid); Type: COMMENT; Schema: public; Owner: -
 --
 
-COMMENT ON FUNCTION public.burn_note_exists(p_id uuid) IS 'Returns true if a burn note with the given id exists. Single-ID lookup only — no enumeration surface. Used by the client to decide whether to render the sealed UI on a /burn link.';
+COMMENT ON FUNCTION public.burn_note_exists(p_id uuid) IS 'Returns true if a burn note with the given id exists. Single-ID lookup only - no enumeration surface. Used by the client to decide whether to render the sealed UI on a /burn link.';
 
 
 --
@@ -1762,13 +1738,13 @@ BEGIN
   v_is_over := v_used > v_max;
 
   IF v_is_over AND NOT v_currently_exceeded THEN
-    -- Just went over — start the clock.
+    -- Just went over - start the clock.
     UPDATE public.pubkey_quotas
        SET quota_exceeded_since = now(),
            updated_at = now()
      WHERE user_pubkey = p_pubkey;
   ELSIF NOT v_is_over AND v_currently_exceeded THEN
-    -- Back under — clear the flag.
+    -- Back under - clear the flag.
     UPDATE public.pubkey_quotas
        SET quota_exceeded_since = NULL,
            updated_at = now()
@@ -1805,6 +1781,7 @@ $$;
 
 CREATE FUNCTION public.count_device_slots(p_pubkey text) RETURNS integer
     LANGUAGE sql STABLE SECURITY DEFINER
+    SET search_path TO 'public'
     AS $$
   SELECT COUNT(*)::integer FROM (
     SELECT DISTINCT COALESCE(device_group, device_id) AS slot
@@ -1859,11 +1836,28 @@ CREATE FUNCTION public.enforce_burn_note_rate_limit() RETURNS trigger
     AS $$
 DECLARE
   v_user_count integer;
+  v_global_count integer;
 BEGIN
-  -- Per-user cap: 100 burn notes per hour. Generous enough to never
-  -- frustrate real usage (team handoffs, onboarding), tight enough to
-  -- slow a single-account spammer. user_id is auto-filled from JWT via
-  -- column DEFAULT; NULL means unauthenticated — skip the check.
+  -- Global ceiling: 500 burn notes/hour across all callers. Works for
+  -- anonymous inserts (no JWT/user_id needed) and bounds the blast
+  -- radius of a flood that slips past Cloudflare's per-IP limits. The
+  -- per-user cap below is dead in practice (burn inserts are anonymous
+  -- by design, so user_id is always NULL), so this is the only active
+  -- DB-level limit. Shared budget: a flooder can block new shares for
+  -- up to an hour; accepted as a transient cost ceiling (24h TTL purge).
+  -- Spec: docs/THREAT_MODEL.md (Quota and abuse protection)
+  SELECT count(*) INTO v_global_count
+    FROM public.burn_notes
+   WHERE created_at > now() - interval '1 hour';
+
+  IF v_global_count >= 500 THEN
+    RAISE EXCEPTION 'Burn note rate limit exceeded - try again later'
+      USING errcode = 'check_violation';
+  END IF;
+
+  -- Per-user cap: 100 burn notes per hour. Currently never fires (burn
+  -- inserts are anonymous by design), kept so it activates for free if a
+  -- future change ever attaches the user's session to the insert.
   IF NEW.user_id IS NOT NULL THEN
     SELECT count(*) INTO v_user_count
       FROM public.burn_notes
@@ -1871,7 +1865,7 @@ BEGIN
        AND created_at > now() - interval '1 hour';
 
     IF v_user_count >= 100 THEN
-      RAISE EXCEPTION 'Burn note rate limit exceeded — try again later'
+      RAISE EXCEPTION 'Burn note rate limit exceeded - try again later'
         USING errcode = 'check_violation';
     END IF;
   END IF;
@@ -1896,193 +1890,108 @@ CREATE FUNCTION public.enforce_notes_quota() RETURNS trigger
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO ''
     AS $$
-
 DECLARE
-
   v_max_notes integer;
-
   v_max_bytes bigint;
-
   v_delta_count integer := 0;
-
   v_delta_bytes bigint := 0;
-
   v_current_count integer;
-
   v_current_bytes bigint;
-
   v_pubkey text;
-
   v_exceeded_since timestamptz;
-
   v_is_tombstone boolean := false;
-
   v_is_restore boolean := false;
-
 BEGIN
-
   v_pubkey := COALESCE(NEW.user_pubkey, OLD.user_pubkey);
 
   -- Detect soft-delete tombstone and restore transitions.
-
   IF (TG_OP = 'UPDATE') THEN
-
     v_is_tombstone := (NEW.deleted_at IS NOT NULL AND OLD.deleted_at IS NULL);
-
     v_is_restore := (NEW.deleted_at IS NULL AND OLD.deleted_at IS NOT NULL);
-
   END IF;
 
   -- Check for sync freeze (90-day grace period expired).
-
   -- Exempt tombstone UPDATEs so users can delete notes to recover.
-
   IF (TG_OP IN ('INSERT', 'UPDATE')) AND NOT v_is_tombstone THEN
-
     SELECT pq.quota_exceeded_since INTO v_exceeded_since
-
       FROM public.pubkey_quotas pq
-
      WHERE pq.user_pubkey = v_pubkey;
 
     IF v_exceeded_since IS NOT NULL
-
        AND v_exceeded_since < (now() - interval '90 days') THEN
-
       RAISE EXCEPTION 'Sync frozen: storage quota exceeded for more than 90 days. Re-subscribe or reduce usage.'
-
         USING errcode = 'check_violation';
-
     END IF;
-
   END IF;
 
   SELECT max_notes, max_total_bytes
-
     INTO v_max_notes, v_max_bytes
-
     FROM public.quota_limits_for_pubkey(v_pubkey);
 
   IF (TG_OP = 'INSERT') THEN
-
     v_delta_count := 1;
-
     v_delta_bytes := octet_length(NEW.ciphertext);
-
   ELSIF (TG_OP = 'UPDATE') THEN
-
     v_delta_count := 0;
-
     IF v_is_tombstone THEN
-
       -- Tombstone: free the space immediately so quota reflects the delete.
-
       v_delta_bytes := -octet_length(OLD.ciphertext);
-
     ELSIF v_is_restore THEN
-
       -- Restore: re-add the bytes (they were removed on tombstone).
-
       v_delta_bytes := octet_length(NEW.ciphertext);
-
     ELSE
-
       -- Normal edit: delta between old and new ciphertext.
-
       v_delta_bytes := octet_length(NEW.ciphertext) - octet_length(OLD.ciphertext);
-
     END IF;
-
   ELSIF (TG_OP = 'DELETE') THEN
-
     v_delta_count := -1;
-
     -- If the row was already tombstoned, bytes were decremented on tombstone.
-
     -- Only decrement bytes for hard-deletes of non-tombstoned rows.
-
     IF OLD.deleted_at IS NOT NULL THEN
-
       v_delta_bytes := 0;
-
     ELSE
-
       v_delta_bytes := -octet_length(OLD.ciphertext);
-
     END IF;
-
   END IF;
 
   INSERT INTO public.pubkey_quotas (user_pubkey, note_count, total_bytes, updated_at)
-
     VALUES (
-
       v_pubkey,
-
       greatest(0, v_delta_count),
-
       greatest(0, v_delta_bytes),
-
       now()
-
     )
-
   ON CONFLICT (user_pubkey) DO UPDATE
-
-    SET note_count  = public.pubkey_quotas.note_count  + v_delta_count,
-
-        total_bytes = public.pubkey_quotas.total_bytes + v_delta_bytes,
-
+    SET note_count  = greatest(0, public.pubkey_quotas.note_count  + v_delta_count),
+        total_bytes = greatest(0, public.pubkey_quotas.total_bytes + v_delta_bytes),
         updated_at  = now()
-
   RETURNING note_count, total_bytes INTO v_current_count, v_current_bytes;
 
-  -- Skip quota cap checks for tombstones — user is trying to free space.
-
+  -- Skip quota cap checks for tombstones - user is trying to free space.
   IF (TG_OP IN ('INSERT', 'UPDATE')) AND NOT v_is_tombstone THEN
-
     IF v_current_count > v_max_notes THEN
-
       RAISE EXCEPTION 'Quota exceeded: note count % > limit %', v_current_count, v_max_notes
-
         USING errcode = 'check_violation';
-
     END IF;
-
     IF v_current_bytes > v_max_bytes THEN
-
       RAISE EXCEPTION 'Quota exceeded: total ciphertext % bytes > limit % bytes', v_current_bytes, v_max_bytes
-
         USING errcode = 'check_violation';
-
     END IF;
-
   END IF;
 
   -- After tombstone or restore, re-evaluate quota exceeded status so the
-
   -- client banner updates immediately instead of waiting for the next
-
   -- webhook or cron cycle.
-
   IF v_is_tombstone OR v_is_restore THEN
-
     PERFORM public.check_and_set_quota_exceeded(v_pubkey);
-
   END IF;
 
   IF (TG_OP = 'DELETE') THEN
-
     RETURN OLD;
-
   ELSE
-
     RETURN NEW;
-
   END IF;
-
 END;
-
 $$;
 
 
@@ -2361,6 +2270,52 @@ $$;
 
 
 --
+-- Name: recalculate_my_quota(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.recalculate_my_quota() RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO ''
+    AS $$
+DECLARE
+  v_pubkey text;
+  v_note_count integer;
+  v_total_bytes bigint;
+BEGIN
+  v_pubkey := auth.jwt() -> 'app_metadata' ->> 'pubkey';
+  IF v_pubkey IS NULL THEN
+    RAISE EXCEPTION 'pubkey not linked';
+  END IF;
+
+  -- Recount from actual notes table (non-tombstoned rows only).
+  SELECT count(*)::integer,
+         coalesce(sum(octet_length(ciphertext)), 0)::bigint
+    INTO v_note_count, v_total_bytes
+    FROM public.notes
+   WHERE user_pubkey = v_pubkey
+     AND deleted_at IS NULL;
+
+  -- Upsert the corrected values.
+  -- When note_count is 0, also reset image_bytes: with no notes there
+  -- are no image references, so any remaining image_bytes is drift.
+  INSERT INTO public.pubkey_quotas (user_pubkey, note_count, total_bytes, image_bytes, updated_at)
+  VALUES (v_pubkey, v_note_count, v_total_bytes, 0, now())
+  ON CONFLICT (user_pubkey) DO UPDATE
+    SET note_count  = v_note_count,
+        total_bytes = v_total_bytes,
+        image_bytes = CASE
+          WHEN v_note_count = 0 THEN 0
+          ELSE public.pubkey_quotas.image_bytes
+        END,
+        updated_at  = now();
+
+  -- Re-evaluate quota exceeded status.
+  PERFORM public.check_and_set_quota_exceeded(v_pubkey);
+END;
+$$;
+
+
+--
 -- Name: rls_auto_enable(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -2511,6 +2466,25 @@ CREATE TABLE public.burn_notes (
     user_id uuid DEFAULT auth.uid(),
     CONSTRAINT burn_notes_ciphertext_max CHECK ((octet_length(ciphertext) <= 65536))
 );
+
+
+--
+-- Name: custodial_phrases; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.custodial_phrases (
+    auth_uid uuid NOT NULL,
+    ciphertext text NOT NULL,
+    nonce text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: TABLE custodial_phrases; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE public.custodial_phrases IS 'Server-encrypted BIP-39 phrases for custodial OAuth users. Spec: docs/custodial-key-spec.md';
 
 
 --
@@ -2717,6 +2691,14 @@ ALTER TABLE ONLY public.banned_pubkeys
 
 ALTER TABLE ONLY public.burn_notes
     ADD CONSTRAINT burn_notes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: custodial_phrases custodial_phrases_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custodial_phrases
+    ADD CONSTRAINT custodial_phrases_pkey PRIMARY KEY (auth_uid);
 
 
 --
@@ -2931,6 +2913,14 @@ CREATE TRIGGER notes_enforce_quota AFTER INSERT OR DELETE OR UPDATE ON public.no
 
 
 --
+-- Name: custodial_phrases custodial_phrases_auth_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custodial_phrases
+    ADD CONSTRAINT custodial_phrases_auth_uid_fkey FOREIGN KEY (auth_uid) REFERENCES auth.users(id) ON DELETE CASCADE;
+
+
+--
 -- Name: note_versions note_versions_note_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3008,6 +2998,12 @@ ALTER TABLE public.burn_notes ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY burn_notes_insert ON public.burn_notes FOR INSERT TO authenticated, anon WITH CHECK (true);
 
+
+--
+-- Name: custodial_phrases; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.custodial_phrases ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: devices; Type: ROW SECURITY; Schema: public; Owner: -
@@ -3159,4 +3155,5 @@ CREATE POLICY user_settings_owner_update ON public.user_settings FOR UPDATE USIN
 -- PostgreSQL database dump complete
 --
 
+\unrestrict deAuXg6c3rkusCg6zsBtiMFzFUusqGV3PwMAqKa0gXH7beyPkhgFeBTf7G6xspD
 

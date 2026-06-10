@@ -23,6 +23,6 @@ SOFTWARE.
 ---
 
 This license applies only to the contents of this repository (cryptographic
-primitives and database schema). The Privacy Notes application — including its
-UI, sync engine, desktop builds, and all other proprietary components — is not
+primitives and database schema). The Privacy Notes application - including its
+UI, sync engine, desktop builds, and all other proprietary components - is not
 covered by this license and remains proprietary.
