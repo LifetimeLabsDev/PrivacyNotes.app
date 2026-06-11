@@ -1,5 +1,7 @@
 # PrivacyNotes - Open Core
 
+[![GitGem](https://gitgem.org/api/badge/github/LifetimeLabsDev/PrivacyNotes.app.svg)](https://gitgem.org/github/LifetimeLabsDev/PrivacyNotes.app)
+
 PrivacyNotes is a zero-knowledge, end-to-end encrypted notes app. Your 12-word phrase is your identity and your key - no email or password required. Lose the phrase, lose your notes - by design.
 
 The app is live at **[PrivacyNotes.app](https://privacynotes.app)**.
