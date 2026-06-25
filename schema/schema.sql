@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict deAuXg6c3rkusCg6zsBtiMFzFUusqGV3PwMAqKa0gXH7beyPkhgFeBTf7G6xspD
+\restrict f9UfSPE6AEQGyeIWT74rUgsmzrFnn15mG9BMzdPh4QLH686eitlPz7DImIrK4CO
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 18.4
@@ -492,7 +492,7 @@ begin
     raise exception 'label required' using errcode = '22023';
   end if;
 
-  -- Use app_metadata (not user_metadata) - app_metadata is server-writable only.
+  -- Use app_metadata (not user_metadata) — app_metadata is server-writable only.
   caller_pubkey := nullif(
     (auth.jwt() -> 'app_metadata' ->> 'pubkey'),
     ''
@@ -801,7 +801,7 @@ BEGIN
 
   -- Duplicate fingerprints: multiple active devices with identical
   -- (platform, gpu, cores) hashes for the same pubkey. Should not
-  -- happen after dedup - indicates a bug or manipulation.
+  -- happen after dedup — indicates a bug or manipulation.
   RETURN QUERY
   SELECT
     d.pubkey,
@@ -1703,7 +1703,7 @@ $$;
 -- Name: FUNCTION burn_note_exists(p_id uuid); Type: COMMENT; Schema: public; Owner: -
 --
 
-COMMENT ON FUNCTION public.burn_note_exists(p_id uuid) IS 'Returns true if a burn note with the given id exists. Single-ID lookup only - no enumeration surface. Used by the client to decide whether to render the sealed UI on a /burn link.';
+COMMENT ON FUNCTION public.burn_note_exists(p_id uuid) IS 'Returns true if a burn note with the given id exists. Single-ID lookup only — no enumeration surface. Used by the client to decide whether to render the sealed UI on a /burn link.';
 
 
 --
@@ -1738,13 +1738,13 @@ BEGIN
   v_is_over := v_used > v_max;
 
   IF v_is_over AND NOT v_currently_exceeded THEN
-    -- Just went over - start the clock.
+    -- Just went over — start the clock.
     UPDATE public.pubkey_quotas
        SET quota_exceeded_since = now(),
            updated_at = now()
      WHERE user_pubkey = p_pubkey;
   ELSIF NOT v_is_over AND v_currently_exceeded THEN
-    -- Back under - clear the flag.
+    -- Back under — clear the flag.
     UPDATE public.pubkey_quotas
        SET quota_exceeded_since = NULL,
            updated_at = now()
@@ -1840,24 +1840,20 @@ DECLARE
 BEGIN
   -- Global ceiling: 500 burn notes/hour across all callers. Works for
   -- anonymous inserts (no JWT/user_id needed) and bounds the blast
-  -- radius of a flood that slips past Cloudflare's per-IP limits. The
-  -- per-user cap below is dead in practice (burn inserts are anonymous
-  -- by design, so user_id is always NULL), so this is the only active
-  -- DB-level limit. Shared budget: a flooder can block new shares for
-  -- up to an hour; accepted as a transient cost ceiling (24h TTL purge).
+  -- radius of a flood that slips past Cloudflare's per-IP limits.
   -- Spec: docs/THREAT_MODEL.md (Quota and abuse protection)
   SELECT count(*) INTO v_global_count
     FROM public.burn_notes
    WHERE created_at > now() - interval '1 hour';
 
   IF v_global_count >= 500 THEN
-    RAISE EXCEPTION 'Burn note rate limit exceeded - try again later'
+    RAISE EXCEPTION 'Burn note rate limit exceeded — try again later'
       USING errcode = 'check_violation';
   END IF;
 
   -- Per-user cap: 100 burn notes per hour. Currently never fires (burn
-  -- inserts are anonymous by design), kept so it activates for free if a
-  -- future change ever attaches the user's session to the insert.
+  -- inserts are anonymous by design), but kept so it activates for free
+  -- if a future change ever attaches the user's session to the insert.
   IF NEW.user_id IS NOT NULL THEN
     SELECT count(*) INTO v_user_count
       FROM public.burn_notes
@@ -1865,7 +1861,7 @@ BEGIN
        AND created_at > now() - interval '1 hour';
 
     IF v_user_count >= 100 THEN
-      RAISE EXCEPTION 'Burn note rate limit exceeded - try again later'
+      RAISE EXCEPTION 'Burn note rate limit exceeded — try again later'
         USING errcode = 'check_violation';
     END IF;
   END IF;
@@ -1967,7 +1963,7 @@ BEGIN
         updated_at  = now()
   RETURNING note_count, total_bytes INTO v_current_count, v_current_bytes;
 
-  -- Skip quota cap checks for tombstones - user is trying to free space.
+  -- Skip quota cap checks for tombstones — user is trying to free space.
   IF (TG_OP IN ('INSERT', 'UPDATE')) AND NOT v_is_tombstone THEN
     IF v_current_count > v_max_notes THEN
       RAISE EXCEPTION 'Quota exceeded: note count % > limit %', v_current_count, v_max_notes
@@ -2036,6 +2032,34 @@ BEGIN
     SELECT ql.max_notes, ql.max_total_bytes, ql.max_image_bytes, pq.quota_exceeded_since
       FROM public.quota_limits_for_pubkey(v_pubkey) ql
       LEFT JOIN public.pubkey_quotas pq ON pq.user_pubkey = v_pubkey;
+END;
+$$;
+
+
+--
+-- Name: get_my_storage_subs(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.get_my_storage_subs() RETURNS TABLE(subscription_id text, price_id text, gb_count integer, status text, started_at timestamp with time zone, current_period_ends_at timestamp with time zone, scheduled_cancel_at timestamp with time zone)
+    LANGUAGE plpgsql STABLE SECURITY DEFINER
+    SET search_path TO ''
+    AS $$
+DECLARE
+  v_pubkey text;
+BEGIN
+  v_pubkey := auth.jwt() -> 'app_metadata' ->> 'pubkey';
+  IF v_pubkey IS NULL THEN
+    RETURN;
+  END IF;
+
+  RETURN QUERY
+    SELECT s.subscription_id, s.price_id, s.gb_count, s.status, s.started_at,
+           s.current_period_ends_at, s.scheduled_cancel_at
+      FROM public.paddle_storage_subs s
+     WHERE s.pubkey = v_pubkey
+       AND s.status IN ('active','past_due')
+       AND NOT s.gated
+     ORDER BY s.started_at DESC;
 END;
 $$;
 
@@ -2281,13 +2305,14 @@ DECLARE
   v_pubkey text;
   v_note_count integer;
   v_total_bytes bigint;
+  v_image_bytes bigint;
 BEGIN
   v_pubkey := auth.jwt() -> 'app_metadata' ->> 'pubkey';
   IF v_pubkey IS NULL THEN
     RAISE EXCEPTION 'pubkey not linked';
   END IF;
 
-  -- Recount from actual notes table (non-tombstoned rows only).
+  -- Note bytes: recount from the notes table (non-tombstoned rows only).
   SELECT count(*)::integer,
          coalesce(sum(octet_length(ciphertext)), 0)::bigint
     INTO v_note_count, v_total_bytes
@@ -2295,21 +2320,28 @@ BEGIN
    WHERE user_pubkey = v_pubkey
      AND deleted_at IS NULL;
 
-  -- Upsert the corrected values.
-  -- When note_count is 0, also reset image_bytes: with no notes there
-  -- are no image references, so any remaining image_bytes is drift.
+  -- Blob bytes: recompute from Storage ground truth. Images and attachments
+  -- share the 'encrypted-images' bucket, named '<pubkey>/<uuid>'. The LIKE
+  -- prefix lets the (bucket_id, name) index serve a range scan; split_part
+  -- guards correctness in case a pubkey ever contains a LIKE wildcard.
+  SELECT coalesce(sum(nullif(o.metadata ->> 'size', '')::bigint), 0)::bigint
+    INTO v_image_bytes
+    FROM storage.objects o
+   WHERE o.bucket_id = 'encrypted-images'
+     AND o.name LIKE v_pubkey || '/%'
+     AND split_part(o.name, '/', 1) = v_pubkey;
+
+  -- Upsert the corrected values. extra_storage_bytes (add-on capacity) is
+  -- left untouched.
   INSERT INTO public.pubkey_quotas (user_pubkey, note_count, total_bytes, image_bytes, updated_at)
-  VALUES (v_pubkey, v_note_count, v_total_bytes, 0, now())
+  VALUES (v_pubkey, v_note_count, v_total_bytes, v_image_bytes, now())
   ON CONFLICT (user_pubkey) DO UPDATE
     SET note_count  = v_note_count,
         total_bytes = v_total_bytes,
-        image_bytes = CASE
-          WHEN v_note_count = 0 THEN 0
-          ELSE public.pubkey_quotas.image_bytes
-        END,
+        image_bytes = v_image_bytes,
         updated_at  = now();
 
-  -- Re-evaluate quota exceeded status.
+  -- Re-evaluate quota exceeded status so the client banner updates.
   PERFORM public.check_and_set_quota_exceeded(v_pubkey);
 END;
 $$;
@@ -2376,23 +2408,61 @@ $$;
 
 
 --
--- Name: upsert_storage_sub(text, text, text, integer, text, timestamp with time zone, boolean); Type: FUNCTION; Schema: public; Owner: -
+-- Name: update_storage_sub_package(text, text, integer, text, timestamp with time zone, timestamp with time zone); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.upsert_storage_sub(p_subscription_id text, p_pubkey text, p_price_id text, p_gb_count integer, p_status text, p_started_at timestamp with time zone, p_gated boolean DEFAULT false) RETURNS void
+CREATE FUNCTION public.update_storage_sub_package(p_subscription_id text, p_price_id text, p_gb_count integer, p_status text, p_period_ends_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_scheduled_cancel_at timestamp with time zone DEFAULT NULL::timestamp with time zone) RETURNS integer
+    LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO ''
+    AS $$
+DECLARE
+  v_count integer;
+BEGIN
+  IF p_status NOT IN ('active','past_due','canceled') THEN
+    RAISE EXCEPTION 'invalid status %', p_status;
+  END IF;
+  IF p_gb_count <= 0 THEN
+    RAISE EXCEPTION 'invalid gb_count %', p_gb_count;
+  END IF;
+
+  UPDATE public.paddle_storage_subs
+     SET price_id               = p_price_id,
+         gb_count               = p_gb_count,
+         status                 = p_status,
+         canceled_at            = CASE WHEN p_status = 'canceled' THEN now() ELSE canceled_at END,
+         current_period_ends_at = COALESCE(p_period_ends_at, current_period_ends_at),
+         scheduled_cancel_at    = p_scheduled_cancel_at,
+         updated_at             = now()
+   WHERE subscription_id = p_subscription_id;
+
+  GET DIAGNOSTICS v_count = ROW_COUNT;
+  RETURN v_count;
+END;
+$$;
+
+
+--
+-- Name: upsert_storage_sub(text, text, text, integer, text, timestamp with time zone, boolean, timestamp with time zone, timestamp with time zone); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.upsert_storage_sub(p_subscription_id text, p_pubkey text, p_price_id text, p_gb_count integer, p_status text, p_started_at timestamp with time zone, p_gated boolean DEFAULT false, p_period_ends_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_scheduled_cancel_at timestamp with time zone DEFAULT NULL::timestamp with time zone) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO ''
     AS $$
 BEGIN
   INSERT INTO public.paddle_storage_subs
-    (subscription_id, pubkey, price_id, gb_count, status, started_at, gated, updated_at)
+    (subscription_id, pubkey, price_id, gb_count, status, started_at, gated,
+     current_period_ends_at, scheduled_cancel_at, updated_at)
   VALUES
-    (p_subscription_id, p_pubkey, p_price_id, p_gb_count, p_status, p_started_at, p_gated, now())
+    (p_subscription_id, p_pubkey, p_price_id, p_gb_count, p_status, p_started_at, p_gated,
+     p_period_ends_at, p_scheduled_cancel_at, now())
   ON CONFLICT (subscription_id) DO UPDATE
-    SET status     = EXCLUDED.status,
-        gb_count   = EXCLUDED.gb_count,
-        gated      = EXCLUDED.gated,
-        updated_at = now();
+    SET status                 = EXCLUDED.status,
+        gb_count               = EXCLUDED.gb_count,
+        gated                  = EXCLUDED.gated,
+        current_period_ends_at = COALESCE(EXCLUDED.current_period_ends_at, public.paddle_storage_subs.current_period_ends_at),
+        scheduled_cancel_at    = EXCLUDED.scheduled_cancel_at,
+        updated_at             = now();
 END;
 $$;
 
@@ -2546,6 +2616,8 @@ CREATE TABLE public.paddle_storage_subs (
     canceled_at timestamp with time zone,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     gated boolean DEFAULT false NOT NULL,
+    current_period_ends_at timestamp with time zone,
+    scheduled_cancel_at timestamp with time zone,
     CONSTRAINT paddle_storage_subs_gb_count_check CHECK ((gb_count > 0)),
     CONSTRAINT paddle_storage_subs_status_check CHECK ((status = ANY (ARRAY['active'::text, 'past_due'::text, 'canceled'::text])))
 );
@@ -3155,5 +3227,5 @@ CREATE POLICY user_settings_owner_update ON public.user_settings FOR UPDATE USIN
 -- PostgreSQL database dump complete
 --
 
-\unrestrict deAuXg6c3rkusCg6zsBtiMFzFUusqGV3PwMAqKa0gXH7beyPkhgFeBTf7G6xspD
+\unrestrict f9UfSPE6AEQGyeIWT74rUgsmzrFnn15mG9BMzdPh4QLH686eitlPz7DImIrK4CO
 
