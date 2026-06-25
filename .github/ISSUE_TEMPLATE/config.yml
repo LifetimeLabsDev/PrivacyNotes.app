@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: FAQ and help
+    url: https://privacynotes.app/faq
+    about: Most questions are answered here. Please check before opening an issue.

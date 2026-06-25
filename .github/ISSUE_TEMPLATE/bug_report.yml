@@ -1,0 +1,34 @@
+name: Bug report
+description: Something is broken or not working as expected
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: What happened
+      description: What went wrong, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: List the exact steps so we can see it too.
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Platform
+      options:
+        - Web
+        - macOS
+        - iOS
+        - Windows
+        - Linux
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: App version
+      description: Find it in Settings.
+    validations:
+      required: false
