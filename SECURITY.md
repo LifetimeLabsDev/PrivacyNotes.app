@@ -114,4 +114,4 @@ In the meantime, the cryptographic code lives in this open-core repo so anyone w
 
 ## Reporting a vulnerability
 
-Email privacynotes@lifetimelabs.dev. If a fix requires coordination, we'll work with you on timing before public disclosure. We don't currently run a paid bounty program; we'd like to once it's responsibly affordable.
+Email privacynotes@lifetimelabs.dev. That contact is also published in our PGP-signed security.txt (https://privacynotes.app/.well-known/security.txt), so you can confirm it's authentic, and if you'd like to encrypt your report our public key is at https://privacynotes.app/.well-known/pgp-key.txt. If a fix requires coordination, we'll work with you on timing before public disclosure. We don't currently run a paid bounty program; we'd like to once it's responsibly affordable.

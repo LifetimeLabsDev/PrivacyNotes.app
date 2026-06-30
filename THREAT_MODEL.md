@@ -112,7 +112,7 @@ The user-facing copy describes these honestly as gates ("a biometric gate so oth
 - **Cloudflare Turnstile** on signup (invisible managed challenge, server-verified).
 - **Per-row:** 1 MB ciphertext CHECK constraint.
 - **Per-pubkey:** 10,000 notes, 50 MB total (free) / 500 MB (Pro). Enforced by Postgres triggers on `pubkey_quotas`.
-- **Provisional account purge:** Anonymous auth users with no linked pubkey are deleted after 30 days (pg_cron).
+- **Provisional account purge:** Anonymous auth users that never link a pubkey (signed up but never completed setup) are deleted after 7 days (pg_cron). This is cleanup for abandoned signups, not an inactivity timeout - accounts that have linked a pubkey are never purged.
 - **Burn notes:** 64 KB ciphertext CHECK per row, 24h TTL purge, and a global ceiling of 500 inserts/hour (Postgres trigger `enforce_burn_note_rate_limit`). Burn creation is anonymous by design (session-less anon client), so per-user/per-pubkey limits do not apply; the global ceiling is a backstop to Cloudflare's per-IP limits and bounds storage blast radius. Tradeoff: a flooder can deny new burn shares globally for up to an hour.
 - **Cloudflare rate limiting:** IP-level rules on signup and sync endpoints.
 

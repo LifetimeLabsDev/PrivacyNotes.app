@@ -75,7 +75,7 @@ These libraries have zero dependencies, are written for auditability, and are us
 - Row-Level Security policies ensure each user can only access rows matching their own public key
 - Abuse limits (per-pubkey note count, ciphertext size caps) are enforced server-side via triggers
 - Note history (versioning) stores encrypted snapshots, not plaintext diffs
-- Provisional anonymous accounts with no linked pubkey are purged after 30 days
+- Abandoned signups that never link a pubkey (created but never set up) are purged after 7 days. Accounts that have completed setup are never deleted for inactivity.
 
 ---
 
