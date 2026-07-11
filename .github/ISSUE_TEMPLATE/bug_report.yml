@@ -21,14 +21,10 @@ body:
       options:
         - Web
         - macOS
-        - iOS
         - Windows
         - Linux
+        - iOS
+        - Android (APK)
+        - Android (Play Store)
     validations:
       required: true
-  - type: input
-    attributes:
-      label: App version
-      description: Find it in Settings.
-    validations:
-      required: false
