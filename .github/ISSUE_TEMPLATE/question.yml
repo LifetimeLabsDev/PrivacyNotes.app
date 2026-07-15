@@ -1,0 +1,34 @@
+name: Question
+description: Ask us anything about how PrivacyNotes works
+title: "[Question]: "
+labels: [question]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ask away, you are not bothering us. Good questions usually end up on our
+        [help pages](https://privacynotes.app/help), so you are doing the next person a favour.
+
+        This page is public, so never post your recovery phrase here. Nobody honest will ever
+        ask you for it, us included.
+
+  - type: textarea
+    attributes:
+      label: Your question
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: Where? (optional)
+      options:
+        - Not about one in particular
+        - In a browser
+        - Mac app
+        - Windows app
+        - Linux app
+        - iPhone or iPad app
+        - Android app (downloaded from our site)
+        - Android app (from Google Play)
+    validations:
+      required: false

@@ -3,32 +3,47 @@ description: Something is broken or not working as expected
 title: "[Bug]: "
 labels: [bug]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Quick heads up before you paste a screenshot: this is a notes app, so a screenshot
+        usually has your notes in it. Crop or blur them. Never post your recovery phrase.
+
+        If it also happens at [try.privacynotes.app](https://try.privacynotes.app), mention it.
+        Then we can see it for ourselves, with none of your notes involved.
+
   - type: textarea
     attributes:
-      label: What happened
+      label: What happened?
       description: What went wrong, and what did you expect instead?
     validations:
       required: true
+
   - type: textarea
     attributes:
-      label: Steps to reproduce
-      description: List the exact steps so we can see it too.
+      label: How do we make it happen?
+      description: The steps you took, so we can see it too.
     validations:
       required: true
-  - type: dropdown
-    attributes:
-      label: Platform
-      options:
-        - Web
-        - macOS
-        - iOS
-        - Windows
-        - Linux
-    validations:
-      required: true
+
   - type: input
     attributes:
-      label: App version
-      description: Find it in Settings.
+      label: Version
+      description: Settings, then About.
+      placeholder: "0.251.0"
     validations:
-      required: false
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: Where?
+      options:
+        - In a browser
+        - Mac app
+        - Windows app
+        - Linux app
+        - iPhone or iPad app
+        - Android app (downloaded from our site)
+        - Android app (from Google Play)
+    validations:
+      required: true

@@ -1841,7 +1841,7 @@ BEGIN
   -- Global ceiling: 500 burn notes/hour across all callers. Works for
   -- anonymous inserts (no JWT/user_id needed) and bounds the blast
   -- radius of a flood that slips past Cloudflare's per-IP limits.
-  -- Spec: docs/THREAT_MODEL.md (Quota and abuse protection)
+  -- Spec: ops/docs/THREAT_MODEL.md (Quota and abuse protection)
   SELECT count(*) INTO v_global_count
     FROM public.burn_notes
    WHERE created_at > now() - interval '1 hour';
@@ -2120,6 +2120,7 @@ BEGIN
      WHERE pubkey = v_pubkey
        AND status IN ('active','past_due')
        AND NOT gated
+       AND scheduled_cancel_at IS NULL
   );
 END;
 $$;
@@ -2200,25 +2201,6 @@ $$;
 
 
 --
--- Name: pubkey_has_active_storage_sub(text); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION public.pubkey_has_active_storage_sub(p_pubkey text) RETURNS boolean
-    LANGUAGE plpgsql STABLE SECURITY DEFINER
-    SET search_path TO ''
-    AS $$
-BEGIN
-  RETURN EXISTS (
-    SELECT 1 FROM public.paddle_storage_subs
-     WHERE pubkey = p_pubkey
-       AND status IN ('active','past_due')
-       AND NOT gated
-  );
-END;
-$$;
-
-
---
 -- Name: purge_provisional_users(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -2269,7 +2251,7 @@ BEGIN
     SELECT 1 FROM public.pro_pubkeys WHERE pubkey = p_pubkey
   ) INTO v_is_pro;
 
-  SELECT COALESCE(SUM(gb_count) * 1073741824, 0)::bigint INTO v_extra
+  SELECT COALESCE(SUM(gb_count) * 1000000000, 0)::bigint INTO v_extra
     FROM public.paddle_storage_subs
    WHERE pubkey = p_pubkey
      AND status IN ('active','past_due')
@@ -2280,14 +2262,14 @@ BEGIN
     -- both notes and images.
     RETURN QUERY SELECT
       10000::integer,
-      (500 * 1024 * 1024 + v_extra)::bigint,
-      (500 * 1024 * 1024 + v_extra)::bigint;
+      (500 * 1000 * 1000 + v_extra)::bigint,
+      (500 * 1000 * 1000 + v_extra)::bigint;
   ELSE
     -- Free: 50 MB combined quota shared between notes and images.
     RETURN QUERY SELECT
       10000::integer,
-      (50 * 1024 * 1024)::bigint,
-      (50 * 1024 * 1024)::bigint;
+      (50 * 1000 * 1000)::bigint,
+      (50 * 1000 * 1000)::bigint;
   END IF;
 END;
 $$;
@@ -2554,7 +2536,7 @@ CREATE TABLE public.custodial_phrases (
 -- Name: TABLE custodial_phrases; Type: COMMENT; Schema: public; Owner: -
 --
 
-COMMENT ON TABLE public.custodial_phrases IS 'Server-encrypted BIP-39 phrases for custodial OAuth users. Spec: docs/custodial-key-spec.md';
+COMMENT ON TABLE public.custodial_phrases IS 'Server-encrypted BIP-39 phrases for custodial OAuth users. Spec: ops/docs/custodial-key-spec.md';
 
 
 --
@@ -2591,6 +2573,7 @@ CREATE TABLE public.notes (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone,
+    ingested_at timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT notes_ciphertext_max_1mb CHECK ((octet_length(ciphertext) <= 1048576))
 );
 

@@ -1,5 +1,18 @@
 blank_issues_enabled: false
 contact_links:
-  - name: FAQ and help
-    url: https://privacynotes.app/faq
-    about: Most questions are answered here. Please check before opening an issue.
+  - name: Report a security problem (please do not post it publicly)
+    url: https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md
+    about: >
+      Found a hole in the way we encrypt or store your data? Email
+      privacynotes@lifetimelabs.dev instead of posting here, so it can be fixed before
+      everyone can see it. SECURITY.md explains what we protect and what we do not.
+  - name: Help center
+    url: https://privacynotes.app/help
+    about: >
+      Guides, moving in from another app, and answers to most questions. Usually faster than
+      waiting for us, though you are welcome to ask here either way.
+  - name: Try it without an account
+    url: https://try.privacynotes.app
+    about: >
+      A demo with made-up notes. Nothing is saved and nothing leaves your browser. Handy for
+      working out whether a problem is the app itself or just your own copy.

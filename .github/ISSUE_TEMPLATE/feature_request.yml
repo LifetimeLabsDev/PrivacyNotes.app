@@ -1,15 +1,19 @@
 name: Feature request
 description: Suggest an idea or improvement
 title: "[Feature]: "
-labels: [enhancement]
+labels: [feature]
 body:
   - type: textarea
     attributes:
       label: What would you like?
     validations:
       required: true
+
   - type: textarea
     attributes:
-      label: Why / what problem does it solve?
+      label: What problem does it solve?
+      description: >
+        If you have a way of getting by without it today, tell us that too. It often tells us
+        more than the idea itself does.
     validations:
       required: true

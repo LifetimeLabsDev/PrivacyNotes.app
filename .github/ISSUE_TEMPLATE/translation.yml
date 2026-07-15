@@ -1,0 +1,38 @@
+name: Translation issue
+description: Something reads wrong in your language
+title: "[Translation]: "
+labels: [translation]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        PrivacyNotes is in nine languages. We are native speakers of almost none of them, so we
+        miss things.
+
+        The wrong gender. Phrasing that sounds like a robot. A word nobody really says. A button
+        with the text running off the edge. You spot it in a second. We never would.
+
+  - type: dropdown
+    attributes:
+      label: Which language?
+      options:
+        - German (Deutsch)
+        - Spanish (Español)
+        - French (Français)
+        - Italian (Italiano)
+        - Dutch (Nederlands)
+        - Polish (Polski)
+        - Portuguese, Portugal (Português)
+        - Portuguese, Brazil (Português do Brasil)
+        - English
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: What is wrong, and where?
+      description: >
+        Where you saw it, what it says now, and what it should say. A cropped screenshot works
+        too, especially if the text is running off the edge of something.
+    validations:
+      required: true

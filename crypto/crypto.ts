@@ -18,7 +18,7 @@ import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha256';
 import { randomBytes } from '@noble/hashes/utils';
 import * as ed from '@noble/ed25519';
-// Spec: docs/THREAT_MODEL.md (xchacha20poly1305 via @noble/ciphers)
+// Spec: ops/docs/THREAT_MODEL.md (xchacha20poly1305 via @noble/ciphers)
 import { xchacha20poly1305 } from '@noble/ciphers/chacha';
 
 import type { DecryptedNote } from './types.js';
@@ -30,7 +30,7 @@ const utf8Decoder = new TextDecoder();
 // BIP-39 phrase
 // ------------------------------------------------------------------
 
-// Spec: docs/THREAT_MODEL.md (BIP-39 12-word phrase, client-generated, never touches server)
+// Spec: ops/docs/THREAT_MODEL.md (BIP-39 12-word phrase, client-generated, never touches server)
 export function generatePhrase(): string {
   return generateMnemonic(wordlist, 128);
 }
@@ -181,10 +181,10 @@ export async function signStorageManageChallenge(
 //   - The same pubkey on the same hardware produces consistent hashes,
 //     so per-user device dedup still works.
 //
-// Spec: specs/device-fingerprint-hash.md
+// Spec: ops/docs/device-fingerprint-hash.md
 
 /** Per-user fingerprint pepper. Same seed → same pepper, forever. */
-// Spec: specs/device-fingerprint-hash.md (HKDF info "privacynotes-fp-pepper-v1")
+// Spec: ops/docs/device-fingerprint-hash.md (HKDF info "privacynotes-fp-pepper-v1")
 export function deriveFpPepper(seed: Uint8Array): Uint8Array {
   return hkdf(
     sha256,
@@ -306,7 +306,7 @@ export function base64urlToBytes(b64url: string): Uint8Array {
  */
 export type EncryptedPayload = Pick<
   DecryptedNote,
-  'title' | 'body' | 'tags' | 'trashed' | 'starred' | 'locked' | 'pinProtected' | 'type' | 'trackers'
+  'title' | 'body' | 'tags' | 'trashed' | 'starred' | 'locked' | 'pinProtected' | 'type' | 'trackers' | 'folderId'
 >;
 
 export function encryptNote(
@@ -326,6 +326,7 @@ export function encryptNote(
       pinProtected: note.pinProtected,
       type: note.type,
       ...(note.trackers ? { trackers: note.trackers } : {}),
+      ...(note.folderId ? { folderId: note.folderId } : {}),
     })
   );
   const ciphertext = cipher.encrypt(plaintext);
@@ -359,6 +360,7 @@ export function decryptNote(
     pinProtected: parsed.pinProtected ?? false,
     type: parsed.type ?? 'note',
     trackers: (parsed as Record<string, unknown>).trackers as Record<string, unknown> | undefined,
+    folderId: parsed.folderId ?? null,
   };
 }
 

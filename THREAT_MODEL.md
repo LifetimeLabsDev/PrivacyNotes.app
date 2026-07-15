@@ -1,6 +1,6 @@
 # Threat Model
 
-Last updated: 2026-06-10 (v0.195.6)
+Last updated: 2026-07-15 (v0.251.1)
 
 This document describes the security assumptions, trust boundaries, and known limitations of PrivacyNotes. It is intended for security auditors, contributors, and users who want to understand exactly what the system protects against and what it does not.
 
@@ -11,7 +11,9 @@ PrivacyNotes is an end-to-end encrypted personal workspace (notes, tasks, journa
 1. **Ed25519 signing keypair** - the public key serves as the user's identity (pubkey). Used to authenticate API calls via challenge-response signatures.
 2. **XChaCha20-Poly1305 symmetric key** - encrypts all note content, user settings, and note version history before any data leaves the device.
 
-The phrase, private signing key, and encryption key never leave the client. The server stores only the pubkey (identity), ciphertext, and nonce.
+Under self-custody, which is the default, the phrase, private signing key, and encryption key never leave the client, and the server stores only the pubkey (identity), ciphertext, and nonce.
+
+**One exception, chosen by the user at OAuth signup.** In custodial mode the phrase is sent to the server and stored encrypted under a server-held key, which makes the server capable of decrypting that user's data. Everything in this document describes self-custody unless it says otherwise; the custodial deviations are specified in "OAuth users" below, and they are the single largest trust boundary in the system. Read that section before drawing conclusions from this one.
 
 ## Trust boundaries
 
@@ -158,7 +160,7 @@ The user explicitly opts to have their BIP-39 phrase stored server-side for conv
 - Neither custodial endpoint has rate limiting beyond Supabase's default connection limits. Standard for edge functions but worth noting given `get-custodial-phrase` returns the crown jewels.
 - The decrypted phrase is held in Deno isolate memory briefly during `get-custodial-phrase` responses. No explicit memory zeroing. This is inherent to the Deno runtime.
 
-**Design rationale:** The choice is presented at first OAuth sign-in with explicit tradeoff explanation. This is the product differentiator - most apps store keys server-side silently; we ask the user. See `docs/custodial-key-spec.md` for the full architecture.
+**Design rationale:** The choice is presented at first OAuth sign-in with explicit tradeoff explanation. This is the product differentiator - most apps store keys server-side silently; we ask the user. See `ops/docs/custodial-key-spec.md` for the full architecture.
 
 **Historical note:** Prior to v0.152.0 (2026-05), the `oauth-phrase` edge function derived OAuth users' phrases server-side from a Supabase secret (`OAUTH_PHRASE_PEPPER`). This was a silent server-side decision with no user consent. The function was deleted and the pepper unset in v0.173.4 after all 5 legacy users confirmed migration. The custodial key storage introduced in v0.172.0 is an explicit opt-in replacement.
 

@@ -6,7 +6,9 @@ If you find a vulnerability, please email privacynotes@lifetimelabs.dev instead 
 
 ## In one paragraph
 
-PrivacyNotes is end-to-end encrypted. Your 12-word recovery phrase is generated on your device and never sent anywhere. From it we derive two keys: one to encrypt every note, task, and journal entry before it leaves the device, and one to sign requests so the server can tell it's you without knowing who you are. The server stores ciphertext and a public key. Neither the server nor we hold the keys required to decrypt it - those live only on your devices.
+PrivacyNotes is end-to-end encrypted. Your 12-word recovery phrase is generated on your device. From it we derive two keys: one to encrypt every note, task, and journal entry before it leaves the device, and one to sign requests so the server can tell it's you without knowing who you are. The server stores ciphertext and a public key. Under self-custody, which is the default and what you get unless you choose otherwise at signup, neither the server nor we hold the keys required to decrypt it, and those live only on your devices.
+
+One deliberate exception, which you choose at signup and which we would rather state up front than bury: if you sign up with Google or Apple, you can opt into having us store your phrase so that a new device is one click instead of twelve words. That is **custodial mode**, and it means we can decrypt your notes. It is off unless you pick it, it is reversible, and it is described in full in [Custodial mode](#custodial-mode) below.
 
 ## What the server sees
 
@@ -17,9 +19,11 @@ The server is Supabase (Postgres + Row Level Security) in Zurich. For each user 
 - Nonces and timestamps required to sync and resolve order.
 - Sizes of the encrypted blobs (a row in a database has a size).
 
-It does not store: titles, body text, tags, the recovery phrase, or anything derived from them. Phrase-flow users sign up with anonymous Supabase auth - no email, no name, no identifier tied to who they are. OAuth users (Google, Apple) have an identity from the provider attached to their session; see the OAuth section below for what that does and does not mean.
+It does not store: titles, body text, tags, or anything derived from them. Phrase-flow users sign up with anonymous Supabase auth - no email, no name, no identifier tied to who they are. OAuth users (Google, Apple) have an identity from the provider attached to their session; see the OAuth section below for what that does and does not mean.
 
-If the server is compromised tomorrow, the attacker gets a database of opaque bytes addressed by public key. They can correlate which key syncs at which time and infer crude things like "this user has roughly 200 notes," but they cannot read content.
+It does not store your recovery phrase either, unless you chose custodial mode at signup, in which case it stores an encrypted copy. That is the one case where the sentence above stops being the whole story, and it gets its own section below.
+
+If the server is compromised tomorrow, the attacker gets a database of opaque bytes addressed by public key. They can correlate which key syncs at which time and infer crude things like "this user has roughly 200 notes," but they cannot read content. The exception is custodial users: an attacker who reached both the database and the phrase-encryption key would be able to decrypt their notes.
 
 ## Cryptography
 
@@ -78,21 +82,45 @@ What does touch IP addresses, honestly: Cloudflare and Supabase transiently proc
 
 ## OAuth users (Google, Apple)
 
-OAuth is a convenience entry point. The user's recovery phrase is generated on their device at first sign-in and never leaves it, exactly as in the phrase flow. OAuth provides three things: a one-click way to return on a known device, abuse protection (Google/Apple have already proved the user is a real human), and a stable identity to attach things like Pro subscriptions to.
+OAuth is a convenience entry point. Your recovery phrase is still generated on your device at first sign-in. OAuth provides three things: a one-click way to return on a known device, abuse protection (Google and Apple have already proved you are a real human), and a stable identity to attach things like Pro subscriptions to.
 
-OAuth is **not** a key recovery mechanism. If you sign in on a new device with Google or Apple, we will recognize you, but we cannot unlock your data for you - your encryption keys live only on the devices you've used before. You'll be asked to type your phrase or scan a QR sign-in code from an existing device. This is the same model WhatsApp and Telegram use: identity is one thing, key material is another, and we never conflate them.
+It also costs you something, whichever mode you pick: the email Google or Apple shares with us is linked to your public key in our database. Phrase-only users have no such link. If being unidentifiable to us matters more than a fast sign-in, use the phrase flow.
+
+At OAuth signup you choose between two modes, and the choice is the most consequential one in the product:
+
+- **Self-custody** (the default). Your phrase never leaves your device. On a new device we recognize you but cannot unlock anything for you: you type your phrase or scan a QR sign-in code from a device you already use. Identity is one thing, key material is another, and in this mode we never conflate them.
+- **Custodial.** You ask us to keep a copy of your phrase so a new device is one click. See below.
+
+## Custodial mode
+
+If you chose custodial at signup, we hold your recovery phrase. It is encrypted at rest with AES-256-GCM under a key held by the server, not by you, and it exists so you can sign in on a new device with nothing but your Google or Apple account.
+
+**What that means, stated plainly: we can decrypt your notes.** Not "in theory," not "if you count some exotic attack." The phrase is the root of every key, we have a copy, and we have the key that unwraps it. So:
+
+- A valid legal order compelling us could produce your plaintext.
+- A deep enough compromise of our server, reaching both the database and the phrase key, would produce your plaintext.
+- A dishonest future version of this company could read your notes without telling you.
+
+None of those are true for self-custody users. There is nothing on our side to compel, steal, or betray: an attacker who takes the entire database gets ciphertext and a dead end where the phrase should be.
+
+**A known weakness we are not hiding.** Retrieving a custodial phrase requires only a valid session token. Unlike account deletion, it is not gated behind a second signature challenge, because at that point in the flow you may not have a signing key yet: the phrase is what derives it. A stolen session token is therefore enough to exfiltrate a custodial phrase for as long as that token lives. This is flagged for the third-party audit and written up in [`THREAT_MODEL.md`](THREAT_MODEL.md).
+
+**It is a one-way ratchet.** You can move from custodial to self-custody at any time and we delete our copy. You cannot go back. That direction is deliberate: the safe move should always be available, and the unsafe one should require a decision you make once, knowingly.
+
+**Why offer it at all.** For a lot of people the realistic alternative to a custodial encrypted notes app is not a stricter one, it is a plaintext one, or a notes app owned by an advertising company. We would rather offer the trade honestly, default it to off, and let you climb the ratchet, than pretend the trade does not exist. But if you came here for the guarantee the rest of this document describes, use the phrase flow or switch to self-custody in Settings.
 
 ## What we trust
 
 - **Your device and browser.** If the operating system is compromised or the browser is malicious, none of the above helps. This is the universal limit of in-app encryption.
 - **The cryptographic libraries.** `@noble/ciphers`, `@noble/hashes`, `@noble/ed25519`, `@scure/bip39`. Audited and widely deployed.
-- **The frontend bundle.** Frontend assets built from this codebase and served over Cloudflare. A compromised CDN deployment could ship malicious JavaScript that exfiltrates the phrase. This is the standard supply-chain risk for any web app. We have not yet added Subresource Integrity or reproducible web builds. Code-signed native builds would structurally narrow this trust boundary - they are on the roadmap and not yet shipped.
+- **The frontend bundle, on the web.** Frontend assets built from this codebase and served over Cloudflare. A compromised CDN deployment could ship malicious JavaScript that exfiltrates the phrase. This is the standard supply-chain risk for any web app, and we have not yet added Subresource Integrity or reproducible web builds.
+- **Less so in the native apps.** Code-signed native builds narrow that boundary structurally, and they have shipped: macOS is notarized, Windows is Authenticode-signed via Azure, Linux ships a signed AppImage and deb, and the Android APK is pinned to a signing certificate we cannot rotate without every sideloaded user's app refusing the update. A native build is a fixed artifact rather than code re-fetched on every load, so tampering means re-signing and re-distributing, which leaves a trail. If your threat model includes us being compromised or coerced, prefer the native apps over the web app.
 
 ## What we don't protect against
 
 - A compromised endpoint. Malware on your machine reads plaintext while the app is unlocked, same as any E2E system.
 - A targeted adversary with custodial access to your unlocked device.
-- You losing your recovery phrase. There is no reset. We chose this on purpose; a recoverable phrase would be a backdoor.
+- You losing your recovery phrase, under self-custody. There is no reset. We chose this on purpose; a recoverable phrase would be a backdoor, and custodial mode is that backdoor offered honestly, by name, to the people who decide they want it.
 - Social engineering. Nobody from PrivacyNotes will ever ask for your phrase. If someone does, they are not us.
 - Denial of service against our infrastructure providers.
 - Future cryptographically relevant quantum computers, eventually. XChaCha20-Poly1305 at 256-bit keys remains strong against Grover-class attacks; Ed25519 does not against Shor. This is not a near-term practical concern but is worth noting.
@@ -103,7 +131,7 @@ OAuth is **not** a key recovery mechanism. If you sign in on a new device with G
 - Cloudflare Turnstile on signup.
 - 1 MB CHECK constraint on each ciphertext row.
 - Per-user quotas enforced by Postgres triggers (10,000 notes, 50 MB free, 500 MB Pro).
-- Anonymous accounts that never link a pubkey are purged after 30 days by a scheduled job.
+- Anonymous accounts that never link a pubkey are purged after 7 days by a scheduled job. Accounts that finished setup are never deleted for inactivity.
 - IP-level rate limiting on signup and sync.
 
 ## Audit status

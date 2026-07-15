@@ -1,91 +1,90 @@
-# PrivacyNotes - Open Core
+<div align="center">
 
+<img src="assets/icon.svg" alt="" width="76" height="76">
+
+# PrivacyNotes
+
+**End-to-end encrypted notes, tasks, and journal.**<br>
+Your 12-word phrase is your identity and your key. No email, no password, no account to leak.
+
+[**Website**](https://privacynotes.app) &nbsp;·&nbsp; [**Try it, no account**](https://try.privacynotes.app) &nbsp;·&nbsp; [**Security**](SECURITY.md) &nbsp;·&nbsp; [**Threat model**](THREAT_MODEL.md)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-1E40AF.svg)](LICENSE)
+[![Encryption](https://img.shields.io/badge/Encryption-XChaCha20--Poly1305-10B981.svg)](crypto/crypto.ts)
+[![Identity](https://img.shields.io/badge/Identity-Ed25519-4F6BD5.svg)](crypto/crypto.ts)
+[![Audit](https://img.shields.io/badge/Third--party%20audit-not%20yet-lightgrey.svg)](#security-contact)
 [![GitGem](https://gitgem.org/api/badge/github/LifetimeLabsDev/PrivacyNotes.app.svg)](https://gitgem.org/github/LifetimeLabsDev/PrivacyNotes.app)
 
-PrivacyNotes is a zero-knowledge, end-to-end encrypted notes app. Your 12-word phrase is your identity and your key - no email or password required. Lose the phrase, lose your notes - by design.
+</div>
 
-The app is live at **[PrivacyNotes.app](https://privacynotes.app)**.
+<br>
+
+<div align="center">
 
 ### What your data looks like on our server
 
-![Database screenshot - the server stores only ciphertext it cannot read](assets/database-row.png)
+<img src="assets/database-row.png" alt="A real row from the notes table, containing only ciphertext the server cannot read" width="760">
 
-A real row from the `notes` table. The server stores the public key, ciphertext, and nonce. That's it. No title, no body, no tags - just bytes we can't read.
+<em>A real row from the <code>notes</code> table. A public key, a ciphertext, a nonce.<br>
+No title, no body, no tags. Just bytes we cannot read.</em>
+
+</div>
+
+<br>
 
 ---
 
 ## Why this repo exists
 
-We believe privacy claims require proof. Saying "your notes are encrypted" means nothing if you can't read the code that does the encrypting.
+Privacy claims need proof. "Your notes are encrypted" means nothing if you cannot read the code doing the encrypting.
 
-This repository contains the **cryptographic core** and **database schema** of PrivacyNotes - the parts that matter for trust. You can read every line, audit every function, and verify that we do exactly what we say we do:
+So the parts you actually have to trust are here: the cryptographic core, the database schema, and the threat model. Not summaries of them. The real files, the ones that ship.
 
-- Your phrase never leaves your device.
-- Your notes are encrypted before they touch our server.
-- The server stores only ciphertext it cannot read.
+Three claims we make, and where to check each one without taking our word for it:
 
-The application code (UI, editor, sync logic) is proprietary and lives in a private repository. This is sometimes called an **open core** model - the security-critical foundation is open, the product built on top of it is not.
+| The claim | Check it here |
+| :--- | :--- |
+| Your phrase never leaves your device | [`crypto/crypto.ts`](crypto/crypto.ts), and the derivation strings in the live bundle |
+| Notes are encrypted before they touch our server | [`crypto/crypto.ts`](crypto/crypto.ts), the XChaCha20-Poly1305 path |
+| The server stores only ciphertext | [`schema/schema.sql`](schema/schema.sql), the `notes` table and its RLS policies |
 
----
+If any of those stops holding, the claim is broken and you can prove it. That is the entire point of this repo.
 
-## What's in this repo
-
-### `SECURITY.md` - Threat model and cryptographic design
-
-The authoritative description of what PrivacyNotes protects against, what it doesn't, the cryptographic design in full, the OAuth model, the PIN model, known limitations, and the audit roadmap. If you're reviewing the project, start there.
-
-### `crypto/` - Cryptographic primitives
-
-The single TypeScript module that handles all key derivation and encryption in PrivacyNotes. No wrappers, no indirection - this is the actual production code.
-
-**Identity and key derivation:**
-
-- A 12-word BIP-39 mnemonic (128 bits of entropy) is generated client-side
-- The mnemonic is converted to a 64-byte seed via the standard BIP-39 PBKDF2 path
-- Two keys are derived from that seed using HKDF-SHA256 with distinct domain-separation strings:
-  - `privacynotes-signing-v1` - produces an Ed25519 private key; the corresponding public key becomes the user ID
-  - `privacynotes-encryption-v1` - produces a 32-byte symmetric key for note encryption
-
-**Note encryption:**
-
-- Each note is encrypted with XChaCha20-Poly1305 using a random 24-byte nonce
-- The plaintext payload includes title, body, tags, and metadata (trashed/starred state) - the server cannot see any of it
-- 24-byte nonces make random generation safe without collision risk (unlike AES-GCM's 12-byte nonces)
-
-**Challenge signing:**
-
-- Pubkey-to-account binding uses Ed25519 signatures over structured challenge messages (`link:<authUid>`)
-- Device registration and revocation use similar signed challenges
-- All signatures bind to the session's auth UID to prevent replay attacks
-
-**Dependencies (all from the [@noble](https://github.com/paulmillr/noble-hashes) and [@scure](https://github.com/paulmillr/scure-bip39) families by Paul Miller):**
-
-- `@scure/bip39` - mnemonic generation and validation
-- `@noble/hashes` - HKDF, SHA-256
-- `@noble/ed25519` - signing keypair
-- `@noble/ciphers` - XChaCha20-Poly1305
-
-These libraries have zero dependencies, are written for auditability, and are used in production by major wallets and crypto projects.
-
-### `schema/` - Database schema and row-level security
-
-`schema/schema.sql` is the consolidated, current-state schema - the single file that defines every table, policy, trigger, and function in production. It proves:
-
-- The server stores `ciphertext` and `nonce` - not plaintext
-- Row-Level Security policies ensure each user can only access rows matching their own public key
-- Abuse limits (per-pubkey note count, ciphertext size caps) are enforced server-side via triggers
-- Note history (versioning) stores encrypted snapshots, not plaintext diffs
-- Abandoned signups that never link a pubkey (created but never set up) are purged after 7 days. Accounts that have completed setup are never deleted for inactivity.
+The first claim has one exception, which you choose at signup and which is off unless you pick it. We would rather you read about it here than find it yourself: see [custodial mode](#custodial-mode-the-exception-to-the-first-claim).
 
 ---
 
-## How to verify
+## What is in here
 
-### Read the code
+| Path | What it is |
+| :--- | :--- |
+| [`crypto/crypto.ts`](crypto/crypto.ts) | Every line of key derivation and encryption in PrivacyNotes. One file, about 400 lines, commented step by step. Not a reference implementation. The production code. |
+| [`schema/schema.sql`](schema/schema.sql) | The consolidated current-state schema. Every table, RLS policy, trigger, and function in production. |
+| [`SECURITY.md`](SECURITY.md) | What we protect against, what we do not, and what the server can see. Written for users. |
+| [`THREAT_MODEL.md`](THREAT_MODEL.md) | Trust boundaries, cryptographic detail, and known limitations, including the unflattering ones. Written for auditors. **Start here if you are reviewing the project.** |
 
-The crypto module is a single file, under 300 lines, with inline comments explaining every step. Start there.
+### The design in brief
 
-### Run it yourself
+**Identity and key derivation.** A 12-word BIP-39 mnemonic (128 bits of entropy) is generated on your device and turned into a 64-byte seed via the standard BIP-39 PBKDF2 path. Two keys come out of that seed via HKDF-SHA256, with domain-separated info strings:
+
+| Info string | Produces | Used for |
+| :--- | :--- | :--- |
+| `privacynotes-signing-v1` | Ed25519 private key | Its public key is your user ID |
+| `privacynotes-encryption-v1` | 32-byte symmetric key | Note encryption |
+
+**Note encryption.** Each note is encrypted with XChaCha20-Poly1305 under a random 24-byte nonce. The plaintext payload includes title, body, tags, and metadata such as trashed and starred state. The server sees none of it. The 24-byte nonce is what makes random generation safe without collision risk, unlike AES-GCM's 12 bytes.
+
+**Challenge signing.** Pubkey-to-account binding uses Ed25519 signatures over structured challenges (`link:<authUid>`). Device registration and revocation use the same shape. Every signature binds to the session's auth UID, so a captured signature cannot be replayed into another session.
+
+**Dependencies**, all from the [@noble](https://github.com/paulmillr/noble-hashes) and [@scure](https://github.com/paulmillr/scure-bip39) families: `@scure/bip39`, `@noble/hashes`, `@noble/ed25519`, `@noble/ciphers`. Zero dependencies each, written to be auditable, deployed in production by major wallets.
+
+---
+
+## Verify it yourself
+
+**Read it.** [`crypto/crypto.ts`](crypto/crypto.ts) is one file and you can finish it in a sitting.
+
+**Run the derivation.** The same path the app uses:
 
 ```bash
 npm install @scure/bip39 @noble/hashes @noble/ed25519 @noble/ciphers
@@ -96,101 +95,85 @@ const { wordlist } = require('@scure/bip39/wordlists/english');
 const { hkdf } = require('@noble/hashes/hkdf');
 const { sha256 } = require('@noble/hashes/sha256');
 
-// Generate a phrase
 const phrase = generateMnemonic(wordlist, 128);
 console.log('Phrase:', phrase);
 
-// Derive the seed
 const seed = mnemonicToSeedSync(phrase);
-
-// Derive encryption key (same path the app uses)
 const encKey = hkdf(sha256, seed, undefined, 'privacynotes-encryption-v1', 32);
 console.log('Encryption key (hex):', Buffer.from(encKey).toString('hex'));
 
-// Same phrase always yields the same key
-const seed2 = mnemonicToSeedSync(phrase);
-const encKey2 = hkdf(sha256, seed2, undefined, 'privacynotes-encryption-v1', 32);
+const encKey2 = hkdf(sha256, mnemonicToSeedSync(phrase), undefined, 'privacynotes-encryption-v1', 32);
 console.log('Deterministic:', Buffer.from(encKey).equals(Buffer.from(encKey2)));
 "
 ```
 
-### Inspect the database schema
+**Diff it against production.** The bundle is minified, so a textual diff is not practical, but the derivation is falsifiable anyway. Open the JavaScript served at privacynotes.app and search it for `privacynotes-signing-v1` and `privacynotes-encryption-v1`, the HKDF-SHA256 construction, and XChaCha20-Poly1305 with 24-byte nonces. They are in there right now. If they ever are not, we are lying and you can show it.
 
-Open `schema/schema.sql` - it's the complete, current-state schema with every table, RLS policy, trigger, and function. Look for the `notes` table: it stores `ciphertext` and `nonce`, not `title` or `body`.
-
-### Compare against production
-
-The cryptographic logic and constants in this repo match what ships in the app. The production bundle is minified, so an exact textual diff isn't practical - but the derivation paths are falsifiable. Inspect the JavaScript served at privacynotes.app and search the bundle for the literal strings `privacynotes-signing-v1` and `privacynotes-encryption-v1`, the HKDF-SHA256 construction, and the XChaCha20-Poly1305 cipher with 24-byte nonces. If any of those don't match `crypto/`, the claim is broken.
+**Read the schema.** In [`schema/schema.sql`](schema/schema.sql), find the `notes` table. It has `ciphertext` and `nonce`. It has no `title` and no `body`. RLS restricts every row to the public key that owns it, and abuse limits (note count, ciphertext size) are enforced by triggers rather than by asking nicely. Abandoned signups that never link a pubkey are purged after 7 days; accounts that finished setup are never deleted for inactivity.
 
 ---
 
-## Threat model
+## The parts that are not absolute
 
-A short summary. The full threat model - trust boundaries, cryptographic detail, known limitations (AAD, sync conflicts, PIN as UX gate), and our position on third-party audits - lives in [`SECURITY.md`](SECURITY.md). If anything below disagrees with `SECURITY.md`, treat `SECURITY.md` as the authoritative version.
+Every honest end-to-end encrypted project has these. Here are ours.
 
-**What we protect against:**
+### Custodial mode, the exception to the first claim
 
-- Server compromise - the database contains only ciphertext; an attacker who dumps every row gets nothing readable
-- Network interception - encryption happens client-side before any data is transmitted
-- Us - the server does not hold the keys required to decrypt your notes. Your phrase never reaches us.
+By default your phrase is generated on your device and never sent anywhere. That is self-custody, and it is what you get unless you decide otherwise.
 
-**What the server still sees (metadata):**
+When you sign up with Google or Apple, you choose between self-custody and letting us store your phrase so that signing in on a new device is one click instead of twelve words. If you pick the second, the truth is short: **we can decrypt your notes.** Your phrase sits on our servers encrypted under a key we hold, so a valid legal order, a deep enough compromise, or a dishonest future version of us could reach your plaintext. Self-custody users are exposed to none of that, because there is nothing on our side to compel.
 
-End-to-end encryption protects content, not the fact that content exists. Even with every note encrypted, the server can observe:
+It is a one-way ratchet. You can move from custodial to self-custody whenever you want and we delete our copy. You cannot go back.
 
-- The public key associated with each row (your stable pseudonymous ID)
-- Ciphertext length (an approximate signal of plaintext size)
-- Row creation and update timestamps (activity patterns)
-- Per-user note count and request IP addresses
-- Sync frequency and access patterns
+We think the trade is legitimate, because for many people the realistic alternative is not a stricter notes app, it is a plaintext one. But it is a real trade and it belongs in the README rather than a footnote. If you want the version of PrivacyNotes this document describes, use the phrase flow.
 
-This is the same metadata-leakage profile as Signal, Standard Notes, and every other E2EE app of this shape. Tor or a VPN reduces the IP-level leak; the rest is structural to running a sync server at all.
+[`SECURITY.md`](SECURITY.md) and [`THREAT_MODEL.md`](THREAT_MODEL.md) carry the full detail, including a weakness in custodial phrase retrieval that we have flagged for audit rather than quietly fixed and forgotten.
 
-**What we don't protect against:**
+### Metadata
 
-- Losing your phrase - there is no recovery mechanism. This is intentional.
-- A compromised device - if malware is running on your machine, it can read what you can read
-- Targeted browser exploits - the app runs in a browser; a sufficiently motivated attacker with access to your browser session could extract keys from memory
-- Malicious JavaScript via web delivery - see the next section
+Encryption protects content, not the fact that content exists. Even with every note encrypted, the server sees your public key (a stable pseudonymous ID), ciphertext length, row timestamps, note counts, request IPs, and sync patterns. This is structural to running a sync server and it is the same shape of leak every app of this kind has. Tor or a VPN handles the IP part. The rest is the cost of sync.
 
-**OAuth users (Google/Apple sign-in):** As of v0.152.0, OAuth users generate their recovery phrase on-device, the same way phrase-flow users do. The server cannot derive their phrase. OAuth provides identity and a way to recognize you on a new device - it is not a key recovery mechanism. If you sign in on a new device with Google or Apple, you'll still be asked to type your phrase or scan a QR sign-in code from an existing device.
+### OAuth attaches a name to your key
 
-OAuth is a trade-off: it gives you a familiar sign-in experience, but it also links your real-world identity (the email Google or Apple shares with us) to your public key in our database. Phrase-only users have no such linkage. If anonymity from us matters more than convenience, use the phrase flow. See `SECURITY.md` for the full OAuth section, including a note on what earlier versions did and why we changed it.
+Phrase-only users have no identity attached to their public key. Sign in with Google or Apple and the email the provider shares with us is linked to your pubkey in our database. This is true whether or not you choose custodial mode. If being unidentifiable to us matters more than convenience, use the phrase flow.
 
----
+### Browser-delivered code
 
-## Limits of browser-delivered cryptography
+Open-sourcing the crypto proves the design. It does not prove that the JavaScript your browser ran today is the JavaScript in this repo. Anyone controlling our hosting could serve modified code to one user, one region, or everyone. This is structural to every web app, it is not unique to us, and open source alone does not fix it.
 
-Open-sourcing the crypto module proves the design. It does not prove that the JavaScript your browser executed today is the JavaScript in this repo.
+What narrows it today:
 
-Because the web app at privacynotes.app is served dynamically, whoever controls our hosting infrastructure can ship modified JavaScript to a single user, a region, or everyone - at any time. A compromise of the infrastructure, a malicious insider, or external pressure on the hosting could in principle deliver a build that exfiltrates your phrase or your encryption key before you ever see ciphertext. Open-source crypto does not solve this; it is structural to every web-delivered app, not a flaw unique to us.
+- **Signed native builds.** macOS is notarized, Windows is Authenticode-signed through Azure, Linux ships a signed AppImage and deb, and the Android APK is pinned to a certificate we cannot rotate without every sideloaded user's app refusing the update. A native build is a fixed artifact rather than code refetched on every load, so tampering means re-signing and re-distributing, which leaves a trail. **If your threat model includes us being coerced, prefer the native apps.**
+- **Inspectable constants on every load.** The derivation paths are visible in the served bundle, as above.
 
-What narrows this gap today:
+What would close it further and has not shipped: Subresource Integrity and reproducible web builds. We would rather name the gap than let it sit quietly.
 
-- **Source verification on each load.** The cryptographic constants and derivation paths are inspectable in the served bundle (see "Compare against production" above). An anomaly between the served code and this repo is detectable by anyone who looks.
+### Things we cannot help with
 
-What would close it structurally - and hasn't shipped yet:
-
-- **Code-signed native builds.** A native desktop or mobile build ships as a fixed bundle whose hash users can verify before running it; a modified build would have to be re-signed and re-distributed, leaving a visible trail. We don't have these yet. We're calling it out as a known gap, not a future feature in disguise.
-
-If your threat model is "the company is coerced or compromised tomorrow," current web-only delivery may not be sufficient for you. If it's "my notes shouldn't be readable by my hosting provider, my ISP, or our database operators," the encryption model holds and the web app is appropriate.
+Losing your phrase, under self-custody, means losing your notes. There is no reset, because a reset is a backdoor with better branding. Malware on your device reads what you read. A targeted attacker with your unlocked browser session can reach your keys in memory.
 
 ---
 
-## What's NOT in this repo
+## What is not in here
 
-The application itself: React UI, TipTap editor integration, sync engine, import/export, edge functions, build configuration, and deployment pipeline. These are proprietary.
+The application: React UI, the editor, the sync engine, import and export, edge functions, and the build pipeline.
+
+We have committed to open-sourcing the client apps once the native apps have all shipped. The sync backend stays closed, so that will not make PrivacyNotes an open-source project in the unqualified sense, and we would rather say so than let the phrase do work it has not earned. Until then: open-source clients are the plan, an open core is the present tense.
 
 ---
 
 ## Security contact
 
-If you find a vulnerability in the cryptographic implementation, please email **privacynotes@lifetimelabs.dev** instead of opening a public issue. Full reporting policy in [`SECURITY.md`](SECURITY.md).
+Found a flaw in the crypto, the derivation, or the schema? Email **privacynotes@lifetimelabs.dev** rather than opening a public issue, so it can be fixed before it is public.
+
+That address is published in our PGP-signed [security.txt](https://privacynotes.app/.well-known/security.txt) so you can confirm it is really us, and our [public key](https://privacynotes.app/.well-known/pgp-key.txt) is there if you want to encrypt the report. If a fix needs coordination we will work with you on timing before disclosure. There is no paid bounty yet; we want one when it is responsibly affordable.
+
+**No third-party audit has been performed.** The first serious spend out of revenue is one, with Cure53 as the target firm. We would rather write that sentence than gesture at "audit coming soon."
 
 ---
 
 ## License
 
-The contents of this repository are licensed under the **MIT License**. You are free to use, audit, fork, and build upon the cryptographic primitives and database schema published here.
+This repository is **MIT**. Use it, audit it, fork it, build on it.
 
-The PrivacyNotes application (UI, sync engine, and all other proprietary components) is not covered by this license and remains proprietary.
+The PrivacyNotes application is not covered by this license.
