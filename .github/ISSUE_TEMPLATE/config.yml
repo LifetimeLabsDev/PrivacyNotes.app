@@ -19,13 +19,3 @@ contact_links:
       What has recently shipped, grouped as new, improved, and fixed. Worth a scan before you
       open an issue, what you are seeing may already be fixed in a version you have not updated
       to yet.
-  - name: Roadmap
-    url: https://privacynotes.app/roadmap
-    about: >
-      What we are building and what is planned next. Worth a look before you request a feature,
-      it may already be on the way.
-  - name: Try it without an account
-    url: https://try.privacynotes.app
-    about: >
-      A demo with made-up notes. Nothing is saved and nothing leaves your browser. Handy for
-      working out whether a problem is the app itself or just your own copy.
