@@ -1,3 +1,11 @@
+# No security contact link here on purpose. GitHub generates its own "Report a security
+# vulnerability" entry in the chooser automatically, for any repo that has a SECURITY.md, and
+# ours has had one since the first public release. Adding one here just renders a second,
+# near-identical security row directly under GitHub's. If the wording needs improving, edit
+# SECURITY.md (which is what GitHub's entry links to), or turn on private vulnerability
+# reporting in Settings > Security, which upgrades GitHub's entry from a link into a real
+# private report form. Do not re-add a contact link for this.
+
 blank_issues_enabled: false
 contact_links:
   - name: Help center
@@ -5,6 +13,17 @@ contact_links:
     about: >
       Guides, moving in from another app, and answers to most questions. Usually faster than
       waiting for us, though you are welcome to ask here either way.
+  - name: Changelog
+    url: https://privacynotes.app/changelog
+    about: >
+      What has recently shipped, grouped as new, improved, and fixed. Worth a scan before you
+      open an issue, what you are seeing may already be fixed in a version you have not updated
+      to yet.
+  - name: Roadmap
+    url: https://privacynotes.app/roadmap
+    about: >
+      What we are building and what is planned next. Worth a look before you request a feature,
+      it may already be on the way.
   - name: Try it without an account
     url: https://try.privacynotes.app
     about: >
