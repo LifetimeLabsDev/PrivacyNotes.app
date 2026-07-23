@@ -1,11 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Report a security problem (please do not post it publicly)
-    url: https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md
-    about: >
-      Found a hole in the way we encrypt or store your data? Email
-      privacynotes@lifetimelabs.dev instead of posting here, so it can be fixed before
-      everyone can see it. SECURITY.md explains what we protect and what we do not.
   - name: Help center
     url: https://privacynotes.app/help
     about: >
