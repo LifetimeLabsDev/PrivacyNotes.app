@@ -12,14 +12,18 @@ import {
   validateMnemonic,
   mnemonicToSeedSync,
 } from '@scure/bip39';
-import { wordlist } from '@scure/bip39/wordlists/english';
-import { hkdf } from '@noble/hashes/hkdf';
-import { hmac } from '@noble/hashes/hmac';
-import { sha256 } from '@noble/hashes/sha256';
-import { randomBytes } from '@noble/hashes/utils';
+// @noble/@scure v2+ require the explicit `.js` on subpath imports, and sha256 folded into
+// sha2. Dropping the suffix, or reaching for '@noble/hashes/sha256', is a build error, not a
+// silent fallback. Verified 2026-07-16: these paths produce byte-identical keys to the v1
+// ones (see tools/crypto-kat.mjs). Spec: ops/docs/dependency-migration.md
+import { wordlist } from '@scure/bip39/wordlists/english.js';
+import { hkdf } from '@noble/hashes/hkdf.js';
+import { hmac } from '@noble/hashes/hmac.js';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { randomBytes } from '@noble/hashes/utils.js';
 import * as ed from '@noble/ed25519';
 // Spec: ops/docs/THREAT_MODEL.md (xchacha20poly1305 via @noble/ciphers)
-import { xchacha20poly1305 } from '@noble/ciphers/chacha';
+import { xchacha20poly1305 } from '@noble/ciphers/chacha.js';
 
 import type { DecryptedNote } from './types.js';
 

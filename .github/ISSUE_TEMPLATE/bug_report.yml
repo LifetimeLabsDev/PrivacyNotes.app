@@ -26,15 +26,23 @@ body:
     validations:
       required: true
 
+  # id: version lets the in-app "report a bug" link prefill this from VERSION, so the reporter
+  # never types it and we never get a guess. No placeholder on purpose: a pre-filled example
+  # version just teaches people to accept it without looking, and a confidently wrong version
+  # is worse than a blank one. Optional for anyone arriving straight from GitHub.
+  # Spec: ops/docs/gotchas.md (not every channel auto-updates).
   - type: input
+    id: version
     attributes:
       label: Version
-      description: Settings, then About.
-      placeholder: "0.251.0"
+      description: >
+        Settings, then About. Leave it blank if you are not sure: we would rather have no
+        answer than a guess.
     validations:
-      required: true
+      required: false
 
   - type: dropdown
+    id: where
     attributes:
       label: Where?
       options:

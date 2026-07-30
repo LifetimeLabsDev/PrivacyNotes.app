@@ -8,7 +8,7 @@ If you find a vulnerability, please email privacynotes@lifetimelabs.dev instead 
 
 PrivacyNotes is end-to-end encrypted. Your 12-word recovery phrase is generated on your device. From it we derive two keys: one to encrypt every note, task, and journal entry before it leaves the device, and one to sign requests so the server can tell it's you without knowing who you are. The server stores ciphertext and a public key. Under self-custody, which is the default and what you get unless you choose otherwise at signup, neither the server nor we hold the keys required to decrypt it, and those live only on your devices.
 
-One deliberate exception, which you choose at signup and which we would rather state up front than bury: if you sign up with Google or Apple, you can opt into having us store your phrase so that a new device is one click instead of twelve words. That is **custodial mode**, and it means we can decrypt your notes. It is off unless you pick it, it is reversible, and it is described in full in [Custodial mode](#custodial-mode) below.
+One deliberate exception, which you choose at signup and which we would rather state up front than bury: if you sign up with Google or Apple, you can opt into having us store your phrase so that a new device is one click instead of twelve words. That is **custodial mode**, and it means we can decrypt your notes. It is off unless you pick it, you can leave it later (described below, including what leaving takes today), and it is described in full in [Custodial mode](#custodial-mode) below.
 
 ## What the server sees
 
@@ -105,9 +105,9 @@ None of those are true for self-custody users. There is nothing on our side to c
 
 **A known weakness we are not hiding.** Retrieving a custodial phrase requires only a valid session token. Unlike account deletion, it is not gated behind a second signature challenge, because at that point in the flow you may not have a signing key yet: the phrase is what derives it. A stolen session token is therefore enough to exfiltrate a custodial phrase for as long as that token lives. This is flagged for the third-party audit and written up in [`THREAT_MODEL.md`](THREAT_MODEL.md).
 
-**It is a one-way ratchet.** You can move from custodial to self-custody at any time and we delete our copy. You cannot go back. That direction is deliberate: the safe move should always be available, and the unsafe one should require a decision you make once, knowingly.
+**It is a one-way ratchet by design.** Leaving custodial mode is meant to always be possible, and going back is not: the safe move should stay available, and the unsafe one should require a decision you make once, knowingly. One honest caveat about today's implementation: the in-place switch (a button that deletes our stored copy and keeps your account) is not built yet - it is on our tracked backlog. Until it ships, leaving custodial mode means migrating: export a full backup, create a fresh self-custody vault, restore the backup there, and delete the old account, which removes our stored copy of the old phrase along with it. Clunkier than a button, but it gets you to the same place without trusting us to forget.
 
-**Why offer it at all.** For a lot of people the realistic alternative to a custodial encrypted notes app is not a stricter one, it is a plaintext one, or a notes app owned by an advertising company. We would rather offer the trade honestly, default it to off, and let you climb the ratchet, than pretend the trade does not exist. But if you came here for the guarantee the rest of this document describes, use the phrase flow or switch to self-custody in Settings.
+**Why offer it at all.** For a lot of people the realistic alternative to a custodial encrypted notes app is not a stricter one, it is a plaintext one, or a notes app owned by an advertising company. We would rather offer the trade honestly, default it to off, and let you climb the ratchet, than pretend the trade does not exist. But if you came here for the guarantee the rest of this document describes, use the phrase flow, or migrate to a self-custody vault as described above.
 
 ## What we trust
 

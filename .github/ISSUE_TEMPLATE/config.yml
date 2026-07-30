@@ -5,7 +5,6 @@
 # SECURITY.md (which is what GitHub's entry links to), or turn on private vulnerability
 # reporting in Settings > Security, which upgrades GitHub's entry from a link into a real
 # private report form. Do not re-add a contact link for this.
-
 blank_issues_enabled: false
 contact_links:
   - name: Help center
@@ -13,9 +12,8 @@ contact_links:
     about: >
       Guides, moving in from another app, and answers to most questions. Usually faster than
       waiting for us, though you are welcome to ask here either way.
-  - name: Changelog
-    url: https://privacynotes.app/changelog
+  - name: Try it without an account
+    url: https://try.privacynotes.app
     about: >
-      What has recently shipped, grouped as new, improved, and fixed. Worth a scan before you
-      open an issue, what you are seeing may already be fixed in a version you have not updated
-      to yet.
+      A demo with made-up notes. Nothing is saved and nothing leaves your browser. Handy for
+      working out whether a problem is the app itself or just your own copy.

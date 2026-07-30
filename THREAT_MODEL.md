@@ -169,5 +169,6 @@ The user explicitly opts to have their BIP-39 phrase stored server-side for conv
 - **Device compromise:** OS-level malware, keyloggers, memory inspection.
 - **Supply-chain attacks on the web bundle:** A compromised Cloudflare deployment or CDN could serve malicious JS. Mitigated for desktop users (Tauri bundles the frontend). SRI or reproducible builds are not yet implemented for the web version.
 - **Denial of service:** Volumetric attacks against Cloudflare or Supabase infrastructure.
+- **Clipboard exposure:** Once a user copies a secret (vault field or recovery phrase), the OS clipboard is outside the app's control: clipboard history, sync services, and other applications can read it. We deliberately make no clipboard-wipe claims; browsers cannot clear a background tab's clipboard reliably, so a timed wipe would be security theater.
 - **Social engineering:** Tricking users into revealing their phrase.
 - **Quantum computing:** XChaCha20 is symmetric and quantum-resistant at 256-bit key length. Ed25519 is vulnerable to Shor's algorithm but this is not a near-term practical concern.
