@@ -8,7 +8,7 @@ If you find a vulnerability, please email privacynotes@lifetimelabs.dev instead 
 
 PrivacyNotes is end-to-end encrypted. Your 12-word recovery phrase is generated on your device. From it we derive two keys: one to encrypt every note, task, and journal entry before it leaves the device, and one to sign requests so the server can tell it's you without knowing who you are. The server stores ciphertext and a public key. Under self-custody, which is the default and what you get unless you choose otherwise at signup, neither the server nor we hold the keys required to decrypt it, and those live only on your devices.
 
-One deliberate exception, which you choose at signup and which we would rather state up front than bury: if you sign up with Google or Apple, you can opt into having us store your phrase so that a new device is one click instead of twelve words. That is **custodial mode**, and it means we can decrypt your notes. It is off unless you pick it, you can leave it later (described below, including what leaving takes today), and it is described in full in [Custodial mode](#custodial-mode) below.
+One deliberate exception, which you choose at signup and which we would rather state up front than bury: if you sign up with Google or Apple, you can opt into having us store your phrase so that a new device is one click instead of twelve words. That is **custodial mode**, and it means the ability to decrypt your notes sits on our side rather than only on yours. We do not use it, and nothing in our systems reads note content, but the capability is real and we count capabilities rather than intentions. It is off unless you pick it, you can leave it later (described below, including what leaving takes today), and it is described in full in [Custodial mode](#custodial-mode) below.
 
 ## What the server sees
 
@@ -95,7 +95,9 @@ At OAuth signup you choose between two modes, and the choice is the most consequ
 
 If you chose custodial at signup, we hold your recovery phrase. It is encrypted at rest with AES-256-GCM under a key held by the server, not by you, and it exists so you can sign in on a new device with nothing but your Google or Apple account.
 
-**What that means, stated plainly: we can decrypt your notes.** Not "in theory," not "if you count some exotic attack." The phrase is the root of every key, we have a copy, and we have the key that unwraps it. So:
+**What that means, stated plainly: the capability to decrypt your notes sits on our side.** Not "in theory," not "if you count some exotic attack." The phrase is the root of every key, we hold a copy, and we hold the key that unwraps it.
+
+We do not use it. Nothing in our systems reads note content: the server stores ciphertext, decryption happens on your device, and there is no indexing, no search, and no analysis of what you write anywhere in between. But a threat model built on our intentions would be worth nothing, because intentions are not auditable, and they survive neither a subpoena nor a change of ownership. The capability is what counts, and this is what it means:
 
 - A valid legal order compelling us could produce your plaintext.
 - A deep enough compromise of our server, reaching both the database and the phrase key, would produce your plaintext.
