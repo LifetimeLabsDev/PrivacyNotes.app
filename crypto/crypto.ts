@@ -154,6 +154,43 @@ export async function signDeleteAccountChallenge(
 }
 
 /**
+ * Sign the custodial-release challenge (custodial -> self-custody).
+ * Proves the caller holds the master key, so a stolen session token
+ * alone cannot flip someone out of custodial mode. This challenge is
+ * possible where the retrieval one is not: by the time a user can ask
+ * to leave custodial mode they are signed in and hold the key.
+ */
+export async function signCustodialReleaseChallenge(
+  privateKey: Uint8Array,
+  authUid: string,
+): Promise<Uint8Array> {
+  const message = utf8.encode(`delete-custodial-phrase:${authUid}`);
+  return ed.signAsync(message, privateKey);
+}
+
+/**
+ * Sign the custodial-adopt challenge (storing a phrase server-side).
+ *
+ * Without this, store-custodial-phrase authorizes on the session token
+ * alone, and a stolen token lets an attacker plant a phrase THEY
+ * generated as the victim's custodial phrase. The victim's next
+ * new-device sign-in then retrieves the attacker's phrase and lands in
+ * the attacker's vault, so everything written afterwards is readable
+ * by them. Binding the call to the account's signing key closes that:
+ * the phrase can only be stored by someone who already holds it.
+ *
+ * Usable on both callers, because link-pubkey runs before the store in
+ * the signup flow, so the signing key exists by then.
+ */
+export async function signCustodialAdoptChallenge(
+  privateKey: Uint8Array,
+  authUid: string,
+): Promise<Uint8Array> {
+  const message = utf8.encode(`store-custodial-phrase:${authUid}`);
+  return ed.signAsync(message, privateKey);
+}
+
+/**
  * Sign the storage-subscription management challenge. Binds the action and
  * (for a switch) the target price so a signature cannot be replayed against a
  * different subscription, action, or package. priceId is empty for cancel.

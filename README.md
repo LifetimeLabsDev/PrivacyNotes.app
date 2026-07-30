@@ -123,7 +123,7 @@ By default your phrase is generated on your device and never sent anywhere. That
 
 When you sign up with Google or Apple, you choose between self-custody and letting us store your phrase so that signing in on a new device is one click instead of twelve words. If you pick the second, the truth is short: **we can decrypt your notes.** Your phrase sits on our servers encrypted under a key we hold, so a valid legal order, a deep enough compromise, or a dishonest future version of us could reach your plaintext. Self-custody users are exposed to none of that, because there is nothing on our side to compel.
 
-It is a one-way ratchet. You can move from custodial to self-custody whenever you want and we delete our copy. You cannot go back.
+It is a one-way ratchet by design: leaving custodial mode is meant to always be possible, and going back is not. One honest caveat about today's implementation. The in-place switch, a button that deletes our stored copy and keeps your account, is not built yet. It is on our tracked backlog. Until it ships, leaving custodial mode means migrating: export a full backup, create a fresh self-custody vault, restore the backup there, and delete the old account, which removes our stored copy of the old phrase along with it. Clunkier than a button, and it gets you to the same place without trusting us to forget.
 
 We think the trade is legitimate, because for many people the realistic alternative is not a stricter notes app, it is a plaintext one. But it is a real trade and it belongs in the README rather than a footnote. If you want the version of PrivacyNotes this document describes, use the phrase flow.
 
