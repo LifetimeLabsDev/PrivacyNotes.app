@@ -1,38 +1,38 @@
 # Threat Model
 
-Last updated: 2026-07-15 (v0.251.1)
+Last updated: 2026-08-01 (v0.283.1)
 
-This document describes the security assumptions, trust boundaries, and known limitations of PrivacyNotes. It is intended for security auditors, contributors, and users who want to understand exactly what the system protects against and what it does not.
+This document describes the security assumptions, trust boundaries, and known limitations of PrivacyNotes, for auditors, contributors, and users who want to know exactly what the system protects against and what it does not.
 
 ## System overview
 
-PrivacyNotes is an end-to-end encrypted personal workspace (notes, tasks, journal). A 12-word BIP-39 mnemonic phrase, generated client-side, is the sole root of trust. From this phrase, two keys are deterministically derived via HKDF-SHA256 with domain-separated info strings:
+PrivacyNotes is an end-to-end encrypted personal workspace (notes, tasks, journal). A 12-word BIP-39 mnemonic phrase, generated client-side, is the sole root of trust. Two keys are derived from it via HKDF-SHA256 with domain-separated info strings:
 
-1. **Ed25519 signing keypair** - the public key serves as the user's identity (pubkey). Used to authenticate API calls via challenge-response signatures.
-2. **XChaCha20-Poly1305 symmetric key** - encrypts all note content, user settings, and note version history before any data leaves the device.
+1. **Ed25519 signing keypair** - the public key is the user's identity (pubkey); signatures authenticate sensitive API calls.
+2. **XChaCha20-Poly1305 symmetric key** - encrypts all note content, attachments, user settings, and note version history before anything leaves the device.
 
-Under self-custody, which is the default, the phrase, private signing key, and encryption key never leave the client, and the server stores only the pubkey (identity), ciphertext, and nonce.
+Under self-custody, which is the default, the phrase, private signing key, and encryption key never leave the client. The server stores ciphertext, nonces, and operational metadata: the pubkey, device rows (name, platform, last-seen time, and peppered fingerprint hashes - see "Devices and fingerprint hashes"), quota counters, and Pro/storage subscription records. It never stores plaintext content.
 
-**One exception, chosen by the user at OAuth signup.** In custodial mode the phrase is sent to the server and stored encrypted under a server-held key, which makes the server capable of decrypting that user's data. Everything in this document describes self-custody unless it says otherwise; the custodial deviations are specified in "OAuth users" below, and they are the single largest trust boundary in the system. Read that section before drawing conclusions from this one.
+**One exception, chosen by the user at OAuth signup.** In custodial mode the phrase is stored server-side, encrypted under a server-held key, which makes the server capable of decrypting that user's data. Everything below describes self-custody unless stated otherwise; the custodial deviations are specified in "OAuth users" and are the single largest trust boundary in the system.
 
 ## Trust boundaries
 
 ### Fully trusted
 
-- **The user's device.** We assume the device is not compromised. An attacker with full device access (OS-level keylogger, memory inspection) can extract the phrase. This is explicitly out of scope.
-- **The user's browser/WebView.** We rely on Web Crypto API, IndexedDB, and localStorage behaving correctly. A compromised browser breaks all guarantees.
-- **The cryptographic primitives.** We use `@noble/ciphers` (XChaCha20-Poly1305), `@noble/hashes` (HKDF-SHA256, SHA-256), `@noble/ed25519`, and `@scure/bip39`. These are audited, widely deployed libraries by Paul Miller. We trust them to be correctly implemented.
+- **The user's device.** An attacker with full device access (OS-level keylogger, memory inspection, storage read) can extract the phrase. Out of scope.
+- **The user's browser/WebView.** We rely on Web Crypto API, IndexedDB, and localStorage behaving correctly.
+- **The cryptographic primitives.** `@noble/ciphers`, `@noble/hashes`, `@noble/ed25519`, `@scure/bip39` - audited, widely deployed libraries by Paul Miller.
 
 ### Partially trusted
 
-- **Supabase (server + database).** The server can see pubkeys, ciphertext, nonces, and timestamps. It cannot read note contents. A compromised server can: delete data, serve stale data, observe access patterns (which pubkey syncs when, note count, ciphertext sizes). It cannot forge or decrypt notes without the user's key.
-- **Cloudflare (CDN + Workers).** Serves the static frontend bundle. A compromised Cloudflare deployment could serve malicious JavaScript that exfiltrates the phrase. This is the standard supply-chain risk for any web application. Desktop (Tauri) builds mitigate this by bundling the frontend locally.
-- **Paddle (payment processor).** Processes Pro purchases. Receives transaction metadata but no note content. Webhook integrity is verified via HMAC-SHA256 signature.
+- **Supabase (server + database).** Sees pubkeys, ciphertext, nonces, timestamps, and the metadata listed above. Cannot read content. A compromised server can delete data, serve stale data, and observe access patterns (which pubkey syncs when, note count, ciphertext sizes); it cannot forge or decrypt notes.
+- **Cloudflare (CDN + Workers).** Serves the frontend bundle. A compromised deployment could serve malicious JS that exfiltrates the phrase - the standard supply-chain risk for any web app. Desktop (Tauri) builds bundle the frontend locally, which mitigates this.
+- **Paddle (payment processor).** Receives transaction metadata, no note content. Webhooks verified via HMAC-SHA256.
 
 ### Untrusted
 
-- **The network.** All client-server communication is over TLS. Note content is encrypted before transmission regardless.
-- **Other users.** RLS policies enforce strict pubkey isolation. One user cannot read, modify, or delete another user's data.
+- **The network.** TLS everywhere; content is encrypted before transmission regardless.
+- **Other users.** RLS policies enforce strict pubkey isolation.
 
 ## Cryptographic design
 
@@ -46,129 +46,118 @@ BIP-39 phrase (128 bits entropy)
   → HKDF-SHA256(seed, salt=none, info="privacynotes-encryption-v1") → 32-byte symmetric key
 ```
 
-**Known observation: HKDF salt is omitted.** Per RFC 5869 section 2.2, when the salt is not provided, HKDF uses a zero-filled byte string of HashLen. This is acceptable when the input keying material (IKM) has sufficient entropy, which it does - the BIP-39 seed provides 512 bits. The domain separation comes from distinct `info` strings. An explicit salt would not meaningfully improve security here but could be added in a future key derivation version if desired.
+**HKDF salt is omitted.** Per RFC 5869, an absent salt is a zero-filled string. Acceptable here: the input keying material is a 512-bit seed, and domain separation comes from the info strings. An explicit salt could be added in a future derivation version but would not meaningfully improve security.
 
 ### Encryption
 
 - **Algorithm:** XChaCha20-Poly1305 (256-bit key, 192-bit nonce, 128-bit tag).
-- **Nonce generation:** 24 bytes from `crypto.getRandomValues()` (via `@noble/hashes/utils.randomBytes`). The 192-bit nonce space makes random nonce collisions negligible even at scale (~2^96 messages before birthday bound).
-- **Payload:** JSON-serialized note fields (title, body, tags, metadata flags) are encrypted as a single blob. The server stores base64-encoded ciphertext and nonce.
+- **Nonce:** 24 bytes from `crypto.getRandomValues()` per encryption. The 192-bit nonce space makes random collisions negligible (~2^96 birthday bound).
+- **Payload:** the note's JSON fields - title, body, tags, note type, metadata flags, and journal mood-tracker entries - are encrypted as a single blob. Health-adjacent data (mood tracking) sits inside the E2E envelope like everything else. The server stores base64 ciphertext and nonce.
 
-**Known limitation: no Associated Authenticated Data (AAD).** The note's `id` and `user_pubkey` are not bound to the ciphertext via AAD. This means a server-side attacker with database write access could swap ciphertexts between note rows belonging to the same user without the client detecting it. Practical impact is low - the attacker needs direct database access and can only swap data within a single user's notes (cross-user swaps fail because the encryption key differs). Adding AAD would require a ciphertext format migration. Tracked for a future version.
+**Known limitation: no AAD.** The note `id` and `user_pubkey` are not bound to the ciphertext, so an attacker with database write access could swap ciphertexts between rows of the same user undetected (cross-user swaps fail; the key differs). Adding AAD requires a ciphertext format migration. Tracked for a future version.
+
+### Encrypted attachments
+
+Images and file attachments use the same primitive via `encryptBlob` (`shared/src/blob.ts`): raw bytes encrypted under the user's symmetric key, 24-byte nonce prepended to the ciphertext. The original filename, MIME type, and size are encrypted inside the blob. The server sees an opaque object at path `<pubkey>/<uuid>` in a private storage bucket; RLS restricts each user to their own path prefix.
+
+### Burn notes (one-time shares)
+
+A burn note is encrypted client-side with a fresh random key that exists only in the share URL's fragment (`/burn#id=<uuid>&k=<hex>`). Fragments are never sent over HTTP, so the server holds ciphertext it can never decrypt, with no link to any account (creation is anonymous). Opening the link calls a consume-once RPC that deletes the row and returns the ciphertext in one statement; the table has no SELECT policy, so rows cannot be listed or re-read. Unopened notes are purged after 24 hours.
+
+### QR sign-in and phrase handoff
+
+Adding a device via QR encodes the full phrase in a URL fragment (`#phrase=...`) displayed as a QR code on the trusted device. The fragment never traverses the network; the new device consumes it on load and immediately removes it from the URL and history via `history.replaceState`. The QR itself is equivalent to the phrase while displayed - treat it as a secret.
 
 ### Challenge-response authentication
 
-Device registration, pubkey linking, and account deletion all use Ed25519 signatures over structured challenge messages (e.g., `link:<authUid>`, `register-device:<authUid>:<deviceId>`). The `authUid` binding prevents replay across sessions.
+Device registration, pubkey linking, custody changes, and account deletion use Ed25519 signatures over structured challenges (e.g. `link:<authUid>`, `register-device:<authUid>:<deviceId>`). The `authUid` binding prevents replay across sessions.
 
 ## PIN protection
 
-### Design intent
-
-The 4-digit PIN is a **UI convenience gate**, not a security boundary. It protects the phrase modal and PIN-protected notes against casual shoulder-surfing on the user's own device. It is not designed to resist an attacker who has:
-
-- Access to the device's filesystem (the PIN hash is in localStorage and synced settings)
-- The user's BIP-39 phrase (which grants full decryption without any PIN)
-- Time and compute to brute-force 10,000 combinations offline
+The 4-digit PIN is a **UI convenience gate**, not a security boundary. It protects against shoulder-surfing and a borrowed, unlocked device - not against an attacker with filesystem access, the phrase, or offline compute. A 4-digit PIN has 10,000 values; an attacker holding the stored hash can brute-force it offline in minutes to hours regardless of iteration count. Users needing more should rely on OS-level device encryption and screen lock.
 
 ### Implementation
 
-- **Hash:** PBKDF2-SHA256, 600,000 iterations, 16-byte random salt, 256-bit output.
-- **Verification:** Constant-time comparison (XOR accumulator, no early exit).
-- **Storage:** Base64-encoded hash and salt in `UserSettings` (encrypted, synced) with a localStorage cache for synchronous `hasPin()` checks.
-- **Session unlock:** Timestamp in sessionStorage (per-tab). Configurable timeout: always ask, never re-ask, or re-ask after N minutes.
-
-### Brute-force protection
-
-UI-level exponential backoff prevents casual brute-forcing: after 5 consecutive failed attempts, PIN input is locked for 30 seconds, doubling with each subsequent failure (60s, 120s, 240s...). The lockout state is stored in localStorage (survives tab close) - sessionStorage was previously used but allowed an attacker to reset the counter by simply closing and reopening the tab, which defeated the protection. A successful verify clears the failure counter. The same counter is shared across every PIN entry surface (note unlock, app lock screen, etc.) so attempts can't be split across views to multiply the effective threshold.
-
-This is a UX defense, not a cryptographic one. An attacker with access to localStorage can extract the PBKDF2 hash and brute-force offline without ever touching the UI.
-
-### Accepted risk
-
-A 4-digit PIN has 10,000 possible values. At 600,000 PBKDF2 iterations, offline brute-force on modern hardware takes minutes to hours depending on the attacker's setup. The UI lockout prevents the much faster path of mashing digits in the browser. This is acceptable given the stated threat model (personal device, casual protection). Users who need stronger protection should rely on OS-level device encryption and screen lock, which we recommend in the phrase storage guidance.
+- **Hash:** PBKDF2-SHA256, 600,000 iterations, 16-byte random salt, constant-time comparison.
+- **Legacy hashes:** PINs set before the iteration bump used 100,000 iterations. They verify transparently and are rehashed to 600,000 on the next successful entry; until that entry, the weaker hash persists in storage.
+- **Storage:** hash and salt in `UserSettings` (encrypted, synced) plus a localStorage cache; per-tab session unlock with a configurable timeout.
+- **UI lockout:** 5 consecutive failures lock PIN entry for 30 seconds, doubling on each further failure. The counter lives in localStorage (survives tab close) and is shared across all PIN surfaces, so attempts cannot be split across views. This blocks casual in-browser guessing only; it does not slow the offline attack above.
 
 ### Lock / PIN-protect notes
 
-The `locked` and `pinProtected` flags on notes are **client-side enforcement only**. They live inside the encrypted ciphertext (the server never sees them), and the client hides or gates access to notes with these flags set. However, any client with the user's phrase can decrypt all notes regardless of these flags - there is no server-side enforcement and no separate encryption key for locked notes.
-
-This is a deliberate design choice: adding a second encryption layer for locked notes would require a second key (derived from the PIN), which would make those notes unrecoverable if the user forgets their PIN. The current model treats lock/PIN-protect as organizational privacy features (hiding sensitive notes from a quick glance), not as cryptographic access control.
+The `locked` and `pinProtected` flags live inside the ciphertext and are enforced client-side only; any client holding the phrase decrypts everything regardless. Deliberate: a second, PIN-derived key would make those notes unrecoverable on a forgotten PIN. These are organizational privacy features, not cryptographic access control.
 
 ### Local phrase-at-rest: biometric and PIN wrapping
 
-On a trusted device the BIP-39 phrase is stored locally so the user can unlock without re-typing it. Two optional features "lock" that stored phrase. **Both are convenience gates at the same trust level as plaintext phrase storage, not cryptographic protection** - they defend against shoulder-surfing and a borrowed, unlocked device, never against an attacker who can read the device's storage. The implementation (`packages/web/src/biometric.ts`) is explicit about this.
+On a trusted device the phrase is stored locally so the user can unlock without retyping it. Two optional features gate that stored phrase; **both are convenience gates at the same trust level as plaintext storage**:
 
-- **Biometric unlock** (WebAuthn platform authenticator - Touch ID / Face ID / Windows Hello). On enrollment a random AES-GCM-256 key encrypts the phrase, and **both the wrapped phrase and the raw wrap key are stored in localStorage**. The WebAuthn assertion is a user-presence check that gates the UI flow; it does **not** derive or release the key. Consequently anyone with localStorage read access can decrypt the phrase without ever passing the biometric prompt. This provides no confidentiality beyond plaintext storage. A future version could bind the key to the authenticator via the WebAuthn PRF extension, which would make biometric a real cryptographic gate; until then it is presence-only.
+- **Biometric unlock** (WebAuthn platform authenticator). A random AES-GCM-256 key wraps the phrase, and both the wrapped phrase and the raw wrap key sit in localStorage. The assertion is a user-presence check gating the UI flow; it does not derive or release the key, so storage access bypasses the biometric entirely. A future version could bind the key to the authenticator via the WebAuthn PRF extension.
+- **PIN-wrapped phrase.** With app lock enabled, the phrase is wrapped with a PIN-derived AES key (same PBKDF2 parameters as above) and stored in synced `UserSettings` plus localStorage. Offline brute-force of the wrapped blob recovers the **master phrase** - the root key for the whole account - which is sharper than the per-note gate and accepted for the same reason: it requires storage access to a trusted device, which is out of scope.
 
-- **PIN-wrapped phrase.** When app lock is enabled, the phrase is wrapped with an AES key derived from the 4-digit PIN (PBKDF2-SHA256, 600,000 iterations, 16-byte salt) and stored in synced `UserSettings` plus localStorage. Because a 4-digit PIN has only 10,000 values and the UI lockout (see above) does not apply to offline attacks, an attacker holding the wrapped blob can brute-force the PIN offline in minutes-to-hours and recover the **master phrase** - i.e. the root key for the entire account on every device, not merely one note. This is a sharper consequence than the per-note PIN gate, and is accepted for the same reason: it only matters once an attacker already has storage access to a trusted device, which is out of scope (see Device compromise, below).
+User-facing copy describes both honestly as gates, not encryption.
 
-The user-facing copy describes these honestly as gates ("a biometric gate so others nearby can't access your notes", "blocks casual viewing if someone borrows your device"), not as encryption. Users who need protection against an attacker with device/storage access should rely on OS-level device encryption and screen lock.
+## Sync, conflicts, and deletion
 
-## Sync and conflict resolution
+- **Model:** pull-then-push per device, ordered by `updated_at`.
+- **Conflicts:** concurrent edits are detected via conditional updates. Metadata-only changes auto-merge; body-vs-body conflicts surface a resolution UI with both versions preserved. Nothing is silently overwritten.
+- **Deletion and retention:** deleting a note writes a tombstone (`deleted_at`) that syncs to other devices. A scheduled job permanently deletes tombstoned rows (and their version history, via cascade) after 30 days; until then the note is restorable and its ciphertext remains on the server.
 
-- **Model:** Pull-then-push, last-write-wins by `updated_at` timestamp.
-- **Known limitation:** Concurrent offline edits to the same note on two devices will result in the newer edit silently winning. No CRDT or conflict UI exists. Accepted for V1.
-- **Tombstones:** Hard deletes are propagated as server-side DELETE operations during sync push.
+## Quota and limits
 
-## Quota and abuse protection
+- **Per-account:** 10,000 notes; combined storage (notes + attachments) of 50 MB free / 500 MB Pro, extendable with optional 1/2/5 GB Pro storage add-ons. Enforced server-side by Postgres triggers.
+- **Per-row:** 1 MB ciphertext cap (64 KB for burn notes).
+- **Over-quota lifecycle:** exceeding the cap (e.g. after a storage add-on is cancelled) starts a 90-day grace period during which sync continues. Past 90 days, new writes are rejected ("Sync frozen") until usage drops or capacity is re-added; deletes remain allowed so recovery is always possible, and local data is never touched.
+- **Abuse defenses:** signup is gated by an invisible, server-verified challenge (Cloudflare Turnstile) plus rate limiting, and abusive write patterns are bounded by further server-side limits. Exact mechanisms and thresholds are deliberately not documented here. Anonymous signups that never complete setup are deleted after 7 days; accounts with a linked pubkey are never purged.
 
-- **Cloudflare Turnstile** on signup (invisible managed challenge, server-verified).
-- **Per-row:** 1 MB ciphertext CHECK constraint.
-- **Per-pubkey:** 10,000 notes, 50 MB total (free) / 500 MB (Pro). Enforced by Postgres triggers on `pubkey_quotas`.
-- **Provisional account purge:** Anonymous auth users that never link a pubkey (signed up but never completed setup) are deleted after 7 days (pg_cron). This is cleanup for abandoned signups, not an inactivity timeout - accounts that have linked a pubkey are never purged.
-- **Burn notes:** 64 KB ciphertext CHECK per row, 24h TTL purge, and a global ceiling of 500 inserts/hour (Postgres trigger `enforce_burn_note_rate_limit`). Burn creation is anonymous by design (session-less anon client), so per-user/per-pubkey limits do not apply; the global ceiling is a backstop to Cloudflare's per-IP limits and bounds storage blast radius. Tradeoff: a flooder can deny new burn shares globally for up to an hour.
-- **Cloudflare rate limiting:** IP-level rules on signup and sync endpoints.
+## Devices and fingerprint hashes
+
+Each registered device has a server-side row: user-visible name, platform, last-seen timestamp, and four fingerprint hashes used to group multiple browsers on one physical machine into a single device entry. The signals - platform, GPU renderer string, CPU core count, browser language - are hashed client-side with HMAC-SHA256 under a per-user pepper derived from the BIP-39 seed. Raw signal values never leave the device, and the server cannot brute-force the low-entropy signals because it never holds the pepper. Hashes are incomparable across users.
 
 ## OAuth users
 
-OAuth (Google, Apple, GitHub) is an identity-only sign-in path. At first OAuth sign-in, the user chooses between two key custody models:
+OAuth (Google, Apple, GitHub) is an identity-only sign-in path. At first OAuth sign-in the user chooses a key custody model.
 
 ### Account identity and cross-provider linking
 
-How an OAuth sign-in resolves to an account is **not** decided by our code. It is decided by Supabase GoTrue, by **confirmed email**, not by the provider's `sub` claim. When a user signs in with a new provider whose verified email matches an existing user's confirmed email, GoTrue merges the new identity into the **same `auth.users` row** (same `auth.uid`). Our code (`auth.tsx` `hydrateFromOAuthSession`) then reads `app_metadata.pubkey` off whichever user GoTrue returns. Same uid means same pubkey, same encryption key, same notes.
+Account resolution is decided by Supabase GoTrue by **confirmed email**, not the provider's `sub`: a second provider reporting the same verified email merges into the same `auth.users` row, hence the same pubkey and notes. This is the load-bearing feature that lets a Google signup later sign in with Apple.
 
-This is a load-bearing product feature, not an accident: it is what lets a user who signed up with Google sign in later with Apple (e.g. on iOS) and reach the same account. There is no alternative link key, because each provider issues a different `sub`; the email is the only shared identifier.
+**Safety condition:** this is safe only because every enabled provider proves email ownership. Merging into a victim's account requires controlling the victim's email address, at which point most of their accounts are already lost - the standard property of email-based OAuth linking.
 
-**Safety condition.** This is safe only because every enabled provider (Google, Apple, GitHub) proves email ownership before reporting an email as verified. To merge into a victim's account, an attacker must control the victim's email address, at which point they already control most of the victim's accounts. This is the standard, accepted property of email-based OAuth linking.
+**Invariant (do not break):** never enable an auth method that can present an unverified email as confirmed (e.g. email/password without verification, a misconfigured magic-link path). Such a method would let an attacker merge into a custodial victim's account and call `get-custodial-phrase` to retrieve the plaintext phrase. Self-custody users would be unaffected; custodial users would be fully compromised.
 
-**Invariant (do not break):** as long as custodial mode exists, never enable an auth method that can present an *unverified* or *unproven* email as confirmed (e.g. email/password with verification disabled, a misconfigured magic-link path, or a provider that does not verify email ownership). Such a method would let an attacker mint a confirmed-email identity for an address they do not control, merge into a custodial victim's `auth.uid`, and then call `get-custodial-phrase` (JWT-only, no signature challenge) to retrieve the **plaintext** recovery phrase, fully decrypting all of the victim's notes. Self-custody users are unaffected (no server-side phrase; the attacker reaches ciphertext and a phrase-entry dead end). Custodial users would be fully compromised. This invariant is the line between a convenience feature and a custodial phrase-leak vulnerability.
-
-**Known UX failure mode (not a security issue, but a data-loss-shaped one).** The merge only fires when the second provider returns the *same* email as the first. Apple's "Hide My Email" returns a `@privaterelay.appleid.com` relay address, and a user's Apple ID email may simply differ from their Google email. In either case no merge occurs and the user silently lands in a fresh, empty account. Custodial users are hit hardest: they are the least likely to have saved their recovery phrase, so an email mismatch on a new device leaves them with no in-app recovery path (they must re-sign-in with the original provider on a platform where it is offered, then hand off via QR). Any "Apple-only on iOS" decision must account for this; the new-OAuth-user onboarding path should assume the user may be an existing user whose email did not match and surface phrase / QR recovery prominently.
+**Known UX failure mode (data-loss-shaped, not a security issue):** if the second provider returns a different email (Apple's "Hide My Email" relay, or simply a different address), no merge occurs and the user silently lands in a fresh, empty account. Custodial users are hit hardest, as they are least likely to have saved their phrase. Onboarding surfaces phrase / QR recovery prominently for this reason.
 
 ### Self-custody (maximum privacy)
 
-The user's BIP-39 phrase is generated client-side and never transmitted to the server. The same zero-knowledge guarantees as phrase-only signup apply:
-
-- The server stores only the user's pubkey under `app_metadata.pubkey`.
-- OAuth proves identity (provider's stable `sub` claim). It does not give the server any access to key material.
-- A new device requires the user's phrase or a QR sign-in code from an existing device.
+The phrase is generated client-side and never transmitted. The server stores only the pubkey under `app_metadata.pubkey`; OAuth proves identity and grants no access to key material. A new device requires the phrase or a QR sign-in from an existing device.
 
 ### Custodial (keep it simple)
 
-The user explicitly opts to have their BIP-39 phrase stored server-side for convenience. The phrase is encrypted with AES-256-GCM using a dedicated server secret (`CUSTODIAL_PHRASE_KEY`) and stored in `custodial_phrases`. This enables 1-click sign-in on new devices via OAuth alone.
+The user explicitly opts to store their phrase server-side, encrypted with AES-256-GCM under a dedicated server secret (`CUSTODIAL_PHRASE_KEY`), enabling 1-click sign-in on new devices.
 
-**Trust implications for custodial users:**
+**Trust implications:**
 
-- The server operator (and anyone who obtains both database access AND the `CUSTODIAL_PHRASE_KEY` secret) can decrypt the user's phrase and therefore all their data.
-- A valid legal order compelling the server operator could result in decryption of custodial users' data.
-- Custodial users retain: encryption in transit (TLS), encryption at rest in the database (AES-256-GCM), and protection against database-only breaches (attacker needs the secret too).
-- Users can upgrade from custodial to self-custody at any time (one-way ratchet: the server deletes their phrase). They cannot downgrade from self-custody to custodial.
+- The server operator (or anyone holding both database access and the secret) can decrypt the user's phrase and therefore all their data. A valid legal order could compel this.
+- Custodial users retain TLS in transit, AES-256-GCM at rest, and protection against database-only breaches.
+- Custody is reversible from Settings > Security > Your Phrase: leaving deletes the `custodial_phrases` row, returning re-inserts it. Both directions require a live OAuth session AND an Ed25519 signature over a challenge, so a stolen session token alone cannot change custody mode.
+- **Cost of reversibility:** the plaintext phrase can reach `store-custodial-phrase` from any signed-in device at any time, not only at signup. The signature bounds who (the key holder), not when or where.
 
-**Known limitations of custodial mode (flagged for audit):**
+**Known limitations (flagged for audit):**
 
-- `get-custodial-phrase` requires only a valid JWT - no secondary challenge (unlike `delete-account`, which requires an ed25519 signature). A stolen session token is sufficient to exfiltrate the phrase. The window of vulnerability is the JWT's lifetime. Adding a signature challenge is not straightforward here because the user may not yet have a signing key (the phrase is needed to derive it).
-- `store-custodial-phrase` validates word count (12) but does not verify words are from the BIP-39 wordlist. Low risk since an attacker can only corrupt their own recovery phrase.
-- Neither custodial endpoint has rate limiting beyond Supabase's default connection limits. Standard for edge functions but worth noting given `get-custodial-phrase` returns the crown jewels.
-- The decrypted phrase is held in Deno isolate memory briefly during `get-custodial-phrase` responses. No explicit memory zeroing. This is inherent to the Deno runtime.
+- `get-custodial-phrase` requires only a valid JWT - no signature challenge. A stolen session token suffices to exfiltrate the phrase for the JWT's lifetime. A signature challenge is not straightforward here: the user may not yet hold a signing key (the phrase is needed to derive it).
+- `store-custodial-phrase` validates word count but not BIP-39 wordlist membership. Low risk: the call is signed, so callers can only store a phrase they already hold, corrupting only their own account.
+- Neither custodial endpoint has rate limiting beyond platform defaults, notable given what `get-custodial-phrase` returns.
+- The decrypted phrase transits isolate memory during `get-custodial-phrase` responses with no explicit zeroing; inherent to the runtime.
 
-**Design rationale:** The choice is presented at first OAuth sign-in with explicit tradeoff explanation. This is the product differentiator - most apps store keys server-side silently; we ask the user. See `ops/docs/custodial-key-spec.md` for the full architecture.
+**Design rationale:** the choice is presented at first OAuth sign-in with an explicit tradeoff explanation. Most apps store keys server-side silently; we ask.
 
-**Historical note:** Prior to v0.152.0 (2026-05), the `oauth-phrase` edge function derived OAuth users' phrases server-side from a Supabase secret (`OAUTH_PHRASE_PEPPER`). This was a silent server-side decision with no user consent. The function was deleted and the pepper unset in v0.173.4 after all 5 legacy users confirmed migration. The custodial key storage introduced in v0.172.0 is an explicit opt-in replacement.
+**Historical note:** before v0.152.0, an edge function derived OAuth users' phrases server-side from a secret pepper, silently. It was removed in v0.173.4 after all affected users migrated; the explicit custodial opt-in replaced it.
 
 ## Out-of-scope threats
 
-- **Device compromise:** OS-level malware, keyloggers, memory inspection.
-- **Supply-chain attacks on the web bundle:** A compromised Cloudflare deployment or CDN could serve malicious JS. Mitigated for desktop users (Tauri bundles the frontend). SRI or reproducible builds are not yet implemented for the web version.
-- **Denial of service:** Volumetric attacks against Cloudflare or Supabase infrastructure.
-- **Clipboard exposure:** Once a user copies a secret (vault field or recovery phrase), the OS clipboard is outside the app's control: clipboard history, sync services, and other applications can read it. We deliberately make no clipboard-wipe claims; browsers cannot clear a background tab's clipboard reliably, so a timed wipe would be security theater.
-- **Social engineering:** Tricking users into revealing their phrase.
-- **Quantum computing:** XChaCha20 is symmetric and quantum-resistant at 256-bit key length. Ed25519 is vulnerable to Shor's algorithm but this is not a near-term practical concern.
+- **Device compromise:** OS-level malware, keyloggers, memory or storage inspection.
+- **Supply-chain attacks on the web bundle:** a compromised CDN could serve malicious JS. Mitigated for desktop (bundled frontend); SRI / reproducible builds not yet implemented for web.
+- **Denial of service** against Cloudflare or Supabase.
+- **Clipboard exposure:** once a secret is copied, the OS clipboard is outside our control. We deliberately make no clipboard-wipe claims; a timed wipe from a background tab is unreliable and would be security theater.
+- **Social engineering** that extracts the phrase from the user.
+- **Quantum computing:** XChaCha20 at 256 bits is quantum-resistant; Ed25519 is vulnerable to Shor's algorithm, not a near-term practical concern.

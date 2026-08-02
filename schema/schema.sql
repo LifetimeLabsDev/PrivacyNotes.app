@@ -492,7 +492,7 @@ begin
     raise exception 'label required' using errcode = '22023';
   end if;
 
-  -- Use app_metadata (not user_metadata) — app_metadata is server-writable only.
+  -- Use app_metadata (not user_metadata) - app_metadata is server-writable only.
   caller_pubkey := nullif(
     (auth.jwt() -> 'app_metadata' ->> 'pubkey'),
     ''
@@ -801,7 +801,7 @@ BEGIN
 
   -- Duplicate fingerprints: multiple active devices with identical
   -- (platform, gpu, cores) hashes for the same pubkey. Should not
-  -- happen after dedup — indicates a bug or manipulation.
+  -- happen after dedup - indicates a bug or manipulation.
   RETURN QUERY
   SELECT
     d.pubkey,
@@ -1703,7 +1703,7 @@ $$;
 -- Name: FUNCTION burn_note_exists(p_id uuid); Type: COMMENT; Schema: public; Owner: -
 --
 
-COMMENT ON FUNCTION public.burn_note_exists(p_id uuid) IS 'Returns true if a burn note with the given id exists. Single-ID lookup only — no enumeration surface. Used by the client to decide whether to render the sealed UI on a /burn link.';
+COMMENT ON FUNCTION public.burn_note_exists(p_id uuid) IS 'Returns true if a burn note with the given id exists. Single-ID lookup only - no enumeration surface. Used by the client to decide whether to render the sealed UI on a /burn link.';
 
 
 --
@@ -1738,13 +1738,13 @@ BEGIN
   v_is_over := v_used > v_max;
 
   IF v_is_over AND NOT v_currently_exceeded THEN
-    -- Just went over — start the clock.
+    -- Just went over - start the clock.
     UPDATE public.pubkey_quotas
        SET quota_exceeded_since = now(),
            updated_at = now()
      WHERE user_pubkey = p_pubkey;
   ELSIF NOT v_is_over AND v_currently_exceeded THEN
-    -- Back under — clear the flag.
+    -- Back under - clear the flag.
     UPDATE public.pubkey_quotas
        SET quota_exceeded_since = NULL,
            updated_at = now()
@@ -1847,7 +1847,7 @@ BEGIN
    WHERE created_at > now() - interval '1 hour';
 
   IF v_global_count >= 500 THEN
-    RAISE EXCEPTION 'Burn note rate limit exceeded — try again later'
+    RAISE EXCEPTION 'Burn note rate limit exceeded - try again later'
       USING errcode = 'check_violation';
   END IF;
 
@@ -1861,7 +1861,7 @@ BEGIN
        AND created_at > now() - interval '1 hour';
 
     IF v_user_count >= 100 THEN
-      RAISE EXCEPTION 'Burn note rate limit exceeded — try again later'
+      RAISE EXCEPTION 'Burn note rate limit exceeded - try again later'
         USING errcode = 'check_violation';
     END IF;
   END IF;
@@ -1963,7 +1963,7 @@ BEGIN
         updated_at  = now()
   RETURNING note_count, total_bytes INTO v_current_count, v_current_bytes;
 
-  -- Skip quota cap checks for tombstones — user is trying to free space.
+  -- Skip quota cap checks for tombstones - user is trying to free space.
   IF (TG_OP IN ('INSERT', 'UPDATE')) AND NOT v_is_tombstone THEN
     IF v_current_count > v_max_notes THEN
       RAISE EXCEPTION 'Quota exceeded: note count % > limit %', v_current_count, v_max_notes
