@@ -1805,8 +1805,12 @@ DECLARE
   v_updated int;
 BEGIN
   v_pubkey := auth.jwt() -> 'app_metadata' ->> 'pubkey';
+  -- Not a revocation: the caller cannot prove who it is. Raise so the
+  -- client's fail-open error branch handles it instead of reading a
+  -- `false` as "this device was revoked" and destroying the session.
+  -- Spec: ops/docs/design-decisions.md (heartbeat revocation verdict)
   IF v_pubkey IS NULL OR v_pubkey = '' THEN
-    RETURN false;
+    RAISE EXCEPTION 'pubkey not linked';
   END IF;
 
   -- Banned users get kicked on next heartbeat.
@@ -2171,6 +2175,21 @@ $$;
 
 
 --
+-- Name: notes_set_changed_at(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.notes_set_changed_at() RETURNS trigger
+    LANGUAGE plpgsql
+    SET search_path TO 'public'
+    AS $$
+BEGIN
+  NEW.changed_at = now();
+  RETURN NEW;
+END;
+$$;
+
+
+--
 -- Name: prune_note_versions(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -2276,10 +2295,10 @@ $$;
 
 
 --
--- Name: recalculate_my_quota(); Type: FUNCTION; Schema: public; Owner: -
+-- Name: recalculate_my_quota(text[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.recalculate_my_quota() RETURNS void
+CREATE FUNCTION public.recalculate_my_quota(p_pending_gc text[] DEFAULT '{}'::text[]) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO ''
     AS $$
@@ -2288,11 +2307,14 @@ DECLARE
   v_note_count integer;
   v_total_bytes bigint;
   v_image_bytes bigint;
+  v_pending text[];
 BEGIN
   v_pubkey := auth.jwt() -> 'app_metadata' ->> 'pubkey';
   IF v_pubkey IS NULL THEN
     RAISE EXCEPTION 'pubkey not linked';
   END IF;
+
+  v_pending := coalesce(p_pending_gc, '{}');
 
   -- Note bytes: recount from the notes table (non-tombstoned rows only).
   SELECT count(*)::integer,
@@ -2302,16 +2324,19 @@ BEGIN
    WHERE user_pubkey = v_pubkey
      AND deleted_at IS NULL;
 
-  -- Blob bytes: recompute from Storage ground truth. Images and attachments
-  -- share the 'encrypted-images' bucket, named '<pubkey>/<uuid>'. The LIKE
-  -- prefix lets the (bucket_id, name) index serve a range scan; split_part
-  -- guards correctness in case a pubkey ever contains a LIKE wildcard.
+  -- Blob bytes: recompute from Storage ground truth, minus anything the
+  -- caller has already queued for deletion. Images and attachments share the
+  -- 'encrypted-images' bucket, named '<pubkey>/<uuid>'. The LIKE prefix lets
+  -- the (bucket_id, name) index serve a range scan; split_part guards
+  -- correctness in case a pubkey ever contains a LIKE wildcard, and supplies
+  -- the uuid half for the pending-GC exclusion.
   SELECT coalesce(sum(nullif(o.metadata ->> 'size', '')::bigint), 0)::bigint
     INTO v_image_bytes
     FROM storage.objects o
    WHERE o.bucket_id = 'encrypted-images'
      AND o.name LIKE v_pubkey || '/%'
-     AND split_part(o.name, '/', 1) = v_pubkey;
+     AND split_part(o.name, '/', 1) = v_pubkey
+     AND NOT (split_part(o.name, '/', 2) = ANY (v_pending));
 
   -- Upsert the corrected values. extra_storage_bytes (add-on capacity) is
   -- left untouched.
@@ -2574,6 +2599,7 @@ CREATE TABLE public.notes (
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone,
     ingested_at timestamp with time zone DEFAULT now() NOT NULL,
+    changed_at timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT notes_ciphertext_max_1mb CHECK ((octet_length(ciphertext) <= 1048576))
 );
 
@@ -2583,6 +2609,13 @@ CREATE TABLE public.notes (
 --
 
 COMMENT ON COLUMN public.notes.deleted_at IS 'Soft-delete tombstone. NULL = live row. Set by client when user permanently deletes. Hard-deleted by pg_cron after 30 days.';
+
+
+--
+-- Name: COLUMN notes.changed_at; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.notes.changed_at IS 'Server-assigned change clock: set to now() by trigger on every INSERT and UPDATE, never influenced by the client. The single key the delta pull filters, sorts and keyset-pages on.';
 
 
 --
@@ -2884,6 +2917,13 @@ CREATE INDEX note_versions_user_pubkey_idx ON public.note_versions USING btree (
 
 
 --
+-- Name: notes_changed_at_keyset_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX notes_changed_at_keyset_idx ON public.notes USING btree (user_pubkey, changed_at, id);
+
+
+--
 -- Name: notes_deleted_at_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2965,6 +3005,16 @@ CREATE TRIGGER notes_block_writes_to_deleted BEFORE UPDATE ON public.notes FOR E
 --
 
 CREATE TRIGGER notes_enforce_quota AFTER INSERT OR DELETE OR UPDATE ON public.notes FOR EACH ROW EXECUTE FUNCTION public.enforce_notes_quota();
+
+
+--
+-- Name: notes notes_set_changed_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+-- Fires AFTER notes_block_writes_to_deleted on the same event
+-- (alphabetical order), so a write dropped by the block trigger never
+-- reaches the touch and a tombstoned row's changed_at stays frozen.
+CREATE TRIGGER notes_set_changed_at BEFORE INSERT OR UPDATE ON public.notes FOR EACH ROW EXECUTE FUNCTION public.notes_set_changed_at();
 
 
 --

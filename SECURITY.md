@@ -132,11 +132,10 @@ Earlier versions of this document called this a one-way ratchet, and until v0.27
 
 ## Quotas and abuse protection
 
-- Cloudflare Turnstile on signup.
+- Abuse gating on signup, including rate limiting and, when enabled, an interactive challenge. We tune these over time and do not enumerate the current settings here.
 - 1 MB CHECK constraint on each ciphertext row.
 - Per-user quotas enforced by Postgres triggers (10,000 notes, 50 MB free, 500 MB Pro).
 - Anonymous accounts that never link a pubkey are purged after 7 days by a scheduled job. Accounts that finished setup are never deleted for inactivity.
-- IP-level rate limiting on signup and sync.
 
 ## Audit status
 
