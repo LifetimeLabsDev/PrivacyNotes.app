@@ -236,6 +236,58 @@ export function deriveFpPepper(seed: Uint8Array): Uint8Array {
   );
 }
 
+// ------------------------------------------------------------------
+// Auth credential (returning-user session re-mint)
+// ------------------------------------------------------------------
+//
+// A returning user's Supabase session is re-minted by signing in to
+// their EXISTING auth user with a credential derived from the phrase,
+// instead of creating a brand-new anonymous auth user on every re-mint.
+// Anonymous sign-ins are rate-limited per IP per hour and every one of
+// them leaves an orphaned auth.users row behind, so the anonymous path
+// is reserved for the FIRST sign-in of a pubkey; link-pubkey attaches
+// this credential to that auth user, and every later re-mint is a
+// plain password grant against it.
+//
+//   - The password is a full HKDF branch off the seed, disjoint from
+//     the signing, encryption and pepper branches. Holding it grants
+//     nothing beyond a session for this pubkey's account - which the
+//     phrase holder could already mint - and it cannot be reversed to
+//     the seed. The server stores only GoTrue's bcrypt of it.
+//   - The email is not an address, it is an identifier in email
+//     shape: the pubkey at a domain we control that no OAuth provider
+//     can ever assert and that receives no mail. The server derives it
+//     from the signature-verified pubkey itself (never from client
+//     input), which is what keeps the THREAT_MODEL invariant intact:
+//     nothing here can present an attacker-chosen email as confirmed.
+//
+// Spec: ops/docs/design-decisions.md (phrase-derived auth credential)
+
+/** Domain part of the derived auth email. Not a mail domain: no MX,
+ * never receives anything, exists so GoTrue has a unique, deterministic
+ * identifier to key the password grant on. Duplicated in the
+ * link-pubkey edge function, which must derive the same address. */
+export const AUTH_EMAIL_DOMAIN = 'phrase.privacynotes.app';
+
+/** Deterministic sign-in identifier for a pubkey. Lowercase on both
+ * sides: GoTrue lowercases emails on write, so deriving it any other
+ * way would sign in to a user that does not exist. */
+export function authEmailForPubkey(pubkey: string): string {
+  return `${pubkey.toLowerCase()}@${AUTH_EMAIL_DOMAIN}`;
+}
+
+/** Phrase-derived password for the auth user. Same seed → same
+ * password, forever: this is a login credential, not a vault key, but
+ * it is pinned by the same KAT harness because drift here fails
+ * SILENTLY - password sign-in returns invalid_credentials and the
+ * client quietly falls back to minting anonymous users again, which is
+ * exactly the rate-limited path this credential exists to retire. */
+export function deriveAuthPassword(seed: Uint8Array): string {
+  return bytesToHex(
+    hkdf(sha256, seed, undefined, utf8.encode('privacynotes-auth-password-v1'), 32),
+  );
+}
+
 export interface FpInput {
   /** Normalized OS label, e.g. "macOS", "Windows", "iPhone". */
   platform: string;

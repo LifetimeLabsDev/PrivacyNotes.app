@@ -42,11 +42,14 @@ Under self-custody, which is the default, the phrase, private signing key, and e
 BIP-39 phrase (128 bits entropy)
   → mnemonicToSeedSync (PBKDF2-HMAC-SHA512, 2048 iterations, passphrase="mnemonic")
   → 64-byte seed
-  → HKDF-SHA256(seed, salt=none, info="privacynotes-signing-v1")    → 32-byte Ed25519 private key
-  → HKDF-SHA256(seed, salt=none, info="privacynotes-encryption-v1") → 32-byte symmetric key
+  → HKDF-SHA256(seed, salt=none, info="privacynotes-signing-v1")       → 32-byte Ed25519 private key
+  → HKDF-SHA256(seed, salt=none, info="privacynotes-encryption-v1")    → 32-byte symmetric key
+  → HKDF-SHA256(seed, salt=none, info="privacynotes-auth-password-v1") → 32-byte session credential
 ```
 
 **HKDF salt is omitted.** Per RFC 5869, an absent salt is a zero-filled string. Acceptable here: the input keying material is a 512-bit seed, and domain separation comes from the info strings. An explicit salt could be added in a future derivation version but would not meaningfully improve security.
+
+**The session credential is a login secret, not a key.** Returning devices re-mint their Supabase session by password grant against the account's existing auth user, using the auth-password HKDF branch (hex-encoded) as the password and the deterministic identifier `<pubkey>@phrase.privacynotes.app` as the login email. That address is an identifier in email shape: the domain receives no mail, and the server derives it from the signature-verified pubkey, never from client input. The server stores only a bcrypt hash of the credential; recovering the seed from it is not possible, and holding the credential grants exactly what holding a session grants - access to ciphertext the phrase holder could already fetch. Anonymous sign-in is used only for an account's first session.
 
 ### Encryption
 
@@ -124,6 +127,8 @@ Account resolution is decided by Supabase GoTrue by **confirmed email**, not the
 **Safety condition:** this is safe only because every enabled provider proves email ownership. Merging into a victim's account requires controlling the victim's email address, at which point most of their accounts are already lost - the standard property of email-based OAuth linking.
 
 **Invariant (do not break):** never enable an auth method that can present an unverified email as confirmed (e.g. email/password without verification, a misconfigured magic-link path). Such a method would let an attacker merge into a custodial victim's account and call `get-custodial-phrase` to retrieve the plaintext phrase. Self-custody users would be unaffected; custodial users would be fully compromised.
+
+**How the session credential complies:** the email provider is enabled (password grant for the re-mint credential above) with confirmation required, so a self-serve signup can never yield a signed-in, confirmed identity. The only path that confirms an email without verification is the pubkey link itself, and it confirms exclusively `<pubkey>@phrase.privacynotes.app` - composed server-side from a pubkey proven by ed25519 signature, on a domain the project controls and no identity provider can assert. No attacker-chosen address can reach a confirmed state through it.
 
 **Known UX failure mode (data-loss-shaped, not a security issue):** if the second provider returns a different email (Apple's "Hide My Email" relay, or simply a different address), no merge occurs and the user silently lands in a fresh, empty account. Custodial users are hit hardest, as they are least likely to have saved their phrase. Onboarding surfaces phrase / QR recovery prominently for this reason.
 
