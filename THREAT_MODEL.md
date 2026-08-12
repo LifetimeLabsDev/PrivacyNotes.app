@@ -111,6 +111,7 @@ User-facing copy describes both honestly as gates, not encryption.
 - **Per-row:** 1 MB ciphertext cap (64 KB for burn notes).
 - **Over-quota lifecycle:** exceeding the cap (e.g. after a storage add-on is cancelled) starts a 90-day grace period during which sync continues. Past 90 days, new writes are rejected ("Sync frozen") until usage drops or capacity is re-added; deletes remain allowed so recovery is always possible, and local data is never touched.
 - **Abuse defenses:** signup is rate-limited and may additionally be gated by an interactive challenge, and abusive write patterns are bounded by further server-side limits. Exact mechanisms and thresholds are deliberately not documented here. Anonymous signups that never complete setup are deleted after 7 days; accounts with a linked pubkey are never purged.
+- **Deletion metadata:** when an attachment or image is deleted, the client queues the blob's opaque id in a server-side pending set (`pending_blob_gc`) so storage accounting stays consistent across devices. The server therefore learns "a blob was deleted around time T" when the delete happens rather than when the deferred sweep removes the object (up to ~72 hours later). Rows are owner-scoped by RLS and self-expire from accounting after 7 days; blob contents remain encrypted throughout.
 
 ## Devices and fingerprint hashes
 

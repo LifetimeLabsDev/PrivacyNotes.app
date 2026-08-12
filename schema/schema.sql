@@ -3204,6 +3204,30 @@ CREATE POLICY pro_pubkeys_owner_select ON public.pro_pubkeys FOR SELECT USING ((
 
 
 --
+-- Name: pending_blob_gc; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.pending_blob_gc ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: pending_blob_gc pending_blob_gc_owner_select; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY pending_blob_gc_owner_select ON public.pending_blob_gc FOR SELECT USING ((user_pubkey = ((auth.jwt() -> 'app_metadata'::text) ->> 'pubkey'::text)));
+
+--
+-- Name: pending_blob_gc pending_blob_gc_owner_insert; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY pending_blob_gc_owner_insert ON public.pending_blob_gc FOR INSERT WITH CHECK ((user_pubkey = ((auth.jwt() -> 'app_metadata'::text) ->> 'pubkey'::text)));
+
+--
+-- Name: pending_blob_gc pending_blob_gc_owner_delete; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY pending_blob_gc_owner_delete ON public.pending_blob_gc FOR DELETE USING ((user_pubkey = ((auth.jwt() -> 'app_metadata'::text) ->> 'pubkey'::text)));
+
+--
 -- Name: pubkey_quotas; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
