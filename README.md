@@ -9,6 +9,8 @@ Your 12-word phrase is your identity and your key. No email, no password, no acc
 
 [**Website**](https://privacynotes.app) &nbsp;·&nbsp; [**Try it, no account**](https://try.privacynotes.app) &nbsp;·&nbsp; [**Security**](SECURITY.md) &nbsp;·&nbsp; [**Threat model**](THREAT_MODEL.md)
 
+Signed apps for [**macOS**](https://privacynotes.app/#downloads), [**Windows**](https://privacynotes.app/#downloads), [**Linux**](https://privacynotes.app/#downloads) and [**Android**](https://privacynotes.app/#downloads), or run it in the browser.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-1E40AF.svg)](LICENSE)
 [![Encryption](https://img.shields.io/badge/Encryption-XChaCha20--Poly1305-10B981.svg)](crypto/crypto.ts)
 [![Identity](https://img.shields.io/badge/Identity-Ed25519-4F6BD5.svg)](crypto/crypto.ts)
@@ -31,6 +33,30 @@ No title, no body, no tags. Just bytes we cannot read.</em>
 </div>
 
 <br>
+
+---
+
+## What PrivacyNotes is
+
+An end-to-end encrypted notes, tasks and journal app for macOS, Windows, Linux, Android and the browser. You get a 12-word phrase instead of an account, and everything you write is encrypted on your device before it syncs, under a key only you hold. Notes, journal entries, tasks, a password vault, and file attachments all live under that one key.
+
+If you are coming from somewhere else, the importer already reads your export:
+
+| Coming from | What to drop in |
+| :--- | :--- |
+| Evernote | `.enex`, on its own or several zipped. Keeps formatting, tags, attachments, note links and notebooks |
+| Apple Notes | `.zip` of a Markdown export |
+| Apple Journal | `.zip` of `AppleJournalEntries`, with photos, videos, voice memos and locations |
+| Obsidian | vault `.zip`, keeping tags, `[[note links]]` and folder structure |
+| Notesnook | `.zip` HTML export or `.nnbackupz` |
+| Standard Notes | `.zip` or `.txt` backup |
+| Simplenote | `.zip` or `.json` export |
+| Google Keep | Takeout `.zip` or `.json` |
+| Samsung Notes | `.zip`, `.docx` or `.txt` |
+| Bitwarden | `.json` export, into the password vault |
+| Anything else | `.md` files, individually or zipped |
+
+Nothing in that list is uploaded for conversion. The parser runs in your browser and the result is encrypted before it leaves the device, which is the only reason importing a decade of Evernote into a service like this is a reasonable thing to do.
 
 ---
 
@@ -84,30 +110,37 @@ The first claim has one exception, which you choose at signup and which is off u
 
 **Read it.** [`crypto/crypto.ts`](crypto/crypto.ts) is one file and you can finish it in a sitting.
 
-**Run the derivation.** The same path the app uses:
+**Run the derivation.** The same path the app uses, from the same audited packages, in a scratch directory you can delete afterwards. Copy the whole block:
 
 ```bash
-npm install @scure/bip39 @noble/hashes @noble/ed25519 @noble/ciphers
+mkdir -p /tmp/pn-verify && cd /tmp/pn-verify
+npm install --silent @scure/bip39@^2 @noble/hashes@^2
 
-node -e "
-const { generateMnemonic, mnemonicToSeedSync } = require('@scure/bip39');
-const { wordlist } = require('@scure/bip39/wordlists/english');
-const { hkdf } = require('@noble/hashes/hkdf');
-const { sha256 } = require('@noble/hashes/sha256');
+node --input-type=module -e "
+import { generateMnemonic, mnemonicToSeedSync } from '@scure/bip39';
+import { wordlist } from '@scure/bip39/wordlists/english.js';
+import { hkdf } from '@noble/hashes/hkdf.js';
+import { sha256 } from '@noble/hashes/sha2.js';
+
+const utf8 = new TextEncoder();
+const hex  = b => Buffer.from(b).toString('hex');
 
 const phrase = generateMnemonic(wordlist, 128);
-console.log('Phrase:', phrase);
+const seed   = mnemonicToSeedSync(phrase);
+const encKey = hkdf(sha256, seed, undefined, utf8.encode('privacynotes-encryption-v1'), 32);
+const sigKey = hkdf(sha256, seed, undefined, utf8.encode('privacynotes-signing-v1'), 32);
 
-const seed = mnemonicToSeedSync(phrase);
-const encKey = hkdf(sha256, seed, undefined, 'privacynotes-encryption-v1', 32);
-console.log('Encryption key (hex):', Buffer.from(encKey).toString('hex'));
-
-const encKey2 = hkdf(sha256, mnemonicToSeedSync(phrase), undefined, 'privacynotes-encryption-v1', 32);
-console.log('Deterministic:', Buffer.from(encKey).equals(Buffer.from(encKey2)));
+console.log('Phrase           :', phrase);
+console.log('Encryption key   :', hex(encKey));
+console.log('Signing key      :', hex(sigKey));
+console.log('Deterministic    :', hex(hkdf(sha256, mnemonicToSeedSync(phrase), undefined, utf8.encode('privacynotes-encryption-v1'), 32)) === hex(encKey));
+console.log('Domain-separated :', hex(encKey) !== hex(sigKey));
 "
 ```
 
-**Diff it against production.** The bundle is minified, so a textual diff is not practical, but the derivation is falsifiable anyway. Open the JavaScript served at privacynotes.app and search it for `privacynotes-signing-v1` and `privacynotes-encryption-v1`, the HKDF-SHA256 construction, and XChaCha20-Poly1305 with 24-byte nonces. They are in there right now. If they ever are not, we are lying and you can show it.
+Two lines of that output are the ones that matter. `Deterministic: true` says the phrase alone reproduces the key, on any machine, forever, with nothing fetched from us. `Domain-separated: true` says the signing key and the encryption key cannot be derived from each other, so publishing your user ID does not leak the key your notes are under.
+
+**Diff it against production.** The bundle is minified, so a textual diff is not practical, but the derivation is falsifiable anyway. Open the JavaScript served at PrivacyNotes.app and search it for `privacynotes-signing-v1` and `privacynotes-encryption-v1`, the HKDF-SHA256 construction, and XChaCha20-Poly1305 with 24-byte nonces. They are in there right now. If they ever are not, we are lying and you can show it.
 
 **Read the schema.** In [`schema/schema.sql`](schema/schema.sql), find the `notes` table. It has `ciphertext` and `nonce`. It has no `title` and no `body`. RLS restricts every row to the public key that owns it, and abuse limits (note count, ciphertext size) are enforced by triggers rather than by asking nicely. Abandoned signups that never link a pubkey are purged after 7 days; accounts that finished setup are never deleted for inactivity.
 
