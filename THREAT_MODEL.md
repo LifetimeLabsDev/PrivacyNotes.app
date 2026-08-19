@@ -1,6 +1,6 @@
 # Threat Model
 
-Last updated: 2026-08-01 (v0.283.1)
+Last updated: 2026-08-19 (v0.413.1)
 
 This document describes the security assumptions, trust boundaries, and known limitations of PrivacyNotes, for auditors, contributors, and users who want to know exactly what the system protects against and what it does not.
 
@@ -74,6 +74,18 @@ Adding a device via QR encodes the full phrase in a URL fragment (`#phrase=...`)
 ### Challenge-response authentication
 
 Device registration, pubkey linking, custody changes, and account deletion use Ed25519 signatures over structured challenges (e.g. `link:<authUid>`, `register-device:<authUid>:<deviceId>`). The `authUid` binding prevents replay across sessions.
+
+## Local storage at rest
+
+**Notes are stored in plaintext on the device.** Encryption happens at the sync boundary, not at the storage layer: `LocalNote` in `db.ts` holds `title` and `body` as ordinary strings in IndexedDB, and `encryptNote` runs on the way out in `sync.ts`. The same applies to everything derived from note content, including the decrypted image and attachment caches and the parsed-document cache.
+
+This is deliberate. The device is fully trusted (see "Trust boundaries"), and the content key is derived from a phrase held on that same device, so encrypting local rows under it would protect against nobody: any adversary who can read the database can read the key material sitting beside it. The real boundary for data at rest on the user's machine is OS full-disk encryption and screen lock, which the app cannot implement and should not imply.
+
+The consequence, stated plainly: **an attacker with filesystem or storage access to an unlocked device reads notes directly**, as does a malicious browser extension with storage permissions. Both are out of scope (see "Out-of-scope threats"), and no feature in the product changes that.
+
+This section defines the phrase "plaintext storage" used below: the PIN, the biometric unlock, and the per-note lock and PIN-protect flags are convenience gates sitting at exactly this trust level, not cryptographic access control.
+
+Sign-out clears the local database (`clearLocalDatabase`), with an option to retain notes that have not yet synced so they are not lost.
 
 ## PIN protection
 

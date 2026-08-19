@@ -7,9 +7,9 @@
 **End-to-end encrypted notes, tasks, and journal.**<br>
 Your 12-word phrase is your identity and your key. No email, no password, no account to leak.
 
-[**Website**](https://privacynotes.app) &nbsp;·&nbsp; [**Try it, no account**](https://try.privacynotes.app) &nbsp;·&nbsp; [**Security**](SECURITY.md) &nbsp;·&nbsp; [**Threat model**](THREAT_MODEL.md)
+[**Website**](https://privacynotes.app/en) &nbsp;·&nbsp; [**Try it, no account**](https://try.privacynotes.app) &nbsp;·&nbsp; [**Verify it yourself**](VERIFY.md) &nbsp;·&nbsp; [**Security**](SECURITY.md) &nbsp;·&nbsp; [**Threat model**](THREAT_MODEL.md)
 
-Signed apps for [**macOS**](https://privacynotes.app/#downloads), [**Windows**](https://privacynotes.app/#downloads), [**Linux**](https://privacynotes.app/#downloads) and [**Android**](https://privacynotes.app/#downloads), or run it in the browser.
+Signed apps for [**macOS**](https://privacynotes.app/en#downloads), [**Windows**](https://privacynotes.app/en#downloads), [**Linux**](https://privacynotes.app/en#downloads) and [**Android**](https://privacynotes.app/en#downloads), or run it in the browser.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-1E40AF.svg)](LICENSE)
 [![Encryption](https://img.shields.io/badge/Encryption-XChaCha20--Poly1305-10B981.svg)](crypto/crypto.ts)
@@ -29,6 +29,10 @@ Signed apps for [**macOS**](https://privacynotes.app/#downloads), [**Windows**](
 
 <em>A real row from the <code>notes</code> table. A public key, a ciphertext, a nonce.<br>
 No title, no body, no tags. Just bytes we cannot read.</em>
+
+<br>
+
+**Do not take our word for it.** [**Check it yourself in about a minute**](VERIFY.md), with nothing but your browser's network tab.
 
 </div>
 

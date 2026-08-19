@@ -1519,19 +1519,29 @@ BEGIN
   END IF;
 
   RETURN QUERY
-  WITH usage AS (
+  WITH addons AS (
+    -- Same add-on expression as quota_limits_for_pubkey: decimal GB,
+    -- active or past_due, gated subs excluded (0070).
+    SELECT pss.pubkey, (COALESCE(SUM(pss.gb_count), 0) * 1000000000)::bigint AS extra
+    FROM public.paddle_storage_subs pss
+    WHERE pss.status IN ('active', 'past_due')
+      AND NOT pss.gated
+    GROUP BY pss.pubkey
+  ),
+  usage AS (
     SELECT
       pq.user_pubkey,
       CASE WHEN pp.pubkey IS NOT NULL THEN 'pro' ELSE 'free' END AS tier,
       (pq.total_bytes + pq.image_bytes)::float /
         NULLIF(
           CASE WHEN pp.pubkey IS NOT NULL
-            THEN (500 * 1024 * 1024 + pq.extra_storage_bytes)
-            ELSE (50 * 1024 * 1024)
+            THEN (500 * 1000 * 1000 + COALESCE(a.extra, 0))
+            ELSE (50 * 1000 * 1000)
           END, 0
         ) AS pct
     FROM public.pubkey_quotas pq
     LEFT JOIN public.pro_pubkeys pp ON pp.pubkey = pq.user_pubkey
+    LEFT JOIN addons a ON a.pubkey = pq.user_pubkey
   )
   SELECT
     u.tier,
@@ -1616,11 +1626,13 @@ BEGIN
   FROM public.pubkey_quotas pq
   WHERE pq.user_pubkey = target_pubkey;
 
-  -- Extra storage from paddle_storage_subs (replaced dropped extra_storage_bytes column)
-  SELECT COALESCE(SUM(gb_count) * 1073741824, 0)::bigint INTO v_extra_storage
+  -- Extra storage from paddle_storage_subs (replaced dropped extra_storage_bytes
+  -- column). Mirrors quota_limits_for_pubkey: decimal GB, gated subs excluded (0070).
+  SELECT COALESCE(SUM(gb_count) * 1000000000, 0)::bigint INTO v_extra_storage
     FROM public.paddle_storage_subs
    WHERE pubkey = target_pubkey
-     AND status IN ('active','past_due');
+     AND status IN ('active','past_due')
+     AND NOT gated;
 
   -- Devices
   SELECT count(*), max(last_seen_at)

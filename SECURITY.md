@@ -8,6 +8,8 @@ If you find a vulnerability, please email privacynotes@lifetimelabs.dev instead 
 
 PrivacyNotes is end-to-end encrypted. Your 12-word recovery phrase is generated on your device. From it we derive two keys: one to encrypt every note, task, and journal entry before it leaves the device, and one to sign requests so the server can tell it's you without knowing who you are. The server stores ciphertext and a public key. Under self-custody, which is the default and what you get unless you choose otherwise at signup, neither the server nor we hold the keys required to decrypt it, and those live only on your devices.
 
+You do not have to take that on faith. [VERIFY.md](VERIFY.md) is a three-tier guide to checking it yourself, and the first tier takes about a minute in your browser's network tab with no tools and no code reading.
+
 One deliberate exception, which you choose at signup and which we would rather state up front than bury: if you sign up with Google or Apple, you can opt into having us store your phrase so that a new device is one click instead of twelve words. That is **custodial mode**, and it means the ability to decrypt your notes sits on our side rather than only on yours. We do not use it, and nothing in our systems reads note content, but the capability is real and we count capabilities rather than intentions. It is off unless you pick it, you can leave it later (described below, including what leaving takes today), and it is described in full in [Custodial mode](#custodial-mode) below.
 
 ## What the server sees
@@ -122,8 +124,8 @@ Earlier versions of this document called this a one-way ratchet, and until v0.27
 
 ## What we don't protect against
 
-- A compromised endpoint. Malware on your machine reads plaintext while the app is unlocked, same as any E2E system.
-- A targeted adversary with custodial access to your unlocked device.
+- A compromised endpoint. Encryption protects your notes from us and from anyone between you and us, not from your own machine. Notes are stored in plaintext in local storage on the device, because the key to decrypt them lives on that same device: anything able to read the one can read the other, so encrypting local storage would buy you nothing while implying it bought you something. What protects data at rest on your machine is OS-level disk encryption and your screen lock. Malware, or anyone with access to your unlocked device, reads your notes, same as any end-to-end encrypted system.
+- A targeted adversary with custodial access to your unlocked device. The PIN and biometric options are convenience gates against a borrowed laptop, not cryptography, and the section above says so.
 - You losing your recovery phrase, under self-custody. There is no reset. We chose this on purpose; a recoverable phrase would be a backdoor, and custodial mode is that backdoor offered honestly, by name, to the people who decide they want it.
 - Social engineering. Nobody from PrivacyNotes will ever ask for your phrase. If someone does, they are not us.
 - Denial of service against our infrastructure providers.
