@@ -6,8 +6,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        PrivacyNotes is in nine languages. We are native speakers of almost none of them, so we
-        miss things.
+        PrivacyNotes is translated into every language in the list below. The English is ours. The
+        rest is machine translated against a style guide, and we are native speakers of almost none
+        of them, so we miss things.
 
         The wrong gender. Phrasing that sounds like a robot. A word nobody really says. A button
         with the text running off the edge. You spot it in a second. We never would.
@@ -24,6 +25,14 @@ body:
         - Polish (Polski)
         - Portuguese, Portugal (Português)
         - Portuguese, Brazil (Português do Brasil)
+        - Japanese (日本語)
+        - Korean (한국어)
+        - Traditional Chinese (繁體中文)
+        - Catalan (Català)
+        - Czech (Čeština)
+        - Turkish (Türkçe)
+        - Swedish (Svenska)
+        - Arabic (العربية)
         - English
     validations:
       required: true
