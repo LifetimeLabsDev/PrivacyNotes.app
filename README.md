@@ -14,7 +14,6 @@ Signed apps for [**macOS**](https://privacynotes.app/en#downloads), [**Windows**
 [![License: MIT](https://img.shields.io/badge/License-MIT-1E40AF.svg)](LICENSE)
 [![Encryption](https://img.shields.io/badge/Encryption-XChaCha20--Poly1305-10B981.svg)](crypto/crypto.ts)
 [![Identity](https://img.shields.io/badge/Identity-Ed25519-4F6BD5.svg)](crypto/crypto.ts)
-[![Audit](https://img.shields.io/badge/Third--party%20audit-not%20yet-lightgrey.svg)](#security-contact)
 [![GitGem](https://gitgem.org/api/badge/github/LifetimeLabsDev/PrivacyNotes.app.svg)](https://gitgem.org/github/LifetimeLabsDev/PrivacyNotes.app)
 
 [![PrivacyNotes on PrivacyTools.io](https://privacytools.io/badge/privacynotes/chip-auto.svg)](https://privacytools.io/app/privacynotes)
