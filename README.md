@@ -17,9 +17,8 @@ Signed apps for [**macOS**](https://privacynotes.app/en#downloads), [**Windows**
 [![Audit](https://img.shields.io/badge/Third--party%20audit-not%20yet-lightgrey.svg)](#security-contact)
 [![GitGem](https://gitgem.org/api/badge/github/LifetimeLabsDev/PrivacyNotes.app.svg)](https://gitgem.org/github/LifetimeLabsDev/PrivacyNotes.app)
 
+[![PrivacyNotes on PrivacyTools.io](https://privacytools.io/badge/privacynotes/chip-auto.svg)](https://privacytools.io/app/privacynotes)
 </div>
-
-<br>
 
 <div align="center">
 
