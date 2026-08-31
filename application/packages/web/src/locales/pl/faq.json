@@ -172,7 +172,7 @@
     "open-source": {
       "q": "Czy PrivacyNotes jest open source?",
       "a": [
-        "Tak. Aplikacje webowa, komputerowa i mobilna są opublikowane na [GitHubie](https://github.com/LifetimeLabsDev/PrivacyNotes.app) razem z kodem szyfrowania, który zamienia Twoje notatki w nieczytelny tekst, schematem bazy danych, do której się synchronizują, i modelem zagrożeń opisującym, co chroni każdy element. To ten sam kod, z którego budujemy nasze wydania.",
+        "Tak. Aplikacje webowa, komputerowa i mobilna są opublikowane na [GitHubie](https://github.com/LifetimeLabsDev/PrivacyNotes.app) razem z kodem szyfrowania, który zamienia Twoje notatki w nieczytelny tekst i modelem zagrożeń opisującym, co chroni każdy element. To ten sam kod, z którego budujemy nasze wydania.",
         "Właśnie to zamienia obietnicę w coś, co możesz sprawdzić. Przeczytaj kod szyfrowania za jednym posiedzeniem, otwórz zakładkę sieci w przeglądarce i zobacz, jak Twoje notatki wychodzą jako nieczytelny tekst, albo zbuduj aplikację sam i porównaj ją z tą, którą wydajemy. Nie musisz wierzyć nam na słowo."
       ]
     },
@@ -336,8 +336,8 @@
     "platforms": {
       "q": "Na jakich platformach działa PrivacyNotes?",
       "a": [
-        "Dziś w przeglądarce, na macOS, Windows, Linux i Android, a iOS wkrótce. Każda aplikacja jest zbudowana z tego samego rdzenia, z tym samym szyfrowaniem end-to-end, i synchronizuje się przez to samo konto. W [sekcji pobierania](https://privacynotes.app/pl#downloads) zawsze są najnowsze wersje.",
-        "Aplikacje natywne wymagają macOS 13 lub nowszego, Windows 10 lub nowszego, Androida 7.0 lub nowszego, albo dystrybucji Linuksa z webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ lub równoważna). iOS będzie wymagał iOS 15 lub nowszego. Poniżej tych wersji aplikacja się nie zainstaluje ani nie uruchomi - skorzystaj wtedy z wersji w przeglądarce.",
+        "W przeglądarce oraz na macOS, Windows, Linux, iOS i Android. Każda aplikacja jest zbudowana z tego samego rdzenia, z tym samym szyfrowaniem end-to-end, i synchronizuje się przez to samo konto. W [sekcji pobierania](https://privacynotes.app/pl#downloads) zawsze są najnowsze wersje.",
+        "Aplikacje natywne wymagają macOS 13 lub nowszego, Windows 10 lub nowszego, iOS 15 lub nowszego, Androida 7.0 lub nowszego, albo dystrybucji Linuksa z webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ lub równoważna). Poniżej tych wersji aplikacja się nie zainstaluje ani nie uruchomi - skorzystaj wtedy z wersji w przeglądarce.",
         "Aplikacja w przeglądarce to pełnoprawny obywatel, a nie rozwiązanie awaryjne: trzyma pełną lokalną kopię Twoich danych i działa offline, więc każda nowoczesna przeglądarka zawsze jest drogą do środka."
       ]
     },
@@ -549,8 +549,8 @@
     "store-purchases": {
       "q": "Czy zakupy przechodzą między wersją w przeglądarce, Google Play i App Store?",
       "a": [
-        "Tak. Pro i pamięć przypinają się do Twojego konta, nie do platformy czy sklepu. Kup w przeglądarce, a każda aplikacja, do której się zalogujesz, ma Pro, wliczając wersje ze sklepów; kup w wersji ze sklepu, a aplikacje w przeglądarce i na komputerze odblokują się tak samo. Nie ma przycisku „przywróć zakupy”, bo przywróceniem jest zalogowanie się - uprawnienie idzie za kontem.",
-        "Jedyna różnica to kto Cię rozlicza. Zakupy w przeglądarce idą przez Paddle i zarządzasz nimi w aplikacji w Ustawienia > Pamięć. Zakupy zrobione w wersji ze sklepu (Google Play albo App Store, gdy te aplikacje się pojawią) rozlicza ten sklep: cykliczną pamięć anulujesz w ustawieniach subskrypcji sklepu, a zwroty idą jego procedurą. Tak czy inaczej to wszędzie to samo konto i to samo Pro - wliczając platformy, które jeszcze nie istnieją."
+        "Tak. Pro i pamięć przypinają się do Twojego konta, nie do platformy czy sklepu. Kup w przeglądarce, a każda aplikacja, do której się zalogujesz, ma Pro, wliczając wersje ze sklepów; kup w wersji ze sklepu, a aplikacje w przeglądarce i na komputerze odblokują się tak samo. Przywróceniem jest samo zalogowanie się, bo uprawnienie idzie za kontem. Wersja ze sklepu ma dodatkowo przycisk **Przywróć zakupy** w Ustawienia > Plan, który pyta Apple albo Google, co masz, i po ponownej instalacji znowu to odblokowuje.",
+        "Jedyna różnica to kto Cię rozlicza. Zakupy w przeglądarce idą przez Paddle i zarządzasz nimi w aplikacji w Ustawienia > Pamięć. Zakupy zrobione w wersji ze sklepu (App Store już teraz, Google Play gdy ta aplikacja się pojawi) rozlicza ten sklep: cykliczną pamięć anulujesz w ustawieniach subskrypcji sklepu, a zwroty idą jego procedurą. Tak czy inaczej to wszędzie to samo konto i to samo Pro - wliczając platformy, które jeszcze nie istnieją."
       ]
     },
     "play-vs-apk": {
@@ -662,7 +662,7 @@
     "verify-download": {
       "q": "Jak sprawdzić, czy pobrana aplikacja jest prawdziwa?",
       "a": [
-        "Każda wydana przez nas kompilacja jest podpisana, a twój system operacyjny sprawdza ten podpis, zanim cokolwiek uruchomi. Kompilacje macOS są podpisane i notaryzowane przez Apple. Instalatory Windows niosą podpis Authenticode, który przeczytasz we Właściwości > Podpisy cyfrowe. APK na Androida jest podpisany naszym własnym kluczem i dlatego Android odrzuca każdą aktualizację, która nie pochodzi od nas. Aplikacje desktopowe też odrzucą aktualizację niepodpisaną naszym kluczem.",
+        "Każda wydana przez nas kompilacja jest podpisana, a twój system operacyjny sprawdza ten podpis, zanim cokolwiek uruchomi. Kompilacje macOS są podpisane i notaryzowane przez Apple. Instalatory Windows niosą podpis Authenticode, który przeczytasz we Właściwości > Podpisy cyfrowe. APK na Androida jest podpisany naszym własnym kluczem i dlatego Android odrzuca każdą aktualizację, która nie pochodzi od nas. Aplikacja na iPhone'a i iPada jest podpisana przez Apple i instaluje się tylko przez App Store. Aplikacje desktopowe też odrzucą aktualizację niepodpisaną naszym kluczem.",
         "Pobieraj wyłącznie z PrivacyNotes.app albo z naszych [wydań na GitHubie](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), gdzie jest każda wersja. Liczy się podpis, a Twój system sprawdza go za Ciebie: weryfikuje go względem klucza, którego nigdzie na naszej stronie nie ma, więc podmieniony plik nie przejdzie tej kontroli, cokolwiek głosi strona obok."
       ]
     },

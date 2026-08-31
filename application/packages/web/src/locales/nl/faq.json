@@ -172,7 +172,7 @@
     "open-source": {
       "q": "Is PrivacyNotes open source?",
       "a": [
-        "Ja. De web-, desktop- en mobiele apps zijn gepubliceerd op [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), samen met de encryptiecode die je notities onleesbaar maakt, het databaseschema waar ze naartoe synchroniseren en het dreigingsmodel dat beschrijft wat elk onderdeel beschermt. Het is dezelfde code waaruit we onze releases bouwen.",
+        "Ja. De web-, desktop- en mobiele apps zijn gepubliceerd op [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), samen met de encryptiecode die je notities onleesbaar maakt en het dreigingsmodel dat beschrijft wat elk onderdeel beschermt. Het is dezelfde code waaruit we onze releases bouwen.",
         "Dat is wat een belofte verandert in iets wat je kunt narekenen. Lees de encryptie in één zitting door, open het netwerktabblad van je browser en kijk hoe je eigen notities als onleesbare tekst vertrekken, of bouw de app zelf en vergelijk hem met wat wij uitleveren. Je hoeft ons geen woord te geloven."
       ]
     },
@@ -336,8 +336,8 @@
     "platforms": {
       "q": "Op welke platforms draait PrivacyNotes?",
       "a": [
-        "Vandaag op web, macOS, Windows, Linux en Android, met iOS binnenkort. Elke app is uit dezelfde kern gebouwd met dezelfde end-to-end versleuteling en synchroniseert via hetzelfde account. In de [downloadsectie](https://privacynotes.app/nl#downloads) staan altijd de nieuwste versies.",
-        "De native apps hebben macOS 13 of nieuwer, Windows 10 of nieuwer, Android 7.0 of nieuwer, of een Linux-distributie met webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ of gelijkwaardig) nodig. iOS gaat iOS 15 of nieuwer vragen. Daaronder installeert of start de app niet, dus gebruik dan de webapp.",
+        "Op web, macOS, Windows, Linux, iOS en Android. Elke app is uit dezelfde kern gebouwd met dezelfde end-to-end versleuteling en synchroniseert via hetzelfde account. In de [downloadsectie](https://privacynotes.app/nl#downloads) staan altijd de nieuwste versies.",
+        "De native apps hebben macOS 13 of nieuwer, Windows 10 of nieuwer, iOS 15 of nieuwer, Android 7.0 of nieuwer, of een Linux-distributie met webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ of gelijkwaardig) nodig. Daaronder installeert of start de app niet, dus gebruik dan de webapp.",
         "De webapp is volwaardig, geen noodoplossing: hij houdt een volledige lokale kopie van je gegevens bij en werkt offline, dus elke moderne browser is altijd een manier om binnen te komen."
       ]
     },
@@ -549,8 +549,8 @@
     "store-purchases": {
       "q": "Gaan aankopen over tussen het web, Google Play en de App Store?",
       "a": [
-        "Ja. Pro en opslag hangen aan je account, niet aan een platform of store. Koop op het web en elke app waarop je je aanmeldt is Pro, ook de store-builds; koop in een store-build en de web- en desktop-apps ontgrendelen op dezelfde manier. Er is geen knop \"Aankopen herstellen\", want aanmelden ís het herstellen - het recht volgt het account.",
-        "Het enige verschil is wie je factureert. Webaankopen lopen via Paddle en beheer je in de app onder Instellingen > Opslag. Aankopen binnen een store-build (Google Play of de App Store, zodra die apps uitkomen) worden door die store gefactureerd: terugkerende opslag zet je stop in de abonnementsinstellingen van de store, en terugbetalingen volgen het proces van de store. Hoe dan ook is het overal hetzelfde account en dezelfde Pro - ook op platforms die nog niet bestaan."
+        "Ja. Pro en opslag hangen aan je account, niet aan een platform of store. Koop op het web en elke app waarop je je aanmeldt is Pro, ook de store-builds; koop in een store-build en de web- en desktop-apps ontgrendelen op dezelfde manier. Aanmelden ís het herstellen, want het recht volgt het account. Een store-build heeft daarnaast een knop **Aankopen herstellen** onder Instellingen > Plan, die aan Apple of Google vraagt wat je bezit en het na een herinstallatie opnieuw ontgrendelt.",
+        "Het enige verschil is wie je factureert. Webaankopen lopen via Paddle en beheer je in de app onder Instellingen > Opslag. Aankopen binnen een store-build (de App Store vandaag, Google Play zodra die app uitkomt) worden door die store gefactureerd: terugkerende opslag zet je stop in de abonnementsinstellingen van de store, en terugbetalingen volgen het proces van de store. Hoe dan ook is het overal hetzelfde account en dezelfde Pro - ook op platforms die nog niet bestaan."
       ]
     },
     "play-vs-apk": {
@@ -662,7 +662,7 @@
     "verify-download": {
       "q": "Hoe controleer ik of de app die ik downloadde echt is?",
       "a": [
-        "Elke build die we uitleveren is ondertekend, en je besturingssysteem controleert die handtekening voordat het iets uitvoert. macOS-builds zijn door Apple ondertekend en genotariseerd. Windows-installers dragen een Authenticode-handtekening die je kunt lezen onder Eigenschappen > Digitale handtekeningen. De Android-APK is ondertekend met onze eigen sleutel, en daarom weigert Android elke update die niet van ons komt. Ook de desktop-apps wijzen een update af die niet met onze sleutel is ondertekend.",
+        "Elke build die we uitleveren is ondertekend, en je besturingssysteem controleert die handtekening voordat het iets uitvoert. macOS-builds zijn door Apple ondertekend en genotariseerd. Windows-installers dragen een Authenticode-handtekening die je kunt lezen onder Eigenschappen > Digitale handtekeningen. De Android-APK is ondertekend met onze eigen sleutel, en daarom weigert Android elke update die niet van ons komt. De app voor iPhone en iPad is door Apple ondertekend en installeert alleen via de App Store. Ook de desktop-apps wijzen een update af die niet met onze sleutel is ondertekend.",
         "Download alleen van PrivacyNotes.app of van onze [releases op GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), waar elke versie staat. De handtekening is de controle die telt, en je systeem voert hem voor je uit: hij wordt gecontroleerd tegen een sleutel die nergens op onze site staat, dus een verwisseld bestand zakt voor die controle, wat er ook naast op de pagina staat."
       ]
     },

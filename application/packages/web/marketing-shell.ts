@@ -44,8 +44,8 @@ function esc(s: string): string {
  * Every claim here is generated from a source of truth rather than typed out:
  * the price from pricing.ts, the beta/list choice from the same env var
  * isBetaPricing() reads in paddle.ts, so the offer can never contradict the
- * price on the page. Platforms are the ones actually shipped - iOS is
- * deliberately absent, it has not launched (ops/docs/mobile-release-status.md).
+ * price on the page. Platforms are the ones actually shipped
+ * (ops/docs/mobile-release-status.md).
  * No aggregateRating: we have no review corpus, and inventing one is a
  * manual-action risk, not a shortcut.
  */
@@ -79,7 +79,7 @@ function jsonLd(locale: string): string {
         url,
         description: m.description,
         applicationCategory: 'ProductivityApplication',
-        operatingSystem: 'Web, macOS, Windows, Linux, Android',
+        operatingSystem: 'Web, macOS, Windows, Linux, iOS, Android',
         inLanguage: HREFLANG[locale] ?? 'en',
         publisher: { '@id': `${ORIGIN}/#organization` },
         offers: [
@@ -153,8 +153,9 @@ const HEAD_BLOCK = /<title>[\s\S]*?<meta name="twitter:image"[^>]*>/;
  * LOCALE_TO_SLUG, so neither can go stale the way a hand-typed number does -
  * the count said 14 for three locale additions.
  *
- * The wording is deliberate: the clients, the encryption layer, the schema
- * and the threat model are published, and the sync backend stays closed.
+ * The wording is deliberate: the clients, the encryption layer and the threat
+ * model are published, and the sync backend stays closed. The database schema
+ * is NOT published and must not be named here.
  * llms.txt is a factual reference rather than a pitch, so it names that
  * split plainly.
  */
@@ -168,9 +169,9 @@ Signing up needs no email address: a new account is a generated 12-word recovery
 
 The free tier is a real tier, not a trial: 2 devices and 50 MB of storage, with no time limit. Pro is a one-time payment of $${proPrice} for unlimited devices and 500 MB, with extra storage sold separately as a yearly add-on. There is no subscription for the app itself.
 
-Available on the web, macOS, Windows, Linux and Android. The interface and help center are translated into ${Object.keys(LOCALE_TO_SLUG).length} languages.
+Available on the web, macOS, Windows, Linux, iOS and Android. The interface and help center are translated into ${Object.keys(LOCALE_TO_SLUG).length} languages.
 
-The app is open source: the web, desktop and mobile clients, the encryption layer, the database schema and the threat model are all published. The sync backend stays closed and holds nothing but encrypted data.
+The app is open source: the web, desktop and mobile clients, the encryption layer and the threat model are all published. The sync backend stays closed and holds nothing but encrypted data.
 
 ## Product
 - [Homepage](${ORIGIN}/en): what it does, what it costs, and where to download it.

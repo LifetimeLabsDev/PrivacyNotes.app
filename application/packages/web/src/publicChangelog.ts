@@ -26,6 +26,14 @@ export const IN_APP_CHANGELOG_LIMIT = 10;
 
 export const PUBLIC_CHANGELOG: ChangelogRelease[] = [
   {
+    version: '0.491',
+    date: '2026-09-01',
+    title: 'PrivacyNotes is on the App Store',
+    items: [
+      { type: 'new', text: 'PrivacyNotes is on the App Store. The iPhone and iPad app is the same app as the Mac, Windows, Linux and Android ones, and the download tile on the homepage links straight to it.' },
+    ],
+  },
+  {
     version: '0.490',
     date: '2026-08-31',
     title: "A protected note stays open while you're writing in it",

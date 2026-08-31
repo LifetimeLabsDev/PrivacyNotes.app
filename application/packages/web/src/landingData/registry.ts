@@ -58,7 +58,7 @@ export const BENEFITS = {
   'offline-first': {
     icon: 'globe',
     title: 'Works offline, everywhere',
-    body: 'Browser, macOS, Windows, Linux, Android. A dead connection never blocks writing; sync catches up, encrypted, when you are back.',
+    body: 'Browser, macOS, Windows, Linux, iOS, Android. A dead connection never blocks writing; sync catches up, encrypted, when you are back.',
   },
 } as const;
 
@@ -168,7 +168,7 @@ export const VS_ROWS: Record<string, VsRow> = {
     us: { v: 'yes' },
   },
   platforms: {
-    label: 'Web, macOS, Windows, Linux, Android',
+    label: 'Web, macOS, Windows, Linux, iOS, Android',
     group: 'editor',
     us: { v: 'yes' },
   },

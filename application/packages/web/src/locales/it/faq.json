@@ -172,7 +172,7 @@
     "open-source": {
       "q": "PrivacyNotes è open source?",
       "a": [
-        "Sì. Le app web, desktop e mobile sono pubblicate su [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), insieme al codice di cifratura che rende illeggibili le tue note, allo schema del database in cui si sincronizzano e al modello delle minacce che spiega cosa protegge ogni pezzo. È lo stesso codice da cui compiliamo le nostre release.",
+        "Sì. Le app web, desktop e mobile sono pubblicate su [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), insieme al codice di cifratura che rende illeggibili le tue note e al modello delle minacce che spiega cosa protegge ogni pezzo. È lo stesso codice da cui compiliamo le nostre release.",
         "È questo che trasforma una promessa in qualcosa che puoi verificare. Leggi la cifratura in una sola sessione, apri la scheda di rete del browser e guarda le tue note uscire come testo illeggibile, oppure compila l'app da solo e confrontala con quella che distribuiamo. Non devi crederci sulla parola."
       ]
     },
@@ -336,8 +336,8 @@
     "platforms": {
       "q": "Su quali piattaforme gira PrivacyNotes?",
       "a": [
-        "Web, macOS, Windows, Linux e Android oggi, iOS in arrivo. Ogni app nasce dallo stesso nucleo con la stessa cifratura end-to-end e si sincronizza tramite lo stesso account. La [sezione download](https://privacynotes.app/it#downloads) ha sempre le build più recenti.",
-        "Le app native richiedono macOS 13 o successivo, Windows 10 o successivo, Android 7.0 o successivo, oppure una distribuzione Linux con webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ o equivalente). iOS richiederà iOS 15 o successivo. Sotto queste versioni l'app non si installa e non parte: usa l'app web.",
+        "Web, macOS, Windows, Linux, iOS e Android. Ogni app nasce dallo stesso nucleo con la stessa cifratura end-to-end e si sincronizza tramite lo stesso account. La [sezione download](https://privacynotes.app/it#downloads) ha sempre le build più recenti.",
+        "Le app native richiedono macOS 13 o successivo, Windows 10 o successivo, iOS 15 o successivo, Android 7.0 o successivo, oppure una distribuzione Linux con webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ o equivalente). Sotto queste versioni l'app non si installa e non parte: usa l'app web.",
         "L'app web è un cittadino di prima classe, non una ruota di scorta: tiene una copia locale completa dei tuoi dati e funziona offline - qualsiasi browser moderno è quindi sempre una via d'accesso."
       ]
     },
@@ -549,8 +549,8 @@
     "store-purchases": {
       "q": "Gli acquisti si trasferiscono tra web, Google Play e App Store?",
       "a": [
-        "Sì. Pro e lo spazio si legano al tuo account, non a una piattaforma o a uno store. Compra sul web e ogni app in cui accedi è Pro, comprese le build da store; compra dentro una build da store e le app web e desktop si sbloccano allo stesso modo. Non c'è alcun pulsante \"ripristina acquisti\" perché accedere è il ripristino - il diritto segue l'account.",
-        "L'unica differenza è chi ti fattura. Gli acquisti web passano da Paddle e si gestiscono nell'app in Impostazioni > Archiviazione. Gli acquisti fatti dentro una build da store (Google Play o l'App Store, una volta uscite quelle app) sono fatturati da quello store: lo spazio ricorrente si disdice nelle impostazioni di abbonamento dello store, e i rimborsi seguono la procedura dello store. In ogni caso è lo stesso account e lo stesso Pro ovunque - comprese le piattaforme che ancora non esistono."
+        "Sì. Pro e lo spazio si legano al tuo account, non a una piattaforma o a uno store. Compra sul web e ogni app in cui accedi è Pro, comprese le build da store; compra dentro una build da store e le app web e desktop si sbloccano allo stesso modo. Accedere è il ripristino, perché il diritto segue l'account. Una build da store porta anche un pulsante **Ripristina acquisti** in Impostazioni > Piano, che chiede ad Apple o Google che cosa possiedi e lo sblocca di nuovo dopo una reinstallazione.",
+        "L'unica differenza è chi ti fattura. Gli acquisti web passano da Paddle e si gestiscono nell'app in Impostazioni > Archiviazione. Gli acquisti fatti dentro una build da store (l'App Store oggi, Google Play una volta uscita quell'app) sono fatturati da quello store: lo spazio ricorrente si disdice nelle impostazioni di abbonamento dello store, e i rimborsi seguono la procedura dello store. In ogni caso è lo stesso account e lo stesso Pro ovunque - comprese le piattaforme che ancora non esistono."
       ]
     },
     "play-vs-apk": {
@@ -662,7 +662,7 @@
     "verify-download": {
       "q": "Come verifico che l'app che ho scaricato sia autentica?",
       "a": [
-        "Ogni build che pubblichiamo è firmata, e il tuo sistema operativo controlla quella firma prima di eseguire qualsiasi cosa. Le build macOS sono firmate e autenticate da Apple. Gli installer Windows portano una firma Authenticode che puoi leggere in Proprietà > Firme digitali. L'APK Android è firmato con la nostra chiave, ed è per questo che Android rifiuta ogni aggiornamento che non venga da noi. Anche le app desktop rifiutano un aggiornamento non firmato con la nostra chiave.",
+        "Ogni build che pubblichiamo è firmata, e il tuo sistema operativo controlla quella firma prima di eseguire qualsiasi cosa. Le build macOS sono firmate e autenticate da Apple. Gli installer Windows portano una firma Authenticode che puoi leggere in Proprietà > Firme digitali. L'APK Android è firmato con la nostra chiave, ed è per questo che Android rifiuta ogni aggiornamento che non venga da noi. L'app per iPhone e iPad è firmata da Apple e si installa solo dall'App Store. Anche le app desktop rifiutano un aggiornamento non firmato con la nostra chiave.",
         "Scarica solo da PrivacyNotes.app o dalle nostre [release su GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), dove c'è ogni versione. La firma è il controllo che conta, e il tuo sistema lo esegue per te: viene verificata contro una chiave che sul nostro sito non c'è affatto, quindi un file sostituito non supera quel controllo, qualsiasi cosa dica la pagina accanto."
       ]
     },

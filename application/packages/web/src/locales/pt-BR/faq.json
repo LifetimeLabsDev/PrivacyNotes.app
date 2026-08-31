@@ -172,7 +172,7 @@
     "open-source": {
       "q": "O PrivacyNotes é open source?",
       "a": [
-        "Sim. Os aplicativos web, de computador e de celular estão publicados no [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), junto com o código de criptografia que torna suas notas ilegíveis, o esquema do banco de dados para onde elas sincronizam e o modelo de ameaças que descreve o que cada parte protege. É o mesmo código com que compilamos nossas versões.",
+        "Sim. Os aplicativos web, de computador e de celular estão publicados no [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), junto com o código de criptografia que torna suas notas ilegíveis e o modelo de ameaças que descreve o que cada parte protege. É o mesmo código com que compilamos nossas versões.",
         "É isso que transforma uma promessa em algo que você pode conferir. Leia a criptografia numa sentada só, abra a aba de rede do navegador e veja suas próprias notas saírem como texto ilegível, ou compile o aplicativo você mesmo e compare com o que distribuímos. Você não precisa acreditar em uma palavra nossa."
       ]
     },
@@ -336,8 +336,8 @@
     "platforms": {
       "q": "Em quais plataformas o PrivacyNotes roda?",
       "a": [
-        "Web, macOS, Windows, Linux e Android hoje, com iOS chegando em breve. Cada app nasce do mesmo núcleo, com a mesma criptografia de ponta a ponta, e sincroniza pela mesma conta. A [seção de downloads](https://privacynotes.app/br#downloads) tem sempre as versões mais recentes.",
-        "Os apps nativos precisam de macOS 13 ou mais recente, Windows 10 ou mais recente, Android 7.0 ou mais recente, ou uma distribuição Linux com webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ ou equivalente). O iOS vai precisar de iOS 15 ou mais recente. Abaixo dessas versões o app não instala nem abre, então use o app web.",
+        "Web, macOS, Windows, Linux, iOS e Android. Cada app nasce do mesmo núcleo, com a mesma criptografia de ponta a ponta, e sincroniza pela mesma conta. A [seção de downloads](https://privacynotes.app/br#downloads) tem sempre as versões mais recentes.",
+        "Os apps nativos precisam de macOS 13 ou mais recente, Windows 10 ou mais recente, iOS 15 ou mais recente, Android 7.0 ou mais recente, ou uma distribuição Linux com webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ ou equivalente). Abaixo dessas versões o app não instala nem abre, então use o app web.",
         "O app web é cidadão de primeira classe, não um plano B: mantém uma cópia local completa dos seus dados e funciona offline - qualquer navegador moderno é sempre uma porta de entrada."
       ]
     },
@@ -549,8 +549,8 @@
     "store-purchases": {
       "q": "As compras valem entre a web, a Google Play e a App Store?",
       "a": [
-        "Sim. O Pro e o armazenamento estão vinculados à sua conta, não a uma plataforma ou loja. Compre na web e todo app em que você entrar é Pro, incluindo as versões de loja; compre dentro de uma versão de loja e os apps web e desktop liberam do mesmo jeito. Não existe botão de \"restaurar compras\", porque entrar já é a restauração - o direito segue a conta.",
-        "A única diferença é quem faz a cobrança. As compras na web passam pela Paddle e são gerenciadas no app em Configurações > Armazenamento. As compras feitas dentro de uma versão de loja (Google Play ou a App Store, quando esses apps saírem) são cobradas por essa loja: o armazenamento recorrente é cancelado nas configurações de assinatura da loja, e os reembolsos seguem o processo da loja. De um jeito ou de outro, é a mesma conta e o mesmo Pro em todo lugar - incluindo plataformas que ainda nem existem."
+        "Sim. O Pro e o armazenamento estão vinculados à sua conta, não a uma plataforma ou loja. Compre na web e todo app em que você entrar é Pro, incluindo as versões de loja; compre dentro de uma versão de loja e os apps web e desktop liberam do mesmo jeito. Entrar já é a restauração, porque o direito segue a conta. Uma versão de loja traz também um botão **Restaurar compras** em Configurações > Plano, que pergunta à Apple ou ao Google o que você tem e libera de novo depois de uma reinstalação.",
+        "A única diferença é quem faz a cobrança. As compras na web passam pela Paddle e são gerenciadas no app em Configurações > Armazenamento. As compras feitas dentro de uma versão de loja (a App Store hoje, Google Play quando esse app sair) são cobradas por essa loja: o armazenamento recorrente é cancelado nas configurações de assinatura da loja, e os reembolsos seguem o processo da loja. De um jeito ou de outro, é a mesma conta e o mesmo Pro em todo lugar - incluindo plataformas que ainda nem existem."
       ]
     },
     "play-vs-apk": {
@@ -662,7 +662,7 @@
     "verify-download": {
       "q": "Como confiro se o app que baixei é autêntico?",
       "a": [
-        "Toda build que a gente publica é assinada, e o seu sistema operacional confere essa assinatura antes de executar qualquer coisa. As builds macOS são assinadas e notarizadas pela Apple. Os instaladores Windows carregam uma assinatura Authenticode que você lê em Propriedades > Assinaturas digitais. O APK Android é assinado com a nossa própria chave, e é por isso que o Android recusa qualquer atualização que não venha de nós. Os apps de computador também rejeitam uma atualização que não esteja assinada com a nossa chave.",
+        "Toda build que a gente publica é assinada, e o seu sistema operacional confere essa assinatura antes de executar qualquer coisa. As builds macOS são assinadas e notarizadas pela Apple. Os instaladores Windows carregam uma assinatura Authenticode que você lê em Propriedades > Assinaturas digitais. O APK Android é assinado com a nossa própria chave, e é por isso que o Android recusa qualquer atualização que não venha de nós. O app para iPhone e iPad é assinado pela Apple e só instala pela App Store. Os apps de computador também rejeitam uma atualização que não esteja assinada com a nossa chave.",
         "Baixe só de PrivacyNotes.app ou dos nossos [lançamentos no GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), onde está cada versão. A assinatura é a conferência que conta, e o seu sistema faz essa conferência por você: ela é checada contra uma chave que não está em lugar nenhum do nosso site, então um arquivo trocado é reprovado nessa conferência, diga o que disser a página ao lado."
       ]
     },

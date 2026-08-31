@@ -172,7 +172,7 @@
     "open-source": {
       "q": "Je PrivacyNotes open source?",
       "a": [
-        "Ano. Webová, počítačová i mobilní aplikace jsou zveřejněné na [GitHubu](https://github.com/LifetimeLabsDev/PrivacyNotes.app) spolu se šifrovacím kódem, který tvoje poznámky mění v nečitelný text, se schématem databáze, do které se synchronizují, a s modelem hrozeb popisujícím, co která část chrání. Je to přesně ten kód, ze kterého sestavujeme vydání.",
+        "Ano. Webová, počítačová i mobilní aplikace jsou zveřejněné na [GitHubu](https://github.com/LifetimeLabsDev/PrivacyNotes.app) spolu se šifrovacím kódem, který tvoje poznámky mění v nečitelný text a s modelem hrozeb popisujícím, co která část chrání. Je to přesně ten kód, ze kterého sestavujeme vydání.",
         "Právě tohle mění slib v něco, co si můžeš ověřit. Šifrování se dá přečíst na jedno posezení, v záložce sítě v prohlížeči uvidíš vlastní poznámky odcházet jako nečitelný text, a aplikaci si můžeš sestavit sám a porovnat ji s tou, kterou vydáváme. Nemusíš nám věřit ani slovo."
       ]
     },
@@ -336,8 +336,8 @@
     "platforms": {
       "q": "Na jakých platformách PrivacyNotes běží?",
       "a": [
-        "Dnes web, macOS, Windows, Linux a Android, iOS je na cestě. Každá aplikace stojí na stejném jádru se stejným end-to-end šifrováním a synchronizuje se přes stejný účet. Nejnovější verze jsou vždycky v [sekci ke stažení](https://privacynotes.app/cs#downloads).",
-        "Nativní aplikace potřebují macOS 13 nebo novější, Windows 10 nebo novější, Android 7.0 nebo novější, případně linuxovou distribuci s webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ nebo srovnatelná). iOS bude potřebovat iOS 15 nebo novější. Pod těmito verzemi se aplikace nenainstaluje ani nespustí - použij radši webovou aplikaci.",
+        "Web, macOS, Windows, Linux, iOS a Android. Každá aplikace stojí na stejném jádru se stejným end-to-end šifrováním a synchronizuje se přes stejný účet. Nejnovější verze jsou vždycky v [sekci ke stažení](https://privacynotes.app/cs#downloads).",
+        "Nativní aplikace potřebují macOS 13 nebo novější, Windows 10 nebo novější, iOS 15 nebo novější, Android 7.0 nebo novější, případně linuxovou distribuci s webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ nebo srovnatelná). Pod těmito verzemi se aplikace nenainstaluje ani nespustí - použij radši webovou aplikaci.",
         "Webová aplikace je plnohodnotný člen, ne náhradní řešení: drží kompletní lokální kopii tvých dat a funguje offline, takže jakýkoli moderní prohlížeč je vždycky cesta dovnitř."
       ]
     },
@@ -549,8 +549,8 @@
     "store-purchases": {
       "q": "Přenášejí se nákupy mezi webem, Google Play a App Storem?",
       "a": [
-        "Ano. Pro a úložiště se váží na tvůj účet, ne na platformu nebo obchod. Kup na webu a každá aplikace, do které se přihlásíš, má Pro, včetně verzí z obchodů; kup ve verzi z obchodu a web i aplikace pro počítač se odemknou stejně. Není tu žádné tlačítko „obnovit nákupy“, protože obnovením je samo přihlášení - nárok jde za účtem.",
-        "Jediný rozdíl je v tom, kdo ti účtuje. Nákupy na webu jdou přes Paddle a spravují se v aplikaci v Nastavení > Úložiště. Nákupy uvnitř verze z obchodu (Google Play nebo App Store, až tyto aplikace vyjdou) účtuje ten obchod: opakované úložiště se ruší v nastavení předplatných daného obchodu a vrácení peněz se řídí jeho procesem. Tak či tak je to stejný účet a stejné Pro všude - včetně platforem, které ještě neexistují."
+        "Ano. Pro a úložiště se váží na tvůj účet, ne na platformu nebo obchod. Kup na webu a každá aplikace, do které se přihlásíš, má Pro, včetně verzí z obchodů; kup ve verzi z obchodu a web i aplikace pro počítač se odemknou stejně. Obnovením je samo přihlášení, protože nárok jde za účtem. Verze z obchodu má navíc tlačítko **Obnovit nákupy** v Nastavení > Tarif, které se zeptá Applu nebo Googlu, co vlastníš, a po přeinstalaci to zase odemkne.",
+        "Jediný rozdíl je v tom, kdo ti účtuje. Nákupy na webu jdou přes Paddle a spravují se v aplikaci v Nastavení > Úložiště. Nákupy uvnitř verze z obchodu (App Store dnes, Google Play až ta aplikace vyjde) účtuje ten obchod: opakované úložiště se ruší v nastavení předplatných daného obchodu a vrácení peněz se řídí jeho procesem. Tak či tak je to stejný účet a stejné Pro všude - včetně platforem, které ještě neexistují."
       ]
     },
     "play-vs-apk": {
@@ -662,7 +662,7 @@
     "verify-download": {
       "q": "Jak zjistím, že stažená aplikace je pravá?",
       "a": [
-        "Každé sestavení, které vydáváme, je podepsané a tvůj operační systém ten podpis ověří, než cokoli spustí. Sestavení pro macOS podepisuje a notarizuje Apple. Instalátory pro Windows nesou podpis Authenticode, který si přečteš ve Vlastnosti > Digitální podpisy. Android APK je podepsané naším vlastním klíčem, a proto Android odmítne každou aktualizaci, která není od nás. Desktopové aplikace také odmítnou aktualizaci, která není podepsaná naším klíčem.",
+        "Každé sestavení, které vydáváme, je podepsané a tvůj operační systém ten podpis ověří, než cokoli spustí. Sestavení pro macOS podepisuje a notarizuje Apple. Instalátory pro Windows nesou podpis Authenticode, který si přečteš ve Vlastnosti > Digitální podpisy. Android APK je podepsané naším vlastním klíčem, a proto Android odmítne každou aktualizaci, která není od nás. Aplikace pro iPhone a iPad je podepsaná Applem a instaluje se jenom přes App Store. Desktopové aplikace také odmítnou aktualizaci, která není podepsaná naším klíčem.",
         "Stahuj jen z PrivacyNotes.app nebo z našich [vydání na GitHubu](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), kde je každá verze. Rozhoduje podpis a tvůj systém ho ověří za tebe: ověřuje se proti klíči, který na našem webu vůbec není, takže vyměněný soubor tou kontrolou neprojde, ať na stránce vedle stojí cokoli."
       ]
     },

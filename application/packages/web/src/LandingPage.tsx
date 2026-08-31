@@ -35,6 +35,15 @@ const IS_DESKTOP = detectPlatform() !== 'web';
  */
 const MAC_DMG_URL = 'https://releases.privacynotes.app/latest/PrivacyNotes_universal.dmg';
 
+/**
+ * App Store listing for the iPhone and iPad app. Country-less form: Apple
+ * redirects it to the reader's own storefront. StoreUpdateToast.tsx carries
+ * the same URL for the in-app floor toast, because that file ships inside the
+ * native binaries and must not import marketing code.
+ * // Spec: ops/docs/mobile-release-status.md (app records - Apple ID 6785958812)
+ */
+const APP_STORE_URL = 'https://apps.apple.com/app/id6785958812';
+
 /** All-platform release archive on the public GitHub repo, one page per version, signed builds. */
 const GITHUB_RELEASES_URL = 'https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases';
 
@@ -436,30 +445,33 @@ function DownloadTile({
   href,
   icon,
   name,
-  soon,
   tileBg,
   iconColor,
   onClick,
   expanded,
   version,
+  note,
 }: {
   href?: string;
   icon: ReactNode;
   name: string;
-  soon?: boolean;
   /** Tile fill for BOTH modes: the platform tiles keep their light tints
    *  in dark (decided 2026-08-25) so the brand icons - Tux's canonical
    *  black body above all - never sit on a near-black card. Icon colors
-   *  must therefore work on a light ground in both modes. The disabled
-   *  "soon" tile is the deliberate exception and stays dim. */
+   *  must therefore work on a light ground in both modes. A tile with no
+   *  destination is the exception and renders dim and dashed below. */
   tileBg?: string;
   iconColor?: string;
   onClick?: () => void;
   expanded?: boolean;
   version?: string;
+  /** Fills the version slot on a tile that has no version manifest to read.
+   *  The App Store owns the iOS version and publishes no manifest we could
+   *  poll, so that tile names the store instead of leaving the line blank. */
+  note?: string;
 }) {
   const { t } = useTranslation('landing');
-  if (soon || (!href && !onClick)) {
+  if (!href && !onClick) {
     return (
       <div className="flex w-20 flex-col items-center gap-2.5">
         <span
@@ -474,7 +486,9 @@ function DownloadTile({
   }
   // No parentheses around the version: the accessible name must CONTAIN the
   // visible text ("macOS v0.448.0"), and "(v0.448.0)" breaks the substring.
-  const ariaLabel = version ? `${t('downloads.tileAria', { name })} v${version}` : t('downloads.tileAria', { name });
+  // Same rule for a note, which sits in the same slot and is equally visible.
+  const suffix = version ? ` v${version}` : note ? ` ${note}` : '';
+  const ariaLabel = `${t('downloads.tileAria', { name })}${suffix}`;
   const tile = (
     <>
       <span
@@ -485,7 +499,7 @@ function DownloadTile({
         {icon}
       </span>
       <span className="text-sm font-semibold text-[var(--wl-ink)]">{name}</span>
-      <span className="h-3.5 font-mono text-[10px] text-[var(--wl-muted)]">{version ? `v${version}` : null}</span>
+      <span className="h-3.5 font-mono text-[10px] text-[var(--wl-muted)]">{version ? `v${version}` : note}</span>
     </>
   );
   if (onClick) {
@@ -1633,7 +1647,7 @@ export function LandingPage({
             <DownloadTile href={WINDOWS_SETUP_URL} name="Windows" version={platformVersions.Windows} tileBg="#E7EFF8" iconColor="#0078D4" icon={<WindowsLogo size={42} weight="fill" />} />
             <DownloadTile onClick={() => { setAndroidOpen(false); setPkgOpen(false); setLinuxOpen((v) => !v); }} expanded={linuxOpen} name="Linux" version={platformVersions.Linux} tileBg="#F5E9C8" icon={<TuxMark size={46} />} />
             <DownloadTile onClick={() => { setLinuxOpen(false); setPkgOpen(false); setAndroidOpen((v) => !v); }} expanded={androidOpen} name="Android" version={platformVersions.Android} tileBg="#E7F0E0" iconColor="#3DDC84" icon={<AndroidLogo size={44} weight="fill" />} />
-            <DownloadTile name="iOS" icon={<AppleLogo size={42} weight="fill" />} soon />
+            <DownloadTile href={APP_STORE_URL} name="iOS" note={t('downloads.appStore')} tileBg="#EDE8D8" iconColor="#1C1917" icon={<AppleLogo size={42} weight="fill" />} />
           </div>
           {linuxOpen && (
             <div dir="ltr" className="mx-auto mt-6 max-w-lg overflow-hidden rounded-2xl border border-[var(--wl-ink)]/15 bg-[var(--wl-card)]/70 text-left"> {/* rtl-ok: code sample stays LTR */}

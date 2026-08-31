@@ -172,7 +172,7 @@
     "open-source": {
       "q": "Ist PrivacyNotes Open Source?",
       "a": [
-        "Ja. Die Web-, Desktop- und Mobil-Apps sind auf [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app) veröffentlicht, zusammen mit dem Verschlüsselungscode, der deine Notizen unlesbar macht, dem Datenbankschema, in das sie synchronisiert werden, und dem Threat Model, das festhält, was welcher Teil schützt. Es ist derselbe Code, aus dem wir unsere Releases bauen.",
+        "Ja. Die Web-, Desktop- und Mobil-Apps sind auf [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app) veröffentlicht, zusammen mit dem Verschlüsselungscode, der deine Notizen unlesbar macht und dem Threat Model, das festhält, was welcher Teil schützt. Es ist derselbe Code, aus dem wir unsere Releases bauen.",
         "Genau das macht aus einem Versprechen etwas Überprüfbares. Lies die Verschlüsselung in einer Sitzung durch, öffne den Netzwerk-Tab deines Browsers und sieh zu, wie deine Notizen als unlesbarer Text hinausgehen, oder bau die App selbst und vergleich sie mit dem, was wir ausliefern. Du musst uns kein Wort davon glauben."
       ]
     },
@@ -336,8 +336,8 @@
     "platforms": {
       "q": "Auf welchen Plattformen läuft PrivacyNotes?",
       "a": [
-        "Web, macOS, Windows, Linux und Android heute, iOS folgt bald. Jede App entsteht aus demselben Kern mit derselben Ende-zu-Ende-Verschlüsselung und synchronisiert über dasselbe Konto. Im [Downloads-Bereich](https://privacynotes.app/de#downloads) liegen immer die neuesten Builds.",
-        "Die nativen Apps brauchen macOS 13 oder neuer, Windows 10 oder neuer, Android 7.0 oder neuer, oder eine Linux-Distribution mit webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ oder gleichwertig). iOS wird iOS 15 oder neuer brauchen. Darunter lässt sich die App weder installieren noch starten - nimm dann die Web-App.",
+        "Web, macOS, Windows, Linux, iOS und Android. Jede App entsteht aus demselben Kern mit derselben Ende-zu-Ende-Verschlüsselung und synchronisiert über dasselbe Konto. Im [Downloads-Bereich](https://privacynotes.app/de#downloads) liegen immer die neuesten Builds.",
+        "Die nativen Apps brauchen macOS 13 oder neuer, Windows 10 oder neuer, iOS 15 oder neuer, Android 7.0 oder neuer, oder eine Linux-Distribution mit webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ oder gleichwertig). Darunter lässt sich die App weder installieren noch starten - nimm dann die Web-App.",
         "Die Web-App ist vollwertig, kein Notnagel: Sie hält eine komplette lokale Kopie deiner Daten und funktioniert offline - jeder moderne Browser ist also immer ein Zugang."
       ]
     },
@@ -549,8 +549,8 @@
     "store-purchases": {
       "q": "Werden Käufe zwischen Web, Google Play und dem App Store übernommen?",
       "a": [
-        "Ja. Pro und Speicher hängen an deinem Konto, nicht an einer Plattform oder einem Store. Kaufe im Web, und jede App, in der du dich anmeldest, ist Pro, auch Store-Builds; kaufe innerhalb eines Store-Builds, und die Web- und Desktop-Apps schalten sich genauso frei. Es gibt keine Schaltfläche \"Käufe wiederherstellen\", denn das Anmelden ist die Wiederherstellung - die Berechtigung folgt dem Konto.",
-        "Der eine Unterschied ist, wer dir abrechnet. Web-Käufe laufen über Paddle und werden in der App unter Einstellungen > Speicher verwaltet. Käufe innerhalb eines Store-Builds (Google Play oder der App Store, sobald diese Apps erscheinen) werden von diesem Store abgerechnet: Wiederkehrender Speicher wird in den Abo-Einstellungen des Stores gekündigt, und Rückerstattungen folgen dem Prozess des Stores. So oder so ist es überall dasselbe Konto und dasselbe Pro - auch auf Plattformen, die es noch nicht gibt."
+        "Ja. Pro und Speicher hängen an deinem Konto, nicht an einer Plattform oder einem Store. Kaufe im Web, und jede App, in der du dich anmeldest, ist Pro, auch Store-Builds; kaufe innerhalb eines Store-Builds, und die Web- und Desktop-Apps schalten sich genauso frei. Das Anmelden ist die Wiederherstellung, denn die Berechtigung folgt dem Konto. Ein Store-Build hat außerdem eine Schaltfläche **Käufe wiederherstellen** unter Einstellungen > Tarif, die bei Apple oder Google nachfragt, was dir gehört, und es nach einer Neuinstallation wieder freischaltet.",
+        "Der eine Unterschied ist, wer dir abrechnet. Web-Käufe laufen über Paddle und werden in der App unter Einstellungen > Speicher verwaltet. Käufe innerhalb eines Store-Builds (der App Store heute, Google Play sobald diese App erscheint) werden von diesem Store abgerechnet: Wiederkehrender Speicher wird in den Abo-Einstellungen des Stores gekündigt, und Rückerstattungen folgen dem Prozess des Stores. So oder so ist es überall dasselbe Konto und dasselbe Pro - auch auf Plattformen, die es noch nicht gibt."
       ]
     },
     "play-vs-apk": {
@@ -662,7 +662,7 @@
     "verify-download": {
       "q": "Wie prüfe ich, ob die heruntergeladene App echt ist?",
       "a": [
-        "Jeder Build, den wir ausliefern, ist signiert, und dein Betriebssystem prüft diese Signatur, bevor es irgendetwas ausführt. macOS-Builds sind von Apple signiert und notarisiert. Windows-Installer tragen eine Authenticode-Signatur, die du unter Eigenschaften > Digitale Signaturen lesen kannst. Das Android-APK ist mit unserem eigenen Schlüssel signiert, weshalb Android jedes Update ablehnt, das nicht von uns stammt. Auch die Desktop-Apps weisen ein Update zurück, das nicht mit unserem Schlüssel signiert ist.",
+        "Jeder Build, den wir ausliefern, ist signiert, und dein Betriebssystem prüft diese Signatur, bevor es irgendetwas ausführt. macOS-Builds sind von Apple signiert und notarisiert. Windows-Installer tragen eine Authenticode-Signatur, die du unter Eigenschaften > Digitale Signaturen lesen kannst. Das Android-APK ist mit unserem eigenen Schlüssel signiert, weshalb Android jedes Update ablehnt, das nicht von uns stammt. Die App für iPhone und iPad ist von Apple signiert und lässt sich nur über den App Store installieren. Auch die Desktop-Apps weisen ein Update zurück, das nicht mit unserem Schlüssel signiert ist.",
         "Lade nur von PrivacyNotes.app oder von unseren [Releases auf GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), wo jede Version steht. Die Signatur ist die Prüfung, die zählt, und dein Betriebssystem führt sie für dich aus: Sie wird gegen einen Schlüssel geprüft, der nirgends auf unserer Website liegt, eine ausgetauschte Datei fällt also durch, egal was auf der Seite daneben steht."
       ]
     },

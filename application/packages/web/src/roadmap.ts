@@ -368,17 +368,25 @@ export const PUBLIC_ROADMAP: RoadmapItem[] = [
     icon: 'pencil',
   },
   {
-    // Last of the `shipped` run, deliberately: renderItems() puts the "You are
-    // here" marker at the FIRST non-shipped item, so a shipped card placed
-    // below `adding-features` would render green, on the done-colored rail,
-    // underneath a marker saying the shipped work is above it. Newest shipped
-    // milestone, so it sits at the bottom of the run.
     id: 'open-codebase',
     title: 'The apps are open source',
     status: 'shipped',
     description:
       'The web, desktop, and mobile clients are published, next to the encryption they use and the database schema behind them.',
     icon: 'github',
+  },
+  {
+    // Last of the `shipped` run, deliberately: renderItems() puts the "You are
+    // here" marker at the FIRST non-shipped item, so a shipped card placed
+    // below `adding-features` would render green, on the done-colored rail,
+    // underneath a marker saying the shipped work is above it. Newest shipped
+    // milestone, so it sits at the bottom of the run.
+    id: 'ios',
+    title: 'iOS app',
+    status: 'shipped',
+    description:
+      'A native iPhone and iPad app with the same end-to-end encryption, on the App Store.',
+    icon: 'apple',
   },
   {
     id: 'adding-features',
@@ -395,13 +403,6 @@ export const PUBLIC_ROADMAP: RoadmapItem[] = [
     description:
       'Reports get triaged quickly and fixes ship in the next release rather than waiting for a milestone. Found something? The bug tracker is open.',
     icon: 'bug',
-  },
-  {
-    id: 'ios',
-    title: 'iOS app',
-    status: 'in-review',
-    description: 'A native iPhone and iPad app with the same end-to-end encryption.',
-    icon: 'apple',
   },
   {
     id: 'google-play',

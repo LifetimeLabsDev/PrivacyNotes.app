@@ -14,7 +14,7 @@ Your 12-word phrase is your identity and your key. No email, no password, no acc
 
 [**Website**](https://privacynotes.app/en) &nbsp;·&nbsp; [**Try it, no account**](https://try.privacynotes.app) &nbsp;·&nbsp; [**Verify it yourself**](VERIFY.md) &nbsp;·&nbsp; [**Security**](SECURITY.md) &nbsp;·&nbsp; [**Threat model**](THREAT_MODEL.md)
 
-Signed apps for [**macOS**](https://privacynotes.app/en#downloads), [**Windows**](https://privacynotes.app/en#downloads), [**Linux**](https://privacynotes.app/en#downloads) and [**Android**](https://privacynotes.app/en#downloads), or run it in the browser.
+Signed apps for [**macOS**](https://privacynotes.app/en#downloads), [**Windows**](https://privacynotes.app/en#downloads), [**Linux**](https://privacynotes.app/en#downloads), [**Android**](https://privacynotes.app/en#downloads) and [**iOS**](https://apps.apple.com/app/id6785958812), or run it in the browser.
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL--3.0-1E40AF.svg)](LICENSE)
 [![Encryption](https://img.shields.io/badge/Encryption-XChaCha20--Poly1305-10B981.svg)](crypto/crypto.ts)
@@ -58,7 +58,7 @@ No title, no body, no tags. Just bytes we cannot read.</em>
 
 ## What PrivacyNotes is
 
-An end-to-end encrypted notes, tasks and journal app for macOS, Windows, Linux, Android and the browser. You get a 12-word phrase instead of an account, and everything you write is encrypted on your device under a key only you hold, on disk and on the way to us. Notes, journal entries, tasks, a password vault, and file attachments all live under that one key.
+An end-to-end encrypted notes, tasks and journal app for macOS, Windows, Linux, Android, iOS and the browser. You get a 12-word phrase instead of an account, and everything you write is encrypted on your device under a key only you hold, on disk and on the way to us. Notes, journal entries, tasks, a password vault, and file attachments all live under that one key.
 
 ---
 

@@ -1,6 +1,10 @@
 import { type Plugin } from 'vite';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss } from './static-page-theme.ts';
 import { brandMark, CHROME_CSS, OG_IMAGE_TAGS, ogLocaleTag, SITE_FOOTER, siteNav } from './static-page-chrome.ts';
+import { formatBytes } from './src/formatBytes.ts';
 
 // Pre-renders the static /brand page: brand assets + press kit. Emitted as
 // brand/index.html so Cloudflare serves it directly at /brand, same pattern
@@ -27,7 +31,8 @@ import { brandMark, CHROME_CSS, OG_IMAGE_TAGS, ogLocaleTag, SITE_FOOTER, siteNav
 // dark lockups; only the wordmark adapts. Two-tone lives only in the logo,
 // never in running text. Spec: ops/docs/design-decisions.md (brand kit)
 
-const B = '/marketing/brand';
+const M = '/marketing';
+const B = `${M}/brand`;
 const CANONICAL = 'https://privacynotes.app/brand';
 const DESC =
   'Official PrivacyNotes logos, icons, colors, and boilerplate. Download individual SVG and PNG assets and copy ready-made descriptions for articles and app round-ups.';
@@ -60,6 +65,35 @@ const WORDMARKS: Card[] = [
   { file: 'privacynotes-wordmark-light', title: 'Wordmark, light', tile: 'light', kind: 'wordmark', png: '1600 x 247' },
   { file: 'privacynotes-wordmark-dark', title: 'Wordmark, dark', tile: 'dark', kind: 'wordmark', png: '1600 x 247' },
 ];
+
+// The two product shots are the homepage's own files, referenced rather than
+// re-exported: both surfaces read one pair, so a new capture lands on the
+// homepage and here in the same step. They sit in public/marketing/ beside the
+// brand assets, so the app build's pn-strip-marketing-assets gate keeps them
+// out of native binaries without a second rule.
+const SHOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'public/marketing');
+
+// The pixel size is declared and the byte size is measured, because they go
+// stale at different rates: a re-encode of the same frame moves the bytes and
+// nothing else. Reading the file also makes a renamed capture fail the build
+// instead of shipping a broken tile beside a number that was true once.
+const SHOT_DIMS = '2048 x 1116';
+
+const SHOTS: Array<{ file: string; title: string; saveAs: string }> = [
+  { file: 'demo-app-light', title: 'App, light', saveAs: 'privacynotes-app-light.webp' },
+  { file: 'demo-app-dark', title: 'App, dark', saveAs: 'privacynotes-app-dark.webp' },
+];
+
+// `download` names the saved file, because the source names are the homepage's
+// and a press kit should hand over a branded filename.
+function shotCard(s: (typeof SHOTS)[number]): string {
+  const size = formatBytes(fs.statSync(path.join(SHOT_DIR, `${s.file}.webp`)).size);
+  return `<div class="card">
+<div class="shot"><img src="${M}/${s.file}.webp" alt="PrivacyNotes ${s.title.toLowerCase()}" width="2048" height="1116" loading="lazy"></div>
+<div class="meta"><div><strong>${s.title}</strong><span class="dims">${size}, WebP ${SHOT_DIMS}</span></div>
+<div class="dl"><a class="pill" href="${M}/${s.file}.webp" download="${s.saveAs}">WebP</a></div></div>
+</div>`;
+}
 
 function card(c: Card): string {
   const note = c.note ? `<span class="note">${c.note}</span>` : '';
@@ -112,6 +146,7 @@ const SECTIONS: Array<{ id: string; label: string; title?: string }> = [
   { id: 'clearspace', label: 'Clearspace', title: 'Clearspace &amp; minimum sizes' },
   { id: 'color', label: 'Color' },
   { id: 'typography', label: 'Typography' },
+  { id: 'screenshots', label: 'Screenshots' },
   { id: 'descriptions', label: 'Descriptions', title: 'Name &amp; descriptions' },
   { id: 'facts', label: 'Fact sheet' },
   { id: 'usage', label: 'Usage' },
@@ -159,11 +194,11 @@ const FACTS: Array<[string, string]> = [
   ['Developer', '<a href="https://lifetimelabs.dev" target="_blank" rel="noopener noreferrer">Lifetime Labs LLC</a>'],
   ['Website', '<a href="https://privacynotes.app/en">PrivacyNotes.app</a>'],
   ['Model', 'Free forever tier + one-time lifetime Pro purchase; optional storage add-ons billed yearly'],
-  // "iOS coming soon" is a dated claim. When iOS ships, this row, the homepage
-  // downloads availability line and the /help platforms answer all need the
-  // same edit; the follow-up is tracked in ops/docs/mobile-release-status.md
-  // (Open follow-ups) so it is not remembered only here.
-  ['Platforms', 'Web, macOS, Windows, Linux, Android. iOS coming soon.'],
+  // A platform list is a dated claim, and this row, the homepage downloads
+  // availability line, the /help platforms answer and the JSON-LD in
+  // marketing-shell.ts all carry their own copy of it. Change them together;
+  // ops/docs/mobile-release-status.md keeps the list.
+  ['Platforms', 'Web, macOS, Windows, Linux, iOS, Android'],
   ['Stack', 'React + TypeScript, local-first storage'],
   ['Source', 'Open source: <a href="https://github.com/LifetimeLabsDev/PrivacyNotes.app" target="_blank" rel="noopener noreferrer">github.com/LifetimeLabsDev/PrivacyNotes.app</a>'],
   ['Encryption', 'XChaCha20-Poly1305, BIP-39 12-word phrase, zero knowledge'],
@@ -201,6 +236,8 @@ const PAGE_CSS = `h2{font-size:20px;font-weight:750;letter-spacing:-.02em;margin
 .t-light{background:#fff}.t-dark{background:#0a0d12}
 .t-light::after{color:#8b94a3}.t-dark::after{color:rgba(255,255,255,.45)}
 .k-lockup img{height:38px}.k-wordmark img{height:34px}.k-icon img{height:72px}
+.shot{border-bottom:1px solid var(--line);background:var(--rail)}
+.shot img{display:block;width:100%;height:auto}
 .meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;font-size:13px}
 .meta strong{display:block;font-weight:650}
 .dims{color:var(--faint);font-size:11.5px;display:block}
@@ -351,6 +388,12 @@ ${swatches()}
 
 ${h2('typography')}
 <p class="lead"><strong>Wordmark:</strong> Inter Bold (700), tracking -2%, shipped as outlines, so you never need the font installed to use the files. <strong>Product and site:</strong> the native system font stack. For collateral, Inter 400-800 (free, SIL Open Font License).</p>
+
+${h2('screenshots')}
+<p class="lead">The app itself, one capture per theme, both of the same screen. Pick whichever matches the page you are placing it on. Crop as you need to, but do not recolor: the two themes are the reason there are two files.</p>
+<div class="grid">
+${SHOTS.map(shotCard).join('\n')}
+</div>
 
 ${h2('descriptions')}
 <p class="lead">Always ${brandMark()}: one word, capital P, capital N, with "Privacy" in the accent color wherever the medium allows it. The domain is written the same way, ${brandMark('.app')}, everywhere except inside an actual URL. Never "Privacy Notes", "Privacynotes", or "PN". The App Store listing name "PrivacyNotes - Zero Knowledge" is a store-name workaround, not the brand.</p>

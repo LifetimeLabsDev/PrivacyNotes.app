@@ -172,7 +172,7 @@
     "open-source": {
       "q": "¿PrivacyNotes es open source?",
       "a": [
-        "Sí. Las apps web, de escritorio y móvil están publicadas en [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), junto con el código de cifrado que vuelve ilegibles tus notas, el esquema de base de datos al que se sincronizan y el modelo de amenazas que detalla qué protege cada pieza. Es el mismo código con el que compilamos nuestras versiones.",
+        "Sí. Las apps web, de escritorio y móvil están publicadas en [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), junto con el código de cifrado que vuelve ilegibles tus notas y el modelo de amenazas que detalla qué protege cada pieza. Es el mismo código con el que compilamos nuestras versiones.",
         "Eso es lo que convierte una promesa en algo que puedes comprobar. Lee el cifrado de una sentada, abre la pestaña de red de tu navegador y mira cómo tus notas salen como texto ilegible, o compila la app tú mismo y compárala con la que distribuimos. No tienes que creernos ni una palabra."
       ]
     },
@@ -336,8 +336,8 @@
     "platforms": {
       "q": "¿En qué plataformas funciona PrivacyNotes?",
       "a": [
-        "Web, macOS, Windows, Linux y Android hoy, con iOS en camino. Cada app se construye desde el mismo núcleo con el mismo cifrado de extremo a extremo y se sincroniza con la misma cuenta. La [sección de descargas](https://privacynotes.app/es#downloads) siempre tiene las últimas versiones.",
-        "Las apps nativas necesitan macOS 13 o posterior, Windows 10 o posterior, Android 7.0 o posterior, o una distribución de Linux con webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ o equivalente). iOS pedirá iOS 15 o posterior. Por debajo de esas versiones la app no se instala ni arranca: usa la app web.",
+        "Web, macOS, Windows, Linux, iOS y Android. Cada app se construye desde el mismo núcleo con el mismo cifrado de extremo a extremo y se sincroniza con la misma cuenta. La [sección de descargas](https://privacynotes.app/es#downloads) siempre tiene las últimas versiones.",
+        "Las apps nativas necesitan macOS 13 o posterior, Windows 10 o posterior, iOS 15 o posterior, Android 7.0 o posterior, o una distribución de Linux con webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ o equivalente). Por debajo de esas versiones la app no se instala ni arranca: usa la app web.",
         "La app web es ciudadana de primera, no un plan B: guarda una copia local completa de tus datos y funciona sin conexión - cualquier navegador moderno es siempre una vía de entrada."
       ]
     },
@@ -549,8 +549,8 @@
     "store-purchases": {
       "q": "¿Las compras se trasladan entre la web, Google Play y la App Store?",
       "a": [
-        "Sí. Pro y el almacenamiento se vinculan a tu cuenta, no a una plataforma o tienda. Compra en la web y todas las apps en las que inicies sesión serán Pro, incluidas las versiones de tienda; compra dentro de una versión de tienda y las apps web y de escritorio se desbloquean igual. No hay botón de \"restaurar compras\" porque iniciar sesión es la restauración - el derecho sigue a la cuenta.",
-        "La única diferencia es quién te cobra. Las compras web pasan por Paddle y se gestionan en la app en Ajustes > Almacenamiento. Las compras hechas dentro de una versión de tienda (Google Play o la App Store, cuando salgan esas apps) las cobra esa tienda: el almacenamiento recurrente se cancela en los ajustes de suscripción de la tienda, y los reembolsos siguen el proceso de la tienda. En cualquier caso es la misma cuenta y el mismo Pro en todas partes - incluidas plataformas que aún no existen."
+        "Sí. Pro y el almacenamiento se vinculan a tu cuenta, no a una plataforma o tienda. Compra en la web y todas las apps en las que inicies sesión serán Pro, incluidas las versiones de tienda; compra dentro de una versión de tienda y las apps web y de escritorio se desbloquean igual. Iniciar sesión es la restauración, porque el derecho sigue a la cuenta. Una versión de tienda lleva además un botón **Restaurar compras** en Ajustes > Plan, que pregunta a Apple o Google qué tienes y lo vuelve a desbloquear tras una reinstalación.",
+        "La única diferencia es quién te cobra. Las compras web pasan por Paddle y se gestionan en la app en Ajustes > Almacenamiento. Las compras hechas dentro de una versión de tienda (la App Store hoy, Google Play cuando salga esa app) las cobra esa tienda: el almacenamiento recurrente se cancela en los ajustes de suscripción de la tienda, y los reembolsos siguen el proceso de la tienda. En cualquier caso es la misma cuenta y el mismo Pro en todas partes - incluidas plataformas que aún no existen."
       ]
     },
     "play-vs-apk": {
@@ -662,7 +662,7 @@
     "verify-download": {
       "q": "¿Cómo compruebo que la app que descargué es auténtica?",
       "a": [
-        "Cada build que publicamos va firmada, y tu sistema operativo comprueba esa firma antes de ejecutar nada. Los builds de macOS están firmados y notarizados por Apple. Los instaladores de Windows llevan una firma Authenticode que puedes leer en Propiedades > Firmas digitales. El APK de Android está firmado con nuestra propia clave, y por eso Android rechaza cualquier actualización que no venga de nosotros. Las apps de escritorio también rechazan una actualización que no esté firmada con nuestra clave.",
+        "Cada build que publicamos va firmada, y tu sistema operativo comprueba esa firma antes de ejecutar nada. Los builds de macOS están firmados y notarizados por Apple. Los instaladores de Windows llevan una firma Authenticode que puedes leer en Propiedades > Firmas digitales. El APK de Android está firmado con nuestra propia clave, y por eso Android rechaza cualquier actualización que no venga de nosotros. La app para iPhone y iPad está firmada por Apple y solo se instala desde la App Store. Las apps de escritorio también rechazan una actualización que no esté firmada con nuestra clave.",
         "Descarga solo desde PrivacyNotes.app o desde nuestras [versiones en GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), donde está cada release. La firma es la comprobación que cuenta, y tu sistema la hace por ti: se contrasta con una clave que no está en ninguna parte de nuestra web, así que un archivo cambiado falla esa comprobación diga lo que diga la página de al lado."
       ]
     },

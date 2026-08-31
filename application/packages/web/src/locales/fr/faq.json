@@ -172,7 +172,7 @@
     "open-source": {
       "q": "PrivacyNotes est-il open source ?",
       "a": [
-        "Oui. Les applications web, bureau et mobile sont publiées sur [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), avec le code de chiffrement qui rend tes notes illisibles, le schéma de base de données dans lequel elles se synchronisent et le modèle de menace qui détaille ce que chaque pièce protège. C'est le code exact à partir duquel nous compilons nos versions.",
+        "Oui. Les applications web, bureau et mobile sont publiées sur [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), avec le code de chiffrement qui rend tes notes illisibles et le modèle de menace qui détaille ce que chaque pièce protège. C'est le code exact à partir duquel nous compilons nos versions.",
         "C'est ce qui transforme une promesse en quelque chose de vérifiable. Lis le chiffrement en une seule séance, ouvre l'onglet réseau de ton navigateur et regarde tes propres notes partir sous forme de texte illisible, ou compile l'application toi-même et compare-la à ce que nous livrons. Tu n'as à nous croire sur aucun point."
       ]
     },
@@ -336,8 +336,8 @@
     "platforms": {
       "q": "Sur quelles plateformes PrivacyNotes fonctionne-t-il ?",
       "a": [
-        "Web, macOS, Windows, Linux et Android aujourd'hui, iOS arrive bientôt. Chaque appli est bâtie sur le même cœur avec le même chiffrement de bout en bout et se synchronise via le même compte. La [section téléchargements](https://privacynotes.app/fr#downloads) a toujours les derniers builds.",
-        "Les applis natives ont besoin de macOS 13 ou plus récent, Windows 10 ou plus récent, Android 7.0 ou plus récent, ou une distribution Linux avec webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ ou équivalent). iOS demandera iOS 15 ou plus récent. En dessous, l'appli ne s'installe ni ne démarre : passe par l'appli web.",
+        "Web, macOS, Windows, Linux, iOS et Android. Chaque appli est bâtie sur le même cœur avec le même chiffrement de bout en bout et se synchronise via le même compte. La [section téléchargements](https://privacynotes.app/fr#downloads) a toujours les derniers builds.",
+        "Les applis natives ont besoin de macOS 13 ou plus récent, Windows 10 ou plus récent, iOS 15 ou plus récent, Android 7.0 ou plus récent, ou une distribution Linux avec webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ ou équivalent). En dessous, l'appli ne s'installe ni ne démarre : passe par l'appli web.",
         "L'appli web est un citoyen de première classe, pas une roue de secours : elle garde une copie locale complète de tes données et fonctionne hors ligne - n'importe quel navigateur moderne est donc toujours une porte d'entrée."
       ]
     },
@@ -549,8 +549,8 @@
     "store-purchases": {
       "q": "Les achats sont-ils transférés entre le web, Google Play et l'App Store ?",
       "a": [
-        "Oui. Pro et le stockage se rattachent à ton compte, pas à une plateforme ou une boutique. Achète sur le web et chaque appli où tu te connectes est Pro, y compris les builds de boutique ; achète dans un build de boutique et les applis web et desktop se débloquent de la même façon. Il n'y a pas de bouton \"restaurer les achats\" car se connecter est la restauration - le droit suit le compte.",
-        "La seule différence, c'est qui te facture. Les achats web passent par Paddle et se gèrent dans l'appli sous Paramètres > Stockage. Les achats faits dans un build de boutique (Google Play ou l'App Store, une fois ces applis livrées) sont facturés par cette boutique : le stockage récurrent se résilie dans les réglages d'abonnement de la boutique, et les remboursements suivent le processus de la boutique. Dans les deux cas, c'est le même compte et le même Pro partout - y compris les plateformes qui n'existent pas encore."
+        "Oui. Pro et le stockage se rattachent à ton compte, pas à une plateforme ou une boutique. Achète sur le web et chaque appli où tu te connectes est Pro, y compris les builds de boutique ; achète dans un build de boutique et les applis web et desktop se débloquent de la même façon. Se connecter est la restauration, car le droit suit le compte. Un build de boutique porte aussi un bouton **Restaurer les achats** dans Paramètres > Forfait, qui demande à Apple ou Google ce que tu possèdes et le débloque à nouveau après une réinstallation.",
+        "La seule différence, c'est qui te facture. Les achats web passent par Paddle et se gèrent dans l'appli sous Paramètres > Stockage. Les achats faits dans un build de boutique (l'App Store aujourd'hui, Google Play une fois cette appli livrée) sont facturés par cette boutique : le stockage récurrent se résilie dans les réglages d'abonnement de la boutique, et les remboursements suivent le processus de la boutique. Dans les deux cas, c'est le même compte et le même Pro partout - y compris les plateformes qui n'existent pas encore."
       ]
     },
     "play-vs-apk": {
@@ -662,7 +662,7 @@
     "verify-download": {
       "q": "Comment vérifier que l'app que j'ai téléchargée est authentique ?",
       "a": [
-        "Chaque build que nous publions est signé, et ton système d'exploitation vérifie cette signature avant d'exécuter quoi que ce soit. Les builds macOS sont signés et notarisés par Apple. Les installateurs Windows portent une signature Authenticode que tu peux lire dans Propriétés > Signatures numériques. L'APK Android est signé avec notre propre clé, c'est pourquoi Android refuse toute mise à jour qui ne vient pas de nous. Les apps de bureau rejettent elles aussi une mise à jour qui n'est pas signée avec notre clé.",
+        "Chaque build que nous publions est signé, et ton système d'exploitation vérifie cette signature avant d'exécuter quoi que ce soit. Les builds macOS sont signés et notarisés par Apple. Les installateurs Windows portent une signature Authenticode que tu peux lire dans Propriétés > Signatures numériques. L'APK Android est signé avec notre propre clé, c'est pourquoi Android refuse toute mise à jour qui ne vient pas de nous. L'appli pour iPhone et iPad est signée par Apple et ne s'installe que depuis l'App Store. Les apps de bureau rejettent elles aussi une mise à jour qui n'est pas signée avec notre clé.",
         "Télécharge uniquement depuis PrivacyNotes.app ou depuis nos [versions sur GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), qui listent chaque version. La signature est la vérification qui compte, et ton système la fait pour toi : elle est contrôlée contre une clé qui ne se trouve nulle part sur notre site, donc un fichier remplacé échoue à ce contrôle quoi qu'affiche la page à côté."
       ]
     },

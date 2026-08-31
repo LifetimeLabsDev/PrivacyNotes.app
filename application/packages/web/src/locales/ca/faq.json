@@ -172,7 +172,7 @@
     "open-source": {
       "q": "PrivacyNotes és de codi obert?",
       "a": [
-        "Sí. Les aplicacions web, d'escriptori i mòbil estan publicades a [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), juntament amb el codi de xifratge que fa il·legibles les teves notes, l'esquema de la base de dades on se sincronitzen i el model d'amenaces que detalla què protegeix cada peça. És el mateix codi amb què compilem les nostres versions.",
+        "Sí. Les aplicacions web, d'escriptori i mòbil estan publicades a [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), juntament amb el codi de xifratge que fa il·legibles les teves notes i el model d'amenaces que detalla què protegeix cada peça. És el mateix codi amb què compilem les nostres versions.",
         "Això és el que converteix una promesa en una cosa que pots comprovar. Llegeix el xifratge d'una tirada, obre la pestanya de xarxa del navegador i mira com les teves notes surten com a text il·legible, o compila l'aplicació tu mateix i compara-la amb la que distribuïm. No has de creure'ns ni una paraula."
       ]
     },
@@ -336,8 +336,8 @@
     "platforms": {
       "q": "En quines plataformes funciona PrivacyNotes?",
       "a": [
-        "Avui: web, macOS, Windows, Linux i Android, amb iOS a punt d'arribar. Totes les aplicacions es construeixen a partir del mateix nucli amb el mateix xifratge d'extrem a extrem i se sincronitzen amb el mateix compte. La [secció de baixades](https://privacynotes.app/ca#downloads) sempre té les últimes versions.",
-        "Les aplicacions natives necessiten macOS 13 o posterior, Windows 10 o posterior, Android 7.0 o posterior, o una distribució de Linux amb webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ o equivalent). iOS demanarà iOS 15 o posterior. Per sota d'aquestes versions l'aplicació no s'instal·la ni s'inicia: fes servir l'aplicació web.",
+        "Web, macOS, Windows, Linux, iOS i Android. Totes les aplicacions es construeixen a partir del mateix nucli amb el mateix xifratge d'extrem a extrem i se sincronitzen amb el mateix compte. La [secció de baixades](https://privacynotes.app/ca#downloads) sempre té les últimes versions.",
+        "Les aplicacions natives necessiten macOS 13 o posterior, Windows 10 o posterior, iOS 15 o posterior, Android 7.0 o posterior, o una distribució de Linux amb webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ o equivalent). Per sota d'aquestes versions l'aplicació no s'instal·la ni s'inicia: fes servir l'aplicació web.",
         "L'aplicació web és de primera classe, no pas un pla B: guarda una còpia local completa de les teves dades i funciona fora de línia, així que qualsevol navegador modern sempre és una porta d'entrada."
       ]
     },
@@ -549,8 +549,8 @@
     "store-purchases": {
       "q": "Les compres es traspassen entre la web, Google Play i l'App Store?",
       "a": [
-        "Sí. Pro i l'emmagatzematge van lligats al teu compte, no pas a cap plataforma ni botiga. Compra al web i totes les aplicacions on iniciïs la sessió tindran Pro, incloses les versions de botiga; compra des d'una versió de botiga i les aplicacions web i d'escriptori es desbloquegen igual. No hi ha cap botó de «restaurar compres» perquè iniciar la sessió ja és la restauració - el dret segueix el compte.",
-        "L'única diferència és qui et factura. Les compres al web passen per Paddle i es gestionen a l'aplicació a Configuració > Emmagatzematge. Les compres fetes des d'una versió de botiga (Google Play o l'App Store, quan surtin aquelles aplicacions) les factura aquella botiga: l'emmagatzematge recurrent es cancel·la a la configuració de subscripcions de la botiga, i els reemborsaments segueixen el procés de la botiga. Sigui com sigui, és el mateix compte i el mateix Pro pertot arreu - incloent-hi plataformes que encara no existeixen."
+        "Sí. Pro i l'emmagatzematge van lligats al teu compte, no pas a cap plataforma ni botiga. Compra al web i totes les aplicacions on iniciïs la sessió tindran Pro, incloses les versions de botiga; compra des d'una versió de botiga i les aplicacions web i d'escriptori es desbloquegen igual. Iniciar la sessió ja és la restauració, perquè el dret segueix el compte. Una versió de botiga porta a més un botó **Restaura les compres** a Configuració > Pla, que pregunta a Apple o Google què tens i ho torna a desbloquejar després d'una reinstal·lació.",
+        "L'única diferència és qui et factura. Les compres al web passen per Paddle i es gestionen a l'aplicació a Configuració > Emmagatzematge. Les compres fetes des d'una versió de botiga (l'App Store avui, Google Play quan surti aquella aplicació) les factura aquella botiga: l'emmagatzematge recurrent es cancel·la a la configuració de subscripcions de la botiga, i els reemborsaments segueixen el procés de la botiga. Sigui com sigui, és el mateix compte i el mateix Pro pertot arreu - incloent-hi plataformes que encara no existeixen."
       ]
     },
     "play-vs-apk": {
@@ -662,7 +662,7 @@
     "verify-download": {
       "q": "Com comprovo que l'app que he baixat és autèntica?",
       "a": [
-        "Cada compilació que publiquem està signada, i el teu sistema operatiu comprova aquesta signatura abans d'executar res. Les compilacions de macOS estan signades i notaritzades per Apple. Els instal·ladors de Windows porten una signatura Authenticode que pots llegir a Propietats > Signatures digitals. L'APK d'Android està signat amb la nostra pròpia clau, i per això Android rebutja qualsevol actualització que no vingui de nosaltres. Les apps d'escriptori també rebutgen una actualització que no estigui signada amb la nostra clau.",
+        "Cada compilació que publiquem està signada, i el teu sistema operatiu comprova aquesta signatura abans d'executar res. Les compilacions de macOS estan signades i notaritzades per Apple. Els instal·ladors de Windows porten una signatura Authenticode que pots llegir a Propietats > Signatures digitals. L'APK d'Android està signat amb la nostra pròpia clau, i per això Android rebutja qualsevol actualització que no vingui de nosaltres. L'app per a iPhone i iPad està signada per Apple i només s'instal·la des de l'App Store. Les apps d'escriptori també rebutgen una actualització que no estigui signada amb la nostra clau.",
         "Baixa només des de PrivacyNotes.app o des de les nostres [versions a GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), on hi ha cada llançament. La signatura és la comprovació que compta, i el teu sistema la fa per tu: es verifica contra una clau que no és enlloc del nostre lloc web, així que un fitxer canviat no passa aquella comprovació, digui el que digui la pàgina del costat."
       ]
     },

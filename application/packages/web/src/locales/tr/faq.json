@@ -172,7 +172,7 @@
     "open-source": {
       "q": "PrivacyNotes açık kaynak mı?",
       "a": [
-        "Evet. Web, masaüstü ve mobil uygulamalar [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app) üzerinde yayımlanıyor; notlarınızı okunamaz hale getiren şifreleme kodu, notların senkronize edildiği veritabanı şeması ve hangi parçanın neyi koruduğunu anlatan tehdit modeli de öyle. Sürümlerimizi derlediğimiz kodun aynısı.",
+        "Evet. Web, masaüstü ve mobil uygulamalar [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app) üzerinde yayımlanıyor; notlarınızı okunamaz hale getiren şifreleme kodu ve hangi parçanın neyi koruduğunu anlatan tehdit modeli de öyle. Sürümlerimizi derlediğimiz kodun aynısı.",
         "Bir sözü kendi gözünüzle doğrulayabileceğiniz bir şeye çeviren de budur. Şifrelemeyi tek oturuşta okuyabilir, tarayıcınızın ağ sekmesini açıp kendi notlarınızın okunamaz metin olarak çıktığını görebilir ya da uygulamayı kendiniz derleyip dağıttığımızla karşılaştırabilirsiniz. Söylediklerimizin hiçbirine inanmak zorunda değilsiniz."
       ]
     },
@@ -336,8 +336,8 @@
     "platforms": {
       "q": "PrivacyNotes hangi platformlarda çalışıyor?",
       "a": [
-        "Bugün web, macOS, Windows, Linux ve Android; iOS de yakında geliyor. Her uygulama aynı çekirdekten, aynı uçtan uca şifrelemeyle üretilir ve aynı hesap üzerinden eşitlenir. [İndirmeler bölümünde](https://privacynotes.app/tr#downloads) her zaman en güncel sürümler bulunur.",
-        "Yerel uygulamalar macOS 13 veya üzeri, Windows 10 veya üzeri, Android 7.0 veya üzeri ya da webkit2gtk 4.1 içeren bir Linux sürümü (Ubuntu 22.04+, Debian 12+ veya eşdeğeri) gerektirir. iOS için iOS 15 veya üzeri gerekecek. Bu sürümlerin altında uygulama kurulmaz ya da açılmaz, o yüzden web uygulamasını kullanın.",
+        "Web, macOS, Windows, Linux, iOS ve Android. Her uygulama aynı çekirdekten, aynı uçtan uca şifrelemeyle üretilir ve aynı hesap üzerinden eşitlenir. [İndirmeler bölümünde](https://privacynotes.app/tr#downloads) her zaman en güncel sürümler bulunur.",
+        "Yerel uygulamalar macOS 13 veya üzeri, Windows 10 veya üzeri, iOS 15 veya üzeri, Android 7.0 veya üzeri ya da webkit2gtk 4.1 içeren bir Linux sürümü (Ubuntu 22.04+, Debian 12+ veya eşdeğeri) gerektirir. Bu sürümlerin altında uygulama kurulmaz ya da açılmaz, o yüzden web uygulamasını kullanın.",
         "Web uygulaması bir yedek çözüm değil, tam donanımlı bir uygulamadır: verilerinizin tam bir yerel kopyasını tutar ve çevrimdışı çalışır, yani modern her tarayıcı her zaman bir giriş yoludur."
       ]
     },
@@ -549,8 +549,8 @@
     "store-purchases": {
       "q": "Satın alımlar web, Google Play ve App Store arasında geçerli olur mu?",
       "a": [
-        "Evet. Pro ve depolama bir platforma ya da mağazaya değil, hesabınıza bağlanır. Web'den alın, giriş yaptığınız her uygulama Pro olur, mağaza sürümleri dâhil; bir mağaza sürümünün içinden alın, web ve masaüstü uygulamaları aynı şekilde açılır. “Satın alımları geri yükle” düğmesi yok, çünkü geri yükleme zaten giriş yapmanın kendisi - hak hesabı takip eder.",
-        "Tek fark, faturayı kimin kestiği. Web satın alımları Paddle üzerinden yürür ve uygulamada Ayarlar > Depolama altından yönetilir. Bir mağaza sürümünün içinde yapılan satın alımların (Google Play ya da App Store, bu uygulamalar çıktığında) faturasını o mağaza keser: tekrar eden depolama mağazanın abonelik ayarlarından iptal edilir ve iadeler mağazanın sürecini izler. Her hâlükârda aynı hesap ve her yerde aynı Pro - henüz var olmayan platformlar dâhil."
+        "Evet. Pro ve depolama bir platforma ya da mağazaya değil, hesabınıza bağlanır. Web'den alın, giriş yaptığınız her uygulama Pro olur, mağaza sürümleri dâhil; bir mağaza sürümünün içinden alın, web ve masaüstü uygulamaları aynı şekilde açılır. Geri yükleme zaten giriş yapmanın kendisi, çünkü hak hesabı takip eder. Mağaza sürümünde ayrıca Ayarlar > Plan altında bir **Satın alımları geri yükle** düğmesi bulunur; Apple ya da Google'a neye sahip olduğunuzu sorar ve yeniden kurulumdan sonra yine açar.",
+        "Tek fark, faturayı kimin kestiği. Web satın alımları Paddle üzerinden yürür ve uygulamada Ayarlar > Depolama altından yönetilir. Bir mağaza sürümünün içinde yapılan satın alımların (App Store şu anda, Google Play o uygulama çıktığında) faturasını o mağaza keser: tekrar eden depolama mağazanın abonelik ayarlarından iptal edilir ve iadeler mağazanın sürecini izler. Her hâlükârda aynı hesap ve her yerde aynı Pro - henüz var olmayan platformlar dâhil."
       ]
     },
     "play-vs-apk": {
@@ -662,7 +662,7 @@
     "verify-download": {
       "q": "İndirdiğim uygulamanın gerçek olduğunu nasıl doğrularım?",
       "a": [
-        "Yayımladığımız her yapı imzalıdır ve işletim sisteminiz herhangi bir şeyi çalıştırmadan önce o imzayı denetler. macOS yapıları Apple tarafından imzalanır ve noterlenir. Windows yükleyicileri, Özellikler > Dijital İmzalar altında okuyabileceğiniz bir Authenticode imzası taşır. Android APK'si kendi anahtarımızla imzalanır; bu yüzden Android bizden gelmeyen her güncellemeyi reddeder. Masaüstü uygulamaları da anahtarımızla imzalanmamış bir güncellemeyi geri çevirir.",
+        "Yayımladığımız her yapı imzalıdır ve işletim sisteminiz herhangi bir şeyi çalıştırmadan önce o imzayı denetler. macOS yapıları Apple tarafından imzalanır ve noterlenir. Windows yükleyicileri, Özellikler > Dijital İmzalar altında okuyabileceğiniz bir Authenticode imzası taşır. Android APK'si kendi anahtarımızla imzalanır; bu yüzden Android bizden gelmeyen her güncellemeyi reddeder. iPhone ve iPad uygulaması Apple tarafından imzalanır ve yalnızca App Store üzerinden kurulur. Masaüstü uygulamaları da anahtarımızla imzalanmamış bir güncellemeyi geri çevirir.",
         "Yalnızca PrivacyNotes.app adresinden ya da her sürümün bulunduğu [GitHub sürümlerimizden](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases) indirin. Asıl denetim imzadır ve onu sisteminiz sizin için yapar: imza, sitemizde hiçbir yerde bulunmayan bir anahtara karşı doğrulanır, yani değiştirilmiş bir dosya, yanındaki sayfa ne yazarsa yazsın bu denetimden geçemez."
       ]
     },

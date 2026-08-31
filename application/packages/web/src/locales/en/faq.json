@@ -172,7 +172,7 @@
     "open-source": {
       "q": "Is PrivacyNotes open source?",
       "a": [
-        "Yes. The web, desktop, and mobile apps are published on [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), together with the encryption code that scrambles your notes, the database schema they sync into, and the threat model spelling out what each piece protects. It is the same code our releases are built from.",
+        "Yes. The web, desktop, and mobile apps are published on [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), together with the encryption code that scrambles your notes and the threat model spelling out what each piece protects. It is the same code our releases are built from.",
         "That is what turns a promise into something you can check. Read the encryption in one sitting, open your browser's network tab and watch your own notes leave as unreadable text, or build the app yourself and compare it against what we ship. You do not have to take our word for any of it."
       ]
     },
@@ -336,8 +336,8 @@
     "platforms": {
       "q": "Which platforms does PrivacyNotes run on?",
       "a": [
-        "Web, macOS, Windows, Linux, and Android today, with iOS coming soon. Every app is built from the same core with the same end-to-end encryption and syncs through the same account. The [downloads section](https://privacynotes.app/en#downloads) always has the latest builds.",
-        "The native apps need macOS 13 or newer, Windows 10 or newer, Android 7.0 or newer, or a Linux release with webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+, or equivalent). iOS will need iOS 15 or newer. Below those versions the app will not install or start, so use the web app instead.",
+        "Web, macOS, Windows, Linux, iOS, and Android. Every app is built from the same core with the same end-to-end encryption and syncs through the same account. The [downloads section](https://privacynotes.app/en#downloads) always has the latest builds.",
+        "The native apps need macOS 13 or newer, Windows 10 or newer, iOS 15 or newer, Android 7.0 or newer, or a Linux release with webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+, or equivalent). Below those versions the app will not install or start, so use the web app instead.",
         "The web app is a first-class citizen, not a fallback: it keeps a full local copy of your data and works offline, so any modern browser is always a way in."
       ]
     },
@@ -549,8 +549,8 @@
     "store-purchases": {
       "q": "Do purchases carry over between the web, Google Play, and the App Store?",
       "a": [
-        "Yes. Pro and storage attach to your account, not to a platform or store. Buy on the web and every app you sign into is Pro, including store builds; buy inside a store build and the web and desktop apps unlock the same way. There is no \"restore purchases\" button because signing in is the restore - the entitlement follows the account.",
-        "The one difference is who bills you. Web purchases run through Paddle and are managed in the app under Settings > Storage. Purchases made inside a store build (Google Play or the App Store, once those apps ship) are billed by that store: recurring storage is cancelled in the store's subscription settings, and refunds follow the store's process. Either way it is the same account and the same Pro everywhere - including platforms that do not exist yet."
+        "Yes. Pro and storage attach to your account, not to a platform or store. Buy on the web and every app you sign into is Pro, including store builds; buy inside a store build and the web and desktop apps unlock the same way. Signing in is the restore, because the entitlement follows the account. A store build carries a **Restore purchases** button under Settings > Plan as well, which asks Apple or Google what you own and unlocks it again after a reinstall.",
+        "The one difference is who bills you. Web purchases run through Paddle and are managed in the app under Settings > Storage. Purchases made inside a store build (the App Store today, Google Play once that app ships) are billed by that store: recurring storage is cancelled in the store's subscription settings, and refunds follow the store's process. Either way it is the same account and the same Pro everywhere - including platforms that do not exist yet."
       ]
     },
     "play-vs-apk": {
@@ -662,7 +662,7 @@
     "verify-download": {
       "q": "How do I check that the app I downloaded is genuine?",
       "a": [
-        "Every build we ship is signed, and your operating system checks that signature before it runs anything. macOS builds are signed and notarized by Apple. Windows installers carry an Authenticode signature you can read under Properties > Digital Signatures. The Android APK is signed with our own key, which is why Android refuses any update that is not ours. The desktop apps also reject an update that is not signed with our key.",
+        "Every build we ship is signed, and your operating system checks that signature before it runs anything. macOS builds are signed and notarized by Apple. Windows installers carry an Authenticode signature you can read under Properties > Digital Signatures. The Android APK is signed with our own key, which is why Android refuses any update that is not ours. The iPhone and iPad app is signed by Apple and only installs through the App Store. The desktop apps also reject an update that is not signed with our key.",
         "Download only from PrivacyNotes.app or from our [releases on GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), which lists every version. The signature is the check that counts, and your system runs it for you: it is verified against a key that lives nowhere on our website, so a swapped file fails that check whatever the page beside it says."
       ]
     },

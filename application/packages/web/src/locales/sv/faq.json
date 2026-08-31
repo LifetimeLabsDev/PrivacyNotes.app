@@ -172,7 +172,7 @@
     "open-source": {
       "q": "Är PrivacyNotes öppen källkod?",
       "a": [
-        "Ja. Webb-, dator- och mobilapparna är publicerade på [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), tillsammans med krypteringskoden som gör dina anteckningar oläsbara, databasschemat de synkas till och hotmodellen som beskriver vad varje del skyddar. Det är samma kod som vi bygger våra utgåvor från.",
+        "Ja. Webb-, dator- och mobilapparna är publicerade på [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), tillsammans med krypteringskoden som gör dina anteckningar oläsbara och hotmodellen som beskriver vad varje del skyddar. Det är samma kod som vi bygger våra utgåvor från.",
         "Det är det som gör ett löfte till något du kan kontrollera. Läs krypteringen i ett svep, öppna webbläsarens nätverksflik och se dina egna anteckningar lämna datorn som oläslig text, eller bygg appen själv och jämför den med den vi levererar. Du behöver inte ta oss på orden."
       ]
     },
@@ -336,8 +336,8 @@
     "platforms": {
       "q": "Vilka plattformar kör PrivacyNotes på?",
       "a": [
-        "Webb, macOS, Windows, Linux och Android i dag, med iOS på väg. Varje app är byggd från samma kärna med samma totalsträckskryptering och synkar via samma konto. [Nedladdningsavsnittet](https://privacynotes.app/sv#downloads) har alltid de senaste versionerna.",
-        "De nativa apparna kräver macOS 13 eller senare, Windows 10 eller senare, Android 7.0 eller senare, eller en Linux-utgåva med webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ eller motsvarande). iOS kommer att kräva iOS 15 eller senare. Under de versionerna går appen inte att installera eller starta, så använd webbappen i stället.",
+        "Webb, macOS, Windows, Linux, iOS och Android. Varje app är byggd från samma kärna med samma totalsträckskryptering och synkar via samma konto. [Nedladdningsavsnittet](https://privacynotes.app/sv#downloads) har alltid de senaste versionerna.",
+        "De nativa apparna kräver macOS 13 eller senare, Windows 10 eller senare, iOS 15 eller senare, Android 7.0 eller senare, eller en Linux-utgåva med webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ eller motsvarande). Under de versionerna går appen inte att installera eller starta, så använd webbappen i stället.",
         "Webbappen är en fullvärdig medlem, inte en reservlösning: den håller en komplett lokal kopia av dina data och fungerar offline, så vilken modern webbläsare som helst är alltid en väg in."
       ]
     },
@@ -549,8 +549,8 @@
     "store-purchases": {
       "q": "Följer köp med mellan webben, Google Play och App Store?",
       "a": [
-        "Ja. Pro och lagring är knutna till ditt konto, inte till en plattform eller en butik. Köp på webben så är varje app du loggar in i Pro, inklusive butiksversionerna; köp inne i en butiksversion så låses webb- och datorapparna upp på samma sätt. Det finns ingen knapp för att ”återställa köp”, eftersom inloggningen är återställningen - rättigheten följer kontot.",
-        "Den enda skillnaden är vem som fakturerar dig. Webbköp går via Paddle och hanteras i appen under Inställningar > Lagring. Köp som görs inne i en butiksversion (Google Play eller App Store, när de apparna lanseras) faktureras av den butiken: återkommande lagring sägs upp i butikens prenumerationsinställningar, och återbetalningar följer butikens process. Hur som helst är det samma konto och samma Pro överallt - inklusive plattformar som inte finns än."
+        "Ja. Pro och lagring är knutna till ditt konto, inte till en plattform eller en butik. Köp på webben så är varje app du loggar in i Pro, inklusive butiksversionerna; köp inne i en butiksversion så låses webb- och datorapparna upp på samma sätt. Inloggningen är återställningen, eftersom rättigheten följer kontot. En butiksversion har dessutom en knapp **Återställ köp** under Inställningar > Plan, som frågar Apple eller Google vad du äger och låser upp det igen efter en ominstallation.",
+        "Den enda skillnaden är vem som fakturerar dig. Webbköp går via Paddle och hanteras i appen under Inställningar > Lagring. Köp som görs inne i en butiksversion (App Store i dag, Google Play när den appen lanseras) faktureras av den butiken: återkommande lagring sägs upp i butikens prenumerationsinställningar, och återbetalningar följer butikens process. Hur som helst är det samma konto och samma Pro överallt - inklusive plattformar som inte finns än."
       ]
     },
     "play-vs-apk": {
@@ -662,7 +662,7 @@
     "verify-download": {
       "q": "Hur kontrollerar jag att appen jag laddade ner är äkta?",
       "a": [
-        "Varje bygge vi släpper är signerat, och ditt operativsystem kontrollerar signaturen innan det kör något. macOS-byggen är signerade och notariserade av Apple. Windows-installerare bär en Authenticode-signatur som du kan läsa under Egenskaper > Digitala signaturer. Android-APK:n är signerad med vår egen nyckel, vilket är varför Android vägrar varje uppdatering som inte kommer från oss. Skrivbordsapparna avvisar också en uppdatering som inte är signerad med vår nyckel.",
+        "Varje bygge vi släpper är signerat, och ditt operativsystem kontrollerar signaturen innan det kör något. macOS-byggen är signerade och notariserade av Apple. Windows-installerare bär en Authenticode-signatur som du kan läsa under Egenskaper > Digitala signaturer. Android-APK:n är signerad med vår egen nyckel, vilket är varför Android vägrar varje uppdatering som inte kommer från oss. Appen för iPhone och iPad är signerad av Apple och installeras bara via App Store. Skrivbordsapparna avvisar också en uppdatering som inte är signerad med vår nyckel.",
         "Ladda bara ner från PrivacyNotes.app eller från våra [utgåvor på GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), där varje version finns. Signaturen är kontrollen som räknas, och ditt system gör den åt dig: den prövas mot en nyckel som inte finns någonstans på vår webbplats, så en utbytt fil faller på den kontrollen oavsett vad sidan bredvid påstår."
       ]
     },
