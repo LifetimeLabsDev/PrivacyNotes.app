@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Taille :",
+    "widthXs": "TP",
+    "widthS": "P",
+    "widthM": "M",
+    "widthL": "G",
+    "downloadAria": "Télécharger l'image",
+    "deleteAria": "Supprimer l'image",
+    "loading": "Chargement de l'image...",
+    "uploading": "Envoi de {{name}}...",
+    "uploadFailed": "L'envoi a échoué : {{message}}",
+    "storeUnavailable": "Stockage d'images indisponible",
+    "loadFailed": "Échec du chargement de l'image",
+    "notFound": "Image introuvable"
+  },
+  "attachment": {
+    "fallbackName": "Pièce jointe",
+    "imageAlt": "Image",
+    "cantPlay": "Lecture impossible. Télécharge pour écouter",
+    "downloadingStatus": "téléchargement...",
+    "deleteConfirm": "Supprimer ?",
+    "copied": "Copié",
+    "download": "Télécharger",
+    "downloadToPlay": "Télécharger pour lire",
+    "play": "Lire",
+    "pause": "Pause",
+    "fileNotFound": "Fichier introuvable",
+    "localOnly": "Sur cet appareil uniquement",
+    "localOnlyTip": "Ne tient pas dans ton stockage. Pas de sauvegarde : effacer les données du navigateur ou de l'app supprime le fichier. Il se synchronisera dès qu'il y aura de la place.",
+    "notUploaded": "Pas encore téléversé",
+    "notUploadedTip": "Ce fichier n'a pas encore été téléversé depuis l'appareil où il a été ajouté - souvent parce que le stockage y est plein. Il s'ouvrira ici dès qu'il sera synchronisé.",
+    "downloadFailed": "Le téléchargement a échoué",
+    "playbackFailed": "La lecture a échoué",
+    "uploadFailed": "L'envoi a échoué : {{message}}",
+    "unknownError": "Erreur inconnue"
+  }
+}

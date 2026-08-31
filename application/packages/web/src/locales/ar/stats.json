@@ -1,0 +1,132 @@
+{
+  "title": "الإحصاءات",
+  "tabs": {
+    "writing": "الكتابة",
+    "wellness": "العافية"
+  },
+  "writing": {
+    "notes": "الملاحظات",
+    "words": "الكلمات",
+    "tags": "الوسوم",
+    "currentStreak": "السلسلة الحالية",
+    "longestStreak": "أطول سلسلة",
+    "streakValue": "{{count}} يوم",
+    "timeRangeAria": "النطاق الزمني للنشاط",
+    "modeActivity": "النشاط",
+    "modeMood": "المزاج",
+    "tooltipMood": "{{date}}: المزاج {{mood}}/10",
+    "tooltipNoMood": "{{date}}: لا مزاج مسجّل",
+    "tooltipEdits_zero": "{{date}}: {{count}} تعديلات",
+    "tooltipEdits_one": "{{date}}: {{count}} تعديل",
+    "tooltipEdits_two": "{{date}}: {{count}} تعديلان",
+    "tooltipEdits_few": "{{date}}: {{count}} تعديلات",
+    "tooltipEdits_many": "{{date}}: {{count}} تعديلًا",
+    "tooltipEdits_other": "{{date}}: {{count}} تعديلًا",
+    "longestNote": "أطول ملاحظة: <name>{{title}}</name> ({{count}} كلمة)"
+  },
+  "range": {
+    "7d": "7 أيام",
+    "14d": "14 يومًا",
+    "30d": "30 يومًا",
+    "3mo": "3 أشهر",
+    "6mo": "6 أشهر",
+    "12mo": "12 شهرًا"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "الكل",
+      "sleepActivity": "النوم والنشاط",
+      "medication": "الأدوية",
+      "patterns": "الأنماط"
+    },
+    "empty": {
+      "title": "لا توجد بيانات عافية بعد.",
+      "hint": "افتح مدخل يوميات وسجّل مزاجك للبدء."
+    },
+    "overview": {
+      "daysTracked": "الأيام المتتبَّعة",
+      "avgMood": "متوسط المزاج",
+      "avgSleep": "متوسط النوم",
+      "medAdherence": "الالتزام بالدواء",
+      "moodTrend": "اتجاه المزاج",
+      "moodByDayOfWeek": "المزاج حسب يوم الأسبوع",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "تصدير",
+      "allTime": "كل الوقت",
+      "last90Days": "آخر 90 يومًا",
+      "last30Days": "آخر 30 يومًا",
+      "last7Days": "آخر 7 أيام",
+      "downloadJSON": "تنزيل JSON",
+      "doctorPDF": "تقرير PDF للطبيب",
+      "copyAIPrompt": "نسخ موجّه الذكاء الاصطناعي",
+      "copied": "تم النسخ!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "جودة النوم",
+      "activity": "النشاط",
+      "avgSleepPerNight": "متوسط النوم لكل ليلة"
+    },
+    "medication": {
+      "adherence": "الالتزام",
+      "empty": {
+        "title": "لا توجد بيانات أدوية بعد.",
+        "hint": "أضف دواءً في إعدادات المتتبعات، ثم سجّل يوميًا."
+      },
+      "dosageTimeline": "الجدول الزمني للجرعات",
+      "started": "بدأ بـ {{dosage}}",
+      "changedTo": "تغيّر إلى {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "أبرز المشاعر",
+      "insights": "الرؤى",
+      "proBadge": "PRO",
+      "insightsLocked_zero": "تم اكتشاف {{count}} رؤى. الترقية إلى Pro للعرض",
+      "insightsLocked_one": "تم اكتشاف {{count}} رؤية. الترقية إلى Pro للعرض",
+      "insightsLocked_two": "تم اكتشاف {{count}} رؤيتين. الترقية إلى Pro للعرض",
+      "insightsLocked_few": "تم اكتشاف {{count}} رؤى. الترقية إلى Pro للعرض",
+      "insightsLocked_many": "تم اكتشاف {{count}} رؤية. الترقية إلى Pro للعرض",
+      "insightsLocked_other": "تم اكتشاف {{count}} رؤية. الترقية إلى Pro للعرض",
+      "weekInReview": "مراجعة الأسبوع",
+      "weekInReviewLocked": "الترقية إلى Pro لعرض ملخص عافيتك الأسبوعي"
+    },
+    "week": {
+      "range": "{{start}} إلى {{end}}",
+      "daysLogged": "{{count}}/7 أيام مسجّلة",
+      "avgMood": "متوسط المزاج",
+      "moodDelta": "{{delta}} مقارنة بالأسبوع الماضي",
+      "avgSleep": "متوسط النوم",
+      "medsTaken": "الأدوية المأخوذة",
+      "topActivity": "أبرز نشاط",
+      "topEmotions": "أبرز المشاعر",
+      "reflection": "التأمل",
+      "reflectionPlaceholder": "كيف كان هذا الأسبوع بشكل عام؟ أي أفكار تود تدوينها..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "تم تحقيق إنجاز"
+  },
+  "milestone": {
+    "notes_zero": "{{count}} ملاحظات مكتوبة",
+    "notes_one": "{{count}} ملاحظة مكتوبة",
+    "notes_two": "{{count}} ملاحظتان مكتوبتان",
+    "notes_few": "{{count}} ملاحظات مكتوبة",
+    "notes_many": "{{count}} ملاحظة مكتوبة",
+    "notes_other": "{{count}} ملاحظة مكتوبة",
+    "streak": "سلسلة كتابة لمدة {{count}} يوم",
+    "words_zero": "{{formatted}} كلمات مكتوبة",
+    "words_one": "{{formatted}} كلمة مكتوبة",
+    "words_two": "{{formatted}} كلمتان مكتوبتان",
+    "words_few": "{{formatted}} كلمات مكتوبة",
+    "words_many": "{{formatted}} كلمة مكتوبة",
+    "words_other": "{{formatted}} كلمة مكتوبة",
+    "age30": "30 يومًا مع PrivacyNotes",
+    "age365": "سنة واحدة مع PrivacyNotes",
+    "age730": "سنتان مع PrivacyNotes",
+    "age1825": "5 سنوات مع PrivacyNotes",
+    "ageDefault": "منذ {{count}} يوم"
+  }
+}

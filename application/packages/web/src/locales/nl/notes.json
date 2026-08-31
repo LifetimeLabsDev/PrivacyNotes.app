@@ -1,0 +1,275 @@
+{
+  "noteRow": {
+    "created": "Aangemaakt",
+    "modified": "Gewijzigd",
+    "select": "Notitie selecteren",
+    "deselect": "Selectie opheffen",
+    "pinProtected": "Met PIN beveiligd",
+    "readOnly": "Alleen-lezen",
+    "file": "Bestand",
+    "empty": "Leeg",
+    "noContent": "Geen inhoud"
+  },
+  "header": {
+    "new": "Nieuw",
+    "newNote": "Nieuwe notitie",
+    "newNoteHover": "Nieuwe notitie ({{hotkey}})",
+    "trash": "Prullenbak"
+  },
+  "folderChip": {
+    "clear": "Mapfilter wissen: {{folder}}"
+  },
+  "tagChip": {
+    "clear": "Tagfilter wissen: {{tag}}"
+  },
+  "vaultNew": {
+    "ariaLabel": "Nieuw kluisitem",
+    "login": "Login",
+    "card": "Creditcard",
+    "sshKey": "SSH-sleutel"
+  },
+  "newMenu": {
+    "note": "Notitie",
+    "task": "Taak",
+    "journal": "Dagboek",
+    "login": "Login",
+    "file": "Bestand",
+    "bookmark": "Bladwijzer"
+  },
+  "vaultFilter": {
+    "all": "Alles",
+    "logins": "Logins",
+    "cards": "Creditcards",
+    "keys": "Sleutels"
+  },
+  "journal": {
+    "backfillHover": "Nieuw dagboek voor een recente dag",
+    "newEntry": "Nieuwe dagboeknotitie",
+    "newEntryHover": "Nieuwe dagboeknotitie ({{hotkey}})"
+  },
+  "tasks": {
+    "newTitle": "Taken voor {{date}}"
+  },
+  "trash": {
+    "empty": "Legen",
+    "emptyHover": "Alle notities in de prullenbak verwijderen",
+    "storage": "Opslag",
+    "autoDelete": "Auto-verwijderen: 30 d"
+  },
+  "search": {
+    "sortOptions": "Sorteer- en weergaveopties",
+    "placeholderVault": "Kluis doorzoeken…",
+    "placeholderNotes": "Notities zoeken…"
+  },
+  "selection": {
+    "countOf": "{{selected}} van {{total}} geselecteerd",
+    "selectAll": "Alles selecteren",
+    "deselectAll": "Selectie opheffen"
+  },
+  "empty": {
+    "noMatches": "Geen resultaten.",
+    "vault": "De kluis is leeg.",
+    "notes": "Nog geen notities.",
+    "filtered": "Geen items voldoen aan je filters.",
+    "clearFilters": "Filters wissen",
+    "filteredAfter": "om ze te tonen."
+  },
+  "headerLabel": {
+    "allItems": "Alles",
+    "untagged": "Zonder tag",
+    "journals": "Dagboeken",
+    "vault": "Kluis",
+    "pinned": "Vastgezet",
+    "notes": "Notities"
+  },
+  "footerStats": {
+    "journals": "Dagboeken",
+    "items": "Items",
+    "trashed": "In prullenbak",
+    "notes": "Notities",
+    "bookmarks": "Bladwijzers"
+  },
+  "toast": {
+    "imageUploadFailed": "Uploaden van afbeelding mislukt: {{error}}",
+    "imageError": "Fout bij afbeelding: {{error}}",
+    "uploadFailedFor": "Uploaden mislukt voor \"{{filename}}\": {{error}}",
+    "importedSyncing_one": "{{count}} notitie geïmporteerd. Synchroniseren…",
+    "importedSyncing_other": "{{count}} notities geïmporteerd. Synchroniseren…",
+    "addedTag_one": "#{{tag}} toegevoegd aan {{count}} item",
+    "addedTag_other": "#{{tag}} toegevoegd aan {{count}} items"
+  },
+  "burn": {
+    "mediaOnly": "Deze notitie bevat alleen media en kan niet via een burn-link worden gedeeld.",
+    "shareTitle": "Versleutelde notitie"
+  },
+  "loadError": {
+    "message": "Kon je notities niet laden. De verbinding met de lokale database is onderbroken. Dit kan gebeuren als de app een tijd op de achtergrond heeft gestaan.",
+    "reload": "Herladen"
+  },
+  "banner": {
+    "dismiss": "Sluiten",
+    "proActivationPending": "Je betaling is binnen, maar het activeren van Pro duurt langer dan normaal. Ververs over een minuut, of neem contact op met support als Pro niet actief wordt.",
+    "snapshotPaused": "Notitiegeschiedenis is gepauzeerd. Je Pro-plan lijkt niet actief. Van nieuwe bewerkingen worden geen versies bewaard totdat Pro is hersteld.",
+    "restorePro": "Pro herstellen",
+    "storagePastDue": "De betaling voor je opslagabonnement is mislukt. Werk je kaart bij in Paddle om je extra ruimte niet te verliezen.",
+    "updateCard": "Kaart bijwerken"
+  },
+  "sidebar": {
+    "collapse": "Zijbalk inklappen",
+    "expand": "Zijbalk uitklappen"
+  },
+  "notesList": {
+    "collapse": "Notitielijst inklappen",
+    "expand": "Notitielijst uitklappen"
+  },
+  "paneResize": {
+    "hintCollapse": "Klik om in te klappen · Sleep om de grootte aan te passen"
+  },
+  "emptyEditor": {
+    "selectFile": "Kies een bestand om te bekijken",
+    "uploadFiles": "Of upload nieuwe bestanden naar je versleutelde kluis.",
+    "selectNote": "Kies een notitie of maak een nieuwe.",
+    "selectMarkdown": "Open een Markdown-bestand om het hier te lezen."
+  },
+  "zen": {
+    "exit": "Zen verlaten",
+    "exitHover": "Zen-modus verlaten (Esc)",
+    "enterHover": "Zen-modus starten",
+    "proHover": "Zen-modus (Pro)",
+    "enterAriaShortcut": "Zen-modus starten (⌘⇧F)"
+  },
+  "editor": {
+    "backToList": "Terug naar notitielijst",
+    "backToGrid": "Terug naar raster",
+    "titlePlaceholder": "Naamloos (klik om te bewerken of laat hem automatisch ontstaan)",
+    "titlePlaceholderLogin": "bijv. GitHub",
+    "titlePlaceholderCard": "bijv. Visa eindigend op 4242",
+    "titlePlaceholderSshKey": "bijv. GitHub deploy-sleutel",
+    "pin": "Vastzetten",
+    "unpin": "Losmaken",
+    "restore": "Herstellen",
+    "deleteForever": "Definitief verwijderen",
+    "moveToTrash": "Naar prullenbak",
+    "noteOptions": "Notitieopties",
+    "readOnlyToggle": "Alleen-lezen. Zet het uit in",
+    "menu": "Menu",
+    "showMarkdown": "Markdown tonen",
+    "showFormatted": "Opgemaakt tonen",
+    "invisiblesShow": "Onzichtbare tekens tonen",
+    "invisiblesHide": "Onzichtbare tekens verbergen",
+    "findInNote": "Zoeken in notitie",
+    "navPrev": "Vorige notitie",
+    "navNext": "Volgende notitie",
+    "undo": "Ongedaan maken",
+    "redo": "Opnieuw",
+    "hide": "Verbergen",
+    "show": "Tonen",
+    "hideToolbar": "Opmaakbalk verbergen",
+    "showToolbar": "Opmaakbalk tonen",
+    "widthDefault": "Standaardbreedte",
+    "widthWide": "Breder",
+    "widthFull": "Volledige breedte",
+    "burn": "Delen & vernietigen na lezen",
+    "titlePlaceholderLink": "Naam van bladwijzer"
+  },
+  "share": {
+    "hover": "Delen / exporteren",
+    "ariaLabel": "Delen of exporteren",
+    "thisNote": "Deze notitie",
+    "currentMdTitle": "Huidige notitie (.md)",
+    "currentMdDesc": "Kale markdown met front-matter.",
+    "currentHtmlTitle": "Huidige notitie (.html)",
+    "currentHtmlDesc": "Printvriendelijk, markdown weergegeven op een witte pagina.",
+    "printTitle": "Afdrukken / opslaan als PDF",
+    "printDesc": "Opent het afdrukvenster. Sla op als PDF of stuur naar een printer.",
+    "burnTitle": "Delen & vernietigen na lezen",
+    "burnDesc": "Publiceer deze notitie als link die één keer te bekijken is. De link vernietigt zichzelf na het lezen. Je notitie blijft veilig in je account.",
+    "backup": "Back-up",
+    "fullBackupTitle": "Volledige back-up (.zip)",
+    "fullBackupDesc": "Alles: notities, dagboeken, kluis, taken, afbeeldingen, audio, bestanden.",
+    "allHtmlTitle": "Alle items (.zip met .html)",
+    "allHtmlDesc": "Eén printbare HTML per item. Handig om offline te lezen.",
+    "jsonTitle": "Tekstback-up (.json)",
+    "jsonDesc": "Alle tekst en metagegevens, geen afbeeldingen of bestanden."
+  },
+  "weekReview": {
+    "title": "Week in beeld",
+    "daysLogged": "{{count}}/7 vastgelegd",
+    "mood": "Stemming",
+    "sleep": "Slaap",
+    "meds": "Medicijnen",
+    "activity": "Activiteit"
+  },
+  "footer": {
+    "settings": "Instellingen",
+    "viewShortcuts": "Alle sneltoetsen bekijken",
+    "newNote": "Nieuw",
+    "newNoteHintMac": "Option + Shift + N",
+    "newNoteHintOther": "Alt + Shift + N",
+    "openStats": "Statistieken openen",
+    "words": "Woorden",
+    "zen": "Zen-modus",
+    "appearance": "Weergave",
+    "signOut": "Afmelden",
+    "signingOut": "Afmelden…",
+    "switchToLight": "Overschakelen naar lichte modus",
+    "switchToDark": "Overschakelen naar donkere modus"
+  },
+  "settings": {
+    "groupYourNotes": "Je notities",
+    "groupAccount": "Account & gegevens",
+    "groupBrand": "PrivacyNotes",
+    "statsLabel": "Statistieken",
+    "journalsLabel": "Dagboeken",
+    "importLabel": "Importeren & exporteren",
+    "planLabel": "Account",
+    "storageLabel": "Opslag",
+    "securityLabel": "Beveiliging",
+    "accountLabel": "ID & synchronisatie",
+    "appearanceLabel": "Weergave",
+    "helpLabel": "Help",
+    "aboutLabel": "Over",
+    "languageLabel": "Taal",
+    "languageDesc": "Kies de taal waarin PrivacyNotes wordt getoond."
+  },
+  "importStore": {
+    "title": "Importeren of opslaan?",
+    "confirm": "Als notities importeren",
+    "cancel": "Als bestanden opslaan",
+    "bodySingle": "<strong>{{filename}}</strong> lijkt een markdown-bestand. Wil je het als notitie importeren zodat je het kunt lezen en bewerken, of als versleutelde bijlage opslaan?",
+    "bodyMulti": "Deze {{count}} bestanden lijken markdown. Wil je ze als notities importeren zodat je ze kunt lezen en bewerken, of als versleutelde bijlagen opslaan?"
+  },
+  "bulkTrash": {
+    "title": "Naar prullenbak",
+    "body_one": "<highlight>{{count}} item</highlight> naar de prullenbak verplaatsen? Je kunt het later herstellen.",
+    "body_other": "<highlight>{{count}} items</highlight> naar de prullenbak verplaatsen? Je kunt ze later herstellen."
+  },
+  "bulkDelete": {
+    "body_one": "<highlight>{{count}} notitie</highlight> definitief verwijderen? Dit kan niet ongedaan worden gemaakt.",
+    "body_other": "<highlight>{{count}} notities</highlight> definitief verwijderen? Dit kan niet ongedaan worden gemaakt."
+  },
+  "tagConfirm": {
+    "mergeTitle": "Tags samenvoegen",
+    "deleteTitle": "Tag verwijderen",
+    "deleteWithNotesTitle": "Tag & notities verwijderen",
+    "mergeConfirm": "Samenvoegen",
+    "deleteConfirm": "Tag verwijderen",
+    "moveToTrash": "Naar prullenbak",
+    "mergeBody_one": "De tag <highlight>“{{targetTag}}”</highlight> bestaat al. <highlight>{{count}} notitie</highlight> met de tag “{{tag}}” daarin samenvoegen?",
+    "mergeBody_other": "De tag <highlight>“{{targetTag}}”</highlight> bestaat al. <highlight>{{count}} notities</highlight> met de tag “{{tag}}” daarin samenvoegen?",
+    "deleteBody_one": "De tag <highlight>“{{tag}}”</highlight> van <highlight>{{count}} notitie</highlight> verwijderen? De notitie zelf blijft bestaan.",
+    "deleteBody_other": "De tag <highlight>“{{tag}}”</highlight> van <highlight>{{count}} notities</highlight> verwijderen? De notities zelf blijven bestaan.",
+    "deleteWithNotesBody_one": "De tag <highlight>“{{tag}}”</highlight> verwijderen en <highlight>{{count}} notitie</highlight> naar de prullenbak verplaatsen? Je kunt hem daar herstellen.",
+    "deleteWithNotesBody_other": "De tag <highlight>“{{tag}}”</highlight> verwijderen en <highlight>{{count}} notities</highlight> naar de prullenbak verplaatsen? Je kunt ze daar herstellen."
+  },
+  "createNote": {
+    "title": "Notitie aanmaken?",
+    "confirm": "Notitie aanmaken",
+    "body": "Er bestaat geen notitie met de titel <highlight>“{{title}}”</highlight>. Dit kan gebeuren als de gelinkte notitie een andere naam heeft gekregen. Een nieuwe notitie met deze titel aanmaken?"
+  },
+  "freshVault": {
+    "title": "Nieuwe kluis aangemaakt",
+    "confirm": "Duidelijk",
+    "body": "Geen bestaande kluis kwam overeen met de herstelzin die je invoerde, dus is er een nieuwe lege kluis aangemaakt. Verwachtte je je notities te zien, meld je dan af en voer je herstelzin zorgvuldig opnieuw in - één ander woord opent een andere kluis."
+  }
+}

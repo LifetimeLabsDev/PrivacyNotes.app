@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Boyut:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "Görseli indir",
+    "deleteAria": "Görseli sil",
+    "loading": "Görsel yükleniyor...",
+    "uploading": "{{name}} yükleniyor...",
+    "uploadFailed": "Yükleme başarısız: {{message}}",
+    "storeUnavailable": "Görsel deposu kullanılamıyor",
+    "loadFailed": "Görsel yüklenemedi",
+    "notFound": "Görsel bulunamadı"
+  },
+  "attachment": {
+    "fallbackName": "Ek",
+    "imageAlt": "Görsel",
+    "cantPlay": "Oynatılamıyor. Dinlemek için indirin",
+    "downloadingStatus": "indiriliyor...",
+    "deleteConfirm": "Silinsin mi?",
+    "copied": "Kopyalandı",
+    "download": "İndir",
+    "downloadToPlay": "Oynatmak için indirin",
+    "play": "Oynat",
+    "pause": "Duraklat",
+    "fileNotFound": "Dosya bulunamadı",
+    "localOnly": "Yalnızca bu cihazda",
+    "localOnlyTip": "Depolama alanınıza sığmıyor. Yedeklenmiyor - tarayıcı/uygulama verilerini temizlerseniz silinir. Yer açılınca eşitlenir.",
+    "notUploaded": "Henüz yüklenmedi",
+    "notUploadedTip": "Bu dosya, eklendiği cihazdan henüz yüklenmedi - genellikle oradaki depolama alanı dolu olduğu için. Eşitlenince burada açılır.",
+    "downloadFailed": "İndirme başarısız",
+    "playbackFailed": "Oynatma başarısız",
+    "uploadFailed": "Yükleme başarısız: {{message}}",
+    "unknownError": "Bilinmeyen hata"
+  }
+}

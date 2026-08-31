@@ -1,0 +1,64 @@
+{
+  "upgrade": {
+    "header": "Zapłać raz, zostaje na zawsze",
+    "earlyAdopterBadge": "Wczesny użytkownik",
+    "oneTime": "jednorazowo",
+    "subscriptionPitch": "Żadnej subskrypcji. Żadnej opłaty rocznej. Jedna płatność, odblokowane na całe życie.",
+    "ctaUnlock": "Odblokuj wszystko",
+    "ctaOpening": "Otwieranie płatności...",
+    "ctaSignUp": "Zarejestruj się, aby odblokować",
+    "intro": {
+      "storage": "Większe pliki i więcej miejsca to funkcja Pro. Przejdź na Pro, aby mieć pliki do 50 MB i 500 MB pamięci.",
+      "folders": "Foldery to funkcja Pro. Uporządkuj notatki w zagnieżdżonych folderach, tak głęboko, jak potrzebujesz, i trzymaj każdy projekt osobno.",
+      "lock": "Blokowanie notatki to funkcja Pro. Przejdź na Pro, aby chronić dowolną notatkę przed przypadkową edycją.",
+      "protect": "Ochrona notatki kodem PIN to funkcja Pro. Przejdź na Pro, aby zabezpieczyć wrażliwe notatki swoim PIN-em.",
+      "history": "Historia notatki to funkcja Pro. Przejdź na Pro, aby zachować oś czasu każdego zapisu.",
+      "devices": "Osiągnięto limit 2 urządzeń. Przejdź na Pro, aby mieć nieograniczoną liczbę urządzeń.",
+      "zen": "Tryb Zen to funkcja Pro. Przejdź na Pro, aby pisać bez rozpraszaczy.",
+      "theme": "Motywy premium to funkcja Pro. Przejdź na Pro, aby odblokować każdy odcień.",
+      "callout": "Pełny zestaw wyróżnień to funkcja Pro.",
+      "totp": "Kody 2FA to funkcja Pro. Zapisz klucz uwierzytelniający przy dowolnym loginie, a zmieniający się kod zobaczysz obok hasła. Sam klucz jest zapisywany i synchronizowany w każdym planie.",
+      "default": "Jedno ulepszenie odblokowuje wszystko poniżej. Płatność jednorazowa."
+    },
+    "features": {
+      "devices": "Synchronizacja nieograniczonej liczby urządzeń, każda platforma",
+      "folders": "Zagnieżdżone foldery, porządek według projektów",
+      "lock": "Blokada i ochrona PIN-em dowolnej notatki",
+      "history": "Pełna historia notatki, przywracanie w każdej chwili",
+      "themes": "Motywy premium w każdym odcieniu",
+      "zen": "Tryb Zen, pisanie bez rozpraszaczy",
+      "storage": "500 MB pamięci + załączniki do 50 MB"
+    },
+    "comparisonBeta": "Zapłać {{earlyPrice}} $ raz. Obsidian Sync kosztuje 48 $/rok, co roku. Standard Notes liczy sobie 90 $/rok. Cena dla wczesnych użytkowników, zablokowana, zanim wzrośnie do {{proPrice}} $.",
+    "comparison": "Zapłać {{proPrice}} $ raz i miej to na zawsze. Obsidian Sync kosztuje 48 $/rok, a Standard Notes 90 $/rok, każdego roku."
+  },
+  "purchaseError": {
+    "store": "Nie udało się dokończyć płatności w sklepie i nie zostałeś obciążony. Spróbuj ponownie za chwilę.",
+    "validate": "Płatność przeszła, ale jej aktywacja się nie powiodła. Uruchom aplikację ponownie, aby spróbować jeszcze raz - jeśli nadal się nie odblokuje, sklep automatycznie zwróci pieniądze w ciągu 3 dni.",
+    "alreadyOwned": "Sklep twierdzi, że już posiadasz ten zakup, ale należy on do innego konta. Zaloguj się frazą odzyskiwania używaną przy zakupie."
+  },
+  "checkout": {
+    "invalidTitle": "Nieprawidłowy link do płatności",
+    "invalidBody": "Otwórz płatność z poziomu aplikacji, abyśmy mogli przypisać zakup do Twojego konta.",
+    "completeTitle": "Płatność zakończona",
+    "completeBody": "Możesz zamknąć tę kartę i wrócić do PrivacyNotes. Twoje Pro odblokuje się automatycznie.",
+    "openingTitle": "Otwieranie bezpiecznej płatności...",
+    "openingBody": "Powinno pojawić się okno płatności Paddle. Jeśli się nie pojawi, przeglądarka mogła zablokować wyskakujące okienko - odśwież tę stronę, aby spróbować ponownie."
+  },
+  "history": {
+    "title": "Historia notatki",
+    "subtitle": "Do 20 wersji na notatkę. Najstarsze usuwane automatycznie.",
+    "empty": "Brak historii. Wersje zaczną się pojawiać po następnej edycji. Zajrzyj tu później.",
+    "selectPrompt": "Wybierz wersję, aby zobaczyć podgląd.",
+    "emptyBody": "(pusto)",
+    "restore": "Przywróć",
+    "restoring": "Przywracanie…"
+  },
+  "donation": {
+    "eyebrow": "Odblokowano",
+    "intro": "<brand/> jest darmowe i zawsze takie pozostanie. Bez reklam, bez śledzenia, bez adresu e-mail w bazie. Jeśli pomogło Ci myśleć, pisać lub pamiętać, rozważ wsparcie rozwoju. Dzięki temu projekt żyje i powstają kolejne funkcje.",
+    "proBenefits": "Wsparcie odblokowuje też korzyści Pro, gdy tylko będą gotowe: nieograniczoną liczbę urządzeń, załączniki i szyfrowane kopie zapasowe w chmurze.",
+    "maybeLater": "Może później",
+    "support": "Wesprzyj →"
+  }
+}

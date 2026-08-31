@@ -1,0 +1,169 @@
+{
+  "shell": {
+    "importTitle": "Deine Daten importieren",
+    "exportTitle": "Deine Daten exportieren",
+    "restoreTitle": "Deine Daten wiederherstellen",
+    "vaultTitle": "Deine Passwörter importieren",
+    "tablistLabel": "Import, Export, Wiederherstellung oder Passwörter",
+    "tabImport": "Import",
+    "tabExport": "Export",
+    "tabRestore": "Wiederherstellung",
+    "tabVault": "Passwörter",
+    "working": "Wird verarbeitet…"
+  },
+  "footer": {
+    "exportNote": "Exporte laufen lokal. Es wird nichts hochgeladen.",
+    "restoreNote": "Deine Datei wird lokal gelesen und entschlüsselt.",
+    "importNote": "Alles wird verschlüsselt, bevor es dein Gerät zum Synchronisieren verlässt."
+  },
+  "importPick": {
+    "autoTagLabel": "Importierte Notizen nach Quelle taggen",
+    "autoTagDesc": "Google-Keep-Notizen erhalten <keep>#google</keep>, Obsidian erhält <obsidian>#obsidian</obsidian> und so weiter.",
+    "guideAria": "Import-Anleitung für {{app}}",
+    "guideLabel": "Anleitung"
+  },
+  "folderImport": {
+    "tagLabel": "Notizen zusätzlich nach Ordner taggen",
+    "tagDesc": "Deine Ordner werden so oder so wiederhergestellt. Das fügt jeden Ordnernamen zusätzlich als Tag hinzu, praktisch, wenn du auch gern nach Tag filterst."
+  },
+  "sourceDesc": {
+    "googleKeep": "Google-Takeout-.zip (Keep-Ordner) oder eine einzelne .json-Notiz. Checklisten werden als native Aufgabenlisten importiert.",
+    "appleNotes": "Exportiere über die kostenlose Exporter-App als Markdown und lege dann die .zip hier ab.",
+    "appleJournal": "Exportiere aus Journal auf dem Mac oder iPhone, komprimiere den Ordner AppleJournalEntries und lege die .zip hier ab. Einträge werden als Tagebucheinträge importiert, mit ihren Fotos, Videos, Sprachmemos und Orten.",
+    "evernote": "Eine einzelne .enex oder mehrere zusammen in einer Zip. Behält Formatierung, Tags, Anhänge, Notiz-Links und Notizbücher. Aufgaben legt Evernote nicht in die .enex.",
+    "samsungNotes": "Exportiere als Word (.docx) oder Text (.txt). Packe mehrere Dateien in ein Zip für den Massenimport.",
+    "simplenote": "Exportiere aus Simplenote (Einstellungen -> Tools -> Notizen exportieren). Lege die .zip ab.",
+    "standardNotes": "Entschlüsseltes .zip- oder .txt-Backup aus Standard Notes (Datei > Exportieren > Entschlüsselt).",
+    "obsidian": "Obsidian-Vault als .zip. Erhält Tags, [[note links]], Ordnerstruktur, inline #tags sowie eingebettete Bilder und Dateien.",
+    "notesnook": "Notesnook-Export als .zip. Wähle beim Exportieren HTML, um Formatierung, Notizbücher, Tags und Anhänge zu behalten.",
+    "upnote": "In UpNote: Settings > Backup > Backup now, dann alles im Backup-Ordner zippen. Behält Notizbücher, Tags, Pins, note-links, Formatierung und Anhänge. Einzel-Exporte aus den Handy-Apps funktionieren auch - wähle \"Export to HTML\".",
+    "markdownFolder": ".md- oder .txt-Dateien einzeln oder als .zip. Ein gezippter Ordner behält seine Unterordner und bringt seine Bilder und Anhänge mit.",
+    "markdownApp": "Diese Notizen sind schon Markdown-Dateien in einem Ordner. Zieh den Ordner als .zip hinein, dann kommen seine Unterordner, Bilder und #Tags mit.",
+    "browserBookmarks": "Die Lesezeichen-Datei (.html) aus \"Export bookmarks\" in deinem Browser, oder die .zip, die Safari schreibt. Chrome, Firefox, Safari, Edge, Opera, Brave und Vivaldi enthalten alle dieselbe Datei. Ordner und Daten kommen mit.",
+    "bitwarden": "Unverschlüsselter .json-Export aus Bitwarden (Tools > Export vault > .json). Logins, Karten, SSH-Schlüssel, sichere Notizen und TOTP-Codes kommen alle mit.",
+    "browserPasswords": "Die Passwort-Datei (.csv) aus Chrome, Edge, Brave, Opera, Vivaldi, Firefox oder Safari, oder die .zip, die Safari schreibt. Jede Zeile wird ein Login. Lösch die Datei, wenn du fertig bist - sie enthält deine Passwörter im Klartext."
+  },
+  "vaultPick": {
+    "intro": "Importiere Logins, Kreditkarten und SSH-Schlüssel aus einem anderen Passwortmanager."
+  },
+  "restorePick": {
+    "intro": "Stelle ein PrivacyNotes-Backup wieder her, das du zuvor exportiert hast. Deine Datei wird lokal gelesen und entschlüsselt.",
+    "fullBackupTitle": "Vollständiges Backup (.zip)",
+    "fullBackupDesc": "Stelle Notizen, Tagebücher, Tresor-Einträge, Aufgaben, Bilder, Audio und Dateien wieder her. Alles wird als neue Einträge importiert - vorhandene Daten werden nicht überschrieben.",
+    "encryptedBackupTitle": "Verschlüsseltes Backup (.pnbackup, .pnbackupz)",
+    "encryptedBackupDesc": "Stelle ein verschlüsseltes Backup mit deinem Phrasenschlüssel wieder her. Eine .pnbackupz-Datei bringt alles zurück, Dateien eingeschlossen; eine .pnbackup-Datei enthält nur Textinhalte und Metadaten. Du musst mit demselben Konto angemeldet sein, das es erstellt hat."
+  },
+  "encryptedBackupLabel": "Verschlüsseltes Backup",
+  "status": {
+    "readingFile": "Datei wird gelesen…",
+    "decryptingBackup": "Backup wird entschlüsselt...",
+    "writingNotes": "Notizen werden in deine lokale Bibliothek geschrieben…",
+    "importingBlobs": "Bilder und Anhänge werden importiert...",
+    "restoringBlobs": "Bilder und Dateien werden wiederhergestellt..."
+  },
+  "errors": {
+    "genericParse": "Etwas ist schiefgelaufen.",
+    "decryptionFailed": "Entschlüsselung fehlgeschlagen. Falsche Phrase oder beschädigte Datei.",
+    "blobImportFailed": "Deine Notizen wurden importiert, aber ihre Bilder und Dateien nicht: {{detail}} Nichts in der Datei, die du ausgewählt hast, wurde verändert, du kannst die importierten Notizen also löschen und den Import erneut starten."
+  },
+  "preview": {
+    "sourceLabel": "Quelle",
+    "uniqueTags": "Eindeutige Tags",
+    "empty": "Leer",
+    "untagged": "Ohne Tag",
+    "items": "Einträge",
+    "previewLabel": "Vorschau",
+    "andMore": "… und {{count}} weitere",
+    "headsUpLabel": "Hinweis:",
+    "duplicateWarning": "beim Importieren werden diese als neue Notizen hinzugefügt. Wenn du das zweimal ausführst, erhältst du Duplikate. Eine automatische Duplikaterkennung gibt es noch nicht.",
+    "quotaExceeded": "<strong>Zu wenig Speicher zum Importieren.</strong> Geschätzt {{needed}} benötigt, {{available}} verfügbar. Schaffe Platz oder rüste auf, bevor du importierst.",
+    "quotaWarning": "Hinweis: Dieser Import wird etwa {{needed}} deines verbleibenden Speichers von {{available}} belegen.",
+    "oversizeAttachments_one": "1 Datei ist größer als das {{limit}}-Limit pro Datei deines Tarifs. Sie wird auf dieses Gerät importiert, synchronisiert aber erst mit deinen anderen Geräten, wenn du upgradest.",
+    "oversizeAttachments_other": "{{count}} Dateien sind größer als das {{limit}}-Limit pro Datei deines Tarifs. Sie werden auf dieses Gerät importiert, synchronisieren aber erst mit deinen anderen Geräten, wenn du upgradest.",
+    "duplicateSkipNote": "Lesezeichen, die du schon gespeichert hast, werden übersprungen. Ein zweiter Durchlauf legt also nichts doppelt an."
+  },
+  "counts": {
+    "note_one": "Notiz",
+    "note_other": "Notizen",
+    "journal_one": "Tagebucheintrag",
+    "journal_other": "Tagebucheinträge",
+    "login_one": "Login",
+    "login_other": "Logins",
+    "card_one": "Karte",
+    "card_other": "Karten",
+    "sshKey_one": "SSH-Schlüssel",
+    "sshKey_other": "SSH-Schlüssel",
+    "zeroItems": "0 Einträge",
+    "importButton": "{{counts}} importieren"
+  },
+  "errorPhase": {
+    "heading": "{{importer}}: Import fehlgeschlagen"
+  },
+  "export": {
+    "intro": "Deine Daten gehören dir. Exportiere jederzeit, kostenlos.",
+    "fullBackupHeading": "Vollständiges Backup",
+    "portableHeading": "Portabler Export",
+    "vaultOnlyHeading": "Nur Tresor",
+    "zipBackupTitle": "PrivacyNotes-Backup (.zip)",
+    "zipBackupDesc": "Alles: Notizen, Tagebücher, Tresor-Einträge, Aufgaben, Bilder, Audio und Dateien. Nutze dies für ein vollständiges Konto-Backup oder den Umzug auf ein neues Gerät. Die Dateien darin sind nicht verschlüsselt, bewahre das Zip also an einem sicheren Ort auf.",
+    "encryptedZipBackupTitle": "Verschlüsseltes Voll-Backup (.pnbackupz)",
+    "encryptedZipBackupDesc": "Alles, was das Zip-Backup enthält - Notizen, Tresor-Einträge, Bilder, Audio und Dateien - versiegelt mit deinem Phrasenschlüssel. Lässt sich mit deiner Phrase auf jedem Gerät wiederherstellen. Überall sicher aufzubewahren.",
+    "encryptedBackupTitle": "Verschlüsseltes Backup (.pnbackup)",
+    "encryptedBackupDesc": "Alle Textinhalte und Metadaten, verschlüsselt mit deinem Phrasenschlüssel. Keine Bilder oder Dateien. Überall sicher aufzubewahren - ohne deine Phrase nicht lesbar.",
+    "htmlArchiveTitle": "HTML-Archiv (.zip)",
+    "htmlArchiveDesc": "Eine druckbare HTML-Seite pro Notiz. Gut zum Offline-Lesen oder Archivieren, nicht zum Wiederherstellen.",
+    "textBackupTitle": "Text-Backup (.json)",
+    "textBackupDesc": "Alle Textinhalte und Metadaten als einfaches JSON. Keine Bilder oder Dateien. Bewahre es an einem vertrauenswürdigen Ort auf - dies ist nicht verschlüsselt.",
+    "vaultExportTitle": "Tresor-Export (.json)",
+    "vaultExportDesc": "Logins, Karten und SSH-Schlüssel im Bitwarden-kompatiblen Format. Von den meisten Passwortmanagern importierbar. Klartext - mit Vorsicht behandeln.",
+    "bookmarksOnlyHeading": "Nur Lesezeichen",
+    "bookmarksExportTitle": "Lesezeichen-Datei (.html)",
+    "bookmarksExportDesc": "Die Standard-Lesezeichendatei, die jeder Browser liest. Importiere sie mit deinen Ordnern in Chrome, Firefox, Safari oder Edge."
+  },
+  "exportProgress": {
+    "failedTitle": "Export fehlgeschlagen",
+    "completeTitle": "Export abgeschlossen",
+    "exportingTitle": "Backup wird exportiert...",
+    "preparing": "Wird vorbereitet...",
+    "exporting": "Wird exportiert...",
+    "imagesProgress": "Bilder werden exportiert... {{done}} von {{total}}",
+    "filesProgress": "Dateien werden exportiert... {{done}} von {{total}}",
+    "building": "Backup wird erstellt...",
+    "compressing": "Wird komprimiert..."
+  },
+  "upload": {
+    "completeTitle": "Upload abgeschlossen",
+    "failedTitle": "Upload fehlgeschlagen",
+    "partialTitle": "{{done}} hochgeladen, {{failed}} fehlgeschlagen",
+    "uploadingTitle_one": "{{count}} Datei wird hochgeladen",
+    "uploadingTitle_other": "{{count}} Dateien werden hochgeladen",
+    "statusDone": "Fertig",
+    "statusFailed": "Fehlgeschlagen",
+    "errorStorageFull": "Speicher voll - schaffe Platz oder füge Speicher hinzu, um diese Datei hochzuladen.",
+    "errorStorageFullKept": "Passt nicht in deinen Speicher - bleibt auf diesem Gerät. Sobald Platz frei wird, wird die Datei synchronisiert.",
+    "statusUploading": "Wird hochgeladen...",
+    "statusWaiting": "Wartet",
+    "summaryDone": "{{count}} fertig",
+    "summaryUploading": "{{count}} werden hochgeladen",
+    "summaryFailed": "{{count}} fehlgeschlagen",
+    "typesHint": "Bilder, Dokumente, Audio, Video, Zip. Max. {{limit}} MB / Datei.",
+    "proPitch": "Pro erhöht das Limit auf 50 MB pro Datei.",
+    "proPitchCta": "Upgrade",
+    "storagePitch": "Ein Speicher-Add-on erhöht es auf 100 MB pro Datei.",
+    "storagePitchCta": "Speicher hinzufügen"
+  },
+  "decryptErrors": {
+    "tooSmall": "Diese Datei ist leer oder unvollständig ({{size}} Bytes), es gibt also nichts wiederherzustellen. Exportiere das Backup erneut und prüfe vor dem Import, ob die gespeicherte Datei eine echte Größe hat.",
+    "notThisAccount": "Dieses Backup ließ sich nicht entsperren. Ein .pnbackup öffnet sich nur in dem Konto, das es erstellt hat - meist stammt es also aus einem anderen Konto. Um Notizen zwischen Konten zu verschieben, exportiere stattdessen ein vollständiges Backup (.zip). Wenn es das richtige Konto ist, wurde die Datei beschädigt oder unvollständig gespeichert."
+  },
+  "exportErrors": {
+    "generic": "Der Export konnte nicht gespeichert werden. Versuche es noch einmal oder wähle einen anderen Ordner."
+  },
+  "saveErrors": {
+    "shortWrite": "Es wurden nur {{written}} von {{expected}} Bytes gespeichert, die Datei ist also unvollständig. Versuche es erneut und speichere in den Speicher deines Geräts statt in einen Cloud-Ordner."
+  },
+  "browserImport": {
+    "tagLabel": "Schlagworte aus deinem Browser behalten",
+    "tagDesc": "Firefox speichert Schlagworte und ein Adressleisten-Stichwort zu jedem Lesezeichen. Beides wird hier zu Schlagworten."
+  }
+}

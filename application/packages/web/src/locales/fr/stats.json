@@ -1,0 +1,116 @@
+{
+  "title": "Statistiques",
+  "tabs": {
+    "writing": "Écriture",
+    "wellness": "Bien-être"
+  },
+  "writing": {
+    "notes": "Notes",
+    "words": "Mots",
+    "tags": "Étiquettes",
+    "currentStreak": "Série actuelle",
+    "longestStreak": "Plus longue série",
+    "streakValue": "{{count}}j",
+    "timeRangeAria": "Plage de temps d'activité",
+    "modeActivity": "Activité",
+    "modeMood": "Humeur",
+    "tooltipMood": "{{date}} : humeur {{mood}}/10",
+    "tooltipNoMood": "{{date}} : aucune humeur",
+    "tooltipEdits_one": "{{date}} : {{count}} modification",
+    "tooltipEdits_other": "{{date}} : {{count}} modifications",
+    "longestNote": "Note la plus longue : <name>{{title}}</name> ({{count}} mots)"
+  },
+  "range": {
+    "7d": "7 jours",
+    "14d": "14 jours",
+    "30d": "30 jours",
+    "3mo": "3 mois",
+    "6mo": "6 mois",
+    "12mo": "12 mois"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Tout",
+      "sleepActivity": "Sommeil et activité",
+      "medication": "Médication",
+      "patterns": "Tendances"
+    },
+    "empty": {
+      "title": "Pas encore de données de bien-être.",
+      "hint": "Ouvre une entrée de journal et note ton humeur pour commencer."
+    },
+    "overview": {
+      "daysTracked": "Jours suivis",
+      "avgMood": "Humeur moy.",
+      "avgSleep": "Sommeil moy.",
+      "medAdherence": "Observance médic.",
+      "moodTrend": "Tendance d'humeur",
+      "moodByDayOfWeek": "Humeur par jour de la semaine",
+      "moodTrendTooltip": "{{date}} : {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}} : {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Exporter",
+      "allTime": "Tout l'historique",
+      "last90Days": "90 derniers jours",
+      "last30Days": "30 derniers jours",
+      "last7Days": "7 derniers jours",
+      "downloadJSON": "Télécharger le JSON",
+      "doctorPDF": "PDF médecin",
+      "copyAIPrompt": "Copier le prompt IA",
+      "copied": "Copié !",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Qualité du sommeil",
+      "activity": "Activité",
+      "avgSleepPerNight": "Sommeil moyen par nuit"
+    },
+    "medication": {
+      "adherence": "Observance",
+      "empty": {
+        "title": "Pas encore de données de médication.",
+        "hint": "Ajoute un médicament dans les paramètres de suivi, puis note-le quotidiennement."
+      },
+      "dosageTimeline": "Chronologie des dosages",
+      "started": "Démarré {{dosage}}",
+      "changedTo": "Modifié en {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Principales émotions",
+      "insights": "Analyses",
+      "proBadge": "PRO",
+      "insightsLocked_one": "{{count}} analyse détectée. Passe à Pro pour la voir",
+      "insightsLocked_other": "{{count}} analyses détectées. Passe à Pro pour les voir",
+      "weekInReview": "Bilan de la semaine",
+      "weekInReviewLocked": "Passe à Pro pour voir ton résumé hebdomadaire de bien-être"
+    },
+    "week": {
+      "range": "{{start}} au {{end}}",
+      "daysLogged": "{{count}}/7 jours notés",
+      "avgMood": "Humeur moy.",
+      "moodDelta": "{{delta}} vs semaine dernière",
+      "avgSleep": "Sommeil moy.",
+      "medsTaken": "Médocs pris",
+      "topActivity": "Activité principale",
+      "topEmotions": "Principales émotions",
+      "reflection": "Réflexion",
+      "reflectionPlaceholder": "Comment cette semaine s'est-elle passée dans l'ensemble ? Des pensées à noter..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Jalon débloqué"
+  },
+  "milestone": {
+    "notes_one": "{{count}} note écrite",
+    "notes_other": "{{count}} notes écrites",
+    "streak": "Série d'écriture de {{count}} jours",
+    "words_one": "{{formatted}} mot écrit",
+    "words_other": "{{formatted}} mots écrits",
+    "age30": "30 jours avec PrivacyNotes",
+    "age365": "1 an avec PrivacyNotes",
+    "age730": "2 ans avec PrivacyNotes",
+    "age1825": "5 ans avec PrivacyNotes",
+    "ageDefault": "{{count}} jours au compteur"
+  }
+}

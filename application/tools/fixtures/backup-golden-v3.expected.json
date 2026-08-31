@@ -1,0 +1,85 @@
+{
+  "version": 3,
+  "exportedAt": "2026-07-16T12:00:00.000Z",
+  "notes": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "title": "Träume & Ziele 🚀",
+      "body": "# Heading\n\nBody with a [[note-link]], a <https://privacynotes.app> link, `code`, and unicode: äöü ß 日本語 émoji 🎉.\n\n- bullet\n\n- [ ] task line",
+      "tags": ["työ", "日本語", "a-tag"],
+      "createdAt": "2026-07-01T08:00:00.000Z",
+      "updatedAt": "2026-07-15T09:30:00.000Z",
+      "starred": 1,
+      "type": "note",
+      "locked": 0,
+      "pinProtected": 0
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "title": "Weekly chores",
+      "body": "- [ ] water plants\n- [x] take out trash",
+      "tags": [],
+      "createdAt": "2026-07-02T08:00:00.000Z",
+      "updatedAt": "2026-07-14T10:00:00.000Z",
+      "starred": 0,
+      "type": "task",
+      "locked": 0,
+      "pinProtected": 0,
+      "folderId": "00000000-0000-4000-8000-00000000000a"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "title": "Journal: a fixed day",
+      "body": "Slept fine, wrote tests.",
+      "tags": ["journal"],
+      "createdAt": "2026-07-03T21:00:00.000Z",
+      "updatedAt": "2026-07-03T21:05:00.000Z",
+      "starred": 0,
+      "type": "journal",
+      "locked": 0,
+      "pinProtected": 0,
+      "trackers": { "mood": 4, "sleepHours": 7.5, "activities": ["walk", "code"] }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000004",
+      "title": "Example login",
+      "body": "{\"domain\":\"example.com\",\"username\":\"synthetic@example.com\",\"password\":\"not-a-real-secret\"}",
+      "tags": ["vault"],
+      "createdAt": "2026-07-04T12:00:00.000Z",
+      "updatedAt": "2026-07-04T12:00:00.000Z",
+      "starred": 0,
+      "type": "login",
+      "locked": 1,
+      "pinProtected": 1
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000005",
+      "title": "Example ssh key",
+      "body": "{\"publicKey\":\"ssh-ed25519 AAAA-synthetic\",\"privateKey\":\"not-a-real-key\"}",
+      "tags": [],
+      "createdAt": "2026-07-05T12:00:00.000Z",
+      "updatedAt": "2026-07-05T12:00:00.000Z",
+      "starred": 0,
+      "type": "ssh-key",
+      "locked": 1,
+      "pinProtected": 0,
+      "folderId": "00000000-0000-4000-8000-00000000000b"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000006",
+      "title": "Attachment carrier",
+      "body": "An image ref ![alt](pn:img/00000000-0000-4000-8000-0000000000f1) and a file [doc.pdf|12345|application/pdf](pn:file/00000000-0000-4000-8000-0000000000f2) stay as raw refs in backups.",
+      "tags": ["files"],
+      "createdAt": "2026-07-06T12:00:00.000Z",
+      "updatedAt": "2026-07-06T12:00:00.000Z",
+      "starred": 0,
+      "type": "file",
+      "locked": 0,
+      "pinProtected": 0
+    }
+  ],
+  "folders": [
+    { "id": "00000000-0000-4000-8000-00000000000a", "name": "Chores", "parentId": null, "order": 0 },
+    { "id": "00000000-0000-4000-8000-00000000000b", "name": "Keys", "parentId": "00000000-0000-4000-8000-00000000000a", "order": 1 }
+  ]
+}

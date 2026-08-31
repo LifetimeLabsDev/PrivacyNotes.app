@@ -1,0 +1,169 @@
+{
+  "shell": {
+    "importTitle": "Importera dina data",
+    "exportTitle": "Exportera dina data",
+    "restoreTitle": "Återställ dina data",
+    "vaultTitle": "Importera dina lösenord",
+    "tablistLabel": "Importera, exportera, återställ eller lösenord",
+    "tabImport": "Importera",
+    "tabExport": "Exportera",
+    "tabRestore": "Återställ",
+    "tabVault": "Lösenord",
+    "working": "Arbetar…"
+  },
+  "footer": {
+    "exportNote": "Exporter körs lokalt. Ingenting laddas upp.",
+    "restoreNote": "Din fil läses och dekrypteras lokalt.",
+    "importNote": "Allt krypteras innan det lämnar din enhet för att synkas."
+  },
+  "importPick": {
+    "autoTagLabel": "Tagga importerade anteckningar efter källa",
+    "autoTagDesc": "Anteckningar från Google Keep får <keep>#google</keep>, Obsidian får <obsidian>#obsidian</obsidian>, och så vidare.",
+    "guideAria": "Importguide för {{app}}",
+    "guideLabel": "Guide"
+  },
+  "folderImport": {
+    "tagLabel": "Tagga även anteckningar efter mapp",
+    "tagDesc": "Dina mappar återskapas oavsett. Det här lägger dessutom till varje mappnamn som en tagg, praktiskt om du också gillar att filtrera på tagg."
+  },
+  "sourceDesc": {
+    "googleKeep": "Google Takeout .zip (mappen Keep) eller en enskild .json-anteckning. Checklistor importeras som riktiga uppgiftslistor.",
+    "appleNotes": "Exportera med gratisappen Exporter som Markdown och släpp .zip-filen här.",
+    "appleJournal": "Exportera från Journal på Mac eller iPhone, komprimera mappen AppleJournalEntries och släpp .zip-filen här. Posterna importeras som dagboksinlägg med sina foton, videor, röstmemon och platser.",
+    "evernote": "En ensam .enex, eller flera zippade tillsammans. Behåller formatering, taggar, bilagor, anteckningslänkar och anteckningsböcker. Evernote tar inte med uppgifter i .enex.",
+    "samsungNotes": "Exportera som Word (.docx) eller text (.txt). Zippa flera filer för att importera många på en gång.",
+    "simplenote": "Exportera från Simplenote (Inställningar -> Verktyg -> Exportera anteckningar). Släpp .zip-filen här.",
+    "standardNotes": "Dekrypterad .zip- eller .txt-säkerhetskopia från Standard Notes (Arkiv > Exportera > Dekrypterad).",
+    "obsidian": "Obsidian-valv som .zip. Bevarar taggar, [[note links]], mappstruktur, #taggar i texten samt inbäddade bilder och filer.",
+    "notesnook": "Notesnook-export som .zip. Välj HTML vid exporten för att behålla formatering, anteckningsböcker, taggar och bilagor.",
+    "upnote": "I UpNote: Settings > Backup > Backup now, zippa sedan allt i mappen med säkerhetskopian. Behåller anteckningsböcker, taggar, fästa anteckningar, anteckningslänkar, formatering och bilagor. Export av enskilda anteckningar från mobilapparna fungerar också - välj ”Export to HTML”.",
+    "markdownFolder": ".md- eller .txt-filer var för sig eller som en .zip. En zippad mapp behåller sina undermappar och tar med sig sina bilder och bilagor.",
+    "markdownApp": "De här anteckningarna är redan Markdown-filer i en mapp. Släpp mappen som .zip så följer undermappar, bilder och #taggar med.",
+    "browserBookmarks": "Bokmärkesfilen (.html) från \"Export bookmarks\" i din webbläsare, eller .zip:en som Safari skriver. Chrome, Firefox, Safari, Edge, Opera, Brave och Vivaldi innehåller alla samma fil. Mappar och datum följer med.",
+    "bitwarden": "Okrypterad .json-export från Bitwarden (Tools > Export vault > .json). Inloggningar, kort, SSH-nycklar, säkra anteckningar och TOTP-koder följer med.",
+    "browserPasswords": "Lösenordsfilen (.csv) från Chrome, Edge, Brave, Opera, Vivaldi, Firefox eller Safari, eller .zip:en som Safari skriver. Varje rad blir en inloggning. Radera filen när du är klar - den innehåller dina lösenord i klartext."
+  },
+  "vaultPick": {
+    "intro": "Importera inloggningar, kort och SSH-nycklar från en annan lösenordshanterare."
+  },
+  "restorePick": {
+    "intro": "Återställ en PrivacyNotes-säkerhetskopia som du exporterat tidigare. Din fil läses och dekrypteras lokalt.",
+    "fullBackupTitle": "Fullständig säkerhetskopia (.zip)",
+    "fullBackupDesc": "Återställ anteckningar, dagböcker, valvobjekt, uppgifter, bilder, ljud och filer. Allt importeras som nya objekt - befintliga data skrivs inte över.",
+    "encryptedBackupTitle": "Krypterad säkerhetskopia (.pnbackup, .pnbackupz)",
+    "encryptedBackupDesc": "Återställ en krypterad säkerhetskopia med din frasnyckel. En .pnbackupz tar tillbaka allt, filer inräknade; en .pnbackup innehåller bara text och metadata. Du måste vara inloggad med samma konto som skapade den."
+  },
+  "encryptedBackupLabel": "Krypterad säkerhetskopia",
+  "status": {
+    "readingFile": "Läser filen…",
+    "decryptingBackup": "Dekrypterar säkerhetskopian...",
+    "writingNotes": "Skriver anteckningar till ditt lokala bibliotek…",
+    "importingBlobs": "Importerar bilder och bilagor...",
+    "restoringBlobs": "Återställer bilder och filer..."
+  },
+  "errors": {
+    "genericParse": "Något gick fel.",
+    "decryptionFailed": "Dekrypteringen misslyckades. Fel fras eller skadad fil.",
+    "blobImportFailed": "Dina anteckningar importerades, men inte deras bilder och filer: {{detail}} Ingenting i filen du valde ändrades, så du kan radera de importerade anteckningarna och köra importen igen."
+  },
+  "preview": {
+    "sourceLabel": "Källa",
+    "uniqueTags": "Unika taggar",
+    "empty": "Tom",
+    "untagged": "Otaggad",
+    "items": "Objekt",
+    "previewLabel": "Förhandsvisning",
+    "andMore": "… och {{count}} till",
+    "headsUpLabel": "Obs:",
+    "duplicateWarning": "importen lägger till de här som nya anteckningar. Kör du den två gånger får du dubbletter. Det finns ingen automatisk dubblettrensning ännu.",
+    "quotaExceeded": "<strong>För lite lagring för att importera.</strong> Uppskattningsvis {{needed}} behövs, {{available}} tillgängligt. Frigör utrymme eller uppgradera innan du importerar.",
+    "quotaWarning": "Obs: den här importen använder ungefär {{needed}} av ditt återstående lagringsutrymme på {{available}}.",
+    "oversizeAttachments_one": "1 fil är större än gränsen på {{limit}} per fil i din plan. Den importeras till den här enheten, men synkas inte till dina andra enheter förrän du uppgraderar.",
+    "oversizeAttachments_other": "{{count}} filer är större än gränsen på {{limit}} per fil i din plan. De importeras till den här enheten, men synkas inte till dina andra enheter förrän du uppgraderar.",
+    "duplicateSkipNote": "bokmärken du redan sparat hoppas över, så att köra det här två gånger dubblerar ingenting."
+  },
+  "counts": {
+    "note_one": "anteckning",
+    "note_other": "anteckningar",
+    "journal_one": "dagboksinlägg",
+    "journal_other": "dagboksinlägg",
+    "login_one": "inloggning",
+    "login_other": "inloggningar",
+    "card_one": "kort",
+    "card_other": "kort",
+    "sshKey_one": "SSH-nyckel",
+    "sshKey_other": "SSH-nycklar",
+    "zeroItems": "0 objekt",
+    "importButton": "Importera {{counts}}"
+  },
+  "errorPhase": {
+    "heading": "{{importer}}: importen misslyckades"
+  },
+  "export": {
+    "intro": "Dina data är dina. Exportera när du vill, gratis.",
+    "fullBackupHeading": "Fullständig säkerhetskopia",
+    "portableHeading": "Portabel export",
+    "vaultOnlyHeading": "Endast valvet",
+    "zipBackupTitle": "PrivacyNotes-säkerhetskopia (.zip)",
+    "zipBackupDesc": "Allt: anteckningar, dagböcker, valvobjekt, uppgifter, bilder, ljud och filer. Använd den här för en komplett kontosäkerhetskopia eller för att flytta till en ny enhet. Filerna i den är inte krypterade, så förvara zip-filen på ett säkert ställe.",
+    "encryptedZipBackupTitle": "Krypterad fullständig säkerhetskopia (.pnbackupz)",
+    "encryptedZipBackupDesc": "Allt som zip-kopian innehåller - anteckningar, valvobjekt, bilder, ljud och filer - förseglat med din frasnyckel. Återställs med din fras på vilken enhet som helst. Tryggt att förvara var som helst.",
+    "encryptedBackupTitle": "Krypterad säkerhetskopia (.pnbackup)",
+    "encryptedBackupDesc": "Allt textinnehåll och all metadata, krypterat med din frasnyckel. Inga bilder eller filer. Tryggt att förvara var som helst - oläsligt utan din fras.",
+    "htmlArchiveTitle": "HTML-arkiv (.zip)",
+    "htmlArchiveDesc": "En utskrivbar HTML-sida per anteckning. Bra för att läsa offline eller arkivera, inte för att återställa.",
+    "textBackupTitle": "Textsäkerhetskopia (.json)",
+    "textBackupDesc": "Allt textinnehåll och all metadata som vanlig JSON. Inga bilder eller filer. Förvara den någonstans du litar på - den här är inte krypterad.",
+    "vaultExportTitle": "Valvexport (.json)",
+    "vaultExportDesc": "Inloggningar, kort och SSH-nycklar i Bitwarden-kompatibelt format. Kan importeras av de flesta lösenordshanterare. Klartext - hantera varsamt.",
+    "bookmarksOnlyHeading": "Endast bokmärken",
+    "bookmarksExportTitle": "Bokmärkesfil (.html)",
+    "bookmarksExportDesc": "Standardfilen för bokmärken som varje webbläsare läser. Importera den till Chrome, Firefox, Safari eller Edge med mapparna kvar."
+  },
+  "exportProgress": {
+    "failedTitle": "Exporten misslyckades",
+    "completeTitle": "Exporten är klar",
+    "exportingTitle": "Exporterar säkerhetskopia...",
+    "preparing": "Förbereder...",
+    "exporting": "Exporterar...",
+    "imagesProgress": "Exporterar bilder... {{done}} av {{total}}",
+    "filesProgress": "Exporterar filer... {{done}} av {{total}}",
+    "building": "Bygger säkerhetskopian...",
+    "compressing": "Komprimerar..."
+  },
+  "upload": {
+    "completeTitle": "Uppladdningen är klar",
+    "failedTitle": "Uppladdningen misslyckades",
+    "partialTitle": "{{done}} uppladdade, {{failed}} misslyckades",
+    "uploadingTitle_one": "Laddar upp {{count}} fil",
+    "uploadingTitle_other": "Laddar upp {{count}} filer",
+    "statusDone": "Klar",
+    "statusFailed": "Misslyckades",
+    "errorStorageFull": "Lagringen är full - frigör utrymme eller lägg till lagring för att ladda upp den här filen.",
+    "errorStorageFullKept": "Får inte plats i din lagring - behålls på den här enheten. Den synkas när utrymme frigörs.",
+    "statusUploading": "Laddar upp...",
+    "statusWaiting": "Väntar",
+    "summaryDone": "{{count}} laddades upp",
+    "summaryUploading": "{{count}} pågår",
+    "summaryFailed": "{{count}} misslyckades",
+    "typesHint": "Bilder, dokument, ljud, video, zip. Max {{limit}} MB per fil.",
+    "proPitch": "Pro höjer gränsen till 50 MB per fil.",
+    "proPitchCta": "Uppgradera",
+    "storagePitch": "Ett lagringstillägg höjer den till 100 MB per fil.",
+    "storagePitchCta": "Lägg till lagring"
+  },
+  "decryptErrors": {
+    "tooSmall": "Den här filen är tom eller ofullständig ({{size}} byte), så det finns ingenting att återställa. Exportera säkerhetskopian igen och kontrollera att den sparade filen har en rimlig storlek innan du importerar den.",
+    "notThisAccount": "Den här säkerhetskopian gick inte att låsa upp. En .pnbackup öppnas bara i kontot som skapade den, så det här är oftast en säkerhetskopia från ett annat konto - vill du flytta anteckningar mellan konton exporterar du en fullständig säkerhetskopia (.zip) i stället. Om det är rätt konto blev filen skadad eller sparades ofullständigt."
+  },
+  "exportErrors": {
+    "generic": "Exporten kunde inte sparas. Försök igen, eller välj en annan mapp."
+  },
+  "saveErrors": {
+    "shortWrite": "Bara {{written}} av {{expected}} byte sparades, så filen är ofullständig. Försök igen och spara till enhetens egen lagring i stället för till en molnmapp."
+  },
+  "browserImport": {
+    "tagLabel": "Behåll taggarna från din webbläsare",
+    "tagDesc": "Firefox sparar taggar och ett adressfältsnyckelord tillsammans med bokmärket. Båda blir taggar här."
+  }
+}

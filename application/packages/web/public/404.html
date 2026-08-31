@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!--
+  Served by Cloudflare for any path that is neither a pre-rendered page nor
+  a real file: assets.not_found_handling = "404-page" in wrangler.jsonc.
+  The app's own client routes never reach here - worker.ts serves the SPA
+  shell for the paths in its SPA_ROUTES list before falling through to the
+  asset layer.
+
+  Deliberately dependency-free: no bundle, no /static-pages.js, no inline
+  script (CSP is script-src 'self'). A 404 that needs JavaScript to render
+  is a 404 that renders blank for the crawler that asked for it. Theme
+  follows prefers-color-scheme rather than the site's stored toggle, which
+  is a fair trade for zero JS on an error page.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#171514" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F5F5F5" media="(prefers-color-scheme: light)" />
+    <title>Page not found - PrivacyNotes</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <style>
+      :root {
+        --bg: #f5f5f5;
+        --fg: #1a1817;
+        --muted: #6b6560;
+        --line: #e2ded9;
+        --card: #ffffff;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #171514;
+          --fg: #f0ece8;
+          --muted: #9a938c;
+          --line: #2e2a27;
+          --card: #1f1c1a;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: var(--bg);
+        color: var(--fg);
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      main {
+        width: 100%;
+        max-width: 420px;
+        text-align: center;
+      }
+      .code {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 0 0 10px;
+      }
+      h1 {
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin: 0 0 10px;
+      }
+      p {
+        font-size: 15.5px;
+        line-height: 1.6;
+        color: var(--muted);
+        margin: 0 0 26px;
+      }
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+      }
+      a {
+        display: inline-block;
+        padding: 10px 18px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--card);
+        color: var(--fg);
+        font-size: 14.5px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      a:hover {
+        border-color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="code">Error 404</p>
+      <h1>This page doesn't exist</h1>
+      <p>The link may be out of date, or the address may have a typo in it.</p>
+      <div class="links">
+        <a href="/">Go to PrivacyNotes</a>
+        <a href="/help">Help center</a>
+      </div>
+    </main>
+  </body>
+</html>

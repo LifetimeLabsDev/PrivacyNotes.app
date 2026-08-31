@@ -1,0 +1,62 @@
+{
+  "export": [
+    "backup-strategy"
+  ],
+  "exportEnd": [
+    "leaving"
+  ],
+  "restore": [
+    "restore-backup",
+    "backup-strategy"
+  ],
+  "vault": [
+    "vault",
+    "vault-totp"
+  ],
+  "devices": [
+    "device-limit"
+  ],
+  "devicesPro": [
+    "remove-device"
+  ],
+  "storage": [
+    "storage-usage"
+  ],
+  "me": [
+    "what-syncs"
+  ],
+  "pin": [
+    "forgot-pin",
+    "locked-vs-protected"
+  ],
+  "biometric": [
+    "biometric-unlock",
+    "why-no-2fa"
+  ],
+  "phrase": [
+    "phrase-vs-password",
+    "guess-phrase"
+  ],
+  "wellness": [
+    "journal"
+  ],
+  "language": [
+    "translation-quality"
+  ],
+  "burn": [
+    "burn-notes"
+  ],
+  "upgrade": [
+    "buy-pro-anonymously",
+    "store-purchases"
+  ],
+  "deleteAccount": [
+    "delete-account"
+  ],
+  "downloads": [
+    "obtainium"
+  ],
+  "about": [
+    "data-location"
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "dismiss": "Odrzuć",
+  "close": "Zamknij",
+  "moveBanner": {
+    "title": "Aplikacja przenosi się na use.privacynotes.app",
+    "body": "Przenieś tę sesję teraz - to zajmuje kilka sekund, a notatki idą z Tobą.",
+    "cta": "Przenieś teraz",
+    "syncing": "Synchronizowanie notatek…",
+    "error": "Nie udało się teraz wszystkiego zsynchronizować. Sprawdź połączenie i spróbuj ponownie.",
+    "conflict": "Jedna z Twoich notatek ma konflikt synchronizacji, który wymaga Twojej decyzji. Rozwiąż go w oknie, a potem spróbuj ponownie."
+  },
+  "movedHint": {
+    "body": "To nowy dom aplikacji. Zaktualizuj zakładkę na use.privacynotes.app i dodaj ponownie skróty na ekranie głównym.",
+    "gotIt": "Rozumiem"
+  },
+  "moveScreen": {
+    "title": "Aplikacja przeniosła się na use.privacynotes.app",
+    "body": "Przenieś to urządzenie teraz - to zajmuje kilka sekund, a notatki idą z Tobą. Nic tu nie zostanie usunięte.",
+    "openNotes": "Otwórz tu raz swoje notatki, aby to naprawić",
+    "website": "Zamiast tego przeglądaj stronę"
+  },
+  "quota": {
+    "frozen": {
+      "configured": "Synchronizacja wstrzymana. Od ponad 90 dni przekraczasz limit pamięci. Twoje notatki są bezpieczne lokalnie. Odnów subskrypcję lub wyeksportuj dane.",
+      "unconfigured": "Synchronizacja wstrzymana. Od ponad 90 dni przekraczasz limit pamięci. Twoje notatki są bezpieczne lokalnie. Wyeksportuj dane i usuń część notatek, aby wznowić synchronizację."
+    },
+    "grace": {
+      "configured_one": "Dodatek pamięci wygasł. Pozostał {{count}} dzień na zmniejszenie zużycia lub odnowienie subskrypcji, zanim synchronizacja zostanie wstrzymana.",
+      "configured_few": "Dodatek pamięci wygasł. Pozostały {{count}} dni na zmniejszenie zużycia lub odnowienie subskrypcji, zanim synchronizacja zostanie wstrzymana.",
+      "configured_many": "Dodatek pamięci wygasł. Pozostało {{count}} dni na zmniejszenie zużycia lub odnowienie subskrypcji, zanim synchronizacja zostanie wstrzymana.",
+      "configured_other": "Dodatek pamięci wygasł. Pozostało {{count}} dnia na zmniejszenie zużycia lub odnowienie subskrypcji, zanim synchronizacja zostanie wstrzymana.",
+      "unconfigured_one": "Limit pamięci przekroczony. Pozostał {{count}} dzień na usunięcie części notatek, zanim synchronizacja zostanie wstrzymana.",
+      "unconfigured_few": "Limit pamięci przekroczony. Pozostały {{count}} dni na usunięcie części notatek, zanim synchronizacja zostanie wstrzymana.",
+      "unconfigured_many": "Limit pamięci przekroczony. Pozostało {{count}} dni na usunięcie części notatek, zanim synchronizacja zostanie wstrzymana.",
+      "unconfigured_other": "Limit pamięci przekroczony. Pozostało {{count}} dnia na usunięcie części notatek, zanim synchronizacja zostanie wstrzymana."
+    },
+    "full": {
+      "configured": "Pamięć zapełniona. Części notatek nie udało się zsynchronizować. Zwolnij miejsce lub dokup pamięć.",
+      "unconfigured": "Pamięć zapełniona. Części notatek nie udało się zsynchronizować. Zwolnij miejsce, usuwając część notatek."
+    },
+    "manageStorage": "Zarządzaj pamięcią",
+    "viewUsage": "Zobacz zużycie"
+  },
+  "syncError": {
+    "failed_one": "{{count}} notatka nie została zsynchronizowana. Ponowimy próbę automatycznie.",
+    "failed_few": "{{count}} notatki nie zostały zsynchronizowane. Ponowimy próbę automatycznie.",
+    "failed_many": "{{count}} notatek nie zostało zsynchronizowanych. Ponowimy próbę automatycznie.",
+    "failed_other": "{{count}} notatki nie zostało zsynchronizowanych. Ponowimy próbę automatycznie.",
+    "lastError": "Ostatni błąd: {{message}}"
+  },
+  "sessionExpired": {
+    "title": "Sesja wygasła",
+    "body": "Twoja sesja wygasła. Notatki są bezpieczne na tym urządzeniu. Zaloguj się ponownie, aby wznowić synchronizację.",
+    "signInAgain": "Zaloguj się ponownie"
+  },
+  "signOutConfirm": {
+    "title": "Czy zapisałeś swoją frazę z 12 słów?",
+    "body": "Twoja fraza to <only>jedyna</only> droga powrotu. Żadnego resetu przez e-mail, żadnej infolinii. Z założenia nie wiemy, kim jesteś. Jeśli jeszcze jej nie zapisałeś, wybierz <action>Nie, pokaż frazę</action>, a otworzymy ją teraz.",
+    "unsyncedWarn_one": "1 notatka na tym urządzeniu nie została jeszcze zsynchronizowana. Zostanie bezpowrotnie utracona, jeśli nie uda się jej wysłać podczas wylogowania.",
+    "unsyncedWarn_few": "{{count}} notatki na tym urządzeniu nie zostały jeszcze zsynchronizowane. Zostaną bezpowrotnie utracone, jeśli nie uda się ich wysłać podczas wylogowania.",
+    "unsyncedWarn_many": "{{count}} notatek na tym urządzeniu nie zostało jeszcze zsynchronizowanych. Zostaną bezpowrotnie utracone, jeśli nie uda się ich wysłać podczas wylogowania.",
+    "unsyncedWarn_other": "{{count}} notatki na tym urządzeniu nie zostały jeszcze zsynchronizowane. Zostaną bezpowrotnie utracone, jeśli nie uda się ich wysłać podczas wylogowania.",
+    "unsyncedKept_one": "1 notatka na tym urządzeniu nie została jeszcze zsynchronizowana. Zostanie na tym urządzeniu i zsynchronizuje się, gdy znów się zalogujesz.",
+    "unsyncedKept_few": "{{count}} notatki na tym urządzeniu nie zostały jeszcze zsynchronizowane. Zostaną na tym urządzeniu i zsynchronizują się, gdy znów się zalogujesz.",
+    "unsyncedKept_many": "{{count}} notatek na tym urządzeniu nie zostało jeszcze zsynchronizowanych. Zostaną na tym urządzeniu i zsynchronizują się, gdy znów się zalogujesz.",
+    "unsyncedKept_other": "{{count}} notatki na tym urządzeniu nie zostały jeszcze zsynchronizowane. Zostaną na tym urządzeniu i zsynchronizują się, gdy znów się zalogujesz.",
+    "dontRemind": "Nie przypominaj mi więcej",
+    "showPhrase": "Nie, pokaż frazę",
+    "confirm": "Tak, wyloguj"
+  },
+  "burnShareModal": {
+    "title": "Udostępnij i spal po przeczytaniu",
+    "body": "<lead>Twoja oryginalna notatka nie zostanie usunięta.</lead> Zostaje bezpiecznie na Twoim koncie. Link do spalenia to osobna zaszyfrowana kopia, która niszczy się po przeczytaniu. Link wygasa po 24 godzinach, otwarty czy nie.",
+    "imagesStripped": "Pokazywany jest tylko tekst, pliki w tej notatce są ukryte.",
+    "copied": "Skopiowano"
+  },
+  "burnView": {
+    "tagline": "Zaszyfrowane. Ulotne. Tylko dla Twoich oczu.",
+    "toggleTheme": "Przełącz motyw",
+    "checking": "Sprawdzanie...",
+    "revealing": "Pobieranie i odszyfrowywanie...",
+    "goToApp": "Przejdź do <brand/>",
+    "footerTagline": "- Notatki szyfrowane w modelu zero-knowledge, hostowane w Szwajcarii.",
+    "sealed": {
+      "heading": "Otrzymałeś zaszyfrowaną notatkę.",
+      "subheading": "Ta wiadomość zniszczy się po przeczytaniu. Nieprzeczytane linki wygasają po 24 godzinach.",
+      "reveal": "Odsłoń wiadomość",
+      "warning": "Serwer usuwa notatkę w chwili, gdy ją odsłonisz. Nie ma drugiej szansy."
+    },
+    "revealed": {
+      "countdown": "Tekst zniknie za {{time}}",
+      "clearNow": "Wyczyść teraz",
+      "emptyNote": "(pusta notatka)",
+      "deletedNotice": "Ta udostępniona kopia została usunięta z serwera. Nie można jej ponownie wyświetlić."
+    },
+    "destroyed": {
+      "heading": "Wiadomość zniszczona.",
+      "body": "Usunięta z serwera i wyczyszczona z pamięci. Tej wiadomości nie da się już przeczytać."
+    },
+    "gone": {
+      "heading": "Tej notatki już nie ma.",
+      "body": "Została już przeczytana albo wygasła. Linki do spalenia można otworzyć tylko raz i wygasają po 24 godzinach."
+    },
+    "error": {
+      "heading": "Coś poszło nie tak.",
+      "fallback": "Link może być uszkodzony lub niekompletny.",
+      "server": "Błąd serwera. Notatka mogła już zostać przeczytana albo wygasła.",
+      "decryption": "Odszyfrowywanie nie powiodło się. Link może być uszkodzony.",
+      "network": "Nie udało się połączyć z serwerem. Sprawdź połączenie i spróbuj ponownie."
+    },
+    "noPayload": {
+      "heading": "Nie znaleziono wiadomości.",
+      "body": "Ten adres URL nie zawiera odniesienia do notatki do spalenia. Upewnij się, że masz kompletny link."
+    }
+  },
+  "burnShare": {
+    "offline": "Jesteś offline. Linki do spalenia wymagają połączenia z serwerem. Spróbuj ponownie, gdy wrócisz online.",
+    "demo": "Linki do spalenia są zapisywane na serwerze, a demo z żadnym się nie łączy. Zarejestruj się, aby tworzyć prawdziwe linki do spalenia.",
+    "tooLarge": "Notatka jest za duża, aby udostępnić ją linkiem do spalenia ({{size}} KB). Maksimum to {{max}} KB.",
+    "storeFailed": "Nie udało się zapisać notatki do spalenia na serwerze."
+  }
+}

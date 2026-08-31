@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Velikost:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "Stáhnout obrázek",
+    "deleteAria": "Smazat obrázek",
+    "loading": "Načítám obrázek...",
+    "uploading": "Odesílám {{name}}...",
+    "uploadFailed": "Odeslání se nezdařilo: {{message}}",
+    "storeUnavailable": "Úložiště obrázků není dostupné",
+    "loadFailed": "Obrázek se nepodařilo načíst",
+    "notFound": "Obrázek nenalezen"
+  },
+  "attachment": {
+    "fallbackName": "Příloha",
+    "imageAlt": "Obrázek",
+    "cantPlay": "Nelze přehrát. Stáhni si to k poslechu",
+    "downloadingStatus": "stahuji...",
+    "deleteConfirm": "Smazat?",
+    "copied": "Zkopírováno",
+    "download": "Stáhnout",
+    "downloadToPlay": "Stáhnout k přehrání",
+    "play": "Přehrát",
+    "pause": "Pozastavit",
+    "fileNotFound": "Soubor nenalezen",
+    "localOnly": "Jen na tomto zařízení",
+    "localOnlyTip": "Nevejde se do úložiště. Není zálohovaný: smazáním dat prohlížeče nebo aplikace o soubor přijdeš. Synchronizuje se, jakmile se uvolní místo.",
+    "notUploaded": "Zatím nenahráno",
+    "notUploadedTip": "Tento soubor se zatím nenahrál ze zařízení, kde byl přidán - obvykle proto, že je tam plné úložiště. Otevře se tady, jakmile se synchronizuje.",
+    "downloadFailed": "Stažení se nezdařilo",
+    "playbackFailed": "Přehrávání se nezdařilo",
+    "uploadFailed": "Odeslání se nezdařilo: {{message}}",
+    "unknownError": "Neznámá chyba"
+  }
+}

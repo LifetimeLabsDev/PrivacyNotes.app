@@ -1,0 +1,162 @@
+{
+  "shell": {
+    "importTitle": "데이터 가져오기",
+    "exportTitle": "데이터 내보내기",
+    "restoreTitle": "데이터 복원",
+    "vaultTitle": "비밀번호 가져오기",
+    "tablistLabel": "가져오기, 내보내기, 복원 또는 비밀번호",
+    "tabImport": "가져오기",
+    "tabExport": "내보내기",
+    "tabRestore": "복원",
+    "tabVault": "비밀번호",
+    "working": "작업 중…"
+  },
+  "footer": {
+    "exportNote": "내보내기는 로컬에서 실행돼요. 아무것도 업로드되지 않아요.",
+    "restoreNote": "파일은 로컬에서 읽고 복호화해요.",
+    "importNote": "모든 데이터는 동기화를 위해 기기를 떠나기 전에 암호화돼요."
+  },
+  "importPick": {
+    "autoTagLabel": "가져온 노트에 출처 태그 달기",
+    "autoTagDesc": "Google Keep 노트에는 <keep>#google</keep>, Obsidian에는 <obsidian>#obsidian</obsidian> 태그가 붙는 식이에요.",
+    "guideAria": "{{app}} 가져오기 가이드",
+    "guideLabel": "가이드"
+  },
+  "folderImport": {
+    "tagLabel": "폴더 이름도 태그로 달기",
+    "tagDesc": "폴더는 어차피 그대로 다시 만들어져요. 여기에 더해 각 폴더 이름을 태그로도 추가해요. 태그로 필터링하는 것도 좋아한다면 유용해요."
+  },
+  "sourceDesc": {
+    "googleKeep": "Google Takeout .zip(Keep 폴더) 또는 단일 .json 노트. 체크리스트는 기본 할 일 목록으로 가져와요.",
+    "appleNotes": "무료 Exporter 앱으로 Markdown 내보내기를 한 뒤 .zip을 여기에 놓으세요.",
+    "appleJournal": "Mac이나 iPhone의 일기에서 내보낸 뒤 AppleJournalEntries 폴더를 압축해서 .zip을 여기에 놓으세요. 항목은 사진, 동영상, 음성 메모, 위치 정보와 함께 저널 항목으로 가져와요.",
+    "evernote": ".enex 파일 하나만 넣어도 되고, 여러 개를 zip으로 묶어도 돼요. 서식, 태그, 첨부 파일, 노트 링크, 노트북을 유지해요. Evernote는 작업을 .enex에 넣지 않아요.",
+    "samsungNotes": "Word(.docx) 또는 텍스트(.txt)로 내보내세요. 여러 파일은 zip으로 묶으면 한 번에 가져올 수 있어요.",
+    "simplenote": "Simplenote에서 내보내세요(Settings -> Tools -> Export Notes). .zip을 여기에 놓으세요.",
+    "standardNotes": "Standard Notes의 복호화된 .zip 또는 .txt 백업(File > Export > Decrypted).",
+    "obsidian": "Obsidian 볼트를 .zip으로. 태그, [[note links]], 폴더 구조, 본문 속 #태그, 삽입한 이미지와 파일을 유지해요.",
+    "notesnook": "Notesnook 내보내기를 .zip으로. 내보낼 때 HTML을 선택하면 서식, 노트북, 태그, 첨부 파일이 유지돼요.",
+    "upnote": "UpNote에서 Settings > Backup > Backup now를 실행한 다음, 백업 폴더 안의 모든 것을 zip으로 압축하세요. 노트북, 태그, 고정, note-link, 서식, 첨부 파일이 유지돼요. 휴대폰 앱의 노트별 내보내기도 받아요. \"Export to HTML\"을 선택하세요.",
+    "markdownFolder": ".md 또는 .txt 파일을 하나씩, 또는 .zip으로. 압축한 폴더는 하위 폴더를 그대로 두고 이미지와 첨부 파일도 함께 가져와요.",
+    "markdownApp": "이 노트들은 이미 폴더 안의 Markdown 파일이에요. 그 폴더를 .zip으로 놓으면 하위 폴더와 이미지, #태그가 같이 들어와요.",
+    "browserBookmarks": "브라우저의 \"Export bookmarks\"로 만든 북마크 파일(.html), 또는 Safari가 만드는 .zip이에요. Chrome, Firefox, Safari, Edge, Opera, Brave, Vivaldi 모두 같은 파일을 담고 있어요. 폴더와 날짜도 함께 와요.",
+    "bitwarden": "Bitwarden의 암호화되지 않은 .json 내보내기 파일이에요 (Tools > Export vault > .json). 로그인, 카드, SSH 키, 보안 메모, TOTP 코드가 모두 함께 들어와요.",
+    "browserPasswords": "Chrome, Edge, Brave, Opera, Vivaldi, Firefox, Safari의 비밀번호 파일(.csv), 또는 Safari가 만드는 .zip이에요. 한 줄이 로그인 하나가 돼요. 다 끝나면 파일을 지우세요. 비밀번호가 그대로 적혀 있어요."
+  },
+  "vaultPick": {
+    "intro": "다른 비밀번호 관리자에서 로그인, 신용카드, SSH 키를 가져오세요."
+  },
+  "restorePick": {
+    "intro": "이전에 내보낸 PrivacyNotes 백업을 복원하세요. 파일은 로컬에서 읽고 복호화해요.",
+    "fullBackupTitle": "전체 백업 (.zip)",
+    "fullBackupDesc": "노트, 저널, 보관함 항목, 할 일, 이미지, 오디오, 파일을 복원해요. 모두 새 항목으로 가져오고, 기존 데이터는 덮어쓰지 않아요.",
+    "encryptedBackupTitle": "암호화 백업 (.pnbackup, .pnbackupz)",
+    "encryptedBackupDesc": "문구 키로 암호화 백업을 복원해요. .pnbackupz는 파일까지 전부 되돌리고, .pnbackup은 텍스트 콘텐츠와 메타데이터만 담고 있어요. 백업을 만든 계정과 같은 계정으로 로그인되어 있어야 해요."
+  },
+  "encryptedBackupLabel": "암호화 백업",
+  "status": {
+    "readingFile": "파일 읽는 중…",
+    "decryptingBackup": "백업 복호화 중...",
+    "writingNotes": "노트를 로컬 라이브러리에 쓰는 중…",
+    "importingBlobs": "이미지와 첨부 파일 가져오는 중...",
+    "restoringBlobs": "이미지와 파일 복원 중..."
+  },
+  "errors": {
+    "genericParse": "문제가 발생했어요.",
+    "decryptionFailed": "복호화에 실패했어요. 문구가 틀렸거나 파일이 손상됐어요.",
+    "blobImportFailed": "노트는 가져왔지만 이미지와 파일은 가져오지 못했어요: {{detail}} 선택한 파일 안의 내용은 전혀 바뀌지 않았으니, 가져온 노트를 지우고 다시 가져오기를 실행해도 괜찮아요."
+  },
+  "preview": {
+    "sourceLabel": "출처",
+    "uniqueTags": "고유 태그",
+    "empty": "비어 있음",
+    "untagged": "태그 없음",
+    "items": "항목",
+    "previewLabel": "미리보기",
+    "andMore": "… 외 {{count}}개",
+    "headsUpLabel": "참고:",
+    "duplicateWarning": "가져오면 이 항목들이 새 노트로 추가돼요. 두 번 실행하면 중복이 생겨요. 자동 중복 제거는 아직 없어요.",
+    "quotaExceeded": "<strong>저장 공간이 부족해서 가져올 수 없어요.</strong> 약 {{needed}} 필요, {{available}} 사용 가능. 공간을 확보하거나 업그레이드한 뒤 가져오세요.",
+    "quotaWarning": "참고: 이번 가져오기는 남은 저장 공간 {{available}} 중 약 {{needed}}를 사용해요.",
+    "oversizeAttachments_other": "{{count}}개의 파일이 요금제의 파일당 한도 {{limit}}보다 커요. 이 기기에는 가져오지만, 업그레이드하기 전까지는 다른 기기와 동기화되지 않아요.",
+    "duplicateSkipNote": "이미 저장한 북마크는 건너뛰기 때문에 두 번 실행해도 중복되지 않아요."
+  },
+  "counts": {
+    "note_other": "노트",
+    "journal_other": "저널",
+    "login_other": "로그인",
+    "card_other": "카드",
+    "sshKey_other": "SSH 키",
+    "zeroItems": "항목 0개",
+    "importButton": "{{counts}} 가져오기"
+  },
+  "errorPhase": {
+    "heading": "{{importer}}: 가져오기 실패"
+  },
+  "export": {
+    "intro": "데이터는 당신의 것이에요. 언제든, 무료로 내보내세요.",
+    "fullBackupHeading": "전체 백업",
+    "portableHeading": "이동용 내보내기",
+    "vaultOnlyHeading": "보관함만",
+    "zipBackupTitle": "PrivacyNotes 백업 (.zip)",
+    "zipBackupDesc": "노트, 저널, 보관함 항목, 할 일, 이미지, 오디오, 파일까지 전부예요. 계정 전체를 백업하거나 새 기기로 옮길 때 사용하세요. 안에 든 파일은 암호화되어 있지 않으니 zip 파일을 안전한 곳에 보관하세요.",
+    "encryptedZipBackupTitle": "암호화 전체 백업 (.pnbackupz)",
+    "encryptedZipBackupDesc": "zip 백업에 담기는 모든 것(노트, 보관함 항목, 이미지, 오디오, 파일)을 문구 키로 봉인해요. 어느 기기에서든 문구로 복원할 수 있어요. 어디에 보관해도 안전해요.",
+    "encryptedBackupTitle": "암호화 백업 (.pnbackup)",
+    "encryptedBackupDesc": "모든 텍스트 콘텐츠와 메타데이터를 문구 키로 암호화해요. 이미지와 파일은 제외예요. 문구 없이는 읽을 수 없으니 어디에 보관해도 안전해요.",
+    "htmlArchiveTitle": "HTML 아카이브 (.zip)",
+    "htmlArchiveDesc": "노트마다 인쇄 가능한 HTML 페이지 하나씩. 오프라인 열람이나 보관용으로 좋고, 복원용은 아니에요.",
+    "textBackupTitle": "텍스트 백업 (.json)",
+    "textBackupDesc": "모든 텍스트 콘텐츠와 메타데이터를 일반 JSON으로. 이미지와 파일은 제외예요. 암호화되지 않으니 신뢰할 수 있는 곳에 보관하세요.",
+    "vaultExportTitle": "보관함 내보내기 (.json)",
+    "vaultExportDesc": "로그인, 카드, SSH 키를 Bitwarden 호환 형식으로. 대부분의 비밀번호 관리자에서 가져올 수 있어요. 평문이니 조심해서 다루세요.",
+    "bookmarksOnlyHeading": "북마크만",
+    "bookmarksExportTitle": "북마크 파일 (.html)",
+    "bookmarksExportDesc": "어느 브라우저에서나 읽는 표준 북마크 파일이에요. 폴더를 그대로 유지한 채 Chrome, Firefox, Safari, Edge로 가져갈 수 있어요."
+  },
+  "exportProgress": {
+    "failedTitle": "내보내기 실패",
+    "completeTitle": "내보내기 완료",
+    "exportingTitle": "백업 내보내는 중...",
+    "preparing": "준비 중...",
+    "exporting": "내보내는 중...",
+    "imagesProgress": "이미지 내보내는 중... {{total}}개 중 {{done}}개",
+    "filesProgress": "파일 내보내는 중... {{total}}개 중 {{done}}개",
+    "building": "백업 만드는 중...",
+    "compressing": "압축 중..."
+  },
+  "upload": {
+    "completeTitle": "업로드 완료",
+    "failedTitle": "업로드 실패",
+    "partialTitle": "{{done}}개 업로드, {{failed}}개 실패",
+    "uploadingTitle_other": "파일 {{count}}개 업로드 중",
+    "statusDone": "완료",
+    "statusFailed": "실패",
+    "errorStorageFull": "저장 공간이 가득 찼어요. 공간을 비우거나 스토리지를 추가하면 이 파일을 업로드할 수 있어요.",
+    "errorStorageFullKept": "저장 공간에 들어가지 않아 이 기기에만 보관돼요. 공간이 생기면 동기화돼요.",
+    "statusUploading": "업로드 중...",
+    "statusWaiting": "대기 중",
+    "summaryDone": "{{count}}개 완료",
+    "summaryUploading": "{{count}}개 업로드 중",
+    "summaryFailed": "{{count}}개 실패",
+    "typesHint": "이미지, 문서, 오디오, 비디오, zip. 파일당 최대 {{limit}} MB.",
+    "proPitch": "Pro는 파일당 한도를 50 MB로 올려 줘요.",
+    "proPitchCta": "업그레이드",
+    "storagePitch": "저장 공간 플랜은 파일당 100 MB까지 올려 줘요.",
+    "storagePitchCta": "저장 공간 추가"
+  },
+  "decryptErrors": {
+    "tooSmall": "이 파일은 비어 있거나 불완전해요({{size}}바이트). 복원할 내용이 없어요. 백업을 다시 내보낸 뒤, 저장된 파일 크기가 제대로 나오는지 확인하고 가져오세요.",
+    "notThisAccount": "이 백업을 열 수 없었어요. .pnbackup은 만든 계정에서만 열리기 때문에 보통은 다른 계정의 백업이에요. 계정 사이에 노트를 옮기려면 전체 백업(.zip)을 내보내세요. 계정이 맞다면 파일이 손상됐거나 저장이 중간에 끊긴 거예요."
+  },
+  "exportErrors": {
+    "generic": "내보낸 파일을 저장하지 못했어요. 다시 시도하거나 다른 폴더를 선택해 보세요."
+  },
+  "saveErrors": {
+    "shortWrite": "{{expected}}바이트 중 {{written}}바이트만 저장돼서 파일이 불완전해요. 클라우드 폴더 대신 기기 저장소에 저장해서 다시 시도해 보세요."
+  },
+  "browserImport": {
+    "tagLabel": "브라우저의 태그 유지하기",
+    "tagDesc": "Firefox는 북마크에 태그와 주소창 키워드를 함께 저장해요. 둘 다 여기서는 태그가 돼요."
+  }
+}

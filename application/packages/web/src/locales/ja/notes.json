@@ -1,0 +1,268 @@
+{
+  "noteRow": {
+    "created": "作成",
+    "modified": "更新",
+    "select": "ノートを選択",
+    "deselect": "ノートの選択を解除",
+    "pinProtected": "PIN保護",
+    "readOnly": "読み取り専用",
+    "file": "ファイル",
+    "empty": "空",
+    "noContent": "内容なし"
+  },
+  "header": {
+    "new": "新規",
+    "newNote": "新規ノート",
+    "newNoteHover": "新規ノート({{hotkey}})",
+    "trash": "ゴミ箱"
+  },
+  "folderChip": {
+    "clear": "フォルダの絞り込みを解除: {{folder}}"
+  },
+  "tagChip": {
+    "clear": "タグの絞り込みを解除: {{tag}}"
+  },
+  "vaultNew": {
+    "ariaLabel": "新規保管庫アイテム",
+    "login": "ログイン",
+    "card": "クレジットカード",
+    "sshKey": "SSH鍵"
+  },
+  "newMenu": {
+    "note": "ノート",
+    "task": "タスク",
+    "journal": "ジャーナル",
+    "login": "ログイン",
+    "file": "ファイル",
+    "bookmark": "ブックマーク"
+  },
+  "vaultFilter": {
+    "all": "すべて",
+    "logins": "ログイン",
+    "cards": "クレジットカード",
+    "keys": "鍵"
+  },
+  "journal": {
+    "backfillHover": "過去の日のジャーナルを作成",
+    "newEntry": "新規ジャーナル",
+    "newEntryHover": "新規ジャーナル({{hotkey}})"
+  },
+  "tasks": {
+    "newTitle": "{{date}} のタスク"
+  },
+  "trash": {
+    "empty": "空にする",
+    "emptyHover": "ゴミ箱のノートをすべて削除",
+    "storage": "ストレージ",
+    "autoDelete": "30日で自動削除"
+  },
+  "search": {
+    "sortOptions": "並び替えと表示オプション",
+    "placeholderVault": "保管庫を検索…",
+    "placeholderNotes": "ノートを検索…"
+  },
+  "selection": {
+    "countOf": "{{total}}件中{{selected}}件を選択",
+    "selectAll": "すべて選択",
+    "deselectAll": "選択をすべて解除"
+  },
+  "empty": {
+    "noMatches": "一致なし。",
+    "vault": "保管庫は空です。",
+    "notes": "まだノートがありません。",
+    "filtered": "フィルターに一致する項目はありません。",
+    "clearFilters": "フィルターを解除",
+    "filteredAfter": "すると表示されます。"
+  },
+  "headerLabel": {
+    "allItems": "すべて",
+    "untagged": "タグなし",
+    "journals": "ジャーナル",
+    "vault": "保管庫",
+    "pinned": "ピン留め",
+    "notes": "ノート"
+  },
+  "footerStats": {
+    "journals": "ジャーナル",
+    "items": "アイテム",
+    "trashed": "ゴミ箱",
+    "notes": "ノート",
+    "bookmarks": "ブックマーク"
+  },
+  "toast": {
+    "imageUploadFailed": "画像のアップロードに失敗しました: {{error}}",
+    "imageError": "画像エラー: {{error}}",
+    "uploadFailedFor": "「{{filename}}」のアップロードに失敗しました: {{error}}",
+    "importedSyncing_other": "{{count}}件のノートを読み込みました。同期中…",
+    "addedTag_other": "{{count}}件のアイテムに#{{tag}}を追加しました"
+  },
+  "burn": {
+    "mediaOnly": "このノートにはメディアしか含まれていないため、burnリンクでは共有できません。",
+    "shareTitle": "暗号化されたノート"
+  },
+  "loadError": {
+    "message": "ノートを読み込めませんでした。ローカルデータベースへの接続が中断されました。アプリが長くバックグラウンドにあった後に起こることがあります。",
+    "reload": "再読み込み"
+  },
+  "banner": {
+    "dismiss": "閉じる",
+    "proActivationPending": "支払いは受領しましたが、Proの有効化に通常より時間がかかっています。1分ほどしてから再読み込みしてください。有効にならない場合はサポートにご連絡ください。",
+    "snapshotPaused": "ノート履歴は一時停止中です。Proプランが無効になっているようです。Proが復元されるまで、新しい編集のスナップショットは保存されません。",
+    "restorePro": "Proを復元",
+    "storagePastDue": "ストレージのサブスクリプションの支払いに失敗しました。追加容量を失わないよう、Paddleでカード情報を更新してください。",
+    "updateCard": "カードを更新"
+  },
+  "sidebar": {
+    "collapse": "サイドバーを折りたたむ",
+    "expand": "サイドバーを展開"
+  },
+  "notesList": {
+    "collapse": "ノートリストを折りたたむ",
+    "expand": "ノートリストを展開"
+  },
+  "paneResize": {
+    "hintCollapse": "クリックで折りたたみ · ドラッグでサイズ変更"
+  },
+  "emptyEditor": {
+    "selectFile": "プレビューするファイルを選択",
+    "uploadFiles": "または、新しいファイルを暗号化保管庫にアップロードしてください。",
+    "selectNote": "ノートを選択するか、新しく作成してください。",
+    "selectMarkdown": "Markdownファイルを開くと、ここで読めます。"
+  },
+  "zen": {
+    "exit": "Zenを終了",
+    "exitHover": "Zenモードを終了(Esc)",
+    "enterHover": "Zenモードを開始",
+    "proHover": "Zenモード(Pro)",
+    "enterAriaShortcut": "Zenモードを開始(⌘⇧F)"
+  },
+  "editor": {
+    "backToList": "ノートリストに戻る",
+    "backToGrid": "グリッドに戻る",
+    "titlePlaceholder": "無題(クリックして編集、または自動生成)",
+    "titlePlaceholderLogin": "例: GitHub",
+    "titlePlaceholderCard": "例: 下4桁4242のVisa",
+    "titlePlaceholderSshKey": "例: GitHubデプロイキー",
+    "pin": "ピン留め",
+    "unpin": "ピン留めを解除",
+    "restore": "復元",
+    "deleteForever": "完全に削除",
+    "moveToTrash": "ゴミ箱に移動",
+    "noteOptions": "ノートオプション",
+    "readOnlyToggle": "読み取り専用。解除は",
+    "menu": "メニュー",
+    "showMarkdown": "Markdownを表示",
+    "showFormatted": "書式付きで表示",
+    "invisiblesShow": "編集記号を表示",
+    "invisiblesHide": "編集記号を非表示",
+    "findInNote": "ノート内を検索",
+    "navPrev": "前のノート",
+    "navNext": "次のノート",
+    "undo": "元に戻す",
+    "redo": "やり直す",
+    "hide": "隠す",
+    "show": "表示",
+    "hideToolbar": "書式ツールバーを隠す",
+    "showToolbar": "書式ツールバーを表示",
+    "widthDefault": "標準の幅",
+    "widthWide": "もっと広く",
+    "widthFull": "全幅",
+    "burn": "Burn After Readingで共有",
+    "titlePlaceholderLink": "ブックマーク名"
+  },
+  "share": {
+    "hover": "共有 / 書き出し",
+    "ariaLabel": "共有または書き出し",
+    "thisNote": "このノート",
+    "currentMdTitle": "現在のノート(.md)",
+    "currentMdDesc": "フロントマター付きの生のMarkdown。",
+    "currentHtmlTitle": "現在のノート(.html)",
+    "currentHtmlDesc": "印刷向き。白いページにMarkdownをレンダリング。",
+    "printTitle": "印刷 / PDFとして保存",
+    "printDesc": "印刷ダイアログを開きます。PDFとして保存するか、プリンタに送信できます。",
+    "burnTitle": "Burn After Readingで共有",
+    "burnDesc": "このノートを、1回だけ閲覧できるリンクとして公開します。リンクは読まれると自己破壊します。元のノートはアカウントに安全に残ります。",
+    "backup": "バックアップ",
+    "fullBackupTitle": "完全バックアップ(.zip)",
+    "fullBackupDesc": "ノート、ジャーナル、保管庫、タスク、画像、音声、ファイルのすべて。",
+    "allHtmlTitle": "全アイテム(.htmlの.zip)",
+    "allHtmlDesc": "アイテムごとに印刷可能なHTMLを1枚。オフラインでの閲覧に。",
+    "jsonTitle": "テキストバックアップ(.json)",
+    "jsonDesc": "すべてのテキスト内容とメタデータ。画像とファイルは含まれません。"
+  },
+  "weekReview": {
+    "title": "週間レビュー",
+    "daysLogged": "{{count}}/7日記録",
+    "mood": "気分",
+    "sleep": "睡眠",
+    "meds": "服薬",
+    "activity": "活動"
+  },
+  "footer": {
+    "settings": "設定",
+    "viewShortcuts": "キーボードショートカット一覧を表示",
+    "newNote": "新規",
+    "newNoteHintMac": "Option + Shift + N",
+    "newNoteHintOther": "Alt + Shift + N",
+    "openStats": "統計を開く",
+    "words": "単語",
+    "zen": "Zenモード",
+    "appearance": "外観",
+    "signOut": "サインアウト",
+    "signingOut": "サインアウト中…",
+    "switchToLight": "ライトモードに切り替え",
+    "switchToDark": "ダークモードに切り替え"
+  },
+  "settings": {
+    "groupYourNotes": "あなたのノート",
+    "groupAccount": "アカウントとデータ",
+    "groupBrand": "PrivacyNotes",
+    "statsLabel": "統計",
+    "journalsLabel": "ジャーナル",
+    "importLabel": "読み込みと書き出し",
+    "planLabel": "アカウント",
+    "storageLabel": "ストレージ",
+    "securityLabel": "セキュリティ",
+    "accountLabel": "IDと同期",
+    "appearanceLabel": "外観",
+    "helpLabel": "ヘルプ",
+    "aboutLabel": "概要",
+    "languageLabel": "言語",
+    "languageDesc": "PrivacyNotesの表示言語を選択。"
+  },
+  "importStore": {
+    "title": "読み込みますか、保存しますか?",
+    "confirm": "ノートとして読み込む",
+    "cancel": "ファイルとして保存",
+    "bodySingle": "<strong>{{filename}}</strong>はMarkdownファイルのようです。ノートとして読み込んで閲覧・編集できるようにしますか?それとも暗号化された添付ファイルとして保存しますか?",
+    "bodyMulti": "これら{{count}}個のファイルはMarkdownのようです。ノートとして読み込んで閲覧・編集できるようにしますか?それとも暗号化された添付ファイルとして保存しますか?"
+  },
+  "bulkTrash": {
+    "title": "ゴミ箱に移動",
+    "body_other": "<highlight>{{count}}件のアイテム</highlight>をゴミ箱に移動しますか?後で復元できます。"
+  },
+  "bulkDelete": {
+    "body_other": "<highlight>{{count}}件のノート</highlight>を完全に削除しますか?この操作は取り消せません。"
+  },
+  "tagConfirm": {
+    "mergeTitle": "タグを統合",
+    "deleteTitle": "タグを削除",
+    "deleteWithNotesTitle": "タグとノートを削除",
+    "mergeConfirm": "統合",
+    "deleteConfirm": "タグを削除",
+    "moveToTrash": "ゴミ箱に移動",
+    "mergeBody_other": "タグ<highlight>「{{targetTag}}」</highlight>はすでに存在します。現在「{{tag}}」が付いている<highlight>{{count}}件のノート</highlight>をそちらに統合しますか?",
+    "deleteBody_other": "タグ<highlight>「{{tag}}」</highlight>を<highlight>{{count}}件のノート</highlight>から削除しますか?ノート自体は削除されません。",
+    "deleteWithNotesBody_other": "タグ<highlight>「{{tag}}」</highlight>を削除して、<highlight>{{count}}件のノート</highlight>をゴミ箱に移動しますか?ゴミ箱から復元できます。"
+  },
+  "createNote": {
+    "title": "ノートを作成しますか?",
+    "confirm": "ノートを作成",
+    "body": "<highlight>「{{title}}」</highlight>というタイトルのノートは存在しません。リンク先のノートの名前が変更されると起こることがあります。このタイトルで新しいノートを作成しますか?"
+  },
+  "freshVault": {
+    "title": "新しい保管庫を作成しました",
+    "confirm": "OK",
+    "body": "入力されたフレーズに一致する既存の保管庫がなかったため、新しい空の保管庫を作成しました。自分のノートが表示されるはずだった場合は、サインアウトして、フレーズを注意深く入力し直してください。1単語でも違うと、別の保管庫が開きます。"
+  }
+}

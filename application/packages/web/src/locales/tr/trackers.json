@@ -1,0 +1,169 @@
+{
+  "labels": {
+    "mood": "Ruh hali",
+    "emotions": "Duygular",
+    "sleep": "Uyku",
+    "sleepScore": "Uyku puanı",
+    "heartRate": "Kalp atış hızı",
+    "activity": "Aktivite",
+    "medication": "İlaç",
+    "meds": "İlaçlar",
+    "energy": "Enerji",
+    "focus": "Odak",
+    "weight": "Kilo",
+    "steps": "Adım",
+    "water": "Su",
+    "screenTime": "Ekran süresi",
+    "caffeine": "Kafein",
+    "pain": "Ağrı",
+    "social": "Sosyallik",
+    "custom": "Özel"
+  },
+  "units": {
+    "hoursSuffix": "sa",
+    "bpm": "atım/dk",
+    "kg": "kg",
+    "steps_one": "adım",
+    "steps_other": "adım",
+    "hrs": "sa",
+    "glasses_one": " bardak",
+    "glasses_other": " bardak",
+    "cups_one": " fincan",
+    "cups_other": " fincan"
+  },
+  "scaleEnds": {
+    "low": "düşük",
+    "high": "yüksek",
+    "none": "yok",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "şiddetli",
+    "socialLow": "yalnız",
+    "socialHigh": "çok sosyal"
+  },
+  "mood": {
+    "prompt": "Kendinizi nasıl hissediyorsunuz? (1-10)",
+    "low": "berbat",
+    "high": "harika",
+    "anchor": {
+      "1": "berbat",
+      "3": "zorlu",
+      "5": "idare eder",
+      "7": "iyi",
+      "10": "harika"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "Şu anda hangi duyguları yaşıyorsunuz?",
+    "count_one": "{{count}} duygu",
+    "count_other": "{{count}} duygu",
+    "valence": {
+      "positive": "olumlu",
+      "neutral": "nötr",
+      "negative": "olumsuz"
+    },
+    "tags": {
+      "happy": "Mutlu",
+      "calm": "Sakin",
+      "relaxed": "Rahat",
+      "grateful": "Minnettar",
+      "loved": "Sevilen",
+      "motivated": "Motive",
+      "confident": "Kendinden emin",
+      "productive": "Üretken",
+      "focused": "Odaklanmış",
+      "energetic": "Enerjik",
+      "tired": "Yorgun",
+      "restless": "Huzursuz",
+      "distracted": "Dikkati dağınık",
+      "numb": "Hissiz",
+      "overwhelmed": "Bunalmış",
+      "anxious": "Kaygılı",
+      "stressed": "Stresli",
+      "frustrated": "Bıkkın",
+      "irritable": "Huysuz",
+      "sad": "Üzgün",
+      "lonely": "Yalnız",
+      "guilty": "Suçlu",
+      "hopeless": "Umutsuz",
+      "angry": "Öfkeli"
+    }
+  },
+  "sleep": {
+    "prompt": "Nasıl uyudunuz?",
+    "hoursLabel": "Saat:",
+    "quality": {
+      "terrible": "Berbat",
+      "poor": "Kötü",
+      "okay": "İdare eder",
+      "good": "İyi",
+      "great": "Harika"
+    }
+  },
+  "sleepScore": {
+    "prompt": "Uyku puanı"
+  },
+  "heartRate": {
+    "prompt": "Ortalama kalp atış hızı"
+  },
+  "activity": {
+    "prompt": "Bugünkü aktivite düzeyiniz?",
+    "level": {
+      "sedentary": "Hareketsiz",
+      "light": "Hafif",
+      "moderate": "Orta",
+      "active": "Aktif",
+      "intense": "Yoğun"
+    }
+  },
+  "medication": {
+    "heading": "İlaçlar",
+    "empty": "Henüz ilaç tanımlanmadı.",
+    "takenCount_one": "{{count}} alındı",
+    "takenCount_other": "{{count}} alındı",
+    "namePlaceholder": "İlaç adı",
+    "dosagePlaceholder": "Doz (örn. 50mg)",
+    "addMedication": "+ İlaç ekle",
+    "editMedication": "İlacı düzenle",
+    "removeMedication": "İlacı kaldır",
+    "confirmRemove": "<highlight>{{name}}</highlight> kaldırılsın mı?",
+    "yes": "Evet",
+    "no": "Hayır",
+    "taken": "Alındı",
+    "skip": "Atla"
+  },
+  "custom": {
+    "yes": "Evet",
+    "no": "Hayır",
+    "typeLabels": {
+      "scale10": "Ölçek (0-10)",
+      "scale5": "Ölçek (0-5)",
+      "slider100": "Kaydırıcı (0-100)",
+      "number": "Sayı",
+      "yesno": "Evet / Hayır"
+    }
+  },
+  "config": {
+    "configureTrackers": "Takipleri yapılandır",
+    "title": "Takipler",
+    "categoryMoodMind": "Ruh hali ve zihin",
+    "categoryBodyHealth": "Beden ve sağlık",
+    "categoryLifestyle": "Yaşam tarzı",
+    "customHeading": "Özel",
+    "resume": "Sürdür",
+    "stop": "Durdur",
+    "addCustomTracker": "Özel takip ekle",
+    "addCustomTrackerCount": "Özel takip ekle ({{count}}/{{max}})",
+    "addCustomTrackerHint": "Ne isterseniz takip edin",
+    "maxReached": "{{max}} özel takip sınırına ulaşıldı.",
+    "customTrackers": "Özel takipler",
+    "newCustomTracker": "Yeni özel takip",
+    "trackerNamePlaceholder": "Takip adı",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "Tür:",
+    "colorLabel": "Renk:"
+  }
+}

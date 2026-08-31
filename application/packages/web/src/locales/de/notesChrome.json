@@ -1,0 +1,112 @@
+{
+  "dismiss": "Schließen",
+  "close": "Schließen",
+  "moveBanner": {
+    "title": "Die App zieht um auf use.privacynotes.app",
+    "body": "Zieh diese Sitzung jetzt um - es dauert nur ein paar Sekunden und deine Notizen kommen mit.",
+    "cta": "Jetzt umziehen",
+    "syncing": "Deine Notizen werden synchronisiert…",
+    "error": "Es konnte gerade nicht alles synchronisiert werden. Prüf deine Verbindung und versuch es nochmal.",
+    "conflict": "Eine deiner Notizen hat einen Sync-Konflikt, der deine Entscheidung braucht. Löse ihn im Dialog und versuch es dann nochmal."
+  },
+  "movedHint": {
+    "body": "Das ist das neue Zuhause der App. Aktualisiere dein Lesezeichen auf use.privacynotes.app und füge Startbildschirm-Verknüpfungen neu hinzu.",
+    "gotIt": "Alles klar"
+  },
+  "moveScreen": {
+    "title": "Die App ist umgezogen auf use.privacynotes.app",
+    "body": "Zieh dieses Gerät jetzt um - es dauert nur ein paar Sekunden und deine Notizen kommen mit. Hier wird nichts gelöscht.",
+    "openNotes": "Öffne deine Notizen einmal hier, um das zu beheben",
+    "website": "Stattdessen die Website ansehen"
+  },
+  "quota": {
+    "frozen": {
+      "configured": "Sync pausiert. Du liegst seit über 90 Tagen über deinem Speicherlimit. Deine Notizen sind lokal sicher. Schließe erneut ein Abo ab oder exportiere deine Daten.",
+      "unconfigured": "Sync pausiert. Du liegst seit über 90 Tagen über deinem Speicherlimit. Deine Notizen sind lokal sicher. Exportiere und kürze Notizen, um den Sync fortzusetzen."
+    },
+    "grace": {
+      "configured_one": "Speicher-Add-on abgelaufen. {{count}} Tag, um die Nutzung zu reduzieren oder erneut ein Abo abzuschließen, bevor der Sync pausiert.",
+      "configured_other": "Speicher-Add-on abgelaufen. {{count}} Tage, um die Nutzung zu reduzieren oder erneut ein Abo abzuschließen, bevor der Sync pausiert.",
+      "unconfigured_one": "Über deinem Speicherlimit. {{count}} Tag, um Notizen zu kürzen, bevor der Sync pausiert.",
+      "unconfigured_other": "Über deinem Speicherlimit. {{count}} Tage, um Notizen zu kürzen, bevor der Sync pausiert."
+    },
+    "full": {
+      "configured": "Speicher voll. Einige Notizen konnten nicht synchronisiert werden. Schaffe Platz oder füge mehr Speicher hinzu.",
+      "unconfigured": "Speicher voll. Einige Notizen konnten nicht synchronisiert werden. Schaffe Platz, indem du Notizen kürzt."
+    },
+    "manageStorage": "Speicher verwalten",
+    "viewUsage": "Nutzung anzeigen"
+  },
+  "syncError": {
+    "failed_one": "1 Notiz konnte nicht synchronisiert werden. Es wird automatisch erneut versucht.",
+    "failed_other": "{{count}} Notizen konnten nicht synchronisiert werden. Es wird automatisch erneut versucht.",
+    "lastError": "Letzter Fehler: {{message}}"
+  },
+  "sessionExpired": {
+    "title": "Sitzung abgelaufen",
+    "body": "Deine Sitzung ist abgelaufen. Deine Notizen sind auf diesem Gerät sicher. Melde dich erneut an, um die Synchronisierung fortzusetzen.",
+    "signInAgain": "Erneut anmelden"
+  },
+  "signOutConfirm": {
+    "title": "Hast du deine 12-Wort-Phrase gespeichert?",
+    "body": "Deine Phrase ist der <only>einzige</only> Weg zurück. Kein E-Mail-Reset, keine Support-Hotline. Wir wissen nicht, wer du bist, ganz bewusst. Falls du sie noch nicht aufgeschrieben hast, tippe auf <action>Nein, Phrase anzeigen</action>, und wir öffnen sie sofort für dich.",
+    "unsyncedWarn_one": "1 Notiz auf diesem Gerät ist noch nicht synchronisiert. Sie geht dauerhaft verloren, wenn sie beim Abmelden nicht hochgeladen werden kann.",
+    "unsyncedWarn_other": "{{count}} Notizen auf diesem Gerät sind noch nicht synchronisiert. Sie gehen dauerhaft verloren, wenn sie beim Abmelden nicht hochgeladen werden können.",
+    "unsyncedKept_one": "1 Notiz auf diesem Gerät ist noch nicht synchronisiert. Sie bleibt auf diesem Gerät und wird synchronisiert, sobald du dich wieder anmeldest.",
+    "unsyncedKept_other": "{{count}} Notizen auf diesem Gerät sind noch nicht synchronisiert. Sie bleiben auf diesem Gerät und werden synchronisiert, sobald du dich wieder anmeldest.",
+    "dontRemind": "Mich nicht erneut erinnern",
+    "showPhrase": "Nein, Phrase anzeigen",
+    "confirm": "Ja, abmelden"
+  },
+  "burnShareModal": {
+    "title": "Teilen und nach dem Lesen vernichten",
+    "body": "<lead>Deine ursprüngliche Notiz wird nicht gelöscht.</lead> Sie bleibt sicher in deinem Konto. Der Burn-Link ist eine separate verschlüsselte Kopie, die sich nach dem Lesen selbst zerstört. Der Link läuft nach 24 Stunden ab, ob geöffnet oder nicht.",
+    "imagesStripped": "Es wird nur Text angezeigt, Dateien sind in dieser Notiz ausgeblendet.",
+    "copied": "Kopiert"
+  },
+  "burnView": {
+    "tagline": "Verschlüsselt. Vergänglich. Nur für deine Augen.",
+    "toggleTheme": "Design umschalten",
+    "checking": "Wird geprüft...",
+    "revealing": "Wird abgerufen und entschlüsselt...",
+    "goToApp": "Zu <brand/> gehen",
+    "footerTagline": "- Zero-Knowledge-verschlüsselte Notizen, gehostet in der Schweiz.",
+    "sealed": {
+      "heading": "Du hast eine verschlüsselte Notiz erhalten.",
+      "subheading": "Diese Nachricht zerstört sich nach dem Lesen selbst. Ungelesene Links laufen nach 24 Stunden ab.",
+      "reveal": "Nachricht anzeigen",
+      "warning": "Der Server löscht die Notiz in dem Moment, in dem du sie anzeigst. Keine zweite Chance."
+    },
+    "revealed": {
+      "countdown": "Klartext wird in {{time}} gelöscht",
+      "clearNow": "Jetzt löschen",
+      "emptyNote": "(leere Notiz)",
+      "deletedNotice": "Diese geteilte Kopie wurde vom Server gelöscht. Sie kann nicht erneut angesehen werden."
+    },
+    "destroyed": {
+      "heading": "Nachricht zerstört.",
+      "body": "Vom Server gelöscht und aus dem Speicher entfernt. Diese Nachricht kann nicht erneut gelesen werden."
+    },
+    "gone": {
+      "heading": "Diese Notiz ist weg.",
+      "body": "Sie wurde bereits gelesen oder ist abgelaufen. Burn-Links können nur einmal geöffnet werden und laufen nach 24 Stunden ab."
+    },
+    "error": {
+      "heading": "Etwas ist schiefgelaufen.",
+      "fallback": "Der Link ist möglicherweise beschädigt oder unvollständig.",
+      "server": "Serverfehler. Die Notiz wurde möglicherweise bereits gelesen oder ist abgelaufen.",
+      "decryption": "Entschlüsselung fehlgeschlagen. Der Link ist möglicherweise beschädigt.",
+      "network": "Der Server konnte nicht erreicht werden. Prüfe deine Verbindung und versuch es erneut."
+    },
+    "noPayload": {
+      "heading": "Keine Nachricht gefunden.",
+      "body": "Diese URL enthält keinen Verweis auf eine Burn-Notiz. Stelle sicher, dass du den vollständigen Link hast."
+    }
+  },
+  "burnShare": {
+    "offline": "Du bist offline. Burn-Links erfordern einen Server-Roundtrip. Versuch es erneut, sobald du wieder online bist.",
+    "demo": "Burn-Links werden auf einem Server gespeichert, und die Demo kontaktiert keinen. Registriere dich, um echte Burn-Links zu erstellen.",
+    "tooLarge": "Die Notiz ist zu groß, um sie per Burn-Link zu teilen ({{size}} KB). Das Maximum sind {{max}} KB.",
+    "storeFailed": "Die Burn-Notiz konnte nicht auf dem Server gespeichert werden."
+  }
+}

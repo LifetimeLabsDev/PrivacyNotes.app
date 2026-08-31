@@ -1,0 +1,21 @@
+packages:
+  - 'packages/*'
+allowBuilds:
+  esbuild: true
+# Supply-chain gate (pnpm 10.16+/11 feature): refuse to install packages published
+# less than 24h ago. Written out explicitly so the policy is versioned rather than
+# an invisible pnpm default; CI's pnpm 9 ignores these keys. The per-version
+# excludes unblock entries that a Dependabot bump merged while they were younger
+# than the gate; each pins one exact version, so the list expires naturally and
+# should be pruned, not extended, on later bumps.
+# Spec: ops/docs/dependency-migration.md (pnpm supply-chain gate)
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - "@supabase/auth-js@2.110.6"
+  - "@supabase/functions-js@2.110.6"
+  - "@supabase/postgrest-js@2.110.6"
+  - "@supabase/realtime-js@2.110.6"
+  - "@supabase/storage-js@2.110.6"
+  - "@supabase/supabase-js@2.110.6"
+  - "electron-to-chromium@1.5.392"
+  - "react-i18next@17.0.10"

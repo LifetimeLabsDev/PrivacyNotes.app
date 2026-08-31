@@ -1,0 +1,701 @@
+{
+  "page": {
+    "importTitle": "Importa a PrivacyNotes",
+    "importSteps": [
+      "Obre PrivacyNotes i ves a Configuració > Import & Export.",
+      "Tria **{{app}}** com a origen.",
+      "Arrossega-hi el fitxer que acabes d'exportar, o fes clic per cercar-lo.",
+      "Mira què anuncia la previsualització i després inicia la importació."
+    ],
+    "otherGuides": "Altres guies d'importació"
+  },
+  "guides": {
+    "google-keep": {
+      "app": "Google Keep",
+      "title": "Exporta les teves notes de Google Keep",
+      "metaTitle": "Exportar Google Keep amb Takeout - PrivacyNotes",
+      "lead": "Google Keep no té cap botó d'exportació dins de la mateixa aplicació; la via oficial de sortida és Google Takeout. Es fa en uns cinc minuts, i PrivacyNotes llegeix el fitxer de Takeout directament, sense necessitat de descomprimir res.",
+      "sections": [
+        {
+          "h": "Exporta les notes des de Google Keep",
+          "steps": [
+            "Ves a [takeout.google.com](https://takeout.google.com) i inicia la sessió amb el compte de Google on tens les notes.",
+            "Fes clic a «Deselect all» (desmarca-ho tot), després baixa per la llista de productes i marca només «Keep».",
+            "Fes clic a «Next step» (pas següent) i deixa els valors per defecte: una sola exportació, fitxer .zip.",
+            "Fes clic a «Create export» (crea l'exportació). Google prepara l'arxiu i t'envia per correu un enllaç de baixada; només amb Keep, això sol ser qüestió de minuts, no pas d'hores.",
+            "Baixa el .zip. Pots deixar-lo exactament tal com és."
+          ]
+        },
+        {
+          "h": "Què hi arriba",
+          "p": [
+            "Els títols, el text de les notes i el format arriben intactes. Les llistes de comprovació de Keep es converteixen en llistes de tasques natives de PrivacyNotes, i les etiquetes de Keep hi arriben com a etiquetes.",
+            "Deixa anar el .zip sencer de Takeout a l'importador. Si ja l'havies descomprimit, també funciona un sol fitxer de nota .json de la carpeta Takeout/Keep."
+          ]
+        }
+      ]
+    },
+    "apple-notes": {
+      "app": "Apple Notes",
+      "title": "Exporta les teves notes d'Apple Notes",
+      "metaTitle": "Exportar Apple Notes a Markdown - PrivacyNotes",
+      "lead": "Apple Notes no té cap exportació massiva pròpia, així que la via pràctica en un Mac és l'aplicació gratuïta Exporter, que escriu les teves notes com a Markdown. PrivacyNotes llegeix aquesta exportació directament, imatges incloses.",
+      "sections": [
+        {
+          "h": "Exporta les notes en un Mac",
+          "steps": [
+            "Instal·la l'aplicació gratuïta «Exporter» des de la Mac App Store.",
+            "Obre-la i exporta les notes. Obtens una carpeta de fitxers Markdown, organitzada per compte i per carpeta, amb les imatges al costat.",
+            "Al Finder, fes clic dret sobre aquesta carpeta i tria «Comprimeix» per convertir-la en un .zip."
+          ]
+        },
+        {
+          "h": "Si vens de l'iPhone o l'iPad",
+          "p": [
+            "Els zips per nota compartits des de l'iOS (un .zip petit amb el Markdown de la nota més una carpeta Attachments) també s'accepten: deixa'ls anar d'un en un. Per a una biblioteca sencera, la via del Mac de més amunt és molt més ràpida."
+          ]
+        },
+        {
+          "h": "Què hi arriba",
+          "p": [
+            "L'estructura de carpetes, el text de les notes i les imatges incrustades sobreviuen al viatge. Les notes conserven el títol, i els adjunts aterren a l'emmagatzematge de fitxers xifrat al costat de la seva nota."
+          ]
+        }
+      ]
+    },
+    "obsidian": {
+      "app": "Obsidian",
+      "title": "Exporta el teu vault d'Obsidian",
+      "metaTitle": "Exportar un vault d'Obsidian - PrivacyNotes",
+      "lead": "Obsidian no té cap pas d'exportació i tampoc el necessita: un vault ja és una carpeta de fitxers Markdown. És la migració més fàcil de totes. Comprimeix el vault en un zip i deixa'l anar a l'importador.",
+      "sections": [
+        {
+          "h": "Exporta el teu vault",
+          "steps": [
+            "Localitza la carpeta del vault al disc. Si no saps segur on és, Obsidian en mostra el camí quan fas clic al nom del vault al selector de vaults.",
+            "Comprimeix la carpeta en un .zip: clic dret > Comprimeix al macOS, o Envia a > Carpeta comprimida (en zip) al Windows.",
+            "Aquest zip és el fitxer d'importació. No calen connectors ni exportacions."
+          ]
+        },
+        {
+          "h": "Què hi arriba",
+          "p": [
+            "La teva estructura de carpetes es reconstrueix com a carpetes reals, no pas aplanada en etiquetes, per molt profunda que sigui la imbricació. Una nota a Work/Projects va a parar a una carpeta Work > Projects. Si reimportes el mateix vault, es reutilitzen les carpetes ja creades en lloc de duplicar-les.",
+            "Amb el pla gratuït pots navegar per aquestes carpetes des del primer moment; crear, reanomenar i moure carpetes és una funció Pro, així que una importació d'Obsidian és una bona manera de provar-ho abans de passar a Pro.",
+            "El frontmatter YAML s'interpreta: les etiquetes, els àlies i les dates de creació es respecten, i les etiquetes en línia amb # dins del cos es fusionen amb el camp d'etiquetes. També pots marcar «Etiqueta també les notes per carpeta» durant la importació per afegir el nom de cada carpeta com a etiqueta, útil si també t'agrada filtrar per etiqueta.",
+            "Els teus enllaços [[...]] continuen funcionant: PrivacyNotes els mostra com a note-links, així que les connexions entre notes sobreviuen a la mudança. La carpeta de configuració .obsidian i la .trash s'ometen automàticament."
+          ]
+        }
+      ]
+    },
+    "standard-notes": {
+      "app": "Standard Notes",
+      "title": "Exporta les teves notes de Standard Notes",
+      "metaTitle": "Exportar una còpia de Standard Notes - PrivacyNotes",
+      "lead": "Standard Notes ofereix una exportació de còpia de seguretat desxifrada, i aquest és el fitxer que PrivacyNotes llegeix. Un detall important abans de començar: ha de ser la variant desxifrada, no pas la xifrada.",
+      "sections": [
+        {
+          "h": "Exporta les notes des de Standard Notes",
+          "steps": [
+            "Obre Standard Notes (la web a app.standardnotes.com o l'aplicació d'escriptori) i inicia la sessió.",
+            "Obre les preferències i després la secció «Backups».",
+            "Baixa una còpia de seguretat de les dades i tria el format desxifrat quan t'ho demani.",
+            "Obtens un .zip que conté un fitxer anomenat «Standard Notes Backup and Import File.txt». Deixa el zip tal com és."
+          ]
+        },
+        {
+          "h": "Les còpies de seguretat xifrades no s'admeten",
+          "p": [
+            "Una còpia de seguretat xifrada de Standard Notes és text xifrat que només la teva contrasenya de Standard Notes pot obrir, així que l'importador no la pot llegir. Si has exportat la variant xifrada, torna a exportar i tria la desxifrada. Com que el fitxer conté les teves notes en text clar, suprimeix-lo quan la importació hagi acabat.",
+            "Deixa anar el .zip sencer a l'importador, o només el fitxer .txt si ja l'havies descomprimit."
+          ]
+        }
+      ]
+    },
+    "simplenote": {
+      "app": "Simplenote",
+      "title": "Exporta les teves notes de Simplenote",
+      "metaTitle": "Exportar notes de Simplenote - PrivacyNotes",
+      "lead": "Simplenote té una exportació integrada i neta que es fa amb tres clics, i PrivacyNotes llegeix directament el zip resultant.",
+      "sections": [
+        {
+          "h": "Exporta les notes des de Simplenote",
+          "steps": [
+            "Inicia la sessió a [app.simplenote.com](https://app.simplenote.com) (o obre l'aplicació d'escriptori).",
+            "Obre el menú de la barra lateral i ves a «Settings».",
+            "A «Account», tria «Export Notes». Es baixa un .zip immediatament."
+          ]
+        },
+        {
+          "h": "Què hi arriba",
+          "p": [
+            "El zip conté un notes.json canònic amb totes les teves notes i les seves metadades: les etiquetes hi arriben i les dates de creació es conserven. Deixa anar el .zip sencer a l'importador tal com és."
+          ]
+        }
+      ]
+    },
+    "samsung-notes": {
+      "app": "Samsung Notes",
+      "title": "Exporta les teves notes de Samsung Notes",
+      "metaTitle": "Exportar Samsung Notes a Word - PrivacyNotes",
+      "lead": "Samsung Notes exporta un fitxer per nota, en dues variants. Tria preferentment l'exportació a Microsoft Word (.docx): conserva el format, mentre que l'exportació a text pla el perd.",
+      "sections": [
+        {
+          "h": "Exporta les notes des de Samsung Notes",
+          "steps": [
+            "A Samsung Notes, mantén premuda una nota per seleccionar les que vulguis (o «Selecciona-ho tot»).",
+            "Toca el menú de tres punts i tria «Desa com a fitxer».",
+            "Tria «Fitxer de Microsoft Word» (.docx) per a notes amb format, o «Fitxer de text» (.txt) per a text pla.",
+            "Samsung desa un fitxer per nota a l'emmagatzematge del dispositiu. Si n'has exportat més d'uns quants, aplega'ls en un sol .zip (selecciona'ls al gestor de fitxers i comprimeix-los)."
+          ]
+        },
+        {
+          "h": "Què hi arriba",
+          "p": [
+            "De les exportacions .docx: la negreta, la cursiva, el subratllat, el ratllat, les llistes de pics i numerades, i les caselles de selecció (que es converteixen en llistes de tasques natives) sobreviuen totes. De les exportacions .txt: el text, i res més.",
+            "Les imatges incrustades en una nota de Samsung es traslladen a mà: l'importador marca cada nota que en tenia una, així saps exactament on tornar-les a posar. El text, els títols i les dates arriben tots en la mateixa passada."
+          ]
+        }
+      ]
+    },
+    "bitwarden": {
+      "app": "Bitwarden",
+      "title": "Exporta la teva caixa forta de Bitwarden",
+      "metaTitle": "Exportar una caixa forta de Bitwarden - PrivacyNotes",
+      "lead": "Bitwarden exporta tota la teva caixa forta en un sol fitxer .json sense xifrar, i PrivacyNotes endreça cada element al seu lloc: inicis de sessió, targetes, claus SSH i notes segures.",
+      "sections": [
+        {
+          "h": "Exporta la caixa forta des de Bitwarden",
+          "steps": [
+            "Obre la caixa forta web de Bitwarden (o l'aplicació d'escriptori) i inicia la sessió.",
+            "Ves a «Tools» i després a «Export vault».",
+            "Tria el format de fitxer .json (el normal, no pas «.json (Encrypted)»).",
+            "Confirma-ho amb la contrasenya mestra i baixa el fitxer."
+          ]
+        },
+        {
+          "h": "On va a parar cada cosa",
+          "p": [
+            "Els inicis de sessió es converteixen en entrades d'inici de sessió de la Caixa forta (amb la icona del lloc web), les targetes en entrades de targeta i les claus SSH en entrades de clau SSH, i les notes segures i les identitats arriben com a notes llegibles. Les carpetes de Bitwarden es transformen en etiquetes, i els preferits arriben amb estrella. Les claus d'autenticació (TOTP) també vénen amb tu, així que els teus codis 2FA continuen funcionant.",
+            "El fitxer d'exportació conté les teves contrasenyes en text clar, així que importa'l, comprova que tot hagi arribat i després suprimeix el fitxer com cal. Dins de PrivacyNotes torna a quedar tot xifrat d'extrem a extrem."
+          ]
+        }
+      ]
+    },
+    "evernote": {
+      "app": "Evernote",
+      "title": "Exporta les teves notes d'Evernote",
+      "metaTitle": "Exportar notes d'Evernote en ENEX - PrivacyNotes",
+      "lead": "Evernote exporta una llibreta cada vegada, i només des de l'aplicació d'escriptori. Tria el format ENEX i les notes hi arriben senceres: la formatació, les etiquetes, els adjunts, els retalls web i els enllaços que hi ha entre elles.",
+      "sections": [
+        {
+          "img": {
+            "src": "/help/img/evernote-export-menu.webp",
+            "alt": "El menú contextual d'una llibreta a l'aplicació d'escriptori d'Evernote, amb «Export notebook...» destacat.",
+            "width": 1576,
+            "height": 652
+          },
+          "h": "Exporta una llibreta",
+          "steps": [
+            "Obre Evernote al Mac o al Windows. Ni la versió web ni les aplicacions de mòbil no poden escriure fitxers .enex.",
+            "Fes clic dret sobre la llibreta a la barra lateral i tria «Export notebook...».",
+            "Tria «ENEX format (.enex)» i deixa marcades totes les caselles de «Export note attributes»: són les que s'enduen les teves etiquetes, dates, recordatoris i els URL dels retalls web.",
+            "Desa el fitxer. Evernote li posa el nom de la llibreta, i aquest nom és el que aquí farà de carpeta, així que no el canviïs.",
+            "Deixa anar aquest .enex tal com és. Si tens més d'una llibreta, repeteix l'exportació per a cadascuna, després posa els fitxers .enex dins d'un mateix zip i deixa'l anar d'una sola vegada."
+          ]
+        },
+        {
+          "img": {
+            "src": "/help/img/evernote-export-format.webp",
+            "alt": "El diàleg d'exportació d'Evernote amb «ENEX format (.enex)» seleccionat i tots els atributs de nota marcats.",
+            "width": 1576,
+            "height": 1120
+          },
+          "h": "Tria ENEX, no pas les exportacions a HTML o PDF",
+          "p": [
+            "Els altres tres formats no sobreviuen al viatge. Les dues exportacions a HTML inflen cada nota amb una còpia del mateix full d'estils i perden el nom del fitxer i l'enllaç de baixada de tots els adjunts que no siguin imatges, i l'exportació a PDF fon la llibreta en un sol document sense cap frontera entre notes. Si en deixes anar una aquí per error, t'ho direm en lloc d'importar mitja llibreta.",
+            "Deixa «Split file size by» desactivat tret que la llibreta contingui gigabytes d'escanejos."
+          ]
+        },
+        {
+          "h": "Una llibreta cada vegada",
+          "p": [
+            "No hi ha cap exportació del compte sencer, i una pila no es pot exportar com una unitat. Triar les notes a mà et limita a 100 per exportació, així que fer clic dret sobre la llibreta és alhora més ràpid i l'única manera de superar aquest límit. Les piles tampoc no s'escriuen dins del fitxer, de manera que les teves carpetes arriben totes al mateix nivell.",
+            "Amb el pla gratuït també pots exportar, amb un però: el nivell gratuït només permet un dispositiu connectat, i això demana l'aplicació d'escriptori."
+          ]
+        },
+        {
+          "h": "Què hi arriba i què no",
+          "p": [
+            "Les taules, els blocs de codi, el text ressaltat, el subratllat, el color del text i les fórmules sobreviuen tots. Les llistes de comprovació es converteixen en llistes de tasques, els recordatoris de nota es converteixen en una tasca al capdamunt de la nota, els adjunts i les imatges es tornen a xifrar dins del teu emmagatzematge, els retalls web conserven l'URL d'origen i les notes de veu conserven la transcripció. Els enllaços interns es converteixen en note-links, aparellats pel títol de la nota enllaçada, ja que Evernote no exporta cap identificador de nota.",
+            "Les tasques no hi arriben: l'exportació deixa un marcador «Content not supported» allà on hi havia cada bloc de tasques, sense títols, ni dates de venciment, ni estats de compleció per llegir. Els blocs xifrats continuen xifrats, així que desxifra'ls abans a Evernote. Els tipus de lletra personalitzats, l'alineació del text i la jerarquia d'etiquetes imbricades es descarten."
+          ]
+        },
+        {
+          "h": "Si l'exportació falla a mig camí",
+          "p": [
+            "Evernote guarda les teves notes als seus servidors i se les va baixant mentre escriu l'exportació, així que una llibreta gran es pot aturar al 13%, després al 40%, i acabar al tercer intent. Torna a executar la mateixa exportació: cada intent en desa més a la memòria cau local i arriba més lluny que l'anterior."
+          ]
+        }
+      ]
+    },
+    "markdown": {
+      "app": "Markdown",
+      "title": "Importa fitxers Markdown",
+      "metaTitle": "Importa fitxers Markdown a PrivacyNotes",
+      "lead": "La via genèrica per a tota la resta: qualsevol aplicació que pugui exportar Markdown es pot mudar a PrivacyNotes. Funcionen tant els fitxers .md solts com un .zip d'una carpeta sencera.",
+      "sections": [
+        {
+          "h": "Prepara els fitxers",
+          "steps": [
+            "Exporta o aplega els teus fitxers .md. Qualsevol origen serveix: una altra aplicació de notes, un lloc web estàtic, una carpeta de fitxers README.",
+            "Si són més d'un grapat de fitxers, posa la carpeta dins d'un .zip.",
+            "Deixa anar el zip (o els fitxers .md individuals) a l'importador."
+          ]
+        },
+        {
+          "h": "Com es llegeixen els fitxers",
+          "p": [
+            "El frontmatter YAML es respecta quan hi és: els camps title, created, updated i tags es fan servir tal qual, cosa que converteix aquest camí també en el de restauració de les exportacions Markdown de PrivacyNotes. També es llegeixen les etiquetes escrites com a #hashtags dins del text. Els fitxers simples sense frontmatter fan servir el nom del fitxer com a títol i el contingut com a cos. L'anàlisi és deliberadament tolerant: s'accepten .md, .markdown, .mdown, .mkd i .txt.",
+            "Comprimeix tota la carpeta i l'estructura hi va inclosa. Les subcarpetes es reconstrueixen com a carpetes de veritat, a qualsevol profunditat, i les imatges i els fitxers als quals enllacen les teves notes s'importen al costat. Allò que no enllaça ningú es queda fora i se't compta, o sigui que una carpeta plena de captures velles no et menja l'emmagatzematge."
+          ]
+        }
+      ]
+    },
+    "notesnook": {
+      "app": "Notesnook",
+      "title": "Exporta les teves notes de Notesnook",
+      "metaTitle": "Exportar notes de Notesnook - PrivacyNotes",
+      "lead": "Notesnook pot bolcar tot el teu compte com una carpeta de fitxers. Tria l'exportació HTML i no queda res enrere: la formatació, els quaderns, les etiquetes, els adjunts i els enllaços entre notes sobreviuen tots a la mudança.",
+      "sections": [
+        {
+          "img": {
+            "src": "/help/img/notesnook-export.webp",
+            "alt": "La configuració de Notesnook, a la pàgina «Backup & export», amb el desplegable «Export as» obert i HTML seleccionat.",
+            "width": 1576,
+            "height": 963
+          }
+        },
+        {
+          "h": "Exporta les notes",
+          "steps": [
+            "Obre Notesnook i ves a Settings > Backup & export.",
+            "Localitza «Export all notes» i obre el desplegable «Export as».",
+            "Tria HTML. Això és important: és l'únic format que Notesnook escriu sense arrencar-ne abans la formatació.",
+            "Notesnook desa un únic .zip amb un fitxer per nota més una carpeta d'adjunts. Aquest zip és el teu fitxer d'importació."
+          ]
+        },
+        {
+          "h": "Tria HTML, no pas Markdown",
+          "p": [
+            "El desplegable d'exportació de Notesnook ofereix Text, Markdown, Markdown + Frontmatter i HTML. Només HTML ho conserva tot.",
+            "Les dues opcions de Markdown aplanen les notes abans d'escriure-les: el subratllat, les mides de lletra i l'alineació del text desapareixen abans que el fitxer ens arribi. L'opció de Markdown pla, a més, no escriu ni etiquetes ni dates originals, així que cada nota importada quedaria sense etiquetes i amb la data d'avui. Les acceptem igualment totes dues, i et direm què s'ha perdut, però HTML és la que cal triar.",
+            "L'exportació Text no té cap estructura per llegir i no s'accepta."
+          ]
+        },
+        {
+          "h": "Què hi arriba",
+          "p": [
+            "Els teus quaderns es reconstrueixen com a carpetes reals, no pas aplanats en etiquetes, a la profunditat que tinguessin a Notesnook. Una nota a Work > Projects va a parar a una carpeta Work > Projects.",
+            "Les notes fixades i les preferides es mantenen marcades. Notesnook manté «Pin» (fixar) i «Favorite» (preferit) com a dues propietats separades; PrivacyNotes té una sola llista de notes fixades, així que una nota que fos qualsevol de les dues coses va a parar allà.",
+            "Els ressaltats, les matemàtiques i l'alineació del text arriben tal com són: el text ressaltat continua ressaltat, les fórmules es tornen a mostrar com a matemàtiques, i els blocs centrats o alineats a la dreta conserven l'alineació. Els tipus de lletra personalitzats, les mides de lletra i els colors de text no tenen equivalent aquí, així que aquest estil es descarta i el text es conserva."
+          ]
+        },
+        {
+          "h": "Un fitxer de còpia de seguretat no és una exportació",
+          "p": [
+            "Notesnook també pot desar un fitxer de còpia de seguretat acabat en .nnbackupz. Això és una altra cosa: emmagatzema cada adjunt en el format xifrat propi de Notesnook, que només Notesnook pot desempaquetar. Si en deixes anar un aquí, t'ho direm en lloc d'importar-lo a mitges. En lloc d'això, fes servir «Export all notes» en HTML."
+          ]
+        }
+      ]
+    },
+    "apple-journal": {
+      "app": "Apple Journal",
+      "title": "Exporta les teves entrades d'Apple Journal",
+      "metaTitle": "Exportar les entrades d'Apple Journal - PrivacyNotes",
+      "lead": "Apple Journal (Diari) exporta un fitxer HTML per entrada, més una carpeta amb totes les fotos, vídeos i notes de veu. PrivacyNotes llegeix tota l'exportació i reconstrueix cada una com a entrada de diari, datada el dia que la vas escriure.",
+      "sections": [
+        {
+          "h": "Exporta el teu diari en un Mac",
+          "steps": [
+            "Obre Diari i tria Fitxer > Exporta a la barra de menús.",
+            "Tria una destinació. Diari escriu una carpeta anomenada AppleJournalEntries, amb una carpeta Entries i una carpeta Resources a dins.",
+            "Fes clic dret sobre aquesta carpeta i tria Comprimeix. Al costat apareix AppleJournalEntries.zip, i aquest és el fitxer que cal importar."
+          ]
+        },
+        {
+          "h": "Exporta des d'un iPhone o iPad",
+          "steps": [
+            "Obre Diari. Sota l'apartat Diaris, toca el teu diari per obrir-lo (es diu Diari llevat que l'hagis reanomenat, i mostra quantes entrades conté).",
+            "A la llista d'entrades, toca el botó … a dalt a la dreta, tria Exporta, i confirma amb el botó Exporta.",
+            "Desa'l al telèfon.",
+            "Obre l'app Fitxers i troba la carpeta que ha escrit, anomenada AppleJournalEntries.",
+            "Prem i mantén premuda aquesta carpeta i tria Comprimeix. El .zip que apareix al costat és el fitxer que cal importar."
+          ]
+        },
+        {
+          "h": "Què hi arriba",
+          "p": [
+            "Cada entrada aterra a Diaris en lloc de a Notes, datada el dia que Diari mostra a sobre, així que el teu historial manté la seva forma.",
+            "Les fotos i Live Photos s'importen com a imatges, els vídeos i notes de veu com a adjunts. Apple lliura les fotos en HEIC, que la majoria de navegadors no poden mostrar, així que PrivacyNotes converteix cada una a JPEG a l'entrada. Aquesta és la part lenta d'una importació gran: unes quantes centenes de fotos poden trigar diversos minuts, i la línia de progrés les compta per tu.",
+            "La negreta, la cursiva, el subratllat, el ratllat, els colors de text, les llistes amb pics i numerades, i les citacions en bloc sobreviuen totes."
+          ]
+        },
+        {
+          "h": "Fotos, vídeos i el teu emmagatzematge",
+          "p": [
+            "Un diari ple de fotos és molt més gran que un diari ple de text, i compta contra el teu emmagatzematge igual que qualsevol altra cosa. La previsualització de la importació ho suma tot abans que confirmis, i es nega a començar si no hi cap."
+          ]
+        },
+        {
+          "h": "On van les teves ubicacions",
+          "p": [
+            "Diari registra on va passar una entrada, i PrivacyNotes no té mapa propi, així que cada lloc es converteix en un enllaç dins d'una llista «Places» al final de l'entrada.",
+            "Els llocs que Diari va registrar amb coordenades obren un marcador en aquest punt exacte a OpenStreetMap. Els llocs dels quals només té el nom obren en canvi una cerca d'aquest nom. No s'envia res enlloc fins que no en cliquis un."
+          ]
+        },
+        {
+          "h": "Estat d'ànim",
+          "p": [
+            "Si vas registrar un Estat d'ànim, PrivacyNotes omple els trackers d'humor i emoció d'aquesta entrada allà on el vocabulari d'Apple coincideix amb un dels nostres. Tot el que no pot fer coincidir, i les àrees de vida que vas etiquetar, es conserven com una línia de text perquè no es perdi res."
+          ]
+        },
+        {
+          "h": "Què no hi arriba",
+          "p": [
+            "Les targetes de suggeriment de Diari per a entrenaments, contactes i contingut multimèdia que vas reproduir mantenen el text però no la il·lustració. Les notes de veu arriben com a enregistraments, però no amb la transcripció d'Apple: l'exportador n'elimina tots els espais, així que el que escriu és una tira ininterrompuda de caràcters. Es deixa de banda en lloc d'importar-se il·legible.",
+            "Les notes de veu d'una exportació des de Mac són fitxers CAF, que cap navegador pot reproduir. S'importen i es descarreguen sense problemes, però no les sentiràs a l'app. Una exportació des de l'iPhone escriu els mateixos enregistraments en M4A, que es reprodueix directament, així que fes servir el telèfon si pots triar."
+          ]
+        }
+      ]
+    },
+    "upnote": {
+      "app": "UpNote",
+      "title": "Exporta les teves notes d'UpNote",
+      "metaTitle": "Exportar notes d'UpNote - PrivacyNotes",
+      "lead": "A UpNote, l'exportació es diu còpia de seguretat: escriu tot el teu compte en una carpeta del disc, pla gratuït inclòs. Comprimeix aquesta carpeta en un zip i tot es trasllada: les notes amb tota la seva formatació, els quaderns, les etiquetes, les notes fixades, els note-links, les imatges i els adjunts.",
+      "sections": [
+        {
+          "img": {
+            "src": "/help/img/upnote-backup.webp",
+            "alt": "La configuració d'UpNote, a la pàgina «Backup», amb «Backup attachments», «Backup now» i «View backup folder» visibles.",
+            "width": 1576,
+            "height": 1070
+          },
+          "h": "Crea una còpia de seguretat local",
+          "steps": [
+            "Obre UpNote a l'ordinador i ves a Settings > Backup.",
+            "Activa «Backup attachments». Ve desactivat per defecte, i sense això les teves imatges i fitxers es queden enrere.",
+            "Fes clic a «Backup now» i espera que la línia «Last backup at» s'actualitzi.",
+            "Fes clic a «View backup folder». UpNote obre la carpeta que acaba d'escriure."
+          ]
+        },
+        {
+          "img": {
+            "src": "/help/img/upnote-folder.webp",
+            "alt": "La carpeta de còpia de seguretat d'UpNote amb les carpetes data, files, Markdown i revisions seleccionades i el menú de clic dret obert sobre Comprimeix.",
+            "width": 1576,
+            "height": 642
+          },
+          "h": "Comprimeix tot el que hi ha a la carpeta",
+          "steps": [
+            "Selecciona tot el que hi ha a la carpeta de còpia de seguretat: data, files i tot el que hi hagi al costat.",
+            "Comprimeix la selecció: clic dret > Comprimeix al macOS, o Envia a > Carpeta comprimida (en zip) al Windows.",
+            "Aquest .zip és el teu fitxer d'importació."
+          ],
+          "p": [
+            "Comprimeix la carpeta sencera, no només la carpeta Markdown de dins. Aquestes còpies en markdown són una versió aplanada: el subratllat, els colors, els ressaltats, les seccions plegables i l'alineació del text ja no hi són. La formatació completa de les teves notes viu a la carpeta data, i això és el que llegim. Si deixes anar un zip sense aquesta carpeta, t'ho direm en lloc d'importar les còpies aplanades."
+          ]
+        },
+        {
+          "img": {
+            "src": "/help/img/upnote-export-menu.webp",
+            "alt": "El menú Export d'UpNote a l'iOS, que ofereix Export to Text, PDF, Markdown i HTML.",
+            "width": 1576,
+            "height": 1235
+          },
+          "h": "A l'iPhone o l'Android: exporta les notes d'una en una",
+          "steps": [
+            "Les apps de mòbil d'UpNote no poden escriure una còpia de seguretat. En lloc d'això, obre una nota i toca els tres punts de la cantonada superior.",
+            "Tria Export > «Export to HTML». No pas Markdown: UpNote aplana els requadres destacats, els colors de text, l'alineació i els subíndexs i superíndexs abans d'escriure el seu Markdown, mentre que l'HTML ho conserva tot.",
+            "Comparteix el resultat a l'app Fitxers o envia-te'l, i després deixa'l anar aquí sense modificar.",
+            "Vols moure unes quantes notes? Desa les exportacions a l'app Fitxers, selecciona-les totes i tria Comprimeix: aquest únic zip s'importa d'una tirada."
+          ],
+          "p": [
+            "L'exportació HTML fa arribar tota la teva formatació. El que cap exportació per nota no porta és l'estructura de la biblioteca: els quaderns, les notes fixades i les dates només viuen a la còpia de seguretat, així que quan arribis a un ordinador, la via de la còpia de seguretat de més amunt completa la mudança. Les exportacions en Markdown també s'accepten, amb l'aplanament que comporten."
+          ]
+        },
+        {
+          "h": "Què hi arriba",
+          "p": [
+            "Els teus quaderns es reconstrueixen com a carpetes reals, imbricades tan avall com ho estiguessin a UpNote. Una nota que vivia en diversos quaderns va a parar al primer i porta els altres com a etiquetes.",
+            "Les notes fixades i les de Quick Access arriben com a fixades. Les notes de la paperera van a parar a la paperera, les plantilles s'importen com a notes amb l'etiqueta #template, els enllaços entre notes es converteixen en note-links, i cada nota conserva les seves dates originals.",
+            "La formatació sobreviu: les llistes de verificació, les taules, els blocs de codi, les matemàtiques, el subratllat, els subíndexs i superíndexs, l'alineació del text i els ressaltats. Les seccions plegables es converteixen en requadres destacats plegables i conserven el seu estat obert o tancat. Els colors de text i els colors de ressaltat es fan coincidir tots dos amb la paleta pròpia de l'editor, de manera que un ressaltat groc continua sent groc i un de verd continua sent verd. Cada nota arriba tal com l'UpNote la va desar per última vegada."
+          ]
+        },
+        {
+          "h": "Si falten imatges o fitxers",
+          "p": [
+            "Una còpia de seguretat feta abans de marcar «Backup attachments» no conté cap fitxer, i la previsualització de la importació t'avisarà que hi ha notes que fan referència a adjunts que la còpia no porta. Si passa, cancel·la, activa l'opció a UpNote, torna a fer clic a «Backup now», comprimeix la carpeta nova i importa aquesta."
+          ]
+        }
+      ]
+    },
+    "browser-bookmarks": {
+      "app": "Marcadors del navegador",
+      "title": "Exporta els marcadors del teu navegador",
+      "metaTitle": "Exportar els marcadors de qualsevol navegador - PrivacyNotes",
+      "lead": "Tots els navegadors d’escriptori exporten el mateix fitxer d’adreces d’interès (.html), i PrivacyNotes el llegeix amb les teves carpetes i les teves dates intactes. Safari embolcalla aquest fitxer en un .zip, que pots deixar anar sense obrir-lo. Cap navegador de mòbil sap exportar, així que activa la sincronització del teu navegador i exporta des d’un ordinador.",
+      "sections": [
+        {
+          "h": "Exportar des de Chrome, Edge, Brave, Opera o Vivaldi",
+          "steps": [
+            "Obre el gestor de marcadors amb Ctrl+Maj+O, o Cmd+Opció+B en un Mac. A l'Edge aquesta mateixa pàgina es diu Favorites.",
+            "Fes clic al botó \"...\" de dalt a la dreta del gestor i tria \"Export bookmarks\". A l'Edge hi diu \"Export favorites\".",
+            "Desa el fitxer. És un .html amb la data d'avui al nom."
+          ]
+        },
+        {
+          "h": "Exportar des de Firefox",
+          "steps": [
+            "Prem Ctrl+Maj+O, o Cmd+Maj+O en un Mac, per obrir la finestra Biblioteca.",
+            "Fes clic a \"Import and Backup\" a la seva barra d'eines i tria \"Export Bookmarks to HTML...\".",
+            "Desa'l. El fitxer es diu bookmarks.html."
+          ]
+        },
+        {
+          "h": "Exportar des de Safari",
+          "img": {
+            "src": "/help/img/safari-export-menu.webp",
+            "alt": "El menú File de Safari, amb \"Export Browsing Data to File...\" destacat a baix",
+            "width": 1576,
+            "height": 1226
+          },
+          "steps": [
+            "Tria File > \"Export Browsing Data to File...\" a la barra de menús.",
+            "Apaga-ho tot excepte Bookmarks i després fes clic a Export.",
+            "Safari desa un .zip. Deixa anar aquest .zip aquí tal com és, o bé el Bookmarks.html que hi ha a dins. Totes dues coses funcionen.",
+            "Les versions antigues de Safari mostren File > Export > \"Bookmarks...\" en lloc seu, i desen un fitxer .html normal."
+          ]
+        },
+        {
+          "h": "Deixa encès només l’interruptor Bookmarks",
+          "img": {
+            "src": "/help/img/browser-bookmarks-safari-export.webp",
+            "alt": "La finestra Export Browsing Data de Safari, amb Bookmarks encès i tots els altres tipus apagats",
+            "width": 1576,
+            "height": 1356
+          },
+          "p": [
+            "La mateixa finestra ofereix History, Extensions, Credit Cards i Passwords. Deixa’ls apagats. PrivacyNotes no llegeix res de l’arxiu tret de les adreces d’interès, però una exportació que després has d’esborrar és una còpia més de les teves contrasenyes en text pla a la carpeta de baixades."
+          ]
+        },
+        {
+          "h": "Què arriba",
+          "p": [
+            "Cada carpeta que tenies arriba igual, imbricada tal com la vas deixar, dins d’una carpeta nova anomenada Adreces d’interès. La barra d’adreces d’interès és l’excepció: el seu contingut puja un nivell en lloc de convertir-se en carpeta, perquè cada navegador anomena aquesta barra d’una manera diferent en cada llengua. Safari no marca res, així que el seu Favorites sí que arriba com a carpeta.",
+            "El dia que vas desar cada marcador arriba amb ell. Safari és l'únic navegador que no escriu cap data, així que una exportació de Safari arriba amb la data d'avui.",
+            "Firefox també és l'únic que desa etiquetes i una paraula clau de la barra d'adreces amb un marcador. Si el teu fitxer en porta, la previsualització t'ofereix una casella per conservar-les, i totes dues arriben aquí com a etiquetes.",
+            "Tres coses queden fora expressament. Les dreceres internes del navegador com Most Visited no són enllaços de debò: es compten i es descarten. Les icones dels llocs tampoc no es llegeixen del fitxer, perquè la còpia que hi ha desada envelleix; PrivacyNotes en recupera una de nova. I una carpeta que no tenia cap adreça d’interès no es torna a crear.",
+            "Importar dues vegades el mateix fitxer és segur. Un marcador amb una adreça que ja tens desada s'omet en comptes d'afegir-se un altre cop, i la previsualització et diu quants n'hi havia."
+          ]
+        },
+        {
+          "h": "Tornar-los a treure",
+          "p": [
+            "Ves a Configuració > Import & Export > Exporta i tria \"Fitxer de marcadors (.html)\". Obtens el mateix fitxer estàndard, amb carpetes i tot, que llegeix qualsevol navegador. Els teus marcadors no queden mai tancats aquí."
+          ]
+        }
+      ]
+    },
+    "browser-passwords": {
+      "app": "Contrasenyes del navegador",
+      "title": "Exporta les contrasenyes del teu navegador",
+      "metaTitle": "Exportar les contrasenyes desades al navegador - PrivacyNotes",
+      "lead": "Chrome, Edge, Firefox i Safari exporten totes les contrasenyes desades com un fitxer .csv senzill, i PrivacyNotes els llegeix tots, un inici de sessió per fila. Safari embolcalla el seu .csv en un .zip, que pots deixar anar sense obrir-lo.",
+      "sections": [
+        {
+          "h": "Exportar des de Chrome, Edge, Brave, Opera o Vivaldi",
+          "steps": [
+            "Obre els Settings del navegador i ves a la pàgina de contrasenyes. A Chrome és \"Passwords and autofill\" > Google Password Manager > Settings; a Edge, \"Profiles > Passwords\".",
+            "Busca \"Export passwords\" i tria \"Download file\".",
+            "Confirma amb la contrasenya del dispositiu o l'empremta. El fitxer sol dir-se passwords.csv."
+          ]
+        },
+        {
+          "h": "Exportar des de Firefox",
+          "steps": [
+            "Escriu about:logins a la barra d'adreces i prem Retorn.",
+            "Fes clic al botó \"...\" de dalt a la dreta i tria \"Export Logins...\".",
+            "Confirma amb la contrasenya del dispositiu. El fitxer es diu logins.csv."
+          ]
+        },
+        {
+          "h": "Exportar des de Safari",
+          "img": {
+            "src": "/help/img/safari-export-menu.webp",
+            "alt": "El menú File de Safari, amb \"Export Browsing Data to File...\" destacat a baix",
+            "width": 1576,
+            "height": 1226
+          },
+          "steps": [
+            "Tria File > \"Export Browsing Data to File...\" a la barra de menús.",
+            "Apaga-ho tot excepte Passwords i després fes clic a Export.",
+            "Confirma amb Touch ID o amb la contrasenya del Mac. Safari desa un .zip amb el Passwords.csv a dins, i aquest .zip el pots deixar anar aquí tal com és.",
+            "A partir de macOS 15, l’app Passwords exporta les mateixes files amb File > \"Export All Passwords...\", com a .csv normal."
+          ]
+        },
+        {
+          "h": "Deixa encès només l’interruptor Passwords",
+          "img": {
+            "src": "/help/img/browser-passwords-safari-export.webp",
+            "alt": "La finestra Export Browsing Data de Safari, amb Passwords encès i tots els altres tipus apagats",
+            "width": 1576,
+            "height": 1358
+          },
+          "p": [
+            "La mateixa finestra també exporta les teves adreces d’interès, l’historial i les targetes desades. Cada interruptor que deixis encès escriu un altre fitxer sense xifrar dins del mateix arxiu, així que apaga’ls. Una excepció: si també vols les adreces d’interès aquí, encén tots dos i deixa anar aquest únic .zip als dos importadors, perquè cadascun només hi llegeix el seu propi fitxer."
+          ]
+        },
+        {
+          "h": "Què arriba",
+          "p": [
+            "Cada fila es converteix en un inici de sessió amb el lloc, el nom d'usuari i la contrasenya, més la nota que el navegador hi guardava. Firefox és l'únic dels tres que escriu dates, així que els seus inicis de sessió conserven el dia en què els vas desar i la resta arriben amb la data d'avui. Safari és l'únic que exporta una clau d'autenticació, i només si guardaves els codis a Safari: quan hi és, el codi continua funcionant aquí.",
+            "Els navegadors desen una entrada per cada pàgina d'accés, així que una exportació gran sovint porta diverses files de la mateixa empresa. Arriben totes, i després les pots ajuntar o esborrar.",
+            "Un navegador guarda les contrasenyes en una llista plana, així que no hi ha estructura de carpetes per refer. En comptes d'això, cada inici de sessió arriba etiquetat, cosa que et recupera tot el lot amb un clic."
+          ]
+        },
+        {
+          "h": "Esborra el fitxer d'exportació quan acabis: són les teves contrasenyes en text pla",
+          "p": [
+            "Al .csv exportat no hi ha res xifrat, tant si arriba dins d’un .zip com si no. Qui l’obri llegeix totes les contrasenyes que has desat, així que guarda’l a la teva màquina, importa’l, comprova que ha arribat tot i després esborra el fitxer i buida la paperera. Dins de PrivacyNotes torna a estar xifrat d’extrem a extrem."
+          ]
+        }
+      ]
+    },
+    "typora": {
+      "app": "Typora",
+      "title": "Exporta les teves notes de Typora",
+      "metaTitle": "Exportar notes de Typora - PrivacyNotes",
+      "lead": "Typora edita fitxers .md normals que ja són en una carpeta del teu disc, o sigui que no hi ha cap pas d'exportació. Comprimeix la carpeta i deixa-la anar aquí.",
+      "sections": [
+        {
+          "h": "Comprimeix la carpeta on escrius",
+          "steps": [
+            "Troba la carpeta amb els teus fitxers .md. Typora no té biblioteca pròpia, així que és allà on tu vas triar desar-los.",
+            "Clic dret a la carpeta i tria Comprimeix (macOS) o Envia a > Carpeta comprimida (Windows).",
+            "Deixa anar el .zip a la importació."
+          ]
+        },
+        {
+          "h": "Decideix on viuen les imatges abans de comprimir",
+          "p": [
+            "Typora pot desar una imatge al costat de la nota, dins d'una subcarpeta assets, o deixar-la on la vas arrossegar des de. Només poden arribar les imatges que són dins de la carpeta que comprimeixes. Obre Preferències > Imatge, posa-ho perquè copiï les imatges a la carpeta assets de la nota, i fes servir \"Format > Imatge > Copia els fitxers d'imatge a...\" a les notes antigues on les imatges encara apunten a un altre lloc."
+          ]
+        },
+        {
+          "h": "Què arriba",
+          "p": [
+            "Les subcarpetes es tornen carpetes de veritat, a qualsevol profunditat. Encapçalaments, taules, llistes de tasques, blocs de codi, notes al peu, fórmules i ressaltats sobreviuen, i els URL nus es tornen enllaços clicables. El frontmatter YAML es llegeix per al títol, les dates i les etiquetes.",
+            "Les etiquetes arriben pels dos camins: des del frontmatter YAML i des dels #hashtags escrits al text. Un hashtag dins d'un bloc de codi continua sent codi, i un número sol com ara #4711 continua sent la referència d'un tiquet."
+          ]
+        }
+      ]
+    },
+    "ia-writer": {
+      "app": "iA Writer",
+      "title": "Exporta la teva biblioteca d'iA Writer",
+      "metaTitle": "Exportar la biblioteca d'iA Writer - PrivacyNotes",
+      "lead": "iA Writer desa el que escrius com a fitxers .md normals a la seva Library, o sigui que aquesta carpeta ja és l'exportació. L'única cosa que has de fer bé: aconseguir que iCloud et doni abans els fitxers de debò.",
+      "sections": [
+        {
+          "h": "Treu la carpeta d'iCloud i després comprimeix-la",
+          "steps": [
+            "A iA Writer, clic dret a la carpeta de la barra lateral Library i tria \"Mostra al Finder\".",
+            "Al Finder, clic dret en aquesta carpeta i tria \"Baixa ara\", perquè iCloud es descarregui cada fitxer en comptes de deixar-hi marcadors.",
+            "Torna-hi amb clic dret i tria Comprimeix.",
+            "Deixa anar el .zip a la importació."
+          ]
+        },
+        {
+          "h": "A l'iPhone o l'iPad",
+          "p": [
+            "Obre l'app Fitxers, ves a iCloud Drive > iA Writer, mantén premuda la carpeta i tria Comprimeix. Comparteix el .zip amb PrivacyNotes, o obre PrivacyNotes i agafa'l des de Fitxers."
+          ]
+        },
+        {
+          "h": "El parany dels marcadors",
+          "p": [
+            "Amb \"Optimitza l'emmagatzematge del Mac\" activat, iCloud substitueix els fitxers que fa temps que no obres per marcadors minúsculs. Comprimeix la carpeta en aquest estat i obtens un arxiu de closques buides: la importació s'executa, diu que ha anat bé i no porta gairebé res. Fes primer \"Baixa ara\" i després comprova que el .zip pesa més o menys el que pesa el que has escrit."
+          ]
+        },
+        {
+          "h": "Què arriba",
+          "p": [
+            "Les carpetes de la Library es tornen carpetes de veritat, a qualsevol profunditat, i les imatges i els fitxers als quals enllacen les teves notes hi van amb elles. Encapçalaments, taules, llistes de tasques, blocs de codi i notes al peu sobreviuen, i els URL nus es tornen enllaços clicables. El frontmatter es llegeix per al títol, les dates i les etiquetes.",
+            "Els blocs de contingut, que mentre escrius fiquen un fitxer dins d'un altre, arriben com l'enllaç tal com està escrit, no com el text que anaven a buscar."
+          ]
+        }
+      ]
+    },
+    "zettlr": {
+      "app": "Zettlr",
+      "title": "Exporta les teves notes de Zettlr",
+      "metaTitle": "Exportar notes de Zettlr - PrivacyNotes",
+      "lead": "Zettlr treballa directament sobre una carpeta de fitxers .md, o sigui que l'espai de treball que ja tens és l'exportació. Comprimeix-lo i deixa'l anar aquí.",
+      "sections": [
+        {
+          "h": "Comprimeix l'espai de treball",
+          "steps": [
+            "A Zettlr, clic dret a l'espai de treball de dalt de tot de l'arbre de fitxers i tria \"Mostra al Finder\", o \"Mostra a l'Explorador\" al Windows.",
+            "Clic dret a la carpeta d'allà i comprimeix-la.",
+            "Deixa anar el .zip a la importació."
+          ]
+        },
+        {
+          "h": "Els enllaços Zettelkasten conserven el text, no la destinació",
+          "p": [
+            "Zettlr enllaça les notes per identificador, així que un enllaç es llegeix [[20260823120000]]. Nosaltres conservem els note-links exactament tal com són escrits, cosa que vol dir que un enllaç per identificador només troba la seva nota aquí si alguna nota es titula de debò amb aquest identificador. Els enllaços escrits amb el nom del fitxer funcionen amb normalitat: si hi comptes, canvia el format d'enllaç intern al nom de fitxer abans d'exportar.",
+            "Les claus de citació com ara [@doe2026] per a nosaltres són text. Arriben sense canvis i deixen de ser clicables."
+          ]
+        },
+        {
+          "h": "Què arriba",
+          "p": [
+            "Les subcarpetes de l'espai de treball es tornen carpetes de veritat, a qualsevol profunditat, i les imatges i els fitxers als quals enllacen les teves notes hi van amb elles. Encapçalaments, taules, llistes de tasques, blocs de codi, notes al peu, fórmules i ressaltats sobreviuen tots. Les etiquetes es llegeixen del frontmatter YAML i dels #hashtags escrits al text, o sigui que un Zettelkasten fet a base de hashtags manté la seva ordenació."
+          ]
+        }
+      ]
+    },
+    "nextcloud-notes": {
+      "app": "Nextcloud Notes",
+      "title": "Exporta les teves notes de Nextcloud Notes",
+      "metaTitle": "Exportar Nextcloud Notes - PrivacyNotes",
+      "lead": "Nextcloud Notes no necessita cap pas d'exportació: cada nota ja és un fitxer simple en una carpeta del teu propi servidor, i Nextcloud et dona tota aquesta carpeta en .zip. Aquí llegim les dues extensions que fa servir, o sigui que no cal convertir res abans.",
+      "sections": [
+        {
+          "h": "Baixa la carpeta Notes",
+          "steps": [
+            "Obre Fitxers al teu Nextcloud, des del navegador.",
+            "Troba la carpeta Notes. Es diu Notes, tret que l'administració li hagi canviat el nom.",
+            "Obre el menú \"...\" de la carpeta i tria Baixa. Nextcloud empaqueta tota la carpeta en un .zip.",
+            "Deixa anar el .zip a la importació."
+          ]
+        },
+        {
+          "h": "Què arriba",
+          "p": [
+            "Les categories es desen com a subcarpetes, o sigui que arriben com a carpetes de veritat. Les dates de les notes surten dels fitxers mateixos, no del moment de la importació. Encapçalaments, taules, llistes de tasques, blocs de codi, notes al peu i fórmules sobreviuen, i els URL nus es tornen enllaços clicables.",
+            "Això importa una còpia. Del teu Nextcloud no s'esborra res i no hi torna res per sincronització, així que conserva el servidor com a arxiu fins que estiguis content amb el que ha aterrat aquí."
+          ]
+        },
+        {
+          "h": "Les dues extensions van bé",
+          "p": [
+            "Notes escriu .txt de sèrie i .md quan tu o la teva administració canvieu l'ajust. Aquí llegim totes dues, i també .markdown, .mdown i .mkd, o sigui que abans d'exportar no has de canviar cap nom ni tocar el servidor."
+          ]
+        }
+      ]
+    }
+  }
+}

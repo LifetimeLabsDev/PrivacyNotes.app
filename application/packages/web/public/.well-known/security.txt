@@ -1,0 +1,20 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+# Security contact for PrivacyNotes
+# https://securitytxt.org/
+
+Contact: mailto:privacynotes@lifetimelabs.dev
+Encryption: https://privacynotes.app/.well-known/pgp-key.txt
+Expires: 2027-04-19T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://privacynotes.app/.well-known/security.txt
+Policy: https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md
+-----BEGIN PGP SIGNATURE-----
+
+iJEEARYKADkWIQQdE5VuXVxD+WpEhq0EoZ/ZRtGx5QUCaj0XuxsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwwLDMACgkQBKGf2UbRseXgdAD+JP8NZfyR+a+HfjivmvbO
+ykxLg+/WXRqhgg9bRhIJEEYA/0RK8HZmNTerZIu1ELgDD99S6nbuUsYTWYnquqNn
+XYUH
+=+suy
+-----END PGP SIGNATURE-----

@@ -1,0 +1,116 @@
+{
+  "title": "Statistiche",
+  "tabs": {
+    "writing": "Scrittura",
+    "wellness": "Benessere"
+  },
+  "writing": {
+    "notes": "Note",
+    "words": "Parole",
+    "tags": "Tag",
+    "currentStreak": "Serie attuale",
+    "longestStreak": "Serie più lunga",
+    "streakValue": "{{count}}g",
+    "timeRangeAria": "Intervallo di tempo dell'attività",
+    "modeActivity": "Attività",
+    "modeMood": "Umore",
+    "tooltipMood": "{{date}}: umore {{mood}}/10",
+    "tooltipNoMood": "{{date}}: nessun umore",
+    "tooltipEdits_one": "{{date}}: {{count}} modifica",
+    "tooltipEdits_other": "{{date}}: {{count}} modifiche",
+    "longestNote": "Nota più lunga: <name>{{title}}</name> ({{count}} parole)"
+  },
+  "range": {
+    "7d": "7 giorni",
+    "14d": "14 giorni",
+    "30d": "30 giorni",
+    "3mo": "3 mesi",
+    "6mo": "6 mesi",
+    "12mo": "12 mesi"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Tutto",
+      "sleepActivity": "Sonno e attività",
+      "medication": "Farmaci",
+      "patterns": "Andamenti"
+    },
+    "empty": {
+      "title": "Ancora nessun dato sul benessere.",
+      "hint": "Apri una pagina di diario e registra il tuo umore per iniziare."
+    },
+    "overview": {
+      "daysTracked": "Giorni monitorati",
+      "avgMood": "Umore medio",
+      "avgSleep": "Sonno medio",
+      "medAdherence": "Aderenza ai farmaci",
+      "moodTrend": "Andamento dell'umore",
+      "moodByDayOfWeek": "Umore per giorno della settimana",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Esporta",
+      "allTime": "Da sempre",
+      "last90Days": "Ultimi 90 giorni",
+      "last30Days": "Ultimi 30 giorni",
+      "last7Days": "Ultimi 7 giorni",
+      "downloadJSON": "Scarica JSON",
+      "doctorPDF": "PDF per il medico",
+      "copyAIPrompt": "Copia prompt per IA",
+      "copied": "Copiato!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Qualità del sonno",
+      "activity": "Attività",
+      "avgSleepPerNight": "Sonno medio per notte"
+    },
+    "medication": {
+      "adherence": "Aderenza",
+      "empty": {
+        "title": "Ancora nessun dato sui farmaci.",
+        "hint": "Aggiungi un farmaco nelle impostazioni del tracker, poi registralo ogni giorno."
+      },
+      "dosageTimeline": "Cronologia del dosaggio",
+      "started": "Iniziato con {{dosage}}",
+      "changedTo": "Passato a {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Emozioni principali",
+      "insights": "Approfondimenti",
+      "proBadge": "PRO",
+      "insightsLocked_one": "{{count}} approfondimento rilevato. Passa a Pro per visualizzarlo",
+      "insightsLocked_other": "{{count}} approfondimenti rilevati. Passa a Pro per visualizzarli",
+      "weekInReview": "Riepilogo della settimana",
+      "weekInReviewLocked": "Passa a Pro per vedere il tuo riepilogo settimanale del benessere"
+    },
+    "week": {
+      "range": "{{start}} - {{end}}",
+      "daysLogged": "{{count}}/7 giorni registrati",
+      "avgMood": "Umore medio",
+      "moodDelta": "{{delta}} rispetto alla settimana scorsa",
+      "avgSleep": "Sonno medio",
+      "medsTaken": "Farmaci assunti",
+      "topActivity": "Attività principale",
+      "topEmotions": "Emozioni principali",
+      "reflection": "Riflessione",
+      "reflectionPlaceholder": "Com'è andata questa settimana nel complesso? Pensieri da annotare..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Traguardo sbloccato"
+  },
+  "milestone": {
+    "notes_one": "{{count}} nota scritta",
+    "notes_other": "{{count}} note scritte",
+    "streak": "Serie di scrittura di {{count}} giorni",
+    "words_one": "{{formatted}} parola scritta",
+    "words_other": "{{formatted}} parole scritte",
+    "age30": "30 giorni con PrivacyNotes",
+    "age365": "1 anno con PrivacyNotes",
+    "age730": "2 anni con PrivacyNotes",
+    "age1825": "5 anni con PrivacyNotes",
+    "ageDefault": "{{count}} giorni di attività"
+  }
+}

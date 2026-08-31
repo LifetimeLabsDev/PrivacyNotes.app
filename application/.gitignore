@@ -1,0 +1,30 @@
+# Published to the public mirror as application/.gitignore.
+#
+# The private repo's own ignore file is not published: it describes internal
+# working practice. This one covers only what a person building the app
+# actually produces.
+
+node_modules/
+dist/
+*.tsbuildinfo
+*.log
+
+.env
+.env.local
+.env.*.local
+
+.DS_Store
+._*
+
+# Rust and Tauri build output, one to two gigabytes of it.
+**/target/
+
+# Tauri regenerates these from tracked configuration on every build.
+packages/desktop/src-tauri/gen/android/.gradle/
+packages/desktop/src-tauri/gen/android/build/
+packages/desktop/src-tauri/gen/android/app/build/
+packages/desktop/src-tauri/gen/android/local.properties
+packages/desktop/src-tauri/gen/android/keystore.properties
+packages/desktop/src-tauri/gen/apple/build/
+packages/desktop/src-tauri/gen/apple/Externals/
+packages/desktop/src-tauri/gen/apple/xcuserdata/

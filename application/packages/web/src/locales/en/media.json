@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Size:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "Download image",
+    "deleteAria": "Delete image",
+    "loading": "Loading image...",
+    "uploading": "Uploading {{name}}...",
+    "uploadFailed": "Upload failed: {{message}}",
+    "storeUnavailable": "Image store not available",
+    "loadFailed": "Failed to load image",
+    "notFound": "Image not found"
+  },
+  "attachment": {
+    "fallbackName": "Attachment",
+    "imageAlt": "Image",
+    "cantPlay": "Can't play. Download to listen",
+    "downloadingStatus": "downloading...",
+    "deleteConfirm": "Delete?",
+    "copied": "Copied",
+    "download": "Download",
+    "downloadToPlay": "Download to play",
+    "play": "Play",
+    "pause": "Pause",
+    "fileNotFound": "File not found",
+    "localOnly": "On this device only",
+    "localOnlyTip": "Doesn't fit in your storage. Not backed up - clearing browser/app data deletes it. It syncs once space frees.",
+    "notUploaded": "Not uploaded yet",
+    "notUploadedTip": "This file hasn't been uploaded from the device it was added on - usually because storage is full there. It opens here once it syncs.",
+    "downloadFailed": "Download failed",
+    "playbackFailed": "Playback failed",
+    "uploadFailed": "Upload failed: {{message}}",
+    "unknownError": "Unknown error"
+  }
+}

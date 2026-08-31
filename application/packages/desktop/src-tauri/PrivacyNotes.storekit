@@ -1,0 +1,130 @@
+{
+  "identifier" : "ab6a9bee-bb63-460c-a825-869b4c8b1f8f",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "49.99",
+      "familyShareable" : false,
+      "internalID" : "887fb68b-c400-4d94-b2f3-f9870cd601b5",
+      "localizations" : [
+        {
+          "description" : "All Pro features. One purchase, forever.",
+          "displayName" : "PrivacyNotes Pro",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "app.privacynotes.pro",
+      "referenceName" : "PrivacyNotes Pro",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "1e090de8-0eaf-4503-9c7e-3fb41fa892b7",
+      "localizations" : [
+
+      ],
+      "name" : "Encrypted Storage",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "17.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "54e55b49-b9f3-49e8-8332-ab98b3aeb80b",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Adds 5 GB of end-to-end encrypted sync storage.",
+              "displayName" : "5 GB Encrypted Storage",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "app.privacynotes.storage.5gb",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Storage 5 GB",
+          "subscriptionGroupID" : "1e090de8-0eaf-4503-9c7e-3fb41fa892b7",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "8.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "de654873-8ca0-4b3a-a5d6-209e4cb7d615",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Adds 2 GB of end-to-end encrypted sync storage.",
+              "displayName" : "2 GB Encrypted Storage",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "app.privacynotes.storage.2gb",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Storage 2 GB",
+          "subscriptionGroupID" : "1e090de8-0eaf-4503-9c7e-3fb41fa892b7",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 3,
+          "internalID" : "0c62b8ea-4eeb-4074-96a1-ee8d63877910",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Adds 1 GB of end-to-end encrypted sync storage.",
+              "displayName" : "1 GB Encrypted Storage",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "app.privacynotes.storage.1gb",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Storage 1 GB",
+          "subscriptionGroupID" : "1e090de8-0eaf-4503-9c7e-3fb41fa892b7",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

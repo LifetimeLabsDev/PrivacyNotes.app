@@ -1,0 +1,169 @@
+{
+  "labels": {
+    "mood": "Humör",
+    "emotions": "Känslor",
+    "sleep": "Sömn",
+    "sleepScore": "Sömnpoäng",
+    "heartRate": "Puls",
+    "activity": "Aktivitet",
+    "medication": "Medicin",
+    "meds": "Mediciner",
+    "energy": "Energi",
+    "focus": "Fokus",
+    "weight": "Vikt",
+    "steps": "Steg",
+    "water": "Vatten",
+    "screenTime": "Skärmtid",
+    "caffeine": "Koffein",
+    "pain": "Smärta",
+    "social": "Socialt",
+    "custom": "Eget"
+  },
+  "units": {
+    "hoursSuffix": " tim",
+    "bpm": "slag/min",
+    "kg": "kg",
+    "steps_one": "steg",
+    "steps_other": "steg",
+    "hrs": "tim",
+    "glasses_one": " glas",
+    "glasses_other": " glas",
+    "cups_one": " kopp",
+    "cups_other": " koppar"
+  },
+  "scaleEnds": {
+    "low": "lågt",
+    "high": "högt",
+    "none": "inget",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "svår",
+    "socialLow": "isolerad",
+    "socialHigh": "mycket social"
+  },
+  "mood": {
+    "prompt": "Hur mår du? (1-10)",
+    "low": "uselt",
+    "high": "fantastiskt",
+    "anchor": {
+      "1": "uselt",
+      "3": "tungt",
+      "5": "okej",
+      "7": "bra",
+      "10": "fantastiskt"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "Vilka känslor finns där?",
+    "count_one": "{{count}} känsla",
+    "count_other": "{{count}} känslor",
+    "valence": {
+      "positive": "positiv",
+      "neutral": "neutral",
+      "negative": "negativ"
+    },
+    "tags": {
+      "happy": "Glad",
+      "calm": "Lugn",
+      "relaxed": "Avslappnad",
+      "grateful": "Tacksam",
+      "loved": "Älskad",
+      "motivated": "Motiverad",
+      "confident": "Självsäker",
+      "productive": "Produktiv",
+      "focused": "Fokuserad",
+      "energetic": "Energisk",
+      "tired": "Trött",
+      "restless": "Rastlös",
+      "distracted": "Okoncentrerad",
+      "numb": "Känslolös",
+      "overwhelmed": "Överväldigad",
+      "anxious": "Ängslig",
+      "stressed": "Stressad",
+      "frustrated": "Frustrerad",
+      "irritable": "Lättirriterad",
+      "sad": "Ledsen",
+      "lonely": "Ensam",
+      "guilty": "Skuldtyngd",
+      "hopeless": "Hopplös",
+      "angry": "Arg"
+    }
+  },
+  "sleep": {
+    "prompt": "Hur sov du?",
+    "hoursLabel": "Timmar:",
+    "quality": {
+      "terrible": "Hemskt",
+      "poor": "Dåligt",
+      "okay": "Okej",
+      "good": "Bra",
+      "great": "Toppen"
+    }
+  },
+  "sleepScore": {
+    "prompt": "Sömnpoäng"
+  },
+  "heartRate": {
+    "prompt": "Genomsnittlig puls"
+  },
+  "activity": {
+    "prompt": "Aktivitetsnivå idag?",
+    "level": {
+      "sedentary": "Stillasittande",
+      "light": "Lätt",
+      "moderate": "Måttlig",
+      "active": "Aktiv",
+      "intense": "Intensiv"
+    }
+  },
+  "medication": {
+    "heading": "Mediciner",
+    "empty": "Du har inte lagt till några mediciner än.",
+    "takenCount_one": "{{count}} tagen",
+    "takenCount_other": "{{count}} tagna",
+    "namePlaceholder": "Medicinens namn",
+    "dosagePlaceholder": "Dosering (t.ex. 50 mg)",
+    "addMedication": "+ Lägg till medicin",
+    "editMedication": "Redigera medicin",
+    "removeMedication": "Ta bort medicin",
+    "confirmRemove": "Ta bort <highlight>{{name}}</highlight>?",
+    "yes": "Ja",
+    "no": "Nej",
+    "taken": "Tagen",
+    "skip": "Hoppa över"
+  },
+  "custom": {
+    "yes": "Ja",
+    "no": "Nej",
+    "typeLabels": {
+      "scale10": "Skala (0-10)",
+      "scale5": "Skala (0-5)",
+      "slider100": "Reglage (0-100)",
+      "number": "Tal",
+      "yesno": "Ja / Nej"
+    }
+  },
+  "config": {
+    "configureTrackers": "Ställ in mätvärden",
+    "title": "Mätvärden",
+    "categoryMoodMind": "Humör och sinne",
+    "categoryBodyHealth": "Kropp och hälsa",
+    "categoryLifestyle": "Livsstil",
+    "customHeading": "Egna",
+    "resume": "Återuppta",
+    "stop": "Stoppa",
+    "addCustomTracker": "Lägg till eget mätvärde",
+    "addCustomTrackerCount": "Lägg till eget mätvärde ({{count}}/{{max}})",
+    "addCustomTrackerHint": "Mät vad du vill",
+    "maxReached": "Du har nått gränsen på {{max}} egna mätvärden.",
+    "customTrackers": "Egna mätvärden",
+    "newCustomTracker": "Nytt eget mätvärde",
+    "trackerNamePlaceholder": "Namn på mätvärde",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "Typ:",
+    "colorLabel": "Färg:"
+  }
+}

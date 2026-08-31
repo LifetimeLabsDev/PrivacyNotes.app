@@ -1,0 +1,164 @@
+{
+  "labels": {
+    "mood": "気分",
+    "emotions": "感情",
+    "sleep": "睡眠",
+    "sleepScore": "睡眠スコア",
+    "heartRate": "心拍数",
+    "activity": "活動",
+    "medication": "服薬",
+    "meds": "薬",
+    "energy": "エネルギー",
+    "focus": "集中",
+    "weight": "体重",
+    "steps": "歩数",
+    "water": "水分",
+    "screenTime": "スクリーンタイム",
+    "caffeine": "カフェイン",
+    "pain": "痛み",
+    "social": "社交",
+    "custom": "カスタム"
+  },
+  "units": {
+    "hoursSuffix": "時間",
+    "bpm": "bpm",
+    "kg": "kg",
+    "steps_other": "歩",
+    "hrs": "時間",
+    "glasses_other": "杯",
+    "cups_other": "杯"
+  },
+  "scaleEnds": {
+    "low": "低",
+    "high": "高",
+    "none": "なし",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "重度",
+    "socialLow": "孤立",
+    "socialHigh": "とても社交的"
+  },
+  "mood": {
+    "prompt": "今の気分は?(1〜10)",
+    "low": "最悪",
+    "high": "最高",
+    "anchor": {
+      "1": "最悪",
+      "3": "つらい",
+      "5": "ふつう",
+      "7": "良い",
+      "10": "最高"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}}({{min}}〜{{max}})"
+  },
+  "emotions": {
+    "prompt": "どんな感情がありますか?",
+    "count_other": "{{count}}件の感情",
+    "valence": {
+      "positive": "ポジティブ",
+      "neutral": "ニュートラル",
+      "negative": "ネガティブ"
+    },
+    "tags": {
+      "happy": "うれしい",
+      "calm": "穏やか",
+      "relaxed": "リラックス",
+      "grateful": "感謝",
+      "loved": "愛されている",
+      "motivated": "やる気",
+      "confident": "自信",
+      "productive": "はかどる",
+      "focused": "集中",
+      "energetic": "元気",
+      "tired": "疲れた",
+      "restless": "そわそわ",
+      "distracted": "気が散る",
+      "numb": "無感覚",
+      "overwhelmed": "いっぱいいっぱい",
+      "anxious": "不安",
+      "stressed": "ストレス",
+      "frustrated": "もどかしい",
+      "irritable": "イライラ",
+      "sad": "悲しい",
+      "lonely": "さみしい",
+      "guilty": "罪悪感",
+      "hopeless": "絶望",
+      "angry": "怒り"
+    }
+  },
+  "sleep": {
+    "prompt": "よく眠れましたか?",
+    "hoursLabel": "時間:",
+    "quality": {
+      "terrible": "最悪",
+      "poor": "悪い",
+      "okay": "ふつう",
+      "good": "良い",
+      "great": "最高"
+    }
+  },
+  "sleepScore": {
+    "prompt": "睡眠スコア"
+  },
+  "heartRate": {
+    "prompt": "平均心拍数"
+  },
+  "activity": {
+    "prompt": "今日の活動量は?",
+    "level": {
+      "sedentary": "座りがち",
+      "light": "軽め",
+      "moderate": "普通",
+      "active": "活発",
+      "intense": "激しい"
+    }
+  },
+  "medication": {
+    "heading": "薬",
+    "empty": "まだ薬が設定されていません。",
+    "takenCount_other": "{{count}}件服用",
+    "namePlaceholder": "薬の名前",
+    "dosagePlaceholder": "用量(例: 50mg)",
+    "addMedication": "+ 薬を追加",
+    "editMedication": "薬を編集",
+    "removeMedication": "薬を削除",
+    "confirmRemove": "<highlight>{{name}}</highlight>を削除しますか?",
+    "yes": "はい",
+    "no": "いいえ",
+    "taken": "服用",
+    "skip": "スキップ"
+  },
+  "custom": {
+    "yes": "はい",
+    "no": "いいえ",
+    "typeLabels": {
+      "scale10": "スケール(0〜10)",
+      "scale5": "スケール(0〜5)",
+      "slider100": "スライダー(0〜100)",
+      "number": "数値",
+      "yesno": "はい / いいえ"
+    }
+  },
+  "config": {
+    "configureTrackers": "トラッカーを設定",
+    "title": "トラッカー",
+    "categoryMoodMind": "気分とこころ",
+    "categoryBodyHealth": "からだと健康",
+    "categoryLifestyle": "ライフスタイル",
+    "customHeading": "カスタム",
+    "resume": "再開",
+    "stop": "停止",
+    "addCustomTracker": "カスタムトラッカーを追加",
+    "addCustomTrackerCount": "カスタムトラッカーを追加({{count}}/{{max}})",
+    "addCustomTrackerHint": "何でも好きなものを記録",
+    "maxReached": "カスタムトラッカーは最大{{max}}個までです。",
+    "customTrackers": "カスタムトラッカー",
+    "newCustomTracker": "新規カスタムトラッカー",
+    "trackerNamePlaceholder": "トラッカー名",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "種類:",
+    "colorLabel": "色:"
+  }
+}

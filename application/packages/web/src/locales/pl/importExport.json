@@ -1,0 +1,183 @@
+{
+  "shell": {
+    "importTitle": "Zaimportuj swoje dane",
+    "exportTitle": "Wyeksportuj swoje dane",
+    "restoreTitle": "Przywróć swoje dane",
+    "vaultTitle": "Zaimportuj swoje hasła",
+    "tablistLabel": "Import, eksport, przywracanie lub hasła",
+    "tabImport": "Import",
+    "tabExport": "Eksport",
+    "tabRestore": "Przywracanie",
+    "tabVault": "Hasła",
+    "working": "Pracuję…"
+  },
+  "footer": {
+    "exportNote": "Eksport działa lokalnie. Nic nie jest wysyłane.",
+    "restoreNote": "Twój plik jest odczytywany i odszyfrowywany lokalnie.",
+    "importNote": "Wszystko jest szyfrowane, zanim opuści Twoje urządzenie w celu synchronizacji."
+  },
+  "importPick": {
+    "autoTagLabel": "Oznacz zaimportowane notatki tagiem źródła",
+    "autoTagDesc": "Notatki z Google Keep dostają <keep>#google</keep>, Obsidian dostaje <obsidian>#obsidian</obsidian> i tak dalej.",
+    "guideAria": "Przewodnik importu dla {{app}}",
+    "guideLabel": "Poradnik"
+  },
+  "folderImport": {
+    "tagLabel": "Oznacz notatki też tagiem folderu",
+    "tagDesc": "Twoje foldery i tak zostaną odtworzone. To dodaje nazwę każdego folderu również jako tag, przydatne, jeśli lubisz też filtrować po tagach."
+  },
+  "sourceDesc": {
+    "googleKeep": "Plik .zip z Google Takeout (folder Keep) lub pojedyncza notatka .json. Listy kontrolne importują się jako natywne listy zadań.",
+    "appleNotes": "Wyeksportuj darmową aplikacją Exporter jako Markdown, a potem upuść tutaj plik .zip.",
+    "appleJournal": "Eksportuj z Dziennika na Macu lub iPhonie, skompresuj folder AppleJournalEntries i upuść tutaj plik .zip. Wpisy importują się jako wpisy w dzienniku razem ze zdjęciami, filmami, notatkami głosowymi i lokalizacjami.",
+    "evernote": "Pojedynczy plik .enex albo kilka spakowanych w zip. Zachowuje formatowanie, tagi, załączniki, linki między notatkami i notatniki. Zadań Evernote nie zapisuje w .enex.",
+    "samsungNotes": "Wyeksportuj jako Word (.docx) lub tekst (.txt). Spakuj wiele plików w .zip do importu zbiorczego.",
+    "simplenote": "Wyeksportuj z Simplenote (Settings -> Tools -> Export Notes). Upuść plik .zip.",
+    "standardNotes": "Odszyfrowana kopia .zip lub .txt ze Standard Notes (File > Export > Decrypted).",
+    "obsidian": "Sejf Obsidiana jako .zip. Zachowuje tagi, [[note links]], strukturę folderów, tagi #inline oraz osadzone obrazki i pliki.",
+    "notesnook": "Eksport Notesnook jako .zip. Przy eksporcie wybierz HTML, aby zachować formatowanie, notesy, tagi i załączniki.",
+    "upnote": "W UpNote: Settings > Backup > Backup now, potem spakuj wszystko z folderu kopii zapasowej do .zip. Zachowuje notesy, tagi, przypięcia, linki do notatek, formatowanie i załączniki. Eksporty pojedynczych notatek z aplikacji na telefon też działają - wybierz „Export to HTML”.",
+    "markdownFolder": "Pliki .md albo .txt pojedynczo lub w .zip. Spakowany folder zachowuje podfoldery i zabiera ze sobą obrazki oraz załączniki.",
+    "markdownApp": "Te notatki już są plikami Markdown w folderze. Przeciągnij ten folder jako .zip, a razem z nim przyjdą podfoldery, obrazki i #tagi.",
+    "browserBookmarks": "Plik zakładek (.html) z \"Export bookmarks\" w twojej przeglądarce albo .zip, który zapisuje Safari. Chrome, Firefox, Safari, Edge, Opera, Brave i Vivaldi zawierają ten sam plik. Foldery i daty przychodzą razem z nim.",
+    "bitwarden": "Niezaszyfrowany eksport .json z Bitwarden (Tools > Export vault > .json). Loginy, karty, klucze SSH, bezpieczne notatki i kody TOTP przychodzą razem.",
+    "browserPasswords": "Plik haseł (.csv) z Chrome, Edge, Brave, Opery, Vivaldi, Firefoksa lub Safari albo .zip, który zapisuje Safari. Każdy wiersz staje się loginem. Usuń plik, gdy skończysz - są w nim twoje hasła jawnym tekstem."
+  },
+  "vaultPick": {
+    "intro": "Zaimportuj loginy, karty kredytowe i klucze SSH z innego menedżera haseł."
+  },
+  "restorePick": {
+    "intro": "Przywróć kopię zapasową PrivacyNotes wyeksportowaną wcześniej. Twój plik jest odczytywany i odszyfrowywany lokalnie.",
+    "fullBackupTitle": "Pełna kopia zapasowa (.zip)",
+    "fullBackupDesc": "Przywróć notatki, dzienniki, elementy sejfu, zadania, obrazy, dźwięk i pliki. Wszystko jest importowane jako nowe elementy - istniejące dane nie są nadpisywane.",
+    "encryptedBackupTitle": "Zaszyfrowana kopia zapasowa (.pnbackup, .pnbackupz)",
+    "encryptedBackupDesc": "Przywróć zaszyfrowaną kopię zapasową kluczem z Twojej frazy. Plik .pnbackupz przywraca wszystko, razem z plikami; .pnbackup zawiera tylko tekst i metadane. Musisz być zalogowany na tym samym koncie, które ją utworzyło."
+  },
+  "encryptedBackupLabel": "Zaszyfrowana kopia zapasowa",
+  "status": {
+    "readingFile": "Odczytywanie pliku…",
+    "decryptingBackup": "Odszyfrowywanie kopii zapasowej...",
+    "writingNotes": "Zapisywanie notatek w Twojej lokalnej bibliotece…",
+    "importingBlobs": "Importowanie obrazów i załączników...",
+    "restoringBlobs": "Przywracanie obrazów i plików..."
+  },
+  "errors": {
+    "genericParse": "Coś poszło nie tak.",
+    "decryptionFailed": "Odszyfrowywanie nie powiodło się. Zła fraza lub uszkodzony plik.",
+    "blobImportFailed": "Twoje notatki zaimportowały się, ale ich obrazy i pliki nie: {{detail}} Nic w pliku, który wybrałeś, nie zostało zmienione, więc możesz usunąć zaimportowane notatki i uruchomić import ponownie."
+  },
+  "preview": {
+    "sourceLabel": "Źródło",
+    "uniqueTags": "Unikalne tagi",
+    "empty": "Puste",
+    "untagged": "Bez tagów",
+    "items": "Elementy",
+    "previewLabel": "Podgląd",
+    "andMore": "… i jeszcze {{count}}",
+    "headsUpLabel": "Uwaga:",
+    "duplicateWarning": "import dodaje je jako nowe notatki. Jeśli uruchomisz go dwa razy, dostaniesz duplikaty. Nie ma jeszcze automatycznego usuwania duplikatów.",
+    "quotaExceeded": "<strong>Za mało pamięci, aby zaimportować.</strong> Szacowane zapotrzebowanie: {{needed}}, dostępne: {{available}}. Zwolnij miejsce lub przejdź na wyższy plan przed importem.",
+    "quotaWarning": "Uwaga: ten import zajmie mniej więcej {{needed}} z Twoich {{available}} pozostałej pamięci.",
+    "oversizeAttachments_one": "1 plik jest większy niż limit {{limit}} na plik w Twoim planie. Zaimportuje się na to urządzenie, ale nie zsynchronizuje się z innymi urządzeniami, dopóki nie przejdziesz na wyższy plan.",
+    "oversizeAttachments_few": "{{count}} pliki są większe niż limit {{limit}} na plik w Twoim planie. Zaimportują się na to urządzenie, ale nie zsynchronizują się z innymi urządzeniami, dopóki nie przejdziesz na wyższy plan.",
+    "oversizeAttachments_many": "{{count}} plików jest większych niż limit {{limit}} na plik w Twoim planie. Zaimportują się na to urządzenie, ale nie zsynchronizują się z innymi urządzeniami, dopóki nie przejdziesz na wyższy plan.",
+    "oversizeAttachments_other": "{{count}} pliku jest większe niż limit {{limit}} na plik w Twoim planie. Zaimportuje się na to urządzenie, ale nie zsynchronizuje się z innymi urządzeniami, dopóki nie przejdziesz na wyższy plan.",
+    "duplicateSkipNote": "zakładki, które już masz zapisane, zostaną pominięte, więc powtórzenie tego importu niczego nie zduplikuje."
+  },
+  "counts": {
+    "note_one": "notatka",
+    "note_few": "notatki",
+    "note_many": "notatek",
+    "note_other": "notatki",
+    "journal_one": "wpis w dzienniku",
+    "journal_few": "wpisy w dzienniku",
+    "journal_many": "wpisów w dzienniku",
+    "journal_other": "wpisy w dzienniku",
+    "login_one": "login",
+    "login_few": "loginy",
+    "login_many": "loginów",
+    "login_other": "loginu",
+    "card_one": "karta",
+    "card_few": "karty",
+    "card_many": "kart",
+    "card_other": "karty",
+    "sshKey_one": "klucz SSH",
+    "sshKey_few": "klucze SSH",
+    "sshKey_many": "kluczy SSH",
+    "sshKey_other": "klucza SSH",
+    "zeroItems": "0 elementów",
+    "importButton": "Importuj ({{counts}})"
+  },
+  "errorPhase": {
+    "heading": "{{importer}}: import nie powiódł się"
+  },
+  "export": {
+    "intro": "Twoje dane należą do Ciebie. Eksportuj, kiedy chcesz, za darmo.",
+    "fullBackupHeading": "Pełna kopia zapasowa",
+    "portableHeading": "Eksport przenośny",
+    "vaultOnlyHeading": "Tylko sejf",
+    "zipBackupTitle": "Kopia zapasowa PrivacyNotes (.zip)",
+    "zipBackupDesc": "Wszystko: notatki, dzienniki, elementy sejfu, zadania, obrazy, dźwięk i pliki. Użyj tego do pełnej kopii konta lub przeniesienia się na nowe urządzenie. Pliki w środku nie są zaszyfrowane, więc przechowuj zip w bezpiecznym miejscu.",
+    "encryptedZipBackupTitle": "Zaszyfrowana pełna kopia zapasowa (.pnbackupz)",
+    "encryptedZipBackupDesc": "Wszystko, co zawiera kopia zip - notatki, elementy sejfu, obrazy, dźwięk i pliki - zapieczętowane kluczem z Twojej frazy. Przywrócisz ją swoją frazą na dowolnym urządzeniu. Możesz ją trzymać gdziekolwiek.",
+    "encryptedBackupTitle": "Zaszyfrowana kopia zapasowa (.pnbackup)",
+    "encryptedBackupDesc": "Cała treść tekstowa i metadane, zaszyfrowane kluczem z Twojej frazy. Bez obrazów i plików. Możesz ją trzymać gdziekolwiek - bez Twojej frazy jest nieczytelna.",
+    "htmlArchiveTitle": "Archiwum HTML (.zip)",
+    "htmlArchiveDesc": "Jedna strona HTML gotowa do druku na notatkę. Dobre do czytania offline lub archiwizacji, nie do przywracania.",
+    "textBackupTitle": "Kopia tekstowa (.json)",
+    "textBackupDesc": "Cała treść tekstowa i metadane jako zwykły JSON. Bez obrazów i plików. Trzymaj w miejscu, któremu ufasz - to nie jest zaszyfrowane.",
+    "vaultExportTitle": "Eksport sejfu (.json)",
+    "vaultExportDesc": "Loginy, karty i klucze SSH w formacie zgodnym z Bitwarden. Można je zaimportować w większości menedżerów haseł. Tekst jawny - obchodź się z nim ostrożnie.",
+    "bookmarksOnlyHeading": "Tylko zakładki",
+    "bookmarksExportTitle": "Plik zakładek (.html)",
+    "bookmarksExportDesc": "Standardowy plik zakładek, który czyta każda przeglądarka. Zaimportuj go do Chrome, Firefoksa, Safari albo Edge razem z folderami."
+  },
+  "exportProgress": {
+    "failedTitle": "Eksport nie powiódł się",
+    "completeTitle": "Eksport zakończony",
+    "exportingTitle": "Eksportowanie kopii zapasowej...",
+    "preparing": "Przygotowywanie...",
+    "exporting": "Eksportowanie...",
+    "imagesProgress": "Eksportowanie obrazów... {{done}} z {{total}}",
+    "filesProgress": "Eksportowanie plików... {{done}} z {{total}}",
+    "building": "Tworzenie kopii zapasowej...",
+    "compressing": "Kompresowanie..."
+  },
+  "upload": {
+    "completeTitle": "Przesyłanie zakończone",
+    "failedTitle": "Przesyłanie nie powiodło się",
+    "partialTitle": "Przesłano: {{done}}, nieudane: {{failed}}",
+    "uploadingTitle_one": "Przesyłanie {{count}} pliku",
+    "uploadingTitle_few": "Przesyłanie {{count}} plików",
+    "uploadingTitle_many": "Przesyłanie {{count}} plików",
+    "uploadingTitle_other": "Przesyłanie {{count}} pliku",
+    "statusDone": "Gotowe",
+    "statusFailed": "Niepowodzenie",
+    "errorStorageFull": "Magazyn pełny - zwolnij miejsce lub dokup magazyn, aby przesłać ten plik.",
+    "errorStorageFullKept": "Nie mieści się w magazynie - zostaje na tym urządzeniu. Zsynchronizuje się, gdy zwolni się miejsce.",
+    "statusUploading": "Przesyłanie...",
+    "statusWaiting": "Oczekiwanie",
+    "summaryDone": "gotowe: {{count}}",
+    "summaryUploading": "przesyłanie: {{count}}",
+    "summaryFailed": "niepowodzenia: {{count}}",
+    "typesHint": "Obrazy, dokumenty, dźwięk, wideo, zip. Maks. {{limit}} MB na plik.",
+    "proPitch": "Pro podnosi limit do 50 MB na plik.",
+    "proPitchCta": "Przejdź na Pro",
+    "storagePitch": "Plan pamięci podnosi go do 100 MB na plik.",
+    "storagePitchCta": "Dokup pamięć"
+  },
+  "decryptErrors": {
+    "tooSmall": "Ten plik jest pusty lub niekompletny ({{size}} B), więc nie ma czego przywracać. Wyeksportuj kopię jeszcze raz i przed importem sprawdź, czy zapisany plik ma realny rozmiar.",
+    "notThisAccount": "Nie udało się otworzyć tej kopii. Plik .pnbackup otwiera się tylko na koncie, które go utworzyło, więc zwykle jest to kopia z innego konta - żeby przenieść notatki między kontami, wyeksportuj pełną kopię zapasową (.zip). Jeśli konto jest właściwe, plik został uszkodzony albo zapisany niekompletnie."
+  },
+  "exportErrors": {
+    "generic": "Nie udało się zapisać eksportu. Spróbuj ponownie albo wybierz inny folder."
+  },
+  "saveErrors": {
+    "shortWrite": "Zapisano tylko {{written}} z {{expected}} bajtów, więc plik jest niekompletny. Spróbuj ponownie i zapisz w pamięci urządzenia zamiast w folderze w chmurze."
+  },
+  "browserImport": {
+    "tagLabel": "Zachowaj tagi z przeglądarki",
+    "tagDesc": "Firefox zapisuje przy zakładce tagi i słowo kluczowe paska adresu. Jedno i drugie trafia tutaj jako tagi."
+  }
+}

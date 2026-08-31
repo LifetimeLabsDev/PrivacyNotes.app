@@ -1,0 +1,116 @@
+{
+  "title": "Statistics",
+  "tabs": {
+    "writing": "Writing",
+    "wellness": "Wellness"
+  },
+  "writing": {
+    "notes": "Notes",
+    "words": "Words",
+    "tags": "Tags",
+    "currentStreak": "Current streak",
+    "longestStreak": "Longest streak",
+    "streakValue": "{{count}}d",
+    "timeRangeAria": "Activity time range",
+    "modeActivity": "Activity",
+    "modeMood": "Mood",
+    "tooltipMood": "{{date}}: mood {{mood}}/10",
+    "tooltipNoMood": "{{date}}: no mood",
+    "tooltipEdits_one": "{{date}}: {{count}} edit",
+    "tooltipEdits_other": "{{date}}: {{count}} edits",
+    "longestNote": "Longest note: <name>{{title}}</name> ({{count}} words)"
+  },
+  "range": {
+    "7d": "7 days",
+    "14d": "14 days",
+    "30d": "30 days",
+    "3mo": "3 months",
+    "6mo": "6 months",
+    "12mo": "12 months"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "All",
+      "sleepActivity": "Sleep & Activity",
+      "medication": "Medication",
+      "patterns": "Patterns"
+    },
+    "empty": {
+      "title": "No wellness data yet.",
+      "hint": "Open a journal entry and log your mood to get started."
+    },
+    "overview": {
+      "daysTracked": "Days tracked",
+      "avgMood": "Avg mood",
+      "avgSleep": "Avg sleep",
+      "medAdherence": "Med adherence",
+      "moodTrend": "Mood trend",
+      "moodByDayOfWeek": "Mood by day of week",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Export",
+      "allTime": "All time",
+      "last90Days": "Last 90 days",
+      "last30Days": "Last 30 days",
+      "last7Days": "Last 7 days",
+      "downloadJSON": "Download JSON",
+      "doctorPDF": "Doctor PDF",
+      "copyAIPrompt": "Copy AI prompt",
+      "copied": "Copied!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Sleep quality",
+      "activity": "Activity",
+      "avgSleepPerNight": "Average sleep per night"
+    },
+    "medication": {
+      "adherence": "Adherence",
+      "empty": {
+        "title": "No medication data yet.",
+        "hint": "Add a medication in the tracker settings, then log daily."
+      },
+      "dosageTimeline": "Dosage timeline",
+      "started": "Started {{dosage}}",
+      "changedTo": "Changed to {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Top emotions",
+      "insights": "Insights",
+      "proBadge": "PRO",
+      "insightsLocked_one": "{{count}} insight detected. Upgrade to Pro to view",
+      "insightsLocked_other": "{{count}} insights detected. Upgrade to Pro to view",
+      "weekInReview": "Week in review",
+      "weekInReviewLocked": "Upgrade to Pro to see your weekly wellness summary"
+    },
+    "week": {
+      "range": "{{start}} to {{end}}",
+      "daysLogged": "{{count}}/7 days logged",
+      "avgMood": "Avg mood",
+      "moodDelta": "{{delta}} vs last week",
+      "avgSleep": "Avg sleep",
+      "medsTaken": "Meds taken",
+      "topActivity": "Top activity",
+      "topEmotions": "Top emotions",
+      "reflection": "Reflection",
+      "reflectionPlaceholder": "How did this week feel overall? Any thoughts to capture..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Milestone unlocked"
+  },
+  "milestone": {
+    "notes_one": "{{count}} note written",
+    "notes_other": "{{count}} notes written",
+    "streak": "{{count}}-day writing streak",
+    "words_one": "{{formatted}} word written",
+    "words_other": "{{formatted}} words written",
+    "age30": "30 days with PrivacyNotes",
+    "age365": "1 year with PrivacyNotes",
+    "age730": "2 years with PrivacyNotes",
+    "age1825": "5 years with PrivacyNotes",
+    "ageDefault": "{{count}} days in"
+  }
+}

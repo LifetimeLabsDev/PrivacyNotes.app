@@ -1,0 +1,117 @@
+{
+  "dismiss": "Descarta",
+  "close": "Tanca",
+  "moveBanner": {
+    "title": "L'aplicació es trasllada a use.privacynotes.app",
+    "body": "Trasllada aquesta sessió ara - triga uns segons i les teves notes vénen amb tu.",
+    "cta": "Trasllada ara",
+    "syncing": "S'estan sincronitzant les teves notes…",
+    "error": "Ara mateix no s'ha pogut sincronitzar tot. Comprova la connexió i torna-ho a provar.",
+    "conflict": "Una de les teves notes té un conflicte de sincronització que necessita la teva decisió. Resol-lo al diàleg i torna-ho a provar."
+  },
+  "movedHint": {
+    "body": "Aquesta és la nova casa de l'aplicació. Actualitza el marcador a use.privacynotes.app i torna a afegir les dreceres de la pantalla d'inici.",
+    "gotIt": "Entesos"
+  },
+  "moveScreen": {
+    "title": "L'aplicació s'ha traslladat a use.privacynotes.app",
+    "body": "Trasllada aquest dispositiu ara - triga uns segons i les teves notes vénen amb tu. Aquí no s'esborra res.",
+    "openNotes": "Obre les teves notes aquí un cop per resoldre-ho",
+    "website": "Explora el web en canvi"
+  },
+  "quota": {
+    "frozen": {
+      "configured": "Sincronització en pausa. Fa més de 90 dies que superes el límit d'emmagatzematge. Les teves notes són segures localment. Torna a subscriure't o exporta les teves dades.",
+      "unconfigured": "Sincronització en pausa. Fa més de 90 dies que superes el límit d'emmagatzematge. Les teves notes són segures localment. Exporta i retalla notes per reprendre la sincronització."
+    },
+    "grace": {
+      "configured_one": "L'emmagatzematge addicional ha caducat. Queda {{count}} dia per reduir l'ús o tornar a subscriure't abans que la sincronització es pausi.",
+      "configured_many": "L'emmagatzematge addicional ha caducat. Queden {{count}} dies per reduir l'ús o tornar a subscriure't abans que la sincronització es pausi.",
+      "configured_other": "L'emmagatzematge addicional ha caducat. Queden {{count}} dies per reduir l'ús o tornar a subscriure't abans que la sincronització es pausi.",
+      "unconfigured_one": "Has superat el límit d'emmagatzematge. Queda {{count}} dia per retallar notes abans que la sincronització es pausi.",
+      "unconfigured_many": "Has superat el límit d'emmagatzematge. Queden {{count}} dies per retallar notes abans que la sincronització es pausi.",
+      "unconfigured_other": "Has superat el límit d'emmagatzematge. Queden {{count}} dies per retallar notes abans que la sincronització es pausi."
+    },
+    "full": {
+      "configured": "Emmagatzematge ple. Algunes notes no s'han pogut sincronitzar. Allibera espai o afegeix més emmagatzematge.",
+      "unconfigured": "Emmagatzematge ple. Algunes notes no s'han pogut sincronitzar. Allibera espai retallant notes."
+    },
+    "manageStorage": "Gestiona l'emmagatzematge",
+    "viewUsage": "Mostra l'ús"
+  },
+  "syncError": {
+    "failed_one": "1 nota no s'ha pogut sincronitzar. Es tornarà a provar automàticament.",
+    "failed_many": "{{count}} notes no s'han pogut sincronitzar. Es tornaran a provar automàticament.",
+    "failed_other": "{{count}} notes no s'han pogut sincronitzar. Es tornaran a provar automàticament.",
+    "lastError": "Últim error: {{message}}"
+  },
+  "sessionExpired": {
+    "title": "La sessió ha caducat",
+    "body": "La teva sessió ha caducat. Les teves notes són segures en aquest dispositiu. Torna a iniciar la sessió per reprendre la sincronització.",
+    "signInAgain": "Torna a iniciar la sessió"
+  },
+  "signOutConfirm": {
+    "title": "Has desat la teva frase de 12 paraules?",
+    "body": "La teva frase és l'<only>única</only> manera de tornar a entrar. No hi ha restabliment per correu ni línia de suport. No sabem qui ets, per disseny. Si encara no l'has apuntada, toca <action>No, mostra la frase</action> i te l'obrirem ara mateix.",
+    "unsyncedWarn_one": "1 nota d'aquest dispositiu encara no s'ha sincronitzat. Es perdrà per sempre si no es pot pujar en tancar la sessió.",
+    "unsyncedWarn_many": "{{count}} notes d'aquest dispositiu encara no s'han sincronitzat. Es perdran per sempre si no es poden pujar en tancar la sessió.",
+    "unsyncedWarn_other": "{{count}} notes d'aquest dispositiu encara no s'han sincronitzat. Es perdran per sempre si no es poden pujar en tancar la sessió.",
+    "unsyncedKept_one": "1 nota d'aquest dispositiu encara no s'ha sincronitzat. Es queda en aquest dispositiu i se sincronitzarà quan tornis a iniciar la sessió.",
+    "unsyncedKept_many": "{{count}} notes d'aquest dispositiu encara no s'han sincronitzat. Es queden en aquest dispositiu i se sincronitzaran quan tornis a iniciar la sessió.",
+    "unsyncedKept_other": "{{count}} notes d'aquest dispositiu encara no s'han sincronitzat. Es queden en aquest dispositiu i se sincronitzaran quan tornis a iniciar la sessió.",
+    "dontRemind": "No m'ho tornis a recordar",
+    "showPhrase": "No, mostra la frase",
+    "confirm": "Sí, tanca la sessió"
+  },
+  "burnShareModal": {
+    "title": "Comparteix amb Burn After Reading",
+    "body": "<lead>La teva nota original no se suprimirà.</lead> Es queda segura al teu compte. L'enllaç burn és una còpia xifrada a part que s'autodestrueix després de llegir-se. L'enllaç caduca al cap de 24 hores, s'obri o no.",
+    "imagesStripped": "Només es mostra el text; els fitxers queden ocults en aquesta nota.",
+    "copied": "Copiat"
+  },
+  "burnView": {
+    "tagline": "Xifrat. Efímer. Només per als teus ulls.",
+    "toggleTheme": "Canvia el tema",
+    "checking": "S'està comprovant...",
+    "revealing": "S'està recuperant i desxifrant...",
+    "goToApp": "Vés a <brand/>",
+    "footerTagline": "- Notes xifrades de coneixement zero, allotjades a Suïssa.",
+    "sealed": {
+      "heading": "Has rebut una nota xifrada.",
+      "subheading": "Aquest missatge s'autodestruirà després de llegir-lo. Els enllaços no llegits caduquen al cap de 24 hores.",
+      "reveal": "Mostra el missatge",
+      "warning": "El servidor suprimeix la nota en el moment que la mostres. No hi ha segona oportunitat."
+    },
+    "revealed": {
+      "countdown": "El text en clar s'esborra d'aquí a {{time}}",
+      "clearNow": "Esborra'l ara",
+      "emptyNote": "(nota buida)",
+      "deletedNotice": "Aquesta còpia compartida s'ha suprimit del servidor. No es pot tornar a veure."
+    },
+    "destroyed": {
+      "heading": "Missatge destruït.",
+      "body": "Suprimit del servidor i esborrat de la memòria. Aquest missatge no es pot tornar a llegir."
+    },
+    "gone": {
+      "heading": "Aquesta nota ja no existeix.",
+      "body": "Ja s'ha llegit o ha caducat. Els enllaços burn només es poden obrir una vegada i caduquen al cap de 24 hores."
+    },
+    "error": {
+      "heading": "Alguna cosa ha anat malament.",
+      "fallback": "Pot ser que l'enllaç estigui malmès o incomplet.",
+      "server": "Error del servidor. Pot ser que la nota ja s'hagi llegit o hagi caducat.",
+      "decryption": "El desxifratge ha fallat. Pot ser que l'enllaç estigui malmès.",
+      "network": "No s'ha pogut contactar amb el servidor. Comprova la connexió i torna-ho a provar."
+    },
+    "noPayload": {
+      "heading": "No s'ha trobat cap missatge.",
+      "body": "Aquest URL no conté cap referència a una nota burn. Assegura't de tenir l'enllaç complet."
+    }
+  },
+  "burnShare": {
+    "offline": "Ets fora de línia. Els enllaços burn requereixen una connexió amb el servidor. Torna-ho a provar quan tornis a estar en línia.",
+    "demo": "Els enllaços burn es desen en un servidor, i la demo no en contacta cap. Registra't per crear enllaços burn reals.",
+    "tooLarge": "La nota és massa gran per compartir-la amb un enllaç burn ({{size}}KB). El màxim és {{max}}KB.",
+    "storeFailed": "No s'ha pogut desar la nota burn al servidor."
+  }
+}

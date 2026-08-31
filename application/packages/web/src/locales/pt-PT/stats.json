@@ -1,0 +1,116 @@
+{
+  "title": "Estatísticas",
+  "tabs": {
+    "writing": "Escrita",
+    "wellness": "Bem-estar"
+  },
+  "writing": {
+    "notes": "Notas",
+    "words": "Palavras",
+    "tags": "Etiquetas",
+    "currentStreak": "Sequência atual",
+    "longestStreak": "Maior sequência",
+    "streakValue": "{{count}}d",
+    "timeRangeAria": "Intervalo de tempo da atividade",
+    "modeActivity": "Atividade",
+    "modeMood": "Humor",
+    "tooltipMood": "{{date}}: humor {{mood}}/10",
+    "tooltipNoMood": "{{date}}: sem humor",
+    "tooltipEdits_one": "{{date}}: {{count}} edição",
+    "tooltipEdits_other": "{{date}}: {{count}} edições",
+    "longestNote": "Nota mais longa: <name>{{title}}</name> ({{count}} palavras)"
+  },
+  "range": {
+    "7d": "7 dias",
+    "14d": "14 dias",
+    "30d": "30 dias",
+    "3mo": "3 meses",
+    "6mo": "6 meses",
+    "12mo": "12 meses"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Tudo",
+      "sleepActivity": "Sono e atividade",
+      "medication": "Medicação",
+      "patterns": "Padrões"
+    },
+    "empty": {
+      "title": "Ainda não há dados de bem-estar.",
+      "hint": "Abre uma entrada de diário e regista o teu humor para começar."
+    },
+    "overview": {
+      "daysTracked": "Dias registados",
+      "avgMood": "Humor médio",
+      "avgSleep": "Sono médio",
+      "medAdherence": "Adesão à medicação",
+      "moodTrend": "Tendência do humor",
+      "moodByDayOfWeek": "Humor por dia da semana",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Exportar",
+      "allTime": "Todo o período",
+      "last90Days": "Últimos 90 dias",
+      "last30Days": "Últimos 30 dias",
+      "last7Days": "Últimos 7 dias",
+      "downloadJSON": "Transferir JSON",
+      "doctorPDF": "PDF para o médico",
+      "copyAIPrompt": "Copiar prompt de IA",
+      "copied": "Copiado!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Qualidade do sono",
+      "activity": "Atividade",
+      "avgSleepPerNight": "Sono médio por noite"
+    },
+    "medication": {
+      "adherence": "Adesão",
+      "empty": {
+        "title": "Ainda não há dados de medicação.",
+        "hint": "Adiciona um medicamento nas definições de registos e regista diariamente."
+      },
+      "dosageTimeline": "Cronologia da dosagem",
+      "started": "Começou {{dosage}}",
+      "changedTo": "Mudou para {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Principais emoções",
+      "insights": "Análises",
+      "proBadge": "PRO",
+      "insightsLocked_one": "{{count}} análise detetada. Passa para Pro para veres",
+      "insightsLocked_other": "{{count}} análises detetadas. Passa para Pro para veres",
+      "weekInReview": "Resumo da semana",
+      "weekInReviewLocked": "Passa para Pro para veres o teu resumo semanal de bem-estar"
+    },
+    "week": {
+      "range": "{{start}} a {{end}}",
+      "daysLogged": "{{count}}/7 dias registados",
+      "avgMood": "Humor médio",
+      "moodDelta": "{{delta}} face à semana passada",
+      "avgSleep": "Sono médio",
+      "medsTaken": "Medicamentos tomados",
+      "topActivity": "Principal atividade",
+      "topEmotions": "Principais emoções",
+      "reflection": "Reflexão",
+      "reflectionPlaceholder": "Como correu esta semana no geral? Algum pensamento a registar..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Marco desbloqueado"
+  },
+  "milestone": {
+    "notes_one": "{{count}} nota escrita",
+    "notes_other": "{{count}} notas escritas",
+    "streak": "Sequência de escrita de {{count}} dias",
+    "words_one": "{{formatted}} palavra escrita",
+    "words_other": "{{formatted}} palavras escritas",
+    "age30": "30 dias com o PrivacyNotes",
+    "age365": "1 ano com o PrivacyNotes",
+    "age730": "2 anos com o PrivacyNotes",
+    "age1825": "5 anos com o PrivacyNotes",
+    "ageDefault": "{{count}} dias por cá"
+  }
+}

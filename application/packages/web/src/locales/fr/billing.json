@@ -1,0 +1,64 @@
+{
+  "upgrade": {
+    "header": "Paie une fois, à toi pour toujours",
+    "earlyAdopterBadge": "Adoptant précoce",
+    "oneTime": "unique",
+    "subscriptionPitch": "Pas d'abonnement. Pas de frais annuels. Un seul paiement, débloqué à vie.",
+    "ctaUnlock": "Tout débloquer",
+    "ctaOpening": "Ouverture du paiement...",
+    "ctaSignUp": "Inscris-toi pour débloquer",
+    "intro": {
+      "storage": "Des envois plus volumineux et plus d'espace sont une fonctionnalité Pro. Passe à Pro pour des fichiers de 50 Mo et 500 Mo de stockage.",
+      "folders": "Les dossiers sont une fonctionnalité Pro. Organise tes notes dans des dossiers imbriqués, aussi profonds que tu veux, et garde chaque projet séparé.",
+      "lock": "Verrouiller une note est une fonctionnalité Pro. Passe à Pro pour protéger toute note des modifications accidentelles.",
+      "protect": "Protéger une note par PIN est une fonctionnalité Pro. Passe à Pro pour protéger les notes sensibles derrière ton PIN.",
+      "history": "L'historique des notes est une fonctionnalité Pro. Passe à Pro pour conserver une chronologie de chaque enregistrement.",
+      "devices": "Tu as atteint la limite de 2 appareils. Passe à Pro pour un nombre illimité d'appareils.",
+      "zen": "Le mode Zen est une fonctionnalité Pro. Passe à Pro pour une écriture sans distraction.",
+      "theme": "Les thèmes premium sont une fonctionnalité Pro. Passe à Pro pour débloquer toutes les nuances.",
+      "callout": "L'ensemble complet des encadrés est une fonctionnalité Pro.",
+      "totp": "Les codes 2FA sont une fonctionnalité Pro. Enregistre une clé d'authentification avec n'importe quel identifiant et le code rotatif s'affiche à côté du mot de passe. La clé elle-même est enregistrée et synchronisée dans toutes les formules.",
+      "default": "Une seule mise à niveau débloque tout ce qui suit. Paiement unique."
+    },
+    "features": {
+      "devices": "Synchronise un nombre illimité d'appareils, sur toutes les plateformes",
+      "folders": "Dossiers imbriqués, organisation par projet",
+      "lock": "Verrouille et protège par PIN n'importe quelle note",
+      "history": "Historique complet des notes, restaure à tout moment",
+      "themes": "Thèmes premium dans toutes les nuances",
+      "zen": "Mode Zen, écriture sans distraction",
+      "storage": "500 Mo de stockage + 50 Mo de pièces jointes"
+    },
+    "comparisonBeta": "Paie {{earlyPrice}} $ une fois. Obsidian Sync coûte 48 $/an, chaque année. Standard Notes facture 90 $/an. Prix adoptant précoce, bloqué avant qu'il ne passe à {{proPrice}} $.",
+    "comparison": "Paie {{proPrice}} $ une fois et c'est à toi pour toujours. Obsidian Sync coûte 48 $/an et Standard Notes 90 $/an, chaque année."
+  },
+  "purchaseError": {
+    "store": "Le paiement dans le store n'a pas pu aboutir et tu n'as pas été débité. Réessaie dans un instant.",
+    "validate": "Ton paiement a bien été effectué, mais l'activation a échoué. Redémarre l'application pour réessayer - si le déblocage ne se fait toujours pas, le store rembourse l'achat automatiquement sous 3 jours.",
+    "alreadyOwned": "Le store indique que tu possèdes déjà cet achat, mais il appartient à un autre compte. Connecte-toi avec la phrase de récupération que tu utilisais au moment de l'achat."
+  },
+  "checkout": {
+    "invalidTitle": "Lien de paiement invalide",
+    "invalidBody": "Ouvre le paiement depuis l'application pour qu'on puisse rattacher l'achat à ton compte.",
+    "completeTitle": "Paiement effectué",
+    "completeBody": "Tu peux fermer cet onglet et revenir à PrivacyNotes. Ta mise à niveau se débloque automatiquement.",
+    "openingTitle": "Ouverture du paiement sécurisé...",
+    "openingBody": "Une fenêtre de paiement Paddle devrait apparaître. Si ce n'est pas le cas, ton navigateur a peut-être bloqué la popup - recharge cette page pour réessayer."
+  },
+  "history": {
+    "title": "Historique des notes",
+    "subtitle": "Jusqu'à 20 versions par note. Les plus anciennes sont automatiquement élaguées.",
+    "empty": "Pas encore d'historique. Les versions commencent à s'accumuler après la prochaine modification. Reviens plus tard.",
+    "selectPrompt": "Sélectionne une version pour l'aperçu.",
+    "emptyBody": "(vide)",
+    "restore": "Restaurer",
+    "restoring": "Restauration…"
+  },
+  "donation": {
+    "eyebrow": "Tu as débloqué",
+    "intro": "<brand/> est gratuit, et le restera toujours. Pas de pubs, pas de pistage, aucun e-mail enregistré. S'il t'a aidé à penser, écrire ou te souvenir, envisage de soutenir le développement. Ça garde le projet en vie et finance les prochaines fonctionnalités.",
+    "proBenefits": "Soutenir débloque aussi les avantages Pro dès leur sortie : appareils illimités, pièces jointes, sauvegardes cloud chiffrées.",
+    "maybeLater": "Plus tard",
+    "support": "Soutenir →"
+  }
+}

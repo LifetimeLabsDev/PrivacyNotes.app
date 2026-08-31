@@ -1,0 +1,169 @@
+{
+  "labels": {
+    "mood": "Stimmung",
+    "emotions": "Emotionen",
+    "sleep": "Schlaf",
+    "sleepScore": "Schlafwert",
+    "heartRate": "Herzfrequenz",
+    "activity": "Aktivität",
+    "medication": "Medikation",
+    "meds": "Medis",
+    "energy": "Energie",
+    "focus": "Fokus",
+    "weight": "Gewicht",
+    "steps": "Schritte",
+    "water": "Wasser",
+    "screenTime": "Bildschirmzeit",
+    "caffeine": "Koffein",
+    "pain": "Schmerz",
+    "social": "Sozial",
+    "custom": "Benutzerdefiniert"
+  },
+  "units": {
+    "hoursSuffix": "h",
+    "bpm": "bpm",
+    "kg": "kg",
+    "steps_one": "Schritt",
+    "steps_other": "Schritte",
+    "hrs": "Std.",
+    "glasses_one": " Glas",
+    "glasses_other": " Gläser",
+    "cups_one": " Tasse",
+    "cups_other": " Tassen"
+  },
+  "scaleEnds": {
+    "low": "niedrig",
+    "high": "hoch",
+    "none": "keine",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "stark",
+    "socialLow": "isoliert",
+    "socialHigh": "sehr gesellig"
+  },
+  "mood": {
+    "prompt": "Wie fühlst du dich? (1-10)",
+    "low": "schrecklich",
+    "high": "fantastisch",
+    "anchor": {
+      "1": "schrecklich",
+      "3": "mies",
+      "5": "okay",
+      "7": "gut",
+      "10": "fantastisch"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "Welche Emotionen sind da?",
+    "count_one": "{{count}} Emotion",
+    "count_other": "{{count}} Emotionen",
+    "valence": {
+      "positive": "positiv",
+      "neutral": "neutral",
+      "negative": "negativ"
+    },
+    "tags": {
+      "happy": "Glücklich",
+      "calm": "Ruhig",
+      "relaxed": "Entspannt",
+      "grateful": "Dankbar",
+      "loved": "Geliebt",
+      "motivated": "Motiviert",
+      "confident": "Selbstsicher",
+      "productive": "Produktiv",
+      "focused": "Fokussiert",
+      "energetic": "Energiegeladen",
+      "tired": "Müde",
+      "restless": "Unruhig",
+      "distracted": "Abgelenkt",
+      "numb": "Abgestumpft",
+      "overwhelmed": "Überfordert",
+      "anxious": "Ängstlich",
+      "stressed": "Gestresst",
+      "frustrated": "Frustriert",
+      "irritable": "Gereizt",
+      "sad": "Traurig",
+      "lonely": "Einsam",
+      "guilty": "Schuldig",
+      "hopeless": "Hoffnungslos",
+      "angry": "Wütend"
+    }
+  },
+  "sleep": {
+    "prompt": "Wie hast du geschlafen?",
+    "hoursLabel": "Stunden:",
+    "quality": {
+      "terrible": "Furchtbar",
+      "poor": "Schlecht",
+      "okay": "Okay",
+      "good": "Gut",
+      "great": "Großartig"
+    }
+  },
+  "sleepScore": {
+    "prompt": "Schlafwert"
+  },
+  "heartRate": {
+    "prompt": "Durchschnittliche Herzfrequenz"
+  },
+  "activity": {
+    "prompt": "Aktivitätslevel heute?",
+    "level": {
+      "sedentary": "Sitzend",
+      "light": "Leicht",
+      "moderate": "Mäßig",
+      "active": "Aktiv",
+      "intense": "Intensiv"
+    }
+  },
+  "medication": {
+    "heading": "Medikamente",
+    "empty": "Noch keine Medikamente eingerichtet.",
+    "takenCount_one": "{{count}} eingenommen",
+    "takenCount_other": "{{count}} eingenommen",
+    "namePlaceholder": "Name des Medikaments",
+    "dosagePlaceholder": "Dosierung (z. B. 50 mg)",
+    "addMedication": "+ Medikament hinzufügen",
+    "editMedication": "Medikament bearbeiten",
+    "removeMedication": "Medikament entfernen",
+    "confirmRemove": "<highlight>{{name}}</highlight> entfernen?",
+    "yes": "Ja",
+    "no": "Nein",
+    "taken": "Eingenommen",
+    "skip": "Überspringen"
+  },
+  "custom": {
+    "yes": "Ja",
+    "no": "Nein",
+    "typeLabels": {
+      "scale10": "Skala (0-10)",
+      "scale5": "Skala (0-5)",
+      "slider100": "Schieberegler (0-100)",
+      "number": "Zahl",
+      "yesno": "Ja / Nein"
+    }
+  },
+  "config": {
+    "configureTrackers": "Tracker konfigurieren",
+    "title": "Tracker",
+    "categoryMoodMind": "Stimmung und Geist",
+    "categoryBodyHealth": "Körper und Gesundheit",
+    "categoryLifestyle": "Lebensstil",
+    "customHeading": "Benutzerdefiniert",
+    "resume": "Fortsetzen",
+    "stop": "Stoppen",
+    "addCustomTracker": "Benutzerdefinierten Tracker hinzufügen",
+    "addCustomTrackerCount": "Benutzerdefinierten Tracker hinzufügen ({{count}}/{{max}})",
+    "addCustomTrackerHint": "Tracke alles, was du möchtest",
+    "maxReached": "Maximal {{max}} benutzerdefinierte Tracker erreicht.",
+    "customTrackers": "Benutzerdefinierte Tracker",
+    "newCustomTracker": "Neuer benutzerdefinierter Tracker",
+    "trackerNamePlaceholder": "Name des Trackers",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "Typ:",
+    "colorLabel": "Farbe:"
+  }
+}

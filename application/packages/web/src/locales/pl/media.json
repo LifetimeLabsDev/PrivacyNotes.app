@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Rozmiar:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "Pobierz obraz",
+    "deleteAria": "Usuń obraz",
+    "loading": "Wczytywanie obrazu...",
+    "uploading": "Przesyłanie {{name}}...",
+    "uploadFailed": "Przesyłanie nie powiodło się: {{message}}",
+    "storeUnavailable": "Magazyn obrazów jest niedostępny",
+    "loadFailed": "Nie udało się wczytać obrazu",
+    "notFound": "Nie znaleziono obrazu"
+  },
+  "attachment": {
+    "fallbackName": "Załącznik",
+    "imageAlt": "Obraz",
+    "cantPlay": "Nie można odtworzyć. Pobierz, aby posłuchać",
+    "downloadingStatus": "pobieranie...",
+    "deleteConfirm": "Usunąć?",
+    "copied": "Skopiowano",
+    "download": "Pobierz",
+    "downloadToPlay": "Pobierz, aby odtworzyć",
+    "play": "Odtwórz",
+    "pause": "Wstrzymaj",
+    "fileNotFound": "Nie znaleziono pliku",
+    "localOnly": "Tylko na tym urządzeniu",
+    "localOnlyTip": "Nie mieści się w magazynie. Brak kopii zapasowej: wyczyszczenie danych przeglądarki lub aplikacji usuwa plik. Zsynchronizuje się, gdy zwolni się miejsce.",
+    "notUploaded": "Jeszcze nie przesłano",
+    "notUploadedTip": "Ten plik nie został jeszcze przesłany z urządzenia, na którym go dodano - zwykle dlatego, że tam magazyn jest pełny. Otworzy się tutaj, gdy się zsynchronizuje.",
+    "downloadFailed": "Pobieranie nie powiodło się",
+    "playbackFailed": "Odtwarzanie nie powiodło się",
+    "uploadFailed": "Przesyłanie nie powiodło się: {{message}}",
+    "unknownError": "Nieznany błąd"
+  }
+}

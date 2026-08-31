@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Tamanho:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "Transferir imagem",
+    "deleteAria": "Eliminar imagem",
+    "loading": "A carregar imagem...",
+    "uploading": "A enviar {{name}}...",
+    "uploadFailed": "O envio falhou: {{message}}",
+    "storeUnavailable": "Armazenamento de imagens indisponível",
+    "loadFailed": "Falha ao carregar a imagem",
+    "notFound": "Imagem não encontrada"
+  },
+  "attachment": {
+    "fallbackName": "Anexo",
+    "imageAlt": "Imagem",
+    "cantPlay": "Não é possível reproduzir. Transfere para ouvir",
+    "downloadingStatus": "a transferir...",
+    "deleteConfirm": "Eliminar?",
+    "copied": "Copiado",
+    "download": "Transferir",
+    "downloadToPlay": "Transfere para reproduzir",
+    "play": "Reproduzir",
+    "pause": "Pausar",
+    "fileNotFound": "Ficheiro não encontrado",
+    "localOnly": "Só neste dispositivo",
+    "localOnlyTip": "Não cabe no teu armazenamento. Sem cópia de segurança: limpar os dados do navegador ou da app apaga o ficheiro. Sincroniza assim que houver espaço.",
+    "notUploaded": "Ainda não enviado",
+    "notUploadedTip": "Este ficheiro ainda não foi enviado do dispositivo onde foi adicionado - normalmente porque o armazenamento lá está cheio. Abre aqui assim que sincronizar.",
+    "downloadFailed": "A transferência falhou",
+    "playbackFailed": "A reprodução falhou",
+    "uploadFailed": "O envio falhou: {{message}}",
+    "unknownError": "Erro desconhecido"
+  }
+}

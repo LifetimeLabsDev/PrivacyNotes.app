@@ -1,0 +1,701 @@
+{
+  "page": {
+    "importTitle": "PrivacyNotes'a içe aktarma",
+    "importSteps": [
+      "PrivacyNotes'u açıp Ayarlar > Import & Export yolunu izleyin.",
+      "Kaynak olarak **{{app}}** seçeneğini seçin.",
+      "Az önce dışa aktardığınız dosyayı sürükleyin ya da tıklayıp seçin.",
+      "Önizlemenin neyin geleceğini söylediğine bakın, sonra içe aktarmayı başlatın."
+    ],
+    "otherGuides": "Diğer içe aktarma rehberleri"
+  },
+  "guides": {
+    "google-keep": {
+      "app": "Google Keep",
+      "title": "Google Keep notlarınızı dışa aktarın",
+      "metaTitle": "Google Keep'i Takeout ile dışa aktarma - PrivacyNotes",
+      "lead": "Google Keep'in kendi içinde dışa aktarma düğmesi yok; resmî çıkış yolu Google Takeout. Yaklaşık beş dakika sürer ve PrivacyNotes Takeout dosyasını doğrudan okur, arşivi açmanıza gerek kalmaz.",
+      "sections": [
+        {
+          "h": "Notlarınızı Google Keep'ten dışa aktarın",
+          "steps": [
+            "[takeout.google.com](https://takeout.google.com) adresine gidin ve notlarınızın bulunduğu Google hesabıyla oturum açın.",
+            "\"Deselect all\" (tüm seçimi kaldır) düğmesine tıklayın, ürün listesinde aşağı inin ve yalnızca \"Keep\" kutusunu işaretleyin.",
+            "\"Next step\" düğmesine tıklayın ve varsayılanları koruyun: tek seferlik dışa aktarma, .zip dosyası.",
+            "\"Create export\" düğmesine tıklayın. Google arşivi hazırlar ve size e-postayla bir indirme bağlantısı gönderir; yalnızca Keep seçiliyken bu genellikle saatler değil dakikalar sürer.",
+            ".zip dosyasını indirin. Onu olduğu gibi bırakabilirsiniz."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Başlıklar, not metni ve biçimlendirme olduğu gibi gelir. Keep kontrol listeleri PrivacyNotes'un kendi görev listelerine dönüşür, Keep etiketleriniz de etiket olarak gelir.",
+            "Takeout .zip dosyasının tamamını içe aktarıcıya bırakın. Arşivi zaten açtıysanız Takeout/Keep klasöründeki tek bir .json not dosyası da işe yarar."
+          ]
+        }
+      ]
+    },
+    "apple-notes": {
+      "app": "Apple Notes",
+      "title": "Apple Notes notlarınızı dışa aktarın",
+      "metaTitle": "Apple Notes'u Markdown olarak dışa aktarma - PrivacyNotes",
+      "lead": "Apple Notes'un kendi toplu dışa aktarma özelliği yok; Mac'te işi gören yol, notlarınızı Markdown olarak yazan ücretsiz Exporter uygulamasından geçiyor. PrivacyNotes bu dışa aktarmayı görselleriyle birlikte doğrudan okur.",
+      "sections": [
+        {
+          "h": "Mac'te notlarınızı dışa aktarın",
+          "steps": [
+            "Mac App Store'dan ücretsiz \"Exporter\" uygulamasını yükleyin.",
+            "Uygulamayı açıp notlarınızı dışa aktarın. Hesaba ve klasöre göre düzenlenmiş, görsellerin de yanında durduğu bir Markdown dosyaları klasörü elde edersiniz.",
+            "Finder'da o klasöre sağ tıklayın ve \"Sıkıştır\" (Compress) seçeneğiyle .zip haline getirin."
+          ]
+        },
+        {
+          "h": "iPhone veya iPad'den geliyorsanız",
+          "p": [
+            "iOS'tan paylaşılan not başına zip dosyaları (notun Markdown'ını ve bir Attachments klasörünü içeren küçük bir .zip) da kabul edilir: teker teker bırakın. Kütüphanenin tamamı için yukarıdaki Mac yolu çok daha hızlı."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Klasör yapısı, not metni ve gömülü görseller yolculuktan sağ çıkar. Notlar başlıklarını korur, ekler ise notlarıyla birlikte şifreli dosya deposuna iner."
+          ]
+        }
+      ]
+    },
+    "obsidian": {
+      "app": "Obsidian",
+      "title": "Obsidian kasanızı dışa aktarın",
+      "metaTitle": "Obsidian kasasını dışa aktarma - PrivacyNotes",
+      "lead": "Obsidian'da dışa aktarma adımı yok, gerek de yok: bir kasa zaten Markdown dosyalarından oluşan bir klasör. Bu da onu taşınmaların en kolayı yapıyor. Kasayı zipleyin, sürükleyip bırakın.",
+      "sections": [
+        {
+          "h": "Kasanızı dışa aktarın",
+          "steps": [
+            "Diskteki kasa klasörünüzü bulun. Nerede olduğundan emin değilseniz, kasa değiştiricide kasa adına tıkladığınızda Obsidian yolu gösterir.",
+            "Klasörü .zip olarak sıkıştırın: macOS'ta sağ tık > Sıkıştır (Compress), Windows'ta Gönder > Sıkıştırılmış (zip) klasör.",
+            "İçe aktarma dosyanız bu zip. Eklentiye ya da başka bir dışa aktarmaya gerek yok."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Klasör yapınız etiketlere düzleştirilmeden, ne kadar derin olursa olsun gerçek klasörler olarak yeniden kurulur. Work/Projects içindeki bir not, Work > Projects klasörüne iner. Aynı kasayı yeniden aktardığınızda daha önce oluşturduğu klasörler yeniden kullanılır, kopyaları çıkmaz.",
+            "Ücretsiz planda bu klasörlere hemen göz atabilirsiniz; klasör oluşturmak, yeniden adlandırmak ve taşımak Pro özelliğidir, yani bir Obsidian içe aktarması, yükseltmeden önce bunu denemenin iyi bir yolu.",
+            "YAML frontmatter anlaşılır: tags, aliases ve oluşturulma tarihleri dikkate alınır, gövdedeki satır içi #etiketler de etiket alanına eklenir. İçe aktarma sırasında \"Notları klasörüne göre de etiketle\" seçeneğini işaretleyerek her klasör adını etiket olarak da ekleyebilirsiniz; etiketle filtrelemeyi sevenler için pratik.",
+            "[[...]] bağlantılarınız çalışmaya devam eder: PrivacyNotes onları note-link olarak gösterir, yani notlar arasındaki bağlar taşınmadan sağ çıkar. .obsidian yapılandırma klasörü ve .trash otomatik olarak atlanır."
+          ]
+        }
+      ]
+    },
+    "standard-notes": {
+      "app": "Standard Notes",
+      "title": "Standard Notes notlarınızı dışa aktarın",
+      "metaTitle": "Standard Notes yedeğini dışa aktarma - PrivacyNotes",
+      "lead": "Standard Notes şifresi çözülmüş bir yedek dışa aktarması sunuyor ve PrivacyNotes'un okuduğu dosya da bu. Baştan söyleyelim: şifreli olan değil, şifresi çözülmüş olan gerekiyor.",
+      "sections": [
+        {
+          "h": "Notlarınızı Standard Notes'tan dışa aktarın",
+          "steps": [
+            "Standard Notes'u açın (app.standardnotes.com üzerinden web ya da masaüstü uygulaması) ve oturum açın.",
+            "Preferences (tercihler) bölümünü, ardından Backups (yedekler) kısmını açın.",
+            "Bir veri yedeği indirin ve sorulduğunda şifresi çözülmüş (decrypted) biçimi seçin.",
+            "İçinde \"Standard Notes Backup and Import File.txt\" adlı bir dosya bulunan bir .zip elde edersiniz. Zip'i olduğu gibi bırakın."
+          ]
+        },
+        {
+          "h": "Şifreli yedekler desteklenmiyor",
+          "p": [
+            "Şifreli bir Standard Notes yedeği, yalnızca Standard Notes parolanızın açabildiği bir şifreli metindir; içe aktarıcı onu okuyamaz. Şifreli biçimi dışa aktardıysanız yeniden dışa aktarın ve şifresi çözülmüş (decrypted) biçimi seçin. Dosya notlarınızı düz metin olarak taşıdığı için, içe aktarma bittikten sonra onu silin.",
+            ".zip dosyasının tamamını içe aktarıcıya bırakın; arşivi zaten açtıysanız yalnızca .txt dosyasını bırakmanız da yeter."
+          ]
+        }
+      ]
+    },
+    "simplenote": {
+      "app": "Simplenote",
+      "title": "Simplenote notlarınızı dışa aktarın",
+      "metaTitle": "Simplenote notlarını dışa aktarma - PrivacyNotes",
+      "lead": "Simplenote'un üç tıkta biten temiz bir yerleşik dışa aktarması var ve PrivacyNotes ortaya çıkan zip'i doğrudan okuyor.",
+      "sections": [
+        {
+          "h": "Notlarınızı Simplenote'tan dışa aktarın",
+          "steps": [
+            "[app.simplenote.com](https://app.simplenote.com) adresinden oturum açın (ya da masaüstü uygulamasını açın).",
+            "Kenar çubuğu menüsünü açıp Settings (ayarlar) bölümüne gidin.",
+            "Account altındaki \"Export Notes\" seçeneğine tıklayın. Bir .zip anında inmeye başlar."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Zip'in içinde tüm notlarınızı ve üst verilerini tutan, esas kaynak olan bir notes.json var: etiketler de geliyor, oluşturulma tarihleri de korunuyor. .zip dosyasının tamamını olduğu gibi içe aktarıcıya bırakın."
+          ]
+        }
+      ]
+    },
+    "samsung-notes": {
+      "app": "Samsung Notes",
+      "title": "Samsung Notes notlarınızı dışa aktarın",
+      "metaTitle": "Samsung Notes'u Word olarak dışa aktarma - PrivacyNotes",
+      "lead": "Samsung Notes her notu ayrı bir dosya olarak, iki biçimden birinde dışa aktarır. Microsoft Word (.docx) dışa aktarmasını tercih edin: biçimlendirmenizi korur, düz metin dışa aktarması ise kaybeder.",
+      "sections": [
+        {
+          "h": "Notlarınızı Samsung Notes'tan dışa aktarın",
+          "steps": [
+            "Samsung Notes'ta istediğiniz notları uzun basarak seçin (ya da Tümünü seç seçeneğini kullanın).",
+            "Üç nokta menüsünü açın ve \"Dosya olarak kaydet\" seçeneğine dokunun.",
+            "Biçimlendirilmiş notlar için \"Microsoft Word dosyası\" (.docx), düz metin için \"Metin dosyası\" (.txt) seçin.",
+            "Samsung her not için cihaz depolamanıza ayrı bir dosya kaydeder. Birkaç taneden fazlasını dışa aktardıysanız hepsini tek bir .zip içinde toplayın (dosya yöneticinizde seçip sıkıştırın)."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            ".docx dışa aktarmalarından: kalın, italik, altı çizili, üstü çizili, madde işaretli ve numaralı listeler ve onay kutuları (bunlar görev listesine dönüşür) sağ çıkar. .txt dışa aktarmalarından: metin, başka hiçbir şey.",
+            "Samsung notuna gömülü görselleri elle taşırsınız: içe aktarıcı, görsel içeren her notu işaretler, böylece resimleri nereye geri koyacağınızı tam olarak bilirsiniz. Metin, başlıklar ve tarihler aynı geçişte gelir."
+          ]
+        }
+      ]
+    },
+    "bitwarden": {
+      "app": "Bitwarden",
+      "title": "Bitwarden kasanızı dışa aktarın",
+      "metaTitle": "Bitwarden kasasını dışa aktarma - PrivacyNotes",
+      "lead": "Bitwarden bütün kasanızı tek bir şifrelenmemiş .json dosyası olarak dışa aktarır, PrivacyNotes da her kaydı olması gereken yere yerleştirir: giriş bilgileri, kartlar, SSH anahtarları ve güvenli notlar.",
+      "sections": [
+        {
+          "h": "Kasanızı Bitwarden'dan dışa aktarın",
+          "steps": [
+            "Bitwarden web kasasını (ya da masaüstü uygulamasını) açıp oturum açın.",
+            "Tools (araçlar) bölümüne, ardından \"Export vault\" seçeneğine gidin.",
+            ".json dosya biçimini seçin (düz olanı, \".json (Encrypted)\" değil).",
+            "Ana parolanızla onaylayın ve dosyayı indirin."
+          ]
+        },
+        {
+          "h": "Neler nereye iniyor",
+          "p": [
+            "Giriş bilgileri Kasa'daki giriş kayıtlarına (site simgeleriyle birlikte), kartlar kart kayıtlarına, SSH anahtarları SSH anahtarı kayıtlarına dönüşür; güvenli notlar ve kimlikler ise okunabilir not olarak gelir. Bitwarden klasörleri etiketlere eşlenir, favoriler de yıldızlı gelir. Kimlik doğrulama anahtarları (TOTP) da birlikte gelir, böylece 2FA kodlarınız çalışmaya devam eder.",
+            "Dışa aktarılan dosya parolalarınızı düz metin olarak tutar, bu yüzden içe aktarın, her şeyin geldiğini doğrulayın, sonra dosyayı düzgünce silin. PrivacyNotes içinde her şey yeniden uçtan uca şifrelenir."
+          ]
+        }
+      ]
+    },
+    "evernote": {
+      "app": "Evernote",
+      "title": "Evernote notlarınızı dışa aktarın",
+      "metaTitle": "Evernote notlarını ENEX olarak dışa aktarma - PrivacyNotes",
+      "lead": "Evernote tek seferde tek bir defteri, yalnızca masaüstü uygulamasından dışa aktarır. ENEX biçimini seçin, notlarınız eksiksiz gelsin: biçimlendirme, etiketler, ekler, web kupürleri ve aralarındaki bağlantılar.",
+      "sections": [
+        {
+          "img": {
+            "src": "/help/img/evernote-export-menu.webp",
+            "alt": "Evernote masaüstü uygulamasının defter bağlam menüsü, \"Export notebook...\" vurgulanmış halde.",
+            "width": 1576,
+            "height": 652
+          },
+          "h": "Bir defteri dışa aktarın",
+          "steps": [
+            "Evernote'u Mac veya Windows'ta açın. Web sürümü ve telefon uygulamaları .enex dosyası yazamaz.",
+            "Kenar çubuğunda deftere sağ tıklayın ve \"Export notebook...\" seçeneğine tıklayın.",
+            "\"ENEX format (.enex)\" biçimini seçin ve Export note attributes altındaki bütün kutuları işaretli bırakın: etiketlerinizi, tarihlerinizi, hatırlatıcılarınızı ve web kupürü URL'lerini onlar taşır.",
+            "Dosyayı kaydedin. Evernote ona defterin adını verir ve bu ad bu tarafta klasör adı olur, o yüzden değiştirmeyin.",
+            "O .enex dosyasını olduğu gibi bırakın. Birden fazla defteriniz varsa her biri için dışa aktarmayı tekrarlayın, sonra .enex dosyalarını tek bir zip'te toplayıp zip'i bir kerede bırakın."
+          ]
+        },
+        {
+          "img": {
+            "src": "/help/img/evernote-export-format.webp",
+            "alt": "Evernote'un dışa aktarma penceresi: ENEX format (.enex) seçili ve bütün not öznitelikleri işaretli.",
+            "width": 1576,
+            "height": 1120
+          },
+          "h": "HTML ya da PDF değil, ENEX seçin",
+          "p": [
+            "Diğer üç biçim yolculuktan sağ çıkmıyor. İki HTML dışa aktarması da her notu aynı stil dosyasının bir kopyasıyla şişiriyor ve görsel olmayan her ekin dosya adını ve indirme bağlantısını kaybediyor; PDF dışa aktarması ise defteri, not sınırları kalmayan tek bir belgede eritiyor. Yanlışlıkla bunlardan birini bırakırsanız, defterin yarısını içe aktarmak yerine size durumu söyleriz.",
+            "Defterde gigabaytlarca tarama yoksa \"Split file size by\" seçeneğini kapalı bırakın."
+          ]
+        },
+        {
+          "h": "Tek seferde tek defter",
+          "p": [
+            "Hesabın tamamını dışa aktarma diye bir şey yok, bir yığın da bütün olarak dışa aktarılamıyor. Notları elle seçmek sizi dışa aktarma başına 100 notla sınırlıyor, yani deftere sağ tıklamak hem daha hızlı hem de bu sınırın ötesine geçmenin tek yolu. Yığınlar da dosyaya yazılmıyor, dolayısıyla klasörleriniz düz gelir.",
+            "Ücretsiz planlar da dışa aktarabilir, tek bir pürüzle: ücretsiz seviye tek bir bağlı cihaza izin veriyor ve bu iş masaüstü uygulamasını gerektiriyor."
+          ]
+        },
+        {
+          "h": "Neler geliyor, neler gelmiyor",
+          "p": [
+            "Tablolar, kod blokları, vurgular, altı çizili metin, metin rengi ve formüller sağ çıkar. Kontrol listeleri görev listesine dönüşür, not hatırlatıcıları notun en üstünde bir göreve dönüşür, ekler ve görseller deponuza yeniden şifrelenerek girer, web kupürleri kaynak URL'lerini korur, sesli notlar da dökümlerini korur. İç bağlantılar note-link'e dönüşür; Evernote not kimliği dışa aktarmadığı için eşleştirme, bağlanan notun başlığı üzerinden yapılır.",
+            "Görevler gelmiyor: dışa aktarma, her görev bloğunun yerine bir \"Content not supported\" yer tutucusu bırakıyor, okunacak başlık, son tarih ya da tamamlanma durumu kalmıyor. Şifreli bloklar şifreli kalır, onları önce Evernote'ta çözün. Özel yazı tipleri, metin hizalaması ve iç içe etiket hiyerarşisi düşer."
+          ]
+        },
+        {
+          "h": "Dışa aktarma yarıda kalırsa",
+          "p": [
+            "Evernote notlarınızı sunucularında tutar ve dışa aktarmayı yazarken onları indirir, bu yüzden büyük bir defter %13'te, sonra %40'ta durabilir, sonra da tamamlanır. Aynı dışa aktarmayı yeniden çalıştırın: her deneme daha fazlasını yerelde önbelleğe alır ve bir öncekinden daha ileri gider."
+          ]
+        }
+      ]
+    },
+    "markdown": {
+      "app": "Markdown",
+      "title": "Markdown dosyalarını içe aktarma",
+      "metaTitle": "Markdown dosyalarını PrivacyNotes'a aktarın",
+      "lead": "Geri kalan her şey için genel yol: Markdown dışa aktarabilen her uygulama PrivacyNotes'a taşınabilir. Tek tek .md dosyaları da işe yarar, bütün bir klasörün .zip'i de.",
+      "sections": [
+        {
+          "h": "Dosyalarınızı hazırlayın",
+          "steps": [
+            ".md dosyalarınızı dışa aktarın ya da toplayın. Her kaynak olur: başka bir not uygulaması, statik bir site, README dolu bir klasör.",
+            "Birkaç dosyadan fazlası varsa klasörü bir .zip'e koyun.",
+            "Zip'i (ya da tek tek .md dosyalarını) içe aktarıcıya bırakın."
+          ]
+        },
+        {
+          "h": "Dosyalar nasıl okunuyor",
+          "p": [
+            "YAML frontmatter varsa dikkate alınır: title, created, updated ve tags alanları doğrudan kullanılır, bu da onu PrivacyNotes'un kendi Markdown dışa aktarmaları için geri yükleme yolu yapar. Metnin içine #etiket olarak yazılan etiketler de okunur. Frontmatter'ı olmayan düz dosyalarda dosya adı başlık, içerik ise gövde olur. Ayrıştırıcı bilerek hoşgörülü: .md, .markdown, .mdown, .mkd ve .txt kabul edilir.",
+            "Klasörün tamamını ziplerseniz yapı da onunla gelir. Alt klasörler, ne kadar derinde olursa olsun gerçek klasör olarak yeniden kurulur; notlarınızın bağlandığı görseller ve dosyalar da yanlarında içe aktarılır. Hiçbir şeyin bağlanmadığı dosyalar geride bırakılır ve sayısı size söylenir, böylece eski ekran görüntüleriyle dolu bir klasör alanınızı yemez."
+          ]
+        }
+      ]
+    },
+    "notesnook": {
+      "app": "Notesnook",
+      "title": "Notesnook notlarınızı dışa aktarın",
+      "metaTitle": "Notesnook notlarını dışa aktarma - PrivacyNotes",
+      "lead": "Notesnook hesabınızın tamamını, dosyalardan oluşan bir klasör olarak yazabiliyor. HTML dışa aktarmasını seçin, geride hiçbir şey kalmasın: biçimlendirme, defterler, etiketler, ekler ve notlarınız arasındaki bağlantılar taşınmadan sağ çıkar.",
+      "sections": [
+        {
+          "img": {
+            "src": "/help/img/notesnook-export.webp",
+            "alt": "Notesnook ayarları, Backup & export sayfası; Export as açılır menüsü açık ve HTML seçili.",
+            "width": 1576,
+            "height": 963
+          }
+        },
+        {
+          "h": "Notlarınızı dışa aktarın",
+          "steps": [
+            "Notesnook'u açın ve Settings > Backup & export bölümüne gidin.",
+            "\"Export all notes\" seçeneğini bulun ve \"Export as\" açılır menüsünü açın.",
+            "HTML'i seçin. Bu önemli: Notesnook'un biçimlendirmenizi kırpmadan yazdığı tek biçim bu.",
+            "Notesnook, her not için bir dosya ve bir ekler klasörü içeren tek bir .zip kaydeder. İçe aktarma dosyanız o zip."
+          ]
+        },
+        {
+          "h": "Markdown değil, HTML seçin",
+          "p": [
+            "Notesnook'un dışa aktarma menüsü Text, Markdown, Markdown + Frontmatter ve HTML sunuyor. Her şeyi koruyan tek seçenek HTML.",
+            "İki Markdown seçeneği de notlarınızı yazmadan önce düzleştiriyor: altı çizili metin, yazı tipi boyutları ve metin hizalaması dosya bize ulaşmadan çoktan gitmiş oluyor. Düz Markdown seçeneği ayrıca ne etiket ne de özgün tarih yazıyor, yani içe aktarılan her not etiketsiz ve bugünün tarihiyle damgalanmış olurdu. İkisini de yine kabul ediyoruz ve neyin kaybolduğunu size söylüyoruz, ama seçilmesi gereken HTML.",
+            "Text dışa aktarmasında okunacak bir yapı yok, o yüzden kabul edilmiyor."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Defterleriniz etiketlere düzleştirilmeden, Notesnook'ta iç içe geçtikleri derinlikte gerçek klasörler olarak yeniden kurulur. Work > Projects içindeki bir not, Work > Projects klasörüne iner.",
+            "Sabitlenmiş ve favori notlar işaretli kalır. Notesnook, Pin ve Favorite'ı iki ayrı özellik olarak tutuyor; PrivacyNotes'ta tek bir Sabitlenmiş listesi var, bu yüzden ikisinden biri olan not oraya iner.",
+            "Vurgular, matematik ve metin hizalaması olduğu gibi gelir: vurgulanmış metin vurgulu kalır, formüller yeniden matematik olarak görüntülenir ve ortalanmış ya da sağa hizalanmış bloklar hizalamalarını korur. Özel yazı tiplerinin, yazı tipi boyutlarının ve metin renklerinin burada karşılığı yok, bu yüzden o stil düşer, metin ise korunur."
+          ]
+        },
+        {
+          "h": "Yedek dosyası, dışa aktarma değildir",
+          "p": [
+            "Notesnook ayrıca .nnbackupz ile biten bir yedek dosyası da kaydedebiliyor. O bambaşka bir şey: her eki Notesnook'un kendi şifreli biçiminde saklıyor ve onu yalnızca Notesnook açabiliyor. Böyle bir dosyayı buraya bırakırsanız, yarısını içe aktarmak yerine size durumu söyleriz. Bunun yerine \"Export all notes\" seçeneğini HTML olarak kullanın."
+          ]
+        }
+      ]
+    },
+    "apple-journal": {
+      "app": "Apple Journal",
+      "title": "Apple Journal kayıtlarınızı dışa aktarın",
+      "metaTitle": "Apple Journal kayıtlarını dışa aktarma - PrivacyNotes",
+      "lead": "Apple Journal her kayıt için bir HTML dosyası ve bütün fotoğrafları, videoları ve ses notlarını tutan bir klasör dışa aktarır. PrivacyNotes dışa aktarmanın tamamını okur ve her birini, yazdığınız günün tarihiyle bir günlük kaydı olarak yeniden kurar.",
+      "sections": [
+        {
+          "h": "Mac'te günlüğünüzü dışa aktarın",
+          "steps": [
+            "Journal'ı açın ve menü çubuğunda File > Export yolunu izleyin.",
+            "Bir hedef seçin. Journal, içinde bir Entries ve bir Resources klasörü bulunan AppleJournalEntries adlı bir klasör yazar.",
+            "O klasöre sağ tıklayıp Sıkıştır'ı (Compress) seçin. Yanında AppleJournalEntries.zip belirir; içe aktarılacak dosya odur."
+          ]
+        },
+        {
+          "h": "iPhone veya iPad'den dışa aktarın",
+          "steps": [
+            "Journal'ı açın. Journals başlığı altında günlüğünüze dokunup açın (yeniden adlandırmadıysanız adı Journal'dır ve kaç kayıt tuttuğunu gösterir).",
+            "Kayıt listesinde sağ üstteki … düğmesine dokunun, Export'u seçin ve Export düğmesiyle onaylayın.",
+            "Telefonunuza kaydedin.",
+            "Files uygulamasını açın ve yazdığı AppleJournalEntries adlı klasörü bulun.",
+            "O klasöre basılı tutup Sıkıştır'ı seçin. Yanında beliren .zip, içe aktarılacak dosyadır."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Her kayıt Notlar'a değil Günlükler'e iner ve Journal'ın üstünde gösterdiği tarihi taşır, böylece geçmişiniz şeklini korur.",
+            "Fotoğraflar ve Live Photos görsel olarak, videolar ve ses notları ek olarak içe aktarılır. Apple fotoğrafları çoğu tarayıcının gösteremediği HEIC biçiminde verdiği için PrivacyNotes her birini girişte JPEG'e çevirir. Büyük bir içe aktarmanın yavaş kısmı budur: birkaç yüz fotoğraf birkaç dakika sürebilir, ilerleme satırı da onları sizin için sayar.",
+            "Kalın, italik, altı çizili, üstü çizili, metin renkleri, madde işaretli ve numaralı listeler ve alıntı blokları sağ çıkar."
+          ]
+        },
+        {
+          "h": "Fotoğraflar, videolar ve depolama alanınız",
+          "p": [
+            "Fotoğraf dolu bir günlük, metin dolu bir günlükten çok daha büyüktür ve depolama alanınızdan diğer her şey gibi düşer. İçe aktarma önizlemesi, siz onaylamadan önce toplamı hesaplar ve sığmayacaksa başlamayı reddeder."
+          ]
+        },
+        {
+          "h": "Konumlarınız nereye gidiyor",
+          "p": [
+            "Journal, bir kaydın nerede yazıldığını da tutar, PrivacyNotes'un ise kendi haritası yok, bu yüzden her yer kaydın sonundaki bir Yerler listesinde bağlantıya dönüşür.",
+            "Journal'ın koordinatlarıyla kaydettiği yerler OpenStreetMap'te tam o noktada bir iğne açar. Yalnızca adını verdiği yerler ise o ad için bir arama açar. Siz birine tıklayana kadar hiçbir yere hiçbir şey gönderilmez."
+          ]
+        },
+        {
+          "h": "Ruh hali",
+          "p": [
+            "Bir ruh hali (State of Mind) kaydettiyseniz, PrivacyNotes o kayıttaki ruh hali ve duygu takiplerini, Apple'ın ifadesi bizimkilerden biriyle eşleştiği her yerde doldurur. Eşleştiremediği her şey ve etiketlediğiniz yaşam alanları bir satır metin olarak saklanır, böylece hiçbir şey kaybolmaz."
+          ]
+        },
+        {
+          "h": "Neler gelmiyor",
+          "p": [
+            "Journal'ın antrenmanlar, kişiler ve dinlediğiniz içerikler için gösterdiği öneri kartları metinlerini korur ama görsellerini korumaz. Ses notları kayıt olarak gelir, ancak Apple'ın döküm metniyle değil: dışa aktarıcı metnin içindeki bütün boşlukları siliyor, yani yazdığı şey kesintisiz tek bir karakter dizisi oluyor. Okunmaz hâlde içe aktarmaktansa geride bırakılıyor.",
+            "Mac dışa aktarmasındaki ses notları, hiçbir tarayıcının çalamadığı CAF dosyalarıdır. Sorunsuz içe aktarılır ve indirilir, ama uygulamada onları duyamazsınız. iPhone dışa aktarması aynı kayıtları, satır içinde çalınabilen M4A olarak yazar; seçme şansınız varsa telefonu kullanın."
+          ]
+        }
+      ]
+    },
+    "upnote": {
+      "app": "UpNote",
+      "title": "UpNote notlarınızı dışa aktarın",
+      "metaTitle": "UpNote notlarını dışa aktarma - PrivacyNotes",
+      "lead": "UpNote'ta dışa aktarmanın adı yedek: hesabınızın tamamını diskteki bir klasöre yazıyor, ücretsiz plan dahil. O klasörü zipleyin, her şey birlikte taşınsın: tüm biçimlendirmesiyle notlar, defterler, etiketler, sabitlemeler, note-link'ler, görseller ve ekler.",
+      "sections": [
+        {
+          "img": {
+            "src": "/help/img/upnote-backup.webp",
+            "alt": "UpNote ayarları, Backup sayfası; Backup attachments, Backup now ve View backup folder görünür durumda.",
+            "width": 1576,
+            "height": 1070
+          },
+          "h": "Yerel bir yedek oluşturun",
+          "steps": [
+            "Bilgisayarınızda UpNote'u açın ve Settings > Backup bölümüne gidin.",
+            "\"Backup attachments\" seçeneğini açın. Varsayılan olarak kapalıdır ve açılmazsa görselleriniz ile dosyalarınız geride kalır.",
+            "\"Backup now\" düğmesine tıklayın ve \"Last backup at\" satırının güncellenmesini bekleyin.",
+            "\"View backup folder\" düğmesine tıklayın. UpNote az önce yazdığı klasörü açar."
+          ]
+        },
+        {
+          "img": {
+            "src": "/help/img/upnote-folder.webp",
+            "alt": "UpNote yedek klasörü; data, files, Markdown ve revisions klasörleri seçili, sağ tık menüsü Sıkıştır (Compress) üzerinde açık.",
+            "width": 1576,
+            "height": 642
+          },
+          "h": "Klasördeki her şeyi zipleyin",
+          "steps": [
+            "Yedek klasöründeki her şeyi seçin: data, files ve yanlarında ne varsa.",
+            "Seçimi sıkıştırın: macOS'ta sağ tık > Sıkıştır (Compress), Windows'ta Gönder > Sıkıştırılmış (zip) klasör.",
+            "İçe aktarma dosyanız o .zip."
+          ],
+          "p": [
+            "İçindeki Markdown klasörünü değil, klasörün tamamını zipleyin. O markdown kopyaları düzleştirilmiş bir çıktıdır: altı çizili metin, renkler, vurgular, katlanabilir bölümler ve metin hizalaması onlardan çoktan gitmiştir. Notlarınızın tam biçimlendirmesi data klasöründe yaşar ve bizim okuduğumuz da odur. data klasörü olmayan bir zip bırakırsanız, düzleştirilmiş kopyaları içe aktarmak yerine size durumu söyleriz."
+          ]
+        },
+        {
+          "img": {
+            "src": "/help/img/upnote-export-menu.webp",
+            "alt": "UpNote'un iOS'taki Export menüsü; Export to Text, PDF, Markdown ve HTML seçeneklerini sunuyor.",
+            "width": 1576,
+            "height": 1235
+          },
+          "h": "iPhone veya Android'de: notları tek tek dışa aktarın",
+          "steps": [
+            "UpNote'un telefon uygulamaları yedek yazamıyor. Bunun yerine bir notu açın ve üst köşedeki üç noktaya dokunun.",
+            "Export > \"Export to HTML\" yolunu izleyin. Markdown değil: UpNote, Markdown'ını yazmadan önce bilgi kutularını, metin renklerini, hizalamayı ve alt ve üst simgeleri düzleştiriyor; HTML ise her şeyi koruyor.",
+            "Sonucu Files uygulamanıza paylaşın ya da kendinize gönderin, sonra hiç değiştirmeden buraya bırakın.",
+            "Birden çok not mu taşıyorsunuz? Dışa aktarmaları Files uygulamanıza kaydedin, hepsini seçin ve Sıkıştır'ı seçin: o tek zip, tek seferde içe aktarılır."
+          ],
+          "p": [
+            "HTML dışa aktarması biçimlendirmenizi eksiksiz taşır. Hiçbir tekil not dışa aktarmasının taşımadığı şey ise kitaplık yapısı: defterler, sabitlemeler ve tarihler yalnızca yedekte yaşar, bu yüzden bir bilgisayara ulaştığınızda taşınmayı yukarıdaki yedek yolu tamamlar. Markdown dışa aktarmaları da kabul edilir, getirdikleri düzleştirmeyle birlikte."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Defterleriniz, UpNote'ta iç içe geçtikleri derinlikte gerçek klasörler olarak yeniden kurulur. Birden çok defterde yaşayan bir not ilkine iner ve diğerlerini etiket olarak taşır.",
+            "Sabitlenmiş ve Quick Access notları Sabitlenmiş olarak gelir. Çöpteki notlar çöpe iner, şablonlar #template etiketiyle not olarak içe aktarılır, notlar arasındaki bağlantılar note-link'e dönüşür ve her not özgün tarihlerini korur.",
+            "Biçimlendirme sağ çıkar: kontrol listeleri, tablolar, kod blokları, matematik, altı çizili metin, alt ve üst simgeler, metin hizalaması ve vurgular. Katlanabilir bölümler katlanabilir bilgi kutularına dönüşür ve açık ya da kapalı durumlarını korur. Metin renkleri de vurgu renkleri de editörün kendi paletiyle eşleştirilir, böylece sarı bir vurgu sarı, yeşil olan da yeşil kalır. Her not, UpNote'un en son kaydettiği haliyle gelir."
+          ]
+        },
+        {
+          "h": "Görseller veya dosyalar eksikse",
+          "p": [
+            "\"Backup attachments\" seçeneğini işaretlemeden önce alınmış bir yedekte dosya yoktur ve içe aktarma önizlemesi, notların yedekte bulunmayan eklere başvurduğu konusunda sizi uyarır. Uyarırsa iptal edin, ayarı UpNote'ta açın, yeniden \"Backup now\" düğmesine tıklayın, yeni klasörü zipleyin ve onu içe aktarın."
+          ]
+        }
+      ]
+    },
+    "browser-bookmarks": {
+      "app": "Tarayıcı yer imleri",
+      "title": "Tarayıcınızdaki yer imlerini dışa aktarın",
+      "metaTitle": "Yer imlerini her tarayıcıdan dışa aktarma - PrivacyNotes",
+      "lead": "Masaüstündeki her tarayıcı aynı yer imi dosyasını (.html) dışa aktarır ve PrivacyNotes onu klasörleriniz ve tarihlerinizle birlikte okur. Safari bu dosyayı bir .zip içine koyar; o .zip'i açmadan bırakabilirsiniz. Telefondaki hiçbir tarayıcı dışa aktaramaz, bu yüzden orada tarayıcınızın kendi senkronizasyonunu açın ve bilgisayardan dışa aktarın.",
+      "sections": [
+        {
+          "h": "Chrome, Edge, Brave, Opera veya Vivaldi'den dışa aktarma",
+          "steps": [
+            "Yer imi yöneticisini Ctrl+Shift+O ile, Mac'te Cmd+Option+B ile açın. Edge'de aynı sayfanın adı Favorites.",
+            "Yöneticinin sağ üstündeki \"...\" düğmesine tıklayıp \"Export bookmarks\" seçeneğini seçin. Edge'de \"Export favorites\" yazar.",
+            "Dosyayı kaydedin. Adında bugünün tarihi olan bir .html dosyasıdır."
+          ]
+        },
+        {
+          "h": "Firefox'tan dışa aktarma",
+          "steps": [
+            "Kitaplık penceresini açmak için Ctrl+Shift+O, Mac'te Cmd+Shift+O tuşlarına basın.",
+            "Araç çubuğundaki \"Import and Backup\" düğmesine tıklayıp \"Export Bookmarks to HTML...\" seçeneğini seçin.",
+            "Kaydedin. Dosyanın adı bookmarks.html olur."
+          ]
+        },
+        {
+          "h": "Safari'den dışa aktarma",
+          "img": {
+            "src": "/help/img/safari-export-menu.webp",
+            "alt": "Safari'nin File menüsü; aşağıda \"Export Browsing Data to File...\" vurgulu",
+            "width": 1576,
+            "height": 1226
+          },
+          "steps": [
+            "Menü çubuğundan File > \"Export Browsing Data to File...\" seçin.",
+            "Bookmarks dışında her şeyi kapatın, sonra Export düğmesine tıklayın.",
+            "Safari bir .zip kaydeder. O .zip'i olduğu gibi buraya bırakın ya da içindeki Bookmarks.html dosyasını bırakın. İkisi de çalışır.",
+            "Eski Safari sürümleri bunun yerine File > Export > \"Bookmarks...\" gösterir ve düz bir .html dosyası kaydeder."
+          ]
+        },
+        {
+          "h": "Yalnızca Bookmarks anahtarını açık bırakın",
+          "img": {
+            "src": "/help/img/browser-bookmarks-safari-export.webp",
+            "alt": "Safari'nin Export Browsing Data penceresi; Bookmarks açık, diğer tüm türler kapalı",
+            "width": 1576,
+            "height": 1356
+          },
+          "p": [
+            "Aynı pencere History, Extensions, Credit Cards ve Passwords seçeneklerini de sunar. Onları kapalı bırakın. PrivacyNotes arşivden yer imlerinden başka hiçbir şey okumaz, ama sonradan silmeniz gereken bir dışa aktarma, indirilenler klasörünüzde duran bir düz metin parola kopyası daha demektir."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Sahip olduğunuz her klasör, bıraktığınız iç içe düzenle birlikte, Yer imleri adlı tek bir yeni klasörün içine gelir. Yer imi çubuğu istisnadır: içeriği klasöre dönüşmek yerine bir seviye yukarı çıkar, çünkü her tarayıcı bu çubuğa her dilde başka bir ad verir. Safari hiçbir şeyi işaretlemez, bu yüzden onun Favorites klasörü gerçekten klasör olarak gelir.",
+            "Her yer imini kaydettiğiniz gün de birlikte gelir. Hiç tarih yazmayan tek tarayıcı Safari olduğu için, Safari'den gelen dosyadaki her satır bugünün tarihini alır.",
+            "Bir yer imiyle birlikte etiketleri ve adres çubuğu anahtar sözcüğünü saklayan tek tarayıcı da Firefox'tur. Dosyanız bunları taşıyorsa önizleme size bunları saklamak için bir onay kutusu sunar ve ikisi de burada etiket olarak görünür.",
+            "Üç şey bilerek geride kalır. Most Visited gibi tarayıcıya özgü kısayollar gerçek bağlantı değildir; sayılır ve atlanır. Site simgeleri de dosyadan okunmaz, çünkü içine kaydedilen kopya eskir; PrivacyNotes yenisini getirir. Ve içinde hiç yer imi olmayan bir klasör yeniden oluşturulmaz.",
+            "Aynı dosyayı iki kez içe aktarmak güvenlidir. Adresini zaten kaydettiğiniz bir yer imi yeniden eklenmek yerine atlanır ve önizleme kaç tane olduğunu söyler."
+          ]
+        },
+        {
+          "h": "Geri dışa aktarma",
+          "p": [
+            "Ayarlar > Import & Export > Dışa aktar yolunu izleyip \"Yer imi dosyası (.html)\" seçeneğini seçin. Her tarayıcının okuduğu standart dosyayı klasörleriyle birlikte alırsınız. Yer imleriniz burada asla kilitli kalmaz."
+          ]
+        }
+      ]
+    },
+    "browser-passwords": {
+      "app": "Tarayıcı parolaları",
+      "title": "Tarayıcınızdaki parolaları dışa aktarın",
+      "metaTitle": "Tarayıcıda kayıtlı parolaları dışa aktarma - PrivacyNotes",
+      "lead": "Chrome, Edge, Firefox ve Safari kayıtlı parolalarını düz bir .csv dosyası olarak dışa aktarır ve PrivacyNotes hepsini okur; her satır bir oturum bilgisi olur. Safari kendi .csv dosyasını bir .zip içine koyar; o .zip'i açmadan bırakabilirsiniz.",
+      "sections": [
+        {
+          "h": "Chrome, Edge, Brave, Opera veya Vivaldi'den dışa aktarma",
+          "steps": [
+            "Tarayıcınızın Settings bölümünü açın ve parola sayfasına gidin. Chrome'da \"Passwords and autofill\" > Google Password Manager > Settings, Edge'de \"Profiles > Passwords\".",
+            "\"Export passwords\" seçeneğini bulun ve \"Download file\" deyin.",
+            "Cihaz parolanızla veya parmak izinizle onaylayın. Dosyanın adı genelde passwords.csv olur."
+          ]
+        },
+        {
+          "h": "Firefox'tan dışa aktarma",
+          "steps": [
+            "Adres çubuğuna about:logins yazın ve Enter'a basın.",
+            "Sağ üstteki \"...\" düğmesine tıklayın ve \"Export Logins...\" seçin.",
+            "Cihaz parolanızla onaylayın. Dosyanın adı logins.csv olur."
+          ]
+        },
+        {
+          "h": "Safari'den dışa aktarma",
+          "img": {
+            "src": "/help/img/safari-export-menu.webp",
+            "alt": "Safari'nin File menüsü; aşağıda \"Export Browsing Data to File...\" vurgulu",
+            "width": 1576,
+            "height": 1226
+          },
+          "steps": [
+            "Menü çubuğundan File > \"Export Browsing Data to File...\" seçin.",
+            "Passwords dışında her şeyi kapatın, sonra Export düğmesine tıklayın.",
+            "Touch ID ile ya da Mac parolanızla onaylayın. Safari içinde Passwords.csv bulunan bir .zip kaydeder ve o .zip'i olduğu gibi buraya bırakabilirsiniz.",
+            "macOS 15 ve sonrasında Passwords uygulaması aynı satırları File > \"Export All Passwords...\" ile düz .csv olarak dışa aktarır."
+          ]
+        },
+        {
+          "h": "Yalnızca Passwords anahtarını açık bırakın",
+          "img": {
+            "src": "/help/img/browser-passwords-safari-export.webp",
+            "alt": "Safari'nin Export Browsing Data penceresi; Passwords açık, diğer tüm türler kapalı",
+            "width": 1576,
+            "height": 1358
+          },
+          "p": [
+            "Aynı pencere yer imlerinizi, geçmişinizi ve kayıtlı kartlarınızı da dışa aktarır. Açık bıraktığınız her anahtar aynı arşive şifresiz bir dosya daha yazar, bu yüzden onları kapatın. Bir istisna: yer imlerinizi de buraya almak istiyorsanız ikisini birden açın ve o tek .zip dosyasını her iki içe aktarıcıya da bırakın, çünkü her biri ondan yalnızca kendi dosyasını okur."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Her satır; sitesi, kullanıcı adı ve parolasıyla birlikte bir oturum bilgisine dönüşür, tarayıcının yanında tuttuğu not da gelir. Üçü içinde tarihi yazan tek tarayıcı Firefox, bu yüzden onun kayıtları ilk kaydettiğiniz günü korur, diğerleri bugünün tarihiyle gelir. Kimlik doğrulama anahtarını dışa aktaran tek tarayıcı Safari, o da yalnızca doğrulama kodlarını Safari'de tuttuysanız. Öyleyse kod burada da çalışmaya devam eder.",
+            "Tarayıcılar her oturum açma sayfası için ayrı bir kayıt tutar, bu yüzden büyük bir dosyada aynı şirkete ait birkaç satır bulunur. Hepsi içe aktarılır, sonrasında birleştirebilir veya silebilirsiniz.",
+            "Tarayıcı parolaları tek bir düz listede tutar, dolayısıyla yeniden kurulacak bir klasör yapısı yoktur. Bunun yerine her oturum bilgisi etiketli gelir ve tek tıkla tüm partiyi karşınıza getirir."
+          ]
+        },
+        {
+          "h": "İşiniz bitince dışa aktarılan dosyayı silin: o dosya parolalarınızın düz metin hali",
+          "p": [
+            "Dışa aktarılan .csv dosyasında hiçbir şey şifreli değildir; bir .zip içinde gelse de gelmese de. Onu açan herkes kaydettiğiniz her parolayı okur, bu yüzden dosyayı kendi bilgisayarınızda tutun, içe aktarın, her şeyin geldiğini kontrol edin, sonra dosyayı silin ve çöp kutusunu boşaltın. PrivacyNotes içinde her şey yeniden uçtan uca şifrelenir."
+          ]
+        }
+      ]
+    },
+    "typora": {
+      "app": "Typora",
+      "title": "Typora notlarınızı dışa aktarın",
+      "metaTitle": "Typora notlarını dışa aktarma - PrivacyNotes",
+      "lead": "Typora, diskinizde zaten bir klasörde duran sıradan .md dosyalarını düzenler, yani dışa aktarma adımı diye bir şey yok. Klasörü ziplleyin ve buraya bırakın.",
+      "sections": [
+        {
+          "h": "İçinde yazdığınız klasörü zipleyin",
+          "steps": [
+            ".md dosyalarınızın durduğu klasörü bulun. Typora'nın kendine ait bir kitaplığı yok, yani klasör kaydetmeyi seçtiğiniz yerde.",
+            "Klasöre sağ tıklayıp Sıkıştır (macOS) ya da Gönder > Sıkıştırılmış (zip) klasör (Windows) deyin.",
+            ".zip dosyasını içe aktarmaya bırakın."
+          ]
+        },
+        {
+          "h": "Ziplemeden önce görsellerinizin nerede durduğunu netleştirin",
+          "p": [
+            "Typora bir görseli notun yanında, bir assets alt klasöründe ya da sürüklediğiniz yerde bırakabilir. Buraya yalnızca zipllediğiniz klasörün içindeki görseller gelebilir. Tercihler > Görsel bölümünü açıp görsellerin notun kendi assets klasörüne kopyalanmasını seçin, görselleri hâlâ başka yeri gösteren eski notlarda ise \"Biçim > Görsel > Görsel dosyalarını şuraya kopyala...\" komutunu kullanın."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Alt klasörler, ne kadar derinde olursa olsun gerçek klasöre dönüşür. Başlıklar, tablolar, görev listeleri, kod blokları, dipnotlar, formüller ve vurgular korunur, çıplak URL'ler tıklanabilir bağlantı olur. YAML frontmatter başlık, tarihler ve etiketler için okunur.",
+            "Etiketler iki yoldan da gelir: YAML frontmatter'dan ve metnin içine yazılmış #etiketlerden. Kod bloğu içindeki bir etiket kod olarak kalır, #4711 gibi tek başına bir sayı ise kayıt numarası olarak kalır."
+          ]
+        }
+      ]
+    },
+    "ia-writer": {
+      "app": "iA Writer",
+      "title": "iA Writer kütüphanenizi dışa aktarın",
+      "metaTitle": "iA Writer kütüphanesini dışa aktarma - PrivacyNotes",
+      "lead": "iA Writer yazdıklarınızı kitaplığında sıradan .md dosyaları olarak tutar, yani kitaplık klasörü zaten dışa aktarmanın kendisi. Doğru yapılması gereken tek şey: iCloud'un önce gerçek dosyaları teslim etmesini sağlamak.",
+      "sections": [
+        {
+          "h": "Klasörü iCloud'dan çıkarın, sonra zipleyin",
+          "steps": [
+            "iA Writer'da Library kenar çubuğundaki klasöre sağ tıklayıp \"Finder'da Göster\" deyin.",
+            "Finder'da aynı klasöre sağ tıklayıp \"Şimdi İndir\" deyin; böylece iCloud yer tutucu bırakmak yerine her dosyayı gerçekten indirir.",
+            "Yeniden sağ tıklayıp Sıkıştır deyin.",
+            ".zip dosyasını içe aktarmaya bırakın."
+          ]
+        },
+        {
+          "h": "iPhone veya iPad'de",
+          "p": [
+            "Dosyalar uygulamasını açın, iCloud Drive > iA Writer yolunu izleyin, klasörü basılı tutup Sıkıştır deyin. .zip dosyasını PrivacyNotes ile paylaşın ya da PrivacyNotes'u açıp Dosyalar'dan seçin."
+          ]
+        },
+        {
+          "h": "Yer tutucu tuzağı",
+          "p": [
+            "\"Mac Depolamayı İyileştir\" açıkken iCloud, bir süredir açmadığınız dosyaları minik yer tutucularla değiştirir. Klasörü bu hâldeyken ziplerseniz elinize boş kabuklardan oluşan bir arşiv geçer: içe aktarma çalışır, başarılı olduğunu söyler ve neredeyse hiçbir şey getirmez. Önce \"Şimdi İndir\" deyin, sonra .zip dosyasının kabaca yazdıklarınız kadar yer kapladığını doğrulayın."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Kitaplık klasörleri, ne kadar derinde olursa olsun gerçek klasöre dönüşür; notlarınızın bağlandığı görseller ve dosyalar da onlarla birlikte gelir. Başlıklar, tablolar, görev listeleri, kod blokları ve dipnotlar korunur, çıplak URL'ler tıklanabilir bağlantı olur. Frontmatter başlık, tarihler ve etiketler için okunur.",
+            "Yazarken bir dosyayı başkasının içine çeken içerik blokları, çektikleri metin olarak değil, yazıldıkları bağlantı hâliyle gelir."
+          ]
+        }
+      ]
+    },
+    "zettlr": {
+      "app": "Zettlr",
+      "title": "Zettlr notlarınızı dışa aktarın",
+      "metaTitle": "Zettlr notlarını dışa aktarma - PrivacyNotes",
+      "lead": "Zettlr doğrudan bir .md dosyası klasörü üzerinde çalışır, yani hâlihazırdaki çalışma alanınız dışa aktarmanın kendisi. Zipleyin ve buraya bırakın.",
+      "sections": [
+        {
+          "h": "Çalışma alanını zipleyin",
+          "steps": [
+            "Zettlr'da dosya ağacının en üstündeki çalışma alanına sağ tıklayıp \"Finder'da Göster\", Windows'ta \"Dosya Gezgini'nde Göster\" deyin.",
+            "Oradaki klasöre sağ tıklayıp sıkıştırın.",
+            ".zip dosyasını içe aktarmaya bırakın."
+          ]
+        },
+        {
+          "h": "Zettelkasten bağlantıları metnini korur, hedefini değil",
+          "p": [
+            "Zettlr notları kimlik numarasıyla bağlar, yani bir bağlantı [[20260823120000]] biçiminde okunur. Biz note-link'leri yazıldıkları gibi bırakırız; dolayısıyla kimlik numaralı bir bağlantı burada ancak bir notun başlığı gerçekten o numaraysa hedefini bulur. Dosya adıyla yazılan bağlantılar normal çalışır, bu yüzden onlara güveniyorsanız dışa aktarmadan önce iç bağlantı biçiminizi dosya adına geçirin.",
+            "[@doe2026] gibi kaynak anahtarları bizim için metindir. Değişmeden gelirler ve tıklanabilir olmaktan çıkarlar."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Çalışma alanının alt klasörleri, ne kadar derinde olursa olsun gerçek klasöre dönüşür; notlarınızın bağlandığı görseller ve dosyalar da onlarla gelir. Başlıklar, tablolar, görev listeleri, kod blokları, dipnotlar, formüller ve vurgular korunur. Etiketler hem YAML frontmatter'dan hem de metne yazılmış #etiketlerden okunur, yani etiketler üzerine kurulu bir Zettelkasten düzenini korur."
+          ]
+        }
+      ]
+    },
+    "nextcloud-notes": {
+      "app": "Nextcloud Notes",
+      "title": "Nextcloud Notes notlarınızı dışa aktarın",
+      "metaTitle": "Nextcloud Notes'u dışa aktarma - PrivacyNotes",
+      "lead": "Nextcloud Notes'ta dışa aktarma adımına gerek yok: her not zaten kendi sunucunuzdaki tek bir klasörde sade bir dosya, Nextcloud da o klasörün tamamını size .zip olarak veriyor. Kullandığı iki uzantıyı da burada okuyoruz, yani önceden dönüştürülecek bir şey yok.",
+      "sections": [
+        {
+          "h": "Notes klasörünü indirin",
+          "steps": [
+            "Tarayıcıdan Nextcloud'unuzda Dosyalar'ı açın.",
+            "Notes klasörünü bulun. Yöneticiniz adını değiştirmediyse adı Notes'tur.",
+            "Klasörün \"...\" menüsünü açıp İndir deyin. Nextcloud klasörün tamamını bir .zip içine koyar.",
+            ".zip dosyasını içe aktarmaya bırakın."
+          ]
+        },
+        {
+          "h": "Neler geliyor",
+          "p": [
+            "Kategoriler alt klasör olarak saklandığı için gerçek klasör olarak gelir. Notların tarihleri, içe aktarma anından değil, dosyaların kendisinden gelir. Başlıklar, tablolar, görev listeleri, kod blokları, dipnotlar ve formüller korunur, çıplak URL'ler tıklanabilir bağlantı olur.",
+            "Burada bir kopya içe aktarılıyor. Nextcloud'unuzdan hiçbir şey silinmez ve geriye doğru bir eşitleme olmaz, bu yüzden buraya inenlerden memnun kalana kadar sunucuyu arşiviniz olarak tutun."
+          ]
+        },
+        {
+          "h": "İki uzantı da olur",
+          "p": [
+            "Notes kutudan çıktığı hâliyle .txt yazar; siz ya da yöneticiniz ayarı değiştirdiğinde .md yazar. İkisini de burada okuyoruz, ayrıca .markdown, .mdown ve .mkd de okunur, yani dışa aktarmadan önce ne bir şeyin adını değiştirmeniz ne de sunucuya dokunmanız gerekir."
+          ]
+        }
+      ]
+    }
+  }
+}

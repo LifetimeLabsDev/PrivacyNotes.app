@@ -1,0 +1,50 @@
+# Vite emits content-hashed filenames under /assets, so they can be
+# cached forever: a new deploy produces new URLs. Without this rule the
+# browser revalidates every asset on every load (~100 ms per file).
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Polled by versionCheck.ts to detect new deploys - must never be
+# served from the browser cache.
+/version.json
+  Cache-Control: no-cache
+
+# The plain-text twins of the help pages (help-page.ts), for AI agents.
+# Markdown is the format, but text/plain is the transport on purpose: with
+# text/markdown a browser downloads the file instead of showing it, and
+# X-Content-Type-Options: nosniff below leaves it no way to recover. Every
+# agent reads text/plain, and the .md extension still names the format.
+/help/*.md
+  Content-Type: text/plain; charset=utf-8
+
+# The plain-text twin of the changelog page (changelog-page.ts), same reason
+# as the help twins above it.
+/changelog.md
+  Content-Type: text/plain; charset=utf-8
+
+# Same reason, for the two text bundles at the root: Cloudflare serves .txt
+# as a bare "text/plain", and a client that takes the HTTP default for text/*
+# reads UTF-8 answers as latin-1 and mangles every accent in them.
+/llms-full.txt
+  Content-Type: text/plain; charset=utf-8
+
+/llms-index.txt
+  Content-Type: text/plain; charset=utf-8
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(self), microphone=(self), geolocation=(), payment=(self "https://buy.paddle.com")
+  # Strict-Transport-Security is set at the Cloudflare edge (Edge Certificates > HSTS), not here, to avoid a duplicate header.
+  # This is the STRICT policy, naming no payment host. It is a fallback only:
+  # wrangler.jsonc sets run_worker_first, and withSecurityHeaders() in worker.ts
+  # overwrites this header on every HTML response, including the one page that
+  # may load Paddle (/checkout). Deliberately not given a /checkout rule of its
+  # own: relying on _headers precedence for a security header is a bad trade,
+  # and this way a Worker that failed to run breaks checkout visibly instead of
+  # loosening the app silently. Keep in sync with cspFor(false) in worker.ts.
+  Content-Security-Policy: default-src 'none'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://sync.privacynotes.app https://releases.privacynotes.app https://challenges.cloudflare.com; img-src 'self' data: blob: https://sync.privacynotes.app; frame-src https://challenges.cloudflare.com; font-src 'self' data:; media-src 'self' blob:; worker-src 'self' blob:; manifest-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'

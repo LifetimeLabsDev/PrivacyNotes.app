@@ -1,0 +1,107 @@
+{
+  "dismiss": "忽略",
+  "close": "關閉",
+  "moveBanner": {
+    "title": "應用程式即將搬家到 use.privacynotes.app",
+    "body": "現在就把這個工作階段搬過去 - 只需幾秒鐘，你的筆記會一起帶走。",
+    "cta": "立即搬家",
+    "syncing": "正在同步你的筆記…",
+    "error": "目前無法完成全部同步。請檢查連線後再試一次。",
+    "conflict": "你有一篇筆記出現需要你決定的同步衝突。請在對話框中解決後再試一次。"
+  },
+  "movedHint": {
+    "body": "這裡是應用程式的新家。請把書籤更新為 use.privacynotes.app，主畫面捷徑也請重新加入。",
+    "gotIt": "知道了"
+  },
+  "moveScreen": {
+    "title": "應用程式已搬家到 use.privacynotes.app",
+    "body": "現在就把這台裝置搬過去 - 只需幾秒鐘，你的筆記會一起帶走。這裡不會刪除任何東西。",
+    "openNotes": "要解決問題，請先在這裡打開一次你的筆記",
+    "website": "改為瀏覽網站"
+  },
+  "quota": {
+    "frozen": {
+      "configured": "同步已暫停。你超出儲存空間上限已達 90 天以上。你的筆記在本機安然無恙。請重新訂閱，或匯出你的資料。",
+      "unconfigured": "同步已暫停。你超出儲存空間上限已達 90 天以上。你的筆記在本機安然無恙。請匯出並精簡筆記以恢復同步。"
+    },
+    "grace": {
+      "configured_other": "儲存空間加購已到期。剩 {{count}} 天可減少用量或重新訂閱，否則同步將暫停。",
+      "unconfigured_other": "已超過儲存空間上限。剩 {{count}} 天可精簡筆記，否則同步將暫停。"
+    },
+    "full": {
+      "configured": "儲存空間已滿，部分筆記無法同步。請釋出空間或加購儲存空間。",
+      "unconfigured": "儲存空間已滿，部分筆記無法同步。請精簡筆記以釋出空間。"
+    },
+    "manageStorage": "管理儲存空間",
+    "viewUsage": "檢視用量"
+  },
+  "syncError": {
+    "failed_other": "{{count}} 篇筆記同步失敗，將自動重試。",
+    "lastError": "最近錯誤：{{message}}"
+  },
+  "sessionExpired": {
+    "title": "工作階段已過期",
+    "body": "你的工作階段已過期。筆記在這部裝置上安然無恙，重新登入即可恢復同步。",
+    "signInAgain": "重新登入"
+  },
+  "signOutConfirm": {
+    "title": "你保存好 12 個助憶詞了嗎？",
+    "body": "助憶詞是回到帳號的<only>唯一</only>途徑。沒有電子郵件重設，也沒有客服專線；我們刻意設計成不知道你是誰。如果你還沒抄下來，點<action>還沒，顯示助憶詞</action>，我們現在就打開給你看。",
+    "unsyncedWarn_other": "這部裝置上有 {{count}} 則筆記尚未同步。若登出時無法上傳，這些筆記將永久遺失。",
+    "unsyncedKept_other": "這部裝置上有 {{count}} 則筆記尚未同步。筆記會保留在這部裝置上，重新登入後就會同步。",
+    "dontRemind": "不要再提醒我",
+    "showPhrase": "還沒，顯示助憶詞",
+    "confirm": "是，登出"
+  },
+  "burnShareModal": {
+    "title": "分享與 Burn After Reading",
+    "body": "<lead>你的原始筆記不會被刪除。</lead>它仍安全地保留在你的帳號中。burn 連結是另外一份加密副本，被閱讀後就會自動銷毀。無論是否被開啟，連結都會在 24 小時後失效。",
+    "imagesStripped": "這篇筆記僅顯示文字，檔案已隱藏。",
+    "copied": "已複製"
+  },
+  "burnView": {
+    "tagline": "加密。轉瞬即逝。僅供親閱。",
+    "toggleTheme": "切換佈景主題",
+    "checking": "檢查中…",
+    "revealing": "正在取得並解密…",
+    "goToApp": "前往 <brand/>",
+    "footerTagline": "- 零知識加密筆記，主機在瑞士。",
+    "sealed": {
+      "heading": "你收到一篇加密筆記。",
+      "subheading": "這則訊息將在閱讀後自動銷毀。未讀的連結會在 24 小時後失效。",
+      "reveal": "顯示訊息",
+      "warning": "在你顯示的那一刻，伺服器就會刪除這篇筆記。沒有第二次機會。"
+    },
+    "revealed": {
+      "countdown": "明文將於 {{time}} 後清除",
+      "clearNow": "立即清除",
+      "emptyNote": "（空白筆記）",
+      "deletedNotice": "這份分享副本已從伺服器刪除，無法再次檢視。"
+    },
+    "destroyed": {
+      "heading": "訊息已銷毀。",
+      "body": "已從伺服器刪除並自記憶體清除。這則訊息無法再被讀取。"
+    },
+    "gone": {
+      "heading": "這篇筆記已不存在。",
+      "body": "它已被讀取或已過期。burn 連結只能開啟一次，且會在 24 小時後失效。"
+    },
+    "error": {
+      "heading": "發生錯誤。",
+      "fallback": "連結可能已損毀或不完整。",
+      "server": "伺服器錯誤。筆記可能已被讀取或已過期。",
+      "decryption": "解密失敗。連結可能已損毀。",
+      "network": "無法連上伺服器。請檢查網路連線後再試一次。"
+    },
+    "noPayload": {
+      "heading": "找不到訊息。",
+      "body": "這個網址不含 burn 筆記參照。請確認你拿到的是完整連結。"
+    }
+  },
+  "burnShare": {
+    "offline": "你目前離線。burn 連結需要與伺服器往返，請恢復連線後再試。",
+    "demo": "burn 連結會儲存在伺服器上，而示範版不會連線到伺服器。註冊後即可建立真正的 burn 連結。",
+    "tooLarge": "筆記太大，無法透過 burn 連結分享（{{size}}KB）。上限為 {{max}}KB。",
+    "storeFailed": "無法將 burn 筆記儲存到伺服器。"
+  }
+}

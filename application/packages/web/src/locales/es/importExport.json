@@ -1,0 +1,169 @@
+{
+  "shell": {
+    "importTitle": "Importar tus datos",
+    "exportTitle": "Exportar tus datos",
+    "restoreTitle": "Restaurar tus datos",
+    "vaultTitle": "Importar tus contraseñas",
+    "tablistLabel": "Importar, Exportar, Restaurar o Contraseñas",
+    "tabImport": "Importar",
+    "tabExport": "Exportar",
+    "tabRestore": "Restaurar",
+    "tabVault": "Contraseñas",
+    "working": "Trabajando…"
+  },
+  "footer": {
+    "exportNote": "Las exportaciones se ejecutan localmente. No se sube nada.",
+    "restoreNote": "Tu archivo se lee y descifra localmente.",
+    "importNote": "Todo se cifra antes de salir de tu dispositivo para sincronizarse."
+  },
+  "importPick": {
+    "autoTagLabel": "Etiquetar las notas importadas por origen",
+    "autoTagDesc": "Las notas de Google Keep reciben <keep>#google</keep>, las de Obsidian reciben <obsidian>#obsidian</obsidian>, y así sucesivamente.",
+    "guideAria": "Guía de importación para {{app}}",
+    "guideLabel": "Guía"
+  },
+  "folderImport": {
+    "tagLabel": "Etiquetar también las notas por carpeta",
+    "tagDesc": "Tus carpetas se reconstruyen de todos modos. Esto añade además el nombre de cada carpeta como etiqueta, útil si también te gusta filtrar por etiqueta."
+  },
+  "sourceDesc": {
+    "googleKeep": "Archivo .zip de Google Takeout (carpeta Keep) o una sola nota .json. Las listas de tareas se importan como listas de tareas nativas.",
+    "appleNotes": "Exporta con la app gratuita Exporter como Markdown y luego suelta el .zip aquí.",
+    "appleJournal": "Exporta desde Diario en Mac o iPhone, comprime la carpeta AppleJournalEntries y suelta el .zip. Las entradas se importan como entradas de diario con sus fotos, vídeos, notas de voz y ubicaciones.",
+    "evernote": "Un solo .enex, o varios dentro de un zip. Conserva el formato, las etiquetas, los adjuntos, los enlaces entre notas y los cuadernos. Evernote deja las tareas fuera del .enex.",
+    "samsungNotes": "Exporta como Word (.docx) o Texto (.txt). Comprime varios archivos en un zip para importación masiva.",
+    "simplenote": "Exporta desde Simplenote (Ajustes -> Herramientas -> Exportar notas). Suelta el .zip.",
+    "standardNotes": "Copia de seguridad descifrada .zip o .txt de Standard Notes (Archivo > Exportar > Descifrado).",
+    "obsidian": "Bóveda de Obsidian en .zip. Conserva etiquetas, [[note links]], estructura de carpetas, #tags en línea, e imágenes y archivos incrustados.",
+    "notesnook": "Exportación de Notesnook como .zip. Elige HTML al exportar para conservar el formato, los cuadernos, las etiquetas y los adjuntos.",
+    "upnote": "En UpNote: Settings > Backup > Backup now, y luego comprime en un .zip todo lo que hay en la carpeta de backup. Conserva los cuadernos, las etiquetas, las notas fijadas, los enlaces entre notas, el formato y los adjuntos. Las exportaciones nota a nota desde las apps de móvil también funcionan: elige \"Export to HTML\".",
+    "markdownFolder": "Archivos .md o .txt sueltos o dentro de un .zip. Una carpeta comprimida mantiene sus subcarpetas y trae sus imágenes y adjuntos.",
+    "markdownApp": "Estas notas ya son archivos Markdown dentro de una carpeta. Suelta esa carpeta como .zip y vienen con ella sus subcarpetas, sus imágenes y sus #etiquetas.",
+    "browserBookmarks": "El archivo de marcadores (.html) que sale de \"Export bookmarks\" en tu navegador, o el .zip que escribe Safari. Chrome, Firefox, Safari, Edge, Opera, Brave y Vivaldi contienen el mismo archivo. Las carpetas y las fechas vienen con él.",
+    "bitwarden": "Exportación .json sin cifrar de Bitwarden (Tools > Export vault > .json). Inicios de sesión, tarjetas, claves SSH, notas seguras y códigos TOTP vienen todos.",
+    "browserPasswords": "El archivo de contraseñas (.csv) de Chrome, Edge, Brave, Opera, Vivaldi, Firefox o Safari, o el .zip que escribe Safari. Cada fila se convierte en un inicio de sesión. Borra el archivo cuando termines - lleva tus contraseñas en texto plano."
+  },
+  "vaultPick": {
+    "intro": "Importa inicios de sesión, tarjetas de crédito y claves SSH desde otro gestor de contraseñas."
+  },
+  "restorePick": {
+    "intro": "Restaura una copia de seguridad de PrivacyNotes que exportaste antes. Tu archivo se lee y descifra localmente.",
+    "fullBackupTitle": "Copia de seguridad completa (.zip)",
+    "fullBackupDesc": "Restaura notas, diarios, elementos de la bóveda, tareas, imágenes, audio y archivos. Todo se importa como elementos nuevos - los datos existentes no se sobrescriben.",
+    "encryptedBackupTitle": "Copia de seguridad cifrada (.pnbackup, .pnbackupz)",
+    "encryptedBackupDesc": "Restaura una copia de seguridad cifrada con la clave de tu frase. Un .pnbackupz lo devuelve todo, archivos incluidos; un .pnbackup solo contiene texto y metadatos. Debes haber iniciado sesión con la misma cuenta que la creó."
+  },
+  "encryptedBackupLabel": "Copia de seguridad cifrada",
+  "status": {
+    "readingFile": "Leyendo archivo…",
+    "decryptingBackup": "Descifrando copia de seguridad...",
+    "writingNotes": "Escribiendo notas en tu biblioteca local…",
+    "importingBlobs": "Importando imágenes y adjuntos...",
+    "restoringBlobs": "Restaurando imágenes y archivos..."
+  },
+  "errors": {
+    "genericParse": "Algo salió mal.",
+    "decryptionFailed": "El descifrado falló. Frase incorrecta o archivo dañado.",
+    "blobImportFailed": "Tus notas se importaron, pero sus imágenes y archivos no: {{detail}} Nada del archivo que elegiste cambió, así que puedes borrar las notas importadas y volver a ejecutar la importación."
+  },
+  "preview": {
+    "sourceLabel": "Origen",
+    "uniqueTags": "Etiquetas únicas",
+    "empty": "Vacío",
+    "untagged": "Sin etiquetar",
+    "items": "Elementos",
+    "previewLabel": "Vista previa",
+    "andMore": "… y {{count}} más",
+    "headsUpLabel": "Aviso:",
+    "duplicateWarning": "importar las añade como notas nuevas. Si lo ejecutas dos veces, tendrás duplicados. Aún no hay deduplicación automática.",
+    "quotaExceeded": "<strong>Almacenamiento insuficiente para importar.</strong> Se estiman {{needed}} necesarios, {{available}} disponibles. Libera espacio o mejora tu plan antes de importar.",
+    "quotaWarning": "Aviso: esta importación usará aproximadamente {{needed}} de tus {{available}} de almacenamiento restante.",
+    "oversizeAttachments_one": "1 archivo supera el límite de {{limit}} por archivo de tu plan. Se importa a este dispositivo, pero no se sincronizará con tus otros dispositivos hasta que mejores a Pro.",
+    "oversizeAttachments_other": "{{count}} archivos superan el límite de {{limit}} por archivo de tu plan. Se importan a este dispositivo, pero no se sincronizarán con tus otros dispositivos hasta que mejores a Pro.",
+    "duplicateSkipNote": "los marcadores que ya guardaste se omiten, así que repetir esta importación no duplica nada."
+  },
+  "counts": {
+    "note_one": "nota",
+    "note_other": "notas",
+    "journal_one": "entrada de diario",
+    "journal_other": "entradas de diario",
+    "login_one": "inicio de sesión",
+    "login_other": "inicios de sesión",
+    "card_one": "tarjeta",
+    "card_other": "tarjetas",
+    "sshKey_one": "clave SSH",
+    "sshKey_other": "claves SSH",
+    "zeroItems": "0 elementos",
+    "importButton": "Importar {{counts}}"
+  },
+  "errorPhase": {
+    "heading": "{{importer}}: la importación falló"
+  },
+  "export": {
+    "intro": "Tus datos son tuyos. Expórtalos cuando quieras, gratis.",
+    "fullBackupHeading": "Copia de seguridad completa",
+    "portableHeading": "Exportación portátil",
+    "vaultOnlyHeading": "Solo bóveda",
+    "zipBackupTitle": "Copia de seguridad de PrivacyNotes (.zip)",
+    "zipBackupDesc": "Todo: notas, diarios, elementos de la bóveda, tareas, imágenes, audio y archivos. Úsalo para una copia completa de la cuenta o para pasar a un dispositivo nuevo. Los archivos que contiene no están cifrados, así que guarda el zip en un lugar seguro.",
+    "encryptedZipBackupTitle": "Copia de seguridad completa cifrada (.pnbackupz)",
+    "encryptedZipBackupDesc": "Todo lo que contiene la copia zip - notas, elementos de la bóveda, imágenes, audio y archivos - sellado con la clave de tu frase. Se restaura con tu frase en cualquier dispositivo. Puedes guardarla en cualquier sitio.",
+    "encryptedBackupTitle": "Copia de seguridad cifrada (.pnbackup)",
+    "encryptedBackupDesc": "Todo el contenido de texto y los metadatos, cifrados con la clave de tu frase. Sin imágenes ni archivos. Puedes guardarla en cualquier sitio - es ilegible sin tu frase.",
+    "htmlArchiveTitle": "Archivo HTML (.zip)",
+    "htmlArchiveDesc": "Una página HTML imprimible por nota. Ideal para leer sin conexión o archivar, no para restaurar.",
+    "textBackupTitle": "Copia de seguridad de texto (.json)",
+    "textBackupDesc": "Todo el contenido de texto y los metadatos como JSON plano. Sin imágenes ni archivos. Guárdalo en un sitio de confianza - esto no está cifrado.",
+    "vaultExportTitle": "Exportación de la bóveda (.json)",
+    "vaultExportDesc": "Inicios de sesión, tarjetas y claves SSH en formato compatible con Bitwarden. Importable por la mayoría de gestores de contraseñas. Texto plano - manéjalo con cuidado.",
+    "bookmarksOnlyHeading": "Solo marcadores",
+    "bookmarksExportTitle": "Archivo de marcadores (.html)",
+    "bookmarksExportDesc": "El archivo de marcadores estándar que lee cualquier navegador. Impórtalo en Chrome, Firefox, Safari o Edge con tus carpetas intactas."
+  },
+  "exportProgress": {
+    "failedTitle": "La exportación falló",
+    "completeTitle": "Exportación completada",
+    "exportingTitle": "Exportando copia de seguridad...",
+    "preparing": "Preparando...",
+    "exporting": "Exportando...",
+    "imagesProgress": "Exportando imágenes... {{done}} de {{total}}",
+    "filesProgress": "Exportando archivos... {{done}} de {{total}}",
+    "building": "Creando copia de seguridad...",
+    "compressing": "Comprimiendo..."
+  },
+  "upload": {
+    "completeTitle": "Subida completada",
+    "failedTitle": "La subida falló",
+    "partialTitle": "{{done}} subidos, {{failed}} fallidos",
+    "uploadingTitle_one": "Subiendo {{count}} archivo",
+    "uploadingTitle_other": "Subiendo {{count}} archivos",
+    "statusDone": "Hecho",
+    "statusFailed": "Fallido",
+    "errorStorageFull": "Almacenamiento lleno - libera espacio o añade almacenamiento para subir este archivo.",
+    "errorStorageFullKept": "No cabe en tu almacenamiento - se queda en este dispositivo. Se sincronizará cuando haya espacio.",
+    "statusUploading": "Subiendo...",
+    "statusWaiting": "Esperando",
+    "summaryDone": "{{count}} hechos",
+    "summaryUploading": "{{count}} subiendo",
+    "summaryFailed": "{{count}} fallidos",
+    "typesHint": "Imágenes, documentos, audio, vídeo, zip. Máx. {{limit}} MB / archivo.",
+    "proPitch": "Pro sube el límite a 50 MB por archivo.",
+    "proPitchCta": "Mejorar plan",
+    "storagePitch": "Un plan de almacenamiento lo sube a 100 MB por archivo.",
+    "storagePitchCta": "Añadir almacenamiento"
+  },
+  "decryptErrors": {
+    "tooSmall": "Este archivo está vacío o incompleto ({{size}} bytes), así que no hay nada que restaurar. Exporta la copia de nuevo y comprueba que el archivo guardado tiene un tamaño real antes de importarlo.",
+    "notThisAccount": "No se ha podido desbloquear esta copia. Un .pnbackup solo se abre en la cuenta que lo creó, así que normalmente es una copia de otra cuenta - para mover notas entre cuentas, exporta una copia de seguridad completa (.zip). Si la cuenta es la correcta, el archivo se dañó o se guardó incompleto."
+  },
+  "exportErrors": {
+    "generic": "No se ha podido guardar la exportación. Inténtalo de nuevo o elige otra carpeta."
+  },
+  "saveErrors": {
+    "shortWrite": "Solo se han guardado {{written}} de {{expected}} bytes, así que el archivo está incompleto. Inténtalo otra vez y guarda en el almacenamiento de tu dispositivo en lugar de en una carpeta en la nube."
+  },
+  "browserImport": {
+    "tagLabel": "Conserva las etiquetas de tu navegador",
+    "tagDesc": "Firefox guarda etiquetas y una palabra clave de la barra de direcciones con cada marcador. Aquí las dos se convierten en etiquetas."
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Tamaño:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "Descargar imagen",
+    "deleteAria": "Eliminar imagen",
+    "loading": "Cargando imagen...",
+    "uploading": "Subiendo {{name}}...",
+    "uploadFailed": "La subida falló: {{message}}",
+    "storeUnavailable": "Almacén de imágenes no disponible",
+    "loadFailed": "No se pudo cargar la imagen",
+    "notFound": "Imagen no encontrada"
+  },
+  "attachment": {
+    "fallbackName": "Adjunto",
+    "imageAlt": "Imagen",
+    "cantPlay": "No se puede reproducir. Descárgalo para escuchar",
+    "downloadingStatus": "descargando...",
+    "deleteConfirm": "¿Eliminar?",
+    "copied": "Copiado",
+    "download": "Descargar",
+    "downloadToPlay": "Descargar para reproducir",
+    "play": "Reproducir",
+    "pause": "Pausar",
+    "fileNotFound": "Archivo no encontrado",
+    "localOnly": "Solo en este dispositivo",
+    "localOnlyTip": "No cabe en tu almacenamiento. Sin copia de seguridad: si borras los datos del navegador o de la app, el archivo se pierde. Se sincronizará cuando haya espacio.",
+    "notUploaded": "Aún no subido",
+    "notUploadedTip": "Este archivo aún no se ha subido desde el dispositivo donde se añadió - normalmente porque allí el almacenamiento está lleno. Se abrirá aquí en cuanto se sincronice.",
+    "downloadFailed": "La descarga falló",
+    "playbackFailed": "La reproducción falló",
+    "uploadFailed": "La subida falló: {{message}}",
+    "unknownError": "Error desconocido"
+  }
+}

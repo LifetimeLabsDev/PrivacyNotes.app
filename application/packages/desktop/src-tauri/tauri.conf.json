@@ -1,0 +1,122 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "PrivacyNotes",
+  "version": "0.489.0",
+  "identifier": "app.privacynotes",
+  "build": {
+    "beforeDevCommand": "pnpm --filter desktop sync-version && pnpm --filter shared build && pnpm --filter web dev",
+    "beforeBuildCommand": "pnpm --filter desktop sync-version && pnpm --filter shared build && pnpm --filter web build",
+    "devUrl": "http://localhost:5173",
+    "frontendDist": "../../web/dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "PrivacyNotes",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 480,
+        "minHeight": 480,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true,
+        "transparent": false
+      }
+    ],
+    "security": {
+      "assetProtocol": {
+        "enable": true,
+        "scope": { "allow": ["**"], "deny": ["$APPDATA/**"] }
+      },
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc://localhost http://ipc.localhost https://privacynotes.app https://sync.privacynotes.app https://releases.privacynotes.app; img-src 'self' data: blob: asset: http://asset.localhost https://privacynotes.app; font-src 'self' data:; media-src 'self' blob:; worker-src 'self' blob:"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "createUpdaterArtifacts": false,
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.png",
+      "icons/icon.icns",
+      "icons/icon.ico",
+      "icons/Assets.car"
+    ],
+    "copyright": "© 2026 Lifetime Labs LLC",
+    "publisher": "Lifetime Labs LLC",
+    "category": "Productivity",
+    "fileAssociations": [
+      {
+        "ext": ["md", "markdown", "mdown", "mkd"],
+        "name": "Markdown document",
+        "description": "Markdown document",
+        "mimeType": "text/markdown",
+        "role": "Editor",
+        "rank": "Default",
+        "contentTypes": ["net.daringfireball.markdown"]
+      },
+      {
+        "ext": ["txt"],
+        "name": "Plain text document",
+        "description": "Plain text document",
+        "mimeType": "text/plain",
+        "role": "Editor",
+        "rank": "Alternate",
+        "contentTypes": ["public.plain-text"]
+      }
+    ],
+    "shortDescription": "End-to-end encrypted notes.",
+    "longDescription": "PrivacyNotes is a zero-knowledge, end-to-end encrypted workspace for your notes, tasks, files and vault. Your 12-word recovery phrase derives the key on your device. Under self-custody, which is the default, not even we can read your notes.",
+    "iOS": {
+      "developmentTeam": "PV88JJL329",
+      "minimumSystemVersion": "15.0"
+    },
+    "macOS": {
+      "minimumSystemVersion": "13.0",
+      "entitlements": "./Entitlements.plist",
+      "dmg": {
+        "background": "./dmg/background.png",
+        "windowSize": { "width": 660, "height": 400 },
+        "appPosition": { "x": 180, "y": 200 },
+        "applicationFolderPosition": { "x": 480, "y": 200 }
+      }
+    },
+    "windows": {
+      "nsis": {
+        "installerHooks": "./windows/hooks.nsi"
+      }
+    },
+    "linux": {
+      "deb": {
+        "desktopTemplate": "./linux/privacynotes.desktop",
+        "files": {
+          "/usr/share/metainfo/app.privacynotes.metainfo.xml": "metainfo/app.privacynotes.metainfo.xml"
+        }
+      }
+    }
+  },
+  "plugins": {
+    "fs": {
+      "requireLiteralLeadingDot": false
+    },
+    "deep-link": {
+      "desktop": {
+        "schemes": ["privacynotes"]
+      },
+      "mobile": [
+        {
+          "scheme": ["privacynotes"],
+          "appLink": false
+        }
+      ]
+    },
+    "updater": {
+      "endpoints": [
+        "https://releases.privacynotes.app/u/{{target}}-{{arch}}/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDZDOTc2Njg3OTIxODlFNUYKUldSZm5oaVNoMmFYYkEvMGdRZ1lzOVJRN0lnd0RlbFgwZ1hGTzhHVU5MUUFLMEk3UnpjNWR0L2YK"
+    }
+  }
+}

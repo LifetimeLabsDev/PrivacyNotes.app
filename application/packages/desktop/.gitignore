@@ -1,0 +1,63 @@
+# Tauri
+src-tauri/target/
+# gen/ is regenerated scratch EXCEPT four hand-customized files: three on
+# Android (CAMERA permission + soft-keyboard fix + dual-keystore signing block)
+# and the iOS Info.plist. Git can't re-include a file whose parent dir is
+# excluded, hence the level-by-level carve-out below. Keystore properties,
+# build output, the rest of gen/apple and wry's generated/ stay ignored.
+#
+# The iOS plist is here for CFBundleLocalizations. WKWebView reports the app's
+# EFFECTIVE locale to `navigator.language`, which iOS computes by intersecting
+# the phone's preferred languages with the languages the bundle declares - so
+# an undeclared language makes a German phone report `en`, and the app seeds
+# English starter notes and English UI for a user who asked for neither.
+# Nothing fails when that array is lost: the app builds, runs, and is quietly
+# wrong for every non-English user. Android has no such gate, which is why only
+# iOS needs this. Keep the array in step with SUPPORTED_LOCALES in
+# `packages/web/src/i18n.ts` (`zh-TW` is declared as `zh-Hant` there, the tag
+# iOS knows).
+#
+# Extended 2026-08-28: the private repo is now the full dev-environment backup,
+# so the hand-editable platform config joins the carve-out. The test is whether
+# a fresh clone can rebuild the file. Tauri regenerates tauri.properties,
+# tauri.build.gradle.kts, proguard-tauri.pro and tauri.settings.gradle from
+# tracked config on every build, so those stay out and cause no churn. The
+# signing keystores and their property files stay out for good.
+src-tauri/gen/*
+!src-tauri/gen/android/
+src-tauri/gen/android/*
+!src-tauri/gen/android/build.gradle.kts
+!src-tauri/gen/android/gradle.properties
+!src-tauri/gen/android/settings.gradle
+!src-tauri/gen/android/gradlew
+!src-tauri/gen/android/gradlew.bat
+!src-tauri/gen/android/gradle/
+!src-tauri/gen/android/app/
+src-tauri/gen/android/app/*
+!src-tauri/gen/android/app/build.gradle.kts
+!src-tauri/gen/android/app/proguard-rules.pro
+!src-tauri/gen/android/app/src/
+src-tauri/gen/android/app/src/*
+!src-tauri/gen/android/app/src/main/
+src-tauri/gen/android/app/src/main/*
+!src-tauri/gen/android/app/src/main/AndroidManifest.xml
+!src-tauri/gen/android/app/src/main/java/
+src-tauri/gen/android/app/src/main/java/*
+!src-tauri/gen/android/app/src/main/java/app/
+src-tauri/gen/android/app/src/main/java/app/*
+!src-tauri/gen/android/app/src/main/java/app/privacynotes/
+src-tauri/gen/android/app/src/main/java/app/privacynotes/*
+!src-tauri/gen/android/app/src/main/java/app/privacynotes/MainActivity.kt
+!src-tauri/gen/apple/
+src-tauri/gen/apple/*
+!src-tauri/gen/apple/ExportOptions.plist
+!src-tauri/gen/apple/project.yml
+!src-tauri/gen/apple/PrivacyInfo.xcprivacy
+!src-tauri/gen/apple/LaunchScreen.storyboard
+!src-tauri/gen/apple/Podfile
+!src-tauri/gen/apple/Assets.xcassets/
+!src-tauri/gen/apple/privacynotes_iOS/
+src-tauri/gen/apple/privacynotes_iOS/*
+!src-tauri/gen/apple/privacynotes_iOS/Info.plist
+!src-tauri/gen/apple/privacynotes_iOS/privacynotes_iOS.entitlements
+# Cargo.lock IS committed (this is an app, not a library) for reproducible release builds - do not re-ignore it

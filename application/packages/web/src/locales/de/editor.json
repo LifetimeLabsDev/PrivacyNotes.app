@@ -1,0 +1,174 @@
+{
+  "placeholder": "Schreib los…",
+  "toolbar": {
+    "bold": "Fett",
+    "italic": "Kursiv",
+    "underline": "Unterstrichen",
+    "heading": "Überschrift",
+    "taskList": "Aufgabenliste",
+    "bulletList": "Aufzählungsliste",
+    "linkMenu": "Link",
+    "noteLinkMenu": "Notiz-Link",
+    "numberedList": "Nummerierte Liste",
+    "textColor": "Textfarbe",
+    "textColorApply": "Textfarbe: {{color}}",
+    "pickColor": "Textfarbe wählen",
+    "table": "Tabelle",
+    "quote": "Zitat",
+    "callout": "Hinweisbox",
+    "inlineCode": "Inline-Code",
+    "strikethrough": "Durchgestrichen",
+    "codeBlock": "Codeblock",
+    "divider": "Trennlinie",
+    "moreFormatting": "Mehr Formatierung",
+    "fewerFormatting": "Weniger Formatierungsoptionen",
+    "image": "Bild",
+    "attachFile": "Datei anhängen",
+    "insert": "Einfügen",
+    "highlight": "Hervorheben",
+    "highlightApply": "Hervorheben: {{color}}",
+    "pickHighlight": "Hervorhebungsfarbe wählen",
+    "superscript": "Hochgestellt",
+    "subscript": "Tiefgestellt",
+    "math": "Formel",
+    "blockMath": "Formelblock",
+    "align": "Ausrichtung",
+    "font": "Schrift"
+  },
+  "align": {
+    "left": "Linksbündig",
+    "center": "Zentriert",
+    "right": "Rechtsbündig",
+    "justify": "Blocksatz"
+  },
+  "font": {
+    "families": {
+      "sans": "Sans",
+      "serif": "Serif",
+      "mono": "Mono"
+    },
+    "sizes": {
+      "small": "Klein",
+      "large": "Groß",
+      "huge": "Sehr groß"
+    },
+    "reset": "Schrift zurücksetzen"
+  },
+  "heading": {
+    "normalText": "Normaler Text",
+    "level": "Überschrift {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "Hinweisbox einfügen",
+    "remove": "Hinweisbox entfernen",
+    "types": {
+      "info": "Info",
+      "success": "Erfolg",
+      "warning": "Warnung",
+      "tip": "Tipp",
+      "danger": "Gefahr",
+      "question": "Frage",
+      "quote": "Zitat",
+      "example": "Beispiel",
+      "bug": "Bug",
+      "note": "Notiz",
+      "abstract": "Zusammenfassung",
+      "failure": "Fehler"
+    }
+  },
+  "color": {
+    "remove": "Farbe entfernen",
+    "removeHighlight": "Hervorhebung entfernen",
+    "names": {
+      "gray": "Grau",
+      "red": "Rot",
+      "orange": "Orange",
+      "yellow": "Gelb",
+      "green": "Grün",
+      "teal": "Türkis",
+      "blue": "Blau",
+      "purple": "Lila",
+      "pink": "Pink"
+    }
+  },
+  "insertGroup": {
+    "insert": "Einfügen",
+    "blocks": "Blöcke",
+    "notation": "Notation"
+  },
+  "table": {
+    "addRowAbove": "Zeile oberhalb einfügen",
+    "addRowBelow": "Zeile unterhalb einfügen",
+    "addColumnLeft": "Spalte links einfügen",
+    "addColumnRight": "Spalte rechts einfügen",
+    "deleteRow": "Zeile löschen",
+    "deleteColumn": "Spalte löschen",
+    "deleteTable": "Tabelle löschen"
+  },
+  "find": {
+    "placeholder": "In Notiz suchen",
+    "label": "In Notiz suchen",
+    "previous": "Vorheriger Treffer (Shift+Enter)",
+    "previousTitle": "Zurück (Shift+Enter)",
+    "next": "Nächster Treffer (Enter)",
+    "nextTitle": "Weiter (Enter)",
+    "close": "Suche schließen",
+    "closeTitle": "Schließen (⌘F)"
+  },
+  "outline": {
+    "show": "Gliederung anzeigen",
+    "showTitle": "Gliederung (Cmd/Ctrl+Shift+O)",
+    "title": "Gliederung",
+    "ariaLabel": "Notizgliederung",
+    "hide": "Gliederung ausblenden",
+    "hideTitle": "Gliederung ausblenden (Esc)"
+  },
+  "topRow": {
+    "add": "Zeile am Anfang einfügen"
+  },
+  "link": {
+    "popoverLabel": "Link hinzufügen",
+    "placeholder": "Eine URL einfügen oder tippen",
+    "apply": "Anwenden",
+    "addTitle": "Link hinzufügen",
+    "editTitle": "Link bearbeiten",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://beispiel.de",
+    "errorEnterUrl": "Gib eine URL ein",
+    "errorInvalidUrl": "Gib eine gültige URL ein",
+    "textLabel": "Linktext",
+    "textPlaceholder": "Optional, leer lassen, um die URL anzuzeigen",
+    "selectedTextHint": "Der markierte Text wird als Link verwendet",
+    "editTextHint": "Bearbeite den Linktext im Editor",
+    "update": "Aktualisieren"
+  },
+  "audio": {
+    "uploadingRecording": "Aufnahme wird hochgeladen...",
+    "uploading": "Wird hochgeladen...",
+    "stopRecording": "Aufnahme stoppen",
+    "recordAudio": "Audio aufnehmen",
+    "savingRecording": "Aufnahme wird gespeichert...",
+    "recording": "Aufnahme läuft",
+    "secondsLeft": "{{count}}s übrig",
+    "stop": "Stoppen"
+  },
+  "wordCount": {
+    "words_one": "{{formatted}} Wort",
+    "words_other": "{{formatted}} Wörter",
+    "characters_one": "{{formatted}} Zeichen",
+    "characters_other": "{{formatted}} Zeichen",
+    "tooLargeToSync": ", möglicherweise zu groß zum Synchronisieren, lagere einen Teil in eine neue Notiz aus",
+    "veryLong": ", sehr lang, könnte beim Bearbeiten langsam sein und ruckeln",
+    "gettingLong": ", wird lang, könnte auf langsameren Geräten hängen",
+    "largeTableWarning": "Eine große Tabelle ({{rows}} Zeilen) kann diese Notiz beim Bearbeiten langsam machen, erwäge sie aufzuteilen"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "Keine passenden Notizen",
+    "create": "„{{query}}“ erstellen"
+  },
+  "codeBlock": {
+    "copy": "Kopieren",
+    "copied": "Kopiert",
+    "copyFailed": "Fehlgeschlagen"
+  }
+}

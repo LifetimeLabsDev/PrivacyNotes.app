@@ -1,0 +1,29 @@
+{
+  "identifier": "ios",
+  "description": "iOS-only permissions: in-app OAuth session (guideline 4); the itms-apps URL that jumps to the App Store's subscription-management page (storage cancel); and opening http(s) URLs with an explicit application, which is what presenting them in the in-app SFSafariViewController sheet ('inAppBrowser') requires. Separate file from mobile.json because auth-session is only compiled for iOS - an Android ACL build must never see its permission identifier.",
+  "platforms": [
+    "iOS"
+  ],
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "auth-session:default",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "itms-apps://*"
+        },
+        {
+          "url": "https://*",
+          "app": true
+        },
+        {
+          "url": "http://*",
+          "app": true
+        }
+      ]
+    }
+  ]
+}

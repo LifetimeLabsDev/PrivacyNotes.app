@@ -1,0 +1,174 @@
+{
+  "placeholder": "Begin met schrijven…",
+  "toolbar": {
+    "bold": "Vet",
+    "italic": "Cursief",
+    "underline": "Onderstrepen",
+    "heading": "Kop",
+    "taskList": "Takenlijst",
+    "bulletList": "Opsomming",
+    "linkMenu": "Link",
+    "noteLinkMenu": "Notitielink",
+    "numberedList": "Genummerde lijst",
+    "textColor": "Tekstkleur",
+    "textColorApply": "Tekstkleur: {{color}}",
+    "pickColor": "Tekstkleur kiezen",
+    "table": "Tabel",
+    "quote": "Citaat",
+    "callout": "Aandachtsblok",
+    "inlineCode": "Inline code",
+    "strikethrough": "Doorhalen",
+    "codeBlock": "Codeblok",
+    "divider": "Scheidingslijn",
+    "moreFormatting": "Meer opmaak",
+    "fewerFormatting": "Minder opmaakopties",
+    "image": "Afbeelding",
+    "attachFile": "Bestand bijvoegen",
+    "insert": "Invoegen",
+    "highlight": "Markeren",
+    "highlightApply": "Markeren: {{color}}",
+    "pickHighlight": "Markeerkleur kiezen",
+    "superscript": "Superscript",
+    "subscript": "Subscript",
+    "math": "Formule",
+    "blockMath": "Formuleblok",
+    "align": "Uitlijning",
+    "font": "Lettertype"
+  },
+  "align": {
+    "left": "Links uitlijnen",
+    "center": "Centreren",
+    "right": "Rechts uitlijnen",
+    "justify": "Uitvullen"
+  },
+  "font": {
+    "families": {
+      "sans": "Sans",
+      "serif": "Serif",
+      "mono": "Mono"
+    },
+    "sizes": {
+      "small": "Klein",
+      "large": "Groot",
+      "huge": "Zeer groot"
+    },
+    "reset": "Lettertype herstellen"
+  },
+  "heading": {
+    "normalText": "Normale tekst",
+    "level": "Kop {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "Aandachtsblok invoegen",
+    "remove": "Aandachtsblok verwijderen",
+    "types": {
+      "info": "Info",
+      "success": "Gelukt",
+      "warning": "Waarschuwing",
+      "tip": "Tip",
+      "danger": "Gevaar",
+      "question": "Vraag",
+      "quote": "Citaat",
+      "example": "Voorbeeld",
+      "bug": "Bug",
+      "note": "Notitie",
+      "abstract": "Samenvatting",
+      "failure": "Mislukt"
+    }
+  },
+  "color": {
+    "remove": "Kleur verwijderen",
+    "removeHighlight": "Markering verwijderen",
+    "names": {
+      "gray": "Grijs",
+      "red": "Rood",
+      "orange": "Oranje",
+      "yellow": "Geel",
+      "green": "Groen",
+      "teal": "Blauwgroen",
+      "blue": "Blauw",
+      "purple": "Paars",
+      "pink": "Roze"
+    }
+  },
+  "insertGroup": {
+    "insert": "Invoegen",
+    "blocks": "Blokken",
+    "notation": "Notatie"
+  },
+  "table": {
+    "addRowAbove": "Rij hierboven invoegen",
+    "addRowBelow": "Rij hieronder invoegen",
+    "addColumnLeft": "Kolom links invoegen",
+    "addColumnRight": "Kolom rechts invoegen",
+    "deleteRow": "Rij verwijderen",
+    "deleteColumn": "Kolom verwijderen",
+    "deleteTable": "Tabel verwijderen"
+  },
+  "find": {
+    "placeholder": "Zoeken in notitie",
+    "label": "Zoeken in notitie",
+    "previous": "Vorige overeenkomst (Shift+Enter)",
+    "previousTitle": "Vorige (Shift+Enter)",
+    "next": "Volgende overeenkomst (Enter)",
+    "nextTitle": "Volgende (Enter)",
+    "close": "Zoeken sluiten",
+    "closeTitle": "Sluiten (⌘F)"
+  },
+  "outline": {
+    "show": "Overzicht tonen",
+    "showTitle": "Overzicht (Cmd/Ctrl+Shift+O)",
+    "title": "Overzicht",
+    "ariaLabel": "Notitie-overzicht",
+    "hide": "Overzicht verbergen",
+    "hideTitle": "Overzicht verbergen (Esc)"
+  },
+  "topRow": {
+    "add": "Regel bovenaan toevoegen"
+  },
+  "link": {
+    "popoverLabel": "Link toevoegen",
+    "placeholder": "Plak of typ een URL",
+    "apply": "Toepassen",
+    "addTitle": "Link toevoegen",
+    "editTitle": "Link bewerken",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "Voer een URL in",
+    "errorInvalidUrl": "Voer een geldige URL in",
+    "textLabel": "Linktekst",
+    "textPlaceholder": "Optioneel, laat leeg om de URL te tonen",
+    "selectedTextHint": "De geselecteerde tekst wordt de link",
+    "editTextHint": "Bewerk de linktekst in de editor",
+    "update": "Bijwerken"
+  },
+  "audio": {
+    "uploadingRecording": "Opname uploaden...",
+    "uploading": "Uploaden...",
+    "stopRecording": "Opname stoppen",
+    "recordAudio": "Audio opnemen",
+    "savingRecording": "Opname opslaan...",
+    "recording": "Opnemen",
+    "secondsLeft": "nog {{count}}s",
+    "stop": "Stoppen"
+  },
+  "wordCount": {
+    "words_one": "{{formatted}} woord",
+    "words_other": "{{formatted}} woorden",
+    "characters_one": "{{formatted}} teken",
+    "characters_other": "{{formatted}} tekens",
+    "tooLargeToSync": ", mogelijk te groot om te synchroniseren, splits op in een nieuwe notitie",
+    "veryLong": ", erg lang, bewerken kan traag worden en haperen",
+    "gettingLong": ", wordt lang, kan haperen op tragere apparaten",
+    "largeTableWarning": "Een grote tabel ({{rows}} rijen) kan deze notitie traag maken om te bewerken, overweeg om te splitsen"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "Geen overeenkomende notities",
+    "create": "\"{{query}}\" aanmaken"
+  },
+  "codeBlock": {
+    "copy": "Kopiëren",
+    "copied": "Gekopieerd",
+    "copyFailed": "Mislukt"
+  }
+}

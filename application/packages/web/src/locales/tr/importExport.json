@@ -1,0 +1,169 @@
+{
+  "shell": {
+    "importTitle": "Verilerinizi içe aktarın",
+    "exportTitle": "Verilerinizi dışa aktarın",
+    "restoreTitle": "Verilerinizi geri yükleyin",
+    "vaultTitle": "Parolalarınızı içe aktarın",
+    "tablistLabel": "İçe aktar, Dışa aktar, Geri yükle veya Parolalar",
+    "tabImport": "İçe aktar",
+    "tabExport": "Dışa aktar",
+    "tabRestore": "Geri yükle",
+    "tabVault": "Parolalar",
+    "working": "İşleniyor…"
+  },
+  "footer": {
+    "exportNote": "Dışa aktarma cihazınızda çalışır. Hiçbir şey yüklenmez.",
+    "restoreNote": "Dosyanız cihazınızda okunup şifresi çözülür.",
+    "importNote": "Her şey eşitlenmek üzere cihazınızdan ayrılmadan önce şifrelenir."
+  },
+  "importPick": {
+    "autoTagLabel": "İçe aktarılan notları kaynağına göre etiketle",
+    "autoTagDesc": "Google Keep notları <keep>#google</keep>, Obsidian notları <obsidian>#obsidian</obsidian> etiketini alır; gerisi de böyle.",
+    "guideAria": "{{app}} için içe aktarma rehberi",
+    "guideLabel": "Kılavuz"
+  },
+  "folderImport": {
+    "tagLabel": "Notları klasörüne göre de etiketle",
+    "tagDesc": "Klasörleriniz her durumda yeniden oluşturulur. Bu seçenek her klasör adını ayrıca etiket olarak ekler, etikete göre filtrelemeyi de seviyorsanız işinize yarar."
+  },
+  "sourceDesc": {
+    "googleKeep": "Google Takeout .zip dosyası (Keep klasörü) veya tek bir .json notu. Kontrol listeleri gerçek görev listesi olarak aktarılır.",
+    "appleNotes": "Ücretsiz Exporter uygulamasıyla Markdown olarak dışa aktarın, sonra .zip dosyasını buraya bırakın.",
+    "appleJournal": "Mac veya iPhone'daki Journal uygulamasından dışa aktarın, AppleJournalEntries klasörünü sıkıştırın ve .zip dosyasını bırakın. Kayıtlar fotoğrafları, videoları, ses notları ve konumlarıyla birlikte günlük kaydı olarak içe aktarılır.",
+    "evernote": "Tek başına bir .enex veya birkaçı birlikte sıkıştırılmış hâlde. Biçimlendirmeyi, etiketleri, ekleri, note-link'leri ve not defterlerini korur. Evernote görevleri .enex dosyasına koymaz.",
+    "samsungNotes": "Word (.docx) veya Metin (.txt) olarak dışa aktarın. Toplu aktarım için birden fazla dosyayı sıkıştırın.",
+    "simplenote": "Simplenote'tan dışa aktarın (Ayarlar -> Araçlar -> Notları Dışa Aktar). .zip dosyasını bırakın.",
+    "standardNotes": "Standard Notes'tan alınmış şifresi çözülmüş .zip veya .txt yedeği (Dosya > Dışa Aktar > Şifresi Çözülmüş).",
+    "obsidian": "Obsidian kasası .zip olarak. Etiketleri, [[note link]] bağlantılarını, klasör yapısını, metin içi #etiketleri ve gömülü görsel ile dosyaları korur.",
+    "notesnook": "Notesnook dışa aktarımı .zip olarak. Biçimlendirmeyi, not defterlerini, etiketleri ve ekleri korumak için dışa aktarırken HTML seçin.",
+    "upnote": "UpNote'ta: Settings > Backup > Backup now, ardından yedek klasöründeki her şeyi zipleyin. Not defterlerini, etiketleri, sabitlemeleri, note-link'leri, biçimlendirmeyi ve ekleri korur. Telefon uygulamalarından tekil not dışa aktarmaları da çalışır - \"Export to HTML\" seçin.",
+    "markdownFolder": "Tek tek ya da bir .zip içinde .md veya .txt dosyaları. Ziplenmiş bir klasör alt klasörlerini korur, görsellerini ve eklerini de birlikte getirir.",
+    "markdownApp": "Bu notlar zaten bir klasördeki Markdown dosyaları. Klasörü .zip olarak bırakın; alt klasörleri, görselleri ve #etiketleri de birlikte gelsin.",
+    "browserBookmarks": "Tarayıcınızdaki \"Export bookmarks\" ile oluşan yer imi dosyası (.html) ya da Safari'nin yazdığı .zip. Chrome, Firefox, Safari, Edge, Opera, Brave ve Vivaldi aynı dosyayı içerir. Klasörler ve tarihler de gelir.",
+    "bitwarden": "Bitwarden'dan şifrelenmemiş .json dışa aktarımı (Tools > Export vault > .json). Oturum bilgileri, kartlar, SSH anahtarları, güvenli notlar ve TOTP kodları hep birlikte gelir.",
+    "browserPasswords": "Chrome, Edge, Brave, Opera, Vivaldi, Firefox ya da Safari'den gelen parola dosyası (.csv) ya da Safari'nin yazdığı .zip. Her satır bir oturum bilgisine dönüşür. İşiniz bitince dosyayı silin - parolalarınızı düz metin olarak taşır."
+  },
+  "vaultPick": {
+    "intro": "Başka bir parola yöneticisinden giriş bilgilerini, kredi kartlarını ve SSH anahtarlarını içe aktarın."
+  },
+  "restorePick": {
+    "intro": "Daha önce dışa aktardığınız bir PrivacyNotes yedeğini geri yükleyin. Dosyanız cihazınızda okunup şifresi çözülür.",
+    "fullBackupTitle": "Tam yedek (.zip)",
+    "fullBackupDesc": "Notları, günlükleri, kasa öğelerini, görevleri, görselleri, sesleri ve dosyaları geri yükleyin. Her şey yeni öğe olarak aktarılır - mevcut verilerin üzerine yazılmaz.",
+    "encryptedBackupTitle": "Şifreli yedek (.pnbackup, .pnbackupz)",
+    "encryptedBackupDesc": "Şifreli bir yedeği ifade anahtarınızla geri yükleyin. Bir .pnbackupz dosyası dosyalar dahil her şeyi geri getirir; .pnbackup yalnızca metin içeriği ve üst verileri içerir. Yedeği oluşturan hesapla giriş yapmış olmanız gerekir."
+  },
+  "encryptedBackupLabel": "Şifreli yedek",
+  "status": {
+    "readingFile": "Dosya okunuyor…",
+    "decryptingBackup": "Yedeğin şifresi çözülüyor...",
+    "writingNotes": "Notlar yerel kitaplığınıza yazılıyor…",
+    "importingBlobs": "Görseller ve ekler içe aktarılıyor...",
+    "restoringBlobs": "Görseller ve dosyalar geri yükleniyor..."
+  },
+  "errors": {
+    "genericParse": "Bir şeyler ters gitti.",
+    "decryptionFailed": "Şifre çözme başarısız oldu. İfade yanlış veya dosya bozuk.",
+    "blobImportFailed": "Notlarınız aktarıldı, ama görselleri ve dosyaları aktarılmadı: {{detail}} Seçtiğiniz dosyada hiçbir şey değişmedi, yani aktarılan notları silip içe aktarmayı yeniden çalıştırabilirsiniz."
+  },
+  "preview": {
+    "sourceLabel": "Kaynak",
+    "uniqueTags": "Benzersiz etiket",
+    "empty": "Boş",
+    "untagged": "Etiketsiz",
+    "items": "Öğe",
+    "previewLabel": "Önizleme",
+    "andMore": "… ve {{count}} tane daha",
+    "headsUpLabel": "Dikkat:",
+    "duplicateWarning": "içe aktarma bunları yeni not olarak ekler. Bunu iki kez çalıştırırsanız kopyalar oluşur. Henüz otomatik kopya ayıklama yok.",
+    "quotaExceeded": "<strong>Depolama alanı içe aktarmaya yetmiyor.</strong> Tahmini {{needed}} gerekiyor, {{available}} boş. İçe aktarmadan önce yer açın veya yükseltin.",
+    "quotaWarning": "Dikkat: bu içe aktarma, kalan {{available}} depolama alanınızın yaklaşık {{needed}} kadarını kullanacak.",
+    "oversizeAttachments_one": "1 dosya, planınızdaki {{limit}} dosya başı sınırından büyük. Bu cihaza aktarılır, ama siz yükseltene kadar diğer cihazlarınıza eşitlenmez.",
+    "oversizeAttachments_other": "{{count}} dosya, planınızdaki {{limit}} dosya başı sınırından büyük. Bu cihaza aktarılır, ama siz yükseltene kadar diğer cihazlarınıza eşitlenmez.",
+    "duplicateSkipNote": "zaten kaydettiğiniz yer imleri atlanır, bu yüzden ikinci kez çalıştırmak hiçbir şeyi çoğaltmaz."
+  },
+  "counts": {
+    "note_one": "not",
+    "note_other": "not",
+    "journal_one": "günlük kaydı",
+    "journal_other": "günlük kaydı",
+    "login_one": "giriş bilgisi",
+    "login_other": "giriş bilgisi",
+    "card_one": "kart",
+    "card_other": "kart",
+    "sshKey_one": "SSH anahtarı",
+    "sshKey_other": "SSH anahtarı",
+    "zeroItems": "0 öğe",
+    "importButton": "{{counts}} içe aktar"
+  },
+  "errorPhase": {
+    "heading": "{{importer}}: içe aktarma başarısız oldu"
+  },
+  "export": {
+    "intro": "Verileriniz size ait. İstediğiniz zaman dışa aktarın, hem de ücretsiz.",
+    "fullBackupHeading": "Tam yedek",
+    "portableHeading": "Taşınabilir dışa aktarım",
+    "vaultOnlyHeading": "Yalnızca kasa",
+    "zipBackupTitle": "PrivacyNotes yedeği (.zip)",
+    "zipBackupDesc": "Her şey: notlar, günlükler, kasa öğeleri, görevler, görseller, sesler ve dosyalar. Eksiksiz bir hesap yedeği için veya yeni bir cihaza taşınmak için bunu kullanın. İçindeki dosyalar şifrelenmemiştir, bu yüzden zip dosyasını güvenli bir yerde saklayın.",
+    "encryptedZipBackupTitle": "Şifreli tam yedek (.pnbackupz)",
+    "encryptedZipBackupDesc": "Zip yedeğinin içerdiği her şey - notlar, kasa öğeleri, görseller, sesler ve dosyalar - ifade anahtarınızla mühürlenmiş hâlde. Her cihazda ifadenizle geri yüklenir. İstediğiniz yerde saklayabilirsiniz.",
+    "encryptedBackupTitle": "Şifreli yedek (.pnbackup)",
+    "encryptedBackupDesc": "Tüm metin içeriği ve üst veriler, ifade anahtarınızla şifrelenmiş hâlde. Görsel veya dosya içermez. İstediğiniz yerde saklayabilirsiniz - ifadeniz olmadan okunamaz.",
+    "htmlArchiveTitle": "HTML arşivi (.zip)",
+    "htmlArchiveDesc": "Her not için yazdırılabilir tek bir HTML sayfası. Çevrimdışı okumak veya arşivlemek için iyi, geri yüklemek için değil.",
+    "textBackupTitle": "Metin yedeği (.json)",
+    "textBackupDesc": "Tüm metin içeriği ve üst veriler düz JSON olarak. Görsel veya dosya içermez. Güvendiğiniz bir yerde saklayın - bu dosya şifreli değildir.",
+    "vaultExportTitle": "Kasa dışa aktarımı (.json)",
+    "vaultExportDesc": "Giriş bilgileri, kartlar ve SSH anahtarları Bitwarden uyumlu biçimde. Çoğu parola yöneticisi içe aktarabilir. Düz metin - dikkatli davranın.",
+    "bookmarksOnlyHeading": "Yalnızca yer imleri",
+    "bookmarksExportTitle": "Yer imi dosyası (.html)",
+    "bookmarksExportDesc": "Her tarayıcının okuduğu standart yer imi dosyası. Klasörlerinizle birlikte Chrome, Firefox, Safari veya Edge içine aktarın."
+  },
+  "exportProgress": {
+    "failedTitle": "Dışa aktarma başarısız oldu",
+    "completeTitle": "Dışa aktarma tamamlandı",
+    "exportingTitle": "Yedek dışa aktarılıyor...",
+    "preparing": "Hazırlanıyor...",
+    "exporting": "Dışa aktarılıyor...",
+    "imagesProgress": "Görseller dışa aktarılıyor... {{total}} görselden {{done}} tanesi",
+    "filesProgress": "Dosyalar dışa aktarılıyor... {{total}} dosyadan {{done}} tanesi",
+    "building": "Yedek oluşturuluyor...",
+    "compressing": "Sıkıştırılıyor..."
+  },
+  "upload": {
+    "completeTitle": "Yükleme tamamlandı",
+    "failedTitle": "Yükleme başarısız oldu",
+    "partialTitle": "{{done}} yüklendi, {{failed}} başarısız",
+    "uploadingTitle_one": "{{count}} dosya yükleniyor",
+    "uploadingTitle_other": "{{count}} dosya yükleniyor",
+    "statusDone": "Bitti",
+    "statusFailed": "Başarısız",
+    "errorStorageFull": "Depolama dolu - bu dosyayı yüklemek için yer açın veya depolama ekleyin.",
+    "errorStorageFullKept": "Depolamanıza sığmıyor - bu cihazda tutuldu. Yer açılınca eşitlenecek.",
+    "statusUploading": "Yükleniyor...",
+    "statusWaiting": "Bekliyor",
+    "summaryDone": "{{count}} tamam",
+    "summaryUploading": "{{count}} yükleniyor",
+    "summaryFailed": "{{count}} başarısız",
+    "typesHint": "Görsel, belge, ses, video, zip. Dosya başına en fazla {{limit}} MB.",
+    "proPitch": "Pro, sınırı dosya başına 50 MB'a çıkarır.",
+    "proPitchCta": "Yükselt",
+    "storagePitch": "Bir depolama planı bunu dosya başına 100 MB'a çıkarır.",
+    "storagePitchCta": "Depolama ekle"
+  },
+  "decryptErrors": {
+    "tooSmall": "Bu dosya boş veya eksik ({{size}} bayt), yani geri yüklenecek bir şey yok. Yedeği yeniden dışa aktarın ve içe aktarmadan önce kaydedilen dosyanın gerçekten bir boyutu olduğunu kontrol edin.",
+    "notThisAccount": "Bu yedeğin kilidi açılamadı. Bir .pnbackup yalnızca onu oluşturan hesapta açılır, yani bu genellikle başka bir hesaba ait bir yedektir - notları hesaplar arasında taşımak için bunun yerine tam yedek (.zip) dışa aktarın. Hesap doğruysa dosya zarar görmüş veya eksik kaydedilmiş demektir."
+  },
+  "exportErrors": {
+    "generic": "Dışa aktarım kaydedilemedi. Lütfen tekrar deneyin veya başka bir klasör seçin."
+  },
+  "saveErrors": {
+    "shortWrite": "{{expected}} baytın yalnızca {{written}} baytı kaydedildi, yani dosya eksik. Tekrar deneyin ve bir bulut klasörü yerine cihazınızın kendi depolamasına kaydedin."
+  },
+  "browserImport": {
+    "tagLabel": "Tarayıcınızdaki etiketleri koru",
+    "tagDesc": "Firefox, yer imiyle birlikte etiketleri ve adres çubuğu anahtar sözcüğünü de saklar. İkisi de burada etikete dönüşür."
+  }
+}

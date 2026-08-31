@@ -1,0 +1,64 @@
+{
+  "upgrade": {
+    "header": "Pague uma vez, seu para sempre",
+    "earlyAdopterBadge": "Adotante inicial",
+    "oneTime": "pagamento único",
+    "subscriptionPitch": "Sem assinatura. Sem taxa anual. Um pagamento, liberado para a vida toda.",
+    "ctaUnlock": "Liberar tudo",
+    "ctaOpening": "Abrindo o checkout...",
+    "ctaSignUp": "Cadastre-se para liberar",
+    "intro": {
+      "storage": "Envios maiores e mais espaço são um recurso Pro. Faça upgrade para arquivos de 50 MB e 500 MB de armazenamento.",
+      "folders": "As pastas são um recurso Pro. Organize suas notas em pastas aninhadas, na profundidade que você precisar, e mantenha cada projeto separado.",
+      "lock": "Bloquear uma nota é um recurso Pro. Faça upgrade para proteger qualquer nota contra edições acidentais.",
+      "protect": "Proteger uma nota com PIN é um recurso Pro. Faça upgrade para proteger notas sensíveis com seu PIN.",
+      "history": "O histórico de notas é um recurso Pro. Faça upgrade para manter uma linha do tempo de cada salvamento.",
+      "devices": "Você atingiu o limite de 2 dispositivos. Faça upgrade para ter dispositivos ilimitados.",
+      "zen": "O modo zen é um recurso Pro. Faça upgrade para escrever sem distrações.",
+      "theme": "Os temas premium são um recurso Pro. Faça upgrade para liberar todos os tons.",
+      "callout": "O conjunto completo de avisos é um recurso Pro.",
+      "totp": "Códigos 2FA são um recurso Pro. Guarde uma chave de autenticação em qualquer login e veja o código rotativo ao lado da senha. A chave em si é salva e sincronizada em todos os planos.",
+      "default": "Um upgrade libera tudo abaixo. Pagamento único."
+    },
+    "features": {
+      "devices": "Sincronize dispositivos ilimitados, em todas as plataformas",
+      "folders": "Pastas aninhadas, organização por projeto",
+      "lock": "Bloqueie e proteja qualquer nota com PIN",
+      "history": "Histórico completo de notas, restaure quando quiser",
+      "themes": "Temas premium em todos os tons",
+      "zen": "Modo zen, escrita sem distrações",
+      "storage": "500 MB de armazenamento + 50 MB de anexos"
+    },
+    "comparisonBeta": "Pague US$ {{earlyPrice}} uma vez. O Obsidian Sync custa US$ 48/ano, todo ano. O Standard Notes cobra US$ 90/ano. Preço de adotante inicial, garantido antes de subir para US$ {{proPrice}}.",
+    "comparison": "Pague US$ {{proPrice}} uma vez e tenha para sempre. O Obsidian Sync custa US$ 48/ano e o Standard Notes US$ 90/ano, todo santo ano."
+  },
+  "purchaseError": {
+    "store": "Não foi possível concluir a compra na loja e nada foi cobrado de você. Tente novamente em instantes.",
+    "validate": "Seu pagamento foi aprovado, mas a ativação falhou. Reinicie o app para tentar de novo - se mesmo assim não desbloquear, a loja reembolsa a compra automaticamente em até 3 dias.",
+    "alreadyOwned": "A loja diz que você já possui esta compra, mas ela pertence a outra conta. Entre com a frase de recuperação que você usava quando comprou."
+  },
+  "checkout": {
+    "invalidTitle": "Link de checkout inválido",
+    "invalidBody": "Abra o checkout de dentro do app para que possamos vincular a compra à sua conta.",
+    "completeTitle": "Pagamento concluído",
+    "completeBody": "Você pode fechar esta aba e voltar ao PrivacyNotes. Seu upgrade é liberado automaticamente.",
+    "openingTitle": "Abrindo o checkout seguro...",
+    "openingBody": "Uma janela de checkout do Paddle deve aparecer. Se não aparecer, seu navegador pode ter bloqueado o pop-up - recarregue esta página para tentar de novo."
+  },
+  "history": {
+    "title": "Histórico de notas",
+    "subtitle": "Até 20 versões por nota. As mais antigas são removidas automaticamente.",
+    "empty": "Nenhum histórico ainda. As versões começam a se acumular após a próxima edição. Volte depois.",
+    "selectPrompt": "Selecione uma versão para visualizar.",
+    "emptyBody": "(vazia)",
+    "restore": "Restaurar",
+    "restoring": "Restaurando…"
+  },
+  "donation": {
+    "eyebrow": "Você liberou",
+    "intro": "O <brand/> é gratuito, e sempre será. Sem anúncios, sem rastreamento, sem e-mail cadastrado. Se ele ajudou você a pensar, escrever ou lembrar, considere apoiar o desenvolvimento. É o que mantém tudo funcionando e paga os próximos recursos.",
+    "proBenefits": "Apoiar também libera os benefícios Pro quando eles chegarem: dispositivos ilimitados, anexos, backups criptografados na nuvem.",
+    "maybeLater": "Talvez depois",
+    "support": "Apoiar →"
+  }
+}

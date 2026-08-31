@@ -1,0 +1,112 @@
+{
+  "title": "통계",
+  "tabs": {
+    "writing": "글쓰기",
+    "wellness": "웰니스"
+  },
+  "writing": {
+    "notes": "노트",
+    "words": "단어",
+    "tags": "태그",
+    "currentStreak": "현재 스트릭",
+    "longestStreak": "최장 스트릭",
+    "streakValue": "{{count}}일",
+    "timeRangeAria": "활동 기간",
+    "modeActivity": "활동",
+    "modeMood": "기분",
+    "tooltipMood": "{{date}}: 기분 {{mood}}/10",
+    "tooltipNoMood": "{{date}}: 기분 기록 없음",
+    "tooltipEdits_other": "{{date}}: 수정 {{count}}회",
+    "longestNote": "가장 긴 노트: <name>{{title}}</name> ({{count}} 단어)"
+  },
+  "range": {
+    "7d": "7일",
+    "14d": "14일",
+    "30d": "30일",
+    "3mo": "3개월",
+    "6mo": "6개월",
+    "12mo": "12개월"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "전체",
+      "sleepActivity": "수면 & 활동",
+      "medication": "복약",
+      "patterns": "패턴"
+    },
+    "empty": {
+      "title": "아직 웰니스 데이터가 없어요.",
+      "hint": "저널 항목을 열고 기분을 기록하면 시작돼요."
+    },
+    "overview": {
+      "daysTracked": "기록한 날",
+      "avgMood": "평균 기분",
+      "avgSleep": "평균 수면",
+      "medAdherence": "복약 순응도",
+      "moodTrend": "기분 추세",
+      "moodByDayOfWeek": "요일별 기분",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "내보내기",
+      "allTime": "전체 기간",
+      "last90Days": "최근 90일",
+      "last30Days": "최근 30일",
+      "last7Days": "최근 7일",
+      "downloadJSON": "JSON 다운로드",
+      "doctorPDF": "의사용 PDF",
+      "copyAIPrompt": "AI 프롬프트 복사",
+      "copied": "복사됨!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "수면 질",
+      "activity": "활동",
+      "avgSleepPerNight": "하룻밤 평균 수면"
+    },
+    "medication": {
+      "adherence": "순응도",
+      "empty": {
+        "title": "아직 복약 데이터가 없어요.",
+        "hint": "트래커 설정에서 약을 추가하고 매일 기록하세요."
+      },
+      "dosageTimeline": "용량 타임라인",
+      "started": "시작: {{dosage}}",
+      "changedTo": "변경: {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "주요 감정",
+      "insights": "인사이트",
+      "proBadge": "PRO",
+      "insightsLocked_other": "인사이트 {{count}}개 감지됨. 보려면 Pro로 업그레이드하세요",
+      "weekInReview": "주간 리뷰",
+      "weekInReviewLocked": "주간 웰니스 요약을 보려면 Pro로 업그레이드하세요"
+    },
+    "week": {
+      "range": "{{start}} ~ {{end}}",
+      "daysLogged": "7일 중 {{count}}일 기록",
+      "avgMood": "평균 기분",
+      "moodDelta": "지난주 대비 {{delta}}",
+      "avgSleep": "평균 수면",
+      "medsTaken": "복용한 약",
+      "topActivity": "주요 활동",
+      "topEmotions": "주요 감정",
+      "reflection": "돌아보기",
+      "reflectionPlaceholder": "이번 주는 전반적으로 어땠나요? 남기고 싶은 생각이 있다면..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "마일스톤 달성"
+  },
+  "milestone": {
+    "notes_other": "노트 {{count}}개 작성",
+    "streak": "{{count}}일 연속 글쓰기",
+    "words_other": "{{formatted}} 단어 작성",
+    "age30": "PrivacyNotes와 30일",
+    "age365": "PrivacyNotes와 1년",
+    "age730": "PrivacyNotes와 2년",
+    "age1825": "PrivacyNotes와 5년",
+    "ageDefault": "{{count}}일째"
+  }
+}

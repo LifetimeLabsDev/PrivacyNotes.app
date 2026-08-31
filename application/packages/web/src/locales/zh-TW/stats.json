@@ -1,0 +1,112 @@
+{
+  "title": "統計",
+  "tabs": {
+    "writing": "寫作",
+    "wellness": "身心"
+  },
+  "writing": {
+    "notes": "筆記",
+    "words": "字數",
+    "tags": "標籤",
+    "currentStreak": "目前連續天數",
+    "longestStreak": "最長連續天數",
+    "streakValue": "{{count}} 天",
+    "timeRangeAria": "活動時間範圍",
+    "modeActivity": "活動",
+    "modeMood": "心情",
+    "tooltipMood": "{{date}}：心情 {{mood}}/10",
+    "tooltipNoMood": "{{date}}：未記錄心情",
+    "tooltipEdits_other": "{{date}}：{{count}} 次編輯",
+    "longestNote": "最長的筆記：<name>{{title}}</name>（{{count}} 字）"
+  },
+  "range": {
+    "7d": "7 天",
+    "14d": "14 天",
+    "30d": "30 天",
+    "3mo": "3 個月",
+    "6mo": "6 個月",
+    "12mo": "12 個月"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "全部",
+      "sleepActivity": "睡眠與活動",
+      "medication": "藥物",
+      "patterns": "模式"
+    },
+    "empty": {
+      "title": "還沒有身心資料。",
+      "hint": "開啟一篇日誌並記錄心情，就能開始。"
+    },
+    "overview": {
+      "daysTracked": "追蹤天數",
+      "avgMood": "平均心情",
+      "avgSleep": "平均睡眠",
+      "medAdherence": "服藥率",
+      "moodTrend": "心情趨勢",
+      "moodByDayOfWeek": "各星期幾的心情",
+      "moodTrendTooltip": "{{date}}：{{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}：{{mood}}/10（{{anchor}}）"
+    },
+    "export": {
+      "heading": "匯出",
+      "allTime": "全部期間",
+      "last90Days": "最近 90 天",
+      "last30Days": "最近 30 天",
+      "last7Days": "最近 7 天",
+      "downloadJSON": "下載 JSON",
+      "doctorPDF": "醫師 PDF",
+      "copyAIPrompt": "複製 AI 提示詞",
+      "copied": "已複製！",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "睡眠品質",
+      "activity": "活動",
+      "avgSleepPerNight": "每晚平均睡眠"
+    },
+    "medication": {
+      "adherence": "服藥率",
+      "empty": {
+        "title": "還沒有用藥資料。",
+        "hint": "先在追蹤設定中新增藥物，再每天記錄。"
+      },
+      "dosageTimeline": "劑量時間軸",
+      "started": "開始 {{dosage}}",
+      "changedTo": "改為 {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "最常見情緒",
+      "insights": "洞察",
+      "proBadge": "PRO",
+      "insightsLocked_other": "偵測到 {{count}} 項洞察。升級 Pro 即可檢視",
+      "weekInReview": "每週回顧",
+      "weekInReviewLocked": "升級 Pro 即可查看你的每週身心摘要"
+    },
+    "week": {
+      "range": "{{start}} 至 {{end}}",
+      "daysLogged": "已記錄 {{count}}/7 天",
+      "avgMood": "平均心情",
+      "moodDelta": "與上週相比 {{delta}}",
+      "avgSleep": "平均睡眠",
+      "medsTaken": "已服藥",
+      "topActivity": "主要活動",
+      "topEmotions": "最常見情緒",
+      "reflection": "反思",
+      "reflectionPlaceholder": "這一週整體感覺如何？想記下什麼想法…"
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "達成里程碑"
+  },
+  "milestone": {
+    "notes_other": "已寫下 {{count}} 篇筆記",
+    "streak": "連續寫作 {{count}} 天",
+    "words_other": "已寫下 {{formatted}} 字",
+    "age30": "使用 PrivacyNotes 滿 30 天",
+    "age365": "使用 PrivacyNotes 滿 1 年",
+    "age730": "使用 PrivacyNotes 滿 2 年",
+    "age1825": "使用 PrivacyNotes 滿 5 年",
+    "ageDefault": "加入第 {{count}} 天"
+  }
+}

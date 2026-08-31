@@ -1,0 +1,162 @@
+{
+  "shell": {
+    "importTitle": "データを読み込む",
+    "exportTitle": "データを書き出す",
+    "restoreTitle": "データを復元する",
+    "vaultTitle": "パスワードを読み込む",
+    "tablistLabel": "読み込み、書き出し、復元、パスワード",
+    "tabImport": "読み込み",
+    "tabExport": "書き出し",
+    "tabRestore": "復元",
+    "tabVault": "パスワード",
+    "working": "処理中…"
+  },
+  "footer": {
+    "exportNote": "書き出しはローカルで実行されます。何もアップロードされません。",
+    "restoreNote": "ファイルはローカルで読み取り、復号されます。",
+    "importNote": "同期のためにデバイスを離れる前に、すべてが暗号化されます。"
+  },
+  "importPick": {
+    "autoTagLabel": "読み込んだノートに提供元のタグを付ける",
+    "autoTagDesc": "Google Keepのノートには<keep>#google</keep>、Obsidianには<obsidian>#obsidian</obsidian>、という具合です。",
+    "guideAria": "{{app}}の読み込みガイド",
+    "guideLabel": "ガイド"
+  },
+  "folderImport": {
+    "tagLabel": "フォルダ名のタグも付ける",
+    "tagDesc": "フォルダはどちらにしても再現されます。これはさらに各フォルダ名をタグとしても追加するオプションで、タグでも絞り込みたい場合に便利です。"
+  },
+  "sourceDesc": {
+    "googleKeep": "Google Takeoutの.zip(Keepフォルダ)または単一の.jsonノート。チェックリストはネイティブのタスクリストとして読み込まれます。",
+    "appleNotes": "無料のExporterアプリでMarkdownとして書き出し、その.zipをここにドロップしてください。",
+    "appleJournal": "Journal(ジャーナル)をMacまたはiPhoneから書き出し、AppleJournalEntriesフォルダを圧縮して、その.zipをドロップしてください。エントリーは写真、動画、ボイスメモ、位置情報とともにジャーナルのエントリーとして読み込まれます。",
+    "evernote": ".enexが1つでも、複数をzipにまとめてでも読み込めます。書式、タグ、添付ファイル、ノートリンク、ノートブックを保持します。タスクはEvernoteが.enexに含めません。",
+    "samsungNotes": "Word(.docx)またはテキスト(.txt)として書き出してください。複数ファイルはzipにまとめると一括で読み込めます。",
+    "simplenote": "Simplenoteから書き出して(Settings -> Tools -> Export Notes)、その.zipをドロップしてください。",
+    "standardNotes": "Standard Notesの復号済み.zipまたは.txtバックアップ(File > Export > Decrypted)。",
+    "obsidian": "Obsidianの保管庫を.zipで。タグ、[[note links]]、フォルダ構造、本文中の#タグ、埋め込んだ画像とファイルを保持します。",
+    "notesnook": "Notesnookの書き出しデータを.zipで。書き出し時にHTMLを選ぶと、書式、ノートブック、タグ、添付ファイルが保持されます。",
+    "upnote": "UpNoteの設定 > 「Backup」で「Backup now」を実行し、バックアップフォルダの中身をすべてzipにしてください。ノートブック、タグ、ピン留め、ノートリンク、書式、添付ファイルを保持します。スマートフォンアプリからのノート単位の書き出しにも対応しています。その場合は「Export to HTML」を選んでください。",
+    "markdownFolder": ".mdまたは.txtファイルを個別に、あるいは.zipでまとめて。zipにしたフォルダはサブフォルダを保ち、画像や添付ファイルも一緒に運びます。",
+    "markdownApp": "これらのノートは、すでにフォルダの中のMarkdownファイルです。そのフォルダを.zipにしてドロップすれば、サブフォルダも画像も#タグも一緒に入ってきます。",
+    "browserBookmarks": "ブラウザの \"Export bookmarks\" で書き出したブックマークファイル (.html)、または Safari が書き出す .zip です。Chrome、Firefox、Safari、Edge、Opera、Brave、Vivaldi はどれも同じファイルを含みます。フォルダーと日付も一緒に入ります。",
+    "bitwarden": "Bitwarden の暗号化されていない .json エクスポート（Tools > Export vault > .json）。ログイン、カード、SSH 鍵、セキュアメモ、TOTP コードがすべて一緒に読み込まれます。",
+    "browserPasswords": "Chrome、Edge、Brave、Opera、Vivaldi、Firefox、Safari のパスワードファイル (.csv)、または Safari が書き出す .zip です。1 行がログイン 1 件になります。終わったらファイルは削除してください。パスワードがそのまま書かれています。"
+  },
+  "vaultPick": {
+    "intro": "ログイン情報、クレジットカード、SSH鍵を、他のパスワードマネージャーから読み込みます。"
+  },
+  "restorePick": {
+    "intro": "以前に書き出したPrivacyNotesのバックアップを復元します。ファイルはローカルで読み取り、復号されます。",
+    "fullBackupTitle": "完全バックアップ(.zip)",
+    "fullBackupDesc": "ノート、ジャーナル、保管庫のアイテム、タスク、画像、音声、ファイルを復元します。すべて新しいアイテムとして読み込まれ、既存のデータが上書きされることはありません。",
+    "encryptedBackupTitle": "暗号化バックアップ(.pnbackup、.pnbackupz)",
+    "encryptedBackupDesc": "暗号化バックアップをフレーズ鍵で復元します。.pnbackupz はファイルも含めてすべてを復元します。.pnbackup はテキスト内容とメタデータのみです。バックアップを作成したのと同じアカウントでサインインしている必要があります。"
+  },
+  "encryptedBackupLabel": "暗号化バックアップ",
+  "status": {
+    "readingFile": "ファイルを読み取り中…",
+    "decryptingBackup": "バックアップを復号中...",
+    "writingNotes": "ノートをローカルライブラリに書き込み中…",
+    "importingBlobs": "画像と添付ファイルを読み込み中...",
+    "restoringBlobs": "画像とファイルを復元中..."
+  },
+  "errors": {
+    "genericParse": "問題が発生しました。",
+    "decryptionFailed": "復号に失敗しました。フレーズが違うか、ファイルが破損しています。",
+    "blobImportFailed": "ノートは読み込まれましたが、画像とファイルは読み込まれませんでした: {{detail}} 選んだファイルの中身は変更されていないので、読み込んだノートを削除してから、もう一度読み込みをやり直せます。"
+  },
+  "preview": {
+    "sourceLabel": "読み込み元",
+    "uniqueTags": "タグの種類",
+    "empty": "空",
+    "untagged": "タグなし",
+    "items": "アイテム",
+    "previewLabel": "プレビュー",
+    "andMore": "… 他{{count}}件",
+    "headsUpLabel": "注意:",
+    "duplicateWarning": "読み込むと、これらは新しいノートとして追加されます。2回実行すると重複します。自動の重複排除はまだありません。",
+    "quotaExceeded": "<strong>ストレージ不足のため読み込めません。</strong>推定{{needed}}が必要ですが、利用できるのは{{available}}です。空き容量を確保するか、アップグレードしてから読み込んでください。",
+    "quotaWarning": "注意: この読み込みで、残りストレージ{{available}}のうち約{{needed}}を使用します。",
+    "oversizeAttachments_other": "{{count}}件のファイルが、ご利用のプランのファイルごとの上限{{limit}}を超えています。これらはこのデバイスには読み込まれますが、アップグレードするまで他のデバイスには同期されません。",
+    "duplicateSkipNote": "すでに保存済みのブックマークはスキップされるので、二度実行しても重複しません。"
+  },
+  "counts": {
+    "note_other": "件のノート",
+    "journal_other": "件のジャーナル",
+    "login_other": "件のログイン",
+    "card_other": "件のカード",
+    "sshKey_other": "件のSSH鍵",
+    "zeroItems": "0件",
+    "importButton": "{{counts}}を読み込む"
+  },
+  "errorPhase": {
+    "heading": "{{importer}}: 読み込みに失敗しました"
+  },
+  "export": {
+    "intro": "データはあなたのものです。いつでも無料で書き出せます。",
+    "fullBackupHeading": "完全バックアップ",
+    "portableHeading": "汎用形式で書き出し",
+    "vaultOnlyHeading": "保管庫のみ",
+    "zipBackupTitle": "PrivacyNotesバックアップ(.zip)",
+    "zipBackupDesc": "ノート、ジャーナル、保管庫のアイテム、タスク、画像、音声、ファイルのすべて。アカウント全体のバックアップや、新しいデバイスへの移行に使えます。中のファイルは暗号化されていないため、zipは安全な場所に保管してください。",
+    "encryptedZipBackupTitle": "暗号化フルバックアップ(.pnbackupz)",
+    "encryptedZipBackupDesc": "zipバックアップに含まれるすべて（ノート、保管庫のアイテム、画像、音声、ファイル）をフレーズ鍵で封印します。どのデバイスでもフレーズで復元できます。どこに保管しても安全です。",
+    "encryptedBackupTitle": "暗号化バックアップ(.pnbackup)",
+    "encryptedBackupDesc": "すべてのテキスト内容とメタデータを、フレーズ鍵で暗号化した形式で。画像とファイルは含まれません。フレーズがなければ読めないため、どこに保管しても安全です。",
+    "htmlArchiveTitle": "HTMLアーカイブ(.zip)",
+    "htmlArchiveDesc": "ノートごとに印刷可能なHTMLページを1枚。オフラインでの閲覧やアーカイブ向きで、復元には使えません。",
+    "textBackupTitle": "テキストバックアップ(.json)",
+    "textBackupDesc": "すべてのテキスト内容とメタデータをプレーンなJSONで。画像とファイルは含まれません。暗号化されていないため、信頼できる場所に保管してください。",
+    "vaultExportTitle": "保管庫の書き出し(.json)",
+    "vaultExportDesc": "ログイン情報、カード、SSH鍵をBitwarden互換の形式で。ほとんどのパスワードマネージャーで読み込めます。平文のため、取り扱いには注意してください。",
+    "bookmarksOnlyHeading": "ブックマークのみ",
+    "bookmarksExportTitle": "ブックマークファイル (.html)",
+    "bookmarksExportDesc": "どのブラウザでも読める標準のブックマークファイルです。フォルダーごと Chrome、Firefox、Safari、Edge に取り込めます。"
+  },
+  "exportProgress": {
+    "failedTitle": "書き出しに失敗しました",
+    "completeTitle": "書き出しが完了しました",
+    "exportingTitle": "バックアップを書き出し中...",
+    "preparing": "準備中...",
+    "exporting": "書き出し中...",
+    "imagesProgress": "画像を書き出し中... {{done}} / {{total}}",
+    "filesProgress": "ファイルを書き出し中... {{done}} / {{total}}",
+    "building": "バックアップを作成中...",
+    "compressing": "圧縮中..."
+  },
+  "upload": {
+    "completeTitle": "アップロードが完了しました",
+    "failedTitle": "アップロードに失敗しました",
+    "partialTitle": "{{done}}件成功、{{failed}}件失敗",
+    "uploadingTitle_other": "{{count}}件のファイルをアップロード中",
+    "statusDone": "完了",
+    "statusFailed": "失敗",
+    "errorStorageFull": "ストレージが満杯です。空き容量を確保するか、ストレージを追加するとアップロードできます。",
+    "errorStorageFullKept": "ストレージに収まらないため、この端末に保存されています。空き容量ができると同期されます。",
+    "statusUploading": "アップロード中...",
+    "statusWaiting": "待機中",
+    "summaryDone": "{{count}}件完了",
+    "summaryUploading": "{{count}}件アップロード中",
+    "summaryFailed": "{{count}}件失敗",
+    "typesHint": "画像、文書、音声、動画、zip。最大{{limit}} MB / ファイル。",
+    "proPitch": "Proなら上限が1ファイルあたり50 MBになります。",
+    "proPitchCta": "アップグレード",
+    "storagePitch": "ストレージプランなら1ファイルあたり100 MBになります。",
+    "storagePitchCta": "ストレージを追加"
+  },
+  "decryptErrors": {
+    "tooSmall": "このファイルは空か不完全です（{{size}} バイト）。復元できる内容がありません。バックアップを書き出し直し、保存されたファイルにきちんとサイズがあるか確認してから読み込んでください。",
+    "notThisAccount": "このバックアップは解除できませんでした。.pnbackup は作成したアカウントでしか開けないため、多くは別アカウントのバックアップです。アカウント間でノートを移すには、完全バックアップ（.zip）を書き出してください。アカウントが正しい場合は、ファイルが破損しているか、保存が途中で終わっています。"
+  },
+  "exportErrors": {
+    "generic": "書き出したファイルを保存できませんでした。もう一度試すか、別のフォルダーを選んでください。"
+  },
+  "saveErrors": {
+    "shortWrite": "{{expected}} バイト中 {{written}} バイトしか保存されず、ファイルが不完全です。クラウドのフォルダーではなく端末のストレージに保存して、もう一度お試しください。"
+  },
+  "browserImport": {
+    "tagLabel": "ブラウザのタグを残す",
+    "tagDesc": "Firefox はブックマークにタグとアドレスバーのキーワードを保存します。どちらもここではタグになります。"
+  }
+}

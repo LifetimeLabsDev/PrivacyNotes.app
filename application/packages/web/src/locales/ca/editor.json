@@ -1,0 +1,176 @@
+{
+  "placeholder": "Comença a escriure…",
+  "toolbar": {
+    "bold": "Negreta",
+    "italic": "Cursiva",
+    "underline": "Subratllat",
+    "heading": "Encapçalament",
+    "taskList": "Llista de tasques",
+    "bulletList": "Llista de pics",
+    "linkMenu": "Enllaç",
+    "noteLinkMenu": "Enllaç a una nota",
+    "numberedList": "Llista numerada",
+    "textColor": "Color del text",
+    "textColorApply": "Color del text: {{color}}",
+    "pickColor": "Tria un color del text",
+    "table": "Taula",
+    "quote": "Citació",
+    "callout": "Requadre destacat",
+    "inlineCode": "Codi en línia",
+    "strikethrough": "Ratllat",
+    "codeBlock": "Bloc de codi",
+    "divider": "Divisor",
+    "moreFormatting": "Més opcions de format",
+    "fewerFormatting": "Menys opcions de format",
+    "image": "Imatge",
+    "attachFile": "Adjunta un fitxer",
+    "insert": "Insereix",
+    "highlight": "Ressaltat",
+    "highlightApply": "Ressaltat: {{color}}",
+    "pickHighlight": "Tria un color de ressaltat",
+    "superscript": "Superíndex",
+    "subscript": "Subíndex",
+    "math": "Fórmula matemàtica",
+    "blockMath": "Fórmula en bloc",
+    "align": "Alineació",
+    "font": "Lletra"
+  },
+  "align": {
+    "left": "Alinea a l’esquerra",
+    "center": "Centra",
+    "right": "Alinea a la dreta",
+    "justify": "Justifica"
+  },
+  "font": {
+    "families": {
+      "sans": "Sans",
+      "serif": "Serif",
+      "mono": "Mono"
+    },
+    "sizes": {
+      "small": "Petita",
+      "large": "Gran",
+      "huge": "Molt gran"
+    },
+    "reset": "Restableix la lletra"
+  },
+  "heading": {
+    "normalText": "Text normal",
+    "level": "Encapçalament {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "Insereix un requadre destacat",
+    "remove": "Elimina el requadre destacat",
+    "types": {
+      "info": "Informació",
+      "success": "Èxit",
+      "warning": "Avís",
+      "tip": "Consell",
+      "danger": "Perill",
+      "question": "Pregunta",
+      "quote": "Citació",
+      "example": "Exemple",
+      "bug": "Error",
+      "note": "Nota",
+      "abstract": "Resum",
+      "failure": "Fallada"
+    }
+  },
+  "color": {
+    "remove": "Elimina el color",
+    "removeHighlight": "Elimina el ressaltat",
+    "names": {
+      "gray": "Gris",
+      "red": "Vermell",
+      "orange": "Taronja",
+      "yellow": "Groc",
+      "green": "Verd",
+      "teal": "Verd blavós",
+      "blue": "Blau",
+      "purple": "Porpra",
+      "pink": "Rosa"
+    }
+  },
+  "insertGroup": {
+    "insert": "Insereix",
+    "blocks": "Blocs",
+    "notation": "Notació"
+  },
+  "table": {
+    "addRowAbove": "Afegeix una fila a sobre",
+    "addRowBelow": "Afegeix una fila a sota",
+    "addColumnLeft": "Afegeix una columna a l'esquerra",
+    "addColumnRight": "Afegeix una columna a la dreta",
+    "deleteRow": "Suprimeix la fila",
+    "deleteColumn": "Suprimeix la columna",
+    "deleteTable": "Suprimeix la taula"
+  },
+  "find": {
+    "placeholder": "Cerca dins la nota",
+    "label": "Cerca dins la nota",
+    "previous": "Coincidència anterior (Maj+Retorn)",
+    "previousTitle": "Anterior (Maj+Retorn)",
+    "next": "Coincidència següent (Retorn)",
+    "nextTitle": "Següent (Retorn)",
+    "close": "Tanca la cerca",
+    "closeTitle": "Tanca (⌘F)"
+  },
+  "outline": {
+    "show": "Mostra l'esquema",
+    "showTitle": "Esquema (Cmd/Ctrl+Maj+O)",
+    "title": "Esquema",
+    "ariaLabel": "Esquema de la nota",
+    "hide": "Amaga l'esquema",
+    "hideTitle": "Amaga l'esquema (Esc)"
+  },
+  "topRow": {
+    "add": "Afegeix una línia a dalt"
+  },
+  "link": {
+    "popoverLabel": "Afegeix un enllaç",
+    "placeholder": "Enganxa o escriu un URL",
+    "apply": "Aplica",
+    "addTitle": "Afegeix un enllaç",
+    "editTitle": "Edita l'enllaç",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "Escriu un URL",
+    "errorInvalidUrl": "Escriu un URL vàlid",
+    "textLabel": "Text de l'enllaç",
+    "textPlaceholder": "Opcional; deixa-ho en blanc per mostrar l'URL",
+    "selectedTextHint": "El text seleccionat es farà servir com a enllaç",
+    "editTextHint": "Edita el text de l'enllaç a l'editor",
+    "update": "Actualitza"
+  },
+  "audio": {
+    "uploadingRecording": "S'està pujant l'enregistrament...",
+    "uploading": "S'està pujant...",
+    "stopRecording": "Atura l'enregistrament",
+    "recordAudio": "Enregistra àudio",
+    "savingRecording": "S'està desant l'enregistrament...",
+    "recording": "Enregistrant",
+    "secondsLeft": "Queden {{count}} s",
+    "stop": "Atura"
+  },
+  "wordCount": {
+    "words_one": "{{formatted}} paraula",
+    "words_many": "{{formatted}} paraules",
+    "words_other": "{{formatted}} paraules",
+    "characters_one": "{{formatted}} caràcter",
+    "characters_many": "{{formatted}} caràcters",
+    "characters_other": "{{formatted}} caràcters",
+    "tooLargeToSync": ", potser és massa gran per sincronitzar-se, divideix-la en una nota nova",
+    "veryLong": ", molt llarga, pot anar lenta en editar-la i encallar-se",
+    "gettingLong": ", es va fent llarga, pot anar lenta en dispositius més lents",
+    "largeTableWarning": "Una taula gran ({{rows}} files) pot fer que aquesta nota vagi lenta en editar-la; considera dividir-la"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "Cap nota coincident",
+    "create": "Crea \"{{query}}\""
+  },
+  "codeBlock": {
+    "copy": "Copia",
+    "copied": "Copiat",
+    "copyFailed": "Ha fallat"
+  }
+}

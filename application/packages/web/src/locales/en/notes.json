@@ -1,0 +1,275 @@
+{
+  "noteRow": {
+    "created": "Created",
+    "modified": "Modified",
+    "select": "Select note",
+    "deselect": "Deselect note",
+    "pinProtected": "PIN-protected",
+    "readOnly": "Read-only",
+    "file": "File",
+    "empty": "Empty",
+    "noContent": "No content"
+  },
+  "header": {
+    "new": "New",
+    "newNote": "New note",
+    "newNoteHover": "New note ({{hotkey}})",
+    "trash": "Trash"
+  },
+  "folderChip": {
+    "clear": "Clear folder filter: {{folder}}"
+  },
+  "tagChip": {
+    "clear": "Clear tag filter: {{tag}}"
+  },
+  "vaultNew": {
+    "ariaLabel": "New vault item",
+    "login": "Login",
+    "card": "Credit Card",
+    "sshKey": "SSH Key"
+  },
+  "newMenu": {
+    "note": "Note",
+    "task": "Task",
+    "journal": "Journal",
+    "login": "Login",
+    "file": "File",
+    "bookmark": "Bookmark"
+  },
+  "vaultFilter": {
+    "all": "All",
+    "logins": "Logins",
+    "cards": "Credit Cards",
+    "keys": "Keys"
+  },
+  "journal": {
+    "backfillHover": "New journal for a recent day",
+    "newEntry": "New journal entry",
+    "newEntryHover": "New journal entry ({{hotkey}})"
+  },
+  "tasks": {
+    "newTitle": "Tasks for {{date}}"
+  },
+  "trash": {
+    "empty": "Empty",
+    "emptyHover": "Delete all notes in trash",
+    "storage": "Storage",
+    "autoDelete": "30d auto-delete"
+  },
+  "search": {
+    "sortOptions": "Sort and view options",
+    "placeholderVault": "Search vault…",
+    "placeholderNotes": "Search notes…"
+  },
+  "selection": {
+    "countOf": "{{selected}} of {{total}} selected",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all"
+  },
+  "empty": {
+    "noMatches": "No matches.",
+    "vault": "Vault is empty.",
+    "notes": "No notes yet.",
+    "filtered": "No items match your filters.",
+    "clearFilters": "Clear filters",
+    "filteredAfter": "To display them."
+  },
+  "headerLabel": {
+    "allItems": "All",
+    "untagged": "Untagged",
+    "journals": "Journals",
+    "vault": "Vault",
+    "pinned": "Pinned",
+    "notes": "Notes"
+  },
+  "footerStats": {
+    "journals": "Journals",
+    "items": "Items",
+    "trashed": "Trashed",
+    "notes": "Notes",
+    "bookmarks": "Bookmarks"
+  },
+  "toast": {
+    "imageUploadFailed": "Image upload failed: {{error}}",
+    "imageError": "Image error: {{error}}",
+    "uploadFailedFor": "Upload failed for \"{{filename}}\": {{error}}",
+    "importedSyncing_one": "Imported {{count}} note. Syncing…",
+    "importedSyncing_other": "Imported {{count}} notes. Syncing…",
+    "addedTag_one": "Added #{{tag}} to {{count}} item",
+    "addedTag_other": "Added #{{tag}} to {{count}} items"
+  },
+  "burn": {
+    "mediaOnly": "This note only contains media and can't be shared via burn link.",
+    "shareTitle": "Encrypted note"
+  },
+  "loadError": {
+    "message": "Could not load your notes. The local database connection was interrupted. This can happen after the app has been in the background for a while.",
+    "reload": "Reload"
+  },
+  "banner": {
+    "dismiss": "Dismiss",
+    "proActivationPending": "Payment received but Pro activation is taking longer than usual. Refresh in a minute, or contact support if it doesn't flip on.",
+    "snapshotPaused": "Note history is paused. Your Pro plan looks inactive. New edits won't be snapshotted until Pro is restored.",
+    "restorePro": "Restore Pro",
+    "storagePastDue": "Your storage subscription payment failed. Update your card in Paddle to avoid losing extra capacity.",
+    "updateCard": "Update card"
+  },
+  "sidebar": {
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar"
+  },
+  "notesList": {
+    "collapse": "Collapse notes list",
+    "expand": "Expand notes list"
+  },
+  "paneResize": {
+    "hintCollapse": "Click to collapse · Drag to resize"
+  },
+  "emptyEditor": {
+    "selectFile": "Select a file to preview",
+    "uploadFiles": "Or upload new files to your encrypted vault.",
+    "selectNote": "Select a note or create a new one.",
+    "selectMarkdown": "Open a Markdown file to read it here."
+  },
+  "zen": {
+    "exit": "Exit Zen",
+    "exitHover": "Exit Zen mode (Esc)",
+    "enterHover": "Enter Zen mode",
+    "proHover": "Zen mode (Pro)",
+    "enterAriaShortcut": "Enter Zen mode (⌘⇧F)"
+  },
+  "editor": {
+    "backToList": "Back to notes list",
+    "backToGrid": "Back to grid",
+    "titlePlaceholder": "Untitled (click to edit or let it autogenerate)",
+    "titlePlaceholderLogin": "e.g. GitHub",
+    "titlePlaceholderCard": "e.g. Visa ending in 4242",
+    "titlePlaceholderSshKey": "e.g. GitHub deploy key",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "restore": "Restore",
+    "deleteForever": "Delete forever",
+    "moveToTrash": "Move to trash",
+    "noteOptions": "Note options",
+    "readOnlyToggle": "Read-only. Toggle off in",
+    "menu": "Menu",
+    "showMarkdown": "Show markdown",
+    "showFormatted": "Show formatted",
+    "invisiblesShow": "Show invisible characters",
+    "invisiblesHide": "Hide invisible characters",
+    "findInNote": "Find in note",
+    "navPrev": "Previous note",
+    "navNext": "Next note",
+    "undo": "Undo",
+    "redo": "Redo",
+    "hide": "Hide",
+    "show": "Show",
+    "hideToolbar": "Hide formatting toolbar",
+    "showToolbar": "Show formatting toolbar",
+    "widthDefault": "Default width",
+    "widthWide": "Wider",
+    "widthFull": "Full width",
+    "burn": "Share & Burn After Reading",
+    "titlePlaceholderLink": "Bookmark name"
+  },
+  "share": {
+    "hover": "Share / Export",
+    "ariaLabel": "Share or export",
+    "thisNote": "This note",
+    "currentMdTitle": "Current note (.md)",
+    "currentMdDesc": "Raw markdown with front-matter.",
+    "currentHtmlTitle": "Current note (.html)",
+    "currentHtmlDesc": "Printer-friendly, markdown rendered on a white page.",
+    "printTitle": "Print / Save as PDF",
+    "printDesc": "Opens the print dialog. Save as PDF or send to a printer.",
+    "burnTitle": "Share & Burn After Reading",
+    "burnDesc": "Publish this note as a one-time view link. The link self-destructs after reading. Your note stays safe in your account.",
+    "backup": "Backup",
+    "fullBackupTitle": "Full backup (.zip)",
+    "fullBackupDesc": "Everything: notes, journals, vault, tasks, images, audio, files.",
+    "allHtmlTitle": "All items (.zip of .html)",
+    "allHtmlDesc": "One printable HTML per item. Good for reading offline.",
+    "jsonTitle": "Text backup (.json)",
+    "jsonDesc": "All text content and metadata, no images or files."
+  },
+  "weekReview": {
+    "title": "Week in review",
+    "daysLogged": "{{count}}/7 logged",
+    "mood": "Mood",
+    "sleep": "Sleep",
+    "meds": "Meds",
+    "activity": "Activity"
+  },
+  "footer": {
+    "settings": "Settings",
+    "viewShortcuts": "View all keyboard shortcuts",
+    "newNote": "New",
+    "newNoteHintMac": "Option + Shift + N",
+    "newNoteHintOther": "Alt + Shift + N",
+    "openStats": "Open stats",
+    "words": "Words",
+    "zen": "Zen",
+    "appearance": "Appearance",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "settings": {
+    "groupYourNotes": "Your notes",
+    "groupAccount": "Account & data",
+    "groupBrand": "PrivacyNotes",
+    "statsLabel": "Statistics",
+    "journalsLabel": "Journals",
+    "importLabel": "Import & Export",
+    "planLabel": "Account",
+    "storageLabel": "Storage",
+    "securityLabel": "Security",
+    "accountLabel": "ID & Sync",
+    "appearanceLabel": "Appearance",
+    "helpLabel": "Help",
+    "aboutLabel": "About",
+    "languageLabel": "Language",
+    "languageDesc": "Choose the language PrivacyNotes is shown in."
+  },
+  "importStore": {
+    "title": "Import or store?",
+    "confirm": "Import as notes",
+    "cancel": "Store as files",
+    "bodySingle": "<strong>{{filename}}</strong> looks like a markdown file. Import it as a note so you can read and edit it, or store it as an encrypted file attachment?",
+    "bodyMulti": "These {{count}} files look like markdown. Import them as notes so you can read and edit them, or store them as encrypted file attachments?"
+  },
+  "bulkTrash": {
+    "title": "Move to Trash",
+    "body_one": "Move <highlight>{{count}} item</highlight> to trash? You can restore them later.",
+    "body_other": "Move <highlight>{{count}} items</highlight> to trash? You can restore them later."
+  },
+  "bulkDelete": {
+    "body_one": "Permanently delete <highlight>{{count}} note</highlight>? This cannot be undone.",
+    "body_other": "Permanently delete <highlight>{{count}} notes</highlight>? This cannot be undone."
+  },
+  "tagConfirm": {
+    "mergeTitle": "Merge Tags",
+    "deleteTitle": "Delete Tag",
+    "deleteWithNotesTitle": "Delete Tag & Notes",
+    "mergeConfirm": "Merge",
+    "deleteConfirm": "Delete Tag",
+    "moveToTrash": "Move to Trash",
+    "mergeBody_one": "Tag <highlight>“{{targetTag}}”</highlight> already exists. Merge <highlight>{{count}} note</highlight> currently tagged “{{tag}}” into it?",
+    "mergeBody_other": "Tag <highlight>“{{targetTag}}”</highlight> already exists. Merge <highlight>{{count}} notes</highlight> currently tagged “{{tag}}” into it?",
+    "deleteBody_one": "Remove tag <highlight>“{{tag}}”</highlight> from <highlight>{{count}} note</highlight>? The notes themselves are not deleted.",
+    "deleteBody_other": "Remove tag <highlight>“{{tag}}”</highlight> from <highlight>{{count}} notes</highlight>? The notes themselves are not deleted.",
+    "deleteWithNotesBody_one": "Delete tag <highlight>“{{tag}}”</highlight> and move <highlight>{{count}} note</highlight> to Trash? You can restore them from there.",
+    "deleteWithNotesBody_other": "Delete tag <highlight>“{{tag}}”</highlight> and move <highlight>{{count}} notes</highlight> to Trash? You can restore them from there."
+  },
+  "createNote": {
+    "title": "Create note?",
+    "confirm": "Create note",
+    "body": "No note titled <highlight>“{{title}}”</highlight> exists. This can happen if the linked note was renamed. Create a new note with this title?"
+  },
+  "freshVault": {
+    "title": "New vault created",
+    "confirm": "Got it",
+    "body": "No existing vault matched the phrase you entered, so a new empty one was created. If you expected to see your notes, sign out and re-enter your phrase carefully - a single different word opens a different vault."
+  }
+}

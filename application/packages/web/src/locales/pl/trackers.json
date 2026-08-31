@@ -1,0 +1,176 @@
+{
+  "labels": {
+    "mood": "Nastrój",
+    "emotions": "Emocje",
+    "sleep": "Sen",
+    "sleepScore": "Wynik snu",
+    "heartRate": "Tętno",
+    "activity": "Aktywność",
+    "medication": "Leki",
+    "meds": "Leki",
+    "energy": "Energia",
+    "focus": "Skupienie",
+    "weight": "Waga",
+    "steps": "Kroki",
+    "water": "Woda",
+    "screenTime": "Czas przed ekranem",
+    "caffeine": "Kofeina",
+    "pain": "Ból",
+    "social": "Kontakty",
+    "custom": "Własne"
+  },
+  "units": {
+    "hoursSuffix": "h",
+    "bpm": "ud./min",
+    "kg": "kg",
+    "steps_one": "krok",
+    "steps_few": "kroki",
+    "steps_many": "kroków",
+    "hrs": "godz.",
+    "glasses_one": " szkl.",
+    "glasses_few": " szkl.",
+    "glasses_many": " szkl.",
+    "cups_one": " filiż.",
+    "cups_few": " filiż.",
+    "cups_many": " filiż."
+  },
+  "scaleEnds": {
+    "low": "nisko",
+    "high": "wysoko",
+    "none": "brak",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "silny",
+    "socialLow": "izolacja",
+    "socialHigh": "bardzo towarzysko"
+  },
+  "mood": {
+    "prompt": "Jak się czujesz? (1-10)",
+    "low": "okropnie",
+    "high": "wspaniale",
+    "anchor": {
+      "1": "okropnie",
+      "3": "ciężko",
+      "5": "w porządku",
+      "7": "dobrze",
+      "10": "wspaniale"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "Jakie emocje są obecne?",
+    "count_one": "{{count}} emocja",
+    "count_few": "{{count}} emocje",
+    "count_many": "{{count}} emocji",
+    "count_other": "{{count}} emocji",
+    "valence": {
+      "positive": "pozytywna",
+      "neutral": "neutralna",
+      "negative": "negatywna"
+    },
+    "tags": {
+      "happy": "Szczęście",
+      "calm": "Spokój",
+      "relaxed": "Odprężenie",
+      "grateful": "Wdzięczność",
+      "loved": "Bycie kochanym",
+      "motivated": "Motywacja",
+      "confident": "Pewność siebie",
+      "productive": "Produktywność",
+      "focused": "Skupienie",
+      "energetic": "Energia",
+      "tired": "Zmęczenie",
+      "restless": "Niepokój",
+      "distracted": "Rozproszenie",
+      "numb": "Odrętwienie",
+      "overwhelmed": "Przytłoczenie",
+      "anxious": "Lęk",
+      "stressed": "Stres",
+      "frustrated": "Frustracja",
+      "irritable": "Rozdrażnienie",
+      "sad": "Smutek",
+      "lonely": "Samotność",
+      "guilty": "Poczucie winy",
+      "hopeless": "Beznadzieja",
+      "angry": "Złość"
+    }
+  },
+  "sleep": {
+    "prompt": "Jak Ci się spało?",
+    "hoursLabel": "Godziny:",
+    "quality": {
+      "terrible": "Fatalnie",
+      "poor": "Słabo",
+      "okay": "W porządku",
+      "good": "Dobrze",
+      "great": "Świetnie"
+    }
+  },
+  "sleepScore": {
+    "prompt": "Wynik snu"
+  },
+  "heartRate": {
+    "prompt": "Średnie tętno"
+  },
+  "activity": {
+    "prompt": "Poziom aktywności dzisiaj?",
+    "level": {
+      "sedentary": "Siedzący",
+      "light": "Lekki",
+      "moderate": "Umiarkowany",
+      "active": "Aktywny",
+      "intense": "Intensywny"
+    }
+  },
+  "medication": {
+    "heading": "Leki",
+    "empty": "Nie skonfigurowano jeszcze żadnych leków.",
+    "takenCount_one": "{{count}} przyjęty",
+    "takenCount_few": "{{count}} przyjęte",
+    "takenCount_many": "{{count}} przyjętych",
+    "takenCount_other": "{{count}} przyjętego",
+    "namePlaceholder": "Nazwa leku",
+    "dosagePlaceholder": "Dawka (np. 50 mg)",
+    "addMedication": "+ Dodaj lek",
+    "editMedication": "Edytuj lek",
+    "removeMedication": "Usuń lek",
+    "confirmRemove": "Usunąć <highlight>{{name}}</highlight>?",
+    "yes": "Tak",
+    "no": "Nie",
+    "taken": "Przyjęty",
+    "skip": "Pominięty"
+  },
+  "custom": {
+    "yes": "Tak",
+    "no": "Nie",
+    "typeLabels": {
+      "scale10": "Skala (0-10)",
+      "scale5": "Skala (0-5)",
+      "slider100": "Suwak (0-100)",
+      "number": "Liczba",
+      "yesno": "Tak / Nie"
+    }
+  },
+  "config": {
+    "configureTrackers": "Skonfiguruj trackery",
+    "title": "Trackery",
+    "categoryMoodMind": "Nastrój i umysł",
+    "categoryBodyHealth": "Ciało i zdrowie",
+    "categoryLifestyle": "Styl życia",
+    "customHeading": "Własne",
+    "resume": "Wznów",
+    "stop": "Zatrzymaj",
+    "addCustomTracker": "Dodaj własny tracker",
+    "addCustomTrackerCount": "Dodaj własny tracker ({{count}}/{{max}})",
+    "addCustomTrackerHint": "Śledź, co tylko chcesz",
+    "maxReached": "Osiągnięto maksimum {{max}} własnych trackerów.",
+    "customTrackers": "Własne trackery",
+    "newCustomTracker": "Nowy własny tracker",
+    "trackerNamePlaceholder": "Nazwa trackera",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "Typ:",
+    "colorLabel": "Kolor:"
+  }
+}

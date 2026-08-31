@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Hardened-runtime entitlements applied at codesign time for the notarized macOS
+     build (wired via bundle.macOS.entitlements in tauri.conf.json). The notarized
+     DMG runs under the hardened runtime, which blocks camera/microphone access unless
+     the app carries the matching device entitlement, even when the NSCamera/NSMicrophone
+     usage strings are present in Info.plist. Both are required for the webview's
+     getUserMedia calls: camera for the sign-in QR scanner, audio-input for the in-app
+     audio recorder (AudioRecorder.tsx). The usage string satisfies TCC, the entitlement
+     satisfies the hardened runtime; wry grants the WebKit-level permission via its
+     WKUIDelegate (requestMediaCapturePermissionForOrigin). iOS has no such entitlements
+     (usage strings alone cover it), so this file is macOS-only.
+     Spec: ops/docs/macos-ios-setup.md (camera + mic access + entitlements) -->
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.device.camera</key>
+	<true/>
+	<key>com.apple.security.device.audio-input</key>
+	<true/>
+</dict>
+</plist>

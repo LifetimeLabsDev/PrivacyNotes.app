@@ -1,0 +1,64 @@
+{
+  "upgrade": {
+    "header": "Pay once, yours forever",
+    "earlyAdopterBadge": "Early adopter",
+    "oneTime": "one-time",
+    "subscriptionPitch": "No subscription. No yearly fee. One payment, unlocked for life.",
+    "ctaUnlock": "Unlock everything",
+    "ctaOpening": "Opening checkout...",
+    "ctaSignUp": "Sign up to unlock",
+    "intro": {
+      "storage": "Bigger uploads and more space are a Pro feature. Upgrade for 50 MB files and 500 MB of storage.",
+      "folders": "Folders are a Pro feature. Organize your notes into nested folders, as deep as you need, and keep every project separate.",
+      "lock": "Locking a note is a Pro feature. Upgrade to protect any note from accidental edits.",
+      "protect": "PIN-protecting a note is a Pro feature. Upgrade to gate sensitive notes behind your PIN.",
+      "history": "Note history is a Pro feature. Upgrade to keep a timeline of every save.",
+      "devices": "You've hit the 2-device cap. Upgrade for unlimited devices.",
+      "zen": "Zen mode is a Pro feature. Upgrade for distraction-free writing.",
+      "theme": "Premium themes are a Pro feature. Upgrade to unlock every shade.",
+      "callout": "The complete set of callouts is a Pro feature.",
+      "totp": "2FA codes are a Pro feature. Store an authenticator key with any login and get the rotating code next to the password. The key itself is saved and synced on every plan.",
+      "default": "One upgrade unlocks everything below. One-time payment."
+    },
+    "features": {
+      "devices": "Sync unlimited devices, every platform",
+      "folders": "Nested folders, organize by project",
+      "lock": "Lock & PIN-protect any note",
+      "history": "Full note history, restore anytime",
+      "themes": "Premium themes in every shade",
+      "zen": "Zen mode, distraction-free writing",
+      "storage": "500 MB storage + 50 MB attachments"
+    },
+    "comparisonBeta": "Pay ${{earlyPrice}} once. Obsidian Sync costs $48/yr, every year. Standard Notes charges $90/yr. Early adopter price, locked in before it rises to ${{proPrice}}.",
+    "comparison": "Pay ${{proPrice}} once and own it forever. Obsidian Sync costs $48/yr and Standard Notes $90/yr, every single year."
+  },
+  "purchaseError": {
+    "store": "The store checkout could not be completed and you have not been charged. Please try again in a moment.",
+    "validate": "Your payment went through but activating it failed. Restart the app to retry - if it still does not unlock, the store refunds the purchase automatically within 3 days.",
+    "alreadyOwned": "The store says you already own this, but it belongs to a different account. Sign in with the recovery phrase you were using when you bought it."
+  },
+  "checkout": {
+    "invalidTitle": "Checkout link invalid",
+    "invalidBody": "Open checkout from inside the app so we can attach the purchase to your account.",
+    "completeTitle": "Payment complete",
+    "completeBody": "You can close this tab and return to PrivacyNotes. Your upgrade unlocks automatically.",
+    "openingTitle": "Opening secure checkout...",
+    "openingBody": "A Paddle checkout window should appear. If it does not, your browser may have blocked the popup - reload this page to retry."
+  },
+  "history": {
+    "title": "Note history",
+    "subtitle": "Up to 20 versions per note. Oldest auto-pruned.",
+    "empty": "No history yet. Versions start piling up after the next edit. Come back later.",
+    "selectPrompt": "Select a version to preview.",
+    "emptyBody": "(empty)",
+    "restore": "Restore",
+    "restoring": "Restoring…"
+  },
+  "donation": {
+    "eyebrow": "You unlocked",
+    "intro": "<brand/> is free, and it always will be. No ads, no tracking, no email on file. If it's helped you think, write, or remember, consider supporting development. It keeps the lights on and pays for the next features.",
+    "proBenefits": "Supporting also unlocks Pro benefits once they ship: unlimited devices, attachments, encrypted cloud backups.",
+    "maybeLater": "Maybe later",
+    "support": "Support →"
+  }
+}

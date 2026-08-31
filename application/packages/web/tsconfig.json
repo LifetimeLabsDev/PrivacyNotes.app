@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "noEmit": true,
+    // src/marketingMeta.ts imports ./localeRoutes.ts with the extension so
+    // Vite's native config loader can resolve it. Spec: ops/docs/gotchas.md
+    // (Vite native config loader)
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src/**/*"]
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 48 48" id="Logo-Markdown--Streamline-Ionic-Filled" height="48" width="48">
+  <desc>
+    Logo Markdown Streamline Icon: https://streamlinehq.com
+  </desc>
+  <g clip-path="url(#a)">
+    <path fill="#000000" d="M44.5277 5.99805H3.46577c-1.91435 0-3.46869969 1.62935-3.46869969 3.63464V38.3592c0 2.0062 1.55434969 3.6384 3.46869969 3.6384H44.5277c1.9106 0 3.4687-1.6322 3.4687-3.6384V9.63269c0-2.00529-1.5543-3.63464-3.4687-3.63464ZM26.9967 34.4977h-5.9999V23.9978l-4.4999 5.9999-4.5-5.9999v10.4999H5.99699V13.4979h5.99991l4.5 7.4999 4.4999-7.4999h5.9999v20.9998Zm8.9999 0-7.4999-10.4999h4.5046l-.0047-10.4999h5.9999v10.4999h4.5l-7.4999 10.4999Z"></path>
+  </g>
+  <defs>
+    <clipPath id="a">
+      <path fill="#ffffff" d="M0 0h47.999v47.999H0z" transform="translate(-.003 -.002)"></path>
+    </clipPath>
+  </defs>
+</svg>

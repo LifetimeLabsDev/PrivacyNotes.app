@@ -1,0 +1,121 @@
+[package]
+name = "privacynotes"
+version = "0.489.0"
+description = "PrivacyNotes - end-to-end encrypted notes"
+authors = ["Lifetime Labs LLC <hi@lifetimelabs.dev>"]
+homepage = "https://privacynotes.app"
+edition = "2021"
+# Matches the toolchain the four release-*.yml workflows pin - bump all five together.
+# The floor comes from the tree, not from Tauri's own MSRV: tauri-plugin-iap needs
+# 1.90 and time/serde_with need 1.88, so cargo rejects anything older outright.
+# A floor below the true one is not harmless - it advertises Windows 7 support (the
+# last Rust with it was 1.77.2) that no shipped build has ever had.
+# Spec: ops/docs/gotchas.md (pinned release toolchains)
+rust-version = "1.97.0"
+
+[lib]
+name = "privacynotes_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# Pinned to the 2.11 minor: Tauri's build rejects a Rust-crate vs @tauri-apps/api
+# major.minor mismatch. Bump this together with @tauri-apps/api in package.json.
+# protocol-asset backs the `assetProtocol` block in tauri.conf.json, which is
+# how the Markdown pillar will render an image a note references by relative
+# path. Enabling the config without this feature is a build error, by design.
+# Spec: ops/docs/plans/markdown-folder.md (section 8, media)
+tauri = { version = "~2.11", features = ["protocol-asset"] }
+tauri-plugin-deep-link = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Self-updater is desktop-only (macOS/Windows/Linux). iOS/Android update
+# through their app stores, and the plugin won't compile for those targets.
+# single-instance (with the deep-link feature) forwards privacynotes://
+# OAuth callbacks to the already-running instance so a second on-disk copy
+# of the app can't launch fresh and swallow the redirect.
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-updater = "2"
+tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
+tauri-plugin-process = "2"
+tauri-plugin-window-state = "2"
+
+# Native biometric gate (src/biometric.rs). Embedded webviews expose no WebAuthn
+# platform authenticator, so that path is dead in every native build and the OS
+# APIs are the replacement: LocalAuthentication here, Windows Hello below.
+# Every crate involved is already in the tree via tauri/tao/wry, so these add
+# dependency edges and features, never packages.
+# Spec: ops/docs/biometric-unlock.md, backlog #101
+[target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
+objc2 = "0.6"
+block2 = "0.6"
+# NSGeometry + objc2-core-foundation are for src/print.rs (view frames, and the
+# iPad popover anchor). Both are already in the tree via tao/wry, so this turns
+# features on rather than adding packages.
+objc2-foundation = { version = "0.3", features = [
+  "NSError",
+  "NSString",
+  "NSGeometry",
+  "objc2-core-foundation",
+] }
+
+# windows-future carries IAsyncOperation, which the UserConsentVerifier interop
+# returns; the `windows` crate re-exports nothing for it.
+[target.'cfg(target_os = "windows")'.dependencies]
+windows = { version = "0.61", features = [
+  "Security_Credentials_UI",
+  "Win32_Foundation",
+  "Win32_System_Com",
+  "Win32_System_WinRT",
+  # src/file_assoc.rs: AssocQueryStringW reads which app owns .md, and
+  # ShellExecuteW opens the Default apps page in Settings. Windows forbids an app
+  # setting its own default, so reading and signposting is the whole surface.
+  # Spec: ops/docs/plans/markdown-folder.md (section 11)
+  "Win32_UI_Shell",
+  "Win32_UI_WindowsAndMessaging",
+] }
+windows-future = "0.2"
+
+# The third biometric backend. Android has no OS-level API this crate can call
+# directly: BiometricPrompt is Kotlin, and it needs an Activity to attach to, so
+# the gate has to ship a native library alongside the Rust. That is what this
+# plugin is - androidx.biometric behind the same two calls the other two
+# backends expose (src/biometric.rs). Its commands are never granted to the
+# webview: only our own `biometric_available` / `biometric_authenticate` reach
+# it, from Rust.
+# Spec: ops/docs/biometric-unlock.md (section 3.2 native path)
+[target.'cfg(target_os = "android")'.dependencies]
+tauri-plugin-biometric = "2"
+
+# Native in-app purchase: StoreKit (iOS) + Google Play Billing (Android) via one
+# plugin. The notarized DMG / Windows / Linux never compile it. The macOS App
+# Store build adds it for macOS under the `mas` feature (MAS track).
+# Spec: ops/docs/billing-integration.md
+[target.'cfg(any(target_os = "android", target_os = "ios"))'.dependencies]
+tauri-plugin-iap = "0.9"
+
+# In-app OAuth presentation (ASWebAuthenticationSession). iOS only: App Review
+# guideline 4 rejects sign-in that bounces through the external browser
+# (rejected 2026-08-22), and the session sheet is Apple's sanctioned fix.
+# Android keeps the system-browser + deep-link flow, so the plugin is not
+# compiled there. Pinned exact: third-party code on the auth path, review the
+# diff before any bump (ops/docs/dependency-migration.md).
+[target.'cfg(target_os = "ios")'.dependencies]
+tauri-plugin-auth-session = "=0.2.2"
+
+[features]
+default = []
+devtools = ["tauri/devtools"]
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

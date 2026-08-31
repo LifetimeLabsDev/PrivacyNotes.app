@@ -1,0 +1,112 @@
+{
+  "dismiss": "Avfärda",
+  "close": "Stäng",
+  "moveBanner": {
+    "title": "Appen flyttar till use.privacynotes.app",
+    "body": "Flytta över den här sessionen nu - det tar några sekunder och dina anteckningar följer med.",
+    "cta": "Flytta nu",
+    "syncing": "Synkar dina anteckningar…",
+    "error": "Kunde inte synka allt just nu. Kontrollera din anslutning och försök igen.",
+    "conflict": "En av dina anteckningar har en synkkonflikt som behöver ditt beslut. Lös den i dialogrutan och försök igen."
+  },
+  "movedHint": {
+    "body": "Det här är appens nya hem. Uppdatera ditt bokmärke till use.privacynotes.app och lägg till genvägen på hemskärmen igen.",
+    "gotIt": "Uppfattat"
+  },
+  "moveScreen": {
+    "title": "Appen har flyttat till use.privacynotes.app",
+    "body": "Flytta över den här enheten nu - det tar några sekunder och dina anteckningar följer med. Inget raderas här.",
+    "openNotes": "Öppna dina anteckningar här en gång för att fixa det",
+    "website": "Besök webbplatsen i stället"
+  },
+  "quota": {
+    "frozen": {
+      "configured": "Synken är pausad. Du har legat över din lagringsgräns i 90+ dagar. Dina anteckningar är trygga lokalt. Prenumerera igen eller exportera dina data.",
+      "unconfigured": "Synken är pausad. Du har legat över din lagringsgräns i 90+ dagar. Dina anteckningar är trygga lokalt. Exportera och rensa anteckningar för att återuppta synken."
+    },
+    "grace": {
+      "configured_one": "Lagringstillägget har gått ut. {{count}} dag kvar att minska användningen eller prenumerera igen innan synken pausas.",
+      "configured_other": "Lagringstillägget har gått ut. {{count}} dagar kvar att minska användningen eller prenumerera igen innan synken pausas.",
+      "unconfigured_one": "Över din lagringsgräns. {{count}} dag kvar att rensa anteckningar innan synken pausas.",
+      "unconfigured_other": "Över din lagringsgräns. {{count}} dagar kvar att rensa anteckningar innan synken pausas."
+    },
+    "full": {
+      "configured": "Lagringen är full. Vissa anteckningar kunde inte synkas. Frigör utrymme eller lägg till mer lagring.",
+      "unconfigured": "Lagringen är full. Vissa anteckningar kunde inte synkas. Frigör utrymme genom att rensa anteckningar."
+    },
+    "manageStorage": "Hantera lagring",
+    "viewUsage": "Visa användning"
+  },
+  "syncError": {
+    "failed_one": "1 anteckning kunde inte synkas. Ett nytt försök görs automatiskt.",
+    "failed_other": "{{count}} anteckningar kunde inte synkas. Nya försök görs automatiskt.",
+    "lastError": "Senaste felet: {{message}}"
+  },
+  "sessionExpired": {
+    "title": "Sessionen har gått ut",
+    "body": "Din session har gått ut. Dina anteckningar är trygga på den här enheten. Logga in igen för att återuppta synken.",
+    "signInAgain": "Logga in igen"
+  },
+  "signOutConfirm": {
+    "title": "Har du sparat din fras på 12 ord?",
+    "body": "Din fras är den <only>enda</only> vägen tillbaka. Ingen återställning via e-post, ingen supportlinje. Vi vet inte vem du är, helt avsiktligt. Om du inte har skrivit ner den än, tryck på <action>Nej, visa frasen</action> så öppnar vi den åt dig direkt.",
+    "unsyncedWarn_one": "1 anteckning på den här enheten har inte synkats än. Den går förlorad för alltid om den inte kan laddas upp när du loggar ut.",
+    "unsyncedWarn_other": "{{count}} anteckningar på den här enheten har inte synkats än. De går förlorade för alltid om de inte kan laddas upp när du loggar ut.",
+    "unsyncedKept_one": "1 anteckning på den här enheten har inte synkats än. Den stannar på enheten och synkas när du loggar in igen.",
+    "unsyncedKept_other": "{{count}} anteckningar på den här enheten har inte synkats än. De stannar på enheten och synkas när du loggar in igen.",
+    "dontRemind": "Påminn mig inte igen",
+    "showPhrase": "Nej, visa frasen",
+    "confirm": "Ja, logga ut"
+  },
+  "burnShareModal": {
+    "title": "Dela och bränn efter läsning",
+    "body": "<lead>Din ursprungliga anteckning raderas inte.</lead> Den ligger kvar tryggt på ditt konto. Burn-länken är en separat krypterad kopia som självförstörs efter att den lästs. Länken går ut efter 24 timmar, oavsett om den öppnas eller inte.",
+    "imagesStripped": "Bara text visas, filer döljs i den här anteckningen.",
+    "copied": "Kopierad"
+  },
+  "burnView": {
+    "tagline": "Krypterad. Flyktig. Endast för dina ögon.",
+    "toggleTheme": "Växla tema",
+    "checking": "Kontrollerar...",
+    "revealing": "Hämtar och dekrypterar...",
+    "goToApp": "Gå till <brand/>",
+    "footerTagline": "- Zero-knowledge-krypterade anteckningar, med servrar i Schweiz.",
+    "sealed": {
+      "heading": "Du har fått en krypterad anteckning.",
+      "subheading": "Det här meddelandet självförstörs efter läsning. Olästa länkar går ut efter 24 timmar.",
+      "reveal": "Visa meddelandet",
+      "warning": "Servern raderar anteckningen i samma stund som du visar den. Du får ingen andra chans."
+    },
+    "revealed": {
+      "countdown": "Klartexten rensas om {{time}}",
+      "clearNow": "Rensa nu",
+      "emptyNote": "(tom anteckning)",
+      "deletedNotice": "Den här delade kopian har raderats från servern. Den går inte att visa igen."
+    },
+    "destroyed": {
+      "heading": "Meddelandet är förstört.",
+      "body": "Raderat från servern och rensat ur minnet. Det här meddelandet går inte att läsa igen."
+    },
+    "gone": {
+      "heading": "Den här anteckningen är borta.",
+      "body": "Den har redan lästs eller gått ut. Burn-länkar kan bara öppnas en gång och går ut efter 24 timmar."
+    },
+    "error": {
+      "heading": "Något gick fel.",
+      "fallback": "Länken kan vara skadad eller ofullständig.",
+      "server": "Serverfel. Anteckningen kan redan ha lästs eller gått ut.",
+      "decryption": "Dekrypteringen misslyckades. Länken kan vara skadad.",
+      "network": "Kunde inte nå servern. Kontrollera din anslutning och försök igen."
+    },
+    "noPayload": {
+      "heading": "Inget meddelande hittades.",
+      "body": "Den här URL:en innehåller ingen referens till en burn note. Se till att du har hela länken."
+    }
+  },
+  "burnShare": {
+    "offline": "Du är offline. Burn-länkar kräver kontakt med servern. Försök igen när du är uppkopplad.",
+    "demo": "Burn-länkar lagras på en server, och demoläget kontaktar aldrig någon server. Skapa ett konto för att göra riktiga burn-länkar.",
+    "tooLarge": "Anteckningen är för stor för att delas via burn-länk ({{size}} KB). Max är {{max}} KB.",
+    "storeFailed": "Kunde inte lagra burn note på servern."
+  }
+}

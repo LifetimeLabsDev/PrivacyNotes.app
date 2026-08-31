@@ -1,0 +1,112 @@
+{
+  "dismiss": "Dispensar",
+  "close": "Fechar",
+  "moveBanner": {
+    "title": "A app vai mudar-se para use.privacynotes.app",
+    "body": "Move esta sessão agora - demora poucos segundos e as tuas notas vão contigo.",
+    "cta": "Mudar agora",
+    "syncing": "A sincronizar as tuas notas…",
+    "error": "Não foi possível sincronizar tudo agora. Verifica a tua ligação e tenta novamente.",
+    "conflict": "Uma das tuas notas tem um conflito de sincronização que precisa da tua decisão. Resolve-o na caixa e tenta novamente."
+  },
+  "movedHint": {
+    "body": "Esta é a nova casa da app. Atualiza o teu marcador para use.privacynotes.app e volta a adicionar atalhos do ecrã principal.",
+    "gotIt": "Entendido"
+  },
+  "moveScreen": {
+    "title": "A app mudou-se para use.privacynotes.app",
+    "body": "Move este dispositivo agora - demora poucos segundos e as tuas notas vão contigo. Aqui nada é apagado.",
+    "openNotes": "Abre as tuas notas aqui uma vez para resolver isto",
+    "website": "Ver antes o site"
+  },
+  "quota": {
+    "frozen": {
+      "configured": "Sincronização em pausa. Estás acima do teu limite de armazenamento há mais de 90 dias. As tuas notas estão seguras localmente. Reativa a subscrição ou exporta os teus dados.",
+      "unconfigured": "Sincronização em pausa. Estás acima do teu limite de armazenamento há mais de 90 dias. As tuas notas estão seguras localmente. Exporta e reduz notas para retomar a sincronização."
+    },
+    "grace": {
+      "configured_one": "O complemento de armazenamento expirou. Resta {{count}} dia para reduzires o uso ou reativares a subscrição antes de a sincronização parar.",
+      "configured_other": "O complemento de armazenamento expirou. Restam {{count}} dias para reduzires o uso ou reativares a subscrição antes de a sincronização parar.",
+      "unconfigured_one": "Acima do teu limite de armazenamento. Resta {{count}} dia para reduzires notas antes de a sincronização parar.",
+      "unconfigured_other": "Acima do teu limite de armazenamento. Restam {{count}} dias para reduzires notas antes de a sincronização parar."
+    },
+    "full": {
+      "configured": "Armazenamento cheio. Algumas notas não conseguiram sincronizar. Liberta espaço ou adiciona mais armazenamento.",
+      "unconfigured": "Armazenamento cheio. Algumas notas não conseguiram sincronizar. Liberta espaço reduzindo notas."
+    },
+    "manageStorage": "Gerir armazenamento",
+    "viewUsage": "Ver utilização"
+  },
+  "syncError": {
+    "failed_one": "1 nota falhou ao sincronizar. Vai tentar de novo automaticamente.",
+    "failed_other": "{{count}} notas falharam ao sincronizar. Vão tentar de novo automaticamente.",
+    "lastError": "Último erro: {{message}}"
+  },
+  "sessionExpired": {
+    "title": "Sessão expirada",
+    "body": "A tua sessão expirou. As tuas notas estão seguras neste dispositivo. Inicia sessão de novo para retomar a sincronização.",
+    "signInAgain": "Iniciar sessão de novo"
+  },
+  "signOutConfirm": {
+    "title": "Guardaste a tua frase de 12 palavras?",
+    "body": "A tua frase é a <only>única</only> forma de voltar a entrar. Sem reposição por e-mail, sem linha de apoio. Não sabemos quem és, por design. Se ainda não a anotaste, toca em <action>Não, mostrar frase</action> e abrimo-la já para ti.",
+    "unsyncedWarn_one": "1 nota neste dispositivo ainda não foi sincronizada. Perde-se para sempre se não puder ser enviada ao terminar sessão.",
+    "unsyncedWarn_other": "{{count}} notas neste dispositivo ainda não foram sincronizadas. Perdem-se para sempre se não puderem ser enviadas ao terminar sessão.",
+    "unsyncedKept_one": "1 nota neste dispositivo ainda não foi sincronizada. Fica neste dispositivo e sincroniza quando voltares a iniciar sessão.",
+    "unsyncedKept_other": "{{count}} notas neste dispositivo ainda não foram sincronizadas. Ficam neste dispositivo e sincronizam quando voltares a iniciar sessão.",
+    "dontRemind": "Não voltar a lembrar-me",
+    "showPhrase": "Não, mostrar frase",
+    "confirm": "Sim, terminar sessão"
+  },
+  "burnShareModal": {
+    "title": "Partilhar e Queimar Após Ler",
+    "body": "<lead>A tua nota original não será eliminada.</lead> Continua segura na tua conta. O burn link é uma cópia encriptada separada que se autodestrói depois de lida. O link expira ao fim de 24 horas, aberto ou não.",
+    "imagesStripped": "Apenas o texto é apresentado, os ficheiros ficam ocultos nesta nota.",
+    "copied": "Copiado"
+  },
+  "burnView": {
+    "tagline": "Encriptada. Efémera. Só para os teus olhos.",
+    "toggleTheme": "Alternar tema",
+    "checking": "A verificar...",
+    "revealing": "A obter e a desencriptar...",
+    "goToApp": "Ir para <brand/>",
+    "footerTagline": "- Notas com encriptação de zero conhecimento, alojadas na Suíça.",
+    "sealed": {
+      "heading": "Recebeste uma nota encriptada.",
+      "subheading": "Esta mensagem vai autodestruir-se após a leitura. Os links não lidos expiram ao fim de 24 horas.",
+      "reveal": "Revelar mensagem",
+      "warning": "O servidor elimina a nota no momento em que a revelas. Não há segunda oportunidade."
+    },
+    "revealed": {
+      "countdown": "O texto desaparece em {{time}}",
+      "clearNow": "Limpar agora",
+      "emptyNote": "(nota vazia)",
+      "deletedNotice": "Esta cópia partilhada foi eliminada do servidor. Não pode voltar a ser vista."
+    },
+    "destroyed": {
+      "heading": "Mensagem destruída.",
+      "body": "Eliminada do servidor e apagada da memória. Esta mensagem não pode voltar a ser lida."
+    },
+    "gone": {
+      "heading": "Esta nota desapareceu.",
+      "body": "Já foi lida ou expirou. Os burn links só podem ser abertos uma vez e expiram ao fim de 24 horas."
+    },
+    "error": {
+      "heading": "Algo correu mal.",
+      "fallback": "O link pode estar corrompido ou incompleto.",
+      "server": "Erro de servidor. A nota pode já ter sido lida ou ter expirado.",
+      "decryption": "A desencriptação falhou. O link pode estar corrompido.",
+      "network": "Não foi possível contactar o servidor. Verifica a tua ligação e tenta de novo."
+    },
+    "noPayload": {
+      "heading": "Nenhuma mensagem encontrada.",
+      "body": "Este URL não contém uma referência de burn note. Verifica se tens o link completo."
+    }
+  },
+  "burnShare": {
+    "offline": "Estás offline. Os burn links exigem uma ida e volta ao servidor. Tenta de novo quando estiveres online.",
+    "demo": "Os burn links são guardados num servidor, e a demo não contacta nenhum. Regista-te para criares burn links reais.",
+    "tooLarge": "A nota é demasiado grande para partilhar por burn link ({{size}}KB). O máximo é {{max}}KB.",
+    "storeFailed": "Falha ao armazenar a burn note no servidor."
+  }
+}

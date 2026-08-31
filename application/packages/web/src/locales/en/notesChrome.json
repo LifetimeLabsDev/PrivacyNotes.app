@@ -1,0 +1,112 @@
+{
+  "dismiss": "Dismiss",
+  "close": "Close",
+  "moveBanner": {
+    "title": "The app is moving to use.privacynotes.app",
+    "body": "Move this session over now - it takes a few seconds and your notes come with you.",
+    "cta": "Move now",
+    "syncing": "Syncing your notes…",
+    "error": "Couldn't sync everything just now. Check your connection and try again.",
+    "conflict": "One of your notes has a sync conflict that needs your decision. Resolve it in the dialog, then try again."
+  },
+  "movedHint": {
+    "body": "This is the app's new home. Update your bookmark to use.privacynotes.app and re-add any home screen shortcut.",
+    "gotIt": "Got it"
+  },
+  "moveScreen": {
+    "title": "The app has moved to use.privacynotes.app",
+    "body": "Move this device over now - it takes a few seconds and your notes come with you. Nothing is deleted here.",
+    "openNotes": "Open your notes here once to fix this",
+    "website": "Browse the website instead"
+  },
+  "quota": {
+    "frozen": {
+      "configured": "Sync paused. You've been over your storage limit for 90+ days. Your notes are safe locally. Re-subscribe or export your data.",
+      "unconfigured": "Sync paused. You've been over your storage limit for 90+ days. Your notes are safe locally. Export and trim notes to resume sync."
+    },
+    "grace": {
+      "configured_one": "Storage add-on expired. {{count}} day left to reduce usage or re-subscribe before sync pauses.",
+      "configured_other": "Storage add-on expired. {{count}} days left to reduce usage or re-subscribe before sync pauses.",
+      "unconfigured_one": "Over your storage limit. {{count}} day left to trim notes before sync pauses.",
+      "unconfigured_other": "Over your storage limit. {{count}} days left to trim notes before sync pauses."
+    },
+    "full": {
+      "configured": "Storage full. Some notes couldn't sync. Free up space or add more storage.",
+      "unconfigured": "Storage full. Some notes couldn't sync. Free up space by trimming notes."
+    },
+    "manageStorage": "Manage storage",
+    "viewUsage": "View usage"
+  },
+  "syncError": {
+    "failed_one": "1 note failed to sync. It'll retry automatically.",
+    "failed_other": "{{count}} notes failed to sync. They'll retry automatically.",
+    "lastError": "Last error: {{message}}"
+  },
+  "sessionExpired": {
+    "title": "Session expired",
+    "body": "Your session has expired. Your notes are safe on this device. Sign in again to resume syncing.",
+    "signInAgain": "Sign in again"
+  },
+  "signOutConfirm": {
+    "title": "Did you save your 12-word phrase?",
+    "body": "Your phrase is the <only>only</only> way back in. No email reset, no support line. We don't know who you are, by design. If you haven't written it down yet, tap <action>No, show phrase</action> and we'll open it for you right now.",
+    "unsyncedWarn_one": "1 note on this device hasn't synced yet. It will be permanently lost if it can't be uploaded while signing out.",
+    "unsyncedWarn_other": "{{count}} notes on this device haven't synced yet. They will be permanently lost if they can't be uploaded while signing out.",
+    "unsyncedKept_one": "1 note on this device hasn't synced yet. It stays on this device and syncs after you sign in again.",
+    "unsyncedKept_other": "{{count}} notes on this device haven't synced yet. They stay on this device and sync after you sign in again.",
+    "dontRemind": "Don't remind me again",
+    "showPhrase": "No, show phrase",
+    "confirm": "Yes, sign out"
+  },
+  "burnShareModal": {
+    "title": "Share & Burn After Reading",
+    "body": "<lead>Your original note will not be deleted.</lead> It stays safe in your account. The burn link is a separate encrypted copy that self-destructs after being read. Link expires after 24 hours, whether opened or not.",
+    "imagesStripped": "Only text is shown, files are hidden in this note.",
+    "copied": "Copied"
+  },
+  "burnView": {
+    "tagline": "Encrypted. Ephemeral. Eyes only.",
+    "toggleTheme": "Toggle theme",
+    "checking": "Checking...",
+    "revealing": "Fetching and decrypting...",
+    "goToApp": "Go to <brand/>",
+    "footerTagline": "- Zero-knowledge encrypted notes, hosted in Switzerland.",
+    "sealed": {
+      "heading": "You received an encrypted note.",
+      "subheading": "This message will self-destruct after reading. Unread links expire after 24 hours.",
+      "reveal": "Reveal Message",
+      "warning": "The server deletes the note the moment you reveal it. No second chances."
+    },
+    "revealed": {
+      "countdown": "Plaintext clears in {{time}}",
+      "clearNow": "Clear now",
+      "emptyNote": "(empty note)",
+      "deletedNotice": "This shared copy has been deleted from the server. It cannot be viewed again."
+    },
+    "destroyed": {
+      "heading": "Message destroyed.",
+      "body": "Deleted from the server and cleared from memory. This message cannot be read again."
+    },
+    "gone": {
+      "heading": "This note is gone.",
+      "body": "It was already read or has expired. Burn links can only be opened once and expire after 24 hours."
+    },
+    "error": {
+      "heading": "Something went wrong.",
+      "fallback": "The link may be corrupted or incomplete.",
+      "server": "Server error. The note may have already been read or expired.",
+      "decryption": "Decryption failed. The link may be corrupted.",
+      "network": "Could not reach the server. Check your connection and try again."
+    },
+    "noPayload": {
+      "heading": "No message found.",
+      "body": "This URL doesn’t contain a burn note reference. Make sure you have the complete link."
+    }
+  },
+  "burnShare": {
+    "offline": "You're offline. Burn links require a server round-trip. Try again when you're back online.",
+    "demo": "Burn links are stored on a server, and the demo never contacts one. Sign up to create real burn links.",
+    "tooLarge": "Note is too large to share via burn link ({{size}}KB). Maximum is {{max}}KB.",
+    "storeFailed": "Failed to store burn note on server."
+  }
+}

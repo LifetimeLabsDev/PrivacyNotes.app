@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- iOS-ONLY additions, merged into the generated iOS bundle at BUILD time.
+     Tauri looks for both `Info.plist` and `Info.ios.plist` beside tauri.conf.json;
+     the shared one carries the TCC usage strings and CFBundleLocalizations for
+     macOS and iOS alike, and this one carries what must NOT reach the macOS
+     bundle.
+
+     Why the URL scheme lives here and not in tauri.conf.json: the deep-link
+     plugin's `plugins.deep-link.desktop.schemes` is translated into
+     CFBundleURLTypes by the macOS bundler, but `plugins.deep-link.mobile` is
+     NOT translated into CFBundleURLTypes on iOS (verified against Tauri CLI
+     2.11.4, 2026-08-15). Without this file the generated iOS Info.plist has no
+     URL scheme at all, and every `privacynotes://auth-callback` return is a
+     silent no-op: Google and Apple sign-in both dead-end after the browser
+     hands control back.
+
+     Why it must not go in the shared Info.plist: macOS already generates its
+     own CFBundleURLTypes entry (CFBundleURLName "app.privacynotes privacynotes")
+     and declaring a second one there risks overriding the bundler's on the
+     shipping DMG, where deep links carry the native OAuth return.
+
+     History, so nobody re-adds the old mechanism: until 2026-08-15 the scheme was
+     spliced into the GENERATED plist by scripts/apply-ios-appearance-icons.sh,
+     which worked but had two weaknesses - it was a string-replace against XML
+     Tauri is free to reformat, and it only ran via `ios:icons`, so an `ios:init`
+     on its own produced a build with no URL scheme and no warning. That script
+     now only asserts the key is present and fails loudly if it is not.
+     Spec: ops/docs/macos-ios-setup.md (native Google sign-in / deep links) -->
+<plist version="1.0">
+<dict>
+	<!-- iOS does not open documents, so it must not advertise that it does.
+	     `bundle.fileAssociations` in tauri.conf.json exists for macOS (Apple
+	     Events), Windows (registry) and Linux (MimeType), but Tauri emits it into
+	     the iOS bundle too as CFBundleDocumentTypes. Nothing on iOS can act on
+	     that: the Rust open handler is `#[cfg(target_os = "macos")]`, and the
+	     Markdown folder capability gate returns 'unavailable' on phones because
+	     the File System Access API does not exist there.
+
+	     Transporter rejects the upload for it (error 90737, "Missing Document
+	     Configuration"), which demands either UISupportsDocumentBrowser or
+	     LSSupportsOpeningDocumentsInPlace. Both would be false claims: setting
+	     either to YES puts PrivacyNotes in the Files app's "Open With" list for
+	     every .md and .txt, where tapping it would do nothing at all. So the
+	     declaration is emptied instead, which is what the app actually supports,
+	     and the LS key is set false so the validator has its explicit answer
+	     regardless of how it reads an empty array.
+
+	     The suppression itself lives in `tauri.ios.conf.json`, which empties
+	     `bundle.fileAssociations` for iOS only (Tauri merges a per-platform config
+	     file automatically). Emptying CFBundleDocumentTypes from HERE was tried
+	     first on 2026-08-15 and does NOT work: the plist merge does not replace
+	     Tauri's generated array, so the entries survived. The key below stays as a
+	     belt-and-braces answer for the validator in case anything ever
+	     reintroduces a document type on iOS.
+
+	     If iOS ever DOES learn to open files, delete `tauri.ios.conf.json` and the
+	     key below, and let the shared fileAssociations flow through.
+	     Spec: ops/docs/plans/markdown-folder-handoff.md (platform matrix) -->
+	<!-- ITSAppUsesNonExemptEncryption IS DELIBERATELY ABSENT. Do not add it back
+	     without reading this: setting it to true BREAKS the upload, and that was
+	     proven the hard way on 2026-08-16 with Transporter error 409, "Invalid
+	     Export Compliance Code. The export compliance key value [] in the app's
+	     Info.plist doesn't match the key value of the app's export compliance
+	     documentation."
+
+	     The mechanism is circular for this app. `true` obliges Apple to match it
+	     against ITSEncryptionExportComplianceCode, a UUID issued only when App
+	     Store Connect APPROVES an App Encryption Documentation upload. That upload
+	     asks whether the app ships in France; France is excluded from v1 (see
+	     ops/docs/mobile-manual-tasks.md section E-FR), so ASC answers "you don't
+	     need to upload any documents", no documentation record is created, and no
+	     code is ever issued. True then points at a document that cannot exist.
+
+	     `false` is the other way to silence it and is NOT available: it asserts an
+	     exemption applies, which is exactly the question the 15 CFR 742.15(b)
+	     filing of 2026-08-16 did not settle for a closed binary. Choosing it to
+	     quiet a dialog would be picking an answer for convenience over truth.
+
+	     So the key stays out, and App Store Connect asks the export question once
+	     per build instead. That costs about ten seconds and always works. Revisit
+	     ONLY if a documentation record with a real key value ever exists, which
+	     realistically means France being added back after an ANSSI filing.
+	     Spec: ops/docs/tsu-notification.md (the filing, and what is still open) -->
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<false/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>app.privacynotes</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>privacynotes</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

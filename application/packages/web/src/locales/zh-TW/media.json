@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "大小：",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "下載圖片",
+    "deleteAria": "刪除圖片",
+    "loading": "載入圖片中…",
+    "uploading": "正在上傳 {{name}}…",
+    "uploadFailed": "上傳失敗：{{message}}",
+    "storeUnavailable": "圖片儲存區無法使用",
+    "loadFailed": "圖片載入失敗",
+    "notFound": "找不到圖片"
+  },
+  "attachment": {
+    "fallbackName": "附件",
+    "imageAlt": "圖片",
+    "cantPlay": "無法播放，請下載後聆聽",
+    "downloadingStatus": "下載中…",
+    "deleteConfirm": "刪除？",
+    "copied": "已複製",
+    "download": "下載",
+    "downloadToPlay": "下載後播放",
+    "play": "播放",
+    "pause": "暫停",
+    "fileNotFound": "找不到檔案",
+    "localOnly": "僅在這部裝置",
+    "localOnlyTip": "超出你的儲存空間，只存在這部裝置上。這不是備份：清除瀏覽器或 App 資料就會遺失。空間釋出後就會同步。",
+    "notUploaded": "尚未上傳",
+    "notUploadedTip": "這個檔案還沒從新增它的裝置上傳，通常是因為那部裝置的儲存空間已滿。同步後就能在這裡開啟。",
+    "downloadFailed": "下載失敗",
+    "playbackFailed": "播放失敗",
+    "uploadFailed": "上傳失敗：{{message}}",
+    "unknownError": "未知錯誤"
+  }
+}

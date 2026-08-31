@@ -1,0 +1,112 @@
+{
+  "title": "統計",
+  "tabs": {
+    "writing": "執筆",
+    "wellness": "ウェルネス"
+  },
+  "writing": {
+    "notes": "ノート",
+    "words": "単語",
+    "tags": "タグ",
+    "currentStreak": "現在の連続日数",
+    "longestStreak": "最長の連続日数",
+    "streakValue": "{{count}}日",
+    "timeRangeAria": "アクティビティの期間",
+    "modeActivity": "アクティビティ",
+    "modeMood": "気分",
+    "tooltipMood": "{{date}}: 気分{{mood}}/10",
+    "tooltipNoMood": "{{date}}: 気分の記録なし",
+    "tooltipEdits_other": "{{date}}: {{count}}回の編集",
+    "longestNote": "最長のノート: <name>{{title}}</name>({{count}}語)"
+  },
+  "range": {
+    "7d": "7日",
+    "14d": "14日",
+    "30d": "30日",
+    "3mo": "3か月",
+    "6mo": "6か月",
+    "12mo": "12か月"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "すべて",
+      "sleepActivity": "睡眠と活動",
+      "medication": "服薬",
+      "patterns": "パターン"
+    },
+    "empty": {
+      "title": "ウェルネスデータはまだありません。",
+      "hint": "ジャーナルを開いて気分を記録すると始まります。"
+    },
+    "overview": {
+      "daysTracked": "記録日数",
+      "avgMood": "平均気分",
+      "avgSleep": "平均睡眠",
+      "medAdherence": "服薬率",
+      "moodTrend": "気分の推移",
+      "moodByDayOfWeek": "曜日別の気分",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10({{anchor}})"
+    },
+    "export": {
+      "heading": "書き出し",
+      "allTime": "全期間",
+      "last90Days": "過去90日",
+      "last30Days": "過去30日",
+      "last7Days": "過去7日",
+      "downloadJSON": "JSONをダウンロード",
+      "doctorPDF": "医師向けPDF",
+      "copyAIPrompt": "AIプロンプトをコピー",
+      "copied": "コピーしました!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "睡眠の質",
+      "activity": "活動",
+      "avgSleepPerNight": "一晩あたりの平均睡眠"
+    },
+    "medication": {
+      "adherence": "服薬率",
+      "empty": {
+        "title": "服薬データはまだありません。",
+        "hint": "トラッカー設定で薬を追加して、毎日記録しましょう。"
+      },
+      "dosageTimeline": "用量の推移",
+      "started": "{{dosage}}で開始",
+      "changedTo": "{{dosage}}に変更"
+    },
+    "patterns": {
+      "topEmotions": "多かった感情",
+      "insights": "インサイト",
+      "proBadge": "PRO",
+      "insightsLocked_other": "{{count}}件のインサイトを検出しました。表示するにはProにアップグレード",
+      "weekInReview": "週間レビュー",
+      "weekInReviewLocked": "週間ウェルネスサマリーを見るにはProにアップグレード"
+    },
+    "week": {
+      "range": "{{start}}〜{{end}}",
+      "daysLogged": "{{count}}/7日記録",
+      "avgMood": "平均気分",
+      "moodDelta": "先週比{{delta}}",
+      "avgSleep": "平均睡眠",
+      "medsTaken": "服薬回数",
+      "topActivity": "主な活動",
+      "topEmotions": "多かった感情",
+      "reflection": "ふりかえり",
+      "reflectionPlaceholder": "今週は全体としてどうでしたか?思ったことがあれば書き留めましょう..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "マイルストーン達成"
+  },
+  "milestone": {
+    "notes_other": "ノート{{count}}件を執筆",
+    "streak": "{{count}}日連続で執筆",
+    "words_other": "{{formatted}}語を執筆",
+    "age30": "PrivacyNotesと30日",
+    "age365": "PrivacyNotesと1年",
+    "age730": "PrivacyNotesと2年",
+    "age1825": "PrivacyNotesと5年",
+    "ageDefault": "利用開始から{{count}}日"
+  }
+}

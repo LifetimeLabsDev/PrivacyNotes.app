@@ -1,0 +1,169 @@
+{
+  "shell": {
+    "importTitle": "Je gegevens importeren",
+    "exportTitle": "Je gegevens exporteren",
+    "restoreTitle": "Je gegevens herstellen",
+    "vaultTitle": "Je wachtwoorden importeren",
+    "tablistLabel": "Importeren, exporteren, herstellen of wachtwoorden",
+    "tabImport": "Importeren",
+    "tabExport": "Exporteren",
+    "tabRestore": "Herstellen",
+    "tabVault": "Wachtwoorden",
+    "working": "Bezig…"
+  },
+  "footer": {
+    "exportNote": "Exporteren gebeurt lokaal. Er wordt niets geüpload.",
+    "restoreNote": "Je bestand wordt lokaal gelezen en ontsleuteld.",
+    "importNote": "Alles wordt versleuteld voordat het je apparaat verlaat om te synchroniseren."
+  },
+  "importPick": {
+    "autoTagLabel": "Geïmporteerde notities taggen per bron",
+    "autoTagDesc": "Notities uit Google Keep krijgen <keep>#google</keep>, Obsidian krijgt <obsidian>#obsidian</obsidian>, enzovoort.",
+    "guideAria": "Importgids voor {{app}}",
+    "guideLabel": "Gids"
+  },
+  "folderImport": {
+    "tagLabel": "Notities ook taggen per map",
+    "tagDesc": "Je mappen worden sowieso opnieuw opgebouwd. Dit voegt elke mapnaam ook als tag toe, handig als je graag op tag filtert."
+  },
+  "sourceDesc": {
+    "googleKeep": "Google Takeout .zip (map Keep) of één losse .json-notitie. Checklists worden geïmporteerd als echte takenlijsten.",
+    "appleNotes": "Exporteer via de gratis Exporter-app als Markdown en sleep de .zip hierheen.",
+    "appleJournal": "Exporteer vanuit Dagboek op Mac of iPhone, comprimeer de map AppleJournalEntries en sleep de .zip hierheen. Items worden geïmporteerd als dagboeknotities met hun foto's, video's, spraakmemo's en locaties.",
+    "evernote": "Eén .enex los, of meerdere samen in een zip. Behoudt opmaak, tags, bijlagen, notitiekoppelingen en notitieblokken. Taken laat Evernote uit de .enex weg.",
+    "samsungNotes": "Exporteer als Word (.docx) of tekst (.txt). Zip meerdere bestanden om ze in één keer te importeren.",
+    "simplenote": "Exporteer uit Simplenote (Settings -> Tools -> Export Notes). Sleep de .zip hierheen.",
+    "standardNotes": "Ontsleutelde back-up in .zip of .txt uit Standard Notes (File > Export > Decrypted).",
+    "obsidian": "Obsidian-vault als .zip. Behoudt tags, [[note links]], mappenstructuur, inline #tags en ingesloten afbeeldingen en bestanden.",
+    "notesnook": "Notesnook-export als .zip. Kies bij het exporteren HTML om opmaak, notitieboeken, tags en bijlagen te behouden.",
+    "upnote": "In UpNote: Settings > Backup > Backup now, en zip daarna alles in de back-upmap. Behoudt notitieboeken, tags, vastgezette notities, notitielinks, opmaak en bijlagen. Exports per notitie uit de telefoon-apps werken ook - kies \"Export to HTML\".",
+    "markdownFolder": ".md- of .txt-bestanden los of als .zip. Een gezipte map houdt zijn submappen en neemt zijn afbeeldingen en bijlagen mee.",
+    "markdownApp": "Deze notities zijn al Markdown-bestanden in een map. Sleep die map als .zip hierin en de submappen, afbeeldingen en #tags komen mee.",
+    "browserBookmarks": "Het bladwijzerbestand (.html) uit \"Export bookmarks\" in je browser, of de .zip die Safari schrijft. Chrome, Firefox, Safari, Edge, Opera, Brave en Vivaldi bevatten allemaal hetzelfde bestand. Mappen en datums gaan mee.",
+    "bitwarden": "Onversleutelde .json-export uit Bitwarden (Tools > Export vault > .json). Logins, kaarten, SSH-sleutels, beveiligde notities en TOTP-codes komen allemaal mee.",
+    "browserPasswords": "Het wachtwoordbestand (.csv) uit Chrome, Edge, Brave, Opera, Vivaldi, Firefox of Safari, of de .zip die Safari schrijft. Elke regel wordt een login. Gooi het bestand weg als je klaar bent - het bevat je wachtwoorden in platte tekst."
+  },
+  "vaultPick": {
+    "intro": "Importeer logins, creditcards en SSH-sleutels uit een andere wachtwoordmanager."
+  },
+  "restorePick": {
+    "intro": "Herstel een PrivacyNotes-back-up die je eerder hebt geëxporteerd. Je bestand wordt lokaal gelezen en ontsleuteld.",
+    "fullBackupTitle": "Volledige back-up (.zip)",
+    "fullBackupDesc": "Herstel notities, dagboeken, kluisitems, taken, afbeeldingen, audio en bestanden. Alles wordt als nieuwe items geïmporteerd - bestaande gegevens worden niet overschreven.",
+    "encryptedBackupTitle": "Versleutelde back-up (.pnbackup, .pnbackupz)",
+    "encryptedBackupDesc": "Herstel een versleutelde back-up met de sleutel van je herstelzin. Een .pnbackupz brengt alles terug, bestanden inbegrepen; een .pnbackup bevat alleen tekst en metagegevens. Je moet aangemeld zijn met hetzelfde account dat hem heeft gemaakt."
+  },
+  "encryptedBackupLabel": "Versleutelde back-up",
+  "status": {
+    "readingFile": "Bestand lezen…",
+    "decryptingBackup": "Back-up ontsleutelen...",
+    "writingNotes": "Notities naar je lokale bibliotheek schrijven…",
+    "importingBlobs": "Afbeeldingen en bijlagen importeren...",
+    "restoringBlobs": "Afbeeldingen en bestanden herstellen..."
+  },
+  "errors": {
+    "genericParse": "Er ging iets mis.",
+    "decryptionFailed": "Ontsleutelen mislukt. Verkeerde herstelzin of beschadigd bestand.",
+    "blobImportFailed": "Je notities zijn geïmporteerd, maar hun afbeeldingen en bestanden niet: {{detail}} Er is niets veranderd in het bestand dat je hebt gekozen, dus je kunt de geïmporteerde notities verwijderen en de import opnieuw uitvoeren."
+  },
+  "preview": {
+    "sourceLabel": "Bron",
+    "uniqueTags": "Unieke tags",
+    "empty": "Leeg",
+    "untagged": "Zonder tag",
+    "items": "Items",
+    "previewLabel": "Voorbeeld",
+    "andMore": "… en nog {{count}}",
+    "headsUpLabel": "Let op:",
+    "duplicateWarning": "importeren voegt deze toe als nieuwe notities. Doe je dit twee keer, dan krijg je dubbele notities. Er is nog geen automatische ontdubbeling.",
+    "quotaExceeded": "<strong>Te weinig opslag om te importeren.</strong> Naar schatting {{needed}} nodig, {{available}} beschikbaar. Maak ruimte vrij of upgrade voordat je importeert.",
+    "quotaWarning": "Let op: deze import gebruikt ongeveer {{needed}} van je resterende {{available}} opslag.",
+    "oversizeAttachments_one": "1 bestand is groter dan de limiet van {{limit}} per bestand op je abonnement. Het wordt op dit apparaat geïmporteerd, maar synchroniseert pas naar je andere apparaten als je upgrade.",
+    "oversizeAttachments_other": "{{count}} bestanden zijn groter dan de limiet van {{limit}} per bestand op je abonnement. Ze worden op dit apparaat geïmporteerd, maar synchroniseren pas naar je andere apparaten als je upgrade.",
+    "duplicateSkipNote": "bladwijzers die je al bewaard hebt worden overgeslagen, dus dit twee keer doen levert niets dubbels op."
+  },
+  "counts": {
+    "note_one": "notitie",
+    "note_other": "notities",
+    "journal_one": "dagboeknotitie",
+    "journal_other": "dagboeknotities",
+    "login_one": "login",
+    "login_other": "logins",
+    "card_one": "kaart",
+    "card_other": "kaarten",
+    "sshKey_one": "SSH-sleutel",
+    "sshKey_other": "SSH-sleutels",
+    "zeroItems": "0 items",
+    "importButton": "{{counts}} importeren"
+  },
+  "errorPhase": {
+    "heading": "{{importer}}: importeren mislukt"
+  },
+  "export": {
+    "intro": "Je gegevens zijn van jou. Exporteer wanneer je wilt, gratis.",
+    "fullBackupHeading": "Volledige back-up",
+    "portableHeading": "Overdraagbare export",
+    "vaultOnlyHeading": "Alleen kluis",
+    "zipBackupTitle": "PrivacyNotes-back-up (.zip)",
+    "zipBackupDesc": "Alles: notities, dagboeken, kluisitems, taken, afbeeldingen, audio en bestanden. Gebruik dit voor een complete back-up van je account of om naar een nieuw apparaat te verhuizen. De bestanden erin zijn niet versleuteld, bewaar de zip dus op een veilige plek.",
+    "encryptedZipBackupTitle": "Versleutelde volledige back-up (.pnbackupz)",
+    "encryptedZipBackupDesc": "Alles wat de zip-back-up bevat - notities, kluisitems, afbeeldingen, audio en bestanden - verzegeld met de sleutel van je herstelzin. Te herstellen met je herstelzin op elk apparaat. Overal veilig te bewaren.",
+    "encryptedBackupTitle": "Versleutelde back-up (.pnbackup)",
+    "encryptedBackupDesc": "Alle tekst en metagegevens, versleuteld met de sleutel van je herstelzin. Geen afbeeldingen of bestanden. Overal veilig te bewaren - onleesbaar zonder je herstelzin.",
+    "htmlArchiveTitle": "HTML-archief (.zip)",
+    "htmlArchiveDesc": "Eén printbare HTML-pagina per notitie. Handig om offline te lezen of te archiveren, niet om te herstellen.",
+    "textBackupTitle": "Tekstback-up (.json)",
+    "textBackupDesc": "Alle tekst en metagegevens als gewone JSON. Geen afbeeldingen of bestanden. Bewaar het op een plek die je vertrouwt - dit is niet versleuteld.",
+    "vaultExportTitle": "Kluisexport (.json)",
+    "vaultExportDesc": "Logins, kaarten en SSH-sleutels in een Bitwarden-compatibel formaat. Te importeren in de meeste wachtwoordmanagers. Onversleuteld - ga er zorgvuldig mee om.",
+    "bookmarksOnlyHeading": "Alleen bladwijzers",
+    "bookmarksExportTitle": "Bladwijzerbestand (.html)",
+    "bookmarksExportDesc": "Het standaard bladwijzerbestand dat elke browser leest. Importeer het in Chrome, Firefox, Safari of Edge met je mappen erbij."
+  },
+  "exportProgress": {
+    "failedTitle": "Exporteren mislukt",
+    "completeTitle": "Export voltooid",
+    "exportingTitle": "Back-up exporteren...",
+    "preparing": "Voorbereiden...",
+    "exporting": "Exporteren...",
+    "imagesProgress": "Afbeeldingen exporteren... {{done}} van {{total}}",
+    "filesProgress": "Bestanden exporteren... {{done}} van {{total}}",
+    "building": "Back-up samenstellen...",
+    "compressing": "Comprimeren..."
+  },
+  "upload": {
+    "completeTitle": "Uploaden voltooid",
+    "failedTitle": "Uploaden mislukt",
+    "partialTitle": "{{done}} geüpload, {{failed}} mislukt",
+    "uploadingTitle_one": "{{count}} bestand uploaden",
+    "uploadingTitle_other": "{{count}} bestanden uploaden",
+    "statusDone": "Klaar",
+    "statusFailed": "Mislukt",
+    "errorStorageFull": "Opslag vol - maak ruimte vrij of voeg opslag toe om dit bestand te uploaden.",
+    "errorStorageFullKept": "Past niet in je opslag - blijft op dit apparaat. Zodra er ruimte vrijkomt wordt het bestand gesynchroniseerd.",
+    "statusUploading": "Uploaden...",
+    "statusWaiting": "Wachten",
+    "summaryDone": "{{count}} klaar",
+    "summaryUploading": "{{count}} bezig",
+    "summaryFailed": "{{count}} mislukt",
+    "typesHint": "Afbeeldingen, documenten, audio, video, zip. Max {{limit}} MB per bestand.",
+    "proPitch": "Met Pro gaat de limiet naar 50 MB per bestand.",
+    "proPitchCta": "Upgraden",
+    "storagePitch": "Met een opslaguitbreiding gaat hij naar 100 MB per bestand.",
+    "storagePitchCta": "Opslag toevoegen"
+  },
+  "decryptErrors": {
+    "tooSmall": "Dit bestand is leeg of onvolledig ({{size}} bytes), dus er valt niets te herstellen. Exporteer de back-up opnieuw en controleer voor het importeren of het opgeslagen bestand een echte grootte heeft.",
+    "notThisAccount": "Deze back-up kon niet worden ontgrendeld. Een .pnbackup opent alleen in het account dat hem heeft gemaakt, dus meestal is dit een back-up van een ander account - gebruik een volledige back-up (.zip) om notities tussen accounts te verplaatsen. Klopt het account wel, dan is het bestand beschadigd of onvolledig opgeslagen."
+  },
+  "exportErrors": {
+    "generic": "De export kon niet worden opgeslagen. Probeer het opnieuw of kies een andere map."
+  },
+  "saveErrors": {
+    "shortWrite": "Er zijn maar {{written}} van de {{expected}} bytes opgeslagen, dus het bestand is onvolledig. Probeer het opnieuw en sla op in de opslag van je apparaat in plaats van in een cloudmap."
+  },
+  "browserImport": {
+    "tagLabel": "Tags uit je browser behouden",
+    "tagDesc": "Firefox bewaart tags en een adresbalk-trefwoord bij een bladwijzer. Allebei worden hier tags."
+  }
+}

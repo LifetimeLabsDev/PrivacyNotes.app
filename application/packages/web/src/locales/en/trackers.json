@@ -1,0 +1,169 @@
+{
+  "labels": {
+    "mood": "Mood",
+    "emotions": "Emotions",
+    "sleep": "Sleep",
+    "sleepScore": "Sleep Score",
+    "heartRate": "Heart Rate",
+    "activity": "Activity",
+    "medication": "Medication",
+    "meds": "Meds",
+    "energy": "Energy",
+    "focus": "Focus",
+    "weight": "Weight",
+    "steps": "Steps",
+    "water": "Water",
+    "screenTime": "Screen Time",
+    "caffeine": "Caffeine",
+    "pain": "Pain",
+    "social": "Social",
+    "custom": "Custom"
+  },
+  "units": {
+    "hoursSuffix": "h",
+    "bpm": "bpm",
+    "kg": "kg",
+    "steps_one": "step",
+    "steps_other": "steps",
+    "hrs": "hrs",
+    "glasses_one": " glass",
+    "glasses_other": " glasses",
+    "cups_one": " cup",
+    "cups_other": " cups"
+  },
+  "scaleEnds": {
+    "low": "low",
+    "high": "high",
+    "none": "none",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "severe",
+    "socialLow": "isolated",
+    "socialHigh": "very social"
+  },
+  "mood": {
+    "prompt": "How are you feeling? (1-10)",
+    "low": "awful",
+    "high": "amazing",
+    "anchor": {
+      "1": "awful",
+      "3": "rough",
+      "5": "okay",
+      "7": "good",
+      "10": "amazing"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "What emotions are present?",
+    "count_one": "{{count}} emotion",
+    "count_other": "{{count}} emotions",
+    "valence": {
+      "positive": "positive",
+      "neutral": "neutral",
+      "negative": "negative"
+    },
+    "tags": {
+      "happy": "Happy",
+      "calm": "Calm",
+      "relaxed": "Relaxed",
+      "grateful": "Grateful",
+      "loved": "Loved",
+      "motivated": "Motivated",
+      "confident": "Confident",
+      "productive": "Productive",
+      "focused": "Focused",
+      "energetic": "Energetic",
+      "tired": "Tired",
+      "restless": "Restless",
+      "distracted": "Distracted",
+      "numb": "Numb",
+      "overwhelmed": "Overwhelmed",
+      "anxious": "Anxious",
+      "stressed": "Stressed",
+      "frustrated": "Frustrated",
+      "irritable": "Irritable",
+      "sad": "Sad",
+      "lonely": "Lonely",
+      "guilty": "Guilty",
+      "hopeless": "Hopeless",
+      "angry": "Angry"
+    }
+  },
+  "sleep": {
+    "prompt": "How did you sleep?",
+    "hoursLabel": "Hours:",
+    "quality": {
+      "terrible": "Terrible",
+      "poor": "Poor",
+      "okay": "Okay",
+      "good": "Good",
+      "great": "Great"
+    }
+  },
+  "sleepScore": {
+    "prompt": "Sleep score"
+  },
+  "heartRate": {
+    "prompt": "Average heart rate"
+  },
+  "activity": {
+    "prompt": "Activity level today?",
+    "level": {
+      "sedentary": "Sedentary",
+      "light": "Light",
+      "moderate": "Moderate",
+      "active": "Active",
+      "intense": "Intense"
+    }
+  },
+  "medication": {
+    "heading": "Medications",
+    "empty": "No medications configured yet.",
+    "takenCount_one": "{{count}} taken",
+    "takenCount_other": "{{count}} taken",
+    "namePlaceholder": "Medication name",
+    "dosagePlaceholder": "Dosage (e.g. 50mg)",
+    "addMedication": "+ Add medication",
+    "editMedication": "Edit medication",
+    "removeMedication": "Remove medication",
+    "confirmRemove": "Remove <highlight>{{name}}</highlight>?",
+    "yes": "Yes",
+    "no": "No",
+    "taken": "Taken",
+    "skip": "Skip"
+  },
+  "custom": {
+    "yes": "Yes",
+    "no": "No",
+    "typeLabels": {
+      "scale10": "Scale (0-10)",
+      "scale5": "Scale (0-5)",
+      "slider100": "Slider (0-100)",
+      "number": "Number",
+      "yesno": "Yes / No"
+    }
+  },
+  "config": {
+    "configureTrackers": "Configure trackers",
+    "title": "Trackers",
+    "categoryMoodMind": "Mood & mind",
+    "categoryBodyHealth": "Body & health",
+    "categoryLifestyle": "Lifestyle",
+    "customHeading": "Custom",
+    "resume": "Resume",
+    "stop": "Stop",
+    "addCustomTracker": "Add custom tracker",
+    "addCustomTrackerCount": "Add custom tracker ({{count}}/{{max}})",
+    "addCustomTrackerHint": "Track anything you want",
+    "maxReached": "Maximum {{max}} custom trackers reached.",
+    "customTrackers": "Custom trackers",
+    "newCustomTracker": "New custom tracker",
+    "trackerNamePlaceholder": "Tracker name",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "Type:",
+    "colorLabel": "Color:"
+  }
+}

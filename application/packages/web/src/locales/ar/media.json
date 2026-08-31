@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "الحجم:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "تنزيل الصورة",
+    "deleteAria": "حذف الصورة",
+    "loading": "جارٍ تحميل الصورة...",
+    "uploading": "جارٍ رفع {{name}}...",
+    "uploadFailed": "فشل الرفع: {{message}}",
+    "storeUnavailable": "مخزن الصور غير متاح",
+    "loadFailed": "فشل تحميل الصورة",
+    "notFound": "الصورة غير موجودة"
+  },
+  "attachment": {
+    "fallbackName": "مرفق",
+    "imageAlt": "صورة",
+    "cantPlay": "تعذّر التشغيل. نزّل للاستماع",
+    "downloadingStatus": "جارٍ التنزيل...",
+    "deleteConfirm": "حذف؟",
+    "copied": "تم النسخ",
+    "download": "تنزيل",
+    "downloadToPlay": "التنزيل للتشغيل",
+    "play": "تشغيل",
+    "pause": "إيقاف مؤقت",
+    "fileNotFound": "الملف غير موجود",
+    "localOnly": "على هذا الجهاز فقط",
+    "localOnlyTip": "لا يتسع في مساحة تخزينك. غير محفوظ احتياطيًا - مسح بيانات المتصفح/التطبيق يحذفه. يُزامَن بمجرد توفر مساحة.",
+    "notUploaded": "لم يُرفع بعد",
+    "notUploadedTip": "لم يُرفع هذا الملف بعد من الجهاز الذي أُضيف عليه - غالبًا لأن مساحة التخزين هناك ممتلئة. يُفتح هنا بمجرد مزامنته.",
+    "downloadFailed": "فشل التنزيل",
+    "playbackFailed": "فشل التشغيل",
+    "uploadFailed": "فشل الرفع: {{message}}",
+    "unknownError": "خطأ غير معروف"
+  }
+}

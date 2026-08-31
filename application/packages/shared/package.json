@@ -1,0 +1,28 @@
+{
+  "name": "@notes/shared",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@noble/ciphers": "^2.3.0",
+    "@noble/ed25519": "^3.1.0",
+    "@noble/hashes": "^2.3.0",
+    "@scure/bip39": "^2.3.0",
+    "@supabase/supabase-js": "^2.112.3"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

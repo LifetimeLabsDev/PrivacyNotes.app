@@ -1,0 +1,149 @@
+{
+  "version": 3,
+  "exportedAt": "2026-07-16T06:18:57.385Z",
+  "notes": [
+    {
+      "id": "d17e4327-22fd-42da-1e1c-0334dc89e653",
+      "title": "Welcome to PrivacyNotes",
+      "body": "Every note you write is **end-to-end encrypted** with a key derived from your 12-word phrase. We can't read your notes. Not in transit, not at rest, not if our database got breached. That's math, not marketing.\n\n**Your phrase is the only key.** Lose it and nothing recovers your notes. Write it down somewhere real.\n\n![What our server actually sees: your notes as opaque, encrypted blobs.](/onboarding/database.webp)\n\n*What our server sees: opaque ciphertext, encrypted on your device before it ever leaves.*\n\n## Get going\n\n- [ ] Create a note with **+ New Note**\n- [ ] Try markdown: headings, **bold**, *italic*, `code`, lists, quotes (toolbar or just type)\n- [ ] Link notes with `[[`, try [[Tasks: Getting started]] or [[Journal: First Day in Tokyo]]\n- [ ] Tag a note with `#idea` or `#groceries` in the tag field\n- [ ] **Star** a note to pin it to the top\n\n## Vault\n\nStore logins and credit cards, encrypted the same way as your notes. Check out the examples: [[Google]] and [[Visa ending 4242]].\n\n## Import & Export\n\nSidebar → **Import / Export**. Bring in notes from Google Keep, Standard Notes, or markdown. Export as `.md`, `.html`, `.zip`, or `.json`. Your data is never trapped.\n\n## Sync\n\nSame 12-word phrase on another device and everything shows up, encrypted. No trackers, no ads, no telemetry.",
+      "tags": [
+        "privacy",
+        "encryption"
+      ],
+      "createdAt": "2026-07-16T06:18:50.844Z",
+      "updatedAt": "2026-07-16T06:18:50.844Z",
+      "starred": 1,
+      "type": "note",
+      "locked": 0,
+      "pinProtected": 0
+    },
+    {
+      "id": "d17e4327-22fd-42da-7a54-0334dc89e653",
+      "title": "Tasks: Getting started",
+      "body": "Tick these off as you go. Every `- [ ]` line across all your notes rolls up into the **Tasks** view in the sidebar. Scatter to-dos wherever they belong, see the full picture in one place.\n\n- [ ] Write your first real note\n- [ ] Tag it with `#idea` or `#todo` in the tag field\n- [ ] **Star** a note to pin it to the top\n- [ ] Open **search**, it searches content, not just titles\n- [ ] Import old notes: sidebar → **Import / Export**\n- [ ] Sign in on a second device with the same phrase\n- [ ] Try **dark mode** and **zen mode**\n- [ ] Open the **Vault** and check out the demo login and credit card\n\nTo start your own task list: toolbar → task list button, or just type `- [ ]` on a new line.\n\nSee [[Welcome to PrivacyNotes]] for the overview, or [[Journal: First Day in Tokyo]] for journal entries.",
+      "tags": [
+        "getting-started"
+      ],
+      "createdAt": "2026-07-16T06:18:49.844Z",
+      "updatedAt": "2026-07-16T06:18:49.844Z",
+      "starred": 1,
+      "type": "task",
+      "locked": 0,
+      "pinProtected": 0
+    },
+    {
+      "id": "d17e4327-22fd-42da-be11-0334dc89e653",
+      "title": "Journal: Your Wellness Dashboard",
+      "body": "The tracker pills above capture your day in a few taps: mood, sleep, activity, medication, energy, focus. Tap a pill to expand it, log a value, done. Everything encrypted.\n\n**Emotion tags:** 24 research-backed options mapped to real psychology dimensions. Tap as many as apply.\n\n**Medication tracking:** logs daily adherence. The \"Multivitamin\" is an example; edit it via the gear icon on the pill bar.\n\n## Try these\n\n- [ ] Tap the **Mood** pill and set it to how you actually feel\n- [ ] Pick today's emotion tags\n- [ ] Check **Statistics** (bar chart icon) → Wellness tab\n- [ ] Tap the **gear icon** to configure which pills show up\n- [ ] Backfill a past day via the **calendar icon** in journal view\n\nAfter a week of logging, the Patterns tab starts detecting correlations: mood vs. sleep, medication adherence vs. energy. All computed locally.\n\n---\n\n*Delete this anytime. Your real journal starts with your first honest check-in.*\n\nSee [[Journal: First Day in Tokyo]] for a travel journal example.",
+      "tags": [],
+      "createdAt": "2026-07-16T06:18:48.844Z",
+      "updatedAt": "2026-07-16T06:18:48.844Z",
+      "starred": 0,
+      "type": "journal",
+      "locked": 0,
+      "pinProtected": 0,
+      "trackers": {
+        "mood": 7,
+        "emotions": [
+          "happy",
+          "motivated",
+          "focused",
+          "grateful"
+        ],
+        "sleep": {
+          "quality": "good",
+          "hours": 7.5
+        },
+        "activity": "moderate",
+        "energy": 7,
+        "focus": 8,
+        "medications": [
+          {
+            "medicationId": "00000000-0000-4000-b000-000000000001",
+            "status": "taken"
+          }
+        ]
+      }
+    },
+    {
+      "id": "d17e4327-22fd-42da-d0ce-0334dc89e653",
+      "title": "Journal: First Day in Tokyo",
+      "body": "Landed at Narita around noon on three hours of plane sleep. The train into the city was the first thing that clicked. Silent carriage, punctual to the second, a vending machine selling hot coffee in a can.\n\n![Tokyo skyline at dusk, Shibuya crossing lit up in neon.](/onboarding/japan.webp)\n\n## Things to do:\n\n- [ ] Meiji Shrine (Harajuku station)\n- [ ] Tsukiji Outer Market\n- [ ] Wander Shinjuku at night\n- [ ] Shibuya Crossing and Shibuya Sky\n\nEnded up in a six-seat ramen place where the only English was a QR code on the wall. Pointed at a photo, got a tsukemen that made me forget about jet lag for twenty minutes.\n\n## Tomorrow\n\n- Teamlab Planets, book before breakfast\n- Find the jazz bar in Golden Gai\n- Try a konbini egg sandwich\n\nCrossed Shibuya at rush hour. Seen it a thousand times in photos and it still doesn't prepare you. The sheer *choreography* of it. Nobody bumps into anyone.\n\n---\n\n*This is an example journal entry. Create new entries from the Journal view. Daily entries, writing streaks, the works.*\n\nSee [[Journal: Your Wellness Dashboard]] for wellness tracking, or [[Tasks: Getting started]] for a checklist.",
+      "tags": [],
+      "createdAt": "2026-07-16T06:18:47.844Z",
+      "updatedAt": "2026-07-16T06:18:47.844Z",
+      "starred": 0,
+      "type": "journal",
+      "locked": 0,
+      "pinProtected": 0,
+      "trackers": {
+        "mood": 8,
+        "emotions": [
+          "excited",
+          "curious",
+          "grateful"
+        ],
+        "sleep": {
+          "quality": "poor",
+          "hours": 3
+        },
+        "activity": "intense",
+        "energy": 6,
+        "focus": 5
+      }
+    },
+    {
+      "id": "d17e4327-22fd-42da-109a-0334dc89e653",
+      "title": "Google",
+      "body": "{\"url\":\"https://accounts.google.com\",\"username\":\"test@gmail.com\",\"password\":\"xK9#mQ2$vL7nR4pW\",\"notes\":\"Example login. Edit or delete anytime.\"}",
+      "tags": [],
+      "createdAt": "2026-07-16T06:18:46.844Z",
+      "updatedAt": "2026-07-16T06:18:46.844Z",
+      "starred": 0,
+      "type": "login",
+      "locked": 0,
+      "pinProtected": 0
+    },
+    {
+      "id": "d17e4327-22fd-42da-ca4d-0334dc89e653",
+      "title": "Visa ending 4242",
+      "body": "{\"cardholderName\":\"John Doe\",\"cardNumber\":\"4532015112830366\",\"expMonth\":\"09\",\"expYear\":\"2028\",\"cvv\":\"847\",\"billingZip\":\"10001\",\"notes\":\"Example credit card. Edit or delete anytime.\"}",
+      "tags": [],
+      "createdAt": "2026-07-16T06:18:45.844Z",
+      "updatedAt": "2026-07-16T06:18:45.844Z",
+      "starred": 0,
+      "type": "card",
+      "locked": 0,
+      "pinProtected": 0
+    },
+    {
+      "id": "d17e4327-22fd-42da-f01d-0334dc89e653",
+      "title": "Chapter 1 - the descent",
+      "body": "She stepped through the hatch and the gravity fell away, the station's hum replaced by the tick of cooling metal.\n\nThis note lives in the **Sci-fi novel** folder - switch the sidebar to **Folders** to browse projects as a tree. A note keeps its tags too: folders and tags are independent.",
+      "tags": [
+        "draft"
+      ],
+      "createdAt": "2026-07-16T06:18:44.863Z",
+      "updatedAt": "2026-07-16T06:18:44.863Z",
+      "starred": 0,
+      "type": "note",
+      "locked": 0,
+      "pinProtected": 0,
+      "folderId": "f01de001-0000-4000-8000-000000000002"
+    }
+  ],
+  "folders": [
+    {
+      "id": "f01de001-0000-4000-8000-000000000001",
+      "name": "Stories",
+      "parentId": null,
+      "order": 0
+    },
+    {
+      "id": "f01de001-0000-4000-8000-000000000002",
+      "name": "Sci-fi novel",
+      "parentId": "f01de001-0000-4000-8000-000000000001",
+      "order": 0
+    }
+  ]
+}

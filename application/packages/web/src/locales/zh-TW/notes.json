@@ -1,0 +1,268 @@
+{
+  "noteRow": {
+    "created": "建立於",
+    "modified": "修改於",
+    "select": "選取筆記",
+    "deselect": "取消選取筆記",
+    "pinProtected": "PIN 碼保護",
+    "readOnly": "唯讀",
+    "file": "檔案",
+    "empty": "空白",
+    "noContent": "沒有內容"
+  },
+  "header": {
+    "new": "新增",
+    "newNote": "新增筆記",
+    "newNoteHover": "新增筆記（{{hotkey}}）",
+    "trash": "垃圾桶"
+  },
+  "folderChip": {
+    "clear": "清除資料夾篩選：{{folder}}"
+  },
+  "tagChip": {
+    "clear": "清除標籤篩選：{{tag}}"
+  },
+  "vaultNew": {
+    "ariaLabel": "新增保險庫項目",
+    "login": "登入資訊",
+    "card": "信用卡",
+    "sshKey": "SSH 金鑰"
+  },
+  "newMenu": {
+    "note": "筆記",
+    "task": "任務",
+    "journal": "日誌",
+    "login": "登入資訊",
+    "file": "檔案",
+    "bookmark": "書籤"
+  },
+  "vaultFilter": {
+    "all": "全部",
+    "logins": "登入資訊",
+    "cards": "信用卡",
+    "keys": "金鑰"
+  },
+  "journal": {
+    "backfillHover": "為最近的日子補寫日誌",
+    "newEntry": "新增日誌",
+    "newEntryHover": "新增日誌（{{hotkey}}）"
+  },
+  "tasks": {
+    "newTitle": "{{date}} 的任務"
+  },
+  "trash": {
+    "empty": "清空",
+    "emptyHover": "刪除垃圾桶中的所有筆記",
+    "storage": "儲存空間",
+    "autoDelete": "30 天自動刪除"
+  },
+  "search": {
+    "sortOptions": "排序與檢視選項",
+    "placeholderVault": "搜尋保險庫…",
+    "placeholderNotes": "搜尋筆記…"
+  },
+  "selection": {
+    "countOf": "已選取 {{selected}}/{{total}} 項",
+    "selectAll": "全選",
+    "deselectAll": "取消全選"
+  },
+  "empty": {
+    "noMatches": "沒有符合的結果。",
+    "vault": "保險庫是空的。",
+    "notes": "還沒有筆記。",
+    "filtered": "沒有項目符合篩選條件。",
+    "clearFilters": "清除篩選",
+    "filteredAfter": "即可顯示。"
+  },
+  "headerLabel": {
+    "allItems": "全部",
+    "untagged": "無標籤",
+    "journals": "日誌",
+    "vault": "保險庫",
+    "pinned": "已釘選",
+    "notes": "筆記"
+  },
+  "footerStats": {
+    "journals": "日誌",
+    "items": "項目",
+    "trashed": "垃圾桶",
+    "notes": "筆記",
+    "bookmarks": "書籤"
+  },
+  "toast": {
+    "imageUploadFailed": "圖片上傳失敗：{{error}}",
+    "imageError": "圖片錯誤：{{error}}",
+    "uploadFailedFor": "「{{filename}}」上傳失敗：{{error}}",
+    "importedSyncing_other": "已匯入 {{count}} 篇筆記。同步中…",
+    "addedTag_other": "已將 #{{tag}} 加入 {{count}} 個項目"
+  },
+  "burn": {
+    "mediaOnly": "這篇筆記只包含媒體內容，無法透過 burn 連結分享。",
+    "shareTitle": "加密筆記"
+  },
+  "loadError": {
+    "message": "無法載入你的筆記。本機資料庫連線中斷；應用程式在背景待了一段時間後可能發生這種情況。",
+    "reload": "重新載入"
+  },
+  "banner": {
+    "dismiss": "忽略",
+    "proActivationPending": "已收到款項，但 Pro 開通比平常慢。請一分鐘後重新整理；如果一直沒有解鎖，請聯絡支援。",
+    "snapshotPaused": "筆記歷史已暫停。你的 Pro 方案看起來未生效，在 Pro 恢復前，新的編輯不會建立快照。",
+    "restorePro": "恢復 Pro",
+    "storagePastDue": "你的儲存空間訂閱扣款失敗。請到 Paddle 更新卡片資料，以免失去額外容量。",
+    "updateCard": "更新卡片"
+  },
+  "sidebar": {
+    "collapse": "收合側邊欄",
+    "expand": "展開側邊欄"
+  },
+  "notesList": {
+    "collapse": "收合筆記清單",
+    "expand": "展開筆記清單"
+  },
+  "paneResize": {
+    "hintCollapse": "點一下收合 · 拖曳調整大小"
+  },
+  "emptyEditor": {
+    "selectFile": "選擇要預覽的檔案",
+    "uploadFiles": "或上傳新檔案到你的加密保險庫。",
+    "selectNote": "選擇一篇筆記，或建立新筆記。",
+    "selectMarkdown": "開啟一個 Markdown 檔，就能在這裡閱讀。"
+  },
+  "zen": {
+    "exit": "離開 Zen",
+    "exitHover": "離開 Zen 模式（Esc）",
+    "enterHover": "進入 Zen 模式",
+    "proHover": "Zen 模式（Pro）",
+    "enterAriaShortcut": "進入 Zen 模式（⌘⇧F）"
+  },
+  "editor": {
+    "backToList": "回到筆記清單",
+    "backToGrid": "回到格狀檢視",
+    "titlePlaceholder": "未命名（點一下編輯，或留白自動產生）",
+    "titlePlaceholderLogin": "例如 GitHub",
+    "titlePlaceholderCard": "例如 4242 結尾的 Visa 卡",
+    "titlePlaceholderSshKey": "例如 GitHub 部署金鑰",
+    "pin": "釘選",
+    "unpin": "取消釘選",
+    "restore": "還原",
+    "deleteForever": "永久刪除",
+    "moveToTrash": "移至垃圾桶",
+    "noteOptions": "筆記選項",
+    "readOnlyToggle": "唯讀。關閉請至",
+    "menu": "選單",
+    "showMarkdown": "顯示 Markdown",
+    "showFormatted": "顯示排版結果",
+    "invisiblesShow": "顯示編輯標記",
+    "invisiblesHide": "隱藏編輯標記",
+    "findInNote": "在筆記中尋找",
+    "navPrev": "上一則筆記",
+    "navNext": "下一則筆記",
+    "undo": "復原",
+    "redo": "重做",
+    "hide": "隱藏",
+    "show": "顯示",
+    "hideToolbar": "隱藏格式工具列",
+    "showToolbar": "顯示格式工具列",
+    "widthDefault": "預設寬度",
+    "widthWide": "更寬",
+    "widthFull": "全寬",
+    "burn": "分享與 Burn After Reading",
+    "titlePlaceholderLink": "書籤名稱"
+  },
+  "share": {
+    "hover": "分享／匯出",
+    "ariaLabel": "分享或匯出",
+    "thisNote": "這篇筆記",
+    "currentMdTitle": "目前筆記（.md）",
+    "currentMdDesc": "原始 Markdown，含 front-matter。",
+    "currentHtmlTitle": "目前筆記（.html）",
+    "currentHtmlDesc": "適合列印，Markdown 排版呈現於白底頁面。",
+    "printTitle": "列印／另存為 PDF",
+    "printDesc": "開啟列印對話框，可另存為 PDF 或送印。",
+    "burnTitle": "分享與 Burn After Reading",
+    "burnDesc": "將這篇筆記發佈為一次性檢視連結，連結在被閱讀後自動銷毀。你的筆記仍安全保留在帳號中。",
+    "backup": "備份",
+    "fullBackupTitle": "完整備份（.zip）",
+    "fullBackupDesc": "全部內容：筆記、日誌、保險庫、任務、圖片、音訊、檔案。",
+    "allHtmlTitle": "所有項目（.html 打包為 .zip）",
+    "allHtmlDesc": "每個項目一頁可列印的 HTML，適合離線閱讀。",
+    "jsonTitle": "文字備份（.json）",
+    "jsonDesc": "所有文字內容與中繼資料，不含圖片或檔案。"
+  },
+  "weekReview": {
+    "title": "每週回顧",
+    "daysLogged": "已記錄 {{count}}/7 天",
+    "mood": "心情",
+    "sleep": "睡眠",
+    "meds": "用藥",
+    "activity": "活動"
+  },
+  "footer": {
+    "settings": "設定",
+    "viewShortcuts": "檢視所有鍵盤快速鍵",
+    "newNote": "新增",
+    "newNoteHintMac": "Option + Shift + N",
+    "newNoteHintOther": "Alt + Shift + N",
+    "openStats": "開啟統計",
+    "words": "字數",
+    "zen": "Zen 模式",
+    "appearance": "外觀",
+    "signOut": "登出",
+    "signingOut": "登出中…",
+    "switchToLight": "切換至淺色模式",
+    "switchToDark": "切換至深色模式"
+  },
+  "settings": {
+    "groupYourNotes": "你的筆記",
+    "groupAccount": "帳號與資料",
+    "groupBrand": "PrivacyNotes",
+    "statsLabel": "統計",
+    "journalsLabel": "日誌",
+    "importLabel": "匯入與匯出",
+    "planLabel": "帳號",
+    "storageLabel": "儲存空間",
+    "securityLabel": "安全性",
+    "accountLabel": "ID 與同步",
+    "appearanceLabel": "外觀",
+    "helpLabel": "說明",
+    "aboutLabel": "關於",
+    "languageLabel": "語言",
+    "languageDesc": "選擇 PrivacyNotes 的顯示語言。"
+  },
+  "importStore": {
+    "title": "匯入還是儲存？",
+    "confirm": "匯入為筆記",
+    "cancel": "儲存為檔案",
+    "bodySingle": "<strong>{{filename}}</strong> 看起來是 Markdown 檔。要匯入為筆記以便閱讀和編輯，還是儲存為加密檔案附件？",
+    "bodyMulti": "這 {{count}} 個檔案看起來是 Markdown。要匯入為筆記以便閱讀和編輯，還是儲存為加密檔案附件？"
+  },
+  "bulkTrash": {
+    "title": "移至垃圾桶",
+    "body_other": "要將 <highlight>{{count}} 個項目</highlight>移至垃圾桶嗎？之後仍可還原。"
+  },
+  "bulkDelete": {
+    "body_other": "要永久刪除 <highlight>{{count}} 篇筆記</highlight>嗎？此動作無法復原。"
+  },
+  "tagConfirm": {
+    "mergeTitle": "合併標籤",
+    "deleteTitle": "刪除標籤",
+    "deleteWithNotesTitle": "刪除標籤與筆記",
+    "mergeConfirm": "合併",
+    "deleteConfirm": "刪除標籤",
+    "moveToTrash": "移至垃圾桶",
+    "mergeBody_other": "標籤 <highlight>「{{targetTag}}」</highlight>已存在。要將目前標記為「{{tag}}」的 <highlight>{{count}} 篇筆記</highlight>併入嗎？",
+    "deleteBody_other": "要從 <highlight>{{count}} 篇筆記</highlight>移除標籤 <highlight>「{{tag}}」</highlight>嗎？筆記本身不會被刪除。",
+    "deleteWithNotesBody_other": "要刪除標籤 <highlight>「{{tag}}」</highlight>並將 <highlight>{{count}} 篇筆記</highlight>移至垃圾桶嗎？之後仍可從垃圾桶還原。"
+  },
+  "createNote": {
+    "title": "要建立筆記嗎？",
+    "confirm": "建立筆記",
+    "body": "沒有標題為 <highlight>「{{title}}」</highlight>的筆記。被連結的筆記若改過名，就可能發生這種情況。要以這個標題建立新筆記嗎？"
+  },
+  "freshVault": {
+    "title": "已建立新保險庫",
+    "confirm": "知道了",
+    "body": "沒有既有保險庫符合你輸入的助憶詞，因此建立了一個新的空保險庫。如果你預期會看到自己的筆記，請登出後仔細重新輸入助憶詞：只要一個單字不同，開啟的就是另一個保險庫。"
+  }
+}

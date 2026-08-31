@@ -1,0 +1,183 @@
+{
+  "shell": {
+    "importTitle": "Importuj svoje data",
+    "exportTitle": "Exportuj svoje data",
+    "restoreTitle": "Obnov svoje data",
+    "vaultTitle": "Importuj svoje hesla",
+    "tablistLabel": "Import, Export, Obnovit nebo Hesla",
+    "tabImport": "Import",
+    "tabExport": "Export",
+    "tabRestore": "Obnovit",
+    "tabVault": "Hesla",
+    "working": "Pracuji…"
+  },
+  "footer": {
+    "exportNote": "Export běží lokálně. Nic se nikam nenahrává.",
+    "restoreNote": "Tvůj soubor se načte a dešifruje lokálně.",
+    "importNote": "Všechno se zašifruje, ještě než to kvůli synchronizaci opustí tvoje zařízení."
+  },
+  "importPick": {
+    "autoTagLabel": "Označit importované poznámky podle zdroje",
+    "autoTagDesc": "Poznámky z Google Keep dostanou <keep>#google</keep>, poznámky z Obsidianu <obsidian>#obsidian</obsidian> a tak dále.",
+    "guideAria": "Průvodce importem pro {{app}}",
+    "guideLabel": "Návod"
+  },
+  "folderImport": {
+    "tagLabel": "Označit poznámky i podle složky",
+    "tagDesc": "Tvoje složky se znovu postaví tak i tak. Tohle navíc přidá název každé složky i jako značku, což se hodí, když filtruješ podle značek."
+  },
+  "sourceDesc": {
+    "googleKeep": "Google Takeout .zip (složka Keep) nebo jedna poznámka .json. Zaškrtávací seznamy se importují jako nativní seznamy úkolů.",
+    "appleNotes": "Exportuj přes bezplatnou aplikaci Exporter do Markdownu a pak sem přetáhni .zip.",
+    "appleJournal": "Exportuj z Deníku na Macu nebo iPhonu, zkomprimuj složku AppleJournalEntries a přetáhni sem .zip. Záznamy se importují jako záznamy v deníku i s fotkami, videi, hlasovými poznámkami a polohami.",
+    "evernote": "Jeden soubor .enex, nebo víc zabalených do zipu. Zachová formátování, štítky, přílohy, odkazy mezi poznámkami a zápisníky. Úkoly Evernote do .enex nedává.",
+    "samsungNotes": "Exportuj jako Word (.docx) nebo text (.txt). Víc souborů zabal do .zip pro hromadný import.",
+    "simplenote": "Exportuj ze Simplenote (Settings -> Tools -> Export Notes). Přetáhni sem .zip.",
+    "standardNotes": "Dešifrovaná záloha .zip nebo .txt ze Standard Notes (File > Export > Decrypted).",
+    "obsidian": "Vault Obsidianu jako .zip. Zachová štítky, [[note links]], strukturu složek, inline #tagy i vložené obrázky a soubory.",
+    "notesnook": "Export z Notesnooku jako .zip. Při exportu zvol HTML, aby se zachovalo formátování, zápisníky, značky a přílohy.",
+    "upnote": "V UpNote: Settings > Backup > Backup now, pak zabal do zipu všechno ve složce se zálohou. Zachová zápisníky, značky, připnutí, note-linky, formátování a přílohy. Fungují i exporty jednotlivých poznámek z mobilních aplikací - zvol „Export to HTML“.",
+    "markdownFolder": "Soubory .md nebo .txt jednotlivě, nebo jako .zip. Zabalená složka si udrží podsložky a vezme s sebou obrázky i přílohy.",
+    "markdownApp": "Tyhle poznámky už jsou soubory Markdown ve složce. Přetáhni tu složku jako .zip a přijdou s ní podsložky, obrázky i #štítky.",
+    "browserBookmarks": "Soubor se záložkami (.html) z \"Export bookmarks\" v tvém prohlížeči, nebo .zip, který zapíše Safari. Chrome, Firefox, Safari, Edge, Opera, Brave i Vivaldi obsahují stejný soubor. Složky a data přijdou s ním.",
+    "bitwarden": "Nezašifrovaný export .json z Bitwardenu (Tools > Export vault > .json). Přihlášení, karty, SSH klíče, zabezpečené poznámky i kódy TOTP přijdou s sebou.",
+    "browserPasswords": "Soubor s hesly (.csv) z Chrome, Edge, Brave, Opery, Vivaldi, Firefoxu nebo Safari, nebo .zip, který zapíše Safari. Z každého řádku bude přihlášení. Až budeš hotový, soubor smaž - jsou v něm tvoje hesla v čitelné podobě."
+  },
+  "vaultPick": {
+    "intro": "Importuj přihlašovací údaje, platební karty a SSH klíče z jiného správce hesel."
+  },
+  "restorePick": {
+    "intro": "Obnov dříve vytvořenou zálohu PrivacyNotes. Tvůj soubor se načte a dešifruje lokálně.",
+    "fullBackupTitle": "Kompletní záloha (.zip)",
+    "fullBackupDesc": "Obnoví poznámky, deníky, položky trezoru, úkoly, obrázky, zvuk a soubory. Všechno se importuje jako nové položky - existující data se nepřepíšou.",
+    "encryptedBackupTitle": "Šifrovaná záloha (.pnbackup, .pnbackupz)",
+    "encryptedBackupDesc": "Obnov šifrovanou zálohu klíčem z tvojí fráze. Soubor .pnbackupz vrátí všechno včetně souborů; .pnbackup obsahuje jen text a metadata. Vyžaduje přihlášení pod stejným účtem, který zálohu vytvořil."
+  },
+  "encryptedBackupLabel": "Šifrovaná záloha",
+  "status": {
+    "readingFile": "Načítám soubor…",
+    "decryptingBackup": "Dešifruji zálohu...",
+    "writingNotes": "Zapisuji poznámky do tvojí místní knihovny…",
+    "importingBlobs": "Importuji obrázky a přílohy...",
+    "restoringBlobs": "Obnovuji obrázky a soubory..."
+  },
+  "errors": {
+    "genericParse": "Něco se pokazilo.",
+    "decryptionFailed": "Dešifrování selhalo. Špatná fráze nebo poškozený soubor.",
+    "blobImportFailed": "Tvoje poznámky se naimportovaly, ale jejich obrázky a soubory ne: {{detail}} V souboru, který jsi vybral, se nic nezměnilo, takže naimportované poznámky můžeš smazat a spustit import znovu."
+  },
+  "preview": {
+    "sourceLabel": "Zdroj",
+    "uniqueTags": "Unikátní značky",
+    "empty": "Prázdné",
+    "untagged": "Bez značek",
+    "items": "Položky",
+    "previewLabel": "Náhled",
+    "andMore": "… a {{count}} dalších",
+    "headsUpLabel": "Pozor:",
+    "duplicateWarning": "import je přidá jako nové poznámky. Když ho spustíš dvakrát, budeš mít duplikáty. Automatické slučování duplikátů zatím nemáme.",
+    "quotaExceeded": "<strong>Na import máš málo místa.</strong> Odhadem je potřeba {{needed}}, k dispozici je {{available}}. Před importem uvolni místo nebo přejdi na vyšší tarif.",
+    "quotaWarning": "Pozor: tento import spotřebuje přibližně {{needed}} z {{available}} zbývajícího místa.",
+    "oversizeAttachments_one": "1 soubor je větší než limit {{limit}} na soubor v tvém plánu. Naimportuje se do tohoto zařízení, ale nesynchronizuje se s tvými dalšími zařízeními, dokud nepřejdeš na vyšší tarif.",
+    "oversizeAttachments_few": "{{count}} soubory jsou větší než limit {{limit}} na soubor v tvém plánu. Naimportují se do tohoto zařízení, ale nesynchronizují se s tvými dalšími zařízeními, dokud nepřejdeš na vyšší tarif.",
+    "oversizeAttachments_many": "{{count}} souboru je větší než limit {{limit}} na soubor v tvém plánu. Naimportuje se do tohoto zařízení, ale nesynchronizuje se s tvými dalšími zařízeními, dokud nepřejdeš na vyšší tarif.",
+    "oversizeAttachments_other": "{{count}} souborů je větších než limit {{limit}} na soubor v tvém plánu. Naimportují se do tohoto zařízení, ale nesynchronizují se s tvými dalšími zařízeními, dokud nepřejdeš na vyšší tarif.",
+    "duplicateSkipNote": "záložky, které už máš uložené, se přeskočí, takže druhý průchod nic nezduplikuje."
+  },
+  "counts": {
+    "note_one": "poznámka",
+    "note_few": "poznámky",
+    "note_many": "poznámky",
+    "note_other": "poznámek",
+    "journal_one": "záznam v deníku",
+    "journal_few": "záznamy v deníku",
+    "journal_many": "záznamy v deníku",
+    "journal_other": "záznamů v deníku",
+    "login_one": "přihlašovací údaj",
+    "login_few": "přihlašovací údaje",
+    "login_many": "přihlašovacího údaje",
+    "login_other": "přihlašovacích údajů",
+    "card_one": "karta",
+    "card_few": "karty",
+    "card_many": "karty",
+    "card_other": "karet",
+    "sshKey_one": "SSH klíč",
+    "sshKey_few": "SSH klíče",
+    "sshKey_many": "SSH klíče",
+    "sshKey_other": "SSH klíčů",
+    "zeroItems": "0 položek",
+    "importButton": "Importovat {{counts}}"
+  },
+  "errorPhase": {
+    "heading": "{{importer}}: import selhal"
+  },
+  "export": {
+    "intro": "Tvoje data jsou tvoje. Exportuj je kdykoli a zdarma.",
+    "fullBackupHeading": "Kompletní záloha",
+    "portableHeading": "Přenositelný export",
+    "vaultOnlyHeading": "Jen trezor",
+    "zipBackupTitle": "Záloha PrivacyNotes (.zip)",
+    "zipBackupDesc": "Všechno: poznámky, deníky, položky trezoru, úkoly, obrázky, zvuk a soubory. Použij ji pro kompletní zálohu účtu nebo pro přechod na nové zařízení. Soubory uvnitř nejsou šifrované, proto ulož zip na bezpečné místo.",
+    "encryptedZipBackupTitle": "Šifrovaná úplná záloha (.pnbackupz)",
+    "encryptedZipBackupDesc": "Všechno, co obsahuje zip záloha - poznámky, položky trezoru, obrázky, zvuk a soubory - zapečetěné klíčem z tvojí fráze. Obnovíš ji svou frází na jakémkoli zařízení. Můžeš ji bezpečně uložit kamkoli.",
+    "encryptedBackupTitle": "Šifrovaná záloha (.pnbackup)",
+    "encryptedBackupDesc": "Veškerý textový obsah a metadata zašifrované klíčem z tvojí fráze. Bez obrázků a souborů. Můžeš ji bezpečně uložit kamkoli - bez tvojí fráze je nečitelná.",
+    "htmlArchiveTitle": "HTML archiv (.zip)",
+    "htmlArchiveDesc": "Jedna tisknutelná HTML stránka na každou poznámku. Dobré pro čtení offline nebo archivaci, ne pro obnovu.",
+    "textBackupTitle": "Textová záloha (.json)",
+    "textBackupDesc": "Veškerý textový obsah a metadata jako čistý JSON. Bez obrázků a souborů. Ulož ji na místo, kterému věříš - není zašifrovaná.",
+    "vaultExportTitle": "Export trezoru (.json)",
+    "vaultExportDesc": "Přihlašovací údaje, karty a SSH klíče ve formátu kompatibilním s Bitwardenem. Naimportuje ho většina správců hesel. Nezašifrovaný text - zacházej s ním opatrně.",
+    "bookmarksOnlyHeading": "Jen záložky",
+    "bookmarksExportTitle": "Soubor záložek (.html)",
+    "bookmarksExportDesc": "Standardní soubor záložek, který přečte každý prohlížeč. Naimportuj ho i se složkami do Chrome, Firefoxu, Safari nebo Edge."
+  },
+  "exportProgress": {
+    "failedTitle": "Export selhal",
+    "completeTitle": "Export dokončen",
+    "exportingTitle": "Exportuji zálohu...",
+    "preparing": "Připravuji...",
+    "exporting": "Exportuji...",
+    "imagesProgress": "Exportuji obrázky... {{done}} z {{total}}",
+    "filesProgress": "Exportuji soubory... {{done}} z {{total}}",
+    "building": "Vytvářím zálohu...",
+    "compressing": "Komprimuji..."
+  },
+  "upload": {
+    "completeTitle": "Nahrávání dokončeno",
+    "failedTitle": "Nahrávání selhalo",
+    "partialTitle": "{{done}} nahráno, {{failed}} selhalo",
+    "uploadingTitle_one": "Nahrávám {{count}} soubor",
+    "uploadingTitle_few": "Nahrávám {{count}} soubory",
+    "uploadingTitle_many": "Nahrávám {{count}} souboru",
+    "uploadingTitle_other": "Nahrávám {{count}} souborů",
+    "statusDone": "Hotovo",
+    "statusFailed": "Selhalo",
+    "errorStorageFull": "Úložiště je plné - uvolni místo nebo přidej úložiště, aby bylo možné soubor nahrát.",
+    "errorStorageFullKept": "Nevejde se do úložiště - zůstává na tomto zařízení. Jakmile se uvolní místo, soubor se synchronizuje.",
+    "statusUploading": "Nahrává se...",
+    "statusWaiting": "Čeká",
+    "summaryDone": "{{count}} hotovo",
+    "summaryUploading": "{{count}} se nahrává",
+    "summaryFailed": "{{count}} selhalo",
+    "typesHint": "Obrázky, dokumenty, zvuk, video, zip. Max {{limit}} MB / soubor.",
+    "proPitch": "Pro zvedne limit na 50 MB na soubor.",
+    "proPitchCta": "Přejít na Pro",
+    "storagePitch": "Rozšíření úložiště ho zvedne na 100 MB na soubor.",
+    "storagePitchCta": "Přidat úložiště"
+  },
+  "decryptErrors": {
+    "tooSmall": "Tento soubor je prázdný nebo neúplný ({{size}} B), takže není co obnovit. Vyexportuj zálohu znovu a před importem zkontroluj, že má uložený soubor skutečnou velikost.",
+    "notThisAccount": "Tuhle zálohu se nepodařilo odemknout. Soubor .pnbackup jde otevřít jen v účtu, který ho vytvořil, takže obvykle jde o zálohu z jiného účtu - na přesun poznámek mezi účty vyexportuj kompletní zálohu (.zip). Pokud je účet správný, soubor se poškodil nebo se uložil neúplně."
+  },
+  "exportErrors": {
+    "generic": "Export se nepodařilo uložit. Zkus to znovu, nebo vyber jinou složku."
+  },
+  "saveErrors": {
+    "shortWrite": "Uložilo se jen {{written}} z {{expected}} bajtů, takže je soubor neúplný. Zkus to znovu a ulož do úložiště zařízení místo do složky v cloudu."
+  },
+  "browserImport": {
+    "tagLabel": "Zachovat štítky z prohlížeče",
+    "tagDesc": "Firefox ukládá k záložce štítky a klíčové slovo pro adresní řádek. Obojí se tady změní na štítky."
+  }
+}

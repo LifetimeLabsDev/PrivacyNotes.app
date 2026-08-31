@@ -1,0 +1,64 @@
+{
+  "upgrade": {
+    "header": "Paga una vegada, teu per sempre",
+    "earlyAdopterBadge": "Pioner",
+    "oneTime": "pagament únic",
+    "subscriptionPitch": "Sense subscripció. Sense quota anual. Un sol pagament, desbloquejat per a tota la vida.",
+    "ctaUnlock": "Desbloqueja-ho tot",
+    "ctaOpening": "S'està obrint la pàgina de pagament...",
+    "ctaSignUp": "Registra't per desbloquejar-ho",
+    "intro": {
+      "storage": "Els fitxers més grans i més espai són una funció Pro. Millora per pujar fitxers de 50 MB i tenir 500 MB d'emmagatzematge.",
+      "folders": "Les carpetes són una funció Pro. Organitza les notes en carpetes imbricades, tan profundes com necessitis, i mantén cada projecte separat.",
+      "lock": "Blocar una nota és una funció Pro. Millora per protegir qualsevol nota d'edicions accidentals.",
+      "protect": "Protegir una nota amb PIN és una funció Pro. Millora per amagar les notes sensibles darrere del teu PIN.",
+      "history": "L'historial de notes és una funció Pro. Millora per conservar una cronologia de cada desada.",
+      "devices": "Has arribat al límit de 2 dispositius. Millora per tenir dispositius il·limitats.",
+      "zen": "El mode Zen és una funció Pro. Millora per escriure sense distraccions.",
+      "theme": "Els temes prèmium són una funció Pro. Millora per desbloquejar tots els tons.",
+      "callout": "El conjunt complet de requadres destacats és una funció Pro.",
+      "totp": "Els codis 2FA són una funció Pro. Desa una clau d'autenticació a qualsevol inici de sessió i tindràs el codi rotatiu al costat de la contrasenya. La clau es desa i se sincronitza en tots els plans.",
+      "default": "Una sola millora desbloqueja tot això. Pagament únic."
+    },
+    "features": {
+      "devices": "Sincronitza dispositius il·limitats, a totes les plataformes",
+      "folders": "Carpetes imbricades, organitza per projecte",
+      "lock": "Bloca i protegeix amb PIN qualsevol nota",
+      "history": "Historial complet de notes, restaura quan vulguis",
+      "themes": "Temes prèmium en tots els tons",
+      "zen": "Mode Zen, escriptura sense distraccions",
+      "storage": "500 MB d'emmagatzematge + adjunts de 50 MB"
+    },
+    "comparisonBeta": "Paga ${{earlyPrice}} una sola vegada. Obsidian Sync costa $48/any, cada any. Standard Notes cobra $90/any. Preu per a pioners, fixat abans que pugi a ${{proPrice}}.",
+    "comparison": "Paga ${{proPrice}} una sola vegada i és teu per sempre. Obsidian Sync costa $48/any i Standard Notes $90/any, any rere any."
+  },
+  "purchaseError": {
+    "store": "No s'ha pogut completar el pagament a la botiga i no se t'ha cobrat res. Torna-ho a provar d'aquí a un moment.",
+    "validate": "El pagament s'ha fet correctament, però l'activació ha fallat. Reinicia l'aplicació per tornar-ho a provar; si tot i així no es desbloqueja, la botiga retorna l'import automàticament en un termini de 3 dies.",
+    "alreadyOwned": "La botiga diu que ja tens aquesta compra, però pertany a un altre compte. Inicia la sessió amb la frase de recuperació que feies servir quan la vas comprar."
+  },
+  "checkout": {
+    "invalidTitle": "L'enllaç de pagament no és vàlid",
+    "invalidBody": "Obre la pàgina de pagament des de dins de l'aplicació perquè puguem vincular la compra al teu compte.",
+    "completeTitle": "Pagament completat",
+    "completeBody": "Ja pots tancar aquesta pestanya i tornar a PrivacyNotes. La millora es desbloqueja automàticament.",
+    "openingTitle": "S'està obrint el pagament segur...",
+    "openingBody": "Hauria d'aparèixer una finestra de pagament de Paddle. Si no apareix, potser el navegador ha blocat la finestra emergent; torna a carregar aquesta pàgina per provar-ho de nou."
+  },
+  "history": {
+    "title": "Historial de la nota",
+    "subtitle": "Fins a 20 versions per nota. Les més antigues s'eliminen automàticament.",
+    "empty": "Encara no hi ha historial. Les versions es comencen a acumular a partir de la propera edició. Torna més tard.",
+    "selectPrompt": "Selecciona una versió per previsualitzar-la.",
+    "emptyBody": "(buida)",
+    "restore": "Restaura",
+    "restoring": "S'està restaurant…"
+  },
+  "donation": {
+    "eyebrow": "Has desbloquejat",
+    "intro": "<brand/> és gratuïta, i sempre ho serà. Sense anuncis, sense seguiment, sense cap correu registrat. Si t'ha ajudat a pensar, escriure o recordar, considera donar suport al desenvolupament. Manté el projecte en marxa i paga les properes funcions.",
+    "proBenefits": "Donar suport també desbloqueja els avantatges Pro quan arribin: dispositius il·limitats, fitxers adjunts, còpies de seguretat xifrades al núvol.",
+    "maybeLater": "Potser més tard",
+    "support": "Dona suport →"
+  }
+}

@@ -1,0 +1,289 @@
+{
+  "noteRow": {
+    "created": "Vytvořeno",
+    "modified": "Upraveno",
+    "select": "Vybrat poznámku",
+    "deselect": "Zrušit výběr poznámky",
+    "pinProtected": "Chráněno PINem",
+    "readOnly": "Jen pro čtení",
+    "file": "Soubor",
+    "empty": "Prázdná",
+    "noContent": "Bez obsahu"
+  },
+  "header": {
+    "new": "Nový",
+    "newNote": "Nová poznámka",
+    "newNoteHover": "Nová poznámka ({{hotkey}})",
+    "trash": "Koš"
+  },
+  "folderChip": {
+    "clear": "Zrušit filtr složky: {{folder}}"
+  },
+  "tagChip": {
+    "clear": "Zrušit filtr značky: {{tag}}"
+  },
+  "vaultNew": {
+    "ariaLabel": "Nová položka trezoru",
+    "login": "Přihlášení",
+    "card": "Kreditní karta",
+    "sshKey": "SSH klíč"
+  },
+  "newMenu": {
+    "note": "Poznámka",
+    "task": "Úkol",
+    "journal": "Deník",
+    "login": "Přihlášení",
+    "file": "Soubor",
+    "bookmark": "Záložka"
+  },
+  "vaultFilter": {
+    "all": "Vše",
+    "logins": "Přihlášení",
+    "cards": "Karty",
+    "keys": "Klíče"
+  },
+  "journal": {
+    "backfillHover": "Nový deník pro některý z posledních dní",
+    "newEntry": "Nový záznam v deníku",
+    "newEntryHover": "Nový záznam v deníku ({{hotkey}})"
+  },
+  "tasks": {
+    "newTitle": "Úkoly na {{date}}"
+  },
+  "trash": {
+    "empty": "Vysypat",
+    "emptyHover": "Smazat všechny poznámky v koši",
+    "storage": "Úložiště",
+    "autoDelete": "Auto-mazání: 30 dní"
+  },
+  "search": {
+    "sortOptions": "Možnosti řazení a zobrazení",
+    "placeholderVault": "Hledat v trezoru…",
+    "placeholderNotes": "Hledat v poznámkách…"
+  },
+  "selection": {
+    "countOf": "Vybráno {{selected}} z {{total}}",
+    "selectAll": "Vybrat vše",
+    "deselectAll": "Zrušit výběr"
+  },
+  "empty": {
+    "noMatches": "Nic nenalezeno.",
+    "vault": "Trezor je prázdný.",
+    "notes": "Zatím žádné poznámky.",
+    "filtered": "Žádné položky neodpovídají tvým filtrům.",
+    "clearFilters": "Zrušit filtry",
+    "filteredAfter": "abys je zobrazil."
+  },
+  "headerLabel": {
+    "allItems": "Vše",
+    "untagged": "Bez značek",
+    "journals": "Deníky",
+    "vault": "Trezor",
+    "pinned": "Připnuté",
+    "notes": "Poznámky"
+  },
+  "footerStats": {
+    "journals": "Deníků",
+    "items": "Položek",
+    "trashed": "V koši",
+    "notes": "Poznámek",
+    "bookmarks": "Záložek"
+  },
+  "toast": {
+    "imageUploadFailed": "Nahrání obrázku se nezdařilo: {{error}}",
+    "imageError": "Chyba obrázku: {{error}}",
+    "uploadFailedFor": "Nahrání souboru „{{filename}}“ se nezdařilo: {{error}}",
+    "importedSyncing_one": "Importována {{count}} poznámka. Probíhá synchronizace…",
+    "importedSyncing_few": "Importovány {{count}} poznámky. Probíhá synchronizace…",
+    "importedSyncing_many": "Importováno {{count}} poznámky. Probíhá synchronizace…",
+    "importedSyncing_other": "Importováno {{count}} poznámek. Probíhá synchronizace…",
+    "addedTag_one": "Přidáno #{{tag}} k {{count}} položce",
+    "addedTag_few": "Přidáno #{{tag}} k {{count}} položkám",
+    "addedTag_many": "Přidáno #{{tag}} k {{count}} položky",
+    "addedTag_other": "Přidáno #{{tag}} k {{count}} položkám"
+  },
+  "burn": {
+    "mediaOnly": "Tato poznámka obsahuje pouze média, a proto ji nelze sdílet odkazem ke spálení.",
+    "shareTitle": "Šifrovaná poznámka"
+  },
+  "loadError": {
+    "message": "Nepodařilo se načíst tvoje poznámky. Připojení k lokální databázi bylo přerušeno. Může se to stát, když aplikace nějakou dobu běžela na pozadí.",
+    "reload": "Načíst znovu"
+  },
+  "banner": {
+    "dismiss": "Zavřít",
+    "proActivationPending": "Platba byla přijata, ale aktivace Pro trvá déle než obvykle. Za minutu obnov stránku, nebo napiš podpoře, pokud se Pro nezapne.",
+    "snapshotPaused": "Historie poznámek je pozastavena. Tvůj tarif Pro vypadá jako neaktivní. Nové úpravy se nebudou ukládat do historie, dokud Pro neobnovíš.",
+    "restorePro": "Obnovit Pro",
+    "storagePastDue": "Platba za předplatné úložiště se nezdařila. Aktualizuj kartu v Paddle, ať nepřijdeš o rozšířenou kapacitu.",
+    "updateCard": "Aktualizovat kartu"
+  },
+  "sidebar": {
+    "collapse": "Sbalit postranní panel",
+    "expand": "Rozbalit postranní panel"
+  },
+  "notesList": {
+    "collapse": "Sbalit seznam poznámek",
+    "expand": "Rozbalit seznam poznámek"
+  },
+  "paneResize": {
+    "hintCollapse": "Kliknutím sbalíš · Přetažením změníš velikost"
+  },
+  "emptyEditor": {
+    "selectFile": "Vyber soubor pro náhled",
+    "uploadFiles": "Nebo nahraj nové soubory do svého šifrovaného trezoru.",
+    "selectNote": "Vyber poznámku nebo si vytvoř novou.",
+    "selectMarkdown": "Otevři soubor Markdown, ať se ti tu zobrazí."
+  },
+  "zen": {
+    "exit": "Ukončit Zen",
+    "exitHover": "Ukončit režim Zen (Esc)",
+    "enterHover": "Zapnout režim Zen",
+    "proHover": "Režim Zen (Pro)",
+    "enterAriaShortcut": "Zapnout režim Zen (⌘⇧F)"
+  },
+  "editor": {
+    "backToList": "Zpět na seznam poznámek",
+    "backToGrid": "Zpět na mřížku",
+    "titlePlaceholder": "Bez názvu (klikni a uprav, nebo nech vygenerovat)",
+    "titlePlaceholderLogin": "např. GitHub",
+    "titlePlaceholderCard": "např. Visa končící 4242",
+    "titlePlaceholderSshKey": "např. deploy klíč pro GitHub",
+    "pin": "Připnout",
+    "unpin": "Odepnout",
+    "restore": "Obnovit",
+    "deleteForever": "Smazat navždy",
+    "moveToTrash": "Přesunout do koše",
+    "noteOptions": "Možnosti poznámky",
+    "readOnlyToggle": "Jen pro čtení. Vypnout lze v",
+    "menu": "Nabídka",
+    "showMarkdown": "Zobrazit markdown",
+    "showFormatted": "Zobrazit formátovaně",
+    "invisiblesShow": "Zobrazit netisknutelné znaky",
+    "invisiblesHide": "Skrýt netisknutelné znaky",
+    "findInNote": "Najít v poznámce",
+    "navPrev": "Předchozí poznámka",
+    "navNext": "Další poznámka",
+    "undo": "Vrátit zpět",
+    "redo": "Znovu",
+    "hide": "Skrýt",
+    "show": "Zobrazit",
+    "hideToolbar": "Skrýt panel formátování",
+    "showToolbar": "Zobrazit panel formátování",
+    "widthDefault": "Výchozí šířka",
+    "widthWide": "Širší",
+    "widthFull": "Plná šířka",
+    "burn": "Sdílet a spálit po přečtení",
+    "titlePlaceholderLink": "Název záložky"
+  },
+  "share": {
+    "hover": "Sdílet / exportovat",
+    "ariaLabel": "Sdílet nebo exportovat",
+    "thisNote": "Tato poznámka",
+    "currentMdTitle": "Aktuální poznámka (.md)",
+    "currentMdDesc": "Zdrojový markdown s front-matter.",
+    "currentHtmlTitle": "Aktuální poznámka (.html)",
+    "currentHtmlDesc": "Vhodné pro tisk, markdown vykreslený na bílé stránce.",
+    "printTitle": "Vytisknout / uložit jako PDF",
+    "printDesc": "Otevře dialog tisku. Ulož jako PDF nebo pošli na tiskárnu.",
+    "burnTitle": "Sdílet a spálit po přečtení",
+    "burnDesc": "Zveřejní tuto poznámku jako odkaz na jedno zobrazení. Odkaz se po přečtení sám zničí. Tvoje poznámka zůstane v bezpečí ve tvém účtu.",
+    "backup": "Záloha",
+    "fullBackupTitle": "Plná záloha (.zip)",
+    "fullBackupDesc": "Všechno: poznámky, deníky, trezor, úkoly, obrázky, zvuk, soubory.",
+    "allHtmlTitle": "Všechny položky (.zip s .html)",
+    "allHtmlDesc": "Jeden HTML k tisku pro každou položku. Dobré na čtení offline.",
+    "jsonTitle": "Textová záloha (.json)",
+    "jsonDesc": "Veškerý text a metadata, bez obrázků a souborů."
+  },
+  "weekReview": {
+    "title": "Týdenní přehled",
+    "daysLogged": "zapsáno {{count}}/7",
+    "mood": "Nálada",
+    "sleep": "Spánek",
+    "meds": "Léky",
+    "activity": "Aktivita"
+  },
+  "footer": {
+    "settings": "Nastavení",
+    "viewShortcuts": "Zobrazit všechny klávesové zkratky",
+    "newNote": "Nové",
+    "newNoteHintMac": "Option + Shift + N",
+    "newNoteHintOther": "Alt + Shift + N",
+    "openStats": "Otevřít statistiky",
+    "words": "Slov",
+    "zen": "Režim Zen",
+    "appearance": "Vzhled",
+    "signOut": "Odhlásit se",
+    "signingOut": "Odhlašování…",
+    "switchToLight": "Přepnout na světlý režim",
+    "switchToDark": "Přepnout na tmavý režim"
+  },
+  "settings": {
+    "groupYourNotes": "Tvoje poznámky",
+    "groupAccount": "Účet a data",
+    "groupBrand": "PrivacyNotes",
+    "statsLabel": "Statistiky",
+    "journalsLabel": "Deníky",
+    "importLabel": "Import a export",
+    "planLabel": "Účet",
+    "storageLabel": "Úložiště",
+    "securityLabel": "Zabezpečení",
+    "accountLabel": "ID a synchronizace",
+    "appearanceLabel": "Vzhled",
+    "helpLabel": "Nápověda",
+    "aboutLabel": "O aplikaci",
+    "languageLabel": "Jazyk",
+    "languageDesc": "Vyber jazyk, ve kterém se PrivacyNotes zobrazuje."
+  },
+  "importStore": {
+    "title": "Importovat, nebo uložit?",
+    "confirm": "Importovat jako poznámky",
+    "cancel": "Uložit jako soubory",
+    "bodySingle": "<strong>{{filename}}</strong> vypadá jako soubor markdown. Importovat ho jako poznámku, kterou můžeš číst a upravovat, nebo ho uložit jako šifrovanou přílohu?",
+    "bodyMulti": "Tyto soubory ({{count}}) vypadají jako markdown. Importovat je jako poznámky, které můžeš číst a upravovat, nebo je uložit jako šifrované přílohy?"
+  },
+  "bulkTrash": {
+    "title": "Přesunout do koše",
+    "body_one": "Přesunout <highlight>{{count}} položku</highlight> do koše? Můžeš ji později obnovit.",
+    "body_few": "Přesunout <highlight>{{count}} položky</highlight> do koše? Můžeš je později obnovit.",
+    "body_many": "Přesunout <highlight>{{count}} položky</highlight> do koše? Můžeš je později obnovit.",
+    "body_other": "Přesunout <highlight>{{count}} položek</highlight> do koše? Můžeš je později obnovit."
+  },
+  "bulkDelete": {
+    "body_one": "Trvale smazat <highlight>{{count}} poznámku</highlight>? Tuto akci nelze vzít zpět.",
+    "body_few": "Trvale smazat <highlight>{{count}} poznámky</highlight>? Tuto akci nelze vzít zpět.",
+    "body_many": "Trvale smazat <highlight>{{count}} poznámky</highlight>? Tuto akci nelze vzít zpět.",
+    "body_other": "Trvale smazat <highlight>{{count}} poznámek</highlight>? Tuto akci nelze vzít zpět."
+  },
+  "tagConfirm": {
+    "mergeTitle": "Sloučit značky",
+    "deleteTitle": "Smazat značku",
+    "deleteWithNotesTitle": "Smazat značku a poznámky",
+    "mergeConfirm": "Sloučit",
+    "deleteConfirm": "Smazat značku",
+    "moveToTrash": "Přesunout do koše",
+    "mergeBody_one": "Značka <highlight>„{{targetTag}}“</highlight> už existuje. Sloučit do ní <highlight>{{count}} poznámku</highlight> se stávající značkou „{{tag}}“?",
+    "mergeBody_few": "Značka <highlight>„{{targetTag}}“</highlight> už existuje. Sloučit do ní <highlight>{{count}} poznámky</highlight> se stávající značkou „{{tag}}“?",
+    "mergeBody_many": "Značka <highlight>„{{targetTag}}“</highlight> už existuje. Sloučit do ní <highlight>{{count}} poznámky</highlight> se stávající značkou „{{tag}}“?",
+    "mergeBody_other": "Značka <highlight>„{{targetTag}}“</highlight> už existuje. Sloučit do ní <highlight>{{count}} poznámek</highlight> se stávající značkou „{{tag}}“?",
+    "deleteBody_one": "Odebrat značku <highlight>„{{tag}}“</highlight> z <highlight>{{count}} poznámky</highlight>? Samotné poznámky se nesmažou.",
+    "deleteBody_few": "Odebrat značku <highlight>„{{tag}}“</highlight> z <highlight>{{count}} poznámek</highlight>? Samotné poznámky se nesmažou.",
+    "deleteBody_many": "Odebrat značku <highlight>„{{tag}}“</highlight> z <highlight>{{count}} poznámky</highlight>? Samotné poznámky se nesmažou.",
+    "deleteBody_other": "Odebrat značku <highlight>„{{tag}}“</highlight> z <highlight>{{count}} poznámek</highlight>? Samotné poznámky se nesmažou.",
+    "deleteWithNotesBody_one": "Smazat značku <highlight>„{{tag}}“</highlight> a přesunout <highlight>{{count}} poznámku</highlight> do koše? Můžeš ji odtud obnovit.",
+    "deleteWithNotesBody_few": "Smazat značku <highlight>„{{tag}}“</highlight> a přesunout <highlight>{{count}} poznámky</highlight> do koše? Můžeš je odtud obnovit.",
+    "deleteWithNotesBody_many": "Smazat značku <highlight>„{{tag}}“</highlight> a přesunout <highlight>{{count}} poznámky</highlight> do koše? Můžeš je odtud obnovit.",
+    "deleteWithNotesBody_other": "Smazat značku <highlight>„{{tag}}“</highlight> a přesunout <highlight>{{count}} poznámek</highlight> do koše? Můžeš je odtud obnovit."
+  },
+  "createNote": {
+    "title": "Vytvořit poznámku?",
+    "confirm": "Vytvořit poznámku",
+    "body": "Poznámka s názvem <highlight>„{{title}}“</highlight> neexistuje. Může se to stát, když byla propojená poznámka přejmenována. Vytvořit novou poznámku s tímto názvem?"
+  },
+  "freshVault": {
+    "title": "Byl vytvořen nový trezor",
+    "confirm": "Rozumím",
+    "body": "Zadané frázi neodpovídal žádný existující trezor, takže byl vytvořen nový a prázdný. Jestli tu měly být tvoje poznámky, odhlas se a zadej frázi znovu a pozorně - jedno jiné slovo otevře úplně jiný trezor."
+  }
+}

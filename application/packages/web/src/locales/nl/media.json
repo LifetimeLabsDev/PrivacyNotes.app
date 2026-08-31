@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Grootte:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "Afbeelding downloaden",
+    "deleteAria": "Afbeelding verwijderen",
+    "loading": "Afbeelding laden...",
+    "uploading": "{{name}} uploaden...",
+    "uploadFailed": "Uploaden mislukt: {{message}}",
+    "storeUnavailable": "Afbeeldingsopslag niet beschikbaar",
+    "loadFailed": "Afbeelding kon niet worden geladen",
+    "notFound": "Afbeelding niet gevonden"
+  },
+  "attachment": {
+    "fallbackName": "Bijlage",
+    "imageAlt": "Afbeelding",
+    "cantPlay": "Afspelen lukt niet. Download om te luisteren",
+    "downloadingStatus": "downloaden...",
+    "deleteConfirm": "Verwijderen?",
+    "copied": "Gekopieerd",
+    "download": "Downloaden",
+    "downloadToPlay": "Download om af te spelen",
+    "play": "Afspelen",
+    "pause": "Pauzeren",
+    "fileNotFound": "Bestand niet gevonden",
+    "localOnly": "Alleen op dit apparaat",
+    "localOnlyTip": "Past niet in je opslag. Geen back-up: als je browser- of app-gegevens wist, is het bestand weg. Synchroniseert zodra er ruimte vrijkomt.",
+    "notUploaded": "Nog niet geüpload",
+    "notUploadedTip": "Dit bestand is nog niet geüpload vanaf het apparaat waarop het is toegevoegd - meestal omdat de opslag daar vol is. Het opent hier zodra het is gesynchroniseerd.",
+    "downloadFailed": "Downloaden mislukt",
+    "playbackFailed": "Afspelen mislukt",
+    "uploadFailed": "Uploaden mislukt: {{message}}",
+    "unknownError": "Onbekende fout"
+  }
+}

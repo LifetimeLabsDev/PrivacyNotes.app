@@ -1,0 +1,64 @@
+{
+  "upgrade": {
+    "header": "Eenmalig betalen, voor altijd van jou",
+    "earlyAdopterBadge": "Early adopter",
+    "oneTime": "eenmalig",
+    "subscriptionPitch": "Geen abonnement. Geen jaarlijkse kosten. Eén betaling, voor het leven ontgrendeld.",
+    "ctaUnlock": "Alles ontgrendelen",
+    "ctaOpening": "Afrekenen openen...",
+    "ctaSignUp": "Meld je aan om te ontgrendelen",
+    "intro": {
+      "storage": "Grotere uploads en meer ruimte zijn een Pro-functie. Upgrade voor bestanden tot 50 MB en 500 MB opslag.",
+      "folders": "Mappen zijn een Pro-functie. Orden je notities in submappen, zo diep als je wilt, en houd elk project gescheiden.",
+      "lock": "Een notitie vergrendelen is een Pro-functie. Upgrade om notities te beschermen tegen onbedoelde wijzigingen.",
+      "protect": "Een notitie met een PIN beveiligen is een Pro-functie. Upgrade om gevoelige notities achter je PIN te zetten.",
+      "history": "Notitiegeschiedenis is een Pro-functie. Upgrade om een tijdlijn van elke opgeslagen versie te bewaren.",
+      "devices": "Je zit aan de limiet van 2 apparaten. Upgrade voor een onbeperkt aantal apparaten.",
+      "zen": "Zen-modus is een Pro-functie. Upgrade voor schrijven zonder afleiding.",
+      "theme": "Premium thema's zijn een Pro-functie. Upgrade om elke tint te ontgrendelen.",
+      "callout": "De volledige set aandachtsblokken is een Pro-functie.",
+      "totp": "2FA-codes zijn een Pro-functie. Bewaar een authenticator-sleutel bij elke login en je krijgt de wisselende code naast het wachtwoord. De sleutel zelf wordt in elk abonnement opgeslagen en gesynchroniseerd.",
+      "default": "Eén upgrade ontgrendelt alles hieronder. Eenmalige betaling."
+    },
+    "features": {
+      "devices": "Synchroniseer onbeperkt veel apparaten, op elk platform",
+      "folders": "Submappen, orden per project",
+      "lock": "Vergrendel elke notitie of beveilig hem met een PIN",
+      "history": "Volledige notitiegeschiedenis, herstel wanneer je wilt",
+      "themes": "Premium thema's in elke tint",
+      "zen": "Zen-modus, schrijven zonder afleiding",
+      "storage": "500 MB opslag + bijlagen tot 50 MB"
+    },
+    "comparisonBeta": "Betaal eenmalig ${{earlyPrice}}. Obsidian Sync kost $48 per jaar, elk jaar. Standard Notes rekent $90 per jaar. Early-adopterprijs, vastgezet voordat hij naar ${{proPrice}} gaat.",
+    "comparison": "Betaal eenmalig ${{proPrice}} en het is voor altijd van jou. Obsidian Sync kost $48 per jaar en Standard Notes $90 per jaar, elk jaar opnieuw."
+  },
+  "purchaseError": {
+    "store": "Het afrekenen in de store kon niet worden voltooid en er is niets afgeschreven. Probeer het zo meteen opnieuw.",
+    "validate": "Je betaling is gelukt, maar het activeren niet. Start de app opnieuw om het nog eens te proberen - blijft het ontgrendelen mislukken, dan betaalt de store de aankoop binnen 3 dagen automatisch terug.",
+    "alreadyOwned": "Volgens de store bezit je dit al, maar het hoort bij een ander account. Meld je aan met de herstelzin die je gebruikte toen je de aankoop deed."
+  },
+  "checkout": {
+    "invalidTitle": "Afrekenlink ongeldig",
+    "invalidBody": "Start het afrekenen vanuit de app, zodat we de aankoop aan je account kunnen koppelen.",
+    "completeTitle": "Betaling voltooid",
+    "completeBody": "Je kunt dit tabblad sluiten en terug naar PrivacyNotes. Je upgrade wordt automatisch ontgrendeld.",
+    "openingTitle": "Beveiligd afrekenen openen...",
+    "openingBody": "Er hoort een Paddle-afrekenvenster te verschijnen. Gebeurt dat niet, dan heeft je browser de pop-up misschien geblokkeerd - herlaad deze pagina om het opnieuw te proberen."
+  },
+  "history": {
+    "title": "Notitiegeschiedenis",
+    "subtitle": "Tot 20 versies per notitie. De oudste worden automatisch opgeruimd.",
+    "empty": "Nog geen geschiedenis. Versies worden vanaf de volgende bewerking bewaard. Kom later terug.",
+    "selectPrompt": "Kies een versie om te bekijken.",
+    "emptyBody": "(leeg)",
+    "restore": "Herstellen",
+    "restoring": "Herstellen…"
+  },
+  "donation": {
+    "eyebrow": "Je hebt ontgrendeld",
+    "intro": "<brand/> is gratis, en dat blijft het. Geen advertenties, geen tracking, geen e-mailadres in onze administratie. Als het je heeft geholpen om te denken, te schrijven of dingen te onthouden, overweeg dan de ontwikkeling te steunen. Daarmee blijft het project draaien en worden de volgende functies betaald.",
+    "proBenefits": "Met je steun ontgrendel je ook de Pro-voordelen zodra die er zijn: onbeperkt veel apparaten, bijlagen, versleutelde back-ups in de cloud.",
+    "maybeLater": "Misschien later",
+    "support": "Steunen →"
+  }
+}

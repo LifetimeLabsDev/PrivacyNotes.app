@@ -1,0 +1,120 @@
+{
+  "title": "Estadístiques",
+  "tabs": {
+    "writing": "Escriptura",
+    "wellness": "Benestar"
+  },
+  "writing": {
+    "notes": "Notes",
+    "words": "Paraules",
+    "tags": "Etiquetes",
+    "currentStreak": "Ratxa actual",
+    "longestStreak": "Ratxa més llarga",
+    "streakValue": "{{count}} d",
+    "timeRangeAria": "Interval de temps de l'activitat",
+    "modeActivity": "Activitat",
+    "modeMood": "Ànim",
+    "tooltipMood": "{{date}}: ànim {{mood}}/10",
+    "tooltipNoMood": "{{date}}: sense registre d'ànim",
+    "tooltipEdits_one": "{{date}}: {{count}} edició",
+    "tooltipEdits_many": "{{date}}: {{count}} edicions",
+    "tooltipEdits_other": "{{date}}: {{count}} edicions",
+    "longestNote": "Nota més llarga: <name>{{title}}</name> ({{count}} paraules)"
+  },
+  "range": {
+    "7d": "7 dies",
+    "14d": "14 dies",
+    "30d": "30 dies",
+    "3mo": "3 mesos",
+    "6mo": "6 mesos",
+    "12mo": "12 mesos"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Tot",
+      "sleepActivity": "Son i activitat",
+      "medication": "Medicació",
+      "patterns": "Patrons"
+    },
+    "empty": {
+      "title": "Encara no hi ha dades de benestar.",
+      "hint": "Obre una entrada de diari i registra el teu ànim per començar."
+    },
+    "overview": {
+      "daysTracked": "Dies registrats",
+      "avgMood": "Ànim mitjà",
+      "avgSleep": "Son mitjà",
+      "medAdherence": "Adherència a la medicació",
+      "moodTrend": "Tendència de l'ànim",
+      "moodByDayOfWeek": "Ànim per dia de la setmana",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Exporta",
+      "allTime": "Des de sempre",
+      "last90Days": "Últims 90 dies",
+      "last30Days": "Últims 30 dies",
+      "last7Days": "Últims 7 dies",
+      "downloadJSON": "Baixa el JSON",
+      "doctorPDF": "PDF per al metge",
+      "copyAIPrompt": "Copia la indicació per a la IA",
+      "copied": "Copiat!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Qualitat del son",
+      "activity": "Activitat",
+      "avgSleepPerNight": "Mitjana de son per nit"
+    },
+    "medication": {
+      "adherence": "Adherència",
+      "empty": {
+        "title": "Encara no hi ha dades de medicació.",
+        "hint": "Afegeix un medicament a la configuració de seguiments i després registra'l cada dia."
+      },
+      "dosageTimeline": "Cronologia de la dosi",
+      "started": "Inici amb {{dosage}}",
+      "changedTo": "Canvi a {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Emocions principals",
+      "insights": "Observacions",
+      "proBadge": "PRO",
+      "insightsLocked_one": "S'ha detectat {{count}} observació. Millora a Pro per veure-la",
+      "insightsLocked_many": "S'han detectat {{count}} observacions. Millora a Pro per veure-les",
+      "insightsLocked_other": "S'han detectat {{count}} observacions. Millora a Pro per veure-les",
+      "weekInReview": "Resum de la setmana",
+      "weekInReviewLocked": "Millora a Pro per veure el teu resum setmanal de benestar"
+    },
+    "week": {
+      "range": "De {{start}} a {{end}}",
+      "daysLogged": "{{count}}/7 dies registrats",
+      "avgMood": "Ànim mitjà",
+      "moodDelta": "{{delta}} respecte de la setmana passada",
+      "avgSleep": "Son mitjà",
+      "medsTaken": "Medicació presa",
+      "topActivity": "Activitat principal",
+      "topEmotions": "Emocions principals",
+      "reflection": "Reflexió",
+      "reflectionPlaceholder": "Com ha anat la setmana en general? Cap pensament per apuntar..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Fita desbloquejada"
+  },
+  "milestone": {
+    "notes_one": "{{count}} nota escrita",
+    "notes_many": "{{count}} notes escrites",
+    "notes_other": "{{count}} notes escrites",
+    "streak": "Ratxa d'escriptura de {{count}} dies",
+    "words_one": "{{formatted}} paraula escrita",
+    "words_many": "{{formatted}} paraules escrites",
+    "words_other": "{{formatted}} paraules escrites",
+    "age30": "30 dies amb PrivacyNotes",
+    "age365": "1 any amb PrivacyNotes",
+    "age730": "2 anys amb PrivacyNotes",
+    "age1825": "5 anys amb PrivacyNotes",
+    "ageDefault": "{{count}} dies amb nosaltres"
+  }
+}

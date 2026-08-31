@@ -1,0 +1,275 @@
+{
+  "noteRow": {
+    "created": "Erstellt",
+    "modified": "Geändert",
+    "select": "Notiz auswählen",
+    "deselect": "Notiz abwählen",
+    "pinProtected": "PIN-geschützt",
+    "readOnly": "Schreibgeschützt",
+    "file": "Datei",
+    "empty": "Leer",
+    "noContent": "Kein Inhalt"
+  },
+  "header": {
+    "new": "Neu",
+    "newNote": "Neue Notiz",
+    "newNoteHover": "Neue Notiz ({{hotkey}})",
+    "trash": "Papierkorb"
+  },
+  "folderChip": {
+    "clear": "Ordnerfilter aufheben: {{folder}}"
+  },
+  "tagChip": {
+    "clear": "Tagfilter aufheben: {{tag}}"
+  },
+  "vaultNew": {
+    "ariaLabel": "Neuer Tresor-Eintrag",
+    "login": "Login",
+    "card": "Kreditkarte",
+    "sshKey": "SSH-Schlüssel"
+  },
+  "newMenu": {
+    "note": "Notiz",
+    "task": "Aufgabe",
+    "journal": "Tagebuch",
+    "login": "Login",
+    "file": "Datei",
+    "bookmark": "Lesezeichen"
+  },
+  "vaultFilter": {
+    "all": "Alle",
+    "logins": "Logins",
+    "cards": "Kreditkarten",
+    "keys": "Schlüssel"
+  },
+  "journal": {
+    "backfillHover": "Neues Tagebuch für einen vergangenen Tag",
+    "newEntry": "Neuer Tagebucheintrag",
+    "newEntryHover": "Neuer Tagebucheintrag ({{hotkey}})"
+  },
+  "tasks": {
+    "newTitle": "Aufgaben für {{date}}"
+  },
+  "trash": {
+    "empty": "Leeren",
+    "emptyHover": "Alle Notizen im Papierkorb löschen",
+    "storage": "Speicher",
+    "autoDelete": "Autolöschen: 30 Tage"
+  },
+  "search": {
+    "sortOptions": "Sortier- und Ansichtsoptionen",
+    "placeholderVault": "Tresor durchsuchen…",
+    "placeholderNotes": "Notizen durchsuchen…"
+  },
+  "selection": {
+    "countOf": "{{selected}} von {{total}} ausgewählt",
+    "selectAll": "Alle auswählen",
+    "deselectAll": "Auswahl aufheben"
+  },
+  "empty": {
+    "noMatches": "Keine Treffer.",
+    "vault": "Der Tresor ist leer.",
+    "notes": "Noch keine Notizen.",
+    "filtered": "Keine Einträge passen zu deinen Filtern.",
+    "clearFilters": "Filter aufheben",
+    "filteredAfter": "damit sie wieder erscheinen."
+  },
+  "headerLabel": {
+    "allItems": "Alle",
+    "untagged": "Ohne Tag",
+    "journals": "Tagebücher",
+    "vault": "Tresor",
+    "pinned": "Angepinnt",
+    "notes": "Notizen"
+  },
+  "footerStats": {
+    "journals": "Tagebücher",
+    "items": "Einträge",
+    "trashed": "Im Papierkorb",
+    "notes": "Notizen",
+    "bookmarks": "Lesezeichen"
+  },
+  "toast": {
+    "imageUploadFailed": "Bild-Upload fehlgeschlagen: {{error}}",
+    "imageError": "Bildfehler: {{error}}",
+    "uploadFailedFor": "Upload fehlgeschlagen für „{{filename}}“: {{error}}",
+    "importedSyncing_one": "{{count}} Notiz importiert. Wird synchronisiert…",
+    "importedSyncing_other": "{{count}} Notizen importiert. Wird synchronisiert…",
+    "addedTag_one": "#{{tag}} zu {{count}} Eintrag hinzugefügt",
+    "addedTag_other": "#{{tag}} zu {{count}} Einträgen hinzugefügt"
+  },
+  "burn": {
+    "mediaOnly": "Diese Notiz enthält nur Medien und kann nicht per Vernichtungslink geteilt werden.",
+    "shareTitle": "Verschlüsselte Notiz"
+  },
+  "loadError": {
+    "message": "Deine Notizen konnten nicht geladen werden. Die Verbindung zur lokalen Datenbank wurde unterbrochen. Das kann passieren, wenn die App eine Weile im Hintergrund war.",
+    "reload": "Neu laden"
+  },
+  "banner": {
+    "dismiss": "Schließen",
+    "proActivationPending": "Zahlung erhalten, aber die Pro-Aktivierung dauert länger als üblich. Lade in einer Minute neu oder kontaktiere den Support, falls Pro nicht aktiviert wird.",
+    "snapshotPaused": "Der Notizverlauf ist pausiert. Dein Pro-Tarif scheint inaktiv. Neue Änderungen werden nicht versioniert, bis Pro wiederhergestellt ist.",
+    "restorePro": "Pro wiederherstellen",
+    "storagePastDue": "Die Zahlung für dein Speicher-Abo ist fehlgeschlagen. Aktualisiere deine Karte in Paddle, um zusätzlichen Speicher nicht zu verlieren.",
+    "updateCard": "Karte aktualisieren"
+  },
+  "sidebar": {
+    "collapse": "Seitenleiste einklappen",
+    "expand": "Seitenleiste ausklappen"
+  },
+  "notesList": {
+    "collapse": "Notizliste einklappen",
+    "expand": "Notizliste ausklappen"
+  },
+  "paneResize": {
+    "hintCollapse": "Zum Einklappen klicken · Zum Anpassen ziehen"
+  },
+  "emptyEditor": {
+    "selectFile": "Wähle eine Datei zur Vorschau",
+    "uploadFiles": "Oder lade neue Dateien in deinen verschlüsselten Tresor.",
+    "selectNote": "Wähle eine Notiz oder erstelle eine neue.",
+    "selectMarkdown": "Öffne eine Markdown-Datei, um sie hier zu lesen."
+  },
+  "zen": {
+    "exit": "Zen verlassen",
+    "exitHover": "Zen-Modus verlassen (Esc)",
+    "enterHover": "Zen-Modus starten",
+    "proHover": "Zen-Modus (Pro)",
+    "enterAriaShortcut": "Zen-Modus starten (⌘⇧F)"
+  },
+  "editor": {
+    "backToList": "Zurück zur Notizliste",
+    "backToGrid": "Zurück zum Raster",
+    "titlePlaceholder": "Ohne Titel (zum Bearbeiten klicken oder automatisch erstellen lassen)",
+    "titlePlaceholderLogin": "z. B. GitHub",
+    "titlePlaceholderCard": "z. B. Visa endend auf 4242",
+    "titlePlaceholderSshKey": "z. B. GitHub Deploy-Schlüssel",
+    "pin": "Anpinnen",
+    "unpin": "Lösen",
+    "restore": "Wiederherstellen",
+    "deleteForever": "Endgültig löschen",
+    "moveToTrash": "In den Papierkorb",
+    "noteOptions": "Notizoptionen",
+    "readOnlyToggle": "Schreibgeschützt. Ausschalten unter",
+    "menu": "Menü",
+    "showMarkdown": "Markdown anzeigen",
+    "showFormatted": "Formatiert anzeigen",
+    "invisiblesShow": "Unsichtbare Zeichen anzeigen",
+    "invisiblesHide": "Unsichtbare Zeichen ausblenden",
+    "findInNote": "In Notiz suchen",
+    "navPrev": "Vorherige Notiz",
+    "navNext": "Nächste Notiz",
+    "undo": "Rückgängig",
+    "redo": "Wiederholen",
+    "hide": "Verbergen",
+    "show": "Anzeigen",
+    "hideToolbar": "Formatierungsleiste ausblenden",
+    "showToolbar": "Formatierungsleiste anzeigen",
+    "widthDefault": "Standardbreite",
+    "widthWide": "Breiter",
+    "widthFull": "Volle Breite",
+    "burn": "Teilen & nach dem Lesen vernichten",
+    "titlePlaceholderLink": "Name des Lesezeichens"
+  },
+  "share": {
+    "hover": "Teilen / Exportieren",
+    "ariaLabel": "Teilen oder exportieren",
+    "thisNote": "Diese Notiz",
+    "currentMdTitle": "Aktuelle Notiz (.md)",
+    "currentMdDesc": "Rohes Markdown mit Front-Matter.",
+    "currentHtmlTitle": "Aktuelle Notiz (.html)",
+    "currentHtmlDesc": "Druckfreundlich, Markdown auf weißer Seite gerendert.",
+    "printTitle": "Drucken / Als PDF speichern",
+    "printDesc": "Öffnet den Druckdialog. Als PDF speichern oder an einen Drucker senden.",
+    "burnTitle": "Teilen & nach dem Lesen vernichten",
+    "burnDesc": "Veröffentliche diese Notiz als Link zum einmaligen Ansehen. Der Link zerstört sich nach dem Lesen selbst. Deine Notiz bleibt sicher in deinem Konto.",
+    "backup": "Backup",
+    "fullBackupTitle": "Komplettes Backup (.zip)",
+    "fullBackupDesc": "Alles: Notizen, Tagebücher, Tresor, Aufgaben, Bilder, Audio, Dateien.",
+    "allHtmlTitle": "Alle Einträge (.zip mit .html)",
+    "allHtmlDesc": "Ein druckbares HTML pro Eintrag. Gut zum Offline-Lesen.",
+    "jsonTitle": "Text-Backup (.json)",
+    "jsonDesc": "Alle Textinhalte und Metadaten, keine Bilder oder Dateien."
+  },
+  "weekReview": {
+    "title": "Wochenrückblick",
+    "daysLogged": "{{count}}/7 erfasst",
+    "mood": "Stimmung",
+    "sleep": "Schlaf",
+    "meds": "Medikamente",
+    "activity": "Aktivität"
+  },
+  "footer": {
+    "settings": "Einstellungen",
+    "viewShortcuts": "Alle Tastenkürzel anzeigen",
+    "newNote": "Neu",
+    "newNoteHintMac": "Option + Umschalt + N",
+    "newNoteHintOther": "Alt + Umschalt + N",
+    "openStats": "Statistiken öffnen",
+    "words": "Wörter",
+    "zen": "Zen-Modus",
+    "appearance": "Design",
+    "signOut": "Abmelden",
+    "signingOut": "Wird abgemeldet…",
+    "switchToLight": "Zum hellen Modus wechseln",
+    "switchToDark": "Zum dunklen Modus wechseln"
+  },
+  "settings": {
+    "groupYourNotes": "Deine Notizen",
+    "groupAccount": "Konto & Daten",
+    "groupBrand": "PrivacyNotes",
+    "statsLabel": "Statistiken",
+    "journalsLabel": "Tagebücher",
+    "importLabel": "Import & Export",
+    "planLabel": "Konto",
+    "storageLabel": "Speicher",
+    "securityLabel": "Sicherheit",
+    "accountLabel": "ID & Sync",
+    "appearanceLabel": "Design",
+    "helpLabel": "Hilfe",
+    "aboutLabel": "Über",
+    "languageLabel": "Sprache",
+    "languageDesc": "Wähle die Sprache, in der PrivacyNotes angezeigt wird."
+  },
+  "importStore": {
+    "title": "Importieren oder speichern?",
+    "confirm": "Als Notizen importieren",
+    "cancel": "Als Dateien speichern",
+    "bodySingle": "<strong>{{filename}}</strong> sieht nach einer Markdown-Datei aus. Als Notiz importieren, damit du sie lesen und bearbeiten kannst, oder als verschlüsselten Dateianhang speichern?",
+    "bodyMulti": "Diese {{count}} Dateien sehen nach Markdown aus. Als Notizen importieren, damit du sie lesen und bearbeiten kannst, oder als verschlüsselte Dateianhänge speichern?"
+  },
+  "bulkTrash": {
+    "title": "In den Papierkorb",
+    "body_one": "<highlight>{{count}} Eintrag</highlight> in den Papierkorb verschieben? Du kannst ihn später wiederherstellen.",
+    "body_other": "<highlight>{{count}} Einträge</highlight> in den Papierkorb verschieben? Du kannst sie später wiederherstellen."
+  },
+  "bulkDelete": {
+    "body_one": "<highlight>{{count}} Notiz</highlight> endgültig löschen? Das kann nicht rückgängig gemacht werden.",
+    "body_other": "<highlight>{{count}} Notizen</highlight> endgültig löschen? Das kann nicht rückgängig gemacht werden."
+  },
+  "tagConfirm": {
+    "mergeTitle": "Tags zusammenführen",
+    "deleteTitle": "Tag löschen",
+    "deleteWithNotesTitle": "Tag & Notizen löschen",
+    "mergeConfirm": "Zusammenführen",
+    "deleteConfirm": "Tag löschen",
+    "moveToTrash": "In den Papierkorb",
+    "mergeBody_one": "Tag <highlight>„{{targetTag}}“</highlight> existiert bereits. <highlight>{{count}} Notiz</highlight>, die aktuell mit „{{tag}}“ getaggt ist, dorthin überführen?",
+    "mergeBody_other": "Tag <highlight>„{{targetTag}}“</highlight> existiert bereits. <highlight>{{count}} Notizen</highlight>, die aktuell mit „{{tag}}“ getaggt sind, dorthin überführen?",
+    "deleteBody_one": "Tag <highlight>„{{tag}}“</highlight> von <highlight>{{count}} Notiz</highlight> entfernen? Die Notiz selbst wird nicht gelöscht.",
+    "deleteBody_other": "Tag <highlight>„{{tag}}“</highlight> von <highlight>{{count}} Notizen</highlight> entfernen? Die Notizen selbst werden nicht gelöscht.",
+    "deleteWithNotesBody_one": "Tag <highlight>„{{tag}}“</highlight> löschen und <highlight>{{count}} Notiz</highlight> in den Papierkorb verschieben? Du kannst sie von dort wiederherstellen.",
+    "deleteWithNotesBody_other": "Tag <highlight>„{{tag}}“</highlight> löschen und <highlight>{{count}} Notizen</highlight> in den Papierkorb verschieben? Du kannst sie von dort wiederherstellen."
+  },
+  "createNote": {
+    "title": "Notiz erstellen?",
+    "confirm": "Notiz erstellen",
+    "body": "Es existiert keine Notiz mit dem Titel <highlight>„{{title}}“</highlight>. Das kann passieren, wenn die verlinkte Notiz umbenannt wurde. Eine neue Notiz mit diesem Titel erstellen?"
+  },
+  "freshVault": {
+    "title": "Neuer Tresor erstellt",
+    "confirm": "Verstanden",
+    "body": "Kein vorhandener Tresor passte zu der eingegebenen Phrase, daher wurde ein neuer, leerer erstellt. Falls du deine Notizen erwartet hast, melde dich ab und gib deine Phrase sorgfältig erneut ein - ein einziges anderes Wort öffnet einen anderen Tresor."
+  }
+}

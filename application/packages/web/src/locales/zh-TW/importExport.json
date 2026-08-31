@@ -1,0 +1,162 @@
+{
+  "shell": {
+    "importTitle": "匯入你的資料",
+    "exportTitle": "匯出你的資料",
+    "restoreTitle": "還原你的資料",
+    "vaultTitle": "匯入你的密碼",
+    "tablistLabel": "匯入、匯出、還原或密碼",
+    "tabImport": "匯入",
+    "tabExport": "匯出",
+    "tabRestore": "還原",
+    "tabVault": "密碼",
+    "working": "處理中…"
+  },
+  "footer": {
+    "exportNote": "匯出在本機執行，不會上傳任何資料。",
+    "restoreNote": "你的檔案會在本機讀取並解密。",
+    "importNote": "所有內容都會先在你的裝置上加密，才離開裝置進行同步。"
+  },
+  "importPick": {
+    "autoTagLabel": "依來源為匯入的筆記加上標籤",
+    "autoTagDesc": "Google Keep 筆記會加上 <keep>#google</keep>，Obsidian 加上 <obsidian>#obsidian</obsidian>，依此類推。",
+    "guideAria": "{{app}} 匯入指南",
+    "guideLabel": "指南"
+  },
+  "folderImport": {
+    "tagLabel": "同時依資料夾加上標籤",
+    "tagDesc": "無論如何都會重建你的資料夾。這個選項會把每個資料夾名稱也加成標籤，如果你也喜歡用標籤篩選會很方便。"
+  },
+  "sourceDesc": {
+    "googleKeep": "Google Takeout 的 .zip（Keep 資料夾）或單一 .json 筆記。核取清單會匯入為原生任務清單。",
+    "appleNotes": "用免費的 Exporter 應用程式匯出為 Markdown，然後把 .zip 拖進來。",
+    "appleJournal": "從 Mac 或 iPhone 的日誌匯出，把 AppleJournalEntries 資料夾壓縮起來，再把 .zip 拖進來。項目會連同相片、影片、語音備忘錄與位置資訊一起匯入為日誌項目。",
+    "evernote": "單一 .enex 檔案，或多個壓成一個 zip 都可以。保留格式、標籤、附件、筆記連結與筆記本。Evernote 不會把任務寫進 .enex。",
+    "samsungNotes": "匯出為 Word（.docx）或文字（.txt）。多個檔案可壓成 zip 批次匯入。",
+    "simplenote": "從 Simplenote 匯出（Settings -> Tools -> Export Notes），把 .zip 拖進來。",
+    "standardNotes": "Standard Notes 的已解密 .zip 或 .txt 備份（File > Export > Decrypted）。",
+    "obsidian": "Obsidian vault 的 .zip。保留標籤、[[note links]]、資料夾結構、內文中的 #tags，以及嵌入的圖片和檔案。",
+    "notesnook": "Notesnook 匯出的 .zip。匯出時選 HTML 可保留格式、筆記本、標籤與附件。",
+    "upnote": "在 UpNote 中：Settings > Backup >「Backup now」，然後把備份資料夾裡的所有內容壓成 zip。保留筆記本、標籤、釘選、筆記連結、格式與附件。手機應用程式的逐篇匯出也可以：請選「Export to HTML」。",
+    "markdownFolder": "單獨的 .md 或 .txt 檔，或是一個 .zip。壓成 zip 的資料夾會保留子資料夾，並把圖片和附件一起帶過來。",
+    "markdownApp": "這些筆記本來就是資料夾裡的 Markdown 檔。把那個資料夾壓成 .zip 拖進來，子資料夾、圖片和 #標籤都會跟著過來。",
+    "browserBookmarks": "瀏覽器「Export bookmarks」產生的書籤檔（.html），或 Safari 寫出的 .zip。Chrome、Firefox、Safari、Edge、Opera、Brave 和 Vivaldi 裝的都是同一種檔案，資料夾和日期都會一起帶過來。",
+    "bitwarden": "Bitwarden 未加密的 .json 匯出檔（Tools > Export vault > .json）。登入資料、卡片、SSH 金鑰、安全筆記與 TOTP 驗證碼都會一起帶進來。",
+    "browserPasswords": "來自 Chrome、Edge、Brave、Opera、Vivaldi、Firefox 或 Safari 的密碼檔（.csv），或 Safari 寫出的 .zip。每一列都會變成一組登入資料。用完請把檔案刪掉 - 裡面是你的明文密碼。"
+  },
+  "vaultPick": {
+    "intro": "從其他密碼管理器匯入登入資訊、信用卡與 SSH 金鑰。"
+  },
+  "restorePick": {
+    "intro": "還原你先前匯出的 PrivacyNotes 備份。你的檔案會在本機讀取並解密。",
+    "fullBackupTitle": "完整備份（.zip）",
+    "fullBackupDesc": "還原筆記、日誌、保險庫項目、任務、圖片、音訊與檔案。所有內容都會匯入為新項目，不會覆寫既有資料。",
+    "encryptedBackupTitle": "加密備份（.pnbackup、.pnbackupz）",
+    "encryptedBackupDesc": "以你的助憶詞金鑰還原加密備份。.pnbackupz 會還原全部內容，包含檔案；.pnbackup 只含文字內容與中繼資料。必須以建立備份時的同一個帳號登入。"
+  },
+  "encryptedBackupLabel": "加密備份",
+  "status": {
+    "readingFile": "讀取檔案中…",
+    "decryptingBackup": "解密備份中…",
+    "writingNotes": "正在將筆記寫入你的本機筆記庫…",
+    "importingBlobs": "正在匯入圖片與附件…",
+    "restoringBlobs": "正在還原圖片與檔案…"
+  },
+  "errors": {
+    "genericParse": "發生錯誤。",
+    "decryptionFailed": "解密失敗。助憶詞錯誤或檔案已損毀。",
+    "blobImportFailed": "你的筆記已經匯入，但圖片與檔案沒有：{{detail}} 你選取的檔案內容完全沒有變動，所以可以刪除已匯入的筆記，再重新匯入一次。"
+  },
+  "preview": {
+    "sourceLabel": "來源",
+    "uniqueTags": "不重複標籤",
+    "empty": "空白",
+    "untagged": "無標籤",
+    "items": "項目",
+    "previewLabel": "預覽",
+    "andMore": "…還有 {{count}} 個",
+    "headsUpLabel": "提醒：",
+    "duplicateWarning": "匯入會把這些內容新增為新筆記。執行兩次就會出現重複項目，目前還沒有自動去重。",
+    "quotaExceeded": "<strong>儲存空間不足，無法匯入。</strong>預估需要 {{needed}}，目前可用 {{available}}。請先釋出空間或升級再匯入。",
+    "quotaWarning": "提醒：這次匯入大約會用掉 {{needed}}，你剩餘的儲存空間為 {{available}}。",
+    "oversizeAttachments_other": "{{count}} 個檔案超過你方案的單檔上限 {{limit}}。它們會匯入到這台裝置，但在你升級之前不會同步到你的其他裝置。",
+    "duplicateSkipNote": "已經存過的書籤會自動略過，所以重跑一次也不會重複。"
+  },
+  "counts": {
+    "note_other": "筆記",
+    "journal_other": "日誌",
+    "login_other": "登入資訊",
+    "card_other": "卡片",
+    "sshKey_other": "SSH 金鑰",
+    "zeroItems": "0 個項目",
+    "importButton": "匯入 {{counts}}"
+  },
+  "errorPhase": {
+    "heading": "{{importer}}：匯入失敗"
+  },
+  "export": {
+    "intro": "資料是你的。隨時匯出，完全免費。",
+    "fullBackupHeading": "完整備份",
+    "portableHeading": "可攜匯出",
+    "vaultOnlyHeading": "僅保險庫",
+    "zipBackupTitle": "PrivacyNotes 備份（.zip）",
+    "zipBackupDesc": "全部內容：筆記、日誌、保險庫項目、任務、圖片、音訊與檔案。適合完整備份帳號，或搬到新裝置。裡面的檔案未加密，請把 zip 存放在安全的地方。",
+    "encryptedZipBackupTitle": "加密完整備份（.pnbackupz）",
+    "encryptedZipBackupDesc": "zip 備份包含的一切（筆記、保險庫項目、圖片、音訊與檔案）都以你的助憶詞金鑰封存。在任何裝置上都能用助憶詞還原。存放在哪裡都安全。",
+    "encryptedBackupTitle": "加密備份（.pnbackup）",
+    "encryptedBackupDesc": "所有文字內容與中繼資料，以你的助憶詞金鑰加密。不含圖片或檔案。存放在哪裡都安全：沒有助憶詞就無法讀取。",
+    "htmlArchiveTitle": "HTML 封存（.zip）",
+    "htmlArchiveDesc": "每篇筆記一頁可列印的 HTML。適合離線閱讀或封存，不適合用來還原。",
+    "textBackupTitle": "文字備份（.json）",
+    "textBackupDesc": "所有文字內容與中繼資料，純 JSON 格式。不含圖片或檔案。請存放在你信任的地方：這份備份未加密。",
+    "vaultExportTitle": "保險庫匯出（.json）",
+    "vaultExportDesc": "登入資訊、卡片與 SSH 金鑰，Bitwarden 相容格式，多數密碼管理器都能匯入。內容為明文，請小心保管。",
+    "bookmarksOnlyHeading": "僅書籤",
+    "bookmarksExportTitle": "書籤檔案 (.html)",
+    "bookmarksExportDesc": "每個瀏覽器都讀得懂的標準書籤檔案，可以連同資料夾一起匯入 Chrome、Firefox、Safari 或 Edge。"
+  },
+  "exportProgress": {
+    "failedTitle": "匯出失敗",
+    "completeTitle": "匯出完成",
+    "exportingTitle": "正在匯出備份…",
+    "preparing": "準備中…",
+    "exporting": "匯出中…",
+    "imagesProgress": "正在匯出圖片… {{done}}/{{total}}",
+    "filesProgress": "正在匯出檔案… {{done}}/{{total}}",
+    "building": "正在建立備份…",
+    "compressing": "壓縮中…"
+  },
+  "upload": {
+    "completeTitle": "上傳完成",
+    "failedTitle": "上傳失敗",
+    "partialTitle": "{{done}} 個成功，{{failed}} 個失敗",
+    "uploadingTitle_other": "正在上傳 {{count}} 個檔案",
+    "statusDone": "完成",
+    "statusFailed": "失敗",
+    "errorStorageFull": "儲存空間已滿。清出空間或加購儲存空間後即可上傳這個檔案。",
+    "errorStorageFullKept": "超出你的儲存空間，先保留在這部裝置上。空間釋出後就會同步。",
+    "statusUploading": "上傳中…",
+    "statusWaiting": "等待中",
+    "summaryDone": "{{count}} 個完成",
+    "summaryUploading": "{{count}} 個上傳中",
+    "summaryFailed": "{{count}} 個失敗",
+    "typesHint": "圖片、文書、音訊、影片、zip。單檔上限 {{limit}} MB。",
+    "proPitch": "Pro 將上限提高到單檔 50 MB。",
+    "proPitchCta": "升級",
+    "storagePitch": "儲存空間方案可提高到單檔 100 MB。",
+    "storagePitchCta": "加購儲存空間"
+  },
+  "decryptErrors": {
+    "tooSmall": "這個檔案是空的或不完整（{{size}} 位元組），沒有可還原的內容。請重新匯出備份，並在匯入前確認儲存的檔案有實際大小。",
+    "notThisAccount": "無法解開這份備份。.pnbackup 只能在建立它的帳號中開啟，所以這通常是別的帳號的備份 - 若要在帳號之間搬移筆記，請改匯出完整備份（.zip）。如果帳號沒錯，代表檔案已損毀或儲存時未寫完。"
+  },
+  "exportErrors": {
+    "generic": "匯出的檔案無法儲存。請再試一次，或改選其他資料夾。"
+  },
+  "saveErrors": {
+    "shortWrite": "{{expected}} 位元組中只儲存了 {{written}} 位元組，檔案並不完整。請再試一次，並存到裝置本機儲存空間而非雲端資料夾。"
+  },
+  "browserImport": {
+    "tagLabel": "保留瀏覽器的標籤",
+    "tagDesc": "Firefox 會把標籤和網址列關鍵字一起存在書籤裡，兩者在這裡都會變成標籤。"
+  }
+}

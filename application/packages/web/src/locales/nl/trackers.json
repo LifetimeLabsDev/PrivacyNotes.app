@@ -1,0 +1,169 @@
+{
+  "labels": {
+    "mood": "Stemming",
+    "emotions": "Emoties",
+    "sleep": "Slaap",
+    "sleepScore": "Slaapscore",
+    "heartRate": "Hartslag",
+    "activity": "Activiteit",
+    "medication": "Medicatie",
+    "meds": "Medicijnen",
+    "energy": "Energie",
+    "focus": "Focus",
+    "weight": "Gewicht",
+    "steps": "Stappen",
+    "water": "Water",
+    "screenTime": "Schermtijd",
+    "caffeine": "Cafeïne",
+    "pain": "Pijn",
+    "social": "Sociaal",
+    "custom": "Eigen"
+  },
+  "units": {
+    "hoursSuffix": "u",
+    "bpm": "bpm",
+    "kg": "kg",
+    "steps_one": "stap",
+    "steps_other": "stappen",
+    "hrs": "uur",
+    "glasses_one": " glas",
+    "glasses_other": " glazen",
+    "cups_one": " kopje",
+    "cups_other": " kopjes"
+  },
+  "scaleEnds": {
+    "low": "laag",
+    "high": "hoog",
+    "none": "geen",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "hevig",
+    "socialLow": "geïsoleerd",
+    "socialHigh": "heel sociaal"
+  },
+  "mood": {
+    "prompt": "Hoe voel je je? (1-10)",
+    "low": "vreselijk",
+    "high": "geweldig",
+    "anchor": {
+      "1": "vreselijk",
+      "3": "moeizaam",
+      "5": "oké",
+      "7": "goed",
+      "10": "geweldig"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "Welke emoties spelen er?",
+    "count_one": "{{count}} emotie",
+    "count_other": "{{count}} emoties",
+    "valence": {
+      "positive": "positief",
+      "neutral": "neutraal",
+      "negative": "negatief"
+    },
+    "tags": {
+      "happy": "Blij",
+      "calm": "Kalm",
+      "relaxed": "Ontspannen",
+      "grateful": "Dankbaar",
+      "loved": "Geliefd",
+      "motivated": "Gemotiveerd",
+      "confident": "Zelfverzekerd",
+      "productive": "Productief",
+      "focused": "Geconcentreerd",
+      "energetic": "Energiek",
+      "tired": "Moe",
+      "restless": "Rusteloos",
+      "distracted": "Afgeleid",
+      "numb": "Verdoofd",
+      "overwhelmed": "Overweldigd",
+      "anxious": "Angstig",
+      "stressed": "Gestrest",
+      "frustrated": "Gefrustreerd",
+      "irritable": "Prikkelbaar",
+      "sad": "Verdrietig",
+      "lonely": "Eenzaam",
+      "guilty": "Schuldig",
+      "hopeless": "Hopeloos",
+      "angry": "Boos"
+    }
+  },
+  "sleep": {
+    "prompt": "Hoe heb je geslapen?",
+    "hoursLabel": "Uren:",
+    "quality": {
+      "terrible": "Vreselijk",
+      "poor": "Slecht",
+      "okay": "Oké",
+      "good": "Goed",
+      "great": "Uitstekend"
+    }
+  },
+  "sleepScore": {
+    "prompt": "Slaapscore"
+  },
+  "heartRate": {
+    "prompt": "Gemiddelde hartslag"
+  },
+  "activity": {
+    "prompt": "Activiteitsniveau vandaag?",
+    "level": {
+      "sedentary": "Zittend",
+      "light": "Licht",
+      "moderate": "Matig",
+      "active": "Actief",
+      "intense": "Intensief"
+    }
+  },
+  "medication": {
+    "heading": "Medicijnen",
+    "empty": "Nog geen medicijnen ingesteld.",
+    "takenCount_one": "{{count}} ingenomen",
+    "takenCount_other": "{{count}} ingenomen",
+    "namePlaceholder": "Naam medicijn",
+    "dosagePlaceholder": "Dosering (bijv. 50mg)",
+    "addMedication": "+ Medicijn toevoegen",
+    "editMedication": "Medicijn bewerken",
+    "removeMedication": "Medicijn verwijderen",
+    "confirmRemove": "<highlight>{{name}}</highlight> verwijderen?",
+    "yes": "Ja",
+    "no": "Nee",
+    "taken": "Ingenomen",
+    "skip": "Overslaan"
+  },
+  "custom": {
+    "yes": "Ja",
+    "no": "Nee",
+    "typeLabels": {
+      "scale10": "Schaal (0-10)",
+      "scale5": "Schaal (0-5)",
+      "slider100": "Schuifregelaar (0-100)",
+      "number": "Getal",
+      "yesno": "Ja / Nee"
+    }
+  },
+  "config": {
+    "configureTrackers": "Trackers instellen",
+    "title": "Trackers",
+    "categoryMoodMind": "Stemming & geest",
+    "categoryBodyHealth": "Lichaam & gezondheid",
+    "categoryLifestyle": "Leefstijl",
+    "customHeading": "Eigen",
+    "resume": "Hervatten",
+    "stop": "Stoppen",
+    "addCustomTracker": "Eigen tracker toevoegen",
+    "addCustomTrackerCount": "Eigen tracker toevoegen ({{count}}/{{max}})",
+    "addCustomTrackerHint": "Houd bij wat je maar wilt",
+    "maxReached": "Maximum van {{max}} eigen trackers bereikt.",
+    "customTrackers": "Eigen trackers",
+    "newCustomTracker": "Nieuwe eigen tracker",
+    "trackerNamePlaceholder": "Naam van tracker",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "Type:",
+    "colorLabel": "Kleur:"
+  }
+}

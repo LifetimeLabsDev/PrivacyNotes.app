@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Größe:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "Bild herunterladen",
+    "deleteAria": "Bild löschen",
+    "loading": "Bild wird geladen...",
+    "uploading": "{{name}} wird hochgeladen...",
+    "uploadFailed": "Upload fehlgeschlagen: {{message}}",
+    "storeUnavailable": "Bildspeicher nicht verfügbar",
+    "loadFailed": "Bild konnte nicht geladen werden",
+    "notFound": "Bild nicht gefunden"
+  },
+  "attachment": {
+    "fallbackName": "Anhang",
+    "imageAlt": "Bild",
+    "cantPlay": "Wiedergabe nicht möglich. Zum Anhören herunterladen",
+    "downloadingStatus": "wird heruntergeladen...",
+    "deleteConfirm": "Löschen?",
+    "copied": "Kopiert",
+    "download": "Herunterladen",
+    "downloadToPlay": "Zum Abspielen herunterladen",
+    "play": "Abspielen",
+    "pause": "Pause",
+    "fileNotFound": "Datei nicht gefunden",
+    "localOnly": "Nur auf diesem Gerät",
+    "localOnlyTip": "Passt nicht in deinen Speicher. Kein Backup: Löschen der Browser- oder App-Daten entfernt die Datei. Synchronisiert, sobald Platz frei wird.",
+    "notUploaded": "Noch nicht hochgeladen",
+    "notUploadedTip": "Diese Datei wurde vom Gerät, auf dem sie hinzugefügt wurde, noch nicht hochgeladen - meist weil dort der Speicher voll ist. Sie öffnet sich hier, sobald sie synchronisiert ist.",
+    "downloadFailed": "Download fehlgeschlagen",
+    "playbackFailed": "Wiedergabe fehlgeschlagen",
+    "uploadFailed": "Upload fehlgeschlagen: {{message}}",
+    "unknownError": "Unbekannter Fehler"
+  }
+}

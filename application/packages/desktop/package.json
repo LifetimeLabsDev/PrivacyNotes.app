@@ -1,0 +1,29 @@
+{
+  "name": "desktop",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tauri dev --features devtools",
+    "build": "tauri build",
+    "tauri": "tauri",
+    "sync-version": "node scripts/sync-version.mjs",
+    "icon": "tauri icon ../web/icon/1024px-750px-whitespace-height.png --ios-color '#ffffff' && bash scripts/apply-desktop-icon.sh && bash scripts/apply-android-icons.sh",
+    "ios:init": "tauri ios init",
+    "ios:icons": "bash scripts/apply-ios-appearance-icons.sh",
+    "ios:dev": "tauri ios dev --host --features devtools",
+    "ios:build": "tauri ios build",
+    "android:init": "tauri android init && bash scripts/apply-android-icons.sh",
+    "android:icons": "bash scripts/apply-android-icons.sh",
+    "android:dev": "tauri android dev --host --features devtools",
+    "android:build": "tauri android build --aab",
+    "android:build:apk": "tauri android build --apk",
+    "android:build:direct": "VITE_ANDROID_DIST=direct tauri android build --apk"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.4"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.11.1"
+  }
+}

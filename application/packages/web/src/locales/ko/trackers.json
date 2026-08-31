@@ -1,0 +1,164 @@
+{
+  "labels": {
+    "mood": "기분",
+    "emotions": "감정",
+    "sleep": "수면",
+    "sleepScore": "수면 점수",
+    "heartRate": "심박수",
+    "activity": "활동",
+    "medication": "복약",
+    "meds": "약",
+    "energy": "에너지",
+    "focus": "집중",
+    "weight": "체중",
+    "steps": "걸음",
+    "water": "물",
+    "screenTime": "스크린 타임",
+    "caffeine": "카페인",
+    "pain": "통증",
+    "social": "사회적 교류",
+    "custom": "커스텀"
+  },
+  "units": {
+    "hoursSuffix": "시간",
+    "bpm": "bpm",
+    "kg": "kg",
+    "steps_other": "걸음",
+    "hrs": "시간",
+    "glasses_other": "잔",
+    "cups_other": "잔"
+  },
+  "scaleEnds": {
+    "low": "낮음",
+    "high": "높음",
+    "none": "없음",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "극심",
+    "socialLow": "고립",
+    "socialHigh": "활발"
+  },
+  "mood": {
+    "prompt": "지금 기분이 어때요? (1-10)",
+    "low": "최악",
+    "high": "최고",
+    "anchor": {
+      "1": "최악",
+      "3": "힘듦",
+      "5": "보통",
+      "7": "좋음",
+      "10": "최고"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "어떤 감정이 드나요?",
+    "count_other": "감정 {{count}}개",
+    "valence": {
+      "positive": "긍정",
+      "neutral": "중립",
+      "negative": "부정"
+    },
+    "tags": {
+      "happy": "행복",
+      "calm": "차분",
+      "relaxed": "편안",
+      "grateful": "감사",
+      "loved": "사랑받음",
+      "motivated": "의욕",
+      "confident": "자신감",
+      "productive": "생산적",
+      "focused": "집중",
+      "energetic": "활기",
+      "tired": "피곤",
+      "restless": "안절부절",
+      "distracted": "산만",
+      "numb": "무감각",
+      "overwhelmed": "버거움",
+      "anxious": "불안",
+      "stressed": "스트레스",
+      "frustrated": "답답",
+      "irritable": "짜증",
+      "sad": "슬픔",
+      "lonely": "외로움",
+      "guilty": "죄책감",
+      "hopeless": "절망",
+      "angry": "분노"
+    }
+  },
+  "sleep": {
+    "prompt": "잠은 어땠어요?",
+    "hoursLabel": "수면 시간:",
+    "quality": {
+      "terrible": "최악",
+      "poor": "나쁨",
+      "okay": "보통",
+      "good": "좋음",
+      "great": "아주 좋음"
+    }
+  },
+  "sleepScore": {
+    "prompt": "수면 점수"
+  },
+  "heartRate": {
+    "prompt": "평균 심박수"
+  },
+  "activity": {
+    "prompt": "오늘 활동량은요?",
+    "level": {
+      "sedentary": "좌식",
+      "light": "가벼움",
+      "moderate": "보통",
+      "active": "활동적",
+      "intense": "고강도"
+    }
+  },
+  "medication": {
+    "heading": "약",
+    "empty": "아직 설정된 약이 없어요.",
+    "takenCount_other": "{{count}}개 복용",
+    "namePlaceholder": "약 이름",
+    "dosagePlaceholder": "용량 (예: 50mg)",
+    "addMedication": "+ 약 추가",
+    "editMedication": "약 편집",
+    "removeMedication": "약 제거",
+    "confirmRemove": "<highlight>{{name}}</highlight> 항목을 제거할까요?",
+    "yes": "네",
+    "no": "아니요",
+    "taken": "복용",
+    "skip": "건너뜀"
+  },
+  "custom": {
+    "yes": "네",
+    "no": "아니요",
+    "typeLabels": {
+      "scale10": "척도 (0-10)",
+      "scale5": "척도 (0-5)",
+      "slider100": "슬라이더 (0-100)",
+      "number": "숫자",
+      "yesno": "네 / 아니요"
+    }
+  },
+  "config": {
+    "configureTrackers": "트래커 설정",
+    "title": "트래커",
+    "categoryMoodMind": "기분 & 마음",
+    "categoryBodyHealth": "몸 & 건강",
+    "categoryLifestyle": "라이프스타일",
+    "customHeading": "커스텀",
+    "resume": "재개",
+    "stop": "중지",
+    "addCustomTracker": "커스텀 트래커 추가",
+    "addCustomTrackerCount": "커스텀 트래커 추가 ({{count}}/{{max}})",
+    "addCustomTrackerHint": "무엇이든 원하는 걸 기록하세요",
+    "maxReached": "커스텀 트래커는 최대 {{max}}개까지예요.",
+    "customTrackers": "커스텀 트래커",
+    "newCustomTracker": "새 커스텀 트래커",
+    "trackerNamePlaceholder": "트래커 이름",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "유형:",
+    "colorLabel": "색상:"
+  }
+}

@@ -1,0 +1,275 @@
+{
+  "noteRow": {
+    "created": "Skapad",
+    "modified": "Ändrad",
+    "select": "Markera anteckning",
+    "deselect": "Avmarkera anteckning",
+    "pinProtected": "PIN-skyddad",
+    "readOnly": "Skrivskyddad",
+    "file": "Fil",
+    "empty": "Tom",
+    "noContent": "Inget innehåll"
+  },
+  "header": {
+    "new": "Ny",
+    "newNote": "Ny anteckning",
+    "newNoteHover": "Ny anteckning ({{hotkey}})",
+    "trash": "Papperskorgen"
+  },
+  "folderChip": {
+    "clear": "Rensa mappfilter: {{folder}}"
+  },
+  "tagChip": {
+    "clear": "Rensa taggfilter: {{tag}}"
+  },
+  "vaultNew": {
+    "ariaLabel": "Nytt objekt i valvet",
+    "login": "Inloggning",
+    "card": "Kreditkort",
+    "sshKey": "SSH-nyckel"
+  },
+  "newMenu": {
+    "note": "Anteckning",
+    "task": "Uppgift",
+    "journal": "Dagbok",
+    "login": "Inloggning",
+    "file": "Fil",
+    "bookmark": "Bokmärke"
+  },
+  "vaultFilter": {
+    "all": "Alla",
+    "logins": "Inloggningar",
+    "cards": "Kreditkort",
+    "keys": "Nycklar"
+  },
+  "journal": {
+    "backfillHover": "Nytt dagboksinlägg för en av de senaste dagarna",
+    "newEntry": "Nytt dagboksinlägg",
+    "newEntryHover": "Nytt dagboksinlägg ({{hotkey}})"
+  },
+  "tasks": {
+    "newTitle": "Uppgifter för {{date}}"
+  },
+  "trash": {
+    "empty": "Töm",
+    "emptyHover": "Radera alla anteckningar i papperskorgen",
+    "storage": "Lagring",
+    "autoDelete": "Autoradering: 30 d"
+  },
+  "search": {
+    "sortOptions": "Sorterings- och visningsalternativ",
+    "placeholderVault": "Sök i valvet…",
+    "placeholderNotes": "Sök bland anteckningar…"
+  },
+  "selection": {
+    "countOf": "{{selected}} av {{total}} markerade",
+    "selectAll": "Markera alla",
+    "deselectAll": "Avmarkera alla"
+  },
+  "empty": {
+    "noMatches": "Inga träffar.",
+    "vault": "Valvet är tomt.",
+    "notes": "Inga anteckningar än.",
+    "filtered": "Inga objekt matchar dina filter.",
+    "clearFilters": "Rensa filter",
+    "filteredAfter": "för att visa dem."
+  },
+  "headerLabel": {
+    "allItems": "Alla",
+    "untagged": "Otaggade",
+    "journals": "Dagböcker",
+    "vault": "Valv",
+    "pinned": "Fästa",
+    "notes": "Anteckningar"
+  },
+  "footerStats": {
+    "journals": "Dagböcker",
+    "items": "Objekt",
+    "trashed": "I papperskorgen",
+    "notes": "Anteckningar",
+    "bookmarks": "Bokmärken"
+  },
+  "toast": {
+    "imageUploadFailed": "Bilduppladdningen misslyckades: {{error}}",
+    "imageError": "Bildfel: {{error}}",
+    "uploadFailedFor": "Uppladdningen misslyckades för ”{{filename}}”: {{error}}",
+    "importedSyncing_one": "Importerade {{count}} anteckning. Synkar…",
+    "importedSyncing_other": "Importerade {{count}} anteckningar. Synkar…",
+    "addedTag_one": "Lade till #{{tag}} på {{count}} objekt",
+    "addedTag_other": "Lade till #{{tag}} på {{count}} objekt"
+  },
+  "burn": {
+    "mediaOnly": "Den här anteckningen innehåller bara media och kan inte delas via burn-länk.",
+    "shareTitle": "Krypterad anteckning"
+  },
+  "loadError": {
+    "message": "Det gick inte att läsa in dina anteckningar. Anslutningen till den lokala databasen avbröts. Det kan hända efter att appen har legat i bakgrunden en stund.",
+    "reload": "Ladda om"
+  },
+  "banner": {
+    "dismiss": "Avfärda",
+    "proActivationPending": "Betalningen är mottagen, men Pro-aktiveringen tar längre tid än vanligt. Ladda om om en minut, eller hör av dig till supporten om det inte slår på.",
+    "snapshotPaused": "Anteckningshistoriken är pausad. Din Pro-plan verkar inaktiv. Nya ändringar sparas inte som versioner förrän Pro är återställt.",
+    "restorePro": "Återställ Pro",
+    "storagePastDue": "Betalningen för din lagringsprenumeration misslyckades. Uppdatera ditt kort i Paddle så att du inte förlorar extrautrymmet.",
+    "updateCard": "Uppdatera kort"
+  },
+  "sidebar": {
+    "collapse": "Fäll ihop sidofältet",
+    "expand": "Fäll ut sidofältet"
+  },
+  "notesList": {
+    "collapse": "Fäll ihop anteckningslistan",
+    "expand": "Fäll ut anteckningslistan"
+  },
+  "paneResize": {
+    "hintCollapse": "Klicka för att fälla ihop · Dra för att ändra storlek"
+  },
+  "emptyEditor": {
+    "selectFile": "Välj en fil att förhandsgranska",
+    "uploadFiles": "Eller ladda upp nya filer till ditt krypterade valv.",
+    "selectNote": "Välj en anteckning eller skapa en ny.",
+    "selectMarkdown": "Öppna en Markdown-fil för att läsa den här."
+  },
+  "zen": {
+    "exit": "Avsluta Zen",
+    "exitHover": "Avsluta zenläge (Esc)",
+    "enterHover": "Starta zenläge",
+    "proHover": "Zenläge (Pro)",
+    "enterAriaShortcut": "Starta zenläge (⌘⇧F)"
+  },
+  "editor": {
+    "backToList": "Tillbaka till anteckningslistan",
+    "backToGrid": "Tillbaka till rutnätet",
+    "titlePlaceholder": "Utan titel (klicka för att redigera, eller låt den skapas automatiskt)",
+    "titlePlaceholderLogin": "t.ex. GitHub",
+    "titlePlaceholderCard": "t.ex. Visa som slutar på 4242",
+    "titlePlaceholderSshKey": "t.ex. GitHub-distributionsnyckel",
+    "pin": "Fäst",
+    "unpin": "Lossa",
+    "restore": "Återställ",
+    "deleteForever": "Radera för alltid",
+    "moveToTrash": "Flytta till papperskorgen",
+    "noteOptions": "Anteckningsalternativ",
+    "readOnlyToggle": "Skrivskyddad. Stäng av i",
+    "menu": "Meny",
+    "showMarkdown": "Visa markdown",
+    "showFormatted": "Visa formaterat",
+    "invisiblesShow": "Visa osynliga tecken",
+    "invisiblesHide": "Dölj osynliga tecken",
+    "findInNote": "Sök i anteckning",
+    "navPrev": "Föregående anteckning",
+    "navNext": "Nästa anteckning",
+    "undo": "Ångra",
+    "redo": "Gör om",
+    "hide": "Dölj",
+    "show": "Visa",
+    "hideToolbar": "Dölj formateringsverktygsfältet",
+    "showToolbar": "Visa formateringsverktygsfältet",
+    "widthDefault": "Standardbredd",
+    "widthWide": "Bredare",
+    "widthFull": "Full bredd",
+    "burn": "Dela och bränn efter läsning",
+    "titlePlaceholderLink": "Bokmärkesnamn"
+  },
+  "share": {
+    "hover": "Dela / Exportera",
+    "ariaLabel": "Dela eller exportera",
+    "thisNote": "Den här anteckningen",
+    "currentMdTitle": "Aktuell anteckning (.md)",
+    "currentMdDesc": "Rå markdown med front-matter.",
+    "currentHtmlTitle": "Aktuell anteckning (.html)",
+    "currentHtmlDesc": "Utskriftsvänlig, markdown renderad på en vit sida.",
+    "printTitle": "Skriv ut / Spara som PDF",
+    "printDesc": "Öppnar utskriftsdialogen. Spara som PDF eller skicka till en skrivare.",
+    "burnTitle": "Dela och bränn efter läsning",
+    "burnDesc": "Publicera den här anteckningen som en länk som bara går att öppna en gång. Länken förstör sig själv efter läsning. Din anteckning ligger kvar tryggt på ditt konto.",
+    "backup": "Säkerhetskopia",
+    "fullBackupTitle": "Fullständig säkerhetskopia (.zip)",
+    "fullBackupDesc": "Allt: anteckningar, dagböcker, valv, uppgifter, bilder, ljud, filer.",
+    "allHtmlTitle": "Alla objekt (.zip med .html)",
+    "allHtmlDesc": "En utskrivbar HTML-fil per objekt. Bra att läsa offline.",
+    "jsonTitle": "Textsäkerhetskopia (.json)",
+    "jsonDesc": "Allt textinnehåll och all metadata, inga bilder eller filer."
+  },
+  "weekReview": {
+    "title": "Veckan i återblick",
+    "daysLogged": "{{count}}/7 loggade",
+    "mood": "Humör",
+    "sleep": "Sömn",
+    "meds": "Medicin",
+    "activity": "Aktivitet"
+  },
+  "footer": {
+    "settings": "Inställningar",
+    "viewShortcuts": "Visa alla kortkommandon",
+    "newNote": "Ny",
+    "newNoteHintMac": "Option + Shift + N",
+    "newNoteHintOther": "Alt + Shift + N",
+    "openStats": "Öppna statistik",
+    "words": "Ord",
+    "zen": "Zenläge",
+    "appearance": "Utseende",
+    "signOut": "Logga ut",
+    "signingOut": "Loggar ut…",
+    "switchToLight": "Byt till ljust läge",
+    "switchToDark": "Byt till mörkt läge"
+  },
+  "settings": {
+    "groupYourNotes": "Dina anteckningar",
+    "groupAccount": "Konto och data",
+    "groupBrand": "PrivacyNotes",
+    "statsLabel": "Statistik",
+    "journalsLabel": "Dagböcker",
+    "importLabel": "Import och export",
+    "planLabel": "Konto",
+    "storageLabel": "Lagring",
+    "securityLabel": "Säkerhet",
+    "accountLabel": "ID och synk",
+    "appearanceLabel": "Utseende",
+    "helpLabel": "Hjälp",
+    "aboutLabel": "Om",
+    "languageLabel": "Språk",
+    "languageDesc": "Välj språket som PrivacyNotes visas på."
+  },
+  "importStore": {
+    "title": "Importera eller lagra?",
+    "confirm": "Importera som anteckningar",
+    "cancel": "Lagra som filer",
+    "bodySingle": "<strong>{{filename}}</strong> ser ut att vara en markdown-fil. Vill du importera den som en anteckning så att du kan läsa och redigera den, eller lagra den som en krypterad filbilaga?",
+    "bodyMulti": "De här {{count}} filerna ser ut att vara markdown. Vill du importera dem som anteckningar så att du kan läsa och redigera dem, eller lagra dem som krypterade filbilagor?"
+  },
+  "bulkTrash": {
+    "title": "Flytta till papperskorgen",
+    "body_one": "Flytta <highlight>{{count}} objekt</highlight> till papperskorgen? Du kan återställa det senare.",
+    "body_other": "Flytta <highlight>{{count}} objekt</highlight> till papperskorgen? Du kan återställa dem senare."
+  },
+  "bulkDelete": {
+    "body_one": "Radera <highlight>{{count}} anteckning</highlight> permanent? Det går inte att ångra.",
+    "body_other": "Radera <highlight>{{count}} anteckningar</highlight> permanent? Det går inte att ångra."
+  },
+  "tagConfirm": {
+    "mergeTitle": "Slå ihop taggar",
+    "deleteTitle": "Radera tagg",
+    "deleteWithNotesTitle": "Radera tagg och anteckningar",
+    "mergeConfirm": "Slå ihop",
+    "deleteConfirm": "Radera tagg",
+    "moveToTrash": "Flytta till papperskorgen",
+    "mergeBody_one": "Taggen <highlight>”{{targetTag}}”</highlight> finns redan. Vill du slå ihop <highlight>{{count}} anteckning</highlight> som är taggad ”{{tag}}” med den?",
+    "mergeBody_other": "Taggen <highlight>”{{targetTag}}”</highlight> finns redan. Vill du slå ihop <highlight>{{count}} anteckningar</highlight> som är taggade ”{{tag}}” med den?",
+    "deleteBody_one": "Ta bort taggen <highlight>”{{tag}}”</highlight> från <highlight>{{count}} anteckning</highlight>? Själva anteckningen raderas inte.",
+    "deleteBody_other": "Ta bort taggen <highlight>”{{tag}}”</highlight> från <highlight>{{count}} anteckningar</highlight>? Själva anteckningarna raderas inte.",
+    "deleteWithNotesBody_one": "Radera taggen <highlight>”{{tag}}”</highlight> och flytta <highlight>{{count}} anteckning</highlight> till papperskorgen? Du kan återställa den därifrån.",
+    "deleteWithNotesBody_other": "Radera taggen <highlight>”{{tag}}”</highlight> och flytta <highlight>{{count}} anteckningar</highlight> till papperskorgen? Du kan återställa dem därifrån."
+  },
+  "createNote": {
+    "title": "Skapa anteckning?",
+    "confirm": "Skapa anteckning",
+    "body": "Det finns ingen anteckning med titeln <highlight>”{{title}}”</highlight>. Det kan hända om den länkade anteckningen har bytt namn. Vill du skapa en ny anteckning med den titeln?"
+  },
+  "freshVault": {
+    "title": "Nytt valv skapat",
+    "confirm": "Uppfattat",
+    "body": "Inget befintligt valv matchade frasen du angav, så ett nytt tomt valv skapades. Om du väntade dig att se dina anteckningar: logga ut och skriv in frasen noggrant igen - ett enda annorlunda ord öppnar ett annat valv."
+  }
+}

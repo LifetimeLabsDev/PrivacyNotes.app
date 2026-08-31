@@ -1,0 +1,282 @@
+{
+  "noteRow": {
+    "created": "Creada",
+    "modified": "Modificada",
+    "select": "Selecciona la nota",
+    "deselect": "Desselecciona la nota",
+    "pinProtected": "Protegida amb PIN",
+    "readOnly": "Només de lectura",
+    "file": "Fitxer",
+    "empty": "Buida",
+    "noContent": "Sense contingut"
+  },
+  "header": {
+    "new": "Nova",
+    "newNote": "Nota nova",
+    "newNoteHover": "Nota nova ({{hotkey}})",
+    "trash": "Paperera"
+  },
+  "folderChip": {
+    "clear": "Treu el filtre de carpeta: {{folder}}"
+  },
+  "tagChip": {
+    "clear": "Treu el filtre d'etiqueta: {{tag}}"
+  },
+  "vaultNew": {
+    "ariaLabel": "Element nou de la caixa forta",
+    "login": "Inici de sessió",
+    "card": "Targeta de crèdit",
+    "sshKey": "Clau SSH"
+  },
+  "newMenu": {
+    "note": "Nota",
+    "task": "Tasca",
+    "journal": "Diari",
+    "login": "Inici de sessió",
+    "file": "Fitxer",
+    "bookmark": "Marcador"
+  },
+  "vaultFilter": {
+    "all": "Tot",
+    "logins": "Accessos",
+    "cards": "Targetes",
+    "keys": "Claus"
+  },
+  "journal": {
+    "backfillHover": "Diari nou per a un dia recent",
+    "newEntry": "Entrada de diari nova",
+    "newEntryHover": "Entrada de diari nova ({{hotkey}})"
+  },
+  "tasks": {
+    "newTitle": "Tasques del {{date}}"
+  },
+  "trash": {
+    "empty": "Buida",
+    "emptyHover": "Suprimeix totes les notes de la paperera",
+    "storage": "Emmagatzematge",
+    "autoDelete": "Supressió auto.: 30 d"
+  },
+  "search": {
+    "sortOptions": "Opcions d'ordenació i visualització",
+    "placeholderVault": "Cerca a la caixa forta…",
+    "placeholderNotes": "Cerca notes…"
+  },
+  "selection": {
+    "countOf": "{{selected}} de {{total}} seleccionats",
+    "selectAll": "Selecciona-ho tot",
+    "deselectAll": "Desselecciona-ho tot"
+  },
+  "empty": {
+    "noMatches": "Cap coincidència.",
+    "vault": "La caixa forta és buida.",
+    "notes": "Encara no hi ha notes.",
+    "filtered": "Cap element coincideix amb els teus filtres.",
+    "clearFilters": "Neteja els filtres",
+    "filteredAfter": "per mostrar-los."
+  },
+  "headerLabel": {
+    "allItems": "Tot",
+    "untagged": "Sense etiquetes",
+    "journals": "Diaris",
+    "vault": "Caixa forta",
+    "pinned": "Fixats",
+    "notes": "Notes"
+  },
+  "footerStats": {
+    "journals": "Diaris",
+    "items": "Elements",
+    "trashed": "A la paperera",
+    "notes": "Notes",
+    "bookmarks": "Marcadors"
+  },
+  "toast": {
+    "imageUploadFailed": "La pujada de la imatge ha fallat: {{error}}",
+    "imageError": "Error d'imatge: {{error}}",
+    "uploadFailedFor": "La pujada de \"{{filename}}\" ha fallat: {{error}}",
+    "importedSyncing_one": "S'ha importat {{count}} nota. S'està sincronitzant…",
+    "importedSyncing_many": "S'han importat {{count}} notes. S'estan sincronitzant…",
+    "importedSyncing_other": "S'han importat {{count}} notes. S'estan sincronitzant…",
+    "addedTag_one": "S'ha afegit #{{tag}} a {{count}} element",
+    "addedTag_many": "S'ha afegit #{{tag}} a {{count}} elements",
+    "addedTag_other": "S'ha afegit #{{tag}} a {{count}} elements"
+  },
+  "burn": {
+    "mediaOnly": "Aquesta nota només conté fitxers multimèdia i no es pot compartir amb un enllaç burn.",
+    "shareTitle": "Nota xifrada"
+  },
+  "loadError": {
+    "message": "No s'han pogut carregar les notes. La connexió amb la base de dades local s'ha interromput. Això pot passar quan l'aplicació ha estat una estona en segon pla.",
+    "reload": "Torna a carregar"
+  },
+  "banner": {
+    "dismiss": "Descarta",
+    "proActivationPending": "Hem rebut el pagament, però l'activació de Pro triga més de l'habitual. Actualitza d'aquí a un minut o contacta amb el suport si no s'activa.",
+    "snapshotPaused": "L'historial de notes està en pausa. El teu pla Pro sembla inactiu. Les edicions noves no es desaran a l'historial fins que Pro es restauri.",
+    "restorePro": "Restaura Pro",
+    "storagePastDue": "El pagament de la teva subscripció d'emmagatzematge ha fallat. Actualitza la targeta a Paddle per no perdre la capacitat extra.",
+    "updateCard": "Actualitza la targeta"
+  },
+  "sidebar": {
+    "collapse": "Replega la barra lateral",
+    "expand": "Desplega la barra lateral"
+  },
+  "notesList": {
+    "collapse": "Replega la llista de notes",
+    "expand": "Desplega la llista de notes"
+  },
+  "paneResize": {
+    "hintCollapse": "Fes clic per replegar · Arrossega per redimensionar"
+  },
+  "emptyEditor": {
+    "selectFile": "Selecciona un fitxer per previsualitzar-lo",
+    "uploadFiles": "O puja fitxers nous a la teva caixa forta xifrada.",
+    "selectNote": "Selecciona una nota o crea'n una de nova.",
+    "selectMarkdown": "Obre un fitxer Markdown per llegir-lo aquí."
+  },
+  "zen": {
+    "exit": "Surt del Zen",
+    "exitHover": "Surt del mode Zen (Esc)",
+    "enterHover": "Entra al mode Zen",
+    "proHover": "Mode Zen (Pro)",
+    "enterAriaShortcut": "Entra al mode Zen (⌘⇧F)"
+  },
+  "editor": {
+    "backToList": "Torna a la llista de notes",
+    "backToGrid": "Torna a la graella",
+    "titlePlaceholder": "Sense títol (fes-hi clic per editar-lo o deixa que es generi sol)",
+    "titlePlaceholderLogin": "p. ex. GitHub",
+    "titlePlaceholderCard": "p. ex. Visa acabada en 4242",
+    "titlePlaceholderSshKey": "p. ex. clau de desplegament de GitHub",
+    "pin": "Fixa",
+    "unpin": "Desfixa",
+    "restore": "Restaura",
+    "deleteForever": "Suprimeix per sempre",
+    "moveToTrash": "Mou a la paperera",
+    "noteOptions": "Opcions de la nota",
+    "readOnlyToggle": "Només de lectura. Desactiva-ho a",
+    "menu": "Menú",
+    "showMarkdown": "Mostra el markdown",
+    "showFormatted": "Mostra amb format",
+    "invisiblesShow": "Mostra els caràcters invisibles",
+    "invisiblesHide": "Amaga els caràcters invisibles",
+    "findInNote": "Cerca dins la nota",
+    "navPrev": "Nota anterior",
+    "navNext": "Nota següent",
+    "undo": "Desfés",
+    "redo": "Refés",
+    "hide": "Amaga",
+    "show": "Mostra",
+    "hideToolbar": "Amaga la barra de format",
+    "showToolbar": "Mostra la barra de format",
+    "widthDefault": "Amplada predeterminada",
+    "widthWide": "Més ample",
+    "widthFull": "Amplada completa",
+    "burn": "Comparteix amb Burn After Reading",
+    "titlePlaceholderLink": "Nom del marcador"
+  },
+  "share": {
+    "hover": "Comparteix / Exporta",
+    "ariaLabel": "Comparteix o exporta",
+    "thisNote": "Aquesta nota",
+    "currentMdTitle": "Nota actual (.md)",
+    "currentMdDesc": "Markdown en brut amb front-matter.",
+    "currentHtmlTitle": "Nota actual (.html)",
+    "currentHtmlDesc": "Ideal per imprimir, markdown renderitzat en una pàgina blanca.",
+    "printTitle": "Imprimeix / Desa com a PDF",
+    "printDesc": "Obre el diàleg d'impressió. Desa com a PDF o envia-ho a una impressora.",
+    "burnTitle": "Comparteix amb Burn After Reading",
+    "burnDesc": "Publica aquesta nota com a enllaç de visualització única. L'enllaç s'autodestrueix després de llegir-se. La teva nota es queda segura al teu compte.",
+    "backup": "Còpia de seguretat",
+    "fullBackupTitle": "Còpia de seguretat completa (.zip)",
+    "fullBackupDesc": "Tot: notes, diaris, caixa forta, tasques, imatges, àudio, fitxers.",
+    "allHtmlTitle": "Tots els elements (.zip de .html)",
+    "allHtmlDesc": "Un HTML imprimible per element. Ideal per llegir fora de línia.",
+    "jsonTitle": "Còpia de seguretat de text (.json)",
+    "jsonDesc": "Tot el contingut de text i les metadades, sense imatges ni fitxers."
+  },
+  "weekReview": {
+    "title": "Resum de la setmana",
+    "daysLogged": "{{count}}/7 registrats",
+    "mood": "Ànim",
+    "sleep": "Son",
+    "meds": "Medicació",
+    "activity": "Activitat"
+  },
+  "footer": {
+    "settings": "Configuració",
+    "viewShortcuts": "Mostra totes les dreceres de teclat",
+    "newNote": "Nou",
+    "newNoteHintMac": "Option + Maj + N",
+    "newNoteHintOther": "Alt + Maj + N",
+    "openStats": "Obre les estadístiques",
+    "words": "Paraules",
+    "zen": "Mode Zen",
+    "appearance": "Aparença",
+    "signOut": "Tanca la sessió",
+    "signingOut": "S'està tancant la sessió…",
+    "switchToLight": "Canvia al mode clar",
+    "switchToDark": "Canvia al mode fosc"
+  },
+  "settings": {
+    "groupYourNotes": "Les teves notes",
+    "groupAccount": "Compte i dades",
+    "groupBrand": "PrivacyNotes",
+    "statsLabel": "Estadístiques",
+    "journalsLabel": "Diaris",
+    "importLabel": "Importa i exporta",
+    "planLabel": "Compte",
+    "storageLabel": "Emmagatzematge",
+    "securityLabel": "Seguretat",
+    "accountLabel": "ID i sincronització",
+    "appearanceLabel": "Aparença",
+    "helpLabel": "Ajuda",
+    "aboutLabel": "Informació",
+    "languageLabel": "Llengua",
+    "languageDesc": "Tria la llengua en què es mostra PrivacyNotes."
+  },
+  "importStore": {
+    "title": "Importar o emmagatzemar?",
+    "confirm": "Importa com a notes",
+    "cancel": "Desa com a fitxers",
+    "bodySingle": "<strong>{{filename}}</strong> sembla un fitxer markdown. Vols importar-lo com a nota per poder llegir-lo i editar-lo, o emmagatzemar-lo com a fitxer adjunt xifrat?",
+    "bodyMulti": "Aquests {{count}} fitxers semblen markdown. Vols importar-los com a notes per poder llegir-los i editar-los, o emmagatzemar-los com a fitxers adjunts xifrats?"
+  },
+  "bulkTrash": {
+    "title": "Mou a la paperera",
+    "body_one": "Vols moure <highlight>{{count}} element</highlight> a la paperera? Després el podràs restaurar.",
+    "body_many": "Vols moure <highlight>{{count}} elements</highlight> a la paperera? Després els podràs restaurar.",
+    "body_other": "Vols moure <highlight>{{count}} elements</highlight> a la paperera? Després els podràs restaurar."
+  },
+  "bulkDelete": {
+    "body_one": "Vols suprimir permanentment <highlight>{{count}} nota</highlight>? Aquesta acció no es pot desfer.",
+    "body_many": "Vols suprimir permanentment <highlight>{{count}} notes</highlight>? Aquesta acció no es pot desfer.",
+    "body_other": "Vols suprimir permanentment <highlight>{{count}} notes</highlight>? Aquesta acció no es pot desfer."
+  },
+  "tagConfirm": {
+    "mergeTitle": "Fusiona les etiquetes",
+    "deleteTitle": "Suprimeix l'etiqueta",
+    "deleteWithNotesTitle": "Suprimeix l'etiqueta i les notes",
+    "mergeConfirm": "Fusiona",
+    "deleteConfirm": "Suprimeix l'etiqueta",
+    "moveToTrash": "Mou a la paperera",
+    "mergeBody_one": "L'etiqueta <highlight>“{{targetTag}}”</highlight> ja existeix. Vols fusionar-hi <highlight>{{count}} nota</highlight> que ara té l'etiqueta “{{tag}}”?",
+    "mergeBody_many": "L'etiqueta <highlight>“{{targetTag}}”</highlight> ja existeix. Vols fusionar-hi <highlight>{{count}} notes</highlight> que ara tenen l'etiqueta “{{tag}}”?",
+    "mergeBody_other": "L'etiqueta <highlight>“{{targetTag}}”</highlight> ja existeix. Vols fusionar-hi <highlight>{{count}} notes</highlight> que ara tenen l'etiqueta “{{tag}}”?",
+    "deleteBody_one": "Vols treure l'etiqueta <highlight>“{{tag}}”</highlight> de <highlight>{{count}} nota</highlight>? Les notes en si no se suprimeixen.",
+    "deleteBody_many": "Vols treure l'etiqueta <highlight>“{{tag}}”</highlight> de <highlight>{{count}} notes</highlight>? Les notes en si no se suprimeixen.",
+    "deleteBody_other": "Vols treure l'etiqueta <highlight>“{{tag}}”</highlight> de <highlight>{{count}} notes</highlight>? Les notes en si no se suprimeixen.",
+    "deleteWithNotesBody_one": "Vols suprimir l'etiqueta <highlight>“{{tag}}”</highlight> i moure <highlight>{{count}} nota</highlight> a la paperera? Des d'allà la podràs restaurar.",
+    "deleteWithNotesBody_many": "Vols suprimir l'etiqueta <highlight>“{{tag}}”</highlight> i moure <highlight>{{count}} notes</highlight> a la paperera? Des d'allà les podràs restaurar.",
+    "deleteWithNotesBody_other": "Vols suprimir l'etiqueta <highlight>“{{tag}}”</highlight> i moure <highlight>{{count}} notes</highlight> a la paperera? Des d'allà les podràs restaurar."
+  },
+  "createNote": {
+    "title": "Vols crear la nota?",
+    "confirm": "Crea la nota",
+    "body": "No hi ha cap nota amb el títol <highlight>“{{title}}”</highlight>. Això pot passar si s'ha canviat el nom de la nota enllaçada. Vols crear una nota nova amb aquest títol?"
+  },
+  "freshVault": {
+    "title": "S'ha creat una caixa forta nova",
+    "confirm": "Entesos",
+    "body": "Cap caixa forta existent no coincideix amb la frase que has introduït, així que se n'ha creat una de buida. Si esperaves veure les teves notes, tanca la sessió i torna a introduir la frase amb cura: una sola paraula diferent obre una caixa forta diferent."
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "placeholder": "Börja skriva…",
+  "toolbar": {
+    "bold": "Fet",
+    "italic": "Kursiv",
+    "underline": "Understruken",
+    "heading": "Rubrik",
+    "taskList": "Uppgiftslista",
+    "bulletList": "Punktlista",
+    "linkMenu": "Länk",
+    "noteLinkMenu": "Anteckningslänk",
+    "numberedList": "Numrerad lista",
+    "textColor": "Textfärg",
+    "textColorApply": "Textfärg: {{color}}",
+    "pickColor": "Välj textfärg",
+    "table": "Tabell",
+    "quote": "Citat",
+    "callout": "Informationsruta",
+    "inlineCode": "Infogad kod",
+    "strikethrough": "Genomstruken",
+    "codeBlock": "Kodblock",
+    "divider": "Avdelare",
+    "moreFormatting": "Mer formatering",
+    "fewerFormatting": "Färre formateringsalternativ",
+    "image": "Bild",
+    "attachFile": "Bifoga fil",
+    "insert": "Infoga",
+    "highlight": "Överstrykning",
+    "highlightApply": "Överstrykning: {{color}}",
+    "pickHighlight": "Välj överstrykningsfärg",
+    "superscript": "Upphöjd text",
+    "subscript": "Nedsänkt text",
+    "math": "Matematisk formel",
+    "blockMath": "Blockformel",
+    "align": "Justering",
+    "font": "Teckensnitt"
+  },
+  "align": {
+    "left": "Vänsterjustera",
+    "center": "Centrera",
+    "right": "Högerjustera",
+    "justify": "Marginaljustera"
+  },
+  "font": {
+    "families": {
+      "sans": "Sans",
+      "serif": "Serif",
+      "mono": "Mono"
+    },
+    "sizes": {
+      "small": "Liten",
+      "large": "Stor",
+      "huge": "Enorm"
+    },
+    "reset": "Återställ teckensnitt"
+  },
+  "heading": {
+    "normalText": "Vanlig text",
+    "level": "Rubrik {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "Infoga informationsruta",
+    "remove": "Ta bort informationsruta",
+    "types": {
+      "info": "Info",
+      "success": "Klart",
+      "warning": "Varning",
+      "tip": "Tips",
+      "danger": "Fara",
+      "question": "Fråga",
+      "quote": "Citat",
+      "example": "Exempel",
+      "bug": "Bugg",
+      "note": "Anteckning",
+      "abstract": "Sammanfattning",
+      "failure": "Misslyckades"
+    }
+  },
+  "color": {
+    "remove": "Ta bort färg",
+    "removeHighlight": "Ta bort överstrykning",
+    "names": {
+      "gray": "Grå",
+      "red": "Röd",
+      "orange": "Orange",
+      "yellow": "Gul",
+      "green": "Grön",
+      "teal": "Blågrön",
+      "blue": "Blå",
+      "purple": "Lila",
+      "pink": "Rosa"
+    }
+  },
+  "insertGroup": {
+    "insert": "Infoga",
+    "blocks": "Block",
+    "notation": "Notation"
+  },
+  "table": {
+    "addRowAbove": "Lägg till rad ovanför",
+    "addRowBelow": "Lägg till rad nedanför",
+    "addColumnLeft": "Lägg till kolumn till vänster",
+    "addColumnRight": "Lägg till kolumn till höger",
+    "deleteRow": "Radera rad",
+    "deleteColumn": "Radera kolumn",
+    "deleteTable": "Radera tabell"
+  },
+  "find": {
+    "placeholder": "Sök i anteckning",
+    "label": "Sök i anteckning",
+    "previous": "Föregående träff (Shift+Enter)",
+    "previousTitle": "Föregående (Shift+Enter)",
+    "next": "Nästa träff (Enter)",
+    "nextTitle": "Nästa (Enter)",
+    "close": "Stäng sökning",
+    "closeTitle": "Stäng (⌘F)"
+  },
+  "outline": {
+    "show": "Visa översikt",
+    "showTitle": "Översikt (Cmd/Ctrl+Shift+O)",
+    "title": "Översikt",
+    "ariaLabel": "Anteckningens översikt",
+    "hide": "Dölj översikt",
+    "hideTitle": "Dölj översikt (Esc)"
+  },
+  "topRow": {
+    "add": "Lägg till en rad högst upp"
+  },
+  "link": {
+    "popoverLabel": "Lägg till länk",
+    "placeholder": "Klistra in eller skriv en URL",
+    "apply": "Tillämpa",
+    "addTitle": "Lägg till länk",
+    "editTitle": "Redigera länk",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "Ange en URL",
+    "errorInvalidUrl": "Ange en giltig URL",
+    "textLabel": "Länktext",
+    "textPlaceholder": "Valfritt, lämna tomt för att visa URL:en",
+    "selectedTextHint": "Den markerade texten används som länk",
+    "editTextHint": "Redigera länktexten i redigeraren",
+    "update": "Uppdatera"
+  },
+  "audio": {
+    "uploadingRecording": "Laddar upp inspelning...",
+    "uploading": "Laddar upp...",
+    "stopRecording": "Stoppa inspelning",
+    "recordAudio": "Spela in ljud",
+    "savingRecording": "Sparar inspelning...",
+    "recording": "Spelar in",
+    "secondsLeft": "{{count}} s kvar",
+    "stop": "Stoppa"
+  },
+  "wordCount": {
+    "words_one": "{{formatted}} ord",
+    "words_other": "{{formatted}} ord",
+    "characters_one": "{{formatted}} tecken",
+    "characters_other": "{{formatted}} tecken",
+    "tooLargeToSync": ", kan vara för stor för att synka, dela upp i en ny anteckning",
+    "veryLong": ", mycket lång, kan bli trög att redigera och hacka",
+    "gettingLong": ", börjar bli lång, kan lagga på långsammare enheter",
+    "largeTableWarning": "En stor tabell ({{rows}} rader) kan göra anteckningen trög att redigera, överväg att dela upp den"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "Inga matchande anteckningar",
+    "create": "Skapa \"{{query}}\""
+  },
+  "codeBlock": {
+    "copy": "Kopiera",
+    "copied": "Kopierad",
+    "copyFailed": "Misslyckades"
+  }
+}

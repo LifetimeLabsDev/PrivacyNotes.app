@@ -1,0 +1,189 @@
+{
+  "labels": {
+    "mood": "المزاج",
+    "emotions": "المشاعر",
+    "sleep": "النوم",
+    "sleepScore": "درجة النوم",
+    "heartRate": "معدل ضربات القلب",
+    "activity": "النشاط",
+    "medication": "الدواء",
+    "meds": "الأدوية",
+    "energy": "الطاقة",
+    "focus": "التركيز",
+    "weight": "الوزن",
+    "steps": "الخطوات",
+    "water": "الماء",
+    "screenTime": "وقت الشاشة",
+    "caffeine": "الكافيين",
+    "pain": "الألم",
+    "social": "التواصل",
+    "custom": "مخصص"
+  },
+  "units": {
+    "hoursSuffix": "س",
+    "bpm": "bpm",
+    "kg": "kg",
+    "steps_zero": "خطوة",
+    "steps_one": "خطوة",
+    "steps_two": "خطوتان",
+    "steps_few": "خطوات",
+    "steps_many": "خطوة",
+    "steps_other": "خطوة",
+    "hrs": "س",
+    "glasses_zero": " كوب",
+    "glasses_one": " كوب",
+    "glasses_two": " كوبان",
+    "glasses_few": " أكواب",
+    "glasses_many": " كوبًا",
+    "glasses_other": " كوب",
+    "cups_zero": " فنجان",
+    "cups_one": " فنجان",
+    "cups_two": " فنجانان",
+    "cups_few": " فناجين",
+    "cups_many": " فنجانًا",
+    "cups_other": " فنجان"
+  },
+  "scaleEnds": {
+    "low": "منخفض",
+    "high": "مرتفع",
+    "none": "لا شيء",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "شديد",
+    "socialLow": "منعزل",
+    "socialHigh": "اجتماعي جدًا"
+  },
+  "mood": {
+    "prompt": "كيف تشعر؟ (1-10)",
+    "low": "سيئ جدًا",
+    "high": "رائع",
+    "anchor": {
+      "1": "سيئ جدًا",
+      "3": "صعب",
+      "5": "عادي",
+      "7": "جيد",
+      "10": "رائع"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "ما هي المشاعر الحاضرة؟",
+    "count_zero": "{{count}} مشاعر",
+    "count_one": "{{count}} شعور",
+    "count_two": "{{count}} شعوران",
+    "count_few": "{{count}} مشاعر",
+    "count_many": "{{count}} شعورًا",
+    "count_other": "{{count}} شعورًا",
+    "valence": {
+      "positive": "إيجابي",
+      "neutral": "محايد",
+      "negative": "سلبي"
+    },
+    "tags": {
+      "happy": "سعيد",
+      "calm": "هادئ",
+      "relaxed": "مرتاح",
+      "grateful": "ممتن",
+      "loved": "محبوب",
+      "motivated": "متحفز",
+      "confident": "واثق",
+      "productive": "منتج",
+      "focused": "مركّز",
+      "energetic": "نشيط",
+      "tired": "متعب",
+      "restless": "متململ",
+      "distracted": "مشتت",
+      "numb": "فاقد الشعور",
+      "overwhelmed": "مثقل",
+      "anxious": "قلق",
+      "stressed": "متوتر",
+      "frustrated": "محبَط",
+      "irritable": "سريع الانفعال",
+      "sad": "حزين",
+      "lonely": "وحيد",
+      "guilty": "مذنب",
+      "hopeless": "يائس",
+      "angry": "غاضب"
+    }
+  },
+  "sleep": {
+    "prompt": "كيف كان نومك؟",
+    "hoursLabel": "الساعات:",
+    "quality": {
+      "terrible": "سيئ جدًا",
+      "poor": "ضعيف",
+      "okay": "مقبول",
+      "good": "جيد",
+      "great": "ممتاز"
+    }
+  },
+  "sleepScore": {
+    "prompt": "درجة النوم"
+  },
+  "heartRate": {
+    "prompt": "متوسط معدل ضربات القلب"
+  },
+  "activity": {
+    "prompt": "ما هو مستوى نشاطك اليوم؟",
+    "level": {
+      "sedentary": "خامل",
+      "light": "خفيف",
+      "moderate": "متوسط",
+      "active": "نشيط",
+      "intense": "مكثف"
+    }
+  },
+  "medication": {
+    "heading": "الأدوية",
+    "empty": "لا توجد أدوية مُعدّة بعد.",
+    "takenCount_zero": "{{count}} أدوية مأخوذة",
+    "takenCount_one": "{{count}} دواء مأخوذ",
+    "takenCount_two": "{{count}} دواءان مأخوذان",
+    "takenCount_few": "{{count}} أدوية مأخوذة",
+    "takenCount_many": "{{count}} دواءً مأخوذًا",
+    "takenCount_other": "{{count}} دواءً مأخوذًا",
+    "namePlaceholder": "اسم الدواء",
+    "dosagePlaceholder": "الجرعة (مثال: 50 ملغ)",
+    "addMedication": "+ إضافة دواء",
+    "editMedication": "تعديل الدواء",
+    "removeMedication": "إزالة الدواء",
+    "confirmRemove": "هل تريد إزالة <highlight>{{name}}</highlight>؟",
+    "yes": "نعم",
+    "no": "لا",
+    "taken": "تم تناوله",
+    "skip": "تخطي"
+  },
+  "custom": {
+    "yes": "نعم",
+    "no": "لا",
+    "typeLabels": {
+      "scale10": "مقياس (0-10)",
+      "scale5": "مقياس (0-5)",
+      "slider100": "شريط تمرير (0-100)",
+      "number": "رقم",
+      "yesno": "نعم / لا"
+    }
+  },
+  "config": {
+    "configureTrackers": "إعداد المتتبعات",
+    "title": "المتتبعات",
+    "categoryMoodMind": "المزاج والذهن",
+    "categoryBodyHealth": "الجسد والصحة",
+    "categoryLifestyle": "نمط الحياة",
+    "customHeading": "مخصص",
+    "resume": "استئناف",
+    "stop": "إيقاف",
+    "addCustomTracker": "إضافة متتبع مخصص",
+    "addCustomTrackerCount": "إضافة متتبع مخصص ({{count}}/{{max}})",
+    "addCustomTrackerHint": "تتبع أي شيء تريده",
+    "maxReached": "تم الوصول إلى الحد الأقصى وهو {{max}} من المتتبعات المخصصة.",
+    "customTrackers": "المتتبعات المخصصة",
+    "newCustomTracker": "متتبع مخصص جديد",
+    "trackerNamePlaceholder": "اسم المتتبع",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "النوع:",
+    "colorLabel": "اللون:"
+  }
+}

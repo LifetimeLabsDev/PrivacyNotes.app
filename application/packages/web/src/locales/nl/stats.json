@@ -1,0 +1,116 @@
+{
+  "title": "Statistieken",
+  "tabs": {
+    "writing": "Schrijven",
+    "wellness": "Welzijn"
+  },
+  "writing": {
+    "notes": "Notities",
+    "words": "Woorden",
+    "tags": "Tags",
+    "currentStreak": "Huidige reeks",
+    "longestStreak": "Langste reeks",
+    "streakValue": "{{count}}d",
+    "timeRangeAria": "Periode van activiteit",
+    "modeActivity": "Activiteit",
+    "modeMood": "Stemming",
+    "tooltipMood": "{{date}}: stemming {{mood}}/10",
+    "tooltipNoMood": "{{date}}: geen stemming",
+    "tooltipEdits_one": "{{date}}: {{count}} bewerking",
+    "tooltipEdits_other": "{{date}}: {{count}} bewerkingen",
+    "longestNote": "Langste notitie: <name>{{title}}</name> ({{count}} woorden)"
+  },
+  "range": {
+    "7d": "7 dagen",
+    "14d": "14 dagen",
+    "30d": "30 dagen",
+    "3mo": "3 maanden",
+    "6mo": "6 maanden",
+    "12mo": "12 maanden"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Alles",
+      "sleepActivity": "Slaap & activiteit",
+      "medication": "Medicatie",
+      "patterns": "Patronen"
+    },
+    "empty": {
+      "title": "Nog geen welzijnsgegevens.",
+      "hint": "Open een dagboeknotitie en leg je stemming vast om te beginnen."
+    },
+    "overview": {
+      "daysTracked": "Dagen bijgehouden",
+      "avgMood": "Gem. stemming",
+      "avgSleep": "Gem. slaap",
+      "medAdherence": "Medicatietrouw",
+      "moodTrend": "Stemmingstrend",
+      "moodByDayOfWeek": "Stemming per weekdag",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Exporteren",
+      "allTime": "Alles",
+      "last90Days": "Laatste 90 dagen",
+      "last30Days": "Laatste 30 dagen",
+      "last7Days": "Laatste 7 dagen",
+      "downloadJSON": "JSON downloaden",
+      "doctorPDF": "PDF voor je arts",
+      "copyAIPrompt": "AI-prompt kopiëren",
+      "copied": "Gekopieerd!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Slaapkwaliteit",
+      "activity": "Activiteit",
+      "avgSleepPerNight": "Gemiddelde slaap per nacht"
+    },
+    "medication": {
+      "adherence": "Medicatietrouw",
+      "empty": {
+        "title": "Nog geen medicatiegegevens.",
+        "hint": "Voeg een medicijn toe in de tracker-instellingen en leg het dagelijks vast."
+      },
+      "dosageTimeline": "Doseringsverloop",
+      "started": "Gestart met {{dosage}}",
+      "changedTo": "Gewijzigd naar {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Meest voorkomende emoties",
+      "insights": "Inzichten",
+      "proBadge": "PRO",
+      "insightsLocked_one": "{{count}} inzicht gevonden. Upgrade naar Pro om te bekijken",
+      "insightsLocked_other": "{{count}} inzichten gevonden. Upgrade naar Pro om te bekijken",
+      "weekInReview": "Week in beeld",
+      "weekInReviewLocked": "Upgrade naar Pro om je wekelijkse welzijnsoverzicht te zien"
+    },
+    "week": {
+      "range": "{{start}} tot {{end}}",
+      "daysLogged": "{{count}}/7 dagen vastgelegd",
+      "avgMood": "Gem. stemming",
+      "moodDelta": "{{delta}} t.o.v. vorige week",
+      "avgSleep": "Gem. slaap",
+      "medsTaken": "Medicatie ingenomen",
+      "topActivity": "Meeste activiteit",
+      "topEmotions": "Meest voorkomende emoties",
+      "reflection": "Reflectie",
+      "reflectionPlaceholder": "Hoe voelde deze week in het algemeen? Gedachten om vast te leggen..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Mijlpaal behaald"
+  },
+  "milestone": {
+    "notes_one": "{{count}} notitie geschreven",
+    "notes_other": "{{count}} notities geschreven",
+    "streak": "{{count}} dagen op rij geschreven",
+    "words_one": "{{formatted}} woord geschreven",
+    "words_other": "{{formatted}} woorden geschreven",
+    "age30": "30 dagen met PrivacyNotes",
+    "age365": "1 jaar met PrivacyNotes",
+    "age730": "2 jaar met PrivacyNotes",
+    "age1825": "5 jaar met PrivacyNotes",
+    "ageDefault": "{{count}} dagen onderweg"
+  }
+}

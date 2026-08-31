@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>app.privacynotes</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>LicenseRef-proprietary</project_license>
+  <name>PrivacyNotes</name>
+  <summary>End-to-end encrypted notes, tasks, and journal</summary>
+  <developer id="dev.lifetimelabs">
+    <name>Lifetime Labs LLC</name>
+  </developer>
+  <description>
+    <p>
+      PrivacyNotes is a zero-knowledge, end-to-end encrypted place for your notes, tasks, and journal.
+      Your 12-word recovery phrase is the only key, so not even we can read your content.
+    </p>
+    <p>
+      It works offline, syncs across your devices with end-to-end encryption, and keeps your data
+      private by design.
+    </p>
+  </description>
+  <launchable type="desktop-id">PrivacyNotes.desktop</launchable>
+  <url type="homepage">https://privacynotes.app</url>
+  <url type="help">https://privacynotes.app/faq</url>
+  <url type="bugtracker">https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues</url>
+  <content_rating type="oars-1.1" />
+</component>

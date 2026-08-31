@@ -1,0 +1,64 @@
+{
+  "upgrade": {
+    "header": "Einmal zahlen, für immer deins",
+    "earlyAdopterBadge": "Early Adopter",
+    "oneTime": "einmalig",
+    "subscriptionPitch": "Kein Abo. Keine Jahresgebühr. Eine Zahlung, für immer freigeschaltet.",
+    "ctaUnlock": "Alles freischalten",
+    "ctaOpening": "Checkout wird geöffnet...",
+    "ctaSignUp": "Registrieren zum Freischalten",
+    "intro": {
+      "storage": "Größere Uploads und mehr Speicher sind eine Pro-Funktion. Rüste auf für 50-MB-Dateien und 500 MB Speicher.",
+      "folders": "Ordner sind eine Pro-Funktion. Organisiere deine Notizen in verschachtelten Ordnern, so tief du willst, und halte jedes Projekt getrennt.",
+      "lock": "Eine Notiz zu sperren ist eine Pro-Funktion. Rüste auf, um jede Notiz vor versehentlichen Änderungen zu schützen.",
+      "protect": "Eine Notiz mit PIN zu schützen ist eine Pro-Funktion. Rüste auf, um sensible Notizen hinter deiner PIN zu sichern.",
+      "history": "Der Notizverlauf ist eine Pro-Funktion. Rüste auf, um eine Chronik jeder Speicherung zu behalten.",
+      "devices": "Du hast das Limit von 2 Geräten erreicht. Rüste auf für unbegrenzt viele Geräte.",
+      "zen": "Der Zen-Modus ist eine Pro-Funktion. Rüste auf für ablenkungsfreies Schreiben.",
+      "theme": "Premium-Designs sind eine Pro-Funktion. Rüste auf, um jeden Farbton freizuschalten.",
+      "callout": "Der vollständige Satz an Hinweisboxen ist eine Pro-Funktion.",
+      "totp": "2FA-Codes sind eine Pro-Funktion. Speichere einen Authenticator-Schlüssel bei jedem Login und du bekommst den wechselnden Code direkt neben dem Passwort. Der Schlüssel selbst wird in jedem Tarif gespeichert und synchronisiert.",
+      "default": "Ein Upgrade schaltet alles unten frei. Einmalzahlung."
+    },
+    "features": {
+      "devices": "Unbegrenzt viele Geräte synchronisieren, jede Plattform",
+      "folders": "Verschachtelte Ordner, Organisation nach Projekt",
+      "lock": "Jede Notiz sperren und mit PIN schützen",
+      "history": "Vollständiger Notizverlauf, jederzeit wiederherstellbar",
+      "themes": "Premium-Designs in jedem Farbton",
+      "zen": "Zen-Modus, ablenkungsfreies Schreiben",
+      "storage": "500 MB Speicher + 50 MB Anhänge"
+    },
+    "comparisonBeta": "Zahle einmalig {{earlyPrice}} $. Obsidian Sync kostet 48 $/Jahr, jedes Jahr. Standard Notes verlangt 90 $/Jahr. Early-Adopter-Preis, festgeschrieben, bevor er auf {{proPrice}} $ steigt.",
+    "comparison": "Zahle einmalig {{proPrice}} $ und besitze es für immer. Obsidian Sync kostet 48 $/Jahr und Standard Notes 90 $/Jahr, jedes einzelne Jahr."
+  },
+  "purchaseError": {
+    "store": "Der Kauf im Store konnte nicht abgeschlossen werden und dir wurde nichts berechnet. Bitte versuche es gleich noch einmal.",
+    "validate": "Deine Zahlung ging durch, aber die Aktivierung ist fehlgeschlagen. Starte die App neu, um es erneut zu versuchen - falls Pro immer noch nicht freigeschaltet wird, erstattet der Store den Kauf automatisch innerhalb von 3 Tagen.",
+    "alreadyOwned": "Laut Store besitzt du diesen Kauf bereits, aber er gehört zu einem anderen Konto. Melde dich mit der Wiederherstellungsphrase an, die du beim Kauf verwendet hast."
+  },
+  "checkout": {
+    "invalidTitle": "Checkout-Link ungültig",
+    "invalidBody": "Öffne den Checkout aus der App heraus, damit wir den Kauf deinem Konto zuordnen können.",
+    "completeTitle": "Zahlung abgeschlossen",
+    "completeBody": "Du kannst diesen Tab schließen und zu PrivacyNotes zurückkehren. Dein Upgrade wird automatisch freigeschaltet.",
+    "openingTitle": "Sicherer Checkout wird geöffnet...",
+    "openingBody": "Ein Paddle-Checkout-Fenster sollte erscheinen. Falls nicht, hat dein Browser das Popup möglicherweise blockiert - lade diese Seite neu, um es erneut zu versuchen."
+  },
+  "history": {
+    "title": "Notizverlauf",
+    "subtitle": "Bis zu 20 Versionen pro Notiz. Älteste werden automatisch entfernt.",
+    "empty": "Noch kein Verlauf. Versionen sammeln sich nach der nächsten Bearbeitung an. Schau später wieder vorbei.",
+    "selectPrompt": "Wähle eine Version für die Vorschau.",
+    "emptyBody": "(leer)",
+    "restore": "Wiederherstellen",
+    "restoring": "Wird wiederhergestellt…"
+  },
+  "donation": {
+    "eyebrow": "Du hast freigeschaltet",
+    "intro": "<brand/> ist kostenlos und wird es immer bleiben. Keine Werbung, kein Tracking, keine E-Mail gespeichert. Wenn es dir geholfen hat zu denken, zu schreiben oder dich zu erinnern, denk über eine Unterstützung der Entwicklung nach. Sie hält den Betrieb am Laufen und finanziert die nächsten Funktionen.",
+    "proBenefits": "Mit deiner Unterstützung schaltest du außerdem Pro-Vorteile frei, sobald sie verfügbar sind: unbegrenzt viele Geräte, Anhänge, verschlüsselte Cloud-Backups.",
+    "maybeLater": "Vielleicht später",
+    "support": "Unterstützen →"
+  }
+}

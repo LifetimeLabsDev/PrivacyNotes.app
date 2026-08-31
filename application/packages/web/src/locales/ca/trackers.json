@@ -1,0 +1,171 @@
+{
+  "labels": {
+    "mood": "Estat d'ànim",
+    "emotions": "Emocions",
+    "sleep": "Son",
+    "sleepScore": "Puntuació del son",
+    "heartRate": "Freqüència cardíaca",
+    "activity": "Activitat",
+    "medication": "Medicació",
+    "meds": "Medicació",
+    "energy": "Energia",
+    "focus": "Concentració",
+    "weight": "Pes",
+    "steps": "Passos",
+    "water": "Aigua",
+    "screenTime": "Temps de pantalla",
+    "caffeine": "Cafeïna",
+    "pain": "Dolor",
+    "social": "Social",
+    "custom": "Personalitzat"
+  },
+  "units": {
+    "hoursSuffix": "h",
+    "bpm": "ppm",
+    "kg": "kg",
+    "steps_one": "pas",
+    "steps_other": "passos",
+    "hrs": "h",
+    "glasses_one": " got",
+    "glasses_other": " gots",
+    "cups_one": " tassa",
+    "cups_other": " tasses"
+  },
+  "scaleEnds": {
+    "low": "baix",
+    "high": "alt",
+    "none": "gens",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "intens",
+    "socialLow": "aïllat",
+    "socialHigh": "molt sociable"
+  },
+  "mood": {
+    "prompt": "Com et sents? (1-10)",
+    "low": "fatal",
+    "high": "de meravella",
+    "anchor": {
+      "1": "fatal",
+      "3": "malament",
+      "5": "normal",
+      "7": "bé",
+      "10": "de meravella"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "Quines emocions hi ha presents?",
+    "count_one": "{{count}} emoció",
+    "count_many": "{{count}} emocions",
+    "count_other": "{{count}} emocions",
+    "valence": {
+      "positive": "positiva",
+      "neutral": "neutra",
+      "negative": "negativa"
+    },
+    "tags": {
+      "happy": "Alegria",
+      "calm": "Calma",
+      "relaxed": "Relaxació",
+      "grateful": "Gratitud",
+      "loved": "Estima",
+      "motivated": "Motivació",
+      "confident": "Confiança",
+      "productive": "Productivitat",
+      "focused": "Concentració",
+      "energetic": "Energia",
+      "tired": "Cansament",
+      "restless": "Inquietud",
+      "distracted": "Distracció",
+      "numb": "Insensibilitat",
+      "overwhelmed": "Aclaparament",
+      "anxious": "Ansietat",
+      "stressed": "Estrès",
+      "frustrated": "Frustració",
+      "irritable": "Irritabilitat",
+      "sad": "Tristesa",
+      "lonely": "Solitud",
+      "guilty": "Culpa",
+      "hopeless": "Desesperança",
+      "angry": "Ràbia"
+    }
+  },
+  "sleep": {
+    "prompt": "Com has dormit?",
+    "hoursLabel": "Hores:",
+    "quality": {
+      "terrible": "Terrible",
+      "poor": "Dolent",
+      "okay": "Normal",
+      "good": "Bo",
+      "great": "Molt bo"
+    }
+  },
+  "sleepScore": {
+    "prompt": "Puntuació del son"
+  },
+  "heartRate": {
+    "prompt": "Freqüència cardíaca mitjana"
+  },
+  "activity": {
+    "prompt": "Nivell d'activitat d'avui?",
+    "level": {
+      "sedentary": "Sedentari",
+      "light": "Lleuger",
+      "moderate": "Moderat",
+      "active": "Actiu",
+      "intense": "Intens"
+    }
+  },
+  "medication": {
+    "heading": "Medicaments",
+    "empty": "Encara no hi ha cap medicament configurat.",
+    "takenCount_one": "{{count}} pres",
+    "takenCount_many": "{{count}} presos",
+    "takenCount_other": "{{count}} presos",
+    "namePlaceholder": "Nom del medicament",
+    "dosagePlaceholder": "Dosi (p. ex. 50mg)",
+    "addMedication": "+ Afegeix un medicament",
+    "editMedication": "Edita el medicament",
+    "removeMedication": "Elimina el medicament",
+    "confirmRemove": "Vols eliminar <highlight>{{name}}</highlight>?",
+    "yes": "Sí",
+    "no": "No",
+    "taken": "Pres",
+    "skip": "Omet"
+  },
+  "custom": {
+    "yes": "Sí",
+    "no": "No",
+    "typeLabels": {
+      "scale10": "Escala (0-10)",
+      "scale5": "Escala (0-5)",
+      "slider100": "Control lliscant (0-100)",
+      "number": "Número",
+      "yesno": "Sí / No"
+    }
+  },
+  "config": {
+    "configureTrackers": "Configura els seguiments",
+    "title": "Seguiments",
+    "categoryMoodMind": "Ànim i ment",
+    "categoryBodyHealth": "Cos i salut",
+    "categoryLifestyle": "Estil de vida",
+    "customHeading": "Personalitzats",
+    "resume": "Reprèn",
+    "stop": "Atura",
+    "addCustomTracker": "Afegeix un seguiment personalitzat",
+    "addCustomTrackerCount": "Afegeix un seguiment personalitzat ({{count}}/{{max}})",
+    "addCustomTrackerHint": "Registra qualsevol cosa que vulguis",
+    "maxReached": "Has arribat al màxim de {{max}} seguiments personalitzats.",
+    "customTrackers": "Seguiments personalitzats",
+    "newCustomTracker": "Seguiment personalitzat nou",
+    "trackerNamePlaceholder": "Nom del seguiment",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "Tipus:",
+    "colorLabel": "Color:"
+  }
+}

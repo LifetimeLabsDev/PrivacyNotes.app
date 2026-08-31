@@ -1,0 +1,112 @@
+{
+  "dismiss": "Sluiten",
+  "close": "Sluiten",
+  "moveBanner": {
+    "title": "De app verhuist naar use.privacynotes.app",
+    "body": "Verplaats deze sessie nu - het duurt een paar seconden en je notities gaan mee.",
+    "cta": "Nu verhuizen",
+    "syncing": "Je notities worden gesynchroniseerd…",
+    "error": "Kon nu niet alles synchroniseren. Controleer je verbinding en probeer het opnieuw.",
+    "conflict": "Een van je notities heeft een synchronisatieconflict dat een beslissing van jou vraagt. Los het op in het venster en probeer het daarna opnieuw."
+  },
+  "movedHint": {
+    "body": "Dit is het nieuwe thuis van de app. Werk je bladwijzer bij naar use.privacynotes.app en voeg snelkoppelingen op je beginscherm opnieuw toe.",
+    "gotIt": "Begrepen"
+  },
+  "moveScreen": {
+    "title": "De app is verhuisd naar use.privacynotes.app",
+    "body": "Verplaats dit apparaat nu - het duurt een paar seconden en je notities gaan mee. Hier wordt niets verwijderd.",
+    "openNotes": "Open je notities hier één keer om dit op te lossen",
+    "website": "Bekijk in plaats daarvan de website"
+  },
+  "quota": {
+    "frozen": {
+      "configured": "Synchronisatie gepauzeerd. Je zit al 90+ dagen over je opslaglimiet. Je notities staan veilig op dit apparaat. Neem opnieuw een abonnement of exporteer je gegevens.",
+      "unconfigured": "Synchronisatie gepauzeerd. Je zit al 90+ dagen over je opslaglimiet. Je notities staan veilig op dit apparaat. Exporteer en ruim notities op om de synchronisatie te hervatten."
+    },
+    "grace": {
+      "configured_one": "Opslaguitbreiding verlopen. Nog {{count}} dag om je gebruik te verlagen of opnieuw een abonnement te nemen voordat de synchronisatie pauzeert.",
+      "configured_other": "Opslaguitbreiding verlopen. Nog {{count}} dagen om je gebruik te verlagen of opnieuw een abonnement te nemen voordat de synchronisatie pauzeert.",
+      "unconfigured_one": "Over je opslaglimiet. Nog {{count}} dag om notities op te ruimen voordat de synchronisatie pauzeert.",
+      "unconfigured_other": "Over je opslaglimiet. Nog {{count}} dagen om notities op te ruimen voordat de synchronisatie pauzeert."
+    },
+    "full": {
+      "configured": "Opslag vol. Sommige notities konden niet synchroniseren. Maak ruimte vrij of neem meer opslag.",
+      "unconfigured": "Opslag vol. Sommige notities konden niet synchroniseren. Maak ruimte vrij door notities op te ruimen."
+    },
+    "manageStorage": "Opslag beheren",
+    "viewUsage": "Gebruik bekijken"
+  },
+  "syncError": {
+    "failed_one": "1 notitie kon niet synchroniseren. Het wordt automatisch opnieuw geprobeerd.",
+    "failed_other": "{{count}} notities konden niet synchroniseren. Het wordt automatisch opnieuw geprobeerd.",
+    "lastError": "Laatste fout: {{message}}"
+  },
+  "sessionExpired": {
+    "title": "Sessie verlopen",
+    "body": "Je sessie is verlopen. Je notities staan veilig op dit apparaat. Meld je opnieuw aan om verder te synchroniseren.",
+    "signInAgain": "Opnieuw aanmelden"
+  },
+  "signOutConfirm": {
+    "title": "Heb je je 12-woordenzin opgeslagen?",
+    "body": "Je herstelzin is de <only>enige</only> manier om weer binnen te komen. Geen e-mailherstel, geen helpdesk. We weten niet wie je bent, en dat is met opzet. Heb je hem nog niet opgeschreven, tik dan op <action>Nee, toon herstelzin</action> en we openen hem meteen voor je.",
+    "unsyncedWarn_one": "1 notitie op dit apparaat is nog niet gesynchroniseerd. Die gaat definitief verloren als uploaden tijdens het afmelden mislukt.",
+    "unsyncedWarn_other": "{{count}} notities op dit apparaat zijn nog niet gesynchroniseerd. Die gaan definitief verloren als uploaden tijdens het afmelden mislukt.",
+    "unsyncedKept_one": "1 notitie op dit apparaat is nog niet gesynchroniseerd. Die blijft op dit apparaat staan en synchroniseert zodra je je weer aanmeldt.",
+    "unsyncedKept_other": "{{count}} notities op dit apparaat zijn nog niet gesynchroniseerd. Die blijven op dit apparaat staan en synchroniseren zodra je je weer aanmeldt.",
+    "dontRemind": "Herinner me hier niet meer aan",
+    "showPhrase": "Nee, toon herstelzin",
+    "confirm": "Ja, afmelden"
+  },
+  "burnShareModal": {
+    "title": "Delen & vernietigen na lezen",
+    "body": "<lead>Je oorspronkelijke notitie wordt niet verwijderd.</lead> Die blijft veilig in je account. De burn-link is een aparte versleutelde kopie die zichzelf vernietigt zodra hij gelezen is. De link verloopt na 24 uur, of hij nu geopend is of niet.",
+    "imagesStripped": "Alleen tekst wordt getoond, bestanden in deze notitie blijven verborgen.",
+    "copied": "Gekopieerd"
+  },
+  "burnView": {
+    "tagline": "Versleuteld. Vluchtig. Alleen voor jouw ogen.",
+    "toggleTheme": "Thema wisselen",
+    "checking": "Controleren...",
+    "revealing": "Ophalen en ontsleutelen...",
+    "goToApp": "Ga naar <brand/>",
+    "footerTagline": "- Zero-knowledge versleutelde notities, gehost in Zwitserland.",
+    "sealed": {
+      "heading": "Je hebt een versleutelde notitie ontvangen.",
+      "subheading": "Dit bericht vernietigt zichzelf na het lezen. Ongelezen links verlopen na 24 uur.",
+      "reveal": "Bericht tonen",
+      "warning": "De server verwijdert de notitie op het moment dat je hem toont. Je krijgt geen tweede kans."
+    },
+    "revealed": {
+      "countdown": "Leesbare tekst verdwijnt over {{time}}",
+      "clearNow": "Nu wissen",
+      "emptyNote": "(lege notitie)",
+      "deletedNotice": "Deze gedeelde kopie is van de server verwijderd. Hij kan niet nog eens worden bekeken."
+    },
+    "destroyed": {
+      "heading": "Bericht vernietigd.",
+      "body": "Verwijderd van de server en gewist uit het geheugen. Dit bericht kan niet opnieuw worden gelezen."
+    },
+    "gone": {
+      "heading": "Deze notitie is weg.",
+      "body": "Hij was al gelezen of is verlopen. Burn-links kunnen maar één keer worden geopend en verlopen na 24 uur."
+    },
+    "error": {
+      "heading": "Er ging iets mis.",
+      "fallback": "De link is mogelijk beschadigd of onvolledig.",
+      "server": "Serverfout. De notitie is misschien al gelezen of verlopen.",
+      "decryption": "Ontsleutelen mislukt. De link is mogelijk beschadigd.",
+      "network": "Kon de server niet bereiken. Controleer je verbinding en probeer het opnieuw."
+    },
+    "noPayload": {
+      "heading": "Geen bericht gevonden.",
+      "body": "Deze URL bevat geen verwijzing naar een burn-notitie. Controleer of je de volledige link hebt."
+    }
+  },
+  "burnShare": {
+    "offline": "Je bent offline. Burn-links hebben contact met de server nodig. Probeer het opnieuw zodra je weer online bent.",
+    "demo": "Burn-links worden op een server opgeslagen, en de demo neemt met geen enkele server contact op. Meld je aan om echte burn-links te maken.",
+    "tooLarge": "De notitie is te groot om via een burn-link te delen ({{size}}KB). Maximaal is {{max}}KB.",
+    "storeFailed": "Kon de burn-notitie niet op de server opslaan."
+  }
+}

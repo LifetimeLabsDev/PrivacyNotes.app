@@ -1,0 +1,64 @@
+{
+  "upgrade": {
+    "header": "Zaplať jednou, máš to navždy",
+    "earlyAdopterBadge": "Zaváděcí cena",
+    "oneTime": "jednorázově",
+    "subscriptionPitch": "Bez předplatného. Bez ročního poplatku. Jedna platba, odemčeno navždy.",
+    "ctaUnlock": "Odemknout vše",
+    "ctaOpening": "Otevírání platby...",
+    "ctaSignUp": "Zaregistrovat se a odemknout",
+    "intro": {
+      "storage": "Větší soubory a víc místa jsou funkce Pro. Přejdi na Pro a získáš soubory do 50 MB a 500 MB úložiště.",
+      "folders": "Složky jsou funkce Pro. Uspořádej si poznámky do vnořených složek, jak hluboko potřebuješ, a drž každý projekt zvlášť.",
+      "lock": "Zamknutí poznámky je funkce Pro. Přejdi na Pro a ochraň jakoukoli poznámku před nechtěnými úpravami.",
+      "protect": "Ochrana poznámky PINem je funkce Pro. Přejdi na Pro a schovej citlivé poznámky za svůj PIN.",
+      "history": "Historie poznámek je funkce Pro. Přejdi na Pro a uchovávej si časovou osu každého uložení.",
+      "devices": "Jsi na limitu 2 zařízení. Přejdi na Pro a získej neomezený počet zařízení.",
+      "zen": "Režim Zen je funkce Pro. Přejdi na Pro a piš bez rozptylování.",
+      "theme": "Prémiová témata jsou funkce Pro. Přejdi na Pro a odemkni si každý odstín.",
+      "callout": "Kompletní sada calloutů je funkce Pro.",
+      "totp": "Kódy 2FA jsou funkce Pro. Ulož ověřovací klíč k libovolným přihlašovacím údajům a měnící se kód uvidíš hned vedle hesla. Samotný klíč se ukládá a synchronizuje ve všech tarifech.",
+      "default": "Jeden přechod na Pro odemkne všechno níže. Jednorázová platba."
+    },
+    "features": {
+      "devices": "Synchronizace neomezeného počtu zařízení, na každé platformě",
+      "folders": "Vnořené složky, uspořádání podle projektů",
+      "lock": "Zamykání a ochrana PINem u jakékoli poznámky",
+      "history": "Plná historie poznámek, obnovení kdykoli",
+      "themes": "Prémiová témata v každém odstínu",
+      "zen": "Režim Zen, psaní bez rozptylování",
+      "storage": "500 MB úložiště + přílohy do 50 MB"
+    },
+    "comparisonBeta": "Zaplať jednou {{earlyPrice}} $. Obsidian Sync stojí 48 $/rok, každý rok. Standard Notes si účtuje 90 $/rok. Zaváděcí cena, zamčená ještě předtím, než vzroste na {{proPrice}} $.",
+    "comparison": "Zaplať jednou {{proPrice}} $ a máš to navždy. Obsidian Sync stojí 48 $/rok a Standard Notes 90 $/rok, rok co rok."
+  },
+  "purchaseError": {
+    "store": "Nákup v obchodě se nepodařilo dokončit a nic ti nebylo naúčtováno. Zkus to prosím za chvíli znovu.",
+    "validate": "Platba prošla, ale aktivace se nezdařila. Restartuj aplikaci a zkus to znovu - pokud se to ani potom neodemkne, obchod ti peníze za nákup automaticky vrátí do 3 dnů.",
+    "alreadyOwned": "Obchod tvrdí, že tento nákup už vlastníš, ale patří k jinému účtu. Přihlas se obnovovací frází použitou při nákupu."
+  },
+  "checkout": {
+    "invalidTitle": "Neplatný odkaz na platbu",
+    "invalidBody": "Otevři platbu přímo v aplikaci, ať můžeme nákup přiřadit k tvému účtu.",
+    "completeTitle": "Platba dokončena",
+    "completeBody": "Tuto kartu můžeš zavřít a vrátit se do PrivacyNotes. Tvůj nákup se odemkne automaticky.",
+    "openingTitle": "Otevírání bezpečné platby...",
+    "openingBody": "Mělo by se objevit platební okno Paddle. Pokud se neobjeví, prohlížeč možná zablokoval vyskakovací okno - obnov tuto stránku a zkus to znovu."
+  },
+  "history": {
+    "title": "Historie poznámky",
+    "subtitle": "Až 20 verzí na poznámku. Nejstarší se automaticky mažou.",
+    "empty": "Zatím žádná historie. Verze se začnou hromadit po další úpravě. Vrať se později.",
+    "selectPrompt": "Vyber verzi pro náhled.",
+    "emptyBody": "(prázdné)",
+    "restore": "Obnovit",
+    "restoring": "Obnovování…"
+  },
+  "donation": {
+    "eyebrow": "Máš odemčeno",
+    "intro": "<brand/> je zdarma a vždycky bude. Žádné reklamy, žádné sledování, žádný e-mail v evidenci. Pokud ti pomohl myslet, psát nebo si pamatovat, zvaž podporu dalšího vývoje. Drží to projekt v provozu a platí to další funkce.",
+    "proBenefits": "Podpora ti navíc odemkne výhody Pro, jakmile vyjdou: neomezený počet zařízení, přílohy a šifrované zálohy v cloudu.",
+    "maybeLater": "Možná později",
+    "support": "Podpořit →"
+  }
+}

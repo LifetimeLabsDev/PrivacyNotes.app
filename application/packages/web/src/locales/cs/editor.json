@@ -1,0 +1,178 @@
+{
+  "placeholder": "Začni psát…",
+  "toolbar": {
+    "bold": "Tučné",
+    "italic": "Kurzíva",
+    "underline": "Podtržené",
+    "heading": "Nadpis",
+    "taskList": "Seznam úkolů",
+    "bulletList": "Odrážky",
+    "linkMenu": "Odkaz",
+    "noteLinkMenu": "Odkaz na poznámku",
+    "numberedList": "Číslovaný seznam",
+    "textColor": "Barva textu",
+    "textColorApply": "Barva textu: {{color}}",
+    "pickColor": "Vybrat barvu textu",
+    "table": "Tabulka",
+    "quote": "Citace",
+    "callout": "Callout",
+    "inlineCode": "Kód",
+    "strikethrough": "Přeškrtnuté",
+    "codeBlock": "Blok kódu",
+    "divider": "Oddělovač",
+    "moreFormatting": "Další formátování",
+    "fewerFormatting": "Méně možností formátování",
+    "image": "Obrázek",
+    "attachFile": "Přiložit soubor",
+    "insert": "Vložit",
+    "highlight": "Zvýraznění",
+    "highlightApply": "Zvýraznění: {{color}}",
+    "pickHighlight": "Vybrat barvu zvýraznění",
+    "superscript": "Horní index",
+    "subscript": "Dolní index",
+    "math": "Matematický vzorec",
+    "blockMath": "Blokový vzorec",
+    "align": "Zarovnání",
+    "font": "Písmo"
+  },
+  "align": {
+    "left": "Zarovnat vlevo",
+    "center": "Na střed",
+    "right": "Zarovnat vpravo",
+    "justify": "Do bloku"
+  },
+  "font": {
+    "families": {
+      "sans": "Sans",
+      "serif": "Serif",
+      "mono": "Mono"
+    },
+    "sizes": {
+      "small": "Malé",
+      "large": "Velké",
+      "huge": "Velmi velké"
+    },
+    "reset": "Obnovit písmo"
+  },
+  "heading": {
+    "normalText": "Normální text",
+    "level": "Nadpis {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "Vložit callout",
+    "remove": "Odstranit callout",
+    "types": {
+      "info": "Informace",
+      "success": "Úspěch",
+      "warning": "Varování",
+      "tip": "Tip",
+      "danger": "Nebezpečí",
+      "question": "Otázka",
+      "quote": "Citace",
+      "example": "Příklad",
+      "bug": "Chyba",
+      "note": "Poznámka",
+      "abstract": "Souhrn",
+      "failure": "Selhání"
+    }
+  },
+  "color": {
+    "remove": "Odstranit barvu",
+    "removeHighlight": "Odstranit zvýraznění",
+    "names": {
+      "gray": "Šedá",
+      "red": "Červená",
+      "orange": "Oranžová",
+      "yellow": "Žlutá",
+      "green": "Zelená",
+      "teal": "Modrozelená",
+      "blue": "Modrá",
+      "purple": "Fialová",
+      "pink": "Růžová"
+    }
+  },
+  "insertGroup": {
+    "insert": "Vložit",
+    "blocks": "Bloky",
+    "notation": "Zápis"
+  },
+  "table": {
+    "addRowAbove": "Přidat řádek nad",
+    "addRowBelow": "Přidat řádek pod",
+    "addColumnLeft": "Přidat sloupec vlevo",
+    "addColumnRight": "Přidat sloupec vpravo",
+    "deleteRow": "Smazat řádek",
+    "deleteColumn": "Smazat sloupec",
+    "deleteTable": "Smazat tabulku"
+  },
+  "find": {
+    "placeholder": "Najít v poznámce",
+    "label": "Najít v poznámce",
+    "previous": "Předchozí výskyt (Shift+Enter)",
+    "previousTitle": "Předchozí (Shift+Enter)",
+    "next": "Další výskyt (Enter)",
+    "nextTitle": "Další (Enter)",
+    "close": "Zavřít hledání",
+    "closeTitle": "Zavřít (⌘F)"
+  },
+  "outline": {
+    "show": "Zobrazit osnovu",
+    "showTitle": "Osnova (Cmd/Ctrl+Shift+O)",
+    "title": "Osnova",
+    "ariaLabel": "Osnova poznámky",
+    "hide": "Skrýt osnovu",
+    "hideTitle": "Skrýt osnovu (Esc)"
+  },
+  "topRow": {
+    "add": "Přidat řádek na začátek"
+  },
+  "link": {
+    "popoverLabel": "Přidat odkaz",
+    "placeholder": "Vlož nebo napiš URL",
+    "apply": "Použít",
+    "addTitle": "Přidat odkaz",
+    "editTitle": "Upravit odkaz",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "Zadej adresu URL",
+    "errorInvalidUrl": "Zadej platnou adresu URL",
+    "textLabel": "Text odkazu",
+    "textPlaceholder": "Nepovinné, nech prázdné a zobrazí se URL",
+    "selectedTextHint": "Jako odkaz se použije vybraný text",
+    "editTextHint": "Text odkazu uprav v editoru",
+    "update": "Uložit"
+  },
+  "audio": {
+    "uploadingRecording": "Odesílám nahrávku...",
+    "uploading": "Odesílám...",
+    "stopRecording": "Zastavit nahrávání",
+    "recordAudio": "Nahrát zvuk",
+    "savingRecording": "Ukládám nahrávku...",
+    "recording": "Nahrávání",
+    "secondsLeft": "{{count}} s do konce",
+    "stop": "Zastavit"
+  },
+  "wordCount": {
+    "words_one": "{{formatted}} slovo",
+    "words_few": "{{formatted}} slova",
+    "words_many": "{{formatted}} slova",
+    "words_other": "{{formatted}} slov",
+    "characters_one": "{{formatted}} znak",
+    "characters_few": "{{formatted}} znaky",
+    "characters_many": "{{formatted}} znaku",
+    "characters_other": "{{formatted}} znaků",
+    "tooLargeToSync": ", možná je příliš velká pro synchronizaci, rozděl ji do nové poznámky",
+    "veryLong": ", velmi dlouhá, úpravy mohou být pomalé a trhané",
+    "gettingLong": ", začíná být dlouhá, na pomalejších zařízeních se může zadrhávat",
+    "largeTableWarning": "Velká tabulka ({{rows}} řádků) může zpomalit úpravy této poznámky, zvaž její rozdělení"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "Žádné odpovídající poznámky",
+    "create": "Vytvořit „{{query}}“"
+  },
+  "codeBlock": {
+    "copy": "Kopírovat",
+    "copied": "Zkopírováno",
+    "copyFailed": "Nepovedlo se"
+  }
+}

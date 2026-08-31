@@ -1,0 +1,701 @@
+{
+  "page": {
+    "importTitle": "匯入 PrivacyNotes",
+    "importSteps": [
+      "開啟 PrivacyNotes，前往設定 > 匯入與匯出。",
+      "選 **{{app}}** 當來源。",
+      "把剛剛匯出的檔案拖進來，或點一下選檔。",
+      "看一下預覽會匯入什麼，再開始匯入。"
+    ],
+    "otherGuides": "其他匯入指南"
+  },
+  "guides": {
+    "google-keep": {
+      "app": "Google Keep",
+      "title": "匯出你的 Google Keep 筆記",
+      "metaTitle": "如何用 Takeout 匯出 Google Keep - PrivacyNotes",
+      "lead": "Google Keep 應用程式本身沒有匯出按鈕；官方的出路是 Google Takeout（介面上叫「Google 匯出」）。整個流程大約五分鐘，而且 PrivacyNotes 能直接讀取 Takeout 檔案，不需要解壓縮。",
+      "sections": [
+        {
+          "h": "從 Google Keep 匯出筆記",
+          "steps": [
+            "前往 [takeout.google.com](https://takeout.google.com)，用存放筆記的那個 Google 帳號登入。",
+            "點選「取消全選」，然後往下捲動產品清單，只勾選「Keep」。",
+            "點選「下一步」，保留預設值：匯出一次、.zip 檔案。",
+            "點選「建立匯出作業」。Google 會準備封存檔並寄下載連結給你；只匯出 Keep 的話，通常幾分鐘就好，不用等上幾小時。",
+            "下載 .zip。完全不需要動它。"
+          ]
+        },
+        {
+          "h": "哪些內容會跟著過來",
+          "p": [
+            "標題、筆記內文與格式都會完整抵達。Keep 的核取清單會轉換成 PrivacyNotes 的原生任務清單，Keep 的標籤則會變成這裡的標籤。",
+            "把整個 Takeout .zip 拖進匯入器即可。如果已經解壓縮了，Takeout/Keep 資料夾裡的單一 .json 筆記檔也可以。"
+          ]
+        }
+      ]
+    },
+    "apple-notes": {
+      "app": "Apple Notes",
+      "title": "匯出你的 Apple Notes 筆記",
+      "metaTitle": "如何把 Apple Notes 匯出成 Markdown - PrivacyNotes",
+      "lead": "Apple Notes（備忘錄）本身沒有整批匯出的功能，所以在 Mac 上實際可行的路線是免費的 Exporter 應用程式，它會把你的筆記寫成 Markdown。PrivacyNotes 能直接讀取那份匯出內容，圖片也包括在內。",
+      "sections": [
+        {
+          "h": "在 Mac 上匯出筆記",
+          "steps": [
+            "從 Mac App Store 安裝免費的「Exporter」應用程式。",
+            "開啟它並匯出筆記。你會得到一個裝滿 Markdown 檔案的資料夾，依帳號與資料夾整理，圖片放在一旁。",
+            "在 Finder 中對那個資料夾按右鍵，選擇「壓縮」把它變成 .zip。"
+          ]
+        },
+        {
+          "h": "從 iPhone 或 iPad 過來",
+          "p": [
+            "從 iOS 分享出來的單篇 zip（內含該篇筆記的 Markdown 加上一個 Attachments 資料夾的小 .zip）也可以匯入：一次拖一個進來。要搬整個筆記庫，上面的 Mac 路線快得多。"
+          ]
+        },
+        {
+          "h": "哪些內容會跟著過來",
+          "p": [
+            "資料夾結構、筆記內文與內嵌圖片都能安然渡過這趟旅程。筆記保留自己的標題，附件則會存進加密檔案儲存空間，跟在各自的筆記旁。"
+          ]
+        }
+      ]
+    },
+    "obsidian": {
+      "app": "Obsidian",
+      "title": "匯出你的 Obsidian vault",
+      "metaTitle": "如何匯出 Obsidian vault - PrivacyNotes",
+      "lead": "Obsidian 沒有匯出這個步驟，也不需要：vault 本來就是一個裝滿 Markdown 檔案的資料夾。這是所有搬家路線中最簡單的一條，把 vault 壓成 zip，拖進來就好。",
+      "sections": [
+        {
+          "h": "匯出你的 vault",
+          "steps": [
+            "找到磁碟上的 vault 資料夾。不確定位置的話，在 Obsidian 的 vault 切換器點一下 vault 名稱就會顯示路徑。",
+            "把資料夾壓縮成 .zip：macOS 上按右鍵 >「壓縮」，Windows 上選「傳送到 > 壓縮的 (zipped) 資料夾」。",
+            "那個 zip 就是匯入檔。不需要任何外掛或匯出動作。"
+          ]
+        },
+        {
+          "h": "哪些內容會跟著過來",
+          "p": [
+            "你的資料夾結構會重建為真正的資料夾，而不是壓平成標籤，不論巢狀有多深。位於 Work/Projects 的筆記會進到 Work > Projects 資料夾。重新匯入同一個 vault 時，會沿用先前建立的資料夾，不會重複建立。",
+            "免費方案就能直接瀏覽這些資料夾；建立、重新命名與移動資料夾是 Pro 功能，所以 Obsidian 匯入是升級前試用資料夾的好方法。",
+            "YAML frontmatter 讀得懂：tags、aliases 與建立日期都會被採用，內文中的行內 #標籤 也會併入標籤欄位。匯入時還可以勾選「同時依資料夾加上標籤」，把每個資料夾名稱也加成標籤，喜歡用標籤篩選的話很方便。",
+            "你的 [[...]] 連結照樣有效：PrivacyNotes 會把它們呈現為 note-link，筆記之間的連結撐得過這次搬家。.obsidian 設定資料夾與 .trash 會自動略過。"
+          ]
+        }
+      ]
+    },
+    "standard-notes": {
+      "app": "Standard Notes",
+      "title": "匯出你的 Standard Notes 筆記",
+      "metaTitle": "如何匯出 Standard Notes 備份 - PrivacyNotes",
+      "lead": "Standard Notes 提供已解密的備份匯出，PrivacyNotes 讀的就是那個檔案。先講一個重要細節：必須是已解密（decrypted）的版本，不能是加密的那種。",
+      "sections": [
+        {
+          "h": "從 Standard Notes 匯出筆記",
+          "steps": [
+            "開啟 Standard Notes（網頁版在 app.standardnotes.com，或桌面應用程式）並登入。",
+            "開啟 Preferences（偏好設定），再進入 Backups（備份）區段。",
+            "下載資料備份，詢問格式時選擇 decrypted（已解密）。",
+            "你會得到一個 .zip，裡面有一個名為「Standard Notes Backup and Import File.txt」的檔案。整個 zip 保持原樣即可。"
+          ]
+        },
+        {
+          "h": "不支援加密備份",
+          "p": [
+            "加密的 Standard Notes 備份是只有你的 Standard Notes 密碼才打得開的密文，匯入器讀不了。如果匯出成了加密版本，請重新匯出並選擇 decrypted。由於這個檔案以明文包含你的筆記，匯入完成後請把它刪掉。",
+            "把整個 .zip 拖進匯入器；已經解壓縮的話，只拖那個 .txt 檔也行。"
+          ]
+        }
+      ]
+    },
+    "simplenote": {
+      "app": "Simplenote",
+      "title": "匯出你的 Simplenote 筆記",
+      "metaTitle": "如何匯出 Simplenote 筆記 - PrivacyNotes",
+      "lead": "Simplenote 內建乾淨俐落的匯出功能，點三下就完成，PrivacyNotes 能直接讀取產生的 zip。",
+      "sections": [
+        {
+          "h": "從 Simplenote 匯出筆記",
+          "steps": [
+            "登入 [app.simplenote.com](https://app.simplenote.com)（或開啟桌面應用程式）。",
+            "開啟側邊欄選單，進入 Settings（設定）。",
+            "在 Account 底下選擇「Export Notes」，.zip 會立即下載。"
+          ]
+        },
+        {
+          "h": "哪些內容會跟著過來",
+          "p": [
+            "zip 裡有一份權威的 notes.json，包含你所有的筆記與中繼資料：標籤會跟著過來，建立日期也會保留。把整個 .zip 原封不動拖進匯入器即可。"
+          ]
+        }
+      ]
+    },
+    "samsung-notes": {
+      "app": "Samsung Notes",
+      "title": "匯出你的 Samsung Notes 筆記",
+      "metaTitle": "如何把 Samsung Notes 匯出成 Word - PrivacyNotes",
+      "lead": "Samsung Notes 每篇筆記匯出一個檔案，有兩種格式。優先選 Microsoft Word（.docx）匯出：它能保住格式，純文字匯出則會弄丟。",
+      "sections": [
+        {
+          "h": "從 Samsung Notes 匯出筆記",
+          "steps": [
+            "在 Samsung Notes 中長按選取想要的筆記（或全選）。",
+            "點選三點選單，選擇「儲存為檔案」。",
+            "要保留格式就選「Microsoft Word 檔案」（.docx），純文字則選「文字檔案」（.txt）。",
+            "Samsung 會把每篇筆記各存成一個檔案到裝置的儲存空間。如果匯出的不只幾篇，請把它們收進同一個 .zip（在檔案管理應用程式中選取後壓縮）。"
+          ]
+        },
+        {
+          "h": "哪些內容會跟著過來",
+          "p": [
+            ".docx 匯出：粗體、斜體、底線、刪除線、項目符號與編號清單，以及核取方塊（會變成原生任務清單）全都保得住。.txt 匯出：只有文字，其他都沒有。",
+            "內嵌在 Samsung 筆記裡的圖片要手動搬過來：匯入器會逐篇標示原本有圖的筆記，讓你清楚知道該把圖片放回哪裡。內文、標題與日期都在同一次匯入中一併到位。"
+          ]
+        }
+      ]
+    },
+    "bitwarden": {
+      "app": "Bitwarden",
+      "title": "匯出你的 Bitwarden 密碼庫",
+      "metaTitle": "如何匯出 Bitwarden 密碼庫 - PrivacyNotes",
+      "lead": "Bitwarden 會把整個密碼庫匯出成一個未加密的 .json 檔，PrivacyNotes 再把每一筆內容歸位：登入資訊、卡片、SSH 金鑰與安全筆記。",
+      "sections": [
+        {
+          "h": "從 Bitwarden 匯出密碼庫",
+          "steps": [
+            "開啟 Bitwarden 網頁版密碼庫（或桌面應用程式）並登入。",
+            "前往「工具」，再選「匯出密碼庫」。",
+            "檔案格式選擇 .json（一般版本，不是「.json (Encrypted)」）。",
+            "輸入主密碼確認，然後下載檔案。"
+          ]
+        },
+        {
+          "h": "東西會落在哪裡",
+          "p": [
+            "登入項目會成為保險庫的登入資訊項目（連同網站圖示），卡片成為卡片項目，SSH 金鑰成為 SSH 金鑰項目，安全筆記與身分則會變成可讀的筆記。Bitwarden 的資料夾對應為標籤，最愛項目抵達時也保持標記。 驗證金鑰（TOTP）也會一併帶過來，你的 2FA 驗證碼可以繼續使用。",
+            "匯出檔以明文保存你的密碼，所以匯入、確認一切到齊之後，請把檔案徹底刪除。進到 PrivacyNotes 之後，一切又重新處於端對端加密之下。"
+          ]
+        }
+      ]
+    },
+    "evernote": {
+      "app": "Evernote",
+      "title": "匯出你的 Evernote 筆記",
+      "metaTitle": "如何把 Evernote 筆記匯出成 ENEX - PrivacyNotes",
+      "lead": "Evernote 只能從桌面應用程式匯出，而且一次只能匯出一個筆記本。選擇 ENEX 格式，你的筆記就會完整抵達：格式、標籤、附件、網頁擷取內容，以及它們之間的連結。",
+      "sections": [
+        {
+          "img": {
+            "src": "/help/img/evernote-export-menu.webp",
+            "alt": "Evernote 桌面應用程式的筆記本右鍵選單，「Export notebook...」被標示出來。",
+            "width": 1576,
+            "height": 652
+          },
+          "h": "匯出一個筆記本",
+          "steps": [
+            "在 Mac 或 Windows 上開啟 Evernote。網頁版與手機應用程式寫不出 .enex 檔案。",
+            "在側邊欄對筆記本按右鍵，選擇「Export notebook...」。",
+            "選「ENEX format (.enex)」，並讓「Export note attributes」底下的每個項目都保持勾選：你的標籤、日期、提醒與網頁擷取的原始網址都靠它們帶過來。",
+            "存檔。Evernote 會以筆記本的名稱替檔案命名，而那個名字會成為這裡的資料夾名稱，所以請別改它。",
+            "那個 .enex 直接拖進來就行。如果你有不只一本筆記本，每本都重複一次匯出，然後把 .enex 檔案壓進同一個 zip，一次拖進來。"
+          ]
+        },
+        {
+          "img": {
+            "src": "/help/img/evernote-export-format.webp",
+            "alt": "Evernote 的匯出對話框，已選取 ENEX format (.enex)，「Export note attributes」的每一項都已勾選。",
+            "width": 1576,
+            "height": 1120
+          },
+          "h": "選 ENEX，不要選 HTML 或 PDF",
+          "p": [
+            "另外三種格式撐不過這趟旅程。兩種 HTML 匯出都會把同一份樣式表複製進每一篇筆記，讓檔案臃腫起來，而且非圖片的附件會連檔名與下載連結一起弄丟；PDF 匯出則把整個筆記本熔成一份文件，筆記之間的界線蕩然無存。不小心拖了其中一種進來，我們會直接說明，而不是硬匯入半個筆記本。",
+            "除非那個筆記本裝了好幾 GB 的掃描檔，否則請讓「Split file size by」保持關閉。"
+          ]
+        },
+        {
+          "h": "一次一個筆記本",
+          "p": [
+            "沒有整個帳號的匯出，堆疊也不能整組匯出。手動挑選筆記的話，一次上限是 100 篇，所以對筆記本按右鍵不但比較快，也是唯一突破那個上限的方法。堆疊同樣不會寫進檔案裡，所以你的資料夾會以扁平的形式抵達。",
+            "免費方案也能匯出，只是有個前提：免費方案只允許連結一台裝置，而這件事需要桌面應用程式。"
+          ]
+        },
+        {
+          "h": "哪些會過來，哪些不會",
+          "p": [
+            "表格、程式碼區塊、螢光標示、底線、文字顏色與公式全都保得住。核取清單會變成任務清單，筆記提醒會變成筆記最上方的一項任務，附件與圖片會重新加密後存進你的儲存空間，網頁擷取內容保留原始網址，語音筆記保留逐字稿。內部連結會變成 note-link；由於 Evernote 不會匯出筆記 ID，因此以連結目標的筆記標題來配對。",
+            "Evernote 的任務不會跟著過來：匯出檔只在每個任務區塊原本的位置留下一個「Content not supported」佔位內容，沒有標題、到期日或完成狀態可讀。加密的區塊會維持加密，所以請先在 Evernote 裡解密。自訂字型、文字對齊與巢狀標籤階層則會被捨棄。"
+          ]
+        },
+        {
+          "h": "匯出中途失敗的話",
+          "p": [
+            "Evernote 把你的筆記放在自家伺服器上，一邊寫匯出檔一邊往下拉，所以一個大筆記本可能停在 13%，再一次停在 40%，第三次才跑完。再跑一次同樣的匯出：每試一次就會在本機快取更多內容，也會比上一次走得更遠。"
+          ]
+        }
+      ]
+    },
+    "markdown": {
+      "app": "Markdown",
+      "title": "匯入 Markdown 檔案",
+      "metaTitle": "將 Markdown 檔案匯入 PrivacyNotes",
+      "lead": "其他一切的通用路線：任何能匯出 Markdown 的應用程式，都能搬進 PrivacyNotes。單一 .md 檔可以，整個資料夾壓成的 .zip 也可以。",
+      "sections": [
+        {
+          "h": "準備檔案",
+          "steps": [
+            "匯出或收集你的 .md 檔案。任何來源都行：別的筆記應用程式、靜態網站，或一整個資料夾的 README。",
+            "檔案超過幾個的話，把資料夾壓成 .zip。",
+            "把 zip（或個別 .md 檔案）拖進匯入器。"
+          ]
+        },
+        {
+          "h": "檔案是怎麼被解讀的",
+          "p": [
+            "有 YAML frontmatter 的話會照著讀：title、created、updated 和 tags 欄位會直接採用，這也讓這條路成為還原 PrivacyNotes 自家 Markdown 匯出檔的方式。寫在內文中的 #主題標籤也會讀。沒有 frontmatter 的單純檔案，會用檔名當標題、內容當內文。剖析刻意寬鬆：.md、.markdown、.mdown、.mkd 和 .txt 全都接受。",
+            "把整個資料夾壓成 zip，結構也會一起過來。子資料夾會重建成真正的資料夾，不管巢狀多深，筆記連到的圖片和檔案也會一併匯入。沒有任何筆記連到的東西會留在原地並被計數，所以一個塞滿舊截圖的資料夾不會吃掉你的空間。"
+          ]
+        }
+      ]
+    },
+    "notesnook": {
+      "app": "Notesnook",
+      "title": "匯出你的 Notesnook 筆記",
+      "metaTitle": "如何匯出 Notesnook 筆記 - PrivacyNotes",
+      "lead": "Notesnook 可以把整個帳號寫成一個裝滿檔案的資料夾。選擇 HTML 匯出就什麼都不會落下：格式、筆記本、標籤、附件，以及筆記之間的連結，全都撐得過這次搬家。",
+      "sections": [
+        {
+          "img": {
+            "src": "/help/img/notesnook-export.webp",
+            "alt": "Notesnook 設定中的 Backup & export 頁面，「Export as」下拉選單已展開並選取 HTML。",
+            "width": 1576,
+            "height": 963
+          }
+        },
+        {
+          "h": "匯出筆記",
+          "steps": [
+            "開啟 Notesnook，前往 Settings > Backup & export（設定 > 備份與匯出）。",
+            "找到「Export all notes」（匯出所有筆記），展開「Export as」（匯出為）下拉選單。",
+            "選 HTML。這一步很關鍵：這是 Notesnook 唯一不會先剝掉格式再寫出的格式。",
+            "Notesnook 會存出單一 .zip，內含每篇筆記各一個檔案，外加一個附件資料夾。那個 zip 就是你的匯入檔。"
+          ]
+        },
+        {
+          "h": "選 HTML，不要選 Markdown",
+          "p": [
+            "Notesnook 的匯出下拉選單提供 Text、Markdown、Markdown + Frontmatter 和 HTML。只有 HTML 能保留一切。",
+            "兩個 Markdown 選項都會先把筆記壓平再寫出：底線、字體大小與文字對齊在檔案到我們手上之前就沒了。純 Markdown 選項還不會寫入標籤與原始日期，所以每篇匯入的筆記都會沒有標籤，而且蓋上今天的日期。這兩種我們仍然接受，也會告訴你少了什麼，但要選就選 HTML。",
+            "Text 匯出沒有可解讀的結構，不予接受。"
+          ]
+        },
+        {
+          "h": "哪些內容會跟著過來",
+          "p": [
+            "你的筆記本會重建為真正的資料夾，而不是壓平成標籤，並保留在 Notesnook 中的巢狀深度。位於 Work > Projects 的筆記會進到 Work > Projects 資料夾。",
+            "釘選與最愛的筆記仍會保留標記。Notesnook 把 Pin 和 Favorite 當成兩個獨立屬性；PrivacyNotes 只有單一的釘選清單，所以只要是其中之一的筆記都會進到那裡。",
+            "螢光標示、數學公式與文字對齊都會原樣過來：標示過的文字保持螢光標示，公式會重新以數學呈現，置中或靠右對齊的區塊也保留原本的對齊。自訂字型、字體大小與文字顏色在這裡沒有對應的功能，所以那些樣式會被捨棄，文字本身則保留下來。"
+          ]
+        },
+        {
+          "h": "備份檔不是匯出檔",
+          "p": [
+            "Notesnook 也能存出以 .nnbackupz 結尾的備份檔。那是另一回事：它用 Notesnook 自家的加密格式保存每個附件，只有 Notesnook 拆得開。把它丟進來，我們會直接說明，而不是硬匯入一半。請改用「Export all notes」匯出成 HTML。"
+          ]
+        }
+      ]
+    },
+    "apple-journal": {
+      "app": "Apple Journal",
+      "title": "匯出你的 Apple Journal 項目",
+      "metaTitle": "如何匯出 Apple Journal 項目 - PrivacyNotes",
+      "lead": "Apple Journal（日誌）每篇項目會匯出一個 HTML 檔案，另外還有一個資料夾裝著所有相片、影片與語音備忘錄。PrivacyNotes 會讀取整份匯出內容，把每一篇重建成一則日誌項目，日期就是你當初寫下它的那一天。",
+      "sections": [
+        {
+          "h": "在 Mac 上匯出你的日誌",
+          "steps": [
+            "開啟「日誌」，在選單列選擇「檔案 > 輸出」。",
+            "選擇儲存位置。日誌會寫出一個名為 AppleJournalEntries 的資料夾，裡面有 Entries 資料夾與 Resources 資料夾。",
+            "在該資料夾按右鍵，選擇「壓縮」。旁邊會出現 AppleJournalEntries.zip，那就是要匯入的檔案。"
+          ]
+        },
+        {
+          "h": "從 iPhone 或 iPad 匯出",
+          "steps": [
+            "開啟「日誌」。在「日誌」標題底下，點一下你的日誌把它打開（除非你重新命名過，否則名稱是「日誌」，並會顯示裡面有多少篇條目）。",
+            "在條目列表中，點一下右上角的「…」按鈕，選擇「輸出」，再用「輸出」按鈕確認。",
+            "存到你的手機。",
+            "開啟「檔案」應用程式，找到它寫出的資料夾，名稱是 AppleJournalEntries。",
+            "按住那個資料夾，選擇「壓縮」。旁邊出現的 .zip 就是要匯入的檔案。"
+          ]
+        },
+        {
+          "h": "哪些內容會跟著過來",
+          "p": [
+            "所有項目都會進到「日誌」而不是「筆記」，日期就是日誌上顯示的那天，所以你的紀錄會保持原本的樣子。",
+            "相片與原況照片會匯入為圖片，影片與語音備忘錄則作為附件匯入。Apple 是以 HEIC 格式匯出相片的，但大多數瀏覽器無法顯示 HEIC，所以 PrivacyNotes 會在匯入過程中把每一張轉成 JPEG。這是大型匯入中最耗時的一步：幾百張相片可能要花上好幾分鐘，進度列會替你計數。",
+            "粗體、斜體、底線、刪除線、文字顏色、項目符號與編號清單、引言區塊全都撐得過來。"
+          ]
+        },
+        {
+          "h": "相片、影片與你的儲存空間",
+          "p": [
+            "裝滿相片的日誌遠比只有文字的日誌大得多，而且和其他任何東西一樣會計入你的儲存空間。匯入預覽會在你確認前先算出總容量，空間不夠就不會開始。"
+          ]
+        },
+        {
+          "h": "你的位置資訊會去哪裡",
+          "p": [
+            "日誌會記錄一篇項目發生的地點，而 PrivacyNotes 沒有自己的地圖功能，所以每個地點都會變成項目末端「Places」清單裡的一個連結。",
+            "日誌以座標記錄的地點，會在 OpenStreetMap 上那個確切位置開啟一個圖釘；只記了名稱的地點，則會改成用那個名稱開啟搜尋。在你點下去之前，什麼都不會傳送到任何地方。"
+          ]
+        },
+        {
+          "h": "State of Mind",
+          "p": [
+            "如果你記錄過 State of Mind，只要 Apple 的用詞能對應到我們的某個心情或情緒追蹤項目，PrivacyNotes 就會替那篇項目填入心情與情緒追蹤欄位。無法對應的內容，以及你標記的生活領域，都會保留成一行文字，確保不會遺失。"
+          ]
+        },
+        {
+          "h": "哪些內容不會跟著過來",
+          "p": [
+            "日誌針對運動、聯絡人與播放過的媒體提供的建議卡片，會保留文字但不保留圖片。語音備忘錄會以錄音的形式過來，但不含 Apple 為它做的逐字稿：匯出工具會把逐字稿裡的空格全部拿掉，寫出來的東西會是一長串沒有間斷的字元，所以與其匯入一份讀不懂的內容，我們選擇捨棄它。",
+            "Mac 匯出的語音備忘錄是 CAF 檔，沒有瀏覽器播得動。匯入和下載都沒問題，但你在應用程式裡聽不到它們。iPhone 匯出會把同樣的錄音寫成 M4A，可以直接播放，所以如果可以選，請用手機匯出。"
+          ]
+        }
+      ]
+    },
+    "upnote": {
+      "app": "UpNote",
+      "title": "匯出你的 UpNote 筆記",
+      "metaTitle": "如何匯出 UpNote 筆記 - PrivacyNotes",
+      "lead": "UpNote 的匯出叫做備份：它會把整個帳號寫進磁碟上的一個資料夾，免費方案也不例外。把那個資料夾壓成 zip，一切就都搬得動：帶著完整格式的筆記、筆記本、標籤、釘選、筆記連結、圖片與附件。",
+      "sections": [
+        {
+          "img": {
+            "src": "/help/img/upnote-backup.webp",
+            "alt": "UpNote 設定中的 Backup 頁面，可以看到 Backup attachments、Backup now 與 View backup folder。",
+            "width": 1576,
+            "height": 1070
+          },
+          "h": "建立本機備份",
+          "steps": [
+            "在電腦上開啟 UpNote，前往 Settings > Backup。",
+            "開啟「Backup attachments」。這個選項預設是關閉的，不開的話你的圖片與檔案會被留在原地。",
+            "點一下「Backup now」，等「Last backup at」那一行更新。",
+            "點一下「View backup folder」，UpNote 會開啟它剛寫好的資料夾。"
+          ]
+        },
+        {
+          "img": {
+            "src": "/help/img/upnote-folder.webp",
+            "alt": "UpNote 備份資料夾中已選取 data、files、Markdown 與 revisions 資料夾，右鍵選單停在「壓縮」上。",
+            "width": 1576,
+            "height": 642
+          },
+          "h": "把資料夾裡的所有內容壓成 zip",
+          "steps": [
+            "選取備份資料夾裡的所有內容：data、files，以及旁邊的一切。",
+            "把選取的內容壓縮起來：macOS 上按右鍵 >「壓縮」，Windows 上選「傳送到 > 壓縮的 (zipped) 資料夾」。",
+            "那個 .zip 就是你的匯入檔。"
+          ],
+          "p": [
+            "要壓的是整個資料夾，不是裡面那個 Markdown 資料夾。那些 markdown 副本是壓平過的呈現：底線、顏色、螢光標示、可摺疊區段與文字對齊在裡面早已不見。筆記的完整格式住在 data 資料夾裡，我們讀的就是它。丟進來的 zip 少了它，我們會直接說明，而不是硬匯入那些壓平的副本。"
+          ]
+        },
+        {
+          "img": {
+            "src": "/help/img/upnote-export-menu.webp",
+            "alt": "UpNote 在 iOS 上的 Export 選單，提供 Export to Text、PDF、Markdown 與 HTML。",
+            "width": 1576,
+            "height": 1235
+          },
+          "h": "在 iPhone 或 Android 上：一次匯出一篇筆記",
+          "steps": [
+            "UpNote 的手機應用程式寫不出備份。改為開啟一篇筆記，點一下上方角落的三點選單。",
+            "選擇 Export >「Export to HTML」。不要選 Markdown：UpNote 在寫出 Markdown 之前，會先把標註、文字顏色、對齊與上下標壓平，HTML 則什麼都留得住。",
+            "把匯出的檔案分享到「檔案」應用程式，或寄給自己，然後原封不動拖進來。",
+            "要搬好幾篇筆記？把匯出檔都存進「檔案」應用程式，全部選取後選「壓縮」：那一個 zip 就能一次匯入。"
+          ],
+          "p": [
+            "HTML 匯出能把你的格式完整帶過來。任何逐篇匯出都帶不動的是資料庫的結構：筆記本、釘選與日期只存在於備份裡，所以等你回到電腦前，再走上面的備份路線完成搬家。Markdown 匯出我們也接受，連同它帶來的壓平一起。"
+          ]
+        },
+        {
+          "h": "哪些內容會跟著過來",
+          "p": [
+            "你的筆記本會重建為真正的資料夾，並保留在 UpNote 中的巢狀深度。同時放在好幾個筆記本裡的筆記會落在第一個筆記本，其餘的則以標籤帶著。",
+            "釘選與 Quick Access 的筆記抵達時都是釘選狀態。丟進垃圾桶的筆記會落在垃圾桶，範本會匯入成帶有 #template 標籤的筆記，筆記之間的連結會變成 note-link，而且每篇筆記都保留原本的日期。",
+            "格式保得住：核取清單、表格、程式碼區塊、數學公式、底線、上下標、文字對齊與螢光標示都在。可摺疊區段會變成可摺疊的標註，並保留展開或收合的狀態。文字顏色和螢光標示顏色都會對應到編輯器自己的調色盤，黃色螢光標示還是黃色，綠色還是綠色。每篇筆記都以 UpNote 最後儲存的樣子進來。"
+          ]
+        },
+        {
+          "h": "如果圖片或檔案不見了",
+          "p": [
+            "在勾選「Backup attachments」之前做的備份裡沒有任何檔案，匯入預覽會警告你：有筆記引用了備份裡沒有的附件。遇到這種情況，請取消，回 UpNote 開啟該設定，再點一次「Backup now」，把新的資料夾壓成 zip，改匯入那一份。"
+          ]
+        }
+      ]
+    },
+    "browser-bookmarks": {
+      "app": "瀏覽器書籤",
+      "title": "匯出你的瀏覽器書籤",
+      "metaTitle": "如何從任何瀏覽器匯出書籤 - PrivacyNotes",
+      "lead": "每一款桌機瀏覽器匯出的都是同一種書籤檔（.html），PrivacyNotes 會連同你的資料夾和日期一起讀進來。Safari 會把這個檔案包成 .zip，你不用解壓縮就能直接拖進來。手機瀏覽器都不能匯出，所以請先打開瀏覽器自己的同步，再從電腦匯出。",
+      "sections": [
+        {
+          "h": "從 Chrome、Edge、Brave、Opera 或 Vivaldi 匯出",
+          "steps": [
+            "用 Ctrl+Shift+O 開啟書籤管理員，Mac 上是 Cmd+Option+B。在 Edge 裡同一個頁面叫 Favorites。",
+            "點管理員右上角的「...」按鈕，選 \"Export bookmarks\"。Edge 顯示的是 \"Export favorites\"。",
+            "存檔。這是一個檔名帶有今天日期的 .html 檔案。"
+          ]
+        },
+        {
+          "h": "從 Firefox 匯出",
+          "steps": [
+            "按 Ctrl+Shift+O 開啟資料庫視窗，Mac 上是 Cmd+Shift+O。",
+            "在工具列點 \"Import and Backup\"，選 \"Export Bookmarks to HTML...\"。",
+            "存檔。檔名是 bookmarks.html。"
+          ]
+        },
+        {
+          "h": "從 Safari 匯出",
+          "img": {
+            "src": "/help/img/safari-export-menu.webp",
+            "alt": "Safari 的 File 選單，下方的 \"Export Browsing Data to File...\" 被反白",
+            "width": 1576,
+            "height": 1226
+          },
+          "steps": [
+            "在選單列選 File > \"Export Browsing Data to File...\"。",
+            "把 Bookmarks 以外全部關掉，然後按 Export。",
+            "Safari 會存出一個 .zip。你可以直接把這個 .zip 拖進來，或是拖裡面的 Bookmarks.html，兩種都可以。",
+            "舊版 Safari 顯示的是 File > Export > \"Bookmarks...\"，存出來的是一般的 .html 檔。"
+          ]
+        },
+        {
+          "h": "只留 Bookmarks 這個開關打開",
+          "img": {
+            "src": "/help/img/browser-bookmarks-safari-export.webp",
+            "alt": "Safari 的 Export Browsing Data 視窗，Bookmarks 開著，其他種類都關著",
+            "width": 1576,
+            "height": 1356
+          },
+          "p": [
+            "同一個視窗還有 History、Extensions、Credit Cards 和 Passwords。這些都關著。PrivacyNotes 從這個封存檔裡只會讀書籤，但一份你事後還得刪掉的匯出檔，等於你的下載資料夾裡又多了一份明文密碼。"
+          ]
+        },
+        {
+          "h": "哪些會一起過來",
+          "p": [
+            "你原本的每個資料夾都會過來，層級和你離開時一模一樣，全部收進一個叫「書籤」的新資料夾裡。書籤列是例外：它的內容會往上提一層，不會變成資料夾，因為每個瀏覽器在每種語言裡對這條列的叫法都不一樣。Safari 什麼都不標記，所以它的 Favorites 真的會變成一個資料夾。",
+            "每個書籤存下來的那天也會跟著過來。只有 Safari 完全不寫日期，所以從 Safari 匯出的書籤會是今天的日期。",
+            "也只有 Firefox 會把標籤和網址列關鍵字存在書籤裡。如果你的檔案帶著它們，預覽會提供一個核取方塊讓你保留，兩者都會變成這裡的標籤。",
+            "有三樣東西是刻意不收的。Most Visited 這類瀏覽器內建的捷徑不是真的連結，只會計數然後略過。網站圖示也不會從檔案裡讀，因為存在裡面的那份會過期，PrivacyNotes 會另外抓新的。還有，原本沒放任何書籤的資料夾不會重建。",
+            "同一個檔案匯入兩次不會有問題。網址已經存過的書籤會被略過而不是再加一次，預覽也會告訴你有幾個。"
+          ]
+        },
+        {
+          "h": "再帶出去",
+          "p": [
+            "到設定 > 匯入與匯出 > 匯出，選「書籤檔案 (.html)」。你會拿到每個瀏覽器都讀得懂的標準檔案，連資料夾一起。你的書籤從來不會被鎖在這裡。"
+          ]
+        }
+      ]
+    },
+    "browser-passwords": {
+      "app": "瀏覽器密碼",
+      "title": "匯出你的瀏覽器密碼",
+      "metaTitle": "如何匯出瀏覽器儲存的密碼 - PrivacyNotes",
+      "lead": "Chrome、Edge、Firefox 和 Safari 都會把儲存的密碼匯出成一般的 .csv 檔，PrivacyNotes 每一種都讀得懂，一列就是一組登入資料。Safari 會把它的 .csv 包成 .zip，你不用解壓縮就能直接拖進來。",
+      "sections": [
+        {
+          "h": "從 Chrome、Edge、Brave、Opera 或 Vivaldi 匯出",
+          "steps": [
+            "打開瀏覽器的 Settings，進到密碼頁面。Chrome 是 \"Passwords and autofill\" > Google Password Manager > Settings，Edge 是 \"Profiles > Passwords\"。",
+            "找到 \"Export passwords\"，選 \"Download file\"。",
+            "用裝置密碼或指紋確認。檔案通常叫 passwords.csv。"
+          ]
+        },
+        {
+          "h": "從 Firefox 匯出",
+          "steps": [
+            "在網址列輸入 about:logins，按 Enter。",
+            "點右上角的 \"...\" 按鈕，選 \"Export Logins...\"。",
+            "用裝置密碼確認。檔案叫 logins.csv。"
+          ]
+        },
+        {
+          "h": "從 Safari 匯出",
+          "img": {
+            "src": "/help/img/safari-export-menu.webp",
+            "alt": "Safari 的 File 選單，下方的 \"Export Browsing Data to File...\" 被反白",
+            "width": 1576,
+            "height": 1226
+          },
+          "steps": [
+            "在選單列選 File > \"Export Browsing Data to File...\"。",
+            "把 Passwords 以外全部關掉，然後按 Export。",
+            "用 Touch ID 或 Mac 密碼確認。Safari 會存出一個裝著 Passwords.csv 的 .zip，這個 .zip 直接拖進來就行。",
+            "macOS 15 以後，Passwords App 也能用 File > \"Export All Passwords...\" 匯出同樣的資料，是一般的 .csv。"
+          ]
+        },
+        {
+          "h": "只留 Passwords 這個開關打開",
+          "img": {
+            "src": "/help/img/browser-passwords-safari-export.webp",
+            "alt": "Safari 的 Export Browsing Data 視窗，Passwords 開著，其他種類都關著",
+            "width": 1576,
+            "height": 1358
+          },
+          "p": [
+            "同一個視窗也會匯出你的書籤、瀏覽紀錄和已存的信用卡。你多留一個開關，同一個封存檔裡就多一份沒加密的檔案，所以把它們關掉。有一個例外：如果你也想把書籤帶進來，就兩個都打開，然後把同一個 .zip 分別拖進兩個匯入項目，因為它們各自只會讀自己的那份檔案。"
+          ]
+        },
+        {
+          "h": "有哪些會一起過來",
+          "p": [
+            "每一列會變成一筆登入資料，帶著網站、使用者名稱和密碼，還有瀏覽器一起存的備註。三個之中只有 Firefox 會寫入日期，所以它的登入資料會保留你當初存下的那一天，其他的則以今天的日期進來。只有 Safari 會匯出驗證金鑰，而且要你原本就把驗證碼放在 Safari 裡；有的話，那組驗證碼在這裡也能繼續用。",
+            "瀏覽器會為每個登入頁面各存一筆，所以大一點的匯出檔常常有同一家公司的好幾列。它們都會匯入，之後你可以自己合併或刪掉。",
+            "瀏覽器把密碼放在一份平面清單裡，所以沒有資料夾結構需要重建。每筆登入資料改為帶標籤進來，讓你一鍵就能叫出整批。"
+          ]
+        },
+        {
+          "h": "用完就把匯出檔刪掉：那就是你的明文密碼",
+          "p": [
+            "匯出的 .csv 沒有任何加密，不管它是不是裝在 .zip 裡。打開的人就能讀到你存過的每一組密碼，所以請把它留在自己的電腦上，匯入、確認全部都進來了，然後刪掉檔案並清空垃圾桶。到了 PrivacyNotes 裡面，一切又是端對端加密的。"
+          ]
+        }
+      ]
+    },
+    "typora": {
+      "app": "Typora",
+      "title": "匯出你的 Typora 筆記",
+      "metaTitle": "如何匯出 Typora 筆記 - PrivacyNotes",
+      "lead": "Typora 編輯的就是磁碟上某個資料夾裡的一般 .md 檔，所以根本沒有匯出這一步。把資料夾壓成 zip，拖進來就好。",
+      "sections": [
+        {
+          "h": "把你寫作的資料夾壓成 zip",
+          "steps": [
+            "找到放 .md 檔的資料夾。Typora 沒有自己的資料庫，所以它就在你當初選擇儲存的位置。",
+            "在資料夾上按右鍵，macOS 選「壓縮」，Windows 選「傳送到」>「壓縮的 (zipped) 資料夾」。",
+            "把 .zip 拖進匯入。"
+          ]
+        },
+        {
+          "h": "壓縮前先確定圖片放在哪",
+          "p": [
+            "Typora 可以把圖片放在筆記旁邊、放進 assets 子資料夾，或留在你拖曳過來的原處。只有在你壓縮的那個資料夾裡面的圖片才過得來。打開「偏好設定」>「圖片」，設成把圖片複製到筆記自己的 assets 資料夾；至於圖片還指向別處的舊筆記，用「格式」>「圖片」>「複製圖片檔到...」處理。"
+          ]
+        },
+        {
+          "h": "會跟著過來的東西",
+          "p": [
+            "子資料夾會變成真正的資料夾，不管巢狀多深。標題、表格、待辦清單、程式碼區塊、註腳、數學式和螢光標記都會保留，裸的網址會變成可點的連結。YAML frontmatter 會用來讀標題、日期和標籤。",
+            "標籤兩種寫法都收：YAML frontmatter 裡的，還有寫在內文中的 #主題標籤。程式碼區塊裡的主題標籤仍然是程式碼，而像 #4711 這種純數字仍然是工單編號。"
+          ]
+        }
+      ]
+    },
+    "ia-writer": {
+      "app": "iA Writer",
+      "title": "匯出你的 iA Writer 資料庫",
+      "metaTitle": "如何匯出 iA Writer 資料庫 - PrivacyNotes",
+      "lead": "iA Writer 把你寫的東西當成一般 .md 檔放在它的 Library 裡，所以那個資料夾本身就是匯出檔。唯一要做對的事：先讓 iCloud 把真正的檔案交出來。",
+      "sections": [
+        {
+          "h": "先把資料夾從 iCloud 取出，再壓成 zip",
+          "steps": [
+            "在 iA Writer 的 Library 側邊欄對資料夾按右鍵，選「在 Finder 中顯示」。",
+            "在 Finder 裡對同一個資料夾按右鍵，選「立即下載」，讓 iCloud 真的把每個檔案抓下來，而不是留下佔位檔。",
+            "再按一次右鍵，選「壓縮」。",
+            "把 .zip 拖進匯入。"
+          ]
+        },
+        {
+          "h": "在 iPhone 或 iPad 上",
+          "p": [
+            "打開「檔案」App，前往 iCloud Drive > iA Writer，長按資料夾並選「壓縮」。把 .zip 分享給 PrivacyNotes，或是開啟 PrivacyNotes 從「檔案」裡挑它。"
+          ]
+        },
+        {
+          "h": "佔位檔的陷阱",
+          "p": [
+            "開著「最佳化 Mac 儲存空間」時，iCloud 會把你一陣子沒開的檔案換成很小的佔位檔。在這個狀態下壓縮資料夾，拿到的會是一包空殼：匯入照樣跑完、回報成功，卻幾乎什麼都沒帶進來。先做「立即下載」，再確認 .zip 的大小跟你寫的份量差不多，然後才匯入。"
+          ]
+        },
+        {
+          "h": "會跟著過來的東西",
+          "p": [
+            "Library 的資料夾會變成真正的資料夾，不管巢狀多深，筆記連到的圖片和檔案也會一起過來。標題、表格、待辦清單、程式碼區塊和註腳都會保留，裸的網址會變成可點的連結。frontmatter 會用來讀標題、日期和標籤。",
+            "寫作時把一個檔案拉進另一個檔案的內容區塊，過來時會是它原本寫成的那個連結，而不是被拉進來的內文。"
+          ]
+        }
+      ]
+    },
+    "zettlr": {
+      "app": "Zettlr",
+      "title": "匯出你的 Zettlr 筆記",
+      "metaTitle": "如何匯出 Zettlr 筆記 - PrivacyNotes",
+      "lead": "Zettlr 直接在一個裝著 .md 檔的資料夾上工作，所以你手上的工作區就是匯出檔。壓成 zip 拖進來即可。",
+      "sections": [
+        {
+          "h": "把工作區壓成 zip",
+          "steps": [
+            "在 Zettlr 檔案樹最上面的工作區按右鍵，選「在 Finder 中顯示」，Windows 上則是「在檔案總管中顯示」。",
+            "在那裡對資料夾按右鍵並壓縮。",
+            "把 .zip 拖進匯入。"
+          ]
+        },
+        {
+          "h": "Zettelkasten 連結留得住文字，留不住目標",
+          "p": [
+            "Zettlr 用 ID 連結筆記，所以一條連結長得像 [[20260823120000]]。我們會原封不動保留 note-link 的寫法，也就是說，ID 連結只有在真的有一則筆記以那個 ID 當標題時才連得上。用檔名寫的連結則正常運作，如果你很依賴這些連結，匯出前先把內部連結格式改成檔名。",
+            "像 [@doe2026] 這種引用鍵，對我們來說就是文字。它們會原樣過來，但不再可點。"
+          ]
+        },
+        {
+          "h": "會跟著過來的東西",
+          "p": [
+            "工作區的子資料夾會變成真正的資料夾，不管巢狀多深，筆記連到的圖片和檔案也會一起過來。標題、表格、待辦清單、程式碼區塊、註腳、數學式和螢光標記全都保留。標籤會從 YAML frontmatter 讀，也會從內文中寫的 #主題標籤讀，所以靠主題標籤搭起來的 Zettelkasten 也能保住原本的分類。"
+          ]
+        }
+      ]
+    },
+    "nextcloud-notes": {
+      "app": "Nextcloud Notes",
+      "title": "匯出你的 Nextcloud Notes 筆記",
+      "metaTitle": "如何匯出 Nextcloud Notes - PrivacyNotes",
+      "lead": "Nextcloud Notes 不需要匯出這個步驟：每則筆記本來就是你自己伺服器上某個資料夾裡的單純檔案，而 Nextcloud 會把整個資料夾包成 .zip 給你。它用的兩種副檔名這裡都讀得懂，所以事前不用轉換什麼。",
+      "sections": [
+        {
+          "h": "下載 Notes 資料夾",
+          "steps": [
+            "用瀏覽器打開你 Nextcloud 上的「檔案」。",
+            "找到 Notes 資料夾。除非管理員改過名字，否則它就叫 Notes。",
+            "打開資料夾上的「...」選單，選「下載」。Nextcloud 會把整個資料夾打包成 .zip。",
+            "把 .zip 拖進匯入。"
+          ]
+        },
+        {
+          "h": "會跟著過來的東西",
+          "p": [
+            "分類是以子資料夾的形式儲存的，所以會變成真正的資料夾過來。筆記的日期取自檔案本身，而不是匯入的當下。標題、表格、待辦清單、程式碼區塊、註腳和數學式都會保留，裸的網址會變成可點的連結。",
+            "這裡匯入的是副本。你的 Nextcloud 不會被刪掉任何東西，也不會有任何內容同步回去，所以在你滿意這裡的結果之前，把伺服器留著當封存。"
+          ]
+        },
+        {
+          "h": "兩種副檔名都可以",
+          "p": [
+            "Notes 預設寫 .txt，等你或你的管理員改了設定才寫 .md。這裡兩種都讀，.markdown、.mdown 和 .mkd 也讀，所以匯出前你不必改任何檔名，也不必動伺服器。"
+          ]
+        }
+      ]
+    }
+  }
+}

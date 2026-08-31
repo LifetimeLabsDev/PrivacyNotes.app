@@ -1,0 +1,124 @@
+{
+  "title": "Statistiky",
+  "tabs": {
+    "writing": "Psaní",
+    "wellness": "Pohoda"
+  },
+  "writing": {
+    "notes": "Poznámky",
+    "words": "Slova",
+    "tags": "Značky",
+    "currentStreak": "Aktuální série",
+    "longestStreak": "Nejdelší série",
+    "streakValue": "{{count}} d",
+    "timeRangeAria": "Časové rozmezí aktivity",
+    "modeActivity": "Aktivita",
+    "modeMood": "Nálada",
+    "tooltipMood": "{{date}}: nálada {{mood}}/10",
+    "tooltipNoMood": "{{date}}: nálada nezapsána",
+    "tooltipEdits_one": "{{date}}: {{count}} úprava",
+    "tooltipEdits_few": "{{date}}: {{count}} úpravy",
+    "tooltipEdits_many": "{{date}}: {{count}} úpravy",
+    "tooltipEdits_other": "{{date}}: {{count}} úprav",
+    "longestNote": "Nejdelší poznámka: <name>{{title}}</name> ({{count}} slov)"
+  },
+  "range": {
+    "7d": "7 dní",
+    "14d": "14 dní",
+    "30d": "30 dní",
+    "3mo": "3 měsíce",
+    "6mo": "6 měsíců",
+    "12mo": "12 měsíců"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Vše",
+      "sleepActivity": "Spánek a aktivita",
+      "medication": "Léky",
+      "patterns": "Vzorce"
+    },
+    "empty": {
+      "title": "Zatím žádná data o pohodě.",
+      "hint": "Začni tím, že si otevřeš záznam v deníku a zapíšeš náladu."
+    },
+    "overview": {
+      "daysTracked": "Zaznamenané dny",
+      "avgMood": "Prům. nálada",
+      "avgSleep": "Prům. spánek",
+      "medAdherence": "Dodržování léků",
+      "moodTrend": "Trend nálady",
+      "moodByDayOfWeek": "Nálada podle dne v týdnu",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Export",
+      "allTime": "Celá historie",
+      "last90Days": "Posledních 90 dní",
+      "last30Days": "Posledních 30 dní",
+      "last7Days": "Posledních 7 dní",
+      "downloadJSON": "Stáhnout JSON",
+      "doctorPDF": "PDF pro lékaře",
+      "copyAIPrompt": "Kopírovat prompt pro AI",
+      "copied": "Zkopírováno!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Kvalita spánku",
+      "activity": "Aktivita",
+      "avgSleepPerNight": "Průměrný spánek za noc"
+    },
+    "medication": {
+      "adherence": "Dodržování",
+      "empty": {
+        "title": "Zatím žádná data o lécích.",
+        "hint": "Přidej si lék v nastavení sledování a pak si zapisuj každý den."
+      },
+      "dosageTimeline": "Časová osa dávkování",
+      "started": "Začátek {{dosage}}",
+      "changedTo": "Změna na {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Nejčastější emoce",
+      "insights": "Postřehy",
+      "proBadge": "PRO",
+      "insightsLocked_one": "Nalezen {{count}} postřeh. Přejdi na Pro a zobraz si ho",
+      "insightsLocked_few": "Nalezeny {{count}} postřehy. Přejdi na Pro a zobraz si je",
+      "insightsLocked_many": "Nalezeno {{count}} postřehu. Přejdi na Pro a zobraz si je",
+      "insightsLocked_other": "Nalezeno {{count}} postřehů. Přejdi na Pro a zobraz si je",
+      "weekInReview": "Týdenní přehled",
+      "weekInReviewLocked": "Přejdi na Pro a uvidíš týdenní souhrn své pohody"
+    },
+    "week": {
+      "range": "{{start}} až {{end}}",
+      "daysLogged": "{{count}}/7 dní zapsáno",
+      "avgMood": "Prům. nálada",
+      "moodDelta": "{{delta}} proti minulému týdnu",
+      "avgSleep": "Prům. spánek",
+      "medsTaken": "Užité léky",
+      "topActivity": "Nejčastější aktivita",
+      "topEmotions": "Nejčastější emoce",
+      "reflection": "Ohlédnutí",
+      "reflectionPlaceholder": "Jaký byl tenhle týden celkově? Chceš si k tomu něco poznamenat..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Milník odemčen"
+  },
+  "milestone": {
+    "notes_one": "{{count}} napsaná poznámka",
+    "notes_few": "{{count}} napsané poznámky",
+    "notes_many": "{{count}} napsané poznámky",
+    "notes_other": "{{count}} napsaných poznámek",
+    "streak": "{{count}}denní série psaní",
+    "words_one": "{{formatted}} napsané slovo",
+    "words_few": "{{formatted}} napsaná slova",
+    "words_many": "{{formatted}} napsaného slova",
+    "words_other": "{{formatted}} napsaných slov",
+    "age30": "30 dní s PrivacyNotes",
+    "age365": "Rok s PrivacyNotes",
+    "age730": "2 roky s PrivacyNotes",
+    "age1825": "5 let s PrivacyNotes",
+    "ageDefault": "{{count}}. den s PrivacyNotes"
+  }
+}

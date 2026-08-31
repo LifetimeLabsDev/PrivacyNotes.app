@@ -1,0 +1,116 @@
+{
+  "title": "Statistik",
+  "tabs": {
+    "writing": "Skrivande",
+    "wellness": "Välmående"
+  },
+  "writing": {
+    "notes": "Anteckningar",
+    "words": "Ord",
+    "tags": "Taggar",
+    "currentStreak": "Nuvarande svit",
+    "longestStreak": "Längsta svit",
+    "streakValue": "{{count}} d",
+    "timeRangeAria": "Tidsintervall för aktivitet",
+    "modeActivity": "Aktivitet",
+    "modeMood": "Humör",
+    "tooltipMood": "{{date}}: humör {{mood}}/10",
+    "tooltipNoMood": "{{date}}: inget humör",
+    "tooltipEdits_one": "{{date}}: {{count}} ändring",
+    "tooltipEdits_other": "{{date}}: {{count}} ändringar",
+    "longestNote": "Längsta anteckning: <name>{{title}}</name> ({{count}} ord)"
+  },
+  "range": {
+    "7d": "7 dagar",
+    "14d": "14 dagar",
+    "30d": "30 dagar",
+    "3mo": "3 månader",
+    "6mo": "6 månader",
+    "12mo": "12 månader"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Alla",
+      "sleepActivity": "Sömn och aktivitet",
+      "medication": "Medicin",
+      "patterns": "Mönster"
+    },
+    "empty": {
+      "title": "Ingen välmåendedata än.",
+      "hint": "Öppna ett dagboksinlägg och logga ditt humör för att komma igång."
+    },
+    "overview": {
+      "daysTracked": "Loggade dagar",
+      "avgMood": "Snitthumör",
+      "avgSleep": "Snittsömn",
+      "medAdherence": "Medicinföljsamhet",
+      "moodTrend": "Humörtrend",
+      "moodByDayOfWeek": "Humör per veckodag",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Exportera",
+      "allTime": "All tid",
+      "last90Days": "Senaste 90 dagarna",
+      "last30Days": "Senaste 30 dagarna",
+      "last7Days": "Senaste 7 dagarna",
+      "downloadJSON": "Ladda ner JSON",
+      "doctorPDF": "Läkar-PDF",
+      "copyAIPrompt": "Kopiera AI-prompt",
+      "copied": "Kopierat!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Sömnkvalitet",
+      "activity": "Aktivitet",
+      "avgSleepPerNight": "Genomsnittlig sömn per natt"
+    },
+    "medication": {
+      "adherence": "Följsamhet",
+      "empty": {
+        "title": "Ingen medicindata än.",
+        "hint": "Lägg till en medicin i inställningarna för mätvärden och logga sedan dagligen."
+      },
+      "dosageTimeline": "Dosering över tid",
+      "started": "Började med {{dosage}}",
+      "changedTo": "Ändrad till {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Vanligaste känslorna",
+      "insights": "Insikter",
+      "proBadge": "PRO",
+      "insightsLocked_one": "{{count}} insikt hittad. Uppgradera till Pro för att se den",
+      "insightsLocked_other": "{{count}} insikter hittade. Uppgradera till Pro för att se dem",
+      "weekInReview": "Veckan i återblick",
+      "weekInReviewLocked": "Uppgradera till Pro för att se veckans sammanfattning av ditt mående"
+    },
+    "week": {
+      "range": "{{start}} till {{end}}",
+      "daysLogged": "{{count}}/7 dagar loggade",
+      "avgMood": "Snitthumör",
+      "moodDelta": "{{delta}} mot förra veckan",
+      "avgSleep": "Snittsömn",
+      "medsTaken": "Tagna mediciner",
+      "topActivity": "Vanligaste aktiviteten",
+      "topEmotions": "Vanligaste känslorna",
+      "reflection": "Reflektion",
+      "reflectionPlaceholder": "Hur kändes veckan i stort? Tankar att fånga upp..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Milstolpe upplåst"
+  },
+  "milestone": {
+    "notes_one": "{{count}} anteckning skriven",
+    "notes_other": "{{count}} anteckningar skrivna",
+    "streak": "Skrivsvit på {{count}} dagar",
+    "words_one": "{{formatted}} ord skrivet",
+    "words_other": "{{formatted}} ord skrivna",
+    "age30": "30 dagar med PrivacyNotes",
+    "age365": "1 år med PrivacyNotes",
+    "age730": "2 år med PrivacyNotes",
+    "age1825": "5 år med PrivacyNotes",
+    "ageDefault": "{{count}} dagar tillsammans"
+  }
+}

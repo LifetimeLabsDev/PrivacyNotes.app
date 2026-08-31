@@ -1,0 +1,182 @@
+{
+  "placeholder": "ابدأ الكتابة…",
+  "toolbar": {
+    "bold": "غامق",
+    "italic": "مائل",
+    "underline": "تسطير",
+    "heading": "عنوان",
+    "taskList": "قائمة مهام",
+    "bulletList": "قائمة نقطية",
+    "linkMenu": "رابط",
+    "noteLinkMenu": "رابط ملاحظة",
+    "numberedList": "قائمة مرقّمة",
+    "textColor": "لون النص",
+    "textColorApply": "لون النص: {{color}}",
+    "pickColor": "اختيار لون النص",
+    "table": "جدول",
+    "quote": "اقتباس",
+    "callout": "تنبيه",
+    "inlineCode": "كود مضمّن",
+    "strikethrough": "يتوسطه خط",
+    "codeBlock": "كتلة كود",
+    "divider": "خط فاصل",
+    "moreFormatting": "مزيد من التنسيق",
+    "fewerFormatting": "خيارات تنسيق أقل",
+    "image": "صورة",
+    "attachFile": "إرفاق ملف",
+    "insert": "إدراج",
+    "highlight": "تمييز",
+    "highlightApply": "تمييز: {{color}}",
+    "pickHighlight": "اختيار لون التمييز",
+    "superscript": "أس علوي",
+    "subscript": "أس سفلي",
+    "math": "معادلة رياضية",
+    "blockMath": "معادلة كتلة",
+    "align": "محاذاة",
+    "font": "الخط"
+  },
+  "align": {
+    "left": "محاذاة لليسار",
+    "center": "توسيط",
+    "right": "محاذاة لليمين",
+    "justify": "ضبط"
+  },
+  "font": {
+    "families": {
+      "sans": "بلا تذييل",
+      "serif": "بتذييل",
+      "mono": "أحادي التباعد"
+    },
+    "sizes": {
+      "small": "صغير",
+      "large": "كبير",
+      "huge": "كبير جدًا"
+    },
+    "reset": "إعادة تعيين الخط"
+  },
+  "heading": {
+    "normalText": "نص عادي",
+    "level": "عنوان {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "إدراج تنبيه",
+    "remove": "إزالة التنبيه",
+    "types": {
+      "info": "معلومة",
+      "success": "نجاح",
+      "warning": "تحذير",
+      "tip": "نصيحة",
+      "danger": "خطر",
+      "question": "سؤال",
+      "quote": "اقتباس",
+      "example": "مثال",
+      "bug": "خطأ",
+      "note": "ملاحظة",
+      "abstract": "ملخص",
+      "failure": "فشل"
+    }
+  },
+  "color": {
+    "remove": "إزالة اللون",
+    "removeHighlight": "إزالة التمييز",
+    "names": {
+      "gray": "رمادي",
+      "red": "أحمر",
+      "orange": "برتقالي",
+      "yellow": "أصفر",
+      "green": "أخضر",
+      "teal": "أزرق مخضر",
+      "blue": "أزرق",
+      "purple": "بنفسجي",
+      "pink": "وردي"
+    }
+  },
+  "insertGroup": {
+    "insert": "إدراج",
+    "blocks": "الكتل",
+    "notation": "الترميز"
+  },
+  "table": {
+    "addRowAbove": "إضافة صف أعلاه",
+    "addRowBelow": "إضافة صف أسفله",
+    "addColumnLeft": "إضافة عمود إلى اليسار",
+    "addColumnRight": "إضافة عمود إلى اليمين",
+    "deleteRow": "حذف الصف",
+    "deleteColumn": "حذف العمود",
+    "deleteTable": "حذف الجدول"
+  },
+  "find": {
+    "placeholder": "البحث في الملاحظة",
+    "label": "البحث في الملاحظة",
+    "previous": "المطابقة السابقة (Shift+Enter)",
+    "previousTitle": "السابق (Shift+Enter)",
+    "next": "المطابقة التالية (Enter)",
+    "nextTitle": "التالي (Enter)",
+    "close": "إغلاق البحث",
+    "closeTitle": "إغلاق (⌘F)"
+  },
+  "outline": {
+    "show": "إظهار المخطط التفصيلي",
+    "showTitle": "المخطط التفصيلي (Cmd/Ctrl+Shift+O)",
+    "title": "المخطط التفصيلي",
+    "ariaLabel": "مخطط الملاحظة",
+    "hide": "إخفاء المخطط التفصيلي",
+    "hideTitle": "إخفاء المخطط التفصيلي (Esc)"
+  },
+  "topRow": {
+    "add": "إضافة سطر في الأعلى"
+  },
+  "link": {
+    "popoverLabel": "إضافة رابط",
+    "placeholder": "الصق أو اكتب رابطًا",
+    "apply": "تطبيق",
+    "addTitle": "إضافة رابط",
+    "editTitle": "تعديل الرابط",
+    "urlLabel": "الرابط",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "أدخل رابطًا",
+    "errorInvalidUrl": "أدخل رابطًا صالحًا",
+    "textLabel": "نص الرابط",
+    "textPlaceholder": "اختياري، اتركه فارغًا لعرض الرابط",
+    "selectedTextHint": "سيتم استخدام النص المحدد كرابط",
+    "editTextHint": "عدّل نص الرابط في المحرر",
+    "update": "تحديث"
+  },
+  "audio": {
+    "uploadingRecording": "جارٍ تحميل التسجيل...",
+    "uploading": "جارٍ التحميل...",
+    "stopRecording": "إيقاف التسجيل",
+    "recordAudio": "تسجيل صوتي",
+    "savingRecording": "جارٍ حفظ التسجيل...",
+    "recording": "جارٍ التسجيل",
+    "secondsLeft": "{{count}} ثانية متبقية",
+    "stop": "إيقاف"
+  },
+  "wordCount": {
+    "words_zero": "{{formatted}} كلمات",
+    "words_one": "{{formatted}} كلمة",
+    "words_two": "{{formatted}} كلمتان",
+    "words_few": "{{formatted}} كلمات",
+    "words_many": "{{formatted}} كلمة",
+    "words_other": "{{formatted}} كلمة",
+    "characters_zero": "{{formatted}} أحرف",
+    "characters_one": "{{formatted}} حرف",
+    "characters_two": "{{formatted}} حرفان",
+    "characters_few": "{{formatted}} أحرف",
+    "characters_many": "{{formatted}} حرفًا",
+    "characters_other": "{{formatted}} حرفًا",
+    "tooLargeToSync": "، قد تكون كبيرة جدًا للمزامنة، قسّمها إلى ملاحظة جديدة",
+    "veryLong": "، طويلة جدًا، قد تكون بطيئة في التعديل وتتقطع",
+    "gettingLong": "، أصبحت طويلة، قد تتأخر على الأجهزة الأبطأ",
+    "largeTableWarning": "جدول كبير ({{rows}} صفًا) قد يجعل تعديل هذه الملاحظة بطيئًا، ففكر في تقسيمه"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "لا توجد ملاحظات مطابقة",
+    "create": "إنشاء «{{query}}»"
+  },
+  "codeBlock": {
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "copyFailed": "فشل"
+  }
+}

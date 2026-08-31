@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/org.privacyguides.verifiedapps"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.privacynotes",
+      "sha256_cert_fingerprints": [
+        "98:A0:BB:5A:AF:69:4F:6B:EA:50:AD:CB:4A:36:D4:B5:7A:3C:3E:42:F6:7A:FF:08:FB:EA:46:89:69:6C:AA:87"
+      ]
+    }
+  }
+]

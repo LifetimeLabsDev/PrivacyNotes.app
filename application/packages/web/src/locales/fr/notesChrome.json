@@ -1,0 +1,112 @@
+{
+  "dismiss": "Ignorer",
+  "close": "Fermer",
+  "moveBanner": {
+    "title": "L'application déménage sur use.privacynotes.app",
+    "body": "Transfère cette session maintenant - ça ne prend que quelques secondes et tes notes t'accompagnent.",
+    "cta": "Déménager maintenant",
+    "syncing": "Synchronisation de tes notes…",
+    "error": "Impossible de tout synchroniser pour le moment. Vérifie ta connexion et réessaie.",
+    "conflict": "Une de tes notes a un conflit de synchronisation qui nécessite ta décision. Résous-le dans la boîte de dialogue, puis réessaie."
+  },
+  "movedHint": {
+    "body": "C'est la nouvelle adresse de l'application. Mets à jour ton marque-page vers use.privacynotes.app et rajoute tes raccourcis d'écran d'accueil.",
+    "gotIt": "Compris"
+  },
+  "moveScreen": {
+    "title": "L'application a déménagé sur use.privacynotes.app",
+    "body": "Transfère cet appareil maintenant - ça ne prend que quelques secondes et tes notes t'accompagnent. Rien n'est supprimé ici.",
+    "openNotes": "Ouvre tes notes ici une fois pour corriger le problème",
+    "website": "Parcourir le site à la place"
+  },
+  "quota": {
+    "frozen": {
+      "configured": "Synchro en pause. Tu as dépassé ta limite de stockage depuis plus de 90 jours. Tes notes sont en sécurité en local. Réabonne-toi ou exporte tes données.",
+      "unconfigured": "Synchro en pause. Tu as dépassé ta limite de stockage depuis plus de 90 jours. Tes notes sont en sécurité en local. Exporte et allège tes notes pour reprendre la synchro."
+    },
+    "grace": {
+      "configured_one": "Module de stockage expiré. {{count}} jour restant pour réduire l'utilisation ou te réabonner avant la mise en pause de la synchro.",
+      "configured_other": "Module de stockage expiré. {{count}} jours restants pour réduire l'utilisation ou te réabonner avant la mise en pause de la synchro.",
+      "unconfigured_one": "Limite de stockage dépassée. {{count}} jour restant pour alléger tes notes avant la mise en pause de la synchro.",
+      "unconfigured_other": "Limite de stockage dépassée. {{count}} jours restants pour alléger tes notes avant la mise en pause de la synchro."
+    },
+    "full": {
+      "configured": "Stockage plein. Certaines notes n'ont pas pu se synchroniser. Libère de l'espace ou ajoute du stockage.",
+      "unconfigured": "Stockage plein. Certaines notes n'ont pas pu se synchroniser. Libère de l'espace en allégeant tes notes."
+    },
+    "manageStorage": "Gérer le stockage",
+    "viewUsage": "Voir l'utilisation"
+  },
+  "syncError": {
+    "failed_one": "1 note n'a pas pu se synchroniser. Elle réessaiera automatiquement.",
+    "failed_other": "{{count}} notes n'ont pas pu se synchroniser. Elles réessaieront automatiquement.",
+    "lastError": "Dernière erreur : {{message}}"
+  },
+  "sessionExpired": {
+    "title": "Session expirée",
+    "body": "Ta session a expiré. Tes notes sont en sécurité sur cet appareil. Reconnecte-toi pour reprendre la synchro.",
+    "signInAgain": "Se reconnecter"
+  },
+  "signOutConfirm": {
+    "title": "As-tu enregistré ta phrase de 12 mots ?",
+    "body": "Ta phrase est le <only>seul</only> moyen de revenir. Pas de réinitialisation par e-mail, pas de ligne d'assistance. On ne sait pas qui tu es, et c'est voulu. Si tu ne l'as pas encore notée, appuie sur <action>Non, afficher la phrase</action> et on te l'affiche tout de suite.",
+    "unsyncedWarn_one": "1 note sur cet appareil n'est pas encore synchronisée. Elle sera définitivement perdue si elle ne peut pas être envoyée pendant la déconnexion.",
+    "unsyncedWarn_other": "{{count}} notes sur cet appareil ne sont pas encore synchronisées. Elles seront définitivement perdues si elles ne peuvent pas être envoyées pendant la déconnexion.",
+    "unsyncedKept_one": "1 note sur cet appareil n'est pas encore synchronisée. Elle reste sur cet appareil et se synchronisera quand tu te reconnecteras.",
+    "unsyncedKept_other": "{{count}} notes sur cet appareil ne sont pas encore synchronisées. Elles restent sur cet appareil et se synchroniseront quand tu te reconnecteras.",
+    "dontRemind": "Ne plus me le rappeler",
+    "showPhrase": "Non, afficher la phrase",
+    "confirm": "Oui, me déconnecter"
+  },
+  "burnShareModal": {
+    "title": "Partager en burn note",
+    "body": "<lead>Ta note d'origine ne sera pas supprimée.</lead> Elle reste en sécurité dans ton compte. Le lien burn est une copie chiffrée distincte qui s'autodétruit après lecture. Le lien expire après 24 heures, qu'il soit ouvert ou non.",
+    "imagesStripped": "Seul le texte est affiché, les fichiers sont masqués dans cette note.",
+    "copied": "Copié"
+  },
+  "burnView": {
+    "tagline": "Chiffré. Éphémère. Rien que pour tes yeux.",
+    "toggleTheme": "Basculer le thème",
+    "checking": "Vérification...",
+    "revealing": "Récupération et déchiffrement...",
+    "goToApp": "Aller sur <brand/>",
+    "footerTagline": "- Notes chiffrées en zero-knowledge, hébergées en Suisse.",
+    "sealed": {
+      "heading": "Tu as reçu une note chiffrée.",
+      "subheading": "Ce message s'autodétruira après lecture. Les liens non lus expirent après 24 heures.",
+      "reveal": "Révéler le message",
+      "warning": "Le serveur supprime la note dès que tu la révèles. Pas de seconde chance."
+    },
+    "revealed": {
+      "countdown": "Le texte en clair s'efface dans {{time}}",
+      "clearNow": "Effacer maintenant",
+      "emptyNote": "(note vide)",
+      "deletedNotice": "Cette copie partagée a été supprimée du serveur. Elle ne peut plus être consultée."
+    },
+    "destroyed": {
+      "heading": "Message détruit.",
+      "body": "Supprimé du serveur et effacé de la mémoire. Ce message ne peut plus être lu."
+    },
+    "gone": {
+      "heading": "Cette note a disparu.",
+      "body": "Elle a déjà été lue ou a expiré. Les liens burn ne peuvent être ouverts qu'une fois et expirent après 24 heures."
+    },
+    "error": {
+      "heading": "Une erreur s'est produite.",
+      "fallback": "Le lien est peut-être corrompu ou incomplet.",
+      "server": "Erreur du serveur. La note a peut-être déjà été lue ou a expiré.",
+      "decryption": "Le déchiffrement a échoué. Le lien est peut-être corrompu.",
+      "network": "Impossible de joindre le serveur. Vérifie ta connexion et réessaie."
+    },
+    "noPayload": {
+      "heading": "Aucun message trouvé.",
+      "body": "Cette URL ne contient pas de référence de burn note. Assure-toi d'avoir le lien complet."
+    }
+  },
+  "burnShare": {
+    "offline": "Tu es hors ligne. Les liens burn nécessitent un aller-retour vers le serveur. Réessaie quand tu seras de nouveau en ligne.",
+    "demo": "Les liens burn sont stockés sur un serveur, et la démo n'en contacte aucun. Inscris-toi pour créer de vrais liens burn.",
+    "tooLarge": "La note est trop volumineuse pour être partagée via un lien burn ({{size}} Ko). Le maximum est de {{max}} Ko.",
+    "storeFailed": "Échec de l'enregistrement de la burn note sur le serveur."
+  }
+}

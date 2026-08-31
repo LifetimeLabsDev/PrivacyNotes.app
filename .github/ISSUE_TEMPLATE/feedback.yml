@@ -1,0 +1,20 @@
+name: Feedback
+description: Tell us how it went. Not a bug, not a feature request.
+title: "[Feedback]: "
+labels: [feedback]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Some of the most useful things people tell us are not bugs and not requests. Something
+        was confusing, something took three tries to find, something was better than you
+        expected. All of it helps, even if you cannot say what the fix should be.
+
+        One sentence is plenty. This page is public, so please keep your recovery phrase out of
+        it, and crop your notes out of any screenshot.
+
+  - type: textarea
+    attributes:
+      label: What is on your mind?
+    validations:
+      required: true

@@ -1,0 +1,172 @@
+{
+  "placeholder": "書き始めましょう…",
+  "toolbar": {
+    "bold": "太字",
+    "italic": "斜体",
+    "underline": "下線",
+    "heading": "見出し",
+    "taskList": "タスクリスト",
+    "bulletList": "箇条書き",
+    "linkMenu": "リンク",
+    "noteLinkMenu": "ノートリンク",
+    "numberedList": "番号付きリスト",
+    "textColor": "文字色",
+    "textColorApply": "文字色: {{color}}",
+    "pickColor": "文字色を選択",
+    "table": "表",
+    "quote": "引用",
+    "callout": "コールアウト",
+    "inlineCode": "インラインコード",
+    "strikethrough": "取り消し線",
+    "codeBlock": "コードブロック",
+    "divider": "区切り線",
+    "moreFormatting": "その他の書式",
+    "fewerFormatting": "書式オプションを減らす",
+    "image": "画像",
+    "attachFile": "ファイルを添付",
+    "insert": "挿入",
+    "highlight": "ハイライト",
+    "highlightApply": "ハイライト: {{color}}",
+    "pickHighlight": "ハイライト色を選択",
+    "superscript": "上付き文字",
+    "subscript": "下付き文字",
+    "math": "数式",
+    "blockMath": "ブロック数式",
+    "align": "配置",
+    "font": "フォント"
+  },
+  "align": {
+    "left": "左揃え",
+    "center": "中央揃え",
+    "right": "右揃え",
+    "justify": "両端揃え"
+  },
+  "font": {
+    "families": {
+      "sans": "ゴシック",
+      "serif": "明朝",
+      "mono": "等幅"
+    },
+    "sizes": {
+      "small": "小",
+      "large": "大",
+      "huge": "特大"
+    },
+    "reset": "フォントをリセット"
+  },
+  "heading": {
+    "normalText": "標準テキスト",
+    "level": "見出し{{level}}"
+  },
+  "callout": {
+    "pickerLabel": "コールアウトを挿入",
+    "remove": "コールアウトを削除",
+    "types": {
+      "info": "情報",
+      "success": "成功",
+      "warning": "警告",
+      "tip": "ヒント",
+      "danger": "危険",
+      "question": "質問",
+      "quote": "引用",
+      "example": "例",
+      "bug": "バグ",
+      "note": "メモ",
+      "abstract": "要約",
+      "failure": "失敗"
+    }
+  },
+  "color": {
+    "remove": "色を削除",
+    "removeHighlight": "ハイライトを削除",
+    "names": {
+      "gray": "グレー",
+      "red": "赤",
+      "orange": "オレンジ",
+      "yellow": "黄色",
+      "green": "緑",
+      "teal": "ティール",
+      "blue": "青",
+      "purple": "紫",
+      "pink": "ピンク"
+    }
+  },
+  "insertGroup": {
+    "insert": "挿入",
+    "blocks": "ブロック",
+    "notation": "記法"
+  },
+  "table": {
+    "addRowAbove": "上に行を追加",
+    "addRowBelow": "下に行を追加",
+    "addColumnLeft": "左に列を追加",
+    "addColumnRight": "右に列を追加",
+    "deleteRow": "行を削除",
+    "deleteColumn": "列を削除",
+    "deleteTable": "表を削除"
+  },
+  "find": {
+    "placeholder": "ノート内を検索",
+    "label": "ノート内を検索",
+    "previous": "前の一致(Shift+Enter)",
+    "previousTitle": "前へ(Shift+Enter)",
+    "next": "次の一致(Enter)",
+    "nextTitle": "次へ(Enter)",
+    "close": "検索を閉じる",
+    "closeTitle": "閉じる(⌘F)"
+  },
+  "outline": {
+    "show": "アウトラインを表示",
+    "showTitle": "アウトライン(Cmd/Ctrl+Shift+O)",
+    "title": "アウトライン",
+    "ariaLabel": "ノートのアウトライン",
+    "hide": "アウトラインを隠す",
+    "hideTitle": "アウトラインを隠す(Esc)"
+  },
+  "topRow": {
+    "add": "先頭に行を追加"
+  },
+  "link": {
+    "popoverLabel": "リンクを追加",
+    "placeholder": "URLを貼り付けまたは入力",
+    "apply": "適用",
+    "addTitle": "リンクを追加",
+    "editTitle": "リンクを編集",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "URLを入力してください",
+    "errorInvalidUrl": "有効なURLを入力してください",
+    "textLabel": "リンクテキスト",
+    "textPlaceholder": "任意。空欄の場合はURLを表示",
+    "selectedTextHint": "選択中のテキストがリンクになります",
+    "editTextHint": "リンクテキストはエディタで編集してください",
+    "update": "更新"
+  },
+  "audio": {
+    "uploadingRecording": "録音をアップロード中...",
+    "uploading": "アップロード中...",
+    "stopRecording": "録音を停止",
+    "recordAudio": "音声を録音",
+    "savingRecording": "録音を保存中...",
+    "recording": "録音中",
+    "secondsLeft": "残り{{count}}秒",
+    "stop": "停止"
+  },
+  "wordCount": {
+    "words_other": "{{formatted}}語",
+    "characters_other": "{{formatted}}文字",
+    "tooLargeToSync": "、同期には大きすぎる可能性があります。新しいノートに分割してください",
+    "veryLong": "、非常に長いため、編集が重くなったりカクつくことがあります",
+    "gettingLong": "、長くなってきました。遅いデバイスでは重くなることがあります",
+    "largeTableWarning": "大きな表({{rows}}行)があるため、このノートは編集が重くなることがあります。分割を検討してください"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "一致するノートがありません",
+    "create": "「{{query}}」を作成"
+  },
+  "codeBlock": {
+    "copy": "コピー",
+    "copied": "コピーしました",
+    "copyFailed": "失敗しました"
+  }
+}

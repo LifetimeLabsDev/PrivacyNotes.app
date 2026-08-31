@@ -1,0 +1,172 @@
+{
+  "placeholder": "開始書寫…",
+  "toolbar": {
+    "bold": "粗體",
+    "italic": "斜體",
+    "underline": "底線",
+    "heading": "標題",
+    "taskList": "任務清單",
+    "bulletList": "項目符號清單",
+    "linkMenu": "連結",
+    "noteLinkMenu": "筆記連結",
+    "numberedList": "編號清單",
+    "textColor": "文字顏色",
+    "textColorApply": "文字顏色：{{color}}",
+    "pickColor": "選擇文字顏色",
+    "table": "表格",
+    "quote": "引言",
+    "callout": "標註",
+    "inlineCode": "行內程式碼",
+    "strikethrough": "刪除線",
+    "codeBlock": "程式碼區塊",
+    "divider": "分隔線",
+    "moreFormatting": "更多格式選項",
+    "fewerFormatting": "較少格式選項",
+    "image": "圖片",
+    "attachFile": "附加檔案",
+    "insert": "插入",
+    "highlight": "螢光標記",
+    "highlightApply": "螢光標記：{{color}}",
+    "pickHighlight": "選擇螢光標記顏色",
+    "superscript": "上標",
+    "subscript": "下標",
+    "math": "數學公式",
+    "blockMath": "區塊公式",
+    "align": "對齊",
+    "font": "字型"
+  },
+  "align": {
+    "left": "靠左對齊",
+    "center": "置中對齊",
+    "right": "靠右對齊",
+    "justify": "左右對齊"
+  },
+  "font": {
+    "families": {
+      "sans": "黑體",
+      "serif": "襯線",
+      "mono": "等寬"
+    },
+    "sizes": {
+      "small": "小",
+      "large": "大",
+      "huge": "特大"
+    },
+    "reset": "重設字型"
+  },
+  "heading": {
+    "normalText": "一般文字",
+    "level": "標題 {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "插入標註",
+    "remove": "移除標註",
+    "types": {
+      "info": "資訊",
+      "success": "成功",
+      "warning": "警告",
+      "tip": "提示",
+      "danger": "危險",
+      "question": "問題",
+      "quote": "引言",
+      "example": "範例",
+      "bug": "錯誤",
+      "note": "註記",
+      "abstract": "摘要",
+      "failure": "失敗"
+    }
+  },
+  "color": {
+    "remove": "移除顏色",
+    "removeHighlight": "移除螢光標記",
+    "names": {
+      "gray": "灰色",
+      "red": "紅色",
+      "orange": "橙色",
+      "yellow": "黃色",
+      "green": "綠色",
+      "teal": "藍綠色",
+      "blue": "藍色",
+      "purple": "紫色",
+      "pink": "粉紅色"
+    }
+  },
+  "insertGroup": {
+    "insert": "插入",
+    "blocks": "區塊",
+    "notation": "標記"
+  },
+  "table": {
+    "addRowAbove": "在上方插入列",
+    "addRowBelow": "在下方插入列",
+    "addColumnLeft": "在左側插入欄",
+    "addColumnRight": "在右側插入欄",
+    "deleteRow": "刪除列",
+    "deleteColumn": "刪除欄",
+    "deleteTable": "刪除表格"
+  },
+  "find": {
+    "placeholder": "在筆記中尋找",
+    "label": "在筆記中尋找",
+    "previous": "上一個符合項目（Shift+Enter）",
+    "previousTitle": "上一個（Shift+Enter）",
+    "next": "下一個符合項目（Enter）",
+    "nextTitle": "下一個（Enter）",
+    "close": "關閉尋找",
+    "closeTitle": "關閉（⌘F）"
+  },
+  "outline": {
+    "show": "顯示大綱",
+    "showTitle": "大綱（Cmd/Ctrl+Shift+O）",
+    "title": "大綱",
+    "ariaLabel": "筆記大綱",
+    "hide": "隱藏大綱",
+    "hideTitle": "隱藏大綱（Esc）"
+  },
+  "topRow": {
+    "add": "在最上方加入一行"
+  },
+  "link": {
+    "popoverLabel": "插入連結",
+    "placeholder": "貼上或輸入 URL",
+    "apply": "套用",
+    "addTitle": "插入連結",
+    "editTitle": "編輯連結",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "請輸入 URL",
+    "errorInvalidUrl": "請輸入有效的 URL",
+    "textLabel": "連結文字",
+    "textPlaceholder": "選填，留空則顯示 URL",
+    "selectedTextHint": "將以選取的文字作為連結",
+    "editTextHint": "請在編輯器中修改連結文字",
+    "update": "更新"
+  },
+  "audio": {
+    "uploadingRecording": "正在上傳錄音…",
+    "uploading": "上傳中…",
+    "stopRecording": "停止錄音",
+    "recordAudio": "錄音",
+    "savingRecording": "正在儲存錄音…",
+    "recording": "錄音中",
+    "secondsLeft": "剩 {{count}} 秒",
+    "stop": "停止"
+  },
+  "wordCount": {
+    "words_other": "{{formatted}} 字",
+    "characters_other": "{{formatted}} 個字元",
+    "tooLargeToSync": "，可能過大而無法同步，請拆成新筆記",
+    "veryLong": "，篇幅很長，編輯可能變慢或卡頓",
+    "gettingLong": "，篇幅漸長，較慢的裝置可能出現延遲",
+    "largeTableWarning": "大型表格（{{rows}} 列）會讓這篇筆記編輯變慢，建議拆分"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "沒有相符的筆記",
+    "create": "建立「{{query}}」"
+  },
+  "codeBlock": {
+    "copy": "複製",
+    "copied": "已複製",
+    "copyFailed": "失敗"
+  }
+}

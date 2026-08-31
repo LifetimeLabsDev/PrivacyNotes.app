@@ -1,0 +1,64 @@
+{
+  "upgrade": {
+    "header": "付一次，永久擁有",
+    "earlyAdopterBadge": "早鳥",
+    "oneTime": "一次買斷",
+    "subscriptionPitch": "免訂閱、免年費。付款一次，終身解鎖。",
+    "ctaUnlock": "解鎖全部功能",
+    "ctaOpening": "正在開啟結帳…",
+    "ctaSignUp": "註冊以解鎖",
+    "intro": {
+      "storage": "更大的上傳與更多空間是 Pro 功能。升級即可上傳 50 MB 檔案並獲得 500 MB 儲存空間。",
+      "folders": "資料夾是 Pro 功能。將筆記整理進巢狀資料夾，要多深就多深，讓每個專案各自分開。",
+      "lock": "鎖定筆記是 Pro 功能。升級即可保護任何筆記不被誤改。",
+      "protect": "以 PIN 碼保護筆記是 Pro 功能。升級即可把敏感筆記鎖在 PIN 碼之後。",
+      "history": "筆記歷史是 Pro 功能。升級即可保留每一次儲存的時間軸。",
+      "devices": "你已達到 2 部裝置的上限。升級即可使用無上限裝置。",
+      "zen": "Zen 模式是 Pro 功能。升級享受無干擾寫作。",
+      "theme": "進階佈景主題是 Pro 功能。升級解鎖所有色調。",
+      "callout": "完整的標註樣式是 Pro 功能。",
+      "totp": "2FA 驗證碼是 Pro 功能。在任何登入資訊中儲存驗證金鑰，就能在密碼旁看到不斷更新的驗證碼。金鑰本身在所有方案都會儲存並同步。",
+      "default": "一次升級，解鎖以下全部功能。單次付款。"
+    },
+    "features": {
+      "devices": "同步無上限裝置，支援所有平台",
+      "folders": "巢狀資料夾，依專案整理",
+      "lock": "鎖定並以 PIN 碼保護任何筆記",
+      "history": "完整筆記歷史，隨時還原",
+      "themes": "各種色調的進階佈景主題",
+      "zen": "Zen 模式，無干擾寫作",
+      "storage": "500 MB 儲存空間 + 50 MB 附件"
+    },
+    "comparisonBeta": "一次付 ${{earlyPrice}}。Obsidian Sync 每年收 $48，年年都要；Standard Notes 每年收 $90。早鳥價，在漲到 ${{proPrice}} 前先鎖定。",
+    "comparison": "一次付 ${{proPrice}}，永久擁有。Obsidian Sync 每年 $48、Standard Notes 每年 $90，而且年年都要付。"
+  },
+  "purchaseError": {
+    "store": "商店結帳未能完成，你並未被扣款。請稍後再試一次。",
+    "validate": "你的付款已成功，但啟用失敗。請重新啟動應用程式重試；若仍未解鎖，商店會在 3 天內自動退款。",
+    "alreadyOwned": "商店顯示你已擁有這個項目，但它屬於另一個帳號。請用購買當時使用的復原助憶詞登入。"
+  },
+  "checkout": {
+    "invalidTitle": "結帳連結無效",
+    "invalidBody": "請從應用程式內開啟結帳，我們才能將這筆購買綁定到你的帳號。",
+    "completeTitle": "付款完成",
+    "completeBody": "你可以關閉這個分頁並回到 PrivacyNotes，升級會自動解鎖。",
+    "openingTitle": "正在開啟安全結帳…",
+    "openingBody": "Paddle 結帳視窗應該會出現。如果沒有，可能是瀏覽器攔截了彈出視窗，請重新載入此頁面再試。"
+  },
+  "history": {
+    "title": "筆記歷史",
+    "subtitle": "每篇筆記最多 20 個版本，最舊的會自動清除。",
+    "empty": "還沒有歷史紀錄。下次編輯後版本就會開始累積，之後再回來看看。",
+    "selectPrompt": "選擇一個版本以預覽。",
+    "emptyBody": "（空白）",
+    "restore": "還原",
+    "restoring": "還原中…"
+  },
+  "donation": {
+    "eyebrow": "你解鎖了",
+    "intro": "<brand/> 是免費的，而且永遠免費。沒有廣告、沒有追蹤、不留電子郵件。如果它幫你思考、寫作或記住了什麼，歡迎支持開發：這能讓服務持續運轉，也養得起下一批功能。",
+    "proBenefits": "支持我們，也會在 Pro 權益推出後為你解鎖：無上限裝置、附件、加密雲端備份。",
+    "maybeLater": "之後再說",
+    "support": "支持 →"
+  }
+}

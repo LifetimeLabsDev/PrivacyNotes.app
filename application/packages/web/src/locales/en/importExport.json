@@ -1,0 +1,169 @@
+{
+  "shell": {
+    "importTitle": "Import your data",
+    "exportTitle": "Export your data",
+    "restoreTitle": "Restore your data",
+    "vaultTitle": "Import your passwords",
+    "tablistLabel": "Import, Export, Restore, or Passwords",
+    "tabImport": "Import",
+    "tabExport": "Export",
+    "tabRestore": "Restore",
+    "tabVault": "Passwords",
+    "working": "Working…"
+  },
+  "footer": {
+    "exportNote": "Exports run locally. Nothing is uploaded.",
+    "restoreNote": "Your file is read and decrypted locally.",
+    "importNote": "Everything is encrypted before it leaves your device to sync."
+  },
+  "importPick": {
+    "autoTagLabel": "Tag imported notes by source",
+    "autoTagDesc": "Google Keep notes get <keep>#google</keep>, Obsidian gets <obsidian>#obsidian</obsidian>, and so on.",
+    "guideAria": "Import guide for {{app}}",
+    "guideLabel": "Guide"
+  },
+  "folderImport": {
+    "tagLabel": "Also tag notes by folder",
+    "tagDesc": "Your folders are rebuilt either way. This adds each folder name as a tag too, handy if you also like filtering by tag."
+  },
+  "browserImport": {
+    "tagLabel": "Keep tags from your browser",
+    "tagDesc": "Firefox saves tags and an address-bar keyword with a bookmark. Both become tags here."
+  },
+  "sourceDesc": {
+    "googleKeep": "Google Takeout .zip (Keep folder) or a single .json note. Checklists import as native task lists.",
+    "appleNotes": "Export via the free Exporter app as Markdown, then drop the .zip here.",
+    "appleJournal": "Export from Journal on Mac or iPhone, compress the AppleJournalEntries folder, and drop the .zip. Entries import as journal entries with their photos, videos, voice memos, and locations.",
+    "evernote": "One .enex on its own, or several zipped together. Keeps formatting, tags, attachments, note links, and notebooks. Evernote leaves tasks out of .enex.",
+    "samsungNotes": "Export as Word (.docx) or Text (.txt). Zip multiple files for bulk import.",
+    "simplenote": "Export from Simplenote (Settings -> Tools -> Export Notes). Drop the .zip.",
+    "standardNotes": "Decrypted .zip or .txt backup from Standard Notes (File > Export > Decrypted).",
+    "obsidian": "Obsidian vault as .zip. Preserves tags, [[note links]], folder structure, inline #tags, and embedded images and files.",
+    "notesnook": "Notesnook export as .zip. Pick HTML when exporting to keep formatting, notebooks, tags, and attachments.",
+    "upnote": "In UpNote: Settings > Backup > Backup now, then zip everything in the backup folder. Keeps notebooks, tags, pins, note links, formatting, and attachments. Per-note exports from the phone apps work too - pick \"Export to HTML\".",
+    "markdownFolder": ".md or .txt files individually or as a .zip. A zipped folder keeps its subfolders and brings its images and attachments along.",
+    "markdownApp": "These notes are already Markdown files in a folder. Drop that folder in as a .zip and its subfolders, images, and #tags come with it.",
+    "browserBookmarks": "The bookmarks .html file from your browser’s \"Export bookmarks\", or the .zip Safari writes. Chrome, Firefox, Safari, Edge, Opera, Brave, and Vivaldi all hold the same file. Folders and dates come along.",
+    "bitwarden": "Unencrypted .json vault export from Bitwarden (Tools > Export vault > .json). Logins, cards, SSH keys, secure notes, and TOTP codes all come along.",
+    "browserPasswords": "The passwords .csv from Chrome, Edge, Brave, Opera, Vivaldi, Firefox, or Safari, or the .zip Safari writes. Each row becomes a login. Delete the file when you are done - it holds your passwords in plain text."
+  },
+  "vaultPick": {
+    "intro": "Import logins, credit cards, and SSH keys from another password manager."
+  },
+  "restorePick": {
+    "intro": "Restore a PrivacyNotes backup you exported earlier. Your file is read and decrypted locally.",
+    "fullBackupTitle": "Full backup (.zip)",
+    "fullBackupDesc": "Restore notes, journals, vault items, tasks, images, audio, and files. Everything is imported as new items - existing data is not overwritten.",
+    "encryptedBackupTitle": "Encrypted backup (.pnbackup, .pnbackupz)",
+    "encryptedBackupDesc": "Restore an encrypted backup with your phrase key. A .pnbackupz brings everything back, files included; a .pnbackup carries text content and metadata only. You must be signed in with the same account that created it."
+  },
+  "encryptedBackupLabel": "Encrypted backup",
+  "status": {
+    "readingFile": "Reading file…",
+    "decryptingBackup": "Decrypting backup...",
+    "writingNotes": "Writing notes to your local library…",
+    "importingBlobs": "Importing images and attachments...",
+    "restoringBlobs": "Restoring images and files..."
+  },
+  "errors": {
+    "genericParse": "Something went wrong.",
+    "decryptionFailed": "Decryption failed. Wrong phrase or corrupted file.",
+    "blobImportFailed": "Your notes imported, but their images and files did not: {{detail}} Nothing in the file you picked was changed, so you can delete the imported notes and run the import again."
+  },
+  "preview": {
+    "sourceLabel": "Source",
+    "uniqueTags": "Unique tags",
+    "empty": "Empty",
+    "untagged": "Untagged",
+    "items": "Items",
+    "previewLabel": "Preview",
+    "andMore": "… and {{count}} more",
+    "headsUpLabel": "Heads up:",
+    "duplicateWarning": "importing adds these as new notes. If you run this twice, you’ll get duplicates. There’s no automatic dedupe yet.",
+    "duplicateSkipNote": "bookmarks you have already saved are skipped, so running this twice will not duplicate anything.",
+    "quotaExceeded": "<strong>Storage too low to import.</strong> Estimated {{needed}} needed, {{available}} available. Free up space or upgrade before importing.",
+    "quotaWarning": "Heads up: this import will use roughly {{needed}} of your {{available}} remaining storage.",
+    "oversizeAttachments_one": "1 file is larger than the {{limit}} per-file limit on your plan. It imports to this device, but it will not sync to your other devices until you upgrade.",
+    "oversizeAttachments_other": "{{count}} files are larger than the {{limit}} per-file limit on your plan. They import to this device, but they will not sync to your other devices until you upgrade."
+  },
+  "counts": {
+    "note_one": "note",
+    "note_other": "notes",
+    "journal_one": "journal entry",
+    "journal_other": "journal entries",
+    "login_one": "login",
+    "login_other": "logins",
+    "card_one": "card",
+    "card_other": "cards",
+    "sshKey_one": "SSH key",
+    "sshKey_other": "SSH keys",
+    "zeroItems": "0 items",
+    "importButton": "Import {{counts}}"
+  },
+  "errorPhase": {
+    "heading": "{{importer}}: import failed"
+  },
+  "export": {
+    "intro": "Your data is yours. Export any time, for free.",
+    "fullBackupHeading": "Full backup",
+    "portableHeading": "Portable export",
+    "vaultOnlyHeading": "Vault only",
+    "zipBackupTitle": "PrivacyNotes backup (.zip)",
+    "zipBackupDesc": "Everything: notes, journals, vault items, tasks, images, audio, and files. Use this for a complete account backup or to move to a new device. The files inside are not encrypted, so store the zip somewhere safe.",
+    "encryptedZipBackupTitle": "Encrypted full backup (.pnbackupz)",
+    "encryptedZipBackupDesc": "Everything the zip backup holds - notes, vault items, images, audio, and files - sealed with your phrase key. Restores with your phrase on any device. Safe to store anywhere.",
+    "encryptedBackupTitle": "Encrypted backup (.pnbackup)",
+    "encryptedBackupDesc": "All text content and metadata, encrypted with your phrase key. No images or files. Safe to store anywhere - unreadable without your phrase.",
+    "htmlArchiveTitle": "HTML archive (.zip)",
+    "htmlArchiveDesc": "One printable HTML page per note. Good for reading offline or archiving, not for restoring.",
+    "textBackupTitle": "Text backup (.json)",
+    "textBackupDesc": "All text content and metadata as plain JSON. No images or files. Store somewhere you trust - this is not encrypted.",
+    "vaultExportTitle": "Vault export (.json)",
+    "vaultExportDesc": "Logins, cards, and SSH keys in Bitwarden-compatible format. Importable by most password managers. Plaintext - handle with care.",
+    "bookmarksOnlyHeading": "Bookmarks only",
+    "bookmarksExportTitle": "Bookmarks file (.html)",
+    "bookmarksExportDesc": "The standard bookmarks file every browser reads. Import it into Chrome, Firefox, Safari, or Edge with your folders intact."
+  },
+  "exportProgress": {
+    "failedTitle": "Export failed",
+    "completeTitle": "Export complete",
+    "exportingTitle": "Exporting backup...",
+    "preparing": "Preparing...",
+    "exporting": "Exporting...",
+    "imagesProgress": "Exporting images... {{done}} of {{total}}",
+    "filesProgress": "Exporting files... {{done}} of {{total}}",
+    "building": "Building backup...",
+    "compressing": "Compressing..."
+  },
+  "upload": {
+    "completeTitle": "Upload complete",
+    "failedTitle": "Upload failed",
+    "partialTitle": "{{done}} uploaded, {{failed}} failed",
+    "uploadingTitle_one": "Uploading {{count}} file",
+    "uploadingTitle_other": "Uploading {{count}} files",
+    "statusDone": "Done",
+    "statusFailed": "Failed",
+    "errorStorageFull": "Storage full - free up space or add storage to upload this file.",
+    "errorStorageFullKept": "Doesn't fit in your storage - kept on this device. It will sync once space frees.",
+    "statusUploading": "Uploading...",
+    "statusWaiting": "Waiting",
+    "summaryDone": "{{count}} done",
+    "summaryUploading": "{{count}} uploading",
+    "summaryFailed": "{{count}} failed",
+    "typesHint": "Images, docs, audio, video, zip. Max {{limit}} MB / file.",
+    "proPitch": "Pro raises the limit to 50 MB per file.",
+    "proPitchCta": "Upgrade",
+    "storagePitch": "A storage plan raises it to 100 MB per file.",
+    "storagePitchCta": "Add storage"
+  },
+  "decryptErrors": {
+    "tooSmall": "This file is empty or incomplete ({{size}} bytes), so there is nothing to restore. Export the backup again and check that the saved file has a real size before importing it.",
+    "notThisAccount": "This backup could not be unlocked. A .pnbackup only opens in the account that created it, so this is usually a backup from a different account - to move notes between accounts, export a full backup (.zip) instead. If it is the right account, the file was damaged or saved incompletely."
+  },
+  "exportErrors": {
+    "generic": "The export could not be saved. Please try again, or pick a different folder."
+  },
+  "saveErrors": {
+    "shortWrite": "Only {{written}} of {{expected}} bytes were saved, so the file is incomplete. Try again and save to your device's own storage rather than a cloud folder."
+  }
+}

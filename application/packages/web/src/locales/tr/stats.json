@@ -1,0 +1,116 @@
+{
+  "title": "İstatistikler",
+  "tabs": {
+    "writing": "Yazma",
+    "wellness": "Sağlık"
+  },
+  "writing": {
+    "notes": "Notlar",
+    "words": "Kelimeler",
+    "tags": "Etiketler",
+    "currentStreak": "Mevcut seri",
+    "longestStreak": "En uzun seri",
+    "streakValue": "{{count}} gün",
+    "timeRangeAria": "Etkinlik zaman aralığı",
+    "modeActivity": "Etkinlik",
+    "modeMood": "Ruh hali",
+    "tooltipMood": "{{date}}: ruh hali {{mood}}/10",
+    "tooltipNoMood": "{{date}}: ruh hali kaydı yok",
+    "tooltipEdits_one": "{{date}}: {{count}} düzenleme",
+    "tooltipEdits_other": "{{date}}: {{count}} düzenleme",
+    "longestNote": "En uzun not: <name>{{title}}</name> ({{count}} kelime)"
+  },
+  "range": {
+    "7d": "7 gün",
+    "14d": "14 gün",
+    "30d": "30 gün",
+    "3mo": "3 ay",
+    "6mo": "6 ay",
+    "12mo": "12 ay"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Tümü",
+      "sleepActivity": "Uyku ve aktivite",
+      "medication": "İlaç",
+      "patterns": "Örüntüler"
+    },
+    "empty": {
+      "title": "Henüz sağlık verisi yok.",
+      "hint": "Bir günlük kaydı açıp ruh halinizi kaydederek başlayın."
+    },
+    "overview": {
+      "daysTracked": "Takip edilen gün",
+      "avgMood": "Ort. ruh hali",
+      "avgSleep": "Ort. uyku",
+      "medAdherence": "İlaç uyumu",
+      "moodTrend": "Ruh hali eğilimi",
+      "moodByDayOfWeek": "Haftanın günlerine göre ruh hali",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Dışa aktar",
+      "allTime": "Tüm zamanlar",
+      "last90Days": "Son 90 gün",
+      "last30Days": "Son 30 gün",
+      "last7Days": "Son 7 gün",
+      "downloadJSON": "JSON indir",
+      "doctorPDF": "Doktor PDF'i",
+      "copyAIPrompt": "Yapay zekâ istemini kopyala",
+      "copied": "Kopyalandı!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Uyku kalitesi",
+      "activity": "Aktivite",
+      "avgSleepPerNight": "Gecelik ortalama uyku"
+    },
+    "medication": {
+      "adherence": "Uyum",
+      "empty": {
+        "title": "Henüz ilaç verisi yok.",
+        "hint": "Takip ayarlarından bir ilaç ekleyin, sonra her gün kaydedin."
+      },
+      "dosageTimeline": "Doz zaman çizelgesi",
+      "started": "{{dosage}} ile başlandı",
+      "changedTo": "{{dosage}} olarak değiştirildi"
+    },
+    "patterns": {
+      "topEmotions": "En sık duygular",
+      "insights": "İçgörüler",
+      "proBadge": "PRO",
+      "insightsLocked_one": "{{count}} içgörü bulundu. Görmek için Pro'ya yükseltin",
+      "insightsLocked_other": "{{count}} içgörü bulundu. Görmek için Pro'ya yükseltin",
+      "weekInReview": "Haftanın özeti",
+      "weekInReviewLocked": "Haftalık sağlık özetinizi görmek için Pro'ya yükseltin"
+    },
+    "week": {
+      "range": "{{start}} - {{end}}",
+      "daysLogged": "7 günün {{count}} günü kaydedildi",
+      "avgMood": "Ort. ruh hali",
+      "moodDelta": "{{delta}} (geçen haftaya göre)",
+      "avgSleep": "Ort. uyku",
+      "medsTaken": "Alınan ilaçlar",
+      "topActivity": "En sık aktivite",
+      "topEmotions": "En sık duygular",
+      "reflection": "Değerlendirme",
+      "reflectionPlaceholder": "Bu hafta genel olarak nasıl geçti? Aklınızda kalanları yazın..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Kilometre taşı açıldı"
+  },
+  "milestone": {
+    "notes_one": "{{count}} not yazıldı",
+    "notes_other": "{{count}} not yazıldı",
+    "streak": "{{count}} günlük yazma serisi",
+    "words_one": "{{formatted}} kelime yazıldı",
+    "words_other": "{{formatted}} kelime yazıldı",
+    "age30": "PrivacyNotes ile 30 gün",
+    "age365": "PrivacyNotes ile 1 yıl",
+    "age730": "PrivacyNotes ile 2 yıl",
+    "age1825": "PrivacyNotes ile 5 yıl",
+    "ageDefault": "{{count}} gündür birlikteyiz"
+  }
+}

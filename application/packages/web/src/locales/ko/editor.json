@@ -1,0 +1,172 @@
+{
+  "placeholder": "쓰기 시작하세요…",
+  "toolbar": {
+    "bold": "굵게",
+    "italic": "기울임",
+    "underline": "밑줄",
+    "heading": "제목",
+    "taskList": "할 일 목록",
+    "bulletList": "글머리 기호 목록",
+    "linkMenu": "링크",
+    "noteLinkMenu": "노트 링크",
+    "numberedList": "번호 목록",
+    "textColor": "글자 색",
+    "textColorApply": "글자 색: {{color}}",
+    "pickColor": "글자 색 선택",
+    "table": "표",
+    "quote": "인용",
+    "callout": "콜아웃",
+    "inlineCode": "인라인 코드",
+    "strikethrough": "취소선",
+    "codeBlock": "코드 블록",
+    "divider": "구분선",
+    "moreFormatting": "서식 더 보기",
+    "fewerFormatting": "서식 옵션 접기",
+    "image": "이미지",
+    "attachFile": "파일 첨부",
+    "insert": "삽입",
+    "highlight": "형광펜",
+    "highlightApply": "형광펜: {{color}}",
+    "pickHighlight": "형광펜 색 선택",
+    "superscript": "위 첨자",
+    "subscript": "아래 첨자",
+    "math": "수학 수식",
+    "blockMath": "블록 수식",
+    "align": "정렬",
+    "font": "글꼴"
+  },
+  "align": {
+    "left": "왼쪽 정렬",
+    "center": "가운데 정렬",
+    "right": "오른쪽 정렬",
+    "justify": "양쪽 정렬"
+  },
+  "font": {
+    "families": {
+      "sans": "고딕",
+      "serif": "명조",
+      "mono": "고정폭"
+    },
+    "sizes": {
+      "small": "작게",
+      "large": "크게",
+      "huge": "아주 크게"
+    },
+    "reset": "글꼴 초기화"
+  },
+  "heading": {
+    "normalText": "본문",
+    "level": "제목 {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "콜아웃 삽입",
+    "remove": "콜아웃 제거",
+    "types": {
+      "info": "정보",
+      "success": "성공",
+      "warning": "경고",
+      "tip": "팁",
+      "danger": "위험",
+      "question": "질문",
+      "quote": "인용",
+      "example": "예시",
+      "bug": "버그",
+      "note": "노트",
+      "abstract": "요약",
+      "failure": "실패"
+    }
+  },
+  "color": {
+    "remove": "색상 제거",
+    "removeHighlight": "형광펜 제거",
+    "names": {
+      "gray": "회색",
+      "red": "빨강",
+      "orange": "주황",
+      "yellow": "노랑",
+      "green": "초록",
+      "teal": "청록",
+      "blue": "파랑",
+      "purple": "보라",
+      "pink": "분홍"
+    }
+  },
+  "insertGroup": {
+    "insert": "삽입",
+    "blocks": "블록",
+    "notation": "표기"
+  },
+  "table": {
+    "addRowAbove": "위에 행 추가",
+    "addRowBelow": "아래에 행 추가",
+    "addColumnLeft": "왼쪽에 열 추가",
+    "addColumnRight": "오른쪽에 열 추가",
+    "deleteRow": "행 삭제",
+    "deleteColumn": "열 삭제",
+    "deleteTable": "표 삭제"
+  },
+  "find": {
+    "placeholder": "노트에서 찾기",
+    "label": "노트에서 찾기",
+    "previous": "이전 결과 (Shift+Enter)",
+    "previousTitle": "이전 (Shift+Enter)",
+    "next": "다음 결과 (Enter)",
+    "nextTitle": "다음 (Enter)",
+    "close": "찾기 닫기",
+    "closeTitle": "닫기 (⌘F)"
+  },
+  "outline": {
+    "show": "개요 표시",
+    "showTitle": "개요 (Cmd/Ctrl+Shift+O)",
+    "title": "개요",
+    "ariaLabel": "노트 개요",
+    "hide": "개요 숨기기",
+    "hideTitle": "개요 숨기기 (Esc)"
+  },
+  "topRow": {
+    "add": "맨 위에 줄 추가"
+  },
+  "link": {
+    "popoverLabel": "링크 추가",
+    "placeholder": "URL을 붙여넣거나 입력하세요",
+    "apply": "적용",
+    "addTitle": "링크 추가",
+    "editTitle": "링크 편집",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "URL을 입력하세요",
+    "errorInvalidUrl": "올바른 URL을 입력하세요",
+    "textLabel": "링크 텍스트",
+    "textPlaceholder": "선택 사항, 비우면 URL이 표시돼요",
+    "selectedTextHint": "선택한 텍스트가 링크로 사용돼요",
+    "editTextHint": "링크 텍스트는 편집기에서 수정하세요",
+    "update": "업데이트"
+  },
+  "audio": {
+    "uploadingRecording": "녹음 업로드 중...",
+    "uploading": "업로드 중...",
+    "stopRecording": "녹음 중지",
+    "recordAudio": "오디오 녹음",
+    "savingRecording": "녹음 저장 중...",
+    "recording": "녹음 중",
+    "secondsLeft": "{{count}}초 남음",
+    "stop": "중지"
+  },
+  "wordCount": {
+    "words_other": "{{formatted}} 단어",
+    "characters_other": "{{formatted}}자",
+    "tooLargeToSync": ", 동기화하기에 너무 클 수 있어요. 새 노트로 나누세요",
+    "veryLong": ", 매우 길어요. 편집이 느려지거나 끊길 수 있어요",
+    "gettingLong": ", 길어지고 있어요. 느린 기기에서는 버벅일 수 있어요",
+    "largeTableWarning": "큰 표({{rows}}행)는 이 노트의 편집을 느리게 만들 수 있어요. 나누는 것을 고려하세요"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "일치하는 노트 없음",
+    "create": "\"{{query}}\" 만들기"
+  },
+  "codeBlock": {
+    "copy": "복사",
+    "copied": "복사됨",
+    "copyFailed": "실패"
+  }
+}

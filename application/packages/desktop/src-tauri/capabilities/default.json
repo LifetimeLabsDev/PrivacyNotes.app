@@ -1,0 +1,47 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Default permissions for PrivacyNotes. The dialog and fs grants exist for the Markdown folder pillar, which picks a file or folder and then scans, reads, writes and renames plaintext notes inside it; every filesystem grant is scoped to $HOME, which the picker widens at runtime to whatever the user actually chose, and which a double-clicked file widens through take_pending_opens. `opener:allow-open-path` was granted here until 2026-08-14 for the row menu's Reveal in folder / Open in default app; both were removed as dead controls, so the grant went with them - nothing outside `openUrl` (covered by opener:default) uses the opener plugin now, and an unused path grant is ACL surface for no feature.",
+  "windows": ["main", "about"],
+  "permissions": [
+    "core:default",
+    "core:event:default",
+    "core:window:allow-close",
+    "deep-link:default",
+    "opener:default",
+    "dialog:allow-save",
+    "dialog:allow-open",
+    {
+      "identifier": "fs:allow-read-dir",
+      "allow": [{ "path": "$HOME/**" }]
+    },
+    {
+      "identifier": "fs:allow-read-text-file",
+      "allow": [{ "path": "$HOME/**" }]
+    },
+    {
+      "identifier": "fs:allow-write-text-file",
+      "allow": [{ "path": "$HOME/**" }]
+    },
+    {
+      "identifier": "fs:allow-write-file",
+      "allow": [{ "path": "$HOME/**" }]
+    },
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [{ "path": "$HOME/**" }]
+    },
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": [{ "path": "$HOME/**" }]
+    },
+    {
+      "identifier": "fs:allow-rename",
+      "allow": [{ "path": "$HOME/**" }]
+    },
+    {
+      "identifier": "fs:allow-stat",
+      "allow": [{ "path": "$HOME/**" }]
+    }
+  ]
+}

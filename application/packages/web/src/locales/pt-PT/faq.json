@@ -1,0 +1,699 @@
+{
+  "page": {
+    "title": "Ajuda e FAQ",
+    "sub": "Respostas e guias passo a passo: segurança, sincronização, preços e a mudança a partir de outras apps.",
+    "metaTitle": "Ajuda e FAQ - PrivacyNotes",
+    "metaDescription": "O centro de ajuda do PrivacyNotes: encriptação, frase de recuperação, sincronização, preços e guias de exportação passo a passo para sair de outra app.",
+    "guides": "Guias de importação",
+    "guidesLead": "Vens de outra app? Exportar e importar, passo a passo.",
+    "searchLabel": "Procurar na FAQ",
+    "searchPlaceholder": "Procurar: frase perdida, exportar, dispositivos...",
+    "topics": "Temas",
+    "countAll": "{{total}} respostas em {{groups}} temas",
+    "countMatch": "{{shown}} de {{total}} respostas correspondem",
+    "noMatches": "Nada encontrado para “{{q}}”. Tenta outras palavras.",
+    "clearSearch": "Limpar a pesquisa",
+    "searchAll": "Procurar “{{q}}” em todas as respostas",
+    "copyLink": "Copiar o link desta resposta",
+    "copied": "Link copiado",
+    "feedbackPrompt": "A tua pergunta não foi respondida aqui? Fala connosco:",
+    "sourcesTitle": "Lê o código",
+    "sourcesNote": "O nosso código e a nossa documentação estão no GitHub, em inglês.",
+    "askTitle": "Ainda com dúvidas? Pergunta ao teu agente de IA.",
+    "askMini": "Pergunta antes ao teu agente de IA",
+    "askBody": "Tens uma resposta em segundos em vez de esperares pela nossa. O teu assistente lê as {{total}} respostas e todos os guias de importação de uma só vez, por isso consegue combiná-los, aprofundar a tua pergunta e explicá-la pelas tuas palavras. Nós não vemos nada disso, porque não temos chatbot.",
+    "askStep1": "Copia o prompt.",
+    "askStep2": "Cola-o no ChatGPT, Claude, Gemini ou noutro assistente de IA qualquer.",
+    "askStep3": "Faz a tua pergunta, na tua própria língua.",
+    "askStep4": "Deixa essa conversa aberta. Da próxima vez, pergunta logo.",
+    "askCopy": "Copiar prompt de IA",
+    "askCopyShort": "Copiar",
+    "askCopied": "Copiado",
+    "askShow": "Mostrar prompt de IA",
+    "askWarn": "Nunca coles a tua frase de recuperação, o teu PIN ou uma nota numa IA.",
+    "changelogLabel": "Changelog",
+    "languageLabel": "Idioma",
+    "homeLabel": "Início",
+    "appLabel": "App",
+    "related": "Perguntas relacionadas",
+    "browseAll": "Ver todas as perguntas",
+    "mdShowcase": "Vê em ação",
+    "mdDemoHeadings": "Títulos",
+    "mdDemoInline": "Formatação em linha",
+    "mdDemoTasks": "Lista de tarefas",
+    "mdDemoLists": "Listas aninhadas",
+    "mdDemoCallouts": "Avisos",
+    "mdDemoTable": "Tabela",
+    "mdDemoCode": "Bloco de código",
+    "mdDemoScripts": "Sobrescrito, subscrito, sublinhado",
+    "mdDemoMath": "Matemática (KaTeX)",
+    "mdDemoQuote": "Citação e note-link",
+    "mdDemoDivider": "Separador",
+    "hkShowcase": "A lista completa",
+    "hkLegend": "No Windows e no Linux, ⌘ é Ctrl e ⌥ é Alt."
+  },
+  "groups": {
+    "gettingStarted": "Primeiros passos",
+    "securityPrivacy": "Segurança e privacidade",
+    "accountRecovery": "Conta e recuperação",
+    "syncDevices": "Sincronização e dispositivos",
+    "yourData": "Os teus dados",
+    "pricingPro": "Preços e Pro",
+    "appsPlatforms": "Apps e plataformas"
+  },
+  "entries": {
+    "try-before-signup": {
+      "q": "Posso experimentar o PrivacyNotes sem criar uma conta?",
+      "a": [
+        "Sim. A demo em [try.privacynotes.app](https://try.privacynotes.app) é a app completa com conteúdo de exemplo: sem registo, sem e-mail, e nada do que escreves é guardado. Corre inteiramente no teu navegador e nunca envia nada para os nossos servidores.",
+        "Fechar o separador apaga tudo, e é mesmo essa a ideia. Quando quiseres guardar as tuas notas, cria um cofre a sério em [use.privacynotes.app](https://use.privacynotes.app) e começa de novo: copia antes o que quiseres levar da demo."
+      ]
+    },
+    "need-email": {
+      "q": "Preciso de um e-mail para me registar?",
+      "a": [
+        "Não. Um cofre novo é uma frase de recuperação de 12 palavras acabada de gerar, e mais nada. Sem e-mail, sem nome de utilizador, sem telefone, sem passo de verificação. Se inicias sessão com a frase, não te conseguíamos escrever nem que quiséssemos, porque nunca ficamos a saber quem és.",
+        "Preferes o caminho conhecido? Iniciar sessão com Google, Apple ou GitHub também funciona. Essa via revela-nos inevitavelmente o e-mail associado a essa conta, mas as tuas notas continuam encriptadas ponta a ponta em qualquer dos casos, e por baixo continuas a receber uma frase."
+      ]
+    },
+    "import-from-other-apps": {
+      "q": "Como trago as minhas notas de outra app?",
+      "a": [
+        "Abre Definições > Import & Export e escolhe a origem. Há importadores dedicados para Apple Notes, Obsidian, Standard Notes, Google Keep, Simplenote, Samsung Notes e Bitwarden (os logins, os cartões e as notas seguras vão parar ao Cofre), além de um importador de Markdown genérico para qualquer pasta de ficheiros .md.",
+        "As importações correm inteiramente no teu dispositivo: os teus ficheiros exportados são lidos, encriptados e guardados localmente, nada é enviado para processamento. Cada nota importada recebe uma etiqueta com a origem, para poderes rever o lote depois, e as listas de verificação do Google Keep passam até a listas de tarefas nativas."
+      ]
+    },
+    "markdown-support": {
+      "q": "O editor entende Markdown?",
+      "a": [
+        "Sim. Escreve Markdown e a formatação aparece na hora: # títulos, **negrito**, listas, - [ ] caixas de tarefa, citações e avisos. As notas também exportam como Markdown limpo, por isso o que escreves continua portátil.",
+        "Também podes ligar notas umas às outras: escreve [[ e um preenchimento automático sugere-te as notas que já tens. Um note-link abre o destino com um clique, e o painel de estrutura mais a procura dentro da nota mantêm os documentos longos navegáveis."
+      ]
+    },
+    "what-can-you-see": {
+      "q": "O que é que o PrivacyNotes consegue ver das minhas notas?",
+      "a": [
+        "Nada legível. As notas, os títulos, as etiquetas e os anexos são encriptados no teu dispositivo antes de sincronizarem. O servidor armazena texto cifrado que não consegue decifrar, e do nosso lado não existe chave nenhuma que mude isso.",
+        "O que conseguimos ver é o mínimo para operar o serviço: quanto armazenamento encriptado ocupas, quantos dispositivos tens associados e as horas de sincronização. Se inicias sessão com uma frase em vez de Google, Apple ou GitHub, nem o teu e-mail conhecemos."
+      ]
+    },
+    "phrase-vs-password": {
+      "q": "Porquê uma frase de recuperação em vez de utilizador e palavra-passe?",
+      "a": [
+        "Ao início parece ao contrário, mas uma única frase de recuperação é a construção mais forte. Com utilizador e palavra-passe, o utilizador não é segredo (aparece em todas as fugas de dados), por isso toda a segurança assenta na palavra-passe - e as palavras-passe escolhidas por humanos rondam, em média, os 30 a 40 bits de entropia. A tua frase de 12 palavras são 128 bits garantidos, gerados pelo teu dispositivo, nunca escolhidos por um humano e nunca reaproveitados de outro site.",
+        "Do nosso lado também não há nada a perder. Um início de sessão com palavra-passe significa que o servidor guarda pelo menos um hash da palavra-passe, que pode fugir, ser quebrado ou cair em phishing. A tua frase nunca sai do teu dispositivo: deriva as tuas chaves de encriptação localmente, e o servidor só vê dados encriptados. Não há hash para roubar nem fluxo de reposição de palavra-passe de que um atacante possa abusar.",
+        "Se escrever 12 palavras te parece trabalhoso: podes guardar a frase no teu gestor de palavras-passe com um toque (Definições > Segurança > A tua frase), e iniciar sessão passa a ser como em qualquer outro sítio. Preferes o caminho conhecido? Iniciar sessão com Google, Apple ou GitHub também funciona, e por baixo continuas a receber uma frase."
+      ]
+    },
+    "threat-model-levels": {
+      "q": "Posso escolher o meu próprio equilíbrio entre conveniência e privacidade?",
+      "a": [
+        "Sim, de propósito. Nem toda a gente se defende das mesmas ameaças, por isso o modelo de conta é uma escada, e não um dogma único. Em todos os degraus as tuas notas continuam encriptadas ponta a ponta; o que muda é quem guarda a chave e o que sabemos sobre ti.",
+        "A ponta conveniente: inicia sessão com Google, Apple ou GitHub e escolhe \"Mantém tudo simples e prático\" quando te perguntarem. Guardamos a tua frase de recuperação por ti, encriptada em repouso no nosso servidor, por isso qualquer dispositivo inicia sessão só com essa conta e não há nada para guardar nem perder. Em troca, conhecemos o e-mail por trás dessa conta e somos nós a guardar a tua chave, em vez de ti. Se a tua ameaça realista é perderes as tuas próprias credenciais, e não um ataque dirigido, este é o degrau certo.",
+        "O meio: inicia sessão com Google, Apple ou GitHub, mas escolhe \"Máxima segurança e privacidade\". A tua frase nunca toca nos nossos servidores e a encriptação é totalmente de zero conhecimento; os dispositivos novos precisam da frase ou de uma leitura de QR a partir de um dispositivo com sessão já iniciada. Continuamos, por força, a conhecer o e-mail por trás dessa conta, mas não conseguiríamos ler uma única nota, nem sob coação.",
+        "A ponta privada: dispensa esses inícios de sessão por completo e usa apenas a frase de 12 palavras. Sem e-mail, sem nome, sem identidade e, combinada com uma [compra anónima do Pro](/pt/help/buy-pro-anonymously/), nem o pagamento deixa o teu nome em lado nenhum. Em troca, a custódia da chave é toda tua: perdes a frase sem nenhum dispositivo com sessão iniciada e ninguém te consegue ajudar.",
+        "Não ficas preso ao degrau que escolheste. Em Definições > Segurança > A tua frase, os dois modos aparecem lado a lado com o que cada um custa, e podes mudar em qualquer direção quando quiseres. Passar para a autocustódia apaga a nossa cópia e pede-te primeiro que voltes a escrever três das tuas doze palavras, porque quem carrega ali é justamente quem nunca as apontou. Voltar atrás envia a frase outra vez e exige uma escolha explícita. Ambas as direções são assinadas com a chave da tua conta, por isso uma sessão roubada não muda o teu modo. E cada degrau aceita as camadas locais por cima: bloqueio por PIN, desbloqueio biométrico e proteção por nota."
+      ]
+    },
+    "twelve-word-phrase": {
+      "q": "Uma frase de 12 palavras é suficientemente segura? Porque não 24, como nas carteiras Bitcoin?",
+      "a": [
+        "Sim, 12 palavras chegam. Uma frase BIP-39 de 12 palavras codifica 128 bits de entropia. Quebrar 128 bits por força bruta não é um problema de \"precisamos de um computador maior\", é um problema de \"precisamos de mais energia do que a humanidade produz\". Não existe ataque realista que quebre 128 bits mas falhe nos 256.",
+        "A comparação com o Bitcoin mostra justamente porque é que 24 palavras são sobretudo marketing: as chaves do Bitcoin vivem na curva secp256k1, que por si só oferece apenas cerca de 128 bits de segurança. Uma frase de 24 palavras injeta 256 bits de entropia numa fechadura que continua a abrir-se com cerca de 128 bits de trabalho. É também por isso que muitas carteiras conhecidas continuam a usar 12 palavras por predefinição.",
+        "O PrivacyNotes visa o mesmo nível de 128 bits de ponta a ponta: a tua frase passa por uma função de derivação de chave, e a encriptação que ela protege (XChaCha20-Poly1305) está calibrada na mesma medida. Passar para 24 palavras duplicaria o que anotas e escreves sem qualquer ganho prático de segurança, por isso ficamos nas 12.",
+        "O que conta é onde guardas a frase, não de quantas palavras é feita. Guarda-a num gestor de palavras-passe, não a escrevas em mais lado nenhum, e 12 palavras vão sobreviver a todos nós."
+      ]
+    },
+    "guess-phrase": {
+      "q": "Se alguém adivinhar as minhas 12 palavras, consegue entrar na minha conta?",
+      "a": [
+        "Resposta curta: sim. A tua frase é a chave, por isso quem a tiver consegue iniciar sessão, tal como quem tiver a chave da tua casa consegue abrir a porta. Isso é de propósito: é a única chave mestra das tuas notas, e nada mais fraco fica à frente dela. Portanto, a pergunta a sério não é se ter a frase dá acesso (dá), mas se alguém a conseguiria adivinhar - e aí a resposta é não, com nenhum computador que exista ou que se consiga prever.",
+        "Eis a escala. Uma frase de 12 palavras é uma entre 2^128 possibilidades: cerca de 340 sextiliões, um número de 39 dígitos (3,4 x 10^38). A probabilidade de adivinhares a tua à primeira é de 1 em 340 sextiliões, uma probabilidade mais remota do que ganhar quatro vezes seguidas um prémio de lotaria de 1 em 300 milhões. Tratá-lo como uma busca em vez de um golpe de sorte também não ajuda: mesmo a um trilião de tentativas por segundo (10^18, muito além do que qualquer hardware real consegue, estados-nação incluídos), percorrê-las todas levaria uns 10 biliões de anos, quase 800 vezes a idade atual do universo. E essa é a versão de fantasia, porque cada tentativa a sério tem de passar por um passo de derivação de chave deliberadamente lento, e qualquer ataque online tem de atravessar os nossos servidores, o que torna o adivinhar verdadeiro mais lento em muitas mais ordens de grandeza. O esquema também não é novidade: a mesma construção de 128 bits protege carteiras Bitcoin há mais de uma década, e nunca ninguém adivinhou uma.",
+        "É tentador imaginar a frase como uma palavra-passe, que se reforça misturando maiúsculas, números e símbolos. Uma frase de recuperação não funciona assim, e nunca deves tentar montar ou editar uma à mão. O teu dispositivo gera 128 bits de aleatoriedade criptograficamente segura e codifica-os em 12 palavras de uma lista pública fixa de 2048 palavras: essa aleatoriedade é toda a força. A última palavra até carrega uma soma de verificação integrada, por isso uma frase mal escrita ou inventada é rejeitada logo à partida. A ordem das palavras importa, as maiúsculas não (normalizamo-las quando inicias sessão), e acrescentar símbolos só tornaria a frase inválida. Escreve as palavras exatamente como te foram entregues."
+      ]
+    },
+    "why-no-2fa": {
+      "q": "Porque é que não existe autenticação de dois fatores (2FA)?",
+      "a": [
+        "Porque é uma escolha deliberada, não um esquecimento. A 2FA que conheces, um código por SMS ou uma app autenticadora, existe para escorar palavras-passe fracas escolhidas por humanos, e assenta num segredo partilhado e num caminho de recuperação guardados num servidor. É exatamente essa a superfície de ataque que o modelo de frase elimina: o teu dispositivo prova que tem a chave assinando um desafio, por isso os nossos servidores só recebem uma chave pública e uma assinatura, nunca a frase e nunca um hash de palavra-passe. Aparafusar um código por cima reintroduziria a maquinaria do lado do servidor que este design existe para evitar, sem acrescentar nada contra o adivinhar, porque 128 bits já fecham essa porta.",
+        "O que aqui te protege é local, e está em todos os planos: o bloqueio da app (PIN) e o desbloqueio biométrico ficam à frente de um dispositivo que outra pessoa apanhe. Os riscos que vale a pena defender são o phishing e uma frase espreitada por cima do ombro, não o adivinhar. Guarda por isso a frase num gestor de palavras-passe e não a escrevas em lado nenhum além da app.",
+        "Fora isso, a frase é a chave, por isso faz-lhe backup no dia em que criares a conta: guarda-a num gestor de palavras-passe de confiança, ou imprime-a ou escreve-a à mão e guarda essa cópia num sítio seguro. Nunca a coles em nada que não seja a própria app."
+      ]
+    },
+    "bip39-wordlist": {
+      "q": "Usam a mesma lista de palavras das carteiras Bitcoin (BIP-39)?",
+      "a": [
+        "Sim, a lista BIP-39 padrão (em inglês): 2048 palavras, exatamente a mesma lista que as carteiras Bitcoin usam. Geramos as frases com a [@scure/bip39](https://github.com/paulmillr/scure-bip39), uma biblioteca open source auditada. Nada de listas próprias nem de criptografia caseira.",
+        "A lista foi desenhada para se escrever à mão: as quatro primeiras letras de cada palavra são únicas, por isso uma palavra borrada ou abreviada continua inequívoca, e as palavras parecidas foram excluídas de propósito.",
+        "Por ser a lista padrão, podes conferir a tua frase em qualquer referência BIP-39 pública, e o nosso código de encriptação é [open source](https://github.com/LifetimeLabsDev/PrivacyNotes.app), por isso podes rever tu mesmo a implementação."
+      ]
+    },
+    "search-local": {
+      "q": "Procurar nas minhas notas envia alguma coisa para os vossos servidores?",
+      "a": [
+        "Não. A procura consulta um índice de texto integral construído e guardado no teu dispositivo. As pesquisas nunca saem dele, os resultados aparecem mesmo sem ligação nenhuma, e nada sobre o que procuras é alguma vez transmitido.",
+        "Não é uma política que pudéssemos reverter em silêncio, é imposto pela arquitetura: o servidor só guarda texto cifrado, por isso do nosso lado não há nada legível para indexar ou vasculhar. Um servidor que não consegue ler as tuas notas também não as consegue procurar."
+      ]
+    },
+    "no-ai": {
+      "q": "O PrivacyNotes usa IA nas minhas notas?",
+      "a": [
+        "Não. Não há funcionalidades de IA na app, nenhum processamento de IA em segundo plano e nenhum treino de modelos com o teu conteúdo. As tuas notas são encriptadas antes de saírem do teu dispositivo, por isso nos nossos servidores não existe nada legível para alimentar seja o que for.",
+        "Se algum dia lançarmos algo nesta direção, teria de correr inteiramente no teu dispositivo e ser estritamente opcional. Enviar notas em texto simples para um modelo na nuvem quebraria a promessa de zero conhecimento, por isso está fora de questão."
+      ]
+    },
+    "burn-notes": {
+      "q": "O que são burn notes?",
+      "a": [
+        "Uma burn note é uma forma autodestrutiva de partilhar uma nota com alguém que não usa o PrivacyNotes. A app encripta o conteúdo com uma chave de uso único e dá-te um link. A chave viaja no fragmento do link, que os navegadores nunca enviam para os servidores, por isso o nosso servidor guarda texto cifrado que não consegue ler.",
+        "Na primeira vez que o link é aberto, o servidor entrega o texto cifrado e apaga-o no mesmo passo: uma leitura, e acabou. Os links nunca abertos expiram sozinhos ao fim de 24 horas. De uma forma ou de outra, nada fica para trás."
+      ]
+    },
+    "open-source": {
+      "q": "O PrivacyNotes é open source?",
+      "a": [
+        "Sim. As aplicações web, de computador e móvel estão publicadas no [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), juntamente com o código de encriptação que torna as tuas notas ilegíveis, o esquema da base de dados para onde sincronizam e o modelo de ameaças que descreve o que cada peça protege. É o mesmo código a partir do qual compilamos as nossas versões.",
+        "É isso que transforma uma promessa em algo que podes verificar. Lê a encriptação de uma assentada, abre o separador de rede do teu navegador e vê as tuas próprias notas saírem como texto ilegível, ou compila tu mesmo a aplicação e compara-a com a que distribuímos. Não tens de acreditar em nada do que dizemos."
+      ]
+    },
+    "report-vulnerability": {
+      "q": "Encontrei uma vulnerabilidade de segurança. Como a comunico?",
+      "a": [
+        "Escreve para privacynotes@lifetimelabs.dev. O mesmo endereço está publicado no nosso [security.txt](https://privacynotes.app/.well-known/security.txt) assinado com PGP, por isso podes confirmar que é genuíno antes de escrever, e a nossa [chave pública](https://privacynotes.app/.well-known/pgp-key.txt) está lá ao lado se preferires cifrar o relatório.",
+        "Respondemos e, quando uma correção exige coordenação, combinamos contigo os prazos de divulgação antes de algo se tornar público. Os relatos chegam diretamente a quem escreveu o código, e quem quiser crédito recebe-o. Testa contra a demonstração em try.privacynotes.app ou uma conta descartável, nunca contra as notas de outra pessoa."
+      ]
+    },
+    "lost-phrase": {
+      "q": "Perdi a minha frase de recuperação. Conseguem recuperar a minha conta?",
+      "a": [
+        "Se ainda tens sessão iniciada nalgum dispositivo: sim, consegues recuperá-la tu mesmo. Abre Definições > Segurança > A tua frase e guarda-a já no teu gestor de palavras-passe.",
+        "Se não tens nenhum dispositivo com sessão iniciada nem a frase: não, e ninguém consegue. A tua frase nunca chega aos nossos servidores, por isso não há nada para repor e nenhum pedido de apoio que ajude. Não é uma política que possamos dobrar - é isso que a encriptação ponta a ponta significa. Qualquer serviço capaz de restaurar os teus dados encriptados depois de uma perda total está a guardar as tuas chaves.",
+        "A prevenção custa dez segundos: guarda a frase num gestor de palavras-passe no dia em que criares a conta."
+      ]
+    },
+    "oauth-recovery": {
+      "q": "Inicio sessão com Google, Apple ou GitHub. E se perder o acesso a essa conta?",
+      "a": [
+        "Por baixo continuas a ter uma frase de 12 palavras, e a frase sozinha chega para iniciares sessão em qualquer dispositivo - sem Google, Apple nem GitHub. Abre Definições > Segurança > A tua frase e guarda-a no teu gestor de palavras-passe.",
+        "Faz isso uma vez e perder a conta Google, Apple ou GitHub não te custa nada: é só iniciares sessão com a frase."
+      ]
+    },
+    "forgot-pin": {
+      "q": "Esqueci-me do meu PIN. Os meus dados desapareceram?",
+      "a": [
+        "Não. O PIN é um fecho de conveniência contra olhares curiosos no teu próprio dispositivo, não uma chave de encriptação. As tuas notas são encriptadas com chaves derivadas da tua frase de recuperação, e a frase dá sempre acesso total, sem PIN nenhum.",
+        "É uma decisão de design deliberada: amarrar a encriptação a um PIN de 4 dígitos significaria que um PIN esquecido destrói dados. Aqui isso nunca acontece."
+      ]
+    },
+    "delete-account": {
+      "q": "Como elimino a minha conta?",
+      "a": [
+        "Na app: Definições > Conta e, a seguir, \"Eliminar a conta e os dados\". Isto remove permanentemente do servidor as tuas notas sincronizadas, os ficheiros, os dispositivos, as definições e a própria conta. Não há período de retenção nem backup que possamos restaurar depois, por isso exporta antes tudo o que quiseres manter (Definições > Import & Export).",
+        "Dois pormenores: uma subscrição de armazenamento ativa tem de ser cancelada antes da eliminação (uma já agendada para terminar não bloqueia), e como uma conta de frase nunca incluiu um e-mail nem um nome, não sobra perfil nem lista de marketing para limpar. Apagar os dados locais de um dispositivo é uma ação separada e não mexe na tua conta."
+      ]
+    },
+    "what-syncs": {
+      "q": "O que é que sincroniza exatamente entre os meus dispositivos, e o que fica local?",
+      "a": [
+        "Tudo o que esperarias, encriptado no teu dispositivo antes de sincronizar: notas, tarefas, entradas de diário, o teu cofre e os ficheiros encriptados lá dentro. As tuas definições também te acompanham - etiquetas favoritas, preferências de ordenação e de vista, tema de cor, o teu PIN (como hash com sal, nunca o PIN em si), bloqueio da app, configuração de registos e medicamentos, e a limpeza automática do lixo. Configura uma vez e todos os dispositivos acompanham.",
+        "Algumas coisas ficam de propósito só no dispositivo: o modo claro ou escuro (cada dispositivo segue a preferência do próprio sistema), o desbloqueio biométrico (preso ao hardware de cada dispositivo) e o teu estado de desbloqueio (fechar a app bloqueia sempre de novo). O servidor só armazena blobs encriptados e não consegue ler nada disso."
+      ]
+    },
+    "offline": {
+      "q": "O PrivacyNotes funciona offline?",
+      "a": [
+        "Sim. A app é local-first: as tuas notas vivem numa base de dados no teu dispositivo, por isso ler, escrever e procurar funcionam sem ligação nenhuma. As alterações sincronizam sozinhas quando voltares a ficar online."
+      ]
+    },
+    "sync-conflicts": {
+      "q": "O que acontece se editar a mesma nota em dois dispositivos ao mesmo tempo?",
+      "a": [
+        "Nada é substituído em silêncio. Se os dois dispositivos mudaram a mesma nota enquanto estavam separados (um estava offline, por exemplo), a app deteta a colisão quando voltarem a sincronizar e mostra uma caixa de conflito: manter a versão deste dispositivo, manter a outra, ou manter as duas como notas separadas.",
+        "No dia a dia raramente a vais ver. Online, as edições sincronizam em segundos, e a caixa só aparece quando duas versões da mesma nota divergiram mesmo."
+      ]
+    },
+    "remove-device": {
+      "q": "Como removo um dispositivo que já não uso?",
+      "a": [
+        "Definições > Conta lista todos os dispositivos registados. Remove o que vais reformar: a vaga é libertada de imediato (útil no plano gratuito de 2 dispositivos), e o dispositivo removido termina sessão da próxima vez que tentar sincronizar. Fica visível em \"Removidos recentemente\" durante 72 horas, para confirmares que desapareceu.",
+        "A remoção liberta a vaga e termina a sessão nesse dispositivo; quem manda no acesso é a frase. Quem tiver as tuas 12 palavras consegue iniciar sessão de novo, por isso, se um dispositivo se perdeu ou foi roubado, protege primeiro a frase e mantém ligado o bloqueio da app (PIN ou biometria). É isso que impede um dispositivo encontrado de ser uma porta aberta."
+      ]
+    },
+    "data-location": {
+      "q": "Onde é que os meus dados são armazenados?",
+      "a": [
+        "Primeiro no teu dispositivo, e é essa a cópia com que trabalhas: a app é local-first, por isso as tuas notas abrem e editam-se offline. A cópia de sincronização vive em servidores em Zurique, na Suíça. O que lá está é a tua chave pública, blobs encriptados das tuas notas, ficheiros e definições, além das marcas temporais e dos tamanhos de que uma sincronização precisa. Nenhum título, nenhum texto, nenhuma etiqueta.",
+        "O país conta menos do que a encriptação. Tudo é encriptado no teu dispositivo antes de sair, por isso essa cópia seria ilegível onde quer que estivesse: a Suíça é um bónus, não a promessa. [O que sincroniza](/pt/help/what-syncs/) enumera-o ponto por ponto.",
+        "A cópia no teu dispositivo também é encriptada. As notas são seladas no disco com uma chave derivada da tua frase de recuperação ao desbloqueares, por isso um perfil de navegador copiado, um despejo de armazenamento ou uma cópia de segurança roubada contém dados encriptados, não as tuas notas."
+      ]
+    },
+    "export": {
+      "q": "Posso exportar as minhas notas, ou estou preso?",
+      "a": [
+        "Podes exportar tudo quando quiseres, gerado inteiramente no teu dispositivo: ficheiros Markdown num zip com os anexos incluídos, um backup JSON completo, ou HTML autossuficiente - por nota ou para a conta inteira.",
+        "Importar também funciona: traz notas do Obsidian, Apple Notes, Google Keep, Standard Notes, Simplenote e Samsung Notes. Prender-te aqui não faz parte do modelo de negócio."
+      ]
+    },
+    "attachment-limits": {
+      "q": "Que ficheiros posso anexar, e de que tamanho?",
+      "a": [
+        "Qualquer tipo de ficheiro: imagens, PDF, áudio, arquivos comprimidos, o que quer que largues aqui. Cada ficheiro é encriptado no teu dispositivo antes do envio, tal como o texto das notas, e a vista Ficheiros reúne todos os anexos num só sítio.",
+        "O limite por ficheiro é de 5 MB no plano gratuito e de 50 MB no Pro. Os ficheiros contam para o teu armazenamento total de sincronização (50 MB no grátis, 500 MB no Pro, expansível até 5,5 GB com os complementos de armazenamento), e a barra em Definições > Armazenamento mostra sempre onde estás."
+      ]
+    },
+    "vault": {
+      "q": "O que é o Cofre?",
+      "a": [
+        "O Cofre é uma secção dedicada a segredos estruturados: logins com nome de utilizador e palavra-passe, cartões de crédito e de débito, e chaves SSH. As entradas têm campos a sério em vez de texto livre, os logins mostram o ícone do site, e tudo é encriptado ponta a ponta como o resto dos teus dados.",
+        "Dá um lar arrumado e protegido àquele punhado de credenciais que, de outra forma, acaba espalhado pelas notas. Combina-o com o bloqueio da app e a proteção por PIN para teres uma segunda barreira nas entradas mais sensíveis. Uma importação do Bitwarden vai parar aqui automaticamente."
+      ]
+    },
+    "note-size-limit": {
+      "q": "Qual é o tamanho máximo de uma nota, e o que significam os avisos de tamanho?",
+      "a": [
+        "Escreve o que quiseres - nas notas normais, a questão do tamanho nunca se põe. Quando uma única nota cresce muito, aparece uma dica por baixo dela que sobe de tom em três degraus: por volta das 50.000 palavras, avisa que a nota está a ficar longa e pode ficar lenta em dispositivos mais lentos; por volta das 75.000, fica âmbar, o que quer dizer que a edição pode começar a bloquear; e por volta das 100.000, sugere dividir a nota porque estás a aproximar-te do limite de sincronização. São guias, não bloqueios rígidos, e nada te impede de continuar.",
+        "Esse limite de sincronização é o único teto a sério. Uma única nota comporta cerca de 1 MB de texto depois de encriptada - grosso modo, 120.000 palavras de inglês comum, e menos com escrita não latina ou muita formatação. Uma nota que passe disso continua a funcionar e fica segura no dispositivo onde a escreveste, mas essa nota não vai sincronizar com os teus outros dispositivos (vais ver um aviso de \"falha ao sincronizar\"). As restantes notas não são afetadas: uma nota demasiado grande nunca bloqueia mais nada.",
+        "A solução é fácil: divide uma nota muito longa em algumas mais pequenas. O conteúdo é idêntico, sincroniza sem problemas e o editor continua rápido. Um contador de palavras ao vivo por baixo de cada nota deixa-te ficar de olho no tamanho."
+      ]
+    },
+    "shutdown": {
+      "q": "O que acontece às minhas notas se o PrivacyNotes fechar?",
+      "a": [
+        "Não perdes nada. O conjunto completo de dados já está no teu dispositivo porque a app é local-first, e a exportação para Markdown, JSON ou HTML funciona totalmente offline.",
+        "O código de encriptação também é [open source](https://github.com/LifetimeLabsDev/PrivacyNotes.app), por isso o formato continua legível de forma independente, mesmo num mundo em que os nossos servidores desaparecessem de um dia para o outro."
+      ]
+    },
+    "free-vs-pro": {
+      "q": "O que é grátis e o que é Pro?",
+      "a": [
+        "O grátis é o produto completo, não uma amostra: notas, tarefas, diário e cofre encriptados ponta a ponta, uso offline, importação e exportação - em até 2 dispositivos com 50 MB de armazenamento de sincronização.",
+        "O Pro é uma compra única que acrescenta dispositivos ilimitados, 500 MB de armazenamento de sincronização (expansível), histórico de versões das notas, anexos maiores, bloqueio de notas e proteção por PIN, registo de bem-estar avançado, modo Zen e todos os temas de cor."
+      ]
+    },
+    "one-time-pricing": {
+      "q": "Como é que um pagamento único financia um serviço de sincronização para sempre?",
+      "a": [
+        "Porque o serviço foi desenhado de propósito para ser barato de operar. A app é local-first e as notas são pequenos blobs encriptados, por isso o servidor pouco mais faz do que guardá-los e passá-los entre os teus dispositivos. Sem pipeline de analytics, sem funcionalidades de IA a queimar computação, sem departamento de apoio.",
+        "O único custo que cresce com o tempo é o armazenamento, e é esse que é cobrado em conformidade: o espaço para lá dos 500 MB incluídos é um pequeno complemento anual. Os custos únicos pagam-se uma vez; os custos recorrentes, recorrem. O modelo só tem de se pagar a si mesmo, e paga."
+      ]
+    },
+    "pro-cross-platform": {
+      "q": "Comprei o Pro numa plataforma. Tenho-o em todas?",
+      "a": [
+        "Sim. O Pro está associado à tua conta, não a um dispositivo, plataforma ou loja. Compra-o uma vez, inicia sessão com a mesma frase (ou o mesmo início de sessão Google, Apple ou GitHub) em qualquer lado, e o Pro está ativo lá também.",
+        "Isso inclui plataformas que ainda nem existem: quando uma app nova sair, o teu Pro atual acompanha-te sem custo extra."
+      ]
+    },
+    "storage-addons": {
+      "q": "Como funcionam os complementos de armazenamento?",
+      "a": [
+        "O Pro inclui 500 MB de armazenamento de sincronização encriptado. Se precisares de mais, os pacotes somam-se por cima: 1 GB por 4,80 $ ao ano, 2 GB por 8,40 $, ou 5 GB por 18 $, até 5,5 GB no total. Os complementos são a única compra recorrente do produto, porque o armazenamento é a única coisa que nos custa dinheiro em cada mês que o usas.",
+        "Tudo se gere em Definições > Armazenamento: troca por um pacote maior (pagas só a diferença proporcional) ou cancela quando quiseres e fica com o espaço até acabar o período que já pagaste. O Pro, de qualquer forma, é teu para sempre."
+      ]
+    },
+    "refunds": {
+      "q": "Qual é a política de reembolso?",
+      "a": [
+        "30 dias, sem perguntas. Se o Pro não for para ti, pede o reembolso integral no prazo de 30 dias após a compra e o valor volta para o método de pagamento original. Os clientes na UE mantêm ainda o seu direito legal de retratação de 14 dias.",
+        "Os pagamentos são processados pela Paddle, o nosso merchant of record, por isso os reembolsos são tratados diretamente pela Paddle: responde ao e-mail do recibo da compra ou visita [paddle.net](https://paddle.net). A política completa está nos [termos de serviço](https://lifetimelabs.dev/terms/#refunds)."
+      ]
+    },
+    "paddle-privacy": {
+      "q": "O que é que ficam a saber sobre mim quando pago?",
+      "a": [
+        "Menos do que imaginas. O checkout passa pela [Paddle](https://www.paddle.com), o merchant of record: o teu nome, o número do cartão e a morada de faturação vão para a Paddle por causa do pagamento e dos impostos, e nunca tocam nos nossos servidores.",
+        "O que chega até nós é a confirmação de que a chave pública da tua conta passou a Pro, mais o valor da encomenda. A relação de faturação, incluindo o e-mail de recibo que escreves no checkout, fica com a Paddle. Por isso uma conta só de frase continua pseudónima para nós mesmo como cliente pagante: sabemos que pagaste, não quem és."
+      ]
+    },
+    "buy-pro-anonymously": {
+      "q": "Posso comprar o Pro sem revelar quem sou?",
+      "a": [
+        "Sim, com duas ferramentas correntes. Para o recibo, usa um alias de e-mail: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) ou [addy.io](https://addy.io) reencaminham todos para a tua caixa real sem a exporem. Para o pagamento, usa um cartão mascarado: o [privacy.com](https://privacy.com), nos EUA, gera cartões virtuais que funcionam com qualquer nome que escrevas, e muitos bancos e serviços noutros sítios (o [Revolut](https://www.revolut.com), por exemplo) oferecem cartões virtuais descartáveis que fazem o mesmo trabalho.",
+        "No checkout, a Paddle pede um e-mail, um método de pagamento e um país (mais um código postal nalgumas regiões) para calcular o imposto. O alias recebe o recibo, o cartão mascarado leva o nome que lhe deste, e a localização fiscal situa-te, quando muito, numa região, e mais nada. Mantém o alias vivo, no entanto: o e-mail do recibo é a tua prova de compra e o teu canal para um reembolso.",
+        "Combinado com uma conta de frase, nenhuma das partes fica com o quadro completo: o teu banco vê um carregamento de cartão, a Paddle vê um alias e um cartão mascarado, e nós vemos apenas que uma chave pública passou a Pro."
+      ]
+    },
+    "platforms": {
+      "q": "Em que plataformas é que o PrivacyNotes funciona?",
+      "a": [
+        "Web, macOS, Windows, Linux e Android hoje, com o iOS a chegar em breve. Todas as apps são construídas a partir do mesmo núcleo, com a mesma encriptação ponta a ponta, e sincronizam pela mesma conta. A [secção de transferências](https://privacynotes.app/pt#downloads) tem sempre as versões mais recentes.",
+        "As apps nativas precisam de macOS 13 ou mais recente, Windows 10 ou mais recente, Android 7.0 ou mais recente, ou uma distribuição Linux com webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ ou equivalente). O iOS vai precisar de iOS 15 ou mais recente. Abaixo dessas versões a app não instala nem arranca - usa antes a app web.",
+        "A app web é um cidadão de primeira, não um plano B: mantém uma cópia local completa dos teus dados e funciona offline, por isso qualquer navegador moderno é sempre uma porta de entrada."
+      ]
+    },
+    "feature-requests": {
+      "q": "Pedi uma funcionalidade ou reportei um bug. Quanto tempo demora até sair?",
+      "a": [
+        "Muitas vezes dias. Os pedidos pequenos e os relatos de bugs entram normalmente na versão seguinte, e lançamos uma versão quase todas as semanas em vez de duas ou três vezes por ano. O [changelog](/changelog) é a prova: cada entrada tem data, está escrita em linguagem simples e diz o que mudou. Lê um mês e saberás exatamente o que esperar de nós antes de confiares seja o que for à aplicação.",
+        "Este ritmo vem de uma equipa pequena com muitas ferramentas, incluindo a ajuda da IA no trabalho de interface. Quer dizer que vale a pena construir o pedido de uma só pessoa, quando de outro modo uma equipa pequena teria de dizer que não a tudo menos ao topo da lista. Cada alteração é revista por uma pessoa, verificada pelos testes automáticos e publicada em nosso nome. A camada de cifra e o protocolo de sincronização avançam devagar de propósito: revistos linha a linha, testados contra vetores de referência publicados e [públicos](https://github.com/LifetimeLabsDev/PrivacyNotes.app) para que os possas ler em vez de acreditares em nós.",
+        "A aplicação em si não tem funcionalidades de IA e nunca envia as tuas notas para lado nenhum ([detalhes](/pt/help/no-ai/)). Essa promessa é à parte, e não muda."
+      ]
+    },
+    "android-updates": {
+      "q": "A app Android atualiza-se sozinha?",
+      "a": [
+        "Instala-a com o [Obtainium](/pt/help/obtainium/) e sim: ele lê os nossos lançamentos e oferece cada versão nova assim que sai, e é mesmo por isso que recomendamos essa via no Android. Um APK levado diretamente do nosso site atualiza-se quando tu disseres, porque o Android só atualiza automaticamente apps vindas de uma loja.",
+        "O APK do site avisa-te em vez disso. A app verifica se existe uma versão mais recente e mostra o aviso \"Atualização disponível\" com um botão \"Transferir\". Toca em Transferir e depois abre o ficheiro transferido para o instalar por cima da versão antiga, com as tuas notas e definições intactas. A verificação só pergunta se existe uma versão mais recente, nunca toca nas tuas notas, que ficam cifradas o tempo todo."
+      ]
+    },
+    "obtainium": {
+      "q": "Como instalo a app Android com o Obtainium?",
+      "a": [
+        "O Obtainium é uma app Android gratuita e de código aberto que instala outras apps diretamente a partir das respetivas páginas de lançamentos. Passa a ser a forma que recomendamos para instalar o PrivacyNotes no Android, porque é a única via que se mantém atualizada sozinha. Já o tens? Toca no badge e ele adiciona o PrivacyNotes por ti.",
+        "[![Obter no Obtainium](/marketing/badge-obtainium.webp)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22app.privacynotes%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2FLifetimeLabsDev%2FPrivacyNotes.app%22%2C%22author%22%3A%22LifetimeLabsDev%22%2C%22name%22%3A%22PrivacyNotes%22%7D)",
+        "Ainda não o tens? Instala primeiro o [Obtainium](https://obtainium.imranr.dev/), adiciona uma app e cola isto:",
+        "`https://github.com/LifetimeLabsDev/PrivacyNotes.app`",
+        "O Obtainium lê os nossos lançamentos, escolhe o APK e instala cada versão nova assim que sai. Não entra nenhuma conta Google em momento algum.",
+        "O Obtainium não é uma app nossa, e o Android continua a pedir-te confirmação em cada instalação, por isso uma atualização chega como notificação e um toque, não em silêncio. O APK é a mesma compilação que a nossa página de transferências serve, assinada com a mesma chave, por isso o Obtainium adota uma app que já instalaste por sideload: nada a desinstalar, nada a voltar a iniciar sessão. Sem ele, a app só te consegue [avisar dentro da app](/pt/help/android-updates/) que existe uma versão pronta."
+      ]
+    },
+    "languages": {
+      "q": "Que idiomas é que a app fala?",
+      "a": [
+        "Inglês, alemão, francês, italiano, espanhol, neerlandês, polaco, checo, catalão, turco, sueco, japonês, coreano, chinês tradicional, árabe e português, nas variantes europeia e do Brasil. A app segue o idioma do sistema por predefinição, ou podes fixar um explicitamente em Definições > Idioma em cada dispositivo.",
+        "As traduções são grátis para toda a gente, não são uma vantagem Pro. Estão previstos mais idiomas; se o teu está a faltar, diz-nos no [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) ou no [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
+      ]
+    },
+    "translation-quality": {
+      "q": "Como são feitas as traduções da app?",
+      "a": [
+        "O inglês somos nós que o escrevemos, e todos os outros idiomas são traduzidos por uma máquina a partir de um guia de estilo escrito para cada um: o registo certo, a palavra certa para cada termo da interface e uma verificação automática em cada versão para que não falte texto nem fique nada em inglês sem darmos por isso. As traduções estão em todos os planos, nunca são um extra do Pro.",
+        "Podes melhorar qualquer uma delas. Se uma frase soar torta no teu idioma, [comunica a tradução](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new?template=translation.yml): o teu idioma, o ecrã onde aparece e o que devia dizer. As correções saem na versão seguinte."
+      ]
+    },
+    "markdown-syntax": {
+      "q": "Que sintaxe Markdown é que o editor entende?",
+      "a": [
+        "Os formatos Markdown padrão ganham vida à medida que escreves: títulos, ênfase, rasurado e destaque, listas com marcas e numeradas, listas de tarefas (Tab e Shift+Tab aninham qualquer lista, checklists incluídas), citações, separadores, código em linha e blocos de código com realce de sintaxe, matemática em linha e em bloco (KaTeX), e note-links entre notas com preenchimento automático.",
+        "A barra de formatação e o seu menu Inserir acrescentam o resto: tabelas, avisos em nove tipos que podem fechar-se, sublinhado, sobrescrito e subscrito, alinhamento do texto, cores de texto e de destaque, tipos de letra, ligações, imagens e anexos de ficheiros. Tudo se mantém como Markdown nos dois sentidos: \"Ver markdown\" por baixo de qualquer nota revela o código-fonte em bruto, e as exportações são ficheiros .md limpos, por isso nada do que escreves fica preso num formato proprietário."
+      ]
+    },
+    "tasks": {
+      "q": "Como funcionam as tarefas?",
+      "a": [
+        "Qualquer linha que escrevas como - [ ] em qualquer nota torna-se uma tarefa, e a vista Tarefas na barra lateral reúne-as todas num só sítio. Marcar aí uma tarefa como concluída atualiza a nota onde ela vive, e abrir uma tarefa salta para essa nota. Não há uma base de dados de tarefas à parte para manter: as tarefas são apenas linhas nas tuas notas, encriptadas como tudo o resto.",
+        "A caixa de adição rápida no topo de Tarefas acrescenta a uma nota chamada Quick Tasks (criada para ti no primeiro uso), por isso apanhar um afazer solto é uma tecla, não uma decisão de arquivo. A mesma vista oferece três disposições (Híbrida, Agregada, Lista), um interruptor para as tarefas concluídas, e procura de tarefas, e o botão Nova na vista Todos pode começar diretamente uma nota de tarefas."
+      ]
+    },
+    "journal": {
+      "q": "Como funciona o diário, e o que posso registar?",
+      "a": [
+        "Diários é uma vista dedicada a entradas com data: um toque cria a entrada de hoje, e o botão de calendário ao lado preenche um dia recente que te escapou. Uma entrada é uma nota normal mais registos opcionais: humor numa escala de 1 a 10 com 24 etiquetas de emoção, sono, atividade, medicamentos, energia, foco e mais. \"Configurar registos\" dentro de qualquer entrada ativa ou desativa os predefinidos, e o Pro acrescenta até 10 registos personalizados (escalas, números, sim/não).",
+        "As Estatísticas (em Definições, ou o ícone de estatísticas no rodapé) transformam as entradas em tendências no separador Bem-estar: o humor ao longo do tempo, gráficos de sono e atividade, adesão à medicação. As exportações são geradas no teu dispositivo: \"Transferir JSON\" é grátis, e o Pro acrescenta um \"PDF para o médico\" para levares às consultas, um prompt de IA pronto a copiar para o chatbot à tua escolha, análise de padrões e um resumo da semana. Os dados dos registos vivem dentro da entrada encriptada, por isso o servidor não consegue ler nada disso."
+      ]
+    },
+    "bookmarks": {
+      "q": "Posso guardar os marcadores do navegador no PrivacyNotes?",
+      "a": [
+        "Sim. Os marcadores são um pilar próprio na barra lateral, ao lado das notas, das tarefas e dos diários, e são gratuitos em todos os planos. Cola um link na barra de adição rápida para guardar um. Para trazer os teus, exporta um ficheiro de marcadores (.html) do teu navegador e larga-o em Definições > Import & Export > Importar > \"Browser bookmarks\". O Chrome, o Firefox, o Safari, o Edge, o Opera, o Brave e o Vivaldi contêm o mesmo ficheiro, e as tuas pastas e datas vêm juntas. O Safari embrulha-o num .zip, que podes largar sem o abrir.",
+        "Os teus endereços nunca saem do teu dispositivo: não carregamos a página por trás de um link, e é por isso que um marcador que adicionas à mão fica com o domínio como nome até escreveres um. Os ícones dos sites são a única exceção, e podes desligá-los. A exportação escreve o mesmo ficheiro padrão, portanto os teus marcadores saem com a mesma facilidade ([guia de importação](/pt/help/import/browser-bookmarks/))."
+      ]
+    },
+    "keyboard-shortcuts": {
+      "q": "Que atalhos de teclado existem?",
+      "a": [
+        "Carrega em ? em qualquer parte da app para veres o guia de referência integrado, também disponível em Definições > Sobre e Ajuda. Os atalhos cobrem navegação, ações sobre notas, formatação e vistas - e no Windows e no Linux, cada Cmd lê-se como Ctrl e Option como Alt.",
+        "O essencial: Cmd+K foca a procura, J e K percorrem a lista, Alt+Shift+N começa uma nota nova, Cmd+Backspace envia a selecionada para o lixo, Cmd+, abre as Definições. Enquanto escreves: Cmd+B negrito, Cmd+I itálico, Cmd+Shift+K insere um link, Cmd+Shift+9 começa uma lista de tarefas, Cmd+F procura dentro da nota, Cmd+Shift+O mostra ou esconde a estrutura. Cmd+\\ esconde a barra lateral, Cmd+Shift+L troca o tema, Cmd+Shift+F entra no modo Zen (Pro), e Esc recua em quase tudo."
+      ]
+    },
+    "hotkey-cheat-sheet": {
+      "q": "Existe um guia de referência dos atalhos para imprimir?",
+      "a": [
+        "Sim. O [guia de referência para imprimir](/help/keyboard-shortcuts/cheat-sheet) reúne todos os atalhos numa única página A4, em duas colunas, pronta a afixar ao lado do ecrã. É gerado a partir da mesma lista que a app mostra, por isso nunca pode ficar atrasado em relação a uma versão.",
+        "Abre-o e carrega no botão Imprimir (ou Cmd+P / Ctrl+P). Para ficares com um ficheiro em vez de papel, escolhe PDF como destino na janela de impressão. O guia também está ligado por cima e por baixo da lista de atalhos na app (Definições > Sobre e Ajuda > Atalhos) e no rodapé deste site."
+      ]
+    },
+    "ask-an-ai": {
+      "q": "Posso usar o meu próprio agente de IA para obter ajuda com o PrivacyNotes?",
+      "a": [
+        "Sim, e construímos o centro de ajuda a pensar nisso. Cada resposta está publicada num único ficheiro de texto em [llms-full.txt](https://privacynotes.app/llms-full.txt), por isso um assistente lê tudo de uma vez. A caixa no fim de qualquer página de ajuda copia um prompt já pronto: cola-o no ChatGPT, Claude, Gemini ou no assistente que já usas, e pergunta na tua própria língua.",
+        "Mandar-te para uma ferramenta em que já confias deixa-nos completamente de fora, e nunca ficamos a saber o que perguntaste. Um chatbot nosso significaria as tuas perguntas a aterrar nos nossos servidores, e as perguntas sobre uma app de notas costumam levar o conteúdo das notas atrás. Isto é separado da app em si, que não tem funcionalidades de IA nenhumas ([detalhes](/pt/help/no-ai/)).",
+        "Nunca coles a tua frase de recuperação, o teu PIN ou o texto de uma nota num assistente. Nenhuma resposta precisa deles, o prompt copiado diz ao assistente para os recusar, e tudo o que escreves na caixa de conversa de outra pessoa já saiu do teu dispositivo."
+      ]
+    },
+    "locked-vs-protected": {
+      "q": "Qual é a diferença entre notas apenas de leitura e notas protegidas por PIN?",
+      "a": [
+        "\"Apenas leitura\" (no menu de opções da nota, Pro) tranca uma nota contra edições, para que um documento terminado não seja estragado por acidente; não esconde nada. \"Proteger\" (o mesmo menu, Pro) esconde o título e o conteúdo de uma nota atrás do teu PIN ou desbloqueio biométrico, para aquelas coisas que preferias não ter à vista num ecrã que outros às vezes veem.",
+        "Ambos são fechos para o ecrã, não uma segunda camada de encriptação. Os indicadores viajam dentro dos dados encriptados da nota, e a nota não é reencriptada com o teu PIN de propósito: assim, um PIN esquecido nunca pode destruir dados. A frase continua a ser a fronteira a sério: protege-a primeiro e usa estes fechos para o ecrã que os outros às vezes veem."
+      ]
+    },
+    "biometric-unlock": {
+      "q": "O desbloqueio biométrico deixou de funcionar. O que posso fazer?",
+      "a": [
+        "Nunca ficas sem acesso. O ecrã de bloqueio oferece sempre uma alternativa: \"Desbloquear com PIN\", ou \"Iniciar sessão com a frase de recuperação\". A biometria é um fecho local, não uma chave de encriptação, por isso as tuas notas ficam intactas de qualquer forma.",
+        "Depois, arranja o fecho. O registo é por dispositivo, por isso um telemóvel novo, um perfil de navegador acabado de criar, ou uma reinstalação precisam de novo registo: Definições > Segurança > \"Bloqueio biométrico\", desativa, depois \"Ativar o desbloqueio biométrico\" outra vez. Também exige \"Confiar neste dispositivo\" (as sessões não confiáveis desaparecem quando o separador fecha) e hardware com um autenticador de plataforma (Touch ID, Face ID, Windows Hello). Se um gestor de palavras-passe como o Bitwarden ou o 1Password aparecer em vez da janela do sistema, dispensa-o e tenta de novo, ou desliga a captura de passkeys dele para o site - a app pede o autenticador integrado, mas alguns gestores intercetam à mesma."
+      ]
+    },
+    "phrase-compromised": {
+      "q": "A minha frase de recuperação foi exposta. O que faço?",
+      "a": [
+        "Dá o cofre por perdido. Uma frase não pode ser mudada nem rodada, porque a frase é a chave sob a qual tudo é encriptado - por isso a solução é mudar para um cofre novo. Primeiro, na conta antiga, exporta tudo: Definições > Import & Export > Exportar > \"Backup do PrivacyNotes (.zip)\".",
+        "Termina sessão, cria um cofre novo (12 palavras novas), e traz a exportação de volta em Definições > Import & Export > Restaurar > \"Backup completo (.zip)\". Depois elimina a conta antiga a partir de qualquer dispositivo onde ainda tenhas sessão iniciada: Definições > Conta > \"Eliminar a conta e os dados...\". Isso remove os dados sincronizados dela e fecha a porta a quem tiver a frase antiga. Se iniciaste sessão com Google, Apple ou GitHub, elimina primeiro a conta antiga, depois inicia sessão com Google, Apple ou GitHub outra vez para começar o cofre novo.",
+        "Duas coisas a tratar primeiro: cancela um complemento de armazenamento ativo, porque a eliminação obriga a isso, e repara que o Pro fica na conta onde foi comprado em vez de passar para o cofre novo. Depois guarda a frase nova num gestor de palavras-passe e em mais lado nenhum: a prevenção é toda esta."
+      ]
+    },
+    "lost-device": {
+      "q": "Perdi um dispositivo. Como protejo as minhas notas?",
+      "a": [
+        "A partir de qualquer dispositivo com sessão iniciada, abre Definições > Conta > \"Dispositivos registados\" e remove o que perdeste. Da próxima vez que esse dispositivo ficar online, termina sessão e os seus dados locais são apagados, cerca de um minuto após a utilização seguinte. Fica listado em \"Removidos recentemente\" durante 72 horas, para poderes confirmar que desapareceu.",
+        "Ativa o bloqueio da app (PIN ou biometria) em tudo o que seja portátil e mantém o bloqueio de ecrã do sistema operativo. Um dispositivo apaga-se assim que voltar a ligar-se, por isso até lá são esses fechos locais que ficam entre um telemóvel perdido e as tuas notas. A chave a sério é a frase: quem tiver as tuas 12 palavras consegue iniciar sessão de novo. Se suspeitas que a própria frase foi exposta, segue antes o [guia para uma frase exposta](/pt/help/phrase-compromised/)."
+      ]
+    },
+    "device-limit": {
+      "q": "O que significa \"Limite de dispositivos atingido\"?",
+      "a": [
+        "As contas gratuitas sincronizam em até 2 dispositivos, e esta caixa aparece quando um terceiro tenta registar-se. Remove um dispositivo que já não uses diretamente na caixa, ou num dispositivo existente em Definições > Conta ([como funciona a remoção](/pt/help/remove-device/)). A vaga é libertada de imediato, e o dispositivo removido continua visível em \"Removidos recentemente\" durante 72 horas. O Pro elimina o limite por completo.",
+        "Vários navegadores num só computador contam como um único dispositivo: são agrupados através de hashes que preservam a privacidade de sinais grosseiros da máquina, calculados no teu dispositivo com um segredo por conta. Uma atualização grande do navegador, ou um navegador reforçado como o Brave ou o Tor que torna esses sinais aleatórios, pode pôr a mesma máquina numa vaga nova. Remove a entrada obsoleta e segue em frente. Nunca ficas sem acesso."
+      ]
+    },
+    "over-quota": {
+      "q": "O que acontece quando ultrapasso o meu limite de armazenamento?",
+      "a": [
+        "Nunca se apaga nada. Quando as novas alterações deixam de caber, a sincronização avisa: \"Armazenamento cheio. Algumas notas não conseguiram sincronizar.\" Os dados existentes continuam a sincronizar, o crescimento novo não. Se ficares acima do limite, começa uma contagem decrescente de 90 dias, mostrada como um banner âmbar. Ler, editar para reduzir, apagar e exportar continuam todos a funcionar o tempo todo.",
+        "Após 90 dias acima do limite, a sincronização entra em pausa: o banner fica vermelho (\"Sincronização em pausa. Estás acima do teu limite de armazenamento há mais de 90 dias.\"). A app continua a funcionar por completo em todos os dispositivos; as alterações ficam apenas locais até voltares para baixo do limite. A recuperação é instantânea e faz-se sozinha: [liberta espaço](/pt/help/storage-usage/) - esvaziar o lixo conta - ou adiciona armazenamento em Definições > Armazenamento, e a sincronização retoma sozinha. Isto é o oposto deliberado dos serviços que apagam automaticamente os dados acima do limite."
+      ]
+    },
+    "backup-strategy": {
+      "q": "Qual é a melhor forma de fazer backup das minhas notas?",
+      "a": [
+        "Exporta o \"Backup completo encriptado (.pnbackupz)\" em Definições > Import & Export > Exportar. Encripta tudo - notas, diários, itens do cofre, tarefas, imagens, áudio e ficheiros - com a chave da tua frase, por isso podes deixá-lo numa drive na nuvem ou numa pen, e restaura com a tua frase em qualquer dispositivo.",
+        "Abre com a frase que o criou, por isso guarda ao lado um \"Backup do PrivacyNotes (.zip)\" caso alguma vez [mudes para uma frase nova](/pt/help/phrase-compromised/): o mesmo conteúdo, restaura para qualquer cofre e legível no disco, por isso guarda-o num sítio de confiança. O \"Backup encriptado (.pnbackup)\" cobre texto e metadados em vez de imagens e ficheiros, e o \"Backup de texto (.json)\" e o arquivo HTML são formatos de portabilidade e não formatos de restauro.",
+        "Porquê ter backups locais, se tudo sincroniza? Porque a sincronização não é um backup: propaga fielmente as eliminações, incluindo as de um servidor comprometido que os teus dispositivos depois espelham. Uma cópia no teu próprio disco é a única que nenhum acontecimento no servidor consegue tocar. Exporta antes de importações grandes, antes de saíres, e num ritmo que consigas manter."
+      ]
+    },
+    "restore-backup": {
+      "q": "Como restauro um backup?",
+      "a": [
+        "Abre Definições > Import & Export > Restaurar e escolhe o formato que tens. \"Backup completo (.zip)\" leva a exportação inteira: notas, diários, itens do cofre, tarefas, imagens, áudio e ficheiros. \"Backup encriptado (.pnbackup, .pnbackupz)\" leva as duas exportações encriptadas. O teu ficheiro é lido e desencriptado no teu dispositivo, e restaurar é gratuito em qualquer plano.",
+        "Tudo chega como itens novos e nada do que já tens é substituído, por isso restaurar o mesmo ficheiro duas vezes deixa-te com duas cópias de cada nota. Os dois formatos encriptados só abrem na conta que os criou, porque estão encriptados com a chave da frase dessa conta; um .zip entra em qualquer cofre ([que backup fazer](/pt/help/backup-strategy/))."
+      ]
+    },
+    "storage-usage": {
+      "q": "O que conta para o meu armazenamento, e como liberto espaço?",
+      "a": [
+        "Tudo o que sincronizas, ao seu tamanho encriptado: o texto das notas, imagens, gravações de áudio e anexos de ficheiros. A barra em Definições > Armazenamento mostra o total; a pegada de cada nota está listada nas suas opções de nota como \"Armazenamento usado\". As notas no lixo continuam a contar até o lixo ser esvaziado.",
+        "Para libertar espaço depressa, abre Ficheiros, ordena por Tamanho e apaga os itens maiores - os anexos fazem o texto parecer minúsculo em quase todas as contas. Depois esvazia o lixo: a vista Lixo mostra quanto espaço o \"Esvaziar\" vai libertar. Só o texto quase nunca enche uma quota; até os 50 MB grátis comportam dezenas de milhares de notas simples."
+      ]
+    },
+    "upload-failed": {
+      "q": "Porque é que o envio do meu ficheiro falhou?",
+      "a": [
+        "O erro diz-te que teto atingiste. Por ficheiro: 5 MB no grátis, 50 MB no Pro, 100 MB com qualquer complemento de armazenamento. No total: tudo o que sincronizas tem de caber no armazenamento da tua conta (50 MB no grátis, 500 MB no Pro, mais com complementos), por isso uma quota cheia faz falhar um envio mesmo quando o ficheiro é pequeno. Qualquer tipo de ficheiro é aceite.",
+        "Verifica a barra de armazenamento na vista Ficheiros ou em Definições > Armazenamento, e escolhe depois a solução mais barata: [liberta espaço](/pt/help/storage-usage/), faz upgrade, ou reduz o ficheiro (as fotos do telemóvel são muitas vezes originais de vários MB; um JPEG comprimido é uma fração do tamanho). Os envios também precisam de ligação: os ficheiros não ficam em fila enquanto estás offline."
+      ]
+    },
+    "trash-auto-delete": {
+      "q": "Porque é que desapareceram notas do meu lixo?",
+      "a": [
+        "O lixo não é um arquivo: por predefinição, tudo o que estiver lá é apagado em definitivo ao fim de 30 dias. O interruptor fica na própria vista Lixo, com o nome \"Eliminação automática ao fim de 30 dias\" - desliga-o aí se quiseres manter o lixo para sempre, e a definição sincroniza com todos os teus dispositivos. A limpeza corre no teu dispositivo quando a app abre, porque o servidor não consegue ver que notas encriptadas estão no lixo.",
+        "Apagado em definitivo quer dizer que desapareceu: sem cópia no servidor e sem caminho de recuperação. Se usas o lixo como um monte de \"talvez um dia\", desativa a eliminação automática ou restaura as notas antes do dia 30. Até lá, as notas no lixo continuam a contar para [o teu armazenamento](/pt/help/storage-usage/) - o \"Esvaziar\" na mesma vista liberta esse espaço de imediato."
+      ]
+    },
+    "leaving": {
+      "q": "Como saio do PrivacyNotes por completo?",
+      "a": [
+        "Primeiro exporta, depois elimina - as duas coisas fazem-se sozinhas. Definições > Import & Export > Exportar cobre todas as vias de saída: \"Backup do PrivacyNotes (.zip)\" para uma cópia completa, Markdown e HTML portáteis para a tua próxima app de notas, e \"Exportação do cofre (.json)\" em formato compatível com o Bitwarden para o teu próximo gestor de palavras-passe. As exportações são geradas no teu dispositivo.",
+        "Depois, Definições > Conta > \"Eliminar a conta e os dados...\": escreve DELETE, e as tuas notas sincronizadas, os ficheiros, os dispositivos, as definições e a própria conta são removidos permanentemente sem período de retenção ([detalhes](/pt/help/delete-account/)). Um complemento de armazenamento ativo tem de ser cancelado primeiro em Definições > Armazenamento. Uma conta só de frase não deixa nada para trás para limpar, porque nunca soubemos quem és. Sem padrões manipuladores e sem e-mails de reconquista - os teus dados são teus, mesmo à saída."
+      ]
+    },
+    "data-rights": {
+      "q": "Como é que o PrivacyNotes lida com o RGPD e os meus direitos sobre os dados?",
+      "a": [
+        "Sobretudo guardando o mínimo possível. Regista-te com uma frase e não há nome, e-mail nem identidade em ficheiro para pedir: os teus dados são texto cifrado sob uma chave pública aleatória, alojada em Zurique, na Suíça. Inicia sessão com Google, Apple ou GitHub e existe exatamente um identificador - o e-mail por trás dessa conta, associado a essa chave. Os dados de faturação do Pro ficam com a [Paddle](https://www.paddle.com), o merchant of record, não connosco.",
+        "Todos os direitos se exercem por ti e de imediato, sem formulário de pedido: o acesso e a portabilidade são Definições > Import & Export (exportação completa em formatos abertos), o apagamento é Definições > Conta > \"Eliminar a conta e os dados...\" sem período de retenção, e a retificação é editares as tuas notas. A versão formal, incluindo como nos contactar para o que a app não conseguir fazer sozinha, está na [política de privacidade](https://lifetimelabs.dev/privacy/)."
+      ]
+    },
+    "referral-links": {
+      "q": "Registam de que site é que eu vim?",
+      "a": [
+        "Sim, e tem a ver com publicidade. Compramos espaços noutros sites e pagamos a criadores, por isso precisamos de saber quais é que trazem mesmo pessoas. O dinheiro de publicidade desperdiçado é um custo que o produto suporta na mesma, por isso medimo-lo na forma mais pequena que responde à pergunta.",
+        "O site de marketing conta visitas e que ligação te trouxe, apenas como totais: sem cookies, sem ficha de visitante, sem scripts de terceiros. Se criares uma conta, ela guarda duas palavras curtas de uma lista publicada: por que ligação chegaste, se houve alguma, e como instalaste a aplicação, por exemplo “android-play”.",
+        "As duas palavras são escritas uma única vez quando a conta é criada, nunca são atualizadas e são apagadas com a tua conta. Mais nada sobre a tua chegada é guardado. Se fechares o separador antes de te registares, ou se o teu navegador remover a ligação, não registamos nada. As aplicações em si não medem nada sobre ti: abre o separador de rede e confirma."
+      ]
+    },
+    "pro-not-active": {
+      "q": "Paguei o Pro mas não está ativo. E agora?",
+      "a": [
+        "Dá-lhe um minuto, depois recarrega a app. Depois do checkout, a app fica a verificar durante cerca de 20 segundos e desbloqueia sozinha, e uma recarga volta a verificar o estado do Pro ao arrancar. Se o pagamento entrou mas a ativação se atrasa, um banner diz \"Pagamento recebido, mas a ativação do Pro está a demorar mais do que o normal\" - esse estado resolve-se sozinho em quase todos os casos. Nas versões de loja, uma compra que falhe a validação volta a tentar quando reinicias a app, e uma compra que nunca ative é reembolsada pela loja automaticamente no prazo de 3 dias.",
+        "Continua bloqueado? É quase sempre uma conta trocada: o Pro fica ligado à conta com que tinhas sessão iniciada na compra, por isso uma frase diferente - ou um início de sessão Google, Apple ou GitHub em vez do teu cofre de frase - é uma conta diferente. Compara o ID da conta em Definições > ID & Sync no dispositivo que o comprou. Se estiver mesmo encravado, [comunica-nos](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) e inclui esse ID da conta: identifica a compra e não revela nada sobre as tuas notas."
+      ]
+    },
+    "manage-storage-addon": {
+      "q": "Como mudo ou cancelo o meu complemento de armazenamento?",
+      "a": [
+        "Definições > Armazenamento é o painel de controlo. Passar para um pacote maior aplica-se de imediato, e a confirmação mostra o valor proporcional exato cobrado hoje antes de confirmares; a data de renovação não muda. \"Cancelar o armazenamento\" mantém o teu espaço extra até ao fim do período que já pagaste. Para passares a um pacote mais pequeno, cancela o atual e compra o mais pequeno quando o período terminar.",
+        "Se os teus dados ainda couberem no limite restante depois de expirar, fica por aqui; se não, nada é apagado e começa o [ciclo de 90 dias acima do limite](/pt/help/over-quota/). Uma renovação falhada mostra um banner com um link \"Atualizar cartão\" para corrigir o pagamento na Paddle. Se subscreveste dentro de uma versão de loja, é a loja que te cobra, por isso o cancelamento faz-se nas definições de subscrição da própria loja."
+      ]
+    },
+    "store-purchases": {
+      "q": "As compras passam entre a web, a Google Play e a App Store?",
+      "a": [
+        "Sim. O Pro e o armazenamento ficam associados à tua conta, não a uma plataforma ou loja. Compra na web e todas as apps onde inicias sessão ficam Pro, incluindo as versões de loja; compra dentro de uma versão de loja e as apps de web e de computador desbloqueiam da mesma maneira. Não há botão de \"restaurar compras\" porque iniciar sessão é o restauro - o direito acompanha a conta.",
+        "A única diferença é quem te cobra. As compras na web passam pela Paddle e gerem-se na app em Definições > Armazenamento. As compras feitas dentro de uma versão de loja (Google Play ou a App Store, assim que essas apps saírem) são cobradas por essa loja: o armazenamento recorrente cancela-se nas definições de subscrição da loja, e os reembolsos seguem o processo da loja. De uma forma ou de outra, é a mesma conta e o mesmo Pro em todo o lado - incluindo plataformas que ainda não existem."
+      ]
+    },
+    "play-vs-apk": {
+      "q": "Obtainium, APK direto ou Google Play: que transferência Android?",
+      "a": [
+        "Escolhe o [Obtainium](/pt/help/obtainium/) se queres que a app se mantenha atualizada sozinha, e o APK direto se preferes não ter uma segunda app para isso. A Google Play ainda não está ativa, por isso hoje a escolha é entre esses dois. Entregam-te o mesmo ficheiro assinado com a mesma chave, por isso podes mudar em qualquer sentido a qualquer momento: o Obtainium adota um APK que já instalaste por sideload, e o APK do site instala-se por cima de um do Obtainium.",
+        "Podes mudar de ideias mais tarde sem complicações. Antes de qualquer mudança que obrigue a desinstalar primeiro, confirma que a app mostra \"Synced\" e tem à mão as tuas 12 palavras ou um QR de início de sessão de outro dispositivo, porque desinstalar apaga a cópia local."
+      ]
+    },
+    "markdown-folder": {
+      "q": "Posso editar uma pasta de ficheiros Markdown do meu próprio disco?",
+      "a": [
+        "Sim. Abre o pilar Markdown na barra lateral, escolhe uma pasta com ficheiros .md e .txt e edita-os no mesmo editor que usas para as notas. As subpastas aparecem sozinhas, as alterações são gravadas diretamente no ficheiro e nada é convertido, por isso a mesma pasta continua a funcionar no Obsidian, num repositório git ou nos teus próprios scripts. **Guardar nas minhas notas** copia um ficheiro, ou uma seleção inteira, para as tuas notas cifradas com um clique e deixa o original onde está. Tudo isto é gratuito em qualquer plano.",
+        "Esses ficheiros ficam no teu disco exatamente como os deixaste: nunca os enviamos, nunca sincronizam para os teus outros dispositivos e nada é convertido pelo caminho. Funciona na app de computador em qualquer computador, e no Chrome, Edge ou Opera do lado do navegador, porque abrir uma pasta diretamente do disco é uma capacidade de computador."
+      ]
+    },
+    "folders": {
+      "q": "Como funcionam as pastas e preciso de Pro para elas?",
+      "a": [
+        "As pastas aninham-se tão fundo quanto quiseres e vivem na barra lateral. Percorrê-las é gratuito em qualquer plano. Criar uma, mudar-lhe o nome ou mover uma nota para dentro (\"Nova pasta\" e \"Mover para a pasta\") é onde começa o Pro, para que uma conta gratuita consiga sempre ler uma estrutura importada ou construída durante o Pro. Uma linha \"Sem pasta\" lista todas as notas que não estão em nenhuma.",
+        "Uma nota vive numa só pasta de cada vez, como um ficheiro. Usa as [etiquetas](/pt/help/tags/) quando algo pertence a dois sítios ao mesmo tempo. A pasta está dentro da nota cifrada, por isso o servidor vê a tua estrutura tão pouco como vê o teu texto."
+      ]
+    },
+    "tags": {
+      "q": "Como funcionam as etiquetas?",
+      "a": [
+        "Cada nota aberta tem uma linha de etiquetas por baixo do título. Escreve uma palavra e carrega em Enter, vírgula ou #, e a etiqueta passa a ser um chip. A barra lateral lista todas as etiquetas que usas, e um clique filtra a lista para essas notas. Podes mudar o nome de uma etiqueta em todo o lado de uma vez, marcá-la como favorita para ficar no topo, ou apagá-la, com ou sem as notas que a levam.",
+        "Etiquetas e pastas resolvem problemas diferentes: uma nota vive numa pasta mas leva tantas etiquetas quantas quiseres, que é exatamente o que precisas quando algo é ao mesmo tempo \"trabalho\" e \"fatura\". As importações etiquetam por origem, por isso tudo o que vem de outra app chega com a sua própria etiqueta e é fácil de encontrar, ou de limpar mais tarde."
+      ]
+    },
+    "note-links": {
+      "q": "Como ligo uma nota a outra?",
+      "a": [
+        "Escreve [[ em qualquer ponto de uma nota e começa a escrever um título. Escolhe uma nota da lista e fica uma ligação entre notas em que podes clicar. Se nada corresponder, escolhe \"Criar\" e a nota nova é criada e ligada num só passo. O botão \"Ligar a outra nota\" da barra de ferramentas faz o mesmo.",
+        "As ligações entre notas vivem dentro da nota, por isso são exportadas com ela e sobrevivem a uma importação: um cofre do Obsidian mantém as suas ligações e as ligações de notas do Evernote são convertidas à entrada. Para descobrires o que aponta para uma nota, pesquisa o título dela: cada nota que lhe liga contém essas palavras."
+      ]
+    },
+    "appearance": {
+      "q": "Posso mudar o aspeto da app?",
+      "a": [
+        "Sim, em Definições > Aspeto. O Modo alterna entre Claro, Escuro e Auto, que segue o teu sistema. O Tamanho do texto tem quatro passos e só aumenta a tua superfície de escrita: a interface à volta fica na mesma. A Vista dispõe os itens em Lista ou Grelha. O Editor decide se as notas abrem Formatado ou como Markdown puro.",
+        "Os temas de cor são a única parte por trás do Pro: o tema predefinido é gratuito e o Pro desbloqueia os restantes, tanto claros como escuros. O modo zen, que esconde tudo menos o teu texto, também é Pro (Cmd+Shift+F). O modo e o tamanho do texto ficam no dispositivo onde os definiste. Todo o resto segue a tua conta para os teus outros dispositivos."
+      ]
+    },
+    "share-with-someone": {
+      "q": "Posso partilhar uma nota com alguém, ou trabalhar nela a dois?",
+      "a": [
+        "Envia uma [nota autodestrutiva](/pt/help/burn-notes/): transforma qualquer nota numa ligação cifrada de uso único, destruída no momento em que é lida, o que chega para uma palavra-passe, uma morada ou um rascunho. Para algo que a outra pessoa fique a ter, exporta a nota como Markdown, HTML ou PDF e envia o ficheiro.",
+        "Uma nota editada em direto por duas pessoas seria outro produto: obrigaria o servidor a passar chaves entre pessoas, e manter o servidor longe das tuas chaves é aqui o desenho inteiro. Uma conta é uma pessoa com uma frase, e é isso que faz de \"não conseguimos ler as tuas notas\" um facto e não uma política."
+      ]
+    },
+    "add-second-device": {
+      "q": "Como inicio sessão num segundo dispositivo?",
+      "a": [
+        "No dispositivo que já usas, abre Definições > Segurança > A tua frase. Estão lá as tuas 12 palavras e um código QR de início de sessão. No dispositivo novo escolhe \"Entrar com frase\" e lê esse QR com a câmara, envia uma fotografia dele, ou escreve as palavras. As tuas notas chegam em segundos.",
+        "Uma conta gratuita cobre 2 dispositivos e o Pro tantos quantos quiseres, e dois navegadores no mesmo computador contam como um só dispositivo. Trata o QR exatamente como a frase que ele leva: não o mostres a ninguém e nunca o deixes cair numa biblioteca de fotografias que sincroniza para a nuvem de outra pessoa."
+      ]
+    },
+    "pause-sync": {
+      "q": "Posso impedir um dispositivo de sincronizar sem terminar sessão?",
+      "a": [
+        "Sim. Abre Definições > ID & Sync e carrega em \"Pausar sincronização\". Esse dispositivo deixa de enviar seja o que for para o servidor: notas, definições e ficheiros. Continuas a escrever exatamente como antes, tudo se acumula localmente, e assim que retomares sobe tudo.",
+        "A pausa pertence só a esse dispositivo. Não viaja para os outros e nunca se levanta sozinha, porque um interruptor que diz \"este dispositivo não fala com ninguém\" não pode ser reposto por nada a não ser por ti. Uma coisa continua de propósito: o pequeno sinal com que um dispositivo removido fica a saber que o foi. É assim que um [dispositivo perdido](/pt/help/lost-device/) se apaga na mesma."
+      ]
+    },
+    "wifi-only": {
+      "q": "Posso impedir a app de enviar ficheiros pela rede móvel?",
+      "a": [
+        "No Android, sim. Abre Definições > ID & Sync e liga \"Ficheiros só com wi-fi\". As tuas notas continuam a sincronizar em qualquer ligação, porque o texto é minúsculo. Só as imagens e os anexos esperam, e sobem assim que o wi-fi volta em vez de aguardarem a tentativa seguinte.",
+        "O interruptor vive no Android porque o Android é a única plataforma cuja vista de app distingue wi-fi de rede móvel de forma fiável, e um interruptor que adivinha vale menos do que interruptor nenhum. Numa ligação paga noutro sítio, [\"Pausar sincronização\"](/pt/help/pause-sync/) faz o mesmo trabalho com mão mais pesada e funciona em todo o lado."
+      ]
+    },
+    "clear-browser-data": {
+      "q": "O que acontece se eu limpar os dados do navegador ou os cookies?",
+      "a": [
+        "A app web guarda as tuas notas no armazenamento do próprio navegador, por isso limpar os dados de site do PrivacyNotes apaga a cópia local e termina a tua sessão. Tudo o que já tinha sincronizado está a salvo: inicia sessão com a tua frase de 12 palavras e volta. O que ainda não tinha sincronizado perde-se, porque nunca tivemos uma cópia disso.",
+        "Portanto faz duas coisas. Confirma que o rodapé diz \"Synced\" antes de limpares seja o que for, e guarda a tua frase num gestor de palavras-passe, porque um navegador esvaziado não ta pode pedir com jeitinho. As apps de computador e de telemóvel não são afetadas: têm o seu próprio armazenamento, no qual uma limpeza do navegador nunca toca."
+      ]
+    },
+    "android-backup": {
+      "q": "As minhas notas estão no backup do meu telemóvel Android?",
+      "a": [
+        "Não. A app Android mantém os seus dados fora do backup na nuvem do telemóvel, por isso nada disso chega ao Google Drive. A razão é a chave, não as notas: onde escolheste **Confiar neste dispositivo**, as tuas 12 palavras ficam nesse dispositivo para te manter com sessão iniciada, e um backup na nuvem não é sítio para a chave de uma conta encriptada ponta a ponta.",
+        "Um telemóvel novo começa por isso vazio: instala a app, inicia sessão com as tuas 12 palavras e chega tudo o que sincronizou. O que nunca sincronizou vive só no telemóvel antigo, por isso confirma primeiro que o rodapé diz \"Synced\", ou leva contigo um \"Backup do PrivacyNotes (.zip)\" de Definições > Import & Export > Exportar ([que backup fazer](/pt/help/backup-strategy/)).",
+        "Uma transferência direta de telemóvel para telemóvel durante a configuração é outra coisa: alguns telemóveis movem aí os dados das apps, e o Android não dá a uma app forma fiável de recusar. Essa cópia nunca sai dos teus dois dispositivos, por isso apaga o telemóvel antigo depois."
+      ]
+    },
+    "print": {
+      "q": "Posso imprimir uma nota ou guardá-la em PDF?",
+      "a": [
+        "Sim. Clica com o botão direito numa nota, ou abre o menu de partilha dela, e escolhe \"Imprimir / Guardar como PDF\". Abre a janela de impressão do teu sistema, por isso podes enviar para uma impressora ou guardar um PDF a partir daí. A página sai limpa sobre branco e com a formatação intacta, uses o tema que usares na app.",
+        "É gerada no teu dispositivo como qualquer outra [exportação](/pt/help/export/), por isso não é enviado nada para a produzir. Para várias notas de uma vez, seleciona-as e exporta como HTML: ficas com uma página imprimível por nota. O \"PDF para o médico\" nas Estatísticas é um relatório de bem-estar à parte, feito de propósito para isso, e precisa de Pro."
+      ]
+    },
+    "note-history": {
+      "q": "Posso recuperar uma versão anterior de uma nota?",
+      "a": [
+        "Sim, com Pro. Abre o menu \"...\" da nota e escolhe \"Histórico da nota\" para percorrer e restaurar até 20 versões anteriores. Restaurar não perde nada: o texto atual é guardado antes como versão, por isso podes andar para a frente e para trás. As versões são cifradas como a própria nota, por isso nós também não as conseguimos ler.",
+        "É tirado um instantâneo no máximo uma vez por minuto, por isso duas edições com segundos de intervalo partilham uma versão. O histórico é a única funcionalidade Pro que passa pelo servidor, e é por isso que a demonstração guarda antes uma cópia local própria. Todos os planos têm ainda o [lixo](/pt/help/trash-auto-delete/), que guarda uma nota apagada durante 30 dias."
+      ]
+    },
+    "vault-totp": {
+      "q": "O Cofre pode guardar as minhas chaves 2FA (códigos TOTP / MFA)?",
+      "a": [
+        "Sim. Um início de sessão do Cofre tem um campo \"Código 2FA\" que aceita um segredo base32 ou uma ligação otpauth:// inteira, e uma importação do Bitwarden traz as chaves existentes. A chave é cifrada, guardada e sincronizada em todos os planos, o gratuito incluído. O Pro transforma-a no código rotativo com a sua contagem decrescente, por isso não precisas de uma segunda app aberta ao lado.",
+        "Uma palavra-passe e o seu código de uso único no mesmo cofre significam que um dispositivo desbloqueado tem os dois fatores, a mesma troca que faz qualquer gestor de palavras-passe com códigos integrados. Na maioria das contas a conveniência ganha, sobretudo com o bloqueio da app ou um PIN à frente. Se preferires separar os dois fatores para o teu email ou o teu banco, põe esses códigos noutro lado e deixa o [Cofre](/pt/help/vault/) levar o resto."
+      ]
+    },
+    "verify-download": {
+      "q": "Como verifico se a app que transferi é genuína?",
+      "a": [
+        "Cada compilação que publicamos é assinada, e o teu sistema operativo verifica essa assinatura antes de executar seja o que for. As compilações macOS são assinadas e notarizadas pela Apple. Os instaladores Windows levam uma assinatura Authenticode que podes ler em Propriedades > Assinaturas digitais. O APK Android é assinado com a nossa própria chave, e é por isso que o Android recusa qualquer atualização que não venha de nós. As apps de computador também rejeitam uma atualização que não esteja assinada com a nossa chave.",
+        "Transfere só a partir de PrivacyNotes.app ou das nossas [versões no GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases), onde está cada lançamento. A assinatura é a verificação que conta, e o teu sistema faz essa verificação por ti: é conferida contra uma chave que não está em parte alguma do nosso site, por isso um ficheiro trocado chumba nessa verificação, diga o que disser a página ao lado."
+      ]
+    },
+    "family-sharing": {
+      "q": "A minha família pode partilhar uma conta ou uma compra Pro?",
+      "a": [
+        "A resposta são duas contas, e abrir a segunda não custa nada: cada uma recebe 2 dispositivos e 50 MB grátis. Uma conta é uma frase de 12 palavras, e quem tem essa frase tem tudo o que está lá dentro: cada nota, cada entrada do cofre, em cada dispositivo. São as contas separadas que dão a cada pessoa as suas notas privadas. O Pro compra-se por conta.",
+        "Para passar uma coisa específica, envia uma [nota autodestrutiva](/pt/help/burn-notes/) em vez da tua frase. Uma conta de casa partilhada funciona bem se for mesmo o que queres: guarda a frase numa entrada partilhada do gestor de palavras-passe e parte do princípio de que quem alguma vez a teve já viu tudo o que está lá dentro."
+      ]
+    },
+    "business-use": {
+      "q": "Posso usar o PrivacyNotes no trabalho e existe um plano de equipa?",
+      "a": [
+        "Podes usá-lo no trabalho, e muita gente usa. Por desenho é uma ferramenta para uma só pessoa: a tua própria conta, a tua própria frase, a tua própria compra do Pro, e cada pessoa de uma equipa guarda a sua própria chave. Não há espaço partilhado, consola de administração nem faturação central.",
+        "Pesa isso antes de normalizarem isto. Cifragem de conhecimento zero significa que as notas pertencem a quem as escreveu, exatamente o que quer uma jornalista, um advogado ou quem presta consultoria, e é por isso que uma organização que precisa de depósito de chaves ou de registos de auditoria os põe num sistema feito para isso. Para uma pessoa que exerce por conta própria é a posição mais forte que existe: ninguém pode ser obrigado a entregar o que ninguém consegue ler."
+      ]
+    },
+    "signup-options": {
+      "q": "Que opção de registo devo escolher?",
+      "a": [
+        "A que corresponde ao teu nível de ameaça. Há três. Um: iniciar sessão com o Google, a Apple ou o GitHub, com a tua chave guardada no nosso servidor. Dois: o mesmo início de sessão, mas a chave fica só no teu dispositivo. Três: \"Gerar uma frase\", sem email, sem nome e sem qualquer início de sessão. Os três mantêm as tuas notas cifradas ponta a ponta, e o que os separa é quem tem a chave e o que ficamos a saber sobre ti.",
+        "Iniciar sessão com qualquer um dos três pergunta depois onde vive a tua chave. \"Mantém tudo simples e prático\" guarda-a cifrada no nosso servidor, por isso qualquer dispositivo novo inicia sessão só com esse início de sessão e tu não tens nada para guardar. É o nível certo se o que temes é perder as tuas próprias credenciais. \"Máxima segurança e privacidade\" mantém a chave no teu dispositivo: não conseguiríamos ler uma nota sob pressão nenhuma, e um dispositivo novo pede as tuas 12 palavras ou a leitura de um QR a partir de um dispositivo com sessão iniciada.",
+        "O caminho só com a frase é o nível mais alto: sem email, sem nome, sem nada que ligue a conta a uma pessoa. Em troca, a chave é só tua, por isso perdê-la sem nenhum dispositivo com sessão iniciada quer dizer que ninguém te pode ajudar. Nada disto é definitivo: Definições > Segurança > A tua frase leva-te de um modo para o outro quando quiseres, e qualquer nível pode acrescentar por cima um PIN ou um bloqueio biométrico. A escada completa, com o preço de cada degrau, está em [a escada dos níveis de ameaça](/pt/help/threat-model-levels/)."
+      ]
+    },
+    "storage-after-delete": {
+      "q": "Apaguei ficheiros mas o meu armazenamento não desceu. Porquê?",
+      "a": [
+        "O teu espaço já está livre. No momento em que a eliminação sincroniza, esses bytes deixam de contar para a tua quota, no servidor tal como neste dispositivo. Se a barra ainda mostrar o número antigo, carrega no ícone de atualizar ao lado: volta a contar a partir do servidor e deixa de fora tudo o que já está em fila para ser eliminado. Um dispositivo que esteve offline mantém a sua última contagem até se pôr em dia.",
+        "Os \"poucos dias\" de que a app fala são sobre o ficheiro cifrado em si, não sobre a tua quota, e essa espera é deliberada. Eliminar um ficheiro do armazenamento é definitivo, não há lixo de onde o pescar de volta. Um dispositivo que não acabou de sincronizar tem uma imagem incompleta das tuas notas, por isso podia eliminar uma imagem que outra nota ainda mostra. Um ficheiro espera por isso pelo menos 24 horas, e só um dispositivo com sincronização terminada em condições o remove. Essa paciência não te custa nada, porque o espaço foi creditado no dia em que eliminaste."
+      ]
+    }
+  }
+}

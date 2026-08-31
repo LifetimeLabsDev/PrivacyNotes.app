@@ -1,0 +1,30 @@
+# Overrides Tauri's built-in desktop-entry template (bundle.linux.deb.desktopTemplate).
+# It exists for ONE character: the %F on Exec.
+#
+# Tauri 2.11.4 ships `Exec={{exec}}` with no field code, and per the freedesktop
+# Desktop Entry spec an entry without one is launched with NO arguments - so a
+# file manager opening a .md would start the app and the path would never reach
+# argv, which is where lib.rs reads it. Double-click did nothing on Linux.
+#
+# Everything else is byte-for-byte Tauri's template, so keep it that way and
+# re-diff it against the upstream template on a Tauri bump:
+# crates/tauri-bundler/src/bundle/linux/freedesktop/main.desktop
+# The AppImage bundler builds on the deb tree, so this one file covers both.
+#
+# MimeType comes from bundle.fileAssociations plus the deep-link schemes; the
+# variable is available even though the config schema's docstring omits it.
+# Spec: ops/docs/plans/markdown-folder.md (section 11)
+[Desktop Entry]
+Categories={{categories}}
+{{#if comment}}
+Comment={{comment}}
+{{/if}}
+Exec={{exec}} %F
+StartupWMClass={{exec}}
+Icon={{icon}}
+Name={{name}}
+Terminal=false
+Type=Application
+{{#if mime_type}}
+MimeType={{mime_type}}
+{{/if}}

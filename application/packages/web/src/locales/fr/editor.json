@@ -1,0 +1,174 @@
+{
+  "placeholder": "Commence à écrire…",
+  "toolbar": {
+    "bold": "Gras",
+    "italic": "Italique",
+    "underline": "Souligné",
+    "heading": "Titre",
+    "taskList": "Liste de tâches",
+    "bulletList": "Liste à puces",
+    "linkMenu": "Lien",
+    "noteLinkMenu": "Lien vers une note",
+    "numberedList": "Liste numérotée",
+    "textColor": "Couleur du texte",
+    "textColorApply": "Couleur du texte : {{color}}",
+    "pickColor": "Choisir une couleur de texte",
+    "table": "Tableau",
+    "quote": "Citation",
+    "callout": "Encadré",
+    "inlineCode": "Code en ligne",
+    "strikethrough": "Barré",
+    "codeBlock": "Bloc de code",
+    "divider": "Séparateur",
+    "moreFormatting": "Plus de mise en forme",
+    "fewerFormatting": "Moins d'options de mise en forme",
+    "image": "Image",
+    "attachFile": "Joindre un fichier",
+    "insert": "Insérer",
+    "highlight": "Surligner",
+    "highlightApply": "Surligner : {{color}}",
+    "pickHighlight": "Choisir une couleur de surlignage",
+    "superscript": "Exposant",
+    "subscript": "Indice",
+    "math": "Formule",
+    "blockMath": "Formule en bloc",
+    "align": "Alignement",
+    "font": "Police"
+  },
+  "align": {
+    "left": "Aligner à gauche",
+    "center": "Centrer",
+    "right": "Aligner à droite",
+    "justify": "Justifier"
+  },
+  "font": {
+    "families": {
+      "sans": "Sans",
+      "serif": "Serif",
+      "mono": "Mono"
+    },
+    "sizes": {
+      "small": "Petit",
+      "large": "Grand",
+      "huge": "Très grand"
+    },
+    "reset": "Réinitialiser la police"
+  },
+  "heading": {
+    "normalText": "Texte normal",
+    "level": "Titre {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "Insérer un encadré",
+    "remove": "Retirer l'encadré",
+    "types": {
+      "info": "Info",
+      "success": "Succès",
+      "warning": "Avertissement",
+      "tip": "Astuce",
+      "danger": "Danger",
+      "question": "Question",
+      "quote": "Citation",
+      "example": "Exemple",
+      "bug": "Bug",
+      "note": "Note",
+      "abstract": "Résumé",
+      "failure": "Échec"
+    }
+  },
+  "color": {
+    "remove": "Retirer la couleur",
+    "removeHighlight": "Retirer le surlignage",
+    "names": {
+      "gray": "Gris",
+      "red": "Rouge",
+      "orange": "Orange",
+      "yellow": "Jaune",
+      "green": "Vert",
+      "teal": "Turquoise",
+      "blue": "Bleu",
+      "purple": "Violet",
+      "pink": "Rose"
+    }
+  },
+  "insertGroup": {
+    "insert": "Insérer",
+    "blocks": "Blocs",
+    "notation": "Notation"
+  },
+  "table": {
+    "addRowAbove": "Ajouter une ligne au-dessus",
+    "addRowBelow": "Ajouter une ligne en dessous",
+    "addColumnLeft": "Ajouter une colonne à gauche",
+    "addColumnRight": "Ajouter une colonne à droite",
+    "deleteRow": "Supprimer la ligne",
+    "deleteColumn": "Supprimer la colonne",
+    "deleteTable": "Supprimer le tableau"
+  },
+  "find": {
+    "placeholder": "Rechercher dans la note",
+    "label": "Rechercher dans la note",
+    "previous": "Correspondance précédente (Maj+Entrée)",
+    "previousTitle": "Précédent (Maj+Entrée)",
+    "next": "Correspondance suivante (Entrée)",
+    "nextTitle": "Suivant (Entrée)",
+    "close": "Fermer la recherche",
+    "closeTitle": "Fermer (⌘F)"
+  },
+  "outline": {
+    "show": "Afficher le plan",
+    "showTitle": "Plan (Cmd/Ctrl+Maj+O)",
+    "title": "Plan",
+    "ariaLabel": "Plan de la note",
+    "hide": "Masquer le plan",
+    "hideTitle": "Masquer le plan (Échap)"
+  },
+  "topRow": {
+    "add": "Ajouter une ligne en haut"
+  },
+  "link": {
+    "popoverLabel": "Ajouter un lien",
+    "placeholder": "Colle ou saisis une URL",
+    "apply": "Appliquer",
+    "addTitle": "Ajouter un lien",
+    "editTitle": "Modifier le lien",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://exemple.com",
+    "errorEnterUrl": "Saisis une URL",
+    "errorInvalidUrl": "Saisis une URL valide",
+    "textLabel": "Texte du lien",
+    "textPlaceholder": "Facultatif, laisse vide pour afficher l'URL",
+    "selectedTextHint": "Le texte sélectionné sera utilisé comme lien",
+    "editTextHint": "Modifie le texte du lien dans l'éditeur",
+    "update": "Mettre à jour"
+  },
+  "audio": {
+    "uploadingRecording": "Envoi de l'enregistrement...",
+    "uploading": "Envoi...",
+    "stopRecording": "Arrêter l'enregistrement",
+    "recordAudio": "Enregistrer un audio",
+    "savingRecording": "Enregistrement de la prise...",
+    "recording": "Enregistrement en cours",
+    "secondsLeft": "{{count}}s restantes",
+    "stop": "Arrêter"
+  },
+  "wordCount": {
+    "words_one": "{{formatted}} mot",
+    "words_other": "{{formatted}} mots",
+    "characters_one": "{{formatted}} caractère",
+    "characters_other": "{{formatted}} caractères",
+    "tooLargeToSync": ", peut-être trop volumineux pour se synchroniser, scinde-la en une nouvelle note",
+    "veryLong": ", très long, l'édition peut être lente et saccadée",
+    "gettingLong": ", devient long, peut ralentir sur les appareils plus lents",
+    "largeTableWarning": "Un grand tableau ({{rows}} lignes) peut rendre cette note lente à éditer, envisage de la scinder"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "Aucune note correspondante",
+    "create": "Créer « {{query}} »"
+  },
+  "codeBlock": {
+    "copy": "Copier",
+    "copied": "Copié",
+    "copyFailed": "Échec"
+  }
+}

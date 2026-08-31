@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Mida:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "Baixa la imatge",
+    "deleteAria": "Suprimeix la imatge",
+    "loading": "S'està carregant la imatge...",
+    "uploading": "S'està pujant {{name}}...",
+    "uploadFailed": "La pujada ha fallat: {{message}}",
+    "storeUnavailable": "El magatzem d'imatges no està disponible",
+    "loadFailed": "No s'ha pogut carregar la imatge",
+    "notFound": "No s'ha trobat la imatge"
+  },
+  "attachment": {
+    "fallbackName": "Adjunt",
+    "imageAlt": "Imatge",
+    "cantPlay": "No es pot reproduir. Baixa'l per escoltar-lo",
+    "downloadingStatus": "s'està baixant...",
+    "deleteConfirm": "Suprimir?",
+    "copied": "Copiat",
+    "download": "Baixa",
+    "downloadToPlay": "Baixa'l per reproduir-lo",
+    "play": "Reprodueix",
+    "pause": "Pausa",
+    "fileNotFound": "No s'ha trobat el fitxer",
+    "localOnly": "Només en aquest dispositiu",
+    "localOnlyTip": "No cap al teu emmagatzematge. Sense còpia de seguretat: si esborres les dades del navegador o de l'app, el fitxer es perd. Se sincronitzarà quan hi hagi espai.",
+    "notUploaded": "Encara no pujat",
+    "notUploadedTip": "Aquest fitxer encara no s'ha pujat des del dispositiu on es va afegir - normalment perquè allà l'emmagatzematge és ple. S'obrirà aquí quan se sincronitzi.",
+    "downloadFailed": "La baixada ha fallat",
+    "playbackFailed": "La reproducció ha fallat",
+    "uploadFailed": "La pujada ha fallat: {{message}}",
+    "unknownError": "Error desconegut"
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "shell": {
+    "importTitle": "Importa les teves dades",
+    "exportTitle": "Exporta les teves dades",
+    "restoreTitle": "Restaura les teves dades",
+    "vaultTitle": "Importa les teves contrasenyes",
+    "tablistLabel": "Importació, exportació, restauració o contrasenyes",
+    "tabImport": "Importa",
+    "tabExport": "Exporta",
+    "tabRestore": "Restaura",
+    "tabVault": "Contrasenyes",
+    "working": "S'està treballant…"
+  },
+  "footer": {
+    "exportNote": "Les exportacions s'executen localment. No es puja res.",
+    "restoreNote": "El teu fitxer es llegeix i es desxifra localment.",
+    "importNote": "Tot es xifra abans de sortir del teu dispositiu per sincronitzar-se."
+  },
+  "importPick": {
+    "autoTagLabel": "Etiqueta les notes importades segons l'origen",
+    "autoTagDesc": "Les notes de Google Keep reben <keep>#google</keep>, les d'Obsidian <obsidian>#obsidian</obsidian>, i així successivament.",
+    "guideAria": "Guia d'importació per a {{app}}",
+    "guideLabel": "Guia"
+  },
+  "folderImport": {
+    "tagLabel": "Etiqueta també les notes per carpeta",
+    "tagDesc": "Les carpetes es reconstrueixen igualment. Això afegeix a més el nom de cada carpeta com a etiqueta, útil si també t'agrada filtrar per etiqueta."
+  },
+  "sourceDesc": {
+    "googleKeep": "Fitxer .zip de Google Takeout (carpeta Keep) o una sola nota .json. Les llistes de verificació s'importen com a llistes de tasques natives.",
+    "appleNotes": "Exporta amb l'aplicació gratuïta Exporter en format Markdown i deixa anar el .zip aquí.",
+    "appleJournal": "Exporta des de Diari al Mac o a l'iPhone, comprimeix la carpeta AppleJournalEntries i deixa anar el .zip. Les entrades s'importen com a entrades de diari amb les fotos, els vídeos, les notes de veu i les ubicacions.",
+    "evernote": "Un sol .enex, o uns quants dins d'un zip. Conserva el format, les etiquetes, els adjunts, els enllaços entre notes i les llibretes. L'Evernote deixa les tasques fora del .enex.",
+    "samsungNotes": "Exporta com a Word (.docx) o text (.txt). Comprimeix diversos fitxers en un .zip per importar-los en bloc.",
+    "simplenote": "Exporta des de Simplenote (Settings -> Tools -> Export Notes). Deixa anar el .zip.",
+    "standardNotes": "Còpia de seguretat desxifrada .zip o .txt de Standard Notes (File > Export > Decrypted).",
+    "obsidian": "Vault d'Obsidian en .zip. Conserva etiquetes, [[note links]], estructura de carpetes, #tags en línia, i imatges i fitxers incrustats.",
+    "notesnook": "Exportació de Notesnook com a .zip. Tria HTML en exportar per conservar el format, les llibretes, les etiquetes i els adjunts.",
+    "upnote": "A UpNote: Settings > Backup > Backup now, i després comprimeix tot el que hi ha a la carpeta de còpia de seguretat. Conserva les llibretes, les etiquetes, les notes fixades, els note-links, el format i els adjunts. Les exportacions per nota des de les apps de mòbil també funcionen - tria «Export to HTML».",
+    "markdownFolder": "Fitxers .md o .txt solts o dins d'un .zip. Una carpeta comprimida manté les subcarpetes i s'emporta les imatges i els adjunts.",
+    "markdownApp": "Aquestes notes ja són fitxers Markdown dins d'una carpeta. Deixa anar aquesta carpeta en .zip i hi van les subcarpetes, les imatges i les #etiquetes.",
+    "browserBookmarks": "El fitxer d’adreces d’interès (.html) que surt de \"Export bookmarks\" al teu navegador, o el .zip que escriu Safari. Chrome, Firefox, Safari, Edge, Opera, Brave i Vivaldi contenen tots el mateix fitxer. Les carpetes i les dates hi vénen.",
+    "bitwarden": "Exportació .json sense xifrar de Bitwarden (Tools > Export vault > .json). Inicis de sessió, targetes, claus SSH, notes segures i codis TOTP vénen tots.",
+    "browserPasswords": "El fitxer de contrasenyes (.csv) de Chrome, Edge, Brave, Opera, Vivaldi, Firefox o Safari, o el .zip que escriu Safari. Cada fila es converteix en un inici de sessió. Esborra el fitxer quan acabis - conté les teves contrasenyes en text pla."
+  },
+  "vaultPick": {
+    "intro": "Importa inicis de sessió, targetes de crèdit i claus SSH des d'un altre gestor de contrasenyes."
+  },
+  "restorePick": {
+    "intro": "Restaura una còpia de seguretat de PrivacyNotes que hagis exportat abans. El teu fitxer es llegeix i es desxifra localment.",
+    "fullBackupTitle": "Còpia de seguretat completa (.zip)",
+    "fullBackupDesc": "Restaura notes, diaris, elements de la caixa forta, tasques, imatges, àudio i fitxers. Tot s'importa com a elements nous; les dades existents no se sobreescriuen.",
+    "encryptedBackupTitle": "Còpia de seguretat xifrada (.pnbackup, .pnbackupz)",
+    "encryptedBackupDesc": "Restaura una còpia de seguretat xifrada amb la clau de la teva frase. Un .pnbackupz ho retorna tot, fitxers inclosos; un .pnbackup només conté text i metadades. Has d'haver iniciat la sessió amb el mateix compte que la va crear."
+  },
+  "encryptedBackupLabel": "Còpia de seguretat xifrada",
+  "status": {
+    "readingFile": "S'està llegint el fitxer…",
+    "decryptingBackup": "S'està desxifrant la còpia de seguretat...",
+    "writingNotes": "S'estan escrivint les notes a la teva biblioteca local…",
+    "importingBlobs": "S'estan important les imatges i els adjunts...",
+    "restoringBlobs": "S'estan restaurant les imatges i els fitxers..."
+  },
+  "errors": {
+    "genericParse": "Alguna cosa ha anat malament.",
+    "decryptionFailed": "El desxifratge ha fallat. Frase incorrecta o fitxer malmès.",
+    "blobImportFailed": "Les teves notes s'han importat, però les imatges i els fitxers no: {{detail}} No s'ha modificat res del fitxer que vas triar, així que pots suprimir les notes importades i tornar a executar la importació."
+  },
+  "preview": {
+    "sourceLabel": "Origen",
+    "uniqueTags": "Etiquetes úniques",
+    "empty": "Buit",
+    "untagged": "Sense etiquetes",
+    "items": "Elements",
+    "previewLabel": "Previsualització",
+    "andMore": "… i {{count}} més",
+    "headsUpLabel": "Atenció:",
+    "duplicateWarning": "la importació afegeix aquests elements com a notes noves. Si l'executes dues vegades, tindràs duplicats. Encara no hi ha deduplicació automàtica.",
+    "quotaExceeded": "<strong>No tens prou emmagatzematge per importar.</strong> Es calcula que calen {{needed}}, i en queden {{available}} de disponibles. Allibera espai o millora el pla abans d'importar.",
+    "quotaWarning": "Atenció: aquesta importació farà servir aproximadament {{needed}} dels {{available}} d'emmagatzematge que et queden.",
+    "oversizeAttachments_one": "1 fitxer supera el límit de {{limit}} per fitxer del teu pla. S'importa en aquest dispositiu, però no se sincronitzarà amb els altres dispositius fins que no milloris a Pro.",
+    "oversizeAttachments_many": "{{count}} fitxers superen el límit de {{limit}} per fitxer del teu pla. S'importen en aquest dispositiu, però no se sincronitzaran amb els altres dispositius fins que no milloris a Pro.",
+    "oversizeAttachments_other": "{{count}} fitxers superen el límit de {{limit}} per fitxer del teu pla. S'importen en aquest dispositiu, però no se sincronitzaran amb els altres dispositius fins que no milloris a Pro.",
+    "duplicateSkipNote": "els marcadors que ja tens desats s'ometen, així que repetir aquesta importació no duplica res."
+  },
+  "counts": {
+    "note_one": "nota",
+    "note_many": "notes",
+    "note_other": "notes",
+    "journal_one": "entrada de diari",
+    "journal_many": "entrades de diari",
+    "journal_other": "entrades de diari",
+    "login_one": "inici de sessió",
+    "login_many": "inicis de sessió",
+    "login_other": "inicis de sessió",
+    "card_one": "targeta",
+    "card_many": "targetes",
+    "card_other": "targetes",
+    "sshKey_one": "clau SSH",
+    "sshKey_many": "claus SSH",
+    "sshKey_other": "claus SSH",
+    "zeroItems": "0 elements",
+    "importButton": "Importa {{counts}}"
+  },
+  "errorPhase": {
+    "heading": "{{importer}}: la importació ha fallat"
+  },
+  "export": {
+    "intro": "Les teves dades són teves. Exporta-les quan vulguis, gratis.",
+    "fullBackupHeading": "Còpia de seguretat completa",
+    "portableHeading": "Exportació portable",
+    "vaultOnlyHeading": "Només la caixa forta",
+    "zipBackupTitle": "Còpia de seguretat de PrivacyNotes (.zip)",
+    "zipBackupDesc": "Tot: notes, diaris, elements de la caixa forta, tasques, imatges, àudio i fitxers. Fes-la servir com a còpia de seguretat completa del compte o per passar a un dispositiu nou. Els fitxers de dins no estan xifrats, així que guarda el zip en un lloc segur.",
+    "encryptedZipBackupTitle": "Còpia de seguretat completa xifrada (.pnbackupz)",
+    "encryptedZipBackupDesc": "Tot el que conté la còpia zip - notes, elements de la caixa forta, imatges, àudio i fitxers - segellat amb la clau de la teva frase. Es restaura amb la teva frase a qualsevol dispositiu. Es pot desar en qualsevol lloc.",
+    "encryptedBackupTitle": "Còpia de seguretat xifrada (.pnbackup)",
+    "encryptedBackupDesc": "Tot el contingut de text i les metadades, xifrats amb la clau de la teva frase. Sense imatges ni fitxers. Es pot desar en qualsevol lloc sense por: és il·legible sense la teva frase.",
+    "htmlArchiveTitle": "Arxiu HTML (.zip)",
+    "htmlArchiveDesc": "Una pàgina HTML imprimible per nota. Ideal per llegir fora de línia o arxivar, no per restaurar.",
+    "textBackupTitle": "Còpia de seguretat de text (.json)",
+    "textBackupDesc": "Tot el contingut de text i les metadades en JSON pla. Sense imatges ni fitxers. Desa-la en un lloc de confiança: no està xifrada.",
+    "vaultExportTitle": "Exportació de la caixa forta (.json)",
+    "vaultExportDesc": "Inicis de sessió, targetes i claus SSH en format compatible amb Bitwarden. La majoria de gestors de contrasenyes el poden importar. En text clar: tracta-la amb cura.",
+    "bookmarksOnlyHeading": "Només marcadors",
+    "bookmarksExportTitle": "Fitxer de marcadors (.html)",
+    "bookmarksExportDesc": "El fitxer de marcadors estàndard que llegeix qualsevol navegador. Importa'l al Chrome, Firefox, Safari o Edge amb les carpetes intactes."
+  },
+  "exportProgress": {
+    "failedTitle": "L'exportació ha fallat",
+    "completeTitle": "Exportació completada",
+    "exportingTitle": "S'està exportant la còpia de seguretat...",
+    "preparing": "S'està preparant...",
+    "exporting": "S'està exportant...",
+    "imagesProgress": "S'estan exportant les imatges... {{done}} de {{total}}",
+    "filesProgress": "S'estan exportant els fitxers... {{done}} de {{total}}",
+    "building": "S'està construint la còpia de seguretat...",
+    "compressing": "S'està comprimint..."
+  },
+  "upload": {
+    "completeTitle": "Pujada completada",
+    "failedTitle": "La pujada ha fallat",
+    "partialTitle": "{{done}} pujats, {{failed}} amb errors",
+    "uploadingTitle_one": "S'està pujant {{count}} fitxer",
+    "uploadingTitle_many": "S'estan pujant {{count}} fitxers",
+    "uploadingTitle_other": "S'estan pujant {{count}} fitxers",
+    "statusDone": "Fet",
+    "statusFailed": "Ha fallat",
+    "errorStorageFull": "Emmagatzematge ple - allibera espai o afegeix emmagatzematge per pujar aquest fitxer.",
+    "errorStorageFullKept": "No cap al teu emmagatzematge - es queda en aquest dispositiu. Se sincronitzarà quan hi hagi espai.",
+    "statusUploading": "S'està pujant...",
+    "statusWaiting": "En espera",
+    "summaryDone": "{{count}} fets",
+    "summaryUploading": "{{count}} en curs",
+    "summaryFailed": "{{count}} amb errors",
+    "typesHint": "Imatges, documents, àudio, vídeo, zip. Màxim {{limit}} MB per fitxer.",
+    "proPitch": "Pro augmenta el límit a 50 MB per fitxer.",
+    "proPitchCta": "Millora",
+    "storagePitch": "Un pla d'emmagatzematge l'augmenta a 100 MB per fitxer.",
+    "storagePitchCta": "Afegeix emmagatzematge"
+  },
+  "decryptErrors": {
+    "tooSmall": "Aquest fitxer és buit o incomplet ({{size}} bytes), així que no hi ha res a restaurar. Torna a exportar la còpia i comprova que el fitxer desat té una mida real abans d'importar-lo.",
+    "notThisAccount": "No s'ha pogut desbloquejar aquesta còpia. Un .pnbackup només s'obre al compte que el va crear, així que normalment és una còpia d'un altre compte - per moure notes entre comptes, exporta una còpia de seguretat completa (.zip). Si el compte és el correcte, el fitxer s'ha malmès o s'ha desat incomplet."
+  },
+  "exportErrors": {
+    "generic": "No s'ha pogut desar l'exportació. Torna-ho a provar o tria una altra carpeta."
+  },
+  "saveErrors": {
+    "shortWrite": "Només s'han desat {{written}} de {{expected}} bytes, així que el fitxer és incomplet. Torna-ho a provar desant a l'emmagatzematge del teu dispositiu en comptes d'una carpeta al núvol."
+  },
+  "browserImport": {
+    "tagLabel": "Conserva les etiquetes del teu navegador",
+    "tagDesc": "El Firefox desa etiquetes i una paraula clau de la barra d'adreces amb cada marcador. Aquí totes dues passen a ser etiquetes."
+  }
+}

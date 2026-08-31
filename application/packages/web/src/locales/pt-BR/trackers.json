@@ -1,0 +1,169 @@
+{
+  "labels": {
+    "mood": "Humor",
+    "emotions": "Emoções",
+    "sleep": "Sono",
+    "sleepScore": "Pontuação do sono",
+    "heartRate": "Frequência cardíaca",
+    "activity": "Atividade",
+    "medication": "Medicação",
+    "meds": "Remédios",
+    "energy": "Energia",
+    "focus": "Foco",
+    "weight": "Peso",
+    "steps": "Passos",
+    "water": "Água",
+    "screenTime": "Tempo de tela",
+    "caffeine": "Cafeína",
+    "pain": "Dor",
+    "social": "Social",
+    "custom": "Personalizado"
+  },
+  "units": {
+    "hoursSuffix": "h",
+    "bpm": "bpm",
+    "kg": "kg",
+    "steps_one": "passo",
+    "steps_other": "passos",
+    "hrs": "h",
+    "glasses_one": " copo",
+    "glasses_other": " copos",
+    "cups_one": " xícara",
+    "cups_other": " xícaras"
+  },
+  "scaleEnds": {
+    "low": "baixo",
+    "high": "alto",
+    "none": "nenhum",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "intensa",
+    "socialLow": "isolado",
+    "socialHigh": "muito social"
+  },
+  "mood": {
+    "prompt": "Como você está se sentindo? (1-10)",
+    "low": "péssimo",
+    "high": "incrível",
+    "anchor": {
+      "1": "péssimo",
+      "3": "difícil",
+      "5": "ok",
+      "7": "bem",
+      "10": "incrível"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "Quais emoções estão presentes?",
+    "count_one": "{{count}} emoção",
+    "count_other": "{{count}} emoções",
+    "valence": {
+      "positive": "positiva",
+      "neutral": "neutra",
+      "negative": "negativa"
+    },
+    "tags": {
+      "happy": "Feliz",
+      "calm": "Calmo",
+      "relaxed": "Relaxado",
+      "grateful": "Grato",
+      "loved": "Amado",
+      "motivated": "Motivado",
+      "confident": "Confiante",
+      "productive": "Produtivo",
+      "focused": "Focado",
+      "energetic": "Cheio de energia",
+      "tired": "Cansado",
+      "restless": "Inquieto",
+      "distracted": "Distraído",
+      "numb": "Anestesiado",
+      "overwhelmed": "Sobrecarregado",
+      "anxious": "Ansioso",
+      "stressed": "Estressado",
+      "frustrated": "Frustrado",
+      "irritable": "Irritado",
+      "sad": "Triste",
+      "lonely": "Sozinho",
+      "guilty": "Culpado",
+      "hopeless": "Sem esperança",
+      "angry": "Com raiva"
+    }
+  },
+  "sleep": {
+    "prompt": "Como você dormiu?",
+    "hoursLabel": "Horas:",
+    "quality": {
+      "terrible": "Péssimo",
+      "poor": "Ruim",
+      "okay": "Ok",
+      "good": "Bom",
+      "great": "Ótimo"
+    }
+  },
+  "sleepScore": {
+    "prompt": "Pontuação do sono"
+  },
+  "heartRate": {
+    "prompt": "Frequência cardíaca média"
+  },
+  "activity": {
+    "prompt": "Nível de atividade hoje?",
+    "level": {
+      "sedentary": "Sedentário",
+      "light": "Leve",
+      "moderate": "Moderado",
+      "active": "Ativo",
+      "intense": "Intenso"
+    }
+  },
+  "medication": {
+    "heading": "Medicações",
+    "empty": "Nenhuma medicação configurada ainda.",
+    "takenCount_one": "{{count}} tomado",
+    "takenCount_other": "{{count}} tomados",
+    "namePlaceholder": "Nome da medicação",
+    "dosagePlaceholder": "Dosagem (ex.: 50mg)",
+    "addMedication": "+ Adicionar medicação",
+    "editMedication": "Editar medicação",
+    "removeMedication": "Remover medicação",
+    "confirmRemove": "Remover <highlight>{{name}}</highlight>?",
+    "yes": "Sim",
+    "no": "Não",
+    "taken": "Tomado",
+    "skip": "Pular"
+  },
+  "custom": {
+    "yes": "Sim",
+    "no": "Não",
+    "typeLabels": {
+      "scale10": "Escala (0-10)",
+      "scale5": "Escala (0-5)",
+      "slider100": "Controle deslizante (0-100)",
+      "number": "Número",
+      "yesno": "Sim / Não"
+    }
+  },
+  "config": {
+    "configureTrackers": "Configurar rastreadores",
+    "title": "Rastreadores",
+    "categoryMoodMind": "Humor e mente",
+    "categoryBodyHealth": "Corpo e saúde",
+    "categoryLifestyle": "Estilo de vida",
+    "customHeading": "Personalizado",
+    "resume": "Retomar",
+    "stop": "Parar",
+    "addCustomTracker": "Adicionar rastreador personalizado",
+    "addCustomTrackerCount": "Adicionar rastreador personalizado ({{count}}/{{max}})",
+    "addCustomTrackerHint": "Acompanhe o que você quiser",
+    "maxReached": "Máximo de {{max}} rastreadores personalizados atingido.",
+    "customTrackers": "Rastreadores personalizados",
+    "newCustomTracker": "Novo rastreador personalizado",
+    "trackerNamePlaceholder": "Nome do rastreador",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "Tipo:",
+    "colorLabel": "Cor:"
+  }
+}

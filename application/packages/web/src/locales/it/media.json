@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Dimensione:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "Scarica immagine",
+    "deleteAria": "Elimina immagine",
+    "loading": "Caricamento immagine...",
+    "uploading": "Caricamento di {{name}}...",
+    "uploadFailed": "Caricamento non riuscito: {{message}}",
+    "storeUnavailable": "Archivio immagini non disponibile",
+    "loadFailed": "Impossibile caricare l'immagine",
+    "notFound": "Immagine non trovata"
+  },
+  "attachment": {
+    "fallbackName": "Allegato",
+    "imageAlt": "Immagine",
+    "cantPlay": "Impossibile riprodurre. Scarica per ascoltare",
+    "downloadingStatus": "download in corso...",
+    "deleteConfirm": "Eliminare?",
+    "copied": "Copiato",
+    "download": "Scarica",
+    "downloadToPlay": "Scarica per riprodurre",
+    "play": "Riproduci",
+    "pause": "Pausa",
+    "fileNotFound": "File non trovato",
+    "localOnly": "Solo su questo dispositivo",
+    "localOnlyTip": "Non entra nel tuo spazio. Nessun backup: cancellando i dati del browser o dell'app il file va perso. Si sincronizzerà appena si libera spazio.",
+    "notUploaded": "Non ancora caricato",
+    "notUploadedTip": "Questo file non è ancora stato caricato dal dispositivo su cui è stato aggiunto - di solito perché lì lo spazio è pieno. Si aprirà qui appena sarà sincronizzato.",
+    "downloadFailed": "Download non riuscito",
+    "playbackFailed": "Riproduzione non riuscita",
+    "uploadFailed": "Caricamento non riuscito: {{message}}",
+    "unknownError": "Errore sconosciuto"
+  }
+}

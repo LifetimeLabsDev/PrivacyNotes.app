@@ -1,0 +1,174 @@
+{
+  "placeholder": "Start writing…",
+  "toolbar": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "heading": "Heading",
+    "taskList": "Task list",
+    "bulletList": "Bullet list",
+    "linkMenu": "Link",
+    "noteLinkMenu": "Note link",
+    "numberedList": "Numbered list",
+    "textColor": "Text color",
+    "textColorApply": "Text color: {{color}}",
+    "pickColor": "Choose a text color",
+    "table": "Table",
+    "quote": "Quote",
+    "callout": "Callout",
+    "inlineCode": "Inline code",
+    "strikethrough": "Strikethrough",
+    "codeBlock": "Code block",
+    "divider": "Divider",
+    "moreFormatting": "More formatting",
+    "fewerFormatting": "Fewer formatting options",
+    "image": "Image",
+    "attachFile": "Attach file",
+    "insert": "Insert",
+    "highlight": "Highlight",
+    "highlightApply": "Highlight: {{color}}",
+    "pickHighlight": "Choose a highlight color",
+    "superscript": "Superscript",
+    "subscript": "Subscript",
+    "math": "Math formula",
+    "blockMath": "Block formula",
+    "align": "Alignment",
+    "font": "Font"
+  },
+  "align": {
+    "left": "Align left",
+    "center": "Center",
+    "right": "Align right",
+    "justify": "Justify"
+  },
+  "font": {
+    "families": {
+      "sans": "Sans",
+      "serif": "Serif",
+      "mono": "Mono"
+    },
+    "sizes": {
+      "small": "Small",
+      "large": "Large",
+      "huge": "Huge"
+    },
+    "reset": "Reset font"
+  },
+  "heading": {
+    "normalText": "Normal text",
+    "level": "Heading {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "Insert callout",
+    "remove": "Remove callout",
+    "types": {
+      "info": "Info",
+      "success": "Success",
+      "warning": "Warning",
+      "tip": "Tip",
+      "danger": "Danger",
+      "question": "Question",
+      "quote": "Quote",
+      "example": "Example",
+      "bug": "Bug",
+      "note": "Note",
+      "abstract": "Abstract",
+      "failure": "Failure"
+    }
+  },
+  "color": {
+    "remove": "Remove color",
+    "removeHighlight": "Remove highlight",
+    "names": {
+      "gray": "Gray",
+      "red": "Red",
+      "orange": "Orange",
+      "yellow": "Yellow",
+      "green": "Green",
+      "teal": "Teal",
+      "blue": "Blue",
+      "purple": "Purple",
+      "pink": "Pink"
+    }
+  },
+  "insertGroup": {
+    "insert": "Insert",
+    "blocks": "Blocks",
+    "notation": "Notation"
+  },
+  "table": {
+    "addRowAbove": "Add row above",
+    "addRowBelow": "Add row below",
+    "addColumnLeft": "Add column left",
+    "addColumnRight": "Add column right",
+    "deleteRow": "Delete row",
+    "deleteColumn": "Delete column",
+    "deleteTable": "Delete table"
+  },
+  "find": {
+    "placeholder": "Find in note",
+    "label": "Find in note",
+    "previous": "Previous match (Shift+Enter)",
+    "previousTitle": "Previous (Shift+Enter)",
+    "next": "Next match (Enter)",
+    "nextTitle": "Next (Enter)",
+    "close": "Close find",
+    "closeTitle": "Close (⌘F)"
+  },
+  "outline": {
+    "show": "Show outline",
+    "showTitle": "Outline (Cmd/Ctrl+Shift+O)",
+    "title": "Outline",
+    "ariaLabel": "Note outline",
+    "hide": "Hide outline",
+    "hideTitle": "Hide outline (Esc)"
+  },
+  "topRow": {
+    "add": "Add a line at the top"
+  },
+  "link": {
+    "popoverLabel": "Add link",
+    "placeholder": "Paste or type a URL",
+    "apply": "Apply",
+    "addTitle": "Add link",
+    "editTitle": "Edit link",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "Enter a URL",
+    "errorInvalidUrl": "Enter a valid URL",
+    "textLabel": "Link text",
+    "textPlaceholder": "Optional, leave blank to show URL",
+    "selectedTextHint": "Selected text will be used as the link",
+    "editTextHint": "Edit the link text in the editor",
+    "update": "Update"
+  },
+  "audio": {
+    "uploadingRecording": "Uploading recording...",
+    "uploading": "Uploading...",
+    "stopRecording": "Stop recording",
+    "recordAudio": "Record audio",
+    "savingRecording": "Saving recording...",
+    "recording": "Recording",
+    "secondsLeft": "{{count}}s left",
+    "stop": "Stop"
+  },
+  "wordCount": {
+    "words_one": "{{formatted}} word",
+    "words_other": "{{formatted}} words",
+    "characters_one": "{{formatted}} character",
+    "characters_other": "{{formatted}} characters",
+    "tooLargeToSync": ", may be too large to sync, split into a new note",
+    "veryLong": ", very long, may be slow to edit and stutter",
+    "gettingLong": ", getting long, may lag on slower devices",
+    "largeTableWarning": "Large table ({{rows}} rows) can make this note slow to edit, consider splitting it"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "No matching notes",
+    "create": "Create \"{{query}}\""
+  },
+  "codeBlock": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyFailed": "Failed"
+  }
+}

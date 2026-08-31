@@ -1,0 +1,64 @@
+{
+  "upgrade": {
+    "header": "Betala en gång, din för alltid",
+    "earlyAdopterBadge": "Tidig användare",
+    "oneTime": "engångsbetalning",
+    "subscriptionPitch": "Ingen prenumeration. Ingen årsavgift. En betalning, upplåst för livet.",
+    "ctaUnlock": "Lås upp allt",
+    "ctaOpening": "Öppnar kassan...",
+    "ctaSignUp": "Registrera dig för att låsa upp",
+    "intro": {
+      "storage": "Större uppladdningar och mer utrymme är en Pro-funktion. Uppgradera för 50 MB-filer och 500 MB lagring.",
+      "folders": "Mappar är en Pro-funktion. Organisera dina anteckningar i mappar med undermappar, så djupt du vill, och håll varje projekt för sig.",
+      "lock": "Att låsa en anteckning är en Pro-funktion. Uppgradera för att skydda vilken anteckning som helst mot oavsiktliga ändringar.",
+      "protect": "Att PIN-skydda en anteckning är en Pro-funktion. Uppgradera för att lägga känsliga anteckningar bakom din PIN.",
+      "history": "Anteckningshistorik är en Pro-funktion. Uppgradera för att få en tidslinje över varje sparad version.",
+      "devices": "Du har nått gränsen på 2 enheter. Uppgradera för obegränsat antal enheter.",
+      "zen": "Zenläge är en Pro-funktion. Uppgradera för skrivande utan distraktioner.",
+      "theme": "Premiumteman är en Pro-funktion. Uppgradera för att låsa upp varje nyans.",
+      "callout": "Hela uppsättningen informationsrutor är en Pro-funktion.",
+      "totp": "2FA-koder är en Pro-funktion. Spara en autentiseringsnyckel på vilken inloggning som helst så får du den roterande koden bredvid lösenordet. Själva nyckeln sparas och synkas i alla planer.",
+      "default": "En uppgradering låser upp allt nedan. Engångsbetalning."
+    },
+    "features": {
+      "devices": "Synka obegränsat antal enheter, på alla plattformar",
+      "folders": "Mappar i flera nivåer, ordna per projekt",
+      "lock": "Lås och PIN-skydda vilken anteckning som helst",
+      "history": "Full anteckningshistorik, återställ när du vill",
+      "themes": "Premiumteman i varje nyans",
+      "zen": "Zenläge, skrivande utan distraktioner",
+      "storage": "500 MB lagring + 50 MB bilagor"
+    },
+    "comparisonBeta": "Betala ${{earlyPrice}} en gång. Obsidian Sync kostar $48/år, år efter år. Standard Notes tar $90/år. Pris för tidiga användare, låst innan det höjs till ${{proPrice}}.",
+    "comparison": "Betala ${{proPrice}} en gång och äg det för alltid. Obsidian Sync kostar $48/år och Standard Notes $90/år, varenda år."
+  },
+  "purchaseError": {
+    "store": "Köpet i butiken kunde inte slutföras och du har inte debiterats. Försök igen om en stund.",
+    "validate": "Betalningen gick igenom men aktiveringen misslyckades. Starta om appen för att försöka igen - om det fortfarande inte låses upp återbetalar butiken köpet automatiskt inom 3 dagar.",
+    "alreadyOwned": "Enligt butiken äger du redan det här, men köpet tillhör ett annat konto. Logga in med den återställningsfras du använde när du köpte det."
+  },
+  "checkout": {
+    "invalidTitle": "Ogiltig kassalänk",
+    "invalidBody": "Öppna kassan inifrån appen så att vi kan koppla köpet till ditt konto.",
+    "completeTitle": "Betalningen är klar",
+    "completeBody": "Du kan stänga den här fliken och gå tillbaka till PrivacyNotes. Din uppgradering låses upp automatiskt.",
+    "openingTitle": "Öppnar säker kassa...",
+    "openingBody": "Ett kassafönster från Paddle bör dyka upp. Om det inte gör det kan webbläsaren ha blockerat popup-fönstret - ladda om sidan för att försöka igen."
+  },
+  "history": {
+    "title": "Anteckningshistorik",
+    "subtitle": "Upp till 20 versioner per anteckning. De äldsta gallras bort automatiskt.",
+    "empty": "Ingen historik än. Versioner börjar samlas efter nästa ändring. Kom tillbaka senare.",
+    "selectPrompt": "Välj en version för att förhandsgranska.",
+    "emptyBody": "(tom)",
+    "restore": "Återställ",
+    "restoring": "Återställer…"
+  },
+  "donation": {
+    "eyebrow": "Du låste upp",
+    "intro": "<brand/> är gratis, och kommer alltid att vara det. Inga annonser, ingen spårning, ingen e-postadress sparad. Om appen har hjälpt dig att tänka, skriva eller minnas, överväg att stötta utvecklingen. Det håller lamporna tända och bekostar nästa funktioner.",
+    "proBenefits": "Att stötta låser också upp Pro-fördelar när de kommer: obegränsat antal enheter, bilagor, krypterade säkerhetskopior i molnet.",
+    "maybeLater": "Kanske senare",
+    "support": "Stötta →"
+  }
+}

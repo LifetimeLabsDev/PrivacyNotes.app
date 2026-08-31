@@ -1,0 +1,701 @@
+{
+  "page": {
+    "importTitle": "Importar para o PrivacyNotes",
+    "importSteps": [
+      "Abre o PrivacyNotes e vai a Definições > Import & Export.",
+      "Escolhe **{{app}}** como origem.",
+      "Arrasta o ficheiro que acabaste de exportar, ou carrega para o procurar.",
+      "Vê o que a pré-visualização anuncia e depois inicia a importação."
+    ],
+    "otherGuides": "Outros guias de importação"
+  },
+  "guides": {
+    "google-keep": {
+      "app": "Google Keep",
+      "title": "Exporta as tuas notas do Google Keep",
+      "metaTitle": "Exportar o Google Keep com o Takeout - PrivacyNotes",
+      "lead": "O Google Keep não tem botão de exportar dentro da própria app; a saída oficial é o Google Takeout. Demora uns cinco minutos, e o PrivacyNotes lê o ficheiro do Takeout diretamente, sem descomprimir.",
+      "sections": [
+        {
+          "h": "Exporta as tuas notas do Google Keep",
+          "steps": [
+            "Vai a [takeout.google.com](https://takeout.google.com) e inicia sessão com a conta Google dona das tuas notas.",
+            "Clica em \"Deselect all\" (desmarcar tudo) e, na lista de produtos, assinala apenas \"Keep\".",
+            "Clica em \"Next step\" e mantém as predefinições: exportação única, ficheiro .zip.",
+            "Clica em \"Create export\". A Google prepara o arquivo e envia um link de transferência por e-mail; só com o Keep isto costuma demorar minutos, não horas.",
+            "Transfere o .zip. Podes deixá-lo exatamente como está."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "Títulos, texto das notas e formatação chegam intactos. As listas de verificação do Keep passam a listas de tarefas nativas do PrivacyNotes, e os marcadores do Keep chegam como etiquetas.",
+            "Arrasta o .zip inteiro do Takeout para o importador. Se já o descomprimiste, um ficheiro .json avulso da pasta Takeout/Keep também funciona."
+          ]
+        }
+      ]
+    },
+    "apple-notes": {
+      "app": "Apple Notes",
+      "title": "Exporta as tuas notas do Apple Notes",
+      "metaTitle": "Exportar o Apple Notes para Markdown - PrivacyNotes",
+      "lead": "O Apple Notes não tem exportação em massa própria, por isso o caminho prático no Mac é a app gratuita Exporter, que grava as tuas notas em Markdown. O PrivacyNotes lê essa exportação diretamente, imagens incluídas.",
+      "sections": [
+        {
+          "h": "Exporta as tuas notas num Mac",
+          "steps": [
+            "Instala a app gratuita \"Exporter\" da Mac App Store.",
+            "Abre-a e exporta as tuas notas. Recebes uma pasta de ficheiros Markdown, organizada por conta e por pasta, com as imagens ao lado.",
+            "No Finder, clica com o botão direito nessa pasta e escolhe \"Comprimir\" para a transformares num .zip."
+          ]
+        },
+        {
+          "h": "Vens de um iPhone ou iPad",
+          "p": [
+            "Os zips por nota partilhados a partir do iOS (um pequeno .zip com o Markdown da nota mais uma pasta Attachments) também são aceites: arrasta-os um de cada vez. Para uma biblioteca inteira, o caminho do Mac acima é bastante mais rápido."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "A estrutura de pastas, o texto das notas e as imagens incorporadas sobrevivem à mudança. As notas mantêm os títulos, e os anexos vão parar ao armazenamento encriptado de ficheiros, ao lado da respetiva nota."
+          ]
+        }
+      ]
+    },
+    "obsidian": {
+      "app": "Obsidian",
+      "title": "Exporta o teu vault do Obsidian",
+      "metaTitle": "Exportar um vault do Obsidian - PrivacyNotes",
+      "lead": "O Obsidian não tem passo de exportação e não precisa de um: um vault já é uma pasta de ficheiros Markdown. É a migração mais fácil de todas. Comprime o vault e arrasta-o para dentro.",
+      "sections": [
+        {
+          "h": "Exporta o teu vault",
+          "steps": [
+            "Encontra a pasta do vault no disco. Se não souberes onde fica, o Obsidian mostra o caminho quando clicas no nome do vault no seletor de vaults.",
+            "Comprime a pasta para .zip: clique com o botão direito > Comprimir no macOS, ou Enviar para > Pasta comprimida no Windows.",
+            "Esse zip é o ficheiro de importação. Sem plugins nem exportações."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "A tua estrutura de pastas é reconstruída como pastas a sério, não achatada em etiquetas, por mais fundo que esteja aninhada. Uma nota em Work/Projects vai parar a uma pasta Work > Projects. Se voltares a importar o mesmo vault, as pastas já criadas são reutilizadas em vez de duplicadas.",
+            "No plano gratuito podes navegar por estas pastas de imediato; criar, mudar o nome e mover pastas é uma funcionalidade Pro, por isso uma importação do Obsidian é uma boa forma de a experimentares antes de passares para Pro.",
+            "O frontmatter YAML é entendido: tags, aliases e datas de criação são respeitados, e as #tags inline no corpo são juntadas ao campo de tags. Durante a importação podes também assinalar \"Etiquetar também as notas por pasta\" para adicionares o nome de cada pasta como etiqueta, prático se gostares de filtrar por etiqueta.",
+            "Os teus links [[...]] continuam a funcionar: o PrivacyNotes apresenta-os como note-links, por isso as ligações entre notas sobrevivem à mudança. A pasta de configuração .obsidian e a .trash são ignoradas automaticamente."
+          ]
+        }
+      ]
+    },
+    "standard-notes": {
+      "app": "Standard Notes",
+      "title": "Exporta as tuas notas do Standard Notes",
+      "metaTitle": "Exportar um backup do Standard Notes - PrivacyNotes",
+      "lead": "O Standard Notes oferece um backup desencriptado como exportação, e é esse o ficheiro que o PrivacyNotes lê. Um pormenor importante logo à partida: tem de ser a variante desencriptada, não a encriptada.",
+      "sections": [
+        {
+          "h": "Exporta as tuas notas do Standard Notes",
+          "steps": [
+            "Abre o Standard Notes (na web em app.standardnotes.com, ou a app para computador) e inicia sessão.",
+            "Abre as Preferências e depois a secção Backups.",
+            "Transfere um backup de dados e escolhe o formato desencriptado (decrypted) quando te for pedido.",
+            "Recebes um .zip com um ficheiro chamado \"Standard Notes Backup and Import File.txt\". Mantém o zip como está."
+          ]
+        },
+        {
+          "h": "Os backups encriptados não são suportados",
+          "p": [
+            "Um backup encriptado do Standard Notes é texto cifrado que só a tua palavra-passe do Standard Notes consegue abrir, por isso o importador não o consegue ler. Se exportaste a variante encriptada, exporta de novo e escolhe desencriptado. Como o ficheiro contém as tuas notas em texto simples, apaga-o quando a importação terminar.",
+            "Arrasta o .zip inteiro para o importador, ou só o ficheiro .txt se já o descomprimiste."
+          ]
+        }
+      ]
+    },
+    "simplenote": {
+      "app": "Simplenote",
+      "title": "Exporta as tuas notas do Simplenote",
+      "metaTitle": "Exportar notas do Simplenote - PrivacyNotes",
+      "lead": "O Simplenote tem uma exportação integrada e limpa que leva três cliques, e o PrivacyNotes lê o zip resultante diretamente.",
+      "sections": [
+        {
+          "h": "Exporta as tuas notas do Simplenote",
+          "steps": [
+            "Inicia sessão em [app.simplenote.com](https://app.simplenote.com) (ou abre a app para computador).",
+            "Abre o menu lateral e vai a Settings.",
+            "Em Account, escolhe \"Export Notes\". Um .zip é transferido de imediato."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "O zip contém um notes.json de referência com todas as tuas notas e os respetivos metadados: as etiquetas vêm junto, e as datas de criação são preservadas. Arrasta o .zip inteiro, tal como está, para o importador."
+          ]
+        }
+      ]
+    },
+    "samsung-notes": {
+      "app": "Samsung Notes",
+      "title": "Exporta as tuas notas do Samsung Notes",
+      "metaTitle": "Exportar o Samsung Notes para Word - PrivacyNotes",
+      "lead": "O Samsung Notes exporta um ficheiro por nota, em duas variantes. Prefere a exportação para Microsoft Word (.docx): mantém a tua formatação, enquanto a de texto simples a perde.",
+      "sections": [
+        {
+          "h": "Exporta as tuas notas do Samsung Notes",
+          "steps": [
+            "No Samsung Notes, mantém premido para selecionares as notas que quiseres (ou Selecionar tudo).",
+            "Toca no menu de três pontos e escolhe \"Guardar como ficheiro\".",
+            "Escolhe \"Ficheiro do Microsoft Word\" (.docx) para notas formatadas, ou \"Ficheiro de texto\" (.txt) para texto simples.",
+            "A Samsung guarda um ficheiro por nota no armazenamento do dispositivo. Junta-os num único .zip (seleciona-os no gestor de ficheiros e comprime) se exportaste mais do que alguns."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "Dos .docx: negrito, itálico, sublinhado, rasurado, listas com marcadores e numeradas, e caixas de verificação (que passam a listas de tarefas nativas) sobrevivem todos. Dos .txt: o texto, e nada mais.",
+            "As imagens incorporadas numa nota do Samsung passam à mão: o importador assinala cada nota que tinha uma, por isso sabes exatamente onde as voltar a colocar. O texto, os títulos e as datas chegam todos na mesma passagem."
+          ]
+        }
+      ]
+    },
+    "bitwarden": {
+      "app": "Bitwarden",
+      "title": "Exporta o teu cofre do Bitwarden",
+      "metaTitle": "Exportar um cofre do Bitwarden - PrivacyNotes",
+      "lead": "O Bitwarden exporta o teu cofre inteiro num único ficheiro .json não encriptado, e o PrivacyNotes arruma cada item no seu lugar: logins, cartões, chaves SSH e notas seguras.",
+      "sections": [
+        {
+          "h": "Exporta o teu cofre do Bitwarden",
+          "steps": [
+            "Abre o cofre web do Bitwarden (ou a app para computador) e inicia sessão.",
+            "Vai a Tools e depois a \"Export vault\".",
+            "Escolhe o formato de ficheiro .json (o simples, não \".json (Encrypted)\").",
+            "Confirma com a tua palavra-passe mestra e transfere o ficheiro."
+          ]
+        },
+        {
+          "h": "Onde as coisas vão parar",
+          "p": [
+            "Os logins passam a entradas de login do Cofre (com os ícones dos sites), os cartões passam a entradas de cartão, as chaves SSH passam a entradas de chave SSH, e as notas seguras mais as identidades chegam como notas legíveis. As pastas do Bitwarden passam a etiquetas, e os favoritos chegam com estrela. As chaves de autenticação (TOTP) vêm também, por isso os teus códigos 2FA continuam a funcionar.",
+            "O ficheiro exportado contém as tuas palavras-passe em texto simples, por isso importa-o, confirma que chegou tudo e depois apaga o ficheiro em condições. Dentro do PrivacyNotes tudo volta a ficar encriptado ponta a ponta."
+          ]
+        }
+      ]
+    },
+    "evernote": {
+      "app": "Evernote",
+      "title": "Exporta as tuas notas do Evernote",
+      "metaTitle": "Exportar notas do Evernote em ENEX - PrivacyNotes",
+      "lead": "O Evernote exporta um caderno de cada vez, e só a partir da app para computador. Escolhe o formato ENEX e as tuas notas chegam inteiras: formatação, etiquetas, anexos, recortes da web e as ligações entre elas.",
+      "sections": [
+        {
+          "img": {
+            "src": "/help/img/evernote-export-menu.webp",
+            "alt": "O menu de contexto de um caderno na app do Evernote para computador, com \"Export notebook...\" em destaque.",
+            "width": 1576,
+            "height": 652
+          },
+          "h": "Exporta um caderno",
+          "steps": [
+            "Abre o Evernote no Mac ou no Windows. A versão web e as apps de telemóvel não conseguem escrever ficheiros .enex.",
+            "Clica com o botão direito no caderno na barra lateral e escolhe \"Export notebook...\".",
+            "Escolhe \"ENEX format (.enex)\" e deixa todas as caixas de Export note attributes assinaladas: são elas que levam as tuas etiquetas, datas, lembretes e os URLs dos recortes da web.",
+            "Guarda o ficheiro. O Evernote dá-lhe o nome do caderno, e esse nome passa a ser a pasta deste lado, por isso mantém-no.",
+            "Larga esse .enex tal como está. Se tens mais do que um caderno, repete a exportação para cada um, depois junta os ficheiros .enex num único zip e larga esse zip de uma só vez."
+          ]
+        },
+        {
+          "img": {
+            "src": "/help/img/evernote-export-format.webp",
+            "alt": "A janela de exportação do Evernote com \"ENEX format (.enex)\" selecionado e todos os atributos de nota assinalados.",
+            "width": 1576,
+            "height": 1120
+          },
+          "h": "Escolhe ENEX, não as exportações em HTML ou PDF",
+          "p": [
+            "Os outros três formatos não sobrevivem à viagem. As duas exportações em HTML incham cada nota com uma cópia da mesma folha de estilos e perdem o nome do ficheiro e o link de transferência de todos os anexos que não sejam imagens, e a exportação em PDF funde o caderno inteiro num único documento sem qualquer fronteira entre notas. Larga uma dessas aqui por engano e nós dizemos-to, em vez de importarmos meio caderno.",
+            "Deixa \"Split file size by\" desligado, a não ser que o caderno tenha gigabytes de digitalizações."
+          ]
+        },
+        {
+          "h": "Um caderno de cada vez",
+          "p": [
+            "Não há exportação da conta inteira, e uma pilha não pode ser exportada como um todo. Escolher notas à mão limita-te a 100 por exportação, por isso clicar com o botão direito no caderno é mais rápido e é também a única forma de passar esse limite. As pilhas também não ficam escritas no ficheiro, por isso as tuas pastas chegam todas ao mesmo nível.",
+            "Os planos gratuitos também conseguem exportar, com uma ressalva: o nível gratuito só permite um dispositivo ligado, e isto precisa da app para computador."
+          ]
+        },
+        {
+          "h": "O que vem junto, e o que fica para trás",
+          "p": [
+            "Tabelas, blocos de código, realces, sublinhado, cor do texto e fórmulas sobrevivem todos. As listas de verificação passam a listas de tarefas, os lembretes de nota passam a uma tarefa no topo da nota, os anexos e as imagens são novamente encriptados dentro do teu armazenamento, os recortes da web mantêm o URL de origem, e as notas de voz mantêm a transcrição. As ligações internas passam a note-links, correspondidas pelo título da nota ligada, já que o Evernote não exporta identificadores de notas.",
+            "As tarefas não vêm junto: a exportação deixa um marcador \"Content not supported\" no lugar de cada bloco de tarefas, sem títulos, sem datas-limite e sem estados de conclusão para ler. Os blocos encriptados continuam encriptados, por isso desencripta-os primeiro no Evernote. Os tipos de letra personalizados, o alinhamento do texto e a hierarquia de etiquetas aninhadas são descartados."
+          ]
+        },
+        {
+          "h": "Se a exportação falhar a meio",
+          "p": [
+            "O Evernote guarda as tuas notas nos servidores dele e vai-as transferindo enquanto escreve a exportação, por isso um caderno grande pode parar aos 13%, depois aos 40%, e só à terceira terminar. Corre a mesma exportação outra vez: cada tentativa guarda mais coisas em cache localmente e vai mais longe do que a anterior."
+          ]
+        }
+      ]
+    },
+    "markdown": {
+      "app": "Markdown",
+      "title": "Importar ficheiros Markdown",
+      "metaTitle": "Importar ficheiros Markdown para o PrivacyNotes",
+      "lead": "O caminho genérico para tudo o resto: qualquer app que exporte Markdown pode mudar-se para o PrivacyNotes. Ficheiros .md avulsos funcionam, e um .zip de uma pasta inteira também.",
+      "sections": [
+        {
+          "h": "Prepara os teus ficheiros",
+          "steps": [
+            "Exporta ou reúne os teus ficheiros .md. Qualquer origem serve: outra app de notas, um site estático, uma pasta de READMEs.",
+            "Se tiveres mais do que um punhado de ficheiros, mete a pasta num .zip.",
+            "Arrasta o zip (ou ficheiros .md individuais) para o importador."
+          ]
+        },
+        {
+          "h": "Como os ficheiros são lidos",
+          "p": [
+            "O frontmatter YAML é respeitado quando existe: os campos title, created, updated e tags são usados tal como estão, o que faz deste também o caminho de reposição das exportações Markdown do próprio PrivacyNotes. Também lemos as etiquetas escritas como #hashtags no texto. Os ficheiros simples sem frontmatter usam o nome do ficheiro como título e o conteúdo como corpo. A análise é deliberadamente tolerante: aceitamos .md, .markdown, .mdown, .mkd e .txt.",
+            "Comprime a pasta inteira e a estrutura vem com ela. As subpastas são reconstruídas como pastas a sério, a qualquer profundidade, e as imagens e ficheiros para onde as tuas notas apontam são importados ao lado delas. Aquilo para onde nada aponta fica para trás e é contado, por isso uma pasta cheia de capturas de ecrã antigas não te come o armazenamento."
+          ]
+        }
+      ]
+    },
+    "notesnook": {
+      "app": "Notesnook",
+      "title": "Exporta as tuas notas do Notesnook",
+      "metaTitle": "Exportar notas do Notesnook - PrivacyNotes",
+      "lead": "O Notesnook consegue despejar a tua conta inteira como uma pasta de ficheiros. Escolhe a exportação em HTML e nada fica para trás: formatação, cadernos, etiquetas, anexos e os links entre as tuas notas sobrevivem todos à mudança.",
+      "sections": [
+        {
+          "img": {
+            "src": "/help/img/notesnook-export.webp",
+            "alt": "Definições do Notesnook, página Backup & export, com o menu Export as aberto e HTML selecionado.",
+            "width": 1576,
+            "height": 963
+          }
+        },
+        {
+          "h": "Exporta as tuas notas",
+          "steps": [
+            "Abre o Notesnook e vai a Settings > Backup & export.",
+            "Encontra \"Export all notes\" e abre o menu \"Export as\".",
+            "Escolhe HTML. Isto é importante: é o único formato que o Notesnook escreve sem antes retirar a tua formatação.",
+            "O Notesnook guarda um único .zip com um ficheiro por nota mais uma pasta attachments. Esse zip é o teu ficheiro de importação."
+          ]
+        },
+        {
+          "h": "Escolhe HTML, não Markdown",
+          "p": [
+            "O menu de exportação do Notesnook oferece Text, Markdown, Markdown + Frontmatter e HTML. Só o HTML guarda tudo.",
+            "As duas opções de Markdown achatam as tuas notas antes de as escreverem: sublinhado, tamanhos de letra e alinhamento do texto desaparecem antes de o ficheiro sequer chegar até nós. A opção Markdown pura também não escreve etiquetas nem datas originais, por isso cada nota importada chegaria sem etiquetas e carimbada com a data de hoje. Ainda assim aceitamos as duas, e vamos dizer-te o que se perdeu, mas HTML é a que deves escolher.",
+            "A exportação em Text não tem estrutura para ler e não é aceite."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "Os teus cadernos são reconstruídos como pastas a sério, não achatados em etiquetas, à profundidade a que o Notesnook os aninhou. Uma nota em Work > Projects vai parar a uma pasta Work > Projects.",
+            "As notas fixadas e favoritas mantêm-se marcadas. O Notesnook trata Pin e Favorite como duas propriedades separadas; o PrivacyNotes tem uma única lista Fixados, por isso uma nota que fosse uma das duas vai parar lá.",
+            "Os realces, a matemática e o alinhamento do texto chegam como são: o texto realçado continua realçado, as fórmulas voltam a ser apresentadas como matemática, e os blocos centrados ou alinhados à direita mantêm o alinhamento. Os tipos de letra personalizados, os tamanhos de letra e as cores de texto não têm equivalente aqui, por isso esse estilo é descartado e o texto é mantido."
+          ]
+        },
+        {
+          "h": "Um ficheiro de backup não é uma exportação",
+          "p": [
+            "O Notesnook também consegue guardar um ficheiro de backup terminado em .nnbackupz. Isso é outra coisa: guarda cada anexo no formato encriptado do próprio Notesnook, que só o Notesnook consegue abrir. Larga um aqui e nós dizemos-to em vez de o importarmos pela metade. Usa antes \"Export all notes\" em HTML."
+          ]
+        }
+      ]
+    },
+    "apple-journal": {
+      "app": "Apple Journal",
+      "title": "Exporta as tuas entradas do Apple Journal",
+      "metaTitle": "Exportar as entradas do Apple Journal - PrivacyNotes",
+      "lead": "O Apple Journal (Diário) exporta um ficheiro HTML por entrada, mais uma pasta com todas as fotos, vídeos e memorandos de voz. O PrivacyNotes lê a exportação toda e reconstrói cada uma como entrada de diário, datada do dia em que a escreveste.",
+      "sections": [
+        {
+          "h": "Exporta o teu diário num Mac",
+          "steps": [
+            "Abre o Diário e escolhe Ficheiro > Exportar na barra de menus.",
+            "Escolhe um destino. O Diário grava uma pasta chamada AppleJournalEntries, com uma pasta Entries e uma pasta Resources lá dentro.",
+            "Clica com o botão direito nessa pasta e escolhe Comprimir. Aparece AppleJournalEntries.zip ao lado, e é esse o ficheiro a importar."
+          ]
+        },
+        {
+          "h": "Exporta a partir de um iPhone ou iPad",
+          "steps": [
+            "Abre o Diário. Debaixo do título Diários, toca no teu diário para o abrir (chama-se Diário a menos que o tenhas renomeado, e mostra quantas entradas tem).",
+            "Na lista de entradas, toca no botão … no canto superior direito, escolhe Exportar, e confirma com o botão Exportar.",
+            "Guarda-o no telemóvel.",
+            "Abre a app Ficheiros e encontra a pasta que ele criou, chamada AppleJournalEntries.",
+            "Mantém premida essa pasta e escolhe Comprimir. O .zip que aparece ao lado é o ficheiro a importar."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "Cada entrada vai parar aos Diários em vez de às Notas, datada do dia que o Diário mostra por cima dela, para que o teu histórico mantenha a sua forma.",
+            "As fotos e Live Photos importam-se como imagens, os vídeos e memorandos de voz como anexos. A Apple entrega as fotos em HEIC, que a maioria dos navegadores não consegue mostrar, por isso o PrivacyNotes converte cada uma para JPEG à entrada. É essa a parte lenta de uma importação grande: umas centenas de fotos podem demorar vários minutos, e a linha de progresso conta-as por ti.",
+            "Negrito, itálico, sublinhado, rasurado, cores de texto, listas com marcadores e numeradas, e citações em bloco sobrevivem todos."
+          ]
+        },
+        {
+          "h": "Fotos, vídeos e o teu armazenamento",
+          "p": [
+            "Um diário cheio de fotos é bem maior do que um diário cheio de texto, e conta para o teu armazenamento tal como tudo o resto. A pré-visualização da importação soma tudo antes de confirmares, e recusa-se a começar se não couber."
+          ]
+        },
+        {
+          "h": "Para onde vão as tuas localizações",
+          "p": [
+            "O Diário regista onde aconteceu uma entrada, e o PrivacyNotes não tem mapa próprio, por isso cada local torna-se uma ligação numa lista \"Places\" no final da entrada.",
+            "Os locais que o Diário registou com coordenadas abrem um marcador nesse ponto exato no OpenStreetMap. Os locais de que só tem o nome abrem antes uma pesquisa por esse nome. Nada é enviado para lado nenhum até clicares num deles."
+          ]
+        },
+        {
+          "h": "Estado de Espírito",
+          "p": [
+            "Se registaste um Estado de Espírito, o PrivacyNotes preenche os marcadores de humor e emoção dessa entrada sempre que o vocabulário da Apple corresponde a um dos nossos. Tudo o que não consegue corresponder, e as áreas de vida que etiquetaste, ficam guardados como uma linha de texto para que nada se perca."
+          ]
+        },
+        {
+          "h": "O que não vem junto",
+          "p": [
+            "Os cartões de sugestão do Diário para treinos, contactos e conteúdo multimédia que reproduziste mantêm o texto mas não a imagem. Os memorandos de voz chegam como gravações, mas não com a transcrição da Apple: o exportador retira-lhe todos os espaços, por isso o que escreve é uma sequência ininterrupta de caracteres. Fica de fora em vez de ser importado ilegível.",
+            "Os memorandos de voz de uma exportação a partir do Mac são ficheiros CAF, que nenhum navegador consegue reproduzir. Importam-se e descarregam-se bem, mas não os vais ouvir na app. Uma exportação a partir do iPhone grava as mesmas gravações em M4A, que reproduz diretamente, por isso usa o telemóvel se puderes escolher."
+          ]
+        }
+      ]
+    },
+    "upnote": {
+      "app": "UpNote",
+      "title": "Exporta as tuas notas do UpNote",
+      "metaTitle": "Exportar notas do UpNote - PrivacyNotes",
+      "lead": "No UpNote, a exportação chama-se backup: escreve a tua conta inteira numa pasta no disco, plano gratuito incluído. Comprime essa pasta e muda-se tudo: notas com a formatação completa, cadernos, etiquetas, notas fixadas, note-links, imagens e anexos.",
+      "sections": [
+        {
+          "img": {
+            "src": "/help/img/upnote-backup.webp",
+            "alt": "Definições do UpNote, página Backup, com Backup attachments, Backup now e View backup folder visíveis.",
+            "width": 1576,
+            "height": 1070
+          },
+          "h": "Cria um backup local",
+          "steps": [
+            "Abre o UpNote no computador e vai a Settings > Backup.",
+            "Ativa \"Backup attachments\". Vem desligado de origem, e sem ele as tuas imagens e ficheiros ficam para trás.",
+            "Clica em \"Backup now\" e espera que a linha \"Last backup at\" atualize.",
+            "Clica em \"View backup folder\". O UpNote abre a pasta que acabou de escrever."
+          ]
+        },
+        {
+          "img": {
+            "src": "/help/img/upnote-folder.webp",
+            "alt": "A pasta de backup do UpNote com as pastas data, files, Markdown e revisions selecionadas e o menu do botão direito aberto em Comprimir.",
+            "width": 1576,
+            "height": 642
+          },
+          "h": "Comprime tudo o que está nessa pasta",
+          "steps": [
+            "Seleciona tudo o que está na pasta de backup: data, files e o que estiver ao lado delas.",
+            "Comprime a seleção: clique com o botão direito > Comprimir no macOS, ou Enviar para > Pasta comprimida no Windows.",
+            "Esse .zip é o teu ficheiro de importação."
+          ],
+          "p": [
+            "Comprime a pasta inteira, não apenas a pasta Markdown lá dentro. Essas cópias em markdown são uma versão achatada: o sublinhado, as cores, os realces, as secções recolhíveis e o alinhamento do texto já desapareceram delas. A formatação completa das tuas notas vive na pasta data, e é essa que nós lemos. Larga um zip sem ela e nós dizemos-to em vez de importarmos as cópias achatadas."
+          ]
+        },
+        {
+          "img": {
+            "src": "/help/img/upnote-export-menu.webp",
+            "alt": "O menu Export do UpNote no iOS, com as opções Export to Text, PDF, Markdown e HTML.",
+            "width": 1576,
+            "height": 1235
+          },
+          "h": "No iPhone ou Android: exporta as notas uma a uma",
+          "steps": [
+            "As apps de telemóvel do UpNote não conseguem escrever um backup. Em vez disso, abre uma nota e toca nos três pontos no canto superior.",
+            "Escolhe Export > \"Export to HTML\". Não Markdown: o UpNote achata os avisos, as cores de texto, o alinhamento e o subscrito e sobrescrito antes de escrever o seu Markdown, enquanto o HTML guarda tudo.",
+            "Partilha o resultado para a app Ficheiros ou envia-o para ti, e depois larga-o aqui sem mexer.",
+            "Vais mudar várias notas? Guarda as exportações na app Ficheiros, seleciona-as todas e escolhe Comprimir: esse único zip importa-se de uma vez."
+          ],
+          "p": [
+            "A exportação em HTML traz a tua formatação completa. O que nenhuma exportação nota a nota carrega é a estrutura da biblioteca: os cadernos, as notas fixadas e as datas só vivem no backup, por isso, assim que chegares a um computador, o caminho do backup acima completa a mudança. As exportações em Markdown também são aceites, com o achatamento que trazem."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "Os teus cadernos são reconstruídos como pastas a sério, aninhadas tão fundo quanto estavam no UpNote. Uma nota que vivia em vários cadernos vai parar ao primeiro e leva os outros como etiquetas.",
+            "As notas fixadas e as de Quick Access chegam à lista Fixados. As notas no lixo vão parar ao lixo, os modelos importam-se como notas com a etiqueta #template, os links entre notas passam a note-links, e cada nota mantém as suas datas originais.",
+            "A formatação sobrevive: listas de verificação, tabelas, blocos de código, matemática, sublinhado, subscrito e sobrescrito, alinhamento do texto e realces. As secções recolhíveis passam a avisos dobráveis e mantêm o seu estado aberto ou fechado. As cores de texto e as cores de realce são ambas correspondidas à paleta do próprio editor, por isso um realce amarelo continua amarelo e um verde continua verde. Cada nota chega tal como o UpNote a gravou pela última vez."
+          ]
+        },
+        {
+          "h": "Se faltarem imagens ou ficheiros",
+          "p": [
+            "Um backup feito antes de teres assinalado \"Backup attachments\" não tem ficheiros lá dentro, e a pré-visualização da importação vai avisar-te de que há notas a referir anexos que o backup não traz. Se isso acontecer, cancela, ativa a opção no UpNote, clica outra vez em \"Backup now\", comprime a pasta nova e importa essa."
+          ]
+        }
+      ]
+    },
+    "browser-bookmarks": {
+      "app": "Marcadores do navegador",
+      "title": "Exporta os marcadores do teu navegador",
+      "metaTitle": "Exportar marcadores de qualquer navegador - PrivacyNotes",
+      "lead": "Todos os navegadores de computador exportam o mesmo ficheiro de marcadores (.html), e o PrivacyNotes lê-o com as tuas pastas e as tuas datas intactas. O Safari embrulha esse ficheiro num .zip, que podes largar sem o abrir. Nenhum navegador de telemóvel sabe exportar, por isso liga a sincronização do teu navegador e exporta a partir de um computador.",
+      "sections": [
+        {
+          "h": "Exportar do Chrome, Edge, Brave, Opera ou Vivaldi",
+          "steps": [
+            "Abre o gestor de marcadores com Ctrl+Shift+O, ou Cmd+Option+B num Mac. No Edge a mesma página chama-se Favorites.",
+            "Carrega no botão \"...\" no canto superior direito do gestor e escolhe \"Export bookmarks\". No Edge diz \"Export favorites\".",
+            "Guarda o ficheiro. É um .html com a data de hoje no nome."
+          ]
+        },
+        {
+          "h": "Exportar do Firefox",
+          "steps": [
+            "Carrega em Ctrl+Shift+O, ou Cmd+Shift+O num Mac, para abrir a janela Biblioteca.",
+            "Carrega em \"Import and Backup\" na barra de ferramentas e escolhe \"Export Bookmarks to HTML...\".",
+            "Guarda-o. O ficheiro chama-se bookmarks.html."
+          ]
+        },
+        {
+          "h": "Exportar do Safari",
+          "img": {
+            "src": "/help/img/safari-export-menu.webp",
+            "alt": "O menu File do Safari, com \"Export Browsing Data to File...\" realçado em baixo",
+            "width": 1576,
+            "height": 1226
+          },
+          "steps": [
+            "Escolhe File > \"Export Browsing Data to File...\" na barra de menus.",
+            "Desliga tudo menos Bookmarks e depois clica em Export.",
+            "O Safari guarda um .zip. Larga esse .zip aqui tal como está, ou o Bookmarks.html lá dentro. Ambos funcionam.",
+            "As versões mais antigas do Safari mostram antes File > Export > \"Bookmarks...\" e guardam um ficheiro .html simples."
+          ]
+        },
+        {
+          "h": "Deixa ligado só o interruptor Bookmarks",
+          "img": {
+            "src": "/help/img/browser-bookmarks-safari-export.webp",
+            "alt": "A janela Export Browsing Data do Safari, com Bookmarks ligado e todos os outros tipos desligados",
+            "width": 1576,
+            "height": 1356
+          },
+          "p": [
+            "A mesma janela oferece History, Extensions, Credit Cards e Passwords. Deixa-os desligados. O PrivacyNotes não lê nada do arquivo além dos marcadores, mas uma exportação que depois tens de apagar é mais uma cópia em texto simples das tuas palavras-passe na pasta de transferências."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "Cada pasta que tinhas vem junto, aninhada tal como a deixaste, dentro de uma nova pasta chamada Marcadores. A barra de marcadores é a exceção: o conteúdo dela sobe um nível em vez de virar pasta, porque cada navegador chama a essa barra um nome diferente em cada língua. O Safari não marca nada, por isso o Favorites dele chega mesmo como pasta.",
+            "O dia em que guardaste cada marcador vem com ele. O Safari é o único navegador que não escreve datas nenhumas, por isso uma exportação do Safari chega com a data de hoje.",
+            "O Firefox é também o único que guarda etiquetas e uma palavra-chave da barra de endereço com um marcador. Se o teu ficheiro as trouxer, a pré-visualização oferece uma caixa para as manter, e ambas chegam aqui como etiquetas.",
+            "Três coisas ficam de fora de propósito. Os atalhos internos do navegador, como Most Visited, não são links a sério: são contados e ignorados. Os ícones dos sites também não são lidos do ficheiro, porque a cópia guardada lá dentro envelhece; o PrivacyNotes vai buscar uma nova. E uma pasta que não tinha marcadores nenhuns não é recriada.",
+            "Importar o mesmo ficheiro duas vezes é seguro. Um marcador cujo endereço já guardaste é ignorado em vez de acrescentado outra vez, e a pré-visualização diz-te quantos."
+          ]
+        },
+        {
+          "h": "Levá-los de volta",
+          "p": [
+            "Vai a Definições > Import & Export > Exportar e escolhe \"Ficheiro de marcadores (.html)\". Recebes o mesmo ficheiro padrão, com pastas e tudo, que qualquer navegador lê. Os teus marcadores nunca ficam presos aqui."
+          ]
+        }
+      ]
+    },
+    "browser-passwords": {
+      "app": "Palavras-passe do navegador",
+      "title": "Exporta as palavras-passe do teu navegador",
+      "metaTitle": "Exportar as palavras-passe guardadas no navegador - PrivacyNotes",
+      "lead": "O Chrome, o Edge, o Firefox e o Safari exportam todos as palavras-passe guardadas como um ficheiro .csv simples, e o PrivacyNotes lê todos, uma credencial por linha. O Safari embrulha o .csv dele num .zip, que podes largar sem o abrir.",
+      "sections": [
+        {
+          "h": "Exportar do Chrome, Edge, Brave, Opera ou Vivaldi",
+          "steps": [
+            "Abre as Settings do navegador e vai à página das palavras-passe. No Chrome é \"Passwords and autofill\" > Google Password Manager > Settings, no Edge é \"Profiles > Passwords\".",
+            "Procura \"Export passwords\" e escolhe \"Download file\".",
+            "Confirma com a palavra-passe do teu dispositivo ou com a impressão digital. O ficheiro chama-se normalmente passwords.csv."
+          ]
+        },
+        {
+          "h": "Exportar do Firefox",
+          "steps": [
+            "Escreve about:logins na barra de endereços e carrega em Enter.",
+            "Carrega no botão \"...\" no canto superior direito e escolhe \"Export Logins...\".",
+            "Confirma com a palavra-passe do teu dispositivo. O ficheiro chama-se logins.csv."
+          ]
+        },
+        {
+          "h": "Exportar do Safari",
+          "img": {
+            "src": "/help/img/safari-export-menu.webp",
+            "alt": "O menu File do Safari, com \"Export Browsing Data to File...\" realçado em baixo",
+            "width": 1576,
+            "height": 1226
+          },
+          "steps": [
+            "Escolhe File > \"Export Browsing Data to File...\" na barra de menus.",
+            "Desliga tudo menos Passwords e depois clica em Export.",
+            "Confirma com Touch ID ou com a palavra-passe do Mac. O Safari guarda um .zip com o Passwords.csv lá dentro, e esse .zip podes largá-lo aqui tal como está.",
+            "A partir do macOS 15, a app Passwords exporta as mesmas linhas em File > \"Export All Passwords...\", como .csv simples."
+          ]
+        },
+        {
+          "h": "Deixa ligado só o interruptor Passwords",
+          "img": {
+            "src": "/help/img/browser-passwords-safari-export.webp",
+            "alt": "A janela Export Browsing Data do Safari, com Passwords ligado e todos os outros tipos desligados",
+            "width": 1576,
+            "height": 1358
+          },
+          "p": [
+            "A mesma janela também exporta os teus marcadores, o histórico e os cartões guardados. Cada interruptor que deixes ligado escreve mais um ficheiro não cifrado no mesmo arquivo, por isso desliga-os. Uma exceção: se também queres os marcadores aqui, liga os dois e larga esse único .zip nos dois importadores, porque cada um lê dele apenas o seu próprio ficheiro."
+          ]
+        },
+        {
+          "h": "O que vem junto",
+          "p": [
+            "Cada linha torna-se uma credencial com o site, o nome de utilizador e a palavra-passe, mais a nota que o navegador guardava com ela. O Firefox é o único dos três que escreve datas, por isso as suas credenciais mantêm o dia em que as guardaste e as outras chegam com a data de hoje. O Safari é o único que exporta uma chave de autenticação, e só se guardavas os códigos no Safari: quando isso acontece, o código continua a funcionar aqui.",
+            "Os navegadores guardam uma entrada por cada página de início de sessão, por isso uma exportação grande traz muitas vezes várias linhas da mesma empresa. Vêm todas, e depois podes juntá-las ou apagá-las.",
+            "Um navegador guarda as palavras-passe numa lista plana, por isso não há estrutura de pastas para reconstruir. Em vez disso, cada credencial chega com uma etiqueta, o que te traz o lote inteiro num clique."
+          ]
+        },
+        {
+          "h": "Apaga o ficheiro exportado quando acabares: são as tuas palavras-passe em texto simples",
+          "p": [
+            "No .csv exportado não há nada cifrado, venha ele dentro de um .zip ou não. Quem o abrir lê todas as palavras-passe que guardaste, por isso mantém-no na tua própria máquina, importa-o, confirma que chegou tudo e depois apaga o ficheiro e esvazia a reciclagem. Dentro do PrivacyNotes tudo volta a estar cifrado ponta a ponta."
+          ]
+        }
+      ]
+    },
+    "typora": {
+      "app": "Typora",
+      "title": "Exporta as tuas notas do Typora",
+      "metaTitle": "Exportar notas do Typora - PrivacyNotes",
+      "lead": "O Typora edita ficheiros .md normais que já estão numa pasta do teu disco, por isso não há passo de exportação nenhum. Comprime a pasta e larga-a aqui.",
+      "sections": [
+        {
+          "h": "Comprime a pasta onde escreves",
+          "steps": [
+            "Encontra a pasta com os teus ficheiros .md. O Typora não tem biblioteca própria, por isso está onde tu escolheste guardá-los.",
+            "Clica na pasta com o botão direito e escolhe Comprimir (macOS) ou Enviar para > Pasta comprimida (Windows).",
+            "Larga o .zip na importação."
+          ]
+        },
+        {
+          "h": "Antes de comprimir, decide onde vivem as imagens",
+          "p": [
+            "O Typora pode guardar uma imagem ao lado da nota, dentro de uma subpasta assets, ou deixá-la onde a arrastaste. Só chegam cá as imagens que estejam dentro da pasta que comprimes. Abre Preferências > Imagem, põe a copiar as imagens para a pasta assets da própria nota, e usa \"Formatar > Imagem > Copiar ficheiros de imagem para...\" nas notas antigas cujas imagens ainda apontem para outro sítio."
+          ]
+        },
+        {
+          "h": "O que vem",
+          "p": [
+            "As subpastas tornam-se pastas a sério, a qualquer profundidade. Títulos, tabelas, listas de tarefas, blocos de código, notas de rodapé, fórmulas e destaques sobrevivem, e os URL soltos passam a ligações clicáveis. O frontmatter YAML é lido para o título, as datas e as etiquetas.",
+            "As etiquetas vêm pelos dois caminhos: do frontmatter YAML e dos #hashtags escritos no texto. Um hashtag dentro de um bloco de código continua a ser código, e um número solto como #4711 continua a ser a referência de um ticket."
+          ]
+        }
+      ]
+    },
+    "ia-writer": {
+      "app": "iA Writer",
+      "title": "Exporta a tua biblioteca do iA Writer",
+      "metaTitle": "Exportar a biblioteca do iA Writer - PrivacyNotes",
+      "lead": "O iA Writer guarda o que escreves como ficheiros .md normais na sua Library, por isso essa pasta já é a exportação. A única coisa a acertar: obrigar o iCloud a entregar-te primeiro os ficheiros a sério.",
+      "sections": [
+        {
+          "h": "Tira a pasta do iCloud e só depois a comprime",
+          "steps": [
+            "No iA Writer, clica com o botão direito na pasta da barra lateral Library e escolhe \"Mostrar no Finder\".",
+            "No Finder, clica com o botão direito nessa pasta e escolhe \"Transferir agora\", para o iCloud ir buscar cada ficheiro em vez de deixar marcadores.",
+            "Clica outra vez com o botão direito e escolhe Comprimir.",
+            "Larga o .zip na importação."
+          ]
+        },
+        {
+          "h": "No iPhone ou no iPad",
+          "p": [
+            "Abre a app Ficheiros, vai a iCloud Drive > iA Writer, mantém a pasta premida e escolhe Comprimir. Partilha o .zip para o PrivacyNotes, ou abre o PrivacyNotes e vai buscá-lo aos Ficheiros."
+          ]
+        },
+        {
+          "h": "A armadilha dos marcadores",
+          "p": [
+            "Com \"Otimizar armazenamento do Mac\" ligado, o iCloud troca os ficheiros que há muito não abres por marcadores minúsculos. Comprimes a pasta nesse estado e ficas com um arquivo de cascas vazias: a importação corre, diz que correu bem, e não traz quase nada. Faz primeiro \"Transferir agora\" e depois confirma que o .zip pesa mais ou menos o que pesa aquilo que escreveste."
+          ]
+        },
+        {
+          "h": "O que vem",
+          "p": [
+            "As pastas da Library tornam-se pastas a sério, a qualquer profundidade, e as imagens e ficheiros para onde as tuas notas apontam vêm com elas. Títulos, tabelas, listas de tarefas, blocos de código e notas de rodapé sobrevivem, e os URL soltos passam a ligações clicáveis. O frontmatter é lido para o título, as datas e as etiquetas.",
+            "Os blocos de conteúdo, que enquanto escreves puxam um ficheiro para dentro de outro, chegam como a ligação tal como está escrita, e não como o texto que iam buscar."
+          ]
+        }
+      ]
+    },
+    "zettlr": {
+      "app": "Zettlr",
+      "title": "Exporta as tuas notas do Zettlr",
+      "metaTitle": "Exportar notas do Zettlr - PrivacyNotes",
+      "lead": "O Zettlr trabalha directamente sobre uma pasta de ficheiros .md, por isso a área de trabalho que já tens é a exportação. Comprime-a e larga-a aqui.",
+      "sections": [
+        {
+          "h": "Comprime a área de trabalho",
+          "steps": [
+            "No Zettlr, clica com o botão direito na área de trabalho no topo da árvore de ficheiros e escolhe \"Mostrar no Finder\", ou \"Mostrar no Explorador\" no Windows.",
+            "Clica com o botão direito nessa pasta e comprime-a.",
+            "Larga o .zip na importação."
+          ]
+        },
+        {
+          "h": "As ligações Zettelkasten guardam o texto, não o destino",
+          "p": [
+            "O Zettlr liga as notas por identificador, por isso uma ligação lê-se [[20260823120000]]. Nós mantemos os note-links exactamente como estão escritos, o que quer dizer que uma ligação por identificador só encontra cá a sua nota se houver mesmo uma nota intitulada com esse identificador. As ligações escritas com o nome do ficheiro funcionam normalmente: se contas com elas, muda o formato das ligações internas para o nome do ficheiro antes de exportares.",
+            "As chaves de citação como [@doe2026] são texto para nós. Vêm sem alterações e deixam de ser clicáveis."
+          ]
+        },
+        {
+          "h": "O que vem",
+          "p": [
+            "As subpastas da área de trabalho tornam-se pastas a sério, a qualquer profundidade, e as imagens e ficheiros para onde as tuas notas apontam vêm com elas. Títulos, tabelas, listas de tarefas, blocos de código, notas de rodapé, fórmulas e destaques sobrevivem todos. As etiquetas são lidas do frontmatter YAML e dos #hashtags escritos no texto, por isso um Zettelkasten construído sobre hashtags mantém a sua arrumação."
+          ]
+        }
+      ]
+    },
+    "nextcloud-notes": {
+      "app": "Nextcloud Notes",
+      "title": "Exporta as tuas notas do Nextcloud Notes",
+      "metaTitle": "Exportar o Nextcloud Notes - PrivacyNotes",
+      "lead": "O Nextcloud Notes não precisa de nenhum passo de exportação: cada nota já é um ficheiro simples numa pasta do teu próprio servidor, e o Nextcloud entrega-te essa pasta inteira em .zip. Aqui lemos as duas extensões que ele usa, por isso não há nada para converter antes.",
+      "sections": [
+        {
+          "h": "Transfere a pasta Notes",
+          "steps": [
+            "Abre o Ficheiros no teu Nextcloud, no navegador.",
+            "Encontra a pasta Notes. Chama-se Notes, a não ser que a administração lhe tenha mudado o nome.",
+            "Abre o menu \"...\" da pasta e escolhe Transferir. O Nextcloud embrulha a pasta inteira num .zip.",
+            "Larga o .zip na importação."
+          ]
+        },
+        {
+          "h": "O que vem",
+          "p": [
+            "As categorias são guardadas como subpastas, por isso chegam como pastas a sério. As datas das notas vêm dos próprios ficheiros e não do momento da importação. Títulos, tabelas, listas de tarefas, blocos de código, notas de rodapé e fórmulas sobrevivem, e os URL soltos passam a ligações clicáveis.",
+            "Isto importa uma cópia. Do teu Nextcloud não se apaga nada e nada volta por sincronização, por isso guarda o servidor como arquivo até estares contente com o que aterrou aqui."
+          ]
+        },
+        {
+          "h": "As duas extensões servem",
+          "p": [
+            "O Notes escreve .txt de origem e .md assim que tu ou a tua administração mudarem a definição. Aqui lemos as duas, tal como .markdown, .mdown e .mkd, por isso antes de exportares não tens de mudar nomes nem de mexer no servidor."
+          ]
+        }
+      ]
+    }
+  }
+}

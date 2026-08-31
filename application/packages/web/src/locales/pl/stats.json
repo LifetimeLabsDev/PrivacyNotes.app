@@ -1,0 +1,124 @@
+{
+  "title": "Statystyki",
+  "tabs": {
+    "writing": "Pisanie",
+    "wellness": "Samopoczucie"
+  },
+  "writing": {
+    "notes": "Notatki",
+    "words": "Słowa",
+    "tags": "Tagi",
+    "currentStreak": "Aktualna seria",
+    "longestStreak": "Najdłuższa seria",
+    "streakValue": "{{count}} d",
+    "timeRangeAria": "Zakres czasu aktywności",
+    "modeActivity": "Aktywność",
+    "modeMood": "Nastrój",
+    "tooltipMood": "{{date}}: nastrój {{mood}}/10",
+    "tooltipNoMood": "{{date}}: brak nastroju",
+    "tooltipEdits_one": "{{date}}: {{count}} edycja",
+    "tooltipEdits_few": "{{date}}: {{count}} edycje",
+    "tooltipEdits_many": "{{date}}: {{count}} edycji",
+    "tooltipEdits_other": "{{date}}: {{count}} edycji",
+    "longestNote": "Najdłuższa notatka: <name>{{title}}</name> (słów: {{count}})"
+  },
+  "range": {
+    "7d": "7 dni",
+    "14d": "14 dni",
+    "30d": "30 dni",
+    "3mo": "3 miesiące",
+    "6mo": "6 miesięcy",
+    "12mo": "12 miesięcy"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Wszystko",
+      "sleepActivity": "Sen i aktywność",
+      "medication": "Leki",
+      "patterns": "Wzorce"
+    },
+    "empty": {
+      "title": "Brak danych o samopoczuciu.",
+      "hint": "Otwórz wpis w dzienniku i zapisz swój nastrój, aby zacząć."
+    },
+    "overview": {
+      "daysTracked": "Śledzone dni",
+      "avgMood": "Śr. nastrój",
+      "avgSleep": "Śr. sen",
+      "medAdherence": "Przyjmowanie leków",
+      "moodTrend": "Trend nastroju",
+      "moodByDayOfWeek": "Nastrój wg dnia tygodnia",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Eksport",
+      "allTime": "Cały okres",
+      "last90Days": "Ostatnie 90 dni",
+      "last30Days": "Ostatnie 30 dni",
+      "last7Days": "Ostatnie 7 dni",
+      "downloadJSON": "Pobierz JSON",
+      "doctorPDF": "PDF dla lekarza",
+      "copyAIPrompt": "Kopiuj prompt AI",
+      "copied": "Skopiowano!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Jakość snu",
+      "activity": "Aktywność",
+      "avgSleepPerNight": "Średni sen na dobę"
+    },
+    "medication": {
+      "adherence": "Regularność",
+      "empty": {
+        "title": "Brak danych o lekach.",
+        "hint": "Dodaj lek w ustawieniach trackerów, a potem zapisuj go codziennie."
+      },
+      "dosageTimeline": "Historia dawkowania",
+      "started": "Rozpoczęto {{dosage}}",
+      "changedTo": "Zmieniono na {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Najczęstsze emocje",
+      "insights": "Spostrzeżenia",
+      "proBadge": "PRO",
+      "insightsLocked_one": "Wykryto {{count}} spostrzeżenie. Przejdź na Pro, aby je zobaczyć",
+      "insightsLocked_few": "Wykryto {{count}} spostrzeżenia. Przejdź na Pro, aby je zobaczyć",
+      "insightsLocked_many": "Wykryto {{count}} spostrzeżeń. Przejdź na Pro, aby je zobaczyć",
+      "insightsLocked_other": "Wykryto {{count}} spostrzeżenia. Przejdź na Pro, aby je zobaczyć",
+      "weekInReview": "Podsumowanie tygodnia",
+      "weekInReviewLocked": "Przejdź na Pro, aby zobaczyć tygodniowe podsumowanie samopoczucia"
+    },
+    "week": {
+      "range": "{{start}} do {{end}}",
+      "daysLogged": "zapisane dni: {{count}}/7",
+      "avgMood": "Śr. nastrój",
+      "moodDelta": "{{delta}} w porównaniu z zeszłym tygodniem",
+      "avgSleep": "Śr. sen",
+      "medsTaken": "Przyjęte leki",
+      "topActivity": "Główna aktywność",
+      "topEmotions": "Najczęstsze emocje",
+      "reflection": "Refleksja",
+      "reflectionPlaceholder": "Jaki był ten tydzień? Zapisz swoje przemyślenia..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Osiągnięto kamień milowy"
+  },
+  "milestone": {
+    "notes_one": "Napisano {{count}} notatkę",
+    "notes_few": "Napisano {{count}} notatki",
+    "notes_many": "Napisano {{count}} notatek",
+    "notes_other": "Napisano {{count}} notatki",
+    "streak": "Seria pisania: {{count}} dni",
+    "words_one": "Napisano {{formatted}} słowo",
+    "words_few": "Napisano {{formatted}} słowa",
+    "words_many": "Napisano {{formatted}} słów",
+    "words_other": "Napisano {{formatted}} słowa",
+    "age30": "30 dni z PrivacyNotes",
+    "age365": "Rok z PrivacyNotes",
+    "age730": "2 lata z PrivacyNotes",
+    "age1825": "5 lat z PrivacyNotes",
+    "ageDefault": "Dni z PrivacyNotes: {{count}}"
+  }
+}

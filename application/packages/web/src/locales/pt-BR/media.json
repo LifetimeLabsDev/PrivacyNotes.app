@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Tamanho:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "Baixar imagem",
+    "deleteAria": "Excluir imagem",
+    "loading": "Carregando imagem...",
+    "uploading": "Enviando {{name}}...",
+    "uploadFailed": "O envio falhou: {{message}}",
+    "storeUnavailable": "Armazenamento de imagens indisponível",
+    "loadFailed": "Falha ao carregar a imagem",
+    "notFound": "Imagem não encontrada"
+  },
+  "attachment": {
+    "fallbackName": "Anexo",
+    "imageAlt": "Imagem",
+    "cantPlay": "Não dá para reproduzir. Baixe para ouvir",
+    "downloadingStatus": "baixando...",
+    "deleteConfirm": "Excluir?",
+    "copied": "Copiado",
+    "download": "Baixar",
+    "downloadToPlay": "Baixe para reproduzir",
+    "play": "Reproduzir",
+    "pause": "Pausar",
+    "fileNotFound": "Arquivo não encontrado",
+    "localOnly": "Só neste dispositivo",
+    "localOnlyTip": "Não cabe no seu armazenamento. Sem backup: limpar os dados do navegador ou do app apaga o arquivo. Vai sincronizar assim que houver espaço.",
+    "notUploaded": "Ainda não enviado",
+    "notUploadedTip": "Este arquivo ainda não foi enviado do dispositivo onde foi adicionado - normalmente porque o armazenamento lá está cheio. Ele abre aqui assim que sincronizar.",
+    "downloadFailed": "O download falhou",
+    "playbackFailed": "A reprodução falhou",
+    "uploadFailed": "O envio falhou: {{message}}",
+    "unknownError": "Erro desconhecido"
+  }
+}

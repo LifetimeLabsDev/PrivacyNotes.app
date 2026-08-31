@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="theme-color" content="#171514" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F5F5F5" media="(prefers-color-scheme: light)" />
+    <!-- CSP is set via response header in worker.ts (not a meta tag)
+         so Cloudflare can modify it to allow its own injected scripts. -->
+    <!-- Warm up DNS + TLS to the sync backend while the JS bundle is
+         still parsing, so the first API call skips connection setup. -->
+    <link rel="preconnect" href="https://sync.privacynotes.app" crossorigin />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <!-- Mastodon profile verification. Must live in the static <head>: the
+         homepage footer's rel="me" link is React-rendered, and Mastodon's
+         verifier reads raw HTML without executing JavaScript, so it never
+         sees the footer. -->
+    <link rel="me" href="https://mastodon.social/@privacynotes" />
+    <title>PrivacyNotes: Your Encrypted Vault for Notes, Tasks & Journals</title>
+    <meta name="description" content="Note down your thoughts, tasks, and journal - encrypted, always. End-to-end encrypted with zero tracking, hosted in Switzerland." />
+    <meta property="og:title" content="PrivacyNotes: Notes. Tasks. Journal. Zero Knowledge." />
+    <meta property="og:description" content="Note down your thoughts, tasks, and journal - encrypted, always. End-to-end encrypted with zero tracking, hosted in Switzerland." />
+    <meta property="og:image" content="https://privacynotes.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PrivacyNotes: Notes. Tasks. Journal. Zero Knowledge." />
+    <meta name="twitter:description" content="Note down your thoughts, tasks, and journal - encrypted, always. End-to-end encrypted with zero tracking, hosted in Switzerland." />
+    <meta name="twitter:image" content="https://privacynotes.app/og-image.png" />
+  </head>
+  <body class="antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

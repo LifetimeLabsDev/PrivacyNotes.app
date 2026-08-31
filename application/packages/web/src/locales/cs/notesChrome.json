@@ -1,0 +1,122 @@
+{
+  "dismiss": "Zavřít",
+  "close": "Zavřít",
+  "moveBanner": {
+    "title": "Aplikace se přesouvá na use.privacynotes.app",
+    "body": "Přesuň tuhle relaci hned - zabere to pár sekund a tvoje poznámky jdou s tebou.",
+    "cta": "Přesunout hned",
+    "syncing": "Probíhá synchronizace poznámek…",
+    "error": "Teď se nepodařilo synchronizovat všechno. Zkontroluj připojení a zkus to znovu.",
+    "conflict": "Jedna z tvých poznámek má konflikt synchronizace, který vyžaduje tvé rozhodnutí. Vyřeš ho v dialogu a zkus to znovu."
+  },
+  "movedHint": {
+    "body": "Tady je nový domov aplikace. Uprav si záložku na use.privacynotes.app a znovu si přidej případnou zkratku na domovské obrazovce.",
+    "gotIt": "Rozumím"
+  },
+  "moveScreen": {
+    "title": "Aplikace se přestěhovala na use.privacynotes.app",
+    "body": "Přesuň tohle zařízení hned - zabere to pár sekund a tvoje poznámky jdou s tebou. Nic se tady nemaže.",
+    "openNotes": "Otevři tady jednou svoje poznámky a vyřeš to",
+    "website": "Prohlédnout si místo toho web"
+  },
+  "quota": {
+    "frozen": {
+      "configured": "Synchronizace je pozastavena. Limit úložiště překračuješ už víc než 90 dní. Tvoje poznámky jsou v bezpečí v zařízení. Obnov si předplatné, nebo si vyexportuj data.",
+      "unconfigured": "Synchronizace je pozastavena. Limit úložiště překračuješ už víc než 90 dní. Tvoje poznámky jsou v bezpečí v zařízení. Vyexportuj a promaž poznámky, aby se synchronizace obnovila."
+    },
+    "grace": {
+      "configured_one": "Rozšíření úložiště vypršelo. Zbývá {{count}} den na snížení objemu dat nebo obnovení předplatného, než se synchronizace pozastaví.",
+      "configured_few": "Rozšíření úložiště vypršelo. Zbývají {{count}} dny na snížení objemu dat nebo obnovení předplatného, než se synchronizace pozastaví.",
+      "configured_many": "Rozšíření úložiště vypršelo. Zbývá {{count}} dne na snížení objemu dat nebo obnovení předplatného, než se synchronizace pozastaví.",
+      "configured_other": "Rozšíření úložiště vypršelo. Zbývá {{count}} dní na snížení objemu dat nebo obnovení předplatného, než se synchronizace pozastaví.",
+      "unconfigured_one": "Překračuješ limit úložiště. Zbývá {{count}} den na promazání poznámek, než se synchronizace pozastaví.",
+      "unconfigured_few": "Překračuješ limit úložiště. Zbývají {{count}} dny na promazání poznámek, než se synchronizace pozastaví.",
+      "unconfigured_many": "Překračuješ limit úložiště. Zbývá {{count}} dne na promazání poznámek, než se synchronizace pozastaví.",
+      "unconfigured_other": "Překračuješ limit úložiště. Zbývá {{count}} dní na promazání poznámek, než se synchronizace pozastaví."
+    },
+    "full": {
+      "configured": "Úložiště je plné. Některé poznámky se nepodařilo synchronizovat. Uvolni místo, nebo si přidej další úložiště.",
+      "unconfigured": "Úložiště je plné. Některé poznámky se nepodařilo synchronizovat. Uvolni místo promazáním poznámek."
+    },
+    "manageStorage": "Správa úložiště",
+    "viewUsage": "Zobrazit využití"
+  },
+  "syncError": {
+    "failed_one": "1 poznámku se nepodařilo synchronizovat. Zkusí se to znovu automaticky.",
+    "failed_few": "{{count}} poznámky se nepodařilo synchronizovat. Zkusí se to znovu automaticky.",
+    "failed_many": "{{count}} poznámky se nepodařilo synchronizovat. Zkusí se to znovu automaticky.",
+    "failed_other": "{{count}} poznámek se nepodařilo synchronizovat. Zkusí se to znovu automaticky.",
+    "lastError": "Poslední chyba: {{message}}"
+  },
+  "sessionExpired": {
+    "title": "Relace vypršela",
+    "body": "Tvoje relace vypršela. Poznámky máš v bezpečí v tomto zařízení. Přihlas se znovu a synchronizace bude pokračovat.",
+    "signInAgain": "Přihlásit se znovu"
+  },
+  "signOutConfirm": {
+    "title": "Máš uloženou frázi z 12 slov?",
+    "body": "Tvoje fráze je <only>jediná</only> cesta zpátky. Žádný reset e-mailem, žádná linka podpory. Nevíme, kdo jsi, a to záměrně. Jestli ji ještě nemáš zapsanou, klepni na <action>Ne, zobrazit frázi</action> a hned ti ji otevřeme.",
+    "unsyncedWarn_one": "1 poznámka v tomto zařízení ještě není synchronizovaná. Pokud se ji při odhlášení nepodaří nahrát, bude nenávratně ztracena.",
+    "unsyncedWarn_few": "{{count}} poznámky v tomto zařízení ještě nejsou synchronizované. Pokud se je při odhlášení nepodaří nahrát, budou nenávratně ztraceny.",
+    "unsyncedWarn_many": "{{count}} poznámky v tomto zařízení ještě není synchronizováno. Pokud se je při odhlášení nepodaří nahrát, budou nenávratně ztraceny.",
+    "unsyncedWarn_other": "{{count}} poznámek v tomto zařízení ještě není synchronizováno. Pokud se je při odhlášení nepodaří nahrát, budou nenávratně ztraceny.",
+    "unsyncedKept_one": "1 poznámka v tomto zařízení ještě není synchronizovaná. Zůstane v tomto zařízení a synchronizuje se, až se znovu přihlásíš.",
+    "unsyncedKept_few": "{{count}} poznámky v tomto zařízení ještě nejsou synchronizované. Zůstanou v tomto zařízení a synchronizují se, až se znovu přihlásíš.",
+    "unsyncedKept_many": "{{count}} poznámky v tomto zařízení ještě není synchronizováno. Zůstanou v tomto zařízení a synchronizují se, až se znovu přihlásíš.",
+    "unsyncedKept_other": "{{count}} poznámek v tomto zařízení ještě není synchronizováno. Zůstanou v tomto zařízení a synchronizují se, až se znovu přihlásíš.",
+    "dontRemind": "Už mi to nepřipomínat",
+    "showPhrase": "Ne, zobrazit frázi",
+    "confirm": "Ano, odhlásit se"
+  },
+  "burnShareModal": {
+    "title": "Sdílet a spálit po přečtení",
+    "body": "<lead>Tvoje původní poznámka se nesmaže.</lead> Zůstane v bezpečí ve tvém účtu. Odkaz ke spálení je samostatná šifrovaná kopie, která se po přečtení sama zničí. Link vyprší po 24 hodinách, ať už ho někdo otevře, nebo ne.",
+    "imagesStripped": "Zobrazuje se jen text, soubory v této poznámce zůstávají skryté.",
+    "copied": "Zkopírováno"
+  },
+  "burnView": {
+    "tagline": "Šifrované. Prchavé. Jen pro tvé oči.",
+    "toggleTheme": "Přepnout téma",
+    "checking": "Probíhá kontrola...",
+    "revealing": "Probíhá načítání a dešifrování...",
+    "goToApp": "Přejít na <brand/>",
+    "footerTagline": "- Poznámky šifrované zero-knowledge, hostované ve Švýcarsku.",
+    "sealed": {
+      "heading": "Přišla ti zašifrovaná poznámka.",
+      "subheading": "Tato zpráva se po přečtení sama zničí. Nepřečtené linky vyprší po 24 hodinách.",
+      "reveal": "Zobrazit zprávu",
+      "warning": "Server poznámku smaže ve chvíli, kdy si ji zobrazíš. Druhá šance není."
+    },
+    "revealed": {
+      "countdown": "Text se smaže za {{time}}",
+      "clearNow": "Smazat hned",
+      "emptyNote": "(prázdná poznámka)",
+      "deletedNotice": "Tato sdílená kopie byla smazána ze serveru. Znovu už ji zobrazit nelze."
+    },
+    "destroyed": {
+      "heading": "Zpráva zničena.",
+      "body": "Smazána ze serveru a vymazána z paměti. Tuto zprávu už znovu přečíst nelze."
+    },
+    "gone": {
+      "heading": "Tato poznámka je pryč.",
+      "body": "Buď už byla přečtena, nebo vypršela. Odkazy ke spálení se dají otevřít jen jednou a vyprší po 24 hodinách."
+    },
+    "error": {
+      "heading": "Něco se pokazilo.",
+      "fallback": "Link může být poškozený nebo nekompletní.",
+      "server": "Chyba serveru. Poznámka už mohla být přečtena, nebo vypršela.",
+      "decryption": "Dešifrování se nezdařilo. Link může být poškozený.",
+      "network": "Server se nepodařilo kontaktovat. Zkontroluj připojení a zkus to znovu."
+    },
+    "noPayload": {
+      "heading": "Žádná zpráva nenalezena.",
+      "body": "Tato adresa URL neobsahuje odkaz na poznámku ke spálení. Zkontroluj, že máš celý link."
+    }
+  },
+  "burnShare": {
+    "offline": "Jsi offline. Odkazy ke spálení potřebují komunikaci se serverem. Zkus to znovu, až budeš znovu online.",
+    "demo": "Odkazy ke spálení se ukládají na server a demo se k žádnému nepřipojuje. Zaregistruj se a vytvářej opravdové odkazy ke spálení.",
+    "tooLarge": "Poznámka je příliš velká na sdílení odkazem ke spálení ({{size}} KB). Maximum je {{max}} KB.",
+    "storeFailed": "Poznámku ke spálení se nepodařilo uložit na server."
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "labels": {
+    "mood": "Humor",
+    "emotions": "Emoções",
+    "sleep": "Sono",
+    "sleepScore": "Pontuação do sono",
+    "heartRate": "Frequência cardíaca",
+    "activity": "Atividade",
+    "medication": "Medicação",
+    "meds": "Medicamentos",
+    "energy": "Energia",
+    "focus": "Foco",
+    "weight": "Peso",
+    "steps": "Passos",
+    "water": "Água",
+    "screenTime": "Tempo de ecrã",
+    "caffeine": "Cafeína",
+    "pain": "Dor",
+    "social": "Social",
+    "custom": "Personalizado"
+  },
+  "units": {
+    "hoursSuffix": "h",
+    "bpm": "bpm",
+    "kg": "kg",
+    "steps_one": "passo",
+    "steps_other": "passos",
+    "hrs": "h",
+    "glasses_one": " copo",
+    "glasses_other": " copos",
+    "cups_one": " chávena",
+    "cups_other": " chávenas"
+  },
+  "scaleEnds": {
+    "low": "baixo",
+    "high": "alto",
+    "none": "nenhum",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "intensa",
+    "socialLow": "isolado",
+    "socialHigh": "muito social"
+  },
+  "mood": {
+    "prompt": "Como te estás a sentir? (1-10)",
+    "low": "péssimo",
+    "high": "incrível",
+    "anchor": {
+      "1": "péssimo",
+      "3": "difícil",
+      "5": "razoável",
+      "7": "bem",
+      "10": "incrível"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "Que emoções estão presentes?",
+    "count_one": "{{count}} emoção",
+    "count_other": "{{count}} emoções",
+    "valence": {
+      "positive": "positiva",
+      "neutral": "neutra",
+      "negative": "negativa"
+    },
+    "tags": {
+      "happy": "Feliz",
+      "calm": "Calmo",
+      "relaxed": "Relaxado",
+      "grateful": "Grato",
+      "loved": "Amado",
+      "motivated": "Motivado",
+      "confident": "Confiante",
+      "productive": "Produtivo",
+      "focused": "Focado",
+      "energetic": "Cheio de energia",
+      "tired": "Cansado",
+      "restless": "Inquieto",
+      "distracted": "Distraído",
+      "numb": "Entorpecido",
+      "overwhelmed": "Sobrecarregado",
+      "anxious": "Ansioso",
+      "stressed": "Stressado",
+      "frustrated": "Frustrado",
+      "irritable": "Irritado",
+      "sad": "Triste",
+      "lonely": "Sozinho",
+      "guilty": "Culpado",
+      "hopeless": "Sem esperança",
+      "angry": "Zangado"
+    }
+  },
+  "sleep": {
+    "prompt": "Como dormiste?",
+    "hoursLabel": "Horas:",
+    "quality": {
+      "terrible": "Péssimo",
+      "poor": "Mau",
+      "okay": "Razoável",
+      "good": "Bom",
+      "great": "Ótimo"
+    }
+  },
+  "sleepScore": {
+    "prompt": "Pontuação do sono"
+  },
+  "heartRate": {
+    "prompt": "Frequência cardíaca média"
+  },
+  "activity": {
+    "prompt": "Nível de atividade hoje?",
+    "level": {
+      "sedentary": "Sedentário",
+      "light": "Leve",
+      "moderate": "Moderado",
+      "active": "Ativo",
+      "intense": "Intenso"
+    }
+  },
+  "medication": {
+    "heading": "Medicamentos",
+    "empty": "Ainda não há medicamentos configurados.",
+    "takenCount_one": "{{count}} tomado",
+    "takenCount_other": "{{count}} tomados",
+    "namePlaceholder": "Nome do medicamento",
+    "dosagePlaceholder": "Dosagem (ex.: 50 mg)",
+    "addMedication": "+ Adicionar medicamento",
+    "editMedication": "Editar medicamento",
+    "removeMedication": "Remover medicamento",
+    "confirmRemove": "Remover <highlight>{{name}}</highlight>?",
+    "yes": "Sim",
+    "no": "Não",
+    "taken": "Tomado",
+    "skip": "Saltar"
+  },
+  "custom": {
+    "yes": "Sim",
+    "no": "Não",
+    "typeLabels": {
+      "scale10": "Escala (0-10)",
+      "scale5": "Escala (0-5)",
+      "slider100": "Controlo deslizante (0-100)",
+      "number": "Número",
+      "yesno": "Sim / Não"
+    }
+  },
+  "config": {
+    "configureTrackers": "Configurar registos",
+    "title": "Registos",
+    "categoryMoodMind": "Humor e mente",
+    "categoryBodyHealth": "Corpo e saúde",
+    "categoryLifestyle": "Estilo de vida",
+    "customHeading": "Personalizados",
+    "resume": "Retomar",
+    "stop": "Parar",
+    "addCustomTracker": "Adicionar registo personalizado",
+    "addCustomTrackerCount": "Adicionar registo personalizado ({{count}}/{{max}})",
+    "addCustomTrackerHint": "Regista o que quiseres",
+    "maxReached": "Atingiste o máximo de {{max}} registos personalizados.",
+    "customTrackers": "Registos personalizados",
+    "newCustomTracker": "Novo registo personalizado",
+    "trackerNamePlaceholder": "Nome do registo",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "Tipo:",
+    "colorLabel": "Cor:"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "upgrade": {
+    "header": "Paga una vez, tuyo para siempre",
+    "earlyAdopterBadge": "Early Adopter",
+    "oneTime": "pago único",
+    "subscriptionPitch": "Sin suscripción. Sin cuota anual. Un pago, desbloqueado de por vida.",
+    "ctaUnlock": "Desbloquear todo",
+    "ctaOpening": "Abriendo el pago...",
+    "ctaSignUp": "Regístrate para desbloquear",
+    "intro": {
+      "storage": "Subidas más grandes y más espacio son una función Pro. Mejora tu plan para archivos de 50 MB y 500 MB de almacenamiento.",
+      "folders": "Las carpetas son una función Pro. Organiza tus notas en carpetas anidadas, tan profundas como necesites, y mantén cada proyecto separado.",
+      "lock": "Bloquear una nota es una función Pro. Mejora tu plan para proteger cualquier nota de ediciones accidentales.",
+      "protect": "Proteger una nota con PIN es una función Pro. Mejora tu plan para resguardar notas sensibles tras tu PIN.",
+      "history": "El historial de notas es una función Pro. Mejora tu plan para mantener una cronología de cada guardado.",
+      "devices": "Has alcanzado el límite de 2 dispositivos. Mejora tu plan para dispositivos ilimitados.",
+      "zen": "El modo Zen es una función Pro. Mejora tu plan para escribir sin distracciones.",
+      "theme": "Los temas premium son una función Pro. Mejora tu plan para desbloquear todos los tonos.",
+      "callout": "El conjunto completo de avisos es una función Pro.",
+      "totp": "Los códigos 2FA son una función Pro. Guarda una clave de autenticación en cualquier inicio de sesión y tendrás el código rotativo junto a la contraseña. La clave se guarda y se sincroniza en todos los planes.",
+      "default": "Una sola mejora desbloquea todo lo de abajo. Pago único."
+    },
+    "features": {
+      "devices": "Sincroniza dispositivos ilimitados, en todas las plataformas",
+      "folders": "Carpetas anidadas, organización por proyecto",
+      "lock": "Bloquea y protege con PIN cualquier nota",
+      "history": "Historial completo de notas, restaura cuando quieras",
+      "themes": "Temas premium en todos los tonos",
+      "zen": "Modo Zen, escritura sin distracciones",
+      "storage": "500 MB de almacenamiento + 50 MB de adjuntos"
+    },
+    "comparisonBeta": "Paga {{earlyPrice}} $ una vez. Obsidian Sync cuesta 48 $/año, cada año. Standard Notes cobra 90 $/año. Precio early adopter, fijado antes de que suba a {{proPrice}} $.",
+    "comparison": "Paga {{proPrice}} $ una vez y es tuyo para siempre. Obsidian Sync cuesta 48 $/año y Standard Notes 90 $/año, todos los años."
+  },
+  "purchaseError": {
+    "store": "No se pudo completar la compra en la tienda y no se te ha cobrado nada. Inténtalo de nuevo en un momento.",
+    "validate": "Tu pago se realizó correctamente, pero la activación falló. Reinicia la app para volver a intentarlo - si sigue sin desbloquearse, la tienda reembolsa la compra automáticamente en un plazo de 3 días.",
+    "alreadyOwned": "La tienda dice que ya posees esta compra, pero pertenece a otra cuenta. Inicia sesión con la frase de recuperación que usabas cuando la compraste."
+  },
+  "checkout": {
+    "invalidTitle": "Enlace de pago no válido",
+    "invalidBody": "Abre el pago desde dentro de la app para que podamos vincular la compra a tu cuenta.",
+    "completeTitle": "Pago completado",
+    "completeBody": "Puedes cerrar esta pestaña y volver a PrivacyNotes. Tu mejora se desbloquea automáticamente.",
+    "openingTitle": "Abriendo el pago seguro...",
+    "openingBody": "Debería aparecer una ventana de pago de Paddle. Si no aparece, puede que tu navegador haya bloqueado la ventana emergente - recarga esta página para reintentar."
+  },
+  "history": {
+    "title": "Historial de notas",
+    "subtitle": "Hasta 20 versiones por nota. Las más antiguas se eliminan automáticamente.",
+    "empty": "Aún no hay historial. Las versiones empiezan a acumularse tras la próxima edición. Vuelve más tarde.",
+    "selectPrompt": "Selecciona una versión para previsualizarla.",
+    "emptyBody": "(vacío)",
+    "restore": "Restaurar",
+    "restoring": "Restaurando…"
+  },
+  "donation": {
+    "eyebrow": "Has desbloqueado",
+    "intro": "<brand/> es gratis, y siempre lo será. Sin anuncios, sin rastreo, sin correo registrado. Si te ha ayudado a pensar, escribir o recordar, plantéate apoyar el desarrollo. Mantiene el proyecto en marcha y paga las próximas funciones.",
+    "proBenefits": "Apoyar también desbloquea las ventajas Pro cuando se lancen: dispositivos ilimitados, adjuntos y copias de seguridad cifradas en la nube.",
+    "maybeLater": "Quizás más tarde",
+    "support": "Apoyar →"
+  }
+}

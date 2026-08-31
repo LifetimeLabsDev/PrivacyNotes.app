@@ -1,0 +1,174 @@
+{
+  "placeholder": "Yazmaya başlayın…",
+  "toolbar": {
+    "bold": "Kalın",
+    "italic": "İtalik",
+    "underline": "Altı çizili",
+    "heading": "Başlık",
+    "taskList": "Görev listesi",
+    "bulletList": "Madde listesi",
+    "linkMenu": "Bağlantı",
+    "noteLinkMenu": "Not bağlantısı",
+    "numberedList": "Numaralı liste",
+    "textColor": "Metin rengi",
+    "textColorApply": "Metin rengi: {{color}}",
+    "pickColor": "Metin rengi seç",
+    "table": "Tablo",
+    "quote": "Alıntı",
+    "callout": "Bilgi kutusu",
+    "inlineCode": "Satır içi kod",
+    "strikethrough": "Üstü çizili",
+    "codeBlock": "Kod bloğu",
+    "divider": "Ayırıcı",
+    "moreFormatting": "Daha fazla biçimlendirme",
+    "fewerFormatting": "Daha az biçimlendirme seçeneği",
+    "image": "Görsel",
+    "attachFile": "Dosya ekle",
+    "insert": "Ekle",
+    "highlight": "Vurgu",
+    "highlightApply": "Vurgu: {{color}}",
+    "pickHighlight": "Vurgu rengi seç",
+    "superscript": "Üst simge",
+    "subscript": "Alt simge",
+    "math": "Matematik formülü",
+    "blockMath": "Blok formül",
+    "align": "Hizalama",
+    "font": "Yazı tipi"
+  },
+  "align": {
+    "left": "Sola hizala",
+    "center": "Ortala",
+    "right": "Sağa hizala",
+    "justify": "İki yana yasla"
+  },
+  "font": {
+    "families": {
+      "sans": "Sans",
+      "serif": "Serif",
+      "mono": "Mono"
+    },
+    "sizes": {
+      "small": "Küçük",
+      "large": "Büyük",
+      "huge": "Çok büyük"
+    },
+    "reset": "Yazı tipini sıfırla"
+  },
+  "heading": {
+    "normalText": "Normal metin",
+    "level": "Başlık {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "Bilgi kutusu ekle",
+    "remove": "Bilgi kutusunu kaldır",
+    "types": {
+      "info": "Bilgi",
+      "success": "Başarılı",
+      "warning": "Uyarı",
+      "tip": "İpucu",
+      "danger": "Tehlike",
+      "question": "Soru",
+      "quote": "Alıntı",
+      "example": "Örnek",
+      "bug": "Hata",
+      "note": "Not",
+      "abstract": "Özet",
+      "failure": "Başarısız"
+    }
+  },
+  "color": {
+    "remove": "Rengi kaldır",
+    "removeHighlight": "Vurguyu kaldır",
+    "names": {
+      "gray": "Gri",
+      "red": "Kırmızı",
+      "orange": "Turuncu",
+      "yellow": "Sarı",
+      "green": "Yeşil",
+      "teal": "Turkuaz",
+      "blue": "Mavi",
+      "purple": "Mor",
+      "pink": "Pembe"
+    }
+  },
+  "insertGroup": {
+    "insert": "Ekle",
+    "blocks": "Bloklar",
+    "notation": "Gösterim"
+  },
+  "table": {
+    "addRowAbove": "Üste satır ekle",
+    "addRowBelow": "Alta satır ekle",
+    "addColumnLeft": "Sola sütun ekle",
+    "addColumnRight": "Sağa sütun ekle",
+    "deleteRow": "Satırı sil",
+    "deleteColumn": "Sütunu sil",
+    "deleteTable": "Tabloyu sil"
+  },
+  "find": {
+    "placeholder": "Notta bul",
+    "label": "Notta bul",
+    "previous": "Önceki eşleşme (Shift+Enter)",
+    "previousTitle": "Önceki (Shift+Enter)",
+    "next": "Sonraki eşleşme (Enter)",
+    "nextTitle": "Sonraki (Enter)",
+    "close": "Aramayı kapat",
+    "closeTitle": "Kapat (⌘F)"
+  },
+  "outline": {
+    "show": "Ana hattı göster",
+    "showTitle": "Ana hat (Cmd/Ctrl+Shift+O)",
+    "title": "Ana hat",
+    "ariaLabel": "Not ana hattı",
+    "hide": "Ana hattı gizle",
+    "hideTitle": "Ana hattı gizle (Esc)"
+  },
+  "topRow": {
+    "add": "En üste bir satır ekle"
+  },
+  "link": {
+    "popoverLabel": "Bağlantı ekle",
+    "placeholder": "Bir URL yapıştırın veya yazın",
+    "apply": "Uygula",
+    "addTitle": "Bağlantı ekle",
+    "editTitle": "Bağlantıyı düzenle",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "Bir URL girin",
+    "errorInvalidUrl": "Geçerli bir URL girin",
+    "textLabel": "Bağlantı metni",
+    "textPlaceholder": "İsteğe bağlı, URL'yi göstermek için boş bırakın",
+    "selectedTextHint": "Seçili metin bağlantı olarak kullanılacak",
+    "editTextHint": "Bağlantı metnini düzenleyicide düzenleyin",
+    "update": "Güncelle"
+  },
+  "audio": {
+    "uploadingRecording": "Kayıt yükleniyor...",
+    "uploading": "Yükleniyor...",
+    "stopRecording": "Kaydı durdur",
+    "recordAudio": "Ses kaydet",
+    "savingRecording": "Kayıt kaydediliyor...",
+    "recording": "Kayıt sürüyor",
+    "secondsLeft": "{{count}} sn kaldı",
+    "stop": "Durdur"
+  },
+  "wordCount": {
+    "words_one": "{{formatted}} kelime",
+    "words_other": "{{formatted}} kelime",
+    "characters_one": "{{formatted}} karakter",
+    "characters_other": "{{formatted}} karakter",
+    "tooLargeToSync": ", eşitlemek için çok büyük olabilir, yeni bir nota bölün",
+    "veryLong": ", çok uzun, düzenlemesi yavaş olabilir ve takılabilir",
+    "gettingLong": ", uzuyor, yavaş cihazlarda takılabilir",
+    "largeTableWarning": "Büyük tablo ({{rows}} satır) bu notun düzenlenmesini yavaşlatabilir, bölmeyi düşünün"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "Eşleşen not yok",
+    "create": "\"{{query}}\" oluştur"
+  },
+  "codeBlock": {
+    "copy": "Kopyala",
+    "copied": "Kopyalandı",
+    "copyFailed": "Başarısız"
+  }
+}

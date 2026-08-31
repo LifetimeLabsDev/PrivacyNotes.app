@@ -1,0 +1,7 @@
+{
+  "identifier": "mobile",
+  "description": "Mobile-only (iOS/Android) permissions: native in-app purchase",
+  "platforms": ["iOS", "android"],
+  "windows": ["main"],
+  "permissions": ["iap:default"]
+}

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Merged into the generated Info.plist by Tauri for macOS and iOS bundles.
+     These TCC usage strings are required for the webview's getUserMedia calls:
+     NSCameraUsageDescription for the sign-in QR scanner, NSMicrophoneUsageDescription
+     for the in-app audio recorder (AudioRecorder.tsx). Without the matching string,
+     macOS TCC denies the request and can kill the app outright. On a signed/notarized
+     macOS build these pair with the hardened-runtime entitlements in Entitlements.plist;
+     the usage string alone is not enough there. iOS needs only these strings (no
+     device entitlements exist on iOS).
+     NSFaceIDUsageDescription is required by the native biometric unlock on iOS:
+     LocalAuthentication crashes the app outright when Face ID is invoked without
+     it. Touch ID (macOS and iPhone SE class) needs no string, and macOS ignores
+     this key entirely, but the file is shared by both bundles.
+     Spec: ops/docs/macos-ios-setup.md (camera + mic access),
+     ops/docs/biometric-unlock.md (native path) -->
+<plist version="1.0">
+<dict>
+	<key>NSCameraUsageDescription</key>
+	<string>PrivacyNotes uses the camera only to scan sign-in QR codes. The video feed is processed on this device and never uploaded.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>PrivacyNotes uses the microphone only when you record an audio note. The recording is encrypted on this device before it is stored or synced.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>PrivacyNotes uses Face ID only to unlock the app on this device. Your notes stay encrypted with your recovery phrase, and no biometric data ever leaves this device.</string>
+	<!-- The languages the UI actually ships, so the App Store listing advertises
+	     them and iOS offers this app in Settings > PrivacyNotes > Language. The
+	     bundle carries no .lproj directories (the UI is localized in the webview
+	     by i18next, not by NSLocalizedString), so without this key both stores
+	     report the app as English-only no matter how many catalogs ship.
+	     Mirrors SUPPORTED_LOCALES in packages/web/src/i18n.ts - keep in sync when
+	     adding a locale. Traditional Chinese is declared as the script tag
+	     zh-Hant, matching the fallbackLng map that serves TW, HK and Macau from
+	     the one zh-TW catalog.
+	     Spec: ops/docs/i18n-spec.md section 10d (wiring checklist) -->
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>de</string>
+		<string>fr</string>
+		<string>it</string>
+		<string>es</string>
+		<string>nl</string>
+		<string>pl</string>
+		<string>pt-PT</string>
+		<string>pt-BR</string>
+		<string>ja</string>
+		<string>ko</string>
+		<string>zh-Hant</string>
+		<string>ca</string>
+		<string>cs</string>
+		<string>tr</string>
+		<string>sv</string>
+		<string>ar</string>
+	</array>
+</dict>
+</plist>

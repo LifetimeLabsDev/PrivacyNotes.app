@@ -1,0 +1,275 @@
+{
+  "noteRow": {
+    "created": "Créée",
+    "modified": "Modifiée",
+    "select": "Sélectionner la note",
+    "deselect": "Désélectionner la note",
+    "pinProtected": "Protégé par PIN",
+    "readOnly": "Lecture seule",
+    "file": "Fichier",
+    "empty": "Vide",
+    "noContent": "Aucun contenu"
+  },
+  "header": {
+    "new": "Nouveau",
+    "newNote": "Nouvelle note",
+    "newNoteHover": "Nouvelle note ({{hotkey}})",
+    "trash": "Corbeille"
+  },
+  "folderChip": {
+    "clear": "Effacer le filtre de dossier : {{folder}}"
+  },
+  "tagChip": {
+    "clear": "Effacer le filtre d'étiquette : {{tag}}"
+  },
+  "vaultNew": {
+    "ariaLabel": "Nouvel élément du coffre",
+    "login": "Identifiant",
+    "card": "Carte bancaire",
+    "sshKey": "Clé SSH"
+  },
+  "newMenu": {
+    "note": "Note",
+    "task": "Tâche",
+    "journal": "Journal",
+    "login": "Identifiant",
+    "file": "Fichier",
+    "bookmark": "Signet"
+  },
+  "vaultFilter": {
+    "all": "Tous",
+    "logins": "Identifiants",
+    "cards": "Cartes",
+    "keys": "Clés"
+  },
+  "journal": {
+    "backfillHover": "Nouveau journal pour un jour récent",
+    "newEntry": "Nouvelle entrée de journal",
+    "newEntryHover": "Nouvelle entrée de journal ({{hotkey}})"
+  },
+  "tasks": {
+    "newTitle": "Tâches du {{date}}"
+  },
+  "trash": {
+    "empty": "Vider",
+    "emptyHover": "Supprimer toutes les notes de la corbeille",
+    "storage": "Stockage",
+    "autoDelete": "Suppression auto : 30 j"
+  },
+  "search": {
+    "sortOptions": "Options de tri et d'affichage",
+    "placeholderVault": "Rechercher dans le coffre…",
+    "placeholderNotes": "Rechercher des notes…"
+  },
+  "selection": {
+    "countOf": "{{selected}} sur {{total}} sélectionnés",
+    "selectAll": "Tout sélectionner",
+    "deselectAll": "Tout désélectionner"
+  },
+  "empty": {
+    "noMatches": "Aucun résultat.",
+    "vault": "Le coffre est vide.",
+    "notes": "Aucune note pour l'instant.",
+    "filtered": "Aucun élément ne correspond à tes filtres.",
+    "clearFilters": "Effacer les filtres",
+    "filteredAfter": "pour les afficher."
+  },
+  "headerLabel": {
+    "allItems": "Tout",
+    "untagged": "Sans étiquette",
+    "journals": "Journaux",
+    "vault": "Coffre",
+    "pinned": "Épinglés",
+    "notes": "Notes"
+  },
+  "footerStats": {
+    "journals": "Journaux",
+    "items": "Éléments",
+    "trashed": "Supprimés",
+    "notes": "Notes",
+    "bookmarks": "Signets"
+  },
+  "toast": {
+    "imageUploadFailed": "Échec de l'envoi de l'image : {{error}}",
+    "imageError": "Erreur d'image : {{error}}",
+    "uploadFailedFor": "Échec de l'envoi pour « {{filename}} » : {{error}}",
+    "importedSyncing_one": "{{count}} note importée. Synchronisation…",
+    "importedSyncing_other": "{{count}} notes importées. Synchronisation…",
+    "addedTag_one": "#{{tag}} ajoutée à {{count}} élément",
+    "addedTag_other": "#{{tag}} ajoutée à {{count}} éléments"
+  },
+  "burn": {
+    "mediaOnly": "Cette note ne contient que des médias et ne peut pas être partagée via un lien burn.",
+    "shareTitle": "Note chiffrée"
+  },
+  "loadError": {
+    "message": "Impossible de charger tes notes. La connexion à la base de données locale a été interrompue. Cela peut arriver lorsque l'application est restée en arrière-plan un certain temps.",
+    "reload": "Recharger"
+  },
+  "banner": {
+    "dismiss": "Ignorer",
+    "proActivationPending": "Paiement reçu, mais l'activation de Pro prend plus de temps que d'habitude. Actualise dans une minute, ou contacte le support si ça ne s'active pas.",
+    "snapshotPaused": "L'historique des notes est en pause. Ton abonnement Pro semble inactif. Les nouvelles modifications ne seront pas enregistrées tant que Pro n'est pas rétabli.",
+    "restorePro": "Rétablir Pro",
+    "storagePastDue": "Le paiement de ton abonnement de stockage a échoué. Mets à jour ta carte dans Paddle pour ne pas perdre la capacité supplémentaire.",
+    "updateCard": "Mettre à jour la carte"
+  },
+  "sidebar": {
+    "collapse": "Replier la barre latérale",
+    "expand": "Déplier la barre latérale"
+  },
+  "notesList": {
+    "collapse": "Replier la liste des notes",
+    "expand": "Déplier la liste des notes"
+  },
+  "paneResize": {
+    "hintCollapse": "Clique pour replier · Glisse pour redimensionner"
+  },
+  "emptyEditor": {
+    "selectFile": "Sélectionne un fichier à prévisualiser",
+    "uploadFiles": "Ou importe de nouveaux fichiers dans ton coffre chiffré.",
+    "selectNote": "Sélectionne une note ou crées-en une nouvelle.",
+    "selectMarkdown": "Ouvre un fichier Markdown pour le lire ici."
+  },
+  "zen": {
+    "exit": "Quitter Zen",
+    "exitHover": "Quitter le mode Zen (Échap)",
+    "enterHover": "Activer le mode Zen",
+    "proHover": "Mode Zen (Pro)",
+    "enterAriaShortcut": "Activer le mode Zen (⌘⇧F)"
+  },
+  "editor": {
+    "backToList": "Retour à la liste des notes",
+    "backToGrid": "Retour à la grille",
+    "titlePlaceholder": "Sans titre (clique pour modifier ou laisse-le se générer)",
+    "titlePlaceholderLogin": "ex. GitHub",
+    "titlePlaceholderCard": "ex. Visa finissant par 4242",
+    "titlePlaceholderSshKey": "ex. clé de déploiement GitHub",
+    "pin": "Épingler",
+    "unpin": "Désépingler",
+    "restore": "Restaurer",
+    "deleteForever": "Supprimer définitivement",
+    "moveToTrash": "Mettre à la corbeille",
+    "noteOptions": "Options de la note",
+    "readOnlyToggle": "Lecture seule. Désactive dans",
+    "menu": "Menu",
+    "showMarkdown": "Afficher le markdown",
+    "showFormatted": "Afficher la mise en forme",
+    "invisiblesShow": "Afficher les caractères invisibles",
+    "invisiblesHide": "Masquer les caractères invisibles",
+    "findInNote": "Rechercher dans la note",
+    "navPrev": "Note précédente",
+    "navNext": "Note suivante",
+    "undo": "Annuler",
+    "redo": "Rétablir",
+    "hide": "Masquer",
+    "show": "Afficher",
+    "hideToolbar": "Masquer la barre de mise en forme",
+    "showToolbar": "Afficher la barre de mise en forme",
+    "widthDefault": "Largeur par défaut",
+    "widthWide": "Plus large",
+    "widthFull": "Pleine largeur",
+    "burn": "Partager en burn note",
+    "titlePlaceholderLink": "Nom du signet"
+  },
+  "share": {
+    "hover": "Partager / Exporter",
+    "ariaLabel": "Partager ou exporter",
+    "thisNote": "Cette note",
+    "currentMdTitle": "Note actuelle (.md)",
+    "currentMdDesc": "Markdown brut avec front-matter.",
+    "currentHtmlTitle": "Note actuelle (.html)",
+    "currentHtmlDesc": "Compatible impression, markdown rendu sur une page blanche.",
+    "printTitle": "Imprimer / Enregistrer en PDF",
+    "printDesc": "Ouvre la boîte de dialogue d'impression. Enregistre en PDF ou envoie à une imprimante.",
+    "burnTitle": "Partager en burn note",
+    "burnDesc": "Publie cette note sous forme de lien à usage unique. Le lien s'autodétruit après lecture. Ta note reste en sécurité dans ton compte.",
+    "backup": "Sauvegarde",
+    "fullBackupTitle": "Sauvegarde complète (.zip)",
+    "fullBackupDesc": "Tout : notes, journaux, coffre, tâches, images, audio, fichiers.",
+    "allHtmlTitle": "Tous les éléments (.zip de .html)",
+    "allHtmlDesc": "Un fichier HTML imprimable par élément. Idéal pour lire hors ligne.",
+    "jsonTitle": "Sauvegarde texte (.json)",
+    "jsonDesc": "Tout le contenu texte et les métadonnées, sans les images ni les fichiers."
+  },
+  "weekReview": {
+    "title": "Bilan de la semaine",
+    "daysLogged": "{{count}}/7 enregistrés",
+    "mood": "Humeur",
+    "sleep": "Sommeil",
+    "meds": "Médicaments",
+    "activity": "Activité"
+  },
+  "footer": {
+    "settings": "Paramètres",
+    "viewShortcuts": "Voir tous les raccourcis clavier",
+    "newNote": "Nouveau",
+    "newNoteHintMac": "Option + Maj + N",
+    "newNoteHintOther": "Alt + Maj + N",
+    "openStats": "Ouvrir les statistiques",
+    "words": "Mots",
+    "zen": "Mode Zen",
+    "appearance": "Apparence",
+    "signOut": "Se déconnecter",
+    "signingOut": "Déconnexion…",
+    "switchToLight": "Passer en mode clair",
+    "switchToDark": "Passer en mode sombre"
+  },
+  "settings": {
+    "groupYourNotes": "Tes notes",
+    "groupAccount": "Compte et données",
+    "groupBrand": "PrivacyNotes",
+    "statsLabel": "Statistiques",
+    "journalsLabel": "Journaux",
+    "importLabel": "Import et export",
+    "planLabel": "Compte",
+    "storageLabel": "Stockage",
+    "securityLabel": "Sécurité",
+    "accountLabel": "ID & Sync",
+    "appearanceLabel": "Apparence",
+    "helpLabel": "Aide",
+    "aboutLabel": "À propos",
+    "languageLabel": "Langue",
+    "languageDesc": "Choisis la langue d'affichage de PrivacyNotes."
+  },
+  "importStore": {
+    "title": "Importer ou stocker ?",
+    "confirm": "Importer comme notes",
+    "cancel": "Stocker comme fichiers",
+    "bodySingle": "<strong>{{filename}}</strong> ressemble à un fichier markdown. L'importer comme note pour pouvoir le lire et le modifier, ou le stocker comme pièce jointe chiffrée ?",
+    "bodyMulti": "Ces {{count}} fichiers ressemblent à du markdown. Les importer comme notes pour pouvoir les lire et les modifier, ou les stocker comme pièces jointes chiffrées ?"
+  },
+  "bulkTrash": {
+    "title": "Mettre à la corbeille",
+    "body_one": "Mettre <highlight>{{count}} élément</highlight> à la corbeille ? Tu pourras le restaurer plus tard.",
+    "body_other": "Mettre <highlight>{{count}} éléments</highlight> à la corbeille ? Tu pourras les restaurer plus tard."
+  },
+  "bulkDelete": {
+    "body_one": "Supprimer définitivement <highlight>{{count}} note</highlight> ? Cette action est irréversible.",
+    "body_other": "Supprimer définitivement <highlight>{{count}} notes</highlight> ? Cette action est irréversible."
+  },
+  "tagConfirm": {
+    "mergeTitle": "Fusionner les étiquettes",
+    "deleteTitle": "Supprimer l'étiquette",
+    "deleteWithNotesTitle": "Supprimer l'étiquette et les notes",
+    "mergeConfirm": "Fusionner",
+    "deleteConfirm": "Supprimer l'étiquette",
+    "moveToTrash": "Mettre à la corbeille",
+    "mergeBody_one": "L'étiquette <highlight>« {{targetTag}} »</highlight> existe déjà. Fusionner <highlight>{{count}} note</highlight> actuellement étiquetée « {{tag}} » dedans ?",
+    "mergeBody_other": "L'étiquette <highlight>« {{targetTag}} »</highlight> existe déjà. Fusionner <highlight>{{count}} notes</highlight> actuellement étiquetées « {{tag}} » dedans ?",
+    "deleteBody_one": "Retirer l'étiquette <highlight>« {{tag}} »</highlight> de <highlight>{{count}} note</highlight> ? Les notes elles-mêmes ne sont pas supprimées.",
+    "deleteBody_other": "Retirer l'étiquette <highlight>« {{tag}} »</highlight> de <highlight>{{count}} notes</highlight> ? Les notes elles-mêmes ne sont pas supprimées.",
+    "deleteWithNotesBody_one": "Supprimer l'étiquette <highlight>« {{tag}} »</highlight> et mettre <highlight>{{count}} note</highlight> à la corbeille ? Tu pourras la restaurer depuis là.",
+    "deleteWithNotesBody_other": "Supprimer l'étiquette <highlight>« {{tag}} »</highlight> et mettre <highlight>{{count}} notes</highlight> à la corbeille ? Tu pourras les restaurer depuis là."
+  },
+  "createNote": {
+    "title": "Créer une note ?",
+    "confirm": "Créer la note",
+    "body": "Aucune note intitulée <highlight>« {{title}} »</highlight> n'existe. Cela peut arriver si la note liée a été renommée. Créer une nouvelle note avec ce titre ?"
+  },
+  "freshVault": {
+    "title": "Nouveau coffre créé",
+    "confirm": "Compris",
+    "body": "Aucun coffre existant ne correspondait à la phrase que tu as saisie, donc un nouveau coffre vide a été créé. Si tu t'attendais à voir tes notes, déconnecte-toi et ressaisis ta phrase avec soin - un seul mot différent ouvre un coffre différent."
+  }
+}

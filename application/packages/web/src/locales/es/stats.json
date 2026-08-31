@@ -1,0 +1,116 @@
+{
+  "title": "Estadísticas",
+  "tabs": {
+    "writing": "Escritura",
+    "wellness": "Bienestar"
+  },
+  "writing": {
+    "notes": "Notas",
+    "words": "Palabras",
+    "tags": "Etiquetas",
+    "currentStreak": "Racha actual",
+    "longestStreak": "Racha más larga",
+    "streakValue": "{{count}}d",
+    "timeRangeAria": "Rango de tiempo de actividad",
+    "modeActivity": "Actividad",
+    "modeMood": "Estado de ánimo",
+    "tooltipMood": "{{date}}: ánimo {{mood}}/10",
+    "tooltipNoMood": "{{date}}: sin ánimo",
+    "tooltipEdits_one": "{{date}}: {{count}} edición",
+    "tooltipEdits_other": "{{date}}: {{count}} ediciones",
+    "longestNote": "Nota más larga: <name>{{title}}</name> ({{count}} palabras)"
+  },
+  "range": {
+    "7d": "7 días",
+    "14d": "14 días",
+    "30d": "30 días",
+    "3mo": "3 meses",
+    "6mo": "6 meses",
+    "12mo": "12 meses"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Todo",
+      "sleepActivity": "Sueño y actividad",
+      "medication": "Medicación",
+      "patterns": "Patrones"
+    },
+    "empty": {
+      "title": "Aún no hay datos de bienestar.",
+      "hint": "Abre una entrada del diario y registra tu estado de ánimo para empezar."
+    },
+    "overview": {
+      "daysTracked": "Días registrados",
+      "avgMood": "Ánimo medio",
+      "avgSleep": "Sueño medio",
+      "medAdherence": "Adherencia a la medicación",
+      "moodTrend": "Tendencia del ánimo",
+      "moodByDayOfWeek": "Ánimo por día de la semana",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Exportar",
+      "allTime": "Todo el tiempo",
+      "last90Days": "Últimos 90 días",
+      "last30Days": "Últimos 30 días",
+      "last7Days": "Últimos 7 días",
+      "downloadJSON": "Descargar JSON",
+      "doctorPDF": "PDF para el médico",
+      "copyAIPrompt": "Copiar prompt de IA",
+      "copied": "¡Copiado!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Calidad del sueño",
+      "activity": "Actividad",
+      "avgSleepPerNight": "Sueño medio por noche"
+    },
+    "medication": {
+      "adherence": "Adherencia",
+      "empty": {
+        "title": "Aún no hay datos de medicación.",
+        "hint": "Añade una medicación en los ajustes de registros y luego regístrala a diario."
+      },
+      "dosageTimeline": "Cronología de dosis",
+      "started": "Inicio: {{dosage}}",
+      "changedTo": "Cambio a {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Emociones principales",
+      "insights": "Hallazgos",
+      "proBadge": "PRO",
+      "insightsLocked_one": "{{count}} hallazgo detectado. Mejora a Pro para verlo",
+      "insightsLocked_other": "{{count}} hallazgos detectados. Mejora a Pro para verlos",
+      "weekInReview": "Resumen de la semana",
+      "weekInReviewLocked": "Mejora a Pro para ver tu resumen semanal de bienestar"
+    },
+    "week": {
+      "range": "{{start}} a {{end}}",
+      "daysLogged": "{{count}}/7 días registrados",
+      "avgMood": "Ánimo medio",
+      "moodDelta": "{{delta}} respecto a la semana pasada",
+      "avgSleep": "Sueño medio",
+      "medsTaken": "Medicinas tomadas",
+      "topActivity": "Actividad principal",
+      "topEmotions": "Emociones principales",
+      "reflection": "Reflexión",
+      "reflectionPlaceholder": "¿Qué tal ha ido la semana en general? Anota cualquier pensamiento..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Hito desbloqueado"
+  },
+  "milestone": {
+    "notes_one": "{{count}} nota escrita",
+    "notes_other": "{{count}} notas escritas",
+    "streak": "racha de escritura de {{count}} días",
+    "words_one": "{{formatted}} palabra escrita",
+    "words_other": "{{formatted}} palabras escritas",
+    "age30": "30 días con PrivacyNotes",
+    "age365": "1 año con PrivacyNotes",
+    "age730": "2 años con PrivacyNotes",
+    "age1825": "5 años con PrivacyNotes",
+    "ageDefault": "{{count}} días en PrivacyNotes"
+  }
+}

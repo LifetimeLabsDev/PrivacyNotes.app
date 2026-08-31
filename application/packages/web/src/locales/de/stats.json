@@ -1,0 +1,116 @@
+{
+  "title": "Statistiken",
+  "tabs": {
+    "writing": "Schreiben",
+    "wellness": "Wohlbefinden"
+  },
+  "writing": {
+    "notes": "Notizen",
+    "words": "Wörter",
+    "tags": "Tags",
+    "currentStreak": "Aktuelle Serie",
+    "longestStreak": "Längste Serie",
+    "streakValue": "{{count}} T.",
+    "timeRangeAria": "Aktivitätszeitraum",
+    "modeActivity": "Aktivität",
+    "modeMood": "Stimmung",
+    "tooltipMood": "{{date}}: Stimmung {{mood}}/10",
+    "tooltipNoMood": "{{date}}: keine Stimmung",
+    "tooltipEdits_one": "{{date}}: {{count}} Bearbeitung",
+    "tooltipEdits_other": "{{date}}: {{count}} Bearbeitungen",
+    "longestNote": "Längste Notiz: <name>{{title}}</name> ({{count}} Wörter)"
+  },
+  "range": {
+    "7d": "7 Tage",
+    "14d": "14 Tage",
+    "30d": "30 Tage",
+    "3mo": "3 Monate",
+    "6mo": "6 Monate",
+    "12mo": "12 Monate"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Alle",
+      "sleepActivity": "Schlaf und Aktivität",
+      "medication": "Medikation",
+      "patterns": "Muster"
+    },
+    "empty": {
+      "title": "Noch keine Wohlbefindens-Daten.",
+      "hint": "Öffne einen Tagebucheintrag und erfasse deine Stimmung, um loszulegen."
+    },
+    "overview": {
+      "daysTracked": "Erfasste Tage",
+      "avgMood": "Durchschn. Stimmung",
+      "avgSleep": "Durchschn. Schlaf",
+      "medAdherence": "Einnahmetreue",
+      "moodTrend": "Stimmungstrend",
+      "moodByDayOfWeek": "Stimmung nach Wochentag",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Export",
+      "allTime": "Gesamter Zeitraum",
+      "last90Days": "Letzte 90 Tage",
+      "last30Days": "Letzte 30 Tage",
+      "last7Days": "Letzte 7 Tage",
+      "downloadJSON": "JSON herunterladen",
+      "doctorPDF": "Arzt-PDF",
+      "copyAIPrompt": "KI-Prompt kopieren",
+      "copied": "Kopiert!",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Schlafqualität",
+      "activity": "Aktivität",
+      "avgSleepPerNight": "Durchschnittlicher Schlaf pro Nacht"
+    },
+    "medication": {
+      "adherence": "Einnahmetreue",
+      "empty": {
+        "title": "Noch keine Medikamentendaten.",
+        "hint": "Füge in den Tracker-Einstellungen ein Medikament hinzu und erfasse es dann täglich."
+      },
+      "dosageTimeline": "Dosierungsverlauf",
+      "started": "Begonnen mit {{dosage}}",
+      "changedTo": "Geändert auf {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Häufigste Emotionen",
+      "insights": "Erkenntnisse",
+      "proBadge": "PRO",
+      "insightsLocked_one": "{{count}} Erkenntnis gefunden. Rüste auf Pro auf, um sie anzuzeigen",
+      "insightsLocked_other": "{{count}} Erkenntnisse gefunden. Rüste auf Pro auf, um sie anzuzeigen",
+      "weekInReview": "Wochenrückblick",
+      "weekInReviewLocked": "Rüste auf Pro auf, um deine wöchentliche Wohlbefindens-Zusammenfassung zu sehen"
+    },
+    "week": {
+      "range": "{{start}} bis {{end}}",
+      "daysLogged": "{{count}}/7 Tage erfasst",
+      "avgMood": "Durchschn. Stimmung",
+      "moodDelta": "{{delta}} ggü. letzter Woche",
+      "avgSleep": "Durchschn. Schlaf",
+      "medsTaken": "Medikamente eingenommen",
+      "topActivity": "Häufigste Aktivität",
+      "topEmotions": "Häufigste Emotionen",
+      "reflection": "Reflexion",
+      "reflectionPlaceholder": "Wie hat sich diese Woche insgesamt angefühlt? Gedanken zum Festhalten..."
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Meilenstein freigeschaltet"
+  },
+  "milestone": {
+    "notes_one": "{{count}} Notiz geschrieben",
+    "notes_other": "{{count}} Notizen geschrieben",
+    "streak": "{{count}}-Tage-Schreibserie",
+    "words_one": "{{formatted}} Wort geschrieben",
+    "words_other": "{{formatted}} Wörter geschrieben",
+    "age30": "30 Tage mit PrivacyNotes",
+    "age365": "1 Jahr mit PrivacyNotes",
+    "age730": "2 Jahre mit PrivacyNotes",
+    "age1825": "5 Jahre mit PrivacyNotes",
+    "ageDefault": "{{count}} Tage dabei"
+  }
+}

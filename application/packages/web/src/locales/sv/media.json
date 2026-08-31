@@ -1,0 +1,38 @@
+{
+  "image": {
+    "sizeLabel": "Storlek:",
+    "widthXs": "XS",
+    "widthS": "S",
+    "widthM": "M",
+    "widthL": "L",
+    "downloadAria": "Ladda ner bild",
+    "deleteAria": "Radera bild",
+    "loading": "Laddar bild...",
+    "uploading": "Laddar upp {{name}}...",
+    "uploadFailed": "Uppladdningen misslyckades: {{message}}",
+    "storeUnavailable": "Bildlagringen är inte tillgänglig",
+    "loadFailed": "Kunde inte ladda bilden",
+    "notFound": "Bilden hittades inte"
+  },
+  "attachment": {
+    "fallbackName": "Bilaga",
+    "imageAlt": "Bild",
+    "cantPlay": "Kan inte spelas upp. Ladda ner för att lyssna",
+    "downloadingStatus": "laddar ner...",
+    "deleteConfirm": "Radera?",
+    "copied": "Kopierad",
+    "download": "Ladda ner",
+    "downloadToPlay": "Ladda ner för att spela upp",
+    "play": "Spela upp",
+    "pause": "Pausa",
+    "fileNotFound": "Filen hittades inte",
+    "localOnly": "Bara på den här enheten",
+    "localOnlyTip": "Får inte plats i ditt lagringsutrymme. Ingen säkerhetskopia - raderas om du rensar webbläsar- eller appdata. Den synkas så fort det finns plats igen.",
+    "notUploaded": "Inte uppladdad än",
+    "notUploadedTip": "Filen har inte laddats upp än från enheten där den lades till - oftast för att lagringsutrymmet är fullt där. Den öppnas här så fort den har synkats.",
+    "downloadFailed": "Nedladdningen misslyckades",
+    "playbackFailed": "Uppspelningen misslyckades",
+    "uploadFailed": "Uppladdningen misslyckades: {{message}}",
+    "unknownError": "Okänt fel"
+  }
+}

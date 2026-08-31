@@ -1,0 +1,164 @@
+{
+  "labels": {
+    "mood": "心情",
+    "emotions": "情緒",
+    "sleep": "睡眠",
+    "sleepScore": "睡眠分數",
+    "heartRate": "心率",
+    "activity": "活動",
+    "medication": "藥物",
+    "meds": "用藥",
+    "energy": "活力",
+    "focus": "專注",
+    "weight": "體重",
+    "steps": "步數",
+    "water": "飲水",
+    "screenTime": "螢幕使用時間",
+    "caffeine": "咖啡因",
+    "pain": "疼痛",
+    "social": "社交",
+    "custom": "自訂"
+  },
+  "units": {
+    "hoursSuffix": "h",
+    "bpm": "bpm",
+    "kg": "kg",
+    "steps_other": "步",
+    "hrs": "小時",
+    "glasses_other": " 杯",
+    "cups_other": " 杯"
+  },
+  "scaleEnds": {
+    "low": "低",
+    "high": "高",
+    "none": "無",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "劇烈",
+    "socialLow": "孤立",
+    "socialHigh": "非常熱絡"
+  },
+  "mood": {
+    "prompt": "現在感覺如何？（1-10）",
+    "low": "糟透了",
+    "high": "超棒",
+    "anchor": {
+      "1": "糟透了",
+      "3": "不太好",
+      "5": "還好",
+      "7": "不錯",
+      "10": "超棒"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}}（{{min}}-{{max}}）"
+  },
+  "emotions": {
+    "prompt": "現在有哪些情緒？",
+    "count_other": "{{count}} 種情緒",
+    "valence": {
+      "positive": "正向",
+      "neutral": "中性",
+      "negative": "負向"
+    },
+    "tags": {
+      "happy": "開心",
+      "calm": "平靜",
+      "relaxed": "放鬆",
+      "grateful": "感恩",
+      "loved": "被愛",
+      "motivated": "有動力",
+      "confident": "有自信",
+      "productive": "有效率",
+      "focused": "專注",
+      "energetic": "精力充沛",
+      "tired": "疲倦",
+      "restless": "坐立不安",
+      "distracted": "分心",
+      "numb": "麻木",
+      "overwhelmed": "不堪負荷",
+      "anxious": "焦慮",
+      "stressed": "壓力大",
+      "frustrated": "挫折",
+      "irritable": "易怒",
+      "sad": "難過",
+      "lonely": "孤單",
+      "guilty": "內疚",
+      "hopeless": "無望",
+      "angry": "生氣"
+    }
+  },
+  "sleep": {
+    "prompt": "昨晚睡得如何？",
+    "hoursLabel": "時數：",
+    "quality": {
+      "terrible": "極差",
+      "poor": "不佳",
+      "okay": "普通",
+      "good": "良好",
+      "great": "極佳"
+    }
+  },
+  "sleepScore": {
+    "prompt": "睡眠分數"
+  },
+  "heartRate": {
+    "prompt": "平均心率"
+  },
+  "activity": {
+    "prompt": "今天的活動量？",
+    "level": {
+      "sedentary": "久坐",
+      "light": "輕度",
+      "moderate": "中度",
+      "active": "活躍",
+      "intense": "高強度"
+    }
+  },
+  "medication": {
+    "heading": "藥物",
+    "empty": "尚未設定任何藥物。",
+    "takenCount_other": "已服 {{count}} 項",
+    "namePlaceholder": "藥物名稱",
+    "dosagePlaceholder": "劑量（例如 50mg）",
+    "addMedication": "+ 新增藥物",
+    "editMedication": "編輯藥物",
+    "removeMedication": "移除藥物",
+    "confirmRemove": "要移除 <highlight>{{name}}</highlight> 嗎？",
+    "yes": "是",
+    "no": "否",
+    "taken": "已服",
+    "skip": "略過"
+  },
+  "custom": {
+    "yes": "是",
+    "no": "否",
+    "typeLabels": {
+      "scale10": "量表（0-10）",
+      "scale5": "量表（0-5）",
+      "slider100": "滑桿（0-100）",
+      "number": "數值",
+      "yesno": "是／否"
+    }
+  },
+  "config": {
+    "configureTrackers": "設定追蹤項目",
+    "title": "追蹤項目",
+    "categoryMoodMind": "心情與心理",
+    "categoryBodyHealth": "身體與健康",
+    "categoryLifestyle": "生活型態",
+    "customHeading": "自訂",
+    "resume": "繼續",
+    "stop": "停止",
+    "addCustomTracker": "新增自訂追蹤項目",
+    "addCustomTrackerCount": "新增自訂追蹤項目（{{count}}/{{max}}）",
+    "addCustomTrackerHint": "想追蹤什麼都可以",
+    "maxReached": "自訂追蹤項目已達上限（{{max}} 個）。",
+    "customTrackers": "自訂追蹤項目",
+    "newCustomTracker": "新的自訂追蹤項目",
+    "trackerNamePlaceholder": "追蹤項目名稱",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "類型：",
+    "colorLabel": "顏色："
+  }
+}
