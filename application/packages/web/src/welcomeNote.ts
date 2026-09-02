@@ -66,7 +66,11 @@ const TOTP_LOGIN_NOTE_BODY = JSON.stringify({
   notes: 'Example login with a 2FA code. Edit or delete anytime.',
 });
 
-const CARD_NOTE_TITLE = 'Visa ending 4242';
+// Matches what deriveCardTitle() in CardForm.tsx produces for the number
+// below, down to the wording. A hand-written title drifts from the card it
+// describes and the seed then contradicts itself on screen: this one claimed
+// a card ending 4242 while the vault entry beside it read 0366.
+const CARD_NOTE_TITLE = 'Visa ending in 0366';
 
 const CARD_NOTE_BODY = JSON.stringify({
   cardholderName: 'John Doe',

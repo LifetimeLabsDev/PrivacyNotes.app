@@ -247,6 +247,15 @@
         "La còpia del teu dispositiu també està xifrada. Les notes se segellen al disc amb una clau derivada de la teva frase de recuperació en desbloquejar, així que un perfil de navegador copiat, un bolcat d'emmagatzematge o una còpia de seguretat robada contenen dades xifrades, no pas les teves notes."
       ]
     },
+    "data-on-disk": {
+      "q": "On desa l'app les meves notes al disc?",
+      "a": [
+        "En una carpeta per instal·lació, dins de l'àrea de dades d'aplicacions del teu compte. On és aquesta carpeta depèn de la plataforma:",
+        "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, o `app.privacynotes.appimage` en l'AppImage, que porta el seu propi motor web i per això manté un perfil propi\n- **Android, iOS**: l'emmagatzematge privat de l'app, que cap altra app pot obrir\n- **Navegador**: el perfil del teu navegador, sota `use.privacynotes.app`",
+        "El que hi ha allà són dades xifrades. Cada nota és un bloc segellat amb el títol, el text i les etiquetes a dins, obert per una clau derivada de la teva frase de recuperació en desbloquejar. En clar només queda el que necessita l'índex local: identificadors, dates i marques com preferida o esborrada.",
+        "Per portar les notes a un altre dispositiu, o per guardar-ne una còpia teva, fes servir **Configuració > Import & Export > Exporta** i tria la «Còpia de seguretat completa xifrada (.pnbackupz)». Ho conté tot, està xifrada amb la clau de la teva frase i es restaura amb la teva frase en qualsevol dispositiu. [Més sobre còpies de seguretat](/ca/help/backup-strategy/)."
+      ]
+    },
     "export": {
       "q": "Puc exportar les meves notes, o hi estic lligat?",
       "a": [

@@ -85,6 +85,7 @@ export const FAQ_STRUCTURE: ReadonlyArray<{ id: string; group: FaqGroupKey }> = 
   { id: 'device-limit', group: 'syncDevices' },
   { id: 'over-quota', group: 'syncDevices' },
   { id: 'data-location', group: 'yourData' },
+  { id: 'data-on-disk', group: 'yourData' },
   { id: 'export', group: 'yourData' },
   { id: 'print', group: 'yourData' },
   { id: 'backup-strategy', group: 'yourData' },

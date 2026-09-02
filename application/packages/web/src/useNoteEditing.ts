@@ -4,7 +4,7 @@ import type { LocalNote } from './db';
 import type { JournalTrackerData } from './trackerTypes';
 import { bulkSetBody, getNote, updateNote } from './notesRepo';
 import { createNoteVersion } from './noteVersions';
-import { proUnlocked } from './demo';
+import { isDemoMode, proUnlocked } from './demo';
 import { gcOnBodyChange } from './imageGC';
 import { noteLinkKey, retargetNoteLinks } from './noteLinks';
 import { noteLinkName } from './notesViewUtils';
@@ -114,6 +114,16 @@ export function useNoteEditing({
     void (async () => {
       const note = await getNote(id);
       if (!note) return;
+      // A version row holds a foreign key into notes, so the server must
+      // already hold the note. A note born in this session is local-only
+      // until the next push, which trails the first keystroke by seconds,
+      // and the insert is refused for a parent row that is not there yet.
+      // syncedNonce is the one field that proves the server holds it: both
+      // the push and the pull stamp it. The demo keeps its snapshots in its
+      // own local table and never syncs, so it has no parent to wait for.
+      // Return before the two refs below rather than after, so the skip
+      // leaves the rate-limit slot free and the next edit tries again.
+      if (note.syncedNonce == null && !isDemoMode()) return;
       const h = await contentHash(note);
       if (lastVersionHashRef.current.get(id) === h) return;
       lastVersionHashRef.current.set(id, h);

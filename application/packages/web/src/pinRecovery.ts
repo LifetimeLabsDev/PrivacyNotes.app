@@ -35,14 +35,14 @@ import type { UserSettings } from './userSettings';
  * carry the removal to the others. Local side effects run here; the
  * returned blob still has to be saved and synced by the caller.
  *
- * `appLockEnabled` is deliberately untouched, and that is a fix rather than
- * an omission. It is a synced setting, while an enrolled fingerprint is a
- * fact about ONE device, so deciding the flag from this device's biometric
- * state let a laptop with no fingerprint switch off a phone's working
- * fingerprint lock - a remote disarm, from an action that had nothing to do
- * with that phone. Nothing needs the flag to move: App.tsx already refuses
- * to lock a device holding no wrapped blob, so this device simply stops
- * locking while every device that kept a door keeps using it.
+ * `appLockEnabled` is deliberately untouched. It is a synced setting, while
+ * an enrolled fingerprint is a fact about ONE device, so deciding the flag
+ * from this device's biometric state would let a laptop with no fingerprint
+ * reader switch off a phone's working fingerprint lock - a remote disarm,
+ * from an action that has nothing to do with that phone. Nothing needs the
+ * flag to move: App.tsx refuses to lock a device holding no wrapped blob, so
+ * this device simply stops locking while every device that kept a door keeps
+ * using it.
  *
  * `phrase` is read on a device that is left with no door at all, to put the
  * phrase back at rest so the next boot has a session to restore. Arming app
@@ -72,15 +72,15 @@ export function clearPin(settings: UserSettings, phrase: string): UserSettings {
 /**
  * Point this device's PIN wrap at whatever the account settings now say.
  *
- * Both directions matter, and only one of them used to exist. Arriving, the
- * wrap lights app lock up on a new device without re-entering the PIN.
- * Leaving, it is the only thing that retires a removed PIN here: the hash
- * cache follows the settings already, but the wrap stayed, so a PIN removed
- * on one device kept unlocking every other one - and kept demanding a PIN
- * its owner had just replaced.
+ * Both directions matter. Arriving, the wrap lights app lock up on a new
+ * device without re-entering the PIN. Leaving, it is the only thing that
+ * retires a removed PIN here: the hash cache follows the settings on its
+ * own, but a wrap left in place keeps unlocking this device with a PIN the
+ * account no longer holds, and keeps demanding one its owner has already
+ * replaced.
  *
- * One function rather than the condition written out at both call sites,
- * because a one-way copy is exactly the shape the bug had.
+ * One function rather than the condition written out at both call sites, so
+ * the two directions cannot drift into a one-way copy.
  */
 export function syncPinWrap(settings: UserSettings): void {
   if (settings.pinWrapSalt && settings.pinWrapIV && settings.pinWrapCiphertext) {

@@ -247,6 +247,15 @@
         "De kopie op je apparaat is ook versleuteld. Notities worden op schijf verzegeld met een sleutel die bij het ontgrendelen uit je herstelzin wordt afgeleid, dus een gekopieerd browserprofiel, een opslagdump of een gestolen back-up bevat versleutelde data, niet je notities."
       ]
     },
+    "data-on-disk": {
+      "q": "Waar bewaart de app mijn notities op schijf?",
+      "a": [
+        "In één map per installatie, in het app-datagebied van je account. Waar die map staat, hangt af van het platform:",
+        "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, of `app.privacynotes.appimage` bij de AppImage, die zijn eigen web-engine meebrengt en dus een eigen profiel houdt\n- **Android, iOS**: de privéopslag van de app, die geen enkele andere app kan openen\n- **Browser**: je browserprofiel, onder `use.privacynotes.app`",
+        "Wat daar staat is versleutelde data. Elke notitie is één verzegeld blok met de titel, de tekst en de tags erin, geopend door een sleutel die bij het ontgrendelen uit je herstelzin wordt afgeleid. Alleen wat de lokale index nodig heeft blijft leesbaar: id's, tijdstempels en markeringen zoals favoriet of verwijderd.",
+        "Wil je je notities naar een ander apparaat halen of zelf een kopie bewaren, gebruik dan **Instellingen > Import & Export > Exporteren** en kies \"Versleutelde volledige back-up (.pnbackupz)\". Hij bevat alles, is versleuteld met de sleutel van je herstelzin en herstelt met je herstelzin op elk apparaat. [Meer over back-ups](/nl/help/backup-strategy/)."
+      ]
+    },
     "export": {
       "q": "Kan ik mijn notities exporteren, of zit ik vast?",
       "a": [

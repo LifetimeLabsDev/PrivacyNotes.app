@@ -98,8 +98,16 @@ export function NoteHistoryModal({
         </div>
 
         <div className="flex flex-col sm:flex-row flex-1 min-h-0">
-          {/* Left pane: version list */}
-          <div className="max-h-40 sm:max-h-none sm:w-56 shrink-0 border-b sm:border-b-0 sm:border-e border-divider overflow-y-auto">
+          {/* Left pane: version list.
+              The phone cap is set so the list ends PART WAY through a row:
+              a row is about 82px, and 208px shows two of them plus half of
+              the third, which is what tells a reader the list scrolls. A cap
+              that lands on a row boundary reads as the whole history, and a
+              160px cap did exactly that - it cut the second row by 3px and
+              people reported a two-version limit. 208 sits as far from a
+              boundary as the arithmetic allows, so the cut survives the row
+              growing or shrinking with the script a locale is written in. */}
+          <div className="max-h-52 sm:max-h-none sm:w-56 shrink-0 border-b sm:border-b-0 sm:border-e border-divider overflow-y-auto">
             {versions === null && !err && (
               <div className="p-4 text-[13px] text-neutral-500">{t('common:state.loading')}</div>
             )}
@@ -138,8 +146,14 @@ export function NoteHistoryModal({
             </ul>
           </div>
 
-          {/* Right pane: preview */}
-          <div className="flex-1 min-w-0 flex flex-col">
+          {/* Right pane: preview.
+              min-h-0 as well as min-w-0, because the parent above stacks
+              this pane on a phone and lays it beside the list only from
+              sm up. A flex item defaults to min-height:auto and so refuses
+              to shrink under its own content: without this the pane grows
+              past the modal, the modal clips it, and the scroller below
+              never gets a bounded height to scroll inside. */}
+          <div className="flex-1 min-w-0 min-h-0 flex flex-col">
             {selected ? (
               <>
                 <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-divider shrink-0">

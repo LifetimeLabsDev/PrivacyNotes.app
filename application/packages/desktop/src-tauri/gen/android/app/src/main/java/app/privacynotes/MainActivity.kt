@@ -1,6 +1,7 @@
 package app.privacynotes
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
@@ -57,6 +58,7 @@ class MainActivity : TauriActivity() {
     // and the boot-time paint already pushes. See applyDecorBackground().
     webView.addJavascriptInterface(BarsBridge(), "__pnBars")
     webView.addJavascriptInterface(PrintBridge(), "__pnPrint")
+    webView.addJavascriptInterface(InstallerBridge(), "__pnInstaller")
 
     onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
       override fun handleOnBackPressed() {
@@ -181,6 +183,39 @@ class MainActivity : TauriActivity() {
         // would give it that origin's reach for no reason.
         webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null)
         printWebView = webView
+      }
+    }
+  }
+
+  /**
+   * JS -> native channel for the installing package name.
+   *
+   * The direct APK is the same file whether a store put it here or the user
+   * downloaded it in a browser, so the frontend cannot tell from the build
+   * alone whether anything else is going to update this app. Android knows,
+   * and this is the only way to ask: androidInstaller.ts turns the answer
+   * into "a store keeps this current" and suppresses the update prompt on a
+   * true. Spec: ops/docs/android-update-check.md (store-installed APKs)
+   *
+   * An empty string means nobody claimed the install, which is what a raw
+   * sideload looks like. getInstallSourceInfo arrived in API 30 and the app
+   * runs from API 24, hence the deprecated call underneath it.
+   *
+   * Tracked in git; restore after any `tauri android init`.
+   * Spec: ops/docs/android-setup.md (re-apply checklist)
+   */
+  private inner class InstallerBridge {
+    @JavascriptInterface
+    fun get(): String {
+      return try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+          packageManager.getInstallSourceInfo(packageName).installingPackageName
+        } else {
+          @Suppress("DEPRECATION")
+          packageManager.getInstallerPackageName(packageName)
+        } ?: ""
+      } catch (e: PackageManager.NameNotFoundException) {
+        ""
       }
     }
   }

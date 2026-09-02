@@ -7,6 +7,7 @@ import { detectPlatform } from './devices';
 import { isUpdateSnoozed, snoozeUpdate } from './updateSnooze';
 import { setUpdateAvailable } from './updateAvailable';
 import { reportVersionFloor } from './versionFloor';
+import { installedByStore } from './androidInstaller';
 
 /**
  * Update prompt for the direct-download Android APK (the off-store channel for
@@ -28,6 +29,10 @@ import { reportVersionFloor } from './versionFloor';
  * Play build (the default, flag unset) auto-updates through the store, so it
  * must never show this. The bundled frontend ships inside the APK, so a UI
  * change needs a new APK, not a page refresh - hence "download", not "reload".
+ *
+ * The same APK also reaches phones through stores that update it themselves
+ * (Zapstore, Obtainium), and those installs get the floor report but no
+ * prompt - androidInstaller.ts is what tells them apart.
  *
  * Spec: ops/docs/android-update-check.md
  */
@@ -93,6 +98,16 @@ export function AndroidUpdateToast() {
         // APK exists - report before the version early-return so the sync
         // pause (versionFloor.ts) always tracks the latest published floor.
         reportVersionFloor(typeof m.minVersion === 'string' ? m.minVersion : null);
+        // A store that carries this APK owns the update from here on: it
+        // checks in the background and installs in place, because every
+        // release carries the same signing certificate. Prompting anyway
+        // would send its users to a manual browser download, the slower path
+        // to the same build, and below the floor that prompt cannot even be
+        // dismissed. Keep reporting the floor above, because the sync pause
+        // is right either way and SyncStatus carries its explanation
+        // permanently; only this toast and the rail's Downloads dot are
+        // wrong, and both are skipped by returning here.
+        if (installedByStore()) return;
         if (compareSemver(m.version, VERSION) <= 0) return;
         // Badge the rail's Downloads button first, so the dot stays put even
         // when the toast below is snoozed away.

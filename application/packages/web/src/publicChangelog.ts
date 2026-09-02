@@ -26,6 +26,27 @@ export const IN_APP_CHANGELOG_LIMIT = 10;
 
 export const PUBLIC_CHANGELOG: ChangelogRelease[] = [
   {
+    version: '0.497',
+    date: '2026-09-03',
+    title: 'Now on Zapstore, and store installs stop getting update nags',
+    items: [
+      { type: 'new', text: 'PrivacyNotes is on Zapstore, an app store for Android that needs no Google account.' },
+      { type: 'improved', text: 'If a store installs your updates for you, such as Zapstore or Obtainium, the app no longer asks you to download them by hand.' },
+      { type: 'fixed', text: 'The example card in your vault no longer carries a title naming a different card number.' },
+    ],
+  },
+  {
+    version: '0.496',
+    date: '2026-09-03',
+    title: 'Note history keeps every version, and scrolls on a phone',
+    items: [
+      { type: 'improved', text: 'The help center now names the exact folder your notes sit in, on every platform.' },
+      { type: 'fixed', text: 'A new note keeps its first version, instead of starting its history at the second edit.' },
+      { type: 'fixed', text: 'Note history scrolls on a phone.' },
+      { type: 'fixed', text: 'The version list shows more than one entry at a time, so a long history no longer looks like two versions.' },
+    ],
+  },
+  {
     version: '0.495',
     date: '2026-09-02',
     title: 'The editor stops putting buttons on top of your text',

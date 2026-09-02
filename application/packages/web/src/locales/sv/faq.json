@@ -247,6 +247,15 @@
         "Kopian på din enhet är krypterad den också. Anteckningarna förseglas på disken med en nyckel som härleds ur din återställningsfras när du låser upp, så en kopierad webbläsarprofil, en lagringsdump eller en stulen säkerhetskopia bär krypterad data i stället för dina anteckningar."
       ]
     },
+    "data-on-disk": {
+      "q": "Var på disken sparar appen mina anteckningar?",
+      "a": [
+        "I en mapp per installation, i ditt kontos app-datayta. Var mappen ligger beror på plattformen:",
+        "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, eller `app.privacynotes.appimage` för AppImage, som har med sig sin egen webbmotor och därför håller en egen profil\n- **Android, iOS**: appens privata lagring, som ingen annan app kommer åt\n- **Webbläsare**: din webbläsarprofil, under `use.privacynotes.app`",
+        "Det som ligger där är krypterad data. Varje anteckning är ett förseglat block med titeln, texten och taggarna inuti, som öppnas av en nyckel som härleds ur din återställningsfras när du låser upp. I klartext blir bara det kvar som det lokala indexet behöver: id:n, tidsstämplar och flaggor som favorit eller raderad.",
+        "Vill du flytta anteckningarna till en annan enhet, eller ha en egen kopia, använd **Inställningar > Import & Export > Exportera** och välj ”Krypterad fullständig säkerhetskopia (.pnbackupz)”. Den innehåller allt, är krypterad med din frasnyckel och återställs med din fras på vilken enhet som helst. [Mer om säkerhetskopior](/sv/help/backup-strategy/)."
+      ]
+    },
     "export": {
       "q": "Kan jag exportera mina anteckningar, eller är jag inlåst?",
       "a": [

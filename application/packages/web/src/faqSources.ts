@@ -123,6 +123,10 @@ export const FAQ_SOURCES: Readonly<Record<string, readonly FaqSource[]>> = {
     { doc: 'security', heading: 'What the server sees' },
     { doc: 'threatModel', heading: 'Local storage at rest' },
   ],
+  'data-on-disk': [
+    { doc: 'threatModel', heading: 'Local storage at rest' },
+    { doc: 'verify', heading: 'What step 6 showed you, and what it does not buy' },
+  ],
   'clear-browser-data': [{ doc: 'threatModel', heading: 'Local storage at rest' }],
   'data-rights': [{ doc: 'security', heading: 'What we measure' }],
 

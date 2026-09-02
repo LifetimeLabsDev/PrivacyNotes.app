@@ -247,6 +247,15 @@
         "A cópia no seu aparelho também é criptografada. As notas são seladas no disco com uma chave derivada da sua frase de recuperação ao desbloquear, então um perfil de navegador copiado, um despejo de armazenamento ou um backup roubado contém dados criptografados, não as suas notas."
       ]
     },
+    "data-on-disk": {
+      "q": "Onde o app guarda minhas notas no disco?",
+      "a": [
+        "Em uma pasta por instalação, na área de dados de apps da sua conta. Onde fica essa pasta depende da plataforma:",
+        "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, ou `app.privacynotes.appimage` no AppImage, que traz o próprio motor web e por isso mantém um perfil só dele\n- **Android, iOS**: o armazenamento privado do app, que nenhum outro app consegue abrir\n- **Navegador**: o perfil do seu navegador, em `use.privacynotes.app`",
+        "O que está lá são dados criptografados. Cada nota é um bloco selado com o título, o texto e as tags dentro, aberto por uma chave derivada da sua frase de recuperação ao desbloquear. Em claro fica só o que o índice local precisa: identificadores, datas e marcações como favorita ou excluída.",
+        "Para levar suas notas para outro aparelho, ou guardar uma cópia sua, use **Configurações > Import & Export > Exportar** e escolha o \"Backup completo criptografado (.pnbackupz)\". Ele tem tudo, é criptografado com a chave da sua frase e restaura com a sua frase em qualquer aparelho. [Mais sobre backups](/br/help/backup-strategy/)."
+      ]
+    },
     "export": {
       "q": "Posso exportar minhas notas, ou estou preso?",
       "a": [

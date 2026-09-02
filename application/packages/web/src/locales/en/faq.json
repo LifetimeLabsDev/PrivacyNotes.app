@@ -247,6 +247,15 @@
         "The copy on your device is encrypted too. Notes are sealed on disk under a key derived from your recovery phrase when you unlock, so a copied browser profile, a storage dump or a stolen backup carries ciphertext rather than your notes."
       ]
     },
+    "data-on-disk": {
+      "q": "Where on my disk does the app store my notes?",
+      "a": [
+        "In one folder per install, inside your account's app-data area. Where that folder is depends on the platform:",
+        "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, or `app.privacynotes.appimage` for the AppImage, which bundles its own web engine and so keeps its own profile\n- **Android, iOS**: the app's private storage, which no other app can open\n- **Browser**: your browser profile, under `use.privacynotes.app`",
+        "What sits there is ciphertext. Each note is one sealed blob holding the title, body and tags, opened by a key derived from your recovery phrase when you unlock, so a copied folder carries nothing readable. Only what the local index needs stays in the clear: ids, timestamps, and flags such as starred or deleted.",
+        "To move your notes to another device, or to keep a copy of your own, use **Settings > Import & Export > Export** and pick \"Encrypted full backup (.pnbackupz)\". It holds everything, it is encrypted with your phrase key, and it restores with your phrase on any device. [More on backups](/help/backup-strategy/)."
+      ]
+    },
     "export": {
       "q": "Can I export my notes, or am I locked in?",
       "a": [

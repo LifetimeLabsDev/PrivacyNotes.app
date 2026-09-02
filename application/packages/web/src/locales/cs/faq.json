@@ -247,6 +247,15 @@
         "Kopie na tvém zařízení je zašifrovaná také. Poznámky jsou na disku zapečetěné klíčem odvozeným z tvé obnovovací fráze při odemčení, takže zkopírovaný profil prohlížeče, výpis úložiště nebo ukradená záloha nesou šifrovaná data, ne tvoje poznámky."
       ]
     },
+    "data-on-disk": {
+      "q": "Kde má aplikace na disku uložené moje poznámky?",
+      "a": [
+        "V jedné složce na instalaci, v datové oblasti aplikací tvého účtu. Kde ta složka je, záleží na platformě:",
+        "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, u AppImage `app.privacynotes.appimage`, protože si nese vlastní webový engine, a drží si tak vlastní profil\n- **Android, iOS**: soukromé úložiště aplikace, které žádná jiná aplikace neotevře\n- **Prohlížeč**: profil tvého prohlížeče, pod `use.privacynotes.app`",
+        "To, co tam leží, jsou šifrovaná data. Každá poznámka je jeden zapečetěný blok s názvem, textem a štítky uvnitř, který otevře klíč odvozený z tvé obnovovací fráze při odemčení. Čitelné zůstane jen to, co potřebuje místní index: identifikátory, časy a příznaky jako oblíbená nebo smazaná.",
+        "Když chceš poznámky přenést na jiné zařízení nebo si nechat vlastní kopii, použij **Nastavení > Import & Export > Export** a vyber „Šifrovaná úplná záloha (.pnbackupz)“. Obsahuje všechno, je zašifrovaná klíčem z tvojí fráze a obnovíš ji svou frází na jakémkoli zařízení. [Víc o zálohách](/cs/help/backup-strategy/)."
+      ]
+    },
     "export": {
       "q": "Můžu si poznámky vyexportovat, nebo je to jednosměrka?",
       "a": [

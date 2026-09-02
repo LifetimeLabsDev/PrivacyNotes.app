@@ -247,6 +247,15 @@
         "La copia de tu dispositivo también está cifrada. Las notas se sellan en el disco con una clave derivada de tu frase de recuperación al desbloquear, así que un perfil de navegador copiado, un volcado de almacenamiento o una copia de seguridad robada contienen datos cifrados, no tus notas."
       ]
     },
+    "data-on-disk": {
+      "q": "¿Dónde guarda la app mis notas en el disco?",
+      "a": [
+        "En una carpeta por instalación, dentro del área de datos de apps de tu cuenta. Dónde está esa carpeta depende de la plataforma:",
+        "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, o `app.privacynotes.appimage` en el AppImage, que trae su propio motor web y por eso mantiene su propio perfil\n- **Android, iOS**: el almacenamiento privado de la app, que ninguna otra app puede abrir\n- **Navegador**: tu perfil de navegador, en `use.privacynotes.app`",
+        "Lo que hay ahí son datos cifrados. Cada nota es un bloque sellado con el título, el texto y las etiquetas dentro, que abre una clave derivada de tu frase de recuperación al desbloquear. En claro solo queda lo que necesita el índice local: identificadores, fechas y marcas como favorita o eliminada.",
+        "Para llevar tus notas a otro dispositivo, o guardar una copia propia, usa **Ajustes > Import & Export > Exportar** y elige \"Copia de seguridad completa cifrada (.pnbackupz)\". Lo contiene todo, está cifrada con la clave de tu frase y se restaura con tu frase en cualquier dispositivo. [Más sobre copias de seguridad](/es/help/backup-strategy/)."
+      ]
+    },
     "export": {
       "q": "¿Puedo exportar mis notas o estoy atrapado?",
       "a": [

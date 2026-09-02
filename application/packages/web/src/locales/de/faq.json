@@ -247,6 +247,15 @@
         "Die Kopie auf deinem Gerät ist ebenfalls verschlüsselt. Notizen liegen versiegelt auf der Festplatte, unter einem Schlüssel, der beim Entsperren aus deiner Wiederherstellungsphrase abgeleitet wird, also enthält ein kopiertes Browser-Profil, ein Speicherabzug oder ein gestohlenes Backup verschlüsselte Daten und nicht deine Notizen."
       ]
     },
+    "data-on-disk": {
+      "q": "Wo auf der Festplatte speichert die App meine Notizen?",
+      "a": [
+        "In einem Ordner pro Installation, in deinem App-Daten-Bereich. Wo dieser Ordner liegt, hängt von der Plattform ab:",
+        "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, beim AppImage `app.privacynotes.appimage`, das seine eigene Web-Engine mitbringt und deshalb ein eigenes Profil behält\n- **Android, iOS**: der private Speicher der App, den keine andere App öffnen kann\n- **Browser**: dein Browser-Profil, unter `use.privacynotes.app`",
+        "Was dort liegt, sind verschlüsselte Daten. Jede Notiz ist ein versiegelter Block mit Titel, Text und Tags darin, geöffnet von einem Schlüssel, der beim Entsperren aus deiner Wiederherstellungsphrase abgeleitet wird. Klar lesbar bleibt nur, was der lokale Index braucht: IDs, Zeitstempel und Markierungen wie favorisiert oder gelöscht.",
+        "Um deine Notizen auf ein anderes Gerät zu bringen oder eine eigene Kopie zu behalten, nutze **Einstellungen > Import & Export > Export** und wähle \"Verschlüsseltes Voll-Backup (.pnbackupz)\". Es enthält alles, ist mit deinem Phrasenschlüssel verschlüsselt und lässt sich mit deiner Phrase auf jedem Gerät wiederherstellen. [Mehr zu Backups](/de/help/backup-strategy/)."
+      ]
+    },
     "export": {
       "q": "Kann ich meine Notizen exportieren, oder bin ich eingesperrt?",
       "a": [

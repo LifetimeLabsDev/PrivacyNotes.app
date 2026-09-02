@@ -247,6 +247,15 @@
         "Anche la copia sul tuo dispositivo è cifrata. Le note sono sigillate sul disco con una chiave derivata dalla tua frase di recupero allo sblocco, quindi un profilo del browser copiato, un dump della memoria o un backup rubato contiene dati cifrati, non le tue note."
       ]
     },
+    "data-on-disk": {
+      "q": "Dove salva le mie note sul disco l'app?",
+      "a": [
+        "In una cartella per installazione, nell'area dati delle app del tuo account. Dove si trova dipende dalla piattaforma:",
+        "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, oppure `app.privacynotes.appimage` per l'AppImage, che porta con sé il proprio motore web e quindi mantiene un profilo separato\n- **Android, iOS**: la memoria privata dell'app, che nessun'altra app può aprire\n- **Browser**: il profilo del tuo browser, sotto `use.privacynotes.app`",
+        "Quello che c'è dentro sono dati cifrati. Ogni nota è un blocco sigillato che contiene titolo, testo e tag, aperto da una chiave derivata dalla tua frase di recupero allo sblocco. In chiaro resta solo ciò che serve all'indice locale: id, date e contrassegni come preferita o eliminata.",
+        "Per spostare le note su un altro dispositivo, o per tenerne una copia, usa **Impostazioni > Import & Export > Esporta** e scegli \"Backup completo cifrato (.pnbackupz)\". Contiene tutto, è cifrato con la chiave della tua frase e si ripristina con la tua frase su qualsiasi dispositivo. [Altro sui backup](/it/help/backup-strategy/)."
+      ]
+    },
     "export": {
       "q": "Posso esportare le mie note, o sono in gabbia?",
       "a": [

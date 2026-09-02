@@ -247,6 +247,15 @@
         "La copie sur ton appareil est chiffrée elle aussi. Les notes sont scellées sur le disque avec une clé dérivée de ta phrase de récupération au déverrouillage, donc un profil de navigateur copié, un vidage de stockage ou une sauvegarde volée contient des données chiffrées, pas tes notes."
       ]
     },
+    "data-on-disk": {
+      "q": "Où l'app stocke-t-elle mes notes sur mon disque ?",
+      "a": [
+        "Dans un dossier par installation, dans l'espace de données applicatives de ton compte. Son emplacement dépend de la plateforme :",
+        "- **macOS** : `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows** : `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux** : `~/.local/share/app.privacynotes`, ou `app.privacynotes.appimage` pour l'AppImage, qui embarque son propre moteur web et garde donc son propre profil\n- **Android, iOS** : le stockage privé de l'app, qu'aucune autre app ne peut ouvrir\n- **Navigateur** : ton profil de navigateur, sous `use.privacynotes.app`",
+        "Ce qui s'y trouve, ce sont des données chiffrées. Chaque note est un bloc scellé qui contient le titre, le texte et les tags, ouvert par une clé dérivée de ta phrase de récupération au déverrouillage. Seul ce dont l'index local a besoin reste en clair : identifiants, horodatages et marqueurs comme favori ou supprimé.",
+        "Pour transférer tes notes sur un autre appareil, ou en garder une copie, utilise **Paramètres > Import & Export > Exporter** et choisis \"Sauvegarde complète chiffrée (.pnbackupz)\". Elle contient tout, elle est chiffrée avec la clé de ta phrase et se restaure avec ta phrase sur n'importe quel appareil. [En savoir plus sur les sauvegardes](/fr/help/backup-strategy/)."
+      ]
+    },
     "export": {
       "q": "Puis-je exporter mes notes, ou suis-je enfermé ?",
       "a": [

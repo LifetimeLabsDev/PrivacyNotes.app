@@ -1,0 +1,67 @@
+# Zapstore listing for the direct-channel Android APK.
+#
+# The published artifact is the GitHub release asset, which is byte-identical to
+# what releases.privacynotes.app serves. It is signed with the direct-channel
+# certificate that packages/desktop/scripts/publish-android-release.sh pins and
+# re-verifies on every publish. Zapstore records that certificate on the first
+# publish and blocks any later release that does not match it, so the pin and
+# the store agree by construction.
+#
+# Spec: ops/docs/android-setup.md (Zapstore listing)
+
+repository: https://github.com/LifetimeLabsDev/PrivacyNotes.app
+
+# Auto-whitelisting: Zapstore checks this key against the repository owner.
+pubkey: npub1dhzrs20zh3eehq96fe8ewgatfr8u4gjzdh97z6p8n5qurkwqt7wsl7z3k9
+
+# A release also carries a dmg, two AppImages, two debs, an installer exe and
+# five checksum files. The APK is the only asset with a hyphen before the
+# version, so anchor on that rather than on the extension alone.
+match: '^PrivacyNotes-[0-9.]+\.apk$'
+
+name: PrivacyNotes
+summary: One encrypted place for notes, tasks, journal, files and your vault
+
+description: |
+  Notes, tasks, journal, files, bookmarks and a password vault in one app,
+  encrypted on your device before anything leaves it.
+
+  Sign in with a 12-word phrase. No email and no password, so there is no
+  account to leak. Your key never reaches our servers, which is why we cannot
+  read your notes and cannot reset them for you.
+
+  - **Notes** in a rich editor: live Markdown, tables, tags, callouts and
+    note-links.
+  - **Tasks** with due dates and recurring items.
+  - **Journal** with mood, sleep and medication tracking, plus a doctor export.
+  - **Files**: encrypted images, documents, audio and video.
+  - **Bookmarks** with website icons, and a browser bookmark import.
+  - **Vault** for passwords and two-factor codes.
+
+  The full client source is published, along with the encryption
+  (XChaCha20-Poly1305, HKDF-SHA256, Ed25519) and the threat model, so the
+  privacy claims are falsifiable rather than promised.
+
+  Free forever on the free tier. Pro unlocks through web checkout: this build
+  carries no Google billing and needs no Google account.
+
+tags:
+  - productivity
+  - notes
+  - privacy
+  - encryption
+
+license: AGPL-3.0
+website: https://privacynotes.app
+icon: https://privacynotes.app/marketing/brand/privacynotes-store-icon.png
+
+# Phone screenshots, fetched over HTTP at publish time. They live in this
+# repository (ops/mirror/store in the private tree) rather than on the web
+# app's origin, so a megabyte of store artwork stays out of every app
+# download. Order is the order Zapstore shows them in, strongest first.
+images:
+  - https://raw.githubusercontent.com/LifetimeLabsDev/PrivacyNotes.app/main/assets/store/01-editor.webp
+  - https://raw.githubusercontent.com/LifetimeLabsDev/PrivacyNotes.app/main/assets/store/02-journal.webp
+  - https://raw.githubusercontent.com/LifetimeLabsDev/PrivacyNotes.app/main/assets/store/03-vault.webp
+  - https://raw.githubusercontent.com/LifetimeLabsDev/PrivacyNotes.app/main/assets/store/04-language.webp
+  - https://raw.githubusercontent.com/LifetimeLabsDev/PrivacyNotes.app/main/assets/store/05-appearance.webp

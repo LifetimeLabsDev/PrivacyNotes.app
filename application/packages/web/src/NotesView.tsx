@@ -4113,13 +4113,11 @@ function AuthenticatedView({
         // Leave it to the platform instead of answering it with a menu
         // of app actions. Spec: issue #208.
         if (isTouchContextMenu(e)) return;
-        // Overlays opt out entirely: "New note / Sign out" is meaningless
-        // on top of Settings, so swallow the event rather than trading one
-        // wrong menu for the WebView's own. Spec: issue #208.
-        if (optsOutOfAppMenu(e.target)) {
-          e.preventDefault();
-          return;
-        }
+        // Overlays opt out of the app menu: "New note / Sign out" is
+        // meaningless on top of Settings. The right-click falls through to
+        // the platform's own menu, which is what a screen of prose and
+        // copyable text wants. Spec: issue #208.
+        if (optsOutOfAppMenu(e.target)) return;
         ctxMenu.open(e, buildGlobalMenu());
       }}
     >

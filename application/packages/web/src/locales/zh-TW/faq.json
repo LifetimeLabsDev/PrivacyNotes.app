@@ -247,6 +247,15 @@
         "你裝置上的那份副本也有加密。解鎖時會從你的復原助憶詞導出一把金鑰，筆記就用它封存在磁碟上，所以被複製的瀏覽器設定檔、儲存空間傾印或遭竊的備份，帶走的是密文而不是你的筆記。"
       ]
     },
+    "data-on-disk": {
+      "q": "app 把我的筆記存在磁碟的哪裡？",
+      "a": [
+        "每個安裝各有一個資料夾，放在你帳號的 app 資料區裡。確切位置看平台：",
+        "- **macOS**：`~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**：`%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**：`~/.local/share/app.privacynotes`，AppImage 則是 `app.privacynotes.appimage`，因為它自帶網頁引擎，所以也自帶一份設定檔\n- **Android、iOS**：app 的私有儲存空間，其他 app 打不開\n- **瀏覽器**：`use.privacynotes.app` 底下的瀏覽器設定檔",
+        "放在那裡的是密文。每則筆記都是一個封存的區塊，標題、內文和標籤都在裡面，解鎖時用從復原助憶詞導出的金鑰打開。留在明文的只有本機索引需要的東西：ID、時間戳，還有我的最愛或已刪除這類標記。",
+        "要把筆記搬到別的裝置，或自己留一份，就到**設定 > 匯入與匯出 > 匯出**選「加密完整備份（.pnbackupz）」。它包含所有東西，用你的助憶詞金鑰加密，只要有助憶詞，在任何裝置上都還原得回來。[更多備份說明](/tw/help/backup-strategy/)"
+      ]
+    },
     "export": {
       "q": "我能匯出筆記嗎？還是被綁死在裡面？",
       "a": [

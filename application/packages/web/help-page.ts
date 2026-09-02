@@ -265,7 +265,8 @@ function renderInline(s: string): string {
         ? `<a href="${url}">${text}</a>`
         : `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`
     )
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
 }
 
 /**
@@ -281,6 +282,19 @@ function renderInline(s: string): string {
  * they already mean exactly this.
  */
 const CODE_PARA = /^`([^`]+)`$/;
+
+/**
+ * A paragraph whose every line starts with "- " is a list: one row per line,
+ * rendered as a borderless definition table rather than as prose. It exists
+ * for a set the reader scans to find their own row - the per-platform storage
+ * paths - where a sentence makes every reader read four answers that are not
+ * theirs. Single backticks inside a row mark a literal path or value.
+ *
+ * The .md twins and the llms text layer carry the dashes through untouched,
+ * where they already mean a list, and stripMd drops the markers for the text
+ * surfaces (JSON-LD, meta descriptions, the search haystack).
+ * // Spec: ops/docs/help-center.md (the template)
+ */
 
 /**
  * A whole paragraph that is one linked image is a badge: today the Obtainium
@@ -318,6 +332,11 @@ function renderParagraph(par: string, p: Record<string, string>): string {
     const [, alt, src, href] = badge;
     return `<a class="bdg" href="${esc(href)}" target="_blank" rel="noopener noreferrer"><img src="${esc(src)}" alt="${esc(alt)}" width="${BADGE_W}" height="${BADGE_H}" loading="lazy"></a>`;
   }
+  const lines = par.trim().split('\n');
+  if (lines.length > 1 && lines.every((l) => l.startsWith('- '))) {
+    const items = lines.map((l) => `<li>${renderInline(l.slice(2))}</li>`).join('');
+    return `<ul class="lst">${items}</ul>`;
+  }
   const code = CODE_PARA.exec(par.trim());
   if (!code) return `<p>${renderInline(par)}</p>`;
   return `<div class="cbx"><code>${esc(code[1])}</code><button class="btn-ok js-cbx-copy" type="button" data-copied="${esc(p.askCopied)}" hidden><span class="ic ic-copy">${icon(COPY_PATH, 13)}</span><span class="ic ic-done">${icon(CHECK_PATH, 13)}</span><span class="lbl">${esc(p.askCopyShort)}</span></button></div>`;
@@ -329,7 +348,8 @@ function stripMd(s: string): string {
     .replace(/\[!\[([^\]]*)\]\([^)]+\)\]\([^)]+\)/g, '$1')
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1')
     .replace(/\*\*([^*]+)\*\*/g, '$1')
-    .replace(/`([^`]+)`/g, '$1');
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/^- /gm, '');
 }
 
 /**
@@ -742,6 +762,7 @@ function feedbackBlock(prompt: string): string {
 const CONTENT_BASELINE = '2026-08-26';
 const CONTENT_UPDATED: Record<string, string> = {
   'data-location': '2026-08-28',
+  'data-on-disk': '2026-09-02',
   'open-source': '2026-08-30',
   'report-vulnerability': '2026-08-31',
   'bip39-wordlist': '2026-08-30',
@@ -1064,7 +1085,7 @@ summary:hover .perma{opacity:1}
 .chev{flex:0 0 auto;width:10px;height:10px;border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:rotate(45deg);transition:transform .15s ease;margin-top:-4px}
 details[open] .chev{transform:rotate(-135deg);margin-top:4px}
 .a{padding:0 0 22px}
-.a p{margin:0 0 12px;font-size:15px;color:var(--muted)}\n.cbx{display:flex;flex-wrap:wrap;align-items:center;gap:9px 10px;margin:0 0 12px;padding:9px 10px 9px 13px;border:1px solid var(--line);border-radius:9px;background:var(--rail)}\n.cbx code{flex:1 1 210px;min-width:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.5;color:var(--fg);word-break:break-all}\n.cbx .btn-ok{flex:none;margin-inline-start:auto}\n.bdg{display:block;width:max-content;max-width:100%;margin:0 0 14px;transition:opacity .15s ease}\n.bdg:hover{opacity:.82}\n.bdg img{display:block;height:48px;width:auto}
+.a p{margin:0 0 12px;font-size:15px;color:var(--muted)}\n.cbx{display:flex;flex-wrap:wrap;align-items:center;gap:9px 10px;margin:0 0 12px;padding:9px 10px 9px 13px;border:1px solid var(--line);border-radius:9px;background:var(--rail)}\n.cbx code{flex:1 1 210px;min-width:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.5;color:var(--fg);word-break:break-all}\n.cbx .btn-ok{flex:none;margin-inline-start:auto}\n.lst{margin:0 0 14px;padding-inline-start:19px;list-style:disc}\n.lst li{margin:0 0 7px;font-size:15px;color:var(--muted);line-height:1.65}\n.lst strong{color:var(--fg)}\n.lst code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:var(--fg);word-break:break-all;direction:ltr;unicode-bidi:isolate}\n.bdg{display:block;width:max-content;max-width:100%;margin:0 0 14px;transition:opacity .15s ease}\n.bdg:hover{opacity:.82}\n.bdg img{display:block;height:48px;width:auto}
 .a p:last-child{margin-bottom:0}
 .copybtn{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--faint);background:none;border:0;cursor:pointer;padding:0;margin-top:2px;font-family:inherit}
 .copybtn:hover{color:var(--accent)}

@@ -247,6 +247,15 @@
         "Cihazınızdaki kopya da şifrelidir. Notlar, kilidi açtığınızda kurtarma ifadenizden türetilen bir anahtarla diskte mühürlenir; bu yüzden kopyalanmış bir tarayıcı profili, bir depolama dökümü ya da çalınmış bir yedek, notlarınızı değil şifreli veriyi taşır."
       ]
     },
+    "data-on-disk": {
+      "q": "Uygulama notlarımı diskte nerede saklıyor?",
+      "a": [
+        "Kurulum başına tek bir klasörde, hesabınızın uygulama verisi alanında. Bu klasörün yeri platforma göre değişir:",
+        "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, AppImage için `app.privacynotes.appimage`; AppImage kendi web motorunu taşıdığı için kendi profilini de ayrı tutar\n- **Android, iOS**: uygulamanın özel deposu, başka hiçbir uygulama açamaz\n- **Tarayıcı**: `use.privacynotes.app` altındaki tarayıcı profiliniz",
+        "Orada duran şey şifreli veridir. Her not, başlığı, metni ve etiketleri içinde taşıyan mühürlü tek bir bloktur ve kilidi açtığınızda kurtarma ifadenizden türetilen bir anahtarla açılır. Açıkta yalnızca yerel dizinin ihtiyaç duyduğu şeyler kalır: kimlikler, zaman damgaları ve favori ya da silinmiş gibi işaretler.",
+        "Notlarınızı başka bir cihaza taşımak ya da kendinize bir kopya saklamak için **Ayarlar > Import & Export > Dışa aktar** altından “Şifreli tam yedek (.pnbackupz)” dosyasını seçin. Her şeyi içerir, ifade anahtarınızla şifrelenir ve ifadenizle her cihazda geri yüklenir. [Yedekler hakkında daha fazlası](/tr/help/backup-strategy/)"
+      ]
+    },
     "export": {
       "q": "Notlarımı dışa aktarabilir miyim, yoksa kilitli miyim?",
       "a": [

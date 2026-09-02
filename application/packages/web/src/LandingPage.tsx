@@ -1063,6 +1063,7 @@ export function LandingPage({
             <a href="#downloads" className="pn-fx-navlink hidden min-[896px]:inline hover:text-accent transition">{t('header.downloads')}</a>
             <a href={helpPath(activeLocale())} className="pn-fx-navlink hidden min-[896px]:inline hover:text-accent transition">{t('header.help')}</a>
             <a href="/changelog" className="pn-fx-navlink hidden lg:inline hover:text-accent transition">{t('header.changelog')}</a>
+              <a href="/roadmap" className="pn-fx-navlink hidden lg:inline hover:text-accent transition">{t('header.roadmap')}</a>
             <span className="hidden sm:block">
               <ThemeToggle compact />
             </span>
@@ -1125,17 +1126,19 @@ export function LandingPage({
                 <button type="button" onClick={() => goToSection('downloads')} className="cursor-pointer border-b border-[var(--wl-line)] py-4 text-start">
                   {t('header.downloads')}
                 </button>
-                <button type="button" onClick={() => goToSection('pricing')} className="cursor-pointer border-b border-[var(--wl-line)] py-4 text-start">
-                  {t('header.pricing')}
-                </button>
-                <a href="/roadmap" className="border-b border-[var(--wl-line)] py-4">
-                  {t('header.roadmap')}
-                </a>
                 <a href={helpPath(activeLocale())} className="border-b border-[var(--wl-line)] py-4">
                   {t('header.help')}
                 </a>
-                <a href="/changelog" className="py-4">
+                {/* Help, Changelog, Roadmap run in the order the inline
+                    header puts them in, so the two navs read as one menu at
+                    the width where they swap over. Pricing has no inline
+                    counterpart and keeps its place. The last row carries no
+                    rule, so the divider moves with the order. */}
+                <a href="/changelog" className="border-b border-[var(--wl-line)] py-4">
                   {t('header.changelog')}
+                </a>
+                <a href="/roadmap" className="py-4">
+                  {t('header.roadmap')}
                 </a>
               </nav>
               <div className="mt-auto space-y-3 pt-10">
@@ -1186,6 +1189,7 @@ export function LandingPage({
               <a href="#downloads" className="pn-fx-navlink hidden min-[896px]:inline hover:text-accent transition">{t('header.downloads')}</a>
               <a href={helpPath(activeLocale())} className="pn-fx-navlink hidden min-[896px]:inline hover:text-accent transition">{t('header.help')}</a>
               <a href="/changelog" className="pn-fx-navlink hidden lg:inline hover:text-accent transition">{t('header.changelog')}</a>
+              <a href="/roadmap" className="pn-fx-navlink hidden lg:inline hover:text-accent transition">{t('header.roadmap')}</a>
               <span className="hidden sm:block">
                 <ThemeToggle compact />
               </span>

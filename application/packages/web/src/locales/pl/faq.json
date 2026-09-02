@@ -247,6 +247,15 @@
         "Kopia na Twoim urządzeniu też jest zaszyfrowana. Notatki są zapieczętowane na dysku kluczem wyprowadzonym z Twojej frazy odzyskiwania przy odblokowaniu, więc skopiowany profil przeglądarki, zrzut pamięci czy skradziona kopia zapasowa zawierają zaszyfrowane dane, a nie Twoje notatki."
       ]
     },
+    "data-on-disk": {
+      "q": "Gdzie na dysku aplikacja przechowuje moje notatki?",
+      "a": [
+        "W jednym folderze na instalację, w obszarze danych aplikacji Twojego konta. To, gdzie ten folder leży, zależy od platformy:",
+        "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, albo `app.privacynotes.appimage` w przypadku AppImage, który niesie własny silnik przeglądarki i dlatego trzyma własny profil\n- **Android, iOS**: prywatna pamięć aplikacji, której nie otworzy żadna inna aplikacja\n- **Przeglądarka**: profil Twojej przeglądarki, pod `use.privacynotes.app`",
+        "To, co tam leży, to zaszyfrowane dane. Każda notatka to jeden zapieczętowany blok z tytułem, treścią i tagami w środku, otwierany kluczem wyprowadzonym z Twojej frazy odzyskiwania przy odblokowaniu. Jawne zostaje tylko to, czego potrzebuje lokalny indeks: identyfikatory, znaczniki czasu i flagi takie jak ulubiona czy usunięta.",
+        "Żeby przenieść notatki na inne urządzenie albo zachować własną kopię, użyj **Ustawienia > Import & Export > Eksport** i wybierz „Zaszyfrowana pełna kopia zapasowa (.pnbackupz)”. Zawiera wszystko, jest zaszyfrowana kluczem Twojej frazy i przywraca się Twoją frazą na dowolnym urządzeniu. [Więcej o kopiach zapasowych](/pl/help/backup-strategy/)."
+      ]
+    },
     "export": {
       "q": "Czy mogę wyeksportować swoje notatki, czy jestem uwięziony?",
       "a": [

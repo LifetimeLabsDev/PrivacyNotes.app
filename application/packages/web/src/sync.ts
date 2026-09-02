@@ -1113,13 +1113,21 @@ async function syncInner(
   };
 
   /** Clear the dirty flag for rows the server accepted, keeping the
-   *  per-note timestamp guard so an edit made mid-push stays dirty. */
-  const clearDirty = async (notes: LocalNote[]) => {
+   *  per-note timestamp guard so an edit made mid-push stays dirty.
+   *  `nonces` maps note id to the nonce the accepted row carries, so a row
+   *  that lands here is stamped as synced exactly like one from the
+   *  per-note path. Anything keyed off syncedNonce reads a bulk-inserted
+   *  note as present on the server, which it is. */
+  const clearDirty = async (notes: LocalNote[], nonces?: Map<string, string>) => {
     await db.transaction('rw', db.notes, async () => {
       for (const note of notes) {
         const current = await db.notes.get(note.id);
         if (current && current.updatedAt === note.updatedAt) {
-          await db.notes.update(note.id, { dirty: 0 });
+          const nonce = nonces?.get(note.id);
+          await db.notes.update(
+            note.id,
+            nonce == null ? { dirty: 0 } : { dirty: 0, syncedNonce: nonce },
+          );
         }
       }
     });
@@ -1173,7 +1181,8 @@ async function syncInner(
           break;
         }
         const batch = fresh.slice(i, i + INSERT_CHUNK);
-        const { error } = await supabase.from('notes').insert(batch.map(buildRow));
+        const rows = batch.map(buildRow);
+        const { error } = await supabase.from('notes').insert(rows);
         if (error) {
           if (isAuthError(error)) throw new SessionExpiredError();
           if (isQuotaError(error)) throw new QuotaExceededError(error.message);
@@ -1188,7 +1197,7 @@ async function syncInner(
           retry.push(...batch);
           continue;
         }
-        await clearDirty(batch);
+        await clearDirty(batch, new Map(rows.map((r) => [r.id, r.nonce])));
       }
       pending = toUpsert.filter((n) => known.has(n.id)).concat(retry);
     }

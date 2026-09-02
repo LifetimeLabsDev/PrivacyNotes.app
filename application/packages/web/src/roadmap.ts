@@ -62,6 +62,7 @@ export type RoadmapIcon =
   | 'graph'
   | 'timer'
   | 'bookmark'
+  | 'contacts'
   | 'sidebar'
   | 'robot'
   | 'coin';
@@ -411,6 +412,14 @@ export const PUBLIC_ROADMAP: RoadmapItem[] = [
     status: 'in-progress',
     description: 'The same Android app on Google Play, for one-tap install and automatic updates.',
     icon: 'store',
+  },
+  {
+    id: 'contacts',
+    title: 'Contacts',
+    status: 'up-next',
+    description:
+      "An address book in the vault, for the people who should not be in your phone's. Import everything from one file, keep the numbers you rarely call but never want to lose, and tap one to hand it to your dialer.",
+    icon: 'contacts',
   },
   {
     id: 'graph-view',
