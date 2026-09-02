@@ -198,7 +198,9 @@
     "expand": "Espandi",
     "reorder": "Riordina {{folder}}",
     "saveName": "Salva il nome della cartella",
-    "actionsForFolder": "Azioni per la cartella {{folder}}"
+    "actionsForFolder": "Azioni per la cartella {{folder}}",
+    "seedSecurity": "Sicurezza",
+    "seedTravel": "Viaggi"
   },
   "collapsedSidebar": {
     "newNote": "Nuova nota",

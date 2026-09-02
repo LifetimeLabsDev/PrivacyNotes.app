@@ -23,6 +23,11 @@ type Props = {
   autoFocus?: boolean;
   disabled?: boolean;
   ariaLabel?: string;
+  /** Smaller boxes for a settings pane, where the PIN is one control on a
+   *  dense form. The lock screen and the note gate keep the full size:
+   *  there the PIN is the only thing on screen and the box is the target a
+   *  thumb aims at. */
+  compact?: boolean;
 };
 
 const LENGTH = 4;
@@ -60,6 +65,7 @@ export const PinInput = forwardRef<PinInputHandle, Props>(function PinInput(
     autoFocus = false,
     disabled = false,
     ariaLabel,
+    compact = false,
   },
   ref,
 ) {
@@ -165,12 +171,12 @@ export const PinInput = forwardRef<PinInputHandle, Props>(function PinInput(
       role="group"
       aria-label={groupLabel}
       dir="ltr"
-      className="flex gap-3 justify-center"
+      className={`flex justify-center ${compact ? 'gap-2' : 'gap-3'}`}
     >
       {digits.map((d, i) => (
         <div
           key={i}
-          className={`relative w-14 h-16 sm:w-16 ${disabled ? 'opacity-40' : ''}`}
+          className={`relative ${compact ? 'w-11 h-12' : 'w-14 h-16 sm:w-16'} ${disabled ? 'opacity-40' : ''}`}
         >
           <input
             ref={(el) => {
@@ -189,14 +195,14 @@ export const PinInput = forwardRef<PinInputHandle, Props>(function PinInput(
             disabled={disabled}
             style={HIDDEN_TEXT}
             aria-label={t('pinInput.digitAriaLabel', { index: i + 1 })}
-            className="w-full h-full rounded-md bg-track border border-divider focus:border-accent dark:focus:border-accent text-center text-2xl font-mono focus:outline-none disabled:cursor-not-allowed"
+            className={`w-full h-full rounded-md bg-track border border-divider focus:border-accent dark:focus:border-accent text-center font-mono focus:outline-none disabled:cursor-not-allowed ${compact ? 'text-xl' : 'text-2xl'}`}
           />
           {d && (
             // The bullet the field no longer draws. Same glyph, size and
             // family the browser used, so the boxes look untouched.
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 flex items-center justify-center text-pn text-2xl font-mono"
+              className={`pointer-events-none absolute inset-0 flex items-center justify-center text-pn font-mono ${compact ? 'text-xl' : 'text-2xl'}`}
             >
               &bull;
             </span>

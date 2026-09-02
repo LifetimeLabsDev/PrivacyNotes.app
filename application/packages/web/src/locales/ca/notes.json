@@ -177,7 +177,6 @@
   "share": {
     "hover": "Comparteix / Exporta",
     "ariaLabel": "Comparteix o exporta",
-    "thisNote": "Aquesta nota",
     "currentMdTitle": "Nota actual (.md)",
     "currentMdDesc": "Markdown en brut amb front-matter.",
     "currentHtmlTitle": "Nota actual (.html)",
@@ -185,14 +184,7 @@
     "printTitle": "Imprimeix / Desa com a PDF",
     "printDesc": "Obre el diàleg d'impressió. Desa com a PDF o envia-ho a una impressora.",
     "burnTitle": "Comparteix amb Burn After Reading",
-    "burnDesc": "Publica aquesta nota com a enllaç de visualització única. L'enllaç s'autodestrueix després de llegir-se. La teva nota es queda segura al teu compte.",
-    "backup": "Còpia de seguretat",
-    "fullBackupTitle": "Còpia de seguretat completa (.zip)",
-    "fullBackupDesc": "Tot: notes, diaris, caixa forta, tasques, imatges, àudio, fitxers.",
-    "allHtmlTitle": "Tots els elements (.zip de .html)",
-    "allHtmlDesc": "Un HTML imprimible per element. Ideal per llegir fora de línia.",
-    "jsonTitle": "Còpia de seguretat de text (.json)",
-    "jsonDesc": "Tot el contingut de text i les metadades, sense imatges ni fitxers."
+    "burnDesc": "Publica aquesta nota com a enllaç de visualització única. L'enllaç s'autodestrueix després de llegir-se. La teva nota es queda segura al teu compte."
   },
   "weekReview": {
     "title": "Resum de la setmana",

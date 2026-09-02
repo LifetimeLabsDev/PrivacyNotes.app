@@ -138,6 +138,8 @@
     "faviconsDesc": "連結和保險庫登入項目旁的網站標誌。",
     "faviconsExample": "範例：",
     "faviconsProxy": "圖示會透過我們的代理伺服器載入。僅套用於這台裝置。",
+    "invisiblesTitle": "不可見字元",
+    "invisiblesDesc": "書寫時顯示空格、換行和段落標記。",
     "sidebarTitle": "側邊欄",
     "sidebarDesc": "側邊欄要顯示哪些檢視，以及「全部」清單包含哪些項目。",
     "colInSidebar": "側邊欄",

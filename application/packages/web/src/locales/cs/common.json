@@ -47,9 +47,11 @@
     "required": "Vyžadována aktualizace",
     "changelog": "Changelog",
     "refresh": "Znovu načíst",
+    "restart": "Restartovat",
     "dismiss": "Zavřít",
     "download": "Stáhnout",
-    "update": "Aktualizovat"
+    "update": "Aktualizovat",
+    "copyCommand": "Kopírovat příkaz"
   },
   "hotkeys": {
     "heading": "Nápověda ke klávesovým zkratkám",

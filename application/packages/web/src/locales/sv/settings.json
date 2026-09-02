@@ -147,6 +147,8 @@
     "faviconsDesc": "Webbplatslogotyper bredvid länkar och inloggningar i valvet.",
     "faviconsExample": "Exempel:",
     "faviconsProxy": "Ikonerna laddas via vår proxy. Bara den här enheten.",
+    "invisiblesTitle": "Osynliga tecken",
+    "invisiblesDesc": "Visar mellanslag, radbrytningar och styckemarkeringar medan du skriver.",
     "sidebarTitle": "Sidofält",
     "sidebarDesc": "Vilka vyer som visas i sidofältet och vilka objekt listan Alla innehåller.",
     "colInSidebar": "Sidofält",

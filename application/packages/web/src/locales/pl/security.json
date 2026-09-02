@@ -13,7 +13,7 @@
     "checking": "Sprawdzanie...",
     "verify": "Zweryfikuj",
     "replaceExisting": "Wpisz nowy 4-cyfrowy PIN. Zastąpi on obecny PIN.",
-    "setIntro": "4-cyfrowy PIN będzie wymagany do zobaczenia frazy i otwarcia chronionych notatek. Blokuje przypadkowe podglądanie, gdy ktoś pożyczy Twoje urządzenie.",
+    "setIntro": "4-cyfrowy PIN otwiera twoje chronione notatki i frazę odzyskiwania. Synchronizuje się na wszystkich urządzeniach.",
     "protectReason": "Chronione notatki wymagają PIN-u, bo blokada wędruje na Twoje pozostałe urządzenia, a odcisk palca nie.",
     "newPin": "Nowy PIN",
     "confirmPin": "Potwierdź PIN",
@@ -35,6 +35,17 @@
     "introNoBio": "Wpisz obecny PIN, aby potwierdzić usunięcie. Widok frazy nie będzie już chroniony.",
     "verifying": "Weryfikowanie...",
     "removePin": "Usuń PIN"
+  },
+  "pinRecovery": {
+    "forgotPin": "Nie pamiętasz PIN-u?",
+    "title": "Zresetuj PIN",
+    "intro": "Wpisz swoją frazę odzyskiwania z 12 słów, aby usunąć PIN. Zaraz potem możesz ustawić nowy.",
+    "lockIntro": "Wpisz swoją frazę odzyskiwania z 12 słów. Odblokuje aplikację i usunie PIN.",
+    "consequence": "PIN zostanie usunięty na wszystkich twoich urządzeniach. Odblokowanie biometryczne pozostaje bez zmian.",
+    "wrongPhrase": "To nie jest fraza odzyskiwania tego konta.",
+    "clearPin": "Wyczyść PIN",
+    "lockAction": "Odblokuj i usuń PIN",
+    "cleared": "PIN usunięty. Ustaw poniżej nowy albo zostaw wyłączony."
   },
   "phraseGate": {
     "enterToView": "Wpisz swój 4-cyfrowy PIN, aby zobaczyć frazę.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "Wpisz swój PIN raz, aby to włączyć. Zamyka on kopię Twojej frazy odzyskiwania, więc tylko Twój PIN może otworzyć aplikację.",
     "relockAfter": "Zablokuj ponownie po",
     "relockHint": "Dotyczy ekranu blokady aplikacji i wszystkich notatek chronionych PIN-em.",
-    "perDeviceNote": "Każde urządzenie rejestruje się osobno. Odblokowanie biometryczne wymaga Twojego odcisku palca lub twarzy, aby dostać się do aplikacji na tym urządzeniu.",
+    "perDeviceNote": "Odblokowanie biometryczne otwiera te same notatki co PIN. Zostaje na tym urządzeniu i nigdy się nie synchronizuje.",
     "disableConfirmTitle": "Wyłącz biometrię",
     "disableConfirmLabel": "Wyłącz",
     "disableConfirmBody": "Wyłączyć odblokowanie biometryczne na tym urządzeniu?",

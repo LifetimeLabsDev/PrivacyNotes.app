@@ -8,9 +8,9 @@ import { db, type LocalNote } from './db';
 import { sync, CaptchaRequiredError, DeviceRevokedError, QuotaExceededError, SessionExpiredError, type NoteConflict } from './sync';
 import { logAuthEvent } from './authDiag';
 import { fetchQuotaUsage } from './devices';
-import { hasSettingsPulled, saveLocalSettings, syncUserSettings, type UserSettings } from './userSettings';
+import { hasSettingsPulled, loadLocalSettings, saveLocalSettings, syncUserSettings, type UserSettings } from './userSettings';
 import { syncPinCache } from './pin';
-import { hasPinWrappedPhrase, hydrateLocalPinWrap } from './biometric';
+import { syncPinWrap } from './pinRecovery';
 import { seedOnboardingNotes, SEED_MEDICATION } from './welcomeNote';
 import { mergeTrackers, trackersEqual } from './trackerTypes';
 import { isDemoMode } from './demo';
@@ -187,17 +187,9 @@ export function useSyncOrchestrator({
       let merged = await syncUserSettings(supabase, auth.pubkey, auth.encryptionKey);
       syncPinCache(merged);
 
-      // Hydrate local PIN wrap from synced settings if this device
-      // doesn't have it yet. Makes app lock work immediately on new
-      // devices without re-entering the PIN.
-      if (merged.pinWrapSalt && merged.pinWrapIV && merged.pinWrapCiphertext && !hasPinWrappedPhrase()) {
-        hydrateLocalPinWrap({
-          pinWrapSalt: merged.pinWrapSalt,
-          pinWrapIV: merged.pinWrapIV,
-          pinWrapCiphertext: merged.pinWrapCiphertext,
-          pinWrapIterations: merged.pinWrapIterations ?? 100_000,
-        });
-      }
+      // Carries the account's PIN wrap onto this device, and off it again
+      // when the account no longer has one.
+      syncPinWrap(merged);
 
       // One-shot welcome-note seed. Runs exactly once per user, ever
       // - gated on the synced `welcomeNoteSeeded` flag so a second
@@ -273,7 +265,11 @@ export function useSyncOrchestrator({
             // user signs out before the next sync pass, re-login sees the
             // flag, skips seeding, and the app is empty.
             await sync(supabase, auth.pubkey, auth.encryptionKey, auth.deviceId, undefined, onPushError);
-            effective = { ...merged, welcomeNoteSeeded: true };
+            // Re-read rather than reuse `merged`: seeding writes the starter
+            // folder tree into settings itself, and a snapshot taken before
+            // the seed would drop those folders one line later. The
+            // medications fold-back above is the same trap, found first.
+            effective = { ...loadLocalSettings(), welcomeNoteSeeded: true };
             saveLocalSettings(effective);
             // Push the flag now that the notes are safely on the server.
             void syncUserSettings(supabase, auth.pubkey, auth.encryptionKey).catch(

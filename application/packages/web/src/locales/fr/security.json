@@ -13,7 +13,7 @@
     "checking": "Vérification...",
     "verify": "Vérifier",
     "replaceExisting": "Saisis un nouveau PIN à 4 chiffres. Il remplace ton PIN actuel.",
-    "setIntro": "Un PIN à 4 chiffres sera requis pour voir ta phrase et ouvrir les notes protégées. Ça empêche les regards indiscrets si quelqu'un emprunte ton appareil.",
+    "setIntro": "Un PIN à 4 chiffres ouvre tes notes protégées et ta phrase de récupération. Il est synchronisé sur tous tes appareils.",
     "protectReason": "Les notes protégées ont besoin d'un PIN, car le verrou suit tes autres appareils, contrairement à ton empreinte.",
     "newPin": "Nouveau PIN",
     "confirmPin": "Confirme le PIN",
@@ -35,6 +35,17 @@
     "introNoBio": "Saisis ton PIN actuel pour confirmer la suppression. La vue de la phrase ne sera plus protégée.",
     "verifying": "Vérification...",
     "removePin": "Supprimer le PIN"
+  },
+  "pinRecovery": {
+    "forgotPin": "PIN oublié ?",
+    "title": "Réinitialiser ton PIN",
+    "intro": "Saisis ta phrase de récupération de 12 mots pour effacer le PIN. Tu pourras en définir un nouveau juste après.",
+    "lockIntro": "Saisis ta phrase de récupération de 12 mots. Elle déverrouille l'application et efface le PIN.",
+    "consequence": "Le PIN est effacé sur tous tes appareils. Le déverrouillage biométrique n'est pas affecté.",
+    "wrongPhrase": "Ce n'est pas la phrase de récupération de ce compte.",
+    "clearPin": "Effacer le PIN",
+    "lockAction": "Déverrouiller et effacer le PIN",
+    "cleared": "PIN effacé. Définis-en un nouveau ci-dessous, ou laisse-le désactivé."
   },
   "phraseGate": {
     "enterToView": "Saisis ton PIN à 4 chiffres pour voir ta phrase.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "Saisis ton PIN une fois pour l'activer. Il verrouille une copie de ta phrase de récupération, pour que seul ton PIN puisse ouvrir l'app.",
     "relockAfter": "Reverrouiller après",
     "relockHint": "S'applique à l'écran de verrouillage de l'app et à toute note protégée par PIN.",
-    "perDeviceNote": "Chaque appareil s'enregistre indépendamment. Le déverrouillage biométrique requiert ton empreinte ou ton visage pour accéder à l'app sur cet appareil.",
+    "perDeviceNote": "Le déverrouillage biométrique ouvre les mêmes notes que ton PIN. Il reste sur cet appareil et n'est jamais synchronisé.",
     "disableConfirmTitle": "Désactiver la biométrie",
     "disableConfirmLabel": "Désactiver",
     "disableConfirmBody": "Désactiver le déverrouillage biométrique sur cet appareil ?",

@@ -198,7 +198,9 @@
     "expand": "Uitklappen",
     "reorder": "{{folder}} herschikken",
     "saveName": "Mapnaam opslaan",
-    "actionsForFolder": "Acties voor map {{folder}}"
+    "actionsForFolder": "Acties voor map {{folder}}",
+    "seedSecurity": "Beveiliging",
+    "seedTravel": "Reizen"
   },
   "collapsedSidebar": {
     "newNote": "Nieuwe notitie",

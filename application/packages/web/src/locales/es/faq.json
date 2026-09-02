@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Olvidé mi PIN. ¿Mis datos están perdidos?",
+      "q": "Olvidé mi PIN. ¿Cómo vuelvo a entrar?",
       "a": [
-        "No. El PIN es un bloqueo de conveniencia contra miradas curiosas en tu propio dispositivo, no una clave de cifrado. Tus notas están cifradas con claves derivadas de tu frase de recuperación, y la frase siempre concede acceso completo, sin PIN alguno.",
-        "Es una decisión de diseño deliberada: atar el cifrado a un PIN de 4 dígitos significaría que un PIN olvidado destruye datos. Aquí eso no pasa nunca."
+        "No se pierde nada, y puedes borrar el PIN tú mismo con tu frase de recuperación. El PIN es un candado de pantalla, no una clave de cifrado: tus notas están cifradas con claves derivadas de la frase, así que la frase es lo que las abre. Atar el cifrado a cuatro dígitos haría que un PIN olvidado destruyera datos. Aquí nunca ocurre.",
+        "Allí donde la app pida el PIN, elige **¿Olvidaste tu PIN?** y escribe tus 12 palabras. Está en la pantalla de bloqueo, en una nota protegida y en **Ajustes > Seguridad > PIN**. El PIN se borra en todos tus dispositivos y puedes establecer uno nuevo enseguida. El desbloqueo biométrico no se ve afectado."
       ]
     },
     "delete-account": {

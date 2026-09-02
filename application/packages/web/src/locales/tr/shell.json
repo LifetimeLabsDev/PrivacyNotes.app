@@ -198,7 +198,9 @@
     "expand": "Genişlet",
     "reorder": "{{folder}} klasörünü yeniden sırala",
     "saveName": "Klasör adını kaydet",
-    "actionsForFolder": "{{folder}} klasörü için işlemler"
+    "actionsForFolder": "{{folder}} klasörü için işlemler",
+    "seedSecurity": "Güvenlik",
+    "seedTravel": "Seyahat"
   },
   "collapsedSidebar": {
     "newNote": "Yeni not",

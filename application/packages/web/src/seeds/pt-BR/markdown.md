@@ -109,7 +109,7 @@ São dois tipos, e eles são diferentes de propósito.
 - Um link da web abre um site: [privacynotes.app](https://privacynotes.app/br)
 - Um link de nota abre outra nota sua: [[Como suas notas são protegidas]]
 
-Os dois têm botão na barra. A corrente faz um link da web. O botão ao lado lista suas notas e você escolhe qual quer.
+Os dois têm botão na barra. A corrente faz um link da web. Os colchetes fazem um note-link: listam suas notas e você escolhe qual quer. Digitar `[[` faz a mesma coisa.
 
 ---
 

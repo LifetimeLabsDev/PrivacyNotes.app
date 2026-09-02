@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { UpdateToast } from './UpdateToast';
 import { detectPlatform } from './devices';
 import { marketingHomeHref } from './siteLinks';
@@ -27,10 +28,17 @@ const CHANGELOG_URL = 'https://privacynotes.app/changelog';
 // that does not satisfy it yet. Spec: ops/docs/android-update-check.md (floors are published per platform, never globally).
 const LINUX_POLICY_URL = 'https://releases.privacynotes.app/linux/update-policy.json';
 
-// What the launch check found: a staged install awaiting Restart, or (on a
-// Linux .deb, which can't self-update) a newer version to download by hand.
+// The command a Scoop user runs to move to the version this toast names. Scoop's
+// bucket carries each release within hours of it shipping, so there is always
+// something for this to fetch by the time the toast appears.
+const SCOOP_UPDATE_CMD = 'scoop update privacynotes';
+
+// What the launch check found. `restart` is a staged install awaiting a relaunch.
+// The other two cannot self-update and want opposite advice: a Linux .deb is
+// replaced from the downloads page, while a Scoop install must NOT be, because the
+// download there is the installer that leaves a second copy behind.
 // `required` is set only in download mode, when this build is below the floor.
-type UpdateReady = { version: string; mode: 'restart' | 'download'; required?: boolean };
+type UpdateReady = { version: string; mode: 'restart' | 'download' | 'scoop'; required?: boolean };
 
 /**
  * Desktop self-updater (macOS/Windows/Linux only).
@@ -78,6 +86,18 @@ async function runUpdateCheck(): Promise<UpdateReady | null> {
     // install; the toast points the user at the downloads page to fetch the
     // newer .deb by hand. Spec: ops/docs/linux-release.md (.deb lives in root-owned /usr, excluded from the updater manifest).
     if (!canSelfUpdate) {
+      // Both blocked formats arrive here, so ask which one before choosing the
+      // nudge. Defaulting to the .deb path on an error keeps the existing
+      // behaviour for the platform that has had this toast all along.
+      const scoop = await invoke<boolean>('is_scoop_install').catch(() => false);
+      if (scoop) {
+        // No release floor is consulted: the floor is published for Linux only,
+        // and a Scoop user is never more than one bucket poll behind anyway, so
+        // this toast is always dismissible.
+        if (isUpdateSnoozed(update.version)) return null;
+        return { version: update.version, mode: 'scoop' };
+      }
+
       const minVersion = await fetchLinuxMinVersion();
       // Feed the sync pause (versionFloor.ts). Only ever runs when an update
       // exists, which is sufficient: the floor is never above the newest
@@ -121,6 +141,17 @@ async function openChangelog(): Promise<void> {
   }
 }
 
+async function copyScoopCommand(): Promise<void> {
+  try {
+    await navigator.clipboard.writeText(SCOOP_UPDATE_CMD);
+  } catch (e) {
+    // Denied or unavailable. The toast still named the new version, and the
+    // command is on the homepage, so this is a lost convenience rather than a
+    // dead end.
+    console.warn('[updater] clipboard write failed', e);
+  }
+}
+
 async function openDownloads(): Promise<void> {
   try {
     const { openUrl } = await import('@tauri-apps/plugin-opener');
@@ -134,6 +165,7 @@ async function openDownloads(): Promise<void> {
 }
 
 export function DesktopUpdater() {
+  const { t } = useTranslation('common');
   const [ready, setReady] = useState<UpdateReady | null>(null);
   const lastCheckRef = useRef(0);
   const stagedRef = useRef(false);
@@ -145,7 +177,7 @@ export function DesktopUpdater() {
     if (import.meta.env.DEV) {
       (window as unknown as Record<string, unknown>).__pnDesktopUpdateToast = (opts?: {
         required?: boolean;
-        mode?: 'restart' | 'download';
+        mode?: 'restart' | 'download' | 'scoop';
       }) => {
         setUpdateAvailable('999.0.0');
         setReady({
@@ -184,29 +216,37 @@ export function DesktopUpdater() {
 
   if (!ready) return null;
 
-  // A Linux .deb can't self-update, so its toast is a nudge to the downloads
-  // page rather than a Restart. Only a below-the-floor build loses its dismiss
-  // and changelog; an ordinary .deb update behaves like every other one. Every
-  // other desktop build has staged the install; it just Restarts.
-  const isDownload = ready.mode === 'download';
-  const required = isDownload && !!ready.required;
+  // Only a staged install offers Restart. A .deb is sent to the downloads page,
+  // and a Scoop install is handed the command instead, since the download it
+  // would otherwise be pointed at is what creates the second copy. Only a
+  // below-the-floor .deb loses its dismiss and changelog; every other update
+  // behaves like an ordinary one.
+  const isStaged = ready.mode === 'restart';
+  const isScoop = ready.mode === 'scoop';
+  const required = ready.mode === 'download' && !!ready.required;
   return (
     <UpdateToast
       version={ready.version}
-      actionLabel={isDownload ? 'Download' : 'Restart'}
+      actionLabel={t(
+        isStaged ? 'updateToast.restart' : isScoop ? 'updateToast.copyCommand' : 'updateToast.download',
+      )}
       required={required}
-      onAction={() => (isDownload ? void openDownloads() : void relaunchApp())}
+      onAction={() => {
+        if (isStaged) return void relaunchApp();
+        if (isScoop) return void copyScoopCommand();
+        void openDownloads();
+      }}
       onChangelog={required ? undefined : () => void openChangelog()}
       onDismiss={
         required
           ? undefined
           : () => {
-              // Only the download path snoozes: a staged install costs nothing
+              // Only the nudge paths snooze: a staged install costs nothing
               // to re-offer on the next focus check, and Restart is one click.
               // Re-arm the checker there too, so the toast can return once the
               // 48h lapses on an app that is never quit. The restart path stays
               // latched - re-checking would re-run downloadAndInstall.
-              if (isDownload) {
+              if (!isStaged) {
                 snoozeUpdate(ready.version);
                 stagedRef.current = false;
               }

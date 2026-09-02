@@ -13,7 +13,7 @@
     "checking": "A verificar...",
     "verify": "Verificar",
     "replaceExisting": "Introduz um novo PIN de 4 dígitos. Substitui o teu PIN atual.",
-    "setIntro": "Um PIN de 4 dígitos será exigido para veres a tua frase e abrires notas protegidas. Bloqueia uma espreitadela casual se alguém te pedir o dispositivo emprestado.",
+    "setIntro": "Um PIN de 4 dígitos abre as tuas notas protegidas e a tua frase de recuperação. É sincronizado com todos os teus dispositivos.",
     "protectReason": "As notas protegidas precisam de um PIN, porque o bloqueio viaja para os teus outros dispositivos e a tua impressão digital não.",
     "newPin": "Novo PIN",
     "confirmPin": "Confirmar PIN",
@@ -35,6 +35,17 @@
     "introNoBio": "Introduz o teu PIN atual para confirmares a remoção. A vista da frase deixa de estar protegida.",
     "verifying": "A verificar...",
     "removePin": "Remover PIN"
+  },
+  "pinRecovery": {
+    "forgotPin": "Esqueceste-te do PIN?",
+    "title": "Repor o PIN",
+    "intro": "Introduz a tua frase de recuperação de 12 palavras para limpar o PIN. Logo a seguir podes definir um novo.",
+    "lockIntro": "Introduz a tua frase de recuperação de 12 palavras. Desbloqueia a aplicação e limpa o PIN.",
+    "consequence": "O PIN é limpo em todos os teus dispositivos. O desbloqueio biométrico não é afetado.",
+    "wrongPhrase": "Esta não é a frase de recuperação desta conta.",
+    "clearPin": "Limpar PIN",
+    "lockAction": "Desbloquear e limpar PIN",
+    "cleared": "PIN limpo. Define um novo abaixo ou deixa-o desativado."
   },
   "phraseGate": {
     "enterToView": "Introduz o teu PIN de 4 dígitos para veres a tua frase.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "Introduz o teu PIN uma vez para ativar isto. Ele tranca uma cópia da tua frase de recuperação, para que só o teu PIN possa abrir a app.",
     "relockAfter": "Voltar a bloquear após",
     "relockHint": "Aplica-se ao ecrã de bloqueio da app e a qualquer nota protegida por PIN.",
-    "perDeviceNote": "Cada dispositivo faz o registo de forma independente. O desbloqueio biométrico exige a tua impressão digital ou rosto para aceder à app neste dispositivo.",
+    "perDeviceNote": "O desbloqueio biométrico abre as mesmas notas que o teu PIN. Fica neste dispositivo e nunca é sincronizado.",
     "disableConfirmTitle": "Desativar a biometria",
     "disableConfirmLabel": "Desativar",
     "disableConfirmBody": "Desativar o desbloqueio biométrico neste dispositivo?",

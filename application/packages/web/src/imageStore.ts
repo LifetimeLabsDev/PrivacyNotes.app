@@ -46,6 +46,87 @@ function isQuotaError(msg: string): boolean {
   return msg.includes('Quota exceeded');
 }
 
+/**
+ * Encrypted blob sizes learned from a Storage listing, keyed by uuid.
+ *
+ * imageDedup carries the same number, but it is keyed by the SHA-256 of the
+ * pre-encryption bytes, which only the device that uploaded the image holds.
+ * A new phone, a fresh browser or a cleared cache has no row to update, so a
+ * size read off Storage lives here instead. A blob is immutable, so a uuid
+ * keeps its size for good and this never needs invalidating.
+ *
+ * The listing that fills this scans the whole bucket, so the cache is what
+ * holds it to once per device rather than once per render.
+ */
+const IMAGE_SIZES_KEY = 'imageSizesByUuid';
+
+export async function readImageSizes(): Promise<Record<string, number>> {
+  const entry = await db.kv.get(IMAGE_SIZES_KEY);
+  if (typeof entry?.value !== 'string') return {};
+  try {
+    const parsed: unknown = JSON.parse(entry.value);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+    return parsed as Record<string, number>;
+  } catch {
+    return {};
+  }
+}
+
+export async function rememberImageSizes(sizes: Record<string, number>): Promise<void> {
+  if (Object.keys(sizes).length === 0) return;
+  const merged = { ...(await readImageSizes()), ...sizes };
+  await db.kv.put({ key: IMAGE_SIZES_KEY, value: JSON.stringify(merged) });
+}
+
+/** Storage returns at most this many names per listing call. */
+const LIST_PAGE = 1000;
+
+/**
+ * Look up blob sizes in Storage and remember what the listing resolves.
+ *
+ * The listing pages, because an account can hold more blobs than one call
+ * returns and Storage answers with the first page only: a blob past that page
+ * has no size any single call can reach. Paging stops the moment every wanted
+ * uuid is accounted for, so a full scan is the worst case rather than the norm,
+ * and one call already costs a scan of the whole bucket.
+ *
+ * `absent` names the uuids the listing walked past without finding, which is
+ * what a note referencing a removed blob leaves behind. Nothing here remembers
+ * them: the same blob can still arrive from another device, so how long to stop
+ * asking belongs to the caller.
+ */
+export async function listImageSizes(
+  supabase: SupabaseClient,
+  pubkey: string,
+  wanted: string[],
+): Promise<{ sizes: Map<string, number>; absent: string[] }> {
+  const sizes = new Map<string, number>();
+  const outstanding = new Set(wanted);
+  if (outstanding.size === 0) return { sizes, absent: [] };
+
+  const learned: Record<string, number> = {};
+  for (let offset = 0; outstanding.size > 0; offset += LIST_PAGE) {
+    const { data, error } = await supabase.storage
+      .from(BUCKET)
+      .list(pubkey, { limit: LIST_PAGE, offset });
+    // A failed page leaves the rest outstanding rather than absent: the
+    // caller must not read a network error as "this blob is gone".
+    if (error) return { sizes, absent: [] };
+    const page = data ?? [];
+    for (const obj of page) {
+      const size = (obj.metadata as Record<string, unknown> | null)?.size;
+      if (typeof size === 'number' && size > 0) {
+        sizes.set(obj.name, size);
+        learned[obj.name] = size;
+      }
+      outstanding.delete(obj.name);
+    }
+    if (page.length < LIST_PAGE) break;
+  }
+  await rememberImageSizes(learned);
+  return { sizes, absent: [...outstanding] };
+}
+
 export class ImageStore {
   private supabase: SupabaseClient;
   private encryptionKey: Uint8Array;

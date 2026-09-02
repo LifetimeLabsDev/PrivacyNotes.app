@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "J'ai oublié mon PIN. Mes données sont-elles perdues ?",
+      "q": "J'ai oublié mon PIN. Comment revenir dans l'app ?",
       "a": [
-        "Non. Le PIN est un verrou de confort contre les regards indiscrets sur ton propre appareil, pas une clé de chiffrement. Tes notes sont chiffrées avec des clés dérivées de ta phrase de récupération, et la phrase donne toujours l'accès complet, sans aucun PIN.",
-        "C'est un choix de conception délibéré : lier le chiffrement à un PIN à 4 chiffres signifierait qu'un PIN oublié détruit des données. Ça n'arrive jamais ici."
+        "Rien n'est perdu, et tu peux effacer le PIN toi-même avec ta phrase de récupération. Le PIN est un verrou d'écran, pas une clé de chiffrement : tes notes sont chiffrées avec des clés dérivées de la phrase, donc c'est la phrase qui les ouvre. Lier le chiffrement à quatre chiffres ferait qu'un PIN oublié détruirait des données. Ici, jamais.",
+        "Partout où l'app demande le PIN, choisis **PIN oublié ?** et saisis tes 12 mots. C'est sur l'écran de verrouillage, sur une note protégée et dans **Réglages > Sécurité > PIN**. Le PIN est effacé sur tous tes appareils, et tu peux en définir un nouveau tout de suite. Le déverrouillage biométrique n'est pas affecté."
       ]
     },
     "delete-account": {

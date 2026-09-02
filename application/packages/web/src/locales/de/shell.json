@@ -198,7 +198,9 @@
     "expand": "Ausklappen",
     "reorder": "{{folder}} neu anordnen",
     "saveName": "Ordnernamen speichern",
-    "actionsForFolder": "Aktionen für Ordner {{folder}}"
+    "actionsForFolder": "Aktionen für Ordner {{folder}}",
+    "seedSecurity": "Sicherheit",
+    "seedTravel": "Reisen"
   },
   "collapsedSidebar": {
     "newNote": "Neue Notiz",

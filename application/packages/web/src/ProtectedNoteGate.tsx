@@ -4,6 +4,7 @@ import { Fingerprint, Lock, ShieldSlash } from './icons';
 import { PinInput, type PinInputHandle } from './PinInput';
 import { hasPin, setPin as storePin, verifyPin, recordPinFailure, clearPinFailures, getPinLockoutState } from './pin';
 import { hasBiometricCredential, unlockWithBiometric } from './biometric';
+import { ForgotPinLink, PinRecoveryForm } from './PinRecoveryForm';
 import { useEscapeToClose } from './useEscapeToClose';
 import type { UserSettings } from './userSettings';
 
@@ -19,8 +20,14 @@ import type { UserSettings } from './userSettings';
  *      The PIN screen is one tap away, and so is the way back.
  *   2. **Verify** - a PIN is set; user enters it to unlock.
  *   3. **Bootstrap** - no PIN or biometric. Inline "Set a PIN" prompt.
+ *
+ * A fourth screen sits behind all of them: the recovery phrase, for a PIN
+ * nobody remembers. Without it a forgotten PIN shuts these notes forever,
+ * because the hash is synced and every screen that changes it asks for the
+ * old one. Spec: ops/docs/plans/pin-recovery.md
  */
 export function ProtectedNoteGate({
+  phrase,
   onUnlock,
   onRemoveProtection,
   onCancel,
@@ -29,6 +36,8 @@ export function ProtectedNoteGate({
   userSettings,
   onSettingsChange,
 }: {
+  /** The account's phrase, so a forgotten PIN has a way out. */
+  phrase: string;
   onUnlock: () => void;
   /** Drop the note's protection. Runs only behind the same check as an
    *  unlock, so it is no weaker a gate than the one it removes. */
@@ -47,8 +56,10 @@ export function ProtectedNoteGate({
   userSettings: UserSettings;
   onSettingsChange: (next: UserSettings) => void;
 }) {
+  const { t } = useTranslation('security');
   const pinIsSet = hasPin();
   const bioEnrolled = hasBiometricCredential();
+  const [recovering, setRecovering] = useState(false);
   // Which of the two screens is showing. The PIN screen never sets this
   // back, because its biometric button prompts where it stands.
   const [usePin, setUsePin] = useState(false);
@@ -73,6 +84,25 @@ export function ProtectedNoteGate({
     onExitRemove?.();
   };
 
+  // Clearing the PIN drops this gate into BootstrapMode, whose own "set a
+  // PIN" step ends in the unlock the user came for.
+  if (recovering) {
+    return (
+      <div className="max-w-sm mx-auto mt-16 space-y-4">
+        <h2 className="text-lg font-semibold tracking-tight text-center">
+          {t('pinRecovery.title')}
+        </h2>
+        <PinRecoveryForm
+          phrase={phrase}
+          userSettings={userSettings}
+          onSettingsChange={onSettingsChange}
+          onCleared={() => setRecovering(false)}
+          onCancel={() => setRecovering(false)}
+        />
+      </div>
+    );
+  }
+
   if (bioEnrolled && !usePin) {
     return (
       <BiometricMode
@@ -95,6 +125,7 @@ export function ProtectedNoteGate({
       onCancelRemove={onCancelRemove}
       onCancel={onCancel}
       showBiometric={bioEnrolled}
+      onForgotPin={() => setRecovering(true)}
     />
   ) : (
     <BootstrapMode onUnlock={done} onCancel={onCancel} userSettings={userSettings} onSettingsChange={onSettingsChange} />
@@ -257,6 +288,7 @@ function VerifyMode({
   onCancelRemove,
   onCancel,
   showBiometric = false,
+  onForgotPin,
 }: {
   /** What a correct PIN performs: unlock the note, or take the lock off. */
   done: () => void;
@@ -268,6 +300,9 @@ function VerifyMode({
   /** True only when this device has biometric enrolled, so the button is
    *  absent where there is no finger to ask for. */
   showBiometric?: boolean;
+  /** Opens the phrase route. Absent while removing protection, where the
+   *  user is not locked out of anything. */
+  onForgotPin?: () => void;
 }) {
   const { t } = useTranslation('security');
   const [value, setValue] = useState('');
@@ -377,6 +412,7 @@ function VerifyMode({
             {bio.busy ? t('protectedGate.verifying') : t('protectedGate.useBiometricInstead')}
           </button>
         )}
+        {onForgotPin && !removing && <ForgotPinLink onClick={onForgotPin} />}
         {onStartRemove && (
           <>
             <div className="border-t border-divider mt-1" />

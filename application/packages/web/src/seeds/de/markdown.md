@@ -109,7 +109,7 @@ Es gibt zwei Arten, und sie sehen absichtlich verschieden aus.
 - Ein Web-Link öffnet eine Seite: [privacynotes.app](https://privacynotes.app/de)
 - Ein Notiz-Link öffnet eine andere deiner Notizen: [[Wie deine Notizen geschützt sind]]
 
-Beide haben einen Knopf in der Leiste. Die Kette macht einen Web-Link. Der Knopf daneben listet deine Notizen auf, und du wählst die gemeinte aus.
+Beide haben einen Knopf in der Leiste. Die Kette macht einen Web-Link. Die Klammern machen einen Notiz-Link: Sie listen deine Notizen auf, und du wählst die gemeinte aus. `[[` zu tippen macht dasselbe.
 
 ---
 

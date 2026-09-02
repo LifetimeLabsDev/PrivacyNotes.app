@@ -113,6 +113,7 @@ const ICONS: Record<RoadmapIcon, string> = {
   bookmark: `${S}<path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4.3-6.5 4.3v-16a1 1 0 0 1 1-1z"/></svg>`,
   sidebar: `${S}<rect x="3" y="4.5" width="18" height="15" rx="2"/><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"/><line x1="5.7" y1="9" x2="7.3" y2="9"/><line x1="5.7" y1="12" x2="7.3" y2="12"/><line x1="5.7" y1="15" x2="7.3" y2="15"/></svg>`,
   robot: `${S}<rect x="4" y="8" width="16" height="11" rx="3"/><line x1="12" y1="4.3" x2="12" y2="8"/><circle cx="12" cy="3" r="1.3"/><circle cx="9.2" cy="13" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.8" cy="13" r="1.1" fill="currentColor" stroke="none"/><line x1="2.4" y1="12.2" x2="4" y2="12.2"/><line x1="20" y1="12.2" x2="21.6" y2="12.2"/></svg>`,
+  coin: `${S}<circle cx="9.2" cy="9.2" r="6"/><path d="M15.4 9.6a6 6 0 1 1-5.8 5.8"/></svg>`,
 };
 
 /** Everything not yet shipped and not deferred past 1.0 is the live edge. */

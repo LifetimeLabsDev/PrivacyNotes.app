@@ -44,9 +44,11 @@
     "required": "需要更新",
     "changelog": "Changelog",
     "refresh": "重新整理",
+    "restart": "重新啟動",
     "dismiss": "忽略",
     "download": "下載",
-    "update": "更新"
+    "update": "更新",
+    "copyCommand": "複製指令"
   },
   "hotkeys": {
     "heading": "快速鍵說明",

@@ -150,6 +150,7 @@ function InlinePinGate({
         }}
         onComplete={(v) => void submit(v)}
         autoFocus
+        compact
         disabled={disabled}
       />
       {err && (

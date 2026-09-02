@@ -150,6 +150,8 @@
     "faviconsDesc": "El logotip del lloc al costat dels enllaços i dels inicis de sessió de la Caixa forta.",
     "faviconsExample": "Exemple:",
     "faviconsProxy": "Les icones passen pel nostre proxy. Només en aquest dispositiu.",
+    "invisiblesTitle": "Caràcters invisibles",
+    "invisiblesDesc": "Mostra els espais, els salts de línia i les marques de paràgraf mentre escrius.",
     "sidebarTitle": "Barra lateral",
     "sidebarDesc": "Quines vistes apareixen a la barra lateral i quins elements conté la llista Tot.",
     "colInSidebar": "Barra lateral",

@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Zapomniałem PIN-u. Czy moje dane przepadły?",
+      "q": "Nie pamiętam PIN-u. Jak wrócić do aplikacji?",
       "a": [
-        "Nie. PIN to wygodna blokada przed podglądaniem przez ramię na Twoim własnym urządzeniu, a nie klucz szyfrowania. Twoje notatki są zaszyfrowane kluczami wyprowadzonymi z frazy odzyskiwania, a fraza zawsze daje pełny dostęp bez żadnego PIN-u.",
-        "To świadoma decyzja projektowa: powiązanie szyfrowania z 4-cyfrowym PIN-em oznaczałoby, że zapomniany PIN niszczy dane. Tutaj nigdy tego nie robi."
+        "Nic nie przepada, a PIN możesz usunąć samodzielnie za pomocą frazy odzyskiwania. PIN to blokada ekranu, a nie klucz szyfrujący: twoje notatki są zaszyfrowane kluczami z frazy, więc to fraza je otwiera. Powiązanie szyfrowania z czterema cyframi oznaczałoby, że zapomniany PIN niszczy dane. Tutaj to się nigdy nie zdarza.",
+        "Wszędzie tam, gdzie aplikacja prosi o PIN, wybierz **Nie pamiętasz PIN-u?** i wpisz swoje 12 słów. Znajdziesz to na ekranie blokady, na chronionej notatce i w **Ustawienia > Bezpieczeństwo > PIN**. PIN zostanie usunięty na wszystkich urządzeniach i od razu możesz ustawić nowy. Odblokowanie biometryczne pozostaje bez zmian."
       ]
     },
     "delete-account": {

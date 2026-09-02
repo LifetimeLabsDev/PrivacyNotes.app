@@ -44,9 +44,11 @@
     "required": "アップデートが必要です",
     "changelog": "Changelog",
     "refresh": "再読み込み",
+    "restart": "再起動",
     "dismiss": "閉じる",
     "download": "ダウンロード",
-    "update": "アップデート"
+    "update": "アップデート",
+    "copyCommand": "コマンドをコピー"
   },
   "hotkeys": {
     "heading": "ショートカットのヘルプ",

@@ -109,7 +109,7 @@ Ce ne sono due tipi, e sono diversi di proposito.
 - Un link web apre un sito: [privacynotes.app](https://privacynotes.app/it)
 - Un link di nota apre un'altra delle tue note: [[Come sono protette le tue note]]
 
-Entrambi hanno un pulsante nella barra. La catena fa un link web. Quello accanto elenca le tue note e scegli quella che vuoi.
+Entrambi hanno un pulsante nella barra. La catena fa un link web. Le parentesi quadre fanno un link a una nota: elencano le tue note e scegli quella che vuoi. Digitare `[[` fa la stessa cosa.
 
 ---
 

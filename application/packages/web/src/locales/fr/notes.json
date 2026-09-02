@@ -175,7 +175,6 @@
   "share": {
     "hover": "Partager / Exporter",
     "ariaLabel": "Partager ou exporter",
-    "thisNote": "Cette note",
     "currentMdTitle": "Note actuelle (.md)",
     "currentMdDesc": "Markdown brut avec front-matter.",
     "currentHtmlTitle": "Note actuelle (.html)",
@@ -183,14 +182,7 @@
     "printTitle": "Imprimer / Enregistrer en PDF",
     "printDesc": "Ouvre la boîte de dialogue d'impression. Enregistre en PDF ou envoie à une imprimante.",
     "burnTitle": "Partager en burn note",
-    "burnDesc": "Publie cette note sous forme de lien à usage unique. Le lien s'autodétruit après lecture. Ta note reste en sécurité dans ton compte.",
-    "backup": "Sauvegarde",
-    "fullBackupTitle": "Sauvegarde complète (.zip)",
-    "fullBackupDesc": "Tout : notes, journaux, coffre, tâches, images, audio, fichiers.",
-    "allHtmlTitle": "Tous les éléments (.zip de .html)",
-    "allHtmlDesc": "Un fichier HTML imprimable par élément. Idéal pour lire hors ligne.",
-    "jsonTitle": "Sauvegarde texte (.json)",
-    "jsonDesc": "Tout le contenu texte et les métadonnées, sans les images ni les fichiers."
+    "burnDesc": "Publie cette note sous forme de lien à usage unique. Le lien s'autodétruit après lecture. Ta note reste en sécurité dans ton compte."
   },
   "weekReview": {
     "title": "Bilan de la semaine",

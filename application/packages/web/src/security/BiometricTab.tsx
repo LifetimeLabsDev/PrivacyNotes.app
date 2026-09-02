@@ -33,7 +33,6 @@ export function BiometricTab({
   onSettingsChange,
   pinTimeoutMinutes,
   onPinTimeoutChange,
-  onCancel,
 }: {
   phrase: string;
   pubkey: string;
@@ -41,7 +40,6 @@ export function BiometricTab({
   onSettingsChange: (next: UserSettings) => void;
   pinTimeoutMinutes: number;
   onPinTimeoutChange: (minutes: number) => void;
-  onCancel: () => void;
 }) {
   const { t } = useTranslation('security');
   const [deviceSupported, setDeviceSupported] = useState<boolean | null>(null);
@@ -311,22 +309,6 @@ export function BiometricTab({
       <p className="text-xs text-pn-soft leading-relaxed">
         {t('biometricTab.perDeviceNote')}
       </p>
-
-      <div className="flex gap-2">
-        <button
-          onClick={onCancel}
-          className="flex-1 rounded-md border border-divider hover:bg-surface-1 px-3 py-2 text-sm transition"
-        >
-          {t('common:actions.cancel')}
-        </button>
-        <button
-          onClick={onCancel}
-          className="flex-1 inline-flex items-center justify-center gap-2 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition"
-        >
-          <Check size={16} aria-hidden="true" />
-          {t('common:actions.done')}
-        </button>
-      </div>
 
       <HelpChip surface="biometric" />
 

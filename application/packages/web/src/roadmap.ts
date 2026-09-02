@@ -63,7 +63,8 @@ export type RoadmapIcon =
   | 'timer'
   | 'bookmark'
   | 'sidebar'
-  | 'robot';
+  | 'robot'
+  | 'coin';
 
 export type RoadmapItem = {
   /** Stable slug, used as the anchor id on the /roadmap page. */
@@ -450,6 +451,14 @@ export const PUBLIC_ROADMAP: RoadmapItem[] = [
     description:
       'Arrives together with full pricing: a price that is fair in one country can be a week of pay in another, so Pro will be priced to local purchasing power and shown in your currency, on the website, at checkout, and in the app stores. Buying today still beats waiting - the early adopter price is the lowest Pro will ever cost, in any country.',
     icon: 'globe',
+  },
+  {
+    id: 'crypto-payments',
+    title: 'Paying in crypto',
+    status: 'up-next',
+    description:
+      'Card and app store are the only ways to buy Pro today. Crypto is what people who signed up with a phrase and no email ask for, so we are working out the coins, the processor and the refunds. A way to pay, not a blockchain in the app.',
+    icon: 'coin',
   },
   {
     id: 'faster-everywhere',

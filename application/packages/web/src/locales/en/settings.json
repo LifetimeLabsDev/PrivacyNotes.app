@@ -147,6 +147,8 @@
     "faviconsDesc": "Site logos next to links and vault logins.",
     "faviconsExample": "Example:",
     "faviconsProxy": "Loads through our proxy. This device only.",
+    "invisiblesTitle": "Invisible characters",
+    "invisiblesDesc": "Show spaces, line breaks and paragraph marks while you write.",
     "sidebarTitle": "Sidebar",
     "sidebarDesc": "Which views appear in the sidebar, and which items the All list holds.",
     "colInSidebar": "Sidebar",

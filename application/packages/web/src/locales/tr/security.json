@@ -13,7 +13,7 @@
     "checking": "Kontrol ediliyor...",
     "verify": "Doğrula",
     "replaceExisting": "Yeni bir 4 haneli PIN girin. Bu, mevcut PIN'inizin yerini alır.",
-    "setIntro": "İfadenizi görüntülemek ve korumalı notları açmak için 4 haneli bir PIN gerekecek. Biri cihazınızı ödünç aldığında meraklı bakışları engeller.",
+    "setIntro": "4 haneli PIN, korumalı notlarınızı ve kurtarma ifadenizi açar. Tüm cihazlarınıza eşitlenir.",
     "protectReason": "Korumalı notlar bir PIN gerektirir, çünkü kilit diğer cihazlarınıza da gider, parmak iziniz gitmez.",
     "newPin": "Yeni PIN",
     "confirmPin": "PIN tekrarı",
@@ -35,6 +35,17 @@
     "introNoBio": "Kaldırmayı onaylamak için mevcut PIN'inizi girin. İfade görünümü artık korumalı olmayacak.",
     "verifying": "Doğrulanıyor...",
     "removePin": "PIN'i kaldır"
+  },
+  "pinRecovery": {
+    "forgotPin": "PIN'inizi mi unuttunuz?",
+    "title": "PIN'i sıfırla",
+    "intro": "PIN'i temizlemek için 12 kelimelik kurtarma ifadenizi yazın. Hemen ardından yeni bir PIN belirleyebilirsiniz.",
+    "lockIntro": "12 kelimelik kurtarma ifadenizi girin. Uygulamanın kilidini açar ve PIN'i temizler.",
+    "consequence": "PIN tüm cihazlarınızda temizlenir. Biyometrik kilit açma bundan etkilenmez.",
+    "wrongPhrase": "Bu, bu hesabın kurtarma ifadesi değil.",
+    "clearPin": "PIN'i temizle",
+    "lockAction": "Kilidi aç ve PIN'i temizle",
+    "cleared": "PIN temizlendi. Aşağıdan yeni bir PIN belirleyin veya kapalı bırakın."
   },
   "phraseGate": {
     "enterToView": "İfadenizi görmek için 4 haneli PIN'inizi girin.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "Bunu açmak için PIN'inizi bir kez girin. Kurtarma ifadenizin bir kopyasını kilitler, böylece uygulamayı yalnızca PIN'iniz açabilir.",
     "relockAfter": "Tekrar kilitlenme süresi",
     "relockHint": "Uygulama kilit ekranı ve PIN korumalı notlar için geçerlidir.",
-    "perDeviceNote": "Her cihaz ayrı ayrı kaydolur. Biyometrik kilit açma, bu cihazda uygulamaya erişmek için parmak izinizi veya yüzünüzü ister.",
+    "perDeviceNote": "Biyometrik kilit açma, PIN ile aynı notları açar. Bu cihazda kalır ve hiçbir zaman eşitlenmez.",
     "disableConfirmTitle": "Biyometrik kilidi devre dışı bırak",
     "disableConfirmLabel": "Devre dışı bırak",
     "disableConfirmBody": "Bu cihazda biyometrik kilit açma devre dışı bırakılsın mı?",

@@ -175,7 +175,6 @@
   "share": {
     "hover": "Compartir / Exportar",
     "ariaLabel": "Compartir o exportar",
-    "thisNote": "Esta nota",
     "currentMdTitle": "Nota actual (.md)",
     "currentMdDesc": "Markdown sin procesar con front-matter.",
     "currentHtmlTitle": "Nota actual (.html)",
@@ -183,14 +182,7 @@
     "printTitle": "Imprimir / Guardar como PDF",
     "printDesc": "Abre el cuadro de impresión. Guarda como PDF o envía a una impresora.",
     "burnTitle": "Compartir y destruir tras leer",
-    "burnDesc": "Publica esta nota como un enlace de un solo uso. El enlace se autodestruye tras leerse. Tu nota sigue a salvo en tu cuenta.",
-    "backup": "Copia de seguridad",
-    "fullBackupTitle": "Copia completa (.zip)",
-    "fullBackupDesc": "Todo: notas, diarios, bóveda, tareas, imágenes, audio, archivos.",
-    "allHtmlTitle": "Todos los elementos (.zip de .html)",
-    "allHtmlDesc": "Un HTML imprimible por elemento. Ideal para leer sin conexión.",
-    "jsonTitle": "Copia de texto (.json)",
-    "jsonDesc": "Todo el contenido de texto y los metadatos, sin imágenes ni archivos."
+    "burnDesc": "Publica esta nota como un enlace de un solo uso. El enlace se autodestruye tras leerse. Tu nota sigue a salvo en tu cuenta."
   },
   "weekReview": {
     "title": "Resumen de la semana",

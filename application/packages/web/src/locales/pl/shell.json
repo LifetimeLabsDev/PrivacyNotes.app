@@ -198,7 +198,9 @@
     "expand": "Rozwiń",
     "reorder": "Zmień kolejność: {{folder}}",
     "saveName": "Zapisz nazwę folderu",
-    "actionsForFolder": "Akcje dla folderu {{folder}}"
+    "actionsForFolder": "Akcje dla folderu {{folder}}",
+    "seedSecurity": "Bezpieczeństwo",
+    "seedTravel": "Podróże"
   },
   "collapsedSidebar": {
     "newNote": "Nowa notatka",

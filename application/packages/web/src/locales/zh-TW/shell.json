@@ -198,7 +198,9 @@
     "expand": "展開",
     "reorder": "重新排序 {{folder}}",
     "saveName": "儲存資料夾名稱",
-    "actionsForFolder": "資料夾 {{folder}} 的動作"
+    "actionsForFolder": "資料夾 {{folder}} 的動作",
+    "seedSecurity": "安全性",
+    "seedTravel": "旅行"
   },
   "collapsedSidebar": {
     "newNote": "新增筆記",

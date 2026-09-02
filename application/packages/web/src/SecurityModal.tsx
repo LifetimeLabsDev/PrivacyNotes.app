@@ -7,7 +7,6 @@ import { PhraseTab } from './security/PhraseTab';
 import { PinTab } from './security/PinTab';
 import type { UserSettings } from './userSettings';
 import { useEscapeToClose } from './useEscapeToClose';
-import { HelpChip } from './HelpChip';
 
 type Tab = 'pin' | 'phrase' | 'biometric';
 
@@ -110,18 +109,14 @@ export function SecurityModal({
         </div>
 
         {tab === 'pin' && (
-          <>
-          <HelpChip surface="pin" className="mb-3" />
           <PinTab
             phrase={phrase}
             timeoutMinutes={pinTimeoutMinutes}
             onTimeoutChange={onPinTimeoutChange}
-            onCancel={onClose}
             userSettings={userSettings}
             onSettingsChange={onSettingsChange}
             reason={reason}
           />
-          </>
         )}
 
         {tab === 'biometric' && (
@@ -132,7 +127,6 @@ export function SecurityModal({
             onSettingsChange={onSettingsChange}
             pinTimeoutMinutes={pinTimeoutMinutes}
             onPinTimeoutChange={onPinTimeoutChange}
-            onCancel={onClose}
           />
         )}
 

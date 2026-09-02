@@ -128,31 +128,6 @@
   max-width: var(--pn-content-max);
 }
 
-/* The editor pane is a query container so the width toggle can ask about
-   the PANE rather than the window. A media query is the wrong instrument
-   here: the sidebar and the notes list are both drag-resizable, so a
-   1400px window can leave a 590px pane (toggle useless, media query shows
-   it) and a 1000px window with both columns collapsed can leave a 940px
-   pane (toggle useful, media query hides it). Same reasoning as the
-   storage picker below. */
-.pn-editor-pane {
-  container-type: inline-size;
-  container-name: pn-pane;
-}
-
-/* Show the width toggle only where the axis can change something: a pane
-   wider than the DEFAULT cap. The threshold is deliberately the default
-   and not the CURRENT cap - at 'full' there is no cap, so a current-cap
-   test would go false and delete the button the moment someone used it.
-   Strictly greater, not `min-width`: at a pane of exactly 56rem the column
-   already fills it, so every step would render the same thing.
-   Engines without container queries never show it (graceful fallback);
-   Settings > Appearance carries the axis at every width either way. */
-.pn-width-toggle { display: none; }
-@container pn-pane (width > 56rem) {
-  .pn-width-toggle { display: block; }
-}
-
 @layer editor {
   /* Editable notes render a click row above the body (Editor.tsx): it is the
      line you can always reach above a first block you cannot type in front of,
@@ -2241,18 +2216,23 @@
    invisible until the pointer arrives, and the overlap lasts as long as the
    hover does.
 
-   The ribbon moves into the row's own end gutter, where nothing else lives,
-   and the buttons move the same distance inboard, so the two keep a lane
-   between them instead of sharing one. The mark itself does not change - same
-   polygon, same colour, same corner - so a row still matches its tile.
+   The buttons move inboard past the mark, and the mark itself does not move:
+   a list row spans the whole screen on a phone, so a ribbon pushed into the
+   row's outer edge sits against the bezel with nothing around it, which reads
+   as a rendering slip rather than as a corner mark. It stays in the row's own
+   16px gutter, the position it holds under a mouse and the one the row's text
+   is measured from, and only the rows that carry a ribbon pay for the lane.
    Spec: ops/docs/ui-patterns.md section 78 (bookmark ribbon) */
 @media (hover: none) {
-  .pn-row .pn-ribbon,
   .pn-notes-grid .pn-ribbon {
     inset-inline-end: 0;
   }
-  .pn-row-actions {
-    padding-inline-end: 10px;
+  /* Scoped with :has(), so a row without a bookmark mark keeps its trailing
+     controls where every other row puts them. A browser without :has()
+     (Firefox before 121) leaves the buttons under the ribbon, which is the
+     behaviour that shipped before the lane existed. */
+  .pn-row:has(.pn-ribbon) .pn-row-actions {
+    padding-inline-end: 22px;
   }
   .pn-notes-grid .pn-card-actions {
     inset-inline-end: 16px;

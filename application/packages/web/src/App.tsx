@@ -16,8 +16,9 @@ import {
   onWrappedBlobChange,
 } from './biometric';
 import { shouldPromptForPin, markPinUnlocked } from './pin';
+import { clearPin } from './pinRecovery';
 import { startReLockWatch } from './appReLock';
-import { loadLocalSettings } from './userSettings';
+import { loadLocalSettings, saveLocalSettings } from './userSettings';
 import { hasStoredSession, isTrustedDevice } from './trustStorage';
 import { isDemoMode } from './demo';
 import {
@@ -100,7 +101,7 @@ if (hasStoredSession()) {
 }
 
 export default function App() {
-  const { auth, signInWithPhrase } = useAuth();
+  const { auth, signInWithPhrase, unlockLocally } = useAuth();
 
   // Explicit per-language marketing URL (/de, /en, ...). Locale slugs are the
   // public marketing site and stay browsable at that URL for everyone -
@@ -302,6 +303,23 @@ export default function App() {
   // only; it is cleared the moment the sign-in succeeds.
   const [unlockSignIn, setUnlockSignIn] = useState<'idle' | 'busy' | 'error'>('idle');
   const unlockPhraseRef = useRef<string | null>(null);
+  // Held beside the phrase so the retry button keeps the intent.
+  const unlockRecoverRef = useRef(false);
+
+  /**
+   * Take the PIN off, from the lock screen's "Forgot your PIN?" door.
+   *
+   * Runs only after the unlock proves the phrase, so a phrase that passes
+   * its checksum but belongs elsewhere cannot cost this device the PIN it
+   * still remembers. NotesView is unmounted while the lock is up and reads
+   * this cache in its own initializer, so writing it here is what carries
+   * the removal to the other devices on the next sync.
+   * Spec: ops/docs/plans/pin-recovery.md
+   */
+  function applyPinRecovery(phrase: string) {
+    saveLocalSettings(clearPin(loadLocalSettings(), phrase));
+    unlockRecoverRef.current = false;
+  }
 
   async function runUnlockSignIn(phrase: string) {
     setUnlockSignIn('busy');
@@ -312,6 +330,7 @@ export default function App() {
     // challenge on every lock-screen unlock.
     const result = await signInWithPhrase(phrase, isTrustedDevice());
     if (result.ok) {
+      if (unlockRecoverRef.current) applyPinRecovery(phrase);
       unlockPhraseRef.current = null;
       setUnlockSignIn('idle');
       setLocked(false);
@@ -326,12 +345,40 @@ export default function App() {
     setUnlockSignIn('error');
   }
 
-  function handleLockScreenUnlock(phrase: string) {
+  async function handleLockScreenUnlock(phrase: string, recover = false) {
     markPinUnlocked();
+    unlockRecoverRef.current = recover;
     if (auth.status === 'authenticated') {
+      if (recover) applyPinRecovery(phrase);
       setLocked(false);
       return;
     }
+    // Local-first, for the same reason the boot path is. Enabling app
+    // lock strips the stored phrase, so a cold start has no session and
+    // this unlock is the sign-in - which made a reachable server the
+    // price of opening notes that are already on this disk, under the
+    // very phrase the PIN or biometric just unwrapped. Render them, then
+    // establish the session behind the app. A device whose access was
+    // revoked is still caught by the heartbeat on the first sync; it
+    // sees its own local data a moment sooner, which is the trade
+    // `tryFastBoot` already makes on every normal boot.
+    if (await unlockLocally(phrase)) {
+      // Before the sign-in, not after: it reads app lock's armed state to
+      // decide whether to write the phrase back at rest, and after a
+      // recovery the lock is off and that write is the right one.
+      if (recover) applyPinRecovery(phrase);
+      unlockPhraseRef.current = null;
+      setUnlockSignIn('idle');
+      setLocked(false);
+      // Not awaited and not surfaced: the user is in, and sync owns its
+      // own error reporting from here. signInWithPhrase skips the phrase
+      // persist while the lock is armed, so this cannot write the phrase
+      // back to disk and undo the lock.
+      void signInWithPhrase(phrase, isTrustedDevice());
+      return;
+    }
+    // Nothing local to render (a wiped or brand-new device), so the
+    // network sign-in is the only door, exactly as before.
     unlockPhraseRef.current = phrase;
     void runUnlockSignIn(phrase);
   }

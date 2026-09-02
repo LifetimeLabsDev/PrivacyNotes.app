@@ -1,9 +1,9 @@
 /**
  * Drag-to-resize for the sidebar and notes-list panes (GitHub #211).
  *
- * The EXPANDED collapse strips double as drag handles: pointer down
- * plus movement under the threshold is a click (collapse, exactly the
- * behaviour the strips always had), movement past it is a resize that
+ * The EXPANDED collapse strips double as drag handles: pointer down and
+ * release with movement under the threshold is a click (collapse, exactly
+ * the behaviour the strips always had), movement past it is a resize that
  * clamps to [min, max] - dragging below the minimum just pins at min.
  * Arrow keys resize in 16px steps when the strip is focused, Enter/Space
  * collapses, Escape cancels an in-flight drag (width snaps back). Collapse
@@ -20,6 +20,11 @@
  * (e.g. the strip unmounting mid-drag - Cmd+Shift+F zen during a drag),
  * and Escape cancels. Without this, one missed pointerup left the global
  * col-resize cursor stuck until the next strip click (first-round bug).
+ * The four are not equal, though: only a RELEASE can collapse. A pointer
+ * the platform cancels or a capture that dies ends the drag and leaves
+ * the pane alone, because neither is a click - a touch device cancels
+ * the finger resting on the strip every time it rotates, and a collapse
+ * there is both unasked for and persisted.
  *
  * Perf contract: during a drag the width is written imperatively as a CSS
  * variable on NotesView's root div (one style write per move) plus the
@@ -164,13 +169,19 @@ export function usePaneResize(cfg: {
     return drag;
   };
 
-  /** Normal end: commit the width (or treat as click if never moved). */
-  const finishDrag = () => {
+  /** Normal end: commit the width (or treat as click if never moved).
+      A press that never moved collapses only when the pointer was
+      RELEASED. A pointer the platform cancels is not a click, and on
+      touch the platform cancels the finger resting on the strip every
+      time the device rotates, where a collapse is both unasked for and
+      persisted. Termination is unconditional either way; only the
+      collapse waits for a real release. */
+  const finishDrag = (released: boolean) => {
     const drag = teardown();
     if (!drag) return;
     if (!drag.moved) {
       // Clean click: the strip's historical collapse toggle.
-      cfg.onCollapse();
+      if (released) cfg.onCollapse();
       return;
     }
     if (drag.lastWidth !== null) cfg.onCommitWidth(drag.lastWidth);
@@ -187,7 +198,7 @@ export function usePaneResize(cfg: {
   // mid-drag (view switch, zen), end it gracefully.
   const finishRef = useRef(finishDrag);
   finishRef.current = finishDrag;
-  useEffect(() => () => finishRef.current(), []);
+  useEffect(() => () => finishRef.current(false), []);
 
   const onPointerDown = (e: React.PointerEvent<HTMLElement>) => {
     if (e.button !== 0 || dragRef.current) return;
@@ -197,7 +208,7 @@ export function usePaneResize(cfg: {
     // (focus steal, release outside the window, DOM churn) must still
     // end the drag, or the col-resize cursor stays stuck globally.
     const onWinEnd = (ev: PointerEvent) => {
-      if (dragRef.current?.pointerId === ev.pointerId) finishDrag();
+      if (dragRef.current?.pointerId === ev.pointerId) finishDrag(ev.type === 'pointerup');
     };
     const onWinKey = (ev: KeyboardEvent) => {
       if (ev.key === 'Escape') {
@@ -249,7 +260,8 @@ export function usePaneResize(cfg: {
     badge(e, `${w}px`);
   };
 
-  const onEnd = () => finishDrag();
+  const onRelease = () => finishDrag(true);
+  const onAbandon = () => finishDrag(false);
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -267,9 +279,9 @@ export function usePaneResize(cfg: {
     stripProps: {
       onPointerDown,
       onPointerMove,
-      onPointerUp: onEnd,
-      onPointerCancel: onEnd,
-      onLostPointerCapture: onEnd,
+      onPointerUp: onRelease,
+      onPointerCancel: onAbandon,
+      onLostPointerCapture: onAbandon,
       onKeyDown,
     },
   };

@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "I forgot my PIN. Is my data gone?",
+      "q": "I forgot my PIN. How do I get back in?",
       "a": [
-        "No. The PIN is a convenience lock against shoulder-surfing on your own device, not an encryption key. Your notes are encrypted with keys derived from your recovery phrase, and the phrase always grants full access without any PIN.",
-        "This is a deliberate design choice: tying encryption to a 4-digit PIN would mean a forgotten PIN destroys data. It never does here."
+        "Nothing is lost, and you can clear the PIN yourself with your recovery phrase. The PIN is a screen gate rather than an encryption key: your notes are encrypted with keys derived from the phrase, so the phrase is what opens them. Tying encryption to four digits would mean a forgotten PIN destroyed data, and it never does here.",
+        "Wherever the app asks for the PIN, choose **Forgot your PIN?** and type your 12 words. It is on the lock screen, on a protected note, and in **Settings > Security > PIN**. The PIN clears on every device, and you can set a new one straight away. Biometric unlock is not affected."
       ]
     },
     "delete-account": {

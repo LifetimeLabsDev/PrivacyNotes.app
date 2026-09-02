@@ -44,9 +44,11 @@
     "required": "업데이트가 필요해요",
     "changelog": "Changelog",
     "refresh": "새로고침",
+    "restart": "다시 시작",
     "dismiss": "닫기",
     "download": "다운로드",
-    "update": "업데이트"
+    "update": "업데이트",
+    "copyCommand": "명령어 복사"
   },
   "hotkeys": {
     "heading": "단축키 도움말",

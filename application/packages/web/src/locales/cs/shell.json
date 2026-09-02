@@ -198,7 +198,9 @@
     "expand": "Rozbalit",
     "reorder": "Změnit pořadí: {{folder}}",
     "saveName": "Uložit název složky",
-    "actionsForFolder": "Akce pro složku {{folder}}"
+    "actionsForFolder": "Akce pro složku {{folder}}",
+    "seedSecurity": "Zabezpečení",
+    "seedTravel": "Cestování"
   },
   "collapsedSidebar": {
     "newNote": "Nová poznámka",

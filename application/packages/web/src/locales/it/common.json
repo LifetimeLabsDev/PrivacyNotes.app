@@ -45,9 +45,11 @@
     "required": "Aggiornamento richiesto",
     "changelog": "Changelog",
     "refresh": "Aggiorna",
+    "restart": "Riavvia",
     "dismiss": "Ignora",
     "download": "Scarica",
-    "update": "Aggiorna"
+    "update": "Aggiorna",
+    "copyCommand": "Copia comando"
   },
   "hotkeys": {
     "heading": "Guida alle scorciatoie",

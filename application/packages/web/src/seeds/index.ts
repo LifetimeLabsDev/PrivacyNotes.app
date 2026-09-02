@@ -15,9 +15,10 @@
  *   type       note | task | journal | link          (default note)
  *   tags       comma separated, no leading #         (default none)
  *   starred    true pins it to the top of the list   (default false)
- *   folder     folder name, DEMO ONLY - real vaults start with an empty
- *              tree on purpose, because folders are Pro. The name must
- *              exist in DEMO_FOLDERS in welcomeNote.ts.
+ *   folder     folder name. Files the note in every vault: the starter
+ *              tree seeds for everyone, and browsing it is free. The name
+ *              must be a key of SEED_FOLDERS in welcomeNote.ts, which
+ *              `tools/check-seeds.mjs` enforces.
  *   demoOnly   true seeds it only in the public demo (default false)
  *   order      sort weight, lower is newer and sits higher (default 100)
  *
@@ -51,7 +52,7 @@ export interface SeedDoc {
   type: SeedType;
   tags: string[];
   starred: boolean;
-  /** Folder name, applied in demo only. Null when the note is unfiled. */
+  /** Folder name, applied in every vault. Null when the note is unfiled. */
   folder: string | null;
   demoOnly: boolean;
   order: number;

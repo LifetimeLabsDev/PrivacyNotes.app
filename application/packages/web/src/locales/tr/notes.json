@@ -175,7 +175,6 @@
   "share": {
     "hover": "Paylaş / Dışa aktar",
     "ariaLabel": "Paylaş veya dışa aktar",
-    "thisNote": "Bu not",
     "currentMdTitle": "Bu not (.md)",
     "currentMdDesc": "Front-matter'lı ham markdown.",
     "currentHtmlTitle": "Bu not (.html)",
@@ -183,14 +182,7 @@
     "printTitle": "Yazdır / PDF olarak kaydet",
     "printDesc": "Yazdırma penceresini açar. PDF olarak kaydedin veya yazıcıya gönderin.",
     "burnTitle": "Paylaş ve okunduktan sonra yak",
-    "burnDesc": "Bu notu tek seferlik görüntüleme bağlantısı olarak yayınlayın. Bağlantı okunduktan sonra kendini imha eder. Notunuz hesabınızda güvende kalır.",
-    "backup": "Yedek",
-    "fullBackupTitle": "Tam yedek (.zip)",
-    "fullBackupDesc": "Her şey: notlar, günlükler, kasa, görevler, görseller, sesler, dosyalar.",
-    "allHtmlTitle": "Tüm öğeler (.html dosyalarının .zip'i)",
-    "allHtmlDesc": "Her öğe için yazdırılabilir bir HTML. Çevrimdışı okumak için ideal.",
-    "jsonTitle": "Metin yedeği (.json)",
-    "jsonDesc": "Tüm metin içeriği ve üst veriler, görsel veya dosya yok."
+    "burnDesc": "Bu notu tek seferlik görüntüleme bağlantısı olarak yayınlayın. Bağlantı okunduktan sonra kendini imha eder. Notunuz hesabınızda güvende kalır."
   },
   "weekReview": {
     "title": "Haftanın özeti",

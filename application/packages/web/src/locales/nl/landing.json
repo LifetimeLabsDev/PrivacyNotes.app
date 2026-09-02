@@ -125,7 +125,8 @@
     "pkgToggle": "Installeren met een packagemanager ({{platforms}})",
     "pkgBrewDesc": "Updates regelt de app, niet brew",
     "pkgWingetDesc": "Zit in Windows 10 en 11",
-    "pkgFootnote": "Beide installeren dezelfde ondertekende build van onze eigen servers, en de app blijft zichzelf hoe dan ook bijwerken.",
+    "pkgScoopDesc": "Updates regelt Scoop, niet de app",
+    "pkgFootnote": "Elk installeert dezelfde ondertekende build. Bij Homebrew en winget werkt de app zichzelf bij. Bij Scoop voer je scoop update privacynotes uit.",
     "githubLink": "Alle releases op GitHub",
     "githubNote": "Ondertekend · Openbaar · Verifieerbaar · Elke release, zonder uitzondering"
   },

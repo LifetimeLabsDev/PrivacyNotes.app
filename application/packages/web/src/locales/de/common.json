@@ -45,9 +45,11 @@
     "required": "Update erforderlich",
     "changelog": "Changelog",
     "refresh": "Neu laden",
+    "restart": "Neu starten",
     "dismiss": "Schließen",
     "download": "Herunterladen",
-    "update": "Aktualisieren"
+    "update": "Aktualisieren",
+    "copyCommand": "Befehl kopieren"
   },
   "hotkeys": {
     "heading": "Tastenkürzel-Hilfe",

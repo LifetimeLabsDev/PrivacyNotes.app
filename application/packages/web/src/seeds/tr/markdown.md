@@ -109,7 +109,7 @@ Bir görseli nota sürükleyin ya da yapıştırın. Boyutunu değiştirmek ya d
 - Web bağlantısı bir siteyi açar: [privacynotes.app](https://privacynotes.app/tr)
 - Not bağlantısı başka bir notunuzu açar: [[Notlarınız nasıl korunuyor]]
 
-İkisinin de çubukta düğmesi var. Zincir web bağlantısı yapar. Yanındaki düğme notlarınızı listeler, siz de kastettiğinizi seçersiniz.
+İkisinin de çubukta düğmesi var. Zincir web bağlantısı yapar. Köşeli parantezler not bağlantısı yapar: notlarınızı listeler, siz de kastettiğinizi seçersiniz. `[[` yazmak da aynı şeyi yapar.
 
 ---
 

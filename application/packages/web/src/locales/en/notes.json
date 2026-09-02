@@ -175,7 +175,6 @@
   "share": {
     "hover": "Share / Export",
     "ariaLabel": "Share or export",
-    "thisNote": "This note",
     "currentMdTitle": "Current note (.md)",
     "currentMdDesc": "Raw markdown with front-matter.",
     "currentHtmlTitle": "Current note (.html)",
@@ -183,14 +182,7 @@
     "printTitle": "Print / Save as PDF",
     "printDesc": "Opens the print dialog. Save as PDF or send to a printer.",
     "burnTitle": "Share & Burn After Reading",
-    "burnDesc": "Publish this note as a one-time view link. The link self-destructs after reading. Your note stays safe in your account.",
-    "backup": "Backup",
-    "fullBackupTitle": "Full backup (.zip)",
-    "fullBackupDesc": "Everything: notes, journals, vault, tasks, images, audio, files.",
-    "allHtmlTitle": "All items (.zip of .html)",
-    "allHtmlDesc": "One printable HTML per item. Good for reading offline.",
-    "jsonTitle": "Text backup (.json)",
-    "jsonDesc": "All text content and metadata, no images or files."
+    "burnDesc": "Publish this note as a one-time view link. The link self-destructs after reading. Your note stays safe in your account."
   },
   "weekReview": {
     "title": "Week in review",

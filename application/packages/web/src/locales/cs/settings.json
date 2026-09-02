@@ -165,6 +165,8 @@
     "faviconsDesc": "Logo webu vedle odkazů a přihlášení v Trezoru.",
     "faviconsExample": "Příklad:",
     "faviconsProxy": "Ikony se načítají přes naše proxy. Jen na tomto zařízení.",
+    "invisiblesTitle": "Netisknutelné znaky",
+    "invisiblesDesc": "Zobrazuje mezery, konce řádků a značky odstavců při psaní.",
     "sidebarTitle": "Postranní panel",
     "sidebarDesc": "Která zobrazení se objeví na postranním panelu a které položky obsahuje seznam Vše.",
     "colInSidebar": "Postranní panel",

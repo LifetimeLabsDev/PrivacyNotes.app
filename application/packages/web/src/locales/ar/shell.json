@@ -198,7 +198,9 @@
     "expand": "توسيع",
     "reorder": "إعادة ترتيب {{folder}}",
     "saveName": "حفظ اسم المجلد",
-    "actionsForFolder": "إجراءات المجلد {{folder}}"
+    "actionsForFolder": "إجراءات المجلد {{folder}}",
+    "seedSecurity": "الأمان",
+    "seedTravel": "السفر"
   },
   "collapsedSidebar": {
     "newNote": "ملاحظة جديدة",

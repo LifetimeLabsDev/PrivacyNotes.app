@@ -125,7 +125,8 @@
     "pkgToggle": "Install with a package manager ({{platforms}})",
     "pkgBrewDesc": "Updates are handled by the app, not by brew",
     "pkgWingetDesc": "Built into Windows 10 and 11",
-    "pkgFootnote": "Both install the same signed build from our own servers, and the app keeps updating itself either way.",
+    "pkgScoopDesc": "Updates come from Scoop, not from the app",
+    "pkgFootnote": "Each one installs the same signed build. With Homebrew and winget the app updates itself. With Scoop you run scoop update privacynotes.",
     "githubLink": "All releases on GitHub",
     "githubNote": "Signed · Public · Verifiable · Every single release"
   },

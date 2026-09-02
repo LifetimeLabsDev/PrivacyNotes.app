@@ -147,6 +147,8 @@
     "faviconsDesc": "Le logo du site à côté des liens et des identifiants du Coffre.",
     "faviconsExample": "Exemple :",
     "faviconsProxy": "Les icônes passent par notre proxy. Uniquement sur cet appareil.",
+    "invisiblesTitle": "Caractères invisibles",
+    "invisiblesDesc": "Affiche les espaces, les sauts de ligne et les marques de paragraphe pendant que tu écris.",
     "sidebarTitle": "Barre latérale",
     "sidebarDesc": "Quelles vues apparaissent dans la barre latérale et quels éléments contient la liste « Tout ».",
     "colInSidebar": "Barre latérale",

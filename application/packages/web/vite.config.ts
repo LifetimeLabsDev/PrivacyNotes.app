@@ -635,7 +635,20 @@ const DEFAULT_CHUNK_BUDGET_KB = 60;
 // 894 -> 895 (2026-08-31, same day): the announcement banner and its
 // registry on the landing and shell boot paths - AnnouncementBanner
 // +3.84, openExternal -2.91, net +0.93 kB as the build reports it.
-const BOOT_PATH_BUDGET_KB = 895;
+// 895 -> 896 (2026-09-02): the paged blob-size listing in imageStore
+// (+0.14 kB gz, measured against HEAD in a worktree). Storage answers a
+// listing with one page, so an unpaged call left every blob past the
+// first page permanently sizeless. The predecessor landed at 0.02 kB
+// headroom, which is why 0.14 needs a raise at all.
+// 896 -> 897 (2026-09-02): the recovery-phrase route out of a forgotten
+// PIN - pinRecovery.ts, its form, and the strings in every security
+// catalog (+0.57 kB gz over the whole boot path). A forgotten PIN had no
+// route at all before it, on any device.
+// 897 -> 898 (2026-09-02, same day): two phosphor glyphs, FileHtml and
+// Printer, for the share menu's new icon column (+0.81 kB gz across the
+// closure). The menu lost three whole-vault backup rows in the same
+// change and the strings behind them, so the net cost is two icons.
+const BOOT_PATH_BUDGET_KB = 898;
 
 // The budget above is stated in ONE environment's units: build-smoke's, which
 // is ubuntu with the synthetic values from tools/ci-vite-env.mjs. Every other
@@ -976,6 +989,18 @@ function chunkCycles(): Plugin {
 }
 
 export default defineConfig({
+  // The platform the app is being BUILT for, straight from Tauri's own build
+  // environment, so the client never has to infer it from a user-agent
+  // string. Empty for the web build. This exists because guessing was wrong:
+  // an iPad's webview reports a Mac user agent, so detectPlatform() answered
+  // 'desktop' there and the iPad got the desktop code paths - the system
+  // browser for sign-in and the web checkout for Pro. App Review rejected
+  // 0.491.2 on both counts (guideline 4 and 3.1.1, 2026-09-01) after passing
+  // on iPhone, because only the iPad hit it.
+  // Spec: ops/docs/gotchas.md (an iPad reports a Mac user agent)
+  define: {
+    __PN_BUILD_PLATFORM__: JSON.stringify(process.env.TAURI_ENV_PLATFORM ?? ''),
+  },
   plugins: [
     react(),
     syncHelpQuestions(),

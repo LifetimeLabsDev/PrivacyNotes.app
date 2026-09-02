@@ -26,11 +26,64 @@ export const IN_APP_CHANGELOG_LIMIT = 10;
 
 export const PUBLIC_CHANGELOG: ChangelogRelease[] = [
   {
+    version: '0.495',
+    date: '2026-09-02',
+    title: 'The editor stops putting buttons on top of your text',
+    items: [
+      { type: 'improved', text: 'The buttons that floated over the top corner of a note are gone, and search appears only once a note is long enough to scroll past.' },
+      { type: 'improved', text: 'Invisible characters is now a row in Settings > Appearance, and reading width moved there too.' },
+      { type: 'improved', text: 'The note header carries fewer icons, so the title has room; burn, pin and trash live in the note menu, and share stays on screen at every width.' },
+      { type: 'improved', text: 'The share menu covers the note you are in, and the three whole-vault backups moved to Settings > Import & Export beside the other exports.' },
+      { type: 'improved', text: 'Undo and redo show only on a device with no keyboard.' },
+      { type: 'fixed', text: 'The share menu opens under its own button instead of on top of it when a banner sits above the app.' },
+    ],
+  },
+  {
+    version: '0.494',
+    date: '2026-09-02',
+    title: 'A forgotten PIN has a way out',
+    items: [
+      { type: 'new', text: 'Your recovery phrase clears a forgotten PIN, from the lock screen, a protected note, or Settings > Security.' },
+      { type: 'improved', text: 'The Security pane is shorter, and the PIN and Biometric tabs say what each lock actually covers.' },
+      { type: 'fixed', text: 'Removing your PIN on one device removes it everywhere, instead of leaving the old PIN working on your other devices.' },
+      { type: 'fixed', text: 'Removing a PIN on a device with no fingerprint reader no longer switches app lock off for your other devices.' },
+    ],
+  },
+  {
+    version: '0.493',
+    date: '2026-09-02',
+    title: 'The app lock opens your notes without waiting on the server',
+    items: [
+      { type: 'improved', text: 'Unlocking with your PIN or fingerprint opens your notes straight from your device, so a slow or unreachable server cannot keep you out.' },
+      { type: 'improved', text: 'The formatting row fits more buttons on a phone, and holds the same ones wherever your cursor sits.' },
+      { type: 'improved', text: 'Bulleted and numbered lists moved into the + menu, and the note link button moved back out beside the link button.' },
+      { type: 'fixed', text: 'A browser that has lost part of its stored data opens your notes instead of showing the sign-up screen.' },
+      { type: 'fixed', text: 'Files beyond the first thousand show their size in the Files view.' },
+      { type: 'fixed', text: "The bookmark mark on a saved link sits in the row's gutter instead of against the screen edge." },
+    ],
+  },
+  {
+    version: '0.492',
+    date: '2026-09-01',
+    title: 'A new vault opens on folders',
+    items: [
+      { type: 'new', text: 'A new account opens with its notes already filed into folders, named in your language.' },
+      { type: 'improved', text: 'A free account can delete a starter folder it does not want.' },
+      { type: 'fixed', text: 'On iPad, signing in stays inside the app and Pro is bought through the App Store.' },
+      { type: 'fixed', text: 'Rotating your phone to landscape and back no longer leaves the app blank.' },
+      { type: 'fixed', text: 'The app stopped making a needless storage request on every sync, which was slowing the service for everyone.' },
+    ],
+  },
+  {
     version: '0.491',
     date: '2026-09-01',
     title: 'PrivacyNotes is on the App Store',
     items: [
       { type: 'new', text: 'PrivacyNotes is on the App Store. The iPhone and iPad app is the same app as the Mac, Windows, Linux and Android ones, and the download tile on the homepage links straight to it.' },
+      { type: 'new', text: 'Windows installs through winget and Scoop now, both listed on the homepage beside the direct download.' },
+      { type: 'fixed', text: 'The link and callout buttons are back in the formatting row and work again.' },
+      { type: 'fixed', text: 'A Scoop install no longer leaves a second copy of the app behind after an update, and the update toast hands you the Scoop command instead.' },
+      { type: 'fixed', text: 'The update toast reads in your language instead of English.' },
     ],
   },
   {

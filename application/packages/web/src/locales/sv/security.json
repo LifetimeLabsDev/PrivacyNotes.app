@@ -13,7 +13,7 @@
     "checking": "Kontrollerar...",
     "verify": "Verifiera",
     "replaceExisting": "Ange en ny fyrsiffrig PIN. Den ersätter din nuvarande PIN.",
-    "setIntro": "En fyrsiffrig PIN krävs för att visa din fras och öppna skyddade anteckningar. Stoppar nyfikna blickar om någon lånar din enhet.",
+    "setIntro": "En fyrsiffrig PIN öppnar dina skyddade anteckningar och din återställningsfras. Den synkas till alla dina enheter.",
     "protectReason": "Skyddade anteckningar behöver en PIN, eftersom låset följer med till dina andra enheter men inte fingeravtrycket.",
     "newPin": "Ny PIN",
     "confirmPin": "Bekräfta PIN",
@@ -35,6 +35,17 @@
     "introNoBio": "Ange din nuvarande PIN för att bekräfta borttagningen. Frasvyn kommer inte längre att vara skyddad.",
     "verifying": "Verifierar...",
     "removePin": "Ta bort PIN"
+  },
+  "pinRecovery": {
+    "forgotPin": "Glömt din PIN?",
+    "title": "Återställ din PIN",
+    "intro": "Ange din återställningsfras på 12 ord för att ta bort PIN-koden. Direkt efteråt kan du ange en ny.",
+    "lockIntro": "Ange din återställningsfras på 12 ord. Den låser upp appen och tar bort PIN-koden.",
+    "consequence": "PIN-koden tas bort på alla dina enheter. Biometrisk upplåsning påverkas inte.",
+    "wrongPhrase": "Det är inte återställningsfrasen för det här kontot.",
+    "clearPin": "Rensa PIN",
+    "lockAction": "Lås upp och ta bort PIN",
+    "cleared": "PIN borttagen. Ange en ny nedan, eller lämna den av."
   },
   "phraseGate": {
     "enterToView": "Ange din fyrsiffriga PIN för att visa din fras.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "Ange din PIN en gång för att slå på det här. Den låser en kopia av din återställningsfras, så att bara din PIN kan öppna appen.",
     "relockAfter": "Lås igen efter",
     "relockHint": "Gäller appens låsskärm och alla PIN-skyddade anteckningar.",
-    "perDeviceNote": "Varje enhet registreras för sig. Biometrisk upplåsning kräver ditt fingeravtryck eller ansikte för att komma åt appen på den här enheten.",
+    "perDeviceNote": "Biometrisk upplåsning öppnar samma anteckningar som din PIN. Den stannar på den här enheten och synkas aldrig.",
     "disableConfirmTitle": "Inaktivera biometri",
     "disableConfirmLabel": "Inaktivera",
     "disableConfirmBody": "Vill du inaktivera biometrisk upplåsning på den här enheten?",

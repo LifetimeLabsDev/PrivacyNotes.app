@@ -7,9 +7,9 @@
  * encrypted payload; the definitions here never touch the server in
  * plaintext either (they ride the encrypted user_settings blob).
  *
- * Everything in this module is pure: helpers take a folder array and
- * return a new one. Callers apply results through NotesView's
- * `mutateSettings` so the settings generation guard stays intact.
+ * The helpers are pure: they take a folder array and return a new one.
+ * Callers apply results through NotesView's `mutateSettings` so the
+ * settings generation guard stays intact.
  */
 
 import type { LocalNote } from './db';
@@ -21,6 +21,42 @@ export interface FolderDef {
   parentId: string | null;
   /** Sibling sort index (ascending). */
   order: number;
+}
+
+/* ── Starter folder tree ────────────────────────────────────────────
+ * Every new vault opens on a small tree, the same one the public demo
+ * shows. The ids live here and the rest of the table lives in
+ * `welcomeNote.ts`, which seeds it: the sidebar needs to recognise a
+ * starter folder, and it should not carry the names and the nesting into
+ * the boot path to do that.
+ *
+ * The ids are fixed and permanent. They are what an already-seeded vault
+ * matches on, what a seed file's `folder:` frontmatter resolves through,
+ * and what the delete rule below tests against.
+ * Spec: ops/specs/folders.md (starter tree)
+ */
+export const SEED_FOLDER_IDS = {
+  PrivacyNotes: 'f01de001-0000-4000-8000-000000000004',
+  Markdown: 'f01de001-0000-4000-8000-000000000005',
+  Security: 'f01de001-0000-4000-8000-000000000006',
+  Travel: 'f01de001-0000-4000-8000-000000000001',
+} as const;
+
+/**
+ * May this account delete this folder?
+ *
+ * Deleting is Pro like every other folder action, with one exception: a
+ * locked account may take apart the starter tree. It was given that tree
+ * rather than asked for it, and it cannot create a folder to replace one,
+ * so a tree it cannot delete is a tree it is stuck with. A folder made
+ * while subscribed stays put after a downgrade, because that one is the
+ * user's own work.
+ *
+ * Both gates read this: the row menu decides whether to open at all, and
+ * the handler that does the work checks again.
+ */
+export function canDeleteFolder(id: string, foldersUnlocked: boolean): boolean {
+  return foldersUnlocked || (Object.values(SEED_FOLDER_IDS) as string[]).includes(id);
 }
 
 /**

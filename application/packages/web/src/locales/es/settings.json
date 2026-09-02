@@ -147,6 +147,8 @@
     "faviconsDesc": "El logo del sitio junto a los enlaces y los inicios de sesión de la Bóveda.",
     "faviconsExample": "Ejemplo:",
     "faviconsProxy": "Los iconos pasan por nuestro proxy. Solo en este dispositivo.",
+    "invisiblesTitle": "Caracteres invisibles",
+    "invisiblesDesc": "Muestra los espacios, los saltos de línea y las marcas de párrafo mientras escribes.",
     "sidebarTitle": "Barra lateral",
     "sidebarDesc": "Qué vistas aparecen en la barra lateral y qué elementos contiene la lista «Todos».",
     "colInSidebar": "Barra lateral",

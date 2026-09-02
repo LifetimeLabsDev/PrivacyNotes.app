@@ -13,7 +13,7 @@
     "checking": "Wird geprüft...",
     "verify": "Bestätigen",
     "replaceExisting": "Gib eine neue 4-stellige PIN ein. Sie ersetzt deine bisherige PIN.",
-    "setIntro": "Eine 4-stellige PIN ist nötig, um deine Phrase anzuzeigen und geschützte Notizen zu öffnen. Verhindert beiläufiges Mitlesen, wenn jemand dein Gerät ausleiht.",
+    "setIntro": "Eine 4-stellige PIN öffnet deine geschützten Notizen und deine Wiederherstellungsphrase. Sie wird auf alle Geräte synchronisiert.",
     "protectReason": "Geschützte Notizen brauchen eine PIN, denn die Sperre wandert auf deine anderen Geräte mit, dein Fingerabdruck nicht.",
     "newPin": "Neue PIN",
     "confirmPin": "PIN bestätigen",
@@ -35,6 +35,17 @@
     "introNoBio": "Gib deine aktuelle PIN ein, um das Entfernen zu bestätigen. Die Phrasen-Ansicht ist danach nicht mehr gesperrt.",
     "verifying": "Wird bestätigt...",
     "removePin": "PIN entfernen"
+  },
+  "pinRecovery": {
+    "forgotPin": "PIN vergessen?",
+    "title": "PIN zurücksetzen",
+    "intro": "Gib deine 12-Wort-Wiederherstellungsphrase ein, um die PIN zu löschen. Danach kannst du direkt eine neue festlegen.",
+    "lockIntro": "Gib deine 12-Wort-Wiederherstellungsphrase ein. Sie entsperrt die App und löscht die PIN.",
+    "consequence": "Die PIN wird auf allen deinen Geräten gelöscht. Die biometrische Entsperrung bleibt davon unberührt.",
+    "wrongPhrase": "Das ist nicht die Wiederherstellungsphrase dieses Kontos.",
+    "clearPin": "PIN löschen",
+    "lockAction": "Entsperren und PIN löschen",
+    "cleared": "PIN gelöscht. Lege unten eine neue fest oder lass sie weg."
   },
   "phraseGate": {
     "enterToView": "Gib deine 4-stellige PIN ein, um deine Phrase anzuzeigen.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "Gib deine PIN einmal ein, um das einzuschalten. Sie verschließt eine Kopie deiner Wiederherstellungsphrase, sodass nur deine PIN die App öffnen kann.",
     "relockAfter": "Erneut sperren nach",
     "relockHint": "Gilt für den Sperrbildschirm der App und alle PIN-geschützten Notizen.",
-    "perDeviceNote": "Jedes Gerät wird einzeln eingerichtet. Die biometrische Entsperrung verlangt deinen Fingerabdruck oder dein Gesicht, um die App auf diesem Gerät zu öffnen.",
+    "perDeviceNote": "Die biometrische Entsperrung öffnet dieselben Notizen wie deine PIN. Sie bleibt auf diesem Gerät und wird nie synchronisiert.",
     "disableConfirmTitle": "Biometrie deaktivieren",
     "disableConfirmLabel": "Deaktivieren",
     "disableConfirmBody": "Biometrische Entsperrung auf diesem Gerät deaktivieren?",

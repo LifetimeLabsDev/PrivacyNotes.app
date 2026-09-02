@@ -6,6 +6,7 @@ import { IconUpgrade } from '../UpgradeModal';
 import type { LocalNote } from '../db';
 import {
   applyFolderPlacement,
+  canDeleteFolder,
   createFolder,
   deleteFolder,
   folderCounts as computeFolderCounts,
@@ -202,7 +203,7 @@ export function useFolderActions({
 
   /** Delete a folder: subfolders and notes move up to its parent. */
   async function handleDeleteFolder(id: string) {
-    if (!foldersUnlocked) {
+    if (!canDeleteFolder(id, foldersUnlocked)) {
       openFoldersUpsell();
       return;
     }

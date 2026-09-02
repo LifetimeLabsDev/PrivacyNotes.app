@@ -1,47 +1,72 @@
+import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from '../db';
-import { Export, Fire } from '../icons';
+import { Export, Fire, FileMd, FileHtml, Printer } from '../icons';
 import { HoverLabel } from '../HoverLabel';
+import { usePopoverPosition } from '../usePopoverPosition';
 
 export function ShareMenu({
   open,
   onClose,
   onToggle,
-  compactHeaderActions,
   zenMode,
   selected,
-  notes,
   exportSingleMarkdown,
   exportSingleHtml,
-  exportAllMarkdownZip,
-  exportAllHtmlZip,
-  exportAllJson,
   printNote,
   handleBurnShare,
 }: {
   open: boolean;
   onClose: () => void;
   onToggle: () => void;
-  compactHeaderActions: boolean;
   zenMode: boolean;
   selected: LocalNote;
-  notes: LocalNote[];
   exportSingleMarkdown: (n: LocalNote) => Promise<void> | void;
   exportSingleHtml: (n: LocalNote) => Promise<void> | void;
-  exportAllMarkdownZip: (ns: LocalNote[]) => Promise<void> | void;
-  exportAllHtmlZip: (ns: LocalNote[]) => Promise<void> | void;
-  exportAllJson: (ns: LocalNote[]) => Promise<void> | void;
   printNote: (n: LocalNote) => Promise<void> | void;
   handleBurnShare: (n: LocalNote) => Promise<void> | void;
 }) {
   const { t } = useTranslation('notes');
+  const anchorRef = useRef<HTMLDivElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  // Positioned by the same hook and the same alignment as the "..." menu one
+  // button along, and for the same reason it was needed there: the panel used
+  // to be pinned to the viewport at a fixed 3.5rem, which assumes the header
+  // starts at the top of the window. It does not whenever a banner sits above
+  // the shell - the demo bar, or an announcement - and the panel then opened
+  // ON TOP of the button that had just been pressed. The hook measures the
+  // trigger, opens below it, and flips above when there is no room.
+  // Spec: ops/docs/ui-patterns.md (section 15)
+  const pos = usePopoverPosition(open, anchorRef, panelRef, { align: 'end' });
+
+  // Close on an outside pointerdown, ignoring the trigger so it can toggle
+  // without a re-open flicker. Same handler shape as NoteOptionsMenu.
+  useEffect(() => {
+    if (!open) return;
+    function handler(e: PointerEvent) {
+      const target = e.target as Node | null;
+      if (!target) return;
+      if (panelRef.current && panelRef.current.contains(target)) return;
+      if (anchorRef.current && anchorRef.current.contains(target)) return;
+      onClose();
+    }
+    window.addEventListener('pointerdown', handler, true);
+    return () => window.removeEventListener('pointerdown', handler, true);
+  }, [open, onClose]);
+
   return (
     <>
-      {/* Share / Export button - collapses into the "..." menu when
-          the header is narrow. Desktop dropdown owns both per-note
-          exports and whole-vault backups. */}
-      <div className={`relative shrink-0 ${compactHeaderActions || zenMode ? 'hidden' : 'block'}`}>
-        <HoverLabel label={t('share.hover')} position="below">
+      {/* Share / Export button. It holds its place at every width, because
+          it is the action people reach for and the header no longer carries
+          burn, pin or trash to crowd it. Zen is the one place it stands
+          down, and the "..." menu grows a Share cell there instead. The
+          dropdown owns both per-note exports and whole-vault backups. */}
+      <div ref={anchorRef} className={`shrink-0 ${zenMode ? 'hidden' : 'block'}`}>
+        {/* Same tip placement as the "..." button beside it: both sit at
+            the end of the row, and a centred tip on the last control is cut
+            by the window edge. */}
+        <HoverLabel label={t('share.hover')} position="below-end">
           <button
             onClick={onToggle}
             aria-label={t('share.ariaLabel')}
@@ -58,123 +83,96 @@ export function ShareMenu({
           </button>
         </HoverLabel>
       </div>
-      {open && (
-        <>
-          {/* invisible backdrop to catch outside clicks */}
+      {open && createPortal(
+        (
           <div
-            className="fixed inset-0 z-40"
-            onClick={onClose}
-          />
-          <div className="fixed end-2 z-50 w-72 rounded-lg border border-divider bg-surface-2 shadow-xl overflow-y-auto text-sm" style={{ top: '3.5rem', maxHeight: 'calc(100vh - 4.5rem)' }}>
-              <div className="px-3 pt-3 pb-1 text-[11px] uppercase tracking-wide text-neutral-500 dark:text-neutral-600">
-                {t('share.thisNote')}
-              </div>
+            ref={panelRef}
+            role="dialog"
+            aria-label={t('share.ariaLabel')}
+            className="fixed z-50 w-72 max-h-[calc(100vh-16px)] overflow-y-auto rounded-lg border border-divider bg-surface-2 shadow-lg text-sm py-1"
+            style={{
+              top: pos?.top ?? 0,
+              left: pos?.left ?? 0,
+              visibility: pos ? 'visible' : 'hidden',
+            }}
+          >
+              {/* Icon column in accent, the grammar the "..." menu next door
+                  already uses, and the same marks the Export tab of Settings
+                  > Import & Export wears for these file types. Burn keeps its
+                  orange, because colour in this header means burn or
+                  destructive and never decoration. */}
               <button
                 onClick={() => {
                   onClose();
                   void exportSingleMarkdown(selected);
                 }}
-                className="w-full text-start px-3 py-2 hover:bg-surface-1 transition"
+                className="w-full text-start px-3 py-2.5 flex items-start gap-2.5 hover:bg-surface-1 transition"
               >
-                <div className="font-medium text-pn">
-                  {t('share.currentMdTitle')}
-                </div>
-                <div className="text-[12px] text-neutral-500">
-                  {t('share.currentMdDesc')}
-                </div>
+                <span className="shrink-0 mt-0.5 text-accent"><FileMd size={18} aria-hidden="true" /></span>
+                <span className="min-w-0">
+                  <span className="block font-medium text-pn">
+                    {t('share.currentMdTitle')}
+                  </span>
+                  <span className="block text-[12px] text-neutral-500">
+                    {t('share.currentMdDesc')}
+                  </span>
+                </span>
               </button>
               <button
                 onClick={() => {
                   onClose();
                   void exportSingleHtml(selected);
                 }}
-                className="w-full text-start px-3 py-2 hover:bg-surface-1 transition"
+                className="w-full text-start px-3 py-2.5 flex items-start gap-2.5 hover:bg-surface-1 transition"
               >
-                <div className="font-medium text-pn">
-                  {t('share.currentHtmlTitle')}
-                </div>
-                <div className="text-[12px] text-neutral-500">
-                  {t('share.currentHtmlDesc')}
-                </div>
+                <span className="shrink-0 mt-0.5 text-accent"><FileHtml size={18} aria-hidden="true" /></span>
+                <span className="min-w-0">
+                  <span className="block font-medium text-pn">
+                    {t('share.currentHtmlTitle')}
+                  </span>
+                  <span className="block text-[12px] text-neutral-500">
+                    {t('share.currentHtmlDesc')}
+                  </span>
+                </span>
               </button>
               <button
                 onClick={() => {
                   onClose();
                   void printNote(selected);
                 }}
-                className="w-full text-start px-3 py-2 hover:bg-surface-1 transition"
+                className="w-full text-start px-3 py-2.5 flex items-start gap-2.5 hover:bg-surface-1 transition"
               >
-                <div className="font-medium text-pn">
-                  {t('share.printTitle')}
-                </div>
-                <div className="text-[12px] text-neutral-500">
-                  {t('share.printDesc')}
-                </div>
+                <span className="shrink-0 mt-0.5 text-accent"><Printer size={18} aria-hidden="true" /></span>
+                <span className="min-w-0">
+                  <span className="block font-medium text-pn">
+                    {t('share.printTitle')}
+                  </span>
+                  <span className="block text-[12px] text-neutral-500">
+                    {t('share.printDesc')}
+                  </span>
+                </span>
               </button>
               <button
                 onClick={() => {
                   onClose();
                   void handleBurnShare(selected);
                 }}
-                className="w-full text-start px-3 py-2 hover:bg-surface-1 transition"
+                className="w-full text-start px-3 py-2.5 flex items-start gap-2.5 hover:bg-surface-1 transition"
               >
-                <div className="font-medium text-orange-600 dark:text-orange-400 flex items-center gap-1.5">
-                  <Fire />
-                  {t('share.burnTitle')}
-                </div>
-                <div className="text-[12px] text-neutral-500">
-                  {t('share.burnDesc')}
-                </div>
+                <span className="shrink-0 mt-0.5 text-orange-600 dark:text-orange-400"><Fire size={18} aria-hidden="true" /></span>
+                <span className="min-w-0">
+                  <span className="block font-medium text-orange-600 dark:text-orange-400">
+                    {t('share.burnTitle')}
+                  </span>
+                  <span className="block text-[12px] text-neutral-500">
+                    {t('share.burnDesc')}
+                  </span>
+                </span>
               </button>
-              <div className="border-t border-divider" />
-              <div className="px-3 pt-3 pb-1 text-[11px] uppercase tracking-wide text-neutral-500 dark:text-neutral-600">
-                {t('share.backup')}
-              </div>
-              <button
-                onClick={() => {
-                  onClose();
-                  void exportAllMarkdownZip(notes);
-                }}
-                className="w-full text-start px-3 py-2 hover:bg-surface-1 transition"
-              >
-                <div className="font-medium text-pn">
-                  {t('share.fullBackupTitle')}
-                </div>
-                <div className="text-[12px] text-neutral-500">
-                  {t('share.fullBackupDesc')}
-                </div>
-              </button>
-              <button
-                onClick={() => {
-                  onClose();
-                  void exportAllHtmlZip(notes);
-                }}
-                className="w-full text-start px-3 py-2 hover:bg-surface-1 transition"
-              >
-                <div className="font-medium text-pn">
-                  {t('share.allHtmlTitle')}
-                </div>
-                <div className="text-[12px] text-neutral-500">
-                  {t('share.allHtmlDesc')}
-                </div>
-              </button>
-              <button
-                onClick={() => {
-                  onClose();
-                  void exportAllJson(notes);
-                }}
-                className="w-full text-start px-3 py-2 hover:bg-surface-1 transition"
-              >
-                <div className="font-medium text-pn">
-                  {t('share.jsonTitle')}
-                </div>
-                <div className="text-[12px] text-neutral-500">
-                  {t('share.jsonDesc')}
-                </div>
-              </button>
-            </div>
-          </>
-        )}
+          </div>
+        ),
+        document.body,
+      )}
     </>
   );
 }

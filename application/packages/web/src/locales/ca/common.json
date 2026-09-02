@@ -46,9 +46,11 @@
     "required": "Actualització necessària",
     "changelog": "Changelog",
     "refresh": "Actualitza",
+    "restart": "Reinicia",
     "dismiss": "Descarta",
     "download": "Baixa",
-    "update": "Actualitza"
+    "update": "Actualitza",
+    "copyCommand": "Copia l'ordre"
   },
   "hotkeys": {
     "heading": "Ajuda de dreceres",

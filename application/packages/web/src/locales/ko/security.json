@@ -13,7 +13,7 @@
     "checking": "확인 중...",
     "verify": "확인",
     "replaceExisting": "새 4자리 PIN을 입력하세요. 기존 PIN을 대체해요.",
-    "setIntro": "문구를 보거나 보호된 노트를 열 때 4자리 PIN이 필요해져요. 누가 기기를 잠깐 빌렸을 때 슬쩍 들여다보는 걸 막아 줘요.",
+    "setIntro": "4자리 PIN으로 보호된 노트와 복구 문구를 열어요. PIN은 모든 기기에 동기화돼요.",
     "protectReason": "보호된 메모에는 PIN이 필요해요. 잠금은 다른 기기로 따라가지만 지문은 따라가지 않거든요.",
     "newPin": "새 PIN",
     "confirmPin": "PIN 확인",
@@ -35,6 +35,17 @@
     "introNoBio": "제거를 확정하려면 현재 PIN을 입력하세요. 문구 보기가 더 이상 보호되지 않아요.",
     "verifying": "확인 중...",
     "removePin": "PIN 제거"
+  },
+  "pinRecovery": {
+    "forgotPin": "PIN을 잊으셨나요?",
+    "title": "PIN 재설정",
+    "intro": "12단어 복구 문구를 입력하면 PIN이 삭제돼요. 바로 다음에 새 PIN을 설정할 수 있어요.",
+    "lockIntro": "12단어 복구 문구를 입력하세요. 앱 잠금을 해제하고 PIN을 삭제해요.",
+    "consequence": "PIN은 모든 기기에서 삭제돼요. 생체 인증 잠금 해제는 영향을 받지 않아요.",
+    "wrongPhrase": "이 계정의 복구 문구가 아니에요.",
+    "clearPin": "PIN 지우기",
+    "lockAction": "잠금 해제하고 PIN 삭제",
+    "cleared": "PIN을 삭제했어요. 아래에서 새로 설정하거나 그대로 두세요."
   },
   "phraseGate": {
     "enterToView": "문구를 보려면 4자리 PIN을 입력하세요.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "이 기능을 켜려면 PIN을 한 번 입력하세요. 복구 문구 사본을 잠가서 PIN으로만 앱을 열 수 있게 해요.",
     "relockAfter": "다시 잠그기까지",
     "relockHint": "앱 잠금 화면과 PIN 보호 노트에 적용돼요.",
-    "perDeviceNote": "기기마다 개별적으로 등록해요. 생체 인증 잠금 해제를 켜면 이 기기에서 앱에 접근할 때 지문이나 얼굴이 필요해요.",
+    "perDeviceNote": "생체 인증 잠금 해제는 PIN과 같은 노트를 열어요. 이 기기에만 남고 동기화되지 않아요.",
     "disableConfirmTitle": "생체 인증 끄기",
     "disableConfirmLabel": "끄기",
     "disableConfirmBody": "이 기기에서 생체 인증 잠금 해제를 끌까요?",

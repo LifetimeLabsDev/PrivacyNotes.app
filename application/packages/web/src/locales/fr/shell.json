@@ -198,7 +198,9 @@
     "expand": "Développer",
     "reorder": "Réorganiser {{folder}}",
     "saveName": "Enregistrer le nom du dossier",
-    "actionsForFolder": "Actions pour le dossier {{folder}}"
+    "actionsForFolder": "Actions pour le dossier {{folder}}",
+    "seedSecurity": "Sécurité",
+    "seedTravel": "Voyages"
   },
   "collapsedSidebar": {
     "newNote": "Nouvelle note",

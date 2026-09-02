@@ -147,6 +147,8 @@
     "faviconsDesc": "Het logo van de site naast links en Kluis-logins.",
     "faviconsExample": "Voorbeeld:",
     "faviconsProxy": "De iconen lopen via onze proxy. Alleen op dit apparaat.",
+    "invisiblesTitle": "Onzichtbare tekens",
+    "invisiblesDesc": "Toont spaties, regeleindes en alineamarkeringen terwijl je schrijft.",
     "sidebarTitle": "Zijbalk",
     "sidebarDesc": "Welke weergaven in de zijbalk staan en welke items de lijst Alles bevat.",
     "colInSidebar": "Zijbalk",

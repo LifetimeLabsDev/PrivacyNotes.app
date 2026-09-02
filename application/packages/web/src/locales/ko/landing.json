@@ -125,7 +125,8 @@
     "pkgToggle": "패키지 매니저로 설치 ({{platforms}})",
     "pkgBrewDesc": "업데이트는 brew가 아니라 앱이 처리해요",
     "pkgWingetDesc": "Windows 10과 11에 기본 포함",
-    "pkgFootnote": "둘 다 저희 서버에서 동일한 서명된 빌드를 설치하며, 어느 쪽이든 앱은 계속 스스로 업데이트해요.",
+    "pkgScoopDesc": "업데이트는 앱이 아니라 Scoop이 처리해요",
+    "pkgFootnote": "모두 동일한 서명된 빌드를 설치해요. Homebrew와 winget에서는 앱이 스스로 업데이트해요. Scoop에서는 scoop update privacynotes를 실행해요.",
     "githubLink": "GitHub의 모든 릴리스",
     "githubNote": "서명됨 · 공개 · 검증 가능 · 예외 없이 모든 릴리스"
   },

@@ -165,6 +165,8 @@
     "faviconsDesc": "Logo strony obok linków i loginów w Sejfie.",
     "faviconsExample": "Przykład:",
     "faviconsProxy": "Ikony ładują się przez nasze proxy. Tylko na tym urządzeniu.",
+    "invisiblesTitle": "Znaki niedrukowane",
+    "invisiblesDesc": "Pokazuje spacje, znaki końca wiersza i znaki akapitu podczas pisania.",
     "sidebarTitle": "Pasek boczny",
     "sidebarDesc": "Które widoki pojawiają się na pasku bocznym i jakie elementy zawiera lista Wszystkie.",
     "colInSidebar": "Pasek boczny",

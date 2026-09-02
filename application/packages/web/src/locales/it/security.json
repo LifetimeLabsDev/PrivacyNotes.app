@@ -13,7 +13,7 @@
     "checking": "Verifica in corso...",
     "verify": "Verifica",
     "replaceExisting": "Inserisci un nuovo PIN di 4 cifre. Sostituisce il tuo PIN attuale.",
-    "setIntro": "Servirà un PIN di 4 cifre per visualizzare la tua frase e aprire le note protette. Blocca gli sguardi curiosi se qualcuno prende in prestito il tuo dispositivo.",
+    "setIntro": "Un PIN di 4 cifre apre le tue note protette e la tua frase di recupero. Si sincronizza su tutti i dispositivi.",
     "protectReason": "Le note protette hanno bisogno di un PIN, perché il blocco arriva anche sugli altri tuoi dispositivi, la tua impronta no.",
     "newPin": "Nuovo PIN",
     "confirmPin": "Conferma PIN",
@@ -35,6 +35,17 @@
     "introNoBio": "Inserisci il tuo PIN attuale per confermare la rimozione. La visualizzazione della frase non sarà più protetta.",
     "verifying": "Verifica in corso...",
     "removePin": "Rimuovi PIN"
+  },
+  "pinRecovery": {
+    "forgotPin": "PIN dimenticato?",
+    "title": "Reimposta il PIN",
+    "intro": "Inserisci la tua frase di recupero di 12 parole per cancellare il PIN. Subito dopo puoi impostarne uno nuovo.",
+    "lockIntro": "Inserisci la tua frase di recupero di 12 parole. Sblocca l'app e cancella il PIN.",
+    "consequence": "Il PIN viene cancellato su tutti i tuoi dispositivi. Lo sblocco biometrico non cambia.",
+    "wrongPhrase": "Questa non è la frase di recupero di questo account.",
+    "clearPin": "Cancella PIN",
+    "lockAction": "Sblocca e cancella il PIN",
+    "cleared": "PIN cancellato. Impostane uno nuovo qui sotto, oppure lascialo disattivato."
   },
   "phraseGate": {
     "enterToView": "Inserisci il tuo PIN di 4 cifre per visualizzare la tua frase.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "Inserisci il tuo PIN una volta per attivarlo. Blocca una copia della tua frase di recupero, così solo il tuo PIN può aprire l'app.",
     "relockAfter": "Riblocca dopo",
     "relockHint": "Si applica alla schermata di blocco dell'app e a tutte le note protette da PIN.",
-    "perDeviceNote": "Ogni dispositivo si registra in modo indipendente. Lo sblocco biometrico richiede la tua impronta digitale o il tuo volto per accedere all'app su questo dispositivo.",
+    "perDeviceNote": "Lo sblocco biometrico apre le stesse note del tuo PIN. Resta su questo dispositivo e non si sincronizza mai.",
     "disableConfirmTitle": "Disattiva biometria",
     "disableConfirmLabel": "Disattiva",
     "disableConfirmBody": "Disattivare lo sblocco biometrico su questo dispositivo?",

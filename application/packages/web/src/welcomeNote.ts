@@ -13,7 +13,7 @@
  *     code has something to show, and a demo credit card. These are JSON
  *     bodies rather than markdown, so a `.md` file is the wrong shape.
  *   - the hand-maintained bookmark rows
- *   - the demo folder tree a seed file can file itself into by name, and
+ *   - the starter folder tree a seed file files itself into by name, and
  *     the extra tracker pills the demo switches on to show that data off
  *
  * Tracker VALUES moved into the markdown frontmatter on 2026-08-26, so a
@@ -38,9 +38,10 @@ import type {
   MedicationTemplate,
 } from './trackerTypes';
 import { isDemoMode } from './demo';
+import i18n from './i18n';
 import { toLocalIso } from './notesViewUtils';
 import { loadLocalSettings, saveLocalSettings } from './userSettings';
-import type { FolderDef } from './folders';
+import { SEED_FOLDER_IDS, type FolderDef } from './folders';
 import { buildLinkBody } from './linkBody';
 import { loadSeeds, type SeedDoc } from './seeds';
 
@@ -208,9 +209,9 @@ async function seedDoc(pubkey: string, doc: SeedDoc, timestamp: string): Promise
     day ? new Date(`${day}T21:00:00`).toISOString() : timestamp,
     seedTrackers(doc),
     doc.type,
-    // Folders are Pro and real vaults start with an empty tree on purpose,
-    // so a `folder:` in frontmatter only files the note in the demo.
-    isDemoMode() && doc.folder ? (DEMO_FOLDERS[doc.folder]?.id ?? null) : null,
+    // A `folder:` in frontmatter files the note in every vault. Browsing
+    // the tree is free; the Pro gate sits on each folder ACTION.
+    doc.folder ? (SEED_FOLDERS[doc.folder]?.id ?? null) : null,
   );
 }
 
@@ -227,10 +228,8 @@ const BOOKMARK_SEEDS: { sentinel: string; title: string; url: string; tags: stri
 ];
 
 async function seedBookmarkNotes(pubkey: string, baseTs: number): Promise<void> {
-  // Same demo-only folder rule the markdown seeds follow: a real vault starts
-  // with an empty tree because folders are Pro, so this only files them in the
-  // demo. All five sit in PrivacyNotes, next to Moving in.
-  const folderId = isDemoMode() ? (DEMO_FOLDERS.PrivacyNotes?.id ?? null) : null;
+  // All five sit in PrivacyNotes, next to Moving in.
+  const folderId = SEED_FOLDERS.PrivacyNotes?.id ?? null;
   await Promise.all(
     BOOKMARK_SEEDS.map((b, i) =>
       seedNote(
@@ -316,8 +315,8 @@ export async function seedOnboardingNotes(pubkey: string): Promise<void> {
   const docs = (await loadSeeds()).filter((d) => !d.demoOnly || isDemoMode());
   const base = Date.now();
 
-  // The demo folder tree has to exist before its notes are filed into it.
-  await seedDemoFolderTree();
+  // The folder tree has to exist before its notes are filed into it.
+  await seedFolderTree();
 
   const vaultBase = base - (docs.length + 1) * 1000;
   await Promise.all([
@@ -332,60 +331,81 @@ export async function seedOnboardingNotes(pubkey: string): Promise<void> {
   ]);
 }
 
-/* ── Demo folder tree ──────────────────────────────────────────────
- * Folders is Pro and unlocked in the public demo as a teaser (like zen),
- * so demo visitors get a small pre-built tree. Demo only - real fresh
- * accounts start with an empty tree, deliberately: folders are Pro, and
- * a stranger's filing system is a worse first run than an empty tree
- * with a New folder button.
+/* ── Starter folder tree ────────────────────────────────────────────
+ * Every new vault opens on this tree, the same one the public demo shows.
+ * The ids are in `folders.ts`, because the sidebar recognises a starter
+ * folder by id to decide whether a free account may delete it; the names
+ * and the nesting are here, where the seeding happens.
  *
- * The tree files notes the demo already has rather than inventing notes
+ * The tree files notes the vault already has rather than inventing notes
  * to fill it:
  *
- *   PrivacyNotes        Moving in, plus the five seeded bookmarks
+ *   PrivacyNotes        Welcome, Moving in, Bifana, and the five bookmarks
  *     Markdown          Everything markdown can do here
  *     Security          How your notes are protected
  *   Travel              the three Tokyo journal entries
  *
  * Two things it has to show. Every folder has a count, so nothing looks
  * abandoned; and nesting has a reason, PrivacyNotes being the area and
- * Markdown and Security the two subjects inside it. The Welcome note and
- * the recipe stay unfiled on purpose, so the tree is visibly a choice
- * rather than somewhere every note has to go.
+ * Markdown and Security the two subjects inside it.
  *
  * A seed file joins the tree by naming one of these in its `folder:`
- * frontmatter. IDs are fixed and permanent; adding a folder means adding
- * a row here with a fresh id.
- * Spec: ops/specs/folders.md (demo seed)
+ * frontmatter, and `tools/check-seeds.mjs` fails on a name that is not a
+ * key below. Adding a folder means adding a row here and an id there.
+ *
+ * `PrivacyNotes` and `Markdown` are proper nouns and read the same in
+ * every language. The other two are ordinary words, so they carry a
+ * catalog key and seed in the user's own language. The literal `name`
+ * beside it is the English, and the fallback if the key ever goes.
+ * Spec: ops/specs/folders.md (starter tree)
  */
-const DEMO_FOLDER_PRIVACYNOTES = 'f01de001-0000-4000-8000-000000000004';
+interface SeedFolder {
+  id: string;
+  name: string;
+  /** Catalog key, when the name is a word rather than a proper noun. */
+  nameKey?: string;
+  parentId: string | null;
+  order: number;
+}
 
-const DEMO_FOLDERS: Record<string, FolderDef> = {
+const SEED_FOLDERS: Record<string, SeedFolder> = {
   PrivacyNotes: {
-    id: DEMO_FOLDER_PRIVACYNOTES,
+    id: SEED_FOLDER_IDS.PrivacyNotes,
     name: 'PrivacyNotes',
     parentId: null,
     order: 0,
   },
   Markdown: {
-    id: 'f01de001-0000-4000-8000-000000000005',
+    id: SEED_FOLDER_IDS.Markdown,
     name: 'Markdown',
-    parentId: DEMO_FOLDER_PRIVACYNOTES,
+    parentId: SEED_FOLDER_IDS.PrivacyNotes,
     order: 0,
   },
   Security: {
-    id: 'f01de001-0000-4000-8000-000000000006',
+    id: SEED_FOLDER_IDS.Security,
     name: 'Security',
-    parentId: DEMO_FOLDER_PRIVACYNOTES,
+    nameKey: 'shell:folders.seedSecurity',
+    parentId: SEED_FOLDER_IDS.PrivacyNotes,
     order: 1,
   },
   Travel: {
-    id: 'f01de001-0000-4000-8000-000000000001',
+    id: SEED_FOLDER_IDS.Travel,
     name: 'Travel',
+    nameKey: 'shell:folders.seedTravel',
     parentId: null,
     order: 1,
   },
 };
+
+/** The tree as the settings blob stores it, named in the user's language. */
+function seedFolderDefs(): FolderDef[] {
+  return Object.values(SEED_FOLDERS).map((f) => ({
+    id: f.id,
+    name: f.nameKey ? i18n.t(f.nameKey) : f.name,
+    parentId: f.parentId,
+    order: f.order,
+  }));
+}
 
 /**
  * Extra tracker pills switched on for the demo only.
@@ -407,18 +427,24 @@ const DEMO_EXTRA_TRACKERS: BuiltinTrackerId[] = [
 ];
 
 /**
- * Prepare the demo's settings: the folder tree, and the wider pill set.
- * No-op outside the demo. Idempotent, and additive only - a visitor who
- * removes a folder or switches a pill off keeps that choice for the session.
+ * Prepare the vault's settings: the starter folder tree for everyone, and
+ * the wider pill set in the demo.
+ *
+ * Additive by id, so a name, an order or a nesting the user changed is
+ * never reset. It does NOT remember a deletion, which is safe only
+ * because seeding runs once per account (the `welcomeNoteSeeded` flag)
+ * and once per fresh demo tab session. Call it a second time inside one
+ * session and a folder the user deleted comes back.
  */
-async function seedDemoFolderTree(): Promise<void> {
-  if (!isDemoMode()) return;
+async function seedFolderTree(): Promise<void> {
   const settings = loadLocalSettings();
   const have = new Set(settings.folders.map((f) => f.id));
-  const missingFolders = Object.values(DEMO_FOLDERS).filter((f) => !have.has(f.id));
+  const missingFolders = seedFolderDefs().filter((f) => !have.has(f.id));
 
   const active = settings.trackerSettings.activeBuiltins;
-  const missingPills = DEMO_EXTRA_TRACKERS.filter((id) => !active.includes(id));
+  const missingPills = isDemoMode()
+    ? DEMO_EXTRA_TRACKERS.filter((id) => !active.includes(id))
+    : [];
 
   if (missingFolders.length === 0 && missingPills.length === 0) return;
   saveLocalSettings({

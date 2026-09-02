@@ -5,6 +5,13 @@
  * Supports biometric unlock (WebAuthn PRF) and PIN unlock, with
  * full phrase re-entry as last resort.
  *
+ * The phrase opens two different doors, so the screen asks which one. Plain
+ * re-entry unlocks and leaves the PIN alone, for somebody who simply
+ * prefers typing the words. "Forgot your PIN?" unlocks and clears the PIN,
+ * which is the only route out of one nobody remembers - the hash is synced,
+ * so signing out and back in restores it.
+ * Spec: ops/docs/plans/pin-recovery.md
+ *
  * The lock screen unwraps the phrase from an encrypted blob and
  * passes it back to the parent via `onUnlock(phrase)`. No note
  * content is visible behind it.
@@ -29,7 +36,11 @@ import { isValidPhrase } from '@notes/shared';
 import { Brand } from './Brand';
 
 type Props = {
-  onUnlock: (phrase: string) => void;
+  /** `recover` asks the caller to clear the PIN once the unlock lands. It
+   *  is deliberately not applied here: this screen holds no settings, and
+   *  a phrase that passes its checksum but belongs to another account must
+   *  not cost this device the PIN it still remembers. */
+  onUnlock: (phrase: string, recover?: boolean) => void;
   /**
    * The post-unlock sign-in, driven by App.tsx: 'busy' while
    * signInWithPhrase runs, 'error' when it failed on a transient
@@ -41,12 +52,14 @@ type Props = {
   onRetrySignIn?: () => void;
 };
 
-type View = 'main' | 'pin' | 'phrase';
+type View = 'main' | 'pin' | 'phrase' | 'recover';
 
-// After this many cumulative failures, drop the user into the phrase
-// re-entry view. The exponential backoff in pin.ts kicks in earlier (5
+// After this many cumulative failures, drop the user into phrase
+// recovery. The exponential backoff in pin.ts kicks in earlier (5
 // failures → 30s, 60s, 120s, ...), but eventually we should just hand
-// them the phrase escape hatch instead of making them wait minutes.
+// them the phrase escape hatch instead of making them wait minutes. It is
+// the recovery door rather than the plain one: ten wrong guesses means the
+// PIN is forgotten, not mistyped.
 const HARD_EXHAUSTION_THRESHOLD = 10;
 
 export function LockScreen({ onUnlock, signInState = 'idle', onRetrySignIn }: Props) {
@@ -125,16 +138,18 @@ export function LockScreen({ onUnlock, signInState = 'idle', onRetrySignIn }: Pr
         <PinUnlock
           onUnlock={onUnlock}
           onBack={() => setView('main')}
-          onExhausted={() => setView('phrase')}
+          onExhausted={() => setView('recover')}
+          onForgotPin={() => setView('recover')}
         />
       </LockShell>
     );
   }
 
-  if (view === 'phrase') {
+  if (view === 'phrase' || view === 'recover') {
     return (
       <LockShell>
         <PhraseUnlock
+          recover={view === 'recover'}
           onUnlock={onUnlock}
           onBack={() => setView('main')}
         />
@@ -224,10 +239,12 @@ function PinUnlock({
   onUnlock,
   onBack,
   onExhausted,
+  onForgotPin,
 }: {
   onUnlock: (phrase: string) => void;
   onBack: () => void;
   onExhausted: () => void;
+  onForgotPin: () => void;
 }) {
   const { t } = useTranslation('security');
   const [value, setValue] = useState('');
@@ -325,6 +342,13 @@ function PinUnlock({
           {busy ? t('lockScreen.checking') : t('lockScreen.unlock')}
         </button>
       </div>
+
+      <button
+        onClick={onForgotPin}
+        className="w-full text-sm text-accent hover:underline py-1 transition"
+      >
+        {t('pinRecovery.forgotPin')}
+      </button>
     </div>
   );
 }
@@ -334,9 +358,12 @@ function PinUnlock({
 function PhraseUnlock({
   onUnlock,
   onBack,
+  recover = false,
 }: {
-  onUnlock: (phrase: string) => void;
+  onUnlock: (phrase: string, recover?: boolean) => void;
   onBack: () => void;
+  /** Came from "Forgot your PIN?", so the unlock also clears the PIN. */
+  recover?: boolean;
 }) {
   const { t } = useTranslation('security');
   const [input, setInput] = useState('');
@@ -348,7 +375,7 @@ function PhraseUnlock({
       setError(t('lockScreen.invalidPhrase'));
       return;
     }
-    onUnlock(trimmed);
+    onUnlock(trimmed, recover);
   }
 
   return (
@@ -362,9 +389,11 @@ function PhraseUnlock({
       </button>
 
       <div className="text-center space-y-2">
-        <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">{t('lockScreen.recoveryPhrase')}</h2>
+        <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">
+          {recover ? t('pinRecovery.title') : t('lockScreen.recoveryPhrase')}
+        </h2>
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          {t('lockScreen.recoveryPhraseSubtitle')}
+          {recover ? t('pinRecovery.lockIntro') : t('lockScreen.recoveryPhraseSubtitle')}
         </p>
       </div>
 
@@ -397,7 +426,7 @@ function PhraseUnlock({
           disabled={!input.trim()}
           className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {t('lockScreen.unlock')}
+          {recover ? t('pinRecovery.lockAction') : t('lockScreen.unlock')}
         </button>
       </div>
     </div>

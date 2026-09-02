@@ -112,7 +112,7 @@ There are two kinds, and they look different on purpose.
 - A web link opens a site: [privacynotes.app](https://privacynotes.app/en)
 - A note-link opens another of your notes: [[How your notes are protected]]
 
-Both have a toolbar button. The chain makes a web link. The one next to it lists your notes, and you pick the note you mean.
+Both have a toolbar button. The chain makes a web link. The brackets make a note-link: they list your notes, and you pick the one you mean. Typing `[[` does the same thing.
 
 ---
 

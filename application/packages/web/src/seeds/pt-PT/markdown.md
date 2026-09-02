@@ -109,7 +109,7 @@ Há dois tipos, e são diferentes de propósito.
 - Uma ligação web abre um site: [privacynotes.app](https://privacynotes.app/pt)
 - Uma ligação de nota abre outra nota tua: [[Como as tuas notas estão protegidas]]
 
-Os dois têm botão na barra. A corrente faz uma ligação web. O botão ao lado lista as tuas notas e escolhes a que queres.
+Os dois têm botão na barra. A corrente faz uma ligação web. Os parênteses retos fazem uma ligação de nota: listam as tuas notas e escolhes a que queres. Escrever `[[` faz o mesmo.
 
 ---
 

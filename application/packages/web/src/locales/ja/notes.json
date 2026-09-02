@@ -173,7 +173,6 @@
   "share": {
     "hover": "共有 / 書き出し",
     "ariaLabel": "共有または書き出し",
-    "thisNote": "このノート",
     "currentMdTitle": "現在のノート(.md)",
     "currentMdDesc": "フロントマター付きの生のMarkdown。",
     "currentHtmlTitle": "現在のノート(.html)",
@@ -181,14 +180,7 @@
     "printTitle": "印刷 / PDFとして保存",
     "printDesc": "印刷ダイアログを開きます。PDFとして保存するか、プリンタに送信できます。",
     "burnTitle": "Burn After Readingで共有",
-    "burnDesc": "このノートを、1回だけ閲覧できるリンクとして公開します。リンクは読まれると自己破壊します。元のノートはアカウントに安全に残ります。",
-    "backup": "バックアップ",
-    "fullBackupTitle": "完全バックアップ(.zip)",
-    "fullBackupDesc": "ノート、ジャーナル、保管庫、タスク、画像、音声、ファイルのすべて。",
-    "allHtmlTitle": "全アイテム(.htmlの.zip)",
-    "allHtmlDesc": "アイテムごとに印刷可能なHTMLを1枚。オフラインでの閲覧に。",
-    "jsonTitle": "テキストバックアップ(.json)",
-    "jsonDesc": "すべてのテキスト内容とメタデータ。画像とファイルは含まれません。"
+    "burnDesc": "このノートを、1回だけ閲覧できるリンクとして公開します。リンクは読まれると自己破壊します。元のノートはアカウントに安全に残ります。"
   },
   "weekReview": {
     "title": "週間レビュー",

@@ -167,9 +167,27 @@ type TauriWindow = Window & {
 export function detectPlatform(): Platform {
   const w = window as TauriWindow;
   if (w.__TAURI__ || w.__TAURI_INTERNALS__) {
+    // The build knows what it is; the browser only has opinions. Tauri sets
+    // TAURI_ENV_PLATFORM while building and vite bakes it in, so this branch
+    // cannot be fooled by a user agent. Everything below it is the fallback
+    // for a native build made outside Tauri's build pipeline.
+    if (__PN_BUILD_PLATFORM__ === 'ios') return 'ios';
+    if (__PN_BUILD_PLATFORM__ === 'android') return 'android';
+    if (__PN_BUILD_PLATFORM__) return 'desktop';
+
     const ua = navigator.userAgent.toLowerCase();
     if (ua.includes('iphone') || ua.includes('ipad')) return 'ios';
     if (ua.includes('android')) return 'android';
+    // An iPad's webview reports a MAC user agent, with no "ipad" anywhere in
+    // it, so the checks above miss it and it used to fall through to
+    // 'desktop'. That handed iPads every desktop code path: the system
+    // browser for OAuth and the web checkout for Pro, which is precisely
+    // what App Review rejected on 2026-09-01 (guideline 4 and 3.1.1) after
+    // the same build passed on iPhone. Touch points are the tell - no Mac
+    // reports any, and this only runs inside a native build, so a desktop
+    // browser on exotic hardware cannot reach it.
+    // Spec: ops/docs/gotchas.md (an iPad reports a Mac user agent)
+    if (ua.includes('macintosh') && navigator.maxTouchPoints > 1) return 'ios';
     return 'desktop';
   }
   return 'web';

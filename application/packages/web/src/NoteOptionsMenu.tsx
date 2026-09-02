@@ -77,7 +77,6 @@ type Props = NoteActionGuardDeps & {
    * same action twice. All four header buttons share one condition
    * today; if they ever diverge, this becomes a set, not a boolean.
    */
-  actionsHiddenInHeader?: boolean;
   /** Trash view: the menu carries only the two trash actions. */
   isTrash?: boolean;
   onRestore?: () => void;
@@ -104,7 +103,6 @@ export function NoteOptionsMenu({
   onMoveToFolder,
   editorMode,
   onToggleEditorMode,
-  actionsHiddenInHeader,
   isTrash,
   onRestore,
   onDeleteForever,
@@ -145,6 +143,10 @@ export function NoteOptionsMenu({
   // Both halves have to be there: the caller only passes them when this
   // note actually has a markdown editor under the header.
   const showModeRow = !isTrash && !!onToggleEditorMode && !!editorMode;
+  // The caller decides which cells exist by passing or omitting each handler,
+  // so the strip has nothing to work out for itself. It just needs to know
+  // whether it drew anything, because the row below it wears the hairline.
+  const hasStrip = !isTrash && !!(onBurn || onToggleStar || onShare || onTrash);
 
   const bytes = computeNoteTotalSize(note);
   // A media-only note has nothing left to send once images and files are
@@ -190,9 +192,14 @@ export function NoteOptionsMenu({
         </div>
       ) : (
         <>
-          {/* The header's icons, in the header's order, and only while
-              the header is too narrow to show them itself. */}
-          {actionsHiddenInHeader && (
+          {/* Burn, pin and trash. This is their only home: the editor
+              header stopped carrying them, so the strip is permanent rather
+              than a stand-in that appears when the row runs out of width.
+              Share is the exception and still comes and goes, because the
+              header kept it - the caller passes onShare only where its own
+              copy is hidden.
+              Spec: ops/docs/ui-patterns.md (section 80) */}
+          {hasStrip && (
             <div className="flex items-stretch gap-0 p-1.5">
               {onBurn && (
                 <StripButton
@@ -230,7 +237,7 @@ export function NoteOptionsMenu({
           )}
 
           {showModeRow && (
-            <div className={`${actionsHiddenInHeader ? 'border-t border-divider ' : ''}py-1`}>
+            <div className={`${hasStrip ? 'border-t border-divider ' : ''}py-1`}>
               <ActionItem
                 label={editorMode === 'markdown' ? t('notes:editor.showFormatted') : t('notes:editor.showMarkdown')}
                 description={
@@ -247,7 +254,7 @@ export function NoteOptionsMenu({
             </div>
           )}
 
-          <div className={`${actionsHiddenInHeader || showModeRow ? 'border-t border-divider ' : ''}py-1`}>
+          <div className={`${hasStrip || showModeRow ? 'border-t border-divider ' : ''}py-1`}>
             <ToggleItem
               label={t('noteOptionsMenu.readOnly')}
               description={t('noteOptionsMenu.readOnlyDescription')}

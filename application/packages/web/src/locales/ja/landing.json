@@ -125,7 +125,8 @@
     "pkgToggle": "パッケージマネージャーでインストール ({{platforms}})",
     "pkgBrewDesc": "更新は brew ではなくアプリが行います",
     "pkgWingetDesc": "Windows 10 と 11 に標準搭載",
-    "pkgFootnote": "どちらも当社サーバーから同じ署名済みビルドをインストールします。どちらの場合もアプリは自動で更新され続けます。",
+    "pkgScoopDesc": "更新はアプリではなく Scoop が行います",
+    "pkgFootnote": "どれも同じ署名済みビルドをインストールします。Homebrew と winget ではアプリが自動で更新されます。Scoop では scoop update privacynotes を実行します。",
     "githubLink": "GitHubのリリース一覧",
     "githubNote": "署名済み · 公開 · 検証可能 · 全リリース対象"
   },

@@ -109,7 +109,7 @@ Jsou dva druhy a schválně vypadají jinak.
 - Webový odkaz otevře stránku: [privacynotes.app](https://privacynotes.app/cs)
 - Odkaz na poznámku otevře jinou tvoji poznámku: [[Jak jsou tvoje poznámky chráněné]]
 
-Oba mají tlačítko na liště. Řetěz udělá webový odkaz. Tlačítko vedle vypíše tvoje poznámky a ty si vybereš tu, kterou myslíš.
+Oba mají tlačítko na liště. Řetěz udělá webový odkaz. Hranaté závorky udělají odkaz na poznámku: vypíšou tvoje poznámky a ty si vybereš tu, kterou myslíš. Napsat `[[` udělá totéž.
 
 ---
 

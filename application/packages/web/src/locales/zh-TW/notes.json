@@ -173,7 +173,6 @@
   "share": {
     "hover": "分享／匯出",
     "ariaLabel": "分享或匯出",
-    "thisNote": "這篇筆記",
     "currentMdTitle": "目前筆記（.md）",
     "currentMdDesc": "原始 Markdown，含 front-matter。",
     "currentHtmlTitle": "目前筆記（.html）",
@@ -181,14 +180,7 @@
     "printTitle": "列印／另存為 PDF",
     "printDesc": "開啟列印對話框，可另存為 PDF 或送印。",
     "burnTitle": "分享與 Burn After Reading",
-    "burnDesc": "將這篇筆記發佈為一次性檢視連結，連結在被閱讀後自動銷毀。你的筆記仍安全保留在帳號中。",
-    "backup": "備份",
-    "fullBackupTitle": "完整備份（.zip）",
-    "fullBackupDesc": "全部內容：筆記、日誌、保險庫、任務、圖片、音訊、檔案。",
-    "allHtmlTitle": "所有項目（.html 打包為 .zip）",
-    "allHtmlDesc": "每個項目一頁可列印的 HTML，適合離線閱讀。",
-    "jsonTitle": "文字備份（.json）",
-    "jsonDesc": "所有文字內容與中繼資料，不含圖片或檔案。"
+    "burnDesc": "將這篇筆記發佈為一次性檢視連結，連結在被閱讀後自動銷毀。你的筆記仍安全保留在帳號中。"
   },
   "weekReview": {
     "title": "每週回顧",

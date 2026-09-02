@@ -125,7 +125,8 @@
     "pkgToggle": "使用套件管理器安裝 ({{platforms}})",
     "pkgBrewDesc": "更新由應用程式處理，不是 brew",
     "pkgWingetDesc": "Windows 10 與 11 內建",
-    "pkgFootnote": "兩者都會從我們自己的伺服器安裝同一個已簽署的版本，而且不論用哪一種，應用程式都會持續自我更新。",
+    "pkgScoopDesc": "更新由 Scoop 處理，不是應用程式",
+    "pkgFootnote": "每一種都會安裝同一個已簽署的版本。使用 Homebrew 和 winget 時，應用程式會自我更新。使用 Scoop 時，請執行 scoop update privacynotes。",
     "githubLink": "GitHub 上的所有版本",
     "githubNote": "已簽署 · 公開 · 可驗證 · 每個版本都不例外"
   },

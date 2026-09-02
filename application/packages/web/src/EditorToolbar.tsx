@@ -179,6 +179,10 @@ const TB_SPLIT_CARET =
 // and this toolbar are one instrument, so they share a box and a glyph size.
 // Weight comes from the IconDefaults provider.
 const TB_ICON = 18;
+// What the ••• toggle costs row 1 once it appears: one 32px button box and
+// the 6px gap before it. Only the frame that turns overflow on needs this -
+// after that the toggle is in the cluster and the row is measured around it.
+const MORE_TOGGLE_W = 38;
 
 function ToolbarBtn({
   onClick,
@@ -519,24 +523,30 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
     return () => document.removeEventListener('pointerdown', handler);
   }, [alignOpen]);
 
-  // The '+' menu's wrapper. Declared here rather than beside the rest of the
-  // insert state because the callout picker below anchors on it: the callout
-  // entry lives in that menu, so the menu's trigger is the only element the
-  // panel can align to.
+  // The '+' menu's wrapper, read by the menu's own outside-click check below.
   const insertWrapRef = useRef<HTMLDivElement>(null);
 
   // Callout type picker. Same portal + outside-click pattern as the color
   // swatch so it escapes the toolbar's overflow clipping.
+  //
+  // The trigger belongs in this row, inside calloutWrapRef and beside the panel
+  // it opens. A popover whose trigger sits in a menu that closes on the same
+  // pointerdown cannot survive its own opening press: the menu unmounts the
+  // pressed row, the event reaches this listener carrying a target that is no
+  // longer in the document, no wrapper contains it, and the check reads an
+  // outside click. The link popover has the same requirement.
   const [calloutOpen, setCalloutOpen] = useState(false);
+  const calloutWrapRef = useRef<HTMLDivElement>(null);
+  const calloutBtnRef = useRef<HTMLButtonElement>(null);
   const calloutPopoverRef = useRef<HTMLDivElement>(null);
-  const calloutPos = usePopoverPosition(calloutOpen, insertWrapRef, calloutPopoverRef);
+  const calloutPos = usePopoverPosition(calloutOpen, calloutBtnRef, calloutPopoverRef);
 
   useEffect(() => {
     if (!calloutOpen) return;
     function handler(e: PointerEvent) {
       const target = e.target as Node;
       if (
-        insertWrapRef.current?.contains(target) ||
+        calloutWrapRef.current?.contains(target) ||
         calloutPopoverRef.current?.contains(target)
       ) return;
       setCalloutOpen(false);
@@ -614,43 +624,62 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
   const insertPos = usePopoverPosition(insertOpen, rightClusterRef, insertMenuRef, { align: 'end' });
   const itemWidthsRef = useRef<number[]>([]);
   const overflowRef = useRef(false);
+  const recomputeFitRef = useRef<() => void>(() => {});
   useLayoutEffect(() => {
     const row = formatRowRef.current;
     const flexRow = row?.parentElement;
     if (!row || !flexRow) return;
     const recompute = () => {
       const kids = Array.from(row.children) as HTMLElement[];
-      // Capture every button's width once, while all are rendered in row 1.
+      // Every button's width, captured while all of them are still in row 1.
+      // Later passes see only the ones that fit, so they refresh that prefix
+      // in place, and each entry keeps the WIDEST width it has been measured
+      // at. The heading button is why: its glyph reads H in body copy and H1
+      // to H6 inside a heading, so it grows by a digit as the caret moves.
+      // Reserving the wider spelling is what stops the row dropping a button
+      // the moment somebody puts the caret in a title.
       if (kids.length > itemWidthsRef.current.length) {
         itemWidthsRef.current = kids.map((k) => k.getBoundingClientRect().width);
+      } else {
+        kids.forEach((k, i) => {
+          itemWidthsRef.current[i] = Math.max(itemWidthsRef.current[i] ?? 0, k.getBoundingClientRect().width);
+        });
       }
       const widths = itemWidthsRef.current;
       const total = widths.length;
       if (!total) return;
+      // A button width is fractional - the heading button's glyph decides its
+      // own - while the row's box is whole pixels, so a button whose last
+      // fraction of a pixel lands outside still reads as fitting: the clip
+      // takes a sliver of a rounded corner nobody can see. Hold that slack
+      // open, because a 0.8px overhang otherwise costs a whole button.
+      const SUBPIXEL = 1;
       const fit = (cap: number) => {
         let used = 0;
         let n = 0;
         for (; n < total; n++) {
           used += widths[n]! + (n ? 2 : 0);
-          if (used > cap) break;
+          if (used - cap > SUBPIXEL) break;
         }
         return n;
       };
-      // row.clientWidth is the exact width flexbox allotted row 1 (it already
-      // accounts for the right cluster, including ••• when present). Fitting
-      // against it directly is precise; -6 keeps a hair of safety so the last
-      // button never touches the cluster.
-      const avail = row.clientWidth - 6;
+      // The row's own box is the width flexbox allotted it, and it already
+      // accounts for the right cluster, including ••• when that is present.
+      // The 6px gap to the cluster is part of the layout, so nothing is held
+      // back for it here: a margin on top of that gap buys no space a reader
+      // can see and costs the last button its place.
+      const avail = row.getBoundingClientRect().width;
       let n = fit(avail);
       const overflow = n < total;
       // On the transition into overflow the ••• isn't in the cluster yet, so
       // reserve its width now - otherwise a button would clip for one frame
       // before the observer re-measures the (now wider) cluster.
-      if (overflow && !overflowRef.current) n = Math.max(1, fit(avail - 42));
+      if (overflow && !overflowRef.current) n = Math.max(1, fit(avail - MORE_TOGGLE_W));
       overflowRef.current = overflow;
       setVisibleCount(overflow ? n : total);
       setHasOverflow(overflow);
     };
+    recomputeFitRef.current = recompute;
     recompute();
     const ro = new ResizeObserver(recompute);
     ro.observe(flexRow);
@@ -670,6 +699,10 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
     : isActive('heading', { level: 5 }) ? 5
     : isActive('heading', { level: 6 }) ? 6
     : 0;
+  // Re-fit when the heading button's glyph changes, which is the one width in
+  // the row that moves on its own. This is what teaches the widths cache the
+  // wider spelling the first time a caret lands in a heading.
+  useLayoutEffect(() => { recomputeFitRef.current(); }, [activeHeading]);
 
   // Format buttons in priority order. They fill the bar; whatever doesn't
   // fit wraps below and is clipped (max-h) until ••• expands it.
@@ -703,9 +736,15 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
             setHeadingOpen((prev) => !prev);
           }}
           aria-label={t('toolbar.heading')}
-          className={`flex items-center justify-center gap-0.5 h-9 w-auto px-2 rounded-lg active:scale-95 transition outline-none shrink-0 ${activeHeading ? TB_BTN_ACTIVE : TB_BTN_REST}`}
+          className={`flex items-center justify-center gap-0.5 h-9 w-auto px-1.5 rounded-lg active:scale-95 transition outline-none shrink-0 ${activeHeading ? TB_BTN_ACTIVE : TB_BTN_REST}`}
         >
-          <span className="font-bold text-sm px-0.5">H{activeHeading || ''}</span>
+          {/* No padding around the glyph, and a tighter box than a plain icon
+              button needs. The letter and the caret already read as one word,
+              and the 8px this frees is a whole button's place in a phone-width
+              row - the difference between the checklist toggle sitting in the
+              row and sitting behind the ••• .
+              Spec: ops/docs/ui-patterns.md (section 23 - editor toolbar fit) */}
+          <span className="font-bold text-sm">H{activeHeading || ''}</span>
           <ChevronDownIcon size={12} />
         </button>
       </HoverLabel>
@@ -758,14 +797,19 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
       <ListChecksIcon size={TB_ICON} />
     </ToolbarBtn>
   );
-  const bullets = (
-    <ToolbarBtn key="bullets" onClick={() => editor.chain().focus().toggleBulletList().run()} active={isActive('bulletList')} label={t('toolbar.bulletList')} tabIndex={mobileTabIndex}>
-      <ListIcon size={TB_ICON} />
+  const link = (
+    <ToolbarBtn key="link" onClick={onOpenLinkPopover} active={isActive('link')} label={t('toolbar.addLink')} tabIndex={mobileTabIndex}>
+      <LinkIcon size={TB_ICON} />
     </ToolbarBtn>
   );
-  const numbered = (
-    <ToolbarBtn key="numbered" onClick={() => editor.chain().focus().toggleOrderedList().run()} active={isActive('orderedList')} label={t('toolbar.numberedList')} tabIndex={mobileTabIndex}>
-      <ListOrderedIcon size={TB_ICON} />
+  // The two kinds of link are one pair and sit together: the chain reaches a
+  // site, the brackets reach another note. This one only types "[[" and leaves
+  // the rest to the suggestion plugin, so it could live in the '+' menu as
+  // well - it sits in the row because its twin has to, and a pair split across
+  // two homes reads as two unrelated controls.
+  const noteLink = (
+    <ToolbarBtn key="notelink" onClick={() => { editor.chain().focus().insertContent('[[').run(); }} label={t('toolbar.noteLink')} tabIndex={mobileTabIndex}>
+      <BracketsIcon size={TB_ICON} />
     </ToolbarBtn>
   );
   // Split control: the wide half applies the remembered colour, the caret
@@ -867,75 +911,88 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
       )}
     </div>
   );
-  /**
-   * The callout type picker, detached from any toolbar button: the callout
-   * entry lives in the + menu, so the panel anchors on that menu's own
-   * trigger and is mounted from the toolbar's own render rather than from
-   * inside a button. No callout button exists in the row to park it in, and
-   * a popover mounted inside an element that never renders shows nothing.
-   */
-  const calloutPopover = calloutOpen && createPortal(
-    <div
-      ref={calloutPopoverRef}
-      role="menu"
-      aria-label={t('callout.pickerLabel')}
-      className="fixed z-50 bg-surface-1 border border-divider rounded-lg shadow-lg p-2 w-[224px]"
-      style={{
-        top: calloutPos?.top ?? 0,
-        left: calloutPos?.left ?? 0,
-        visibility: calloutPos ? 'visible' : 'hidden',
-      }}
-    >
-      <div className="grid grid-cols-3 gap-1">
-        {CALLOUT_TYPES.map((c) => {
-          const locked = c.pro && !calloutUnlocked;
-          const CalloutIcon = c.icon;
-          return (
-            <button
-              key={c.type}
-              type="button"
-              onPointerDown={(e) => {
-                e.preventDefault();
-                setCalloutOpen(false);
-                if (locked) { onOpenUpgrade?.('callout'); return; }
-                if (editor.isActive('callout')) {
-                  editor.chain().focus().setCalloutType(c.type).run();
-                } else {
-                  editor.chain().focus().insertCallout(c.type).run();
-                }
-              }}
-              className="relative flex flex-col items-center gap-1 rounded-md px-1 py-2 text-neutral-700 dark:text-neutral-200 [@media(hover:hover)]:hover:bg-neutral-100 [@media(hover:hover)]:dark:hover:bg-neutral-800 transition"
-            >
-              <CalloutIcon size={18} weight="bold" color={c.color} />
-              <span className="text-[11px] leading-none">{t(`callout.types.${c.type}`)}</span>
-              {locked && (
-                <RocketIcon size={11} weight="fill" className="text-pro absolute top-1 end-1" />
-              )}
-            </button>
-          );
-        })}
-      </div>
-      {/* When the cursor is inside a callout, offer an explicit way to remove
-          it - the picker is where users look to change or undo a callout, and
-          this covers touch platforms with no Backspace-at-start gesture. */}
-      {isActive('callout') && (
-        <div className="mt-1.5 pt-1.5 border-t border-divider">
-          <button
-            type="button"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              setCalloutOpen(false);
-              editor.chain().focus().removeCallout().run();
-            }}
-            className="flex w-full items-center justify-center gap-2 rounded-md px-2 py-2 text-[13px] text-neutral-700 dark:text-neutral-200 [@media(hover:hover)]:hover:bg-neutral-100 [@media(hover:hover)]:dark:hover:bg-neutral-800 transition"
-          >
-            <TrashIcon size={16} className="text-red-500 dark:text-red-400" />
-            <span>{t('callout.remove')}</span>
-          </button>
-        </div>
+  const callout = (
+    <div key="callout" ref={calloutWrapRef} className="relative shrink-0">
+      <HoverLabel label={t('toolbar.callout')} position="below">
+        <button
+          ref={calloutBtnRef}
+          type="button"
+          tabIndex={mobileTabIndex}
+          onMouseDown={(e) => e.preventDefault()}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            setCalloutOpen((prev) => !prev);
+          }}
+          aria-label={t('toolbar.callout')}
+          className={`${TB_BTN_BASE} ${isActive('callout') ? TB_BTN_ACTIVE : TB_BTN_REST} shrink-0`}
+        >
+          <MegaphoneIcon size={TB_ICON} />
+        </button>
+      </HoverLabel>
+      {calloutOpen && createPortal(
+        <div
+          ref={calloutPopoverRef}
+          role="menu"
+          aria-label={t('callout.pickerLabel')}
+          className="fixed z-50 bg-surface-1 border border-divider rounded-lg shadow-lg p-2 w-[224px]"
+          style={{
+            top: calloutPos?.top ?? 0,
+            left: calloutPos?.left ?? 0,
+            visibility: calloutPos ? 'visible' : 'hidden',
+          }}
+        >
+          <div className="grid grid-cols-3 gap-1">
+            {CALLOUT_TYPES.map((c) => {
+              const locked = c.pro && !calloutUnlocked;
+              const CalloutIcon = c.icon;
+              return (
+                <button
+                  key={c.type}
+                  type="button"
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    setCalloutOpen(false);
+                    if (locked) { onOpenUpgrade?.('callout'); return; }
+                    if (editor.isActive('callout')) {
+                      editor.chain().focus().setCalloutType(c.type).run();
+                    } else {
+                      editor.chain().focus().insertCallout(c.type).run();
+                    }
+                  }}
+                  className="relative flex flex-col items-center gap-1 rounded-md px-1 py-2 text-neutral-700 dark:text-neutral-200 [@media(hover:hover)]:hover:bg-neutral-100 [@media(hover:hover)]:dark:hover:bg-neutral-800 transition"
+                >
+                  <CalloutIcon size={18} weight="bold" color={c.color} />
+                  <span className="text-[11px] leading-none">{t(`callout.types.${c.type}`)}</span>
+                  {locked && (
+                    <RocketIcon size={11} weight="fill" className="text-pro absolute top-1 end-1" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          {/* When the cursor is inside a callout, offer an explicit way to remove
+              it - the picker is where users look to change or undo a callout, and
+              this covers touch platforms with no Backspace-at-start gesture. */}
+          {isActive('callout') && (
+            <div className="mt-1.5 pt-1.5 border-t border-divider">
+              <button
+                type="button"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  setCalloutOpen(false);
+                  editor.chain().focus().removeCallout().run();
+                }}
+                className="flex w-full items-center justify-center gap-2 rounded-md px-2 py-2 text-[13px] text-neutral-700 dark:text-neutral-200 [@media(hover:hover)]:hover:bg-neutral-100 [@media(hover:hover)]:dark:hover:bg-neutral-800 transition"
+              >
+                <TrashIcon size={16} className="text-red-500 dark:text-red-400" />
+                <span>{t('callout.remove')}</span>
+              </button>
+            </div>
+          )}
+        </div>,
+        document.body,
       )}
-    </div>,
-    document.body,
+    </div>
   );
   const font = (
     <div key="font" ref={fontWrapRef} className="relative shrink-0">
@@ -1241,21 +1298,29 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
   );
 
   // Priority order (1 = first to show, last to be clipped). The row holds the
-  // toggles reached while writing a sentence. Everything a person goes LOOKING
-  // for lives in the '+' menu: the block inserts, the rare notation marks, both
-  // link kinds, quote and callout. Numbered sits beside bullets (list family),
-  // highlight beside text color (paint family).
+  // toggles reached while writing a sentence. What a person goes LOOKING for
+  // lives in the '+' menu instead: the block inserts, the rare notation marks
+  // and the quote. Highlight sits beside text color (paint family), and the
+  // note link beside the chain (link family).
   //
-  // Link, note link, quote and callout moved out on 2026-08-30. A Pixel 10
-  // fits five buttons in this row, so sixteen entries wrapped the overflow row
-  // onto two lines; twelve wrap onto one. Strikethrough stays: it is a mark
-  // applied to a selection, which is what this row is for.
+  // The bullet and numbered lists are in the menu rather than the row, even
+  // though both are common: a person who wants one types "- " or "1. " and the
+  // list opens under the caret, so the button is the slower way to reach a
+  // thing the keyboard already does. The checklist keeps its button because
+  // "[] " is the one list prefix nobody guesses. Two buttons back is a whole
+  // button's place at phone width.
+  //
+  // Link and callout stay in the row because both open a React popover, and a
+  // popover cannot be opened from a menu that closes on the same press - see
+  // the callout picker's own note above. Every '+' entry either runs a command
+  // outright or hands the caret to a ProseMirror plugin, which survives the
+  // menu closing under it.
   const formatButtons = [
-    bold, italic, underline, heading, tasks, bullets, numbered,
+    bold, italic, underline, heading, tasks, link, noteLink,
     // Text-styling trio, kept adjacent and in this order: color, alignment,
     // font. They are the three attribute-driven popovers and read as one group.
     color, align, font,
-    highlight, strike,
+    highlight, callout, strike,
   ];
 
   return (
@@ -1276,10 +1341,11 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
         {/* Right cluster: ••• overflow toggle (only when something overflows)
             + accent media cluster (image / attach / audio), always on row 1. */}
         <div ref={rightClusterRef} className="shrink-0 flex items-center gap-1.5">
-          {/* '+' insert menu: block inserts (hr, table, code block) plus
-              the rare notation marks (inline code, sup/sub, math). Labeled
-              entries with syntax hints - the menu teaches while the format
-              row keeps only the always-on writing toggles. */}
+          {/* '+' insert menu: block inserts (table, divider, code block, the
+              bullet and numbered lists) plus the rare notation marks (inline
+              code, sup/sub, math). Labeled entries with syntax hints - the
+              menu teaches while the format row keeps the marks a live
+              selection is waiting for. */}
           <div ref={insertWrapRef} className="relative shrink-0">
             <HoverLabel label={t('toolbar.insert')} position="below">
               <button
@@ -1308,31 +1374,6 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
               >
                 {[
                   {
-                    // Link and note link lead the menu: they are the two
-                    // entries somebody opens this menu FOR. Spec:
-                    // ops/docs/ui-patterns.md (the insert menu is grouped by
-                    // reach, not by node kind)
-                    key: 'link',
-                    group: 'insert',
-                    Icon: LinkIcon,
-                    // A menu row is not a tooltip: the row says what the entry
-                    // makes and the hint column carries the shortcut, rather
-                    // than the icon button's parenthesised label.
-                    label: t('toolbar.linkMenu'),
-                    hint: 'Cmd+Shift+K',
-                    active: isActive('link'),
-                    run: onOpenLinkPopover,
-                  },
-                  {
-                    key: 'notelink',
-                    group: 'insert',
-                    Icon: BracketsIcon,
-                    label: t('toolbar.noteLinkMenu'),
-                    hint: '[[',
-                    active: false,
-                    run: () => { editor.chain().focus().insertContent('[[').run(); },
-                  },
-                  {
                     key: 'table',
                     group: 'insert',
                     Icon: TableIcon,
@@ -1351,6 +1392,28 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
                     run: () => editor.chain().focus().setHorizontalRule().run(),
                   },
                   {
+                    // The two lists whose markdown prefix a person already
+                    // knows. The hint column is the point of moving them here:
+                    // it teaches the prefix, and the prefix is faster than the
+                    // menu it is written in.
+                    key: 'bullets',
+                    group: 'insert',
+                    Icon: ListIcon,
+                    label: t('toolbar.bulletList'),
+                    hint: '-',
+                    active: isActive('bulletList'),
+                    run: () => editor.chain().focus().toggleBulletList().run(),
+                  },
+                  {
+                    key: 'numbered',
+                    group: 'insert',
+                    Icon: ListOrderedIcon,
+                    label: t('toolbar.numberedList'),
+                    hint: '1.',
+                    active: isActive('orderedList'),
+                    run: () => editor.chain().focus().toggleOrderedList().run(),
+                  },
+                  {
                     key: 'quote',
                     group: 'blocks',
                     Icon: QuoteIcon,
@@ -1358,15 +1421,6 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
                     hint: '>',
                     active: isActive('blockquote'),
                     run: () => editor.chain().focus().toggleBlockquote().run(),
-                  },
-                  {
-                    key: 'callout',
-                    group: 'blocks',
-                    Icon: MegaphoneIcon,
-                    label: t('toolbar.callout'),
-                    hint: null,
-                    active: isActive('callout'),
-                    run: () => setCalloutOpen(true),
                   },
                   {
                     key: 'codeblock',
@@ -1505,8 +1559,6 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
           )}
         </div>
       </div>
-
-      {calloutPopover}
 
       {/* Row 2: the overflow buttons, full width, revealed by •••. */}
       {formatExpanded && hasOverflow && (

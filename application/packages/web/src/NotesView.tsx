@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, useMemo, useDeferredValue, type CSSProperties } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, useCallback, useMemo, useDeferredValue, type CSSProperties } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { CaretRight, Folder, Fire } from './icons';
 import { useAuth, type AuthState } from './auth';
@@ -24,7 +24,7 @@ import { BookmarksList, type BookmarkDraft } from './BookmarksList';
 import { openExternal } from './openExternal';
 import { noteLinkKey } from './noteLinks';
 import { parseLinkBody, buildLinkBody, buildLinkKeyMap } from './linkBody';
-import { UNFILED_ID } from './folders';
+import { canDeleteFolder, UNFILED_ID } from './folders';
 import { FolderNamesContext } from './folderNames';
 import { db, reopenDb, type LocalNote } from './db';
 import { ConflictModal } from './ConflictModal';
@@ -51,10 +51,10 @@ import { activeLocale } from './languages';
 import { UpgradeModal } from './UpgradeModal';
 import { PinGateModal } from './ProtectedNoteGate';
 import { shouldPromptForPin, markPinUnlocked, hasPin, syncPinCache } from './pin';
+import { syncPinWrap } from './pinRecovery';
 import { startPinKeepAlive } from './pinKeepAlive';
 import { hasBiometricCredential, unlockWithBiometric } from './biometric';
 import { rememberOpenNote, takeReopenNote } from './appReLock';
-import { hasPinWrappedPhrase, hydrateLocalPinWrap } from './biometric';
 import { createNoteVersion } from './noteVersions';
 import { HoverLabel } from './HoverLabel';
 import { useNoteEditing } from './useNoteEditing';
@@ -87,7 +87,7 @@ import { countWords } from './wordCountUtils';
 import { isDemoMode, proUnlocked } from './demo';
 import { recordAdminEvent } from './adminEvents';
 import { createBurnLink, prepareBurnPayload } from './burnShare';
-import { ImageStore } from './imageStore';
+import { ImageStore, readImageSizes, listImageSizes } from './imageStore';
 import { EmptyTrashModal } from './EmptyTrashModal';
 import { DeleteNoteModal } from './DeleteNoteModal';
 import { ConfirmModal } from './ConfirmModal';
@@ -236,34 +236,38 @@ const RATING_ASK_DELAY_MS = 4000;
 /**
  * Editor header widths, measured on the header row itself rather than the
  * viewport, because the sidebar and the notes list are drag-resizable and a
- * wide window says nothing about how wide the editor pane is.
+ * wide window says nothing about how wide the editor pane is. Above the
+ * first and second, the quick-action pill appears in its two tiers.
  *
- * Below the first, burn/pin/share/trash collapse into the "..." menu. Above
- * the second and third, the quick-action pill appears in its two tiers.
- *
- * The two upper numbers are lower than a window width would suggest,
- * because this row does not grow with the window: it wears
- * `.pn-content-col`, so at the default reading column it stops at 896px
- * however wide the pane gets. A threshold above that is unreachable for
- * everyone who never changes the column.
+ * Both numbers are lower than a window width would suggest, because this row
+ * does not grow with the window: it wears `.pn-content-col`, so at the
+ * default reading column it stops at 896px however wide the pane gets. A
+ * threshold above that is unreachable for everyone who never changes the
+ * column.
  *
  * Both were set from what is left for the TITLE, which is the row's first
  * claim and the thing every other number is spent against. They are also
  * deliberately ABOVE the 896px the default reading column caps this row at,
- * so the common case shows five icons rather than thirteen: the extra
- * groups arrive only on a genuinely wide pane, or once the reader picks the
- * wide or full column themselves. At 896 that leaves the title 583px.
+ * so the common case shows the short row rather than a dozen icons: the
+ * extra groups arrive only on a genuinely wide pane, or once the reader
+ * picks the wide or full column themselves. At 896 that leaves the title
+ * 583px.
  *
- * Two controls sit outside this ladder because they must never hide. The
- * back/forward pair is the only way to retrace a step on a phone, where the
- * notes list is not on screen at all, and the "..." menu is where every
- * action that IS hidden went. Below COMPACT_HEADER_PX those two and the
- * title are the whole row, which is what leaves a phone a readable title.
+ * Nothing else in this row hides by width. The back/forward pair is the only
+ * way to retrace a step on a phone, where the notes list is not on screen at
+ * all; share is the action people reach for, so it holds its place at every
+ * width; and burn, pin and trash live in the "..." menu, which never hides.
  * Spec: ops/docs/ui-patterns.md (section 80)
  */
-const COMPACT_HEADER_PX = 560;
 const QUICK_ACTIONS_CORE_PX = 960;
 const QUICK_ACTIONS_ALL_PX = 1280;
+/**
+ * How far a note has to run past its scroller before the editor's find pill
+ * appears. One comfortable line, so a note hovering on the boundary does not
+ * flicker the pill while somebody types.
+ * Spec: ops/docs/design-decisions.md (the editor corner holds only controls that can hide themselves)
+ */
+const NOTE_OVERFLOW_SLACK_PX = 40;
 
 export function NotesView() {
   const { auth, supabase, signOut, forceSignOut, refreshProStatus, revalidationExpired } = useAuth();
@@ -700,10 +704,9 @@ function AuthenticatedView({
     // null) would wipe the real account's PIN cache off this origin.
     if (!isDemoMode()) {
       syncPinCache(loaded);
-      // Hydrate local PIN wrap from cached settings if not present locally
-      if (loaded.pinWrapSalt && loaded.pinWrapIV && loaded.pinWrapCiphertext && !hasPinWrappedPhrase()) {
-        hydrateLocalPinWrap({ pinWrapSalt: loaded.pinWrapSalt, pinWrapIV: loaded.pinWrapIV, pinWrapCiphertext: loaded.pinWrapCiphertext, pinWrapIterations: loaded.pinWrapIterations ?? 100_000 });
-      }
+      // The wrap follows the cached settings the same way the hash cache
+      // above does, in both directions.
+      syncPinWrap(loaded);
     }
     return loaded;
   });
@@ -841,8 +844,21 @@ function AuthenticatedView({
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1280px)').matches,
   );
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => !xlScreen);
+  // The list collapse is a MULTI-PANE affordance: both of its strips are
+  // md+ only, and below that line the list is the whole screen. Honouring
+  // the stored flag there unmounts the only pane, leaves no handle to
+  // bring it back, and persists - a blank app that a restart cannot cure.
+  // A phone reaches the strips at all because landscape is wider than md,
+  // so dropping out of the md band forgets the collapse, the same session
+  // reseed the sidebar does at the xl line above. The mount read is gated
+  // too, so a device that is already stuck heals on its next launch
+  // instead of painting one blank frame first.
+  // Spec: ops/docs/ui-patterns.md section 56 (pane resize strips)
+  const [mdScreen, setMdScreen] = useState<boolean>(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches,
+  );
   const [notesListCollapsed, setNotesListCollapsed] = useState<boolean>(
-    () => readUiBool('privacynotes.ui.notesListCollapsed', false)
+    () => mdScreen && readUiBool('privacynotes.ui.notesListCollapsed', false)
   );
   const [viewsCollapsed, setViewsCollapsed] = useState<boolean>(
     () => readUiBool('privacynotes.ui.viewsCollapsed', false)
@@ -928,7 +944,15 @@ function AuthenticatedView({
     mq.addEventListener('change', on);
     return () => mq.removeEventListener('change', on);
   }, []);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(min-width: 768px)');
+    const on = () => setMdScreen(mq.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
   useEffect(() => { setSidebarCollapsed(!xlScreen); }, [xlScreen]);
+  useEffect(() => { if (!mdScreen) setNotesListCollapsed(false); }, [mdScreen]);
   useEffect(() => { writeUiBool('privacynotes.ui.notesListCollapsed', notesListCollapsed); }, [notesListCollapsed]);
   useEffect(() => { writeUiBool('privacynotes.ui.viewsCollapsed', viewsCollapsed); }, [viewsCollapsed]);
   useEffect(() => { writeUiPx('privacynotes.ui.sidebarWidth', sidebarWidth); }, [sidebarWidth]);
@@ -1043,7 +1067,6 @@ function AuthenticatedView({
   // True when the editor header is too narrow to fit the pin/share/trash
   // shortcut icons without crowding the title; they collapse into the "..."
   // menu so the title keeps priority. Measured on the header row (below).
-  const [compactHeaderActions, setCompactHeaderActions] = useState(false);
   // How much of the quick-action pill the header row can carry: nothing, the
   // three note-behavior icons, or all seven. The pill is a shortcut into the
   // "..." menu, which keeps every one of these rows at every width.
@@ -1057,6 +1080,55 @@ function AuthenticatedView({
   // the toolbar reads for its sticky `top`.
   const tagRowObserverRef = useRef<ResizeObserver | null>(null);
   const tagRowColRef = useRef<HTMLElement | null>(null);
+  /**
+   * Whether the open note runs past its own scroller. The editor's find pill
+   * floats over the note text, so it draws itself only when the note is long
+   * enough to have somewhere to scroll to; on a note that fits, the corner is
+   * empty. Nothing else keys off this.
+   *
+   * The gap is a hysteresis band, not a rounding guard. A note sitting on the
+   * boundary grows and shrinks by a line as the caret wraps, and a bare
+   * `scrollHeight > clientHeight` test makes the pill blink on and off while
+   * somebody types. One comfortable line of slack costs nothing: a note that
+   * only just overflows has nothing worth finding in it either.
+   * Spec: ops/docs/ui-patterns.md (section 80)
+   */
+  const [bodyOverflows, setBodyOverflows] = useState(false);
+  const scrollerObserverRef = useRef<ResizeObserver | null>(null);
+  const scrollerNodeRef = useRef<HTMLDivElement | null>(null);
+  /**
+   * Read the open note's height against its scroller, and make sure we are
+   * watching whatever is currently inside it.
+   *
+   * The column is re-resolved on every pass rather than captured once. The
+   * scroller survives a note switch, so the callback ref fires only on the
+   * first note; a column captured then can be replaced underneath us, and a
+   * ResizeObserver holding the old one reports a note that never changes
+   * size. `observe` on an element already watched is a no-op, so re-asking
+   * costs nothing and self-heals after a swap.
+   */
+  const measureBodyOverflow = useCallback(() => {
+    const node = scrollerNodeRef.current;
+    const ro = scrollerObserverRef.current;
+    if (!node || !ro) return;
+    const col = node.querySelector('[data-content-col]');
+    if (col) ro.observe(col);
+    setBodyOverflows(node.scrollHeight - node.clientHeight > NOTE_OVERFLOW_SLACK_PX);
+  }, []);
+  const setNoteScroller = useCallback((node: HTMLDivElement | null) => {
+    scrollerObserverRef.current?.disconnect();
+    scrollerObserverRef.current = null;
+    scrollerNodeRef.current = node;
+    if (!node) { setBodyOverflows(false); return; }
+    // The scroller's own box stops changing once the pane is sized, so the
+    // column inside it is what reports a note crossing the line as it is
+    // written. Both are watched: the scroller for a pane resize, the column
+    // for the text.
+    const ro = new ResizeObserver(() => measureBodyOverflow());
+    ro.observe(node);
+    scrollerObserverRef.current = ro;
+    measureBodyOverflow();
+  }, [measureBodyOverflow]);
   const setStickyTagRow = useCallback((node: HTMLDivElement | null) => {
     tagRowObserverRef.current?.disconnect();
     if (!node) {
@@ -1678,6 +1750,8 @@ function AuthenticatedView({
 
   // Enrich image items with sizes - local cache first, then Supabase Storage.
   const [fileItems, setFileItems] = useState(rawFileItems);
+  /** Blob uuids a full listing did not find, held for this session only. */
+  const absentBlobs = useRef<Set<string>>(new Set());
   useEffect(() => {
     const zeroSize = rawFileItems.filter((f) => f.kind === 'image' && f.size === 0);
     if (zeroSize.length === 0) { setFileItems(rawFileItems); return; }
@@ -1685,30 +1759,44 @@ function AuthenticatedView({
     let cancelled = false;
     void (async () => {
       const sizeMap = new Map<string, number>();
-      // 1. Local imageDedup cache (fast, no network).
+      // 1. Local imageDedup cache (fast, no network). It is keyed by the
+      //    content hash, so only the device that uploaded the image has a row.
       const local = await db.imageDedup.where('uuid').anyOf(uuids).toArray();
       for (const r of local) if (r.encryptedSize) sizeMap.set(r.uuid, r.encryptedSize);
-      // 2. Server fallback for anything still missing (old uploads).
-      // Skipped in demo mode, which makes zero server calls - nothing was
-      // ever uploaded, so there is nothing for the server to know about.
-      const missing = uuids.filter((u) => !sizeMap.has(u));
-      if (missing.length > 0 && !isDemoMode()) {
+      // 2. Sizes an earlier listing already resolved. This is the cache every
+      //    other device reads: a new phone or a fresh browser holds no hash.
+      const remembered = await readImageSizes();
+      for (const u of uuids) {
+        if (sizeMap.has(u)) continue;
+        const sz = remembered[u];
+        if (sz) sizeMap.set(u, sz);
+      }
+      // 3. Storage listing for whatever is still unknown. It pages, and the
+      //    Files view is the only surface that renders a byte size, so no
+      //    other view pays for the scan.
+      //    Skipped in demo mode, which makes zero server calls - nothing was
+      //    ever uploaded, so there is nothing for the server to know about.
+      const missing = uuids.filter(
+        (u) => !sizeMap.has(u) && !absentBlobs.current.has(u),
+      );
+      if (missing.length > 0 && view === 'files' && !isDemoMode()) {
         try {
-          const { data } = await supabase.storage
-            .from('encrypted-images')
-            .list(auth.pubkey, { limit: 1000 });
-          if (data && !cancelled) {
-            for (const obj of data) {
-              const sz = (obj.metadata as Record<string, unknown> | null)?.size;
-              if (typeof sz === 'number' && sz > 0) sizeMap.set(obj.name, sz);
-            }
-            // Backfill imageDedup so next load is local-only.
-            for (const uuid of missing) {
-              const sz = sizeMap.get(uuid);
-              if (!sz) continue;
-              const rec = await db.imageDedup.where('uuid').equals(uuid).first();
-              if (rec) await db.imageDedup.put({ ...rec, encryptedSize: sz });
-            }
+          const { sizes, absent } = await listImageSizes(supabase, auth.pubkey, missing);
+          for (const [uuid, sz] of sizes) sizeMap.set(uuid, sz);
+          // A uuid a full listing walked past is not in the bucket, which is
+          // what a note referencing a removed blob leaves behind. Holding it
+          // for the session is what stops paging from re-running on every
+          // render; a reload asks again, so a blob that a second device
+          // uploads later is still picked up.
+          for (const uuid of absent) absentBlobs.current.add(uuid);
+          if (cancelled) return;
+          // imageDedup keeps carrying the size where a row exists, which
+          // leaves the quota accounting reading one number.
+          for (const uuid of missing) {
+            const sz = sizeMap.get(uuid);
+            if (!sz) continue;
+            const rec = await db.imageDedup.where('uuid').equals(uuid).first();
+            if (rec) await db.imageDedup.put({ ...rec, encryptedSize: sz });
           }
         } catch { /* offline - sizes will fill in next time */ }
       }
@@ -1718,7 +1806,7 @@ function AuthenticatedView({
         : rawFileItems);
     })();
     return () => { cancelled = true; };
-  }, [rawFileItems, supabase, auth.pubkey]);
+  }, [rawFileItems, supabase, auth.pubkey, view]);
 
   useEffect(() => {
     if (view !== 'files' && view !== 'trash') return;
@@ -2139,6 +2227,27 @@ function AuthenticatedView({
   const selectedEditorMode: 'formatted' | 'markdown' =
     (selected ? editorModeOverrides[selected.id] : undefined) ?? userSettings.editorMode;
 
+  /**
+   * Re-measure the open note whenever the note under the scroller changes.
+   * The ResizeObserver covers a note GROWING as it is typed. It cannot cover
+   * a SWAP: the scroller keeps its own box while its contents are replaced,
+   * and the column is exchanged rather than resized, so the observer is left
+   * holding a detached element that will never report again.
+   *
+   * A LAYOUT effect, not a plain one, and this is the whole reason. The first
+   * build read the DOM inside `requestAnimationFrame` and measured the note
+   * that was on its way out: the callback beat React's commit, re-observed
+   * the OLD column, and the pill then stayed on a short note forever, because
+   * nothing was watching the new one either. A layout effect runs after the
+   * commit, so the column it finds is the one on screen. The frame after is a
+   * second pass for whatever settles later, an image being the usual one.
+   */
+  useLayoutEffect(() => {
+    measureBodyOverflow();
+    const a = requestAnimationFrame(measureBodyOverflow);
+    return () => cancelAnimationFrame(a);
+  }, [selectedId, selectedEditorMode, editorRevision, measureBodyOverflow]);
+
   // Which of the editor header's icon groups fit, measured on the header
   // row itself rather than the viewport: the sidebar and the notes list are
   // drag-resizable, so a narrow editor pane under a wide window has to
@@ -2159,7 +2268,6 @@ function AuthenticatedView({
     if (!node) return;
     const measure = () => {
       const w = node.clientWidth;
-      setCompactHeaderActions(w < COMPACT_HEADER_PX);
       setQuickActionsTier(w >= QUICK_ACTIONS_ALL_PX ? 2 : w >= QUICK_ACTIONS_CORE_PX ? 1 : 0);
     };
     measureHeaderRef.current = measure;
@@ -3546,7 +3654,7 @@ function AuthenticatedView({
         setFolderPicker({ mode: 'folder', folderId: id });
       }}
       onRequestDeleteFolder={(id) => {
-        if (!foldersUnlocked) { openFoldersUpsell(); return; }
+        if (!canDeleteFolder(id, foldersUnlocked)) { openFoldersUpsell(); return; }
         const f = userSettings.folders.find((x) => x.id === id);
         if (f) setFolderDeleteConfirm({ id, name: f.name });
       }}
@@ -4371,7 +4479,6 @@ function AuthenticatedView({
               setZenMode={setZenMode}
               zenToolbar={zenToolbar}
               setZenToolbar={setZenToolbar}
-              compactHeaderActions={compactHeaderActions}
               quickActionsTier={quickActionsTier}
               canGoPrev={neighbourNoteId(-1) !== null}
               canGoNext={neighbourNoteId(1) !== null}
@@ -4396,6 +4503,8 @@ function AuthenticatedView({
               tagInputRef={tagInputRef}
               editorRef={editorRef}
               setHeaderRow={setHeaderRow}
+              setNoteScroller={setNoteScroller}
+              bodyOverflows={bodyOverflows}
               noteOptionsButtonRef={noteOptionsButtonRef}
               setStickyTagRow={setStickyTagRow}
               editorRevision={editorRevision}
@@ -4426,9 +4535,6 @@ function AuthenticatedView({
               setShowShareMenu={setShowShareMenu}
               exportSingleMarkdown={exportSingleMarkdown}
               exportSingleHtml={exportSingleHtml}
-              exportAllMarkdownZip={exportAllMarkdownZip}
-              exportAllHtmlZip={exportAllHtmlZip}
-              exportAllJson={exportAllJson}
               printNote={printNote}
               showNoteOptions={showNoteOptions}
               setShowNoteOptions={setShowNoteOptions}

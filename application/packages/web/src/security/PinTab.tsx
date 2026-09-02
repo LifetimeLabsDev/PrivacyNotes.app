@@ -1,18 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check } from '../icons';
 import { useEscapeToClose } from '../useEscapeToClose';
 import {
   hasBiometricCredential,
   hasPinWrappedPhrase,
-  removePinWrappedPhrase,
   removeStoredPhrase,
   wrapPhraseWithPin,
 } from '../biometric';
-import { persistStoredPhrase } from '../phraseAtRest';
+import { HelpChip } from '../HelpChip';
 import {
   clearPinFailures,
-  clearPinFromSettings,
   getPinLockoutState,
   hasPin,
   markPinUnlocked,
@@ -20,8 +17,10 @@ import {
   setPin as storePin,
   verifyPin,
 } from '../pin';
+import { clearPin } from '../pinRecovery';
+import { ForgotPinLink, PinRecoveryForm } from '../PinRecoveryForm';
 import { PinInput, type PinInputHandle } from '../PinInput';
-import { SectionEyebrow, SettingsCallout } from '../settingsUI';
+import { SectionEyebrow, SETTINGS_HELP, SettingsCallout } from '../settingsUI';
 import type { UserSettings } from '../userSettings';
 import { TIMEOUT_OPTIONS } from './timeoutOptions';
 
@@ -34,7 +33,6 @@ export function PinTab({
   phrase,
   timeoutMinutes,
   onTimeoutChange,
-  onCancel,
   userSettings,
   onSettingsChange,
   reason,
@@ -42,7 +40,6 @@ export function PinTab({
   phrase: string;
   timeoutMinutes: number;
   onTimeoutChange: (minutes: number) => void;
-  onCancel: () => void;
   userSettings: UserSettings;
   onSettingsChange: (next: UserSettings) => void;
   /** Why the user landed here, when it was not their own idea. Protecting
@@ -55,6 +52,10 @@ export function PinTab({
   // UI transitions without remounting.
   const [pinExists, setPinExists] = useState(() => hasPin());
   const [oldPinVerified, setOldPinVerified] = useState(false);
+  // The phrase route out of a forgotten PIN, and the line that says it
+  // worked. Spec: ops/docs/plans/pin-recovery.md
+  const [recovering, setRecovering] = useState(false);
+  const [recovered, setRecovered] = useState(false);
   const [oldPin, setOldPin] = useState('');
   const [oldPinError, setOldPinError] = useState<string | null>(null);
   const [oldPinBusy, setOldPinBusy] = useState(false);
@@ -152,37 +153,45 @@ export function PinTab({
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
 
   function doRemovePin() {
-    const hasBio = hasBiometricCredential();
-    removePinWrappedPhrase();
-    if (!hasBio && userSettings.appLockEnabled) {
-      // Fire-and-forget: persist wraps the phrase at rest and falls
-      // back to the old plaintext write on a degraded browser, so the
-      // sync caller keeps the same guarantees restore had.
-      void persistStoredPhrase(phrase);
-    }
-    const updated = clearPinFromSettings(userSettings);
-    if (!hasBio) {
-      updated.appLockEnabled = false;
-    }
-    // Clear synced PIN wrap blob
-    updated.pinWrapSalt = null;
-    updated.pinWrapIV = null;
-    updated.pinWrapCiphertext = null;
-    updated.pinWrapIterations = null;
-    onSettingsChange(updated);
+    // The same clear the phrase route performs, so the two cannot drift.
+    // App lock is left alone: it is a synced setting and an enrolled
+    // fingerprint is not, so removing a PIN here used to switch off a lock
+    // another device could still open. clearPin carries the reasoning.
+    onSettingsChange(clearPin(userSettings, phrase));
     setPinExists(false);
     setOldPinVerified(false);
     reset();
   }
 
+  if (recovering) {
+    return (
+      <div className="space-y-3">
+        <PinRecoveryForm
+          phrase={phrase}
+          userSettings={userSettings}
+          onSettingsChange={onSettingsChange}
+          onCleared={() => {
+            setRecovering(false);
+            setRecovered(true);
+            setPinExists(false);
+            setOldPinVerified(false);
+            reset();
+          }}
+          onCancel={() => setRecovering(false)}
+        />
+        <HelpChip surface="pin" className="pt-2 border-t border-divider" />
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       {needsOldPin ? (
         <>
-          <p className="text-sm text-pn-soft leading-relaxed">
+          <p className={`${SETTINGS_HELP} leading-relaxed`}>
             {t('pinTab.enterCurrent')}
           </p>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <SectionEyebrow className="text-center">
               {t('pinTab.currentPin')}
             </SectionEyebrow>
@@ -195,6 +204,7 @@ export function PinTab({
               }}
               onComplete={(v) => void verifyOldPin(v)}
               autoFocus
+              compact
               disabled={oldPinBusy || lockout.locked}
             />
           </div>
@@ -210,21 +220,25 @@ export function PinTab({
           >
             {oldPinBusy ? t('pinTab.checking') : t('pinTab.verify')}
           </button>
+          <ForgotPinLink onClick={() => setRecovering(true)} />
         </>
       ) : (
         <>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {reason === 'protect' && (
               <SettingsCallout>{t('pinTab.protectReason')}</SettingsCallout>
             )}
-            <p className="text-sm text-pn-soft leading-relaxed">
+            {recovered && (
+              <p className="text-sm text-accent">{t('pinRecovery.cleared')}</p>
+            )}
+            <p className={`${SETTINGS_HELP} leading-relaxed`}>
               {pinExists
                 ? t('pinTab.replaceExisting')
                 : t('pinTab.setIntro')}
             </p>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <SectionEyebrow className="text-center">
               {t('pinTab.newPin')}
             </SectionEyebrow>
@@ -236,11 +250,12 @@ export function PinTab({
                 setError(null);
               }}
               onComplete={() => confirmRef.current?.focus()}
+              compact
               disabled={busy}
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <SectionEyebrow className="text-center">
               {t('pinTab.confirmPin')}
             </SectionEyebrow>
@@ -252,6 +267,7 @@ export function PinTab({
                 setError(null);
               }}
               onComplete={(v) => void submit(pin, v)}
+              compact
               disabled={busy}
             />
           </div>
@@ -289,9 +305,9 @@ export function PinTab({
       {/* Shared unlock-timeout selector - same rule governs the phrase
           view and any PIN-protected note once unlocked this session.
           Disabled when no PIN is set (nothing to time). */}
-      <div className="pt-4 border-t border-divider">
+      <div className="pt-3 border-t border-divider">
         <label className="block">
-          <SectionEyebrow className="mb-2">
+          <SectionEyebrow className="mb-1.5">
             {t('pinTab.reaskAfter')}
           </SectionEyebrow>
           <select
@@ -306,27 +322,13 @@ export function PinTab({
               </option>
             ))}
           </select>
-          <p className="text-xs text-pn-soft mt-1.5 leading-relaxed">
+          <p className={`${SETTINGS_HELP} mt-1.5 leading-relaxed`}>
             {t('pinTab.reaskHint')}
           </p>
         </label>
       </div>
 
-      <div className="flex gap-2">
-        <button
-          onClick={onCancel}
-          className="flex-1 rounded-md border border-divider hover:bg-surface-1 px-3 py-2 text-sm transition"
-        >
-          {t('common:actions.cancel')}
-        </button>
-        <button
-          onClick={onCancel}
-          className="flex-1 inline-flex items-center justify-center gap-2 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition"
-        >
-          <Check size={16} aria-hidden="true" />
-          {t('common:actions.done')}
-        </button>
-      </div>
+      <HelpChip surface="pin" className="pt-3 border-t border-divider" />
 
       {showRemoveConfirm && (
         <RemovePinDialog

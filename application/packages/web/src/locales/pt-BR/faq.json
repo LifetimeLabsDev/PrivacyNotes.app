@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Esqueci meu PIN. Meus dados se foram?",
+      "q": "Esqueci meu PIN. Como volto a entrar?",
       "a": [
-        "Não. O PIN é uma trava de conveniência contra olhares curiosos no seu próprio aparelho, não uma chave de criptografia. Suas notas são criptografadas com chaves derivadas da sua frase de recuperação, e a frase sempre dá acesso completo, sem PIN algum.",
-        "É uma decisão de projeto deliberada: amarrar a criptografia a um PIN de 4 dígitos significaria que um PIN esquecido destrói dados. Aqui isso nunca acontece."
+        "Nada se perde, e você mesmo pode limpar o PIN com sua frase de recuperação. O PIN é uma trava de tela, não uma chave de criptografia: suas notas são criptografadas com chaves derivadas da frase, então é a frase que as abre. Amarrar a criptografia a quatro dígitos faria um PIN esquecido destruir dados. Aqui isso nunca acontece.",
+        "Onde quer que o app peça o PIN, escolha **Esqueceu seu PIN?** e digite suas 12 palavras. Está na tela de bloqueio, em uma nota protegida e em **Configurações > Segurança > PIN**. O PIN é limpo em todos os seus dispositivos e você pode definir um novo em seguida. O desbloqueio biométrico não é afetado."
       ]
     },
     "delete-account": {

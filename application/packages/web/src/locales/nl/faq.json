@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Ik ben mijn PIN vergeten. Zijn mijn gegevens weg?",
+      "q": "Ik ben mijn PIN vergeten. Hoe kom ik er weer in?",
       "a": [
-        "Nee. De PIN is een handig slot tegen meekijkers op je eigen apparaat, geen encryptiesleutel. Je notities zijn versleuteld met sleutels die van je herstelzin zijn afgeleid, en de herstelzin geeft altijd volledige toegang, zonder PIN.",
-        "Dat is een bewuste ontwerpkeuze: versleuteling koppelen aan een PIN van 4 cijfers zou betekenen dat een vergeten PIN je gegevens vernietigt. Dat gebeurt hier nooit."
+        "Er gaat niets verloren, en je kunt de PIN zelf wissen met je herstelzin. De PIN is een slot op het scherm, geen versleutelingssleutel: je notities zijn versleuteld met sleutels uit de herstelzin, dus de herstelzin opent ze. Versleuteling aan vier cijfers koppelen zou betekenen dat een vergeten PIN gegevens vernietigt. Hier gebeurt dat nooit.",
+        "Overal waar de app om de PIN vraagt, kies je **PIN vergeten?** en typ je je 12 woorden. Het staat op het vergrendelscherm, op een beveiligde notitie en in **Instellingen > Beveiliging > PIN**. De PIN wordt op al je apparaten gewist en je kunt meteen een nieuwe instellen. Biometrisch ontgrendelen verandert niet."
       ]
     },
     "delete-account": {

@@ -109,7 +109,7 @@ Hay dos tipos, y se ven distintos a propósito.
 - Un enlace web abre un sitio: [privacynotes.app](https://privacynotes.app/es)
 - Un enlace de nota abre otra de tus notas: [[Cómo se protegen tus notas]]
 
-Los dos tienen botón en la barra. La cadena hace un enlace web. El de al lado lista tus notas y eliges la que quieres.
+Los dos tienen botón en la barra. La cadena hace un enlace web. Los corchetes hacen un enlace de nota: listan tus notas y eliges la que quieres. Escribir `[[` hace lo mismo.
 
 ---
 

@@ -13,7 +13,7 @@
     "checking": "檢查中…",
     "verify": "驗證",
     "replaceExisting": "輸入新的 4 位數 PIN 碼，將取代現有的 PIN 碼。",
-    "setIntro": "檢視助憶詞與開啟受保護筆記時，將需要輸入 4 位數 PIN 碼。有人借用你的裝置時，可以防止隨手翻看。",
+    "setIntro": "4 位數 PIN 碼可開啟你的受保護筆記和復原助憶詞，並同步到你所有裝置。",
     "protectReason": "受保護的筆記需要 PIN 碼，因為鎖會跟著你的其他裝置走，指紋不會。",
     "newPin": "新 PIN 碼",
     "confirmPin": "確認 PIN 碼",
@@ -35,6 +35,17 @@
     "introNoBio": "輸入目前的 PIN 碼以確認移除。助憶詞檢視將不再有把關。",
     "verifying": "驗證中…",
     "removePin": "移除 PIN 碼"
+  },
+  "pinRecovery": {
+    "forgotPin": "忘記 PIN 碼？",
+    "title": "重設 PIN 碼",
+    "intro": "輸入你的 12 個復原助憶詞即可清除 PIN 碼。之後就能立刻設定新的。",
+    "lockIntro": "輸入你的 12 個復原助憶詞。它會解鎖應用程式並清除 PIN 碼。",
+    "consequence": "PIN 碼會在你所有裝置上清除。生物辨識解鎖不受影響。",
+    "wrongPhrase": "這不是這個帳戶的復原助憶詞。",
+    "clearPin": "清除 PIN 碼",
+    "lockAction": "解鎖並清除 PIN 碼",
+    "cleared": "PIN 碼已清除。可在下方設定新的，或維持關閉。"
   },
   "phraseGate": {
     "enterToView": "輸入 4 位數 PIN 碼以檢視你的助憶詞。",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "輸入一次 PIN 碼即可開啟這項功能。它會鎖住一份你的復原助憶詞副本，只有你的 PIN 碼能打開應用程式。",
     "relockAfter": "重新鎖定間隔",
     "relockHint": "適用於應用程式鎖定畫面與所有受 PIN 碼保護的筆記。",
-    "perDeviceNote": "每部裝置各自註冊。啟用後，在這部裝置存取應用程式需要你的指紋或臉部。",
+    "perDeviceNote": "生物辨識解鎖開啟的筆記和 PIN 碼相同。它只留在這部裝置上，永不同步。",
     "disableConfirmTitle": "停用生物辨識",
     "disableConfirmLabel": "停用",
     "disableConfirmBody": "要在此裝置停用生物辨識解鎖嗎？",

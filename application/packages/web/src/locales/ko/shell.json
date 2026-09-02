@@ -198,7 +198,9 @@
     "expand": "펼치기",
     "reorder": "{{folder}} 순서 바꾸기",
     "saveName": "폴더 이름 저장",
-    "actionsForFolder": "{{folder}} 폴더 작업"
+    "actionsForFolder": "{{folder}} 폴더 작업",
+    "seedSecurity": "보안",
+    "seedTravel": "여행"
   },
   "collapsedSidebar": {
     "newNote": "새 노트",

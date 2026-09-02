@@ -109,7 +109,7 @@ Det finns två sorter, och de ser olika ut med flit.
 - En webblänk öppnar en sida: [privacynotes.app](https://privacynotes.app/sv)
 - En anteckningslänk öppnar en annan av dina anteckningar: [[Hur dina anteckningar skyddas]]
 
-Båda har en knapp i fältet. Kedjan gör en webblänk. Knappen bredvid listar dina anteckningar, och du väljer den du menar.
+Båda har en knapp i fältet. Kedjan gör en webblänk. Hakparenteserna gör en anteckningslänk: de listar dina anteckningar, och du väljer den du menar. Att skriva `[[` gör samma sak.
 
 ---
 

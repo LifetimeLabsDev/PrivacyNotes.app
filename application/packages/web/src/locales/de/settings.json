@@ -147,6 +147,8 @@
     "faviconsDesc": "Logos der Websites neben Links und Tresor-Logins.",
     "faviconsExample": "Beispiel:",
     "faviconsProxy": "Wird über unseren Proxy geladen. Gilt nur auf diesem Gerät.",
+    "invisiblesTitle": "Unsichtbare Zeichen",
+    "invisiblesDesc": "Leerzeichen, Zeilenumbrüche und Absatzmarken beim Schreiben anzeigen.",
     "sidebarTitle": "Seitenleiste",
     "sidebarDesc": "Welche Ansichten in der Seitenleiste erscheinen und welche Einträge die Liste „Alle“ enthält.",
     "colInSidebar": "Seitenleiste",

@@ -125,7 +125,8 @@
     "pkgToggle": "التثبيت عبر مدير حزم ({{platforms}})",
     "pkgBrewDesc": "التحديثات يتولاها التطبيق نفسه، لا brew",
     "pkgWingetDesc": "مدمج في Windows 10 و11",
-    "pkgFootnote": "كلا الخيارين يثبّت النسخة الموقّعة ذاتها من خوادمنا، والتطبيق يستمر في تحديث نفسه في الحالتين.",
+    "pkgScoopDesc": "التحديثات تأتي من Scoop، لا من التطبيق",
+    "pkgFootnote": "كل واحد منها يثبّت النسخة الموقّعة ذاتها. مع Homebrew و winget يحدّث التطبيق نفسه. ومع Scoop تشغّل الأمر scoop update privacynotes.",
     "githubLink": "كل الإصدارات على GitHub",
     "githubNote": "موقّع · علني · قابل للتحقق · كل إصدار دون استثناء"
   },

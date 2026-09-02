@@ -45,9 +45,11 @@
     "required": "Update required",
     "changelog": "Changelog",
     "refresh": "Refresh",
+    "restart": "Restart",
     "dismiss": "Dismiss",
     "download": "Download",
-    "update": "Update"
+    "update": "Update",
+    "copyCommand": "Copy command"
   },
   "hotkeys": {
     "heading": "Hotkeys Help",

@@ -47,9 +47,11 @@
     "required": "Wymagana aktualizacja",
     "changelog": "Changelog",
     "refresh": "Odśwież",
+    "restart": "Uruchom ponownie",
     "dismiss": "Odrzuć",
     "download": "Pobierz",
-    "update": "Aktualizuj"
+    "update": "Aktualizuj",
+    "copyCommand": "Kopiuj polecenie"
   },
   "hotkeys": {
     "heading": "Pomoc: skróty klawiszowe",

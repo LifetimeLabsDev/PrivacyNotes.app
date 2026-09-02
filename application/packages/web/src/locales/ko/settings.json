@@ -138,6 +138,8 @@
     "faviconsDesc": "링크와 보관함 로그인 옆에 표시되는 사이트 로고예요.",
     "faviconsExample": "예시:",
     "faviconsProxy": "아이콘은 저희 프록시를 거쳐 불러와요. 이 기기에서만 적용돼요.",
+    "invisiblesTitle": "보이지 않는 문자",
+    "invisiblesDesc": "쓰는 동안 공백, 줄바꿈, 문단 기호를 보여줘요.",
     "sidebarTitle": "사이드바",
     "sidebarDesc": "사이드바에 표시할 뷰와 전체 목록에 포함할 항목입니다.",
     "colInSidebar": "사이드바",

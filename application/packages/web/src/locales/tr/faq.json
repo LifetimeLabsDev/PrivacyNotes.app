@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "PIN'imi unuttum. Verilerim gitti mi?",
+      "q": "PIN'imi unuttum. Nasıl geri girerim?",
       "a": [
-        "Hayır. PIN, kendi cihazınızda omuz üstünden bakılmasına karşı bir kolaylık kilididir, şifreleme anahtarı değil. Notlarınız kurtarma ifadenizden türetilen anahtarlarla şifrelenir ve ifade her zaman PIN olmadan tam erişim sağlar.",
-        "Bu bilinçli bir tasarım tercihi: şifrelemeyi 4 haneli bir PIN'e bağlamak, unutulan bir PIN'in veriyi yok etmesi demek olurdu. Burada asla öyle olmaz."
+        "Hiçbir şey kaybolmaz ve PIN'i kurtarma ifadenizle kendiniz temizleyebilirsiniz. PIN bir ekran kilididir, şifreleme anahtarı değil: notlarınız kurtarma ifadesinden türetilen anahtarlarla şifrelenir, yani notları açan şey ifadedir. Şifrelemeyi dört haneye bağlamak, unutulan bir PIN'in veriyi yok etmesi demek olurdu. Burada bu asla olmaz.",
+        "Uygulama PIN sorduğu her yerde **PIN'inizi mi unuttunuz?** seçeneğini seçin ve 12 kelimenizi yazın. Kilit ekranında, korumalı bir notta ve **Ayarlar > Güvenlik > PIN** altında bulunur. PIN tüm cihazlarınızda temizlenir ve hemen yeni bir PIN belirleyebilirsiniz. Biyometrik kilit açma bundan etkilenmez."
       ]
     },
     "delete-account": {

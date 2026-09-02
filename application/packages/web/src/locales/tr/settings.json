@@ -147,6 +147,8 @@
     "faviconsDesc": "Bağlantıların ve kasa girişlerinin yanındaki site logoları.",
     "faviconsExample": "Örnek:",
     "faviconsProxy": "Simgeler proxy sunucumuz üzerinden yüklenir. Yalnızca bu cihazda.",
+    "invisiblesTitle": "Görünmez karakterler",
+    "invisiblesDesc": "Yazarken boşlukları, satır sonlarını ve paragraf işaretlerini gösterir.",
     "sidebarTitle": "Kenar çubuğu",
     "sidebarDesc": "Kenar çubuğunda hangi görünümlerin yer alacağı ve Tümü listesinin neleri içereceği.",
     "colInSidebar": "Kenar çubuğu",

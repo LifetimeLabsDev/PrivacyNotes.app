@@ -198,7 +198,9 @@
     "expand": "Desplega",
     "reorder": "Reordena {{folder}}",
     "saveName": "Desa el nom de la carpeta",
-    "actionsForFolder": "Accions per a la carpeta {{folder}}"
+    "actionsForFolder": "Accions per a la carpeta {{folder}}",
+    "seedSecurity": "Seguretat",
+    "seedTravel": "Viatges"
   },
   "collapsedSidebar": {
     "newNote": "Nota nova",

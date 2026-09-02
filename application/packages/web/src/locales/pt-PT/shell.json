@@ -198,7 +198,9 @@
     "expand": "Expandir",
     "reorder": "Reordenar {{folder}}",
     "saveName": "Guardar o nome da pasta",
-    "actionsForFolder": "Ações para a pasta {{folder}}"
+    "actionsForFolder": "Ações para a pasta {{folder}}",
+    "seedSecurity": "Segurança",
+    "seedTravel": "Viagens"
   },
   "collapsedSidebar": {
     "newNote": "Nova nota",

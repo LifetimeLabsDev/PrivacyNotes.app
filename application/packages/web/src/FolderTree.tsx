@@ -7,6 +7,7 @@ import { INDENT_PX, MAX_INDENT_LEVEL, useFolderExpansion } from './folderTreeSta
 import { FolderNameInput } from './FolderNameInput';
 import {
   canCreateChild,
+  canDeleteFolder,
   folderSiblingSorter,
   type FolderSortDir,
   type FolderSortField,
@@ -60,7 +61,9 @@ export interface FolderTreeProps {
   onReorderFolders: (id: string, parentId: string | null, orderedIds: string[]) => void;
   /** Free account: the tree is browsable but every folder action is
    *  Pro - affordances fire onLockedAction (the upgrade modal)
-   *  instead of their real handler. */
+   *  instead of their real handler. Deleting a starter folder is the one
+   *  action that still works, so the tree it was given is not a tree it
+   *  is stuck with (canDeleteFolder in folders.ts carries the reason). */
   locked?: boolean;
   onLockedAction?: () => void;
   /** Sibling sort (persisted per-device in NotesView, like tag sort). */
@@ -127,8 +130,10 @@ export function FolderTree({
 
   function openMenuAt(id: string, x: number, y: number) {
     // Locked accounts browse the tree but every action upsells - the
-    // menu's items are all actions, so the menu itself is the gate.
-    if (locked) {
+    // menu's items are all actions, so the menu itself is the gate. A
+    // starter folder is the exception: its menu opens carrying Delete
+    // alone, which is the only item that would work.
+    if (!canDeleteFolder(id, !locked)) {
       onLockedAction?.();
       return;
     }
@@ -339,42 +344,50 @@ export function FolderTree({
             }}
             className="fixed z-[60] min-w-[200px] rounded-md border border-divider bg-surface-2 shadow-lg py-1"
           >
-            {menuCanNest && (
-              <button
-                onClick={() => {
-                  setMenu(null);
-                  setCreateDraft('');
-                  setCreatingUnder(menuFolder.id);
-                  expand(folders, menuFolder.id);
-                }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
-              >
-                <FolderPlus />
-                {t('folders.newSubfolder')}
-              </button>
+            {/* When locked, this menu opens only on a starter folder and
+                carries Delete alone. The other three are Pro, and a menu
+                whose every item opens the paywall is worse than one that
+                does the single thing it offers. */}
+            {!locked && (
+              <>
+                {menuCanNest && (
+                  <button
+                    onClick={() => {
+                      setMenu(null);
+                      setCreateDraft('');
+                      setCreatingUnder(menuFolder.id);
+                      expand(folders, menuFolder.id);
+                    }}
+                    className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
+                  >
+                    <FolderPlus />
+                    {t('folders.newSubfolder')}
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setMenu(null);
+                    onRequestMove(menuFolder.id);
+                  }}
+                  className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
+                >
+                  <ArrowElbowDownRight />
+                  {t('folders.move')}
+                </button>
+                <button
+                  onClick={() => {
+                    setMenu(null);
+                    setRenameBuffer(menuFolder.name);
+                    setRenamingId(menuFolder.id);
+                  }}
+                  className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
+                >
+                  <PencilSimple />
+                  {t('folders.rename')}
+                </button>
+                <div className="my-1 border-t border-divider" />
+              </>
             )}
-            <button
-              onClick={() => {
-                setMenu(null);
-                onRequestMove(menuFolder.id);
-              }}
-              className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
-            >
-              <ArrowElbowDownRight />
-              {t('folders.move')}
-            </button>
-            <button
-              onClick={() => {
-                setMenu(null);
-                setRenameBuffer(menuFolder.name);
-                setRenamingId(menuFolder.id);
-              }}
-              className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
-            >
-              <PencilSimple />
-              {t('folders.rename')}
-            </button>
-            <div className="my-1 border-t border-divider" />
             <button
               onClick={() => {
                 setMenu(null);

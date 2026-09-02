@@ -198,7 +198,9 @@
     "expand": "Expand",
     "reorder": "Reorder {{folder}}",
     "saveName": "Save folder name",
-    "actionsForFolder": "Actions for folder {{folder}}"
+    "actionsForFolder": "Actions for folder {{folder}}",
+    "seedSecurity": "Security",
+    "seedTravel": "Travel"
   },
   "collapsedSidebar": {
     "newNote": "New note",

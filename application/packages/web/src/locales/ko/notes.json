@@ -173,7 +173,6 @@
   "share": {
     "hover": "공유 / 내보내기",
     "ariaLabel": "공유 또는 내보내기",
-    "thisNote": "이 노트",
     "currentMdTitle": "현재 노트 (.md)",
     "currentMdDesc": "front-matter가 포함된 raw markdown.",
     "currentHtmlTitle": "현재 노트 (.html)",
@@ -181,14 +180,7 @@
     "printTitle": "인쇄 / PDF로 저장",
     "printDesc": "인쇄 대화 상자를 열어요. PDF로 저장하거나 프린터로 보내세요.",
     "burnTitle": "공유 & Burn After Reading",
-    "burnDesc": "이 노트를 한 번만 볼 수 있는 링크로 게시해요. 링크는 읽히면 스스로 파기돼요. 원본 노트는 계정에 안전하게 남아요.",
-    "backup": "백업",
-    "fullBackupTitle": "전체 백업 (.zip)",
-    "fullBackupDesc": "노트, 저널, 보관함, 할 일, 이미지, 오디오, 파일까지 전부.",
-    "allHtmlTitle": "모든 항목 (.html 묶음 .zip)",
-    "allHtmlDesc": "항목마다 인쇄 가능한 HTML 하나씩. 오프라인 열람에 좋아요.",
-    "jsonTitle": "텍스트 백업 (.json)",
-    "jsonDesc": "모든 텍스트 콘텐츠와 메타데이터, 이미지와 파일은 제외."
+    "burnDesc": "이 노트를 한 번만 볼 수 있는 링크로 게시해요. 링크는 읽히면 스스로 파기돼요. 원본 노트는 계정에 안전하게 남아요."
   },
   "weekReview": {
     "title": "주간 리뷰",

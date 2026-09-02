@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Esqueci-me do meu PIN. Os meus dados desapareceram?",
+      "q": "Esqueci-me do PIN. Como volto a entrar?",
       "a": [
-        "Não. O PIN é um fecho de conveniência contra olhares curiosos no teu próprio dispositivo, não uma chave de encriptação. As tuas notas são encriptadas com chaves derivadas da tua frase de recuperação, e a frase dá sempre acesso total, sem PIN nenhum.",
-        "É uma decisão de design deliberada: amarrar a encriptação a um PIN de 4 dígitos significaria que um PIN esquecido destrói dados. Aqui isso nunca acontece."
+        "Não se perde nada e podes limpar o PIN sozinho com a tua frase de recuperação. O PIN é um bloqueio de ecrã, não uma chave de encriptação: as tuas notas estão encriptadas com chaves derivadas da frase, por isso é a frase que as abre. Ligar a encriptação a quatro dígitos faria com que um PIN esquecido destruísse dados. Aqui nunca acontece.",
+        "Sempre que a aplicação pedir o PIN, escolhe **Esqueceste-te do PIN?** e escreve as tuas 12 palavras. Está no ecrã de bloqueio, numa nota protegida e em **Definições > Segurança > PIN**. O PIN é limpo em todos os teus dispositivos e podes definir um novo logo de seguida. O desbloqueio biométrico não é afetado."
       ]
     },
     "delete-account": {

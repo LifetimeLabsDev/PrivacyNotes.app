@@ -198,7 +198,9 @@
     "expand": "展開",
     "reorder": "{{folder}} を並べ替え",
     "saveName": "フォルダ名を保存",
-    "actionsForFolder": "フォルダ{{folder}}の操作"
+    "actionsForFolder": "フォルダ{{folder}}の操作",
+    "seedSecurity": "セキュリティ",
+    "seedTravel": "旅行"
   },
   "collapsedSidebar": {
     "newNote": "新規ノート",

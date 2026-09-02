@@ -1,6 +1,6 @@
 import type { Dispatch, ReactNode, RefObject, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowUUpLeft as Undo2Icon, ArrowUUpRight as Redo2Icon, X, ArrowLeft, PushPin, ArrowCounterClockwise, Trash, Fire, DotsThreeOutlineVertical, CaretLeft, CaretRight, PencilSimpleSlash, MarkdownLogo, Paragraph, MagnifyingGlass, TextAa, FileMd, FrameCorners } from '../icons';
+import { ArrowUUpLeft as Undo2Icon, ArrowUUpRight as Redo2Icon, X, ArrowLeft, ArrowCounterClockwise, Trash, DotsThreeOutlineVertical, CaretLeft, CaretRight, PencilSimpleSlash, MarkdownLogo, Paragraph, MagnifyingGlass, FrameCorners } from '../icons';
 import type { AuthState } from '../auth';
 import type { LocalNote } from '../db';
 import { updateNote } from '../notesRepo';
@@ -58,29 +58,22 @@ const HEADER_ICON = 18;
  * Cycles the editor's reading column: default, wide, full. The cap itself
  * lives in one place (`.pn-content-col` in index.css); this only steps the
  * `data-content-width` attribute the CSS reads.
- *
- * Rendered twice - last in the tag row's control cluster, and again in the
- * zen header - because the tag row is hidden in zen. It follows the markdown
- * toggle in both, so the two headers read the same way. The `box` prop is the only
- * difference: the cluster's borderless 32px square, or zen's bordered one.
- *
- * `.pn-width-toggle` shows it only where the axis can change something: a
- * PANE wider than the default cap. That is a container query, not a media
- * query, because the sidebar and the notes list are drag-resizable and the
- * window width does not predict the pane's. Settings > Appearance carries
- * the axis at every width.
  * Spec: ops/docs/design-decisions.md (editor content column max-width)
+ */
+/**
+ * The reading-width cycle, and zen is its only home in the editor: zen
+ * strips the page down and takes the settings sheet away with it, so the one
+ * taste that changes how the stripped page reads has to stay reachable.
+ * Everywhere else Settings > Appearance carries the same axis, at every
+ * width, which the tag-row copy never did - it needed a pane past 56rem to
+ * appear at all. It wears zen's bordered box, like its two neighbours.
  */
 function ContentWidthButton({
   contentWidth,
   onCycle,
-  box,
-  tabIndex,
 }: {
   contentWidth: ContentWidth;
   onCycle: () => void;
-  box: 'cluster' | 'zen';
-  tabIndex?: number;
 }) {
   const { t } = useTranslation('notes');
   // The tip names what the click DOES, like the markdown toggle beside it,
@@ -93,18 +86,13 @@ function ContentWidthButton({
         : t('editor.widthDefault');
   const on = contentWidth !== 'default';
   return (
-    <HoverLabel label={nextLabel} position="below-end" className="pn-width-toggle">
+    <HoverLabel label={nextLabel} position="below-end">
       <button
         type="button"
-        tabIndex={tabIndex}
         onMouseDown={(e) => e.preventDefault()}
         onClick={onCycle}
         aria-label={nextLabel}
-        className={
-          box === 'zen'
-            ? `shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md border transition ${on ? 'border-accent/50 bg-accent/10 text-accent' : 'border-divider bg-surface-2 text-neutral-600 dark:text-neutral-300 hover:text-accent hover:border-accent/50'}`
-            : `${HEADER_BTN_BASE} w-8 ${on ? 'text-accent bg-accent/15' : HEADER_BTN_REST}`
-        }
+        className={`shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md border transition ${on ? 'border-accent/50 bg-accent/10 text-accent' : 'border-divider bg-surface-2 text-neutral-600 dark:text-neutral-300 hover:text-accent hover:border-accent/50'}`}
       >
         <FrameCorners size={HEADER_ICON} aria-hidden="true" />
       </button>
@@ -128,7 +116,6 @@ export interface NoteEditorPaneProps {
   zenToolbar: boolean;
   setZenToolbar: Dispatch<SetStateAction<boolean>>;
 
-  compactHeaderActions: boolean;
   /** How many quick-action groups the header row fits. Measured in NotesView. */
   quickActionsTier: QuickActionsTier;
   /** Previous/next note in the list (GitHub #246). Never hides. */
@@ -168,6 +155,12 @@ export interface NoteEditorPaneProps {
   setHeaderRow: (node: HTMLDivElement | null) => void;
   noteOptionsButtonRef: RefObject<HTMLButtonElement | null>;
   setStickyTagRow: (node: HTMLDivElement | null) => void;
+  /** Callback ref for the editor's scroll container, so NotesView can watch
+   *  the note grow past it. Same shape as setStickyTagRow above. */
+  setNoteScroller: (node: HTMLDivElement | null) => void;
+  /** True once the open note runs past its scroller. Drives the find pill,
+   *  and nothing else. */
+  bodyOverflows: boolean;
 
   editorRevision: number;
   wcBody: string;
@@ -204,9 +197,6 @@ export interface NoteEditorPaneProps {
   setShowShareMenu: Dispatch<SetStateAction<boolean>>;
   exportSingleMarkdown: (n: LocalNote) => Promise<void> | void;
   exportSingleHtml: (n: LocalNote) => Promise<void> | void;
-  exportAllMarkdownZip: (ns: LocalNote[]) => Promise<void> | void;
-  exportAllHtmlZip: (ns: LocalNote[]) => Promise<void> | void;
-  exportAllJson: (ns: LocalNote[]) => Promise<void> | void;
   printNote: (n: LocalNote) => Promise<void> | void;
 
   showNoteOptions: boolean;
@@ -246,7 +236,6 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     setZenMode,
     zenToolbar,
     setZenToolbar,
-    compactHeaderActions,
     quickActionsTier,
     canGoPrev,
     canGoNext,
@@ -273,6 +262,8 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     setHeaderRow,
     noteOptionsButtonRef,
     setStickyTagRow,
+    setNoteScroller,
+    bodyOverflows,
     editorRevision,
     wcBody,
     setWcBody,
@@ -301,9 +292,6 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     setShowShareMenu,
     exportSingleMarkdown,
     exportSingleHtml,
-    exportAllMarkdownZip,
-    exportAllHtmlZip,
-    exportAllJson,
     printNote,
     showNoteOptions,
     setShowNoteOptions,
@@ -411,70 +399,36 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     },
   };
   /**
-   * The formatted/markdown switch, one of the bodyControls below. Split out
-   * so the canSwitchEditorMode condition reads on its own; null on a note
-   * that cannot switch.
+   * The only control left in the editor's top-right slot, beside the
+   * collapsed outline pill.
+   *
+   * The slot floats over the note's own text, so a control earns a place in
+   * it by being able to take itself away again. The outline draws nothing on
+   * a note without headings; find draws nothing on a note that fits the
+   * screen, because there is nothing to scroll past and looking for a word
+   * you can already see is not a thing anyone does. On a note short enough,
+   * the corner is empty.
+   *
+   * Two controls that used to sit here have permanent homes elsewhere and
+   * left. The markdown switch is the first row of the "..." menu and the
+   * link under the word count. Invisible characters is a row in Settings >
+   * Appearance and the toggle beside the word count. Neither could hide
+   * itself, and three opaque boxes over the first line of every note is what
+   * GitHub #265 reported.
+   *
+   * Find drives the rich editor's own search plugin through editorRef, so it
+   * has nothing to act on over the markdown textarea and stays away there.
    * Spec: ops/docs/ui-patterns.md (section 80)
    */
-  const modeSwitchButton = canSwitchEditorMode ? (
+  const bodyControls = selectedEditorMode !== 'markdown' && bodyOverflows ? (
     <EditorSlotPill
-      label={selectedEditorMode === 'markdown' ? t('editor.showFormatted') : t('editor.showMarkdown')}
-      onClick={toggleEditorMode}
+      label={t('editor.findInNote')}
+      onClick={() => editorRef.current?.toggleFind()}
       tabIndex={isMobile ? -1 : undefined}
     >
-      {/* The glyph names the DESTINATION, like the label: a markdown file
-          when the click opens the source, an "Aa" when it brings the
-          formatted text back. The bare markdown mark is deliberately not
-          used for either - the tag row wears it for the formatting bar, and
-          two of them near each other read as one control drawn twice. */}
-      {selectedEditorMode === 'markdown'
-        ? <TextAa size={17} aria-hidden="true" />
-        : <FileMd size={17} aria-hidden="true" />}
+      <MagnifyingGlass size={17} />
     </EditorSlotPill>
   ) : null;
-  /**
-   * The controls that act on the note BODY, handed to Editor and rendered
-   * in its top-right slot beside the collapsed outline pill.
-   *
-   * They sit there rather than in the tag row because that is the corner
-   * they act on, and because the tag row's chips were losing to them: find,
-   * the text switch and the invisible-characters toggle are about what you
-   * are reading, while the two controls left in the tag row are about the
-   * rows above and below it. The slot is a row that already exists on every
-   * note, so nothing floats over the text and nothing new is reserved.
-   * Spec: ops/docs/ui-patterns.md (section 80)
-   */
-  const bodyControls = (
-    <>
-      {/* Find drives the rich editor's own search plugin through editorRef,
-          so it has nothing to act on over the markdown textarea and hides
-          there. The source view keeps the switch, which is the way back. */}
-      {selectedEditorMode !== 'markdown' && (
-        <EditorSlotPill
-          label={t('editor.findInNote')}
-          onClick={() => editorRef.current?.toggleFind()}
-          tabIndex={isMobile ? -1 : undefined}
-        >
-          <MagnifyingGlass size={17} />
-        </EditorSlotPill>
-      )}
-      {modeSwitchButton}
-      {/* Invisible characters. Also has a home in the note footer, beside the
-          word count, which is where it has always been and stays: that is the
-          copy you find without scrolling to the end of a long note. Nothing
-          to decorate in the source view either. */}
-      {selectedEditorMode !== 'markdown' && (
-        <EditorSlotPill
-          label={invisibles ? t('editor.invisiblesHide') : t('editor.invisiblesShow')}
-          onClick={() => setInvisibles(!invisibles)}
-          active={invisibles}
-          tabIndex={isMobile ? -1 : undefined}
-        >
-          <Paragraph size={17} weight={invisibles ? 'fill' : 'duotone'} />
-        </EditorSlotPill>
-      )}
-    </>
-  );
 
   return (
     <>
@@ -631,38 +585,13 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             onConvertType={() => void convertNoteType()}
           />
         )}
-        {/* Share & Burn After Reading - a one-time view link. Amber so
-            it reads as the share affordance; sits before the pin. */}
-        {view !== 'trash' && (
-          <HoverLabel label={t('editor.burn')} position="below">
-            <button
-              onClick={() => void handleBurnShare(selected)}
-              aria-label={t('editor.burn')}
-              className={`${compactHeaderActions || zenMode ? 'hidden' : ''} ${HEADER_BTN_BASE} w-8 text-orange-600 dark:text-orange-400 active:scale-95 [@media(hover:hover)]:hover:bg-orange-500/10`}
-            >
-              <Fire size={HEADER_ICON} />
-            </button>
-          </HoverLabel>
-        )}
-        {/* Pin button - collapses into the "..." menu when the header
-            is narrow (compactHeaderActions) so the title keeps room. */}
-        {view !== 'trash' && (
-          <HoverLabel label={selected.starred === 1 ? t('editor.unpin') : t('editor.pin')} position="below">
-            <button
-              onClick={() =>
-                void handleToggleStar(selected.id, selected.starred !== 1)
-              }
-              aria-label={selected.starred === 1 ? t('editor.unpin') : t('editor.pin')}
-              className={`${compactHeaderActions || zenMode ? 'hidden' : ''} ${HEADER_BTN}`}
-            >
-            {selected.starred === 1 ? (
-              <PushPin size={HEADER_ICON} weight="fill" className="text-accent" />
-            ) : (
-              <PushPin size={HEADER_ICON} />
-            )}
-            </button>
-          </HoverLabel>
-        )}
+        {/* Burn, pin and trash are not here. All three are rare, all three
+            already had a permanent row in the "..." menu, and the header was
+            carrying up to thirteen icons beside a title it kept truncating.
+            Share is the one that stayed, because it is the one people reach
+            for, and it now holds its place at every width instead of
+            dropping out on a narrow pane.
+            Spec: ops/docs/design-decisions.md (share holds the header) */}
         {view === 'trash' ? (
           <>
             {/* Trash actions - labeled so "Restore" vs "Delete
@@ -697,81 +626,15 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             open={showShareMenu}
             onClose={() => setShowShareMenu(false)}
             onToggle={() => setShowShareMenu((v) => !v)}
-            compactHeaderActions={compactHeaderActions}
             zenMode={zenMode}
             selected={selected}
-            notes={notes}
             exportSingleMarkdown={exportSingleMarkdown}
             exportSingleHtml={exportSingleHtml}
-            exportAllMarkdownZip={exportAllMarkdownZip}
-            exportAllHtmlZip={exportAllHtmlZip}
-            exportAllJson={exportAllJson}
             printNote={printNote}
             handleBurnShare={handleBurnShare}
           />
-          {/* Trash button - collapses into the "..." menu when the
-              header is narrow to give the title more room. */}
-          <HoverLabel label={t('editor.moveToTrash')} position="below">
-            <button
-              onClick={() => void handleTrash(selected.id)}
-              aria-label={t('editor.moveToTrash')}
-              className={`${compactHeaderActions || zenMode ? 'hidden' : ''} ${HEADER_BTN_BASE} w-8 text-red-500 dark:text-red-400 active:scale-95 [@media(hover:hover)]:hover:bg-red-500/10`}
-            >
-              <Trash size={HEADER_ICON} />
-            </button>
-          </HoverLabel>
           </>
         )}
-        {/* Note options - the complete per-note surface, and the only
-            one that never hides: every icon to its left collapses under
-            560px, so the menu repeats them in a strip and adds the Pro
-            toggles, folders, history and the note-info block. It renders
-            in the trash view too, where it carries Restore and Delete
-            forever, and in zen, where the vertical three-dot glyph is
-            narrow enough not to compete with the page. Anchored relative
-            so the popover positions under the button. */}
-        <div className="relative shrink-0">
-          <HoverLabel label={t('editor.noteOptions')} position="below-end">
-            <button
-              ref={noteOptionsButtonRef}
-              onClick={() => setShowNoteOptions((v) => !v)}
-              aria-label={t('editor.noteOptions')}
-              aria-expanded={showNoteOptions}
-              // In zen it takes the bordered box its two neighbours wear.
-              // Zen strips the page to the note, so the few controls left
-              // have to look like controls; borderless among bordered reads
-              // as a stray glyph rather than the third button in a row.
-              className={
-                zenMode
-                  ? `shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md border transition ${showNoteOptions ? 'border-accent/50 bg-accent/10 text-accent' : 'border-divider bg-surface-2 text-neutral-600 dark:text-neutral-300 hover:text-accent hover:border-accent/50'}`
-                  : `${HEADER_BTN_BASE} w-8 ${showNoteOptions ? 'text-accent bg-accent/15' : HEADER_BTN_REST}`
-              }
-          >
-            <DotsThreeOutlineVertical size={HEADER_ICON} aria-hidden="true" />
-            </button>
-          </HoverLabel>
-          {showNoteOptions && (
-            <NoteOptionsMenu
-              {...noteGuards}
-              isTrash={view === 'trash'}
-              actionsHiddenInHeader={compactHeaderActions || zenMode}
-              onRestore={() => void handleRestore(selected.id)}
-              onDeleteForever={() => setDeleteConfirm({ id: selected.id, title: selected.title || '' })}
-              onBurn={() => void handleBurnShare(selected)}
-              anchorRef={noteOptionsButtonRef}
-              onDuplicate={() => void handleDuplicate(selected.id)}
-              onToggleStar={() =>
-                void handleToggleStar(selected.id, selected.starred !== 1)
-              }
-              onShare={() => setShowShareMenu(true)}
-              onTrash={() => void handleTrash(selected.id)}
-              onConvertType={() => void convertNoteType()}
-              {...(canSwitchEditorMode
-                ? { editorMode: selectedEditorMode, onToggleEditorMode: toggleEditorMode }
-                : {})}
-            />
-          )}
-        </div>
         {zenMode && markdownBody && (
           // Zen's only formatting affordance, and testers kept missing
           // it: borderless with a 16px glyph it read as a label beside
@@ -794,12 +657,68 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           </HoverLabel>
         )}
         {zenMode && (
-          <ContentWidthButton
-            contentWidth={contentWidth}
-            onCycle={cycleContentWidth}
-            box="zen"
-          />
+          <ContentWidthButton contentWidth={contentWidth} onCycle={cycleContentWidth} />
         )}
+        {/* Note options - the complete per-note surface, and the only
+            control that never hides. Burn, pin and trash live in its strip
+            and nowhere else; it adds the Pro toggles, folders, history and
+            the note-info block. It renders in the trash view too, where it
+            carries Restore and Delete forever, and in zen, where the
+            vertical three-dot glyph is narrow enough not to compete with
+            the page.
+
+            Last in the row after the zen controls, so in zen it sits beside
+            Exit Zen rather than in front of the pair of toggles: the two
+            that end the row are the two that leave the note, and a menu
+            wedged before them splits controls that belong together. Outside
+            zen those three render nothing, so this is still the row's last
+            item there. Anchored relative so the popover opens under the
+            button. */}
+        <div className="relative shrink-0">
+          <HoverLabel label={t('editor.noteOptions')} position="below-end">
+            <button
+              ref={noteOptionsButtonRef}
+              onClick={() => setShowNoteOptions((v) => !v)}
+              aria-label={t('editor.noteOptions')}
+              aria-expanded={showNoteOptions}
+              // In zen it takes the bordered box its neighbours wear.
+              // Zen strips the page to the note, so the few controls left
+              // have to look like controls; borderless among bordered reads
+              // as a stray glyph rather than one more button in the row.
+              className={
+                zenMode
+                  ? `shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md border transition ${showNoteOptions ? 'border-accent/50 bg-accent/10 text-accent' : 'border-divider bg-surface-2 text-neutral-600 dark:text-neutral-300 hover:text-accent hover:border-accent/50'}`
+                  : `${HEADER_BTN_BASE} w-8 ${showNoteOptions ? 'text-accent bg-accent/15' : HEADER_BTN_REST}`
+              }
+          >
+            <DotsThreeOutlineVertical size={HEADER_ICON} aria-hidden="true" />
+            </button>
+          </HoverLabel>
+          {showNoteOptions && (
+            <NoteOptionsMenu
+              {...noteGuards}
+              isTrash={view === 'trash'}
+              onRestore={() => void handleRestore(selected.id)}
+              onDeleteForever={() => setDeleteConfirm({ id: selected.id, title: selected.title || '' })}
+              onBurn={() => void handleBurnShare(selected)}
+              anchorRef={noteOptionsButtonRef}
+              onDuplicate={() => void handleDuplicate(selected.id)}
+              onToggleStar={() =>
+                void handleToggleStar(selected.id, selected.starred !== 1)
+              }
+              // Share is the one strip cell that comes and goes, because it
+              // is the one action still in the header: two copies at one
+              // width would read as the same control drawn twice. Zen hides
+              // the header's copy, so zen is where the cell earns its place.
+              {...(zenMode ? { onShare: () => setShowShareMenu(true) } : {})}
+              onTrash={() => void handleTrash(selected.id)}
+              onConvertType={() => void convertNoteType()}
+              {...(canSwitchEditorMode
+                ? { editorMode: selectedEditorMode, onToggleEditorMode: toggleEditorMode }
+                : {})}
+            />
+          )}
+        </div>
         {zenMode && (
           // Last control in the row and hard against the window's
           // right edge, so the centered tip was cut by the viewport
@@ -831,6 +750,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
       {isNoteLocked(selected) || removingProtection ? (
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 pt-0 pb-6">
           <ProtectedNoteGate
+            phrase={auth.phrase}
             onUnlock={onPinUnlocked}
             initialIntent={removingProtection ? 'remove' : 'unlock'}
             onExitRemove={() => setRemoveProtectionFor(null)}
@@ -899,7 +819,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
         </div>
         </div>
       ) : (
-        <div className={`flex-1 overflow-y-auto overflow-x-hidden pt-0 ${footerVisible ? 'pb-2' : 'pb-[max(0.5rem,env(safe-area-inset-bottom))]'}`}>
+        <div ref={setNoteScroller} className={`flex-1 overflow-y-auto overflow-x-hidden pt-0 ${footerVisible ? 'pb-2' : 'pb-[max(0.5rem,env(safe-area-inset-bottom))]'}`}>
           {/* Tags + tracker pills + week-in-review scroll with the
               editor so they don't permanently eat vertical space
               on mobile. The toolbar inside Editor is sticky.
@@ -941,7 +861,15 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                       reading width the bar sits across. Everything that
                       acts on the BODY moved into the slot above it (see
                       bodyControls further down). */}
-                  <div className="flex items-center gap-0.5">
+                  {/* Undo and redo are for the devices with no keyboard to
+                      press. On a pointer device Ctrl+Z and Ctrl+Shift+Z do
+                      the same job without spending a place in the row, and
+                      the pair was the only thing left in this cluster that a
+                      shortcut already covered. The hover query is the test
+                      because it answers what the device HAS, where a width
+                      breakpoint only guesses.
+                      Spec: ops/docs/design-decisions.md (share holds the header) */}
+                  <div className="flex items-center gap-0.5 [@media(hover:hover)_and_(pointer:fine)]:hidden">
                     <HoverLabel label={t('editor.undo')} position="below">
                       <button
                         type="button"
@@ -967,7 +895,9 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                       </button>
                     </HoverLabel>
                   </div>
-                  <HeaderDivider />
+                  <div className="[@media(hover:hover)_and_(pointer:fine)]:hidden">
+                    <HeaderDivider />
+                  </div>
                   <div className="flex items-center gap-0.5">
                     {selectedEditorMode !== 'markdown' && (
                     <HoverLabel label={toolbarVisible ? t('editor.hideToolbar') : t('editor.showToolbar')} position="below">
@@ -988,12 +918,11 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                       </button>
                     </HoverLabel>
                     )}
-                    <ContentWidthButton
-                      contentWidth={contentWidth}
-                      onCycle={cycleContentWidth}
-                      box="cluster"
-                      tabIndex={isMobile ? -1 : undefined}
-                    />
+                    {/* The reading width is not here. It only ever appeared
+                        past a 56rem pane, it is a taste somebody sets once,
+                        and Settings > Appearance carries the same axis at
+                        every width. Zen keeps its own copy, because zen has
+                        no settings sheet to reach. */}
                   </div>
                 </div>
                 )
@@ -1032,28 +961,17 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           )}
           <div className="px-4 sm:px-6 flex flex-1 flex-col min-w-0">
             {selectedEditorMode === 'markdown' ? (
-              <>
-                {/* The way back. The rich editor is unmounted here, and with
-                    it the slot that normally carries this switch, so the
-                    source view puts it in the same corner on its own. Find,
-                    invisible characters and the outline have no meaning over
-                    a plain textarea and stay behind. */}
-                {/* The same controls the rich editor gets, in the same
-                    corner. Only the offset differs: the source view has no
-                    formatting toolbar to clear. */}
-                <div
-                  className="sticky z-[5] flex h-0 items-start justify-end gap-1.5 overflow-visible pointer-events-none"
-                  style={{ top: 'var(--pn-tagrow-h, 0px)' }}
-                >
-                  {bodyControls}
-                </div>
-                <MarkdownSourceEditor
-                  key={`${selected.id}-${editorRevision}`}
-                  value={selected.body}
-                  onChange={(body) => { handleBodyChange(selected.id, body); setWcBody(body); }}
-                  readOnly={view === 'trash' || selected.locked === 1}
-                />
-              </>
+              /* No corner here, and nothing to put in one. Find drives the
+                 rich editor, which is unmounted in this view, and the outline
+                 has no headings to read off a plain textarea. The way back to
+                 formatted text is the first row of the "..." menu and the
+                 link under the word count. */
+              <MarkdownSourceEditor
+                key={`${selected.id}-${editorRevision}`}
+                value={selected.body}
+                onChange={(body) => { handleBodyChange(selected.id, body); setWcBody(body); }}
+                readOnly={view === 'trash' || selected.locked === 1}
+              />
             ) : (
               <Editor
                 key={`${selected.id}-${editorRevision}`}

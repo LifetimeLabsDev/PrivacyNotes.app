@@ -109,7 +109,7 @@ Il y en a deux sortes, et elles ne se ressemblent pas, exprès.
 - Un lien web ouvre un site : [privacynotes.app](https://privacynotes.app/fr)
 - Un lien de note ouvre une autre de tes notes : [[Comment tes notes sont protégées]]
 
-Les deux ont un bouton dans la barre. La chaîne fait un lien web. Celui d'à côté liste tes notes et tu choisis celle que tu veux.
+Les deux ont un bouton dans la barre. La chaîne fait un lien web. Les crochets font un lien de note : ils listent tes notes et tu choisis celle que tu veux. Taper `[[` fait la même chose.
 
 ---
 

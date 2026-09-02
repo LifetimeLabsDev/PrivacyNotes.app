@@ -175,7 +175,6 @@
   "share": {
     "hover": "Delen / exporteren",
     "ariaLabel": "Delen of exporteren",
-    "thisNote": "Deze notitie",
     "currentMdTitle": "Huidige notitie (.md)",
     "currentMdDesc": "Kale markdown met front-matter.",
     "currentHtmlTitle": "Huidige notitie (.html)",
@@ -183,14 +182,7 @@
     "printTitle": "Afdrukken / opslaan als PDF",
     "printDesc": "Opent het afdrukvenster. Sla op als PDF of stuur naar een printer.",
     "burnTitle": "Delen & vernietigen na lezen",
-    "burnDesc": "Publiceer deze notitie als link die één keer te bekijken is. De link vernietigt zichzelf na het lezen. Je notitie blijft veilig in je account.",
-    "backup": "Back-up",
-    "fullBackupTitle": "Volledige back-up (.zip)",
-    "fullBackupDesc": "Alles: notities, dagboeken, kluis, taken, afbeeldingen, audio, bestanden.",
-    "allHtmlTitle": "Alle items (.zip met .html)",
-    "allHtmlDesc": "Eén printbare HTML per item. Handig om offline te lezen.",
-    "jsonTitle": "Tekstback-up (.json)",
-    "jsonDesc": "Alle tekst en metagegevens, geen afbeeldingen of bestanden."
+    "burnDesc": "Publiceer deze notitie als link die één keer te bekijken is. De link vernietigt zichzelf na het lezen. Je notitie blijft veilig in je account."
   },
   "weekReview": {
     "title": "Week in beeld",

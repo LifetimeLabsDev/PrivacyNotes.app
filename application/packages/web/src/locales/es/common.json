@@ -45,9 +45,11 @@
     "required": "Actualización necesaria",
     "changelog": "Changelog",
     "refresh": "Actualizar",
+    "restart": "Reiniciar",
     "dismiss": "Descartar",
     "download": "Descargar",
-    "update": "Actualizar"
+    "update": "Actualizar",
+    "copyCommand": "Copiar comando"
   },
   "hotkeys": {
     "heading": "Ayuda de atajos",

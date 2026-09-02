@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "He oblidat el PIN. He perdut les meves dades?",
+      "q": "He oblidat el PIN. Com hi torno a entrar?",
       "a": [
-        "No. El PIN és un bloqueig de comoditat contra mirades indiscretes al teu propi dispositiu, no pas una clau de xifratge. Les teves notes es xifren amb claus derivades de la teva frase de recuperació, i la frase sempre dona accés complet sense cap PIN.",
-        "És una decisió de disseny deliberada: lligar el xifratge a un PIN de 4 xifres voldria dir que un PIN oblidat destrueix dades. Aquí això no passa mai."
+        "No es perd res, i pots esborrar el PIN tu mateix amb la teva frase de recuperació. El PIN és un pany de pantalla, no una clau de xifratge: les teves notes estan xifrades amb claus derivades de la frase, així que és la frase la que les obre. Lligar el xifratge a quatre xifres faria que un PIN oblidat destruís dades. Aquí no passa mai.",
+        "Allà on l'aplicació demani el PIN, tria **Has oblidat el PIN?** i escriu les teves 12 paraules. Hi és a la pantalla de bloqueig, en una nota protegida i a **Configuració > Seguretat > PIN**. El PIN s'esborra a tots els teus dispositius i en pots establir un de nou tot seguit. El desbloqueig biomètric no es veu afectat."
       ]
     },
     "delete-account": {

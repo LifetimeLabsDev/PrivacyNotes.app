@@ -109,7 +109,7 @@ N'hi ha de dues menes, i es veuen diferents a propòsit.
 - Un enllaç web obre un lloc: [privacynotes.app](https://privacynotes.app/ca)
 - Un enllaç de nota obre una altra nota teva: [[Com estan protegides les teves notes]]
 
-Tots dos tenen botó a la barra. La cadena fa un enllaç web. El del costat llista les teves notes i tries la que vols.
+Tots dos tenen botó a la barra. La cadena fa un enllaç web. Els claudàtors fan un enllaç de nota: llisten les teves notes i tries la que vols. Escriure `[[` fa el mateix.
 
 ---
 

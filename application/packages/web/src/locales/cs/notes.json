@@ -179,7 +179,6 @@
   "share": {
     "hover": "Sdílet / exportovat",
     "ariaLabel": "Sdílet nebo exportovat",
-    "thisNote": "Tato poznámka",
     "currentMdTitle": "Aktuální poznámka (.md)",
     "currentMdDesc": "Zdrojový markdown s front-matter.",
     "currentHtmlTitle": "Aktuální poznámka (.html)",
@@ -187,14 +186,7 @@
     "printTitle": "Vytisknout / uložit jako PDF",
     "printDesc": "Otevře dialog tisku. Ulož jako PDF nebo pošli na tiskárnu.",
     "burnTitle": "Sdílet a spálit po přečtení",
-    "burnDesc": "Zveřejní tuto poznámku jako odkaz na jedno zobrazení. Odkaz se po přečtení sám zničí. Tvoje poznámka zůstane v bezpečí ve tvém účtu.",
-    "backup": "Záloha",
-    "fullBackupTitle": "Plná záloha (.zip)",
-    "fullBackupDesc": "Všechno: poznámky, deníky, trezor, úkoly, obrázky, zvuk, soubory.",
-    "allHtmlTitle": "Všechny položky (.zip s .html)",
-    "allHtmlDesc": "Jeden HTML k tisku pro každou položku. Dobré na čtení offline.",
-    "jsonTitle": "Textová záloha (.json)",
-    "jsonDesc": "Veškerý text a metadata, bez obrázků a souborů."
+    "burnDesc": "Zveřejní tuto poznámku jako odkaz na jedno zobrazení. Odkaz se po přečtení sám zničí. Tvoje poznámka zůstane v bezpečí ve tvém účtu."
   },
   "weekReview": {
     "title": "Týdenní přehled",

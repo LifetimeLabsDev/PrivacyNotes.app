@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Jag har glömt min PIN. Är mina data borta?",
+      "q": "Jag har glömt min PIN. Hur kommer jag in igen?",
       "a": [
-        "Nej. PIN-koden är ett bekvämlighetslås mot nyfikna blickar på din egen enhet, inte en krypteringsnyckel. Dina anteckningar krypteras med nycklar som härleds ur din återställningsfras, och frasen ger alltid full åtkomst utan någon PIN.",
-        "Det är ett medvetet designval: att knyta krypteringen till en fyrsiffrig PIN skulle betyda att en glömd PIN förstör data. Det gör den aldrig här."
+        "Inget går förlorat, och du kan ta bort PIN-koden själv med din återställningsfras. PIN-koden är ett lås på skärmen, inte en krypteringsnyckel: dina anteckningar krypteras med nycklar som härleds ur frasen, så det är frasen som öppnar dem. Att binda krypteringen till fyra siffror skulle betyda att en glömd PIN förstör data. Här sker det aldrig.",
+        "Överallt där appen frågar efter PIN-koden väljer du **Glömt din PIN?** och skriver dina 12 ord. Den finns på låsskärmen, på en skyddad anteckning och under **Inställningar > Säkerhet > PIN**. PIN-koden tas bort på alla dina enheter och du kan ange en ny direkt. Biometrisk upplåsning påverkas inte."
       ]
     },
     "delete-account": {

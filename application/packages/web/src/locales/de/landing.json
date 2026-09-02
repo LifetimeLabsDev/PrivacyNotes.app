@@ -125,7 +125,8 @@
     "pkgToggle": "Mit einem Paketmanager installieren ({{platforms}})",
     "pkgBrewDesc": "Updates übernimmt die App, nicht brew",
     "pkgWingetDesc": "In Windows 10 und 11 enthalten",
-    "pkgFootnote": "Beide installieren denselben signierten Build von unseren eigenen Servern, und die App aktualisiert sich so oder so selbst.",
+    "pkgScoopDesc": "Updates übernimmt Scoop, nicht die App",
+    "pkgFootnote": "Jeder installiert denselben signierten Build. Bei Homebrew und winget aktualisiert sich die App selbst. Bei Scoop führst du scoop update privacynotes aus.",
     "githubLink": "Alle Versionen auf GitHub",
     "githubNote": "Signiert · Öffentlich · Überprüfbar · Jede einzelne Version"
   },

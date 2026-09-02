@@ -45,9 +45,11 @@
     "required": "Uppdatering krävs",
     "changelog": "Changelog",
     "refresh": "Ladda om",
+    "restart": "Starta om",
     "dismiss": "Avfärda",
     "download": "Ladda ner",
-    "update": "Uppdatera"
+    "update": "Uppdatera",
+    "copyCommand": "Kopiera kommando"
   },
   "hotkeys": {
     "heading": "Hjälp med kortkommandon",

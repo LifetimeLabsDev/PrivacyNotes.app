@@ -175,7 +175,6 @@
   "share": {
     "hover": "Dela / Exportera",
     "ariaLabel": "Dela eller exportera",
-    "thisNote": "Den här anteckningen",
     "currentMdTitle": "Aktuell anteckning (.md)",
     "currentMdDesc": "Rå markdown med front-matter.",
     "currentHtmlTitle": "Aktuell anteckning (.html)",
@@ -183,14 +182,7 @@
     "printTitle": "Skriv ut / Spara som PDF",
     "printDesc": "Öppnar utskriftsdialogen. Spara som PDF eller skicka till en skrivare.",
     "burnTitle": "Dela och bränn efter läsning",
-    "burnDesc": "Publicera den här anteckningen som en länk som bara går att öppna en gång. Länken förstör sig själv efter läsning. Din anteckning ligger kvar tryggt på ditt konto.",
-    "backup": "Säkerhetskopia",
-    "fullBackupTitle": "Fullständig säkerhetskopia (.zip)",
-    "fullBackupDesc": "Allt: anteckningar, dagböcker, valv, uppgifter, bilder, ljud, filer.",
-    "allHtmlTitle": "Alla objekt (.zip med .html)",
-    "allHtmlDesc": "En utskrivbar HTML-fil per objekt. Bra att läsa offline.",
-    "jsonTitle": "Textsäkerhetskopia (.json)",
-    "jsonDesc": "Allt textinnehåll och all metadata, inga bilder eller filer."
+    "burnDesc": "Publicera den här anteckningen som en länk som bara går att öppna en gång. Länken förstör sig själv efter läsning. Din anteckning ligger kvar tryggt på ditt konto."
   },
   "weekReview": {
     "title": "Veckan i återblick",

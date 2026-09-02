@@ -45,9 +45,11 @@
     "required": "Güncelleme gerekli",
     "changelog": "Changelog",
     "refresh": "Yenile",
+    "restart": "Yeniden başlat",
     "dismiss": "Kapat",
     "download": "İndir",
-    "update": "Güncelle"
+    "update": "Güncelle",
+    "copyCommand": "Komutu kopyala"
   },
   "hotkeys": {
     "heading": "Kısayol yardımı",

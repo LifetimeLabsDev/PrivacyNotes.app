@@ -99,7 +99,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   // renders a subset of Style only. Spec: ops/docs/ui-patterns.md section 36
   const [tab, setTab] = useState<'style' | 'lists'>('style');
   const panelRef = useRef<HTMLDivElement>(null);
-  const { theme, themeMode, setThemeMode, colorTheme, setColorTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, favicons, setFavicons } = useTheme();
+  const { theme, themeMode, setThemeMode, colorTheme, setColorTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, favicons, setFavicons, invisibles, setInvisibles } = useTheme();
 
   // The public demo unlocks every palette so visitors can try them for
   // real (they persist, no revert). The rocket badge on each card still
@@ -416,6 +416,30 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
               type="checkbox"
               checked={favicons}
               onChange={(e) => setFavicons(e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-9 h-5 bg-pn-muted/35 peer-checked:bg-accent rounded-full transition-colors" />
+            <div className="absolute start-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-4 peer-checked:rtl:-translate-x-4" />
+          </div>
+        </label>
+
+        {/* Invisible characters - the pilcrow, the space dots and the line
+            breaks the editor can draw. This is a taste somebody sets once
+            and leaves, which is what makes a settings row the right home for
+            it and a permanent button over the note text the wrong one. The
+            editor keeps the quick toggle beside the word count for the
+            person who wants it on for one note.
+            Spec: ops/docs/design-decisions.md (the editor corner holds only controls that can hide themselves) */}
+        <label className="flex items-center justify-between gap-x-5 py-3 cursor-pointer">
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium">{t('appearance.invisiblesTitle')}</p>
+            <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.invisiblesDesc')}</p>
+          </div>
+          <div className="relative shrink-0">
+            <input
+              type="checkbox"
+              checked={invisibles}
+              onChange={(e) => setInvisibles(e.target.checked)}
               className="sr-only peer"
             />
             <div className="w-9 h-5 bg-pn-muted/35 peer-checked:bg-accent rounded-full transition-colors" />

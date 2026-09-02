@@ -175,7 +175,6 @@
   "share": {
     "hover": "Teilen / Exportieren",
     "ariaLabel": "Teilen oder exportieren",
-    "thisNote": "Diese Notiz",
     "currentMdTitle": "Aktuelle Notiz (.md)",
     "currentMdDesc": "Rohes Markdown mit Front-Matter.",
     "currentHtmlTitle": "Aktuelle Notiz (.html)",
@@ -183,14 +182,7 @@
     "printTitle": "Drucken / Als PDF speichern",
     "printDesc": "Öffnet den Druckdialog. Als PDF speichern oder an einen Drucker senden.",
     "burnTitle": "Teilen & nach dem Lesen vernichten",
-    "burnDesc": "Veröffentliche diese Notiz als Link zum einmaligen Ansehen. Der Link zerstört sich nach dem Lesen selbst. Deine Notiz bleibt sicher in deinem Konto.",
-    "backup": "Backup",
-    "fullBackupTitle": "Komplettes Backup (.zip)",
-    "fullBackupDesc": "Alles: Notizen, Tagebücher, Tresor, Aufgaben, Bilder, Audio, Dateien.",
-    "allHtmlTitle": "Alle Einträge (.zip mit .html)",
-    "allHtmlDesc": "Ein druckbares HTML pro Eintrag. Gut zum Offline-Lesen.",
-    "jsonTitle": "Text-Backup (.json)",
-    "jsonDesc": "Alle Textinhalte und Metadaten, keine Bilder oder Dateien."
+    "burnDesc": "Veröffentliche diese Notiz als Link zum einmaligen Ansehen. Der Link zerstört sich nach dem Lesen selbst. Deine Notiz bleibt sicher in deinem Konto."
   },
   "weekReview": {
     "title": "Wochenrückblick",

@@ -109,7 +109,7 @@ Er zijn twee soorten, en ze zien er met opzet anders uit.
 - Een weblink opent een site: [privacynotes.app](https://privacynotes.app/nl)
 - Een notitielink opent een andere notitie van jou: [[Hoe je notities beschermd zijn]]
 
-Allebei hebben een knop in de balk. De ketting maakt een weblink. De knop ernaast somt je notities op, en jij kiest welke je bedoelt.
+Allebei hebben een knop in de balk. De ketting maakt een weblink. De haakjes maken een notitielink: ze sommen je notities op, en jij kiest welke je bedoelt. `[[` typen doet hetzelfde.
 
 ---
 

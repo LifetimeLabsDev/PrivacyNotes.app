@@ -13,7 +13,7 @@
     "checking": "Comprobando...",
     "verify": "Verificar",
     "replaceExisting": "Introduce un nuevo PIN de 4 dígitos. Esto reemplaza tu PIN actual.",
-    "setIntro": "Se pedirá un PIN de 4 dígitos para ver tu frase y abrir notas protegidas. Evita miradas curiosas si alguien toma prestado tu dispositivo.",
+    "setIntro": "Un PIN de 4 dígitos abre tus notas protegidas y tu frase de recuperación. Se sincroniza en todos tus dispositivos.",
     "protectReason": "Las notas protegidas necesitan un PIN, porque el bloqueo viaja a tus otros dispositivos y tu huella no.",
     "newPin": "Nuevo PIN",
     "confirmPin": "Confirmar PIN",
@@ -35,6 +35,17 @@
     "introNoBio": "Introduce tu PIN actual para confirmar la eliminación. La vista de la frase ya no estará protegida.",
     "verifying": "Verificando...",
     "removePin": "Quitar PIN"
+  },
+  "pinRecovery": {
+    "forgotPin": "¿Olvidaste tu PIN?",
+    "title": "Restablecer tu PIN",
+    "intro": "Introduce tu frase de recuperación de 12 palabras para borrar el PIN. Justo después puedes establecer uno nuevo.",
+    "lockIntro": "Introduce tu frase de recuperación de 12 palabras. Desbloquea la app y borra el PIN.",
+    "consequence": "El PIN se borra en todos tus dispositivos. El desbloqueo biométrico no se ve afectado.",
+    "wrongPhrase": "Esa no es la frase de recuperación de esta cuenta.",
+    "clearPin": "Borrar PIN",
+    "lockAction": "Desbloquear y borrar PIN",
+    "cleared": "PIN borrado. Establece uno nuevo abajo o déjalo desactivado."
   },
   "phraseGate": {
     "enterToView": "Introduce tu PIN de 4 dígitos para ver tu frase.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "Introduce tu PIN una vez para activarlo. Guarda bajo llave una copia de tu frase de recuperación, de modo que solo tu PIN pueda abrir la app.",
     "relockAfter": "Volver a bloquear tras",
     "relockHint": "Se aplica a la pantalla de bloqueo de la app y a cualquier nota protegida con PIN.",
-    "perDeviceNote": "Cada dispositivo se registra de forma independiente. El desbloqueo biométrico requiere tu huella o tu rostro para acceder a la app en este dispositivo.",
+    "perDeviceNote": "El desbloqueo biométrico abre las mismas notas que tu PIN. Se queda en este dispositivo y nunca se sincroniza.",
     "disableConfirmTitle": "Desactivar biometría",
     "disableConfirmLabel": "Desactivar",
     "disableConfirmBody": "¿Desactivar el desbloqueo biométrico en este dispositivo?",

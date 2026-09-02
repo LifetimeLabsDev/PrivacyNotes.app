@@ -174,8 +174,9 @@ export function writeCachedAccountFlags(flags: CachedAccountFlags): void {
   try {
     localStorage.setItem(ACCOUNT_FLAGS_KEY, JSON.stringify(flags));
   } catch {
-    /* quota or privacy mode - fast boot just won't trigger next time */
+    /* quota or privacy mode - the mirror below still carries the flags */
   }
+  void writeAccountFlagsMirror(flags);
 }
 
 export function clearCachedAccountFlags(): void {
@@ -184,6 +185,41 @@ export function clearCachedAccountFlags(): void {
   } catch {
     /* ignore */
   }
+  void clearAccountFlagsMirror();
+}
+
+/**
+ * IndexedDB mirror of ACCOUNT_FLAGS_KEY (db.kv, key 'accountFlags').
+ *
+ * Both fast-boot gates - the owner marker and these flags - read
+ * localStorage, and an eviction takes every key at once, so mirroring
+ * one without the other buys nothing: the boot still falls through to
+ * the network path with the notes sitting untouched in Dexie. Same
+ * reasoning as the owner mirror above, same storage, same best-effort
+ * write. These are not secrets; the pubkey scoping is what stops one
+ * account reading another's.
+ */
+async function writeAccountFlagsMirror(flags: CachedAccountFlags): Promise<void> {
+  try {
+    await db.kv.put({ key: 'accountFlags', value: JSON.stringify(flags) });
+  } catch { /* ignore */ }
+}
+
+export async function readAccountFlagsMirror(pubkey: string): Promise<CachedAccountFlags | null> {
+  try {
+    const value = (await db.kv.get('accountFlags'))?.value;
+    if (typeof value !== 'string') return null;
+    const parsed = JSON.parse(value) as CachedAccountFlags;
+    return parsed?.pubkey === pubkey ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+async function clearAccountFlagsMirror(): Promise<void> {
+  try {
+    await db.kv.delete('accountFlags');
+  } catch { /* ignore */ }
 }
 
 /** Patch just the custody bit, leaving the Pro flags alone. No-op if

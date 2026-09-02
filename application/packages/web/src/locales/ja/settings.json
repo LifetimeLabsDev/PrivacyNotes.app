@@ -138,6 +138,8 @@
     "faviconsDesc": "リンクや保管庫のログインの横に表示されるサイトのロゴ。",
     "faviconsExample": "例:",
     "faviconsProxy": "アイコンは当社のプロキシ経由で読み込まれます。この端末だけに適用されます。",
+    "invisiblesTitle": "不可視文字",
+    "invisiblesDesc": "入力中にスペース、改行、段落記号を表示します。",
     "sidebarTitle": "サイドバー",
     "sidebarDesc": "サイドバーに表示するビューと、「すべて」に含める項目を選びます。",
     "colInSidebar": "サイドバー",

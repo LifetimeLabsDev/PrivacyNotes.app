@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Ich habe meine PIN vergessen. Sind meine Daten weg?",
+      "q": "Ich habe meine PIN vergessen. Wie komme ich wieder rein?",
       "a": [
-        "Nein. Die PIN ist eine Komfort-Sperre gegen neugierige Blicke auf deinem eigenen Gerät, kein Verschlüsselungsschlüssel. Deine Notizen sind mit Schlüsseln verschlüsselt, die aus deiner Wiederherstellungsphrase abgeleitet werden, und die Phrase gewährt immer vollen Zugriff, ganz ohne PIN.",
-        "Das ist eine bewusste Design-Entscheidung: Verschlüsselung an eine 4-stellige PIN zu binden hieße, dass eine vergessene PIN Daten vernichtet. Das passiert hier nie."
+        "Es geht nichts verloren, und du kannst die PIN mit deiner Wiederherstellungsphrase selbst löschen. Die PIN ist eine Sperre auf dem Bildschirm, kein Schlüssel: deine Notizen sind mit Schlüsseln aus der Phrase verschlüsselt, also öffnet die Phrase sie. Wäre die Verschlüsselung an vier Ziffern gebunden, würde eine vergessene PIN Daten vernichten. Hier passiert das nie.",
+        "Überall dort, wo die App nach der PIN fragt, wählst du **PIN vergessen?** und gibst deine 12 Wörter ein. Das gibt es auf dem Sperrbildschirm, auf einer geschützten Notiz und unter **Einstellungen > Sicherheit > PIN**. Die PIN wird auf allen Geräten gelöscht, und du kannst sofort eine neue festlegen. Die biometrische Entsperrung bleibt davon unberührt."
       ]
     },
     "delete-account": {

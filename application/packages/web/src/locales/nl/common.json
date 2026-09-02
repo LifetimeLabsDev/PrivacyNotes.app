@@ -45,9 +45,11 @@
     "required": "Update vereist",
     "changelog": "Changelog",
     "refresh": "Herladen",
+    "restart": "Herstarten",
     "dismiss": "Sluiten",
     "download": "Downloaden",
-    "update": "Bijwerken"
+    "update": "Bijwerken",
+    "copyCommand": "Opdracht kopiëren"
   },
   "hotkeys": {
     "heading": "Sneltoetsen",

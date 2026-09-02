@@ -13,7 +13,7 @@
     "checking": "Controleren...",
     "verify": "Controleren",
     "replaceExisting": "Voer een nieuwe PIN van 4 cijfers in. Deze vervangt je huidige PIN.",
-    "setIntro": "Een PIN van 4 cijfers is nodig om je herstelzin te bekijken en beveiligde notities te openen. Voorkomt dat iemand even meekijkt als je je apparaat uitleent.",
+    "setIntro": "Een PIN van 4 cijfers opent je beveiligde notities en je herstelzin. Hij synchroniseert naar al je apparaten.",
     "protectReason": "Beveiligde notities hebben een PIN nodig, want het slot reist mee naar je andere apparaten en je vingerafdruk niet.",
     "newPin": "Nieuwe PIN",
     "confirmPin": "PIN bevestigen",
@@ -35,6 +35,17 @@
     "introNoBio": "Voer je huidige PIN in om het verwijderen te bevestigen. Je herstelzin is dan niet meer afgeschermd.",
     "verifying": "Controleren...",
     "removePin": "PIN verwijderen"
+  },
+  "pinRecovery": {
+    "forgotPin": "PIN vergeten?",
+    "title": "PIN opnieuw instellen",
+    "intro": "Voer je herstelzin van 12 woorden in om de PIN te wissen. Daarna kun je meteen een nieuwe instellen.",
+    "lockIntro": "Voer je herstelzin van 12 woorden in. Die ontgrendelt de app en wist de PIN.",
+    "consequence": "De PIN wordt op al je apparaten gewist. Biometrisch ontgrendelen verandert niet.",
+    "wrongPhrase": "Dit is niet de herstelzin van dit account.",
+    "clearPin": "PIN wissen",
+    "lockAction": "Ontgrendelen en PIN wissen",
+    "cleared": "PIN gewist. Stel hieronder een nieuwe in of laat hem uit."
   },
   "phraseGate": {
     "enterToView": "Voer je PIN van 4 cijfers in om je herstelzin te bekijken.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "Voer je PIN één keer in om dit aan te zetten. Die vergrendelt een kopie van je herstelzin, zodat alleen je PIN de app kan openen.",
     "relockAfter": "Opnieuw vergrendelen na",
     "relockHint": "Geldt voor het vergrendelscherm van de app en alle notities met PIN-beveiliging.",
-    "perDeviceNote": "Elk apparaat stelt dit apart in. Met biometrisch ontgrendelen heb je je vingerafdruk of gezicht nodig om op dit apparaat bij de app te komen.",
+    "perDeviceNote": "Biometrisch ontgrendelen opent dezelfde notities als je PIN. Het blijft op dit apparaat en synchroniseert nooit.",
     "disableConfirmTitle": "Biometrie uitschakelen",
     "disableConfirmLabel": "Uitschakelen",
     "disableConfirmBody": "Biometrisch ontgrendelen op dit apparaat uitschakelen?",

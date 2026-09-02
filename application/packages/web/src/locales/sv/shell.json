@@ -198,7 +198,9 @@
     "expand": "Fäll ut",
     "reorder": "Ändra ordning på {{folder}}",
     "saveName": "Spara mappnamnet",
-    "actionsForFolder": "Åtgärder för mappen {{folder}}"
+    "actionsForFolder": "Åtgärder för mappen {{folder}}",
+    "seedSecurity": "Säkerhet",
+    "seedTravel": "Resor"
   },
   "collapsedSidebar": {
     "newNote": "Ny anteckning",

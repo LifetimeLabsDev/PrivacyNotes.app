@@ -125,7 +125,8 @@
     "pkgToggle": "Instalace přes správce balíčků ({{platforms}})",
     "pkgBrewDesc": "Aktualizace řeší aplikace, ne brew",
     "pkgWingetDesc": "Součást Windows 10 a 11",
-    "pkgFootnote": "Obojí nainstaluje stejné podepsané sestavení z našich vlastních serverů a aplikace se tak jako tak aktualizuje sama.",
+    "pkgScoopDesc": "Aktualizace řeší Scoop, ne aplikace",
+    "pkgFootnote": "Každý z nich nainstaluje stejné podepsané sestavení. U Homebrew a wingetu se aplikace aktualizuje sama. U Scoopu spustíš scoop update privacynotes.",
     "githubLink": "Všechna vydání na GitHubu",
     "githubNote": "Podepsané · Veřejné · Ověřitelné · Každé vydání bez výjimky"
   },

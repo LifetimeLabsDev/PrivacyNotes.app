@@ -179,7 +179,6 @@
   "share": {
     "hover": "Udostępnij / eksportuj",
     "ariaLabel": "Udostępnij lub eksportuj",
-    "thisNote": "Ta notatka",
     "currentMdTitle": "Bieżąca notatka (.md)",
     "currentMdDesc": "Surowy markdown z front-matter.",
     "currentHtmlTitle": "Bieżąca notatka (.html)",
@@ -187,14 +186,7 @@
     "printTitle": "Drukuj / zapisz jako PDF",
     "printDesc": "Otwiera okno drukowania. Zapisz jako PDF lub wyślij na drukarkę.",
     "burnTitle": "Udostępnij i spal po przeczytaniu",
-    "burnDesc": "Opublikuj tę notatkę jako link do jednorazowego wglądu. Link niszczy się po przeczytaniu. Twoja notatka zostaje bezpiecznie na koncie.",
-    "backup": "Kopia zapasowa",
-    "fullBackupTitle": "Pełna kopia zapasowa (.zip)",
-    "fullBackupDesc": "Wszystko: notatki, dzienniki, sejf, zadania, obrazy, dźwięk, pliki.",
-    "allHtmlTitle": "Wszystkie elementy (.zip z plikami .html)",
-    "allHtmlDesc": "Jeden plik HTML gotowy do druku na element. Dobre do czytania offline.",
-    "jsonTitle": "Kopia tekstowa (.json)",
-    "jsonDesc": "Cała treść tekstowa i metadane, bez obrazów i plików."
+    "burnDesc": "Opublikuj tę notatkę jako link do jednorazowego wglądu. Link niszczy się po przeczytaniu. Twoja notatka zostaje bezpiecznie na koncie."
   },
   "weekReview": {
     "title": "Podsumowanie tygodnia",

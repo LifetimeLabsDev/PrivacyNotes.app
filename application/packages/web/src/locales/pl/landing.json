@@ -125,7 +125,8 @@
     "pkgToggle": "Zainstaluj przez menedżera pakietów ({{platforms}})",
     "pkgBrewDesc": "Aktualizacjami zajmuje się aplikacja, nie brew",
     "pkgWingetDesc": "Wbudowany w Windows 10 i 11",
-    "pkgFootnote": "Oba instalują tę samą podpisaną kompilację z naszych własnych serwerów, a aplikacja i tak aktualizuje się sama.",
+    "pkgScoopDesc": "Aktualizacjami zajmuje się Scoop, nie aplikacja",
+    "pkgFootnote": "Każdy instaluje tę samą podpisaną kompilację. W Homebrew i wingecie aplikacja aktualizuje się sama. W Scoopie uruchamiasz scoop update privacynotes.",
     "githubLink": "Wszystkie wydania na GitHubie",
     "githubNote": "Podpisane · Publiczne · Weryfikowalne · Każde wydanie bez wyjątku"
   },

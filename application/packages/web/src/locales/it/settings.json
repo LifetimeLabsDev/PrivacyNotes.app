@@ -147,6 +147,8 @@
     "faviconsDesc": "Il logo del sito accanto ai link e alle credenziali della Cassaforte.",
     "faviconsExample": "Esempio:",
     "faviconsProxy": "Le icone passano dal nostro proxy. Solo su questo dispositivo.",
+    "invisiblesTitle": "Caratteri invisibili",
+    "invisiblesDesc": "Mostra gli spazi, le interruzioni di riga e i segni di paragrafo mentre scrivi.",
     "sidebarTitle": "Barra laterale",
     "sidebarDesc": "Quali viste compaiono nella barra laterale e quali elementi contiene l’elenco «Tutti».",
     "colInSidebar": "Barra laterale",

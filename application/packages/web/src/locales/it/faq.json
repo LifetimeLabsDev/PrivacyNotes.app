@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Ho dimenticato il PIN. I miei dati sono persi?",
+      "q": "Ho dimenticato il PIN. Come rientro?",
       "a": [
-        "No. Il PIN è un blocco di comodità contro gli occhi indiscreti sul tuo stesso dispositivo, non una chiave di cifratura. Le tue note sono cifrate con chiavi derivate dalla tua frase di recupero, e la frase concede sempre l'accesso completo, senza alcun PIN.",
-        "È una scelta di progettazione deliberata: legare la cifratura a un PIN di 4 cifre significherebbe che un PIN dimenticato distrugge i dati. Qui non succede mai."
+        "Non si perde nulla e puoi cancellare il PIN da solo con la tua frase di recupero. Il PIN è un blocco sullo schermo, non una chiave di cifratura: le tue note sono cifrate con chiavi derivate dalla frase, quindi è la frase ad aprirle. Legare la cifratura a quattro cifre significherebbe che un PIN dimenticato distrugge dati. Qui non succede mai.",
+        "Ovunque l'app chieda il PIN, scegli **PIN dimenticato?** e inserisci le tue 12 parole. Si trova nella schermata di blocco, su una nota protetta e in **Impostazioni > Sicurezza > PIN**. Il PIN viene cancellato su tutti i dispositivi e puoi impostarne subito uno nuovo. Lo sblocco biometrico non cambia."
       ]
     },
     "delete-account": {

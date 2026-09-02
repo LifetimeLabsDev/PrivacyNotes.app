@@ -147,6 +147,8 @@
     "faviconsDesc": "O logo do site ao lado dos links e dos logins do Cofre.",
     "faviconsExample": "Exemplo:",
     "faviconsProxy": "Os ícones passam pelo nosso proxy. Somente neste dispositivo.",
+    "invisiblesTitle": "Caracteres invisíveis",
+    "invisiblesDesc": "Mostra os espaços, as quebras de linha e as marcas de parágrafo enquanto você escreve.",
     "sidebarTitle": "Barra lateral",
     "sidebarDesc": "Quais visualizações aparecem na barra lateral e quais itens a lista Todos contém.",
     "colInSidebar": "Barra lateral",

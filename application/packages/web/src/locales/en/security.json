@@ -13,7 +13,7 @@
     "checking": "Checking...",
     "verify": "Verify",
     "replaceExisting": "Enter a new 4-digit PIN. This replaces your existing PIN.",
-    "setIntro": "A 4-digit PIN will be required to view your phrase and open protected notes. Blocks casual viewing if someone borrows your device.",
+    "setIntro": "A 4-digit PIN opens your protected notes and your recovery phrase. It syncs to every device.",
     "protectReason": "Protected notes need a PIN, because the lock travels to your other devices and your fingerprint does not.",
     "newPin": "New PIN",
     "confirmPin": "Confirm PIN",
@@ -35,6 +35,17 @@
     "introNoBio": "Enter your current PIN to confirm removal. The phrase view will no longer be gated.",
     "verifying": "Verifying...",
     "removePin": "Remove PIN"
+  },
+  "pinRecovery": {
+    "forgotPin": "Forgot your PIN?",
+    "title": "Reset your PIN",
+    "intro": "Type your 12-word recovery phrase to clear the PIN. You can set a new one straight after.",
+    "lockIntro": "Enter your 12-word recovery phrase. It unlocks the app and clears the PIN.",
+    "consequence": "The PIN is cleared on all your devices. Biometric unlock is not affected.",
+    "wrongPhrase": "That is not the recovery phrase for this account.",
+    "clearPin": "Clear PIN",
+    "lockAction": "Unlock and clear PIN",
+    "cleared": "PIN cleared. Set a new one below, or leave it off."
   },
   "phraseGate": {
     "enterToView": "Enter your 4-digit PIN to view your phrase.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "Enter your PIN once to turn this on. It locks a copy of your recovery phrase so only your PIN can open the app.",
     "relockAfter": "Re-lock after",
     "relockHint": "Applies to the app lock screen and any PIN-protected notes.",
-    "perDeviceNote": "Each device enrolls independently. Biometric unlock requires your fingerprint or face to access the app on this device.",
+    "perDeviceNote": "Biometric unlock opens the same notes as your PIN. It stays on this device and never syncs.",
     "disableConfirmTitle": "Disable Biometric",
     "disableConfirmLabel": "Disable",
     "disableConfirmBody": "Disable biometric unlock on this device?",

@@ -199,10 +199,10 @@
       ]
     },
     "forgot-pin": {
-      "q": "Nepamatuju si PIN. Jsou moje data ztracená?",
+      "q": "Zapomněl jsem PIN. Jak se dostanu zpátky?",
       "a": [
-        "Ne. PIN je pohodlný zámek proti nakukování přes rameno na tvém vlastním zařízení, ne šifrovací klíč. Tvoje poznámky jsou zašifrované klíči odvozenými z obnovovací fráze a fráze vždycky dá plný přístup i bez PINu.",
-        "Je to záměrné rozhodnutí: navázat šifrování na čtyřmístný PIN by znamenalo, že zapomenutý PIN zničí data. Tady se to nestane nikdy."
+        "Nic se neztratí a PIN si můžeš smazat sám pomocí obnovovací fráze. PIN je zámek na obrazovce, ne šifrovací klíč: poznámky jsou šifrované klíči odvozenými z fráze, takže je otevírá fráze. Kdyby šifrování viselo na čtyřech číslicích, zapomenutý PIN by ničil data. Tady se to nikdy nestane.",
+        "Kdekoli se aplikace ptá na PIN, zvol **Nepamatuješ si PIN?** a zadej svých 12 slov. Najdeš to na zamykací obrazovce, u chráněné poznámky a v **Nastavení > Zabezpečení > PIN**. PIN se smaže na všech zařízeních a hned si můžeš nastavit nový. Biometrické odemknutí zůstane beze změny."
       ]
     },
     "delete-account": {

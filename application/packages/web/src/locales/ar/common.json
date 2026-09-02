@@ -49,9 +49,11 @@
     "required": "التحديث مطلوب",
     "changelog": "Changelog",
     "refresh": "تحديث",
+    "restart": "إعادة التشغيل",
     "dismiss": "إغلاق",
     "download": "تنزيل",
-    "update": "تحديث"
+    "update": "تحديث",
+    "copyCommand": "نسخ الأمر"
   },
   "hotkeys": {
     "heading": "مساعدة الاختصارات",

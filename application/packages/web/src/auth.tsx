@@ -89,6 +89,7 @@ import {
   jwtPayloadPubkey,
   readOwnerMirror,
   writeOwnerMirror,
+  readAccountFlagsMirror,
 } from './authStorage';
 import { logAuthEvent } from './authDiag';
 import { checkEarlySupporter, useProStatus } from './authProStatus';
@@ -263,6 +264,21 @@ type AuthContextValue = {
      */
     | { ok: false; error: string; captchaRequired?: boolean }
   >;
+  /**
+   * Authenticate the app-lock screen from this device's own data.
+   *
+   * Enabling app lock strips the stored phrase, so a cold start carries
+   * no session and nothing to auto-restore: the unlock IS the sign-in.
+   * That made a reachable server a precondition for reading notes which
+   * already sit in this browser, decrypted by the phrase the PIN or
+   * biometric just unwrapped. This renders them from IndexedDB and
+   * leaves the caller to establish the session behind the app.
+   *
+   * False means there is nothing local to render, and the caller falls
+   * back to the network sign-in. Same eligibility and the same revoked
+   * device trade as `tryFastBoot`, which does the work.
+   */
+  unlockLocally: (phrase: string) => Promise<boolean>;
   signInWithOAuth: (
     provider: OAuthProvider
   ) => Promise<{ ok: true } | { ok: false; error: string }>;
@@ -1165,14 +1181,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const pubkey = bytesToHex(publicKey);
 
       let owner: string | null = null;
-      try { owner = localStorage.getItem(PUBKEY_OWNER_KEY); } catch { /* ignore */ }
-      if (owner !== pubkey) return false;
+      let ownerReadFailed = false;
+      try { owner = localStorage.getItem(PUBKEY_OWNER_KEY); } catch { ownerReadFailed = true; }
+      if (owner === null || ownerReadFailed) {
+        // No marker, but that is not the same as no owner. Safari and
+        // iOS clear localStorage after seven days without a visit and
+        // leave Dexie alone, so the notes outlive the thing that says
+        // whose they are. The mirror lives WITH the data it vouches
+        // for, which is why wipePrior already trusts it for the far
+        // more destructive call. Both absent still reads as unknown,
+        // and unknown never boots.
+        const mirror = await readOwnerMirror();
+        if (mirror !== pubkey) return false;
+        logAuthEvent('auth:fast-boot-owner-from-mirror');
+      } else if (owner !== pubkey) {
+        // A marker naming somebody else is a real answer, not a gap.
+        return false;
+      }
 
-      const cached = readCachedAccountFlags(pubkey);
-      if (!cached) return false;
+      // Same eviction, same fallback: these two gates share a storage
+      // area, so mirroring one without the other would still strand
+      // the boot on the network path.
+      const cached = readCachedAccountFlags(pubkey) ?? (await readAccountFlagsMirror(pubkey));
+      if (!cached) {
+        // Ownership is settled by this point, so these notes are
+        // certainly this user's and only the Pro answer is missing -
+        // which an install whose flags predate the mirror loses to the
+        // same eviction. Refusing the boot over that trades "your notes
+        // are unreachable" for "your Pro badge is a few seconds late",
+        // which is the wrong way round. The handshake writes the real
+        // answer when it lands, and reconcileCustody fixes custody off
+        // the JWT claim.
+        logAuthEvent('auth:fast-boot-flags-defaulted');
+      }
+      const flags = cached ?? { pubkey, isPro: false, isEarlySupporter: false };
 
       const localCount = await db.notes.count();
-      if (localCount === 0) return false;
+      if (localCount === 0) {
+        // The one exit that genuinely has nothing to show. The boot
+        // path's demote reads this as the only reason fast boot ever
+        // declines, so say it in the log rather than leaving the next
+        // reader to infer it.
+        logAuthEvent('auth:fast-boot-no-local-notes');
+        return false;
+      }
 
       setAuth({
         status: 'authenticated',
@@ -1183,18 +1235,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signingPrivateKey,
         fpPepper,
         deviceId: getDeviceId(pubkey),
-        isPro: cached.isPro,
-        isEarlySupporter: cached.isEarlySupporter,
+        isPro: flags.isPro,
+        isEarlySupporter: flags.isEarlySupporter,
         // Carry the cached answer. Absent (flags written before the
         // field existed) reads as self-custody, and reconcileCustody
         // corrects it from the JWT claim a moment later.
-        isCustodial: cached.isCustodial === true,
+        isCustodial: flags.isCustodial === true,
       });
       return true;
     } catch (err) {
       console.warn('[auth] fast boot failed, falling back to full auth:', err);
       return false;
     }
+  }
+
+  /**
+   * The app-lock screen's local door. See the context type for why it
+   * exists; `tryFastBoot` above owns the eligibility rules and the
+   * security reasoning, and this adds only the breadcrumb, so a report
+   * of "the lock let me in with no network" names its own cause.
+   */
+  async function unlockLocally(phrase: string): Promise<boolean> {
+    const booted = await tryFastBoot(phrase, 'phrase');
+    logAuthEvent(booted ? 'auth:applock-local-unlock' : 'auth:applock-local-unlock-unavailable');
+    return booted;
   }
 
   async function resolveDeviceLimit(
@@ -1464,10 +1528,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // Same taxonomy as the fast-boot branch above (session audit
           // 2026-08-25): a rate limit is "not now", never "sign in
           // again" - arm the backoff so the session re-mints by itself
-          // once the cap clears. The onboarding demote still runs
-          // (there is nothing local to render when fast boot was not
-          // possible), but the retry brings the account back without
-          // the user typing anything.
+          // once the cap clears. The onboarding demote still runs, and
+          // by this point it is the honest answer: fast boot declined,
+          // which now means either no notes on this device or an owner
+          // neither the marker nor the db.kv mirror could name. The
+          // second is unknowable rather than empty, and rendering it
+          // would hand one account another's notes. Its own breadcrumb
+          // says which happened.
           if (err instanceof RateLimitedError) {
             scheduleRemintRetry(phrase, method);
           }
@@ -1966,6 +2033,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         auth,
         supabase,
         signInWithPhrase,
+        unlockLocally,
         revalidationExpired,
         signInWithOAuth,
         signOut,

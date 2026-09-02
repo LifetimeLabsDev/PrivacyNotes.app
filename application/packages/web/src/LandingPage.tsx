@@ -332,13 +332,6 @@ function PkgCmd({ icon, name, tool, desc, cmd, divider }: {
 }
 
 /**
- * winget-pkgs review gate. The manifest is submitted (microsoft/winget-pkgs#416239) but
- * until it merges `winget install LifetimeLabs.PrivacyNotes` answers "No package found",
- * so the row stays hidden. Flip to true once the PR merges; nothing else changes.
- */
-const WINGET_PUBLISHED = false;
-
-/**
  * Stable "latest Windows build" link (NSIS -setup.exe, x86_64). Same overwrite-on-release
  * pattern as MAC_DMG_URL and LINUX_APPIMAGE_URL: the release workflow rewrites this alias every
  * release, so the link never goes stale.
@@ -1801,10 +1794,9 @@ export function LandingPage({
               className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-accent transition hover:opacity-80"
             >
               <Package size={17} weight="fill" />
-              {/* Platforms come from WINGET_PUBLISHED, never a literal: a label reading
-                  "macOS, Windows" above a panel with no winget row would be a lie the
-                  moment someone opened it. */}
-              {t('downloads.pkgToggle', { platforms: WINGET_PUBLISHED ? 'macOS, Windows' : 'macOS' })}
+              {/* This label names the rows in the panel below. Adding or removing a row
+                  means editing both, or it promises a platform nobody finds. */}
+              {t('downloads.pkgToggle', { platforms: 'macOS, Windows' })}
             </button>
             <a
               href={GITHUB_RELEASES_URL}
@@ -1832,16 +1824,26 @@ export function LandingPage({
               {/* The fully qualified tap path is not optional: `brew tap` followed by a short
                   install dead-ends on Homebrew 6's tap-trust prompt, while installing by full
                   name trusts just this cask and skips it. */}
-              {WINGET_PUBLISHED && (
-                <PkgCmd
-                  divider
-                  icon={<WindowsLogo size={17} weight="fill" />}
-                  name="Windows"
-                  tool="winget"
-                  desc={t('downloads.pkgWingetDesc')}
-                  cmd="winget install LifetimeLabs.PrivacyNotes"
-                />
-              )}
+              <PkgCmd
+                divider
+                icon={<WindowsLogo size={17} weight="fill" />}
+                name="Windows"
+                tool="winget"
+                desc={t('downloads.pkgWingetDesc')}
+                cmd="winget install LifetimeLabs.PrivacyNotes"
+              />
+              {/* Two lines, and CmdBlock renders `cmd` with whitespace-pre-wrap, so the
+                  break survives and the copy button hands over both. Scoop resolves a
+                  short name only against buckets it already knows, so the bucket has to
+                  be added before the install can name it. */}
+              <PkgCmd
+                divider
+                icon={<WindowsLogo size={17} weight="fill" />}
+                name="Windows"
+                tool="Scoop"
+                desc={t('downloads.pkgScoopDesc')}
+                cmd={'scoop bucket add lifetimelabs https://github.com/LifetimeLabsDev/scoop-bucket\nscoop install lifetimelabs/privacynotes'}
+              />
               <p className="border-t border-[var(--wl-ink)]/10 px-4 py-3 text-xs leading-relaxed text-[var(--wl-sub)]">
                 {t('downloads.pkgFootnote')}
               </p>

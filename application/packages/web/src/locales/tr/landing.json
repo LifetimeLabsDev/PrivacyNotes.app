@@ -125,7 +125,8 @@
     "pkgToggle": "Paket yöneticisiyle kurun ({{platforms}})",
     "pkgBrewDesc": "Güncellemeleri brew değil, uygulamanın kendisi yapar",
     "pkgWingetDesc": "Windows 10 ve 11'de yerleşik olarak gelir",
-    "pkgFootnote": "İkisi de kendi sunucularımızdaki aynı imzalı yapıyı kurar ve uygulama her iki durumda da kendini güncellemeye devam eder.",
+    "pkgScoopDesc": "Güncellemeleri uygulama değil, Scoop yapar",
+    "pkgFootnote": "Her biri aynı imzalı yapıyı kurar. Homebrew ve winget'te uygulama kendini günceller. Scoop'ta scoop update privacynotes komutunu çalıştırırsınız.",
     "githubLink": "Tüm sürümler GitHub'da",
     "githubNote": "İmzalı · Herkese açık · Doğrulanabilir · İstisnasız her sürüm"
   },

@@ -13,7 +13,7 @@
     "checking": "Kontrola...",
     "verify": "Ověřit",
     "replaceExisting": "Zadej nový čtyřmístný PIN. Nahradí tvůj současný PIN.",
-    "setIntro": "Čtyřmístný PIN bude potřeba k zobrazení tvé fráze a k otevření chráněných poznámek. Zabrání zvědavému nakukování, když si někdo půjčí tvoje zařízení.",
+    "setIntro": "Čtyřmístný PIN otevírá tvé chráněné poznámky a obnovovací frázi. Synchronizuje se do všech zařízení.",
     "protectReason": "Chráněné poznámky potřebují PIN, protože zámek putuje i na tvá ostatní zařízení, ale otisk prstu ne.",
     "newPin": "Nový PIN",
     "confirmPin": "Potvrzení PINu",
@@ -35,6 +35,17 @@
     "introNoBio": "Zadej svůj současný PIN a potvrď odstranění. Zobrazení fráze už nebude nijak chráněné.",
     "verifying": "Ověřování...",
     "removePin": "Odstranit PIN"
+  },
+  "pinRecovery": {
+    "forgotPin": "Nepamatuješ si PIN?",
+    "title": "Obnovit PIN",
+    "intro": "Zadej svou obnovovací frázi z 12 slov a PIN se smaže. Hned potom si můžeš nastavit nový.",
+    "lockIntro": "Zadej svou obnovovací frázi z 12 slov. Odemkne aplikaci a smaže PIN.",
+    "consequence": "PIN se smaže na všech tvých zařízeních. Biometrické odemknutí zůstane beze změny.",
+    "wrongPhrase": "Tohle není obnovovací fráze tohoto účtu.",
+    "clearPin": "Smazat PIN",
+    "lockAction": "Odemknout a smazat PIN",
+    "cleared": "PIN smazán. Níže si nastav nový, nebo ho nech vypnutý."
   },
   "phraseGate": {
     "enterToView": "Pro zobrazení fráze zadej svůj čtyřmístný PIN.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "Zadej svůj PIN jednou a zapneš to. Uzamkne kopii tvé obnovovací fráze, takže aplikaci otevře jen tvůj PIN.",
     "relockAfter": "Znovu zamknout po",
     "relockHint": "Platí pro uzamykací obrazovku aplikace a pro všechny poznámky chráněné PINem.",
-    "perDeviceNote": "Každé zařízení se registruje samostatně. Biometrické odemknutí vyžaduje k přístupu do aplikace na tomto zařízení tvůj otisk prstu nebo obličej.",
+    "perDeviceNote": "Biometrické odemknutí otevírá stejné poznámky jako PIN. Zůstává na tomto zařízení a nikdy se nesynchronizuje.",
     "disableConfirmTitle": "Vypnout biometriku",
     "disableConfirmLabel": "Vypnout",
     "disableConfirmBody": "Vypnout na tomto zařízení biometrické odemknutí?",

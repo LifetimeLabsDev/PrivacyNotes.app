@@ -223,6 +223,7 @@ pub fn run() {
     #[cfg(desktop)]
     let builder = builder.invoke_handler(tauri::generate_handler![
         can_self_update,
+        is_scoop_install,
         biometric_available,
         biometric_authenticate,
         print_html,
@@ -350,11 +351,41 @@ pub fn run() {
         });
 }
 
-/// Whether this install can self-update via the Tauri updater. On Linux only the
-/// AppImage can: a .deb lives in root-owned /usr and would re-download the AppImage
-/// payload and fail to apply it every launch, so the frontend skips the check when
-/// this is false. Detected via the APPIMAGE env var the AppImage runtime sets.
-/// Always true on macOS/Windows, which self-update normally.
+/// Whether this executable was unpacked by Scoop rather than installed by our NSIS
+/// installer. Scoop keeps each app under `<root>\apps\<name>\<version>\` and treats that
+/// path as its record of what is installed, so a build written into it out of band makes
+/// the folder name a lie: `scoop list` keeps reporting the old version and the next
+/// `scoop update` puts it back. The root is relocatable, so honour SCOOP and SCOOP_GLOBAL
+/// before falling back to the default layout.
+/// Spec: ops/docs/windows-release.md (a Scoop install updates through Scoop)
+#[cfg(all(desktop, target_os = "windows"))]
+fn unpacked_by_scoop() -> bool {
+    let Ok(exe) = std::env::current_exe() else {
+        // Nothing to match against. Answering "not Scoop" keeps the ordinary NSIS
+        // install self-updating, which is the far more common case.
+        return false;
+    };
+    let exe = exe.to_string_lossy().to_lowercase();
+    for var in ["SCOOP", "SCOOP_GLOBAL"] {
+        let Some(root) = std::env::var_os(var) else { continue };
+        let root = root.to_string_lossy().to_lowercase();
+        let root = root.trim_end_matches('\\');
+        if !root.is_empty() && exe.starts_with(&format!("{root}\\apps\\")) {
+            return true;
+        }
+    }
+    exe.contains("\\scoop\\apps\\")
+}
+
+/// Whether this install can self-update via the Tauri updater.
+///
+/// Two formats cannot, for the same underlying reason: the updater runs an installer
+/// that writes somewhere other than where this copy lives. A Linux .deb sits in
+/// root-owned /usr, so the AppImage payload fails to apply every launch; the APPIMAGE
+/// env var the AppImage runtime sets is what tells the two apart. A Scoop install sits
+/// in Scoop's own directory while our NSIS installer targets %LOCALAPPDATA%\PrivacyNotes,
+/// so self-updating would leave a second copy the user's shortcut never points at.
+/// The frontend nudges instead of installing whenever this is false.
 /// Spec: ops/docs/linux-release.md (deb ships beside the AppImage; only the AppImage self-updates)
 #[cfg(desktop)]
 #[tauri::command]
@@ -363,9 +394,30 @@ fn can_self_update() -> bool {
     {
         std::env::var_os("APPIMAGE").is_some()
     }
-    #[cfg(not(target_os = "linux"))]
+    #[cfg(target_os = "windows")]
+    {
+        !unpacked_by_scoop()
+    }
+    #[cfg(not(any(target_os = "linux", target_os = "windows")))]
     {
         true
+    }
+}
+
+/// Whether the nudge shown in place of a self-update should name Scoop. Both blocked
+/// formats answer false to can_self_update, and their advice is opposite: a .deb user
+/// fetches a newer package from the website, while a Scoop user must NOT, because the
+/// download there is the NSIS installer that creates the second copy.
+#[cfg(desktop)]
+#[tauri::command]
+fn is_scoop_install() -> bool {
+    #[cfg(target_os = "windows")]
+    {
+        unpacked_by_scoop()
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        false
     }
 }
 

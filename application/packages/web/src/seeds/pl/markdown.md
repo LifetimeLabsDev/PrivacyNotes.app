@@ -109,7 +109,7 @@ Są dwa rodzaje i celowo wyglądają inaczej.
 - Link internetowy otwiera stronę: [privacynotes.app](https://privacynotes.app/pl)
 - Link do notatki otwiera inną twoją notatkę: [[Jak chronione są twoje notatki]]
 
-Oba mają przycisk na pasku. Łańcuch robi link internetowy. Przycisk obok wypisuje twoje notatki, a ty wybierasz tę, o którą ci chodzi.
+Oba mają przycisk na pasku. Łańcuch robi link internetowy. Nawiasy kwadratowe robią link do notatki: wypisują twoje notatki, a ty wybierasz tę, o którą ci chodzi. Wpisanie `[[` działa tak samo.
 
 ---
 

@@ -13,7 +13,7 @@
     "checking": "S'està comprovant...",
     "verify": "Verifica",
     "replaceExisting": "Introdueix un PIN nou de 4 xifres. Substituirà el PIN actual.",
-    "setIntro": "Es demanarà un PIN de 4 xifres per veure la teva frase i obrir les notes protegides. Evita mirades curioses si algú et demana el dispositiu.",
+    "setIntro": "Un PIN de 4 xifres obre les teves notes protegides i la teva frase de recuperació. Se sincronitza a tots els dispositius.",
     "protectReason": "Les notes protegides necessiten un PIN, perquè el bloqueig viatja als teus altres dispositius i l'empremta no.",
     "newPin": "PIN nou",
     "confirmPin": "Confirma el PIN",
@@ -35,6 +35,17 @@
     "introNoBio": "Introdueix el PIN actual per confirmar-ne l'eliminació. La vista de la frase ja no estarà protegida.",
     "verifying": "S'està verificant...",
     "removePin": "Elimina el PIN"
+  },
+  "pinRecovery": {
+    "forgotPin": "Has oblidat el PIN?",
+    "title": "Restableix el PIN",
+    "intro": "Introdueix la teva frase de recuperació de 12 paraules per esborrar el PIN. Just després en pots establir un de nou.",
+    "lockIntro": "Introdueix la teva frase de recuperació de 12 paraules. Desbloqueja l'aplicació i esborra el PIN.",
+    "consequence": "El PIN s'esborra a tots els teus dispositius. El desbloqueig biomètric no es veu afectat.",
+    "wrongPhrase": "Aquesta no és la frase de recuperació d'aquest compte.",
+    "clearPin": "Esborra el PIN",
+    "lockAction": "Desbloqueja i esborra el PIN",
+    "cleared": "PIN esborrat. Estableix-ne un de nou a sota o deixa'l desactivat."
   },
   "phraseGate": {
     "enterToView": "Introdueix el teu PIN de 4 xifres per veure la frase.",
@@ -94,7 +105,7 @@
     "confirmPinForLock": "Introdueix el teu PIN un cop per activar-ho. Tanca amb clau una còpia de la teva frase de recuperació, de manera que només el teu PIN pot obrir l'aplicació.",
     "relockAfter": "Torna a blocar al cap de",
     "relockHint": "S'aplica a la pantalla de bloqueig i a qualsevol nota protegida amb PIN.",
-    "perDeviceNote": "Cada dispositiu es registra de manera independent. El desbloqueig biomètric requereix la teva empremta o la teva cara per accedir a l'aplicació en aquest dispositiu.",
+    "perDeviceNote": "El desbloqueig biomètric obre les mateixes notes que el PIN. Es queda en aquest dispositiu i no se sincronitza mai.",
     "disableConfirmTitle": "Desactiva la biometria",
     "disableConfirmLabel": "Desactiva",
     "disableConfirmBody": "Vols desactivar el desbloqueig biomètric en aquest dispositiu?",
