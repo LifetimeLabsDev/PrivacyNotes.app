@@ -809,9 +809,10 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         />
       )}
       <EditorContent editor={editor} />
-      {editor && !readOnly && editor.isActive('table') && (
-        <TableControls editor={editor} />
-      )}
+      {/* Always mounted, hidden by itself until the caret is in a table: a
+          gate read here would only be as fresh as the last render of this
+          component, which a transaction does not cause. */}
+      {editor && !readOnly && <TableControls editor={editor} />}
       {editor && !readOnly && linkPopoverOpen && isMobile && (
         <LinkSheet editor={editor} isMobile={true} onClose={() => setLinkPopoverOpen(false)} />
       )}

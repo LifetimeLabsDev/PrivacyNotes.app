@@ -98,17 +98,13 @@
     "kicker": "Nedladdningar",
     "heading": "Ladda ner PrivacyNotes",
     "tileAria": "Ladda ner för {{name}}",
-    "apkQualifier": "direktnedladdning",
-    "apkDesc": "Googlefritt, uppdateringsavisering i appen",
-    "obtainiumQualifier": "uppdaterar sig själv",
-    "obtainiumDesc": "Tryck på badgen i telefonen: Obtainium lägger till PrivacyNotes och installerar varje ny version åt dig.",
+    "apkDesc": "Varje uppdatering är en nedladdning och en installation du gör själv.",
+    "obtainiumDesc": "Installerar varje ny version från vårt repo.",
     "obtainiumBadgeAlt": "Hämta på Obtainium",
-    "obtainiumManual": "Inte i telefonen? Klistra in det här i Obtainium istället:",
     "appStore": "App Store",
     "recommended": "Rekommenderas",
-    "playDesc": "Uppdateras automatiskt via butiken",
     "comingSoon": "Kommer snart",
-    "apkFootnote": "Kräver Android 7.0 eller nyare. APK-filen behöver varken Google-konto eller Google-betalning: Pro låses upp via kassan på webben. Den säger till i appen när en ny version finns; Obtainium och Play-versionen uppdaterar sig själva.",
+    "apkFootnote": "Kräver Android 7.0 eller nyare. Zapstore, Obtainium och APK-filen behöver varken Google-konto eller Google-betalning: Pro låses upp via kassan på webben. APK-filen säger till i appen när en ny version finns.",
     "linuxRequirement": "Båda formaten kräver webkit2gtk 4.1: Ubuntu 22.04 eller nyare, Debian 12 eller nyare, eller en motsvarande utgåva från 2023 och framåt. Äldre distributioner levererar bara webkit2gtk 4.0 och kan inte köra de här byggena.",
     "linuxArchX86": "Intel / AMD (x86_64)",
     "linuxArchX86Desc": "Nästan alla stationära och bärbara datorer. Välj den här om du är osäker.",
@@ -121,14 +117,18 @@
     "checksumAria": "SHA-256-kontrollsumma för {{label}}",
     "debFootnote": "Uppdaterar du en befintlig <highlight>.deb-installation</highlight>? Avinstallera den inte först. Att dubbelklicka på filen kör fast i Ubuntus App Center, som bara meddelar att appen redan är installerad, så installera den nya över den gamla från en terminal. Använd raden som passar din dator; dpkg --print-architecture visar vilken du behöver:",
     "availability": "Finns nu: macOS 13+, Windows 10+, iOS 15+, Linux och Android.",
-    "betaNote": "Alla våra appar är i beta och kan fortfarande ha buggar, så webbversionen är stabilast just nu. Den goda nyheten: varje app uppdaterar sig själv, och vi släpper rättningar nästan dagligen.",
+    "betaNote": "Alla våra appar är i beta och kan fortfarande ha buggar, så webbversionen är stabilast just nu. Varje app uppdaterar sig själv och vi släpper rättningar nästan dagligen.",
     "pkgToggle": "Installera med en pakethanterare ({{platforms}})",
     "pkgBrewDesc": "Uppdateringar sköts av appen, inte av brew",
     "pkgWingetDesc": "Inbyggt i Windows 10 och 11",
     "pkgScoopDesc": "Uppdateringar sköts av Scoop, inte av appen",
     "pkgFootnote": "Var och en installerar samma signerade bygge. Med Homebrew och winget uppdaterar appen sig själv. Med Scoop kör du scoop update privacynotes.",
     "githubLink": "Alla utgåvor på GitHub",
-    "githubNote": "Signerad · Offentlig · Verifierbar · Varenda utgåva"
+    "githubNote": "Signerad · Offentlig · Verifierbar · Varenda utgåva",
+    "zapstoreDesc": "<rec>Rekommenderas.</rec> Kontrollerar vår signatur innan den installerar.",
+    "zapstoreBadgeAlt": "Hämta på Zapstore",
+    "autoUpdates": "Uppdaterar sig själv",
+    "manualUpdates": "Manuella uppdateringar"
   },
   "ctaRepeat": {
     "getStarted": "Kom igång"
@@ -150,7 +150,7 @@
     "proLabel": "Pro · Betala en gång",
     "earlyAdopterBadge": "Tidig användare",
     "oneTime": "engångsbetalning",
-    "proOnceDesc": "En gång. Inte per år. Inte per månad. Du betalar <b>en gång</b> och äger det för alltid.",
+    "proOnceDesc": "Du betalar <b>en gång</b> och äger det för alltid.",
     "proCompareBeta": "Betala {{earlyPrice}} $ en gång. Obsidian Sync kostar 48 $/år, varje år. Standard Notes tar 90 $/år. Pris för tidiga användare, låst innan det höjs till {{proPrice}} $.",
     "proCompare": "Betala {{proPrice}} $ en gång och äg det för alltid. Obsidian Sync kostar 48 $/år och Standard Notes 90 $/år, varenda år.",
     "proEverythingFree": "Allt i Gratis, plus:",
@@ -190,9 +190,9 @@
   "mood": {
     "kicker": "Humör- och må-bra-spårning",
     "heading": "Spåra det du faktiskt känner.",
-    "intro": "Humör, känslor, sömn, medicin och aktivitetsnivå med tryck, inte skrivande. Allt totalsträckskrypterat. Ingenting lämnar din enhet okrypterat.",
+    "intro": "Humör, känslor, sömn, medicin och aktivitetsnivå, allt med några tryck. Allt krypteras på din enhet innan det synkas.",
     "cardEmotionsTitle": "Humör (1-10) + 24 känslotaggar",
-    "cardEmotionsBody": "Inga smileys. 24 forskningsbaserade känslotaggar med verklig nyans. Spåra det du faktiskt känner, se mönster över tid och exportera data som din terapeut eller läkare kan arbeta med.",
+    "cardEmotionsBody": "24 forskningsbaserade känslotaggar. Sätt ord på det du känner, se mönster över tid och exportera data som din terapeut eller läkare kan arbeta med.",
     "cardSleepTitle": "Sömnkvalitet + aktivitetsnivå",
     "cardSleepBody": "Femgradig kvalitetsskala plus valfritt antal timmar. Aktivitet från stillasittande till intensiv. Analysen kopplar automatiskt ihop det med ditt humör.",
     "cardMedsTitle": "Följsamhet till medicinering",
@@ -200,7 +200,7 @@
     "cardAnalyticsTitle": "Mönsterigenkänning + export till läkaren",
     "cardAnalyticsBody": "Analysen körs på din enhet och hittar samband mellan sömn, aktivitet, medicin och humör. Exportera en utskrivbar PDF-rapport till läkaren eller kopiera en strukturerad prompt för AI-analys.",
     "encryptedHeading": "Därför fungerar det här bara krypterat",
-    "encryptedBody": "Ingen antecknar sin antidepressiva dos i Notion. Ingen loggar hopplösa dagar i ett Google-dokument. Känsliga uppgifter kräver zero-knowledge-kryptering, så vi byggde det så från dag ett."
+    "encryptedBody": "Ingen antecknar sin antidepressiva dos i Notion. Ingen loggar hopplösa dagar i ett Google-dokument. Så känsliga uppgifter kräver zero-knowledge-kryptering, och så är PrivacyNotes byggt."
   },
   "comparison": {
     "kicker": "Räkna på det",
@@ -245,10 +245,10 @@
   "whyPrivacy": {
     "kicker": "Därför spelar det roll",
     "heading": "De flesta anteckningsappar läser dina anteckningar.<accent>Vår kan inte.</accent>",
-    "para1": "De flesta anteckningsappar gräver i ditt innehåll. Lägg till ”köp en ny tv” i inköpslistan och de närmaste sidorna du besöker fylls med tv-annonser. Din matlista, din dagbok, dina privata tankar, allt matas in i annonsmaskineriet, profileras och säljs vidare. Det är ingen konspiration; det är affärsmodellen för varje ”gratis” anteckningsapp som lever på reklam.",
+    "para1": "De flesta anteckningsappar gräver i ditt innehåll. Lägg till ”köp en ny tv” i inköpslistan och de närmaste sidorna du besöker fylls med tv-annonser. Din matlista, din dagbok, dina privata tankar, allt matas in i annonsmaskineriet, profileras och säljs vidare. Det är affärsmodellen för varje ”gratis” anteckningsapp som lever på reklam.",
     "para2": "Även appar som inte visar annonser lagrar dina anteckningar i klartext på sina servrar, läsbara för anställda, åtkomliga vid intrång och tillgängliga för var och en med ett domstolsbeslut. Dina uppgifter blir deras påtryckningsmedel.",
     "differenceLabel": "Skillnaden",
-    "differenceBody": "<brand/> är totalsträckskrypterad med nycklar som aldrig lämnar din enhet. Vi kan inte läsa dina anteckningar. Våra servrar kan inte heller. Ingen spårning, ingen analys, inga annonser, ingen profilering. Aldrig. Det du skriver förblir ditt.",
+    "differenceBody": "<brand/> är totalsträckskrypterad med nycklar som aldrig lämnar din enhet, så varken vi eller våra servrar kan läsa det du skriver. Det finns ingen spårning, ingen analys, inga annonser och ingen profilering, och det kommer det aldrig att göra. Det du skriver förblir ditt.",
     "keyboardNote": "<b>En kommentar om tangentbord på enheten.</b> Tredjepartstangentbord (som Gboard, SwiftKey eller Samsung Keyboard) kan skicka det du skriver till sina egna servrar. Det sker på operativsystemsnivå, utanför alla appars kontroll. Överväg att stänga av molnfunktioner i tangentbordets inställningar, eller att använda ett tangentbord som bara kör offline."
   },
   "readIt": {
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "Din fras är din nyckel",
-    "body": "Ingen fras, inga anteckningar. Vi kan inte återställa dem. Ingen kan det. Det är priset för äkta kryptering. Det är ingen idé att kontakta vårt utvecklingsteam, med egen förvaring kan vi helt enkelt inte dekryptera dina anteckningar, bara du kan det.",
+    "body": "Ingen fras, inga anteckningar. Vi kan inte återställa dem, och det kan ingen annan heller. Det är priset för totalsträckskryptering: med egen förvaring är du den enda som har nyckeln, så att skriva till vårt team hämtar inte tillbaka dina anteckningar.",
     "noRecoveryTerm": "Ingen återställning",
     "noRecoveryDesc": "Tappar du frasen tappar du anteckningarna",
     "deviceTerm": "Skapad på enheten",

@@ -63,6 +63,7 @@ const RENDER_TRANSLATED: Record<string, readonly string[]> = {
   'notes:vaultNew.sshKey': [], // "SSH Key" in the vault New menu
   'shell:vaultItem.badgeSshKey': [], // "SSH Key" vault row badge
   'notes:settings.accountLabel': [], // "ID & Sync" - product term
+  'settings:syncStatus.notSynced': [], // footer pill word; the slot is narrow and ID & Sync carries the translation
   'notes:vaultFilter.keys': [], // Vault "Keys" filter chip, pairs with the SSH badge
   'shell:tagsRail.viewAuto': [], // "Auto" view mode
   'settings:appearance.viewAuto': [], // "Auto" view mode

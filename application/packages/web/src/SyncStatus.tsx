@@ -9,6 +9,7 @@ import { isDemoMode } from './demo';
 import { useBelowVersionFloor } from './versionFloor';
 import { useSyncPaused } from './syncPause';
 import { useFilesWifiOnly } from './wifiOnly';
+import { usePushFailures } from './pushFailures';
 
 interface SyncStatusProps {
   /** Icon size in px - 14 for mobile header, 13 for footers. */
@@ -26,8 +27,10 @@ interface SyncStatusProps {
 
 /**
  * Sync status indicator with offline awareness.
- * Four states: Offline (amber) > Syncing (accent spinner) > Uploading
- * (accent spinner, blobs still queued) > Synced (green check).
+ * Offline (amber) > Syncing (accent spinner) > Not synced (amber, the
+ * last pass could not push a note; the footer slot fits one short word,
+ * so the fuller "not backed up" lives in the tooltip and in ID & Sync) >
+ * Uploading (accent spinner, blobs still queued) > Synced (green check).
  *
  * The green check is a promise that nothing is still on its way up, so
  * it must not show while blobs wait in the upload queue - "Synced" next
@@ -50,6 +53,7 @@ export function SyncStatus({ size = 13, onOpen }: SyncStatusProps) {
   const belowFloor = useBelowVersionFloor();
   const paused = useSyncPaused();
   const wifi = useFilesWifiOnly();
+  const failures = usePushFailures();
 
   // Demo mode never saves anything - don't show a green "Synced" check
   // that implies durability. Say so plainly instead.
@@ -130,6 +134,23 @@ export function SyncStatus({ size = 13, onOpen }: SyncStatusProps) {
           aria: t('syncStatus.syncingAria'),
           needsOpenHint: true,
         }
+      : failures.size > 0
+        ? {
+            // The last pass could not push these notes (pushFailures.ts).
+            // Outranks every upload state below: a green check or an
+            // "Uploading" spinner would claim the notes are on their way
+            // while the server has refused them. The count and the reason
+            // per note live in ID & Sync, one click away.
+            body: (
+              <>
+                <Warning size={size} className="text-amber-500 dark:text-amber-400" />
+                <span className="text-amber-600 dark:text-amber-400">{t('syncStatus.notSynced', exemptOpts('settings:syncStatus.notSynced'))}</span>
+              </>
+            ),
+            tip: t('syncStatus.notBackedUpTooltip', { count: failures.size }),
+            aria: t('syncStatus.notBackedUpAria', { count: failures.size }),
+            needsOpenHint: true,
+          }
       : pendingUploads.count > 0 && wifi.held
         ? {
             // "Files on wifi only" is holding the queue on cellular. Not an

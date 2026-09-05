@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "Hinweisbox einfügen",
     "remove": "Hinweisbox entfernen",
+    "collapse": "Hinweisbox einklappen",
+    "expand": "Hinweisbox ausklappen",
     "types": {
       "info": "Info",
       "success": "Erfolg",
@@ -101,6 +103,7 @@
     "addRowBelow": "Zeile unterhalb einfügen",
     "addColumnLeft": "Spalte links einfügen",
     "addColumnRight": "Spalte rechts einfügen",
+    "toggleHeaderRow": "Kopfzeile umschalten",
     "deleteRow": "Zeile löschen",
     "deleteColumn": "Spalte löschen",
     "deleteTable": "Tabelle löschen"

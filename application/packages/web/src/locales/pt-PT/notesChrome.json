@@ -56,7 +56,14 @@
     "unsyncedKept_other": "{{count}} notas neste dispositivo ainda não foram sincronizadas. Ficam neste dispositivo e sincronizam quando voltares a iniciar sessão.",
     "dontRemind": "Não voltar a lembrar-me",
     "showPhrase": "Não, mostrar frase",
-    "confirm": "Sim, terminar sessão"
+    "confirm": "Sim, terminar sessão",
+    "stay": "Manter sessão iniciada",
+    "signOutLose_one": "Terminar sessão e perder {{count}} nota",
+    "signOutLose_other": "Terminar sessão e perder {{count}} notas",
+    "neverBackedUp_one": "Só neste dispositivo:",
+    "neverBackedUp_other": "Só neste dispositivo:",
+    "moreNotes": "e mais {{count}}",
+    "appLockHint": "Dispositivo partilhado? Ativa o bloqueio da app em Definições > Segurança."
   },
   "burnShareModal": {
     "title": "Partilhar e Queimar Após Ler",

@@ -56,7 +56,14 @@
     "unsyncedKept_other": "Bu cihazdaki {{count}} not henüz eşitlenmedi. Bu cihazda kalır ve tekrar giriş yaptığınızda eşitlenir.",
     "dontRemind": "Bir daha hatırlatma",
     "showPhrase": "Hayır, ifadeyi göster",
-    "confirm": "Evet, çıkış yap"
+    "confirm": "Evet, çıkış yap",
+    "stay": "Oturumu açık tut",
+    "signOutLose_one": "Çıkış yap ve {{count}} notu kaybet",
+    "signOutLose_other": "Çıkış yap ve {{count}} notu kaybet",
+    "neverBackedUp_one": "Yalnızca bu cihazda:",
+    "neverBackedUp_other": "Yalnızca bu cihazda:",
+    "moreNotes": "ve {{count}} tane daha",
+    "appLockHint": "Ortak cihaz mı? Ayarlar > Güvenlik'ten uygulama kilidini açın."
   },
   "burnShareModal": {
     "title": "Paylaş ve okunduktan sonra yak",

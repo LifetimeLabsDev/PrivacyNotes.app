@@ -431,6 +431,7 @@
     "urlInvalid": "example.com veya https://example.com/page gibi bir web adresi girin.",
     "urlDuplicate": "Bu URL zaten başka bir yer iminde, bu yüzden değişiklik kaydedilmedi.",
     "openAction": "Aç",
+    "copiedUrl": "Bağlantı kopyalandı",
     "moveToTrash": "Çöp kutusuna taşı",
     "emptyNone": "Henüz yer imi yok.",
     "emptyTitle": "Saklamaya değer siteleri kaydedin",

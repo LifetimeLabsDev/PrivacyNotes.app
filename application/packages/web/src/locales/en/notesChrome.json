@@ -56,7 +56,14 @@
     "unsyncedKept_other": "{{count}} notes on this device haven't synced yet. They stay on this device and sync after you sign in again.",
     "dontRemind": "Don't remind me again",
     "showPhrase": "No, show phrase",
-    "confirm": "Yes, sign out"
+    "confirm": "Yes, sign out",
+    "stay": "Stay signed in",
+    "signOutLose_one": "Sign out and lose {{count}} note",
+    "signOutLose_other": "Sign out and lose {{count}} notes",
+    "neverBackedUp_one": "Only on this device:",
+    "neverBackedUp_other": "Only on this device:",
+    "moreNotes": "and {{count}} more",
+    "appLockHint": "Shared device? Turn on app lock under Settings > Security."
   },
   "burnShareModal": {
     "title": "Share & Burn After Reading",

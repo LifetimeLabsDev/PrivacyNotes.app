@@ -224,7 +224,11 @@
     "pausedTooltip": "이 기기에서 동기화를 일시중지했어요. 다시 시작할 때까지 노트는 여기에 남아요.",
     "pausedAria": "동기화 일시중지됨",
     "wifiHold": "와이파이 대기 중",
-    "wifiHoldTooltip": "와이파이가 돌아오면 파일을 올려요. 노트는 계속 동기화돼요."
+    "wifiHoldTooltip": "와이파이가 돌아오면 파일을 올려요. 노트는 계속 동기화돼요.",
+    "notSynced": "동기화 안 됨",
+    "notBackedUp": "백업 안 됨",
+    "notBackedUpTooltip_other": "노트 {{count}}개가 백업되지 않았어요. 클릭하면 이유를 볼 수 있어요.",
+    "notBackedUpAria_other": "노트 {{count}}개가 백업되지 않았어요"
   },
   "errors": {
     "noSession": "활성 세션이 없어요. 다시 로그인해 보세요.",
@@ -257,14 +261,19 @@
     "nodeDevice": "이 기기",
     "nodeEncrypted": "암호화",
     "nodeRegion": "스위스",
-    "sealed": "올리기 전에 암호화돼요. 서버는 읽을 수 없어요.",
+    "sealed": "내 기기에서 암호화돼요. 서버는 내용을 읽을 수 없어요.",
     "offlineFact": "오프라인에서도 작동해요. 다시 온라인이 되면 동기화해요.",
     "activity": "최근 활동",
     "passUp_other": "{{count}}개 보냄",
     "passDown_other": "{{count}}개 받음",
     "passNothing": "변경 없음",
     "passNothingRepeat": "변경 없음 - {{count}}회",
-    "passFailed": "실패"
+    "passFailed": "실패",
+    "notBackedUpHeading_other": "노트 {{count}}개가 백업되지 않았어요",
+    "reasonTooLarge": "1 MB 제한 초과",
+    "reasonFailed": "실패: {{message}}",
+    "openNote": "열기",
+    "passPushFailed_other": "{{count}}개 실패"
   },
   "language": {
     "reportMistake": "번역 오류 신고하기"

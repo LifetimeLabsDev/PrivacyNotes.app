@@ -235,7 +235,13 @@
     "pausedTooltip": "Hai messo in pausa la sincronizzazione su questo dispositivo. Le note restano qui finché non riprendi.",
     "pausedAria": "Sincronizzazione in pausa",
     "wifiHold": "In attesa del wifi",
-    "wifiHoldTooltip": "I file partono appena torna il wifi. Le note continuano a sincronizzarsi."
+    "wifiHoldTooltip": "I file partono appena torna il wifi. Le note continuano a sincronizzarsi.",
+    "notSynced": "Non sincronizzato",
+    "notBackedUp": "Senza backup",
+    "notBackedUpTooltip_one": "{{count}} nota non ha un backup. Clicca per vedere perché.",
+    "notBackedUpTooltip_other": "{{count}} note non hanno un backup. Clicca per vedere perché.",
+    "notBackedUpAria_one": "{{count}} nota non ha un backup",
+    "notBackedUpAria_other": "{{count}} note non hanno un backup"
   },
   "errors": {
     "noSession": "Nessuna sessione attiva. Prova ad accedere di nuovo.",
@@ -271,7 +277,7 @@
     "nodeDevice": "Questo dispositivo",
     "nodeEncrypted": "Crittografato",
     "nodeRegion": "Svizzera",
-    "sealed": "Crittografate prima del caricamento. Il server non può leggerle.",
+    "sealed": "Cifrate sul tuo dispositivo. Il server non può leggerle.",
     "offlineFact": "Funziona offline. Si sincronizza quando torni online.",
     "activity": "Attività recente",
     "passUp_one": "{{count}} inviato",
@@ -280,7 +286,14 @@
     "passDown_other": "{{count}} ricevuti",
     "passNothing": "Nessuna modifica",
     "passNothingRepeat": "Nessuna modifica - {{count}}x",
-    "passFailed": "non riuscita"
+    "passFailed": "non riuscita",
+    "notBackedUpHeading_one": "{{count}} nota non ha un backup",
+    "notBackedUpHeading_other": "{{count}} note non hanno un backup",
+    "reasonTooLarge": "Oltre il limite di 1 MB",
+    "reasonFailed": "Non riuscito: {{message}}",
+    "openNote": "Apri",
+    "passPushFailed_one": "{{count}} non riuscito",
+    "passPushFailed_other": "{{count}} non riusciti"
   },
   "language": {
     "reportMistake": "Segnala un errore di traduzione"

@@ -146,9 +146,14 @@ Each sync pass runs in this order:
    50**, because a row that does not exist server-side has nothing to
    conflict with; everything else goes through the per-note conditional
    update (`lte` guard on `updated_at`) that detects conflicts. A failed
-   insert batch falls back to the per-note path so one oversized or
-   malformed row cannot fail its neighbours, and a failed probe falls
-   back entirely rather than risk bulk-inserting over live rows.
+   insert batch falls back to the per-note path so one malformed row
+   cannot fail its neighbours, and a failed probe falls back entirely
+   rather than risk bulk-inserting over live rows. A row above the
+   per-row ceiling (`octet_length(ciphertext) <= 1048576`) never reaches
+   either path: both measure the base64 they are about to send and report
+   the note through `onPushError` instead, because the server can only
+   refuse it and no retry changes that. The note stays dirty and marked
+   "not backed up" until an edit brings it under the ceiling.
    Before this split every first-time push cost up to three sequential
    round-trips (conditional update that matches nothing, select to find
    out why, insert), so a 500-note import was ~1500 serial requests and

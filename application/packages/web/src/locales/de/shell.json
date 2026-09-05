@@ -431,6 +431,7 @@
     "urlInvalid": "Gib eine Webadresse ein, z. B. example.com oder https://example.com/page.",
     "urlDuplicate": "Ein anderes Lesezeichen hat diese URL bereits, die Änderung wurde nicht gespeichert.",
     "openAction": "Öffnen",
+    "copiedUrl": "Link kopiert",
     "moveToTrash": "In den Papierkorb",
     "emptyNone": "Noch keine Lesezeichen.",
     "emptyTitle": "Speichere die Seiten, die es wert sind",

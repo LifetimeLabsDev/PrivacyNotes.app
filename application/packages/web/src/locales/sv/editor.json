@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "Infoga informationsruta",
     "remove": "Ta bort informationsruta",
+    "collapse": "Fäll ihop informationsrutan",
+    "expand": "Fäll ut informationsrutan",
     "types": {
       "info": "Info",
       "success": "Klart",
@@ -101,6 +103,7 @@
     "addRowBelow": "Lägg till rad nedanför",
     "addColumnLeft": "Lägg till kolumn till vänster",
     "addColumnRight": "Lägg till kolumn till höger",
+    "toggleHeaderRow": "Slå på eller av rubrikrad",
     "deleteRow": "Radera rad",
     "deleteColumn": "Radera kolumn",
     "deleteTable": "Radera tabell"

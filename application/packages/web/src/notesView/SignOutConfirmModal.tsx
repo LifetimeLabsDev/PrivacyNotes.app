@@ -22,24 +22,38 @@ export function SignOutConfirmModal({
   onDontRemindChange,
   onShowPhrase,
   onConfirmSignOut,
+  onStay,
   unsyncedCount,
   unsyncedKept,
+  neverBackedUp,
 }: {
   dontRemind: boolean;
   onDontRemindChange: (next: boolean) => void;
   onShowPhrase: () => void;
   onConfirmSignOut: () => void;
+  /** Closes the confirm and keeps the session. The default action while
+   *  unsynced notes are at stake: the rows rest sealed on this device,
+   *  so staying costs nothing and signing out destroys them. */
+  onStay: () => void;
   /** Local rows with dirty=1 at the moment the modal opened. */
   unsyncedCount: number;
   /** True when the sign-out preserves unsynced rows (forced context). */
   unsyncedKept: boolean;
+  /** The subset that exists on this device only (neverBackedUp.ts). */
+  neverBackedUp: ReadonlyArray<{ id: string; title: string }>;
 }) {
   const { t } = useTranslation('notesChrome');
-  useEscapeToClose(onShowPhrase);
+  // With unsynced rows at stake, every dismissal keeps the session; the
+  // phrase escape hatch stays as an explicit button.
+  const risky = unsyncedCount > 0 && !unsyncedKept;
+  const dismiss = risky ? onStay : onShowPhrase;
+  useEscapeToClose(dismiss);
+  const shown = neverBackedUp.slice(0, 5);
+  const more = neverBackedUp.length - shown.length;
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 p-4"
-      onClick={onShowPhrase}
+      onClick={dismiss}
     >
       <div
         className="w-full max-w-sm rounded-lg bg-surface-2 border border-divider text-pn p-6 space-y-4"
@@ -50,7 +64,7 @@ export function SignOutConfirmModal({
             {t('signOutConfirm.title')}
           </h2>
           <button
-            onClick={onShowPhrase}
+            onClick={dismiss}
             className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1"
             aria-label={t('close')}
           >
@@ -66,11 +80,25 @@ export function SignOutConfirmModal({
         {unsyncedCount > 0 && (
           <div className="flex items-start gap-2 rounded-md border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 text-[13px] leading-snug p-3">
             <WarningCircle size={16} className="shrink-0 mt-0.5" />
-            <span>
-              {t(unsyncedKept ? 'signOutConfirm.unsyncedKept' : 'signOutConfirm.unsyncedWarn', {
-                count: unsyncedCount,
-              })}
-            </span>
+            <div className="space-y-2">
+              <span>
+                {t(unsyncedKept ? 'signOutConfirm.unsyncedKept' : 'signOutConfirm.unsyncedWarn', {
+                  count: unsyncedCount,
+                })}
+              </span>
+              {risky && shown.length > 0 && (
+                <div>
+                  <p className="font-medium">{t('signOutConfirm.neverBackedUp', { count: neverBackedUp.length })}</p>
+                  <ul className="mt-1 list-disc ps-4 space-y-0.5">
+                    {shown.map((n) => (
+                      <li key={n.id} className="truncate" dir="auto">{n.title}</li>
+                    ))}
+                    {more > 0 && <li className="list-none -ms-4 opacity-80">{t('signOutConfirm.moreNotes', { count: more })}</li>}
+                  </ul>
+                </div>
+              )}
+              {risky && <p className="opacity-90">{t('signOutConfirm.appLockHint')}</p>}
+            </div>
           </div>
         )}
         <label className="flex items-center gap-2 text-[13px] text-neutral-500 dark:text-neutral-500 cursor-pointer select-none">
@@ -82,20 +110,47 @@ export function SignOutConfirmModal({
           />
           {t('signOutConfirm.dontRemind')}
         </label>
-        <div className="flex gap-2 pt-2">
-          <button
-            onClick={onShowPhrase}
-            className="flex-1 rounded-md border border-neutral-300 dark:border-neutral-800 hover:bg-surface-1 px-4 py-2 text-sm transition"
-          >
-            {t('signOutConfirm.showPhrase')}
-          </button>
-          <button
-            onClick={onConfirmSignOut}
-            className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2 text-sm font-medium transition"
-          >
-            {t('signOutConfirm.confirm')}
-          </button>
-        </div>
+        {risky ? (
+          // Data at stake: the primary action keeps it, and the sign-out
+          // names its cost. Two clicks to lose notes is the point.
+          <div className="space-y-2 pt-2">
+            <div className="flex gap-2">
+              <button
+                onClick={onShowPhrase}
+                className="flex-1 rounded-md border border-neutral-300 dark:border-neutral-800 hover:bg-surface-1 px-4 py-2 text-sm transition"
+              >
+                {t('signOutConfirm.showPhrase')}
+              </button>
+              <button
+                onClick={onStay}
+                className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2 text-sm font-medium transition"
+              >
+                {t('signOutConfirm.stay')}
+              </button>
+            </div>
+            <button
+              onClick={onConfirmSignOut}
+              className="w-full rounded-md border border-red-300 dark:border-red-900 text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 px-4 py-2 text-sm transition"
+            >
+              {t('signOutConfirm.signOutLose', { count: unsyncedCount })}
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2 pt-2">
+            <button
+              onClick={onShowPhrase}
+              className="flex-1 rounded-md border border-neutral-300 dark:border-neutral-800 hover:bg-surface-1 px-4 py-2 text-sm transition"
+            >
+              {t('signOutConfirm.showPhrase')}
+            </button>
+            <button
+              onClick={onConfirmSignOut}
+              className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2 text-sm font-medium transition"
+            >
+              {t('signOutConfirm.confirm')}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

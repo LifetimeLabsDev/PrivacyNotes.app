@@ -64,6 +64,19 @@ const SECURITY_DOC_URL = 'https://github.com/LifetimeLabsDev/PrivacyNotes.app/bl
 const CRYPTO_SRC_URL = 'https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts';
 
 /**
+ * The Zapstore listing, and the store itself for a reader who has never heard of it.
+ *
+ * Zapstore carries the same direct APK the row below links, taken from the GitHub release,
+ * so there is no separate build and no second signing key. What it adds over a raw download
+ * is verification a person cannot do by hand on a phone: it checks the file hash and the
+ * signing certificate against the ones recorded when we published, and refuses the install
+ * on a mismatch. The listing id is the Android package id.
+ * Spec: ops/docs/android-setup.md (Zapstore listing)
+ */
+const ZAPSTORE_LISTING_URL = 'https://zapstore.dev/apps/app.privacynotes';
+const ZAPSTORE_SITE_URL = 'https://zapstore.dev';
+
+/**
  * Repo root, which is what Obtainium's GitHub source wants pasted in - NOT the /releases
  * page and NOT a direct asset link. Obtainium then reads the release feed itself, picks the
  * one .apk asset per tag, and installs each new version. That is the whole integration: no
@@ -1657,9 +1670,10 @@ export function LandingPage({
                 {t('downloads.linuxRequirement')}
               </p>
               {/* One group per architecture, detected one first. The AppImage carries the
-                  Recommended pill for the same reason Obtainium carries it in the Android
-                  panel below: of the formats offered there, it is the one that updates
-                  itself. Spec: ops/docs/linux-release.md (the sole updater payload) */}
+                  Recommended pill because of the formats offered here it is the one that
+                  updates itself, the .deb being root-owned. One pill per panel, the same
+                  rule the Android panel follows: a second one turns a recommendation into
+                  a category. Spec: ops/docs/linux-release.md (the sole updater payload) */}
               {linuxArchShown.map((a, i) => (
                 <div key={a} className={i > 0 ? 'border-t border-[var(--wl-ink)]/10' : undefined}>
                   <div className="flex items-start justify-between gap-3 px-4 pt-3 pb-1.5">
@@ -1712,73 +1726,112 @@ export function LandingPage({
           )}
           {androidOpen && (
             <div dir="ltr" className="mx-auto mt-6 max-w-lg overflow-hidden rounded-2xl border border-[var(--wl-ink)]/15 bg-[var(--wl-card)]/70 text-left"> {/* rtl-ok: code sample stays LTR */}
-              {/* Obtainium leads because it is the only Android route that updates itself
-                  today: the raw APK can only alert, and Play is not here yet. Icons and the
-                  gap-2 header shape are lifted from PkgCmd so this panel and the
-                  package-manager panel below read as one family. */}
-              <div className="px-4 py-3">
-                {/* Every row in these panels breathes below its title row
-                    (mb-1.5), so a chip or qualifier never sits glued to the
-                    description underneath. */}
-                <div className="mb-1.5 flex items-center justify-between gap-3">
-                  <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-semibold text-[var(--wl-ink)]">
-                    <span aria-hidden="true" className="shrink-0 text-accent"><Package size={17} weight="fill" /></span>
-                    <a href={OBTAINIUM_SITE_URL} target="_blank" rel="noopener" className="underline hover:no-underline">Obtainium</a>
-                    <span className="whitespace-nowrap text-xs font-normal text-[var(--wl-sub)]">({t('downloads.obtainiumQualifier')})</span>
+              {/* The two self-updating routes lead, and each badge sits at the end of its own
+                  row rather than under it: the badge art already carries the store's name, so
+                  a title line above it would print the same word twice. What the row adds is
+                  the one thing the art cannot say - who installs the next version. That is the
+                  chip, and it is why the APK carries an amber one: a reader who skips every
+                  sentence still learns that two routes keep themselves current and one is a
+                  chore. Zapstore takes the Recommended word because it is the only route that
+                  verifies before it installs: it holds the file hash and the signing
+                  certificate we published and refuses a mismatch, which is the check this
+                  whole page asks people to care about. The row wraps below about 384px, so a
+                  phone stacks the badge under the text instead of squeezing both. */}
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3">
+                <div className="min-w-[175px] flex-1">
+                  <span className="flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold text-[var(--wl-ink)]">
+                    <a href={ZAPSTORE_SITE_URL} target="_blank" rel="noopener" className="underline hover:no-underline">Zapstore</a>
+                    <span className="whitespace-nowrap rounded-full bg-[var(--wl-tint-green)] px-2 py-0.5 text-xs font-semibold text-[var(--wl-emerald)]">{t('downloads.autoUpdates')}</span>
                   </span>
-                  <span className="shrink-0 rounded-full border border-[var(--wl-emerald)]/30 bg-[var(--wl-tint-green)] px-2.5 py-1 text-xs font-semibold text-[var(--wl-emerald)]">
-                    {t('downloads.recommended')}
+                  <span className="mt-0.5 block text-sm text-[var(--wl-sub)]">
+                    <Trans
+                      i18nKey="landing:downloads.zapstoreDesc"
+                      components={{ rec: <strong className="font-semibold text-[var(--wl-emerald)]" /> }}
+                    />
                   </span>
                 </div>
-                <span className="mt-0.5 block text-sm text-[var(--wl-sub)]">{t('downloads.obtainiumDesc')}</span>
-                {/* Obtainium's own badge, served from our origin like every other image here.
-                    It is the whole point of the row on a phone, so it sits above the URL: the
-                    copy block below is the fallback for a desktop reader and for a browser that
-                    refuses to hand a custom scheme to an app. */}
-                <a href={OBTAINIUM_ADD_URL} target="_blank" rel="noopener" className="mt-2.5 inline-block transition hover:opacity-80">
+                {/* Zapstore's own badge, served from our origin like every other image here.
+                    It links the listing rather than an install scheme, which is the whole
+                    difference from the Obtainium badge below: that one hands the phone an app
+                    entry to add, this one opens a page a person reads first. No copy block
+                    underneath for the same reason - the URL is a destination, not something
+                    to paste into another app. Kept as the supplied SVG rather than rasterised
+                    to match its neighbour, because vector art stays sharp at any density and
+                    the row renders it at 48px on a phone and a desktop alike. */}
+                <a href={ZAPSTORE_LISTING_URL} target="_blank" rel="noopener" className="shrink-0 transition hover:opacity-80">
                   <img
-                    src="/marketing/badge-obtainium.webp"
-                    alt={t('downloads.obtainiumBadgeAlt')}
-                    width={161}
+                    src="/marketing/badge-zapstore.svg"
+                    alt={t('downloads.zapstoreBadgeAlt')}
+                    width={157}
                     height={48}
                     loading="lazy"
                     className="block h-12 w-auto"
                   />
                 </a>
-                <span className="mt-2.5 block text-sm text-[var(--wl-sub)]">{t('downloads.obtainiumManual')}</span>
-                <CmdBlock className="mt-1.5" cmd={OBTAINIUM_SOURCE_URL} />
+              </div>
+              <div className="border-t border-[var(--wl-ink)]/10 px-4 py-3">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+                  <div className="min-w-[175px] flex-1">
+                    <span className="flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold text-[var(--wl-ink)]">
+                      <a href={OBTAINIUM_SITE_URL} target="_blank" rel="noopener" className="underline hover:no-underline">Obtainium</a>
+                      <span className="whitespace-nowrap rounded-full bg-[var(--wl-tint-green)] px-2 py-0.5 text-xs font-semibold text-[var(--wl-emerald)]">{t('downloads.autoUpdates')}</span>
+                    </span>
+                    <span className="mt-0.5 block text-sm text-[var(--wl-sub)]">{t('downloads.obtainiumDesc')}</span>
+                  </div>
+                  {/* Obtainium's own badge, served from our origin like every other image here.
+                      It is the whole point of the row on a phone, so it sits in the row itself:
+                      the copy block below is the fallback for a desktop reader and for a browser
+                      that refuses to hand a custom scheme to an app. */}
+                  <a href={OBTAINIUM_ADD_URL} target="_blank" rel="noopener" className="shrink-0 transition hover:opacity-80">
+                    <img
+                      src="/marketing/badge-obtainium.webp"
+                      alt={t('downloads.obtainiumBadgeAlt')}
+                      width={161}
+                      height={48}
+                      loading="lazy"
+                      className="block h-12 w-auto"
+                    />
+                  </a>
+                </div>
+                {/* The URL is what Obtainium wants pasted, and nothing else on this page has a
+                    use for it, so it hangs inside this row with no rule on either side. A rule
+                    would read as a route of its own and invite a reader to paste it somewhere
+                    that has no idea what to do with it. */}
+                <CmdBlock className="mt-2.5" cmd={OBTAINIUM_SOURCE_URL} />
                 {/* The house FAQ-link design, same component the sign-in and settings
                     modals use, so a /help link looks identical wherever it appears. It
                     carries the real FAQ question rather than a label of our own, which
                     is why this row needs no string of its own. */}
                 <HelpChip surface="downloads" className="mt-2.5" />
               </div>
-              {/* A div rather than an anchor, and the APK link stretched across it, for the
-                  same reason as a Linux row: the digest link cannot nest inside it. This is
-                  the one Android route where a checksum earns its place, because a
-                  sideloaded APK is installed by hand outside any store's verification. */}
-              <div className="relative border-t border-[var(--wl-ink)]/10 px-4 py-3 hover:bg-[var(--wl-ink)]/5">
-                <span className="mb-1.5 flex items-center gap-2 font-semibold text-[var(--wl-ink)]">
-                  <a href={ANDROID_APK_URL} className="flex items-center gap-2 after:absolute after:inset-0">
-                    <span aria-hidden="true" className="shrink-0 text-accent"><AndroidLogo size={17} weight="fill" /></span>
-                    APK
-                  </a>
-                  <span className="text-xs font-normal text-[var(--wl-sub)]">({t('downloads.apkQualifier')})</span>
-                  <ChecksumLink href={ANDROID_APK_URL} label="APK" className="ms-auto" />
-                </span>
-                <span className="mt-0.5 block text-sm text-[var(--wl-sub)]">{t('downloads.apkDesc')}</span>
-              </div>
-              <div className="flex items-center justify-between gap-3 border-t border-[var(--wl-ink)]/10 px-4 py-3">
-                <span>
-                  <span className="mb-1.5 flex items-center gap-2 font-semibold text-[var(--wl-muted)]">
+              {/* One row for the two routes nobody has to keep current by choice: the APK you
+                  update by hand, and the store that is not open yet. The APK half is its own
+                  positioned block because the digest link cannot nest inside the download
+                  link, so the anchor is stretched across that block alone - which is also what
+                  keeps the hover highlight off the Play line underneath. This is the one
+                  Android route where a checksum earns its place, because a sideloaded APK is
+                  installed by hand outside any store's verification. */}
+              <div className="border-t border-[var(--wl-ink)]/10 py-1">
+                <div className="relative px-4 py-2 hover:bg-[var(--wl-ink)]/5">
+                  <span className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold text-[var(--wl-ink)]">
+                    <a href={ANDROID_APK_URL} className="flex items-center gap-2 after:absolute after:inset-0">
+                      <span aria-hidden="true" className="shrink-0 text-accent"><AndroidLogo size={17} weight="fill" /></span>
+                      APK
+                    </a>
+                    <span className="whitespace-nowrap rounded-full bg-[var(--wl-tint-amber)] px-2 py-0.5 text-xs font-semibold text-[var(--wl-amber-text)]">{t('downloads.manualUpdates')}</span>
+                    <ChecksumLink href={ANDROID_APK_URL} label="APK" className="ms-auto" />
+                  </span>
+                  <span className="mt-0.5 block text-sm text-[var(--wl-sub)]">{t('downloads.apkDesc')}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3 px-4 py-2">
+                  <span className="flex items-center gap-2 font-semibold text-[var(--wl-muted)]">
                     <span aria-hidden="true" className="shrink-0"><GooglePlayLogo size={17} weight="fill" /></span>
                     Google Play
                   </span>
-                  <span className="mt-0.5 block text-sm text-[var(--wl-muted)]">{t('downloads.playDesc')}</span>
-                </span>
-                <span className="shrink-0 rounded-full border border-[var(--wl-ink)]/15 px-2.5 py-1 text-xs font-semibold text-[var(--wl-sub)]">
-                  {t('downloads.comingSoon')}
-                </span>
+                  <span className="shrink-0 rounded-full border border-[var(--wl-ink)]/15 px-2.5 py-1 text-xs font-semibold text-[var(--wl-sub)]">
+                    {t('downloads.comingSoon')}
+                  </span>
+                </div>
               </div>
               <p className="border-t border-[var(--wl-ink)]/10 px-4 py-3 text-xs leading-relaxed text-[var(--wl-sub)]">
                 {t('downloads.apkFootnote')}
@@ -1795,22 +1848,33 @@ export function LandingPage({
               type="button"
               onClick={() => { setLinuxOpen(false); setAndroidOpen(false); setPkgOpen((v) => !v); }}
               aria-expanded={pkgOpen}
-              className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-accent transition hover:opacity-80"
+              className="flex cursor-pointer items-start gap-2 text-sm font-semibold text-accent transition hover:opacity-80"
             >
-              <Package size={17} weight="fill" />
+              {/* Centred inside a 20px box, which is the text's own line height, so the
+                  mark sits on the first line instead of floating between two. These
+                  labels name their platforms, so they are long in English and longer in
+                  German, and a centred icon beside a wrapped label reads as orphaned.
+                  Same box the help chip uses, for the same reason. */}
+              <span className="flex h-5 shrink-0 items-center">
+                <Package size={17} weight="fill" aria-hidden="true" />
+              </span>
               {/* This label names the rows in the panel below. Adding or removing a row
                   means editing both, or it promises a platform nobody finds. */}
-              {t('downloads.pkgToggle', { platforms: 'macOS, Windows' })}
+              <span>{t('downloads.pkgToggle', { platforms: 'macOS, Windows' })}</span>
             </button>
             <a
               href={GITHUB_RELEASES_URL}
               target="_blank"
               rel="noopener"
-              className="flex items-center gap-2 text-sm font-semibold text-accent transition hover:opacity-80"
+              className="flex items-start gap-2 text-sm font-semibold text-accent transition hover:opacity-80"
             >
-              <GithubLogo size={17} weight="fill" />
-              {t('downloads.githubLink')}
-              <ArrowUpRight size={13} className="shrink-0" aria-hidden="true" />
+              <span className="flex h-5 shrink-0 items-center">
+                <GithubLogo size={17} weight="fill" aria-hidden="true" />
+              </span>
+              <span>
+                {t('downloads.githubLink')}
+                <ArrowUpRight size={13} className="ms-1.5 inline align-[-1px]" aria-hidden="true" />
+              </span>
             </a>
           </div>
           <p className="mt-4 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] leading-relaxed text-[var(--wl-emerald)]">

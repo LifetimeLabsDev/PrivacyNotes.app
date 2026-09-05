@@ -443,6 +443,7 @@
     "urlInvalid": "أدخل عنوان ويب، مثل example.com أو https://example.com/page.",
     "urlDuplicate": "هذا الرابط موجود بالفعل في إشارة مرجعية أخرى، لذلك لم يُحفظ التغيير.",
     "openAction": "فتح",
+    "copiedUrl": "تم نسخ الرابط",
     "moveToTrash": "نقل إلى المهملات",
     "emptyNone": "لا إشارات مرجعية بعد.",
     "emptyTitle": "احفظ المواقع التي تستحق البقاء",

@@ -428,6 +428,7 @@
     "urlInvalid": "example.com 또는 https://example.com/page 같은 웹 주소를 입력하세요.",
     "urlDuplicate": "다른 북마크가 이미 이 URL을 쓰고 있어서 변경 사항이 저장되지 않았어요.",
     "openAction": "열기",
+    "copiedUrl": "링크를 복사했어요",
     "moveToTrash": "휴지통으로 이동",
     "emptyNone": "아직 북마크가 없어요.",
     "emptyTitle": "간직할 만한 사이트를 저장하세요",

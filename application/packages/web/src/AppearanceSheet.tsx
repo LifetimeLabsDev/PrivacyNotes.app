@@ -70,14 +70,27 @@ const TEXT_SIZE_GLYPH: Record<TextSize, string> = {
   xl: 'text-[17px]',
 };
 
-/** Swatch colors per theme - 3 vertical stripes: bg tone, accent, text. */
+/** Swatch colors per theme - 3 vertical stripes: sidebar tone, accent,
+    text. Stripe one is the sidebar (`--pn-surface-0`), never the list or
+    the editor tone: it is the widest spread the palettes have, so it is
+    what makes one chip read as a different theme from the next.
+    Spec: ops/docs/color-themes.md (section 4, adding a theme) */
 const SWATCH: Record<ColorTheme, [string, string, string]> = {
   'default': ['#F5F5F5', '#1E40AF', '#0A0A0A'],
   'warm-cream': ['#D8CDB4', '#1D4ED8', '#2D2416'],
   'slate': ['#DDE1E8', '#4338CA', '#121524'],
-  'soft-dark': ['#22262E', '#4A90D9', '#CDD3DE'],
+  'soft-dark': ['#1C1F26', '#4A90D9', '#CDD3DE'],
   'navy-depths': ['#0D1321', '#4B7BF5', '#D4DAE7'],
 };
+
+/** The Default card stands for whichever palette the painted mode uses, so
+    unlike a named theme it has one set of stripes per mode. The table above
+    holds the light one. */
+const SWATCH_DEFAULT_DARK: [string, string, string] = ['#171514', '#4A90D9', '#D9D4CC'];
+
+function swatchFor(ct: ColorTheme, dark: boolean): [string, string, string] {
+  return ct === 'default' && dark ? SWATCH_DEFAULT_DARK : SWATCH[ct];
+}
 
 /** Segmented-control option states, shared by both layouts. */
 const SEG_ACTIVE = 'bg-surface-2 shadow-sm text-pn font-semibold';
@@ -291,7 +304,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
                 // Badge only - keyed off isPro, not themesUnlocked, so the
                 // demo still shows which palettes are Pro while using them.
                 const locked = !isPro && !FREE_THEMES.has(ct);
-                const [c1, c2, c3] = SWATCH[ct];
+                const [c1, c2, c3] = swatchFor(ct, isDark);
                 return (
                   <button
                     key={ct}
@@ -661,7 +674,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             // Badge only - keyed off isPro, not themesUnlocked, so the
             // demo still shows which palettes are Pro while using them.
             const locked = !isPro && !FREE_THEMES.has(ct);
-            const [c1, c2, c3] = SWATCH[ct];
+            const [c1, c2, c3] = swatchFor(ct, isDark);
             return (
               <button
                 key={ct}

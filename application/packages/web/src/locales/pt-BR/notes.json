@@ -8,7 +8,8 @@
     "readOnly": "Somente leitura",
     "file": "Arquivo",
     "empty": "Vazia",
-    "noContent": "Sem conteúdo"
+    "noContent": "Sem conteúdo",
+    "notBackedUp": "Sem backup"
   },
   "header": {
     "new": "Nova",
@@ -170,7 +171,9 @@
     "widthWide": "Mais largo",
     "widthFull": "Largura total",
     "burn": "Compartilhar e Queimar Após Ler",
-    "titlePlaceholderLink": "Nome do marcador"
+    "titlePlaceholderLink": "Nome do marcador",
+    "notBackedUpTooLarge": "Acima do limite de 1 MB, então sem backup. Mova as imagens para anexos ou divida a nota.",
+    "notBackedUpFailed": "Sem backup. Último erro: {{message}}. Tentando de novo."
   },
   "share": {
     "hover": "Compartilhar / Exportar",

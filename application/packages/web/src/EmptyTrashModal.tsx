@@ -1,13 +1,16 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { ConfirmModal } from './ConfirmModal';
+import { NeverBackedUpNotice } from './neverBackedUp';
 
 type Props = {
   noteCount: number;
+  /** The trashed ids, for the never-backed-up warning. */
+  noteIds?: readonly string[];
   onConfirm: () => void;
   onClose: () => void;
 };
 
-export function EmptyTrashModal({ noteCount, onConfirm, onClose }: Props) {
+export function EmptyTrashModal({ noteCount, noteIds, onConfirm, onClose }: Props) {
   const { t } = useTranslation('common');
   return (
     <ConfirmModal
@@ -23,6 +26,7 @@ export function EmptyTrashModal({ noteCount, onConfirm, onClose }: Props) {
         values={{ count: noteCount }}
         components={{ highlight: <span className="font-medium text-pn" /> }}
       />
+      <NeverBackedUpNotice ids={noteIds ?? null} />
     </ConfirmModal>
   );
 }

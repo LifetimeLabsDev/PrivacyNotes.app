@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "插入標註",
     "remove": "移除標註",
+    "collapse": "收合標註",
+    "expand": "展開標註",
     "types": {
       "info": "資訊",
       "success": "成功",
@@ -101,6 +103,7 @@
     "addRowBelow": "在下方插入列",
     "addColumnLeft": "在左側插入欄",
     "addColumnRight": "在右側插入欄",
+    "toggleHeaderRow": "切換標題列",
     "deleteRow": "刪除列",
     "deleteColumn": "刪除欄",
     "deleteTable": "刪除表格"

@@ -98,17 +98,13 @@
     "kicker": "Ke stažení",
     "heading": "Stáhni si PrivacyNotes",
     "tileAria": "Stáhnout pro {{name}}",
-    "apkQualifier": "přímé stažení",
-    "apkDesc": "Bez Googlu, upozornění na aktualizace v aplikaci",
-    "obtainiumQualifier": "aktualizuje se samo",
-    "obtainiumDesc": "Klepni na odznak v telefonu: Obtainium přidá PrivacyNotes a bude za tebe instalovat každou novou verzi.",
+    "apkDesc": "Každou aktualizaci si stáhneš a nainstaluješ sám.",
+    "obtainiumDesc": "Instaluje každou novou verzi z našeho repozitáře.",
     "obtainiumBadgeAlt": "Získat na Obtainium",
-    "obtainiumManual": "Nejsi u telefonu? Vlož tohle do Obtainium místo toho:",
     "appStore": "App Store",
     "recommended": "Doporučeno",
-    "playDesc": "Automatické aktualizace přes obchod",
     "comingSoon": "Už brzy",
-    "apkFootnote": "Vyžaduje Android 7.0 nebo novější. APK nepotřebuje účet Google ani platby přes Google: Pro si odemkneš platbou na webu. Až bude připravená nová verze, aplikace ti to sama oznámí; Obtainium a verze z Play se aktualizují samy.",
+    "apkFootnote": "Vyžaduje Android 7.0 nebo novější. Zapstore, Obtainium ani APK nepotřebují účet Google ani platby přes Google: Pro si odemkneš platbou na webu. Až bude připravená nová verze, APK ti to oznámí v aplikaci.",
     "linuxRequirement": "Oba formáty potřebují webkit2gtk 4.1: Ubuntu 22.04 nebo novější, Debian 12 nebo novější, případně srovnatelnou distribuci od roku 2023. Starší distribuce mají jen webkit2gtk 4.0 a tato sestavení nespustí.",
     "linuxArchX86": "Intel / AMD (x86_64)",
     "linuxArchX86Desc": "Skoro každý stolní počítač i notebook. Když si nejsi jistý, vyber tenhle.",
@@ -121,14 +117,18 @@
     "checksumAria": "Kontrolní součet SHA-256 pro {{label}}",
     "debFootnote": "Aktualizuješ stávající <highlight>instalaci .deb</highlight>? Neodinstalovávej ji předem. Dvojklik na soubor skončí ve slepé uličce v Ubuntu App Centru, které jen oznámí, že je aplikace nainstalovaná - novou verzi nainstaluj z terminálu rovnou přes tu starou. Použij řádek, který odpovídá tvému počítači; dpkg --print-architecture ti ukáže který:",
     "availability": "K dispozici už teď: macOS 13+, Windows 10+, iOS 15+, Linux a Android.",
-    "betaNote": "Všechny naše aplikace jsou ve verzi beta a mohou obsahovat chyby, takže zatím je nejstabilnější webová verze. Dobrá zpráva: každá aplikace se aktualizuje sama a opravy vydáváme téměř každý den.",
+    "betaNote": "Všechny naše aplikace jsou ve verzi beta a mohou obsahovat chyby, takže zatím je nejstabilnější webová verze. Každá aplikace se aktualizuje sama a opravy vydáváme téměř každý den.",
     "pkgToggle": "Instalace přes správce balíčků ({{platforms}})",
     "pkgBrewDesc": "Aktualizace řeší aplikace, ne brew",
     "pkgWingetDesc": "Součást Windows 10 a 11",
     "pkgScoopDesc": "Aktualizace řeší Scoop, ne aplikace",
     "pkgFootnote": "Každý z nich nainstaluje stejné podepsané sestavení. U Homebrew a wingetu se aplikace aktualizuje sama. U Scoopu spustíš scoop update privacynotes.",
     "githubLink": "Všechna vydání na GitHubu",
-    "githubNote": "Podepsané · Veřejné · Ověřitelné · Každé vydání bez výjimky"
+    "githubNote": "Podepsané · Veřejné · Ověřitelné · Každé vydání bez výjimky",
+    "zapstoreDesc": "<rec>Doporučeno.</rec> Před instalací ověří náš podpis.",
+    "zapstoreBadgeAlt": "Získat na Zapstore",
+    "autoUpdates": "Aktualizuje se samo",
+    "manualUpdates": "Ruční aktualizace"
   },
   "ctaRepeat": {
     "getStarted": "Začni"
@@ -150,7 +150,7 @@
     "proLabel": "Pro · Zaplatíš jednou",
     "earlyAdopterBadge": "Zaváděcí cena",
     "oneTime": "jednorázově",
-    "proOnceDesc": "Jednorázově. Ne ročně. Ne měsíčně. Zaplatíš <b>jednou</b> a máš to navždy.",
+    "proOnceDesc": "Zaplatíš <b>jednou</b> a máš to navždy.",
     "proCompareBeta": "Zaplať jednou {{earlyPrice}} $. Obsidian Sync stojí 48 $/rok, každý rok. Standard Notes si účtuje 90 $/rok. Zaváděcí cena, zamčená ještě předtím, než vzroste na {{proPrice}} $.",
     "proCompare": "Zaplať jednou {{proPrice}} $ a máš to navždy. Obsidian Sync stojí 48 $/rok a Standard Notes 90 $/rok, rok co rok.",
     "proEverythingFree": "Všechno z verze zdarma, plus:",
@@ -190,9 +190,9 @@
   "mood": {
     "kicker": "Sledování nálady a pohody",
     "heading": "Sleduj, co opravdu cítíš.",
-    "intro": "Náladu, emoce, spánek, léky i míru aktivity zaznamenáš klepnutím, ne psaním. Vše je šifrované end-to-end. Nic neopustí tvoje zařízení nezašifrované.",
+    "intro": "Náladu, emoce, spánek, léky i míru aktivity zaznamenáš pár klepnutími. Všechno se zašifruje na tvém zařízení, ještě než se to synchronizuje.",
     "cardEmotionsTitle": "Nálada (1-10) + 24 značek emocí",
-    "cardEmotionsBody": "Žádní smajlíci. 24 značek emocí podložených výzkumem, které opravdu rozlišují odstíny. Sleduj, co opravdu cítíš, všímej si vzorců v čase a exportuj data, se kterými tvůj terapeut nebo lékař dokáže pracovat.",
+    "cardEmotionsBody": "24 značek emocí podložených výzkumem. Pojmenuj, co cítíš, všímej si vzorců v čase a exportuj data, se kterými tvůj terapeut nebo lékař dokáže pracovat.",
     "cardSleepTitle": "Kvalita spánku + míra aktivity",
     "cardSleepBody": "Pětistupňová škála kvality plus volitelně počet hodin. Aktivita od sedavé po intenzivní. Analýza to automaticky propojí s tvou náladou.",
     "cardMedsTitle": "Dodržování léčby",
@@ -200,7 +200,7 @@
     "cardAnalyticsTitle": "Hledání vzorců + export pro lékaře",
     "cardAnalyticsBody": "Analýza běží na tvém zařízení a najde souvislosti mezi spánkem, aktivitou, léky a náladou. Exportuj tisknutelnou zprávu v PDF pro lékaře nebo si zkopíruj strukturovaný prompt pro analýzu pomocí AI.",
     "encryptedHeading": "Proč to funguje jen se šifrováním",
-    "encryptedBody": "Nikdo si nezapisuje dávku antidepresiv do Notionu. Nikdo si nevede záznam o beznadějných dnech v Dokumentech Google. Citlivá data potřebují šifrování s nulovou znalostí, a tak jsme to tak postavili od prvního dne."
+    "encryptedBody": "Nikdo si nezapisuje dávku antidepresiv do Notionu. Nikdo si nevede záznam o beznadějných dnech v Dokumentech Google. Takhle citlivá data potřebují šifrování s nulovou znalostí, a přesně tak je PrivacyNotes postavený."
   },
   "comparison": {
     "kicker": "Spočítej si to",
@@ -245,10 +245,10 @@
   "whyPrivacy": {
     "kicker": "Proč na tom záleží",
     "heading": "Většina aplikací na poznámky si tvoje poznámky čte.<accent>Ta naše nemůže.</accent>",
-    "para1": "Většina aplikací na poznámky těží z tvého obsahu. Přidej si na nákupní seznam „koupit novou televizi“ a na dalších pár stránkách naskáčou reklamy na televize. Tvůj nákupní seznam, tvůj deník, tvoje soukromé myšlenky, všechno putuje do strojů na cílení reklamy, kde tě profilují a prodají. Není to konspirace; je to obchodní model každé „bezplatné“ aplikace na poznámky, kterou platí reklama.",
+    "para1": "Většina aplikací na poznámky těží z tvého obsahu. Přidej si na nákupní seznam „koupit novou televizi“ a na dalších pár stránkách naskáčou reklamy na televize. Tvůj nákupní seznam, tvůj deník, tvoje soukromé myšlenky, všechno putuje do strojů na cílení reklamy, kde tě profilují a prodají. Je to obchodní model každé „bezplatné“ aplikace na poznámky, kterou platí reklama.",
     "para2": "I aplikace, které reklamy nezobrazují, mají tvoje poznámky na svých serverech v nezašifrované podobě, čitelné pro zaměstnance, zranitelné při únicích dat a dostupné komukoli se soudním příkazem. Tvoje data se stanou jejich pákou.",
     "differenceLabel": "V čem je rozdíl",
-    "differenceBody": "<brand/> je end-to-end šifrovaný klíči, které nikdy neopustí tvoje zařízení. Tvoje poznámky si nepřečteme. Naše servery taky ne. Žádné sledování, žádná analytika, žádné reklamy, žádné profilování. Nikdy. Co napíšeš, zůstává tvoje.",
+    "differenceBody": "<brand/> je end-to-end šifrovaný klíči, které nikdy neopustí tvoje zařízení, takže to, co píšeš, si nepřečteme my ani naše servery. Není tu žádné sledování, žádná analytika, žádné reklamy ani profilování a nikdy nebudou. Co napíšeš, zůstává tvoje.",
     "keyboardNote": "<b>Poznámka ke klávesnicím v zařízení.</b> Klávesnice třetích stran (třeba Gboard, SwiftKey nebo Samsung Keyboard) mohou posílat to, co píšeš, na vlastní servery. Děje se to na úrovni operačního systému, mimo kontrolu jakékoli aplikace. Zvaž vypnutí cloudových funkcí v nastavení klávesnice nebo použití klávesnice, která funguje jen offline."
   },
   "readIt": {
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "Tvoje fráze je tvůj klíč",
-    "body": "Bez fráze nejsou poznámky. My je neobnovíme. Nikdo je neobnoví. To je cena za skutečné šifrování. Nemá smysl psát našemu vývojovému týmu, při vlastní správě tvoje poznámky prostě rozšifrovat neumíme, dokážeš to jen ty.",
+    "body": "Bez fráze nejsou poznámky. My je neobnovíme a nikdo jiný taky ne. To je cena za end-to-end šifrování: při vlastní správě máš klíč jenom ty, takže poznámky ti nevrátí ani zpráva našemu týmu.",
     "noRecoveryTerm": "Žádná obnova",
     "noRecoveryDesc": "Ztratíš frázi, ztratíš poznámky",
     "deviceTerm": "Vytvořená v zařízení",

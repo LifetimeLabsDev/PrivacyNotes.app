@@ -22,6 +22,10 @@ export type SyncPassEntry = {
   down: number;
   /** Coalesced "nothing to do" streak length (see recordSyncPass). */
   n?: number;
+  /** Dirty rows this pass attempted and could not push. `up` counts the
+   *  accepted ones only, so a pass that failed every push reads as
+   *  "3 failed", never as "No changes". */
+  failed?: number;
 };
 
 const STORAGE_KEY = 'privacynotes.syncLog';
@@ -54,7 +58,7 @@ export function recordSyncPass(entry: SyncPassEntry): void {
   // instead of filling the log with one "nothing to do" row per 30s
   // tick. The list then only grows when something actually happened.
   const last = entries[entries.length - 1];
-  const isNoop = (e: SyncPassEntry) => e.ok && e.up === 0 && e.down === 0;
+  const isNoop = (e: SyncPassEntry) => e.ok && e.up === 0 && e.down === 0 && !(e.failed && e.failed > 0);
   if (last && isNoop(entry) && isNoop(last)) {
     entries = [...entries.slice(0, -1), { ...entry, n: (last.n ?? 1) + 1 }];
   } else {

@@ -238,7 +238,13 @@
     "pausedTooltip": "Has posat la sincronització en pausa en aquest dispositiu. Les notes es queden aquí fins que la reprenguis.",
     "pausedAria": "Sincronització en pausa",
     "wifiHold": "Esperant el wifi",
-    "wifiHoldTooltip": "Els fitxers pugen quan torni el wifi. Les notes segueixen sincronitzant-se."
+    "wifiHoldTooltip": "Els fitxers pugen quan torni el wifi. Les notes segueixen sincronitzant-se.",
+    "notSynced": "No sincronitzat",
+    "notBackedUp": "Sense còpia de seguretat",
+    "notBackedUpTooltip_one": "{{count}} nota no té còpia de seguretat. Fes clic per veure per què.",
+    "notBackedUpTooltip_other": "{{count}} notes no tenen còpia de seguretat. Fes clic per veure per què.",
+    "notBackedUpAria_one": "{{count}} nota no té còpia de seguretat",
+    "notBackedUpAria_other": "{{count}} notes no tenen còpia de seguretat"
   },
   "errors": {
     "noSession": "No hi ha cap sessió activa. Torna a iniciar la sessió.",
@@ -274,7 +280,7 @@
     "nodeDevice": "Aquest dispositiu",
     "nodeEncrypted": "Xifrat",
     "nodeRegion": "Suïssa",
-    "sealed": "Xifrades abans de pujar-les. El servidor no les pot llegir.",
+    "sealed": "Xifrades al teu dispositiu. El servidor no les pot llegir.",
     "offlineFact": "Funciona sense connexió. Se sincronitza quan tornis a estar en línia.",
     "activity": "Activitat recent",
     "passUp_one": "{{count}} enviat",
@@ -283,7 +289,14 @@
     "passDown_other": "{{count}} rebuts",
     "passNothing": "Sense canvis",
     "passNothingRepeat": "Sense canvis - {{count}}x",
-    "passFailed": "ha fallat"
+    "passFailed": "ha fallat",
+    "notBackedUpHeading_one": "{{count}} nota no té còpia de seguretat",
+    "notBackedUpHeading_other": "{{count}} notes no tenen còpia de seguretat",
+    "reasonTooLarge": "Supera el límit d'1 MB",
+    "reasonFailed": "Ha fallat: {{message}}",
+    "openNote": "Obre",
+    "passPushFailed_one": "{{count}} ha fallat",
+    "passPushFailed_other": "{{count}} han fallat"
   },
   "language": {
     "reportMistake": "Informa d’un error de traducció"

@@ -235,7 +235,13 @@
     "pausedTooltip": "Você pausou a sincronização neste dispositivo. Suas notas ficam aqui até você retomar.",
     "pausedAria": "Sincronização pausada",
     "wifiHold": "Aguardando wi-fi",
-    "wifiHoldTooltip": "Os arquivos sobem assim que o wi-fi voltar. As notas continuam sincronizando."
+    "wifiHoldTooltip": "Os arquivos sobem assim que o wi-fi voltar. As notas continuam sincronizando.",
+    "notSynced": "Não sincronizado",
+    "notBackedUp": "Sem backup",
+    "notBackedUpTooltip_one": "{{count}} nota está sem backup. Clique para ver por quê.",
+    "notBackedUpTooltip_other": "{{count}} notas estão sem backup. Clique para ver por quê.",
+    "notBackedUpAria_one": "{{count}} nota está sem backup",
+    "notBackedUpAria_other": "{{count}} notas estão sem backup"
   },
   "errors": {
     "noSession": "Nenhuma sessão ativa. Tente entrar de novo.",
@@ -271,7 +277,7 @@
     "nodeDevice": "Este dispositivo",
     "nodeEncrypted": "Criptografado",
     "nodeRegion": "Suíça",
-    "sealed": "Criptografadas antes do envio. O servidor não consegue lê-las.",
+    "sealed": "Criptografadas no seu dispositivo. O servidor não consegue lê-las.",
     "offlineFact": "Funciona offline. Sincroniza quando você voltar a ficar online.",
     "activity": "Atividade recente",
     "passUp_one": "{{count}} enviado",
@@ -280,7 +286,14 @@
     "passDown_other": "{{count}} recebidos",
     "passNothing": "Sem alterações",
     "passNothingRepeat": "Sem alterações - {{count}}x",
-    "passFailed": "falhou"
+    "passFailed": "falhou",
+    "notBackedUpHeading_one": "{{count}} nota está sem backup",
+    "notBackedUpHeading_other": "{{count}} notas estão sem backup",
+    "reasonTooLarge": "Acima do limite de 1 MB",
+    "reasonFailed": "Falhou: {{message}}",
+    "openNote": "Abrir",
+    "passPushFailed_one": "{{count}} falhou",
+    "passPushFailed_other": "{{count}} falharam"
   },
   "language": {
     "reportMistake": "Relatar um erro de tradução"

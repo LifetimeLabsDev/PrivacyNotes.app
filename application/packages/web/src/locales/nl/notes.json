@@ -8,7 +8,8 @@
     "readOnly": "Alleen-lezen",
     "file": "Bestand",
     "empty": "Leeg",
-    "noContent": "Geen inhoud"
+    "noContent": "Geen inhoud",
+    "notBackedUp": "Geen back-up"
   },
   "header": {
     "new": "Nieuw",
@@ -170,7 +171,9 @@
     "widthWide": "Breder",
     "widthFull": "Volledige breedte",
     "burn": "Delen & vernietigen na lezen",
-    "titlePlaceholderLink": "Naam van bladwijzer"
+    "titlePlaceholderLink": "Naam van bladwijzer",
+    "notBackedUpTooLarge": "Boven de limiet van 1 MB, dus geen back-up. Verplaats afbeeldingen naar bijlagen of splits de notitie.",
+    "notBackedUpFailed": "Geen back-up. Laatste fout: {{message}}. Nieuwe poging bezig."
   },
   "share": {
     "hover": "Delen / exporteren",

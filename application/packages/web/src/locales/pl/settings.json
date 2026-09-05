@@ -257,7 +257,17 @@
     "pausedTooltip": "Wstrzymałeś synchronizację na tym urządzeniu. Notatki zostają tutaj, dopóki jej nie wznowisz.",
     "pausedAria": "Synchronizacja wstrzymana",
     "wifiHold": "Czeka na wi-fi",
-    "wifiHoldTooltip": "Pliki wyślą się, gdy wróci wi-fi. Notatki synchronizują się dalej."
+    "wifiHoldTooltip": "Pliki wyślą się, gdy wróci wi-fi. Notatki synchronizują się dalej.",
+    "notSynced": "Niezsynchronizowane",
+    "notBackedUp": "Bez kopii zapasowej",
+    "notBackedUpTooltip_one": "{{count}} notatka nie ma kopii zapasowej. Kliknij, aby zobaczyć dlaczego.",
+    "notBackedUpTooltip_few": "{{count}} notatki nie mają kopii zapasowej. Kliknij, aby zobaczyć dlaczego.",
+    "notBackedUpTooltip_many": "{{count}} notatek nie ma kopii zapasowej. Kliknij, aby zobaczyć dlaczego.",
+    "notBackedUpTooltip_other": "{{count}} notatki nie ma kopii zapasowej. Kliknij, aby zobaczyć dlaczego.",
+    "notBackedUpAria_one": "{{count}} notatka nie ma kopii zapasowej",
+    "notBackedUpAria_few": "{{count}} notatki nie mają kopii zapasowej",
+    "notBackedUpAria_many": "{{count}} notatek nie ma kopii zapasowej",
+    "notBackedUpAria_other": "{{count}} notatki nie ma kopii zapasowej"
   },
   "errors": {
     "noSession": "Brak aktywnej sesji. Spróbuj zalogować się ponownie.",
@@ -299,7 +309,7 @@
     "nodeDevice": "To urządzenie",
     "nodeEncrypted": "Zaszyfrowane",
     "nodeRegion": "Szwajcaria",
-    "sealed": "Szyfrowane przed wysłaniem. Serwer nie może ich odczytać.",
+    "sealed": "Zaszyfrowane na Twoim urządzeniu. Serwer nie może ich odczytać.",
     "offlineFact": "Działa offline. Synchronizuje się, gdy znów będziesz online.",
     "activity": "Ostatnia aktywność",
     "passUp_one": "{{count}} wysłano",
@@ -312,7 +322,18 @@
     "passDown_other": "{{count}} odebrano",
     "passNothing": "Bez zmian",
     "passNothingRepeat": "Bez zmian - {{count}}x",
-    "passFailed": "niepowodzenie"
+    "passFailed": "niepowodzenie",
+    "notBackedUpHeading_one": "{{count}} notatka nie ma kopii zapasowej",
+    "notBackedUpHeading_few": "{{count}} notatki nie mają kopii zapasowej",
+    "notBackedUpHeading_many": "{{count}} notatek nie ma kopii zapasowej",
+    "notBackedUpHeading_other": "{{count}} notatki nie ma kopii zapasowej",
+    "reasonTooLarge": "Powyżej limitu 1 MB",
+    "reasonFailed": "Niepowodzenie: {{message}}",
+    "openNote": "Otwórz",
+    "passPushFailed_one": "{{count}} nieudana",
+    "passPushFailed_few": "{{count}} nieudane",
+    "passPushFailed_many": "{{count}} nieudanych",
+    "passPushFailed_other": "{{count}} nieudanej"
   },
   "language": {
     "reportMistake": "Zgłoś błąd w tłumaczeniu"

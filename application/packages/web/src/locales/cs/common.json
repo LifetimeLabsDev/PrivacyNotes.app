@@ -213,5 +213,17 @@
       "tvůj trezor zůstává agresivně nečitelný.",
       "švýcarská neutralita, ale pro poznámky."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Nikdy nezálohováno. Tohle je jediná kopie.",
+    "some_one": "{{count}} z těchto poznámek nikdy nebyla zálohována. Tohle je její jediná kopie.",
+    "some_few": "{{count}} z těchto poznámek nikdy nebyly zálohovány. Tohle jsou jejich jediné kopie.",
+    "some_many": "{{count}} z těchto poznámek nikdy nebylo zálohováno. Tohle jsou jejich jediné kopie.",
+    "some_other": "{{count}} z těchto poznámek nikdy nebylo zálohováno. Tohle jsou jejich jediné kopie.",
+    "changesOne": "Poslední změny nemají zálohu a ztratily by se.",
+    "changesSome_one": "{{count}} z těchto poznámek má nezálohované změny, které by se ztratily.",
+    "changesSome_few": "{{count}} z těchto poznámek mají nezálohované změny, které by se ztratily.",
+    "changesSome_many": "{{count}} z těchto poznámek má nezálohované změny, které by se ztratily.",
+    "changesSome_other": "{{count}} z těchto poznámek má nezálohované změny, které by se ztratily."
   }
 }

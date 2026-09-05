@@ -437,6 +437,7 @@
     "urlInvalid": "Zadej webovou adresu, např. example.com nebo https://example.com/page.",
     "urlDuplicate": "Tuto URL už má jiná záložka, takže se změna neuložila.",
     "openAction": "Otevřít",
+    "copiedUrl": "Odkaz zkopírován",
     "moveToTrash": "Přesunout do koše",
     "emptyNone": "Zatím žádné záložky.",
     "emptyTitle": "Ukládej si weby, které stojí za to",

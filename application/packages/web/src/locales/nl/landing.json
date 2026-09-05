@@ -98,17 +98,13 @@
     "kicker": "Downloads",
     "heading": "Download PrivacyNotes",
     "tileAria": "Download voor {{name}}",
-    "apkQualifier": "directe download",
-    "apkDesc": "Google-vrij, updatemelding in de app",
-    "obtainiumQualifier": "werkt zichzelf bij",
-    "obtainiumDesc": "Tik op de badge op je telefoon: Obtainium voegt PrivacyNotes toe en installeert elke nieuwe versie voor je.",
+    "apkDesc": "Elke update is een download en een installatie die je zelf doet.",
+    "obtainiumDesc": "Installeert elke nieuwe versie uit onze repo.",
     "obtainiumBadgeAlt": "Downloaden via Obtainium",
-    "obtainiumManual": "Niet op je telefoon? Plak dit in Obtainium:",
     "appStore": "App Store",
     "recommended": "Aanbevolen",
-    "playDesc": "Werkt zichzelf bij via de store",
     "comingSoon": "Binnenkort",
-    "apkFootnote": "Vereist Android 7.0 of nieuwer. De APK heeft geen Google-account en geen Google-betalingen nodig: Pro ontgrendel je via het web. Hij waarschuwt je in de app zodra er een nieuwe versie klaarstaat; Obtainium en de Play-versie werken zichzelf bij.",
+    "apkFootnote": "Vereist Android 7.0 of nieuwer. Zapstore, Obtainium en de APK hebben geen Google-account en geen Google-betalingen nodig: Pro ontgrendel je via het web. De APK waarschuwt je in de app zodra er een nieuwe versie klaarstaat.",
     "linuxRequirement": "Beide formaten hebben webkit2gtk 4.1 nodig: Ubuntu 22.04 of nieuwer, Debian 12 of nieuwer, of een gelijkwaardige distributie vanaf 2023. Oudere distributies leveren alleen webkit2gtk 4.0 en kunnen deze builds niet draaien.",
     "linuxArchX86": "Intel / AMD (x86_64)",
     "linuxArchX86Desc": "Bijna elke desktop en laptop. Kies deze als je twijfelt.",
@@ -121,14 +117,18 @@
     "checksumAria": "SHA-256-controlesom voor {{label}}",
     "debFootnote": "Werk je een bestaande <highlight>.deb-installatie</highlight> bij? Verwijder hem niet eerst. Dubbelklikken op het bestand loopt dood in Ubuntu's App Center, dat alleen meldt dat de app geïnstalleerd is: installeer de nieuwe vanuit een terminal over de oude heen. Gebruik de regel die bij jouw machine hoort; dpkg --print-architecture laat zien welke dat is:",
     "availability": "Nu beschikbaar: macOS 13+, Windows 10+, iOS 15+, Linux en Android.",
-    "betaNote": "Al onze apps zijn in beta en kunnen nog bugs bevatten, dus de webversie is voorlopig het stabielst. Goed nieuws: elke app werkt zichzelf bij, en we brengen bijna dagelijks verbeteringen uit.",
+    "betaNote": "Al onze apps zijn in beta en kunnen nog bugs bevatten, dus de webversie is voorlopig het stabielst. Elke app werkt zichzelf bij en we brengen bijna dagelijks verbeteringen uit.",
     "pkgToggle": "Installeren met een packagemanager ({{platforms}})",
     "pkgBrewDesc": "Updates regelt de app, niet brew",
     "pkgWingetDesc": "Zit in Windows 10 en 11",
     "pkgScoopDesc": "Updates regelt Scoop, niet de app",
     "pkgFootnote": "Elk installeert dezelfde ondertekende build. Bij Homebrew en winget werkt de app zichzelf bij. Bij Scoop voer je scoop update privacynotes uit.",
     "githubLink": "Alle releases op GitHub",
-    "githubNote": "Ondertekend · Openbaar · Verifieerbaar · Elke release, zonder uitzondering"
+    "githubNote": "Ondertekend · Openbaar · Verifieerbaar · Elke release, zonder uitzondering",
+    "zapstoreDesc": "<rec>Aanbevolen.</rec> Controleert onze handtekening voor het installeren.",
+    "zapstoreBadgeAlt": "Downloaden via Zapstore",
+    "autoUpdates": "Werkt zichzelf bij",
+    "manualUpdates": "Handmatig bijwerken"
   },
   "ctaRepeat": {
     "getStarted": "Aan de slag"
@@ -150,7 +150,7 @@
     "proLabel": "Pro · Eenmalig betalen",
     "earlyAdopterBadge": "Early Adopter",
     "oneTime": "eenmalig",
-    "proOnceDesc": "Eenmalig. Niet per jaar. Niet per maand. Je betaalt <b>één keer</b> en het is voor altijd van jou.",
+    "proOnceDesc": "Je betaalt <b>één keer</b> en het is voor altijd van jou.",
     "proCompareBeta": "Betaal eenmalig ${{earlyPrice}}. Obsidian Sync kost $48 per jaar, elk jaar. Standard Notes rekent $90 per jaar. Early-adopterprijs, vastgezet voordat hij naar ${{proPrice}} gaat.",
     "proCompare": "Betaal eenmalig ${{proPrice}} en het is voor altijd van jou. Obsidian Sync kost $48 per jaar en Standard Notes $90 per jaar, elk jaar opnieuw.",
     "proEverythingFree": "Alles uit Gratis, plus:",
@@ -190,9 +190,9 @@
   "mood": {
     "kicker": "Stemming & welzijn bijhouden",
     "heading": "Houd bij wat je echt voelt.",
-    "intro": "Stemming, emoties, slaap, medicatie en activiteitsniveau met een paar tikken, niet met typen. Alles end-to-end versleuteld. Niets verlaat je apparaat onversleuteld.",
+    "intro": "Stemming, emoties, slaap, medicatie en activiteitsniveau, met een paar tikken. Alles wordt op je apparaat versleuteld voordat het synchroniseert.",
     "cardEmotionsTitle": "Stemming (1-10) + 24 emotietags",
-    "cardEmotionsBody": "Geen emoji-gezichtjes. 24 wetenschappelijk onderbouwde emotietags met echte nuance. Houd bij wat je echt voelt, ontdek patronen door de tijd heen, en exporteer gegevens waar je therapeut of arts mee uit de voeten kan.",
+    "cardEmotionsBody": "24 wetenschappelijk onderbouwde emotietags. Benoem wat je voelt, ontdek patronen door de tijd heen, en exporteer gegevens waar je therapeut of arts mee uit de voeten kan.",
     "cardSleepTitle": "Slaapkwaliteit + activiteitsniveau",
     "cardSleepBody": "Een kwaliteitsschaal met vijf niveaus plus optioneel het aantal uren. Activiteit van zittend tot intensief. De analyse legt automatisch verband met je stemming.",
     "cardMedsTitle": "Medicatietrouw",
@@ -200,7 +200,7 @@
     "cardAnalyticsTitle": "Patronen herkennen + export voor je arts",
     "cardAnalyticsBody": "Analyses op je eigen apparaat vinden verbanden tussen slaap, activiteit, medicatie en stemming. Exporteer een printbaar PDF-rapport voor je arts of kopieer een gestructureerde prompt voor analyse met AI.",
     "encryptedHeading": "Waarom dit alleen versleuteld werkt",
-    "encryptedBody": "Niemand legt de dosering van zijn antidepressiva vast in Notion. Niemand houdt hopeloze dagen bij in een Google Doc. Gevoelige gegevens vragen om zero-knowledge versleuteling, dus hebben we het vanaf dag één zo gebouwd."
+    "encryptedBody": "Niemand legt de dosering van zijn antidepressiva vast in Notion. Niemand houdt hopeloze dagen bij in een Google Doc. Zulke gevoelige gegevens vragen om zero-knowledge versleuteling, en zo is PrivacyNotes gebouwd."
   },
   "comparison": {
     "kicker": "De rekensom",
@@ -245,10 +245,10 @@
   "whyPrivacy": {
     "kicker": "Waarom het uitmaakt",
     "heading": "De meeste notitie-apps lezen je notities.<accent>De onze kan dat niet.</accent>",
-    "para1": "De meeste notitie-apps spitten je inhoud door. Zet “nieuwe tv kopen” op je boodschappenlijst en je volgende pagina's staan vol tv-advertenties. Je boodschappenlijst, je dagboek, je privégedachten, allemaal het advertentiecircuit in, geprofileerd en verkocht. Dat is geen complot; het is het verdienmodel van elke “gratis” notitie-app die van advertenties leeft.",
+    "para1": "De meeste notitie-apps spitten je inhoud door. Zet “nieuwe tv kopen” op je boodschappenlijst en je volgende pagina's staan vol tv-advertenties. Je boodschappenlijst, je dagboek, je privégedachten, allemaal het advertentiecircuit in, geprofileerd en verkocht. Dat is het verdienmodel van elke “gratis” notitie-app die van advertenties leeft.",
     "para2": "Zelfs apps zonder advertenties bewaren je notities nog steeds als leesbare tekst op hun servers: te lezen door medewerkers, buit te maken bij een datalek, en beschikbaar voor iedereen met een gerechtelijk bevel. Jouw gegevens worden hun machtsmiddel.",
     "differenceLabel": "Het verschil",
-    "differenceBody": "<brand/> is end-to-end versleuteld met sleutels die je apparaat nooit verlaten. Wij kunnen je notities niet lezen. Onze servers ook niet. Geen tracking, geen analytics, geen advertenties, geen profilering. Nooit. Wat jij schrijft, blijft van jou.",
+    "differenceBody": "<brand/> is end-to-end versleuteld met sleutels die je apparaat nooit verlaten, dus wij noch onze servers kunnen lezen wat je schrijft. Er is geen tracking, geen analytics, geen advertenties en geen profilering, en die komen er ook nooit. Wat jij schrijft, blijft van jou.",
     "keyboardNote": "<b>Een kanttekening over toetsenborden.</b> Toetsenborden van derden (zoals Gboard, SwiftKey of Samsung Keyboard) kunnen wat je typt naar hun eigen servers sturen. Dat gebeurt op het niveau van het besturingssysteem, buiten de invloed van welke app dan ook. Overweeg om de cloudfuncties in je toetsenbordinstellingen uit te zetten of een toetsenbord te gebruiken dat alleen offline werkt."
   },
   "readIt": {
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "Je herstelzin is je sleutel",
-    "body": "Geen herstelzin, geen notities. Wij kunnen ze niet terughalen. Niemand kan dat. Dat is de prijs van echte versleuteling. Het heeft geen zin om ons ontwikkelteam te mailen, bij eigen beheer kunnen we je notities simpelweg niet ontsleutelen, alleen jij kunt dat.",
+    "body": "Geen herstelzin, geen notities. Wij kunnen ze niet terughalen, en niemand anders ook. Dat is de prijs van end-to-end versleuteling: bij eigen beheer heb alleen jij de sleutel, dus een mail naar ons team brengt je notities niet terug.",
     "noRecoveryTerm": "Geen herstel",
     "noRecoveryDesc": "Herstelzin kwijt, notities kwijt",
     "deviceTerm": "Gemaakt op je apparaat",

@@ -431,6 +431,7 @@
     "urlInvalid": "Introduce una dirección web, como example.com o https://example.com/page.",
     "urlDuplicate": "Otro marcador ya tiene esta URL, así que no se ha guardado el cambio.",
     "openAction": "Abrir",
+    "copiedUrl": "Enlace copiado",
     "moveToTrash": "Mover a la papelera",
     "emptyNone": "Aún no hay marcadores.",
     "emptyTitle": "Guarda los sitios que vale la pena conservar",

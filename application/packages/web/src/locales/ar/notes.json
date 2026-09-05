@@ -8,7 +8,8 @@
     "readOnly": "للقراءة فقط",
     "file": "ملف",
     "empty": "فارغة",
-    "noContent": "بلا محتوى"
+    "noContent": "بلا محتوى",
+    "notBackedUp": "غير منسوخة احتياطيًا"
   },
   "header": {
     "new": "جديد",
@@ -178,7 +179,9 @@
     "widthWide": "أوسع",
     "widthFull": "عرض كامل",
     "burn": "مشاركة وحرق بعد القراءة",
-    "titlePlaceholderLink": "اسم الإشارة المرجعية"
+    "titlePlaceholderLink": "اسم الإشارة المرجعية",
+    "notBackedUpTooLarge": "تتجاوز حد 1 ميغابايت، لذا لم تُنسخ احتياطيًا. انقل الصور إلى المرفقات أو قسّم الملاحظة.",
+    "notBackedUpFailed": "غير منسوخة احتياطيًا. آخر خطأ: {{message}}. تجري إعادة المحاولة."
   },
   "share": {
     "hover": "مشاركة / تصدير",

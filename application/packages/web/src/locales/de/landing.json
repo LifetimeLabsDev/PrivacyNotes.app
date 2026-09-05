@@ -98,17 +98,13 @@
     "kicker": "Downloads",
     "heading": "PrivacyNotes herunterladen",
     "tileAria": "Für {{name}} herunterladen",
-    "apkQualifier": "direkter Download",
-    "apkDesc": "Ohne Google, Update-Hinweis in der App",
-    "obtainiumQualifier": "aktualisiert sich selbst",
-    "obtainiumDesc": "Tippe auf dem Handy auf das Badge: Obtainium fügt PrivacyNotes hinzu und installiert jede neue Version für dich.",
+    "apkDesc": "Jedes Update ist ein Download und eine Installation, die du selbst machst.",
+    "obtainiumDesc": "Installiert jede neue Version aus unserem Repo.",
     "obtainiumBadgeAlt": "Bei Obtainium holen",
-    "obtainiumManual": "Nicht auf dem Handy? Füge das hier in Obtainium ein:",
     "appStore": "App Store",
     "recommended": "Empfohlen",
-    "playDesc": "Aktualisiert sich automatisch über den Store",
     "comingSoon": "Bald verfügbar",
-    "apkFootnote": "Benötigt Android 7.0 oder neuer. Die APK braucht kein Google-Konto und keine Google-Zahlungen: Pro wird über den Web-Checkout freigeschaltet. Sie meldet sich in der App, sobald eine neue Version bereitsteht; Obtainium und die Play-Version aktualisieren sich selbst.",
+    "apkFootnote": "Benötigt Android 7.0 oder neuer. Zapstore, Obtainium und die APK brauchen kein Google-Konto und keine Google-Zahlungen: Pro wird über den Web-Checkout freigeschaltet. Die APK meldet sich in der App, sobald eine neue Version bereitsteht.",
     "linuxRequirement": "Beide Formate brauchen webkit2gtk 4.1: Ubuntu 22.04 oder neuer, Debian 12 oder neuer, oder eine gleichwertige Distribution ab 2023. Ältere Distributionen liefern nur webkit2gtk 4.0 und können diese Builds nicht ausführen.",
     "linuxArchX86": "Intel / AMD (x86_64)",
     "linuxArchX86Desc": "Fast jeder Desktop und Laptop. Nimm den hier, wenn du unsicher bist.",
@@ -121,14 +117,18 @@
     "checksumAria": "SHA-256-Prüfsumme für {{label}}",
     "debFootnote": "Du aktualisierst eine bestehende <highlight>.deb-Installation</highlight>? Deinstalliere sie vorher nicht. Ein Doppelklick auf die Datei landet in Ubuntus App Center in einer Sackgasse, dort steht nur, dass die App installiert ist. Installiere die neue Version im Terminal einfach über die alte. Nimm die Zeile, die zu deinem Rechner passt; dpkg --print-architecture sagt dir, welche das ist:",
     "availability": "Jetzt verfügbar: macOS 13+, Windows 10+, iOS 15+, Linux und Android.",
-    "betaNote": "Alle unsere Apps sind in der Beta-Phase und können noch Fehler enthalten, daher ist die Web-Version derzeit die stabilste. Die gute Nachricht: Jede App aktualisiert sich automatisch, und wir liefern fast täglich Fixes.",
+    "betaNote": "Alle unsere Apps sind in der Beta-Phase und können noch Fehler enthalten, daher ist die Web-Version derzeit die stabilste. Jede App aktualisiert sich automatisch, und wir liefern fast täglich Fixes.",
     "pkgToggle": "Mit einem Paketmanager installieren ({{platforms}})",
     "pkgBrewDesc": "Updates übernimmt die App, nicht brew",
     "pkgWingetDesc": "In Windows 10 und 11 enthalten",
     "pkgScoopDesc": "Updates übernimmt Scoop, nicht die App",
     "pkgFootnote": "Jeder installiert denselben signierten Build. Bei Homebrew und winget aktualisiert sich die App selbst. Bei Scoop führst du scoop update privacynotes aus.",
     "githubLink": "Alle Versionen auf GitHub",
-    "githubNote": "Signiert · Öffentlich · Überprüfbar · Jede einzelne Version"
+    "githubNote": "Signiert · Öffentlich · Überprüfbar · Jede einzelne Version",
+    "zapstoreDesc": "<rec>Empfohlen.</rec> Prüft unsere Signatur vor der Installation.",
+    "zapstoreBadgeAlt": "Bei Zapstore holen",
+    "autoUpdates": "Aktualisiert sich selbst",
+    "manualUpdates": "Manuelle Updates"
   },
   "ctaRepeat": {
     "getStarted": "Loslegen"
@@ -150,7 +150,7 @@
     "proLabel": "Pro · Einmalig zahlen",
     "earlyAdopterBadge": "Early Adopter",
     "oneTime": "einmalig",
-    "proOnceDesc": "Einmalig. Nicht jährlich. Nicht monatlich. Du zahlst <b>einmal</b> und besitzt es für immer.",
+    "proOnceDesc": "Du zahlst <b>einmal</b> und besitzt es für immer.",
     "proCompareBeta": "Zahle {{earlyPrice}} $ einmalig. Obsidian Sync kostet 48 $/Jahr, jedes Jahr. Standard Notes verlangt 90 $/Jahr. Early-Adopter-Preis, festgeschrieben, bevor er auf {{proPrice}} $ steigt.",
     "proCompare": "Zahle {{proPrice}} $ einmalig und besitze es für immer. Obsidian Sync kostet 48 $/Jahr und Standard Notes 90 $/Jahr, jedes einzelne Jahr.",
     "proEverythingFree": "Alles aus Kostenlos, plus:",
@@ -190,9 +190,9 @@
   "mood": {
     "kicker": "Stimmungs- & Wohlbefindens-Tracking",
     "heading": "Erfasse, was du wirklich fühlst.",
-    "intro": "Stimmung, Emotionen, Schlaf, Medikamente und Aktivitätslevel per Fingertipp statt Tastatur. Alles Ende-zu-Ende-verschlüsselt. Nichts verlässt dein Gerät unverschlüsselt.",
+    "intro": "Stimmung, Emotionen, Schlaf, Medikamente und Aktivitätslevel, alles mit wenigen Fingertipps. Alles wird auf deinem Gerät verschlüsselt, bevor es synchronisiert wird.",
     "cardEmotionsTitle": "Stimmung (1-10) + 24 Emotions-Tags",
-    "cardEmotionsBody": "Keine Emoji-Gesichter. 24 forschungsbasierte Emotions-Tags mit echter Differenzierung. Erfasse, was du wirklich fühlst, erkenne Muster über die Zeit und exportiere Daten, mit denen deine Therapeutin oder dein Arzt arbeiten kann.",
+    "cardEmotionsBody": "24 forschungsbasierte Emotions-Tags. Benenne, was du fühlst, erkenne Muster über die Zeit und exportiere Daten, mit denen deine Therapeutin oder dein Arzt arbeiten kann.",
     "cardSleepTitle": "Schlafqualität + Aktivitätslevel",
     "cardSleepBody": "Fünfstufige Qualitätsskala plus optionale Stunden. Aktivität von sitzend bis intensiv. Die Analysen verknüpfen diese automatisch mit deiner Stimmung.",
     "cardMedsTitle": "Medikamenten-Einnahme",
@@ -200,7 +200,7 @@
     "cardAnalyticsTitle": "Mustererkennung + Arzt-Export",
     "cardAnalyticsBody": "Clientseitige Analysen erkennen Zusammenhänge zwischen Schlaf, Aktivität, Medikamenten und Stimmung. Exportiere einen druckbaren PDF-Bericht für deinen Arzt oder kopiere einen strukturierten Prompt für die KI-Analyse.",
     "encryptedHeading": "Warum das nur verschlüsselt funktioniert",
-    "encryptedBody": "Niemand notiert seine Antidepressiva-Dosis in Notion. Niemand erfasst hoffnungslose Tage in einem Google Doc. Sensible Daten brauchen Zero-Knowledge-Verschlüsselung, also haben wir es von Tag eins an so gebaut."
+    "encryptedBody": "Niemand notiert seine Antidepressiva-Dosis in Notion. Niemand erfasst hoffnungslose Tage in einem Google Doc. So sensible Daten brauchen Zero-Knowledge-Verschlüsselung, und genau so ist PrivacyNotes gebaut."
   },
   "comparison": {
     "kicker": "Die Rechnung",
@@ -245,10 +245,10 @@
   "whyPrivacy": {
     "kicker": "Warum es zählt",
     "heading": "Die meisten Notiz-Apps lesen deine Notizen.<accent>Unsere kann es nicht.</accent>",
-    "para1": "Die meisten Notiz-Apps werten deine Inhalte aus. Schreib „neuen Fernseher kaufen“ auf deine Einkaufsliste, und deine nächsten Seiten füllen sich mit Fernseher-Werbung. Deine Einkaufsliste, dein Tagebuch, deine privaten Gedanken, alles in Werbe-Targeting-Pipelines eingespeist, profiliert und verkauft. Das ist keine Verschwörung; es ist das Geschäftsmodell jeder „kostenlosen“, werbefinanzierten Notiz-App.",
+    "para1": "Die meisten Notiz-Apps werten deine Inhalte aus. Schreib „neuen Fernseher kaufen“ auf deine Einkaufsliste, und deine nächsten Seiten füllen sich mit Fernseher-Werbung. Deine Einkaufsliste, dein Tagebuch, deine privaten Gedanken, alles in Werbe-Targeting-Pipelines eingespeist, profiliert und verkauft. Das ist das Geschäftsmodell jeder „kostenlosen“, werbefinanzierten Notiz-App.",
     "para2": "Selbst Apps, die keine Werbung zeigen, speichern deine Notizen im Klartext auf ihren Servern, lesbar für Mitarbeitende, angreifbar bei Datenlecks und verfügbar für jeden mit einer richterlichen Anordnung. Deine Daten werden zu ihrem Druckmittel.",
     "differenceLabel": "Der Unterschied",
-    "differenceBody": "<brand/> ist Ende-zu-Ende-verschlüsselt mit Schlüsseln, die dein Gerät nie verlassen. Wir können deine Notizen nicht lesen. Unsere Server auch nicht. Kein Tracking, keine Analyse, keine Werbung, kein Profiling. Niemals. Was du schreibst, bleibt deins.",
+    "differenceBody": "<brand/> ist Ende-zu-Ende-verschlüsselt mit Schlüsseln, die dein Gerät nie verlassen, also können weder wir noch unsere Server lesen, was du schreibst. Es gibt kein Tracking, keine Analyse, keine Werbung und kein Profiling, und das wird auch so bleiben. Was du schreibst, bleibt deins.",
     "keyboardNote": "<b>Ein Hinweis zu Gerätetastaturen.</b> Tastaturen von Drittanbietern (wie Gboard, SwiftKey oder Samsung Keyboard) senden möglicherweise, was du tippst, an ihre eigenen Server. Das geschieht auf Betriebssystem-Ebene, außerhalb der Kontrolle jeder App. Erwäge, Cloud-Funktionen in deinen Tastatur-Einstellungen zu deaktivieren oder eine reine Offline-Tastatur zu nutzen."
   },
   "readIt": {
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "Deine Phrase ist dein Schlüssel",
-    "body": "Keine Phrase, keine Notizen. Wir können sie nicht wiederherstellen. Niemand kann das. Das ist der Preis für echte Verschlüsselung. Es bringt nichts, unser Entwicklerteam zu kontaktieren, bei Selbstverwahrung können wir deine Notizen schlicht nicht entschlüsseln, nur du kannst es.",
+    "body": "Keine Phrase, keine Notizen. Wir können sie nicht wiederherstellen, und niemand sonst kann es. Das ist der Preis für Ende-zu-Ende-Verschlüsselung: bei Selbstverwahrung hast nur du den Schlüssel, deshalb kann auch eine Nachricht an unser Team deine Notizen nicht zurückholen.",
     "noRecoveryTerm": "Keine Wiederherstellung",
     "noRecoveryDesc": "Phrase verloren, Notizen verloren",
     "deviceTerm": "Auf dem Gerät erzeugt",

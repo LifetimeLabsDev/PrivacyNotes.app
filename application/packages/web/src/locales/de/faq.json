@@ -79,7 +79,7 @@
     "import-from-other-apps": {
       "q": "Wie bringe ich meine Notizen aus einer anderen App hierher?",
       "a": [
-        "Öffne Einstellungen > Import & Export und wähle deine Quelle. Es gibt eigene Importer für Apple Notes, Obsidian, Standard Notes, Google Keep, Simplenote, Samsung Notes und Bitwarden (Logins, Karten und sichere Notizen landen im Tresor), plus einen generischen Markdown-Importer für jeden Ordner voller .md-Dateien.",
+        "Öffne Einstellungen > Import & Export und wähle deine Quelle. Die Liste deckt die Apps ab, aus denen Leute kommen: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes und Apple Journal. Bitwarden und die gespeicherten Passwörter deines Browsers landen im Tresor, deine Browser-Lesezeichen kommen als Lesezeichen an, und ein generischer Markdown-Importer nimmt jeden Ordner mit .md-Dateien.",
         "Importe laufen komplett auf deinem Gerät: Deine Export-Dateien werden lokal gelesen, verschlüsselt und gespeichert, nichts wird zur Verarbeitung hochgeladen. Jede importierte Notiz bekommt einen Tag mit ihrer Quelle, damit du den Stapel danach durchsehen kannst, und Google-Keep-Checklisten werden sogar zu nativen Aufgabenlisten."
       ]
     },
@@ -188,7 +188,7 @@
       "a": [
         "Wenn du auf irgendeinem Gerät noch angemeldet bist: ja, das kannst du selbst. Öffne Einstellungen > Sicherheit > Deine Phrase und speichere sie jetzt sofort in deinen Passwort-Manager.",
         "Wenn du kein angemeldetes Gerät und keine Phrase mehr hast: nein, und niemand kann das. Deine Phrase erreicht unsere Server nie, es gibt also nichts zurückzusetzen und kein Support-Ticket, das helfen könnte. Das ist keine Richtlinie, die wir beugen könnten - das ist die Bedeutung von Ende-zu-Ende-Verschlüsselung. Jeder Dienst, der deine verschlüsselten Daten nach einem Totalverlust wiederherstellen kann, hält deine Schlüssel.",
-        "Die Vorsorge kostet zehn Sekunden: Speichere die Phrase am Tag der Kontoerstellung in einem Passwort-Manager."
+        "Die Vorsorge kostet zehn Sekunden: Speichere die Phrase am Tag der Kontoerstellung in einem Passwort-Manager. Ist sie schon weg und du zahlst für ein Speicher-Add-on: Paddle rechnet direkt mit dir ab und kann es ohne deine Phrase kündigen, siehe [Add-on ändern oder kündigen](/de/help/manage-storage-addon/)."
       ]
     },
     "oauth-recovery": {
@@ -259,8 +259,8 @@
     "export": {
       "q": "Kann ich meine Notizen exportieren, oder bin ich eingesperrt?",
       "a": [
-        "Du kannst jederzeit alles exportieren, vollständig auf deinem Gerät erzeugt: Markdown-Dateien als Zip inklusive Anhängen, ein komplettes JSON-Backup oder eigenständiges HTML - pro Notiz oder für das ganze Konto.",
-        "Import geht auch: Hol dir Notizen aus Obsidian, Apple Notes, Google Keep, Standard Notes, Simplenote und Samsung Notes. Lock-in ist kein Teil des Geschäftsmodells."
+        "Du kannst jederzeit alles exportieren, vollständig auf deinem Gerät erzeugt: Markdown-Dateien als Zip inklusive Anhängen, ein komplettes JSON-Backup oder eigenständiges HTML - pro Notiz oder für das ganze Konto. Tresor-Einträge haben ihren eigenen Weg, \"Tresor-Export (.json)\", der Bitwardens Format schreibt und deine Benutzernamen, Passwörter, URLs, Kartendaten und 2FA-Schlüssel nach Bitwarden, 1Password oder KeePass mitnimmt.",
+        "Das alles steht unter Einstellungen > Import & Export > Export. Der Import läuft genauso, aus Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden und mehr: Die vollständige Liste steht unter [aus einer anderen App umziehen](/de/help/import-from-other-apps/). Lock-in ist kein Teil des Geschäftsmodells."
       ]
     },
     "attachment-limits": {
@@ -552,7 +552,8 @@
       "q": "Wie ändere oder kündige ich mein Speicher-Add-on?",
       "a": [
         "Einstellungen > Speicher ist die Schaltzentrale. Ein Upgrade auf ein größeres Paket gilt sofort, und die Bestätigung zeigt den genauen anteiligen Betrag, der heute abgebucht wird, bevor du zusagst; das Verlängerungsdatum verschiebt sich nicht. \"Speicher kündigen\" behält deinen zusätzlichen Platz bis zum Ende des bereits bezahlten Zeitraums. Für ein kleineres Paket kündigst du das aktuelle und kaufst das kleinere, wenn der Zeitraum endet.",
-        "Passen deine Daten nach Ablauf noch in das verbleibende Limit, ist damit alles erledigt; wenn nicht, wird nichts gelöscht und der [90-tägige Über-Limit-Zyklus](/de/help/over-quota/) beginnt. Eine fehlgeschlagene Verlängerung zeigt ein Banner mit einem Link \"Karte aktualisieren\", um die Zahlung in Paddle zu korrigieren. Hast du innerhalb eines Store-Builds abonniert, rechnet der Store ab, die Kündigung erfolgt also stattdessen in den Abo-Einstellungen des Stores."
+        "Passen deine Daten nach Ablauf noch in das verbleibende Limit, ist damit alles erledigt; wenn nicht, wird nichts gelöscht und der [90-tägige Über-Limit-Zyklus](/de/help/over-quota/) beginnt. Eine fehlgeschlagene Verlängerung zeigt ein Banner mit einem Link \"Karte aktualisieren\", um die Zahlung in Paddle zu korrigieren.",
+        "Kündigen von außerhalb der App geht auch, und das ist die Antwort, wenn du dich nicht anmelden kannst. Paddle ist unser Händler und rechnet direkt mit dir ab: Nutze den Link \"Abo verwalten\" in deiner Rechnungs-E-Mail oder den Support-Chat auf [paddle.net](https://paddle.net). Bei einem Store-Build ist es dasselbe, also kündige dort in den Abo-Einstellungen des Stores."
       ]
     },
     "store-purchases": {

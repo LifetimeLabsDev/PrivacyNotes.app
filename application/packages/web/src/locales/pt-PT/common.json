@@ -209,5 +209,13 @@
       "o teu cofre continua agressivamente ilegível.",
       "neutralidade suíça, mas para notas."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Nunca teve cópia de segurança. Esta é a única cópia.",
+    "some_one": "{{count}} destas notas nunca teve cópia de segurança. Esta é a sua única cópia.",
+    "some_other": "{{count}} destas notas nunca tiveram cópia de segurança. Estas são as únicas cópias.",
+    "changesOne": "As últimas alterações não têm cópia de segurança e perder-se-iam.",
+    "changesSome_one": "{{count}} destas notas tem alterações sem cópia de segurança que se perderiam.",
+    "changesSome_other": "{{count}} destas notas têm alterações sem cópia de segurança que se perderiam."
   }
 }

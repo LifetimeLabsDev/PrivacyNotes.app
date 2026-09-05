@@ -8,7 +8,8 @@
     "readOnly": "Sola lettura",
     "file": "File",
     "empty": "Vuota",
-    "noContent": "Nessun contenuto"
+    "noContent": "Nessun contenuto",
+    "notBackedUp": "Senza backup"
   },
   "header": {
     "new": "Nuova",
@@ -170,7 +171,9 @@
     "widthWide": "Più largo",
     "widthFull": "Larghezza piena",
     "burn": "Condividi & Burn After Reading",
-    "titlePlaceholderLink": "Nome del segnalibro"
+    "titlePlaceholderLink": "Nome del segnalibro",
+    "notBackedUpTooLarge": "Oltre il limite di 1 MB, quindi senza backup. Sposta le immagini negli allegati o dividi la nota.",
+    "notBackedUpFailed": "Senza backup. Ultimo errore: {{message}}. Nuovo tentativo in corso."
   },
   "share": {
     "hover": "Condividi / Esporta",

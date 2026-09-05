@@ -18,6 +18,7 @@ import { reconcileOrphanBlobs, sweepBlobGC } from './imageGC';
 import { perfSpan } from './perf';
 import { setSyncingFlag } from './syncingStore';
 import { recordSyncPass } from './syncLog';
+import { classifyPushFailure, recordPassPushFailures } from './pushFailures';
 import { reconcileFlushStash } from './flushStash';
 import type { ImageStore } from './imageStore';
 import type { AttachmentStore } from './attachmentStore';
@@ -59,8 +60,11 @@ export function useSyncOrchestrator({
   /** ISO timestamp of when the user first exceeded quota (from server). */
   const [quotaExceededSince, setQuotaExceededSince] = useState<string | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);
-  /** Per-sync-pass push-error tracking. Cleared at the start of each
-   * `runSync` and populated by the `onPushError` callback. See gap #4. */
+  /** Per-sync-pass push-error tracking for the dismissable banner. Cleared
+   * at the start of each `runSync` and populated by the `onPushError`
+   * callback. Size rejections stay out of it: the banner's "retries
+   * automatically" is false for them, so they surface through
+   * pushFailures.ts (pill, ID & Sync list, editor bar) instead. See gap #4. */
   const [pushErrors, setPushErrors] = useState<{ count: number; lastMessage: string } | null>(null);
   /** Fingerprint of dismissed push errors. When the user dismisses,
    *  we store `count:lastMessage`. Banner stays hidden until the
@@ -128,9 +132,16 @@ export function useSyncOrchestrator({
     const openNoteBefore = openNoteId ? await db.notes.get(openNoteId) : undefined;
     const endPass = perfSpan('syncPass');
     setSyncingFlag(true);
-    // Per-pass error accumulator. The callback below feeds it from sync.ts.
+    // Per-pass error accumulator for the banner. The callback below feeds
+    // it from sync.ts.
     let passErrors: { count: number; lastMessage: string } | null = null;
-    const onPushError = (_id: string, message: string) => {
+    // Every failure of this pass by note id, for pushFailures.ts. Recorded
+    // only after a pass that ran: a skipped pass attempted nothing, so its
+    // empty list says nothing about the notes that failed last time.
+    const passFailures: Array<{ id: string; message: string }> = [];
+    let passRan = false;
+    const onPushError = (id: string, message: string) => {
+      passFailures.push({ id, message });
       // An RLS rejection means this session's pubkey link is broken
       // server-side; retrying the push can never succeed. Invalidate
       // the registration throttle so the next boot re-runs the full
@@ -139,6 +150,9 @@ export function useSyncOrchestrator({
       if (message.includes('row-level security')) {
         invalidateDeviceRegistration();
       }
+      // A size rejection has its own surfaces and no retry that can
+      // succeed, so it never reaches the banner's "retries automatically".
+      if (classifyPushFailure(message) === 'too_large') return;
       passErrors = {
         count: (passErrors?.count ?? 0) + 1,
         lastMessage: message,
@@ -161,15 +175,20 @@ export function useSyncOrchestrator({
       const onBatch = localCount === 0 ? refresh : undefined;
       const passStartedAt = Date.now();
       const syncResult = await sync(supabase, auth.pubkey, auth.encryptionKey, auth.deviceId, onBatch, onPushError, enqueueConflict);
+      passRan = syncResult.ran;
       // Feed the sync activity log (syncLog.ts). Skipped passes (demo,
       // floor, pause, mutex) report ran: false and are non-events.
       if (syncResult.ran) {
+        // `pushed` counts attempted rows; the log separates the accepted
+        // ones from the refused, so a stuck note never reads as "1 up".
+        const failedCount = new Set(passFailures.map((f) => f.id)).size;
         recordSyncPass({
           at: passStartedAt,
           ms: Date.now() - passStartedAt,
           ok: syncResult.pullOk,
-          up: syncResult.pushed ?? 0,
+          up: Math.max(0, (syncResult.pushed ?? 0) - failedCount),
           down: syncResult.pulled ?? 0,
+          failed: failedCount,
         });
       }
       // A pass that actually ran proves the session carries this vault's
@@ -499,6 +518,7 @@ export function useSyncOrchestrator({
         pushErrorsDismissedKey.current = null;
       }
       setPushErrors(passErrors);
+      if (passRan) recordPassPushFailures(passFailures);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supabase, auth.pubkey, auth.encryptionKey, auth.deviceId, auth.isPro, refresh, forceSignOut, enqueueConflict]);

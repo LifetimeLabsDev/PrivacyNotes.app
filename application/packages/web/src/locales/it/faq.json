@@ -79,7 +79,7 @@
     "import-from-other-apps": {
       "q": "Come porto qui le mie note da un'altra app?",
       "a": [
-        "Apri Impostazioni > Import & Export e scegli la tua origine. Ci sono importatori dedicati per Apple Notes, Obsidian, Standard Notes, Google Keep, Simplenote, Samsung Notes e Bitwarden (credenziali, carte e note sicure finiscono nella Cassaforte), più un importatore Markdown generico per qualsiasi cartella di file .md.",
+        "Apri Impostazioni > Import & Export e scegli la tua origine. L'elenco copre le app da cui arrivano le persone: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes e Apple Journal. Bitwarden e le password salvate nel browser finiscono nella Cassaforte, i segnalibri del browser arrivano come segnalibri, e un importatore Markdown generico prende qualsiasi cartella di file .md.",
         "Le importazioni girano interamente sul tuo dispositivo: i file esportati vengono letti, cifrati e salvati in locale, nulla viene caricato per l'elaborazione. Ogni nota importata riceve un tag con la sua origine, così in seguito puoi rivederle tutte insieme, e le checklist di Google Keep diventano perfino vere liste di attività."
       ]
     },
@@ -188,7 +188,7 @@
       "a": [
         "Se sei ancora connesso su un dispositivo qualsiasi: sì, puoi recuperarla da solo. Apri Impostazioni > Sicurezza > La tua frase e salvala subito nel tuo password manager.",
         "Se non hai più né un dispositivo connesso né la frase: no, e non può nessuno. La tua frase non raggiunge mai i nostri server, quindi non c'è nulla da reimpostare e nessun ticket di supporto che possa aiutare. Non è una regola che potremmo piegare - è il significato stesso della cifratura end-to-end. Qualsiasi servizio capace di ripristinare i tuoi dati cifrati dopo una perdita totale sta custodendo le tue chiavi.",
-        "La prevenzione costa dieci secondi: salva la frase in un password manager il giorno in cui crei l'account."
+        "La prevenzione costa dieci secondi: salva la frase in un password manager il giorno in cui crei l'account. Se è già persa e paghi un pacchetto di archiviazione, Paddle ti fattura direttamente e può disdirlo senza la tua frase: vedi [cambiare o disdire un pacchetto](/it/help/manage-storage-addon/)."
       ]
     },
     "oauth-recovery": {
@@ -259,8 +259,8 @@
     "export": {
       "q": "Posso esportare le mie note, o sono in gabbia?",
       "a": [
-        "Puoi esportare tutto in qualsiasi momento, generato interamente sul tuo dispositivo: file Markdown in uno zip con gli allegati inclusi, un backup JSON completo, o HTML autonomo - per singola nota o per l'intero account.",
-        "Funziona anche l'importazione: porta dentro note da Obsidian, Apple Notes, Google Keep, Standard Notes, Simplenote e Samsung Notes. Il lock-in non fa parte del modello di business."
+        "Puoi esportare tutto in qualsiasi momento, generato interamente sul tuo dispositivo: file Markdown in uno zip con gli allegati inclusi, un backup JSON completo, o HTML autonomo - per singola nota o per l'intero account. Le voci della cassaforte hanno una via tutta loro, \"Esportazione cassaforte (.json)\", che scrive il formato di Bitwarden e porta nomi utente, password, URL, dati delle carte e chiavi 2FA in Bitwarden, 1Password o KeePass.",
+        "Sta tutto in Impostazioni > Import & Export > Export. L'importazione funziona allo stesso modo, da Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden e altri: l'elenco completo è in [arrivare da un'altra app](/it/help/import-from-other-apps/). Il lock-in non fa parte del modello di business."
       ]
     },
     "attachment-limits": {
@@ -552,7 +552,8 @@
       "q": "Come cambio o disdico il mio pacchetto di archiviazione?",
       "a": [
         "Impostazioni > Archiviazione è il pannello di controllo. Il passaggio a un pacchetto più grande si applica subito, e la conferma mostra l'importo esatto pro rata addebitato oggi prima che tu confermi; la data di rinnovo non si sposta. \"Annulla lo spazio\" mantiene il tuo spazio extra fino alla fine del periodo che hai già pagato. Per passare a un pacchetto più piccolo, disdici quello attuale e compra il più piccolo alla fine del periodo.",
-        "Se dopo la scadenza i tuoi dati stanno ancora nel limite rimanente, finisce lì; altrimenti non viene eliminato nulla e comincia il [ciclo di 90 giorni oltre la quota](/it/help/over-quota/). Un rinnovo non riuscito mostra un banner con un link \"Aggiorna carta\" per sistemare il pagamento in Paddle. Se ti sei abbonato all'interno di una build da store, è lo store a fatturarti, quindi la disdetta avviene nelle impostazioni di abbonamento dello store stesso."
+        "Se dopo la scadenza i tuoi dati stanno ancora nel limite rimanente, finisce lì; altrimenti non viene eliminato nulla e comincia il [ciclo di 90 giorni oltre la quota](/it/help/over-quota/). Un rinnovo non riuscito mostra un banner con un link \"Aggiorna carta\" per sistemare il pagamento in Paddle.",
+        "Disdire da fuori dall'app funziona, ed è la risposta quando non riesci ad accedere. Paddle è il nostro rivenditore ufficiale e ti fattura direttamente: usa il link \"Gestisci abbonamento\" nell'email della ricevuta, oppure la chat di supporto su [paddle.net](https://paddle.net). Con una build da store vale lo stesso, quindi disdici lì nelle impostazioni di abbonamento dello store."
       ]
     },
     "store-purchases": {

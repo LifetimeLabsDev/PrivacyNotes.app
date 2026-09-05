@@ -8,7 +8,8 @@
     "readOnly": "Read-only",
     "file": "File",
     "empty": "Empty",
-    "noContent": "No content"
+    "noContent": "No content",
+    "notBackedUp": "Not backed up"
   },
   "header": {
     "new": "New",
@@ -170,7 +171,9 @@
     "widthWide": "Wider",
     "widthFull": "Full width",
     "burn": "Share & Burn After Reading",
-    "titlePlaceholderLink": "Bookmark name"
+    "titlePlaceholderLink": "Bookmark name",
+    "notBackedUpTooLarge": "Over the 1 MB limit, so not backed up. Move pictures to attachments or split the note.",
+    "notBackedUpFailed": "Not backed up. Last error: {{message}}. Retrying."
   },
   "share": {
     "hover": "Share / Export",

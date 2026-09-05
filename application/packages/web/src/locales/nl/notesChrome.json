@@ -56,7 +56,14 @@
     "unsyncedKept_other": "{{count}} notities op dit apparaat zijn nog niet gesynchroniseerd. Die blijven op dit apparaat staan en synchroniseren zodra je je weer aanmeldt.",
     "dontRemind": "Herinner me hier niet meer aan",
     "showPhrase": "Nee, toon herstelzin",
-    "confirm": "Ja, afmelden"
+    "confirm": "Ja, afmelden",
+    "stay": "Aangemeld blijven",
+    "signOutLose_one": "Afmelden en {{count}} notitie verliezen",
+    "signOutLose_other": "Afmelden en {{count}} notities verliezen",
+    "neverBackedUp_one": "Alleen op dit apparaat:",
+    "neverBackedUp_other": "Alleen op dit apparaat:",
+    "moreNotes": "en nog {{count}}",
+    "appLockHint": "Gedeeld apparaat? Zet de app-vergrendeling aan onder Instellingen > Beveiliging."
   },
   "burnShareModal": {
     "title": "Delen & vernietigen na lezen",

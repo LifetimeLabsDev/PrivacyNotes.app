@@ -8,7 +8,8 @@
     "readOnly": "Schreibgeschützt",
     "file": "Datei",
     "empty": "Leer",
-    "noContent": "Kein Inhalt"
+    "noContent": "Kein Inhalt",
+    "notBackedUp": "Nicht gesichert"
   },
   "header": {
     "new": "Neu",
@@ -170,7 +171,9 @@
     "widthWide": "Breiter",
     "widthFull": "Volle Breite",
     "burn": "Teilen & nach dem Lesen vernichten",
-    "titlePlaceholderLink": "Name des Lesezeichens"
+    "titlePlaceholderLink": "Name des Lesezeichens",
+    "notBackedUpTooLarge": "Über dem 1-MB-Limit, daher nicht gesichert. Verschiebe Bilder in Anhänge oder teile die Notiz auf.",
+    "notBackedUpFailed": "Nicht gesichert. Letzter Fehler: {{message}}. Neuer Versuch läuft."
   },
   "share": {
     "hover": "Teilen / Exportieren",

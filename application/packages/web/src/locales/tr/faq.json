@@ -79,7 +79,7 @@
     "import-from-other-apps": {
       "q": "Notlarımı başka bir uygulamadan nasıl taşırım?",
       "a": [
-        "Ayarlar > Import & Export bölümünü açıp kaynağınızı seçin. Apple Notes, Obsidian, Standard Notes, Google Keep, Simplenote, Samsung Notes ve Bitwarden (girişler, kartlar ve güvenli notlar Kasa'ya iner) için özel içe aktarıcılar var; ayrıca .md dosyalarından oluşan herhangi bir klasör için genel bir Markdown içe aktarıcısı.",
+        "Ayarlar > Import & Export bölümünü açıp kaynağınızı seçin. Liste, insanların geldiği uygulamaları kapsıyor: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes ve Apple Journal. Bitwarden ve tarayıcınızda kayıtlı parolalar Kasa'ya iner, tarayıcı yer imleriniz yer imi olarak gelir, genel Markdown içe aktarıcısı da .md dosyalarından oluşan herhangi bir klasörü alır.",
         "İçe aktarma tamamen cihazınızda çalışır: dışa aktardığınız dosyalar ayrıştırılır, şifrelenir ve yerelde saklanır, işlenmek üzere hiçbir şey yüklenmez. İçe aktarılan her not kaynağıyla etiketlenir, böylece grubu sonradan gözden geçirebilirsiniz; Google Keep kontrol listeleri ise doğrudan görev listelerine dönüşür."
       ]
     },
@@ -188,7 +188,7 @@
       "a": [
         "Hâlâ herhangi bir cihazda giriş yapmış durumdaysanız: evet, kendiniz kurtarabilirsiniz. Ayarlar > Güvenlik > Kurtarma ifadeniz bölümünü açın ve hemen şimdi parola yöneticinize kaydedin.",
         "Giriş yapmış bir cihazınız ve ifadeniz yoksa: hayır, kimse yapamaz. İfadeniz sunucularımıza hiç ulaşmaz, yani sıfırlanacak bir şey ve yardımcı olabilecek bir destek talebi yok. Bu esnetebileceğimiz bir politika değil - uçtan uca şifrelemenin anlamı bu. Tam bir kayıptan sonra şifreli verinizi geri getirebilen her hizmet, anahtarlarınızı elinde tutuyordur.",
-        "Çözümü on saniye sürüyor: hesabınızı oluşturduğunuz gün ifadeyi bir parola yöneticisinde saklayın."
+        "Çözümü on saniye sürüyor: hesabınızı oluşturduğunuz gün ifadeyi bir parola yöneticisinde saklayın. İfade çoktan gittiyse ve bir depolama paketi ödüyorsanız, faturayı doğrudan Paddle keser ve paketi ifadeniz olmadan iptal edebilir: bkz. [paketi değiştirme veya iptal etme](/tr/help/manage-storage-addon/)."
       ]
     },
     "oauth-recovery": {
@@ -259,8 +259,8 @@
     "export": {
       "q": "Notlarımı dışa aktarabilir miyim, yoksa kilitli miyim?",
       "a": [
-        "Her şeyi istediğiniz zaman dışa aktarabilirsiniz ve hepsi cihazınızda üretilir: ekleriyle birlikte zip içinde Markdown dosyaları, tam bir JSON yedeği ya da kendi kendine yeten HTML - not başına veya tüm hesap için.",
-        "İçe aktarma da var: Obsidian, Apple Notes, Google Keep, Standard Notes, Simplenote ve Samsung Notes'tan not getirin. Sizi kilitlemek iş modelimizin parçası değil."
+        "Her şeyi istediğiniz zaman dışa aktarabilirsiniz ve hepsi cihazınızda üretilir: ekleriyle birlikte zip içinde Markdown dosyaları, tam bir JSON yedeği ya da kendi kendine yeten HTML - not başına veya tüm hesap için. Kasa öğelerinin kendi yolu var: “Kasa dışa aktarımı (.json)” Bitwarden biçiminde yazar ve kullanıcı adlarınızı, parolalarınızı, adreslerinizi, kart bilgilerinizi ve 2FA anahtarlarınızı Bitwarden, 1Password veya KeePass tarafına taşır.",
+        "Hepsi Ayarlar > Import & Export > Export altında. İçe aktarma da aynı şekilde çalışır: Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden ve daha fazlası. Tam liste [başka bir uygulamadan taşınma](/tr/help/import-from-other-apps/) sayfasında. Sizi kilitlemek iş modelimizin parçası değil."
       ]
     },
     "attachment-limits": {
@@ -552,7 +552,8 @@
       "q": "Depolama paketimi nasıl değiştirir veya iptal ederim?",
       "a": [
         "Kontrol paneli Ayarlar > Depolama. Daha büyük bir pakete yükseltmek hemen geçerli olur ve onay ekranı, siz kesinleştirmeden önce bugün tahsil edilecek oranlanmış tutarı birebir gösterir; yenileme tarihi kaymaz. “Depolamayı iptal et”, zaten ödediğiniz dönemin sonuna kadar ek alanınızı korur. Daha küçük bir pakete geçmek için mevcut paketi iptal edin ve dönem bitince küçüğünü alın.",
-        "Süre dolduğunda veriniz kalan sınıra sığıyorsa mesele orada biter; sığmıyorsa hiçbir şey silinmez ve [90 günlük kota aşımı döngüsü](/tr/help/over-quota/) başlar. Başarısız bir yenileme, ödemeyi Paddle'da düzeltmeniz için “Kartı güncelle” bağlantılı bir şerit gösterir. Bir mağaza sürümünün içinden abone olduysanız faturayı mağaza kesiyordur, yani iptal de mağazanın kendi abonelik ayarlarından yapılır."
+        "Süre dolduğunda veriniz kalan sınıra sığıyorsa mesele orada biter; sığmıyorsa hiçbir şey silinmez ve [90 günlük kota aşımı döngüsü](/tr/help/over-quota/) başlar. Başarısız bir yenileme, ödemeyi Paddle'da düzeltmeniz için “Kartı güncelle” bağlantılı bir şerit gösterir.",
+        "Uygulamanın dışından iptal de işe yarar; giriş yapamadığınızda cevap budur. Paddle kayıtlı satıcımızdır ve size doğrudan fatura keser: makbuz e-postanızdaki “Aboneliği yönet” bağlantısını ya da [paddle.net](https://paddle.net) adresindeki destek sohbetini kullanın. Mağaza sürümünde de fikir aynıdır, yani iptali mağazanın kendi abonelik ayarlarından yaparsınız."
       ]
     },
     "store-purchases": {

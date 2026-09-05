@@ -235,7 +235,13 @@
     "pausedTooltip": "Bu cihazda eşitlemeyi duraklattınız. Notlar siz devam ettirene kadar burada kalır.",
     "pausedAria": "Eşitleme duraklatıldı",
     "wifiHold": "Wi-Fi bekleniyor",
-    "wifiHoldTooltip": "Dosyalar Wi-Fi geldiğinde yüklenir. Notlar eşitlenmeye devam eder."
+    "wifiHoldTooltip": "Dosyalar Wi-Fi geldiğinde yüklenir. Notlar eşitlenmeye devam eder.",
+    "notSynced": "Eşitlenmedi",
+    "notBackedUp": "Yedeklenmedi",
+    "notBackedUpTooltip_one": "{{count}} not yedeklenmedi. Nedenini görmek için tıklayın.",
+    "notBackedUpTooltip_other": "{{count}} not yedeklenmedi. Nedenini görmek için tıklayın.",
+    "notBackedUpAria_one": "{{count}} not yedeklenmedi",
+    "notBackedUpAria_other": "{{count}} not yedeklenmedi"
   },
   "errors": {
     "noSession": "Etkin oturum yok. Tekrar oturum açmayı deneyin.",
@@ -271,7 +277,7 @@
     "nodeDevice": "Bu cihaz",
     "nodeEncrypted": "Şifreli",
     "nodeRegion": "İsviçre",
-    "sealed": "Yüklenmeden önce şifrelenir. Sunucu bunları okuyamaz.",
+    "sealed": "Cihazınızda şifrelenir. Sunucu bunları okuyamaz.",
     "offlineFact": "Çevrimdışı çalışır. Tekrar çevrimiçi olduğunuzda eşitlenir.",
     "activity": "Son etkinlik",
     "passUp_one": "{{count}} gönderildi",
@@ -280,7 +286,14 @@
     "passDown_other": "{{count}} alındı",
     "passNothing": "Değişiklik yok",
     "passNothingRepeat": "Değişiklik yok - {{count}}x",
-    "passFailed": "başarısız"
+    "passFailed": "başarısız",
+    "notBackedUpHeading_one": "{{count}} not yedeklenmedi",
+    "notBackedUpHeading_other": "{{count}} not yedeklenmedi",
+    "reasonTooLarge": "1 MB sınırının üzerinde",
+    "reasonFailed": "Başarısız: {{message}}",
+    "openNote": "Aç",
+    "passPushFailed_one": "{{count}} başarısız",
+    "passPushFailed_other": "{{count}} başarısız"
   },
   "language": {
     "reportMistake": "Çeviri hatası bildir"

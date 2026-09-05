@@ -213,5 +213,17 @@
       "twój sejf pozostaje agresywnie nieczytelny.",
       "szwajcarska neutralność, ale dla notatek."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Nigdy nie miała kopii zapasowej. To jedyna kopia.",
+    "some_one": "{{count}} z tych notatek nigdy nie miała kopii zapasowej. To jej jedyna kopia.",
+    "some_few": "{{count}} z tych notatek nigdy nie miały kopii zapasowej. To ich jedyne kopie.",
+    "some_many": "{{count}} z tych notatek nigdy nie miało kopii zapasowej. To ich jedyne kopie.",
+    "some_other": "{{count}} z tych notatek nigdy nie miało kopii zapasowej. To ich jedyne kopie.",
+    "changesOne": "Jej ostatnie zmiany nie mają kopii zapasowej i zostałyby utracone.",
+    "changesSome_one": "{{count}} z tych notatek ma zmiany bez kopii zapasowej, które zostałyby utracone.",
+    "changesSome_few": "{{count}} z tych notatek mają zmiany bez kopii zapasowej, które zostałyby utracone.",
+    "changesSome_many": "{{count}} z tych notatek ma zmiany bez kopii zapasowej, które zostałyby utracone.",
+    "changesSome_other": "{{count}} z tych notatek ma zmiany bez kopii zapasowej, które zostałyby utracone."
   }
 }

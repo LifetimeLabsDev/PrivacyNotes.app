@@ -79,7 +79,7 @@
     "import-from-other-apps": {
       "q": "Jak k vám přenesu poznámky z jiné aplikace?",
       "a": [
-        "Otevři Nastavení > Import & Export a vyber zdroj. Máme samostatné importy pro Apple Notes, Obsidian, Standard Notes, Google Keep, Simplenote, Samsung Notes a Bitwarden (přihlašovací údaje, karty a bezpečné poznámky skončí v Trezoru) a k tomu obecný import Markdownu pro jakoukoli složku se soubory .md.",
+        "Otevři Nastavení > Import & Export a vyber zdroj. Seznam pokrývá aplikace, ze kterých lidi přicházejí: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes a Apple Journal. Bitwarden a hesla uložená v prohlížeči skončí v Trezoru, záložky z prohlížeče dorazí jako záložky a obecný Markdown importér vezme jakoukoli složku se soubory .md.",
         "Import běží celý na tvém zařízení: exportované soubory se rozeberou, zašifrují a uloží lokálně, nic se nikam neposílá ke zpracování. Každá naimportovaná poznámka dostane značku podle zdroje, takže si celou dávku můžeš potom projít, a kontrolní seznamy z Google Keep se dokonce převedou na nativní seznamy úkolů."
       ]
     },
@@ -188,7 +188,7 @@
       "a": [
         "Pokud máš ještě někde přihlášené zařízení: ano, dostaneš se k ní. Otevři Nastavení > Zabezpečení > Tvoje fráze a hned si ji ulož do správce hesel.",
         "Pokud nemáš přihlášené zařízení ani frázi: ne, a nedokáže to nikdo. Tvoje fráze se na naše servery nikdy nedostane, takže není co resetovat a nepomůže ani žádný ticket na podporu. Není to pravidlo, které bychom mohli ohnout - je to význam end-to-end šifrování. Každá služba, která ti po úplné ztrátě dokáže obnovit šifrovaná data, drží tvoje klíče.",
-        "Náprava zabere deset sekund: ulož si frázi do správce hesel v den, kdy si zakládáš účet."
+        "Náprava zabere deset sekund: ulož si frázi do správce hesel v den, kdy si zakládáš účet. Pokud je fráze už pryč a platíš si rozšíření úložiště: účtuje ti ho přímo Paddle a dokáže ho zrušit i bez tvojí fráze, viz [změna nebo zrušení rozšíření](/cs/help/manage-storage-addon/)."
       ]
     },
     "oauth-recovery": {
@@ -259,8 +259,8 @@
     "export": {
       "q": "Můžu si poznámky vyexportovat, nebo je to jednosměrka?",
       "a": [
-        "Vyexportovat můžeš kdykoli všechno a vzniká to celé na tvém zařízení: soubory Markdown v zipu včetně příloh, kompletní záloha v JSON nebo samostatné HTML - po jedné poznámce, nebo za celý účet.",
-        "Import funguje taky: poznámky přeneseš z Obsidianu, Apple Notes, Google Keep, Standard Notes, Simplenote a Samsung Notes. Uzamčení u jednoho dodavatele není součástí našeho obchodního modelu."
+        "Vyexportovat můžeš kdykoli všechno a vzniká to celé na tvém zařízení: soubory Markdown v zipu včetně příloh, kompletní záloha v JSON nebo samostatné HTML - po jedné poznámce, nebo za celý účet. Položky trezoru mají vlastní cestu ven, „Export trezoru (.json)“ zapisuje formát Bitwardenu a přenese tvoje uživatelská jména, hesla, URL, údaje o kartách a klíče 2FA do Bitwardenu, 1Passwordu nebo KeePassu.",
+        "Všechno najdeš v Nastavení > Import & Export > Export. Import funguje stejně, z Obsidianu, Evernotu, Apple Notes, Standard Notes, Bitwardenu a dalších: úplný seznam je v [přechodu z jiné aplikace](/cs/help/import-from-other-apps/). Uzamčení u nás není součástí obchodního modelu."
       ]
     },
     "attachment-limits": {
@@ -552,7 +552,8 @@
       "q": "Jak změním nebo zruším rozšíření úložiště?",
       "a": [
         "Nastavení > Úložiště je ovládací panel. Přechod na větší balíček platí okamžitě a potvrzení ti ještě před odsouhlasením ukáže přesnou poměrnou částku, která se dnes naúčtuje; datum obnovení se neposouvá. „Zrušit úložiště“ ti nechá místo navíc do konce období, které už máš zaplacené. Na menší balíček přejdeš tak, že ten současný zrušíš a menší koupíš po konci období.",
-        "Pokud se tvoje data po vypršení vejdou do zbývajícího limitu, je to tím vyřešené; pokud ne, nic se nemaže a začíná [90denní režim nad limitem](/cs/help/over-quota/). Neúspěšné obnovení zobrazí pruh s odkazem „Aktualizovat kartu“, kde platbu spravíš v Paddlu. Pokud předplatné vzniklo ve verzi z obchodu, účtuje ti ho ten obchod, takže zrušení proběhne v jeho vlastním nastavení předplatných."
+        "Pokud se tvoje data po vypršení vejdou do zbývajícího limitu, je to tím vyřešené; pokud ne, nic se nemaže a začíná [90denní režim nad limitem](/cs/help/over-quota/). Neúspěšné obnovení zobrazí pruh s odkazem „Aktualizovat kartu“, kde platbu spravíš v Paddlu.",
+        "Zrušit se dá i mimo aplikaci, a to je odpověď ve chvíli, kdy se nemůžeš přihlásit. Paddle je náš prodejce a účtuje ti přímo: použij odkaz „Spravovat předplatné“ v e-mailu s účtenkou nebo podporu na chatu na [paddle.net](https://paddle.net). U verze z obchodu platí totéž, takže zruš předplatné v nastavení předplatných daného obchodu."
       ]
     },
     "store-purchases": {

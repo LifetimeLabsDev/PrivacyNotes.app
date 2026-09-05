@@ -42,9 +42,11 @@ type Card = {
   file: string;
   title: string;
   tile: Tile;
-  kind: 'lockup' | 'wordmark' | 'icon';
+  kind: 'lockup' | 'wordmark' | 'icon' | 'avatar';
   png: string;
   note?: string;
+  /** Fills its own frame, so the tile must not claim a transparent background. */
+  opaque?: true;
 };
 
 // There is deliberately NO monochrome variant. Knocking the mark down to one
@@ -57,8 +59,26 @@ const LOCKUPS: Card[] = [
   { file: 'privacynotes-lockup-color-dark', title: 'Color, dark backgrounds', tile: 'dark', kind: 'lockup', png: '2048 x 373' },
 ];
 
+// The avatar is the one asset that drops the document outline, and it is not a
+// recolor of the icon. A profile site masks an avatar into a circle, and a
+// near-square outline inside a circle leaves four empty lobes at the poles that
+// no scale removes: the corner fold sits outside every crop large enough to
+// cover the frame. So the page body becomes the whole frame, and the padlock,
+// the check badge and the two blues carry the recognition. The file stays
+// SQUARE with the fold in its top-right corner, because the circular mask cuts
+// that corner into a folded circle, which is why one file serves both shapes.
+// Spec: ops/docs/design-decisions.md (social avatar)
 const ICONS: Card[] = [
   { file: 'privacynotes-icon-color', title: 'Icon, light and dark', tile: 'light', kind: 'icon', png: '943 x 1024' },
+  {
+    file: 'privacynotes-avatar',
+    title: 'Avatar, social profiles',
+    tile: 'light',
+    kind: 'avatar',
+    png: '1024 x 1024',
+    note: 'Square file. Profile sites crop it to a circle.',
+    opaque: true,
+  },
 ];
 
 const WORDMARKS: Card[] = [
@@ -98,7 +118,7 @@ function shotCard(s: (typeof SHOTS)[number]): string {
 function card(c: Card): string {
   const note = c.note ? `<span class="note">${c.note}</span>` : '';
   return `<div class="card">
-<div class="tile t-${c.tile} k-${c.kind}"><img src="${B}/${c.file}.svg" alt="PrivacyNotes ${c.title}" loading="lazy"></div>
+<div class="tile t-${c.tile} k-${c.kind}" data-bg="${c.opaque ? 'opaque' : 'transparent bg'}"><img src="${B}/${c.file}.svg" alt="PrivacyNotes ${c.title}" loading="lazy"></div>
 <div class="meta"><div><strong>${c.title}</strong><span class="dims">SVG + PNG ${c.png}</span>${note}</div>
 <div class="dl"><a class="pill" href="${B}/${c.file}.svg" download>SVG</a><a class="pill" href="${B}/${c.file}.png" download>PNG</a></div></div>
 </div>`;
@@ -231,11 +251,11 @@ const PAGE_CSS = `h2{font-size:20px;font-weight:750;letter-spacing:-.02em;margin
 .grid.one{grid-template-columns:1fr}
 .card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--rail)}
 .tile{display:flex;align-items:center;justify-content:center;padding:24px 16px;min-height:110px;border-bottom:1px solid var(--line);position:relative}
-.tile::after{content:"transparent bg";position:absolute;top:7px;right:9px;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);opacity:.75}
+.tile::after{content:attr(data-bg);position:absolute;top:7px;right:9px;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);opacity:.75}
 .tile img{max-width:100%;height:auto}
 .t-light{background:#fff}.t-dark{background:#0a0d12}
 .t-light::after{color:#8b94a3}.t-dark::after{color:rgba(255,255,255,.45)}
-.k-lockup img{height:38px}.k-wordmark img{height:34px}.k-icon img{height:72px}
+.k-lockup img{height:38px}.k-wordmark img{height:34px}.k-icon img,.k-avatar img{height:72px}
 .shot{border-bottom:1px solid var(--line);background:var(--rail)}
 .shot img{display:block;width:100%;height:auto}
 .meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;font-size:13px}
@@ -291,7 +311,7 @@ const PAGE_CSS = `h2{font-size:20px;font-weight:750;letter-spacing:-.02em;margin
 .dont-tile img{height:24px}
 .dont-tile p{margin:10px 0 0;font-size:12px;color:#5b6472}
 .dont-tile::before{content:"\\2715";position:absolute;top:6px;left:10px;color:var(--bad);font-weight:800}
-.trademark{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--faint);font-size:12.5px}
+.rights{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--faint);font-size:12.5px}
 @media(max-width:600px){
 .grid,.dd,.donts{grid-template-columns:1fr}
 .sws{grid-template-columns:1fr 1fr}
@@ -359,8 +379,8 @@ ${LOCKUPS.map(card).join('\n')}
 </div>
 
 ${h2('icon')}
-<p class="lead">For avatars, favicons, app tiles, and anywhere below minimum lockup size. One file, and it holds up on light and dark alike.</p>
-<div class="grid one">
+<p class="lead">The icon is for favicons, app tiles, and anywhere below minimum lockup size. It holds up on light and dark alike. The avatar is a separate file for social profiles, where the site masks whatever you upload into a circle: it fills the frame in Brand Blue and carries the fold in its top-right corner, so the same square file reads as a folded page in a square slot and a folded circle in a round one.</p>
+<div class="grid">
 ${ICONS.map(card).join('\n')}
 </div>
 
@@ -425,7 +445,7 @@ ${h2('usage')}
 <div class="dont-tile"><img src="${B}/dont-invert.svg" alt=""><p>don't invert the two-tone split</p></div>
 </div>
 
-<p class="trademark">${brandMark()} and the document-lock mark are trademarks of Lifetime Labs LLC. The assets on this page may be used to reference ${brandMark()}; they may not be used to imply endorsement.</p>
+<p class="rights">The assets on this page may be used to reference ${brandMark()}; they may not be used to imply endorsement.</p>
 </div>
 </div>
 </div>

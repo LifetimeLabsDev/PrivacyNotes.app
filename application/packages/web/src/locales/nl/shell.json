@@ -431,6 +431,7 @@
     "urlInvalid": "Voer een webadres in, zoals example.com of https://example.com/page.",
     "urlDuplicate": "Een andere bladwijzer heeft deze URL al, de wijziging is niet opgeslagen.",
     "openAction": "Openen",
+    "copiedUrl": "Link gekopieerd",
     "moveToTrash": "Naar prullenbak",
     "emptyNone": "Nog geen bladwijzers.",
     "emptyTitle": "Bewaar de sites die het waard zijn",

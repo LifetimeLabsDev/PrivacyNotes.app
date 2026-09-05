@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "コールアウトを挿入",
     "remove": "コールアウトを削除",
+    "collapse": "コールアウトを折りたたむ",
+    "expand": "コールアウトを展開",
     "types": {
       "info": "情報",
       "success": "成功",
@@ -101,6 +103,7 @@
     "addRowBelow": "下に行を追加",
     "addColumnLeft": "左に列を追加",
     "addColumnRight": "右に列を追加",
+    "toggleHeaderRow": "見出し行を切り替え",
     "deleteRow": "行を削除",
     "deleteColumn": "列を削除",
     "deleteTable": "表を削除"

@@ -8,7 +8,8 @@
     "readOnly": "읽기 전용",
     "file": "파일",
     "empty": "비어 있음",
-    "noContent": "내용 없음"
+    "noContent": "내용 없음",
+    "notBackedUp": "백업 안 됨"
   },
   "header": {
     "new": "추가",
@@ -168,7 +169,9 @@
     "widthWide": "더 넓게",
     "widthFull": "전체 너비",
     "burn": "공유 & Burn After Reading",
-    "titlePlaceholderLink": "북마크 이름"
+    "titlePlaceholderLink": "북마크 이름",
+    "notBackedUpTooLarge": "1 MB 제한을 넘어 백업되지 않았어요. 사진을 첨부 파일로 옮기거나 노트를 나눠 주세요.",
+    "notBackedUpFailed": "백업되지 않았어요. 마지막 오류: {{message}}. 다시 시도하는 중이에요."
   },
   "share": {
     "hover": "공유 / 내보내기",

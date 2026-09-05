@@ -235,7 +235,13 @@
     "pausedTooltip": "You paused sync on this device. Notes stay here until you resume.",
     "pausedAria": "Sync paused",
     "wifiHold": "Waiting for wifi",
-    "wifiHoldTooltip": "Files upload when wifi returns. Notes still sync."
+    "wifiHoldTooltip": "Files upload when wifi returns. Notes still sync.",
+    "notBackedUp": "Not backed up",
+    "notSynced": "Not synced",
+    "notBackedUpTooltip_one": "{{count}} note is not backed up. Click to see why.",
+    "notBackedUpTooltip_other": "{{count}} notes are not backed up. Click to see why.",
+    "notBackedUpAria_one": "{{count}} note is not backed up",
+    "notBackedUpAria_other": "{{count}} notes are not backed up"
   },
   "errors": {
     "noSession": "No active session. Try signing in again.",
@@ -271,7 +277,7 @@
     "nodeDevice": "This device",
     "nodeEncrypted": "Encrypted",
     "nodeRegion": "Switzerland",
-    "sealed": "Encrypted before upload. The server cannot read them.",
+    "sealed": "Encrypted on your device. The server cannot read them.",
     "offlineFact": "Works offline. Syncs when you are back online.",
     "activity": "Recent activity",
     "passUp_one": "{{count}} up",
@@ -280,7 +286,14 @@
     "passDown_other": "{{count}} down",
     "passNothing": "No changes",
     "passNothingRepeat": "No changes - {{count}}x",
-    "passFailed": "failed"
+    "passFailed": "failed",
+    "notBackedUpHeading_one": "{{count}} note is not backed up",
+    "notBackedUpHeading_other": "{{count}} notes are not backed up",
+    "reasonTooLarge": "Over the 1 MB limit",
+    "reasonFailed": "Failed: {{message}}",
+    "openNote": "Open",
+    "passPushFailed_one": "{{count}} failed",
+    "passPushFailed_other": "{{count}} failed"
   },
   "language": {
     "reportMistake": "Report a translation mistake"

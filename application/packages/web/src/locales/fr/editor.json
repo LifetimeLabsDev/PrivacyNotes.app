@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "Insérer un encadré",
     "remove": "Retirer l'encadré",
+    "collapse": "Replier l'encadré",
+    "expand": "Déplier l'encadré",
     "types": {
       "info": "Info",
       "success": "Succès",
@@ -101,6 +103,7 @@
     "addRowBelow": "Ajouter une ligne en dessous",
     "addColumnLeft": "Ajouter une colonne à gauche",
     "addColumnRight": "Ajouter une colonne à droite",
+    "toggleHeaderRow": "Activer ou désactiver la ligne d'en-tête",
     "deleteRow": "Supprimer la ligne",
     "deleteColumn": "Supprimer la colonne",
     "deleteTable": "Supprimer le tableau"

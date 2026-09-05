@@ -211,5 +211,13 @@
       "la teva caixa forta continua sent agressivament il·legible.",
       "neutralitat suïssa, però per a notes."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Mai no ha tingut còpia de seguretat. Aquesta és l'única còpia.",
+    "some_one": "{{count}} d'aquestes notes mai no ha tingut còpia de seguretat. Aquesta és la seva única còpia.",
+    "some_other": "{{count}} d'aquestes notes mai no han tingut còpia de seguretat. Aquestes són les úniques còpies.",
+    "changesOne": "Els darrers canvis no tenen còpia de seguretat i es perdrien.",
+    "changesSome_one": "{{count}} d'aquestes notes té canvis sense còpia de seguretat que es perdrien.",
+    "changesSome_other": "{{count}} d'aquestes notes tenen canvis sense còpia de seguretat que es perdrien."
   }
 }

@@ -802,6 +802,9 @@ function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): stri
   .content table {
     border-collapse: collapse;
     width: 100%;
+    /* Equal columns, matching the editor. Sizing from content here would give
+       the same table different proportions on paper than on screen. */
+    table-layout: fixed;
     margin: 1em 0;
   }
   .content th, .content td {

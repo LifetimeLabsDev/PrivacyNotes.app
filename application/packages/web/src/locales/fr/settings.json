@@ -235,7 +235,13 @@
     "pausedTooltip": "Tu as mis la synchronisation en pause sur cet appareil. Tes notes restent ici jusqu’à la reprise.",
     "pausedAria": "Synchronisation en pause",
     "wifiHold": "En attente du wifi",
-    "wifiHoldTooltip": "Les fichiers partent dès le retour du wifi. Les notes continuent de se synchroniser."
+    "wifiHoldTooltip": "Les fichiers partent dès le retour du wifi. Les notes continuent de se synchroniser.",
+    "notSynced": "Non synchronisé",
+    "notBackedUp": "Non sauvegardé",
+    "notBackedUpTooltip_one": "{{count}} note n'est pas sauvegardée. Clique pour voir pourquoi.",
+    "notBackedUpTooltip_other": "{{count}} notes ne sont pas sauvegardées. Clique pour voir pourquoi.",
+    "notBackedUpAria_one": "{{count}} note n'est pas sauvegardée",
+    "notBackedUpAria_other": "{{count}} notes ne sont pas sauvegardées"
   },
   "errors": {
     "noSession": "Aucune session active. Réessaie de te connecter.",
@@ -271,7 +277,7 @@
     "nodeDevice": "Cet appareil",
     "nodeEncrypted": "Chiffré",
     "nodeRegion": "Suisse",
-    "sealed": "Chiffré avant l’envoi. Le serveur ne peut pas les lire.",
+    "sealed": "Chiffrées sur ton appareil. Le serveur ne peut pas les lire.",
     "offlineFact": "Fonctionne hors ligne. Se synchronise dès que tu es de nouveau en ligne.",
     "activity": "Activité récente",
     "passUp_one": "{{count}} envoyé",
@@ -280,7 +286,14 @@
     "passDown_other": "{{count}} reçus",
     "passNothing": "Aucun changement",
     "passNothingRepeat": "Aucun changement - {{count}}x",
-    "passFailed": "échec"
+    "passFailed": "échec",
+    "notBackedUpHeading_one": "{{count}} note n'est pas sauvegardée",
+    "notBackedUpHeading_other": "{{count}} notes ne sont pas sauvegardées",
+    "reasonTooLarge": "Au-delà de la limite de 1 Mo",
+    "reasonFailed": "Échec : {{message}}",
+    "openNote": "Ouvrir",
+    "passPushFailed_one": "{{count}} en échec",
+    "passPushFailed_other": "{{count}} en échec"
   },
   "language": {
     "reportMistake": "Signaler une erreur de traduction"

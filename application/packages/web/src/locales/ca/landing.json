@@ -98,17 +98,13 @@
     "kicker": "Baixades",
     "heading": "Baixa PrivacyNotes",
     "tileAria": "Baixa per a {{name}}",
-    "apkQualifier": "baixada directa",
-    "apkDesc": "Sense Google, avís d'actualització dins l'aplicació",
-    "obtainiumQualifier": "s'actualitza sol",
-    "obtainiumDesc": "Toca la insígnia al mòbil: Obtainium afegeix PrivacyNotes i instal·la cada versió nova per tu.",
+    "apkDesc": "Cada actualització és una baixada i una instal·lació que fas tu.",
+    "obtainiumDesc": "Instal·la cada versió nova del nostre repositori.",
     "obtainiumBadgeAlt": "Aconsegueix-lo a Obtainium",
-    "obtainiumManual": "No ets al mòbil? Enganxa això a Obtainium:",
     "appStore": "App Store",
     "recommended": "Recomanat",
-    "playDesc": "S'actualitza automàticament des de la botiga",
     "comingSoon": "Properament",
-    "apkFootnote": "Requereix Android 7.0 o posterior. L'APK no necessita cap compte de Google ni la facturació de Google: Pro es desbloqueja amb el pagament web. T'avisa dins l'aplicació quan hi ha una versió nova a punt; Obtainium i la versió de Play s'actualitzen sols.",
+    "apkFootnote": "Requereix Android 7.0 o posterior. Zapstore, Obtainium i l'APK no necessiten cap compte de Google ni la facturació de Google: Pro es desbloqueja amb el pagament web. L'APK t'avisa dins l'aplicació quan hi ha una versió nova a punt.",
     "linuxRequirement": "Tots dos formats necessiten webkit2gtk 4.1: Ubuntu 22.04 o posterior, Debian 12 o posterior, o una distribució equivalent del 2023 endavant. Les distribucions més antigues només porten webkit2gtk 4.0 i no poden executar aquestes versions.",
     "linuxArchX86": "Intel / AMD (x86_64)",
     "linuxArchX86Desc": "Gairebé tots els ordinadors de sobretaula i portàtils. Si tens dubtes, tria aquest.",
@@ -121,14 +117,18 @@
     "checksumAria": "Suma de verificació SHA-256 de {{label}}",
     "debFootnote": "Estàs actualitzant una <highlight>instal·lació .deb</highlight> que ja tens? No la desinstal·lis abans. Fer doble clic al fitxer acaba en un carreró sense sortida a l'App Center d'Ubuntu, que només diu que l'aplicació està instal·lada: instal·la la nova sobre l'antiga des d'un terminal. Fes servir la línia que correspon al teu ordinador; dpkg --print-architecture et diu quina és:",
     "availability": "Ja disponible: macOS 13+, Windows 10+, iOS 15+, Linux i Android.",
-    "betaNote": "Totes les nostres aplicacions són en beta i encara poden tenir errors, així que de moment la versió web és la més estable. La bona notícia: totes les aplicacions s'actualitzen soles i publiquem correccions gairebé cada dia.",
+    "betaNote": "Totes les nostres aplicacions són en beta i encara poden tenir errors, així que de moment la versió web és la més estable. Totes les aplicacions s'actualitzen soles i publiquem correccions gairebé cada dia.",
     "pkgToggle": "Instal·la amb un gestor de paquets ({{platforms}})",
     "pkgBrewDesc": "Les actualitzacions les gestiona l'aplicació, no pas brew",
     "pkgWingetDesc": "Inclòs al Windows 10 i 11",
     "pkgScoopDesc": "Les actualitzacions les gestiona Scoop, no pas l'aplicació",
     "pkgFootnote": "Cadascun instal·la la mateixa compilació signada. Amb Homebrew i winget l'aplicació s'actualitza sola. Amb Scoop executes scoop update privacynotes.",
     "githubLink": "Totes les versions a GitHub",
-    "githubNote": "Signada · Pública · Verificable · Cada versió, sense excepció"
+    "githubNote": "Signada · Pública · Verificable · Cada versió, sense excepció",
+    "zapstoreDesc": "<rec>Recomanat.</rec> Comprova la nostra signatura abans d'instal·lar.",
+    "zapstoreBadgeAlt": "Aconsegueix-lo a Zapstore",
+    "autoUpdates": "S'actualitza sol",
+    "manualUpdates": "Actualització manual"
   },
   "ctaRepeat": {
     "getStarted": "Comença"
@@ -150,7 +150,7 @@
     "proLabel": "Pro · Un sol pagament",
     "earlyAdopterBadge": "Pioner",
     "oneTime": "pagament únic",
-    "proOnceDesc": "Un sol pagament. Ni anual, ni mensual. Pagues <b>una vegada</b> i és teu per sempre.",
+    "proOnceDesc": "Pagues <b>una vegada</b> i és teu per sempre.",
     "proCompareBeta": "Paga ${{earlyPrice}} una sola vegada. Obsidian Sync costa $48/any, cada any. Standard Notes cobra $90/any. Preu per a pioners, fixat abans que pugi a ${{proPrice}}.",
     "proCompare": "Paga ${{proPrice}} una sola vegada i és teu per sempre. Obsidian Sync costa $48/any i Standard Notes $90/any, any rere any.",
     "proEverythingFree": "Tot el del pla gratuït, i a més:",
@@ -190,9 +190,9 @@
   "mood": {
     "kicker": "Registre d'ànim i benestar",
     "heading": "Registra el que sents de debò.",
-    "intro": "Ànim, emocions, son, medicació i nivell d'activitat amb tocs, no teclejant. Tot xifrat d'extrem a extrem. Res no surt del teu dispositiu sense xifrar.",
+    "intro": "Ànim, emocions, son, medicació i nivell d'activitat, tot amb uns quants tocs. Tot es xifra al teu dispositiu abans de sincronitzar-se.",
     "cardEmotionsTitle": "Ànim (1-10) + 24 etiquetes d'emocions",
-    "cardEmotionsBody": "Res de caretes emoji. 24 etiquetes d'emocions amb base científica i granularitat real. Registra el que sents de debò, detecta patrons al llarg del temps i exporta dades amb què el teu terapeuta o metge pugui treballar.",
+    "cardEmotionsBody": "24 etiquetes d'emocions amb base científica. Posa nom al que sents, detecta patrons al llarg del temps i exporta dades amb què el teu terapeuta o metge pugui treballar.",
     "cardSleepTitle": "Qualitat del son + nivell d'activitat",
     "cardSleepBody": "Escala de qualitat de cinc nivells, més hores opcionals. Activitat des de sedentària fins a intensa. L'analítica ho correlaciona automàticament amb el teu ànim.",
     "cardMedsTitle": "Adherència a la medicació",
@@ -200,7 +200,7 @@
     "cardAnalyticsTitle": "Detecció de patrons + exportació per al metge",
     "cardAnalyticsBody": "L'analítica al client detecta correlacions entre son, activitat, medicació i ànim. Exporta un informe PDF imprimible per al teu metge o copia una indicació estructurada per analitzar-la amb IA.",
     "encryptedHeading": "Per què això només funciona xifrat",
-    "encryptedBody": "Ningú no apunta la dosi d'antidepressius a Notion. Ningú no registra els dies de desesperança en un document de Google. Les dades sensibles necessiten xifratge de coneixement zero, així que ho vam construir així des del primer dia."
+    "encryptedBody": "Ningú no apunta la dosi d'antidepressius a Notion. Ningú no registra els dies de desesperança en un document de Google. Unes dades tan sensibles necessiten xifratge de coneixement zero, i així és com està construït PrivacyNotes."
   },
   "comparison": {
     "kicker": "Fem números",
@@ -245,10 +245,10 @@
   "whyPrivacy": {
     "kicker": "Per què importa",
     "heading": "La majoria d'aplicacions de notes llegeixen les teves notes.<accent>La nostra no pot.</accent>",
-    "para1": "La majoria d'aplicacions de notes exploten el teu contingut. Afegeix “comprar un televisor nou” a la llista de la compra i les properes pàgines que visitis s'ompliran d'anuncis de televisors. La llista de la compra, el teu diari, els teus pensaments privats, tot alimentant circuits de publicitat dirigida, perfilat i venut. No és cap conspiració; és el model de negoci de totes les aplicacions de notes “gratuïtes” que viuen de la publicitat.",
+    "para1": "La majoria d'aplicacions de notes exploten el teu contingut. Afegeix “comprar un televisor nou” a la llista de la compra i les properes pàgines que visitis s'ompliran d'anuncis de televisors. La llista de la compra, el teu diari, els teus pensaments privats, tot alimentant circuits de publicitat dirigida, perfilat i venut. És el model de negoci de totes les aplicacions de notes “gratuïtes” que viuen de la publicitat.",
     "para2": "Fins i tot les aplicacions que no mostren anuncis guarden les teves notes en text clar als seus servidors: llegibles pels empleats, exposades a filtracions i a l'abast de qualsevol requeriment judicial. Les teves dades es converteixen en el seu avantatge.",
     "differenceLabel": "La diferència",
-    "differenceBody": "<brand/> està xifrada d'extrem a extrem amb claus que no surten mai del teu dispositiu. No podem llegir les teves notes. Els nostres servidors tampoc. Sense seguiment, sense analítiques, sense anuncis, sense perfils. Mai. El que escrius és teu.",
+    "differenceBody": "<brand/> està xifrada d'extrem a extrem amb claus que no surten mai del teu dispositiu, de manera que ni nosaltres ni els nostres servidors podem llegir el que escrius. No hi ha seguiment, ni analítiques, ni anuncis, ni perfils, i mai no n'hi haurà. El que escrius és teu.",
     "keyboardNote": "<b>Un apunt sobre els teclats del dispositiu.</b> Els teclats de tercers (com Gboard, SwiftKey o Samsung Keyboard) poden enviar el que escrius als seus propis servidors. Això passa a nivell del sistema operatiu, fora del control de qualsevol aplicació. Considera desactivar les funcions al núvol a la configuració del teclat o fer servir un teclat només fora de línia."
   },
   "readIt": {
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "La teva frase és la teva clau",
-    "body": "Sense frase, no hi ha notes. No les podem recuperar. Ningú no pot. Aquest és el preu del xifratge de debò. No cal que escriguis al nostre equip de desenvolupament: amb autocustòdia, simplement no podem desxifrar les teves notes, només tu pots.",
+    "body": "Sense frase, no hi ha notes. No les podem recuperar, i ningú més no ho pot fer. Aquest és el preu del xifratge d'extrem a extrem: amb autocustòdia només tu tens la clau, així que escriure al nostre equip no et tornarà les notes.",
     "noRecoveryTerm": "Sense recuperació",
     "noRecoveryDesc": "Perds la frase, perds les notes",
     "deviceTerm": "Generada al dispositiu",

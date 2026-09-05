@@ -434,6 +434,7 @@
     "urlInvalid": "Escriu una adreça web, com example.com o https://example.com/page.",
     "urlDuplicate": "Un altre marcador ja té aquest URL, així que el canvi no s'ha desat.",
     "openAction": "Obre",
+    "copiedUrl": "Enllaç copiat",
     "moveToTrash": "Mou a la paperera",
     "emptyNone": "Encara no hi ha marcadors.",
     "emptyTitle": "Desa els llocs que val la pena conservar",

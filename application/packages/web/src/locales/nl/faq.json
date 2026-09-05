@@ -79,7 +79,7 @@
     "import-from-other-apps": {
       "q": "Hoe haal ik mijn notities uit een andere app hierheen?",
       "a": [
-        "Open Instellingen > Import & Export en kies je bron. Er zijn speciale importers voor Apple Notes, Obsidian, Standard Notes, Google Keep, Simplenote, Samsung Notes en Bitwarden (logins, kaarten en beveiligde notities belanden in de Kluis), plus een algemene Markdown-importer voor elke map met .md-bestanden.",
+        "Open Instellingen > Import & Export en kies je bron. De lijst dekt de apps waar mensen vandaan komen: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes en Apple Journal. Bitwarden en de opgeslagen wachtwoorden van je browser belanden in de Kluis, je browserbladwijzers komen binnen als bladwijzers, en een generieke Markdown-importer neemt elke map met .md-bestanden.",
         "Importeren gebeurt volledig op je apparaat: je geëxporteerde bestanden worden gelezen, versleuteld en lokaal opgeslagen, er wordt niets geüpload om te verwerken. Elke geïmporteerde notitie krijgt een tag van zijn bron zodat je de batch achteraf kunt nakijken, en checklists uit Google Keep worden zelfs echte takenlijsten."
       ]
     },
@@ -188,7 +188,7 @@
       "a": [
         "Ben je nog op een apparaat aangemeld: ja, dan kun je hem zelf terughalen. Open Instellingen > Beveiliging > Je herstelzin en sla hem nu meteen op in je wachtwoordmanager.",
         "Heb je geen aangemeld apparaat en geen herstelzin: nee, en niemand kan dat. Je herstelzin bereikt onze servers nooit, dus er valt niets te resetten en geen supportticket kan helpen. Dit is geen beleid dat we zouden kunnen buigen - het is wat end-to-end versleuteling betekent. Elke dienst die je versleutelde gegevens na een totaal verlies wél kan herstellen, heeft je sleutels in handen.",
-        "De oplossing kost tien seconden: bewaar de herstelzin in een wachtwoordmanager op de dag dat je je account aanmaakt."
+        "De oplossing kost tien seconden: bewaar de herstelzin in een wachtwoordmanager op de dag dat je je account aanmaakt. Is hij al weg en betaal je voor een opslaguitbreiding, dan factureert Paddle je rechtstreeks en kan Paddle die stopzetten zonder je herstelzin: zie [een uitbreiding wijzigen of stopzetten](/nl/help/manage-storage-addon/)."
       ]
     },
     "oauth-recovery": {
@@ -259,8 +259,8 @@
     "export": {
       "q": "Kan ik mijn notities exporteren, of zit ik vast?",
       "a": [
-        "Je kunt op elk moment alles exporteren, volledig op je eigen apparaat gemaakt: Markdown-bestanden in een zip met bijlagen erbij, een volledige JSON-back-up, of zelfstandige HTML - per notitie of voor je hele account.",
-        "Importeren kan ook: haal notities binnen uit Obsidian, Apple Notes, Google Keep, Standard Notes, Simplenote en Samsung Notes. Vastzitten hoort niet bij het verdienmodel."
+        "Je kunt op elk moment alles exporteren, volledig op je eigen apparaat gemaakt: Markdown-bestanden in een zip met bijlagen erbij, een volledige JSON-back-up, of zelfstandige HTML - per notitie of voor je hele account. Kluisitems hebben hun eigen route, \"Kluisexport (.json)\", die het formaat van Bitwarden schrijft en je gebruikersnamen, wachtwoorden, URL's, kaartgegevens en 2FA-sleutels meeneemt naar Bitwarden, 1Password of KeePass.",
+        "Het staat allemaal onder Instellingen > Import & Export > Export. Importeren gaat net zo, vanuit Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden en meer: de volledige lijst staat in [overstappen vanuit een andere app](/nl/help/import-from-other-apps/). Lock-in hoort niet bij het verdienmodel."
       ]
     },
     "attachment-limits": {
@@ -552,7 +552,8 @@
       "q": "Hoe wijzig of stop ik mijn opslaguitbreiding?",
       "a": [
         "Instellingen > Opslag is het bedieningspaneel. Overstappen naar een groter pakket gaat meteen in, en de bevestiging toont het exacte bedrag naar rato dat vandaag in rekening wordt gebracht voordat je bevestigt; de verlengdatum verschuift niet. \"Opslag stopzetten\" houdt je extra ruimte tot het einde van de periode die je al betaald hebt. Wil je naar een kleiner pakket, zet het huidige stop en koop het kleinere zodra de periode afloopt.",
-        "Past je gegevens na afloop nog binnen de resterende limiet, dan houdt het daarmee op; zo niet, dan wordt er niets verwijderd en begint de [levenscyclus van 90 dagen boven de limiet](/nl/help/over-quota/). Een mislukte verlenging toont een banner met een link \"Kaart bijwerken\" om de betaling in Paddle te herstellen. Nam je een abonnement in een store-build, dan factureert de store je, dus stopzetten gebeurt in dat geval in de eigen abonnementsinstellingen van de store."
+        "Past je gegevens na afloop nog binnen de resterende limiet, dan houdt het daarmee op; zo niet, dan wordt er niets verwijderd en begint de [levenscyclus van 90 dagen boven de limiet](/nl/help/over-quota/). Een mislukte verlenging toont een banner met een link \"Kaart bijwerken\" om de betaling in Paddle te herstellen.",
+        "Stopzetten van buiten de app kan ook, en dat is het antwoord als je niet kunt inloggen. Paddle is onze verkoper van record en factureert je rechtstreeks: gebruik de link \"Abonnement beheren\" in je bonmail, of de supportchat op [paddle.net](https://paddle.net). Bij een store-build is het hetzelfde idee, dus stop het daar in de eigen abonnementsinstellingen van de store."
       ]
     },
     "store-purchases": {

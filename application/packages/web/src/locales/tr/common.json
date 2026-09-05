@@ -209,5 +209,13 @@
       "kasan agresif biçimde okunamaz kalıyor.",
       "isviçre tarafsızlığı, ama notlar için."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Hiç yedeklenmedi. Bu tek kopya.",
+    "some_one": "Bu notlardan {{count}} tanesi hiç yedeklenmedi. Bu onun tek kopyası.",
+    "some_other": "Bu notlardan {{count}} tanesi hiç yedeklenmedi. Bunlar tek kopyaları.",
+    "changesOne": "Son değişiklikleri yedeklenmedi ve kaybolur.",
+    "changesSome_one": "Bu notlardan {{count}} tanesinin yedeklenmemiş değişiklikleri var ve kaybolur.",
+    "changesSome_other": "Bu notlardan {{count}} tanesinin yedeklenmemiş değişiklikleri var ve kaybolur."
   }
 }

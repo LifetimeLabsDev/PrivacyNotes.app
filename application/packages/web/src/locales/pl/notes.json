@@ -8,7 +8,8 @@
     "readOnly": "Tylko do odczytu",
     "file": "Plik",
     "empty": "Pusta",
-    "noContent": "Brak treści"
+    "noContent": "Brak treści",
+    "notBackedUp": "Bez kopii zapasowej"
   },
   "header": {
     "new": "Nowa",
@@ -174,7 +175,9 @@
     "widthWide": "Szerzej",
     "widthFull": "Pełna szerokość",
     "burn": "Udostępnij i spal po przeczytaniu",
-    "titlePlaceholderLink": "Nazwa zakładki"
+    "titlePlaceholderLink": "Nazwa zakładki",
+    "notBackedUpTooLarge": "Powyżej limitu 1 MB, więc bez kopii zapasowej. Przenieś obrazy do załączników lub podziel notatkę.",
+    "notBackedUpFailed": "Bez kopii zapasowej. Ostatni błąd: {{message}}. Ponawianie."
   },
   "share": {
     "hover": "Udostępnij / eksportuj",

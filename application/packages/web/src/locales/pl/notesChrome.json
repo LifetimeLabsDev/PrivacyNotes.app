@@ -66,7 +66,18 @@
     "unsyncedKept_other": "{{count}} notatki na tym urządzeniu nie zostały jeszcze zsynchronizowane. Zostaną na tym urządzeniu i zsynchronizują się, gdy znów się zalogujesz.",
     "dontRemind": "Nie przypominaj mi więcej",
     "showPhrase": "Nie, pokaż frazę",
-    "confirm": "Tak, wyloguj"
+    "confirm": "Tak, wyloguj",
+    "stay": "Pozostań zalogowany",
+    "signOutLose_one": "Wyloguj się i strać {{count}} notatkę",
+    "signOutLose_few": "Wyloguj się i strać {{count}} notatki",
+    "signOutLose_many": "Wyloguj się i strać {{count}} notatek",
+    "signOutLose_other": "Wyloguj się i strać {{count}} notatki",
+    "neverBackedUp_one": "Tylko na tym urządzeniu:",
+    "neverBackedUp_few": "Tylko na tym urządzeniu:",
+    "neverBackedUp_many": "Tylko na tym urządzeniu:",
+    "neverBackedUp_other": "Tylko na tym urządzeniu:",
+    "moreNotes": "i jeszcze {{count}}",
+    "appLockHint": "Współdzielone urządzenie? Włącz blokadę aplikacji w Ustawienia > Bezpieczeństwo."
   },
   "burnShareModal": {
     "title": "Udostępnij i spal po przeczytaniu",

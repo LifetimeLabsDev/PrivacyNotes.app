@@ -76,7 +76,22 @@
     "unsyncedKept_other": "توجد {{count}} ملاحظة على هذا الجهاز لم تُزامَن بعد. تبقى على هذا الجهاز وتُزامَن بعد تسجيل الدخول مرة أخرى.",
     "dontRemind": "عدم التذكير مرة أخرى",
     "showPhrase": "لا، إظهار العبارة",
-    "confirm": "نعم، تسجيل الخروج"
+    "confirm": "نعم، تسجيل الخروج",
+    "stay": "البقاء مسجّل الدخول",
+    "signOutLose_zero": "تسجيل الخروج وفقدان {{count}} ملاحظة",
+    "signOutLose_one": "تسجيل الخروج وفقدان {{count}} ملاحظة",
+    "signOutLose_two": "تسجيل الخروج وفقدان {{count}} ملاحظتين",
+    "signOutLose_few": "تسجيل الخروج وفقدان {{count}} ملاحظات",
+    "signOutLose_many": "تسجيل الخروج وفقدان {{count}} ملاحظة",
+    "signOutLose_other": "تسجيل الخروج وفقدان {{count}} ملاحظة",
+    "neverBackedUp_zero": "على هذا الجهاز فقط:",
+    "neverBackedUp_one": "على هذا الجهاز فقط:",
+    "neverBackedUp_two": "على هذا الجهاز فقط:",
+    "neverBackedUp_few": "على هذا الجهاز فقط:",
+    "neverBackedUp_many": "على هذا الجهاز فقط:",
+    "neverBackedUp_other": "على هذا الجهاز فقط:",
+    "moreNotes": "و{{count}} أخرى",
+    "appLockHint": "جهاز مشترك؟ فعّل قفل التطبيق من الإعدادات > الأمان."
   },
   "burnShareModal": {
     "title": "مشاركة وحرق بعد القراءة",

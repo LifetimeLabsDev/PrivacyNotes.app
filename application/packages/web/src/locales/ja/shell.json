@@ -428,6 +428,7 @@
     "urlInvalid": "example.com や https://example.com/page のようなウェブアドレスを入力してください。",
     "urlDuplicate": "このURLは別のブックマークにすでにあるため、変更は保存されませんでした。",
     "openAction": "開く",
+    "copiedUrl": "リンクをコピーしました",
     "moveToTrash": "ゴミ箱に移動",
     "emptyNone": "ブックマークはまだありません。",
     "emptyTitle": "残しておきたいサイトを保存",

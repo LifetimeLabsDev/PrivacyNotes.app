@@ -98,17 +98,13 @@
     "kicker": "Downloads",
     "heading": "Download PrivacyNotes",
     "tileAria": "Download for {{name}}",
-    "apkQualifier": "direct download",
-    "apkDesc": "Google-free, in-app update alert",
-    "obtainiumQualifier": "auto-updating",
-    "obtainiumDesc": "Tap the badge on your phone: Obtainium adds PrivacyNotes and installs every new release for you.",
+    "apkDesc": "Every update is a download and an install you do yourself.",
+    "obtainiumDesc": "Installs every new release from our repo.",
     "obtainiumBadgeAlt": "Get it on Obtainium",
-    "obtainiumManual": "Not on your phone? Paste this into Obtainium instead:",
     "appStore": "App Store",
     "recommended": "Recommended",
-    "playDesc": "Auto-updates via the store",
     "comingSoon": "Coming soon",
-    "apkFootnote": "Needs Android 7.0 or newer. The APK needs no Google account and no Google billing: Pro unlocks via web checkout. It alerts you in-app when a new version is ready; Obtainium and the Play version update themselves.",
+    "apkFootnote": "Needs Android 7.0 or newer. Zapstore, Obtainium and the APK need no Google account and no Google billing: Pro unlocks via web checkout. The APK alerts you in-app when a new version is ready.",
     "linuxRequirement": "Both formats need webkit2gtk 4.1: Ubuntu 22.04 or newer, Debian 12 or newer, or an equivalent release from 2023 onward. Older distributions only ship webkit2gtk 4.0 and cannot run these builds.",
     "linuxArchX86": "Intel / AMD (x86_64)",
     "linuxArchX86Desc": "Nearly every desktop and laptop. Pick this if unsure.",
@@ -121,14 +117,18 @@
     "checksumAria": "SHA-256 checksum for {{label}}",
     "debFootnote": "Updating an existing <highlight>.deb install</highlight>? Do not uninstall it first. Double-clicking the file dead-ends in Ubuntu's App Center, which only reports that the app is installed, so install the new one over the old one from a terminal. Use the line that matches your machine; dpkg --print-architecture prints which one you need:",
     "availability": "Available now: macOS 13+, Windows 10+, iOS 15+, Linux and Android.",
-    "betaNote": "All our apps are in beta and may still have bugs, so the web version is the most stable for now. Good news: every app auto-updates, and we ship fixes almost daily.",
+    "betaNote": "All our apps are in beta and may still have bugs, so the web version is the most stable for now. Every app auto-updates and we ship fixes almost daily.",
     "pkgToggle": "Install with a package manager ({{platforms}})",
     "pkgBrewDesc": "Updates are handled by the app, not by brew",
     "pkgWingetDesc": "Built into Windows 10 and 11",
     "pkgScoopDesc": "Updates come from Scoop, not from the app",
     "pkgFootnote": "Each one installs the same signed build. With Homebrew and winget the app updates itself. With Scoop you run scoop update privacynotes.",
     "githubLink": "All releases on GitHub",
-    "githubNote": "Signed · Public · Verifiable · Every single release"
+    "githubNote": "Signed · Public · Verifiable · Every single release",
+    "zapstoreDesc": "<rec>Recommended.</rec> Verifies our signature before it installs.",
+    "zapstoreBadgeAlt": "Get it on Zapstore",
+    "autoUpdates": "Auto-updates",
+    "manualUpdates": "Manual updates"
   },
   "ctaRepeat": {
     "getStarted": "Get started"
@@ -150,7 +150,7 @@
     "proLabel": "Pro · Pay once",
     "earlyAdopterBadge": "Early Adopter",
     "oneTime": "one-time",
-    "proOnceDesc": "One-time. Not yearly. Not monthly. You pay <b>once</b> and own it forever.",
+    "proOnceDesc": "You pay <b>once</b> and own it forever.",
     "proCompareBeta": "Pay ${{earlyPrice}} once. Obsidian Sync costs $48/yr, every year. Standard Notes charges $90/yr. Early adopter price, locked in before it rises to ${{proPrice}}.",
     "proCompare": "Pay ${{proPrice}} once and own it forever. Obsidian Sync costs $48/yr and Standard Notes $90/yr, every single year.",
     "proEverythingFree": "Everything in Free, plus:",
@@ -190,9 +190,9 @@
   "mood": {
     "kicker": "Mood & wellness tracking",
     "heading": "Track what you actually feel.",
-    "intro": "Mood, emotions, sleep, medication, and activity level with taps, not typing. Everything encrypted end-to-end. Nothing leaves your device unencrypted.",
+    "intro": "Mood, emotions, sleep, medication and activity level, all in a few taps. Everything is encrypted on your device before it syncs.",
     "cardEmotionsTitle": "Mood (1-10) + 24 emotion tags",
-    "cardEmotionsBody": "Not emoji faces. 24 research-backed emotion tags with real granularity. Track what you actually feel, spot patterns over time, and export data your therapist or doctor can work with.",
+    "cardEmotionsBody": "24 research-backed emotion tags. Name what you feel, spot patterns over time, and export data your therapist or doctor can work with.",
     "cardSleepTitle": "Sleep quality + activity level",
     "cardSleepBody": "Five-level quality scale plus optional hours. Activity from sedentary to intense. The analytics correlate these with your mood automatically.",
     "cardMedsTitle": "Medication adherence",
@@ -200,7 +200,7 @@
     "cardAnalyticsTitle": "Pattern detection + doctor export",
     "cardAnalyticsBody": "Client-side analytics detect correlations between sleep, activity, medication, and mood. Export a printable PDF report for your doctor or copy a structured prompt for AI analysis.",
     "encryptedHeading": "Why this only works encrypted",
-    "encryptedBody": "Nobody logs their antidepressant dosage in Notion. Nobody tracks hopeless days in a Google Doc. Sensitive data needs zero-knowledge encryption, so we built it that way from day one."
+    "encryptedBody": "Nobody logs their antidepressant dosage in Notion. Nobody tracks hopeless days in a Google Doc. Data this sensitive needs zero-knowledge encryption, so that is how PrivacyNotes is built."
   },
   "comparison": {
     "kicker": "The math",
@@ -245,10 +245,10 @@
   "whyPrivacy": {
     "kicker": "Why it matters",
     "heading": "Most note apps read your notes.<accent>Ours can’t.</accent>",
-    "para1": "Most note apps mine your content. Add “buy a new TV” to your shopping list and your next few pages fill up with TV ads. Your grocery list, your journal, your private thoughts, all fed into ad-targeting pipelines, profiled, and sold. That’s not a conspiracy; it’s the business model of every “free” note app backed by advertising.",
+    "para1": "Most note apps mine your content. Add “buy a new TV” to your shopping list and your next few pages fill up with TV ads. Your grocery list, your journal, your private thoughts, all fed into ad-targeting pipelines, profiled, and sold. That is the business model of every “free” note app backed by advertising.",
     "para2": "Even apps that don’t show ads still store your notes in plaintext on their servers, readable by employees, hackable in breaches, and available to anyone with a subpoena. Your data becomes their leverage.",
     "differenceLabel": "The difference",
-    "differenceBody": "<brand/> is end-to-end encrypted with keys that never leave your device. We can’t read your notes. Our servers can’t. No tracking, no analytics, no ads, no profiling. Ever. What you write stays yours.",
+    "differenceBody": "<brand/> is end-to-end encrypted with keys that never leave your device, so neither we nor our servers can read what you write. There is no tracking, no analytics, no advertising and no profiling, and there never will be. What you write stays yours.",
     "keyboardNote": "<b>A note on device keyboards.</b> Third-party keyboards (such as Gboard, SwiftKey, or Samsung Keyboard) may send what you type to their own servers. This happens at the operating-system level, outside any app’s control. Consider disabling cloud features in your keyboard settings or using an offline-only keyboard."
   },
   "readIt": {
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "Your phrase is your key",
-    "body": "No phrase, no notes. We can't recover them. Nobody can. That's the trade-off for true encryption. No point in contacting our developer team: under self-custody we simply cannot decrypt your notes, only you can.",
+    "body": "No phrase, no notes. We cannot recover them, and neither can anyone else. That is the trade-off for end-to-end encryption: under self-custody you are the only one holding the key, so writing to our team cannot bring your notes back.",
     "noRecoveryTerm": "No recovery",
     "noRecoveryDesc": "Lose your phrase, lose your notes",
     "deviceTerm": "Device-generated",

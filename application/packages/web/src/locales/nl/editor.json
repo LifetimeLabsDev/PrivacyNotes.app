@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "Aandachtsblok invoegen",
     "remove": "Aandachtsblok verwijderen",
+    "collapse": "Aandachtsblok inklappen",
+    "expand": "Aandachtsblok uitklappen",
     "types": {
       "info": "Info",
       "success": "Gelukt",
@@ -101,6 +103,7 @@
     "addRowBelow": "Rij hieronder invoegen",
     "addColumnLeft": "Kolom links invoegen",
     "addColumnRight": "Kolom rechts invoegen",
+    "toggleHeaderRow": "Koprij in- of uitschakelen",
     "deleteRow": "Rij verwijderen",
     "deleteColumn": "Kolom verwijderen",
     "deleteTable": "Tabel verwijderen"

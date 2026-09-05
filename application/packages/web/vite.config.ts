@@ -379,7 +379,11 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // 157 -> 158 (2026-08-31, same day): the encrypted full backup's card
   // and prop threading, the trashed-flag wiring, and the blob stores'
   // ownership guard - +0.40 kB measured.
-  NotesView: 158,
+  // 158 -> 159 (2026-09-05): the never-backed-up guards - the notice in
+  // the three permanent-delete confirms, the sign-out confirm's list and
+  // safer default, and the reveal shared with ID & Sync's Open. +0.51 kB
+  // measured against the v0.499.4 baseline drawn the same day.
+  NotesView: 159,
   // 209.51 kB gz since katex became its own chunk below (278.11 with it inside,
   // against a 300 budget). Retightened in the same change that moved it: a
   // budget carrying 90 kB of slack is decoration, not a gate.
@@ -648,7 +652,16 @@ const DEFAULT_CHUNK_BUDGET_KB = 60;
 // Printer, for the share menu's new icon column (+0.81 kB gz across the
 // closure). The menu lost three whole-vault backup rows in the same
 // change and the strings behind them, so the net cost is two icons.
-const BOOT_PATH_BUDGET_KB = 898;
+// 898 -> 899 (2026-09-05): the "Not backed up" state - pushFailures.ts,
+// the pill and panel branches, the reveal helper NotesView now shares with
+// the note-link jump, the bar under the editor header and the row badge.
+// The build reports NotesView +0.44 kB gz since the v0.495.0 baseline,
+// which the four releases between carried across at 0.02 kB of headroom;
+// useOnlineStatus +0.24 and Editor +0.17 are those releases, not this one.
+// 899 -> 900 (2026-09-05, same day): the never-backed-up guards, the
+// honest sync log and the fuller support report. +0.96 kB since the
+// same-day baseline: NotesView +0.70, i18n +0.20, the rest in the panel.
+const BOOT_PATH_BUDGET_KB = 900;
 
 // The budget above is stated in ONE environment's units: build-smoke's, which
 // is ubuntu with the synthetic values from tools/ci-vite-env.mjs. Every other

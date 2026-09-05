@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "콜아웃 삽입",
     "remove": "콜아웃 제거",
+    "collapse": "콜아웃 접기",
+    "expand": "콜아웃 펼치기",
     "types": {
       "info": "정보",
       "success": "성공",
@@ -101,6 +103,7 @@
     "addRowBelow": "아래에 행 추가",
     "addColumnLeft": "왼쪽에 열 추가",
     "addColumnRight": "오른쪽에 열 추가",
+    "toggleHeaderRow": "머리글 행 전환",
     "deleteRow": "행 삭제",
     "deleteColumn": "열 삭제",
     "deleteTable": "표 삭제"

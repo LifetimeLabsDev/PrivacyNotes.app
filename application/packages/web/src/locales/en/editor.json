@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "Insert callout",
     "remove": "Remove callout",
+    "collapse": "Collapse callout",
+    "expand": "Expand callout",
     "types": {
       "info": "Info",
       "success": "Success",
@@ -101,6 +103,7 @@
     "addRowBelow": "Add row below",
     "addColumnLeft": "Add column left",
     "addColumnRight": "Add column right",
+    "toggleHeaderRow": "Toggle header row",
     "deleteRow": "Delete row",
     "deleteColumn": "Delete column",
     "deleteTable": "Delete table"

@@ -209,5 +209,13 @@
       "your vault remains aggressively unreadable.",
       "swiss neutrality, but for notes."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Never backed up. This is the only copy.",
+    "some_one": "{{count}} of these notes was never backed up. This is its only copy.",
+    "some_other": "{{count}} of these notes were never backed up. These are the only copies.",
+    "changesOne": "Its latest changes are not backed up and would be lost.",
+    "changesSome_one": "{{count}} of these notes has changes that are not backed up and would be lost.",
+    "changesSome_other": "{{count}} of these notes have changes that are not backed up and would be lost."
   }
 }

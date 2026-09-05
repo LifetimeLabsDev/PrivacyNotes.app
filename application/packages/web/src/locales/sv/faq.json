@@ -79,7 +79,7 @@
     "import-from-other-apps": {
       "q": "Hur flyttar jag in mina anteckningar från en annan app?",
       "a": [
-        "Öppna Inställningar > Import & Export och välj din källa. Det finns särskilda importfunktioner för Apple Notes, Obsidian, Standard Notes, Google Keep, Simplenote, Samsung Notes och Bitwarden (inloggningar, kort och säkra anteckningar hamnar i Valvet), plus en generell Markdown-import för vilken mapp med .md-filer som helst.",
+        "Öppna Inställningar > Import & Export och välj din källa. Listan täcker de appar folk kommer från: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes och Apple Journal. Bitwarden och de lösenord webbläsaren sparat hamnar i Valvet, dina bokmärken kommer in som bokmärken, och en generell Markdown-import tar vilken mapp med .md-filer som helst.",
         "Importen körs helt på din enhet: dina exportfiler tolkas, krypteras och sparas lokalt, ingenting laddas upp för bearbetning. Varje importerad anteckning taggas med sin källa så att du kan gå igenom omgången efteråt, och checklistor från Google Keep blir till och med riktiga uppgiftslistor."
       ]
     },
@@ -188,7 +188,7 @@
       "a": [
         "Är du fortfarande inloggad på någon enhet: ja, då kan du hämta den själv. Öppna Inställningar > Säkerhet > Din fras och spara den i din lösenordshanterare på en gång.",
         "Har du varken en inloggad enhet eller frasen: nej, och ingen annan kan heller. Din fras når aldrig våra servrar, så det finns ingenting att återställa och inget supportärende som hjälper. Det här är ingen policy vi kan böja på - det är vad totalsträckskryptering betyder. Varje tjänst som kan återskapa dina krypterade data efter en total förlust sitter på dina nycklar.",
-        "Åtgärden tar tio sekunder: lägg frasen i en lösenordshanterare samma dag du skapar ditt konto."
+        "Åtgärden tar tio sekunder: lägg frasen i en lösenordshanterare samma dag du skapar ditt konto. Är den redan borta och du betalar för ett lagringstillägg: Paddle fakturerar dig direkt och kan säga upp det utan din fras, se [ändra eller säga upp ett tillägg](/sv/help/manage-storage-addon/)."
       ]
     },
     "oauth-recovery": {
@@ -259,8 +259,8 @@
     "export": {
       "q": "Kan jag exportera mina anteckningar, eller är jag inlåst?",
       "a": [
-        "Du kan exportera allt när som helst, och allt genereras på din enhet: Markdown-filer i en zip med bilagorna inkluderade, en fullständig JSON-säkerhetskopia, eller fristående HTML - per anteckning eller för hela kontot.",
-        "Import fungerar också: ta in anteckningar från Obsidian, Apple Notes, Google Keep, Standard Notes, Simplenote och Samsung Notes. Inlåsning ingår inte i affärsmodellen."
+        "Du kan exportera allt när som helst, och allt genereras på din enhet: Markdown-filer i en zip med bilagorna inkluderade, en fullständig JSON-säkerhetskopia, eller fristående HTML - per anteckning eller för hela kontot. Valvets poster har en egen väg ut, ”Valvexport (.json)”, som skriver Bitwardens format och tar med dina användarnamn, lösenord, webbadresser, kortuppgifter och 2FA-nycklar till Bitwarden, 1Password eller KeePass.",
+        "Allt ligger under Inställningar > Import & Export > Export. Import fungerar likadant, från Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden och fler: hela listan finns i [flytta in från en annan app](/sv/help/import-from-other-apps/). Inlåsning ingår inte i affärsmodellen."
       ]
     },
     "attachment-limits": {
@@ -552,7 +552,8 @@
       "q": "Hur ändrar eller säger jag upp mitt lagringstillägg?",
       "a": [
         "Inställningar > Lagring är kontrollpanelen. En uppgradering till ett större paket gäller direkt, och bekräftelsen visar exakt vilket proportionerligt belopp som dras i dag innan du godkänner; förnyelsedatumet flyttas inte. ”Avsluta lagringen” låter dig behålla det extra utrymmet till slutet av perioden du redan betalat för. Vill du till ett mindre paket säger du upp det nuvarande och köper det mindre när perioden tar slut.",
-        "Om dina data fortfarande får plats under det kvarvarande taket när perioden gått ut är saken utagerad; annars raderas ingenting och [90-dagarsförloppet över kvoten](/sv/help/over-quota/) startar. En misslyckad förnyelse visar en banner med länken ”Uppdatera kort” för att fixa betalningen i Paddle. Tecknade du prenumerationen inne i en butiksversion är det butiken som fakturerar dig, så uppsägningen sker i butikens egna prenumerationsinställningar i stället."
+        "Om dina data fortfarande får plats under det kvarvarande taket när perioden gått ut är saken utagerad; annars raderas ingenting och [90-dagarsförloppet över kvoten](/sv/help/over-quota/) startar. En misslyckad förnyelse visar en banner med länken ”Uppdatera kort” för att fixa betalningen i Paddle.",
+        "Att säga upp utanför appen fungerar också, och det är svaret när du inte kan logga in. Paddle är vår återförsäljare och fakturerar dig direkt: använd länken ”Hantera prenumeration” i kvittomejlet, eller supportchatten på [paddle.net](https://paddle.net). En butiksversion är samma sak, så säg upp där, i butikens egna prenumerationsinställningar."
       ]
     },
     "store-purchases": {

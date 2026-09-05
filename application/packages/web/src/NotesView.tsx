@@ -22,6 +22,7 @@ import { parseMarkdownFile } from './import/markdown';
 import { FolderPicker } from './FolderPicker';
 import { BookmarksList, type BookmarkDraft } from './BookmarksList';
 import { openExternal } from './openExternal';
+import { NeverBackedUpNotice, listNeverBackedUp } from './neverBackedUp';
 import { noteLinkKey } from './noteLinks';
 import { parseLinkBody, buildLinkBody, buildLinkKeyMap } from './linkBody';
 import { canDeleteFolder, UNFILED_ID } from './folders';
@@ -687,6 +688,9 @@ function AuthenticatedView({
   /** dirty=1 rows counted when the sign-out confirm opens - drives the
    *  unsynced-notes warning in SignOutConfirmModal. */
   const [unsyncedCount, setUnsyncedCount] = useState(0);
+  /** The unsynced rows that exist on this device only, listed in the
+   *  sign-out confirm so the person sees what a chosen sign-out costs. */
+  const [neverBackedUpNotes, setNeverBackedUpNotes] = useState<Array<{ id: string; title: string }>>([]);
   // Hydrated from localStorage; remote sync overwrites on mount if newer.
   const [userSettings, setUserSettings] = useState<UserSettings>(() => {
     const loaded = loadLocalSettings();
@@ -2418,6 +2422,60 @@ function AuthenticatedView({
     }
   }
 
+  // ── Reveal a note from outside the list ───────────────────────────
+  // Shared by the note-link jump and ID & Sync's "Open": both arrive from
+  // outside the list, so both must clear whatever scope would bounce the
+  // selection straight back.
+  const revealNote = useCallback(
+    (match: LocalNote) => {
+      // A bookmark is a URL, not an editor document: selecting it would
+      // land on an empty Notes pane, which is what #238 reported. Open
+      // the URL instead - the same rule a bookmark row click follows.
+      const bookmarkUrl =
+        match.type === 'link' ? parseLinkBody(match.body).url : '';
+      if (bookmarkUrl) {
+        openExternal(bookmarkUrl);
+        setDrawerOpen(false);
+        return;
+      }
+      // Switch pillar so the auto-select effect doesn't snap back. A
+      // trashed note lives in the Trash view; the link jump never sends
+      // one here (it searches live notes), ID & Sync can.
+      const targetView: View =
+        match.trashed === 1 ? 'trash' :
+        match.type === 'journal' ? 'journal' :
+        match.type === 'task' ? 'tasks' :
+        match.type === 'file' ? 'files' :
+        match.type === 'login' || match.type === 'card' || match.type === 'ssh-key' ? 'vault' :
+        // Only reached by a bookmark whose URL is missing or unparseable:
+        // show it in its own pillar so the user can repair it.
+        match.type === 'link' ? 'bookmarks' :
+        'all';
+      setView(targetView);
+      // The pillar alone is not enough. A tag, a folder, a search and the
+      // Vault type filter each scope the LIST, and the auto-select effect
+      // above replaces any selection the list does not hold - so a link
+      // into a note the active filter hides opened it and was bounced
+      // straight back, either to the first note the filter did leave or to
+      // nothing at all. The link looked dead. Clear whatever hides the
+      // target; a filter the target passes is the user's context and stays.
+      if (!inScope(match)) {
+        setSelectedTag(null);
+        setSelectedFolder(null);
+      }
+      // Search is left behind either way: the results list is the thing the
+      // reader just navigated out of, and testing membership costs a second
+      // index query to keep a box that is now stale.
+      if (search) setSearch('');
+      if (vaultFilter !== 'all' && vaultFilter !== match.type) setVaultFilter('all');
+      linkTargetRef.current = match.id;
+      setSelectedId(match.id);
+      setDrawerOpen(false);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [inScope, search, vaultFilter]
+  );
+
   // ── Wiki-link navigation ──────────────────────────────────────────
   // Find a note by title and select it. If no match exists, prompt
   // before creating - a stale link whose target was renamed should not
@@ -2439,53 +2497,26 @@ function AuthenticatedView({
           return key ? activeNotes.find((n) => noteLinkKey(noteLinkName(n)) === key) : undefined;
         })();
       if (match) {
-        // A bookmark is a URL, not an editor document: selecting it would
-        // land on an empty Notes pane, which is what #238 reported. Open
-        // the URL instead - the same rule a bookmark row click follows.
-        const bookmarkUrl =
-          match.type === 'link' ? parseLinkBody(match.body).url : '';
-        if (bookmarkUrl) {
-          openExternal(bookmarkUrl);
-          setDrawerOpen(false);
-          return;
-        }
-        // Switch pillar so the auto-select effect doesn't snap back.
-        const targetView: View =
-          match.type === 'journal' ? 'journal' :
-          match.type === 'task' ? 'tasks' :
-          match.type === 'file' ? 'files' :
-          match.type === 'login' || match.type === 'card' || match.type === 'ssh-key' ? 'vault' :
-          // Only reached by a bookmark whose URL is missing or unparseable:
-          // show it in its own pillar so the user can repair it.
-          match.type === 'link' ? 'bookmarks' :
-          'all';
-        setView(targetView);
-        // The pillar alone is not enough. A tag, a folder, a search and the
-        // Vault type filter each scope the LIST, and the auto-select effect
-        // above replaces any selection the list does not hold - so a link
-        // into a note the active filter hides opened it and was bounced
-        // straight back, either to the first note the filter did leave or to
-        // nothing at all. The link looked dead. Clear whatever hides the
-        // target; a filter the target passes is the user's context and stays.
-        if (!inScope(match)) {
-          setSelectedTag(null);
-          setSelectedFolder(null);
-        }
-        // Search is left behind either way: the results list is the thing the
-        // reader just navigated out of, and testing membership costs a second
-        // index query to keep a box that is now stale.
-        if (search) setSearch('');
-        if (vaultFilter !== 'all' && vaultFilter !== match.type) setVaultFilter('all');
-        linkTargetRef.current = match.id;
-        setSelectedId(match.id);
-        setDrawerOpen(false);
+        revealNote(match);
         return;
       }
       // No match - ask before creating so a dangling link doesn't make junk.
       setWikiLinkCreatePending(target);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeNotes, inScope, search, vaultFilter]
+    [activeNotes, revealNote]
+  );
+
+  /** ID & Sync's "Open" for a note the last pass could not push: leave
+   *  settings and reveal it, past any filter that would hide it. */
+  const openNoteById = useCallback(
+    (id: string) => {
+      const match = notes.find((n) => n.id === id);
+      if (!match) return;
+      setShowSettings(false);
+      revealNote(match);
+    },
+    [notes, revealNote]
   );
 
   // Confirmed via the modal: create the note for a dangling wiki-link
@@ -3260,6 +3291,7 @@ function AuthenticatedView({
       // the forced-sign-out guard (#121).
       const unsynced = await countUnsyncedNotes();
       setUnsyncedCount(unsynced);
+      setNeverBackedUpNotes(unsynced > 0 ? await listNeverBackedUp() : []);
       if (unsynced === 0) {
         // Custodial users don't need the phrase reminder - the server
         // stores their key for 1-click re-sign-in.
@@ -4652,6 +4684,7 @@ function AuthenticatedView({
             onToggleHiddenView: handleToggleHiddenView,
             auth,
             settingsAutoVerify,
+            onOpenNote: openNoteById,
             setShowSettings,
             setShowUpgrade,
             setImportToast,
@@ -4884,6 +4917,7 @@ function AuthenticatedView({
       {showEmptyTrashModal && (
         <EmptyTrashModal
           noteCount={trashedNotes.length}
+          noteIds={trashedNotes.map((n) => n.id)}
           onConfirm={() => void confirmEmptyTrash()}
           onClose={() => setShowEmptyTrashModal(false)}
         />
@@ -4891,6 +4925,7 @@ function AuthenticatedView({
       {deleteConfirm && (
         <DeleteNoteModal
           noteTitle={deleteConfirm.title}
+          noteId={deleteConfirm.id}
           onConfirm={() => void handlePermanentlyDelete(deleteConfirm.id)}
           onClose={() => setDeleteConfirm(null)}
         />
@@ -4973,6 +5008,7 @@ function AuthenticatedView({
             values={{ count: bulkDeletePending.length }}
             components={{ highlight: <span className="font-medium text-pn" /> }}
           />
+          <NeverBackedUpNotice ids={bulkDeletePending} />
         </ConfirmModal>
       )}
       {tagConfirm && (
@@ -5163,6 +5199,8 @@ function AuthenticatedView({
           onDontRemindChange={setSignOutDontRemind}
           unsyncedCount={unsyncedCount}
           unsyncedKept={sessionExpired || revalidationExpired}
+          neverBackedUp={neverBackedUpNotes}
+          onStay={() => setShowSignOutConfirm(false)}
           onShowPhrase={() => {
             // "Don't remind me again" is intentionally NOT honoured on
             // this path - the user explicitly asked to see the phrase,

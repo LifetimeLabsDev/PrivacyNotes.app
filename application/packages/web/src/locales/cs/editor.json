@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "Vložit callout",
     "remove": "Odstranit callout",
+    "collapse": "Sbalit callout",
+    "expand": "Rozbalit callout",
     "types": {
       "info": "Informace",
       "success": "Úspěch",
@@ -101,6 +103,7 @@
     "addRowBelow": "Přidat řádek pod",
     "addColumnLeft": "Přidat sloupec vlevo",
     "addColumnRight": "Přidat sloupec vpravo",
+    "toggleHeaderRow": "Zapnout nebo vypnout řádek záhlaví",
     "deleteRow": "Smazat řádek",
     "deleteColumn": "Smazat sloupec",
     "deleteTable": "Smazat tabulku"

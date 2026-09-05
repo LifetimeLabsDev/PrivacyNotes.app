@@ -209,5 +209,13 @@
       "dein tresor bleibt aggressiv unlesbar.",
       "schweizer neutralität, aber für notizen."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Nie gesichert. Dies ist die einzige Kopie.",
+    "some_one": "{{count}} dieser Notizen wurde nie gesichert. Dies ist ihre einzige Kopie.",
+    "some_other": "{{count}} dieser Notizen wurden nie gesichert. Dies sind die einzigen Kopien.",
+    "changesOne": "Die letzten Änderungen sind nicht gesichert und würden verloren gehen.",
+    "changesSome_one": "{{count}} dieser Notizen hat ungesicherte Änderungen, die verloren gehen würden.",
+    "changesSome_other": "{{count}} dieser Notizen haben ungesicherte Änderungen, die verloren gehen würden."
   }
 }

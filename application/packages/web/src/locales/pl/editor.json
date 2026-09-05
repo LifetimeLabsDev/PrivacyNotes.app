@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "Wstaw wyróżnienie",
     "remove": "Usuń wyróżnienie",
+    "collapse": "Zwiń wyróżnienie",
+    "expand": "Rozwiń wyróżnienie",
     "types": {
       "info": "Informacja",
       "success": "Sukces",
@@ -101,6 +103,7 @@
     "addRowBelow": "Dodaj wiersz poniżej",
     "addColumnLeft": "Dodaj kolumnę z lewej",
     "addColumnRight": "Dodaj kolumnę z prawej",
+    "toggleHeaderRow": "Włącz lub wyłącz wiersz nagłówka",
     "deleteRow": "Usuń wiersz",
     "deleteColumn": "Usuń kolumnę",
     "deleteTable": "Usuń tabelę"

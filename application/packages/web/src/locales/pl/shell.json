@@ -437,6 +437,7 @@
     "urlInvalid": "Wpisz adres strony, np. example.com lub https://example.com/page.",
     "urlDuplicate": "Inna zakładka ma już ten URL, więc zmiana nie została zapisana.",
     "openAction": "Otwórz",
+    "copiedUrl": "Link skopiowany",
     "moveToTrash": "Przenieś do kosza",
     "emptyNone": "Nie masz jeszcze zakładek.",
     "emptyTitle": "Zapisuj strony warte zachowania",

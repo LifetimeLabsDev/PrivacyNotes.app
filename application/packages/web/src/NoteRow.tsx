@@ -7,9 +7,10 @@ import { deriveDisplayTitle, deriveExcerpt, rowSizeLabel, formatModified, fileCo
 import { Favicon } from './VaultItem';
 import { parseLoginBody, domainFromUrl } from './LoginForm';
 import { parseLinkBody, linkDomain } from './linkBody';
-import { Check, PushPin, Shield, PencilSimpleSlash, Book, CheckSquare, File, Image, MusicNotes, Key, CreditCard, Lock, Globe, BookmarkSimple, Folder, type Icon } from './icons';
+import { Check, PushPin, Shield, PencilSimpleSlash, Book, CheckSquare, File, Image, MusicNotes, Key, CreditCard, Lock, Globe, BookmarkSimple, Folder, Warning, type Icon } from './icons';
 import { useFolderName } from './folderNames';
 import { sortTags } from './notesRepo';
+import { usePushFailure } from './pushFailures';
 
 
 export interface NoteRowProps {
@@ -105,6 +106,9 @@ export default React.memo(function NoteRow({
   trailing,
 }: NoteRowProps) {
   const { t } = useTranslation('notes');
+  // Subscribed per row: the set changes once per pass at most, and only
+  // when a note's verdict changes, so this costs nothing while idle.
+  const pushFailure = usePushFailure(n.id);
   const isVault = n.type === 'login' || n.type === 'card' || n.type === 'ssh-key';
   const isLink = n.type === 'link';
   const isFile = n.type === 'file';
@@ -112,7 +116,7 @@ export default React.memo(function NoteRow({
   const isTask = n.type === 'task';
   const hasTasks = isTask;
   const hasStatusIcons =
-    (showTypeIcons && n.starred === 1) || n.pinProtected === 1 || n.locked === 1;
+    (showTypeIcons && n.starred === 1) || n.pinProtected === 1 || n.locked === 1 || pushFailure !== undefined;
 
   // Per-row derived values are memoized on the note object. NotesList hands
   // every row fresh inline callback props, which defeats this component's
@@ -232,6 +236,9 @@ export default React.memo(function NoteRow({
             </span>
           )}
           <span className="shrink-0 flex items-center gap-1.5 text-accent">
+            {pushFailure && (
+              <Warning size={12} className="text-amber-500 dark:text-amber-400" aria-label={t('noteRow.notBackedUp')} />
+            )}
             {showTypeIcons && n.starred === 1 && (
               <PushPin size={12} />
             )}

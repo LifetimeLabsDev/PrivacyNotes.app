@@ -209,5 +209,13 @@
       "tu bóveda sigue siendo agresivamente ilegible.",
       "neutralidad suiza, pero para notas."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Nunca tuvo copia de seguridad. Esta es la única copia.",
+    "some_one": "{{count}} de estas notas nunca tuvo copia de seguridad. Esta es su única copia.",
+    "some_other": "{{count}} de estas notas nunca tuvieron copia de seguridad. Estas son las únicas copias.",
+    "changesOne": "Sus últimos cambios no tienen copia de seguridad y se perderían.",
+    "changesSome_one": "{{count}} de estas notas tiene cambios sin copia de seguridad que se perderían.",
+    "changesSome_other": "{{count}} de estas notas tienen cambios sin copia de seguridad que se perderían."
   }
 }

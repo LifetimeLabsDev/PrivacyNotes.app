@@ -8,7 +8,8 @@
     "readOnly": "Skrivskyddad",
     "file": "Fil",
     "empty": "Tom",
-    "noContent": "Inget innehåll"
+    "noContent": "Inget innehåll",
+    "notBackedUp": "Inte säkerhetskopierad"
   },
   "header": {
     "new": "Ny",
@@ -170,7 +171,9 @@
     "widthWide": "Bredare",
     "widthFull": "Full bredd",
     "burn": "Dela och bränn efter läsning",
-    "titlePlaceholderLink": "Bokmärkesnamn"
+    "titlePlaceholderLink": "Bokmärkesnamn",
+    "notBackedUpTooLarge": "Över gränsen på 1 MB, alltså inte säkerhetskopierad. Flytta bilder till bilagor eller dela upp anteckningen.",
+    "notBackedUpFailed": "Inte säkerhetskopierad. Senaste fel: {{message}}. Försöker igen."
   },
   "share": {
     "hover": "Dela / Exportera",

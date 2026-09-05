@@ -224,7 +224,11 @@
     "pausedTooltip": "你在這台裝置上暫停了同步。筆記會留在這裡，直到你恢復同步。",
     "pausedAria": "同步已暫停",
     "wifiHold": "等待 Wi-Fi",
-    "wifiHoldTooltip": "Wi-Fi 回來後就會上傳檔案。筆記仍照常同步。"
+    "wifiHoldTooltip": "Wi-Fi 回來後就會上傳檔案。筆記仍照常同步。",
+    "notSynced": "未同步",
+    "notBackedUp": "未備份",
+    "notBackedUpTooltip_other": "{{count}} 則筆記尚未備份。點一下查看原因。",
+    "notBackedUpAria_other": "{{count}} 則筆記尚未備份"
   },
   "errors": {
     "noSession": "沒有有效的工作階段，請重新登入再試。",
@@ -257,14 +261,19 @@
     "nodeDevice": "這台裝置",
     "nodeEncrypted": "已加密",
     "nodeRegion": "瑞士",
-    "sealed": "上傳前先加密。伺服器讀不到內容。",
+    "sealed": "在你的裝置上加密。伺服器無法讀取。",
     "offlineFact": "離線也能用。回到線上後就會同步。",
     "activity": "最近活動",
     "passUp_other": "上傳 {{count}} 筆",
     "passDown_other": "下載 {{count}} 筆",
     "passNothing": "沒有變更",
     "passNothingRepeat": "沒有變更 - {{count}} 次",
-    "passFailed": "失敗"
+    "passFailed": "失敗",
+    "notBackedUpHeading_other": "{{count}} 則筆記尚未備份",
+    "reasonTooLarge": "超過 1 MB 上限",
+    "reasonFailed": "失敗：{{message}}",
+    "openNote": "開啟",
+    "passPushFailed_other": "{{count}} 則失敗"
   },
   "language": {
     "reportMistake": "回報翻譯錯誤"

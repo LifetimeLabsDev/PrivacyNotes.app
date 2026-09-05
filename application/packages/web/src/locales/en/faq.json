@@ -79,7 +79,7 @@
     "import-from-other-apps": {
       "q": "How do I move my notes in from another app?",
       "a": [
-        "Open Settings > Import & Export and pick your source. There are dedicated importers for Apple Notes, Obsidian, Standard Notes, Google Keep, Simplenote, Samsung Notes, and Bitwarden (logins, cards, and secure notes land in the Vault), plus a generic Markdown importer for any folder of .md files.",
+        "Open Settings > Import & Export and pick your source. The list covers the apps people arrive from: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes and Apple Journal. Bitwarden and your browser's saved passwords land in the Vault, your browser bookmarks come across as bookmarks, and a generic Markdown importer takes any folder of .md files.",
         "Imports run entirely on your device: your exported files are parsed, encrypted, and stored locally, nothing is uploaded for processing. Each imported note is tagged with its source so you can review the batch afterwards, and Google Keep checklists even convert to native task lists."
       ]
     },
@@ -188,7 +188,7 @@
       "a": [
         "If you are still signed in on any device: yes, you can recover it yourself. Open Settings > Security > Your Phrase and save it to your password manager right now.",
         "If you have no signed-in device and no phrase: no, and nobody can. Your phrase never reaches our servers, so there is nothing to reset and no support ticket that can help. This is not a policy we could bend - it is what end-to-end encryption means. Any service that can restore your encrypted data after a total loss is holding your keys.",
-        "The fix costs ten seconds: store the phrase in a password manager the day you create your account."
+        "The fix costs ten seconds: store the phrase in a password manager the day you create your account. If it is already gone and you pay for a storage add-on, Paddle bills you directly and can cancel it without your phrase: see [changing or cancelling an add-on](/help/manage-storage-addon/)."
       ]
     },
     "oauth-recovery": {
@@ -259,8 +259,8 @@
     "export": {
       "q": "Can I export my notes, or am I locked in?",
       "a": [
-        "You can export everything at any time, generated entirely on your device: Markdown files in a zip with attachments included, a full JSON backup, or self-contained HTML - per note or for the whole account.",
-        "Import works too: bring notes in from Obsidian, Apple Notes, Google Keep, Standard Notes, Simplenote, and Samsung Notes. Lock-in is not part of the business model."
+        "You can export everything at any time, generated entirely on your device: Markdown files in a zip with attachments included, a full JSON backup, or self-contained HTML - per note or for the whole account. Vault items get their own route, \"Vault export (.json)\", which writes Bitwarden's format and carries your usernames, passwords, URLs, card details and 2FA keys into Bitwarden, 1Password or KeePass.",
+        "It all sits under Settings > Import & Export > Export. Import runs the same way, from Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden and more: the full list is in [moving in from another app](/help/import-from-other-apps/). Lock-in is not part of the business model."
       ]
     },
     "attachment-limits": {
@@ -552,7 +552,8 @@
       "q": "How do I change or cancel my storage add-on?",
       "a": [
         "Settings > Storage is the control panel. Upgrading to a bigger package applies immediately, and the confirmation shows the exact prorated amount charged today before you commit; the renewal date does not move. \"Cancel storage\" keeps your extra space until the end of the period you already paid for. To move to a smaller package, cancel the current one and buy the smaller one when the period ends.",
-        "If your data still fits the remaining cap after expiry, that is the end of it; if not, nothing is deleted and the [90-day over-quota lifecycle](/help/over-quota/) begins. A failed renewal shows a banner with an \"Update card\" link to fix payment in Paddle. If you subscribed inside a store build, the store bills you, so cancellation happens in the store's own subscription settings instead."
+        "If your data still fits the remaining cap after expiry, that is the end of it; if not, nothing is deleted and the [90-day over-quota lifecycle](/help/over-quota/) begins. A failed renewal shows a banner with an \"Update card\" link to fix payment in Paddle.",
+        "Cancelling from outside the app works too, which is the answer when you cannot sign in. Paddle is our merchant of record and bills you directly: use the \"Manage Subscription\" link in your receipt email, or the support chat at [paddle.net](https://paddle.net). A store build is the same idea, so cancel there in the store's own subscription settings."
       ]
     },
     "store-purchases": {

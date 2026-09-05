@@ -209,5 +209,13 @@
       "ditt valv förblir aggressivt oläsbart.",
       "schweizisk neutralitet, fast för anteckningar."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Aldrig säkerhetskopierad. Det här är enda kopian.",
+    "some_one": "{{count}} av de här anteckningarna har aldrig säkerhetskopierats. Det här är dess enda kopia.",
+    "some_other": "{{count}} av de här anteckningarna har aldrig säkerhetskopierats. Det här är de enda kopiorna.",
+    "changesOne": "De senaste ändringarna är inte säkerhetskopierade och skulle gå förlorade.",
+    "changesSome_one": "{{count}} av de här anteckningarna har ändringar som inte är säkerhetskopierade och skulle gå förlorade.",
+    "changesSome_other": "{{count}} av de här anteckningarna har ändringar som inte är säkerhetskopierade och skulle gå förlorade."
   }
 }

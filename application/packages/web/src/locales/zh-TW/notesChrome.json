@@ -51,7 +51,12 @@
     "unsyncedKept_other": "這部裝置上有 {{count}} 則筆記尚未同步。筆記會保留在這部裝置上，重新登入後就會同步。",
     "dontRemind": "不要再提醒我",
     "showPhrase": "還沒，顯示助憶詞",
-    "confirm": "是，登出"
+    "confirm": "是，登出",
+    "stay": "保持登入",
+    "signOutLose_other": "登出並失去 {{count}} 則筆記",
+    "neverBackedUp_other": "只存在於這部裝置：",
+    "moreNotes": "還有 {{count}} 則",
+    "appLockHint": "共用裝置？請到「設定 > 安全性」開啟應用程式鎖定。"
   },
   "burnShareModal": {
     "title": "分享與 Burn After Reading",

@@ -8,7 +8,8 @@
     "readOnly": "Només de lectura",
     "file": "Fitxer",
     "empty": "Buida",
-    "noContent": "Sense contingut"
+    "noContent": "Sense contingut",
+    "notBackedUp": "Sense còpia de seguretat"
   },
   "header": {
     "new": "Nova",
@@ -172,7 +173,9 @@
     "widthWide": "Més ample",
     "widthFull": "Amplada completa",
     "burn": "Comparteix amb Burn After Reading",
-    "titlePlaceholderLink": "Nom del marcador"
+    "titlePlaceholderLink": "Nom del marcador",
+    "notBackedUpTooLarge": "Supera el límit d'1 MB, per tant no té còpia de seguretat. Mou les imatges a adjunts o divideix la nota.",
+    "notBackedUpFailed": "Sense còpia de seguretat. Darrer error: {{message}}. Tornant-ho a provar."
   },
   "share": {
     "hover": "Comparteix / Exporta",

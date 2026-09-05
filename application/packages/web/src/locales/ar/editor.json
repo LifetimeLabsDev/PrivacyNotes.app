@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "إدراج تنبيه",
     "remove": "إزالة التنبيه",
+    "collapse": "طي التنبيه",
+    "expand": "توسيع التنبيه",
     "types": {
       "info": "معلومة",
       "success": "نجاح",
@@ -101,6 +103,7 @@
     "addRowBelow": "إضافة صف أسفله",
     "addColumnLeft": "إضافة عمود إلى اليسار",
     "addColumnRight": "إضافة عمود إلى اليمين",
+    "toggleHeaderRow": "تفعيل صف الرأس أو إلغاؤه",
     "deleteRow": "حذف الصف",
     "deleteColumn": "حذف العمود",
     "deleteTable": "حذف الجدول"

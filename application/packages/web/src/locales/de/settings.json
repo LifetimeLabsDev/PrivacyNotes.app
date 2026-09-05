@@ -235,7 +235,13 @@
     "pausedTooltip": "Du hast die Synchronisierung auf diesem Gerät pausiert. Notizen bleiben hier, bis du sie fortsetzt.",
     "pausedAria": "Synchronisierung pausiert",
     "wifiHold": "Wartet auf WLAN",
-    "wifiHoldTooltip": "Dateien werden hochgeladen, sobald WLAN da ist. Notizen synchronisieren weiter."
+    "wifiHoldTooltip": "Dateien werden hochgeladen, sobald WLAN da ist. Notizen synchronisieren weiter.",
+    "notSynced": "Nicht synchronisiert",
+    "notBackedUp": "Nicht gesichert",
+    "notBackedUpTooltip_one": "{{count}} Notiz ist nicht gesichert. Klicke, um zu sehen, warum.",
+    "notBackedUpTooltip_other": "{{count}} Notizen sind nicht gesichert. Klicke, um zu sehen, warum.",
+    "notBackedUpAria_one": "{{count}} Notiz ist nicht gesichert",
+    "notBackedUpAria_other": "{{count}} Notizen sind nicht gesichert"
   },
   "errors": {
     "noSession": "Keine aktive Sitzung. Versuch, dich erneut anzumelden.",
@@ -271,7 +277,7 @@
     "nodeDevice": "Dieses Gerät",
     "nodeEncrypted": "Verschlüsselt",
     "nodeRegion": "Schweiz",
-    "sealed": "Vor dem Upload verschlüsselt. Der Server kann sie nicht lesen.",
+    "sealed": "Auf deinem Gerät verschlüsselt. Der Server kann sie nicht lesen.",
     "offlineFact": "Funktioniert offline. Wird synchronisiert, sobald du wieder online bist.",
     "activity": "Letzte Aktivität",
     "passUp_one": "{{count}} gesendet",
@@ -280,7 +286,14 @@
     "passDown_other": "{{count}} empfangen",
     "passNothing": "Keine Änderungen",
     "passNothingRepeat": "Keine Änderungen - {{count}}x",
-    "passFailed": "fehlgeschlagen"
+    "passFailed": "fehlgeschlagen",
+    "notBackedUpHeading_one": "{{count}} Notiz ist nicht gesichert",
+    "notBackedUpHeading_other": "{{count}} Notizen sind nicht gesichert",
+    "reasonTooLarge": "Über dem 1-MB-Limit",
+    "reasonFailed": "Fehlgeschlagen: {{message}}",
+    "openNote": "Öffnen",
+    "passPushFailed_one": "{{count}} fehlgeschlagen",
+    "passPushFailed_other": "{{count}} fehlgeschlagen"
   },
   "language": {
     "reportMistake": "Übersetzungsfehler melden"

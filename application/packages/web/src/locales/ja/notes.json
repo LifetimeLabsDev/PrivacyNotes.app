@@ -8,7 +8,8 @@
     "readOnly": "読み取り専用",
     "file": "ファイル",
     "empty": "空",
-    "noContent": "内容なし"
+    "noContent": "内容なし",
+    "notBackedUp": "未バックアップ"
   },
   "header": {
     "new": "新規",
@@ -168,7 +169,9 @@
     "widthWide": "もっと広く",
     "widthFull": "全幅",
     "burn": "Burn After Readingで共有",
-    "titlePlaceholderLink": "ブックマーク名"
+    "titlePlaceholderLink": "ブックマーク名",
+    "notBackedUpTooLarge": "1 MBの上限を超えているため、バックアップされていません。画像を添付ファイルに移すか、ノートを分割してください。",
+    "notBackedUpFailed": "バックアップされていません。直近のエラー: {{message}}。再試行中です。"
   },
   "share": {
     "hover": "共有 / 書き出し",

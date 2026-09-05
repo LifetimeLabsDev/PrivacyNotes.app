@@ -79,7 +79,7 @@
     "import-from-other-apps": {
       "q": "Comment importer mes notes depuis une autre appli ?",
       "a": [
-        "Ouvre Paramètres > Import & Export et choisis ta source. Il existe des importateurs dédiés pour Apple Notes, Obsidian, Standard Notes, Google Keep, Simplenote, Samsung Notes et Bitwarden (identifiants, cartes et notes sécurisées atterrissent dans le Coffre), plus un importateur Markdown générique pour n'importe quel dossier de fichiers .md.",
+        "Ouvre Paramètres > Import & Export et choisis ta source. La liste couvre les applis d'où viennent les gens : Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes et Apple Journal. Bitwarden et les mots de passe enregistrés dans ton navigateur atterrissent dans le Coffre, tes signets de navigateur arrivent comme signets, et un importateur Markdown générique prend n'importe quel dossier de fichiers .md.",
         "Les imports s'exécutent entièrement sur ton appareil : tes fichiers exportés sont lus, chiffrés et stockés localement, rien n'est envoyé pour traitement. Chaque note importée reçoit une étiquette avec sa source pour relire le lot ensuite, et les checklists Google Keep deviennent même de vraies listes de tâches."
       ]
     },
@@ -188,7 +188,7 @@
       "a": [
         "Si tu es encore connecté sur n'importe quel appareil : oui, tu peux la récupérer toi-même. Ouvre Paramètres > Sécurité > Ta phrase et enregistre-la tout de suite dans ton gestionnaire de mots de passe.",
         "Si tu n'as plus ni appareil connecté ni phrase : non, et personne ne le peut. Ta phrase n'atteint jamais nos serveurs, il n'y a donc rien à réinitialiser et aucun ticket de support qui puisse aider. Ce n'est pas une règle que nous pourrions assouplir - c'est la définition même du chiffrement de bout en bout. Tout service capable de restaurer tes données chiffrées après une perte totale détient tes clés.",
-        "La précaution coûte dix secondes : range la phrase dans un gestionnaire de mots de passe le jour où tu crées ton compte."
+        "La précaution coûte dix secondes : range la phrase dans un gestionnaire de mots de passe le jour où tu crées ton compte. Si elle est déjà perdue et que tu paies un module de stockage, Paddle te facture directement et peut le résilier sans ta phrase : voir [changer ou résilier un module](/fr/help/manage-storage-addon/)."
       ]
     },
     "oauth-recovery": {
@@ -259,8 +259,8 @@
     "export": {
       "q": "Puis-je exporter mes notes, ou suis-je enfermé ?",
       "a": [
-        "Tu peux tout exporter à tout moment, entièrement généré sur ton appareil : des fichiers Markdown dans un zip avec les pièces jointes, une sauvegarde JSON complète, ou du HTML autonome - par note ou pour tout le compte.",
-        "L'import marche aussi : rapatrie tes notes depuis Obsidian, Apple Notes, Google Keep, Standard Notes, Simplenote et Samsung Notes. L'enfermement ne fait pas partie du modèle économique."
+        "Tu peux tout exporter à tout moment, entièrement généré sur ton appareil : des fichiers Markdown dans un zip avec les pièces jointes, une sauvegarde JSON complète, ou du HTML autonome - par note ou pour tout le compte. Les éléments du coffre ont leur propre voie, \"Export du coffre (.json)\", qui écrit le format de Bitwarden et emporte tes identifiants, mots de passe, URL, données de carte et clés 2FA vers Bitwarden, 1Password ou KeePass.",
+        "Tout se trouve dans Paramètres > Import & Export > Export. L'import marche pareil, depuis Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden et d'autres : la liste complète est dans [arriver depuis une autre appli](/fr/help/import-from-other-apps/). L'enfermement ne fait pas partie du modèle économique."
       ]
     },
     "attachment-limits": {
@@ -552,7 +552,8 @@
       "q": "Comment changer ou résilier mon module de stockage ?",
       "a": [
         "Paramètres > Stockage est le panneau de contrôle. Passer à un forfait plus grand s'applique immédiatement, et la confirmation montre le montant exact au prorata débité aujourd'hui avant que tu valides ; la date de renouvellement ne bouge pas. \"Annuler le stockage\" garde ton espace supplémentaire jusqu'à la fin de la période déjà payée. Pour un forfait plus petit, résilie l'actuel et achète le plus petit à la fin de la période.",
-        "Si tes données tiennent encore dans la limite restante après expiration, c'est terminé ; sinon, rien n'est supprimé et le [cycle de 90 jours en cas de dépassement](/fr/help/over-quota/) commence. Un renouvellement échoué affiche une bannière avec un lien \"Mettre à jour la carte\" pour corriger le paiement dans Paddle. Si tu t'es abonné dans un build de boutique, c'est la boutique qui te facture, la résiliation se fait donc dans les réglages d'abonnement de la boutique."
+        "Si tes données tiennent encore dans la limite restante après expiration, c'est terminé ; sinon, rien n'est supprimé et le [cycle de 90 jours en cas de dépassement](/fr/help/over-quota/) commence. Un renouvellement échoué affiche une bannière avec un lien \"Mettre à jour la carte\" pour corriger le paiement dans Paddle.",
+        "Résilier depuis l'extérieur de l'appli marche aussi, et c'est la réponse quand tu ne peux pas te connecter. Paddle est notre revendeur officiel et te facture directement : utilise le lien \"Gérer l'abonnement\" dans ton e-mail de reçu, ou le chat d'assistance sur [paddle.net](https://paddle.net). Un build de boutique, c'est la même idée, donc résilie là-bas dans les réglages d'abonnement de la boutique."
       ]
     },
     "store-purchases": {

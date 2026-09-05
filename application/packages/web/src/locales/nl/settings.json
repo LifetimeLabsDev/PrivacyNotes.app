@@ -235,7 +235,13 @@
     "pausedTooltip": "Je hebt de synchronisatie op dit apparaat gepauzeerd. Je notities blijven hier tot je hervat.",
     "pausedAria": "Synchronisatie gepauzeerd",
     "wifiHold": "Wacht op wifi",
-    "wifiHoldTooltip": "Bestanden gaan omhoog zodra er wifi is. Notities blijven synchroniseren."
+    "wifiHoldTooltip": "Bestanden gaan omhoog zodra er wifi is. Notities blijven synchroniseren.",
+    "notSynced": "Niet gesynchroniseerd",
+    "notBackedUp": "Geen back-up",
+    "notBackedUpTooltip_one": "{{count}} notitie heeft geen back-up. Klik om te zien waarom.",
+    "notBackedUpTooltip_other": "{{count}} notities hebben geen back-up. Klik om te zien waarom.",
+    "notBackedUpAria_one": "{{count}} notitie heeft geen back-up",
+    "notBackedUpAria_other": "{{count}} notities hebben geen back-up"
   },
   "errors": {
     "noSession": "Geen actieve sessie. Probeer je opnieuw aan te melden.",
@@ -271,7 +277,7 @@
     "nodeDevice": "Dit apparaat",
     "nodeEncrypted": "Versleuteld",
     "nodeRegion": "Zwitserland",
-    "sealed": "Versleuteld voor het uploaden. De server kan ze niet lezen.",
+    "sealed": "Versleuteld op je apparaat. De server kan ze niet lezen.",
     "offlineFact": "Werkt offline. Synchroniseert zodra je weer online bent.",
     "activity": "Recente activiteit",
     "passUp_one": "{{count}} verzonden",
@@ -280,7 +286,14 @@
     "passDown_other": "{{count}} ontvangen",
     "passNothing": "Geen wijzigingen",
     "passNothingRepeat": "Geen wijzigingen - {{count}}x",
-    "passFailed": "mislukt"
+    "passFailed": "mislukt",
+    "notBackedUpHeading_one": "{{count}} notitie heeft geen back-up",
+    "notBackedUpHeading_other": "{{count}} notities hebben geen back-up",
+    "reasonTooLarge": "Boven de limiet van 1 MB",
+    "reasonFailed": "Mislukt: {{message}}",
+    "openNote": "Openen",
+    "passPushFailed_one": "{{count}} mislukt",
+    "passPushFailed_other": "{{count}} mislukt"
   },
   "language": {
     "reportMistake": "Vertaalfout melden"

@@ -98,17 +98,13 @@
     "kicker": "İndirmeler",
     "heading": "PrivacyNotes'u indirin",
     "tileAria": "{{name}} için indir",
-    "apkQualifier": "doğrudan indirme",
-    "apkDesc": "Google gerekmez, uygulama içi güncelleme uyarısı",
-    "obtainiumQualifier": "kendini günceller",
-    "obtainiumDesc": "Telefonunuzda rozete dokunun: Obtainium PrivacyNotes'u ekler ve her yeni sürümü sizin için kurar.",
+    "apkDesc": "Her güncellemeyi kendiniz indirip kurarsınız.",
+    "obtainiumDesc": "Depomuzdaki her yeni sürümü kurar.",
     "obtainiumBadgeAlt": "Obtainium'da Edin",
-    "obtainiumManual": "Telefonunuzda değil misiniz? Bunun yerine bunu Obtainium'a yapıştırın:",
     "appStore": "App Store",
     "recommended": "Önerilen",
-    "playDesc": "Mağaza üzerinden otomatik güncellenir",
     "comingSoon": "Yakında",
-    "apkFootnote": "Android 7.0 veya üzeri gerekir. APK için Google hesabı ve Google ödeme sistemi gerekmez: Pro, web üzerinden satın alınarak açılır. Yeni bir sürüm hazır olduğunda sizi uygulama içinde uyarır; Obtainium ve Play sürümü kendini günceller.",
+    "apkFootnote": "Android 7.0 veya üzeri gerekir. Zapstore, Obtainium ve APK için Google hesabı ve Google ödeme sistemi gerekmez: Pro, web üzerinden satın alınarak açılır. Yeni bir sürüm hazır olduğunda APK sizi uygulama içinde uyarır.",
     "linuxRequirement": "Her iki biçim de webkit2gtk 4.1 gerektirir: Ubuntu 22.04 veya üzeri, Debian 12 veya üzeri ya da 2023 sonrası eşdeğer bir sürüm. Daha eski dağıtımlar yalnızca webkit2gtk 4.0 ile gelir ve bu yapıları çalıştıramaz.",
     "linuxArchX86": "Intel / AMD (x86_64)",
     "linuxArchX86Desc": "Neredeyse her masaüstü ve dizüstü bilgisayar. Emin değilseniz bunu seçin.",
@@ -121,14 +117,18 @@
     "checksumAria": "{{label}} için SHA-256 sağlama toplamı",
     "debFootnote": "Mevcut bir <highlight>.deb kurulumunu</highlight> mu güncelliyorsunuz? Önce kaldırmayın. Dosyaya çift tıklamak Ubuntu'nun App Center'ında çıkmaz sokağa girer, orası yalnızca uygulamanın kurulu olduğunu söyler; bu yüzden yenisini eskisinin üzerine terminalden kurun. Makinenize uyan satırı kullanın; hangisine ihtiyacınız olduğunu dpkg --print-architecture yazdırır:",
     "availability": "Şu anda mevcut: macOS 13+, Windows 10+, iOS 15+, Linux ve Android.",
-    "betaNote": "Tüm uygulamalarımız beta aşamasında ve hâlâ hata içerebilir, bu yüzden şimdilik en kararlısı web sürümü. İyi haber: her uygulama kendini günceller ve neredeyse her gün düzeltme yayınlıyoruz.",
+    "betaNote": "Tüm uygulamalarımız beta aşamasında ve hâlâ hata içerebilir, bu yüzden şimdilik en kararlısı web sürümü. Her uygulama kendini günceller ve neredeyse her gün düzeltme yayınlıyoruz.",
     "pkgToggle": "Paket yöneticisiyle kurun ({{platforms}})",
     "pkgBrewDesc": "Güncellemeleri brew değil, uygulamanın kendisi yapar",
     "pkgWingetDesc": "Windows 10 ve 11'de yerleşik olarak gelir",
     "pkgScoopDesc": "Güncellemeleri uygulama değil, Scoop yapar",
     "pkgFootnote": "Her biri aynı imzalı yapıyı kurar. Homebrew ve winget'te uygulama kendini günceller. Scoop'ta scoop update privacynotes komutunu çalıştırırsınız.",
     "githubLink": "Tüm sürümler GitHub'da",
-    "githubNote": "İmzalı · Herkese açık · Doğrulanabilir · İstisnasız her sürüm"
+    "githubNote": "İmzalı · Herkese açık · Doğrulanabilir · İstisnasız her sürüm",
+    "zapstoreDesc": "<rec>Önerilen.</rec> Kurulumdan önce imzamızı doğrular.",
+    "zapstoreBadgeAlt": "Zapstore'da Edin",
+    "autoUpdates": "Kendini günceller",
+    "manualUpdates": "Elle güncellenir"
   },
   "ctaRepeat": {
     "getStarted": "Başlayın"
@@ -150,7 +150,7 @@
     "proLabel": "Pro · Tek seferlik ödeme",
     "earlyAdopterBadge": "Erken Kullanıcı",
     "oneTime": "tek seferlik",
-    "proOnceDesc": "Tek seferlik. Yıllık değil. Aylık değil. <b>Bir kez</b> ödersiniz ve sonsuza dek sizindir.",
+    "proOnceDesc": "<b>Bir kez</b> ödersiniz ve sonsuza dek sizindir.",
     "proCompareBeta": "Bir kez {{earlyPrice}} $ ödeyin. Obsidian Sync yılda 48 $, her yıl. Standard Notes yılda 90 $ alıyor. Erken kullanıcı fiyatı, {{proPrice}} $'a yükselmeden önce sabitlendi.",
     "proCompare": "Bir kez {{proPrice}} $ ödeyin, sonsuza dek sizin olsun. Obsidian Sync yılda 48 $, Standard Notes 90 $ tutuyor, hem de her yıl.",
     "proEverythingFree": "Ücretsizdeki her şey, ayrıca:",
@@ -190,9 +190,9 @@
   "mood": {
     "kicker": "Ruh hali ve sağlık takibi",
     "heading": "Gerçekten ne hissettiğinizi takip edin.",
-    "intro": "Ruh hali, duygular, uyku, ilaç ve aktivite düzeyi; yazarak değil, dokunarak. Her şey uçtan uca şifreli. Hiçbir şey cihazınızdan şifresiz çıkmaz.",
+    "intro": "Ruh hali, duygular, uyku, ilaç ve aktivite düzeyi, hepsi birkaç dokunuşla. Her şey senkronize edilmeden önce cihazınızda şifrelenir.",
     "cardEmotionsTitle": "Ruh hali (1-10) + 24 duygu etiketi",
-    "cardEmotionsBody": "Emoji suratlar değil. Gerçek ayrıntı sunan, araştırmaya dayalı 24 duygu etiketi. Gerçekten ne hissettiğinizi kaydedin, zaman içindeki örüntüleri görün ve terapistinizin ya da doktorunuzun işine yarayacak veriyi dışa aktarın.",
+    "cardEmotionsBody": "Araştırmaya dayalı 24 duygu etiketi. Hissettiğinize bir ad verin, zaman içindeki örüntüleri görün ve terapistinizin ya da doktorunuzun işine yarayacak veriyi dışa aktarın.",
     "cardSleepTitle": "Uyku kalitesi + aktivite düzeyi",
     "cardSleepBody": "Beş kademeli kalite ölçeği ve isteğe bağlı saat girişi. Hareketsizden yoğuna kadar aktivite düzeyi. Analizler bunları ruh halinizle otomatik olarak ilişkilendirir.",
     "cardMedsTitle": "İlaç uyumu",
@@ -200,7 +200,7 @@
     "cardAnalyticsTitle": "Örüntü tespiti + doktor dışa aktarımı",
     "cardAnalyticsBody": "İstemci tarafındaki analizler uyku, aktivite, ilaç ve ruh hali arasındaki bağlantıları bulur. Doktorunuz için yazdırılabilir bir PDF raporu dışa aktarın veya yapay zekâ analizi için yapılandırılmış bir istem kopyalayın.",
     "encryptedHeading": "Bu neden yalnızca şifreliyken işe yarar",
-    "encryptedBody": "Kimse antidepresan dozunu Notion'a yazmıyor. Kimse umutsuz geçen günlerini bir Google Doc'ta tutmuyor. Hassas veri sıfır bilgi şifrelemesi ister, biz de ilk günden itibaren böyle kurduk."
+    "encryptedBody": "Kimse antidepresan dozunu Notion'a yazmıyor. Kimse umutsuz geçen günlerini bir Google Doc'ta tutmuyor. Bu kadar hassas veri sıfır bilgi şifrelemesi ister; PrivacyNotes de böyle kurulmuştur."
   },
   "comparison": {
     "kicker": "Hesap ortada",
@@ -245,10 +245,10 @@
   "whyPrivacy": {
     "kicker": "Neden önemli",
     "heading": "Çoğu not uygulaması notlarınızı okur.<accent>Bizimki okuyamaz.</accent>",
-    "para1": "Çoğu not uygulaması içeriğinizden veri devşirir. Alışveriş listenize “yeni televizyon al” yazın, sonraki birkaç sayfanız televizyon reklamıyla dolar. Market listeniz, günlüğünüz, en özel düşünceleriniz; hepsi reklam hedefleme sistemlerine akıyor, profilleniyor ve satılıyor. Bu bir komplo teorisi değil; reklamla ayakta duran her “ücretsiz” not uygulamasının iş modeli.",
+    "para1": "Çoğu not uygulaması içeriğinizden veri devşirir. Alışveriş listenize “yeni televizyon al” yazın, sonraki birkaç sayfanız televizyon reklamıyla dolar. Market listeniz, günlüğünüz, en özel düşünceleriniz; hepsi reklam hedefleme sistemlerine akıyor, profilleniyor ve satılıyor. Bu, reklamla ayakta duran her “ücretsiz” not uygulamasının iş modeli.",
     "para2": "Reklam göstermeyen uygulamalar bile notlarınızı sunucularında düz metin olarak tutuyor: çalışanlar okuyabiliyor, ihlallerde sızabiliyor, mahkeme kararı olan herkes erişebiliyor. Verileriniz onların kozu oluyor.",
     "differenceLabel": "Aradaki fark",
-    "differenceBody": "<brand/> uçtan uca şifrelidir ve anahtarlar cihazınızdan hiç çıkmaz. Notlarınızı biz okuyamayız. Sunucularımız da okuyamaz. Takip yok, analitik yok, reklam yok, profilleme yok. Asla. Yazdığınız sizde kalır.",
+    "differenceBody": "<brand/> uçtan uca şifrelidir ve anahtarlar cihazınızdan hiç çıkmaz; bu yüzden yazdıklarınızı ne biz ne de sunucularımız okuyabilir. Takip, analitik, reklam ve profilleme yok, bundan sonra da olmayacak. Yazdığınız sizde kalır.",
     "keyboardNote": "<b>Cihaz klavyeleri hakkında bir not.</b> Üçüncü taraf klavyeler (Gboard, SwiftKey veya Samsung Klavye gibi) yazdıklarınızı kendi sunucularına gönderebilir. Bu, işletim sistemi düzeyinde, herhangi bir uygulamanın denetimi dışında olur. Klavye ayarlarınızdaki bulut özelliklerini kapatmayı ya da yalnızca çevrimdışı çalışan bir klavye kullanmayı düşünün."
   },
   "readIt": {
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "İfadeniz anahtarınızdır",
-    "body": "İfade yoksa not da yok. Biz geri getiremeyiz. Kimse getiremez. Gerçek şifrelemenin bedeli bu. Geliştirici ekibimize yazmanın da bir anlamı yok; kendi saklamanızda notlarınızı biz çözemeyiz, yalnızca siz çözebilirsiniz.",
+    "body": "İfade yoksa not da yok. Biz geri getiremeyiz, başka kimse de getiremez. Uçtan uca şifrelemenin bedeli bu: kendi saklamanızda anahtar yalnızca sizde olduğu için, ekibimize yazmanız da notlarınızı geri getirmez.",
     "noRecoveryTerm": "Kurtarma yok",
     "noRecoveryDesc": "İfadenizi kaybederseniz notlarınızı da kaybedersiniz",
     "deviceTerm": "Cihazda üretilir",

@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "Insereix un requadre destacat",
     "remove": "Elimina el requadre destacat",
+    "collapse": "Replega el requadre destacat",
+    "expand": "Desplega el requadre destacat",
     "types": {
       "info": "Informació",
       "success": "Èxit",
@@ -101,6 +103,7 @@
     "addRowBelow": "Afegeix una fila a sota",
     "addColumnLeft": "Afegeix una columna a l'esquerra",
     "addColumnRight": "Afegeix una columna a la dreta",
+    "toggleHeaderRow": "Activa o desactiva la fila de capçalera",
     "deleteRow": "Suprimeix la fila",
     "deleteColumn": "Suprimeix la columna",
     "deleteTable": "Suprimeix la taula"

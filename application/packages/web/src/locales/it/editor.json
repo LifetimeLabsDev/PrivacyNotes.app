@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "Inserisci riquadro",
     "remove": "Rimuovi riquadro",
+    "collapse": "Comprimi riquadro",
+    "expand": "Espandi riquadro",
     "types": {
       "info": "Info",
       "success": "Successo",
@@ -101,6 +103,7 @@
     "addRowBelow": "Aggiungi riga sotto",
     "addColumnLeft": "Aggiungi colonna a sinistra",
     "addColumnRight": "Aggiungi colonna a destra",
+    "toggleHeaderRow": "Attiva o disattiva la riga di intestazione",
     "deleteRow": "Elimina riga",
     "deleteColumn": "Elimina colonna",
     "deleteTable": "Elimina tabella"

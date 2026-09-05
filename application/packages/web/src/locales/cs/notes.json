@@ -8,7 +8,8 @@
     "readOnly": "Jen pro čtení",
     "file": "Soubor",
     "empty": "Prázdná",
-    "noContent": "Bez obsahu"
+    "noContent": "Bez obsahu",
+    "notBackedUp": "Bez zálohy"
   },
   "header": {
     "new": "Nový",
@@ -174,7 +175,9 @@
     "widthWide": "Širší",
     "widthFull": "Plná šířka",
     "burn": "Sdílet a spálit po přečtení",
-    "titlePlaceholderLink": "Název záložky"
+    "titlePlaceholderLink": "Název záložky",
+    "notBackedUpTooLarge": "Nad limitem 1 MB, proto bez zálohy. Přesuň obrázky do příloh nebo poznámku rozděl.",
+    "notBackedUpFailed": "Bez zálohy. Poslední chyba: {{message}}. Zkouší se znovu."
   },
   "share": {
     "hover": "Sdílet / exportovat",

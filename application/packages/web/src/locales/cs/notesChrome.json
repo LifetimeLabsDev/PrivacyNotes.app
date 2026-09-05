@@ -66,7 +66,18 @@
     "unsyncedKept_other": "{{count}} poznámek v tomto zařízení ještě není synchronizováno. Zůstanou v tomto zařízení a synchronizují se, až se znovu přihlásíš.",
     "dontRemind": "Už mi to nepřipomínat",
     "showPhrase": "Ne, zobrazit frázi",
-    "confirm": "Ano, odhlásit se"
+    "confirm": "Ano, odhlásit se",
+    "stay": "Zůstat přihlášen",
+    "signOutLose_one": "Odhlásit se a přijít o {{count}} poznámku",
+    "signOutLose_few": "Odhlásit se a přijít o {{count}} poznámky",
+    "signOutLose_many": "Odhlásit se a přijít o {{count}} poznámky",
+    "signOutLose_other": "Odhlásit se a přijít o {{count}} poznámek",
+    "neverBackedUp_one": "Jen na tomto zařízení:",
+    "neverBackedUp_few": "Jen na tomto zařízení:",
+    "neverBackedUp_many": "Jen na tomto zařízení:",
+    "neverBackedUp_other": "Jen na tomto zařízení:",
+    "moreNotes": "a dalších {{count}}",
+    "appLockHint": "Sdílené zařízení? Zapni zámek aplikace v Nastavení > Zabezpečení."
   },
   "burnShareModal": {
     "title": "Sdílet a spálit po přečtení",

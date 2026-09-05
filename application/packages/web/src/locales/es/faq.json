@@ -79,7 +79,7 @@
     "import-from-other-apps": {
       "q": "¿Cómo traigo mis notas desde otra app?",
       "a": [
-        "Abre Ajustes > Import & Export y elige tu origen. Hay importadores dedicados para Apple Notes, Obsidian, Standard Notes, Google Keep, Simplenote, Samsung Notes y Bitwarden (los inicios de sesión, tarjetas y notas seguras aterrizan en la Bóveda), más un importador Markdown genérico para cualquier carpeta de archivos .md.",
+        "Abre Ajustes > Import & Export y elige tu origen. La lista cubre las apps de las que viene la gente: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes y Apple Journal. Bitwarden y las contraseñas guardadas de tu navegador acaban en la Bóveda, tus marcadores del navegador llegan como marcadores, y un importador de Markdown genérico acepta cualquier carpeta de archivos .md.",
         "Las importaciones se ejecutan por completo en tu dispositivo: tus archivos exportados se leen, cifran y guardan en local, nada se sube para procesarlo. Cada nota importada recibe una etiqueta con su origen para que puedas revisar el lote después, y las listas de Google Keep incluso se convierten en listas de tareas nativas."
       ]
     },
@@ -188,7 +188,7 @@
       "a": [
         "Si sigues con la sesión iniciada en cualquier dispositivo: sí, puedes recuperarla tú mismo. Abre Ajustes > Seguridad > Tu frase y guárdala ahora mismo en tu gestor de contraseñas.",
         "Si no tienes ningún dispositivo con sesión ni la frase: no, y nadie puede. Tu frase nunca llega a nuestros servidores, así que no hay nada que restablecer ni ticket de soporte que ayude. No es una política que podamos saltarnos - es lo que significa el cifrado de extremo a extremo. Cualquier servicio capaz de restaurar tus datos cifrados tras una pérdida total está guardando tus llaves.",
-        "La prevención cuesta diez segundos: guarda la frase en un gestor de contraseñas el día que crees tu cuenta."
+        "La prevención cuesta diez segundos: guarda la frase en un gestor de contraseñas el día que crees tu cuenta. Si ya se perdió y pagas un complemento de almacenamiento, Paddle te cobra directamente y puede cancelarlo sin tu frase: mira [cambiar o cancelar un complemento](/es/help/manage-storage-addon/)."
       ]
     },
     "oauth-recovery": {
@@ -259,8 +259,8 @@
     "export": {
       "q": "¿Puedo exportar mis notas o estoy atrapado?",
       "a": [
-        "Puedes exportarlo todo en cualquier momento, generado por completo en tu dispositivo: archivos Markdown en un zip con los adjuntos incluidos, una copia JSON completa, o HTML autónomo - por nota o para toda la cuenta.",
-        "Importar también funciona: trae notas desde Obsidian, Apple Notes, Google Keep, Standard Notes, Simplenote y Samsung Notes. El encierro no forma parte del modelo de negocio."
+        "Puedes exportarlo todo en cualquier momento, generado por completo en tu dispositivo: archivos Markdown en un zip con los adjuntos incluidos, una copia JSON completa, o HTML autónomo - por nota o para toda la cuenta. Los elementos de la bóveda tienen su propia vía, \"Exportación de la bóveda (.json)\", que escribe el formato de Bitwarden y lleva tus nombres de usuario, contraseñas, URL, datos de tarjeta y claves 2FA a Bitwarden, 1Password o KeePass.",
+        "Todo está en Ajustes > Import & Export > Export. La importación funciona igual, desde Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden y más: la lista completa está en [llegar desde otra app](/es/help/import-from-other-apps/). El bloqueo no forma parte del modelo de negocio."
       ]
     },
     "attachment-limits": {
@@ -552,7 +552,8 @@
       "q": "¿Cómo cambio o cancelo mi complemento de almacenamiento?",
       "a": [
         "Ajustes > Almacenamiento es el panel de control. Cambiar a un paquete mayor se aplica de inmediato, y la confirmación muestra el importe prorrateado exacto que se cobra hoy antes de que confirmes; la fecha de renovación no se mueve. \"Cancelar almacenamiento\" conserva tu espacio extra hasta el final del periodo que ya pagaste. Para pasar a un paquete más pequeño, cancela el actual y compra el pequeño cuando termine el periodo.",
-        "Si tus datos aún caben en el tope restante tras la expiración, ahí acaba todo; si no, no se elimina nada y comienza el [ciclo de 90 días por exceso de cuota](/es/help/over-quota/). Una renovación fallida muestra un banner con un enlace \"Actualizar tarjeta\" para arreglar el pago en Paddle. Si te suscribiste dentro de una versión de tienda, la tienda te cobra, así que la cancelación ocurre en los propios ajustes de suscripción de la tienda."
+        "Si tus datos aún caben en el tope restante tras la expiración, ahí acaba todo; si no, no se elimina nada y comienza el [ciclo de 90 días por exceso de cuota](/es/help/over-quota/). Una renovación fallida muestra un banner con un enlace \"Actualizar tarjeta\" para arreglar el pago en Paddle.",
+        "Cancelar desde fuera de la app también funciona, y es la respuesta cuando no puedes iniciar sesión. Paddle es nuestro comerciante registrado y te cobra directamente: usa el enlace \"Gestionar suscripción\" del correo del recibo, o el chat de soporte en [paddle.net](https://paddle.net). Con una versión de tienda es la misma idea, así que cancela allí en los ajustes de suscripción de la tienda."
       ]
     },
     "store-purchases": {

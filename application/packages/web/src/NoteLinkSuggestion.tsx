@@ -222,37 +222,30 @@ export function wikiLinkSuggestion(editor: Editor): ReturnType<typeof Suggestion
       let component: ReactRenderer<SuggestionListRef> | null = null;
       let popup: HTMLDivElement | null = null;
       let blurHandler: (() => void) | null = null;
+      // Escape means "no dropdown for the rest of this [[", so the list must
+      // stay away until the run ends. A lost focus means nothing of the kind,
+      // and the two teardowns are otherwise identical, so they are told apart
+      // here rather than in cleanup().
+      let dismissed = false;
 
       return {
         onStart(props: SuggestionProps<NoteTitleEntry, { target: string }>) {
-          component = new ReactRenderer(SuggestionList, {
-            props: {
-              items: props.items,
-              query: props.query,
-              command: props.command,
-            },
-            editor: props.editor,
-          });
-
-          popup = document.createElement('div');
-          popup.style.position = 'absolute';
-          popup.style.zIndex = '9999';
-          // Prevent mousedown inside the popup from stealing focus from the
-          // editor - without this, focusout fires before the click handler
-          // can run, destroying the popup and swallowing the selection.
-          popup.addEventListener('mousedown', (e) => e.preventDefault());
-          popup.appendChild(component.element);
-          document.body.appendChild(popup);
-
-          updatePosition(popup, props.clientRect);
-
-          // Dismiss popup when editor loses focus (e.g. modal opens on top)
-          const editorDom = props.editor.view.dom;
-          blurHandler = () => cleanup();
-          editorDom.addEventListener('focusout', blurHandler);
+          dismissed = false;
+          mount(props);
         },
 
         onUpdate(props: SuggestionProps<NoteTitleEntry, { target: string }>) {
+          // The suggestion stays active across a lost focus while the dropdown
+          // does not, so an update can arrive with nothing on screen. It has to
+          // be rebuilt, not re-propped: on Android a backspace blurs and
+          // refocuses the editor to keep the virtual keyboard up, which
+          // otherwise leaves the note titles gone for the rest of the [[ run
+          // and the user typing into a list that never answers.
+          if (!component && !dismissed) {
+            mount(props);
+            return;
+          }
+
           component?.updateProps({
             items: props.items,
             query: props.query,
@@ -264,6 +257,7 @@ export function wikiLinkSuggestion(editor: Editor): ReturnType<typeof Suggestion
 
         onKeyDown(props: SuggestionKeyDownProps) {
           if (props.event.key === 'Escape') {
+            dismissed = true;
             cleanup();
             return true;
           }
@@ -271,9 +265,38 @@ export function wikiLinkSuggestion(editor: Editor): ReturnType<typeof Suggestion
         },
 
         onExit() {
+          dismissed = false;
           cleanup();
         },
       };
+
+      function mount(props: SuggestionProps<NoteTitleEntry, { target: string }>) {
+        component = new ReactRenderer(SuggestionList, {
+          props: {
+            items: props.items,
+            query: props.query,
+            command: props.command,
+          },
+          editor: props.editor,
+        });
+
+        popup = document.createElement('div');
+        popup.style.position = 'absolute';
+        popup.style.zIndex = '9999';
+        // Prevent mousedown inside the popup from stealing focus from the
+        // editor - without this, focusout fires before the click handler
+        // can run, destroying the popup and swallowing the selection.
+        popup.addEventListener('mousedown', (e) => e.preventDefault());
+        popup.appendChild(component.element);
+        document.body.appendChild(popup);
+
+        updatePosition(popup, props.clientRect);
+
+        // Dismiss popup when editor loses focus (e.g. modal opens on top)
+        const editorDom = props.editor.view.dom;
+        blurHandler = () => cleanup();
+        editorDom.addEventListener('focusout', blurHandler);
+      }
 
       function cleanup() {
         if (blurHandler) {

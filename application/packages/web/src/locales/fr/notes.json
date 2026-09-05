@@ -8,7 +8,8 @@
     "readOnly": "Lecture seule",
     "file": "Fichier",
     "empty": "Vide",
-    "noContent": "Aucun contenu"
+    "noContent": "Aucun contenu",
+    "notBackedUp": "Non sauvegardé"
   },
   "header": {
     "new": "Nouveau",
@@ -170,7 +171,9 @@
     "widthWide": "Plus large",
     "widthFull": "Pleine largeur",
     "burn": "Partager en burn note",
-    "titlePlaceholderLink": "Nom du signet"
+    "titlePlaceholderLink": "Nom du signet",
+    "notBackedUpTooLarge": "Au-delà de la limite de 1 Mo, donc non sauvegardée. Déplace les images en pièces jointes ou scinde la note.",
+    "notBackedUpFailed": "Non sauvegardée. Dernière erreur : {{message}}. Nouvel essai en cours."
   },
   "share": {
     "hover": "Partager / Exporter",

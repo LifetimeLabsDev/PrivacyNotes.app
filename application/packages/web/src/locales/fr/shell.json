@@ -431,6 +431,7 @@
     "urlInvalid": "Saisis une adresse web, comme example.com ou https://example.com/page.",
     "urlDuplicate": "Un autre signet a déjà cette URL, la modification n'a pas été enregistrée.",
     "openAction": "Ouvrir",
+    "copiedUrl": "Lien copié",
     "moveToTrash": "Mettre à la corbeille",
     "emptyNone": "Aucun signet pour l'instant.",
     "emptyTitle": "Garde les sites qui comptent",

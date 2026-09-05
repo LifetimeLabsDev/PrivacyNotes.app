@@ -428,6 +428,7 @@
     "urlInvalid": "請輸入網址，例如 example.com 或 https://example.com/page。",
     "urlDuplicate": "另一個書籤已經使用這個網址，所以沒有儲存變更。",
     "openAction": "開啟",
+    "copiedUrl": "已複製連結",
     "moveToTrash": "移至垃圾桶",
     "emptyNone": "還沒有書籤。",
     "emptyTitle": "把值得留下的網站存起來",

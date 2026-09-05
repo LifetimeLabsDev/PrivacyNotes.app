@@ -235,7 +235,13 @@
     "pausedTooltip": "Puseste a sincronização em pausa neste dispositivo. As notas ficam aqui até retomares.",
     "pausedAria": "Sincronização em pausa",
     "wifiHold": "À espera de wi-fi",
-    "wifiHoldTooltip": "Os ficheiros sobem assim que houver wi-fi. As notas continuam a sincronizar."
+    "wifiHoldTooltip": "Os ficheiros sobem assim que houver wi-fi. As notas continuam a sincronizar.",
+    "notSynced": "Não sincronizado",
+    "notBackedUp": "Sem cópia de segurança",
+    "notBackedUpTooltip_one": "{{count}} nota não tem cópia de segurança. Clica para ver porquê.",
+    "notBackedUpTooltip_other": "{{count}} notas não têm cópia de segurança. Clica para ver porquê.",
+    "notBackedUpAria_one": "{{count}} nota não tem cópia de segurança",
+    "notBackedUpAria_other": "{{count}} notas não têm cópia de segurança"
   },
   "errors": {
     "noSession": "Nenhuma sessão ativa. Tenta iniciar sessão de novo.",
@@ -271,7 +277,7 @@
     "nodeDevice": "Este dispositivo",
     "nodeEncrypted": "Encriptado",
     "nodeRegion": "Suíça",
-    "sealed": "Encriptadas antes do envio. O servidor não as consegue ler.",
+    "sealed": "Cifradas no teu dispositivo. O servidor não as consegue ler.",
     "offlineFact": "Funciona offline. Sincroniza quando voltares a estar online.",
     "activity": "Atividade recente",
     "passUp_one": "{{count}} enviado",
@@ -280,7 +286,14 @@
     "passDown_other": "{{count}} recebidos",
     "passNothing": "Sem alterações",
     "passNothingRepeat": "Sem alterações - {{count}}x",
-    "passFailed": "falhou"
+    "passFailed": "falhou",
+    "notBackedUpHeading_one": "{{count}} nota não tem cópia de segurança",
+    "notBackedUpHeading_other": "{{count}} notas não têm cópia de segurança",
+    "reasonTooLarge": "Acima do limite de 1 MB",
+    "reasonFailed": "Falhou: {{message}}",
+    "openNote": "Abrir",
+    "passPushFailed_one": "{{count}} falhou",
+    "passPushFailed_other": "{{count}} falharam"
   },
   "language": {
     "reportMistake": "Comunicar um erro de tradução"

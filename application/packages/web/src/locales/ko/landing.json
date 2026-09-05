@@ -98,17 +98,13 @@
     "kicker": "다운로드",
     "heading": "PrivacyNotes 다운로드",
     "tileAria": "{{name}}용 다운로드",
-    "apkQualifier": "직접 다운로드",
-    "apkDesc": "Google 없이, 앱 내 업데이트 알림",
-    "obtainiumQualifier": "자동 업데이트",
-    "obtainiumDesc": "휴대폰에서 배지를 탭하세요. Obtainium이 PrivacyNotes를 추가하고 새 버전이 나올 때마다 설치해 줘요.",
+    "apkDesc": "업데이트할 때마다 직접 내려받아 설치해요.",
+    "obtainiumDesc": "저장소에서 새 버전을 모두 설치해요.",
     "obtainiumBadgeAlt": "Obtainium에서 받기",
-    "obtainiumManual": "휴대폰이 아니라면, 대신 이걸 Obtainium에 붙여 넣으세요.",
     "appStore": "App Store",
     "recommended": "추천",
-    "playDesc": "스토어를 통한 자동 업데이트",
     "comingSoon": "출시 예정",
-    "apkFootnote": "Android 7.0 이상이 필요해요. APK는 Google 계정도 Google 결제도 필요 없어요: Pro는 웹 결제로 잠금 해제돼요. 새 버전이 준비되면 앱 안에서 알려 주고, Obtainium과 Play 버전은 스스로 업데이트돼요.",
+    "apkFootnote": "Android 7.0 이상이 필요해요. Zapstore, Obtainium, APK는 Google 계정도 Google 결제도 필요 없어요: Pro는 웹 결제로 잠금 해제돼요. 새 버전이 준비되면 APK가 앱 안에서 알려 줘요.",
     "linuxRequirement": "두 형식 모두 webkit2gtk 4.1이 필요해요. Ubuntu 22.04 이상, Debian 12 이상, 또는 2023년 이후의 동등한 배포판이어야 해요. 그보다 오래된 배포판에는 webkit2gtk 4.0만 들어 있어서 이 빌드를 실행할 수 없어요.",
     "linuxArchX86": "Intel / AMD (x86_64)",
     "linuxArchX86Desc": "거의 모든 데스크톱과 노트북. 잘 모르겠으면 이걸 고르세요.",
@@ -121,14 +117,18 @@
     "checksumAria": "{{label}}의 SHA-256 체크섬",
     "debFootnote": "이미 설치한 <highlight>.deb</highlight>를 업데이트하나요? 먼저 제거하지 않아도 돼요. 파일을 두 번 클릭하면 Ubuntu 앱 센터가 이미 설치됐다고만 알려 주고 막히니, 터미널에서 새 파일을 기존 위에 덮어 설치하세요. 사용 중인 컴퓨터에 맞는 줄을 쓰면 되고, 어느 쪽인지 모르겠다면 dpkg --print-architecture로 확인할 수 있어요:",
     "availability": "지금 사용할 수 있어요: macOS 13 이상, Windows 10 이상, iOS 15 이상, Linux, Android.",
-    "betaNote": "모든 앱은 아직 베타라 버그가 있을 수 있어요. 그래서 지금은 웹 버전이 가장 안정적이에요. 좋은 소식: 모든 앱이 자동 업데이트되고, 수정 버전이 거의 매일 나가요.",
+    "betaNote": "모든 앱은 아직 베타라 버그가 있을 수 있어요. 그래서 지금은 웹 버전이 가장 안정적이에요. 모든 앱이 자동 업데이트되고, 수정 버전이 거의 매일 나가요.",
     "pkgToggle": "패키지 매니저로 설치 ({{platforms}})",
     "pkgBrewDesc": "업데이트는 brew가 아니라 앱이 처리해요",
     "pkgWingetDesc": "Windows 10과 11에 기본 포함",
     "pkgScoopDesc": "업데이트는 앱이 아니라 Scoop이 처리해요",
     "pkgFootnote": "모두 동일한 서명된 빌드를 설치해요. Homebrew와 winget에서는 앱이 스스로 업데이트해요. Scoop에서는 scoop update privacynotes를 실행해요.",
     "githubLink": "GitHub의 모든 릴리스",
-    "githubNote": "서명됨 · 공개 · 검증 가능 · 예외 없이 모든 릴리스"
+    "githubNote": "서명됨 · 공개 · 검증 가능 · 예외 없이 모든 릴리스",
+    "zapstoreDesc": "<rec>추천.</rec> 설치 전에 서명을 확인해요.",
+    "zapstoreBadgeAlt": "Zapstore에서 받기",
+    "autoUpdates": "자동 업데이트",
+    "manualUpdates": "수동 업데이트"
   },
   "ctaRepeat": {
     "getStarted": "시작하기"
@@ -150,7 +150,7 @@
     "proLabel": "Pro · 1회 결제",
     "earlyAdopterBadge": "얼리어답터",
     "oneTime": "1회 결제",
-    "proOnceDesc": "1회 결제예요. 매년도, 매달도 아니에요. <b>한 번</b> 내면 평생 소유해요.",
+    "proOnceDesc": "<b>한 번</b> 내면 평생 소유해요.",
     "proCompareBeta": "${{earlyPrice}} 한 번이면 끝이에요. Obsidian Sync는 매년 $48, Standard Notes는 매년 $90을 받아요. ${{proPrice}}로 오르기 전에 잠그는 얼리어답터 가격이에요.",
     "proCompare": "${{proPrice}}를 한 번만 내면 평생 내 것이에요. Obsidian Sync는 매년 $48, Standard Notes는 매년 $90을 꼬박꼬박 받아요.",
     "proEverythingFree": "Free의 모든 것에 더해:",
@@ -190,9 +190,9 @@
   "mood": {
     "kicker": "기분 & 웰니스 트래킹",
     "heading": "실제로 느끼는 감정을 기록하세요.",
-    "intro": "기분, 감정, 수면, 복약, 활동량을 타이핑 대신 탭으로. 전부 종단간 암호화. 어떤 것도 암호화 없이 기기를 떠나지 않아요.",
+    "intro": "기분, 감정, 수면, 복약, 활동량을 몇 번의 탭으로 기록해요. 모든 것이 동기화되기 전에 기기에서 암호화돼요.",
     "cardEmotionsTitle": "기분(1-10) + 감정 태그 24종",
-    "cardEmotionsBody": "이모지 표정이 아니에요. 연구에 기반한 24가지 감정 태그로 진짜 세밀하게 기록해요. 실제 감정을 기록하고, 시간에 따른 패턴을 발견하고, 치료사나 의사가 활용할 수 있는 데이터로 내보내세요.",
+    "cardEmotionsBody": "연구에 기반한 24가지 감정 태그. 지금 느끼는 감정에 이름을 붙이고, 시간에 따른 패턴을 발견하고, 치료사나 의사가 활용할 수 있는 데이터로 내보내세요.",
     "cardSleepTitle": "수면 질 + 활동량",
     "cardSleepBody": "5단계 수면 질 척도에 선택 입력인 수면 시간까지. 활동량은 좌식부터 고강도까지. 분석이 이 데이터를 기분과 자동으로 연관 지어요.",
     "cardMedsTitle": "복약 순응도",
@@ -200,7 +200,7 @@
     "cardAnalyticsTitle": "패턴 감지 + 의사용 내보내기",
     "cardAnalyticsBody": "클라이언트 측 분석이 수면, 활동, 복약, 기분 사이의 상관관계를 감지해요. 의사에게 보여 줄 인쇄용 PDF 리포트를 내보내거나, AI 분석용 구조화 프롬프트를 복사하세요.",
     "encryptedHeading": "왜 암호화 없이는 안 되는가",
-    "encryptedBody": "Notion에 항우울제 용량을 적는 사람은 없어요. Google Doc에 절망스러웠던 날을 기록하는 사람도 없죠. 민감한 데이터에는 영지식 암호화가 필요해요. 그래서 저희는 첫날부터 그렇게 만들었어요."
+    "encryptedBody": "Notion에 항우울제 용량을 적는 사람은 없어요. Google Doc에 절망스러웠던 날을 기록하는 사람도 없죠. 이만큼 민감한 데이터에는 영지식 암호화가 필요하고, PrivacyNotes는 그렇게 만들어졌어요."
   },
   "comparison": {
     "kicker": "계산해 보면",
@@ -245,10 +245,10 @@
   "whyPrivacy": {
     "kicker": "왜 중요한가",
     "heading": "대부분의 노트 앱은 당신의 노트를 읽어요.<accent>저희는 못 읽어요.</accent>",
-    "para1": "대부분의 노트 앱은 당신이 쓴 내용을 채굴해요. 쇼핑 목록에 “새 TV 사기”를 적으면 다음 며칠간 화면이 TV 광고로 가득 차죠. 장보기 목록, 저널, 사적인 생각이 전부 광고 타겟팅 파이프라인에 흘러들어 프로파일링되고 팔려요. 음모론이 아니라, 광고로 굴러가는 모든 “무료” 노트 앱의 비즈니스 모델이에요.",
+    "para1": "대부분의 노트 앱은 당신이 쓴 내용을 채굴해요. 쇼핑 목록에 “새 TV 사기”를 적으면 다음 며칠간 화면이 TV 광고로 가득 차죠. 장보기 목록, 저널, 사적인 생각이 전부 광고 타겟팅 파이프라인에 흘러들어 프로파일링되고 팔려요. 광고로 굴러가는 모든 “무료” 노트 앱의 비즈니스 모델이에요.",
     "para2": "광고를 보여 주지 않는 앱조차 노트를 서버에 평문으로 저장해요. 직원이 읽을 수 있고, 유출 사고에 뚫릴 수 있고, 영장 하나면 누구든 볼 수 있어요. 당신의 데이터가 그들의 지렛대가 되는 거죠.",
     "differenceLabel": "차이점",
-    "differenceBody": "<brand/>는 기기를 절대 떠나지 않는 키로 종단간 암호화돼요. 저희는 당신의 노트를 읽을 수 없어요. 저희 서버도 못 읽어요. 추적도, 분석도, 광고도, 프로파일링도 없어요. 영원히요. 당신이 쓴 글은 당신 것으로 남아요.",
+    "differenceBody": "<brand/>는 기기를 절대 떠나지 않는 키로 종단간 암호화돼서, 저희도 저희 서버도 당신이 쓴 글을 읽을 수 없어요. 추적도, 분석도, 광고도, 프로파일링도 없고 앞으로도 없어요. 당신이 쓴 글은 당신 것으로 남아요.",
     "keyboardNote": "<b>기기 키보드에 관한 안내.</b> 서드파티 키보드(Gboard, SwiftKey, Samsung Keyboard 등)는 입력 내용을 자체 서버로 보낼 수 있어요. 이건 운영체제 수준에서 일어나는 일이라 어떤 앱도 막을 수 없어요. 키보드 설정에서 클라우드 기능을 끄거나 오프라인 전용 키보드 사용을 고려하세요."
   },
   "readIt": {
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "당신의 문구가 곧 열쇠예요",
-    "body": "문구가 없으면 노트도 없어요. 저희도, 그 누구도 복구할 수 없어요. 그게 진짜 암호화의 대가예요. 개발팀에 연락해도 소용없어요. 자가 보관에서는 저희가 당신의 노트를 복호화할 수 없고, 오직 당신만 할 수 있어요.",
+    "body": "문구가 없으면 노트도 없어요. 저희도, 그 누구도 복구할 수 없어요. 종단간 암호화의 대가예요. 자가 보관에서는 키를 가진 사람이 당신뿐이라, 개발팀에 연락해도 노트를 되돌릴 수 없어요.",
     "noRecoveryTerm": "복구 불가",
     "noRecoveryDesc": "문구를 잃으면 노트도 잃어요",
     "deviceTerm": "기기에서 생성",

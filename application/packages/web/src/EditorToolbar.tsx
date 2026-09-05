@@ -1380,7 +1380,13 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
                     label: t('toolbar.table'),
                     hint: null,
                     active: isActive('table'),
-                    run: () => editor.chain().focus().insertTable({ rows: 2, cols: 2, withHeaderRow: false }).run(),
+                    // A header row is what a pipe table needs to exist at all:
+                    // the markdown serializer falls back to raw HTML for a
+                    // table whose first row is plain cells, so a headerless
+                    // one is stored as a wall of markup and travels to other
+                    // apps as markup too. The bar under the table turns it off
+                    // for anyone who wants a grid instead.
+                    run: () => editor.chain().focus().insertTable({ rows: 2, cols: 2, withHeaderRow: true }).run(),
                   },
                   {
                     key: 'hr',

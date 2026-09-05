@@ -308,9 +308,17 @@ function isNoteTooLargeError(err: { code?: string; message?: string } | null): b
   return err?.code === '23514' && !!err.message?.includes('notes_ciphertext_max_1mb');
 }
 
+/** The server's per-row ceiling: `octet_length(ciphertext) <= 1048576`.
+ * The column holds base64, which is ASCII, so a JavaScript string length
+ * counts the same bytes the CHECK does. Measuring the row here keeps a
+ * note the server can only refuse off the wire entirely.
+ * Spec: packages/supabase/migrations/history/0009_abuse_limits.sql */
+const CIPHERTEXT_MAX_BYTES = 1_048_576;
+
 /** Surfaced via onPushError when a note exceeds the 1 MB per-note size
- * limit. Shows in the amber "failed to sync" banner. */
-const NOTE_TOO_LARGE_MSG = 'a note is over the 1 MB size limit';
+ * limit. pushFailures.ts matches this exact string to mark the note
+ * "not backed up" in the pill, the ID & Sync list and the editor. */
+export const NOTE_TOO_LARGE_MSG = 'a note is over the 1 MB size limit';
 
 type RemoteRow = {
   id: string;
@@ -1181,7 +1189,23 @@ async function syncInner(
           break;
         }
         const batch = fresh.slice(i, i + INSERT_CHUNK);
-        const rows = batch.map(buildRow);
+        // A row over the per-row ceiling fails the whole chunk and takes
+        // its neighbours down to the slow path with it, every pass, for as
+        // long as the note exists. Hold it back and report it here: that
+        // report is what marks it "not backed up", and it is the only one
+        // this pass makes, because the per-note path never sees it either.
+        const rows: ReturnType<typeof buildRow>[] = [];
+        const sendable: LocalNote[] = [];
+        for (const note of batch) {
+          const built = buildRow(note);
+          if (built.ciphertext.length > CIPHERTEXT_MAX_BYTES) {
+            if (onPushError) onPushError(note.id, NOTE_TOO_LARGE_MSG);
+            continue;
+          }
+          rows.push(built);
+          sendable.push(note);
+        }
+        if (rows.length === 0) continue;
         const { error } = await supabase.from('notes').insert(rows);
         if (error) {
           if (isAuthError(error)) throw new SessionExpiredError();
@@ -1194,10 +1218,10 @@ async function syncInner(
           // batch, so hand this chunk to the per-note path where each
           // note gets its own verdict and its own error message.
           console.warn('[sync] batch insert failed, retrying these per note', error);
-          retry.push(...batch);
+          retry.push(...sendable);
           continue;
         }
-        await clearDirty(batch, new Map(rows.map((r) => [r.id, r.nonce])));
+        await clearDirty(sendable, new Map(rows.map((r) => [r.id, r.nonce])));
       }
       pending = toUpsert.filter((n) => known.has(n.id)).concat(retry);
     }
@@ -1234,6 +1258,14 @@ async function syncInner(
       created_at: note.createdAt,
       updated_at: note.updatedAt,
     };
+
+    // No retry can make this row fit, so it costs nothing but the report.
+    // The note stays dirty and keeps its "not backed up" marking until an
+    // edit brings it under the ceiling, when this check simply passes.
+    if (row.ciphertext.length > CIPHERTEXT_MAX_BYTES) {
+      if (onPushError) onPushError(note.id, NOTE_TOO_LARGE_MSG);
+      return;
+    }
 
     // Try conditional update: only succeeds if server isn't newer.
     const { data: updated, error: updateErr } = await supabase

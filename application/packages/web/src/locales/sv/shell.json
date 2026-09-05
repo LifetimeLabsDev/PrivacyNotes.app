@@ -431,6 +431,7 @@
     "urlInvalid": "Ange en webbadress, som example.com eller https://example.com/page.",
     "urlDuplicate": "Ett annat bokmärke har redan den här URL:en, så ändringen sparades inte.",
     "openAction": "Öppna",
+    "copiedUrl": "Länk kopierad",
     "moveToTrash": "Flytta till papperskorgen",
     "emptyNone": "Inga bokmärken än.",
     "emptyTitle": "Spara sidorna som är värda att behålla",

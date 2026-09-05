@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "Bilgi kutusu ekle",
     "remove": "Bilgi kutusunu kaldır",
+    "collapse": "Bilgi kutusunu daralt",
+    "expand": "Bilgi kutusunu genişlet",
     "types": {
       "info": "Bilgi",
       "success": "Başarılı",
@@ -101,6 +103,7 @@
     "addRowBelow": "Alta satır ekle",
     "addColumnLeft": "Sola sütun ekle",
     "addColumnRight": "Sağa sütun ekle",
+    "toggleHeaderRow": "Başlık satırını aç/kapat",
     "deleteRow": "Satırı sil",
     "deleteColumn": "Sütunu sil",
     "deleteTable": "Tabloyu sil"

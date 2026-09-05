@@ -235,7 +235,13 @@
     "pausedTooltip": "Pusiste la sincronización en pausa en este dispositivo. Tus notas se quedan aquí hasta que la reanudes.",
     "pausedAria": "Sincronización en pausa",
     "wifiHold": "Esperando al wifi",
-    "wifiHoldTooltip": "Los archivos suben cuando vuelva el wifi. Las notas se siguen sincronizando."
+    "wifiHoldTooltip": "Los archivos suben cuando vuelva el wifi. Las notas se siguen sincronizando.",
+    "notSynced": "Sin sincronizar",
+    "notBackedUp": "Sin copia de seguridad",
+    "notBackedUpTooltip_one": "{{count}} nota no tiene copia de seguridad. Haz clic para ver por qué.",
+    "notBackedUpTooltip_other": "{{count}} notas no tienen copia de seguridad. Haz clic para ver por qué.",
+    "notBackedUpAria_one": "{{count}} nota no tiene copia de seguridad",
+    "notBackedUpAria_other": "{{count}} notas no tienen copia de seguridad"
   },
   "errors": {
     "noSession": "No hay sesión activa. Intenta iniciar sesión de nuevo.",
@@ -271,7 +277,7 @@
     "nodeDevice": "Este dispositivo",
     "nodeEncrypted": "Cifrado",
     "nodeRegion": "Suiza",
-    "sealed": "Cifradas antes de subirlas. El servidor no puede leerlas.",
+    "sealed": "Cifradas en tu dispositivo. El servidor no puede leerlas.",
     "offlineFact": "Funciona sin conexión. Se sincroniza cuando vuelves a estar en línea.",
     "activity": "Actividad reciente",
     "passUp_one": "{{count}} enviado",
@@ -280,7 +286,14 @@
     "passDown_other": "{{count}} recibidos",
     "passNothing": "Sin cambios",
     "passNothingRepeat": "Sin cambios - {{count}}x",
-    "passFailed": "falló"
+    "passFailed": "falló",
+    "notBackedUpHeading_one": "{{count}} nota no tiene copia de seguridad",
+    "notBackedUpHeading_other": "{{count}} notas no tienen copia de seguridad",
+    "reasonTooLarge": "Supera el límite de 1 MB",
+    "reasonFailed": "Fallo: {{message}}",
+    "openNote": "Abrir",
+    "passPushFailed_one": "{{count}} con fallo",
+    "passPushFailed_other": "{{count}} con fallo"
   },
   "language": {
     "reportMistake": "Informar de un error de traducción"

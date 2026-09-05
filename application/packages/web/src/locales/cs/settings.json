@@ -257,7 +257,17 @@
     "pausedTooltip": "Pozastavil jsi synchronizaci na tomhle zařízení. Poznámky zůstanou tady, dokud ji neobnovíš.",
     "pausedAria": "Synchronizace pozastavena",
     "wifiHold": "Čeká na wi-fi",
-    "wifiHoldTooltip": "Soubory se nahrají, jakmile bude wi-fi. Poznámky se synchronizují dál."
+    "wifiHoldTooltip": "Soubory se nahrají, jakmile bude wi-fi. Poznámky se synchronizují dál.",
+    "notSynced": "Nesynchronizováno",
+    "notBackedUp": "Bez zálohy",
+    "notBackedUpTooltip_one": "{{count}} poznámka nemá zálohu. Klikni a zjisti proč.",
+    "notBackedUpTooltip_few": "{{count}} poznámky nemají zálohu. Klikni a zjisti proč.",
+    "notBackedUpTooltip_many": "{{count}} poznámky nemá zálohu. Klikni a zjisti proč.",
+    "notBackedUpTooltip_other": "{{count}} poznámek nemá zálohu. Klikni a zjisti proč.",
+    "notBackedUpAria_one": "{{count}} poznámka nemá zálohu",
+    "notBackedUpAria_few": "{{count}} poznámky nemají zálohu",
+    "notBackedUpAria_many": "{{count}} poznámky nemá zálohu",
+    "notBackedUpAria_other": "{{count}} poznámek nemá zálohu"
   },
   "errors": {
     "noSession": "Žádná aktivní relace. Zkus se přihlásit znovu.",
@@ -299,7 +309,7 @@
     "nodeDevice": "Toto zařízení",
     "nodeEncrypted": "Šifrováno",
     "nodeRegion": "Švýcarsko",
-    "sealed": "Šifrované před nahráním. Server je nepřečte.",
+    "sealed": "Zašifrováno na tvém zařízení. Server je nemůže číst.",
     "offlineFact": "Funguje offline. Synchronizuje se, až budeš zase online.",
     "activity": "Nedávná aktivita",
     "passUp_one": "{{count}} odesláno",
@@ -312,7 +322,18 @@
     "passDown_other": "{{count}} přijato",
     "passNothing": "Žádné změny",
     "passNothingRepeat": "Žádné změny - {{count}}x",
-    "passFailed": "selhalo"
+    "passFailed": "selhalo",
+    "notBackedUpHeading_one": "{{count}} poznámka nemá zálohu",
+    "notBackedUpHeading_few": "{{count}} poznámky nemají zálohu",
+    "notBackedUpHeading_many": "{{count}} poznámky nemá zálohu",
+    "notBackedUpHeading_other": "{{count}} poznámek nemá zálohu",
+    "reasonTooLarge": "Nad limitem 1 MB",
+    "reasonFailed": "Selhalo: {{message}}",
+    "openNote": "Otevřít",
+    "passPushFailed_one": "{{count}} selhala",
+    "passPushFailed_few": "{{count}} selhaly",
+    "passPushFailed_many": "{{count}} selhalo",
+    "passPushFailed_other": "{{count}} selhalo"
   },
   "language": {
     "reportMistake": "Nahlásit chybu v překladu"

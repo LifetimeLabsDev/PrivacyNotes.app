@@ -49,6 +49,8 @@ type Props = {
    * question this panel answers.
    */
   autoVerify?: boolean;
+  /** Opens a note from ID & Sync's not-backed-up list. */
+  onOpenNote?: (id: string) => void;
   /**
    * Whether a sync pass is running right now. Owned by the app shell,
    * passed in so this panel can report the same live state the footer
@@ -87,7 +89,7 @@ type DeviceGroup = {
  * Pro status is surfaced with a badge + an upsell block for free
  * users.
  */
-export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow, embedded = false, autoVerify = false, tab: controlledTab, onTabChange }: Props) {
+export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow, embedded = false, autoVerify = false, onOpenNote, tab: controlledTab, onTabChange }: Props) {
   const { t } = useTranslation('settings');
   // Real App Store / Play prices, already in the user's storefront currency.
   // Null everywhere else, and every use below falls back to the Paddle USD
@@ -1197,13 +1199,13 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
         )}
 
         {/* ── Sync tab ── */}
-        {tab === 'sync' && <SyncPanel onSyncNow={onSyncNow} supabase={supabase} />}
+        {tab === 'sync' && <SyncPanel onSyncNow={onSyncNow} supabase={supabase} onOpenNote={onOpenNote} />}
 
         {/* ── Me tab (ID & Sync - the full sync readout) ── */}
         {tab === 'me' && (
           <>
             <HelpChip surface="me" />
-            <SyncPanel pubkey={authed?.pubkey} onSyncNow={onSyncNow} supabase={supabase} autoVerify={autoVerify} />
+            <SyncPanel pubkey={authed?.pubkey} onSyncNow={onSyncNow} supabase={supabase} autoVerify={autoVerify} onOpenNote={onOpenNote} />
           </>
         )}
 

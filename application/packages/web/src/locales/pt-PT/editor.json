@@ -61,6 +61,8 @@
   "callout": {
     "pickerLabel": "Inserir aviso",
     "remove": "Remover aviso",
+    "collapse": "Recolher aviso",
+    "expand": "Expandir aviso",
     "types": {
       "info": "Info",
       "success": "Sucesso",
@@ -101,6 +103,7 @@
     "addRowBelow": "Adicionar linha abaixo",
     "addColumnLeft": "Adicionar coluna à esquerda",
     "addColumnRight": "Adicionar coluna à direita",
+    "toggleHeaderRow": "Ativar ou desativar a linha de cabeçalho",
     "deleteRow": "Eliminar linha",
     "deleteColumn": "Eliminar coluna",
     "deleteTable": "Eliminar tabela"

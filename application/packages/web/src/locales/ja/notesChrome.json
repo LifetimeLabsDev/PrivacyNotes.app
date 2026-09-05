@@ -51,7 +51,12 @@
     "unsyncedKept_other": "このデバイスには未同期のノートが{{count}}件あります。ノートはこのデバイスに残り、次回サインインすると同期されます。",
     "dontRemind": "今後表示しない",
     "showPhrase": "いいえ、フレーズを表示",
-    "confirm": "はい、サインアウト"
+    "confirm": "はい、サインアウト",
+    "stay": "ログインしたままにする",
+    "signOutLose_other": "ログアウトして{{count}}件のノートを失う",
+    "neverBackedUp_other": "この端末にのみあります:",
+    "moreNotes": "ほか{{count}}件",
+    "appLockHint": "共有端末ですか？設定 > セキュリティでアプリロックをオンにしてください。"
   },
   "burnShareModal": {
     "title": "Burn After Readingで共有",

@@ -224,7 +224,11 @@
     "pausedTooltip": "このデバイスで同期を一時停止しています。再開するまでノートはここに残ります。",
     "pausedAria": "同期を一時停止中",
     "wifiHold": "Wi-Fi待ち",
-    "wifiHoldTooltip": "Wi-Fiに戻るとファイルをアップロードします。ノートの同期は続きます。"
+    "wifiHoldTooltip": "Wi-Fiに戻るとファイルをアップロードします。ノートの同期は続きます。",
+    "notSynced": "未同期",
+    "notBackedUp": "未バックアップ",
+    "notBackedUpTooltip_other": "{{count}}件のノートがバックアップされていません。クリックすると理由を確認できます。",
+    "notBackedUpAria_other": "{{count}}件のノートがバックアップされていません"
   },
   "errors": {
     "noSession": "有効なセッションがありません。もう一度サインインしてみてください。",
@@ -257,14 +261,19 @@
     "nodeDevice": "このデバイス",
     "nodeEncrypted": "暗号化",
     "nodeRegion": "スイス",
-    "sealed": "アップロード前に暗号化されます。サーバーは読み取れません。",
+    "sealed": "お使いの端末で暗号化されます。サーバーは内容を読めません。",
     "offlineFact": "オフラインでも使えます。オンラインに戻ると同期します。",
     "activity": "最近の履歴",
     "passUp_other": "{{count}}件送信",
     "passDown_other": "{{count}}件受信",
     "passNothing": "変更なし",
     "passNothingRepeat": "変更なし - {{count}}回",
-    "passFailed": "失敗"
+    "passFailed": "失敗",
+    "notBackedUpHeading_other": "{{count}}件のノートがバックアップされていません",
+    "reasonTooLarge": "1 MBの上限を超えています",
+    "reasonFailed": "失敗: {{message}}",
+    "openNote": "開く",
+    "passPushFailed_other": "{{count}}件失敗"
   },
   "language": {
     "reportMistake": "翻訳の誤りを報告"

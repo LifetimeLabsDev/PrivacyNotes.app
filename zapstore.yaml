@@ -20,40 +20,56 @@ pubkey: npub1dhzrs20zh3eehq96fe8ewgatfr8u4gjzdh97z6p8n5qurkwqt7wsl7z3k9
 match: '^PrivacyNotes-[0-9.]+\.apk$'
 
 name: PrivacyNotes
-summary: One encrypted place for notes, tasks, journal, files and your vault
+summary: Notes. Tasks. Files. Vault. Zero knowledge.
 
+# The copy below is the homepage, not a second version of it. Every line has a
+# source in packages/web/src/locales/en/landing.json: the opening is hero.subhead,
+# the list is the pillar blurbs, the source line is trust.openSourceBody and the
+# closing line is hero.microcopy. Take a change from there rather than editing it
+# here, so the store and the site cannot drift into two different pitches.
+#
+# The homepage kicker counting the pillars is deliberately NOT here: it includes
+# the on-disk Markdown folder, which runs in the desktop app and Chromium only,
+# so the count is wrong on a phone.
+#
+# Every paragraph and every list item is ONE unwrapped line. This is a literal
+# YAML block, so a newline inside a sentence survives into the store and breaks
+# the line there, at whatever column the file happened to wrap. Bold markers are
+# left out for the same reason: the renderer turns "- " into a list item and
+# prints "**" as two asterisks, so emphasis reads as punctuation.
 description: |
-  Notes, tasks, journal, files, bookmarks and a password vault in one app,
-  encrypted on your device before anything leaves it.
+  One encrypted place for everything you'd never post. Encrypted on your device before it goes anywhere. We couldn't read it if we tried.
 
-  Sign in with a 12-word phrase. No email and no password, so there is no
-  account to leak. Your key never reaches our servers, which is why we cannot
-  read your notes and cannot reset them for you.
+  - Notes: rich live editor, tags, instant search.
+  - Tasks: every checkbox, one view.
+  - Vault: passwords, cards, SSH keys.
+  - Journal: mood, sleep, medication. Research-backed tags, doctor export.
+  - Files: encrypted images, docs, audio, and video.
+  - Bookmark Sync: saved links with website icons. Import your browser bookmarks.
 
-  - **Notes** in a rich editor: live Markdown, tables, tags, callouts and
-    note-links.
-  - **Tasks** with due dates and recurring items.
-  - **Journal** with mood, sleep and medication tracking, plus a doctor export.
-  - **Files**: encrypted images, documents, audio and video.
-  - **Bookmarks** with website icons, and a browser bookmark import.
-  - **Vault** for passwords and two-factor codes.
+  The app and the encryption inside it are published, so anyone can check our zero-knowledge claims.
 
-  The full client source is published, along with the encryption
-  (XChaCha20-Poly1305, HKDF-SHA256, Ed25519) and the threat model, so the
-  privacy claims are falsifiable rather than promised.
+  Free forever. No credit card. Sign in with Google, Apple, or just a 12-word phrase.
 
-  Free forever on the free tier. Pro unlocks through web checkout: this build
-  carries no Google billing and needs no Google account.
-
+# Tags drive where the store files this app, and the vocabulary is whatever
+# publishers already use rather than a fixed list, so these are chosen to match
+# the words in circulation instead of the ones that read best. Measured across
+# published listings: "note" outnumbers "notes", "task" is in use, and
+# "productivity" appears on nothing at all, which would have filed this app on
+# its own. Check the neighbours before adding a word here.
 tags:
-  - productivity
-  - notes
+  - note
+  - task
   - privacy
   - encryption
 
 license: AGPL-3.0
 website: https://privacynotes.app
-icon: https://privacynotes.app/marketing/brand/privacynotes-store-icon.png
+# The social profile avatar, not the icon from the press kit. A store tile is
+# full bleed and draws its own corners, so it wants the square opaque artwork
+# rather than the mark floated on white with its own padding.
+# Spec: ops/docs/design-decisions.md (social avatar)
+icon: https://privacynotes.app/marketing/brand/privacynotes-avatar.png
 
 # Phone screenshots, fetched over HTTP at publish time. They live in this
 # repository (ops/mirror/store in the private tree) rather than on the web

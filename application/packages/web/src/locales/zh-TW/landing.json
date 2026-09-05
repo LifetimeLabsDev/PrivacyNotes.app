@@ -98,17 +98,13 @@
     "kicker": "下載",
     "heading": "下載 PrivacyNotes",
     "tileAria": "下載 {{name}} 版",
-    "apkQualifier": "直接下載",
-    "apkDesc": "無 Google 元件，應用程式內更新通知",
-    "obtainiumQualifier": "自動更新",
-    "obtainiumDesc": "在手機上點一下徽章：Obtainium 會加入 PrivacyNotes，並在每個新版本推出時幫你安裝。",
+    "apkDesc": "每次更新都要自己下載並安裝。",
+    "obtainiumDesc": "從我們的儲存庫安裝每一個新版本。",
     "obtainiumBadgeAlt": "在 Obtainium 取得",
-    "obtainiumManual": "不是在手機上嗎?改成把這段貼到 Obtainium 裡：",
     "appStore": "App Store",
     "recommended": "建議",
-    "playDesc": "透過商店自動更新",
     "comingSoon": "即將推出",
-    "apkFootnote": "需要 Android 7.0 以上。APK 不需要 Google 帳號，也不經 Google 收費：Pro 透過網頁結帳解鎖。新版本推出時會在應用程式內通知你；Obtainium 與 Play 版則會自動更新。",
+    "apkFootnote": "需要 Android 7.0 以上。Zapstore、Obtainium 與 APK 都不需要 Google 帳號，也不經 Google 收費：Pro 透過網頁結帳解鎖。新版本推出時，APK 會在應用程式內通知你。",
     "linuxRequirement": "兩種格式都需要 webkit2gtk 4.1：Ubuntu 22.04 以上、Debian 12 以上，或 2023 年以後的同等發行版。更舊的發行版只提供 webkit2gtk 4.0，無法執行這些版本。",
     "linuxArchX86": "Intel / AMD (x86_64)",
     "linuxArchX86Desc": "幾乎所有桌機和筆電。不確定就選這個。",
@@ -121,14 +117,18 @@
     "checksumAria": "{{label}} 的 SHA-256 校驗碼",
     "debFootnote": "要更新已經安裝的 <highlight>.deb</highlight> 嗎？不必先解除安裝。雙擊檔案只會停在 Ubuntu 的 App Center，那裡只會顯示應用程式已安裝，所以請從終端機把新版直接裝在舊版上。請選擇符合你電腦的那一行，不確定的話可以用 dpkg --print-architecture 查看：",
     "availability": "現已推出：macOS 13 以上、Windows 10 以上、iOS 15 以上、Linux 與 Android。",
-    "betaNote": "我們所有的應用程式都還在 beta，可能仍有 bug，目前以網頁版最穩定。好消息是：每個應用程式都會自動更新，而且我們幾乎每天推出修正。",
+    "betaNote": "我們所有的應用程式都還在 beta，可能仍有 bug，目前以網頁版最穩定。每個應用程式都會自動更新，而且我們幾乎每天推出修正。",
     "pkgToggle": "使用套件管理器安裝 ({{platforms}})",
     "pkgBrewDesc": "更新由應用程式處理，不是 brew",
     "pkgWingetDesc": "Windows 10 與 11 內建",
     "pkgScoopDesc": "更新由 Scoop 處理，不是應用程式",
     "pkgFootnote": "每一種都會安裝同一個已簽署的版本。使用 Homebrew 和 winget 時，應用程式會自我更新。使用 Scoop 時，請執行 scoop update privacynotes。",
     "githubLink": "GitHub 上的所有版本",
-    "githubNote": "已簽署 · 公開 · 可驗證 · 每個版本都不例外"
+    "githubNote": "已簽署 · 公開 · 可驗證 · 每個版本都不例外",
+    "zapstoreDesc": "<rec>建議。</rec>安裝前會先驗證我們的簽章。",
+    "zapstoreBadgeAlt": "在 Zapstore 取得",
+    "autoUpdates": "自動更新",
+    "manualUpdates": "手動更新"
   },
   "ctaRepeat": {
     "getStarted": "開始使用"
@@ -150,7 +150,7 @@
     "proLabel": "Pro · 付一次",
     "earlyAdopterBadge": "早鳥",
     "oneTime": "一次買斷",
-    "proOnceDesc": "一次性收費。不是年費，也不是月費。<b>付一次</b>，永久擁有。",
+    "proOnceDesc": "<b>付一次</b>，永久擁有。",
     "proCompareBeta": "一次付 ${{earlyPrice}}。Obsidian Sync 每年收 $48，年年都要；Standard Notes 每年收 $90。早鳥價，在漲到 ${{proPrice}} 前先鎖定。",
     "proCompare": "一次付 ${{proPrice}}，永久擁有。Obsidian Sync 每年 $48、Standard Notes 每年 $90，而且年年都要付。",
     "proEverythingFree": "包含 Free 的全部功能，再加上：",
@@ -190,9 +190,9 @@
   "mood": {
     "kicker": "心情與身心追蹤",
     "heading": "記錄你真實的感受。",
-    "intro": "心情、情緒、睡眠、用藥與活動量，用點按完成，不必打字。一切端對端加密，任何內容都不會以未加密的形式離開你的裝置。",
+    "intro": "心情、情緒、睡眠、用藥與活動量，幾下點按就能記錄。所有內容都會在同步之前，先在你的裝置上完成加密。",
     "cardEmotionsTitle": "心情（1-10）+ 24 種情緒標籤",
-    "cardEmotionsBody": "不是表情符號臉譜，而是 24 種有研究依據、粒度扎實的情緒標籤。記錄你真實的感受，隨時間看出模式，並匯出你的心理師或醫師能實際運用的資料。",
+    "cardEmotionsBody": "24 種有研究依據的情緒標籤。為當下的感受命名，隨時間看出模式，並匯出你的心理師或醫師能實際運用的資料。",
     "cardSleepTitle": "睡眠品質 + 活動量",
     "cardSleepBody": "品質分為五級，另可加填時數。活動量從久坐到高強度。分析功能會自動把這些與你的心情做關聯。",
     "cardMedsTitle": "服藥順從性",
@@ -200,7 +200,7 @@
     "cardAnalyticsTitle": "模式偵測 + 醫師匯出",
     "cardAnalyticsBody": "用戶端分析會偵測睡眠、活動、用藥與心情之間的關聯。可匯出可列印的 PDF 報告給醫師，或複製結構化提示詞供 AI 分析。",
     "encryptedHeading": "為什麼只有加密才做得到",
-    "encryptedBody": "沒有人會把抗憂鬱劑劑量記在 Notion，也沒有人會在 Google Docs 裡記錄絕望的日子。敏感資料需要零知識加密，所以我們從第一天就這麼打造。"
+    "encryptedBody": "沒有人會把抗憂鬱劑劑量記在 Notion，也沒有人會在 Google Docs 裡記錄絕望的日子。這麼敏感的資料需要零知識加密，PrivacyNotes 就是這樣打造的。"
   },
   "comparison": {
     "kicker": "算給你看",
@@ -245,10 +245,10 @@
   "whyPrivacy": {
     "kicker": "為什麼重要",
     "heading": "多數筆記 App 會讀你的筆記。<accent>我們的讀不到。</accent>",
-    "para1": "多數筆記 App 會挖掘你的內容。在購物清單加上「買台新電視」，接下來幾頁全是電視廣告。你的採買清單、你的日誌、你的私密想法，全被餵進廣告投放管線，被建檔、被販售。這不是陰謀論，而是每個靠廣告撐起的「免費」筆記 App 的商業模式。",
+    "para1": "多數筆記 App 會挖掘你的內容。在購物清單加上「買台新電視」，接下來幾頁全是電視廣告。你的採買清單、你的日誌、你的私密想法，全被餵進廣告投放管線，被建檔、被販售。這就是每個靠廣告撐起的「免費」筆記 App 的商業模式。",
     "para2": "就連不放廣告的 App，也仍把你的筆記以明文存在他們的伺服器上：員工讀得到、外洩偷得走、一紙傳票就能調閱。你的資料成了他們的籌碼。",
     "differenceLabel": "差別在這裡",
-    "differenceBody": "<brand/> 採端對端加密，金鑰從不離開你的裝置。我們讀不到你的筆記，我們的伺服器也讀不到。沒有追蹤、沒有分析、沒有廣告、沒有側寫。永遠沒有。你寫下的，永遠是你的。",
+    "differenceBody": "<brand/> 採端對端加密，金鑰從不離開你的裝置，因此我們和我們的伺服器都讀不到你寫的內容。沒有追蹤、沒有分析、沒有廣告、沒有側寫，未來也不會有。你寫下的，永遠是你的。",
     "keyboardNote": "<b>關於裝置鍵盤的提醒。</b>第三方鍵盤（例如 Gboard、SwiftKey 或 Samsung 鍵盤）可能會把你輸入的內容傳到它們自己的伺服器。這發生在作業系統層級，任何 App 都管不到。建議在鍵盤設定中停用雲端功能，或改用純離線鍵盤。"
   },
   "readIt": {
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "你的助憶詞就是你的金鑰",
-    "body": "沒有助憶詞，就沒有筆記。我們救不回來，任何人都救不回來。這是真加密的代價。聯絡開發團隊也沒有用：在自我保管下，我們真的無法解密你的筆記，只有你可以。",
+    "body": "沒有助憶詞，就沒有筆記。我們救不回來，任何人都救不回來。這是端對端加密的代價：在自我保管下，只有你握有金鑰，所以聯絡開發團隊也無法把筆記找回來。",
     "noRecoveryTerm": "無法救援",
     "noRecoveryDesc": "遺失助憶詞，就失去筆記",
     "deviceTerm": "裝置端產生",

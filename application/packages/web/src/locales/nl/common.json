@@ -209,5 +209,13 @@
       "je kluis blijft agressief onleesbaar.",
       "zwitserse neutraliteit, maar dan voor notities."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Nooit geback-upt. Dit is de enige kopie.",
+    "some_one": "{{count}} van deze notities is nooit geback-upt. Dit is de enige kopie.",
+    "some_other": "{{count}} van deze notities zijn nooit geback-upt. Dit zijn de enige kopieën.",
+    "changesOne": "De laatste wijzigingen zijn niet geback-upt en zouden verloren gaan.",
+    "changesSome_one": "{{count}} van deze notities heeft niet-geback-upte wijzigingen die verloren zouden gaan.",
+    "changesSome_other": "{{count}} van deze notities hebben niet-geback-upte wijzigingen die verloren zouden gaan."
   }
 }

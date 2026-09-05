@@ -209,5 +209,13 @@
       "ton coffre reste obstinément illisible.",
       "neutralité suisse, mais pour les notes."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Jamais sauvegardée. C'est la seule copie.",
+    "some_one": "{{count}} de ces notes n'a jamais été sauvegardée. C'est sa seule copie.",
+    "some_other": "{{count}} de ces notes n'ont jamais été sauvegardées. Ce sont les seules copies.",
+    "changesOne": "Ses dernières modifications ne sont pas sauvegardées et seraient perdues.",
+    "changesSome_one": "{{count}} de ces notes a des modifications non sauvegardées qui seraient perdues.",
+    "changesSome_other": "{{count}} de ces notes ont des modifications non sauvegardées qui seraient perdues."
   }
 }

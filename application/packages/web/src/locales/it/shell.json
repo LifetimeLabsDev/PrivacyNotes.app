@@ -431,6 +431,7 @@
     "urlInvalid": "Inserisci un indirizzo web, come example.com o https://example.com/page.",
     "urlDuplicate": "Un altro segnalibro ha già questo URL, la modifica non è stata salvata.",
     "openAction": "Apri",
+    "copiedUrl": "Link copiato",
     "moveToTrash": "Sposta nel cestino",
     "emptyNone": "Ancora nessun segnalibro.",
     "emptyTitle": "Salva i siti che vale la pena tenere",

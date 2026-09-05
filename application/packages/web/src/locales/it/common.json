@@ -209,5 +209,13 @@
       "la tua cassaforte resta ostinatamente illeggibile.",
       "neutralità svizzera, ma per le note."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Mai salvata in backup. Questa è l'unica copia.",
+    "some_one": "{{count}} di queste note non è mai stata salvata in backup. Questa è la sua unica copia.",
+    "some_other": "{{count}} di queste note non sono mai state salvate in backup. Queste sono le uniche copie.",
+    "changesOne": "Le ultime modifiche non hanno un backup e andrebbero perse.",
+    "changesSome_one": "{{count}} di queste note ha modifiche senza backup che andrebbero perse.",
+    "changesSome_other": "{{count}} di queste note hanno modifiche senza backup che andrebbero perse."
   }
 }

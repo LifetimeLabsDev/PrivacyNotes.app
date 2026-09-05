@@ -3012,7 +3012,7 @@ dependencies = [
 
 [[package]]
 name = "privacynotes"
-version = "0.495.1"
+version = "0.500.4"
 dependencies = [
  "block2",
  "objc2",

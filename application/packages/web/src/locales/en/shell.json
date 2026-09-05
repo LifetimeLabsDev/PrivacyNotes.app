@@ -431,6 +431,7 @@
     "urlInvalid": "Enter a web address, like example.com or https://example.com/page.",
     "urlDuplicate": "Another bookmark already has this URL, so the change was not saved.",
     "openAction": "Open",
+    "copiedUrl": "Link copied",
     "moveToTrash": "Move to Trash",
     "emptyNone": "No bookmarks yet.",
     "emptyTitle": "Save the sites worth keeping",

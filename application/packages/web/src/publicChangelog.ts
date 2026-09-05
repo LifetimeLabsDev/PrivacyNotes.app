@@ -26,6 +26,42 @@ export const IN_APP_CHANGELOG_LIMIT = 10;
 
 export const PUBLIC_CHANGELOG: ChangelogRelease[] = [
   {
+    version: '0.500',
+    date: '2026-09-05',
+    title: 'A note the server refuses no longer looks synced',
+    items: [
+      { type: 'new', text: 'A note the server will not accept now reads "Not synced", carries a warning, and appears in ID & Sync with the fix it needs.' },
+      { type: 'new', text: 'Deleting a note, emptying the trash or signing out warns you first when a note exists on this device only.' },
+      { type: 'improved', text: 'A note too large to sync stops uploading on every pass, which saves data on every signed-in device.' },
+      { type: 'improved', text: 'The markdown view carries a "Show formatted" button beside the tags, and in zen mode.' },
+      { type: 'fixed', text: 'A note-link comes out with one press of Backspace or Delete, on every platform.' },
+      { type: 'fixed', text: 'Typing "[[" and then pressing backspace no longer kills the note-title list for the rest of that link.' },
+    ],
+  },
+  {
+    version: '0.499',
+    date: '2026-09-04',
+    title: 'Clearer Android downloads, and an honest theme picker',
+    items: [
+      { type: 'improved', text: 'The Android downloads lead with Zapstore, the one route that checks the signature of the app before it installs.' },
+      { type: 'improved', text: 'Each Android download says whether it updates itself or you update it by hand.' },
+      { type: 'improved', text: 'The homepage reads more plainly, in every language.' },
+      { type: 'fixed', text: 'The Default chip in the theme picker paints the dark palette while dark mode is on, so the extra themes no longer look like the odd ones out.' },
+    ],
+  },
+  {
+    version: '0.498',
+    date: '2026-09-03',
+    title: 'Tables get a header row and columns that stay put',
+    items: [
+      { type: 'new', text: 'A new table comes with a header row, so it stays a table when you export it or read the source.' },
+      { type: 'new', text: 'The table toolbar adds or removes a header row on any table.' },
+      { type: 'improved', text: 'Table columns share the width evenly and text wraps inside a cell, so one long sentence no longer squeezes every other column.' },
+      { type: 'improved', text: 'The brand page carries an avatar made for a round crop.' },
+      { type: 'fixed', text: 'The table toolbar appears when your cursor enters a table, follows the table as it grows, and leaves when you do.' },
+    ],
+  },
+  {
     version: '0.497',
     date: '2026-09-03',
     title: 'Now on Zapstore, and store installs stop getting update nags',

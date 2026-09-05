@@ -56,7 +56,14 @@
     "unsyncedKept_other": "{{count}} anteckningar på den här enheten har inte synkats än. De stannar på enheten och synkas när du loggar in igen.",
     "dontRemind": "Påminn mig inte igen",
     "showPhrase": "Nej, visa frasen",
-    "confirm": "Ja, logga ut"
+    "confirm": "Ja, logga ut",
+    "stay": "Förbli inloggad",
+    "signOutLose_one": "Logga ut och förlora {{count}} anteckning",
+    "signOutLose_other": "Logga ut och förlora {{count}} anteckningar",
+    "neverBackedUp_one": "Bara på den här enheten:",
+    "neverBackedUp_other": "Bara på den här enheten:",
+    "moreNotes": "och {{count}} till",
+    "appLockHint": "Delad enhet? Slå på applåset under Inställningar > Säkerhet."
   },
   "burnShareModal": {
     "title": "Dela och bränn efter läsning",

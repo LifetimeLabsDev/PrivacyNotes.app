@@ -68,6 +68,7 @@ export function buildSettingsCategories({
   onToggleHiddenView,
   auth,
   settingsAutoVerify,
+  onOpenNote,
   setShowSettings,
   setShowUpgrade,
   setImportToast,
@@ -103,6 +104,8 @@ export function buildSettingsCategories({
   onToggleHiddenView: (field: 'hiddenViews' | 'hiddenInAll', key: View) => void;
   auth: Authed;
   settingsAutoVerify: boolean;
+  /** ID & Sync's "Open" for a note the last pass could not push. */
+  onOpenNote: (id: string) => void;
   setShowSettings: Dispatch<SetStateAction<boolean>>;
   setShowUpgrade: (next: { trigger: 'theme' | null }) => void;
   setImportToast: Dispatch<SetStateAction<string | null>>;
@@ -222,6 +225,7 @@ export function buildSettingsCategories({
                   embedded
                   tab="plan"
                   onSyncNow={runSync}
+                  onOpenNote={onOpenNote}
                   onClose={() => setShowSettings(false)}
                   onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: null }); }}
                   onSignOut={handleSignOutClick}
@@ -238,6 +242,7 @@ export function buildSettingsCategories({
                   embedded
                   tab="storage"
                   onSyncNow={runSync}
+                  onOpenNote={onOpenNote}
                   onClose={() => setShowSettings(false)}
                   onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: null }); }}
                   onSignOut={handleSignOutClick}
@@ -277,6 +282,7 @@ export function buildSettingsCategories({
                   embedded
                   tab="me"
                   onSyncNow={runSync}
+                  onOpenNote={onOpenNote}
                   autoVerify={settingsAutoVerify}
                   onClose={() => setShowSettings(false)}
                   onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: null }); }}

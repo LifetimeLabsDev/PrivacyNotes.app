@@ -8,7 +8,8 @@
     "readOnly": "唯讀",
     "file": "檔案",
     "empty": "空白",
-    "noContent": "沒有內容"
+    "noContent": "沒有內容",
+    "notBackedUp": "未備份"
   },
   "header": {
     "new": "新增",
@@ -168,7 +169,9 @@
     "widthWide": "更寬",
     "widthFull": "全寬",
     "burn": "分享與 Burn After Reading",
-    "titlePlaceholderLink": "書籤名稱"
+    "titlePlaceholderLink": "書籤名稱",
+    "notBackedUpTooLarge": "超過 1 MB 上限，因此尚未備份。請把圖片改為附件，或將筆記拆成兩則。",
+    "notBackedUpFailed": "尚未備份。最近的錯誤：{{message}}。正在重試。"
   },
   "share": {
     "hover": "分享／匯出",

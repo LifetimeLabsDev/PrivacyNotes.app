@@ -1,6 +1,6 @@
 import type { Dispatch, ReactNode, RefObject, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowUUpLeft as Undo2Icon, ArrowUUpRight as Redo2Icon, X, ArrowLeft, ArrowCounterClockwise, Trash, DotsThreeOutlineVertical, CaretLeft, CaretRight, PencilSimpleSlash, MarkdownLogo, Paragraph, MagnifyingGlass, FrameCorners } from '../icons';
+import { ArrowUUpLeft as Undo2Icon, ArrowUUpRight as Redo2Icon, X, ArrowLeft, ArrowCounterClockwise, Trash, DotsThreeOutlineVertical, CaretLeft, CaretRight, PencilSimpleSlash, MarkdownLogo, TextAa, Paragraph, MagnifyingGlass, FrameCorners } from '../icons';
 import type { AuthState } from '../auth';
 import type { LocalNote } from '../db';
 import { updateNote } from '../notesRepo';
@@ -17,6 +17,7 @@ import { EditorSlotPill } from '../EditorSlotPill';
 import { useTheme, type ContentWidth } from '../theme';
 import { TITLE_MAX_LENGTH } from '../useNoteEditing';
 import { proUnlocked } from '../demo';
+import { usePushFailure } from '../pushFailures';
 import { VaultItem } from '../VaultItem';
 import { isWeekJournal, toLocalIso } from '../notesViewUtils';
 import type { View } from '../views';
@@ -53,6 +54,17 @@ const HEADER_BTN = `${HEADER_BTN_BASE} w-8 ${HEADER_BTN_REST}`;
 const HEADER_BTN_NARROW = `${HEADER_BTN_BASE} w-6 ${HEADER_BTN_REST}`;
 /** Glyph size for every icon in the editor header. */
 const HEADER_ICON = 18;
+/**
+ * The same 32px square, in zen's clothes. Zen strips the page down to the
+ * note, so the few controls left have to look like controls: borderless
+ * among bordered reads as a stray glyph, and every one of them matches the
+ * Exit Zen button beside it. `ZEN_BTN_ON` is the pressed state for the
+ * toggles that have one.
+ */
+const ZEN_BTN_BOX =
+  'shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md border transition';
+const ZEN_BTN_REST = `${ZEN_BTN_BOX} border-divider bg-surface-2 text-neutral-600 dark:text-neutral-300 hover:text-accent hover:border-accent/50`;
+const ZEN_BTN_ON = `${ZEN_BTN_BOX} border-accent/50 bg-accent/10 text-accent`;
 
 /**
  * Cycles the editor's reading column: default, wide, full. The cap itself
@@ -92,7 +104,7 @@ function ContentWidthButton({
         onMouseDown={(e) => e.preventDefault()}
         onClick={onCycle}
         aria-label={nextLabel}
-        className={`shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md border transition ${on ? 'border-accent/50 bg-accent/10 text-accent' : 'border-divider bg-surface-2 text-neutral-600 dark:text-neutral-300 hover:text-accent hover:border-accent/50'}`}
+        className={on ? ZEN_BTN_ON : ZEN_BTN_REST}
       >
         <FrameCorners size={HEADER_ICON} aria-hidden="true" />
       </button>
@@ -224,6 +236,8 @@ export interface NoteEditorPaneProps {
 
 export function NoteEditorPane(props: NoteEditorPaneProps) {
   const { t } = useTranslation('notes');
+  // The last sync pass could not push this note (pushFailures.ts).
+  const pushFailure = usePushFailure(props.selected.id);
   const { contentWidth, cycleContentWidth } = useTheme();
   const {
     selected,
@@ -635,7 +649,26 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           />
           </>
         )}
-        {zenMode && markdownBody && (
+        {/* One slot, one control per editor mode, exactly as the tag row
+            does it outside zen. The formatting bar drives TipTap, which the
+            source view unmounts, so in markdown mode this box carries the
+            way back to formatted text instead of a toggle that reads as
+            live and does nothing. Icon only, because Exit Zen is the one
+            label zen affords and a second one would compete with it.
+            Spec: ops/specs/editor-mode-toggle.md */}
+        {zenMode && canSwitchEditorMode && selectedEditorMode === 'markdown' && (
+          <HoverLabel label={t('editor.showFormatted')} position="below">
+            <button
+              type="button"
+              onClick={toggleEditorMode}
+              aria-label={t('editor.showFormatted')}
+              className={ZEN_BTN_REST}
+            >
+              <TextAa size={HEADER_ICON} aria-hidden="true" />
+            </button>
+          </HoverLabel>
+        )}
+        {zenMode && markdownBody && selectedEditorMode !== 'markdown' && (
           // Zen's only formatting affordance, and testers kept missing
           // it: borderless with a 16px glyph it read as a label beside
           // the bordered Exit Zen button. MarkdownLogo's viewBox is
@@ -650,7 +683,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               onClick={() => setZenToolbar((v) => !v)}
               aria-label={zenToolbar ? t('editor.hideToolbar') : t('editor.showToolbar')}
               aria-pressed={zenToolbar}
-              className={`shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md border transition ${zenToolbar ? 'border-accent/50 bg-accent/10 text-accent' : 'border-divider bg-surface-2 text-neutral-600 dark:text-neutral-300 hover:text-accent hover:border-accent/50'}`}
+              className={zenToolbar ? ZEN_BTN_ON : ZEN_BTN_REST}
             >
               <MarkdownLogo size={20} aria-hidden="true" />
             </button>
@@ -682,12 +715,9 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               aria-label={t('editor.noteOptions')}
               aria-expanded={showNoteOptions}
               // In zen it takes the bordered box its neighbours wear.
-              // Zen strips the page to the note, so the few controls left
-              // have to look like controls; borderless among bordered reads
-              // as a stray glyph rather than one more button in the row.
               className={
                 zenMode
-                  ? `shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md border transition ${showNoteOptions ? 'border-accent/50 bg-accent/10 text-accent' : 'border-divider bg-surface-2 text-neutral-600 dark:text-neutral-300 hover:text-accent hover:border-accent/50'}`
+                  ? (showNoteOptions ? ZEN_BTN_ON : ZEN_BTN_REST)
                   : `${HEADER_BTN_BASE} w-8 ${showNoteOptions ? 'text-accent bg-accent/15' : HEADER_BTN_REST}`
               }
           >
@@ -741,6 +771,20 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
         )}
         </div>
       </div>
+      {/* Not backed up: the server refused this note on the last pass. Sits
+          under the header so the header keeps its fixed height, and has no
+          dismiss - the only thing that clears it is a pass that pushes the
+          note. Spec: ops/docs/ui-patterns.md (the not-backed-up state) */}
+      {pushFailure && (
+        <div
+          role="status"
+          className="shrink-0 border-b border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 px-4 sm:px-6 py-2 text-sm text-amber-800 dark:text-amber-300"
+        >
+          {pushFailure.reason === 'too_large'
+            ? t('editor.notBackedUpTooLarge')
+            : t('editor.notBackedUpFailed', { message: pushFailure.message })}
+        </div>
+      )}
       {/* PIN-protect gate - covers the editor until the user
           unlocks. Unlocking here sets the shared session
           timer, so any other protected notes also become
@@ -850,8 +894,8 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                 // through to the textarea's own native history (see
                 // handleHistory in NotesView.tsx), and the reading width is
                 // a CSS variable on the content column, which the source
-                // view wears too. So the one dead control hides and the
-                // rest stay.
+                // view wears too. So the one dead control gives its slot to
+                // the way back to formatted text, and the rest stay.
                 // Spec: ops/specs/editor-mode-toggle.md
                 (
                 <div className="ml-auto flex items-center gap-1.5 shrink-0">
@@ -899,6 +943,32 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                     <HeaderDivider />
                   </div>
                   <div className="flex items-center gap-0.5">
+                    {/* The way back out of the source view, in the slot the
+                        formatting-bar toggle holds the rest of the time.
+                        Both controls act on the shape of the editor rather
+                        than on the note body, so one place carries both and
+                        neither is ever drawn twice. The glyph names the
+                        DESTINATION, matching the "..." menu's row for the
+                        same flip; the label spells it out where the row has
+                        room, and under `sm` the glyph stands alone in the
+                        row's own 32px square, which is where the tag row is
+                        tightest. The label is a second copy of the
+                        accessible name, so there is no hover tip on top of
+                        it.
+                        Spec: ops/specs/editor-mode-toggle.md */}
+                    {selectedEditorMode === 'markdown' && canSwitchEditorMode && (
+                      <button
+                        type="button"
+                        tabIndex={isMobile ? -1 : undefined}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={toggleEditorMode}
+                        aria-label={t('editor.showFormatted')}
+                        className={`${HEADER_BTN_BASE} ${HEADER_BTN_REST} w-8 sm:w-auto sm:gap-1.5 sm:px-2 text-xs font-medium`}
+                      >
+                        <TextAa size={HEADER_ICON} aria-hidden="true" />
+                        <span className="hidden sm:inline">{t('editor.showFormatted')}</span>
+                      </button>
+                    )}
                     {selectedEditorMode !== 'markdown' && (
                     <HoverLabel label={toolbarVisible ? t('editor.hideToolbar') : t('editor.showToolbar')} position="below">
                       <button
@@ -964,8 +1034,8 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               /* No corner here, and nothing to put in one. Find drives the
                  rich editor, which is unmounted in this view, and the outline
                  has no headings to read off a plain textarea. The way back to
-                 formatted text is the first row of the "..." menu and the
-                 link under the word count. */
+                 formatted text is the tag row's button, the first row of the
+                 "..." menu, and the link under the word count. */
               <MarkdownSourceEditor
                 key={`${selected.id}-${editorRevision}`}
                 value={selected.body}

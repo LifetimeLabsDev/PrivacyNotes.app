@@ -56,7 +56,14 @@
     "unsyncedKept_other": "{{count}} Notizen auf diesem Gerät sind noch nicht synchronisiert. Sie bleiben auf diesem Gerät und werden synchronisiert, sobald du dich wieder anmeldest.",
     "dontRemind": "Mich nicht erneut erinnern",
     "showPhrase": "Nein, Phrase anzeigen",
-    "confirm": "Ja, abmelden"
+    "confirm": "Ja, abmelden",
+    "stay": "Angemeldet bleiben",
+    "signOutLose_one": "Abmelden und {{count}} Notiz verlieren",
+    "signOutLose_other": "Abmelden und {{count}} Notizen verlieren",
+    "neverBackedUp_one": "Nur auf diesem Gerät:",
+    "neverBackedUp_other": "Nur auf diesem Gerät:",
+    "moreNotes": "und {{count}} weitere",
+    "appLockHint": "Geteiltes Gerät? Schalte die App-Sperre unter Einstellungen > Sicherheit ein."
   },
   "burnShareModal": {
     "title": "Teilen und nach dem Lesen vernichten",

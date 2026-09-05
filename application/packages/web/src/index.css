@@ -263,7 +263,13 @@
     & table.pn-table {
       border-collapse: collapse;
       width: 100%;
-      table-layout: auto;
+      /* Every column gets the same share of the width, and text wraps inside
+         it. Sizing from content instead lets one long sentence swallow the
+         table, and there is no drag handle to undo that with - column resizing
+         is off, because a stored column width cannot be written into a pipe
+         table.
+         Spec: ops/docs/design-decisions.md (Table column widths) */
+      table-layout: fixed;
       overflow: hidden;
       /* Prose gives <table> its own 2em top/bottom margin, and the table sits
          inside .tableWrapper which already carries 1em - the two stacked to a

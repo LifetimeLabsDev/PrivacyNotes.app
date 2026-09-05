@@ -20,6 +20,18 @@
 const LOG_KEY = 'privacynotes.authlog';
 const MAX_ENTRIES = 200;
 
+/** The newest `limit` breadcrumbs, oldest first. Read by the support
+ *  report, so a device with no console can still hand over its trail. */
+export function readAuthLog(limit = 20): Array<{ t: string; event: string } & Record<string, unknown>> {
+  try {
+    const raw = localStorage.getItem(LOG_KEY);
+    const list = raw ? (JSON.parse(raw) as Array<{ t: string; event: string } & Record<string, unknown>>) : [];
+    return Array.isArray(list) ? list.slice(-limit) : [];
+  } catch {
+    return [];
+  }
+}
+
 export function logAuthEvent(
   event: string,
   detail?: Record<string, unknown>,

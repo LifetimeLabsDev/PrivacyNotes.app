@@ -79,7 +79,7 @@
     "import-from-other-apps": {
       "q": "Com puc portar les meves notes des d'una altra aplicació?",
       "a": [
-        "Obre Configuració > Import & Export i tria l'origen. Hi ha importadors dedicats per a Apple Notes, Obsidian, Standard Notes, Google Keep, Simplenote, Samsung Notes i Bitwarden (els inicis de sessió, les targetes i les notes segures van a parar a la Caixa forta), més un importador genèric de Markdown per a qualsevol carpeta de fitxers .md.",
+        "Obre Configuració > Import & Export i tria l'origen. La llista cobreix les aplicacions d'on ve la gent: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes i Apple Journal. Bitwarden i les contrasenyes desades del teu navegador acaben a la Caixa forta, els marcadors del navegador arriben com a marcadors, i un importador de Markdown genèric accepta qualsevol carpeta de fitxers .md.",
         "Les importacions s'executen íntegrament al teu dispositiu: els fitxers exportats s'analitzen, es xifren i es desen localment; no es puja res enlloc per processar-ho. Cada nota importada s'etiqueta amb el seu origen perquè després puguis repassar el lot sencer, i les llistes de comprovació de Google Keep es converteixen fins i tot en llistes de tasques natives."
       ]
     },
@@ -188,7 +188,7 @@
       "a": [
         "Si encara tens la sessió iniciada en algun dispositiu: sí, la pots recuperar tu mateix. Obre Configuració > Seguretat > La teva frase i desa-la ara mateix al teu gestor de contrasenyes.",
         "Si no tens cap dispositiu amb la sessió iniciada ni la frase: no, i ningú no pot. La teva frase no arriba mai als nostres servidors, així que no hi ha res a restablir ni cap tiquet de suport que hi pugui fer res. No és una política que puguem doblegar - és el que significa el xifratge d'extrem a extrem. Qualsevol servei que et pugui restaurar les dades xifrades després d'una pèrdua total és que et guarda les claus.",
-        "La solució costa deu segons: desa la frase en un gestor de contrasenyes el mateix dia que creïs el compte."
+        "La solució costa deu segons: desa la frase en un gestor de contrasenyes el mateix dia que creïs el compte. Si ja s'ha perdut i pagues un complement d'emmagatzematge, Paddle et factura directament i el pot cancel·lar sense la teva frase: mira [canviar o cancel·lar un complement](/ca/help/manage-storage-addon/)."
       ]
     },
     "oauth-recovery": {
@@ -259,8 +259,8 @@
     "export": {
       "q": "Puc exportar les meves notes, o hi estic lligat?",
       "a": [
-        "Pots exportar-ho tot en qualsevol moment, generat íntegrament al teu dispositiu: fitxers Markdown en un zip amb els adjunts inclosos, una còpia de seguretat completa en JSON, o HTML autònom - per nota o per a tot el compte.",
-        "La importació també funciona: porta-hi notes des d'Obsidian, Apple Notes, Google Keep, Standard Notes, Simplenote i Samsung Notes. La dependència forçada no forma part del model de negoci."
+        "Pots exportar-ho tot en qualsevol moment, generat íntegrament al teu dispositiu: fitxers Markdown en un zip amb els adjunts inclosos, una còpia de seguretat completa en JSON, o HTML autònom - per nota o per a tot el compte. Els elements de la caixa forta tenen la seva pròpia via, «Exportació de la caixa forta (.json)», que escriu el format de Bitwarden i porta els teus noms d'usuari, contrasenyes, URL, dades de targeta i claus 2FA a Bitwarden, 1Password o KeePass.",
+        "Tot és a Configuració > Import & Export > Export. La importació funciona igual, des d'Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden i més: la llista completa és a [venir d'una altra aplicació](/ca/help/import-from-other-apps/). Tancar-te a dins no forma part del model de negoci."
       ]
     },
     "attachment-limits": {
@@ -552,7 +552,8 @@
       "q": "Com canvio o cancel·lo el meu complement d'emmagatzematge?",
       "a": [
         "Configuració > Emmagatzematge és el tauler de control. Canviar a un paquet més gran s'aplica immediatament, i la confirmació mostra l'import prorratejat exacte que es cobra avui abans no ho confirmis; la data de renovació no es mou. «Cancel·la l'emmagatzematge» et manté l'espai addicional fins al final del període que ja has pagat. Per passar a un paquet més petit, cancel·la l'actual i compra el petit quan s'acabi el període.",
-        "Si les teves dades encara caben en el límit restant després del venciment, s'ha acabat; si no, no s'esborra res i comença el [cicle de 90 dies per excés de quota](/ca/help/over-quota/). Una renovació fallida mostra un avís amb un enllaç «Actualitza la targeta» per arreglar el pagament a Paddle. Si t'hi vas subscriure des d'una versió de botiga, qui et factura és la botiga, així que la cancel·lació es fa a la configuració de subscripcions de la botiga mateixa."
+        "Si les teves dades encara caben en el límit restant després del venciment, s'ha acabat; si no, no s'esborra res i comença el [cicle de 90 dies per excés de quota](/ca/help/over-quota/). Una renovació fallida mostra un avís amb un enllaç «Actualitza la targeta» per arreglar el pagament a Paddle.",
+        "Cancel·lar des de fora de l'aplicació també funciona, i és la resposta quan no pots iniciar la sessió. Paddle és el nostre comerciant registrat i et factura directament: fes servir l'enllaç «Gestiona la subscripció» del correu del rebut, o el xat d'assistència a [paddle.net](https://paddle.net). Amb una versió de botiga la idea és la mateixa, així que cancel·la allà, a la configuració de subscripcions de la botiga."
       ]
     },
     "store-purchases": {

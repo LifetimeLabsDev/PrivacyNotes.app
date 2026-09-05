@@ -79,7 +79,7 @@
     "import-from-other-apps": {
       "q": "Jak przenieść notatki z innej aplikacji?",
       "a": [
-        "Otwórz Ustawienia > Import & Export i wybierz swoje źródło. Są osobne importery dla Apple Notes, Obsidian, Standard Notes, Google Keep, Simplenote, Samsung Notes i Bitwarden (loginy, karty i bezpieczne notatki lądują w Sejfie), plus uniwersalny importer Markdown dla dowolnego folderu z plikami .md.",
+        "Otwórz Ustawienia > Import & Export i wybierz swoje źródło. Lista obejmuje aplikacje, z których ludzie przychodzą: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes i Apple Journal. Bitwarden oraz hasła zapisane w przeglądarce trafiają do Sejfu, zakładki przeglądarki przychodzą jako zakładki, a ogólny importer Markdown przyjmuje dowolny folder z plikami .md.",
         "Importy działają w całości na Twoim urządzeniu: wyeksportowane pliki są parsowane, szyfrowane i zapisywane lokalnie, nic nie jest wysyłane do przetworzenia. Każda zaimportowana notatka dostaje tag swojego źródła, żebyś mógł później przejrzeć całą partię, a listy kontrolne z Google Keep zamieniają się nawet w natywne listy zadań."
       ]
     },
@@ -188,7 +188,7 @@
       "a": [
         "Jeśli jesteś jeszcze zalogowany na jakimkolwiek urządzeniu: tak, możesz ją odzyskać sam. Otwórz Ustawienia > Bezpieczeństwo > Twoja fraza i zapisz ją teraz w menedżerze haseł.",
         "Jeśli nie masz żadnego zalogowanego urządzenia ani frazy: nie, i nikt inny też nie może. Twoja fraza nigdy nie trafia na nasze serwery, więc nie ma czego zresetować i nie ma zgłoszenia do wsparcia, które by pomogło. To nie polityka, którą moglibyśmy nagiąć - to właśnie znaczy szyfrowanie end-to-end. Każda usługa, która potrafi odtworzyć Twoje zaszyfrowane dane po całkowitej utracie, trzyma Twoje klucze.",
-        "Zabezpieczenie kosztuje dziesięć sekund: zapisz frazę w menedżerze haseł tego samego dnia, w którym zakładasz konto."
+        "Zabezpieczenie kosztuje dziesięć sekund: zapisz frazę w menedżerze haseł tego samego dnia, w którym zakładasz konto. Jeśli fraza już przepadła, a płacisz za dodatek pamięci: rozlicza Cię bezpośrednio Paddle i może go anulować bez Twojej frazy, zobacz [zmiana albo anulowanie dodatku](/pl/help/manage-storage-addon/)."
       ]
     },
     "oauth-recovery": {
@@ -259,8 +259,8 @@
     "export": {
       "q": "Czy mogę wyeksportować swoje notatki, czy jestem uwięziony?",
       "a": [
-        "Możesz wyeksportować wszystko w każdej chwili, generowane w całości na Twoim urządzeniu: pliki Markdown w zipie razem z załącznikami, pełną kopię JSON albo samodzielny HTML - dla pojedynczej notatki lub całego konta.",
-        "Import też działa: przenieś notatki z Obsidian, Apple Notes, Google Keep, Standard Notes, Simplenote i Samsung Notes. Uwięzienie użytkownika nie jest częścią naszego modelu biznesowego."
+        "Możesz wyeksportować wszystko w każdej chwili, generowane w całości na Twoim urządzeniu: pliki Markdown w zipie razem z załącznikami, pełną kopię JSON albo samodzielny HTML - dla pojedynczej notatki lub całego konta. Wpisy z sejfu mają własną drogę, „Eksport sejfu (.json)”, który zapisuje format Bitwardena i przenosi Twoje nazwy użytkownika, hasła, adresy URL, dane kart i klucze 2FA do Bitwardena, 1Password albo KeePass.",
+        "Wszystko znajdziesz w Ustawienia > Import & Export > Export. Import działa tak samo, z Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden i nie tylko: pełna lista jest w [przenosiny z innej aplikacji](/pl/help/import-from-other-apps/). Uwięzienie u nas nie jest częścią modelu biznesowego."
       ]
     },
     "attachment-limits": {
@@ -552,7 +552,8 @@
       "q": "Jak zmienić albo anulować dodatek pamięci?",
       "a": [
         "Ustawienia > Pamięć to Twój panel sterowania. Przejście na większy pakiet działa od razu, a potwierdzenie pokazuje dokładną proporcjonalną kwotę pobraną dzisiaj, zanim to zatwierdzisz; data odnowienia się nie przesuwa. „Anuluj pamięć” zachowuje Twoje dodatkowe miejsce do końca okresu, który już opłaciłeś. Żeby przejść na mniejszy pakiet, anuluj obecny i kup mniejszy, gdy okres się skończy.",
-        "Jeśli po wygaśnięciu Twoje dane wciąż mieszczą się w pozostałym limicie, to koniec sprawy; jeśli nie, nic nie jest usuwane i zaczyna się [90-dniowy cykl przekroczenia limitu](/pl/help/over-quota/). Nieudane odnowienie pokazuje baner z linkiem „Zaktualizuj kartę”, żeby naprawić płatność w Paddle. Jeśli subskrybowałeś w wersji ze sklepu, rozlicza Cię sklep, więc anulowanie odbywa się zamiast tego w ustawieniach subskrypcji tego sklepu."
+        "Jeśli po wygaśnięciu Twoje dane wciąż mieszczą się w pozostałym limicie, to koniec sprawy; jeśli nie, nic nie jest usuwane i zaczyna się [90-dniowy cykl przekroczenia limitu](/pl/help/over-quota/). Nieudane odnowienie pokazuje baner z linkiem „Zaktualizuj kartę”, żeby naprawić płatność w Paddle.",
+        "Anulowanie spoza aplikacji też działa i to jest odpowiedź, gdy nie możesz się zalogować. Paddle jest naszym sprzedawcą i rozlicza Cię bezpośrednio: skorzystaj z linku „Zarządzaj subskrypcją” w e-mailu z potwierdzeniem albo z czatu wsparcia na [paddle.net](https://paddle.net). W wersji ze sklepu jest tak samo, więc anuluj tam, w ustawieniach subskrypcji sklepu."
       ]
     },
     "store-purchases": {

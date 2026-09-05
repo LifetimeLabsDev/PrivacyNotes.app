@@ -56,7 +56,14 @@
     "unsyncedKept_other": "{{count}} notes sur cet appareil ne sont pas encore synchronisées. Elles restent sur cet appareil et se synchroniseront quand tu te reconnecteras.",
     "dontRemind": "Ne plus me le rappeler",
     "showPhrase": "Non, afficher la phrase",
-    "confirm": "Oui, me déconnecter"
+    "confirm": "Oui, me déconnecter",
+    "stay": "Rester connecté",
+    "signOutLose_one": "Se déconnecter et perdre {{count}} note",
+    "signOutLose_other": "Se déconnecter et perdre {{count}} notes",
+    "neverBackedUp_one": "Uniquement sur cet appareil :",
+    "neverBackedUp_other": "Uniquement sur cet appareil :",
+    "moreNotes": "et {{count}} de plus",
+    "appLockHint": "Appareil partagé ? Active le verrouillage de l'app dans Paramètres > Sécurité."
   },
   "burnShareModal": {
     "title": "Partager en burn note",

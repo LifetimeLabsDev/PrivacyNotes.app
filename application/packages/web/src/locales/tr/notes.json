@@ -8,7 +8,8 @@
     "readOnly": "Salt okunur",
     "file": "Dosya",
     "empty": "Boş",
-    "noContent": "İçerik yok"
+    "noContent": "İçerik yok",
+    "notBackedUp": "Yedeklenmedi"
   },
   "header": {
     "new": "Yeni",
@@ -170,7 +171,9 @@
     "widthWide": "Daha geniş",
     "widthFull": "Tam genişlik",
     "burn": "Paylaş ve okunduktan sonra yak",
-    "titlePlaceholderLink": "Yer imi adı"
+    "titlePlaceholderLink": "Yer imi adı",
+    "notBackedUpTooLarge": "1 MB sınırının üzerinde olduğu için yedeklenmedi. Görselleri eklere taşıyın veya notu bölün.",
+    "notBackedUpFailed": "Yedeklenmedi. Son hata: {{message}}. Yeniden deneniyor."
   },
   "share": {
     "hover": "Paylaş / Dışa aktar",

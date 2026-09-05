@@ -235,7 +235,13 @@
     "pausedTooltip": "Du har pausat synkningen på den här enheten. Anteckningarna stannar här tills du återupptar den.",
     "pausedAria": "Synkning pausad",
     "wifiHold": "Väntar på wifi",
-    "wifiHoldTooltip": "Filerna laddas upp när wifi är tillbaka. Anteckningarna synkar som vanligt."
+    "wifiHoldTooltip": "Filerna laddas upp när wifi är tillbaka. Anteckningarna synkar som vanligt.",
+    "notSynced": "Inte synkad",
+    "notBackedUp": "Inte säkerhetskopierad",
+    "notBackedUpTooltip_one": "{{count}} anteckning är inte säkerhetskopierad. Klicka för att se varför.",
+    "notBackedUpTooltip_other": "{{count}} anteckningar är inte säkerhetskopierade. Klicka för att se varför.",
+    "notBackedUpAria_one": "{{count}} anteckning är inte säkerhetskopierad",
+    "notBackedUpAria_other": "{{count}} anteckningar är inte säkerhetskopierade"
   },
   "errors": {
     "noSession": "Ingen aktiv session. Försök logga in igen.",
@@ -271,7 +277,7 @@
     "nodeDevice": "Den här enheten",
     "nodeEncrypted": "Krypterat",
     "nodeRegion": "Schweiz",
-    "sealed": "Krypteras före uppladdning. Servern kan inte läsa dem.",
+    "sealed": "Krypterade på din enhet. Servern kan inte läsa dem.",
     "offlineFact": "Fungerar offline. Synkar när du är online igen.",
     "activity": "Senaste aktivitet",
     "passUp_one": "{{count}} skickad",
@@ -280,7 +286,14 @@
     "passDown_other": "{{count}} mottagna",
     "passNothing": "Inga ändringar",
     "passNothingRepeat": "Inga ändringar - {{count}}x",
-    "passFailed": "misslyckades"
+    "passFailed": "misslyckades",
+    "notBackedUpHeading_one": "{{count}} anteckning är inte säkerhetskopierad",
+    "notBackedUpHeading_other": "{{count}} anteckningar är inte säkerhetskopierade",
+    "reasonTooLarge": "Över gränsen på 1 MB",
+    "reasonFailed": "Misslyckades: {{message}}",
+    "openNote": "Öppna",
+    "passPushFailed_one": "{{count}} misslyckades",
+    "passPushFailed_other": "{{count}} misslyckades"
   },
   "language": {
     "reportMistake": "Rapportera ett översättningsfel"

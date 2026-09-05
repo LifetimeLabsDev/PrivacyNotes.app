@@ -28,6 +28,10 @@ import { useBelowVersionFloor } from './versionFloor';
 import { setSyncPaused, useSyncPaused } from './syncPause';
 import { setFilesWifiOnly, useFilesWifiOnly, wifiOnlyAvailable } from './wifiOnly';
 import { useSyncLog, lastOkSyncAt, type SyncPassEntry } from './syncLog';
+import { usePushFailures, type PushFailure } from './pushFailures';
+import { db } from './db';
+import { readAuthLog } from './authDiag';
+import { deriveDisplayTitle } from './notesViewUtils';
 import { useVerifyStamp } from './verifyStamp';
 import { formatRelative, SETTINGS_EYEBROW } from './settingsUI';
 import { VERSION } from './version';
@@ -48,6 +52,7 @@ export function SyncPanel({
   onSyncNow,
   supabase,
   autoVerify = false,
+  onOpenNote,
 }: {
   pubkey?: string;
   onSyncNow?: () => void | Promise<void>;
@@ -56,6 +61,9 @@ export function SyncPanel({
   /** Run the verify on mount - set when the footer pill's click IS the
    *  question (was SyncVerifyBlock's autoRun). */
   autoVerify?: boolean;
+  /** Opens a note from the not-backed-up list. Absent where there is no
+   *  editor to open it in. */
+  onOpenNote?: (id: string) => void;
 }) {
   const { t } = useTranslation('settings');
   const online = useOnlineStatus();
@@ -66,6 +74,31 @@ export function SyncPanel({
   const wifi = useFilesWifiOnly();
   const log = useSyncLog();
   const stamp = useVerifyStamp();
+  const failures = usePushFailures();
+
+  // Titles for the not-backed-up list, read on demand: the failing notes
+  // are the few the last pass refused, never the whole vault.
+  const [failedNotes, setFailedNotes] = useState<Array<{ id: string; title: string; failure: PushFailure; chars: number }>>([]);
+  useEffect(() => {
+    if (failures.size === 0) {
+      setFailedNotes([]);
+      return;
+    }
+    let cancelled = false;
+    const ids = [...failures.keys()];
+    void db.notes.bulkGet(ids).then((rows) => {
+      if (cancelled) return;
+      setFailedNotes(
+        ids.map((id, i) => {
+          const row = rows[i];
+          return { id, title: row ? deriveDisplayTitle(row) : id.slice(0, 8), failure: failures.get(id)!, chars: row ? row.body.length : 0 };
+        }),
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [failures]);
 
   // Re-render every 30 s so "2 min ago" ages without interaction.
   const [, tick] = useReducer((x: number) => x + 1, 0);
@@ -125,12 +158,13 @@ export function SyncPanel({
   // pill (SyncStatus.tsx), and carries the same words the pill does.
   const demo = isDemoMode();
 
-  const state: 'demo' | 'floor' | 'paused' | 'offline' | 'syncing' | 'wifiHold' | 'storageFull' | 'uploading' | 'synced' =
+  const state: 'demo' | 'floor' | 'paused' | 'offline' | 'syncing' | 'notBackedUp' | 'wifiHold' | 'storageFull' | 'uploading' | 'synced' =
     demo ? 'demo'
     : belowFloor ? 'floor'
     : paused ? 'paused'
     : !online ? 'offline'
     : syncing ? 'syncing'
+    : failures.size > 0 ? 'notBackedUp'
     : pending.count > 0 && wifi.held ? 'wifiHold'
     : pending.count > 0 && pending.blocked >= pending.count ? 'storageFull'
     : pending.count > 0 ? 'uploading'
@@ -144,6 +178,7 @@ export function SyncPanel({
     paused: { icon: <Pause size={17} weight="bold" />, word: t('syncStatus.paused'), cls: amber },
     offline: { icon: <WifiSlash size={17} />, word: t('syncStatus.offline'), cls: amber },
     syncing: { icon: <CircleNotch size={17} className="animate-spin" />, word: t('syncStatus.syncing'), cls: 'text-accent' },
+    notBackedUp: { icon: <Warning size={17} />, word: t('syncStatus.notBackedUp'), cls: amber },
     wifiHold: { icon: <CloudArrowUp size={17} />, word: t('syncStatus.wifiHold'), cls: amber },
     storageFull: { icon: <Warning size={17} />, word: t('syncStatus.storageFull'), cls: amber },
     uploading: { icon: <CircleNotch size={17} className="animate-spin" />, word: t('syncStatus.uploading'), cls: 'text-accent' },
@@ -160,6 +195,7 @@ export function SyncPanel({
     : state === 'floor' ? t('syncStatus.updateRequiredTooltip')
     : state === 'paused' ? t('syncPanel.pausedBody')
     : state === 'offline' ? t('syncStatus.offlineTooltip')
+    : state === 'notBackedUp' ? t('syncStatus.notBackedUpAria', { count: failures.size })
     : state === 'wifiHold' ? t('syncStatus.wifiHoldTooltip')
     : state === 'storageFull' ? t('syncStatus.pendingBlobsBlocked', { count: pending.blocked })
     : state === 'uploading' ? t('syncStatus.pendingBlobs', { count: pending.count })
@@ -226,6 +262,38 @@ export function SyncPanel({
 
         {!demo && <PassBars log={log} />}
       </div>
+
+      {/* ── Not backed up: the notes the last pass could not push, with the
+          reason each one was refused. Persistent by design - it clears only
+          when a pass pushes them. */}
+      {failedNotes.length > 0 && !demo && (
+        <div className="rounded-lg border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 p-3">
+          <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
+            {t('syncPanel.notBackedUpHeading', { count: failedNotes.length })}
+          </p>
+          <ul className="mt-2 space-y-1.5">
+            {failedNotes.map(({ id, title, failure }) => (
+              <li key={id} className="flex items-center gap-2 text-sm">
+                <span className="min-w-0 flex-1 truncate" dir="auto">{title}</span>
+                <span className="shrink-0 text-xs text-amber-700 dark:text-amber-400">
+                  {failure.reason === 'too_large'
+                    ? t('syncPanel.reasonTooLarge')
+                    : t('syncPanel.reasonFailed', { message: failure.message })}
+                </span>
+                {onOpenNote && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenNote(id)}
+                    className="shrink-0 rounded-md border border-amber-300 dark:border-amber-700 px-2 py-0.5 text-xs font-medium hover:bg-amber-100 dark:hover:bg-amber-900/40 transition"
+                  >
+                    {t('syncPanel.openNote')}
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* ── Controls: the two actions side by side, settings rows under ── */}
       <div className="grid gap-3 sm:grid-cols-2">
@@ -390,7 +458,7 @@ export function SyncPanel({
       </div>
 
       {/* ── Account ID (ID & Sync only) ── */}
-      {pubkey && <AccountIdRow pubkey={pubkey} unsynced={unsynced} pendingCount={pending.count} />}
+      {pubkey && <AccountIdRow pubkey={pubkey} unsynced={unsynced} pendingCount={pending.count} log={log} failed={failedNotes} />}
 
       {/* ── Recent activity ── */}
       {!demo && <ActivityList log={log} />}
@@ -444,7 +512,7 @@ function PassBars({ log }: { log: SyncPassEntry[] }) {
   return (
     <div className="mt-2.5 flex items-end gap-[3px] h-5" aria-hidden="true">
       {bars.map((e, i) => {
-        const h = 30 + Math.min(70, (e.up + e.down) * 7);
+        const h = 30 + Math.min(70, (e.up + e.down + (e.failed ?? 0)) * 7);
         // Older passes fade: the newest bar is fully opaque, the oldest
         // sits at 45%, so a red failure from hours ago reads as history
         // instead of a live alarm.
@@ -452,7 +520,7 @@ function PassBars({ log }: { log: SyncPassEntry[] }) {
         return (
           <span
             key={`${e.at}-${i}`}
-            className={`flex-1 rounded-[2px] ${e.ok ? 'bg-emerald-500/50' : 'bg-red-500/60'}`}
+            className={`flex-1 rounded-[2px] ${!e.ok ? 'bg-red-500/60' : e.failed ? 'bg-amber-500/60' : 'bg-emerald-500/50'}`}
             style={{ height: `${e.ok ? h : 60}%`, opacity: 0.45 + 0.55 * age }}
           />
         );
@@ -465,10 +533,16 @@ function AccountIdRow({
   pubkey,
   unsynced,
   pendingCount,
+  log,
+  failed,
 }: {
   pubkey: string;
   unsynced: number;
   pendingCount: number;
+  /** The recent passes, newest last (syncLog.ts). */
+  log: SyncPassEntry[];
+  /** The notes the last pass could not push. */
+  failed: ReadonlyArray<{ id: string; failure: PushFailure; chars: number }>;
 }) {
   const { t } = useTranslation('settings');
   const [copied, setCopied] = useState<'id' | 'report' | null>(null);
@@ -487,6 +561,24 @@ function AccountIdRow({
             `Unsynced notes: ${unsynced}`,
             `Pending file uploads: ${pendingCount}`,
             `Last sync: ${lastOkSyncAt() !== null ? new Date(lastOkSyncAt() as number).toISOString() : 'never'}`,
+            // The three things the 2026-09-04 case needed a dashboard for:
+            // which notes are stuck and why, whether passes run, and what
+            // the session did. Ids are prefixes, titles never appear.
+            ...(failed.length > 0
+              ? ['', 'Not backed up:', ...failed.map((f) => `  ${f.id.slice(0, 8)}  ${f.failure.reason}  ${f.chars} chars  ${f.failure.message}`)]
+              : []),
+            '',
+            'Recent passes (newest first):',
+            ...[...log].reverse().map((e) =>
+              `  ${new Date(e.at).toISOString()}  ${e.ok ? 'ok' : 'FAILED'}  up=${e.up} down=${e.down}${e.failed ? ` failed=${e.failed}` : ''}${(e.n ?? 1) > 1 ? ` x${e.n}` : ''}  ${e.ms}ms`,
+            ),
+            '',
+            'Auth breadcrumbs (newest first):',
+            ...readAuthLog(20).reverse().map((b) => {
+              const { t: at, event, ...rest } = b;
+              const detail = Object.keys(rest).length > 0 ? `  ${JSON.stringify(rest)}` : '';
+              return `  ${at}  ${event}${detail}`;
+            }),
           ].join('\n');
     try {
       await navigator.clipboard.writeText(text);
@@ -575,16 +667,17 @@ function ActivityList({ log }: { log: SyncPassEntry[] }) {
                 <td className="px-3.5 py-1.5 tabular-nums text-pn-muted">
                   {new Date(e.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </td>
-                <td className={`px-2 py-1.5 ${e.ok ? '' : 'text-red-500 dark:text-red-400'}`}>
+                <td className={`px-2 py-1.5 ${!e.ok ? 'text-red-500 dark:text-red-400' : e.failed ? 'text-amber-600 dark:text-amber-400' : ''}`}>
                   {!e.ok
                     ? t('syncPanel.passFailed')
-                    : e.up === 0 && e.down === 0
+                    : e.up === 0 && e.down === 0 && !e.failed
                       ? (e.n ?? 1) > 1
                         ? t('syncPanel.passNothingRepeat', { count: e.n })
                         : t('syncPanel.passNothing')
                       : [
                           e.up > 0 ? t('syncPanel.passUp', { count: e.up }) : null,
                           e.down > 0 ? t('syncPanel.passDown', { count: e.down }) : null,
+                          e.failed ? t('syncPanel.passPushFailed', { count: e.failed }) : null,
                         ].filter(Boolean).join(', ')}
                 </td>
                 <td className="px-3.5 py-1.5 text-end tabular-nums text-pn-muted">

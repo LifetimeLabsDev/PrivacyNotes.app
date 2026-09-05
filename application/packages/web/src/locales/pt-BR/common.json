@@ -209,5 +209,13 @@
       "seu cofre segue agressivamente ilegível.",
       "neutralidade suíça, mas pras notas."
     ]
+  },
+  "neverBackedUp": {
+    "one": "Nunca teve backup. Esta é a única cópia.",
+    "some_one": "{{count}} destas notas nunca teve backup. Esta é a única cópia dela.",
+    "some_other": "{{count}} destas notas nunca tiveram backup. Estas são as únicas cópias.",
+    "changesOne": "As últimas alterações estão sem backup e seriam perdidas.",
+    "changesSome_one": "{{count}} destas notas tem alterações sem backup que seriam perdidas.",
+    "changesSome_other": "{{count}} destas notas têm alterações sem backup que seriam perdidas."
   }
 }
