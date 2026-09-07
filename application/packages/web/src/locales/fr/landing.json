@@ -254,7 +254,7 @@
   "readIt": {
     "kicker": "Open source",
     "heading": "Ne nous crois pas. Lis le code.",
-    "body": "L'application que tu utilises est publiée, avec le chiffrement qu'elle contient et la base de données à laquelle elle parle. Commence par la vérification d'une minute qui ne demande aucun outil, ou va droit au code.",
+    "body": "L'application que tu utilises est publiée, avec le chiffrement qu'elle contient. Commence par la vérification d'une minute qui ne demande aucun outil, ou va droit au code.",
     "cta": "Voir le code sur GitHub",
     "verify": "Vérifie par toi-même",
     "threatModel": "Ce qu'un attaquant peut faire",

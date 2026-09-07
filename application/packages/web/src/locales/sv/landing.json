@@ -254,7 +254,7 @@
   "readIt": {
     "kicker": "Öppen källkod",
     "heading": "Lita inte på oss. Läs koden.",
-    "body": "Appen du använder är publicerad, tillsammans med krypteringen i den och databasen den pratar med. Börja med enminuterskontrollen som inte kräver några verktyg, eller gå direkt till koden.",
+    "body": "Appen du använder är publicerad, tillsammans med krypteringen i den. Börja med enminuterskontrollen som inte kräver några verktyg, eller gå direkt till koden.",
     "cta": "Se källkoden på GitHub",
     "verify": "Kontrollera själv",
     "threatModel": "Vad en angripare kan göra",

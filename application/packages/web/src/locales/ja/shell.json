@@ -230,6 +230,7 @@
     "noteHistoryDescription": "直近20件のどのバージョンでも復元できます。",
     "showMarkdownDescription": "生のマークダウンを編集します。",
     "showFormattedDescription": "書式付きエディタに戻ります。",
+    "findReplace": "検索と置換",
     "comingSoon": "近日公開",
     "noteOptions": "ノートオプション",
     "lastModified": "最終更新: {{date}}",

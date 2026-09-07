@@ -18,6 +18,7 @@
       "theme": "Os temas premium são um recurso Pro. Faça upgrade para liberar todos os tons.",
       "callout": "O conjunto completo de avisos é um recurso Pro.",
       "totp": "Códigos 2FA são um recurso Pro. Guarde uma chave de autenticação em qualquer login e veja o código rotativo ao lado da senha. A chave em si é salva e sincronizada em todos os planos.",
+      "replace": "Buscar e substituir é um recurso Pro. Faça upgrade para substituir uma ocorrência ou todas as ocorrências de uma nota de uma vez.",
       "default": "Um upgrade libera tudo abaixo. Pagamento único."
     },
     "features": {

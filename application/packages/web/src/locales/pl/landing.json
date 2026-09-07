@@ -254,7 +254,7 @@
   "readIt": {
     "kicker": "Open source",
     "heading": "Nie wierz nam. Przeczytaj.",
-    "body": "Aplikacja, której właśnie używasz, jest opublikowana razem z szyfrowaniem w środku i bazą danych, z którą rozmawia. Zacznij od minutowego sprawdzenia bez żadnych narzędzi albo od razu przejdź do kodu.",
+    "body": "Aplikacja, której właśnie używasz, jest opublikowana razem z szyfrowaniem w środku. Zacznij od minutowego sprawdzenia bez żadnych narzędzi albo od razu przejdź do kodu.",
     "cta": "Zobacz kod na GitHubie",
     "verify": "Sprawdź sam",
     "threatModel": "Co może zrobić atakujący",

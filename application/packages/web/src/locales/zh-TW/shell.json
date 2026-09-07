@@ -230,6 +230,7 @@
     "noteHistoryDescription": "還原最近 20 個版本中的任何一個。",
     "showMarkdownDescription": "編輯原始 markdown。",
     "showFormattedDescription": "回到排版編輯器。",
+    "findReplace": "尋找與取代",
     "comingSoon": "即將推出",
     "noteOptions": "筆記選項",
     "lastModified": "最後修改：{{date}}",

@@ -11,6 +11,7 @@ import {
 import type { BackupPayload } from '@notes/shared';
 import i18n from './i18n';
 import { trackerRows, trackerHeading } from './trackerExport';
+import { loadLocalSettings } from './userSettings';
 import { intlLocale } from './languages';
 import { saveBlob } from './saveFile';
 import { detectPlatform } from './devices';
@@ -598,7 +599,7 @@ function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): stri
   // missing half of what the entry recorded. HTML and print are terminal
   // formats (nothing reads them back), so this is the readable rendering;
   // the machine-readable copy rides in the markdown front-matter instead.
-  const rows = trackerRows(note.trackers);
+  const rows = trackerRows(note.trackers, loadLocalSettings().trackerSettings.weightUnit);
   const trackersHtml =
     rows.length > 0
       ? `<section class="trackers">

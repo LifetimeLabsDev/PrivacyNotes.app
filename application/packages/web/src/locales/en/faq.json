@@ -19,6 +19,7 @@
     "feedbackPrompt": "Your question wasn't answered here? Reach out:",
     "sourcesTitle": "Read the source",
     "sourcesNote": "Our source and documentation are on GitHub, in English.",
+    "docsRail": "Documentation",
     "askTitle": "Still stuck? Ask your AI agent.",
     "askMini": "Ask your AI agent instead",
     "askBody": "You get an answer in seconds instead of waiting for a reply. Your assistant reads all {{total}} answers and every import guide at once, so it can combine them, follow up on your question, and explain it in your own words. We never see any of it, because we do not run a chatbot.",
@@ -354,7 +355,8 @@
       "q": "I asked for a feature or reported a bug. How long until it ships?",
       "a": [
         "Often days. Small requests and bug reports usually land in the next release, and releases go out most weeks rather than a few times a year. The [changelog](/changelog) is the record: every entry is dated, written in plain language, and says what changed. Read a month of it and you will know exactly what to expect from us before you commit anything to the app.",
-        "That pace comes from a small team with heavy tooling, including AI assistance on the interface work. It means a request from one person is worth building, where a small team would otherwise say no to everything except the top of the list. Every change is reviewed by a person, checked by the automated test suite, and shipped under our name. The encryption layer and the sync protocol move slowly by design: reviewed line by line, tested against published reference vectors, and [public](https://github.com/LifetimeLabsDev/PrivacyNotes.app) so you can read them instead of trusting us.",
+        "That pace comes from how the work is split. The encryption core, the sync protocol and the sign-in flow were written by people, next to day jobs, long before the app had a name, and the crypto core is still maintained that way; nothing automated goes near it. Once that foundation was solid, in spring 2026, we started using AI coding tools under a fixed protocol: first for [translations](/help/translation-quality/), then help articles, then interface features and non-critical bug fixes, where they are good at pinning down rare edge cases that would otherwise take weeks, and at writing the test scripts that hold several developers to one standard. That is why a request from one person is worth building instead of waiting behind the top of the list.",
+        "Anything touching encryption, sync or sign-in stays with skilled developers who write every line, and that code is [public](https://github.com/LifetimeLabsDev/PrivacyNotes.app) so you can read it instead of trusting us. More on the team and how we work on our [about page](https://lifetimelabs.dev/about).",
         "The app itself has no AI features and never sends your notes anywhere ([details](/help/no-ai/)). That promise is separate, and it does not change."
       ]
     },

@@ -15,6 +15,7 @@ import {
   type QuotaUsage,
   type StorageSubRow,
 } from './devices';
+import { groupDeviceSlots, shortDeviceId, type DeviceSlot } from './deviceSlots';
 import { readPanelCache, writePanelCache } from './accountPanelCache';
 import { Check, SignOut, X } from './icons';
 import { HoverLabel } from './HoverLabel';
@@ -62,15 +63,8 @@ type Props = {
   onTabChange?: (tab: 'plan' | 'storage' | 'sync' | 'me') => void;
 };
 
-/** A physical device, grouping one or more browser sessions. */
-type DeviceGroup = {
-  key: string;
-  name: string;
-  platform: string;
-  lastSeenAt: string;
-  isSelf: boolean;
-  rows: DeviceRow[];
-};
+/** What Remove acts on: one row of a slot, or every row in it. */
+type RevokeTarget = { slot: DeviceSlot; rows: [DeviceRow, ...DeviceRow[]] };
 
 /**
  * Device management + sync status panel.
@@ -110,7 +104,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
   const [quota, setQuota] = useState<QuotaUsage | null>(cachedPanel?.quota ?? null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [confirm, setConfirm] = useState<DeviceGroup | null>(null);
+  const [confirm, setConfirm] = useState<RevokeTarget | null>(null);
 
   useEscapeToClose(onClose, !embedded && !confirm);
 
@@ -339,9 +333,9 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
     }
   }
 
-  async function handleRevokeGroup(group: DeviceGroup) {
+  async function handleRevoke(target: RevokeTarget) {
     if (!authed) return;
-    setBusy(group.key);
+    setBusy(target.slot.key);
     setError(null);
     const { data: sessData } = await supabase.auth.getSession();
     const session = sessData.session;
@@ -351,9 +345,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
       return;
     }
     try {
-      // Revoke every row in the group (all browser sessions on
-      // this physical device).
-      for (const row of group.rows) {
+      for (const row of target.rows) {
         await revokeDevice({
           supabase,
           accessToken: session.access_token,
@@ -371,7 +363,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
       // and they're locked out. registerDevice is idempotent on a
       // matching device_id (it un-revokes), so a retry is the recovery
       // path. See gap #27.
-      if (group.isSelf) {
+      if (target.rows.some((row) => row.device_id === authed.deviceId)) {
         const registerArgs = {
           supabase,
           accessToken: session.access_token,
@@ -406,43 +398,9 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
   }
 
   const freeLimit = 2;
-  const activeDevices = devices?.filter((d) => !d.revoked_at) ?? [];
   const cooldownDevices = devices?.filter((d) => d.revoked_at) ?? [];
-
-  // Group active devices by device_name for display. Server-side
-  // device_group handles same-browser dedup (cache clears), but
-  // cross-browser GPU strings differ too much for fingerprint grouping
-  // to work reliably (Chrome: "ANGLE (Apple M4...)", Firefox: "Apple
-  // M1, or similar", Safari: "Apple GPU" - all the same Mac).
-  // Grouping by name gives one card per physical device type.
-  const groupedDevices: DeviceGroup[] = (() => {
-    const map = new Map<string, DeviceGroup>();
-    for (const d of activeDevices) {
-      const key = d.device_name ?? d.device_id;
-      const existing = map.get(key);
-      if (existing) {
-        existing.rows.push(d);
-        if (d.last_seen_at > existing.lastSeenAt) {
-          existing.lastSeenAt = d.last_seen_at;
-        }
-        if (authed && d.device_id === authed.deviceId) {
-          existing.isSelf = true;
-        }
-      } else {
-        map.set(key, {
-          key,
-          name: d.device_name,
-          platform: d.platform,
-          lastSeenAt: d.last_seen_at,
-          isSelf: !!(authed && d.device_id === authed.deviceId),
-          rows: [d],
-        });
-      }
-    }
-    return Array.from(map.values()).sort(
-      (a, b) => new Date(b.lastSeenAt).getTime() - new Date(a.lastSeenAt).getTime(),
-    );
-  })();
+  // One card per server slot, so this list and the free-tier cap agree.
+  const slots = groupDeviceSlots(devices ?? [], authed?.deviceId ?? null);
 
   return (
     <div
@@ -542,7 +500,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                   />{' '}
                   {devices && (
                     <>
-                      {t('plan.freeUsage', { used: groupedDevices.length, limit: freeLimit })}
+                      {t('plan.freeUsage', { used: slots.length, limit: freeLimit })}
                     </>
                   )}
                 </div>
@@ -1091,41 +1049,64 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
               <HelpChip surface={isPro ? 'devicesPro' : 'devices'} className="mb-3" />
               {devices === null ? (
                 <div className="text-sm text-pn-muted">{t('common:state.loading')}</div>
-              ) : groupedDevices.length === 0 ? (
+              ) : slots.length === 0 ? (
                 <div className="text-sm text-pn-muted">
                   {t('devices.empty')}
                 </div>
               ) : (
                 <ul className="space-y-2">
-                  {groupedDevices.map((g) => (
-                    <li
-                      key={g.key}
-                      className="flex items-center justify-between gap-3 rounded-md border border-divider px-3 py-2"
-                    >
-                      <div className="min-w-0">
-                        <div className="text-sm font-medium truncate flex items-center gap-2">
-                          {g.name}
-                          {g.isSelf && (
-                            <span className="text-[10px] uppercase tracking-wide text-accent">
-                              {t('devices.thisDevice')}
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-[11px] text-pn-muted">
-                          {g.platform}
-                          {g.rows.length > 1 && ` · ${t('devices.sessions', { count: g.rows.length })}`}
-                          {` · ${t('devices.lastActive', { time: formatRelative(g.lastSeenAt) })}`}
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setConfirm(g)}
-                        disabled={busy !== null}
-                        className="text-xs rounded-md border border-red-300 text-red-700 hover:bg-red-50 dark:border-red-900/60 dark:text-red-300 dark:hover:bg-red-950/30 px-2.5 py-1.5 transition disabled:opacity-50"
+                  {slots.map((slot) => (
+                    slot.rows.length === 1 ? (
+                      <li
+                        key={slot.key}
+                        className="flex items-center justify-between gap-3 rounded-md border border-divider px-3 py-2"
                       >
-                        {t('common:actions.remove')}
-                      </button>
-                    </li>
+                        <DeviceRowLabel row={slot.rows[0]} isSelf={slot.isSelf} />
+                        <button
+                          type="button"
+                          onClick={() => setConfirm({ slot, rows: slot.rows })}
+                          disabled={busy !== null}
+                          className={REMOVE_BUTTON}
+                        >
+                          {t('common:actions.remove')}
+                        </button>
+                      </li>
+                    ) : (
+                      /* Several rows share one slot: a reinstall, a second
+                         browser, or a second machine the fingerprint merged.
+                         Each row keeps its own Remove; the whole slot is the
+                         explicit second action. */
+                      <li key={slot.key} className="rounded-md border border-divider px-3 pt-2 pb-1.5">
+                        <div className="text-[11px] text-pn-muted">
+                          {t('devices.sharedSlot', { count: slot.rows.length })}
+                        </div>
+                        <ul className="divide-y divide-divider">
+                          {slot.rows.map((row) => (
+                            <li key={row.device_id} className="flex items-center justify-between gap-3 py-2">
+                              <DeviceRowLabel row={row} isSelf={authed?.deviceId === row.device_id} />
+                              <button
+                                type="button"
+                                onClick={() => setConfirm({ slot, rows: [row] })}
+                                disabled={busy !== null}
+                                className={REMOVE_BUTTON}
+                              >
+                                {t('common:actions.remove')}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="flex justify-end border-t border-divider pt-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setConfirm({ slot, rows: slot.rows })}
+                            disabled={busy !== null}
+                            className="text-xs text-pn-muted hover:text-pn transition disabled:opacity-50"
+                          >
+                            {t('devices.removeAll')}
+                          </button>
+                        </div>
+                      </li>
+                    )
                   ))}
                 </ul>
               )}
@@ -1146,6 +1127,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                       <div className="min-w-0">
                         <div className="text-sm font-medium truncate text-pn-muted">
                           {d.device_name}
+                          <span className="font-mono text-[11px] font-normal ms-2">{shortDeviceId(d.device_id)}</span>
                         </div>
                         <div className="text-[11px] text-pn-muted/75">
                           {t('devices.removedAt', { time: formatRelative(d.revoked_at!) })}
@@ -1221,13 +1203,41 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
 
       {confirm && authed && (
         <RevokeConfirm
-          group={confirm}
+          target={confirm}
           isPro={isPro}
           busy={busy}
+          selfDeviceId={authed.deviceId}
           onCancel={() => setConfirm(null)}
-          onConfirm={() => void handleRevokeGroup(confirm)}
+          onConfirm={() => void handleRevoke(confirm)}
         />
       )}
+    </div>
+  );
+}
+
+const REMOVE_BUTTON =
+  'text-xs rounded-md border border-red-300 text-red-700 hover:bg-red-50 dark:border-red-900/60 dark:text-red-300 dark:hover:bg-red-950/30 px-2.5 py-1.5 transition disabled:opacity-50';
+
+/** Name line plus the meta that tells two identically named rows apart. */
+function DeviceRowLabel({ row, isSelf }: { row: DeviceRow; isSelf: boolean }) {
+  const { t } = useTranslation('settings');
+  return (
+    <div className="min-w-0">
+      <div className="text-sm font-medium truncate flex items-center gap-2">
+        {row.device_name}
+        {isSelf && (
+          <span className="text-[10px] uppercase tracking-wide text-accent">
+            {t('devices.thisDevice')}
+          </span>
+        )}
+      </div>
+      <div className="text-[11px] text-pn-muted">
+        {row.platform}
+        {' · '}
+        <span className="font-mono">{shortDeviceId(row.device_id)}</span>
+        {` · ${t('devices.added', { time: formatRelative(row.created_at) })}`}
+        {` · ${t('devices.lastActive', { time: formatRelative(row.last_seen_at) })}`}
+      </div>
     </div>
   );
 }
@@ -1237,20 +1247,29 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
 // ------------------------------------------------------------------
 
 function RevokeConfirm({
-  group,
+  target,
   isPro,
   busy,
+  selfDeviceId,
   onCancel,
   onConfirm,
 }: {
-  group: DeviceGroup;
+  target: RevokeTarget;
   isPro: boolean | null;
   busy: string | null;
+  selfDeviceId: string | null;
   onCancel: () => void;
   onConfirm: () => void;
 }) {
   const { t } = useTranslation('settings');
   useEscapeToClose(onCancel);
+
+  const { slot, rows } = target;
+  // A whole-slot removal frees the slot; a single row out of several does not.
+  const wholeSlot = rows.length === slot.rows.length;
+  const removesSelf = rows.some((row) => row.device_id === selfDeviceId);
+  const row = rows[0];
+  const othersLeft = slot.rows.length - rows.length;
 
   return (
     <div
@@ -1262,16 +1281,26 @@ function RevokeConfirm({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-lg font-semibold">
-          {t('revoke.title', { name: group.name })}
+          {wholeSlot ? t('revoke.title', { name: row.device_name }) : t('revoke.titleInstall')}
         </h2>
+        {!wholeSlot && (
+          <p className="text-sm text-pn-soft">
+            {row.device_name}
+            {' · '}
+            <span className="font-mono">{shortDeviceId(row.device_id)}</span>
+            {` · ${t('devices.added', { time: formatRelative(row.created_at) })} · ${t('devices.lastActive', { time: formatRelative(row.last_seen_at) })}`}
+          </p>
+        )}
         <p className="text-sm text-pn-muted leading-relaxed">
-          {group.isSelf
-            ? t('revoke.bodySelf')
-            : `${t('revoke.bodyOther')}${group.rows.length > 1 ? ` ${t('revoke.bodyOtherSessions', { count: group.rows.length })}` : ''}`}
+          {removesSelf
+            ? `${t('revoke.bodySelf')}${rows.length > 1 ? ` ${t('revoke.bodyRemoveAll', { count: rows.length })}` : ''}`
+            : wholeSlot
+              ? `${t('revoke.bodyOther')}${rows.length > 1 ? ` ${t('revoke.bodyRemoveAll', { count: rows.length })}` : ''}`
+              : `${t('revoke.bodyInstall')} ${t('revoke.bodyInstallOthers', { count: othersLeft })}`}
         </p>
-        {!isPro && !group.isSelf && (
+        {!isPro && !removesSelf && (
           <p className="text-xs text-pn-muted leading-relaxed">
-            {t('revoke.freeNote')}
+            {wholeSlot ? t('revoke.freeNote') : t('revoke.freeNoteKept')}
           </p>
         )}
         <div className="flex gap-2">
@@ -1289,14 +1318,13 @@ function RevokeConfirm({
             disabled={busy !== null}
             className="flex-1 rounded-md bg-red-600 hover:bg-red-700 text-white px-3 py-2 text-sm transition disabled:opacity-50"
           >
-            {busy === group.key ? t('revoke.removing') : t('common:actions.remove')}
+            {busy === slot.key ? t('revoke.removing') : t('common:actions.remove')}
           </button>
         </div>
       </div>
     </div>
   );
 }
-
 function formatPlanDate(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;

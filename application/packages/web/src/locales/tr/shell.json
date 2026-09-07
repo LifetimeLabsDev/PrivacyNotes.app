@@ -230,6 +230,7 @@
     "noteHistoryDescription": "Son 20 sürümden herhangi birini geri yükleyin.",
     "showMarkdownDescription": "Ham markdown kaynağını düzenleyin.",
     "showFormattedDescription": "Biçimlendirilmiş düzenleyiciye dönün.",
+    "findReplace": "Bul ve değiştir",
     "comingSoon": "Yakında",
     "noteOptions": "Not seçenekleri",
     "lastModified": "Son değişiklik: {{date}}",

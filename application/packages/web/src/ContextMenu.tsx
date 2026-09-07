@@ -174,7 +174,19 @@ export function ContextMenu({
       if (ref.current && !ref.current.contains(e.target as Node)) onClose();
     };
     const onScroll = () => onClose();
-    const onResize = () => onClose();
+    // A soft keyboard sliding in or out changes the viewport height and leaves
+    // the width alone. That is chrome moving, not the page under the menu, and
+    // it is the ordinary case on a phone: a long press takes focus off the
+    // editor, the keyboard retracts, and the resize lands about 20ms after the
+    // menu opened. Closing on it makes the menu flash and vanish on the first
+    // try, then work on the second, once the keyboard is already down. A
+    // rotation or a real window resize changes the width, and still closes.
+    let lastWidth = window.innerWidth;
+    const onResize = () => {
+      if (window.innerWidth === lastWidth) return;
+      lastWidth = window.innerWidth;
+      onClose();
+    };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();

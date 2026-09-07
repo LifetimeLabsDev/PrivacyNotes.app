@@ -116,7 +116,18 @@
     "next": "次の一致(Enter)",
     "nextTitle": "次へ(Enter)",
     "close": "検索を閉じる",
-    "closeTitle": "閉じる(⌘F)"
+    "closeTitle": "閉じる(⌘F)",
+    "replacePlaceholder": "置換後の文字列",
+    "replaceLabel": "置換後の文字列",
+    "replace": "置換",
+    "replaceTitle": "この一致を置換(Enter)",
+    "replaceAll": "すべて",
+    "replaceAllTitle": "すべての一致を置換",
+    "caseSensitive": "大文字と小文字を区別",
+    "caseSensitiveTitle": "大文字と小文字を区別",
+    "closeReplace": "検索と置換を閉じる",
+    "closeReplaceTitle": "閉じる(⌥⌘F)",
+    "replacedCount_other": "{{count}}件を置換しました"
   },
   "outline": {
     "show": "アウトラインを表示",
@@ -171,5 +182,9 @@
     "copy": "コピー",
     "copied": "コピーしました",
     "copyFailed": "失敗しました"
+  },
+  "noteLink": {
+    "open": "ノートを開く",
+    "remove": "リンクを削除"
   }
 }

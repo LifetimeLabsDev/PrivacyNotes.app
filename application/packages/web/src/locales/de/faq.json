@@ -19,6 +19,7 @@
     "feedbackPrompt": "Deine Frage wurde hier nicht beantwortet? Melde dich:",
     "sourcesTitle": "Quellcode lesen",
     "sourcesNote": "Unser Quellcode und unsere Dokumentation liegen auf GitHub, auf Englisch.",
+    "docsRail": "Dokumentation",
     "askTitle": "Nicht weitergekommen? Frag deinen KI-Agenten.",
     "askMini": "Lieber deinen KI-Agenten fragen",
     "askBody": "Du bekommst in Sekunden eine Antwort, statt auf eine Rückmeldung zu warten. Dein Assistent liest alle {{total}} Antworten und jede Import-Anleitung auf einmal, kann sie also kombinieren, bei deiner Frage nachhaken und sie in deinen Worten erklären. Wir sehen nichts davon, denn wir betreiben keinen Chatbot.",
@@ -354,7 +355,8 @@
       "q": "Ich habe eine Funktion vorgeschlagen oder einen Fehler gemeldet. Wann ist das fertig?",
       "a": [
         "Oft nur wenige Tage. Kleine Wünsche und Fehlermeldungen landen meist im nächsten Release, und Releases erscheinen fast jede Woche statt ein paar Mal im Jahr. Das [Changelog](/changelog) ist der Beleg: jeder Eintrag ist datiert, in klarer Sprache geschrieben und sagt, was sich geändert hat. Lies einen Monat davon, und du weißt genau, was du von uns erwarten kannst, bevor du der App irgendetwas anvertraust.",
-        "Dieses Tempo kommt von einem kleinen Team mit viel Werkzeug, unter anderem KI-Unterstützung bei der Oberfläche. Es bedeutet, dass sich auch der Wunsch einer einzelnen Person lohnt, während ein kleines Team sonst zu allem außer den obersten Punkten der Liste Nein sagen müsste. Jede Änderung wird von einem Menschen geprüft, von der automatischen Testsuite kontrolliert und unter unserem Namen veröffentlicht. Die Verschlüsselung und das Sync-Protokoll bewegen sich bewusst langsam: Zeile für Zeile geprüft, gegen veröffentlichte Referenzvektoren getestet und [öffentlich](https://github.com/LifetimeLabsDev/PrivacyNotes.app), damit du sie lesen kannst, statt uns zu glauben.",
+        "Dieses Tempo kommt daher, wie die Arbeit aufgeteilt ist. Der Verschlüsselungskern, das Sync-Protokoll und die Anmeldung wurden von Menschen geschrieben, neben dem Brotjob, lange bevor die App einen Namen hatte, und der Kryptokern wird bis heute so gepflegt; nichts Automatisiertes kommt in seine Nähe. Als dieses Fundament im Frühjahr 2026 stand, haben wir angefangen, KI-Werkzeuge nach einem festen Protokoll einzusetzen: zuerst für [Übersetzungen](/de/help/translation-quality/), dann für Hilfeartikel, dann für Oberflächenfunktionen und unkritische Fehlerbehebungen, wo sie gut darin sind, seltene Randfälle einzukreisen, die sonst Wochen kosten würden, und Testskripte zu schreiben, die mehrere Entwickler auf einen Standard verpflichten. Deshalb lohnt sich der Wunsch einer einzelnen Person, statt hinter den obersten Punkten der Liste zu warten.",
+        "Alles, was Verschlüsselung, Sync oder Anmeldung berührt, bleibt bei erfahrenen Leuten, die jede Zeile lesen, bevor sie ausgeliefert wird, und dieser Code ist [öffentlich](https://github.com/LifetimeLabsDev/PrivacyNotes.app), damit du ihn lesen kannst, statt uns zu glauben. Mehr über das Team und unsere Arbeitsweise steht auf unserer [Über-uns-Seite](https://lifetimelabs.dev/about).",
         "Die App selbst hat keine KI-Funktionen und schickt deine Notizen nirgendwohin ([Details](/de/help/no-ai/)). Dieses Versprechen steht für sich, und daran ändert sich nichts."
       ]
     },

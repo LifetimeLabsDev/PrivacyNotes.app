@@ -114,6 +114,8 @@ There are two kinds, and they look different on purpose.
 
 Both have a toolbar button. The chain makes a web link. The brackets make a note-link: they list your notes, and you pick the one you mean. Typing `[[` does the same thing.
 
+A note-link does not have to read as the note's title. Type the title, a bar, then the words you want on the page: [[How your notes are protected|these words]] open that note.
+
 ---
 
 *If you already write markdown, type it and it formats as you go. To see the raw text behind any note, click on **Show markdown** at the bottom right of this note.*

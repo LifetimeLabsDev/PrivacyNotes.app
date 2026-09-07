@@ -254,7 +254,7 @@
   "readIt": {
     "kicker": "Open source",
     "heading": "Geloof ons niet. Lees het na.",
-    "body": "De app die je nu gebruikt is gepubliceerd, samen met de encryptie erin en de database waarmee hij praat. Begin met de controle van één minuut waar je niets voor nodig hebt, of ga meteen naar de code.",
+    "body": "De app die je nu gebruikt is gepubliceerd, samen met de encryptie erin. Begin met de controle van één minuut waar je niets voor nodig hebt, of ga meteen naar de code.",
     "cta": "Bekijk de broncode op GitHub",
     "verify": "Controleer het zelf",
     "threatModel": "Wat een aanvaller kan",

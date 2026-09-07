@@ -230,6 +230,7 @@
     "noteHistoryDescription": "Restaura qualsevol de les 20 últimes versions.",
     "showMarkdownDescription": "Edita el markdown en brut.",
     "showFormattedDescription": "Torna a l'editor amb format.",
+    "findReplace": "Cerca i substitueix",
     "comingSoon": "Properament",
     "noteOptions": "Opcions de la nota",
     "lastModified": "Última modificació: {{date}}",

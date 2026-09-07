@@ -230,6 +230,7 @@
     "noteHistoryDescription": "Obnov kteroukoli z posledních 20 verzí.",
     "showMarkdownDescription": "Uprav čistý markdown.",
     "showFormattedDescription": "Zpět do formátovaného editoru.",
+    "findReplace": "Najít a nahradit",
     "comingSoon": "Už brzy",
     "noteOptions": "Možnosti poznámky",
     "lastModified": "Naposledy upraveno: {{date}}",

@@ -18,6 +18,7 @@
       "theme": "Premium temalar bir Pro özelliğidir. Her tonun kilidini açmak için yükseltin.",
       "callout": "Bilgi kutularının tamamı bir Pro özelliğidir.",
       "totp": "2FA kodları bir Pro özelliğidir. Herhangi bir girişe kimlik doğrulama anahtarı kaydedin, değişen kodu parolanın yanında görün. Anahtarın kendisi tüm planlarda kaydedilir ve senkronize edilir.",
+      "replace": "Bul ve değiştir bir Pro özelliğidir. Bir nottaki tek bir eşleşmeyi veya tüm eşleşmeleri tek seferde değiştirmek için yükseltin.",
       "default": "Tek bir yükseltme aşağıdaki her şeyin kilidini açar. Tek seferlik ödeme."
     },
     "features": {

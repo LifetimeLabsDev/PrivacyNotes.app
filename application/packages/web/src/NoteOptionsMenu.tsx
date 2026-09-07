@@ -9,7 +9,7 @@ import { noteActionGuards, type NoteActionGuardDeps } from './noteActionGuards';
 import { usePopoverPosition } from './usePopoverPosition';
 import { intlLocale } from './languages';
 import { prepareBurnPayload } from './burnShare';
-import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Trash, Repeat, Copy, Folder, Fire, ArrowCounterClockwise, FileMd, TextAa } from './icons';
+import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Trash, Repeat, Copy, Folder, Fire, ArrowCounterClockwise, FileMd, TextAa, Swap } from './icons';
 
 /**
  * Per-note options dropdown, anchored to the "..." button in the
@@ -72,6 +72,13 @@ type Props = NoteActionGuardDeps & {
   /** Flip this note between the rich editor and the markdown source. */
   onToggleEditorMode?: () => void;
   /**
+   * Open the find-and-replace bar. Present only while the note shows the
+   * rich editor: the bar drives that editor's search plugin, which the
+   * markdown textarea does not have. The Pro gate sits inside the editor,
+   * one gate for this row and the keyboard shortcut.
+   */
+  onFindReplace?: () => void;
+  /**
    * True once the header's own burn/pin/share/trash icons are hidden.
    * The strip renders only then, so the two surfaces never show the
    * same action twice. All four header buttons share one condition
@@ -103,6 +110,7 @@ export function NoteOptionsMenu({
   onMoveToFolder,
   editorMode,
   onToggleEditorMode,
+  onFindReplace,
   isTrash,
   onRestore,
   onDeleteForever,
@@ -143,6 +151,7 @@ export function NoteOptionsMenu({
   // Both halves have to be there: the caller only passes them when this
   // note actually has a markdown editor under the header.
   const showModeRow = !isTrash && !!onToggleEditorMode && !!editorMode;
+  const showReplaceRow = !isTrash && !!onFindReplace;
   // The caller decides which cells exist by passing or omitting each handler,
   // so the strip has nothing to work out for itself. It just needs to know
   // whether it drew anything, because the row below it wears the hairline.
@@ -168,7 +177,11 @@ export function NoteOptionsMenu({
     >
       {/* Find-in-note deliberately does NOT live here: the magnifier sits in
           the tag row, one row below this menu's own button, and a second
-          entry for it only made this list longer. Neither do a bookmark's
+          entry for it only made this list longer. Find AND REPLACE does live
+          here, under the editor-mode switch: it has no pill in the corner (a
+          second one would crowd the note's first line, GitHub #265) and no
+          key on a phone, so this row is its only pointer path. Neither do a
+          bookmark's
           Open/Copy or a vault item's Edit/Copy: those render inside the item
           itself, directly under this menu, and no width ever hides them. */}
       {isTrash ? (
@@ -236,25 +249,38 @@ export function NoteOptionsMenu({
             </div>
           )}
 
-          {showModeRow && (
+          {(showModeRow || showReplaceRow) && (
             <div className={`${hasStrip ? 'border-t border-divider ' : ''}py-1`}>
-              <ActionItem
-                label={editorMode === 'markdown' ? t('notes:editor.showFormatted') : t('notes:editor.showMarkdown')}
-                description={
-                  editorMode === 'markdown'
-                    ? t('noteOptionsMenu.showFormattedDescription')
-                    : t('noteOptionsMenu.showMarkdownDescription')
-                }
-                icon={editorMode === 'markdown' ? <IconFormatted /> : <IconMarkdown />}
-                onClick={() => {
-                  onToggleEditorMode?.();
-                  onClose();
-                }}
-              />
+              {showModeRow && (
+                <ActionItem
+                  label={editorMode === 'markdown' ? t('notes:editor.showFormatted') : t('notes:editor.showMarkdown')}
+                  description={
+                    editorMode === 'markdown'
+                      ? t('noteOptionsMenu.showFormattedDescription')
+                      : t('noteOptionsMenu.showMarkdownDescription')
+                  }
+                  icon={editorMode === 'markdown' ? <IconFormatted /> : <IconMarkdown />}
+                  onClick={() => {
+                    onToggleEditorMode?.();
+                    onClose();
+                  }}
+                />
+              )}
+              {showReplaceRow && (
+                <ActionItem
+                  label={t('noteOptionsMenu.findReplace')}
+                  icon={<IconReplace />}
+                  pro={!isPro}
+                  onClick={() => {
+                    onFindReplace?.();
+                    onClose();
+                  }}
+                />
+              )}
             </div>
           )}
 
-          <div className={`${hasStrip || showModeRow ? 'border-t border-divider ' : ''}py-1`}>
+          <div className={`${hasStrip || showModeRow || showReplaceRow ? 'border-t border-divider ' : ''}py-1`}>
             <ToggleItem
               label={t('noteOptionsMenu.readOnly')}
               description={t('noteOptionsMenu.readOnlyDescription')}
@@ -560,6 +586,10 @@ function IconFolder() {
    brings the formatted text back. The bare MarkdownLogo is deliberately not
    used for either - the tag row wears it for the formatting bar, and that
    is a different control. */
+function IconReplace() {
+  return <Swap size={16} aria-hidden="true" />;
+}
+
 function IconMarkdown() {
   return <FileMd size={17} aria-hidden="true" />;
 }

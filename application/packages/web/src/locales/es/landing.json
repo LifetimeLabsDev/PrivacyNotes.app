@@ -254,7 +254,7 @@
   "readIt": {
     "kicker": "Open source",
     "heading": "No nos creas. Léelo.",
-    "body": "La app que estás usando está publicada, junto con el cifrado que lleva dentro y la base de datos con la que habla. Empieza por la comprobación de un minuto que no necesita herramientas, o ve directo al código.",
+    "body": "La app que estás usando está publicada, junto con el cifrado que lleva dentro. Empieza por la comprobación de un minuto que no necesita herramientas, o ve directo al código.",
     "cta": "Ver el código en GitHub",
     "verify": "Compruébalo tú mismo",
     "threatModel": "Qué puede hacer un atacante",

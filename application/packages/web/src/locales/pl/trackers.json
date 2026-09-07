@@ -23,6 +23,7 @@
     "hoursSuffix": "h",
     "bpm": "ud./min",
     "kg": "kg",
+    "lb": "lb",
     "steps_one": "krok",
     "steps_few": "kroki",
     "steps_many": "kroków",

@@ -241,6 +241,63 @@ export const BUILTIN_TRACKER_COLORS: Record<BuiltinTrackerId, string> = {
 };
 
 // ------------------------------------------------------------------
+// Weight units
+// ------------------------------------------------------------------
+
+export const WEIGHT_UNITS = ['kg', 'lb'] as const;
+
+export type WeightUnit = (typeof WEIGHT_UNITS)[number];
+
+/** The pound is defined as exactly 0.45359237 kg. */
+const KG_PER_LB = 0.45359237;
+
+/**
+ * Countries whose everyday body weight is quoted in pounds. Read from the
+ * browser's region rather than the app language, because the language a
+ * person reads in says nothing about the scale they own.
+ */
+const POUND_REGIONS = new Set(['US', 'LR', 'MM']);
+
+function defaultWeightUnit(): WeightUnit {
+  if (typeof navigator === 'undefined') return 'kg';
+  const region = new Intl.Locale(navigator.language || 'en').region;
+  return region && POUND_REGIONS.has(region) ? 'lb' : 'kg';
+}
+
+/** The range a person can weigh, in kilograms. */
+const WEIGHT_RANGE_KG = { min: 20, max: 300 } as const;
+
+/**
+ * The input bounds for one unit. The pound bounds round outward from the
+ * kilogram ones, so the heaviest storable value still sits inside the
+ * field after a unit switch.
+ */
+export function weightRange(unit: WeightUnit): { min: number; max: number } {
+  if (unit === 'kg') return WEIGHT_RANGE_KG;
+  return {
+    min: Math.floor(WEIGHT_RANGE_KG.min / KG_PER_LB),
+    max: Math.ceil(WEIGHT_RANGE_KG.max / KG_PER_LB),
+  };
+}
+
+/** The stored kilograms as the number to show in `unit`, at one decimal. */
+export function weightToDisplay(kg: number, unit: WeightUnit): number {
+  const shown = unit === 'kg' ? kg : kg / KG_PER_LB;
+  return Number(shown.toFixed(1));
+}
+
+/**
+ * A number the user typed in `unit`, as the kilograms to store. Three
+ * decimals of a kilogram is 0.002 lb, far below the 0.05 lb that would
+ * move a one-decimal reading, so a value survives any number of unit
+ * switches unchanged.
+ */
+export function weightToCanonical(value: number, unit: WeightUnit): number {
+  const kg = unit === 'kg' ? value : value * KG_PER_LB;
+  return Number(kg.toFixed(3));
+}
+
+// ------------------------------------------------------------------
 // Journal tracker data - the per-entry payload
 // ------------------------------------------------------------------
 
@@ -258,7 +315,9 @@ export interface JournalTrackerData {
   heartRate?: number; // average resting BPM
   energy?: number; // 0-10
   focus?: number; // 0-10
-  weight?: number; // kg or lbs (user preference)
+  /** Kilograms, always. `trackerSettings.weightUnit` picks the unit the
+   *  app shows it in, and every reader converts on the way out. */
+  weight?: number;
   steps?: number; // daily step count
   water?: number; // glasses (0-10)
   screenTime?: number; // hours
@@ -387,6 +446,10 @@ export interface TrackerSettings {
   activeBuiltins: BuiltinTrackerId[];
   customTrackers: CustomTrackerTemplate[];
   archivedMedications: MedicationTemplate[];
+  /** The unit the weight tracker reads and writes in. The stored value is
+   *  kilograms whichever way this is set, so switching it re-renders the
+   *  history rather than reinterpreting it. */
+  weightUnit: WeightUnit;
 }
 
 export function defaultTrackerSettings(): TrackerSettings {
@@ -395,5 +458,6 @@ export function defaultTrackerSettings(): TrackerSettings {
     activeBuiltins: ['mood', 'emotions', 'sleep', 'activity', 'medication', 'energy', 'focus'],
     customTrackers: [],
     archivedMedications: [],
+    weightUnit: defaultWeightUnit(),
   };
 }

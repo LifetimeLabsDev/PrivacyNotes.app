@@ -254,7 +254,7 @@
   "readIt": {
     "kicker": "Open Source",
     "heading": "Glaub uns nicht. Lies es nach.",
-    "body": "Die App, die du gerade benutzt, ist veröffentlicht - mitsamt der Verschlüsselung darin und der Datenbank, mit der sie spricht. Fang mit der Ein-Minuten-Prüfung ohne Werkzeuge an, oder geh direkt zum Code.",
+    "body": "Die App, die du gerade benutzt, ist veröffentlicht - mitsamt der Verschlüsselung darin. Fang mit der Ein-Minuten-Prüfung ohne Werkzeuge an, oder geh direkt zum Code.",
     "cta": "Quellcode auf GitHub ansehen",
     "verify": "Selbst nachprüfen",
     "threatModel": "Was ein Angreifer kann",

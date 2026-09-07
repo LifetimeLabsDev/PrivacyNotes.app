@@ -91,6 +91,7 @@ import {
   writeOwnerMirror,
   readAccountFlagsMirror,
 } from './authStorage';
+import { resetAppearance } from './theme';
 import { logAuthEvent } from './authDiag';
 import { checkEarlySupporter, useProStatus } from './authProStatus';
 import { useCustody } from './authCustody';
@@ -595,6 +596,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       removeBiometricCredential();
       removePinWrappedPhrase();
       clearAccountScopedUiState();
+      // The appearance axes (light/dark, palette, text size, editor
+      // width, spell check, website icons, invisibles) are device-local
+      // and survive a sign-out by design - the same person coming back
+      // wants their own setup. A new owner is the case they must not
+      // survive: they described the previous account's taste, and the
+      // palette among them can be a Pro one the arriving account has
+      // not paid for.
+      resetAppearance();
       try { localStorage.removeItem('privacynotes.lastSync'); } catch { /* ignore */ }
       try { sessionStorage.removeItem('privacynotes.lastSync'); } catch { /* ignore */ }
       // Drop the cached anon session - it carries the prior user's

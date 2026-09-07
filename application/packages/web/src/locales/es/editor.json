@@ -116,7 +116,19 @@
     "next": "Coincidencia siguiente (Enter)",
     "nextTitle": "Siguiente (Enter)",
     "close": "Cerrar búsqueda",
-    "closeTitle": "Cerrar (⌘F)"
+    "closeTitle": "Cerrar (⌘F)",
+    "replacePlaceholder": "Reemplazar con",
+    "replaceLabel": "Reemplazar con",
+    "replace": "Reemplazar",
+    "replaceTitle": "Reemplazar esta coincidencia (Enter)",
+    "replaceAll": "Todas",
+    "replaceAllTitle": "Reemplazar todas las coincidencias",
+    "caseSensitive": "Coincidir mayúsculas y minúsculas",
+    "caseSensitiveTitle": "Coincidir mayúsculas y minúsculas",
+    "closeReplace": "Cerrar buscar y reemplazar",
+    "closeReplaceTitle": "Cerrar (⌥⌘F)",
+    "replacedCount_one": "{{count}} reemplazada",
+    "replacedCount_other": "{{count}} reemplazadas"
   },
   "outline": {
     "show": "Mostrar esquema",
@@ -173,5 +185,9 @@
     "copy": "Copiar",
     "copied": "Copiado",
     "copyFailed": "Error"
+  },
+  "noteLink": {
+    "open": "Abrir nota",
+    "remove": "Quitar enlace"
   }
 }

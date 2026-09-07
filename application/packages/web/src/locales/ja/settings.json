@@ -79,8 +79,10 @@
     "heading": "登録済みデバイス",
     "empty": "登録済みデバイスがありません。まだ同期が完了していない可能性があります。",
     "thisDevice": "このデバイス",
-    "sessions_other": "{{count}}セッション",
+    "sharedSlot_other": "{{count}}件のインストールが1つのデバイス枠を共有しています",
+    "added": "追加{{time}}",
     "lastActive": "最終アクティブ{{time}}",
+    "removeAll": "すべて削除",
     "recentlyRemoved": "最近削除",
     "removedAt": "削除: {{time}}"
   },
@@ -106,10 +108,14 @@
   },
   "revoke": {
     "title": "「{{name}}」を削除しますか?",
+    "titleInstall": "このインストールを削除しますか?",
     "bodySelf": "このデバイスの登録がリセットされます。セッションは有効のままで、デバイスはすぐに自動で再登録されます。",
-    "bodyOther": "このデバイス上のすべてのセッションがサインアウトされます。",
-    "bodyOtherSessions_other": "{{count}}件のブラウザセッションが削除されます。",
+    "bodyOther": "このデバイスは次回の同期時にサインアウトされます。",
+    "bodyRemoveAll_other": "枠内の{{count}}件のインストールがすべて削除されます。",
+    "bodyInstall": "このインストールは次回の同期時にサインアウトされます。",
+    "bodyInstallOthers_other": "この枠の他の{{count}}件のインストールは残ります。",
     "freeNote": "枠はすぐに空くため、代わりのデバイスをすぐに追加できます。削除したデバイスは「最近削除」に72時間表示されます。",
+    "freeNoteKept": "他のインストールが残っている間、枠は使用中のままです。",
     "removing": "削除中..."
   },
   "appearance": {

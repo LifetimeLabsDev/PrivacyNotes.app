@@ -116,7 +116,23 @@
     "next": "المطابقة التالية (Enter)",
     "nextTitle": "التالي (Enter)",
     "close": "إغلاق البحث",
-    "closeTitle": "إغلاق (⌘F)"
+    "closeTitle": "إغلاق (⌘F)",
+    "replacePlaceholder": "استبدال بـ",
+    "replaceLabel": "استبدال بـ",
+    "replace": "استبدال",
+    "replaceTitle": "استبدال هذه النتيجة (Enter)",
+    "replaceAll": "الكل",
+    "replaceAllTitle": "استبدال كل النتائج",
+    "caseSensitive": "مطابقة حالة الأحرف",
+    "caseSensitiveTitle": "مطابقة حالة الأحرف",
+    "closeReplace": "إغلاق البحث والاستبدال",
+    "closeReplaceTitle": "إغلاق (⌥⌘F)",
+    "replacedCount_zero": "تم استبدال {{count}}",
+    "replacedCount_one": "تم استبدال {{count}}",
+    "replacedCount_two": "تم استبدال {{count}}",
+    "replacedCount_few": "تم استبدال {{count}}",
+    "replacedCount_many": "تم استبدال {{count}}",
+    "replacedCount_other": "تم استبدال {{count}}"
   },
   "outline": {
     "show": "إظهار المخطط التفصيلي",
@@ -181,5 +197,9 @@
     "copy": "نسخ",
     "copied": "تم النسخ",
     "copyFailed": "فشل"
+  },
+  "noteLink": {
+    "open": "فتح الملاحظة",
+    "remove": "إزالة الرابط"
   }
 }

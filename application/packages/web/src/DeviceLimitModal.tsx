@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { useAuth } from './auth';
 import type { DeviceRow } from './devices';
+import { shortDeviceId } from './deviceSlots';
 import { isPaddleConfigured, isBetaPricing } from './paddle';
 import { startProCheckout } from './billing';
 import { PRO_PRICE, EARLY_PRICE } from './pricing';
@@ -275,6 +276,7 @@ function DeviceRowView({
       <div className="min-w-0">
         <div className="text-sm font-medium truncate">
           {device.device_name}
+          <span className="ms-2 font-mono text-[11px] font-normal text-neutral-500">{shortDeviceId(device.device_id)}</span>
           {isCurrent && (
             <span className="ms-2 text-[10px] uppercase tracking-wide text-accent">
               {t('deviceLimit.thisDevice')}

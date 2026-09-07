@@ -375,7 +375,7 @@ function AuthenticatedView({
   // what they just tried to do.
   const [showUpgrade, setShowUpgrade] = useState<
     | null
-    | { trigger: 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage' | 'callout' | 'fileSize' | 'folders' | 'totp' | null }
+    | { trigger: 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage' | 'callout' | 'fileSize' | 'folders' | 'totp' | 'replace' | null }
   >(null);
   const [exportProgress, setExportProgress] = useState<{ status: string; done: boolean; error?: string } | null>(null);
   // Note-options "..." menu state. `null` = closed.

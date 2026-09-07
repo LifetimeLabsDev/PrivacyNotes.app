@@ -71,6 +71,7 @@
       "newNote": "新規ノート",
       "moveToTrash": "ノートをゴミ箱に移動",
       "findInNote": "ノート内を検索（もう一度押すと閉じます）",
+      "findReplace": "検索と置換",
       "toggleOutline": "アウトラインの表示を切り替え",
       "bold": "太字",
       "italic": "斜体",

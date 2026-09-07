@@ -230,6 +230,7 @@
     "noteHistoryDescription": "Przywróć dowolną z ostatnich 20 wersji.",
     "showMarkdownDescription": "Edytuj surowy markdown.",
     "showFormattedDescription": "Wróć do edytora z formatowaniem.",
+    "findReplace": "Znajdź i zamień",
     "comingSoon": "Wkrótce",
     "noteOptions": "Opcje notatki",
     "lastModified": "Ostatnia zmiana: {{date}}",

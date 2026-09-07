@@ -19,6 +19,7 @@
     "feedbackPrompt": "Staat je vraag hier niet bij? Neem contact op:",
     "sourcesTitle": "Lees de broncode",
     "sourcesNote": "Onze broncode en documentatie staan op GitHub, in het Engels.",
+    "docsRail": "Documentatie",
     "askTitle": "Nog steeds vast? Vraag het je AI-agent.",
     "askMini": "Vraag het liever je AI-agent",
     "askBody": "Je krijgt binnen enkele seconden antwoord in plaats van op ons te wachten. Je assistent leest alle {{total}} antwoorden en elke importgids in één keer, en kan ze dus combineren, doorvragen op jouw vraag en het in jouw woorden uitleggen. Wij zien er niets van, want wij hebben geen chatbot.",
@@ -354,7 +355,8 @@
       "q": "Ik heb een functie gevraagd of een bug gemeld. Hoe lang duurt het voordat het er is?",
       "a": [
         "Vaak een paar dagen. Kleine verzoeken en bugmeldingen komen meestal in de volgende versie terecht, en we brengen bijna elke week een versie uit in plaats van een paar keer per jaar. De [changelog](/changelog) is het bewijs: elk item heeft een datum, staat in gewone taal en zegt wat er is veranderd. Lees een maand terug en je weet precies wat je van ons kunt verwachten voordat je de app iets toevertrouwt.",
-        "Dat tempo komt van een klein team met veel gereedschap, waaronder AI-hulp bij het werk aan de interface. Het betekent dat het verzoek van één persoon de moeite waard is om te bouwen, waar een klein team anders nee moet zeggen tegen alles behalve de bovenkant van de lijst. Elke wijziging wordt door een mens nagelezen, door de automatische tests gecontroleerd en onder onze naam uitgebracht. De versleuteling en het synchronisatieprotocol gaan met opzet langzaam: regel voor regel nagelezen, getest tegen gepubliceerde referentievectoren en [openbaar](https://github.com/LifetimeLabsDev/PrivacyNotes.app) zodat je ze kunt lezen in plaats van ons te geloven.",
+        "Dat tempo komt door hoe het werk verdeeld is. De versleutelingskern, het synchronisatieprotocol en het inloggen zijn door mensen geschreven, naast hun baan, lang voordat de app een naam had, en de cryptokern wordt nog steeds zo onderhouden; niets geautomatiseerds komt erbij in de buurt. Toen dat fundament stond, in het voorjaar van 2026, zijn we AI-hulpmiddelen gaan gebruiken volgens een vast protocol: eerst voor [vertalingen](/nl/help/translation-quality/), daarna hulpartikelen, daarna interfacefuncties en niet-kritieke bugfixes, waar ze goed zijn in het opsporen van zeldzame randgevallen die anders weken zouden kosten, en in het schrijven van de testscripts die meerdere ontwikkelaars aan één standaard houden. Daarom is het verzoek van één persoon de moeite waard om te bouwen in plaats van te wachten achter de bovenkant van de lijst.",
+        "Alles wat versleuteling, synchronisatie of inloggen raakt, blijft bij ervaren mensen die elke regel lezen voordat het uitkomt, en die code is [openbaar](https://github.com/LifetimeLabsDev/PrivacyNotes.app) zodat je hem kunt lezen in plaats van ons te geloven. Meer over het team en hoe we werken staat op onze [over-ons-pagina](https://lifetimelabs.dev/about).",
         "De app zelf heeft geen AI-functies en stuurt je notities nergens heen ([details](/nl/help/no-ai/)). Die belofte staat op zichzelf, en verandert niet."
       ]
     },

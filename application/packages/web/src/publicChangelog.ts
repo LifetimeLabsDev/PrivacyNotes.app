@@ -26,6 +26,55 @@ export const IN_APP_CHANGELOG_LIMIT = 10;
 
 export const PUBLIC_CHANGELOG: ChangelogRelease[] = [
   {
+    version: '0.505',
+    date: '2026-09-07',
+    title: 'Find and replace, and drag and drop on the desktop',
+    items: [
+      { type: 'new', text: 'A note can find and replace, one match at a time or every match at once. Find stays free; replace is part of Pro.' },
+      { type: 'fixed', text: 'Dropping a file into a note, and dragging text or an image inside one, work in the desktop app on macOS, Windows and Linux.' },
+      { type: 'fixed', text: 'A file dropped on the sidebar or the note list no longer opens that file in place of the app.' },
+    ],
+  },
+  {
+    version: '0.504',
+    date: '2026-09-07',
+    title: 'Every registered device gets its own Remove',
+    items: [
+      { type: 'improved', text: 'Each device row shows its platform, its short id, when it was added and when it was last active, so two machines of one kind are told apart.' },
+      { type: 'improved', text: 'Two app installs never share one slot, so the list matches the device count your plan enforces.' },
+      { type: 'fixed', text: 'Removing one Windows PC no longer removes every other install that carries the same name.' },
+    ],
+  },
+  {
+    version: '0.503',
+    date: '2026-09-07',
+    title: 'A long press on a note-link offers to open or remove it',
+    items: [
+      { type: 'new', text: 'A long press on a note-link on a phone, or a right-click on a computer, offers "Open note" and "Remove link".' },
+      { type: 'fixed', text: 'A menu no longer flashes and vanishes on the first try when the on-screen keyboard slides away.' },
+    ],
+  },
+  {
+    version: '0.502',
+    date: '2026-09-07',
+    title: 'The weight tracker reads in pounds',
+    items: [
+      { type: 'new', text: "The journal's weight tracker reads in pounds or kilograms, and your choice follows you to every device." },
+      { type: 'improved', text: 'Switching the unit redraws your history, so no entry you already wrote changes meaning.' },
+    ],
+  },
+  {
+    version: '0.501',
+    date: '2026-09-07',
+    title: 'The security documents are one click from any help page',
+    items: [
+      { type: 'new', text: 'Every help page links the threat model, the security policy and the verification guide, so you can read them from the app.' },
+      { type: 'new', text: 'The recovery-phrase file can be downloaded from Settings > Security at any time, not only on the day you sign up.' },
+      { type: 'improved', text: 'The phrase file carries the words as a single line you can paste straight into a new device.' },
+      { type: 'fixed', text: 'The callout fold button and the bookmark "Copy URL" message show their real names instead of an internal label.' },
+    ],
+  },
+  {
     version: '0.500',
     date: '2026-09-05',
     title: 'A note the server refuses no longer looks synced',

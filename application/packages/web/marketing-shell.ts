@@ -149,6 +149,8 @@ const HEAD_BLOCK = /<title>[\s\S]*?<meta name="twitter:image"[^>]*>/;
  * front of it; both are emitted by help-page.ts, which owns those catalogs.
  * /changelog.md is the fourth file in that layer and the only one that says
  * what CHANGED rather than how the app works; changelog-page.ts emits it.
+ * /docs/index.md is the fifth, and the only one that says how the app is
+ * BUILT; publishedDocs.ts emits it and the documents it routes to.
  * The price interpolates from pricing.ts, and the language count from
  * LOCALE_TO_SLUG, so neither can go stale the way a hand-typed number does -
  * the count said 14 for three locale additions.
@@ -184,7 +186,8 @@ The app is open source: the web, desktop and mobile clients, the encryption laye
 - [Question index](${ORIGIN}/llms-index.txt): every help question against the URL that answers it, each one plain text and about 900 bytes. Start here and fetch only what you need.
 - [Every help answer in one file](${ORIGIN}/llms-full.txt): the same content in one fetch, about 17,700 tokens, when a second request is not possible.
 - [Every release in one file](${ORIGIN}/changelog.md): the whole changelog as plain text, newest first. Read it when the question is about what changed, what is new in a version, or where something moved.
-- [Threat model and published encryption code](https://github.com/LifetimeLabsDev/PrivacyNotes.app): what the server can and cannot see, stated precisely.
+- [Security documentation index](${ORIGIN}/docs/index.md): the published security documents as plain text, with the sections of each. Read it when the question is about the encryption, what the server can read, how to verify any of it, or how sync resolves a conflict.
+- [Source, threat model and encryption code](https://github.com/LifetimeLabsDev/PrivacyNotes.app): the repository the documents above are published from, with the clients beside them.
 
 ## Press
 - [Brand assets](${ORIGIN}/brand): logos, wordmarks and usage rules.

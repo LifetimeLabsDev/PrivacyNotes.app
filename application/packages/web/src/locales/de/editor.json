@@ -116,7 +116,19 @@
     "next": "Nächster Treffer (Enter)",
     "nextTitle": "Weiter (Enter)",
     "close": "Suche schließen",
-    "closeTitle": "Schließen (⌘F)"
+    "closeTitle": "Schließen (⌘F)",
+    "replacePlaceholder": "Ersetzen durch",
+    "replaceLabel": "Ersetzen durch",
+    "replace": "Ersetzen",
+    "replaceTitle": "Diesen Treffer ersetzen (Enter)",
+    "replaceAll": "Alle",
+    "replaceAllTitle": "Alle Treffer ersetzen",
+    "caseSensitive": "Groß-/Kleinschreibung beachten",
+    "caseSensitiveTitle": "Groß-/Kleinschreibung beachten",
+    "closeReplace": "Suchen und Ersetzen schließen",
+    "closeReplaceTitle": "Schließen (⌥⌘F)",
+    "replacedCount_one": "{{count}} ersetzt",
+    "replacedCount_other": "{{count}} ersetzt"
   },
   "outline": {
     "show": "Gliederung anzeigen",
@@ -173,5 +185,9 @@
     "copy": "Kopieren",
     "copied": "Kopiert",
     "copyFailed": "Fehlgeschlagen"
+  },
+  "noteLink": {
+    "open": "Notiz öffnen",
+    "remove": "Link entfernen"
   }
 }

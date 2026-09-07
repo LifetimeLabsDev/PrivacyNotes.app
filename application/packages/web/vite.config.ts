@@ -661,7 +661,18 @@ const DEFAULT_CHUNK_BUDGET_KB = 60;
 // 899 -> 900 (2026-09-05, same day): the never-backed-up guards, the
 // honest sync log and the fuller support report. +0.96 kB since the
 // same-day baseline: NotesView +0.70, i18n +0.20, the rest in the panel.
-const BOOT_PATH_BUDGET_KB = 900;
+// 900 -> 901 (2026-09-07): one label added to every locale catalog, for
+// the single-line copy of the words in the recovery-phrase file. It
+// landed on 0.02 kB of headroom, so the string itself is the whole
+// overrun; the rest of the +0.53 since the v0.500.0 baseline is the
+// releases in between.
+// 901 -> 903 (2026-09-07, same day): find and replace - ReplaceBar,
+// MatchNav, the replace drivers in editorSearch, one phosphor glyph and
+// the strings behind them. +1.46 kB gz measured against HEAD in a
+// worktree (Editor +1.03, the rest is catalogs and the icon). HEAD sat at
+// 0.34 kB of headroom, so the UpgradeModal and billing movement the build
+// also reports is the three releases before this one, not this change.
+const BOOT_PATH_BUDGET_KB = 903;
 
 // The budget above is stated in ONE environment's units: build-smoke's, which
 // is ubuntu with the synthetic values from tools/ci-vite-env.mjs. Every other

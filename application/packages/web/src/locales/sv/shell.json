@@ -230,6 +230,7 @@
     "noteHistoryDescription": "Återställ vilken som helst av de 20 senaste versionerna.",
     "showMarkdownDescription": "Redigera rå markdown.",
     "showFormattedDescription": "Tillbaka till den formaterade redigeraren.",
+    "findReplace": "Sök och ersätt",
     "comingSoon": "Kommer snart",
     "noteOptions": "Anteckningsalternativ",
     "lastModified": "Senast ändrad: {{date}}",

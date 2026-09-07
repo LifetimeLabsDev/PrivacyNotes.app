@@ -116,7 +116,21 @@
     "next": "Další výskyt (Enter)",
     "nextTitle": "Další (Enter)",
     "close": "Zavřít hledání",
-    "closeTitle": "Zavřít (⌘F)"
+    "closeTitle": "Zavřít (⌘F)",
+    "replacePlaceholder": "Nahradit za",
+    "replaceLabel": "Nahradit za",
+    "replace": "Nahradit",
+    "replaceTitle": "Nahradit tento výskyt (Enter)",
+    "replaceAll": "Vše",
+    "replaceAllTitle": "Nahradit všechny výskyty",
+    "caseSensitive": "Rozlišovat velikost písmen",
+    "caseSensitiveTitle": "Rozlišovat velikost písmen",
+    "closeReplace": "Zavřít najít a nahradit",
+    "closeReplaceTitle": "Zavřít (⌥⌘F)",
+    "replacedCount_one": "{{count}} nahrazen",
+    "replacedCount_few": "{{count}} nahrazeny",
+    "replacedCount_many": "{{count}} nahrazeno",
+    "replacedCount_other": "{{count}} nahrazeno"
   },
   "outline": {
     "show": "Zobrazit osnovu",
@@ -177,5 +191,9 @@
     "copy": "Kopírovat",
     "copied": "Zkopírováno",
     "copyFailed": "Nepovedlo se"
+  },
+  "noteLink": {
+    "open": "Otevřít poznámku",
+    "remove": "Odstranit odkaz"
   }
 }

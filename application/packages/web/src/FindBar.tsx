@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Editor as TipTapEditor } from '@tiptap/react';
-import { MagnifyingGlass, CaretUp, CaretDown, X } from './icons';
+import { MagnifyingGlass, X } from './icons';
 import { HoverLabel } from './HoverLabel';
+import { BAR_BTN, MatchNav } from './MatchNav';
 import {
   setSearchQuery,
   setActiveMatch,
   clearSearch,
   getSearchInfo,
   scrollToCurrentMatch,
-  getActiveMatchRange,
+  type SearchInfo,
 } from './editorSearch';
 
 type Props = {
@@ -27,13 +28,14 @@ type Props = {
  * deliberately does not (see onKeyDown).
  *
  * All match-finding and highlighting lives in editorSearch.ts; this is just
- * the control surface.
+ * the control surface. ReplaceBar.tsx is its Pro twin on the same plugin,
+ * and MatchNav.tsx holds the count and arrows both bars draw.
  */
 export function FindBar({ editor, focusTick, onClose }: Props) {
   const { t } = useTranslation('editor');
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
-  const [info, setInfo] = useState<{ active: number; total: number }>({ active: -1, total: 0 });
+  const [info, setInfo] = useState<SearchInfo>({ active: -1, total: 0, activeIsNode: false });
 
   const refresh = useCallback(() => {
     setInfo(getSearchInfo(editor.view));
@@ -107,11 +109,6 @@ export function FindBar({ editor, focusTick, onClose }: Props) {
   const noHits = info.total === 0 && hasQuery;
   const count = info.total > 0 ? `${info.active + 1}/${info.total}` : hasQuery ? '0/0' : '';
 
-  const btn =
-    'flex items-center justify-center w-7 h-7 rounded text-neutral-600 dark:text-neutral-300 ' +
-    '[@media(hover:hover)]:hover:bg-neutral-200 [@media(hover:hover)]:dark:hover:bg-neutral-800 ' +
-    'disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition shrink-0 outline-none';
-
   return (
     <div className="pointer-events-auto mt-1 me-2 flex items-center gap-0.5 rounded-lg border border-divider bg-surface-1 shadow-lg px-1.5 py-1">
       <MagnifyingGlass size={15} className="text-neutral-400 dark:text-neutral-500 shrink-0 ms-0.5 me-0.5" />
@@ -127,37 +124,7 @@ export function FindBar({ editor, focusTick, onClose }: Props) {
         autoComplete="off"
         className="w-36 sm:w-44 bg-transparent text-sm text-neutral-800 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 outline-none px-1"
       />
-      <span
-        className={`min-w-[3.5ch] text-center text-xs tabular-nums shrink-0 ${
-          noHits ? 'text-red-500' : 'text-neutral-400 dark:text-neutral-500'
-        }`}
-      >
-        {count}
-      </span>
-      <HoverLabel label={t('find.previousTitle')} position="below">
-        <button
-          type="button"
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={() => go(-1)}
-          disabled={info.total === 0}
-          aria-label={t('find.previous')}
-          className={btn}
-        >
-          <CaretUp size={15} />
-        </button>
-      </HoverLabel>
-      <HoverLabel label={t('find.nextTitle')} position="below">
-        <button
-          type="button"
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={() => go(1)}
-          disabled={info.total === 0}
-          aria-label={t('find.next')}
-          className={btn}
-        >
-          <CaretDown size={15} />
-        </button>
-      </HoverLabel>
+      <MatchNav count={count} noHits={noHits} canStep={info.total > 0} onStep={go} />
       <div className="w-px h-5 bg-divider mx-0.5 shrink-0" aria-hidden="true" />
       <HoverLabel label={t('find.closeTitle')} position="below-end">
         <button
@@ -168,7 +135,7 @@ export function FindBar({ editor, focusTick, onClose }: Props) {
           // type-checking against it and silently did nothing at runtime.
           onClick={onClose}
           aria-label={t('find.close')}
-          className={btn}
+          className={BAR_BTN}
         >
           <X size={15} />
         </button>

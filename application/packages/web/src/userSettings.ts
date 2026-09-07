@@ -39,7 +39,9 @@ import {
 } from './listPrefs';
 import {
   defaultTrackerSettings,
+  WEIGHT_UNITS,
   type TrackerSettings,
+  type WeightUnit,
   type CustomTrackerTemplate,
   type MedicationTemplate,
 } from './trackerTypes';
@@ -189,15 +191,19 @@ export type UserSettings = {
   pinWrapCiphertext: string | null;
   pinWrapIterations: number | null;
   /**
-   * Active color theme. Synced so the user sees the same palette
-   * across devices. Light/dark axis is separate (localStorage only,
-   * respects per-device system preference). Default 'default'.
+   * Carried in the blob, but inert: the palette lives in localStorage
+   * (`theme.ts` owns every appearance axis and none of them reaches the
+   * server), and no path writes a picked theme into this field or reads
+   * one back out of it. It is still parsed and migrated so an older
+   * client's stored value survives a round trip instead of being
+   * dropped. Default 'default'.
    */
   colorTheme: ColorTheme;
   /**
    * Which layout notes render in: 'list' (narrow rows), 'grid'
    * (full-width tiles), or 'auto' (grid on wide screens, list on
-   * narrow). Global across every view, synced like colorTheme.
+   * narrow). Global across every view and synced, so a phone and a
+   * desktop agree.
    * Default 'list' so new accounts land on the familiar list + editor
    * layout; an explicit Auto/Grid toggle switches away from it.
    */
@@ -462,6 +468,7 @@ function hydrate(raw: unknown): UserSettings {
       activeBuiltins: Array.isArray(ts.activeBuiltins) ? ts.activeBuiltins : dts.activeBuiltins,
       customTrackers: Array.isArray(ts.customTrackers) ? ts.customTrackers : dts.customTrackers,
       archivedMedications: Array.isArray(ts.archivedMedications) ? ts.archivedMedications : dts.archivedMedications,
+      weightUnit: WEIGHT_UNITS.includes(ts.weightUnit as WeightUnit) ? (ts.weightUnit as WeightUnit) : dts.weightUnit,
     };
   }
   if (typeof obj.autoDeleteTrashDays === 'number' && Number.isFinite(obj.autoDeleteTrashDays) && obj.autoDeleteTrashDays >= 0) {

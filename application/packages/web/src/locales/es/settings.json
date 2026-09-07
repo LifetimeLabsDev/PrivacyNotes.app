@@ -80,9 +80,11 @@
     "heading": "Dispositivos registrados",
     "empty": "No hay dispositivos registrados. Probablemente la sincronización aún no ha terminado.",
     "thisDevice": "Este dispositivo",
-    "sessions_one": "{{count}} sesión",
-    "sessions_other": "{{count}} sesiones",
+    "sharedSlot_one": "{{count}} instalación en este espacio de dispositivo",
+    "sharedSlot_other": "{{count}} instalaciones comparten un espacio de dispositivo",
+    "added": "añadido {{time}}",
     "lastActive": "activo por última vez {{time}}",
+    "removeAll": "Quitar todas",
     "recentlyRemoved": "Quitados recientemente",
     "removedAt": "Quitado {{time}}"
   },
@@ -114,11 +116,16 @@
   },
   "revoke": {
     "title": "¿Quitar “{{name}}”?",
+    "titleInstall": "¿Quitar esta instalación?",
     "bodySelf": "Esto restablecerá el registro de tu dispositivo. Tu sesión sigue activa. El dispositivo se vuelve a registrar de inmediato.",
-    "bodyOther": "Se cerrarán todas las sesiones de este dispositivo.",
-    "bodyOtherSessions_one": "Esto quita {{count}} sesión del navegador.",
-    "bodyOtherSessions_other": "Esto quita {{count}} sesiones del navegador.",
+    "bodyOther": "Este dispositivo cerrará sesión en la próxima sincronización.",
+    "bodyRemoveAll_one": "Esto quita {{count}} instalación.",
+    "bodyRemoveAll_other": "Esto quita las {{count}} instalaciones del espacio.",
+    "bodyInstall": "Esta instalación cerrará sesión en la próxima sincronización.",
+    "bodyInstallOthers_one": "La otra instalación de este espacio se mantiene.",
+    "bodyInstallOthers_other": "Las otras {{count}} instalaciones de este espacio se mantienen.",
     "freeNote": "El espacio se libera de inmediato - puedes añadir un dispositivo de reemplazo enseguida. El dispositivo quitado sigue visible en “Quitados recientemente” durante 72 horas.",
+    "freeNoteKept": "El espacio sigue ocupado mientras queden otras instalaciones en él.",
     "removing": "Quitando..."
   },
   "appearance": {

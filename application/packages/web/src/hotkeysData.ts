@@ -48,6 +48,8 @@ export const HOTKEY_GROUPS: HotkeyGroup[] = [
     rows: [
       // Toggles. Esc deliberately does NOT close it - Esc closes the note.
       { keys: '⌘F', label: 'Find in note (press again to close)', i18nKey: 'findInNote' },
+      // ⌥⌘F, never ⌘H: macOS takes ⌘H for Hide before a page sees it.
+      { keys: '⌥⌘F', label: 'Find and replace', i18nKey: 'findReplace' },
       { keys: '⌘⇧O', label: 'Toggle outline', i18nKey: 'toggleOutline' },
       // ⌘⇧K, not ⌘K: plain ⌘K focuses search everywhere since 2026-08-21
       // (useKeyboardShortcuts.ts); the link popover took the shifted key.

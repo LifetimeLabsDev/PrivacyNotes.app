@@ -230,6 +230,7 @@
     "noteHistoryDescription": "Stelle jede der letzten 20 Versionen wieder her.",
     "showMarkdownDescription": "Bearbeite den reinen Markdown-Text.",
     "showFormattedDescription": "Zurück zum formatierten Editor.",
+    "findReplace": "Suchen und ersetzen",
     "comingSoon": "Demnächst",
     "noteOptions": "Notizoptionen",
     "lastModified": "Zuletzt geändert: {{date}}",

@@ -19,6 +19,7 @@
     "feedbackPrompt": "Sorunuz burada yanıtlanmadı mı? Bize ulaşın:",
     "sourcesTitle": "Kaynağı okuyun",
     "sourcesNote": "Kaynak kodumuz ve belgelerimiz GitHub'da, İngilizce olarak yayımlanıyor.",
+    "docsRail": "Dokümantasyon",
     "askTitle": "Hâlâ takıldınız mı? Yapay zekâ ajanınıza sorun.",
     "askMini": "Yapay zekâ ajanınıza sorun",
     "askBody": "Yanıt beklemek yerine saniyeler içinde cevabı alırsınız. Asistanınız {{total}} yanıtın tamamını ve tüm içe aktarma rehberlerini bir kerede okur; böylece bunları birleştirebilir, sorunuzu derinleştirebilir ve kendi kelimelerinizle açıklayabilir. Sohbet botu çalıştırmadığımız için bunların hiçbirini görmeyiz.",
@@ -354,7 +355,8 @@
       "q": "Bir özellik istedim ya da bir hata bildirdim. Ne kadar sürede geliyor?",
       "a": [
         "Çoğu zaman birkaç gün. Küçük istekler ve hata bildirimleri genellikle bir sonraki sürüme giriyor ve sürümler yılda birkaç kez değil, neredeyse her hafta çıkıyor. [Changelog](/changelog) bunun kaydıdır: her madde tarihlidir, sade bir dille yazılmıştır ve neyin değiştiğini söyler. Bir aylık kısmını okuyun, uygulamaya bir şey emanet etmeden önce bizden ne bekleyeceğinizi tam olarak bilirsiniz.",
-        "Bu hız, arayüz işlerinde yapay zekâ desteği de dahil olmak üzere güçlü araçlarla çalışan küçük bir ekipten geliyor. Bu, tek bir kişinin isteğinin bile yapmaya değer olduğu anlamına gelir; küçük bir ekip başka türlü listenin en üstü dışında her şeye hayır demek zorunda kalırdı. Her değişikliği bir insan gözden geçirir, otomatik testler denetler ve kendi adımızla yayımlanır. Şifreleme katmanı ile eşitleme protokolü bilerek yavaş ilerler: satır satır gözden geçirilir, yayımlanmış referans vektörlerine karşı test edilir ve [herkese açıktır](https://github.com/LifetimeLabsDev/PrivacyNotes.app); bize inanmak yerine kendiniz okuyabilirsiniz.",
+        "Bu hız, işin nasıl bölündüğünden geliyor. Şifreleme çekirdeği, eşitleme protokolü ve giriş akışı, uygulamanın daha adı yokken, insanlar tarafından günlük işlerinin yanında yazıldı ve kripto çekirdeği bugün de öyle bakılıyor; otomatik hiçbir şey yanına yaklaşmıyor. O temel 2026 baharında sağlamlaşınca, sabit bir protokol altında yapay zekâ kodlama araçlarını kullanmaya başladık: önce [çeviriler](/tr/help/translation-quality/) için, sonra yardım makaleleri, sonra arayüz özellikleri ve kritik olmayan hata düzeltmeleri için; bu araçlar, aksi halde haftalar alacak nadir uç durumları köşeye sıkıştırmakta ve birden fazla geliştiriciyi tek bir standartta tutan test betiklerini yazmakta iyi. Tek bir kişinin isteğinin, listenin en üstünün arkasında beklemek yerine yapmaya değer olması bu yüzden.",
+        "Şifrelemeye, eşitlemeye veya girişe dokunan her şey, yayımlanmadan önce her satırı okuyan deneyimli insanlarda kalıyor ve bu kod [herkese açık](https://github.com/LifetimeLabsDev/PrivacyNotes.app); bize inanmak yerine kendiniz okuyabilirsiniz. Ekip ve nasıl çalıştığımız hakkında daha fazlası [hakkımızda sayfasında](https://lifetimelabs.dev/about).",
         "Uygulamanın kendisinde yapay zekâ özelliği yoktur ve notlarınızı hiçbir yere göndermez ([ayrıntılar](/tr/help/no-ai/)). Bu söz ayrı durur ve değişmez."
       ]
     },

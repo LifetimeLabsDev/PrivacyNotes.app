@@ -116,7 +116,19 @@
     "next": "Nästa träff (Enter)",
     "nextTitle": "Nästa (Enter)",
     "close": "Stäng sökning",
-    "closeTitle": "Stäng (⌘F)"
+    "closeTitle": "Stäng (⌘F)",
+    "replacePlaceholder": "Ersätt med",
+    "replaceLabel": "Ersätt med",
+    "replace": "Ersätt",
+    "replaceTitle": "Ersätt den här träffen (Enter)",
+    "replaceAll": "Alla",
+    "replaceAllTitle": "Ersätt alla träffar",
+    "caseSensitive": "Matcha skiftläge",
+    "caseSensitiveTitle": "Matcha skiftläge",
+    "closeReplace": "Stäng sök och ersätt",
+    "closeReplaceTitle": "Stäng (⌥⌘F)",
+    "replacedCount_one": "{{count}} ersatt",
+    "replacedCount_other": "{{count}} ersatta"
   },
   "outline": {
     "show": "Visa översikt",
@@ -173,5 +185,9 @@
     "copy": "Kopiera",
     "copied": "Kopierad",
     "copyFailed": "Misslyckades"
+  },
+  "noteLink": {
+    "open": "Öppna anteckning",
+    "remove": "Ta bort länk"
   }
 }

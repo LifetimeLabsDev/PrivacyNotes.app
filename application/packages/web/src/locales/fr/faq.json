@@ -19,6 +19,7 @@
     "feedbackPrompt": "Ta question n'a pas trouvé de réponse ici ? Écris-nous :",
     "sourcesTitle": "Lire le code source",
     "sourcesNote": "Notre code source et notre documentation sont sur GitHub, en anglais.",
+    "docsRail": "Documentation",
     "askTitle": "Toujours bloqué ? Demande à ton agent IA.",
     "askMini": "Demander plutôt à ton agent IA",
     "askBody": "Tu obtiens une réponse en quelques secondes au lieu d'attendre la nôtre. Ton assistant lit les {{total}} réponses et tous les guides d'import d'un coup : il peut donc les combiner, revenir sur ta question et l'expliquer avec tes mots. Nous n'en voyons rien, parce que nous n'avons pas de chatbot.",
@@ -354,7 +355,8 @@
       "q": "J'ai demandé une fonctionnalité ou signalé un bug. Dans combien de temps est-ce disponible ?",
       "a": [
         "Souvent quelques jours. Les petites demandes et les rapports de bug arrivent en général dans la version suivante, et nous publions une version presque chaque semaine plutôt que deux ou trois fois par an. Le [changelog](/changelog) en est la preuve : chaque entrée est datée, écrite en langage clair, et dit ce qui a changé. Lis-en un mois et tu sauras exactement à quoi t'attendre de notre part avant de confier quoi que ce soit à l'application.",
-        "Ce rythme vient d'une petite équipe très outillée, ce qui inclut l'aide de l'IA sur le travail d'interface. Cela veut dire que la demande d'une seule personne vaut la peine d'être construite, là où une petite équipe devrait sinon dire non à tout sauf au haut de la liste. Chaque changement est relu par un humain, vérifié par la suite de tests automatiques, et publié sous notre nom. La couche de chiffrement et le protocole de synchronisation avancent lentement par choix : relus ligne par ligne, testés contre des vecteurs de référence publiés, et [publics](https://github.com/LifetimeLabsDev/PrivacyNotes.app) pour que tu puisses les lire au lieu de nous croire sur parole.",
+        "Ce rythme vient de la façon dont le travail est réparti. Le cœur de chiffrement, le protocole de synchronisation et la connexion ont été écrits par des humains, à côté de leur emploi, bien avant que l'appli ait un nom, et le cœur cryptographique est toujours entretenu ainsi : rien d'automatisé ne s'en approche. Une fois cette base solide, au printemps 2026, nous avons commencé à utiliser des outils d'IA pour coder, selon un protocole fixe : d'abord pour les [traductions](/fr/help/translation-quality/), puis les articles d'aide, puis les fonctions d'interface et les corrections de bugs non critiques, où ils sont doués pour cerner des cas rares qui prendraient sinon des semaines, et pour écrire les scripts de test qui tiennent plusieurs développeurs à un même standard. C'est pour ça que la demande d'une seule personne vaut la peine d'être construite au lieu d'attendre derrière le haut de la liste.",
+        "Tout ce qui touche au chiffrement, à la synchronisation ou à la connexion reste entre les mains de gens expérimentés qui relisent chaque ligne avant publication, et ce code est [public](https://github.com/LifetimeLabsDev/PrivacyNotes.app) pour que tu puisses le lire au lieu de nous croire sur parole. Plus d'infos sur l'équipe et notre façon de travailler sur notre [page À propos](https://lifetimelabs.dev/about).",
         "L'application elle-même n'a aucune fonctionnalité d'IA et n'envoie jamais tes notes nulle part ([détails](/fr/help/no-ai/)). Cette promesse est distincte, et elle ne change pas."
       ]
     },

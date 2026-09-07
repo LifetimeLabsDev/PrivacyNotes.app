@@ -3,6 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { generatePhrase, isValidPhrase } from '@notes/shared';
 import { ArrowLeft, ArrowRight, CaretDown, Check, Copy, FileText, KeyReturn, Lock, Password, QrCode, Scales, Scan, Upload, Warning } from './icons';
 import { QRCodeCanvas } from 'qrcode.react';
+import { buildPhraseFile, PHRASE_FILE_NAME } from './phraseFile';
 import { buildSignInUrl, extractPhraseFromScan } from './qrSignIn';
 import { saveBlob } from './saveFile';
 import { useAuth } from './auth';
@@ -744,18 +745,12 @@ function CreatePhrase({
   }
 
   function handleDownloadTxt() {
-    const lines = [
-      t('createPhrase.txtTitle'),
-      '',
-      ...words.map((w, i) => `${i + 1}. ${w}`),
-      '',
-      t('createPhrase.txtFooter'),
-      '',
-    ];
-    downloadBlob(
-      new Blob([lines.join('\n')], { type: 'text/plain' }),
-      'privacynotes-recovery-phrase.txt'
-    );
+    const text = buildPhraseFile(phrase, {
+      title: t('createPhrase.txtTitle'),
+      oneLine: t('createPhrase.txtOneLine'),
+      footer: t('createPhrase.txtFooter'),
+    });
+    downloadBlob(new Blob([text], { type: 'text/plain' }), PHRASE_FILE_NAME);
   }
 
   async function handleDownloadQR() {

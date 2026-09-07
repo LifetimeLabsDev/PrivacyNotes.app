@@ -230,6 +230,7 @@
     "noteHistoryDescription": "Restaura qualquer uma das últimas 20 versões.",
     "showMarkdownDescription": "Edita o markdown em bruto.",
     "showFormattedDescription": "Volta ao editor formatado.",
+    "findReplace": "Procurar e substituir",
     "comingSoon": "Em breve",
     "noteOptions": "Opções da nota",
     "lastModified": "Última modificação: {{date}}",

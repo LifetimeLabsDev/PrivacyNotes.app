@@ -18,6 +18,7 @@
       "theme": "Les thèmes premium sont une fonctionnalité Pro. Passe à Pro pour débloquer toutes les nuances.",
       "callout": "L'ensemble complet des encadrés est une fonctionnalité Pro.",
       "totp": "Les codes 2FA sont une fonctionnalité Pro. Enregistre une clé d'authentification avec n'importe quel identifiant et le code rotatif s'affiche à côté du mot de passe. La clé elle-même est enregistrée et synchronisée dans toutes les formules.",
+      "replace": "Rechercher et remplacer est une fonctionnalité Pro. Passe à Pro pour remplacer une occurrence ou toutes les occurrences d'une note d'un coup.",
       "default": "Une seule mise à niveau débloque tout ce qui suit. Paiement unique."
     },
     "features": {

@@ -116,7 +116,19 @@
     "next": "Next match (Enter)",
     "nextTitle": "Next (Enter)",
     "close": "Close find",
-    "closeTitle": "Close (⌘F)"
+    "closeTitle": "Close (⌘F)",
+    "replacePlaceholder": "Replace with",
+    "replaceLabel": "Replace with",
+    "replace": "Replace",
+    "replaceTitle": "Replace this match (Enter)",
+    "replaceAll": "All",
+    "replaceAllTitle": "Replace every match",
+    "caseSensitive": "Match case",
+    "caseSensitiveTitle": "Match case",
+    "closeReplace": "Close find and replace",
+    "closeReplaceTitle": "Close (⌥⌘F)",
+    "replacedCount_one": "{{count}} replaced",
+    "replacedCount_other": "{{count}} replaced"
   },
   "outline": {
     "show": "Show outline",
@@ -173,5 +185,9 @@
     "copy": "Copy",
     "copied": "Copied",
     "copyFailed": "Failed"
+  },
+  "noteLink": {
+    "open": "Open note",
+    "remove": "Remove link"
   }
 }

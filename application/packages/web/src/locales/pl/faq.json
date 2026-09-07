@@ -19,6 +19,7 @@
     "feedbackPrompt": "Nie znalazłeś tu odpowiedzi na swoje pytanie? Napisz:",
     "sourcesTitle": "Przeczytaj kod",
     "sourcesNote": "Nasz kod i dokumentacja są na GitHubie, po angielsku.",
+    "docsRail": "Dokumentacja",
     "askTitle": "Nadal nie wiesz? Zapytaj swojego agenta AI.",
     "askMini": "Zapytaj lepiej swojego agenta AI",
     "askBody": "Dostajesz odpowiedź w kilka sekund, zamiast czekać na naszą. Twój asystent czyta naraz wszystkie {{total}} odpowiedzi i każdy przewodnik importu, więc może je łączyć, dopytać o twoje pytanie i wyjaśnić je twoimi słowami. My nie widzimy z tego nic, bo nie prowadzimy czatbota.",
@@ -354,7 +355,8 @@
       "q": "Poprosiłam o funkcję albo zgłosiłam błąd. Jak długo trzeba czekać?",
       "a": [
         "Często kilka dni. Drobne prośby i zgłoszenia błędów zwykle trafiają do następnego wydania, a wydania wychodzą niemal co tydzień, a nie kilka razy w roku. [Changelog](/changelog) jest na to dowodem: każdy wpis ma datę, jest napisany prostym językiem i mówi, co się zmieniło. Przeczytaj miesiąc wstecz, a będziesz dokładnie wiedzieć, czego się po nas spodziewać, zanim powierzysz aplikacji cokolwiek.",
-        "To tempo bierze się z małego zespołu z mocnym warsztatem, w tym z pomocy AI przy pracy nad interfejsem. Znaczy to, że warto zbudować nawet prośbę jednej osoby, podczas gdy mały zespół musiałby inaczej odmawiać wszystkiemu poza szczytem listy. Każdą zmianę sprawdza człowiek, kontrolują ją testy automatyczne i wychodzi ona pod naszą nazwą. Warstwa szyfrowania i protokół synchronizacji celowo idą powoli: są czytane linijka po linijce, testowane wobec opublikowanych wektorów referencyjnych i [jawne](https://github.com/LifetimeLabsDev/PrivacyNotes.app), żeby można było je przeczytać, zamiast nam wierzyć.",
+        "To tempo bierze się z tego, jak podzielona jest praca. Rdzeń szyfrowania, protokół synchronizacji i logowanie napisali ludzie, obok swojej pracy, na długo zanim aplikacja miała nazwę, a rdzeń kryptograficzny nadal jest tak utrzymywany; nic zautomatyzowanego się do niego nie zbliża. Kiedy ten fundament był solidny, wiosną 2026, zaczęliśmy używać narzędzi AI do kodowania według stałego protokołu: najpierw do [tłumaczeń](/pl/help/translation-quality/), potem do artykułów pomocy, potem do funkcji interfejsu i poprawek niekrytycznych błędów, gdzie dobrze radzą sobie z namierzaniem rzadkich przypadków brzegowych, które inaczej zajęłyby tygodnie, i z pisaniem skryptów testowych, które trzymają kilku programistów przy jednym standardzie. Dlatego prośbę jednej osoby warto zbudować, zamiast czekać za szczytem listy.",
+        "Wszystko, co dotyka szyfrowania, synchronizacji lub logowania, zostaje w rękach doświadczonych ludzi, którzy czytają każdą linijkę przed wydaniem, a ten kod jest [jawny](https://github.com/LifetimeLabsDev/PrivacyNotes.app), żeby można było go przeczytać, zamiast nam wierzyć. Więcej o zespole i o tym, jak pracujemy, na naszej [stronie o nas](https://lifetimelabs.dev/about).",
         "Sama aplikacja nie ma żadnych funkcji AI i nigdy nigdzie nie wysyła twoich notatek ([szczegóły](/pl/help/no-ai/)). Ta obietnica stoi osobno i się nie zmienia."
       ]
     },

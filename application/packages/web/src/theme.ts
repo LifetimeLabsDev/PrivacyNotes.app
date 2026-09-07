@@ -1,5 +1,5 @@
 /**
- * Theme system: four orthogonal axes.
+ * Theme system: orthogonal appearance axes.
  *
  * 1. Light / dark - Tailwind `darkMode: 'class'`, toggles `dark` on <html>.
  *    What the user picks is a MODE ('auto' | 'light' | 'dark'); 'auto'
@@ -14,12 +14,17 @@
  *    --pn-content-max, the cap on the editor's reading column.
  * 5. Spell check - paints nothing. A flag the writing surfaces read to
  *    decide whether to hand the engine's own spell checker an off switch.
+ * 6. Website icons - paints nothing. Read by every surface that draws a
+ *    link or a vault login, and the off switch for the proxy request.
+ * 7. Invisible characters - paints nothing. The editor drives the
+ *    extension's show/hide commands from it.
  *
- * All five persist to localStorage. Only the color theme also syncs via
- * UserSettings; the light/dark mode, the text size, the content width and
- * the spell-check flag stay device-local on purpose - all four are
- * properties of the screen in front of you, not of the account, and a
- * desktop and a phone can reasonably disagree.
+ * Every axis persists to localStorage and NONE of them reaches the
+ * server: each is a property of the screen in front of you rather than
+ * of the account, and a desktop and a phone can reasonably disagree.
+ * A sign-out leaves them standing for that same reason. The one thing
+ * that clears them is a different account arriving on this install -
+ * see `resetAppearance`.
  */
 import { useCallback, useSyncExternalStore } from 'react';
 
@@ -235,10 +240,10 @@ const TEXT_SIZE_KEY = 'privacynotes.textSize';
  * in the app chrome scales (that is a much larger job - most of the
  * chrome is pinned to literal pixel sizes).
  *
- * Device-local on purpose, and NOT synced like colorTheme: a phone held
- * at arm's length and a 27" monitor want different answers, so syncing
- * this would mean fixing it on one device and breaking it on another.
- * Same reasoning as the light/dark mode above.
+ * Device-local on purpose, like every other axis: a phone held at arm's
+ * length and a 27" monitor want different answers, so syncing this would
+ * mean fixing it on one device and breaking it on another. Same
+ * reasoning as the light/dark mode above.
  */
 export const TEXT_SIZES = ['sm', 'md', 'lg', 'xl'] as const;
 export type TextSize = (typeof TEXT_SIZES)[number];
@@ -284,9 +289,9 @@ const CONTENT_WIDTH_KEY = 'privacynotes.contentWidth';
  * carries the toggle button, and none of them needs React state to obey
  * a CSS variable. Settings > Appearance is the way back in those modes.
  *
- * Device-local and NOT synced, for the text-size reason: a phone never
- * reaches the cap at all, so syncing this would fix one screen and do
- * nothing for the other.
+ * Device-local, for the text-size reason: a phone never reaches the cap
+ * at all, so syncing this would fix one screen and do nothing for the
+ * other.
  * Spec: ops/docs/design-decisions.md (editor content column max-width)
  */
 export const CONTENT_WIDTHS = ['default', 'wide', 'full'] as const;
@@ -358,8 +363,8 @@ const FAVICONS_KEY = 'privacynotes.favicons';
 /**
  * Whether links and vault logins show the site's own icon. Default ON.
  *
- * Device-local and NOT synced, for the same reason as the three axes above:
- * it is about how someone is reading right now. It is also the only off
+ * Device-local, for the same reason as the axes above: it is about how
+ * someone is reading right now. It is also the only off
  * switch for the one thing the icons cost - a request per new domain to our
  * proxy - so it has to work on the device making the requests.
  *
@@ -397,9 +402,9 @@ const INVISIBLES_KEY = 'privacynotes.invisibles';
  * Whether the editor paints pilcrows, space dots and line-break arrows.
  * Default OFF - it is a proofreading aid, not a writing default.
  *
- * Device-local and NOT synced, for the same reason as spell check and text
- * size above: it is a property of how someone is reading right now, not of
- * the account. Someone who turns it on to hunt a stray double space on the
+ * Device-local, for the same reason as spell check and text size above:
+ * it is a property of how someone is reading right now, not of the
+ * account. Someone who turns it on to hunt a stray double space on the
  * desktop does not want every phone session showing dots.
  *
  * Purely decorative - the extension paints ProseMirror decorations and never
@@ -532,6 +537,42 @@ function applyColorTheme(ct: ColorTheme): void {
 /** Bootstrap color theme - called from initTheme(). */
 function initColorTheme(): void {
   applyColorTheme(getStoredColorTheme());
+}
+
+// ------------------------------------------------------------------
+// Cross-axis reset
+// ------------------------------------------------------------------
+
+/**
+ * Put every axis back to its default and repaint.
+ *
+ * Called from one place only: the account-switch wipe in auth.tsx, when
+ * a DIFFERENT account signs in on this install. A plain sign-out leaves
+ * the axes alone on purpose, because they describe the screen in front
+ * of you and somebody signing back into their own account wants their
+ * own setup back. A new owner is the other case - the axes otherwise
+ * carried the previous person's taste into a fresh account on a shared
+ * machine, and a Pro palette with it, since nothing checks the stored
+ * theme against the new account's tier at sign-in.
+ *
+ * It repaints instead of only dropping the keys, because an account
+ * switch never reloads the page: a cleared key alone would leave <html>
+ * wearing the old palette until the next boot.
+ *
+ * Best effort. It runs inside the wipe that gates authentication, so a
+ * storage that refuses to write must not take the sign-in down with it.
+ */
+export function resetAppearance(): void {
+  try {
+    applyThemeMode('auto');
+    applyColorTheme('default');
+    applyTextSize('md');
+    applyContentWidth('default');
+    applySpellcheck(true);
+    applyFavicons(true);
+    applyInvisibles(false);
+  } catch { /* ignore */ }
+  emitThemeChange();
 }
 
 // ------------------------------------------------------------------

@@ -254,7 +254,7 @@
   "readIt": {
     "kicker": "Codi obert",
     "heading": "No ens creguis. Llegeix-ho.",
-    "body": "L'aplicació que estàs fent servir està publicada, juntament amb el xifratge que porta dins i la base de dades amb qui parla. Comença per la comprovació d'un minut que no necessita cap eina, o ves directament al codi.",
+    "body": "L'aplicació que estàs fent servir està publicada, juntament amb el xifratge que porta dins. Comença per la comprovació d'un minut que no necessita cap eina, o ves directament al codi.",
     "cta": "Mira el codi a GitHub",
     "verify": "Comprova-ho tu mateix",
     "threatModel": "Què pot fer un atacant",

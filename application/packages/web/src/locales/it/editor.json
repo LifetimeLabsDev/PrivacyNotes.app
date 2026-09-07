@@ -116,7 +116,19 @@
     "next": "Corrispondenza successiva (Enter)",
     "nextTitle": "Successiva (Enter)",
     "close": "Chiudi ricerca",
-    "closeTitle": "Chiudi (⌘F)"
+    "closeTitle": "Chiudi (⌘F)",
+    "replacePlaceholder": "Sostituisci con",
+    "replaceLabel": "Sostituisci con",
+    "replace": "Sostituisci",
+    "replaceTitle": "Sostituisci questa occorrenza (Enter)",
+    "replaceAll": "Tutte",
+    "replaceAllTitle": "Sostituisci tutte le occorrenze",
+    "caseSensitive": "Maiuscole/minuscole",
+    "caseSensitiveTitle": "Maiuscole/minuscole",
+    "closeReplace": "Chiudi trova e sostituisci",
+    "closeReplaceTitle": "Chiudi (⌥⌘F)",
+    "replacedCount_one": "{{count}} sostituita",
+    "replacedCount_other": "{{count}} sostituite"
   },
   "outline": {
     "show": "Mostra struttura",
@@ -173,5 +185,9 @@
     "copy": "Copia",
     "copied": "Copiato",
     "copyFailed": "Errore"
+  },
+  "noteLink": {
+    "open": "Apri nota",
+    "remove": "Rimuovi link"
   }
 }

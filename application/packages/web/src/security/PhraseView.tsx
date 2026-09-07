@@ -1,7 +1,8 @@
 import { QRCodeCanvas } from 'qrcode.react';
 import { useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { CaretDown, Check, EyeSlash, Warning, iconCopy, iconDownload } from '../icons';
+import { CaretDown, Check, EyeSlash, FileText, Warning, iconCopy, iconDownload } from '../icons';
+import { buildPhraseFile, PHRASE_FILE_NAME } from '../phraseFile';
 import { buildSignInUrl } from '../qrSignIn';
 import { RevealGate } from '../RevealGate';
 import { saveBlob } from '../saveFile';
@@ -91,6 +92,17 @@ export function PhraseView({
     await saveBlob(blob, filename);
   }
 
+  // Same file the onboarding screen offers; its strings live in the auth catalog.
+  async function handleDownloadTxt() {
+    const text = buildPhraseFile(phrase, {
+      title: t('auth:createPhrase.txtTitle'),
+      oneLine: t('auth:createPhrase.txtOneLine'),
+      footer: t('auth:createPhrase.txtFooter'),
+    });
+    // Direct local save, never navigator.share: the file decrypts the vault.
+    await saveBlob(new Blob([text], { type: 'text/plain' }), PHRASE_FILE_NAME);
+  }
+
   return (
     <div className="space-y-3">
       {showCallout && (
@@ -150,17 +162,27 @@ export function PhraseView({
       {/* QR collapsed behind a toggle - most people read/copy words; the
           QR is only for device-to-device migration via scan. Hidden while
           sealed: the QR carries the phrase, so it is a second way to put
-          it on screen. Save QR and Copy stay, because neither shows it. */}
-      {!sealed && (
+          it on screen. Save QR, Copy and the .txt download stay, because
+          none of them shows it, so the row drops to one column instead. */}
+      <div className={`grid gap-2 ${sealed ? 'grid-cols-1' : 'grid-cols-2'}`}>
+        {!sealed && (
+          <button
+            onClick={() => setShowQR((s) => !s)}
+            aria-expanded={showQR}
+            className="inline-flex items-center justify-center gap-1.5 rounded-md border border-divider hover:bg-surface-1 px-2 py-2 text-sm text-pn-soft transition"
+          >
+            <CaretDown aria-hidden="true" className={`transition-transform ${showQR ? 'rotate-180' : ''}`} />
+            {showQR ? t('phraseView.hideQr') : t('phraseView.showQr')}
+          </button>
+        )}
         <button
-          onClick={() => setShowQR((s) => !s)}
-          aria-expanded={showQR}
-          className="w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-divider hover:bg-surface-1 px-3 py-2 text-sm text-pn-soft transition"
+          onClick={() => { void handleDownloadTxt(); }}
+          className="inline-flex items-center justify-center gap-1.5 rounded-md border border-divider hover:bg-surface-1 px-2 py-2 text-sm text-pn-soft transition"
         >
-          <CaretDown aria-hidden="true" className={`transition-transform ${showQR ? 'rotate-180' : ''}`} />
-          {showQR ? t('phraseView.hideQr') : t('phraseView.showQr')}
+          <FileText aria-hidden="true" />
+          {t('auth:createPhrase.downloadTxt')}
         </button>
-      )}
+      </div>
 
       {/*
         The canvas stays mounted even when collapsed (hidden via CSS, not

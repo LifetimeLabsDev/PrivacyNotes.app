@@ -19,8 +19,11 @@ import { InputRule, mergeAttributes, Node } from '@tiptap/core';
 import { NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react';
 import { Fragment, Slice, type Node as PMNode } from '@tiptap/pm/model';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
+import { useTranslation } from 'react-i18next';
 import { wikiLinkSuggestion } from './NoteLinkSuggestion';
 import { HoverLabel } from './HoverLabel';
+import { ContextMenu, useContextMenu, type ContextMenuItem } from './ContextMenu';
+import { iconExternal, iconTrash } from './icons';
 
 /* ------------------------------------------------------------------ */
 /* Navigation callback - set by the host (NotesView) via extension    */
@@ -51,12 +54,16 @@ export function setWikiLinkNavigator(
 function WikiLinkView({
   node,
   editor,
+  deleteNode,
 }: {
   node: { attrs: { target: string; label: string | null } };
   editor: { storage: Record<string, Record<string, unknown>>; isEditable: boolean };
+  deleteNode: () => void;
 }) {
   const { target, label } = node.attrs;
   const display = label || target;
+  const { t } = useTranslation('editor');
+  const menu = useContextMenu();
   const wlStore = editor.storage.wikiLink as Record<string, unknown> | undefined;
   // Read the navigator out of the storage box AT CLICK TIME, never at render
   // time. NotesView rewrites the box on every render, and the navigator it
@@ -70,10 +77,43 @@ function WikiLinkView({
     if (navigate) navigate(target);
   };
 
+  // A link is one uneditable object rather than a run of letters, and that is
+  // what makes it unreachable on a touch screen. A tap follows the link, so it
+  // can never leave a caret beside it, and a long press hands the selection to
+  // the platform's own text-selection layer, which the editor is never told
+  // about - the handles appear around the link while the editor holds no
+  // selection at all, so cut and delete act on nothing. A soft keyboard cannot
+  // rescue it either: with the link selected it reports only that its own input
+  // method is handling the key and sends no input event, so no handler runs.
+  // This menu is the route that owes nothing to the keyboard. It is also why
+  // this is the one place a touch long press does not belong to the platform.
+  // Reported as GitHub #283 (deleting a note-link is stuck on Android).
+  const openMenu = (e: React.MouseEvent) => {
+    if (!editor.isEditable) return;
+    const items: ContextMenuItem[] = [
+      { label: t('noteLink.open'), onSelect: go, icon: iconExternal() },
+      { label: t('noteLink.remove'), onSelect: deleteNode, destructive: true, icon: iconTrash() },
+    ];
+    menu.open(e, items);
+    // The platform starts its own selection on a long press before it asks
+    // whether a menu is wanted, so the highlight and its two drag handles are
+    // already painted over the link by the time this runs. They belong to a
+    // selection the editor does not share and cannot act on, and they land on
+    // top of the menu. Drop them, but only when they are inside this link:
+    // a right click carries a selection the user made somewhere else, and that
+    // one is theirs to keep.
+    const el = e.currentTarget;
+    const sel = el.ownerDocument.getSelection();
+    if (sel && !sel.isCollapsed && sel.anchorNode && el.contains(sel.anchorNode)) {
+      sel.removeAllRanges();
+    }
+  };
+
   const span = (
     <span
       role="link"
       tabIndex={0}
+      onContextMenu={openMenu}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -97,6 +137,7 @@ function WikiLinkView({
       {target !== display
         ? <HoverLabel label={target} position="above" inline>{span}</HoverLabel>
         : span}
+      <ContextMenu state={menu.state} onClose={menu.close} />
     </NodeViewWrapper>
   );
 }

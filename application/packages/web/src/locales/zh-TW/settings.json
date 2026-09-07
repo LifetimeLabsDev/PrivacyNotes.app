@@ -79,8 +79,10 @@
     "heading": "已註冊裝置",
     "empty": "沒有已註冊的裝置。同步可能尚未完成。",
     "thisDevice": "此裝置",
-    "sessions_other": "{{count}} 個工作階段",
+    "sharedSlot_other": "{{count}} 個安裝共用一個裝置名額",
+    "added": "加入 {{time}}",
     "lastActive": "最近活動 {{time}}",
+    "removeAll": "全部移除",
     "recentlyRemoved": "最近移除",
     "removedAt": "已於 {{time}} 移除"
   },
@@ -106,10 +108,14 @@
   },
   "revoke": {
     "title": "要移除「{{name}}」嗎？",
+    "titleInstall": "要移除這個安裝嗎？",
     "bodySelf": "這會重設你的裝置註冊。你的工作階段保持有效，裝置會立即重新註冊。",
-    "bodyOther": "這部裝置上的所有工作階段都會被登出。",
-    "bodyOtherSessions_other": "這會移除 {{count}} 個瀏覽器工作階段。",
+    "bodyOther": "這部裝置會在下次同步時被登出。",
+    "bodyRemoveAll_other": "這會移除此名額中的全部 {{count}} 個安裝。",
+    "bodyInstall": "這個安裝會在下次同步時被登出。",
+    "bodyInstallOthers_other": "此名額中的其他 {{count}} 個安裝會保留。",
     "freeNote": "名額會立即釋出，你可以馬上加入替代裝置。被移除的裝置會在「最近移除」中顯示 72 小時。",
+    "freeNoteKept": "只要名額中還有其他安裝，名額就會持續佔用。",
     "removing": "移除中…"
   },
   "appearance": {

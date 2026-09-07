@@ -224,7 +224,7 @@ export interface NoteEditorPaneProps {
   removeProtectionFor: string | null;
   setRemoveProtectionFor: Dispatch<SetStateAction<string | null>>;
   setHistoryForNoteId: Dispatch<SetStateAction<string | null>>;
-  setShowUpgrade: Dispatch<SetStateAction<null | { trigger: 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage' | 'callout' | 'fileSize' | 'folders' | 'totp' | null }>>;
+  setShowUpgrade: Dispatch<SetStateAction<null | { trigger: 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage' | 'callout' | 'fileSize' | 'folders' | 'totp' | 'replace' | null }>>;
   setShowSecurity: Dispatch<SetStateAction<null | { tab: 'pin' | 'phrase' | 'biometric'; reason?: 'protect' }>>;
   onPinUnlocked: () => void;
   setFolderPicker: Dispatch<SetStateAction<
@@ -746,6 +746,12 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               {...(canSwitchEditorMode
                 ? { editorMode: selectedEditorMode, onToggleEditorMode: toggleEditorMode }
                 : {})}
+              // Replace drives the rich editor's search plugin, so the row
+              // exists only while that editor is the one on screen. The Pro
+              // gate is inside toggleReplace, shared with the shortcut.
+              {...(canSwitchEditorMode && selectedEditorMode !== 'markdown'
+                ? { onFindReplace: () => editorRef.current?.toggleReplace() }
+                : {})}
             />
           )}
         </div>
@@ -1053,7 +1059,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                 onFocusChange={setEditorFocused}
                 toolbarVisible={zenMode ? zenToolbar : toolbarVisible}
                 isPro={auth.isPro ?? false}
-                onOpenUpgrade={() => setShowUpgrade({ trigger: 'callout' })}
+                onOpenUpgrade={(trigger) => setShowUpgrade({ trigger })}
                 bodyControls={bodyControls}
               />
             )}

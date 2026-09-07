@@ -374,7 +374,7 @@ export const PUBLIC_ROADMAP: RoadmapItem[] = [
     title: 'The apps are open source',
     status: 'shipped',
     description:
-      'The web, desktop, and mobile clients are published, next to the encryption they use and the database schema behind them.',
+      'The web, desktop, and mobile clients are published, next to the encryption they use and the threat model behind it.',
     icon: 'github',
   },
   {

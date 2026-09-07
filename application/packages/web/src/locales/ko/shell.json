@@ -230,6 +230,7 @@
     "noteHistoryDescription": "최근 20개 버전 중 아무거나 복원해요.",
     "showMarkdownDescription": "원본 마크다운을 편집해요.",
     "showFormattedDescription": "서식 편집기로 돌아가요.",
+    "findReplace": "찾기 및 바꾸기",
     "comingSoon": "출시 예정",
     "noteOptions": "노트 옵션",
     "lastModified": "마지막 수정: {{date}}",

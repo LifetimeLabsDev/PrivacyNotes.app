@@ -116,7 +116,18 @@
     "next": "下一個符合項目（Enter）",
     "nextTitle": "下一個（Enter）",
     "close": "關閉尋找",
-    "closeTitle": "關閉（⌘F）"
+    "closeTitle": "關閉（⌘F）",
+    "replacePlaceholder": "取代為",
+    "replaceLabel": "取代為",
+    "replace": "取代",
+    "replaceTitle": "取代此項（Enter）",
+    "replaceAll": "全部",
+    "replaceAllTitle": "取代全部符合項目",
+    "caseSensitive": "區分大小寫",
+    "caseSensitiveTitle": "區分大小寫",
+    "closeReplace": "關閉尋找與取代",
+    "closeReplaceTitle": "關閉（⌥⌘F）",
+    "replacedCount_other": "已取代 {{count}} 項"
   },
   "outline": {
     "show": "顯示大綱",
@@ -171,5 +182,9 @@
     "copy": "複製",
     "copied": "已複製",
     "copyFailed": "失敗"
+  },
+  "noteLink": {
+    "open": "開啟筆記",
+    "remove": "移除連結"
   }
 }

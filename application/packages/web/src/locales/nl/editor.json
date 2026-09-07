@@ -116,7 +116,19 @@
     "next": "Volgende overeenkomst (Enter)",
     "nextTitle": "Volgende (Enter)",
     "close": "Zoeken sluiten",
-    "closeTitle": "Sluiten (⌘F)"
+    "closeTitle": "Sluiten (⌘F)",
+    "replacePlaceholder": "Vervangen door",
+    "replaceLabel": "Vervangen door",
+    "replace": "Vervangen",
+    "replaceTitle": "Deze overeenkomst vervangen (Enter)",
+    "replaceAll": "Alles",
+    "replaceAllTitle": "Alle overeenkomsten vervangen",
+    "caseSensitive": "Hoofdlettergevoelig",
+    "caseSensitiveTitle": "Hoofdlettergevoelig",
+    "closeReplace": "Zoeken en vervangen sluiten",
+    "closeReplaceTitle": "Sluiten (⌥⌘F)",
+    "replacedCount_one": "{{count}} vervangen",
+    "replacedCount_other": "{{count}} vervangen"
   },
   "outline": {
     "show": "Overzicht tonen",
@@ -173,5 +185,9 @@
     "copy": "Kopiëren",
     "copied": "Gekopieerd",
     "copyFailed": "Mislukt"
+  },
+  "noteLink": {
+    "open": "Notitie openen",
+    "remove": "Link verwijderen"
   }
 }

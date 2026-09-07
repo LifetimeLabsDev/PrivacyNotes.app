@@ -80,9 +80,11 @@
     "heading": "Dispositivos registrados",
     "empty": "Nenhum dispositivo registrado. A sincronização provavelmente ainda não terminou.",
     "thisDevice": "Este dispositivo",
-    "sessions_one": "{{count}} sessão",
-    "sessions_other": "{{count}} sessões",
+    "sharedSlot_one": "{{count}} instalação nesta vaga de dispositivo",
+    "sharedSlot_other": "{{count}} instalações compartilham uma vaga de dispositivo",
+    "added": "adicionado {{time}}",
     "lastActive": "ativo pela última vez {{time}}",
+    "removeAll": "Remover todas",
     "recentlyRemoved": "Removidos recentemente",
     "removedAt": "Removido {{time}}"
   },
@@ -114,11 +116,16 @@
   },
   "revoke": {
     "title": "Remover “{{name}}”?",
+    "titleInstall": "Remover esta instalação?",
     "bodySelf": "Isto redefine o registro do seu dispositivo. Sua sessão continua ativa. O dispositivo se registra de novo imediatamente.",
-    "bodyOther": "Todas as sessões neste dispositivo serão desconectadas.",
-    "bodyOtherSessions_one": "Isto remove {{count}} sessão de navegador.",
-    "bodyOtherSessions_other": "Isto remove {{count}} sessões de navegador.",
+    "bodyOther": "Este dispositivo será desconectado na próxima sincronização.",
+    "bodyRemoveAll_one": "Isto remove {{count}} instalação.",
+    "bodyRemoveAll_other": "Isto remove todas as {{count}} instalações da vaga.",
+    "bodyInstall": "Esta instalação será desconectada na próxima sincronização.",
+    "bodyInstallOthers_one": "A outra instalação nesta vaga continua.",
+    "bodyInstallOthers_other": "As outras {{count}} instalações nesta vaga continuam.",
     "freeNote": "A vaga é liberada na hora - você pode adicionar um dispositivo substituto imediatamente. O dispositivo removido fica visível em “Removidos recentemente” por 72 horas.",
+    "freeNoteKept": "A vaga continua ocupada enquanto houver outras instalações nela.",
     "removing": "Removendo..."
   },
   "appearance": {

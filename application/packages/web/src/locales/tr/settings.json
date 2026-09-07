@@ -80,9 +80,11 @@
     "heading": "Kayıtlı cihazlar",
     "empty": "Kayıtlı cihaz yok. Eşitleme muhtemelen henüz tamamlanmadı.",
     "thisDevice": "Bu cihaz",
-    "sessions_one": "{{count}} oturum",
-    "sessions_other": "{{count}} oturum",
+    "sharedSlot_one": "Bu cihaz yerinde {{count}} kurulum",
+    "sharedSlot_other": "{{count}} kurulum tek bir cihaz yerini paylaşıyor",
+    "added": "eklenme {{time}}",
     "lastActive": "son etkinlik {{time}}",
+    "removeAll": "Tümünü kaldır",
     "recentlyRemoved": "Son kaldırılanlar",
     "removedAt": "{{time}} kaldırıldı"
   },
@@ -114,11 +116,16 @@
   },
   "revoke": {
     "title": "“{{name}}” kaldırılsın mı?",
+    "titleInstall": "Bu kurulum kaldırılsın mı?",
     "bodySelf": "Bu, cihaz kaydınızı sıfırlar. Oturumunuz açık kalır. Cihaz kendini hemen yeniden kaydeder.",
-    "bodyOther": "Bu cihazdaki tüm oturumlar kapatılacak.",
-    "bodyOtherSessions_one": "Bu işlem {{count}} tarayıcı oturumunu kaldırır.",
-    "bodyOtherSessions_other": "Bu işlem {{count}} tarayıcı oturumunu kaldırır.",
+    "bodyOther": "Bu cihazın oturumu bir sonraki eşitlemede kapatılır.",
+    "bodyRemoveAll_one": "Bu işlem {{count}} kurulumu kaldırır.",
+    "bodyRemoveAll_other": "Bu işlem bu yerdeki {{count}} kurulumun tümünü kaldırır.",
+    "bodyInstall": "Bu kurulumun oturumu bir sonraki eşitlemede kapatılır.",
+    "bodyInstallOthers_one": "Bu yerdeki diğer kurulum kalır.",
+    "bodyInstallOthers_other": "Bu yerdeki diğer {{count}} kurulum kalır.",
     "freeNote": "Yer hemen boşalır - yerine başka bir cihazı anında ekleyebilirsiniz. Kaldırılan cihaz 72 saat boyunca “Son kaldırılanlar” altında görünmeye devam eder.",
+    "freeNoteKept": "İçinde başka kurulumlar kaldığı sürece yer dolu kalır.",
     "removing": "Kaldırılıyor..."
   },
   "appearance": {

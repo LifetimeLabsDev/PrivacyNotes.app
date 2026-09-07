@@ -116,7 +116,20 @@
     "next": "Coincidència següent (Retorn)",
     "nextTitle": "Següent (Retorn)",
     "close": "Tanca la cerca",
-    "closeTitle": "Tanca (⌘F)"
+    "closeTitle": "Tanca (⌘F)",
+    "replacePlaceholder": "Substitueix per",
+    "replaceLabel": "Substitueix per",
+    "replace": "Substitueix",
+    "replaceTitle": "Substitueix aquesta coincidència (Retorn)",
+    "replaceAll": "Totes",
+    "replaceAllTitle": "Substitueix totes les coincidències",
+    "caseSensitive": "Distingeix majúscules i minúscules",
+    "caseSensitiveTitle": "Distingeix majúscules i minúscules",
+    "closeReplace": "Tanca cerca i substitueix",
+    "closeReplaceTitle": "Tanca (⌥⌘F)",
+    "replacedCount_one": "{{count}} substituïda",
+    "replacedCount_many": "{{count}} substituïdes",
+    "replacedCount_other": "{{count}} substituïdes"
   },
   "outline": {
     "show": "Mostra l'esquema",
@@ -175,5 +188,9 @@
     "copy": "Copia",
     "copied": "Copiat",
     "copyFailed": "Ha fallat"
+  },
+  "noteLink": {
+    "open": "Obre la nota",
+    "remove": "Elimina l'enllaç"
   }
 }

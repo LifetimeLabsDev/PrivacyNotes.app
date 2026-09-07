@@ -116,7 +116,19 @@
     "next": "Correspondance suivante (Entrée)",
     "nextTitle": "Suivant (Entrée)",
     "close": "Fermer la recherche",
-    "closeTitle": "Fermer (⌘F)"
+    "closeTitle": "Fermer (⌘F)",
+    "replacePlaceholder": "Remplacer par",
+    "replaceLabel": "Remplacer par",
+    "replace": "Remplacer",
+    "replaceTitle": "Remplacer cette occurrence (Entrée)",
+    "replaceAll": "Tout",
+    "replaceAllTitle": "Remplacer toutes les occurrences",
+    "caseSensitive": "Respecter la casse",
+    "caseSensitiveTitle": "Respecter la casse",
+    "closeReplace": "Fermer rechercher et remplacer",
+    "closeReplaceTitle": "Fermer (⌥⌘F)",
+    "replacedCount_one": "{{count}} remplacée",
+    "replacedCount_other": "{{count}} remplacées"
   },
   "outline": {
     "show": "Afficher le plan",
@@ -173,5 +185,9 @@
     "copy": "Copier",
     "copied": "Copié",
     "copyFailed": "Échec"
+  },
+  "noteLink": {
+    "open": "Ouvrir la note",
+    "remove": "Retirer le lien"
   }
 }

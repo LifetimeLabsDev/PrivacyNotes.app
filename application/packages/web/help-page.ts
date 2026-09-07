@@ -8,6 +8,7 @@ import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss } from './static-page-
 import { BRAND_CSS, brandMark, CHROME_CSS, LINK_ICON, OG_IMAGE_TAGS, ogLocaleTag, siteFooterFor, siteNav, type NavLabels } from './static-page-chrome.ts';
 import { LOCALE_TO_SLUG, RTL_LOCALES, helpPath } from './src/localeRoutes.ts';
 import { FAQ_SOURCES, SOURCE_FILES, sourceUrl } from './src/faqSources.ts';
+import { PUBLISHED_DOCS, REPO_URL, docFiles, docMd, docSize, docSourceUrl, docUrl, docsIndexMd } from './publishedDocs.ts';
 import { VERSION } from './src/version.ts';
 import { LANDING_PAGES_PUBLIC } from './landing-pages.ts';
 import { Flag, LANGUAGE_META, sortByNative } from './src/languageData.tsx';
@@ -416,28 +417,67 @@ function railRows(items: RailItem[], cls: string): string {
 }
 
 /**
+ * The published documents, as rail rows.
+ *
+ * Four file names rather than one row saying "GitHub", because the file
+ * names are the claim: a reader deciding whether this project is worth
+ * trusting learns more from seeing THREAT_MODEL.md listed than from any
+ * sentence we could write about it. They sit between the topics and the
+ * import guides, since somebody who wants a threat model will not scroll
+ * past a column of importer logos to find one.
+ *
+ * The rows point at GitHub, never at the plain-text copies this site
+ * serves for assistants: a person who clicks a row wants the repository,
+ * with its history, its issues and the code beside the prose.
+ *
+ * The rail is labelled "Documentation" and NOT "Read the source", which is
+ * the per-answer block's label, because a leaf page carries both and two
+ * identical headings on one page describe two different scopes: the block
+ * is the evidence for THAT answer, the rail is every document there is.
+ * Its own key, so it can be a noun in each language the way "Topics" and
+ * "Import guides" beside it are.
+ *
+ * `rs` rather than `rt`, so static-pages.js leaves them out of the search
+ * filter and the scroll-spy. Neither applies: these rows are not sections
+ * of the page below them.
+ */
+function sourceRailRows(): string {
+  return PUBLISHED_DOCS.map(
+    (d) =>
+      `<a class="ritem rs" href="${docSourceUrl(d)}" target="_blank" rel="noopener noreferrer">${GITHUB_MARK_SM}<span class="rlbl rlbl-mono" dir="auto">${esc(d.published.split('/').pop() ?? d.published)}</span></a>`
+  ).join('\n');
+}
+
+/**
  * The unified sidebar shown on EVERY Help view (hub, FAQ leaves, guides):
- * the FAQ topics on top, the import guides beneath. Topic rows carry the
- * `rt` class so static-pages.js can scope search-filtering and the
- * scroll-spy to them without touching the guide rows.
+ * the FAQ topics on top, the published documents next, the import guides
+ * beneath. Topic rows carry the `rt` class so static-pages.js can scope
+ * search-filtering and the scroll-spy to them without touching the rest.
  */
 function renderSidebar(opts: {
   topicsLabel: string;
   topics: RailItem[];
   guidesLabel: string;
   guideItems: RailItem[];
+  sourcesLabel: string;
+  sourcesNote: string;
   homeHref: string;
   homeLabel: string;
   id?: string;
 }): string {
+  const sourcesNav = `<nav class="rail rail-sources" aria-label="${esc(opts.sourcesLabel)}">
+<p class="eyebrow rail-sep">// ${esc(opts.sourcesLabel)}</p>
+${sourceRailRows()}
+<p class="rail-note">${esc(opts.sourcesNote)}</p>
+</nav>`;
   const guidesNav = opts.guideItems.length
     ? `<nav class="rail rail-guides" aria-label="${esc(opts.guidesLabel)}">
 <p class="eyebrow rail-sep">// ${esc(opts.guidesLabel)}</p>
 ${railRows(opts.guideItems, 'rg')}
 </nav>`
     : '';
-  // Two navs inside one column so mobile can split them: topics up under
-  // the breadcrumb, import guides down below the article.
+  // Three navs inside one column so mobile can split them: topics up under
+  // the breadcrumb, the documents and the import guides below the article.
   // The home row is the one rail entry that is never a filter target: on a
   // leaf it walks back to the hub, on the hub it drops an active query.
   const homeRow = `<a class="ritem rhome" href="${opts.homeHref}">${RAIL_HOME_ICON}<span class="rlbl">${esc(opts.homeLabel)}</span></a>`;
@@ -447,6 +487,7 @@ ${railRows(opts.guideItems, 'rg')}
 ${homeRow}
 ${railRows(opts.topics, 'rt')}
 </nav>
+${sourcesNav}
 ${guidesNav}
 </div>`;
 }
@@ -540,8 +581,16 @@ function icon(d: string, size: number): string {
  * The prompt the "Ask an AI" box copies. English, and deliberately not in
  * the locale catalogs: it is an instruction to a model, not UI copy, and
  * models follow English instructions more reliably than a translation of
- * them. The last rule makes the model answer in the reader's language, so
- * a German reader pastes this and gets German back.
+ * them. The language rule makes the model answer in the reader's language,
+ * so a German reader pastes this and gets German back.
+ *
+ * That rule names the QUESTION as the signal, and it has to. "Reply in my
+ * language" reads as a fact about the person rather than about the text in
+ * front of the model, so a model with any other hint - a region, an
+ * account, a stored preference - is free to prefer it over the words it was
+ * actually sent. One did: an English question about the cipher, answered
+ * out of an English page, came back in German. The language of the question
+ * is the one signal that is always present and never wrong.
  *
  * The help URL carries the reader's locale slug: the model shows
  * that link to a person who then clicks it. /llms-full.txt stays bare -
@@ -556,17 +605,37 @@ function icon(d: string, size: number): string {
  * rewrites could not. So when an assistant gets something wrong here, change
  * what the files say and leave this alone. One rule per job, no more.
  *
- * The one exception is SCOPE, and /changelog.md is why the rule now names it.
- * A behaviour fix belongs in the data; a permission does not. The first line
- * and rule 1 together tell the model what it is allowed to read, so a pointer
- * living only inside llms-index.txt asks the DATA to widen a boundary the
- * READER set, which is the shape a careful model is right to refuse. Granting
- * it cost one word in the first line and one addressed line below, and no new
- * rule: everything the address block names is already covered by "Use only
- * those pages".
+ * The one exception is SCOPE, which is why /changelog.md and /docs/index.md
+ * are named here rather than only in the data. A behaviour fix belongs in the
+ * data; a permission does not. The first line and rule 1 together tell the
+ * model what it is allowed to read, so a pointer living only inside
+ * llms-index.txt asks the DATA to widen a boundary the READER set, which is
+ * the shape a careful model is right to refuse. Each grant costs one word in
+ * the first line and one addressed line below, and no new rule: everything
+ * the address block names is already covered by "Use only those pages".
+ *
+ * The documentation line names the INDEX and nothing else. The four published
+ * documents run to about 21,000 tokens together, so a model handed four URLs
+ * with no way to choose reads all of them or none; /docs/index.md lists the
+ * sections of each, and the choice happens there for the price of 2 KB.
+ *
+ * It also says the index is a router, which is the one citation instruction
+ * that cannot live in the data. Every other misquote is fixed by changing
+ * what a file says, because a model cites what it fetched. This one is the
+ * opposite: an assistant answered the cipher question out of GitHub without
+ * fetching the index at all, and signed off with the index URL anyway, for
+ * the simple reason that this message had printed it and the rules asked for
+ * a source. No file can retract an address the prompt handed out, so the
+ * retraction belongs beside the address. Same shape as the scope grant
+ * above: the reader's message is the only place that can say it.
  *
  * Three fallbacks, narrowing: index, then the one-file bundle, then the
- * HTML pages. The last exists because at least one major assistant reports
+ * HTML pages. The last one names the repository beside our own two pages,
+ * because an assistant that cannot fetch a .md file has otherwise NO route
+ * to the security documentation at all: every address that carries it is a
+ * .md. GitHub renders the same documents as ordinary HTML, and a fetcher
+ * that declines a text file will usually take a page. It exists because at
+ * least one major assistant reports
  * "an automated web-fetching error" on a .txt URL while happily reading a
  * page; our own hosting is not the problem (every user agent gets a 200,
  * no challenge, no bot rule), so the prompt degrades instead of arguing.
@@ -576,9 +645,10 @@ function icon(d: string, size: number): string {
  * a 200 to every user agent tried, including the AI-crawler ones. Suspect
  * an edge-level AI-bot block before suspecting these files.
  *
- * The changelog line sits outside that ladder, after a blank line, because it
- * is not a fallback. Inside the ladder it would read as "only if you cannot
- * fetch a .txt file", which is the opposite of when it applies.
+ * The changelog and documentation lines sit outside that ladder, each after a
+ * blank line, because neither is a fallback. Inside the ladder they would read
+ * as "only if you cannot fetch a .txt file", which is the opposite of when
+ * they apply.
  *
  * The line before the sign-off is a usability catch, not a rule, which is
  * why it sits outside the list. Someone who has never done this pastes the
@@ -593,20 +663,22 @@ function icon(d: string, size: number): string {
  * pasting twelve words into someone else's chat box. The box says it too.
  */
 function askPrompt(locale: HelpLocale): string {
-  return `Answer my questions about PrivacyNotes using only its help center and its changelog.
+  return `Answer my questions about PrivacyNotes using only its help center, its changelog and its security documentation.
 
 Start here: ${ORIGIN}/llms-index.txt
 It lists every question with the page that answers it. Fetch the one or two that match mine.
 If you can only make one request, fetch ${ORIGIN}/llms-full.txt instead.
-If you cannot fetch a .txt or .md file, read ${ORIGIN}${helpPath(locale)} and ${ORIGIN}/changelog instead.
+If you cannot fetch a .txt or .md file, read ${ORIGIN}${helpPath(locale)}, ${ORIGIN}/changelog and ${REPO_URL} instead.
 
 For what changed, or where something moved, fetch ${ORIGIN}/changelog.md.
+
+For how the encryption works, what the server can read, or how to check any of it yourself, fetch ${ORIGIN}/docs/index.md and follow it to one of the documents it lists. That index is a router: cite the document, never the index.
 
 Rules:
 - Use only those pages. If they do not answer something, say so instead of guessing.
 - Never invent a feature, a menu path, a price, or a limit.
 - End your reply with the "Source:" URL from the page you used, exactly as written.
-- Reply in my language.
+- Answer in the same language as my question.
 - Never ask me for my recovery phrase, my PIN, or the contents of a note.
 
 If no question follows, ask me what I would like to know.
@@ -685,6 +757,10 @@ function askMiniBar(p: Record<string, string>): string {
   return `<a class="askmini" href="#ask">${icon(SPARKLE_PATH, 13)}<span>${esc(p.askMini)}</span><span class="askmini-arr" aria-hidden="true"></span></a>`;
 }
 
+/** The same shape at rail size, beside a monospace file name. */
+const GITHUB_MARK_SM =
+  '<svg width="15" height="15" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,104v8a56.06,56.06,0,0,1-48.44,55.47A39.8,39.8,0,0,1,176,192v40a8,8,0,0,1-8,8H104a8,8,0,0,1-8-8V216H72a40,40,0,0,1-40-40A24,24,0,0,0,8,152a8,8,0,0,1,0-16,40,40,0,0,1,40,40,24,24,0,0,0,24,24H96v-8a39.8,39.8,0,0,1,8.44-24.53A56.06,56.06,0,0,1,56,112v-8a58.14,58.14,0,0,1,7.69-28.32A59.78,59.78,0,0,1,69.07,28,8,8,0,0,1,76,24a59.75,59.75,0,0,1,48,24h24a59.75,59.75,0,0,1,48-24,8,8,0,0,1,6.93,4,59.74,59.74,0,0,1,5.37,47.68A58,58,0,0,1,216,104Z"/></svg>';
+
 /** @phosphor-icons "github-logo" (fill), the shape the feedback row uses. */
 const GITHUB_MARK =
   '<svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,104v8a56.06,56.06,0,0,1-48.44,55.47A39.8,39.8,0,0,1,176,192v40a8,8,0,0,1-8,8H104a8,8,0,0,1-8-8V216H72a40,40,0,0,1-40-40A24,24,0,0,0,8,152a8,8,0,0,1,0-16,40,40,0,0,1,40,40,24,24,0,0,0,24,24H96v-8a39.8,39.8,0,0,1,8.44-24.53A56.06,56.06,0,0,1,56,112v-8a58.14,58.14,0,0,1,7.69-28.32A59.78,59.78,0,0,1,69.07,28,8,8,0,0,1,76,24a59.75,59.75,0,0,1,48,24h24a59.75,59.75,0,0,1,48-24,8,8,0,0,1,6.93,4,59.74,59.74,0,0,1,5.37,47.68A58,58,0,0,1,216,104Z"/></svg>';
@@ -717,12 +793,24 @@ ${items}
 </div>`;
 }
 
-/** The same rows as markdown, for the .md twin and the text bundle. */
+/**
+ * The same rows as markdown, for the .md twin and the text bundle.
+ *
+ * A row that is served here as plain text names both URLs, in the index
+ * convention: fetch the first, cite the second. The reader-facing block
+ * above stays on GitHub alone, because a person clicking "Read the source"
+ * wants the repository rather than a text file.
+ */
 function sourcesMd(id: string): string {
   const rows = FAQ_SOURCES[id];
   if (!rows?.length) return '';
   const items = rows
-    .map((s) => `- [${SOURCE_FILES[s.doc]}${s.heading ? `: ${s.heading}` : ''}](${sourceUrl(s)})`)
+    .map((s) => {
+      const served = PUBLISHED_DOCS.find((d) => d.published === SOURCE_FILES[s.doc]);
+      const label = `${SOURCE_FILES[s.doc]}${s.heading ? `: ${s.heading}` : ''}`;
+      if (!served) return `- [${label}](${sourceUrl(s)})`;
+      return `- ${label} -> ${docUrl(served)} (source: ${sourceUrl(s)})`;
+    })
     .join('\n');
   return `\n## Read the source\n\n${items}\n`;
 }
@@ -1155,6 +1243,9 @@ details[open] .chev{transform:rotate(-135deg);margin-top:4px}
 .ask .askwarn{display:flex;gap:9px;align-items:flex-start;margin:17px 0 0;padding-block-start:14px;border-block-start:1px solid var(--ok-line);font-size:13px;font-weight:600;line-height:1.5;color:var(--fg)}
 .ask .askwarn svg{flex:0 0 auto;color:var(--ok);margin-block-start:1px}
 .fb-links{display:flex;gap:8px;flex-wrap:wrap}
+/* The published-document rows. A monospace file name is the whole point of the block, so it takes the weight the topic labels take and drops a step in size to stay on one line inside the 208px rail: THREAT_MODEL.md is the longest name we ship and it fits at 12.5px. It carries dir="auto" like every other file name the app renders, and therefore must NOT stretch the way a topic label does: a stretched box under dir=rtl aligns its LTR name to the far edge and leaves a hole beside the icon. Shrink-wrapping puts the name against its mark in both directions. Spec: ops/docs/ui-patterns.md (section 67, dir=auto convention) */
+.rlbl-mono{flex:0 1 auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;font-weight:600}
+.rail-note{margin:8px 10px 0;font-size:12px;line-height:1.5;color:var(--faint)}
 /* The page shell (.wrap width, .pcols grid, .rail-col, .ritem, .search,
    .count, mark) lives in CHROME_CSS - every static page uses it now, not
    just Help. Only the Help-specific pieces are below. */
@@ -1178,19 +1269,24 @@ details[open] .chev{transform:rotate(-135deg);margin-top:4px}
    The un-sticking and the separator are in CHROME_CSS now - every page's
    rail needs them, not just this one. */
 body[data-static-page="help"] .rail-guides{margin-top:12px}
-/* Leaf & guide: topics under the breadcrumb, guides below the article. */
+body[data-static-page="help"] .rail-sources{margin-top:12px}
+/* Leaf & guide: topics under the breadcrumb, the documents and the guides below the article. The documents go under rather than over it, unlike on the desktop rail: a sticky column is scanned whole, and a phone reads top to bottom, so anything above the answer is something the reader has to get past. */
 body[data-static-page="help-leaf"] .pcols,
-body[data-static-page="help-guide"] .pcols{grid-template-areas:'crumb' 'topics' 'head' 'body' 'guides'}
+body[data-static-page="help-guide"] .pcols{grid-template-areas:'crumb' 'topics' 'head' 'body' 'sources' 'guides'}
 body[data-static-page="help-leaf"] .rail-col,
 body[data-static-page="help-guide"] .rail-col{display:contents}
 .rail-topics{grid-area:topics}
+.rail-sources{grid-area:sources}
 .rail-guides{grid-area:guides}
+.rail-note{flex:1 1 100%;margin:2px 2px 0}
 body[data-static-page="help-leaf"] .rail-topics,
 body[data-static-page="help-guide"] .rail-topics{margin:0;padding-bottom:18px;border-bottom:1px solid var(--line)}
 body[data-static-page="help-leaf"] .col-head,
 body[data-static-page="help-guide"] .col-head{margin:26px 0 20px}
 body[data-static-page="help-leaf"] .rail-guides,
-body[data-static-page="help-guide"] .rail-guides{margin-top:28px;padding-top:20px;border-top:1px solid var(--line)}
+body[data-static-page="help-guide"] .rail-guides,
+body[data-static-page="help-leaf"] .rail-sources,
+body[data-static-page="help-guide"] .rail-sources{margin-top:28px;padding-top:20px;border-top:1px solid var(--line)}
 .app-tile{width:72px;height:72px;border-radius:18px}
 .app-tile img{width:54px;height:54px}
 }`;
@@ -1725,6 +1821,8 @@ ${renderSidebar({
   topicsLabel: p.topics,
   topics: topicRailItems(sections, (k) => `#g-${k}`),
   guidesLabel: p.guides,
+  sourcesLabel: p.docsRail,
+  sourcesNote: p.sourcesNote,
   guideItems: guideRailItems(locale, guideOrder, guides),
   homeHref: helpPath(locale),
   homeLabel: p.browseAll,
@@ -1827,6 +1925,8 @@ ${renderSidebar({
   topicsLabel: p.topics,
   topics: topicRailItems(sections, (k) => `${helpPath(locale)}#g-${k}`, row.group),
   guidesLabel: p.guides,
+  sourcesLabel: p.docsRail,
+  sourcesNote: p.sourcesNote,
   guideItems: guideRailItems(locale, guideOrder, guides),
   homeHref: helpPath(locale),
   homeLabel: p.browseAll,
@@ -1930,6 +2030,8 @@ ${renderSidebar({
   topicsLabel: p.topics,
   topics: topicRailItems(faqSections, (k) => `${helpPath(locale)}#g-${k}`),
   guidesLabel: p.guides,
+  sourcesLabel: p.docsRail,
+  sourcesNote: p.sourcesNote,
   guideItems: guideRailItems(locale, guideOrder, guides, id),
   homeHref: helpPath(locale),
   homeLabel: p.browseAll,
@@ -2148,6 +2250,12 @@ function renderLlmsIndex(
         .map((id) => `- ${guides.guides[id].title} -> ${ORIGIN}${guidePath('en', id)}.md (source: ${ORIGIN}${guidePath('en', id)})`)
         .join('\n')}`
     : '';
+  // Named with a colon rather than the "->" the rows above use, on purpose:
+  // a document is not a twin of a page here, it is a file whose citable form
+  // lives on GitHub, and check:llms counts twins by that arrow.
+  const docList = `\n\nThe documents it lists, if one request is all there is:\n${PUBLISHED_DOCS.map(
+    (d) => `- ${d.published}: ${docUrl(d)} (${docSize(d)}) - ${d.about}`
+  ).join('\n')}`;
   return `# PrivacyNotes Help Center - index
 
 > Every question in the PrivacyNotes help center, against the URL that answers it. ${entryCount} answers and ${guideIds.length} export and import guides. PrivacyNotes is an end-to-end encrypted notes, tasks, journal and vault app.
@@ -2166,6 +2274,11 @@ Everything here describes how the app works today. If the question is about
 what CHANGED - a new feature, a version number, or where a menu path, a
 shortcut or a setting moved - fetch ${ORIGIN}/changelog.md instead.
 It is every release as plain text, newest first, and it cites its own page.
+
+If the question is about how the app is BUILT - the encryption, what the
+server can read, how to verify any of it, or how sync resolves a conflict -
+fetch ${ORIGIN}/docs/index.md instead. It lists the published
+security documents and the sections inside each one.${docList}
 
 The same answers exist in ${HELP_LOCALES.length} languages under ${ORIGIN}/<language-slug>/help/,
 as pages rather than as plain text. Answer in the reader's language from these.
@@ -2240,6 +2353,11 @@ Read ${ORIGIN}/llms.txt first for the rest of the site.
 This file says how the app WORKS. For what CHANGED and when, and for where a
 menu path or a shortcut moved, fetch ${ORIGIN}/changelog.md
 instead: every release as plain text, newest first.
+For how it is BUILT - the encryption, what the server can read, how to verify
+it, how sync resolves a conflict - fetch ${ORIGIN}/docs/index.md,
+which routes to the four published security documents. They are not repeated
+here: together they are longer than this whole file, and most questions never
+reach them.
 
 Every answer below carries a "Source:" line naming its own page. End your
 reply with that URL, never this file and never the help center home.
@@ -2321,6 +2439,10 @@ async function renderAll(): Promise<Rendered[]> {
     fileName: 'llms-index.txt',
     source: renderLlmsIndex(order, rows, en, guideOrder, guidesEn),
   });
+  // The published security documents, verbatim, plus the map that routes to
+  // them. Out of the sitemaps for the same reason the twins are: they mirror
+  // a document that lives on GitHub, and listing both invites a duplicate.
+  for (const file of docFiles()) out.push(file);
   out.push({ fileName: 'sitemap-help.xml', source: renderSitemap(rows, guideIds) });
   out.push({ fileName: 'sitemap-marketing.xml', source: renderMarketingSitemap() });
   out.push({ fileName: 'sitemap.xml', source: renderSitemapIndex() });
@@ -2374,6 +2496,23 @@ export function helpPagePlugin(): Plugin {
         });
       }
       server.middlewares.use('/sitemap.xml', (_req, res) => xml(res, renderSitemapIndex()));
+      // /docs/<slug>.md and /docs/index.md, read off disk on every request so
+      // an edit to a published document shows up without a restart.
+      server.middlewares.use('/docs', (req, res, next) => {
+        const seg = (req.url ?? '/').split('?')[0].replace(/^\/+|\/+$/g, '');
+        if (!seg.endsWith('.md')) {
+          next();
+          return;
+        }
+        const slug = seg.slice(0, -'.md'.length);
+        const body = slug === 'index' ? docsIndexMd() : docMd(slug);
+        if (body === null) {
+          next();
+          return;
+        }
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        res.end(body);
+      });
       for (const locale of HELP_LOCALES) {
         const route = `${localePrefix(locale)}/help`;
         server.middlewares.use(route, async (req, res, next) => {

@@ -254,7 +254,7 @@
   "readIt": {
     "kicker": "Açık kaynak",
     "heading": "Bize güvenmeyin. Okuyun.",
-    "body": "Şu anda kullandığınız uygulama, içindeki şifreleme ve konuştuğu veritabanıyla birlikte yayımlandı. Hiçbir araç gerektirmeyen bir dakikalık denetimle başlayın ya da doğrudan koda gidin.",
+    "body": "Şu anda kullandığınız uygulama, içindeki şifrelemeyle birlikte yayımlandı. Hiçbir araç gerektirmeyen bir dakikalık denetimle başlayın ya da doğrudan koda gidin.",
     "cta": "Kaynağı GitHub'da görüntüle",
     "verify": "Kendiniz doğrulayın",
     "threatModel": "Bir saldırgan ne yapabilir",

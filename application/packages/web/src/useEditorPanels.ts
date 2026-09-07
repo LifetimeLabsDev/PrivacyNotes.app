@@ -9,6 +9,7 @@ import {
 import { type Editor as TipTapEditor } from '@tiptap/react';
 import { getActiveMatchRange } from './editorSearch';
 import { readOutlinePref, writeOutlinePref } from './editorPrefs';
+import { proUnlocked } from './demo';
 
 /**
  * Height of the always-present click row above the note body (rendered by
@@ -18,6 +19,9 @@ import { readOutlinePref, writeOutlinePref } from './editorPrefs';
  */
 export const EDITOR_TOP_GAP_PX = 36;
 
+/** Which bar holds the editor's top-right slot. */
+type EditorBar = 'none' | 'find' | 'replace';
+
 export function useEditorPanels({
   rootRef,
   editorRef,
@@ -25,6 +29,8 @@ export function useEditorPanels({
   isMobile,
   readOnly,
   toolbarVisible,
+  isPro,
+  onOpenUpgrade,
 }: {
   rootRef: RefObject<HTMLDivElement | null>;
   editorRef: RefObject<TipTapEditor | null>;
@@ -32,11 +38,16 @@ export function useEditorPanels({
   isMobile: boolean;
   readOnly: boolean;
   toolbarVisible: boolean;
+  isPro: boolean;
+  /** Opens the upgrade modal when a free account asks for replace. */
+  onOpenUpgrade?: (trigger: 'replace') => void;
 }) {
-  // Find-in-note bar. Opened by Cmd/Ctrl+F; focusTick bumps so a repeated
-  // Cmd/Ctrl+F refocuses + selects the input even while it is already open.
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchFocusTick, setSearchFocusTick] = useState(0);
+  // The find bar (Cmd/Ctrl+F) and the replace bar (Option/Alt+Cmd/Ctrl+F).
+  // One value rather than two flags: the bars share the slot and the
+  // search plugin, so opening one is closing the other. focusTick bumps on
+  // every open so the bar's input takes focus and selects its text.
+  const [bar, setBar] = useState<EditorBar>('none');
+  const [barFocusTick, setBarFocusTick] = useState(0);
   // Document outline panel. Opened via the top-right toggle or Cmd/Ctrl+Shift+O;
   // shares the top-right slot with the find bar, so only one is open at a time.
   const [outlineOpen, setOutlineOpen] = useState(readOutlinePref);
@@ -45,26 +56,26 @@ export function useEditorPanels({
   // open (so text wraps beside it and reclaims full width below).
   const [outlineReserve, setOutlineReserve] = useState({ width: 0, height: 0 });
 
-  /**
-   * Close the find bar, leaving the caret ON the match the reader was looking
-   * at rather than wherever it was before the search.
-   *
-   * The find engine is decoration-only - it highlights and scrolls without
-   * ever moving the selection - so on close the caret is still at the top of
-   * the note, and focusing it scrolled the whole view back there, undoing the
-   * search. Parking the selection on the active hit first is what a browser's
-   * own find does.
-   *
-   * Shared by the X button (via onClose) and the Cmd+F toggle, so the two
-   * cannot drift apart.
-   */
-  /** Mirror of searchOpen for the capture-phase Esc guard, which is registered
+  /** Mirror of `bar` for the capture-phase Esc guard, which is registered
    *  once and must not re-subscribe on every open/close. */
-  const searchOpenRef = useRef(false);
-  useEffect(() => { searchOpenRef.current = searchOpen; }, [searchOpen]);
+  const barRef = useRef<EditorBar>('none');
+  useEffect(() => { barRef.current = bar; }, [bar]);
 
-  const closeFind = useCallback(() => {
-    setSearchOpen(false);
+  /**
+   * Close whichever bar is open, leaving the caret ON the match the reader
+   * was looking at rather than wherever it was before the search.
+   *
+   * Highlighting is decoration-only - it highlights and scrolls without ever
+   * moving the selection - so on close the caret is still at the top of the
+   * note, and focusing it scrolled the whole view back there, undoing the
+   * search. Parking the selection on the active hit first is what a
+   * browser's own find does.
+   *
+   * Shared by each bar's X button (via onClose) and both keyboard toggles,
+   * so none of them can drift apart.
+   */
+  const closeBar = useCallback(() => {
+    setBar('none');
     if (!editorRef.current) return;
     const ed = editorRef.current;
     const hit = getActiveMatchRange(ed.view);
@@ -73,25 +84,50 @@ export function useEditorPanels({
   }, []);
 
   const openFind = useCallback(() => {
-    setSearchOpen(true);
-    setSearchFocusTick((t) => t + 1);
+    setBar('find');
+    setBarFocusTick((t) => t + 1);
     setOutlineOpen(false);
   }, []);
+
+  /**
+   * Replace is the Pro half of search, and this is its one gate: the
+   * shortcut and the "..." menu row both land here, so a free account meets
+   * the same upgrade pitch from either. `proUnlocked`, so the public demo
+   * hands the feature out like every other client-side gate.
+   * Spec: ops/docs/pro-features.md (Find and replace)
+   */
+  const openReplace = useCallback(() => {
+    if (!proUnlocked(isPro)) {
+      onOpenUpgrade?.('replace');
+      return;
+    }
+    setBar('replace');
+    setBarFocusTick((t) => t + 1);
+    setOutlineOpen(false);
+  }, [isPro, onOpenUpgrade]);
 
   /**
    * The single open/close path, shared by Cmd/Ctrl+F and the tag-row magnifier
    * so the two cannot drift: whichever one you reach for, pressing it again
    * closes the bar. Reads the mirror ref rather than state because both callers
-   * fire from event handlers, long after the effect below has synced it.
+   * fire from event handlers, long after the effect above has synced it.
+   * Pressed while the replace bar is up, it swaps to the find bar.
    */
   const toggleFind = useCallback(() => {
-    if (searchOpenRef.current) closeFind();
+    if (barRef.current === 'find') closeBar();
     else openFind();
-  }, [closeFind, openFind]);
+  }, [closeBar, openFind]);
 
-  // Cmd/Ctrl+F opens find; Cmd/Ctrl+Shift+O toggles the outline. One
-  // document-level capture listener catches both, whether the caret is in the
-  // editor body or the editor is merely on screen. We stand down when focus is
+  /** Same shape for replace: the shortcut and the menu row both toggle. */
+  const toggleReplace = useCallback(() => {
+    if (barRef.current === 'replace') closeBar();
+    else openReplace();
+  }, [closeBar, openReplace]);
+
+  // Cmd/Ctrl+F opens find, Option/Alt+Cmd/Ctrl+F opens replace, and
+  // Cmd/Ctrl+Shift+O toggles the outline. One document-level capture listener
+  // catches all three, whether the caret is in the editor body or the editor
+  // is merely on screen. We stand down when focus is
   // in some other input/textarea (e.g. the note-list search) so we don't hijack
   // their shortcuts; our own UI lives inside rootRef so it still counts.
   useEffect(() => {
@@ -108,7 +144,7 @@ export function useEditorPanels({
       // stops clearing the list search.
       const inForeignField = !!ae && /^(input|textarea)$/i.test(ae.tagName) && !inEditor;
 
-      // Swallow Escape while OUR find bar is open and focus is ours, so it
+      // Swallow Escape while one of OUR bars is open and focus is ours, so it
       // neither closes the bar nor reaches the global Esc cascade in
       // useKeyboardShortcuts.
       //
@@ -123,7 +159,7 @@ export function useEditorPanels({
       // bubble-phase on `window`, so stopPropagation here wins. Esc with the
       // bar closed, or with focus in the list search, is untouched.
       if (e.key === 'Escape') {
-        if (searchOpenRef.current && !inForeignField) {
+        if (barRef.current !== 'none' && !inForeignField) {
           e.preventDefault();
           e.stopPropagation();
         }
@@ -131,16 +167,28 @@ export function useEditorPanels({
       }
 
       const mod = e.metaKey || e.ctrlKey;
-      if (!mod || e.altKey) return;
+      if (!mod) return;
+      if (e.altKey) {
+        // Option+Cmd+F opens replace (Alt+Ctrl+F off the Mac). The physical
+        // `code` is tested beside `key` because on macOS, Option rewrites the
+        // key to the character it types (ƒ for F) - the same reason
+        // Editor.tsx tests `code` for its own shifted shortcuts. No other
+        // Option/Alt combination is ours.
+        const isReplace = !e.shiftKey && (e.code === 'KeyF' || e.key === 'f' || e.key === 'F');
+        if (!isReplace || inForeignField) return;
+        e.preventDefault();
+        toggleReplace();
+        return;
+      }
       const isOutline = e.shiftKey && (e.key === 'o' || e.key === 'O');
       const isFind = !e.shiftKey && (e.key === 'f' || e.key === 'F');
       if (!isOutline && !isFind) return;
       if (inForeignField) return;
       e.preventDefault();
       if (isOutline) {
-        // Outline and find share the top-right slot - only one at a time.
+        // The outline and the bars share the top-right slot - one at a time.
         setOutlineOpen((v) => {
-          if (!v) setSearchOpen(false);
+          if (!v) setBar('none');
           return !v;
         });
         return;
@@ -158,7 +206,7 @@ export function useEditorPanels({
     };
     document.addEventListener('keydown', onKeyDown, true);
     return () => document.removeEventListener('keydown', onKeyDown, true);
-  }, [readOnly, toggleFind]);
+  }, [readOnly, toggleFind, toggleReplace]);
 
   // Persist the outline open/closed choice.
   useEffect(() => {
@@ -188,7 +236,7 @@ export function useEditorPanels({
     root.style.setProperty('--pn-outline-fh', `${fh}px`);
   }, [outlineReserve, outlineOpen, isMobile]);
 
-  // Pin the find bar just below the formatting toolbar. The toolbar height
+  // Pin the find and replace bars just below the formatting toolbar. The toolbar height
   // varies (one row, or two when the overflow row is expanded), so measure it
   // live and expose it as a CSS var the bar's sticky `top` reads. Falls back
   // to 0 when the toolbar is hidden so the bar pins under the tag row instead.
@@ -209,13 +257,14 @@ export function useEditorPanels({
   }, [editor, toolbarVisible, readOnly]);
 
   return {
-    searchOpen,
-    setSearchOpen,
-    searchFocusTick,
+    bar,
+    setBar,
+    barFocusTick,
     outlineOpen,
     setOutlineOpen,
     setOutlineReserve,
-    closeFind,
+    closeBar,
     toggleFind,
+    toggleReplace,
   };
 }

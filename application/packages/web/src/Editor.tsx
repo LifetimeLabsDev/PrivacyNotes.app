@@ -52,6 +52,7 @@ import { useTheme } from './theme';
 import { SearchHighlight } from './editorSearch';
 import { mathSourceEdit } from './editorMath';
 import { FindBar } from './FindBar';
+import { ReplaceBar } from './ReplaceBar';
 import { OutlinePanel } from './OutlinePanel';
 import { TableControls } from './TableControls';
 import { Toolbar } from './EditorToolbar';
@@ -104,16 +105,18 @@ type Props = {
   toolbarVisible?: boolean;
   /** Whether the user has Pro. Gates the Pro-only callout types. */
   isPro?: boolean;
-  /** Opens the upgrade modal when a locked Pro callout type is picked. */
-  onOpenUpgrade?: (trigger: 'callout') => void;
+  /** Opens the upgrade modal when a locked Pro callout type is picked, or
+   *  when a free account asks for the replace bar. */
+  onOpenUpgrade?: (trigger: 'callout' | 'replace') => void;
   /** Hides the encrypted image / attachment / audio group - see Toolbar. */
   hideEncryptedMedia?: boolean;
   /**
    * Controls for the BODY, rendered in the top-right slot beside the
    * collapsed outline pill: find, the rich/markdown switch, invisible
    * characters. They are built by NoteEditorPane, which owns their state,
-   * and land here because this is the corner they act on. Hidden while the
-   * find bar is up - the bar owns the corner then, and closes itself.
+   * and land here because this is the corner they act on. Hidden while a
+   * find or replace bar is up - the bar owns the corner then, and closes
+   * itself.
    */
   bodyControls?: ReactNode;
 };
@@ -135,6 +138,10 @@ export type EditorHandle = {
   /** Open the find-in-note bar, or close it if it is already open. The
    *  tag-row magnifier and Cmd/Ctrl+F share this one action. */
   toggleFind: () => void;
+  /** Open the find-and-replace bar, or close it if it is already open. The
+   *  "..." menu row and Option/Alt+Cmd/Ctrl+F share this one action, and the
+   *  Pro gate sits behind it (useEditorPanels.ts). */
+  toggleReplace: () => void;
   /** Scroll to the attachment chip / image whose pn:file/pn:img URI contains
    *  `uuid` and flash-highlight it (jump-to-file from the Files pillar). */
   scrollToFile: (uuid: string) => void;
@@ -601,15 +608,16 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
   }, [isMobile, editor]);
 
   const {
-    searchOpen,
-    setSearchOpen,
-    searchFocusTick,
+    bar,
+    setBar,
+    barFocusTick,
     outlineOpen,
     setOutlineOpen,
     setOutlineReserve,
-    closeFind,
+    closeBar,
     toggleFind,
-  } = useEditorPanels({ rootRef, editorRef, editor, isMobile, readOnly, toolbarVisible });
+    toggleReplace,
+  } = useEditorPanels({ rootRef, editorRef, editor, isMobile, readOnly, toolbarVisible, isPro, onOpenUpgrade });
 
   /**
    * Put the caret on a line above everything else in the note - the action
@@ -653,6 +661,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         editor?.commands.toggleTaskList();
       },
       toggleFind,
+      toggleReplace,
       scrollToFile: (uuid: string) => {
         if (!editor) return;
         // Defer a frame before resolving the position: NodeView portals may
@@ -745,29 +754,29 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           )}
         </>
       )}
-      {/* Find-in-note bar, pinned top-right just under the toolbar. The
+      {/* Find or replace bar, pinned top-right just under the toolbar. The
           zero-height sticky wrapper keeps it floating over the note content
           (no reserved row) and pinned on scroll; the inner bar handles
           pointer events. Sticky top = tag row + measured toolbar height. */}
-      {searchOpen && !readOnly && editor && (
+      {bar !== 'none' && !readOnly && editor && (
         <div
           className="sticky z-[5] flex h-0 items-start justify-end overflow-visible pointer-events-none"
           style={{ top: 'calc(var(--pn-tagrow-h, 0px) + var(--pn-editor-toolbar-h, 0px))' }}
         >
-          <FindBar
-            editor={editor}
-            focusTick={searchFocusTick}
-            onClose={closeFind}
-          />
+          {bar === 'find' ? (
+            <FindBar editor={editor} focusTick={barFocusTick} onClose={closeBar} />
+          ) : (
+            <ReplaceBar editor={editor} focusTick={barFocusTick} onClose={closeBar} />
+          )}
         </div>
       )}
-      {/* Outline panel, same top-right sticky slot as the find bar. Hidden
-          while find is open so the two never share the corner; the panel
+      {/* Outline panel, same top-right sticky slot as the bars. Hidden while
+          a bar is open so the two never share the corner; the panel
           renders nothing when the note has no headings. Also hidden while a
           recording is running: the floating pill sits exactly on the
           banner's Stop button otherwise (reported during the TipTap 3
           verification pass). */}
-      {!searchOpen && !readOnly && editor && audioState === 'idle' && (
+      {bar === 'none' && !readOnly && editor && audioState === 'idle' && (
         <div
           className="sticky z-[5] flex h-0 items-start justify-end gap-1.5 overflow-visible pointer-events-none"
           style={{ top: 'calc(var(--pn-tagrow-h, 0px) + var(--pn-editor-toolbar-h, 0px))' }}
@@ -778,7 +787,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
             open={outlineOpen}
             onOpenChange={(v) => {
               setOutlineOpen(v);
-              if (v) setSearchOpen(false);
+              if (v) setBar('none');
             }}
             onReserve={setOutlineReserve}
           />

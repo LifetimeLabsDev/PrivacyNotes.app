@@ -80,9 +80,11 @@
     "heading": "Registered devices",
     "empty": "No registered devices. Sync probably hasn't completed.",
     "thisDevice": "This device",
-    "sessions_one": "{{count}} session",
-    "sessions_other": "{{count}} sessions",
+    "sharedSlot_one": "{{count}} install in this device slot",
+    "sharedSlot_other": "{{count}} installs share one device slot",
+    "added": "added {{time}}",
     "lastActive": "last active {{time}}",
+    "removeAll": "Remove all",
     "recentlyRemoved": "Recently removed",
     "removedAt": "Removed {{time}}"
   },
@@ -114,11 +116,16 @@
   },
   "revoke": {
     "title": "Remove “{{name}}”?",
+    "titleInstall": "Remove this install?",
     "bodySelf": "This will reset your device registration. Your session stays active. The device re-registers itself immediately.",
-    "bodyOther": "All sessions on this device will be signed out.",
-    "bodyOtherSessions_one": "This removes {{count}} browser session.",
-    "bodyOtherSessions_other": "This removes {{count}} browser sessions.",
+    "bodyOther": "This device is signed out the next time it syncs.",
+    "bodyRemoveAll_one": "This removes {{count}} install.",
+    "bodyRemoveAll_other": "This removes all {{count}} installs in the slot.",
+    "bodyInstall": "This install is signed out the next time it syncs.",
+    "bodyInstallOthers_one": "The other install in this slot stays.",
+    "bodyInstallOthers_other": "The other {{count}} installs in this slot stay.",
     "freeNote": "The slot is freed immediately - you can add a replacement device right away. The removed device stays visible under “Recently removed” for 72 hours.",
+    "freeNoteKept": "The slot stays in use while other installs remain in it.",
     "removing": "Removing..."
   },
   "appearance": {

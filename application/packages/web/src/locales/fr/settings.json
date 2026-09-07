@@ -80,9 +80,11 @@
     "heading": "Appareils enregistrés",
     "empty": "Aucun appareil enregistré. La synchro n'est probablement pas terminée.",
     "thisDevice": "Cet appareil",
-    "sessions_one": "{{count}} session",
-    "sessions_other": "{{count}} sessions",
+    "sharedSlot_one": "{{count}} installation dans cette place d'appareil",
+    "sharedSlot_other": "{{count}} installations partagent une même place d'appareil",
+    "added": "ajouté {{time}}",
     "lastActive": "dernière activité {{time}}",
+    "removeAll": "Tout supprimer",
     "recentlyRemoved": "Récemment supprimés",
     "removedAt": "Supprimé {{time}}"
   },
@@ -114,11 +116,16 @@
   },
   "revoke": {
     "title": "Supprimer « {{name}} » ?",
+    "titleInstall": "Supprimer cette installation ?",
     "bodySelf": "Cela réinitialisera l'enregistrement de ton appareil. Ta session reste active. L'appareil se réenregistre immédiatement.",
-    "bodyOther": "Toutes les sessions sur cet appareil seront déconnectées.",
-    "bodyOtherSessions_one": "Cela supprime {{count}} session de navigateur.",
-    "bodyOtherSessions_other": "Cela supprime {{count}} sessions de navigateur.",
+    "bodyOther": "Cet appareil sera déconnecté à sa prochaine synchro.",
+    "bodyRemoveAll_one": "Cela supprime {{count}} installation.",
+    "bodyRemoveAll_other": "Cela supprime les {{count}} installations de cette place.",
+    "bodyInstall": "Cette installation sera déconnectée à sa prochaine synchro.",
+    "bodyInstallOthers_one": "L'autre installation de cette place est conservée.",
+    "bodyInstallOthers_other": "Les {{count}} autres installations de cette place sont conservées.",
     "freeNote": "La place est libérée immédiatement - tu peux ajouter un appareil de remplacement tout de suite. L'appareil supprimé reste visible sous « Récemment supprimés » pendant 72 heures.",
+    "freeNoteKept": "La place reste occupée tant que d'autres installations y restent.",
     "removing": "Suppression..."
   },
   "appearance": {

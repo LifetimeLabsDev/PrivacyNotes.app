@@ -295,6 +295,7 @@ export default {
         p === '/changelog' ||
         p === '/changelog/feed.xml' ||
         p === '/changelog.md' ||
+        p.startsWith('/docs/') ||
         p === '/roadmap' ||
         p === '/brand' ||
         LANDING_SLUGS.has(p) ||

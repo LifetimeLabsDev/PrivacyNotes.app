@@ -80,9 +80,11 @@
     "heading": "Dispositivi registrati",
     "empty": "Nessun dispositivo registrato. Probabilmente la sincronizzazione non è ancora terminata.",
     "thisDevice": "Questo dispositivo",
-    "sessions_one": "{{count}} sessione",
-    "sessions_other": "{{count}} sessioni",
+    "sharedSlot_one": "{{count}} installazione in questo slot dispositivo",
+    "sharedSlot_other": "{{count}} installazioni condividono uno slot dispositivo",
+    "added": "aggiunto {{time}}",
     "lastActive": "ultima attività {{time}}",
+    "removeAll": "Rimuovi tutte",
     "recentlyRemoved": "Rimossi di recente",
     "removedAt": "Rimosso {{time}}"
   },
@@ -114,11 +116,16 @@
   },
   "revoke": {
     "title": "Rimuovere “{{name}}”?",
+    "titleInstall": "Rimuovere questa installazione?",
     "bodySelf": "Questo reimposterà la registrazione del tuo dispositivo. La tua sessione resta attiva. Il dispositivo si registra di nuovo immediatamente.",
-    "bodyOther": "Tutte le sessioni su questo dispositivo verranno disconnesse.",
-    "bodyOtherSessions_one": "Questo rimuove {{count}} sessione del browser.",
-    "bodyOtherSessions_other": "Questo rimuove {{count}} sessioni del browser.",
+    "bodyOther": "Questo dispositivo verrà disconnesso alla prossima sincronizzazione.",
+    "bodyRemoveAll_one": "Questo rimuove {{count}} installazione.",
+    "bodyRemoveAll_other": "Questo rimuove tutte le {{count}} installazioni dello slot.",
+    "bodyInstall": "Questa installazione verrà disconnessa alla prossima sincronizzazione.",
+    "bodyInstallOthers_one": "L'altra installazione in questo slot resta.",
+    "bodyInstallOthers_other": "Le altre {{count}} installazioni in questo slot restano.",
     "freeNote": "Lo slot viene liberato immediatamente - puoi aggiungere subito un dispositivo sostitutivo. Il dispositivo rimosso resta visibile sotto “Rimossi di recente” per 72 ore.",
+    "freeNoteKept": "Lo slot resta occupato finché ci sono altre installazioni al suo interno.",
     "removing": "Rimozione in corso..."
   },
   "appearance": {

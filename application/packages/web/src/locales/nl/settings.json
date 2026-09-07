@@ -80,9 +80,11 @@
     "heading": "Geregistreerde apparaten",
     "empty": "Geen geregistreerde apparaten. Waarschijnlijk is de synchronisatie nog niet klaar.",
     "thisDevice": "Dit apparaat",
-    "sessions_one": "{{count}} sessie",
-    "sessions_other": "{{count}} sessies",
+    "sharedSlot_one": "{{count}} installatie in deze apparaatplek",
+    "sharedSlot_other": "{{count}} installaties delen één apparaatplek",
+    "added": "toegevoegd {{time}}",
     "lastActive": "laatst actief {{time}}",
+    "removeAll": "Alles verwijderen",
     "recentlyRemoved": "Onlangs verwijderd",
     "removedAt": "Verwijderd {{time}}"
   },
@@ -114,11 +116,16 @@
   },
   "revoke": {
     "title": "“{{name}}” verwijderen?",
+    "titleInstall": "Deze installatie verwijderen?",
     "bodySelf": "Hiermee reset je de registratie van je apparaat. Je sessie blijft actief. Het apparaat registreert zichzelf meteen opnieuw.",
-    "bodyOther": "Alle sessies op dit apparaat worden afgemeld.",
-    "bodyOtherSessions_one": "Hiermee verdwijnt {{count}} browsersessie.",
-    "bodyOtherSessions_other": "Hiermee verdwijnen {{count}} browsersessies.",
+    "bodyOther": "Dit apparaat wordt bij de volgende synchronisatie afgemeld.",
+    "bodyRemoveAll_one": "Hiermee verdwijnt {{count}} installatie.",
+    "bodyRemoveAll_other": "Hiermee verdwijnen alle {{count}} installaties in deze plek.",
+    "bodyInstall": "Deze installatie wordt bij de volgende synchronisatie afgemeld.",
+    "bodyInstallOthers_one": "De andere installatie in deze plek blijft.",
+    "bodyInstallOthers_other": "De andere {{count}} installaties in deze plek blijven.",
     "freeNote": "De plek komt meteen vrij - je kunt direct een ander apparaat toevoegen. Het verwijderde apparaat blijft 72 uur zichtbaar onder “Onlangs verwijderd”.",
+    "freeNoteKept": "De plek blijft bezet zolang er andere installaties in zitten.",
     "removing": "Verwijderen..."
   },
   "appearance": {

@@ -30,7 +30,12 @@ import {
   type MedicationTemplate,
   type SleepQuality,
   type TrackerSettings,
+  type WeightUnit,
+  WEIGHT_UNITS,
   activeCustomTrackers,
+  weightRange,
+  weightToCanonical,
+  weightToDisplay,
 } from './trackerTypes';
 import { TRACKER_ICONS } from './trackers/icons';
 import { ActivityPill } from './trackers/ActivityPill';
@@ -130,7 +135,9 @@ export function TrackerPills({
     [data, onChange]
   );
 
-  const { activeBuiltins, customTrackers } = trackerSettings;
+  const { activeBuiltins, customTrackers, weightUnit } = trackerSettings;
+  const weightBounds = weightRange(weightUnit);
+  const weightUnitOptions = WEIGHT_UNITS.map((u) => ({ key: u, label: t(`units.${u}`) }));
   const activeCustom = activeCustomTrackers(customTrackers).filter((t) => !t.stoppedAt);
 
   // --- Collapsed mode: compact single-row strip with only filled pills ---
@@ -170,7 +177,7 @@ export function TrackerPills({
       pills.push({ key: 'meds', color: BUILTIN_TRACKER_COLORS.medication, icon: TRACKER_ICONS.medication, label: `${data.medications.length}`, toggle: 'medication' });
     }
     if (activeBuiltins.includes('weight') && data.weight != null) {
-      pills.push({ key: 'weight', color: BUILTIN_TRACKER_COLORS.weight, icon: TRACKER_ICONS.weight, label: `${data.weight}${t('units.kg')}`, toggle: 'weight' });
+      pills.push({ key: 'weight', color: BUILTIN_TRACKER_COLORS.weight, icon: TRACKER_ICONS.weight, label: `${weightToDisplay(data.weight, weightUnit)}${t(`units.${weightUnit}`)}`, toggle: 'weight' });
     }
     if (activeBuiltins.includes('steps') && data.steps != null) {
       pills.push({ key: 'steps', color: BUILTIN_TRACKER_COLORS.steps, icon: TRACKER_ICONS.steps, label: `${data.steps}`, toggle: 'steps' });
@@ -320,15 +327,20 @@ export function TrackerPills({
           id="weight"
           label={t('labels.weight')}
           color={BUILTIN_TRACKER_COLORS.weight}
-          value={data.weight}
+          value={data.weight != null ? weightToDisplay(data.weight, weightUnit) : undefined}
           expanded={expanded === 'weight'}
           onToggle={() => toggle('weight')}
-          onChange={(weight) => update({ weight })}
+          onChange={(v) => update({ weight: weightToCanonical(v, weightUnit) })}
           readOnly={readOnly}
-          unit={t('units.kg')}
-          placeholder="70"
-          min={20}
-          max={300}
+          unit={t(`units.${weightUnit}`)}
+          unitOptions={weightUnitOptions}
+          activeUnit={weightUnit}
+          onUnitChange={(u) =>
+            onSettingsChange({ ...trackerSettings, weightUnit: u as WeightUnit })
+          }
+          placeholder={weightUnit === 'kg' ? '70' : '155'}
+          min={weightBounds.min}
+          max={weightBounds.max}
           step={0.1}
         />
       )}

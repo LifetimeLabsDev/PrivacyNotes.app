@@ -18,6 +18,7 @@
       "theme": "Motywy premium to funkcja Pro. Przejdź na Pro, aby odblokować każdy odcień.",
       "callout": "Pełny zestaw wyróżnień to funkcja Pro.",
       "totp": "Kody 2FA to funkcja Pro. Zapisz klucz uwierzytelniający przy dowolnym loginie, a zmieniający się kod zobaczysz obok hasła. Sam klucz jest zapisywany i synchronizowany w każdym planie.",
+      "replace": "Znajdź i zamień to funkcja Pro. Przejdź na Pro, aby zamienić jedno wystąpienie albo wszystkie wystąpienia w notatce za jednym razem.",
       "default": "Jedno ulepszenie odblokowuje wszystko poniżej. Płatność jednorazowa."
     },
     "features": {

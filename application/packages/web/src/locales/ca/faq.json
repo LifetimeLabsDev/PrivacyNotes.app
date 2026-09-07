@@ -19,6 +19,7 @@
     "feedbackPrompt": "No has trobat resposta a la teva pregunta? Escriu-nos:",
     "sourcesTitle": "Llegeix el codi",
     "sourcesNote": "El nostre codi i la nostra documentació són a GitHub, en anglès.",
+    "docsRail": "Documentació",
     "askTitle": "Encara encallat? Pregunta-ho al teu agent d'IA.",
     "askMini": "Pregunta-ho millor al teu agent d'IA",
     "askBody": "Tens una resposta en segons en lloc d'esperar la nostra. El teu assistent llegeix les {{total}} respostes i totes les guies d'importació de cop, així que les pot combinar, aprofundir en la teva pregunta i explicar-te-la amb les teves paraules. Nosaltres no en veiem res, perquè no tenim cap xatbot.",
@@ -354,7 +355,8 @@
       "q": "He demanat una funció o he informat d'un bug. Quant triga a arribar?",
       "a": [
         "Sovint pocs dies. Les peticions petites i els informes de bugs solen entrar a la versió següent, i publiquem una versió gairebé cada setmana en lloc de dues o tres vegades l'any. El [changelog](/changelog) n'és la prova: cada entrada té data, està escrita en llenguatge clar i diu què ha canviat. Llegeix-ne un mes i sabràs exactament què pots esperar de nosaltres abans de confiar res a l'aplicació.",
-        "Aquest ritme surt d'un equip petit amb molta eina, inclosa l'ajuda de la IA en la feina d'interfície. Vol dir que val la pena construir la petició d'una sola persona, quan altrament un equip petit hauria de dir que no a tot excepte al capdamunt de la llista. Cada canvi el revisa una persona, el comprova la bateria de proves automàtiques i surt amb el nostre nom. La capa de xifratge i el protocol de sincronització van a poc a poc a posta: es revisen línia per línia, es proven contra vectors de referència publicats i són [públics](https://github.com/LifetimeLabsDev/PrivacyNotes.app) perquè els puguis llegir en comptes de creure'ns.",
+        "Aquest ritme surt de com està repartida la feina. El nucli de xifratge, el protocol de sincronització i l'inici de sessió els van escriure persones, fora de la feina, molt abans que l'app tingués nom, i el nucli criptogràfic encara es manté així; res d'automatitzat s'hi acosta. Quan aquesta base va ser sòlida, la primavera del 2026, vam començar a fer servir eines d'IA per programar sota un protocol fix: primer per a les [traduccions](/ca/help/translation-quality/), després els articles d'ajuda, després funcions d'interfície i correccions de bugs no crítics, on són bones acotant casos rars que altrament durien setmanes, i escrivint els scripts de prova que obliguen diversos desenvolupadors a un mateix estàndard. Per això val la pena construir la petició d'una sola persona en comptes d'esperar darrere del capdamunt de la llista.",
+        "Tot el que toca el xifratge, la sincronització o l'inici de sessió es queda en mans de gent experimentada que llegeix cada línia abans de publicar-la, i aquest codi és [públic](https://github.com/LifetimeLabsDev/PrivacyNotes.app) perquè el puguis llegir en comptes de creure'ns. Més sobre l'equip i com treballem a la nostra [pàgina sobre nosaltres](https://lifetimelabs.dev/about).",
         "L'aplicació en si no té funcions d'IA i no envia mai les teves notes enlloc ([detalls](/ca/help/no-ai/)). Aquesta promesa va a part, i no canvia."
       ]
     },

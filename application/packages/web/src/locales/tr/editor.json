@@ -116,7 +116,19 @@
     "next": "Sonraki eşleşme (Enter)",
     "nextTitle": "Sonraki (Enter)",
     "close": "Aramayı kapat",
-    "closeTitle": "Kapat (⌘F)"
+    "closeTitle": "Kapat (⌘F)",
+    "replacePlaceholder": "Şununla değiştir",
+    "replaceLabel": "Şununla değiştir",
+    "replace": "Değiştir",
+    "replaceTitle": "Bu eşleşmeyi değiştir (Enter)",
+    "replaceAll": "Tümü",
+    "replaceAllTitle": "Tüm eşleşmeleri değiştir",
+    "caseSensitive": "Büyük/küçük harfe duyarlı",
+    "caseSensitiveTitle": "Büyük/küçük harfe duyarlı",
+    "closeReplace": "Bul ve değiştir çubuğunu kapat",
+    "closeReplaceTitle": "Kapat (⌥⌘F)",
+    "replacedCount_one": "{{count}} değiştirildi",
+    "replacedCount_other": "{{count}} değiştirildi"
   },
   "outline": {
     "show": "Ana hattı göster",
@@ -173,5 +185,9 @@
     "copy": "Kopyala",
     "copied": "Kopyalandı",
     "copyFailed": "Başarısız"
+  },
+  "noteLink": {
+    "open": "Notu aç",
+    "remove": "Bağlantıyı kaldır"
   }
 }

@@ -116,7 +116,21 @@
     "next": "Następne dopasowanie (Enter)",
     "nextTitle": "Następne (Enter)",
     "close": "Zamknij wyszukiwanie",
-    "closeTitle": "Zamknij (⌘F)"
+    "closeTitle": "Zamknij (⌘F)",
+    "replacePlaceholder": "Zamień na",
+    "replaceLabel": "Zamień na",
+    "replace": "Zamień",
+    "replaceTitle": "Zamień to wystąpienie (Enter)",
+    "replaceAll": "Wszystkie",
+    "replaceAllTitle": "Zamień wszystkie wystąpienia",
+    "caseSensitive": "Uwzględniaj wielkość liter",
+    "caseSensitiveTitle": "Uwzględniaj wielkość liter",
+    "closeReplace": "Zamknij znajdź i zamień",
+    "closeReplaceTitle": "Zamknij (⌥⌘F)",
+    "replacedCount_one": "Zamieniono {{count}}",
+    "replacedCount_few": "Zamieniono {{count}}",
+    "replacedCount_many": "Zamieniono {{count}}",
+    "replacedCount_other": "Zamieniono {{count}}"
   },
   "outline": {
     "show": "Pokaż konspekt",
@@ -177,5 +191,9 @@
     "copy": "Kopiuj",
     "copied": "Skopiowano",
     "copyFailed": "Błąd"
+  },
+  "noteLink": {
+    "open": "Otwórz notatkę",
+    "remove": "Usuń link"
   }
 }

@@ -254,7 +254,7 @@
   "readIt": {
     "kicker": "Open source",
     "heading": "Do not trust us. Read it.",
-    "body": "The app you are running is published, along with the encryption inside it and the database it talks to. Start with the one-minute check that needs no tools, or go straight to the code.",
+    "body": "The app you are running is published, along with the encryption inside it. Start with the one-minute check that needs no tools, or go straight to the code.",
     "cta": "View the source on GitHub",
     "verify": "Check it yourself",
     "threatModel": "What an attacker can do",

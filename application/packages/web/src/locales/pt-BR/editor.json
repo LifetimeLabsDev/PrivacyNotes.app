@@ -116,7 +116,19 @@
     "next": "Próximo resultado (Enter)",
     "nextTitle": "Próximo (Enter)",
     "close": "Fechar busca",
-    "closeTitle": "Fechar (⌘F)"
+    "closeTitle": "Fechar (⌘F)",
+    "replacePlaceholder": "Substituir por",
+    "replaceLabel": "Substituir por",
+    "replace": "Substituir",
+    "replaceTitle": "Substituir esta ocorrência (Enter)",
+    "replaceAll": "Todas",
+    "replaceAllTitle": "Substituir todas as ocorrências",
+    "caseSensitive": "Diferenciar maiúsculas de minúsculas",
+    "caseSensitiveTitle": "Diferenciar maiúsculas de minúsculas",
+    "closeReplace": "Fechar buscar e substituir",
+    "closeReplaceTitle": "Fechar (⌥⌘F)",
+    "replacedCount_one": "{{count}} substituída",
+    "replacedCount_other": "{{count}} substituídas"
   },
   "outline": {
     "show": "Mostrar estrutura",
@@ -173,5 +185,9 @@
     "copy": "Copiar",
     "copied": "Copiado",
     "copyFailed": "Falhou"
+  },
+  "noteLink": {
+    "open": "Abrir nota",
+    "remove": "Remover link"
   }
 }

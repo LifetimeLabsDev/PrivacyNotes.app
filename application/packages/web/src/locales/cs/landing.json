@@ -254,7 +254,7 @@
   "readIt": {
     "kicker": "Open source",
     "heading": "Nevěř nám. Přečti si to.",
-    "body": "Aplikace, kterou právě používáš, je zveřejněná i se šifrováním uvnitř a databází, se kterou mluví. Začni minutovou kontrolou, na kterou nepotřebuješ žádné nástroje, nebo jdi rovnou do kódu.",
+    "body": "Aplikace, kterou právě používáš, je zveřejněná i se šifrováním uvnitř. Začni minutovou kontrolou, na kterou nepotřebuješ žádné nástroje, nebo jdi rovnou do kódu.",
     "cta": "Zobrazit kód na GitHubu",
     "verify": "Ověř si to sám",
     "threatModel": "Co dokáže útočník",

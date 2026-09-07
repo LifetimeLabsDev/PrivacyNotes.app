@@ -17,6 +17,11 @@
 /help/*.md
   Content-Type: text/plain; charset=utf-8
 
+# The published security documents, served as plain text (publishedDocs.ts),
+# same reason as the help twins above them.
+/docs/*.md
+  Content-Type: text/plain; charset=utf-8
+
 # The plain-text twin of the changelog page (changelog-page.ts), same reason
 # as the help twins above it.
 /changelog.md

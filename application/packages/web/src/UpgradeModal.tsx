@@ -33,7 +33,7 @@ type Props = {
    * to bias the intro copy so the user doesn't feel like they clicked
    * a random Pro button.
    */
-  trigger?: 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage' | 'callout' | 'fileSize' | 'folders' | 'totp' | null;
+  trigger?: 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage' | 'callout' | 'fileSize' | 'folders' | 'totp' | 'replace' | null;
 };
 
 const FEATURES: Array<{ icon: React.JSX.Element; labelKey: string }> = [
@@ -68,6 +68,8 @@ function introKey(trigger: Props['trigger']): string {
       return 'upgrade.intro.callout';
     case 'totp':
       return 'upgrade.intro.totp';
+    case 'replace':
+      return 'upgrade.intro.replace';
     case 'fileSize':
       // Reuse the already-translated upload upsell string (importExport ns)
       // so the file-size context doesn't need its own billing copy.

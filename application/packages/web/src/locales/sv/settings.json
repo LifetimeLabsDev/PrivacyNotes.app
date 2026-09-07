@@ -80,9 +80,11 @@
     "heading": "Registrerade enheter",
     "empty": "Inga registrerade enheter. Synkningen har förmodligen inte hunnit klart.",
     "thisDevice": "Den här enheten",
-    "sessions_one": "{{count}} session",
-    "sessions_other": "{{count}} sessioner",
+    "sharedSlot_one": "{{count}} installation på den här enhetsplatsen",
+    "sharedSlot_other": "{{count}} installationer delar en enhetsplats",
+    "added": "tillagd {{time}}",
     "lastActive": "senast aktiv {{time}}",
+    "removeAll": "Ta bort alla",
     "recentlyRemoved": "Nyligen borttagna",
     "removedAt": "Borttagen {{time}}"
   },
@@ -114,11 +116,16 @@
   },
   "revoke": {
     "title": "Ta bort ”{{name}}”?",
+    "titleInstall": "Ta bort den här installationen?",
     "bodySelf": "Det här nollställer enhetens registrering. Din session förblir aktiv. Enheten registrerar om sig direkt.",
-    "bodyOther": "Alla sessioner på den här enheten loggas ut.",
-    "bodyOtherSessions_one": "Det tar bort {{count}} webbläsarsession.",
-    "bodyOtherSessions_other": "Det tar bort {{count}} webbläsarsessioner.",
+    "bodyOther": "Den här enheten loggas ut vid nästa synk.",
+    "bodyRemoveAll_one": "Det tar bort {{count}} installation.",
+    "bodyRemoveAll_other": "Det tar bort alla {{count}} installationer på platsen.",
+    "bodyInstall": "Den här installationen loggas ut vid nästa synk.",
+    "bodyInstallOthers_one": "Den andra installationen på platsen blir kvar.",
+    "bodyInstallOthers_other": "De andra {{count}} installationerna på platsen blir kvar.",
     "freeNote": "Platsen frigörs direkt - du kan lägga till en ersättningsenhet med en gång. Den borttagna enheten syns kvar under ”Nyligen borttagna” i 72 timmar.",
+    "freeNoteKept": "Platsen är upptagen så länge andra installationer finns kvar på den.",
     "removing": "Tar bort..."
   },
   "appearance": {

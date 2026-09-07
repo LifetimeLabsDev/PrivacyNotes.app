@@ -19,6 +19,7 @@
     "feedbackPrompt": "Tvoje otázka tu odpověď nenašla? Ozvi se:",
     "sourcesTitle": "Přečti si kód",
     "sourcesNote": "Náš kód i dokumentace jsou na GitHubu, anglicky.",
+    "docsRail": "Dokumentace",
     "askTitle": "Pořád nic? Zeptej se svého AI agenta.",
     "askMini": "Zeptej se radši svého AI agenta",
     "askBody": "Odpověď máš během pár vteřin, místo abys čekal na naši. Tvůj asistent přečte všech {{total}} odpovědí a všechny průvodce importem najednou, takže je umí propojit, doptat se na tvoji otázku a vysvětlit ji tvými slovy. My z toho nevidíme nic, protože žádného chatbota neprovozujeme.",
@@ -354,7 +355,8 @@
       "q": "Jak dlouho trvá, než se přání nebo nahlášená chyba objeví v aplikaci?",
       "a": [
         "Často pár dní. Malá přání a hlášení chyb se obvykle dostanou do příští verze a nové verze vycházejí skoro každý týden, ne dvakrát do roka. [Changelog](/changelog) je toho záznamem: každá položka má datum, je napsaná srozumitelně a říká, co se změnilo. Přečti si měsíc zpátky a budeš přesně vědět, co od nás čekat, ještě než aplikaci něco svěříš.",
-        "To tempo pochází z malého týmu s pořádným nářadím, včetně pomoci AI při práci na rozhraní. Znamená to, že se vyplatí postavit i přání jediného člověka, zatímco malý tým by jinak musel říct ne všemu kromě špičky seznamu. Každou změnu přečte člověk, zkontrolují ji automatické testy a vychází pod naším jménem. Šifrovací vrstva a synchronizační protokol postupují záměrně pomalu: čtou se řádek po řádku, testují se proti zveřejněným referenčním vektorům a jsou [veřejné](https://github.com/LifetimeLabsDev/PrivacyNotes.app), aby sis je mohl přečíst místo toho, abys nám věřil.",
+        "To tempo vychází z toho, jak je práce rozdělená. Šifrovací jádro, synchronizační protokol a přihlašování napsali lidé vedle svých zaměstnání, dávno předtím, než aplikace měla jméno, a kryptografické jádro se tak udržuje dodnes; nic automatizovaného se k němu nepřiblíží. Když tenhle základ na jaře 2026 stál, začali jsme podle pevného protokolu používat nástroje AI pro psaní kódu: nejdřív na [překlady](/cs/help/translation-quality/), pak na články nápovědy, pak na funkce rozhraní a opravy nekritických chyb, kde jsou dobré v dohledávání vzácných okrajových případů, které by jinak zabraly týdny, a v psaní testovacích skriptů, které drží víc vývojářů u jednoho standardu. Proto se vyplatí postavit i přání jediného člověka, místo aby čekalo za špičkou seznamu.",
+        "Všechno, co se dotýká šifrování, synchronizace nebo přihlašování, zůstává u zkušených lidí, kteří každý řádek přečtou, než vyjde, a ten kód je [veřejný](https://github.com/LifetimeLabsDev/PrivacyNotes.app), aby sis ho mohl přečíst místo toho, abys nám věřil. Víc o týmu a o tom, jak pracujeme, najdeš na naší [stránce o nás](https://lifetimelabs.dev/about).",
         "Samotná aplikace žádné funkce AI nemá a tvoje poznámky nikam neposílá ([podrobnosti](/cs/help/no-ai/)). Ten slib stojí samostatně a nemění se."
       ]
     },

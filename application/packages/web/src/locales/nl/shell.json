@@ -230,6 +230,7 @@
     "noteHistoryDescription": "Herstel elk van de laatste 20 versies.",
     "showMarkdownDescription": "Bewerk de ruwe markdown.",
     "showFormattedDescription": "Terug naar de opgemaakte editor.",
+    "findReplace": "Zoeken en vervangen",
     "comingSoon": "Binnenkort",
     "noteOptions": "Notitieopties",
     "lastModified": "Laatst gewijzigd: {{date}}",

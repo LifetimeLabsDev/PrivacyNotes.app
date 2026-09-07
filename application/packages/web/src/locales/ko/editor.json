@@ -116,7 +116,18 @@
     "next": "다음 결과 (Enter)",
     "nextTitle": "다음 (Enter)",
     "close": "찾기 닫기",
-    "closeTitle": "닫기 (⌘F)"
+    "closeTitle": "닫기 (⌘F)",
+    "replacePlaceholder": "바꿀 내용",
+    "replaceLabel": "바꿀 내용",
+    "replace": "바꾸기",
+    "replaceTitle": "이 항목 바꾸기 (Enter)",
+    "replaceAll": "모두",
+    "replaceAllTitle": "모든 항목 바꾸기",
+    "caseSensitive": "대소문자 구분",
+    "caseSensitiveTitle": "대소문자 구분",
+    "closeReplace": "찾기 및 바꾸기 닫기",
+    "closeReplaceTitle": "닫기 (⌥⌘F)",
+    "replacedCount_other": "{{count}}개 바꿈"
   },
   "outline": {
     "show": "개요 표시",
@@ -171,5 +182,9 @@
     "copy": "복사",
     "copied": "복사됨",
     "copyFailed": "실패"
+  },
+  "noteLink": {
+    "open": "노트 열기",
+    "remove": "링크 제거"
   }
 }

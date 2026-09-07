@@ -19,6 +19,7 @@
     "feedbackPrompt": "Fick du inte svar på din fråga här? Hör av dig:",
     "sourcesTitle": "Läs källkoden",
     "sourcesNote": "Vår källkod och dokumentation finns på GitHub, på engelska.",
+    "docsRail": "Dokumentation",
     "askTitle": "Fortfarande fast? Fråga din AI-agent.",
     "askMini": "Fråga din AI-agent i stället",
     "askBody": "Du får svar på några sekunder i stället för att vänta på oss. Din assistent läser alla {{total}} svar och varje importguide på en gång, så den kan kombinera dem, följa upp din fråga och förklara den med dina ord. Vi ser ingenting av det, eftersom vi inte har någon chattbot.",
@@ -354,7 +355,8 @@
       "q": "Jag har önskat en funktion eller rapporterat en bugg. Hur lång tid tar det innan den kommer?",
       "a": [
         "Ofta några dagar. Små önskemål och buggrapporter hamnar oftast i nästa version, och nya versioner släpps nästan varje vecka i stället för ett par gånger om året. [Changelog](/changelog) är beviset: varje post är daterad, skriven på vanlig svenska och säger vad som har ändrats. Läs en månad bakåt så vet du precis vad du kan vänta dig av oss innan du anförtror appen något.",
-        "Det tempot kommer av ett litet team med mycket verktyg, bland annat AI-hjälp i arbetet med gränssnittet. Det betyder att även en enda persons önskemål är värt att bygga, där ett litet team annars måste säga nej till allt utom toppen av listan. Varje ändring granskas av en människa, kontrolleras av den automatiska testsviten och släpps i vårt namn. Krypteringslagret och synkprotokollet går långsamt med flit: de granskas rad för rad, testas mot publicerade referensvektorer och är [offentliga](https://github.com/LifetimeLabsDev/PrivacyNotes.app) så att du kan läsa dem i stället för att tro oss.",
+        "Det tempot kommer av hur arbetet är uppdelat. Krypteringskärnan, synkprotokollet och inloggningen skrevs av människor, vid sidan av deras jobb, långt innan appen hade ett namn, och kryptokärnan underhålls fortfarande så; inget automatiserat kommer i närheten av den. När den grunden stod stadigt, våren 2026, började vi använda AI-verktyg för kod enligt ett fast protokoll: först för [översättningar](/sv/help/translation-quality/), sedan hjälpartiklar, sedan gränssnittsfunktioner och rättningar av icke-kritiska buggar, där de är bra på att ringa in sällsynta specialfall som annars skulle ta veckor, och på att skriva testskripten som håller flera utvecklare till en och samma standard. Det är därför en enda persons önskemål är värt att bygga i stället för att vänta bakom toppen av listan.",
+        "Allt som rör kryptering, synk eller inloggning stannar hos erfarna människor som läser varje rad innan den släpps, och den koden är [offentlig](https://github.com/LifetimeLabsDev/PrivacyNotes.app) så att du kan läsa den i stället för att tro oss. Mer om teamet och hur vi arbetar finns på vår [om oss-sida](https://lifetimelabs.dev/about).",
         "Appen i sig har inga AI-funktioner och skickar aldrig dina anteckningar någonstans ([detaljer](/sv/help/no-ai/)). Det löftet står för sig, och det ändras inte."
       ]
     },

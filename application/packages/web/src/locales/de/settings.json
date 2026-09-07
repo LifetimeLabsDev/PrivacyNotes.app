@@ -80,9 +80,11 @@
     "heading": "Registrierte Geräte",
     "empty": "Keine registrierten Geräte. Die Synchronisierung ist wahrscheinlich noch nicht abgeschlossen.",
     "thisDevice": "Dieses Gerät",
-    "sessions_one": "{{count}} Sitzung",
-    "sessions_other": "{{count}} Sitzungen",
+    "sharedSlot_one": "{{count}} Installation in diesem Geräteplatz",
+    "sharedSlot_other": "{{count}} Installationen teilen sich einen Geräteplatz",
+    "added": "hinzugefügt {{time}}",
     "lastActive": "zuletzt aktiv {{time}}",
+    "removeAll": "Alle entfernen",
     "recentlyRemoved": "Kürzlich entfernt",
     "removedAt": "Entfernt {{time}}"
   },
@@ -114,11 +116,16 @@
   },
   "revoke": {
     "title": "„{{name}}“ entfernen?",
+    "titleInstall": "Diese Installation entfernen?",
     "bodySelf": "Dadurch wird die Registrierung deines Geräts zurückgesetzt. Deine Sitzung bleibt aktiv. Das Gerät registriert sich sofort neu.",
-    "bodyOther": "Alle Sitzungen auf diesem Gerät werden abgemeldet.",
-    "bodyOtherSessions_one": "Dadurch wird {{count}} Browser-Sitzung entfernt.",
-    "bodyOtherSessions_other": "Dadurch werden {{count}} Browser-Sitzungen entfernt.",
+    "bodyOther": "Dieses Gerät wird beim nächsten Sync abgemeldet.",
+    "bodyRemoveAll_one": "Dadurch wird {{count}} Installation entfernt.",
+    "bodyRemoveAll_other": "Dadurch werden alle {{count}} Installationen in diesem Platz entfernt.",
+    "bodyInstall": "Diese Installation wird beim nächsten Sync abgemeldet.",
+    "bodyInstallOthers_one": "Die andere Installation in diesem Platz bleibt.",
+    "bodyInstallOthers_other": "Die anderen {{count}} Installationen in diesem Platz bleiben.",
     "freeNote": "Der Platz wird sofort frei - du kannst gleich ein Ersatzgerät hinzufügen. Das entfernte Gerät bleibt 72 Stunden lang unter „Kürzlich entfernt“ sichtbar.",
+    "freeNoteKept": "Der Platz bleibt belegt, solange andere Installationen darin bleiben.",
     "removing": "Wird entfernt..."
   },
   "appearance": {

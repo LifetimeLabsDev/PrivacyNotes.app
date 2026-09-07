@@ -9,6 +9,7 @@ import { APP_ORIGIN, isApexHost, isAppHost } from './hosts';
 import { detectPlatform } from './devices';
 import { IconDefaults } from './icons';
 import { installAndroidBackBridge } from './androidBack';
+import { installStrayDropGuard } from './strayDropGuard';
 import { i18nReady } from './i18n';
 import { initWriterGenListener, announceSealedWriter } from './writerGen';
 import { setSealedWrites } from './localSeal';
@@ -20,6 +21,10 @@ initTheme();
 // back press, even during onboarding (where an unhandled press
 // correctly backgrounds the app). Inert on every other platform.
 installAndroidBackBridge();
+
+// A file dropped where nothing takes it must not navigate the page away.
+// The desktop webviews depend on it - see strayDropGuard.ts.
+installStrayDropGuard();
 
 // Keep the public demo subdomain out of search results so it doesn't
 // compete with the marketing site (see demo.ts). Same for the dedicated

@@ -230,6 +230,7 @@
     "noteHistoryDescription": "استعد أيًّا من آخر 20 نسخة.",
     "showMarkdownDescription": "حرّر مصدر markdown الخام.",
     "showFormattedDescription": "العودة إلى المحرّر المنسّق.",
+    "findReplace": "البحث والاستبدال",
     "comingSoon": "قريبًا",
     "noteOptions": "خيارات الملاحظة",
     "lastModified": "آخر تعديل: {{date}}",

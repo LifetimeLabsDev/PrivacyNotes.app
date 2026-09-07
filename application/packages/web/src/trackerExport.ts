@@ -4,6 +4,8 @@ import {
   type ActivityLevel,
   type JournalTrackerData,
   type SleepQuality,
+  type WeightUnit,
+  weightToDisplay,
 } from './trackerTypes';
 
 /**
@@ -49,8 +51,14 @@ function isSleep(v: unknown): v is SleepValue {
  * Build the rows. Returns an empty array when the entry has nothing
  * recorded, so callers can skip the whole section rather than print a
  * heading over nothing.
+ *
+ * `weight` is stored in kilograms, so a caller that reads a person's own
+ * unit passes it here. The default prints the stored number as it is.
  */
-export function trackerRows(trackers: Record<string, unknown> | undefined): TrackerRow[] {
+export function trackerRows(
+  trackers: Record<string, unknown> | undefined,
+  weightUnit: WeightUnit = 'kg',
+): TrackerRow[] {
   if (!trackers) return [];
   const d = trackers as JournalTrackerData & Record<string, unknown>;
   const t = (k: string, o?: Record<string, unknown>): string => i18n.t(`trackers:${k}`, o ?? {});
@@ -87,7 +95,9 @@ export function trackerRows(trackers: Record<string, unknown> | undefined): Trac
   add('pain', d.pain != null ? `${d.pain}/10` : null);
   add('social', d.social != null ? `${d.social}/5` : null);
   add('steps', d.steps != null ? `${d.steps}` : null);
-  add('weight', d.weight != null ? `${d.weight}${t('units.kg')}` : null);
+  add('weight', d.weight != null
+    ? `${weightToDisplay(d.weight, weightUnit)}${t(`units.${weightUnit}`)}`
+    : null);
   add('water', d.water != null ? `${d.water}/10` : null);
   add('caffeine', d.caffeine != null ? `${d.caffeine}/5` : null);
   add('screenTime', d.screenTime != null ? `${d.screenTime}${t('units.hoursSuffix')}` : null);

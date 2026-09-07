@@ -79,8 +79,10 @@
     "heading": "등록된 기기",
     "empty": "등록된 기기가 없어요. 아마 동기화가 아직 끝나지 않았어요.",
     "thisDevice": "이 기기",
-    "sessions_other": "세션 {{count}}개",
+    "sharedSlot_other": "설치 {{count}}개가 기기 슬롯 하나를 공유해요",
+    "added": "추가 {{time}}",
     "lastActive": "마지막 활동 {{time}}",
+    "removeAll": "모두 제거",
     "recentlyRemoved": "최근 제거됨",
     "removedAt": "{{time}} 제거됨"
   },
@@ -106,10 +108,14 @@
   },
   "revoke": {
     "title": "“{{name}}” 기기를 제거할까요?",
+    "titleInstall": "이 설치를 제거할까요?",
     "bodySelf": "이 기기의 등록이 초기화돼요. 세션은 유지되고, 기기는 즉시 다시 등록돼요.",
-    "bodyOther": "이 기기의 모든 세션이 로그아웃돼요.",
-    "bodyOtherSessions_other": "브라우저 세션 {{count}}개가 제거돼요.",
+    "bodyOther": "이 기기는 다음 동기화 때 로그아웃돼요.",
+    "bodyRemoveAll_other": "슬롯의 설치 {{count}}개가 모두 제거돼요.",
+    "bodyInstall": "이 설치는 다음 동기화 때 로그아웃돼요.",
+    "bodyInstallOthers_other": "이 슬롯의 다른 설치 {{count}}개는 유지돼요.",
     "freeNote": "슬롯은 즉시 비워져서 바로 대체 기기를 추가할 수 있어요. 제거된 기기는 “최근 제거됨” 아래에 72시간 동안 표시돼요.",
+    "freeNoteKept": "다른 설치가 남아 있는 동안 슬롯은 계속 사용 중이에요.",
     "removing": "제거 중..."
   },
   "appearance": {
