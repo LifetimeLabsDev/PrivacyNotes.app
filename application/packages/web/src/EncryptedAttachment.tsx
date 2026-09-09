@@ -21,6 +21,7 @@ import { Plugin, PluginKey } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
 import { AttachmentStore, type AttachmentMeta } from './attachmentStore';
 import { validateAttachment, isImageFile, formatFileSize } from './attachmentValidation';
+import { currentImageOptions, isSupportedImage, processImage } from './imageProcessing';
 import { HoverLabel } from './HoverLabel';
 import { useBlobQuotaBlocked } from './usePendingUploads';
 import { MusicNotes, VideoCamera, Image, Archive, File as FileGlyph, Pause, Play, Trash, Check, Copy, Download } from './icons';
@@ -455,11 +456,23 @@ async function handleAttachmentUpload(
     return;
   }
 
-  // Pre-flight quota check, incoming file included: attachments upload
-  // unprocessed, so file.size plus encryption overhead is the exact cost.
+  // An image through the paperclip is still a file chip, but its bytes
+  // obey the image switches like every other door, and the chip then names
+  // the stored format so a download opens. A picture the module cannot
+  // read is stored as it arrived, the way every non-image is.
+  let upload = file;
+  if (isSupportedImage(file)) {
+    const processed = await processImage(file, currentImageOptions());
+    if (processed.ok) {
+      upload = new File([processed.image.data as BlobPart], processed.image.name, { type: processed.image.mime });
+    }
+  }
+
+  // Pre-flight quota check, incoming file included: the bytes about to be
+  // stored plus encryption overhead are the exact cost.
   if (_uploadContext.getQuota) {
     const q = _uploadContext.getQuota();
-    if (q && q.usedBytes + estimateBlobBytes(file.size) > q.maxBytes) {
+    if (q && q.usedBytes + estimateBlobBytes(upload.size) > q.maxBytes) {
       _uploadContext.onQuotaExceeded?.();
       return;
     }
@@ -469,7 +482,7 @@ async function handleAttachmentUpload(
   let meta: AttachmentMeta;
   let uploaded: Promise<void>;
   try {
-    const result = await _uploadContext.attachmentStore.uploadAttachment(file);
+    const result = await _uploadContext.attachmentStore.uploadAttachment(upload);
     uuid = result.uuid;
     meta = result.meta;
     uploaded = result.uploaded;

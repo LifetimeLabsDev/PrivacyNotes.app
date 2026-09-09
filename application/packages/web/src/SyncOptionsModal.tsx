@@ -26,7 +26,8 @@ import { isStorageConfigured, getStoragePackages, isBetaPricing } from './paddle
 import { startStorageCheckout, startStorageUpgrade, openNativeSubscriptionManagement, storageProductId, isNativeStoreBuild, restoreNativePurchases, type RestoreOutcome } from './billing';
 import { STORAGE_ADDON_PRICE, PRO_PRICE, EARLY_PRICE } from './pricing';
 import { useStorePrices, type StorePrice } from './storePrices';
-import { AccentBar, formatRelative, HeadlineRule, SectionEyebrow, SettingsCallout, SETTINGS_HELP } from './settingsUI';
+import { formatRelative } from './intlFormat';
+import { AccentBar, HeadlineRule, SectionEyebrow, SettingsCallout, SETTINGS_HELP } from './settingsUI';
 import { SyncPanel } from './SyncPanel';
 import { HelpChip } from './HelpChip';
 
@@ -52,6 +53,12 @@ type Props = {
   autoVerify?: boolean;
   /** Opens a note from ID & Sync's not-backed-up list. */
   onOpenNote?: (id: string) => void;
+  /**
+   * Opens the Images settings pane. The Storage tab is where somebody
+   * stares at a full quota bar, so the lever that shrinks new images is
+   * linked from here. Absent when no caller can navigate.
+   */
+  onOpenImageSettings?: () => void;
   /**
    * Whether a sync pass is running right now. Owned by the app shell,
    * passed in so this panel can report the same live state the footer
@@ -83,7 +90,7 @@ type RevokeTarget = { slot: DeviceSlot; rows: [DeviceRow, ...DeviceRow[]] };
  * Pro status is surfaced with a badge + an upsell block for free
  * users.
  */
-export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow, embedded = false, autoVerify = false, onOpenNote, tab: controlledTab, onTabChange }: Props) {
+export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow, embedded = false, autoVerify = false, onOpenNote, onOpenImageSettings, tab: controlledTab, onTabChange }: Props) {
   const { t } = useTranslation('settings');
   // Real App Store / Play prices, already in the user's storefront currency.
   // Null everywhere else, and every use below falls back to the Paddle USD
@@ -559,6 +566,14 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                       />
                       <p className={`${SETTINGS_HELP} -mt-3`}>
                         {t('common:storageBar.cleanupInfo')}
+                        {onOpenImageSettings && (
+                          <>
+                            {' '}
+                            <button type="button" onClick={onOpenImageSettings} className="text-accent hover:underline">
+                              {t('storage.imageSettingsLink')}
+                            </button>
+                          </>
+                        )}
                       </p>
                       {(activeStorageSub || isStorageConfigured()) ? (
                           <div>
@@ -992,6 +1007,14 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                       />
                       <p className={`${SETTINGS_HELP} -mt-3`}>
                         {t('common:storageBar.cleanupInfo')}
+                        {onOpenImageSettings && (
+                          <>
+                            {' '}
+                            <button type="button" onClick={onOpenImageSettings} className="text-accent hover:underline">
+                              {t('storage.imageSettingsLink')}
+                            </button>
+                          </>
+                        )}
                       </p>
                       <div className="rounded-xl border border-divider bg-surface-2 p-6 text-center">
                         <div className="mx-auto mb-3 w-11 h-11 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">

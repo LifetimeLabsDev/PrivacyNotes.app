@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "Biyometrik desteği kontrol ediliyor...",
     "description": "Parmak izinizle veya yüzünüzle kilidi açın. Yakınınızdakilerin notlarınıza erişememesi için biyometrik bir katman ekler.",
-    "trustFirst": "Biyometrik kilit açmayı kullanmak için önce “Bu cihaza güven” seçeneğini etkinleştirin. Güvenilmeyen cihazlar sekme kapandığında tüm verileri siler.",
+    "trustFirst": "Önce “Bu cihaza güven” seçeneğini etkinleştirin. Biyometrik kilit açma da uygulama kilidi de kurtarma ifadenizin bir kopyasını bu cihazda tutar; güvenilmeyen bir cihaz bunun için değildir.",
     "notAvailable": "Bu cihazda biyometrik kilit açma kullanılamıyor. Tarayıcınız ya da donanımınız platform kimlik doğrulayıcısını (Touch ID, Face ID, Windows Hello) desteklemiyor.",
     "enabledFlash": "Biyometrik kilit açma etkinleştirildi.",
     "enrolledOnDevice": "Bu cihazda kayıtlı",
@@ -199,12 +199,6 @@
     "signOut": "Çıkış yap",
     "thisDevice": "Bu cihaz",
     "lastActive": "{{platform}} · son etkinlik {{when}}",
-    "removing": "Kaldırılıyor...",
-    "relative": {
-      "justNow": "az önce",
-      "minutes": "{{count}} dk önce",
-      "hours": "{{count}} sa önce",
-      "days": "{{count}} gün önce"
-    }
+    "removing": "Kaldırılıyor..."
   }
 }

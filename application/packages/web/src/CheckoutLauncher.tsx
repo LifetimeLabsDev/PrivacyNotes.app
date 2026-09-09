@@ -25,26 +25,37 @@ import {
   openStorageCheckout,
   getStoragePackages,
   initPaddleForTransaction,
+  isBetaPricing,
 } from './paddle';
+import { EARLY_PRICE, PRO_PRICE } from './pricing';
 
-type State = 'opening' | 'done' | 'error';
+type State = 'confirm' | 'opening' | 'done' | 'error';
+
+/** What the link asks to buy, once the URL has been read and checked. */
+type Purchase =
+  | { kind: 'pro'; pubkey: string; price: number }
+  | { kind: 'storage'; pubkey: string; gb: number; price: number; priceId: string };
 
 export default function CheckoutLauncher() {
   const { t } = useTranslation('billing');
   const [state, setState] = useState<State>('opening');
+  const [purchase, setPurchase] = useState<Purchase | null>(null);
+
+  const onDone = () => setState('done');
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const product = params.get('product');
     const pubkey = params.get('pubkey') ?? '';
 
-    const onDone = () => setState('done');
-
     // Paddle-sent payment links land here with `?_ptxn=<transaction id>`
     // - no product, no pubkey, no session. Paddle.js auto-opens the
     // checkout for that transaction once initialized, so initialize and
     // get out of the way. Until the Paddle dashboard's default payment
     // link points at /checkout, these emails dead-ended on the homepage.
+    // No confirm step here: the person is answering their own dunning
+    // email about a subscription they already hold, and the transaction
+    // names the account rather than the URL.
     // Spec: ops/docs/domain-split.md (Paddle default payment link -> /checkout)
     if (params.get('_ptxn')) {
       initPaddleForTransaction(onDone).catch(() => setState('error'));
@@ -56,8 +67,14 @@ export default function CheckoutLauncher() {
       return;
     }
 
+    // Nothing here proves the link came from the reader's own app: the
+    // pubkey is a URL parameter, so a link somebody else wrote pays for
+    // somebody else's account with this card. So the page names what is
+    // being bought, at what price, and which account it lands on, and
+    // waits for a click before any payment window opens.
     if (product === 'pro') {
-      openProCheckout(pubkey, onDone).catch(() => setState('error'));
+      setPurchase({ kind: 'pro', pubkey, price: isBetaPricing() ? EARLY_PRICE : PRO_PRICE });
+      setState('confirm');
       return;
     }
 
@@ -67,13 +84,55 @@ export default function CheckoutLauncher() {
       setState('error');
       return;
     }
-    openStorageCheckout(pubkey, pkg.priceId, onDone).catch(() => setState('error'));
+    setPurchase({
+      kind: 'storage',
+      pubkey,
+      gb: pkg.gb,
+      price: pkg.pricePerYear,
+      priceId: pkg.priceId,
+    });
+    setState('confirm');
   }, []);
+
+  function start(): void {
+    if (!purchase) return;
+    setState('opening');
+    const opened =
+      purchase.kind === 'pro'
+        ? openProCheckout(purchase.pubkey, onDone)
+        : openStorageCheckout(purchase.pubkey, purchase.priceId, onDone);
+    opened.catch(() => setState('error'));
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 p-6">
       <div className="max-w-sm w-full text-center space-y-3">
-        {state === 'error' ? (
+        {state === 'confirm' && purchase ? (
+          <>
+            <h1 className="text-lg font-semibold">{t('checkout.confirmTitle')}</h1>
+            <p className="text-sm">
+              {purchase.kind === 'pro'
+                ? t('checkout.confirmPro', { price: purchase.price })
+                : t('checkout.confirmStorage', { gb: purchase.gb, price: purchase.price })}
+            </p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              {t('checkout.confirmAccount')}
+            </p>
+            <code className="block rounded bg-neutral-100 dark:bg-neutral-900 px-2.5 py-1.5 text-xs font-mono break-all">
+              {purchase.pubkey}
+            </code>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              {t('checkout.confirmCheck')}
+            </p>
+            <button
+              type="button"
+              onClick={start}
+              className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white"
+            >
+              {t('checkout.confirmButton')}
+            </button>
+          </>
+        ) : state === 'error' ? (
           <>
             <h1 className="text-lg font-semibold">{t('checkout.invalidTitle')}</h1>
             <p className="text-sm text-neutral-500 dark:text-neutral-400">

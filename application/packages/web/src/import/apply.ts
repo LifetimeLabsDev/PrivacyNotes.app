@@ -1,5 +1,6 @@
 import { db, type LocalNote } from '../db';
 import { linkDedupeKey, parseLinkBody } from '../linkBody';
+import { addToContactMatchIndex, contactMatches, emptyContactMatchIndex } from '../contactBody';
 import type { ApplyResult, ParsedImport } from './types';
 
 /**
@@ -18,6 +19,9 @@ import type { ApplyResult, ParsedImport } from './types';
  * match against existing non-trashed bookmarks, and the summary reports
  * the skipped count. A bookmark has a natural identity its URL carries,
  * so a re-import doubling every row is a bug, not a feature, there.
+ * CONTACTS ('contact' rows) do the same through the matcher in
+ * contactBody.ts: uid first, then name plus a shared number, then a shared
+ * email. A match is counted and left alone, never merged.
  * Generalizing this to other sources is backlog #155.
  *
  * We write in one Dexie transaction so the import is atomic - either
@@ -47,6 +51,24 @@ export async function applyImport(
       }
       // First occurrence wins inside one import file too.
       keys.add(key);
+      return true;
+    });
+  }
+
+  if (incoming.some((n) => n.type === 'contact')) {
+    const existing = await db.notes
+      .filter((n) => n.type === 'contact' && n.deleted !== 1 && n.trashed !== 1)
+      .toArray();
+    const index = emptyContactMatchIndex();
+    for (const n of existing) addToContactMatchIndex(index, n.title, n.body);
+    incoming = incoming.filter((n) => {
+      if (n.type !== 'contact') return true;
+      if (contactMatches(index, n.title, n.body)) {
+        skippedDuplicates++;
+        return false;
+      }
+      // The first card wins inside one file too.
+      addToContactMatchIndex(index, n.title, n.body);
       return true;
     });
   }

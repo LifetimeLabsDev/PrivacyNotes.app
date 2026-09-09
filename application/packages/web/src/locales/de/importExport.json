@@ -26,6 +26,19 @@
     "tagLabel": "Notizen zusätzlich nach Ordner taggen",
     "tagDesc": "Deine Ordner werden so oder so wiederhergestellt. Das fügt jeden Ordnernamen zusätzlich als Tag hinzu, praktisch, wenn du auch gern nach Tag filterst."
   },
+  "browserImport": {
+    "tagLabel": "Schlagworte aus deinem Browser behalten",
+    "tagDesc": "Firefox speichert Schlagworte und ein Adressleisten-Stichwort zu jedem Lesezeichen. Beides wird hier zu Schlagworten."
+  },
+  "contactImport": {
+    "photosLabel": "Fotos importieren",
+    "photosDesc_one": "{{count}} Foto, etwa {{size}}, sobald die App es verkleinert hat. Das sind {{pct}} % der {{free}}, die du frei hast.",
+    "photosDesc_other": "{{count}} Fotos, etwa {{size}}, sobald die App sie verkleinert hat. Das sind {{pct}} % der {{free}}, die du frei hast.",
+    "photosDescNoQuota_one": "{{count}} Foto, etwa {{size}}, sobald die App es verkleinert hat.",
+    "photosDescNoQuota_other": "{{count}} Fotos, etwa {{size}}, sobald die App sie verkleinert hat.",
+    "photosTooBig_one": "Nicht genug Platz für das Foto ({{size}}), es bleibt draußen. Alles andere kommt mit. Gib {{shortfall}} frei oder hol dir mehr Speicher und importiere erneut, um es nachzuholen.",
+    "photosTooBig_other": "Nicht genug Platz für die {{count}} Fotos ({{size}}), sie bleiben draußen. Alles andere kommt mit. Gib {{shortfall}} frei oder hol dir mehr Speicher und importiere erneut, um sie nachzuholen."
+  },
   "sourceDesc": {
     "googleKeep": "Google-Takeout-.zip (Keep-Ordner) oder eine einzelne .json-Notiz. Checklisten werden als native Aufgabenlisten importiert.",
     "appleNotes": "Exportiere über die kostenlose Exporter-App als Markdown und lege dann die .zip hier ab.",
@@ -40,6 +53,7 @@
     "markdownFolder": ".md- oder .txt-Dateien einzeln oder als .zip. Ein gezippter Ordner behält seine Unterordner und bringt seine Bilder und Anhänge mit.",
     "markdownApp": "Diese Notizen sind schon Markdown-Dateien in einem Ordner. Zieh den Ordner als .zip hinein, dann kommen seine Unterordner, Bilder und #Tags mit.",
     "browserBookmarks": "Die Lesezeichen-Datei (.html) aus \"Export bookmarks\" in deinem Browser, oder die .zip, die Safari schreibt. Chrome, Firefox, Safari, Edge, Opera, Brave und Vivaldi enthalten alle dieselbe Datei. Ordner und Daten kommen mit.",
+    "vcard": "Die .vcf-Datei, die dein Adressbuch exportiert: iPhone und Mac über iCloud oder Kontakte, Android, Google Kontakte. Jede Karte kommt mit, Fotos inklusive, und ein zweiter Import derselben Datei überspringt die Personen, die du schon hast.",
     "bitwarden": "Unverschlüsselter .json-Export aus Bitwarden (Tools > Export vault > .json). Logins, Karten, SSH-Schlüssel, sichere Notizen und TOTP-Codes kommen alle mit.",
     "browserPasswords": "Die Passwort-Datei (.csv) aus Chrome, Edge, Brave, Opera, Vivaldi, Firefox oder Safari, oder die .zip, die Safari schreibt. Jede Zeile wird ein Login. Lösch die Datei, wenn du fertig bist - sie enthält deine Passwörter im Klartext."
   },
@@ -76,11 +90,12 @@
     "andMore": "… und {{count}} weitere",
     "headsUpLabel": "Hinweis:",
     "duplicateWarning": "beim Importieren werden diese als neue Notizen hinzugefügt. Wenn du das zweimal ausführst, erhältst du Duplikate. Eine automatische Duplikaterkennung gibt es noch nicht.",
+    "duplicateSkipNote": "Lesezeichen, die du schon gespeichert hast, werden übersprungen. Ein zweiter Durchlauf legt also nichts doppelt an.",
+    "contactSkipNote": "Personen, die du schon gespeichert hast, werden übersprungen und bleiben, wie sie sind. Ein zweiter Durchlauf legt also niemanden doppelt an.",
     "quotaExceeded": "<strong>Zu wenig Speicher zum Importieren.</strong> Geschätzt {{needed}} benötigt, {{available}} verfügbar. Schaffe Platz oder rüste auf, bevor du importierst.",
     "quotaWarning": "Hinweis: Dieser Import wird etwa {{needed}} deines verbleibenden Speichers von {{available}} belegen.",
     "oversizeAttachments_one": "1 Datei ist größer als das {{limit}}-Limit pro Datei deines Tarifs. Sie wird auf dieses Gerät importiert, synchronisiert aber erst mit deinen anderen Geräten, wenn du upgradest.",
-    "oversizeAttachments_other": "{{count}} Dateien sind größer als das {{limit}}-Limit pro Datei deines Tarifs. Sie werden auf dieses Gerät importiert, synchronisieren aber erst mit deinen anderen Geräten, wenn du upgradest.",
-    "duplicateSkipNote": "Lesezeichen, die du schon gespeichert hast, werden übersprungen. Ein zweiter Durchlauf legt also nichts doppelt an."
+    "oversizeAttachments_other": "{{count}} Dateien sind größer als das {{limit}}-Limit pro Datei deines Tarifs. Sie werden auf dieses Gerät importiert, synchronisieren aber erst mit deinen anderen Geräten, wenn du upgradest."
   },
   "counts": {
     "note_one": "Notiz",
@@ -93,6 +108,8 @@
     "card_other": "Karten",
     "sshKey_one": "SSH-Schlüssel",
     "sshKey_other": "SSH-Schlüssel",
+    "contact_one": "Kontakt",
+    "contact_other": "Kontakte",
     "zeroItems": "0 Einträge",
     "importButton": "{{counts}} importieren"
   },
@@ -118,7 +135,10 @@
     "vaultExportDesc": "Logins, Karten und SSH-Schlüssel im Bitwarden-kompatiblen Format. Von den meisten Passwortmanagern importierbar. Klartext - mit Vorsicht behandeln.",
     "bookmarksOnlyHeading": "Nur Lesezeichen",
     "bookmarksExportTitle": "Lesezeichen-Datei (.html)",
-    "bookmarksExportDesc": "Die Standard-Lesezeichendatei, die jeder Browser liest. Importiere sie mit deinen Ordnern in Chrome, Firefox, Safari oder Edge."
+    "bookmarksExportDesc": "Die Standard-Lesezeichendatei, die jeder Browser liest. Importiere sie mit deinen Ordnern in Chrome, Firefox, Safari oder Edge.",
+    "contactsOnlyHeading": "Nur Kontakte",
+    "contactsExportTitle": "Kontaktdatei (.vcf)",
+    "contactsExportDesc": "Die vCard-Datei, die jedes Telefon und jedes Adressbuch liest. Importiere sie in iPhone, Android, Google Kontakte oder Kontakte auf dem Mac, mit allen Labels und Gruppen."
   },
   "exportProgress": {
     "failedTitle": "Export fehlgeschlagen",
@@ -161,9 +181,5 @@
   },
   "saveErrors": {
     "shortWrite": "Es wurden nur {{written}} von {{expected}} Bytes gespeichert, die Datei ist also unvollständig. Versuche es erneut und speichere in den Speicher deines Geräts statt in einen Cloud-Ordner."
-  },
-  "browserImport": {
-    "tagLabel": "Schlagworte aus deinem Browser behalten",
-    "tagDesc": "Firefox speichert Schlagworte und ein Adressleisten-Stichwort zu jedem Lesezeichen. Beides wird hier zu Schlagworten."
   }
 }

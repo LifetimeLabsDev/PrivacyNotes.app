@@ -35,7 +35,8 @@
     "journal": "저널",
     "login": "로그인",
     "file": "파일",
-    "bookmark": "북마크"
+    "bookmark": "북마크",
+    "contact": "연락처"
   },
   "vaultFilter": {
     "all": "전체",
@@ -88,7 +89,8 @@
     "items": "항목",
     "trashed": "휴지통",
     "notes": "노트",
-    "bookmarks": "북마크"
+    "bookmarks": "북마크",
+    "contacts": "연락처"
   },
   "toast": {
     "imageUploadFailed": "이미지 업로드 실패: {{error}}",
@@ -170,6 +172,7 @@
     "widthFull": "전체 너비",
     "burn": "공유 & Burn After Reading",
     "titlePlaceholderLink": "북마크 이름",
+    "titlePlaceholderContact": "이름",
     "notBackedUpTooLarge": "1 MB 제한을 넘어 백업되지 않았어요. 사진을 첨부 파일로 옮기거나 노트를 나눠 주세요.",
     "notBackedUpFailed": "백업되지 않았어요. 마지막 오류: {{message}}. 다시 시도하는 중이에요."
   },
@@ -217,6 +220,7 @@
     "importLabel": "가져오기/내보내기",
     "planLabel": "계정",
     "storageLabel": "저장 공간",
+    "imagesLabel": "이미지",
     "securityLabel": "보안",
     "accountLabel": "ID·동기화",
     "appearanceLabel": "화면",
@@ -259,5 +263,9 @@
     "title": "새 보관함 생성됨",
     "confirm": "확인했어요",
     "body": "입력한 문구와 일치하는 보관함이 없어서 비어 있는 새 보관함이 만들어졌어요. 원래 노트가 보일 거라 기대했다면, 로그아웃한 뒤 문구를 신중하게 다시 입력하세요. 단어 하나만 달라도 다른 보관함이 열려요."
+  },
+  "ambiguousLink": {
+    "title": "같은 제목의 노트가 두 개 있어요",
+    "body": "<highlight>“{{title}}”</highlight> 제목의 노트가 여러 개라서, 이 링크가 어느 쪽을 가리키는지 알 수 없어요. 하나의 이름을 바꾸면 링크는 나머지를 가리켜요."
   }
 }

@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "Verificando suporte biométrico...",
     "description": "Desbloqueie com sua impressão digital ou rosto. Adiciona uma barreira biométrica para que pessoas por perto não acessem suas notas.",
-    "trustFirst": "Ative \"Confiar neste dispositivo\" primeiro para usar o desbloqueio biométrico. Dispositivos não confiáveis apagam todos os dados quando a aba é fechada.",
+    "trustFirst": "Ative \"Confiar neste dispositivo\" primeiro. O desbloqueio biométrico e o bloqueio do app guardam uma cópia da sua frase de recuperação neste dispositivo, e não é para isso que serve um dispositivo não confiável.",
     "notAvailable": "O desbloqueio biométrico não está disponível neste dispositivo. Seu navegador ou hardware não tem suporte a um autenticador de plataforma (Touch ID, Face ID, Windows Hello).",
     "enabledFlash": "Desbloqueio biométrico ativado.",
     "enrolledOnDevice": "Cadastrado neste dispositivo",
@@ -199,12 +199,6 @@
     "signOut": "Sair",
     "thisDevice": "Este dispositivo",
     "lastActive": "{{platform}} · ativo pela última vez {{when}}",
-    "removing": "Removendo...",
-    "relative": {
-      "justNow": "agora mesmo",
-      "minutes": "há {{count}}min",
-      "hours": "há {{count}}h",
-      "days": "há {{count}}d"
-    }
+    "removing": "Removendo..."
   }
 }

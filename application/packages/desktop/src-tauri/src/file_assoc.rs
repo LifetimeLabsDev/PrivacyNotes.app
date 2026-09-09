@@ -114,6 +114,90 @@ pub fn open_os_settings() -> Result<(), String> {
     Err("Only Windows needs the system settings detour.".to_owned())
 }
 
+/// Escape one executable path for a double-quoted `Exec=` argument of a Linux
+/// desktop entry, or refuse a path the format cannot carry.
+///
+/// Not inside the Linux module, and not behind its `cfg`: it is pure string
+/// work that decides what lands in a file, so it is testable on whatever
+/// machine the tests run on.
+///
+/// The Desktop Entry spec asks for two things, and skipping either produces an
+/// entry the launcher silently rejects while `xdg-mime` still reports success -
+/// so `claim()` would return Ok and the interface would state that Markdown
+/// files open with this app over a handler that opens nothing.
+///
+/// 1. A literal `%` must be doubled, because `%` introduces a field code.
+///    `~/Downloads/PrivacyNotes%20arm64.AppImage` is the case that matters:
+///    browsers hand out percent-encoded filenames routinely, and `%20` reads as
+///    the unknown field code `%2` followed by `0`, which invalidates the whole
+///    `Exec` line.
+/// 2. Inside a quoted argument, `"`, backtick, `$` and backslash must each be
+///    preceded by a backslash.
+///
+/// Order matters: the backslash rule has to run before the `%` rule, or the
+/// backslashes it inserts get counted by the `%` pass.
+///
+/// A newline gets no escape, because the format has none: a desktop entry is
+/// line-oriented, so a path carrying one would end the `Exec` line and start
+/// whatever follows as another key. The answer is to refuse the path, which is
+/// why this returns an Option. A path reaches here from the `APPIMAGE`
+/// environment variable or from `current_exe`, so an attacker needs to be
+/// setting this process's environment already; the refusal is here because the
+/// writer cannot express the alternative, not because the caller is untrusted.
+///
+/// Pinned by the tests at the end of this file. Compiled for Linux, which is
+/// the only platform that writes one of these files, and for any test build,
+/// which is what lets the escaping be checked on a machine that is not Linux.
+/// Spec: ops/docs/audit-file-assoc-2026-09.md
+#[cfg(any(test, not(any(target_os = "macos", target_os = "windows"))))]
+fn escape_exec_arg(path: &str) -> Option<String> {
+    if path.contains(['\n', '\r']) {
+        return None;
+    }
+    let mut out = String::with_capacity(path.len() + 8);
+    for ch in path.chars() {
+        match ch {
+            '"' | '`' | '$' | '\\' => {
+                out.push('\\');
+                out.push(ch);
+            }
+            '%' => out.push_str("%%"),
+            _ => out.push(ch),
+        }
+    }
+    Some(out)
+}
+
+/// Whether a value from `xdg-mime query default` is a desktop entry id we may
+/// join onto a directory and read.
+///
+/// A desktop entry id is a bare filename. The value here is whatever the user's
+/// `mimeapps.list` holds, and `Path::join` follows what it is given: a relative
+/// id can walk upwards, and an absolute one replaces the directory entirely, so
+/// the "read Name= out of the handler" lookup would read a file somebody else
+/// chose and hand its first `Name=` line back to the interface.
+///
+/// Positive shape rather than a denylist: a name, ending in `.desktop`, with no
+/// separator and no dot-dot. Whatever else arrives is refused, which costs the
+/// interface one cosmetic word - the app that owns Markdown then reads as
+/// "another app" instead of by name.
+///
+/// Reaching this needs the ability to write the user's own configuration, which
+/// is already outside what the threat model defends. It is validated anyway
+/// because the value crosses from a file into a path join, and that is the one
+/// shape where a comment is not enough.
+///
+/// Pinned by the tests at the end of this file.
+/// Spec: ops/docs/audit-file-assoc-2026-09.md
+#[cfg(any(test, not(any(target_os = "macos", target_os = "windows"))))]
+fn is_desktop_entry_id(id: &str) -> bool {
+    !id.is_empty()
+        && id.ends_with(".desktop")
+        && !id.contains(['/', '\\', '\0'])
+        && id != ".desktop"
+        && !id.split('.').any(|part| part == "..")
+}
+
 /// macOS: LaunchServices, bound with raw `extern "C"` and `msg_send!` rather
 /// than the `objc2-app-kit` / `objc2-uniform-type-identifiers` bindings so that
 /// no new package enters Cargo.lock - the same trade `biometric.rs` makes for
@@ -303,6 +387,9 @@ mod linux {
     /// ini crate to read one key would be the larger change, and every failure
     /// path here just returns None.
     fn desktop_entry_name(app: &tauri::AppHandle, id: &str) -> Option<String> {
+        if !super::is_desktop_entry_id(id) {
+            return None;
+        }
         let mut dirs: Vec<PathBuf> = Vec::new();
         if let Some(dir) = user_applications_dir(app) {
             dirs.push(dir);
@@ -390,39 +477,6 @@ mod linux {
     /// scheme-handler file: this entry is a real Markdown editor the user chose,
     /// and it has to appear in a file manager's "Open with" list.
     // Spec: ops/docs/plans/markdown-folder.md (section 11)
-    /// Escape one executable path for a double-quoted `Exec=` argument.
-    ///
-    /// The Desktop Entry spec asks for two separate things, and skipping either
-    /// produces an entry the launcher silently rejects while `xdg-mime` still
-    /// reports success - so `claim()` would return Ok and the UI would flip to the
-    /// permanent "Markdown files open with PrivacyNotes" statement over a handler
-    /// that opens nothing.
-    ///
-    /// 1. A literal `%` must be doubled, because `%` introduces a field code.
-    ///    `~/Downloads/PrivacyNotes%20arm64.AppImage` is the case that matters:
-    ///    browsers hand out percent-encoded filenames routinely, and `%20` reads
-    ///    as the unknown field code `%2` followed by `0`, which invalidates the
-    ///    whole `Exec` line.
-    /// 2. Inside a quoted argument, `"`, backtick, `$` and backslash must each be
-    ///    preceded by a backslash.
-    ///
-    /// Order matters: the backslash rule has to run before the `%` rule, or the
-    /// backslashes it inserts get counted by the `%` pass.
-    fn escape_exec_arg(path: &str) -> String {
-        let mut out = String::with_capacity(path.len() + 8);
-        for ch in path.chars() {
-            match ch {
-                '"' | '`' | '$' | '\\' => {
-                    out.push('\\');
-                    out.push(ch);
-                }
-                '%' => out.push_str("%%"),
-                _ => out.push(ch),
-            }
-        }
-        out
-    }
-
     fn write_handler_desktop_file(app: &tauri::AppHandle, id: &str) -> Result<(), String> {
         use tauri::Manager;
         let dir = user_applications_dir(app)
@@ -435,6 +489,9 @@ mod linux {
             Some(path) => PathBuf::from(path),
             None => std::env::current_exe().map_err(|e| e.to_string())?,
         };
+        let escaped = super::escape_exec_arg(&exec.to_string_lossy()).ok_or_else(|| {
+            "This build's own path cannot be written into a desktop entry.".to_owned()
+        })?;
         let body = format!(
             "[Desktop Entry]\n\
              Type=Application\n\
@@ -444,7 +501,7 @@ mod linux {
              Terminal=false\n\
              Categories=Office;TextEditor;\n\
              MimeType={};\n",
-            escape_exec_arg(&exec.to_string_lossy()),
+            escaped,
             MARKDOWN_MIMES.join(";"),
         );
         std::fs::write(dir.join(id), body).map_err(|e| e.to_string())?;
@@ -579,5 +636,66 @@ mod windows_assoc {
             return Err("Windows could not open the Default apps settings page.".to_owned());
         }
         Ok(())
+    }
+}
+
+/// The desktop-entry escaping, which decides what lands in a file on Linux.
+///
+/// Ungated on purpose: the function is pure string work, so a build for any
+/// platform can check it. Every case here is a property its comment states,
+/// and none of them was pinned by anything until these three commands were
+/// read for the first time.
+/// Spec: ops/docs/audit-file-assoc-2026-09.md
+#[cfg(test)]
+mod escape_tests {
+    use super::escape_exec_arg;
+
+    #[test]
+    fn doubles_a_percent_so_a_field_code_is_not_invented() {
+        assert_eq!(
+            escape_exec_arg("/home/a/PrivacyNotes%20arm64.AppImage").unwrap(),
+            "/home/a/PrivacyNotes%%20arm64.AppImage",
+        );
+    }
+
+    #[test]
+    fn escapes_what_a_quoted_argument_reserves() {
+        assert_eq!(escape_exec_arg(r#"/a/"b"/c"#).unwrap(), r#"/a/\"b\"/c"#);
+        assert_eq!(escape_exec_arg("/a/$b/c").unwrap(), "/a/\\$b/c");
+        assert_eq!(escape_exec_arg("/a/`b`/c").unwrap(), "/a/\\`b\\`/c");
+    }
+
+    #[test]
+    fn escapes_the_backslash_before_it_counts_percents() {
+        // The documented ordering: a backslash this inserts must not be seen by
+        // the percent pass.
+        assert_eq!(escape_exec_arg(r"/a\%b").unwrap(), r"/a\\%%b");
+    }
+
+    #[test]
+    fn an_entry_id_is_a_bare_filename() {
+        use super::is_desktop_entry_id;
+        assert!(is_desktop_entry_id("PrivacyNotes.desktop"));
+        assert!(is_desktop_entry_id("org.gnome.gedit.desktop"));
+        // The value comes out of the user's own configuration and is joined
+        // onto a directory, so an absolute id would replace the directory and a
+        // relative one would walk out of it.
+        assert!(!is_desktop_entry_id("/etc/passwd"));
+        assert!(!is_desktop_entry_id("/etc/shadow.desktop"));
+        assert!(!is_desktop_entry_id("../../../etc/hosts.desktop"));
+        assert!(!is_desktop_entry_id("..\\evil.desktop"));
+        assert!(!is_desktop_entry_id(""));
+        assert!(!is_desktop_entry_id(".desktop"));
+        assert!(!is_desktop_entry_id("notes.txt"));
+    }
+
+    #[test]
+    fn refuses_a_newline_rather_than_opening_a_new_key() {
+        // A desktop entry is line-oriented, so a path carrying a newline would
+        // end the Exec line and start whatever follows as another key. There is
+        // no escape for it in the format.
+        assert!(escape_exec_arg("/tmp/a\nExec=/bin/sh\n.AppImage").is_none());
+        assert!(escape_exec_arg("/tmp/a\rb.AppImage").is_none());
+        assert!(escape_exec_arg("/tmp/ordinary.AppImage").is_some());
     }
 }

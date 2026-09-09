@@ -39,6 +39,12 @@
     "alreadyOwned": "Obchod tvrdí, že tento nákup už vlastníš, ale patří k jinému účtu. Přihlas se obnovovací frází použitou při nákupu."
   },
   "checkout": {
+    "confirmTitle": "Potvrď svůj nákup",
+    "confirmPro": "PrivacyNotes Pro, jednorázová platba {{price}} $.",
+    "confirmStorage": "{{gb}} GB úložiště navíc, {{price}} $ ročně.",
+    "confirmAccount": "Odemkne tento účet:",
+    "confirmCheck": "Otevři Nastavení, pak Synchronizace, a zkontroluj, že se ID účtu shoduje. Pokud ne, zavři tuto kartu: platba by odemkla někoho jiného.",
+    "confirmButton": "Pokračovat k platbě",
     "invalidTitle": "Neplatný odkaz na platbu",
     "invalidBody": "Otevři platbu přímo v aplikaci, ať můžeme nákup přiřadit k tvému účtu.",
     "completeTitle": "Platba dokončena",

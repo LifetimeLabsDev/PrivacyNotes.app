@@ -122,6 +122,7 @@ export function sidebarViewRows(t: TFunction): SidebarRow[] {
     ...(markdownSupport() !== 'unavailable'
       ? [{ key: 'markdown' as View, label: t('tagsRail.markdown'), icon: PILLAR_GLYPHS.markdown }]
       : []),
+    { key: 'contacts', label: t('tagsRail.contacts'), icon: PILLAR_GLYPHS.contacts },
     { key: 'bookmarks', label: t('tagsRail.bookmarks'), icon: PILLAR_GLYPHS.bookmarks },
   ];
 }

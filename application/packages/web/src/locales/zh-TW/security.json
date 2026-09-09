@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "正在檢查生物辨識支援…",
     "description": "用指紋或臉部解鎖。多一道生物辨識關卡，身旁的人就無法存取你的筆記。",
-    "trustFirst": "請先啟用「信任此裝置」才能使用生物辨識解鎖。未信任的裝置會在分頁關閉時清除所有資料。",
+    "trustFirst": "請先啟用「信任此裝置」。生物辨識解鎖和應用程式鎖都會在這台裝置上保留一份復原助憶詞，未信任的裝置不適合放這個。",
     "notAvailable": "這部裝置無法使用生物辨識解鎖。你的瀏覽器或硬體不支援平台驗證器（Touch ID、Face ID、Windows Hello）。",
     "enabledFlash": "生物辨識解鎖已啟用。",
     "enrolledOnDevice": "已在此裝置註冊",
@@ -199,12 +199,6 @@
     "signOut": "登出",
     "thisDevice": "此裝置",
     "lastActive": "{{platform}} · 最近活動 {{when}}",
-    "removing": "移除中…",
-    "relative": {
-      "justNow": "剛剛",
-      "minutes": "{{count}} 分鐘前",
-      "hours": "{{count}} 小時前",
-      "days": "{{count}} 天前"
-    }
+    "removing": "移除中…"
   }
 }

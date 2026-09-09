@@ -16,6 +16,7 @@ import {
   exportEncryptedFullBackup as baseExportEncryptedFullBackup,
   exportVaultBitwarden,
   exportBookmarksHtml,
+  exportContactsVcf,
   printNote as basePrintNote,
   decryptBackup,
 } from '../export';
@@ -115,6 +116,8 @@ export function useExports({
     runExport('vault', () => exportVaultBitwarden(ns));
   const exportBookmarks = (ns: LocalNote[]) =>
     runExport('bookmarks', () => exportBookmarksHtml(ns, userSettings.folders));
+  const exportContacts = (ns: LocalNote[]) =>
+    runExport('contacts', () => exportContactsVcf(ns));
   const printNote = async (n: LocalNote) => {
     await basePrintNote(n, imageStoreRef.current, userSettings.folders);
     recordAdminEvent(supabase, 'export', 'pdf');
@@ -168,6 +171,7 @@ export function useExports({
     exportEncryptedBackup,
     exportVault,
     exportBookmarks,
+    exportContacts,
     printNote,
     importEncryptedBackup,
     exportEncryptedFullBackup,

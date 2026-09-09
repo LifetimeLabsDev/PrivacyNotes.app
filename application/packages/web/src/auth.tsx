@@ -62,12 +62,11 @@ import {
 import { clearStoredSource, detectChannel, getStoredSource } from './campaignSource';
 import { clearPanelCache } from './accountPanelCache';
 import {
-  hasBiometricCredential,
-  hasPinWrappedPhrase,
   removeBiometricCredential,
   removePinWrappedPhrase,
 } from './biometric';
 import {
+  appLockArmed,
   isWrappedEnvelope,
   persistStoredPhrase,
   unwrapStoredEnvelope,
@@ -87,6 +86,7 @@ import {
   markRegistered,
   clearRegistrationMarker,
   jwtPayloadPubkey,
+  clearSupabaseAuthKeys,
   readOwnerMirror,
   writeOwnerMirror,
   readAccountFlagsMirror,
@@ -137,7 +137,17 @@ const supabase =
   createSupabaseClient(
     import.meta.env.VITE_SUPABASE_URL,
     import.meta.env.VITE_SUPABASE_ANON_KEY,
-    { storage: trustAwareStorage, detectSessionInUrl: true },
+    {
+      storage: trustAwareStorage,
+      detectSessionInUrl: true,
+      // PKCE for every OAuth flow, web and native: the provider returns a
+      // one-time code that only the install holding the verifier can
+      // exchange, so a callback URL is worthless to anyone who did not
+      // start the flow, and no token ever travels in a URL. Native pairs
+      // it with the pending-sign-in gate in authOAuth.ts.
+      // Spec: ops/docs/plans/deep-link-callback-hardening.md (section 3)
+      flowType: 'pkce',
+    },
   );
 if (import.meta.env.DEV) hmrGlobal.__pnSupabase = supabase;
 
@@ -403,6 +413,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     timer: null,
   });
 
+  /**
+   * Disarm the pending re-mint. An unmounted provider is one reason; the
+   * other two are that the account this phrase belongs to no longer owns
+   * the local data, through a sign-out or through another tab taking the
+   * database over, and an armed timer authenticates into it minutes later.
+   */
+  function cancelRemintRetry(): void {
+    const r = remintRetry.current;
+    if (r.timer) clearTimeout(r.timer);
+    r.timer = null;
+    r.attempt = 0;
+  }
+
   // Never leave a retry armed against an unmounted provider.
   useEffect(() => () => {
     if (remintRetry.current.timer) clearTimeout(remintRetry.current.timer);
@@ -430,8 +453,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     r.attempt++;
     setRemintBlocked(delay + 15_000);
     console.warn(`[auth] re-mint rate limited, retrying in ${Math.round(delay / 1000)}s`);
+    // Which account owns the shared storage right now. The timer fires up
+    // to ten minutes from here, and in that window another tab can sign a
+    // different account into this browser: authenticating then pushes that
+    // account's rows under this phrase's pubkey. So the marker is read
+    // again at fire time, and any change stands the retry down, including
+    // a marker that appeared or was cleared - either way the local data is
+    // no longer what this phrase owns. Deriving the pubkey proves the same
+    // thing and costs a key derivation on a path that runs every minute.
+    let ownerAtArm: string | null = null;
+    try { ownerAtArm = localStorage.getItem(PUBKEY_OWNER_KEY); } catch { /* unreadable: the compare below still holds */ }
     r.timer = setTimeout(() => {
       r.timer = null;
+      let ownerNow: string | null = null;
+      try { ownerNow = localStorage.getItem(PUBKEY_OWNER_KEY); } catch { /* same fallback */ }
+      if (ownerNow !== ownerAtArm) {
+        logAuthEvent('auth:remint-retry-abandoned');
+        r.attempt = 0;
+        setRemintBlocked(0);
+        return;
+      }
       void authenticateWithPhrase(phrase, method)
         .then((ran) => {
           // `false` means the concurrency mutex swallowed the call, so
@@ -1599,6 +1640,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     freshVault = false,
     captchaToken?: string,
   ) {
+    // The demo authenticates itself from a fixed phrase and holds no server
+    // session, so every server call it could make is guarded at its own site.
+    // This one is guarded here instead, because the demo can reach it: `?demo=1`
+    // runs on the same origin as a real install, an app lock armed there
+    // survives an in-tab refresh, and an unlock that completes before the
+    // demo's own asynchronous authentication lands falls through to the
+    // sign-in path. A successful call would claim the pubkey-owner marker
+    // this origin shares with the real account.
+    if (isDemoMode()) {
+      return { ok: false as const, error: 'Sign-in is disabled in the demo.' };
+    }
     const trimmed = phrase.trim().toLowerCase();
     if (!isValidPhrase(trimmed)) {
       return {
@@ -1689,10 +1741,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // promise on the first unlock, permanently (pre-launch audit
       // 2026-08-28, finding 8). The phrase stays memory-only; the next
       // boot goes through the lock screen again, which is the promise.
-      const appLockArmed =
-        loadLocalSettings().appLockEnabled &&
-        (hasPinWrappedPhrase() || hasBiometricCredential());
-      if (appLockArmed) {
+      // The same test now runs on the OAuth custodial path, which
+      // reaches this write too. See appLockArmed in phraseAtRest.ts.
+      if (appLockArmed()) {
         logAuthEvent('auth:phrase-persist-skipped-applock');
       } else {
         await persistStoredPhrase(trimmed);
@@ -1733,6 +1784,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // it of its remaining writes (push boundaries, cursor persist);
       // the next authentication in this tab calls resumeSync.
       suspendSync();
+      // A pending re-mint would authenticate into the storage the other
+      // tab now owns.
+      cancelRemintRetry();
       setAuth((prev) =>
         prev.status === 'authenticated' && prev.pubkey !== e.newValue
           ? { status: 'onboarding' }
@@ -1834,6 +1888,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signOut(opts?: { keepUnsyncedNotes?: boolean }) {
     setRevalidationExpired(false);
+    // Before anything else: a pending re-mint would authenticate this
+    // phrase again minutes after the user signed out.
+    cancelRemintRetry();
     // Stale tab: another tab signed a DIFFERENT account into this
     // browser after we authenticated, so the shared Dexie database and
     // localStorage now belong to that account. Everything below would
@@ -1847,12 +1904,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Keys are deliberately not zeroed: a sync may still be in flight in
     // this tab, and zeroing mid-write would push garbage ciphertext.
     // Dropping the state releases them for GC.
-    if (auth.status === 'authenticated' && !ownsLocalData(auth.pubkey)) {
+    //
+    // The test reads the pubkey off whichever status carries one rather
+    // than off `authenticated` alone, because the wipe below is what
+    // needs protecting and every status reaches it. A device-cap sign-out
+    // carries a pubkey and was skipping the check entirely; the custody
+    // screen's Back button carries none and ran the full wipe on data it
+    // never owned.
+    const tabPubkey =
+      auth.status === 'authenticated' || auth.status === 'device_limit_reached'
+        ? auth.pubkey
+        : null;
+    if (tabPubkey === null || !ownsLocalData(tabPubkey)) {
       // A pass from OUR account may still be in flight in this tab; the
       // shared cursor now belongs to the other account, so that pass
       // must not persist into it. resumeSync() runs on the next
       // authentication.
       suspendSync();
+      // A status with no pubkey owns no vault here, but the custody
+      // choice does own the OAuth session that put it on screen: its
+      // Back button has to end that session or the next boot lands on
+      // the same screen. Ask the authority whether the live session is
+      // still the one this status hydrated, so a tab whose account
+      // another tab replaced cannot sign that account out.
+      if (auth.status === 'oauth_custody_choice') {
+        const { data } = await supabase.auth.getSession();
+        if (data.session?.user.id === auth.authUid) {
+          await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+          clearSupabaseAuthKeys();
+        }
+      }
       sessionRef.current = null;
       setAuth({ status: 'onboarding' });
       return;
@@ -2007,7 +2088,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // 2026-08-25 for multiple users. A voluntary single-device
       // sign-out seeded the same cascade. "Sign out everywhere" is a
       // deliberate feature if we ever want it, never a default.
-      await supabase.auth.signOut({ scope: 'local' });
+      const { error: signOutError } = await supabase.auth.signOut({ scope: 'local' });
+      // The call can decline and still report a clean sign-out: an access
+      // token past its expiry whose refresh cannot reach the network returns
+      // that error before auth-js reaches its own removal, leaving the
+      // session on disk. The phrase is already gone by this point, so the
+      // next boot cannot take the stored-phrase path and self-heal - it
+      // hydrates whatever session it finds instead. The sweep is what makes
+      // the removal independent of the network; the account-deletion path
+      // has always done the same.
+      if (signOutError) logAuthEvent('auth:signout-remote-failed', { name: signOutError.name });
+      clearSupabaseAuthKeys();
       setAuth({ status: 'onboarding' });
     } finally {
       resumeSync();

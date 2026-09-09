@@ -26,6 +26,31 @@
     "tagLabel": "وسم الملاحظات أيضًا حسب المجلد",
     "tagDesc": "تُعاد بنية مجلداتك في كل الأحوال. يضيف هذا اسم كل مجلد كوسم أيضًا، وهو مفيد إذا كنت تحب التصفية حسب الوسم أيضًا."
   },
+  "browserImport": {
+    "tagLabel": "الاحتفاظ بوسوم المتصفح",
+    "tagDesc": "يحفظ Firefox مع كل إشارة مرجعية وسومها وكلمة مفتاحية لشريط العناوين، وكلاهما يصبح وسومًا هنا."
+  },
+  "contactImport": {
+    "photosLabel": "استيراد الصور",
+    "photosDesc_one": "{{count}} صورة، نحو {{size}} بعد أن يصغّرها التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
+    "photosDesc_zero": "{{count}} صور، نحو {{size}} بعد أن يصغّرها التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
+    "photosDesc_two": "{{count}} صورتان، نحو {{size}} بعد أن يصغّرهما التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
+    "photosDesc_few": "{{count}} صور، نحو {{size}} بعد أن يصغّرها التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
+    "photosDesc_many": "{{count}} صورة، نحو {{size}} بعد أن يصغّرها التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
+    "photosDesc_other": "{{count}} صورة، نحو {{size}} بعد أن يصغّرها التطبيق. أي {{pct}}% من {{free}} المتاحة لك.",
+    "photosDescNoQuota_one": "{{count}} صورة، نحو {{size}} بعد أن يصغّرها التطبيق.",
+    "photosDescNoQuota_zero": "{{count}} صور، نحو {{size}} بعد أن يصغّرها التطبيق.",
+    "photosDescNoQuota_two": "{{count}} صورتان، نحو {{size}} بعد أن يصغّرهما التطبيق.",
+    "photosDescNoQuota_few": "{{count}} صور، نحو {{size}} بعد أن يصغّرها التطبيق.",
+    "photosDescNoQuota_many": "{{count}} صورة، نحو {{size}} بعد أن يصغّرها التطبيق.",
+    "photosDescNoQuota_other": "{{count}} صورة، نحو {{size}} بعد أن يصغّرها التطبيق.",
+    "photosTooBig_one": "لا تكفي المساحة للصورة ({{size}})، فستُترك. وكل ما عداها يُستورد. حرّر {{shortfall}} أو أضف مساحة تخزين، ثم استورد مجددًا لإحضارها.",
+    "photosTooBig_zero": "لا تكفي المساحة لـ{{count}} صور ({{size}})، فستُترك. وكل ما عداها يُستورد. حرّر {{shortfall}} أو أضف مساحة تخزين، ثم استورد مجددًا لإحضارها.",
+    "photosTooBig_two": "لا تكفي المساحة للصورتين ({{count}}، {{size}})، فستُتركان. وكل ما عداهما يُستورد. حرّر {{shortfall}} أو أضف مساحة تخزين، ثم استورد مجددًا لإحضارهما.",
+    "photosTooBig_few": "لا تكفي المساحة للصور الـ{{count}} ({{size}})، فستُترك. وكل ما عداها يُستورد. حرّر {{shortfall}} أو أضف مساحة تخزين، ثم استورد مجددًا لإحضارها.",
+    "photosTooBig_many": "لا تكفي المساحة للصور الـ{{count}} ({{size}})، فستُترك. وكل ما عداها يُستورد. حرّر {{shortfall}} أو أضف مساحة تخزين، ثم استورد مجددًا لإحضارها.",
+    "photosTooBig_other": "لا تكفي المساحة للصور الـ{{count}} ({{size}})، فستُترك. وكل ما عداها يُستورد. حرّر {{shortfall}} أو أضف مساحة تخزين، ثم استورد مجددًا لإحضارها."
+  },
   "sourceDesc": {
     "googleKeep": "ملف .zip من Google Takeout (مجلد Keep) أو ملاحظة .json واحدة. تُستورد قوائم التحقق كقوائم مهام أصلية.",
     "appleNotes": "صدّر عبر تطبيق Exporter المجاني بصيغة Markdown، ثم أفلت ملف .zip هنا.",
@@ -40,6 +65,7 @@
     "markdownFolder": "ملفات .md أو .txt فرادى أو داخل ملف .zip. المجلد المضغوط يحتفظ بمجلداته الفرعية ويحضر معه صوره ومرفقاته.",
     "markdownApp": "هذه الملاحظات هي أصلًا ملفات Markdown داخل مجلد. أفلت ذلك المجلد في ملف .zip وستأتي معه مجلداته الفرعية وصوره ووسومه.",
     "browserBookmarks": "ملف الإشارات المرجعية (.html) الناتج عن «Export bookmarks» في متصفحك، أو ملف .zip الذي يكتبه Safari. تحوي متصفحات Chrome وFirefox وSafari وEdge وOpera وBrave وVivaldi الملف نفسه. وتأتي المجلدات والتواريخ معه.",
+    "vcard": "ملف .vcf الذي يصدّره دفتر عناوينك: iPhone وMac عبر iCloud أو تطبيق جهات الاتصال، وAndroid، وجهات اتصال Google. تُستورد كل بطاقة بما فيها الصور، واستيراد الملف نفسه مرتين يتخطى الأشخاص الموجودين لديك.",
     "bitwarden": "تصدير .json غير مشفّر من Bitwarden (Tools > Export vault > .json). تصل معه بيانات تسجيل الدخول والبطاقات ومفاتيح SSH والملاحظات الآمنة ورموز TOTP كلها.",
     "browserPasswords": "ملف كلمات المرور (.csv) من Chrome أو Edge أو Brave أو Opera أو Vivaldi أو Firefox أو Safari، أو ملف .zip الذي يكتبه Safari. يصبح كل صف تسجيل دخول. احذف الملف عند انتهائك - فهو يحمل كلمات مرورك بنص واضح."
   },
@@ -76,49 +102,56 @@
     "andMore": "… و{{count}} أخرى",
     "headsUpLabel": "تنبيه:",
     "duplicateWarning": "يضيف الاستيراد هذه كملاحظات جديدة. إذا شغّلت هذا مرتين، ستحصل على تكرارات. لا يوجد إزالة تكرار تلقائية بعد.",
+    "duplicateSkipNote": "يجري تخطي الإشارات المرجعية التي حفظتها من قبل، لذلك لن يؤدي تكرار الاستيراد إلى أي ازدواج.",
+    "contactSkipNote": "الأشخاص المحفوظون لديك مسبقًا يُتخطّون ويبقون كما هم، فتشغيل الاستيراد مرتين لن يكرر أحدًا.",
     "quotaExceeded": "<strong>مساحة التخزين منخفضة جدًا للاستيراد.</strong> المقدَّر أنك بحاجة إلى {{needed}}، والمتاح {{available}}. يلزم تحرير مساحة أو الترقية إلى Pro قبل الاستيراد.",
     "quotaWarning": "تنبيه: سيستخدم هذا الاستيراد ما يقارب {{needed}} من مساحة التخزين المتبقية لديك البالغة {{available}}.",
-    "oversizeAttachments_zero": "{{count}} ملفات أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. تُستورد إلى هذا الجهاز، لكنها لن تُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro.",
     "oversizeAttachments_one": "ملف واحد أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. يُستورد إلى هذا الجهاز، لكنه لن يُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro.",
+    "oversizeAttachments_other": "{{count}} ملف أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. تُستورد إلى هذا الجهاز، لكنها لن تُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro.",
+    "oversizeAttachments_zero": "{{count}} ملفات أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. تُستورد إلى هذا الجهاز، لكنها لن تُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro.",
     "oversizeAttachments_two": "{{count}} ملفان أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. يُستوردان إلى هذا الجهاز، لكنهما لن يُزامَنا مع أجهزتك الأخرى حتى الترقية إلى Pro.",
     "oversizeAttachments_few": "{{count}} ملفات أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. تُستورد إلى هذا الجهاز، لكنها لن تُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro.",
-    "oversizeAttachments_many": "{{count}} ملفًا أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. تُستورد إلى هذا الجهاز، لكنها لن تُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro.",
-    "oversizeAttachments_other": "{{count}} ملف أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. تُستورد إلى هذا الجهاز، لكنها لن تُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro.",
-    "duplicateSkipNote": "يجري تخطي الإشارات المرجعية التي حفظتها من قبل، لذلك لن يؤدي تكرار الاستيراد إلى أي ازدواج."
+    "oversizeAttachments_many": "{{count}} ملفًا أكبر من الحد الأقصى {{limit}} لكل ملف في خطتك. تُستورد إلى هذا الجهاز، لكنها لن تُزامَن مع أجهزتك الأخرى حتى الترقية إلى Pro."
   },
   "counts": {
-    "note_zero": "لا ملاحظات",
     "note_one": "ملاحظة واحدة",
+    "note_other": "ملاحظة",
+    "journal_one": "يومية واحدة",
+    "journal_other": "يومية",
+    "login_one": "تسجيل دخول واحد",
+    "login_other": "تسجيل دخول",
+    "card_one": "بطاقة واحدة",
+    "card_other": "بطاقة",
+    "sshKey_one": "مفتاح SSH واحد",
+    "sshKey_other": "مفتاح SSH",
+    "contact_one": "جهة اتصال",
+    "contact_zero": "جهات اتصال",
+    "contact_two": "جهتا اتصال",
+    "contact_few": "جهات اتصال",
+    "contact_many": "جهة اتصال",
+    "contact_other": "جهة اتصال",
+    "zeroItems": "0 عناصر",
+    "importButton": "استيراد {{counts}}",
+    "note_zero": "لا ملاحظات",
     "note_two": "ملاحظتان",
     "note_few": "ملاحظات",
     "note_many": "ملاحظةً",
-    "note_other": "ملاحظة",
     "journal_zero": "لا يوميات",
-    "journal_one": "يومية واحدة",
     "journal_two": "يوميتان",
     "journal_few": "يوميات",
     "journal_many": "يوميةً",
-    "journal_other": "يومية",
     "login_zero": "لا تسجيلات دخول",
-    "login_one": "تسجيل دخول واحد",
     "login_two": "تسجيلا دخول",
     "login_few": "تسجيلات دخول",
     "login_many": "تسجيل دخول",
-    "login_other": "تسجيل دخول",
     "card_zero": "لا بطاقات",
-    "card_one": "بطاقة واحدة",
     "card_two": "بطاقتان",
     "card_few": "بطاقات",
     "card_many": "بطاقةً",
-    "card_other": "بطاقة",
     "sshKey_zero": "لا مفاتيح SSH",
-    "sshKey_one": "مفتاح SSH واحد",
     "sshKey_two": "مفتاحا SSH",
     "sshKey_few": "مفاتيح SSH",
-    "sshKey_many": "مفتاح SSH",
-    "sshKey_other": "مفتاح SSH",
-    "zeroItems": "0 عناصر",
-    "importButton": "استيراد {{counts}}"
+    "sshKey_many": "مفتاح SSH"
   },
   "errorPhase": {
     "heading": "{{importer}}: فشل الاستيراد"
@@ -142,7 +175,10 @@
     "vaultExportDesc": "تسجيلات الدخول والبطاقات ومفاتيح SSH بصيغة متوافقة مع Bitwarden. قابلة للاستيراد في معظم مديري كلمات المرور. نص عادي - تعامل معها بحذر.",
     "bookmarksOnlyHeading": "الإشارات المرجعية فقط",
     "bookmarksExportTitle": "ملف الإشارات المرجعية (.html)",
-    "bookmarksExportDesc": "ملف الإشارات المرجعية القياسي الذي يقرأه كل متصفح. استوردْه إلى Chrome أو Firefox أو Safari أو Edge مع بقاء مجلداتك كما هي."
+    "bookmarksExportDesc": "ملف الإشارات المرجعية القياسي الذي يقرأه كل متصفح. استوردْه إلى Chrome أو Firefox أو Safari أو Edge مع بقاء مجلداتك كما هي.",
+    "contactsOnlyHeading": "جهات الاتصال فقط",
+    "contactsExportTitle": "ملف جهات الاتصال (.vcf)",
+    "contactsExportDesc": "ملف vCard الذي يقرؤه كل هاتف ودفتر عناوين. استورده إلى iPhone أو Android أو جهات اتصال Google أو تطبيق جهات الاتصال على Mac، مع بقاء التسميات والمجموعات كما هي."
   },
   "exportProgress": {
     "failedTitle": "فشل التصدير",
@@ -159,11 +195,7 @@
     "completeTitle": "اكتمل الرفع",
     "failedTitle": "فشل الرفع",
     "partialTitle": "تم رفع {{done}}، وفشل {{failed}}",
-    "uploadingTitle_zero": "جارٍ رفع {{count}} ملفات",
     "uploadingTitle_one": "جارٍ رفع {{count}} ملف",
-    "uploadingTitle_two": "جارٍ رفع {{count}} ملفين",
-    "uploadingTitle_few": "جارٍ رفع {{count}} ملفات",
-    "uploadingTitle_many": "جارٍ رفع {{count}} ملفًا",
     "uploadingTitle_other": "جارٍ رفع {{count}} ملف",
     "statusDone": "تم",
     "statusFailed": "فشل",
@@ -178,7 +210,11 @@
     "proPitch": "ترفع Pro الحد إلى 50 ميغابايت لكل ملف.",
     "proPitchCta": "الترقية",
     "storagePitch": "خطة تخزين ترفعه إلى 100 ميغابايت لكل ملف.",
-    "storagePitchCta": "إضافة مساحة تخزين"
+    "storagePitchCta": "إضافة مساحة تخزين",
+    "uploadingTitle_zero": "جارٍ رفع {{count}} ملفات",
+    "uploadingTitle_two": "جارٍ رفع {{count}} ملفين",
+    "uploadingTitle_few": "جارٍ رفع {{count}} ملفات",
+    "uploadingTitle_many": "جارٍ رفع {{count}} ملفًا"
   },
   "decryptErrors": {
     "tooSmall": "هذا الملف فارغ أو غير مكتمل ({{size}} بايت)، لذا لا يوجد شيء لاستعادته. صدّر النسخة الاحتياطية مرة أخرى وتحقق من أن الملف المحفوظ له حجم فعلي قبل استيراده.",
@@ -189,9 +225,5 @@
   },
   "saveErrors": {
     "shortWrite": "تم حفظ {{written}} فقط من أصل {{expected}} بايت، لذا الملف غير مكتمل. حاول مرة أخرى واحفظ في مساحة تخزين جهازك الخاصة بدلًا من مجلد سحابي."
-  },
-  "browserImport": {
-    "tagLabel": "الاحتفاظ بوسوم المتصفح",
-    "tagDesc": "يحفظ Firefox مع كل إشارة مرجعية وسومها وكلمة مفتاحية لشريط العناوين، وكلاهما يصبح وسومًا هنا."
   }
 }

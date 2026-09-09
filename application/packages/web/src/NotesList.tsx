@@ -94,6 +94,7 @@ export interface NotesListProps {
    *  type picker's File option. */
   onNewFile: () => void;
   onNewBookmark: () => void;
+  onNewContact: () => void;
   /** Open the import modal on the tab this pillar imports from - the
    *  standing import entry at the end of the list. */
   onOpenImport: (tab: 'import' | 'vault') => void;
@@ -244,6 +245,7 @@ export function NotesList({
   onNew,
   onNewFile,
   onNewBookmark,
+  onNewContact,
   onOpenImport,
   onBackfillDate,
   onEmptyTrash,
@@ -402,7 +404,7 @@ export function NotesList({
   // created item is starred, from the active view. Bare-noun labels live in
   // notes:newMenu.* so the button's "New" isn't repeated in every row.
   // Order MUST match the sidebar pillar nav (TagsRail.tsx) and the right-click
-  // menu (contextMenus.tsx buildGlobalMenu): Note, Task, Login, File, Journal, Bookmark.
+  // menu (contextMenus.tsx buildGlobalMenu): Note, Task, Login, File, Journal, Contact, Bookmark.
   // Spec: ops/docs/ui-patterns.md section 45 (New-menu order invariant)
   const allNewOptions: NewMenuOption[] = [
     { key: 'note', label: t('newMenu.note'), icon: <NEW_GLYPHS.note />, onSelect: () => onNew() },
@@ -410,6 +412,7 @@ export function NotesList({
     { key: 'login', label: t('newMenu.login'), icon: <NEW_GLYPHS.login />, onSelect: () => onNew('login', 'vault') },
     { key: 'file', label: t('newMenu.file'), icon: <NEW_GLYPHS.file />, onSelect: () => onNewFile() },
     { key: 'journal', label: t('newMenu.journal'), icon: <NEW_GLYPHS.journal />, onSelect: () => onNew(undefined, 'journal') },
+    { key: 'contact', label: t('newMenu.contact'), icon: <NEW_GLYPHS.contact />, onSelect: () => onNewContact() },
     { key: 'bookmark', label: t('newMenu.bookmark'), icon: <NEW_GLYPHS.bookmark />, onSelect: () => onNewBookmark() },
   ];
 

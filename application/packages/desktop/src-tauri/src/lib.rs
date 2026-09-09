@@ -35,6 +35,22 @@ static PENDING_OPEN: std::sync::Mutex<Vec<String>> = std::sync::Mutex::new(Vec::
 #[cfg(desktop)]
 const OPENABLE_EXT: [&str; 5] = ["md", "markdown", "mdown", "mkd", "txt"];
 
+/// The URL scheme the bundle registers, kept in step with `plugins.deep-link`
+/// in tauri.conf.json and asserted against it by
+/// `tests/desktopCapabilities.test.ts`.
+#[cfg(desktop)]
+const APP_SCHEME: &str = "privacynotes:";
+
+/// True when the argument is one of our own deep links.
+///
+/// Case-insensitively, because a scheme is case-insensitive and the shell
+/// hands over whatever the sender typed.
+#[cfg(desktop)]
+fn announces_app_scheme(arg: &str) -> bool {
+    arg.len() >= APP_SCHEME.len()
+        && arg[..APP_SCHEME.len()].eq_ignore_ascii_case(APP_SCHEME)
+}
+
 #[cfg(desktop)]
 fn is_openable(path: &str) -> bool {
     std::path::Path::new(path)
@@ -44,39 +60,91 @@ fn is_openable(path: &str) -> bool {
         .unwrap_or(false)
 }
 
+/// True when the argument announces a URL scheme, `file:` included.
+///
+/// Shape, not a parser, and deliberately. A bare Windows path such as
+/// `C:\notes\a.md` parses as a URL with scheme "c", so asking a parser what
+/// the scheme is would mangle every Windows double-click; a drive letter is
+/// one character and a scheme is at least two. And the colon has to come
+/// before any separator, because `/tmp/my:file.md` is a legal name on Unix.
+///
+/// The `://` form is not enough on its own: a scheme can carry an opaque
+/// value after a single colon, which is how `privacynotes:x|...` slipped
+/// past an earlier version of this test.
+#[cfg(desktop)]
+fn has_url_scheme(arg: &str) -> bool {
+    let Some(colon) = arg.find(':') else { return false };
+    let scheme = &arg[..colon];
+    if scheme.len() < 2 || scheme.contains('/') || scheme.contains('\\') {
+        return false;
+    }
+    let mut chars = scheme.chars();
+    chars.next().is_some_and(|c| c.is_ascii_alphabetic())
+        && chars.all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '-' | '.'))
+}
+
 /// Turn one argv entry into a filesystem path we claimed, or None.
 ///
-/// Two jobs. The extension check is the obvious one - argv carries flags, deep
-/// links and files we never registered. The `file://` unwrapping is the subtle
-/// one: a Linux file manager launching a `%F` desktop entry may hand over a URL
-/// rather than a bare path, and `openPath` on the frontend passes its argument
-/// straight to the fs plugin AS a path. A URL would sail through the extension
-/// check (`.md` parses fine) and then fail to read, which looks exactly like a
-/// broken feature. Percent-encoding is why this goes through a URL parser
-/// instead of a `strip_prefix`: `file:///home/a/my%20note.md` has to come back
-/// as a real space.
+/// The extension check is the obvious job. Two others are not.
+///
+/// A URL is not a file, whatever its last segment looks like: the app's own
+/// scheme arrives on this same argv, and `privacynotes://x/y.md` ends in a
+/// registered extension. The deep-link plugin owns those, and handing one to
+/// the filesystem is how a link somebody else wrote became a path the app
+/// opened.
+///
+/// The one exception is `file://`, which a Linux file manager launching a
+/// `%F` desktop entry may hand over instead of a bare path, and which needs a
+/// parser rather than a `strip_prefix` because `file:///home/a/my%20note.md`
+/// has to come back with a real space. It is scoped away from Windows, which
+/// never sends one: there the single-instance forwarder joins argv with a
+/// pipe and splits the payload on the same character, so one crafted deep
+/// link arrives as several arguments and the second of them was unwrapped
+/// into a path - a local file, or a UNC name pointing at a host of the
+/// sender's choosing.
+///
+/// Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-20)
 #[cfg(desktop)]
 fn openable_path(arg: &str) -> Option<String> {
-    // Only treat an argument as a URL when it says so. A bare Windows path -
-    // `C:\notes\a.md` - parses as a URL with scheme "c", so parsing first and
-    // asking about the scheme afterwards would mangle every Windows double-click.
-    let path = if arg.starts_with("file://") {
-        tauri::Url::parse(arg)
+    #[cfg(not(target_os = "windows"))]
+    if arg.starts_with("file://") {
+        let path = tauri::Url::parse(arg)
             .ok()?
             .to_file_path()
             .ok()?
             .to_string_lossy()
-            .into_owned()
-    } else {
-        arg.to_owned()
-    };
-    is_openable(&path).then_some(path)
+            .into_owned();
+        return is_openable(&path).then_some(path);
+    }
+    if has_url_scheme(arg) {
+        return None;
+    }
+    is_openable(arg).then_some(arg.to_owned())
 }
 
 /// Queue every openable path in an argv-style list. Windows and Linux deliver
 /// file opens this way, both on a cold start and through single-instance.
 #[cfg(desktop)]
 fn queue_from_args<I: IntoIterator<Item = String>>(args: I) {
+    let args: Vec<String> = args.into_iter().collect();
+    // A batch carrying one of our own deep links is a link delivery, not a
+    // file open, and the two must never be mixed. On Windows the
+    // single-instance forwarder joins argv with a pipe and the receiver
+    // splits the payload on the same character, so ONE crafted link arrives
+    // as several arguments and every argument after the first looks exactly
+    // like a file the shell handed over - a local path, or a network name
+    // whose owner learns who opened it.
+    //
+    // Nothing legitimate is lost, because the deep-link plugin refuses that
+    // same batch: it takes the argument after the binary only when there is
+    // no second one (tauri-plugin-deep-link-2.4.10/src/lib.rs:203-210), so a
+    // split payload is already dead as a link before our callback runs. This
+    // closes the delivery rather than the shape, which is why a double-click
+    // on a note that lives on a file server is still an ordinary open.
+    // Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-20)
+    if args.iter().any(|a| announces_app_scheme(a)) {
+        return;
+    }
     let mut queue = PENDING_OPEN.lock().unwrap();
     for arg in args.into_iter().skip(1) {
         if let Some(path) = openable_path(&arg) {
@@ -106,10 +174,14 @@ fn take_pending_opens(app: tauri::AppHandle) -> Vec<String> {
     // `std::env::args()`.
     // Spec: ops/docs/plans/markdown-folder.md (section 11)
     if let Some(scope) = app.try_fs_scope() {
-        for path in &paths {
-            // A path that cannot be granted is still worth returning: the read
-            // will fail with the frontend's own error state rather than being
-            // silently dropped here, which is the more debuggable of the two.
+        // The last one only, which is the one the frontend opens: a
+        // multi-select hands over several, and the widening this grants is
+        // process-wide and permanent, so granting the rest keeps whatever
+        // they name reachable for the life of the run and buys nothing.
+        // A path that cannot be granted is still worth returning: the read
+        // will fail with the frontend's own error state rather than being
+        // silently dropped here, which is the more debuggable of the two.
+        if let Some(path) = paths.last() {
             let _ = scope.allow_file(path);
         }
     }
@@ -530,4 +602,211 @@ fn open_about_window(app: &tauri::AppHandle) {
     .accept_first_mouse(true)
     .center()
     .build();
+}
+
+/// The argv side of the file association, which is the only part of it that
+/// can be reached without an `AppHandle`.
+///
+/// Both of these came out of the September security review. A path is claimed
+/// on its extension alone, and a `file://` value is unwrapped through a URL
+/// parser, so a token that is neither still has to be refused. And the
+/// unwrapping is scoped to the platform that needs it: a Linux file manager
+/// launching a `%F` desktop entry may hand over a URL, while on Windows the
+/// same code turned an attacker-supplied deep link into a filesystem path,
+/// because the single-instance forwarder splits one argument into several.
+///
+/// Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-20, SEC-34)
+#[cfg(all(test, desktop))]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn claims_the_registered_extensions_and_nothing_else() {
+        assert_eq!(openable_path("/tmp/a.md").as_deref(), Some("/tmp/a.md"));
+        assert_eq!(openable_path("/tmp/a.MD").as_deref(), Some("/tmp/a.MD"));
+        assert_eq!(openable_path("/tmp/a.txt").as_deref(), Some("/tmp/a.txt"));
+        assert!(openable_path("/tmp/a.pdf").is_none());
+        assert!(openable_path("--flag").is_none());
+        assert!(openable_path("/tmp/noextension").is_none());
+    }
+
+    #[test]
+    fn a_deep_link_is_not_a_file() {
+        // The scheme is the app's own, and the last segment ends in one of the
+        // registered extensions, which is all `is_openable` looks at.
+        assert!(openable_path("privacynotes://x/y.md").is_none());
+        // The opaque form, which is what the Windows forwarder splits.
+        assert!(openable_path("privacynotes:x|file:///tmp/a.md").is_none());
+        assert!(openable_path("https://example.com/a.md").is_none());
+    }
+
+    #[test]
+    fn a_path_that_merely_contains_a_colon_is_still_a_path() {
+        // One character before the colon is a Windows drive, not a scheme.
+        assert_eq!(openable_path("C:\\notes\\a.md").as_deref(), Some("C:\\notes\\a.md"));
+        // And a colon after a separator belongs to the file name.
+        assert_eq!(openable_path("/tmp/my:file.md").as_deref(), Some("/tmp/my:file.md"));
+    }
+
+    #[cfg(not(target_os = "windows"))]
+    #[test]
+    fn unwraps_a_file_url_where_a_file_manager_sends_one() {
+        assert_eq!(openable_path("file:///tmp/a.md").as_deref(), Some("/tmp/a.md"));
+        // Percent-encoding is why this goes through a parser at all.
+        assert_eq!(
+            openable_path("file:///tmp/my%20note.md").as_deref(),
+            Some("/tmp/my note.md"),
+        );
+    }
+
+    /// The Windows refusal, pinned where every platform can run it.
+    ///
+    /// On Windows the `file://` unwrapping is compiled out, so such an
+    /// argument falls to the general rule below, and this is that rule. A
+    /// build for another platform cannot exercise the branch itself, so the
+    /// predicate it depends on is asserted instead.
+    #[test]
+    fn a_file_url_is_a_url_by_the_general_rule() {
+        assert!(has_url_scheme("file:///C:/Users/victim/notes/private.md"));
+        assert!(has_url_scheme("file://attacker.example/share/x.md"));
+        assert!(!has_url_scheme("C:\\notes\\a.md"));
+        assert!(!has_url_scheme("/tmp/my:file.md"));
+        assert!(!has_url_scheme("--flag"));
+    }
+
+    #[cfg(target_os = "windows")]
+    #[test]
+    fn refuses_a_file_url_on_windows() {
+        // Windows never delivers one, and the single-instance forwarder joins
+        // argv with a pipe and splits the payload on the same character, so
+        // one crafted deep link arrives as several arguments. Unwrapping here
+        // turned the second of them into a path the app then opened, local or
+        // a UNC name pointing at a host the sender chose.
+        assert!(openable_path("file:///C:/Users/victim/notes/private.md").is_none());
+        assert!(openable_path("file://attacker.example/share/x.md").is_none());
+    }
+
+    /// The third producer of the queue, and why it needs no scheme check.
+    ///
+    /// macOS delivers a double-click as an Apple Event rather than in argv,
+    /// so `RunEvent::Opened` pushes straight onto the queue without going
+    /// through `openable_path`. It calls `to_file_path()` first, which is a
+    /// stronger rule than the one above rather than a missing one: a URL that
+    /// is not a file URL has no file path to give. Asserted because the claim
+    /// is about a library, not about our code.
+    #[test]
+    fn a_non_file_url_has_no_file_path() {
+        let deep = tauri::Url::parse("privacynotes://x/y.md").unwrap();
+        assert!(deep.to_file_path().is_err());
+        let web = tauri::Url::parse("https://example.com/a.md").unwrap();
+        assert!(web.to_file_path().is_err());
+        let file = tauri::Url::parse("file:///tmp/a.md").unwrap();
+        assert!(file.to_file_path().is_ok());
+    }
+
+    #[test]
+    fn a_batch_carrying_the_app_scheme_queues_nothing() {
+        // What the Windows forwarder produces from one crafted link: the
+        // scheme token, then the payload, which announces nothing and ends in
+        // a registered extension. A UNC name is the sharp one - opening it is
+        // an outbound connection to a host the sender chose.
+        PENDING_OPEN.lock().unwrap().clear();
+        queue_from_args([
+            "app.exe".to_string(),
+            "privacynotes:x".to_string(),
+            "\\\\attacker.example\\share\\x.md".to_string(),
+        ]);
+        assert!(PENDING_OPEN.lock().unwrap().is_empty());
+
+        // And the same batch shape with a local path, which is the same
+        // injection with a quieter payload.
+        queue_from_args([
+            "app.exe".to_string(),
+            "privacynotes://auth-callback".to_string(),
+            "C:\\Users\\victim\\notes\\private.md".to_string(),
+        ]);
+        assert!(PENDING_OPEN.lock().unwrap().is_empty());
+        PENDING_OPEN.lock().unwrap().clear();
+    }
+
+    #[test]
+    fn a_network_path_still_opens_when_nobody_smuggled_it() {
+        // The refusal is about the delivery, not the shape: a double-click on
+        // a note that lives on a real file server is an ordinary open.
+        PENDING_OPEN.lock().unwrap().clear();
+        queue_from_args([
+            "app.exe".to_string(),
+            "\\\\fileserver\\team\\notes.md".to_string(),
+        ]);
+        assert_eq!(
+            PENDING_OPEN.lock().unwrap().clone(),
+            vec!["\\\\fileserver\\team\\notes.md"],
+        );
+        PENDING_OPEN.lock().unwrap().clear();
+    }
+
+    /// What `readDir` reports for a symlink, which is the fact the folder
+    /// scan's refusal rests on.
+    ///
+    /// The plugin derives `isFile`, `isDirectory` and `isSymlink` from one
+    /// `DirEntry::file_type()` call and returns false for all three when it
+    /// cannot stat the entry (tauri-plugin-fs-2.5.2/src/commands.rs:486-501).
+    /// `file_type()` does not traverse a link, so a link reports itself
+    /// rather than its target - which is why the frontend asks for a proven
+    /// file rather than for "not a symlink". Asserted against a real link on
+    /// a real filesystem, because it is an operating-system behaviour and
+    /// the whole guard depends on it.
+    ///
+    /// Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-21)
+    #[test]
+    fn a_symlink_reports_itself_and_not_its_target() {
+        let dir = std::env::temp_dir().join("pn-symlink-filetype-test");
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let target = dir.join("target.md");
+        std::fs::write(&target, "real bytes").unwrap();
+        let link = dir.join("link.md");
+        #[cfg(unix)]
+        std::os::unix::fs::symlink(&target, &link).unwrap();
+        #[cfg(windows)]
+        std::os::windows::fs::symlink_file(&target, &link).unwrap();
+
+        let mut seen = 0;
+        for entry in std::fs::read_dir(&dir).unwrap() {
+            let entry = entry.unwrap();
+            let file_type = entry.file_type().unwrap();
+            match entry.file_name().to_str().unwrap() {
+                "target.md" => {
+                    assert!(file_type.is_file());
+                    assert!(!file_type.is_symlink());
+                    seen += 1;
+                }
+                "link.md" => {
+                    // The two the scan reads: a link is not a file, so asking
+                    // for a proven file refuses it.
+                    assert!(file_type.is_symlink());
+                    assert!(!file_type.is_file());
+                    assert!(!file_type.is_dir());
+                    seen += 1;
+                }
+                other => panic!("unexpected entry {other}"),
+            }
+        }
+        assert_eq!(seen, 2);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn queue_skips_argv_zero_and_keeps_the_order_given() {
+        PENDING_OPEN.lock().unwrap().clear();
+        queue_from_args([
+            "/Applications/PrivacyNotes.app/Contents/MacOS/a.md".to_string(),
+            "/tmp/first.md".to_string(),
+            "--flag".to_string(),
+            "/tmp/second.txt".to_string(),
+        ]);
+        let queued = PENDING_OPEN.lock().unwrap().clone();
+        assert_eq!(queued, vec!["/tmp/first.md", "/tmp/second.txt"]);
+        PENDING_OPEN.lock().unwrap().clear();
+    }
 }

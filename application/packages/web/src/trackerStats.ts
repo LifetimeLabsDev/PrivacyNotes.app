@@ -4,7 +4,11 @@
  * All computation happens locally. Nothing leaves the device.
  */
 
+import type { TFunction } from 'i18next';
 import type { LocalNote } from './db';
+import { activeLocale, intlLocale } from './languages';
+import { weekdayDate, weekdayLabel } from './intlFormat';
+import { RTL_LOCALES } from './localeRoutes';
 import { journalDateOf, toLocalIso } from './notesViewUtils';
 import {
   mergeTrackers,
@@ -12,10 +16,19 @@ import {
   type MedicationTemplate,
   EMOTION_TAGS,
   SLEEP_LABELS,
+  SLEEP_QUALITIES,
   type SleepQuality,
   ACTIVITY_LABELS,
+  ACTIVITY_LEVELS,
   type ActivityLevel,
 } from './trackerTypes';
+
+// The AI prompt and the doctor report are written in English end to end, so
+// they resolve their own English names. Everything the UI renders travels as
+// a key and is translated where it is shown.
+function emotionLabel(key: string): string {
+  return EMOTION_TAGS.find((t) => t.key === key)?.label ?? key;
+}
 
 /** Average of an array of numbers (returns 0 for empty arrays). */
 function avg(nums: number[]): number {
@@ -33,7 +46,9 @@ function round1(n: number): number {
 
 export type PatternInsight = {
   type: 'correlation' | 'day_of_week' | 'medication' | 'streak' | 'trend';
-  text: string;
+  /** Key under `wellness.insights` in the stats catalog. */
+  key: string;
+  params: Record<string, string | number>;
 };
 
 export type TrackerStats = {
@@ -44,13 +59,13 @@ export type TrackerStats = {
   /** Average mood over tracked period. */
   avgMood: number | null;
   /** Emotion frequency: key -> count, sorted descending. */
-  emotionFrequency: { key: string; label: string; count: number }[];
+  emotionFrequency: { key: string; count: number }[];
   /** Sleep quality distribution. */
-  sleepDistribution: { quality: SleepQuality; label: string; count: number }[];
+  sleepDistribution: { quality: SleepQuality; count: number }[];
   /** Average sleep hours (if logged). */
   avgSleepHours: number | null;
   /** Activity level distribution. */
-  activityDistribution: { level: ActivityLevel; label: string; count: number }[];
+  activityDistribution: { level: ActivityLevel; count: number }[];
   /** Medication adherence: % of expected doses taken. */
   medAdherence: number | null;
   /** Per-medication adherence. `id` disambiguates two medications that
@@ -61,7 +76,7 @@ export type TrackerStats = {
   /** Detected patterns and insights (Pro). */
   patterns: PatternInsight[];
   /** Day-of-week mood averages (0=Sun..6=Sat). */
-  dayOfWeekMood: { day: number; label: string; avg: number; count: number }[] | null;
+  dayOfWeekMood: { day: number; avg: number; count: number }[] | null;
   /** Mood on heatmap (date->mood score for overlay). */
   moodHeatmap: Record<string, number>;
 };
@@ -72,10 +87,10 @@ type WeekInReview = {
   daysLogged: number;
   avgMood: number | null;
   moodDelta: number | null; // vs previous week
-  topEmotions: { key: string; label: string; count: number }[];
+  topEmotions: { key: string; count: number }[];
   avgSleepHours: number | null;
   medAdherence: number | null;
-  dominantActivity: { level: ActivityLevel; label: string } | null;
+  dominantActivity: { level: ActivityLevel } | null;
 };
 
 // ------------------------------------------------------------------
@@ -220,11 +235,7 @@ export function computeTrackerStats(
     }
   }
   const emotionFrequency = Object.entries(emotionCounts)
-    .map(([key, count]) => ({
-      key,
-      label: EMOTION_TAGS.find((t) => t.key === key)?.label ?? key,
-      count,
-    }))
+    .map(([key, count]) => ({ key, count }))
     .sort((a, b) => b.count - a.count);
 
   // ── Sleep ──────────────────────────────────────────────────────
@@ -242,8 +253,8 @@ export function computeTrackerStats(
       }
     }
   }
-  const sleepDistribution = (Object.entries(SLEEP_LABELS) as [SleepQuality, string][]).map(
-    ([quality, label]) => ({ quality, label, count: sleepCounts[quality] ?? 0 })
+  const sleepDistribution = SLEEP_QUALITIES.map(
+    (quality) => ({ quality, count: sleepCounts[quality] ?? 0 })
   );
 
   // ── Activity ───────────────────────────────────────────────────
@@ -255,8 +266,8 @@ export function computeTrackerStats(
       activityCounts[e.data.activity] = (activityCounts[e.data.activity] ?? 0) + 1;
     }
   }
-  const activityDistribution = (Object.entries(ACTIVITY_LABELS) as [ActivityLevel, string][]).map(
-    ([level, label]) => ({ level, label, count: activityCounts[level] ?? 0 })
+  const activityDistribution = ACTIVITY_LEVELS.map(
+    (level) => ({ level, count: activityCounts[level] ?? 0 })
   );
 
   // ── Medication ─────────────────────────────────────────────────
@@ -346,7 +357,7 @@ export function computeTrackerStats(
       }
     }
     const topEmotions = Object.entries(wEmotions)
-      .map(([key, count]) => ({ key, label: EMOTION_TAGS.find((t) => t.key === key)?.label ?? key, count }))
+      .map(([key, count]) => ({ key, count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 
@@ -391,7 +402,7 @@ export function computeTrackerStats(
       avgSleepHours: wAvgSleep != null ? round1(wAvgSleep) : null,
       medAdherence: wMedTotal > 0 ? Math.round((wMedTaken / wMedTotal) * 100) : null,
       dominantActivity: topActivity
-        ? { level: topActivity[0] as ActivityLevel, label: ACTIVITY_LABELS[topActivity[0] as ActivityLevel] }
+        ? { level: topActivity[0] as ActivityLevel }
         : null,
     };
   }
@@ -403,7 +414,6 @@ export function computeTrackerStats(
   }
 
   // ── Day-of-week mood ──────────────────────────────────────────
-  const DOW_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const dowSums: number[] = [0, 0, 0, 0, 0, 0, 0];
   const dowCounts: number[] = [0, 0, 0, 0, 0, 0, 0];
   for (const e of entries) {
@@ -413,11 +423,13 @@ export function computeTrackerStats(
       dowCounts[dow] = (dowCounts[dow] ?? 0) + 1;
     }
   }
+  // The day index travels, never a name: the view owns the label, so it can
+  // render one in the language on screen.
   const dayOfWeekMood = moodCount >= 7
-    ? DOW_LABELS.map((label, i) => {
+    ? dowCounts.map((_, i) => {
         const cnt = dowCounts[i] ?? 0;
         const sum = dowSums[i] ?? 0;
-        return { day: i, label, avg: cnt > 0 ? round1(sum / cnt) : 0, count: cnt };
+        return { day: i, avg: cnt > 0 ? round1(sum / cnt) : 0, count: cnt };
       })
     : null;
 
@@ -478,7 +490,8 @@ function computePatterns(
     if (Math.abs(delta) >= 0.5) {
       patterns.push({
         type: 'correlation',
-        text: `Your mood is ${delta > 0 ? delta + ' points higher' : Math.abs(delta) + ' points lower'} on days you sleep well vs. poorly.`,
+        key: 'sleep',
+        params: { good: round1(goodAvg), bad: round1(badAvg) },
       });
     }
   }
@@ -499,13 +512,13 @@ function computePatterns(
     if (Math.abs(delta) >= 0.5) {
       patterns.push({
         type: 'correlation',
-        text: `Your mood averages ${delta > 0 ? delta + ' points higher' : Math.abs(delta) + ' points lower'} on active days vs. sedentary days.`,
+        key: 'activity',
+        params: { active: round1(activeAvg), sedentary: round1(sedAvg) },
       });
     }
   }
 
   // ── Day-of-week pattern ─────────────────────────────────────────
-  const DOW_NAMES = ['Sundays', 'Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays'];
   const dowSums2: number[] = [0, 0, 0, 0, 0, 0, 0];
   const dowCnts2: number[] = [0, 0, 0, 0, 0, 0, 0];
   for (const e of entries) {
@@ -526,7 +539,8 @@ function computePatterns(
   if (bestDay >= 0 && worstDay >= 0 && bestAvg - worstAvg >= 1) {
     patterns.push({
       type: 'day_of_week',
-      text: `Your best day tends to be ${DOW_NAMES[bestDay]} (avg ${round1(bestAvg)}) and toughest is ${DOW_NAMES[worstDay]} (avg ${round1(worstAvg)}).`,
+      key: 'dayOfWeek',
+      params: { bestDay, bestAvg: round1(bestAvg), worstDay, worstAvg: round1(worstAvg) },
     });
   }
 
@@ -547,7 +561,8 @@ function computePatterns(
       if (Math.abs(delta) >= 0.5) {
         patterns.push({
           type: 'medication',
-          text: `Since starting ${med.name} (${startDate}), your average mood ${delta > 0 ? 'improved' : 'declined'} by ${Math.abs(delta)} points.`,
+          key: 'medication',
+          params: { name: med.name, date: startDate, before: round1(beforeAvg), after: round1(afterAvg) },
         });
       }
     }
@@ -564,7 +579,8 @@ function computePatterns(
   if (streak >= 7) {
     patterns.push({
       type: 'streak',
-      text: `You've logged mood for ${streak} days in a row. Keep it up!`,
+      key: 'streak',
+      params: { count: streak },
     });
   }
 
@@ -576,7 +592,8 @@ function computePatterns(
     if (Math.abs(delta) >= 0.8) {
       patterns.push({
         type: 'trend',
-        text: `Your mood over the last 2 weeks is ${delta > 0 ? delta + ' points above' : Math.abs(delta) + ' points below'} your overall average.`,
+        key: 'trend',
+        params: { recent: round1(recentAvg), overall: round1(avgMood) },
       });
     }
   }
@@ -585,26 +602,61 @@ function computePatterns(
 }
 
 // ------------------------------------------------------------------
+// Insight sentences
+// ------------------------------------------------------------------
+
+/**
+ * The sentence for one detected pattern, in the language on screen.
+ *
+ * The insight travels as a key and plain numbers, so the same pattern reads
+ * correctly in a card, in the AI prompt and in the doctor report. The
+ * day-of-week case is the one that needs more than interpolation: it carries
+ * two weekday indexes, and only the caller's locale can name them.
+ */
+export function insightText(p: PatternInsight, t: TFunction): string {
+  const params = p.type === 'day_of_week'
+    ? {
+        ...p.params,
+        best: weekdayLabel(weekdayDate(Number(p.params.bestDay)), 'long'),
+        worst: weekdayLabel(weekdayDate(Number(p.params.worstDay)), 'long'),
+      }
+    : p.params;
+  return t(`wellness.insights.${p.key}`, params);
+}
+
+// ------------------------------------------------------------------
 // AI prompt generator
 // ------------------------------------------------------------------
 
-export function generateAIPrompt(stats: TrackerStats, medications: MedicationTemplate[]): string {
+export function generateAIPrompt(
+  stats: TrackerStats,
+  medications: MedicationTemplate[],
+  t: TFunction,
+): string {
+  const p = (key: string, vars: Record<string, unknown> = {}) =>
+    t(`wellness.aiPrompt.${key}`, vars) as string;
+  const days = (count: number) => t('wellness.units.days', { count }) as string;
+
   const lines: string[] = [
-    'I\'ve been tracking my mood and wellness. Please analyze the data below for patterns, trends, and actionable insights.',
+    p('intro'),
     '',
-    '## Overview',
-    `- Days tracked: ${stats.trackedDays}`,
+    `## ${p('overview')}`,
+    `- ${p('daysTracked', { days: stats.trackedDays })}`,
   ];
-  if (stats.avgMood != null) lines.push(`- Average mood: ${stats.avgMood}/10`);
-  if (stats.avgSleepHours != null) lines.push(`- Average sleep: ${stats.avgSleepHours}h`);
-  if (stats.medAdherence != null) lines.push(`- Medication adherence: ${stats.medAdherence}%`);
+  if (stats.avgMood != null) lines.push(`- ${p('avgMood', { mood: stats.avgMood })}`);
+  if (stats.avgSleepHours != null) lines.push(`- ${p('avgSleep', { hours: stats.avgSleepHours })}`);
+  if (stats.medAdherence != null) lines.push(`- ${p('adherence', { pct: stats.medAdherence })}`);
   if (stats.emotionFrequency.length > 0) {
-    lines.push(`- Top emotions: ${stats.emotionFrequency.slice(0, 8).map((e) => `${e.label} (${e.count}x)`).join(', ')}`);
+    const list = stats.emotionFrequency
+      .slice(0, 8)
+      .map((e) => `${emotionName(e.key, t)} (${e.count}x)`)
+      .join(', ');
+    lines.push(`- ${p('topEmotions', { list })}`);
   }
 
   // Mood trend as readable table
   if (stats.moodTrend.length > 0) {
-    lines.push('', '## Mood Trend (last 30 days)', '| Date | Mood |', '|------|------|');
+    lines.push('', `## ${p('moodTrend')}`, `| ${p('columnDate')} | ${p('columnMood')} |`, '|------|------|');
     for (const d of stats.moodTrend.slice(-30)) {
       lines.push(`| ${d.date} | ${d.mood}/10 |`);
     }
@@ -612,33 +664,33 @@ export function generateAIPrompt(stats: TrackerStats, medications: MedicationTem
 
   // Sleep distribution
   if (stats.sleepDistribution.some((s) => s.count > 0)) {
-    lines.push('', '## Sleep Quality Distribution');
+    lines.push('', `## ${p('sleepDistribution')}`);
     for (const s of stats.sleepDistribution) {
-      if (s.count > 0) lines.push(`- ${s.label}: ${s.count} days`);
+      if (s.count > 0) lines.push(`- ${sleepName(s.quality, t)}: ${days(s.count)}`);
     }
   }
 
   // Activity distribution
   if (stats.activityDistribution.some((a) => a.count > 0)) {
-    lines.push('', '## Activity Level Distribution');
+    lines.push('', `## ${p('activityDistribution')}`);
     for (const a of stats.activityDistribution) {
-      if (a.count > 0) lines.push(`- ${a.label}: ${a.count} days`);
+      if (a.count > 0) lines.push(`- ${activityName(a.level, t)}: ${days(a.count)}`);
     }
   }
 
   // Medications
   if (stats.medBreakdown.length > 0) {
-    lines.push('', '## Medication Adherence');
+    lines.push('', `## ${p('adherenceHeading')}`);
     for (const m of stats.medBreakdown) {
-      lines.push(`- ${m.name}: taken on ${m.taken} of ${m.total} tracked days (${m.pct}%)`);
+      lines.push(`- ${p('adherenceLine', { name: m.name, taken: m.taken, total: m.total, pct: m.pct })}`);
     }
     const medsWithHistory = medications.filter((m) => m.dosageHistory.length > 0 || m.startedAt);
     if (medsWithHistory.length > 0) {
-      lines.push('', '### Dosage Timeline');
+      lines.push('', `### ${p('dosageTimeline')}`);
       for (const m of medsWithHistory) {
-        lines.push(`- ${m.name}: started ${startingDosage(m)} on ${m.startedAt}`);
+        lines.push(`- ${m.name}: ${startedLine(m, t)}`);
         for (const h of m.dosageHistory.slice(1)) {
-          lines.push(`  - Changed to ${h.dosage} on ${h.changedAt}`);
+          lines.push(`  - ${changedLine(h.dosage, h.changedAt, t)}`);
         }
       }
     }
@@ -646,18 +698,18 @@ export function generateAIPrompt(stats: TrackerStats, medications: MedicationTem
 
   // Detected patterns
   if (stats.patterns.length > 0) {
-    lines.push('', '## Detected Patterns');
-    for (const p of stats.patterns) {
-      lines.push(`- ${p.text}`);
+    lines.push('', `## ${p('patterns')}`);
+    for (const pattern of stats.patterns) {
+      lines.push(`- ${insightText(pattern, t)}`);
     }
   }
 
-  lines.push('', '## What I\'d like to know');
-  lines.push('1. Are there patterns in my mood over time?');
-  lines.push('2. Do sleep quality and activity level correlate with mood?');
-  lines.push('3. Any concerning trends I should discuss with a healthcare provider?');
-  lines.push('4. Actionable suggestions based on the data.');
-  lines.push('', '---', 'Generated by PrivacyNotes (privacynotes.app)');
+  lines.push('', `## ${p('questions')}`);
+  lines.push(`1. ${p('question1')}`);
+  lines.push(`2. ${p('question2')}`);
+  lines.push(`3. ${p('question3')}`);
+  lines.push(`4. ${p('question4')}`);
+  lines.push('', '---', p('footer'));
 
   return lines.join('\n');
 }
@@ -670,8 +722,28 @@ export function generateAIPrompt(stats: TrackerStats, medications: MedicationTem
  *  printing it beside `startedAt` states a fact that never happened once
  *  the dose has changed. Templates created before dosageHistory was
  *  written fall back to it - the old value is genuinely unrecoverable. */
-function startingDosage(m: MedicationTemplate): string {
-  return m.dosageHistory[0]?.dosage || m.dosage || 'unknown dose';
+function startingDosage(m: MedicationTemplate, t: TFunction): string {
+  return m.dosageHistory[0]?.dosage || m.dosage || (t('wellness.report.unknownDose') as string);
+}
+
+function startedLine(m: MedicationTemplate, t: TFunction): string {
+  return t('wellness.report.started', { dosage: startingDosage(m, t), date: m.startedAt }) as string;
+}
+
+function changedLine(dosage: string, date: string, t: TFunction): string {
+  return t('wellness.report.changedTo', { dosage, date }) as string;
+}
+
+function emotionName(key: string, t: TFunction): string {
+  return t(`trackers:emotions.tags.${key}`, { defaultValue: key }) as string;
+}
+
+function sleepName(quality: SleepQuality, t: TFunction): string {
+  return t(`trackers:sleep.quality.${quality}`) as string;
+}
+
+function activityName(level: ActivityLevel, t: TFunction): string {
+  return t(`trackers:activity.level.${level}`) as string;
 }
 
 /** Escape text destined for the printable report. Medication names and
@@ -687,7 +759,14 @@ function esc(value: string): string {
     .replace(/'/g, '&#39;');
 }
 
-export function generateDoctorReport(stats: TrackerStats, medications: MedicationTemplate[]): string {
+export function generateDoctorReport(
+  stats: TrackerStats,
+  medications: MedicationTemplate[],
+  t: TFunction,
+): string {
+  const r = (key: string, vars: Record<string, unknown> = {}) =>
+    t(`wellness.report.${key}`, vars) as string;
+
   const moodSvgBars = stats.moodTrend.slice(-90).map((d, i) => {
     const h = (d.mood / 10) * 100;
     const color = d.mood <= 2 ? '#EF4444' : d.mood <= 4 ? '#F97316' : d.mood <= 6 ? '#EAB308' : d.mood <= 8 ? '#22C55E' : '#1E40AF';
@@ -696,12 +775,12 @@ export function generateDoctorReport(stats: TrackerStats, medications: Medicatio
 
   const sleepRows = stats.sleepDistribution
     .filter((s) => s.count > 0)
-    .map((s) => `<tr><td>${s.label}</td><td>${s.count}</td></tr>`)
+    .map((s) => `<tr><td>${esc(sleepName(s.quality, t))}</td><td>${s.count}</td></tr>`)
     .join('');
 
   const activityRows = stats.activityDistribution
     .filter((a) => a.count > 0)
-    .map((a) => `<tr><td>${a.label}</td><td>${a.count}</td></tr>`)
+    .map((a) => `<tr><td>${esc(activityName(a.level, t))}</td><td>${a.count}</td></tr>`)
     .join('');
 
   const medRows = stats.medBreakdown
@@ -712,61 +791,65 @@ export function generateDoctorReport(stats: TrackerStats, medications: Medicatio
     .filter((m) => m.dosageHistory.length > 0 || m.startedAt)
     .map((m) => {
       const events = [
-        `<li>Started ${esc(startingDosage(m))} on ${esc(m.startedAt)}</li>`,
+        `<li>${esc(startedLine(m, t))}</li>`,
         ...m.dosageHistory
           .slice(1)
-          .map((h) => `<li>Changed to ${esc(h.dosage)} on ${esc(h.changedAt)}</li>`),
+          .map((h) => `<li>${esc(changedLine(h.dosage, h.changedAt, t))}</li>`),
       ].join('');
       return `<h4>${esc(m.name)}</h4><ul>${events}</ul>`;
     }).join('');
 
   const emotionList = stats.emotionFrequency.slice(0, 10)
-    .map((e) => `${esc(e.label)} (${e.count}x)`).join(', ');
+    .map((e) => `${esc(emotionName(e.key, t))} (${e.count}x)`).join(', ');
 
-  const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  const earliest = stats.moodTrend[0]?.date ?? 'N/A';
-  const latest = stats.moodTrend[stats.moodTrend.length - 1]?.date ?? 'N/A';
+  const locale = activeLocale();
+  const today = new Date().toLocaleDateString(intlLocale(locale), { year: 'numeric', month: 'long', day: 'numeric' });
+  const earliest = stats.moodTrend[0]?.date ?? '-';
+  const latest = stats.moodTrend[stats.moodTrend.length - 1]?.date ?? '-';
+  // The report prints outside the app, so it carries its own language and
+  // direction rather than inheriting either.
+  const dir = (RTL_LOCALES as readonly string[]).includes(locale) ? 'rtl' : 'ltr';
 
   return `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>Wellness Report</title>
+<html lang="${locale}" dir="${dir}"><head><meta charset="utf-8"><title>${esc(r('documentTitle'))}</title>
 <style>
 body{font-family:-apple-system,sans-serif;max-width:700px;margin:40px auto;padding:0 20px;font-size:13px;color:#222}
 h1{font-size:20px;margin-bottom:4px}h2{font-size:15px;margin-top:24px;border-bottom:1px solid #ddd;padding-bottom:4px}
 h3{font-size:13px;margin-top:16px}h4{font-size:12px;margin:8px 0 4px}
-table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid #ddd;padding:4px 8px;text-align:left;font-size:12px}
+table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid #ddd;padding:4px 8px;text-align:start;font-size:12px}
 .meta{color:#666;font-size:11px}svg{display:block;margin:8px 0}
-ul{margin:4px 0;padding-left:20px}li{font-size:12px;margin:2px 0}
+ul{margin:4px 0;padding-inline-start:20px}li{font-size:12px;margin:2px 0}
 .footer{margin-top:32px;border-top:1px solid #ddd;padding-top:8px;font-size:10px;color:#999}
 @media print{body{margin:0;padding:20px}}
 </style></head><body>
-<h1>Mood & Wellness Report</h1>
-<p class="meta">Generated ${today} | Period: ${earliest} to ${latest} | Days tracked: ${stats.trackedDays}</p>
+<h1>${esc(r('heading'))}</h1>
+<p class="meta">${esc(r('meta', { date: today, from: earliest, to: latest, days: stats.trackedDays }))}</p>
 
-<h2>Overview</h2>
-<table><tr><th>Metric</th><th>Value</th></tr>
-<tr><td>Average mood</td><td>${stats.avgMood ?? '-'}/10</td></tr>
-<tr><td>Average sleep</td><td>${stats.avgSleepHours ?? '-'} hours</td></tr>
-<tr><td>Medication adherence</td><td>${stats.medAdherence ?? '-'}%</td></tr>
-<tr><td>Days tracked</td><td>${stats.trackedDays}</td></tr>
+<h2>${esc(r('overview'))}</h2>
+<table><tr><th>${esc(r('columnMetric'))}</th><th>${esc(r('columnValue'))}</th></tr>
+<tr><td>${esc(r('avgMood'))}</td><td>${stats.avgMood ?? '-'}/10</td></tr>
+<tr><td>${esc(r('avgSleep'))}</td><td>${stats.avgSleepHours ?? '-'}h</td></tr>
+<tr><td>${esc(r('adherence'))}</td><td>${stats.medAdherence ?? '-'}%</td></tr>
+<tr><td>${esc(r('daysTracked'))}</td><td>${stats.trackedDays}</td></tr>
 </table>
 
-<h2>Mood Trend (last 90 days)</h2>
+<h2>${esc(r('moodTrend'))}</h2>
 <svg width="${stats.moodTrend.slice(-90).length * 8}" height="100" viewBox="0 0 ${stats.moodTrend.slice(-90).length * 8} 100">${moodSvgBars}</svg>
-<p class="meta">Red=1-2, Orange=3-4, Yellow=5-6, Green=7-8, Blue=9-10</p>
+<p class="meta">${esc(r('legend'))}</p>
 
-${sleepRows ? `<h2>Sleep Quality Distribution</h2><table><tr><th>Quality</th><th>Days</th></tr>${sleepRows}</table>` : ''}
+${sleepRows ? `<h2>${esc(r('sleepDistribution'))}</h2><table><tr><th>${esc(r('columnQuality'))}</th><th>${esc(r('columnDays'))}</th></tr>${sleepRows}</table>` : ''}
 
-${activityRows ? `<h2>Activity Level Distribution</h2><table><tr><th>Level</th><th>Days</th></tr>${activityRows}</table>` : ''}
+${activityRows ? `<h2>${esc(r('activityDistribution'))}</h2><table><tr><th>${esc(r('columnLevel'))}</th><th>${esc(r('columnDays'))}</th></tr>${activityRows}</table>` : ''}
 
-${medRows ? `<h2>Medication Adherence</h2><p class="meta">Doses taken as a share of the journalled days on which each medication was being tracked. A day the medication was not marked counts as not taken. Days with no journal entry are not counted either way.</p><table><tr><th>Medication</th><th>Taken/Days</th><th>Rate</th></tr>${medRows}</table>` : ''}
+${medRows ? `<h2>${esc(r('adherenceHeading'))}</h2><p class="meta">${esc(r('adherenceNote'))}</p><table><tr><th>${esc(r('columnMedication'))}</th><th>${esc(r('columnTaken'))}</th><th>${esc(r('columnRate'))}</th></tr>${medRows}</table>` : ''}
 
-${medTimeline ? `<h2>Medication Dosage Timeline</h2>${medTimeline}` : ''}
+${medTimeline ? `<h2>${esc(r('dosageTimeline'))}</h2>${medTimeline}` : ''}
 
-${emotionList ? `<h2>Most Frequent Emotions</h2><p>${emotionList}</p>` : ''}
+${emotionList ? `<h2>${esc(r('topEmotions'))}</h2><p>${emotionList}</p>` : ''}
 
-${stats.patterns.length > 0 ? `<h2>Detected Patterns</h2><ul>${stats.patterns.map((p) => `<li>${esc(p.text)}</li>`).join('')}</ul>` : ''}
+${stats.patterns.length > 0 ? `<h2>${esc(r('patterns'))}</h2><ul>${stats.patterns.map((pattern) => `<li>${esc(insightText(pattern, t))}</li>`).join('')}</ul>` : ''}
 
-<p class="footer">Generated by PrivacyNotes &mdash; privacynotes.app</p>
+<p class="footer">${esc(r('footer'))}</p>
 <script>window.print();</script>
 </body></html>`;
 }

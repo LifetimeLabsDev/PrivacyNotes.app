@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "Biometrische ondersteuning controleren...",
     "description": "Ontgrendel met je vingerafdruk of gezicht. Voegt een biometrisch slot toe zodat anderen in de buurt niet bij je notities kunnen.",
-    "trustFirst": "Zet eerst \"Dit apparaat vertrouwen\" aan om biometrisch te kunnen ontgrendelen. Op niet-vertrouwde apparaten worden alle gegevens gewist zodra het tabblad sluit.",
+    "trustFirst": "Zet eerst \"Dit apparaat vertrouwen\" aan. Biometrisch ontgrendelen en de app-vergrendeling bewaren allebei een kopie van je herstelzin op dit apparaat, en daar is een niet-vertrouwd apparaat niet voor bedoeld.",
     "notAvailable": "Biometrisch ontgrendelen is niet beschikbaar op dit apparaat. Je browser of hardware ondersteunt geen platform-authenticator (Touch ID, Face ID, Windows Hello).",
     "enabledFlash": "Biometrisch ontgrendelen ingeschakeld.",
     "enrolledOnDevice": "Ingesteld op dit apparaat",
@@ -199,12 +199,6 @@
     "signOut": "Afmelden",
     "thisDevice": "Dit apparaat",
     "lastActive": "{{platform}} · laatst actief {{when}}",
-    "removing": "Verwijderen...",
-    "relative": {
-      "justNow": "zojuist",
-      "minutes": "{{count}}m geleden",
-      "hours": "{{count}}u geleden",
-      "days": "{{count}}d geleden"
-    }
+    "removing": "Verwijderen..."
   }
 }

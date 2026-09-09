@@ -1,6 +1,6 @@
 [package]
 name = "privacynotes"
-version = "0.505.1"
+version = "0.507.21"
 description = "PrivacyNotes - end-to-end encrypted notes"
 authors = ["Lifetime Labs LLC <hi@lifetimelabs.dev>"]
 homepage = "https://privacynotes.app"

@@ -10,8 +10,10 @@ import type { ReactNode } from 'react';
 import type { IconProps } from '@phosphor-icons/react';
 import { IconContext } from '@phosphor-icons/react';
 import {
+  AddressBook,
   ArrowCounterClockwise,
   ArrowSquareOut,
+  UserPlus,
   Bookmark as PhBookmark,
   Bookmarks as PhBookmarks,
   BookmarkSimple,
@@ -119,6 +121,7 @@ export const PILLAR_GLYPHS = {
   journals: Notebook,
   markdown: FileMd,
   bookmarks: PhBookmarks,
+  contacts: AddressBook,
   trash: Trash,
 } as const;
 
@@ -134,6 +137,7 @@ export const NEW_GLYPHS = {
   file: Upload,
   journal: Notebook,
   bookmark: PhBookmark,
+  contact: UserPlus,
 } as const;
 
 export function iconNote() {

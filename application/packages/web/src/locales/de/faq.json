@@ -500,6 +500,13 @@
         "Alles kommt als neue Einträge an, und nichts von dem, was du schon hast, wird überschrieben. Stellst du dieselbe Datei zweimal wieder her, hast du also von jeder Notiz zwei Kopien. Beide verschlüsselten Formate öffnen sich nur in dem Konto, das sie erstellt hat, weil sie mit dessen Phrasen-Schlüssel verschlüsselt sind; eine .zip passt in jeden Tresor ([welches Backup du machst](/de/help/backup-strategy/))."
       ]
     },
+    "image-quality": {
+      "q": "Verändert oder komprimiert PrivacyNotes meine Bilder?",
+      "a": [
+        "Ja. Beide Einstellungen sind standardmäßig an, weil wir unsere Nutzer lieben: Du sollst Speicherplatz sparen und deine Privatsphäre behalten. Platzsparer verkleinert ein großes Bild auf 2048 Pixel und speichert es als JPEG mit 85 % Qualität, was alle Details behält, die ein Bildschirm zeigen kann. Standortdaten entfernen streicht die EXIF-Metadaten, die eine Kamera in ein Foto schreibt, samt GPS-Position, bevor das Bild gespeichert wird. Beides gilt für jedes Bild in der App: in eine Notiz eingefügt, als Datei hinzugefügt oder importiert.",
+        "Schalte beides unter **Einstellungen > Bilder** aus; dort gibt es für Kontaktfotos einen dritten Schalter, der sie bei 512 Pixeln hält. Die Einstellungen gelten nur für neue Bilder; Dateien, die keine Bilder sind, werden genau so gespeichert, wie sie sind. HEIC- und TIFF-Bilder werden in JPEG umgewandelt, weil nur Safari sie anzeigen kann. Ein Backup, das du wiederherstellst, wird Byte für Byte zurückgeschrieben."
+      ]
+    },
     "storage-usage": {
       "q": "Was zählt zu meinem Speicher, und wie schaffe ich Platz?",
       "a": [

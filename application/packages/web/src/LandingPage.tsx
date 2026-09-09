@@ -1887,11 +1887,8 @@ export function LandingPage({
                 name="macOS"
                 tool="Homebrew"
                 desc={t('downloads.pkgBrewDesc')}
-                cmd="brew install --cask lifetimelabsdev/tap/privacynotes"
+                cmd="brew install privacynotes"
               />
-              {/* The fully qualified tap path is not optional: `brew tap` followed by a short
-                  install dead-ends on Homebrew 6's tap-trust prompt, while installing by full
-                  name trusts just this cask and skips it. */}
               <PkgCmd
                 divider
                 icon={<WindowsLogo size={17} weight="fill" />}

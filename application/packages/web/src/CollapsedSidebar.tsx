@@ -37,6 +37,7 @@ interface CollapsedSidebarProps {
   filesCount: number;
   journalCount: number;
   bookmarksCount: number;
+  contactsCount: number;
   /** Files in the open Markdown folder, or undefined when none is open. */
   markdownCount?: number | undefined;
   trashedCount: number;
@@ -129,6 +130,7 @@ export function CollapsedSidebar({
   filesCount,
   journalCount,
   bookmarksCount,
+  contactsCount,
   markdownCount,
   trashedCount,
   hiddenViews,
@@ -240,6 +242,13 @@ export function CollapsedSidebar({
         <HoverLabel label={t('pillars.markdown')} count={markdownCount}>
           <button type="button" onClick={() => handleSelectView('markdown')} className={iconBtn(view === 'markdown')} aria-label={t('pillars.markdown')}>
             <PILLAR_GLYPHS.markdown size={18} />
+          </button>
+        </HoverLabel>
+      )}
+      {showRow('contacts') && (
+        <HoverLabel label={t('pillars.contacts')} count={contactsCount}>
+          <button type="button" onClick={() => handleSelectView('contacts')} className={iconBtn(view === 'contacts')} aria-label={t('pillars.contacts')}>
+            <PILLAR_GLYPHS.contacts size={18} />
           </button>
         </HoverLabel>
       )}

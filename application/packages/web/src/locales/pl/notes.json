@@ -35,7 +35,8 @@
     "journal": "Dziennik",
     "login": "Login",
     "file": "Plik",
-    "bookmark": "Zakładka"
+    "bookmark": "Zakładka",
+    "contact": "Kontakt"
   },
   "vaultFilter": {
     "all": "Wszystko",
@@ -88,20 +89,21 @@
     "items": "Elementy",
     "trashed": "W koszu",
     "notes": "Notatki",
-    "bookmarks": "Zakładki"
+    "bookmarks": "Zakładki",
+    "contacts": "Kontakty"
   },
   "toast": {
     "imageUploadFailed": "Przesyłanie obrazu nie powiodło się: {{error}}",
     "imageError": "Błąd obrazu: {{error}}",
     "uploadFailedFor": "Przesyłanie nie powiodło się dla „{{filename}}”: {{error}}",
     "importedSyncing_one": "Zaimportowano {{count}} notatkę. Synchronizowanie…",
-    "importedSyncing_few": "Zaimportowano {{count}} notatki. Synchronizowanie…",
-    "importedSyncing_many": "Zaimportowano {{count}} notatek. Synchronizowanie…",
     "importedSyncing_other": "Zaimportowano {{count}} notatki. Synchronizowanie…",
     "addedTag_one": "Dodano #{{tag}} do {{count}} elementu",
+    "addedTag_other": "Dodano #{{tag}} do {{count}} elementu",
+    "importedSyncing_few": "Zaimportowano {{count}} notatki. Synchronizowanie…",
+    "importedSyncing_many": "Zaimportowano {{count}} notatek. Synchronizowanie…",
     "addedTag_few": "Dodano #{{tag}} do {{count}} elementów",
-    "addedTag_many": "Dodano #{{tag}} do {{count}} elementów",
-    "addedTag_other": "Dodano #{{tag}} do {{count}} elementu"
+    "addedTag_many": "Dodano #{{tag}} do {{count}} elementów"
   },
   "burn": {
     "mediaOnly": "Ta notatka zawiera tylko multimedia i nie można jej udostępnić linkiem do spalenia.",
@@ -176,6 +178,7 @@
     "widthFull": "Pełna szerokość",
     "burn": "Udostępnij i spal po przeczytaniu",
     "titlePlaceholderLink": "Nazwa zakładki",
+    "titlePlaceholderContact": "Imię i nazwisko",
     "notBackedUpTooLarge": "Powyżej limitu 1 MB, więc bez kopii zapasowej. Przenieś obrazy do załączników lub podziel notatkę.",
     "notBackedUpFailed": "Bez kopii zapasowej. Ostatni błąd: {{message}}. Ponawianie."
   },
@@ -223,6 +226,7 @@
     "importLabel": "Import i eksport",
     "planLabel": "Konto",
     "storageLabel": "Pamięć",
+    "imagesLabel": "Obrazy",
     "securityLabel": "Bezpieczeństwo",
     "accountLabel": "ID i synchronizacja",
     "appearanceLabel": "Wygląd",
@@ -241,15 +245,15 @@
   "bulkTrash": {
     "title": "Przenieś do kosza",
     "body_one": "Przenieść <highlight>{{count}} element</highlight> do kosza? Możesz go później przywrócić.",
+    "body_other": "Przenieść <highlight>{{count}} elementu</highlight> do kosza? Możesz je później przywrócić.",
     "body_few": "Przenieść <highlight>{{count}} elementy</highlight> do kosza? Możesz je później przywrócić.",
-    "body_many": "Przenieść <highlight>{{count}} elementów</highlight> do kosza? Możesz je później przywrócić.",
-    "body_other": "Przenieść <highlight>{{count}} elementu</highlight> do kosza? Możesz je później przywrócić."
+    "body_many": "Przenieść <highlight>{{count}} elementów</highlight> do kosza? Możesz je później przywrócić."
   },
   "bulkDelete": {
     "body_one": "Trwale usunąć <highlight>{{count}} notatkę</highlight>? Tej operacji nie można cofnąć.",
+    "body_other": "Trwale usunąć <highlight>{{count}} notatki</highlight>? Tej operacji nie można cofnąć.",
     "body_few": "Trwale usunąć <highlight>{{count}} notatki</highlight>? Tej operacji nie można cofnąć.",
-    "body_many": "Trwale usunąć <highlight>{{count}} notatek</highlight>? Tej operacji nie można cofnąć.",
-    "body_other": "Trwale usunąć <highlight>{{count}} notatki</highlight>? Tej operacji nie można cofnąć."
+    "body_many": "Trwale usunąć <highlight>{{count}} notatek</highlight>? Tej operacji nie można cofnąć."
   },
   "tagConfirm": {
     "mergeTitle": "Scal tagi",
@@ -259,17 +263,17 @@
     "deleteConfirm": "Usuń tag",
     "moveToTrash": "Przenieś do kosza",
     "mergeBody_one": "Tag <highlight>„{{targetTag}}”</highlight> już istnieje. Scalić z nim <highlight>{{count}} notatkę</highlight> oznaczoną obecnie tagiem „{{tag}}”?",
-    "mergeBody_few": "Tag <highlight>„{{targetTag}}”</highlight> już istnieje. Scalić z nim <highlight>{{count}} notatki</highlight> oznaczone obecnie tagiem „{{tag}}”?",
-    "mergeBody_many": "Tag <highlight>„{{targetTag}}”</highlight> już istnieje. Scalić z nim <highlight>{{count}} notatek</highlight> oznaczonych obecnie tagiem „{{tag}}”?",
     "mergeBody_other": "Tag <highlight>„{{targetTag}}”</highlight> już istnieje. Scalić z nim <highlight>{{count}} notatki</highlight> oznaczonej obecnie tagiem „{{tag}}”?",
     "deleteBody_one": "Usunąć tag <highlight>„{{tag}}”</highlight> z <highlight>{{count}} notatki</highlight>? Same notatki nie zostaną usunięte.",
-    "deleteBody_few": "Usunąć tag <highlight>„{{tag}}”</highlight> z <highlight>{{count}} notatek</highlight>? Same notatki nie zostaną usunięte.",
-    "deleteBody_many": "Usunąć tag <highlight>„{{tag}}”</highlight> z <highlight>{{count}} notatek</highlight>? Same notatki nie zostaną usunięte.",
     "deleteBody_other": "Usunąć tag <highlight>„{{tag}}”</highlight> z <highlight>{{count}} notatki</highlight>? Same notatki nie zostaną usunięte.",
     "deleteWithNotesBody_one": "Usunąć tag <highlight>„{{tag}}”</highlight> i przenieść <highlight>{{count}} notatkę</highlight> do kosza? Możesz ją stamtąd przywrócić.",
+    "deleteWithNotesBody_other": "Usunąć tag <highlight>„{{tag}}”</highlight> i przenieść <highlight>{{count}} notatki</highlight> do kosza? Możesz je stamtąd przywrócić.",
+    "mergeBody_few": "Tag <highlight>„{{targetTag}}”</highlight> już istnieje. Scalić z nim <highlight>{{count}} notatki</highlight> oznaczone obecnie tagiem „{{tag}}”?",
+    "mergeBody_many": "Tag <highlight>„{{targetTag}}”</highlight> już istnieje. Scalić z nim <highlight>{{count}} notatek</highlight> oznaczonych obecnie tagiem „{{tag}}”?",
+    "deleteBody_few": "Usunąć tag <highlight>„{{tag}}”</highlight> z <highlight>{{count}} notatek</highlight>? Same notatki nie zostaną usunięte.",
+    "deleteBody_many": "Usunąć tag <highlight>„{{tag}}”</highlight> z <highlight>{{count}} notatek</highlight>? Same notatki nie zostaną usunięte.",
     "deleteWithNotesBody_few": "Usunąć tag <highlight>„{{tag}}”</highlight> i przenieść <highlight>{{count}} notatki</highlight> do kosza? Możesz je stamtąd przywrócić.",
-    "deleteWithNotesBody_many": "Usunąć tag <highlight>„{{tag}}”</highlight> i przenieść <highlight>{{count}} notatek</highlight> do kosza? Możesz je stamtąd przywrócić.",
-    "deleteWithNotesBody_other": "Usunąć tag <highlight>„{{tag}}”</highlight> i przenieść <highlight>{{count}} notatki</highlight> do kosza? Możesz je stamtąd przywrócić."
+    "deleteWithNotesBody_many": "Usunąć tag <highlight>„{{tag}}”</highlight> i przenieść <highlight>{{count}} notatek</highlight> do kosza? Możesz je stamtąd przywrócić."
   },
   "createNote": {
     "title": "Utworzyć notatkę?",
@@ -280,5 +284,9 @@
     "title": "Utworzono nowy sejf",
     "confirm": "Rozumiem",
     "body": "Żaden istniejący sejf nie pasował do wpisanej frazy, więc utworzyliśmy nowy, pusty. Jeśli spodziewałeś się zobaczyć swoje notatki, wyloguj się i wpisz frazę jeszcze raz, uważnie - jedno inne słowo otwiera zupełnie inny sejf."
+  },
+  "ambiguousLink": {
+    "title": "Dwie notatki mają ten tytuł",
+    "body": "Więcej niż jedna notatka nosi tytuł <highlight>„{{title}}”</highlight>, więc ten link nie mówi, o którą chodzi. Zmień nazwę jednej z nich, a link wskaże drugą."
   }
 }

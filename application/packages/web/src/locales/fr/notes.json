@@ -35,7 +35,8 @@
     "journal": "Journal",
     "login": "Identifiant",
     "file": "Fichier",
-    "bookmark": "Signet"
+    "bookmark": "Signet",
+    "contact": "Contact"
   },
   "vaultFilter": {
     "all": "Tous",
@@ -88,7 +89,8 @@
     "items": "Éléments",
     "trashed": "Supprimés",
     "notes": "Notes",
-    "bookmarks": "Signets"
+    "bookmarks": "Signets",
+    "contacts": "Contacts"
   },
   "toast": {
     "imageUploadFailed": "Échec de l'envoi de l'image : {{error}}",
@@ -172,6 +174,7 @@
     "widthFull": "Pleine largeur",
     "burn": "Partager en burn note",
     "titlePlaceholderLink": "Nom du signet",
+    "titlePlaceholderContact": "Nom",
     "notBackedUpTooLarge": "Au-delà de la limite de 1 Mo, donc non sauvegardée. Déplace les images en pièces jointes ou scinde la note.",
     "notBackedUpFailed": "Non sauvegardée. Dernière erreur : {{message}}. Nouvel essai en cours."
   },
@@ -219,6 +222,7 @@
     "importLabel": "Import et export",
     "planLabel": "Compte",
     "storageLabel": "Stockage",
+    "imagesLabel": "Images",
     "securityLabel": "Sécurité",
     "accountLabel": "ID & Sync",
     "appearanceLabel": "Apparence",
@@ -266,5 +270,9 @@
     "title": "Nouveau coffre créé",
     "confirm": "Compris",
     "body": "Aucun coffre existant ne correspondait à la phrase que tu as saisie, donc un nouveau coffre vide a été créé. Si tu t'attendais à voir tes notes, déconnecte-toi et ressaisis ta phrase avec soin - un seul mot différent ouvre un coffre différent."
+  },
+  "ambiguousLink": {
+    "title": "Deux notes portent ce titre",
+    "body": "Plusieurs notes s'intitulent <highlight>« {{title}} »</highlight>, donc ce lien ne dit pas laquelle il désigne. Renomme l'une d'elles et le lien pointera vers l'autre."
   }
 }

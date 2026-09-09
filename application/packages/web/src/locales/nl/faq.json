@@ -500,6 +500,13 @@
         "Alles komt binnen als nieuwe items en niets van wat je al hebt wordt overschreven, dus dezelfde back-up twee keer herstellen laat je met twee kopieën van elke notitie achter. Beide versleutelde formaten gaan alleen open in het account dat ze maakte, omdat ze met de zinsleutel van dat account versleuteld zijn; een .zip past in elke kluis ([welke back-up je maakt](/nl/help/backup-strategy/))."
       ]
     },
+    "image-quality": {
+      "q": "Verandert of comprimeert PrivacyNotes mijn afbeeldingen?",
+      "a": [
+        "Ja. Beide instellingen staan standaard aan omdat we van onze gebruikers houden: we willen dat je opslagruimte bespaart en je privacy behoudt. Ruimtebespaarder verkleint een grote afbeelding tot 2048 pixels en slaat hem op als JPEG met 85 % kwaliteit, wat alle detail bewaart dat een scherm kan tonen. Locatiegegevens verwijderen haalt de EXIF-metadata die een camera in een foto schrijft, inclusief de GPS-locatie, weg voordat de afbeelding wordt opgeslagen. Beide gelden voor elke afbeelding in de app: geplakt in een notitie, toegevoegd als bestand of geïmporteerd.",
+        "Zet een van beide uit onder **Instellingen > Afbeeldingen**, waar contactfoto's een derde schakelaar hebben die ze op 512 pixels houdt. De instellingen gelden alleen voor nieuwe afbeeldingen; bestanden die geen afbeelding zijn, worden precies zo opgeslagen als ze zijn. HEIC- en TIFF-afbeeldingen worden omgezet naar JPEG, omdat alleen Safari ze kan tonen. Een back-up die je terugzet, wordt byte voor byte teruggeschreven."
+      ]
+    },
     "storage-usage": {
       "q": "Wat telt mee voor mijn opslag, en hoe maak ik ruimte vrij?",
       "a": [

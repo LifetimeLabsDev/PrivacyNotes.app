@@ -500,6 +500,13 @@
         "Tot arriba com a elements nous i no se sobreescriu res del que ja tens, així que restaurar dues vegades el mateix fitxer et deixa dues còpies de cada nota. Els dos formats xifrats només s’obren al compte que els va crear, perquè estan xifrats amb la clau de la seva frase; un .zip entra a qualsevol caixa forta ([quina còpia fer](/ca/help/backup-strategy/))."
       ]
     },
+    "image-quality": {
+      "q": "PrivacyNotes canvia o comprimeix les meves imatges?",
+      "a": [
+        "Sí. Les dues opcions estan activades per defecte perquè estimem els nostres usuaris: volem que estalviïs espai i conservis la teva privadesa. Estalvi d'espai redueix una imatge gran a 2048 píxels i la desa com a JPEG al 85 % de qualitat, que conserva tot el detall que una pantalla pot mostrar. Elimina les dades d'ubicació treu les metadades EXIF que una càmera escriu en una foto, inclosa la posició GPS, abans de desar la imatge. Totes dues s'apliquen a cada imatge de l'app: enganxada en una nota, afegida com a fitxer o importada.",
+        "Desactiva qualsevol de les dues a **Configuració > Imatges**, on les fotos de contacte tenen un tercer interruptor que les manté a 512 píxels. Les opcions només afecten les imatges noves; els fitxers que no són imatges es desen exactament tal com són. Les imatges HEIC i TIFF es converteixen a JPEG, perquè només Safari les pot mostrar. Una còpia de seguretat que restauris s'escriu byte a byte."
+      ]
+    },
     "storage-usage": {
       "q": "Què compta dins del meu emmagatzematge i com allibero espai?",
       "a": [

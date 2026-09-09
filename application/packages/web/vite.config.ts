@@ -383,7 +383,19 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // the three permanent-delete confirms, the sign-out confirm's list and
   // safer default, and the reveal shared with ID & Sync's Open. +0.51 kB
   // measured against the v0.499.4 baseline drawn the same day.
-  NotesView: 159,
+  // 159 -> 162 (2026-09-08): the Contacts pillar - ContactsList, ContactItem
+  // and ContactForm are statically imported like every other pillar's list
+  // and body, plus the pillar wiring in NotesView itself. +8.37 kB measured
+  // against the v0.506.0 baseline; the vCard reader and writer stay out of
+  // the boot path (import chunk, dynamic export import).
+  // 162 -> 164 (2026-09-08): the detail-pane kit and the vault view modes
+  // rebuilt on it, +1.83 kB gz, measured against the v0.506.1 baseline.
+  NotesView: 164,
+  // The eager English catalogs. 60.43 kB gz once the Contacts pillar's strings
+  // (the form, the label vocabulary, the import row) and the Images pane
+  // landed (2026-09-08), +1.81 against the v0.506.0 baseline, over the 60 kB
+  // default. Raised to 62.
+  i18n: 62,
   // 209.51 kB gz since katex became its own chunk below (278.11 with it inside,
   // against a 300 budget). Retightened in the same change that moved it: a
   // budget carrying 90 kB of slack is decoration, not a gate.
@@ -672,7 +684,38 @@ const DEFAULT_CHUNK_BUDGET_KB = 60;
 // worktree (Editor +1.03, the rest is catalogs and the icon). HEAD sat at
 // 0.34 kB of headroom, so the UpgradeModal and billing movement the build
 // also reports is the three releases before this one, not this change.
-const BOOT_PATH_BUDGET_KB = 903;
+// 903 -> 905 (2026-09-08): a search result opens on its word (GitHub #288).
+// 903.02 kB gz here, +0.88 since the v0.505.0 baseline: NotesView +0.47 and
+// Editor +0.31 are the jump (the click resolves the matched term, the handle
+// seeds the find bar); shared +0.58 and i18n +0.12 are the dependency batch
+// already on main, EncryptedImage -0.72 the same. Same whisker of margin as
+// every raise above, so the next hundred bytes argue their case in a review.
+// 916.68 kB gz here (2026-09-08), +14.58 since the v0.506.0 baseline, all of it
+// the two features that ship together: the Contacts pillar (NotesView +8.37,
+// contactBody +2.11, its strings in i18n +1.81, icons +0.85) and the image
+// switches (attachmentValidation +1.77 for the door code, imageProcessing's
+// walkers loaded on demand). A pillar is the one growth that earns a raise
+// without a dynamic import: it is on screen the moment the sidebar draws.
+// Raised to 920 with the usual whisker of margin.
+// 920 -> 921 (2026-09-08): the pending-sign-in gate in front of the native
+// OAuth callback (oauthPending.ts plus the handler's refusal branch), auth
+// +0.21 kB gz against 0.30 of headroom. Same whisker of margin.
+// 921 -> 922 (2026-09-09): the doctor report and the AI prompt read their
+// words from the catalog instead of holding English literals, and the English
+// catalog is eager by design, so i18n +1.03 kB gz. The other 0.22 is the
+// formatter module the report and both charts now share. Same whisker.
+// 922 -> 923 (2026-09-09): the lock screen's account check and the sign-out
+// key sweep in auth (+0.27), the wipe's extra keys, the sanitizer's one more
+// selector and the export document's own policy string (NotesView +0.29).
+// Boot-path code every one of them, and none has a lazy home. Same whisker.
+// 923 -> 925 (2026-09-10): the September review's client fixes, all of them on
+// paths that run before anything renders. The settings freshness counter and
+// the two places that refuse a rolled-back blob (+0.55 on the settings module),
+// the sign-out owner check moving off the status onto the wipe and the re-mint
+// retry re-reading the owner (auth +0.33), and the demo-bucket sweep in the
+// danger zone. Two rather than one, so the next copy edit is not a budget
+// question on top of a security one.
+const BOOT_PATH_BUDGET_KB = 925;
 
 // The budget above is stated in ONE environment's units: build-smoke's, which
 // is ubuntu with the synthetic values from tools/ci-vite-env.mjs. Every other

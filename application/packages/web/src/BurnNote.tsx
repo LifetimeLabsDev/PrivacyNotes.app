@@ -4,7 +4,7 @@ import { Fire, Lock, Moon, Sun } from './icons';
 import { RevealGate } from './RevealGate';
 import { useTheme } from './theme';
 import { decryptJson, hexToBytes, createSupabaseClient } from '@notes/shared';
-import { renderMarkdown, prepareRender } from './markdownRender';
+import { renderMarkdownSafe, prepareRender } from './markdownRender';
 import { marketingHomeHref } from './siteLinks';
 import { Brand } from './Brand';
 
@@ -185,7 +185,7 @@ export default function BurnNote() {
   // Memoize rendered markdown so the 1Hz countdown tick doesn't
   // re-render the body HTML every second.
   const bodyHtml = useMemo(
-    () => (note?.body ? renderMarkdown(note.body) : ''),
+    () => (note?.body ? renderMarkdownSafe(note.body) : ''),
     [note?.body, renderReady],
   );
 

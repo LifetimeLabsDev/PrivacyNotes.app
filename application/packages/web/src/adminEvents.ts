@@ -22,6 +22,7 @@ export type ImportSource =
   | 'privacynotes'
   | 'browser-bookmarks'
   | 'browser-passwords'
+  | 'vcard'
   | 'encrypted';
 
 export type ExportSource =
@@ -34,6 +35,7 @@ export type ExportSource =
   | 'encrypted-zip'
   | 'vault'
   | 'bookmarks'
+  | 'contacts'
   | 'pdf'
   | 'burn';
 

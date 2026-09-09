@@ -115,7 +115,7 @@ export function BiometricTab({
   const pinConfirmRef = useRef<PinInputHandle>(null);
 
   async function confirmPinForAppLock(candidate: string) {
-    if (candidate.length !== 4 || pinConfirmBusy) return;
+    if (candidate.length !== 4 || pinConfirmBusy || !trusted) return;
     setPinConfirmBusy(true);
     setPinConfirmError(null);
     const { valid } = await verifyPin(candidate);
@@ -139,12 +139,19 @@ export function BiometricTab({
 
   function handleAppLockToggle() {
     const next = !userSettings.appLockEnabled;
+    // Inside the handler as well as in the markup above, so a third caller
+    // cannot reintroduce the write by forgetting it - which is how the wrap
+    // sites came to disagree with `hydrateLocalPinWrap` in the first place.
+    if (next && !trusted) return;
     if (!next) {
-      // Turning off app lock with no biometric or PIN wrap means we
-      // need to fall back to a plaintext phrase on this device.
-      if (!enrolled && !hasPinWrappedPhrase()) {
-        void persistStoredPhrase(phrase);
-      }
+      // Arming the lock strips the phrase at rest, so a door is the only way
+      // back into this device - and every door here opens through the lock
+      // screen, which stops rendering the moment the flag goes false. The
+      // wrap and the fingerprint that survive the switch-off are therefore
+      // not a way in; they are two things that can no longer be reached. The
+      // phrase goes back first, before the flag commits, so a boot between
+      // the two still has a session to restore.
+      void persistStoredPhrase(phrase);
       setPinConfirm(false);
       onSettingsChange({ ...userSettings, appLockEnabled: false });
       return;
@@ -172,7 +179,7 @@ export function BiometricTab({
         {t('biometricTab.description')}
       </p>
 
-      {!trusted && !enrolled && (
+      {!trusted && (
         <div className="rounded-md border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-900/20 p-3 text-sm text-amber-800 dark:text-amber-200">
           {t('biometricTab.trustFirst')}
         </div>
@@ -222,7 +229,12 @@ export function BiometricTab({
         )
       )}
 
-      {(enrolled || hasPin()) && (
+      {/* Not offered on a device the user marked untrusted: the wrap it
+          creates is a durable, offline-crackable copy of the master phrase,
+          which is the opposite of what that checkbox promises. A lock that
+          is already armed keeps its switch, so nobody is left without a way
+          to turn one off. */}
+      {(enrolled || hasPin()) && (trusted || userSettings.appLockEnabled) && (
         <div className="pt-4 border-t border-divider">
           <label className="flex items-center justify-between cursor-pointer">
             <div>

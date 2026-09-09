@@ -74,7 +74,17 @@
     "needMore": "Need more space?",
     "proSpacePitch": "You're on the free plan. Pro comes with 500 MB built in, ten times the room you have now.",
     "earlyAdopterSave": "Early adopter · save ${{amount}}",
-    "oneTime": "one-time"
+    "oneTime": "one-time",
+    "imageSettingsLink": "Image settings"
+  },
+  "images": {
+    "spaceSaverTitle": "Space saver",
+    "spaceSaverDesc": "Resized to fit {{px}} pixels and saved as JPEG at {{quality}}% quality. A small loss of detail for a fraction of the space.",
+    "removeLocationTitle": "Remove location data",
+    "removeLocationDesc": "The place an image was taken is removed before it is saved, everywhere in the app.",
+    "contactTitle": "Small contact photos",
+    "contactDesc": "Fit inside {{px}} pixels, the largest size the app draws them. Turned off, they follow the space saver settings.",
+    "applyNote": "New images only. Images you already saved are not changed, and files that are not images are never touched."
   },
   "devices": {
     "heading": "Registered devices",

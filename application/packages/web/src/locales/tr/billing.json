@@ -39,6 +39,12 @@
     "alreadyOwned": "Mağaza buna zaten sahip olduğunuzu söylüyor ama satın alım başka bir hesaba ait. Satın alırken kullandığınız kurtarma ifadesiyle giriş yapın."
   },
   "checkout": {
+    "confirmTitle": "Satın alımınızı onaylayın",
+    "confirmPro": "PrivacyNotes Pro, tek seferlik {{price}} $ ödeme.",
+    "confirmStorage": "{{gb}} GB ek depolama, yılda {{price}} $.",
+    "confirmAccount": "Şu hesabın kilidini açacak:",
+    "confirmCheck": "Ayarlar’ı açın, sonra Eşitleme’ye gidin ve oradaki Hesap kimliğinin eşleştiğini doğrulayın. Eşleşmiyorsa bu sekmeyi kapatın: ödeme başka birinin hesabını açar.",
+    "confirmButton": "Ödemeye devam et",
     "invalidTitle": "Ödeme bağlantısı geçersiz",
     "invalidBody": "Satın almayı hesabınıza bağlayabilmemiz için ödemeyi uygulamanın içinden açın.",
     "completeTitle": "Ödeme tamamlandı",

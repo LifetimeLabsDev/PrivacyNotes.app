@@ -39,6 +39,12 @@
     "alreadyOwned": "The store says you already own this, but it belongs to a different account. Sign in with the recovery phrase you were using when you bought it."
   },
   "checkout": {
+    "confirmTitle": "Confirm your purchase",
+    "confirmPro": "PrivacyNotes Pro, one payment of ${{price}}.",
+    "confirmStorage": "{{gb}} GB of extra storage, ${{price}} per year.",
+    "confirmAccount": "It unlocks this account:",
+    "confirmCheck": "Open Settings, then Sync, and check that the Account ID there matches. If it does not, close this tab: the payment would unlock somebody else.",
+    "confirmButton": "Continue to payment",
     "invalidTitle": "Checkout link invalid",
     "invalidBody": "Open checkout from inside the app so we can attach the purchase to your account.",
     "completeTitle": "Payment complete",

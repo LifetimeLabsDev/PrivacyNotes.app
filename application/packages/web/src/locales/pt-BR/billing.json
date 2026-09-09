@@ -39,6 +39,12 @@
     "alreadyOwned": "A loja diz que você já possui esta compra, mas ela pertence a outra conta. Entre com a frase de recuperação que você usava quando comprou."
   },
   "checkout": {
+    "confirmTitle": "Confirme sua compra",
+    "confirmPro": "PrivacyNotes Pro, um pagamento de {{price}} $.",
+    "confirmStorage": "{{gb}} GB de armazenamento extra, {{price}} $ por ano.",
+    "confirmAccount": "Vai desbloquear esta conta:",
+    "confirmCheck": "Abra Configurações, depois Sincronização, e verifique se o ID da conta corresponde. Se não corresponder, feche esta aba: o pagamento desbloquearia outra pessoa.",
+    "confirmButton": "Continuar para o pagamento",
     "invalidTitle": "Link de checkout inválido",
     "invalidBody": "Abra o checkout de dentro do app para que possamos vincular a compra à sua conta.",
     "completeTitle": "Pagamento concluído",

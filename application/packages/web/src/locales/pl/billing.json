@@ -39,6 +39,12 @@
     "alreadyOwned": "Sklep twierdzi, że już posiadasz ten zakup, ale należy on do innego konta. Zaloguj się frazą odzyskiwania używaną przy zakupie."
   },
   "checkout": {
+    "confirmTitle": "Potwierdź zakup",
+    "confirmPro": "PrivacyNotes Pro, jednorazowa płatność {{price}} $.",
+    "confirmStorage": "{{gb}} GB dodatkowej pamięci, {{price}} $ rocznie.",
+    "confirmAccount": "Odblokuje to konto:",
+    "confirmCheck": "Otwórz Ustawienia, potem Synchronizacja, i sprawdź, czy ID konta się zgadza. Jeśli nie, zamknij tę kartę: płatność odblokowałaby kogoś innego.",
+    "confirmButton": "Przejdź do płatności",
     "invalidTitle": "Nieprawidłowy link do płatności",
     "invalidBody": "Otwórz płatność z poziomu aplikacji, abyśmy mogli przypisać zakup do Twojego konta.",
     "completeTitle": "Płatność zakończona",

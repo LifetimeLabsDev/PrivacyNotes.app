@@ -1,4 +1,4 @@
 {
   "_doc": "ops/docs/android-update-check.md - oldest client we still tolerate, on every non-web channel: direct APK, Linux .deb, Google Play, iOS App Store. At or above minVersion an update is ordinary (manual-install toasts dismiss for 48h; store builds show nothing). Below it the toast cannot be dismissed and, on clients new enough to carry versionFloor.ts, every server write pauses until the update. Raised only for a sync/auth protocol change, a client security fix, or a data-corruption fix - decided during the /changelog-publish pass. Never above the newest artifact a platform has published or a store serves at 100%: all publish paths (publish-android-release.sh, release-linux.yml, publish-store-policy.sh) hard-fail on that, and store floors are only published by hand AFTER the release is fully live.",
-  "minVersion": "0.488.3"
+  "minVersion": "0.507.5"
 }

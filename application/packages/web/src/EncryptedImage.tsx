@@ -22,7 +22,8 @@ import { Plugin, PluginKey } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
 import { Download, Trash } from './icons';
-import { processImage } from './imageProcessing';
+import { currentImageOptions, processImage } from './imageProcessing';
+import { validateAttachment } from './attachmentValidation';
 import { useIsTouchDevice } from './useIsMobile';
 import type { ImageStore } from './imageStore';
 import { saveBlob } from './saveFile';
@@ -486,6 +487,8 @@ export async function loadEncryptedImageUrl(uuid: string): Promise<string | null
 
 export type ImageUploadContext = {
   imageStore: ImageStore;
+  /** Picks the per-file tier cap for a picture stored as it arrived. */
+  isPro: boolean;
   /** Called when an image upload would exceed the storage quota. */
   onQuotaExceeded?: () => void;
   /** Returns current quota usage + limits. Null if not available yet. */
@@ -553,20 +556,34 @@ async function handleImageUpload(
     }
   }
 
+  // The per-file tier cap applies only to a picture stored as it arrived:
+  // a space-saved image is a few hundred kilobytes whatever came in, and
+  // the module's own ceiling guards that path.
+  const opts = currentImageOptions();
+  if (opts.fitBox === null) {
+    const maxBytes = _uploadContext.getQuota?.()?.maxBytes ?? 0;
+    const v = validateAttachment(file, _uploadContext.isPro, maxBytes > 500 * 1000 * 1000);
+    if (!v.ok) {
+      reportError(v.error);
+      return;
+    }
+  }
+
   // Show placeholder immediately so the user knows something is happening.
   const placeholderId = addPlaceholder(view, pos, file.name);
 
-  const result = await processImage(file);
+  const result = await processImage(file, opts);
   if (!result.ok) {
     removePlaceholder(view, placeholderId);
     reportError(result.error);
     return;
   }
 
-  // Quota gate with the INCOMING file counted, using the exact processed
-  // bytes (post-compression) so a large paste into a nearly-full account
-  // is refused here instead of by the server after a wasted upload. The
-  // early gate above only catches accounts already at 100%.
+  // Quota gate with the INCOMING file counted, using the exact bytes about
+  // to be stored (shrunk, stripped or kept, whichever the switches chose)
+  // so a large paste into a nearly-full account is refused here instead
+  // of by the server after a wasted upload. The early gate above only
+  // catches accounts already at 100%.
   if (_uploadContext.getQuota) {
     const q = _uploadContext.getQuota();
     if (q && q.usedBytes + estimateBlobBytes(result.image.data.length) > q.maxBytes) {
@@ -599,7 +616,7 @@ async function handleImageUpload(
   if (!imageNode) return;
   const node = imageNode.create({
     src: `${IMAGE_URI_PREFIX}${uuid}`,
-    alt: result.image.originalName,
+    alt: result.image.name,
   });
 
   const targetPos = placeholderPos ?? view.state.selection.to;

@@ -18,6 +18,7 @@ import {
   verifyPin,
 } from '../pin';
 import { clearPin } from '../pinRecovery';
+import { isTrustedDevice } from '../trustStorage';
 import { ForgotPinLink, PinRecoveryForm } from '../PinRecoveryForm';
 import { PinInput, type PinInputHandle } from '../PinInput';
 import { SectionEyebrow, SETTINGS_HELP, SettingsCallout } from '../settingsUI';
@@ -90,7 +91,10 @@ export function PinTab({
       clearPinFailures();
       // If app lock is enabled but no local PIN wrap exists, create it
       // and sync the blob so all devices get it.
-      if (userSettings.appLockEnabled && !hasPinWrappedPhrase()) {
+      // The flag is synced and the wrap is not: a device the user marked
+      // untrusted can be told the lock is on by another device, and must
+      // still not write a durable copy of the phrase here.
+      if (userSettings.appLockEnabled && isTrustedDevice() && !hasPinWrappedPhrase()) {
         const blob = await wrapPhraseWithPin(phrase, candidate);
         removeStoredPhrase();
         onSettingsChange({ ...userSettings, ...blob });
@@ -129,7 +133,7 @@ export function PinTab({
     setBusy(true);
     try {
       const updated = await storePin(pinVal, userSettings);
-      if (updated.appLockEnabled) {
+      if (updated.appLockEnabled && isTrustedDevice()) {
         const blob = await wrapPhraseWithPin(phrase, pinVal);
         removeStoredPhrase();
         Object.assign(updated, blob);

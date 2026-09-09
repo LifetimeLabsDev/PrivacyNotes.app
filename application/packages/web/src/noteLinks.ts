@@ -69,6 +69,35 @@ export function noteLinkKey(value: string): string {
   return noteLinkTarget(value).toLowerCase();
 }
 
+/**
+ * Every live note a `[[link]]` could mean, in the order they were given.
+ *
+ * It returns a list rather than a note because the resolver must not choose
+ * between two notes that carry the same title. It used to take the first
+ * match from a newest-first list, and an import is how a stranger gets a
+ * note into somebody's account: imported notes keep the timestamp their file
+ * declares, and the starter notes ship fixed, published titles that link to
+ * one another. No sort order fixes that, because every field the choice
+ * could rank on comes out of the same file. The caller discloses the
+ * ambiguity instead, which is the answer the rename path already gives to
+ * the same question.
+ *
+ * The two passes are the ones the resolver always ran: the exact title
+ * first, so a note whose real title is written out beats a near-miss, then
+ * the key, so a title the syntax cannot hold verbatim still resolves.
+ */
+export function resolveNoteLinkMatches<T extends { title: string }>(
+  notes: readonly T[],
+  target: string,
+  nameOf: (note: T) => string = (n) => n.title,
+): T[] {
+  const lower = target.toLowerCase();
+  const exact = notes.filter((n) => nameOf(n).toLowerCase() === lower);
+  if (exact.length > 0) return exact;
+  const key = noteLinkKey(target);
+  return key ? notes.filter((n) => noteLinkKey(nameOf(n)) === key) : [];
+}
+
 type Span = { start: number; end: number };
 
 /** Merged spans of the body that are code. */

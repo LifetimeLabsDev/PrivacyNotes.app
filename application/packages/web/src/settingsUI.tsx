@@ -28,25 +28,6 @@ const SETTINGS_EYEBROW_DANGER =
   'text-[11px] font-semibold uppercase tracking-wide text-red-600 dark:text-red-400';
 export const SETTINGS_HELP = 'text-xs text-pn-soft';
 
-/**
- * Compact relative age ("just now", "5m ago", "3d ago") for settings
- * metadata rows. Deliberately English-abbreviated across locales, same
- * as the device list has always shown it. Moved here from
- * SyncOptionsModal so SyncPanel can share it.
- */
-export function formatRelative(iso: string): string {
-  const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return iso;
-  const diff = Date.now() - then;
-  const m = Math.floor(diff / 60_000);
-  if (m < 1) return 'just now';
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  const d = Math.floor(h / 24);
-  return `${d}d ago`;
-}
-
 /** Standard uppercase section header for a settings pane. */
 export function SectionEyebrow({
   children,

@@ -94,5 +94,24 @@ export function noteToMarkdown(
  * compounds, because the padded body is what the next export serializes.
  */
 export function stripFrontMatterPadding(body: string): string {
-  return body.replace(/^(?:\r?\n)+/, '').replace(/(?:\r?\n)+$/, '');
+  // Walked rather than matched. The two anchored patterns this replaces
+  // backtrack: a long run of newlines that does not reach the end of the
+  // string made the trailing one try and fail at every position, which is
+  // quadratic, and every imported file passes through here on the main
+  // thread before anybody has agreed to the import. The unit is an optional
+  // carriage return followed by a line feed, exactly as before, so a lone
+  // carriage return is not padding and survives.
+  let start = 0;
+  const len = body.length;
+  while (start < len) {
+    if (body[start] === '\n') start += 1;
+    else if (body[start] === '\r' && body[start + 1] === '\n') start += 2;
+    else break;
+  }
+  let end = len;
+  while (end > start) {
+    if (body[end - 1] !== '\n') break;
+    end -= body[end - 2] === '\r' ? 2 : 1;
+  }
+  return start === 0 && end === len ? body : body.slice(start, end);
 }

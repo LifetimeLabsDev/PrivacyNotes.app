@@ -4,7 +4,10 @@ import {
   type SetStateAction,
 } from 'react';
 import {
+  bytesToHex,
+  deriveSigningKey,
   isValidPhrase,
+  phraseToSeed,
   type SupabaseClient,
 } from '@notes/shared';
 import {
@@ -12,14 +15,61 @@ import {
   setTrustedDevice,
 } from './trustStorage';
 import { detectPlatform, invokeFnWithRetry } from './devices';
-import { isWrappedEnvelope, persistStoredPhrase } from './phraseAtRest';
+import { appLockArmed, isWrappedEnvelope, persistStoredPhrase } from './phraseAtRest';
 import { APP_ORIGIN, isApexHost } from './hosts';
 import {
   PHRASE_STORAGE_KEY,
   OAUTH_FLAG_KEY,
   OAUTH_NATIVE_REDIRECT,
 } from './authStorage';
+import { logAuthEvent } from './authDiag';
+import { consumeOAuthPending, markOAuthPending } from './oauthPending';
 import type { AuthState, AuthMethod, OAuthProvider } from './auth';
+
+/**
+ * A signed-in install holds a phrase under PHRASE_STORAGE_KEY, either plain
+ * or as a wrapped envelope. Presence and shape only; the value never opens
+ * here. Shared by the native deep-link gate and the cold-start replay skip,
+ * so both answer "is someone signed in" the same way.
+ */
+function hasStoredPhrase(): boolean {
+  const stored = trustAwareStorage.getItem(PHRASE_STORAGE_KEY);
+  return !!stored && (isWrappedEnvelope(stored) || isValidPhrase(stored));
+}
+
+/**
+ * True when `phrase` derives `expectedPubkey`, i.e. the phrase provably
+ * belongs to the account that carries that key. A value the derivation
+ * refuses - the wrong word count throws in phraseToSeed - is not a match
+ * either, so anything unprovable answers false.
+ */
+export async function custodialPhraseMatchesAccount(
+  phrase: string,
+  expectedPubkey: string,
+): Promise<boolean> {
+  try {
+    const { publicKey } = await deriveSigningKey(phraseToSeed(phrase));
+    return bytesToHex(publicKey) === expectedPubkey;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * True when a URL the OS handed the app is an OAuth callback for it.
+ *
+ * The deep-link plugin emits every opened URL, and the desktop build claims
+ * Markdown files, so a note opened during a pending sign-in arrives at the
+ * same handler. The scheme comes from the redirect the app gives providers,
+ * so the two cannot drift apart.
+ */
+export function isOAuthCallbackUrl(rawUrl: string): boolean {
+  try {
+    return new URL(rawUrl).protocol === new URL(OAUTH_NATIVE_REDIRECT).protocol;
+  } catch {
+    return false;
+  }
+}
 
 export function useOAuthFlows({
   authenticateWithPhrase,
@@ -43,10 +93,11 @@ export function useOAuthFlows({
 }) {
   function registerOAuthListener(): () => void {
     // No stored phrase - listen for an OAuth redirect-return session.
-    // With detectSessionInUrl: true, supabase-js processes the
-    // #access_token hash fragment asynchronously during _initialize().
-    // A one-shot getSession() call races with that and often returns
-    // null. onAuthStateChange fires reliably once the hash is consumed.
+    // With detectSessionInUrl: true, supabase-js exchanges the PKCE
+    // ?code= (and still consumes a legacy #access_token fragment)
+    // asynchronously during _initialize(). A one-shot getSession() call
+    // races with that and often returns null. onAuthStateChange fires
+    // reliably once the return is consumed.
     let handled = false;
     // Armed when INITIAL_SESSION(null) arrives while an access_token hash
     // is still unconsumed (see that branch below). If the token turns out
@@ -111,6 +162,22 @@ export function useOAuthFlows({
             },
           );
         } else if (event === 'INITIAL_SESSION' && !session) {
+          // A PKCE ?code= still in the URL here is dead: supabase-js
+          // exchanges it during init, before this event, so a code that
+          // survived was refused (no verifier for it in this storage, or
+          // the server rejected it) and no SIGNED_IN follows. Drop it from
+          // the address bar and say so, loudly: the user came back from
+          // the provider, and a silent sign-in screen reads as "nothing
+          // happened".
+          if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('code')) {
+            logAuthEvent('auth:oauth-code-unexchanged');
+            const url = new URL(window.location.href);
+            url.searchParams.delete('code');
+            history.replaceState(null, '', url.pathname + url.search + url.hash);
+            handled = true;
+            setAuth({ status: 'oauth_hydrate_failed', trust: true });
+            return;
+          }
           // supabase-js finished init with no session - but if the URL
           // hash still has `access_token=...`, the OAuth fragment hasn't
           // been consumed yet. SIGNED_IN will fire shortly. Don't lock
@@ -258,6 +325,23 @@ export function useOAuthFlows({
       if (custodialResult?.custodial && custodialResult.phrase) {
         const custodialPhrase = custodialResult.phrase;
         try {
+          // The phrase has to be THIS account's phrase, and nothing in the
+          // answer says so: derive its pubkey and require it to equal the
+          // claim read above. A foreign phrase takes the handshake through
+          // the owner mismatch, which removes the PIN-wrapped blob that is
+          // an app-lock device's only copy of the real phrase, and then
+          // lands on disk as this install's identity. A genuine custodial
+          // phrase always derives its own account key, so the check costs
+          // that user nothing.
+          if (!(await custodialPhraseMatchesAccount(custodialPhrase, existingPubkey))) {
+            console.warn('[oauth] custodial phrase does not derive this account key');
+            if (superseded()) {
+              console.info('[oauth] hydrate superseded by manual sign-in, aborting');
+              return;
+            }
+            setAuth({ status: 'oauth_hydrate_failed', trust });
+            return;
+          }
           // Custodial user - 1-click sign-in! Pass the OAuth session
           // explicitly so _authenticateWithPhrase never falls through
           // to signInAnonymously (#131).
@@ -274,7 +358,16 @@ export function useOAuthFlows({
             console.warn('[oauth] custodial sign-in skipped: another sign-in is in progress');
             return;
           }
-          await persistStoredPhrase(custodialPhrase);
+          // Arming the app lock strips the stored phrase on purpose, so
+          // that the PIN or the fingerprint really is the only door.
+          // Writing it back here would re-open that door on a device
+          // whose owner closed it, and nothing would say so. The phrase
+          // sign-in has always asked; this path reaches the same write.
+          if (appLockArmed()) {
+            logAuthEvent('auth:phrase-persist-skipped-applock');
+          } else {
+            await persistStoredPhrase(custodialPhrase);
+          }
           trustAwareStorage.setItem(OAUTH_FLAG_KEY, '1');
         } catch (err) {
           // The server just proved this user IS custodial - a failure
@@ -427,6 +520,12 @@ export function useOAuthFlows({
         if (!data?.url) {
           return { ok: false as const, error: 'Could not start sign-in.' };
         }
+        // The callback handler trusts a privacynotes:// URL only while this
+        // marker is fresh and unconsumed, so it must exist before the browser
+        // or the iOS sheet can send one back. One call covers every platform:
+        // the iOS branch below feeds the same handler.
+        // Spec: ops/docs/plans/deep-link-callback-hardening.md (section 2.2)
+        markOAuthPending();
         // iOS presents the flow in-app (ASWebAuthenticationSession) instead
         // of bouncing to Safari: App Review guideline 4 rejects the external
         // browser for sign-in (rejected 2026-08-22). The session intercepts
@@ -482,45 +581,92 @@ export function useOAuthFlows({
   }
 
   // Receives the OAuth redirect on native (Tauri) after the system browser
-  // completes sign-in. Parses the implicit-flow tokens (or a PKCE ?code) off
-  // the privacynotes:// deep link, establishes the session, then hydrates
-  // directly (this handler owns native OAuth hydration).
+  // completes sign-in. Exchanges the PKCE ?code= off the privacynotes://
+  // deep link for a session, then hydrates directly (this handler owns
+  // native OAuth hydration). Tokens in the URL fragment are never read: the
+  // client runs PKCE, so a real return never carries them, and a URL that
+  // does is not ours.
+  //
+  // The scheme is open to the world: on Android any app or web page can send
+  // a privacynotes:// URL with no permission, and desktop and iOS ask only
+  // "Open PrivacyNotes?". Two locks keep a foreign URL out. The pending-
+  // sign-in marker: the URL is acted on only when signInWithOAuth started a
+  // flow within the marker's time limit, at most once per flow, and never
+  // while a signed-in phrase is stored; anything else is dropped before it
+  // is parsed, with a breadcrumb and no other side effect, because silence
+  // gives a rogue link no oracle. And PKCE: a code is single-use and
+  // exchangeable only with the verifier this install stored when it built
+  // the authorize URL, so a code minted for anyone else fails the exchange.
+  // Either failure lands a legitimate flow on the retry screen instead of a
+  // hang. What both locks protect is the owner-mismatch wipe in
+  // authenticateWithPhrase: a URL that installs another account's session
+  // would otherwise destroy this device's local data and stored phrase.
+  // Spec: ops/docs/plans/deep-link-callback-hardening.md (sections 2.2 and 3)
   async function handleNativeOAuthCallback(rawUrl: string) {
+    // Anything that is not our own callback scheme is somebody else's URL,
+    // and the marker is worth one acceptance per flow: spending it on an
+    // opened Markdown file strands the sign-in that follows.
+    if (!isOAuthCallbackUrl(rawUrl)) {
+      logAuthEvent('auth:oauth-callback-refused', { reason: 'scheme' });
+      return;
+    }
+    // Consumed synchronously, before the first await: two deliveries of one
+    // URL (onOpenUrl and the resume check can both fire) cannot both pass.
+    const gate = consumeOAuthPending();
+    const signedIn = hasStoredPhrase();
+    if (gate !== 'ok' || signedIn) {
+      const reason = signedIn ? 'signed-in' : gate;
+      logAuthEvent('auth:oauth-callback-refused', { reason });
+      if (reason === 'stale') {
+        setAuth({ status: 'oauth_hydrate_failed', trust: true });
+      }
+      return;
+    }
+    logAuthEvent('auth:oauth-callback-accepted');
     try {
       const u = new URL(rawUrl);
+      // A provider refusal (the user cancelled at the account picker, or
+      // the provider errored) comes back as error parameters; GoTrue has
+      // placed them in either part of the URL over time, so read both.
       const hash = new URLSearchParams(u.hash.replace(/^#/, ''));
       const err =
-        hash.get('error_description') ||
         u.searchParams.get('error_description') ||
-        hash.get('error') ||
-        u.searchParams.get('error');
+        hash.get('error_description') ||
+        u.searchParams.get('error') ||
+        hash.get('error');
       if (err) {
         console.error('OAuth callback error:', err);
-        return;
-      }
-      const accessToken = hash.get('access_token');
-      const refreshToken = hash.get('refresh_token');
-      if (accessToken && refreshToken) {
-        await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        });
-        // Drive hydration here rather than leaning on onAuthStateChange.
-        // That listener is only registered on the logged-out boot path, so
-        // after a logged-in boot + sign-out it does not exist and the
-        // sign-in hangs until a manual reload. This deep-link handler is
-        // always registered on native, so it owns native OAuth hydration.
-        await hydrateFromOAuthSession(accessToken, /*trust*/ true);
+        setAuth({ status: 'oauth_hydrate_failed', trust: true });
         return;
       }
       const code = u.searchParams.get('code');
-      if (code) {
-        const { data } = await supabase.auth.exchangeCodeForSession(code);
-        const token = data?.session?.access_token;
-        if (token) await hydrateFromOAuthSession(token, /*trust*/ true);
+      if (!code) {
+        logAuthEvent('auth:oauth-callback-no-code');
+        setAuth({ status: 'oauth_hydrate_failed', trust: true });
+        return;
       }
+      // The exchange reads the verifier signInWithOAuth stored in this
+      // install's auth storage and deletes it; a replayed or foreign code
+      // fails here.
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+      const token = data?.session?.access_token;
+      if (error || !token) {
+        logAuthEvent('auth:oauth-code-exchange-failed', {
+          name: error?.name,
+          status: (error as { status?: number } | null)?.status,
+        });
+        setAuth({ status: 'oauth_hydrate_failed', trust: true });
+        return;
+      }
+      // Drive hydration here rather than leaning on onAuthStateChange.
+      // That listener is only registered on the logged-out boot path, so
+      // after a logged-in boot + sign-out it does not exist and the
+      // sign-in hangs until a manual reload. This deep-link handler is
+      // always registered on native, so it owns native OAuth hydration.
+      await hydrateFromOAuthSession(token, /*trust*/ true);
     } catch (e) {
       console.error('Failed to handle OAuth deep link:', e);
+      setAuth({ status: 'oauth_hydrate_failed', trust: true });
     }
   }
 
@@ -546,27 +692,17 @@ export function useOAuthFlows({
         // getCurrent() returns the deep link that launched the activity, and
         // it keeps returning that same launch URL on every cold start AND on
         // every Android dev-mode reload/rebuild - the webview reloads but the
-        // launch intent is unchanged. Reprocessing an already-consumed OAuth
-        // callback re-runs hydrateFromOAuthSession with a now-stale access
-        // token; once that token has expired, get-custodial-phrase 401s,
-        // branch (a) silently falls through, and a custodial user is wrongly
-        // bounced to the phrase-entry screen (intermittent: still-valid token
-        // = no visible bug). If a valid phrase is already stored we are past
-        // sign-in, so skip the stale replay and let the stored-phrase fast
-        // boot restore the session. A genuine first sign-in has no stored
-        // phrase and still processes. The warm onOpenUrl callback below is
-        // always a fresh link, so it stays unguarded.
-        const storedPhrase = trustAwareStorage.getItem(PHRASE_STORAGE_KEY);
-        // A wrapped envelope counts as signed in - presence and shape
-        // only, the value never needs to open here.
-        const alreadySignedIn =
-          !!storedPhrase &&
-          (isWrappedEnvelope(storedPhrase) || isValidPhrase(storedPhrase));
-        // Mark the launch URL seen even when the guard above skips it, or the
-        // resume check below would process the very stale link this guard
-        // exists to avoid.
+        // launch intent is unchanged. The handler's pending-sign-in gate
+        // refuses that replay by construction (the marker was consumed the
+        // first time), and it refuses any link while a phrase is stored. The
+        // skip here stays as a second line: a signed-in install never hands
+        // the launch URL over at all, and the stored-phrase fast boot
+        // restores the session instead.
+        // Mark the launch URL seen even when the guard skips it, or the
+        // resume check below would process the very link this guard exists
+        // to avoid.
         if (initialUrl) seen = initialUrl;
-        if (initialUrl && !alreadySignedIn) {
+        if (initialUrl && !hasStoredPhrase()) {
           await handleNativeOAuthCallback(initialUrl);
         }
         const un = await onOpenUrl((urls) => {

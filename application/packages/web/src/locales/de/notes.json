@@ -35,7 +35,8 @@
     "journal": "Tagebuch",
     "login": "Login",
     "file": "Datei",
-    "bookmark": "Lesezeichen"
+    "bookmark": "Lesezeichen",
+    "contact": "Kontakt"
   },
   "vaultFilter": {
     "all": "Alle",
@@ -88,7 +89,8 @@
     "items": "Einträge",
     "trashed": "Im Papierkorb",
     "notes": "Notizen",
-    "bookmarks": "Lesezeichen"
+    "bookmarks": "Lesezeichen",
+    "contacts": "Kontakte"
   },
   "toast": {
     "imageUploadFailed": "Bild-Upload fehlgeschlagen: {{error}}",
@@ -172,6 +174,7 @@
     "widthFull": "Volle Breite",
     "burn": "Teilen & nach dem Lesen vernichten",
     "titlePlaceholderLink": "Name des Lesezeichens",
+    "titlePlaceholderContact": "Name",
     "notBackedUpTooLarge": "Über dem 1-MB-Limit, daher nicht gesichert. Verschiebe Bilder in Anhänge oder teile die Notiz auf.",
     "notBackedUpFailed": "Nicht gesichert. Letzter Fehler: {{message}}. Neuer Versuch läuft."
   },
@@ -219,6 +222,7 @@
     "importLabel": "Import & Export",
     "planLabel": "Konto",
     "storageLabel": "Speicher",
+    "imagesLabel": "Bilder",
     "securityLabel": "Sicherheit",
     "accountLabel": "ID & Sync",
     "appearanceLabel": "Design",
@@ -266,5 +270,9 @@
     "title": "Neuer Tresor erstellt",
     "confirm": "Verstanden",
     "body": "Kein vorhandener Tresor passte zu der eingegebenen Phrase, daher wurde ein neuer, leerer erstellt. Falls du deine Notizen erwartet hast, melde dich ab und gib deine Phrase sorgfältig erneut ein - ein einziges anderes Wort öffnet einen anderen Tresor."
+  },
+  "ambiguousLink": {
+    "title": "Zwei Notizen tragen diesen Titel",
+    "body": "Mehr als eine Notiz heißt <highlight>„{{title}}“</highlight>, deshalb sagt dieser Link nicht, welche gemeint ist. Benenne eine davon um, dann zeigt der Link auf die andere."
   }
 }

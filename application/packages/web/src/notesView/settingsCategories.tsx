@@ -6,10 +6,11 @@ import type { LocalNote } from '../db';
 import type { FolderDef } from '../folders';
 import type { ImageStore } from '../imageStore';
 import { AppearanceSheet } from '../AppearanceSheet';
+import { ImagesSheet } from '../ImagesSheet';
 import { JournalsSheet } from '../JournalsSheet';
 import { LanguageSheet } from '../LanguageSheet';
 import { exemptOpts } from '../i18nExempt';
-import { Book, ChartBar, CreditCard, Database, Info, Question, Repeat, Shield, Sun, Translate, User } from '../icons';
+import { Book, ChartBar, CreditCard, Database, Image as ImageIcon, Info, Question, Repeat, Shield, Sun, Translate, User } from '../icons';
 import { activeLocale } from '../languages';
 import { helpPath } from '../localeRoutes';
 import { updateNote } from '../notesRepo';
@@ -82,6 +83,7 @@ export function buildSettingsCategories({
   decryptFullBackup,
   exportVault,
   exportBookmarks,
+  exportContacts,
   importEncryptedBackup,
   imageStoreRef,
   attachmentStoreRef,
@@ -119,6 +121,7 @@ export function buildSettingsCategories({
   decryptFullBackup: (file: File) => Promise<File>;
   exportVault: (ns: LocalNote[]) => Promise<void>;
   exportBookmarks: (ns: LocalNote[]) => Promise<void>;
+  exportContacts: (ns: LocalNote[]) => Promise<void>;
   importEncryptedBackup: (file: File) => Promise<number>;
   imageStoreRef: MutableRefObject<ImageStore | null>;
   attachmentStoreRef: MutableRefObject<AttachmentStore | null>;
@@ -190,6 +193,7 @@ export function buildSettingsCategories({
                   decryptFullBackup={decryptFullBackup}
                   onExportVault={exportVault}
                   onExportBookmarks={exportBookmarks}
+                  onExportContacts={exportContacts}
                   onImportEncrypted={importEncryptedBackup}
                   onBlobsRestored={() => {
                     imageStoreRef.current?.processPendingUploads().catch((err) =>
@@ -237,15 +241,33 @@ export function buildSettingsCategories({
               label: t('settings.storageLabel'),
               group: t('settings.groupAccount'),
               icon: <Database size={18} aria-hidden="true" />,
-              render: () => (
+              render: ({ navigate }) => (
                 <SyncOptionsModal
                   embedded
                   tab="storage"
                   onSyncNow={runSync}
                   onOpenNote={onOpenNote}
+                  onOpenImageSettings={() => navigate('images')}
                   onClose={() => setShowSettings(false)}
                   onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: null }); }}
                   onSignOut={handleSignOutClick}
+                />
+              ),
+            },
+            {
+              // The two app-wide image switches. Under Storage on purpose:
+              // the Storage tab is where a full quota bar is stared at, and
+              // it links here. Spec: ops/docs/plans/image-quality-handoff.md (section 9)
+              id: 'images',
+              label: t('settings.imagesLabel'),
+              group: t('settings.groupAccount'),
+              icon: <ImageIcon size={18} aria-hidden="true" />,
+              render: () => (
+                <ImagesSheet
+                  spaceSaver={userSettings.imageSpaceSaver}
+                  stripMetadata={userSettings.imageStripMetadata}
+                  contactCeiling={userSettings.imageContactCeiling}
+                  onChange={(field, value) => mutateSettings((prev) => ({ ...prev, [field]: value }))}
                 />
               ),
             },

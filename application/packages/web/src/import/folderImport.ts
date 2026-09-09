@@ -63,6 +63,20 @@ export function parseFolderPath(raw: string | undefined): string[] {
   return segs.map((x) => x.trim()).filter(Boolean);
 }
 
+/**
+ * The most folders one import may create.
+ *
+ * The tree lands in the synced settings blob, so it is carried to every
+ * device and walked on every boot, and nothing else bounds it: a zip filename
+ * field holds 65,535 bytes, so a few kilobytes of crafted entries produced
+ * tens of thousands of folders. The number is generous against a real vault -
+ * a large Obsidian library runs to a few hundred - and refusing the rest
+ * leaves an import that is merely incomplete rather than an account that is
+ * slow for ever.
+ * Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-27)
+ */
+export const IMPORT_FOLDER_LIMIT = 2_000;
+
 export function buildFolderTree(dirPaths: string[]): {
   folders: FolderDef[];
   dirToFolderId: Map<string, string>;
@@ -91,6 +105,7 @@ export function buildFolderTree(dirPaths: string[]): {
         deepestId = existing;
         continue;
       }
+      if (folders.length >= IMPORT_FOLDER_LIMIT) break;
       if (!canCreateChild(folders, parentId)) break; // invalid parent
       const res = createFolder(folders, seg, parentId);
       if (!res) break; // empty / unusable segment name

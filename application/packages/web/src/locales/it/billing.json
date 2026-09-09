@@ -39,6 +39,12 @@
     "alreadyOwned": "Lo store indica che possiedi già questo acquisto, ma appartiene a un altro account. Accedi con la frase di recupero che usavi al momento dell'acquisto."
   },
   "checkout": {
+    "confirmTitle": "Conferma il tuo acquisto",
+    "confirmPro": "PrivacyNotes Pro, un pagamento di {{price}} $.",
+    "confirmStorage": "{{gb}} GB di spazio in più, {{price}} $ all’anno.",
+    "confirmAccount": "Sbloccherà questo account:",
+    "confirmCheck": "Apri Impostazioni, poi Sincronizzazione, e controlla che l’ID account corrisponda. Se non corrisponde, chiudi questa scheda: il pagamento sbloccherebbe qualcun altro.",
+    "confirmButton": "Continua al pagamento",
     "invalidTitle": "Link di pagamento non valido",
     "invalidBody": "Apri il pagamento dall'interno dell'app così possiamo associare l'acquisto al tuo account.",
     "completeTitle": "Pagamento completato",

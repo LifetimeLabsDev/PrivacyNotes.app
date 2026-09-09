@@ -22,7 +22,7 @@ import {
   iconNewJournal, iconNewLogin, iconNewTask,
   iconNote, iconPin, iconReadOnly, iconRestore, iconSettings,
   iconShield, iconSidebar,
-  iconSignOut, iconTrash, iconUpload, iconZen,
+  iconSignOut, iconTrash, iconUpload, iconZen, NEW_GLYPHS,
 } from '../icons';
 import { noteActionGuards } from '../noteActionGuards';
 import type { ImageStore } from '../imageStore';
@@ -60,6 +60,7 @@ export type ContextMenuDeps = {
   /** Bookmarks create through the pillar's quick-add bar, not handleNew -
    *  this navigates there and focuses the bar. */
   onNewBookmark: () => void;
+  onNewContact: () => void;
   // Bookmark row actions (type 'link')
   onOpenBookmark: (n: LocalNote) => void;
   onCopyBookmarkUrl: (n: LocalNote) => void;
@@ -143,6 +144,11 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
       label: i18n.t('shell:contextMenu.newJournal'),
       icon: iconNewJournal(),
       onSelect: createInPillar('journal'),
+    },
+    {
+      label: i18n.t('shell:contextMenu.newContact'),
+      icon: <NEW_GLYPHS.contact size={14} />,
+      onSelect: () => deps.onNewContact(),
     },
     {
       label: i18n.t('shell:contextMenu.newBookmark'),

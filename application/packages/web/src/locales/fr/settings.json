@@ -74,7 +74,17 @@
     "needMore": "Besoin de plus d'espace ?",
     "proSpacePitch": "Tu es sur le forfait gratuit. Pro inclut 500 Mo, soit dix fois l'espace dont tu disposes maintenant.",
     "earlyAdopterSave": "Adoptant précoce · économise {{amount}} $",
-    "oneTime": "unique"
+    "oneTime": "unique",
+    "imageSettingsLink": "Réglages des images"
+  },
+  "images": {
+    "spaceSaverTitle": "Économiseur d'espace",
+    "spaceSaverDesc": "Réduites à {{px}} pixels et enregistrées en JPEG à {{quality}} % de qualité. Un peu moins de détail pour une fraction de l'espace.",
+    "removeLocationTitle": "Supprimer les données de localisation",
+    "removeLocationDesc": "Le lieu de prise de vue d'une image est retiré avant l'enregistrement, partout dans l'app.",
+    "contactTitle": "Petites photos de contact",
+    "contactDesc": "Tiennent dans {{px}} pixels, la plus grande taille à laquelle l'app les affiche. Désactivé, elles suivent les réglages de l'économiseur d'espace.",
+    "applyNote": "Nouvelles images seulement. Les images déjà enregistrées ne changent pas, et les fichiers qui ne sont pas des images ne sont jamais touchés."
   },
   "devices": {
     "heading": "Appareils enregistrés",
@@ -98,8 +108,6 @@
     "verifyBusy": "Un autre appareil est en train de se synchroniser, donc cette vérification ne peut pas donner de réponse fiable. Réessaie dans un instant.",
     "verifyFailed": "Impossible de joindre le serveur pour vérifier. Réessaie une fois de retour en ligne.",
     "verifyDiverged": "Cet appareil n'est pas au même point que le serveur :",
-    "verifyRepairAction": "Tout retélécharger",
-    "verifyRepairQueued": "La prochaine synchro relira tout ton coffre. Rien de ce qui attend d'être envoyé ne sera perdu.",
     "verifyMissing_one": "{{count}} élément du serveur manque ici",
     "verifyMissing_other": "{{count}} éléments du serveur manquent ici",
     "verifyStale_one": "{{count}} élément ici est plus ancien que la copie du serveur",
@@ -107,12 +115,14 @@
     "verifyPendingDelete_one": "{{count}} élément a été supprimé ailleurs et est encore ici",
     "verifyPendingDelete_other": "{{count}} éléments ont été supprimés ailleurs et sont encore ici",
     "verifyNeverPushed_one": "{{count}} élément ici n'a jamais atteint le serveur",
-    "verifyNeverPushed_other": "{{count}} éléments ici n'ont jamais atteint le serveur"
+    "verifyNeverPushed_other": "{{count}} éléments ici n'ont jamais atteint le serveur",
+    "verifyRepairAction": "Tout retélécharger",
+    "verifyRepairQueued": "La prochaine synchro relira tout ton coffre. Rien de ce qui attend d'être envoyé ne sera perdu."
   },
   "accountId": {
     "heading": "ID de compte",
-    "copyId": "Copier l’ID",
-    "report": "Rapport support"
+    "report": "Rapport support",
+    "copyId": "Copier l’ID"
   },
   "revoke": {
     "title": "Supprimer « {{name}} » ?",
@@ -243,8 +253,8 @@
     "pausedAria": "Synchronisation en pause",
     "wifiHold": "En attente du wifi",
     "wifiHoldTooltip": "Les fichiers partent dès le retour du wifi. Les notes continuent de se synchroniser.",
-    "notSynced": "Non synchronisé",
     "notBackedUp": "Non sauvegardé",
+    "notSynced": "Non synchronisé",
     "notBackedUpTooltip_one": "{{count}} note n'est pas sauvegardée. Clique pour voir pourquoi.",
     "notBackedUpTooltip_other": "{{count}} notes ne sont pas sauvegardées. Clique pour voir pourquoi.",
     "notBackedUpAria_one": "{{count}} note n'est pas sauvegardée",

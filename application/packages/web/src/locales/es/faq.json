@@ -500,6 +500,13 @@
         "Todo llega como elementos nuevos y no se sobrescribe nada de lo que ya tienes, así que restaurar el mismo archivo dos veces te deja dos copias de cada nota. Los dos formatos cifrados solo se abren en la cuenta que los creó, porque están cifrados con la clave de su frase; un .zip entra en cualquier caja fuerte ([qué copia hacer](/es/help/backup-strategy/))."
       ]
     },
+    "image-quality": {
+      "q": "¿PrivacyNotes cambia o comprime mis imágenes?",
+      "a": [
+        "Sí. Los dos ajustes vienen activados porque queremos a nuestros usuarios: queremos que ahorres espacio y conserves tu privacidad. Ahorro de espacio reduce una imagen grande a 2048 píxeles y la guarda como JPEG al 85 % de calidad, que conserva todo el detalle que una pantalla puede mostrar. Quitar datos de ubicación elimina los metadatos EXIF que una cámara escribe en una foto, incluida la posición GPS, antes de guardar la imagen. Los dos se aplican a cada imagen de la app: pegada en una nota, añadida como archivo o importada.",
+        "Desactiva cualquiera de los dos en **Ajustes > Imágenes**, donde las fotos de contacto tienen un tercer interruptor que las mantiene en 512 píxeles. Los ajustes solo afectan a las imágenes nuevas; los archivos que no son imágenes se guardan exactamente como están. Las imágenes HEIC y TIFF se convierten a JPEG, porque solo Safari puede mostrarlas. Una copia de seguridad que restaures se escribe byte a byte."
+      ]
+    },
     "storage-usage": {
       "q": "¿Qué cuenta para mi almacenamiento y cómo libero espacio?",
       "a": [

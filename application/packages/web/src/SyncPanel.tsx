@@ -17,6 +17,7 @@ import {
 } from './icons';
 import { type SupabaseClient } from '@notes/shared';
 import { isDemoMode } from './demo';
+import { formatRelative } from './intlFormat';
 import { verifySync, resetSyncCursor, type SyncReport } from './syncVerify';
 import { recordCleanVerify } from './verifyStamp';
 import { buildDeviceName } from './devices';
@@ -33,7 +34,7 @@ import { db } from './db';
 import { readAuthLog } from './authDiag';
 import { deriveDisplayTitle } from './notesViewUtils';
 import { useVerifyStamp } from './verifyStamp';
-import { formatRelative, SETTINGS_EYEBROW } from './settingsUI';
+import { SETTINGS_EYEBROW } from './settingsUI';
 import { VERSION } from './version';
 
 /**

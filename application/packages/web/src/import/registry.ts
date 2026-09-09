@@ -14,6 +14,7 @@ import { bitwardenImporter } from './bitwarden';
 import { passwordCsvImporter } from './passwordCsv';
 import { simplenoteImporter } from './simplenote';
 import { parseBrowserBookmarks } from './browserBookmarks';
+import { parseVcard } from './vcard';
 
 /**
  * Registry of available importers, keyed by id at every call site. Each
@@ -59,6 +60,18 @@ export const IMPORTERS: Importer[] = [
     enabled: true,
     sourceTag: '',
     parse: parseBrowserBookmarks,
+  },
+  {
+    id: 'vcard',
+    label: 'Contacts (vCard)',
+    // No sourceTag: the groups on the phone arrive as tags already.
+    // Spec: ops/docs/plans/contacts-pillar.md (section 7.3, CATEGORIES become tags)
+    description:
+      'The .vcf file your phone or address book exports: iPhone and Mac through iCloud or Contacts, Android, Google Contacts. Every card comes across, photos included, and importing the same file twice skips the people you already have.',
+    accept: '.vcf,.vcard',
+    enabled: true,
+    sourceTag: '',
+    parse: parseVcard,
   },
   {
     id: 'evernote',

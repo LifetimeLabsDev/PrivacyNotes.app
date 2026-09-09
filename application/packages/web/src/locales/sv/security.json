@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "Kontrollerar stöd för biometri...",
     "description": "Lås upp med fingeravtryck eller ansikte. Lägger till en biometrisk spärr så att ingen i närheten kommer åt dina anteckningar.",
-    "trustFirst": "Aktivera ”Lita på den här enheten” först för att kunna använda biometrisk upplåsning. Enheter som inte är betrodda raderar alla data när fliken stängs.",
+    "trustFirst": "Aktivera ”Lita på den här enheten” först. Biometrisk upplåsning och applåset sparar båda en kopia av din återställningsfras på den här enheten, och det är inte vad en enhet som inte är betrodd är till för.",
     "notAvailable": "Biometrisk upplåsning är inte tillgänglig på den här enheten. Din webbläsare eller hårdvara saknar stöd för en plattformsautentiserare (Touch ID, Face ID, Windows Hello).",
     "enabledFlash": "Biometrisk upplåsning aktiverad.",
     "enrolledOnDevice": "Registrerad på den här enheten",
@@ -199,12 +199,6 @@
     "signOut": "Logga ut",
     "thisDevice": "Den här enheten",
     "lastActive": "{{platform}} · senast aktiv {{when}}",
-    "removing": "Tar bort...",
-    "relative": {
-      "justNow": "just nu",
-      "minutes": "för {{count}} min sedan",
-      "hours": "för {{count}} tim sedan",
-      "days": "för {{count}} d sedan"
-    }
+    "removing": "Tar bort..."
   }
 }

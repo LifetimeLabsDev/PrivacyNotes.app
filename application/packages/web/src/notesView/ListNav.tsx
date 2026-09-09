@@ -18,6 +18,7 @@ const PILL_VIEWS: { key: View; labelKey: string; icon: React.JSX.Element }[] = [
   { key: 'vault', labelKey: 'pillars.vault', icon: <PILLAR_GLYPHS.vault size={16} /> },
   { key: 'files', labelKey: 'pillars.files', icon: <PILLAR_GLYPHS.files size={16} /> },
   { key: 'journal', labelKey: 'pillars.journals', icon: <PILLAR_GLYPHS.journals size={16} /> },
+  { key: 'contacts', labelKey: 'pillars.contacts', icon: <PILLAR_GLYPHS.contacts size={16} /> },
   { key: 'bookmarks', labelKey: 'pillars.bookmarks', icon: <PILLAR_GLYPHS.bookmarks size={16} /> },
 ];
 

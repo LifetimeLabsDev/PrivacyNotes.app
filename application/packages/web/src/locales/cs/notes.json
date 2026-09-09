@@ -35,7 +35,8 @@
     "journal": "Deník",
     "login": "Přihlášení",
     "file": "Soubor",
-    "bookmark": "Záložka"
+    "bookmark": "Záložka",
+    "contact": "Kontakt"
   },
   "vaultFilter": {
     "all": "Vše",
@@ -88,20 +89,21 @@
     "items": "Položek",
     "trashed": "V koši",
     "notes": "Poznámek",
-    "bookmarks": "Záložek"
+    "bookmarks": "Záložek",
+    "contacts": "Kontakty"
   },
   "toast": {
     "imageUploadFailed": "Nahrání obrázku se nezdařilo: {{error}}",
     "imageError": "Chyba obrázku: {{error}}",
     "uploadFailedFor": "Nahrání souboru „{{filename}}“ se nezdařilo: {{error}}",
     "importedSyncing_one": "Importována {{count}} poznámka. Probíhá synchronizace…",
-    "importedSyncing_few": "Importovány {{count}} poznámky. Probíhá synchronizace…",
-    "importedSyncing_many": "Importováno {{count}} poznámky. Probíhá synchronizace…",
     "importedSyncing_other": "Importováno {{count}} poznámek. Probíhá synchronizace…",
     "addedTag_one": "Přidáno #{{tag}} k {{count}} položce",
+    "addedTag_other": "Přidáno #{{tag}} k {{count}} položkám",
+    "importedSyncing_few": "Importovány {{count}} poznámky. Probíhá synchronizace…",
+    "importedSyncing_many": "Importováno {{count}} poznámky. Probíhá synchronizace…",
     "addedTag_few": "Přidáno #{{tag}} k {{count}} položkám",
-    "addedTag_many": "Přidáno #{{tag}} k {{count}} položky",
-    "addedTag_other": "Přidáno #{{tag}} k {{count}} položkám"
+    "addedTag_many": "Přidáno #{{tag}} k {{count}} položky"
   },
   "burn": {
     "mediaOnly": "Tato poznámka obsahuje pouze média, a proto ji nelze sdílet odkazem ke spálení.",
@@ -176,6 +178,7 @@
     "widthFull": "Plná šířka",
     "burn": "Sdílet a spálit po přečtení",
     "titlePlaceholderLink": "Název záložky",
+    "titlePlaceholderContact": "Jméno",
     "notBackedUpTooLarge": "Nad limitem 1 MB, proto bez zálohy. Přesuň obrázky do příloh nebo poznámku rozděl.",
     "notBackedUpFailed": "Bez zálohy. Poslední chyba: {{message}}. Zkouší se znovu."
   },
@@ -223,6 +226,7 @@
     "importLabel": "Import a export",
     "planLabel": "Účet",
     "storageLabel": "Úložiště",
+    "imagesLabel": "Obrázky",
     "securityLabel": "Zabezpečení",
     "accountLabel": "ID a synchronizace",
     "appearanceLabel": "Vzhled",
@@ -241,15 +245,15 @@
   "bulkTrash": {
     "title": "Přesunout do koše",
     "body_one": "Přesunout <highlight>{{count}} položku</highlight> do koše? Můžeš ji později obnovit.",
+    "body_other": "Přesunout <highlight>{{count}} položek</highlight> do koše? Můžeš je později obnovit.",
     "body_few": "Přesunout <highlight>{{count}} položky</highlight> do koše? Můžeš je později obnovit.",
-    "body_many": "Přesunout <highlight>{{count}} položky</highlight> do koše? Můžeš je později obnovit.",
-    "body_other": "Přesunout <highlight>{{count}} položek</highlight> do koše? Můžeš je později obnovit."
+    "body_many": "Přesunout <highlight>{{count}} položky</highlight> do koše? Můžeš je později obnovit."
   },
   "bulkDelete": {
     "body_one": "Trvale smazat <highlight>{{count}} poznámku</highlight>? Tuto akci nelze vzít zpět.",
+    "body_other": "Trvale smazat <highlight>{{count}} poznámek</highlight>? Tuto akci nelze vzít zpět.",
     "body_few": "Trvale smazat <highlight>{{count}} poznámky</highlight>? Tuto akci nelze vzít zpět.",
-    "body_many": "Trvale smazat <highlight>{{count}} poznámky</highlight>? Tuto akci nelze vzít zpět.",
-    "body_other": "Trvale smazat <highlight>{{count}} poznámek</highlight>? Tuto akci nelze vzít zpět."
+    "body_many": "Trvale smazat <highlight>{{count}} poznámky</highlight>? Tuto akci nelze vzít zpět."
   },
   "tagConfirm": {
     "mergeTitle": "Sloučit značky",
@@ -259,17 +263,17 @@
     "deleteConfirm": "Smazat značku",
     "moveToTrash": "Přesunout do koše",
     "mergeBody_one": "Značka <highlight>„{{targetTag}}“</highlight> už existuje. Sloučit do ní <highlight>{{count}} poznámku</highlight> se stávající značkou „{{tag}}“?",
-    "mergeBody_few": "Značka <highlight>„{{targetTag}}“</highlight> už existuje. Sloučit do ní <highlight>{{count}} poznámky</highlight> se stávající značkou „{{tag}}“?",
-    "mergeBody_many": "Značka <highlight>„{{targetTag}}“</highlight> už existuje. Sloučit do ní <highlight>{{count}} poznámky</highlight> se stávající značkou „{{tag}}“?",
     "mergeBody_other": "Značka <highlight>„{{targetTag}}“</highlight> už existuje. Sloučit do ní <highlight>{{count}} poznámek</highlight> se stávající značkou „{{tag}}“?",
     "deleteBody_one": "Odebrat značku <highlight>„{{tag}}“</highlight> z <highlight>{{count}} poznámky</highlight>? Samotné poznámky se nesmažou.",
-    "deleteBody_few": "Odebrat značku <highlight>„{{tag}}“</highlight> z <highlight>{{count}} poznámek</highlight>? Samotné poznámky se nesmažou.",
-    "deleteBody_many": "Odebrat značku <highlight>„{{tag}}“</highlight> z <highlight>{{count}} poznámky</highlight>? Samotné poznámky se nesmažou.",
     "deleteBody_other": "Odebrat značku <highlight>„{{tag}}“</highlight> z <highlight>{{count}} poznámek</highlight>? Samotné poznámky se nesmažou.",
     "deleteWithNotesBody_one": "Smazat značku <highlight>„{{tag}}“</highlight> a přesunout <highlight>{{count}} poznámku</highlight> do koše? Můžeš ji odtud obnovit.",
+    "deleteWithNotesBody_other": "Smazat značku <highlight>„{{tag}}“</highlight> a přesunout <highlight>{{count}} poznámek</highlight> do koše? Můžeš je odtud obnovit.",
+    "mergeBody_few": "Značka <highlight>„{{targetTag}}“</highlight> už existuje. Sloučit do ní <highlight>{{count}} poznámky</highlight> se stávající značkou „{{tag}}“?",
+    "mergeBody_many": "Značka <highlight>„{{targetTag}}“</highlight> už existuje. Sloučit do ní <highlight>{{count}} poznámky</highlight> se stávající značkou „{{tag}}“?",
+    "deleteBody_few": "Odebrat značku <highlight>„{{tag}}“</highlight> z <highlight>{{count}} poznámek</highlight>? Samotné poznámky se nesmažou.",
+    "deleteBody_many": "Odebrat značku <highlight>„{{tag}}“</highlight> z <highlight>{{count}} poznámky</highlight>? Samotné poznámky se nesmažou.",
     "deleteWithNotesBody_few": "Smazat značku <highlight>„{{tag}}“</highlight> a přesunout <highlight>{{count}} poznámky</highlight> do koše? Můžeš je odtud obnovit.",
-    "deleteWithNotesBody_many": "Smazat značku <highlight>„{{tag}}“</highlight> a přesunout <highlight>{{count}} poznámky</highlight> do koše? Můžeš je odtud obnovit.",
-    "deleteWithNotesBody_other": "Smazat značku <highlight>„{{tag}}“</highlight> a přesunout <highlight>{{count}} poznámek</highlight> do koše? Můžeš je odtud obnovit."
+    "deleteWithNotesBody_many": "Smazat značku <highlight>„{{tag}}“</highlight> a přesunout <highlight>{{count}} poznámky</highlight> do koše? Můžeš je odtud obnovit."
   },
   "createNote": {
     "title": "Vytvořit poznámku?",
@@ -280,5 +284,9 @@
     "title": "Byl vytvořen nový trezor",
     "confirm": "Rozumím",
     "body": "Zadané frázi neodpovídal žádný existující trezor, takže byl vytvořen nový a prázdný. Jestli tu měly být tvoje poznámky, odhlas se a zadej frázi znovu a pozorně - jedno jiné slovo otevře úplně jiný trezor."
+  },
+  "ambiguousLink": {
+    "title": "Ten název mají dvě poznámky",
+    "body": "Název <highlight>„{{title}}“</highlight> nese víc než jedna poznámka, takže tenhle odkaz neříká, kterou myslí. Přejmenuj jednu z nich a odkaz povede na tu druhou."
   }
 }

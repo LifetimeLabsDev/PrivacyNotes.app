@@ -59,7 +59,10 @@ function escapeRegExp(s: string): string {
  *
  * Attachment chips are matched by their filename attr (GitHub #167 - the
  * filename is node metadata, not document text, so the text scan can't
- * see it). A hit marks the whole chip as one node match.
+ * see it), and images by their caption and title the same way, because the
+ * list search reads both from the markdown and a note it lists for a
+ * photo's name must have something the bar can show (GitHub #288). A hit
+ * marks the whole node as one node match.
  */
 function findMatches(doc: PMNode, query: string, caseSensitive: boolean): SearchMatch[] {
   if (!query) return [];
@@ -82,12 +85,14 @@ function findMatches(doc: PMNode, query: string, caseSensitive: boolean): Search
       }
     } else {
       current = null;
-      if (node.type.name === 'attachment') {
-        const filename = node.attrs['filename'] as string | null;
-        re.lastIndex = 0;
-        if (filename && re.test(filename)) {
-          nodeMatches.push({ from: pos, to: pos + node.nodeSize, node: true });
-        }
+      const labels =
+        node.type.name === 'attachment'
+          ? [node.attrs['filename'] as string | null]
+          : node.type.name === 'image'
+            ? [node.attrs['alt'] as string | null, node.attrs['title'] as string | null]
+            : [];
+      if (labels.some((label) => { re.lastIndex = 0; return !!label && re.test(label); })) {
+        nodeMatches.push({ from: pos, to: pos + node.nodeSize, node: true });
       }
     }
     return true;
@@ -228,6 +233,33 @@ export function getSearchInfo(view: EditorView): SearchInfo {
 export function scrollToCurrentMatch(view: EditorView): void {
   const hit = view.dom.querySelector('.pn-search-hit-current') as HTMLElement | null;
   hit?.scrollIntoView({ block: 'center', inline: 'nearest' });
+}
+
+/**
+ * Center the current match and keep it centered until layout settles. On a
+ * note that has just opened, the images above a hit decode and grow after
+ * the first scroll and push it off screen, so this re-centers every frame
+ * until the hit's position holds for five frames or 1.2 s pass, the settle
+ * rule the file jump uses. The element is looked up each frame because
+ * ProseMirror rebuilds the decoration spans on every update.
+ */
+export function scrollToCurrentMatchUntilSettled(view: EditorView): void {
+  const start = performance.now();
+  let lastTop = Number.NaN;
+  let stableFrames = 0;
+  const step = () => {
+    if (view.isDestroyed) return;
+    const hit = view.dom.querySelector('.pn-search-hit-current') as HTMLElement | null;
+    if (!hit) return;
+    const top = hit.getBoundingClientRect().top;
+    if (Math.abs(top - lastTop) < 1) stableFrames++;
+    else stableFrames = 0;
+    lastTop = top;
+    hit.scrollIntoView({ block: 'center', inline: 'nearest' });
+    if (stableFrames >= 5 || performance.now() - start > 1200) return;
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
 }
 
 /**

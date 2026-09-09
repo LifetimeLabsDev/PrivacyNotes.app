@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "Kontrola podpory biometriky...",
     "description": "Odemkni otiskem prstu nebo obličejem. Přidá biometrickou branku, aby se k tvým poznámkám nedostal nikdo, kdo je poblíž.",
-    "trustFirst": "Pro biometrické odemknutí nejdřív zapni „Věřit tomuto zařízení“. Nedůvěryhodná zařízení smažou po zavření karty všechna data.",
+    "trustFirst": "Nejdřív zapni „Věřit tomuto zařízení“. Biometrické odemknutí i zámek aplikace ukládají na tomto zařízení kopii tvé obnovovací fráze, a k tomu nedůvěryhodné zařízení není.",
     "notAvailable": "Biometrické odemknutí není na tomto zařízení dostupné. Tvůj prohlížeč nebo hardware nepodporuje platformní autentikátor (Touch ID, Face ID, Windows Hello).",
     "enabledFlash": "Biometrické odemknutí je zapnuté.",
     "enrolledOnDevice": "Zaregistrováno na tomto zařízení",
@@ -199,12 +199,6 @@
     "signOut": "Odhlásit se",
     "thisDevice": "Toto zařízení",
     "lastActive": "{{platform}} · naposledy aktivní {{when}}",
-    "removing": "Odebírání...",
-    "relative": {
-      "justNow": "právě teď",
-      "minutes": "před {{count}} min",
-      "hours": "před {{count}} h",
-      "days": "před {{count}} d"
-    }
+    "removing": "Odebírání..."
   }
 }

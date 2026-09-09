@@ -26,6 +26,37 @@ export const IN_APP_CHANGELOG_LIMIT = 10;
 
 export const PUBLIC_CHANGELOG: ChangelogRelease[] = [
   {
+    version: '0.507',
+    date: '2026-09-10',
+    title: 'Contacts (beta), an encrypted address book with vCard import',
+    items: [
+      { type: 'new', text: 'A Contacts pillar, in beta, keeps names, numbers, emails, addresses and photos in the same encrypted store as your notes, free on every plan.' },
+      { type: 'new', text: 'Contacts import from a vCard file written by iPhone, Mac, Android or Google Contacts, photos included, and export back to one.' },
+      { type: 'new', text: 'Settings > Images can shrink large pictures, keep contact photos small, and remove location data before an image is saved.' },
+      { type: 'improved', text: 'The statistics charts, the wellness cards, the device list, the doctor report and the AI prompt all read in the language the app is in.' },
+      { type: 'improved', text: 'A vault login shows its username, password and authenticator key first, and its website last.' },
+      { type: 'improved', text: 'A contact and a vault item share one detail pane, so both read the same way.' },
+      { type: 'improved', text: 'An import that creates a very large folder tree no longer slows every start after it.' },
+      { type: 'improved', text: 'A large or unusual file no longer freezes the tab while it is read for import.' },
+      { type: 'improved', text: 'A printed or exported note loads nothing from the internet.' },
+      { type: 'fixed', text: 'Turning the app lock off gives the device its key back, so the next start opens the vault instead of asking for your twelve words.' },
+      { type: 'fixed', text: 'A note link that matches more than one note says so and stays put, instead of opening whichever one was newest.' },
+      { type: 'fixed', text: 'Restoring a backup keeps the images and attachments the account already had.' },
+    ],
+  },
+  {
+    version: '0.506',
+    date: '2026-09-09',
+    title: 'The search carries into the note, and finds exact phrases',
+    items: [
+      { type: 'improved', text: 'A note opened from the list search shows the find bar filled with the word you looked for, its hits marked and the first one in view.' },
+      { type: 'improved', text: 'A search of several words now finds only the notes that say that phrase as you typed it.' },
+      { type: 'improved', text: 'Search no longer offers near-miss words, so a search for "test" stops listing a note that says "best".' },
+      { type: 'improved', text: 'A photo matches a search by its caption or its filename, and is ringed in the result.' },
+      { type: 'improved', text: 'macOS installs straight from Homebrew now, with no tap to add first.' },
+    ],
+  },
+  {
     version: '0.505',
     date: '2026-09-07',
     title: 'Find and replace, and drag and drop on the desktop',

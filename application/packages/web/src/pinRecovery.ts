@@ -23,6 +23,7 @@
 import {
   hasBiometricCredential,
   hasPinWrappedPhrase,
+  hasStoredPhrase,
   hydrateLocalPinWrap,
   removePinWrappedPhrase,
 } from './biometric';
@@ -81,8 +82,19 @@ export function clearPin(settings: UserSettings, phrase: string): UserSettings {
  *
  * One function rather than the condition written out at both call sites, so
  * the two directions cannot drift into a one-way copy.
+ *
+ * `phrase` is what the removal half costs an app-lock user without it.
+ * Arming the lock strips the plain copy, so the wrap is the only one on the
+ * device, and the settings this reads can be an older blob than the one it
+ * already had: the freshness test is a server-controlled timestamp and the
+ * ciphertext binds none of its own. Left alone, the next boot would ask for
+ * twelve words the person may never have written down. So a device left with
+ * no door at all puts the phrase back at rest, which is the same trade
+ * clearPin makes above: the app lock switches itself off, and nothing is
+ * lost. Making the wrap stick instead would bring back a PIN removed on one
+ * device still unlocking every other one.
  */
-export function syncPinWrap(settings: UserSettings): void {
+export function syncPinWrap(settings: UserSettings, phrase?: string): void {
   if (settings.pinWrapSalt && settings.pinWrapIV && settings.pinWrapCiphertext) {
     if (!hasPinWrappedPhrase()) {
       hydrateLocalPinWrap({
@@ -96,6 +108,13 @@ export function syncPinWrap(settings: UserSettings): void {
     return;
   }
   removePinWrappedPhrase();
+  // A door is a wrap, a fingerprint, or a phrase already at rest. With none
+  // of the three there is nothing for the next boot to restore a session
+  // from. Fire-and-forget, the same as clearPin: persist falls back to a
+  // plain write on a degraded browser rather than leaving nothing.
+  if (phrase && !hasBiometricCredential() && !hasStoredPhrase()) {
+    void persistStoredPhrase(phrase);
+  }
 }
 
 // Spec: ops/docs/biometric-unlock.md (PIN wrap PBKDF2 count before it was

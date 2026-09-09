@@ -35,11 +35,13 @@ export interface StoredNote {
  *   - 'card'    - credit/debit card (CardForm)
  *   - 'ssh-key' - SSH key pair (SshKeyForm)
  *   - 'link'    - bookmark; body is a small JSON document holding the URL
+ *   - 'contact' - address-book entry; body is a JSON document of labelled
+ *                 rows, the title is the display name (ContactForm)
  *
  * Stored inside the encrypted payload so the server never learns what
  * kind of data the user is storing.
  */
-export type NoteType = 'note' | 'task' | 'journal' | 'file' | 'login' | 'card' | 'ssh-key' | 'link';
+export type NoteType = 'note' | 'task' | 'journal' | 'file' | 'login' | 'card' | 'ssh-key' | 'link' | 'contact';
 
 export interface DecryptedNote {
   id: string;

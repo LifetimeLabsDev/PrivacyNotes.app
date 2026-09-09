@@ -26,6 +26,19 @@
     "tagLabel": "Etiqueta també les notes per carpeta",
     "tagDesc": "Les carpetes es reconstrueixen igualment. Això afegeix a més el nom de cada carpeta com a etiqueta, útil si també t'agrada filtrar per etiqueta."
   },
+  "browserImport": {
+    "tagLabel": "Conserva les etiquetes del teu navegador",
+    "tagDesc": "El Firefox desa etiquetes i una paraula clau de la barra d'adreces amb cada marcador. Aquí totes dues passen a ser etiquetes."
+  },
+  "contactImport": {
+    "photosLabel": "Importa les fotos",
+    "photosDesc_one": "{{count}} foto, uns {{size}} un cop l'app la redueix. És el {{pct}} % dels {{free}} que tens lliures.",
+    "photosDesc_other": "{{count}} fotos, uns {{size}} un cop l'app les redueix. És el {{pct}} % dels {{free}} que tens lliures.",
+    "photosDescNoQuota_one": "{{count}} foto, uns {{size}} un cop l'app la redueix.",
+    "photosDescNoQuota_other": "{{count}} fotos, uns {{size}} un cop l'app les redueix.",
+    "photosTooBig_one": "No hi ha prou espai per a la foto ({{size}}), així que queda fora. Tota la resta s'importa. Allibera {{shortfall}}, o afegeix emmagatzematge, i torna a importar per incorporar-la.",
+    "photosTooBig_other": "No hi ha prou espai per a les {{count}} fotos ({{size}}), així que queden fora. Tota la resta s'importa. Allibera {{shortfall}}, o afegeix emmagatzematge, i torna a importar per incorporar-les."
+  },
   "sourceDesc": {
     "googleKeep": "Fitxer .zip de Google Takeout (carpeta Keep) o una sola nota .json. Les llistes de verificació s'importen com a llistes de tasques natives.",
     "appleNotes": "Exporta amb l'aplicació gratuïta Exporter en format Markdown i deixa anar el .zip aquí.",
@@ -40,6 +53,7 @@
     "markdownFolder": "Fitxers .md o .txt solts o dins d'un .zip. Una carpeta comprimida manté les subcarpetes i s'emporta les imatges i els adjunts.",
     "markdownApp": "Aquestes notes ja són fitxers Markdown dins d'una carpeta. Deixa anar aquesta carpeta en .zip i hi van les subcarpetes, les imatges i les #etiquetes.",
     "browserBookmarks": "El fitxer d’adreces d’interès (.html) que surt de \"Export bookmarks\" al teu navegador, o el .zip que escriu Safari. Chrome, Firefox, Safari, Edge, Opera, Brave i Vivaldi contenen tots el mateix fitxer. Les carpetes i les dates hi vénen.",
+    "vcard": "El fitxer .vcf que exporta la teva agenda: iPhone i Mac mitjançant iCloud o Contactes, Android, Contactes de Google. Cada targeta s'importa, fotos incloses, i importar el mateix fitxer dues vegades omet les persones que ja tens.",
     "bitwarden": "Exportació .json sense xifrar de Bitwarden (Tools > Export vault > .json). Inicis de sessió, targetes, claus SSH, notes segures i codis TOTP vénen tots.",
     "browserPasswords": "El fitxer de contrasenyes (.csv) de Chrome, Edge, Brave, Opera, Vivaldi, Firefox o Safari, o el .zip que escriu Safari. Cada fila es converteix en un inici de sessió. Esborra el fitxer quan acabis - conté les teves contrasenyes en text pla."
   },
@@ -76,31 +90,34 @@
     "andMore": "… i {{count}} més",
     "headsUpLabel": "Atenció:",
     "duplicateWarning": "la importació afegeix aquests elements com a notes noves. Si l'executes dues vegades, tindràs duplicats. Encara no hi ha deduplicació automàtica.",
+    "duplicateSkipNote": "els marcadors que ja tens desats s'ometen, així que repetir aquesta importació no duplica res.",
+    "contactSkipNote": "les persones que ja has desat s'ometen i queden tal com són, així que executar-ho dues vegades no duplicarà ningú.",
     "quotaExceeded": "<strong>No tens prou emmagatzematge per importar.</strong> Es calcula que calen {{needed}}, i en queden {{available}} de disponibles. Allibera espai o millora el pla abans d'importar.",
     "quotaWarning": "Atenció: aquesta importació farà servir aproximadament {{needed}} dels {{available}} d'emmagatzematge que et queden.",
     "oversizeAttachments_one": "1 fitxer supera el límit de {{limit}} per fitxer del teu pla. S'importa en aquest dispositiu, però no se sincronitzarà amb els altres dispositius fins que no milloris a Pro.",
-    "oversizeAttachments_many": "{{count}} fitxers superen el límit de {{limit}} per fitxer del teu pla. S'importen en aquest dispositiu, però no se sincronitzaran amb els altres dispositius fins que no milloris a Pro.",
     "oversizeAttachments_other": "{{count}} fitxers superen el límit de {{limit}} per fitxer del teu pla. S'importen en aquest dispositiu, però no se sincronitzaran amb els altres dispositius fins que no milloris a Pro.",
-    "duplicateSkipNote": "els marcadors que ja tens desats s'ometen, així que repetir aquesta importació no duplica res."
+    "oversizeAttachments_many": "{{count}} fitxers superen el límit de {{limit}} per fitxer del teu pla. S'importen en aquest dispositiu, però no se sincronitzaran amb els altres dispositius fins que no milloris a Pro."
   },
   "counts": {
     "note_one": "nota",
-    "note_many": "notes",
     "note_other": "notes",
     "journal_one": "entrada de diari",
-    "journal_many": "entrades de diari",
     "journal_other": "entrades de diari",
     "login_one": "inici de sessió",
-    "login_many": "inicis de sessió",
     "login_other": "inicis de sessió",
     "card_one": "targeta",
-    "card_many": "targetes",
     "card_other": "targetes",
     "sshKey_one": "clau SSH",
-    "sshKey_many": "claus SSH",
     "sshKey_other": "claus SSH",
+    "contact_one": "contacte",
+    "contact_other": "contactes",
     "zeroItems": "0 elements",
-    "importButton": "Importa {{counts}}"
+    "importButton": "Importa {{counts}}",
+    "note_many": "notes",
+    "journal_many": "entrades de diari",
+    "login_many": "inicis de sessió",
+    "card_many": "targetes",
+    "sshKey_many": "claus SSH"
   },
   "errorPhase": {
     "heading": "{{importer}}: la importació ha fallat"
@@ -124,7 +141,10 @@
     "vaultExportDesc": "Inicis de sessió, targetes i claus SSH en format compatible amb Bitwarden. La majoria de gestors de contrasenyes el poden importar. En text clar: tracta-la amb cura.",
     "bookmarksOnlyHeading": "Només marcadors",
     "bookmarksExportTitle": "Fitxer de marcadors (.html)",
-    "bookmarksExportDesc": "El fitxer de marcadors estàndard que llegeix qualsevol navegador. Importa'l al Chrome, Firefox, Safari o Edge amb les carpetes intactes."
+    "bookmarksExportDesc": "El fitxer de marcadors estàndard que llegeix qualsevol navegador. Importa'l al Chrome, Firefox, Safari o Edge amb les carpetes intactes.",
+    "contactsOnlyHeading": "Només contactes",
+    "contactsExportTitle": "Fitxer de contactes (.vcf)",
+    "contactsExportDesc": "El fitxer vCard que llegeix qualsevol telèfon i agenda. Importa'l a l'iPhone, Android, Contactes de Google o Contactes al Mac, amb etiquetes i grups intactes."
   },
   "exportProgress": {
     "failedTitle": "L'exportació ha fallat",
@@ -142,7 +162,6 @@
     "failedTitle": "La pujada ha fallat",
     "partialTitle": "{{done}} pujats, {{failed}} amb errors",
     "uploadingTitle_one": "S'està pujant {{count}} fitxer",
-    "uploadingTitle_many": "S'estan pujant {{count}} fitxers",
     "uploadingTitle_other": "S'estan pujant {{count}} fitxers",
     "statusDone": "Fet",
     "statusFailed": "Ha fallat",
@@ -157,7 +176,8 @@
     "proPitch": "Pro augmenta el límit a 50 MB per fitxer.",
     "proPitchCta": "Millora",
     "storagePitch": "Un pla d'emmagatzematge l'augmenta a 100 MB per fitxer.",
-    "storagePitchCta": "Afegeix emmagatzematge"
+    "storagePitchCta": "Afegeix emmagatzematge",
+    "uploadingTitle_many": "S'estan pujant {{count}} fitxers"
   },
   "decryptErrors": {
     "tooSmall": "Aquest fitxer és buit o incomplet ({{size}} bytes), així que no hi ha res a restaurar. Torna a exportar la còpia i comprova que el fitxer desat té una mida real abans d'importar-lo.",
@@ -168,9 +188,5 @@
   },
   "saveErrors": {
     "shortWrite": "Només s'han desat {{written}} de {{expected}} bytes, així que el fitxer és incomplet. Torna-ho a provar desant a l'emmagatzematge del teu dispositiu en comptes d'una carpeta al núvol."
-  },
-  "browserImport": {
-    "tagLabel": "Conserva les etiquetes del teu navegador",
-    "tagDesc": "El Firefox desa etiquetes i una paraula clau de la barra d'adreces amb cada marcador. Aquí totes dues passen a ser etiquetes."
   }
 }

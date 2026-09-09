@@ -16,7 +16,8 @@ import {
   onWrappedBlobChange,
 } from './biometric';
 import { shouldPromptForPin, markPinUnlocked } from './pin';
-import { clearPin } from './pinRecovery';
+import { clearPin, phraseMatches } from './pinRecovery';
+import { phraseOwnsThisDevice } from './authStorage';
 import { startReLockWatch } from './appReLock';
 import { loadLocalSettings, saveLocalSettings } from './userSettings';
 import { hasStoredSession, isTrustedDevice } from './trustStorage';
@@ -50,16 +51,18 @@ const IS_DESKTOP = detectPlatform() !== 'web';
 const APEX_APP_RETIRED =
   isApexHost() && !isDemoMode() && detectPlatform() === 'web';
 
-// True when this page load is an OAuth redirect return: the URL hash still
-// carries the provider tokens supabase-js is about to consume. Captured at
-// module eval, before supabase-js strips the hash (it reads
-// window.location.href asynchronously behind navigator.locks - see the boot
-// effect in auth.tsx). Used to hold the loading screen through callback
-// processing instead of flashing the landing page.
+// True when this page load is an OAuth redirect return: the URL still carries
+// what supabase-js is about to consume, a PKCE `?code=` in the query (the
+// legacy implicit return carried `#access_token=` in the hash). Captured at
+// module eval, before supabase-js strips it (it reads window.location.href
+// asynchronously behind navigator.locks - see the boot effect in auth.tsx).
+// Used to hold the loading screen through callback processing instead of
+// flashing the landing page.
 
 const OAUTH_CALLBACK_AT_BOOT =
   typeof window !== 'undefined' &&
-  window.location.hash.includes('access_token=');
+  (window.location.hash.includes('access_token=') ||
+    new URLSearchParams(window.location.search).has('code'));
 
 // Code-split the two big halves of the app: visitors never parse the
 // notes app (TipTap, sync, modals) and returning users never parse the
@@ -167,7 +170,10 @@ export default function App() {
       if (e.defaultPrevented || e.button !== 0) return;
       const anchor = (e.target as Element | null)?.closest('a');
       const href = anchor?.getAttribute('href');
-      if (!href || !/^(https?:|mailto:)/i.test(href)) return;
+      // tel: and sms: ride along with mailto:: a contact's number is a
+      // handoff to the dialer, which the WebView cannot make on its own.
+      // Spec: ops/docs/plans/contacts-pillar.md (section 9, tap to call)
+      if (!href || !/^(https?:|mailto:|tel:|sms:)/i.test(href)) return;
       e.preventDefault();
       // iOS presents web links in an in-app SFSafariViewController sheet
       // ('inAppBrowser' is built into the opener plugin) instead of
@@ -345,13 +351,41 @@ export default function App() {
     setUnlockSignIn('error');
   }
 
-  async function handleLockScreenUnlock(phrase: string, recover = false) {
+  /**
+   * Every door on the lock screen lands here. The fingerprint and the PIN
+   * unwrap a blob this device holds, so their phrase is this account's by
+   * construction. The third door is typed, and a BIP-39 checksum says only
+   * that the words are well formed, never whose they are.
+   *
+   * Answers false when the phrase does not belong to the session behind the
+   * lock, so the screen can say so rather than appear to hang.
+   */
+  async function handleLockScreenUnlock(phrase: string, recover = false): Promise<boolean> {
+    // The lock screen is not a sign-in screen. It is up because this device
+    // armed an app lock, so the phrase typed into it has to be the phrase of
+    // the account behind that lock, and the refusal comes before anything
+    // here has a side effect, markPinUnlocked included.
+    //
+    // Two questions, because the two branches below know the account in two
+    // different ways. A re-lock leaves the session, the phrase and the seal
+    // key live behind the curtain, so there the phrase itself is the
+    // comparison. A cold start has no session, so the owner marker is - and
+    // that half is load-bearing: `tryFastBoot` refuses a foreign phrase but
+    // the branch below then falls through to a full sign-in, which signs the
+    // holder into their own account and takes the local vault with it on the
+    // owner-mismatch wipe. Signing in as somebody else stays available from
+    // the signed-out screen, where it is the deliberate act it looks like.
+    const belongsHere =
+      auth.status === 'authenticated'
+        ? phraseMatches(phrase, auth.phrase)
+        : await phraseOwnsThisDevice(phrase);
+    if (!belongsHere) return false;
     markPinUnlocked();
     unlockRecoverRef.current = recover;
     if (auth.status === 'authenticated') {
       if (recover) applyPinRecovery(phrase);
       setLocked(false);
-      return;
+      return true;
     }
     // Local-first, for the same reason the boot path is. Enabling app
     // lock strips the stored phrase, so a cold start has no session and
@@ -375,12 +409,13 @@ export default function App() {
       // persist while the lock is armed, so this cannot write the phrase
       // back to disk and undo the lock.
       void signInWithPhrase(phrase, isTrustedDevice());
-      return;
+      return true;
     }
     // Nothing local to render (a wiped or brand-new device), so the
     // network sign-in is the only door, exactly as before.
     unlockPhraseRef.current = phrase;
     void runUnlockSignIn(phrase);
+    return true;
   }
 
   // Consume any `#phrase=…` fragment exactly once on mount. This also

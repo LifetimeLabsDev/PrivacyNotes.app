@@ -3,6 +3,7 @@ import type { LocalNote } from './db';
 import { foldArabic } from './arabicFold';
 import { hasCJK, segmentWords } from './cjkSegment';
 import { perfSpan } from './perf';
+import { contactSearchText, parseContactBody } from './contactBody';
 
 /**
  * Client-side full-text search over decrypted notes.
@@ -37,8 +38,30 @@ let index: MiniSearch<IndexedDoc> | null = null;
 /** Set of all IDs currently in the index, for fast has-checks. */
 const indexedIds = new Set<string>();
 
+/**
+ * The body text the index reads for a note: the markdown body, or for a
+ * vault item the fields that are safe to search. A password is never in it,
+ * and neither is a card number. Exported so the phrase check the list runs
+ * on a hit (`noteSaysPhrase` in notesViewUtils) reads exactly what the index
+ * read, and never more.
+ */
+export function indexedBodyText(n: LocalNote): string {
+  // A contact indexes its name, its numbers (as typed and as digits, so
+  // "0176" finds "+49 176 ..."), its emails and its notes; never the uid,
+  // the photo or the unmodelled extras.
+  if (n.type === 'contact') return contactSearchText(parseContactBody(n.body));
+  if (n.type !== 'login' && n.type !== 'card' && n.type !== 'ssh-key') return n.body;
+  try {
+    const d = JSON.parse(n.body);
+    if (n.type === 'login') return [d.url ?? '', d.username ?? '', d.notes ?? ''].join(' ');
+    if (n.type === 'card') return [d.cardholderName ?? '', d.notes ?? ''].join(' ');
+    return [d.label ?? '', d.publicKey ?? '', d.notes ?? ''].join(' ');
+  } catch {
+    return n.body;
+  }
+}
+
 function noteToDoc(n: LocalNote): IndexedDoc {
-  let body = n.body;
   // Tags are indexed for EVERY type. A tag is a label the user typed and the
   // app shows in the list; it is never a secret, and dropping it here meant a
   // tag on a task, a journal, a file, a bookmark or a vault item could not be
@@ -46,19 +69,7 @@ function noteToDoc(n: LocalNote): IndexedDoc {
   // that plain: the pillar's own search box matched tags, this index did not,
   // which is one reason the pane grew a private search (2026-08-22).
   const tagsText = n.tags.join(' ');
-  if (n.type !== 'note') {
-    try {
-      const d = JSON.parse(n.body);
-      if (n.type === 'login') {
-        body = [d.url ?? '', d.username ?? '', d.notes ?? ''].join(' ');
-      } else if (n.type === 'card') {
-        body = [d.cardholderName ?? '', d.notes ?? ''].join(' ');
-      } else if (n.type === 'ssh-key') {
-        body = [d.label ?? '', d.publicKey ?? '', d.notes ?? ''].join(' ');
-      }
-    } catch { /* keep raw body as fallback */ }
-  }
-  return { id: n.id, title: n.title, body, tagsText };
+  return { id: n.id, title: n.title, body: indexedBodyText(n), tagsText };
 }
 
 // MiniSearch's default processTerm just lowercases. Composing foldArabic
@@ -84,12 +95,18 @@ function createIndex(): MiniSearch<IndexedDoc> {
       // Same tokenizer at query time, or CJK queries would split differently
       // from the indexed documents and never match.
       tokenize,
-      // Fuzzy on a short CJK token means "match almost anything" (a 1-edit
-      // distance over a 2-4 character word), so disable it for CJK terms while
-      // keeping the 0.2 typo tolerance for Latin queries.
-      fuzzy: (term: string) => (hasCJK(term) ? false : 0.2),
+      // No typo tolerance, in any script. One edit on a short word is another
+      // word ("test" reaches "best", "100" reaches "10"), so a note was listed
+      // for a word it does not hold and the find bar had nothing of the
+      // reader's to show. Prefix matching covers a word as it is typed.
+      fuzzy: false,
       prefix: true,
       boost: { title: 3, tagsText: 2 },
+      // Every word of a query must match. A note that holds one word of
+      // "encrypted on this device" is not what somebody typing that wants.
+      // The phrase itself is the list's job (`noteSaysPhrase`), and this is
+      // its cheap first cut: a note that says the phrase holds every word.
+      combineWith: 'AND',
     },
   });
 }
@@ -165,4 +182,49 @@ export function updateSearchIndex(
 export function searchNotes(query: string): string[] {
   if (!index || !query.trim()) return [];
   return index.search(query).map((r) => String(r.id));
+}
+
+/**
+ * The words in one hit's body that made it a hit for `query`, as the note
+ * spells them: a prefix search for "grow" reports "growth", because
+ * MiniSearch resolves a query against its term tree before it can find a
+ * document at all. Empty when the note was a hit on its title or its tags
+ * alone, which the editor has no text for. The find bar tries these after
+ * the typed string (GitHub #288).
+ */
+export function searchBodyTerms(query: string, id: string): string[] {
+  if (!index || !query.trim()) return [];
+  const hit = index.search(query).find((r) => String(r.id) === id);
+  if (!hit) return [];
+  return hit.terms.filter((term) => hit.match[term]?.includes('body'));
+}
+
+/**
+ * Whether a query is a phrase: anything the tokenizer splits into more than
+ * one term. A space, but also a hyphen, a dot or an apostrophe:
+ * "encrypted-images" is two terms to the index and one string to the reader,
+ * and the list and the bar both treat it as the string. A single term keeps
+ * prefix and typo tolerance.
+ */
+export function isPhraseQuery(query: string): boolean {
+  return tokenize(query.trim()).length > 1;
+}
+
+/**
+ * What the find bar tries for a hit, in order. A phrase goes in as typed and
+ * nothing else: the bar matches a literal run of text, the list only holds
+ * notes that say the phrase, and a note that does not say it gets no bar
+ * rather than one term of it. A single term goes in as typed first - the
+ * reader's own string, and a prefix lights up inside every word it starts -
+ * then the forms the index resolved it to, shortest first, for the text the
+ * typed string cannot reach as written (an Arabic word typed without its
+ * diacritics). Empty when nothing in the body matched.
+ */
+export function searchSeedCandidates(query: string, bodyTerms: string[]): string[] {
+  if (bodyTerms.length === 0) return [];
+  const typed = query.trim().replace(/\s+/g, ' ');
+  if (isPhraseQuery(typed)) return [typed];
+  const lower = typed.toLowerCase();
+  const resolved = bodyTerms.filter((t) => t !== lower).sort((a, b) => a.length - b.length);
+  return [typed, ...resolved];
 }

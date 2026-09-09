@@ -51,7 +51,7 @@ const MISS_TTL = 24 * 60 * 60;
  * cached response headers change (e.g. CORS) so stale entries are not served
  * to the native apps, which read the proxy cross-origin from tauri://localhost.
  */
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 
 /**
  * The PrivacyTools.io listing badge, carrying our live star rating.
@@ -101,10 +101,12 @@ const APEX_ORIGIN = 'https://privacynotes.app';
  * /burn, which renders content written by a stranger - has no business
  * allowlisting a payment CDN, and does not.
  *
- * The allowlist is scoped per path rather than site-wide because a site-wide
- * policy could not drop the Paddle hosts without taking /checkout down with
- * them. Per-path scoping removes them everywhere they are not needed and
- * leaves the policy on /checkout unchanged, so it cannot break a purchase.
+ * The allowlist is scoped per host and path rather than site-wide because a
+ * site-wide policy could not drop the Paddle hosts without taking /checkout
+ * down with them. Scoping removes them everywhere they are not needed and
+ * leaves the policy on the apex /checkout unchanged, so it cannot break a
+ * purchase. The host half is what keeps a payment CDN out of the origin that
+ * stores the phrase envelope.
  *
  * Spec: ops/docs/design-decisions.md (native checkout: desktop opens the system
  * browser), ops/docs/domain-split.md
@@ -146,6 +148,30 @@ const SECURITY_HEADERS: Record<string, string> = {
 
 /** Allowed characters for the domain parameter (basic sanitisation). */
 const DOMAIN_RE = /^[a-z0-9.-]+$/i;
+
+/**
+ * The only types this proxy serves, mapped to the name it serves them under.
+ *
+ * Echoing the upstream's own header put whatever a stranger's host chose
+ * into a response on our origin, and "contains the word image" admits
+ * image/svg+xml, which a browser treats as a document that can carry script.
+ * Both upstreams answer with ico and png in practice, so an allowlist costs
+ * nothing and removes the question. An unlisted type is a miss, not an error:
+ * the vault row falls back to its letter tile.
+ */
+const RASTER_TYPES: Record<string, string> = {
+  'image/x-icon': 'image/x-icon',
+  'image/vnd.microsoft.icon': 'image/x-icon',
+  'image/png': 'image/png',
+  'image/jpeg': 'image/jpeg',
+  'image/gif': 'image/gif',
+  'image/webp': 'image/webp',
+};
+
+/** The served type for an upstream content-type header, or null to refuse it. */
+function rasterType(contentType: string): string | null {
+  return RASTER_TYPES[contentType.split(';')[0]!.trim().toLowerCase()] ?? null;
+}
 
 /** Upstream favicon sources. */
 const SOURCES = {
@@ -285,10 +311,19 @@ export default {
     // /help/icons/ is exempt: the Import modal reuses those app icons
     // in-app, and a 301 to the apex gets blocked by the document CSP
     // (img-src has no apex entry), rendering broken images.
+    //
+    // /checkout goes too, and it is the one app route that does. It is the
+    // only page that loads a payment CDN, and this host is the one that
+    // stores the phrase envelope, so serving it here would put cdn.paddle.com
+    // and public.profitwell.com in script-src beside the phrase. Nothing
+    // legitimately opens it here: billing.ts targets the apex from every
+    // client, desktop binaries have the apex baked in, and Paddle's own
+    // default payment link points there.
     // Spec: ops/docs/domain-split.md
     if (url.hostname === APP_HOST) {
       const p = url.pathname;
       if (
+        p === CHECKOUT_PATH ||
         LOCALE_SLUGS.has(p) ||
         p === '/help' ||
         (p.startsWith('/help/') && !p.startsWith('/help/icons/')) ||
@@ -404,9 +439,14 @@ function withSecurityHeaders(response: Response, url: URL, status?: number): Res
   if (!ct.includes('text/html')) return response;
   const headers = new Headers(response.headers);
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
-  // The one page that may load Paddle. Everything else keeps the policy above,
-  // which names no payment host at all.
-  if (url.pathname === CHECKOUT_PATH) headers.set('Content-Security-Policy', CSP_CHECKOUT);
+  // The one page that may load Paddle, on the one host that serves it.
+  // Everything else keeps the policy above, which names no payment host at
+  // all. The host half matters as much as the path: the app host redirects
+  // this route away, and the demo host must never reach a payment CDN, so
+  // neither may widen its own script-src by being asked for /checkout.
+  if (url.hostname === APEX_HOST && url.pathname === CHECKOUT_PATH) {
+    headers.set('Content-Security-Policy', CSP_CHECKOUT);
+  }
   // Prevent edge cache from serving stale HTML without headers.
   headers.set('Cache-Control', 'no-cache');
   return new Response(response.body, { status: status ?? response.status, headers });
@@ -422,10 +462,11 @@ async function trySource(
       headers: { 'User-Agent': 'PrivacyNotes-Favicon-Proxy/1.0' },
     });
     const body = await res.arrayBuffer();
-    const contentType = res.headers.get('content-type') || '';
+    const contentType = rasterType(res.headers.get('content-type') || '');
     // DDG returns 200 with a tiny 1x1 placeholder for unknown domains.
-    // Google returns small PNGs. Reject anything < 100 bytes or non-image.
-    if (!res.ok || body.byteLength < 100 || !contentType.includes('image')) {
+    // Google returns small PNGs. Reject anything < 100 bytes or not a raster
+    // image we are willing to put our own name on.
+    if (!res.ok || body.byteLength < 100 || !contentType) {
       return null;
     }
     return { body, contentType };
@@ -474,6 +515,12 @@ async function handleFavicon(request: Request, url: URL): Promise<Response> {
       // Public icons, no credentials - allow any origin so the native apps
       // (tauri://localhost / http://tauri.localhost) can read the response.
       'Access-Control-Allow-Origin': '*',
+      // The bytes came from a stranger's host, so the response says what it
+      // is and refuses to be anything else. Same pair handleBadge sets on its
+      // own SVG: nosniff stops a browser guessing a document out of a raster
+      // type, and the policy leaves nothing for one to do if it did.
+      'X-Content-Type-Options': 'nosniff',
+      'Content-Security-Policy': "default-src 'none'",
     },
   });
 

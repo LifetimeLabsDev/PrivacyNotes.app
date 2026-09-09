@@ -35,7 +35,8 @@
     "journal": "اليوميات",
     "login": "بيانات تسجيل الدخول",
     "file": "ملف",
-    "bookmark": "إشارة مرجعية"
+    "bookmark": "إشارة مرجعية",
+    "contact": "جهة اتصال"
   },
   "vaultFilter": {
     "all": "الكل",
@@ -88,24 +89,25 @@
     "items": "العناصر",
     "trashed": "في المهملات",
     "notes": "الملاحظات",
-    "bookmarks": "الإشارات المرجعية"
+    "bookmarks": "الإشارات المرجعية",
+    "contacts": "جهات الاتصال"
   },
   "toast": {
     "imageUploadFailed": "فشل تحميل الصورة: {{error}}",
     "imageError": "خطأ في الصورة: {{error}}",
     "uploadFailedFor": "فشل تحميل «{{filename}}»: {{error}}",
-    "importedSyncing_zero": "تم استيراد {{count}} ملاحظات. جارٍ المزامنة…",
     "importedSyncing_one": "تم استيراد {{count}} ملاحظة. جارٍ المزامنة…",
+    "importedSyncing_other": "تم استيراد {{count}} ملاحظة. جارٍ المزامنة…",
+    "addedTag_one": "تمت إضافة الوسم #{{tag}} إلى {{count}} عنصر",
+    "addedTag_other": "تمت إضافة الوسم #{{tag}} إلى {{count}} عنصر",
+    "importedSyncing_zero": "تم استيراد {{count}} ملاحظات. جارٍ المزامنة…",
     "importedSyncing_two": "تم استيراد {{count}} ملاحظتين. جارٍ المزامنة…",
     "importedSyncing_few": "تم استيراد {{count}} ملاحظات. جارٍ المزامنة…",
     "importedSyncing_many": "تم استيراد {{count}} ملاحظة. جارٍ المزامنة…",
-    "importedSyncing_other": "تم استيراد {{count}} ملاحظة. جارٍ المزامنة…",
     "addedTag_zero": "تمت إضافة الوسم #{{tag}} إلى {{count}} عناصر",
-    "addedTag_one": "تمت إضافة الوسم #{{tag}} إلى {{count}} عنصر",
     "addedTag_two": "تمت إضافة الوسم #{{tag}} إلى {{count}} عنصرين",
     "addedTag_few": "تمت إضافة الوسم #{{tag}} إلى {{count}} عناصر",
-    "addedTag_many": "تمت إضافة الوسم #{{tag}} إلى {{count}} عنصر",
-    "addedTag_other": "تمت إضافة الوسم #{{tag}} إلى {{count}} عنصر"
+    "addedTag_many": "تمت إضافة الوسم #{{tag}} إلى {{count}} عنصر"
   },
   "burn": {
     "mediaOnly": "تحتوي هذه الملاحظة على وسائط فقط، ولا يمكن مشاركتها عبر رابط الحرق.",
@@ -180,6 +182,7 @@
     "widthFull": "عرض كامل",
     "burn": "مشاركة وحرق بعد القراءة",
     "titlePlaceholderLink": "اسم الإشارة المرجعية",
+    "titlePlaceholderContact": "الاسم",
     "notBackedUpTooLarge": "تتجاوز حد 1 ميغابايت، لذا لم تُنسخ احتياطيًا. انقل الصور إلى المرفقات أو قسّم الملاحظة.",
     "notBackedUpFailed": "غير منسوخة احتياطيًا. آخر خطأ: {{message}}. تجري إعادة المحاولة."
   },
@@ -227,6 +230,7 @@
     "importLabel": "الاستيراد والتصدير",
     "planLabel": "الحساب",
     "storageLabel": "مساحة التخزين",
+    "imagesLabel": "الصور",
     "securityLabel": "الأمان",
     "accountLabel": "الهوية والمزامنة",
     "appearanceLabel": "المظهر",
@@ -244,20 +248,20 @@
   },
   "bulkTrash": {
     "title": "نقل إلى المهملات",
-    "body_zero": "هل تريد نقل <highlight>{{count}} عناصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا.",
     "body_one": "هل تريد نقل <highlight>{{count}} عنصر</highlight> إلى المهملات؟ يمكنك استعادته لاحقًا.",
+    "body_other": "هل تريد نقل <highlight>{{count}} عنصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا.",
+    "body_zero": "هل تريد نقل <highlight>{{count}} عناصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا.",
     "body_two": "هل تريد نقل <highlight>{{count}} عنصرين</highlight> إلى المهملات؟ يمكنك استعادتهما لاحقًا.",
     "body_few": "هل تريد نقل <highlight>{{count}} عناصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا.",
-    "body_many": "هل تريد نقل <highlight>{{count}} عنصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا.",
-    "body_other": "هل تريد نقل <highlight>{{count}} عنصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا."
+    "body_many": "هل تريد نقل <highlight>{{count}} عنصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا."
   },
   "bulkDelete": {
-    "body_zero": "هل تريد حذف <highlight>{{count}} ملاحظات</highlight> نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
     "body_one": "هل تريد حذف <highlight>{{count}} ملاحظة</highlight> نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
+    "body_other": "هل تريد حذف <highlight>{{count}} ملاحظة</highlight> نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
+    "body_zero": "هل تريد حذف <highlight>{{count}} ملاحظات</highlight> نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
     "body_two": "هل تريد حذف <highlight>{{count}} ملاحظتين</highlight> نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
     "body_few": "هل تريد حذف <highlight>{{count}} ملاحظات</highlight> نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
-    "body_many": "هل تريد حذف <highlight>{{count}} ملاحظة</highlight> نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
-    "body_other": "هل تريد حذف <highlight>{{count}} ملاحظة</highlight> نهائيًا؟ لا يمكن التراجع عن هذا الإجراء."
+    "body_many": "هل تريد حذف <highlight>{{count}} ملاحظة</highlight> نهائيًا؟ لا يمكن التراجع عن هذا الإجراء."
   },
   "tagConfirm": {
     "mergeTitle": "دمج الوسوم",
@@ -266,24 +270,24 @@
     "mergeConfirm": "دمج",
     "deleteConfirm": "حذف الوسم",
     "moveToTrash": "نقل إلى المهملات",
-    "mergeBody_zero": "الوسم <highlight>«{{targetTag}}»</highlight> موجود بالفعل. هل تريد دمج <highlight>{{count}} ملاحظات</highlight> موسومة حاليًا بـ «{{tag}}» فيه؟",
     "mergeBody_one": "الوسم <highlight>«{{targetTag}}»</highlight> موجود بالفعل. هل تريد دمج <highlight>{{count}} ملاحظة</highlight> موسومة حاليًا بـ «{{tag}}» فيه؟",
+    "mergeBody_other": "الوسم <highlight>«{{targetTag}}»</highlight> موجود بالفعل. هل تريد دمج <highlight>{{count}} ملاحظة</highlight> موسومة حاليًا بـ «{{tag}}» فيه؟",
+    "deleteBody_one": "هل تريد إزالة الوسم <highlight>«{{tag}}»</highlight> من <highlight>{{count}} ملاحظة</highlight>؟ لن يتم حذف الملاحظة نفسها.",
+    "deleteBody_other": "هل تريد إزالة الوسم <highlight>«{{tag}}»</highlight> من <highlight>{{count}} ملاحظة</highlight>؟ لن يتم حذف الملاحظات نفسها.",
+    "deleteWithNotesBody_one": "هل تريد حذف الوسم <highlight>«{{tag}}»</highlight> ونقل <highlight>{{count}} ملاحظة</highlight> إلى المهملات؟ يمكنك استعادتها من هناك.",
+    "deleteWithNotesBody_other": "هل تريد حذف الوسم <highlight>«{{tag}}»</highlight> ونقل <highlight>{{count}} ملاحظة</highlight> إلى المهملات؟ يمكنك استعادتها من هناك.",
+    "mergeBody_zero": "الوسم <highlight>«{{targetTag}}»</highlight> موجود بالفعل. هل تريد دمج <highlight>{{count}} ملاحظات</highlight> موسومة حاليًا بـ «{{tag}}» فيه؟",
     "mergeBody_two": "الوسم <highlight>«{{targetTag}}»</highlight> موجود بالفعل. هل تريد دمج <highlight>{{count}} ملاحظتين</highlight> موسومتين حاليًا بـ «{{tag}}» فيه؟",
     "mergeBody_few": "الوسم <highlight>«{{targetTag}}»</highlight> موجود بالفعل. هل تريد دمج <highlight>{{count}} ملاحظات</highlight> موسومة حاليًا بـ «{{tag}}» فيه؟",
     "mergeBody_many": "الوسم <highlight>«{{targetTag}}»</highlight> موجود بالفعل. هل تريد دمج <highlight>{{count}} ملاحظة</highlight> موسومة حاليًا بـ «{{tag}}» فيه؟",
-    "mergeBody_other": "الوسم <highlight>«{{targetTag}}»</highlight> موجود بالفعل. هل تريد دمج <highlight>{{count}} ملاحظة</highlight> موسومة حاليًا بـ «{{tag}}» فيه؟",
     "deleteBody_zero": "هل تريد إزالة الوسم <highlight>«{{tag}}»</highlight> من <highlight>{{count}} ملاحظات</highlight>؟ لن يتم حذف الملاحظات نفسها.",
-    "deleteBody_one": "هل تريد إزالة الوسم <highlight>«{{tag}}»</highlight> من <highlight>{{count}} ملاحظة</highlight>؟ لن يتم حذف الملاحظة نفسها.",
     "deleteBody_two": "هل تريد إزالة الوسم <highlight>«{{tag}}»</highlight> من <highlight>{{count}} ملاحظتين</highlight>؟ لن يتم حذف الملاحظتين أنفسهما.",
     "deleteBody_few": "هل تريد إزالة الوسم <highlight>«{{tag}}»</highlight> من <highlight>{{count}} ملاحظات</highlight>؟ لن يتم حذف الملاحظات نفسها.",
     "deleteBody_many": "هل تريد إزالة الوسم <highlight>«{{tag}}»</highlight> من <highlight>{{count}} ملاحظة</highlight>؟ لن يتم حذف الملاحظات نفسها.",
-    "deleteBody_other": "هل تريد إزالة الوسم <highlight>«{{tag}}»</highlight> من <highlight>{{count}} ملاحظة</highlight>؟ لن يتم حذف الملاحظات نفسها.",
     "deleteWithNotesBody_zero": "هل تريد حذف الوسم <highlight>«{{tag}}»</highlight> ونقل <highlight>{{count}} ملاحظات</highlight> إلى المهملات؟ يمكنك استعادتها من هناك.",
-    "deleteWithNotesBody_one": "هل تريد حذف الوسم <highlight>«{{tag}}»</highlight> ونقل <highlight>{{count}} ملاحظة</highlight> إلى المهملات؟ يمكنك استعادتها من هناك.",
     "deleteWithNotesBody_two": "هل تريد حذف الوسم <highlight>«{{tag}}»</highlight> ونقل <highlight>{{count}} ملاحظتين</highlight> إلى المهملات؟ يمكنك استعادتهما من هناك.",
     "deleteWithNotesBody_few": "هل تريد حذف الوسم <highlight>«{{tag}}»</highlight> ونقل <highlight>{{count}} ملاحظات</highlight> إلى المهملات؟ يمكنك استعادتها من هناك.",
-    "deleteWithNotesBody_many": "هل تريد حذف الوسم <highlight>«{{tag}}»</highlight> ونقل <highlight>{{count}} ملاحظة</highlight> إلى المهملات؟ يمكنك استعادتها من هناك.",
-    "deleteWithNotesBody_other": "هل تريد حذف الوسم <highlight>«{{tag}}»</highlight> ونقل <highlight>{{count}} ملاحظة</highlight> إلى المهملات؟ يمكنك استعادتها من هناك."
+    "deleteWithNotesBody_many": "هل تريد حذف الوسم <highlight>«{{tag}}»</highlight> ونقل <highlight>{{count}} ملاحظة</highlight> إلى المهملات؟ يمكنك استعادتها من هناك."
   },
   "createNote": {
     "title": "إنشاء ملاحظة؟",
@@ -294,5 +298,9 @@
     "title": "تم إنشاء خزنة جديدة",
     "confirm": "فهمت",
     "body": "لم تُطابق أي خزنة موجودة العبارة التي أدخلتها، لذا أُنشئت خزنة جديدة فارغة. إذا كنت تتوقع رؤية ملاحظاتك، فسجّل الخروج وأعد إدخال عبارتك بعناية - فكلمة واحدة مختلفة تفتح خزنة مختلفة تمامًا."
+  },
+  "ambiguousLink": {
+    "title": "ملاحظتان تحملان العنوان نفسه",
+    "body": "أكثر من ملاحظة تحمل العنوان <highlight>«{{title}}»</highlight>، لذلك لا يوضّح هذا الرابط أيّهما يقصد. أعد تسمية إحداهما ليشير الرابط إلى الأخرى."
   }
 }

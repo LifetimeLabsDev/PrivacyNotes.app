@@ -5,7 +5,7 @@ import type { LocalNote } from './db';
 import { computeStats } from './stats';
 import { countWords } from './wordCountUtils';
 import { toLocalIso } from './notesViewUtils';
-import { computeTrackerStats, exportTrackerJSON, generateAIPrompt, generateDoctorReport, type TrackerStats, type PatternInsight } from './trackerStats';
+import { computeTrackerStats, exportTrackerJSON, generateAIPrompt, generateDoctorReport, insightText, type TrackerStats, type PatternInsight } from './trackerStats';
 import type { MedicationTemplate } from './trackerTypes';
 import { useEscapeToClose } from './useEscapeToClose';
 import { MOOD_ANCHORS } from './trackerTypes';
@@ -14,6 +14,7 @@ import { detectPlatform } from './devices';
 import { proUnlocked } from './demo';
 import { SectionEyebrow, SETTINGS_EYEBROW } from './settingsUI';
 import { intlLocale } from './languages';
+import { weekdayDate, weekdayLabel } from './intlFormat';
 import { HelpChip } from './HelpChip';
 
 type Props = {
@@ -138,7 +139,6 @@ const RANGES: { id: RangeId; days?: number; weeks?: number; form: 'bars' | 'heat
 // Per-device view preference; not synced (a phone and a 27" monitor want
 // different ranges).
 const STATS_RANGE_KEY = 'pn-stats-range';
-const WEEKDAY = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
 // Default to the smallest preset whose window covers the account's age, so a
 // new account opens on a dense view instead of a near-empty 12-month grid.
@@ -300,7 +300,7 @@ function WritingTab({
               <div className="flex gap-[3px] mt-1">
                 {days.map((d) => (
                   <div key={d.date} className="flex-1 text-center text-[9px] text-pn-muted/75">
-                    {WEEKDAY[new Date(d.date).getUTCDay()]}
+                    {weekdayLabel(new Date(d.date), 'narrow')}
                   </div>
                 ))}
               </div>
@@ -371,6 +371,7 @@ function WellnessTab({
   onWeekReflectionChange?: (text: string) => void;
 }) {
   const { t } = useTranslation('stats');
+  const { t: tt } = useTranslation('trackers');
   const [sub, setSub] = useState<WellnessSubTab>('overview');
   const [copied, setCopied] = useState(false);
   const [exportRange, setExportRange] = useState<'all' | '30' | '90' | '7'>('all');
@@ -392,7 +393,7 @@ function WellnessTab({
 
   const handleCopyAIPrompt = useCallback(() => {
     if (!unlocked) { onOpenUpgrade?.(); return; }
-    const prompt = generateAIPrompt(stats, medications);
+    const prompt = generateAIPrompt(stats, medications, t);
     void navigator.clipboard.writeText(prompt).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -476,7 +477,7 @@ function WellnessTab({
                         className="w-full rounded-t"
                         style={{ height: `${pct}%`, backgroundColor: moodColor(d.avg), opacity: d.count > 0 ? 0.8 : 0.2 }}
                       />
-                      <span className="text-[9px] text-pn-muted">{d.label}</span>
+                      <span className="text-[9px] text-pn-muted">{weekdayLabel(weekdayDate(d.day), 'short')}</span>
                     </div>
                   );
                 })}
@@ -505,7 +506,7 @@ function WellnessTab({
                 type="button"
                 onClick={async () => {
                   if (!unlocked) { onOpenUpgrade?.(); return; }
-                  const html = generateDoctorReport(stats, medications);
+                  const html = generateDoctorReport(stats, medications, t);
                   if (detectPlatform() === 'web') {
                     const w = window.open('', '_blank');
                     if (w) { w.document.write(html); w.document.close(); }
@@ -546,7 +547,7 @@ function WellnessTab({
                   const pct = total > 0 ? (s.count / total) * 100 : 0;
                   return (
                     <div key={s.quality} className="flex items-center gap-2">
-                      <span className="text-[11px] w-14 text-end text-pn-muted">{s.label}</span>
+                      <span className="text-[11px] w-20 text-end text-pn-muted">{tt(`sleep.quality.${s.quality}`)}</span>
                       <div className="flex-1 h-4 bg-surface-0 rounded overflow-hidden">
                         <div className="h-full rounded transition-all" style={{ width: `${pct}%`, backgroundColor: '#7F77DD' }} />
                       </div>
@@ -567,7 +568,7 @@ function WellnessTab({
                   const pct = total > 0 ? (a.count / total) * 100 : 0;
                   return (
                     <div key={a.level} className="flex items-center gap-2">
-                      <span className="text-[11px] w-14 text-end text-pn-muted">{a.label}</span>
+                      <span className="text-[11px] w-20 text-end text-pn-muted">{tt(`activity.level.${a.level}`)}</span>
                       <div className="flex-1 h-4 bg-surface-0 rounded overflow-hidden">
                         <div className="h-full rounded transition-all" style={{ width: `${pct}%`, backgroundColor: '#1D9E75' }} />
                       </div>
@@ -633,7 +634,7 @@ function WellnessTab({
               <div className="flex flex-wrap gap-1.5">
                 {stats.emotionFrequency.slice(0, 12).map((e) => (
                   <span key={e.key} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-surface-0 text-pn-soft">
-                    {e.label}
+                    {tt(`emotions.tags.${e.key}`)}
                     <span className="text-pn-muted">{e.count}</span>
                   </span>
                 ))}
@@ -695,10 +696,11 @@ const PATTERN_ICONS: Record<string, string> = {
 };
 
 function PatternCard({ pattern }: { pattern: PatternInsight }) {
+  const { t } = useTranslation('stats');
   return (
     <div className="flex items-start gap-2 rounded-md bg-track border border-divider px-3 py-2">
       <span className="text-xs font-mono text-accent mt-0.5">{PATTERN_ICONS[pattern.type] ?? '?'}</span>
-      <span className="text-xs text-pn-soft leading-relaxed">{pattern.text}</span>
+      <span className="text-xs text-pn-soft leading-relaxed">{insightText(pattern, t)}</span>
     </div>
   );
 }
@@ -757,6 +759,7 @@ function WeekCard({ week, reflection, onReflectionChange }: {
   onReflectionChange?: (text: string) => void;
 }) {
   const { t } = useTranslation('stats');
+  const { t: tt } = useTranslation('trackers');
   return (
     <div className="rounded-lg border border-divider bg-track p-4 space-y-3">
       <div className="flex items-center justify-between">
@@ -791,7 +794,7 @@ function WeekCard({ week, reflection, onReflectionChange }: {
         )}
         {week.dominantActivity && (
           <div>
-            <div className="text-lg font-semibold">{week.dominantActivity.label}</div>
+            <div className="text-lg font-semibold">{tt(`activity.level.${week.dominantActivity.level}`)}</div>
             <SectionEyebrow>{t('wellness.week.topActivity')}</SectionEyebrow>
           </div>
         )}
@@ -802,7 +805,7 @@ function WeekCard({ week, reflection, onReflectionChange }: {
           <div className="flex flex-wrap gap-1">
             {week.topEmotions.map((e) => (
               <span key={e.key} className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-track text-pn-muted">
-                {e.label} ({e.count})
+                {tt(`emotions.tags.${e.key}`)} ({e.count})
               </span>
             ))}
           </div>

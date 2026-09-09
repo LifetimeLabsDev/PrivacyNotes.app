@@ -500,6 +500,13 @@
         "Everything arrives as new items and nothing you already have is overwritten, so restoring the same file twice leaves you with two copies of every note. Both encrypted formats open only in the account that created them, because they are encrypted with that account's phrase key, while a .zip restores into any vault ([which backup to make](/help/backup-strategy/))."
       ]
     },
+    "image-quality": {
+      "q": "Does PrivacyNotes change or compress my images?",
+      "a": [
+        "Yes. Both settings are on by default because we love our users: we want you to save storage space and keep your privacy. Space saver shrinks a large image to fit 2048 pixels and saves it as JPEG at 85% quality, which keeps all the detail a screen can show. Remove location data strips the EXIF metadata a camera writes into a photo, including the GPS location, before the image is saved. Both apply to every image in the app: pasted into a note, added as a file, or imported.",
+        "Turn either off under **Settings > Images**, where contact photos have a third switch that keeps them at 512 pixels. The settings apply to new images only; files that are not images are stored exactly as they are. HEIC and TIFF images are converted to JPEG, because only Safari can show them. A backup you restore is written back byte for byte."
+      ]
+    },
     "storage-usage": {
       "q": "What counts against my storage, and how do I free space?",
       "a": [

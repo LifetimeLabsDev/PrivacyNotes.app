@@ -1,6 +1,6 @@
 {
   "identifier": "ios",
-  "description": "iOS-only permissions: in-app OAuth session (guideline 4); the itms-apps URL that jumps to the App Store's subscription-management page (storage cancel); and opening http(s) URLs with an explicit application, which is what presenting them in the in-app SFSafariViewController sheet ('inAppBrowser') requires. Separate file from mobile.json because auth-session is only compiled for iOS - an Android ACL build must never see its permission identifier.",
+  "description": "iOS-only permissions: in-app OAuth session (guideline 4); the itms-apps URL that jumps to the App Store's subscription-management page (storage cancel); opening http(s) URLs with an explicit application, which is what presenting them in the in-app SFSafariViewController sheet ('inAppBrowser') requires; and the tel:, sms: and mailto: schemes a contact's rows hand to the dialer, Messages and Mail (never with an application, so they can never land in the browser sheet). Every scheme the app opens must be listed: the ACL refuses silently, which is how every external link died once. Separate file from mobile.json because auth-session is only compiled for iOS - an Android ACL build must never see its permission identifier.",
   "platforms": [
     "iOS"
   ],
@@ -22,6 +22,15 @@
         {
           "url": "http://*",
           "app": true
+        },
+        {
+          "url": "tel:*"
+        },
+        {
+          "url": "sms:*"
+        },
+        {
+          "url": "mailto:*"
         }
       ]
     }

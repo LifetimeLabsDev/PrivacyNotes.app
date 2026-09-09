@@ -11,6 +11,7 @@ export function WeekInReview({
   medications: MedicationTemplate[];
 }) {
   const { t } = useTranslation('notes');
+  const { t: tt } = useTranslation('trackers');
   // Full list, tombstones included - a deleted medication's logged doses
   // still need a name to render against.
   const tStats = computeTrackerStats(notes, medications);
@@ -35,13 +36,13 @@ export function WeekInReview({
         )}
         {w.avgSleepHours != null && <span className="text-neutral-700 dark:text-neutral-300">{t('weekReview.sleep')} <strong>{w.avgSleepHours}h</strong></span>}
         {w.medAdherence != null && <span className="text-neutral-700 dark:text-neutral-300">{t('weekReview.meds')} <strong>{w.medAdherence}%</strong></span>}
-        {w.dominantActivity && <span className="text-neutral-700 dark:text-neutral-300">{t('weekReview.activity')} <strong>{w.dominantActivity.label}</strong></span>}
+        {w.dominantActivity && <span className="text-neutral-700 dark:text-neutral-300">{t('weekReview.activity')} <strong>{tt(`activity.level.${w.dominantActivity.level}`)}</strong></span>}
       </div>
       {w.topEmotions.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {w.topEmotions.slice(0, 3).map((em) => (
             <span key={em.key} className="px-1.5 py-0.5 rounded text-[10px] bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
-              {em.label}
+              {tt(`emotions.tags.${em.key}`)}
             </span>
           ))}
         </div>

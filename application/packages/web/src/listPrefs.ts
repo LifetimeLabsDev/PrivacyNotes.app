@@ -75,7 +75,7 @@ export type ListPrefs = {
  */
 import type { View } from './views';
 
-export type Pillar = 'global' | 'notes' | 'tasks' | 'journal' | 'vault' | 'files' | 'bookmarks';
+export type Pillar = 'global' | 'notes' | 'tasks' | 'journal' | 'vault' | 'files' | 'bookmarks' | 'contacts';
 
 /**
  * The full prefs document: a global default plus optional per-pillar
@@ -89,6 +89,7 @@ export type ListPrefsStore = {
   vault?: ListPrefs;
   files?: ListPrefs;
   bookmarks?: ListPrefs;
+  contacts?: ListPrefs;
 };
 
 const DEFAULT_PREFS: ListPrefs = {
@@ -137,6 +138,11 @@ export const DEFAULT_STORE: ListPrefsStore = {
  */
 const PILLAR_DEFAULTS: Partial<Record<Pillar, Partial<ListPrefs>>> = {
   bookmarks: { showDate: false, showTags: false, showNoteLinks: true },
+  // Contacts: a person's row says who they are and how to reach them; the
+  // date of the last edit is noise there. Sort stays the global default
+  // (date modified), by decision, and A to Z is one click away.
+  // Spec: ops/docs/plans/contacts-pillar.md (section 10, PILLAR_DEFAULTS)
+  contacts: { showDate: false },
   files: { showPreview: false, showDate: false },
   journal: { showDate: false },
   vault: { showDate: false },
@@ -183,6 +189,7 @@ export function hydrateListPrefsStore(raw: unknown): ListPrefsStore {
   if (obj.vault !== undefined) base.vault = hydratePrefs(obj.vault);
   if (obj.files !== undefined) base.files = hydratePrefs(obj.files);
   if (obj.bookmarks !== undefined) base.bookmarks = hydratePrefs(obj.bookmarks);
+  if (obj.contacts !== undefined) base.contacts = hydratePrefs(obj.contacts);
   // Migrate legacy 'logins' key to 'vault'.
   if (!obj.vault && (obj as Record<string, unknown>).logins !== undefined) {
     base.vault = hydratePrefs((obj as Record<string, unknown>).logins);
@@ -249,5 +256,6 @@ export function viewToPillar(view: View): Pillar {
   if (view === 'vault') return 'vault';
   if (view === 'files') return 'files';
   if (view === 'bookmarks') return 'bookmarks';
+  if (view === 'contacts') return 'contacts';
   return 'global';
 }

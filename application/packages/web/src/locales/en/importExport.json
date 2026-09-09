@@ -30,6 +30,15 @@
     "tagLabel": "Keep tags from your browser",
     "tagDesc": "Firefox saves tags and an address-bar keyword with a bookmark. Both become tags here."
   },
+  "contactImport": {
+    "photosLabel": "Import photos",
+    "photosDesc_one": "{{count}} photo, about {{size}} once the app sizes it down. That is {{pct}}% of the {{free}} you have free.",
+    "photosDesc_other": "{{count}} photos, about {{size}} once the app sizes them down. That is {{pct}}% of the {{free}} you have free.",
+    "photosDescNoQuota_one": "{{count}} photo, about {{size}} once the app sizes it down.",
+    "photosDescNoQuota_other": "{{count}} photos, about {{size}} once the app sizes them down.",
+    "photosTooBig_one": "Not enough space for the photo ({{size}}), so it is left out. Everything else comes across. Free up {{shortfall}}, or add storage, and import again to bring it in.",
+    "photosTooBig_other": "Not enough space for the {{count}} photos ({{size}}), so they are left out. Everything else comes across. Free up {{shortfall}}, or add storage, and import again to bring them in."
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (Keep folder) or a single .json note. Checklists import as native task lists.",
     "appleNotes": "Export via the free Exporter app as Markdown, then drop the .zip here.",
@@ -44,6 +53,7 @@
     "markdownFolder": ".md or .txt files individually or as a .zip. A zipped folder keeps its subfolders and brings its images and attachments along.",
     "markdownApp": "These notes are already Markdown files in a folder. Drop that folder in as a .zip and its subfolders, images, and #tags come with it.",
     "browserBookmarks": "The bookmarks .html file from your browser’s \"Export bookmarks\", or the .zip Safari writes. Chrome, Firefox, Safari, Edge, Opera, Brave, and Vivaldi all hold the same file. Folders and dates come along.",
+    "vcard": "The .vcf file your address book exports: iPhone and Mac through iCloud or Contacts, Android, Google Contacts. Every card comes across, photos included, and importing the same file twice skips the people you already have.",
     "bitwarden": "Unencrypted .json vault export from Bitwarden (Tools > Export vault > .json). Logins, cards, SSH keys, secure notes, and TOTP codes all come along.",
     "browserPasswords": "The passwords .csv from Chrome, Edge, Brave, Opera, Vivaldi, Firefox, or Safari, or the .zip Safari writes. Each row becomes a login. Delete the file when you are done - it holds your passwords in plain text."
   },
@@ -81,6 +91,7 @@
     "headsUpLabel": "Heads up:",
     "duplicateWarning": "importing adds these as new notes. If you run this twice, you’ll get duplicates. There’s no automatic dedupe yet.",
     "duplicateSkipNote": "bookmarks you have already saved are skipped, so running this twice will not duplicate anything.",
+    "contactSkipNote": "people you have already saved are skipped and left as they are, so running this twice will not duplicate anyone.",
     "quotaExceeded": "<strong>Storage too low to import.</strong> Estimated {{needed}} needed, {{available}} available. Free up space or upgrade before importing.",
     "quotaWarning": "Heads up: this import will use roughly {{needed}} of your {{available}} remaining storage.",
     "oversizeAttachments_one": "1 file is larger than the {{limit}} per-file limit on your plan. It imports to this device, but it will not sync to your other devices until you upgrade.",
@@ -97,6 +108,8 @@
     "card_other": "cards",
     "sshKey_one": "SSH key",
     "sshKey_other": "SSH keys",
+    "contact_one": "contact",
+    "contact_other": "contacts",
     "zeroItems": "0 items",
     "importButton": "Import {{counts}}"
   },
@@ -122,7 +135,10 @@
     "vaultExportDesc": "Logins, cards, and SSH keys in Bitwarden-compatible format. Importable by most password managers. Plaintext - handle with care.",
     "bookmarksOnlyHeading": "Bookmarks only",
     "bookmarksExportTitle": "Bookmarks file (.html)",
-    "bookmarksExportDesc": "The standard bookmarks file every browser reads. Import it into Chrome, Firefox, Safari, or Edge with your folders intact."
+    "bookmarksExportDesc": "The standard bookmarks file every browser reads. Import it into Chrome, Firefox, Safari, or Edge with your folders intact.",
+    "contactsOnlyHeading": "Contacts only",
+    "contactsExportTitle": "Contacts file (.vcf)",
+    "contactsExportDesc": "The vCard file every phone and address book reads. Import it into iPhone, Android, Google Contacts, or Contacts on the Mac, labels and groups intact."
   },
   "exportProgress": {
     "failedTitle": "Export failed",

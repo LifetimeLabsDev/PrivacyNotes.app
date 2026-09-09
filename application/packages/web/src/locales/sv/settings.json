@@ -74,7 +74,17 @@
     "needMore": "Behöver du mer utrymme?",
     "proSpacePitch": "Du har gratisplanen. Pro har 500 MB inbyggt, tio gånger så mycket utrymme som du har nu.",
     "earlyAdopterSave": "Tidig användare · spara {{amount}} $",
-    "oneTime": "engångsbetalning"
+    "oneTime": "engångsbetalning",
+    "imageSettingsLink": "Bildinställningar"
+  },
+  "images": {
+    "spaceSaverTitle": "Utrymmessparare",
+    "spaceSaverDesc": "Krympt till {{px}} pixlar och sparad som JPEG med {{quality}} % kvalitet. Lite mindre detalj för en bråkdel av utrymmet.",
+    "removeLocationTitle": "Ta bort platsdata",
+    "removeLocationDesc": "Platsen där en bild togs tas bort innan den sparas, överallt i appen.",
+    "contactTitle": "Små kontaktfoton",
+    "contactDesc": "Ryms inom {{px}} pixlar, den största storlek appen visar dem i. Avstängt följer de utrymmesspararens inställningar.",
+    "applyNote": "Bara nya bilder. Bilder du redan har sparat ändras inte, och filer som inte är bilder rörs aldrig."
   },
   "devices": {
     "heading": "Registrerade enheter",
@@ -111,8 +121,8 @@
   },
   "accountId": {
     "heading": "Konto-ID",
-    "copyId": "Kopiera ID",
-    "report": "Supportrapport"
+    "report": "Supportrapport",
+    "copyId": "Kopiera ID"
   },
   "revoke": {
     "title": "Ta bort ”{{name}}”?",
@@ -243,8 +253,8 @@
     "pausedAria": "Synkning pausad",
     "wifiHold": "Väntar på wifi",
     "wifiHoldTooltip": "Filerna laddas upp när wifi är tillbaka. Anteckningarna synkar som vanligt.",
-    "notSynced": "Inte synkad",
     "notBackedUp": "Inte säkerhetskopierad",
+    "notSynced": "Inte synkad",
     "notBackedUpTooltip_one": "{{count}} anteckning är inte säkerhetskopierad. Klicka för att se varför.",
     "notBackedUpTooltip_other": "{{count}} anteckningar är inte säkerhetskopierade. Klicka för att se varför.",
     "notBackedUpAria_one": "{{count}} anteckning är inte säkerhetskopierad",

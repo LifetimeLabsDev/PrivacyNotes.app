@@ -39,6 +39,12 @@
     "alreadyOwned": "ストアによると、この商品はすでに購入済みですが、別のアカウントに紐づいています。購入したときに使っていたリカバリーフレーズでサインインしてください。"
   },
   "checkout": {
+    "confirmTitle": "購入内容の確認",
+    "confirmPro": "PrivacyNotes Pro、{{price}} ドルの1回払いです。",
+    "confirmStorage": "追加ストレージ {{gb}} GB、年額 {{price}} ドルです。",
+    "confirmAccount": "次のアカウントが解除されます。",
+    "confirmCheck": "設定を開いて同期に進み、アカウントIDが一致するか確認してください。一致しない場合はこのタブを閉じてください。支払っても別の人のアカウントが解除されます。",
+    "confirmButton": "支払いに進む",
     "invalidTitle": "チェックアウトリンクが無効です",
     "invalidBody": "購入をアカウントに紐付けるため、アプリ内からチェックアウトを開いてください。",
     "completeTitle": "支払いが完了しました",

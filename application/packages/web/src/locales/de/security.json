@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "Biometrie-Unterstützung wird geprüft...",
     "description": "Entsperre per Fingerabdruck oder Gesicht. Fügt eine biometrische Hürde hinzu, damit niemand in der Nähe auf deine Notizen zugreifen kann.",
-    "trustFirst": "Aktiviere zuerst \"Diesem Gerät vertrauen\", um die biometrische Entsperrung zu nutzen. Nicht vertrauenswürdige Geräte löschen alle Daten, wenn der Tab geschlossen wird.",
+    "trustFirst": "Aktiviere zuerst \"Diesem Gerät vertrauen\". Die biometrische Entsperrung und die App-Sperre legen beide eine Kopie deiner Wiederherstellungsphrase auf diesem Gerät ab, und dafür ist ein nicht vertrauenswürdiges Gerät nicht gedacht.",
     "notAvailable": "Die biometrische Entsperrung ist auf diesem Gerät nicht verfügbar. Dein Browser oder deine Hardware unterstützt keinen Plattform-Authentifikator (Touch ID, Face ID, Windows Hello).",
     "enabledFlash": "Biometrische Entsperrung aktiviert.",
     "enrolledOnDevice": "Auf diesem Gerät eingerichtet",
@@ -199,12 +199,6 @@
     "signOut": "Abmelden",
     "thisDevice": "Dieses Gerät",
     "lastActive": "{{platform}} · zuletzt aktiv {{when}}",
-    "removing": "Wird entfernt...",
-    "relative": {
-      "justNow": "gerade eben",
-      "minutes": "vor {{count}} Min.",
-      "hours": "vor {{count}} Std.",
-      "days": "vor {{count}} T."
-    }
+    "removing": "Wird entfernt..."
   }
 }

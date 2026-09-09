@@ -500,6 +500,13 @@
         "Allt kommer in som nya poster och inget av det du redan har skrivs över, så att återställa samma fil två gånger lämnar dig med två kopior av varje anteckning. Båda de krypterade formaten öppnas bara i kontot som skapade dem, eftersom de är krypterade med det kontots frasnyckel; en .zip går in i vilket valv som helst ([vilken säkerhetskopia du ska ta](/sv/help/backup-strategy/))."
       ]
     },
+    "image-quality": {
+      "q": "Ändrar eller komprimerar PrivacyNotes mina bilder?",
+      "a": [
+        "Ja. Båda inställningarna är på som standard eftersom vi älskar våra användare: vi vill att du sparar lagringsutrymme och behåller din integritet. Utrymmessparare krymper en stor bild till 2048 pixlar och sparar den som JPEG med 85 % kvalitet, vilket behåller all detalj en skärm kan visa. Ta bort platsdata rensar EXIF-metadata som en kamera skriver in i ett foto, inklusive GPS-positionen, innan bilden sparas. Båda gäller varje bild i appen: inklistrad i en anteckning, tillagd som fil eller importerad.",
+        "Stäng av endera under **Inställningar > Bilder**, där kontaktfoton har en tredje brytare som håller dem på 512 pixlar. Inställningarna gäller bara nya bilder; filer som inte är bilder sparas exakt som de är. HEIC- och TIFF-bilder konverteras till JPEG, eftersom bara Safari kan visa dem. En säkerhetskopia du återställer skrivs tillbaka byte för byte."
+      ]
+    },
     "storage-usage": {
       "q": "Vad räknas mot min lagring, och hur frigör jag utrymme?",
       "a": [

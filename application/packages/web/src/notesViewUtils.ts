@@ -4,10 +4,12 @@
  */
 
 import type { LocalNote } from './db';
+import { indexedBodyText, isPhraseQuery } from './search';
 import type { ListPrefs } from './listPrefs';
 import { formatBytes } from './formatBytes';
 import { intlLocale } from './languages';
 import { parseLinkBody, linkDomain } from './linkBody';
+import { contactDisplayName, contactPhotoBytes, contactSecondLine, parseContactBody } from './contactBody';
 
 /** Regex to match pn:file/ links in note bodies. */
 const FILE_LINK_STRIP = /\[[^\]]*\]\(pn:file\/[0-9a-f-]{36}\)/g;
@@ -108,7 +110,10 @@ export function estimateNoteStoredBytes(
  * Matches the server's total_bytes + image_bytes accounting.
  */
 export function computeNoteTotalSize(n: LocalNote): number {
-  return estimateNoteCiphertextBytes(n) + sumAttachmentBlobBytes(n.body ?? '');
+  const body = n.body ?? '';
+  // A contact's photo is an image blob, and the body records its size.
+  const photo = n.type === 'contact' ? contactPhotoBytes(body) : 0;
+  return estimateNoteCiphertextBytes(n) + sumAttachmentBlobBytes(body) + (photo > 0 ? estimateBlobBytes(photo) : 0);
 }
 
 /**
@@ -262,6 +267,27 @@ export function stripToPlainText(line: string): string {
   ).trim();
 }
 
+/**
+ * Whether a note says `query` as typed: several terms (`isPhraseQuery`), in
+ * that order, within one line of the text the index reads
+ * (`indexedBodyText`, so a vault password is never consulted) or in the
+ * title. Case, runs of whitespace and inline markup do not count, because
+ * the reader is matching what the editor shows; the raw line is tried too,
+ * for a string the stripper would eat, like a name with underscores. One
+ * term is never a phrase. The list holds only the hits that say the phrase
+ * (GitHub #288).
+ */
+export function noteSaysPhrase(n: LocalNote, query: string): boolean {
+  if (!isPhraseQuery(query)) return false;
+  const phrase = query.trim().replace(/\s+/g, ' ').toLowerCase();
+  const says = (text: string) => text.replace(/\s+/g, ' ').toLowerCase().includes(phrase);
+  if (says(n.title)) return true;
+  for (const line of indexedBodyText(n).split(/\r?\n/)) {
+    if (says(stripToPlainText(line)) || says(line)) return true;
+  }
+  return false;
+}
+
 // First non-empty line of the body, stripped of the cheapest markdown
 // syntax (#, *, _, backtick, list markers, link syntax). Used as the
 // auto-title fallback, as the excerpt seed, and by any other preview
@@ -287,6 +313,10 @@ export function deriveDisplayTitle(n: LocalNote): string {
   // ops/docs/plans/bookmarks-pillar.md section 2 - never stored).
   if (n.type === 'link') {
     return linkDomain(parseLinkBody(n.body).url) || 'Untitled';
+  }
+  // Contacts: the name the fields spell, else the company, else an address.
+  if (n.type === 'contact') {
+    return contactDisplayName('', parseContactBody(n.body)) || 'Unnamed contact';
   }
   // Vault items: never show raw JSON as title.
   if (n.type === 'login') return 'Untitled login';
@@ -443,6 +473,10 @@ export function deriveExcerpt(n: LocalNote): string {
   // unnamed row shows the domain as title and the URL here).
   if (n.type === 'link') {
     return parseLinkBody(n.body).url;
+  }
+  // Contacts: the first number, else the company, else the first email.
+  if (n.type === 'contact') {
+    return contactSecondLine(parseContactBody(n.body));
   }
   if (n.type === 'card') {
     try {
@@ -636,4 +670,6 @@ export const VAULT_EMPTY_BODIES: Record<string, string> = {
   login: JSON.stringify({ url: '', username: '', password: '', notes: '' }),
   card: JSON.stringify({ cardholderName: '', cardNumber: '', expMonth: '', expYear: '', cvv: '', billingZip: '', notes: '' }),
   'ssh-key': JSON.stringify({ label: '', privateKey: '', publicKey: '', passphrase: '', notes: '' }),
+  // A contact stores only what exists, so its empty body is the empty document.
+  contact: '{}',
 };

@@ -16,7 +16,7 @@ import { Download } from './icons';
  * Spec: ops/docs/design-decisions.md (bookmarks import prompt)
  */
 
-export type ImportPromptKind = 'notes' | 'journal' | 'tasks' | 'vault' | 'bookmarks';
+export type ImportPromptKind = 'notes' | 'journal' | 'tasks' | 'vault' | 'bookmarks' | 'contacts';
 
 /**
  * The offer retires at this many items in the pillar: past it the pillar is
@@ -33,6 +33,7 @@ const IMPORT_PROMPT_MAX_ITEMS: Record<ImportPromptKind, number> = {
   tasks: 25,
   vault: 50,
   bookmarks: 50,
+  contacts: 50,
 };
 
 /** Device-local UI chrome, like the sidebar collapse flags. One key per

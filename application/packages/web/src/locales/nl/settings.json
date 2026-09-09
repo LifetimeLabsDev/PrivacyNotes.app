@@ -74,7 +74,17 @@
     "needMore": "Meer ruimte nodig?",
     "proSpacePitch": "Je zit op het gratis plan. Pro heeft standaard 500 MB, tien keer zoveel als je nu hebt.",
     "earlyAdopterSave": "Early adopter · bespaar ${{amount}}",
-    "oneTime": "eenmalig"
+    "oneTime": "eenmalig",
+    "imageSettingsLink": "Afbeeldingsinstellingen"
+  },
+  "images": {
+    "spaceSaverTitle": "Ruimtebespaarder",
+    "spaceSaverDesc": "Verkleind tot {{px}} pixels en opgeslagen als JPEG met {{quality}} % kwaliteit. Iets minder detail voor een fractie van de ruimte.",
+    "removeLocationTitle": "Locatiegegevens verwijderen",
+    "removeLocationDesc": "De plek waar een afbeelding is gemaakt wordt verwijderd voordat hij wordt opgeslagen, overal in de app.",
+    "contactTitle": "Kleine contactfoto's",
+    "contactDesc": "Passen in {{px}} pixels, het grootste formaat waarin de app ze toont. Uitgeschakeld volgen ze de instellingen van de ruimtebespaarder.",
+    "applyNote": "Alleen nieuwe afbeeldingen. Afbeeldingen die je al hebt opgeslagen veranderen niet, en bestanden die geen afbeelding zijn worden nooit aangeraakt."
   },
   "devices": {
     "heading": "Geregistreerde apparaten",
@@ -98,8 +108,6 @@
     "verifyBusy": "Er is nu een ander apparaat aan het synchroniseren, dus deze controle kan geen zuiver antwoord geven. Probeer het zo nog eens.",
     "verifyFailed": "De server was niet bereikbaar voor de controle. Probeer het opnieuw zodra je weer online bent.",
     "verifyDiverged": "Dit apparaat loopt niet gelijk met de server:",
-    "verifyRepairAction": "Alles opnieuw downloaden",
-    "verifyRepairQueued": "Bij de volgende synchronisatie wordt je hele kluis opnieuw gelezen. Er gaat niets verloren dat nog geüpload moet worden.",
     "verifyMissing_one": "{{count}} item van de server ontbreekt hier",
     "verifyMissing_other": "{{count}} items van de server ontbreken hier",
     "verifyStale_one": "{{count}} item hier is ouder dan de versie op de server",
@@ -107,12 +115,14 @@
     "verifyPendingDelete_one": "{{count}} item is elders verwijderd en staat hier nog",
     "verifyPendingDelete_other": "{{count}} items zijn elders verwijderd en staan hier nog",
     "verifyNeverPushed_one": "{{count}} item hier heeft de server nooit bereikt",
-    "verifyNeverPushed_other": "{{count}} items hier hebben de server nooit bereikt"
+    "verifyNeverPushed_other": "{{count}} items hier hebben de server nooit bereikt",
+    "verifyRepairAction": "Alles opnieuw downloaden",
+    "verifyRepairQueued": "Bij de volgende synchronisatie wordt je hele kluis opnieuw gelezen. Er gaat niets verloren dat nog geüpload moet worden."
   },
   "accountId": {
     "heading": "Account-ID",
-    "copyId": "ID kopiëren",
-    "report": "Supportrapport"
+    "report": "Supportrapport",
+    "copyId": "ID kopiëren"
   },
   "revoke": {
     "title": "“{{name}}” verwijderen?",
@@ -243,8 +253,8 @@
     "pausedAria": "Synchronisatie gepauzeerd",
     "wifiHold": "Wacht op wifi",
     "wifiHoldTooltip": "Bestanden gaan omhoog zodra er wifi is. Notities blijven synchroniseren.",
-    "notSynced": "Niet gesynchroniseerd",
     "notBackedUp": "Geen back-up",
+    "notSynced": "Niet gesynchroniseerd",
     "notBackedUpTooltip_one": "{{count}} notitie heeft geen back-up. Klik om te zien waarom.",
     "notBackedUpTooltip_other": "{{count}} notities hebben geen back-up. Klik om te zien waarom.",
     "notBackedUpAria_one": "{{count}} notitie heeft geen back-up",

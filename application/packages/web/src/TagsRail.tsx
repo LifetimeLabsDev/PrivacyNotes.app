@@ -65,6 +65,7 @@ export interface TagsRailProps {
   openTaskCount: number;
   vaultCount: number;
   bookmarksCount: number;
+  contactsCount: number;
   filesCount: number;
   journalCount: number;
   starredCount: number;
@@ -264,6 +265,7 @@ export function TagsRail(props: TagsRailProps) {
     openTaskCount,
     vaultCount,
     bookmarksCount,
+    contactsCount,
     filesCount,
     journalCount,
     starredCount,
@@ -866,6 +868,22 @@ export function TagsRail(props: TagsRailProps) {
               )}
             </button>
           </HoverLabel>
+        )}
+        {showRow('contacts') && (
+          <button
+            onClick={() => handleSelectView('contacts')}
+            className={viewBtnClass(view === 'contacts')}
+          >
+            <span className="flex items-center gap-2">
+              <span className="text-accent inline-flex">
+                <PILLAR_GLYPHS.contacts size={16} />
+              </span>
+              {t('tagsRail.contacts')}
+            </span>
+            <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
+              {contactsCount}
+            </span>
+          </button>
         )}
         {showRow('bookmarks') && (
           <button

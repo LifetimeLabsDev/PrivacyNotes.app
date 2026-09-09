@@ -114,6 +114,18 @@ export function proUnlocked(isPro: boolean | null | undefined): boolean {
  * SETTINGS bucket survives on purpose (existing behavior - an in-tab
  * refresh keeps preferences); appLockEnabled without a blob is inert.
  */
+/**
+ * True for a key the demo owns. Credential keys are bucketed with a
+ * `.demo` suffix by credentialKey, which is what keeps a `?demo=1`
+ * session on a real install off the real account's phrase envelope,
+ * PIN wrap and biometric wrap. Anything that sweeps storage in demo
+ * matches on this rather than on the `privacynotes.` prefix, because
+ * the prefix is exactly what the two modes share.
+ */
+export function isDemoOwnedKey(key: string): boolean {
+  return key.endsWith('.demo');
+}
+
 export function clearFreshDemoCredentials(): void {
   if (!isDemoMode()) return;
   try {
@@ -125,7 +137,7 @@ export function clearFreshDemoCredentials(): void {
     try {
       for (let i = store.length - 1; i >= 0; i--) {
         const k = store.key(i);
-        if (k && k.endsWith('.demo')) store.removeItem(k);
+        if (k && isDemoOwnedKey(k)) store.removeItem(k);
       }
     } catch {
       /* ignore */

@@ -500,6 +500,13 @@
         "Her şey yeni öge olarak gelir ve elinizdeki hiçbir şeyin üzerine yazılmaz; bu yüzden aynı dosyayı iki kez geri yüklerseniz her notun iki kopyası olur. Her iki şifreli biçim de yalnızca onları oluşturan hesapta açılır, çünkü o hesabın söz öbeği anahtarıyla şifrelenmiştir; .zip ise her kasaya girer ([hangi yedeği almalı](/tr/help/backup-strategy/))."
       ]
     },
+    "image-quality": {
+      "q": "PrivacyNotes görsellerimi değiştiriyor veya sıkıştırıyor mu?",
+      "a": [
+        "Evet. İki ayar da varsayılan olarak açık, çünkü kullanıcılarımızı seviyoruz: depolama alanından tasarruf etmenizi ve gizliliğinizi korumanızı istiyoruz. Alan tasarrufu büyük bir görseli 2048 piksele sığdırır ve %85 kalitede JPEG olarak kaydeder; bu, bir ekranın gösterebileceği tüm ayrıntıyı korur. Konum verisini kaldır, bir kameranın fotoğrafa yazdığı EXIF meta verisini, GPS konumu dahil, görsel kaydedilmeden önce siler. İkisi de uygulamadaki her görsel için geçerli: bir nota yapıştırılan, dosya olarak eklenen veya içe aktarılan.",
+        "İkisinden birini **Ayarlar > Görseller** altında kapatın; orada kişi fotoğrafları için onları 512 pikselde tutan üçüncü bir anahtar var. Ayarlar yalnızca yeni görseller için geçerlidir; görsel olmayan dosyalar olduğu gibi saklanır. HEIC ve TIFF görselleri JPEG'e dönüştürülür, çünkü onları yalnızca Safari gösterebilir. Geri yüklediğiniz bir yedek bayt bayt geri yazılır."
+      ]
+    },
     "storage-usage": {
       "q": "Depolamamdan ne düşer ve nasıl yer açarım?",
       "a": [

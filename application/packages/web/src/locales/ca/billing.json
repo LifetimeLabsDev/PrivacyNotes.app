@@ -39,6 +39,12 @@
     "alreadyOwned": "La botiga diu que ja tens aquesta compra, però pertany a un altre compte. Inicia la sessió amb la frase de recuperació que feies servir quan la vas comprar."
   },
   "checkout": {
+    "confirmTitle": "Confirma la teva compra",
+    "confirmPro": "PrivacyNotes Pro, un pagament de {{price}} $.",
+    "confirmStorage": "{{gb}} GB d’emmagatzematge extra, {{price}} $ l’any.",
+    "confirmAccount": "Desbloquejarà aquest compte:",
+    "confirmCheck": "Obre Configuració, després Sincronització, i comprova que l’ID del compte hi coincideixi. Si no hi coincideix, tanca aquesta pestanya: el pagament desbloquejaria una altra persona.",
+    "confirmButton": "Continua cap al pagament",
     "invalidTitle": "L'enllaç de pagament no és vàlid",
     "invalidBody": "Obre la pàgina de pagament des de dins de l'aplicació perquè puguem vincular la compra al teu compte.",
     "completeTitle": "Pagament completat",

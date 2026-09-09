@@ -6,6 +6,7 @@ import { fetchQuotaUsage } from '../devices';
 import type { AttachmentStore } from '../attachmentStore';
 import { formatFileSize, validateAttachment, FILE_ACCEPT, FILE_ACCEPT_IMAGE, FILE_ACCEPT_AUDIO, FILE_ACCEPT_DOCUMENT } from '../attachmentValidation';
 import { proUnlocked } from '../demo';
+import { currentImageOptions, isSupportedImage, processImage } from '../imageProcessing';
 import type { LocalNote } from '../db';
 import type { FileType } from '../FilesList';
 import { parseMarkdown } from '../import/markdown';
@@ -201,20 +202,31 @@ export function useFilesUpload({
         setUploadEntries([...initial]);
         continue;
       }
+      // Images obey the two image switches at this door too, and the row
+      // then shows the file that is actually stored. A picture the module
+      // cannot read is stored as it arrived, the way every non-image is.
+      let upload = file;
+      if (isSupportedImage(file)) {
+        const processed = await processImage(file, currentImageOptions());
+        if (processed.ok) {
+          upload = new File([processed.image.data as BlobPart], processed.image.name, { type: processed.image.mime });
+          initial[i] = { ...initial[i]!, name: upload.name, size: upload.size };
+        }
+      }
       if (freeBytes !== null) {
-        if (file.size > freeBytes) {
+        if (upload.size > freeBytes) {
           initial[i] = { ...initial[i]!, status: 'failed', errorCode: 'storage-full' };
           setUploadEntries([...initial]);
           continue;
         }
         // Reserve headroom so a batch cannot collectively overshoot.
-        freeBytes -= file.size;
+        freeBytes -= upload.size;
       }
       initial[i] = { ...initial[i]!, status: 'uploading' };
       setUploadEntries([...initial]);
 
       try {
-        const result = await store.uploadAttachment(file);
+        const result = await store.uploadAttachment(upload);
         const { uuid, meta, uploaded } = result;
         const line = `[${meta.name}|${formatFileSize(meta.size)}|${meta.mime}](pn:file/${uuid})`;
 

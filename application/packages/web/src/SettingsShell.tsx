@@ -24,8 +24,12 @@ export type SettingsCategory = {
    * Spec: ops/docs/ui-patterns.md section 36 (settings standard)
    */
   href?: string;
-  /** Renders the pane body. Required unless `href` is set. */
-  render?: () => ReactNode;
+  /**
+   * Renders the pane body. Required unless `href` is set. `navigate` opens
+   * a sibling category from inside a pane, which is how a pane can carry a
+   * link to another pane without knowing the shell.
+   */
+  render?: (tools: { navigate: (id: string) => void }) => ReactNode;
 };
 
 type Props = {
@@ -135,7 +139,7 @@ export function SettingsShell({ categories, initialCategory, defaultCategory, fo
             </button>
             <h2 className="min-w-0 text-base font-semibold leading-tight">{active.label}</h2>
           </div>
-          <div className="flex-1 flex flex-col min-h-0 min-w-0">{active.render?.()}</div>
+          <div className="flex-1 flex flex-col min-h-0 min-w-0">{active.render?.({ navigate: setActiveId })}</div>
         </div>,
       );
     }
@@ -188,12 +192,13 @@ export function SettingsShell({ categories, initialCategory, defaultCategory, fo
   }
 
   // ---- Desktop: two-pane -------------------------------------------------
-  // h-640: the category rail holds 11 rows + 3 group headers and overflowed
-  // 600px by 12px once Journals landed, hiding the Help row behind a scroll.
-  // 640 clears it with roughly one row of slack and still sits under the
-  // 85vh cap on a 13" laptop. Adding a 12th category means re-measuring.
+  // h-656: the category rail holds 12 rows + 3 group headers, which need
+  // 522px of rail; 640 left 514 once Images landed and hid the Help row
+  // behind an 8px scroll. 656 clears it with 8px of slack and still sits
+  // under the 85vh cap on a 13" laptop. Adding a 13th category means
+  // re-measuring (rail scrollHeight against clientHeight).
   return backdrop(
-    <div className="bg-surface-2 border border-divider rounded-lg w-full max-w-4xl h-[640px] max-h-[85vh] flex flex-col text-pn">
+    <div className="bg-surface-2 border border-divider rounded-lg w-full max-w-4xl h-[656px] max-h-[85vh] flex flex-col text-pn">
       <div className="flex items-center justify-between px-5 py-3 border-b border-divider">
         <h2 className="text-lg font-semibold">{t('shell.title')}</h2>
         {closeButton}
@@ -260,7 +265,7 @@ export function SettingsShell({ categories, initialCategory, defaultCategory, fo
               </div>
             </div>
           )}
-          <div className="flex-1 flex flex-col min-h-0 min-w-0">{active?.render?.()}</div>
+          <div className="flex-1 flex flex-col min-h-0 min-w-0">{active?.render?.({ navigate: setActiveId })}</div>
         </section>
       </div>
     </div>,

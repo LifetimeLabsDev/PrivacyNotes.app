@@ -26,6 +26,16 @@
     "tagLabel": "フォルダ名のタグも付ける",
     "tagDesc": "フォルダはどちらにしても再現されます。これはさらに各フォルダ名をタグとしても追加するオプションで、タグでも絞り込みたい場合に便利です。"
   },
+  "browserImport": {
+    "tagLabel": "ブラウザのタグを残す",
+    "tagDesc": "Firefox はブックマークにタグとアドレスバーのキーワードを保存します。どちらもここではタグになります。"
+  },
+  "contactImport": {
+    "photosLabel": "写真をインポート",
+    "photosDesc_other": "写真 {{count}} 枚、アプリで縮小後は約 {{size}}。空き容量 {{free}} の {{pct}}% にあたります。",
+    "photosDescNoQuota_other": "写真 {{count}} 枚、アプリで縮小後は約 {{size}}。",
+    "photosTooBig_other": "写真 {{count}} 枚（{{size}}）分の空きがないため、写真は除外されます。それ以外はすべて取り込まれます。{{shortfall}} を空けるか、ストレージを追加してから、もう一度インポートすると取り込めます。"
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeoutの.zip(Keepフォルダ)または単一の.jsonノート。チェックリストはネイティブのタスクリストとして読み込まれます。",
     "appleNotes": "無料のExporterアプリでMarkdownとして書き出し、その.zipをここにドロップしてください。",
@@ -40,6 +50,7 @@
     "markdownFolder": ".mdまたは.txtファイルを個別に、あるいは.zipでまとめて。zipにしたフォルダはサブフォルダを保ち、画像や添付ファイルも一緒に運びます。",
     "markdownApp": "これらのノートは、すでにフォルダの中のMarkdownファイルです。そのフォルダを.zipにしてドロップすれば、サブフォルダも画像も#タグも一緒に入ってきます。",
     "browserBookmarks": "ブラウザの \"Export bookmarks\" で書き出したブックマークファイル (.html)、または Safari が書き出す .zip です。Chrome、Firefox、Safari、Edge、Opera、Brave、Vivaldi はどれも同じファイルを含みます。フォルダーと日付も一緒に入ります。",
+    "vcard": "連絡帳が書き出す .vcf ファイルです。iPhone と Mac は iCloud または連絡先から、Android、Google コンタクトも同様です。写真も含めてすべてのカードが取り込まれ、同じファイルを 2 回インポートしてもすでにいる人はスキップされます。",
     "bitwarden": "Bitwarden の暗号化されていない .json エクスポート（Tools > Export vault > .json）。ログイン、カード、SSH 鍵、セキュアメモ、TOTP コードがすべて一緒に読み込まれます。",
     "browserPasswords": "Chrome、Edge、Brave、Opera、Vivaldi、Firefox、Safari のパスワードファイル (.csv)、または Safari が書き出す .zip です。1 行がログイン 1 件になります。終わったらファイルは削除してください。パスワードがそのまま書かれています。"
   },
@@ -76,10 +87,11 @@
     "andMore": "… 他{{count}}件",
     "headsUpLabel": "注意:",
     "duplicateWarning": "読み込むと、これらは新しいノートとして追加されます。2回実行すると重複します。自動の重複排除はまだありません。",
+    "duplicateSkipNote": "すでに保存済みのブックマークはスキップされるので、二度実行しても重複しません。",
+    "contactSkipNote": "すでに保存済みの人はスキップされそのまま残るので、2 回実行しても誰も重複しません。",
     "quotaExceeded": "<strong>ストレージ不足のため読み込めません。</strong>推定{{needed}}が必要ですが、利用できるのは{{available}}です。空き容量を確保するか、アップグレードしてから読み込んでください。",
     "quotaWarning": "注意: この読み込みで、残りストレージ{{available}}のうち約{{needed}}を使用します。",
-    "oversizeAttachments_other": "{{count}}件のファイルが、ご利用のプランのファイルごとの上限{{limit}}を超えています。これらはこのデバイスには読み込まれますが、アップグレードするまで他のデバイスには同期されません。",
-    "duplicateSkipNote": "すでに保存済みのブックマークはスキップされるので、二度実行しても重複しません。"
+    "oversizeAttachments_other": "{{count}}件のファイルが、ご利用のプランのファイルごとの上限{{limit}}を超えています。これらはこのデバイスには読み込まれますが、アップグレードするまで他のデバイスには同期されません。"
   },
   "counts": {
     "note_other": "件のノート",
@@ -87,6 +99,7 @@
     "login_other": "件のログイン",
     "card_other": "件のカード",
     "sshKey_other": "件のSSH鍵",
+    "contact_other": "連絡先",
     "zeroItems": "0件",
     "importButton": "{{counts}}を読み込む"
   },
@@ -112,7 +125,10 @@
     "vaultExportDesc": "ログイン情報、カード、SSH鍵をBitwarden互換の形式で。ほとんどのパスワードマネージャーで読み込めます。平文のため、取り扱いには注意してください。",
     "bookmarksOnlyHeading": "ブックマークのみ",
     "bookmarksExportTitle": "ブックマークファイル (.html)",
-    "bookmarksExportDesc": "どのブラウザでも読める標準のブックマークファイルです。フォルダーごと Chrome、Firefox、Safari、Edge に取り込めます。"
+    "bookmarksExportDesc": "どのブラウザでも読める標準のブックマークファイルです。フォルダーごと Chrome、Firefox、Safari、Edge に取り込めます。",
+    "contactsOnlyHeading": "連絡先のみ",
+    "contactsExportTitle": "連絡先ファイル (.vcf)",
+    "contactsExportDesc": "どの電話や連絡帳でも読める vCard ファイルです。iPhone、Android、Google コンタクト、Mac の連絡先にラベルやグループごとインポートできます。"
   },
   "exportProgress": {
     "failedTitle": "書き出しに失敗しました",
@@ -154,9 +170,5 @@
   },
   "saveErrors": {
     "shortWrite": "{{expected}} バイト中 {{written}} バイトしか保存されず、ファイルが不完全です。クラウドのフォルダーではなく端末のストレージに保存して、もう一度お試しください。"
-  },
-  "browserImport": {
-    "tagLabel": "ブラウザのタグを残す",
-    "tagDesc": "Firefox はブックマークにタグとアドレスバーのキーワードを保存します。どちらもここではタグになります。"
   }
 }

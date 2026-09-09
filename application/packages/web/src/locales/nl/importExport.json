@@ -26,6 +26,19 @@
     "tagLabel": "Notities ook taggen per map",
     "tagDesc": "Je mappen worden sowieso opnieuw opgebouwd. Dit voegt elke mapnaam ook als tag toe, handig als je graag op tag filtert."
   },
+  "browserImport": {
+    "tagLabel": "Tags uit je browser behouden",
+    "tagDesc": "Firefox bewaart tags en een adresbalk-trefwoord bij een bladwijzer. Allebei worden hier tags."
+  },
+  "contactImport": {
+    "photosLabel": "Foto's importeren",
+    "photosDesc_one": "{{count}} foto, ongeveer {{size}} zodra de app hem verkleint. Dat is {{pct}} % van de {{free}} die je vrij hebt.",
+    "photosDesc_other": "{{count}} foto's, ongeveer {{size}} zodra de app ze verkleint. Dat is {{pct}} % van de {{free}} die je vrij hebt.",
+    "photosDescNoQuota_one": "{{count}} foto, ongeveer {{size}} zodra de app hem verkleint.",
+    "photosDescNoQuota_other": "{{count}} foto's, ongeveer {{size}} zodra de app ze verkleint.",
+    "photosTooBig_one": "Niet genoeg ruimte voor de foto ({{size}}), dus die blijft achter. Al het andere komt mee. Maak {{shortfall}} vrij, of voeg opslag toe, en importeer opnieuw om hem alsnog binnen te halen.",
+    "photosTooBig_other": "Niet genoeg ruimte voor de {{count}} foto's ({{size}}), dus die blijven achter. Al het andere komt mee. Maak {{shortfall}} vrij, of voeg opslag toe, en importeer opnieuw om ze alsnog binnen te halen."
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (map Keep) of één losse .json-notitie. Checklists worden geïmporteerd als echte takenlijsten.",
     "appleNotes": "Exporteer via de gratis Exporter-app als Markdown en sleep de .zip hierheen.",
@@ -40,6 +53,7 @@
     "markdownFolder": ".md- of .txt-bestanden los of als .zip. Een gezipte map houdt zijn submappen en neemt zijn afbeeldingen en bijlagen mee.",
     "markdownApp": "Deze notities zijn al Markdown-bestanden in een map. Sleep die map als .zip hierin en de submappen, afbeeldingen en #tags komen mee.",
     "browserBookmarks": "Het bladwijzerbestand (.html) uit \"Export bookmarks\" in je browser, of de .zip die Safari schrijft. Chrome, Firefox, Safari, Edge, Opera, Brave en Vivaldi bevatten allemaal hetzelfde bestand. Mappen en datums gaan mee.",
+    "vcard": "Het .vcf-bestand dat je adresboek exporteert: iPhone en Mac via iCloud of Contacten, Android, Google Contacten. Elke kaart komt mee, foto's inbegrepen, en hetzelfde bestand twee keer importeren slaat de mensen over die je al hebt.",
     "bitwarden": "Onversleutelde .json-export uit Bitwarden (Tools > Export vault > .json). Logins, kaarten, SSH-sleutels, beveiligde notities en TOTP-codes komen allemaal mee.",
     "browserPasswords": "Het wachtwoordbestand (.csv) uit Chrome, Edge, Brave, Opera, Vivaldi, Firefox of Safari, of de .zip die Safari schrijft. Elke regel wordt een login. Gooi het bestand weg als je klaar bent - het bevat je wachtwoorden in platte tekst."
   },
@@ -76,11 +90,12 @@
     "andMore": "… en nog {{count}}",
     "headsUpLabel": "Let op:",
     "duplicateWarning": "importeren voegt deze toe als nieuwe notities. Doe je dit twee keer, dan krijg je dubbele notities. Er is nog geen automatische ontdubbeling.",
+    "duplicateSkipNote": "bladwijzers die je al bewaard hebt worden overgeslagen, dus dit twee keer doen levert niets dubbels op.",
+    "contactSkipNote": "mensen die je al hebt opgeslagen worden overgeslagen en blijven zoals ze zijn, dus twee keer draaien maakt van niemand een dubbel.",
     "quotaExceeded": "<strong>Te weinig opslag om te importeren.</strong> Naar schatting {{needed}} nodig, {{available}} beschikbaar. Maak ruimte vrij of upgrade voordat je importeert.",
     "quotaWarning": "Let op: deze import gebruikt ongeveer {{needed}} van je resterende {{available}} opslag.",
     "oversizeAttachments_one": "1 bestand is groter dan de limiet van {{limit}} per bestand op je abonnement. Het wordt op dit apparaat geïmporteerd, maar synchroniseert pas naar je andere apparaten als je upgrade.",
-    "oversizeAttachments_other": "{{count}} bestanden zijn groter dan de limiet van {{limit}} per bestand op je abonnement. Ze worden op dit apparaat geïmporteerd, maar synchroniseren pas naar je andere apparaten als je upgrade.",
-    "duplicateSkipNote": "bladwijzers die je al bewaard hebt worden overgeslagen, dus dit twee keer doen levert niets dubbels op."
+    "oversizeAttachments_other": "{{count}} bestanden zijn groter dan de limiet van {{limit}} per bestand op je abonnement. Ze worden op dit apparaat geïmporteerd, maar synchroniseren pas naar je andere apparaten als je upgrade."
   },
   "counts": {
     "note_one": "notitie",
@@ -93,6 +108,8 @@
     "card_other": "kaarten",
     "sshKey_one": "SSH-sleutel",
     "sshKey_other": "SSH-sleutels",
+    "contact_one": "contact",
+    "contact_other": "contacten",
     "zeroItems": "0 items",
     "importButton": "{{counts}} importeren"
   },
@@ -118,7 +135,10 @@
     "vaultExportDesc": "Logins, kaarten en SSH-sleutels in een Bitwarden-compatibel formaat. Te importeren in de meeste wachtwoordmanagers. Onversleuteld - ga er zorgvuldig mee om.",
     "bookmarksOnlyHeading": "Alleen bladwijzers",
     "bookmarksExportTitle": "Bladwijzerbestand (.html)",
-    "bookmarksExportDesc": "Het standaard bladwijzerbestand dat elke browser leest. Importeer het in Chrome, Firefox, Safari of Edge met je mappen erbij."
+    "bookmarksExportDesc": "Het standaard bladwijzerbestand dat elke browser leest. Importeer het in Chrome, Firefox, Safari of Edge met je mappen erbij.",
+    "contactsOnlyHeading": "Alleen contacten",
+    "contactsExportTitle": "Contactenbestand (.vcf)",
+    "contactsExportDesc": "Het vCard-bestand dat elke telefoon en elk adresboek leest. Importeer het in iPhone, Android, Google Contacten of Contacten op de Mac, met labels en groepen intact."
   },
   "exportProgress": {
     "failedTitle": "Exporteren mislukt",
@@ -161,9 +181,5 @@
   },
   "saveErrors": {
     "shortWrite": "Er zijn maar {{written}} van de {{expected}} bytes opgeslagen, dus het bestand is onvolledig. Probeer het opnieuw en sla op in de opslag van je apparaat in plaats van in een cloudmap."
-  },
-  "browserImport": {
-    "tagLabel": "Tags uit je browser behouden",
-    "tagDesc": "Firefox bewaart tags en een adresbalk-trefwoord bij een bladwijzer. Allebei worden hier tags."
   }
 }

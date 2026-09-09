@@ -35,7 +35,8 @@
     "journal": "Diario",
     "login": "Inicio de sesión",
     "file": "Archivo",
-    "bookmark": "Marcador"
+    "bookmark": "Marcador",
+    "contact": "Contacto"
   },
   "vaultFilter": {
     "all": "Todos",
@@ -88,7 +89,8 @@
     "items": "Elementos",
     "trashed": "En papelera",
     "notes": "Notas",
-    "bookmarks": "Marcadores"
+    "bookmarks": "Marcadores",
+    "contacts": "Contactos"
   },
   "toast": {
     "imageUploadFailed": "Error al subir la imagen: {{error}}",
@@ -172,6 +174,7 @@
     "widthFull": "Anchura completa",
     "burn": "Compartir y destruir tras leer",
     "titlePlaceholderLink": "Nombre del marcador",
+    "titlePlaceholderContact": "Nombre",
     "notBackedUpTooLarge": "Supera el límite de 1 MB, así que no tiene copia de seguridad. Mueve las imágenes a adjuntos o divide la nota.",
     "notBackedUpFailed": "Sin copia de seguridad. Último error: {{message}}. Reintentando."
   },
@@ -219,6 +222,7 @@
     "importLabel": "Importar y exportar",
     "planLabel": "Cuenta",
     "storageLabel": "Almacenamiento",
+    "imagesLabel": "Imágenes",
     "securityLabel": "Seguridad",
     "accountLabel": "ID & Sync",
     "appearanceLabel": "Apariencia",
@@ -266,5 +270,9 @@
     "title": "Nueva bóveda creada",
     "confirm": "Entendido",
     "body": "Ninguna bóveda existente coincidió con la frase que introdujiste, así que se creó una nueva vacía. Si esperabas ver tus notas, cierra sesión y vuelve a introducir tu frase con cuidado: una sola palabra distinta abre una bóveda distinta."
+  },
+  "ambiguousLink": {
+    "title": "Dos notas tienen ese título",
+    "body": "Hay más de una nota titulada <highlight>“{{title}}”</highlight>, así que este enlace no dice a cuál se refiere. Renombra una de ellas y el enlace apuntará a la otra."
   }
 }

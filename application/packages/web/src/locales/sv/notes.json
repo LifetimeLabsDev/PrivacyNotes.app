@@ -35,7 +35,8 @@
     "journal": "Dagbok",
     "login": "Inloggning",
     "file": "Fil",
-    "bookmark": "Bokmärke"
+    "bookmark": "Bokmärke",
+    "contact": "Kontakt"
   },
   "vaultFilter": {
     "all": "Alla",
@@ -88,7 +89,8 @@
     "items": "Objekt",
     "trashed": "I papperskorgen",
     "notes": "Anteckningar",
-    "bookmarks": "Bokmärken"
+    "bookmarks": "Bokmärken",
+    "contacts": "Kontakter"
   },
   "toast": {
     "imageUploadFailed": "Bilduppladdningen misslyckades: {{error}}",
@@ -172,6 +174,7 @@
     "widthFull": "Full bredd",
     "burn": "Dela och bränn efter läsning",
     "titlePlaceholderLink": "Bokmärkesnamn",
+    "titlePlaceholderContact": "Namn",
     "notBackedUpTooLarge": "Över gränsen på 1 MB, alltså inte säkerhetskopierad. Flytta bilder till bilagor eller dela upp anteckningen.",
     "notBackedUpFailed": "Inte säkerhetskopierad. Senaste fel: {{message}}. Försöker igen."
   },
@@ -219,6 +222,7 @@
     "importLabel": "Import och export",
     "planLabel": "Konto",
     "storageLabel": "Lagring",
+    "imagesLabel": "Bilder",
     "securityLabel": "Säkerhet",
     "accountLabel": "ID och synk",
     "appearanceLabel": "Utseende",
@@ -266,5 +270,9 @@
     "title": "Nytt valv skapat",
     "confirm": "Uppfattat",
     "body": "Inget befintligt valv matchade frasen du angav, så ett nytt tomt valv skapades. Om du väntade dig att se dina anteckningar: logga ut och skriv in frasen noggrant igen - ett enda annorlunda ord öppnar ett annat valv."
+  },
+  "ambiguousLink": {
+    "title": "Två anteckningar har den titeln",
+    "body": "Mer än en anteckning heter <highlight>”{{title}}”</highlight>, så den här länken säger inte vilken den menar. Byt namn på den ena, så pekar länken på den andra."
   }
 }

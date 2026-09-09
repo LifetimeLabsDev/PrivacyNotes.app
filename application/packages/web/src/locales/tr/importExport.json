@@ -26,6 +26,19 @@
     "tagLabel": "Notları klasörüne göre de etiketle",
     "tagDesc": "Klasörleriniz her durumda yeniden oluşturulur. Bu seçenek her klasör adını ayrıca etiket olarak ekler, etikete göre filtrelemeyi de seviyorsanız işinize yarar."
   },
+  "browserImport": {
+    "tagLabel": "Tarayıcınızdaki etiketleri koru",
+    "tagDesc": "Firefox, yer imiyle birlikte etiketleri ve adres çubuğu anahtar sözcüğünü de saklar. İkisi de burada etikete dönüşür."
+  },
+  "contactImport": {
+    "photosLabel": "Fotoğrafları içe aktar",
+    "photosDesc_one": "{{count}} fotoğraf, uygulama küçülttükten sonra yaklaşık {{size}}. Bu, boş olan {{free}} alanın %{{pct}}'i.",
+    "photosDesc_other": "{{count}} fotoğraf, uygulama küçülttükten sonra yaklaşık {{size}}. Bu, boş olan {{free}} alanın %{{pct}}'i.",
+    "photosDescNoQuota_one": "{{count}} fotoğraf, uygulama küçülttükten sonra yaklaşık {{size}}.",
+    "photosDescNoQuota_other": "{{count}} fotoğraf, uygulama küçülttükten sonra yaklaşık {{size}}.",
+    "photosTooBig_one": "Fotoğraf için yeterli alan yok ({{size}}), bu yüzden dışarıda bırakılır. Diğer her şey aktarılır. {{shortfall}} boşaltın veya depolama ekleyin, sonra getirmek için yeniden içe aktarın.",
+    "photosTooBig_other": "{{count}} fotoğraf için yeterli alan yok ({{size}}), bu yüzden dışarıda bırakılır. Diğer her şey aktarılır. {{shortfall}} boşaltın veya depolama ekleyin, sonra getirmek için yeniden içe aktarın."
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip dosyası (Keep klasörü) veya tek bir .json notu. Kontrol listeleri gerçek görev listesi olarak aktarılır.",
     "appleNotes": "Ücretsiz Exporter uygulamasıyla Markdown olarak dışa aktarın, sonra .zip dosyasını buraya bırakın.",
@@ -40,6 +53,7 @@
     "markdownFolder": "Tek tek ya da bir .zip içinde .md veya .txt dosyaları. Ziplenmiş bir klasör alt klasörlerini korur, görsellerini ve eklerini de birlikte getirir.",
     "markdownApp": "Bu notlar zaten bir klasördeki Markdown dosyaları. Klasörü .zip olarak bırakın; alt klasörleri, görselleri ve #etiketleri de birlikte gelsin.",
     "browserBookmarks": "Tarayıcınızdaki \"Export bookmarks\" ile oluşan yer imi dosyası (.html) ya da Safari'nin yazdığı .zip. Chrome, Firefox, Safari, Edge, Opera, Brave ve Vivaldi aynı dosyayı içerir. Klasörler ve tarihler de gelir.",
+    "vcard": "Adres defterinizin dışa aktardığı .vcf dosyası: iCloud veya Kişiler üzerinden iPhone ve Mac, Android, Google Kişiler. Her kart fotoğraflarıyla birlikte aktarılır ve aynı dosyayı ikinci kez içe aktarmak zaten sahip olduğunuz kişileri atlar.",
     "bitwarden": "Bitwarden'dan şifrelenmemiş .json dışa aktarımı (Tools > Export vault > .json). Oturum bilgileri, kartlar, SSH anahtarları, güvenli notlar ve TOTP kodları hep birlikte gelir.",
     "browserPasswords": "Chrome, Edge, Brave, Opera, Vivaldi, Firefox ya da Safari'den gelen parola dosyası (.csv) ya da Safari'nin yazdığı .zip. Her satır bir oturum bilgisine dönüşür. İşiniz bitince dosyayı silin - parolalarınızı düz metin olarak taşır."
   },
@@ -76,11 +90,12 @@
     "andMore": "… ve {{count}} tane daha",
     "headsUpLabel": "Dikkat:",
     "duplicateWarning": "içe aktarma bunları yeni not olarak ekler. Bunu iki kez çalıştırırsanız kopyalar oluşur. Henüz otomatik kopya ayıklama yok.",
+    "duplicateSkipNote": "zaten kaydettiğiniz yer imleri atlanır, bu yüzden ikinci kez çalıştırmak hiçbir şeyi çoğaltmaz.",
+    "contactSkipNote": "zaten kaydettiğiniz kişiler atlanır ve olduğu gibi kalır, bu yüzden iki kez çalıştırmak kimseyi çoğaltmaz.",
     "quotaExceeded": "<strong>Depolama alanı içe aktarmaya yetmiyor.</strong> Tahmini {{needed}} gerekiyor, {{available}} boş. İçe aktarmadan önce yer açın veya yükseltin.",
     "quotaWarning": "Dikkat: bu içe aktarma, kalan {{available}} depolama alanınızın yaklaşık {{needed}} kadarını kullanacak.",
     "oversizeAttachments_one": "1 dosya, planınızdaki {{limit}} dosya başı sınırından büyük. Bu cihaza aktarılır, ama siz yükseltene kadar diğer cihazlarınıza eşitlenmez.",
-    "oversizeAttachments_other": "{{count}} dosya, planınızdaki {{limit}} dosya başı sınırından büyük. Bu cihaza aktarılır, ama siz yükseltene kadar diğer cihazlarınıza eşitlenmez.",
-    "duplicateSkipNote": "zaten kaydettiğiniz yer imleri atlanır, bu yüzden ikinci kez çalıştırmak hiçbir şeyi çoğaltmaz."
+    "oversizeAttachments_other": "{{count}} dosya, planınızdaki {{limit}} dosya başı sınırından büyük. Bu cihaza aktarılır, ama siz yükseltene kadar diğer cihazlarınıza eşitlenmez."
   },
   "counts": {
     "note_one": "not",
@@ -93,6 +108,8 @@
     "card_other": "kart",
     "sshKey_one": "SSH anahtarı",
     "sshKey_other": "SSH anahtarı",
+    "contact_one": "kişi",
+    "contact_other": "kişi",
     "zeroItems": "0 öğe",
     "importButton": "{{counts}} içe aktar"
   },
@@ -118,7 +135,10 @@
     "vaultExportDesc": "Giriş bilgileri, kartlar ve SSH anahtarları Bitwarden uyumlu biçimde. Çoğu parola yöneticisi içe aktarabilir. Düz metin - dikkatli davranın.",
     "bookmarksOnlyHeading": "Yalnızca yer imleri",
     "bookmarksExportTitle": "Yer imi dosyası (.html)",
-    "bookmarksExportDesc": "Her tarayıcının okuduğu standart yer imi dosyası. Klasörlerinizle birlikte Chrome, Firefox, Safari veya Edge içine aktarın."
+    "bookmarksExportDesc": "Her tarayıcının okuduğu standart yer imi dosyası. Klasörlerinizle birlikte Chrome, Firefox, Safari veya Edge içine aktarın.",
+    "contactsOnlyHeading": "Yalnızca kişiler",
+    "contactsExportTitle": "Kişiler dosyası (.vcf)",
+    "contactsExportDesc": "Her telefonun ve adres defterinin okuduğu vCard dosyası. iPhone, Android, Google Kişiler veya Mac'teki Kişiler'e, etiketler ve gruplar bozulmadan aktarın."
   },
   "exportProgress": {
     "failedTitle": "Dışa aktarma başarısız oldu",
@@ -161,9 +181,5 @@
   },
   "saveErrors": {
     "shortWrite": "{{expected}} baytın yalnızca {{written}} baytı kaydedildi, yani dosya eksik. Tekrar deneyin ve bir bulut klasörü yerine cihazınızın kendi depolamasına kaydedin."
-  },
-  "browserImport": {
-    "tagLabel": "Tarayıcınızdaki etiketleri koru",
-    "tagDesc": "Firefox, yer imiyle birlikte etiketleri ve adres çubuğu anahtar sözcüğünü de saklar. İkisi de burada etikete dönüşür."
   }
 }

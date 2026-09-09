@@ -48,6 +48,10 @@ export function useEditorPanels({
   // every open so the bar's input takes focus and selects its text.
   const [bar, setBar] = useState<EditorBar>('none');
   const [barFocusTick, setBarFocusTick] = useState(0);
+  // The word a search result opened the find bar on, or null for a bar the
+  // reader opened. The tick changes on every seeded open and keys the bar in
+  // Editor.tsx, so a repeat takes the new word even while the bar is up.
+  const [findSeed, setFindSeed] = useState<{ term: string; tick: number } | null>(null);
   // Document outline panel. Opened via the top-right toggle or Cmd/Ctrl+Shift+O;
   // shares the top-right slot with the find bar, so only one is open at a time.
   const [outlineOpen, setOutlineOpen] = useState(readOutlinePref);
@@ -84,9 +88,39 @@ export function useEditorPanels({
   }, []);
 
   const openFind = useCallback(() => {
+    setFindSeed(null);
     setBar('find');
     setBarFocusTick((t) => t + 1);
     setOutlineOpen(false);
+  }, []);
+
+  /**
+   * Open the find bar on a word the list search matched in this note, so the
+   * open note shows its hits as the query is typed (GitHub #288). No focus
+   * tick: the reader is in the list search box or clicked a result, never
+   * the bar, and the caret stays put. On a phone that is the difference
+   * between a highlight and a keyboard.
+   */
+  const openFindWith = useCallback((term: string) => {
+    setFindSeed((s) => ({ term, tick: (s?.tick ?? 0) + 1 }));
+    setBar('find');
+    setOutlineOpen(false);
+  }, []);
+
+  /** Mirror of `findSeed` for closeSeededFind, which fires from an effect in
+   *  NotesView and must not re-subscribe on every seed. */
+  const findSeedRef = useRef(findSeed);
+  useEffect(() => { findSeedRef.current = findSeed; }, [findSeed]);
+
+  /**
+   * Close the find bar only if the list search opened it. Runs when that
+   * search is emptied, so the bar leaves with the query that brought it.
+   * Neither parks the caret nor focuses the note the way closeBar does: the
+   * reader is in the list search box, and must stay there.
+   */
+  const closeSeededFind = useCallback(() => {
+    if (findSeedRef.current && barRef.current === 'find') setBar('none');
+    setFindSeed(null);
   }, []);
 
   /**
@@ -263,6 +297,9 @@ export function useEditorPanels({
     outlineOpen,
     setOutlineOpen,
     setOutlineReserve,
+    findSeed,
+    openFindWith,
+    closeSeededFind,
     closeBar,
     toggleFind,
     toggleReplace,

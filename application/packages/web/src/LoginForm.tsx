@@ -441,32 +441,6 @@ export function LoginForm({
     /* Width comes from VAULT_COLUMN on the VaultItem wrapper. */
     <div className="flex-1 overflow-y-auto p-6">
       <div className="space-y-4">
-        {/* Website / URL - top of form, most important field */}
-        <div>
-          <label className={labelClass}>{t('loginForm.websiteLabel')}</label>
-          <div className="flex gap-1.5">
-            <input
-              ref={urlRef}
-              type="url"
-              value={data.url}
-              onChange={(e) => handleUrlChange(e.target.value)}
-              onBlur={handleUrlBlur}
-              placeholder="https://github.com"
-              disabled={locked}
-              autoComplete="off"
-              className={fieldClass}
-            />
-            <CopyBtn
-              onClick={() => copy(data.url, 'url')}
-              active={copied === 'url'}
-              title={t('loginForm.copyUrl')}
-            />
-          </div>
-          {urlHint && (
-            <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-400">{urlHint}</p>
-          )}
-        </div>
-
         {/* Username */}
         <div>
           <label className={labelClass}>{t('loginForm.usernameLabel')}</label>
@@ -593,6 +567,33 @@ export function LoginForm({
           )}
           {totpParams && !totpUnlocked && (
             <p className="mt-1 text-[11px] text-neutral-400 dark:text-neutral-500">{t('loginForm.totpProNote')}</p>
+          )}
+        </div>
+
+        {/* Website / URL - after the credentials, the same order the view
+            shows: the title names the site, so the address is a detail. */}
+        <div>
+          <label className={labelClass}>{t('loginForm.websiteLabel')}</label>
+          <div className="flex gap-1.5">
+            <input
+              ref={urlRef}
+              type="url"
+              value={data.url}
+              onChange={(e) => handleUrlChange(e.target.value)}
+              onBlur={handleUrlBlur}
+              placeholder="https://github.com"
+              disabled={locked}
+              autoComplete="off"
+              className={fieldClass}
+            />
+            <CopyBtn
+              onClick={() => copy(data.url, 'url')}
+              active={copied === 'url'}
+              title={t('loginForm.copyUrl')}
+            />
+          </div>
+          {urlHint && (
+            <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-400">{urlHint}</p>
           )}
         </div>
 

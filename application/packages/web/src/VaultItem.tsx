@@ -9,63 +9,17 @@ import { faviconUrl, domainFromUrlString } from './favicon';
 import { prefetchFavicon } from './faviconQueue';
 import { HoverLabel } from './HoverLabel';
 import { exemptOpts } from './i18nExempt';
-import { Copy, Check, Eye, EyeSlash, ArrowSquareOut, PencilSimple, X, Key, CreditCard, Lock, Globe, User, Calendar, MapPin, Tag, Shield, RocketLaunch } from './icons';
+import { Copy, Check, Eye, EyeSlash, ArrowSquareOut, X, Key, CreditCard, Lock, Globe, User, Calendar, MapPin, Tag, Shield, RocketLaunch } from './icons';
+import { openExternal } from './openExternal';
+import { DETAIL_COLUMN, DetailAction, DetailCopyAction, DetailHero, DetailLink, DetailNotes, DetailRow, DetailTile } from './detailPane';
 import { useCopyToClipboard } from './clipboard';
 import { useTheme } from './theme';
 import { parseTotpInput, generateTotpCode, totpSecondsRemaining } from '@notes/shared';
 import { proUnlocked } from './demo';
 
-/**
- * The vault column. Every vault surface is a stack of label + value rows,
- * so at the editor column's full width the value sits stranded at the far
- * end with a lane of empty space between. The three view modes and the edit
- * wrapper below all wear this, and the three forms inherit it from that
- * wrapper - one number, one place.
- * Spec: ops/docs/ui-patterns.md (the vault column)
- */
-const VAULT_COLUMN = 'w-full max-w-[520px]';
 
-/* ────────────────────────────────────────────────────────────────
- * Icon helpers - thin wrappers around the shared Phosphor module
- * ──────────────────────────────────────────────────────────────── */
-const IconCopy = ({ className = '' }: { className?: string }) => (
-  <Copy className={className} />
-);
-const IconCheck = ({ className = '' }: { className?: string }) => (
-  <Check className={className} />
-);
-const IconEye = () => <Eye />;
-const IconEyeOff = () => <EyeSlash />;
-const IconExternal = () => <ArrowSquareOut size={12} />;
-const IconEdit = () => <PencilSimple />;
 const IconX = () => <X />;
 const IconSave = () => <Check />;
-
-/* ────────────────────────────────────────────────────────────────
- * Copy button - view-mode field action
- * ──────────────────────────────────────────────────────────────── */
-function CopyButton({ value, label, copied, onCopy }: {
-  value: string;
-  label: string;
-  copied: string | null;
-  onCopy: (text: string, label: string) => void;
-}) {
-  const { t } = useTranslation('shell');
-  const isCopied = copied === label;
-  const tip = isCopied ? t('vaultItem.copied') : t('vaultItem.copyField', { label });
-  return (
-    <HoverLabel label={tip} position="start">
-      <button
-        type="button"
-        onClick={() => onCopy(value, label)}
-        aria-label={tip}
-        className="shrink-0 rounded-md p-1.5 text-neutral-400 hover:text-accent hover:bg-neutral-100 dark:hover:bg-surface-0 transition"
-      >
-        {isCopied ? <IconCheck className="text-emerald-500" /> : <IconCopy />}
-      </button>
-    </HoverLabel>
-  );
-}
 
 /* ────────────────────────────────────────────────────────────────
  * Favicon image with concurrency-throttled loading + IndexedDB cache.
@@ -166,27 +120,6 @@ function TypeBadge({ type }: { type: 'login' | 'card' | 'ssh-key' }) {
 }
 
 /* ────────────────────────────────────────────────────────────────
- * View-mode field row
- * ──────────────────────────────────────────────────────────────── */
-function ViewField({ label, icon, children }: {
-  label: React.ReactNode;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-center justify-between py-2.5 border-b border-neutral-100 dark:border-neutral-800 last:border-b-0">
-      <span className="text-xs text-neutral-500 dark:text-neutral-400 flex items-center gap-1.5 shrink-0 min-w-[70px]">
-        {icon}
-        {label}
-      </span>
-      <div className="flex items-center gap-1.5 min-w-0 justify-end">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────────
  * TOTP countdown ring - a thin SVG circle that drains over the
  * code's period, red in the last 5 seconds. Static (full, muted)
  * when there's no code to count down (the locked teaser state).
@@ -253,9 +186,9 @@ function TotpField({ raw, isPro, onOpenUpgrade, copy, copied }: {
 
   if (!params) {
     return (
-      <ViewField label={t('vaultItem.fieldTotp')} icon={<Shield size={13} />}>
-        <span className="text-sm text-neutral-400 dark:text-neutral-500 italic">{t('vaultItem.totpInvalid')}</span>
-      </ViewField>
+      <DetailRow label={t('vaultItem.fieldTotp')} icon={<Shield size={13} />}>
+        <span className="text-neutral-400 dark:text-neutral-500 italic">{t('vaultItem.totpInvalid')}</span>
+      </DetailRow>
     );
   }
 
@@ -268,47 +201,60 @@ function TotpField({ raw, isPro, onOpenUpgrade, copy, copied }: {
 
   if (!unlocked) {
     return (
-      <div className="py-2.5 border-b border-neutral-100 dark:border-neutral-800 last:border-b-0">
-        <ViewField label={label} icon={<Shield size={13} />}>
-          <span dir="ltr" className="text-sm font-mono tracking-wider text-neutral-400 dark:text-neutral-600" /* rtl-ok: masked code placeholder, symbols only, must not reorder */>
-            {'••• •••'}
+      <div className="border-b border-neutral-100 dark:border-neutral-800 last:border-b-0">
+        <DetailRow label={label} icon={<Shield size={13} />}>
+          <span className="inline-flex items-center gap-2">
+            <span dir="ltr" className="font-mono tracking-wider text-neutral-400 dark:text-neutral-600" /* rtl-ok: masked code placeholder, symbols only, must not reorder */>
+              {'••• •••'}
+            </span>
+            <TotpRing secondsLeft={params.period} period={params.period} danger={false} static />
           </span>
-          <TotpRing secondsLeft={params.period} period={params.period} danger={false} static />
-        </ViewField>
+        </DetailRow>
         <button
           type="button"
           onClick={onOpenUpgrade}
-          className="mt-1 w-full py-1.5 rounded-md text-xs font-medium bg-accent/8 text-accent hover:bg-accent/15 transition"
+          className="mb-2 w-full py-1.5 rounded-md text-xs font-medium bg-accent/8 text-accent hover:bg-accent/15 transition"
         >
           {t('vaultItem.totpUnlockCta')}
         </button>
-        <p className="mt-1 text-[11px] text-neutral-400 dark:text-neutral-500">{t('vaultItem.totpProNote')}</p>
+        <p className="mb-2 text-[11px] text-neutral-400 dark:text-neutral-500">{t('vaultItem.totpProNote')}</p>
       </div>
     );
   }
 
   const code = generateTotpCode(params, now);
   const secondsLeft = totpSecondsRemaining(params.period, now);
-  const isCopied = copied === 'totpCode';
 
   return (
-    <ViewField label={label} icon={<Shield size={13} />}>
-      <span dir="ltr" className="text-sm font-mono tracking-wider tabular-nums text-neutral-800 dark:text-neutral-200" /* rtl-ok: generated digits, must not reorder */>
-        {groupTotpCode(code)}
+    <DetailRow
+      label={label}
+      icon={<Shield size={13} />}
+      actions={<DetailCopyAction value={code} id="totpCode" copied={copied} onCopy={copy} label={copied === 'totpCode' ? t('vaultItem.copied') : t('vaultItem.copyCode')} />}
+    >
+      <span className="inline-flex items-center gap-2">
+        <span dir="ltr" className="font-mono tracking-wider tabular-nums" /* rtl-ok: generated digits, must not reorder */>
+          {groupTotpCode(code)}
+        </span>
+        <TotpRing secondsLeft={secondsLeft} period={params.period} danger={secondsLeft <= 5} />
       </span>
-      <TotpRing secondsLeft={secondsLeft} period={params.period} danger={secondsLeft <= 5} />
-      <HoverLabel label={isCopied ? t('vaultItem.copied') : t('vaultItem.copyCode')} position="start">
-        <button
-          type="button"
-          onClick={() => copy(code, 'totpCode')}
-          aria-label={t('vaultItem.copyCode')}
-          className="shrink-0 rounded-md p-1.5 text-neutral-400 hover:text-accent hover:bg-neutral-100 dark:hover:bg-surface-0 transition"
-        >
-          {isCopied ? <IconCheck className="text-emerald-500" /> : <IconCopy />}
-        </button>
-      </HoverLabel>
-    </ViewField>
+    </DetailRow>
   );
+}
+
+/** The reveal cell a secret row carries. */
+function RevealAction({ shown, onToggle }: { shown: boolean; onToggle: () => void }) {
+  const { t } = useTranslation('shell');
+  return (
+    <DetailAction label={shown ? t('vaultItem.hide') : t('vaultItem.reveal')} onClick={onToggle}>
+      {shown ? <EyeSlash size={15} /> : <Eye size={15} />}
+    </DetailAction>
+  );
+}
+
+/** The copy cell's hover label: "Copied" while this row is the copied one. */
+function useCopyTip(copied: string | null) {
+  const { t } = useTranslation('shell');
+  return (id: string) => (copied === id ? t('vaultItem.copied') : t('vaultItem.copyField', { label: id }));
 }
 
 /* ────────────────────────────────────────────────────────────────
@@ -329,101 +275,84 @@ function LoginViewMode({ note, onEdit, copy, copied, isPro, onOpenUpgrade }: {
   const fullUrl = data.url.trim() && !/^https?:\/\//i.test(data.url.trim())
     ? 'https://' + data.url.trim()
     : data.url.trim();
+  const copyTip = useCopyTip(copied);
 
   return (
-    <div className={`flex-1 p-6 ${VAULT_COLUMN}`}>
-      {/* Header: favicon + title + badge + edit */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3 min-w-0">
-          <span className="shrink-0 w-10 h-10 rounded-md bg-[#f0efec] flex items-center justify-center overflow-hidden">
-            <Favicon domain={domain} size={28} />
-          </span>
-          <div className="min-w-0">
-            <div className="text-lg font-semibold truncate text-neutral-900 dark:text-white">
-              {note.title || t('vaultItem.untitledLogin')}
-            </div>
-            <TypeBadge type="login" />
-          </div>
-        </div>
-        <button
-          type="button"
-          onClick={onEdit}
-          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-surface-1 border border-divider text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-surface-0 transition"
-        >
-          <IconEdit /> {t('common:actions.edit')}
-        </button>
-      </div>
+    <div className={`flex-1 p-6 ${DETAIL_COLUMN}`}>
+      <DetailHero
+        tile={<DetailTile light><Favicon domain={domain} size={32} /></DetailTile>}
+        title={note.title || t('vaultItem.untitledLogin')}
+        subtitle={<TypeBadge type="login" />}
+        onEdit={onEdit}
+        editLabel={t('common:actions.edit')}
+      />
 
-      {/* Fields */}
-      <div>
-        {data.url && (
-          <ViewField label={t('vaultItem.fieldUrl')} icon={<Globe size={13} />}>
-            <a
-              href={fullUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-accent hover:underline truncate"
-            >
-              {domain || data.url}
-            </a>
-            <CopyButton value={data.url} label="url" copied={copied} onCopy={copy} />
-          </ViewField>
-        )}
-
+      <div className="mt-3">
         {data.username && (
-          <ViewField label={t('vaultItem.fieldUser')} icon={<User size={13} />}>
-            <span className="text-sm text-neutral-800 dark:text-neutral-200 truncate">{data.username}</span>
-            <CopyButton value={data.username} label="username" copied={copied} onCopy={copy} />
-          </ViewField>
+          <DetailRow label={t('vaultItem.fieldUser')} icon={<User size={13} />} actions={<DetailCopyAction value={data.username} id="username" copied={copied} onCopy={copy} label={copyTip('username')} />}>
+            <span className="break-all">{data.username}</span>
+          </DetailRow>
         )}
 
         {data.password && (
-          <ViewField label={t('vaultItem.fieldPass')} icon={<Lock size={13} />}>
-            <span className="min-w-0 break-all text-end text-sm font-mono text-neutral-800 dark:text-neutral-200 tracking-wider">
+          <DetailRow
+            label={t('vaultItem.fieldPass')}
+            icon={<Lock size={13} />}
+            actions={
+              <>
+                <RevealAction shown={showPassword} onToggle={() => setShowPassword(!showPassword)} />
+                <DetailCopyAction value={data.password} id="password" copied={copied} onCopy={copy} label={copyTip('password')} />
+              </>
+            }
+          >
+            <span dir="ltr" className="font-mono tracking-wider break-all" /* rtl-ok: a secret is a code, never reordered */>
               {showPassword ? data.password : '•'.repeat(Math.min(data.password.length, 16))}
             </span>
-            <HoverLabel label={showPassword ? t('vaultItem.hide') : t('vaultItem.reveal')} position="start">
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? t('vaultItem.hide') : t('vaultItem.reveal')}
-              className="shrink-0 p-1 text-neutral-400 hover:text-accent transition rounded"
-            >
-              {showPassword ? <IconEyeOff /> : <IconEye />}
-            </button>
-            </HoverLabel>
-            <CopyButton value={data.password} label="password" copied={copied} onCopy={copy} />
-          </ViewField>
+          </DetailRow>
         )}
 
         {data.totp.trim() && (
           <TotpField raw={data.totp} isPro={isPro} onOpenUpgrade={onOpenUpgrade} copy={copy} copied={copied} />
         )}
+
+        {/* The address comes after the credentials: the hero already names
+            the site, so this row is a detail rather than the headline. */}
+        {data.url && (
+          <DetailRow
+            label={t('vaultItem.fieldUrl')}
+            icon={<Globe size={13} />}
+            actions={
+              <>
+                <DetailAction label={t('vaultItem.open')} onClick={() => openExternal(fullUrl)}><ArrowSquareOut size={15} /></DetailAction>
+                <DetailCopyAction value={data.url} id="url" copied={copied} onCopy={copy} label={copyTip('url')} />
+              </>
+            }
+          >
+            <DetailLink href={fullUrl}>{domain || data.url}</DetailLink>
+          </DetailRow>
+        )}
       </div>
 
-      {/* Copy all button - only when there's something meaningful to copy */}
+      {/* Copy all button - only when there's something meaningful to copy.
+          Lines follow the row order above. */}
       {(data.url || data.username || data.password) && (
         <button
           type="button"
           onClick={() => {
             const lines: string[] = [];
-            if (data.url) lines.push(data.url.trim());
             if (data.username) lines.push(data.username);
             if (data.password) lines.push(data.password);
+            if (data.url) lines.push(data.url.trim());
             copy(lines.join('\n'), 'all');
           }}
           className="mt-3 w-full py-2 rounded-lg text-xs font-medium text-neutral-500 dark:text-neutral-400 border border-divider hover:bg-neutral-100 dark:hover:bg-surface-0 transition flex items-center justify-center gap-1.5"
         >
-          {copied === 'all' ? <IconCheck className="text-emerald-500" /> : <IconCopy />}
+          {copied === 'all' ? <Check className="text-green-500" /> : <Copy />}
           {copied === 'all' ? t('vaultItem.copied') : t('vaultItem.copyAll')}
         </button>
       )}
 
-      {data.notes && (
-        <div className="mt-3 pt-3 border-t border-neutral-100 dark:border-neutral-800 text-sm text-neutral-500 dark:text-neutral-400 italic whitespace-pre-wrap break-words">
-          {data.notes}
-        </div>
-      )}
+      {data.notes && <DetailNotes heading={t('vaultItem.notesHeading')}>{data.notes}</DetailNotes>}
     </div>
   );
 }
@@ -448,85 +377,76 @@ function CardViewMode({ note, onEdit, copy, copied }: {
     ? '•••• '.repeat(Math.floor((digits.length - 4) / 4)) + last4
     : digits;
   const formatted = digits.replace(/(.{4})/g, '$1 ').trim();
+  const copyTip = useCopyTip(copied);
 
   return (
-    <div className={`flex-1 overflow-y-auto p-6 ${VAULT_COLUMN}`}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="min-w-0">
-          <div className="text-lg font-semibold truncate text-neutral-900 dark:text-white">
-            {note.title || t('vaultItem.untitledCard')}
-          </div>
-          <TypeBadge type="card" />
-        </div>
-        <button
-          type="button"
-          onClick={onEdit}
-          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-surface-1 border border-divider text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-surface-0 transition"
-        >
-          <IconEdit /> {t('common:actions.edit')}
-        </button>
-      </div>
+    <div className={`flex-1 overflow-y-auto p-6 ${DETAIL_COLUMN}`}>
+      <DetailHero
+        tile={<DetailTile><CreditCard size={24} /></DetailTile>}
+        title={note.title || t('vaultItem.untitledCard')}
+        subtitle={<TypeBadge type="card" />}
+        onEdit={onEdit}
+        editLabel={t('common:actions.edit')}
+      />
 
-      <div>
+      <div className="mt-3">
         {data.cardholderName && (
-          <ViewField label={t('vaultItem.fieldName')} icon={<User size={13} />}>
-            <span className="text-sm text-neutral-800 dark:text-neutral-200 truncate">{data.cardholderName}</span>
-            <CopyButton value={data.cardholderName} label="name" copied={copied} onCopy={copy} />
-          </ViewField>
+          <DetailRow label={t('vaultItem.fieldName')} icon={<User size={13} />} actions={<DetailCopyAction value={data.cardholderName} id="name" copied={copied} onCopy={copy} label={copyTip('name')} />}>
+            {data.cardholderName}
+          </DetailRow>
         )}
 
         {digits && (
-          <ViewField label={t('vaultItem.fieldNumber')} icon={<CreditCard size={13} />}>
-            <span className="min-w-0 text-end text-sm font-mono text-neutral-800 dark:text-neutral-200 tracking-wider">
-              {showNumber ? formatted : masked}
+          <DetailRow
+            label={t('vaultItem.fieldNumber')}
+            icon={<CreditCard size={13} />}
+            actions={
+              <>
+                <RevealAction shown={showNumber} onToggle={() => setShowNumber(!showNumber)} />
+                <DetailCopyAction value={digits} id="number" copied={copied} onCopy={copy} label={copyTip('number')} />
+              </>
+            }
+          >
+            <span className="inline-flex items-center gap-2 min-w-0">
+              <span dir="ltr" className="font-mono tracking-wider break-all" /* rtl-ok: digits, never reordered */>
+                {showNumber ? formatted : masked}
+              </span>
+              {network && <span className="text-[10px] text-neutral-400 shrink-0">{network}</span>}
             </span>
-            {network && <span className="text-[10px] text-neutral-400 shrink-0">{network}</span>}
-            <HoverLabel label={showNumber ? t('vaultItem.hide') : t('vaultItem.reveal')} position="start">
-            <button type="button" onClick={() => setShowNumber(!showNumber)} aria-label={showNumber ? t('vaultItem.hide') : t('vaultItem.reveal')} className="shrink-0 p-1 text-neutral-400 hover:text-accent transition rounded">
-              {showNumber ? <IconEyeOff /> : <IconEye />}
-            </button>
-            </HoverLabel>
-            <CopyButton value={digits} label="number" copied={copied} onCopy={copy} />
-          </ViewField>
+          </DetailRow>
         )}
 
         {(data.expMonth || data.expYear) && (
-          <ViewField label={t('vaultItem.fieldExpires')} icon={<Calendar size={13} />}>
-            <span className="text-sm text-neutral-800 dark:text-neutral-200">
-              {data.expMonth}/{data.expYear}
-            </span>
-            <CopyButton value={`${data.expMonth}/${data.expYear}`} label="exp" copied={copied} onCopy={copy} />
-          </ViewField>
+          <DetailRow label={t('vaultItem.fieldExpires')} icon={<Calendar size={13} />} actions={<DetailCopyAction value={`${data.expMonth}/${data.expYear}`} id="exp" copied={copied} onCopy={copy} label={copyTip('exp')} />}>
+            <span dir="ltr" /* rtl-ok: a month/year pair, never reordered */>{data.expMonth}/{data.expYear}</span>
+          </DetailRow>
         )}
 
         {data.cvv && (
-          <ViewField label={t('vaultItem.fieldCvv')} icon={<Lock size={13} />}>
-            <span className="text-sm font-mono text-neutral-800 dark:text-neutral-200 tracking-wider">
+          <DetailRow
+            label={t('vaultItem.fieldCvv')}
+            icon={<Lock size={13} />}
+            actions={
+              <>
+                <RevealAction shown={showCvv} onToggle={() => setShowCvv(!showCvv)} />
+                <DetailCopyAction value={data.cvv} id="cvv" copied={copied} onCopy={copy} label={copyTip('cvv')} />
+              </>
+            }
+          >
+            <span dir="ltr" className="font-mono tracking-wider" /* rtl-ok: digits, never reordered */>
               {showCvv ? data.cvv : '•'.repeat(data.cvv.length)}
             </span>
-            <HoverLabel label={showCvv ? t('vaultItem.hide') : t('vaultItem.reveal')} position="start">
-            <button type="button" onClick={() => setShowCvv(!showCvv)} aria-label={showCvv ? t('vaultItem.hide') : t('vaultItem.reveal')} className="shrink-0 p-1 text-neutral-400 hover:text-accent transition rounded">
-              {showCvv ? <IconEyeOff /> : <IconEye />}
-            </button>
-            </HoverLabel>
-            <CopyButton value={data.cvv} label="cvv" copied={copied} onCopy={copy} />
-          </ViewField>
+          </DetailRow>
         )}
 
         {data.billingZip && (
-          <ViewField label={t('vaultItem.fieldZip')} icon={<MapPin size={13} />}>
-            <span className="min-w-0 break-all text-end text-sm text-neutral-800 dark:text-neutral-200">{data.billingZip}</span>
-            <CopyButton value={data.billingZip} label="zip" copied={copied} onCopy={copy} />
-          </ViewField>
+          <DetailRow label={t('vaultItem.fieldZip')} icon={<MapPin size={13} />} actions={<DetailCopyAction value={data.billingZip} id="zip" copied={copied} onCopy={copy} label={copyTip('zip')} />}>
+            <span className="break-all">{data.billingZip}</span>
+          </DetailRow>
         )}
       </div>
 
-      {data.notes && (
-        <div className="mt-3 pt-3 border-t border-neutral-100 dark:border-neutral-800 text-sm text-neutral-500 dark:text-neutral-400 italic whitespace-pre-wrap break-words">
-          {data.notes}
-        </div>
-      )}
+      {data.notes && <DetailNotes heading={t('vaultItem.notesHeading')}>{data.notes}</DetailNotes>}
     </div>
   );
 }
@@ -544,6 +464,7 @@ function SshKeyViewMode({ note, onEdit, copy, copied }: {
   const data = parseSshKeyBody(note.body);
   const [showPrivate, setShowPrivate] = useState(false);
   const [showPassphrase, setShowPassphrase] = useState(false);
+  const copyTip = useCopyTip(copied);
 
   // Truncate public key for display.
   const pubShort = data.publicKey.length > 40
@@ -551,72 +472,64 @@ function SshKeyViewMode({ note, onEdit, copy, copied }: {
     : data.publicKey;
 
   return (
-    <div className={`flex-1 overflow-y-auto p-6 ${VAULT_COLUMN}`}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="min-w-0">
-          <div className="text-lg font-semibold truncate text-neutral-900 dark:text-white">
-            {note.title || t('vaultItem.untitledKey')}
-          </div>
-          <TypeBadge type="ssh-key" />
-        </div>
-        <button
-          type="button"
-          onClick={onEdit}
-          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-surface-1 border border-divider text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-surface-0 transition"
-        >
-          <IconEdit /> {t('common:actions.edit')}
-        </button>
-      </div>
+    <div className={`flex-1 overflow-y-auto p-6 ${DETAIL_COLUMN}`}>
+      <DetailHero
+        tile={<DetailTile><Key size={24} /></DetailTile>}
+        title={note.title || t('vaultItem.untitledKey')}
+        subtitle={<TypeBadge type="ssh-key" />}
+        onEdit={onEdit}
+        editLabel={t('common:actions.edit')}
+      />
 
-      <div>
+      <div className="mt-3">
         {data.label && (
-          <ViewField label={t('vaultItem.fieldLabel')} icon={<Tag size={13} />}>
-            <span className="text-sm text-neutral-800 dark:text-neutral-200 truncate">{data.label}</span>
-          </ViewField>
+          <DetailRow label={t('vaultItem.fieldLabel')} icon={<Tag size={13} />}>
+            <span className="break-all">{data.label}</span>
+          </DetailRow>
         )}
 
         {data.publicKey && (
-          <ViewField label={t('vaultItem.fieldPublic')} icon={<Key size={13} />}>
-            <span className="text-xs font-mono text-neutral-600 dark:text-neutral-400 truncate max-w-[200px]">{pubShort}</span>
-            <CopyButton value={data.publicKey} label="publicKey" copied={copied} onCopy={copy} />
-          </ViewField>
+          <DetailRow label={t('vaultItem.fieldPublic')} icon={<Key size={13} />} actions={<DetailCopyAction value={data.publicKey} id="publicKey" copied={copied} onCopy={copy} label={copyTip('publicKey')} />}>
+            <span dir="ltr" className="font-mono text-xs text-neutral-600 dark:text-neutral-400 break-all" /* rtl-ok: a key, never reordered */>{pubShort}</span>
+          </DetailRow>
         )}
 
         {data.privateKey && (
-          <ViewField label={t('vaultItem.fieldPrivate')} icon={<Lock size={13} />}>
-            <span className="min-w-0 break-all text-end text-sm font-mono text-neutral-800 dark:text-neutral-200 tracking-wider">
+          <DetailRow
+            label={t('vaultItem.fieldPrivate')}
+            icon={<Lock size={13} />}
+            actions={
+              <>
+                <RevealAction shown={showPrivate} onToggle={() => setShowPrivate(!showPrivate)} />
+                <DetailCopyAction value={data.privateKey} id="privateKey" copied={copied} onCopy={copy} label={copyTip('privateKey')} />
+              </>
+            }
+          >
+            <span dir="ltr" className="font-mono tracking-wider break-all" /* rtl-ok: a key, never reordered */>
               {showPrivate ? data.privateKey.slice(0, 30) + '...' : '•'.repeat(16)}
             </span>
-            <HoverLabel label={showPrivate ? t('vaultItem.hide') : t('vaultItem.reveal')} position="start">
-            <button type="button" onClick={() => setShowPrivate(!showPrivate)} aria-label={showPrivate ? t('vaultItem.hide') : t('vaultItem.reveal')} className="shrink-0 p-1 text-neutral-400 hover:text-accent transition rounded">
-              {showPrivate ? <IconEyeOff /> : <IconEye />}
-            </button>
-            </HoverLabel>
-            <CopyButton value={data.privateKey} label="privateKey" copied={copied} onCopy={copy} />
-          </ViewField>
+          </DetailRow>
         )}
 
         {data.passphrase && (
-          <ViewField label={t('vaultItem.fieldPass')} icon={<Shield size={13} />}>
-            <span className="min-w-0 break-all text-end text-sm font-mono text-neutral-800 dark:text-neutral-200 tracking-wider">
+          <DetailRow
+            label={t('vaultItem.fieldPass')}
+            icon={<Shield size={13} />}
+            actions={
+              <>
+                <RevealAction shown={showPassphrase} onToggle={() => setShowPassphrase(!showPassphrase)} />
+                <DetailCopyAction value={data.passphrase} id="passphrase" copied={copied} onCopy={copy} label={copyTip('passphrase')} />
+              </>
+            }
+          >
+            <span dir="ltr" className="font-mono tracking-wider break-all" /* rtl-ok: a secret is a code, never reordered */>
               {showPassphrase ? data.passphrase : '•'.repeat(Math.min(data.passphrase.length, 12))}
             </span>
-            <HoverLabel label={showPassphrase ? t('vaultItem.hide') : t('vaultItem.reveal')} position="start">
-            <button type="button" onClick={() => setShowPassphrase(!showPassphrase)} aria-label={showPassphrase ? t('vaultItem.hide') : t('vaultItem.reveal')} className="shrink-0 p-1 text-neutral-400 hover:text-accent transition rounded">
-              {showPassphrase ? <IconEyeOff /> : <IconEye />}
-            </button>
-            </HoverLabel>
-            <CopyButton value={data.passphrase} label="passphrase" copied={copied} onCopy={copy} />
-          </ViewField>
+          </DetailRow>
         )}
       </div>
 
-      {data.notes && (
-        <div className="mt-3 pt-3 border-t border-neutral-100 dark:border-neutral-800 text-sm text-neutral-500 dark:text-neutral-400 italic whitespace-pre-wrap break-words">
-          {data.notes}
-        </div>
-      )}
+      {data.notes && <DetailNotes heading={t('vaultItem.notesHeading')}>{data.notes}</DetailNotes>}
     </div>
   );
 }
@@ -766,7 +679,7 @@ export function VaultItem({
   const loginFormProps = { ...formProps, isPro };
 
   return (
-    <div className={`flex-1 flex flex-col min-h-0 ${VAULT_COLUMN}`}>
+    <div className={`flex-1 flex flex-col min-h-0 ${DETAIL_COLUMN}`}>
       {note.type === 'login' ? (
         <LoginForm {...loginFormProps} />
       ) : note.type === 'card' ? (

@@ -68,19 +68,24 @@ async function resolveImages(
   return resolved;
 }
 
-/** Sniff image MIME from magic bytes. Stored images are JPEG or, when the
- *  source carried transparency, PNG (see imageProcessing.ts). Defaults to
- *  JPEG for any pre-existing/unknown blob. */
-function sniffImageMime(bytes: Uint8Array): 'image/png' | 'image/jpeg' {
-  return bytes.length >= 4 &&
-    bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47
-    ? 'image/png'
-    : 'image/jpeg';
+/** Sniff image MIME from magic bytes. A stored image is JPEG, PNG when the
+ *  source carried transparency, or the source's own format when the space
+ *  saver was off (see imageProcessing.ts). Defaults to JPEG for any
+ *  pre-existing/unknown blob. */
+function sniffImageMime(bytes: Uint8Array): string {
+  const tag = (at: number, len: number) => String.fromCharCode(...bytes.subarray(at, at + len));
+  if (bytes.length < 12) return 'image/jpeg';
+  if (bytes[0] === 0x89 && tag(1, 3) === 'PNG') return 'image/png';
+  if (tag(0, 4) === 'GIF8') return 'image/gif';
+  if (tag(0, 4) === 'RIFF' && tag(8, 4) === 'WEBP') return 'image/webp';
+  if (tag(0, 2) === 'BM') return 'image/bmp';
+  return 'image/jpeg';
 }
 
 /** File extension matching the sniffed image format. */
-function sniffImageExt(bytes: Uint8Array): 'png' | 'jpg' {
-  return sniffImageMime(bytes) === 'image/png' ? 'png' : 'jpg';
+function sniffImageExt(bytes: Uint8Array): string {
+  const mime = sniffImageMime(bytes);
+  return mime === 'image/jpeg' ? 'jpg' : mime.slice('image/'.length);
 }
 
 /** Convert Uint8Array to base64 string. */
@@ -512,6 +517,28 @@ export async function exportBookmarksHtml(
   );
 }
 
+/**
+ * Contacts as a vCard 3.0 file, the format every phone and address book
+ * reads. Labels go back out in Apple's dialect and every unmodelled line
+ * is written back verbatim, which is what makes the file readable by the
+ * phone it came from. Loaded on demand like the bookmarks writer.
+ * Spec: ops/docs/plans/contacts-pillar.md (section 8)
+ */
+export async function exportContactsVcf(notes: LocalNote[]): Promise<void> {
+  const contacts = notes.filter(
+    (n) => n.type === 'contact' && n.deleted !== 1 && n.trashed !== 1
+  );
+  const { buildVcardFile } = await import('./contactsVcard');
+  const text = buildVcardFile(
+    contacts.map((n) => ({ title: n.title, body: n.body, tags: n.tags, updatedAt: n.updatedAt })),
+  );
+  const stamp = new Date().toISOString().slice(0, 10);
+  await downloadBlob(
+    new Blob([text], { type: 'text/vcard;charset=utf-8' }),
+    `privacynotes-contacts-${stamp}.vcf`
+  );
+}
+
 // ─── Printable HTML export ─────────────────────────────────────────────
 //
 // Pure client-side: renders the note's markdown body into a standalone
@@ -617,6 +644,13 @@ function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): stri
 <html lang="en">
 <head>
 <meta charset="utf-8" />
+<!-- This document leaves every policy the app runs under: the print view is
+     a webview with a null base URL, and an exported file opens from file://
+     in whatever browser the reader has. It is self-contained by
+     construction - the images it shows are already inlined - so nothing it
+     needs is a fetch, and a note that names a remote host must not turn a
+     print into a call to it. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: blob:; style-src 'unsafe-inline'; font-src data:" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>${escapeHtml(title)}</title>
 <style>

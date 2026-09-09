@@ -35,7 +35,8 @@
     "journal": "Günlük",
     "login": "Giriş bilgisi",
     "file": "Dosya",
-    "bookmark": "Yer imi"
+    "bookmark": "Yer imi",
+    "contact": "Kişi"
   },
   "vaultFilter": {
     "all": "Tümü",
@@ -88,7 +89,8 @@
     "items": "Öğe",
     "trashed": "Çöpte",
     "notes": "Not",
-    "bookmarks": "Yer imi"
+    "bookmarks": "Yer imi",
+    "contacts": "Kişiler"
   },
   "toast": {
     "imageUploadFailed": "Görsel yüklenemedi: {{error}}",
@@ -172,6 +174,7 @@
     "widthFull": "Tam genişlik",
     "burn": "Paylaş ve okunduktan sonra yak",
     "titlePlaceholderLink": "Yer imi adı",
+    "titlePlaceholderContact": "Ad",
     "notBackedUpTooLarge": "1 MB sınırının üzerinde olduğu için yedeklenmedi. Görselleri eklere taşıyın veya notu bölün.",
     "notBackedUpFailed": "Yedeklenmedi. Son hata: {{message}}. Yeniden deneniyor."
   },
@@ -219,6 +222,7 @@
     "importLabel": "İçe ve dışa aktarma",
     "planLabel": "Hesap",
     "storageLabel": "Depolama",
+    "imagesLabel": "Görseller",
     "securityLabel": "Güvenlik",
     "accountLabel": "Kimlik ve eşitleme",
     "appearanceLabel": "Görünüm",
@@ -266,5 +270,9 @@
     "title": "Yeni kasa oluşturuldu",
     "confirm": "Anladım",
     "body": "Girdiğiniz ifadeyle eşleşen bir kasa bulunamadı, bu yüzden yeni ve boş bir kasa oluşturuldu. Notlarınızı görmeyi bekliyorduysanız çıkış yapıp ifadenizi dikkatlice yeniden girin - tek bir farklı kelime bile bambaşka bir kasayı açar."
+  },
+  "ambiguousLink": {
+    "title": "İki not aynı başlığı taşıyor",
+    "body": "<highlight>“{{title}}”</highlight> başlığını birden fazla not taşıyor, bu yüzden bu bağlantı hangisini kastettiğini söylemiyor. Birini yeniden adlandırın, bağlantı diğerine gitsin."
   }
 }

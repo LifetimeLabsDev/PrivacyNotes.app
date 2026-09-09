@@ -74,7 +74,17 @@
     "needMore": "Daha fazla yer mi lazım?",
     "proSpacePitch": "Ücretsiz plandasınız. Pro'ya 500 MB dahil, şu anki yerinizin on katı.",
     "earlyAdopterSave": "Erken kullanıcı · {{amount}} $ tasarruf",
-    "oneTime": "tek seferlik"
+    "oneTime": "tek seferlik",
+    "imageSettingsLink": "Görsel ayarları"
+  },
+  "images": {
+    "spaceSaverTitle": "Alan tasarrufu",
+    "spaceSaverDesc": "{{px}} piksele sığdırılır ve %{{quality}} kalitede JPEG olarak kaydedilir. Alanın küçük bir kısmı için ufak bir ayrıntı kaybı.",
+    "removeLocationTitle": "Konum verisini kaldır",
+    "removeLocationDesc": "Bir görselin çekildiği yer, uygulamanın her yerinde, kaydedilmeden önce kaldırılır.",
+    "contactTitle": "Küçük kişi fotoğrafları",
+    "contactDesc": "Uygulamanın onları çizdiği en büyük boyut olan {{px}} piksele sığar. Kapalıyken alan tasarrufu ayarlarına uyarlar.",
+    "applyNote": "Yalnızca yeni görseller. Zaten kaydettiğiniz görseller değişmez ve görsel olmayan dosyalara hiç dokunulmaz."
   },
   "devices": {
     "heading": "Kayıtlı cihazlar",
@@ -111,8 +121,8 @@
   },
   "accountId": {
     "heading": "Hesap kimliği",
-    "copyId": "Kimliği kopyala",
-    "report": "Destek raporu"
+    "report": "Destek raporu",
+    "copyId": "Kimliği kopyala"
   },
   "revoke": {
     "title": "“{{name}}” kaldırılsın mı?",
@@ -243,8 +253,8 @@
     "pausedAria": "Eşitleme duraklatıldı",
     "wifiHold": "Wi-Fi bekleniyor",
     "wifiHoldTooltip": "Dosyalar Wi-Fi geldiğinde yüklenir. Notlar eşitlenmeye devam eder.",
-    "notSynced": "Eşitlenmedi",
     "notBackedUp": "Yedeklenmedi",
+    "notSynced": "Eşitlenmedi",
     "notBackedUpTooltip_one": "{{count}} not yedeklenmedi. Nedenini görmek için tıklayın.",
     "notBackedUpTooltip_other": "{{count}} not yedeklenmedi. Nedenini görmek için tıklayın.",
     "notBackedUpAria_one": "{{count}} not yedeklenmedi",

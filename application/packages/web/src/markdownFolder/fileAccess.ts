@@ -115,6 +115,38 @@ function isSkippedFile(name: string): boolean {
   return name.startsWith('.') || !isSupportedFile(name);
 }
 
+/**
+ * Whether a scan may take what `readDir` reported, on the desktop backend.
+ *
+ * A real file only, proven, and the wording is the point. `isSymlink !== true`
+ * would read the same and let two things through: an entry the plugin could
+ * not stat, which arrives with all three flags false, and any future shape
+ * that does not carry the field. The plugin derives all three from one
+ * `file_type()` call that does NOT traverse a link, so a symlink reports
+ * `isFile: false` and an unreadable entry reports false for everything
+ * (tauri-plugin-fs-2.5.2/src/commands.rs:486-501). Asking for a proven file
+ * refuses both.
+ *
+ * What this keeps out: a link named `notes.md` pointing anywhere the static
+ * grant reaches. The containment test further down guards the STRING a note
+ * supplies, refusing `..` and absolute paths; a link needs neither, and Tauri
+ * resolves it before checking its scope. So the escape is in what the folder
+ * contains, not in what a note asks for, and it is refused where the folder
+ * is read - the same shape `isSkippedDir` uses, and for the same reason: to
+ * be true by construction rather than by remembering.
+ *
+ * Pinned by `tests/markdownFolderAssetPath.test.ts`.
+ * Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-21)
+ */
+export function isScannableFile(entry: {
+  name: string;
+  isFile?: boolean;
+  isDirectory?: boolean;
+  isSymlink?: boolean;
+}): boolean {
+  return entry.isFile === true && !isSkippedFile(entry.name);
+}
+
 /* ── Single file ──────────────────────────────────────────────────── */
 
 /**
@@ -266,12 +298,15 @@ async function scanTauri(fs: TauriFs, root: string, prefix = ''): Promise<Direct
   const found: DirectoryEntry[] = [];
   const base = prefix ? `${root}/${prefix.slice(0, -1)}` : root;
   for (const entry of await fs.readDir(base)) {
-    if (entry.isDirectory) {
+    // A proven directory, then a proven file. Anything else - a link, a
+    // socket, an entry the plugin could not stat - is not descended into and
+    // not listed.
+    if (entry.isDirectory === true) {
       if (isSkippedDir(entry.name)) continue;
       found.push(...await scanTauri(fs, root, `${prefix}${entry.name}/`));
       continue;
     }
-    if (isSkippedFile(entry.name)) continue;
+    if (!isScannableFile(entry)) continue;
     const relPath = `${prefix}${entry.name}`;
     found.push({ relPath, dir: prefix, ref: tauriFileRef(fs, `${root}/${relPath}`, relPath) });
   }

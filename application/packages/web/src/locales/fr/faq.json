@@ -500,6 +500,13 @@
         "Tout arrive sous forme de nouveaux éléments, et rien de ce que tu as déjà n’est écrasé. Restaurer deux fois le même fichier te laisse donc deux copies de chaque note. Les deux formats chiffrés ne s’ouvrent que dans le compte qui les a créés, parce qu’ils sont chiffrés avec la clé de sa phrase ; une .zip se restaure dans n’importe quel coffre ([quelle sauvegarde faire](/fr/help/backup-strategy/))."
       ]
     },
+    "image-quality": {
+      "q": "PrivacyNotes modifie-t-il ou compresse-t-il mes images ?",
+      "a": [
+        "Oui. Les deux réglages sont activés par défaut parce que nous aimons nos utilisateurs : nous voulons que tu économises de l'espace de stockage et que tu gardes ta vie privée. Économiseur d'espace réduit une grande image à 2048 pixels et l'enregistre en JPEG à 85 % de qualité, ce qui garde tout le détail qu'un écran peut afficher. Supprimer les données de localisation retire les métadonnées EXIF qu'un appareil photo écrit dans une photo, position GPS comprise, avant l'enregistrement de l'image. Les deux s'appliquent à chaque image de l'app : collée dans une note, ajoutée comme fichier ou importée.",
+        "Désactive l'un ou l'autre dans **Réglages > Images**, où les photos de contact ont un troisième interrupteur qui les garde à 512 pixels. Les réglages ne concernent que les nouvelles images ; les fichiers qui ne sont pas des images sont stockés exactement tels quels. Les images HEIC et TIFF sont converties en JPEG, parce que seul Safari peut les afficher. Une sauvegarde que tu restaures est réécrite octet par octet."
+      ]
+    },
     "storage-usage": {
       "q": "Qu'est-ce qui compte dans mon stockage, et comment libérer de l'espace ?",
       "a": [

@@ -49,7 +49,7 @@ import { Callout, CalloutTitle } from './Callout';
 import { useIsMobile } from './useIsMobile';
 import { createLongPressGuard } from './softKeyboard';
 import { useTheme } from './theme';
-import { SearchHighlight } from './editorSearch';
+import { SearchHighlight, setSearchQuery, getSearchInfo, clearSearch } from './editorSearch';
 import { mathSourceEdit } from './editorMath';
 import { FindBar } from './FindBar';
 import { ReplaceBar } from './ReplaceBar';
@@ -145,6 +145,14 @@ export type EditorHandle = {
   /** Scroll to the attachment chip / image whose pn:file/pn:img URI contains
    *  `uuid` and flash-highlight it (jump-to-file from the Files pillar). */
   scrollToFile: (uuid: string) => void;
+  /** Open the find bar on the first of `candidates` the text holds, hits
+   *  marked: the list search following into the open note (GitHub #288). A
+   *  no-op on a read-only note, which has no bar, and when the text as
+   *  written holds none of them. */
+  highlightSearch: (candidates: string[]) => void;
+  /** Close the find bar if the search opened it; a bar the reader opened
+   *  stays. Runs when the list search is emptied. */
+  clearSearchHighlight: () => void;
   /** Raw TipTap editor instance - used by NotesView to wire wiki-link navigation. */
   getEditor: () => TipTapEditor | null;
   /** Serialize and save any pending debounced edit NOW, synchronously.
@@ -218,6 +226,17 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
   const longPress = useMemo(createLongPressGuard, []);
   useEffect(() => longPress.cancel, [longPress]);
   const [linkPopoverOpen, setLinkPopoverOpen] = useState(false);
+  const linkBtnRef = useRef<HTMLButtonElement | null>(null);
+  const linkFallbackRef = useRef<HTMLDivElement | null>(null);
+  // The link panel lines up under the toolbar's link button. That button is
+  // absent in two states the shortcut still reaches - the toolbar is hidden,
+  // or the button has folded into the collapsed overflow row - so the anchor
+  // resolves on every measurement instead of being captured once, and falls
+  // back to a zero-height marker at the top of the editor pane.
+  const linkAnchorRef = useMemo(
+    () => ({ get current() { return (linkBtnRef.current ?? linkFallbackRef.current) as HTMLElement | null; } }),
+    [],
+  );
   const [audioState, setAudioState] = useState<AudioRecordingState>('idle');
   const [audioDuration, setAudioDuration] = useState(0);
   const audioStopRef = useRef<(() => void) | null>(null);
@@ -614,6 +633,9 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     outlineOpen,
     setOutlineOpen,
     setOutlineReserve,
+    findSeed,
+    openFindWith,
+    closeSeededFind,
     closeBar,
     toggleFind,
     toggleReplace,
@@ -712,12 +734,31 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           step();
         });
       },
+      highlightSearch: (candidates: string[]) => {
+        if (!editor || readOnly || editor.isDestroyed) return;
+        // Synchronous, unlike scrollToFile: the match list is computed from
+        // the ProseMirror document, which is complete once the editor exists,
+        // and the bar scrolls to the current hit itself. A deferred frame
+        // would also never fire in a hidden tab.
+        for (const candidate of candidates) {
+          setSearchQuery(editor.view, candidate);
+          if (getSearchInfo(editor.view).total > 0) {
+            openFindWith(candidate);
+            return;
+          }
+        }
+        // The index folds what the editor does not (Arabic diacritics, for
+        // one), so a word it matched can be absent from the text as written.
+        // No bar beats a bar that opens on a red 0/0.
+        clearSearch(editor.view);
+      },
+      clearSearchHighlight: closeSeededFind,
       getEditor: () => editor,
       flushPendingSave: () => {
         if (editor) flushNow(editor);
       },
     }),
-    [editor]
+    [editor, readOnly, openFindWith, closeSeededFind]
   );
 
   return (
@@ -729,30 +770,34 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     >
       {/* Toolbar must be a direct child of the Editor root - wrapping it
           in a short-height div kills sticky (the toolbar can only stick
-          within its parent's bounds). The desktop LinkSheet needs a
-          positioned ancestor for its absolute positioning, so it gets its
-          own relative wrapper that does NOT contain the toolbar. */}
+          within its parent's bounds). */}
       {/* Toolbar visibility is controlled by the parent (NotesView) so the
           Hide/Show toggle can live on the tag row instead of overlapping
           the note body. */}
       {!readOnly && toolbarVisible && (
-        <>
-          <Toolbar
-            editor={editor}
-            mobileTabIndex={isMobile ? -1 : undefined}
-            onOpenLinkPopover={() => setLinkPopoverOpen(true)}
-            onAudioStateChange={handleAudioStateChange}
-            audioStopRef={audioStopRef}
-            isPro={isPro}
-            onOpenUpgrade={onOpenUpgrade}
-            hideEncryptedMedia={hideEncryptedMedia}
-          />
-          {editor && linkPopoverOpen && !isMobile && (
-            <div className="relative">
-              <LinkSheet editor={editor} isMobile={false} onClose={() => setLinkPopoverOpen(false)} />
-            </div>
-          )}
-        </>
+        <Toolbar
+          editor={editor}
+          mobileTabIndex={isMobile ? -1 : undefined}
+          onOpenLinkPopover={() => setLinkPopoverOpen(true)}
+          linkBtnRef={linkBtnRef}
+          onAudioStateChange={handleAudioStateChange}
+          audioStopRef={audioStopRef}
+          isPro={isPro}
+          onOpenUpgrade={onOpenUpgrade}
+          hideEncryptedMedia={hideEncryptedMedia}
+        />
+      )}
+      {/* Where the link panel falls back to when the link button is not on
+          screen. Zero height, so it marks the top of the note body when the
+          toolbar is hidden and the line under the toolbar when it is not. */}
+      <div ref={linkFallbackRef} aria-hidden="true" />
+      {editor && !readOnly && linkPopoverOpen && !isMobile && (
+        <LinkSheet
+          editor={editor}
+          isMobile={false}
+          anchorRef={linkAnchorRef}
+          onClose={() => setLinkPopoverOpen(false)}
+        />
       )}
       {/* Find or replace bar, pinned top-right just under the toolbar. The
           zero-height sticky wrapper keeps it floating over the note content
@@ -764,7 +809,13 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           style={{ top: 'calc(var(--pn-tagrow-h, 0px) + var(--pn-editor-toolbar-h, 0px))' }}
         >
           {bar === 'find' ? (
-            <FindBar editor={editor} focusTick={barFocusTick} onClose={closeBar} />
+            <FindBar
+              key={findSeed ? `seed-${findSeed.tick}` : 'find'}
+              editor={editor}
+              focusTick={barFocusTick}
+              initialQuery={findSeed?.term}
+              onClose={closeBar}
+            />
           ) : (
             <ReplaceBar editor={editor} focusTick={barFocusTick} onClose={closeBar} />
           )}
@@ -823,7 +874,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           component, which a transaction does not cause. */}
       {editor && !readOnly && <TableControls editor={editor} />}
       {editor && !readOnly && linkPopoverOpen && isMobile && (
-        <LinkSheet editor={editor} isMobile={true} onClose={() => setLinkPopoverOpen(false)} />
+        <LinkSheet editor={editor} isMobile={true} anchorRef={linkAnchorRef} onClose={() => setLinkPopoverOpen(false)} />
       )}
     </div>
   );

@@ -659,6 +659,7 @@ export async function clearLocalDatabase(opts?: { keepUnsyncedNotes?: boolean })
     const keepAtt = new Set(pendingAtt.map((r) => r.uuid));
     const attIds = await db.attachmentCache.toCollection().primaryKeys();
     await db.attachmentCache.bulkDelete(attIds.filter((id) => !keepAtt.has(id)));
+    await db.attachmentDedup.filter((r) => r.pendingUpload !== 1).delete();
     // The parsed-doc cache holds note bodies (sealed at rest like the
     // notes) and is rebuildable derived data - clear it on every
     // sign-out, kept dirty rows included (they re-cache on next open).

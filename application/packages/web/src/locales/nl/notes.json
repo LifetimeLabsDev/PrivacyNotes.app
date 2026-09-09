@@ -35,7 +35,8 @@
     "journal": "Dagboek",
     "login": "Login",
     "file": "Bestand",
-    "bookmark": "Bladwijzer"
+    "bookmark": "Bladwijzer",
+    "contact": "Contact"
   },
   "vaultFilter": {
     "all": "Alles",
@@ -88,7 +89,8 @@
     "items": "Items",
     "trashed": "In prullenbak",
     "notes": "Notities",
-    "bookmarks": "Bladwijzers"
+    "bookmarks": "Bladwijzers",
+    "contacts": "Contacten"
   },
   "toast": {
     "imageUploadFailed": "Uploaden van afbeelding mislukt: {{error}}",
@@ -172,6 +174,7 @@
     "widthFull": "Volledige breedte",
     "burn": "Delen & vernietigen na lezen",
     "titlePlaceholderLink": "Naam van bladwijzer",
+    "titlePlaceholderContact": "Naam",
     "notBackedUpTooLarge": "Boven de limiet van 1 MB, dus geen back-up. Verplaats afbeeldingen naar bijlagen of splits de notitie.",
     "notBackedUpFailed": "Geen back-up. Laatste fout: {{message}}. Nieuwe poging bezig."
   },
@@ -219,6 +222,7 @@
     "importLabel": "Importeren & exporteren",
     "planLabel": "Account",
     "storageLabel": "Opslag",
+    "imagesLabel": "Afbeeldingen",
     "securityLabel": "Beveiliging",
     "accountLabel": "ID & synchronisatie",
     "appearanceLabel": "Weergave",
@@ -266,5 +270,9 @@
     "title": "Nieuwe kluis aangemaakt",
     "confirm": "Duidelijk",
     "body": "Geen bestaande kluis kwam overeen met de herstelzin die je invoerde, dus is er een nieuwe lege kluis aangemaakt. Verwachtte je je notities te zien, meld je dan af en voer je herstelzin zorgvuldig opnieuw in - één ander woord opent een andere kluis."
+  },
+  "ambiguousLink": {
+    "title": "Twee notities hebben die titel",
+    "body": "Meer dan één notitie heet <highlight>“{{title}}”</highlight>, dus deze link zegt niet welke hij bedoelt. Geef er een andere naam aan, dan wijst de link naar de andere."
   }
 }

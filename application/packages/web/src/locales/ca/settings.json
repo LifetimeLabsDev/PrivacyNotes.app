@@ -17,7 +17,6 @@
     "earlySupporterThanks": "Pioner, gràcies per ser-hi des del primer dia",
     "proThanks": "Tot a punt. Gràcies per donar suport al projecte",
     "freeLimit_one": "<strong>Pla gratuït</strong>, fins a {{count}} dispositiu.",
-    "freeLimit_many": "<strong>Pla gratuït</strong>, fins a {{count}} dispositius.",
     "freeLimit_other": "<strong>Pla gratuït</strong>, fins a {{count}} dispositius.",
     "freeUsage": "Ara mateix en fas servir {{used}} de {{limit}}.",
     "upgradeToPro": "Millora a Pro",
@@ -30,7 +29,8 @@
       "none": "No s'ha trobat cap compra per a aquest compte de la botiga.",
       "notApplied": "S'ha trobat una compra, però pertany a un altre compte. Inicia la sessió amb la frase de recuperació que feies servir quan la vas comprar.",
       "error": "No s'ha pogut connectar amb la botiga. Torna-ho a provar d'aquí a un moment."
-    }
+    },
+    "freeLimit_many": "<strong>Pla gratuït</strong>, fins a {{count}} dispositius."
   },
   "storage": {
     "quotaLabel": "Totes les teves dades xifrades",
@@ -75,20 +75,30 @@
     "needMore": "Necessites més espai?",
     "proSpacePitch": "Ets al pla gratuït. Pro inclou 500 MB de sèrie, deu vegades l'espai que tens ara.",
     "earlyAdopterSave": "Pioner · estalvia ${{amount}}",
-    "oneTime": "pagament únic"
+    "oneTime": "pagament únic",
+    "imageSettingsLink": "Configuració d'imatges"
+  },
+  "images": {
+    "spaceSaverTitle": "Estalvi d'espai",
+    "spaceSaverDesc": "Reduïdes a {{px}} píxels i desades com a JPEG al {{quality}} % de qualitat. Una mica menys de detall per una fracció de l'espai.",
+    "removeLocationTitle": "Elimina les dades d'ubicació",
+    "removeLocationDesc": "El lloc on es va fer una imatge s'elimina abans de desar-la, a tota l'app.",
+    "contactTitle": "Fotos de contacte petites",
+    "contactDesc": "Caben en {{px}} píxels, la mida més gran a què l'app les mostra. Desactivat, segueixen les opcions de l'estalvi d'espai.",
+    "applyNote": "Només imatges noves. Les imatges ja desades no canvien, i els fitxers que no són imatges no es toquen mai."
   },
   "devices": {
     "heading": "Dispositius registrats",
     "empty": "No hi ha dispositius registrats. Probablement la sincronització encara no ha acabat.",
     "thisDevice": "Aquest dispositiu",
     "sharedSlot_one": "{{count}} instal·lació en aquesta plaça de dispositiu",
-    "sharedSlot_many": "{{count}} instal·lacions comparteixen una plaça de dispositiu",
     "sharedSlot_other": "{{count}} instal·lacions comparteixen una plaça de dispositiu",
     "added": "afegit {{time}}",
     "lastActive": "última activitat {{time}}",
     "removeAll": "Elimina-les totes",
     "recentlyRemoved": "Eliminats fa poc",
-    "removedAt": "Eliminat {{time}}"
+    "removedAt": "Eliminat {{time}}",
+    "sharedSlot_many": "{{count}} instal·lacions comparteixen una plaça de dispositiu"
   },
   "sync": {
     "verifyAction": "Compara amb el servidor",
@@ -100,8 +110,6 @@
     "verifyBusy": "Ara mateix hi ha un altre dispositiu sincronitzant, així que aquesta comprovació no pot donar una resposta clara. Torna-ho a provar d’aquí a un moment.",
     "verifyFailed": "No s’ha pogut contactar amb el servidor per comprovar-ho. Torna-ho a provar quan tornis a estar en línia.",
     "verifyDiverged": "Aquest dispositiu no va al mateix pas que el servidor:",
-    "verifyRepairAction": "Torna a baixar-ho tot",
-    "verifyRepairQueued": "A la propera sincronització es tornarà a llegir tota la teva caixa forta. No es perdrà res del que estigui esperant a pujar-se.",
     "verifyMissing_one": "{{count}} element del servidor falta aquí",
     "verifyMissing_other": "{{count}} elements del servidor falten aquí",
     "verifyStale_one": "{{count}} element d’aquí és més antic que la còpia del servidor",
@@ -109,12 +117,14 @@
     "verifyPendingDelete_one": "{{count}} element es va esborrar en un altre lloc i encara és aquí",
     "verifyPendingDelete_other": "{{count}} elements es van esborrar en un altre lloc i encara són aquí",
     "verifyNeverPushed_one": "{{count}} element d’aquí no ha arribat mai al servidor",
-    "verifyNeverPushed_other": "{{count}} elements d’aquí no han arribat mai al servidor"
+    "verifyNeverPushed_other": "{{count}} elements d’aquí no han arribat mai al servidor",
+    "verifyRepairAction": "Torna a baixar-ho tot",
+    "verifyRepairQueued": "A la propera sincronització es tornarà a llegir tota la teva caixa forta. No es perdrà res del que estigui esperant a pujar-se."
   },
   "accountId": {
     "heading": "ID del compte",
-    "copyId": "Copia l’ID",
-    "report": "Informe de suport"
+    "report": "Informe de suport",
+    "copyId": "Copia l’ID"
   },
   "revoke": {
     "title": "Vols eliminar “{{name}}”?",
@@ -122,15 +132,15 @@
     "bodySelf": "Això restablirà el registre d'aquest dispositiu. La teva sessió continua activa. El dispositiu es torna a registrar immediatament.",
     "bodyOther": "Aquest dispositiu tancarà la sessió a la pròxima sincronització.",
     "bodyRemoveAll_one": "Això elimina {{count}} instal·lació.",
-    "bodyRemoveAll_many": "Això elimina les {{count}} instal·lacions de la plaça.",
     "bodyRemoveAll_other": "Això elimina les {{count}} instal·lacions de la plaça.",
     "bodyInstall": "Aquesta instal·lació tancarà la sessió a la pròxima sincronització.",
     "bodyInstallOthers_one": "L'altra instal·lació d'aquesta plaça es manté.",
-    "bodyInstallOthers_many": "Les altres {{count}} instal·lacions d'aquesta plaça es mantenen.",
     "bodyInstallOthers_other": "Les altres {{count}} instal·lacions d'aquesta plaça es mantenen.",
     "freeNote": "La plaça s'allibera immediatament: pots afegir un dispositiu de recanvi ara mateix. El dispositiu eliminat es continua veient a “Eliminats fa poc” durant 72 hores.",
     "freeNoteKept": "La plaça continua ocupada mentre hi quedin altres instal·lacions.",
-    "removing": "S'està eliminant..."
+    "removing": "S'està eliminant...",
+    "bodyRemoveAll_many": "Això elimina les {{count}} instal·lacions de la plaça.",
+    "bodyInstallOthers_many": "Les altres {{count}} instal·lacions d'aquesta plaça es mantenen."
   },
   "appearance": {
     "title": "Aparença",
@@ -247,8 +257,8 @@
     "pausedAria": "Sincronització en pausa",
     "wifiHold": "Esperant el wifi",
     "wifiHoldTooltip": "Els fitxers pugen quan torni el wifi. Les notes segueixen sincronitzant-se.",
-    "notSynced": "No sincronitzat",
     "notBackedUp": "Sense còpia de seguretat",
+    "notSynced": "No sincronitzat",
     "notBackedUpTooltip_one": "{{count}} nota no té còpia de seguretat. Fes clic per veure per què.",
     "notBackedUpTooltip_other": "{{count}} notes no tenen còpia de seguretat. Fes clic per veure per què.",
     "notBackedUpAria_one": "{{count}} nota no té còpia de seguretat",

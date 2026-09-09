@@ -26,6 +26,19 @@
     "tagLabel": "Tagga även anteckningar efter mapp",
     "tagDesc": "Dina mappar återskapas oavsett. Det här lägger dessutom till varje mappnamn som en tagg, praktiskt om du också gillar att filtrera på tagg."
   },
+  "browserImport": {
+    "tagLabel": "Behåll taggarna från din webbläsare",
+    "tagDesc": "Firefox sparar taggar och ett adressfältsnyckelord tillsammans med bokmärket. Båda blir taggar här."
+  },
+  "contactImport": {
+    "photosLabel": "Importera foton",
+    "photosDesc_one": "{{count}} foto, ungefär {{size}} när appen har krympt det. Det är {{pct}} % av de {{free}} du har lediga.",
+    "photosDesc_other": "{{count}} foton, ungefär {{size}} när appen har krympt dem. Det är {{pct}} % av de {{free}} du har lediga.",
+    "photosDescNoQuota_one": "{{count}} foto, ungefär {{size}} när appen har krympt det.",
+    "photosDescNoQuota_other": "{{count}} foton, ungefär {{size}} när appen har krympt dem.",
+    "photosTooBig_one": "Inte tillräckligt med plats för fotot ({{size}}), så det lämnas utanför. Allt annat kommer med. Frigör {{shortfall}}, eller lägg till lagring, och importera igen för att ta med det.",
+    "photosTooBig_other": "Inte tillräckligt med plats för de {{count}} fotona ({{size}}), så de lämnas utanför. Allt annat kommer med. Frigör {{shortfall}}, eller lägg till lagring, och importera igen för att ta med dem."
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (mappen Keep) eller en enskild .json-anteckning. Checklistor importeras som riktiga uppgiftslistor.",
     "appleNotes": "Exportera med gratisappen Exporter som Markdown och släpp .zip-filen här.",
@@ -40,6 +53,7 @@
     "markdownFolder": ".md- eller .txt-filer var för sig eller som en .zip. En zippad mapp behåller sina undermappar och tar med sig sina bilder och bilagor.",
     "markdownApp": "De här anteckningarna är redan Markdown-filer i en mapp. Släpp mappen som .zip så följer undermappar, bilder och #taggar med.",
     "browserBookmarks": "Bokmärkesfilen (.html) från \"Export bookmarks\" i din webbläsare, eller .zip:en som Safari skriver. Chrome, Firefox, Safari, Edge, Opera, Brave och Vivaldi innehåller alla samma fil. Mappar och datum följer med.",
+    "vcard": ".vcf-filen som din adressbok exporterar: iPhone och Mac via iCloud eller Kontakter, Android, Google Kontakter. Varje kort kommer med, foton inräknade, och att importera samma fil två gånger hoppar över personerna du redan har.",
     "bitwarden": "Okrypterad .json-export från Bitwarden (Tools > Export vault > .json). Inloggningar, kort, SSH-nycklar, säkra anteckningar och TOTP-koder följer med.",
     "browserPasswords": "Lösenordsfilen (.csv) från Chrome, Edge, Brave, Opera, Vivaldi, Firefox eller Safari, eller .zip:en som Safari skriver. Varje rad blir en inloggning. Radera filen när du är klar - den innehåller dina lösenord i klartext."
   },
@@ -76,11 +90,12 @@
     "andMore": "… och {{count}} till",
     "headsUpLabel": "Obs:",
     "duplicateWarning": "importen lägger till de här som nya anteckningar. Kör du den två gånger får du dubbletter. Det finns ingen automatisk dubblettrensning ännu.",
+    "duplicateSkipNote": "bokmärken du redan sparat hoppas över, så att köra det här två gånger dubblerar ingenting.",
+    "contactSkipNote": "personer du redan har sparat hoppas över och lämnas som de är, så att köra det två gånger dubblerar ingen.",
     "quotaExceeded": "<strong>För lite lagring för att importera.</strong> Uppskattningsvis {{needed}} behövs, {{available}} tillgängligt. Frigör utrymme eller uppgradera innan du importerar.",
     "quotaWarning": "Obs: den här importen använder ungefär {{needed}} av ditt återstående lagringsutrymme på {{available}}.",
     "oversizeAttachments_one": "1 fil är större än gränsen på {{limit}} per fil i din plan. Den importeras till den här enheten, men synkas inte till dina andra enheter förrän du uppgraderar.",
-    "oversizeAttachments_other": "{{count}} filer är större än gränsen på {{limit}} per fil i din plan. De importeras till den här enheten, men synkas inte till dina andra enheter förrän du uppgraderar.",
-    "duplicateSkipNote": "bokmärken du redan sparat hoppas över, så att köra det här två gånger dubblerar ingenting."
+    "oversizeAttachments_other": "{{count}} filer är större än gränsen på {{limit}} per fil i din plan. De importeras till den här enheten, men synkas inte till dina andra enheter förrän du uppgraderar."
   },
   "counts": {
     "note_one": "anteckning",
@@ -93,6 +108,8 @@
     "card_other": "kort",
     "sshKey_one": "SSH-nyckel",
     "sshKey_other": "SSH-nycklar",
+    "contact_one": "kontakt",
+    "contact_other": "kontakter",
     "zeroItems": "0 objekt",
     "importButton": "Importera {{counts}}"
   },
@@ -118,7 +135,10 @@
     "vaultExportDesc": "Inloggningar, kort och SSH-nycklar i Bitwarden-kompatibelt format. Kan importeras av de flesta lösenordshanterare. Klartext - hantera varsamt.",
     "bookmarksOnlyHeading": "Endast bokmärken",
     "bookmarksExportTitle": "Bokmärkesfil (.html)",
-    "bookmarksExportDesc": "Standardfilen för bokmärken som varje webbläsare läser. Importera den till Chrome, Firefox, Safari eller Edge med mapparna kvar."
+    "bookmarksExportDesc": "Standardfilen för bokmärken som varje webbläsare läser. Importera den till Chrome, Firefox, Safari eller Edge med mapparna kvar.",
+    "contactsOnlyHeading": "Bara kontakter",
+    "contactsExportTitle": "Kontaktfil (.vcf)",
+    "contactsExportDesc": "vCard-filen som varje telefon och adressbok läser. Importera den i iPhone, Android, Google Kontakter eller Kontakter på Mac, med etiketter och grupper intakta."
   },
   "exportProgress": {
     "failedTitle": "Exporten misslyckades",
@@ -161,9 +181,5 @@
   },
   "saveErrors": {
     "shortWrite": "Bara {{written}} av {{expected}} byte sparades, så filen är ofullständig. Försök igen och spara till enhetens egen lagring i stället för till en molnmapp."
-  },
-  "browserImport": {
-    "tagLabel": "Behåll taggarna från din webbläsare",
-    "tagDesc": "Firefox sparar taggar och ett adressfältsnyckelord tillsammans med bokmärket. Båda blir taggar här."
   }
 }

@@ -423,7 +423,24 @@ p{text-wrap:pretty}
 .col-body{grid-area:body;min-width:0}
 .col-head h1{margin:0 0 6px;text-wrap:pretty}
 .col-head .sub{margin:0 0 4px}
-.rail-col{grid-area:rail;align-self:start;position:sticky;top:20px;display:flex;flex-direction:column}
+/* The sticky rail scrolls itself once it is taller than the window. Without
+   the cap it stays pinned at top:20px and everything past the fold is
+   unreachable until you scroll the whole article to its end - on the Help
+   hub, where the rail carries the topics, the documents and every import
+   guide, that is half the menu on a laptop window. */
+.rail-col{grid-area:rail;align-self:start;position:sticky;top:20px;max-height:calc(100dvh - 40px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--fg) 30%,transparent) transparent;display:flex;flex-direction:column}
+/* The rail's own scrollbar: thin, on a transparent track, and tinted from
+   the text colour rather than a surface token, because the two grounds pull
+   in opposite directions - a thumb light enough to recede on the dark page
+   disappears entirely on the white one. A reader whose system draws
+   permanent scrollbars otherwise gets a 15px slab beside a 208px column,
+   heavier than the menu it belongs to. The cut-off row is the affordance;
+   the bar only has to be findable. Chrome takes scrollbar-width/-color and
+   ignores the block below, which is Safari's path to the same look. */
+.rail-col::-webkit-scrollbar{width:8px}
+.rail-col::-webkit-scrollbar-track{background:transparent}
+.rail-col::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--fg) 30%,transparent);border-radius:99px}
+.rail-col::-webkit-scrollbar-thumb:hover{background:var(--faint)}
 .rail{display:flex;flex-direction:column;gap:2px}
 .rail .eyebrow{margin:0 4px 8px}
 .rail .rail-sep{margin-top:22px}
@@ -460,7 +477,7 @@ mark{background:var(--imp-bg);color:var(--mark-fg);border-radius:3px;padding:0 1
    reads as a z-index bug but it is the sticky from the two-column layout
    never being switched off. Pages whose rail becomes display:contents here
    (the Help leaves) out-specify this. */
-.rail-col{position:static;margin:14px 0 20px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.rail-col{position:static;max-height:none;overflow:visible;margin:14px 0 20px;padding-bottom:16px;border-bottom:1px solid var(--line)}
 .rail{flex-direction:row;flex-wrap:wrap;gap:6px}
 .rail .eyebrow{flex:1 1 100%;margin:2px 2px 4px}
 /* A second group's heading needs air above it. In the column layout the

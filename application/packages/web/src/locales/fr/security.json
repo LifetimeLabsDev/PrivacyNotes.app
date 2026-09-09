@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "Vérification de la prise en charge biométrique...",
     "description": "Déverrouille avec ton empreinte ou ton visage. Ajoute une barrière biométrique pour que personne autour de toi n'accède à tes notes.",
-    "trustFirst": "Active d'abord « Faire confiance à cet appareil » pour utiliser le déverrouillage biométrique. Les appareils non approuvés effacent toutes les données à la fermeture de l'onglet.",
+    "trustFirst": "Active d'abord « Faire confiance à cet appareil ». Le déverrouillage biométrique et le verrouillage de l'app gardent tous les deux une copie de ta phrase de récupération sur cet appareil, et ce n'est pas à cela que sert un appareil non approuvé.",
     "notAvailable": "Le déverrouillage biométrique n'est pas disponible sur cet appareil. Ton navigateur ou ton matériel ne prend pas en charge d'authentificateur de plateforme (Touch ID, Face ID, Windows Hello).",
     "enabledFlash": "Déverrouillage biométrique activé.",
     "enrolledOnDevice": "Enregistré sur cet appareil",
@@ -199,12 +199,6 @@
     "signOut": "Se déconnecter",
     "thisDevice": "Cet appareil",
     "lastActive": "{{platform}} · dernière activité {{when}}",
-    "removing": "Suppression...",
-    "relative": {
-      "justNow": "à l'instant",
-      "minutes": "il y a {{count}} min",
-      "hours": "il y a {{count}} h",
-      "days": "il y a {{count}} j"
-    }
+    "removing": "Suppression..."
   }
 }

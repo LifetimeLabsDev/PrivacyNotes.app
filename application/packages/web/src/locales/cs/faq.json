@@ -500,6 +500,13 @@
         "Všechno přijde jako nové položky a nic z toho, co už máš, se nepřepíše, takže když stejný soubor obnovíš dvakrát, budeš mít od každé poznámky dvě kopie. Oba šifrované formáty otevřeš jen v účtu, který je vytvořil, protože jsou zašifrované jeho klíčem z fráze; .zip padne do libovolného trezoru ([jakou zálohu dělat](/cs/help/backup-strategy/))."
       ]
     },
+    "image-quality": {
+      "q": "Mění nebo komprimuje PrivacyNotes moje obrázky?",
+      "a": [
+        "Ano. Obě nastavení jsou ve výchozím stavu zapnutá, protože máme své uživatele rádi: chceme, abys šetřil místo a zachoval si soukromí. Úspora místa zmenší velký obrázek na 2048 pixelů a uloží ho jako JPEG v 85% kvalitě, což zachová všechny detaily, které obrazovka umí zobrazit. Odebrat údaje o poloze odstraní metadata EXIF, která fotoaparát do fotky zapisuje, včetně polohy GPS, ještě před uložením obrázku. Obojí platí pro každý obrázek v aplikaci: vložený do poznámky, přidaný jako soubor nebo importovaný.",
+        "Kterékoli z nich vypni v **Nastavení > Obrázky**, kde mají fotky kontaktů třetí přepínač, který je drží na 512 pixelech. Nastavení platí jen pro nové obrázky; soubory, které nejsou obrázky, se ukládají přesně tak, jak jsou. Obrázky HEIC a TIFF se převádějí na JPEG, protože je umí zobrazit jen Safari. Záloha, kterou obnovíš, se zapíše zpět bajt po bajtu."
+      ]
+    },
     "storage-usage": {
       "q": "Co se počítá do úložiště a jak uvolním místo?",
       "a": [

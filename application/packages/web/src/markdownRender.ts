@@ -212,6 +212,23 @@ async function prepareMath(md: string): Promise<void> {
   katexRender = mod.default.renderToString as unknown as KatexRender;
 }
 
+/**
+ * renderMarkdown, degraded to escaped source if it throws.
+ *
+ * For the burn viewer, whose row is consumed before the page paints: the app
+ * carries no error boundary, so a throw under it blanks the screen and the
+ * one-time note is gone. Plain text the reader can still copy beats nothing.
+ * Nothing in the renderer is known to throw, which is what a net is for.
+ */
+export function renderMarkdownSafe(md: string): string {
+  try {
+    return renderMarkdown(md);
+  } catch (err) {
+    console.error('[render] falling back to plain text:', err);
+    return `<pre>${escapeHtml(md)}</pre>`;
+  }
+}
+
 function renderTex(tex: string, display: boolean): string | null {
   if (!katexRender || !tex.trim()) return null;
   try {
@@ -597,8 +614,15 @@ const UNSAFE_CSS_PROPS =
 
 function sanitizeEditorHtml(html: string): string {
   const doc = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html');
+  // `noscript` is here for a reason the others are not: this parser runs with
+  // scripting disabled, so it reads the element's content as markup and an
+  // attribute inside it as an attribute, while the browser that renders the
+  // serialized output reads the same bytes as text. Anything left inside one
+  // therefore re-parses differently on the other side, handlers included.
   doc.body
-    .querySelectorAll('script,style,iframe,object,embed,link,meta,base,form,input[type="image"]')
+    .querySelectorAll(
+      'script,style,iframe,object,embed,link,meta,base,form,input[type="image"],noscript',
+    )
     .forEach((el) => el.remove());
   doc.body.querySelectorAll('*').forEach((el) => {
     for (const attr of [...el.attributes]) {
@@ -1048,7 +1072,17 @@ export function renderMarkdown(md: string): string {
       }
       const callout = buf[0]?.match(/^\[!(\w+)\]([+-]?)\s?(.*)$/);
       if (callout) {
-        const canon = CALLOUT_ALIASES[callout[1]!.toLowerCase()] ?? 'info';
+        // Own-property only. A plain object answers every name on
+        // Object.prototype, and `constructor` and `__proto__` are already
+        // lower case, so the toLowerCase above does not save them: the
+        // lookup returned a function, the `?? 'info'` fallback saw a truthy
+        // value, and the type lookup below then read a property off
+        // undefined. `toString` and its siblings survive by accident,
+        // because lowercasing them produces a name nothing defines.
+        const alias = callout[1]!.toLowerCase();
+        const canon = Object.hasOwn(CALLOUT_ALIASES, alias)
+          ? CALLOUT_ALIASES[alias]!
+          : 'info';
         const t = CALLOUT_TYPES[canon]!;
         const title = callout[3]!.trim();
         const titleHtml = title ? renderInline(title) : escapeHtml(t.label);

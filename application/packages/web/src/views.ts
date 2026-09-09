@@ -30,7 +30,10 @@ export type View =
   | 'markdown'
   /** Bookmarks pillar - notes of type 'link'. GUI name "Bookmarks", never
    *  "Links". Spec: ops/docs/plans/bookmarks-pillar.md (free feature, not gated behind Pro) */
-  | 'bookmarks';
+  | 'bookmarks'
+  /** Contacts pillar - notes of type 'contact'. Free and ungated, like
+   *  bookmarks. Spec: ops/docs/plans/contacts-pillar.md (section 4, the View union member) */
+  | 'contacts';
 
 /**
  * Whether a view's row is drawn, given the user's hidden list and the view
@@ -75,4 +78,5 @@ export const VIEW_NOTE_TYPES: Partial<Record<View, NoteType[]>> = {
   files: ['file'],
   vault: ['login', 'card', 'ssh-key'],
   bookmarks: ['link'],
+  contacts: ['contact'],
 };

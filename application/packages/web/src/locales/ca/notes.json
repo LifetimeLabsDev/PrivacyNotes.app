@@ -35,7 +35,8 @@
     "journal": "Diari",
     "login": "Inici de sessió",
     "file": "Fitxer",
-    "bookmark": "Marcador"
+    "bookmark": "Marcador",
+    "contact": "Contacte"
   },
   "vaultFilter": {
     "all": "Tot",
@@ -88,18 +89,19 @@
     "items": "Elements",
     "trashed": "A la paperera",
     "notes": "Notes",
-    "bookmarks": "Marcadors"
+    "bookmarks": "Marcadors",
+    "contacts": "Contactes"
   },
   "toast": {
     "imageUploadFailed": "La pujada de la imatge ha fallat: {{error}}",
     "imageError": "Error d'imatge: {{error}}",
     "uploadFailedFor": "La pujada de \"{{filename}}\" ha fallat: {{error}}",
     "importedSyncing_one": "S'ha importat {{count}} nota. S'està sincronitzant…",
-    "importedSyncing_many": "S'han importat {{count}} notes. S'estan sincronitzant…",
     "importedSyncing_other": "S'han importat {{count}} notes. S'estan sincronitzant…",
     "addedTag_one": "S'ha afegit #{{tag}} a {{count}} element",
-    "addedTag_many": "S'ha afegit #{{tag}} a {{count}} elements",
-    "addedTag_other": "S'ha afegit #{{tag}} a {{count}} elements"
+    "addedTag_other": "S'ha afegit #{{tag}} a {{count}} elements",
+    "importedSyncing_many": "S'han importat {{count}} notes. S'estan sincronitzant…",
+    "addedTag_many": "S'ha afegit #{{tag}} a {{count}} elements"
   },
   "burn": {
     "mediaOnly": "Aquesta nota només conté fitxers multimèdia i no es pot compartir amb un enllaç burn.",
@@ -174,6 +176,7 @@
     "widthFull": "Amplada completa",
     "burn": "Comparteix amb Burn After Reading",
     "titlePlaceholderLink": "Nom del marcador",
+    "titlePlaceholderContact": "Nom",
     "notBackedUpTooLarge": "Supera el límit d'1 MB, per tant no té còpia de seguretat. Mou les imatges a adjunts o divideix la nota.",
     "notBackedUpFailed": "Sense còpia de seguretat. Darrer error: {{message}}. Tornant-ho a provar."
   },
@@ -221,6 +224,7 @@
     "importLabel": "Importa i exporta",
     "planLabel": "Compte",
     "storageLabel": "Emmagatzematge",
+    "imagesLabel": "Imatges",
     "securityLabel": "Seguretat",
     "accountLabel": "ID i sincronització",
     "appearanceLabel": "Aparença",
@@ -239,13 +243,13 @@
   "bulkTrash": {
     "title": "Mou a la paperera",
     "body_one": "Vols moure <highlight>{{count}} element</highlight> a la paperera? Després el podràs restaurar.",
-    "body_many": "Vols moure <highlight>{{count}} elements</highlight> a la paperera? Després els podràs restaurar.",
-    "body_other": "Vols moure <highlight>{{count}} elements</highlight> a la paperera? Després els podràs restaurar."
+    "body_other": "Vols moure <highlight>{{count}} elements</highlight> a la paperera? Després els podràs restaurar.",
+    "body_many": "Vols moure <highlight>{{count}} elements</highlight> a la paperera? Després els podràs restaurar."
   },
   "bulkDelete": {
     "body_one": "Vols suprimir permanentment <highlight>{{count}} nota</highlight>? Aquesta acció no es pot desfer.",
-    "body_many": "Vols suprimir permanentment <highlight>{{count}} notes</highlight>? Aquesta acció no es pot desfer.",
-    "body_other": "Vols suprimir permanentment <highlight>{{count}} notes</highlight>? Aquesta acció no es pot desfer."
+    "body_other": "Vols suprimir permanentment <highlight>{{count}} notes</highlight>? Aquesta acció no es pot desfer.",
+    "body_many": "Vols suprimir permanentment <highlight>{{count}} notes</highlight>? Aquesta acció no es pot desfer."
   },
   "tagConfirm": {
     "mergeTitle": "Fusiona les etiquetes",
@@ -255,14 +259,14 @@
     "deleteConfirm": "Suprimeix l'etiqueta",
     "moveToTrash": "Mou a la paperera",
     "mergeBody_one": "L'etiqueta <highlight>“{{targetTag}}”</highlight> ja existeix. Vols fusionar-hi <highlight>{{count}} nota</highlight> que ara té l'etiqueta “{{tag}}”?",
-    "mergeBody_many": "L'etiqueta <highlight>“{{targetTag}}”</highlight> ja existeix. Vols fusionar-hi <highlight>{{count}} notes</highlight> que ara tenen l'etiqueta “{{tag}}”?",
     "mergeBody_other": "L'etiqueta <highlight>“{{targetTag}}”</highlight> ja existeix. Vols fusionar-hi <highlight>{{count}} notes</highlight> que ara tenen l'etiqueta “{{tag}}”?",
     "deleteBody_one": "Vols treure l'etiqueta <highlight>“{{tag}}”</highlight> de <highlight>{{count}} nota</highlight>? Les notes en si no se suprimeixen.",
-    "deleteBody_many": "Vols treure l'etiqueta <highlight>“{{tag}}”</highlight> de <highlight>{{count}} notes</highlight>? Les notes en si no se suprimeixen.",
     "deleteBody_other": "Vols treure l'etiqueta <highlight>“{{tag}}”</highlight> de <highlight>{{count}} notes</highlight>? Les notes en si no se suprimeixen.",
     "deleteWithNotesBody_one": "Vols suprimir l'etiqueta <highlight>“{{tag}}”</highlight> i moure <highlight>{{count}} nota</highlight> a la paperera? Des d'allà la podràs restaurar.",
-    "deleteWithNotesBody_many": "Vols suprimir l'etiqueta <highlight>“{{tag}}”</highlight> i moure <highlight>{{count}} notes</highlight> a la paperera? Des d'allà les podràs restaurar.",
-    "deleteWithNotesBody_other": "Vols suprimir l'etiqueta <highlight>“{{tag}}”</highlight> i moure <highlight>{{count}} notes</highlight> a la paperera? Des d'allà les podràs restaurar."
+    "deleteWithNotesBody_other": "Vols suprimir l'etiqueta <highlight>“{{tag}}”</highlight> i moure <highlight>{{count}} notes</highlight> a la paperera? Des d'allà les podràs restaurar.",
+    "mergeBody_many": "L'etiqueta <highlight>“{{targetTag}}”</highlight> ja existeix. Vols fusionar-hi <highlight>{{count}} notes</highlight> que ara tenen l'etiqueta “{{tag}}”?",
+    "deleteBody_many": "Vols treure l'etiqueta <highlight>“{{tag}}”</highlight> de <highlight>{{count}} notes</highlight>? Les notes en si no se suprimeixen.",
+    "deleteWithNotesBody_many": "Vols suprimir l'etiqueta <highlight>“{{tag}}”</highlight> i moure <highlight>{{count}} notes</highlight> a la paperera? Des d'allà les podràs restaurar."
   },
   "createNote": {
     "title": "Vols crear la nota?",
@@ -273,5 +277,9 @@
     "title": "S'ha creat una caixa forta nova",
     "confirm": "Entesos",
     "body": "Cap caixa forta existent no coincideix amb la frase que has introduït, així que se n'ha creat una de buida. Si esperaves veure les teves notes, tanca la sessió i torna a introduir la frase amb cura: una sola paraula diferent obre una caixa forta diferent."
+  },
+  "ambiguousLink": {
+    "title": "Dues notes tenen aquest títol",
+    "body": "Hi ha més d'una nota amb el títol <highlight>“{{title}}”</highlight>, així que aquest enllaç no diu a quina es refereix. Canvia el nom a una i l'enllaç apuntarà a l'altra."
   }
 }

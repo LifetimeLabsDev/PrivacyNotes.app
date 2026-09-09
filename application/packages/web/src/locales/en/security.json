@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "Checking biometric support...",
     "description": "Unlock with your fingerprint or face. Adds a biometric gate so others nearby can't access your notes.",
-    "trustFirst": "Enable \"Trust this device\" first to use biometric unlock. Untrusted devices clear all data when the tab closes.",
+    "trustFirst": "Turn on \"Trust this device\" first. Biometric unlock and the app lock both keep a copy of your recovery phrase on this device, which is not what an untrusted device is for.",
     "notAvailable": "Biometric unlock is not available on this device. Your browser or hardware doesn't support a platform authenticator (Touch ID, Face ID, Windows Hello).",
     "enabledFlash": "Biometric unlock enabled.",
     "enrolledOnDevice": "Enrolled on this device",
@@ -199,12 +199,6 @@
     "signOut": "Sign out",
     "thisDevice": "This device",
     "lastActive": "{{platform}} · last active {{when}}",
-    "removing": "Removing...",
-    "relative": {
-      "justNow": "just now",
-      "minutes": "{{count}}m ago",
-      "hours": "{{count}}h ago",
-      "days": "{{count}}d ago"
-    }
+    "removing": "Removing..."
   }
 }

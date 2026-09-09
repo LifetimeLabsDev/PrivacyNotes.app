@@ -73,7 +73,17 @@
     "needMore": "공간이 더 필요한가요?",
     "proSpacePitch": "지금은 무료 플랜이에요. Pro에는 500 MB가 기본 포함돼요. 지금 공간의 열 배예요.",
     "earlyAdopterSave": "얼리어답터 · ${{amount}} 절약",
-    "oneTime": "1회 결제"
+    "oneTime": "1회 결제",
+    "imageSettingsLink": "이미지 설정"
+  },
+  "images": {
+    "spaceSaverTitle": "공간 절약",
+    "spaceSaverDesc": "{{px}}픽셀에 맞게 줄이고 {{quality}}% 품질의 JPEG로 저장해요. 약간의 세부를 내주고 공간은 훨씬 적게 써요.",
+    "removeLocationTitle": "위치 정보 제거",
+    "removeLocationDesc": "이미지를 찍은 장소는 앱 어디서든 저장하기 전에 제거돼요.",
+    "contactTitle": "작은 연락처 사진",
+    "contactDesc": "앱이 표시하는 가장 큰 크기인 {{px}}픽셀에 맞춰요. 끄면 공간 절약 설정을 따라요.",
+    "applyNote": "새 이미지에만 적용돼요. 이미 저장한 이미지는 바뀌지 않고, 이미지가 아닌 파일은 전혀 건드리지 않아요."
   },
   "devices": {
     "heading": "등록된 기기",
@@ -94,17 +104,17 @@
     "verifyBusy": "지금 다른 기기가 동기화하고 있어서 이 확인으로는 정확한 답을 낼 수 없어요. 잠시 후에 다시 시도해 주세요.",
     "verifyFailed": "확인하려고 서버에 연결하지 못했어요. 다시 온라인이 되면 시도해 주세요.",
     "verifyDiverged": "이 기기는 서버와 맞지 않아요:",
-    "verifyRepairAction": "전부 다시 내려받기",
-    "verifyRepairQueued": "다음 동기화에서 보관함 전체를 다시 읽어요. 업로드를 기다리는 것은 사라지지 않아요.",
     "verifyMissing_other": "서버에 있는 항목 {{count}}개가 여기에 없어요",
     "verifyStale_other": "여기 있는 항목 {{count}}개가 서버 사본보다 오래됐어요",
     "verifyPendingDelete_other": "다른 기기에서 삭제된 항목 {{count}}개가 아직 여기 있어요",
-    "verifyNeverPushed_other": "여기 있는 항목 {{count}}개는 서버에 한 번도 올라가지 않았어요"
+    "verifyNeverPushed_other": "여기 있는 항목 {{count}}개는 서버에 한 번도 올라가지 않았어요",
+    "verifyRepairAction": "전부 다시 내려받기",
+    "verifyRepairQueued": "다음 동기화에서 보관함 전체를 다시 읽어요. 업로드를 기다리는 것은 사라지지 않아요."
   },
   "accountId": {
     "heading": "계정 ID",
-    "copyId": "ID 복사",
-    "report": "지원 보고서"
+    "report": "지원 보고서",
+    "copyId": "ID 복사"
   },
   "revoke": {
     "title": "“{{name}}” 기기를 제거할까요?",
@@ -231,8 +241,8 @@
     "pausedAria": "동기화 일시중지됨",
     "wifiHold": "와이파이 대기 중",
     "wifiHoldTooltip": "와이파이가 돌아오면 파일을 올려요. 노트는 계속 동기화돼요.",
-    "notSynced": "동기화 안 됨",
     "notBackedUp": "백업 안 됨",
+    "notSynced": "동기화 안 됨",
     "notBackedUpTooltip_other": "노트 {{count}}개가 백업되지 않았어요. 클릭하면 이유를 볼 수 있어요.",
     "notBackedUpAria_other": "노트 {{count}}개가 백업되지 않았어요"
   },

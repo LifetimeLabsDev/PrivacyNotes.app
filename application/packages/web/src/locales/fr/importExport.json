@@ -26,6 +26,19 @@
     "tagLabel": "Étiqueter aussi les notes par dossier",
     "tagDesc": "Tes dossiers sont recréés dans tous les cas. Ceci ajoute aussi chaque nom de dossier comme étiquette, pratique si tu aimes filtrer par étiquette."
   },
+  "browserImport": {
+    "tagLabel": "Garder les étiquettes de ton navigateur",
+    "tagDesc": "Firefox enregistre des étiquettes et un mot-clé de barre d'adresse avec chaque signet. Les deux deviennent des étiquettes ici."
+  },
+  "contactImport": {
+    "photosLabel": "Importer les photos",
+    "photosDesc_one": "{{count}} photo, environ {{size}} une fois réduite par l'app. C'est {{pct}} % des {{free}} dont tu disposes.",
+    "photosDesc_other": "{{count}} photos, environ {{size}} une fois réduites par l'app. C'est {{pct}} % des {{free}} dont tu disposes.",
+    "photosDescNoQuota_one": "{{count}} photo, environ {{size}} une fois réduite par l'app.",
+    "photosDescNoQuota_other": "{{count}} photos, environ {{size}} une fois réduites par l'app.",
+    "photosTooBig_one": "Pas assez d'espace pour la photo ({{size}}), elle est laissée de côté. Tout le reste passe. Libère {{shortfall}}, ou ajoute du stockage, puis importe à nouveau pour la récupérer.",
+    "photosTooBig_other": "Pas assez d'espace pour les {{count}} photos ({{size}}), elles sont laissées de côté. Tout le reste passe. Libère {{shortfall}}, ou ajoute du stockage, puis importe à nouveau pour les récupérer."
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip (dossier Keep) ou une seule note .json. Les listes de contrôle s'importent en listes de tâches natives.",
     "appleNotes": "Exporte via l'app gratuite Exporter au format Markdown, puis dépose le .zip ici.",
@@ -40,6 +53,7 @@
     "markdownFolder": "Fichiers .md ou .txt à l'unité ou en .zip. Un dossier zippé garde ses sous-dossiers et amène ses images et ses pièces jointes.",
     "markdownApp": "Ces notes sont déjà des fichiers Markdown dans un dossier. Dépose ce dossier en .zip et ses sous-dossiers, ses images et ses #tags viennent avec.",
     "browserBookmarks": "Le fichier de favoris (.html) issu de \"Export bookmarks\" dans ton navigateur, ou le .zip que Safari écrit. Chrome, Firefox, Safari, Edge, Opera, Brave et Vivaldi contiennent tous le même fichier. Les dossiers et les dates suivent.",
+    "vcard": "Le fichier .vcf que ton carnet d'adresses exporte : iPhone et Mac via iCloud ou Contacts, Android, Google Contacts. Chaque fiche passe, photos comprises, et importer deux fois le même fichier ignore les personnes que tu as déjà.",
     "bitwarden": "Export .json non chiffré de Bitwarden (Tools > Export vault > .json). Identifiants, cartes, clés SSH, notes sécurisées et codes TOTP suivent tous.",
     "browserPasswords": "Le fichier de mots de passe (.csv) de Chrome, Edge, Brave, Opera, Vivaldi, Firefox ou Safari, ou le .zip que Safari écrit. Chaque ligne devient un identifiant. Supprime le fichier quand tu as fini - il contient tes mots de passe en clair."
   },
@@ -76,11 +90,12 @@
     "andMore": "… et {{count}} de plus",
     "headsUpLabel": "Attention :",
     "duplicateWarning": "l'import les ajoute comme de nouvelles notes. Si tu le lances deux fois, tu auras des doublons. Il n'y a pas encore de déduplication automatique.",
+    "duplicateSkipNote": "les signets que tu as déjà enregistrés sont ignorés, donc relancer cet import ne crée aucun doublon.",
+    "contactSkipNote": "les personnes déjà enregistrées sont ignorées et restent telles quelles, donc un second passage ne créera aucun doublon.",
     "quotaExceeded": "<strong>Stockage trop faible pour importer.</strong> Environ {{needed}} nécessaires, {{available}} disponibles. Libère de l'espace ou passe à la version supérieure avant d'importer.",
     "quotaWarning": "Attention : cet import utilisera environ {{needed}} de tes {{available}} de stockage restant.",
     "oversizeAttachments_one": "1 fichier dépasse la limite de {{limit}} par fichier de ton offre. Il s'importe sur cet appareil, mais ne se synchronisera pas vers tes autres appareils tant que tu ne passes pas à Pro.",
-    "oversizeAttachments_other": "{{count}} fichiers dépassent la limite de {{limit}} par fichier de ton offre. Ils s'importent sur cet appareil, mais ne se synchroniseront pas vers tes autres appareils tant que tu ne passes pas à Pro.",
-    "duplicateSkipNote": "les signets que tu as déjà enregistrés sont ignorés, donc relancer cet import ne crée aucun doublon."
+    "oversizeAttachments_other": "{{count}} fichiers dépassent la limite de {{limit}} par fichier de ton offre. Ils s'importent sur cet appareil, mais ne se synchroniseront pas vers tes autres appareils tant que tu ne passes pas à Pro."
   },
   "counts": {
     "note_one": "note",
@@ -93,6 +108,8 @@
     "card_other": "cartes",
     "sshKey_one": "clé SSH",
     "sshKey_other": "clés SSH",
+    "contact_one": "contact",
+    "contact_other": "contacts",
     "zeroItems": "0 élément",
     "importButton": "Importer {{counts}}"
   },
@@ -118,7 +135,10 @@
     "vaultExportDesc": "Identifiants, cartes et clés SSH au format compatible Bitwarden. Importable par la plupart des gestionnaires de mots de passe. En clair - à manipuler avec précaution.",
     "bookmarksOnlyHeading": "Signets uniquement",
     "bookmarksExportTitle": "Fichier de signets (.html)",
-    "bookmarksExportDesc": "Le fichier de signets standard que tout navigateur lit. Importe-le dans Chrome, Firefox, Safari ou Edge sans perdre tes dossiers."
+    "bookmarksExportDesc": "Le fichier de signets standard que tout navigateur lit. Importe-le dans Chrome, Firefox, Safari ou Edge sans perdre tes dossiers.",
+    "contactsOnlyHeading": "Contacts seulement",
+    "contactsExportTitle": "Fichier de contacts (.vcf)",
+    "contactsExportDesc": "Le fichier vCard que chaque téléphone et chaque carnet d'adresses lit. Importe-le dans iPhone, Android, Google Contacts ou Contacts sur Mac, étiquettes et groupes compris."
   },
   "exportProgress": {
     "failedTitle": "L'export a échoué",
@@ -161,9 +181,5 @@
   },
   "saveErrors": {
     "shortWrite": "Seuls {{written}} octets sur {{expected}} ont été enregistrés, le fichier est donc incomplet. Réessaie en enregistrant dans le stockage de ton appareil plutôt que dans un dossier cloud."
-  },
-  "browserImport": {
-    "tagLabel": "Garder les étiquettes de ton navigateur",
-    "tagDesc": "Firefox enregistre des étiquettes et un mot-clé de barre d'adresse avec chaque signet. Les deux deviennent des étiquettes ici."
   }
 }

@@ -35,7 +35,8 @@
     "journal": "Diario",
     "login": "Accesso",
     "file": "File",
-    "bookmark": "Segnalibro"
+    "bookmark": "Segnalibro",
+    "contact": "Contatto"
   },
   "vaultFilter": {
     "all": "Tutti",
@@ -88,7 +89,8 @@
     "items": "Elementi",
     "trashed": "Nel cestino",
     "notes": "Note",
-    "bookmarks": "Segnalibri"
+    "bookmarks": "Segnalibri",
+    "contacts": "Contatti"
   },
   "toast": {
     "imageUploadFailed": "Caricamento immagine non riuscito: {{error}}",
@@ -172,6 +174,7 @@
     "widthFull": "Larghezza piena",
     "burn": "Condividi & Burn After Reading",
     "titlePlaceholderLink": "Nome del segnalibro",
+    "titlePlaceholderContact": "Nome",
     "notBackedUpTooLarge": "Oltre il limite di 1 MB, quindi senza backup. Sposta le immagini negli allegati o dividi la nota.",
     "notBackedUpFailed": "Senza backup. Ultimo errore: {{message}}. Nuovo tentativo in corso."
   },
@@ -219,6 +222,7 @@
     "importLabel": "Importa ed esporta",
     "planLabel": "Account",
     "storageLabel": "Archiviazione",
+    "imagesLabel": "Immagini",
     "securityLabel": "Sicurezza",
     "accountLabel": "ID & Sync",
     "appearanceLabel": "Aspetto",
@@ -266,5 +270,9 @@
     "title": "Nuova cassaforte creata",
     "confirm": "Ho capito",
     "body": "Nessuna cassaforte esistente corrispondeva alla frase che hai inserito, quindi ne è stata creata una nuova e vuota. Se ti aspettavi di vedere le tue note, esci e reinserisci la frase con attenzione - basta una sola parola diversa per aprire una cassaforte diversa."
+  },
+  "ambiguousLink": {
+    "title": "Due note hanno lo stesso titolo",
+    "body": "Più di una nota si intitola <highlight>“{{title}}”</highlight>, quindi questo link non dice quale intende. Rinomina una delle due e il link punterà all'altra."
   }
 }

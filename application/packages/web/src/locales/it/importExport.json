@@ -26,6 +26,19 @@
     "tagLabel": "Aggiungi anche un tag per cartella",
     "tagDesc": "Le tue cartelle vengono ricostruite in ogni caso. Questo aggiunge anche il nome di ogni cartella come tag, comodo se ti piace filtrare anche per tag."
   },
+  "browserImport": {
+    "tagLabel": "Mantieni i tag del tuo browser",
+    "tagDesc": "Firefox salva tag e una parola chiave della barra degli indirizzi insieme al segnalibro. Qui entrambi diventano tag."
+  },
+  "contactImport": {
+    "photosLabel": "Importa le foto",
+    "photosDesc_one": "{{count}} foto, circa {{size}} una volta ridotta dall'app. È il {{pct}} % dei {{free}} che hai liberi.",
+    "photosDesc_other": "{{count}} foto, circa {{size}} una volta ridotte dall'app. È il {{pct}} % dei {{free}} che hai liberi.",
+    "photosDescNoQuota_one": "{{count}} foto, circa {{size}} una volta ridotta dall'app.",
+    "photosDescNoQuota_other": "{{count}} foto, circa {{size}} una volta ridotte dall'app.",
+    "photosTooBig_one": "Spazio insufficiente per la foto ({{size}}), quindi resta fuori. Tutto il resto viene importato. Libera {{shortfall}}, o aggiungi spazio, e importa di nuovo per recuperarla.",
+    "photosTooBig_other": "Spazio insufficiente per le {{count}} foto ({{size}}), quindi restano fuori. Tutto il resto viene importato. Libera {{shortfall}}, o aggiungi spazio, e importa di nuovo per recuperarle."
+  },
   "sourceDesc": {
     "googleKeep": "File .zip di Google Takeout (cartella Keep) o una singola nota .json. Le checklist vengono importate come elenchi di attività nativi.",
     "appleNotes": "Esporta tramite l'app gratuita Exporter come Markdown, poi trascina qui il file .zip.",
@@ -40,6 +53,7 @@
     "markdownFolder": "File .md o .txt singoli oppure in uno .zip. Una cartella zippata mantiene le sue sottocartelle e porta con sé immagini e allegati.",
     "markdownApp": "Queste note sono già file Markdown dentro una cartella. Trascina qui la cartella come .zip e vengono con lei sottocartelle, immagini e #tag.",
     "browserBookmarks": "Il file di segnalibri (.html) che esce da \"Export bookmarks\" nel tuo browser, oppure lo .zip che scrive Safari. Chrome, Firefox, Safari, Edge, Opera, Brave e Vivaldi contengono tutti lo stesso file. Cartelle e date arrivano con lui.",
+    "vcard": "Il file .vcf che la tua rubrica esporta: iPhone e Mac tramite iCloud o Contatti, Android, Contatti Google. Ogni scheda viene importata, foto comprese, e importare due volte lo stesso file salta le persone che hai già.",
     "bitwarden": "Esportazione .json non cifrata da Bitwarden (Tools > Export vault > .json). Login, carte, chiavi SSH, note sicure e codici TOTP arrivano tutti.",
     "browserPasswords": "Il file di password (.csv) da Chrome, Edge, Brave, Opera, Vivaldi, Firefox o Safari, oppure lo .zip che scrive Safari. Ogni riga diventa una credenziale. Cancella il file quando hai finito - contiene le tue password in chiaro."
   },
@@ -76,11 +90,12 @@
     "andMore": "… e altri {{count}}",
     "headsUpLabel": "Attenzione:",
     "duplicateWarning": "l'importazione le aggiunge come nuove note. Se la esegui due volte, otterrai dei duplicati. Non c'è ancora una deduplicazione automatica.",
+    "duplicateSkipNote": "i segnalibri che hai già salvato vengono saltati, quindi ripetere questo import non crea doppioni.",
+    "contactSkipNote": "le persone che hai già salvato vengono saltate e restano come sono, quindi eseguirlo due volte non duplicherà nessuno.",
     "quotaExceeded": "<strong>Spazio insufficiente per l'importazione.</strong> Stimati {{needed}} necessari, {{available}} disponibili. Libera spazio o passa a Pro prima di importare.",
     "quotaWarning": "Attenzione: questa importazione userà circa {{needed}} dei tuoi {{available}} di spazio rimanente.",
     "oversizeAttachments_one": "1 file supera il limite di {{limit}} per file del tuo piano. Si importa su questo dispositivo, ma non si sincronizzerà sugli altri dispositivi finché non passi a Pro.",
-    "oversizeAttachments_other": "{{count}} file superano il limite di {{limit}} per file del tuo piano. Si importano su questo dispositivo, ma non si sincronizzeranno sugli altri dispositivi finché non passi a Pro.",
-    "duplicateSkipNote": "i segnalibri che hai già salvato vengono saltati, quindi ripetere questo import non crea doppioni."
+    "oversizeAttachments_other": "{{count}} file superano il limite di {{limit}} per file del tuo piano. Si importano su questo dispositivo, ma non si sincronizzeranno sugli altri dispositivi finché non passi a Pro."
   },
   "counts": {
     "note_one": "nota",
@@ -93,6 +108,8 @@
     "card_other": "carte",
     "sshKey_one": "chiave SSH",
     "sshKey_other": "chiavi SSH",
+    "contact_one": "contatto",
+    "contact_other": "contatti",
     "zeroItems": "0 elementi",
     "importButton": "Importa {{counts}}"
   },
@@ -118,7 +135,10 @@
     "vaultExportDesc": "Accessi, carte e chiavi SSH in formato compatibile con Bitwarden. Importabile dalla maggior parte dei gestori di password. In chiaro - maneggiare con cura.",
     "bookmarksOnlyHeading": "Solo segnalibri",
     "bookmarksExportTitle": "File dei segnalibri (.html)",
-    "bookmarksExportDesc": "Il file di segnalibri standard che ogni browser legge. Importalo in Chrome, Firefox, Safari o Edge con le tue cartelle intatte."
+    "bookmarksExportDesc": "Il file di segnalibri standard che ogni browser legge. Importalo in Chrome, Firefox, Safari o Edge con le tue cartelle intatte.",
+    "contactsOnlyHeading": "Solo contatti",
+    "contactsExportTitle": "File contatti (.vcf)",
+    "contactsExportDesc": "Il file vCard che ogni telefono e ogni rubrica legge. Importalo su iPhone, Android, Contatti Google o Contatti sul Mac, con etichette e gruppi intatti."
   },
   "exportProgress": {
     "failedTitle": "Esportazione non riuscita",
@@ -161,9 +181,5 @@
   },
   "saveErrors": {
     "shortWrite": "Sono stati salvati solo {{written}} byte su {{expected}}, quindi il file è incompleto. Riprova salvando nella memoria del dispositivo invece che in una cartella cloud."
-  },
-  "browserImport": {
-    "tagLabel": "Mantieni i tag del tuo browser",
-    "tagDesc": "Firefox salva tag e una parola chiave della barra degli indirizzi insieme al segnalibro. Qui entrambi diventano tag."
   }
 }

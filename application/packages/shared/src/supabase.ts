@@ -20,9 +20,10 @@ export type CreateSupabaseClientOptions = {
    */
   storage?: SupabaseAuthStorage;
   /**
-   * Whether supabase-js should parse OAuth tokens from the URL hash
-   * fragment on init. Defaults to false (safe for Tauri / SSR).
-   * The web client sets this to true so OAuth redirects work.
+   * Whether supabase-js should consume an OAuth return from the URL on
+   * init: a `?code=` exchange under `pkce`, a token fragment under
+   * `implicit`. Defaults to false (safe for Tauri / SSR). The web client
+   * sets this to true so OAuth redirects work.
    */
   detectSessionInUrl?: boolean;
   /**
@@ -39,6 +40,14 @@ export type CreateSupabaseClientOptions = {
    * warning.
    */
   storageKey?: string;
+  /**
+   * OAuth flow. `pkce` sends a code challenge with the authorize request
+   * and gets back a one-time `?code=` that only the client holding the
+   * matching verifier can exchange; `implicit` gets tokens in the URL
+   * fragment. Omitted, supabase-js applies its own default (implicit).
+   * The app client sets `pkce`.
+   */
+  flowType?: 'implicit' | 'pkce';
 };
 
 /**
@@ -57,6 +66,7 @@ export function createSupabaseClient(
       detectSessionInUrl: options?.detectSessionInUrl ?? false,
       ...(options?.storage ? { storage: options.storage } : {}),
       ...(options?.storageKey ? { storageKey: options.storageKey } : {}),
+      ...(options?.flowType ? { flowType: options.flowType } : {}),
     },
   });
 }

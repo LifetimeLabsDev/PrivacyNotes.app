@@ -73,7 +73,17 @@
     "needMore": "需要更多空間？",
     "proSpacePitch": "你目前是免費方案。Pro 內建 500 MB，是你現在的十倍。",
     "earlyAdopterSave": "早鳥 · 省 ${{amount}}",
-    "oneTime": "一次買斷"
+    "oneTime": "一次買斷",
+    "imageSettingsLink": "圖片設定"
+  },
+  "images": {
+    "spaceSaverTitle": "節省空間",
+    "spaceSaverDesc": "縮到 {{px}} 像素以內，以 {{quality}}% 品質存成 JPEG。少一點細節，換來只佔一小部分的空間。",
+    "removeLocationTitle": "移除位置資料",
+    "removeLocationDesc": "圖片的拍攝地點會在儲存前移除，app 裡各處都一樣。",
+    "contactTitle": "小尺寸聯絡人照片",
+    "contactDesc": "縮到 {{px}} 像素以內，也就是 app 顯示它們的最大尺寸。關閉後改依節省空間的設定。",
+    "applyNote": "只影響新的圖片。已經儲存的圖片不會變，不是圖片的檔案也絕不會被動到。"
   },
   "devices": {
     "heading": "已註冊裝置",
@@ -94,17 +104,17 @@
     "verifyBusy": "現在有另一台裝置正在同步，這次檢查無法給出乾淨的結果。請過一會兒再試一次。",
     "verifyFailed": "無法連上伺服器進行檢查。等你回到線上後再試一次。",
     "verifyDiverged": "這台裝置和伺服器不一致：",
-    "verifyRepairAction": "重新下載全部",
-    "verifyRepairQueued": "下次同步會重新讀取你的整個保險庫。任何等待上傳的內容都不會遺失。",
     "verifyMissing_other": "伺服器上有 {{count}} 個項目在這裡找不到",
     "verifyStale_other": "這裡有 {{count}} 個項目比伺服器上的版本舊",
     "verifyPendingDelete_other": "有 {{count}} 個項目已在別處刪除，這裡卻還留著",
-    "verifyNeverPushed_other": "這裡有 {{count}} 個項目從未送達伺服器"
+    "verifyNeverPushed_other": "這裡有 {{count}} 個項目從未送達伺服器",
+    "verifyRepairAction": "重新下載全部",
+    "verifyRepairQueued": "下次同步會重新讀取你的整個保險庫。任何等待上傳的內容都不會遺失。"
   },
   "accountId": {
     "heading": "帳號 ID",
-    "copyId": "複製 ID",
-    "report": "支援報告"
+    "report": "支援報告",
+    "copyId": "複製 ID"
   },
   "revoke": {
     "title": "要移除「{{name}}」嗎？",
@@ -231,8 +241,8 @@
     "pausedAria": "同步已暫停",
     "wifiHold": "等待 Wi-Fi",
     "wifiHoldTooltip": "Wi-Fi 回來後就會上傳檔案。筆記仍照常同步。",
-    "notSynced": "未同步",
     "notBackedUp": "未備份",
+    "notSynced": "未同步",
     "notBackedUpTooltip_other": "{{count}} 則筆記尚未備份。點一下查看原因。",
     "notBackedUpAria_other": "{{count}} 則筆記尚未備份"
   },

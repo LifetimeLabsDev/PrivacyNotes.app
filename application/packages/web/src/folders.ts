@@ -121,9 +121,21 @@ function normalizeFolderName(raw: string): string {
   return raw.trim().replace(/\s+/g, ' ').slice(0, FOLDER_NAME_MAX_LENGTH);
 }
 
-/** 1-based depth of a folder (root = 1). 0 when the id is unknown. */
-function folderDepth(folders: FolderDef[], id: string): number {
-  const byId = new Map(folders.map((f) => [f.id, f]));
+/**
+ * 1-based depth of a folder (root = 1). 0 when the id is unknown.
+ *
+ * `byId` is the caller's index when the caller has one. Built here otherwise,
+ * which is right for a single lookup and quadratic inside a loop: rebuilding
+ * it per folder is what made validating an imported tree cost 369 ms at four
+ * thousand folders and tens of seconds at forty, on every boot rather than
+ * once. Spec: ops/docs/audit-adversarial-2026-09-bfg.md (SEC-27)
+ */
+function folderDepth(
+  folders: FolderDef[],
+  id: string,
+  index?: ReadonlyMap<string, FolderDef>,
+): number {
+  const byId = index ?? new Map(folders.map((f) => [f.id, f]));
   let depth = 0;
   let current = byId.get(id);
   const seen = new Set<string>();
@@ -415,6 +427,41 @@ export function validateFolders(raw: unknown): FolderDef[] {
   const reparented = cleaned.map((f) =>
     f.parentId && !idSet.has(f.parentId) ? { ...f, parentId: null } : f
   );
-  // Drop cycles.
-  return reparented.filter((f) => folderDepth(reparented, f.id) > 0);
+  // Drop cycles, in one pass over the whole set rather than one walk per
+  // folder. A shared index alone is not enough: the walk itself is as long as
+  // the chain, so a single deep tree stays quadratic. Each ancestor's depth is
+  // remembered as it is resolved, so every folder is visited once.
+  const byId = new Map(reparented.map((f) => [f.id, f]));
+  const depth = new Map<string, number>();
+  for (const start of reparented) {
+    if (depth.has(start.id)) continue;
+    // The chain from this folder up to something already known, a root, or a
+    // repeat. A repeat is a cycle, and every folder on the way into it is
+    // invalid too, which is what the 0 records.
+    const chain: FolderDef[] = [];
+    const onPath = new Set<string>();
+    let current: FolderDef | undefined = start;
+    let base = 0;
+    while (current) {
+      const known = depth.get(current.id);
+      if (known !== undefined) {
+        base = known;
+        break;
+      }
+      if (onPath.has(current.id)) {
+        base = 0;
+        for (const f of chain) depth.set(f.id, 0);
+        break;
+      }
+      onPath.add(current.id);
+      chain.push(current);
+      current = current.parentId ? byId.get(current.parentId) : undefined;
+    }
+    if (base === 0 && chain.some((f) => depth.get(f.id) === 0)) continue;
+    for (let i = chain.length - 1; i >= 0; i--) {
+      base += 1;
+      depth.set(chain[i]!.id, base);
+    }
+  }
+  return reparented.filter((f) => (depth.get(f.id) ?? 0) > 0);
 }

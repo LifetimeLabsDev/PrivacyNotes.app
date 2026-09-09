@@ -1,6 +1,9 @@
 import { db } from '../db';
 import type { AttachmentMeta } from '../attachmentStore';
 import { formatFileSize } from '../attachmentValidation';
+import { contactPhotoOptions, currentImageOptions, processImage } from '../imageProcessing';
+import { withContactPhotoBytes } from '../contactBody';
+import type { ImportBlob } from './types';
 
 /* ------------------------------------------------------------------ */
 /* SHA-256 helper (was duplicated in appleNotes, googleKeep, privacynotes) */
@@ -138,7 +141,7 @@ export function isBlobReferenced(key: string, text: string): boolean {
  * Returns counts of images and attachments imported.
  */
 export async function importBlobs(
-  blobs: Map<string, { data: Uint8Array; mime: string; name: string }>,
+  blobs: Map<string, ImportBlob>,
   noteIds: string[],
   onProgress?: (msg: string) => void,
 ): Promise<{ images: number; attachments: number }> {
@@ -148,13 +151,25 @@ export async function importBlobs(
 
   // Store each blob and build key -> pn: URI mapping.
   const keyToUri = new Map<string, string>();
+  // The stored bytes per URI: a contact records its photo's size in its body.
+  const uriToBytes = new Map<string, number>();
   const entries = [...blobs.entries()];
+  const imageOptions = currentImageOptions();
 
   for (let i = 0; i < entries.length; i++) {
-    const [key, { data, mime, name }] = entries[i]!;
+    const [key, blob] = entries[i]!;
+    const { mime, name } = blob;
+    let data = blob.data;
+    const isImage = mime.startsWith('image/');
+    // Every importer's pictures obey the image switches here, in one place.
+    // A picture the module cannot read is stored as it arrived.
+    if (isImage && !blob.processed) {
+      const opts = blob.ceiling === 'contact' ? contactPhotoOptions() : imageOptions;
+      const result = await processImage(new File([data as BlobPart], name, { type: mime }), opts);
+      if (result.ok) data = result.image.data;
+    }
     const hash = await sha256hex(data);
     const uuid = crypto.randomUUID();
-    const isImage = mime.startsWith('image/');
 
     if (isImage) {
       const existing = await db.imageDedup.get(hash);
@@ -165,6 +180,8 @@ export async function importBlobs(
         await db.imageDedup.put({ hash, uuid, encryptedSize: 0, pendingUpload: 1 });
         keyToUri.set(key, `pn:img/${uuid}`);
       }
+      // Same hash, same bytes: the length holds for a deduplicated picture too.
+      uriToBytes.set(keyToUri.get(key)!, data.length);
       imgCount++;
     } else {
       const existing = await db.attachmentDedup.get(hash);
@@ -179,7 +196,9 @@ export async function importBlobs(
       attCount++;
     }
 
-    if ((i + 1) % 10 === 0) {
+    // A processed picture is a decode per blob, so the line follows every
+    // image rather than every tenth entry.
+    if (isImage || (i + 1) % 10 === 0) {
       onProgress?.(`Importing attachments... ${i + 1} of ${entries.length}`);
     }
   }
@@ -235,6 +254,11 @@ export async function importBlobs(
             const replaced = body.replace(blobRefPattern(search, false), replacement);
             if (replaced !== body) { body = replaced; changed = true; }
           }
+        }
+
+        // A contact records its photo's stored size beside the reference.
+        if (changed && note.type === 'contact') {
+          body = withContactPhotoBytes(body, (uri) => uriToBytes.get(uri));
         }
 
         if (changed) {

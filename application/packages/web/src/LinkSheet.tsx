@@ -6,20 +6,28 @@
  * pushed it off-screen, coordsAtPos unreliable after layout shift).
  *
  * Mobile: slides up from the bottom as a sheet, sits above the keyboard.
- * Desktop: drops down from the toolbar area as a compact panel.
+ * Desktop: a portal-rendered panel anchored under the toolbar's link button,
+ * placed by usePopoverPosition like every other toolbar dropdown.
  *
  * Pre-fills "Link text" from the current selection. URL field validates
  * on submit. Supports edit + remove for existing links.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
+import { usePopoverPosition } from './usePopoverPosition';
 import type { Editor } from '@tiptap/react';
 
 type Props = {
   editor: Editor;
   isMobile: boolean;
+  /**
+   * What the desktop panel lines up under. Unread on mobile, where the sheet
+   * is pinned to the viewport bottom instead.
+   */
+  anchorRef: RefObject<HTMLElement | null>;
   onClose: () => void;
 };
 
@@ -42,10 +50,11 @@ function normalizeUrl(input: string): string {
   return `https://${trimmed}`;
 }
 
-export function LinkSheet({ editor, isMobile, onClose }: Props) {
+export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
   const { t } = useTranslation('editor');
   const sheetRef = useRef<HTMLDivElement | null>(null);
   const urlRef = useRef<HTMLInputElement | null>(null);
+  const pos = usePopoverPosition(!isMobile, anchorRef, sheetRef, { align: 'start', gap: 6 });
 
   // Existing link attributes (if cursor is inside a link).
   const existingHref: string =
@@ -264,11 +273,19 @@ export function LinkSheet({ editor, isMobile, onClose }: Props) {
     );
   }
 
-  // Desktop - dropdown panel anchored below the toolbar.
-  return (
+  // Desktop - panel anchored under the link button. It goes through a portal
+  // for the same reason the toolbar's own dropdowns do: the toolbar row clips
+  // its overflow, and a panel laid out inside the editor tree centres on the
+  // pane rather than on the button that opened it.
+  return createPortal(
     <div
       ref={sheetRef}
-      className="absolute top-full left-1/2 -translate-x-1/2 mt-1 z-50 w-80 bg-surface-1 border border-divider rounded-lg p-4 shadow-lg"
+      className="fixed z-50 w-80 bg-surface-1 border border-divider rounded-lg p-4 shadow-lg"
+      style={{
+        top: pos?.top ?? 0,
+        left: pos?.left ?? 0,
+        visibility: pos ? 'visible' : 'hidden',
+      }}
       role="dialog"
       aria-label={isEditing ? t('link.editTitle') : t('link.addTitle')}
     >
@@ -276,6 +293,7 @@ export function LinkSheet({ editor, isMobile, onClose }: Props) {
         {isEditing ? t('link.editTitle') : t('link.addTitle')}
       </h3>
       {form}
-    </div>
+    </div>,
+    document.body,
   );
 }

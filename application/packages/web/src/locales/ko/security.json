@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "생체 인증 지원 확인 중...",
     "description": "지문이나 얼굴로 잠금을 해제하세요. 생체 인증 관문을 추가해 주변 사람이 노트에 접근하지 못하게 해요.",
-    "trustFirst": "생체 인증 잠금 해제를 쓰려면 먼저 \"이 기기 신뢰하기\"를 켜세요. 신뢰하지 않은 기기는 탭을 닫으면 모든 데이터가 지워져요.",
+    "trustFirst": "먼저 \"이 기기 신뢰하기\"를 켜세요. 생체 인증 잠금 해제와 앱 잠금은 둘 다 복구 문구 사본을 이 기기에 저장해요. 신뢰하지 않은 기기는 그런 용도가 아니에요.",
     "notAvailable": "이 기기에서는 생체 인증 잠금 해제를 사용할 수 없어요. 브라우저나 하드웨어가 플랫폼 인증 장치(Touch ID, Face ID, Windows Hello)를 지원하지 않아요.",
     "enabledFlash": "생체 인증 잠금 해제가 켜졌어요.",
     "enrolledOnDevice": "이 기기에 등록됨",
@@ -199,12 +199,6 @@
     "signOut": "로그아웃",
     "thisDevice": "이 기기",
     "lastActive": "{{platform}} · 마지막 활동 {{when}}",
-    "removing": "제거 중...",
-    "relative": {
-      "justNow": "방금",
-      "minutes": "{{count}}분 전",
-      "hours": "{{count}}시간 전",
-      "days": "{{count}}일 전"
-    }
+    "removing": "제거 중..."
   }
 }

@@ -39,6 +39,12 @@
     "alreadyOwned": "Laut Store besitzt du diesen Kauf bereits, aber er gehört zu einem anderen Konto. Melde dich mit der Wiederherstellungsphrase an, die du beim Kauf verwendet hast."
   },
   "checkout": {
+    "confirmTitle": "Kauf bestätigen",
+    "confirmPro": "PrivacyNotes Pro, einmalig {{price}} $.",
+    "confirmStorage": "{{gb}} GB zusätzlicher Speicher, {{price}} $ pro Jahr.",
+    "confirmAccount": "Freigeschaltet wird dieses Konto:",
+    "confirmCheck": "Öffne Einstellungen, dann Sync, und prüfe, ob die Konto-ID dort übereinstimmt. Wenn nicht, schließe diesen Tab: die Zahlung würde jemand anderen freischalten.",
+    "confirmButton": "Weiter zur Zahlung",
     "invalidTitle": "Checkout-Link ungültig",
     "invalidBody": "Öffne den Checkout aus der App heraus, damit wir den Kauf deinem Konto zuordnen können.",
     "completeTitle": "Zahlung abgeschlossen",

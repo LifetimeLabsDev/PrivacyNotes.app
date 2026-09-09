@@ -22,6 +22,9 @@
   "storage": [
     "storage-usage"
   ],
+  "images": [
+    "image-quality"
+  ],
   "me": [
     "what-syncs"
   ],

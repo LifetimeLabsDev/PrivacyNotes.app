@@ -32,7 +32,13 @@
 import { db, reopenDb } from './db';
 import { PHRASE_STORAGE_KEY } from './authStorage';
 import { trustAwareStorage } from './trustStorage';
-import { aesGcmEncrypt, aesGcmDecrypt } from './biometric';
+import {
+  aesGcmEncrypt,
+  aesGcmDecrypt,
+  hasBiometricCredential,
+  hasPinWrappedPhrase,
+} from './biometric';
+import { settingsLocalKey } from './settingsLocalKey';
 import { logAuthEvent } from './authDiag';
 
 // Version-prefixed so a future format change can coexist with old
@@ -114,6 +120,43 @@ async function readWrapKey(): Promise<CryptoKey | null> {
  * behavior: a degraded browser keeps the account usable and never
  * strands the user (auth session audit, section 0).
  */
+/**
+ * True when the app lock is the only door: the setting is on AND a PIN
+ * or biometric wrap exists to open it.
+ *
+ * Arming the lock strips the device-key phrase envelope on purpose, so a
+ * sign-in that writes the phrase back re-creates the door the lock
+ * removed - permanently, and silently. The test therefore belongs to the
+ * write rather than to one sign-in path: both the phrase sign-in and the
+ * custodial OAuth sign-in reach persistStoredPhrase with a lock possibly
+ * armed, and only the first one used to ask.
+ *
+ * It is deliberately NOT inside persistStoredPhrase. Two callers write
+ * the phrase back precisely BECAUSE they are removing a lock factor -
+ * pinRecovery.ts when clearing a PIN leaves no other door, and
+ * BiometricTab.tsx when removing a fingerprint leaves no PIN wrap - and
+ * both run while the settings flag is still on. A guard inside the write
+ * would strand those devices with no phrase and no door, which is the
+ * defect v0.507.16 closed.
+ */
+export function appLockArmed(): boolean {
+  if (!hasPinWrappedPhrase() && !hasBiometricCredential()) return false;
+  // Raw read of the cached settings blob rather than loadLocalSettings,
+  // following bumpNotesCreated: the userSettings import chain reads
+  // browser globals at module load, and this module is imported by the
+  // OAuth path, which must stay light. Only one boolean is needed, and
+  // anything other than a stored true answers "not armed", which is the
+  // safe side here - the write it gates is what restores a lost session.
+  try {
+    const raw = localStorage.getItem(settingsLocalKey());
+    if (!raw) return false;
+    const cache = JSON.parse(raw) as { settings?: { appLockEnabled?: unknown } };
+    return cache.settings?.appLockEnabled === true;
+  } catch {
+    return false;
+  }
+}
+
 export async function persistStoredPhrase(phrase: string): Promise<void> {
   try {
     await getOrCreateWrapKey();

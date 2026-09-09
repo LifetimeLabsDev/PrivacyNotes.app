@@ -26,6 +26,16 @@
     "tagLabel": "폴더 이름도 태그로 달기",
     "tagDesc": "폴더는 어차피 그대로 다시 만들어져요. 여기에 더해 각 폴더 이름을 태그로도 추가해요. 태그로 필터링하는 것도 좋아한다면 유용해요."
   },
+  "browserImport": {
+    "tagLabel": "브라우저의 태그 유지하기",
+    "tagDesc": "Firefox는 북마크에 태그와 주소창 키워드를 함께 저장해요. 둘 다 여기서는 태그가 돼요."
+  },
+  "contactImport": {
+    "photosLabel": "사진 가져오기",
+    "photosDesc_other": "사진 {{count}}장, 앱이 줄인 뒤 약 {{size}}. 남은 공간 {{free}}의 {{pct}}%예요.",
+    "photosDescNoQuota_other": "사진 {{count}}장, 앱이 줄인 뒤 약 {{size}}.",
+    "photosTooBig_other": "사진 {{count}}장({{size}})을 넣을 공간이 부족해서 사진은 빠져요. 나머지는 모두 가져와요. {{shortfall}}을 비우거나 저장 공간을 추가한 뒤 다시 가져오면 사진도 들어와요."
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip(Keep 폴더) 또는 단일 .json 노트. 체크리스트는 기본 할 일 목록으로 가져와요.",
     "appleNotes": "무료 Exporter 앱으로 Markdown 내보내기를 한 뒤 .zip을 여기에 놓으세요.",
@@ -40,6 +50,7 @@
     "markdownFolder": ".md 또는 .txt 파일을 하나씩, 또는 .zip으로. 압축한 폴더는 하위 폴더를 그대로 두고 이미지와 첨부 파일도 함께 가져와요.",
     "markdownApp": "이 노트들은 이미 폴더 안의 Markdown 파일이에요. 그 폴더를 .zip으로 놓으면 하위 폴더와 이미지, #태그가 같이 들어와요.",
     "browserBookmarks": "브라우저의 \"Export bookmarks\"로 만든 북마크 파일(.html), 또는 Safari가 만드는 .zip이에요. Chrome, Firefox, Safari, Edge, Opera, Brave, Vivaldi 모두 같은 파일을 담고 있어요. 폴더와 날짜도 함께 와요.",
+    "vcard": "주소록이 내보내는 .vcf 파일이에요. iPhone과 Mac은 iCloud나 연락처에서, Android와 Google 주소록도 마찬가지예요. 사진을 포함해 모든 카드를 가져오고, 같은 파일을 두 번 가져오면 이미 있는 사람은 건너뛰어요.",
     "bitwarden": "Bitwarden의 암호화되지 않은 .json 내보내기 파일이에요 (Tools > Export vault > .json). 로그인, 카드, SSH 키, 보안 메모, TOTP 코드가 모두 함께 들어와요.",
     "browserPasswords": "Chrome, Edge, Brave, Opera, Vivaldi, Firefox, Safari의 비밀번호 파일(.csv), 또는 Safari가 만드는 .zip이에요. 한 줄이 로그인 하나가 돼요. 다 끝나면 파일을 지우세요. 비밀번호가 그대로 적혀 있어요."
   },
@@ -76,10 +87,11 @@
     "andMore": "… 외 {{count}}개",
     "headsUpLabel": "참고:",
     "duplicateWarning": "가져오면 이 항목들이 새 노트로 추가돼요. 두 번 실행하면 중복이 생겨요. 자동 중복 제거는 아직 없어요.",
+    "duplicateSkipNote": "이미 저장한 북마크는 건너뛰기 때문에 두 번 실행해도 중복되지 않아요.",
+    "contactSkipNote": "이미 저장한 사람은 건너뛰고 그대로 두기 때문에 두 번 실행해도 아무도 중복되지 않아요.",
     "quotaExceeded": "<strong>저장 공간이 부족해서 가져올 수 없어요.</strong> 약 {{needed}} 필요, {{available}} 사용 가능. 공간을 확보하거나 업그레이드한 뒤 가져오세요.",
     "quotaWarning": "참고: 이번 가져오기는 남은 저장 공간 {{available}} 중 약 {{needed}}를 사용해요.",
-    "oversizeAttachments_other": "{{count}}개의 파일이 요금제의 파일당 한도 {{limit}}보다 커요. 이 기기에는 가져오지만, 업그레이드하기 전까지는 다른 기기와 동기화되지 않아요.",
-    "duplicateSkipNote": "이미 저장한 북마크는 건너뛰기 때문에 두 번 실행해도 중복되지 않아요."
+    "oversizeAttachments_other": "{{count}}개의 파일이 요금제의 파일당 한도 {{limit}}보다 커요. 이 기기에는 가져오지만, 업그레이드하기 전까지는 다른 기기와 동기화되지 않아요."
   },
   "counts": {
     "note_other": "노트",
@@ -87,6 +99,7 @@
     "login_other": "로그인",
     "card_other": "카드",
     "sshKey_other": "SSH 키",
+    "contact_other": "연락처",
     "zeroItems": "항목 0개",
     "importButton": "{{counts}} 가져오기"
   },
@@ -112,7 +125,10 @@
     "vaultExportDesc": "로그인, 카드, SSH 키를 Bitwarden 호환 형식으로. 대부분의 비밀번호 관리자에서 가져올 수 있어요. 평문이니 조심해서 다루세요.",
     "bookmarksOnlyHeading": "북마크만",
     "bookmarksExportTitle": "북마크 파일 (.html)",
-    "bookmarksExportDesc": "어느 브라우저에서나 읽는 표준 북마크 파일이에요. 폴더를 그대로 유지한 채 Chrome, Firefox, Safari, Edge로 가져갈 수 있어요."
+    "bookmarksExportDesc": "어느 브라우저에서나 읽는 표준 북마크 파일이에요. 폴더를 그대로 유지한 채 Chrome, Firefox, Safari, Edge로 가져갈 수 있어요.",
+    "contactsOnlyHeading": "연락처만",
+    "contactsExportTitle": "연락처 파일(.vcf)",
+    "contactsExportDesc": "모든 전화와 주소록이 읽는 vCard 파일이에요. iPhone, Android, Google 주소록, Mac의 연락처에 라벨과 그룹 그대로 가져올 수 있어요."
   },
   "exportProgress": {
     "failedTitle": "내보내기 실패",
@@ -154,9 +170,5 @@
   },
   "saveErrors": {
     "shortWrite": "{{expected}}바이트 중 {{written}}바이트만 저장돼서 파일이 불완전해요. 클라우드 폴더 대신 기기 저장소에 저장해서 다시 시도해 보세요."
-  },
-  "browserImport": {
-    "tagLabel": "브라우저의 태그 유지하기",
-    "tagDesc": "Firefox는 북마크에 태그와 주소창 키워드를 함께 저장해요. 둘 다 여기서는 태그가 돼요."
   }
 }

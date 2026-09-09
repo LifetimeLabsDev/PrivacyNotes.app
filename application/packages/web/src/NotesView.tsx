@@ -21,9 +21,10 @@ import { runAtRestSweep } from './localSweep';
 import { parseMarkdownFile } from './import/markdown';
 import { FolderPicker } from './FolderPicker';
 import { BookmarksList, type BookmarkDraft } from './BookmarksList';
+import { ContactsList } from './ContactsList';
 import { openExternal } from './openExternal';
 import { NeverBackedUpNotice, listNeverBackedUp } from './neverBackedUp';
-import { noteLinkKey } from './noteLinks';
+import { resolveNoteLinkMatches } from './noteLinks';
 import { parseLinkBody, buildLinkBody, buildLinkKeyMap } from './linkBody';
 import { canDeleteFolder, UNFILED_ID } from './folders';
 import { FolderNamesContext } from './folderNames';
@@ -61,7 +62,7 @@ import { HoverLabel } from './HoverLabel';
 import { useNoteEditing } from './useNoteEditing';
 import { useSyncOrchestrator } from './useSyncOrchestrator';
 import { useTheme, FREE_THEMES } from './theme';
-import { searchNotes } from './search';
+import { searchNotes, searchBodyTerms, searchSeedCandidates, isPhraseQuery } from './search';
 import { useSearchIndexSync } from './searchIndexSync';
 import type { NewMilestone } from './milestones';
 import { pendingRatingMilestones } from './ratingPrompt';
@@ -93,6 +94,7 @@ import { EmptyTrashModal } from './EmptyTrashModal';
 import { DeleteNoteModal } from './DeleteNoteModal';
 import { ConfirmModal } from './ConfirmModal';
 import { setImageStore, setImageUploadContext } from './EncryptedImage';
+import { setImagePolicy } from './imageProcessing';
 import { AttachmentStore } from './attachmentStore';
 import { setAttachmentStore, setAttachmentUploadContext } from './EncryptedAttachment';
 import { gcOnNoteDelete, gcOnNotesDelete } from './imageGC';
@@ -143,6 +145,7 @@ import {
   deriveDisplayTitle,
   noteLinkName,
   deriveExcerpt,
+  noteSaysPhrase,
   formatModified,
   isWeekJournal,
   getMondayIso,
@@ -222,6 +225,7 @@ const NEW_NOTE_IS_VISIBLE: Record<View, boolean> = {
   files: false,
   markdown: false,
   bookmarks: false,
+  contacts: false,
 };
 
 type Authed = Extract<AuthState, { status: 'authenticated' }>;
@@ -709,8 +713,9 @@ function AuthenticatedView({
     if (!isDemoMode()) {
       syncPinCache(loaded);
       // The wrap follows the cached settings the same way the hash cache
-      // above does, in both directions.
-      syncPinWrap(loaded);
+      // above does, in both directions. The phrase rides along so the
+      // removal direction cannot leave this device with no door.
+      syncPinWrap(loaded, auth.status === 'authenticated' ? auth.phrase : undefined);
     }
     return loaded;
   });
@@ -1061,6 +1066,45 @@ function AuthenticatedView({
     handle.scrollToFile(pendingFileScroll.uuid);
     setPendingFileScroll(null);
   }, [pendingFileScroll, selectedId, pinUnlockVersion]);
+  // Jump-to-text, the twin of the file jump above (GitHub #288): the open
+  // note follows the list search. Whenever the query settles or the open
+  // note changes under an active query, the word the index matched in that
+  // note's body goes to the editor, which opens the find bar on it - no
+  // click needed, so a note that was already open lights up as the query is
+  // typed. Several words are the phrase itself; one word goes in the
+  // index's own spelling, so "grow" opens on "growth" and a one-letter typo
+  // on the word as written (searchSeedCandidates); a title-only or tag-only
+  // hit has nothing the editor can show and seeds nothing. An emptied query
+  // closes the bar the search opened and no other. The nudge is a row click
+  // (handleSelectNote).
+  const [searchJumpNudge, setSearchJumpNudge] = useState(0);
+  const [pendingSearchTerm, setPendingSearchTerm] = useState<{ noteId: string; candidates: string[] } | null>(null);
+  useEffect(() => {
+    if (!deferredSearch.trim()) {
+      editorRef.current?.clearSearchHighlight();
+      return;
+    }
+    if (!selectedId) return;
+    const candidates = searchSeedCandidates(deferredSearch, searchBodyTerms(deferredSearch, selectedId));
+    if (candidates.length > 0) setPendingSearchTerm({ noteId: selectedId, candidates });
+  }, [deferredSearch, selectedId, searchJumpNudge]);
+  // The hand-off waits for the editor the way the file jump does: state, not
+  // a ref, so a PIN gate or a mid-switch re-runs it once the editor exists.
+  // Both clears are guarded: when a query moves the selection, the effect
+  // above queues the new note's seed in the same commit this one retires the
+  // old note's, and a plain null here would retire both.
+  useEffect(() => {
+    if (!pendingSearchTerm) return;
+    const retire = () => setPendingSearchTerm((cur) => (cur === pendingSearchTerm ? null : cur));
+    if (selectedId !== pendingSearchTerm.noteId) {
+      retire();
+      return;
+    }
+    const handle = editorRef.current;
+    if (!handle) return;
+    handle.highlightSearch(pendingSearchTerm.candidates);
+    retire();
+  }, [pendingSearchTerm, selectedId, pinUnlockVersion]);
   const [editorFocused, setEditorFocused] = useState(false);
   // Ref mirror for the sync orchestrator's idle check (#142): runSync fires
   // from a poller whose closure would hold stale state, so it reads focus
@@ -1300,11 +1344,12 @@ function AuthenticatedView({
       console.warn('[imageStore] processPendingUploads failed:', err),
     );
 
-    // Images carry no per-file tier limit (only the shared storage
-    // quota), so this context has no Pro flag - unlike the attachment
-    // one below, whose isPro picks the 5/50/100 MB per-file cap.
+    // isPro picks the 5/50/100 MB per-file cap, which applies to an image
+    // only when the space saver is off and the bytes are stored as they
+    // arrived; a shrunk image is guarded by the module's own ceiling.
     setImageUploadContext({
       imageStore: store,
+      isPro: proUnlocked(auth.isPro),
       onQuotaExceeded: () => {
         setQuotaExceeded(true);
         setShowSyncOptions(true);
@@ -1348,6 +1393,16 @@ function AuthenticatedView({
       setAttachmentUploadContext(null);
     };
   }, [supabase, auth.encryptionKey, auth.pubkey, auth.isPro]);
+
+  // Mirror the two image switches into the module every image door reads.
+  // Spec: ops/docs/plans/image-quality-handoff.md (section 3)
+  useEffect(() => {
+    setImagePolicy({
+      spaceSaver: userSettings.imageSpaceSaver !== 'off',
+      stripMetadata: userSettings.imageStripMetadata !== 'off',
+      contactCeiling: userSettings.imageContactCeiling !== 'off',
+    });
+  }, [userSettings.imageSpaceSaver, userSettings.imageStripMetadata, userSettings.imageContactCeiling]);
 
   // Periodic revocation check - catches idle devices that aren't syncing.
   // Runs every 30s on a timer + on visibilitychange (tab/app foregrounded).
@@ -1446,6 +1501,7 @@ function AuthenticatedView({
     decryptFullBackup,
     exportVault,
     exportBookmarks,
+    exportContacts,
     printNote,
     importEncryptedBackup,
   } = useExports({
@@ -1745,6 +1801,10 @@ function AuthenticatedView({
     [activeNotes]
   );
   const bookmarksCount = allLinkNotes.length;
+  const contactsCount = useMemo(
+    () => activeNotes.filter((n) => n.type === 'contact').length,
+    [activeNotes]
+  );
 
   // Files view - extract all image + attachment references from note bodies.
   const rawFileItems = useMemo(
@@ -1967,6 +2027,8 @@ function AuthenticatedView({
       );
     } else if (view === 'bookmarks') {
       list = activeNotes.filter((n) => n.type === 'link');
+    } else if (view === 'contacts') {
+      list = activeNotes.filter((n) => n.type === 'contact');
     } else {
       // Notes pillar - only plain notes (excludes journals, files, vault types).
       list = activeNotes.filter((n) => n.type === 'note');
@@ -1991,6 +2053,14 @@ function AuthenticatedView({
       for (const id of hitIds) {
         const hit = byId.get(id);
         if (hit) ordered.push(hit);
+      }
+      // Several terms are the exact phrase: the list is the hits that say
+      // them as typed, in relevance order, and nothing else - the same rule
+      // the Tasks, Files and Bookmarks matchers apply to their text. The
+      // index only narrows the candidates (a note that says the phrase holds
+      // every term of it); an inverted index has no word order of its own.
+      if (isPhraseQuery(deferredSearch)) {
+        return ordered.filter((n) => noteSaysPhrase(n, deferredSearch));
       }
       return ordered;
     }
@@ -2318,6 +2388,7 @@ function AuthenticatedView({
       view === 'journal' ? t('footerStats.journals')
       : view === 'vault' ? t('footerStats.items')
       : view === 'bookmarks' ? t('footerStats.bookmarks')
+      : view === 'contacts' ? t('footerStats.contacts')
       : view === 'trash' ? t('footerStats.trashed')
       : t('footerStats.notes');
     return { notes: s.totalNotes, words: s.totalWords, label };
@@ -2447,6 +2518,7 @@ function AuthenticatedView({
         match.type === 'task' ? 'tasks' :
         match.type === 'file' ? 'files' :
         match.type === 'login' || match.type === 'card' || match.type === 'ssh-key' ? 'vault' :
+        match.type === 'contact' ? 'contacts' :
         // Only reached by a bookmark whose URL is missing or unparseable:
         // show it in its own pillar so the user can repair it.
         match.type === 'link' ? 'bookmarks' :
@@ -2483,21 +2555,17 @@ function AuthenticatedView({
   // extension when the user clicks a [[link]].
   const navigateToNoteByTitle = useCallback(
     async (target: string) => {
-      const lower = target.toLowerCase();
-      const match =
-        activeNotes.find((n) => noteLinkName(n).toLowerCase() === lower) ??
-        // Fallback for a target the [[...]] syntax could not hold verbatim.
-        // A title with a pipe or a bracket in it ("Recipes | 2024") is written
-        // into a link with those characters replaced, so it can never match
-        // the title exactly. Comparing both sides through the same rule is
-        // what makes those links - including ones already imported by older
-        // versions - resolve. Spec: packages/web/src/noteLinks.ts
-        (() => {
-          const key = noteLinkKey(target);
-          return key ? activeNotes.find((n) => noteLinkKey(noteLinkName(n)) === key) : undefined;
-        })();
-      if (match) {
-        revealNote(match);
+      const matches = resolveNoteLinkMatches(activeNotes, target, noteLinkName);
+      if (matches.length === 1) {
+        revealNote(matches[0]!);
+        return;
+      }
+      if (matches.length > 1) {
+        // Two live notes carry this title, so the link names both and the
+        // reader is told rather than sent to whichever the list happened to
+        // put first. That order was newest-first, and an import arrives with
+        // whatever timestamp its file declares.
+        setWikiLinkAmbiguous(target);
         return;
       }
       // No match - ask before creating so a dangling link doesn't make junk.
@@ -2849,6 +2917,11 @@ function AuthenticatedView({
       setDrawerOpen(false);
       return;
     }
+    // A click on a result re-runs the search-follow effect below, so the
+    // open result comes back highlighted after its bar was closed. For a
+    // different note the selection changes in the same render, so one click
+    // is still one run.
+    if (search.trim()) setSearchJumpNudge((n) => n + 1);
     if (id === selectedId) {
       setDrawerOpen(false);
       return;
@@ -3173,6 +3246,9 @@ function AuthenticatedView({
   // (e.g. left dangling after its target was renamed) prompts before
   // spawning a phantom note. null = no prompt open.
   const [wikiLinkCreatePending, setWikiLinkCreatePending] = useState<string | null>(null);
+  // A link whose title two live notes carry. Held as the title, because that
+  // is all the reader needs to go and rename one of them.
+  const [wikiLinkAmbiguous, setWikiLinkAmbiguous] = useState<string | null>(null);
 
   function handleEmptyTrash() {
     if (trashedNotes.length === 0) return;
@@ -3417,6 +3493,7 @@ function AuthenticatedView({
     // background note from a pillar that cannot show it helps nobody.
     handleNew: () => {
       if (view === 'bookmarks') { handleNewBookmark(); return; }
+      if (view === 'contacts') { handleNewContact(); return; }
       void handleNew();
     },
     searchInputRef,
@@ -3473,6 +3550,7 @@ function AuthenticatedView({
         filesUploadRef.current?.click();
       },
       onNewBookmark: handleNewBookmark,
+      onNewContact: handleNewContact,
       onOpenBookmark: (n) => openExternal(parseLinkBody(n.body).url),
       onCopyBookmarkUrl: (n) => {
         void navigator.clipboard.writeText(parseLinkBody(n.body).url).then(() => {
@@ -3659,6 +3737,7 @@ function AuthenticatedView({
       openTaskCount={openTaskCount}
       vaultCount={vaultCount}
       bookmarksCount={bookmarksCount}
+      contactsCount={contactsCount}
       filesCount={fileItems.length}
       journalCount={journalCount}
       starredCount={starredCount}
@@ -3938,6 +4017,67 @@ function AuthenticatedView({
     }
   }
 
+  /** New contact: an empty contact note, selected into the editor, which
+   *  opens in edit mode because the body is empty. The empty draft is
+   *  discarded on the way out by the same rule every empty note follows. */
+  function handleNewContact() {
+    void (async () => {
+      await handleSelectView('contacts');
+      const created = await createNote('', '{}', [], false, 'contact');
+      await refresh();
+      await selectBookmarkForEdit(created.id);
+      void runSync();
+    })();
+  }
+
+  const contactsList = (
+    <ContactsList
+      contacts={displayNotes}
+      listPrefs={listPrefs}
+      listPrefsStore={userSettings.listPrefs}
+      onListPrefsChange={handleListPrefsChange}
+      onSelectView={handleSelectView}
+      hiddenViews={userSettings.hiddenViews}
+      onOpenDrawer={() => setDrawerOpen(true)}
+      search={search}
+      setSearch={setSearch}
+      searchInputRef={searchInputRef}
+      activeFolderName={activeFolderName}
+      onClearFolder={() => setSelectedFolder(null)}
+      onClearTag={() => setSelectedTag(null)}
+      activeTag={selectedTag}
+      mobileTabIndex={mobileTabIndex}
+      allTags={tagCounts.tags}
+      foldersUnlocked={foldersUnlocked}
+      viewMode={effectiveViewMode}
+      onRequestNew={handleNewContact}
+      selectedId={view === 'contacts' ? selectedId : null}
+      selectionMode={selectionMode}
+      selectedIds={selectedIds}
+      selectionAllStarred={selectionAllStarred}
+      onRowClick={handleRowClick}
+      onToggleSelected={toggleSelected}
+      onRangeSelect={rangeSelect}
+      onLongPressStart={beginLongPress}
+      onLongPressEnd={cancelLongPress}
+      onClearSelection={clearSelection}
+      onDeselectAll={deselectAll}
+      onSelectAllVisible={selectAllVisible}
+      onBulkFavorite={() => void handleBulkFavorite()}
+      onBulkTag={(tag) => {
+        void handleBulkAddTag(tag).then((count) => {
+          setImportToast(t('toast.addedTag', { tag, count }));
+          window.setTimeout(() => setImportToast(null), 3000);
+        });
+      }}
+      onBulkMoveToFolder={handleBulkMoveToFolder}
+      onBulkExport={() => void handleBulkExport()}
+      onBulkTrash={requestBulkTrash}
+      onRowContextMenu={(note, e) => openRowMenu(e, buildNoteMenu(note))}
+      onOpenImport={() => setImportExportModal({ open: true, tab: 'import' })}
+    />
+  );
+
   const bookmarksList = (
     <BookmarksList
       bookmarks={displayNotes}
@@ -4074,6 +4214,7 @@ function AuthenticatedView({
       isNoteLocked={isNoteLocked}
       onNew={(vaultType, overrideView) => void handleNew(vaultType, overrideView, undefined, view === 'starred')}
       onNewBookmark={handleNewBookmark}
+      onNewContact={handleNewContact}
       onOpenImport={(tab) => setImportExportModal({ open: true, tab })}
       onNewFile={() => {
         void handleSelectView('files');
@@ -4294,6 +4435,7 @@ function AuthenticatedView({
               openTaskCount={openTaskCount}
               vaultCount={vaultCount}
       bookmarksCount={bookmarksCount}
+      contactsCount={contactsCount}
               filesCount={fileItems.length}
               journalCount={journalCount}
               trashedCount={trashedNotes.length}
@@ -4345,7 +4487,7 @@ function AuthenticatedView({
             {/* Every list pane in one provider: the folder chip on a row or a
                 tile is drawn by TagChips, far below any of these panes. */}
             <FolderNamesContext.Provider value={folderNames}>
-              {view === 'tasks' ? tasksList : view === 'files' ? filesList : view === 'markdown' ? markdownPane : view === 'bookmarks' ? bookmarksList : notesList}
+              {view === 'tasks' ? tasksList : view === 'files' ? filesList : view === 'markdown' ? markdownPane : view === 'bookmarks' ? bookmarksList : view === 'contacts' ? contactsList : notesList}
             </FolderNamesContext.Provider>
           </aside>
         )}
@@ -4698,6 +4840,7 @@ function AuthenticatedView({
             decryptFullBackup,
             exportVault,
             exportBookmarks,
+            exportContacts,
             importEncryptedBackup,
             imageStoreRef,
             attachmentStoreRef,
@@ -4781,6 +4924,11 @@ function AuthenticatedView({
         <SyncOptionsModal
           onClose={() => setShowSyncOptions(false)}
           onSyncNow={runSync}
+          onOpenImageSettings={() => {
+            setShowSyncOptions(false);
+            setSettingsCategory('images');
+            setShowSettings(true);
+          }}
           onOpenUpgrade={() => {
             setShowSyncOptions(false);
             setShowUpgrade({ trigger: null });
@@ -5053,6 +5201,23 @@ function AuthenticatedView({
           )}
         </ConfirmModal>
       )}
+      {wikiLinkAmbiguous !== null && (
+        <ConfirmModal
+          title={t('ambiguousLink.title')}
+          confirmLabel={t('common:actions.close')}
+          // Nothing to decline: the modal reports a state, it does not ask.
+          cancelLabel={null}
+          variant="info"
+          onConfirm={() => setWikiLinkAmbiguous(null)}
+          onClose={() => setWikiLinkAmbiguous(null)}
+        >
+          <Trans
+            i18nKey="notes:ambiguousLink.body"
+            values={{ title: wikiLinkAmbiguous }}
+            components={{ highlight: <span className="font-medium text-pn" /> }}
+          />
+        </ConfirmModal>
+      )}
       {wikiLinkCreatePending !== null && (
         <ConfirmModal
           title={t('createNote.title')}
@@ -5118,6 +5283,7 @@ function AuthenticatedView({
           decryptFullBackup={decryptFullBackup}
           onExportVault={exportVault}
           onExportBookmarks={exportBookmarks}
+          onExportContacts={exportContacts}
           onImportEncrypted={importEncryptedBackup}
           onBlobsRestored={handleBlobsRestored}
           onImported={async (count, skippedDuplicates) => {

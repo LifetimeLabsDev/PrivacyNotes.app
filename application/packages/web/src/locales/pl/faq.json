@@ -500,6 +500,13 @@
         "Wszystko trafia jako nowe wpisy i nic z tego, co już masz, nie jest nadpisywane, więc przywrócenie tego samego pliku dwa razy zostawi ci po dwie kopie każdej notatki. Oba zaszyfrowane formaty otworzysz tylko na koncie, które je stworzyło, bo są zaszyfrowane kluczem jego frazy; .zip wejdzie do dowolnego sejfu ([jaką kopię robić](/pl/help/backup-strategy/))."
       ]
     },
+    "image-quality": {
+      "q": "Czy PrivacyNotes zmienia lub kompresuje moje obrazy?",
+      "a": [
+        "Tak. Oba ustawienia są domyślnie włączone, bo kochamy naszych użytkowników: chcemy, żebyś oszczędzał miejsce i zachował prywatność. Oszczędzanie miejsca zmniejsza duży obraz do 2048 pikseli i zapisuje go jako JPEG w jakości 85 %, co zachowuje wszystkie szczegóły, jakie ekran może pokazać. Usuwanie danych lokalizacji wymazuje metadane EXIF, które aparat zapisuje w zdjęciu, łącznie z pozycją GPS, zanim obraz zostanie zapisany. Oba dotyczą każdego obrazu w aplikacji: wklejonego do notatki, dodanego jako plik lub zaimportowanego.",
+        "Wyłącz dowolne z nich w **Ustawienia > Obrazy**, gdzie zdjęcia kontaktów mają trzeci przełącznik, który trzyma je w 512 pikselach. Ustawienia dotyczą tylko nowych obrazów; pliki, które nie są obrazami, są zapisywane dokładnie takie, jakie są. Obrazy HEIC i TIFF są konwertowane do JPEG, bo tylko Safari potrafi je wyświetlić. Kopia zapasowa, którą przywracasz, jest zapisywana bajt po bajcie."
+      ]
+    },
     "storage-usage": {
       "q": "Co liczy się do mojej pamięci i jak zwolnić miejsce?",
       "a": [

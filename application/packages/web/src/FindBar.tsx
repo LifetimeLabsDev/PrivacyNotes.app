@@ -10,6 +10,7 @@ import {
   clearSearch,
   getSearchInfo,
   scrollToCurrentMatch,
+  scrollToCurrentMatchUntilSettled,
   type SearchInfo,
 } from './editorSearch';
 
@@ -17,6 +18,10 @@ type Props = {
   editor: TipTapEditor;
   /** Bumped by the parent on every Cmd/Ctrl+F so the input refocuses + selects. */
   focusTick: number;
+  /** Word to open on when the list search is what opened the bar (GitHub
+   *  #288): the input starts filled, its hits marked, and the caret stays
+   *  where it was. */
+  initialQuery?: string;
   onClose: () => void;
 };
 
@@ -27,14 +32,17 @@ type Props = {
  * view. Cmd/Ctrl+F or the X closes it and returns focus to the note; Esc
  * deliberately does not (see onKeyDown).
  *
+ * Opened by the list search it starts on the matched word (`initialQuery`)
+ * and then neither reads the selection nor takes focus.
+ *
  * All match-finding and highlighting lives in editorSearch.ts; this is just
  * the control surface. ReplaceBar.tsx is its Pro twin on the same plugin,
  * and MatchNav.tsx holds the count and arrows both bars draw.
  */
-export function FindBar({ editor, focusTick, onClose }: Props) {
+export function FindBar({ editor, focusTick, initialQuery, onClose }: Props) {
   const { t } = useTranslation('editor');
   const inputRef = useRef<HTMLInputElement>(null);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(initialQuery ?? '');
   const [info, setInfo] = useState<SearchInfo>({ active: -1, total: 0, activeIsNode: false });
 
   const refresh = useCallback(() => {
@@ -42,8 +50,9 @@ export function FindBar({ editor, focusTick, onClose }: Props) {
   }, [editor]);
 
   // Prefill from the current selection (single line, sane length), the way a
-  // browser find does. Runs once on open.
+  // browser find does. Runs once on open. A seeded open already has its word.
   useEffect(() => {
+    if (initialQuery) return;
     const { from, to } = editor.state.selection;
     if (to > from) {
       const sel = editor.state.doc.textBetween(from, to, ' ').trim();
@@ -53,10 +62,13 @@ export function FindBar({ editor, focusTick, onClose }: Props) {
   }, []);
 
   // Push the query into the plugin, refresh the count, jump to the first hit.
+  // The jump keeps re-centering until layout settles: a seeded bar opens on
+  // a note that has just mounted, whose images grow as they decode. The
+  // arrows below scroll once, because by then the note is laid out.
   useEffect(() => {
     setSearchQuery(editor.view, query);
     refresh();
-    if (query) requestAnimationFrame(() => scrollToCurrentMatch(editor.view));
+    if (query) scrollToCurrentMatchUntilSettled(editor.view);
   }, [query, editor, refresh]);
 
   // Keep the count fresh while the note is edited under an open bar.
@@ -70,13 +82,19 @@ export function FindBar({ editor, focusTick, onClose }: Props) {
     return () => { if (!editor.isDestroyed) clearSearch(editor.view); };
   }, [editor]);
 
-  // Focus + select on open and on every subsequent Cmd/Ctrl+F.
+  // Focus + select on open and on every subsequent Cmd/Ctrl+F. A seeded bar
+  // never focuses itself: the reader is typing in the list search box, not
+  // the bar, and on a phone a focused input raises the keyboard over the
+  // hits the bar was opened to show. The tick cannot move while a seeded bar is
+  // mounted (Cmd/Ctrl+F closes it), so the guard is the prop alone, which
+  // also survives StrictMode running the effect twice.
   useEffect(() => {
+    if (initialQuery) return;
     const el = inputRef.current;
     if (!el) return;
     el.focus();
     el.select();
-  }, [focusTick]);
+  }, [focusTick, initialQuery]);
 
   const go = useCallback((dir: 1 | -1) => {
     const { active, total } = getSearchInfo(editor.view);

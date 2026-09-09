@@ -43,6 +43,7 @@ import { toLocalIso } from './notesViewUtils';
 import { loadLocalSettings, saveLocalSettings } from './userSettings';
 import { SEED_FOLDER_IDS, type FolderDef } from './folders';
 import { buildLinkBody } from './linkBody';
+import { buildContactBody, emptyContact } from './contactBody';
 import { loadSeeds, type SeedDoc } from './seeds';
 
 /* ── Vault seed items ─────────────────────────────────────────── */
@@ -251,6 +252,77 @@ async function seedBookmarkNotes(pubkey: string, baseTs: number): Promise<void> 
   );
 }
 
+/* ── Contact seeds - the rows from the mockup, so the pillar is never
+ * empty on first sight. Invented people: the names, numbers and addresses
+ * belong to nobody. Same idempotent seedNote path; bodies use the canonical
+ * contact-body JSON. Spec: ops/docs/plans/contacts-pillar.md */
+// Built at seed time, so the two translated sentences read in the active language.
+function contactSeeds(): { sentinel: string; title: string; tags: string[]; body: string }[] {
+  return [
+  {
+    sentinel: '10c1',
+    title: 'Clara Meier',
+    tags: ['work'],
+    body: buildContactBody({
+      ...emptyContact(),
+      first: 'Clara',
+      last: 'Meier',
+      org: 'Nordwind GmbH',
+      jobTitle: i18n.t('shell:contacts.seedJobTitle'),
+      phones: [{ label: 'mobile', value: '+49 30 5566 778' }],
+      emails: [{ label: 'work', value: 'c.meier@example.com' }],
+      addresses: [{ label: 'home', street: 'Rue Bonsergent 52', city: 'Paris', region: '', postal: '75010', country: 'France' }],
+    }),
+  },
+  {
+    sentinel: '10c2',
+    title: 'Dr. C. Obermeyer',
+    tags: ['health'],
+    body: buildContactBody({
+      ...emptyContact(),
+      first: 'C.',
+      last: 'Obermeyer',
+      prefix: 'Dr.',
+      org: 'Praxis am Park',
+      phones: [{ label: 'work', value: '030 4455 6677' }],
+      dates: [{ label: 'birthday', value: '--03-14' }],
+      notes: i18n.t('shell:contacts.seedNote'),
+    }),
+  },
+  {
+    sentinel: '10c3',
+    title: 'Anna Baumann',
+    tags: ['friends'],
+    body: buildContactBody({
+      ...emptyContact(),
+      first: 'Anna',
+      last: 'Baumann',
+      phones: [{ label: 'mobile', value: '+49 176 2233 4455' }],
+      emails: [{ label: 'home', value: 'anna@example.com' }],
+      related: [{ label: 'spouse', value: 'David Schulz' }],
+    }),
+  },
+  ];
+}
+
+async function seedContactNotes(pubkey: string, baseTs: number): Promise<void> {
+  await Promise.all(
+    contactSeeds().map((c, i) =>
+      seedNote(
+        seedId(pubkey, c.sentinel),
+        c.title,
+        c.body,
+        c.tags,
+        false,
+        new Date(baseTs - i * 100).toISOString(),
+        undefined,
+        'contact',
+        null,
+      ),
+    ),
+  );
+}
+
 /** Insert the demo login vault item. Idempotent. */
 async function seedLoginNote(
   pubkey: string,
@@ -332,6 +404,7 @@ export async function seedOnboardingNotes(pubkey: string): Promise<void> {
     seedTotpLoginNote(pubkey, new Date(vaultBase - 500).toISOString()),
     seedCardNote(pubkey, new Date(vaultBase - 1000).toISOString()),
     seedBookmarkNotes(pubkey, vaultBase - 1500),
+    seedContactNotes(pubkey, vaultBase - 2500),
   ]);
 }
 

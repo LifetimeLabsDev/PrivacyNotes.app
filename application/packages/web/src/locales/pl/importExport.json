@@ -26,6 +26,25 @@
     "tagLabel": "Oznacz notatki też tagiem folderu",
     "tagDesc": "Twoje foldery i tak zostaną odtworzone. To dodaje nazwę każdego folderu również jako tag, przydatne, jeśli lubisz też filtrować po tagach."
   },
+  "browserImport": {
+    "tagLabel": "Zachowaj tagi z przeglądarki",
+    "tagDesc": "Firefox zapisuje przy zakładce tagi i słowo kluczowe paska adresu. Jedno i drugie trafia tutaj jako tagi."
+  },
+  "contactImport": {
+    "photosLabel": "Importuj zdjęcia",
+    "photosDesc_one": "{{count}} zdjęcie, około {{size}} po zmniejszeniu przez aplikację. To {{pct}} % z {{free}}, które masz wolne.",
+    "photosDesc_few": "{{count}} zdjęcia, około {{size}} po zmniejszeniu przez aplikację. To {{pct}} % z {{free}}, które masz wolne.",
+    "photosDesc_many": "{{count}} zdjęć, około {{size}} po zmniejszeniu przez aplikację. To {{pct}} % z {{free}}, które masz wolne.",
+    "photosDesc_other": "{{count}} zdjęć, około {{size}} po zmniejszeniu przez aplikację. To {{pct}} % z {{free}}, które masz wolne.",
+    "photosDescNoQuota_one": "{{count}} zdjęcie, około {{size}} po zmniejszeniu przez aplikację.",
+    "photosDescNoQuota_few": "{{count}} zdjęcia, około {{size}} po zmniejszeniu przez aplikację.",
+    "photosDescNoQuota_many": "{{count}} zdjęć, około {{size}} po zmniejszeniu przez aplikację.",
+    "photosDescNoQuota_other": "{{count}} zdjęć, około {{size}} po zmniejszeniu przez aplikację.",
+    "photosTooBig_one": "Za mało miejsca na zdjęcie ({{size}}), więc zostaje pominięte. Cała reszta się importuje. Zwolnij {{shortfall}} albo dokup miejsce i zaimportuj ponownie, żeby je dodać.",
+    "photosTooBig_few": "Za mało miejsca na {{count}} zdjęcia ({{size}}), więc zostają pominięte. Cała reszta się importuje. Zwolnij {{shortfall}} albo dokup miejsce i zaimportuj ponownie, żeby je dodać.",
+    "photosTooBig_many": "Za mało miejsca na {{count}} zdjęć ({{size}}), więc zostają pominięte. Cała reszta się importuje. Zwolnij {{shortfall}} albo dokup miejsce i zaimportuj ponownie, żeby je dodać.",
+    "photosTooBig_other": "Za mało miejsca na {{count}} zdjęć ({{size}}), więc zostają pominięte. Cała reszta się importuje. Zwolnij {{shortfall}} albo dokup miejsce i zaimportuj ponownie, żeby je dodać."
+  },
   "sourceDesc": {
     "googleKeep": "Plik .zip z Google Takeout (folder Keep) lub pojedyncza notatka .json. Listy kontrolne importują się jako natywne listy zadań.",
     "appleNotes": "Wyeksportuj darmową aplikacją Exporter jako Markdown, a potem upuść tutaj plik .zip.",
@@ -40,6 +59,7 @@
     "markdownFolder": "Pliki .md albo .txt pojedynczo lub w .zip. Spakowany folder zachowuje podfoldery i zabiera ze sobą obrazki oraz załączniki.",
     "markdownApp": "Te notatki już są plikami Markdown w folderze. Przeciągnij ten folder jako .zip, a razem z nim przyjdą podfoldery, obrazki i #tagi.",
     "browserBookmarks": "Plik zakładek (.html) z \"Export bookmarks\" w twojej przeglądarce albo .zip, który zapisuje Safari. Chrome, Firefox, Safari, Edge, Opera, Brave i Vivaldi zawierają ten sam plik. Foldery i daty przychodzą razem z nim.",
+    "vcard": "Plik .vcf, który eksportuje twoja książka adresowa: iPhone i Mac przez iCloud lub Kontakty, Android, Kontakty Google. Każda wizytówka się importuje, ze zdjęciami, a ponowny import tego samego pliku pomija osoby, które już masz.",
     "bitwarden": "Niezaszyfrowany eksport .json z Bitwarden (Tools > Export vault > .json). Loginy, karty, klucze SSH, bezpieczne notatki i kody TOTP przychodzą razem.",
     "browserPasswords": "Plik haseł (.csv) z Chrome, Edge, Brave, Opery, Vivaldi, Firefoksa lub Safari albo .zip, który zapisuje Safari. Każdy wiersz staje się loginem. Usuń plik, gdy skończysz - są w nim twoje hasła jawnym tekstem."
   },
@@ -76,37 +96,42 @@
     "andMore": "… i jeszcze {{count}}",
     "headsUpLabel": "Uwaga:",
     "duplicateWarning": "import dodaje je jako nowe notatki. Jeśli uruchomisz go dwa razy, dostaniesz duplikaty. Nie ma jeszcze automatycznego usuwania duplikatów.",
+    "duplicateSkipNote": "zakładki, które już masz zapisane, zostaną pominięte, więc powtórzenie tego importu niczego nie zduplikuje.",
+    "contactSkipNote": "osoby, które już zapisałeś, są pomijane i zostają bez zmian, więc drugie uruchomienie nikogo nie zduplikuje.",
     "quotaExceeded": "<strong>Za mało pamięci, aby zaimportować.</strong> Szacowane zapotrzebowanie: {{needed}}, dostępne: {{available}}. Zwolnij miejsce lub przejdź na wyższy plan przed importem.",
     "quotaWarning": "Uwaga: ten import zajmie mniej więcej {{needed}} z Twoich {{available}} pozostałej pamięci.",
     "oversizeAttachments_one": "1 plik jest większy niż limit {{limit}} na plik w Twoim planie. Zaimportuje się na to urządzenie, ale nie zsynchronizuje się z innymi urządzeniami, dopóki nie przejdziesz na wyższy plan.",
-    "oversizeAttachments_few": "{{count}} pliki są większe niż limit {{limit}} na plik w Twoim planie. Zaimportują się na to urządzenie, ale nie zsynchronizują się z innymi urządzeniami, dopóki nie przejdziesz na wyższy plan.",
-    "oversizeAttachments_many": "{{count}} plików jest większych niż limit {{limit}} na plik w Twoim planie. Zaimportują się na to urządzenie, ale nie zsynchronizują się z innymi urządzeniami, dopóki nie przejdziesz na wyższy plan.",
     "oversizeAttachments_other": "{{count}} pliku jest większe niż limit {{limit}} na plik w Twoim planie. Zaimportuje się na to urządzenie, ale nie zsynchronizuje się z innymi urządzeniami, dopóki nie przejdziesz na wyższy plan.",
-    "duplicateSkipNote": "zakładki, które już masz zapisane, zostaną pominięte, więc powtórzenie tego importu niczego nie zduplikuje."
+    "oversizeAttachments_few": "{{count}} pliki są większe niż limit {{limit}} na plik w Twoim planie. Zaimportują się na to urządzenie, ale nie zsynchronizują się z innymi urządzeniami, dopóki nie przejdziesz na wyższy plan.",
+    "oversizeAttachments_many": "{{count}} plików jest większych niż limit {{limit}} na plik w Twoim planie. Zaimportują się na to urządzenie, ale nie zsynchronizują się z innymi urządzeniami, dopóki nie przejdziesz na wyższy plan."
   },
   "counts": {
     "note_one": "notatka",
-    "note_few": "notatki",
-    "note_many": "notatek",
     "note_other": "notatki",
     "journal_one": "wpis w dzienniku",
-    "journal_few": "wpisy w dzienniku",
-    "journal_many": "wpisów w dzienniku",
     "journal_other": "wpisy w dzienniku",
     "login_one": "login",
-    "login_few": "loginy",
-    "login_many": "loginów",
     "login_other": "loginu",
     "card_one": "karta",
-    "card_few": "karty",
-    "card_many": "kart",
     "card_other": "karty",
     "sshKey_one": "klucz SSH",
-    "sshKey_few": "klucze SSH",
-    "sshKey_many": "kluczy SSH",
     "sshKey_other": "klucza SSH",
+    "contact_one": "kontakt",
+    "contact_few": "kontakty",
+    "contact_many": "kontaktów",
+    "contact_other": "kontaktów",
     "zeroItems": "0 elementów",
-    "importButton": "Importuj ({{counts}})"
+    "importButton": "Importuj ({{counts}})",
+    "note_few": "notatki",
+    "note_many": "notatek",
+    "journal_few": "wpisy w dzienniku",
+    "journal_many": "wpisów w dzienniku",
+    "login_few": "loginy",
+    "login_many": "loginów",
+    "card_few": "karty",
+    "card_many": "kart",
+    "sshKey_few": "klucze SSH",
+    "sshKey_many": "kluczy SSH"
   },
   "errorPhase": {
     "heading": "{{importer}}: import nie powiódł się"
@@ -130,7 +155,10 @@
     "vaultExportDesc": "Loginy, karty i klucze SSH w formacie zgodnym z Bitwarden. Można je zaimportować w większości menedżerów haseł. Tekst jawny - obchodź się z nim ostrożnie.",
     "bookmarksOnlyHeading": "Tylko zakładki",
     "bookmarksExportTitle": "Plik zakładek (.html)",
-    "bookmarksExportDesc": "Standardowy plik zakładek, który czyta każda przeglądarka. Zaimportuj go do Chrome, Firefoksa, Safari albo Edge razem z folderami."
+    "bookmarksExportDesc": "Standardowy plik zakładek, który czyta każda przeglądarka. Zaimportuj go do Chrome, Firefoksa, Safari albo Edge razem z folderami.",
+    "contactsOnlyHeading": "Tylko kontakty",
+    "contactsExportTitle": "Plik kontaktów (.vcf)",
+    "contactsExportDesc": "Plik vCard, który czyta każdy telefon i każda książka adresowa. Zaimportuj go do iPhone'a, Androida, Kontaktów Google albo Kontaktów na Macu, z etykietami i grupami."
   },
   "exportProgress": {
     "failedTitle": "Eksport nie powiódł się",
@@ -148,8 +176,6 @@
     "failedTitle": "Przesyłanie nie powiodło się",
     "partialTitle": "Przesłano: {{done}}, nieudane: {{failed}}",
     "uploadingTitle_one": "Przesyłanie {{count}} pliku",
-    "uploadingTitle_few": "Przesyłanie {{count}} plików",
-    "uploadingTitle_many": "Przesyłanie {{count}} plików",
     "uploadingTitle_other": "Przesyłanie {{count}} pliku",
     "statusDone": "Gotowe",
     "statusFailed": "Niepowodzenie",
@@ -164,7 +190,9 @@
     "proPitch": "Pro podnosi limit do 50 MB na plik.",
     "proPitchCta": "Przejdź na Pro",
     "storagePitch": "Plan pamięci podnosi go do 100 MB na plik.",
-    "storagePitchCta": "Dokup pamięć"
+    "storagePitchCta": "Dokup pamięć",
+    "uploadingTitle_few": "Przesyłanie {{count}} plików",
+    "uploadingTitle_many": "Przesyłanie {{count}} plików"
   },
   "decryptErrors": {
     "tooSmall": "Ten plik jest pusty lub niekompletny ({{size}} B), więc nie ma czego przywracać. Wyeksportuj kopię jeszcze raz i przed importem sprawdź, czy zapisany plik ma realny rozmiar.",
@@ -175,9 +203,5 @@
   },
   "saveErrors": {
     "shortWrite": "Zapisano tylko {{written}} z {{expected}} bajtów, więc plik jest niekompletny. Spróbuj ponownie i zapisz w pamięci urządzenia zamiast w folderze w chmurze."
-  },
-  "browserImport": {
-    "tagLabel": "Zachowaj tagi z przeglądarki",
-    "tagDesc": "Firefox zapisuje przy zakładce tagi i słowo kluczowe paska adresu. Jedno i drugie trafia tutaj jako tagi."
   }
 }

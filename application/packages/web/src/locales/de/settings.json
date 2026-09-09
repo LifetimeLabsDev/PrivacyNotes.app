@@ -74,7 +74,17 @@
     "needMore": "Mehr Platz nötig?",
     "proSpacePitch": "Du bist im kostenlosen Tarif. Pro bringt 500 MB von Haus aus mit, zehnmal so viel Platz, wie du jetzt hast.",
     "earlyAdopterSave": "Early Adopter · spare {{amount}} $",
-    "oneTime": "einmalig"
+    "oneTime": "einmalig",
+    "imageSettingsLink": "Bildeinstellungen"
+  },
+  "images": {
+    "spaceSaverTitle": "Platzsparer",
+    "spaceSaverDesc": "Auf {{px}} Pixel verkleinert und als JPEG mit {{quality}} % Qualität gespeichert. Ein kleiner Detailverlust für einen Bruchteil des Platzes.",
+    "removeLocationTitle": "Standortdaten entfernen",
+    "removeLocationDesc": "Der Aufnahmeort eines Bildes wird vor dem Speichern entfernt, überall in der App.",
+    "contactTitle": "Kleine Kontaktfotos",
+    "contactDesc": "Passen in {{px}} Pixel, die größte Größe, in der die App sie zeigt. Ausgeschaltet folgen sie den Platzsparer-Einstellungen.",
+    "applyNote": "Nur neue Bilder. Bereits gespeicherte Bilder bleiben unverändert, und Dateien, die keine Bilder sind, werden nie angefasst."
   },
   "devices": {
     "heading": "Registrierte Geräte",
@@ -98,8 +108,6 @@
     "verifyBusy": "Gerade synchronisiert ein anderes Gerät, deshalb kann diese Prüfung kein klares Ergebnis liefern. Versuch es gleich noch mal.",
     "verifyFailed": "Der Server war für die Prüfung nicht erreichbar. Versuch es wieder, sobald du online bist.",
     "verifyDiverged": "Dieses Gerät stimmt nicht mit dem Server überein:",
-    "verifyRepairAction": "Alles neu laden",
-    "verifyRepairQueued": "Beim nächsten Sync wird dein ganzer Tresor neu gelesen. Nichts, was noch hochgeladen werden muss, geht verloren.",
     "verifyMissing_one": "{{count}} Eintrag vom Server fehlt hier",
     "verifyMissing_other": "{{count}} Einträge vom Server fehlen hier",
     "verifyStale_one": "{{count}} Eintrag hier ist älter als die Fassung auf dem Server",
@@ -107,12 +115,14 @@
     "verifyPendingDelete_one": "{{count}} Eintrag wurde woanders gelöscht und liegt hier noch",
     "verifyPendingDelete_other": "{{count}} Einträge wurden woanders gelöscht und liegen hier noch",
     "verifyNeverPushed_one": "{{count}} Eintrag hier hat den Server nie erreicht",
-    "verifyNeverPushed_other": "{{count}} Einträge hier haben den Server nie erreicht"
+    "verifyNeverPushed_other": "{{count}} Einträge hier haben den Server nie erreicht",
+    "verifyRepairAction": "Alles neu laden",
+    "verifyRepairQueued": "Beim nächsten Sync wird dein ganzer Tresor neu gelesen. Nichts, was noch hochgeladen werden muss, geht verloren."
   },
   "accountId": {
     "heading": "Konto-ID",
-    "copyId": "ID kopieren",
-    "report": "Supportbericht"
+    "report": "Supportbericht",
+    "copyId": "ID kopieren"
   },
   "revoke": {
     "title": "„{{name}}“ entfernen?",
@@ -243,8 +253,8 @@
     "pausedAria": "Synchronisierung pausiert",
     "wifiHold": "Wartet auf WLAN",
     "wifiHoldTooltip": "Dateien werden hochgeladen, sobald WLAN da ist. Notizen synchronisieren weiter.",
-    "notSynced": "Nicht synchronisiert",
     "notBackedUp": "Nicht gesichert",
+    "notSynced": "Nicht synchronisiert",
     "notBackedUpTooltip_one": "{{count}} Notiz ist nicht gesichert. Klicke, um zu sehen, warum.",
     "notBackedUpTooltip_other": "{{count}} Notizen sind nicht gesichert. Klicke, um zu sehen, warum.",
     "notBackedUpAria_one": "{{count}} Notiz ist nicht gesichert",

@@ -37,6 +37,13 @@ export function bumpNotesCreated(): void {
         ? Math.floor(cur)
         : 0;
     s.notesCreated = base + 1;
+    // The settings freshness counter moves with any write that will be pushed,
+    // and this is the one writer that bypasses saveLocalSettings. A blob that
+    // reached the server with a higher number and then a lower one from here
+    // would read as a rollback on the next device to pull it.
+    const rev = s.settingsRev;
+    s.settingsRev =
+      (typeof rev === 'number' && Number.isFinite(rev) && rev >= 0 ? Math.floor(rev) : 0) + 1;
     cache.updatedAt = new Date().toISOString();
     cache.dirty = true;
     localStorage.setItem(key, JSON.stringify(cache));

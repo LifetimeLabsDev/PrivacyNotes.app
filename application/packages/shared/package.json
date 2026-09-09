@@ -16,11 +16,11 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@noble/ciphers": "^2.3.0",
-    "@noble/ed25519": "^3.1.0",
-    "@noble/hashes": "^2.3.0",
-    "@scure/bip39": "^2.3.0",
-    "@supabase/supabase-js": "^2.112.3"
+    "@noble/ciphers": "^2.4.0",
+    "@noble/ed25519": "^3.2.0",
+    "@noble/hashes": "^2.4.0",
+    "@scure/bip39": "^2.4.0",
+    "@supabase/supabase-js": "^2.115.0"
   },
   "devDependencies": {
     "typescript": "^7.0.2"

@@ -55,6 +55,7 @@ import { isDemoMode } from './demo';
 import { settingsLocalKey } from './settingsLocalKey';
 import type { View } from './views';
 import { isServerWriteBlocked } from './syncPause';
+import { logAuthEvent } from './authDiag';
 import {
   isFolderSortField,
   validateFolders,
@@ -66,6 +67,13 @@ import {
 // ------------------------------------------------------------------
 // Shape
 // ------------------------------------------------------------------
+
+/**
+ * One app-wide image switch. A string rather than a boolean so a third
+ * state can be added later without a migration.
+ * Spec: ops/docs/plans/image-quality-handoff.md (section 3)
+ */
+export type ImageSwitch = 'on' | 'off';
 
 export type UserSettings = {
   favoriteTags: string[];
@@ -313,6 +321,41 @@ export type UserSettings = {
    */
   ratingDone: boolean;
   /**
+   * Freshness counter, and the one field the server cannot forge. It lives
+   * INSIDE the encrypted blob, so a server that keeps an old ciphertext and
+   * restamps its `updated_at` cannot raise it: rewriting the number means
+   * encrypting, and it holds no key. Every local save increases it, and a
+   * pulled blob whose number is LOWER than the one this device already holds
+   * is a rollback and is refused.
+   *
+   * Equality is accepted, deliberately. A client that shipped before this
+   * field round-trips it without increasing it (hydrate copies unknown keys
+   * through, which is what makes this need no migration), so refusing equality
+   * would make every save from such a client invisible. Once the release floor
+   * has passed the last client that does not increase it, equality could be
+   * refused too, and until then a rollback of exactly one step is what this
+   * does not catch.
+   *
+   * Spec: ops/docs/plans/security-residuals-handoff.md (section 3)
+   */
+  settingsRev: number;
+  /**
+   * The two app-wide image switches. Space saver fits a new image inside
+   * the ceiling in imageProcessing.ts and re-encodes it; metadata removal
+   * drops EXIF and every other metadata block. Both apply to new images
+   * only: nothing rewrites a blob that is already stored.
+   * Spec: ops/docs/plans/image-quality-handoff.md (section 3)
+   */
+  imageSpaceSaver: ImageSwitch;
+  imageStripMetadata: ImageSwitch;
+  /**
+   * Keep contact photos small: a contact photo fits inside the ceiling in
+   * imageProcessing.ts whatever the two switches above say. Off, it follows
+   * them like any other image. Read by the contacts photo path.
+   * Spec: ops/docs/plans/image-quality-handoff.md (section 7)
+   */
+  imageContactCeiling: ImageSwitch;
+  /**
    * Password generator preferences: length, character set toggles,
    * and exact counts for numbers/symbols. Synced so the user's
    * preferred password shape follows them across devices.
@@ -362,10 +405,15 @@ function defaultSettings(): UserSettings {
     folders: [],
     folderSort: { field: 'name', dir: 'asc' },
     sidebarBrowse: 'tags', // Spec: ops/specs/folders.md (sidebarBrowse default)
+    // Spec: ops/docs/plans/image-quality-handoff.md (section 3, both default on)
+    imageSpaceSaver: 'on',
+    imageStripMetadata: 'on',
+    imageContactCeiling: 'on',
     notesCreated: 0,
     milestonesSeen: [],
     firstSeenAt: null,
     ratingDone: false,
+    settingsRev: 0,
     pwGen: {
       length: 20,
       lowercase: true,
@@ -533,6 +581,15 @@ function hydrate(raw: unknown): UserSettings {
   if (obj.sidebarBrowse === 'tags' || obj.sidebarBrowse === 'folders') {
     base.sidebarBrowse = obj.sidebarBrowse;
   }
+  if (obj.imageSpaceSaver === 'on' || obj.imageSpaceSaver === 'off') {
+    base.imageSpaceSaver = obj.imageSpaceSaver;
+  }
+  if (obj.imageStripMetadata === 'on' || obj.imageStripMetadata === 'off') {
+    base.imageStripMetadata = obj.imageStripMetadata;
+  }
+  if (obj.imageContactCeiling === 'on' || obj.imageContactCeiling === 'off') {
+    base.imageContactCeiling = obj.imageContactCeiling;
+  }
   if (Array.isArray(obj.milestonesSeen)) {
     base.milestonesSeen = obj.milestonesSeen.filter((k): k is string => typeof k === 'string');
   }
@@ -541,6 +598,11 @@ function hydrate(raw: unknown): UserSettings {
   }
   if (typeof obj.ratingDone === 'boolean') {
     base.ratingDone = obj.ratingDone;
+  }
+  // Anything that is not a finite, non-negative number reads as 0, which is
+  // the value a blob written before this field existed effectively carries.
+  if (typeof obj.settingsRev === 'number' && Number.isFinite(obj.settingsRev) && obj.settingsRev >= 0) {
+    base.settingsRev = Math.floor(obj.settingsRev);
   }
   if (
     typeof obj.notesCreated === 'number' &&
@@ -678,6 +740,10 @@ export function saveLocalSettings(next: UserSettings): UserSettings {
   if (stored.ratingDone && !next.ratingDone) {
     next = { ...next, ratingDone: true };
   }
+  // The freshness counter is derived here rather than trusted from the caller,
+  // which hands us whole settings objects out of React state that can predate
+  // another write. It only ever moves up.
+  next = { ...next, settingsRev: Math.max(stored.settingsRev, next.settingsRev) + 1 };
   const cache: LocalCache = {
     settings: next,
     updatedAt: new Date().toISOString(),
@@ -858,7 +924,24 @@ function mergeSettings(local: UserSettings, remote: UserSettings): UserSettings 
 
   if (local.ratingDone) merged.ratingDone = true;
 
+  // Monotonic, like notesCreated: a merged blob must never push a number
+  // lower than one either side has already seen, or its own push reads as a
+  // rollback on the next device to pull it.
+  merged.settingsRev = Math.max(local.settingsRev, remote.settingsRev);
+
   return merged;
+}
+
+/**
+ * A pulled blob carrying a freshness counter lower than the one this device
+ * already holds. Thrown rather than returned so it lands in the same place
+ * the decrypt failure does, where the local copy is what stands.
+ */
+class SettingsRollbackError extends Error {
+  constructor() {
+    super('settings rollback refused');
+    this.name = 'SettingsRollbackError';
+  }
 }
 
 /**
@@ -919,6 +1002,21 @@ export async function syncUserSettings(
             passKey
           )
         );
+        // Rollback refusal. `updated_at` is a column the server writes, so a
+        // server that serves an OLD ciphertext with a NEW stamp passes the
+        // freshness test above and this device adopts a settings blob it has
+        // already moved past. That is how a credential can be deleted by a
+        // genuine old copy: the wrap fields are settings like any other. The
+        // counter inside the blob is the answer, because raising it means
+        // encrypting and the server holds no key.
+        //
+        // Strictly lower only. See the settingsRev field doc for why equality
+        // is accepted, and for what that leaves uncovered.
+        if (remoteSettings.settingsRev < local.settings.settingsRev) {
+          logAuthEvent('settings:rollback-refused');
+          console.warn('[settings] refused a remote blob older than this device holds');
+          throw new SettingsRollbackError();
+        }
         // Remote is authoritative for scalars, but medications use
         // tombstone-based union-merge so no device can ever silently
         // wipe another's templates. Deletions are represented as
@@ -964,7 +1062,15 @@ export async function syncUserSettings(
         };
         writeLocal(effective);
       } catch (err) {
-        console.error('[settings] decrypt failed:', err);
+        // A refused rollback is not a decrypt failure and must not read as
+        // one: the local copy stands and the pass continues to the push,
+        // which is what puts this device's newer blob back on the server.
+        if (err instanceof SettingsRollbackError) {
+          effective = { ...local, dirty: true };
+          writeLocal(effective);
+        } else {
+          console.error('[settings] decrypt failed:', err);
+        }
       }
     }
   } else {
@@ -1154,7 +1260,21 @@ export async function syncUserSettings(
               passKey
             )
           );
-          let merged = mergeSettings(outgoing, serverSettings);
+          // The rollback rule belongs here as well as on the pull, and this is
+          // the door the plan for it did not name. This branch adopts the
+          // server's scalars, so a stale row that beat the conditional update
+          // would come straight back in through the merge - including the
+          // credential fields - after the pull had just refused it. A device
+          // that has never pulled is exempt: it holds no history to be rolled
+          // back to, and taking the server as its base is what stops it wiping
+          // every other device.
+          const rolledBack =
+            effective.everPulled && serverSettings.settingsRev < outgoing.settingsRev;
+          if (rolledBack) {
+            logAuthEvent('settings:rollback-refused');
+            console.warn('[settings] conflict row is older than this device holds - keeping ours');
+          }
+          let merged = rolledBack ? outgoing : mergeSettings(outgoing, serverSettings);
           if (!effective.everPulled) {
             // Re-apply the never-pulled folder append against the newer
             // row, same rule as the pre-push merge above.

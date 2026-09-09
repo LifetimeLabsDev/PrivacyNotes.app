@@ -7,6 +7,7 @@ import {
   useState,
   type ChangeEvent,
   type MutableRefObject,
+  type RefObject,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
@@ -189,17 +190,21 @@ function ToolbarBtn({
   active,
   label,
   tabIndex,
+  btnRef,
   children,
 }: {
   onClick: () => void;
   active?: boolean;
   label: string;
   tabIndex?: number;
+  /** Set on buttons a popover anchors to, so it can measure the real box. */
+  btnRef?: RefObject<HTMLButtonElement | null>;
   children: React.ReactNode;
 }) {
   return (
     <HoverLabel label={label} position="below">
       <button
+        ref={btnRef}
         type="button"
         tabIndex={tabIndex}
         onMouseDown={(e) => e.preventDefault()}
@@ -229,6 +234,12 @@ type ToolbarProps = {
   mobileTabIndex?: number;
   /** Opens the URL link popover (chain icon / Cmd+K). */
   onOpenLinkPopover: () => void;
+  /**
+   * Anchor for that popover. The link button is the only toolbar control a
+   * popover outside this file has to line up with, so the ref comes in rather
+   * than the panel guessing at a position.
+   */
+  linkBtnRef?: RefObject<HTMLButtonElement | null>;
   onAudioStateChange?: (state: AudioRecordingState, duration: number) => void;
   /**
    * Hides the image / attachment / audio group.
@@ -249,7 +260,7 @@ type ToolbarProps = {
   onOpenUpgrade?: (trigger: 'callout') => void;
 };
 
-export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStateChange, audioStopRef, isPro = false, onOpenUpgrade, hideEncryptedMedia = false }: ToolbarProps) {
+export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef, onAudioStateChange, audioStopRef, isPro = false, onOpenUpgrade, hideEncryptedMedia = false }: ToolbarProps) {
   const { t } = useTranslation('editor');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const attachmentInputRef = useRef<HTMLInputElement>(null);
@@ -798,7 +809,7 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, onAudioStat
     </ToolbarBtn>
   );
   const link = (
-    <ToolbarBtn key="link" onClick={onOpenLinkPopover} active={isActive('link')} label={t('toolbar.addLink')} tabIndex={mobileTabIndex}>
+    <ToolbarBtn key="link" onClick={onOpenLinkPopover} active={isActive('link')} label={t('toolbar.addLink')} tabIndex={mobileTabIndex} btnRef={linkBtnRef}>
       <LinkIcon size={TB_ICON} />
     </ToolbarBtn>
   );

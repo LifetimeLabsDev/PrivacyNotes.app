@@ -26,6 +26,16 @@
     "tagLabel": "同時依資料夾加上標籤",
     "tagDesc": "無論如何都會重建你的資料夾。這個選項會把每個資料夾名稱也加成標籤，如果你也喜歡用標籤篩選會很方便。"
   },
+  "browserImport": {
+    "tagLabel": "保留瀏覽器的標籤",
+    "tagDesc": "Firefox 會把標籤和網址列關鍵字一起存在書籤裡，兩者在這裡都會變成標籤。"
+  },
+  "contactImport": {
+    "photosLabel": "匯入照片",
+    "photosDesc_other": "{{count}} 張照片，經 app 縮小後約 {{size}}，佔你可用空間 {{free}} 的 {{pct}}%。",
+    "photosDescNoQuota_other": "{{count}} 張照片，經 app 縮小後約 {{size}}。",
+    "photosTooBig_other": "空間不足以放下這 {{count}} 張照片（{{size}}），所以照片會略過，其他內容全部匯入。清出 {{shortfall}} 或加購空間後再匯入一次，就能把照片帶進來。"
+  },
   "sourceDesc": {
     "googleKeep": "Google Takeout 的 .zip（Keep 資料夾）或單一 .json 筆記。核取清單會匯入為原生任務清單。",
     "appleNotes": "用免費的 Exporter 應用程式匯出為 Markdown，然後把 .zip 拖進來。",
@@ -40,6 +50,7 @@
     "markdownFolder": "單獨的 .md 或 .txt 檔，或是一個 .zip。壓成 zip 的資料夾會保留子資料夾，並把圖片和附件一起帶過來。",
     "markdownApp": "這些筆記本來就是資料夾裡的 Markdown 檔。把那個資料夾壓成 .zip 拖進來，子資料夾、圖片和 #標籤都會跟著過來。",
     "browserBookmarks": "瀏覽器「Export bookmarks」產生的書籤檔（.html），或 Safari 寫出的 .zip。Chrome、Firefox、Safari、Edge、Opera、Brave 和 Vivaldi 裝的都是同一種檔案，資料夾和日期都會一起帶過來。",
+    "vcard": "通訊錄匯出的 .vcf 檔：iPhone 和 Mac 透過 iCloud 或聯絡人，Android，Google 聯絡人。每張名片都會匯入，照片也一起，同一個檔案匯入第二次會略過你已經有的人。",
     "bitwarden": "Bitwarden 未加密的 .json 匯出檔（Tools > Export vault > .json）。登入資料、卡片、SSH 金鑰、安全筆記與 TOTP 驗證碼都會一起帶進來。",
     "browserPasswords": "來自 Chrome、Edge、Brave、Opera、Vivaldi、Firefox 或 Safari 的密碼檔（.csv），或 Safari 寫出的 .zip。每一列都會變成一組登入資料。用完請把檔案刪掉 - 裡面是你的明文密碼。"
   },
@@ -76,10 +87,11 @@
     "andMore": "…還有 {{count}} 個",
     "headsUpLabel": "提醒：",
     "duplicateWarning": "匯入會把這些內容新增為新筆記。執行兩次就會出現重複項目，目前還沒有自動去重。",
+    "duplicateSkipNote": "已經存過的書籤會自動略過，所以重跑一次也不會重複。",
+    "contactSkipNote": "已經存過的人會略過並保持原樣，所以執行兩次不會讓任何人重複。",
     "quotaExceeded": "<strong>儲存空間不足，無法匯入。</strong>預估需要 {{needed}}，目前可用 {{available}}。請先釋出空間或升級再匯入。",
     "quotaWarning": "提醒：這次匯入大約會用掉 {{needed}}，你剩餘的儲存空間為 {{available}}。",
-    "oversizeAttachments_other": "{{count}} 個檔案超過你方案的單檔上限 {{limit}}。它們會匯入到這台裝置，但在你升級之前不會同步到你的其他裝置。",
-    "duplicateSkipNote": "已經存過的書籤會自動略過，所以重跑一次也不會重複。"
+    "oversizeAttachments_other": "{{count}} 個檔案超過你方案的單檔上限 {{limit}}。它們會匯入到這台裝置，但在你升級之前不會同步到你的其他裝置。"
   },
   "counts": {
     "note_other": "筆記",
@@ -87,6 +99,7 @@
     "login_other": "登入資訊",
     "card_other": "卡片",
     "sshKey_other": "SSH 金鑰",
+    "contact_other": "聯絡人",
     "zeroItems": "0 個項目",
     "importButton": "匯入 {{counts}}"
   },
@@ -112,7 +125,10 @@
     "vaultExportDesc": "登入資訊、卡片與 SSH 金鑰，Bitwarden 相容格式，多數密碼管理器都能匯入。內容為明文，請小心保管。",
     "bookmarksOnlyHeading": "僅書籤",
     "bookmarksExportTitle": "書籤檔案 (.html)",
-    "bookmarksExportDesc": "每個瀏覽器都讀得懂的標準書籤檔案，可以連同資料夾一起匯入 Chrome、Firefox、Safari 或 Edge。"
+    "bookmarksExportDesc": "每個瀏覽器都讀得懂的標準書籤檔案，可以連同資料夾一起匯入 Chrome、Firefox、Safari 或 Edge。",
+    "contactsOnlyHeading": "只有聯絡人",
+    "contactsExportTitle": "聯絡人檔案 (.vcf)",
+    "contactsExportDesc": "每支手機和通訊錄都能讀的 vCard 檔。可以匯入 iPhone、Android、Google 聯絡人或 Mac 的聯絡人，標籤和群組都保留。"
   },
   "exportProgress": {
     "failedTitle": "匯出失敗",
@@ -154,9 +170,5 @@
   },
   "saveErrors": {
     "shortWrite": "{{expected}} 位元組中只儲存了 {{written}} 位元組，檔案並不完整。請再試一次，並存到裝置本機儲存空間而非雲端資料夾。"
-  },
-  "browserImport": {
-    "tagLabel": "保留瀏覽器的標籤",
-    "tagDesc": "Firefox 會把標籤和網址列關鍵字一起存在書籤裡，兩者在這裡都會變成標籤。"
   }
 }

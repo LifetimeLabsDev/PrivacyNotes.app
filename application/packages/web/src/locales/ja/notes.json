@@ -35,7 +35,8 @@
     "journal": "ジャーナル",
     "login": "ログイン",
     "file": "ファイル",
-    "bookmark": "ブックマーク"
+    "bookmark": "ブックマーク",
+    "contact": "連絡先"
   },
   "vaultFilter": {
     "all": "すべて",
@@ -88,7 +89,8 @@
     "items": "アイテム",
     "trashed": "ゴミ箱",
     "notes": "ノート",
-    "bookmarks": "ブックマーク"
+    "bookmarks": "ブックマーク",
+    "contacts": "連絡先"
   },
   "toast": {
     "imageUploadFailed": "画像のアップロードに失敗しました: {{error}}",
@@ -170,6 +172,7 @@
     "widthFull": "全幅",
     "burn": "Burn After Readingで共有",
     "titlePlaceholderLink": "ブックマーク名",
+    "titlePlaceholderContact": "名前",
     "notBackedUpTooLarge": "1 MBの上限を超えているため、バックアップされていません。画像を添付ファイルに移すか、ノートを分割してください。",
     "notBackedUpFailed": "バックアップされていません。直近のエラー: {{message}}。再試行中です。"
   },
@@ -217,6 +220,7 @@
     "importLabel": "読み込みと書き出し",
     "planLabel": "アカウント",
     "storageLabel": "ストレージ",
+    "imagesLabel": "画像",
     "securityLabel": "セキュリティ",
     "accountLabel": "IDと同期",
     "appearanceLabel": "外観",
@@ -259,5 +263,9 @@
     "title": "新しい保管庫を作成しました",
     "confirm": "OK",
     "body": "入力されたフレーズに一致する既存の保管庫がなかったため、新しい空の保管庫を作成しました。自分のノートが表示されるはずだった場合は、サインアウトして、フレーズを注意深く入力し直してください。1単語でも違うと、別の保管庫が開きます。"
+  },
+  "ambiguousLink": {
+    "title": "同じタイトルのノートが2つあります",
+    "body": "<highlight>「{{title}}」</highlight>というタイトルのノートが複数あるため、このリンクはどちらを指すのかを示せません。どちらかの名前を変えると、リンクはもう一方を指します。"
   }
 }

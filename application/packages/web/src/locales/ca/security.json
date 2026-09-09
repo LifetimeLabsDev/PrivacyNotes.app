@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "S'està comprovant la compatibilitat biomètrica...",
     "description": "Desbloqueja amb l'empremta o la cara. Afegeix una barrera biomètrica perquè ningú del teu voltant no pugui accedir a les teves notes.",
-    "trustFirst": "Activa primer \"Confia en aquest dispositiu\" per fer servir el desbloqueig biomètric. Els dispositius no fiables esborren totes les dades quan es tanca la pestanya.",
+    "trustFirst": "Activa primer \"Confia en aquest dispositiu\". El desbloqueig biomètric i el bloqueig de l'aplicació desen tots dos una còpia de la teva frase de recuperació en aquest dispositiu, i no és per a això que serveix un dispositiu no fiable.",
     "notAvailable": "El desbloqueig biomètric no està disponible en aquest dispositiu. El navegador o el maquinari no admet cap autenticador de plataforma (Touch ID, Face ID, Windows Hello).",
     "enabledFlash": "Desbloqueig biomètric activat.",
     "enrolledOnDevice": "Registrat en aquest dispositiu",
@@ -199,12 +199,6 @@
     "signOut": "Tanca la sessió",
     "thisDevice": "Aquest dispositiu",
     "lastActive": "{{platform}} · última activitat {{when}}",
-    "removing": "S'està eliminant...",
-    "relative": {
-      "justNow": "ara mateix",
-      "minutes": "fa {{count}} min",
-      "hours": "fa {{count}} h",
-      "days": "fa {{count}} d"
-    }
+    "removing": "S'està eliminant..."
   }
 }

@@ -35,7 +35,8 @@
     "journal": "Journal",
     "login": "Login",
     "file": "File",
-    "bookmark": "Bookmark"
+    "bookmark": "Bookmark",
+    "contact": "Contact"
   },
   "vaultFilter": {
     "all": "All",
@@ -88,7 +89,8 @@
     "items": "Items",
     "trashed": "Trashed",
     "notes": "Notes",
-    "bookmarks": "Bookmarks"
+    "bookmarks": "Bookmarks",
+    "contacts": "Contacts"
   },
   "toast": {
     "imageUploadFailed": "Image upload failed: {{error}}",
@@ -172,6 +174,7 @@
     "widthFull": "Full width",
     "burn": "Share & Burn After Reading",
     "titlePlaceholderLink": "Bookmark name",
+    "titlePlaceholderContact": "Name",
     "notBackedUpTooLarge": "Over the 1 MB limit, so not backed up. Move pictures to attachments or split the note.",
     "notBackedUpFailed": "Not backed up. Last error: {{message}}. Retrying."
   },
@@ -219,6 +222,7 @@
     "importLabel": "Import & Export",
     "planLabel": "Account",
     "storageLabel": "Storage",
+    "imagesLabel": "Images",
     "securityLabel": "Security",
     "accountLabel": "ID & Sync",
     "appearanceLabel": "Appearance",
@@ -266,5 +270,9 @@
     "title": "New vault created",
     "confirm": "Got it",
     "body": "No existing vault matched the phrase you entered, so a new empty one was created. If you expected to see your notes, sign out and re-enter your phrase carefully - a single different word opens a different vault."
+  },
+  "ambiguousLink": {
+    "title": "Two notes share that title",
+    "body": "More than one note is titled <highlight>“{{title}}”</highlight>, so this link does not say which one it means. Rename one of them and the link will point at the other."
   }
 }

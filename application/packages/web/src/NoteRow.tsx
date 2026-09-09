@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
@@ -7,7 +7,9 @@ import { deriveDisplayTitle, deriveExcerpt, rowSizeLabel, formatModified, fileCo
 import { Favicon } from './VaultItem';
 import { parseLoginBody, domainFromUrl } from './LoginForm';
 import { parseLinkBody, linkDomain } from './linkBody';
-import { Check, PushPin, Shield, PencilSimpleSlash, Book, CheckSquare, File, Image, MusicNotes, Key, CreditCard, Lock, Globe, BookmarkSimple, Folder, Warning, type Icon } from './icons';
+import { contactHue, contactInitials, contactInitialsFor, parseContactBody } from './contactBody';
+import { loadEncryptedImageUrl } from './EncryptedImage';
+import { Check, PushPin, Shield, PencilSimpleSlash, Book, CheckSquare, File, Image, MusicNotes, Key, CreditCard, Lock, Globe, BookmarkSimple, Folder, Warning, User, type Icon } from './icons';
 import { useFolderName } from './folderNames';
 import { sortTags } from './notesRepo';
 import { usePushFailure } from './pushFailures';
@@ -313,6 +315,11 @@ export function RowIcon({ note, isVault, isFile, isJournal, hasTasks, trashTint,
   /** 36px chip spanning the title + sub-line pair (vault logins, bookmarks). */
   tall?: boolean;
 }) {
+  // Contacts - the round chip: initials, or the photo when there is one.
+  if (note.type === 'contact') {
+    const c = parseContactBody(note.body);
+    return <ContactChip name={deriveDisplayTitle(note)} initials={contactInitialsFor(note.title, c)} photo={c.photo} size={tall ? 36 : 28} trashTint={trashTint} />;
+  }
   // Bookmarks - favicon chip, globe fallback.
   // In Trash the link row wears the amber BOOKMARK icon, the same rule
   // vault logins follow (login icon there, favicon only while live).
@@ -400,6 +407,65 @@ export function SiteChip({ domain, tall, trashTint, fallback }: {
   return (
     <span className={`shrink-0 ${box} ${bg} flex items-center justify-center ${text} mt-px`}>
       <FallbackIcon size={tall ? 20 : ROW_ICON_PX} />
+    </span>
+  );
+}
+
+/** The chip hues a contact can wear. The index is stable per name (contactHue),
+ *  so the same person is the same colour on every device. */
+const CONTACT_HUE_CLASSES = [
+  'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300',
+  'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
+  'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+  'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
+  'bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300',
+  'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300',
+  'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
+  'bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300',
+];
+
+/**
+ * The one new visual primitive of the Contacts pillar: a CIRCLE holding the
+ * initials, or the photo when the contact has one. Round-for-a-person against
+ * the square icon chips every other row wears is the convention every address
+ * book shares, and it is what lets the eye pick people out of the All list.
+ * The circle is CSS over the stored image, which is never cropped in storage.
+ * Spec: ops/docs/plans/contacts-pillar.md (section 4, the one new primitive)
+ */
+export function ContactChip({ name, initials: given, photo, size, trashTint = false }: {
+  /** The display name; it picks the hue. */
+  name: string;
+  /** The letters to draw; derived from the name when absent. */
+  initials?: string;
+  /** The stored `pn:img/<uuid>` reference, or ''. */
+  photo: string;
+  /** Diameter in px. */
+  size: number;
+  trashTint?: boolean;
+}) {
+  const uuid = photo.startsWith('pn:img/') ? photo.slice('pn:img/'.length) : '';
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (!uuid) { setUrl(null); return; }
+    let alive = true;
+    void loadEncryptedImageUrl(uuid).then((u) => { if (alive) setUrl(u); });
+    return () => { alive = false; };
+  }, [uuid]);
+  const initials = given ?? contactInitials(name);
+  const tone = trashTint
+    ? 'bg-amber-100/80 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'
+    : CONTACT_HUE_CLASSES[contactHue(name)]!;
+  return (
+    <span
+      className={`shrink-0 rounded-full overflow-hidden inline-flex items-center justify-center font-semibold select-none ${tone}`}
+      style={{ width: size, height: size, fontSize: Math.round(size * 0.36) }}
+      aria-hidden="true"
+    >
+      {url ? (
+        <img src={url} alt="" className="w-full h-full object-cover" draggable={false} />
+      ) : (
+        initials || <User size={Math.round(size * 0.5)} />
+      )}
     </span>
   );
 }
@@ -542,6 +608,9 @@ export function CardGlyph({ type, override, domain }: { type: LocalNote['type'];
   } else if (type === 'link') {
     Icon = BookmarkSimple;
     color = 'text-sky-600 dark:text-sky-400';
+  } else if (type === 'contact') {
+    Icon = User;
+    color = 'text-teal-600 dark:text-teal-400';
   }
   return <Icon size={13} className={`pn-card-glyph shrink-0 ${color}`} aria-hidden="true" />;
 }

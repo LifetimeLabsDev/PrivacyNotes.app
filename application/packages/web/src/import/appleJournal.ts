@@ -1,9 +1,9 @@
 import JSZip from 'jszip';
 import { linkifyMarkdown } from './linkify';
-import { processImage } from '../imageProcessing';
+import { currentImageOptions, processImage } from '../imageProcessing';
 import { EMOTION_TAGS } from '../trackerTypes';
 import { toLocalIso } from '../notesViewUtils';
-import type { ImportedNote, ParsedImport } from './types';
+import type { ImportBlob, ImportedNote, ParsedImport } from './types';
 
 /**
  * Apple Journal importer.
@@ -34,8 +34,10 @@ import type { ImportedNote, ParsedImport } from './types';
  *   photo, livePhoto  -> inline image. Apple ships HEIC, which no browser
  *                        except Safari can decode, so every photo goes
  *                        through the same processImage() pipeline as a
- *                        drag-and-drop upload (HEIC -> JPEG, EXIF
- *                        stripped, resized to the 2048px box).
+ *                        drag-and-drop upload (HEIC -> JPEG always; size
+ *                        and metadata follow the two image switches). The
+ *                        blob is marked processed so the shared blob
+ *                        import does not shrink it a second time.
  *   video             -> attachment (.mov), kept as-is
  *   audio             -> attachment (.caf). Apple's transcript sidecar is
  *                        dropped: the exporter strips the spaces out of it
@@ -479,7 +481,7 @@ interface AssetCtx {
   /** Lowercased Resources basename (no extension) -> parsed sidecar JSON. */
   sidecars: Map<string, Record<string, unknown>>;
   /** Blob token -> blob, shared across the whole import. */
-  blobs: Map<string, { data: Uint8Array; mime: string; name: string }>;
+  blobs: Map<string, ImportBlob>;
   /** Photos are converted after every entry has been read, so the progress
    *  bar can count them against a real total. */
   photoJobs: PhotoJob[];
@@ -595,12 +597,18 @@ async function readGrid(grid: Element | null, ctx: AssetCtx): Promise<GridResult
       const leftover: string[] = [];
       for (const label of labels) {
         const key = label.toLowerCase();
-        const mood = VALENCE_MOOD[key];
+        // Own property only: the label comes out of the file, and an
+        // inherited name would return a function that is not undefined.
+        const mood = Object.hasOwn(VALENCE_MOOD, key) ? VALENCE_MOOD[key] : undefined;
         if (mood !== undefined) {
           out.mood = mood;
           continue;
         }
-        const mapped = EMOTION_KEYS.has(key) ? key : EMOTION_ALIASES[key];
+        const mapped = EMOTION_KEYS.has(key)
+          ? key
+          : Object.hasOwn(EMOTION_ALIASES, key)
+            ? EMOTION_ALIASES[key]
+            : undefined;
         if (mapped && !out.emotions.includes(mapped)) {
           out.emotions.push(mapped);
           continue;
@@ -705,13 +713,14 @@ async function runPhotoQueue(
       try {
         const raw = new Uint8Array(await job.entry.async('uint8array'));
         const mime = sniffImageMime(raw) ?? mimeFromExt(job.name);
-        const result = await processImage(new File([raw], job.name, { type: mime }));
+        const result = await processImage(new File([raw], job.name, { type: mime }), currentImageOptions());
         if (result.ok) {
           ctx.counters.converted++;
           ctx.blobs.set(job.token, {
             data: result.image.data,
-            mime: 'image/jpeg',
-            name: nameForMime(job.name, 'image/jpeg'),
+            mime: result.image.mime,
+            name: result.image.name,
+            processed: true,
           });
         } else {
           ctx.counters.failedPhotos++;
@@ -840,7 +849,7 @@ export async function parseAppleJournal(
   const flags: ConvFlags = {
     bold: 0, italic: 0, underline: 0, strike: 0, color: 0, lists: 0, quotes: 0,
   };
-  const blobs = new Map<string, { data: Uint8Array; mime: string; name: string }>();
+  const blobs = new Map<string, ImportBlob>();
   const ctx: AssetCtx = {
     resources, sidecars, blobs, photoJobs: [], nextToken: 0, counters,
   };

@@ -94,6 +94,7 @@ export const FAQ_STRUCTURE: ReadonlyArray<{ id: string; group: FaqGroupKey }> = 
   { id: 'android-backup', group: 'yourData' },
   { id: 'storage-usage', group: 'yourData' },
   { id: 'storage-after-delete', group: 'yourData' },
+  { id: 'image-quality', group: 'yourData' },
   { id: 'attachment-limits', group: 'yourData' },
   { id: 'upload-failed', group: 'yourData' },
   { id: 'trash-auto-delete', group: 'yourData' },

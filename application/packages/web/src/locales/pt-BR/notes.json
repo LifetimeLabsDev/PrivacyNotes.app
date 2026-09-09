@@ -35,7 +35,8 @@
     "journal": "Diário",
     "login": "Login",
     "file": "Arquivo",
-    "bookmark": "Marcador"
+    "bookmark": "Marcador",
+    "contact": "Contato"
   },
   "vaultFilter": {
     "all": "Todos",
@@ -88,7 +89,8 @@
     "items": "Itens",
     "trashed": "Na lixeira",
     "notes": "Notas",
-    "bookmarks": "Marcadores"
+    "bookmarks": "Marcadores",
+    "contacts": "Contatos"
   },
   "toast": {
     "imageUploadFailed": "Falha ao enviar imagem: {{error}}",
@@ -172,6 +174,7 @@
     "widthFull": "Largura total",
     "burn": "Compartilhar e Queimar Após Ler",
     "titlePlaceholderLink": "Nome do marcador",
+    "titlePlaceholderContact": "Nome",
     "notBackedUpTooLarge": "Acima do limite de 1 MB, então sem backup. Mova as imagens para anexos ou divida a nota.",
     "notBackedUpFailed": "Sem backup. Último erro: {{message}}. Tentando de novo."
   },
@@ -219,6 +222,7 @@
     "importLabel": "Importar e Exportar",
     "planLabel": "Conta",
     "storageLabel": "Armazenamento",
+    "imagesLabel": "Imagens",
     "securityLabel": "Segurança",
     "accountLabel": "ID & Sync",
     "appearanceLabel": "Aparência",
@@ -266,5 +270,9 @@
     "title": "Novo cofre criado",
     "confirm": "Entendi",
     "body": "Nenhum cofre existente correspondeu à frase que você digitou, então um novo cofre vazio foi criado. Se você esperava ver suas notas, saia e digite sua frase com cuidado - uma única palavra diferente abre um cofre diferente."
+  },
+  "ambiguousLink": {
+    "title": "Duas notas têm esse título",
+    "body": "Mais de uma nota se chama <highlight>“{{title}}”</highlight>, então este link não diz qual delas ele quer dizer. Renomeie uma e o link vai apontar para a outra."
   }
 }

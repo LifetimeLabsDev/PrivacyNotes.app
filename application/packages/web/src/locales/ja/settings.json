@@ -73,7 +73,17 @@
     "needMore": "もっと容量が必要ですか?",
     "proSpacePitch": "現在は無料プランです。Proには500 MBが含まれ、今の10倍の容量です。",
     "earlyAdopterSave": "アーリーアダプター · ${{amount}}お得",
-    "oneTime": "買い切り"
+    "oneTime": "買い切り",
+    "imageSettingsLink": "画像の設定"
+  },
+  "images": {
+    "spaceSaverTitle": "省スペース",
+    "spaceSaverDesc": "{{px}} ピクセルに収めて品質 {{quality}}% の JPEG として保存します。わずかな細部と引き換えに、容量はごく一部で済みます。",
+    "removeLocationTitle": "位置情報を削除",
+    "removeLocationDesc": "画像の撮影場所は、アプリ内のどこでも保存前に取り除かれます。",
+    "contactTitle": "連絡先の写真を小さく",
+    "contactDesc": "アプリが表示する最大サイズの {{px}} ピクセルに収めます。オフにすると省スペースの設定に従います。",
+    "applyNote": "新しい画像にのみ適用されます。保存済みの画像は変わらず、画像ではないファイルには一切触れません。"
   },
   "devices": {
     "heading": "登録済みデバイス",
@@ -94,17 +104,17 @@
     "verifyBusy": "今ほかのデバイスが同期中のため、この確認では正確な結果を出せません。少ししてからもう一度お試しください。",
     "verifyFailed": "確認のためにサーバーへ接続できませんでした。オンラインに戻ったらもう一度お試しください。",
     "verifyDiverged": "このデバイスはサーバーと一致していません:",
-    "verifyRepairAction": "すべて再ダウンロード",
-    "verifyRepairQueued": "次回の同期で保管庫全体を読み直します。アップロード待ちのものが失われることはありません。",
     "verifyMissing_other": "サーバーにある {{count}} 件のアイテムがここにありません",
     "verifyStale_other": "ここにある {{count}} 件のアイテムがサーバーの版より古くなっています",
     "verifyPendingDelete_other": "他の端末で削除された {{count}} 件のアイテムがまだここにあります",
-    "verifyNeverPushed_other": "ここにある {{count}} 件のアイテムはサーバーに届いていません"
+    "verifyNeverPushed_other": "ここにある {{count}} 件のアイテムはサーバーに届いていません",
+    "verifyRepairAction": "すべて再ダウンロード",
+    "verifyRepairQueued": "次回の同期で保管庫全体を読み直します。アップロード待ちのものが失われることはありません。"
   },
   "accountId": {
     "heading": "アカウントID",
-    "copyId": "IDをコピー",
-    "report": "サポート用レポート"
+    "report": "サポート用レポート",
+    "copyId": "IDをコピー"
   },
   "revoke": {
     "title": "「{{name}}」を削除しますか?",
@@ -231,8 +241,8 @@
     "pausedAria": "同期を一時停止中",
     "wifiHold": "Wi-Fi待ち",
     "wifiHoldTooltip": "Wi-Fiに戻るとファイルをアップロードします。ノートの同期は続きます。",
-    "notSynced": "未同期",
     "notBackedUp": "未バックアップ",
+    "notSynced": "未同期",
     "notBackedUpTooltip_other": "{{count}}件のノートがバックアップされていません。クリックすると理由を確認できます。",
     "notBackedUpAria_other": "{{count}}件のノートがバックアップされていません"
   },

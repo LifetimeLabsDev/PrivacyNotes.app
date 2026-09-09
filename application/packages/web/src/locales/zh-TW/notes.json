@@ -35,7 +35,8 @@
     "journal": "日誌",
     "login": "登入資訊",
     "file": "檔案",
-    "bookmark": "書籤"
+    "bookmark": "書籤",
+    "contact": "聯絡人"
   },
   "vaultFilter": {
     "all": "全部",
@@ -88,7 +89,8 @@
     "items": "項目",
     "trashed": "垃圾桶",
     "notes": "筆記",
-    "bookmarks": "書籤"
+    "bookmarks": "書籤",
+    "contacts": "聯絡人"
   },
   "toast": {
     "imageUploadFailed": "圖片上傳失敗：{{error}}",
@@ -170,6 +172,7 @@
     "widthFull": "全寬",
     "burn": "分享與 Burn After Reading",
     "titlePlaceholderLink": "書籤名稱",
+    "titlePlaceholderContact": "姓名",
     "notBackedUpTooLarge": "超過 1 MB 上限，因此尚未備份。請把圖片改為附件，或將筆記拆成兩則。",
     "notBackedUpFailed": "尚未備份。最近的錯誤：{{message}}。正在重試。"
   },
@@ -217,6 +220,7 @@
     "importLabel": "匯入與匯出",
     "planLabel": "帳號",
     "storageLabel": "儲存空間",
+    "imagesLabel": "圖片",
     "securityLabel": "安全性",
     "accountLabel": "ID 與同步",
     "appearanceLabel": "外觀",
@@ -259,5 +263,9 @@
     "title": "已建立新保險庫",
     "confirm": "知道了",
     "body": "沒有既有保險庫符合你輸入的助憶詞，因此建立了一個新的空保險庫。如果你預期會看到自己的筆記，請登出後仔細重新輸入助憶詞：只要一個單字不同，開啟的就是另一個保險庫。"
+  },
+  "ambiguousLink": {
+    "title": "有兩則筆記用同一個標題",
+    "body": "不只一則筆記的標題是 <highlight>「{{title}}」</highlight>，所以這個連結說不出它指的是哪一則。把其中一則改名，連結就會指向另一則。"
   }
 }

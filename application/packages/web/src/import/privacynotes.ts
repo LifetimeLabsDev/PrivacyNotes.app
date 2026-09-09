@@ -238,12 +238,21 @@ export async function parsePrivacyNotesBackup(
     );
   }
 
-  // Sum blob sizes for the quota preflight.
-  // Attachments have explicit sizes in the manifest; images don't,
-  // so we read their uncompressed bytes from the zip entries.
+  // Sum blob sizes for the quota preflight, from the zip entries rather than
+  // from the manifest. jszip verifies an entry's uncompressed size against
+  // the bytes it inflates, so that number cannot be lied about; the
+  // manifest's own `size` field is whatever the file says. The declared
+  // number is the fallback for an entry that is missing, where the restore
+  // will skip the blob anyway.
   let blobBytes = 0;
-  for (const att of Object.values(manifest.attachments)) {
-    blobBytes += att.size;
+  for (const [uuid, att] of Object.entries(manifest.attachments)) {
+    const zipPath = att.file
+      ? `${att.folder}/${att.file}`
+      : `${att.folder}/${uuid}.${extFromName(att.name)}`;
+    const entry = zip.files[zipPath] as unknown as
+      | { _data?: { uncompressedSize?: number } }
+      | undefined;
+    blobBytes += entry?._data?.uncompressedSize ?? att.size;
   }
   // For images, sum uncompressed sizes from zip entry metadata.
   for (const [path, entry] of Object.entries(zip.files)) {
@@ -300,21 +309,34 @@ export async function restoreBlobs(
   // Restore images
   const imageUuids = Object.keys(manifest.images || {});
   for (const uuid of imageUuids) {
-    // Try multiple extensions - the exporter writes .jpg, or .png when the
-    // source carries transparency; older backups used .webp.
+    // Try multiple extensions - the exporter names the file after the
+    // stored format (.jpg, .png, or the source's own format when the space
+    // saver was off); older backups used .webp.
     const imgFile = zip.file(`images/${uuid}.webp`)
       || zip.file(`images/${uuid}.jpg`)
       || zip.file(`images/${uuid}.jpeg`)
-      || zip.file(`images/${uuid}.png`);
+      || zip.file(`images/${uuid}.png`)
+      || zip.file(`images/${uuid}.gif`)
+      || zip.file(`images/${uuid}.bmp`);
     if (!imgFile) {
       console.warn(`Restore: image ${uuid} listed in manifest but not found in zip`);
       continue;
     }
+    // The ids come out of the archive, and a `put` replaces. Every other
+    // importer mints its own id for exactly this reason, so a blob the
+    // account already holds is left alone here rather than swapped for
+    // whatever the file carries under the same name. Restoring your own
+    // backup finds the identical bytes and loses nothing.
+    if (await db.imageCache.get(uuid)) continue;
     const data = new Uint8Array(await imgFile.async('uint8array'));
     const hash = await sha256hex(data);
 
     await db.imageCache.put({ id: uuid, data, cachedAt: now });
-    await db.imageDedup.put({ hash, uuid, encryptedSize: 0, pendingUpload: 1 });
+    // Keyed by hash, so the same rule applies one table over: a dedup row
+    // the account already has points at a blob it can actually read.
+    if (!(await db.imageDedup.get(hash))) {
+      await db.imageDedup.put({ hash, uuid, encryptedSize: 0, pendingUpload: 1 });
+    }
     imgCount++;
     onProgress?.(`Restoring images... ${imgCount} of ${imageUuids.length}`);
   }
@@ -332,12 +354,19 @@ export async function restoreBlobs(
       console.warn(`Restore: attachment ${uuid} (${zipPath}) not found in zip`);
       continue;
     }
+    if (await db.attachmentCache.get(uuid)) continue;
     const data = new Uint8Array(await attFile.async('uint8array'));
     const hash = await sha256hex(data);
-    const meta: AttachmentMeta = { name: info.name, mime: info.mime, size: info.size };
+    // The size is measured, not read from the manifest: the quota preflight
+    // and the per-file ceiling both consume it, and the archive declares its
+    // own number. `blobImport` measures the bytes it just read for the same
+    // reason.
+    const meta: AttachmentMeta = { name: info.name, mime: info.mime, size: data.length };
 
     await db.attachmentCache.put({ id: uuid, meta, data, cachedAt: now });
-    await db.attachmentDedup.put({ hash, uuid, encryptedSize: 0, pendingUpload: 1 });
+    if (!(await db.attachmentDedup.get(hash))) {
+      await db.attachmentDedup.put({ hash, uuid, encryptedSize: 0, pendingUpload: 1 });
+    }
     attCount++;
     onProgress?.(`Restoring files... ${attCount} of ${attEntries.length}`);
   }

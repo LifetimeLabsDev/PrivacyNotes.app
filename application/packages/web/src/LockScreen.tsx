@@ -36,11 +36,12 @@ import { isValidPhrase } from '@notes/shared';
 import { Brand } from './Brand';
 
 type Props = {
-  /** `recover` asks the caller to clear the PIN once the unlock lands. It
-   *  is deliberately not applied here: this screen holds no settings, and
-   *  a phrase that passes its checksum but belongs to another account must
-   *  not cost this device the PIN it still remembers. */
-  onUnlock: (phrase: string, recover?: boolean) => void;
+  /** Answers false when the phrase does not belong to the account behind the
+   *  lock, which every view below turns into a visible line rather than a
+   *  button that does nothing. `recover` asks the caller to clear the PIN
+   *  once the unlock lands: this screen holds no settings, and the account
+   *  check that has to precede that removal lives with the session. */
+  onUnlock: (phrase: string, recover?: boolean) => Promise<boolean>;
   /**
    * The post-unlock sign-in, driven by App.tsx: 'busy' while
    * signInWithPhrase runs, 'error' when it failed on a transient
@@ -92,7 +93,12 @@ export function LockScreen({ onUnlock, signInState = 'idle', onRetrySignIn }: Pr
       t('common:actions.cancel'),
     );
     if (phrase) {
-      onUnlock(phrase);
+      // A wrap belongs to whichever account enrolled it, and a sign-out
+      // removes it, so a refusal here means this blob outlived its account.
+      if (!(await onUnlock(phrase))) {
+        setBiometricError(t('pinRecovery.wrongPhrase'));
+        setBiometricBusy(false);
+      }
     } else {
       // Only show error on user-initiated attempts, not auto-trigger
       if (!silent) {
@@ -241,7 +247,7 @@ function PinUnlock({
   onExhausted,
   onForgotPin,
 }: {
-  onUnlock: (phrase: string) => void;
+  onUnlock: (phrase: string) => Promise<boolean>;
   onBack: () => void;
   onExhausted: () => void;
   onForgotPin: () => void;
@@ -274,8 +280,14 @@ function PinUnlock({
 
     const phrase = await unwrapPhraseWithPin(pin);
     if (phrase) {
+      // The PIN was right for the blob, whatever the blob turns out to hold,
+      // so the backoff it earned is spent either way.
       clearPinFailures();
-      onUnlock(phrase);
+      if (!(await onUnlock(phrase))) {
+        setError(t('pinRecovery.wrongPhrase'));
+        setValue('');
+        inputRef.current?.clear();
+      }
     } else {
       const state = recordPinFailure();
       setLockout(state);
@@ -360,7 +372,7 @@ function PhraseUnlock({
   onBack,
   recover = false,
 }: {
-  onUnlock: (phrase: string, recover?: boolean) => void;
+  onUnlock: (phrase: string, recover?: boolean) => Promise<boolean>;
   onBack: () => void;
   /** Came from "Forgot your PIN?", so the unlock also clears the PIN. */
   recover?: boolean;
@@ -369,13 +381,18 @@ function PhraseUnlock({
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const trimmed = input.trim().toLowerCase();
     if (!isValidPhrase(trimmed)) {
       setError(t('lockScreen.invalidPhrase'));
       return;
     }
-    onUnlock(trimmed, recover);
+    // Two different refusals, and they must not share a line. The checksum
+    // above is about the words; this one is about whose they are, and the
+    // words can be flawless and still belong elsewhere.
+    if (!(await onUnlock(trimmed, recover))) {
+      setError(t('pinRecovery.wrongPhrase'));
+    }
   }
 
   return (
@@ -422,7 +439,7 @@ function PhraseUnlock({
           {t('common:actions.cancel')}
         </button>
         <button
-          onClick={handleSubmit}
+          onClick={() => void handleSubmit()}
           disabled={!input.trim()}
           className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
         >

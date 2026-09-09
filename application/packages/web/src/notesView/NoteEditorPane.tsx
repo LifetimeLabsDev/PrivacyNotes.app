@@ -12,6 +12,7 @@ import { NoteOptionsMenu } from '../NoteOptionsMenu';
 import { ProtectedNoteGate } from '../ProtectedNoteGate';
 import { parseLinkBody, linkDomain } from '../linkBody';
 import { BookmarkItem } from '../BookmarkItem';
+import { ContactItem } from '../ContactItem';
 import { HoverLabel } from '../HoverLabel';
 import { EditorSlotPill } from '../EditorSlotPill';
 import { useTheme, type ContentWidth } from '../theme';
@@ -325,7 +326,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
   const removingProtection = removeProtectionFor === selected.id;
   const structuredBody =
     selected.type === 'login' || selected.type === 'card' ||
-    selected.type === 'ssh-key' || selected.type === 'link';
+    selected.type === 'ssh-key' || selected.type === 'link' || selected.type === 'contact';
   /**
    * True when the markdown editor is the thing under the header, so Zen's
    * markdown toggle has a toolbar to switch. Two states fail that test.
@@ -552,6 +553,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           spellCheck={spellcheck ? undefined : false}
           placeholder={
             selected.type === 'link' ? (linkDomain(parseLinkBody(selected.body).url) || t('editor.titlePlaceholderLink'))
+            : selected.type === 'contact' ? t('editor.titlePlaceholderContact')
             : selected.type === 'login' ? t('editor.titlePlaceholderLogin')
             : selected.type === 'card' ? t('editor.titlePlaceholderCard')
             : selected.type === 'ssh-key' ? t('editor.titlePlaceholderSshKey')
@@ -845,7 +847,16 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               </span>
             </div>
           )}
-          {selected.type === 'link' ? (
+          {selected.type === 'contact' ? (
+            <ContactItem
+              key={selected.id}
+              note={selected}
+              isTrash={view === 'trash'}
+              onTitleChange={handleTitleChange}
+              onBodyChange={(id, body) => void handleBodyChange(id, body)}
+              onPinProtectedChange={handleSetPinProtected}
+            />
+          ) : selected.type === 'link' ? (
             <BookmarkItem
               key={selected.id}
               note={selected}

@@ -12,12 +12,13 @@ import { recordAdminEvent, type ImportSource } from '../adminEvents';
 import type { LocalNote } from '../db';
 import type { FolderDef } from '../folders';
 import { useEscapeToClose } from '../useEscapeToClose';
-import { ArrowCounterClockwise, BookOpenText, BracketsCurly, Check, CircleNotch, Download, FileHtml, FileZip, Key, Lock, Upload, X } from '../icons';
+import { ArrowCounterClockwise, BookOpenText, BracketsCurly, Check, CircleNotch, Download, FileHtml, FileZip, Key, Lock, Upload, X, AddressBook } from '../icons';
 import { fetchQuotaUsage, recalculateQuota } from '../devices';
 import { estimateNoteStoredBytes, estimateBlobBytes } from '../notesViewUtils';
 import { proUnlocked } from '../demo';
 import { formatBytes } from '../formatBytes';
 import { perFileLimit } from '../attachmentValidation';
+import { contactPhotoOptions, processImage } from '../imageProcessing';
 import { SectionEyebrow, SettingsCallout } from '../settingsUI';
 import { activeLocale } from '../languages';
 import { helpPath } from '../localeRoutes';
@@ -68,6 +69,60 @@ type QuotaCheck = {
   exceeds: boolean;
 };
 
+/**
+ * What an address book's photos will cost once the app sizes them down.
+ * `bytes` is measured from a sample of the actual file, never taken from a
+ * table: contact photo sizes vary by two orders of magnitude between an
+ * OEM contacts app and an iPhone. `fits` is decided BEFORE anything is
+ * written, so the contacts land and the photos are declined as one whole,
+ * never half of them followed by a quota error.
+ * Spec: ops/docs/plans/contacts-pillar.md (section 7.4)
+ */
+type PhotoEstimate = {
+  count: number;
+  bytes: number;
+  /** null when the quota could not be read (offline, demo). */
+  available: number | null;
+  fits: boolean;
+};
+
+/** How many photos the estimate compresses to find the median. */
+const PHOTO_SAMPLE = 20;
+
+async function sampleContactPhotos(parsed: ParsedImport): Promise<{ count: number; bytes: number } | null> {
+  const photos = [...(parsed.blobs?.values() ?? [])].filter((b) => b.ceiling === 'contact');
+  if (photos.length === 0) return null;
+  const step = Math.max(1, Math.floor(photos.length / PHOTO_SAMPLE));
+  const sizes: number[] = [];
+  for (let i = 0; i < photos.length && sizes.length < PHOTO_SAMPLE; i += step) {
+    const b = photos[i]!;
+    const result = await processImage(new File([b.data as BlobPart], b.name, { type: b.mime }), contactPhotoOptions());
+    sizes.push(result.ok ? result.image.sizeBytes : b.data.length);
+  }
+  sizes.sort((a, b) => a - b);
+  const median = sizes[Math.floor(sizes.length / 2)] ?? 0;
+  return { count: photos.length, bytes: estimateBlobBytes(median) * photos.length };
+}
+
+/** The parsed import minus its contact photos: the blobs, and the
+ *  `photo` key each card carries, so no body keeps a dangling reference. */
+function withoutContactPhotos(parsed: ParsedImport): ParsedImport {
+  if (!parsed.blobs) return parsed;
+  const blobs = new Map([...parsed.blobs].filter(([, b]) => b.ceiling !== 'contact'));
+  const notes = parsed.notes.map((n) => {
+    if (n.type !== 'contact') return n;
+    try {
+      const body = JSON.parse(n.body) as Record<string, unknown>;
+      if (!('photo' in body)) return n;
+      delete body.photo;
+      return { ...n, body: JSON.stringify(body) };
+    } catch {
+      return n;
+    }
+  });
+  return { ...parsed, blobs, notes };
+}
+
 // Map importer ids to the short source keys we record in admin_events.
 // The registry uses kebab-case slugs that happen to match 1:1 - this
 // cast is just the type narrowing and keeps the set of sources honest.
@@ -117,6 +172,7 @@ export function ImportModal({
   onExportEncrypted,
   onExportVault,
   onExportBookmarks,
+  onExportContacts,
   onImportEncrypted,
   onExportEncryptedZip,
   decryptFullBackup,
@@ -136,6 +192,7 @@ export function ImportModal({
   onExportEncrypted: (ns: LocalNote[]) => void;
   onExportVault: (ns: LocalNote[]) => void;
   onExportBookmarks: (ns: LocalNote[]) => void;
+  onExportContacts: (ns: LocalNote[]) => void;
   onImportEncrypted: (file: File) => Promise<number>;
   onExportEncryptedZip: (ns: LocalNote[]) => void;
   /** Decrypts a .pnbackupz into the plain full-backup zip; the modal
@@ -175,6 +232,10 @@ export function ImportModal({
   // Firefox tags and address-bar keywords. On by default: they are the
   // user's own labels, and dropping data silently is the worse default.
   const [browserTags, setBrowserTags] = useState(true);
+  /** Contacts: whether the address book's photos come along. On by
+   *  default, forced off when the estimate does not fit the quota. */
+  const [importPhotos, setImportPhotos] = useState(true);
+  const [photoEstimate, setPhotoEstimate] = useState<PhotoEstimate | null>(null);
   /** Quota preflight result. null = not checked yet (e.g. RPC failed,
    *  unauthenticated). Surfaces a warning + blocks the Import button
    *  when the estimated ciphertext exceeds available capacity. */
@@ -227,6 +288,11 @@ export function ImportModal({
       // bites first, but it is true of every importer that ships blobs.
       let oversize = 0;
       let capLabel = '';
+      // Measured before the quota is read, so the row can still show the
+      // count and the size when the quota read fails.
+      const photos = await sampleContactPhotos(parsed);
+      setPhotoEstimate(photos ? { ...photos, available: null, fits: true } : null);
+      setImportPhotos(true);
       try {
         // Recalculate before reading: the counter can trail a delete the
         // user just made, promising space the next recalc takes back.
@@ -239,9 +305,20 @@ export function ImportModal({
         );
         // Blob costs: per-blob encryption overhead when the parsed blob set
         // is available, else the raw byte total.
-        let blobBytes = 0;
+        // A contact photo is shrunk before it is stored, so it costs what the
+        // sample measured, not its raw bytes, and it costs nothing when it is
+        // declined for not fitting.
+        const photosFit = photos ? photos.bytes <= available : true;
+        if (photos) {
+          setPhotoEstimate({ ...photos, available, fits: photosFit });
+          setImportPhotos(photosFit);
+        }
+        let blobBytes = photos && photosFit ? photos.bytes : 0;
         if (parsed.blobs && parsed.blobs.size > 0) {
-          for (const blob of parsed.blobs.values()) blobBytes += estimateBlobBytes(blob.data.length);
+          for (const blob of parsed.blobs.values()) {
+            if (blob.ceiling === 'contact') continue;
+            blobBytes += estimateBlobBytes(blob.data.length);
+          }
         } else {
           blobBytes = parsed.blobBytes ?? 0;
         }
@@ -256,6 +333,7 @@ export function ImportModal({
           usage.maxTotalBytes > 500 * 1000 * 1000,
         );
         for (const blob of parsed.blobs?.values() ?? []) {
+          if (blob.ceiling === 'contact') continue;
           if (blob.data.length > cap) oversize++;
         }
         capLabel = formatBytes(cap);
@@ -306,10 +384,15 @@ export function ImportModal({
       notesForApply = withFolderPathTags(remapped, folderTags);
     }
     notesForApply = withBrowserTags(notesForApply, browserTags);
-    const parsedForApply =
+    let parsedForApply =
       notesForApply === parsed.notes
         ? parsed
         : { ...parsed, notes: notesForApply };
+    // Declined photos leave with their references: a body that still names
+    // a blob nobody stored would carry a dead photo key forever.
+    if (photoEstimate && (!importPhotos || !photoEstimate.fits)) {
+      parsedForApply = withoutContactPhotos(parsedForApply);
+    }
     const tag = autoTag && importer.sourceTag ? importer.sourceTag : undefined;
     const result = await applyImport(parsedForApply, tag);
     if (result.errors.length > 0) {
@@ -508,6 +591,9 @@ export function ImportModal({
                   browserTags={browserTags}
                   onBrowserTagsChange={setBrowserTags}
                   onFolderTagsChange={setFolderTags}
+                  photoEstimate={photoEstimate}
+                  importPhotos={importPhotos}
+                  onImportPhotosChange={setImportPhotos}
                 />
               )}
 
@@ -603,6 +689,10 @@ export function ImportModal({
               }}
               onExportBookmarks={(ns) => {
                 onExportBookmarks(ns);
+                onClose();
+              }}
+              onExportContacts={(ns) => {
+                onExportContacts(ns);
                 onClose();
               }}
               onExportVault={(ns) => {
@@ -707,6 +797,9 @@ const IMPORT_GLYPH: Record<string, ReactNode> = {
   // A key, matching the sidebar's Vault pillar. No browser logo: the same
   // .csv comes out of all of them.
   'browser-passwords': <Key size={20} aria-hidden="true" />,
+  // The address book, matching the Contacts pillar: every phone writes the
+  // same .vcf, so no vendor's logo fits.
+  'vcard': <AddressBook size={20} aria-hidden="true" />,
 };
 
 /** App icons for the note importers, reused from the /help import guides
@@ -761,6 +854,7 @@ const GUIDE_SLUG: Record<string, string> = {
 /** Maps importer ids to their description translation key under sourceDesc. */
 const SOURCE_DESC_KEY: Record<string, string> = {
   'browser-bookmarks': 'sourceDesc.browserBookmarks',
+  'vcard': 'sourceDesc.vcard',
   'google-keep': 'sourceDesc.googleKeep',
   'apple-notes': 'sourceDesc.appleNotes',
   'apple-journal': 'sourceDesc.appleJournal',
@@ -867,7 +961,7 @@ function ImportPickPhase({ onPick, autoTag, onAutoTagChange }: { onPick: (imp: I
   // Browser bookmarks leads on purpose; everything below it is
   // alphabetical. It is the only entry that is not a note app, and it is
   // the one people arrive looking for. Spec: ops/docs/plans/bookmarks-pillar.md
-  const noteIds = ['browser-bookmarks', 'apple-journal', 'apple-notes', 'evernote', 'google-keep', 'ia-writer', 'markdown-folder', 'nextcloud-notes', 'notesnook', 'obsidian', 'samsung-notes', 'simplenote', 'standard-notes', 'typora', 'upnote', 'zettlr'];
+  const noteIds = ['browser-bookmarks', 'vcard', 'apple-journal', 'apple-notes', 'evernote', 'google-keep', 'ia-writer', 'markdown-folder', 'nextcloud-notes', 'notesnook', 'obsidian', 'samsung-notes', 'simplenote', 'standard-notes', 'typora', 'upnote', 'zettlr'];
 
   return (
     <div className="space-y-3">
@@ -1006,17 +1100,20 @@ function computeTypeCounts(notes: ImportedNote[]): { label: string; count: numbe
   let loginCount = 0;
   let cardCount = 0;
   let sshKeyCount = 0;
+  let contactCount = 0;
   for (const n of notes) {
     switch (n.type) {
       case 'journal': journalCount++; break;
       case 'login': loginCount++; break;
       case 'card': cardCount++; break;
       case 'ssh-key': sshKeyCount++; break;
+      case 'contact': contactCount++; break;
       default: noteCount++; break;
     }
   }
   const parts: { label: string; count: number }[] = [];
   if (noteCount > 0) parts.push({ label: i18n.t('importExport:counts.note', { count: noteCount }), count: noteCount });
+  if (contactCount > 0) parts.push({ label: i18n.t('importExport:counts.contact', { count: contactCount }), count: contactCount });
   if (journalCount > 0) parts.push({ label: i18n.t('importExport:counts.journal', { count: journalCount }), count: journalCount });
   if (loginCount > 0) parts.push({ label: i18n.t('importExport:counts.login', { count: loginCount }), count: loginCount });
   if (cardCount > 0) parts.push({ label: i18n.t('importExport:counts.card', { count: cardCount }), count: cardCount });
@@ -1040,6 +1137,9 @@ function PreviewPhase({
   onFolderTagsChange,
   browserTags,
   onBrowserTagsChange,
+  photoEstimate,
+  importPhotos,
+  onImportPhotosChange,
 }: {
   importerLabel: string;
   parsed: ParsedImport;
@@ -1048,6 +1148,9 @@ function PreviewPhase({
   onFolderTagsChange?: (v: boolean) => void;
   browserTags?: boolean;
   onBrowserTagsChange?: (v: boolean) => void;
+  photoEstimate?: PhotoEstimate | null;
+  importPhotos?: boolean;
+  onImportPhotosChange?: (v: boolean) => void;
 }) {
   const { t } = useTranslation('importExport');
   const { stats, warnings, transforms, notes } = parsed;
@@ -1063,6 +1166,7 @@ function PreviewPhase({
   // so the toggle appears only when the file actually carries some.
   const showBrowserTags = notes.some((n) => (n.browserTags?.length ?? 0) > 0);
   const allLinks = notes.length > 0 && notes.every((n) => n.type === 'link');
+  const allContacts = notes.length > 0 && notes.every((n) => n.type === 'contact');
   // Reflect the folder tags the import is about to add (reactive to the
   // toggle) so the tag counts match what actually lands, not the raw
   // parse-time count. Non-folder imports fall through to notes unchanged.
@@ -1162,6 +1266,40 @@ function PreviewPhase({
         </label>
       )}
 
+      {photoEstimate && onImportPhotosChange && (
+        <label className={`flex items-start gap-2 rounded-lg border p-3 transition ${photoEstimate.fits ? 'border-divider cursor-pointer hover:bg-surface-1' : 'border-amber-300 dark:border-amber-800 bg-amber-50/60 dark:bg-amber-950/20'}`}>
+          <input
+            type="checkbox"
+            checked={photoEstimate.fits && (importPhotos ?? true)}
+            disabled={!photoEstimate.fits}
+            onChange={(e) => onImportPhotosChange(e.target.checked)}
+            className="h-4 w-4 mt-0.5 shrink-0 accent-accent"
+          />
+          <div>
+            <div className="text-sm font-medium">{t('contactImport.photosLabel')}</div>
+            <div className="text-xs text-pn-soft mt-0.5">
+              {!photoEstimate.fits && photoEstimate.available !== null
+                ? t('contactImport.photosTooBig', {
+                    count: photoEstimate.count,
+                    size: formatBytes(photoEstimate.bytes),
+                    shortfall: formatBytes(photoEstimate.bytes - photoEstimate.available),
+                  })
+                : photoEstimate.available !== null
+                  ? t('contactImport.photosDesc', {
+                      count: photoEstimate.count,
+                      size: formatBytes(photoEstimate.bytes),
+                      pct: Math.min(100, Math.round((photoEstimate.bytes / Math.max(1, photoEstimate.available)) * 100)),
+                      free: formatBytes(photoEstimate.available),
+                    })
+                  : t('contactImport.photosDescNoQuota', {
+                      count: photoEstimate.count,
+                      size: formatBytes(photoEstimate.bytes),
+                    })}
+            </div>
+          </div>
+        </label>
+      )}
+
       {showBrowserTags && onBrowserTagsChange && (
         <label className="flex items-start gap-2 rounded-lg border border-divider p-3 cursor-pointer hover:bg-surface-1 transition">
           <input
@@ -1217,7 +1355,7 @@ function PreviewPhase({
         </strong>{' '}
         {/* Bookmarks are the one source apply.ts dedupes, on exact URL, so
             the standing "you will get duplicates" line is false for them. */}
-        {allLinks ? t('preview.duplicateSkipNote') : t('preview.duplicateWarning')}
+        {allLinks ? t('preview.duplicateSkipNote') : allContacts ? t('preview.contactSkipNote') : t('preview.duplicateWarning')}
       </SettingsCallout>
     </div>
   );
@@ -1282,6 +1420,7 @@ function ExportPanel({
   onExportEncryptedZip,
   onExportVault,
   onExportBookmarks,
+  onExportContacts,
 }: {
   notes: LocalNote[];
   onExportAllMdZip: (ns: LocalNote[]) => void;
@@ -1291,8 +1430,10 @@ function ExportPanel({
   onExportEncryptedZip: (ns: LocalNote[]) => void;
   onExportVault: (ns: LocalNote[]) => void;
   onExportBookmarks: (ns: LocalNote[]) => void;
+  onExportContacts: (ns: LocalNote[]) => void;
 }) {
   const { t } = useTranslation('importExport');
+  const hasContacts = notes.some((n) => n.type === 'contact' && n.trashed !== 1);
   const hasVaultItems = notes.some(
     (n) => n.type === 'login' || n.type === 'card' || n.type === 'ssh-key',
   );
@@ -1368,6 +1509,22 @@ function ExportPanel({
               description={t('export.bookmarksExportDesc')}
               glyph={<FileHtml size={20} aria-hidden="true" />}
               onClick={() => onExportBookmarks(notes)}
+            />
+          </div>
+        </div>
+      )}
+
+      {hasContacts && (
+        <div>
+          <SectionEyebrow className="mb-1.5">
+            {t('export.contactsOnlyHeading')}
+          </SectionEyebrow>
+          <div className="space-y-1.5">
+            <ActionRow
+              title={t('export.contactsExportTitle')}
+              description={t('export.contactsExportDesc')}
+              glyph={<AddressBook size={20} aria-hidden="true" />}
+              onClick={() => onExportContacts(notes)}
             />
           </div>
         </div>

@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "Sprawdzanie obsługi biometrii...",
     "description": "Odblokuj odciskiem palca lub twarzą. Dodaje bramkę biometryczną, więc osoby w pobliżu nie dostaną się do Twoich notatek.",
-    "trustFirst": "Najpierw włącz „Ufaj temu urządzeniu”, aby korzystać z odblokowania biometrycznego. Niezaufane urządzenia czyszczą wszystkie dane po zamknięciu karty.",
+    "trustFirst": "Najpierw włącz „Ufaj temu urządzeniu”. Odblokowanie biometryczne i blokada aplikacji zapisują na tym urządzeniu kopię twojej frazy odzyskiwania, a niezaufane urządzenie nie jest do tego.",
     "notAvailable": "Odblokowanie biometryczne nie jest dostępne na tym urządzeniu. Twoja przeglądarka lub sprzęt nie obsługuje uwierzytelniania platformy (Touch ID, Face ID, Windows Hello).",
     "enabledFlash": "Odblokowanie biometryczne włączone.",
     "enrolledOnDevice": "Zarejestrowane na tym urządzeniu",
@@ -199,12 +199,6 @@
     "signOut": "Wyloguj się",
     "thisDevice": "To urządzenie",
     "lastActive": "{{platform}} · ostatnio aktywne {{when}}",
-    "removing": "Usuwanie...",
-    "relative": {
-      "justNow": "przed chwilą",
-      "minutes": "{{count}} min temu",
-      "hours": "{{count}} godz. temu",
-      "days": "{{count}} d temu"
-    }
+    "removing": "Usuwanie..."
   }
 }

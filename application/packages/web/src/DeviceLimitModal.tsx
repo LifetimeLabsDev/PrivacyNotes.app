@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { TFunction } from 'i18next';
 import { useAuth } from './auth';
 import type { DeviceRow } from './devices';
 import { shortDeviceId } from './deviceSlots';
+import { formatRelative } from './intlFormat';
 import { isPaddleConfigured, isBetaPricing } from './paddle';
 import { startProCheckout } from './billing';
 import { PRO_PRICE, EARLY_PRICE } from './pricing';
@@ -132,7 +132,7 @@ export function DeviceLimitModal() {
                     {d.device_name}
                   </div>
                   <div className="text-[11px] text-neutral-400 dark:text-neutral-600">
-                    {t('deviceLimit.removedAt', { when: formatRelative(d.revoked_at!, t) })}
+                    {t('deviceLimit.removedAt', { when: formatRelative(d.revoked_at!) })}
                   </div>
                 </div>
               </div>
@@ -284,7 +284,7 @@ function DeviceRowView({
           )}
         </div>
         <div className="text-[11px] text-neutral-500 dark:text-neutral-500">
-          {t('deviceLimit.lastActive', { platform: device.platform, when: formatRelative(device.last_seen_at, t) })}
+          {t('deviceLimit.lastActive', { platform: device.platform, when: formatRelative(device.last_seen_at) })}
         </div>
       </div>
       <button
@@ -297,17 +297,4 @@ function DeviceRowView({
       </button>
     </div>
   );
-}
-
-function formatRelative(iso: string, t: TFunction): string {
-  const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return iso;
-  const diff = Date.now() - then;
-  const m = Math.floor(diff / 60_000);
-  if (m < 1) return t('deviceLimit.relative.justNow');
-  if (m < 60) return t('deviceLimit.relative.minutes', { count: m });
-  const h = Math.floor(m / 60);
-  if (h < 24) return t('deviceLimit.relative.hours', { count: h });
-  const d = Math.floor(h / 24);
-  return t('deviceLimit.relative.days', { count: d });
 }

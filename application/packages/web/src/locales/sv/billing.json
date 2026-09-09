@@ -39,6 +39,12 @@
     "alreadyOwned": "Enligt butiken äger du redan det här, men köpet tillhör ett annat konto. Logga in med den återställningsfras du använde när du köpte det."
   },
   "checkout": {
+    "confirmTitle": "Bekräfta ditt köp",
+    "confirmPro": "PrivacyNotes Pro, en betalning på {{price}} $.",
+    "confirmStorage": "{{gb}} GB extra lagring, {{price}} $ per år.",
+    "confirmAccount": "Det låser upp det här kontot:",
+    "confirmCheck": "Öppna Inställningar, sedan Synk, och kontrollera att Konto-ID stämmer. Gör det inte det, stäng den här fliken: betalningen skulle låsa upp någon annan.",
+    "confirmButton": "Fortsätt till betalning",
     "invalidTitle": "Ogiltig kassalänk",
     "invalidBody": "Öppna kassan inifrån appen så att vi kan koppla köpet till ditt konto.",
     "completeTitle": "Betalningen är klar",

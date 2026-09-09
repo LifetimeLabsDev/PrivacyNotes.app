@@ -39,6 +39,12 @@
     "alreadyOwned": "商店顯示你已擁有這個項目，但它屬於另一個帳號。請用購買當時使用的復原助憶詞登入。"
   },
   "checkout": {
+    "confirmTitle": "確認你的購買",
+    "confirmPro": "PrivacyNotes Pro，一次付清 {{price}} 美元。",
+    "confirmStorage": "額外 {{gb}} GB 儲存空間，每年 {{price}} 美元。",
+    "confirmAccount": "將解鎖這個帳號：",
+    "confirmCheck": "開啟設定，再到同步，確認那裡的帳號 ID 相符。如果不符，請關掉這個分頁：付款會解鎖別人的帳號。",
+    "confirmButton": "繼續付款",
     "invalidTitle": "結帳連結無效",
     "invalidBody": "請從應用程式內開啟結帳，我們才能將這筆購買綁定到你的帳號。",
     "completeTitle": "付款完成",

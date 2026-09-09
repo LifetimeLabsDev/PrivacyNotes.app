@@ -500,6 +500,13 @@
         "Tutto arriva come elementi nuovi e nulla di quello che hai già viene sovrascritto, quindi ripristinare due volte lo stesso file ti lascia due copie di ogni nota. Entrambi i formati cifrati si aprono solo nell’account che li ha creati, perché sono cifrati con la chiave della sua frase; uno .zip entra in qualsiasi cassaforte ([quale backup fare](/it/help/backup-strategy/))."
       ]
     },
+    "image-quality": {
+      "q": "PrivacyNotes modifica o comprime le mie immagini?",
+      "a": [
+        "Sì. Entrambe le impostazioni sono attive per impostazione predefinita perché amiamo i nostri utenti: vogliamo che tu risparmi spazio e mantenga la tua privacy. Risparmio spazio riduce un'immagine grande a 2048 pixel e la salva come JPEG all'85 % di qualità, che conserva tutto il dettaglio che uno schermo può mostrare. Rimuovi dati di posizione elimina i metadati EXIF che una fotocamera scrive in una foto, posizione GPS compresa, prima che l'immagine venga salvata. Entrambe valgono per ogni immagine nell'app: incollata in una nota, aggiunta come file o importata.",
+        "Disattiva l'una o l'altra in **Impostazioni > Immagini**, dove le foto dei contatti hanno un terzo interruttore che le tiene a 512 pixel. Le impostazioni valgono solo per le nuove immagini; i file che non sono immagini vengono salvati esattamente come sono. Le immagini HEIC e TIFF vengono convertite in JPEG, perché solo Safari può mostrarle. Un backup che ripristini viene riscritto byte per byte."
+      ]
+    },
     "storage-usage": {
       "q": "Cosa viene conteggiato nel mio spazio e come libero spazio?",
       "a": [

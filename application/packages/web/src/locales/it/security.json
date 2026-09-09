@@ -93,7 +93,7 @@
   "biometricTab": {
     "checkingSupport": "Verifica del supporto biometrico...",
     "description": "Sblocca con l'impronta digitale o il volto. Aggiunge un livello biometrico così chi ti sta vicino non può accedere alle tue note.",
-    "trustFirst": "Attiva prima \"Considera attendibile questo dispositivo\" per usare lo sblocco biometrico. I dispositivi non attendibili cancellano tutti i dati alla chiusura della scheda.",
+    "trustFirst": "Attiva prima \"Considera attendibile questo dispositivo\". Lo sblocco biometrico e il blocco dell'app conservano entrambi una copia della tua frase di recupero su questo dispositivo, e non è a questo che serve un dispositivo non attendibile.",
     "notAvailable": "Lo sblocco biometrico non è disponibile su questo dispositivo. Il tuo browser o il tuo hardware non supporta un autenticatore di piattaforma (Touch ID, Face ID, Windows Hello).",
     "enabledFlash": "Sblocco biometrico attivato.",
     "enrolledOnDevice": "Registrato su questo dispositivo",
@@ -199,12 +199,6 @@
     "signOut": "Esci",
     "thisDevice": "Questo dispositivo",
     "lastActive": "{{platform}} · ultima attività {{when}}",
-    "removing": "Rimozione in corso...",
-    "relative": {
-      "justNow": "proprio ora",
-      "minutes": "{{count}} min fa",
-      "hours": "{{count}} h fa",
-      "days": "{{count}} g fa"
-    }
+    "removing": "Rimozione in corso..."
   }
 }

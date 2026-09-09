@@ -207,8 +207,9 @@ export function useSyncOrchestrator({
       syncPinCache(merged);
 
       // Carries the account's PIN wrap onto this device, and off it again
-      // when the account no longer has one.
-      syncPinWrap(merged);
+      // when the account no longer has one. The phrase goes with it so a
+      // device the removal leaves with no door can put it back at rest.
+      syncPinWrap(merged, auth.phrase);
 
       // One-shot welcome-note seed. Runs exactly once per user, ever
       // - gated on the synced `welcomeNoteSeeded` flag so a second

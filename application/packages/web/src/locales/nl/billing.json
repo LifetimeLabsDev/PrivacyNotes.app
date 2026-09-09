@@ -39,6 +39,12 @@
     "alreadyOwned": "Volgens de store bezit je dit al, maar het hoort bij een ander account. Meld je aan met de herstelzin die je gebruikte toen je de aankoop deed."
   },
   "checkout": {
+    "confirmTitle": "Bevestig je aankoop",
+    "confirmPro": "PrivacyNotes Pro, eenmalig {{price}} $.",
+    "confirmStorage": "{{gb}} GB extra opslag, {{price}} $ per jaar.",
+    "confirmAccount": "Dit account wordt ontgrendeld:",
+    "confirmCheck": "Open Instellingen, dan Synchronisatie, en controleer of het Account-ID daar overeenkomt. Zo niet, sluit dit tabblad: de betaling zou iemand anders ontgrendelen.",
+    "confirmButton": "Doorgaan naar betaling",
     "invalidTitle": "Afrekenlink ongeldig",
     "invalidBody": "Start het afrekenen vanuit de app, zodat we de aankoop aan je account kunnen koppelen.",
     "completeTitle": "Betaling voltooid",

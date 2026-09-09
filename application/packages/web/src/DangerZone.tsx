@@ -5,7 +5,8 @@ import { deleteAccountServer } from './devices';
 import { deleteEntireLocalDatabase } from './notesRepo';
 import { setDeletingAccount } from './sync';
 import { SectionEyebrow } from './settingsUI';
-import { isDemoMode } from './demo';
+import { isDemoMode, isDemoOwnedKey } from './demo';
+import { settingsLocalKey } from './settingsLocalKey';
 import { HelpChip } from './HelpChip';
 
 // ------------------------------------------------------------------
@@ -13,19 +14,35 @@ import { HelpChip } from './HelpChip';
 // ------------------------------------------------------------------
 
 /**
- * Wipe every `privacynotes.*` key from both localStorage and
- * sessionStorage. Catches per-key to avoid one bad key blocking the rest.
+ * Wipe this session's keys from both localStorage and sessionStorage.
+ * Catches per-key to avoid one bad key blocking the rest.
+ *
+ * The demo runs on the SAME origin as a real install whenever the URL
+ * carries `?demo=1`, and it renders this panel with the local half
+ * already ticked. A prefix sweep there removes the real account's phrase
+ * envelope, PIN wrap, biometric wrap and Supabase session, none of which
+ * the demo owns: every credential the demo writes goes into a `.demo`
+ * bucket for exactly this reason, and this was the one sweep that did
+ * not respect it. So in demo the sweep is the bucket plus the demo
+ * settings key, which is the same set clearFreshDemoCredentials drops on
+ * a fresh tab, and nothing else is touched.
  */
 function clearAllStorageKeys(): void {
+  const demo = isDemoMode();
+  const demoSettings = settingsLocalKey();
   for (const store of [localStorage, sessionStorage]) {
     const keys: string[] = [];
     for (let i = 0; i < store.length; i++) {
       const k = store.key(i);
+      if (!k) continue;
       // Clear app keys AND Supabase auth session keys. Without the
       // sb- prefix, a stale OAuth session survives account deletion
       // and hydrateFromOAuthSession treats the deleted user as
       // existing on the next page load.
-      if (k?.startsWith('privacynotes.') || k?.startsWith('sb-')) keys.push(k);
+      const owned = demo
+        ? isDemoOwnedKey(k) || k === demoSettings
+        : k.startsWith('privacynotes.') || k.startsWith('sb-');
+      if (owned) keys.push(k);
     }
     for (const k of keys) {
       try { store.removeItem(k); } catch { /* ignore */ }
@@ -158,7 +175,13 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
         // side user is already gone so we only clear locally; without
         // this the sb-* session key survives and hydrateFromOAuthSession
         // treats a re-signup as a returning user.
-        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+        //
+        // Not in demo: the demo holds no session of its own, so the only
+        // row this could clear belongs to the real account signed in on
+        // the same origin.
+        if (!isDemoMode()) {
+          await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+        }
         // Nuke IndexedDB (notes, images, attachments, dedup tables).
         await deleteEntireLocalDatabase();
         // Wipe all localStorage/sessionStorage privacynotes.* + sb-* keys.

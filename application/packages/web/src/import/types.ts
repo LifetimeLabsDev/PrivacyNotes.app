@@ -67,6 +67,20 @@ export interface ImportedNote {
 }
 
 /** What an importer returns after successfully parsing a file. */
+/**
+ * One blob an importer carries across. `processed` marks a picture the
+ * importer already ran through the image switches, so the shared blob
+ * import does not shrink it a second time.
+ */
+export type ImportBlob = {
+  data: Uint8Array;
+  mime: string;
+  name: string;
+  processed?: boolean;
+  /** A contact photo obeys the contact ceiling on top of the image switches. */
+  ceiling?: 'contact';
+};
+
 export interface ParsedImport {
   notes: ImportedNote[];
   /** Non-fatal issues worth surfacing in the UI ("3 notes had no title", etc.). */
@@ -96,7 +110,7 @@ export interface ParsedImport {
    * (e.g. "Attachments/UUID.jpeg" or "images/photo.jpg").
    * Used by post-apply blob import to store and rewrite references.
    */
-  blobs?: Map<string, { data: Uint8Array; mime: string; name: string }>;
+  blobs?: Map<string, ImportBlob>;
   /**
    * Folder definitions rebuilt from the source's structure (Obsidian
    * subfolders). Merged into the user's settings folder tree at apply
@@ -130,7 +144,8 @@ export type ImporterId =
   | 'privacynotes'
   | 'bitwarden'
   | 'browser-bookmarks'
-  | 'browser-passwords';
+  | 'browser-passwords'
+  | 'vcard';
 
 export interface Importer {
   id: ImporterId;

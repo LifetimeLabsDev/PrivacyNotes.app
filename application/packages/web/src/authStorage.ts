@@ -1,3 +1,4 @@
+import { bytesToHex, deriveSigningKey, phraseToSeed } from '@notes/shared';
 import { db } from './db';
 import {
   hasPinWrappedPhrase,
@@ -58,6 +59,35 @@ export async function readOwnerMirror(): Promise<string | null> {
 }
 
 /**
+ * Does this phrase derive the account this device already holds?
+ *
+ * The marker first, then the mirror, because localStorage can be evicted
+ * while the notes it vouches for survive. An install where both are gone
+ * has no answer to give: refusing there would strand a user whose browser
+ * cleared its storage, so an unknown owner answers true and leaves the
+ * decision to whatever check comes next.
+ *
+ * A value that derives nothing at all answers false rather than throwing,
+ * so a caller can treat this as one question with one answer.
+ */
+export async function phraseOwnsThisDevice(phrase: string): Promise<boolean> {
+  let owner: string | null = null;
+  try {
+    owner = localStorage.getItem(PUBKEY_OWNER_KEY);
+  } catch {
+    /* storage unavailable - the mirror is the fallback */
+  }
+  if (!owner) owner = await readOwnerMirror();
+  if (!owner) return true;
+  try {
+    const { publicKey } = await deriveSigningKey(phraseToSeed(phrase));
+    return bytesToHex(publicKey) === owner;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * True when this tab may still write to (or wipe) the shared local
  * storage: either nothing has claimed it, or this account did.
  *
@@ -89,15 +119,56 @@ export function ownsLocalData(pubkey: string): boolean {
  * previous account had crossed). Both keys are cleared by every wipe
  * path; they live here so the two paths cannot drift apart.
  */
+/**
+ * Remove GoTrue's own session keys from both stores.
+ *
+ * Sign-out asks the auth library to drop the session, and the library can
+ * decline: an expired access token whose refresh fails at the transport
+ * layer returns that error before it reaches its own removal, so the session
+ * survives on disk while the app reports a clean sign-out. A signed-out
+ * device holding a live refresh token signs itself back in on the next boot,
+ * which for a custodial account decrypts the vault with nobody typing
+ * anything. So the removal runs here too, where nothing can decline it.
+ *
+ * Scoped to the `sb-` prefix on purpose. Everything else in these stores has
+ * an owner that decides when it goes: the trust flag survives a sign-out by
+ * design, and the owner marker is what tells the next sign-in whose data
+ * this is.
+ */
+export function clearSupabaseAuthKeys(): void {
+  for (const store of [localStorage, sessionStorage]) {
+    try {
+      for (let i = store.length - 1; i >= 0; i--) {
+        const key = store.key(i);
+        if (key?.startsWith('sb-')) store.removeItem(key);
+      }
+    } catch {
+      /* storage unavailable - there is nothing to remove */
+    }
+  }
+}
+
 export function clearAccountScopedUiState(): void {
   try {
-    localStorage.removeItem('privacynotes.foldersExpanded'); // FolderTree.tsx
+    // Two folder keys, because the tree switched from storing which folders
+    // are open to storing which are closed, and the retired one is still on
+    // disk wherever an old install wrote it.
+    localStorage.removeItem('privacynotes.folderToggles'); // folderTreeState.ts
+    localStorage.removeItem('privacynotes.foldersExpanded'); // retired
     // Legacy: milestone state moved to UserSettings.milestonesSeen (synced).
     // Still cleared so a pre-move install does not leave it behind.
     localStorage.removeItem('privacynotes.milestonesSeen');
     // Armed by the account that completed a domain-move handoff; the
     // next account on this install must not see its bookmark hint.
     localStorage.removeItem('privacynotes.movedFromApex'); // migrate.ts / MoveBanner.tsx
+    // When this account last verified its sync, and how many rows matched.
+    localStorage.removeItem('privacynotes.verifyStamp'); // verifyStamp.ts
+    // Which offers this account dismissed: the site announcement, and one
+    // key per pillar for the import prompt.
+    localStorage.removeItem('privacynotes.announcementsDismissed'); // announcements.ts
+    for (const kind of ['notes', 'journal', 'tasks', 'vault', 'bookmarks', 'contacts']) {
+      localStorage.removeItem(`privacynotes.importPrompt.hidden.${kind}`); // ImportPrompt.tsx
+    }
   } catch { /* ignore */ }
 }
 
