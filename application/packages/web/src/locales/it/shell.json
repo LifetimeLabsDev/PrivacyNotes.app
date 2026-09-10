@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "Tutti",
-    "notes": "Note",
-    "tasks": "Attività",
-    "vault": "Cassaforte",
-    "files": "File",
-    "journals": "Diario",
-    "pinned": "In evidenza",
     "trash": "Cestino",
-    "markdown": "Markdown",
     "bookmarks": "Segnalibri",
     "contacts": "Contatti"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Opzioni di ordinamento",
     "searchPlaceholder": "Cerca tra i file…",
     "sortName": "Nome",
-    "showNotesWithAttachments": "Mostra note con allegati",
+    "showNotesWithAttachments": "Mostra i file nelle note",
     "noMatches": "Nessun risultato.",
     "pinProtected": "Protetto da PIN",
     "readOnly": "Sola lettura",
@@ -78,10 +70,11 @@
     "menuImages": "Immagini",
     "menuAudio": "Audio",
     "menuDocuments": "Documenti",
-    "menuHideNoteAttachments": "Nascondi allegati delle note",
-    "menuShowNoteAttachments": "Mostra allegati delle note",
+    "menuHideNoteAttachments": "Nascondi i file nelle note",
+    "menuShowNoteAttachments": "Mostra i file nelle note",
     "menuUnpin": "Togli dall'evidenza",
     "menuPin": "Metti in evidenza",
+    "menuRename": "Rinomina",
     "menuMoveToTrash": "Sposta nel cestino"
   },
   "vaultItem": {
@@ -116,6 +109,26 @@
     "notesHeading": "Note",
     "fillOneField": "Compila almeno un campo prima di salvare.",
     "expiryNeedsBoth": "La scadenza richiede sia mese che anno, oppure lasciali entrambi vuoti."
+  },
+  "fileTypes": {
+    "audio": "Audio",
+    "video": "Video",
+    "image": "Immagine",
+    "pdf": "PDF",
+    "archive": "Archivio",
+    "document": "Documento",
+    "spreadsheet": "Foglio di calcolo",
+    "file": "File",
+    "audioRecording": "Registrazione audio",
+    "pdfDocument": "Documento PDF",
+    "attachment": "Allegato"
+  },
+  "noteRow": {
+    "noUsername": "Nessun nome utente",
+    "noCardholder": "Nessun intestatario",
+    "noLabel": "Nessuna etichetta",
+    "files_one": "{{count}} file",
+    "files_other": "{{count}} file"
   },
   "tagsRail": {
     "showAllItems": "Mostra tutti gli elementi",

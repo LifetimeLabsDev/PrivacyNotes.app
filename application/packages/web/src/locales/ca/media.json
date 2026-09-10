@@ -16,6 +16,10 @@
   },
   "attachment": {
     "fallbackName": "Adjunt",
+    "rename": "Canvia el nom",
+    "renamePlaceholder": "Nom del fitxer",
+    "saveName": "Desa el nom",
+    "seek": "Posició de reproducció",
     "imageAlt": "Imatge",
     "cantPlay": "No es pot reproduir. Baixa'l per escoltar-lo",
     "downloadingStatus": "s'està baixant...",

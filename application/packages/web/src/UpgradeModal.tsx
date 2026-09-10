@@ -33,8 +33,13 @@ type Props = {
    * to bias the intro copy so the user doesn't feel like they clicked
    * a random Pro button.
    */
-  trigger?: 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage' | 'callout' | 'fileSize' | 'folders' | 'totp' | 'replace' | null;
+  trigger?: UpgradeTrigger;
 };
+
+/** Which Pro feature opened the modal; picks the intro line. */
+export type UpgradeTrigger =
+  | 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage'
+  | 'callout' | 'fileSize' | 'folders' | 'totp' | 'replace' | 'passphrase' | null;
 
 const FEATURES: Array<{ icon: React.JSX.Element; labelKey: string }> = [
   { icon: <IconDevices />, labelKey: 'upgrade.features.devices' },
@@ -70,6 +75,8 @@ function introKey(trigger: Props['trigger']): string {
       return 'upgrade.intro.totp';
     case 'replace':
       return 'upgrade.intro.replace';
+    case 'passphrase':
+      return 'upgrade.intro.passphrase';
     case 'fileSize':
       // Reuse the already-translated upload upsell string (importExport ns)
       // so the file-size context doesn't need its own billing copy.
@@ -132,7 +139,10 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
 
   return (
     <div
-      className="fixed inset-0 bg-black/40 dark:bg-black/40 flex items-center justify-center p-4 sm:p-6 z-50"
+      /* Stacked overlay, not the standard one: a Pro gate can sit inside
+         another modal, and the pitch is always the thing to read on top.
+         Spec: ops/docs/ui-patterns.md (z-index tier system) */
+      className="fixed inset-0 bg-black/40 dark:bg-black/40 flex items-center justify-center p-4 sm:p-6 z-[55]"
       onClick={onClose}
     >
       <div

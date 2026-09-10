@@ -76,7 +76,13 @@ const ENTITY = /&(?:#(\d{1,7})|#[xX]([0-9a-fA-F]{1,6})|([a-z]+));/gi;
  */
 function decodeEntities(s: string): string {
   return s.replace(ENTITY, (whole, dec: string | undefined, hex: string | undefined, name: string | undefined) => {
-    if (name !== undefined) return NAMED_ENTITY[name.toLowerCase()] ?? whole;
+    if (name !== undefined) {
+      // Own property only: the name comes out of the file, and an inherited
+      // one answers with a function that `?? whole` cannot see, so the
+      // function's own source text would land in the title.
+      const key = name.toLowerCase();
+      return Object.hasOwn(NAMED_ENTITY, key) ? NAMED_ENTITY[key]! : whole;
+    }
     const code = dec !== undefined ? Number(dec) : parseInt(hex!, 16);
     // Reject nothing, the surrogate range, and anything past the last
     // plane, all of which would make fromCodePoint throw.

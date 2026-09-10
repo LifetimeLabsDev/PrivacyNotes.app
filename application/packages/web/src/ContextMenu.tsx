@@ -268,7 +268,8 @@ export function ContextMenu({
       tabIndex={-1}
       style={style}
       onContextMenu={(e) => e.preventDefault()}
-      className="z-[1000] min-w-[220px] py-1 rounded-md border border-divider bg-surface-2/95 backdrop-blur shadow-xl text-[13px] text-pn select-none"
+      // A floor, not a width: no ceiling, so a long translation widens the menu.
+      className="z-[1000] min-w-[160px] py-1 rounded-md border border-divider bg-surface-2/95 backdrop-blur shadow-xl text-[13px] text-pn select-none"
     >
       {state.items.map((it, i) => {
         if ('type' in it && it.type === 'separator') {
@@ -326,7 +327,16 @@ export function ContextMenu({
             }}
             className={`${base} ${tone}`}
           >
-            <span className="w-4 h-4 shrink-0 inline-flex items-center justify-center">
+            {/* Accent, like every other menu in the app. Three cases keep the
+                row's own colour instead, because there the colour IS the
+                message: a hovered row (white on a filled band), a destructive
+                row (red) and a success row (green). A glyph that sets its own
+                colour, such as the burn flame, wins over this from inside. */}
+            <span
+              className={`w-4 h-4 shrink-0 inline-flex items-center justify-center ${
+                active || item.destructive || item.success ? '' : 'text-accent'
+              }`}
+            >
               {item.icon}
             </span>
             <span className="flex-1 truncate">{item.label}</span>

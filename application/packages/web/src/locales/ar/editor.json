@@ -158,8 +158,11 @@
     "textLabel": "نص الرابط",
     "textPlaceholder": "اختياري، اتركه فارغًا لعرض الرابط",
     "selectedTextHint": "سيتم استخدام النص المحدد كرابط",
-    "editTextHint": "عدّل نص الرابط في المحرر",
-    "update": "تحديث"
+    "update": "تحديث",
+    "menuOpen": "فتح الرابط",
+    "menuCopy": "نسخ الرابط",
+    "menuEdit": "تعديل الرابط",
+    "menuRemove": "إزالة الرابط"
   },
   "audio": {
     "uploadingRecording": "جارٍ تحميل التسجيل...",
@@ -197,6 +200,9 @@
     "copy": "نسخ",
     "copied": "تم النسخ",
     "copyFailed": "فشل"
+  },
+  "math": {
+    "sourceLabel": "شيفرة LaTeX"
   },
   "noteLink": {
     "open": "فتح الملاحظة",

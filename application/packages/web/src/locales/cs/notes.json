@@ -103,7 +103,8 @@
     "importedSyncing_few": "Importovány {{count}} poznámky. Probíhá synchronizace…",
     "importedSyncing_many": "Importováno {{count}} poznámky. Probíhá synchronizace…",
     "addedTag_few": "Přidáno #{{tag}} k {{count}} položkám",
-    "addedTag_many": "Přidáno #{{tag}} k {{count}} položky"
+    "addedTag_many": "Přidáno #{{tag}} k {{count}} položky",
+    "restoreSummary": "Obnoveno. Přidáno: {{added}}, aktualizováno: {{updated}}, aktuálních: {{unchanged}}."
   },
   "burn": {
     "mediaOnly": "Tato poznámka obsahuje pouze média, a proto ji nelze sdílet odkazem ke spálení.",

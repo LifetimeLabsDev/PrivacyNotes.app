@@ -19,6 +19,7 @@
       "callout": "Bilgi kutularının tamamı bir Pro özelliğidir.",
       "totp": "2FA kodları bir Pro özelliğidir. Herhangi bir girişe kimlik doğrulama anahtarı kaydedin, değişen kodu parolanın yanında görün. Anahtarın kendisi tüm planlarda kaydedilir ve senkronize edilir.",
       "replace": "Bul ve değiştir bir Pro özelliğidir. Bir nottaki tek bir eşleşmeyi veya tüm eşleşmeleri tek seferde değiştirmek için yükseltin.",
+      "passphrase": "Parola cümleleri bir Pro özelliğidir. Yazması ve söylemesi kolay, rastgele sözcüklerden bir cümle oluşturun.",
       "default": "Tek bir yükseltme aşağıdaki her şeyin kilidini açar. Tek seferlik ödeme."
     },
     "features": {

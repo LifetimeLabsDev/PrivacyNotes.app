@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "Co přesně se mezi zařízeními synchronizuje a co zůstává lokálně?",
       "a": [
-        "Všechno, co by člověk čekal, a všechno zašifrované na tvém zařízení, ještě než se synchronizuje: poznámky, úkoly, záznamy v deníku, tvůj trezor a šifrované soubory v něm. Putuje s tebou i nastavení - oblíbené značky, řazení a nastavení zobrazení, barevné téma, tvůj PIN (jako solený hash, nikdy samotný PIN), zámek aplikace, nastavení sledovaných hodnot a léků a automatické mazání koše. Nastav si to jednou a každé zařízení si to převezme.",
+        "Všechno, co by člověk čekal, a všechno zašifrované na tvém zařízení: poznámky, úkoly, záznamy v deníku, tvůj trezor a soubory v něm. Putuje s tebou i nastavení - oblíbené značky, řazení a nastavení zobrazení, barevné téma, tvůj PIN (jako solený hash, nikdy samotný PIN), zámek aplikace, nastavení sledovaných hodnot a léků a automatické mazání koše. Nastav si to jednou a každé zařízení si to převezme.",
         "Několik věcí zůstává záměrně jen na zařízení: světlý nebo tmavý režim (každé zařízení se řídí vlastním systémovým nastavením), biometrické odemknutí (svázané s hardwarem konkrétního zařízení) a stav odemčení (zavřením aplikace se vždycky znovu zamkne). Server ukládá vždycky jen šifrované bloky a nepřečte z nich nic."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Ano. Záložky jsou samostatný pilíř v postranním panelu, vedle poznámek, úkolů a deníků, a jsou zdarma v každém tarifu. Vlož odkaz do pruhu rychlého přidání a máš ho uložený. Ty stávající si přeneseš takhle: v prohlížeči vyexportuj soubor se záložkami (.html) a přetáhni ho do Nastavení > Import & Export > Import > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave i Vivaldi obsahují stejný soubor a složky i data přijdou s ním. Safari ho zabalí do .zip, který můžeš přetáhnout, aniž bys ho rozbaloval.",
         "Tvoje adresy zařízení nikdy neopustí: stránku za odkazem nestahujeme, a proto záložka, kterou přidáš ručně, nese jako název svou doménu, dokud jí nějaký nenapíšeš. Ikony webů jsou jediná výjimka a můžeš je vypnout. Export zapisuje stejný standardní soubor, takže záložky odejdou stejně snadno, jako přišly ([návod na import](/cs/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "Můžu si v PrivacyNotes vést adresář?",
+      "a": [
+        "Ano. Kontakty jsou samostatný pilíř v postranním panelu, vedle poznámek, úkolů a deníků, a jsou zdarma v každém tarifu. Jeden kontakt pobere jména, čísla, e-maily, adresy, weby, data, firmu i poznámku. Klepnutím na číslo zavoláš, klepnutím na e-mail napíšeš a klepnutím na kterýkoli řádek ho zkopíruješ. Všechno ostatní, co telefon do souboru zapsal, zůstane pod **Také v tomto souboru** a při exportu se zapíše zpátky.",
+        "Ty stávající si přeneseš takhle: v telefonu, na Macu nebo v Google Contacts vyexportuj vizitku vCard (.vcf) a přetáhni ji do Nastavení > Import & Export > Import > \"Contacts (vCard)\". Když stejný soubor přetáhneš i později, lidé, které už máš, se spárují místo toho, aby se zdvojili. Export zapíše běžnou vizitku vCard, takže adresář odejde stejně snadno, jako přišel ([víc o importu](/cs/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "Co patří do Záložek, Kontaktů a Trezoru?",
+      "a": [
+        "Ty části života, které nepatří do profilu prohlížeče ani do adresáře v telefonu. Záložky, kontakty a trezor stojí vedle těch, které prohlížeč a telefon dávno synchronizují do Googlu, Applu nebo Mozilly, a drží to, co odtamtud radši vynecháš. Všechny tři jsou zdarma v každém tarifu.",
+        "- Odkazy o zdraví, penězích, právu nebo hledání práce, na počítači, který s někým sdílíš\n- Rešerše k jednomu tématu, pohromadě místo zapadlá mezi tisíci záložkami prohlížeče\n- Lékařka, právník, majitel bytu a personalista, mimo adresář, který se synchronizuje s iCloudem nebo Googlem\n- Kontakt i s tím, co k němu patří: tvoje poznámky, data, soubor, který ti poslal\n- Obnovovací fráze, licenční klíče, kódy k trezoru a čísla pasů, tedy tajemství, která nejsou přihlašovací údaje\n- Těch pár přihlašovacích údajů, které nikdy nechceš mít v rozšíření prohlížeče",
+        "Každý z nich je řádek v postranním panelu. Když některý chybí, otevři možnosti postranního panelu nad štítky a zapni **Zobrazit na postranním panelu**. Ty stávající vtáhneš ze souboru a stejně tak je zase dostaneš ven ([záložky](/cs/help/bookmarks/), [kontakty](/cs/help/contacts/), [trezor](/cs/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

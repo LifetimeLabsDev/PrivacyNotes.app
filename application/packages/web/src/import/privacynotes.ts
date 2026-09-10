@@ -100,14 +100,16 @@ function rewriteAttachmentsForImport(
   // names with spaces or parens. target points into an attachment folder.
   return body.replace(
     /\[([^\]]*)\]\((?:<((?:audio|video|docs|files)\/[^>]+)>|((?:audio|video|docs|files)\/[^)\s]+))\)/g,
-    (match, _name: string, bracketed: string | undefined, bare: string | undefined) => {
+    (match, name: string, bracketed: string | undefined, bare: string | undefined) => {
       const target = bracketed ?? bare;
       if (!target) return match;
       const uuid = pathToUuid.get(target);
       if (!uuid) return match;
       const info = manifest.attachments[uuid]!;
       const sizeStr = formatSize(info.size);
-      return `[${info.name}|${sizeStr}|${info.mime}](pn:file/${uuid})`;
+      // The link's own text first: one file can be referenced twice under
+      // two names, and the manifest holds room for only one of them.
+      return `[${name || info.name}|${sizeStr}|${info.mime}](pn:file/${uuid})`;
     },
   );
 }
@@ -184,6 +186,7 @@ export async function parsePrivacyNotesBackup(
     }
 
     const note: ImportedNote = {
+      ...(typeof meta.id === 'string' && meta.id ? { id: meta.id } : {}),
       title,
       body: importBody,
       tags,

@@ -266,6 +266,22 @@ function LinuxDl({ href, label, desc, icon, recommended, divider }: {
 }
 
 /**
+ * The green or amber chip beside a download route, answering the one thing the route's
+ * own name cannot: who installs the next version. Green means the app does it, amber
+ * means the reader does. Every route in the downloads section carries one, so somebody
+ * who reads no prose at all still learns which routes keep themselves current, and a
+ * route with no chip reads as an oversight rather than as a route with nothing to say.
+ */
+function UpdatePill({ auto }: { auto: boolean }) {
+  const { t } = useTranslation('landing');
+  return auto ? (
+    <span className="whitespace-nowrap rounded-full bg-[var(--wl-tint-green)] px-2 py-0.5 text-xs font-semibold text-[var(--wl-emerald)]">{t('downloads.autoUpdates')}</span>
+  ) : (
+    <span className="whitespace-nowrap rounded-full bg-[var(--wl-tint-amber)] px-2 py-0.5 text-xs font-semibold text-[var(--wl-amber-text)]">{t('downloads.manualUpdates')}</span>
+  );
+}
+
+/**
  * Rounded mono command block with a copy button glued to its right edge. The single way
  * /download presents a shell command: DebCmd and PkgCmd both render through it, so a
  * styling or behaviour change lands on every command at once. The button copies the
@@ -329,14 +345,15 @@ function DebCmd({ arch, file }: { arch: string; file: string }) {
  * The command block is CmdBlock, shared with DebCmd, so /download keeps a single way
  * of presenting a shell command: one rounded mono block, one copy button.
  */
-function PkgCmd({ icon, name, tool, desc, cmd, divider }: {
-  icon: ReactNode; name: string; tool: string; desc: string; cmd: string; divider?: boolean;
+function PkgCmd({ icon, name, tool, selfUpdates, desc, cmd, divider }: {
+  icon: ReactNode; name: string; tool: string; selfUpdates: boolean; desc: string; cmd: string; divider?: boolean;
 }) {
   return (
     <div className={`px-4 py-3${divider ? ' border-t border-[var(--wl-ink)]/10' : ''}`}>
-      <span className="mb-1.5 flex items-center gap-2 font-semibold text-[var(--wl-ink)]">
+      <span className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold text-[var(--wl-ink)]">
         <span aria-hidden="true" className="shrink-0 text-accent">{icon}</span>
-        {name} <span className="font-normal text-[var(--wl-sub)]">({tool})</span>
+        <span>{name} <span className="font-normal text-[var(--wl-sub)]">({tool})</span></span>
+        <UpdatePill auto={selfUpdates} />
       </span>
       <span className="mt-0.5 block text-sm text-[var(--wl-sub)]">{desc}</span>
       <CmdBlock className="mt-2" cmd={cmd} />
@@ -1741,7 +1758,7 @@ export function LandingPage({
                 <div className="min-w-[175px] flex-1">
                   <span className="flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold text-[var(--wl-ink)]">
                     <a href={ZAPSTORE_SITE_URL} target="_blank" rel="noopener" className="underline hover:no-underline">Zapstore</a>
-                    <span className="whitespace-nowrap rounded-full bg-[var(--wl-tint-green)] px-2 py-0.5 text-xs font-semibold text-[var(--wl-emerald)]">{t('downloads.autoUpdates')}</span>
+                    <UpdatePill auto />
                   </span>
                   <span className="mt-0.5 block text-sm text-[var(--wl-sub)]">
                     <Trans
@@ -1774,7 +1791,7 @@ export function LandingPage({
                   <div className="min-w-[175px] flex-1">
                     <span className="flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold text-[var(--wl-ink)]">
                       <a href={OBTAINIUM_SITE_URL} target="_blank" rel="noopener" className="underline hover:no-underline">Obtainium</a>
-                      <span className="whitespace-nowrap rounded-full bg-[var(--wl-tint-green)] px-2 py-0.5 text-xs font-semibold text-[var(--wl-emerald)]">{t('downloads.autoUpdates')}</span>
+                      <UpdatePill auto />
                     </span>
                     <span className="mt-0.5 block text-sm text-[var(--wl-sub)]">{t('downloads.obtainiumDesc')}</span>
                   </div>
@@ -1818,7 +1835,7 @@ export function LandingPage({
                       <span aria-hidden="true" className="shrink-0 text-accent"><AndroidLogo size={17} weight="fill" /></span>
                       APK
                     </a>
-                    <span className="whitespace-nowrap rounded-full bg-[var(--wl-tint-amber)] px-2 py-0.5 text-xs font-semibold text-[var(--wl-amber-text)]">{t('downloads.manualUpdates')}</span>
+                    <UpdatePill auto={false} />
                     <ChecksumLink href={ANDROID_APK_URL} label="APK" className="ms-auto" />
                   </span>
                   <span className="mt-0.5 block text-sm text-[var(--wl-sub)]">{t('downloads.apkDesc')}</span>
@@ -1842,6 +1859,13 @@ export function LandingPage({
               than room next to the tiles: the macOS and Windows tiles stay one-click
               downloads for everyone else. Same panel shape as the Linux and Android
               disclosures above, and only one of the three is ever open.
+
+              Every row carries the update chip the Android rows carry, because "who
+              installs the next version" is the question that separates these three and
+              a row without the chip reads as the one route that has no answer. A
+              channel that RUNS our installer lands the app where the self-updater
+              installs, so the app keeps itself current; a channel that UNPACKS it does
+              not, which is why Scoop is amber. Apply that test to any channel added here.
               Spec: mockups/downloads-pkgmgr.html */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
             <button
@@ -1886,6 +1910,7 @@ export function LandingPage({
                 icon={<AppleLogo size={17} weight="fill" />}
                 name="macOS"
                 tool="Homebrew"
+                selfUpdates
                 desc={t('downloads.pkgBrewDesc')}
                 cmd="brew install privacynotes"
               />
@@ -1894,6 +1919,7 @@ export function LandingPage({
                 icon={<WindowsLogo size={17} weight="fill" />}
                 name="Windows"
                 tool="winget"
+                selfUpdates
                 desc={t('downloads.pkgWingetDesc')}
                 cmd="winget install LifetimeLabs.PrivacyNotes"
               />
@@ -1906,6 +1932,7 @@ export function LandingPage({
                 icon={<WindowsLogo size={17} weight="fill" />}
                 name="Windows"
                 tool="Scoop"
+                selfUpdates={false}
                 desc={t('downloads.pkgScoopDesc')}
                 cmd={'scoop bucket add lifetimelabs https://github.com/LifetimeLabsDev/scoop-bucket\nscoop install lifetimelabs/privacynotes'}
               />

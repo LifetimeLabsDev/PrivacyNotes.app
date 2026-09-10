@@ -70,14 +70,19 @@ export async function readOwnerMirror(): Promise<string | null> {
  * A value that derives nothing at all answers false rather than throwing,
  * so a caller can treat this as one question with one answer.
  */
-export async function phraseOwnsThisDevice(phrase: string): Promise<boolean> {
+/** The account this device holds, from the marker or from its mirror. */
+async function claimedOwner(): Promise<string | null> {
   let owner: string | null = null;
   try {
     owner = localStorage.getItem(PUBKEY_OWNER_KEY);
   } catch {
     /* storage unavailable - the mirror is the fallback */
   }
-  if (!owner) owner = await readOwnerMirror();
+  return owner ?? (await readOwnerMirror());
+}
+
+export async function phraseOwnsThisDevice(phrase: string): Promise<boolean> {
+  const owner = await claimedOwner();
   if (!owner) return true;
   try {
     const { publicKey } = await deriveSigningKey(phraseToSeed(phrase));
@@ -199,6 +204,28 @@ export async function hasLocalAccountState(): Promise<boolean> {
     if ((await db.notes.count()) > 0) return true;
   } catch { /* ignore */ }
   return false;
+}
+
+/**
+ * True when signing in with this phrase would destroy what is on this
+ * device: the phrase belongs to another account, and there is something
+ * here to lose.
+ *
+ * Both halves matter. A device nobody has claimed answers false, so a
+ * first sign-in is never questioned. So does a signed-out device with
+ * nothing left on it, because a warning about an empty vault is how
+ * people learn to click through warnings.
+ *
+ * One case the wipe covers and this does not: a device carrying data
+ * that neither the marker nor its mirror can name, which the sign-in
+ * clears under a legacy rule. Nothing there can say whose data it is,
+ * so a dialog claiming another account holds this device would be a
+ * sentence nobody can stand behind. The mirror bounds that case to one
+ * boot per install predating it.
+ */
+export async function switchWouldWipe(phrase: string): Promise<boolean> {
+  if (await phraseOwnsThisDevice(phrase)) return false;
+  return hasLocalAccountState();
 }
 
 // Cached account flags for the local-first fast boot. Written on every

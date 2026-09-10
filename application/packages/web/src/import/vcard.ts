@@ -300,10 +300,14 @@ function decodeLabel(raw: string): string {
     // `AssistantPhone` reads as "assistant phone"; the table keys the
     // few names whose spaced form is still not the label word.
     const inner = wrapped[1]!.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
-    return APPLE_LABEL_WORDS[inner.replace(/ /g, '')] ?? inner;
+    // Own property only: the label comes out of the file, and an inherited one
+    // answers with a function, which reaches contactBody and throws there.
+    const key = inner.replace(/ /g, '');
+    return Object.hasOwn(APPLE_LABEL_WORDS, key) ? APPLE_LABEL_WORDS[key]! : inner;
   }
   if (GOOGLE_CONSTANT.test(label)) {
-    return GOOGLE_LABEL_WORDS[label] ?? label.toLowerCase().replace(/_/g, ' ');
+    const spaced = label.toLowerCase().replace(/_/g, ' ');
+    return Object.hasOwn(GOOGLE_LABEL_WORDS, label) ? GOOGLE_LABEL_WORDS[label]! : spaced;
   }
   return label;
 }
@@ -668,7 +672,9 @@ function readCard(lines: Line[], sink: PhotoSink): Card {
         }
         return true;
       default: {
-        const service = IM_SERVICE[l.name];
+        // Own property only. The property name is a stranger's, and the
+        // uppercasing it goes through is not what makes this safe.
+        const service = Object.hasOwn(IM_SERVICE, l.name) ? IM_SERVICE[l.name] : undefined;
         if (!service) return false;
         c.profiles.push({ label: service, value: text(l) });
         return true;

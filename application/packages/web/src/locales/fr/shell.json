@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "Tout",
-    "notes": "Notes",
-    "tasks": "Tâches",
-    "vault": "Coffre",
-    "files": "Fichiers",
-    "journals": "Journaux",
-    "pinned": "Épinglés",
     "trash": "Corbeille",
-    "markdown": "Markdown",
     "bookmarks": "Signets",
     "contacts": "Contacts"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Options de tri",
     "searchPlaceholder": "Rechercher des fichiers…",
     "sortName": "Nom",
-    "showNotesWithAttachments": "Afficher les notes avec pièces jointes",
+    "showNotesWithAttachments": "Afficher les fichiers dans les notes",
     "noMatches": "Aucun résultat.",
     "pinProtected": "Protégé par PIN",
     "readOnly": "Lecture seule",
@@ -78,10 +70,11 @@
     "menuImages": "Images",
     "menuAudio": "Audio",
     "menuDocuments": "Documents",
-    "menuHideNoteAttachments": "Masquer les pièces jointes des notes",
-    "menuShowNoteAttachments": "Afficher les pièces jointes des notes",
+    "menuHideNoteAttachments": "Masquer les fichiers dans les notes",
+    "menuShowNoteAttachments": "Afficher les fichiers dans les notes",
     "menuUnpin": "Désépingler",
     "menuPin": "Épingler",
+    "menuRename": "Renommer",
     "menuMoveToTrash": "Mettre à la corbeille"
   },
   "vaultItem": {
@@ -116,6 +109,26 @@
     "notesHeading": "Notes",
     "fillOneField": "Remplis au moins un champ avant d'enregistrer.",
     "expiryNeedsBoth": "L'expiration nécessite le mois et l'année, ou laisse les deux vides."
+  },
+  "fileTypes": {
+    "audio": "Audio",
+    "video": "Vidéo",
+    "image": "Image",
+    "pdf": "PDF",
+    "archive": "Archive",
+    "document": "Document",
+    "spreadsheet": "Feuille de calcul",
+    "file": "Fichier",
+    "audioRecording": "Enregistrement audio",
+    "pdfDocument": "Document PDF",
+    "attachment": "Pièce jointe"
+  },
+  "noteRow": {
+    "noUsername": "Pas de nom d'utilisateur",
+    "noCardholder": "Pas de titulaire",
+    "noLabel": "Pas d'étiquette",
+    "files_one": "{{count}} fichier",
+    "files_other": "{{count}} fichiers"
   },
   "tagsRail": {
     "showAllItems": "Afficher tous les éléments",

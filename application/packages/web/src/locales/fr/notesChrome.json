@@ -72,6 +72,7 @@
     "copied": "Copié"
   },
   "burnView": {
+    "title": "Burn After Reading",
     "tagline": "Chiffré. Éphémère. Rien que pour tes yeux.",
     "toggleTheme": "Basculer le thème",
     "checking": "Vérification...",

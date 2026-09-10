@@ -43,6 +43,11 @@ export function noteToMarkdown(
     fm.push(`folder: ${folderPath.map((n) => n.replace(/\//g, '\\/')).join('/')}`);
   }
   if (fullMeta) {
+    // The note's own id, backup flavour only. A restore matches on it and
+    // keeps the newer of the two copies, so restoring repairs a vault rather
+    // than filling it with a second version of every note. The portable
+    // export leaves it out: an id from this app means nothing in another one.
+    fm.push(`id: ${note.id}`);
     fm.push(`type: ${note.type || 'note'}`);
     fm.push(`starred: ${note.starred === 1}`);
     // A full backup carries the trash: without this line every trashed

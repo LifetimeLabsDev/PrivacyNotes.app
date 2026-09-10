@@ -19,6 +19,7 @@
       "callout": "Hela uppsättningen informationsrutor är en Pro-funktion.",
       "totp": "2FA-koder är en Pro-funktion. Spara en autentiseringsnyckel på vilken inloggning som helst så får du den roterande koden bredvid lösenordet. Själva nyckeln sparas och synkas i alla planer.",
       "replace": "Sök och ersätt är en Pro-funktion. Uppgradera för att ersätta en träff eller alla träffar i en anteckning på en gång.",
+      "passphrase": "Lösenfraser är en Pro-funktion. Skapa en fras av slumpmässiga ord som är lätt att skriva och att säga.",
       "default": "En uppgradering låser upp allt nedan. Engångsbetalning."
     },
     "features": {

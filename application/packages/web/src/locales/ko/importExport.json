@@ -54,13 +54,20 @@
     "bitwarden": "Bitwarden의 암호화되지 않은 .json 내보내기 파일이에요 (Tools > Export vault > .json). 로그인, 카드, SSH 키, 보안 메모, TOTP 코드가 모두 함께 들어와요.",
     "browserPasswords": "Chrome, Edge, Brave, Opera, Vivaldi, Firefox, Safari의 비밀번호 파일(.csv), 또는 Safari가 만드는 .zip이에요. 한 줄이 로그인 하나가 돼요. 다 끝나면 파일을 지우세요. 비밀번호가 그대로 적혀 있어요."
   },
+  "sourceLabel": {
+    "privacynotes": "PrivacyNotes 전체 백업",
+    "browserBookmarks": "브라우저 북마크",
+    "browserPasswords": "브라우저 비밀번호",
+    "vcard": "연락처 (vCard)",
+    "markdownFolder": "Markdown 파일"
+  },
   "vaultPick": {
     "intro": "다른 비밀번호 관리자에서 로그인, 신용카드, SSH 키를 가져오세요."
   },
   "restorePick": {
     "intro": "이전에 내보낸 PrivacyNotes 백업을 복원하세요. 파일은 로컬에서 읽고 복호화해요.",
     "fullBackupTitle": "전체 백업 (.zip)",
-    "fullBackupDesc": "노트, 저널, 보관함 항목, 할 일, 이미지, 오디오, 파일을 복원해요. 모두 새 항목으로 가져오고, 기존 데이터는 덮어쓰지 않아요.",
+    "fullBackupDesc": "노트, 저널, 보관함 항목, 할 일, 이미지, 오디오, 파일을 복원해요. 이미 있는 노트는 그대로 두고, 백업에 더 새로운 버전이 있을 때만 업데이트해요.",
     "encryptedBackupTitle": "암호화 백업 (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "문구 키로 암호화 백업을 복원해요. .pnbackupz는 파일까지 전부 되돌리고, .pnbackup은 텍스트 콘텐츠와 메타데이터만 담고 있어요. 백업을 만든 계정과 같은 계정으로 로그인되어 있어야 해요."
   },

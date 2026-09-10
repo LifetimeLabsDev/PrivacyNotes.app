@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
 import { parseLinkBody, buildLinkBody, normalizeUrl, linkDomain, duplicateBookmarkId } from './linkBody';
@@ -51,7 +51,10 @@ export function BookmarkItem({
 }) {
   const { t } = useTranslation('shell');
   const { copy, copied } = useCopyToClipboard();
-  const pinConfigured = useMemo(() => hasPin(), []);
+  // Never memoize this. Settings opens over a mounted form, so a PIN
+  // can appear or vanish while the toggle below is on screen, and
+  // localStorage fires nothing that would refresh a frozen value.
+  const pinConfigured = hasPin();
   const [showPinInfo, setShowPinInfo] = useState(false);
   /** The website-icon explainer under the URL field, collapsed by default. */
   const [iconHintOpen, setIconHintOpen] = useState(false);

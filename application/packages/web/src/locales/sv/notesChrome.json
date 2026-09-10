@@ -72,6 +72,7 @@
     "copied": "Kopierad"
   },
   "burnView": {
+    "title": "Burn After Reading",
     "tagline": "Krypterad. Flyktig. Endast för dina ögon.",
     "toggleTheme": "Växla tema",
     "checking": "Kontrollerar...",

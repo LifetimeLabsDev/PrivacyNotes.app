@@ -103,7 +103,8 @@
     "importedSyncing_few": "Zaimportowano {{count}} notatki. Synchronizowanie…",
     "importedSyncing_many": "Zaimportowano {{count}} notatek. Synchronizowanie…",
     "addedTag_few": "Dodano #{{tag}} do {{count}} elementów",
-    "addedTag_many": "Dodano #{{tag}} do {{count}} elementów"
+    "addedTag_many": "Dodano #{{tag}} do {{count}} elementów",
+    "restoreSummary": "Przywrócono. Dodano: {{added}}, zaktualizowano: {{updated}}, aktualnych: {{unchanged}}."
   },
   "burn": {
     "mediaOnly": "Ta notatka zawiera tylko multimedia i nie można jej udostępnić linkiem do spalenia.",

@@ -16,6 +16,10 @@
   },
   "attachment": {
     "fallbackName": "添付ファイル",
+    "rename": "名前を変更",
+    "renamePlaceholder": "ファイル名",
+    "saveName": "名前を保存",
+    "seek": "再生位置",
     "imageAlt": "画像",
     "cantPlay": "再生できません。ダウンロードして聴いてください",
     "downloadingStatus": "ダウンロード中...",

@@ -154,8 +154,11 @@
     "textLabel": "Linktekst",
     "textPlaceholder": "Optioneel, laat leeg om de URL te tonen",
     "selectedTextHint": "De geselecteerde tekst wordt de link",
-    "editTextHint": "Bewerk de linktekst in de editor",
-    "update": "Bijwerken"
+    "update": "Bijwerken",
+    "menuOpen": "Link openen",
+    "menuCopy": "Link kopiëren",
+    "menuEdit": "Link bewerken",
+    "menuRemove": "Link verwijderen"
   },
   "audio": {
     "uploadingRecording": "Opname uploaden...",
@@ -185,6 +188,9 @@
     "copy": "Kopiëren",
     "copied": "Gekopieerd",
     "copyFailed": "Mislukt"
+  },
+  "math": {
+    "sourceLabel": "LaTeX-broncode"
   },
   "noteLink": {
     "open": "Notitie openen",

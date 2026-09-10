@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "Todos",
-    "notes": "Notas",
-    "tasks": "Tarefas",
-    "vault": "Cofre",
-    "files": "Ficheiros",
-    "journals": "Diários",
-    "pinned": "Fixados",
     "trash": "Lixo",
-    "markdown": "Markdown",
     "bookmarks": "Marcadores",
     "contacts": "Contactos"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Opções de ordenação",
     "searchPlaceholder": "Procurar ficheiros…",
     "sortName": "Nome",
-    "showNotesWithAttachments": "Mostrar notas com anexos",
+    "showNotesWithAttachments": "Mostrar ficheiros dentro das notas",
     "noMatches": "Sem resultados.",
     "pinProtected": "Protegido por PIN",
     "readOnly": "Apenas leitura",
@@ -78,10 +70,11 @@
     "menuImages": "Imagens",
     "menuAudio": "Áudio",
     "menuDocuments": "Documentos",
-    "menuHideNoteAttachments": "Ocultar anexos de notas",
-    "menuShowNoteAttachments": "Mostrar anexos de notas",
+    "menuHideNoteAttachments": "Ocultar ficheiros dentro das notas",
+    "menuShowNoteAttachments": "Mostrar ficheiros dentro das notas",
     "menuUnpin": "Desafixar",
     "menuPin": "Fixar",
+    "menuRename": "Renomear",
     "menuMoveToTrash": "Mover para o Lixo"
   },
   "vaultItem": {
@@ -116,6 +109,26 @@
     "notesHeading": "Notas",
     "fillOneField": "Preenche pelo menos um campo antes de guardares.",
     "expiryNeedsBoth": "A validade precisa de mês e ano, ou deixa os dois em branco."
+  },
+  "fileTypes": {
+    "audio": "Áudio",
+    "video": "Vídeo",
+    "image": "Imagem",
+    "pdf": "PDF",
+    "archive": "Arquivo",
+    "document": "Documento",
+    "spreadsheet": "Folha de cálculo",
+    "file": "Ficheiro",
+    "audioRecording": "Gravação de áudio",
+    "pdfDocument": "Documento PDF",
+    "attachment": "Anexo"
+  },
+  "noteRow": {
+    "noUsername": "Sem nome de utilizador",
+    "noCardholder": "Sem titular",
+    "noLabel": "Sem etiqueta",
+    "files_one": "{{count}} ficheiro",
+    "files_other": "{{count}} ficheiros"
   },
   "tagsRail": {
     "showAllItems": "Mostrar todos os itens",

@@ -29,10 +29,26 @@
     "pinFourDigits": "PIN musi mieć 4 cyfry.",
     "pinsDoNotMatch": "PIN-y nie są zgodne."
   },
+  "timeout": {
+    "min1": "1 minuta",
+    "min5": "5 minut",
+    "min15": "15 minut",
+    "min30": "30 minut",
+    "hour1": "1 godzina",
+    "hour4": "4 godziny",
+    "hour8": "8 godzin",
+    "hour12": "12 godzin",
+    "browserRestart": "Po ponownym uruchomieniu przeglądarki"
+  },
+  "pinInfo": {
+    "title": "Wymagaj PIN-u do podglądu",
+    "body": "Gdy ta opcja jest włączona, PIN jest wymagany za każdym razem, gdy otwierasz ten element, nawet jeśli aplikacja jest już odblokowana. Używaj jej do wrażliwych elementów, które mają pozostać chronione, gdy odchodzisz od urządzenia.",
+    "gotIt": "Rozumiem"
+  },
   "removePinDialog": {
     "title": "Usuń PIN",
     "introWithBio": "Wpisz obecny PIN, aby potwierdzić usunięcie. Odblokowanie biometryczne pozostanie aktywne, ale Twoim jedynym zapasowym sposobem będzie fraza odzyskiwania.",
-    "introNoBio": "Wpisz obecny PIN, aby potwierdzić usunięcie. Widok frazy nie będzie już chroniony.",
+    "introNoBio": "Wpisz obecny PIN, aby potwierdzić usunięcie. Ekran frazy odzyskiwania będzie się potem otwierał bez PIN-u.",
     "verifying": "Weryfikowanie...",
     "removePin": "Usuń PIN"
   },
@@ -102,9 +118,11 @@
     "enable": "Włącz odblokowanie biometryczne",
     "lockOnOpen": "Blokuj aplikację przy uruchomieniu",
     "lockOnOpenHint": "Wymagaj biometrii lub PIN-u przy otwieraniu aplikacji.",
-    "confirmPinForLock": "Wpisz swój PIN raz, aby to włączyć. Zamyka on kopię Twojej frazy odzyskiwania, więc tylko Twój PIN może otworzyć aplikację.",
+    "lockNeedsCredential": "Blokada aplikacji wymaga PIN-u lub odblokowania biometrycznego na tym urządzeniu.",
+    "setUpPin": "Ustaw PIN",
+    "confirmPinForLock": "Wpisz swój PIN, aby to włączyć. Zamyka on kopię Twojej frazy odzyskiwania, więc tylko Twój PIN może otworzyć aplikację.",
     "relockAfter": "Zablokuj ponownie po",
-    "relockHint": "Dotyczy ekranu blokady aplikacji i wszystkich notatek chronionych PIN-em.",
+    "relockHint": "Dotyczy tylko ekranu blokady aplikacji.",
     "perDeviceNote": "Odblokowanie biometryczne otwiera te same notatki co PIN. Zostaje na tym urządzeniu i nigdy się nie synchronizuje.",
     "disableConfirmTitle": "Wyłącz biometrię",
     "disableConfirmLabel": "Wyłącz",

@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "Todos",
-    "notes": "Notas",
-    "tasks": "Tareas",
-    "vault": "Bóveda",
-    "files": "Archivos",
-    "journals": "Diarios",
-    "pinned": "Fijadas",
     "trash": "Papelera",
-    "markdown": "Markdown",
     "bookmarks": "Marcadores",
     "contacts": "Contactos"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Opciones de orden",
     "searchPlaceholder": "Buscar archivos…",
     "sortName": "Nombre",
-    "showNotesWithAttachments": "Mostrar notas con adjuntos",
+    "showNotesWithAttachments": "Mostrar archivos dentro de las notas",
     "noMatches": "Sin coincidencias.",
     "pinProtected": "Protegido con PIN",
     "readOnly": "Solo lectura",
@@ -78,10 +70,11 @@
     "menuImages": "Imágenes",
     "menuAudio": "Audio",
     "menuDocuments": "Documentos",
-    "menuHideNoteAttachments": "Ocultar adjuntos de notas",
-    "menuShowNoteAttachments": "Mostrar adjuntos de notas",
+    "menuHideNoteAttachments": "Ocultar archivos dentro de las notas",
+    "menuShowNoteAttachments": "Mostrar archivos dentro de las notas",
     "menuUnpin": "Dejar de fijar",
     "menuPin": "Fijar",
+    "menuRename": "Cambiar nombre",
     "menuMoveToTrash": "Mover a la papelera"
   },
   "vaultItem": {
@@ -116,6 +109,26 @@
     "notesHeading": "Notas",
     "fillOneField": "Rellena al menos un campo antes de guardar.",
     "expiryNeedsBoth": "El vencimiento necesita mes y año, o deja ambos vacíos."
+  },
+  "fileTypes": {
+    "audio": "Audio",
+    "video": "Vídeo",
+    "image": "Imagen",
+    "pdf": "PDF",
+    "archive": "Comprimido",
+    "document": "Documento",
+    "spreadsheet": "Hoja de cálculo",
+    "file": "Archivo",
+    "audioRecording": "Grabación de audio",
+    "pdfDocument": "Documento PDF",
+    "attachment": "Archivo adjunto"
+  },
+  "noteRow": {
+    "noUsername": "Sin nombre de usuario",
+    "noCardholder": "Sin titular",
+    "noLabel": "Sin etiqueta",
+    "files_one": "{{count}} archivo",
+    "files_other": "{{count}} archivos"
   },
   "tagsRail": {
     "showAllItems": "Mostrar todos los elementos",

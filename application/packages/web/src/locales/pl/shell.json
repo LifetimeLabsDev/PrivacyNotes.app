@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "Wszystkie",
-    "notes": "Notatki",
-    "tasks": "Zadania",
-    "vault": "Sejf",
-    "files": "Pliki",
-    "journals": "Dzienniki",
-    "pinned": "Przypięte",
     "trash": "Kosz",
-    "markdown": "Markdown",
     "bookmarks": "Zakładki",
     "contacts": "Kontakty"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Opcje sortowania",
     "searchPlaceholder": "Szukaj plików…",
     "sortName": "Nazwa",
-    "showNotesWithAttachments": "Pokaż notatki z załącznikami",
+    "showNotesWithAttachments": "Pokaż pliki w notatkach",
     "noMatches": "Brak dopasowań.",
     "pinProtected": "Chronione PIN-em",
     "readOnly": "Tylko do odczytu",
@@ -78,10 +70,11 @@
     "menuImages": "Obrazy",
     "menuAudio": "Dźwięk",
     "menuDocuments": "Dokumenty",
-    "menuHideNoteAttachments": "Ukryj załączniki notatek",
-    "menuShowNoteAttachments": "Pokaż załączniki notatek",
+    "menuHideNoteAttachments": "Ukryj pliki w notatkach",
+    "menuShowNoteAttachments": "Pokaż pliki w notatkach",
     "menuUnpin": "Odepnij",
     "menuPin": "Przypnij",
+    "menuRename": "Zmień nazwę",
     "menuMoveToTrash": "Przenieś do kosza"
   },
   "vaultItem": {
@@ -116,6 +109,28 @@
     "notesHeading": "Notatki",
     "fillOneField": "Wypełnij co najmniej jedno pole przed zapisaniem.",
     "expiryNeedsBoth": "Data ważności wymaga miesiąca i roku, albo zostaw oba puste."
+  },
+  "fileTypes": {
+    "audio": "Audio",
+    "video": "Wideo",
+    "image": "Obraz",
+    "pdf": "PDF",
+    "archive": "Archiwum",
+    "document": "Dokument",
+    "spreadsheet": "Arkusz",
+    "file": "Plik",
+    "audioRecording": "Nagranie audio",
+    "pdfDocument": "Dokument PDF",
+    "attachment": "Załącznik"
+  },
+  "noteRow": {
+    "noUsername": "Brak nazwy użytkownika",
+    "noCardholder": "Brak posiadacza karty",
+    "noLabel": "Brak etykiety",
+    "files_one": "{{count}} plik",
+    "files_few": "{{count}} pliki",
+    "files_many": "{{count}} plików",
+    "files_other": "{{count}} pliku"
   },
   "tagsRail": {
     "showAllItems": "Pokaż wszystkie elementy",

@@ -151,7 +151,9 @@ function colorOf(el: Element, style: string): string | null {
   const c = raw.trim().toLowerCase();
   if (!c) return null;
   if (COLOR_OK.test(c)) return c;
-  return NAMED_COLORS[c] ?? null;
+  // Own property only: the name comes out of the export, and an inherited one
+  // answers with a function that `?? null` cannot see.
+  return Object.hasOwn(NAMED_COLORS, c) ? NAMED_COLORS[c]! : null;
 }
 
 /** Extension for a resource that has no filename, derived from its MIME. */

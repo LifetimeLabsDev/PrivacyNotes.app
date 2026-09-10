@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "Co dokładnie synchronizuje się między urządzeniami, a co zostaje lokalnie?",
       "a": [
-        "Wszystko, czego byś się spodziewał, w całości szyfrowane na Twoim urządzeniu przed synchronizacją: notatki, zadania, wpisy w dzienniku, Twój sejf i zaszyfrowane pliki w nim. Ustawienia też idą za Tobą - ulubione tagi, preferencje sortowania i widoku, motyw kolorystyczny, Twój PIN (jako solony skrót, nigdy sam PIN), blokada aplikacji, konfiguracja trackerów i leków oraz automatyczne czyszczenie kosza. Ustaw coś raz, a każde urządzenie to podchwyci.",
+        "Wszystko, czego byś się spodziewał, i wszystko to zaszyfrowane na Twoim urządzeniu: notatki, zadania, wpisy w dzienniku, Twój sejf i pliki w nim. Ustawienia też idą za Tobą - ulubione tagi, preferencje sortowania i widoku, motyw kolorystyczny, Twój PIN (jako solony skrót, nigdy sam PIN), blokada aplikacji, konfiguracja trackerów i leków oraz automatyczne czyszczenie kosza. Ustaw coś raz, a każde urządzenie to podchwyci.",
         "Kilka rzeczy zostaje celowo lokalnie: tryb jasny lub ciemny (każde urządzenie idzie za własnym ustawieniem systemowym), odblokowanie biometryczne (powiązane ze sprzętem każdego urządzenia) oraz stan odblokowania (zamknięcie aplikacji zawsze blokuje ją ponownie). Serwer przechowuje wyłącznie zaszyfrowane bloby i nie potrafi odczytać z nich niczego."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Tak. Zakładki to osobny filar na pasku bocznym, obok notatek, zadań i dzienników, i są bezpłatne w każdym planie. Wklej link w pasku szybkiego dodawania, żeby zapisać jedną. Swoje dotychczasowe przeniesiesz tak: wyeksportuj z przeglądarki plik zakładek (.html) i upuść go w Ustawienia > Import & Export > Import > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave i Vivaldi zawierają ten sam plik, a foldery i daty przychodzą razem z nim. Safari pakuje go do .zip, który możesz upuścić bez rozpakowywania.",
         "Twoje adresy nigdy nie opuszczają urządzenia: nie pobieramy strony kryjącej się za linkiem, i dlatego zakładka dodana ręcznie nosi swoją domenę jako nazwę, dopóki jej nie wpiszesz. Ikony stron to jedyny wyjątek i możesz je wyłączyć. Eksport zapisuje ten sam standardowy plik, więc zakładki wychodzą równie łatwo, jak weszły ([poradnik importu](/pl/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "Czy mogę prowadzić książkę adresową w PrivacyNotes?",
+      "a": [
+        "Tak. Kontakty to osobny filar na pasku bocznym, obok notatek, zadań i dzienników, i są bezpłatne w każdym planie. Jeden kontakt mieści imiona i nazwiska, numery, adresy e-mail, adresy, strony, daty, firmę i notatkę. Dotknij numeru, żeby zadzwonić, adresu e-mail, żeby napisać, albo dowolnego wiersza, żeby go skopiować. Wszystko inne, co telefon wpisał do pliku, zostaje pod **Również w tym pliku** i wraca przy eksporcie.",
+        "Swoje dotychczasowe przeniesiesz tak: wyeksportuj wizytówkę vCard (.vcf) z telefonu, Maca albo z Google Contacts i upuść ją w Ustawienia > Import & Export > Import > \"Contacts (vCard)\". Jeśli później upuścisz ten sam plik jeszcze raz, osoby już zapisane zostaną rozpoznane, a nie zdublowane. Eksport zapisuje zwykłą wizytówkę vCard, więc książka adresowa wychodzi tak łatwo, jak weszła ([więcej o imporcie](/pl/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "Co warto trzymać w Zakładkach, Kontaktach i Sejfie?",
+      "a": [
+        "Te części życia, które nie pasują do profilu przeglądarki ani do książki adresowej w telefonie. Zakładki, kontakty i sejf stoją obok tych, które przeglądarka i telefon i tak synchronizują z Google, Apple albo Mozillą, i trzymają to, co wolisz stamtąd wyłączyć. Wszystkie trzy są bezpłatne w każdym planie.",
+        "- Linki o zdrowiu, pieniądzach, prawie albo szukaniu pracy, na komputerze dzielonym z kimś\n- Materiały do jednego tematu, razem, a nie zagubione wśród tysięcy zakładek przeglądarki\n- Lekarka, prawnik, właściciel mieszkania i rekruter, poza książką adresową synchronizowaną z iCloud albo Google\n- Kontakt razem z kontekstem: twoje notatki, daty, plik, który przysłał\n- Frazy odzyskiwania, klucze licencyjne, kody do sejfu i numery paszportów, czyli sekrety, które nie są loginami\n- Te kilka danych logowania, których nigdy nie chcesz w rozszerzeniu przeglądarki",
+        "Każdy z nich to wiersz na pasku bocznym. Jeśli któregoś brakuje, otwórz opcje paska bocznego nad tagami i włącz **Pokaż na pasku bocznym**. Swoje dotychczasowe wciągniesz z pliku i tak samo je stamtąd wyjmiesz ([zakładki](/pl/help/bookmarks/), [kontakty](/pl/help/contacts/), [sejf](/pl/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

@@ -1,26 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { usePopoverPosition } from '../usePopoverPosition';
-import { useEscapeToClose } from '../useEscapeToClose';
-import { PILLAR_GLYPHS, List, CaretDown } from '../icons';
+import { ViewMenu } from '../ViewMenu';
+import { switcherViewRows } from '../viewRows';
+import { List, CaretDown } from '../icons';
 
 import { isViewShown, type View } from '../views';
-
-// 'markdown' is deliberately absent: this switcher is the below-lg (phone and
-// small tablet) pillar picker, and the Markdown pillar needs a filesystem API
-// no mobile platform has. Offering it here would advertise a view whose only
-// possible content is an explanation of why it cannot work.
-const PILL_VIEWS: { key: View; labelKey: string; icon: React.JSX.Element }[] = [
-  { key: 'home', labelKey: 'pillars.allItems', icon: <PILLAR_GLYPHS.all size={16} /> },
-  { key: 'all', labelKey: 'pillars.notes', icon: <PILLAR_GLYPHS.notes size={16} /> },
-  { key: 'tasks', labelKey: 'pillars.tasks', icon: <PILLAR_GLYPHS.tasks size={16} /> },
-  { key: 'vault', labelKey: 'pillars.vault', icon: <PILLAR_GLYPHS.vault size={16} /> },
-  { key: 'files', labelKey: 'pillars.files', icon: <PILLAR_GLYPHS.files size={16} /> },
-  { key: 'journal', labelKey: 'pillars.journals', icon: <PILLAR_GLYPHS.journals size={16} /> },
-  { key: 'contacts', labelKey: 'pillars.contacts', icon: <PILLAR_GLYPHS.contacts size={16} /> },
-  { key: 'bookmarks', labelKey: 'pillars.bookmarks', icon: <PILLAR_GLYPHS.bookmarks size={16} /> },
-];
 
 /**
  * The left-hand cluster of a list pane's h-14 title row: drawer button, view
@@ -65,27 +50,7 @@ export function ListNav({
 }) {
   const { t } = useTranslation('shell');
   const [open, setOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const dropdownPos = usePopoverPosition(open, buttonRef, dropdownRef, { align: 'start', gap: 6 });
-
-  // Escape / Android back dismiss the dropdown via the shared overlay
-  // stack (ui-patterns.md rule 4).
-  useEscapeToClose(() => setOpen(false), open);
-
-  useEffect(() => {
-    if (!open) return;
-    function handleClick(e: PointerEvent) {
-      if (
-        dropdownRef.current && !dropdownRef.current.contains(e.target as Node) &&
-        buttonRef.current && !buttonRef.current.contains(e.target as Node)
-      ) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener('pointerdown', handleClick);
-    return () => document.removeEventListener('pointerdown', handleClick);
-  }, [open]);
 
   return (
     <div className="flex items-center gap-2 min-w-0 text-neutral-900 dark:text-white">
@@ -112,30 +77,13 @@ export function ListNav({
         <CaretDown className={`lg:hidden shrink-0 text-neutral-500 dark:text-neutral-400 transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div
-          ref={dropdownRef}
-          className="fixed bg-surface-2 border border-divider rounded-xl shadow-lg py-1 min-w-[140px] z-[9999]"
-          style={{
-            top: dropdownPos?.top ?? 0,
-            left: dropdownPos?.left ?? 0,
-            visibility: dropdownPos ? 'visible' : 'hidden',
-          }}
-        >
-          {PILL_VIEWS.filter((p) => isViewShown(p.key, hiddenViews, view)).map(({ key, labelKey, icon: pillIcon }) => (
-            <button
-              key={key}
-              onClick={() => { onSelectView(key); setOpen(false); }}
-              className={`flex items-center gap-2 w-full px-3 py-2 text-sm transition-colors ${
-                view === key
-                  ? 'text-accent bg-accent/10'
-                  : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800'
-              }`}
-            >
-              <span className="shrink-0">{pillIcon}</span>
-              {t(labelKey)}
-            </button>
-          ))}
-        </div>
+        <ViewMenu
+          rows={switcherViewRows(t).filter((r) => isViewShown(r.key, hiddenViews, view))}
+          current={view}
+          onPick={onSelectView}
+          anchorRef={buttonRef}
+          onClose={() => setOpen(false)}
+        />
       )}
     </div>
   );

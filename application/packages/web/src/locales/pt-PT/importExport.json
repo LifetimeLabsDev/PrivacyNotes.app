@@ -57,13 +57,20 @@
     "bitwarden": "Exportação .json não cifrada do Bitwarden (Tools > Export vault > .json). Credenciais, cartões, chaves SSH, notas seguras e códigos TOTP vêm todos.",
     "browserPasswords": "O ficheiro de palavras-passe (.csv) do Chrome, Edge, Brave, Opera, Vivaldi, Firefox ou Safari, ou o .zip que o Safari escreve. Cada linha passa a ser uma credencial. Apaga o ficheiro quando acabares - tem as tuas palavras-passe em texto simples."
   },
+  "sourceLabel": {
+    "privacynotes": "Cópia de segurança completa do PrivacyNotes",
+    "browserBookmarks": "Marcadores do navegador",
+    "browserPasswords": "Palavras-passe do navegador",
+    "vcard": "Contactos (vCard)",
+    "markdownFolder": "Ficheiros Markdown"
+  },
   "vaultPick": {
     "intro": "Importa logins, cartões de crédito e chaves SSH de outro gestor de palavras-passe."
   },
   "restorePick": {
     "intro": "Restaura um backup do PrivacyNotes que exportaste antes. O teu ficheiro é lido e desencriptado localmente.",
     "fullBackupTitle": "Backup completo (.zip)",
-    "fullBackupDesc": "Restaura notas, diários, itens do cofre, tarefas, imagens, áudio e ficheiros. Tudo é importado como itens novos - os dados existentes não são substituídos.",
+    "fullBackupDesc": "Restaura notas, diários, itens do cofre, tarefas, imagens, áudio e ficheiros. Uma nota que já tens é mantida, ou atualizada se o backup tiver uma versão mais recente dela.",
     "encryptedBackupTitle": "Backup encriptado (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Restaura um backup encriptado com a chave da tua frase. Um .pnbackupz traz tudo de volta, ficheiros incluídos; um .pnbackup contém apenas texto e metadados. Tens de ter sessão iniciada com a mesma conta que o criou."
   },

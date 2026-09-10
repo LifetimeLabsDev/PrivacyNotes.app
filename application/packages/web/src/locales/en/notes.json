@@ -99,7 +99,8 @@
     "importedSyncing_one": "Imported {{count}} note. Syncing…",
     "importedSyncing_other": "Imported {{count}} notes. Syncing…",
     "addedTag_one": "Added #{{tag}} to {{count}} item",
-    "addedTag_other": "Added #{{tag}} to {{count}} items"
+    "addedTag_other": "Added #{{tag}} to {{count}} items",
+    "restoreSummary": "Restored. {{added}} added, {{updated}} updated, {{unchanged}} already up to date."
   },
   "burn": {
     "mediaOnly": "This note only contains media and can't be shared via burn link.",

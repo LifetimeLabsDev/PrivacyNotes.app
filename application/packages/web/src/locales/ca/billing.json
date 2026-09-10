@@ -19,6 +19,7 @@
       "callout": "El conjunt complet de requadres destacats és una funció Pro.",
       "totp": "Els codis 2FA són una funció Pro. Desa una clau d'autenticació a qualsevol inici de sessió i tindràs el codi rotatiu al costat de la contrasenya. La clau es desa i se sincronitza en tots els plans.",
       "replace": "Cerca i substitueix és una funció Pro. Millora per substituir una coincidència o totes les d'una nota d'un sol cop.",
+      "passphrase": "Les frases de pas són una funció Pro. Genera una frase de paraules a l'atzar, fàcil d'escriure i de dir.",
       "default": "Una sola millora desbloqueja tot això. Pagament únic."
     },
     "features": {

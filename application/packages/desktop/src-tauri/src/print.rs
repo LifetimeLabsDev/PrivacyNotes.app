@@ -20,9 +20,17 @@
 //! hierarchy rather than left detached. WebKit throttles a web view that belongs
 //! to no window, and the print path needs a laid-out document; the app's opaque
 //! root view covers it, so it is never visible. It is torn down as soon as the
-//! print UI is finished with it, which is why macOS runs the panel app-modally
-//! (`runOperation` returns when the user is done) and iOS does its cleanup in
-//! the print controller's completion block.
+//! print UI is finished with it, which on both platforms means a completion
+//! callback: `printOperationDidRun:success:contextInfo:` on macOS, the print
+//! controller's completion block on iOS.
+//!
+//! Both platforms therefore run the print UI asynchronously, and on macOS that
+//! is a correctness requirement rather than a style. A WKWebView draws its pages
+//! from replies sent by the web content process, so a call that blocks the main
+//! thread until the user is done never receives them and every page comes out
+//! empty - while the panel's own preview, drawn before the thread is blocked,
+//! shows the document in full. `runOperationModalForWindow:` keeps the main
+//! thread running, which is what puts ink on the page.
 
 use block2::RcBlock;
 use objc2::rc::Retained;
@@ -30,8 +38,12 @@ use objc2::runtime::{AnyClass, AnyObject, Bool};
 use objc2::msg_send;
 #[cfg(target_os = "macos")]
 use objc2::sel;
+#[cfg(target_os = "macos")]
+use objc2::{AnyThread, DefinedClass};
 use objc2_foundation::{NSPoint, NSRect, NSSize, NSString};
 use std::cell::Cell;
+#[cfg(target_os = "macos")]
+use std::cell::RefCell;
 
 /// A4 at 96dpi. Only the initial layout: both print paths re-lay the document
 /// out for whatever paper the user picks in the print UI.
@@ -90,7 +102,8 @@ fn build_webview() -> Option<Retained<AnyObject>> {
 /// Polls `isLoading` until the document settles, then prints. A repeating
 /// `NSTimer` rather than a navigation delegate: the block-based timer keeps
 /// every reference on the main thread, where they all have to live anyway, and
-/// saves defining an Objective-C delegate class for one callback.
+/// a block carries the captured webview that a delegate class would need an
+/// ivar for.
 fn print_when_loaded(webview: Retained<AnyObject>, job_name: String) {
     let Some(class) = AnyClass::get(c"NSTimer") else {
         return;
@@ -154,6 +167,16 @@ fn attach(webview: &AnyObject) {
 /// (on iOS) under some scene setups, hence the fallbacks.
 #[cfg(target_os = "macos")]
 fn host_view() -> Option<Retained<AnyObject>> {
+    let window = host_window()?;
+    unsafe {
+        let view: *mut AnyObject = msg_send![&*window, contentView];
+        Retained::retain(view)
+    }
+}
+
+/// The window the print sheet hangs off.
+#[cfg(target_os = "macos")]
+fn host_window() -> Option<Retained<AnyObject>> {
     let class = AnyClass::get(c"NSApplication")?;
     unsafe {
         let app: Retained<AnyObject> = msg_send![class, sharedApplication];
@@ -161,11 +184,7 @@ fn host_view() -> Option<Retained<AnyObject>> {
         if window.is_null() {
             window = msg_send![&*app, mainWindow];
         }
-        if window.is_null() {
-            return None;
-        }
-        let view: *mut AnyObject = msg_send![window, contentView];
-        Retained::retain(view)
+        Retained::retain(window)
     }
 }
 
@@ -185,10 +204,15 @@ fn host_view() -> Option<Retained<AnyObject>> {
     }
 }
 
-/// macOS: the standard print panel, run app-modally. Its "PDF" menu is the
-/// "Save as PDF" half of what the menu item promises, so one panel covers both.
+/// macOS: the standard print panel, as a sheet on the app's window. Its "PDF"
+/// menu is the "Save as PDF" half of what the menu item promises, so one panel
+/// covers both.
 #[cfg(target_os = "macos")]
 fn present(webview: Retained<AnyObject>, job_name: &str) {
+    let Some(window) = print_window(&webview) else {
+        eprintln!("print: the app has no window to hang the print sheet on");
+        return;
+    };
     unsafe {
         // printOperationWithPrintInfo: is macOS 11+. Below that there is no
         // supported way to print a WKWebView, and nothing to fall back to.
@@ -212,12 +236,85 @@ fn present(webview: Retained<AnyObject>, job_name: &str) {
         let operation: Retained<AnyObject> = msg_send![&*webview, printOperationWithPrintInfo: &*info];
         let title = NSString::from_str(job_name);
         let _: () = msg_send![&*operation, setJobTitle: &*title];
-        // Blocks until the user prints or cancels, which is what makes the
-        // teardown below safe to do inline.
-        let _: Bool = msg_send![&*operation, runOperation];
 
-        let _: () = msg_send![&*webview, removeFromSuperview];
+        let done = PrintDone::new(webview);
+        remember(&done);
+        let _: () = msg_send![
+            &*operation,
+            runOperationModalForWindow: &*window,
+            delegate: &*done,
+            didRunSelector: sel!(printOperationDidRun:success:contextInfo:),
+            contextInfo: std::ptr::null_mut::<std::ffi::c_void>(),
+        ];
     }
+}
+
+/// The window to attach the sheet to: the one the webview was parented into,
+/// and the app's own if parenting found nowhere to put it.
+#[cfg(target_os = "macos")]
+fn print_window(webview: &AnyObject) -> Option<Retained<AnyObject>> {
+    let attached: *mut AnyObject = unsafe { msg_send![webview, window] };
+    unsafe { Retained::retain(attached) }.or_else(host_window)
+}
+
+#[cfg(target_os = "macos")]
+objc2::define_class!(
+    // SAFETY: NSObject has no subclassing requirements, and PrintDone
+    // implements no Drop of its own.
+    #[unsafe(super(objc2_foundation::NSObject))]
+    #[ivars = RefCell<Option<Retained<AnyObject>>>]
+    /// Unparents the throwaway webview once the print UI is finished with it.
+    ///
+    /// AppKit does not retain a `didRunSelector` target, so every instance is
+    /// held in `PENDING` until its callback has run. It is not dropped inside
+    /// its own callback: that would free the object mid-method. The next print
+    /// sweeps the finished ones instead, so at most one spent instance is alive
+    /// at a time, and it holds nothing but itself - the note's rendered copy is
+    /// released the moment the callback takes it out.
+    struct PrintDone;
+
+    impl PrintDone {
+        #[unsafe(method(printOperationDidRun:success:contextInfo:))]
+        fn did_run(
+            &self,
+            _operation: *mut AnyObject,
+            _success: Bool,
+            _context: *mut std::ffi::c_void,
+        ) {
+            if let Some(webview) = self.ivars().borrow_mut().take() {
+                unsafe {
+                    let _: () = msg_send![&*webview, removeFromSuperview];
+                }
+            }
+        }
+    }
+);
+
+#[cfg(target_os = "macos")]
+impl PrintDone {
+    fn new(webview: Retained<AnyObject>) -> Retained<Self> {
+        let this = Self::alloc().set_ivars(RefCell::new(Some(webview)));
+        unsafe { msg_send![super(this), init] }
+    }
+
+    /// True while this instance still owns a webview, i.e. before its callback.
+    fn pending(&self) -> bool {
+        self.ivars().borrow().is_some()
+    }
+}
+
+#[cfg(target_os = "macos")]
+thread_local! {
+    static PENDING: RefCell<Vec<Retained<PrintDone>>> = const { RefCell::new(Vec::new()) };
+}
+
+#[cfg(target_os = "macos")]
+fn remember(done: &Retained<PrintDone>) {
+    PENDING.with(|pending| {
+        let mut pending = pending.borrow_mut();
+        pending.retain(|d| d.pending());
+        pending.push(done.clone());
+    });
 }
 
 /// iOS: the system print sheet. Presentation is asynchronous, so the webview has

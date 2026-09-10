@@ -29,10 +29,26 @@
     "pinFourDigits": "De PIN moet uit 4 cijfers bestaan.",
     "pinsDoNotMatch": "De PIN-codes komen niet overeen."
   },
+  "timeout": {
+    "min1": "1 minuut",
+    "min5": "5 minuten",
+    "min15": "15 minuten",
+    "min30": "30 minuten",
+    "hour1": "1 uur",
+    "hour4": "4 uur",
+    "hour8": "8 uur",
+    "hour12": "12 uur",
+    "browserRestart": "Bij herstart van de browser"
+  },
+  "pinInfo": {
+    "title": "PIN vereisen om te bekijken",
+    "body": "Als dit aanstaat, wordt je PIN elke keer gevraagd als je dit item opent, ook als de app al ontgrendeld is. Gebruik het voor gevoelige items die beschermd moeten blijven als je even wegloopt.",
+    "gotIt": "Begrepen"
+  },
   "removePinDialog": {
     "title": "PIN verwijderen",
     "introWithBio": "Voer je huidige PIN in om het verwijderen te bevestigen. Biometrisch ontgrendelen blijft actief, maar je enige terugvaloptie wordt dan je herstelzin.",
-    "introNoBio": "Voer je huidige PIN in om het verwijderen te bevestigen. Je herstelzin is dan niet meer afgeschermd.",
+    "introNoBio": "Voer je huidige PIN in om het verwijderen te bevestigen. Je herstelzin gaat daarna open zonder PIN.",
     "verifying": "Controleren...",
     "removePin": "PIN verwijderen"
   },
@@ -102,9 +118,11 @@
     "enable": "Biometrisch ontgrendelen inschakelen",
     "lockOnOpen": "App vergrendelen bij openen",
     "lockOnOpenHint": "Vraag om biometrie of een PIN bij het openen van de app.",
-    "confirmPinForLock": "Voer je PIN één keer in om dit aan te zetten. Die vergrendelt een kopie van je herstelzin, zodat alleen je PIN de app kan openen.",
+    "lockNeedsCredential": "De app-vergrendeling heeft op dit apparaat een PIN of biometrisch ontgrendelen nodig.",
+    "setUpPin": "PIN instellen",
+    "confirmPinForLock": "Voer je PIN in om dit aan te zetten. Die vergrendelt een kopie van je herstelzin, zodat alleen je PIN de app kan openen.",
     "relockAfter": "Opnieuw vergrendelen na",
-    "relockHint": "Geldt voor het vergrendelscherm van de app en alle notities met PIN-beveiliging.",
+    "relockHint": "Geldt alleen voor het vergrendelscherm van de app.",
     "perDeviceNote": "Biometrisch ontgrendelen opent dezelfde notities als je PIN. Het blijft op dit apparaat en synchroniseert nooit.",
     "disableConfirmTitle": "Biometrie uitschakelen",
     "disableConfirmLabel": "Uitschakelen",

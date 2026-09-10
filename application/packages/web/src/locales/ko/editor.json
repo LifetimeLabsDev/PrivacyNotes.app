@@ -153,8 +153,11 @@
     "textLabel": "링크 텍스트",
     "textPlaceholder": "선택 사항, 비우면 URL이 표시돼요",
     "selectedTextHint": "선택한 텍스트가 링크로 사용돼요",
-    "editTextHint": "링크 텍스트는 편집기에서 수정하세요",
-    "update": "업데이트"
+    "update": "업데이트",
+    "menuOpen": "링크 열기",
+    "menuCopy": "링크 복사",
+    "menuEdit": "링크 편집",
+    "menuRemove": "링크 제거"
   },
   "audio": {
     "uploadingRecording": "녹음 업로드 중...",
@@ -182,6 +185,9 @@
     "copy": "복사",
     "copied": "복사됨",
     "copyFailed": "실패"
+  },
+  "math": {
+    "sourceLabel": "LaTeX 소스"
   },
   "noteLink": {
     "open": "노트 열기",

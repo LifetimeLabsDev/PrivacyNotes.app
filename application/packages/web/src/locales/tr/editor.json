@@ -154,8 +154,11 @@
     "textLabel": "Bağlantı metni",
     "textPlaceholder": "İsteğe bağlı, URL'yi göstermek için boş bırakın",
     "selectedTextHint": "Seçili metin bağlantı olarak kullanılacak",
-    "editTextHint": "Bağlantı metnini düzenleyicide düzenleyin",
-    "update": "Güncelle"
+    "update": "Güncelle",
+    "menuOpen": "Bağlantıyı aç",
+    "menuCopy": "Bağlantıyı kopyala",
+    "menuEdit": "Bağlantıyı düzenle",
+    "menuRemove": "Bağlantıyı kaldır"
   },
   "audio": {
     "uploadingRecording": "Kayıt yükleniyor...",
@@ -185,6 +188,9 @@
     "copy": "Kopyala",
     "copied": "Kopyalandı",
     "copyFailed": "Başarısız"
+  },
+  "math": {
+    "sourceLabel": "LaTeX kodu"
   },
   "noteLink": {
     "open": "Notu aç",

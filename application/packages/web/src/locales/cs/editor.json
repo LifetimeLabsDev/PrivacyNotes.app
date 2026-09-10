@@ -156,8 +156,11 @@
     "textLabel": "Text odkazu",
     "textPlaceholder": "Nepovinné, nech prázdné a zobrazí se URL",
     "selectedTextHint": "Jako odkaz se použije vybraný text",
-    "editTextHint": "Text odkazu uprav v editoru",
-    "update": "Uložit"
+    "update": "Uložit",
+    "menuOpen": "Otevřít odkaz",
+    "menuCopy": "Kopírovat odkaz",
+    "menuEdit": "Upravit odkaz",
+    "menuRemove": "Odstranit odkaz"
   },
   "audio": {
     "uploadingRecording": "Odesílám nahrávku...",
@@ -191,6 +194,9 @@
     "copy": "Kopírovat",
     "copied": "Zkopírováno",
     "copyFailed": "Nepovedlo se"
+  },
+  "math": {
+    "sourceLabel": "Kód LaTeX"
   },
   "noteLink": {
     "open": "Otevřít poznámku",

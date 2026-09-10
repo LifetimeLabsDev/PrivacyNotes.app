@@ -101,7 +101,8 @@
     "addedTag_one": "S'ha afegit #{{tag}} a {{count}} element",
     "addedTag_other": "S'ha afegit #{{tag}} a {{count}} elements",
     "importedSyncing_many": "S'han importat {{count}} notes. S'estan sincronitzant…",
-    "addedTag_many": "S'ha afegit #{{tag}} a {{count}} elements"
+    "addedTag_many": "S'ha afegit #{{tag}} a {{count}} elements",
+    "restoreSummary": "Restaurat. {{added}} afegides, {{updated}} actualitzades, {{unchanged}} ja al dia."
   },
   "burn": {
     "mediaOnly": "Aquesta nota només conté fitxers multimèdia i no es pot compartir amb un enllaç burn.",

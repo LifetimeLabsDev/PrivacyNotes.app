@@ -19,6 +19,7 @@
       "callout": "Kompletní sada calloutů je funkce Pro.",
       "totp": "Kódy 2FA jsou funkce Pro. Ulož ověřovací klíč k libovolným přihlašovacím údajům a měnící se kód uvidíš hned vedle hesla. Samotný klíč se ukládá a synchronizuje ve všech tarifech.",
       "replace": "Najít a nahradit je funkce Pro. Přejdi na Pro a nahraď jeden výskyt nebo všechny výskyty v poznámce najednou.",
+      "passphrase": "Přístupové fráze jsou funkce Pro. Vygeneruj frázi z náhodných slov, která se snadno píše i říká.",
       "default": "Jeden přechod na Pro odemkne všechno níže. Jednorázová platba."
     },
     "features": {

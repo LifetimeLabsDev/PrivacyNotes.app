@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from '../useEscapeToClose';
 import {
+  buildPinWrap,
   hasBiometricCredential,
   hasPinWrappedPhrase,
   removeStoredPhrase,
@@ -13,6 +14,7 @@ import {
   getPinLockoutState,
   hasPin,
   markPinUnlocked,
+  pinChangeNeedsWrap,
   recordPinFailure,
   setPin as storePin,
   verifyPin,
@@ -26,9 +28,9 @@ import type { UserSettings } from '../userSettings';
 import { TIMEOUT_OPTIONS } from './timeoutOptions';
 
 /**
- * PIN tab - set, change, or remove a 4-digit PIN inline. Shares the
- * re-lock timeout selector with the Biometric tab so the user has one
- * setting governing both gates.
+ * PIN tab - set, change, or remove a 4-digit PIN inline, and pick how long
+ * an unlock lasts. That window covers the phrase view and PIN-protected
+ * notes; the app lock screen has its own, in the Biometric tab.
  */
 export function PinTab({
   phrase,
@@ -37,16 +39,22 @@ export function PinTab({
   userSettings,
   onSettingsChange,
   reason,
+  onPinCreated,
 }: {
   phrase: string;
   timeoutMinutes: number;
   onTimeoutChange: (minutes: number) => void;
   userSettings: UserSettings;
-  onSettingsChange: (next: UserSettings) => void;
+  /** `base` is the copy this surface was rendered with; the parent applies
+   *  only the credential keys that differ between it and `next`. */
+  onSettingsChange: (next: UserSettings, base: UserSettings) => void;
   /** Why the user landed here, when it was not their own idea. Protecting
    *  a note opens this tab, and without a word of explanation the demand
    *  for a PIN reads as an arbitrary one. */
   reason?: 'protect';
+  /** A PIN now exists. The parent uses it to return a user who was sent here
+   *  from another tab to create one. */
+  onPinCreated?: () => void;
 }) {
   const { t } = useTranslation('security');
   // Read `hasPin()` once on mount and flip locally on set/remove so the
@@ -97,7 +105,7 @@ export function PinTab({
       if (userSettings.appLockEnabled && isTrustedDevice() && !hasPinWrappedPhrase()) {
         const blob = await wrapPhraseWithPin(phrase, candidate);
         removeStoredPhrase();
-        onSettingsChange({ ...userSettings, ...blob });
+        onSettingsChange({ ...userSettings, ...blob }, userSettings);
       }
       setOldPinVerified(true);
       setOldPin('');
@@ -133,12 +141,22 @@ export function PinTab({
     setBusy(true);
     try {
       const updated = await storePin(pinVal, userSettings);
-      if (updated.appLockEnabled && isTrustedDevice()) {
-        const blob = await wrapPhraseWithPin(phrase, pinVal);
-        removeStoredPhrase();
-        Object.assign(updated, blob);
+      // The wrap follows the hash (pinChangeNeedsWrap). A trusted device
+      // stores the new wrap and, when the lock is on, strips the phrase at
+      // rest so the lock is the only door; the store throws before the strip
+      // if the disk refuses. A device the user marked untrusted builds the
+      // blob in memory only, so the account's wrap follows the new PIN while
+      // this device keeps no copy of it. Pinned by tests/pinChange.test.ts.
+      if (pinChangeNeedsWrap(updated)) {
+        if (isTrustedDevice()) {
+          const blob = await wrapPhraseWithPin(phrase, pinVal);
+          if (updated.appLockEnabled) removeStoredPhrase();
+          Object.assign(updated, blob);
+        } else {
+          Object.assign(updated, await buildPinWrap(phrase, pinVal));
+        }
       }
-      onSettingsChange(updated);
+      onSettingsChange(updated, userSettings);
       // Mark unlocked so the user isn't immediately re-prompted for
       // the PIN they just created.
       markPinUnlocked();
@@ -147,6 +165,7 @@ export function PinTab({
       reset();
       setSavedFlash(true);
       setTimeout(() => setSavedFlash(false), 1800);
+      onPinCreated?.();
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -161,7 +180,7 @@ export function PinTab({
     // App lock is left alone: it is a synced setting and an enrolled
     // fingerprint is not, so removing a PIN here used to switch off a lock
     // another device could still open. clearPin carries the reasoning.
-    onSettingsChange(clearPin(userSettings, phrase));
+    onSettingsChange(clearPin(userSettings, phrase), userSettings);
     setPinExists(false);
     setOldPinVerified(false);
     reset();
@@ -306,9 +325,9 @@ export function PinTab({
         </>
       )}
 
-      {/* Shared unlock-timeout selector - same rule governs the phrase
-          view and any PIN-protected note once unlocked this session.
-          Disabled when no PIN is set (nothing to time). */}
+      {/* One window for the phrase view and every PIN-protected note, from
+          the moment of the unlock. Disabled when no PIN is set (nothing to
+          time). */}
       <div className="pt-3 border-t border-divider">
         <label className="block">
           <SectionEyebrow className="mb-1.5">
@@ -322,7 +341,7 @@ export function PinTab({
           >
             {TIMEOUT_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
-                {opt.label}
+                {t(opt.labelKey)}
               </option>
             ))}
           </select>

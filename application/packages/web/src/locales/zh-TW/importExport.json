@@ -54,13 +54,20 @@
     "bitwarden": "Bitwarden 未加密的 .json 匯出檔（Tools > Export vault > .json）。登入資料、卡片、SSH 金鑰、安全筆記與 TOTP 驗證碼都會一起帶進來。",
     "browserPasswords": "來自 Chrome、Edge、Brave、Opera、Vivaldi、Firefox 或 Safari 的密碼檔（.csv），或 Safari 寫出的 .zip。每一列都會變成一組登入資料。用完請把檔案刪掉 - 裡面是你的明文密碼。"
   },
+  "sourceLabel": {
+    "privacynotes": "PrivacyNotes 完整備份",
+    "browserBookmarks": "瀏覽器書籤",
+    "browserPasswords": "瀏覽器密碼",
+    "vcard": "聯絡人 (vCard)",
+    "markdownFolder": "Markdown 檔案"
+  },
   "vaultPick": {
     "intro": "從其他密碼管理器匯入登入資訊、信用卡與 SSH 金鑰。"
   },
   "restorePick": {
     "intro": "還原你先前匯出的 PrivacyNotes 備份。你的檔案會在本機讀取並解密。",
     "fullBackupTitle": "完整備份（.zip）",
-    "fullBackupDesc": "還原筆記、日誌、保險庫項目、任務、圖片、音訊與檔案。所有內容都會匯入為新項目，不會覆寫既有資料。",
+    "fullBackupDesc": "還原筆記、日誌、保險庫項目、任務、圖片、音訊與檔案。已有的筆記會保留，只有當備份中有較新版本時才會更新。",
     "encryptedBackupTitle": "加密備份（.pnbackup、.pnbackupz）",
     "encryptedBackupDesc": "以你的助憶詞金鑰還原加密備份。.pnbackupz 會還原全部內容，包含檔案；.pnbackup 只含文字內容與中繼資料。必須以建立備份時的同一個帳號登入。"
   },

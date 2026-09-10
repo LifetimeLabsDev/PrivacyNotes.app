@@ -84,17 +84,20 @@ export function useFolderActions({
   const mergeImportedFolders = useCallback(
     (incoming: FolderDef[]): Map<string, string> => {
       if (incoming.length === 0) return new Map();
-      const { folders, idMap } = reconcileImportedFolders(
-        userSettings.folders,
-        incoming
-      );
-      mutateSettings((prev) => ({
-        ...prev,
-        folders: validateFolders(folders),
-      }));
+      // Reconciled against the tree the updater is handed, never against a
+      // copy from render: that copy can predate the first pull, and a tree
+      // rebuilt from it would replace every folder it did not know about.
+      // mutateSettings runs the updater before it returns, so the map is
+      // filled by the time the caller reads it.
+      let idMap = new Map<string, string>();
+      mutateSettings((prev) => {
+        const merged = reconcileImportedFolders(prev.folders, incoming);
+        idMap = merged.idMap;
+        return { ...prev, folders: validateFolders(merged.folders) };
+      });
       return idMap;
     },
-    [userSettings.folders, mutateSettings]
+    [mutateSettings]
   );
 
   // ── Folders (Pro) ───────────────────────────────────────────────
@@ -143,20 +146,29 @@ export function useFolderActions({
       openFoldersUpsell();
       return null;
     }
-    const result = createFolder(userSettings.folders, name, parentId);
-    if (!result) return null;
-    mutateSettings((prev) => ({ ...prev, folders: [...prev.folders, result.created] }));
+    // Built inside the updater, against the tree the cache holds. Sibling
+    // order and the depth check both read the existing tree, and a copy
+    // taken from React can be older than the cache on a device whose first
+    // sync has just landed.
+    let created: FolderDef | null = null;
+    mutateSettings((prev) => {
+      const result = createFolder(prev.folders, name, parentId);
+      if (!result) return prev;
+      created = result.created;
+      return { ...prev, folders: result.folders };
+    });
+    if (!created) return null;
     scheduleFolderSync();
-    return result.created.id;
+    return (created as FolderDef).id;
   }
 
   /** Push the settings blob promptly after a folder mutation instead of
-   *  waiting for the 30s poller, so the tree lands on other devices
-   *  right away. Delayed one tick: mutateSettings persists inside the
-   *  React state updater, which runs on the next render pass - a
-   *  synchronous runSync would race it and see a clean (undirty) blob. */
+   *  waiting for the 30s poller, so the tree lands on other devices right
+   *  away. `mutateSettings` has already written the cache by the time this
+   *  runs, and the sync pass reads that cache, so there is nothing to wait
+   *  for. */
   function scheduleFolderSync() {
-    window.setTimeout(() => void runSync(), 250);
+    void runSync();
   }
 
   function handleRenameFolder(id: string, name: string) {
@@ -207,9 +219,17 @@ export function useFolderActions({
       openFoldersUpsell();
       return;
     }
-    const { reparentTo } = deleteFolder(userSettings.folders, id);
     const memberIds = activeNotes.filter((n) => n.folderId === id).map((n) => n.id);
-    mutateSettings((prev) => ({ ...prev, folders: deleteFolder(prev.folders, id).folders }));
+    // One call, against the tree the updater is handed, so the tombstone and
+    // the parent the notes move to describe the same delete. mutateSettings
+    // runs the updater before it returns, so reparentTo is set by the line
+    // after it.
+    let reparentTo: string | null = null;
+    mutateSettings((prev) => {
+      const next = deleteFolder({ folders: prev.folders, deleted: prev.foldersDeleted }, id);
+      reparentTo = next.reparentTo;
+      return { ...prev, folders: next.folders, foldersDeleted: next.deleted };
+    });
     if (memberIds.length > 0) {
       await bulkMoveToFolder(memberIds, reparentTo);
       await refresh();

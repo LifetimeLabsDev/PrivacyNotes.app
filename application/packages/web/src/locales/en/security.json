@@ -29,10 +29,26 @@
     "pinFourDigits": "PIN must be 4 digits.",
     "pinsDoNotMatch": "PINs do not match."
   },
+  "timeout": {
+    "min1": "1 minute",
+    "min5": "5 minutes",
+    "min15": "15 minutes",
+    "min30": "30 minutes",
+    "hour1": "1 hour",
+    "hour4": "4 hours",
+    "hour8": "8 hours",
+    "hour12": "12 hours",
+    "browserRestart": "On browser restart"
+  },
+  "pinInfo": {
+    "title": "Require PIN to view",
+    "body": "When enabled, your PIN is required every time you open this item, even if the app is already unlocked. Use it for sensitive items that should stay protected when you step away.",
+    "gotIt": "Got it"
+  },
   "removePinDialog": {
     "title": "Remove PIN",
     "introWithBio": "Enter your current PIN to confirm removal. Biometric unlock stays active, but your only fallback will be your recovery phrase.",
-    "introNoBio": "Enter your current PIN to confirm removal. The phrase view will no longer be gated.",
+    "introNoBio": "Enter your current PIN to confirm removal. Your recovery phrase screen will then open without a PIN.",
     "verifying": "Verifying...",
     "removePin": "Remove PIN"
   },
@@ -102,9 +118,11 @@
     "enable": "Enable biometric unlock",
     "lockOnOpen": "Lock app on open",
     "lockOnOpenHint": "Require biometric or PIN when opening the app.",
-    "confirmPinForLock": "Enter your PIN once to turn this on. It locks a copy of your recovery phrase so only your PIN can open the app.",
+    "lockNeedsCredential": "The app lock needs a PIN or biometric unlock on this device.",
+    "setUpPin": "Set a PIN",
+    "confirmPinForLock": "Enter your PIN to turn this on. It locks a copy of your recovery phrase so only your PIN can open the app.",
     "relockAfter": "Re-lock after",
-    "relockHint": "Applies to the app lock screen and any PIN-protected notes.",
+    "relockHint": "Applies to the app lock screen only.",
     "perDeviceNote": "Biometric unlock opens the same notes as your PIN. It stays on this device and never syncs.",
     "disableConfirmTitle": "Disable Biometric",
     "disableConfirmLabel": "Disable",

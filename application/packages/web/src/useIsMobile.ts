@@ -54,3 +54,17 @@ export function useIsMobile(): boolean {
 export function useIsTouchDevice(): boolean {
   return useMediaQuery(TOUCH_MQ);
 }
+
+/**
+ * The same question outside React, asked at the moment it matters: a DOM
+ * listener and a ProseMirror plugin both decide what a click means, and
+ * neither can hold a hook. Asking per event also means a tablet that gains
+ * a mouse is not stuck with the answer from boot.
+ */
+export function isTouchPointer(): boolean {
+  try {
+    return window.matchMedia(TOUCH_MQ).matches;
+  } catch {
+    return false;
+  }
+}

@@ -54,13 +54,20 @@
     "bitwarden": "Bitwarden の暗号化されていない .json エクスポート（Tools > Export vault > .json）。ログイン、カード、SSH 鍵、セキュアメモ、TOTP コードがすべて一緒に読み込まれます。",
     "browserPasswords": "Chrome、Edge、Brave、Opera、Vivaldi、Firefox、Safari のパスワードファイル (.csv)、または Safari が書き出す .zip です。1 行がログイン 1 件になります。終わったらファイルは削除してください。パスワードがそのまま書かれています。"
   },
+  "sourceLabel": {
+    "privacynotes": "PrivacyNotesの完全バックアップ",
+    "browserBookmarks": "ブラウザのブックマーク",
+    "browserPasswords": "ブラウザのパスワード",
+    "vcard": "連絡先 (vCard)",
+    "markdownFolder": "Markdownファイル"
+  },
   "vaultPick": {
     "intro": "ログイン情報、クレジットカード、SSH鍵を、他のパスワードマネージャーから読み込みます。"
   },
   "restorePick": {
     "intro": "以前に書き出したPrivacyNotesのバックアップを復元します。ファイルはローカルで読み取り、復号されます。",
     "fullBackupTitle": "完全バックアップ(.zip)",
-    "fullBackupDesc": "ノート、ジャーナル、保管庫のアイテム、タスク、画像、音声、ファイルを復元します。すべて新しいアイテムとして読み込まれ、既存のデータが上書きされることはありません。",
+    "fullBackupDesc": "ノート、ジャーナル、保管庫のアイテム、タスク、画像、音声、ファイルを復元します。すでにあるノートはそのまま残り、バックアップにより新しい版がある場合だけ更新されます。",
     "encryptedBackupTitle": "暗号化バックアップ(.pnbackup、.pnbackupz)",
     "encryptedBackupDesc": "暗号化バックアップをフレーズ鍵で復元します。.pnbackupz はファイルも含めてすべてを復元します。.pnbackup はテキスト内容とメタデータのみです。バックアップを作成したのと同じアカウントでサインインしている必要があります。"
   },

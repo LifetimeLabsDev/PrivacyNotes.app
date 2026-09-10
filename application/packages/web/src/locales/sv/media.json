@@ -16,6 +16,10 @@
   },
   "attachment": {
     "fallbackName": "Bilaga",
+    "rename": "Byt namn",
+    "renamePlaceholder": "Filnamn",
+    "saveName": "Spara namnet",
+    "seek": "Uppspelningsposition",
     "imageAlt": "Bild",
     "cantPlay": "Kan inte spelas upp. Ladda ner för att lyssna",
     "downloadingStatus": "laddar ner...",

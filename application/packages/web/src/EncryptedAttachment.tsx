@@ -15,7 +15,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { estimateBlobBytes } from './notesViewUtils';
 import { useTranslation } from 'react-i18next';
 import { saveBlob } from './saveFile';
-import { Node, mergeAttributes } from '@tiptap/core';
+import { Node, mergeAttributes, type Editor as TipTapEditor } from '@tiptap/core';
 import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
@@ -24,7 +24,15 @@ import { validateAttachment, isImageFile, formatFileSize } from './attachmentVal
 import { currentImageOptions, isSupportedImage, processImage } from './imageProcessing';
 import { HoverLabel } from './HoverLabel';
 import { useBlobQuotaBlocked } from './usePendingUploads';
-import { MusicNotes, VideoCamera, Image, Archive, File as FileGlyph, Pause, Play, Trash, Check, Copy, Download } from './icons';
+import { MusicNotes, VideoCamera, Image, Archive, File as FileGlyph, Pause, Play, Trash, Check, Copy, Download, PencilSimple, X } from './icons';
+import { formatDuration } from './formatDuration';
+import {
+  FILE_NAME_MAX_LENGTH,
+  cleanFileName,
+  escapeMarkdownText,
+  joinFileName,
+  splitFileName,
+} from './fileNames';
 import i18n from './i18n';
 
 // ------------------------------------------------------------------
@@ -32,6 +40,54 @@ import i18n from './i18n';
 // ------------------------------------------------------------------
 
 const FILE_URI_PREFIX = 'pn:file/';
+
+// ------------------------------------------------------------------
+// Rename requests from outside the editor
+// ------------------------------------------------------------------
+
+type RenameListener = (uuid: string) => void;
+const renameListeners = new Set<RenameListener>();
+
+/**
+ * The most recent request, kept for a moment after it is made. A chip's node
+ * view mounts asynchronously, so a request that arrives with the note - which
+ * is how the Files pillar sends one - reaches no listener at all. The chip
+ * claims it on mount instead.
+ */
+let pendingRename: { uuid: string; at: number } | null = null;
+
+/** How long a request waits for its chip to appear. */
+// Spec: ops/docs/plans/file-rename-and-audio-seek.md (where the control lives)
+const RENAME_REQUEST_TTL_MS = 4000;
+
+/**
+ * Ask the chip holding `uuid` to open its rename field.
+ *
+ * The Files pillar's Rename row opens the parent note and then calls this,
+ * so the name is only ever written by the chip inside the live editor. A
+ * list that rewrote the note body itself would lose the race against a
+ * debounced edit still pending in that editor.
+ */
+export function requestAttachmentRename(uuid: string) {
+  pendingRename = { uuid, at: Date.now() };
+  for (const listener of renameListeners) listener(uuid);
+}
+
+function subscribeToRenameRequests(listener: RenameListener): () => void {
+  renameListeners.add(listener);
+  return () => { renameListeners.delete(listener); };
+}
+
+/** True once, for the chip a live request was aimed at. */
+function claimPendingRename(uuid: string | null): boolean {
+  if (!uuid || !pendingRename || pendingRename.uuid !== uuid) return false;
+  if (Date.now() - pendingRename.at > RENAME_REQUEST_TTL_MS) {
+    pendingRename = null;
+    return false;
+  }
+  pendingRename = null;
+  return true;
+}
 
 /** Extract UUIDs of all pn:file/ references in a markdown body. */
 export function extractAttachmentIds(body: string): Set<string> {
@@ -104,6 +160,51 @@ function ActionButton({ onClick, label, disabled, danger, children }: {
 }
 
 // ------------------------------------------------------------------
+// Audio length
+// ------------------------------------------------------------------
+
+/**
+ * The playable length of a loaded audio element, in seconds, or 0 when the
+ * browser will not say.
+ *
+ * A recording made in the app carries no length in its header, because
+ * MediaRecorder writes MP4 and OGG as it goes and never returns to fill the
+ * field in, so `duration` reads Infinity. Seeking far past the end makes the
+ * browser scan to the real end and report it through `durationchange`; the
+ * position is put back before anything plays. A file that still will not
+ * answer gets 0, which leaves the slider disabled and the total hidden - an
+ * elapsed-only readout is honest, a slider that cannot know where it is is
+ * not.
+ */
+function resolveDuration(audio: HTMLAudioElement): Promise<number> {
+  if (Number.isFinite(audio.duration) && audio.duration > 0) {
+    return Promise.resolve(audio.duration);
+  }
+  return new Promise<number>((resolve) => {
+    let settled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      audio.removeEventListener('durationchange', onDurationChange);
+      try { audio.currentTime = 0; } catch { /* not seekable */ }
+      resolve(Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 0);
+    };
+    const onDurationChange = () => {
+      if (Number.isFinite(audio.duration)) finish();
+    };
+    audio.addEventListener('durationchange', onDurationChange);
+    timer = setTimeout(finish, 1500);
+    try {
+      audio.currentTime = 1e101;
+    } catch {
+      finish();
+    }
+  });
+}
+
+// ------------------------------------------------------------------
 // React NodeView - renders attachment chip with download
 // ------------------------------------------------------------------
 
@@ -111,9 +212,19 @@ type AttachmentNodeViewProps = {
   node: { attrs: { src: string; filename: string; filesize: string; mimetype: string } };
   selected: boolean;
   deleteNode: () => void;
+  updateAttributes: (attrs: Record<string, unknown>) => void;
+  editor: TipTapEditor;
+  extension: { options: AttachmentOptions };
 };
 
-function EncryptedAttachmentView({ node, selected, deleteNode }: AttachmentNodeViewProps) {
+function EncryptedAttachmentView({
+  node,
+  selected,
+  deleteNode,
+  updateAttributes,
+  editor,
+  extension,
+}: AttachmentNodeViewProps) {
   const { t } = useTranslation('media');
   const { src, filename, filesize, mimetype } = node.attrs;
   const [downloading, setDownloading] = useState(false);
@@ -125,6 +236,29 @@ function EncryptedAttachmentView({ node, selected, deleteNode }: AttachmentNodeV
   const [copied, setCopied] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [playing, setPlaying] = useState(false);
+  /**
+   * Whether this note can be edited, tracked rather than read once.
+   * `readOnly` toggles WITHOUT remounting the editor - it is keyed by note
+   * id - and `editor.isEditable` is a plain getter, so a chip that read it
+   * at render time went on offering Rename and Delete on a locked note.
+   * Neither would have saved: the debounced write refuses a read-only note,
+   * so the buttons removed a chip on screen and lost the change on the next
+   * load. `setEditable` emits an update, which is what this listens for.
+   */
+  const [editable, setEditable] = useState(editor.isEditable);
+  useEffect(() => {
+    const sync = () => setEditable(editor.isEditable);
+    sync();
+    editor.on('update', sync);
+    return () => { editor.off('update', sync); };
+  }, [editor]);
+  const [renaming, setRenaming] = useState(false);
+  const [renameValue, setRenameValue] = useState('');
+  // Playback position and length, both in seconds. `duration` stays 0 until
+  // a real length is known, which is what disables the slider - see
+  // resolveDuration for why a recording does not report one at first.
+  const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [formatUnsupported, setFormatUnsupported] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -228,8 +362,10 @@ function EncryptedAttachmentView({ node, selected, deleteNode }: AttachmentNodeV
   }, [uuid, filename, downloading, t]);
 
   const handleCopy = useCallback(() => {
-    // Copy the markdown link so it can be pasted into another note.
-    const name = filename || 'Attachment';
+    // Copy the markdown link so it can be pasted into another note. The name
+    // is escaped the way the serializer escapes it, so a name holding a
+    // bracket or an asterisk pastes back as itself rather than as emphasis.
+    const name = escapeMarkdownText(filename || 'Attachment');
     const size = filesize || '';
     const mime = mimetype || '';
     const md = `[${name}|${size}|${mime}](${src})`;
@@ -238,6 +374,56 @@ function EncryptedAttachmentView({ node, selected, deleteNode }: AttachmentNodeV
       setTimeout(() => setCopied(false), 1500);
     });
   }, [src, filename, filesize, mimetype]);
+
+  // ---- Rename ----
+
+  const currentName = filename || t('attachment.fallbackName');
+  const { ext: nameExt } = splitFileName(currentName);
+
+  const startRename = useCallback(() => {
+    if (!editor.isEditable) return;
+    if (renaming) return;
+    setRenameValue(splitFileName(filename || t('attachment.fallbackName')).base);
+    setRenaming(true);
+  }, [editor, filename, t]);
+
+  const cancelRename = useCallback(() => {
+    setRenaming(false);
+  }, []);
+
+  // A note locked while the field is open drops the field with it, rather
+  // than leaving a control the save path would refuse.
+  useEffect(() => {
+    if (!editable) setRenaming(false);
+  }, [editable]);
+
+  const commitRename = useCallback(() => {
+    setRenaming(false);
+    const before = filename || '';
+    const { ext } = splitFileName(before);
+    const base = cleanFileName(renameValue, '');
+    // Nothing but dots and spaces is a cancel, not a request for a file
+    // called `.` - and it covers the empty field too.
+    if (!/[^.]/.test(base)) return;
+    const next = joinFileName(base, ext);
+    if (next === before) return;
+    updateAttributes({ filename: next });
+    extension.options.onRename?.(next);
+  }, [filename, renameValue, updateAttributes, extension]);
+
+  // The Files pillar's Rename row lands here. A request made while this chip
+  // was already on screen arrives through the listener; one made as the note
+  // opened is waiting to be claimed, because this node view did not exist
+  // when it was sent.
+  useEffect(() => {
+    if (claimPendingRename(uuid)) startRename();
+    return subscribeToRenameRequests((requested) => {
+      if (requested === uuid) {
+        claimPendingRename(uuid);
+        startRename();
+      }
+    });
+  }, [uuid, startRename]);
 
   const handlePlayPause = useCallback(async () => {
     if (playing && audioRef.current) {
@@ -259,13 +445,26 @@ function EncryptedAttachmentView({ node, selected, deleteNode }: AttachmentNodeV
       const audio = document.createElement('audio');
       audio.preload = 'auto';
       audioRef.current = audio;
-      audio.onended = () => setPlaying(false);
+      audio.onended = () => { setPlaying(false); setPosition(0); };
+      // A recording's own header can understate its length - a three-second
+      // one made here reported 1.52 - and the browser only corrects that as
+      // it plays. Take every correction, and never let the thumb sit past
+      // the end of its own track.
+      audio.ondurationchange = () => {
+        if (Number.isFinite(audio.duration) && audio.duration > 0) setDuration(audio.duration);
+      };
+      audio.ontimeupdate = () => {
+        setPosition(audio.currentTime);
+        setDuration((known) => (audio.currentTime > known ? audio.currentTime : known));
+      };
       await new Promise<void>((resolve, reject) => {
         audio.oncanplaythrough = () => resolve();
         audio.onerror = () => reject(new Error('format'));
         audio.src = url;
         audio.load();
       });
+      const known = await resolveDuration(audio);
+      setDuration(known);
       await audio.play();
       setPlaying(true);
     } catch (err) {
@@ -292,7 +491,14 @@ function EncryptedAttachmentView({ node, selected, deleteNode }: AttachmentNodeV
       data-drag-handle
     >
       <div
-        className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border transition ${
+        // Wrapping, with a floor under the name block and another under the
+        // action cluster: on a chip too narrow for one row the cluster drops
+        // to a second line and the name takes the full width, rather than
+        // truncating to nothing behind four buttons. The floors measure the
+        // CHIP, so an editor pane dragged narrow wraps at the same point a
+        // phone does, and the cluster's floor is what stops the chip
+        // un-wrapping mid-edit when its three actions become two.
+        className={`flex flex-wrap items-center gap-2.5 gap-y-1 px-3.5 py-2.5 rounded-xl border transition ${
           selected
             ? 'border-accent bg-accent/10 dark:bg-accent/20'
             : 'border-divider bg-surface-2'
@@ -330,10 +536,53 @@ function EncryptedAttachmentView({ node, selected, deleteNode }: AttachmentNodeV
         )}
 
         {/* ---- Filename + meta ---- */}
-        <div className="flex-1 min-w-0">
-          <div className="text-sm font-medium text-neutral-800 dark:text-neutral-200 truncate">
-            {filename || t('attachment.fallbackName')}
-          </div>
+        <div className="flex-1 min-w-[170px]">
+          {renaming ? (
+            <div className="flex items-baseline gap-1">
+              <input
+                autoFocus
+                dir="auto"
+                value={renameValue}
+                onChange={(e) => setRenameValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    commitRename();
+                  } else if (e.key === 'Escape') {
+                    // Escape belongs to the field while it is open; without
+                    // the stop it reaches the editor's own handlers.
+                    e.preventDefault();
+                    e.stopPropagation();
+                    cancelRename();
+                  }
+                }}
+                onBlur={commitRename}
+                onClick={(e) => e.stopPropagation()}
+                // Stop the press reaching the chip WITHOUT preventing it: the
+                // sibling buttons prevent their mousedown to keep the node
+                // from being dragged, and doing that here would kill the
+                // caret. The drag is refused at dragstart instead.
+                onPointerDown={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                draggable={false}
+                onDragStart={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                maxLength={FILE_NAME_MAX_LENGTH}
+                placeholder={t('attachment.renamePlaceholder')}
+                aria-label={t('attachment.renamePlaceholder')}
+                enterKeyHint="done"
+                className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-sm font-medium text-neutral-800 dark:text-neutral-200"
+              />
+              {nameExt && (
+                <span className="shrink-0 text-sm text-neutral-400 dark:text-neutral-500">
+                  .{nameExt}
+                </span>
+              )}
+            </div>
+          ) : (
+            <div className="text-sm font-medium text-neutral-800 dark:text-neutral-200 truncate" dir="auto">
+              {filename || t('attachment.fallbackName')}
+            </div>
+          )}
           <div className="text-xs text-neutral-400 dark:text-neutral-500 truncate">
             {formatUnsupported && (
               <span className="text-amber-600 dark:text-amber-400">{t('attachment.cantPlay')}</span>
@@ -366,11 +615,62 @@ function EncryptedAttachmentView({ node, selected, deleteNode }: AttachmentNodeV
               {t('attachment.notUploadedTip')}
             </div>
           )}
+
+          {/* ---- Seek (audio only) ----
+              Rendered at rest rather than on first play, so the note does
+              not reflow under the reader. It is inert until the file is
+              loaded, because filling it in advance would mean decrypting
+              every recording in the note on open. */}
+          {isAudio && !formatUnsupported && (
+            <div className="flex items-center gap-2 mt-1.5">
+              <span className="shrink-0 text-[11px] text-neutral-400 dark:text-neutral-500 tabular-nums">
+                {formatDuration(position)}
+              </span>
+              <input
+                type="range"
+                min={0}
+                max={duration || 1}
+                step={0.1}
+                value={duration > 0 ? Math.min(position, duration) : 0}
+                disabled={duration <= 0}
+                onChange={(e) => {
+                  const next = parseFloat(e.target.value);
+                  setPosition(next);
+                  if (audioRef.current) audioRef.current.currentTime = next;
+                }}
+                onClick={(e) => e.stopPropagation()}
+                // Same reasoning as the rename field: stop the press without
+                // preventing it, or the thumb cannot be grabbed at all.
+                onPointerDown={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                draggable={false}
+                onDragStart={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                aria-label={t('attachment.seek')}
+                aria-valuetext={formatDuration(position)}
+                className="flex-1 h-1.5 cursor-pointer disabled:cursor-default disabled:opacity-50"
+                style={{ accentColor: 'rgb(var(--pn-accent))' }}
+              />
+              <span className="shrink-0 text-[11px] text-neutral-400 dark:text-neutral-500 tabular-nums">
+                {duration > 0 ? formatDuration(duration) : '--:--'}
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* ---- Actions ---- */}
-        <div className="shrink-0 flex items-center gap-0.5">
-          {confirmingDelete ? (
+        {/* ---- Actions ----
+            The minimum width holds the wrap decision steady while the
+            rename field is open with only two buttons beside it. */}
+        <div className="shrink-0 flex items-center justify-end gap-0.5 min-w-[126px] ms-auto">
+          {renaming ? (
+            <>
+              <ActionButton onClick={commitRename} label={t('attachment.saveName')}>
+                <Check size={15} className="text-accent" />
+              </ActionButton>
+              <ActionButton onClick={cancelRename} label={t('common:actions.cancel')}>
+                <X size={15} />
+              </ActionButton>
+            </>
+          ) : confirmingDelete ? (
             <button
               type="button"
               onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
@@ -387,6 +687,11 @@ function EncryptedAttachmentView({ node, selected, deleteNode }: AttachmentNodeV
             </button>
           ) : (
             <>
+              {editable && (
+                <ActionButton onClick={startRename} label={t('attachment.rename')}>
+                  <PencilSimple size={15} />
+                </ActionButton>
+              )}
               <ActionButton onClick={handleCopy} label={copied ? t('attachment.copied') : t('common:actions.copy')}>
                 {copied ? (
                   <Check size={15} className="text-green-500" />
@@ -397,12 +702,17 @@ function EncryptedAttachmentView({ node, selected, deleteNode }: AttachmentNodeV
               <ActionButton onClick={handleDownload} disabled={downloading} label={formatUnsupported ? t('attachment.downloadToPlay') : t('attachment.download')}>
                 <Download size={15} />
               </ActionButton>
-              <ActionButton onClick={() => {
-                setConfirmingDelete(true);
-                deleteTimerRef.current = setTimeout(() => setConfirmingDelete(false), 3000);
-              }} label={t('common:actions.delete')} danger>
-                <Trash size={15} />
-              </ActionButton>
+              {/* A read-only note's editor refuses to save, so a delete
+                  there removes the chip on screen and loses it on the next
+                  load. Same gate as the rename beside it. */}
+              {editable && (
+                <ActionButton onClick={() => {
+                  setConfirmingDelete(true);
+                  deleteTimerRef.current = setTimeout(() => setConfirmingDelete(false), 3000);
+                }} label={t('common:actions.delete')} danger>
+                  <Trash size={15} />
+                </ActionButton>
+              )}
             </>
           )}
         </div>
@@ -607,11 +917,24 @@ function createAttachmentUploadPlugin() {
 // TipTap Extension
 // ------------------------------------------------------------------
 
-export const EncryptedAttachment = Node.create({
+export type AttachmentOptions = {
+  /**
+   * Called with the new name after a chip is renamed. The editor decides
+   * whether anything outside the document should follow; see the wiring in
+   * `Editor.tsx`.
+   */
+  onRename: ((name: string) => void) | null;
+};
+
+export const EncryptedAttachment = Node.create<AttachmentOptions>({
   name: 'attachment',
   group: 'block',
   atom: true,
   draggable: true,
+
+  addOptions() {
+    return { onRename: null };
+  },
 
   addAttributes() {
     return {

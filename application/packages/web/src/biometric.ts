@@ -389,27 +389,57 @@ export type PinWrapBlob = {
   pinWrapIterations: number;
 };
 
-export async function wrapPhraseWithPin(
-  phrase: string,
-  pin: string,
-): Promise<PinWrapBlob> {
+/**
+ * Derive and encrypt only: the blob that goes into the synced settings, with
+ * no storage access. A device the user marked untrusted changes the PIN
+ * through this, so the account's wrap follows the new PIN while that device
+ * keeps no copy of it. Pinned by tests/pinChange.test.ts.
+ */
+export async function buildPinWrap(phrase: string, pin: string): Promise<PinWrapBlob> {
   const salt = crypto.getRandomValues(new Uint8Array(PBKDF2_SALT_BYTES));
   const key = await deriveKeyFromPin(pin, salt);
   const { ciphertext, iv } = await aesGcmEncrypt(key, phrase);
-
-  const blob: PinWrapBlob = {
+  return {
     pinWrapSalt: bytesToBase64(salt),
     pinWrapIV: bytesToBase64(iv),
     pinWrapCiphertext: bytesToBase64(ciphertext),
     pinWrapIterations: PIN_PBKDF2_ITERATIONS,
   };
+}
 
+/**
+ * Build the blob and store it as this device's own wrap. The four writes
+ * throw when the store refuses, and the PIN tab strips the phrase at rest
+ * only after this returns, so a device whose disk refused the wrap keeps its
+ * door.
+ */
+export async function wrapPhraseWithPin(
+  phrase: string,
+  pin: string,
+): Promise<PinWrapBlob> {
+  const blob = await buildPinWrap(phrase, pin);
   localStorage.setItem(PIN_PBKDF2_SALT, blob.pinWrapSalt);
   localStorage.setItem(PIN_IV, blob.pinWrapIV);
   localStorage.setItem(PIN_WRAPPED, blob.pinWrapCiphertext);
-  localStorage.setItem(PIN_ITERATIONS_KEY, String(PIN_PBKDF2_ITERATIONS));
-
+  localStorage.setItem(PIN_ITERATIONS_KEY, String(blob.pinWrapIterations));
   return blob;
+}
+
+/**
+ * True when the wrap this device holds IS the given one, by salt and
+ * ciphertext. syncPinWrap asks it so a PIN changed on another device, which
+ * re-wraps under the new PIN, replaces the blob here rather than leaving a
+ * wrap the retired PIN still opens. Pinned by tests/pinRecovery.test.ts.
+ */
+export function hasSamePinWrap(blob: Pick<PinWrapBlob, 'pinWrapSalt' | 'pinWrapCiphertext'>): boolean {
+  try {
+    return (
+      localStorage.getItem(PIN_WRAPPED) === blob.pinWrapCiphertext &&
+      localStorage.getItem(PIN_PBKDF2_SALT) === blob.pinWrapSalt
+    );
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -440,7 +470,17 @@ export function hydrateLocalPinWrap(blob: PinWrapBlob): void {
   }
 }
 
-export async function unwrapPhraseWithPin(pin: string): Promise<string | null> {
+/**
+ * `onUpgraded` receives the blob a legacy-iteration wrap was re-wrapped
+ * into after a successful unlock. The re-wrap is local; the caller carries
+ * the blob to the synced settings, because every device replaces a wrap
+ * that differs from the account's, and an upgrade the account never learns
+ * of would be undone on the next pass and redone on the next unlock.
+ */
+export async function unwrapPhraseWithPin(
+  pin: string,
+  onUpgraded?: (blob: PinWrapBlob) => void,
+): Promise<string | null> {
   const saltB64 = localStorage.getItem(PIN_PBKDF2_SALT);
   const ivB64 = localStorage.getItem(PIN_IV);
   const wrappedB64 = localStorage.getItem(PIN_WRAPPED);
@@ -459,7 +499,7 @@ export async function unwrapPhraseWithPin(pin: string): Promise<string | null> {
 
     // Auto-upgrade: re-wrap with current iterations if using legacy count.
     if (storedIterations < PIN_PBKDF2_ITERATIONS) {
-      wrapPhraseWithPin(phrase, pin).catch(() => { /* best-effort upgrade */ });
+      wrapPhraseWithPin(phrase, pin).then((b) => onUpgraded?.(b)).catch(() => { /* best-effort upgrade */ });
     }
 
     return phrase;
@@ -470,7 +510,7 @@ export async function unwrapPhraseWithPin(pin: string): Promise<string | null> {
       try {
         const legacyKey = await deriveKeyFromPin(pin, salt, LEGACY_PIN_PBKDF2_ITERATIONS);
         const phrase = await aesGcmDecrypt(legacyKey, ciphertext, iv);
-        wrapPhraseWithPin(phrase, pin).catch(() => { /* best-effort upgrade */ });
+        wrapPhraseWithPin(phrase, pin).then((b) => onUpgraded?.(b)).catch(() => { /* best-effort upgrade */ });
         return phrase;
       } catch {
         return null;

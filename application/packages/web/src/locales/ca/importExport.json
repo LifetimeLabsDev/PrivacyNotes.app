@@ -57,13 +57,20 @@
     "bitwarden": "Exportació .json sense xifrar de Bitwarden (Tools > Export vault > .json). Inicis de sessió, targetes, claus SSH, notes segures i codis TOTP vénen tots.",
     "browserPasswords": "El fitxer de contrasenyes (.csv) de Chrome, Edge, Brave, Opera, Vivaldi, Firefox o Safari, o el .zip que escriu Safari. Cada fila es converteix en un inici de sessió. Esborra el fitxer quan acabis - conté les teves contrasenyes en text pla."
   },
+  "sourceLabel": {
+    "privacynotes": "Còpia de seguretat completa de PrivacyNotes",
+    "browserBookmarks": "Marcadors del navegador",
+    "browserPasswords": "Contrasenyes del navegador",
+    "vcard": "Contactes (vCard)",
+    "markdownFolder": "Fitxers Markdown"
+  },
   "vaultPick": {
     "intro": "Importa inicis de sessió, targetes de crèdit i claus SSH des d'un altre gestor de contrasenyes."
   },
   "restorePick": {
     "intro": "Restaura una còpia de seguretat de PrivacyNotes que hagis exportat abans. El teu fitxer es llegeix i es desxifra localment.",
     "fullBackupTitle": "Còpia de seguretat completa (.zip)",
-    "fullBackupDesc": "Restaura notes, diaris, elements de la caixa forta, tasques, imatges, àudio i fitxers. Tot s'importa com a elements nous; les dades existents no se sobreescriuen.",
+    "fullBackupDesc": "Restaura notes, diaris, elements de la caixa forta, tasques, imatges, àudio i fitxers. Una nota que ja tens es conserva, o s'actualitza si la còpia de seguretat en conté una versió més recent.",
     "encryptedBackupTitle": "Còpia de seguretat xifrada (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Restaura una còpia de seguretat xifrada amb la clau de la teva frase. Un .pnbackupz ho retorna tot, fitxers inclosos; un .pnbackup només conté text i metadades. Has d'haver iniciat la sessió amb el mateix compte que la va crear."
   },

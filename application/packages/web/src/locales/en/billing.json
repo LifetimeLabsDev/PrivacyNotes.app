@@ -19,6 +19,7 @@
       "callout": "The complete set of callouts is a Pro feature.",
       "totp": "2FA codes are a Pro feature. Store an authenticator key with any login and get the rotating code next to the password. The key itself is saved and synced on every plan.",
       "replace": "Find and replace is a Pro feature. Upgrade to replace one match or every match in a note at once.",
+      "passphrase": "Passphrases are a Pro feature. Generate a phrase of random words that is easy to type and to say.",
       "default": "One upgrade unlocks everything below. One-time payment."
     },
     "features": {

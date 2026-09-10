@@ -16,6 +16,10 @@
   },
   "attachment": {
     "fallbackName": "Anexo",
+    "rename": "Renomear",
+    "renamePlaceholder": "Nome do arquivo",
+    "saveName": "Salvar o nome",
+    "seek": "Posição de reprodução",
     "imageAlt": "Imagem",
     "cantPlay": "Não dá para reproduzir. Baixe para ouvir",
     "downloadingStatus": "baixando...",

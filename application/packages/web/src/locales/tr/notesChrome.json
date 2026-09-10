@@ -72,6 +72,7 @@
     "copied": "Kopyalandı"
   },
   "burnView": {
+    "title": "Okuduktan sonra yak",
     "tagline": "Şifreli. Geçici. Yalnızca size.",
     "toggleTheme": "Temayı değiştir",
     "checking": "Kontrol ediliyor...",

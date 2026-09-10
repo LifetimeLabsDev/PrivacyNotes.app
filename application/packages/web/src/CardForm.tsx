@@ -1,10 +1,11 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { hasPin } from './pin';
 import { PinInfoModal } from './PinInfoModal';
 import { HoverLabel } from './HoverLabel';
-import { Check, Copy, Eye, EyeSlash, Info, FloppyDisk } from './icons';
+import { Calendar, CreditCard, Check, Copy, Eye, EyeSlash, Info, FloppyDisk, Lock, MapPin, NotePencil, User } from './icons';
 import { useCopyToClipboard } from './clipboard';
+import { FIELD_BUTTON, FIELD_CLASS, FieldLabel } from './formFields';
 
 /* ────────────────────────────────────────────────────────────────
  * CardData - the JSON blob stored in the note body for card-type
@@ -86,7 +87,7 @@ function deriveCardTitle(data: CardData): string {
 function CopyBtn({ onClick, active, title }: { onClick: () => void; active: boolean; title: string }) {
   return (
     <HoverLabel label={title} position="start">
-      <button type="button" onClick={onClick} aria-label={title} className="shrink-0 rounded-md p-2 text-neutral-400 hover:text-accent hover:bg-neutral-100 dark:hover:bg-surface-0 transition">
+      <button type="button" onClick={onClick} aria-label={title} className={FIELD_BUTTON}>
         {active ? (
           <Check size={16} className="text-emerald-500" />
         ) : (
@@ -132,7 +133,10 @@ export function CardForm({
   const { t } = useTranslation('common');
   const data = parseCardBody(body);
   const { copy, copied } = useCopyToClipboard();
-  const pinConfigured = useMemo(() => hasPin(), []);
+  // Never memoize this. Settings opens over a mounted form, so a PIN
+  // can appear or vanish while the toggle below is on screen, and
+  // localStorage fires nothing that would refresh a frozen value.
+  const pinConfigured = hasPin();
   const [showPinInfo, setShowPinInfo] = useState(false);
   const [showNumber, setShowNumber] = useState(false);
   const [numberFocused, setNumberFocused] = useState(false);
@@ -166,9 +170,7 @@ export function CardForm({
     return false;
   })();
 
-  const fieldClass =
-    'w-full rounded-md border border-divider bg-surface-1 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-60';
-  const labelClass = 'block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1';
+  const fieldClass = FIELD_CLASS;
 
   const maskedNumber = data.cardNumber.replace(/\D/g, '').length > 4
     ? '•••• '.repeat(Math.floor((data.cardNumber.replace(/\D/g, '').length - 4) / 4)) +
@@ -184,7 +186,7 @@ export function CardForm({
       <div className="space-y-4">
         {/* Cardholder Name */}
         <div>
-          <label className={labelClass}>{t('cardForm.cardholderName')}</label>
+          <FieldLabel icon={<User size={13} />}>{t('cardForm.cardholderName')}</FieldLabel>
           <input
             type="text"
             value={data.cardholderName}
@@ -198,9 +200,8 @@ export function CardForm({
 
         {/* Card Number */}
         <div>
-          <label className={labelClass}>{t('cardForm.cardNumber')}</label>
+          <FieldLabel icon={<CreditCard size={13} />}>{t('cardForm.cardNumber')}</FieldLabel>
           <div className="flex gap-1.5">
-            <div className="relative flex-1">
               <input
                 type="text"
                 value={showNumber || numberFocused ? formatCardNumber(data.cardNumber) : maskedNumber}
@@ -215,25 +216,18 @@ export function CardForm({
                 disabled={locked}
                 autoComplete="off"
                 inputMode="numeric"
-                className={`${fieldClass} font-mono pe-10`}
+                className={`${fieldClass} font-mono`}
               />
-              <div className="absolute end-1 top-1/2 -translate-y-1/2">
               <HoverLabel label={showNumber ? t('cardForm.hideNumber') : t('cardForm.showNumber')} position="above">
-              <button
-                type="button"
-                onClick={() => setShowNumber(!showNumber)}
-                aria-label={showNumber ? t('cardForm.hideNumber') : t('cardForm.showNumber')}
-                className="rounded p-1 text-neutral-400 hover:text-accent transition"
-              >
-                {showNumber ? (
-                  <EyeSlash size={16} />
-                ) : (
-                  <Eye size={16} />
-                )}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setShowNumber(!showNumber)}
+                  aria-label={showNumber ? t('cardForm.hideNumber') : t('cardForm.showNumber')}
+                  className={FIELD_BUTTON}
+                >
+                  {showNumber ? <EyeSlash size={16} /> : <Eye size={16} />}
+                </button>
               </HoverLabel>
-              </div>
-            </div>
             <CopyBtn
               onClick={() => copy(data.cardNumber, 'number')}
               active={copied === 'number'}
@@ -262,7 +256,7 @@ export function CardForm({
         {/* Expiry + CVV row */}
         <div className="flex gap-3">
           <div className="flex-1">
-            <label className={labelClass}>{t('cardForm.expiry')}</label>
+            <FieldLabel icon={<Calendar size={13} />}>{t('cardForm.expiry')}</FieldLabel>
             <div className="flex gap-1.5">
               <select
                 value={data.expMonth}
@@ -291,7 +285,7 @@ export function CardForm({
             </div>
           </div>
           <div className="w-28">
-            <label className={labelClass}>{t('cardForm.cvv')}</label>
+            <FieldLabel icon={<Lock size={13} />}>{t('cardForm.cvv')}</FieldLabel>
             <div className="flex gap-1.5">
               <input
                 type={showCvv ? 'text' : 'password'}
@@ -309,7 +303,7 @@ export function CardForm({
                 type="button"
                 onClick={() => setShowCvv(!showCvv)}
                 aria-label={showCvv ? t('cardForm.hideCvv') : t('cardForm.showCvv')}
-                className="shrink-0 rounded-md p-2 text-neutral-400 hover:text-accent transition"
+                className={FIELD_BUTTON}
               >
                 {showCvv ? (
                   <EyeSlash size={16} />
@@ -328,7 +322,7 @@ export function CardForm({
 
         {/* Billing Zip */}
         <div>
-          <label className={labelClass}>{t('cardForm.billingZip')}</label>
+          <FieldLabel icon={<MapPin size={13} />}>{t('cardForm.billingZip')}</FieldLabel>
           <input
             type="text"
             value={data.billingZip}
@@ -342,7 +336,7 @@ export function CardForm({
 
         {/* Notes */}
         <div>
-          <label className={labelClass}>{t('cardForm.notes')}</label>
+          <FieldLabel icon={<NotePencil size={13} />}>{t('cardForm.notes')}</FieldLabel>
           <textarea
             value={data.notes}
             onChange={(e) => updateBody({ notes: e.target.value })}

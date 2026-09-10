@@ -212,7 +212,7 @@ export default function BurnNote() {
             {/* Flame icon */}
             <Fire size={28} className="text-orange-500" />
             <div>
-              <h1 className="text-xl font-bold tracking-tight">Burn After Reading</h1>
+              <h1 className="text-xl font-bold tracking-tight">{t('burnView.title')}</h1>
               <p className="text-xs text-neutral-500">{t('burnView.tagline')}</p>
             </div>
           </div>

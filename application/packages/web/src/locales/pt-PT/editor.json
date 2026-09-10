@@ -154,8 +154,11 @@
     "textLabel": "Texto do link",
     "textPlaceholder": "Opcional, deixa em branco para mostrar o URL",
     "selectedTextHint": "O texto selecionado será usado como link",
-    "editTextHint": "Edita o texto do link no editor",
-    "update": "Atualizar"
+    "update": "Atualizar",
+    "menuOpen": "Abrir link",
+    "menuCopy": "Copiar link",
+    "menuEdit": "Editar link",
+    "menuRemove": "Remover link"
   },
   "audio": {
     "uploadingRecording": "A enviar gravação...",
@@ -185,6 +188,9 @@
     "copy": "Copiar",
     "copied": "Copiado",
     "copyFailed": "Falhou"
+  },
+  "math": {
+    "sourceLabel": "Código LaTeX"
   },
   "noteLink": {
     "open": "Abrir nota",

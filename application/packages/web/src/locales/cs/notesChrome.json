@@ -86,6 +86,7 @@
     "copied": "Zkopírováno"
   },
   "burnView": {
+    "title": "Spálit po přečtení",
     "tagline": "Šifrované. Prchavé. Jen pro tvé oči.",
     "toggleTheme": "Přepnout téma",
     "checking": "Probíhá kontrola...",

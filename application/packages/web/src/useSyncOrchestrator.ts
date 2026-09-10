@@ -8,7 +8,7 @@ import { db, type LocalNote } from './db';
 import { sync, CaptchaRequiredError, DeviceRevokedError, QuotaExceededError, SessionExpiredError, type NoteConflict } from './sync';
 import { logAuthEvent } from './authDiag';
 import { fetchQuotaUsage } from './devices';
-import { hasSettingsPulled, loadLocalSettings, saveLocalSettings, syncUserSettings, type UserSettings } from './userSettings';
+import { hasSettingsPulled, syncUserSettings, updateLocalSettings, type UserSettings } from './userSettings';
 import { syncPinCache } from './pin';
 import { syncPinWrap } from './pinRecovery';
 import { seedOnboardingNotes, SEED_MEDICATION } from './welcomeNote';
@@ -245,8 +245,7 @@ export function useSyncOrchestrator({
         // Set the flag and skip seeding.
         const existingCount = await db.notes.where('deleted').equals(0).count();
         if (existingCount > 0 || hadSyncedBefore) {
-          effective = { ...merged, welcomeNoteSeeded: true };
-          saveLocalSettings(effective);
+          effective = updateLocalSettings((prev) => ({ ...prev, welcomeNoteSeeded: true }));
           void syncUserSettings(supabase, auth.pubkey, auth.encryptionKey).catch(
             (err) => console.error('[welcome] push seeded flag (existing notes) failed:', err)
           );
@@ -258,8 +257,7 @@ export function useSyncOrchestrator({
           // (re)creates an account - but fabricating onboarding content
           // here made a fresh vault look like surviving data. Skip the
           // seed and tell the user explicitly that this vault is new.
-          effective = { ...merged, welcomeNoteSeeded: true };
-          saveLocalSettings(effective);
+          effective = updateLocalSettings((prev) => ({ ...prev, welcomeNoteSeeded: true }));
           void syncUserSettings(supabase, auth.pubkey, auth.encryptionKey).catch(
             (err) => console.error('[welcome] push seeded flag (fresh vault) failed:', err)
           );
@@ -270,27 +268,28 @@ export function useSyncOrchestrator({
             // Tokyo journal, Wellness journal) so every pillar has a live
             // example on first open. Each seed is individually idempotent.
             await seedOnboardingNotes(auth.pubkey);
-            // Seed the example medication template if not already present.
-            // It has to fold back into `merged`: the `welcomeNoteSeeded`
-            // write below is built from `merged`, so a separate save here
-            // was overwritten one line later and the seeded journal
-            // entries referenced a medication that did not exist.
-            if (!merged.medications?.some((m) => m.id === SEED_MEDICATION.id)) {
-              merged = { ...merged, medications: [...(merged.medications ?? []), SEED_MEDICATION] };
-              saveLocalSettings(merged);
-            }
+            // Seed the example medication template if not already present,
+            // adding the one field to whatever the cache holds. Seeding has
+            // just written the starter folder tree into that cache, and this
+            // used to save a whole settings object taken BEFORE the seed,
+            // which dropped every one of those folders a line later. The
+            // seeded journal entries reference this medication, so it has to
+            // exist before they are pushed.
+            merged = updateLocalSettings((prev) =>
+              prev.medications?.some((m) => m.id === SEED_MEDICATION.id)
+                ? prev
+                : { ...prev, medications: [...(prev.medications ?? []), SEED_MEDICATION] },
+            );
             // Push the seeded notes to the server BEFORE marking seeding
             // as done. Without this, the flag can land on the server while
             // the notes themselves are still local-only (dirty: 1). If the
             // user signs out before the next sync pass, re-login sees the
             // flag, skips seeding, and the app is empty.
             await sync(supabase, auth.pubkey, auth.encryptionKey, auth.deviceId, undefined, onPushError);
-            // Re-read rather than reuse `merged`: seeding writes the starter
-            // folder tree into settings itself, and a snapshot taken before
-            // the seed would drop those folders one line later. The
-            // medications fold-back above is the same trap, found first.
-            effective = { ...loadLocalSettings(), welcomeNoteSeeded: true };
-            saveLocalSettings(effective);
+            // Against the cache, like every other settings write: seeding
+            // put the starter folder tree there, and a whole object taken
+            // before it would drop those folders.
+            effective = updateLocalSettings((prev) => ({ ...prev, welcomeNoteSeeded: true }));
             // Push the flag now that the notes are safely on the server.
             void syncUserSettings(supabase, auth.pubkey, auth.encryptionKey).catch(
               (err) => console.error('[welcome] push seeded flag failed:', err)
@@ -318,8 +317,10 @@ export function useSyncOrchestrator({
         settingsGenRef.current === settingsGen &&
         hasSettingsPulled()
       ) {
-        effective = { ...effective, firstSeenAt: new Date().toISOString() };
-        saveLocalSettings(effective);
+        const stampedAt = new Date().toISOString();
+        effective = updateLocalSettings((prev) =>
+          prev.firstSeenAt ? prev : { ...prev, firstSeenAt: stampedAt },
+        );
       }
       // Only apply the sync result if no local settings mutation happened
       // while the async sync was in-flight. A stale result would briefly

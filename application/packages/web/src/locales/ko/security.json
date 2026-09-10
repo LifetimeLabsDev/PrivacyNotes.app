@@ -29,10 +29,26 @@
     "pinFourDigits": "PIN은 4자리여야 해요.",
     "pinsDoNotMatch": "PIN이 일치하지 않아요."
   },
+  "timeout": {
+    "min1": "1분",
+    "min5": "5분",
+    "min15": "15분",
+    "min30": "30분",
+    "hour1": "1시간",
+    "hour4": "4시간",
+    "hour8": "8시간",
+    "hour12": "12시간",
+    "browserRestart": "브라우저 재시작 시"
+  },
+  "pinInfo": {
+    "title": "볼 때 PIN 요구",
+    "body": "켜 두면 앱이 이미 잠금 해제되어 있어도 이 항목을 열 때마다 PIN을 입력해야 해요. 자리를 비울 때도 보호해야 하는 민감한 항목에 사용하세요.",
+    "gotIt": "확인했어요"
+  },
   "removePinDialog": {
     "title": "PIN 제거",
     "introWithBio": "제거를 확정하려면 현재 PIN을 입력하세요. 생체 인증 잠금 해제는 유지되지만, 유일한 대안은 복구 문구뿐이에요.",
-    "introNoBio": "제거를 확정하려면 현재 PIN을 입력하세요. 문구 보기가 더 이상 보호되지 않아요.",
+    "introNoBio": "제거를 확정하려면 현재 PIN을 입력하세요. 앞으로 복구 문구 화면은 PIN 없이 열려요.",
     "verifying": "확인 중...",
     "removePin": "PIN 제거"
   },
@@ -102,9 +118,11 @@
     "enable": "생체 인증 잠금 해제 켜기",
     "lockOnOpen": "열 때 앱 잠금",
     "lockOnOpenHint": "앱을 열 때 생체 인증 또는 PIN을 요구해요.",
-    "confirmPinForLock": "이 기능을 켜려면 PIN을 한 번 입력하세요. 복구 문구 사본을 잠가서 PIN으로만 앱을 열 수 있게 해요.",
+    "lockNeedsCredential": "앱 잠금을 쓰려면 이 기기에 PIN이나 생체 인증 잠금 해제가 필요해요.",
+    "setUpPin": "PIN 설정",
+    "confirmPinForLock": "이 기능을 켜려면 PIN을 입력하세요. 복구 문구 사본을 잠가서 PIN으로만 앱을 열 수 있게 해요.",
     "relockAfter": "다시 잠그기까지",
-    "relockHint": "앱 잠금 화면과 PIN 보호 노트에 적용돼요.",
+    "relockHint": "앱 잠금 화면에만 적용돼요.",
     "perDeviceNote": "생체 인증 잠금 해제는 PIN과 같은 노트를 열어요. 이 기기에만 남고 동기화되지 않아요.",
     "disableConfirmTitle": "생체 인증 끄기",
     "disableConfirmLabel": "끄기",

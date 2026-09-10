@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "All",
-    "notes": "Notes",
-    "tasks": "Tasks",
-    "vault": "Vault",
-    "files": "Files",
-    "journals": "Journals",
-    "pinned": "Pinned",
     "trash": "Trash",
-    "markdown": "Markdown",
     "bookmarks": "Bookmarks",
     "contacts": "Contacts"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Sort options",
     "searchPlaceholder": "Search files…",
     "sortName": "Name",
-    "showNotesWithAttachments": "Show notes with attachments",
+    "showNotesWithAttachments": "Show files inside notes",
     "noMatches": "No matches.",
     "pinProtected": "PIN-protected",
     "readOnly": "Read-only",
@@ -78,10 +70,11 @@
     "menuImages": "Images",
     "menuAudio": "Audio",
     "menuDocuments": "Documents",
-    "menuHideNoteAttachments": "Hide note attachments",
-    "menuShowNoteAttachments": "Show note attachments",
+    "menuHideNoteAttachments": "Hide files inside notes",
+    "menuShowNoteAttachments": "Show files inside notes",
     "menuUnpin": "Unpin",
     "menuPin": "Pin",
+    "menuRename": "Rename",
     "menuMoveToTrash": "Move to Trash"
   },
   "vaultItem": {
@@ -116,6 +109,26 @@
     "notesHeading": "Notes",
     "fillOneField": "Fill in at least one field before saving.",
     "expiryNeedsBoth": "Expiry needs both month and year, or leave both empty."
+  },
+  "fileTypes": {
+    "audio": "Audio",
+    "video": "Video",
+    "image": "Image",
+    "pdf": "PDF",
+    "archive": "Archive",
+    "document": "Document",
+    "spreadsheet": "Spreadsheet",
+    "file": "File",
+    "audioRecording": "Audio recording",
+    "pdfDocument": "PDF document",
+    "attachment": "File attachment"
+  },
+  "noteRow": {
+    "noUsername": "No username",
+    "noCardholder": "No cardholder",
+    "noLabel": "No label",
+    "files_one": "{{count}} file",
+    "files_other": "{{count}} files"
   },
   "tagsRail": {
     "showAllItems": "Show all items",

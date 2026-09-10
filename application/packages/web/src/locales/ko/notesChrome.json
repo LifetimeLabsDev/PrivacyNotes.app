@@ -65,6 +65,7 @@
     "copied": "복사됨"
   },
   "burnView": {
+    "title": "Burn After Reading",
     "tagline": "암호화됨. 한순간뿐. 당신 눈에만.",
     "toggleTheme": "테마 전환",
     "checking": "확인 중...",

@@ -57,13 +57,20 @@
     "bitwarden": "Bitwarden'dan şifrelenmemiş .json dışa aktarımı (Tools > Export vault > .json). Oturum bilgileri, kartlar, SSH anahtarları, güvenli notlar ve TOTP kodları hep birlikte gelir.",
     "browserPasswords": "Chrome, Edge, Brave, Opera, Vivaldi, Firefox ya da Safari'den gelen parola dosyası (.csv) ya da Safari'nin yazdığı .zip. Her satır bir oturum bilgisine dönüşür. İşiniz bitince dosyayı silin - parolalarınızı düz metin olarak taşır."
   },
+  "sourceLabel": {
+    "privacynotes": "PrivacyNotes tam yedeği",
+    "browserBookmarks": "Tarayıcı yer imleri",
+    "browserPasswords": "Tarayıcı parolaları",
+    "vcard": "Kişiler (vCard)",
+    "markdownFolder": "Markdown dosyaları"
+  },
   "vaultPick": {
     "intro": "Başka bir parola yöneticisinden giriş bilgilerini, kredi kartlarını ve SSH anahtarlarını içe aktarın."
   },
   "restorePick": {
     "intro": "Daha önce dışa aktardığınız bir PrivacyNotes yedeğini geri yükleyin. Dosyanız cihazınızda okunup şifresi çözülür.",
     "fullBackupTitle": "Tam yedek (.zip)",
-    "fullBackupDesc": "Notları, günlükleri, kasa öğelerini, görevleri, görselleri, sesleri ve dosyaları geri yükleyin. Her şey yeni öğe olarak aktarılır - mevcut verilerin üzerine yazılmaz.",
+    "fullBackupDesc": "Notları, günlükleri, kasa öğelerini, görevleri, görselleri, sesleri ve dosyaları geri yükleyin. Zaten sahip olduğunuz bir not korunur ya da yedekte daha yeni bir kopyası varsa güncellenir.",
     "encryptedBackupTitle": "Şifreli yedek (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Şifreli bir yedeği ifade anahtarınızla geri yükleyin. Bir .pnbackupz dosyası dosyalar dahil her şeyi geri getirir; .pnbackup yalnızca metin içeriği ve üst verileri içerir. Yedeği oluşturan hesapla giriş yapmış olmanız gerekir."
   },

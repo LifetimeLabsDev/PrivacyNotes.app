@@ -28,7 +28,9 @@ export function PinRecoveryForm({
   /** The account's phrase, held by the signed-in app. */
   phrase: string;
   userSettings: UserSettings;
-  onSettingsChange: (next: UserSettings) => void;
+  /** `base` is the copy this surface was rendered with; the parent applies
+   *  only the credential keys that differ between it and `next`. */
+  onSettingsChange: (next: UserSettings, base: UserSettings) => void;
   /** The PIN is gone. Callers move on to setting a new one. */
   onCleared: () => void;
   onCancel: () => void;
@@ -45,7 +47,7 @@ export function PinRecoveryForm({
       setError(t('pinRecovery.wrongPhrase'));
       return;
     }
-    onSettingsChange(clearPin(userSettings, phrase));
+    onSettingsChange(clearPin(userSettings, phrase), userSettings);
     onCleared();
   }
 

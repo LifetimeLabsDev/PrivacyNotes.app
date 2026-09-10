@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Flag, setLanguage, activeLocale, preferredLocale, LANGUAGE_META } from './languages';
+import { Flag, setLanguage, activeLocale, hasExplicitLanguage, preferredLocale, LANGUAGE_META } from './languages';
 import { LOCALE_TO_SLUG } from './localeRoutes';
 import { X } from './icons';
 
@@ -18,7 +18,7 @@ export function LanguageSuggest({ className }: { className?: string }) {
   const [hidden, setHidden] = useState(false);
   const current = activeLocale();
   const suggested = preferredLocale();
-  const explicit = localStorage.getItem('privacynotes.langExplicit') === '1';
+  const explicit = hasExplicitLanguage();
   const dismissed = localStorage.getItem(DISMISS_KEY) === '1';
 
   if (hidden || explicit || dismissed || suggested === current) return null;

@@ -1,10 +1,13 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, Copy, Eye, EyeSlash, FloppyDisk, Info } from './icons';
+import { Check, Copy, Eye, EyeSlash, FloppyDisk, Info, Key, Lock, NotePencil, Shield, Tag } from './icons';
 import { hasPin } from './pin';
 import { PinInfoModal } from './PinInfoModal';
 import { HoverLabel } from './HoverLabel';
+import { exemptOpts } from './i18nExempt';
 import { useCopyToClipboard } from './clipboard';
+import { PasswordField } from './PasswordText';
+import { FIELD_BUTTON, FIELD_CLASS, FieldLabel } from './formFields';
 
 /* ────────────────────────────────────────────────────────────────
  * SshKeyData - the JSON blob stored in the note body for ssh-key
@@ -92,7 +95,7 @@ async function generateEd25519Pair(): Promise<{ privateKey: string; publicKey: s
 function CopyBtn({ onClick, active, title }: { onClick: () => void; active: boolean; title: string }) {
   return (
     <HoverLabel label={title} position="start">
-      <button type="button" onClick={onClick} aria-label={title} className="shrink-0 rounded-md p-2 text-neutral-400 hover:text-accent hover:bg-neutral-100 dark:hover:bg-surface-0 transition">
+      <button type="button" onClick={onClick} aria-label={title} className={FIELD_BUTTON}>
         {active ? (
           <Check size={16} className="text-emerald-500" />
         ) : (
@@ -138,7 +141,10 @@ export function SshKeyForm({
   const { t } = useTranslation('common');
   const data = parseSshKeyBody(body);
   const { copy, copied } = useCopyToClipboard();
-  const pinConfigured = useMemo(() => hasPin(), []);
+  // Never memoize this. Settings opens over a mounted form, so a PIN
+  // can appear or vanish while the toggle below is on screen, and
+  // localStorage fires nothing that would refresh a frozen value.
+  const pinConfigured = hasPin();
   const [showPinInfo, setShowPinInfo] = useState(false);
   const [showPrivate, setShowPrivate] = useState(false);
   const [showPassphrase, setShowPassphrase] = useState(false);
@@ -184,9 +190,7 @@ export function SshKeyForm({
     setGenerating(false);
   }, [noteId, title, onTitleChange, updateBody]);
 
-  const fieldClass =
-    'w-full rounded-md border border-divider bg-surface-1 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-60';
-  const labelClass = 'block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1';
+  const fieldClass = FIELD_CLASS;
 
   return (
     /* Width comes from VAULT_COLUMN on the VaultItem wrapper. */
@@ -194,7 +198,7 @@ export function SshKeyForm({
       <div className="space-y-4">
         {/* Label */}
         <div>
-          <label className={labelClass}>{t('sshKeyForm.label')}</label>
+          <FieldLabel icon={<Tag size={13} />}>{t('sshKeyForm.label')}</FieldLabel>
           <input
             type="text"
             value={data.label}
@@ -224,7 +228,7 @@ export function SshKeyForm({
 
         {/* Public Key */}
         <div>
-          <label className={labelClass}>Public Key</label>
+          <FieldLabel icon={<Key size={13} />}>{t('sshKeyForm.publicKey', exemptOpts('common:sshKeyForm.publicKey'))}</FieldLabel>
           <div className="flex gap-1.5 items-start">
             <textarea
               value={data.publicKey}
@@ -245,9 +249,9 @@ export function SshKeyForm({
 
         {/* Private Key */}
         <div>
-          <label className={labelClass}>Private Key</label>
+          <FieldLabel icon={<Lock size={13} />}>{t('sshKeyForm.privateKey', exemptOpts('common:sshKeyForm.privateKey'))}</FieldLabel>
           <div className="flex gap-1.5 items-start">
-            <div className="relative flex-1">
+            <div className="flex-1 min-w-0">
               {showPrivate ? (
                 <textarea
                   value={data.privateKey}
@@ -264,25 +268,19 @@ export function SshKeyForm({
                   {data.privateKey ? 'Click to reveal private key' : 'No private key stored'}
                 </div>
               )}
-              {data.privateKey && (
-                <div className="absolute end-2 top-2">
-                <HoverLabel label={showPrivate ? 'Hide private key' : 'Show private key'} position="above">
+            </div>
+            {data.privateKey && (
+              <HoverLabel label={showPrivate ? 'Hide private key' : 'Show private key'} position="above">
                 <button
                   type="button"
                   onClick={() => setShowPrivate(!showPrivate)}
                   aria-label={showPrivate ? 'Hide private key' : 'Show private key'}
-                  className="rounded p-1 text-neutral-400 hover:text-accent transition"
+                  className={FIELD_BUTTON}
                 >
-                  {showPrivate ? (
-                    <EyeSlash size={16} />
-                  ) : (
-                    <Eye size={16} />
-                  )}
+                  {showPrivate ? <EyeSlash size={16} /> : <Eye size={16} />}
                 </button>
-                </HoverLabel>
-                </div>
-              )}
-            </div>
+              </HoverLabel>
+            )}
             <CopyBtn
               onClick={() => copy(data.privateKey, 'privateKey')}
               active={copied === 'privateKey'}
@@ -293,35 +291,26 @@ export function SshKeyForm({
 
         {/* Passphrase */}
         <div>
-          <label className={labelClass}>{t('sshKeyForm.passphrase')}</label>
+          <FieldLabel icon={<Shield size={13} />}>{t('sshKeyForm.passphrase')}</FieldLabel>
           <div className="flex gap-1.5">
-            <div className="relative flex-1">
-              <input
-                type={showPassphrase ? 'text' : 'password'}
-                value={data.passphrase}
-                onChange={(e) => updateBody({ passphrase: e.target.value })}
-                placeholder={t('sshKeyForm.passphrasePlaceholder')}
-                disabled={locked}
-                autoComplete="off"
-                className={`${fieldClass} pe-10`}
-              />
-              <div className="absolute end-1 top-1/2 -translate-y-1/2">
-              <HoverLabel label={showPassphrase ? t('sshKeyForm.hide') : t('sshKeyForm.show')} position="above">
+            <PasswordField
+              value={data.passphrase}
+              onChange={(e) => updateBody({ passphrase: e.target.value })}
+              revealed={showPassphrase}
+              disabled={locked}
+              placeholder={t('sshKeyForm.passphrasePlaceholder')}
+              fieldClass={fieldClass}
+            />
+            <HoverLabel label={showPassphrase ? t('sshKeyForm.hide') : t('sshKeyForm.show')} position="above">
               <button
                 type="button"
                 onClick={() => setShowPassphrase(!showPassphrase)}
                 aria-label={showPassphrase ? t('sshKeyForm.hide') : t('sshKeyForm.show')}
-                className="rounded p-1 text-neutral-400 hover:text-accent transition"
+                className={FIELD_BUTTON}
               >
-                {showPassphrase ? (
-                  <EyeSlash size={16} />
-                ) : (
-                  <Eye size={16} />
-                )}
+                {showPassphrase ? <EyeSlash size={16} /> : <Eye size={16} />}
               </button>
-              </HoverLabel>
-              </div>
-            </div>
+            </HoverLabel>
             <CopyBtn
               onClick={() => copy(data.passphrase, 'passphrase')}
               active={copied === 'passphrase'}
@@ -332,7 +321,7 @@ export function SshKeyForm({
 
         {/* Notes */}
         <div>
-          <label className={labelClass}>{t('sshKeyForm.notes')}</label>
+          <FieldLabel icon={<NotePencil size={13} />}>{t('sshKeyForm.notes')}</FieldLabel>
           <textarea
             value={data.notes}
             onChange={(e) => updateBody({ notes: e.target.value })}

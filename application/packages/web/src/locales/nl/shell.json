@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "Alles",
-    "notes": "Notities",
-    "tasks": "Taken",
-    "vault": "Kluis",
-    "files": "Bestanden",
-    "journals": "Dagboeken",
-    "pinned": "Vastgezet",
     "trash": "Prullenbak",
-    "markdown": "Markdown",
     "bookmarks": "Bladwijzers",
     "contacts": "Contacten"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Sorteeropties",
     "searchPlaceholder": "Bestanden zoeken…",
     "sortName": "Naam",
-    "showNotesWithAttachments": "Notities met bijlagen tonen",
+    "showNotesWithAttachments": "Bestanden in notities tonen",
     "noMatches": "Geen resultaten.",
     "pinProtected": "Met PIN beveiligd",
     "readOnly": "Alleen-lezen",
@@ -78,10 +70,11 @@
     "menuImages": "Afbeeldingen",
     "menuAudio": "Audio",
     "menuDocuments": "Documenten",
-    "menuHideNoteAttachments": "Bijlagen van notities verbergen",
-    "menuShowNoteAttachments": "Bijlagen van notities tonen",
+    "menuHideNoteAttachments": "Bestanden in notities verbergen",
+    "menuShowNoteAttachments": "Bestanden in notities tonen",
     "menuUnpin": "Losmaken",
     "menuPin": "Vastzetten",
+    "menuRename": "Naam wijzigen",
     "menuMoveToTrash": "Naar prullenbak"
   },
   "vaultItem": {
@@ -116,6 +109,26 @@
     "notesHeading": "Notities",
     "fillOneField": "Vul minstens één veld in voordat je opslaat.",
     "expiryNeedsBoth": "Vul bij de vervaldatum zowel maand als jaar in, of laat beide leeg."
+  },
+  "fileTypes": {
+    "audio": "Audio",
+    "video": "Video",
+    "image": "Afbeelding",
+    "pdf": "PDF",
+    "archive": "Archief",
+    "document": "Document",
+    "spreadsheet": "Spreadsheet",
+    "file": "Bestand",
+    "audioRecording": "Audio-opname",
+    "pdfDocument": "PDF-document",
+    "attachment": "Bijlage"
+  },
+  "noteRow": {
+    "noUsername": "Geen gebruikersnaam",
+    "noCardholder": "Geen kaarthouder",
+    "noLabel": "Geen label",
+    "files_one": "{{count}} bestand",
+    "files_other": "{{count}} bestanden"
   },
   "tagsRail": {
     "showAllItems": "Alle items tonen",

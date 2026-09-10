@@ -153,8 +153,11 @@
     "textLabel": "連結文字",
     "textPlaceholder": "選填，留空則顯示 URL",
     "selectedTextHint": "將以選取的文字作為連結",
-    "editTextHint": "請在編輯器中修改連結文字",
-    "update": "更新"
+    "update": "更新",
+    "menuOpen": "開啟連結",
+    "menuCopy": "複製連結",
+    "menuEdit": "編輯連結",
+    "menuRemove": "移除連結"
   },
   "audio": {
     "uploadingRecording": "正在上傳錄音…",
@@ -182,6 +185,9 @@
     "copy": "複製",
     "copied": "已複製",
     "copyFailed": "失敗"
+  },
+  "math": {
+    "sourceLabel": "LaTeX 原始碼"
   },
   "noteLink": {
     "open": "開啟筆記",

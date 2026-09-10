@@ -126,6 +126,33 @@ export function clearPinFromSettings(settings: UserSettings): UserSettings {
   return { ...settings, pinSalt: null, pinHash: null, pinIterations: null };
 }
 
+/** A wrap is salt, IV and ciphertext together, the triple syncPinWrap tests. */
+export function hasPinWrap(
+  s: Pick<UserSettings, 'pinWrapSalt' | 'pinWrapIV' | 'pinWrapCiphertext'>,
+): boolean {
+  return (
+    typeof s.pinWrapSalt === 'string' &&
+    typeof s.pinWrapIV === 'string' &&
+    typeof s.pinWrapCiphertext === 'string'
+  );
+}
+
+/**
+ * Whether a PIN change must carry a new wrap of the phrase in the same
+ * write. The wrap follows the hash: both live in the synced settings and
+ * must describe the same PIN, so whenever the account holds a wrap, or the
+ * app lock is on and will need one, the device that changes the PIN re-wraps
+ * under the new PIN. A PIN-only account, with no lock and no wrap, never
+ * gains one: a wrap is a durable copy of the phrase under four digits, and
+ * only a lock to open justifies it. Pinned by tests/pinChange.test.ts.
+ * Spec: ops/docs/archive/sec-65-pin-change-follows.md
+ */
+export function pinChangeNeedsWrap(
+  settings: Pick<UserSettings, 'appLockEnabled' | 'pinWrapSalt' | 'pinWrapIV' | 'pinWrapCiphertext'>,
+): boolean {
+  return settings.appLockEnabled || hasPinWrap(settings);
+}
+
 /**
  * Verify a candidate PIN. Returns `{ valid, needsRehash }`.
  * When `needsRehash` is true, caller should call `setPin()` to upgrade

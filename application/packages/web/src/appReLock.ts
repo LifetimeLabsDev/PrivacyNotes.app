@@ -96,7 +96,7 @@ function readState(lastActivityAt: number): ReLockState {
   return {
     lastActivityAt,
     now: Date.now(),
-    timeoutMinutes: settings.pinTimeoutMinutes,
+    timeoutMinutes: settings.appLockTimeoutMinutes,
     appLockEnabled: settings.appLockEnabled,
     hasWrappedBlob: hasBiometricCredential() || hasPinWrappedPhrase(),
   };

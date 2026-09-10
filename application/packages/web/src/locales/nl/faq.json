@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "Wat synchroniseert er precies tussen mijn apparaten, en wat blijft lokaal?",
       "a": [
-        "Alles wat je zou verwachten, allemaal op je apparaat versleuteld voordat het synchroniseert: notities, taken, dagboeknotities, je kluis en de versleutelde bestanden erin. Je instellingen reizen mee - favoriete tags, sorteer- en weergavevoorkeuren, kleurenthema, je PIN (als gezouten hash, nooit de PIN zelf), het slot op de app, de opzet van je trackers en medicatie, en het automatisch legen van de prullenbak. Stel het één keer in en elk apparaat pikt het op.",
+        "Alles wat je zou verwachten, en dat allemaal versleuteld op je apparaat: notities, taken, dagboeknotities, je kluis en de bestanden erin. Je instellingen reizen mee - favoriete tags, sorteer- en weergavevoorkeuren, kleurenthema, je PIN (als gezouten hash, nooit de PIN zelf), het slot op de app, de opzet van je trackers en medicatie, en het automatisch legen van de prullenbak. Stel het één keer in en elk apparaat pikt het op.",
         "Een paar dingen blijven bewust op het apparaat zelf: lichte of donkere modus (elk apparaat volgt zijn eigen systeemvoorkeur), biometrisch ontgrendelen (gekoppeld aan de hardware van elk apparaat), en of je ontgrendeld bent (de app sluiten vergrendelt altijd opnieuw). De server bewaart alleen ooit versleutelde blobs en kan er niets van lezen."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Ja. Bladwijzers zijn een eigen pijler in de zijbalk, naast notities, taken en dagboeken, en ze zijn gratis in elk plan. Plak een link in de snelinvoerbalk om er een te bewaren. Neem je bestaande mee: exporteer een bladwijzerbestand (.html) uit je browser en zet het neer bij Instellingen > Import & Export > Importeren > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave en Vivaldi bevatten hetzelfde bestand, en je mappen en datums gaan mee. Safari verpakt het in een .zip, die je ongeopend kunt neerzetten.",
         "Je adressen verlaten je apparaat nooit: we halen de pagina achter een link niet op, en daarom draagt een bladwijzer die je zelf toevoegt zijn domein als naam totdat je er een typt. Site-iconen zijn de enige uitzondering, en je kunt ze uitzetten. De export schrijft hetzelfde standaardbestand, dus je bladwijzers vertrekken net zo makkelijk ([importgids](/nl/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "Kan ik een adresboek in PrivacyNotes bijhouden?",
+      "a": [
+        "Ja. Contacten zijn een eigen pijler in de zijbalk, naast notities, taken en dagboeken, en ze zijn gratis in elk plan. Een contact bevat namen, nummers, e-mailadressen, adressen, websites, datums, een bedrijf en een notitie. Tik op een nummer om te bellen, op een e-mailadres om te schrijven, of op een willekeurige regel om die te kopiëren. Al het andere dat je telefoon in het bestand zette, blijft onder **Ook in dit bestand** staan en gaat bij het exporteren weer mee.",
+        "Neem je bestaande mee: exporteer een vCard (.vcf) uit je telefoon, je Mac of Google Contacts en zet die neer bij Instellingen > Import & Export > Importeren > \"Contacts (vCard)\". Zet je later hetzelfde bestand nog eens neer, dan worden mensen die er al staan herkend in plaats van verdubbeld. Het exporteren schrijft een gewone vCard terug, dus je adresboek gaat er net zo makkelijk uit als het erin kwam ([meer over importeren](/nl/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "Wat hoort er in Bladwijzers, Contacten en de Kluis?",
+      "a": [
+        "De delen van je leven die niet in een browserprofiel of in het adresboek van een telefoon thuishoren. Bladwijzers, contacten en de kluis staan naast de exemplaren die je browser en je telefoon allang naar Google, Apple of Mozilla synchroniseren, en ze bewaren wat je daar liever buiten houdt. Alle drie zijn gratis in elk plan.",
+        "- Links over gezondheid, geld, recht of een sollicitatie, op een computer die je met iemand deelt\n- Het opzoekwerk voor één onderwerp, bij elkaar in plaats van verdwaald tussen duizenden browserbladwijzers\n- De huisarts, de advocaat, de verhuurder en de recruiter, buiten een adresboek dat naar iCloud of Google synchroniseert\n- Een contact met alles eromheen: je notities, de datums, het bestand dat hij je stuurde\n- Herstelzinnen, licentiesleutels, kluiscodes en paspoortnummers, geheimen die geen logins zijn\n- De paar inloggegevens die je nooit in een browserextensie wilt hebben",
+        "Elk ervan is een regel in de zijbalk. Ontbreekt er een, open dan de zijbalkopties boven je tags en zet **Tonen in zijbalk** aan. Je haalt je bestaande uit een bestand naar binnen en krijgt ze er net zo weer uit ([bladwijzers](/nl/help/bookmarks/), [contacten](/nl/help/contacts/), [de kluis](/nl/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

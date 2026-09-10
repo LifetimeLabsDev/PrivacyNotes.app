@@ -19,6 +19,7 @@ import type { LocalNote } from './db';
 import { noteToMarkdown } from './noteMarkdown';
 import type { ImageStore } from './imageStore';
 import type { AttachmentStore } from './attachmentStore';
+import { unescapeMarkdownText } from './fileNames';
 import { extractImageIds } from './imageProcessing';
 import { escapeHtml, renderMarkdown, prepareRender, inlineSameOriginImages, inlineRenderedFavicons } from './markdownRender';
 import { parseLoginBody, domainFromUrl } from './LoginForm';
@@ -254,10 +255,13 @@ function rewriteBodyForExport(
     return `images/${uuid}.${ext}`;
   });
   // Rewrite attachments: [name|size|mime](pn:file/<uuid>) → [name](<folder/original name.ext>)
-  result = result.replace(ATTACHMENT_LINK_RE, (match, _name: string, _size: string, _mime: string, uuid: string) => {
+  result = result.replace(ATTACHMENT_LINK_RE, (match, name: string, _size: string, _mime: string, uuid: string) => {
     const info = attachmentMap.get(uuid);
     if (!info) return match;
-    return `[${info.name}](${mdLinkTarget(info.path)})`;
+    // Each reference keeps its OWN label. One file can be referenced from
+    // two notes under two names, so collapsing them onto the first-seen
+    // name would throw one of them away.
+    return `[${name || info.name}](${mdLinkTarget(info.path)})`;
   });
   return result;
 }
@@ -381,14 +385,22 @@ async function buildFullBackupZip(
       try {
         const att = await attachmentStore.getAttachment(uuid);
         if (att) {
+          // The name the user sees is the link text, which a rename changes;
+          // the blob header keeps whatever the file was called when it was
+          // uploaded. The zip follows the reader, so a renamed file arrives
+          // under the name they gave it. Size and mime still come from the
+          // header, because those describe the bytes rather than the label.
+          const shownName = unescapeMarkdownText(allAttLinks.get(uuid)?.name || '') || att.meta.name;
           const folder = attachmentFolder(att.meta.mime);
-          const ext = extensionFromName(att.meta.name, att.meta.mime);
-          const filename = uniqueAttachmentName(att.meta.name, ext, folder, takenAttPaths);
+          const ext = extensionFromName(shownName, att.meta.mime);
+          const filename = uniqueAttachmentName(shownName, ext, folder, takenAttPaths);
           const path = `${folder}/${filename}`;
           zip.file(path, att.data);
-          attachmentMap.set(uuid, { path, name: att.meta.name });
+          attachmentMap.set(uuid, { path, name: shownName });
           manifestAttachments[uuid] = {
-            name: att.meta.name,
+            // Restoring rebuilds the link from this, so a stale name here
+            // would undo the rename on the way back in.
+            name: shownName,
             mime: att.meta.mime,
             size: att.meta.size,
             folder,
@@ -717,7 +729,7 @@ function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): stri
   .content h1, .content h2, .content h3,
   .content h4, .content h5, .content h6 {
     font-family: var(--pn-sans);
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1.3;
     margin-top: 1.6em;
     margin-bottom: 0.4em;
@@ -828,7 +840,7 @@ function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): stri
   .content pre .hljs-template-variable, .content pre .hljs-selector-class, .content pre .hljs-selector-id { color: #6fd7e4; }
   .content pre .hljs-symbol, .content pre .hljs-bullet { color: #f1a5c0; }
   .content pre .hljs-emphasis { font-style: italic; }
-  .content pre .hljs-strong { font-weight: 600; }
+  .content pre .hljs-strong { font-weight: 700; }
   .content img {
     max-width: 100%;
     border-radius: 4px;

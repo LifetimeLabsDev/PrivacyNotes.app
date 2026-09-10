@@ -20,7 +20,7 @@ import {
   printNote as basePrintNote,
   decryptBackup,
 } from '../export';
-import { validateFolders } from '../folders';
+import { applyRestoredFolders, validateFolders } from '../folders';
 import type { ImageStore } from '../imageStore';
 import type { AttachmentStore } from '../attachmentStore';
 import type { UserSettings } from '../userSettings';
@@ -122,7 +122,7 @@ export function useExports({
     await basePrintNote(n, imageStoreRef.current, userSettings.folders);
     recordAdminEvent(supabase, 'export', 'pdf');
   };
-  const importEncryptedBackup = async (file: File): Promise<number> => {
+  const importEncryptedBackup = async (file: File): Promise<{ imported: number; updated: number; unchanged: number }> => {
     const buf = new Uint8Array(await file.arrayBuffer());
     const backup = decryptBackup(buf, auth.encryptionKey);
     recordAdminEvent(supabase, 'import', 'encrypted');
@@ -130,15 +130,26 @@ export function useExports({
     // restored notes' folderId pointers resolve to a real tree.
     const restoredFolders = validateFolders(backup.folders);
     if (restoredFolders.length > 0) {
+      // Through the same helper as the folders-only restore, so a folder the
+      // backup brings back also spends its tombstone. Without that, restoring
+      // a backup to recover a folder you deleted puts it on screen and the
+      // next merge takes it away again.
       mutateSettings((prev) => {
-        const have = new Set(prev.folders.map((f) => f.id));
-        const merged = [...prev.folders, ...restoredFolders.filter((f) => !have.has(f.id))];
-        return { ...prev, folders: validateFolders(merged) };
+        const result = applyRestoredFolders(
+          { folders: prev.folders, deleted: prev.foldersDeleted },
+          restoredFolders,
+        );
+        if (result.added === 0) return prev;
+        return { ...prev, folders: result.tree.folders, foldersDeleted: result.tree.deleted };
       });
     }
     const { applyImport } = await import('../import/apply');
     const parsed = {
       notes: backup.notes.map((n) => ({
+        // The note's own id, which is what turns this from a second copy of
+        // the vault into a repair of it. Backups written before ids were
+        // carried have none, and those still come in as new notes.
+        ...(typeof n.id === 'string' && n.id ? { id: n.id } : {}),
         title: n.title,
         body: n.body,
         tags: n.tags,
@@ -159,7 +170,11 @@ export function useExports({
     };
     const result = await applyImport(parsed);
     if (result.errors.length > 0) throw new Error(result.errors.join('\n'));
-    return result.imported;
+    return {
+      imported: result.imported,
+      updated: result.updated ?? 0,
+      unchanged: result.unchanged ?? 0,
+    };
   };
 
   return {

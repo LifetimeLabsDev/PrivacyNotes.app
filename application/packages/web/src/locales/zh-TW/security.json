@@ -29,10 +29,26 @@
     "pinFourDigits": "PIN 碼必須是 4 位數。",
     "pinsDoNotMatch": "兩次輸入的 PIN 碼不一致。"
   },
+  "timeout": {
+    "min1": "1 分鐘",
+    "min5": "5 分鐘",
+    "min15": "15 分鐘",
+    "min30": "30 分鐘",
+    "hour1": "1 小時",
+    "hour4": "4 小時",
+    "hour8": "8 小時",
+    "hour12": "12 小時",
+    "browserRestart": "瀏覽器重新啟動時"
+  },
+  "pinInfo": {
+    "title": "檢視時需要 PIN 碼",
+    "body": "啟用後，即使應用程式已解鎖，每次開啟這個項目都需要輸入 PIN 碼。適合用在離開座位時仍需保護的敏感項目。",
+    "gotIt": "我知道了"
+  },
   "removePinDialog": {
     "title": "移除 PIN 碼",
     "introWithBio": "輸入目前的 PIN 碼以確認移除。生物辨識解鎖仍會保持啟用，但之後唯一的備援就是你的復原助憶詞。",
-    "introNoBio": "輸入目前的 PIN 碼以確認移除。助憶詞檢視將不再有把關。",
+    "introNoBio": "輸入目前的 PIN 碼以確認移除。之後你的復原助憶詞畫面會直接開啟，不需要 PIN 碼。",
     "verifying": "驗證中…",
     "removePin": "移除 PIN 碼"
   },
@@ -102,9 +118,11 @@
     "enable": "啟用生物辨識解鎖",
     "lockOnOpen": "開啟時鎖定應用程式",
     "lockOnOpenHint": "開啟應用程式時要求生物辨識或 PIN 碼。",
-    "confirmPinForLock": "輸入一次 PIN 碼即可開啟這項功能。它會鎖住一份你的復原助憶詞副本，只有你的 PIN 碼能打開應用程式。",
+    "lockNeedsCredential": "應用程式鎖定需要在這台裝置上設定 PIN 碼或啟用生物辨識解鎖。",
+    "setUpPin": "設定 PIN 碼",
+    "confirmPinForLock": "輸入 PIN 碼即可開啟這項功能。它會鎖住一份你的復原助憶詞副本，只有你的 PIN 碼能打開應用程式。",
     "relockAfter": "重新鎖定間隔",
-    "relockHint": "適用於應用程式鎖定畫面與所有受 PIN 碼保護的筆記。",
+    "relockHint": "僅適用於應用程式鎖定畫面。",
     "perDeviceNote": "生物辨識解鎖開啟的筆記和 PIN 碼相同。它只留在這部裝置上，永不同步。",
     "disableConfirmTitle": "停用生物辨識",
     "disableConfirmLabel": "停用",

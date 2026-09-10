@@ -1,13 +1,15 @@
+import { useState } from 'react';
+import type { UpgradeTrigger } from '../UpgradeModal';
 import type { Dispatch, ReactNode, RefObject, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowUUpLeft as Undo2Icon, ArrowUUpRight as Redo2Icon, X, ArrowLeft, ArrowCounterClockwise, Trash, DotsThreeOutlineVertical, CaretLeft, CaretRight, PencilSimpleSlash, MarkdownLogo, TextAa, Paragraph, MagnifyingGlass, FrameCorners } from '../icons';
+import { ArrowUUpLeft as Undo2Icon, ArrowUUpRight as Redo2Icon, X, ArrowLeft, ArrowCounterClockwise, Trash, DotsThreeOutlineVertical, CaretLeft, CaretRight, PencilSimpleSlash, MarkdownLogo, TextAa, FileMd, Paragraph, MagnifyingGlass, FrameCorners } from '../icons';
 import type { AuthState } from '../auth';
 import type { LocalNote } from '../db';
 import { updateNote } from '../notesRepo';
 import { Editor, type EditorHandle } from '../Editor';
 import { MarkdownSourceEditor } from '../MarkdownSourceEditor';
 import { TagInput, type TagInputHandle } from '../TagInput';
-import type { UserSettings } from '../userSettings';
+import { withCredentialChanges, type UserSettings } from '../userSettings';
 import { NoteOptionsMenu } from '../NoteOptionsMenu';
 import { ProtectedNoteGate } from '../ProtectedNoteGate';
 import { parseLinkBody, linkDomain } from '../linkBody';
@@ -199,7 +201,8 @@ export interface NoteEditorPaneProps {
   handleCloseEditor: () => Promise<void>;
   handleHistory: (action: 'undo' | 'redo') => void;
   handleToggleStar: (id: string, starred: boolean) => Promise<void>;
-  handleTrash: (id: string) => Promise<void>;
+  /** Trash the open note through the shared confirm modal. */
+  requestTrash: (ids: string[]) => void;
   handleRestore: (id: string) => Promise<void>;
   handleDuplicate: (id: string) => Promise<void>;
   handleSetLocked: (id: string, locked: boolean) => Promise<void>;
@@ -225,7 +228,7 @@ export interface NoteEditorPaneProps {
   removeProtectionFor: string | null;
   setRemoveProtectionFor: Dispatch<SetStateAction<string | null>>;
   setHistoryForNoteId: Dispatch<SetStateAction<string | null>>;
-  setShowUpgrade: Dispatch<SetStateAction<null | { trigger: 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage' | 'callout' | 'fileSize' | 'folders' | 'totp' | 'replace' | null }>>;
+  setShowUpgrade: Dispatch<SetStateAction<null | { trigger: UpgradeTrigger }>>;
   setShowSecurity: Dispatch<SetStateAction<null | { tab: 'pin' | 'phrase' | 'biometric'; reason?: 'protect' }>>;
   onPinUnlocked: () => void;
   setFolderPicker: Dispatch<SetStateAction<
@@ -237,6 +240,12 @@ export interface NoteEditorPaneProps {
 
 export function NoteEditorPane(props: NoteEditorPaneProps) {
   const { t } = useTranslation('notes');
+  /** The name the contact form's draft spells, while it is still being typed.
+   *  The title field shows it in grey below, so a new contact wears its name at
+   *  the top before it has a title to wear. Nothing writes it: the form buffers
+   *  its draft and Cancel drops it, so a title stored from a keystroke would
+   *  outlive the edit that spelled it. */
+  const [contactDraftName, setContactDraftName] = useState('');
   // The last sync pass could not push this note (pushFailures.ts).
   const pushFailure = usePushFailure(props.selected.id);
   const { contentWidth, cycleContentWidth } = useTheme();
@@ -297,7 +306,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     handleCloseEditor,
     handleHistory,
     handleToggleStar,
-    handleTrash,
+    requestTrash,
     handleRestore,
     handleDuplicate,
     handleSetLocked,
@@ -553,7 +562,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           spellCheck={spellcheck ? undefined : false}
           placeholder={
             selected.type === 'link' ? (linkDomain(parseLinkBody(selected.body).url) || t('editor.titlePlaceholderLink'))
-            : selected.type === 'contact' ? t('editor.titlePlaceholderContact')
+            : selected.type === 'contact' ? (contactDraftName || t('editor.titlePlaceholderContact'))
             : selected.type === 'login' ? t('editor.titlePlaceholderLogin')
             : selected.type === 'card' ? t('editor.titlePlaceholderCard')
             : selected.type === 'ssh-key' ? t('editor.titlePlaceholderSshKey')
@@ -743,7 +752,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               // width would read as the same control drawn twice. Zen hides
               // the header's copy, so zen is where the cell earns its place.
               {...(zenMode ? { onShare: () => setShowShareMenu(true) } : {})}
-              onTrash={() => void handleTrash(selected.id)}
+              onTrash={() => requestTrash([selected.id])}
               onConvertType={() => void convertNoteType()}
               {...(canSwitchEditorMode
                 ? { editorMode: selectedEditorMode, onToggleEditorMode: toggleEditorMode }
@@ -812,8 +821,8 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             }}
             onCancel={() => setSelectedId(null)}
             userSettings={userSettings}
-            onSettingsChange={(next) => {
-              mutateSettings(() => next);
+            onSettingsChange={(next, base) => {
+              mutateSettings((prev) => withCredentialChanges(prev, base, next));
             }}
           />
         </div>
@@ -852,6 +861,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               key={selected.id}
               note={selected}
               isTrash={view === 'trash'}
+              onDraftName={setContactDraftName}
               onTitleChange={handleTitleChange}
               onBodyChange={(id, body) => void handleBodyChange(id, body)}
               onPinProtectedChange={handleSetPinProtected}
@@ -874,7 +884,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             onBodyChange={handleBodyChange}
             onPinProtectedChange={handleSetPinProtected}
             isPro={auth.isPro}
-            onOpenUpgrade={() => setShowUpgrade({ trigger: 'totp' })}
+            onOpenUpgrade={(trigger) => setShowUpgrade({ trigger })}
           />
           )}
         </div>
@@ -1071,6 +1081,15 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                 toolbarVisible={zenMode ? zenToolbar : toolbarVisible}
                 isPro={auth.isPro ?? false}
                 onOpenUpgrade={(trigger) => setShowUpgrade({ trigger })}
+                // A note created from a single uploaded file carries that
+                // file's name as its title too, so a rename in the chip
+                // takes the title with it. The other direction is left
+                // alone: a note title is free text everywhere else, and
+                // rewriting the body from a text field on every keystroke
+                // is the wrong trade.
+                onRenameFile={selected.type === 'file'
+                  ? (name) => { void handleTitleChange(selected.id, name); }
+                  : undefined}
                 bodyControls={bodyControls}
               />
             )}
@@ -1133,9 +1152,20 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                   <button
                     type="button"
                     onClick={toggleEditorMode}
-                    className="shrink-0 select-none text-xs text-neutral-400 dark:text-neutral-600 hover:text-neutral-600 dark:hover:text-neutral-400 hover:underline transition"
+                    className="shrink-0 select-none inline-flex items-center gap-1.5 text-xs text-neutral-400 dark:text-neutral-600 hover:text-neutral-600 dark:hover:text-neutral-400 transition group/mode"
                   >
-                    {selectedEditorMode === 'markdown' ? t('editor.showFormatted') : t('editor.showMarkdown')}
+                    {/* The same two glyphs the note options menu shows for this
+                        toggle, and the same state decides which: one control in
+                        two places must not be learned twice. Accent, like the
+                        invisible-characters glyph at the other end of this
+                        footer. The underline moves onto the label alone, so the
+                        glyph is not dragged into it. */}
+                    {selectedEditorMode === 'markdown'
+                      ? <TextAa size={14} className="text-accent shrink-0" aria-hidden="true" />
+                      : <FileMd size={14} className="text-accent shrink-0" aria-hidden="true" />}
+                    <span className="group-hover/mode:underline">
+                      {selectedEditorMode === 'markdown' ? t('editor.showFormatted') : t('editor.showMarkdown')}
+                    </span>
                   </button>
                 )}
               </div>

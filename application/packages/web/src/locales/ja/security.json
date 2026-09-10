@@ -29,10 +29,26 @@
     "pinFourDigits": "PINは4桁で入力してください。",
     "pinsDoNotMatch": "PINが一致しません。"
   },
+  "timeout": {
+    "min1": "1分",
+    "min5": "5分",
+    "min15": "15分",
+    "min30": "30分",
+    "hour1": "1時間",
+    "hour4": "4時間",
+    "hour8": "8時間",
+    "hour12": "12時間",
+    "browserRestart": "ブラウザの再起動時"
+  },
+  "pinInfo": {
+    "title": "表示にPINを要求",
+    "body": "有効にすると、アプリのロックが解除されていても、この項目を開くたびにPINの入力が必要になります。席を外すあいだも保護しておきたい大切な項目に使ってください。",
+    "gotIt": "了解しました"
+  },
   "removePinDialog": {
     "title": "PINを削除",
     "introWithBio": "削除を確認するため、現在のPINを入力してください。生体認証によるロック解除は有効のままですが、その代替手段はリカバリーフレーズだけになります。",
-    "introNoBio": "削除を確認するため、現在のPINを入力してください。フレーズの表示はPINで保護されなくなります。",
+    "introNoBio": "削除を確認するため、現在のPINを入力してください。今後、リカバリーフレーズの画面はPINなしで開きます。",
     "verifying": "確認中...",
     "removePin": "PINを削除"
   },
@@ -102,9 +118,11 @@
     "enable": "生体認証によるロック解除を有効にする",
     "lockOnOpen": "起動時にアプリをロック",
     "lockOnOpenHint": "アプリを開くときに、生体認証またはPINを要求します。",
-    "confirmPinForLock": "オンにするには、PINを一度入力してください。リカバリーフレーズのコピーをロックし、PINだけがアプリを開けるようにします。",
+    "lockNeedsCredential": "アプリロックには、このデバイスでPINまたは生体認証によるロック解除が必要です。",
+    "setUpPin": "PINを設定",
+    "confirmPinForLock": "オンにするには、PINを入力してください。リカバリーフレーズのコピーをロックし、PINだけがアプリを開けるようにします。",
     "relockAfter": "再ロックまでの時間",
-    "relockHint": "アプリのロック画面と、PINで保護されたすべてのノートに適用されます。",
+    "relockHint": "アプリのロック画面にのみ適用されます。",
     "perDeviceNote": "生体認証によるロック解除は、PINと同じノートを開きます。このデバイスに残り、同期されることはありません。",
     "disableConfirmTitle": "生体認証を無効化",
     "disableConfirmLabel": "無効にする",

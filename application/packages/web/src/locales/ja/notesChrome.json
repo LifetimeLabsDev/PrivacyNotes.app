@@ -65,6 +65,7 @@
     "copied": "コピーしました"
   },
   "burnView": {
+    "title": "Burn After Reading",
     "tagline": "暗号化。つかの間。あなたの目だけに。",
     "toggleTheme": "テーマを切り替え",
     "checking": "確認中...",

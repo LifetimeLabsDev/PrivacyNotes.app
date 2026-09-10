@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "Qu'est-ce qui se synchronise exactement entre mes appareils, et qu'est-ce qui reste local ?",
       "a": [
-        "Tout ce que tu attends, chaque élément chiffré sur ton appareil avant la sync : notes, tâches, entrées de journal, ton coffre et les fichiers chiffrés qu'il contient. Tes réglages te suivent aussi - étiquettes favorites, préférences de tri et d'affichage, thème de couleur, ton PIN (sous forme de hash salé, jamais le PIN lui-même), verrouillage de l'appli, configuration des suivis et des médicaments, et vidage automatique de la corbeille. Configure une fois, chaque appareil suit.",
+        "Tout ce que tu attends, et le tout chiffré sur ton appareil : notes, tâches, entrées de journal, ton coffre et les fichiers qu'il contient. Tes réglages te suivent aussi - étiquettes favorites, préférences de tri et d'affichage, thème de couleur, ton PIN (sous forme de hash salé, jamais le PIN lui-même), verrouillage de l'appli, configuration des suivis et des médicaments, et vidage automatique de la corbeille. Configure une fois, chaque appareil suit.",
         "Quelques éléments restent volontairement locaux : mode clair ou sombre (chaque appareil suit son propre réglage système), déverrouillage biométrique (lié au matériel de chaque appareil) et ton état de déverrouillage (fermer l'appli reverrouille toujours). Le serveur ne stocke jamais que des blobs chiffrés et ne peut rien en lire."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Oui. Les favoris forment un pilier à part dans la barre latérale, à côté des notes, des tâches et du journal, et ils sont gratuits dans toutes les formules. Colle un lien dans la barre d’ajout rapide pour en enregistrer un. Pour transférer les tiens, exporte un fichier de favoris (.html) depuis ton navigateur, puis dépose-le dans Paramètres > Import & Export > Importer > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave et Vivaldi contiennent le même fichier, et tes dossiers et tes dates suivent. Safari l’enveloppe dans un .zip, que tu peux déposer sans l’ouvrir.",
         "Tes adresses ne quittent jamais ton appareil : nous ne chargeons pas la page derrière un lien, et c’est pourquoi un favori que tu ajoutes toi-même porte son domaine comme nom jusqu’à ce que tu en saisisses un. Les icônes de site sont la seule exception, et tu peux les désactiver. L’export écrit le même fichier standard, tes favoris repartent donc aussi facilement ([guide d’import](/fr/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "Puis-je garder un carnet d’adresses dans PrivacyNotes ?",
+      "a": [
+        "Oui. Les contacts forment un pilier à part dans la barre latérale, à côté des notes, des tâches et du journal, et ils sont gratuits dans toutes les formules. Une fiche réunit les noms, les numéros, les e-mails, les adresses, les sites, les dates, une société et une note. Touche un numéro pour l’appeler, une adresse e-mail pour écrire, ou n’importe quelle ligne pour la copier. Tout ce que ton téléphone a écrit d’autre dans le fichier reste sous **Aussi dans ce fichier** et repart tel quel à l’export.",
+        "Pour transférer les tiens, exporte une vCard (.vcf) depuis ton téléphone, ton Mac ou Google Contacts, puis dépose-la dans Paramètres > Import & Export > Importer > \"Contacts (vCard)\". Redépose le même fichier plus tard et les personnes déjà présentes sont reconnues au lieu d’être dupliquées. L’export réécrit une vCard standard, donc ton carnet ressort aussi facilement qu’il est entré ([en savoir plus sur l’import](/fr/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "Que garder dans Signets, Contacts et le Coffre ?",
+      "a": [
+        "Les parts de ta vie qui n’ont rien à faire dans un profil de navigateur ou dans le carnet d’adresses d’un téléphone. Les signets, les contacts et le Coffre se placent à côté de ceux que ton navigateur et ton téléphone synchronisent déjà vers Google, Apple ou Mozilla, et ils gardent ce que tu préfères tenir à l’écart. Les trois sont gratuits dans toutes les formules.",
+        "- Les liens sur la santé, l’argent, le droit ou une recherche d’emploi, sur un ordinateur que tu partages\n- La documentation d’un sujet, réunie au lieu d’être noyée parmi des milliers de favoris\n- Le médecin, l’avocate, le propriétaire et le recruteur, hors d’un carnet d’adresses synchronisé vers iCloud ou Google\n- Un contact avec ce qui va avec : tes notes, les dates, le fichier qu’il t’a envoyé\n- Phrases de récupération, clés de licence, codes de coffre-fort et numéros de passeport, des secrets qui ne sont pas des identifiants\n- Les quelques identifiants que tu ne veux jamais dans une extension de navigateur",
+        "Chacun est une ligne de la barre latérale. S’il en manque une, ouvre les options de la barre latérale au-dessus de tes tags et active **Afficher dans la barre latérale**. Tu importes tes éléments existants depuis un fichier et tu les ressors de la même façon ([signets](/fr/help/bookmarks/), [contacts](/fr/help/contacts/), [le Coffre](/fr/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

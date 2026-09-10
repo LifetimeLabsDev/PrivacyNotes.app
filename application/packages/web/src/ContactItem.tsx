@@ -78,12 +78,16 @@ function toDraft(c: Contact): Contact {
 export function ContactItem({
   note,
   isTrash,
+  onDraftName,
   onTitleChange,
   onBodyChange,
   onPinProtectedChange,
 }: {
   note: LocalNote;
   isTrash: boolean;
+  /** The name the draft spells, reported on every keystroke so the header can
+   *  show it while it is typed. '' whenever the form is not open. */
+  onDraftName: (name: string) => void;
   onTitleChange: (id: string, title: string) => void;
   onBodyChange: (id: string, body: string) => void;
   onPinProtectedChange: (id: string, value: boolean) => void;
@@ -103,6 +107,18 @@ export function ContactItem({
       setDraftPinProtected(note.pinProtected === 1);
     }
   }, [saved, note.pinProtected, editing]);
+
+  // Hand the header the name being typed, so it appears at the top as the name
+  // fields are filled in. A REPORT, never a write: the draft is buffered and
+  // Cancel drops it, so a title stored from a keystroke would outlive the edit
+  // that spelled it. The header shows it in grey, and Done makes it the title.
+  useEffect(() => {
+    onDraftName(editing ? contactDisplayName('', draft) : '');
+  }, [draft, editing, onDraftName]);
+
+  // Leaving the contact takes the reported name with it, so the next note in
+  // the pane cannot inherit a name that was typed into this one.
+  useEffect(() => () => onDraftName(''), [onDraftName]);
 
   // A note switch resets everything: the component is keyed by note id in
   // NoteEditorPane, so this covers a same-id refresh too.

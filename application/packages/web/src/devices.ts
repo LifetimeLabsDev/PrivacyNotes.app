@@ -357,12 +357,48 @@ export function isStaleTokenLinkError(
  * this signal.
  * Spec: ops/docs/auth-session-audit-2026-08.md (the stale cached token at link-pubkey)
  */
+/**
+ * True when link-pubkey answers that the auth backend rate limited the
+ * token check. Distinct from `isAuthUnreachableLinkError` on purpose: that
+ * one means retry the same token shortly, and this one means stop, because
+ * retrying is what the limit is asking you not to do.
+ */
+export function isAuthRateLimitedLinkError(
+  err: FnError | null | undefined,
+  body: unknown,
+): boolean {
+  if (!err || err.context?.status !== 429) return false;
+  return (body as { error?: string } | null)?.error === 'auth_rate_limited';
+}
+
 export function isAuthUnreachableLinkError(
   err: FnError | null | undefined,
   body: unknown,
 ): boolean {
   if (!err || err.context?.status !== 503) return false;
   return (body as { error?: string } | null)?.error === 'auth_unreachable';
+}
+
+/**
+ * True when link-pubkey received no Authorization header at all. The app
+ * sets that header explicitly on every link call, from a token it has
+ * already proven non-empty, so this client cannot produce the refusal on
+ * its own: something between the app and the server removed the header.
+ * A content filter with HTTPS filtering is the known cause - a native
+ * wrapper serves its page from tauri.localhost, so every call to the sync
+ * host counts as third-party, and filters offer a switch that strips the
+ * header on exactly those. Retrying is useless and re-minting is worse, so
+ * the caller answers with words instead of another attempt.
+ *
+ * Exact-match like its siblings: a 401 with any other body is a different
+ * refusal.
+ */
+export function isMissingBearerLinkError(
+  err: FnError | null | undefined,
+  body: unknown,
+): boolean {
+  if (!err || err.context?.status !== 401) return false;
+  return (body as { error?: string } | null)?.error === 'missing_bearer';
 }
 
 export type RegisterDeviceArgs = {

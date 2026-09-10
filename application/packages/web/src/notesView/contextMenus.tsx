@@ -22,7 +22,7 @@ import {
   iconNewJournal, iconNewLogin, iconNewTask,
   iconNote, iconPin, iconReadOnly, iconRestore, iconSettings,
   iconShield, iconSidebar,
-  iconSignOut, iconTrash, iconUpload, iconZen, NEW_GLYPHS,
+  iconSignOut, iconTrash, iconUpload, iconZen, NEW_GLYPHS, EXPORT_GLYPHS,
 } from '../icons';
 import { noteActionGuards } from '../noteActionGuards';
 import type { ImageStore } from '../imageStore';
@@ -86,6 +86,9 @@ export type ContextMenuDeps = {
   onSetPin: () => void;
   handleDuplicate: (id: string) => Promise<void> | void;
   handleTrash: (id: string) => Promise<void> | void;
+  /** Trash one note through the shared confirm modal, the same question a
+   *  whole selection gets. */
+  requestTrash: (ids: string[]) => void;
   /** Pro: open the folder picker for this note. */
   onMoveToFolder: (id: string) => void;
   handleBurnShare: (n: LocalNote) => Promise<void> | void;
@@ -305,22 +308,22 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
       { type: 'separator' },
       {
         label: i18n.t('shell:contextMenu.exportAsMarkdown'),
-        icon: iconDownload(),
+        icon: <EXPORT_GLYPHS.markdown size={14} aria-hidden="true" />,
         onSelect: () => void deps.exportSingleMarkdown(n),
       },
       {
         label: i18n.t('shell:contextMenu.exportAsHtml'),
-        icon: iconDownload(),
+        icon: <EXPORT_GLYPHS.html size={14} aria-hidden="true" />,
         onSelect: () => void deps.exportSingleHtml(n),
       },
       {
         label: i18n.t('shell:contextMenu.printSaveAsPdf'),
-        icon: iconDownload(),
+        icon: <EXPORT_GLYPHS.print size={14} aria-hidden="true" />,
         onSelect: () => void deps.printNote(n),
       },
       {
         label: i18n.t('shell:contextMenu.shareBurnAfterReading'),
-        icon: <span className="text-orange-500">{iconFlame()}</span>,
+        icon: <span className="text-orange-500"><EXPORT_GLYPHS.burn size={14} aria-hidden="true" /></span>,
         onSelect: () => void deps.handleBurnShare(n),
       },
       { type: 'separator' },
@@ -328,7 +331,7 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
         label: i18n.t('shell:contextMenu.moveToTrash'),
         icon: iconTrash(),
         destructive: true,
-        onSelect: () => void deps.handleTrash(n.id),
+        onSelect: () => deps.requestTrash([n.id]),
       },
     ];
   };

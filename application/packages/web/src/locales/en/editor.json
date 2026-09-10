@@ -154,8 +154,11 @@
     "textLabel": "Link text",
     "textPlaceholder": "Optional, leave blank to show URL",
     "selectedTextHint": "Selected text will be used as the link",
-    "editTextHint": "Edit the link text in the editor",
-    "update": "Update"
+    "update": "Update",
+    "menuOpen": "Open link",
+    "menuCopy": "Copy link",
+    "menuEdit": "Edit link",
+    "menuRemove": "Remove link"
   },
   "audio": {
     "uploadingRecording": "Uploading recording...",
@@ -185,6 +188,9 @@
     "copy": "Copy",
     "copied": "Copied",
     "copyFailed": "Failed"
+  },
+  "math": {
+    "sourceLabel": "LaTeX source"
   },
   "noteLink": {
     "open": "Open note",

@@ -44,13 +44,14 @@ import { LogoIcon } from './LogoIcon';
 import { TypewriterLine } from './LoadingScreen';
 import { toggleHiddenView,
   loadLocalSettings,
-  saveLocalSettings,
+  updateLocalSettings,
+  withCredentialChanges,
   type UserSettings,
 } from './userSettings';
 import { SettingsShell } from './SettingsShell';
 import { iconSignOut } from './icons';
 import { activeLocale } from './languages';
-import { UpgradeModal } from './UpgradeModal';
+import { UpgradeModal, type UpgradeTrigger } from './UpgradeModal';
 import { PinGateModal } from './ProtectedNoteGate';
 import { shouldPromptForPin, markPinUnlocked, hasPin, syncPinCache } from './pin';
 import { syncPinWrap } from './pinRecovery';
@@ -131,6 +132,7 @@ import { setAndroidBackHandler } from './androidBack';
 import { TagsRail } from './TagsRail';
 import type { FolderSortDir, FolderSortField } from './folders';
 import { VIEW_NOTE_TYPES, type View } from './views';
+import { resolveStartView } from './viewRows';
 import { CollapsedSidebar } from './CollapsedSidebar';
 import { FilesList, extractFileItems, type FileType } from './FilesList';
 import { FILE_ACCEPT } from './attachmentValidation';
@@ -143,6 +145,9 @@ import {
 import {
   compareNotes,
   deriveDisplayTitle,
+  deriveTitleFromContent,
+  hasStructuredBody,
+  isPlaceholderTitle,
   noteLinkName,
   deriveExcerpt,
   noteSaysPhrase,
@@ -377,10 +382,7 @@ function AuthenticatedView({
   // UpgradeModal opens from Settings and from any Pro-gated action.
   // The optional trigger biases the intro copy so the user knows
   // what they just tried to do.
-  const [showUpgrade, setShowUpgrade] = useState<
-    | null
-    | { trigger: 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage' | 'callout' | 'fileSize' | 'folders' | 'totp' | 'replace' | null }
-  >(null);
+  const [showUpgrade, setShowUpgrade] = useState<null | { trigger: UpgradeTrigger }>(null);
   const [exportProgress, setExportProgress] = useState<{ status: string; done: boolean; error?: string } | null>(null);
   // Note-options "..." menu state. `null` = closed.
   const [showNoteOptions, setShowNoteOptions] = useState(false);
@@ -477,7 +479,25 @@ function AuthenticatedView({
   const [burnCopied, setBurnCopied] = useState(false);
   const [burnError, setBurnError] = useState<string | null>(null);
   const [burnImagesStripped, setBurnImagesStripped] = useState(false);
-  const [view, setView] = useState<View>('home');
+  /**
+   * The view the app opens on, from the Start in setting.
+   *
+   * Read straight from local storage rather than from the userSettings state
+   * below, because that hook is declared further down and hook order is fixed.
+   * The read is pure and the blob is already in memory, so paying for it twice
+   * at mount costs nothing.
+   *
+   * Consumed once, here. A settings blob that arrives later from another
+   * device does NOT move the person to a different list: by then they are
+   * looking at one. A choice made elsewhere applies at the next cold start,
+   * and anything that navigates on its own - a file association, an OAuth
+   * return, a search hit - runs after mount and simply lands on top.
+   * Spec: ops/docs/plans/start-view.md (cold start only)
+   */
+  const [view, setView] = useState<View>(() => {
+    const stored = loadLocalSettings();
+    return resolveStartView(stored.startView, stored.hiddenViews);
+  });
   /** Vault sub-filter: narrow by item type within the vault view. */
   type VaultFilter = 'all' | 'login' | 'card' | 'ssh-key';
   const [vaultFilter, setVaultFilter] = useState<VaultFilter>('all');
@@ -768,9 +788,7 @@ function AuthenticatedView({
   }
 
   function handleTasksViewChange(nextView: UserSettings['tasksView']) {
-    const next = { ...userSettings, tasksView: nextView };
-    setUserSettings(next);
-    saveLocalSettings(next);
+    mutateSettings((prev) => ({ ...prev, tasksView: nextView }));
   }
 
   // Mirror showDoneTasks onto synced settings. Local alias keeps all
@@ -778,11 +796,10 @@ function AuthenticatedView({
   // lives on `userSettings.tasksShowDone`.
   const showDoneTasks = userSettings.tasksShowDone;
   function setShowDoneTasks(updater: boolean | ((v: boolean) => boolean)) {
-    const nextVal =
-      typeof updater === 'function' ? updater(showDoneTasks) : updater;
-    const next = { ...userSettings, tasksShowDone: nextVal };
-    setUserSettings(next);
-    saveLocalSettings(next);
+    mutateSettings((prev) => ({
+      ...prev,
+      tasksShowDone: typeof updater === 'function' ? updater(prev.tasksShowDone) : updater,
+    }));
   }
 
   /**
@@ -1051,7 +1068,10 @@ function AuthenticatedView({
   // the target note's editor is mounted, scroll to the attachment/image and
   // flash it (GitHub #167). State (not a ref) so the effect below re-runs
   // when a new target is set while the same note is already open.
-  const [pendingFileScroll, setPendingFileScroll] = useState<{ noteId: string; uuid: string } | null>(null);
+  // `rename` rides along so the Files pillar's Rename row waits on the same
+  // gate: the field is opened by the chip inside the live editor, so it
+  // cannot run until that editor is mounted and settled.
+  const [pendingFileScroll, setPendingFileScroll] = useState<{ noteId: string; uuid: string; rename?: boolean } | null>(null);
   useEffect(() => {
     if (!pendingFileScroll) return;
     // User moved on to a different note - drop the stale target.
@@ -1063,7 +1083,8 @@ function AuthenticatedView({
     // the target; pinUnlockVersion bumps re-run this effect after unlock.
     const handle = editorRef.current;
     if (!handle) return;
-    handle.scrollToFile(pendingFileScroll.uuid);
+    if (pendingFileScroll.rename) handle.startRenameFile(pendingFileScroll.uuid);
+    else handle.scrollToFile(pendingFileScroll.uuid);
     setPendingFileScroll(null);
   }, [pendingFileScroll, selectedId, pinUnlockVersion]);
   // Jump-to-text, the twin of the file jump above (GitHub #288): the open
@@ -1437,14 +1458,25 @@ function AuthenticatedView({
   // pass picks up the dirty flag and pushes to the server - no need
   // for a separate debounced push, which was the source of the toggle
   // flicker bug (GitHub #71).
+  //
+  // The updater runs against the CACHE, synchronously, and React state
+  // follows: state can be older than the cache (on a fresh device it is
+  // the defaults until the first pull has been applied to it), and a
+  // change built from that copy would carry an empty folder tree to the
+  // server. Callers may rely on the updater having run by the time this
+  // returns. The generation only moves for a real change, so a no-op
+  // never stops an in-flight pass from delivering its result.
   const mutateSettings = useCallback(
     (updater: (prev: UserSettings) => UserSettings) => {
-      settingsGenRef.current += 1;
-      setUserSettings((prev) => {
-        const next = updater(prev);
-        queueMicrotask(() => saveLocalSettings(next));
-        return next;
+      let changed = false;
+      const next = updateLocalSettings((prev) => {
+        const out = updater(prev);
+        changed = out !== prev;
+        return out;
       });
+      if (!changed) return;
+      settingsGenRef.current += 1;
+      setUserSettings(next);
     },
     []
   );
@@ -1579,9 +1611,19 @@ function AuthenticatedView({
       void (async () => {
         const n = await getNote(id);
         if (!n) return;
+        // Structured notes are named by their own form, or at render time from
+        // their own body: a bookmark by its domain, a contact by the name its
+        // fields spell, a vault item by what its form derives. Every one of
+        // those answers is recomputed each time it is shown, so a copy stored
+        // here is a name that goes stale the moment the body changes - which
+        // is exactly what the bookmarks pillar forbids (GitHub #305).
+        if (hasStructuredBody(n.type)) return;
         if ((n.title ?? '').trim()) return;
-        const derived = deriveDisplayTitle(n);
-        if (!derived || derived === 'Untitled') return;
+        // The value that CONTENT spells, never a display stand-in: this line
+        // writes into the note's own title and syncs it, so "Untitled" or
+        // "Unnamed contact" landing here would become the user's data.
+        const derived = deriveTitleFromContent(n);
+        if (!derived) return;
         // Use existing updatedAt - committing a derived title shouldn't
         // re-sort the note to the top of the list.
         const ts = n.updatedAt ?? new Date().toISOString();
@@ -1664,6 +1706,41 @@ function AuthenticatedView({
       runSync().then(refreshStorage);
     })();
   }, [trashedNotes, userSettings.autoDeleteTrashDays, refresh, runSync, refreshStorage]);
+
+  /**
+   * Clear the placeholder titles a former version stored.
+   *
+   * Until v0.508.3 the derived-title commit above wrote whatever the list was
+   * printing into the note's own title field, and for a structured note that
+   * was a stand-in: the words "Unnamed contact", "Untitled login". A stand-in
+   * is not a name, and a stored one is not empty, so it froze the step that
+   * fills the real name in - a contact kept "Unnamed contact" on its card
+   * after its owner typed one (GitHub #305). Clearing it changes nothing on
+   * screen, because the same word is printed from the fallback, and it hands
+   * the field back to the form.
+   *
+   * Once per app open, over the notes already loaded. The old updatedAt is
+   * kept, for the reason the commit above keeps it and one more: it is the
+   * age signal the trash auto-purge reads. Each device repairs its own copy,
+   * and repairing an already-clean one is a no-op, so the pass is safe to
+   * meet the same row twice.
+   */
+  const titleRepairRanRef = useRef(false);
+  useEffect(() => {
+    if (titleRepairRanRef.current) return;
+    if (notes.length === 0) return;
+    titleRepairRanRef.current = true;
+    const stuck = notes.filter(isPlaceholderTitle);
+    if (stuck.length === 0) return;
+    void (async () => {
+      for (const n of stuck) {
+        patchLocal(n.id, { title: '' }, n.updatedAt);
+        await updateNote(n.id, { title: '' }, n.updatedAt);
+      }
+      scheduleSync();
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notes]);
 
   /**
    * The rating ask.
@@ -1816,6 +1893,28 @@ function AuthenticatedView({
   const [fileItems, setFileItems] = useState(rawFileItems);
   /** Blob uuids a full listing did not find, held for this session only. */
   const absentBlobs = useRef<Set<string>>(new Set());
+  /**
+   * One count per pillar row, for the two surfaces that draw those rows.
+   *
+   * They used to take nine count props each, listed again at each call site,
+   * so adding a pillar meant four edits before its number appeared anywhere.
+   * Markdown is deliberately absent when no folder is open: the row then shows
+   * no count at all, where a 0 would read as an empty folder.
+   * Spec: ops/docs/plans/start-view.md (one counts object)
+   */
+  const viewCounts = useMemo<Partial<Record<View, number>>>(() => ({
+    starred: starredCount,
+    all: plainNotesCount,
+    tasks: openTaskCount,
+    vault: vaultCount,
+    files: fileItems.length,
+    journal: journalCount,
+    contacts: contactsCount,
+    bookmarks: bookmarksCount,
+    markdown: markdownDir?.entries.length,
+  }), [starredCount, plainNotesCount, openTaskCount, vaultCount, fileItems.length,
+       journalCount, contactsCount, bookmarksCount, markdownDir]);
+
   useEffect(() => {
     const zeroSize = rawFileItems.filter((f) => f.kind === 'image' && f.size === 0);
     if (zeroSize.length === 0) { setFileItems(rawFileItems); return; }
@@ -2632,6 +2731,20 @@ function AuthenticatedView({
     setWikiLinkNoteTitles(tiptap, noteTitles);
   });
 
+  /** The folder a new item files into: the one the user is looking at. The
+   *  Unfiled sentinel is a filter, not a folder, so an item created under it
+   *  stays unfiled, which is also what keeps it visible there. */
+  function inheritedFolderId(): string | null {
+    return selectedFolder === UNFILED_ID ? null : selectedFolder;
+  }
+
+  /** The tags a new item carries: the tag the list is filtered by, so the item
+   *  appears in the list it was created from. The untagged sentinel is a
+   *  filter too, and carries nothing. */
+  function inheritedTags(): string[] {
+    return selectedTag && selectedTag !== '__untagged__' ? [selectedTag] : [];
+  }
+
   async function handleNew(vaultType?: 'login' | 'card' | 'ssh-key', overrideView?: View, overrideFolderId?: string | null, overrideStarred?: boolean) {
     // overrideView: when the context menu "New X" fires from a different
     // pillar, the React closure's `view` is stale (re-render hasn't
@@ -2641,9 +2754,7 @@ function AuthenticatedView({
     // Folders method A - create in context: a new note files into the
     // selected folder. The folder menu's "New note here" passes an
     // explicit override for the same stale-closure reason as overrideView.
-    // The Unfiled sentinel is a filter, not a folder - a new note under it
-    // stays unfiled (folderId null), which also keeps it visible there.
-    const inheritFolderId = overrideFolderId ?? (selectedFolder === UNFILED_ID ? null : selectedFolder);
+    const inheritFolderId = overrideFolderId ?? inheritedFolderId();
 
     // ── Bug fix #46a: reuse current empty note instead of creating duplicates ──
     // If the user is already looking at an empty untouched note (type='note'),
@@ -2714,9 +2825,7 @@ function AuthenticatedView({
     const isTasks = effectiveView === 'tasks';
     // Vault view: create structured items (login, card, ssh-key).
     const isVault = effectiveView === 'vault';
-    const inheritTags = selectedTag && selectedTag !== '__untagged__'
-      ? [selectedTag]
-      : undefined;
+    const inheritTags = inheritedTags();
     // Titles are written in the app's language, never a hardcoded en-US:
     // a German account creating today's entry gets a German date. The
     // journal shape is the user's setting (GitHub #200); tasks keep the
@@ -3082,6 +3191,7 @@ function AuthenticatedView({
     cancelLongPress,
     bulkTrashPending,
     requestBulkTrash,
+    requestTrash,
     executeBulkTrash,
     dismissBulkTrash,
     handleBulkRestore,
@@ -3574,6 +3684,7 @@ function AuthenticatedView({
       onSetPin: () => setShowSecurity({ tab: 'pin', reason: 'protect' }),
       handleDuplicate,
       handleTrash,
+      requestTrash,
       onMoveToFolder: (id: string) => {
         const n = notes.find((x) => x.id === id);
         setFolderPicker({ mode: 'note', noteIds: [id], currentFolderId: n?.folderId ?? null });
@@ -3712,7 +3823,6 @@ function AuthenticatedView({
 
   const tagsRail = (
     <TagsRail
-      markdownCount={markdownDir?.entries.length}
       markdownRail={view === 'markdown' && markdownDir ? (
         <MarkdownRail
           entries={markdownDir.entries}
@@ -3733,14 +3843,7 @@ function AuthenticatedView({
       onRate={() => setShowRate(true)}
       viewsCollapsed={viewsCollapsed}
       setViewsCollapsed={setViewsCollapsed}
-      activeNotesCount={plainNotesCount}
-      openTaskCount={openTaskCount}
-      vaultCount={vaultCount}
-      bookmarksCount={bookmarksCount}
-      contactsCount={contactsCount}
-      filesCount={fileItems.length}
-      journalCount={journalCount}
-      starredCount={starredCount}
+      viewCounts={viewCounts}
       trashedCount={trashedNotes.length}
       tagCounts={tagCounts}
       favoriteTagsList={favoriteTagsList}
@@ -3918,6 +4021,11 @@ function AuthenticatedView({
         setDrawerOpen(false);
         if (fileUuid) setPendingFileScroll({ noteId, uuid: fileUuid });
       }}
+      onRenameFile={(noteId, fileUuid) => {
+        setSelectedId(noteId);
+        setDrawerOpen(false);
+        setPendingFileScroll({ noteId, uuid: fileUuid, rename: true });
+      }}
       onUploadFiles={handleFilesUpload}
       mobileTabIndex={mobileTabIndex}
       quotaUsedBytes={viewQuota ? viewQuota.totalBytes + viewQuota.imageBytes : 0}
@@ -3952,7 +4060,7 @@ function AuthenticatedView({
       onBulkTrash={requestBulkTrash}
       onContextMenu={openRowMenu}
       onToggleStar={(id, starred) => void handleToggleStar(id, starred)}
-      onTrash={(id) => void handleTrash(id)}
+      onTrash={(id) => requestTrash([id])}
       isNoteStarred={(id) => notes.find((n) => n.id === id)?.starred === 1}
       allTags={tagCounts.tags}
       onBulkTag={(tag) => {
@@ -4019,11 +4127,22 @@ function AuthenticatedView({
 
   /** New contact: an empty contact note, selected into the editor, which
    *  opens in edit mode because the body is empty. The empty draft is
-   *  discarded on the way out by the same rule every empty note follows. */
+   *  discarded on the way out by the same rule every empty note follows.
+   *
+   *  It inherits the folder, the tag and the pin of the list it is created
+   *  from, the same three `handleNew` inherits, because a contact that misses
+   *  them lands outside the list the user is looking at - and the auto-select
+   *  effect then drops the selection, so the editor never opens and the click
+   *  reads as doing nothing at all (GitHub #305). All three are read before
+   *  the view switch, which is what the Pinned view's New menu needs: it
+   *  leaves a starred-only list to get here. */
   function handleNewContact() {
+    const starred = view === 'starred';
+    const folderId = inheritedFolderId();
+    const tags = inheritedTags();
     void (async () => {
       await handleSelectView('contacts');
-      const created = await createNote('', '{}', [], false, 'contact');
+      const created = await createNote('', '{}', tags, starred, 'contact', folderId);
       await refresh();
       await selectBookmarkForEdit(created.id);
       void runSync();
@@ -4107,7 +4226,10 @@ function AuthenticatedView({
       viewMode={effectiveViewMode}
       onRequestAdd={(url) => {
         void (async () => {
-          const created = await createNote('', buildLinkBody(url), [], false, 'link');
+          // Filed and tagged where the bar stands, for the reason handleNewContact
+          // carries: a bookmark that misses the active filter is added into a list
+          // that does not show it.
+          const created = await createNote('', buildLinkBody(url), inheritedTags(), false, 'link', inheritedFolderId());
           await refresh();
           // Set BEFORE selecting: the focus effect consumes the flag on the
           // selection's render pass - the same choreography handleNew runs.
@@ -4414,7 +4536,6 @@ function AuthenticatedView({
           <aside className="hidden lg:flex w-[52px] flex-col shrink-0 bg-surface-0 border-e border-divider">
             <CollapsedSidebar
               view={view}
-              markdownCount={markdownDir?.entries.length}
               selectedTag={selectedTag}
               handleSelectView={handleSelectView}
               handleSelectTag={handleSelectTag}
@@ -4430,14 +4551,7 @@ function AuthenticatedView({
               }}
               isPro={auth.isPro ?? false}
               selectedFolder={selectedFolder}
-              starredCount={starredCount}
-              activeNotesCount={plainNotesCount}
-              openTaskCount={openTaskCount}
-              vaultCount={vaultCount}
-      bookmarksCount={bookmarksCount}
-      contactsCount={contactsCount}
-              filesCount={fileItems.length}
-              journalCount={journalCount}
+              viewCounts={viewCounts}
               trashedCount={trashedNotes.length}
               viewMode={userSettings.viewMode}
               hiddenViews={userSettings.hiddenViews}
@@ -4697,7 +4811,7 @@ function AuthenticatedView({
               handleCloseEditor={handleCloseEditor}
               handleHistory={handleHistory}
               handleToggleStar={handleToggleStar}
-              handleTrash={handleTrash}
+              requestTrash={requestTrash}
               handleRestore={handleRestore}
               handleDuplicate={handleDuplicate}
               handleSetLocked={handleSetLocked}
@@ -4946,6 +5060,8 @@ function AuthenticatedView({
           hiddenViews={userSettings.hiddenViews}
           hiddenInAll={userSettings.hiddenInAll}
           onToggleHidden={handleToggleHiddenView}
+          startView={userSettings.startView}
+          onStartViewChange={(next) => mutateSettings((prev) => ({ ...prev, startView: next }))}
           onOpenUpgrade={() => {
             setShowAppearance(false);
             setShowUpgrade({ trigger: 'theme' });
@@ -4962,9 +5078,13 @@ function AuthenticatedView({
           onPinTimeoutChange={(minutes) => {
             mutateSettings((prev) => ({ ...prev, pinTimeoutMinutes: minutes }));
           }}
+          appLockTimeoutMinutes={userSettings.appLockTimeoutMinutes}
+          onAppLockTimeoutChange={(minutes) => {
+            mutateSettings((prev) => ({ ...prev, appLockTimeoutMinutes: minutes }));
+          }}
           userSettings={userSettings}
-          onSettingsChange={(next) => {
-            mutateSettings(() => next);
+          onSettingsChange={(next, base) => {
+            mutateSettings((prev) => withCredentialChanges(prev, base, next));
           }}
           onClose={() => setShowSecurity(null)}
           pubkey={auth.pubkey}
@@ -5286,11 +5406,16 @@ function AuthenticatedView({
           onExportContacts={exportContacts}
           onImportEncrypted={importEncryptedBackup}
           onBlobsRestored={handleBlobsRestored}
-          onImported={async (count, skippedDuplicates) => {
+          onImported={async (count, skippedDuplicates, repaired) => {
+            // A restore of our own backup mostly matches what the vault
+            // already holds, so "imported N" would be true and useless. Say
+            // what it did to the notes it recognised.
             setImportToast(
-              skippedDuplicates
-                ? `${t('toast.importedSyncing', { count })} ${t('shell:bookmarks.importSkipped', { count: skippedDuplicates })}`
-                : t('toast.importedSyncing', { count })
+              repaired && (repaired.updated > 0 || repaired.unchanged > 0)
+                ? t('toast.restoreSummary', { added: count, updated: repaired.updated, unchanged: repaired.unchanged })
+                : skippedDuplicates
+                  ? `${t('toast.importedSyncing', { count })} ${t('shell:bookmarks.importSkipped', { count: skippedDuplicates })}`
+                  : t('toast.importedSyncing', { count })
             );
             // Mission accomplished - kill the sidenav hint so it doesn't
             // keep nagging a user who already used the import feature.

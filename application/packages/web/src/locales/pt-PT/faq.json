@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "O que é que sincroniza exatamente entre os meus dispositivos, e o que fica local?",
       "a": [
-        "Tudo o que esperarias, encriptado no teu dispositivo antes de sincronizar: notas, tarefas, entradas de diário, o teu cofre e os ficheiros encriptados lá dentro. As tuas definições também te acompanham - etiquetas favoritas, preferências de ordenação e de vista, tema de cor, o teu PIN (como hash com sal, nunca o PIN em si), bloqueio da app, configuração de registos e medicamentos, e a limpeza automática do lixo. Configura uma vez e todos os dispositivos acompanham.",
+        "Tudo o que esperarias, e tudo isso encriptado no teu dispositivo: notas, tarefas, entradas de diário, o teu cofre e os ficheiros lá dentro. As tuas definições também te acompanham - etiquetas favoritas, preferências de ordenação e de vista, tema de cor, o teu PIN (como hash com sal, nunca o PIN em si), bloqueio da app, configuração de registos e medicamentos, e a limpeza automática do lixo. Configura uma vez e todos os dispositivos acompanham.",
         "Algumas coisas ficam de propósito só no dispositivo: o modo claro ou escuro (cada dispositivo segue a preferência do próprio sistema), o desbloqueio biométrico (preso ao hardware de cada dispositivo) e o teu estado de desbloqueio (fechar a app bloqueia sempre de novo). O servidor só armazena blobs encriptados e não consegue ler nada disso."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Sim. Os marcadores são um pilar próprio na barra lateral, ao lado das notas, das tarefas e dos diários, e são gratuitos em todos os planos. Cola um link na barra de adição rápida para guardar um. Para trazer os teus, exporta um ficheiro de marcadores (.html) do teu navegador e larga-o em Definições > Import & Export > Importar > \"Browser bookmarks\". O Chrome, o Firefox, o Safari, o Edge, o Opera, o Brave e o Vivaldi contêm o mesmo ficheiro, e as tuas pastas e datas vêm juntas. O Safari embrulha-o num .zip, que podes largar sem o abrir.",
         "Os teus endereços nunca saem do teu dispositivo: não carregamos a página por trás de um link, e é por isso que um marcador que adicionas à mão fica com o domínio como nome até escreveres um. Os ícones dos sites são a única exceção, e podes desligá-los. A exportação escreve o mesmo ficheiro padrão, portanto os teus marcadores saem com a mesma facilidade ([guia de importação](/pt/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "Posso ter uma lista de contactos no PrivacyNotes?",
+      "a": [
+        "Sim. Os contactos são um pilar próprio na barra lateral, ao lado das notas, das tarefas e dos diários, e são gratuitos em todos os planos. Uma ficha reúne nomes, números, e-mails, moradas, sites, datas, uma empresa e uma nota. Toca num número para ligar, num e-mail para escrever, ou em qualquer linha para a copiar. Tudo o resto que o teu telemóvel escreveu no ficheiro fica em **Também neste ficheiro** e volta a ser escrito quando exportas.",
+        "Para trazer os teus, exporta um vCard (.vcf) do telemóvel, do Mac ou do Google Contacts e larga-o em Definições > Import & Export > Importar > \"Contacts (vCard)\". Se mais tarde largares o mesmo ficheiro, as pessoas que já lá estão são reconhecidas em vez de duplicadas. A exportação escreve um vCard normal, por isso a tua lista sai com a mesma facilidade com que entrou ([mais sobre importar](/pt/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "O que vale a pena guardar em Marcadores, Contactos e no Cofre?",
+      "a": [
+        "As partes da tua vida que não pertencem a um perfil de navegador nem à lista de contactos de um telemóvel. Os marcadores, os contactos e o cofre ficam ao lado daqueles que o teu navegador e o teu telemóvel já sincronizam com a Google, a Apple ou a Mozilla, e guardam o que preferes deixar de fora. Os três são gratuitos em todos os planos.",
+        "- Links sobre saúde, dinheiro, direito ou uma procura de emprego, num computador que partilhas com alguém\n- A pesquisa sobre um tema, junta em vez de perdida entre milhares de marcadores do navegador\n- O médico, a advogada, o senhorio e o recrutador, fora de uma lista que sincroniza com o iCloud ou a Google\n- Um contacto com o contexto à volta: as tuas notas, as datas, o ficheiro que te enviou\n- Frases de recuperação, chaves de licença, códigos de cofre e números de passaporte, segredos que não são credenciais\n- As poucas credenciais que nunca queres dentro de uma extensão do navegador",
+        "Cada um é uma linha na barra lateral. Se faltar uma, abre as opções da barra lateral por cima das tuas etiquetas e liga **Mostrar na barra lateral**. Trazes os teus a partir de um ficheiro e tira-os da mesma maneira ([marcadores](/pt/help/bookmarks/), [contactos](/pt/help/contacts/), [o cofre](/pt/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

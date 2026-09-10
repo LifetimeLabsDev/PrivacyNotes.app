@@ -7,7 +7,7 @@ import { createNoteVersion } from './noteVersions';
 import { isDemoMode, proUnlocked } from './demo';
 import { gcOnBodyChange } from './imageGC';
 import { noteLinkKey, retargetNoteLinks } from './noteLinks';
-import { noteLinkName } from './notesViewUtils';
+import { hasStructuredBody, noteLinkName } from './notesViewUtils';
 import type { ImageStore } from './imageStore';
 import type { AttachmentStore } from './attachmentStore';
 
@@ -211,11 +211,10 @@ export function useNoteEditing({
       //   read-only notes - the flag exists to stop writes the user did not
       //     make, and this is one.
       if (n.id === id || n.trashed !== 0 || n.locked === 1) continue;
-      // Structured bodies are JSON consumed by a form, not markdown: a
-      // bookmark's `{url}`, a login, a card, an SSH key. Rewriting inside one
-      // would corrupt a stored field. Same exemption, and the same reasoning,
-      // that `import/linkify.ts` carries; any future structured type inherits it.
-      if (n.type === 'link' || n.type === 'login' || n.type === 'card' || n.type === 'ssh-key') continue;
+      // Structured bodies are JSON consumed by a form, not markdown. Rewriting
+      // inside one would corrupt a stored field. Same exemption, and the same
+      // reasoning, that `import/linkify.ts` carries.
+      if (hasStructuredBody(n.type)) continue;
       const next = retargetNoteLinks(n.body, from, to);
       if (next === null) continue;
       updates.push({ id: n.id, body: next.body });
@@ -303,7 +302,7 @@ export function useNoteEditing({
     // only caught up after switching pillars. Same type list, and the same
     // reasoning, as the note-link retarget skip above.
     const type = notes.find((n) => n.id === id)?.type;
-    if (type === 'link' || type === 'login' || type === 'card' || type === 'ssh-key') {
+    if (hasStructuredBody(type)) {
       flushEditingBody();
     }
     scheduleSync();

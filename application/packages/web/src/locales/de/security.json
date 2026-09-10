@@ -29,10 +29,26 @@
     "pinFourDigits": "Die PIN muss 4 Ziffern haben.",
     "pinsDoNotMatch": "Die PINs stimmen nicht überein."
   },
+  "timeout": {
+    "min1": "1 Minute",
+    "min5": "5 Minuten",
+    "min15": "15 Minuten",
+    "min30": "30 Minuten",
+    "hour1": "1 Stunde",
+    "hour4": "4 Stunden",
+    "hour8": "8 Stunden",
+    "hour12": "12 Stunden",
+    "browserRestart": "Beim Neustart des Browsers"
+  },
+  "pinInfo": {
+    "title": "PIN zum Anzeigen verlangen",
+    "body": "Wenn aktiv, wird dein PIN bei jedem Öffnen dieses Eintrags verlangt, auch wenn die App bereits entsperrt ist. Nutze das für sensible Einträge, die geschützt bleiben sollen, wenn du kurz weggehst.",
+    "gotIt": "Verstanden"
+  },
   "removePinDialog": {
     "title": "PIN entfernen",
     "introWithBio": "Gib deine aktuelle PIN ein, um das Entfernen zu bestätigen. Die biometrische Entsperrung bleibt aktiv, aber deine einzige Rückfalloption ist dann deine Wiederherstellungsphrase.",
-    "introNoBio": "Gib deine aktuelle PIN ein, um das Entfernen zu bestätigen. Die Phrasen-Ansicht ist danach nicht mehr gesperrt.",
+    "introNoBio": "Gib deine aktuelle PIN ein, um das Entfernen zu bestätigen. Deine Wiederherstellungsphrase öffnet sich danach ohne PIN.",
     "verifying": "Wird bestätigt...",
     "removePin": "PIN entfernen"
   },
@@ -102,9 +118,11 @@
     "enable": "Biometrische Entsperrung aktivieren",
     "lockOnOpen": "App beim Öffnen sperren",
     "lockOnOpenHint": "Beim Öffnen der App Biometrie oder PIN verlangen.",
-    "confirmPinForLock": "Gib deine PIN einmal ein, um das einzuschalten. Sie verschließt eine Kopie deiner Wiederherstellungsphrase, sodass nur deine PIN die App öffnen kann.",
+    "lockNeedsCredential": "Die App-Sperre braucht auf diesem Gerät eine PIN oder biometrische Entsperrung.",
+    "setUpPin": "PIN festlegen",
+    "confirmPinForLock": "Gib deine PIN ein, um das einzuschalten. Sie verschließt eine Kopie deiner Wiederherstellungsphrase, sodass nur deine PIN die App öffnen kann.",
     "relockAfter": "Erneut sperren nach",
-    "relockHint": "Gilt für den Sperrbildschirm der App und alle PIN-geschützten Notizen.",
+    "relockHint": "Gilt nur für den Sperrbildschirm der App.",
     "perDeviceNote": "Die biometrische Entsperrung öffnet dieselben Notizen wie deine PIN. Sie bleibt auf diesem Gerät und wird nie synchronisiert.",
     "disableConfirmTitle": "Biometrie deaktivieren",
     "disableConfirmLabel": "Deaktivieren",

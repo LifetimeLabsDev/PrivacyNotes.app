@@ -1,7 +1,7 @@
 import { db, type LocalNote } from '../db';
 import { linkDedupeKey, parseLinkBody } from '../linkBody';
 import { addToContactMatchIndex, contactMatches, emptyContactMatchIndex } from '../contactBody';
-import type { ApplyResult, ParsedImport } from './types';
+import type { ApplyResult, ImportedNote, ParsedImport } from './types';
 
 /**
  * Write a ParsedImport into the local Dexie store as brand-new notes
@@ -37,13 +37,18 @@ export async function applyImport(
 
   let incoming = parsed.notes;
   let skippedDuplicates = 0;
-  if (incoming.some((n) => n.type === 'link')) {
+  // A note that carries its own id is matched on that id below, and the
+  // match outranks these two lookalike rules: a contact from our own backup
+  // with a newer phone number must update the row it IS, not be counted as a
+  // duplicate of it. The rules keep their job for every other source.
+  const ownsId = (n: ImportedNote) => typeof n.id === 'string' && n.id.length > 0;
+  if (incoming.some((n) => n.type === 'link' && !ownsId(n))) {
     const existing = await db.notes
       .filter((n) => n.type === 'link' && n.deleted !== 1 && n.trashed !== 1)
       .toArray();
     const keys = new Set(existing.map((n) => linkDedupeKey(parseLinkBody(n.body).url)));
     incoming = incoming.filter((n) => {
-      if (n.type !== 'link') return true;
+      if (n.type !== 'link' || ownsId(n)) return true;
       const key = linkDedupeKey(parseLinkBody(n.body).url);
       if (keys.has(key)) {
         skippedDuplicates++;
@@ -55,14 +60,14 @@ export async function applyImport(
     });
   }
 
-  if (incoming.some((n) => n.type === 'contact')) {
+  if (incoming.some((n) => n.type === 'contact' && !ownsId(n))) {
     const existing = await db.notes
       .filter((n) => n.type === 'contact' && n.deleted !== 1 && n.trashed !== 1)
       .toArray();
     const index = emptyContactMatchIndex();
     for (const n of existing) addToContactMatchIndex(index, n.title, n.body);
     incoming = incoming.filter((n) => {
-      if (n.type !== 'contact') return true;
+      if (n.type !== 'contact' || ownsId(n)) return true;
       if (contactMatches(index, n.title, n.body)) {
         skippedDuplicates++;
         return false;
@@ -73,13 +78,54 @@ export async function applyImport(
     });
   }
 
-  const rows: LocalNote[] = incoming.map((n) => {
+  // Our own backup formats carry each note's real id, and matching on it is
+  // what makes a restore repair a vault instead of doubling it. Read the
+  // local side once, in order, so a note's decision is made against the copy
+  // the vault actually holds.
+  const ownIds = incoming.map((n) => n.id).filter((id): id is string => !!id);
+  const localById = new Map<string, LocalNote>();
+  if (ownIds.length > 0) {
+    const found = await db.notes.bulkGet(ownIds);
+    // bulkGet answers positionally, one slot per key, so it is walked
+    // alongside the ids rather than filtered first.
+    ownIds.forEach((id, i) => {
+      const row = found[i];
+      if (row) localById.set(id, row);
+    });
+  }
+  let updated = 0;
+  let unchanged = 0;
+
+  const rows: LocalNote[] = incoming.flatMap((n) => {
+    const mine = n.id ? localById.get(n.id) : undefined;
+    // The note's own id is reused ONLY when a live local row carries it. Two
+    // states make reuse a silent, permanent failure: a tombstone, because the
+    // server drops every write to a deleted note without an error, so a
+    // restored copy under that id sits dirty for ever and never reaches
+    // another device; and a row this account cannot see, which is what a
+    // backup from a previous account looks like after a lost phrase, because
+    // the id is the table's primary key and the insert collides. A fresh id
+    // syncs in both cases. The cost is that a purged note comes back as a
+    // new note rather than as itself, which is what a restore used to do.
+    const live = !!mine && mine.deleted !== 1;
+    if (live) {
+      // The vault already has this note. Keep whichever copy is newer, which
+      // is the same rule sync applies between two devices. A restore is for
+      // repairing what is missing, so it never overwrites something the user
+      // has edited since the backup was taken.
+      const incomingAt = n.trashed ? '' : n.updatedAt || '';
+      if (!(incomingAt > mine.updatedAt)) {
+        unchanged++;
+        return [];
+      }
+      updated++;
+    }
     const tags = sourceTag && !n.tags.includes(sourceTag)
       ? [...n.tags, sourceTag]
       : n.tags;
     const trashed = n.trashed ? 1 : 0;
     return {
-      id: crypto.randomUUID(),
+      id: live ? n.id! : crypto.randomUUID(),
       title: n.title,
       body: n.body,
       tags,
@@ -121,5 +167,12 @@ export async function applyImport(
     return { imported: 0, errors, noteIds: [] };
   }
 
-  return { imported: rows.length, errors, noteIds: rows.map((r) => r.id), ...(skippedDuplicates > 0 ? { skippedDuplicates } : {}) };
+  return {
+    imported: rows.length - updated,
+    errors,
+    noteIds: rows.map((r) => r.id),
+    ...(skippedDuplicates > 0 ? { skippedDuplicates } : {}),
+    ...(updated > 0 ? { updated } : {}),
+    ...(unchanged > 0 ? { unchanged } : {}),
+  };
 }

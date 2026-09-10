@@ -303,9 +303,10 @@ export function BookmarksList({
    *  they open toward the start; grid card actions sit mid-pane and open
    *  top-center. The mini grid hides every bubble via index.css. */
   /* Grid tips are START-aligned, not centred: the action row sits at the card's
-     start edge, and `.pn-lazy-card`'s paint containment (content-visibility)
-     clips whatever overhangs the tile - which a centred tip does by half its
-     width (reported 2026-08-22, the tip read as "pen the note"). */
+     start edge, and a centred tip overhangs the tile by half its width. Where a
+     tile skips its off-screen work, paint containment cuts that overhang off
+     ("Open the note" read as "pen the note", 2026-08-22); where it does not, the
+     overhang lands on the neighbouring tile's content instead. */
   const tipPos = viewMode === 'grid' ? 'above-start' as const : 'start' as const;
   const itemActions = (n: LocalNote) =>
     selectionMode ? undefined : (

@@ -29,10 +29,26 @@
     "pinFourDigits": "PIN musí mít 4 číslice.",
     "pinsDoNotMatch": "PINy se neshodují."
   },
+  "timeout": {
+    "min1": "1 minuta",
+    "min5": "5 minut",
+    "min15": "15 minut",
+    "min30": "30 minut",
+    "hour1": "1 hodina",
+    "hour4": "4 hodiny",
+    "hour8": "8 hodin",
+    "hour12": "12 hodin",
+    "browserRestart": "Při restartu prohlížeče"
+  },
+  "pinInfo": {
+    "title": "Vyžadovat PIN pro zobrazení",
+    "body": "Když je tohle zapnuté, PIN se vyžaduje pokaždé, když tuhle položku otevřeš, i když je aplikace už odemčená. Použij to u citlivých položek, které mají zůstat chráněné, když odejdeš od zařízení.",
+    "gotIt": "Rozumím"
+  },
   "removePinDialog": {
     "title": "Odstranit PIN",
     "introWithBio": "Zadej svůj současný PIN a potvrď odstranění. Biometrické odemknutí zůstane aktivní, ale tvoje jediná záložní cesta pak bude obnovovací fráze.",
-    "introNoBio": "Zadej svůj současný PIN a potvrď odstranění. Zobrazení fráze už nebude nijak chráněné.",
+    "introNoBio": "Zadej svůj současný PIN a potvrď odstranění. Obrazovka tvé obnovovací fráze se pak otevře bez PINu.",
     "verifying": "Ověřování...",
     "removePin": "Odstranit PIN"
   },
@@ -102,9 +118,11 @@
     "enable": "Zapnout biometrické odemknutí",
     "lockOnOpen": "Zamykat aplikaci při spuštění",
     "lockOnOpenHint": "Při otevření aplikace vyžadovat biometriku nebo PIN.",
-    "confirmPinForLock": "Zadej svůj PIN jednou a zapneš to. Uzamkne kopii tvé obnovovací fráze, takže aplikaci otevře jen tvůj PIN.",
+    "lockNeedsCredential": "Zámek aplikace potřebuje na tomto zařízení PIN nebo biometrické odemknutí.",
+    "setUpPin": "Nastavit PIN",
+    "confirmPinForLock": "Zadej svůj PIN a zapneš to. Uzamkne kopii tvé obnovovací fráze, takže aplikaci otevře jen tvůj PIN.",
     "relockAfter": "Znovu zamknout po",
-    "relockHint": "Platí pro uzamykací obrazovku aplikace a pro všechny poznámky chráněné PINem.",
+    "relockHint": "Platí jen pro uzamykací obrazovku aplikace.",
     "perDeviceNote": "Biometrické odemknutí otevírá stejné poznámky jako PIN. Zůstává na tomto zařízení a nikdy se nesynchronizuje.",
     "disableConfirmTitle": "Vypnout biometriku",
     "disableConfirmLabel": "Vypnout",

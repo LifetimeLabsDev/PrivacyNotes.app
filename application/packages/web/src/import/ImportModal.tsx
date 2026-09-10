@@ -1,12 +1,13 @@
 import { useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import i18n from '../i18n';
 import { IMPORTERS } from './registry';
 import { applyImport } from './apply';
 import { withFolderPathTags } from './folderImport';
 import { withBrowserTags } from './browserBookmarks';
-import type { Importer, ParsedImport, ImportedNote } from './types';
+import type { Importer, ParsedImport, ImportedNote, RestoreCounts } from './types';
 import { useAuth } from '../auth';
 import { recordAdminEvent, type ImportSource } from '../adminEvents';
 import type { LocalNote } from '../db';
@@ -181,7 +182,7 @@ export function ImportModal({
   embedded = false,
 }: {
   onClose: () => void;
-  onImported: (count: number, skippedDuplicates?: number) => void;
+  onImported: (count: number, skippedDuplicates?: number, repaired?: RestoreCounts) => void;
   /** Render inline as a settings pane (no overlay, no own header/escape). */
   embedded?: boolean;
   initialTab?: 'import' | 'export' | 'restore' | 'vault';
@@ -193,7 +194,7 @@ export function ImportModal({
   onExportVault: (ns: LocalNote[]) => void;
   onExportBookmarks: (ns: LocalNote[]) => void;
   onExportContacts: (ns: LocalNote[]) => void;
-  onImportEncrypted: (file: File) => Promise<number>;
+  onImportEncrypted: (file: File) => Promise<RestoreCounts & { imported: number }>;
   onExportEncryptedZip: (ns: LocalNote[]) => void;
   /** Decrypts a .pnbackupz into the plain full-backup zip; the modal
    *  then runs the normal zip restore flow on the result. */
@@ -393,6 +394,46 @@ export function ImportModal({
     if (photoEstimate && (!importPhotos || !photoEstimate.fits)) {
       parsedForApply = withoutContactPhotos(parsedForApply);
     }
+    // A media failure must never sink into a console.warn: that makes the
+    // worst outcome the quietest one, where the notes land, every image
+    // reference stays an un-rewritten placeholder token, and the modal
+    // closes on a success toast with nothing on screen saying the pictures
+    // are gone. Both blob paths below record the reason, and the modal
+    // stays open on it - the notes land either way, so this is reported ON
+    // TOP of a real import, never instead of one.
+    let mediaError: string | null = null;
+
+    // Generic blob import: any importer that populates parsed.blobs gets
+    // its images/attachments stored in IndexedDB and its note bodies
+    // rewritten to pn:img/ and pn:file/ URIs. It runs BEFORE the notes are
+    // written, because a row written with a placeholder can be picked up
+    // and sent by a sync pass before the rewrite lands, and the rewrite
+    // moves no timestamp for that pass to notice (see blobImport.ts).
+    // parsedForApply, not parsed: a contact photo the user declined is
+    // filtered out of both by then, so it is never stored either.
+    let storedBlobs = false;
+    if (parsedForApply.blobs && parsedForApply.blobs.size > 0) {
+      setPhase({
+        kind: 'parsing',
+        importer,
+        status: t('status.importingBlobs'),
+      });
+      try {
+        const { importBlobs } = await import('./blobImport');
+        const media = await importBlobs(parsedForApply.blobs, parsedForApply.notes, (msg) =>
+          setPhase((prev) =>
+            prev.kind === 'parsing' ? { ...prev, status: msg } : prev
+          )
+        );
+        parsedForApply = { ...parsedForApply, notes: media.notes };
+        storedBlobs = true;
+      } catch (err) {
+        console.warn('Blob import failed:', err);
+        mediaError = err instanceof Error ? err.message : String(err);
+      }
+      setPhase({ kind: 'applying', importer });
+    }
+
     const tag = autoTag && importer.sourceTag ? importer.sourceTag : undefined;
     const result = await applyImport(parsedForApply, tag);
     if (result.errors.length > 0) {
@@ -403,38 +444,7 @@ export function ImportModal({
       });
       return;
     }
-
-    // A media failure must never sink into a console.warn: that makes the
-    // worst outcome the quietest one, where the notes land, every image
-    // reference stays an un-rewritten placeholder token, and the modal
-    // closes on a success toast with nothing on screen saying the pictures
-    // are gone. Both blob paths below record the reason, and the modal
-    // stays open on it - the notes are already written either way,
-    // so this is reported ON TOP of a real import, never instead of one.
-    let mediaError: string | null = null;
-
-    // Generic blob import: any importer that populates parsed.blobs
-    // gets its images/attachments stored in IndexedDB and body refs
-    // rewritten to pn:img/ and pn:file/ URIs.
-    if (parsed.blobs && parsed.blobs.size > 0) {
-      setPhase({
-        kind: 'parsing',
-        importer,
-        status: t('status.importingBlobs'),
-      });
-      try {
-        const { importBlobs } = await import('./blobImport');
-        await importBlobs(parsed.blobs, result.noteIds, (msg) =>
-          setPhase((prev) =>
-            prev.kind === 'parsing' ? { ...prev, status: msg } : prev
-          )
-        );
-        onBlobsRestored?.();
-      } catch (err) {
-        console.warn('Blob import failed:', err);
-        mediaError = err instanceof Error ? err.message : String(err);
-      }
-    }
+    if (storedBlobs) onBlobsRestored?.();
 
     // For PrivacyNotes full backups, restore images + attachments from
     // the zip (uses manifest-based restoration, not parsed.blobs).
@@ -476,7 +486,7 @@ export function ImportModal({
     // The notes exist locally whatever happened to the media, so the
     // parent hears about them first: the list has to refresh and the sync
     // has to run even when the error phase below keeps the modal open.
-    onImported(result.imported, result.skippedDuplicates);
+    onImported(result.imported, result.skippedDuplicates, { updated: result.updated ?? 0, unchanged: result.unchanged ?? 0 });
     if (mediaError) {
       setPhase({
         kind: 'error',
@@ -577,14 +587,14 @@ export function ImportModal({
 
               {phase.kind === 'parsing' && (
                 <ParsingPhase
-                  importerLabel={phase.importer.label}
+                  importerLabel={sourceLabel(phase.importer, t)}
                   status={phase.status}
                 />
               )}
 
               {phase.kind === 'preview' && (
                 <PreviewPhase
-                  importerLabel={phase.importer.label}
+                  importerLabel={sourceLabel(phase.importer, t)}
                   parsed={phase.parsed}
                   quotaCheck={quotaCheck}
                   folderTags={folderTags}
@@ -599,14 +609,14 @@ export function ImportModal({
 
               {phase.kind === 'applying' && (
                 <ParsingPhase
-                  importerLabel={phase.importer.label}
+                  importerLabel={sourceLabel(phase.importer, t)}
                   status={t('status.writingNotes')}
                 />
               )}
 
               {phase.kind === 'error' && (
                 <ErrorPhase
-                  importerLabel={phase.importer.label}
+                  importerLabel={sourceLabel(phase.importer, t)}
                   message={phase.message}
                 />
               )}
@@ -638,8 +648,8 @@ export function ImportModal({
                     }
                     setPhase({ kind: 'parsing', importer: { id: 'privacynotes', label: t('encryptedBackupLabel'), description: '', accept: '.pnbackup', enabled: true, sourceTag: '', parse: async () => { throw new Error(); } }, status: t('status.decryptingBackup') });
                     try {
-                      const count = await onImportEncrypted(file);
-                      onImported(count);
+                      const counts = await onImportEncrypted(file);
+                      onImported(counts.imported, undefined, { updated: counts.updated, unchanged: counts.unchanged });
                       onClose();
                     } catch (err) {
                       setPhase({
@@ -652,16 +662,16 @@ export function ImportModal({
                 />
               )}
               {phase.kind === 'parsing' && (
-                <ParsingPhase importerLabel={phase.importer.label} status={phase.status} />
+                <ParsingPhase importerLabel={sourceLabel(phase.importer, t)} status={phase.status} />
               )}
               {phase.kind === 'preview' && (
-                <PreviewPhase importerLabel={phase.importer.label} parsed={phase.parsed} quotaCheck={quotaCheck} />
+                <PreviewPhase importerLabel={sourceLabel(phase.importer, t)} parsed={phase.parsed} quotaCheck={quotaCheck} />
               )}
               {phase.kind === 'applying' && (
-                <ParsingPhase importerLabel={phase.importer.label} status={t('status.writingNotes')} />
+                <ParsingPhase importerLabel={sourceLabel(phase.importer, t)} status={t('status.writingNotes')} />
               )}
               {phase.kind === 'error' && (
-                <ErrorPhase importerLabel={phase.importer.label} message={phase.message} />
+                <ErrorPhase importerLabel={sourceLabel(phase.importer, t)} message={phase.message} />
               )}
             </>
           ) : (
@@ -852,6 +862,35 @@ const GUIDE_SLUG: Record<string, string> = {
 };
 
 /** Maps importer ids to their description translation key under sourceDesc. */
+/**
+ * The few importer labels that are OUR wording rather than the source
+ * application's own name.
+ *
+ * An importer's `label` renders raw, because "Obsidian" is Obsidian in every
+ * language. Five of them are not brands, and each already had a translation
+ * sitting in `guides.json` for its help page, so the picker said "Browser
+ * bookmarks" while the guide one click away said "Signets du navigateur".
+ * `guides.json` is build-only (the static help site reads it off disk; it is
+ * excluded from the runtime catalog glob in i18n.ts), so the wording is
+ * repeated here in a catalog the app actually loads.
+ *
+ * An id ABSENT from this map is a brand name and renders as written. That is
+ * what makes the map readable: it is the list of labels that are ours.
+ */
+const SOURCE_LABEL_KEY: Record<string, string> = {
+  'privacynotes': 'sourceLabel.privacynotes',
+  'browser-bookmarks': 'sourceLabel.browserBookmarks',
+  'browser-passwords': 'sourceLabel.browserPasswords',
+  'vcard': 'sourceLabel.vcard',
+  'markdown-folder': 'sourceLabel.markdownFolder',
+};
+
+/** An importer's name in the reader's language, or its brand name unchanged. */
+function sourceLabel(imp: Importer, t: TFunction): string {
+  const key = SOURCE_LABEL_KEY[imp.id];
+  return key ? t(key) : imp.label;
+}
+
 const SOURCE_DESC_KEY: Record<string, string> = {
   'browser-bookmarks': 'sourceDesc.browserBookmarks',
   'vcard': 'sourceDesc.vcard',
@@ -924,7 +963,7 @@ function ImporterRow({ imp, onPick }: { imp: Importer; onPick: (imp: Importer) =
       >
         <RowIcon src={iconSrc} glyph={glyph} />
         <span className="min-w-0">
-          <span className="block font-medium text-sm">{imp.label}</span>
+          <span className="block font-medium text-sm">{sourceLabel(imp, t)}</span>
           <span className="block text-xs text-pn-soft mt-0.5">
             {descKey ? t(descKey) : imp.description}
           </span>
@@ -935,13 +974,13 @@ function ImporterRow({ imp, onPick }: { imp: Importer; onPick: (imp: Importer) =
           href={siteHref(`${helpPath(activeLocale())}/import/${guideSlug}`)}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={t('importPick.guideAria', { app: imp.label })}
+          aria-label={t('importPick.guideAria', { app: sourceLabel(imp, t) })}
           className="shrink-0 w-16 flex items-center justify-center border-s border-divider rounded-e-lg bg-accent/5 text-accent hover:bg-accent/10 transition"
         >
           {/* The tip still opens toward the row (`start`), which is what keeps
               it clear of the modal's scroller edge. */}
           <HoverLabel
-            label={t('importPick.guideAria', { app: imp.label })}
+            label={t('importPick.guideAria', { app: sourceLabel(imp, t) })}
             position="start"
             className="flex flex-col items-center gap-1"
           >

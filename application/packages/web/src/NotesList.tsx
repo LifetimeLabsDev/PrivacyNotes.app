@@ -187,7 +187,13 @@ function NewDropdown({ options, ariaLabel, icon }: { options: NewMenuOption[]; a
               onClick={() => { onSelect(); setOpen(false); }}
               className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-start whitespace-nowrap text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-surface-1 transition cursor-pointer"
             >
-              <span className="text-neutral-500 dark:text-neutral-400">{icon}</span>
+              {/* Accent, like every other menu that lists things to go to or
+                  make: the rail rows, the sidebar option menus and the view
+                  picker. Grey here made this the one menu whose glyphs read as
+                  decoration. The colour lives on the row rather than in
+                  NEW_GLYPHS, because the same glyphs are also drawn inside the
+                  New button itself, where they sit on an accent-tinted pill. */}
+              <span className="text-accent">{icon}</span>
               {label}
             </button>
           ))}

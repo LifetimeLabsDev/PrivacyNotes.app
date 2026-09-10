@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { activeLocale } from './languages';
 import type { LocalNote } from './db';
 import type { ListPrefs } from './listPrefs';
-import { deriveDisplayTitle, deriveExcerpt, rowSizeLabel, formatModified, fileCount } from './notesViewUtils';
+import { deriveDisplayTitle, deriveExcerpt, emptyExcerptLabel, rowSizeLabel, formatModified, fileCount } from './notesViewUtils';
 import { Favicon } from './VaultItem';
 import { parseLoginBody, domainFromUrl } from './LoginForm';
 import { parseLinkBody, linkDomain } from './linkBody';
@@ -127,8 +128,8 @@ export default React.memo(function NoteRow({
   // row each time - cheap per note, but it adds up on a large vault. displayNotes
   // keeps object identity for unchanged notes, so keying on `n` means they only
   // recompute when that note actually changes.
-  const displayTitle = useMemo(() => deriveDisplayTitle(n), [n]);
-  const excerpt = useMemo(() => deriveExcerpt(n), [n]);
+  const displayTitle = useMemo(() => deriveDisplayTitle(n), [n, activeLocale()]);
+  const excerpt = useMemo(() => deriveExcerpt(n), [n, activeLocale()]);
   /** Shared with `NoteCard` so the row and the tile cannot disagree about when
    *  a size appears. `noteSizeBytes` memoizes per note, so this is a map lookup
    *  after the first call. */
@@ -219,7 +220,7 @@ export default React.memo(function NoteRow({
       {/* Preview - full width */}
       {listPrefs.showPreview && !locked && (
         <div className="text-[13px] text-neutral-500 dark:text-neutral-400 truncate mt-1" dir="auto">
-          {excerpt || (isFile ? t('noteRow.file') : isVault ? t('noteRow.empty') : t('noteRow.noContent'))}
+          {excerpt || emptyExcerptLabel(n)}
         </div>
       )}
       </>

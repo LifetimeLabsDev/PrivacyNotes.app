@@ -18,6 +18,8 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
 import { usePopoverPosition } from './usePopoverPosition';
+import { getMarkRange } from '@tiptap/core';
+import { looksLikeUrl, normalizeUrl } from './editorLinks';
 import type { Editor } from '@tiptap/react';
 
 type Props = {
@@ -30,25 +32,6 @@ type Props = {
   anchorRef: RefObject<HTMLElement | null>;
   onClose: () => void;
 };
-
-const URL_PATTERN = /^([a-z][a-z0-9+.-]*:\/\/|mailto:|tel:)/i;
-const BARE_HOST_PATTERN = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z]{2,})+/i;
-
-function looksLikeUrl(input: string): boolean {
-  const trimmed = input.trim();
-  if (!trimmed) return false;
-  if (URL_PATTERN.test(trimmed)) return true;
-  if (BARE_HOST_PATTERN.test(trimmed)) return true;
-  return false;
-}
-
-function normalizeUrl(input: string): string {
-  const trimmed = input.trim();
-  if (!trimmed) return '';
-  if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return trimmed;
-  if (/^[/?#]/.test(trimmed)) return trimmed;
-  return `https://${trimmed}`;
-}
 
 export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
   const { t } = useTranslation('editor');
@@ -66,8 +49,19 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
     ? editor.state.doc.textBetween(from, to, ' ')
     : '';
 
+  // The words of the link the caret is in, which are what Update rewrites:
+  // it replaces the mark's whole range, so a reader who selected half a link
+  // still edits the whole of it and sees the whole of it in the field.
+  const linkMark = editor.schema.marks.link;
+  const linkRange = existingHref && linkMark
+    ? getMarkRange(editor.state.selection.$from, linkMark)
+    : undefined;
+  const existingText = linkRange
+    ? editor.state.doc.textBetween(linkRange.from, linkRange.to, ' ')
+    : '';
+
   const [url, setUrl] = useState(existingHref);
-  const [text, setText] = useState(selectionText);
+  const [text, setText] = useState(existingHref ? existingText : selectionText);
   const [urlError, setUrlError] = useState('');
 
   // Focus the URL input on mount.
@@ -141,6 +135,21 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
           marks: [{ type: 'link', attrs: { href } }],
         })
         .run();
+    } else if (inLink && linkText && linkText !== existingText) {
+      // Renaming a link. The mark's whole range goes, because the words in
+      // the field are that range. Formatting inside the old words goes with
+      // it: a link is one run of text again, which is what renaming one
+      // means. Everything else keeps the run and only re-points it.
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange('link')
+        .insertContent({
+          type: 'text',
+          text: linkText,
+          marks: [{ type: 'link', attrs: { href } }],
+        })
+        .run();
     } else {
       // Has selection or cursor is inside an existing link - wrap / update.
       editor
@@ -202,14 +211,14 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
           if (e.key === 'Enter') { e.preventDefault(); apply(); }
           if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); onClose(); }
         }}
-        disabled={hasSelection || isEditing}
+        disabled={hasSelection && !isEditing}
         className={`w-full rounded-md border border-divider bg-surface-2 px-3 py-2 text-sm text-pn focus:outline-none focus:ring-1 focus:ring-accent ${
-          (hasSelection || isEditing) ? 'opacity-50 cursor-not-allowed' : ''
+          hasSelection && !isEditing ? 'opacity-50 cursor-not-allowed' : ''
         }`}
       />
-      {(hasSelection || isEditing) && (
+      {hasSelection && !isEditing && (
         <p className="text-[10px] text-neutral-400 dark:text-neutral-500 mt-1">
-          {hasSelection ? t('link.selectedTextHint') : t('link.editTextHint')}
+          {t('link.selectedTextHint')}
         </p>
       )}
 

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ContextMenu, type ContextMenuItem, type ContextMenuState } from './ContextMenu';
 import { hasPin } from './pin';
@@ -13,7 +13,8 @@ import {
   type ContactLabelled,
 } from './contactBody';
 import { ContactChip } from './NoteRow';
-import { CaretDown, Info, Minus, Plus } from './icons';
+import { CaretDown, Info, Minus, NotePencil, Plus, User } from './icons';
+import { FIELD_CLASS, FieldLabel, GroupHeading } from './formFields';
 
 /**
  * The contact form: the edit state of ContactItem, seated beside
@@ -60,10 +61,21 @@ const VOCABULARY: Record<RowKind | 'addresses', readonly string[]> = {
   addresses: ['home', 'work', 'other'],
 };
 
-const fieldClass =
-  'w-full rounded-md border border-divider bg-surface-1 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-60';
-const labelClass = 'block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1';
-const groupClass = 'text-[11px] font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400 mb-1.5';
+/**
+ * What one field may hold. A length cap and nothing else: a phone number is not
+ * a number in every country, a postcode is not digits everywhere, and a name is
+ * not letters in every language, so a format rule here refuses real data. The
+ * one thing worth refusing is a runaway paste, because a note over 1 MB is one
+ * the server will not take, and it then sits unsynced behind a pill the owner
+ * has to notice.
+ * Spec: ops/docs/design-decisions.md (contact field caps)
+ */
+const VALUE_MAX = 200;
+const LABEL_MAX = 40;
+const STREET_MAX = 500;
+const NOTE_MAX = 10_000;
+
+const fieldClass = FIELD_CLASS;
 
 /** Append one blank row when the last row holds a value, and keep exactly one blank at the end. */
 export function withTrailingBlank(rows: ContactLabelled[], defaultLabel: string): ContactLabelled[] {
@@ -109,7 +121,10 @@ export function ContactForm({
   saveError,
 }: ContactFormProps) {
   const { t } = useTranslation('shell');
-  const pinConfigured = useMemo(() => hasPin(), []);
+  // Never memoize this. Settings opens over a mounted form, so a PIN
+  // can appear or vanish while the toggle below is on screen, and
+  // localStorage fires nothing that would refresh a frozen value.
+  const pinConfigured = hasPin();
   const [showPinInfo, setShowPinInfo] = useState(false);
   const [menu, setMenu] = useState<ContextMenuState>(null);
   /** Singles the user added this session, so an empty field stays on screen. */
@@ -233,6 +248,7 @@ export function ContactForm({
           onBlur={() => setCustomLabel(null)}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); setCustomLabel(null); } }}
           placeholder={t('contacts.labelNone')}
+          maxLength={LABEL_MAX}
           className="w-28 shrink-0 rounded-md border border-accent bg-surface-1 px-2 py-2 text-xs focus:outline-none"
         />
       );
@@ -257,7 +273,7 @@ export function ContactForm({
         onClick={onClick}
         disabled={locked || blank}
         aria-label={t('contacts.removeRow')}
-        className={`shrink-0 w-8 h-8 rounded-md inline-flex items-center justify-center text-neutral-400 hover:text-red-600 dark:hover:text-red-400 transition ${blank ? 'opacity-35' : ''}`}
+        className={`shrink-0 w-8 h-8 rounded-md inline-flex items-center justify-center text-accent/70 hover:text-red-600 dark:hover:text-red-400 transition ${blank ? 'opacity-35' : ''}`}
       >
         <Minus size={14} />
       </button>
@@ -267,7 +283,7 @@ export function ContactForm({
   function labelledRows(kind: RowKind, heading: string, placeholder: string, inputMode?: 'tel' | 'email' | 'url' | 'text') {
     return (
       <div>
-        <div className={groupClass}>{heading}</div>
+        <GroupHeading>{heading}</GroupHeading>
         <div className="flex flex-col gap-1.5">
           {draft[kind].map((row, i) => (
             <div key={i} className="flex items-center gap-1.5">
@@ -277,6 +293,7 @@ export function ContactForm({
                 onChange={(e) => setRow(kind, i, { value: e.target.value })}
                 placeholder={placeholder}
                 disabled={locked}
+                maxLength={VALUE_MAX}
                 inputMode={inputMode}
                 autoComplete="off"
                 dir="auto"
@@ -302,6 +319,7 @@ export function ContactForm({
               onChange={(e) => update({ first: e.target.value })}
               placeholder={t('contacts.firstName')}
               disabled={locked}
+              maxLength={VALUE_MAX}
               autoFocus={isNew}
               autoComplete="off"
               dir="auto"
@@ -312,6 +330,7 @@ export function ContactForm({
               onChange={(e) => update({ last: e.target.value })}
               placeholder={t('contacts.lastName')}
               disabled={locked}
+              maxLength={VALUE_MAX}
               autoComplete="off"
               dir="auto"
               className={fieldClass}
@@ -321,28 +340,28 @@ export function ContactForm({
 
         {showNameParts && (
           <div>
-            <div className={groupClass}>{t('contacts.groupName')}</div>
+            <GroupHeading>{t('contacts.groupName')}</GroupHeading>
             <div className="grid grid-cols-3 gap-1.5">
-              <input value={draft.prefix} onChange={(e) => update({ prefix: e.target.value })} placeholder={t('contacts.prefix')} disabled={locked} dir="auto" className={fieldClass} />
-              <input value={draft.middle} onChange={(e) => update({ middle: e.target.value })} placeholder={t('contacts.middleName')} disabled={locked} dir="auto" className={fieldClass} />
-              <input value={draft.suffix} onChange={(e) => update({ suffix: e.target.value })} placeholder={t('contacts.suffix')} disabled={locked} dir="auto" className={fieldClass} />
+              <input value={draft.prefix} onChange={(e) => update({ prefix: e.target.value })} placeholder={t('contacts.prefix')} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
+              <input value={draft.middle} onChange={(e) => update({ middle: e.target.value })} placeholder={t('contacts.middleName')} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
+              <input value={draft.suffix} onChange={(e) => update({ suffix: e.target.value })} placeholder={t('contacts.suffix')} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
             </div>
           </div>
         )}
 
         {showNickname && (
           <div>
-            <label className={labelClass}>{t('contacts.nickname')}</label>
-            <input value={draft.nickname} onChange={(e) => update({ nickname: e.target.value })} disabled={locked} dir="auto" className={fieldClass} />
+            <FieldLabel icon={<User size={13} />}>{t('contacts.nickname')}</FieldLabel>
+            <input value={draft.nickname} onChange={(e) => update({ nickname: e.target.value })} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
           </div>
         )}
 
         {showPhonetic && (
           <div>
-            <div className={groupClass}>{t('contacts.itemPhonetic')}</div>
+            <GroupHeading>{t('contacts.itemPhonetic')}</GroupHeading>
             <div className="grid grid-cols-2 gap-1.5">
-              <input value={draft.phonetic.first} onChange={(e) => update({ phonetic: { ...draft.phonetic, first: e.target.value } })} placeholder={t('contacts.phoneticFirst')} disabled={locked} dir="auto" className={fieldClass} />
-              <input value={draft.phonetic.last} onChange={(e) => update({ phonetic: { ...draft.phonetic, last: e.target.value } })} placeholder={t('contacts.phoneticLast')} disabled={locked} dir="auto" className={fieldClass} />
+              <input value={draft.phonetic.first} onChange={(e) => update({ phonetic: { ...draft.phonetic, first: e.target.value } })} placeholder={t('contacts.phoneticFirst')} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
+              <input value={draft.phonetic.last} onChange={(e) => update({ phonetic: { ...draft.phonetic, last: e.target.value } })} placeholder={t('contacts.phoneticLast')} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
             </div>
           </div>
         )}
@@ -352,16 +371,16 @@ export function ContactForm({
 
         {(showCompany || showJobTitle) && (
           <div>
-            <div className={groupClass}>{t('contacts.menuWork')}</div>
+            <GroupHeading>{t('contacts.menuWork')}</GroupHeading>
             <div className="flex flex-col gap-1.5">
               {showCompany && (
                 <div className="grid grid-cols-2 gap-1.5">
-                  <input value={draft.org} onChange={(e) => update({ org: e.target.value })} placeholder={t('contacts.company')} disabled={locked} dir="auto" className={fieldClass} />
-                  <input value={draft.department} onChange={(e) => update({ department: e.target.value })} placeholder={t('contacts.department')} disabled={locked} dir="auto" className={fieldClass} />
+                  <input value={draft.org} onChange={(e) => update({ org: e.target.value })} placeholder={t('contacts.company')} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
+                  <input value={draft.department} onChange={(e) => update({ department: e.target.value })} placeholder={t('contacts.department')} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
                 </div>
               )}
               {showJobTitle && (
-                <input value={draft.jobTitle} onChange={(e) => update({ jobTitle: e.target.value })} placeholder={t('contacts.jobTitle')} disabled={locked} dir="auto" className={fieldClass} />
+                <input value={draft.jobTitle} onChange={(e) => update({ jobTitle: e.target.value })} placeholder={t('contacts.jobTitle')} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
               )}
             </div>
           </div>
@@ -369,7 +388,7 @@ export function ContactForm({
 
         {showAddresses && (
           <div>
-            <div className={groupClass}>{t('contacts.groupAddress')}</div>
+            <GroupHeading>{t('contacts.groupAddress')}</GroupHeading>
             <div className="flex flex-col gap-3">
               {draft.addresses.map((a, i) => (
                 <div key={i} className="flex items-start gap-1.5">
@@ -377,12 +396,12 @@ export function ContactForm({
                   <div className="flex-1 flex flex-col gap-1.5 min-w-0">
                     {/* One field for the street on purpose: an address that
                         arrived as a single blob stays a blob here. */}
-                    <textarea value={a.street} onChange={(e) => setAddress(i, { street: e.target.value })} placeholder={t('contacts.street')} disabled={locked} rows={2} dir="auto" className={`${fieldClass} resize-y`} />
+                    <textarea value={a.street} onChange={(e) => setAddress(i, { street: e.target.value })} placeholder={t('contacts.street')} disabled={locked} maxLength={STREET_MAX} rows={2} dir="auto" className={`${fieldClass} resize-y`} />
                     <div className="grid grid-cols-2 gap-1.5">
-                      <input value={a.postal} onChange={(e) => setAddress(i, { postal: e.target.value })} placeholder={t('contacts.postal')} disabled={locked} dir="auto" className={fieldClass} />
-                      <input value={a.city} onChange={(e) => setAddress(i, { city: e.target.value })} placeholder={t('contacts.city')} disabled={locked} dir="auto" className={fieldClass} />
-                      <input value={a.region} onChange={(e) => setAddress(i, { region: e.target.value })} placeholder={t('contacts.region')} disabled={locked} dir="auto" className={fieldClass} />
-                      <input value={a.country} onChange={(e) => setAddress(i, { country: e.target.value })} placeholder={t('contacts.country')} disabled={locked} dir="auto" className={fieldClass} />
+                      <input value={a.postal} onChange={(e) => setAddress(i, { postal: e.target.value })} placeholder={t('contacts.postal')} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
+                      <input value={a.city} onChange={(e) => setAddress(i, { city: e.target.value })} placeholder={t('contacts.city')} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
+                      <input value={a.region} onChange={(e) => setAddress(i, { region: e.target.value })} placeholder={t('contacts.region')} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
+                      <input value={a.country} onChange={(e) => setAddress(i, { country: e.target.value })} placeholder={t('contacts.country')} disabled={locked} maxLength={VALUE_MAX} dir="auto" className={fieldClass} />
                     </div>
                   </div>
                   {removeButton(() => removeAddress(i), isAddressEmpty(a))}
@@ -399,8 +418,8 @@ export function ContactForm({
 
         {showNotes && (
           <div>
-            <label className={labelClass}>{t('contacts.groupNote')}</label>
-            <textarea value={draft.notes} onChange={(e) => update({ notes: e.target.value })} placeholder={t('contacts.notePlaceholder')} disabled={locked} rows={3} dir="auto" className={`${fieldClass} resize-y`} />
+            <FieldLabel icon={<NotePencil size={13} />}>{t('contacts.groupNote')}</FieldLabel>
+            <textarea value={draft.notes} onChange={(e) => update({ notes: e.target.value })} placeholder={t('contacts.notePlaceholder')} disabled={locked} maxLength={NOTE_MAX} rows={3} dir="auto" className={`${fieldClass} resize-y`} />
           </div>
         )}
 
@@ -409,7 +428,7 @@ export function ContactForm({
           type="button"
           onClick={openAddField}
           disabled={locked}
-          className="self-start inline-flex items-center gap-1.5 rounded-md border border-dashed border-divider px-3 py-1.5 text-[13px] text-neutral-600 dark:text-neutral-300 hover:border-accent hover:text-accent transition disabled:opacity-60"
+          className="self-start inline-flex items-center gap-1.5 rounded-md border border-dashed border-divider px-3 py-1.5 text-[13px] text-accent hover:border-accent hover:bg-accent/8 transition disabled:opacity-60"
         >
           <Plus size={14} />
           {t('contacts.addField')}

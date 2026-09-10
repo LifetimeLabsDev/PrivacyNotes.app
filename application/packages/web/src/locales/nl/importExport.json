@@ -57,13 +57,20 @@
     "bitwarden": "Onversleutelde .json-export uit Bitwarden (Tools > Export vault > .json). Logins, kaarten, SSH-sleutels, beveiligde notities en TOTP-codes komen allemaal mee.",
     "browserPasswords": "Het wachtwoordbestand (.csv) uit Chrome, Edge, Brave, Opera, Vivaldi, Firefox of Safari, of de .zip die Safari schrijft. Elke regel wordt een login. Gooi het bestand weg als je klaar bent - het bevat je wachtwoorden in platte tekst."
   },
+  "sourceLabel": {
+    "privacynotes": "Volledige back-up van PrivacyNotes",
+    "browserBookmarks": "Browserbladwijzers",
+    "browserPasswords": "Browserwachtwoorden",
+    "vcard": "Contacten (vCard)",
+    "markdownFolder": "Markdown-bestanden"
+  },
   "vaultPick": {
     "intro": "Importeer logins, creditcards en SSH-sleutels uit een andere wachtwoordmanager."
   },
   "restorePick": {
     "intro": "Herstel een PrivacyNotes-back-up die je eerder hebt geëxporteerd. Je bestand wordt lokaal gelezen en ontsleuteld.",
     "fullBackupTitle": "Volledige back-up (.zip)",
-    "fullBackupDesc": "Herstel notities, dagboeken, kluisitems, taken, afbeeldingen, audio en bestanden. Alles wordt als nieuwe items geïmporteerd - bestaande gegevens worden niet overschreven.",
+    "fullBackupDesc": "Herstel notities, dagboeken, kluisitems, taken, afbeeldingen, audio en bestanden. Een notitie die je al hebt blijft staan, of wordt bijgewerkt als de back-up er een nieuwere versie van bevat.",
     "encryptedBackupTitle": "Versleutelde back-up (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Herstel een versleutelde back-up met de sleutel van je herstelzin. Een .pnbackupz brengt alles terug, bestanden inbegrepen; een .pnbackup bevat alleen tekst en metagegevens. Je moet aangemeld zijn met hetzelfde account dat hem heeft gemaakt."
   },

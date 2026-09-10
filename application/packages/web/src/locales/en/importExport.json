@@ -57,13 +57,20 @@
     "bitwarden": "Unencrypted .json vault export from Bitwarden (Tools > Export vault > .json). Logins, cards, SSH keys, secure notes, and TOTP codes all come along.",
     "browserPasswords": "The passwords .csv from Chrome, Edge, Brave, Opera, Vivaldi, Firefox, or Safari, or the .zip Safari writes. Each row becomes a login. Delete the file when you are done - it holds your passwords in plain text."
   },
+  "sourceLabel": {
+    "privacynotes": "PrivacyNotes full backup",
+    "browserBookmarks": "Browser bookmarks",
+    "browserPasswords": "Browser passwords",
+    "vcard": "Contacts (vCard)",
+    "markdownFolder": "Markdown files"
+  },
   "vaultPick": {
     "intro": "Import logins, credit cards, and SSH keys from another password manager."
   },
   "restorePick": {
     "intro": "Restore a PrivacyNotes backup you exported earlier. Your file is read and decrypted locally.",
     "fullBackupTitle": "Full backup (.zip)",
-    "fullBackupDesc": "Restore notes, journals, vault items, tasks, images, audio, and files. Everything is imported as new items - existing data is not overwritten.",
+    "fullBackupDesc": "Restore notes, journals, vault items, tasks, images, audio, and files. A note you already have is kept, or updated if the backup holds a newer copy of it.",
     "encryptedBackupTitle": "Encrypted backup (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Restore an encrypted backup with your phrase key. A .pnbackupz brings everything back, files included; a .pnbackup carries text content and metadata only. You must be signed in with the same account that created it."
   },

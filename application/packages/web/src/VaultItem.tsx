@@ -16,6 +16,8 @@ import { useCopyToClipboard } from './clipboard';
 import { useTheme } from './theme';
 import { parseTotpInput, generateTotpCode, totpSecondsRemaining } from '@notes/shared';
 import { proUnlocked } from './demo';
+import { PasswordText } from './PasswordText';
+import type { UpgradeTrigger } from './UpgradeModal';
 
 
 const IconX = () => <X />;
@@ -169,7 +171,7 @@ function groupTotpCode(code: string): string {
 function TotpField({ raw, isPro, onOpenUpgrade, copy, copied }: {
   raw: string;
   isPro: boolean | null;
-  onOpenUpgrade: () => void;
+  onOpenUpgrade: (trigger: UpgradeTrigger) => void;
   copy: (text: string, label: string) => void;
   copied: string | null;
 }) {
@@ -212,7 +214,7 @@ function TotpField({ raw, isPro, onOpenUpgrade, copy, copied }: {
         </DetailRow>
         <button
           type="button"
-          onClick={onOpenUpgrade}
+          onClick={() => onOpenUpgrade('totp')}
           className="mb-2 w-full py-1.5 rounded-md text-xs font-medium bg-accent/8 text-accent hover:bg-accent/15 transition"
         >
           {t('vaultItem.totpUnlockCta')}
@@ -266,7 +268,7 @@ function LoginViewMode({ note, onEdit, copy, copied, isPro, onOpenUpgrade }: {
   copy: (text: string, label: string) => void;
   copied: string | null;
   isPro: boolean | null;
-  onOpenUpgrade: () => void;
+  onOpenUpgrade: (trigger: UpgradeTrigger) => void;
 }) {
   const { t } = useTranslation('shell');
   const data = parseLoginBody(note.body);
@@ -306,7 +308,7 @@ function LoginViewMode({ note, onEdit, copy, copied, isPro, onOpenUpgrade }: {
             }
           >
             <span dir="ltr" className="font-mono tracking-wider break-all" /* rtl-ok: a secret is a code, never reordered */>
-              {showPassword ? data.password : '•'.repeat(Math.min(data.password.length, 16))}
+              {showPassword ? <PasswordText value={data.password} /> : '•'.repeat(Math.min(data.password.length, 16))}
             </span>
           </DetailRow>
         )}
@@ -523,7 +525,7 @@ function SshKeyViewMode({ note, onEdit, copy, copied }: {
             }
           >
             <span dir="ltr" className="font-mono tracking-wider break-all" /* rtl-ok: a secret is a code, never reordered */>
-              {showPassphrase ? data.passphrase : '•'.repeat(Math.min(data.passphrase.length, 12))}
+              {showPassphrase ? <PasswordText value={data.passphrase} /> : '•'.repeat(Math.min(data.passphrase.length, 12))}
             </span>
           </DetailRow>
         )}
@@ -562,7 +564,7 @@ export interface VaultItemProps {
   /** Drives the TOTP code Pro gate (behavior only - the badge stays on
    *  plain !isPro so demo keeps advertising the feature it unlocks). */
   isPro: boolean | null;
-  onOpenUpgrade: () => void;
+  onOpenUpgrade: (trigger: UpgradeTrigger) => void;
 }
 
 export function VaultItem({
@@ -676,7 +678,7 @@ export function VaultItem({
     isNew,
     saveError,
   };
-  const loginFormProps = { ...formProps, isPro };
+  const loginFormProps = { ...formProps, isPro, onOpenUpgrade };
 
   return (
     <div className={`flex-1 flex flex-col min-h-0 ${DETAIL_COLUMN}`}>

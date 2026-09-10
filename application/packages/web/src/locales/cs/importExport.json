@@ -63,13 +63,20 @@
     "bitwarden": "Nezašifrovaný export .json z Bitwardenu (Tools > Export vault > .json). Přihlášení, karty, SSH klíče, zabezpečené poznámky i kódy TOTP přijdou s sebou.",
     "browserPasswords": "Soubor s hesly (.csv) z Chrome, Edge, Brave, Opery, Vivaldi, Firefoxu nebo Safari, nebo .zip, který zapíše Safari. Z každého řádku bude přihlášení. Až budeš hotový, soubor smaž - jsou v něm tvoje hesla v čitelné podobě."
   },
+  "sourceLabel": {
+    "privacynotes": "Úplná záloha PrivacyNotes",
+    "browserBookmarks": "Záložky prohlížeče",
+    "browserPasswords": "Hesla z prohlížeče",
+    "vcard": "Kontakty (vCard)",
+    "markdownFolder": "Soubory Markdown"
+  },
   "vaultPick": {
     "intro": "Importuj přihlašovací údaje, platební karty a SSH klíče z jiného správce hesel."
   },
   "restorePick": {
     "intro": "Obnov dříve vytvořenou zálohu PrivacyNotes. Tvůj soubor se načte a dešifruje lokálně.",
     "fullBackupTitle": "Kompletní záloha (.zip)",
-    "fullBackupDesc": "Obnoví poznámky, deníky, položky trezoru, úkoly, obrázky, zvuk a soubory. Všechno se importuje jako nové položky - existující data se nepřepíšou.",
+    "fullBackupDesc": "Obnoví poznámky, deníky, položky trezoru, úkoly, obrázky, zvuk a soubory. Poznámka, kterou už máš, zůstane zachována, nebo se aktualizuje, pokud záloha obsahuje její novější verzi.",
     "encryptedBackupTitle": "Šifrovaná záloha (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Obnov šifrovanou zálohu klíčem z tvojí fráze. Soubor .pnbackupz vrátí všechno včetně souborů; .pnbackup obsahuje jen text a metadata. Vyžaduje přihlášení pod stejným účtem, který zálohu vytvořil."
   },

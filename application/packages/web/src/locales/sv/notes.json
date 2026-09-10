@@ -99,7 +99,8 @@
     "importedSyncing_one": "Importerade {{count}} anteckning. Synkar…",
     "importedSyncing_other": "Importerade {{count}} anteckningar. Synkar…",
     "addedTag_one": "Lade till #{{tag}} på {{count}} objekt",
-    "addedTag_other": "Lade till #{{tag}} på {{count}} objekt"
+    "addedTag_other": "Lade till #{{tag}} på {{count}} objekt",
+    "restoreSummary": "Återställt. {{added}} tillagda, {{updated}} uppdaterade, {{unchanged}} redan aktuella."
   },
   "burn": {
     "mediaOnly": "Den här anteckningen innehåller bara media och kan inte delas via burn-länk.",

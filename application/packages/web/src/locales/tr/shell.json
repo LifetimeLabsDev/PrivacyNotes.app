@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "Tümü",
-    "notes": "Notlar",
-    "tasks": "Görevler",
-    "vault": "Kasa",
-    "files": "Dosyalar",
-    "journals": "Günlükler",
-    "pinned": "Sabitlenmiş",
     "trash": "Çöp kutusu",
-    "markdown": "Markdown",
     "bookmarks": "Yer imleri",
     "contacts": "Kişiler"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Sıralama seçenekleri",
     "searchPlaceholder": "Dosyalarda ara…",
     "sortName": "Ad",
-    "showNotesWithAttachments": "Ekleri olan notları göster",
+    "showNotesWithAttachments": "Notlardaki dosyaları göster",
     "noMatches": "Eşleşme yok.",
     "pinProtected": "PIN korumalı",
     "readOnly": "Salt okunur",
@@ -78,10 +70,11 @@
     "menuImages": "Görseller",
     "menuAudio": "Ses",
     "menuDocuments": "Belgeler",
-    "menuHideNoteAttachments": "Not eklerini gizle",
-    "menuShowNoteAttachments": "Not eklerini göster",
+    "menuHideNoteAttachments": "Notlardaki dosyaları gizle",
+    "menuShowNoteAttachments": "Notlardaki dosyaları göster",
     "menuUnpin": "Sabitlemeyi kaldır",
     "menuPin": "Sabitle",
+    "menuRename": "Yeniden adlandır",
     "menuMoveToTrash": "Çöp kutusuna taşı"
   },
   "vaultItem": {
@@ -116,6 +109,26 @@
     "notesHeading": "Notlar",
     "fillOneField": "Kaydetmeden önce en az bir alanı doldurun.",
     "expiryNeedsBoth": "Son kullanma için hem ay hem yıl gerekir; ya da ikisini de boş bırakın."
+  },
+  "fileTypes": {
+    "audio": "Ses",
+    "video": "Video",
+    "image": "Görsel",
+    "pdf": "PDF",
+    "archive": "Arşiv",
+    "document": "Belge",
+    "spreadsheet": "E-tablo",
+    "file": "Dosya",
+    "audioRecording": "Ses kaydı",
+    "pdfDocument": "PDF belgesi",
+    "attachment": "Dosya eki"
+  },
+  "noteRow": {
+    "noUsername": "Kullanıcı adı yok",
+    "noCardholder": "Kart sahibi yok",
+    "noLabel": "Etiket yok",
+    "files_one": "{{count}} dosya",
+    "files_other": "{{count}} dosya"
   },
   "tagsRail": {
     "showAllItems": "Tüm öğeleri göster",

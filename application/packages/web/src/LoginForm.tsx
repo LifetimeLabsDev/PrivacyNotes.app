@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createPortal } from 'react-dom';
-import { ArrowsClockwise, Check, Copy, Eye, EyeSlash, FloppyDisk, Info, Password, X } from './icons';
+import { Check, Copy, Eye, EyeSlash, FloppyDisk, Globe, Info, Lock, NotePencil, Password, Shield, User } from './icons';
 import { hasPin } from './pin';
 import { PinInfoModal } from './PinInfoModal';
 import { HoverLabel } from './HoverLabel';
-import { useEscapeToClose } from './useEscapeToClose';
-import { loadLocalSettings, saveLocalSettings } from './userSettings';
 import { useCopyToClipboard } from './clipboard';
 import { parseTotpInput, generateTotpCode, totpSecondsRemaining } from '@notes/shared';
 import { proUnlocked } from './demo';
+import { PasswordField } from './PasswordText';
+import { FIELD_BUTTON, FIELD_CLASS, FieldLabel } from './formFields';
+import { PasswordGeneratorModal } from './PasswordGenerator';
+import type { UpgradeTrigger } from './UpgradeModal';
 
 /* ────────────────────────────────────────────────────────────────
  * LoginData - the JSON blob stored in the note body for login-type
@@ -66,252 +67,6 @@ export function domainFromUrl(raw: string): string {
 }
 
 /* ────────────────────────────────────────────────────────────────
- * Password generator
- * Ambiguous characters (0, O, o, l, 1, I) excluded from all sets.
- * Symbols limited to universally accepted set (no brackets, pipes,
- * semicolons, angle brackets - those trigger WAF / regex rejections).
- * ──────────────────────────────────────────────────────────────── */
-const CHAR_SETS = {
-  lowercase: 'abcdefghjkmnpqrstuvwxyz',       // no l, o
-  uppercase: 'ABCDEFGHJKLMNPQRSTUVWXYZ',       // no I, O
-  numbers: '23456789',                          // no 0, 1
-  symbols: '!@#$%^&*-_+=?~',                   // safe subset
-};
-
-function generatePassword(
-  length: number,
-  sets: { lowercase: boolean; uppercase: boolean; numbers: boolean; symbols: boolean },
-  exactNumbers: number,
-  exactSymbols: number,
-): string {
-  const rng = (charset: string) => {
-    const a = new Uint32Array(1);
-    crypto.getRandomValues(a);
-    return charset.charAt(a[0]! % charset.length);
-  };
-
-  // Exact-count characters
-  const exact: string[] = [];
-  if (sets.numbers) for (let i = 0; i < exactNumbers; i++) exact.push(rng(CHAR_SETS.numbers));
-  if (sets.symbols) for (let i = 0; i < exactSymbols; i++) exact.push(rng(CHAR_SETS.symbols));
-
-  // Fill pool: only letter sets (no numbers/symbols - those are exact-count)
-  let fillPool = '';
-  if (sets.lowercase) fillPool += CHAR_SETS.lowercase;
-  if (sets.uppercase) fillPool += CHAR_SETS.uppercase;
-  if (!fillPool) fillPool = CHAR_SETS.lowercase; // fallback
-
-  const remaining = Math.max(0, length - exact.length);
-  const arr = new Uint32Array(remaining);
-  crypto.getRandomValues(arr);
-  const fill = Array.from(arr, (v) => fillPool.charAt(v % fillPool.length));
-
-  // Combine and shuffle with Fisher-Yates
-  const result = [...exact, ...fill];
-  const shuffleArr = new Uint32Array(result.length);
-  crypto.getRandomValues(shuffleArr);
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = shuffleArr[i]! % (i + 1);
-    [result[i], result[j]] = [result[j]!, result[i]!];
-  }
-  return result.join('');
-}
-
-/* ────────────────────────────────────────────────────────────────
- * PasswordGenerator popover
- * ──────────────────────────────────────────────────────────────── */
-function PasswordGenerator({ onGenerate }: { onGenerate: (pw: string) => void }) {
-  const { t } = useTranslation('auth');
-  const saved = useMemo(() => loadLocalSettings().pwGen, []);
-  const [length, setLength] = useState(saved.length);
-  const [exactNumbers, setExactNumbers] = useState(saved.exactNumbers);
-  const [exactSymbols, setExactSymbols] = useState(saved.exactSymbols);
-  const [sets, setSets] = useState({
-    lowercase: true, // always required
-    uppercase: saved.uppercase,
-    numbers: saved.numbers,
-    symbols: saved.symbols,
-  });
-  const [preview, setPreview] = useState('');
-
-  // Persist settings to UserSettings (syncs across devices)
-  const persist = (
-    l: number,
-    s: typeof sets,
-    en: number,
-    es: number,
-  ) => {
-    const cur = loadLocalSettings();
-    saveLocalSettings({
-      ...cur,
-      pwGen: { length: l, ...s, exactNumbers: en, exactSymbols: es },
-    });
-  };
-
-  // Generate with explicit params - never reads stale state
-  const gen = (
-    l: number,
-    s: typeof sets,
-    en: number,
-    es: number,
-  ) => {
-    setPreview(generatePassword(l, s, en, es));
-    persist(l, s, en, es);
-  };
-
-  // Generate on mount
-  useEffect(() => {
-    setPreview(generatePassword(saved.length, saved, saved.exactNumbers, saved.exactSymbols));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const updateLength = (v: number) => { setLength(v); gen(v, sets, exactNumbers, exactSymbols); };
-  const updateExactNumbers = (v: number) => { const n = Math.max(0, Math.min(9, v)); setExactNumbers(n); gen(length, sets, n, exactSymbols); };
-  const updateExactSymbols = (v: number) => { const n = Math.max(0, Math.min(9, v)); setExactSymbols(n); gen(length, sets, exactNumbers, n); };
-  const toggle = (key: keyof typeof sets) => {
-    if (key === 'lowercase') return; // lowercase is always required
-    setSets((prev) => {
-      const next = { ...prev, [key]: !prev[key] };
-      if (!next.uppercase && !next.numbers && !next.symbols) return prev;
-      gen(length, next, exactNumbers, exactSymbols);
-      return next;
-    });
-  };
-
-  return (
-    <div className="p-3 space-y-3">
-      <div className="font-mono text-sm bg-surface-0 rounded px-3 py-2 break-all select-all leading-snug">
-        {preview}
-      </div>
-      <div className="flex items-center gap-2">
-        <label className="text-xs text-neutral-500 shrink-0">{t('loginForm.lengthLabel')}</label>
-        <input
-          type="range"
-          min={8}
-          max={64}
-          value={length}
-          onChange={(e) => updateLength(Number(e.target.value))}
-          className="flex-1 min-w-0 accent-accent"
-        />
-        <span className="text-xs tabular-nums w-6 text-end shrink-0">{length}</span>
-      </div>
-      <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-        <HoverLabel label={t('loginForm.lowercaseAlwaysIncluded')} position="above-start">
-          <label className="flex items-center gap-1.5 text-xs cursor-default opacity-60">
-            <input
-              type="checkbox"
-              checked
-              disabled
-              className="rounded accent-accent"
-            />
-            {t('loginForm.charLowercase')}
-          </label>
-        </HoverLabel>
-        {(['uppercase', 'numbers', 'symbols'] as const).map((key) => (
-          <label key={key} className="flex items-center gap-1.5 text-xs cursor-pointer">
-            <input
-              type="checkbox"
-              checked={sets[key]}
-              onChange={() => toggle(key)}
-              className="rounded accent-accent"
-            />
-            {t(`loginForm.char${key.charAt(0).toUpperCase() + key.slice(1)}`)}
-          </label>
-        ))}
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="text-[11px] text-neutral-500 dark:text-neutral-400 block mb-1">{t('loginForm.charNumbers')}</label>
-          <input
-            type="number"
-            min={0}
-            max={9}
-            value={exactNumbers}
-            onChange={(e) => updateExactNumbers(Number(e.target.value) || 0)}
-            disabled={!sets.numbers}
-            className="w-full text-xs px-2 py-1.5 rounded border border-divider bg-surface-0 disabled:opacity-40"
-          />
-        </div>
-        <div>
-          <label className="text-[11px] text-neutral-500 dark:text-neutral-400 block mb-1">{t('loginForm.charSymbols')}</label>
-          <input
-            type="number"
-            min={0}
-            max={9}
-            value={exactSymbols}
-            onChange={(e) => updateExactSymbols(Number(e.target.value) || 0)}
-            disabled={!sets.symbols}
-            className="w-full text-xs px-2 py-1.5 rounded border border-divider bg-surface-0 disabled:opacity-40"
-          />
-        </div>
-      </div>
-      <p className="text-[11px] text-neutral-400 dark:text-neutral-500 !mt-1">
-        {t('loginForm.ambiguousHint')}
-      </p>
-      <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={() => gen(length, sets, exactNumbers, exactSymbols)}
-          className="flex-1 inline-flex items-center justify-center gap-1 text-xs py-1.5 rounded border border-divider hover:bg-neutral-100 dark:hover:bg-surface-1 transition"
-        >
-          <ArrowsClockwise size={13} />
-          {t('loginForm.regenerate')}
-        </button>
-        <button
-          type="button"
-          onClick={() => onGenerate(preview)}
-          className="flex-1 inline-flex items-center justify-center gap-1 text-xs py-1.5 rounded bg-accent text-white hover:bg-accent-hover transition font-medium"
-        >
-          <Check size={13} />
-          {t('loginForm.usePassword')}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────────
- * PasswordGeneratorModal - centered popover with backdrop
- * ──────────────────────────────────────────────────────────────── */
-function PasswordGeneratorModal({
-  onGenerate,
-  onClose,
-}: {
-  onGenerate: (pw: string) => void;
-  onClose: () => void;
-}) {
-  const { t } = useTranslation('auth');
-  useEscapeToClose(onClose);
-  return createPortal(
-    <div className="fixed inset-0 bg-black/30 dark:bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
-      <div
-        className="bg-surface-2 border border-divider rounded-lg max-w-sm w-full shadow-lg"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 pt-4 pb-0">
-          <h2 className="text-base font-semibold text-pn">{t('loginForm.generateTitle')}</h2>
-          <button onClick={onClose} className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1" aria-label={t('common:actions.close')}>
-            <X size={18} />
-          </button>
-        </div>
-        <PasswordGenerator onGenerate={onGenerate} />
-        <div className="px-3 pb-3">
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-full rounded border border-divider text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 px-4 py-1.5 text-xs transition"
-          >
-            {t('common:actions.close')}
-          </button>
-        </div>
-      </div>
-    </div>,
-    document.body,
-  );
-}
-
-/* ────────────────────────────────────────────────────────────────
  * Copy button (reused for username / password / URL)
  * ──────────────────────────────────────────────────────────────── */
 function CopyBtn({
@@ -323,11 +78,9 @@ function CopyBtn({
   active: boolean;
   title: string;
 }) {
-  const cls =
-    'shrink-0 rounded-md p-2 text-neutral-400 hover:text-accent hover:bg-neutral-100 dark:hover:bg-surface-0 transition';
   return (
     <HoverLabel label={title} position="start">
-      <button type="button" onClick={onClick} aria-label={title} className={cls}>
+      <button type="button" onClick={onClick} aria-label={title} className={FIELD_BUTTON}>
         {active ? (
           <Check size={16} className="text-emerald-500" />
         ) : (
@@ -356,8 +109,10 @@ interface LoginFormProps {
   isNew: boolean;
   saveError?: string;
   /** Whether the rotating-code preview may render below the field - the
-   *  key itself is always visible and editable regardless of tier. */
+   *  key itself is always visible and editable regardless of tier. Also
+   *  gates the generator's passphrase mode. */
   isPro: boolean | null;
+  onOpenUpgrade: (trigger: UpgradeTrigger) => void;
 }
 
 export function LoginForm({
@@ -374,11 +129,15 @@ export function LoginForm({
   isNew,
   saveError,
   isPro,
+  onOpenUpgrade,
 }: LoginFormProps) {
   const { t } = useTranslation('auth');
   const data = parseLoginBody(body);
   const { copy, copied } = useCopyToClipboard();
-  const pinConfigured = useMemo(() => hasPin(), []);
+  // Never memoize this. Settings opens over a mounted form, so a PIN
+  // can appear or vanish while the toggle below is on screen, and
+  // localStorage fires nothing that would refresh a frozen value.
+  const pinConfigured = hasPin();
   const [showPinInfo, setShowPinInfo] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showGenerator, setShowGenerator] = useState(false);
@@ -433,9 +192,7 @@ export function LoginForm({
     }
   }, [noteId, title, data.url, onTitleChange]);
 
-  const fieldClass =
-    'w-full rounded-md border border-divider bg-surface-1 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-60';
-  const labelClass = 'block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1';
+  const fieldClass = FIELD_CLASS;
 
   return (
     /* Width comes from VAULT_COLUMN on the VaultItem wrapper. */
@@ -443,7 +200,7 @@ export function LoginForm({
       <div className="space-y-4">
         {/* Username */}
         <div>
-          <label className={labelClass}>{t('loginForm.usernameLabel')}</label>
+          <FieldLabel icon={<User size={13} />}>{t('loginForm.usernameLabel')}</FieldLabel>
           <div className="flex gap-1.5">
             <input
               type="text"
@@ -464,47 +221,26 @@ export function LoginForm({
 
         {/* Password */}
         <div>
-          <label className={labelClass}>{t('loginForm.passwordLabel')}</label>
+          <FieldLabel icon={<Lock size={13} />}>{t('loginForm.passwordLabel')}</FieldLabel>
           <div className="flex gap-1.5">
-            <div className="relative flex-1">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={data.password}
-                onChange={(e) => updateBody({ password: e.target.value })}
-                placeholder={t('loginForm.passwordPlaceholder')}
-                disabled={locked}
-                autoComplete="off"
-                className={`${fieldClass} ${locked ? 'pe-10' : 'pe-[72px]'}`}
-              />
-              <div className="absolute end-1 top-1/2 -translate-y-1/2 flex items-center">
-                <HoverLabel label={showPassword ? t('loginForm.hidePassword') : t('loginForm.showPassword')} position="above">
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? t('loginForm.hidePassword') : t('loginForm.showPassword')}
-                  className="rounded p-1 text-neutral-400 hover:text-accent transition"
-                >
-                  {showPassword ? (
-                    <EyeSlash size={16} />
-                  ) : (
-                    <Eye size={16} />
-                  )}
-                </button>
-                </HoverLabel>
-                {!locked && (
-                  <HoverLabel label={t('loginForm.generatePassword')} position="above">
-                  <button
-                    type="button"
-                    onClick={() => setShowGenerator(true)}
-                    aria-label={t('loginForm.generatePassword')}
-                    className="rounded p-1 text-neutral-400 hover:text-accent transition"
-                  >
-                    <Password size={16} />
-                  </button>
-                  </HoverLabel>
-                )}
-              </div>
-            </div>
+            <PasswordField
+              value={data.password}
+              onChange={(e) => updateBody({ password: e.target.value })}
+              revealed={showPassword}
+              disabled={locked}
+              placeholder={t('loginForm.passwordPlaceholder')}
+              fieldClass={fieldClass}
+            />
+            <HoverLabel label={showPassword ? t('loginForm.hidePassword') : t('loginForm.showPassword')} position="above">
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? t('loginForm.hidePassword') : t('loginForm.showPassword')}
+                className={FIELD_BUTTON}
+              >
+                {showPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
+              </button>
+            </HoverLabel>
             <CopyBtn
               onClick={() => copy(data.password, 'password')}
               active={copied === 'password'}
@@ -523,6 +259,8 @@ export function LoginForm({
           )}
           {showGenerator && (
             <PasswordGeneratorModal
+              isPro={isPro}
+              onOpenUpgrade={() => onOpenUpgrade('passphrase')}
               onGenerate={(pw) => {
                 updateBody({ password: pw });
                 setShowGenerator(false);
@@ -536,7 +274,7 @@ export function LoginForm({
         {/* Authenticator key (TOTP) - the key itself is never masked or
             gated; only the generated code (below) is a Pro feature. */}
         <div>
-          <label className={labelClass}>{t('loginForm.totpLabel')}</label>
+          <FieldLabel icon={<Shield size={13} />}>{t('loginForm.totpLabel')}</FieldLabel>
           <div className="flex gap-1.5">
             <input
               type="text"
@@ -573,7 +311,7 @@ export function LoginForm({
         {/* Website / URL - after the credentials, the same order the view
             shows: the title names the site, so the address is a detail. */}
         <div>
-          <label className={labelClass}>{t('loginForm.websiteLabel')}</label>
+          <FieldLabel icon={<Globe size={13} />}>{t('loginForm.websiteLabel')}</FieldLabel>
           <div className="flex gap-1.5">
             <input
               ref={urlRef}
@@ -599,7 +337,7 @@ export function LoginForm({
 
         {/* Notes */}
         <div>
-          <label className={labelClass}>{t('loginForm.notesLabel')}</label>
+          <FieldLabel icon={<NotePencil size={13} />}>{t('loginForm.notesLabel')}</FieldLabel>
           <textarea
             value={data.notes}
             onChange={(e) => updateBody({ notes: e.target.value })}

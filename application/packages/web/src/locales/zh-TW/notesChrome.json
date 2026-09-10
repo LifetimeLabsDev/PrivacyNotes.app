@@ -65,6 +65,7 @@
     "copied": "已複製"
   },
   "burnView": {
+    "title": "Burn After Reading（閱後即焚筆記）",
     "tagline": "加密。轉瞬即逝。僅供親閱。",
     "toggleTheme": "切換佈景主題",
     "checking": "檢查中…",

@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "Cihazlarım arasında tam olarak ne eşitlenir, ne yerel kalır?",
       "a": [
-        "Beklediğiniz her şey, eşitlenmeden önce cihazınızda şifrelenmiş olarak: notlar, görevler, günlük kayıtları, kasanız ve içindeki şifreli dosyalar. Ayarlarınız da sizinle gelir - favori etiketler, sıralama ve görünüm tercihleri, renk teması, PIN'iniz (tuzlanmış özet olarak, asla PIN'in kendisi değil), uygulama kilidi, takip ve ilaç ayarları, çöp kutusu otomatik silme. Bir kez ayarlayın, her cihaz devralsın.",
+        "Beklediğiniz her şey ve hepsi cihazınızda şifrelenmiş olarak: notlar, görevler, günlük kayıtları, kasanız ve içindeki dosyalar. Ayarlarınız da sizinle gelir - favori etiketler, sıralama ve görünüm tercihleri, renk teması, PIN'iniz (tuzlanmış özet olarak, asla PIN'in kendisi değil), uygulama kilidi, takip ve ilaç ayarları, çöp kutusu otomatik silme. Bir kez ayarlayın, her cihaz devralsın.",
         "Birkaç şey bilerek cihaza özel kalır: açık ya da koyu mod (her cihaz kendi sistem tercihini izler), biyometrik kilit açma (her cihazın donanımına bağlıdır) ve kilit durumunuz (uygulamayı kapatmak her zaman yeniden kilitler). Sunucu yalnızca şifreli veri yığınları saklar ve hiçbirini okuyamaz."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Evet. Yer imleri kenar çubuğunda kendi başına bir sütun; notların, görevlerin ve günlüklerin yanında durur ve her planda ücretsizdir. Bir bağlantıyı hızlı ekleme çubuğuna yapıştırın, kaydedilsin. Mevcut yer imlerinizi taşımak için tarayıcınızdan bir yer imi dosyası (.html) dışa aktarın ve Ayarlar > Import & Export > İçe aktar > \"Browser bookmarks\" alanına bırakın. Chrome, Firefox, Safari, Edge, Opera, Brave ve Vivaldi aynı dosyayı içerir; klasörleriniz ve tarihleriniz de birlikte gelir. Safari onu bir .zip içine koyar; o .zip'i açmadan bırakabilirsiniz.",
         "Adresleriniz cihazınızdan hiç çıkmaz: bir bağlantının arkasındaki sayfayı getirmeyiz, bu yüzden elle eklediğiniz bir yer imi siz bir ad yazana kadar alan adını taşır. Site simgeleri tek istisnadır ve onları kapatabilirsiniz. Dışa aktarma da aynı standart dosyayı yazar, yani yer imleriniz geldikleri kolaylıkla çıkar ([içe aktarma kılavuzu](/tr/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "PrivacyNotes’ta bir adres defteri tutabilir miyim?",
+      "a": [
+        "Evet. Kişiler kenar çubuğunda kendi başına bir sütun; notların, görevlerin ve günlüklerin yanında durur ve her planda ücretsizdir. Bir kişi kaydı adları, numaraları, e-postaları, adresleri, siteleri, tarihleri, bir şirketi ve bir notu taşır. Aramak için numaraya, yazmak için e-posta adresine, kopyalamak için herhangi bir satıra dokunun. Telefonunuzun dosyaya yazdığı diğer her şey **Bu dosyada ayrıca** altında kalır ve dışa aktarırken geri yazılır.",
+        "Mevcut kişilerinizi taşımak için telefonunuzdan, Mac’inizden ya da Google Kişiler’den bir vCard (.vcf) dışa aktarın ve Ayarlar > Import & Export > İçe aktar > \"Contacts (vCard)\" alanına bırakın. Aynı dosyayı sonra bir kez daha bıraktığınızda, zaten kayıtlı olan kişiler kopyalanmaz, eşleştirilir. Dışa aktarma standart bir vCard yazar; böylece adres defteriniz girdiği kolaylıkla çıkar ([içe aktarma hakkında daha fazlası](/tr/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "Yer imleri, Kişiler ve Kasa’da ne tutmalı?",
+      "a": [
+        "Hayatınızın bir tarayıcı profiline ya da telefon rehberine ait olmayan kısımları. Yer imleri, Kişiler ve Kasa; tarayıcınızın ve telefonunuzun çoktan Google, Apple veya Mozilla ile eşitlediklerinin yanında durur ve oradan uzak tutmak istediklerinizi saklar. Üçü de her planda ücretsizdir.",
+        "- Sağlık, para, hukuk ya da iş arama ile ilgili bağlantılar, birileriyle paylaştığınız bir bilgisayarda\n- Tek bir konunun araştırması, binlerce tarayıcı yer iminin arasında kaybolmak yerine bir arada\n- Doktor, avukat, ev sahibi ve işe alım uzmanı, iCloud veya Google ile eşitlenen bir rehberin dışında\n- Çevresindeki bağlamla birlikte bir kişi: notlarınız, tarihler, size gönderdiği dosya\n- Kurtarma ifadeleri, lisans anahtarları, kasa kodları ve pasaport numaraları; giriş bilgisi olmayan sırlar\n- Bir tarayıcı eklentisinde asla bulunmasını istemediğiniz birkaç giriş bilgisi",
+        "Her biri kenar çubuğunda bir satırdır. Bir satır eksikse etiketlerinizin üstündeki kenar çubuğu seçeneklerini açın ve **Kenar çubuğunda göster** seçeneğini işaretleyin. Mevcut kayıtlarınızı bir dosyadan getirir, aynı yoldan geri alırsınız ([yer imleri](/tr/help/bookmarks/), [kişiler](/tr/help/contacts/), [kasa](/tr/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

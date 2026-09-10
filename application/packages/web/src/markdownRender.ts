@@ -13,6 +13,7 @@
  */
 
 import { faviconUrl } from './favicon';
+import { unescapeMarkdownText } from './fileNames';
 import { getFavicons } from './theme';
 
 // ─── Obsidian callout types ────────────────────────────────────────────
@@ -422,8 +423,11 @@ function renderInline(raw: string): string {
   // outside the app. Includes a tooltip explaining why.
   t = t.replace(
     /\[([^|]*)\|([^|]*)\|([^\]]*)\]\(pn:file\/[0-9a-f-]{36}\)/g,
-    (_m: string, name: string, size: string, _mime: string) =>
-      stash(`<span title="This attachment is encrypted and only accessible within PrivacyNotes. Use the full backup (zip) export to include file attachments." style="display:inline-flex;align-items:center;gap:0.4em;padding:0.15em 0.5em;background:#f3f3f3;border-radius:4px;font-size:0.9em;cursor:help">&#128206; ${name} (${size})</span>`)
+    (_m: string, rawName: string, size: string, _mime: string) => {
+      // Raw body text, so the name arrives markdown-escaped.
+      const name = unescapeMarkdownText(rawName);
+      return stash(`<span title="This attachment is encrypted and only accessible within PrivacyNotes. Use the full backup (zip) export to include file attachments." style="display:inline-flex;align-items:center;gap:0.4em;padding:0.15em 0.5em;background:#f3f3f3;border-radius:4px;font-size:0.9em;cursor:help">&#128206; ${name} (${size})</span>`);
+    }
   );
 
   // Note-links [[target]] or [[target|label]] - render as plain text

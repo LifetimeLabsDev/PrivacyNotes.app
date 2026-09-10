@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LOCALES } from './i18n';
-import { LANGUAGE_META as META, Flag, setLanguage, sortByNative } from './languages';
+import { LANGUAGE_META as META, Flag, currentLanguageChoice, setLanguage, sortByNative } from './languages';
 import { ArrowSquareOut, Bug, Check, Translate } from './icons';
 import { HelpChip } from './HelpChip';
 import { useTheme } from './theme';
@@ -21,9 +21,7 @@ export function LanguageSheet({ embedded = false }: Props) {
   // settings now and the header line only ever covered one of them.
   const { t: tNotes } = useTranslation('notes');
   const { spellcheck, setSpellcheck } = useTheme();
-  const [lang, setLang] = useState<string>(
-    () => localStorage.getItem('privacynotes.language') || 'system',
-  );
+  const [lang, setLang] = useState<string>(currentLanguageChoice);
 
   function choose(value: string) {
     setLang(value);

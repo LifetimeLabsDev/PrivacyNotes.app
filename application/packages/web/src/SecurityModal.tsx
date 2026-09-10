@@ -17,14 +17,22 @@ type Props = {
   defaultTab?: Tab;
   /** Why the PIN tab was opened, when something else opened it. */
   reason?: 'protect';
-  /** Current PIN-unlock timeout from UserSettings. */
+  /** Current PIN-unlock timeout from UserSettings. Governs the phrase view
+   *  and PIN-protected notes. */
   pinTimeoutMinutes: number;
   /** Persist a new timeout. Parent owns the settings blob + sync. */
   onPinTimeoutChange: (minutes: number) => void;
+  /** Current app-lock re-lock window from UserSettings. Separate from the
+   *  PIN one: the two gates guard different things. */
+  appLockTimeoutMinutes: number;
+  /** Persist a new app-lock window. Parent owns the settings blob + sync. */
+  onAppLockTimeoutChange: (minutes: number) => void;
   /** Current settings - needed so PIN set/clear can return updated blob. */
   userSettings: UserSettings;
   /** Persist updated settings (PIN changes). Parent owns save + sync. */
-  onSettingsChange: (next: UserSettings) => void;
+  /** `base` is the copy this surface was rendered with; the parent applies
+   *  only the credential keys that differ between it and `next`. */
+  onSettingsChange: (next: UserSettings, base: UserSettings) => void;
   /** The user's hex pubkey - needed for WebAuthn credential creation. */
   pubkey: string;
   /** Render inline as a settings pane (no overlay, no own header/escape). */
@@ -44,6 +52,8 @@ export function SecurityModal({
   reason,
   pinTimeoutMinutes,
   onPinTimeoutChange,
+  appLockTimeoutMinutes,
+  onAppLockTimeoutChange,
   userSettings,
   onSettingsChange,
   pubkey,
@@ -52,6 +62,16 @@ export function SecurityModal({
   const { t } = useTranslation('security');
   useEscapeToClose(onClose, !embedded);
   const [tab, setTab] = useState<Tab>(defaultTab);
+  // The Biometric tab sends a user with no credential off to create a PIN,
+  // and this brings them back once it exists, so the round trip ends where it
+  // started. A tab the user picks themselves clears it: the intent belongs to
+  // that one link, not to the pane it landed on.
+  const [returnToBiometric, setReturnToBiometric] = useState(false);
+
+  function pickTab(next: Tab) {
+    setReturnToBiometric(false);
+    setTab(next);
+  }
 
   // Guard against ghost clicks from the element that opened us (e.g. the
   // mobile drawer "Security" button fires a delayed synthetic click at the
@@ -92,16 +112,16 @@ export function SecurityModal({
 
         {/* Tab strip - underlined, full-width, minimal chrome. */}
         <div className="flex border-b border-divider -mx-6 px-6">
-          <TabButton active={tab === 'pin'} onClick={() => setTab('pin')}>
+          <TabButton active={tab === 'pin'} onClick={() => pickTab('pin')}>
             <Lock className="text-accent" aria-hidden="true" />
             {t('modal.tabPin')}
           </TabButton>
-          <TabButton active={tab === 'biometric'} onClick={() => setTab('biometric')}>
+          <TabButton active={tab === 'biometric'} onClick={() => pickTab('biometric')}>
             <Fingerprint className="text-accent" aria-hidden="true" />
             <span className="sm:hidden">{t('modal.tabBiometricShort')}</span>
             <span className="hidden sm:inline">{t('modal.tabBiometric')}</span>
           </TabButton>
-          <TabButton active={tab === 'phrase'} onClick={() => setTab('phrase')}>
+          <TabButton active={tab === 'phrase'} onClick={() => pickTab('phrase')}>
             <Key className="text-accent" aria-hidden="true" />
             <span className="sm:hidden">{t('modal.tabPhraseShort')}</span>
             <span className="hidden sm:inline">{t('modal.tabPhrase')}</span>
@@ -116,6 +136,11 @@ export function SecurityModal({
             userSettings={userSettings}
             onSettingsChange={onSettingsChange}
             reason={reason}
+            onPinCreated={() => {
+              if (!returnToBiometric) return;
+              setReturnToBiometric(false);
+              setTab('biometric');
+            }}
           />
         )}
 
@@ -125,8 +150,12 @@ export function SecurityModal({
             pubkey={pubkey}
             userSettings={userSettings}
             onSettingsChange={onSettingsChange}
-            pinTimeoutMinutes={pinTimeoutMinutes}
-            onPinTimeoutChange={onPinTimeoutChange}
+            timeoutMinutes={appLockTimeoutMinutes}
+            onTimeoutChange={onAppLockTimeoutChange}
+            onSetUpPin={() => {
+              setReturnToBiometric(true);
+              setTab('pin');
+            }}
           />
         )}
 

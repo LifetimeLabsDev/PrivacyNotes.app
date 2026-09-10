@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "すべて",
-    "notes": "ノート",
-    "tasks": "タスク",
-    "vault": "保管庫",
-    "files": "ファイル",
-    "journals": "ジャーナル",
-    "pinned": "ピン留め",
     "trash": "ゴミ箱",
-    "markdown": "Markdown",
     "bookmarks": "ブックマーク",
     "contacts": "連絡先"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "並び替えオプション",
     "searchPlaceholder": "ファイルを検索…",
     "sortName": "名前",
-    "showNotesWithAttachments": "添付ファイル付きのノートを表示",
+    "showNotesWithAttachments": "ノート内のファイルを表示",
     "noMatches": "一致なし。",
     "pinProtected": "PIN保護",
     "readOnly": "読み取り専用",
@@ -78,10 +70,11 @@
     "menuImages": "画像",
     "menuAudio": "音声",
     "menuDocuments": "文書",
-    "menuHideNoteAttachments": "ノートの添付を隠す",
-    "menuShowNoteAttachments": "ノートの添付を表示",
+    "menuHideNoteAttachments": "ノート内のファイルを隠す",
+    "menuShowNoteAttachments": "ノート内のファイルを表示",
     "menuUnpin": "ピン留めを解除",
     "menuPin": "ピン留め",
+    "menuRename": "名前を変更",
     "menuMoveToTrash": "ゴミ箱に移動"
   },
   "vaultItem": {
@@ -116,6 +109,25 @@
     "notesHeading": "メモ",
     "fillOneField": "保存する前に、少なくとも1つの項目を入力してください。",
     "expiryNeedsBoth": "有効期限は月と年の両方を入力するか、両方とも空にしてください。"
+  },
+  "fileTypes": {
+    "audio": "オーディオ",
+    "video": "動画",
+    "image": "画像",
+    "pdf": "PDF",
+    "archive": "アーカイブ",
+    "document": "文書",
+    "spreadsheet": "スプレッドシート",
+    "file": "ファイル",
+    "audioRecording": "音声録音",
+    "pdfDocument": "PDF文書",
+    "attachment": "添付ファイル"
+  },
+  "noteRow": {
+    "noUsername": "ユーザー名なし",
+    "noCardholder": "名義人なし",
+    "noLabel": "ラベルなし",
+    "files_other": "{{count}}個のファイル"
   },
   "tagsRail": {
     "showAllItems": "すべてのアイテムを表示",

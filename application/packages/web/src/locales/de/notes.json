@@ -99,7 +99,8 @@
     "importedSyncing_one": "{{count}} Notiz importiert. Wird synchronisiert…",
     "importedSyncing_other": "{{count}} Notizen importiert. Wird synchronisiert…",
     "addedTag_one": "#{{tag}} zu {{count}} Eintrag hinzugefügt",
-    "addedTag_other": "#{{tag}} zu {{count}} Einträgen hinzugefügt"
+    "addedTag_other": "#{{tag}} zu {{count}} Einträgen hinzugefügt",
+    "restoreSummary": "Wiederhergestellt. {{added}} hinzugefügt, {{updated}} aktualisiert, {{unchanged}} bereits aktuell."
   },
   "burn": {
     "mediaOnly": "Diese Notiz enthält nur Medien und kann nicht per Vernichtungslink geteilt werden.",

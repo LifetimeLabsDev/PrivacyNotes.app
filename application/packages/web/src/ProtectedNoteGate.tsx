@@ -54,7 +54,9 @@ export function ProtectedNoteGate({
    *  simply falls back to unlocking. */
   onExitRemove?: () => void;
   userSettings: UserSettings;
-  onSettingsChange: (next: UserSettings) => void;
+  /** `base` is the copy this surface was rendered with; the parent applies
+   *  only the credential keys that differ between it and `next`. */
+  onSettingsChange: (next: UserSettings, base: UserSettings) => void;
 }) {
   const { t } = useTranslation('security');
   const pinIsSet = hasPin();
@@ -452,7 +454,9 @@ function BootstrapMode({
   onUnlock: () => void;
   onCancel?: () => void;
   userSettings: UserSettings;
-  onSettingsChange: (next: UserSettings) => void;
+  /** `base` is the copy this surface was rendered with; the parent applies
+   *  only the credential keys that differ between it and `next`. */
+  onSettingsChange: (next: UserSettings, base: UserSettings) => void;
 }) {
   const { t } = useTranslation('security');
   const [pin, setNewPin] = useState('');
@@ -474,7 +478,7 @@ function BootstrapMode({
     setBusy(true);
     try {
       const updated = await storePin(pinVal, userSettings);
-      onSettingsChange(updated);
+      onSettingsChange(updated, userSettings);
       // Storing the PIN is enough - the session is now considered
       // unlocked and the parent advances.
       onUnlock();

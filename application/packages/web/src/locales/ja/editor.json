@@ -153,8 +153,11 @@
     "textLabel": "リンクテキスト",
     "textPlaceholder": "任意。空欄の場合はURLを表示",
     "selectedTextHint": "選択中のテキストがリンクになります",
-    "editTextHint": "リンクテキストはエディタで編集してください",
-    "update": "更新"
+    "update": "更新",
+    "menuOpen": "リンクを開く",
+    "menuCopy": "リンクをコピー",
+    "menuEdit": "リンクを編集",
+    "menuRemove": "リンクを削除"
   },
   "audio": {
     "uploadingRecording": "録音をアップロード中...",
@@ -182,6 +185,9 @@
     "copy": "コピー",
     "copied": "コピーしました",
     "copyFailed": "失敗しました"
+  },
+  "math": {
+    "sourceLabel": "LaTeX ソース"
   },
   "noteLink": {
     "open": "ノートを開く",

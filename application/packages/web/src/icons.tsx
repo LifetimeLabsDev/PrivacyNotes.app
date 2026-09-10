@@ -20,8 +20,8 @@ import {
   CheckFat,
   FileMd,
   Files as PhFiles,
-  Notebook,
   NotePencil,
+  PenNib,
   PencilSimple,
   PlusSquare,
   ShieldPlus,
@@ -37,6 +37,8 @@ import {
   Copy,
   Download,
   Fire,
+  FileHtml,
+  Printer,
   Folder,
   Gear,
   Key,
@@ -118,7 +120,11 @@ export const PILLAR_GLYPHS = {
   tasks: CheckFat,
   vault: Key,
   files: PhFiles,
-  journals: Notebook,
+  // A nib, not a notebook. Files and Journals both used a rounded rectangle
+  // with interior detail, so at rail size the two rows read as the same
+  // silhouette and the pair was reported as indistinguishable. A nib shares
+  // its outline with nothing else in the set.
+  journals: PenNib,
   markdown: FileMd,
   bookmarks: PhBookmarks,
   contacts: AddressBook,
@@ -135,9 +141,25 @@ export const NEW_GLYPHS = {
   task: CheckFat,
   login: ShieldPlus,
   file: Upload,
-  journal: Notebook,
+  journal: PenNib,
   bookmark: PhBookmark,
   contact: UserPlus,
+} as const;
+
+/**
+ * Glyphs for "get this note out of the app": the share menu and the note
+ * context menu both list the same three destinations, and they drew different
+ * pictures for them - the share menu named each format, the context menu used
+ * one download arrow three times. One map, so a person learns each format once.
+ * Sizes stay with the caller; the two menus draw at different scales.
+ */
+export const EXPORT_GLYPHS = {
+  markdown: FileMd,
+  html: FileHtml,
+  print: Printer,
+  /** Not accent, and deliberately: the flame is the one entry here that
+   *  publishes something outside the account. */
+  burn: Fire,
 } as const;
 
 export function iconNote() {

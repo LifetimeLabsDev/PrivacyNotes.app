@@ -1,4 +1,4 @@
-import i18n, { SUPPORTED_LOCALES, ensureLocaleLoaded } from './i18n';
+import i18n, { activeLocale, preferredLocale, SUPPORTED_LOCALES, ensureLocaleLoaded } from './i18n';
 
 // LANGUAGE_META + Flag moved to languageData.tsx (dependency-free) so the
 // static-page build (faq-page.ts) can share them without importing i18n.
@@ -7,21 +7,20 @@ export { LANGUAGE_META, Flag, sortByNative } from './languageData';
 
 const EXPLICIT_KEY = 'privacynotes.langExplicit';
 
+/** True when the user picked a language rather than following detection. */
+export function hasExplicitLanguage(): boolean {
+  return localStorage.getItem(EXPLICIT_KEY) === '1';
+}
+
 /** The user's explicit choice, or 'system' when following browser detection. */
 export function currentLanguageChoice(): string {
   if (localStorage.getItem(EXPLICIT_KEY) !== '1') return 'system';
   return localStorage.getItem('privacynotes.language') || 'system';
 }
 
-/** The locale actually on screen right now, normalized to a supported code. */
-export function activeLocale(): string {
-  const lng = i18n.resolvedLanguage || i18n.language || 'en';
-  return (
-    SUPPORTED_LOCALES.find((l) => l === lng) ||
-    SUPPORTED_LOCALES.find((l) => lng.startsWith(l)) ||
-    'en'
-  );
-}
+// Both accessors live in ./i18n, which owns `normalizeLocale`. Re-exported
+// here because this is where callers look for anything about language.
+export { activeLocale, preferredLocale };
 
 // Spec: ops/docs/archive/rtl-handoff.md (Arabic numerals: Western digits)
 const ARABIC_INTL_LOCALE = 'ar-u-nu-latn';
@@ -39,15 +38,7 @@ export function intlLocale(locale: string = activeLocale()): string {
   return locale === 'ar' ? ARABIC_INTL_LOCALE : locale;
 }
 
-/** The visitor's browser-preferred language, normalized to a supported code. */
-export function preferredLocale(): string {
-  const nav = (navigator.language || 'en').toLowerCase();
-  return (
-    SUPPORTED_LOCALES.find((l) => l.toLowerCase() === nav) ||
-    SUPPORTED_LOCALES.find((l) => nav.startsWith(l.toLowerCase().slice(0, 2))) ||
-    'en'
-  );
-}
+
 
 /**
  * Apply a language. 'system' clears the override and follows the browser.

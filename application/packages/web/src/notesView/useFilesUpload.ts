@@ -4,11 +4,10 @@ import { useTranslation } from 'react-i18next';
 import type { SupabaseClient } from '@notes/shared';
 import { fetchQuotaUsage } from '../devices';
 import type { AttachmentStore } from '../attachmentStore';
-import { formatFileSize, validateAttachment, FILE_ACCEPT, FILE_ACCEPT_IMAGE, FILE_ACCEPT_AUDIO, FILE_ACCEPT_DOCUMENT } from '../attachmentValidation';
+import { formatFileSize, validateAttachment } from '../attachmentValidation';
 import { proUnlocked } from '../demo';
 import { currentImageOptions, isSupportedImage, processImage } from '../imageProcessing';
 import type { LocalNote } from '../db';
-import type { FileType } from '../FilesList';
 import { parseMarkdown } from '../import/markdown';
 import { applyImport } from '../import/apply';
 import type { FolderDef } from '../folders';
@@ -55,18 +54,11 @@ export function useFilesUpload({
   const [pendingImportableFiles, setPendingImportableFiles] = useState<File[] | null>(null);
   const filesUploadRef = useRef<HTMLInputElement | null>(null);
 
-  /** Trigger file upload from the Files view.
-   *  When a filter tab is active, scope the OS picker to that category. */
-  function handleFilesUpload(filter?: FileType) {
-    const input = filesUploadRef.current;
-    if (!input) return;
-    const accept =
-      filter === 'image' ? FILE_ACCEPT_IMAGE :
-      filter === 'audio' ? FILE_ACCEPT_AUDIO :
-      filter === 'document' ? FILE_ACCEPT_DOCUMENT :
-      FILE_ACCEPT;
-    input.accept = accept;
-    input.click();
+  /** Trigger file upload from the Files view. The picker accepts every
+   *  type the vault does: the type tabs choose what the list shows, never
+   *  what may be added. */
+  function handleFilesUpload() {
+    filesUploadRef.current?.click();
   }
 
   /** Handle file(s) selected via the hidden input.
@@ -126,13 +118,25 @@ export function useFilesUpload({
             };
           }
         }
+        // Pictures and attachments are stored and swapped into the bodies
+        // before the notes are written: a row written with a placeholder
+        // can be sent by a sync pass that the later rewrite cannot reach
+        // (see blobImport.ts). Its own try, so a media failure still
+        // leaves the notes, which is what the outer catch would cost.
+        let storedBlobs = false;
+        if (parsed.blobs && parsed.blobs.size > 0) {
+          try {
+            const { importBlobs } = await import('../import/blobImport');
+            const media = await importBlobs(parsed.blobs, toApply.notes);
+            toApply = { ...toApply, notes: media.notes };
+            storedBlobs = true;
+          } catch (err) {
+            console.warn('[Files->Import] media failed for', file.name, err);
+          }
+        }
         const result = await applyImport(toApply, 'markdown');
         totalImported += result.imported;
-        if (parsed.blobs && parsed.blobs.size > 0 && result.noteIds.length > 0) {
-          const { importBlobs } = await import('../import/blobImport');
-          await importBlobs(parsed.blobs, result.noteIds);
-          onBlobsRestored?.();
-        }
+        if (storedBlobs) onBlobsRestored?.();
       } catch (err) {
         console.warn('[Files→Import] failed for', file.name, err);
       }

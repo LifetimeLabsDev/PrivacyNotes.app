@@ -13,7 +13,7 @@ import {
 } from '../biometric';
 import { hasPin, markPinUnlocked, verifyPin } from '../pin';
 import { PinInput, type PinInputHandle } from '../PinInput';
-import { SectionEyebrow } from '../settingsUI';
+import { SectionEyebrow, SETTINGS_HELP, SettingsCallout } from '../settingsUI';
 import { isTrustedDevice } from '../trustStorage';
 import { isDemoMode } from '../demo';
 import { persistStoredPhrase } from '../phraseAtRest';
@@ -23,23 +23,31 @@ import { HelpChip } from '../HelpChip';
 
 /**
  * Biometric tab - enroll/disable WebAuthn platform authenticator
- * (Touch ID, Face ID, Windows Hello) plus the app-lock toggle and
- * shared re-lock timeout selector.
+ * (Touch ID, Face ID, Windows Hello) plus the app-lock toggle and the
+ * app lock's own re-lock window.
  */
 export function BiometricTab({
   phrase,
   pubkey,
   userSettings,
   onSettingsChange,
-  pinTimeoutMinutes,
-  onPinTimeoutChange,
+  timeoutMinutes,
+  onTimeoutChange,
+  onSetUpPin,
 }: {
   phrase: string;
   pubkey: string;
   userSettings: UserSettings;
-  onSettingsChange: (next: UserSettings) => void;
-  pinTimeoutMinutes: number;
-  onPinTimeoutChange: (minutes: number) => void;
+  /** `base` is the copy this surface was rendered with; the parent applies
+   *  only the credential keys that differ between it and `next`. */
+  onSettingsChange: (next: UserSettings, base: UserSettings) => void;
+  /** The app lock's own re-lock window. The PIN tab owns a separate one for
+   *  the phrase view and PIN-protected notes. */
+  timeoutMinutes: number;
+  onTimeoutChange: (minutes: number) => void;
+  /** Send the user to the PIN tab to create the credential the app lock
+   *  needs. The parent brings them back here once it exists. */
+  onSetUpPin: () => void;
 }) {
   const { t } = useTranslation('security');
   const [deviceSupported, setDeviceSupported] = useState<boolean | null>(null);
@@ -53,6 +61,13 @@ export function BiometricTab({
   // phrase the demo wraps is a public constant, and every demo credential is
   // cleared on the next fresh tab session (clearFreshDemoCredentials).
   const trusted = isTrustedDevice() || isDemoMode();
+  // Whether the app lock can do anything on THIS device: a wrap it could
+  // open, or a credential it could build one from. Every predicate reads the
+  // device rather than the account, because `verifyPin` reads the same local
+  // cache `hasPin` checks and the lock screen can only open a wrap that is
+  // here. A synced `pinHash` is not the question: a PIN this device has not
+  // cached yet unwraps nothing.
+  const lockReady = enrolled || hasPin() || hasPinWrappedPhrase();
 
   useEffect(() => {
     void canUseBiometric().then(setDeviceSupported);
@@ -75,10 +90,7 @@ export function BiometricTab({
       // created when the user enables app lock and enters their PIN.
       removeStoredPhrase();
       setEnrolled(true);
-      onSettingsChange({
-        ...userSettings,
-        appLockEnabled: true,
-      });
+      onSettingsChange({ ...userSettings, appLockEnabled: true }, userSettings);
       setSuccessFlash(true);
       setTimeout(() => setSuccessFlash(false), 2000);
     } else {
@@ -93,10 +105,7 @@ export function BiometricTab({
     removeBiometricCredential();
     if (!hasPinWrappedPhrase()) {
       void persistStoredPhrase(phrase);
-      onSettingsChange({
-        ...userSettings,
-        appLockEnabled: false,
-      });
+      onSettingsChange({ ...userSettings, appLockEnabled: false }, userSettings);
     }
     setEnrolled(false);
   }
@@ -134,7 +143,7 @@ export function BiometricTab({
     setPinConfirmValue('');
     setPinConfirmBusy(false);
     // The synced blob fields ride along so every device gets the wrap.
-    onSettingsChange({ ...userSettings, appLockEnabled: true, ...blob });
+    onSettingsChange({ ...userSettings, appLockEnabled: true, ...blob }, userSettings);
   }
 
   function handleAppLockToggle() {
@@ -143,6 +152,10 @@ export function BiometricTab({
     // cannot reintroduce the write by forgetting it - which is how the wrap
     // sites came to disagree with `hydrateLocalPinWrap` in the first place.
     if (next && !trusted) return;
+    // Arming a lock with no door behind it strips the phrase and leaves the
+    // twelve words as the only way back in. The disabled control above says
+    // so; this says it where the write happens.
+    if (next && !lockReady) return;
     if (!next) {
       // Arming the lock strips the phrase at rest, so a door is the only way
       // back into this device - and every door here opens through the lock
@@ -153,7 +166,7 @@ export function BiometricTab({
       // the two still has a session to restore.
       void persistStoredPhrase(phrase);
       setPinConfirm(false);
-      onSettingsChange({ ...userSettings, appLockEnabled: false });
+      onSettingsChange({ ...userSettings, appLockEnabled: false }, userSettings);
       return;
     }
     if (!enrolled && !hasPinWrappedPhrase()) {
@@ -162,7 +175,7 @@ export function BiometricTab({
       setPinConfirm(true);
       return;
     }
-    onSettingsChange({ ...userSettings, appLockEnabled: true });
+    onSettingsChange({ ...userSettings, appLockEnabled: true }, userSettings);
   }
 
   if (deviceSupported === null) {
@@ -234,35 +247,70 @@ export function BiometricTab({
           which is the opposite of what that checkbox promises. A lock that
           is already armed keeps its switch, so nobody is left without a way
           to turn one off. */}
-      {(enrolled || hasPin()) && (trusted || userSettings.appLockEnabled) && (
+      {(trusted || userSettings.appLockEnabled) && (
         <div className="pt-4 border-t border-divider">
-          <label className="flex items-center justify-between cursor-pointer">
+          <label
+            className={`flex items-center justify-between ${lockReady ? 'cursor-pointer' : 'cursor-default'}`}
+          >
             <div>
-              <div className="text-sm font-medium text-pn">{t('biometricTab.lockOnOpen')}</div>
+              <div className={`text-sm font-medium ${lockReady ? 'text-pn' : 'text-pn-muted'}`}>
+                {t('biometricTab.lockOnOpen')}
+              </div>
               <div className="text-xs text-pn-soft mt-0.5">
                 {t('biometricTab.lockOnOpenHint')}
               </div>
             </div>
             <div className="relative">
+              {/* The switch shows what this device does, not what the synced
+                  flag says. The flag can arrive from another device and sit
+                  true here with nothing to open the lock with, where the lock
+                  never engages - a switch reading "on" over a line explaining
+                  that it cannot work is the confusing half of that state. */}
               <input
                 type="checkbox"
-                checked={userSettings.appLockEnabled}
+                checked={lockReady && userSettings.appLockEnabled}
                 onChange={handleAppLockToggle}
+                disabled={!lockReady}
                 className="sr-only peer"
               />
-              <div className="w-9 h-5 bg-pn-muted/35 peer-checked:bg-accent rounded-full transition-colors" />
-              <div className="absolute start-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-4 peer-checked:rtl:-translate-x-4" />
+              <div
+                className={`w-9 h-5 rounded-full transition-colors ${lockReady ? 'bg-pn-muted/35 peer-checked:bg-accent' : 'bg-pn-muted/20'}`}
+              />
+              <div
+                className={`absolute start-0.5 top-0.5 w-4 h-4 rounded-full shadow-sm transition-transform peer-checked:translate-x-4 peer-checked:rtl:-translate-x-4 ${lockReady ? 'bg-white' : 'bg-white/50'}`}
+              />
             </div>
           </label>
+          {/* The switch used to be absent instead of dim, which left the tab
+              silent about the app lock on a device with neither credential -
+              nothing on screen said the feature existed or what it wanted. */}
+          {!lockReady && (
+            <SettingsCallout className="mt-2.5">
+              <span>{t('biometricTab.lockNeedsCredential')}</span>{' '}
+              <button
+                type="button"
+                onClick={onSetUpPin}
+                className="text-accent underline underline-offset-2 hover:no-underline"
+              >
+                {t('biometricTab.setUpPin')}
+              </button>
+            </SettingsCallout>
+          )}
         </div>
       )}
 
       {pinConfirm && (
         <div className="rounded-md border border-divider bg-surface-1 p-3 space-y-3">
-          <p className="text-sm text-pn-soft leading-relaxed">
+          <p className={`${SETTINGS_HELP} leading-relaxed`}>
             {t('biometricTab.confirmPinForLock')}
           </p>
-          <div className="flex justify-center">
+          {/* Same shape as the PIN tab's current-PIN step: eyebrow, compact
+              boxes, then the buttons. The keys live under pinTab because that
+              tab owns this wording; the control is the same control. */}
+          <div className="space-y-1.5">
+            <SectionEyebrow className="text-center">
+              {t('pinTab.currentPin')}
+            </SectionEyebrow>
             <PinInput
               ref={pinConfirmRef}
               value={pinConfirmValue}
@@ -272,6 +320,7 @@ export function BiometricTab({
               }}
               onComplete={(v) => void confirmPinForAppLock(v)}
               autoFocus
+              compact
               disabled={pinConfirmBusy}
             />
           </div>
@@ -280,17 +329,27 @@ export function BiometricTab({
               {pinConfirmError}
             </p>
           )}
-          <button
-            type="button"
-            onClick={() => {
-              setPinConfirm(false);
-              setPinConfirmValue('');
-              setPinConfirmError(null);
-            }}
-            className="w-full rounded-md border border-divider hover:bg-surface-2 px-3 py-2 text-sm transition"
-          >
-            {t('common:actions.cancel')}
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => void confirmPinForAppLock(pinConfirmValue)}
+              disabled={pinConfirmValue.length !== 4 || pinConfirmBusy}
+              className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {pinConfirmBusy ? t('pinTab.checking') : t('pinTab.verify')}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setPinConfirm(false);
+                setPinConfirmValue('');
+                setPinConfirmError(null);
+              }}
+              className="flex-1 rounded-md border border-divider hover:bg-surface-2 px-3 py-2 text-sm transition"
+            >
+              {t('common:actions.cancel')}
+            </button>
+          </div>
         </div>
       )}
 
@@ -301,13 +360,13 @@ export function BiometricTab({
               {t('biometricTab.relockAfter')}
             </SectionEyebrow>
             <select
-              value={String(pinTimeoutMinutes)}
-              onChange={(e) => onPinTimeoutChange(Number(e.target.value))}
+              value={String(timeoutMinutes)}
+              onChange={(e) => onTimeoutChange(Number(e.target.value))}
               className="w-full rounded-md bg-surface-1 border border-divider px-3 py-2 text-sm focus:outline-none focus:border-accent"
             >
               {TIMEOUT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
-                  {opt.label}
+                  {t(opt.labelKey)}
                 </option>
               ))}
             </select>

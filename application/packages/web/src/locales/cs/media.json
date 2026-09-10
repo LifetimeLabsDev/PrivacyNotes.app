@@ -16,6 +16,10 @@
   },
   "attachment": {
     "fallbackName": "Příloha",
+    "rename": "Přejmenovat",
+    "renamePlaceholder": "Název souboru",
+    "saveName": "Uložit název",
+    "seek": "Pozice přehrávání",
     "imageAlt": "Obrázek",
     "cantPlay": "Nelze přehrát. Stáhni si to k poslechu",
     "downloadingStatus": "stahuji...",

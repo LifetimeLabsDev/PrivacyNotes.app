@@ -107,7 +107,8 @@
     "addedTag_zero": "تمت إضافة الوسم #{{tag}} إلى {{count}} عناصر",
     "addedTag_two": "تمت إضافة الوسم #{{tag}} إلى {{count}} عنصرين",
     "addedTag_few": "تمت إضافة الوسم #{{tag}} إلى {{count}} عناصر",
-    "addedTag_many": "تمت إضافة الوسم #{{tag}} إلى {{count}} عنصر"
+    "addedTag_many": "تمت إضافة الوسم #{{tag}} إلى {{count}} عنصر",
+    "restoreSummary": "تمت الاستعادة. أُضيف {{added}}، وحُدِّث {{updated}}، و{{unchanged}} محدَّث بالفعل."
   },
   "burn": {
     "mediaOnly": "تحتوي هذه الملاحظة على وسائط فقط، ولا يمكن مشاركتها عبر رابط الحرق.",

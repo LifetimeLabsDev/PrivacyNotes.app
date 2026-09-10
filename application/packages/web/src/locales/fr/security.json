@@ -29,10 +29,26 @@
     "pinFourDigits": "Le PIN doit comporter 4 chiffres.",
     "pinsDoNotMatch": "Les PIN ne correspondent pas."
   },
+  "timeout": {
+    "min1": "1 minute",
+    "min5": "5 minutes",
+    "min15": "15 minutes",
+    "min30": "30 minutes",
+    "hour1": "1 heure",
+    "hour4": "4 heures",
+    "hour8": "8 heures",
+    "hour12": "12 heures",
+    "browserRestart": "Au redémarrage du navigateur"
+  },
+  "pinInfo": {
+    "title": "Exiger le PIN pour voir",
+    "body": "Une fois activé, ton PIN est demandé chaque fois que tu ouvres cet élément, même si l'application est déjà déverrouillée. Utilise-le pour les éléments sensibles qui doivent rester protégés quand tu t'éloignes.",
+    "gotIt": "J'ai compris"
+  },
   "removePinDialog": {
     "title": "Supprimer le PIN",
     "introWithBio": "Saisis ton PIN actuel pour confirmer la suppression. Le déverrouillage biométrique reste actif, mais ton seul recours sera ta phrase de récupération.",
-    "introNoBio": "Saisis ton PIN actuel pour confirmer la suppression. La vue de la phrase ne sera plus protégée.",
+    "introNoBio": "Saisis ton PIN actuel pour confirmer la suppression. Ton écran de phrase de récupération s'ouvrira ensuite sans PIN.",
     "verifying": "Vérification...",
     "removePin": "Supprimer le PIN"
   },
@@ -102,9 +118,11 @@
     "enable": "Activer le déverrouillage biométrique",
     "lockOnOpen": "Verrouiller l'app à l'ouverture",
     "lockOnOpenHint": "Exiger la biométrie ou le PIN à l'ouverture de l'app.",
-    "confirmPinForLock": "Saisis ton PIN une fois pour l'activer. Il verrouille une copie de ta phrase de récupération, pour que seul ton PIN puisse ouvrir l'app.",
+    "lockNeedsCredential": "Le verrouillage de l'app nécessite un PIN ou le déverrouillage biométrique sur cet appareil.",
+    "setUpPin": "Définir un PIN",
+    "confirmPinForLock": "Saisis ton PIN pour l'activer. Il verrouille une copie de ta phrase de récupération, pour que seul ton PIN puisse ouvrir l'app.",
     "relockAfter": "Reverrouiller après",
-    "relockHint": "S'applique à l'écran de verrouillage de l'app et à toute note protégée par PIN.",
+    "relockHint": "S'applique uniquement à l'écran de verrouillage de l'app.",
     "perDeviceNote": "Le déverrouillage biométrique ouvre les mêmes notes que ton PIN. Il reste sur cet appareil et n'est jamais synchronisé.",
     "disableConfirmTitle": "Désactiver la biométrie",
     "disableConfirmLabel": "Désactiver",

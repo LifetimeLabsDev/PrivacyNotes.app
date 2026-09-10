@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "Alla",
-    "notes": "Anteckningar",
-    "tasks": "Uppgifter",
-    "vault": "Valv",
-    "files": "Filer",
-    "journals": "Dagböcker",
-    "pinned": "Fästa",
     "trash": "Papperskorgen",
-    "markdown": "Markdown",
     "bookmarks": "Bokmärken",
     "contacts": "Kontakter"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Sorteringsalternativ",
     "searchPlaceholder": "Sök filer…",
     "sortName": "Namn",
-    "showNotesWithAttachments": "Visa anteckningar med bilagor",
+    "showNotesWithAttachments": "Visa filer i anteckningar",
     "noMatches": "Inga träffar.",
     "pinProtected": "PIN-skyddad",
     "readOnly": "Skrivskyddad",
@@ -78,10 +70,11 @@
     "menuImages": "Bilder",
     "menuAudio": "Ljud",
     "menuDocuments": "Dokument",
-    "menuHideNoteAttachments": "Dölj anteckningsbilagor",
-    "menuShowNoteAttachments": "Visa anteckningsbilagor",
+    "menuHideNoteAttachments": "Dölj filer i anteckningar",
+    "menuShowNoteAttachments": "Visa filer i anteckningar",
     "menuUnpin": "Lossa",
     "menuPin": "Fäst",
+    "menuRename": "Byt namn",
     "menuMoveToTrash": "Flytta till papperskorgen"
   },
   "vaultItem": {
@@ -116,6 +109,26 @@
     "notesHeading": "Anteckningar",
     "fillOneField": "Fyll i minst ett fält innan du sparar.",
     "expiryNeedsBoth": "Ange både månad och år, eller lämna båda tomma."
+  },
+  "fileTypes": {
+    "audio": "Ljud",
+    "video": "Video",
+    "image": "Bild",
+    "pdf": "PDF",
+    "archive": "Arkiv",
+    "document": "Dokument",
+    "spreadsheet": "Kalkylark",
+    "file": "Fil",
+    "audioRecording": "Ljudinspelning",
+    "pdfDocument": "PDF-dokument",
+    "attachment": "Bilaga"
+  },
+  "noteRow": {
+    "noUsername": "Inget användarnamn",
+    "noCardholder": "Ingen kortinnehavare",
+    "noLabel": "Ingen etikett",
+    "files_one": "{{count}} fil",
+    "files_other": "{{count}} filer"
   },
   "tagsRail": {
     "showAllItems": "Visa allt",

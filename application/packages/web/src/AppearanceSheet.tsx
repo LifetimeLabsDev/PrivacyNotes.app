@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
 import {
   useTheme,
@@ -18,11 +18,13 @@ import {
 } from './theme';
 import { IconUpgrade } from './UpgradeModal';
 import { proUnlocked } from './demo';
-import { X, List, ListBullets, Palette, SquaresFour, Sparkle, DotsThreeOutlineVertical, PILLAR_GLYPHS } from './icons';
+import { X, List, ListBullets, Palette, SquaresFour, Sparkle, DotsThreeOutlineVertical, CaretDown, PILLAR_GLYPHS, type Icon } from './icons';
 import { exemptOpts } from './i18nExempt';
 import { AccentBar, HeadlineRule, SETTINGS_EYEBROW, SETTINGS_HELP } from './settingsUI';
 import { faviconUrl } from './favicon';
-import { allViewRows, sidebarViewRows, ViewCheckBox } from './SidebarOptionsPopover';
+import { ViewCheckBox } from './SidebarOptionsPopover';
+import { allViewRows, resolveStartView, sidebarViewRows, startViewRows } from './viewRows';
+import { ViewMenu } from './ViewMenu';
 import type { View } from './views';
 
 type Props = {
@@ -43,6 +45,10 @@ type Props = {
   hiddenViews: View[];
   hiddenInAll: View[];
   onToggleHidden: (field: 'hiddenViews' | 'hiddenInAll', key: View) => void;
+  /** The view the app opens on at a cold start, and its setter.
+   *  Spec: ops/docs/plans/start-view.md */
+  startView: View;
+  onStartViewChange: (next: View) => void;
 };
 
 /** Translation key per text size. Keeps the order in TEXT_SIZES. */
@@ -92,6 +98,17 @@ function swatchFor(ct: ColorTheme, dark: boolean): [string, string, string] {
   return ct === 'default' && dark ? SWATCH_DEFAULT_DARK : SWATCH[ct];
 }
 
+/** A glyph welded to the word it labels, for a heading that names a column.
+    Trans clones this and replaces only the children, so `icon` survives. */
+function IconWord({ icon: Glyph, children }: { icon: Icon; children?: ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <Glyph size={14} className="text-accent shrink-0" aria-hidden="true" />
+      {children}
+    </span>
+  );
+}
+
 /** Segmented-control option states, shared by both layouts. */
 const SEG_ACTIVE = 'bg-surface-2 shadow-sm text-pn font-semibold';
 const SEG_IDLE = 'text-pn-soft hover:text-pn font-medium';
@@ -102,7 +119,7 @@ const SEG_IDLE = 'text-pn-soft hover:text-pn font-medium';
  */
 const SEG_FILL = 'flex-1 px-3 lg:flex-none';
 
-export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = false, viewMode, onViewModeChange, editorMode, onEditorModeChange, hiddenViews, hiddenInAll, onToggleHidden }: Props) {
+export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = false, viewMode, onViewModeChange, editorMode, onEditorModeChange, hiddenViews, hiddenInAll, onToggleHidden, startView, onStartViewChange }: Props) {
   const { t } = useTranslation('settings');
   // The table's row labels are the sidebar's own strings, so the pane and the
   // rail can never disagree in any language.
@@ -111,6 +128,8 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   // Lists is what its lists hold. The footer popover has no tab strip - it
   // renders a subset of Style only. Spec: ops/docs/ui-patterns.md section 36
   const [tab, setTab] = useState<'style' | 'lists'>('style');
+  const [startMenuOpen, setStartMenuOpen] = useState(false);
+  const startBtnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const { theme, themeMode, setThemeMode, colorTheme, setColorTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, favicons, setFavicons, invisibles, setInvisibles } = useTheme();
 
@@ -279,6 +298,11 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     // and website icons are device-local, icons pass through our proxy)
     // stays at every width - mobile is where those matter most.
     const helpExplain = `${SETTINGS_HELP} mt-0.5 hidden lg:block`;
+    // Offered start views, and the one chosen. A view switched off in the
+    // table below is not offered, and a stored choice that points at one
+    // reads back as All, so the two settings cannot contradict each other.
+    const startRows = startViewRows(tShell, hiddenViews);
+    const startRow = startRows.find((r) => r.key === resolveStartView(startView, hiddenViews));
     const styleRows = (
       <>
         {/* Mode - Auto / Light / Dark. Auto follows the OS and re-resolves
@@ -464,6 +488,41 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
 
     const listRows = (
       <>
+        {/* Start in - which view the app opens on. First on the tab because
+            it answers the question a person arrives with, and because a menu
+            here has the whole pane below it to open into. The menu is the one
+            the phone pillar switcher uses, so a pillar added later appears in
+            both without a second list.
+            Spec: ops/docs/plans/start-view.md */}
+        <div className={row}>
+          <div className="min-w-0">
+            <p className="text-sm font-medium">{t('appearance.startViewTitle')}</p>
+          </div>
+          <button
+            ref={startBtnRef}
+            type="button"
+            onClick={() => setStartMenuOpen((o) => !o)}
+            aria-haspopup="menu"
+            aria-expanded={startMenuOpen}
+            aria-label={`${t('appearance.startViewTitle')}: ${startRow?.label ?? ''}`}
+            className="shrink-0 self-start lg:self-auto inline-flex items-center gap-2 rounded-md bg-track px-3 py-1.5 text-sm font-medium text-pn hover:bg-pn-muted/20 transition"
+          >
+            {startRow && <startRow.icon size={15} className="text-accent shrink-0" aria-hidden="true" />}
+            {startRow?.label}
+            <CaretDown size={12} className={`text-pn-soft transition-transform ${startMenuOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+          </button>
+          {startMenuOpen && (
+            <ViewMenu
+              rows={startRows}
+              current={startView}
+              onPick={onStartViewChange}
+              anchorRef={startBtnRef}
+              onClose={() => setStartMenuOpen(false)}
+              align="end"
+            />
+          )}
+        </div>
+
         {/* View - list / grid / auto layout. */}
         <div className={row}>
           <div className="min-w-0">
@@ -497,7 +556,20 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             List/Grid choice already is.
             Spec: ops/docs/plans/sidebar-views.md */}
         <div className="py-3">
-          <p className="text-sm font-medium">{t('appearance.sidebarTitle')}</p>
+          {/* The heading names the two columns using the two glyphs the column
+              headers carry, so the words below are already recognisable. Each
+              glyph is bound to its word by a Trans tag rather than dropped in
+              at a fixed offset: word order moves between languages, and the
+              pair has to move with it. */}
+          <p className="text-sm font-medium flex items-center gap-1.5">
+            <Trans
+              i18nKey="settings:appearance.sidebarTitle"
+              components={{
+                sb: <IconWord icon={DotsThreeOutlineVertical} />,
+                all: <IconWord icon={PILLAR_GLYPHS.all} />,
+              }}
+            />
+          </p>
           <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.sidebarDesc')}</p>
           <table className="mt-2.5 w-full text-sm">
             <thead>

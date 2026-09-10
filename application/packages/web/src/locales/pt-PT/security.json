@@ -29,10 +29,26 @@
     "pinFourDigits": "O PIN tem de ter 4 dígitos.",
     "pinsDoNotMatch": "Os PIN não coincidem."
   },
+  "timeout": {
+    "min1": "1 minuto",
+    "min5": "5 minutos",
+    "min15": "15 minutos",
+    "min30": "30 minutos",
+    "hour1": "1 hora",
+    "hour4": "4 horas",
+    "hour8": "8 horas",
+    "hour12": "12 horas",
+    "browserRestart": "Ao reiniciar o navegador"
+  },
+  "pinInfo": {
+    "title": "Exigir PIN para ver",
+    "body": "Quando está ativo, o teu PIN é pedido sempre que abres este item, mesmo que a aplicação já esteja desbloqueada. Usa-o para itens sensíveis que devem continuar protegidos quando te afastas.",
+    "gotIt": "Percebi"
+  },
   "removePinDialog": {
     "title": "Remover PIN",
     "introWithBio": "Introduz o teu PIN atual para confirmares a remoção. O desbloqueio biométrico mantém-se ativo, mas a tua única alternativa será a frase de recuperação.",
-    "introNoBio": "Introduz o teu PIN atual para confirmares a remoção. A vista da frase deixa de estar protegida.",
+    "introNoBio": "Introduz o teu PIN atual para confirmares a remoção. O ecrã da tua frase de recuperação passa a abrir sem PIN.",
     "verifying": "A verificar...",
     "removePin": "Remover PIN"
   },
@@ -102,9 +118,11 @@
     "enable": "Ativar o desbloqueio biométrico",
     "lockOnOpen": "Bloquear a app ao abrir",
     "lockOnOpenHint": "Exigir biometria ou PIN ao abrir a app.",
-    "confirmPinForLock": "Introduz o teu PIN uma vez para ativar isto. Ele tranca uma cópia da tua frase de recuperação, para que só o teu PIN possa abrir a app.",
+    "lockNeedsCredential": "O bloqueio da app precisa de um PIN ou do desbloqueio biométrico neste dispositivo.",
+    "setUpPin": "Definir um PIN",
+    "confirmPinForLock": "Introduz o teu PIN para ativar isto. Ele tranca uma cópia da tua frase de recuperação, para que só o teu PIN possa abrir a app.",
     "relockAfter": "Voltar a bloquear após",
-    "relockHint": "Aplica-se ao ecrã de bloqueio da app e a qualquer nota protegida por PIN.",
+    "relockHint": "Aplica-se apenas ao ecrã de bloqueio da app.",
     "perDeviceNote": "O desbloqueio biométrico abre as mesmas notas que o teu PIN. Fica neste dispositivo e nunca é sincronizado.",
     "disableConfirmTitle": "Desativar a biometria",
     "disableConfirmLabel": "Desativar",

@@ -99,7 +99,8 @@
     "importedSyncing_one": "{{count}} notitie geïmporteerd. Synchroniseren…",
     "importedSyncing_other": "{{count}} notities geïmporteerd. Synchroniseren…",
     "addedTag_one": "#{{tag}} toegevoegd aan {{count}} item",
-    "addedTag_other": "#{{tag}} toegevoegd aan {{count}} items"
+    "addedTag_other": "#{{tag}} toegevoegd aan {{count}} items",
+    "restoreSummary": "Hersteld. {{added}} toegevoegd, {{updated}} bijgewerkt, {{unchanged}} al up-to-date."
   },
   "burn": {
     "mediaOnly": "Deze notitie bevat alleen media en kan niet via een burn-link worden gedeeld.",

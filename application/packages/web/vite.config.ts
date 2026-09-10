@@ -305,7 +305,11 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // 77.00 on launch day (2026-08-31), which the previous 77 refused with the
   // baseline at 76.98: three og:locale rows and a reworded FAQ answer, about
   // 20 bytes. Raised to 78 so the next copy edit is not a budget question.
-  '(entry)': 78,
+  // 78.03 in build-smoke's units on 2026-09-10, thirty bytes over, from six
+  // items added to the public changelog. That entry is data in the entry
+  // chunk, so curating a release moves this number and nothing else does.
+  // Raised to 79 for the same reason it went to 78.
+  '(entry)': 79,
   // NEW CHUNK, not new bytes: the whole shared package in one piece, 62.91 kB
   // gz. It has to stay one chunk - splitting it is what put a white page in
   // production. See the advancedChunks comment in `build` for the mechanism.
@@ -395,7 +399,14 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // (the form, the label vocabulary, the import row) and the Images pane
   // landed (2026-09-08), +1.81 against the v0.506.0 baseline, over the 60 kB
   // default. Raised to 62.
-  i18n: 62,
+  // 62.11 in build-smoke's units on 2026-09-10 with no catalog change in the
+  // diff, so this is the ubuntu-against-darwin gap the baseline note warns
+  // about rather than growth. Raised to 63 to stop a measurement difference
+  // failing a build.
+  // 63.01 on 2026-09-11 with the generator's second mode: twenty-odd short
+  // strings for the toggle, the steppers, the strength tiers and the
+  // passphrase options, +0.24 kB gz. Raised to 64.
+  i18n: 64,
   // 209.51 kB gz since katex became its own chunk below (278.11 with it inside,
   // against a 300 budget). Retightened in the same change that moved it: a
   // budget carrying 90 kB of slack is decoration, not a gate.
@@ -715,7 +726,42 @@ const DEFAULT_CHUNK_BUDGET_KB = 60;
 // retry re-reading the owner (auth +0.33), and the demo-bucket sweep in the
 // danger zone. Two rather than one, so the next copy edit is not a budget
 // question on top of a security one.
-const BOOT_PATH_BUDGET_KB = 925;
+// 925 -> 927 (2026-09-10): folders stop being replaced wholesale. The tree
+// merge, the tombstones and the undelete record (folders +0.71), the four
+// merge call sites and the claim gate in settings, the settings writes that
+// now go through the cache rather than a React copy (NotesView +0.37), and
+// the restore matching our own notes by id (apply +0.15). All boot-path: the
+// merge runs on the first sync pass, before anything is drawn. Two rather
+// than one, so the next copy edit is not a budget question on top of a data
+// loss fix.
+// 927 -> 928 (2026-09-10): the editor's link rules, +0.23 kB gz. Deciding
+// what a click means costs a click handler and a mark-range read
+// (editorLinks.ts), and the right-click menu is four items built from
+// components the editor already carries. It lands on the boot path because
+// the editor is inside NotesView's static closure. Same whisker of margin.
+// 929 -> 931 (2026-09-11): renaming a stored file, and a seek bar on an
+// audio chip. The chip grows an inline field, a slider and a wrap rule, the
+// editor grows the handle the Files pillar's Rename row calls, and the name
+// rules are a new module (Editor +1.18, fileNames +0.29, NotesView +0.20).
+// It lands on the boot path because the editor is inside NotesView's static
+// closure, and none of it can load later than the editor it belongs to. Two
+// rather than one, so the next copy edit is not a budget question.
+// 931 -> 932 (2026-09-11): the password colouring (PasswordText.tsx and its
+// three call sites) adds nothing the gauge can see - no vault chunk moved at
+// 0.01 kB resolution against the v0.512.0 baseline. What tripped the gate,
+// by 0.15, is the 1.03 kB the four commits since that baseline had already
+// added without a raise: auth +0.51 (the PIN-wrap move and the settings
+// cache) and adminEvents +0.50. Same whisker of margin.
+// 932 -> 935 (2026-09-11): the password generator grew a second mode and a
+// strength meter, +2.54 kB gz: PasswordGenerator.tsx and passwordGen.ts
+// (the modal, the exact-count and passphrase builders, the bits formula)
+// static under LoginForm, plus their English strings in the eager catalog
+// (i18n +0.24). Loading the modal on demand was measured and rejected: the
+// modules it shares with the boot path (settings, the painter, the hover
+// label, the icons) get hoisted into seven chunks of their own, and the
+// boot path still grows 1.73 kB while first open pays a round trip. Three
+// rather than one, so the next copy edit is not a budget question.
+const BOOT_PATH_BUDGET_KB = 935;
 
 // The budget above is stated in ONE environment's units: build-smoke's, which
 // is ubuntu with the synthetic values from tools/ci-vite-env.mjs. Every other

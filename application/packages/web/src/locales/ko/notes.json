@@ -97,7 +97,8 @@
     "imageError": "이미지 오류: {{error}}",
     "uploadFailedFor": "\"{{filename}}\" 업로드 실패: {{error}}",
     "importedSyncing_other": "노트 {{count}}개를 가져왔어요. 동기화 중…",
-    "addedTag_other": "항목 {{count}}개에 #{{tag}} 추가됨"
+    "addedTag_other": "항목 {{count}}개에 #{{tag}} 추가됨",
+    "restoreSummary": "복원했어요. {{added}}개 추가, {{updated}}개 업데이트, {{unchanged}}개는 이미 최신이에요."
   },
   "burn": {
     "mediaOnly": "이 노트에는 미디어만 있어서 burn 링크로 공유할 수 없어요.",

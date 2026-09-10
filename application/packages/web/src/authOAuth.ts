@@ -21,6 +21,7 @@ import {
   PHRASE_STORAGE_KEY,
   OAUTH_FLAG_KEY,
   OAUTH_NATIVE_REDIRECT,
+  switchWouldWipe,
 } from './authStorage';
 import { logAuthEvent } from './authDiag';
 import { consumeOAuthPending, markOAuthPending } from './oauthPending';
@@ -73,6 +74,7 @@ export function isOAuthCallbackUrl(rawUrl: string): boolean {
 
 export function useOAuthFlows({
   authenticateWithPhrase,
+  askAccountSwitch,
   setAuth,
   supabase,
   authInFlight,
@@ -86,6 +88,12 @@ export function useOAuthFlows({
     freshVault?: boolean,
     captchaToken?: string,
   ) => Promise<boolean>;
+  /**
+   * Asks the person whether the account already on this device may be
+   * cleared. The provider renders it, because this hook runs inside an
+   * OAuth callback and has no screen of its own.
+   */
+  askAccountSwitch: () => Promise<boolean>;
   setAuth: Dispatch<SetStateAction<AuthState>>;
   supabase: SupabaseClient;
   authInFlight: { current: boolean };
@@ -340,6 +348,14 @@ export function useOAuthFlows({
               return;
             }
             setAuth({ status: 'oauth_hydrate_failed', trust });
+            return;
+          }
+          // One click signs in, and on a device holding somebody else's
+          // account that click also clears it. Ask first, and treat a
+          // no as a return to the sign-in options rather than an error:
+          // nothing failed, the person declined.
+          if (await switchWouldWipe(custodialPhrase) && !(await askAccountSwitch())) {
+            setAuth({ status: 'onboarding' });
             return;
           }
           // Custodial user - 1-click sign-in! Pass the OAuth session

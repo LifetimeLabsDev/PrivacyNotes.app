@@ -14,6 +14,8 @@ import { detectPlatform, isLinuxNative } from './devices';
 import { isDemoMode } from './demo';
 import { isAppHost } from './hosts';
 import { applyStoredTheme } from './theme';
+import { ConfirmModal } from './ConfirmModal';
+import { switchWouldWipe } from './authStorage';
 import { LoadingScreen } from './LoadingScreen';
 import { LandingPage, FX_CSS } from './LandingPage';
 import { LogoIcon } from './LogoIcon';
@@ -1050,6 +1052,14 @@ function SignInStep({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Signing in with a phrase this device does not own destroys what is
+  // on it. The question is asked here rather than inside the sign-in,
+  // which also runs on boot paths with no screen to ask from, and only a
+  // person on the signed-out screen ever sees it - which is where
+  // switching accounts is the deliberate act it looks like.
+  const [askSwitch, setAskSwitch] = useState(false);
+  const switchConfirmed = useRef(false);
+
   const [turnstileOk, setTurnstileOk] = useState(false);
   const [turnstileKey, setTurnstileKey] = useState(0);
   const autoFired = useRef(false);
@@ -1107,6 +1117,11 @@ function SignInStep({
   }
 
   async function finish() {
+    // Before the loading screen, which would cover the question.
+    if (!switchConfirmed.current && (await switchWouldWipe(phrase))) {
+      setAskSwitch(true);
+      return;
+    }
     setBusy(true);
     setError(null);
 
@@ -1173,6 +1188,24 @@ function SignInStep({
     void finish();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [turnstileOk]);
+
+  if (askSwitch) {
+    return (
+      <ConfirmModal
+        title={t('signIn.switchTitle')}
+        confirmLabel={t('signIn.switchConfirm')}
+        variant="warning"
+        onConfirm={() => {
+          switchConfirmed.current = true;
+          setAskSwitch(false);
+          void finish();
+        }}
+        onClose={onBack}
+      >
+        {t('signIn.switchBody')}
+      </ConfirmModal>
+    );
+  }
 
   if (busy) {
     return <LoadingScreen inline />;

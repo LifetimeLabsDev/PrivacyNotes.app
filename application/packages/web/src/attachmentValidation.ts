@@ -13,11 +13,6 @@ import { formatBytes } from './formatBytes';
 /** Accept string for file inputs - all file types allowed. */
 export const FILE_ACCEPT = '*/*';
 
-/** Category-scoped accept strings - used when uploading from a filtered view. */
-export const FILE_ACCEPT_IMAGE = '.jpg,.jpeg,.png,.gif,.webp,.heic,.heif,.svg,.tiff,.bmp,.avif';
-export const FILE_ACCEPT_AUDIO = '.mp3,.m4a,.wav,.ogg,.aac,.flac,.webm,.opus,.aiff';
-export const FILE_ACCEPT_DOCUMENT = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.pages,.numbers,.key,.txt,.rtf,.csv,.md,.odt,.ods,.odp,.json,.html';
-
 /** Per-file size limits in bytes. */
 const FILE_SIZE_LIMIT_FREE = 5 * 1000 * 1000;   // 5 MB
 export const FILE_SIZE_LIMIT_PRO = 50 * 1000 * 1000;    // 50 MB

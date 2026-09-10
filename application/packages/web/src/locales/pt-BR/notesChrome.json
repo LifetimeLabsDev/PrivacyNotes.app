@@ -72,6 +72,7 @@
     "copied": "Copiado"
   },
   "burnView": {
+    "title": "Queimar Após Ler",
     "tagline": "Criptografada. Efêmera. Só para seus olhos.",
     "toggleTheme": "Alternar tema",
     "checking": "Verificando...",

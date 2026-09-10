@@ -16,6 +16,10 @@
   },
   "attachment": {
     "fallbackName": "Attachment",
+    "rename": "Rename",
+    "renamePlaceholder": "File name",
+    "saveName": "Save name",
+    "seek": "Playback position",
     "imageAlt": "Image",
     "cantPlay": "Can't play. Download to listen",
     "downloadingStatus": "downloading...",

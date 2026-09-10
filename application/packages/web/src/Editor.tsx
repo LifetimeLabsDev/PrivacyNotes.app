@@ -41,16 +41,19 @@ declare module '@tiptap/core' {
 import { invisibleCharacterBuilders, LazyInvisibleCharacters } from './editorInvisibles';
 import { FaviconChips, refreshFavicons } from './editorFavicons';
 import { EncryptedImage, sanitizePastedHtml } from './EncryptedImage';
-import { EncryptedAttachment } from './EncryptedAttachment';
+import { EncryptedAttachment, requestAttachmentRename } from './EncryptedAttachment';
 import { WikiLink } from './NoteLink';
 import { AudioRecordingBanner, type AudioRecordingState } from './AudioRecorder';
 import { LinkSheet } from './LinkSheet';
 import { Callout, CalloutTitle } from './Callout';
 import { useIsMobile } from './useIsMobile';
+import { ContextMenu, useContextMenu, isTouchContextMenu, type ContextMenuItem } from './ContextMenu';
+import { iconCopy, iconEditPencil, iconExternal, iconTrash } from './icons';
+import { LinkModifierOpen, SelfLinkTyping, linkHrefAt, linkSelectionIfUrl } from './editorLinks';
+import { openExternal } from './openExternal';
 import { createLongPressGuard } from './softKeyboard';
 import { useTheme } from './theme';
 import { SearchHighlight, setSearchQuery, getSearchInfo, clearSearch } from './editorSearch';
-import { mathSourceEdit } from './editorMath';
 import { FindBar } from './FindBar';
 import { ReplaceBar } from './ReplaceBar';
 import { OutlinePanel } from './OutlinePanel';
@@ -82,9 +85,6 @@ import {
   NbspParagraphCleaner,
   MixedListSplitter,
 } from './editorExtensions';
-import { detectPlatform } from './devices';
-
-const IS_DESKTOP = detectPlatform() !== 'web';
 
 type Props = {
   /** Initial markdown content. Only read on mount - use a `key` prop to force reload. */
@@ -119,6 +119,12 @@ type Props = {
    * itself.
    */
   bodyControls?: ReactNode;
+  /**
+   * Called when a file chip in this note is renamed and that note's name
+   * lives outside the document too. Only fires for a note holding exactly
+   * one file - see the wiring below.
+   */
+  onRenameFile?: (name: string) => void;
 };
 
 /**
@@ -145,6 +151,9 @@ export type EditorHandle = {
   /** Scroll to the attachment chip / image whose pn:file/pn:img URI contains
    *  `uuid` and flash-highlight it (jump-to-file from the Files pillar). */
   scrollToFile: (uuid: string) => void;
+  /** Jump to the attachment chip holding `uuid` and open its rename field.
+   *  The Files pillar's Rename row, once the note is open. */
+  startRenameFile: (uuid: string) => void;
   /** Open the find bar on the first of `candidates` the text holds, hits
    *  marked: the list search following into the open note (GitHub #288). A
    *  no-op on a read-only note, which has no bar, and when the text as
@@ -164,60 +173,27 @@ export type EditorHandle = {
 };
 
 const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }>(function EditorInner(
-  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, bodyControls },
+  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, bodyControls, onRenameFile },
   ref
 ) {
   const { t } = useTranslation('editor');
   const { onUpdate, useFlushOnExit, flushNow } = useDebouncedMarkdownSave({ value, onChange, readOnly, noteId });
 
   /**
-   * Back-reference to the editor for extension option callbacks.
-   *
-   * The math extensions' `onClick` is configured inside the `extensions` array
-   * that `useEditor` itself consumes, so the editor does not exist yet at that
-   * point and the callback signature is `(node, pos)` with no editor argument.
-   * This ref is assigned right after and read lazily at click time.
+   * Back-reference to the editor, for callbacks declared above `useEditor`.
+   * The panels hook and the click-to-add-a-line target both need the editor
+   * from a callback that is built before it exists, so they read it lazily.
    */
   const editorRef = useRef<TipTapEditor | null>(null);
 
   /**
-   * Turn a math node back into its own LaTeX source so it can be edited.
-   *
-   * The nodes are atoms - KaTeX output is not editable text, so before this
-   * there was no way to fix a typo in a formula short of deleting it and
-   * retyping from scratch. Clicking now swaps the rendered node for the
-   * `$latex$` / `$$latex$$` that produced it, with the caret in it; finishing
-   * the closing delimiter re-triggers the input rule and it renders again.
-   *
-   * Leaving it as raw text is a safe resting state, not a broken one: that is
-   * exactly the form our markdown-it rules read back, so a note abandoned
-   * mid-edit still renders correctly on the next load.
+   * Stable handle on the rename callback. The extension below captures it
+   * once, when the editor is built, so it has to read the current prop
+   * rather than the one that existed then.
    */
-  const editMathSource = useCallback((node: { attrs: { latex?: string } ; nodeSize: number }, pos: number, block: boolean) => {
-    const ed = editorRef.current;
-    if (!ed || !ed.isEditable) return;
-    const { state } = ed.view;
-    const { schema } = state;
-    const { source, caret } = mathSourceEdit(node.attrs.latex ?? '', pos, block);
+  const onRenameFileRef = useRef(onRenameFile);
+  onRenameFileRef.current = onRenameFile;
 
-    // Build the replacement by hand rather than handing `insertContentAt` a
-    // string. That helper PARSES the string as content, which for a block math
-    // node means it decides on a paragraph wrapper itself - and the resulting
-    // off-by-one put the caret past the end of the new text and into the block
-    // BELOW. Constructing the node here makes the wrapper explicit, which is
-    // what mathSourceEdit's offset is calculated against.
-    const text = schema.text(source);
-    const replacement = block ? schema.nodes['paragraph']?.createAndFill(null, text) : text;
-    if (!replacement) return;
-
-    const tr = state.tr.replaceWith(pos, pos + node.nodeSize, replacement);
-    // Clamp: appendTransaction plugins (TrailingParagraph, MediaGapCleaner)
-    // can still resize the doc around us on the same tick.
-    tr.setSelection(TextSelection.create(tr.doc, Math.min(caret, tr.doc.content.size)));
-    tr.scrollIntoView();
-    ed.view.dispatch(tr);
-    ed.view.focus();
-  }, []);
   const isMobile = useIsMobile();
   const { spellcheck, invisibles, favicons } = useTheme();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -237,6 +213,65 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     () => ({ get current() { return (linkBtnRef.current ?? linkFallbackRef.current) as HTMLElement | null; } }),
     [],
   );
+  /**
+   * The link button and its shortcut, in one place because they answer the
+   * same question and must answer it the same way.
+   *
+   * A selection that is already an address is linked on the spot: the
+   * reader has said where it goes, so the panel would only ask them to
+   * type what they already selected. Everything else opens the panel.
+   */
+  const askForLink = useCallback(() => {
+    const ed = editorRef.current;
+    if (ed && linkSelectionIfUrl(ed)) return;
+    setLinkPopoverOpen(true);
+  }, []);
+
+  const linkMenu = useContextMenu();
+
+  /**
+   * Right-click on a URL link: Open, Copy, Edit, Remove.
+   *
+   * This is the one route to a link that does not go through the caret, and
+   * every other route does: the toolbar button and Cmd/Ctrl+Shift+K both
+   * act on the link the cursor is in, so they answer "Add link" for a
+   * cursor anywhere else and offer no Remove at all (GitHub #293).
+   *
+   * `ContextMenu.tsx` states that a link and editable text keep the
+   * browser's own menu, and this is a deliberate exception to both halves,
+   * for the same reason `NoteLink.tsx` is one: nothing in the platform menu
+   * can take a link off a word. A long press is untouched, because on a
+   * phone the caret route works - the tap opens a sheet, dismissing it
+   * leaves the cursor in the link, and the toolbar then offers Remove.
+   */
+  const openLinkMenu = (e: React.MouseEvent) => {
+    const ed = editorRef.current;
+    if (!ed || readOnly || isTouchContextMenu(e)) return;
+    const at = ed.view.posAtCoords({ left: e.clientX, top: e.clientY });
+    if (!at) return;
+    const href = linkHrefAt(ed.state, at.pos);
+    if (!href) return;
+    // A right click does not move the caret in every browser, and Edit and
+    // Remove both act on the mark the caret is in.
+    ed.chain().focus().setTextSelection(at.pos).run();
+    const items: ContextMenuItem[] = [
+      { label: t('link.menuOpen'), onSelect: () => openExternal(href), icon: iconExternal() },
+      {
+        label: t('link.menuCopy'),
+        onSelect: () => { void navigator.clipboard.writeText(href).catch(() => { /* denied: no clipboard, no feedback */ }); },
+        icon: iconCopy(),
+      },
+      { label: t('link.menuEdit'), onSelect: () => setLinkPopoverOpen(true), icon: iconEditPencil() },
+      {
+        label: t('link.menuRemove'),
+        onSelect: () => { ed.chain().focus().extendMarkRange('link').unsetLink().run(); },
+        destructive: true,
+        icon: iconTrash(),
+      },
+    ];
+    linkMenu.open(e, items);
+  };
+
   const [audioState, setAudioState] = useState<AudioRecordingState>('idle');
   const [audioDuration, setAudioDuration] = useState(0);
   const audioStopRef = useRef<(() => void) | null>(null);
@@ -310,16 +345,15 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         // silently bleeding into adjacent text.
         inclusive() { return false; },
       }).configure({
-        // Clicking a link in the editor opens it in a new tab (web only).
-        // The `target: '_blank'` + `rel: noopener noreferrer` in
-        // HTMLAttributes keep it safe. Meta/Ctrl-click still opens in a
-        // background tab. In the native wrappers this must stay OFF: the
-        // extension opens via window.open, which Android's WebView turns
-        // into an in-place navigation that replaces the app with the web
-        // page (#241) - WKWebView merely swallows the call. The anchor
-        // interceptor in App.tsx already opens every external link through
-        // the opener plugin on native, so the click still works.
-        openOnClick: !IS_DESKTOP,
+        // Who opens a clicked link is decided in one place, and it is not
+        // here: `LinkModifierOpen` reads the pointer, the modifier and
+        // whether the note is being edited, then hands the URL to
+        // `openExternal`. This option cannot make any of those
+        // distinctions - it is fixed when the editor is built, and it
+        // opens through window.open, which Android's WebView turns into an
+        // in-place navigation that replaces the app with the web page
+        // (#241) while WKWebView merely swallows the call.
+        openOnClick: false,
         autolink: true,
         linkOnPaste: true,
         // protocols omitted - http, https, mailto are defaults.
@@ -331,6 +365,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           class: 'text-accent hover:text-accent-hover cursor-pointer',
         },
       }),
+      LinkModifierOpen,
+      SelfLinkTyping,
       TaskListWithMarkdown.configure({
         HTMLAttributes: {
           class: 'task-list',
@@ -364,7 +400,23 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       // Markdown pane's own paste and drop capture handlers.
       // Spec: ops/docs/plans/markdown-folder.md (section 5, isolation)
       EncryptedImage,
-      EncryptedAttachment,
+      EncryptedAttachment.configure({
+        onRename: (name: string) => {
+          // A note whose name lives in its title as well holds exactly one
+          // file: that is how the Files pillar creates it. A note holding
+          // several, or a file pasted into a written note, has a title of
+          // its own that a single chip must not overwrite.
+          const ed = editorRef.current;
+          if (!ed) return;
+          let files = 0;
+          ed.state.doc.descendants((child) => {
+            if (child.type.name === 'attachment') files += 1;
+            return true;
+          });
+          if (files !== 1) return;
+          onRenameFileRef.current?.(name);
+        },
+      }),
       WikiLink,
       CalloutTitle,
       Callout,
@@ -394,14 +446,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           return {};
         },
       }),
-      InlineMathWithMarkdown.configure({
-        katexOptions: { throwOnError: false },
-        onClick: (node, pos) => editMathSource(node, pos, false),
-      }),
-      BlockMathWithMarkdown.configure({
-        katexOptions: { throwOnError: false },
-        onClick: (node, pos) => editMathSource(node, pos, true),
-      }),
+      InlineMathWithMarkdown.configure({ katexOptions: { throwOnError: false } }),
+      BlockMathWithMarkdown.configure({ katexOptions: { throwOnError: false } }),
       // Alignment on the two block types that can carry prose, plus images.
       // Prose is stored as an inline-styled <p>/<h*> by ParagraphWithMarkdown
       // / HeadingWithMarkdown, the same HTML round-trip our colored text uses;
@@ -535,15 +581,15 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           editor?.chain().focus().toggleTaskList().run();
           return true;
         }
-        // Cmd/Ctrl+Shift+K opens the link popover. It was plain ⌘K until
+        // Cmd/Ctrl+Shift+K asks for a link. It was plain ⌘K until
         // 2026-08-21; ⌘K now focuses search everywhere (the modern search
         // convention won over the link convention), so link took the
         // shifted variant. Plain ⌘K must NOT be handled here - returning
         // false lets it bubble to the window search listener. Works with
-        // or without a selection; LinkPopover handles all three states.
+        // or without a selection; LinkSheet handles all three states.
         if (mod && event.shiftKey && !event.altKey && (event.code === 'KeyK' || event.key === 'k' || event.key === 'K')) {
           event.preventDefault();
-          setLinkPopoverOpen(true);
+          askForLink();
           return true;
         }
         // Tab inside the editor body must NEVER escape focus to the next
@@ -588,7 +634,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     if (editor) editor.setEditable(!readOnly);
   }, [editor, readOnly]);
 
-  // Feed the back-reference the math onClick handlers read (see editorRef).
+  // Feed the back-reference declared above (see editorRef).
   useEffect(() => {
     editorRef.current = editor ?? null;
   }, [editor]);
@@ -674,6 +720,64 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     view.focus();
   }, []);
 
+  /**
+   * Centre the attachment chip or image whose `pn:file/` or `pn:img/` ref
+   * holds `uuid` and flash it. Shared by the jump from the Files pillar and
+   * by the rename that pillar asks for. Best effort by nature: it runs on
+   * animation frames, which a hidden or throttled tab never delivers, so no
+   * caller may depend on it having finished.
+   */
+  const revealFileNode = useCallback((uuid: string) => {
+    if (!editor) return;
+    // Defer a frame before resolving the position: NodeView portals may
+    // not be in the DOM yet, and the post-parse normalization plugins
+    // (TrailingParagraph, MediaGapCleaner) can shift positions right
+    // after mount, so a position captured now goes stale.
+    requestAnimationFrame(() => {
+      if (editor.isDestroyed) return;
+      let found = -1;
+      editor.state.doc.descendants((node, pos) => {
+        if (found >= 0) return false;
+        if (node.type.name !== 'attachment' && node.type.name !== 'image') return true;
+        const src = node.attrs['src'] as string | null;
+        if (src && src.includes(uuid)) {
+          found = pos;
+          return false;
+        }
+        return true;
+      });
+      if (found < 0) return;
+      const dom = editor.view.nodeDOM(found);
+      if (!(dom instanceof HTMLElement)) return;
+      // Keep the target centered until layout settles: on a freshly
+      // mounted note the NodeView chips hydrate asynchronously, so a
+      // single scrollIntoView lands correctly and is then pushed away
+      // as the content above the target grows. Re-center every frame
+      // until the target's position is stable, then flash.
+      const start = performance.now();
+      let lastTop = Number.NaN;
+      let stableFrames = 0;
+      const step = () => {
+        if (editor.isDestroyed || !dom.isConnected) return;
+        const top = dom.getBoundingClientRect().top;
+        if (Math.abs(top - lastTop) < 1) stableFrames++;
+        else stableFrames = 0;
+        lastTop = top;
+        dom.scrollIntoView({ block: 'center', inline: 'nearest' });
+        if (stableFrames >= 5 || performance.now() - start > 1200) {
+          // Remove + reflow so a repeat jump to the same file re-flashes.
+          dom.classList.remove('pn-file-flash');
+          void dom.offsetWidth;
+          dom.classList.add('pn-file-flash');
+          window.setTimeout(() => dom.classList.remove('pn-file-flash'), 1700);
+          return;
+        }
+        requestAnimationFrame(step);
+      };
+      step();
+    });
+  }, [editor]);
+
   useImperativeHandle(
     ref,
     () => ({
@@ -685,54 +789,17 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       toggleFind,
       toggleReplace,
       scrollToFile: (uuid: string) => {
-        if (!editor) return;
-        // Defer a frame before resolving the position: NodeView portals may
-        // not be in the DOM yet, and the post-parse normalization plugins
-        // (TrailingParagraph, MediaGapCleaner) can shift positions right
-        // after mount, so a position captured now goes stale.
-        requestAnimationFrame(() => {
-          if (editor.isDestroyed) return;
-          let found = -1;
-          editor.state.doc.descendants((node, pos) => {
-            if (found >= 0) return false;
-            if (node.type.name !== 'attachment' && node.type.name !== 'image') return true;
-            const src = node.attrs['src'] as string | null;
-            if (src && src.includes(uuid)) {
-              found = pos;
-              return false;
-            }
-            return true;
-          });
-          if (found < 0) return;
-          const dom = editor.view.nodeDOM(found);
-          if (!(dom instanceof HTMLElement)) return;
-          // Keep the target centered until layout settles: on a freshly
-          // mounted note the NodeView chips hydrate asynchronously, so a
-          // single scrollIntoView lands correctly and is then pushed away
-          // as the content above the target grows. Re-center every frame
-          // until the target's position is stable, then flash.
-          const start = performance.now();
-          let lastTop = Number.NaN;
-          let stableFrames = 0;
-          const step = () => {
-            if (editor.isDestroyed || !dom.isConnected) return;
-            const top = dom.getBoundingClientRect().top;
-            if (Math.abs(top - lastTop) < 1) stableFrames++;
-            else stableFrames = 0;
-            lastTop = top;
-            dom.scrollIntoView({ block: 'center', inline: 'nearest' });
-            if (stableFrames >= 5 || performance.now() - start > 1200) {
-              // Remove + reflow so a repeat jump to the same file re-flashes.
-              dom.classList.remove('pn-file-flash');
-              void dom.offsetWidth;
-              dom.classList.add('pn-file-flash');
-              window.setTimeout(() => dom.classList.remove('pn-file-flash'), 1700);
-              return;
-            }
-            requestAnimationFrame(step);
-          };
-          step();
-        });
+        revealFileNode(uuid);
+      },
+      startRenameFile: (uuid: string) => {
+        // The name is written by the chip inside the live editor, never by
+        // rewriting the note body from a list. Centring the chip is a
+        // separate, best-effort courtesy: it runs on animation frames, which
+        // a hidden or throttled tab never delivers, and the field must open
+        // either way. The field autofocuses, which brings it into view on
+        // its own.
+        revealFileNode(uuid);
+        requestAttachmentRename(uuid);
       },
       highlightSearch: (candidates: string[]) => {
         if (!editor || readOnly || editor.isDestroyed) return;
@@ -767,6 +834,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       // pn-editor-topgapped hands the "start of note" gap to the click row
       // below, so the body's own top padding doesn't stack on top of it.
       className={`relative flex flex-col min-h-0${readOnly ? '' : ' pn-editor-topgapped'}`}
+      onContextMenu={openLinkMenu}
     >
       {/* Toolbar must be a direct child of the Editor root - wrapping it
           in a short-height div kills sticky (the toolbar can only stick
@@ -778,7 +846,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         <Toolbar
           editor={editor}
           mobileTabIndex={isMobile ? -1 : undefined}
-          onOpenLinkPopover={() => setLinkPopoverOpen(true)}
+          onOpenLinkPopover={askForLink}
           linkBtnRef={linkBtnRef}
           onAudioStateChange={handleAudioStateChange}
           audioStopRef={audioStopRef}
@@ -876,6 +944,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       {editor && !readOnly && linkPopoverOpen && isMobile && (
         <LinkSheet editor={editor} isMobile={true} anchorRef={linkAnchorRef} onClose={() => setLinkPopoverOpen(false)} />
       )}
+      <ContextMenu state={linkMenu.state} onClose={linkMenu.close} />
     </div>
   );
 });

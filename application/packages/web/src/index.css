@@ -577,12 +577,24 @@
 
        All six keep the normal text color: a muted h6 (tried GitHub-style
        in v0.407.x) read as broken next to its siblings. Weight is one
-       value for all six - h2 inherited 700 from the typography plugin
-       while h1 was 600, so the second level was the boldest thing in the
-       note. Line height opens up as the size comes down.
+       value for all six, because the typography plugin sets a different
+       one per level and the ladder then disagrees with itself. Line
+       height opens up as the size comes down.
        Spec: ops/docs/design-decisions.md (editor heading scale) */
     & :where(h1, h2, h3, h4, h5, h6):not(:where([class~='not-prose'] *)) {
-      font-weight: 600;
+      font-weight: 700;
+    }
+    /* Bold, and the six headings above, are 700 rather than the
+       typography plugin's 600. 700 is the only weight a family is sure to
+       carry a real face for: on a device whose system font ships no
+       semibold, a 600 request lands back on the plain face, and bold then
+       differs from the paragraph around it by ink color alone. Issue #300
+       reported that from an Android phone, and its screenshot measured
+       out at identical letter positions, identical width and identical
+       glyph coverage on both runs. The plugin's darker color for strong
+       stays as it is. */
+    & :where(strong):not(:where([class~='not-prose'] *)) {
+      font-weight: 700;
     }
     & :where(h1):not(:where([class~='not-prose'] *)) {
       font-size: calc(var(--pn-editor-body) * 1.867);
@@ -743,7 +755,7 @@
       font-style: italic;
     }
     & pre .hljs-strong {
-      font-weight: 600;
+      font-weight: 700;
     }
     /* ==Highlight== mark. Warm wash instead of browser default yellow;
        text color stays inherited so it reads in both themes. clone keeps
@@ -1946,7 +1958,17 @@
   content-visibility: auto;
   contain-intrinsic-block-size: auto 72px;
 }
-.pn-lazy-card {
+/* A TILE gets the same treatment only where a grid track reads a skipped
+   item's intrinsic block size. The Linux app's web engine does not: it sizes
+   the row from an item with no contents, so every tile shrinks to its own
+   padding, paints its head row clipped inside a 22px box, and a whole vault
+   crushes into one screen of slivers (GitHub #314, a 321-note grid; the same
+   grid at 54 items was correct, because nothing that short is ever far enough
+   off-screen to be skipped, which is what makes the failure read as a scale
+   bug). Block-layout rows keep their estimate there, so the rule above needs
+   no gate. `main.tsx` sets the attribute, and its absence is the safe state:
+   an engine nobody has measured draws the plain, correct grid. */
+[data-lazy-tiles='on'] .pn-lazy-card {
   content-visibility: auto;
   contain-intrinsic-block-size: auto 180px;
 }
@@ -2531,6 +2553,27 @@
 }
 .tiptap .tiptap-mathematics-render--editable:hover {
   background: rgb(var(--pn-accent) / 0.12);
+}
+
+/* The LaTeX source line, shown in place of the formula while it is edited.
+   It stays inside the math node, so nothing the user types is part of the
+   document until it is committed - see mathNodeView. LaTeX is always
+   left-to-right, whatever the surrounding text does. */
+.tiptap .pn-math-source {
+  direction: ltr;
+  text-align: start;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  color: rgb(var(--pn-text));
+  background: rgb(var(--pn-surface-2));
+  border: 1px solid rgb(var(--pn-accent) / 0.5);
+  border-radius: 3px;
+  padding: 0.15em 0.35em;
+  resize: none;
+  outline: none;
+}
+.tiptap textarea.pn-math-source {
+  width: 100%;
 }
 
 /* ── Collapsed icon rail: measured fit tiers ──────────────────────────

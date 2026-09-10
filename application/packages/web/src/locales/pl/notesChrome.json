@@ -86,6 +86,7 @@
     "copied": "Skopiowano"
   },
   "burnView": {
+    "title": "Spal po przeczytaniu",
     "tagline": "Zaszyfrowane. Ulotne. Tylko dla Twoich oczu.",
     "toggleTheme": "Przełącz motyw",
     "checking": "Sprawdzanie...",

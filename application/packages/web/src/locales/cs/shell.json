@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "Vše",
-    "notes": "Poznámky",
-    "tasks": "Úkoly",
-    "vault": "Trezor",
-    "files": "Soubory",
-    "journals": "Deníky",
-    "pinned": "Připnuté",
     "trash": "Koš",
-    "markdown": "Markdown",
     "bookmarks": "Záložky",
     "contacts": "Kontakty"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Možnosti řazení",
     "searchPlaceholder": "Hledat soubory…",
     "sortName": "Název",
-    "showNotesWithAttachments": "Zobrazit poznámky s přílohami",
+    "showNotesWithAttachments": "Zobrazit soubory v poznámkách",
     "noMatches": "Žádné výsledky.",
     "pinProtected": "Chráněno PINem",
     "readOnly": "Jen pro čtení",
@@ -78,10 +70,11 @@
     "menuImages": "Obrázky",
     "menuAudio": "Zvuk",
     "menuDocuments": "Dokumenty",
-    "menuHideNoteAttachments": "Skrýt přílohy poznámek",
-    "menuShowNoteAttachments": "Zobrazit přílohy poznámek",
+    "menuHideNoteAttachments": "Skrýt soubory v poznámkách",
+    "menuShowNoteAttachments": "Zobrazit soubory v poznámkách",
     "menuUnpin": "Odepnout",
     "menuPin": "Připnout",
+    "menuRename": "Přejmenovat",
     "menuMoveToTrash": "Přesunout do koše"
   },
   "vaultItem": {
@@ -116,6 +109,28 @@
     "notesHeading": "Poznámky",
     "fillOneField": "Před uložením vyplň alespoň jedno pole.",
     "expiryNeedsBoth": "Platnost vyžaduje měsíc i rok, nebo nech obě pole prázdná."
+  },
+  "fileTypes": {
+    "audio": "Zvuk",
+    "video": "Video",
+    "image": "Obrázek",
+    "pdf": "PDF",
+    "archive": "Archiv",
+    "document": "Dokument",
+    "spreadsheet": "Tabulka",
+    "file": "Soubor",
+    "audioRecording": "Zvuková nahrávka",
+    "pdfDocument": "Dokument PDF",
+    "attachment": "Příloha"
+  },
+  "noteRow": {
+    "noUsername": "Bez uživatelského jména",
+    "noCardholder": "Bez držitele karty",
+    "noLabel": "Bez štítku",
+    "files_one": "{{count}} soubor",
+    "files_few": "{{count}} soubory",
+    "files_many": "{{count}} souboru",
+    "files_other": "{{count}} souborů"
   },
   "tagsRail": {
     "showAllItems": "Zobrazit všechny položky",

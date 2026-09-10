@@ -25,6 +25,7 @@ import {
   unlockWithBiometric,
   hasPinWrappedPhrase,
   unwrapPhraseWithPin,
+  type PinWrapBlob,
 } from './biometric';
 import { PinInput, type PinInputHandle } from './PinInput';
 import {
@@ -51,6 +52,13 @@ type Props = {
    */
   signInState?: 'idle' | 'busy' | 'error';
   onRetrySignIn?: () => void;
+  /**
+   * A legacy-iteration PIN wrap was re-wrapped after a successful unlock.
+   * This screen holds no settings, so the caller carries the new blob to the
+   * synced row; left local, every other device would replace it with the
+   * account's old one on the next pass and the next unlock would redo it.
+   */
+  onWrapUpgraded?: (blob: PinWrapBlob) => void;
 };
 
 type View = 'main' | 'pin' | 'phrase' | 'recover';
@@ -63,7 +71,7 @@ type View = 'main' | 'pin' | 'phrase' | 'recover';
 // PIN is forgotten, not mistyped.
 const HARD_EXHAUSTION_THRESHOLD = 10;
 
-export function LockScreen({ onUnlock, signInState = 'idle', onRetrySignIn }: Props) {
+export function LockScreen({ onUnlock, signInState = 'idle', onRetrySignIn, onWrapUpgraded }: Props) {
   const { t } = useTranslation('security');
   const [view, setView] = useState<View>('main');
   const [biometricAvailable] = useState(() => hasBiometricCredential());
@@ -146,6 +154,7 @@ export function LockScreen({ onUnlock, signInState = 'idle', onRetrySignIn }: Pr
           onBack={() => setView('main')}
           onExhausted={() => setView('recover')}
           onForgotPin={() => setView('recover')}
+          onWrapUpgraded={onWrapUpgraded}
         />
       </LockShell>
     );
@@ -246,11 +255,13 @@ function PinUnlock({
   onBack,
   onExhausted,
   onForgotPin,
+  onWrapUpgraded,
 }: {
   onUnlock: (phrase: string) => Promise<boolean>;
   onBack: () => void;
   onExhausted: () => void;
   onForgotPin: () => void;
+  onWrapUpgraded?: (blob: PinWrapBlob) => void;
 }) {
   const { t } = useTranslation('security');
   const [value, setValue] = useState('');
@@ -278,7 +289,7 @@ function PinUnlock({
     setBusy(true);
     setError(null);
 
-    const phrase = await unwrapPhraseWithPin(pin);
+    const phrase = await unwrapPhraseWithPin(pin, onWrapUpgraded);
     if (phrase) {
       // The PIN was right for the blob, whatever the blob turns out to hold,
       // so the backoff it earned is spent either way.

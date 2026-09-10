@@ -63,9 +63,15 @@ let suppressed: HTMLElement | null = null;
  * attribute has to be in place before the browser decides to show the IME.
  * A touch screen only reports one gesture at a time, so a single pending
  * restore is enough - a second call re-arms the same window.
+ *
+ * There is no device test here on purpose. `inputmode` reaches an on-screen
+ * keyboard and nothing else, so it costs nothing where there is none, and
+ * asking `(hover: none)` first would refuse the phones that need it most: an
+ * Android with a stylus or a paired mouse reports a hover-capable pointer and
+ * still raises a keyboard over the caller's selection.
  */
 export function suppressSoftKeyboard(el: HTMLElement | null | undefined): void {
-  if (!el || !isSoftKeyboardDevice()) return;
+  if (!el) return;
   if (restoreTimer !== null) {
     window.clearTimeout(restoreTimer);
     // A different element may still be holding the attribute if the previous

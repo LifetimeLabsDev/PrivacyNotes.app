@@ -57,13 +57,20 @@
     "bitwarden": "Okrypterad .json-export från Bitwarden (Tools > Export vault > .json). Inloggningar, kort, SSH-nycklar, säkra anteckningar och TOTP-koder följer med.",
     "browserPasswords": "Lösenordsfilen (.csv) från Chrome, Edge, Brave, Opera, Vivaldi, Firefox eller Safari, eller .zip:en som Safari skriver. Varje rad blir en inloggning. Radera filen när du är klar - den innehåller dina lösenord i klartext."
   },
+  "sourceLabel": {
+    "privacynotes": "Fullständig säkerhetskopia av PrivacyNotes",
+    "browserBookmarks": "Webbläsarbokmärken",
+    "browserPasswords": "Lösenord från webbläsaren",
+    "vcard": "Kontakter (vCard)",
+    "markdownFolder": "Markdown-filer"
+  },
   "vaultPick": {
     "intro": "Importera inloggningar, kort och SSH-nycklar från en annan lösenordshanterare."
   },
   "restorePick": {
     "intro": "Återställ en PrivacyNotes-säkerhetskopia som du exporterat tidigare. Din fil läses och dekrypteras lokalt.",
     "fullBackupTitle": "Fullständig säkerhetskopia (.zip)",
-    "fullBackupDesc": "Återställ anteckningar, dagböcker, valvobjekt, uppgifter, bilder, ljud och filer. Allt importeras som nya objekt - befintliga data skrivs inte över.",
+    "fullBackupDesc": "Återställ anteckningar, dagböcker, valvobjekt, uppgifter, bilder, ljud och filer. En anteckning du redan har behålls, eller uppdateras om säkerhetskopian har en nyare version av den.",
     "encryptedBackupTitle": "Krypterad säkerhetskopia (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Återställ en krypterad säkerhetskopia med din frasnyckel. En .pnbackupz tar tillbaka allt, filer inräknade; en .pnbackup innehåller bara text och metadata. Du måste vara inloggad med samma konto som skapade den."
   },

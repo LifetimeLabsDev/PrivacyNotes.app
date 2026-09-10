@@ -99,7 +99,8 @@
     "importedSyncing_one": "{{count}} note importée. Synchronisation…",
     "importedSyncing_other": "{{count}} notes importées. Synchronisation…",
     "addedTag_one": "#{{tag}} ajoutée à {{count}} élément",
-    "addedTag_other": "#{{tag}} ajoutée à {{count}} éléments"
+    "addedTag_other": "#{{tag}} ajoutée à {{count}} éléments",
+    "restoreSummary": "Restauration terminée : {{added}} ajoutés, {{updated}} mis à jour, {{unchanged}} déjà à jour."
   },
   "burn": {
     "mediaOnly": "Cette note ne contient que des médias et ne peut pas être partagée via un lien burn.",

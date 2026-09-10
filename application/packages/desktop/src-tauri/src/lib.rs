@@ -213,6 +213,193 @@ fn markdown_assoc_open_os_settings() -> Result<(), String> {
     file_assoc::open_os_settings()
 }
 
+/// Whether the process holding the single-instance rendezvous is this app.
+///
+/// The desktop app answers "am I already running?" by seeing whether anything
+/// replies at a meeting point, and on macOS that meeting point is a Unix
+/// socket at a fixed path under `/tmp`, a directory every account on the
+/// machine can write to. The plugin's rule is that whatever replies there IS
+/// the running app: it hands that listener this launch's arguments and its
+/// working directory, then exits. So anything that gets there first stops the
+/// app from ever starting and reads the path of the file somebody tried to
+/// open with it.
+///
+/// Two questions, because one test cannot answer both. A socket owned by
+/// another account is not ours and never can be, since nobody else can create
+/// one owned by us. A socket owned by THIS user still proves nothing, because
+/// a program running as the person owns whatever it creates, so the listener
+/// is asked which executable it is and the answer has to be this one.
+///
+/// The order matters. Nothing there at all means the plugin creates the
+/// socket and owns it. A socket nothing listens on is a leftover from a
+/// crash, which the plugin removes before taking the rendezvous over. Past
+/// that point something is listening, and anything short of proof is refused:
+/// the plugin stays unregistered and the app starts. Losing second-launch
+/// forwarding for one run is a far smaller cost than a run that never
+/// happens, and `/tmp`'s sticky bit means removing a squatter's socket was
+/// never an option anyway.
+///
+/// The connection this makes carries nothing. Arguments and the working
+/// directory travel on the plugin's own connect, which happens after this has
+/// decided, so a listener that fails the test learns only that somebody
+/// looked.
+/// Spec: ops/docs/security-backlog.md (SEC-28)
+#[cfg(all(desktop, target_os = "macos"))]
+fn rendezvous_is_ours(config: &tauri::Config) -> bool {
+    let identifier = config.identifier.replace(['.', '-'], "_");
+    rendezvous_holder_matches(
+        &format!("/tmp/{identifier}_si.sock"),
+        std::env::current_exe()
+            .and_then(std::fs::canonicalize)
+            .ok(),
+    )
+}
+
+/// The decision itself, with both of its inputs handed in so a test can put
+/// a real socket at a real path and ask about a real process.
+#[cfg(all(desktop, target_os = "macos"))]
+fn rendezvous_holder_matches(path: &str, expected: Option<std::path::PathBuf>) -> bool {
+    use std::os::unix::fs::{FileTypeExt, MetadataExt};
+    use std::os::unix::io::AsRawFd;
+    use std::os::unix::net::UnixStream;
+
+    match std::fs::symlink_metadata(path) {
+        Err(_) => return true,
+        Ok(meta) => {
+            if !meta.file_type().is_socket() || meta.uid() != unsafe { libc::geteuid() } {
+                return false;
+            }
+        }
+    }
+
+    let Ok(stream) = UnixStream::connect(path) else {
+        return true;
+    };
+
+    let mut pid: libc::pid_t = 0;
+    let mut len = std::mem::size_of::<libc::pid_t>() as libc::socklen_t;
+    let asked = unsafe {
+        libc::getsockopt(
+            stream.as_raw_fd(),
+            libc::SOL_LOCAL,
+            libc::LOCAL_PEERPID,
+            std::ptr::addr_of_mut!(pid).cast(),
+            &mut len,
+        )
+    };
+    if asked != 0 || pid <= 0 {
+        return false;
+    }
+
+    let mut buf = vec![0u8; libc::PROC_PIDPATHINFO_MAXSIZE as usize];
+    let written =
+        unsafe { libc::proc_pidpath(pid, buf.as_mut_ptr().cast(), buf.len() as u32) };
+    if written <= 0 {
+        return false;
+    }
+    buf.truncate(written as usize);
+
+    // Both sides are resolved before they are compared, so one of them
+    // arriving through a symbolic link cannot read as a different program.
+    let peer = String::from_utf8(buf)
+        .ok()
+        .and_then(|p| std::fs::canonicalize(p).ok());
+    peer.is_some() && peer == expected
+}
+
+/// The rendezvous decision, every branch of it, against real sockets in a
+/// real directory and a real listening process.
+///
+/// The positive case is the one worth having: the listener is this test
+/// binary, so the peer the kernel names IS the executable asked about, which
+/// is the same proof the app makes of a running copy of itself.
+/// Spec: ops/docs/security-backlog.md (SEC-28)
+#[cfg(all(test, desktop, target_os = "macos"))]
+mod rendezvous_tests {
+    use super::rendezvous_holder_matches;
+    use std::os::unix::net::UnixListener;
+    use std::path::PathBuf;
+
+    fn me() -> Option<PathBuf> {
+        std::env::current_exe().and_then(std::fs::canonicalize).ok()
+    }
+
+    fn scratch(name: &str) -> PathBuf {
+        let dir = std::env::temp_dir().join("pn-rendezvous-tests");
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join(name);
+        let _ = std::fs::remove_file(&path);
+        path
+    }
+
+    #[test]
+    fn nothing_there_is_ours_to_take() {
+        let path = scratch("absent.sock");
+        assert!(rendezvous_holder_matches(path.to_str().unwrap(), me()));
+    }
+
+    #[test]
+    fn a_plain_file_is_not_a_rendezvous() {
+        let path = scratch("plain");
+        std::fs::write(&path, b"").unwrap();
+        assert!(!rendezvous_holder_matches(path.to_str().unwrap(), me()));
+    }
+
+    #[test]
+    fn a_symbolic_link_is_not_a_rendezvous() {
+        let target = scratch("link-target.sock");
+        let link = scratch("link");
+        let _listener = UnixListener::bind(&target).unwrap();
+        std::os::unix::fs::symlink(&target, &link).unwrap();
+        // The link points at a socket this process is listening on, so only
+        // reading the link itself rather than its target refuses it.
+        assert!(!rendezvous_holder_matches(link.to_str().unwrap(), me()));
+    }
+
+    #[test]
+    fn a_socket_nobody_listens_on_is_a_leftover() {
+        let path = scratch("stale.sock");
+        drop(UnixListener::bind(&path).unwrap());
+        // The file outlives the listener, and the plugin removes it before it
+        // takes the rendezvous over.
+        assert!(rendezvous_holder_matches(path.to_str().unwrap(), me()));
+    }
+
+    #[test]
+    fn a_listener_that_is_this_executable_is_ours() {
+        let path = scratch("live.sock");
+        let _listener = UnixListener::bind(&path).unwrap();
+        assert!(rendezvous_holder_matches(path.to_str().unwrap(), me()));
+    }
+
+    #[test]
+    fn a_listener_that_is_another_executable_is_not() {
+        let path = scratch("impostor.sock");
+        let _listener = UnixListener::bind(&path).unwrap();
+        assert!(!rendezvous_holder_matches(
+            path.to_str().unwrap(),
+            Some(PathBuf::from("/bin/sh")),
+        ));
+    }
+
+    #[test]
+    fn an_unknowable_executable_is_not_ours() {
+        let path = scratch("unknown.sock");
+        let _listener = UnixListener::bind(&path).unwrap();
+        // Nothing to compare against is not the same as a match, and the
+        // wrong answer here hands a stranger this launch's arguments.
+        assert!(!rendezvous_holder_matches(path.to_str().unwrap(), None));
+    }
+}
+
+/// Linux keeps the rendezvous on the session bus and Windows in a named
+/// mutex, and neither is reachable from another account, so there is nothing
+/// here to check.
+#[cfg(all(desktop, not(target_os = "macos")))]
+fn rendezvous_is_ours(_config: &tauri::Config) -> bool {
+    true
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     // WebKitGTK's DMA-BUF renderer paints nothing on some Linux GPUs (NVIDIA
@@ -225,6 +412,10 @@ pub fn run() {
         std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
     }
 
+    // Built here rather than at the end of the chain: the rendezvous check
+    // below reads the identifier out of it.
+    let context = tauri::generate_context!();
+
     let builder = tauri::Builder::default();
 
     // single-instance MUST be the first plugin registered. With the
@@ -233,7 +424,10 @@ pub fn run() {
     // instead of letting that copy launch fresh and swallow the OAuth
     // redirect. Desktop only. Spec: ops/docs/macos-ios-setup.md (native OAuth)
     #[cfg(desktop)]
-    let builder = builder.plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+    let builder = if !rendezvous_is_ours(context.config()) {
+        builder
+    } else {
+        builder.plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
         use tauri::{Emitter, Manager};
         // A second launch carrying a file path is a double-click while we are
         // already running. The args were discarded here until file
@@ -242,8 +436,9 @@ pub fn run() {
         if let Some(window) = app.get_webview_window("main") {
             let _ = window.set_focus();
         }
-        let _ = app.emit("markdown-open-pending", ());
-    }));
+            let _ = app.emit("markdown-open-pending", ());
+        }))
+    };
 
     let builder = builder
         .plugin(tauri_plugin_opener::init())
@@ -396,7 +591,7 @@ pub fn run() {
             let _ = &app;
             Ok(())
         })
-        .build(tauri::generate_context!())
+        .build(context)
         .expect("error while building PrivacyNotes")
         .run(|_app, _event| {
             // macOS delivers a file open as an Apple Event, never in argv, so

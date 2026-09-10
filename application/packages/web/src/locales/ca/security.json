@@ -29,10 +29,26 @@
     "pinFourDigits": "El PIN ha de tenir 4 xifres.",
     "pinsDoNotMatch": "Els PIN no coincideixen."
   },
+  "timeout": {
+    "min1": "1 minut",
+    "min5": "5 minuts",
+    "min15": "15 minuts",
+    "min30": "30 minuts",
+    "hour1": "1 hora",
+    "hour4": "4 hores",
+    "hour8": "8 hores",
+    "hour12": "12 hores",
+    "browserRestart": "En reiniciar el navegador"
+  },
+  "pinInfo": {
+    "title": "Requereix el PIN per veure-ho",
+    "body": "Quan està actiu, se't demana el PIN cada vegada que obres aquest element, encara que l'aplicació ja estigui desbloquejada. Fes-lo servir per a elements sensibles que hagin de continuar protegits quan t'allunyis.",
+    "gotIt": "Entesos"
+  },
   "removePinDialog": {
     "title": "Elimina el PIN",
     "introWithBio": "Introdueix el PIN actual per confirmar-ne l'eliminació. El desbloqueig biomètric continuarà actiu, però l'única alternativa que et quedarà serà la frase de recuperació.",
-    "introNoBio": "Introdueix el PIN actual per confirmar-ne l'eliminació. La vista de la frase ja no estarà protegida.",
+    "introNoBio": "Introdueix el PIN actual per confirmar-ne l'eliminació. La pantalla de la teva frase de recuperació s'obrirà després sense PIN.",
     "verifying": "S'està verificant...",
     "removePin": "Elimina el PIN"
   },
@@ -102,9 +118,11 @@
     "enable": "Activa el desbloqueig biomètric",
     "lockOnOpen": "Bloca l'aplicació en obrir-la",
     "lockOnOpenHint": "Demana biometria o PIN en obrir l'aplicació.",
-    "confirmPinForLock": "Introdueix el teu PIN un cop per activar-ho. Tanca amb clau una còpia de la teva frase de recuperació, de manera que només el teu PIN pot obrir l'aplicació.",
+    "lockNeedsCredential": "El bloqueig de l'aplicació necessita un PIN o el desbloqueig biomètric en aquest dispositiu.",
+    "setUpPin": "Crea un PIN",
+    "confirmPinForLock": "Introdueix el teu PIN per activar-ho. Tanca amb clau una còpia de la teva frase de recuperació, de manera que només el teu PIN pot obrir l'aplicació.",
     "relockAfter": "Torna a blocar al cap de",
-    "relockHint": "S'aplica a la pantalla de bloqueig i a qualsevol nota protegida amb PIN.",
+    "relockHint": "S'aplica només a la pantalla de bloqueig de l'aplicació.",
     "perDeviceNote": "El desbloqueig biomètric obre les mateixes notes que el PIN. Es queda en aquest dispositiu i no se sincronitza mai.",
     "disableConfirmTitle": "Desactiva la biometria",
     "disableConfirmLabel": "Desactiva",

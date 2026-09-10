@@ -14,6 +14,7 @@ import {
   hasPinWrappedPhrase,
   hasStoredPhrase,
   onWrappedBlobChange,
+  type PinWrapBlob,
 } from './biometric';
 import { shouldPromptForPin, markPinUnlocked } from './pin';
 import { clearPin, phraseMatches } from './pinRecovery';
@@ -32,6 +33,7 @@ import {
 } from './devices';
 import { moveRequested, startMove, markMovedFromApex } from './migrate';
 import { isApexHost, isAppHost } from './hosts';
+import { isTouchPointer } from './useIsMobile';
 import { localeFromPath } from './localeRoutes';
 import { setLanguage } from './languages';
 import { applyMarketingSeo } from './seo';
@@ -174,6 +176,15 @@ export default function App() {
       // handoff to the dialer, which the WebView cannot make on its own.
       // Spec: ops/docs/plans/contacts-pillar.md (section 9, tap to call)
       if (!href || !/^(https?:|mailto:|tel:|sms:)/i.test(href)) return;
+      // A link inside a note being written belongs to the caret, and a
+      // mouse says so by clicking it: the cursor goes in the link and the
+      // browser stays closed. Handing that click over instead moves the
+      // person to another application and costs them the cursor, which is
+      // the only thing the toolbar's Remove acts on (GitHub #293).
+      // `editorLinks.ts` owns what a mouse click does there, including
+      // Cmd/Ctrl-click to open. A finger keeps this route, because it has
+      // no modifier to say "follow it" with.
+      if (!isTouchPointer() && anchor?.closest('[contenteditable="true"]')) return;
       e.preventDefault();
       // iOS presents web links in an in-app SFSafariViewController sheet
       // ('inAppBrowser' is built into the opener plugin) instead of
@@ -257,15 +268,15 @@ export default function App() {
     if (!hasWrapped) return false;
     // Wrapped-only state: enabling app lock strips the stored
     // phrase, so after a reload the ONLY path back into the session
-    // runs through an unlock - the phrase exists nowhere else. The PIN
-    // timeout must not excuse the prompt here: with locked=false and no
-    // stored phrase, boot found nothing to restore and landed a
+    // runs through an unlock - the phrase exists nowhere else. The
+    // re-lock window must not excuse the prompt here: with locked=false
+    // and no stored phrase, boot found nothing to restore and landed a
     // fully healthy account on the signed-out landing page with no way
-    // back in (session audit 2026-08-25). The timeout still applies
+    // back in (session audit 2026-08-25). The window still applies
     // while a stored phrase exists, where skipping the prompt is
     // recoverable.
     if (!hasStoredPhrase()) return true;
-    return shouldPromptForPin(settings.pinTimeoutMinutes);
+    return shouldPromptForPin(settings.appLockTimeoutMinutes);
   });
 
   // Re-lock after the idle window the user picked. Armed only while the app is
@@ -325,6 +336,19 @@ export default function App() {
   function applyPinRecovery(phrase: string) {
     saveLocalSettings(clearPin(loadLocalSettings(), phrase));
     unlockRecoverRef.current = false;
+  }
+
+  /**
+   * Carry a re-wrapped legacy PIN blob to the account, the same way as the
+   * recovery above: the lock screen holds no settings, NotesView is
+   * unmounted while the lock is up, and this cache is what the next pass
+   * pushes. Every device replaces a wrap that differs from the account's,
+   * so an upgrade the account never learned of would be undone on the next
+   * pass and redone on the next unlock.
+   * Spec: ops/docs/archive/sec-65-pin-change-follows.md
+   */
+  function applyPinWrapUpgrade(blob: PinWrapBlob) {
+    saveLocalSettings({ ...loadLocalSettings(), ...blob });
   }
 
   async function runUnlockSignIn(phrase: string) {
@@ -576,6 +600,7 @@ export default function App() {
     screen = (
       <LockScreen
         onUnlock={handleLockScreenUnlock}
+        onWrapUpgraded={applyPinWrapUpgrade}
         signInState={unlockSignIn}
         onRetrySignIn={() => {
           if (unlockPhraseRef.current) void runUnlockSignIn(unlockPhraseRef.current);

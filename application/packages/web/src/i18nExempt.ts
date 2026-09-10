@@ -24,7 +24,7 @@
 // decides it. Human-readable explanation of the per-locale model, and how to
 // change a key: ops/docs/i18n-spec.md section 10b.
 // Design rationale + the CJK unlock: ops/docs/i18n-cjk-plan.md section 3.
-import i18n from './i18n';
+import { activeLocale } from './i18n';
 
 export const FORCE_EN = { lng: 'en' } as const;
 
@@ -58,6 +58,12 @@ const RENDER_TRANSLATED: Record<string, readonly string[]> = {
   'shell:markdown.braveCopy': [],
   'shell:markdown.braveCopied': [],
   'shell:markdown.braveAppAlternative': [],
+
+  // The two SSH key-material labels, whole. Listed here so the review dashboard
+  // marks every cell dead; the runtime forcing is done by ENGLISH_EVERYWHERE
+  // below, which unlike `[]` also covers Arabic.
+  'common:sshKeyForm.publicKey': [],
+  'common:sshKeyForm.privateKey': [],
 
   // Product terms and dev-facing jargon: English in every locale, CJK included.
   'notes:vaultNew.sshKey': [], // "SSH Key" in the vault New menu
@@ -121,14 +127,6 @@ const RENDER_TRANSLATED: Record<string, readonly string[]> = {
   'settings:syncStatus.storageFull': CJK,
 };
 
-// The active locale used for the fit test. resolvedLanguage follows i18next's
-// fallback chain (so a zh-HK request resolved to the zh-TW catalog reports
-// zh-TW). The zh-HK and zh-MO mappings onto zh-TW are explicit in i18n.ts's
-// fallbackLng table and in normalizeLocale.
-function activeLocale(): string {
-  return i18n.resolvedLanguage || i18n.language || 'en';
-}
-
 function fits(allow: readonly string[]): boolean {
   const loc = activeLocale();
   // Arabic is never forced to English, for any key - including the
@@ -155,10 +153,19 @@ function fits(allow: readonly string[]): boolean {
  * whole card in English rather than mix languages inside it (decided
  * 2026-08-14); the flag name itself is separately pinned as a constant.
  *
+ * "Public Key" and "Private Key" are the second case. They name the two halves
+ * of an SSH keypair, and every tool the reader holds them next to says exactly
+ * that: ssh-keygen, the GitHub and GitLab settings screens, ~/.ssh, the header
+ * inside the file. A translated label makes the person carrying the key match
+ * a word they will not meet again anywhere. The surrounding fields (Label,
+ * Passphrase, Notes) are ordinary words and stay translated.
+ *
  * Keys here MUST also appear in RENDER_TRANSLATED with `[]`, which is what the
  * review dashboard parses to grey their cells out.
  */
 const ENGLISH_EVERYWHERE = new Set([
+  'common:sshKeyForm.publicKey',
+  'common:sshKeyForm.privateKey',
   'shell:markdown.braveTitle',
   'shell:markdown.braveSteps',
   'shell:markdown.braveCopy',

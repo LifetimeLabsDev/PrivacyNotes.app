@@ -16,6 +16,10 @@
   },
   "attachment": {
     "fallbackName": "Bijlage",
+    "rename": "Naam wijzigen",
+    "renamePlaceholder": "Bestandsnaam",
+    "saveName": "Naam opslaan",
+    "seek": "Weergavepositie",
     "imageAlt": "Afbeelding",
     "cantPlay": "Afspelen lukt niet. Download om te luisteren",
     "downloadingStatus": "downloaden...",

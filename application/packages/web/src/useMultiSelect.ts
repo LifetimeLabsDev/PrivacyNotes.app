@@ -49,6 +49,7 @@ interface UseMultiSelectReturn {
   cancelLongPress: () => void;
   bulkTrashPending: string[] | null;
   requestBulkTrash: () => void;
+  requestTrash: (ids: string[]) => void;
   executeBulkTrash: () => Promise<void>;
   dismissBulkTrash: () => void;
   handleBulkRestore: () => Promise<void>;
@@ -224,6 +225,17 @@ export function useMultiSelect({
     setBulkTrashPending(ids);
   }
 
+  /**
+   * Ask about named notes rather than the current selection, so a single
+   * note trashed from a menu gets the same question, the same wording and
+   * the same PIN gate as a whole selection. One item reads "1 item"
+   * through the plural form the modal already carries.
+   */
+  function requestTrash(ids: string[]) {
+    if (ids.length === 0) return;
+    setBulkTrashPending(ids);
+  }
+
   async function executeBulkTrash() {
     const ids = bulkTrashPending;
     setBulkTrashPending(null);
@@ -384,6 +396,7 @@ export function useMultiSelect({
     cancelLongPress,
     bulkTrashPending,
     requestBulkTrash,
+    requestTrash,
     executeBulkTrash,
     dismissBulkTrash,
     handleBulkRestore,

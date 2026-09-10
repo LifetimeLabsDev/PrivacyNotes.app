@@ -101,7 +101,24 @@ export type Contact = {
   notes: string;
   extras: ContactExtra[];
   uid: string;
+  /** Stored keys this version does not model, kept as they were read. A newer
+   *  version can add a field and an older one will hand it back untouched. */
+  carried: Record<string, unknown>;
 };
+
+/** Every key this version models, and the reason `carried` can exist: a stored
+ *  key that is not in here was written by a version that knows more than this
+ *  one. Kept in step with `buildContactBody` by tests/contactBody.test.ts. */
+const MODELLED_KEYS = new Set([
+  'first', 'last', 'phones', 'emails', 'photo', 'photoBytes', 'middle', 'prefix',
+  'suffix', 'nickname', 'phonetic', 'org', 'department', 'jobTitle', 'addresses',
+  'urls', 'profiles', 'dates', 'related', 'notes', 'extras', 'uid',
+]);
+
+/** Keys that are never carried, whatever a body holds: assigning one of them
+ *  onto a plain object rewrites its prototype rather than adding a field, and a
+ *  body arrives from a server this app does not trust. */
+const NEVER_CARRIED = new Set(['__proto__', 'constructor', 'prototype']);
 
 /** The label the picker suggests first for each kind of row. */
 export const CONTACT_LABELS = ['mobile', 'home', 'work', 'main', 'other'] as const;
@@ -133,6 +150,7 @@ export function emptyContact(): Contact {
     notes: '',
     extras: [],
     uid: '',
+    carried: {},
   };
 }
 
@@ -220,6 +238,10 @@ export function parseContactBody(body: string): Contact {
   c.notes = str(data.notes);
   c.extras = extraList(data.extras);
   c.uid = str(data.uid);
+  for (const [key, value] of Object.entries(data)) {
+    if (MODELLED_KEYS.has(key) || NEVER_CARRIED.has(key)) continue;
+    c.carried[key] = value;
+  }
   return c;
 }
 
@@ -241,6 +263,15 @@ function packLabelled(rows: ContactLabelled[]): ContactLabelled[] | undefined {
  */
 export function buildContactBody(c: Contact): string {
   const body: ContactBody = {};
+  // What a newer version stored goes back, minus anything this version models
+  // itself. The filter runs at both ends rather than only at the parse, so a
+  // modelled key can never reach the document from here - not even the empty
+  // ones, which are dropped below and would otherwise leave a carried copy of
+  // themselves standing.
+  for (const [key, value] of Object.entries(c.carried)) {
+    if (MODELLED_KEYS.has(key)) continue;
+    (body as Record<string, unknown>)[key] = value;
+  }
   const put = (key: keyof ContactBody, value: string) => {
     const v = value.trim();
     if (v) (body as Record<string, unknown>)[key] = v;

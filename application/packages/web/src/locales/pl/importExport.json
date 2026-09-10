@@ -63,13 +63,20 @@
     "bitwarden": "Niezaszyfrowany eksport .json z Bitwarden (Tools > Export vault > .json). Loginy, karty, klucze SSH, bezpieczne notatki i kody TOTP przychodzą razem.",
     "browserPasswords": "Plik haseł (.csv) z Chrome, Edge, Brave, Opery, Vivaldi, Firefoksa lub Safari albo .zip, który zapisuje Safari. Każdy wiersz staje się loginem. Usuń plik, gdy skończysz - są w nim twoje hasła jawnym tekstem."
   },
+  "sourceLabel": {
+    "privacynotes": "Pełna kopia zapasowa PrivacyNotes",
+    "browserBookmarks": "Zakładki przeglądarki",
+    "browserPasswords": "Hasła z przeglądarki",
+    "vcard": "Kontakty (vCard)",
+    "markdownFolder": "Pliki Markdown"
+  },
   "vaultPick": {
     "intro": "Zaimportuj loginy, karty kredytowe i klucze SSH z innego menedżera haseł."
   },
   "restorePick": {
     "intro": "Przywróć kopię zapasową PrivacyNotes wyeksportowaną wcześniej. Twój plik jest odczytywany i odszyfrowywany lokalnie.",
     "fullBackupTitle": "Pełna kopia zapasowa (.zip)",
-    "fullBackupDesc": "Przywróć notatki, dzienniki, elementy sejfu, zadania, obrazy, dźwięk i pliki. Wszystko jest importowane jako nowe elementy - istniejące dane nie są nadpisywane.",
+    "fullBackupDesc": "Przywróć notatki, dzienniki, elementy sejfu, zadania, obrazy, dźwięk i pliki. Notatka, którą już masz, zostaje zachowana albo zaktualizowana, jeśli kopia zawiera jej nowszą wersję.",
     "encryptedBackupTitle": "Zaszyfrowana kopia zapasowa (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Przywróć zaszyfrowaną kopię zapasową kluczem z Twojej frazy. Plik .pnbackupz przywraca wszystko, razem z plikami; .pnbackup zawiera tylko tekst i metadane. Musisz być zalogowany na tym samym koncie, które ją utworzyło."
   },

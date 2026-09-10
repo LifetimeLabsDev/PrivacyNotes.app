@@ -12,6 +12,7 @@
  * same name as the field the user typed it into.
  */
 import i18n from './i18n';
+import { exemptOpts } from './i18nExempt';
 import type { LocalNote } from './db';
 import { parseLoginBody } from './LoginForm';
 import { parseCardBody, detectCardNetwork } from './CardForm';
@@ -69,8 +70,8 @@ export function vaultContent(note: LocalNote): VaultContent | null {
     const s = parseSshKeyBody(note.body);
     const fields: VaultField[] = [];
     if (s.label) fields.push({ label: i18n.t('common:sshKeyForm.label'), value: s.label, mono: true });
-    if (s.publicKey) fields.push({ label: i18n.t('common:sshKeyForm.publicKey'), value: s.publicKey, mono: true });
-    if (s.privateKey) fields.push({ label: i18n.t('common:sshKeyForm.privateKey'), value: s.privateKey, mono: true });
+    if (s.publicKey) fields.push({ label: i18n.t('common:sshKeyForm.publicKey', exemptOpts('common:sshKeyForm.publicKey')), value: s.publicKey, mono: true });
+    if (s.privateKey) fields.push({ label: i18n.t('common:sshKeyForm.privateKey', exemptOpts('common:sshKeyForm.privateKey')), value: s.privateKey, mono: true });
     if (s.passphrase) fields.push({ label: i18n.t('common:sshKeyForm.passphrase'), value: s.passphrase, mono: true });
     return { fields, notes: s.notes, notesLabel: i18n.t('common:sshKeyForm.notes') };
   }

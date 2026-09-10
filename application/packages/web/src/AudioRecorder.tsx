@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { Microphone as MicIcon, CircleNotch } from './icons';
 import type { EditorView } from '@tiptap/pm/view';
 import { triggerAttachmentUpload } from './EncryptedAttachment';
+import { formatDuration } from './formatDuration';
 
 export type AudioRecordingState = 'idle' | 'recording' | 'uploading';
 
@@ -282,8 +283,3 @@ export function AudioRecordingBanner({
   );
 }
 
-function formatDuration(secs: number) {
-  const m = Math.floor(secs / 60);
-  const s = secs % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
-}

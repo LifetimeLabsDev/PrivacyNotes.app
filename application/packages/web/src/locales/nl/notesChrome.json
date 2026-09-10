@@ -72,6 +72,7 @@
     "copied": "Gekopieerd"
   },
   "burnView": {
+    "title": "Vernietigen na lezen",
     "tagline": "Versleuteld. Vluchtig. Alleen voor jouw ogen.",
     "toggleTheme": "Thema wisselen",
     "checking": "Controleren...",

@@ -19,6 +19,7 @@
       "callout": "De volledige set aandachtsblokken is een Pro-functie.",
       "totp": "2FA-codes zijn een Pro-functie. Bewaar een authenticator-sleutel bij elke login en je krijgt de wisselende code naast het wachtwoord. De sleutel zelf wordt in elk abonnement opgeslagen en gesynchroniseerd.",
       "replace": "Zoeken en vervangen is een Pro-functie. Upgrade om één overeenkomst of alle overeenkomsten in een notitie in één keer te vervangen.",
+      "passphrase": "Wachtwoordzinnen zijn een Pro-functie. Genereer een zin van willekeurige woorden die makkelijk te typen en te zeggen is.",
       "default": "Eén upgrade ontgrendelt alles hieronder. Eenmalige betaling."
     },
     "features": {

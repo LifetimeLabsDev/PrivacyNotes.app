@@ -23,13 +23,14 @@
 import {
   hasBiometricCredential,
   hasPinWrappedPhrase,
+  hasSamePinWrap,
   hasStoredPhrase,
   hydrateLocalPinWrap,
   removePinWrappedPhrase,
 } from './biometric';
 import { persistStoredPhrase } from './phraseAtRest';
 import { clearPinFailures, clearPinFromSettings } from './pin';
-import type { UserSettings } from './userSettings';
+import { isPinWrapWithheld, type UserSettings } from './userSettings';
 
 /**
  * Strip every PIN artifact this device holds and return the settings that
@@ -96,17 +97,30 @@ export function clearPin(settings: UserSettings, phrase: string): UserSettings {
  */
 export function syncPinWrap(settings: UserSettings, phrase?: string): void {
   if (settings.pinWrapSalt && settings.pinWrapIV && settings.pinWrapCiphertext) {
-    if (!hasPinWrappedPhrase()) {
-      hydrateLocalPinWrap({
-        pinWrapSalt: settings.pinWrapSalt,
-        pinWrapIV: settings.pinWrapIV,
-        pinWrapCiphertext: settings.pinWrapCiphertext,
-        // A blob written before the count was recorded is a legacy one.
-        pinWrapIterations: settings.pinWrapIterations ?? LEGACY_WRAP_ITERATIONS,
-      });
+    const blob = {
+      pinWrapSalt: settings.pinWrapSalt,
+      pinWrapIV: settings.pinWrapIV,
+      pinWrapCiphertext: settings.pinWrapCiphertext,
+      // A blob written before the count was recorded is a legacy one.
+      pinWrapIterations: settings.pinWrapIterations ?? LEGACY_WRAP_ITERATIONS,
+    };
+    // The account's wrap is the one this device must hold, not merely some
+    // wrap: a PIN changed elsewhere re-wraps under the new PIN, and a device
+    // that kept its old blob would keep opening with the retired PIN while
+    // its notes asked for the new one. The legacy-iteration upgrade after an
+    // unlock reports its blob to the account for the same reason, or this
+    // would undo it on every pass. Pinned by tests/pinRecovery.test.ts.
+    if (!hasPinWrappedPhrase() || !hasSamePinWrap(blob)) {
+      hydrateLocalPinWrap(blob);
     }
     return;
   }
+  // Four nulls can also mean the cache does not KNOW the account's wrap:
+  // an untrusted device keeps it out of localStorage, and a tab that has not
+  // read the server row yet holds nothing to compare. That is not a removal,
+  // and acting on it would take a door the account still holds. Pinned by
+  // tests/pinRecovery.test.ts.
+  if (isPinWrapWithheld()) return;
   removePinWrappedPhrase();
   // A door is a wrap, a fingerprint, or a phrase already at rest. With none
   // of the three there is nothing for the next boot to restore a session

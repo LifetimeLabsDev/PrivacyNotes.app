@@ -32,6 +32,17 @@ export const ARCHIVED_TAG = 'archived';
 
 /** One note, normalized to the shape PrivacyNotes cares about. */
 export interface ImportedNote {
+  /**
+   * The note's OWN id, set only by the PrivacyNotes backup formats, which
+   * are the only sources whose ids belong to this app.
+   *
+   * It is what makes restoring a backup a repair rather than a second copy
+   * of everything: `applyImport` matches on it and keeps the newer of the
+   * two versions. An importer for another app must leave this unset, so its
+   * ids stay in their own namespace and a re-import still adds everything
+   * again, which is what a person expects from an import.
+   */
+  id?: string;
   title: string;
   body: string;
   /** Already normalized (lowercase, no #, no weird chars). */
@@ -169,6 +180,12 @@ export interface Importer {
 }
 
 /** Result of writing a ParsedImport into the local DB. */
+/** What a restore of our own backup did, so the message can say it. */
+export interface RestoreCounts {
+  updated: number;
+  unchanged: number;
+}
+
 export interface ApplyResult {
   imported: number;
   /** Errors encountered per-note, so the user knows if anything was skipped. */
@@ -178,4 +195,10 @@ export interface ApplyResult {
   /** Bookmarks skipped because a bookmark with the same URL already
    *  exists (exact-match, non-trashed). Only ever set for 'link' rows. */
   skippedDuplicates?: number;
+  /** Restoring our own backup: notes the vault already had, where the
+   *  backup's copy was newer and replaced it. */
+  updated?: number;
+  /** Restoring our own backup: notes the vault already had and kept,
+   *  because the copy it holds is the same or newer. */
+  unchanged?: number;
 }

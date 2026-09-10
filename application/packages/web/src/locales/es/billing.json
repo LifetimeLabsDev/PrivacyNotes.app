@@ -19,6 +19,7 @@
       "callout": "El conjunto completo de avisos es una función Pro.",
       "totp": "Los códigos 2FA son una función Pro. Guarda una clave de autenticación en cualquier inicio de sesión y tendrás el código rotativo junto a la contraseña. La clave se guarda y se sincroniza en todos los planes.",
       "replace": "Buscar y reemplazar es una función Pro. Mejora tu plan para reemplazar una coincidencia o todas las de una nota de una vez.",
+      "passphrase": "Las frases de contraseña son una función Pro. Genera una frase de palabras al azar, fácil de escribir y de decir.",
       "default": "Una sola mejora desbloquea todo lo de abajo. Pago único."
     },
     "features": {

@@ -7,15 +7,18 @@
  * feature is worth. Users who want a hair-trigger can pick 1 minute.
  *
  * `-1` means "never re-ask for the life of this tab".
+ *
+ * Labels are keys rather than text: both call sites already hold the
+ * `security` namespace, so each one resolves its own option list.
  */
-export const TIMEOUT_OPTIONS: Array<{ value: number; label: string }> = [
-  { value: 1, label: '1 minute' },
-  { value: 5, label: '5 minutes' },
-  { value: 15, label: '15 minutes' },
-  { value: 30, label: '30 minutes' },
-  { value: 60, label: '1 hour' },
-  { value: 240, label: '4 hours' },
-  { value: 480, label: '8 hours' },
-  { value: 720, label: '12 hours' },
-  { value: -1, label: 'On browser restart' },
+export const TIMEOUT_OPTIONS: Array<{ value: number; labelKey: string }> = [
+  { value: 1, labelKey: 'timeout.min1' },
+  { value: 5, labelKey: 'timeout.min5' },
+  { value: 15, labelKey: 'timeout.min15' },
+  { value: 30, labelKey: 'timeout.min30' },
+  { value: 60, labelKey: 'timeout.hour1' },
+  { value: 240, labelKey: 'timeout.hour4' },
+  { value: 480, labelKey: 'timeout.hour8' },
+  { value: 720, labelKey: 'timeout.hour12' },
+  { value: -1, labelKey: 'timeout.browserRestart' },
 ];

@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "Tot",
-    "notes": "Notes",
-    "tasks": "Tasques",
-    "vault": "Caixa forta",
-    "files": "Fitxers",
-    "journals": "Diaris",
-    "pinned": "Fixats",
     "trash": "Paperera",
-    "markdown": "Markdown",
     "bookmarks": "Marcadors",
     "contacts": "Contactes"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Opcions d'ordenació",
     "searchPlaceholder": "Cerca fitxers…",
     "sortName": "Nom",
-    "showNotesWithAttachments": "Mostra les notes amb adjunts",
+    "showNotesWithAttachments": "Mostra els fitxers dins de les notes",
     "noMatches": "Cap coincidència.",
     "pinProtected": "Protegit amb PIN",
     "readOnly": "Només de lectura",
@@ -78,10 +70,11 @@
     "menuImages": "Imatges",
     "menuAudio": "Àudio",
     "menuDocuments": "Documents",
-    "menuHideNoteAttachments": "Amaga els adjunts de notes",
-    "menuShowNoteAttachments": "Mostra els adjunts de notes",
+    "menuHideNoteAttachments": "Amaga els fitxers dins de les notes",
+    "menuShowNoteAttachments": "Mostra els fitxers dins de les notes",
     "menuUnpin": "Desfixa",
     "menuPin": "Fixa",
+    "menuRename": "Canvia el nom",
     "menuMoveToTrash": "Mou a la paperera"
   },
   "vaultItem": {
@@ -116,6 +109,26 @@
     "notesHeading": "Notes",
     "fillOneField": "Omple almenys un camp abans de desar.",
     "expiryNeedsBoth": "La caducitat necessita mes i any, o deixa tots dos camps buits."
+  },
+  "fileTypes": {
+    "audio": "Àudio",
+    "video": "Vídeo",
+    "image": "Imatge",
+    "pdf": "PDF",
+    "archive": "Arxiu",
+    "document": "Document",
+    "spreadsheet": "Full de càlcul",
+    "file": "Fitxer",
+    "audioRecording": "Enregistrament d'àudio",
+    "pdfDocument": "Document PDF",
+    "attachment": "Fitxer adjunt"
+  },
+  "noteRow": {
+    "noUsername": "Sense nom d'usuari",
+    "noCardholder": "Sense titular",
+    "noLabel": "Sense etiqueta",
+    "files_one": "{{count}} fitxer",
+    "files_other": "{{count}} fitxers"
   },
   "tagsRail": {
     "showAllItems": "Mostra tots els elements",

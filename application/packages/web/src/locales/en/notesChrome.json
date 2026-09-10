@@ -72,6 +72,7 @@
     "copied": "Copied"
   },
   "burnView": {
+    "title": "Burn After Reading",
     "tagline": "Encrypted. Ephemeral. Eyes only.",
     "toggleTheme": "Toggle theme",
     "checking": "Checking...",

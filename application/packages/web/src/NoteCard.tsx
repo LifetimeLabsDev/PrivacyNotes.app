@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { activeLocale } from './languages';
 import type { NoteRowProps } from './NoteRow';
 import { RowIcon, TagChips, CardGlyph, noteFaviconDomain } from './NoteRow';
-import { deriveDisplayTitle, deriveExcerpt, formatModifiedShort, rowSizeLabel } from './notesViewUtils';
+import { deriveDisplayTitle, deriveExcerpt, emptyExcerptLabel, formatModifiedShort, rowSizeLabel } from './notesViewUtils';
 import { Check, PushPin, Shield, PencilSimpleSlash } from './icons';
 
 /**
@@ -46,10 +47,10 @@ export default React.memo(function NoteCard({
   const hasStatusIcons =
     (showTypeIcons && n.starred === 1) || n.pinProtected === 1 || n.locked === 1;
 
-  const displayTitle = useMemo(() => deriveDisplayTitle(n), [n]);
+  const displayTitle = useMemo(() => deriveDisplayTitle(n), [n, activeLocale()]);
   /** Shared with `NoteRow` - one rule for when a size appears. */
   const sizeText = rowSizeLabel(n, listPrefs.sortField, sizeLabel) || undefined;
-  const excerpt = useMemo(() => deriveExcerpt(n), [n]);
+  const excerpt = useMemo(() => deriveExcerpt(n), [n, activeLocale()]);
   /** Favicon for the mini glyph - bookmarks and logins only, never in trash
    *  (the boxed chip drops the favicon there too, for the amber icon). */
   const faviconDomain = useMemo(() => (trashTint ? '' : noteFaviconDomain(n)), [n, trashTint]);
@@ -131,7 +132,7 @@ export default React.memo(function NoteCard({
       {/* Preview - up to 2 lines (1 line on small tiles, via .pn-card-preview) */}
       {listPrefs.showPreview && !locked && (
         <div className="pn-card-preview text-[13px] text-neutral-500 dark:text-neutral-400 leading-snug" dir="auto">
-          {excerpt || (isFile ? t('noteRow.file') : isVault ? t('noteRow.empty') : t('noteRow.noContent'))}
+          {excerpt || emptyExcerptLabel(n)}
         </div>
       )}
       {/* Tags - sit with the content above the date so the date can stay pinned

@@ -97,7 +97,8 @@
     "imageError": "画像エラー: {{error}}",
     "uploadFailedFor": "「{{filename}}」のアップロードに失敗しました: {{error}}",
     "importedSyncing_other": "{{count}}件のノートを読み込みました。同期中…",
-    "addedTag_other": "{{count}}件のアイテムに#{{tag}}を追加しました"
+    "addedTag_other": "{{count}}件のアイテムに#{{tag}}を追加しました",
+    "restoreSummary": "復元しました。追加 {{added}}件、更新 {{updated}}件、変更なし {{unchanged}}件。"
   },
   "burn": {
     "mediaOnly": "このノートにはメディアしか含まれていないため、burnリンクでは共有できません。",

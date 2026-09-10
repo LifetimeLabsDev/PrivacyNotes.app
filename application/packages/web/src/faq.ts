@@ -47,6 +47,8 @@ export const FAQ_STRUCTURE: ReadonlyArray<{ id: string; group: FaqGroupKey }> = 
   { id: 'tasks', group: 'gettingStarted' },
   { id: 'journal', group: 'gettingStarted' },
   { id: 'bookmarks', group: 'gettingStarted' },
+  { id: 'contacts', group: 'gettingStarted' },
+  { id: 'what-to-keep', group: 'gettingStarted' },
   { id: 'folders', group: 'gettingStarted' },
   { id: 'tags', group: 'gettingStarted' },
   { id: 'note-links', group: 'gettingStarted' },

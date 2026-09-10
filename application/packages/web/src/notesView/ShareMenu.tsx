@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from '../db';
-import { Export, Fire, FileMd, FileHtml, Printer } from '../icons';
+import { Export, EXPORT_GLYPHS } from '../icons';
 import { HoverLabel } from '../HoverLabel';
 import { usePopoverPosition } from '../usePopoverPosition';
 
@@ -108,7 +108,7 @@ export function ShareMenu({
                 }}
                 className="w-full text-start px-3 py-2.5 flex items-start gap-2.5 hover:bg-surface-1 transition"
               >
-                <span className="shrink-0 mt-0.5 text-accent"><FileMd size={18} aria-hidden="true" /></span>
+                <span className="shrink-0 mt-0.5 text-accent"><EXPORT_GLYPHS.markdown size={18} aria-hidden="true" /></span>
                 <span className="min-w-0">
                   <span className="block font-medium text-pn">
                     {t('share.currentMdTitle')}
@@ -125,7 +125,7 @@ export function ShareMenu({
                 }}
                 className="w-full text-start px-3 py-2.5 flex items-start gap-2.5 hover:bg-surface-1 transition"
               >
-                <span className="shrink-0 mt-0.5 text-accent"><FileHtml size={18} aria-hidden="true" /></span>
+                <span className="shrink-0 mt-0.5 text-accent"><EXPORT_GLYPHS.html size={18} aria-hidden="true" /></span>
                 <span className="min-w-0">
                   <span className="block font-medium text-pn">
                     {t('share.currentHtmlTitle')}
@@ -142,7 +142,7 @@ export function ShareMenu({
                 }}
                 className="w-full text-start px-3 py-2.5 flex items-start gap-2.5 hover:bg-surface-1 transition"
               >
-                <span className="shrink-0 mt-0.5 text-accent"><Printer size={18} aria-hidden="true" /></span>
+                <span className="shrink-0 mt-0.5 text-accent"><EXPORT_GLYPHS.print size={18} aria-hidden="true" /></span>
                 <span className="min-w-0">
                   <span className="block font-medium text-pn">
                     {t('share.printTitle')}
@@ -159,7 +159,7 @@ export function ShareMenu({
                 }}
                 className="w-full text-start px-3 py-2.5 flex items-start gap-2.5 hover:bg-surface-1 transition"
               >
-                <span className="shrink-0 mt-0.5 text-orange-600 dark:text-orange-400"><Fire size={18} aria-hidden="true" /></span>
+                <span className="shrink-0 mt-0.5 text-orange-600 dark:text-orange-400"><EXPORT_GLYPHS.burn size={18} aria-hidden="true" /></span>
                 <span className="min-w-0">
                   <span className="block font-medium text-orange-600 dark:text-orange-400">
                     {t('share.burnTitle')}

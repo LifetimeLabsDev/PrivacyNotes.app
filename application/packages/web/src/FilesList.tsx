@@ -17,7 +17,7 @@ import { formatBytes } from './formatBytes';
 import { StorageBar } from './StorageBar';
 import { mimeToLabel, formatModifiedShort } from './notesViewUtils';
 import { CardGlyph, FileTileIcon, TagChips } from './NoteRow';
-import { iconPin, iconTrash, Check, CloudSlash, Folder, Upload, FunnelSimple, PushPin, Shield, PencilSimpleSlash, Files, PILLAR_GLYPHS } from './icons';
+import { iconPin, iconTrash, iconEditPencil, Check, CloudSlash, Folder, Upload, FunnelSimple, PushPin, Shield, PencilSimpleSlash, Files, PILLAR_GLYPHS } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { SelectionToolbar } from './SelectionToolbar';
 import { suppressShiftTextSelection } from './useMultiSelect';
@@ -33,6 +33,7 @@ import { STORAGE_PACKAGES } from './pricing';
 import { FILE_SIZE_LIMIT_PRO, FILE_SIZE_LIMIT_STORAGE } from './attachmentValidation';
 import { loadEncryptedImageUrl } from './EncryptedImage';
 import { useQuotaBlockedUuids } from './usePendingUploads';
+import { unescapeMarkdownText } from './fileNames';
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -142,7 +143,11 @@ export function extractFileItems(notes: LocalNote[]): FileItem[] {
       items.push({
         uuid: m[4]!,
         kind: 'attachment',
-        name: m[1]! || 'Attachment',
+        // The body text is markdown, so a name holding a bracket or an
+        // asterisk arrives escaped. The editor's chip reads the parsed
+        // document and never sees the backslashes; this row reads the raw
+        // body and would show them.
+        name: unescapeMarkdownText(m[1]!) || 'Attachment',
         mime: m[3]! || 'application/octet-stream',
         size: parseSizeToBytes(sizeStr),
         sizeLabel: sizeStr.trim(),
@@ -187,7 +192,11 @@ interface FilesListProps {
   filter: FileType;
   onFilterChange: (f: FileType) => void;
   onOpenNote: (noteId: string, fileUuid?: string) => void;
-  onUploadFiles: (filter?: FileType) => void;
+  /** Rename a stored file: opens its note and puts the chip into rename
+   *  mode. The name is only ever written by the chip in the live editor,
+   *  so a pending edit there cannot overwrite it. */
+  onRenameFile: (noteId: string, fileUuid: string) => void;
+  onUploadFiles: () => void;
   mobileTabIndex?: number;
   quotaUsedBytes: number;
   quotaMaxBytes: number;
@@ -394,6 +403,7 @@ export function FilesList({
   filter,
   onFilterChange: setFilter,
   onOpenNote,
+  onRenameFile,
   onUploadFiles,
   mobileTabIndex,
   quotaUsedBytes,
@@ -642,6 +652,15 @@ export function FilesList({
         icon: iconPin(starred),
         onSelect: () => onToggleStar(item.noteId, !starred),
       },
+      // Images carry no name a reader ever sees here, so there is nothing
+      // to rename on one yet.
+      ...(item.kind === 'attachment' && !item.locked
+        ? [{
+            label: t('filesList.menuRename'),
+            icon: iconEditPencil(),
+            onSelect: () => onRenameFile(item.noteId, item.uuid),
+          }]
+        : []),
       {
         label: t('filesList.menuMoveToTrash'),
         icon: iconTrash(),
@@ -650,25 +669,19 @@ export function FilesList({
       },
     ];
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, showNote, selectedFileIds, isNoteStarred, onToggleStar, onTrash]);
+  }, [filter, showNote, selectedFileIds, isNoteStarred, onToggleStar, onTrash, onRenameFile]);
 
-  /** Base items after the showNote + read-only/protected filters.
-   *  When a type filter is active, bypass the standalone check so ALL
-   *  files of that type appear regardless of the toggle (#92). The
-   *  standalone/showNote toggle only applies to the "All" view. */
+  /** Base items after the three list settings. All three hold on every
+   *  tab: the type tabs pick which files are listed, not which settings
+   *  apply. `standalone` marks a file that is its own note, so with the
+   *  toggle off only files uploaded as files remain. */
   const visibleItems = useMemo(() => {
     let items = fileItems;
-    // Standalone filter only applies when viewing all files.
-    // Type-filtered views (Images/Audio/Files) show every item of that
-    // type so files don't vanish just because the user added text to the
-    // parent note.
-    if (filter === 'all' && !showNote) {
-      items = items.filter((f) => f.standalone);
-    }
+    if (!showNote) items = items.filter((f) => f.standalone);
     if (!listPrefs.showLocked) items = items.filter((f) => !f.locked);
     if (!listPrefs.showProtected) items = items.filter((f) => !f.pinProtected);
     return items;
-  }, [fileItems, filter, showNote, listPrefs.showLocked, listPrefs.showProtected]);
+  }, [fileItems, showNote, listPrefs.showLocked, listPrefs.showProtected]);
 
   const filtered = useMemo(() => {
     let items = visibleItems;
@@ -739,7 +752,7 @@ export function FilesList({
         />
         <button
           type="button"
-          onClick={() => onUploadFiles(filter)}
+          onClick={() => onUploadFiles()}
           tabIndex={mobileTabIndex}
           className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-semibold px-3 py-1.5 text-lg tracking-tight transition"
         >
@@ -916,7 +929,7 @@ export function FilesList({
                 </p>
                 <button
                   type="button"
-                  onClick={() => onUploadFiles(filter)}
+                  onClick={() => onUploadFiles()}
                   className="text-xs font-medium text-white bg-accent hover:bg-accent-hover px-4 py-1.5 rounded-md transition"
                 >
                   {t('filesList.uploadFiles')}

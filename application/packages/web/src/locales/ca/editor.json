@@ -155,8 +155,11 @@
     "textLabel": "Text de l'enllaç",
     "textPlaceholder": "Opcional; deixa-ho en blanc per mostrar l'URL",
     "selectedTextHint": "El text seleccionat es farà servir com a enllaç",
-    "editTextHint": "Edita el text de l'enllaç a l'editor",
-    "update": "Actualitza"
+    "update": "Actualitza",
+    "menuOpen": "Obre l'enllaç",
+    "menuCopy": "Copia l'enllaç",
+    "menuEdit": "Edita l'enllaç",
+    "menuRemove": "Elimina l'enllaç"
   },
   "audio": {
     "uploadingRecording": "S'està pujant l'enregistrament...",
@@ -188,6 +191,9 @@
     "copy": "Copia",
     "copied": "Copiat",
     "copyFailed": "Ha fallat"
+  },
+  "math": {
+    "sourceLabel": "Codi LaTeX"
   },
   "noteLink": {
     "open": "Obre la nota",

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SUPPORTED_LOCALES, normalizeLocale } from './i18n';
-import { LANGUAGE_META, Flag, setLanguage, currentLanguageChoice, activeLocale, sortByNative } from './languages';
+import { SUPPORTED_LOCALES } from './i18n';
+import { LANGUAGE_META, Flag, setLanguage, currentLanguageChoice, activeLocale, preferredLocale, sortByNative } from './languages';
 import { LOCALE_TO_SLUG } from './localeRoutes';
 import { Check, CaretDown, CaretUp, Translate } from './icons';
 
@@ -55,7 +55,7 @@ export function LanguageMenu({ dropUp = false, dark = false, navigate = false, i
       // their notes instead of staying on the marketing page (issue #203).
       // 'system' resolves through the same table the app itself uses, so the
       // slug and the language that renders there agree.
-      const target = value === 'system' ? normalizeLocale(navigator.language) : value;
+      const target = value === 'system' ? preferredLocale() : value;
       window.location.assign(LOCALE_TO_SLUG[target] ?? '/en');
       return;
     }

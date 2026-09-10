@@ -3024,9 +3024,10 @@ dependencies = [
 
 [[package]]
 name = "privacynotes"
-version = "0.507.21"
+version = "0.514.3"
 dependencies = [
  "block2",
+ "libc",
  "objc2",
  "objc2-foundation",
  "serde",

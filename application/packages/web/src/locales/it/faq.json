@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "Cosa si sincronizza esattamente tra i miei dispositivi, e cosa resta locale?",
       "a": [
-        "Tutto ciò che ti aspetteresti, ogni cosa cifrata sul tuo dispositivo prima della sync: note, attività, pagine di diario, la tua cassaforte e i file cifrati al suo interno. Anche le impostazioni ti seguono - tag preferiti, preferenze di ordinamento e vista, tema colore, il tuo PIN (come hash con salt, mai il PIN in sé), blocco app, configurazione di tracker e farmaci, e svuotamento automatico del cestino. Configuri una volta, ogni dispositivo si adegua.",
+        "Tutto ciò che ti aspetteresti, e tutto quanto cifrato sul tuo dispositivo: note, attività, pagine di diario, la tua cassaforte e i file al suo interno. Anche le impostazioni ti seguono - tag preferiti, preferenze di ordinamento e vista, tema colore, il tuo PIN (come hash con salt, mai il PIN in sé), blocco app, configurazione di tracker e farmaci, e svuotamento automatico del cestino. Configuri una volta, ogni dispositivo si adegua.",
         "Alcune cose restano di proposito locali al dispositivo: modalità chiara o scura (ogni dispositivo segue la propria impostazione di sistema), sblocco biometrico (legato all'hardware di ciascun dispositivo) e lo stato di sblocco (alla chiusura l'app si blocca sempre di nuovo). Il server conserva sempre e solo blob cifrati e non può leggerne nulla."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Sì. I segnalibri sono un pilastro a sé nella barra laterale, accanto a note, attività e diario, e sono gratuiti in ogni piano. Incolla un link nella barra di aggiunta rapida per salvarne uno. Per portare i tuoi, esporta un file di segnalibri (.html) dal browser e trascinalo in Impostazioni > Import & Export > Importa > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave e Vivaldi contengono lo stesso file, e cartelle e date arrivano con lui. Safari lo racchiude in uno .zip, che puoi trascinare senza aprirlo.",
         "I tuoi indirizzi non lasciano mai il tuo dispositivo: non carichiamo la pagina dietro a un link, ed è per questo che un segnalibro che aggiungi a mano porta il suo dominio come nome finché non ne scrivi uno. Le icone dei siti sono l’unica eccezione, e puoi spegnerle. L’esportazione scrive lo stesso file standard, così i tuoi segnalibri se ne vanno con la stessa facilità ([guida all’importazione](/it/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "Posso tenere una rubrica in PrivacyNotes?",
+      "a": [
+        "Sì. I contatti sono un pilastro a sé nella barra laterale, accanto a note, attività e diario, e sono gratuiti in ogni piano. Una scheda raccoglie nomi, numeri, email, indirizzi, siti, date, un’azienda e una nota. Tocca un numero per chiamarlo, un indirizzo email per scrivere, o una riga qualsiasi per copiarla. Tutto il resto che il telefono ha scritto nel file resta sotto **Anche in questo file** e torna fuori quando esporti.",
+        "Per portare i tuoi, esporta una vCard (.vcf) dal telefono, dal Mac o da Google Contacts e trascinala in Impostazioni > Import & Export > Importa > \"Contacts (vCard)\". Se più avanti trascini di nuovo lo stesso file, le persone già presenti vengono riconosciute invece che duplicate. L’esportazione riscrive una vCard standard, quindi la tua rubrica esce con la stessa facilità con cui è entrata ([di più sull’importazione](/it/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "Cosa conviene tenere in Segnalibri, Contatti e Cassaforte?",
+      "a": [
+        "Le parti della tua vita che non stanno bene in un profilo del browser o nella rubrica del telefono. Segnalibri, contatti e la cassaforte stanno accanto a quelli che il browser e il telefono sincronizzano già con Google, Apple o Mozilla, e tengono ciò che preferisci lasciare fuori. Tutti e tre sono gratuiti in ogni piano.",
+        "- Link su salute, soldi, questioni legali o una ricerca di lavoro, su un computer che condividi con qualcuno\n- La ricerca su un tema, tenuta insieme invece che sepolta fra migliaia di segnalibri del browser\n- Il medico, l’avvocata, il padrone di casa e il selezionatore, fuori da una rubrica che si sincronizza con iCloud o Google\n- Un contatto con il contesto intorno: le tue note, le date, il file che ti ha mandato\n- Frasi di recupero, chiavi di licenza, codici della cassaforte e numeri di passaporto, segreti che non sono credenziali\n- Le poche credenziali che non vuoi mai dentro un’estensione del browser",
+        "Ognuno è una riga nella barra laterale. Se ne manca una, apri le opzioni della barra laterale sopra i tag e attiva **Mostra nella barra laterale**. Porti dentro i tuoi da un file e li riporti fuori allo stesso modo ([segnalibri](/it/help/bookmarks/), [contatti](/it/help/contacts/), [la cassaforte](/it/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

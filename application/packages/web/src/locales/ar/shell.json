@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "الكل",
-    "notes": "الملاحظات",
-    "tasks": "المهام",
-    "vault": "الخزنة",
-    "files": "الملفات",
-    "journals": "اليوميات",
-    "pinned": "المثبتة",
     "trash": "المهملات",
-    "markdown": "Markdown",
     "bookmarks": "الإشارات المرجعية",
     "contacts": "جهات الاتصال"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "خيارات الفرز",
     "searchPlaceholder": "ابحث في الملفات…",
     "sortName": "الاسم",
-    "showNotesWithAttachments": "إظهار الملاحظات التي تحتوي على مرفقات",
+    "showNotesWithAttachments": "إظهار الملفات داخل الملاحظات",
     "noMatches": "لا توجد نتائج مطابقة.",
     "pinProtected": "محمي برمز PIN",
     "readOnly": "للقراءة فقط",
@@ -78,10 +70,11 @@
     "menuImages": "الصور",
     "menuAudio": "الصوت",
     "menuDocuments": "المستندات",
-    "menuHideNoteAttachments": "إخفاء مرفقات الملاحظات",
-    "menuShowNoteAttachments": "إظهار مرفقات الملاحظات",
+    "menuHideNoteAttachments": "إخفاء الملفات داخل الملاحظات",
+    "menuShowNoteAttachments": "إظهار الملفات داخل الملاحظات",
     "menuUnpin": "إلغاء التثبيت",
     "menuPin": "تثبيت",
+    "menuRename": "إعادة تسمية",
     "menuMoveToTrash": "نقل إلى المهملات"
   },
   "vaultItem": {
@@ -116,6 +109,30 @@
     "notesHeading": "ملاحظات",
     "fillOneField": "يرجى تعبئة حقل واحد على الأقل قبل الحفظ.",
     "expiryNeedsBoth": "يتطلب تاريخ الانتهاء كلًا من الشهر والسنة، أو اتركهما فارغين."
+  },
+  "fileTypes": {
+    "audio": "صوت",
+    "video": "فيديو",
+    "image": "صورة",
+    "pdf": "PDF",
+    "archive": "أرشيف",
+    "document": "مستند",
+    "spreadsheet": "جدول بيانات",
+    "file": "ملف",
+    "audioRecording": "تسجيل صوتي",
+    "pdfDocument": "مستند PDF",
+    "attachment": "مرفق"
+  },
+  "noteRow": {
+    "noUsername": "بدون اسم مستخدم",
+    "noCardholder": "بدون حامل بطاقة",
+    "noLabel": "بدون تسمية",
+    "files_zero": "{{count}} ملفات",
+    "files_one": "{{count}} ملف",
+    "files_two": "{{count}} ملفان",
+    "files_few": "{{count}} ملفات",
+    "files_many": "{{count}} ملفًا",
+    "files_other": "{{count}} ملف"
   },
   "tagsRail": {
     "showAllItems": "إظهار جميع العناصر",

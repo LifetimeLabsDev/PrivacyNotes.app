@@ -516,7 +516,13 @@ const DEMO_EXTRA_TRACKERS: BuiltinTrackerId[] = [
 async function seedFolderTree(): Promise<void> {
   const settings = loadLocalSettings();
   const have = new Set(settings.folders.map((f) => f.id));
-  const missingFolders = seedFolderDefs().filter((f) => !have.has(f.id));
+  // A starter folder the user deleted stays deleted. Seeding runs once per
+  // account, so this only matters on a re-seed, and coming back from the
+  // dead is the one thing a deleted folder must never do.
+  const removed = new Set(settings.foldersDeleted.map((d) => d.id));
+  const missingFolders = seedFolderDefs().filter(
+    (f) => !have.has(f.id) && !removed.has(f.id),
+  );
 
   const active = settings.trackerSettings.activeBuiltins;
   const missingPills = isDemoMode()

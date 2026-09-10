@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "What exactly syncs across my devices, and what stays local?",
       "a": [
-        "Everything you would expect, all encrypted on your device before it syncs: notes, tasks, journal entries, your vault, and the encrypted files in it. Your settings follow you too - favorite tags, sort and view preferences, color theme, your PIN (as a salted hash, never the PIN itself), app lock, tracker and medication setup, and trash auto-delete. Set something up once and every device picks it up.",
+        "Everything you would expect, and all of it encrypted on your device: notes, tasks, journal entries, your vault, and the files in it. Your settings follow you too - favorite tags, sort and view preferences, color theme, your PIN (as a salted hash, never the PIN itself), app lock, tracker and medication setup, and trash auto-delete. Set something up once and every device picks it up.",
         "A few things stay deliberately device-local: light or dark mode (each device follows its own system preference), biometric unlock (tied to the hardware of each device), and your unlock state (closing the app always re-locks). The server only ever stores encrypted blobs and can read none of it."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Yes. Bookmarks are a pillar in the sidebar, next to Notes, Tasks and Journals, and they are free on every tier. Paste a link into the quick-add bar to save one. To bring your existing ones across, export a bookmarks .html file from your browser, then drop it into Settings > Import & Export > Import > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave and Vivaldi all hold the same file, and your folders and dates come with it. Safari wraps it in a .zip, which you can drop in unopened.",
         "Your URLs never leave your device: we do not fetch the page behind a link, which is why a bookmark you add by hand carries its domain as the name until you type one. Site icons are the one exception, and you can switch them off. Export writes the same standard .html file, so your bookmarks leave as easily as they arrived ([import guide](/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "Can I keep an address book in PrivacyNotes?",
+      "a": [
+        "Yes. Contacts is a pillar in the sidebar, next to Notes, Tasks and Journals, and it is free on every tier. A contact holds names, numbers, emails, addresses, websites, dates, a company and a note. Tap a number to dial it, an email address to write one, or any row to copy it. Anything else your phone wrote into the file stays under **Also in this file** and is written back when you export.",
+        "To bring yours across, export a vCard (.vcf) from your phone, your Mac, or Google Contacts, then drop it into Settings > Import & Export > Import > \"Contacts (vCard)\". Import the same file again later and the people already there are matched rather than duplicated. Export writes a standard vCard back out, so your address book leaves as easily as it arrived ([more on importing](/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "What should I keep in Bookmarks, Contacts and the Vault?",
+      "a": [
+        "The parts of your life that do not belong in a browser profile or a phone address book. Bookmarks, Contacts and the Vault sit beside the ones your browser and your phone already sync to Google, Apple or Mozilla, and they hold what you would rather keep out of those. All three are free on every tier.",
+        "- Links about health, money, law or a job hunt, on a computer you share with someone\n- Research for one topic, kept together instead of buried among thousands of browser bookmarks\n- The doctor, the lawyer, the landlord and the recruiter, kept out of an address book that syncs to iCloud or Google\n- A contact with the context around them: your notes, the dates, the file they sent you\n- Recovery phrases, license keys, safe codes and passport numbers, which are secrets but not logins\n- The few credentials you never want inside a browser extension",
+        "Each one is a row in the sidebar. If a row is missing, open the sidebar options menu above your tags and switch **Show in sidebar** on for it. You can bring your existing ones in from a file and take them out the same way ([bookmarks](/help/bookmarks/), [contacts](/help/contacts/), [the Vault](/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

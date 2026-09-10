@@ -29,10 +29,26 @@
     "pinFourDigits": "PIN måste bestå av fyra siffror.",
     "pinsDoNotMatch": "PIN-koderna stämmer inte överens."
   },
+  "timeout": {
+    "min1": "1 minut",
+    "min5": "5 minuter",
+    "min15": "15 minuter",
+    "min30": "30 minuter",
+    "hour1": "1 timme",
+    "hour4": "4 timmar",
+    "hour8": "8 timmar",
+    "hour12": "12 timmar",
+    "browserRestart": "Vid omstart av webbläsaren"
+  },
+  "pinInfo": {
+    "title": "Kräv PIN för att visa",
+    "body": "När det är på krävs din PIN varje gång du öppnar det här objektet, även om appen redan är upplåst. Använd det för känsliga objekt som ska förbli skyddade när du går ifrån.",
+    "gotIt": "Uppfattat"
+  },
   "removePinDialog": {
     "title": "Ta bort PIN",
     "introWithBio": "Ange din nuvarande PIN för att bekräfta borttagningen. Biometrisk upplåsning förblir aktiv, men din enda reserv blir din återställningsfras.",
-    "introNoBio": "Ange din nuvarande PIN för att bekräfta borttagningen. Frasvyn kommer inte längre att vara skyddad.",
+    "introNoBio": "Ange din nuvarande PIN för att bekräfta borttagningen. Din återställningsfras öppnas sedan utan PIN.",
     "verifying": "Verifierar...",
     "removePin": "Ta bort PIN"
   },
@@ -102,9 +118,11 @@
     "enable": "Aktivera biometrisk upplåsning",
     "lockOnOpen": "Lås appen vid start",
     "lockOnOpenHint": "Kräv biometri eller PIN när appen öppnas.",
-    "confirmPinForLock": "Ange din PIN en gång för att slå på det här. Den låser en kopia av din återställningsfras, så att bara din PIN kan öppna appen.",
+    "lockNeedsCredential": "Applåset kräver en PIN eller biometrisk upplåsning på den här enheten.",
+    "setUpPin": "Ange en PIN",
+    "confirmPinForLock": "Ange din PIN för att slå på det här. Den låser en kopia av din återställningsfras, så att bara din PIN kan öppna appen.",
     "relockAfter": "Lås igen efter",
-    "relockHint": "Gäller appens låsskärm och alla PIN-skyddade anteckningar.",
+    "relockHint": "Gäller bara appens låsskärm.",
     "perDeviceNote": "Biometrisk upplåsning öppnar samma anteckningar som din PIN. Den stannar på den här enheten och synkas aldrig.",
     "disableConfirmTitle": "Inaktivera biometri",
     "disableConfirmLabel": "Inaktivera",

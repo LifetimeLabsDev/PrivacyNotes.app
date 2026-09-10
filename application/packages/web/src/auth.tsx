@@ -41,6 +41,7 @@ import {
 import { clearLocalSettings, loadLocalSettings, saveLocalSettings } from './userSettings';
 import { isDemoMode } from './demo';
 import { buildDemoAuthState } from './demoAuth';
+import { ConfirmModal } from './ConfirmModal';
 import { seedOnboardingNotes, SEED_MEDICATION } from './welcomeNote';
 import {
   trustAwareStorage,
@@ -55,6 +56,8 @@ import {
   readFnErrorBody,
   isStaleTokenLinkError,
   isAuthUnreachableLinkError,
+  isAuthRateLimitedLinkError,
+  isMissingBearerLinkError,
   type DeviceRow,
   type FnError,
   type RegisterResult,
@@ -79,6 +82,7 @@ import {
   ownsLocalData,
   clearAccountScopedUiState,
   hasLocalAccountState,
+  switchWouldWipe,
   readCachedAccountFlags,
   writeCachedAccountFlags,
   clearCachedAccountFlags,
@@ -370,6 +374,28 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [auth, setAuth] = useState<AuthState>({ status: 'loading' });
 
+  /**
+   * The account-switch question, for the two doors that cannot ask for
+   * themselves. `_authenticateWithPhrase` clears the prior account's
+   * data, and the OAuth flows reach it from a hook and from a callback,
+   * neither of which renders anything. The provider does, so the promise
+   * lives here and the flows await it.
+   *
+   * The phrase sign-in asks in its own component instead, because it
+   * races its sign-in against a timeout that a person reading a dialog
+   * would lose.
+   */
+  const [switchAsk, setSwitchAsk] = useState<{ resolve: (ok: boolean) => void } | null>(null);
+  function askAccountSwitch(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => setSwitchAsk({ resolve }));
+  }
+  function answerAccountSwitch(ok: boolean): void {
+    setSwitchAsk((pending) => {
+      pending?.resolve(ok);
+      return null;
+    });
+  }
+
   // Snapshot of the last known access token + authUid, kept in a ref so
   // `resolveDeviceLimit` can retry registration without re-deriving
   // everything from the phrase. Lives as long as the AuthProvider - we
@@ -607,19 +633,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         wipePrior = await hasLocalAccountState();
       }
     }
-    if (wipePrior) {
-      // A pass from the PRIOR account can be in flight right now (the
-      // 30 s poll, a visibility tick). Bumping the generation strips it
-      // of every remaining write: the push boundaries and the cursor
-      // persist in sync.ts re-check it. Without this, that pass kept
-      // pushing the old account's rows against the session this
-      // authenticate is about to mint - server RLS refused each one,
-      // and that refusal was the only thing containing it (2026-08-31).
-      suspendSync();
+    /**
+     * The prior account's data. Runs only once the arriving account is
+     * proved: session minted, pubkey linked, device registered and the
+     * live token carrying the claim.
+     *
+     * Two things hold the line until it runs, and either alone is
+     * enough. Sync refuses to start a pass at all while suspended, and
+     * the owner marker still names the PRIOR account, so `ownsLocalData`
+     * refuses every push and cursor write for the arriving pubkey.
+     *
+     * The blob stores read that same marker before each server write,
+     * to stop an instance captured by an in-flight upload spending the
+     * arriving account's quota. That check is open during this window,
+     * and no path reaches it: a sweep needs NotesView mounted, the boot
+     * and sign-in paths have no NotesView, and the one way this state
+     * arrives on a mounted app is another tab taking the marker, which
+     * drops this tab to the signed-out screen and unmounts it.
+     */
+    const wipePriorLocalData = async () => {
       await clearLocalDatabase();
       clearLocalSettings();
       clearCachedAccountFlags();
-      clearRegistrationMarker();
       // Drop the settings-panel figures (device list, quota, storage
       // subs) alongside the other account-scoped caches. Keyed by pubkey
       // so a stale entry could not be read by another account anyway,
@@ -647,6 +682,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       resetAppearance();
       try { localStorage.removeItem('privacynotes.lastSync'); } catch { /* ignore */ }
       try { sessionStorage.removeItem('privacynotes.lastSync'); } catch { /* ignore */ }
+      // The marker moves with the data it describes. A marker naming the
+      // arriving account over the prior account's rows is the one state
+      // that lets those rows push under the new pubkey, and a device
+      // that dies between here and there wakes with a marker, a stored
+      // phrase and a database that all still name the prior account,
+      // which is the state a failed switch should leave behind.
+      try { localStorage.setItem(PUBKEY_OWNER_KEY, pubkey); } catch { /* ignore */ }
+      await writeOwnerMirror(pubkey);
+      // Lift the suspension only now. The generation stays bumped, so
+      // the prior account's pass remains stripped while new passes may
+      // start.
+      resumeSync();
+    };
+
+    if (wipePrior) {
+      // A pass from the PRIOR account can be in flight right now (the
+      // 30 s poll, a visibility tick). Bumping the generation strips it
+      // of every remaining write: the push boundaries and the cursor
+      // persist in sync.ts re-check it. Without this, that pass kept
+      // pushing the old account's rows against the session this
+      // authenticate is about to mint - server RLS refused each one,
+      // and that refusal was the only thing containing it (2026-08-31).
+      //
+      // Sync stays off for the whole window in which this device holds
+      // one account's rows and mints another account's session. Only
+      // the wipe lifts it, so a handshake that fails anywhere below
+      // leaves sync off until the next authentication's resumeSync()
+      // at the top of this function. That is the safe direction: a
+      // suspended sync loses nothing, and a resumed one would push the
+      // prior account's rows under the arriving pubkey.
+      suspendSync();
+      // The registration marker belongs to the prior account's session
+      // rather than to its data, so it goes now. Clearing it only forces
+      // the full link and register pass below, which is what an arriving
+      // account needs anyway.
+      clearRegistrationMarker();
       // Drop the cached anon session - it carries the prior user's
       // app_metadata.pubkey claim until link-pubkey overwrites it.
       // Forcing a fresh sign-in below keeps the auth state coherent.
@@ -657,7 +728,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // access token for link-pubkey and register-device. Current GoTrue
       // rejects tokens whose session_id no longer exists ("session_not_
       // found"), so revoking here 401s the entire OAuth onboarding. The
-      // local-data wipe above is sufficient for OAuth; the signOut is only
+      // local-data wipe is sufficient for OAuth; the signOut is only
       // needed by the phrase path before it calls signInAnonymously below.
       // The method check matters as much as the param check (same class
       // as failHandshake below, 2026-08-25 session audit): an
@@ -668,16 +739,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!oauthSession && method !== 'oauth') {
         await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
       }
+    } else {
+      // Same owner: the marker and its mirror are refreshed here, which
+      // is what repairs a localStorage eviction before anything reads it.
+      try { localStorage.setItem(PUBKEY_OWNER_KEY, pubkey); } catch { /* ignore */ }
+      await writeOwnerMirror(pubkey);
     }
-    try { localStorage.setItem(PUBKEY_OWNER_KEY, pubkey); } catch { /* ignore */ }
-    // Mirror the owner into IndexedDB so an evicted localStorage can
-    // never orphan the marker from the data again (see the wipe check
-    // above).
-    await writeOwnerMirror(pubkey);
-    // Lift the wipe suspension only after the marker names the new
-    // owner: the generation stays bumped, so the prior account's pass
-    // remains stripped while new passes may start.
-    if (wipePrior) resumeSync();
 
     // Resolve a valid session. OAuth callers pass their session
     // explicitly to avoid re-reading from storage (which may be empty
@@ -997,6 +1064,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           mintedThisPass = true;
           continue;
         }
+        // A rate limit is the one refusal that must NOT be retried: the
+        // backend reached us and asked for less traffic, so another attempt
+        // a second later spends more of the same allowance and delays the
+        // moment it clears.
+        if (isAuthRateLimitedLinkError(linkError, linkBody)) break;
         if (staleVerdict || isAuthUnreachableLinkError(linkError, linkBody)) {
           // Failure shape 2: the token cannot be stale (fresh mint or
           // OAuth), so the refusal is the auth backend misfiring. Same
@@ -1025,6 +1097,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // raw function error - onboarding shows this string as-is.
         if (fnCode === 'signups_paused') {
           return failHandshake(new Error(i18n.t('auth:signIn.signupsPaused')));
+        }
+        // Same treatment as the pause above: the raw function error says
+        // nothing a person can act on, and waiting is the whole answer.
+        if (fnCode === 'auth_rate_limited') {
+          logAuthEvent('auth:link-rate-limited');
+          return failHandshake(new Error(i18n.t('auth:signIn.rateLimited')));
+        }
+        // The link call carried no Authorization header, which this client
+        // cannot do: it sets one explicitly, from a token already proven
+        // non-empty. Something on the device or the network removed it, and
+        // a content filter with HTTPS filtering is the known cause.
+        //
+        // Neither failHandshake nor a retry fits. The session is healthy, so
+        // dropping it only spends another anonymous mint against the per-IP
+        // cap, and enough attempts turn the real cause into a rate-limit
+        // message that points somewhere else. The registration marker still
+        // has to go: leaving a fresh one lets the next attempt take the fast
+        // path and skip the very link that is failing, which reads as a
+        // signed-in app that never syncs.
+        // Spec: ops/docs/design-decisions.md (a filter that removes the Authorization header)
+        if (isMissingBearerLinkError(linkError, linkBody)) {
+          logAuthEvent('auth:link-bearer-stripped');
+          clearRegistrationMarker();
+          throw new Error(i18n.t('auth:signIn.authHeaderStripped'));
         }
         const detail = linkBody ? `${linkError.message} - ${JSON.stringify(linkBody)}` : linkError.message;
         return failHandshake(new Error(`link-pubkey failed: ${detail}`));
@@ -1143,6 +1239,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isPro = registerResult.isPro;
       earlySup = isPro ? await checkEarlySupporter(supabase) : false;
     }
+
+    // The arriving account is proved, so this is where the prior one's
+    // data goes. It runs before the fresh-vault seed below, which the
+    // wipe would otherwise take with it.
+    if (wipePrior) await wipePriorLocalData();
 
     // Fresh vault: seed the onboarding notes NOW, before setAuth, so
     // NotesView's very first Dexie read already contains them - no
@@ -1804,6 +1905,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     abandonOAuthHydration,
   } = useOAuthFlows({
     authenticateWithPhrase,
+    askAccountSwitch,
     setAuth,
     supabase,
     authInFlight,
@@ -1826,6 +1928,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const phrase = generatePhrase();
+      // A phrase generated this second owns nothing, so this asks
+      // whether the account already on the device may be cleared. An
+      // empty error is a decline rather than a failure: the choice
+      // screen stays as it was and says nothing.
+      if (await switchWouldWipe(phrase) && !(await askAccountSwitch())) {
+        return { ok: false, error: '' };
+      }
       // Pass the OAuth session explicitly so _authenticateWithPhrase
       // never falls through to signInAnonymously (#131). The phrase was
       // generated this second, so this is a fresh vault: seed during
@@ -2148,6 +2257,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
+      {switchAsk && (
+        <ConfirmModal
+          title={i18n.t('auth:signIn.switchTitle')}
+          confirmLabel={i18n.t('auth:signIn.switchConfirm')}
+          variant="warning"
+          onConfirm={() => answerAccountSwitch(true)}
+          onClose={() => answerAccountSwitch(false)}
+        >
+          {i18n.t('auth:signIn.switchBody')}
+        </ConfirmModal>
+      )}
     </AuthContext.Provider>
   );
 }

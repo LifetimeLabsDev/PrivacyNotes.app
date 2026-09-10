@@ -24,7 +24,7 @@ import { Decoration, DecorationSet } from '@tiptap/pm/view';
 import { Download, Trash } from './icons';
 import { currentImageOptions, processImage } from './imageProcessing';
 import { validateAttachment } from './attachmentValidation';
-import { useIsTouchDevice } from './useIsMobile';
+import { suppressSoftKeyboard } from './softKeyboard';
 import type { ImageStore } from './imageStore';
 import { saveBlob } from './saveFile';
 import i18n from './i18n';
@@ -88,7 +88,7 @@ type ImageNodeViewProps = {
   editor: {
     isEditable: boolean;
     commands: { setNodeSelection: (pos: number) => boolean };
-    view: { focus: () => void };
+    view: { focus: () => void; dom: HTMLElement };
   };
   /** Document position of this image, or undefined once the node is gone. */
   getPos: () => number | undefined;
@@ -181,7 +181,13 @@ const EncryptedImageView = memo(function EncryptedImageView({
   // True once a person taps this image. It separates a selection someone asked
   // for from the one ProseMirror seeds on a note that opens with an image.
   const [tapped, setTapped] = useState(false);
-  const isTouch = useIsTouchDevice();
+  // Was the press that is running right now made by a finger or a pen?
+  // The question is whether THIS press can raise the on-screen keyboard, and
+  // that is a property of the press, not of the machine. A media query answers
+  // the wrong question: an Android phone with a stylus or a paired mouse
+  // reports a hover-capable pointer and still has an on-screen keyboard, so it
+  // took the desktop branch below and lost its selection to the keyboard.
+  const softPress = useRef(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -314,37 +320,32 @@ const EncryptedImageView = memo(function EncryptedImageView({
 
   // Own the tap on the image instead of leaving it to ProseMirror.
   //
-  // The size/download/delete bar needs a NodeSelection on this image. On a
-  // pointer device it also needs focus inside .ProseMirror, because a note
-  // that opens on an image is given that selection before anyone touches
-  // anything, and an unfocused editor must show no editing affordance (see
-  // index.css). A tap on a contenteditable=false child delivers neither: the
-  // caret goes to the nearest text, so an image with a paragraph under it
-  // selected nothing, while the last image in a note - with no text to snap
-  // to - worked.
+  // The size/download/delete bar needs a NodeSelection on this image. Under a
+  // mouse it also needs focus inside .ProseMirror, because a note that opens
+  // on an image is given that selection before anyone touches anything, and an
+  // unfocused editor must show no editing affordance (see index.css). A tap on
+  // a contenteditable=false child delivers neither: the caret goes to the
+  // nearest text, so an image with a paragraph under it selected nothing,
+  // while the last image in a note - with no text to snap to - worked.
   //
-  // A touch device answers "did a person choose this image" with `tapped`
-  // rather than with focus, and takes no focus at all. Focus is what attaches the
-  // keyboard, and the keyboard puts the caret back in the nearest text, which
-  // replaces this node selection tens of milliseconds after the tap. That is
-  // the bar appearing and vanishing again. It also means resizing a picture
-  // no longer drags the keyboard onto the screen.
+  // Under a finger or a pen the question "did a person choose this image" is
+  // answered by `tapped` rather than by focus, and no focus is taken at all.
+  // Focus is what attaches the keyboard, and the keyboard puts the caret back
+  // in the nearest text, which replaces this node selection tens of
+  // milliseconds after the tap. That is the bar appearing and vanishing again.
+  // It also means resizing a picture no longer drags the keyboard onto the
+  // screen.
   //
-  // On every other platform this is belt to ProseMirror's braces: a click
-  // fires after mouseup, so this runs last and wins even when the browser
-  // re-normalizes the selection behind us. Setting the same NodeSelection
-  // twice is a no-op, so pointer behavior is unchanged.
+  // Under a mouse this is belt to ProseMirror's braces: a click fires after
+  // mouseup, so this runs last and wins even when the browser re-normalizes
+  // the selection behind us. Setting the same NodeSelection twice is a no-op,
+  // so mouse behavior is unchanged.
   // Fix: GitHub #240 (image options do not appear on Android)
   const handleSelect = useCallback(() => {
     if (!editor.isEditable) return;
     const pos = getPos();
     if (typeof pos !== 'number') return;
-    // Touch only, and a touch test rather than a width one: the trouble is the
-    // on-screen keyboard, which a narrowed desktop window does not have. On a
-    // pointer device a click already focuses the editor, so the focus rule in
-    // index.css keeps doing its job and nothing here changes: a bar that
-    // outlives a click into the sidebar is what that rule prevents.
-    if (isTouch) setTapped(true);
+    if (softPress.current) setTapped(true);
     editor.commands.setNodeSelection(pos);
     // Focus only where focus is harmless. On Android the keyboard attaches to
     // the editor and puts the caret in the nearest text, which turns this node
@@ -352,8 +353,26 @@ const EncryptedImageView = memo(function EncryptedImageView({
     // tens of milliseconds after it appeared. The bar does not need the editor
     // to hold focus - `tapped` is what tells index.css this image was chosen by
     // a person rather than by the initial selection.
-    if (!isTouch) editor.view.focus();
-  }, [editor, getPos, isTouch]);
+    if (!softPress.current) editor.view.focus();
+  }, [editor, getPos]);
+
+  // Arm the keyboard suppression as the press starts, while there is still
+  // time for it to count. Skipping focus below is not enough once the editor
+  // already holds it: on Android the tap itself re-raises the keyboard, and
+  // the keyboard takes the caret with it. See softKeyboard.ts.
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    softPress.current = e.pointerType !== 'mouse';
+    if (softPress.current) suppressSoftKeyboard(editor.view.dom);
+  }, [editor]);
+
+  // Focus is the default action of mousedown, and under a finger it is what
+  // raises the keyboard and lets the input method rewrite the selection.
+  // Refusing it here keeps the keyboard down for a gesture that only resizes
+  // or deletes a picture. The click still fires, and scrolling is unaffected
+  // because the browser decides that from touch-action before this runs.
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (softPress.current) e.preventDefault();
+  }, []);
 
   // Reset when the selection moves off this image, so the next note that opens
   // on an image shows the bar only after someone taps it.
@@ -415,13 +434,8 @@ const EncryptedImageView = memo(function EncryptedImageView({
             // Click, not pointerdown: a drag of the image never produces one,
             // so grabbing the node to move it does not also select it.
             onClick={handleSelect}
-            // Focus is the default action of mousedown, and on touch it is what
-            // raises the keyboard and lets the input method rewrite the
-            // selection. Refusing it here keeps the keyboard down for a gesture
-            // that only resizes or deletes a picture. The click above still
-            // fires, and scrolling is unaffected because the browser decides
-            // that from touch-action before this runs.
-            onMouseDown={isTouch ? (e) => e.preventDefault() : undefined}
+            onPointerDown={handlePointerDown}
+            onMouseDown={handleMouseDown}
           />
         )}
         {selected && objectUrl && !error && editor.isEditable && (

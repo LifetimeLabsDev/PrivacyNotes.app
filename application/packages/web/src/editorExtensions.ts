@@ -16,6 +16,7 @@ import { Fragment, type Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { Plugin, PluginKey, TextSelection, Selection } from '@tiptap/pm/state';
 import { selectionCell } from '@tiptap/pm/tables';
 import { isSoftKeyboardDevice, suppressSoftKeyboard } from './softKeyboard';
+import { mathNodeView } from './editorMath';
 
 /**
  * Text color support.
@@ -577,6 +578,11 @@ export const InlineMathWithMarkdown = InlineMath.extend({
     };
   },
 
+  /** Source editing in place - see mathNodeView. */
+  addNodeView() {
+    return mathNodeView({ block: false, katexOptions: this.options.katexOptions });
+  },
+
   /**
    * Single-dollar input rule, replacing the extension's own `$$x$$`.
    *
@@ -625,6 +631,11 @@ export const BlockMathWithMarkdown = BlockMath.extend({
         },
       },
     };
+  },
+
+  /** Source editing in place - see mathNodeView. */
+  addNodeView() {
+    return mathNodeView({ block: true, katexOptions: this.options.katexOptions });
   },
 
   /** Double-dollar input rule, replacing upstream's `$$$x$$$`. See the note on

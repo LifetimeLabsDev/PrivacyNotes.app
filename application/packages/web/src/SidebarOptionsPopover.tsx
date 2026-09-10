@@ -3,9 +3,6 @@ import { usePopoverPosition } from './usePopoverPosition';
 import { useEscapeToClose } from './useEscapeToClose';
 import { Check, type Icon } from './icons';
 import type { View } from './views';
-import { markdownSupport } from './markdownFolder/capability';
-import { PILLAR_GLYPHS } from './icons';
-import type { TFunction } from 'i18next';
 
 export interface SidebarOption {
   /** The view this row switches. Also the React key. */
@@ -97,41 +94,6 @@ export function SidebarOptionsPopover({
       ))}
     </div>
   );
-}
-
-/**
- * The rows both option surfaces offer, in sidebar order.
- *
- * 'home' is in neither list: All cannot be hidden (the collapsed rail's logo
- * goes there) and cannot be removed from itself. Markdown appears only where
- * the platform can open a folder, and never in the All list at all - those
- * files live on the user's disk and never enter the encrypted store.
- *
- * Takes a `t` bound to the SHELL namespace: the labels are the sidebar's own
- * strings, so a menu and the row beside it can never disagree in any language.
- * Spec: ops/docs/plans/sidebar-views.md
- */
-export function sidebarViewRows(t: TFunction): SidebarRow[] {
-  return [
-    { key: 'starred', label: t('tagsRail.pinned'), icon: PILLAR_GLYPHS.pinned },
-    { key: 'all', label: t('tagsRail.notes'), icon: PILLAR_GLYPHS.notes },
-    { key: 'tasks', label: t('tagsRail.tasks'), icon: PILLAR_GLYPHS.tasks },
-    { key: 'vault', label: t('tagsRail.vault'), icon: PILLAR_GLYPHS.vault },
-    { key: 'files', label: t('tagsRail.files'), icon: PILLAR_GLYPHS.files },
-    { key: 'journal', label: t('tagsRail.journals'), icon: PILLAR_GLYPHS.journals },
-    ...(markdownSupport() !== 'unavailable'
-      ? [{ key: 'markdown' as View, label: t('tagsRail.markdown'), icon: PILLAR_GLYPHS.markdown }]
-      : []),
-    { key: 'contacts', label: t('tagsRail.contacts'), icon: PILLAR_GLYPHS.contacts },
-    { key: 'bookmarks', label: t('tagsRail.bookmarks'), icon: PILLAR_GLYPHS.bookmarks },
-  ];
-}
-
-export type SidebarRow = { key: View; label: string; icon: SidebarOption['icon'] };
-
-/** The rows that can be switched off in the All list. */
-export function allViewRows(t: TFunction): SidebarRow[] {
-  return sidebarViewRows(t).filter((r) => r.key !== 'starred' && r.key !== 'markdown');
 }
 
 /**

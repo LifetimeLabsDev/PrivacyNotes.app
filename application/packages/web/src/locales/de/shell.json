@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "Alle",
-    "notes": "Notizen",
-    "tasks": "Aufgaben",
-    "vault": "Tresor",
-    "files": "Dateien",
-    "journals": "Tagebücher",
-    "pinned": "Angepinnt",
     "trash": "Papierkorb",
-    "markdown": "Markdown",
     "bookmarks": "Lesezeichen",
     "contacts": "Kontakte"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Sortieroptionen",
     "searchPlaceholder": "Dateien durchsuchen…",
     "sortName": "Name",
-    "showNotesWithAttachments": "Notizen mit Anhängen anzeigen",
+    "showNotesWithAttachments": "Dateien in Notizen anzeigen",
     "noMatches": "Keine Treffer.",
     "pinProtected": "PIN-geschützt",
     "readOnly": "Schreibgeschützt",
@@ -78,10 +70,11 @@
     "menuImages": "Bilder",
     "menuAudio": "Audio",
     "menuDocuments": "Dokumente",
-    "menuHideNoteAttachments": "Notizanhänge ausblenden",
-    "menuShowNoteAttachments": "Notizanhänge anzeigen",
+    "menuHideNoteAttachments": "Dateien in Notizen ausblenden",
+    "menuShowNoteAttachments": "Dateien in Notizen anzeigen",
     "menuUnpin": "Lösen",
     "menuPin": "Anpinnen",
+    "menuRename": "Umbenennen",
     "menuMoveToTrash": "In den Papierkorb"
   },
   "vaultItem": {
@@ -116,6 +109,26 @@
     "notesHeading": "Notizen",
     "fillOneField": "Fülle mindestens ein Feld aus, bevor du speicherst.",
     "expiryNeedsBoth": "Für den Ablauf braucht es Monat und Jahr, oder lass beide leer."
+  },
+  "fileTypes": {
+    "audio": "Audio",
+    "video": "Video",
+    "image": "Bild",
+    "pdf": "PDF",
+    "archive": "Archiv",
+    "document": "Dokument",
+    "spreadsheet": "Tabelle",
+    "file": "Datei",
+    "audioRecording": "Audioaufnahme",
+    "pdfDocument": "PDF-Dokument",
+    "attachment": "Dateianhang"
+  },
+  "noteRow": {
+    "noUsername": "Kein Benutzername",
+    "noCardholder": "Kein Karteninhaber",
+    "noLabel": "Keine Bezeichnung",
+    "files_one": "{{count}} Datei",
+    "files_other": "{{count}} Dateien"
   },
   "tagsRail": {
     "showAllItems": "Alle Einträge anzeigen",

@@ -57,13 +57,20 @@
     "bitwarden": "Unverschlüsselter .json-Export aus Bitwarden (Tools > Export vault > .json). Logins, Karten, SSH-Schlüssel, sichere Notizen und TOTP-Codes kommen alle mit.",
     "browserPasswords": "Die Passwort-Datei (.csv) aus Chrome, Edge, Brave, Opera, Vivaldi, Firefox oder Safari, oder die .zip, die Safari schreibt. Jede Zeile wird ein Login. Lösch die Datei, wenn du fertig bist - sie enthält deine Passwörter im Klartext."
   },
+  "sourceLabel": {
+    "privacynotes": "PrivacyNotes Vollbackup",
+    "browserBookmarks": "Browser-Lesezeichen",
+    "browserPasswords": "Browser-Passwörter",
+    "vcard": "Kontakte (vCard)",
+    "markdownFolder": "Markdown-Dateien"
+  },
   "vaultPick": {
     "intro": "Importiere Logins, Kreditkarten und SSH-Schlüssel aus einem anderen Passwortmanager."
   },
   "restorePick": {
     "intro": "Stelle ein PrivacyNotes-Backup wieder her, das du zuvor exportiert hast. Deine Datei wird lokal gelesen und entschlüsselt.",
     "fullBackupTitle": "Vollständiges Backup (.zip)",
-    "fullBackupDesc": "Stelle Notizen, Tagebücher, Tresor-Einträge, Aufgaben, Bilder, Audio und Dateien wieder her. Alles wird als neue Einträge importiert - vorhandene Daten werden nicht überschrieben.",
+    "fullBackupDesc": "Stelle Notizen, Tagebücher, Tresor-Einträge, Aufgaben, Bilder, Audio und Dateien wieder her. Eine Notiz, die du schon hast, bleibt erhalten oder wird aktualisiert, wenn das Backup eine neuere Fassung davon enthält.",
     "encryptedBackupTitle": "Verschlüsseltes Backup (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Stelle ein verschlüsseltes Backup mit deinem Phrasenschlüssel wieder her. Eine .pnbackupz-Datei bringt alles zurück, Dateien eingeschlossen; eine .pnbackup-Datei enthält nur Textinhalte und Metadaten. Du musst mit demselben Konto angemeldet sein, das es erstellt hat."
   },

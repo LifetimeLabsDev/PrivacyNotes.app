@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "全部",
-    "notes": "筆記",
-    "tasks": "任務",
-    "vault": "保險庫",
-    "files": "檔案",
-    "journals": "日誌",
-    "pinned": "已釘選",
     "trash": "垃圾桶",
-    "markdown": "Markdown",
     "bookmarks": "書籤",
     "contacts": "聯絡人"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "排序選項",
     "searchPlaceholder": "搜尋檔案…",
     "sortName": "名稱",
-    "showNotesWithAttachments": "顯示含附件的筆記",
+    "showNotesWithAttachments": "顯示筆記中的檔案",
     "noMatches": "沒有符合的結果。",
     "pinProtected": "PIN 碼保護",
     "readOnly": "唯讀",
@@ -78,10 +70,11 @@
     "menuImages": "圖片",
     "menuAudio": "音訊",
     "menuDocuments": "文書",
-    "menuHideNoteAttachments": "隱藏筆記附件",
-    "menuShowNoteAttachments": "顯示筆記附件",
+    "menuHideNoteAttachments": "隱藏筆記中的檔案",
+    "menuShowNoteAttachments": "顯示筆記中的檔案",
     "menuUnpin": "取消釘選",
     "menuPin": "釘選",
+    "menuRename": "重新命名",
     "menuMoveToTrash": "移至垃圾桶"
   },
   "vaultItem": {
@@ -116,6 +109,25 @@
     "notesHeading": "備註",
     "fillOneField": "儲存前至少填寫一個欄位。",
     "expiryNeedsBoth": "有效期限需要同時填月份與年份，或兩者都留空。"
+  },
+  "fileTypes": {
+    "audio": "音訊",
+    "video": "影片",
+    "image": "圖片",
+    "pdf": "PDF",
+    "archive": "壓縮檔",
+    "document": "文件",
+    "spreadsheet": "試算表",
+    "file": "檔案",
+    "audioRecording": "錄音檔",
+    "pdfDocument": "PDF 文件",
+    "attachment": "附件"
+  },
+  "noteRow": {
+    "noUsername": "無使用者名稱",
+    "noCardholder": "無持卡人",
+    "noLabel": "無標籤",
+    "files_other": "{{count}} 個檔案"
   },
   "tagsRail": {
     "showAllItems": "顯示所有項目",

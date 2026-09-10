@@ -19,6 +19,7 @@
       "callout": "O conjunto completo de avisos é uma funcionalidade Pro.",
       "totp": "Os códigos 2FA são uma funcionalidade Pro. Guarda uma chave de autenticação em qualquer login e vês o código rotativo ao lado da palavra-passe. A chave é guardada e sincronizada em todos os planos.",
       "replace": "Procurar e substituir é uma funcionalidade Pro. Passa para Pro e substitui uma ocorrência ou todas as ocorrências de uma nota de uma vez.",
+      "passphrase": "As frases-passe são uma funcionalidade Pro. Gera uma frase de palavras aleatórias, fácil de escrever e de dizer.",
       "default": "Um upgrade desbloqueia tudo o que está abaixo. Pagamento único."
     },
     "features": {

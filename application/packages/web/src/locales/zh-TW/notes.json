@@ -97,7 +97,8 @@
     "imageError": "圖片錯誤：{{error}}",
     "uploadFailedFor": "「{{filename}}」上傳失敗：{{error}}",
     "importedSyncing_other": "已匯入 {{count}} 篇筆記。同步中…",
-    "addedTag_other": "已將 #{{tag}} 加入 {{count}} 個項目"
+    "addedTag_other": "已將 #{{tag}} 加入 {{count}} 個項目",
+    "restoreSummary": "已還原。新增 {{added}} 個，更新 {{updated}} 個，{{unchanged}} 個已是最新。"
   },
   "burn": {
     "mediaOnly": "這篇筆記只包含媒體內容，無法透過 burn 連結分享。",

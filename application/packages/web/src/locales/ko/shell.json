@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "전체",
-    "notes": "노트",
-    "tasks": "할 일",
-    "vault": "보관함",
-    "files": "파일",
-    "journals": "저널",
-    "pinned": "고정됨",
     "trash": "휴지통",
-    "markdown": "Markdown",
     "bookmarks": "북마크",
     "contacts": "연락처"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "정렬 옵션",
     "searchPlaceholder": "파일 검색…",
     "sortName": "이름",
-    "showNotesWithAttachments": "첨부 파일이 있는 노트 표시",
+    "showNotesWithAttachments": "노트 안의 파일 표시",
     "noMatches": "일치하는 항목이 없어요.",
     "pinProtected": "PIN 보호됨",
     "readOnly": "읽기 전용",
@@ -78,10 +70,11 @@
     "menuImages": "이미지",
     "menuAudio": "오디오",
     "menuDocuments": "문서",
-    "menuHideNoteAttachments": "노트 첨부 파일 숨기기",
-    "menuShowNoteAttachments": "노트 첨부 파일 표시",
+    "menuHideNoteAttachments": "노트 안의 파일 숨기기",
+    "menuShowNoteAttachments": "노트 안의 파일 표시",
     "menuUnpin": "고정 해제",
     "menuPin": "고정",
+    "menuRename": "이름 바꾸기",
     "menuMoveToTrash": "휴지통으로 이동"
   },
   "vaultItem": {
@@ -116,6 +109,25 @@
     "notesHeading": "메모",
     "fillOneField": "저장하려면 최소 한 칸은 입력하세요.",
     "expiryNeedsBoth": "유효기간은 월과 연도를 모두 입력하거나 둘 다 비워 두세요."
+  },
+  "fileTypes": {
+    "audio": "오디오",
+    "video": "동영상",
+    "image": "이미지",
+    "pdf": "PDF",
+    "archive": "압축 파일",
+    "document": "문서",
+    "spreadsheet": "스프레드시트",
+    "file": "파일",
+    "audioRecording": "오디오 녹음",
+    "pdfDocument": "PDF 문서",
+    "attachment": "첨부 파일"
+  },
+  "noteRow": {
+    "noUsername": "사용자 이름 없음",
+    "noCardholder": "소유자 없음",
+    "noLabel": "라벨 없음",
+    "files_other": "파일 {{count}}개"
   },
   "tagsRail": {
     "showAllItems": "모든 항목 표시",

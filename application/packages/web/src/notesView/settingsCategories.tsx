@@ -18,7 +18,7 @@ import { isWeekJournal } from '../notesViewUtils';
 import type { View } from '../views';
 import type { SettingsCategory } from '../SettingsShell';
 import { siteHref } from '../siteLinks';
-import type { UserSettings } from '../userSettings';
+import { withCredentialChanges, type UserSettings } from '../userSettings';
 
 /**
  * Code-split a modal component while keeping its call sites identical.
@@ -122,7 +122,7 @@ export function buildSettingsCategories({
   exportVault: (ns: LocalNote[]) => Promise<void>;
   exportBookmarks: (ns: LocalNote[]) => Promise<void>;
   exportContacts: (ns: LocalNote[]) => Promise<void>;
-  importEncryptedBackup: (file: File) => Promise<number>;
+  importEncryptedBackup: (file: File) => Promise<{ imported: number; updated: number; unchanged: number }>;
   imageStoreRef: MutableRefObject<ImageStore | null>;
   attachmentStoreRef: MutableRefObject<AttachmentStore | null>;
   refresh: () => Promise<LocalNote[]>;
@@ -203,11 +203,16 @@ export function buildSettingsCategories({
                       console.warn('[attachmentStore] post-restore processPendingUploads failed:', err),
                     );
                   }}
-                  onImported={async (count, skippedDuplicates) => {
+                  onImported={async (count, skippedDuplicates, repaired) => {
+                    // A restore of our own backup mostly matches what the
+                    // vault already holds, so "imported N" would be true and
+                    // useless. Say what it did to the notes it recognised.
                     setImportToast(
-                      skippedDuplicates
-                        ? `${t('toast.importedSyncing', { count })} ${t('shell:bookmarks.importSkipped', { count: skippedDuplicates })}`
-                        : t('toast.importedSyncing', { count }),
+                      repaired && (repaired.updated > 0 || repaired.unchanged > 0)
+                        ? t('toast.restoreSummary', { added: count, updated: repaired.updated, unchanged: repaired.unchanged })
+                        : skippedDuplicates
+                          ? `${t('toast.importedSyncing', { count })} ${t('shell:bookmarks.importSkipped', { count: skippedDuplicates })}`
+                          : t('toast.importedSyncing', { count }),
                     );
                     mutateSettings((prev) =>
                       prev.importHintDismissed ? prev : { ...prev, importHintDismissed: true },
@@ -285,9 +290,13 @@ export function buildSettingsCategories({
                   onPinTimeoutChange={(minutes) => {
                     mutateSettings((prev) => ({ ...prev, pinTimeoutMinutes: minutes }));
                   }}
+                  appLockTimeoutMinutes={userSettings.appLockTimeoutMinutes}
+                  onAppLockTimeoutChange={(minutes) => {
+                    mutateSettings((prev) => ({ ...prev, appLockTimeoutMinutes: minutes }));
+                  }}
                   userSettings={userSettings}
-                  onSettingsChange={(next) => {
-                    mutateSettings(() => next);
+                  onSettingsChange={(next, base) => {
+                    mutateSettings((prev) => withCredentialChanges(prev, base, next));
                   }}
                   onClose={() => setShowSettings(false)}
                   pubkey={auth.pubkey}
@@ -328,6 +337,8 @@ export function buildSettingsCategories({
                   hiddenViews={userSettings.hiddenViews}
                   hiddenInAll={userSettings.hiddenInAll}
                   onToggleHidden={onToggleHiddenView}
+                  startView={userSettings.startView}
+                  onStartViewChange={(next) => mutateSettings((prev) => ({ ...prev, startView: next }))}
                   onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: 'theme' }); }}
                   onClose={() => setShowSettings(false)}
                 />

@@ -99,7 +99,8 @@
     "importedSyncing_one": "{{count}} not içe aktarıldı. Eşitleniyor…",
     "importedSyncing_other": "{{count}} not içe aktarıldı. Eşitleniyor…",
     "addedTag_one": "#{{tag}} etiketi {{count}} öğeye eklendi",
-    "addedTag_other": "#{{tag}} etiketi {{count}} öğeye eklendi"
+    "addedTag_other": "#{{tag}} etiketi {{count}} öğeye eklendi",
+    "restoreSummary": "Geri yüklendi. {{added}} eklendi, {{updated}} güncellendi, {{unchanged}} zaten güncel."
   },
   "burn": {
     "mediaOnly": "Bu not yalnızca medya içeriyor ve yakma bağlantısıyla paylaşılamaz.",

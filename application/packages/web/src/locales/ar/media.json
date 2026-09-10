@@ -16,6 +16,10 @@
   },
   "attachment": {
     "fallbackName": "مرفق",
+    "rename": "إعادة تسمية",
+    "renamePlaceholder": "اسم الملف",
+    "saveName": "حفظ الاسم",
+    "seek": "موضع التشغيل",
     "imageAlt": "صورة",
     "cantPlay": "تعذّر التشغيل. نزّل للاستماع",
     "downloadingStatus": "جارٍ التنزيل...",

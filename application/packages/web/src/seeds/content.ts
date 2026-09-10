@@ -10,7 +10,7 @@
  * The frontmatter keys are documented in `./index.ts`.
  */
 
-import i18n, { normalizeLocale } from '../i18n';
+import { activeLocale, normalizeLocale } from '../i18n';
 import type { SeedDoc, SeedType } from './index';
 
 /**
@@ -133,7 +133,7 @@ const EN_DOCS: SeedDoc[] = sortDocs(
  * file cannot accidentally re-file a note or change its identity.
  */
 export async function resolveSeeds(tag?: string): Promise<SeedDoc[]> {
-  const locale = normalizeLocale(tag ?? i18n.resolvedLanguage ?? i18n.language);
+  const locale = tag ? normalizeLocale(tag) : activeLocale();
   if (locale === 'en') return EN_DOCS;
 
   return Promise.all(

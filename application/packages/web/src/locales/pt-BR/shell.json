@@ -1,14 +1,6 @@
 {
   "pillars": {
-    "allItems": "Todos",
-    "notes": "Notas",
-    "tasks": "Tarefas",
-    "vault": "Cofre",
-    "files": "Arquivos",
-    "journals": "Diários",
-    "pinned": "Fixados",
     "trash": "Lixeira",
-    "markdown": "Markdown",
     "bookmarks": "Marcadores",
     "contacts": "Contatos"
   },
@@ -61,7 +53,7 @@
     "sortOptions": "Opções de ordenação",
     "searchPlaceholder": "Buscar arquivos…",
     "sortName": "Nome",
-    "showNotesWithAttachments": "Mostrar notas com anexos",
+    "showNotesWithAttachments": "Mostrar arquivos dentro das notas",
     "noMatches": "Nenhum resultado.",
     "pinProtected": "Protegido por PIN",
     "readOnly": "Somente leitura",
@@ -78,10 +70,11 @@
     "menuImages": "Imagens",
     "menuAudio": "Áudio",
     "menuDocuments": "Documentos",
-    "menuHideNoteAttachments": "Ocultar anexos de notas",
-    "menuShowNoteAttachments": "Mostrar anexos de notas",
+    "menuHideNoteAttachments": "Ocultar arquivos dentro das notas",
+    "menuShowNoteAttachments": "Mostrar arquivos dentro das notas",
     "menuUnpin": "Desafixar",
     "menuPin": "Fixar",
+    "menuRename": "Renomear",
     "menuMoveToTrash": "Mover para a Lixeira"
   },
   "vaultItem": {
@@ -116,6 +109,26 @@
     "notesHeading": "Notas",
     "fillOneField": "Preencha pelo menos um campo antes de salvar.",
     "expiryNeedsBoth": "A validade precisa de mês e ano, ou deixe os dois em branco."
+  },
+  "fileTypes": {
+    "audio": "Áudio",
+    "video": "Vídeo",
+    "image": "Imagem",
+    "pdf": "PDF",
+    "archive": "Compactado",
+    "document": "Documento",
+    "spreadsheet": "Planilha",
+    "file": "Arquivo",
+    "audioRecording": "Gravação de áudio",
+    "pdfDocument": "Documento PDF",
+    "attachment": "Anexo"
+  },
+  "noteRow": {
+    "noUsername": "Sem nome de usuário",
+    "noCardholder": "Sem titular",
+    "noLabel": "Sem rótulo",
+    "files_one": "{{count}} arquivo",
+    "files_other": "{{count}} arquivos"
   },
   "tagsRail": {
     "showAllItems": "Mostrar todos os itens",

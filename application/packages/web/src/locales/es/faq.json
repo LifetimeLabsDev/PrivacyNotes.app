@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "¿Qué se sincroniza exactamente entre mis dispositivos y qué se queda en local?",
       "a": [
-        "Todo lo que esperarías, cada cosa cifrada en tu dispositivo antes de sincronizarse: notas, tareas, entradas de diario, tu bóveda y los archivos cifrados que contiene. Tus ajustes también te siguen - etiquetas favoritas, preferencias de orden y vista, tema de color, tu PIN (como hash con sal, nunca el PIN en sí), bloqueo de la app, configuración de registros y medicación, y el vaciado automático de la papelera. Configúralo una vez y cada dispositivo lo adopta.",
+        "Todo lo que esperarías, y todo ello cifrado en tu dispositivo: notas, tareas, entradas de diario, tu bóveda y los archivos que contiene. Tus ajustes también te siguen - etiquetas favoritas, preferencias de orden y vista, tema de color, tu PIN (como hash con sal, nunca el PIN en sí), bloqueo de la app, configuración de registros y medicación, y el vaciado automático de la papelera. Configúralo una vez y cada dispositivo lo adopta.",
         "Unas pocas cosas se quedan a propósito en cada dispositivo: modo claro u oscuro (cada dispositivo sigue su propio ajuste del sistema), desbloqueo biométrico (ligado al hardware de cada equipo) y tu estado de desbloqueo (cerrar la app siempre vuelve a bloquear). El servidor solo almacena blobs cifrados y no puede leer nada de ello."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Sí. Los marcadores son un pilar propio en la barra lateral, junto a notas, tareas y diarios, y son gratis en todos los planes. Pega un enlace en la barra de añadido rápido para guardar uno. Para traer los tuyos, exporta un archivo de marcadores (.html) desde tu navegador y suéltalo en Ajustes > Import & Export > Importar > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave y Vivaldi contienen el mismo archivo, y tus carpetas y fechas vienen con él. Safari lo envuelve en un .zip, que puedes soltar sin abrirlo.",
         "Tus direcciones nunca salen de tu dispositivo: no cargamos la página que hay detrás de un enlace, y por eso un marcador que añades a mano lleva su dominio como nombre hasta que escribes uno. Los iconos de sitio son la única excepción, y puedes desactivarlos. La exportación escribe el mismo archivo estándar, así que tus marcadores se van tan fácil como llegaron ([guía de importación](/es/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "¿Puedo tener una agenda de contactos en PrivacyNotes?",
+      "a": [
+        "Sí. Los contactos son un pilar propio en la barra lateral, junto a notas, tareas y diarios, y son gratis en todos los planes. Una ficha reúne nombres, números, correos, direcciones, webs, fechas, una empresa y una nota. Toca un número para llamar, un correo para escribir o cualquier fila para copiarla. Todo lo demás que tu teléfono escribió en el archivo queda bajo **También en este archivo** y se vuelve a escribir al exportar.",
+        "Para traer los tuyos, exporta una vCard (.vcf) desde tu teléfono, tu Mac o Google Contacts y suéltala en Ajustes > Import & Export > Importar > \"Contacts (vCard)\". Si más adelante sueltas el mismo archivo, las personas que ya están se reconocen en vez de duplicarse. La exportación escribe una vCard estándar, así que tu agenda sale tan fácil como entró ([más sobre importar](/es/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "¿Qué conviene guardar en Marcadores, Contactos y la Bóveda?",
+      "a": [
+        "Las partes de tu vida que no pintan nada en un perfil de navegador ni en la agenda del teléfono. Marcadores, contactos y la bóveda se colocan al lado de los que tu navegador y tu teléfono ya sincronizan con Google, Apple o Mozilla, y guardan lo que prefieres dejar fuera. Los tres son gratis en todos los planes.",
+        "- Enlaces sobre salud, dinero, temas legales o una búsqueda de trabajo, en un ordenador que compartes con alguien\n- La documentación de un tema, junta en vez de enterrada entre miles de marcadores del navegador\n- El médico, la abogada, la casera y el reclutador, fuera de una agenda que se sincroniza con iCloud o Google\n- Un contacto con su contexto: tus notas, las fechas, el archivo que te envió\n- Frases de recuperación, claves de licencia, códigos de caja fuerte y números de pasaporte, secretos que no son inicios de sesión\n- Las pocas credenciales que nunca quieres dentro de una extensión del navegador",
+        "Cada uno es una fila de la barra lateral. Si falta alguna, abre las opciones de la barra lateral encima de tus etiquetas y activa **Mostrar en la barra lateral**. Traes los tuyos desde un archivo y los sacas igual ([marcadores](/es/help/bookmarks/), [contactos](/es/help/contacts/), [la bóveda](/es/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

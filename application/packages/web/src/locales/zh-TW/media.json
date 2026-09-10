@@ -16,6 +16,10 @@
   },
   "attachment": {
     "fallbackName": "附件",
+    "rename": "重新命名",
+    "renamePlaceholder": "檔案名稱",
+    "saveName": "儲存名稱",
+    "seek": "播放位置",
     "imageAlt": "圖片",
     "cantPlay": "無法播放，請下載後聆聽",
     "downloadingStatus": "下載中…",

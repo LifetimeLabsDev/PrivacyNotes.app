@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "Was genau wird zwischen meinen Geräten synchronisiert, und was bleibt lokal?",
       "a": [
-        "Alles, was du erwarten würdest, jeweils auf deinem Gerät verschlüsselt, bevor es synchronisiert wird: Notizen, Aufgaben, Tagebucheinträge, dein Tresor und die verschlüsselten Dateien darin. Auch deine Einstellungen reisen mit - favorisierte Tags, Sortier- und Ansichtsvorlieben, Farbschema, deine PIN (als gesalzener Hash, nie die PIN selbst), App-Sperre, Tracker- und Medikamenten-Setup und das automatische Leeren des Papierkorbs. Einmal einrichten, jedes Gerät übernimmt es.",
+        "Alles, was du erwarten würdest, und alles davon auf deinem Gerät verschlüsselt: Notizen, Aufgaben, Tagebucheinträge, dein Tresor und die Dateien darin. Auch deine Einstellungen reisen mit - favorisierte Tags, Sortier- und Ansichtsvorlieben, Farbschema, deine PIN (als gesalzener Hash, nie die PIN selbst), App-Sperre, Tracker- und Medikamenten-Setup und das automatische Leeren des Papierkorbs. Einmal einrichten, jedes Gerät übernimmt es.",
         "Ein paar Dinge bleiben bewusst gerätelokal: heller oder dunkler Modus (jedes Gerät folgt seiner eigenen Systemeinstellung), biometrisches Entsperren (an die Hardware jedes Geräts gebunden) und dein Entsperr-Zustand (die App sperrt sich beim Schließen immer wieder). Der Server speichert immer nur verschlüsselte Blobs und kann nichts davon lesen."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Ja. Lesezeichen sind eine eigene Säule in der Seitenleiste, neben Notizen, Aufgaben und Tagebüchern, und sie sind in jedem Tarif kostenlos. Füge einen Link über die Schnelleingabe hinzu. Deine vorhandenen bringst du mit: Exportiere eine Lesezeichen-Datei (.html) aus deinem Browser und lege sie unter Einstellungen > Import & Export > Import > \"Browser bookmarks\" ab. Chrome, Firefox, Safari, Edge, Opera, Brave und Vivaldi enthalten dieselbe Datei, und Ordner und Daten kommen mit. Safari packt sie in eine .zip, die du ungeöffnet ablegen kannst.",
         "Deine Adressen verlassen dein Gerät nie: Wir rufen die Seite hinter einem Link nicht ab, deshalb trägt ein selbst angelegtes Lesezeichen die Domain als Namen, bis du einen eingibst. Website-Symbole sind die einzige Ausnahme, und du kannst sie abschalten. Der Export schreibt dieselbe Standarddatei, deine Lesezeichen gehen also genauso leicht wieder ([Import-Anleitung](/de/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "Kann ich ein Adressbuch in PrivacyNotes führen?",
+      "a": [
+        "Ja. Kontakte sind eine eigene Säule in der Seitenleiste, neben Notizen, Aufgaben und Tagebüchern, und sie sind in jedem Tarif kostenlos. Ein Kontakt fasst Namen, Nummern, E-Mail-Adressen, Anschriften, Websites, Daten, eine Firma und eine Notiz. Tippe auf eine Nummer, um sie zu wählen, auf eine E-Mail-Adresse, um zu schreiben, oder auf eine beliebige Zeile, um sie zu kopieren. Alles andere, was dein Telefon in die Datei geschrieben hat, bleibt unter **Auch in dieser Datei** und wird beim Export zurückgeschrieben.",
+        "Deine vorhandenen bringst du mit: Exportiere eine vCard (.vcf) von deinem Telefon, deinem Mac oder aus Google Contacts und lege sie unter Einstellungen > Import & Export > Import > \"Contacts (vCard)\" ab. Legst du dieselbe Datei später erneut ab, werden bereits vorhandene Personen erkannt statt verdoppelt. Der Export schreibt eine normale vCard zurück, also verlässt dein Adressbuch die App so leicht, wie es hereinkam ([mehr zum Import](/de/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "Was gehört in Lesezeichen, Kontakte und den Tresor?",
+      "a": [
+        "Die Teile deines Lebens, die nicht in ein Browserprofil oder in ein Telefon-Adressbuch gehören. Lesezeichen, Kontakte und der Tresor stehen neben denen, die dein Browser und dein Telefon längst zu Google, Apple oder Mozilla synchronisieren, und sie halten das, was du da lieber heraushältst. Alle drei sind in jedem Tarif kostenlos.",
+        "- Links zu Gesundheit, Geld, Recht oder Jobsuche, auf einem Rechner, den du mit jemandem teilst\n- Recherche zu einem Thema, beisammen statt verstreut zwischen Tausenden Browser-Lesezeichen\n- Die Ärztin, der Anwalt, die Vermieterin und der Recruiter, außerhalb eines Adressbuchs, das zu iCloud oder Google synchronisiert\n- Ein Kontakt mit allem drumherum: deine Notizen, die Daten, die Datei, die er dir geschickt hat\n- Wiederherstellungsphrasen, Lizenzschlüssel, Tresorcodes und Passnummern, also Geheimnisse, die keine Logins sind\n- Die paar Zugangsdaten, die du nie in einer Browser-Erweiterung haben willst",
+        "Jede davon ist eine Zeile in der Seitenleiste. Fehlt eine, öffne die Seitenleisten-Optionen über deinen Tags und schalte dort **In der Seitenleiste anzeigen** ein. Deine vorhandenen Einträge bringst du aus einer Datei mit und nimmst sie genauso wieder mit ([Lesezeichen](/de/help/bookmarks/), [Kontakte](/de/help/contacts/), [der Tresor](/de/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

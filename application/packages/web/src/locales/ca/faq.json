@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "Què se sincronitza exactament entre els meus dispositius, i què es queda en local?",
       "a": [
-        "Tot el que esperaries, sempre xifrat al teu dispositiu abans de sincronitzar-se: notes, tasques, entrades del diari, la caixa forta i els fitxers xifrats que hi ha dins. La teva configuració també et segueix - etiquetes preferides, preferències d'ordre i de vista, tema de color, el PIN (com a hash amb sal, mai el PIN en si), bloqueig de l'aplicació, configuració dels seguiments i de la medicació, i la supressió automàtica de la paperera. Configura-ho un cop i tots els dispositius ho recullen.",
+        "Tot el que esperaries, i tot plegat xifrat al teu dispositiu: notes, tasques, entrades del diari, la caixa forta i els fitxers que hi ha dins. La teva configuració també et segueix - etiquetes preferides, preferències d'ordre i de vista, tema de color, el PIN (com a hash amb sal, mai el PIN en si), bloqueig de l'aplicació, configuració dels seguiments i de la medicació, i la supressió automàtica de la paperera. Configura-ho un cop i tots els dispositius ho recullen.",
         "Unes quantes coses es queden expressament en local a cada dispositiu: el mode clar o fosc (cada dispositiu segueix la preferència del seu propi sistema), el desbloqueig biomètric (lligat al maquinari de cada dispositiu) i l'estat de desbloqueig (en tancar l'aplicació, sempre es torna a bloquejar). El servidor només emmagatzema blobs xifrats i no en pot llegir res."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Sí. Les adreces d’interès són un pilar propi a la barra lateral, al costat de les notes, les tasques i els diaris, i són gratuïtes en qualsevol pla. Enganxa un enllaç a la barra d’afegit ràpid per desar-ne una. Per portar les teves, exporta un fitxer d’adreces (.html) del navegador i deixa’l anar a Configuració > Import & Export > Importa > \"Browser bookmarks\". El Chrome, el Firefox, el Safari, l’Edge, l’Opera, el Brave i el Vivaldi contenen el mateix fitxer, i les carpetes i les dates hi vénen incloses. El Safari l’embolcalla en un .zip, que pots deixar anar sense obrir-lo.",
         "Les teves adreces no surten mai del teu dispositiu: no carreguem la pàgina que hi ha darrere d’un enllaç, i per això una adreça que afegeixes a mà porta el domini com a nom fins que n’escrius un. Les icones dels llocs són l’única excepció, i les pots desactivar. L’exportació escriu el mateix fitxer estàndard, així que les teves adreces marxen amb la mateixa facilitat ([guia d’importació](/ca/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "Puc tenir una llibreta d’adreces a PrivacyNotes?",
+      "a": [
+        "Sí. Els contactes són un pilar propi a la barra lateral, al costat de les notes, les tasques i els diaris, i són gratuïts en qualsevol pla. Una fitxa recull noms, números, adreces electròniques, adreces, llocs web, dates, una empresa i una nota. Toca un número per trucar, una adreça electrònica per escriure, o qualsevol fila per copiar-la. Tota la resta que el telèfon va escriure al fitxer queda sota **També en aquest fitxer** i es torna a escriure quan exportes.",
+        "Per portar els teus, exporta una vCard (.vcf) del telèfon, del Mac o de Google Contacts i deixa-la anar a Configuració > Import & Export > Importa > \"Contacts (vCard)\". Si més endavant hi deixes anar el mateix fitxer, les persones que ja hi són es reconeixen en comptes de duplicar-se. L’exportació escriu una vCard estàndard, així que la teva llibreta en surt tan fàcilment com hi va entrar ([més sobre importar](/ca/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "Què val la pena desar a Marcadors, Contactes i la Caixa forta?",
+      "a": [
+        "Les parts de la teva vida que no pinten res en un perfil de navegador ni a la llibreta d’adreces d’un telèfon. Els marcadors, els contactes i la caixa forta es posen al costat dels que el navegador i el telèfon ja sincronitzen amb Google, Apple o Mozilla, i guarden allò que prefereixes deixar fora. Tots tres són gratuïts en qualsevol pla.",
+        "- Enllaços sobre salut, diners, dret o una cerca de feina, en un ordinador que comparteixes amb algú\n- La documentació d’un tema, junta en comptes d’enterrada entre milers de marcadors del navegador\n- El metge, l’advocada, la propietària i el reclutador, fora d’una llibreta que se sincronitza amb l’iCloud o Google\n- Un contacte amb el context al voltant: les teves notes, les dates, el fitxer que et va enviar\n- Frases de recuperació, claus de llicència, codis de caixa forta i números de passaport, secrets que no són credencials\n- Les poques credencials que no vols mai dins d’una extensió del navegador",
+        "Cadascun és una fila de la barra lateral. Si en falta una, obre les opcions de la barra lateral sobre les etiquetes i activa **Mostra a la barra lateral**. Els teus els portes des d’un fitxer i els en treus igual ([marcadors](/ca/help/bookmarks/), [contactes](/ca/help/contacts/), [la caixa forta](/ca/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

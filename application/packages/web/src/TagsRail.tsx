@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePointMenuPosition } from './usePopoverPosition';
 import { VERSION } from './version';
@@ -7,15 +7,15 @@ import { Brand } from './Brand';
 import { HoverLabel } from './HoverLabel';
 import { SortRow } from './ListPrefsPopover';
 import { useEscapeToClose } from './useEscapeToClose';
-import { SidebarOptionsPopover, allViewRows, sidebarViewRows } from './SidebarOptionsPopover';
+import { SidebarOptionsPopover } from './SidebarOptionsPopover';
+import { allViewRows, sidebarViewRows } from './viewRows';
 import { TAG_MAX_LENGTH } from './notesRepo';
 import type { UserSettings } from './userSettings';
 import type { FolderDef } from './folders';
 import { FolderTree, type FolderTreeProps } from './FolderTree';
 import type { FolderSortDir, FolderSortField } from './folders';
 import { IconUpgrade } from './UpgradeModal';
-import { Star, Hash, DotsThree, PencilSimple, Trash, X, CaretDown, SquaresFour, List, Sparkle, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Files, Book, Notebook, FunnelSimple, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, type Icon, PILLAR_GLYPHS } from './icons';
-import { markdownSupport } from './markdownFolder/capability';
+import { Star, Hash, DotsThree, PencilSimple, Trash, X, CaretDown, SquaresFour, List, Sparkle, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, type Icon, PILLAR_GLYPHS } from './icons';
 import { isViewShown, type View } from './views';
 import { exemptOpts } from './i18nExempt';
 import { SIDEBAR_ACTIVE } from './sidebarUI';
@@ -60,15 +60,12 @@ export interface TagsRailProps {
   viewsCollapsed: boolean;
   setViewsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 
-  // Counts
-  activeNotesCount: number;
-  openTaskCount: number;
-  vaultCount: number;
-  bookmarksCount: number;
-  contactsCount: number;
-  filesCount: number;
-  journalCount: number;
-  starredCount: number;
+  /** Item count per pillar row, looked up by view. An absent entry draws no
+   *  count at all, which is not the same as a zero: the Markdown pillar scans
+   *  nothing until a folder is chosen, and a "0" there would read as an empty
+   *  folder rather than an unconfigured one.
+   *  Spec: ops/docs/plans/start-view.md (one counts object) */
+  viewCounts: Partial<Record<View, number>>;
   trashedCount: number;
 
   // Tag counts + tag lists
@@ -149,11 +146,6 @@ export interface TagsRailProps {
 
   // Mobile tab index
   mobileTabIndex: number | undefined;
-
-  /** Files in the open Markdown folder, or undefined when none is open - the
-   *  count is omitted rather than shown as 0, which would read as an empty
-   *  folder instead of an unconfigured pillar. */
-  markdownCount?: number | undefined;
 
   /** Replaces everything below the view list when the Markdown pillar is open.
    *  Passed as an element so this file never learns what a Markdown folder is,
@@ -261,14 +253,7 @@ export function TagsRail(props: TagsRailProps) {
     onRate,
     viewsCollapsed,
     setViewsCollapsed,
-    activeNotesCount,
-    openTaskCount,
-    vaultCount,
-    bookmarksCount,
-    contactsCount,
-    filesCount,
-    journalCount,
-    starredCount,
+    viewCounts,
     trashedCount,
     tagCounts,
     favoriteTagsList,
@@ -317,7 +302,6 @@ export function TagsRail(props: TagsRailProps) {
     onToggleHidden,
     setImportExportModal,
     mobileTabIndex,
-    markdownCount,
     markdownRail,
   } = props;
 
@@ -736,171 +720,56 @@ export function TagsRail(props: TagsRailProps) {
             />
           )}
         </div>
-        {/* Pinned hides at zero (same rule as Untagged further down) - an empty
-            list is a row of dead menu space. It stays while it IS the current
-            view so unpinning the last note doesn't yank the row you're standing
-            on out from under you. */}
-        {showRow('starred') && (starredCount > 0 || view === 'starred') && (
-        <button
-          onClick={() => handleSelectView('starred')}
-          className={viewBtnClass(view === 'starred')}
-        >
-          <span className="flex items-center gap-2">
-            <span className="text-accent inline-flex">
-              <PILLAR_GLYPHS.pinned size={16} />
-            </span>
-            {t('tagsRail.pinned')}
-          </span>
-          <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
-            {starredCount}
-          </span>
-        </button>
-        )}
-        {showRow('all') && (
-          <button
-            onClick={() => handleSelectView('all')}
-            className={viewBtnClass(view === 'all')}
-          >
-            <span className="flex items-center gap-2">
-              <span className="text-accent inline-flex">
-                <PILLAR_GLYPHS.notes size={16} />
-              </span>
-              {t('tagsRail.notes')}
-            </span>
-            <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
-              {activeNotesCount}
-            </span>
-          </button>
-        )}
-        {showRow('tasks') && (
-          <button
-            onClick={() => handleSelectView('tasks')}
-            className={viewBtnClass(view === 'tasks')}
-          >
-            <span className="flex items-center gap-2">
-              <span className="text-accent inline-flex">
-                <PILLAR_GLYPHS.tasks size={16} />
-              </span>
-              {t('tagsRail.tasks')}
-            </span>
-            <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
-              {openTaskCount}
-            </span>
-          </button>
-        )}
-        {showRow('vault') && (
-          <button
-            onClick={() => handleSelectView('vault')}
-            className={viewBtnClass(view === 'vault')}
-          >
-            <span className="flex items-center gap-2">
-              <span className="text-accent inline-flex">
-                <PILLAR_GLYPHS.vault size={16} />
-              </span>
-              {t('tagsRail.vault')}
-            </span>
-            <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
-              {vaultCount}
-            </span>
-          </button>
-        )}
-        {showRow('files') && (
-          <button
-            onClick={() => handleSelectView('files')}
-            className={viewBtnClass(view === 'files')}
-          >
-            <span className="flex items-center gap-2">
-              <span className="text-accent inline-flex">
-                <PILLAR_GLYPHS.files size={16} />
-              </span>
-              {t('tagsRail.files')}
-            </span>
-            <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
-              {filesCount}
-            </span>
-          </button>
-        )}
-        {showRow('journal') && (
-          <button
-            onClick={() => handleSelectView('journal')}
-            className={viewBtnClass(view === 'journal')}
-          >
-            <span className="flex items-center gap-2">
-              <span className="text-accent inline-flex">
-                <PILLAR_GLYPHS.journals size={16} />
-              </span>
-              {t('tagsRail.journals')}
-            </span>
-            <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
-              {journalCount}
-            </span>
-          </button>
-        )}
-        {/* Plain-text files on the user's own disk. Hidden entirely where no
-            filesystem API exists and no desktop build can be offered (phones);
-            on a desktop browser without the API it stays visible and its empty
-            state sells the app, because hiding it just produces "where is it"
-            once one user tells another. No count: nothing is scanned until a
-            folder is chosen, and a "0" would read as an empty folder rather
-            than an unconfigured one. */}
-        {markdownSupport() !== 'unavailable' && showRow('markdown') && (
-          // `above`, and it is the only one that works here. The VIEWS list is
-          // `overflow-y-auto`, and CSS forces overflow-x to `auto` with it, so
-          // the container clips on BOTH axes. Measured against its box: `end`
-          // overhangs the right edge and `below` overhangs the bottom (this row
-          // is the last one), while `above` sits fully inside. HoverLabel's own
-          // Trap 2, and the reason the fix is a position rather than a z-index.
-          <HoverLabel label={t('tagsRail.markdownTip')} position="above" className="flex">
+        {/* Every pillar row is drawn from one shared list, so a reworded label
+            or a new pillar reaches this rail, the collapsed strip, the phone
+            switcher and both option menus at once. Three rows carry something
+            of their own and keep it inside the loop; the rest are icon, label
+            and count. All is not here at all - it sits above with the funnel,
+            and the shared list leaves it out because it cannot be hidden from
+            itself.
+            Spec: ops/docs/plans/start-view.md (one row list, one label namespace) */}
+        {sidebarViewRows(t).map((r) => {
+          if (!showRow(r.key)) return null;
+          // Pinned hides at zero (same rule as Untagged further down) - an
+          // empty list is a row of dead menu space. It stays while it IS the
+          // current view so unpinning the last note doesn't yank the row
+          // you're standing on out from under you.
+          if (r.key === 'starred' && !(viewCounts.starred ?? 0) && view !== 'starred') return null;
+          const count = viewCounts[r.key];
+          const row = (
             <button
-              onClick={() => handleSelectView('markdown')}
-              className={viewBtnClass(view === 'markdown')}
+              onClick={() => handleSelectView(r.key)}
+              className={viewBtnClass(view === r.key)}
             >
               <span className="flex items-center gap-2">
                 <span className="text-accent inline-flex">
-                  <PILLAR_GLYPHS.markdown size={16} />
+                  <r.icon size={16} />
                 </span>
-                {t('tagsRail.markdown')}
+                {r.label}
               </span>
-              {markdownCount !== undefined && (
+              {count !== undefined && (
                 <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
-                  {markdownCount}
+                  {count}
                 </span>
               )}
             </button>
-          </HoverLabel>
-        )}
-        {showRow('contacts') && (
-          <button
-            onClick={() => handleSelectView('contacts')}
-            className={viewBtnClass(view === 'contacts')}
-          >
-            <span className="flex items-center gap-2">
-              <span className="text-accent inline-flex">
-                <PILLAR_GLYPHS.contacts size={16} />
-              </span>
-              {t('tagsRail.contacts')}
-            </span>
-            <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
-              {contactsCount}
-            </span>
-          </button>
-        )}
-        {showRow('bookmarks') && (
-          <button
-            onClick={() => handleSelectView('bookmarks')}
-            className={viewBtnClass(view === 'bookmarks')}
-          >
-            <span className="flex items-center gap-2">
-              <span className="text-accent inline-flex">
-                <PILLAR_GLYPHS.bookmarks size={16} />
-              </span>
-              {t('tagsRail.bookmarks')}
-            </span>
-            <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
-              {bookmarksCount}
-            </span>
-          </button>
-        )}
+          );
+          // The Markdown row explains itself, and `above` is the only position
+          // that works here. This list is `overflow-y-auto`, and CSS forces
+          // overflow-x to `auto` with it, so the container clips on BOTH axes.
+          // Measured against its box: `end` overhangs the right edge and
+          // `below` overhangs the bottom (this row is the last one), while
+          // `above` sits fully inside. HoverLabel's own Trap 2, and the reason
+          // the fix is a position rather than a z-index.
+          if (r.key === 'markdown') {
+            return (
+              <HoverLabel key={r.key} label={t('tagsRail.markdownTip')} position="above" className="flex">
+                {row}
+              </HoverLabel>
+            );
+          }
+          return <Fragment key={r.key}>{row}</Fragment>;
+        })}
         </div>
         )}
       </div>

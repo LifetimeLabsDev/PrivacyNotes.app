@@ -19,6 +19,7 @@
       "callout": "Der vollständige Satz an Hinweisboxen ist eine Pro-Funktion.",
       "totp": "2FA-Codes sind eine Pro-Funktion. Speichere einen Authenticator-Schlüssel bei jedem Login und du bekommst den wechselnden Code direkt neben dem Passwort. Der Schlüssel selbst wird in jedem Tarif gespeichert und synchronisiert.",
       "replace": "Suchen und Ersetzen ist eine Pro-Funktion. Rüste auf, um einen Treffer oder alle Treffer einer Notiz auf einmal zu ersetzen.",
+      "passphrase": "Passphrasen sind eine Pro-Funktion. Erzeuge eine Phrase aus zufälligen Wörtern, die sich leicht tippen und aussprechen lässt.",
       "default": "Ein Upgrade schaltet alles unten frei. Einmalzahlung."
     },
     "features": {

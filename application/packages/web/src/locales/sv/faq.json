@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "Vad exakt synkas mellan mina enheter, och vad stannar lokalt?",
       "a": [
-        "Allt du skulle förvänta dig, krypterat på din enhet innan det synkas: anteckningar, uppgifter, dagboksinlägg, ditt valv och de krypterade filerna i det. Dina inställningar följer också med - favorittaggar, sorterings- och vyval, färgtema, din PIN (som en saltad hash, aldrig själva PIN-koden), applås, uppsättning av mätvärden och mediciner samt automatisk tömning av papperskorgen. Ställ in något en gång så plockar varje enhet upp det.",
+        "Allt du skulle förvänta dig, och allt krypterat på din enhet: anteckningar, uppgifter, dagboksinlägg, ditt valv och filerna i det. Dina inställningar följer också med - favorittaggar, sorterings- och vyval, färgtema, din PIN (som en saltad hash, aldrig själva PIN-koden), applås, uppsättning av mätvärden och mediciner samt automatisk tömning av papperskorgen. Ställ in något en gång så plockar varje enhet upp det.",
         "Några saker stannar medvetet på enheten: ljust eller mörkt läge (varje enhet följer sin egen systeminställning), biometrisk upplåsning (bunden till varje enhets hårdvara) och ditt upplåsta läge (stänger du appen låses den alltid igen). Servern lagrar bara krypterade block och kan inte läsa något av dem."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Ja. Bokmärken är en egen pelare i sidopanelen, bredvid anteckningar, uppgifter och dagböcker, och de är gratis i alla planer. Klistra in en länk i snabbfältet så sparas den. Ta med dina befintliga: exportera en bokmärkesfil (.html) från din webbläsare och släpp den i Inställningar > Import & Export > Importera > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave och Vivaldi innehåller samma fil, och mappar och datum följer med. Safari lägger den i en .zip, som du kan släppa utan att öppna.",
         "Dina adresser lämnar aldrig din enhet: vi hämtar inte sidan bakom en länk, och därför bär ett bokmärke du lägger till själv sin domän som namn tills du skriver ett. Webbplatsikoner är det enda undantaget, och dem kan du stänga av. Exporten skriver samma standardfil, så dina bokmärken lämnar lika lätt som de kom ([importguide](/sv/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "Kan jag ha en adressbok i PrivacyNotes?",
+      "a": [
+        "Ja. Kontakter är en egen pelare i sidopanelen, bredvid anteckningar, uppgifter och dagböcker, och de är gratis i alla planer. En kontakt rymmer namn, nummer, e-postadresser, adresser, webbplatser, datum, ett företag och en anteckning. Tryck på ett nummer för att ringa, på en e-postadress för att skriva, eller på vilken rad som helst för att kopiera den. Allt annat som din telefon skrev in i filen ligger kvar under **Också i den här filen** och skrivs tillbaka när du exporterar.",
+        "Ta med dina befintliga: exportera ett vCard (.vcf) från telefonen, din Mac eller Google Kontakter och släpp det i Inställningar > Import & Export > Importera > \"Contacts (vCard)\". Släpper du samma fil igen senare känns personerna som redan finns igen i stället för att dubbleras. Exporten skriver ett vanligt vCard, så adressboken kommer ut lika lätt som den kom in ([mer om att importera](/sv/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "Vad passar i Bokmärken, Kontakter och Valvet?",
+      "a": [
+        "De delar av livet som inte hör hemma i en webbläsarprofil eller i en telefons adressbok. Bokmärken, kontakter och valvet står bredvid dem som din webbläsare och din telefon redan synkar till Google, Apple eller Mozilla, och rymmer det du hellre håller utanför. Alla tre är gratis i alla planer.",
+        "- Länkar om hälsa, pengar, juridik eller ett jobbsök, på en dator du delar med någon\n- Efterforskningen kring ett ämne, samlad i stället för begravd bland tusentals webbläsarbokmärken\n- Läkaren, advokaten, hyresvärden och rekryteraren, utanför en adressbok som synkar till iCloud eller Google\n- En kontakt med sammanhanget runt omkring: dina anteckningar, datumen, filen du fick\n- Återställningsfraser, licensnycklar, kassaskåpskoder och passnummer, hemligheter som inte är inloggningar\n- De få inloggningar du aldrig vill ha inne i ett webbläsartillägg",
+        "Var och en är en rad i sidopanelen. Saknas en rad öppnar du sidofältsalternativen ovanför dina taggar och slår på **Visa i sidofältet**. Du tar in dina befintliga från en fil och får ut dem på samma sätt ([bokmärken](/sv/help/bookmarks/), [kontakter](/sv/help/contacts/), [valvet](/sv/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

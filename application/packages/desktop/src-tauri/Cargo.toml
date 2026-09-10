@@ -1,6 +1,6 @@
 [package]
 name = "privacynotes"
-version = "0.507.21"
+version = "0.514.3"
 description = "PrivacyNotes - end-to-end encrypted notes"
 authors = ["Lifetime Labs LLC <hi@lifetimelabs.dev>"]
 homepage = "https://privacynotes.app"
@@ -52,6 +52,11 @@ tauri-plugin-window-state = "2"
 # Every crate involved is already in the tree via tauri/tao/wry, so these add
 # dependency edges and features, never packages.
 # Spec: ops/docs/biometric-unlock.md, backlog #101
+[target.'cfg(target_os = "macos")'.dependencies]
+# geteuid, for the single-instance rendezvous owner check in lib.rs.
+# Already in the tree through tao and wry; this names it directly.
+libc = "0.2"
+
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
 objc2 = "0.6"
 block2 = "0.6"

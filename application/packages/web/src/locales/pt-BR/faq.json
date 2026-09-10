@@ -216,7 +216,7 @@
     "what-syncs": {
       "q": "O que exatamente sincroniza entre meus aparelhos, e o que fica local?",
       "a": [
-        "Tudo o que você esperaria, cada item criptografado no seu aparelho antes de sincronizar: notas, tarefas, entradas de diário, seu cofre e os arquivos criptografados dentro dele. Suas configurações também acompanham - tags favoritas, preferências de ordenação e exibição, tema de cor, seu PIN (como hash com sal, nunca o PIN em si), bloqueio do app, configuração de rastreadores e medicamentos, e a limpeza automática da lixeira. Configure uma vez e cada aparelho acompanha.",
+        "Tudo o que você esperaria, e tudo isso criptografado no seu aparelho: notas, tarefas, entradas de diário, seu cofre e os arquivos dentro dele. Suas configurações também acompanham - tags favoritas, preferências de ordenação e exibição, tema de cor, seu PIN (como hash com sal, nunca o PIN em si), bloqueio do app, configuração de rastreadores e medicamentos, e a limpeza automática da lixeira. Configure uma vez e cada aparelho acompanha.",
         "Algumas coisas ficam de propósito locais ao aparelho: modo claro ou escuro (cada aparelho segue a própria preferência do sistema), desbloqueio biométrico (preso ao hardware de cada aparelho) e seu estado de desbloqueio (fechar o app sempre trava de novo). O servidor só armazena blobs criptografados e não consegue ler nada disso."
       ]
     },
@@ -418,6 +418,21 @@
       "a": [
         "Sim. Os favoritos são um pilar próprio na barra lateral, ao lado das notas, das tarefas e dos diários, e são gratuitos em todos os planos. Cole um link na barra de adição rápida para salvar um. Para trazer os seus, exporte um arquivo de favoritos (.html) do seu navegador e solte em Configurações > Import & Export > Importar > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave e Vivaldi contêm o mesmo arquivo, e as suas pastas e datas vêm junto. O Safari embrulha ele num .zip, que você pode soltar sem abrir.",
         "Seus endereços nunca saem do seu aparelho: a gente não carrega a página por trás de um link, e é por isso que um favorito que você adiciona à mão fica com o domínio como nome até você escrever um. Os ícones dos sites são a única exceção, e você pode desligá-los. A exportação escreve o mesmo arquivo padrão, então seus favoritos saem com a mesma facilidade ([guia de importação](/br/help/import/browser-bookmarks/))."
+      ]
+    },
+    "contacts": {
+      "q": "Posso ter uma agenda de contatos no PrivacyNotes?",
+      "a": [
+        "Sim. Os contatos são um pilar próprio na barra lateral, ao lado das notas, das tarefas e dos diários, e são gratuitos em todos os planos. Um contato reúne nomes, números, e-mails, endereços, sites, datas, uma empresa e uma nota. Toque num número para ligar, num e-mail para escrever, ou em qualquer linha para copiá-la. Tudo o mais que o seu celular escreveu no arquivo fica em **Também neste arquivo** e volta a ser escrito quando você exporta.",
+        "Para trazer os seus, exporte um vCard (.vcf) do celular, do Mac ou do Google Contacts e solte em Configurações > Import & Export > Importar > \"Contacts (vCard)\". Se mais tarde você soltar o mesmo arquivo, as pessoas que já estão lá são reconhecidas em vez de duplicadas. A exportação escreve um vCard comum, então a sua agenda sai com a mesma facilidade com que entrou ([mais sobre importar](/br/help/import-from-other-apps/))."
+      ]
+    },
+    "what-to-keep": {
+      "q": "O que vale a pena guardar em Favoritos, Contatos e no Cofre?",
+      "a": [
+        "As partes da sua vida que não pertencem a um perfil de navegador nem à agenda de um celular. Os favoritos, os contatos e o cofre ficam ao lado daqueles que o seu navegador e o seu celular já sincronizam com o Google, a Apple ou a Mozilla, e guardam o que você prefere deixar de fora. Os três são gratuitos em todos os planos.",
+        "- Links sobre saúde, dinheiro, direito ou uma busca por emprego, num computador que você divide com alguém\n- A pesquisa sobre um tema, junta em vez de perdida entre milhares de favoritos do navegador\n- O médico, a advogada, o locador e o recrutador, fora de uma agenda que sincroniza com o iCloud ou o Google\n- Um contato com o contexto em volta: as suas notas, as datas, o arquivo que ele mandou\n- Frases de recuperação, chaves de licença, códigos de cofre e números de passaporte, segredos que não são logins\n- As poucas credenciais que você nunca quer dentro de uma extensão do navegador",
+        "Cada um é uma linha na barra lateral. Se faltar uma, abra as opções da barra lateral acima das suas tags e ligue **Mostrar na barra lateral**. Você traz os seus a partir de um arquivo e tira do mesmo jeito ([favoritos](/br/help/bookmarks/), [contatos](/br/help/contacts/), [o cofre](/br/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {

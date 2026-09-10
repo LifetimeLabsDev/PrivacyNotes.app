@@ -57,13 +57,20 @@
     "bitwarden": "Export .json non chiffré de Bitwarden (Tools > Export vault > .json). Identifiants, cartes, clés SSH, notes sécurisées et codes TOTP suivent tous.",
     "browserPasswords": "Le fichier de mots de passe (.csv) de Chrome, Edge, Brave, Opera, Vivaldi, Firefox ou Safari, ou le .zip que Safari écrit. Chaque ligne devient un identifiant. Supprime le fichier quand tu as fini - il contient tes mots de passe en clair."
   },
+  "sourceLabel": {
+    "privacynotes": "Sauvegarde complète PrivacyNotes",
+    "browserBookmarks": "Signets du navigateur",
+    "browserPasswords": "Mots de passe du navigateur",
+    "vcard": "Contacts (vCard)",
+    "markdownFolder": "Fichiers Markdown"
+  },
   "vaultPick": {
     "intro": "Importe des identifiants, cartes bancaires et clés SSH depuis un autre gestionnaire de mots de passe."
   },
   "restorePick": {
     "intro": "Restaure une sauvegarde PrivacyNotes que tu as exportée plus tôt. Ton fichier est lu et déchiffré en local.",
     "fullBackupTitle": "Sauvegarde complète (.zip)",
-    "fullBackupDesc": "Restaure notes, journaux, éléments du coffre, tâches, images, audio et fichiers. Tout est importé comme de nouveaux éléments - les données existantes ne sont pas écrasées.",
+    "fullBackupDesc": "Restaure notes, journaux, éléments du coffre, tâches, images, audio et fichiers. Une note que tu as déjà est conservée, ou mise à jour si la sauvegarde en contient une version plus récente.",
     "encryptedBackupTitle": "Sauvegarde chiffrée (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Restaure une sauvegarde chiffrée avec la clé de ta phrase. Un .pnbackupz ramène tout, fichiers compris ; un .pnbackup ne contient que le texte et les métadonnées. Tu dois être connecté avec le même compte que celui qui l'a créée."
   },

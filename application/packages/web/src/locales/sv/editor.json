@@ -154,8 +154,11 @@
     "textLabel": "Länktext",
     "textPlaceholder": "Valfritt, lämna tomt för att visa URL:en",
     "selectedTextHint": "Den markerade texten används som länk",
-    "editTextHint": "Redigera länktexten i redigeraren",
-    "update": "Uppdatera"
+    "update": "Uppdatera",
+    "menuOpen": "Öppna länk",
+    "menuCopy": "Kopiera länk",
+    "menuEdit": "Redigera länk",
+    "menuRemove": "Ta bort länk"
   },
   "audio": {
     "uploadingRecording": "Laddar upp inspelning...",
@@ -185,6 +188,9 @@
     "copy": "Kopiera",
     "copied": "Kopierad",
     "copyFailed": "Misslyckades"
+  },
+  "math": {
+    "sourceLabel": "LaTeX-kod"
   },
   "noteLink": {
     "open": "Öppna anteckning",

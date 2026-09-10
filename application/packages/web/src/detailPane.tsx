@@ -113,7 +113,9 @@ export function DetailAction({ label, onClick, href, children }: {
   href?: string;
   children: ReactNode;
 }) {
-  const cls = 'w-8 h-8 inline-flex items-center justify-center text-neutral-700 dark:text-neutral-300 hover:text-accent transition';
+  // Accent, like every glyph beside a label in the app: a grey one in a
+  // bordered cell read as a disabled control rather than as a button.
+  const cls = 'w-8 h-8 inline-flex items-center justify-center text-accent/70 hover:text-accent transition';
   return (
     <span className="inline-flex border-s border-divider first:border-s-0 first:rounded-s-[5px] last:rounded-e-[5px] hover:bg-accent/10 transition">
       <HoverLabel label={label} position="start">

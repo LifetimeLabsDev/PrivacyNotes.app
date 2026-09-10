@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { LogoIcon } from './LogoIcon';
 import { HoverLabel } from './HoverLabel';
 import { IconUpgrade } from './UpgradeModal';
-import { Plus, SquaresFour, List, Sparkle, PushPin, File, CheckSquare, Shield, Folder, Book, Hash, Trash, Question, CaretRight, Devices, FileMd, BookmarkSimple, NotePencil, CheckFat, Files, Notebook, Bookmarks, Key, PILLAR_GLYPHS } from './icons';
-import { markdownSupport } from './markdownFolder/capability';
+import { Plus, SquaresFour, List, Sparkle, PushPin, File, CheckSquare, Shield, Folder, Book, Hash, Trash, Question, CaretRight, Devices, FileMd, BookmarkSimple, NotePencil, CheckFat, Notebook, Bookmarks, Key } from './icons';
 import { isViewShown, type View } from './views';
+import { viewRows } from './viewRows';
 import { exemptOpts } from './i18nExempt';
 import { SIDEBAR_ACTIVE } from './sidebarUI';
 import { useUpdateAvailable } from './updateAvailable';
@@ -29,17 +29,11 @@ interface CollapsedSidebarProps {
   isPro: boolean;
   viewMode: 'auto' | 'list' | 'grid';
   onToggleViewMode: () => void;
-  // Counts for hover labels
-  starredCount: number;
-  activeNotesCount: number;
-  openTaskCount: number;
-  vaultCount: number;
-  filesCount: number;
-  journalCount: number;
-  bookmarksCount: number;
-  contactsCount: number;
-  /** Files in the open Markdown folder, or undefined when none is open. */
-  markdownCount?: number | undefined;
+  /** Item count per pillar row, for the hover labels. An absent entry draws
+   *  no count, which is not a zero: the Markdown pillar scans nothing until a
+   *  folder is chosen.
+   *  Spec: ops/docs/plans/start-view.md (one counts object) */
+  viewCounts: Partial<Record<View, number>>;
   trashedCount: number;
   /** Views switched off in the sidebar options menu; the wide rail hides the
    *  same rows. Spec: ops/docs/plans/sidebar-views.md */
@@ -123,15 +117,7 @@ export function CollapsedSidebar({
   isPro,
   viewMode,
   onToggleViewMode,
-  starredCount,
-  activeNotesCount,
-  openTaskCount,
-  vaultCount,
-  filesCount,
-  journalCount,
-  bookmarksCount,
-  contactsCount,
-  markdownCount,
+  viewCounts,
   trashedCount,
   hiddenViews,
 }: CollapsedSidebarProps) {
@@ -188,77 +174,25 @@ export function CollapsedSidebar({
 
       <div className="w-7 border-t border-divider my-1" />
 
-      {/* Views */}
-      <HoverLabel label={t('pillars.allItems')}>
-        <button type="button" onClick={() => handleSelectView('home')} className={iconBtn(view === 'home')} aria-label={t('pillars.allItems')}>
-          <PILLAR_GLYPHS.all size={18} />
-        </button>
-      </HoverLabel>
-      {/* Hidden at zero, same as the expanded rail - collapsing the sidebar
-          must not bring the row back. Kept while it is the current view. */}
-      {showRow('starred') && (starredCount > 0 || view === 'starred') && (
-        <HoverLabel label={t('pillars.pinned')} count={starredCount}>
-          <button type="button" onClick={() => handleSelectView('starred')} className={iconBtn(view === 'starred')} aria-label={t('pillars.pinned')}>
-            <PILLAR_GLYPHS.pinned size={18} />
-          </button>
-        </HoverLabel>
-      )}
-      {showRow('all') && (
-        <HoverLabel label={t('pillars.notes')} count={activeNotesCount}>
-          <button type="button" onClick={() => handleSelectView('all')} className={iconBtn(view === 'all')} aria-label={t('pillars.notes')}>
-            <PILLAR_GLYPHS.notes size={18} />
-          </button>
-        </HoverLabel>
-      )}
-      {showRow('tasks') && (
-        <HoverLabel label={t('pillars.tasks')} count={openTaskCount}>
-          <button type="button" onClick={() => handleSelectView('tasks')} className={iconBtn(view === 'tasks')} aria-label={t('pillars.tasks')}>
-            <PILLAR_GLYPHS.tasks size={18} />
-          </button>
-        </HoverLabel>
-      )}
-      {showRow('vault') && (
-        <HoverLabel label={t('pillars.vault')} count={vaultCount}>
-          <button type="button" onClick={() => handleSelectView('vault')} className={iconBtn(view === 'vault')} aria-label={t('pillars.vault')}>
-            <PILLAR_GLYPHS.vault size={18} />
-          </button>
-        </HoverLabel>
-      )}
-      {showRow('files') && (
-        <HoverLabel label={t('pillars.files')} count={filesCount}>
-          <button type="button" onClick={() => handleSelectView('files')} className={iconBtn(view === 'files')} aria-label={t('pillars.files')}>
-            <PILLAR_GLYPHS.files size={18} />
-          </button>
-        </HoverLabel>
-      )}
-      {showRow('journal') && (
-        <HoverLabel label={t('pillars.journals')} count={journalCount}>
-          <button type="button" onClick={() => handleSelectView('journal')} className={iconBtn(view === 'journal')} aria-label={t('pillars.journals')}>
-            <PILLAR_GLYPHS.journals size={18} />
-          </button>
-        </HoverLabel>
-      )}
-      {markdownSupport() !== 'unavailable' && showRow('markdown') && (
-        <HoverLabel label={t('pillars.markdown')} count={markdownCount}>
-          <button type="button" onClick={() => handleSelectView('markdown')} className={iconBtn(view === 'markdown')} aria-label={t('pillars.markdown')}>
-            <PILLAR_GLYPHS.markdown size={18} />
-          </button>
-        </HoverLabel>
-      )}
-      {showRow('contacts') && (
-        <HoverLabel label={t('pillars.contacts')} count={contactsCount}>
-          <button type="button" onClick={() => handleSelectView('contacts')} className={iconBtn(view === 'contacts')} aria-label={t('pillars.contacts')}>
-            <PILLAR_GLYPHS.contacts size={18} />
-          </button>
-        </HoverLabel>
-      )}
-      {showRow('bookmarks') && (
-        <HoverLabel label={t('pillars.bookmarks')} count={bookmarksCount}>
-          <button type="button" onClick={() => handleSelectView('bookmarks')} className={iconBtn(view === 'bookmarks')} aria-label={t('pillars.bookmarks')}>
-            <PILLAR_GLYPHS.bookmarks size={18} />
-          </button>
-        </HoverLabel>
-      )}
+      {/* Views, from the same shared list the wide rail draws. Collapsing the
+          sidebar must not change which rows exist or what they are called, so
+          neither surface keeps a list of its own.
+          Spec: ops/docs/plans/start-view.md (one row list, one label namespace) */}
+      {viewRows(t).map((r) => {
+        // All is never hideable - the logo above goes there too.
+        if (r.key !== 'home' && !showRow(r.key)) return null;
+        // Hidden at zero, same as the expanded rail. Kept while it is the
+        // current view, so unpinning the last note does not move the row you
+        // are standing on.
+        if (r.key === 'starred' && !(viewCounts.starred ?? 0) && view !== 'starred') return null;
+        return (
+          <HoverLabel key={r.key} label={r.label} count={viewCounts[r.key]}>
+            <button type="button" onClick={() => handleSelectView(r.key)} className={iconBtn(view === r.key)} aria-label={r.label}>
+              <r.icon size={18} />
+            </button>
+          </HoverLabel>
+        );
+      })}
 
       <div className="w-7 border-t border-divider my-1" />
 

@@ -72,6 +72,7 @@
     "copied": "Copiado"
   },
   "burnView": {
+    "title": "Destruir tras leer",
     "tagline": "Cifrado. Efímero. Solo para tus ojos.",
     "toggleTheme": "Alternar tema",
     "checking": "Comprobando...",

@@ -7,6 +7,7 @@ import type { LocalNote } from './db';
 import { indexedBodyText, isPhraseQuery } from './search';
 import type { ListPrefs } from './listPrefs';
 import { formatBytes } from './formatBytes';
+import i18n from './i18n';
 import { intlLocale } from './languages';
 import { parseLinkBody, linkDomain } from './linkBody';
 import { contactDisplayName, contactPhotoBytes, contactSecondLine, parseContactBody } from './contactBody';
@@ -173,10 +174,10 @@ function imageExcerpt(body: string): string {
   const m = body.match(/!\[([^\]]*)\]\([^)]*\)(\{[^}\n]*\})?/);
   if (!m || !m[1]) return '';
   const alt = m[1].trim();
-  if (!alt) return 'Image';
+  if (!alt) return i18n.t('shell:fileTypes.image');
   // Alt text often contains "filename|size|mime" - show just the filename
   const first = alt.split('|')[0];
-  return (first ?? '').trim() || 'Image';
+  return (first ?? '').trim() || i18n.t('shell:fileTypes.image');
 }
 
 // Strips cheap inline markdown (link syntax, inline formatting markers)
@@ -194,11 +195,11 @@ function stripInlineMarkdown(line: string): string {
     // [name|size|mime](pn:file/...) -> friendly label based on mimetype
     .replace(/\[[^\]]*\|[^\]]*\|([^\]]*)\]\(pn:file\/[^)]*\)/g, (_m, mime: string) => {
       const mt = mime.trim().toLowerCase();
-      if (mt.startsWith('audio/')) return 'Audio recording';
-      if (mt.startsWith('video/')) return 'Video';
-      if (mt.startsWith('image/')) return 'Image';
-      if (mt.includes('pdf')) return 'PDF document';
-      return 'File attachment';
+      if (mt.startsWith('audio/')) return i18n.t('shell:fileTypes.audioRecording');
+      if (mt.startsWith('video/')) return i18n.t('shell:fileTypes.video');
+      if (mt.startsWith('image/')) return i18n.t('shell:fileTypes.image');
+      if (mt.includes('pdf')) return i18n.t('shell:fileTypes.pdfDocument');
+      return i18n.t('shell:fileTypes.attachment');
     })
     // [text](url) -> text
     .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
@@ -304,27 +305,102 @@ export function firstBodyLine(body: string): string {
   return '';
 }
 
-// Title shown in the notes-list row. Prefer an explicit title; fall back
-// to the first line of the body; finally "Untitled" if the note is empty.
-export function deriveDisplayTitle(n: LocalNote): string {
+/**
+ * The title a note's own content spells, or '' when it spells none.
+ *
+ * Split from `deriveDisplayTitle` because the two answers are used for
+ * opposite purposes and only one of them may ever be a placeholder. NotesView
+ * COMMITS this value into the note's `title` field when the user leaves an
+ * untitled note, and syncs it, so a placeholder returned here becomes the
+ * user's own data on every device. Return nothing rather than a stand-in, and
+ * let the caller that renders supply the stand-in.
+ */
+export function deriveTitleFromContent(n: LocalNote): string {
   const t = (n.title ?? '').trim();
   if (t) return t;
   // Bookmarks: the domain IS the default name (render-time fallback, per
   // ops/docs/plans/bookmarks-pillar.md section 2 - never stored).
-  if (n.type === 'link') {
-    return linkDomain(parseLinkBody(n.body).url) || 'Untitled';
-  }
+  if (n.type === 'link') return linkDomain(parseLinkBody(n.body).url);
   // Contacts: the name the fields spell, else the company, else an address.
-  if (n.type === 'contact') {
-    return contactDisplayName('', parseContactBody(n.body)) || 'Unnamed contact';
-  }
-  // Vault items: never show raw JSON as title.
-  if (n.type === 'login') return 'Untitled login';
-  if (n.type === 'card') return 'Untitled card';
-  if (n.type === 'ssh-key') return 'Untitled key';
-  const fl = firstBodyLine(n.body);
-  if (fl) return fl.slice(0, 80);
-  return 'Untitled';
+  if (n.type === 'contact') return contactDisplayName('', parseContactBody(n.body));
+  // Vault items never derive one: their body is JSON, and the first line of it
+  // is not a title in any language.
+  if (n.type === 'login' || n.type === 'card' || n.type === 'ssh-key') return '';
+  return firstBodyLine(n.body).slice(0, 80);
+}
+
+// Title shown in the notes-list row: what the content spells, else the
+// stand-in for that note type. Every stand-in is translated, so a row in a
+// Portuguese list does not read "Unnamed contact".
+export function deriveDisplayTitle(n: LocalNote): string {
+  const derived = deriveTitleFromContent(n);
+  if (derived) return derived;
+  if (n.type === 'contact') return i18n.t('shell:contacts.unnamed');
+  if (n.type === 'login') return i18n.t('shell:vaultItem.untitledLogin');
+  if (n.type === 'card') return i18n.t('shell:vaultItem.untitledCard');
+  if (n.type === 'ssh-key') return i18n.t('shell:vaultItem.untitledKey');
+  return i18n.t('common:state.untitled');
+}
+
+/**
+ * The row's second line when the note's own content spells none: the word for
+ * what that type has nothing of.
+ *
+ * A CONTACT is given nothing at all. That line carries a number, a company or
+ * an email, and a contact with none of those still has its name on the line
+ * above it, so a label there is the row calling a named person empty.
+ */
+export function emptyExcerptLabel(n: LocalNote): string {
+  if (n.type === 'file') return i18n.t('notes:noteRow.file');
+  if (n.type === 'login' || n.type === 'card' || n.type === 'ssh-key') return i18n.t('notes:noteRow.empty');
+  if (n.type === 'contact') return '';
+  return i18n.t('notes:noteRow.noContent');
+}
+
+/**
+ * Note types whose body is JSON consumed by a form, not markdown: a bookmark's
+ * `{url}`, a contact, a login, a card, an SSH key.
+ *
+ * Three passes ask this question - the note-link retarget, the body flush into
+ * React state, and the derived-title commit - and each carried its own copy of
+ * the list, which is how the contacts pillar came to be missing from all three
+ * (GitHub #305). One list, one answer.
+ */
+export function hasStructuredBody(type: string | undefined): boolean {
+  return (
+    type === 'link' ||
+    type === 'contact' ||
+    type === 'login' ||
+    type === 'card' ||
+    type === 'ssh-key'
+  );
+}
+
+/**
+ * True when the stored title is only the name the list prints for that note
+ * anyway: "Unnamed contact", "Untitled login", a bookmark's own domain.
+ *
+ * Those are placeholders, not names. A stored one is not empty, and every step
+ * that fills a title in - the contact form on Done, the login form on URL blur
+ * - only fills an empty one, so a stored placeholder freezes the field for
+ * good: a contact kept "Unnamed contact" after its owner typed a real name
+ * (GitHub #305). Clearing one changes nothing on screen, because the same word
+ * comes back from `deriveDisplayTitle`, and it hands the field back to the form.
+ *
+ * The strings are matched in English whatever language the app is in, because
+ * they are what the versions that stored them wrote. They are history, not the
+ * stand-ins the list prints today, and they cannot change.
+ * Test: tests/placeholderTitle.test.ts
+ */
+export function isPlaceholderTitle(n: LocalNote): boolean {
+  const t = (n.title ?? '').trim();
+  if (!t) return false;
+  if (n.type === 'link') return t === linkDomain(parseLinkBody(n.body).url);
+  if (n.type === 'contact') return t === 'Unnamed contact';
+  if (n.type === 'login') return t === 'Untitled login';
+  if (n.type === 'card') return t === 'Untitled card';
+  if (n.type === 'ssh-key') return t === 'Untitled key';
+  return false;
 }
 
 /**
@@ -435,14 +511,14 @@ export function rowSizeLabel(n: LocalNote, sortField: string, explicit?: string)
  */
 export function mimeToLabel(mime: string): string {
   const m = (mime || '').toLowerCase();
-  if (m.startsWith('audio/')) return 'Audio';
-  if (m.startsWith('video/')) return 'Video';
-  if (m.startsWith('image/')) return 'Image';
-  if (m.includes('pdf')) return 'PDF';
-  if (m.includes('zip') || m.includes('compress') || m.includes('archive')) return 'Archive';
-  if (m.includes('document') || m.includes('word')) return 'Document';
-  if (m.includes('sheet') || m.includes('excel')) return 'Spreadsheet';
-  return 'File';
+  if (m.startsWith('audio/')) return i18n.t('shell:fileTypes.audio');
+  if (m.startsWith('video/')) return i18n.t('shell:fileTypes.video');
+  if (m.startsWith('image/')) return i18n.t('shell:fileTypes.image');
+  if (m.includes('pdf')) return i18n.t('shell:fileTypes.pdf');
+  if (m.includes('zip') || m.includes('compress') || m.includes('archive')) return i18n.t('shell:fileTypes.archive');
+  if (m.includes('document') || m.includes('word')) return i18n.t('shell:fileTypes.document');
+  if (m.includes('sheet') || m.includes('excel')) return i18n.t('shell:fileTypes.spreadsheet');
+  return i18n.t('shell:fileTypes.file');
 }
 
 export function deriveExcerpt(n: LocalNote): string {
@@ -460,13 +536,13 @@ export function deriveExcerpt(n: LocalNote): string {
       const m = n.body.match(/\[[^|]*\|[^|]*\|([^\]]*)\]\(pn:file\//);
       return mimeToLabel((m?.[1]?.trim() || '').toLowerCase());
     }
-    return `${count} files`;
+    return i18n.t('shell:noteRow.files', { count });
   }
   if (n.type === 'login') {
     try {
       const data = JSON.parse(n.body);
       const user = typeof data.username === 'string' ? data.username : '';
-      return user || 'No username';
+      return user || i18n.t('shell:noteRow.noUsername');
     } catch { return ''; }
   }
   // Bookmarks: the full URL is the sub-line (named row shows where it goes,
@@ -483,16 +559,20 @@ export function deriveExcerpt(n: LocalNote): string {
       const data = JSON.parse(n.body);
       return typeof data.cardholderName === 'string' && data.cardholderName
         ? data.cardholderName
-        : 'No cardholder';
+        : i18n.t('shell:noteRow.noCardholder');
     } catch { return ''; }
   }
   if (n.type === 'ssh-key') {
     try {
       const data = JSON.parse(n.body);
-      return typeof data.label === 'string' && data.label ? data.label : 'No label';
+      return typeof data.label === 'string' && data.label ? data.label : i18n.t('shell:noteRow.noLabel');
     } catch { return ''; }
   }
   const explicitTitle = (n.title ?? '').trim();
+  // The literal stays English on purpose: it matches a title an IMPORTER wrote
+  // (the Evernote one names an untitled note that), not a stand-in this file
+  // produces. Nothing here writes it any more - `deriveTitleFromContent` never
+  // returns a stand-in, and the display stand-ins are translated.
   if (explicitTitle && explicitTitle !== 'Untitled') {
     for (const line of n.body.split(/\r?\n/)) {
       const t = line.trim();

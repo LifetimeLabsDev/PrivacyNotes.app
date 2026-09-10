@@ -72,6 +72,7 @@
     "copied": "Kopiert"
   },
   "burnView": {
+    "title": "Nach dem Lesen vernichten",
     "tagline": "Verschlüsselt. Vergänglich. Nur für deine Augen.",
     "toggleTheme": "Design umschalten",
     "checking": "Wird geprüft...",

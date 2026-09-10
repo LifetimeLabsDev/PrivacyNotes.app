@@ -16,6 +16,10 @@
   },
   "attachment": {
     "fallbackName": "Ek",
+    "rename": "Yeniden adlandır",
+    "renamePlaceholder": "Dosya adı",
+    "saveName": "Adı kaydet",
+    "seek": "Oynatma konumu",
     "imageAlt": "Görsel",
     "cantPlay": "Oynatılamıyor. Dinlemek için indirin",
     "downloadingStatus": "indiriliyor...",

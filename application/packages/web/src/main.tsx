@@ -6,7 +6,7 @@ import { LoadingScreen } from './LoadingScreen';
 import { initTheme } from './theme';
 import { clearFreshDemoCredentials, isDemoMode } from './demo';
 import { APP_ORIGIN, isApexHost, isAppHost } from './hosts';
-import { detectPlatform } from './devices';
+import { detectPlatform, isLinuxNative } from './devices';
 import { IconDefaults } from './icons';
 import { installAndroidBackBridge } from './androidBack';
 import { installStrayDropGuard } from './strayDropGuard';
@@ -25,6 +25,14 @@ installAndroidBackBridge();
 // A file dropped where nothing takes it must not navigate the page away.
 // The desktop webviews depend on it - see strayDropGuard.ts.
 installStrayDropGuard();
+
+// Off-screen grid tiles skip layout and paint wherever a grid track reads a
+// skipped item's intrinsic size. The Linux app's web engine does not read it
+// and crushes the grid into slivers, so it never gets the attribute. Set
+// before React mounts, so the first grid drawn is already the right one, and
+// absent by default, because the plain grid is the state that always works.
+// Spec: ops/docs/ui-patterns.md (section 64)
+if (!isLinuxNative()) document.documentElement.dataset.lazyTiles = 'on';
 
 // Keep the public demo subdomain out of search results so it doesn't
 // compete with the marketing site (see demo.ts). Same for the dedicated
