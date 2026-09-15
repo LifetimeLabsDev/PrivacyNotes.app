@@ -178,8 +178,9 @@ const EncryptedImageView = memo(function EncryptedImageView({
   const [objectUrl, setObjectUrl] = useState<string | null>(cachedUrl);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(!cachedUrl);
-  // True once a person taps this image. It separates a selection someone asked
-  // for from the one ProseMirror seeds on a note that opens with an image.
+  // True once a person taps this image, and what the size/download/delete bar
+  // hangs on. It separates an image someone chose from the one ProseMirror
+  // seeds a note with when that note opens on an image.
   const [tapped, setTapped] = useState(false);
   // Was the press that is running right now made by a finger or a pen?
   // The question is whether THIS press can raise the on-screen keyboard, and
@@ -320,21 +321,20 @@ const EncryptedImageView = memo(function EncryptedImageView({
 
   // Own the tap on the image instead of leaving it to ProseMirror.
   //
-  // The size/download/delete bar needs a NodeSelection on this image. Under a
-  // mouse it also needs focus inside .ProseMirror, because a note that opens
-  // on an image is given that selection before anyone touches anything, and an
-  // unfocused editor must show no editing affordance (see index.css). A tap on
-  // a contenteditable=false child delivers neither: the caret goes to the
+  // A tap answers two questions at once. The node selection is the one the
+  // rest of the editor reads, for copy, cut and drag. Under a mouse it also
+  // needs focus inside .ProseMirror, because a note that opens on an image is
+  // given that selection before anyone touches anything, and an unfocused
+  // editor must show no editing affordance (see index.css). A tap on a
+  // contenteditable=false child delivers neither: the caret goes to the
   // nearest text, so an image with a paragraph under it selected nothing,
   // while the last image in a note - with no text to snap to - worked.
   //
-  // Under a finger or a pen the question "did a person choose this image" is
-  // answered by `tapped` rather than by focus, and no focus is taken at all.
-  // Focus is what attaches the keyboard, and the keyboard puts the caret back
-  // in the nearest text, which replaces this node selection tens of
-  // milliseconds after the tap. That is the bar appearing and vanishing again.
-  // It also means resizing a picture no longer drags the keyboard onto the
-  // screen.
+  // `tapped` is the second, and it is what the size/download/delete bar hangs
+  // on. Under a finger or a pen no focus is taken at all: focus is what
+  // attaches the keyboard, and the keyboard puts the caret back in the
+  // nearest text. It also means resizing a picture does not drag the keyboard
+  // onto the screen.
   //
   // Under a mouse this is belt to ProseMirror's braces: a click fires after
   // mouseup, so this runs last and wins even when the browser re-normalizes
@@ -349,10 +349,10 @@ const EncryptedImageView = memo(function EncryptedImageView({
     editor.commands.setNodeSelection(pos);
     // Focus only where focus is harmless. On Android the keyboard attaches to
     // the editor and puts the caret in the nearest text, which turns this node
-    // selection into a text selection and takes the bar down with it, a few
-    // tens of milliseconds after it appeared. The bar does not need the editor
-    // to hold focus - `tapped` is what tells index.css this image was chosen by
-    // a person rather than by the initial selection.
+    // selection into a text selection. The bar needs neither that selection
+    // nor the editor's focus: `tapped` carries both, and index.css reads it to
+    // tell an image a person chose from the one the initial selection landed
+    // on.
     if (!softPress.current) editor.view.focus();
   }, [editor, getPos]);
 
@@ -374,11 +374,35 @@ const EncryptedImageView = memo(function EncryptedImageView({
     if (softPress.current) e.preventDefault();
   }, []);
 
-  // Reset when the selection moves off this image, so the next note that opens
-  // on an image shows the bar only after someone taps it.
+  // The bar belongs to the image a person tapped, and it stays until they
+  // touch something else.
+  //
+  // The editor selection is the wrong thing to hang it on. A selection inside
+  // a contenteditable belongs to the platform's input method, and on some
+  // Android builds that method puts the caret back in the text beside the
+  // image within a frame or two of the tap. That is #240: the bar flashes and
+  // goes, and only on an image with text under it, because text is what a
+  // caret can be moved into.
+  //
+  // Nothing the bar offers needs that selection: resize, download and delete
+  // all act on this node's own position. So the tap holds it open and an
+  // ordinary press or keystroke somewhere else closes it, both read in the
+  // capture phase, because the toolbar's own buttons stop the press from
+  // bubbling any further.
   useEffect(() => {
-    if (!selected) setTapped(false);
-  }, [selected]);
+    if (!tapped) return;
+    const close = (e: Event) => {
+      // `globalThis` qualified because `Node` in this file is TipTap's.
+      const target = e.target instanceof globalThis.Node ? e.target : null;
+      if (!target || !wrapperRef.current?.contains(target)) setTapped(false);
+    };
+    document.addEventListener('pointerdown', close, true);
+    document.addEventListener('keydown', close, true);
+    return () => {
+      document.removeEventListener('pointerdown', close, true);
+      document.removeEventListener('keydown', close, true);
+    };
+  }, [tapped]);
 
   // Width style - percentage of container.
   const widthPercent = (width && IMAGE_WIDTHS.includes(width)) ? width : 100;
@@ -397,7 +421,7 @@ const EncryptedImageView = memo(function EncryptedImageView({
 
   return (
     <NodeViewWrapper
-      className={`pn-image-node ${selected ? 'ProseMirror-selectednode' : ''}${selected && tapped ? ' pn-image-tapped' : ''}`}
+      className={`pn-image-node ${selected || tapped ? 'ProseMirror-selectednode' : ''}${tapped ? ' pn-image-tapped' : ''}`}
       // `draggable: true` on the node spec is necessary but NOT sufficient for
       // a React node view: TipTap only starts a drag from an element carrying
       // data-drag-handle, and without one the spec flag does nothing at all.
@@ -438,7 +462,7 @@ const EncryptedImageView = memo(function EncryptedImageView({
             onMouseDown={handleMouseDown}
           />
         )}
-        {selected && objectUrl && !error && editor.isEditable && (
+        {(selected || tapped) && objectUrl && !error && editor.isEditable && (
           <ImageToolbar
             width={widthPercent as ImageWidth}
             onResize={handleResize}

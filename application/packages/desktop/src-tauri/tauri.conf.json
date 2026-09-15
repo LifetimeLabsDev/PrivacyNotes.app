@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "PrivacyNotes",
-  "version": "0.514.3",
+  "version": "0.518.1",
   "identifier": "app.privacynotes",
   "build": {
     "beforeDevCommand": "pnpm --filter desktop sync-version && pnpm --filter shared build && pnpm --filter web dev",

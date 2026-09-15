@@ -761,7 +761,23 @@ const DEFAULT_CHUNK_BUDGET_KB = 60;
 // label, the icons) get hoisted into seven chunks of their own, and the
 // boot path still grows 1.73 kB while first open pays a round trip. Three
 // rather than one, so the next copy edit is not a budget question.
-const BOOT_PATH_BUDGET_KB = 935;
+// 935 -> 937 (2026-09-14): the Line spacing setting and the clipboard
+// rewrite, +0.24 kB gz measured across this session's own edits. The row and
+// its example live in AppearanceSheet, the axis and its reader in theme.ts,
+// the field in userSettings, and the block-walking clipboard serializer in
+// editorExtensions - all of them static under NotesView, so all of them land
+// here. The other 3.62 of the 3.86 this build reports against the v0.512.4
+// baseline is four versions of other people's work that never raised the
+// line, which is also why the gate had 0.23 kB of headroom before anything in
+// this session was written. Two rather than one, so the next copy edit is not
+// a budget question.
+// 937 -> 940 (2026-09-15): one list of rows now builds both note context
+// menus, and the bulk verbs the selection version gained (read-only,
+// protect, duplicate, the two exports) come with it, +2.14 kB gz across
+// NotesView, contextMenus, useMultiSelect and the tag picker. All of it is
+// static under NotesView, so all of it lands here. Three rather than one,
+// so the next row added to that list is not a budget question.
+const BOOT_PATH_BUDGET_KB = 940;
 
 // The budget above is stated in ONE environment's units: build-smoke's, which
 // is ubuntu with the synthetic values from tools/ci-vite-env.mjs. Every other

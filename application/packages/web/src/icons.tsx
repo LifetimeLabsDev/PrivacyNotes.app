@@ -46,6 +46,7 @@ import {
   PencilSimpleSlash,
   PushPin,
   Shield,
+  Tag,
   Sidebar,
   SignOut,
   Trash,
@@ -225,6 +226,9 @@ export function iconFolder() {
 }
 export function iconSettings() {
   return <Gear size={14} />;
+}
+export function iconTag() {
+  return <Tag size={14} />;
 }
 export function iconReadOnly() {
   return <PencilSimpleSlash size={14} />;

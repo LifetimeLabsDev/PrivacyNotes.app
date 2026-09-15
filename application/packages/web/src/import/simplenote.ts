@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { zipEntryText } from './zipEntry';
 import { normalizeTag } from '../notesRepo';
 import { linkifyMarkdown } from './linkify';
 import type { Importer, ImportedNote, ParsedImport } from './types';
@@ -261,7 +262,7 @@ async function extractNotesJson(
         'This zip doesn\'t contain a "source/notes.json" file. Make sure you picked the Simplenote export zip.'
       );
     }
-    return entry.async('string');
+    return zipEntryText(entry);
   }
 
   // .json or anything else - read as text.

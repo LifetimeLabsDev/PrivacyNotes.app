@@ -601,6 +601,13 @@
         "Filerna ligger kvar på din disk precis som du lämnade dem: vi laddar aldrig upp dem, de synkas aldrig till dina andra enheter, och ingenting konverteras på vägen. Det fungerar i skrivbordsappen på vilken dator som helst, och i Chrome, Edge eller Opera i webbläsaren, för att öppna en mapp direkt från disk är en skrivbordsförmåga."
       ]
     },
+    "markdown-folder-mobile": {
+      "q": "Kan jag öppna en Markdown-mapp på telefonen?",
+      "a": [
+        "Inte i dag. [Markdown-mappen](/sv/help/markdown-folder/) fungerar i skrivbordsappen på macOS, Windows och Linux, och i Chrome, Edge eller Opera på en dator, för en dator lämnar över en riktig mapp till appen som den läser och skriver direkt. Android och iOS lämnar inte över någon mapp alls: varje fil når appen genom systemets eget dokumentlager, en behörighet i taget. Att läsa ett helt träd och skriva tillbaka i det är därför ett eget arbete på varje plattform, och det är inte byggt än.",
+        "På telefonen kan du ta in samma filer som kopior: Inställningar > Import & Export > Importera > ”Markdown-filer” tar .md och .txt var för sig eller som en .zip, och en zippad mapp behåller sina undermappar, bilder och bilagor. De kommer in som krypterade anteckningar som synkas till dina andra enheter, och Exportera skriver ut ren .md igen. Originalen ligger kvar på din disk precis där de är."
+      ]
+    },
     "folders": {
       "q": "Hur fungerar mappar, och behöver jag Pro för dem?",
       "a": [

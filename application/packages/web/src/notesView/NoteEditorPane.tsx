@@ -1158,14 +1158,16 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                         toggle, and the same state decides which: one control in
                         two places must not be learned twice. Accent, like the
                         invisible-characters glyph at the other end of this
-                        footer. The underline moves onto the label alone, so the
-                        glyph is not dragged into it. */}
-                    {selectedEditorMode === 'markdown'
-                      ? <TextAa size={14} className="text-accent shrink-0" aria-hidden="true" />
-                      : <FileMd size={14} className="text-accent shrink-0" aria-hidden="true" />}
+                        footer, and after its label rather than before it, so
+                        both glyphs sit on the footer's outer edges and the two
+                        blocks of text face each other. The underline moves onto
+                        the label alone, so the glyph is not dragged into it. */}
                     <span className="group-hover/mode:underline">
                       {selectedEditorMode === 'markdown' ? t('editor.showFormatted') : t('editor.showMarkdown')}
                     </span>
+                    {selectedEditorMode === 'markdown'
+                      ? <TextAa size={14} className="text-accent shrink-0" aria-hidden="true" />
+                      : <FileMd size={14} className="text-accent shrink-0" aria-hidden="true" />}
                   </button>
                 )}
               </div>

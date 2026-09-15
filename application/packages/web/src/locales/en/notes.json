@@ -45,7 +45,6 @@
     "keys": "Keys"
   },
   "journal": {
-    "backfillHover": "New journal for a recent day",
     "newEntry": "New journal entry",
     "newEntryHover": "New journal entry ({{hotkey}})"
   },
@@ -242,7 +241,13 @@
   "bulkTrash": {
     "title": "Move to Trash",
     "body_one": "Move <highlight>{{count}} item</highlight> to trash? You can restore them later.",
-    "body_other": "Move <highlight>{{count}} items</highlight> to trash? You can restore them later."
+    "body_other": "Move <highlight>{{count}} items</highlight> to trash? You can restore them later.",
+    "readOnlyTitle": "Read-only",
+    "readOnlyAcknowledge": "Got it",
+    "readOnlyBlocked_one": "This item is <highlight>read-only</highlight>, so it cannot be moved to trash. Turn read-only off in the note options menu first.",
+    "readOnlyBlocked_other": "All <highlight>{{count}} items</highlight> are read-only, so none of them can be moved to trash. Turn read-only off in the note options menu first.",
+    "readOnlySkipped_one": "<highlight>{{count}} item</highlight> is read-only and stays where it is.",
+    "readOnlySkipped_other": "<highlight>{{count}} items</highlight> are read-only and stay where they are."
   },
   "bulkDelete": {
     "body_one": "Permanently delete <highlight>{{count}} note</highlight>? This cannot be undone.",

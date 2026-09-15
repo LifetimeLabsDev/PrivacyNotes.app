@@ -16,6 +16,7 @@
  */
 
 import JSZip from 'jszip';
+import { zipEntryText } from './zipEntry';
 import type { BackupManifest } from '../export';
 import { stripFrontMatterPadding } from '../noteMarkdown';
 import { FRONT_MATTER } from '../markdownFolder/adapter';
@@ -148,7 +149,7 @@ export async function parsePrivacyNotesBackup(
     );
   }
 
-  const manifest: BackupManifest = JSON.parse(await manifestFile.async('text'));
+  const manifest: BackupManifest = JSON.parse(await zipEntryText(manifestFile));
   if (manifest.format !== 'privacynotes-backup') {
     throw new Error(
       `Unrecognized backup format: "${manifest.format}". Expected "privacynotes-backup".`,
@@ -169,10 +170,16 @@ export async function parsePrivacyNotesBackup(
   );
 
   for (const filename of mdFiles) {
-    const content = await zip.file(filename)!.async('text');
+    const content = await zipEntryText(zip.file(filename)!);
     const { meta, body } = parseFrontmatter(content);
 
-    const title = (meta.title as string) || filename.replace(/\.md$/, '');
+    // The KEY decides, not its value. A backup always writes a `title` line,
+    // so an empty one is a note whose author gave it no name, and the filename
+    // beside it is a slug OF that title: "untitled.md", "untitled-2.md" carry
+    // nothing to recover. Taking a filename there stores a stand-in as the
+    // user's own title and syncs it to every device (GitHub #337). The filename
+    // answers only for a zip with no title line, which this app never writes.
+    const title = 'title' in meta ? String(meta.title ?? '') : filename.replace(/\.md$/, '');
     const tags = Array.isArray(meta.tags) ? (meta.tags as string[]) : [];
     tags.forEach((t) => allTags.add(t));
     if (tags.length === 0) untaggedNotes++;
@@ -304,7 +311,7 @@ export async function restoreBlobs(
   const manifestFile = zip.file('manifest.json');
   if (!manifestFile) return { images: 0, attachments: 0 };
 
-  const manifest: BackupManifest = JSON.parse(await manifestFile.async('text'));
+  const manifest: BackupManifest = JSON.parse(await zipEntryText(manifestFile));
   let imgCount = 0;
   let attCount = 0;
   const now = new Date().toISOString();

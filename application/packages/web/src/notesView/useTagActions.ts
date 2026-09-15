@@ -22,7 +22,7 @@ export function useTagActions({
   setDrawerOpen,
   setCreatingTag,
   setNewTagDraft,
-  pendingTitleFocus,
+  pendingFocus,
   discardIfEmpty,
   mutateSettings,
   refresh,
@@ -38,7 +38,7 @@ export function useTagActions({
   setDrawerOpen: Dispatch<SetStateAction<boolean>>;
   setCreatingTag: Dispatch<SetStateAction<boolean>>;
   setNewTagDraft: Dispatch<SetStateAction<string>>;
-  pendingTitleFocus: MutableRefObject<boolean>;
+  pendingFocus: MutableRefObject<'title' | 'body' | null>;
   discardIfEmpty: (id: string | null) => Promise<boolean>;
   mutateSettings: (updater: (prev: UserSettings) => UserSettings) => void;
   refresh: () => Promise<LocalNote[]>;
@@ -185,11 +185,15 @@ export function useTagActions({
       action is recoverable via the Trash view. */
   const handleDeleteTagAndNotes = useCallback(
     (tag: string) => {
-      const count = activeNotes.filter((n) => n.tags.includes(tag)).length;
+      // Read-only notes keep their tag and stay put, so they are counted
+      // apart: the modal asks about the rest and names how many stayed.
+      const tagged = activeNotes.filter((n) => n.tags.includes(tag));
+      const movable = tagged.filter((n) => n.locked !== 1);
       setTagConfirm({
         type: 'delete-with-notes',
         tag,
-        count,
+        count: movable.length,
+        skipped: tagged.length - movable.length,
         onConfirm: () => {
           void (async () => {
             await trashNotesWithTag(tag);
@@ -238,7 +242,7 @@ export function useTagActions({
     setView('home');
     setSelectedTag(tag);
     setSelectedFolder(null);
-    pendingTitleFocus.current = true;
+    pendingFocus.current = 'body';
     setSelectedId(note.id);
     setDrawerOpen(false);
   }
@@ -249,6 +253,8 @@ export function useTagActions({
     tag: string;
     targetTag?: string;
     count: number;
+    /** Read-only notes held back from a delete-with-notes action. */
+    skipped?: number;
     onConfirm: () => void;
   } | null>(null);
 

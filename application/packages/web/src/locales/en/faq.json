@@ -601,6 +601,13 @@
         "Those files stay on your disk exactly as you left them: we never upload them, they never sync to your other devices, and nothing is converted on the way in or out. It works in the desktop app on any computer, and in Chrome, Edge or Opera in the browser, because opening a folder straight from disk is a desktop capability."
       ]
     },
+    "markdown-folder-mobile": {
+      "q": "Can I open a Markdown folder on my phone?",
+      "a": [
+        "Not today. [The Markdown folder](/help/markdown-folder/) runs in the desktop app on macOS, Windows and Linux, and in Chrome, Edge or Opera on a computer, because a desktop hands the app a real folder it can read and write directly. Android and iOS hand an app no folder at all: every file reaches an app through the system's own document layer, one grant at a time, so reading a whole tree and saving back into it is separate work on each platform and it is not built yet.",
+        "On a phone you can bring the same files in as copies: Settings > Import & Export > Import > \"Markdown files\" takes .md and .txt one at a time or as a .zip, and a zipped folder keeps its subfolders, images and attachments. They arrive as encrypted notes that sync to your other devices, and Export writes clean .md back out. The originals stay on your disk exactly where they are."
+      ]
+    },
     "folders": {
       "q": "How do folders work, and do I need Pro for them?",
       "a": [

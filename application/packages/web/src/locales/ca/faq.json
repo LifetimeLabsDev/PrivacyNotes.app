@@ -601,6 +601,13 @@
         "Aquests fitxers es queden al teu disc tal com els vas deixar: no els pugem mai, no se sincronitzen mai als teus altres dispositius i pel camí no es converteix res. Funciona a l'app d'escriptori en qualsevol ordinador, i a Chrome, Edge o Opera des del navegador, perquè obrir una carpeta directament del disc és una capacitat d'ordinador."
       ]
     },
+    "markdown-folder-mobile": {
+      "q": "Puc obrir una carpeta Markdown al mòbil?",
+      "a": [
+        "Avui no. [La carpeta Markdown](/ca/help/markdown-folder/) funciona a l'app d'escriptori en macOS, Windows i Linux, i a Chrome, Edge o Opera en un ordinador, perquè un escriptori lliura a l'app una carpeta de debò que llegeix i escriu directament. Android i iOS no lliuren cap carpeta: cada fitxer arriba a l'app per la capa de documents del sistema, un permís cada vegada. Llegir un arbre sencer i tornar-hi a escriure és per això feina a part a cada plataforma, i encara no està feta.",
+        "Al mòbil pots entrar els mateixos fitxers com a còpies: Configuració > Import & Export > Importa > «Fitxers Markdown» accepta .md i .txt solts o dins d'un .zip, i una carpeta comprimida manté les subcarpetes, les imatges i els adjunts. Arriben com a notes xifrades que se sincronitzen als teus altres dispositius, i Exporta torna a escriure .md net. Els originals es queden al teu disc exactament on són."
+      ]
+    },
     "folders": {
       "q": "Com funcionen les carpetes i em cal Pro per fer-les servir?",
       "a": [

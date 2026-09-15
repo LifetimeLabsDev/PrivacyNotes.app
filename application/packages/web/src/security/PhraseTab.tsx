@@ -72,12 +72,13 @@ export function PhraseTab({
   // "Done" sitting above the custody section made the pane look like
   // it ended there.
   //
-  // `gated` covers the words behind a reveal banner for anyone with no
-  // PIN (GitHub #245). A PIN holder already answered the gate above, so
-  // asking twice would be friction that buys nothing.
+  // `gated` covers the phrase behind a reveal banner for everyone, PIN
+  // or no PIN (GitHub #316). A PIN answers "is this the owner"; the gate
+  // answers "is anybody else looking at this screen right now", which is
+  // a different question and the one the reader is standing in front of.
   return (
     <div className="space-y-4">
-      <PhraseView phrase={phrase} onCancel={onCancel} hideDismiss gated={!hasPin} />
+      <PhraseView phrase={phrase} onCancel={onCancel} hideDismiss gated hasPin={hasPin} />
       <CustodyPanel phrase={phrase} />
       <HelpChip surface="phrase" />
     </div>

@@ -71,8 +71,11 @@ export function useExports({
     runExport('md', () => baseExportSingleMarkdown(n, imageStoreRef.current, userSettings.folders));
   const exportSingleHtml = (n: LocalNote) =>
     runExport('html', () => baseExportSingleHtml(n, imageStoreRef.current, userSettings.folders));
+  // Both bulk zips open the progress window and both report the same two
+  // phases. An empty opening status is deliberate: the modal owns the
+  // "Preparing..." wording, in every language.
   const exportAllMarkdownZip = async (ns: LocalNote[]) => {
-    setExportProgress({ status: 'Preparing...', done: false });
+    setExportProgress({ status: '', done: false });
     await runExport('md-zip', async () => {
       await baseExportAllMarkdownZip(ns, imageStoreRef.current, attachmentStoreRef.current, (msg) => {
         setExportProgress({ status: msg, done: false });
@@ -81,7 +84,7 @@ export function useExports({
     });
   };
   const exportEncryptedFullBackup = async (ns: LocalNote[]) => {
-    setExportProgress({ status: 'Preparing...', done: false });
+    setExportProgress({ status: '', done: false });
     await runExport('encrypted-zip', async () => {
       await baseExportEncryptedFullBackup(ns, imageStoreRef.current, attachmentStoreRef.current, auth.encryptionKey, (msg) => {
         setExportProgress({ status: msg, done: false });
@@ -105,8 +108,15 @@ export function useExports({
       throw new Error(i18n.t('importExport:decryptErrors.notThisAccount'));
     }
   };
-  const exportAllHtmlZip = (ns: LocalNote[]) =>
-    runExport('html-zip', () => baseExportAllHtmlZip(ns, imageStoreRef.current, userSettings.folders));
+  const exportAllHtmlZip = async (ns: LocalNote[]) => {
+    setExportProgress({ status: '', done: false });
+    await runExport('html-zip', async () => {
+      await baseExportAllHtmlZip(ns, imageStoreRef.current, userSettings.folders, (msg) => {
+        setExportProgress({ status: msg, done: false });
+      });
+      setExportProgress({ status: '', done: true });
+    });
+  };
   const exportAllJson = (ns: LocalNote[]) =>
     runExport('json', () => baseExportAllJson(ns, userSettings.folders));
   const exportEncryptedBackup = (ns: LocalNote[]) =>

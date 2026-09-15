@@ -45,7 +45,6 @@
     "keys": "키"
   },
   "journal": {
-    "backfillHover": "최근 날짜의 새 저널",
     "newEntry": "새 저널 항목",
     "newEntryHover": "새 저널 항목 ({{hotkey}})"
   },
@@ -239,7 +238,11 @@
   },
   "bulkTrash": {
     "title": "휴지통으로 이동",
-    "body_other": "<highlight>항목 {{count}}개</highlight>를 휴지통으로 옮길까요? 나중에 복원할 수 있어요."
+    "body_other": "<highlight>항목 {{count}}개</highlight>를 휴지통으로 옮길까요? 나중에 복원할 수 있어요.",
+    "readOnlyTitle": "읽기 전용",
+    "readOnlyAcknowledge": "알겠어요",
+    "readOnlyBlocked_other": "<highlight>항목 {{count}}개</highlight>가 읽기 전용이라 휴지통으로 옮길 수 없어요. 먼저 노트 옵션에서 읽기 전용을 꺼 주세요.",
+    "readOnlySkipped_other": "<highlight>항목 {{count}}개</highlight>는 읽기 전용이라 그대로 남아요."
   },
   "bulkDelete": {
     "body_other": "<highlight>노트 {{count}}개</highlight>를 영구 삭제할까요? 이 작업은 되돌릴 수 없어요."

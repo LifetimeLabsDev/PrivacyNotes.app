@@ -340,8 +340,12 @@ export function ContextMenu({
               {item.icon}
             </span>
             <span className="flex-1 truncate">{item.label}</span>
+            {/* The word turns white on a hovered row for the same reason the
+                check mark does: the band underneath it IS the accent, so an
+                accent word on it is invisible. The rocket keeps the Pro
+                colour from inside, which is a fixed token either way. */}
             {item.pro && (
-              <span className="shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold text-accent">
+              <span className={`shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold ${active ? 'text-white' : 'text-accent'}`}>
                 <IconUpgrade size={12} /> Pro
               </span>
             )}

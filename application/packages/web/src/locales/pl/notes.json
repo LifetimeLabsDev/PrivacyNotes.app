@@ -45,7 +45,6 @@
     "keys": "Klucze"
   },
   "journal": {
-    "backfillHover": "Nowy dziennik za miniony dzień",
     "newEntry": "Nowy wpis w dzienniku",
     "newEntryHover": "Nowy wpis w dzienniku ({{hotkey}})"
   },
@@ -248,7 +247,17 @@
     "body_one": "Przenieść <highlight>{{count}} element</highlight> do kosza? Możesz go później przywrócić.",
     "body_other": "Przenieść <highlight>{{count}} elementu</highlight> do kosza? Możesz je później przywrócić.",
     "body_few": "Przenieść <highlight>{{count}} elementy</highlight> do kosza? Możesz je później przywrócić.",
-    "body_many": "Przenieść <highlight>{{count}} elementów</highlight> do kosza? Możesz je później przywrócić."
+    "body_many": "Przenieść <highlight>{{count}} elementów</highlight> do kosza? Możesz je później przywrócić.",
+    "readOnlyTitle": "Tylko do odczytu",
+    "readOnlyAcknowledge": "Rozumiem",
+    "readOnlyBlocked_one": "Ten element jest <highlight>tylko do odczytu</highlight>, więc nie trafi do kosza. Najpierw wyłącz tryb tylko do odczytu w opcjach notatki.",
+    "readOnlyBlocked_other": "Wszystkie <highlight>{{count}} elementy</highlight> są tylko do odczytu, więc żaden nie trafi do kosza. Najpierw wyłącz tryb tylko do odczytu w opcjach notatki.",
+    "readOnlySkipped_one": "<highlight>{{count}} element</highlight> jest tylko do odczytu i zostaje na miejscu.",
+    "readOnlySkipped_other": "<highlight>{{count}} elementy</highlight> są tylko do odczytu i zostają na miejscu.",
+    "readOnlyBlocked_few": "Wszystkie <highlight>{{count}} elementy</highlight> są tylko do odczytu, więc żaden nie trafi do kosza. Najpierw wyłącz tryb tylko do odczytu w opcjach notatki.",
+    "readOnlyBlocked_many": "<highlight>{{count}} elementów</highlight> jest tylko do odczytu, więc żaden nie trafi do kosza. Najpierw wyłącz tryb tylko do odczytu w opcjach notatki.",
+    "readOnlySkipped_few": "<highlight>{{count}} elementy</highlight> są tylko do odczytu i zostają na miejscu.",
+    "readOnlySkipped_many": "<highlight>{{count}} elementów</highlight> jest tylko do odczytu i zostaje na miejscu."
   },
   "bulkDelete": {
     "body_one": "Trwale usunąć <highlight>{{count}} notatkę</highlight>? Tej operacji nie można cofnąć.",

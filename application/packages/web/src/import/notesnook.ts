@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { zipEntryText } from './zipEntry';
 import type { FolderDef } from '../folders';
 import { normalizeTag } from '../notesRepo';
 import { FRONT_MATTER } from '../markdownFolder/adapter';
@@ -8,6 +9,7 @@ import { BARE_LINKABLE_RE, linkifyMarkdown } from './linkify';
 // an href to a note TITLE. The shared one sanitizes a title into a writable
 // link target. Two different jobs, one obvious name.
 import { noteLinkTarget as sanitizeLinkTarget } from '../noteLinks';
+import { isUntitledStem } from '../exportNames';
 import { importBlobs, mimeFromExt } from './blobImport';
 import type { ImportedNote, ParsedImport } from './types';
 
@@ -787,11 +789,12 @@ function readHtmlNote(text: string, rel: string, fileDate: Date | null): RawNote
   };
 }
 
-/** Title from a Notesnook filename slug ("Sub4-Note-Title.md"). */
+/** Title from a Notesnook filename slug ("Sub4-Note-Title.md"), or '' when the
+ *  slug is only Notesnook's default name for an unnamed note - see
+ *  `isUntitledStem`. */
 function titleFromFilename(rel: string): string {
   const base = (rel.split('/').pop() ?? rel).replace(/\.(html?|md)$/i, '').trim();
-  if (!base || base.toLowerCase() === 'untitled') return '';
-  return base;
+  return isUntitledStem(base) ? '' : base;
 }
 
 /**
@@ -1008,7 +1011,7 @@ async function parseZip(
   let hadFrontMatter = false;
   for (let i = 0; i < noteFiles.length; i++) {
     const [rel, entry] = noteFiles[i]!;
-    const text = await entry.async('string');
+    const text = await zipEntryText(entry);
     const fileDate = entry.date ?? null;
     if (format === 'html') {
       raws.push(readHtmlNote(text, rel, fileDate));

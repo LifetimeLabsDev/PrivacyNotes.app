@@ -1,6 +1,6 @@
 # Threat Model
 
-Last updated: 2026-08-31 (v0.488.3, local storage at rest: note content sealed on device; SECURITY.md links here)
+Last updated: 2026-09-15 (v0.517.1, three clarifications from the second-family audit: what a server with write access can do to a ciphertext, the BIP-39 salt and entropy, and a program under your own user account as device compromise; previous 2026-08-31, v0.488.3, local storage at rest)
 
 This document describes the security assumptions, trust boundaries, and known limitations of PrivacyNotes, for auditors, contributors, and users who want to know exactly what the system protects against and what it does not.
 
@@ -25,7 +25,7 @@ Under self-custody, which is the default, the phrase, private signing key, and e
 
 ### Partially trusted
 
-- **Supabase (server + database).** Sees pubkeys, ciphertext, nonces, timestamps, and the metadata listed above. Cannot read content. A compromised server can delete data, serve stale data, and observe access patterns (which pubkey syncs when, note count, ciphertext sizes); it cannot forge or decrypt notes.
+- **Supabase (server + database).** Sees pubkeys, ciphertext, nonces, timestamps, and the metadata listed above. Cannot read content. A compromised server can delete data, serve stale data, and observe access patterns (which pubkey syncs when, note count, ciphertext sizes). It cannot decrypt notes, and it cannot forge one from nothing. With database write access it can move one of your existing ciphertexts onto another of your rows, because the wire format carries no row binding yet (see "Known limitation: no AAD" below).
 - **Cloudflare (CDN + Workers).** Serves the frontend bundle. A compromised deployment could serve malicious JS that exfiltrates the phrase - the standard supply-chain risk for any web app. Desktop (Tauri) builds bundle the frontend locally, which mitigates this.
 - **Paddle (payment processor).** Receives transaction metadata, no note content. Webhooks verified via HMAC-SHA256.
 
@@ -40,14 +40,14 @@ Under self-custody, which is the default, the phrase, private signing key, and e
 
 ```
 BIP-39 phrase (128 bits entropy)
-  → mnemonicToSeedSync (PBKDF2-HMAC-SHA512, 2048 iterations, passphrase="mnemonic")
-  → 64-byte seed
+  → mnemonicToSeedSync (PBKDF2-HMAC-SHA512, 2048 iterations, salt "mnemonic", passphrase empty)
+  → 64-byte seed (a stretch of the 128 bits above, not new entropy)
   → HKDF-SHA256(seed, salt=none, info="privacynotes-signing-v1")       → 32-byte Ed25519 private key
   → HKDF-SHA256(seed, salt=none, info="privacynotes-encryption-v1")    → 32-byte symmetric key
   → HKDF-SHA256(seed, salt=none, info="privacynotes-auth-password-v1") → 32-byte session credential
 ```
 
-**HKDF salt is omitted.** Per RFC 5869, an absent salt is a zero-filled string. Acceptable here: the input keying material is a 512-bit seed, and domain separation comes from the info strings. An explicit salt could be added in a future derivation version but would not meaningfully improve security.
+**HKDF salt is omitted.** Per RFC 5869, an absent salt is a zero-filled string. Acceptable here: the input keying material is the 64-byte seed above, which carries the phrase's 128 bits of entropy, and domain separation comes from the info strings. An explicit salt could be added in a future derivation version but would not meaningfully improve security.
 
 **The session credential is a login secret, not a key.** Returning devices re-mint their Supabase session by password grant against the account's existing auth user, using the auth-password HKDF branch (hex-encoded) as the password and the deterministic identifier `<pubkey>@phrase.privacynotes.app` as the login email. That address is an identifier in email shape: the domain receives no mail, and the server derives it from the signature-verified pubkey, never from client input. The server stores only a bcrypt hash of the credential; recovering the seed from it is not possible, and holding the credential grants exactly what holding a session grants - access to ciphertext the phrase holder could already fetch. Anonymous sign-in is used only for an account's first session.
 
@@ -169,7 +169,7 @@ The user explicitly opts to store their phrase server-side, encrypted with AES-2
 
 ## Out-of-scope threats
 
-- **Device compromise:** OS-level malware, keyloggers, memory or storage inspection.
+- **Device compromise:** OS-level malware, keyloggers, memory or storage inspection. A hostile program running under your own user account counts as device compromise: it has the same access to the app's storage and keys as the app itself.
 - **Supply-chain attacks on the web bundle:** a compromised CDN could serve malicious JS. Mitigated for desktop (bundled frontend); SRI / reproducible builds not yet implemented for web.
 - **Denial of service** against Cloudflare or Supabase.
 - **Clipboard exposure:** once a secret is copied, the OS clipboard is outside our control. We deliberately make no clipboard-wipe claims; a timed wipe from a background tab is unreliable and would be security theater.

@@ -45,7 +45,6 @@
     "keys": "Claves"
   },
   "journal": {
-    "backfillHover": "Nuevo diario para un día reciente",
     "newEntry": "Nueva entrada del diario",
     "newEntryHover": "Nueva entrada del diario ({{hotkey}})"
   },
@@ -242,7 +241,13 @@
   "bulkTrash": {
     "title": "Mover a la papelera",
     "body_one": "¿Mover <highlight>{{count}} elemento</highlight> a la papelera? Puedes restaurarlo más tarde.",
-    "body_other": "¿Mover <highlight>{{count}} elementos</highlight> a la papelera? Puedes restaurarlos más tarde."
+    "body_other": "¿Mover <highlight>{{count}} elementos</highlight> a la papelera? Puedes restaurarlos más tarde.",
+    "readOnlyTitle": "Solo lectura",
+    "readOnlyAcknowledge": "Entendido",
+    "readOnlyBlocked_one": "Este elemento es de <highlight>solo lectura</highlight>, así que no puede ir a la papelera. Desactiva solo lectura en las opciones de la nota primero.",
+    "readOnlyBlocked_other": "Los <highlight>{{count}} elementos</highlight> son de solo lectura, así que ninguno puede ir a la papelera. Desactiva solo lectura en las opciones de la nota primero.",
+    "readOnlySkipped_one": "<highlight>{{count}} elemento</highlight> es de solo lectura y se queda donde está.",
+    "readOnlySkipped_other": "<highlight>{{count}} elementos</highlight> son de solo lectura y se quedan donde están."
   },
   "bulkDelete": {
     "body_one": "¿Eliminar de forma permanente <highlight>{{count}} nota</highlight>? Esto no se puede deshacer.",

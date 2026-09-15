@@ -169,7 +169,7 @@ Sign in with Google, Apple or GitHub and the email the provider shares with us i
 
 ### Browser-delivered code
 
-Published source does not prove that the JavaScript your browser ran today came from it: anyone controlling our hosting could serve modified code, per user or per region. That is structural to every web app. What narrows it: the signed native builds (macOS notarized, Windows Authenticode, Linux signed AppImage and deb, Android certificate-pinned APK) are fixed artifacts that cannot change under you between visits - **if your threat model includes us being coerced, prefer them** - and the derivation constants stay findable in the served bundle, as above. Subresource Integrity and reproducible web builds have not shipped yet.
+Published source does not prove that the JavaScript your browser ran today came from it: anyone controlling our hosting could serve modified code, per user or per region. That is structural to every web app. What narrows it: the signed native builds (macOS notarized, Windows Authenticode, Linux signed AppImage, Android certificate-pinned APK) are fixed artifacts that cannot change under you between visits - **if your threat model includes us being coerced, prefer them** - and the derivation constants stay findable in the served bundle, as above. Subresource Integrity and reproducible web builds have not shipped yet.
 
 ### Things we cannot help with
 

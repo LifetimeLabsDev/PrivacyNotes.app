@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { zipEntryText } from './zipEntry';
 import { normalizeTag } from '../notesRepo';
 import { linkifyMarkdown } from './linkify';
 import { importBlobs } from './blobImport';
@@ -427,7 +428,7 @@ async function extractKeepNotes(
 
     onProgress?.(`Reading ${jsonEntries.length} JSON file${jsonEntries.length === 1 ? '' : 's'}…`);
     for (const entry of jsonEntries) {
-      const text = await entry.async('string');
+      const text = await zipEntryText(entry);
       if (!looksLikeKeepNote(text)) continue;
       noteBlobs.push({ name: entry.name, text });
     }

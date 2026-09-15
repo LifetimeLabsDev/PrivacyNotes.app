@@ -1654,3 +1654,111 @@ export const MixedListSplitter = Extension.create({
     };
   },
 });
+
+/**
+ * The note's markdown, rewritten for the clipboard.
+ *
+ * The plain-text flavour of a copy is the lossy one. The HTML flavour beside
+ * it carries the exact document, so this is what a reader sees when they paste
+ * into something that is not a markdown editor at all, and its job is to look
+ * like the screen they copied from. Three things stand between the file and
+ * that, and each is a spelling the file needs and the screen does not.
+ *
+ * A hard break is written `\` in the file and two trailing spaces here. Both
+ * are the same CommonMark break. The file keeps the backslash because a
+ * trailing space is the one character every "trim whitespace on save" tool
+ * eats, and a note in a Markdown folder is opened by other editors; the
+ * clipboard takes the invisible spelling because most paste targets simply
+ * print the backslash at the end of every line.
+ *
+ * An empty paragraph is written `&nbsp;`, the only way a file can record one,
+ * and it arrives in a plain editor as those six literal characters. Here it
+ * becomes a blank line, and a run of blank lines is capped at two so the gap
+ * stays about the size it looked.
+ *
+ * A paragraph break is written as a blank line, and with the gap set to
+ * nothing the screen has no blank line to show. So `tightParagraphs` joins two
+ * adjacent paragraphs with a break instead, and the pasted text then has the
+ * same line count as the note. Every other pair of blocks keeps the blank
+ * line, which is why this walks the blocks rather than the string: a blank
+ * line before a list, a heading or a code fence means something else.
+ *
+ * The accepted cost: what this writes says "lines" where the note says
+ * "paragraphs", so a markdown reader lays out a tight copy as one paragraph
+ * and a spacer paragraph is gone. Nothing a person sees moves, the stored note
+ * is untouched, and a target that understands a document reads the HTML
+ * flavour instead.
+ */
+export function markdownForClipboard(
+  content: Fragment,
+  serialize: (fragment: Fragment) => string,
+  tightParagraphs: boolean,
+): string {
+  const blocks: { node: ProseMirrorNode; md: string }[] = [];
+  let at = 0;
+  content.forEach((node) => {
+    const md = serialize(content.cut(at, at + node.nodeSize));
+    // An empty paragraph is a blank line here, never its file spelling.
+    blocks.push({ node, md: md === EMPTY_PARAGRAPH_MARKDOWN ? '' : md });
+    at += node.nodeSize;
+  });
+
+  let joined = '';
+  for (let i = 0; i < blocks.length; i++) {
+    const cur = blocks[i]!;
+    if (i > 0) {
+      const prev = blocks[i - 1]!.node;
+      const tight =
+        tightParagraphs && prev.type.name === 'paragraph' && cur.node.type.name === 'paragraph';
+      joined += tight ? '  \n' : '\n\n';
+    }
+    joined += cur.md;
+  }
+  return tidyClipboardLines(joined);
+}
+
+/** How ParagraphWithMarkdown writes a paragraph with nothing in it. */
+const EMPTY_PARAGRAPH_MARKDOWN = '&nbsp;';
+
+/**
+ * The per-line half of the rewrite above: backslash breaks, stray `&nbsp;`
+ * from a paragraph nested inside a list item or a callout, and blank runs.
+ *
+ * Fenced code is left alone throughout, because a shell line continuation
+ * ends in exactly the same two characters as a hard break and is the author's
+ * own text. Outside a fence, the parity of a trailing backslash run is what
+ * separates a break from an escape, since the serializer writes `\\` for a
+ * backslash the reader typed. A backslash on the final line ends no line and
+ * is therefore not a break either.
+ */
+function tidyClipboardLines(markdown: string): string {
+  const lines = markdown.split('\n');
+  const out: string[] = [];
+  let fence = '';
+  let blanks = 0;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]!;
+    const mark = /^ {0,3}(`{3,}|~{3,})/.exec(line)?.[1];
+    if (mark) {
+      if (!fence) fence = mark;
+      else if (mark[0] === fence[0] && mark.length >= fence.length) fence = '';
+      out.push(line);
+      blanks = 0;
+      continue;
+    }
+    if (fence) {
+      out.push(line);
+      continue;
+    }
+    const text = line === EMPTY_PARAGRAPH_MARKDOWN ? '' : line;
+    if (text === '') {
+      blanks += 1;
+      if (blanks <= 2) out.push('');
+      continue;
+    }
+    blanks = 0;
+    const trail = i === lines.length - 1 ? undefined : /\\+$/.exec(text)?.[0];
+    out.push(trail && trail.length % 2 === 1 ? `${text.slice(0, -1)}  ` : text);
+  }
+  return out.join('\n');
+}

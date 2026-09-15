@@ -45,7 +45,6 @@
     "keys": "Schlüssel"
   },
   "journal": {
-    "backfillHover": "Neues Tagebuch für einen vergangenen Tag",
     "newEntry": "Neuer Tagebucheintrag",
     "newEntryHover": "Neuer Tagebucheintrag ({{hotkey}})"
   },
@@ -242,7 +241,13 @@
   "bulkTrash": {
     "title": "In den Papierkorb",
     "body_one": "<highlight>{{count}} Eintrag</highlight> in den Papierkorb verschieben? Du kannst ihn später wiederherstellen.",
-    "body_other": "<highlight>{{count}} Einträge</highlight> in den Papierkorb verschieben? Du kannst sie später wiederherstellen."
+    "body_other": "<highlight>{{count}} Einträge</highlight> in den Papierkorb verschieben? Du kannst sie später wiederherstellen.",
+    "readOnlyTitle": "Schreibgeschützt",
+    "readOnlyAcknowledge": "Verstanden",
+    "readOnlyBlocked_one": "Dieser Eintrag ist <highlight>schreibgeschützt</highlight> und kann nicht in den Papierkorb. Schalte den Schreibschutz zuerst in den Notizoptionen aus.",
+    "readOnlyBlocked_other": "Alle <highlight>{{count}} Einträge</highlight> sind schreibgeschützt, also kann keiner in den Papierkorb. Schalte den Schreibschutz zuerst in den Notizoptionen aus.",
+    "readOnlySkipped_one": "<highlight>{{count}} Eintrag</highlight> ist schreibgeschützt und bleibt, wo er ist.",
+    "readOnlySkipped_other": "<highlight>{{count}} Einträge</highlight> sind schreibgeschützt und bleiben, wo sie sind."
   },
   "bulkDelete": {
     "body_one": "<highlight>{{count}} Notiz</highlight> endgültig löschen? Das kann nicht rückgängig gemacht werden.",

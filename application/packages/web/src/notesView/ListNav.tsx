@@ -9,7 +9,7 @@ import { isViewShown, type View } from '../views';
 
 /**
  * The left-hand cluster of a list pane's h-14 title row: drawer button, view
- * icon, view title, and (below lg) a pillar switcher hanging off the title.
+ * icon, view title, and a pillar switcher hanging off the title.
  *
  * This replaces the separate mobile wordmark bar that used to sit above the
  * title row. Two rows both said "Notes" - one as a pillar pill, one as the
@@ -26,8 +26,11 @@ import { isViewShown, type View } from '../views';
  * happens to render first. Keep it on the root, not here.
  * Spec: ops/docs/ui-patterns.md section 51.
  *
- * At lg+ the title renders exactly as it always did: icon, heading, no caret,
- * not clickable (the sidebar owns pillar switching there).
+ * The switcher is live at every width. Below lg it is the only pillar control,
+ * because the rail sits behind the drawer. At lg and above it stands beside the
+ * rail rather than replacing it: the same gesture works whatever the window
+ * size, and the rail's Content section can be collapsed so tags and folders own
+ * that space. GitHub #325.
  */
 export function ListNav({
   view,
@@ -39,8 +42,8 @@ export function ListNav({
 }: {
   view: View;
   onSelectView: (next: View) => void;
-  /** Views switched off in the sidebar options menu. The phone has no rail,
-   *  so this dropdown is where that setting shows up here.
+  /** Views switched off in the sidebar options menu. This dropdown honours the
+   *  same setting the rail does, so one hidden view is hidden in both.
    *  Spec: ops/docs/plans/sidebar-views.md */
   hiddenViews?: View[] | undefined;
   onOpenDrawer: () => void;
@@ -61,20 +64,22 @@ export function ListNav({
       >
         <List size={20} />
       </button>
-      {/* One element for both breakpoints: `lg:pointer-events-none` retires
-          the switcher at lg (where the sidebar owns it) without duplicating
-          the icon + heading markup for a second, non-interactive copy. */}
+      {/* One element for both breakpoints, with no second copy of the icon +
+          heading markup. Two copies drift. The negative margin keeps the icon
+          on the same x as the pane below it, which the hover padding would
+          otherwise shift, and the hover tint is gated on a real pointer so a
+          tap does not leave it stuck on a phone. */}
       <button
         ref={buttonRef}
         type="button"
         onClick={() => setOpen(o => !o)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex items-center gap-2 min-w-0 lg:pointer-events-none"
+        className="flex items-center gap-2 min-w-0 cursor-pointer rounded-lg px-1.5 py-1 -mx-1.5 transition-colors [@media(hover:hover)]:hover:bg-neutral-200/70 [@media(hover:hover)]:dark:hover:bg-neutral-800/70"
       >
         {icon}
         <h2 className="text-lg font-semibold tracking-tight truncate">{title}</h2>
-        <CaretDown className={`lg:hidden shrink-0 text-neutral-500 dark:text-neutral-400 transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
+        <CaretDown className={`shrink-0 text-neutral-500 dark:text-neutral-400 transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
         <ViewMenu

@@ -45,7 +45,6 @@
     "keys": "Sleutels"
   },
   "journal": {
-    "backfillHover": "Nieuw dagboek voor een recente dag",
     "newEntry": "Nieuwe dagboeknotitie",
     "newEntryHover": "Nieuwe dagboeknotitie ({{hotkey}})"
   },
@@ -242,7 +241,13 @@
   "bulkTrash": {
     "title": "Naar prullenbak",
     "body_one": "<highlight>{{count}} item</highlight> naar de prullenbak verplaatsen? Je kunt het later herstellen.",
-    "body_other": "<highlight>{{count}} items</highlight> naar de prullenbak verplaatsen? Je kunt ze later herstellen."
+    "body_other": "<highlight>{{count}} items</highlight> naar de prullenbak verplaatsen? Je kunt ze later herstellen.",
+    "readOnlyTitle": "Alleen-lezen",
+    "readOnlyAcknowledge": "Begrepen",
+    "readOnlyBlocked_one": "Dit item is <highlight>alleen-lezen</highlight> en kan dus niet naar de prullenbak. Zet alleen-lezen eerst uit in de notitieopties.",
+    "readOnlyBlocked_other": "Alle <highlight>{{count}} items</highlight> zijn alleen-lezen, dus geen enkel item kan naar de prullenbak. Zet alleen-lezen eerst uit in de notitieopties.",
+    "readOnlySkipped_one": "<highlight>{{count}} item</highlight> is alleen-lezen en blijft waar het is.",
+    "readOnlySkipped_other": "<highlight>{{count}} items</highlight> zijn alleen-lezen en blijven waar ze zijn."
   },
   "bulkDelete": {
     "body_one": "<highlight>{{count}} notitie</highlight> definitief verwijderen? Dit kan niet ongedaan worden gemaakt.",

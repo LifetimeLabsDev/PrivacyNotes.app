@@ -12,7 +12,7 @@
  * variants would risk holding stale closures over `view`, `theme` etc.
  */
 
-import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
+import type { Dispatch, MutableRefObject, ReactNode, SetStateAction } from 'react';
 import i18n from '../i18n';
 import type { ContextMenuItem } from '../ContextMenu';
 import type { LocalNote } from '../db';
@@ -20,11 +20,11 @@ import {
   iconBookmark, iconCheckbox, iconCopy, iconDownload, iconEditPencil,
   iconExternal, iconFlame, iconFolder,
   iconNewJournal, iconNewLogin, iconNewTask,
-  iconNote, iconPin, iconReadOnly, iconRestore, iconSettings,
+  iconNote, iconPin, iconReadOnly, iconRestore, iconSettings, iconTag,
   iconShield, iconSidebar,
   iconSignOut, iconTrash, iconUpload, iconZen, NEW_GLYPHS, EXPORT_GLYPHS,
 } from '../icons';
-import { noteActionGuards } from '../noteActionGuards';
+import { bulkActionGuards, noteActionGuards } from '../noteActionGuards';
 import type { ImageStore } from '../imageStore';
 import type { View } from '../views';
 
@@ -71,6 +71,25 @@ export type ContextMenuDeps = {
   // Multi-select (used by buildNoteMenu for Select / Deselect)
   selectedIds: Set<string>;
   onToggleSelected: (id: string) => void;
+  /** What a row does to a whole selection. Each is the handler the
+   *  selection toolbar already calls, and each reads the current selection
+   *  itself, so none of them takes a list of ids. */
+  selectionAllStarred: boolean;
+  selectionAllLocked: boolean;
+  selectionAllProtected: boolean;
+  onClearSelection: () => void;
+  onBulkFavorite: () => void;
+  onBulkMoveToFolder: () => void;
+  onBulkDuplicate: () => void;
+  onBulkExportMarkdown: () => void;
+  onBulkExportHtml: () => void;
+  onBulkSetLocked: (locked: boolean) => void;
+  onBulkSetPinProtected: (pinProtected: boolean) => void;
+  onRequestBulkUnprotect: () => void;
+  onBulkRestore: () => void;
+  onBulkDelete: () => void;
+  /** Opens the tag picker for these ids at the point that was clicked. */
+  onTagPicker: (ids: string[]) => void;
 
   // Per-note actions (used by buildNoteMenu)
   handleRestore: (id: string) => Promise<void> | void;
@@ -198,142 +217,281 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
   ];
 
   /**
-   * Per-note menu. Different items when viewing the trash: restore +
-   * "Delete Forever" (permanent delete, skips trash).
+   * The menu for a right-click on a row that is one of several selected
+   * ones. Every verb here acts on the whole selection, which is the only
+   * reading of a menu opened over rows that all look picked. It offers
+   * the selection toolbar's actions and takes their labels, so the two
+   * surfaces cannot name the same action differently. (GitHub #188)
    */
-  const buildNoteMenu = (n: LocalNote): ContextMenuItem[] => {
-    const isSelected = deps.selectedIds.has(n.id);
-    if (deps.view === 'trash') {
-      return [
-        {
-          label: isSelected ? i18n.t('shell:contextMenu.deselect') : i18n.t('shell:contextMenu.select'),
-          icon: iconCheckbox(),
-          onSelect: () => deps.onToggleSelected(n.id),
-        },
-        { type: 'separator' },
-        {
-          label: i18n.t('shell:contextMenu.restore'),
-          icon: iconRestore(),
-          success: true,
-          onSelect: () => void deps.handleRestore(n.id),
-        },
-        { type: 'separator' },
-        {
-          label: i18n.t('shell:contextMenu.deleteForever'),
-          icon: iconTrash(),
-          destructive: true,
-          onSelect: () => deps.requestDeleteConfirm(n.id, n.title || ''),
-        },
-      ];
+  /**
+   * Which items a menu is being built for. Every row reads this instead of
+   * closing over one note, which is what lets one list serve both cases.
+   */
+  type Scope =
+    | { kind: 'one'; note: LocalNote; isSelected: boolean }
+    | { kind: 'many'; ids: string[] };
+
+  /**
+   * A row's answer when it has no meaning for a selection. The reason is
+   * the documentation: a reader of the list sees why the row is absent
+   * without hunting for the code that drops it.
+   */
+  type OneItemOnly = { readonly oneItemOnly: string };
+  const oneItemOnly = (reason: string): OneItemOnly => ({ oneItemOnly: reason });
+  const isOneItemOnly = (v: RowSpec['many']): v is OneItemOnly =>
+    typeof v === 'object' && v !== null && 'oneItemOnly' in v;
+
+  /**
+   * One row of a note menu.
+   *
+   * `many` is required and has no default. That is the whole anti-drift
+   * mechanism: a row cannot be added without saying what it means for a
+   * selection, and "nothing" is a value that carries its reason rather
+   * than an omission nobody notices. The two menus drifted apart once
+   * because they were two lists; there is one list now.
+   */
+  type RowSpec = {
+    label: (s: Scope) => string;
+    icon: (s: Scope) => ReactNode;
+    checked?: (s: Scope) => boolean;
+    pro?: boolean;
+    destructive?: boolean;
+    success?: boolean;
+    /** Rows that belong to certain items only, such as the bookmark verbs. */
+    when?: (s: Scope) => boolean;
+    one: (n: LocalNote) => void;
+    many: ((ids: string[]) => void) | OneItemOnly;
+  };
+
+  /**
+   * Turn groups of rows into a menu for one scope. Separators come from the
+   * grouping rather than from hand-placed entries, so a filtered-out row can
+   * never leave a doubled or leading rule behind.
+   */
+  function renderRows(groups: RowSpec[][], s: Scope): ContextMenuItem[] {
+    const out: ContextMenuItem[] = [];
+    for (const group of groups) {
+      const rows = group.filter((r) => {
+        if (r.when && !r.when(s)) return false;
+        return !(s.kind === 'many' && isOneItemOnly(r.many));
+      });
+      if (rows.length === 0) continue;
+      if (out.length > 0) out.push({ type: 'separator' });
+      for (const r of rows) {
+        out.push({
+          label: r.label(s),
+          icon: r.icon(s),
+          ...(r.checked ? { checked: r.checked(s) } : {}),
+          ...(r.pro ? { pro: true } : {}),
+          ...(r.destructive ? { destructive: true } : {}),
+          ...(r.success ? { success: true } : {}),
+          onSelect: () => {
+            if (s.kind === 'one') { r.one(s.note); return; }
+            if (isOneItemOnly(r.many)) return;
+            r.many(s.ids);
+          },
+        });
+      }
     }
-    const starred = n.starred === 1;
-    // The same gates the "..." options menu runs, so the two surfaces cannot
-    // drift on who may lock a note and what a protect toggle asks for first.
-    const guards = noteActionGuards({
-      note: n,
-      isPro: deps.isPro,
-      onClose: () => { /* the context menu closes itself after onSelect */ },
-      onSetLocked: (locked) => void deps.handleSetLocked(n.id, locked),
-      onSetPinProtected: (p) => void deps.handleSetPinProtected(n.id, p),
-      onRequestRemoveProtection: () => deps.requestRemoveProtection(n.id),
-      onOpenUpgrade: (trigger) => deps.onOpenUpgrade(trigger ?? ''),
-      onSetPin: deps.onSetPin,
-    });
-    // Bookmark rows lead with their own verbs; the standard entries follow.
-    const linkItems: ContextMenuItem[] = n.type === 'link'
-      ? [
-          {
-            label: i18n.t('shell:contextMenu.openBookmark'),
-            icon: iconExternal(),
-            onSelect: () => deps.onOpenBookmark(n),
-          },
-          {
-            label: i18n.t('shell:contextMenu.copyBookmarkUrl'),
-            icon: iconCopy(),
-            onSelect: () => deps.onCopyBookmarkUrl(n),
-          },
-          {
-            label: i18n.t('shell:contextMenu.editBookmark'),
-            icon: iconEditPencil(),
-            onSelect: () => deps.onEditBookmark(n),
-          },
-          { type: 'separator' },
-        ]
-      : [];
-    return [
-      ...linkItems,
+    return out;
+  }
+
+  /** The Pro and PIN gates for a selection, the twin of the per-note ones. */
+  const bulkGuards = () => bulkActionGuards({
+    isPro: deps.isPro,
+    allLocked: deps.selectionAllLocked,
+    allProtected: deps.selectionAllProtected,
+    onSetLocked: (locked) => deps.onBulkSetLocked(locked),
+    onSetPinProtected: (p) => deps.onBulkSetPinProtected(p),
+    onRequestRemoveProtection: () => deps.onRequestBulkUnprotect(),
+    onOpenUpgrade: (trigger) => deps.onOpenUpgrade(trigger ?? ''),
+    onSetPin: deps.onSetPin,
+    onClose: () => { /* the context menu closes itself after onSelect */ },
+  });
+
+  /** The same gates for one note, so the two surfaces cannot drift on who
+   *  may lock a note and what a protect toggle asks for first. */
+  const noteGuards = (n: LocalNote) => noteActionGuards({
+    note: n,
+    isPro: deps.isPro,
+    onClose: () => { /* the context menu closes itself after onSelect */ },
+    onSetLocked: (locked) => void deps.handleSetLocked(n.id, locked),
+    onSetPinProtected: (p) => void deps.handleSetPinProtected(n.id, p),
+    onRequestRemoveProtection: () => deps.requestRemoveProtection(n.id),
+    onOpenUpgrade: (trigger) => deps.onOpenUpgrade(trigger ?? ''),
+    onSetPin: deps.onSetPin,
+  });
+
+  const isLink = (s: Scope) => s.kind === 'one' && s.note.type === 'link';
+
+  /** The selection row: it names the gesture, so it reads differently in
+   *  each scope while staying the same row in the same place. */
+  const selectRow: RowSpec = {
+    label: (s) => s.kind === 'many'
+      ? i18n.t('notes:selection.deselectAll')
+      : s.isSelected ? i18n.t('shell:contextMenu.deselect') : i18n.t('shell:contextMenu.select'),
+    icon: () => iconCheckbox(),
+    one: (n) => deps.onToggleSelected(n.id),
+    many: () => deps.onClearSelection(),
+  };
+
+  /** The rows a note menu offers outside the trash, in groups. */
+  const NOTE_GROUPS: RowSpec[][] = [
+    [
       {
-        label: isSelected ? i18n.t('shell:contextMenu.deselect') : i18n.t('shell:contextMenu.select'),
-        icon: iconCheckbox(),
-        onSelect: () => deps.onToggleSelected(n.id),
+        label: () => i18n.t('shell:contextMenu.openBookmark'),
+        icon: () => iconExternal(),
+        when: isLink,
+        one: (n) => deps.onOpenBookmark(n),
+        many: oneItemOnly('a bookmark opens one tab'),
       },
-      { type: 'separator' },
       {
-        label: starred ? i18n.t('shell:contextMenu.unpin') : i18n.t('shell:contextMenu.pin'),
-        icon: iconPin(starred),
-        onSelect: () => void deps.handleToggleStar(n.id, !starred),
+        label: () => i18n.t('shell:contextMenu.copyBookmarkUrl'),
+        icon: () => iconCopy(),
+        when: isLink,
+        one: (n) => deps.onCopyBookmarkUrl(n),
+        many: oneItemOnly('the clipboard holds one address'),
+      },
+      {
+        label: () => i18n.t('shell:contextMenu.editBookmark'),
+        icon: () => iconEditPencil(),
+        when: isLink,
+        one: (n) => deps.onEditBookmark(n),
+        many: oneItemOnly('the bookmark editor takes one bookmark'),
+      },
+    ],
+    [selectRow],
+    [
+      {
+        label: (s) => (s.kind === 'many' ? deps.selectionAllStarred : s.note.starred === 1)
+          ? i18n.t('shell:contextMenu.unpin')
+          : i18n.t('shell:contextMenu.pin'),
+        icon: (s) => iconPin(s.kind === 'many' ? deps.selectionAllStarred : s.note.starred === 1),
+        one: (n) => void deps.handleToggleStar(n.id, n.starred !== 1),
+        many: () => deps.onBulkFavorite(),
+      },
+      {
+        label: () => i18n.t('shell:selectionToolbar.tag'),
+        icon: () => iconTag(),
+        one: (n) => deps.onTagPicker([n.id]),
+        many: (ids) => deps.onTagPicker(ids),
       },
       // Both labels come from the "..." options menu, because they name the
       // same two switches and one wording for a thing is enough. A trailing
       // check says which way a switch is set, the way a native menu does.
       {
-        label: i18n.t('shell:noteOptionsMenu.readOnly'),
-        icon: iconReadOnly(),
+        label: () => i18n.t('shell:noteOptionsMenu.readOnly'),
+        icon: () => iconReadOnly(),
         pro: !deps.isPro,
-        checked: n.locked === 1,
-        onSelect: () => guards.toggleLock(),
+        checked: (s) => s.kind === 'many' ? deps.selectionAllLocked : s.note.locked === 1,
+        one: (n) => noteGuards(n).toggleLock(),
+        many: () => bulkGuards().toggleLock(),
       },
       {
-        label: i18n.t('shell:noteOptionsMenu.protect'),
-        icon: iconShield(),
+        label: () => i18n.t('shell:noteOptionsMenu.protect'),
+        icon: () => iconShield(),
         pro: !deps.isPro,
-        checked: n.pinProtected === 1,
-        onSelect: () => guards.toggleProtect(),
+        checked: (s) => s.kind === 'many' ? deps.selectionAllProtected : s.note.pinProtected === 1,
+        one: (n) => noteGuards(n).toggleProtect(),
+        many: () => bulkGuards().toggleProtect(),
       },
-      { type: 'separator' },
+    ],
+    [
       {
-        label: i18n.t('shell:contextMenu.duplicate'),
-        icon: iconCopy(),
-        onSelect: () => void deps.handleDuplicate(n.id),
+        label: () => i18n.t('shell:contextMenu.duplicate'),
+        icon: () => iconCopy(),
+        one: (n) => void deps.handleDuplicate(n.id),
+        many: () => deps.onBulkDuplicate(),
       },
       {
-        label: i18n.t('shell:contextMenu.moveToFolder'),
-        icon: iconFolder(),
+        label: () => i18n.t('shell:contextMenu.moveToFolder'),
+        icon: () => iconFolder(),
         pro: !deps.isPro,
-        onSelect: () => {
+        one: (n) => {
           if (!deps.foldersUnlocked) { deps.onOpenUpgrade('folders'); return; }
           deps.onMoveToFolder(n.id);
         },
+        many: () => deps.onBulkMoveToFolder(),
       },
-      { type: 'separator' },
+    ],
+    [
       {
-        label: i18n.t('shell:contextMenu.exportAsMarkdown'),
-        icon: <EXPORT_GLYPHS.markdown size={14} aria-hidden="true" />,
-        onSelect: () => void deps.exportSingleMarkdown(n),
-      },
-      {
-        label: i18n.t('shell:contextMenu.exportAsHtml'),
-        icon: <EXPORT_GLYPHS.html size={14} aria-hidden="true" />,
-        onSelect: () => void deps.exportSingleHtml(n),
+        label: () => i18n.t('shell:contextMenu.exportAsMarkdown'),
+        icon: () => <EXPORT_GLYPHS.markdown size={14} aria-hidden="true" />,
+        one: (n) => void deps.exportSingleMarkdown(n),
+        many: () => deps.onBulkExportMarkdown(),
       },
       {
-        label: i18n.t('shell:contextMenu.printSaveAsPdf'),
-        icon: <EXPORT_GLYPHS.print size={14} aria-hidden="true" />,
-        onSelect: () => void deps.printNote(n),
+        label: () => i18n.t('shell:contextMenu.exportAsHtml'),
+        icon: () => <EXPORT_GLYPHS.html size={14} aria-hidden="true" />,
+        one: (n) => void deps.exportSingleHtml(n),
+        many: () => deps.onBulkExportHtml(),
       },
       {
-        label: i18n.t('shell:contextMenu.shareBurnAfterReading'),
-        icon: <span className="text-orange-500"><EXPORT_GLYPHS.burn size={14} aria-hidden="true" /></span>,
-        onSelect: () => void deps.handleBurnShare(n),
+        label: () => i18n.t('shell:contextMenu.printSaveAsPdf'),
+        icon: () => <EXPORT_GLYPHS.print size={14} aria-hidden="true" />,
+        one: (n) => void deps.printNote(n),
+        many: oneItemOnly('one sheet of paper cannot mean five notes'),
       },
-      { type: 'separator' },
       {
-        label: i18n.t('shell:contextMenu.moveToTrash'),
-        icon: iconTrash(),
+        label: () => i18n.t('shell:contextMenu.shareBurnAfterReading'),
+        icon: () => <span className="text-orange-500"><EXPORT_GLYPHS.burn size={14} aria-hidden="true" /></span>,
+        one: (n) => void deps.handleBurnShare(n),
+        many: oneItemOnly('a burn link points at one note'),
+      },
+    ],
+    [
+      {
+        label: () => i18n.t('shell:contextMenu.moveToTrash'),
+        icon: () => iconTrash(),
         destructive: true,
-        onSelect: () => deps.requestTrash([n.id]),
+        one: (n) => deps.requestTrash([n.id]),
+        many: (ids) => deps.requestTrash(ids),
       },
-    ];
+    ],
+  ];
+
+  /** The trash view is a different menu, built the same way so its own two
+   *  versions cannot drift either. */
+  const TRASH_GROUPS: RowSpec[][] = [
+    [selectRow],
+    [
+      {
+        label: () => i18n.t('shell:contextMenu.restore'),
+        icon: () => iconRestore(),
+        success: true,
+        one: (n) => void deps.handleRestore(n.id),
+        many: () => deps.onBulkRestore(),
+      },
+    ],
+    [
+      {
+        label: () => i18n.t('shell:contextMenu.deleteForever'),
+        icon: () => iconTrash(),
+        destructive: true,
+        one: (n) => deps.requestDeleteConfirm(n.id, n.title || ''),
+        many: () => deps.onBulkDelete(),
+      },
+    ],
+  ];
+
+  /**
+   * Per-note menu. A right-click on one of several selected rows asks about
+   * all of them: a per-note menu there applies a verb to a single row while
+   * the rest sit highlighted beside it, which reads as a bug and is one
+   * where the verb is destructive. (GitHub #188)
+   */
+  const buildNoteMenu = (n: LocalNote): ContextMenuItem[] => {
+    const groups = deps.view === 'trash' ? TRASH_GROUPS : NOTE_GROUPS;
+    const isSelected = deps.selectedIds.has(n.id);
+    if (isSelected && deps.selectedIds.size > 1) {
+      const ids = Array.from(deps.selectedIds);
+      return [
+        { type: 'header', label: i18n.t('shell:contextMenu.selectedCount', { count: ids.length }) },
+        ...renderRows(groups, { kind: 'many', ids }),
+      ];
+    }
+    return renderRows(groups, { kind: 'one', note: n, isSelected });
   };
 
   return { buildGlobalMenu, buildNoteMenu };

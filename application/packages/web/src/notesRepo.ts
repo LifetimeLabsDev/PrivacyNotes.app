@@ -409,6 +409,10 @@ export async function bulkTrash(ids: string[]): Promise<number> {
     for (const id of ids) {
       const note = await db.notes.get(id);
       if (!note) continue;
+      // A read-only note stays out of the trash. The callers filter first,
+      // because only they can say how many items were skipped, but the
+      // check belongs to the write rather than to one route into it.
+      if (note.locked === 1) continue;
       await db.notes.update(id, { trashed: 1, updatedAt: nextStamp(note.updatedAt), dirty: 1 });
       count++;
     }
@@ -441,6 +445,56 @@ export async function bulkPermanentlyDelete(ids: string[]): Promise<number> {
       count++;
     }
   });
+  return count;
+}
+
+/**
+ * Set the read-only flag on every id. The caller decides the target: the
+ * menus turn a selection off only when every item in it is already on,
+ * which is the same rule the pin toggle follows.
+ */
+export async function bulkSetLocked(ids: string[], locked: boolean): Promise<number> {
+  if (ids.length === 0) return 0;
+  const value: 0 | 1 = locked ? 1 : 0;
+  let count = 0;
+  await db.transaction('rw', db.notes, async () => {
+    for (const id of ids) {
+      const note = await db.notes.get(id);
+      if (!note) continue;
+      await db.notes.update(id, { locked: value, updatedAt: nextStamp(note.updatedAt), dirty: 1 });
+      count++;
+    }
+  });
+  return count;
+}
+
+/**
+ * Set the PIN-protect flag on every id. Both directions are gated before
+ * this runs: turning protection on needs a PIN to exist, and taking it
+ * off needs the PIN entered, the same bar a single note asks for.
+ */
+export async function bulkSetPinProtected(ids: string[], pinProtected: boolean): Promise<number> {
+  if (ids.length === 0) return 0;
+  const value: 0 | 1 = pinProtected ? 1 : 0;
+  let count = 0;
+  await db.transaction('rw', db.notes, async () => {
+    for (const id of ids) {
+      const note = await db.notes.get(id);
+      if (!note) continue;
+      await db.notes.update(id, { pinProtected: value, updatedAt: nextStamp(note.updatedAt), dirty: 1 });
+      count++;
+    }
+  });
+  return count;
+}
+
+/** Duplicate every id through the single-note path, so a copy made from a
+ *  selection is the same copy the per-note action makes. */
+export async function bulkDuplicate(ids: string[]): Promise<number> {
+  let count = 0;
+  for (const id of ids) {
+    if (await duplicateNote(id)) count++;
+  }
   return count;
 }
 
@@ -565,6 +619,7 @@ export async function renameTagEverywhere(
 /**
  * Trash every active (non-trashed, non-deleted) note that carries the
  * given tag. Used by the "Delete tag and notes" action in the tag menu.
+ * A read-only note keeps the tag and stays where it is.
  * Returns the number of notes sent to trash.
  */
 export async function trashNotesWithTag(tag: string): Promise<number> {
@@ -573,6 +628,7 @@ export async function trashNotesWithTag(tag: string): Promise<number> {
     const all = await db.notes.toArray();
     for (const note of all) {
       if (note.deleted === 1 || note.trashed === 1) continue;
+      if (note.locked === 1) continue;
       if (!note.tags.includes(tag)) continue;
       await db.notes.update(note.id, {
         trashed: 1,

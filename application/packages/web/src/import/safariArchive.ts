@@ -14,6 +14,7 @@
  */
 
 import JSZip from 'jszip';
+import { zipEntryText } from './zipEntry';
 
 /** Directories, hidden files and the junk a Mac leaves in a zip. */
 function isJunk(path: string): boolean {
@@ -41,5 +42,5 @@ export async function readArchiveEntry(file: File, want: string, ext: RegExp): P
       `This zip holds more than one file that could be it, and none is named ${want}. Unzip it and drop ${want} in on its own.`
     );
   }
-  return (named ?? candidates[0]!)[1].async('string');
+  return zipEntryText((named ?? candidates[0]!)[1]);
 }

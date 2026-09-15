@@ -27,6 +27,7 @@ import { Color } from '@tiptap/extension-color';
 import { FontSize } from '@tiptap/extension-text-style/font-size';
 import { FontFamily } from '@tiptap/extension-text-style/font-family';
 import { TextSelection } from '@tiptap/pm/state';
+import type { Fragment } from '@tiptap/pm/model';
 import { Markdown, type MarkdownStorage } from 'tiptap-markdown';
 
 // TipTap 3 types editor.storage as an empty augmentable interface instead of a
@@ -52,7 +53,7 @@ import { iconCopy, iconEditPencil, iconExternal, iconTrash } from './icons';
 import { LinkModifierOpen, SelfLinkTyping, linkHrefAt, linkSelectionIfUrl } from './editorLinks';
 import { openExternal } from './openExternal';
 import { createLongPressGuard } from './softKeyboard';
-import { useTheme } from './theme';
+import { useTheme, readLineSpacing } from './theme';
 import { SearchHighlight, setSearchQuery, getSearchInfo, clearSearch } from './editorSearch';
 import { FindBar } from './FindBar';
 import { ReplaceBar } from './ReplaceBar';
@@ -84,6 +85,7 @@ import {
   indentListItem,
   NbspParagraphCleaner,
   MixedListSplitter,
+  markdownForClipboard,
 } from './editorExtensions';
 
 type Props = {
@@ -506,6 +508,27 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         // update. Spec: ops/docs/design-decisions.md (Spell check is the
         // engine's, not ours)
         ...(spellcheck ? {} : { spellcheck: 'false' }),
+      },
+      // Copying to another app: the note's markdown, with its line breaks
+      // written as two trailing spaces instead of a backslash. tiptap-markdown
+      // supplies this prop too, and editorProps is consulted before any
+      // plugin, so this wins; an empty string falls back to its version, which
+      // is what the first paint before the editor lands would get.
+      clipboardTextSerializer: (slice) => {
+        // `serializer` is real but missing from tiptap-markdown's published
+        // types, which declare getMarkdown() alone - and getMarkdown() is no
+        // use here, because it serializes the whole note rather than the
+        // selection. Hence the cast.
+        const md = editorRef.current?.storage.markdown as
+          | { serializer?: { serialize(content: Fragment): string } }
+          | undefined;
+        const ser = md?.serializer;
+        if (!ser) return '';
+        return markdownForClipboard(
+          slice.content,
+          (fragment) => ser.serialize(fragment),
+          readLineSpacing() === 'compact',
+        );
       },
       // Strip <img> tags with external/blob sources from pasted HTML so
       // they don't create broken image nodes. The paste plugin in

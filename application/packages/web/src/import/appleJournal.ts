@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { zipEntryText } from './zipEntry';
 import { linkifyMarkdown } from './linkify';
 import { currentImageOptions, processImage } from '../imageProcessing';
 import { EMOTION_TAGS } from '../trackerTypes';
@@ -833,7 +834,7 @@ export async function parseAppleJournal(
   const sidecars = new Map<string, Record<string, unknown>>();
   for (const [base, entry] of sidecarFiles) {
     try {
-      const parsed: unknown = JSON.parse(await entry.async('string'));
+      const parsed: unknown = JSON.parse(await zipEntryText(entry));
       if (parsed && typeof parsed === 'object') {
         sidecars.set(base.replace(/\.json$/, ''), parsed as Record<string, unknown>);
       }
@@ -861,7 +862,7 @@ export async function parseAppleJournal(
     const [rel, entry] = entryFiles[i]!;
     onProgress?.(`Reading entry ${i + 1} of ${entryFiles.length}...`);
 
-    const doc = new DOMParser().parseFromString(await entry.async('string'), 'text/html');
+    const doc = new DOMParser().parseFromString(await zipEntryText(entry), 'text/html');
     const styles = parseSpanStyles(doc.querySelector('style')?.textContent ?? '');
 
     const header = doc.querySelector('.pageHeader')?.textContent ?? null;

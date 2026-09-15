@@ -601,6 +601,13 @@
         "Esses ficheiros ficam no teu disco exatamente como os deixaste: nunca os enviamos, nunca sincronizam para os teus outros dispositivos e nada é convertido pelo caminho. Funciona na app de computador em qualquer computador, e no Chrome, Edge ou Opera do lado do navegador, porque abrir uma pasta diretamente do disco é uma capacidade de computador."
       ]
     },
+    "markdown-folder-mobile": {
+      "q": "Posso abrir uma pasta Markdown no telemóvel?",
+      "a": [
+        "Hoje não. [A pasta Markdown](/pt/help/markdown-folder/) funciona na app de computador em macOS, Windows e Linux, e no Chrome, Edge ou Opera num computador, porque um computador entrega à app uma pasta a sério que ela lê e escreve diretamente. O Android e o iOS não entregam pasta nenhuma: cada ficheiro chega à app pela camada de documentos do sistema, uma autorização de cada vez. Ler uma árvore inteira e voltar a escrever nela é por isso trabalho à parte em cada plataforma, e ainda não está feito.",
+        "No telemóvel podes trazer os mesmos ficheiros como cópias: Definições > Import & Export > Importar > \"Ficheiros Markdown\" aceita .md e .txt soltos ou dentro de um .zip, e uma pasta comprimida mantém as subpastas, as imagens e os anexos. Chegam como notas cifradas que sincronizam para os teus outros dispositivos, e Exportar volta a escrever .md limpo. Os originais ficam no teu disco exatamente onde estão."
+      ]
+    },
     "folders": {
       "q": "Como funcionam as pastas e preciso de Pro para elas?",
       "a": [

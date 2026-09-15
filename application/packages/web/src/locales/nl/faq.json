@@ -601,6 +601,13 @@
         "Die bestanden blijven precies zo op je schijf staan als je ze achterliet: we uploaden ze nooit, ze synchroniseren nooit naar je andere apparaten, en onderweg wordt niets omgezet. Het werkt in de desktop-app op elke computer, en in Chrome, Edge of Opera in de browser, want een map rechtstreeks van schijf openen is iets voor de desktop."
       ]
     },
+    "markdown-folder-mobile": {
+      "q": "Kan ik een Markdown-map op mijn telefoon openen?",
+      "a": [
+        "Vandaag niet. [De Markdown-map](/nl/help/markdown-folder/) werkt in de desktop-app op macOS, Windows en Linux, en in Chrome, Edge of Opera op een computer, want een desktop geeft de app een echte map die hij rechtstreeks leest en beschrijft. Android en iOS geven een app helemaal geen map: elk bestand bereikt een app via de documentenlaag van het systeem, één toestemming tegelijk. Een hele boom lezen en er weer in schrijven is daarom apart werk op elk platform, en dat is nog niet gebouwd.",
+        "Op een telefoon haal je dezelfde bestanden als kopie binnen: Instellingen > Import & Export > Importeren > \"Markdown-bestanden\" neemt .md en .txt los of als .zip, en een gezipte map houdt zijn submappen, afbeeldingen en bijlagen. Ze komen binnen als versleutelde notities die naar je andere apparaten synchroniseren, en Exporteren schrijft weer schone .md weg. De originelen blijven precies waar ze op je schijf staan."
+      ]
+    },
     "folders": {
       "q": "Hoe werken mappen, en heb ik er Pro voor nodig?",
       "a": [

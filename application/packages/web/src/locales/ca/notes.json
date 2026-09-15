@@ -45,7 +45,6 @@
     "keys": "Claus"
   },
   "journal": {
-    "backfillHover": "Diari nou per a un dia recent",
     "newEntry": "Entrada de diari nova",
     "newEntryHover": "Entrada de diari nova ({{hotkey}})"
   },
@@ -245,7 +244,15 @@
     "title": "Mou a la paperera",
     "body_one": "Vols moure <highlight>{{count}} element</highlight> a la paperera? Després el podràs restaurar.",
     "body_other": "Vols moure <highlight>{{count}} elements</highlight> a la paperera? Després els podràs restaurar.",
-    "body_many": "Vols moure <highlight>{{count}} elements</highlight> a la paperera? Després els podràs restaurar."
+    "body_many": "Vols moure <highlight>{{count}} elements</highlight> a la paperera? Després els podràs restaurar.",
+    "readOnlyTitle": "Només de lectura",
+    "readOnlyAcknowledge": "Entesos",
+    "readOnlyBlocked_one": "Aquest element és <highlight>només de lectura</highlight>, així que no pot anar a la paperera. Desactiva primer el només de lectura a les opcions de la nota.",
+    "readOnlyBlocked_many": "Els <highlight>{{count}} elements</highlight> són només de lectura, així que cap no pot anar a la paperera. Desactiva primer el només de lectura a les opcions de la nota.",
+    "readOnlyBlocked_other": "Els <highlight>{{count}} elements</highlight> són només de lectura, així que cap no pot anar a la paperera. Desactiva primer el només de lectura a les opcions de la nota.",
+    "readOnlySkipped_one": "<highlight>{{count}} element</highlight> és només de lectura i es queda on és.",
+    "readOnlySkipped_many": "<highlight>{{count}} elements</highlight> són només de lectura i es queden on són.",
+    "readOnlySkipped_other": "<highlight>{{count}} elements</highlight> són només de lectura i es queden on són."
   },
   "bulkDelete": {
     "body_one": "Vols suprimir permanentment <highlight>{{count}} nota</highlight>? Aquesta acció no es pot desfer.",

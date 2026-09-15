@@ -1,7 +1,9 @@
 import JSZip from 'jszip';
+import { zipEntryText } from './zipEntry';
 import { normalizeTag } from '../notesRepo';
 import { linkifyMarkdown } from './linkify';
 import { importBlobs } from './blobImport';
+import { isUntitledStem } from '../exportNames';
 import type { ImportedNote, ParsedImport } from './types';
 
 /**
@@ -142,8 +144,11 @@ function parseOneNote(
     // Remove the heading line from body
     body = content.slice(headingMatch.index! + headingMatch[0].length).trim();
   } else {
-    const filename = relativePath.split('/').pop() ?? '';
-    title = filename.replace(/\.md$/i, '').trim();
+    // The Exporter names each file after the note, so the filename is the
+    // title - unless it is the default name Apple Notes gives a note that has
+    // none, which is a stand-in and must not be stored. See `isUntitledStem`.
+    const stem = (relativePath.split('/').pop() ?? '').replace(/\.md$/i, '').trim();
+    title = isUntitledStem(stem) ? '' : stem;
   }
 
   // Strip duplicate title line
@@ -254,7 +259,7 @@ async function parseZip(
   let strippedUnderline = 0;
   for (let i = 0; i < mdFiles.length; i++) {
     const [rel, entry] = mdFiles[i]!;
-    const text = await entry.async('string');
+    const text = await zipEntryText(entry);
     const parsed = parseOneNote(text, rel, dropLeading, entry.date ?? null);
     if (parsed.hadUnderline) strippedUnderline++;
     notes.push(parsed);

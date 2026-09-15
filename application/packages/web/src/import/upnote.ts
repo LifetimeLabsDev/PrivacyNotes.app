@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { gunzipText, ImportTooLargeError, zipEntryBytes, zipEntryText } from './zipEntry';
 import type { FolderDef } from '../folders';
 import { normalizeTag } from '../notesRepo';
 import { TEXT_COLORS, HIGHLIGHT_COLORS } from '../editorColors';
@@ -100,22 +101,6 @@ interface Snapshot {
   members: Map<string, string[]>;
   /** file id ("uuid__ext") -> original filename. */
   fileNames: Map<string, string>;
-}
-
-/**
- * Gunzip via the platform's DecompressionStream. jsdom (and some older
- * embedders) lack Blob.stream(), so the source is a hand-rolled
- * ReadableStream rather than blob.stream().
- */
-async function gunzip(data: Uint8Array<ArrayBuffer>): Promise<string> {
-  const src = new ReadableStream<BufferSource>({
-    start(controller) {
-      controller.enqueue(data);
-      controller.close();
-    },
-  });
-  const out = src.pipeThrough(new DecompressionStream('gzip'));
-  return await new Response(out).text();
 }
 
 /**
@@ -1485,7 +1470,7 @@ export async function parseUpNote(
     if (noteFiles.length === 0) {
       for (const { entry: nz } of outerZips) {
         try {
-          const inner = await JSZip.loadAsync(await nz.async('uint8array'));
+          const inner = await JSZip.loadAsync(await zipEntryBytes(nz));
           inner.forEach((path, entry) => {
             if (entry.dir || isJunk(path)) return;
             classify(path, entry, false);
@@ -1519,7 +1504,7 @@ export async function parseUpNote(
     ) {
       const texts: SingleInput[] = [];
       for (const { name, entry, kind } of picked) {
-        texts.push({ name, text: await entry.async('string'), date: entry.date ?? null, kind });
+        texts.push({ name, text: await zipEntryText(entry), date: entry.date ?? null, kind });
       }
       return await parseSingleExports(texts, mediaFiles, onProgress);
     }
@@ -1549,11 +1534,13 @@ export async function parseUpNote(
   let snap: Snapshot | null = null;
   for (const { entry } of snapshotEntries) {
     try {
-      const bytes = new Uint8Array(await entry.async('uint8array'));
-      snap = parseSnapshot(await gunzip(bytes));
+      snap = parseSnapshot(await gunzipText(await zipEntryBytes(entry), entry.name));
       if (snap) break;
-    } catch {
-      // Truncated or corrupt snapshot: try the next older one.
+    } catch (err) {
+      // Truncated or corrupt snapshot: try the next older one. A snapshot that
+      // expands past the import limit is the one refusal that must surface,
+      // or the user reads "no usable snapshot" for a file that was refused.
+      if (err instanceof ImportTooLargeError) throw err;
     }
   }
   if (!snap) {

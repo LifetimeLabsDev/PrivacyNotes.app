@@ -122,6 +122,25 @@
   :root[data-content-width='full'] { --pn-content-max: none; }
 }
 
+/* ------------------------------------------------------------------
+   Paragraph gap - the whole of the Line spacing control.
+
+   Compact is the default and the absent state, so every surface that
+   renders `.prose` without an account behind it lands there: the burn
+   note viewer, and a page opened before the settings arrive.
+
+   The value is an em of the PARAGRAPH, not of the root, so one number
+   holds at all four text sizes and in the burn viewer's own body size.
+
+   Adding a step means adding a data-line-spacing block here and an
+   entry to LINE_SPACINGS in theme.ts, nothing else.
+   Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
+   ------------------------------------------------------------------ */
+@layer base {
+  :root { --pn-para-gap: 0; }
+  :root[data-line-spacing='normal'] { --pn-para-gap: 0.75em; }
+}
+
 .pn-content-col {
   margin-inline: auto;
   width: 100%;
@@ -202,6 +221,16 @@
        renders the bare icon and looks better for it (removed 2026-08-19).
        The cost, accepted: a dark mark (GitHub, X) is fainter on a dark
        page. Sized to match the export's 14px icon. */
+    /* The icon and the link's first character stay on one line together.
+       The icon below is its own box, and CSS offers a line break right
+       after a box like that. A pasted URL is one long word, so a column
+       too narrow to hold it takes that break and leaves the icon alone on
+       the line above - a phone hits this on most links, a desktop column
+       on almost none. Gluing the two removes the break point, so the icon
+       always sits beside the text it belongs to. Spec: GitHub #328. */
+    & a [style*='--fav'] {
+      white-space: nowrap;
+    }
     & a [style*='--fav']::before {
       content: '';
       display: inline-block;
@@ -539,9 +568,19 @@
        with heading level automatically. Order matters: the `h* + *` attach
        rules must come after the element rules - same specificity, later
        wins - so content directly under a heading hugs it. */
+    /* The paragraph gap is the reader's to set, and it starts at nothing:
+       Enter and Shift+Enter then both cost exactly one line step, which is
+       what Apple Notes and Google Keep do. That default is the only rhythm a
+       phone can actually choose, because a phone keyboard has no Shift+Enter,
+       so the tight break is out of reach there and any gap becomes a spacing
+       its writer cannot opt out of (GitHub #255). Every other block keeps a
+       margin, so a heading, a list, an image, a table and a code block still
+       stand clear of the text around them; only paragraph against paragraph
+       closes up. The variable is declared near the top of this file.
+       Spec: ops/docs/design-decisions.md (editor paragraph rhythm) */
     & :where(p):not(:where([class~='not-prose'] *)) {
-      margin-top: 0.75em;
-      margin-bottom: 0.75em;
+      margin-top: var(--pn-para-gap);
+      margin-bottom: var(--pn-para-gap);
     }
     & :where(h1):not(:where([class~='not-prose'] *)) {
       margin-top: 1.6em;
@@ -650,10 +689,12 @@
       margin-top: 0.2em;
       margin-bottom: 0.2em;
     }
-    /* TipTap wraps every list item's text in a <p>; prose's li>p margins
-       (0.75em) would turn every list gappy. Item rhythm comes from the li
-       margins above; interior paragraphs of a multi-paragraph item keep a
-       smaller gap. */
+    /* TipTap wraps every list item's text in a <p>, so a list item inherits
+       the gapless paragraph rule above. That is right between items, where
+       the li margins and the bullet do the separating, and wrong INSIDE a
+       multi-paragraph item, where a second paragraph would read as a wrapped
+       line. So an interior paragraph gets a gap back, and the item's first
+       and last paragraph give it up again at the item's own edges. */
     & :where(li > p):not(:where([class~='not-prose'] *)) {
       margin-top: 0.375em;
       margin-bottom: 0.375em;

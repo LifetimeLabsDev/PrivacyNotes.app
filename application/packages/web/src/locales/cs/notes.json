@@ -45,7 +45,6 @@
     "keys": "Klíče"
   },
   "journal": {
-    "backfillHover": "Nový deník pro některý z posledních dní",
     "newEntry": "Nový záznam v deníku",
     "newEntryHover": "Nový záznam v deníku ({{hotkey}})"
   },
@@ -248,7 +247,17 @@
     "body_one": "Přesunout <highlight>{{count}} položku</highlight> do koše? Můžeš ji později obnovit.",
     "body_other": "Přesunout <highlight>{{count}} položek</highlight> do koše? Můžeš je později obnovit.",
     "body_few": "Přesunout <highlight>{{count}} položky</highlight> do koše? Můžeš je později obnovit.",
-    "body_many": "Přesunout <highlight>{{count}} položky</highlight> do koše? Můžeš je později obnovit."
+    "body_many": "Přesunout <highlight>{{count}} položky</highlight> do koše? Můžeš je později obnovit.",
+    "readOnlyTitle": "Jen pro čtení",
+    "readOnlyAcknowledge": "Rozumím",
+    "readOnlyBlocked_one": "Tato položka je <highlight>jen pro čtení</highlight>, takže ji nelze přesunout do koše. Nejdřív vypni režim jen pro čtení v možnostech poznámky.",
+    "readOnlyBlocked_few": "Všechny <highlight>{{count}} položky</highlight> jsou jen pro čtení, takže žádnou nelze přesunout do koše. Nejdřív vypni režim jen pro čtení v možnostech poznámky.",
+    "readOnlyBlocked_many": "Všechny <highlight>{{count}} položky</highlight> jsou jen pro čtení, takže žádnou nelze přesunout do koše. Nejdřív vypni režim jen pro čtení v možnostech poznámky.",
+    "readOnlyBlocked_other": "Všech <highlight>{{count}} položek</highlight> je jen pro čtení, takže žádnou nelze přesunout do koše. Nejdřív vypni režim jen pro čtení v možnostech poznámky.",
+    "readOnlySkipped_one": "<highlight>{{count}} položka</highlight> je jen pro čtení a zůstává na místě.",
+    "readOnlySkipped_few": "<highlight>{{count}} položky</highlight> jsou jen pro čtení a zůstávají na místě.",
+    "readOnlySkipped_many": "<highlight>{{count}} položky</highlight> jsou jen pro čtení a zůstávají na místě.",
+    "readOnlySkipped_other": "<highlight>{{count}} položek</highlight> je jen pro čtení a zůstává na místě."
   },
   "bulkDelete": {
     "body_one": "Trvale smazat <highlight>{{count}} poznámku</highlight>? Tuto akci nelze vzít zpět.",

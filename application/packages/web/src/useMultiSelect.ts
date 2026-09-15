@@ -8,6 +8,9 @@ import {
   bulkRestore,
   bulkPermanentlyDelete,
   bulkSetStarred,
+  bulkSetLocked,
+  bulkSetPinProtected,
+  bulkDuplicate,
   bulkAddTag,
 } from './notesRepo';
 import { gcOnNotesDelete } from './imageGC';
@@ -28,16 +31,27 @@ interface UseMultiSelectArgs {
   refreshStorage: () => void;
   handleSelectNote: (id: string) => Promise<void>;
   exportAllMarkdownZip: (notes: LocalNote[]) => Promise<void>;
+  exportAllHtmlZip: (notes: LocalNote[]) => Promise<void>;
   /** Returns true if the note is currently PIN-locked. */
   isNoteLocked: (n: LocalNote) => boolean;
   /** Show PIN modal; resolves when user verifies or rejects. */
   requestPinGate: (action: () => Promise<void>) => void;
 }
 
+/** What the trash modal is asking about: the ids that can move to trash,
+ *  and how many of the requested items are read-only and stay where they
+ *  are. Empty ids with a non-zero skipped count is the refusal case, where
+ *  the modal explains rather than asks. */
+type TrashRequest = { ids: string[]; skipped: number };
+
 interface UseMultiSelectReturn {
   selectionMode: boolean;
   selectedIds: Set<string>;
   selectionAllStarred: boolean;
+  /** True when every item in the selection already carries the flag. The
+   *  menus read these to decide which way their toggles go. */
+  selectionAllLocked: boolean;
+  selectionAllProtected: boolean;
   displayNotesRef: React.MutableRefObject<LocalNote[]>;
   clearSelection: () => void;
   deselectAll: () => void;
@@ -47,7 +61,7 @@ interface UseMultiSelectReturn {
   handleRowClick: (e: React.MouseEvent, id: string) => void;
   beginLongPress: (id: string) => void;
   cancelLongPress: () => void;
-  bulkTrashPending: string[] | null;
+  bulkTrashPending: TrashRequest | null;
   requestBulkTrash: () => void;
   requestTrash: (ids: string[]) => void;
   executeBulkTrash: () => Promise<void>;
@@ -60,6 +74,12 @@ interface UseMultiSelectReturn {
   handleBulkFavorite: () => Promise<void>;
   handleBulkExport: () => Promise<void>;
   handleBulkAddTag: (tag: string) => Promise<number>;
+  handleAddTagTo: (ids: string[], tag: string) => Promise<number>;
+  handleBulkSetLocked: (locked: boolean) => Promise<void>;
+  handleBulkSetPinProtected: (pinProtected: boolean) => Promise<void>;
+  requestBulkUnprotect: () => void;
+  handleBulkDuplicate: () => Promise<void>;
+  handleBulkExportHtml: () => Promise<void>;
 }
 
 /** Shift-click is the range-select gesture, so the browser must not also
@@ -86,6 +106,7 @@ export function useMultiSelect({
   refreshStorage,
   handleSelectNote,
   exportAllMarkdownZip,
+  exportAllHtmlZip,
   isNoteLocked,
   requestPinGate,
 }: UseMultiSelectArgs): UseMultiSelectReturn {
@@ -217,12 +238,19 @@ export function useMultiSelect({
   // Bulk trash uses the same two-step pattern as bulk delete:
   // requestBulkTrash stores pending IDs, the caller renders a
   // ConfirmModal, and executeBulkTrash runs the actual trash on confirm.
-  const [bulkTrashPending, setBulkTrashPending] = useState<string[] | null>(null);
+  const [bulkTrashPending, setBulkTrashPending] = useState<TrashRequest | null>(null);
+
+  /** Read-only items never reach the trash, so they are held back here and
+   *  counted, which is what lets the modal name how many stayed behind. */
+  function splitTrashable(ids: string[]): TrashRequest {
+    const movable = ids.filter((id) => notes.find((n) => n.id === id)?.locked !== 1);
+    return { ids: movable, skipped: ids.length - movable.length };
+  }
 
   function requestBulkTrash() {
     const ids = Array.from(selectedIds);
     if (ids.length === 0) return;
-    setBulkTrashPending(ids);
+    setBulkTrashPending(splitTrashable(ids));
   }
 
   /**
@@ -233,11 +261,11 @@ export function useMultiSelect({
    */
   function requestTrash(ids: string[]) {
     if (ids.length === 0) return;
-    setBulkTrashPending(ids);
+    setBulkTrashPending(splitTrashable(ids));
   }
 
   async function executeBulkTrash() {
-    const ids = bulkTrashPending;
+    const ids = bulkTrashPending?.ids;
     setBulkTrashPending(null);
     if (!ids || ids.length === 0) return;
     // If any selected notes are protected and currently locked, require PIN first.
@@ -328,13 +356,59 @@ export function useMultiSelect({
     await exportAllMarkdownZip(picked);
   }
 
-  async function handleBulkAddTag(tag: string): Promise<number> {
-    const ids = Array.from(selectedIds);
+  async function handleBulkExportHtml() {
+    const picked = notes.filter((n) => selectedIds.has(n.id));
+    if (picked.length === 0) return;
+    await exportAllHtmlZip(picked);
+  }
+
+  async function handleAddTagTo(ids: string[], tag: string): Promise<number> {
     if (ids.length === 0) return 0;
     const count = await bulkAddTag(ids, tag);
     await refresh();
     void runSync();
     return count;
+  }
+
+  function handleBulkAddTag(tag: string): Promise<number> {
+    return handleAddTagTo(Array.from(selectedIds), tag);
+  }
+
+  async function handleBulkSetLocked(locked: boolean) {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    await bulkSetLocked(ids, locked);
+    await refresh();
+    void runSync();
+  }
+
+  async function handleBulkSetPinProtected(pinProtected: boolean) {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    await bulkSetPinProtected(ids, pinProtected);
+    await refresh();
+    void runSync();
+  }
+
+  /** Taking protection off a whole selection asks for the PIN once, which
+   *  is the same bar a single note's remove screen sets. */
+  function requestBulkUnprotect() {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    requestPinGate(async () => {
+      await bulkSetPinProtected(ids, false);
+      await refresh();
+      void runSync();
+    });
+  }
+
+  async function handleBulkDuplicate() {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    await bulkDuplicate(ids);
+    clearSelection();
+    await refresh();
+    void runSync();
   }
 
   // When the active view changes (trash↔all↔starred↔tag) drop the
@@ -381,10 +455,21 @@ export function useMultiSelect({
       .filter((n) => selectedIds.has(n.id))
       .every((n) => n.starred === 1);
 
+  // Same rule for the two per-note switches the selection menu carries:
+  // the toggle turns a flag off only when every item already has it on.
+  const selectionAllLocked =
+    selectedIds.size > 0 &&
+    notes.filter((n) => selectedIds.has(n.id)).every((n) => n.locked === 1);
+  const selectionAllProtected =
+    selectedIds.size > 0 &&
+    notes.filter((n) => selectedIds.has(n.id)).every((n) => n.pinProtected === 1);
+
   return {
     selectionMode,
     selectedIds,
     selectionAllStarred,
+    selectionAllLocked,
+    selectionAllProtected,
     displayNotesRef,
     clearSelection,
     deselectAll,
@@ -407,5 +492,11 @@ export function useMultiSelect({
     handleBulkFavorite,
     handleBulkExport,
     handleBulkAddTag,
+    handleAddTagTo,
+    handleBulkSetLocked,
+    handleBulkSetPinProtected,
+    requestBulkUnprotect,
+    handleBulkDuplicate,
+    handleBulkExportHtml,
   };
 }

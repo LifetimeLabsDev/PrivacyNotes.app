@@ -438,6 +438,16 @@ function renderInline(raw: string): string {
   // Links [text](url). URL itself is already HTML-escaped by the
   // initial pass, which is fine for href attribute safety.
   // Includes a favicon image when the href is an http(s) URL.
+  //
+  // Only the open and close tags are stashed. The label stays in the
+  // stream, the way the textStyle span and the mark below also hold their
+  // inner text there, so a label the editor wrote as `**bold**`, `==lit==`
+  // or `<u>x</u>` reaches the passes that turn those into real tags. A
+  // label stashed whole reaches none of them and shows its markers as
+  // literal text. The label arrives HTML-escaped and stays that way: the
+  // only passes that let a tag back through rebuild it from a fixed list
+  // and validate every value, so a burn note cannot smuggle markup in
+  // through a link label. Spec: GitHub #328.
   t = t.replace(
     /\[([^\]]+)\]\(([^)\s]+)\)/g,
     (_m: string, label: string, href: string) => {
@@ -446,7 +456,11 @@ function renderInline(raw: string): string {
       const favicon = fav
         ? `<img src="${fav}" width="14" height="14" style="display:inline-block;vertical-align:middle;margin:0 3px 0 0;border-radius:2px;max-width:none" onerror="this.style.display='none'" />`
         : '';
-      return stash(`<a href="${sanitizeLinkHref(href)}" target="_blank" rel="noopener noreferrer">${favicon}${label}</a>`);
+      return (
+        stash(`<a href="${sanitizeLinkHref(href)}" target="_blank" rel="noopener noreferrer">${favicon}`) +
+        label +
+        stash('</a>')
+      );
     }
   );
 
@@ -463,7 +477,17 @@ function renderInline(raw: string): string {
       const favicon = fav
         ? `<img src="${fav}" width="14" height="14" style="display:inline-block;vertical-align:middle;margin:0 3px 0 0;border-radius:2px;max-width:none" onerror="this.style.display='none'" />`
         : '';
-      return stash(`<a href="${sanitizeLinkHref(url)}" target="_blank" rel="noopener noreferrer">${favicon}${url}</a>`);
+      // The icon is a box of its own, and CSS offers a line break right
+      // after one. The text here is a whole URL, which is a single word, so
+      // a column too narrow to hold it takes that break and strands the icon
+      // on the line above. The first character carries the icon inside one
+      // unbreakable span instead, which is safe on this branch alone: the
+      // pattern guarantees the URL opens with `h`, never with a markdown
+      // marker that a split would tear in half. Spec: GitHub #328.
+      const text = favicon
+        ? `<span style="white-space:nowrap">${favicon}${url.slice(0, 1)}</span>${url.slice(1)}`
+        : url;
+      return stash(`<a href="${sanitizeLinkHref(url)}" target="_blank" rel="noopener noreferrer">${text}</a>`);
     }
   );
 

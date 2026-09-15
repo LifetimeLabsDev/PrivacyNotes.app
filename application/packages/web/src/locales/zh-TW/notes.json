@@ -45,7 +45,6 @@
     "keys": "金鑰"
   },
   "journal": {
-    "backfillHover": "為最近的日子補寫日誌",
     "newEntry": "新增日誌",
     "newEntryHover": "新增日誌（{{hotkey}}）"
   },
@@ -239,7 +238,11 @@
   },
   "bulkTrash": {
     "title": "移至垃圾桶",
-    "body_other": "要將 <highlight>{{count}} 個項目</highlight>移至垃圾桶嗎？之後仍可還原。"
+    "body_other": "要將 <highlight>{{count}} 個項目</highlight>移至垃圾桶嗎？之後仍可還原。",
+    "readOnlyTitle": "唯讀",
+    "readOnlyAcknowledge": "知道了",
+    "readOnlyBlocked_other": "<highlight>{{count}} 個項目</highlight>是唯讀的，無法移至垃圾桶。請先到筆記選項關閉唯讀。",
+    "readOnlySkipped_other": "<highlight>{{count}} 個項目</highlight>是唯讀的，會留在原處。"
   },
   "bulkDelete": {
     "body_other": "要永久刪除 <highlight>{{count}} 篇筆記</highlight>嗎？此動作無法復原。"

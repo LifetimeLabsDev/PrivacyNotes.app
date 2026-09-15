@@ -601,6 +601,13 @@
         "Diese Dateien bleiben genau so auf deiner Festplatte, wie du sie hinterlassen hast: Wir laden sie nie hoch, sie werden nie mit deinen anderen Geräten synchronisiert, und unterwegs wird nichts umgewandelt. Es funktioniert in der Desktop-App auf jedem Computer und im Browser in Chrome, Edge oder Opera, denn einen Ordner direkt von der Festplatte zu öffnen ist eine Desktop-Fähigkeit."
       ]
     },
+    "markdown-folder-mobile": {
+      "q": "Kann ich einen Markdown-Ordner auf dem Handy öffnen?",
+      "a": [
+        "Heute nicht. [Der Markdown-Ordner](/de/help/markdown-folder/) läuft in der Desktop-App unter macOS, Windows und Linux und in Chrome, Edge oder Opera auf einem Computer, weil ein Desktop der App einen echten Ordner gibt, den sie direkt lesen und beschreiben kann. Android und iOS geben einer App gar keinen Ordner: Jede Datei erreicht eine App über die Dokumentenschicht des Systems, immer nur eine Freigabe auf einmal. Einen ganzen Baum zu lesen und wieder hineinzuschreiben ist deshalb auf jeder Plattform eigene Arbeit, und die ist noch nicht gebaut.",
+        "Auf dem Handy holst du dieselben Dateien als Kopien herein: Einstellungen > Import & Export > Import > \"Markdown-Dateien\" nimmt .md und .txt einzeln oder als .zip, und ein gezippter Ordner behält seine Unterordner, Bilder und Anhänge. Sie kommen als verschlüsselte Notizen an, die sich mit deinen anderen Geräten synchronisieren, und Export schreibt sauberes .md wieder heraus. Die Originale bleiben genau dort auf deiner Festplatte, wo sie sind."
+      ]
+    },
     "folders": {
       "q": "Wie funktionieren Ordner, und brauche ich dafür Pro?",
       "a": [

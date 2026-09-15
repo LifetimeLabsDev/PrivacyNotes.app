@@ -9,13 +9,10 @@
  * and bottom border, so there's no vertical jump when it swaps in.
  */
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { normalizeTag } from './notesRepo';
-import { useEscapeToClose } from './useEscapeToClose';
-import { usePopoverPosition } from './usePopoverPosition';
 import { HoverLabel } from './HoverLabel';
+import { TagPicker } from './TagPicker';
 import { IconUpgrade } from './UpgradeModal';
 import { X, PushPin, Tag, Folder, Download, Trash, ArrowCounterClockwise } from './icons';
 
@@ -60,7 +57,6 @@ export function SelectionToolbar({
 }: Props) {
   const { t } = useTranslation('shell');
   const [tagOpen, setTagOpen] = useState(false);
-  const tagBtnRef = useRef<HTMLButtonElement>(null);
 
   return (
     <div className="shrink-0 h-14 px-4 border-b border-divider flex items-center justify-between gap-3 bg-accent/5 dark:bg-accent/10">
@@ -85,7 +81,6 @@ export function SelectionToolbar({
               }
             />
             <ToolbarButton
-              ref={tagBtnRef}
               label={t('selectionToolbar.tag')}
               onClick={() => setTagOpen((v) => !v)}
               icon={
@@ -139,8 +134,7 @@ export function SelectionToolbar({
       </div>
 
       {tagOpen && (
-        <TagPopover
-          anchorRef={tagBtnRef}
+        <TagPicker
           allTags={allTags ?? []}
           onSelect={(tag) => {
             setTagOpen(false);
@@ -150,158 +144,6 @@ export function SelectionToolbar({
         />
       )}
     </div>
-  );
-}
-
-// ── Tag popover ────────────────────────────────────────────────────────
-
-function TagPopover({
-  anchorRef,
-  allTags,
-  onSelect,
-  onClose,
-}: {
-  anchorRef: React.RefObject<HTMLButtonElement | null>;
-  allTags: [string, number][];
-  onSelect: (tag: string) => void;
-  onClose: () => void;
-}) {
-  const { t } = useTranslation('shell');
-  const [filter, setFilter] = useState('');
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEscapeToClose(onClose);
-
-  // Focus the input on mount.
-  useEffect(() => {
-    const id = setTimeout(() => inputRef.current?.focus(), 50);
-    return () => clearTimeout(id);
-  }, []);
-
-  // Outside-click dismiss (delayed to avoid the opening click).
-  useEffect(() => {
-    function handler(e: PointerEvent) {
-      const target = e.target as Node;
-      if (popoverRef.current && popoverRef.current.contains(target)) return;
-      if (anchorRef.current && anchorRef.current.contains(target)) return;
-      onClose();
-    }
-    const id = setTimeout(
-      () => document.addEventListener('pointerdown', handler),
-      50,
-    );
-    return () => {
-      clearTimeout(id);
-      document.removeEventListener('pointerdown', handler);
-    };
-  }, [onClose, anchorRef]);
-
-  // Position: under the anchor, right edges aligned (the tag button sits in
-  // the toolbar's right-hand cluster). The hook then slides it inward so it
-  // can never spill off the viewport - hand-rolled `left: rect.left` used to
-  // push it half off-screen on a phone, where the anchor is only ~120px from
-  // the right edge and the popover is 200 wide. Spec: ops/docs/ui-patterns.md (also flips above the trigger when there is no room below)
-  const pos = usePopoverPosition(true, anchorRef, popoverRef, {
-    gap: 6,
-    align: 'end',
-  });
-
-  // Filter tags alphabetically.
-  const needle = filter.toLowerCase().replace(/^#/, '').trim();
-  const filtered = useMemo(() => {
-    const sorted = [...allTags].sort((a, b) => a[0].localeCompare(b[0]));
-    if (!needle) return sorted;
-    return sorted.filter(([t]) => t.toLowerCase().includes(needle));
-  }, [allTags, needle]);
-
-  // "Create" row: show when the normalized input doesn't match any
-  // existing tag and isn't empty.
-  const normalizedFilter = normalizeTag(filter);
-  const showCreate =
-    normalizedFilter &&
-    !allTags.some(
-      ([t]) => t.toLowerCase() === normalizedFilter.toLowerCase(),
-    );
-
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (showCreate) {
-        onSelect(normalizedFilter);
-      } else if (filtered.length === 1 && filtered[0]) {
-        onSelect(filtered[0][0]);
-      }
-    }
-  }
-
-  return createPortal(
-    <div
-      ref={popoverRef}
-      className="fixed bg-surface-2 border border-divider rounded-lg overflow-hidden"
-      style={{
-        top: pos?.top ?? 0,
-        left: pos?.left ?? 0,
-        width: 200,
-        zIndex: 50,
-        visibility: pos ? 'visible' : 'hidden',
-      }}
-    >
-      {/* Search / create input */}
-      <div className="p-2">
-        <input
-          ref={inputRef}
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={t('selectionToolbar.addTagPlaceholder')}
-          autoComplete="off"
-          className="w-full text-sm bg-transparent border border-divider rounded-md px-2.5 py-1.5 focus:outline-none focus:border-accent placeholder:text-neutral-400 dark:placeholder:text-neutral-600 text-pn"
-        />
-      </div>
-
-      <div className="border-t border-divider" />
-
-      {/* Tag list */}
-      <div className="max-h-[200px] overflow-y-auto py-1">
-        {filtered.map(([tag]) => (
-          <button
-            key={tag}
-            type="button"
-            onClick={() => onSelect(tag)}
-            className="w-full flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[36px]"
-          >
-            <span className="text-neutral-400 dark:text-neutral-600 text-xs">#</span>
-            <span className="text-pn truncate">
-              {tag}
-            </span>
-          </button>
-        ))}
-
-        {filtered.length === 0 && !showCreate && (
-          <div className="px-3 py-2 text-sm text-neutral-400 dark:text-neutral-600">
-            {t('selectionToolbar.noTagsFound')}
-          </div>
-        )}
-
-        {showCreate && (
-          <>
-            {filtered.length > 0 && (
-              <div className="border-t border-divider" />
-            )}
-            <button
-              type="button"
-              onClick={() => onSelect(normalizedFilter)}
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors text-neutral-500 dark:text-neutral-400 min-h-[36px]"
-            >
-              <span className="text-xs">+</span>
-              <span>{t('selectionToolbar.createTag', { tag: normalizedFilter })}</span>
-            </button>
-          </>
-        )}
-      </div>
-    </div>,
-    document.body,
   );
 }
 

@@ -601,6 +601,13 @@
         "O dosyalar diskinizde tam bıraktığınız gibi kalır: onları hiçbir zaman yüklemeyiz, diğer cihazlarınıza hiç eşitlenmezler ve yolda hiçbir şey dönüştürülmez. Masaüstü uygulamasında her bilgisayarda, tarayıcı tarafında ise Chrome, Edge veya Opera'da çalışır; çünkü bir klasörü doğrudan diskten açmak masaüstüne özgü bir yetenektir."
       ]
     },
+    "markdown-folder-mobile": {
+      "q": "Telefonumda bir Markdown klasörü açabilir miyim?",
+      "a": [
+        "Bugün değil. [Markdown klasörü](/tr/help/markdown-folder/) macOS, Windows ve Linux'taki masaüstü uygulamasında ve bir bilgisayardaki Chrome, Edge ya da Opera'da çalışır; çünkü masaüstü, uygulamaya doğrudan okuyup yazabileceği gerçek bir klasör verir. Android ve iOS bir uygulamaya hiç klasör vermez: her dosya uygulamaya sistemin kendi belge katmanından, her seferinde tek bir izinle ulaşır. Bu yüzden bütün bir ağacı okuyup içine geri yazmak her platformda ayrı bir iştir ve henüz yapılmadı.",
+        "Telefonda aynı dosyaları kopya olarak içeri alabilirsiniz: Ayarlar > Import & Export > İçe aktar > “Markdown dosyaları” .md ve .txt dosyalarını tek tek ya da bir .zip içinde alır, ziplenmiş bir klasör de alt klasörlerini, görsellerini ve eklerini korur. Şifreli notlar olarak gelirler ve diğer cihazlarınıza eşitlenir; Dışa aktar da temiz .md dosyalarını geri yazar. Asıl dosyalar diskinizde tam durdukları yerde kalır."
+      ]
+    },
     "folders": {
       "q": "Klasörler nasıl çalışır ve bunun için Pro gerekir mi?",
       "a": [

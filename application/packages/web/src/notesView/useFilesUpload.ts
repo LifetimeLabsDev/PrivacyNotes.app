@@ -29,6 +29,7 @@ export function useFilesUpload({
   setImportToast,
   onImportFolders,
   onBlobsRestored,
+  inheritFilters,
 }: {
   auth: { isPro: boolean };
   supabase: SupabaseClient;
@@ -44,6 +45,12 @@ export function useFilesUpload({
   onImportFolders?: (folders: FolderDef[]) => Map<string, string> | undefined;
   /** Kick the pending-upload passes once blobs have landed locally. */
   onBlobsRestored?: () => void;
+  /** The folder and tags the list the upload started from is filtered by. A
+   *  file that misses them lands outside that list, and the auto-select
+   *  effect then drops the selection, so the upload reads as doing nothing
+   *  (the fault GitHub #305 describes for contacts). Read at upload time, not
+   *  at render time, because the New menu switches to Files on the way here. */
+  inheritFilters?: () => { tags: string[]; folderId: string | null };
 }) {
   const { t } = useTranslation('notes');
 
@@ -166,6 +173,10 @@ export function useFilesUpload({
   /** Core attachment upload logic (extracted from handleFilesSelected). */
   async function doAttachmentUpload(fileArr: File[], store: AttachmentStore) {
     const multi = fileArr.length > 1;
+    // Read once, before the first await: the note is written minutes later
+    // on a slow batch, and the file belongs to the list the user started
+    // from, not to whatever they filtered to while it uploaded.
+    const filters = inheritFilters?.() ?? { tags: [], folderId: null };
 
     // Build initial entries for the modal
     const initial: FileUploadEntry[] = fileArr.map((f) => ({
@@ -262,7 +273,7 @@ export function useFilesUpload({
             });
         } else {
           // Single file - create its own note immediately.
-          const note = await createNote(meta.name, line, undefined, undefined, 'file');
+          const note = await createNote(meta.name, line, filters.tags, undefined, 'file', filters.folderId);
           await refresh();
           void runSync();
           setSelectedId(note.id);
@@ -291,7 +302,7 @@ export function useFilesUpload({
     if (multi && bodyLines.length > 0) {
       const title = `${bodyLines.length} files`;
       const body = bodyLines.join('\n');
-      const note = await createNote(title, body, undefined, undefined, 'file');
+      const note = await createNote(title, body, filters.tags, undefined, 'file', filters.folderId);
       await refresh();
       void runSync();
       setSelectedId(note.id);

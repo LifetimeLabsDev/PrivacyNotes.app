@@ -5,13 +5,11 @@
  * encrypted blobs - the server never sees file names, types, or contents,
  * and vault files are never shared externally. Any file type is therefore
  * allowed; the only limit is per-file size (a quota/cost constraint, not a
- * security one).
+ * security one). A file input that takes everything therefore carries no
+ * `accept` attribute at all, which is the only portable way to say so.
  */
 
 import { formatBytes } from './formatBytes';
-
-/** Accept string for file inputs - all file types allowed. */
-export const FILE_ACCEPT = '*/*';
 
 /** Per-file size limits in bytes. */
 const FILE_SIZE_LIMIT_FREE = 5 * 1000 * 1000;   // 5 MB

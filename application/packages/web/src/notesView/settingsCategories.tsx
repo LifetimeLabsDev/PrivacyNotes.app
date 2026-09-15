@@ -334,6 +334,8 @@ export function buildSettingsCategories({
                   onViewModeChange={(m) => mutateSettings((prev) => ({ ...prev, viewMode: m }))}
                   editorMode={userSettings.editorMode}
                   onEditorModeChange={onEditorModeChange}
+                  lineSpacing={userSettings.lineSpacing}
+                  onLineSpacingChange={(next) => mutateSettings((prev) => ({ ...prev, lineSpacing: next }))}
                   hiddenViews={userSettings.hiddenViews}
                   hiddenInAll={userSettings.hiddenInAll}
                   onToggleHidden={onToggleHiddenView}

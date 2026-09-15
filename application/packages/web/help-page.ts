@@ -849,6 +849,7 @@ function feedbackBlock(prompt: string): string {
  */
 const CONTENT_BASELINE = '2026-08-26';
 const CONTENT_UPDATED: Record<string, string> = {
+  'markdown-folder-mobile': '2026-09-14',
   'image-quality': '2026-09-08',
   'data-location': '2026-08-28',
   'data-on-disk': '2026-09-02',

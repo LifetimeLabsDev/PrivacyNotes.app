@@ -45,7 +45,6 @@
     "keys": "Nycklar"
   },
   "journal": {
-    "backfillHover": "Nytt dagboksinlägg för en av de senaste dagarna",
     "newEntry": "Nytt dagboksinlägg",
     "newEntryHover": "Nytt dagboksinlägg ({{hotkey}})"
   },
@@ -242,7 +241,13 @@
   "bulkTrash": {
     "title": "Flytta till papperskorgen",
     "body_one": "Flytta <highlight>{{count}} objekt</highlight> till papperskorgen? Du kan återställa det senare.",
-    "body_other": "Flytta <highlight>{{count}} objekt</highlight> till papperskorgen? Du kan återställa dem senare."
+    "body_other": "Flytta <highlight>{{count}} objekt</highlight> till papperskorgen? Du kan återställa dem senare.",
+    "readOnlyTitle": "Skrivskyddad",
+    "readOnlyAcknowledge": "Jag förstår",
+    "readOnlyBlocked_one": "Det här objektet är <highlight>skrivskyddat</highlight> och kan därför inte flyttas till papperskorgen. Stäng av skrivskyddet i anteckningsalternativen först.",
+    "readOnlyBlocked_other": "Alla <highlight>{{count}} objekt</highlight> är skrivskyddade, så inget av dem kan flyttas till papperskorgen. Stäng av skrivskyddet i anteckningsalternativen först.",
+    "readOnlySkipped_one": "<highlight>{{count}} objekt</highlight> är skrivskyddat och stannar där det är.",
+    "readOnlySkipped_other": "<highlight>{{count}} objekt</highlight> är skrivskyddade och stannar där de är."
   },
   "bulkDelete": {
     "body_one": "Radera <highlight>{{count}} anteckning</highlight> permanent? Det går inte att ångra.",

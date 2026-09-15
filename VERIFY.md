@@ -120,7 +120,9 @@ pnpm build          # the web app
 pnpm desktop:build  # the desktop app, for the machine you are on
 ```
 
-No secrets, no signing keys, no cooperation from us. Run what you built, point your network tab at it, and tier 1 applies to your own binary. Separately, every release we ship is signed and published with hashes, so you can confirm a downloaded file is the file we built.
+No secrets, no signing keys, no cooperation from us. Run what you built, point your network tab at it, and tier 1 applies to your own binary. Separately, every release we ship is published with hashes, and the macOS, Windows, AppImage and Android builds are signed, so you can confirm a downloaded file is the file we built. The Linux deb ships with hashes only.
+
+**What each check proves, weakest to strongest.** The source is published: you can read what we say we ship. A hash matches: the file you hold is the file we uploaded. A signature verifies: that file came from our key, not a stranger's. A tag names a version: the commit it marks carries that version's source, because the source is pushed to the public repo before a release is built; releases before 2026-09-15 were tagged before their source landed, and their release notes name the commit that carries it. A reproducible build: the file you hold was built from that source, byte for byte. Only the last one ties a binary to the code, and it is not shipped yet.
 
 **What that does not prove.** It does not prove that the binary we ship came from the source you just read. Answering that needs reproducible builds, where your build and ours land on byte-identical output. We consider the Android APK and the Linux AppImage the realistic targets, and it is on the roadmap rather than shipped. We will say so on this page when that changes, and not before.
 

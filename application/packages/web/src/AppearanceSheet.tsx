@@ -15,6 +15,8 @@ import {
   FREE_THEMES,
   TEXT_SIZES,
   CONTENT_WIDTHS,
+  LINE_SPACINGS,
+  type LineSpacing,
 } from './theme';
 import { IconUpgrade } from './UpgradeModal';
 import { proUnlocked } from './demo';
@@ -39,6 +41,9 @@ type Props = {
   /** Default editor mode for note bodies, and its setter. */
   editorMode: 'formatted' | 'markdown';
   onEditorModeChange: (mode: 'formatted' | 'markdown') => void;
+  /** Gap between two paragraphs in a note body, and its setter. */
+  lineSpacing: LineSpacing;
+  onLineSpacingChange: (next: LineSpacing) => void;
   /** Views switched off in the sidebar, and item types switched out of the
    *  All list. Both also live behind the rail's own two icons - this is the
    *  same field shown twice, like View. Spec: ops/docs/plans/sidebar-views.md */
@@ -57,6 +62,12 @@ const TEXT_SIZE_LABEL: Record<TextSize, string> = {
   md: 'appearance.textSizeDefault',
   lg: 'appearance.textSizeLarge',
   xl: 'appearance.textSizeLargest',
+};
+
+/** Translation key per line spacing. Keeps the order in LINE_SPACINGS. */
+const LINE_SPACING_LABEL: Record<LineSpacing, string> = {
+  compact: 'appearance.lineSpacingCompact',
+  normal: 'appearance.lineSpacingNormal',
 };
 
 /** Translation key per content width. Keeps the order in CONTENT_WIDTHS. */
@@ -119,7 +130,7 @@ const SEG_IDLE = 'text-pn-soft hover:text-pn font-medium';
  */
 const SEG_FILL = 'flex-1 px-3 lg:flex-none';
 
-export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = false, viewMode, onViewModeChange, editorMode, onEditorModeChange, hiddenViews, hiddenInAll, onToggleHidden, startView, onStartViewChange }: Props) {
+export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = false, viewMode, onViewModeChange, editorMode, onEditorModeChange, lineSpacing, onLineSpacingChange, hiddenViews, hiddenInAll, onToggleHidden, startView, onStartViewChange }: Props) {
   const { t } = useTranslation('settings');
   // The table's row labels are the sidebar's own strings, so the pane and the
   // rail can never disagree in any language.
@@ -129,6 +140,17 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   // renders a subset of Style only. Spec: ops/docs/ui-patterns.md section 36
   const [tab, setTab] = useState<'style' | 'lists'>('style');
   const [startMenuOpen, setStartMenuOpen] = useState(false);
+  // The example starts closed: the pane already runs a long column of rows,
+  // and a sample that is always open makes one group several times the height
+  // of every other for a reader who never asked to see it. The first click on
+  // either control above it opens it, because that click is the moment the
+  // reader is asking what the option does.
+  const [spacingExampleOpen, setSpacingExampleOpen] = useState(false);
+  // The popover renders no example, so nothing there should arm one: the note
+  // is still on screen behind it and is the better demonstration.
+  const revealExample = () => {
+    if (embedded) setSpacingExampleOpen(true);
+  };
   const startBtnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const { theme, themeMode, setThemeMode, colorTheme, setColorTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, favicons, setFavicons, invisibles, setInvisibles } = useTheme();
@@ -247,7 +269,10 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   const textSizeButtons = TEXT_SIZES.map((size) => (
     <button
       key={size}
-      onClick={() => setTextSize(size)}
+      onClick={() => {
+        setTextSize(size);
+        revealExample();
+      }}
       aria-pressed={textSize === size}
       aria-label={t(TEXT_SIZE_LABEL[size])}
       title={t(TEXT_SIZE_LABEL[size])}
@@ -271,6 +296,25 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
       }`}
     >
       {t(CONTENT_WIDTH_LABEL[w])}
+    </button>
+  ));
+
+  // Two words rather than a preview glyph, for the content-width reason: a
+  // gap has nothing it can show at button size. The example block under the
+  // row is where the difference is actually visible.
+  const lineSpacingButtons = LINE_SPACINGS.map((sp) => (
+    <button
+      key={sp}
+      onClick={() => {
+        onLineSpacingChange(sp);
+        revealExample();
+      }}
+      aria-pressed={lineSpacing === sp}
+      className={`${embedded ? 'flex-1 lg:flex-none lg:px-3' : 'flex-auto'} inline-flex items-center justify-center py-1.5 rounded text-xs transition ${
+        lineSpacing === sp ? SEG_ACTIVE : SEG_IDLE
+      }`}
+    >
+      {t(LINE_SPACING_LABEL[sp])}
     </button>
   ));
 
@@ -369,15 +413,56 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           )}
         </div>
 
-        {/* Text size - the writing surface only. Device-local, never synced
-            (theme.ts explains why). App chrome does not scale: most of it is
-            pinned to literal pixel sizes. */}
-        <div className={row}>
-          <div className="min-w-0">
-            <p className="text-sm font-medium">{t('appearance.textSizeTitle')}</p>
-            <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.textSizeDesc')}</p>
+        {/* Text size and Line spacing, one group under one example. They are
+            the two knobs that change how a paragraph READS, and the sample
+            below shows both at once: it is set in the editor's own body size
+            and reads --pn-para-gap straight off <html>, so it reflows on the
+            click that sets either one and no second copy of a value exists to
+            drift. They are grouped rather than merely adjacent, which is why
+            no hairline runs between them.
+
+            Text size is device-local and line spacing syncs, which is the one
+            disagreement inside the group: a size is a property of the screen
+            in front of you, a paragraph gap is a property of how somebody
+            writes. Each helper says so in its own words.
+
+            The example starts closed. The pane already runs a long column of
+            rows, and a sample that is always open makes this group twice the
+            height of anything else for a reader who never asked to see it.
+            Spec: ops/docs/design-decisions.md (editor paragraph rhythm) */}
+        <div>
+          <div className={row}>
+            <div className="min-w-0">
+              <p className="text-sm font-medium">{t('appearance.textSizeTitle')}</p>
+              <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.textSizeDesc')}</p>
+            </div>
+            <div className={track}>{textSizeButtons}</div>
           </div>
-          <div className={track}>{textSizeButtons}</div>
+          <div className={`${row} pt-0`}>
+            <div className="min-w-0">
+              <p className="text-sm font-medium">{t('appearance.lineSpacingTitle')}</p>
+              <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.lineSpacingDesc')}</p>
+            </div>
+            <div className={track}>{lineSpacingButtons}</div>
+          </div>
+          <div className="pb-3">
+            <button
+              type="button"
+              onClick={() => setSpacingExampleOpen((v) => !v)}
+              aria-expanded={spacingExampleOpen}
+              className="inline-flex items-center gap-1 text-xs text-accent"
+            >
+              <CaretDown size={12} className={`shrink-0 transition-transform ${spacingExampleOpen ? '' : '-rotate-90'}`} aria-hidden="true" />
+              {t('appearance.lineSpacingExample')}
+            </button>
+            {spacingExampleOpen && (
+              <div className="mt-2 rounded-md bg-track px-3 py-2 text-[length:var(--pn-editor-body)] leading-[1.7]">
+                {(['lineSpacingExample1', 'lineSpacingExample2', 'lineSpacingExample3'] as const).map((key) => (
+                  <p key={key} style={{ marginBlock: 'var(--pn-para-gap)' }}>{t(`appearance.${key}`)}</p>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Editor width - the cap on the note's reading column. Device-local
@@ -796,6 +881,20 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           {t('appearance.textSizeDesc')}
         </p>
         <div className="flex gap-1 rounded-md p-1 bg-track">{textSizeButtons}</div>
+      </div>
+
+      {/* Line spacing - see the embedded row above for the reasoning. No
+          example block here: this popover opens from the editor footer with
+          the note still on screen behind it, so the note is the example, and
+          a sample would double the height of a panel this narrow. */}
+      <div className="px-6 pb-4">
+        <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
+          {t('appearance.lineSpacingTitle')}
+        </p>
+        <p className={`${SETTINGS_HELP} mb-2`}>
+          {t('appearance.lineSpacingDesc')}
+        </p>
+        <div className="flex gap-1 rounded-md p-1 bg-track">{lineSpacingButtons}</div>
       </div>
 
       {/* Editor width - see the embedded row above for the reasoning. */}

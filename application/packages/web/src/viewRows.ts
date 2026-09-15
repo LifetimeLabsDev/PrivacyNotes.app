@@ -63,15 +63,16 @@ export function allViewRows(t: TFunction): ViewRow[] {
 }
 
 /**
- * The rows the below-lg pillar switcher offers.
+ * The rows the pillar switcher in a list title offers.
  *
- * Markdown is dropped whatever the platform says: this switcher only opens
- * below lg, and no phone has the filesystem API the pillar needs. Pinned is
- * dropped because the switcher has never carried it - the drawer does. That is
- * behaviour this list inherited rather than chose; changing it is its own call.
+ * Markdown follows the platform gate in `viewRows`, which is the only thing
+ * that can answer it: the switcher opens at every width, and the pillar draws
+ * the same title row, so a desktop user standing in Markdown has to find that
+ * row marked as the current one. Pinned is a state rather than a type and the
+ * sidebar owns it, which is where this list differs from the rail.
  */
 export function switcherViewRows(t: TFunction): ViewRow[] {
-  return viewRows(t).filter((r) => r.key !== 'starred' && r.key !== 'markdown');
+  return viewRows(t).filter((r) => r.key !== 'starred');
 }
 
 /**

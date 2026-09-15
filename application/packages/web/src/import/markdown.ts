@@ -2,9 +2,11 @@
 // dynamically in parseZip so jszip stays out of the boot-path bundle
 // (NotesView statically imports parseMarkdown for drag-and-drop).
 import type JSZip from 'jszip';
+import { zipEntryText } from './zipEntry';
 import type { FolderDef } from '../folders';
 import { extractInlineTags, normalizeTag } from '../notesRepo';
 import { FRONT_MATTER, SUPPORTED_EXT } from '../markdownFolder/adapter';
+import { isUntitledStem } from '../exportNames';
 import { stripFrontMatterPadding } from '../noteMarkdown';
 import { ATTACHMENT_EXT, isBlobReferenced, mimeFromExt } from './blobImport';
 import { buildFolderTree, commonRootPrefix, parseFolderPath } from './folderImport';
@@ -74,18 +76,16 @@ function unquote(s: string | undefined): string {
   return s.replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1');
 }
 
-/** Derive a title from a filename (strip extension, un-slugify). A bare
- * "Untitled.md" (case-insensitive) is treated as "no title" - the common
- * default filename from macOS, Obsidian, Apple Notes exports etc. is a
- * user signal of "didn't name this", not an explicit title choice.
- * Returning "" lets the live first-body-line derivation take over. */
+/** Derive a title from a filename (strip extension, un-slugify). A default
+ * name like "Untitled.md" or "untitled-2.md" is treated as "no title" -
+ * see `isUntitledStem`. Returning "" lets the live first-body-line
+ * derivation take over. */
 function titleFromFilename(name: string): string {
   const stripped = name
     .replace(SUPPORTED_EXT, '')
     .replace(/[-_]+/g, ' ')
     .trim();
-  if (!stripped || stripped.toLowerCase() === 'untitled') return '';
-  return stripped;
+  return isUntitledStem(stripped) ? '' : stripped;
 }
 
 /** One file, plus what it turned out to carry - the transforms line has to
@@ -240,7 +240,7 @@ async function parseZip(
   let inlineTagCount = 0;
   for (let i = 0; i < mdFiles.length; i++) {
     const [rel, entry] = mdFiles[i]!;
-    const text = await entry.async('string');
+    const text = await zipEntryText(entry);
     const parsed = parseOneMd(text, rel.split('/').pop() ?? rel, entry.date ?? null);
     const note = parsed.note;
     if (parsed.hadFrontMatter) fmCount++;

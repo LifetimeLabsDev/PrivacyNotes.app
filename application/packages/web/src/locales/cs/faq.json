@@ -601,6 +601,13 @@
         "Ty soubory zůstávají na tvém disku přesně tak, jak jsi je nechal: nikdy je neodesíláme, nikdy se nesynchronizují na tvá další zařízení a cestou se nic nepřevádí. Funguje to v desktopové aplikaci na jakémkoli počítači a v prohlížeči v Chrome, Edge či Opeře, protože otevřít složku přímo z disku je schopnost počítače."
       ]
     },
+    "markdown-folder-mobile": {
+      "q": "Můžu na telefonu otevřít složku s Markdownem?",
+      "a": [
+        "Dnes ne. [Složka Markdown](/cs/help/markdown-folder/) funguje v desktopové aplikaci na macOS, Windows a Linuxu a v Chrome, Edge či Opeře na počítači, protože počítač předá aplikaci skutečnou složku, kterou přímo čte i zapisuje. Android a iOS nepředají aplikaci žádnou složku: každý soubor se k ní dostane přes systémovou vrstvu dokumentů, vždy po jednom oprávnění. Přečíst celý strom a zapsat do něj zpátky je proto na každé platformě samostatná práce a ta zatím hotová není.",
+        "Na telefonu můžeš tytéž soubory dostat dovnitř jako kopie: Nastavení > Import & Export > Import > „Soubory Markdown“ bere .md i .txt jednotlivě nebo jako .zip a zabalená složka si udrží podsložky, obrázky i přílohy. Přijdou jako šifrované poznámky, které se synchronizují na tvá další zařízení, a Export zapíše čisté .md zase ven. Originály zůstanou na tvém disku přesně tam, kde jsou."
+      ]
+    },
     "folders": {
       "q": "Jak fungují složky a potřebuju na ně Pro?",
       "a": [

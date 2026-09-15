@@ -601,6 +601,13 @@
         "Quei file restano sul tuo disco esattamente come li hai lasciati: non li carichiamo mai, non si sincronizzano mai sugli altri tuoi dispositivi e per strada non viene convertito nulla. Funziona nell'app desktop su qualsiasi computer, e in Chrome, Edge o Opera lato browser, perché aprire una cartella direttamente dal disco è una capacità desktop."
       ]
     },
+    "markdown-folder-mobile": {
+      "q": "Posso aprire una cartella Markdown sul telefono?",
+      "a": [
+        "Oggi no. [La cartella Markdown](/it/help/markdown-folder/) funziona nell'app desktop su macOS, Windows e Linux, e in Chrome, Edge o Opera su un computer, perché un desktop consegna all'app una cartella vera che legge e scrive direttamente. Android e iOS non consegnano nessuna cartella: ogni file arriva all'app attraverso lo strato documenti del sistema, un permesso alla volta. Leggere un albero intero e riscriverci dentro è quindi un lavoro a sé su ogni piattaforma, e non è ancora fatto.",
+        "Sul telefono puoi portare dentro gli stessi file come copie: Impostazioni > Import & Export > Importa > \"File Markdown\" prende .md e .txt singoli oppure in uno .zip, e una cartella zippata mantiene sottocartelle, immagini e allegati. Arrivano come note cifrate che si sincronizzano sugli altri tuoi dispositivi, ed Esporta riscrive .md pulito. Gli originali restano sul tuo disco esattamente dove sono."
+      ]
+    },
     "folders": {
       "q": "Come funzionano le cartelle, e serve Pro per usarle?",
       "a": [

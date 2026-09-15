@@ -45,7 +45,6 @@
     "keys": "Anahtarlar"
   },
   "journal": {
-    "backfillHover": "Yakın bir gün için yeni günlük",
     "newEntry": "Yeni günlük kaydı",
     "newEntryHover": "Yeni günlük kaydı ({{hotkey}})"
   },
@@ -242,7 +241,13 @@
   "bulkTrash": {
     "title": "Çöp kutusuna taşı",
     "body_one": "<highlight>{{count}} öğe</highlight> çöp kutusuna taşınsın mı? Sonradan geri yükleyebilirsiniz.",
-    "body_other": "<highlight>{{count}} öğe</highlight> çöp kutusuna taşınsın mı? Sonradan geri yükleyebilirsiniz."
+    "body_other": "<highlight>{{count}} öğe</highlight> çöp kutusuna taşınsın mı? Sonradan geri yükleyebilirsiniz.",
+    "readOnlyTitle": "Salt okunur",
+    "readOnlyAcknowledge": "Anladım",
+    "readOnlyBlocked_one": "<highlight>{{count}} öğe</highlight> salt okunur olduğu için çöp kutusuna taşınamaz. Önce not seçeneklerinden salt okunur ayarını kapatın.",
+    "readOnlyBlocked_other": "<highlight>{{count}} öğe</highlight> salt okunur olduğu için çöp kutusuna taşınamaz. Önce not seçeneklerinden salt okunur ayarını kapatın.",
+    "readOnlySkipped_one": "<highlight>{{count}} öğe</highlight> salt okunur olduğu için olduğu yerde kalır.",
+    "readOnlySkipped_other": "<highlight>{{count}} öğe</highlight> salt okunur olduğu için olduğu yerde kalır."
   },
   "bulkDelete": {
     "body_one": "<highlight>{{count}} not</highlight> kalıcı olarak silinsin mi? Bu işlem geri alınamaz.",

@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { zipEntryText } from './zipEntry';
 import { normalizeTag } from '../notesRepo';
 import { buildFolderTree } from './folderImport';
 import { linkifyMarkdown } from './linkify';
@@ -988,7 +989,7 @@ async function readInput(
 
   const out: EnexFile[] = [];
   for (const [path, entry] of entries) {
-    out.push({ notebook: notebookName(path), xml: await entry.async('string') });
+    out.push({ notebook: notebookName(path), xml: await zipEntryText(entry) });
   }
   return out;
 }

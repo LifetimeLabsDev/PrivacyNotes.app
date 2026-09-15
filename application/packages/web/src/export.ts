@@ -30,6 +30,7 @@ import type { VaultContent } from './vaultFields';
 import { folderNamePath, type FolderDef } from './folders';
 import { linkExportMarkdown } from './linkBody';
 import { slugify, zipEntryStems } from './exportNames';
+import { readLineSpacing } from './theme';
 
 /** Export helpers. All exports are generated client-side as Blob downloads. */
 
@@ -613,6 +614,17 @@ function renderVaultHtml(vault: VaultContent): string {
  * earlier in the sheet is more specific than a bare `.vault-fields`, so
  * without it that rule keeps winning `border-collapse` and no frame appears.
  */
+/**
+ * The paragraph gap the reader has chosen, as a literal for the export
+ * stylesheet. Read off <html>, where NotesView paints the synced Line
+ * spacing setting, because an exported file carries no attribute of its own
+ * and threading the value through three call sites would only copy it.
+ * Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
+ */
+function paragraphGapCss(): string {
+  return readLineSpacing() === 'normal' ? '0.75em' : '0';
+}
+
 function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): string {
   const title = note.title.trim() || 'Untitled';
   const vault = vaultContent(note);
@@ -769,8 +781,12 @@ function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): stri
     direction: ltr;
     unicode-bidi: isolate;
   }
+  /* The reader's own paragraph gap, so an exported or printed note lays out
+     the way it looked on screen. A fixed 1em here reopened every break a
+     compact editor closes.
+     Spec: ops/docs/design-decisions.md (editor paragraph rhythm) */
   .content p {
-    margin: 0 0 1em;
+    margin: ${paragraphGapCss()} 0;
   }
   .content ul, .content ol {
     margin: 0 0 1em 1.5em;
@@ -1095,10 +1111,12 @@ export async function exportAllHtmlZip(
   notes: LocalNote[],
   imageStore?: ImageStore | null,
   folders: FolderDef[] = [],
+  onProgress?: (msg: string) => void,
 ): Promise<void> {
   const { default: JSZip } = await import('jszip');
   const zip = new JSZip();
   const stems = zipEntryStems(notes);
+  onProgress?.(i18n.t('importExport:exportProgress.building'));
   for (const [i, note] of notes.entries()) {
     const filename = `${stems[i]!}.html`;
 
@@ -1109,6 +1127,7 @@ export async function exportAllHtmlZip(
     noteHtml = await inlineRenderedFavicons(noteHtml);
     zip.file(filename, noteHtml);
   }
+  onProgress?.(i18n.t('importExport:exportProgress.compressing'));
   const blob = await zip.generateAsync({ type: 'blob' });
   const stamp = new Date().toISOString().slice(0, 10);
   await downloadBlob(blob, `privacynotes-backup-${stamp}-html.zip`);

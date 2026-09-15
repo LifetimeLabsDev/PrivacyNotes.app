@@ -212,10 +212,14 @@ function webHref(value: string): string | null {
 function ContactPhotoLightbox({ photo, name, onClose }: { photo: string; name: string; onClose: () => void }) {
   const { t } = useTranslation('common');
   useEscapeToClose(onClose);
-  const uuid = photo.slice('pn:img/'.length);
+  // Same two shapes the chip reads: a stored blob, or the static path the
+  // seeded contact carries.
+  const staticSrc = photo.startsWith('/') ? photo : '';
+  const uuid = photo.startsWith('pn:img/') ? photo.slice('pn:img/'.length) : '';
   const [url, setUrl] = useState<string | null>(null);
   const [small, setSmall] = useState(false);
   useEffect(() => {
+    if (!uuid) { setUrl(null); return; }
     let alive = true;
     void loadEncryptedImageUrl(uuid).then((u) => { if (alive) setUrl(u); });
     return () => { alive = false; };
@@ -244,9 +248,9 @@ function ContactPhotoLightbox({ photo, name, onClose }: { photo: string; name: s
           </button>
         </div>
         <div className={`flex justify-center ${small ? 'p-6' : ''}`}>
-          {url ? (
+          {staticSrc || url ? (
             <img
-              src={url}
+              src={staticSrc || url!}
               alt={name}
               onLoad={(e) => setSmall(e.currentTarget.naturalWidth < 200)}
               className="block max-w-full max-h-[75vh]"

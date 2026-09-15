@@ -26,6 +26,32 @@ export const IN_APP_CHANGELOG_LIMIT = 10;
 
 export const PUBLIC_CHANGELOG: ChangelogRelease[] = [
   {
+    version: '0.518',
+    date: '2026-09-15',
+    title: 'Set your paragraph spacing, and a covered recovery phrase',
+    items: [
+      { type: 'new', text: 'Settings > Appearance > Line spacing sets how much room a paragraph takes: Compact, the new default, or Normal. The choice follows you to every device, because it is how you write rather than a property of one screen.' },
+      { type: 'improved', text: 'Your recovery phrase stays covered until you ask for it, and it hides itself again after 60 seconds. Copy, Save QR and the .txt download are covered with it.' },
+      { type: 'improved', text: 'A new note, journal entry or task list opens with the cursor in the body, so you can write before you name it.' },
+      { type: 'improved', text: 'The title above the list opens the pillar menu at every window width, so a collapsed sidebar no longer costs you the only other way to switch.' },
+      { type: 'improved', text: 'A read-only item can no longer be moved to the trash, from the menu, the toolbar, the keyboard shortcut or a tag delete.' },
+      { type: 'improved', text: 'A right-click on several selected rows acts on all of them, and offers the same actions a single row does.' },
+      { type: 'improved', text: 'Copying a note puts the text on the clipboard the way it reads on screen, with no extra blank lines and no stray backslashes.' },
+      { type: 'improved', text: 'Text size and Line spacing share one live example, which opens on your first click on either one.' },
+      { type: 'improved', text: 'The Journals New button holds the date picker, so its title row fits at any list width.' },
+      { type: 'improved', text: 'The tag picker opens in the same window as the folder picker, so it can no longer land away from the button that opened it.' },
+      { type: 'fixed', text: 'Restoring a backup keeps your untitled notes untitled, so each one still reads by its first line instead of being named "untitled-2".' },
+      { type: 'fixed', text: 'A Markdown, Obsidian, Notesnook or Apple Notes import no longer names a note after a source file called Untitled.' },
+      { type: 'fixed', text: 'Sign-in works on the Linux app on openSUSE and other distributions that keep their certificates in their own place.' },
+      { type: 'fixed', text: 'An import refuses a compressed entry that expands far past its own size, so a crafted backup cannot freeze the app.' },
+      { type: 'fixed', text: 'Upload in the Files pillar opens a picker that can select a file, on Safari, the Mac app and iOS.' },
+      { type: 'fixed', text: 'Tapping a picture on Android keeps its size, download and delete bar on screen.' },
+      { type: 'fixed', text: "A link's website icon stays on the same line as the link on a narrow screen." },
+      { type: 'fixed', text: 'A link label keeps its bold, italic, code and highlight in an export, a PDF and a burn note.' },
+      { type: 'fixed', text: 'Filtering by a tag keeps the full New menu, and a file made under a tag or folder filter stays in the list you made it from.' },
+    ],
+  },
+  {
     version: '0.514',
     date: '2026-09-11',
     title: 'A passphrase generator, and a password you can read',

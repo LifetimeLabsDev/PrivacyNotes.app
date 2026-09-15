@@ -45,7 +45,6 @@
     "keys": "Chaves"
   },
   "journal": {
-    "backfillHover": "Novo diário para um dia recente",
     "newEntry": "Nova entrada de diário",
     "newEntryHover": "Nova entrada de diário ({{hotkey}})"
   },
@@ -242,7 +241,13 @@
   "bulkTrash": {
     "title": "Mover para a Lixeira",
     "body_one": "Mover <highlight>{{count}} item</highlight> para a lixeira? Você pode restaurá-lo depois.",
-    "body_other": "Mover <highlight>{{count}} itens</highlight> para a lixeira? Você pode restaurá-los depois."
+    "body_other": "Mover <highlight>{{count}} itens</highlight> para a lixeira? Você pode restaurá-los depois.",
+    "readOnlyTitle": "Somente leitura",
+    "readOnlyAcknowledge": "Entendi",
+    "readOnlyBlocked_one": "Este item é <highlight>somente leitura</highlight>, então não vai para a lixeira. Desative somente leitura nas opções da nota primeiro.",
+    "readOnlyBlocked_other": "Os <highlight>{{count}} itens</highlight> são somente leitura, então nenhum vai para a lixeira. Desative somente leitura nas opções da nota primeiro.",
+    "readOnlySkipped_one": "<highlight>{{count}} item</highlight> é somente leitura e fica onde está.",
+    "readOnlySkipped_other": "<highlight>{{count}} itens</highlight> são somente leitura e ficam onde estão."
   },
   "bulkDelete": {
     "body_one": "Excluir permanentemente <highlight>{{count}} nota</highlight>? Isso não pode ser desfeito.",

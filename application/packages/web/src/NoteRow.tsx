@@ -438,12 +438,17 @@ export function ContactChip({ name, initials: given, photo, size, trashTint = fa
   name: string;
   /** The letters to draw; derived from the name when absent. */
   initials?: string;
-  /** The stored `pn:img/<uuid>` reference, or ''. */
+  /** The stored `pn:img/<uuid>` reference, a static path for the seeded
+   *  contact, or ''. */
   photo: string;
   /** Diameter in px. */
   size: number;
   trashTint?: boolean;
 }) {
+  // A path rather than a uuid is the seeded contact's picture: a static
+  // asset every install already ships, so it needs no blob, no quota and
+  // no sync, and it draws on a second device that never ran the seeding.
+  const staticSrc = photo.startsWith('/') ? photo : '';
   const uuid = photo.startsWith('pn:img/') ? photo.slice('pn:img/'.length) : '';
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => {
@@ -462,8 +467,8 @@ export function ContactChip({ name, initials: given, photo, size, trashTint = fa
       style={{ width: size, height: size, fontSize: Math.round(size * 0.36) }}
       aria-hidden="true"
     >
-      {url ? (
-        <img src={url} alt="" className="w-full h-full object-cover" draggable={false} />
+      {staticSrc || url ? (
+        <img src={staticSrc || url!} alt="" className="w-full h-full object-cover" draggable={false} />
       ) : (
         initials || <User size={Math.round(size * 0.5)} />
       )}

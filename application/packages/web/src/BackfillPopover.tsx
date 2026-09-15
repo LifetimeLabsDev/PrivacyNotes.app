@@ -11,11 +11,18 @@ import { intlLocale } from './languages';
  * way to map a journal to a calendar date once the title is renamed
  * or the entry is backfilled from a different day).
  *
+ * Today has its own callback because it is not a backfill: the ordinary
+ * new-entry path inherits the open folder, the active tag and the pinned
+ * state of the list the user is standing in, and a dated row deliberately
+ * inherits none of that. The two rows sit in one menu; the actions stay apart.
+ *
  * `onPick` receives the picked date as an ISO yyyy-mm-dd string.
  */
 type Props = {
-  /** Called with the picked ISO date (yyyy-mm-dd). */
+  /** Called with the picked ISO date (yyyy-mm-dd). Never today's date. */
   onPick: (isoDate: string) => void;
+  /** Called for the today row, which creates an ordinary new entry. */
+  onToday: () => void;
   /** Called when the user clicks outside or presses Escape. */
   onClose: () => void;
   /** The trigger button - excluded from outside-click detection. */
@@ -40,7 +47,7 @@ function labelFor(d: Date, today: Date): { kind: 'today' | 'yesterday' | 'weekda
   return { kind: 'weekday', weekday, secondary: date };
 }
 
-export function BackfillPopover({ onPick, onClose, anchorRef }: Props) {
+export function BackfillPopover({ onPick, onToday, onClose, anchorRef }: Props) {
   const { t } = useTranslation('shell');
   const popoverRef = useRef<HTMLDivElement | null>(null);
 
@@ -90,7 +97,7 @@ export function BackfillPopover({ onPick, onClose, anchorRef }: Props) {
             key={iso}
             type="button"
             role="menuitem"
-            onClick={() => { onPick(iso); onClose(); }}
+            onClick={() => { if (isToday) onToday(); else onPick(iso); onClose(); }}
             className={`w-full flex items-baseline justify-between gap-3 px-3 py-2 text-start transition ${
               isToday
                 ? 'bg-accent/10 border-s-[3px] border-accent hover:bg-accent/15'

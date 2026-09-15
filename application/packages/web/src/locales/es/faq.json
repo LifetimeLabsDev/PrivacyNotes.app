@@ -601,6 +601,13 @@
         "Esos archivos se quedan en tu disco tal como los dejaste: nunca los subimos, nunca se sincronizan con tus otros dispositivos y no se convierte nada por el camino. Funciona en la app de escritorio en cualquier ordenador, y en Chrome, Edge u Opera en el navegador, porque abrir una carpeta directamente del disco es una capacidad de escritorio."
       ]
     },
+    "markdown-folder-mobile": {
+      "q": "¿Puedo abrir una carpeta Markdown en el móvil?",
+      "a": [
+        "Hoy no. [La carpeta Markdown](/es/help/markdown-folder/) funciona en la app de escritorio en macOS, Windows y Linux, y en Chrome, Edge u Opera en un ordenador, porque un escritorio le entrega a la app una carpeta real que lee y escribe directamente. Android e iOS no le entregan ninguna carpeta: cada archivo llega a la app por la capa de documentos del sistema, un permiso cada vez. Leer un árbol entero y volver a escribir en él es por eso trabajo aparte en cada plataforma, y todavía no está hecho.",
+        "En el móvil puedes traer los mismos archivos como copias: Ajustes > Import & Export > Importar > \"Archivos Markdown\" acepta .md y .txt sueltos o dentro de un .zip, y una carpeta comprimida mantiene sus subcarpetas, imágenes y adjuntos. Llegan como notas cifradas que se sincronizan con tus otros dispositivos, y Exportar vuelve a escribir .md limpio. Los originales se quedan en tu disco exactamente donde están."
+      ]
+    },
     "folders": {
       "q": "¿Cómo funcionan las carpetas y hace falta Pro para usarlas?",
       "a": [

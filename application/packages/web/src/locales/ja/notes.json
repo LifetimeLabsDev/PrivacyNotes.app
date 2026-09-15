@@ -45,7 +45,6 @@
     "keys": "鍵"
   },
   "journal": {
-    "backfillHover": "過去の日のジャーナルを作成",
     "newEntry": "新規ジャーナル",
     "newEntryHover": "新規ジャーナル({{hotkey}})"
   },
@@ -239,7 +238,11 @@
   },
   "bulkTrash": {
     "title": "ゴミ箱に移動",
-    "body_other": "<highlight>{{count}}件のアイテム</highlight>をゴミ箱に移動しますか?後で復元できます。"
+    "body_other": "<highlight>{{count}}件のアイテム</highlight>をゴミ箱に移動しますか?後で復元できます。",
+    "readOnlyTitle": "読み取り専用",
+    "readOnlyAcknowledge": "わかりました",
+    "readOnlyBlocked_other": "<highlight>{{count}}件のアイテム</highlight>は読み取り専用のため、ゴミ箱に移動できません。先にノートオプションで読み取り専用を解除してください。",
+    "readOnlySkipped_other": "<highlight>{{count}}件のアイテム</highlight>は読み取り専用のため、そのまま残ります。"
   },
   "bulkDelete": {
     "body_other": "<highlight>{{count}}件のノート</highlight>を完全に削除しますか?この操作は取り消せません。"

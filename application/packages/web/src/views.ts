@@ -52,8 +52,8 @@ export type View =
  * the menu read as a dead control (reported for Bookmarks 2026-08-25).
  *
  * Read by all three lists that draw views: the wide rail (`TagsRail`), the
- * narrow icon strip (`CollapsedSidebar`) and the phone pillar dropdown
- * (`notesView/ListNav`). Platform availability is checked separately, and
+ * narrow icon strip (`CollapsedSidebar`) and the pillar dropdown in a list
+ * title (`notesView/ListNav`). Platform availability is checked separately, and
  * first: Markdown stays hidden where no filesystem API exists whatever this
  * says. Spec: ops/docs/plans/sidebar-views.md (governs Show in sidebar only, separate from Show in All)
  */

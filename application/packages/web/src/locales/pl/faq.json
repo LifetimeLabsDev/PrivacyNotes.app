@@ -601,6 +601,13 @@
         "Te pliki zostają na twoim dysku dokładnie tak, jak je zostawiłeś: nigdy ich nie wysyłamy, nigdy nie synchronizują się na twoje inne urządzenia i nic nie jest po drodze konwertowane. Działa to w aplikacji desktopowej na dowolnym komputerze oraz w Chrome, Edge lub Operze w przeglądarce, bo otwarcie folderu prosto z dysku to możliwość komputerowa."
       ]
     },
+    "markdown-folder-mobile": {
+      "q": "Czy mogę otworzyć folder Markdown na telefonie?",
+      "a": [
+        "Dziś nie. [Folder Markdown](/pl/help/markdown-folder/) działa w aplikacji desktopowej na macOS, Windows i Linux oraz w Chrome, Edge lub Operze na komputerze, bo komputer daje aplikacji prawdziwy folder, który czyta i zapisuje bezpośrednio. Android i iOS nie dają aplikacji żadnego folderu: każdy plik dociera do niej przez systemową warstwę dokumentów, po jednym uprawnieniu naraz. Odczytanie całego drzewa i zapisanie do niego z powrotem to więc osobna praca na każdej platformie i nie jest jeszcze zrobiona.",
+        "Na telefonie możesz wciągnąć te same pliki jako kopie: Ustawienia > Import & Export > Import > „Pliki Markdown” przyjmuje .md i .txt pojedynczo albo w .zip, a spakowany folder zachowuje podfoldery, obrazki i załączniki. Trafiają jako zaszyfrowane notatki, które synchronizują się na twoje inne urządzenia, a Eksport zapisuje z powrotem czyste .md. Oryginały zostają na twoim dysku dokładnie tam, gdzie są."
+      ]
+    },
     "folders": {
       "q": "Jak działają foldery i czy potrzebuję do nich Pro?",
       "a": [

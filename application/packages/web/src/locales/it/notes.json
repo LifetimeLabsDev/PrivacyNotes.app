@@ -45,7 +45,6 @@
     "keys": "Chiavi"
   },
   "journal": {
-    "backfillHover": "Nuova pagina di diario per un giorno recente",
     "newEntry": "Nuova pagina di diario",
     "newEntryHover": "Nuova pagina di diario ({{hotkey}})"
   },
@@ -242,7 +241,13 @@
   "bulkTrash": {
     "title": "Sposta nel cestino",
     "body_one": "Spostare <highlight>{{count}} elemento</highlight> nel cestino? Potrai ripristinarlo in seguito.",
-    "body_other": "Spostare <highlight>{{count}} elementi</highlight> nel cestino? Potrai ripristinarli in seguito."
+    "body_other": "Spostare <highlight>{{count}} elementi</highlight> nel cestino? Potrai ripristinarli in seguito.",
+    "readOnlyTitle": "Sola lettura",
+    "readOnlyAcknowledge": "Ho capito",
+    "readOnlyBlocked_one": "Questo elemento è in <highlight>sola lettura</highlight>, quindi non può finire nel cestino. Disattiva prima la sola lettura nelle opzioni nota.",
+    "readOnlyBlocked_other": "Tutti i <highlight>{{count}} elementi</highlight> sono in sola lettura, quindi nessuno può finire nel cestino. Disattiva prima la sola lettura nelle opzioni nota.",
+    "readOnlySkipped_one": "<highlight>{{count}} elemento</highlight> è in sola lettura e resta dov'è.",
+    "readOnlySkipped_other": "<highlight>{{count}} elementi</highlight> sono in sola lettura e restano dove sono."
   },
   "bulkDelete": {
     "body_one": "Eliminare definitivamente <highlight>{{count}} nota</highlight>? L'operazione è irreversibile.",

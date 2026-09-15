@@ -42,6 +42,7 @@ export const FAQ_STRUCTURE: ReadonlyArray<{ id: string; group: FaqGroupKey }> = 
   { id: 'need-email', group: 'gettingStarted' },
   { id: 'import-from-other-apps', group: 'gettingStarted' },
   { id: 'markdown-folder', group: 'gettingStarted' },
+  { id: 'markdown-folder-mobile', group: 'gettingStarted' },
   { id: 'markdown-support', group: 'gettingStarted' },
   { id: 'markdown-syntax', group: 'gettingStarted' },
   { id: 'tasks', group: 'gettingStarted' },

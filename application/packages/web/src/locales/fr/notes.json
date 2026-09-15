@@ -45,7 +45,6 @@
     "keys": "Clés"
   },
   "journal": {
-    "backfillHover": "Nouveau journal pour un jour récent",
     "newEntry": "Nouvelle entrée de journal",
     "newEntryHover": "Nouvelle entrée de journal ({{hotkey}})"
   },
@@ -242,7 +241,13 @@
   "bulkTrash": {
     "title": "Mettre à la corbeille",
     "body_one": "Mettre <highlight>{{count}} élément</highlight> à la corbeille ? Tu pourras le restaurer plus tard.",
-    "body_other": "Mettre <highlight>{{count}} éléments</highlight> à la corbeille ? Tu pourras les restaurer plus tard."
+    "body_other": "Mettre <highlight>{{count}} éléments</highlight> à la corbeille ? Tu pourras les restaurer plus tard.",
+    "readOnlyTitle": "Lecture seule",
+    "readOnlyAcknowledge": "J'ai compris",
+    "readOnlyBlocked_one": "Cet élément est en <highlight>lecture seule</highlight>, il ne peut donc pas aller à la corbeille. Désactive d'abord la lecture seule dans les options de la note.",
+    "readOnlyBlocked_other": "Les <highlight>{{count}} éléments</highlight> sont tous en lecture seule, aucun ne peut donc aller à la corbeille. Désactive d'abord la lecture seule dans les options de la note.",
+    "readOnlySkipped_one": "<highlight>{{count}} élément</highlight> est en lecture seule et reste où il est.",
+    "readOnlySkipped_other": "<highlight>{{count}} éléments</highlight> sont en lecture seule et restent où ils sont."
   },
   "bulkDelete": {
     "body_one": "Supprimer définitivement <highlight>{{count}} note</highlight> ? Cette action est irréversible.",

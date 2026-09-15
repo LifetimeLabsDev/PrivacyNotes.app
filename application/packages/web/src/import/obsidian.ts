@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { zipEntryText } from './zipEntry';
 import type { FolderDef } from '../folders';
 import { extractInlineTags, parseYamlTags } from '../notesRepo';
 import { FRONT_MATTER } from '../markdownFolder/adapter';
@@ -6,6 +7,7 @@ import { ATTACHMENT_EXT, isBlobReferenced, mimeFromExt } from './blobImport';
 import { buildFolderTree, commonRootPrefix } from './folderImport';
 import { linkifyMarkdown } from './linkify';
 import { noteLinkTarget } from '../noteLinks';
+import { isUntitledStem } from '../exportNames';
 import type { ImportedNote, ParsedImport } from './types';
 
 /**
@@ -234,9 +236,11 @@ function parseOneObsidian(
   const filenameTitle = filename
     .replace(/\.md$/i, '')
     .trim();
-  const title =
-    meta.title ||
-    (filenameTitle.toLowerCase() === 'untitled' ? '' : filenameTitle);
+  // An Obsidian note has no title field: the filename IS the name, so it is
+  // the right fallback here. The exception is the name Obsidian itself gives
+  // a note the user never named - "Untitled", then "Untitled 1" - which is a
+  // stand-in rather than a name. See `isUntitledStem`.
+  const title = meta.title || (isUntitledStem(filenameTitle) ? '' : filenameTitle);
 
   // Tags: frontmatter + inline #tags. The subfolder structure becomes
   // real folders in parseZip, not tags (that was the #178 bug).
@@ -335,7 +339,7 @@ async function parseZip(
   const notes: ImportedNote[] = [];
   for (let i = 0; i < mdFiles.length; i++) {
     const [rel, entry] = mdFiles[i]!;
-    const text = await entry.async('string');
+    const text = await zipEntryText(entry);
     const note = parseOneObsidian(text, rel, entry.date ?? null);
     const dir = dirOf(rel);
     if (dir) {

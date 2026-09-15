@@ -396,8 +396,8 @@ export function contactInitials(name: string): string {
 
 /**
  * The initials the chip shows for a contact: the first letters of the first
- * and last name when the fields are filled ("Dr. C. Obermeyer" reads CO,
- * not DC), else the display name's first two words.
+ * and last name when the fields are filled ("Dr. John Doe" reads JD, not
+ * DJ), else the display name's first two words.
  */
 export function contactInitialsFor(title: string, c: Contact): string {
   const first = c.first.trim();
@@ -419,7 +419,7 @@ export function contactHue(name: string): number {
   return h % CONTACT_HUES;
 }
 
-/** The digits of a phone number, for the search index. '+49 176' becomes '49176'. */
+/** The digits of a phone number, for the search index. '+41 79' becomes '4179'. */
 export function phoneDigits(value: string): string {
   return value.replace(/\D/g, '');
 }

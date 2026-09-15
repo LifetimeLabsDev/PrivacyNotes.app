@@ -252,54 +252,66 @@ async function seedBookmarkNotes(pubkey: string, baseTs: number): Promise<void> 
   );
 }
 
-/* ── Contact seeds - the rows from the mockup, so the pillar is never
- * empty on first sight. Invented people: the names, numbers and addresses
- * belong to nobody. Same idempotent seedNote path; bodies use the canonical
- * contact-body JSON. Spec: ops/docs/plans/contacts-pillar.md */
-// Built at seed time, so the two translated sentences read in the active language.
+/* ── The contact seed. ONE contact, with every field a card can render
+ * filled in, because the pillar's job on first sight is to show what a
+ * contact holds. She is a joke with a point: the company's head of
+ * security has never shown her face.
+ *
+ * Every value is a placeholder or one of our own public links. The photo
+ * is a static asset rather than a stored blob, the way every other seeded
+ * picture is, so it costs no quota and draws on a device that never ran
+ * the seeding. Spec: ops/docs/plans/contacts-pillar.md */
+// Built at seed time, so the translated sentences read in the active language.
 function contactSeeds(): { sentinel: string; title: string; tags: string[]; body: string }[] {
   return [
   {
     sentinel: '10c1',
-    title: 'Clara Meier',
+    title: 'Kon Kitsune',
     tags: ['work'],
     body: buildContactBody({
       ...emptyContact(),
-      first: 'Clara',
-      last: 'Meier',
-      org: 'Nordwind GmbH',
+      prefix: 'Agent',
+      first: 'Kon',
+      middle: 'Nine',
+      last: 'Kitsune',
+      suffix: 'IX',
+      nickname: 'Nine-Tails',
+      phonetic: { first: 'kon', middle: '', last: 'kit-su-ne' },
+      photo: '/onboarding/kitsune.webp',
+      photoBytes: 18898,
+      org: 'PrivacyNotes',
+      department: i18n.t('shell:contacts.seedDepartment'),
       jobTitle: i18n.t('shell:contacts.seedJobTitle'),
-      phones: [{ label: 'mobile', value: '+49 30 5566 778' }],
-      emails: [{ label: 'work', value: 'c.meier@example.com' }],
-      addresses: [{ label: 'home', street: 'Rue Bonsergent 52', city: 'Paris', region: '', postal: '75010', country: 'France' }],
-    }),
-  },
-  {
-    sentinel: '10c2',
-    title: 'Dr. C. Obermeyer',
-    tags: ['health'],
-    body: buildContactBody({
-      ...emptyContact(),
-      first: 'C.',
-      last: 'Obermeyer',
-      prefix: 'Dr.',
-      org: 'Praxis am Park',
-      phones: [{ label: 'work', value: '030 4455 6677' }],
-      dates: [{ label: 'birthday', value: '--03-14' }],
+      phones: [
+        { label: 'work', value: '+81 3 9999 0009' },
+        { label: 'mobile', value: '+81 90 9999 0009' },
+      ],
+      emails: [{ label: 'work', value: 'kitsune@example.com' }],
+      addresses: [
+        { label: 'work', street: '9 Fox Alley', city: 'Shibuya', region: 'Tokyo', postal: '150-0001', country: 'Japan' },
+        { label: 'home', street: 'Ninth Torii, Inari Shrine', city: 'Shibuya', region: 'Tokyo', postal: '', country: 'Japan' },
+      ],
+      urls: [
+        { label: 'homepage', value: 'https://privacynotes.app/' },
+        { label: 'Issues', value: 'https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/' },
+      ],
+      // A profile row only offers an Open button when its value parses as
+      // a link, so these hold the whole URL rather than a bare handle.
+      profiles: [
+        { label: 'X', value: 'https://x.com/PrivacyNotesApp' },
+        { label: 'Reddit', value: 'https://www.reddit.com/r/PrivacyNotes/' },
+        { label: 'Mastodon', value: 'https://mastodon.social/@privacynotes' },
+        { label: 'YouTube', value: 'https://www.youtube.com/@PrivacyNotesApp' },
+      ],
+      dates: [
+        { label: 'birthday', value: '--09-09' },
+        { label: 'anniversary', value: '2019-09-09' },
+      ],
+      related: [
+        { label: 'Familiar', value: 'Tofu the Fox' },
+        { label: 'Colleague', value: 'The Night Shift' },
+      ],
       notes: i18n.t('shell:contacts.seedNote'),
-    }),
-  },
-  {
-    sentinel: '10c3',
-    title: 'Anna Baumann',
-    tags: ['friends'],
-    body: buildContactBody({
-      ...emptyContact(),
-      first: 'Anna',
-      last: 'Baumann',
-      phones: [{ label: 'mobile', value: '+49 176 2233 4455' }],
-      emails: [{ label: 'home', value: 'anna@example.com' }],
-      related: [{ label: 'spouse', value: 'David Schulz' }],
     }),
   },
   ];

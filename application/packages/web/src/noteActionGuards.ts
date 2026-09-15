@@ -90,3 +90,61 @@ export function noteActionGuards(d: NoteActionGuardDeps) {
     },
   };
 }
+
+export type BulkActionGuardDeps = {
+  isPro: boolean;
+  /** True when every item in the selection already has the flag on. It is
+   *  what decides the direction, the same way one note's own flag does. */
+  allLocked: boolean;
+  allProtected: boolean;
+  onSetLocked: (locked: boolean) => void;
+  onSetPinProtected: (protectedOn: boolean) => void;
+  /** Taking protection off a selection asks for the PIN once, then applies
+   *  it to all of them. A single note gets its own screen instead. */
+  onRequestRemoveProtection: () => void;
+  onOpenUpgrade: (trigger: NoteUpgradeTrigger) => void;
+  onSetPin?: () => void;
+  onClose: () => void;
+};
+
+/**
+ * The same two gates for a whole selection.
+ *
+ * It sits beside its single-note twin on purpose: the checks are a Pro
+ * boundary and a PIN boundary, and a reader comparing the two functions
+ * must be able to see at a glance that they ask for the same things in
+ * the same order. A selection that could protect or unlock items the
+ * single path refuses would be a hole, not a shortcut.
+ * Spec: ops/docs/pro-features.md
+ */
+export function bulkActionGuards(d: BulkActionGuardDeps) {
+  const unlocked = proUnlocked(d.isPro);
+
+  return {
+    toggleLock() {
+      if (!unlocked) {
+        d.onOpenUpgrade('lock');
+        return;
+      }
+      d.onSetLocked(!d.allLocked);
+    },
+
+    toggleProtect() {
+      if (!unlocked) {
+        d.onOpenUpgrade('protect');
+        return;
+      }
+      if (d.allProtected) {
+        d.onRequestRemoveProtection();
+        return;
+      }
+      // There is nothing to protect a note with until a PIN exists.
+      if (!hasPin()) {
+        d.onClose();
+        d.onSetPin?.();
+        return;
+      }
+      d.onSetPinProtected(true);
+    },
+  };
+}

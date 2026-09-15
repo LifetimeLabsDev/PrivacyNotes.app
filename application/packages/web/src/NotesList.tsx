@@ -12,7 +12,7 @@ import NoteCard from './NoteCard';
 import { StorageBar } from './StorageBar';
 import { HoverLabel } from './HoverLabel';
 import { BackfillPopover } from './BackfillPopover';
-import { Key, CreditCard, Lock, NotePencil, CaretDown, Trash, SquaresFour, Book, Shield, ShieldPlus, PushPin, FileText, Calendar, FunnelSimple, Note, CheckSquare, Upload, BookmarkSimple, Plus, Notebook, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
+import { Key, CreditCard, Lock, NotePencil, CaretDown, Trash, SquaresFour, Book, Shield, ShieldPlus, PushPin, FileText, FunnelSimple, Note, CheckSquare, Upload, BookmarkSimple, Plus, Notebook, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
 import { ActiveFilterEntry, ActiveSearchEntry, FilteredEmpty, ListFilterChips } from './ListFilterChips';
 import { BookmarkRowActions } from './BookmarkRowActions';
 import { ListSearchInput } from './ListSearchInput';
@@ -411,6 +411,9 @@ export function NotesList({
   // notes:newMenu.* so the button's "New" isn't repeated in every row.
   // Order MUST match the sidebar pillar nav (TagsRail.tsx) and the right-click
   // menu (contextMenus.tsx buildGlobalMenu): Note, Task, Login, File, Journal, Contact, Bookmark.
+  // A tag or folder filter narrows the list, never the menu: every type
+  // inherits both filters on creation, so all seven stay reachable and land
+  // where the user is looking (GitHub #324).
   // Spec: ops/docs/ui-patterns.md section 45 (New-menu order invariant)
   const allNewOptions: NewMenuOption[] = [
     { key: 'note', label: t('newMenu.note'), icon: <NEW_GLYPHS.note />, onSelect: () => onNew() },
@@ -483,39 +486,47 @@ export function NotesList({
           </HoverLabel>
         ) : view !== 'trash' ? (
           <div className="shrink-0 flex items-center gap-1.5">
-            {view === 'journal' && (
+            {view === 'vault' ? (
+              <NewDropdown ariaLabel={t('vaultNew.ariaLabel')} options={vaultNewOptions} icon={<NEW_GLYPHS.login size={18} />} />
+            ) : view === 'home' || view === 'starred' ? (
+              <NewDropdown options={allNewOptions} icon={<NEW_GLYPHS.generic size={18} />} />
+            ) : view === 'journal' ? (
+              /* The date picker hangs off the New button rather than a calendar
+                 button beside it. This pillar is the only one that wanted three
+                 controls in one h-14 row, and at a narrow list width the third
+                 one truncated the title to "Jou...". Nothing is buried: today is
+                 the picker's first row and the hotkey still creates it in one
+                 stroke. */
               <div className="relative">
-                <HoverLabel label={t('journal.backfillHover')} position="above">
+                <HoverLabel label={t('journal.newEntryHover', { hotkey: hotkeyLabel })} position="above">
                 <button
                   ref={backfillButtonRef}
                   type="button"
                   onClick={() => setShowBackfill((v) => !v)}
-                  aria-label={t('journal.backfillHover')}
+                  aria-label={t('journal.newEntry')}
                   aria-haspopup="menu"
                   aria-expanded={showBackfill}
-                  className="inline-flex items-center justify-center h-10 rounded-md bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-500 dark:text-neutral-400 px-2.5 transition min-w-[44px]"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-semibold px-3 py-1.5 text-lg tracking-tight transition cursor-pointer"
                 >
-                  <Calendar size={18} />
+                  <NEW_GLYPHS.note size={18} />
+                  {t('header.new', newButtonOpts())}
+                  <CaretDown size={12} className="ms-0.5" />
                 </button>
                 </HoverLabel>
                 {showBackfill && (
                   <BackfillPopover
+                    onToday={() => onNew()}
                     onPick={onBackfillDate}
                     onClose={() => setShowBackfill(false)}
                     anchorRef={backfillButtonRef}
                   />
                 )}
               </div>
-            )}
-            {view === 'vault' ? (
-              <NewDropdown ariaLabel={t('vaultNew.ariaLabel')} options={vaultNewOptions} icon={<NEW_GLYPHS.login size={18} />} />
-            ) : (view === 'home' || view === 'starred') && selectedTag === null ? (
-              <NewDropdown options={allNewOptions} icon={<NEW_GLYPHS.generic size={18} />} />
             ) : (
-              <HoverLabel label={view === 'journal' ? t('journal.newEntryHover', { hotkey: hotkeyLabel }) : t('header.newNoteHover', { hotkey: hotkeyLabel })} position="above">
+              <HoverLabel label={t('header.newNoteHover', { hotkey: hotkeyLabel })} position="above">
               <button
                 onClick={() => onNew()}
-                aria-label={view === 'journal' ? t('journal.newEntry') : t('header.newNote')}
+                aria-label={t('header.newNote')}
                 className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-semibold px-3 py-1.5 text-lg tracking-tight transition"
               >
                 <NEW_GLYPHS.note size={18} />

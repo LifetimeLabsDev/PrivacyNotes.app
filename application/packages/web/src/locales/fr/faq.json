@@ -601,6 +601,13 @@
         "Ces fichiers restent sur ton disque exactement comme tu les as laissés : nous ne les envoyons jamais, ils ne se synchronisent jamais vers tes autres appareils, et rien n'est converti au passage. Cela fonctionne dans l'app de bureau sur n'importe quel ordinateur, et dans Chrome, Edge ou Opera côté navigateur, car ouvrir un dossier directement depuis le disque est une capacité de bureau."
       ]
     },
+    "markdown-folder-mobile": {
+      "q": "Puis-je ouvrir un dossier Markdown sur mon téléphone ?",
+      "a": [
+        "Pas aujourd'hui. [Le dossier Markdown](/fr/help/markdown-folder/) fonctionne dans l'app de bureau sur macOS, Windows et Linux, et dans Chrome, Edge ou Opera sur un ordinateur, car un ordinateur de bureau confie à l'app un vrai dossier qu'elle lit et écrit directement. Android et iOS ne confient aucun dossier à une app : chaque fichier lui parvient par la couche documents du système, une autorisation à la fois. Lire une arborescence entière et y réécrire est donc un travail à part sur chaque plateforme, et il n'est pas encore fait.",
+        "Sur un téléphone, tu peux faire entrer les mêmes fichiers en copie : Paramètres > Import & Export > Importer > \"Fichiers Markdown\" accepte des .md et des .txt à l'unité ou en .zip, et un dossier zippé garde ses sous-dossiers, ses images et ses pièces jointes. Ils arrivent comme des notes chiffrées qui se synchronisent vers tes autres appareils, et Exporter réécrit du .md propre. Les originaux restent exactement où ils sont sur ton disque."
+      ]
+    },
     "folders": {
       "q": "Comment fonctionnent les dossiers, et faut-il Pro pour les utiliser ?",
       "a": [

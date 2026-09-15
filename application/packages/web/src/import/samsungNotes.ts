@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { zipEntryText } from './zipEntry';
 import { linkifyMarkdown } from './linkify';
 import type { ImportedNote, ParsedImport } from './types';
 
@@ -422,7 +423,7 @@ async function parseDocxFile(
   let numDefs = new Map<string, NumDef>();
   const numFile = zip.file('word/numbering.xml');
   if (numFile) {
-    const numXml = await numFile.async('string');
+    const numXml = await zipEntryText(numFile);
     numDefs = parseNumbering(numXml);
   }
 
@@ -431,7 +432,7 @@ async function parseDocxFile(
   if (!docFile) {
     throw new Error('Invalid .docx: missing word/document.xml');
   }
-  const docXml = await docFile.async('string');
+  const docXml = await zipEntryText(docFile);
   const result = docxToMarkdown(docXml, numDefs);
 
   // Extract image blobs referenced by the document
@@ -440,7 +441,7 @@ async function parseDocxFile(
     // Parse rels to resolve rId -> media path
     const relsFile = zip.file('word/_rels/document.xml.rels');
     if (relsFile) {
-      const relsXml = await relsFile.async('string');
+      const relsXml = await zipEntryText(relsFile);
       const rIdToPath = parseDocRels(relsXml);
 
       for (const rId of result.imageRIds) {
@@ -538,7 +539,7 @@ async function extractEntries(
     if (txtFiles.length > 0) {
       onProgress?.(`Reading ${txtFiles.length} text file${txtFiles.length === 1 ? '' : 's'}…`);
       for (const entry of txtFiles) {
-        const text = await entry.async('string');
+        const text = await zipEntryText(entry);
         entries.push({
           name: entry.name,
           format: 'txt',

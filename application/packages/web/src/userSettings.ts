@@ -47,7 +47,7 @@ import {
   type CustomTrackerTemplate,
   type MedicationTemplate,
 } from './trackerTypes';
-import { isColorTheme, type ColorTheme } from './theme';
+import { isColorTheme, isLineSpacing, type ColorTheme, type LineSpacing } from './theme';
 import {
   isJournalTitleFormat,
   JOURNAL_SUFFIX_MAX,
@@ -290,6 +290,16 @@ export type UserSettings = {
    */
   editorMode: 'formatted' | 'markdown';
   /**
+   * The gap between two paragraphs in a note body: 'compact' (none, so
+   * Enter costs the same line as Shift+Enter) or 'normal'. Synced like
+   * editorMode, because it describes how somebody writes rather than the
+   * screen they write on, and a note typed on a phone is read on a
+   * laptop. A blob with no value means compact, so every account lands
+   * there until somebody changes it.
+   * GitHub #255. Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
+   */
+  lineSpacing: LineSpacing;
+  /**
    * Date shape new journal entry titles are born with. Synced like
    * viewMode: someone who prefers ISO dates prefers them on every
    * device. Only new entries are affected - existing titles are free
@@ -462,6 +472,8 @@ function defaultSettings(): UserSettings {
     hiddenInAll: [],
     startView: 'home', // Spec: ops/docs/plans/start-view.md (All is the default)
     editorMode: 'formatted', // Spec: ops/specs/editor-mode-toggle.md (default editor mode)
+    // Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
+    lineSpacing: 'compact',
     // Spec: ops/docs/design-decisions.md (journal entry titles)
     journalTitleFormat: 'long',
     journalTitleSuffix: '',
@@ -687,6 +699,9 @@ function hydrate(raw: unknown): UserSettings {
   }
   if (obj.editorMode === 'formatted' || obj.editorMode === 'markdown') {
     base.editorMode = obj.editorMode;
+  }
+  if (isLineSpacing(obj.lineSpacing)) {
+    base.lineSpacing = obj.lineSpacing;
   }
   if (isJournalTitleFormat(obj.journalTitleFormat)) {
     base.journalTitleFormat = obj.journalTitleFormat;

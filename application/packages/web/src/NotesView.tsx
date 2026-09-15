@@ -24,6 +24,8 @@ import { BookmarksList, type BookmarkDraft } from './BookmarksList';
 import { ContactsList } from './ContactsList';
 import { openExternal } from './openExternal';
 import { NeverBackedUpNotice, listNeverBackedUp } from './neverBackedUp';
+import { ReadOnlySkipNotice } from './readOnlyNotice';
+import { TagPicker } from './TagPicker';
 import { resolveNoteLinkMatches } from './noteLinks';
 import { parseLinkBody, buildLinkBody, buildLinkKeyMap } from './linkBody';
 import { canDeleteFolder, UNFILED_ID } from './folders';
@@ -62,7 +64,7 @@ import { createNoteVersion } from './noteVersions';
 import { HoverLabel } from './HoverLabel';
 import { useNoteEditing } from './useNoteEditing';
 import { useSyncOrchestrator } from './useSyncOrchestrator';
-import { useTheme, FREE_THEMES } from './theme';
+import { useTheme, applyLineSpacing, FREE_THEMES } from './theme';
 import { searchNotes, searchBodyTerms, searchSeedCandidates, isPhraseQuery } from './search';
 import { useSearchIndexSync } from './searchIndexSync';
 import type { NewMilestone } from './milestones';
@@ -135,7 +137,6 @@ import { VIEW_NOTE_TYPES, type View } from './views';
 import { resolveStartView } from './viewRows';
 import { CollapsedSidebar } from './CollapsedSidebar';
 import { FilesList, extractFileItems, type FileType } from './FilesList';
-import { FILE_ACCEPT } from './attachmentValidation';
 import {
   type ListPrefs,
   type ListPrefsStore,
@@ -1054,6 +1055,9 @@ function AuthenticatedView({
     }
     ctxMenu.open(e, items);
   };
+  /** The items the tag picker is open for, or null. It carries the ids
+   *  because the same window serves one row and a whole selection. */
+  const [tagPickerFor, setTagPickerFor] = useState<string[] | null>(null);
   const saveTimer = useRef<number | null>(null);
   const lastSyncAt = useRef<number>(0);
   // Stable ref for flushEditingBody - breaks the circular dependency
@@ -1229,11 +1233,26 @@ function AuthenticatedView({
   const mobileEditing = isMobile && editorFocused;
   /** True when any on-screen keyboard is up on mobile - hides footer/header. */
   const mobileKeyboard = isMobile && keyboardOpen;
-  // When handleNew creates a note, we want the title field to receive
-  // focus on the very next render so the user can start typing
-  // immediately. We can't call `.focus()` synchronously because the
-  // input only mounts after React re-renders with the new selectedId.
-  const pendingTitleFocus = useRef(false);
+  // Where the caret lands once a freshly created item has rendered. A note,
+  // a journal entry and a task list open in the body: the words come first,
+  // and the first line names the note when no title is typed. A bookmark and
+  // a vault item open in the title, the one field their form leaves empty.
+  // A ref, not a call: the header and the editor only mount after React
+  // re-renders with the new selectedId, so the effect below consumes it.
+  // Fix: GitHub #329 (a new note opens in the body, not the title)
+  const pendingFocus = useRef<'title' | 'body' | null>(null);
+  /**
+   * Put the caret in the body of the open note. The rich editor is the usual
+   * home; the markdown source view has no handle, so its textarea is reached
+   * by name, the way handleHistory reaches it.
+   */
+  const focusBody = useCallback(() => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+      return;
+    }
+    document.querySelector<HTMLTextAreaElement>('textarea[data-pn-source]')?.focus();
+  }, []);
   // Toggle the editor into task-list mode on next render (used when
   // creating a new note from the Tasks view so it starts with a checkbox).
   const pendingTaskList = useRef(false);
@@ -1546,13 +1565,9 @@ function AuthenticatedView({
     setExportProgress,
   });
 
-  // After handleNew mounts the new note, the title input appears on the
-  // next render - we then focus it so the user can start typing the
-  // title immediately. Consumes the pending flag so regular
-  // selection changes don't steal focus from the editor.
-  // Mirror of pendingTitleFocus for the Tasks quick-add input. Fires
-  // after the view swap to 'tasks' renders so the input is already in
-  // the DOM by the time we call .focus().
+  // Mirror of pendingFocus for the Tasks quick-add input. Fires after the
+  // view swap to 'tasks' renders so the input is already in the DOM by the
+  // time we call .focus().
   useEffect(() => {
     if (!pendingTaskInputFocus.current) return;
     if (view !== 'tasks') return;
@@ -1562,26 +1577,33 @@ function AuthenticatedView({
     });
   }, [view]);
 
+  // Consumes pendingFocus on the render pass that mounts the created item,
+  // so a regular selection change never steals focus from the editor.
   useEffect(() => {
-    if (!pendingTitleFocus.current) return;
-    if (!selectedId) return;
-    pendingTitleFocus.current = false;
-    // rAF guarantees the input has been committed to the DOM.
+    const target = pendingFocus.current;
+    if (!target || !selectedId) return;
+    pendingFocus.current = null;
+    // rAF guarantees the header has been committed to the DOM.
     requestAnimationFrame(() => {
-      titleInputRef.current?.focus();
-      // If created from Tasks view, toggle the editor into task-list
-      // mode so the first line is an empty checkbox - this makes the
-      // note immediately visible in the Tasks view.
-      if (pendingTaskList.current) {
-        pendingTaskList.current = false;
-        // Double-rAF: the editor mounts after the title input, so we
-        // need one more frame for TipTap to initialize.
-        requestAnimationFrame(() => {
-          editorRef.current?.toggleTaskList();
-        });
+      if (target === 'title') {
+        titleInputRef.current?.focus();
+        return;
       }
+      // Double-rAF: the editor mounts after the header, so the body needs
+      // one more frame for TipTap to initialize.
+      requestAnimationFrame(() => {
+        // A note created from the Tasks view opens in task-list mode, so
+        // its first line is an empty checkbox and the note is immediately
+        // visible in that view. The toggle focuses the editor itself.
+        if (pendingTaskList.current) {
+          pendingTaskList.current = false;
+          editorRef.current?.toggleTaskList();
+          return;
+        }
+        focusBody();
+      });
     });
-  }, [selectedId]);
+  }, [selectedId, focusBody]);
 
   // Hand the open note to the app lock, which unmounts this whole view when it
   // re-locks and gives the note back on the way in.
@@ -1852,7 +1874,7 @@ function AuthenticatedView({
     setDrawerOpen,
     setCreatingTag,
     setNewTagDraft,
-    pendingTitleFocus,
+    pendingFocus,
     discardIfEmpty,
     mutateSettings,
     refresh,
@@ -2774,7 +2796,9 @@ function AuthenticatedView({
           await updateNote(selectedId, { folderId: inheritFolderId });
           await refresh();
         }
-        pendingTitleFocus.current = true;
+        // The draft is already on screen and selectedId does not change, so
+        // the focus effect would not run: put the caret there directly.
+        focusBody();
         return;
       }
     }
@@ -2877,7 +2901,9 @@ function AuthenticatedView({
     const discarded = await discardIfEmpty(previousId);
     if (discarded) await refresh();
     else await refresh();
-    pendingTitleFocus.current = true;
+    // A vault item opens in its title, the one field its form leaves empty;
+    // everything else opens in the body.
+    pendingFocus.current = effectiveVaultType ? 'title' : 'body';
     if (isTasks) pendingTaskList.current = true;
     setSelectedId(note.id);
     setDrawerOpen(false);
@@ -2924,6 +2950,7 @@ function AuthenticatedView({
     // only RUNS on a drop, long after this render assigns it.
     onImportFolders: (folders) => mergeImportedFolders(folders),
     onBlobsRestored: handleBlobsRestored,
+    inheritFilters: () => ({ tags: inheritedTags(), folderId: inheritedFolderId() }),
   });
 
   /**
@@ -3134,6 +3161,13 @@ function AuthenticatedView({
   /** Move to trash (from the 'all' or 'starred' view). */
   async function handleTrash(id: string) {
     const note = notes.find((n) => n.id === id);
+    // Read-only guards deletion as well as editing. The paths that land
+    // here trash without asking first, so a read-only item is routed into
+    // the trash modal, which then explains instead of asking.
+    if (note?.locked === 1) {
+      requestTrash([id]);
+      return;
+    }
     if (note?.pinProtected === 1 && isNoteLocked(note)) {
       setPendingProtectedAction(() => async () => {
         markUnlocked();
@@ -3180,6 +3214,8 @@ function AuthenticatedView({
     selectionMode,
     selectedIds,
     selectionAllStarred,
+    selectionAllLocked,
+    selectionAllProtected,
     displayNotesRef,
     clearSelection,
     deselectAll,
@@ -3202,6 +3238,12 @@ function AuthenticatedView({
     handleBulkFavorite,
     handleBulkExport,
     handleBulkAddTag,
+    handleAddTagTo,
+    handleBulkSetLocked,
+    handleBulkSetPinProtected,
+    requestBulkUnprotect,
+    handleBulkDuplicate,
+    handleBulkExportHtml,
   } = useMultiSelect({
     notes,
     selectedId,
@@ -3215,6 +3257,7 @@ function AuthenticatedView({
     refreshStorage,
     handleSelectNote,
     exportAllMarkdownZip,
+    exportAllHtmlZip,
     isNoteLocked,
     requestPinGate: (action) => setPendingProtectedAction(() => async () => {
       markUnlocked();
@@ -3632,6 +3675,17 @@ function AuthenticatedView({
 
   /** Global / background menu. Fires on right-click anywhere in the app
    *  chrome that isn't an editable surface or a list row. */
+  /** Add one tag to the named items, then say how many got it. The
+   *  selection toolbar, the selection menu and a single row all land here,
+   *  so the toast cannot differ between the ways of asking. */
+  function applyTagTo(ids: string[], tag: string) {
+    void handleAddTagTo(ids, tag).then((count) => {
+      setImportToast(t('toast.addedTag', { tag, count }));
+      window.setTimeout(() => setImportToast(null), 3000);
+    });
+  }
+  const applyBulkTag = (tag: string) => applyTagTo(Array.from(selectedIds), tag);
+
   // Context-menu builders (Global / Text / per-Note) live in
   // ./notesView/contextMenus. Re-derive on every render so the closures
   // see fresh state - same behaviour as the inline versions they replaced.
@@ -3674,6 +3728,21 @@ function AuthenticatedView({
       handleSignOutClick,
       selectedIds,
       onToggleSelected: toggleSelected,
+      selectionAllStarred,
+      selectionAllLocked,
+      selectionAllProtected,
+      onClearSelection: clearSelection,
+      onBulkFavorite: () => void handleBulkFavorite(),
+      onBulkMoveToFolder: handleBulkMoveToFolder,
+      onBulkDuplicate: () => void handleBulkDuplicate(),
+      onBulkExportMarkdown: () => void handleBulkExport(),
+      onBulkExportHtml: () => void handleBulkExportHtml(),
+      onBulkSetLocked: (locked) => void handleBulkSetLocked(locked),
+      onBulkSetPinProtected: (p) => void handleBulkSetPinProtected(p),
+      onRequestBulkUnprotect: requestBulkUnprotect,
+      onBulkRestore: () => void handleBulkRestore(),
+      onBulkDelete: requestBulkDelete,
+      onTagPicker: (ids) => setTagPickerFor(ids),
       handleRestore,
       handlePermanentlyDelete,
       requestDeleteConfirm: (id: string, title: string) => setDeleteConfirm({ id, title }),
@@ -3789,6 +3858,15 @@ function AuthenticatedView({
       if (count > 0) flashToast(t('shell:noteLinks.retargetedToast', { count }));
     });
   }
+
+  // Paint the synced line spacing on <html>, where the shared `.prose` block
+  // reads it. It lives here rather than in theme.ts because theme.ts owns the
+  // device-local axes and this one belongs to the account: the value arrives
+  // with the settings blob, so the attribute follows every sync as well as
+  // every click. Absent means compact, which is what a burn page renders.
+  useEffect(() => {
+    applyLineSpacing(userSettings.lineSpacing);
+  }, [userSettings.lineSpacing]);
 
   // The global editor-mode setting swaps the open note's editors exactly
   // like the per-note "Show markdown" link, so it needs the same pre-swap
@@ -3988,12 +4066,7 @@ function AuthenticatedView({
       onClearSelection={clearSelection}
       onSelectAllVisible={selectAllVisible}
       onBulkFavorite={() => void handleBulkFavorite()}
-      onBulkTag={(tag) => {
-        void handleBulkAddTag(tag).then((count) => {
-          setImportToast(t('toast.addedTag', { tag, count }));
-          window.setTimeout(() => setImportToast(null), 3000);
-        });
-      }}
+      onBulkTag={applyBulkTag}
       onBulkMoveToFolder={handleBulkMoveToFolder}
       foldersUnlocked={foldersUnlocked}
       onBulkExport={() => void handleBulkExport()}
@@ -4063,12 +4136,7 @@ function AuthenticatedView({
       onTrash={(id) => requestTrash([id])}
       isNoteStarred={(id) => notes.find((n) => n.id === id)?.starred === 1}
       allTags={tagCounts.tags}
-      onBulkTag={(tag) => {
-        void handleBulkAddTag(tag).then((count) => {
-          setImportToast(t('toast.addedTag', { tag, count }));
-          window.setTimeout(() => setImportToast(null), 3000);
-        });
-      }}
+      onBulkTag={applyBulkTag}
     />
   );
 
@@ -4183,12 +4251,7 @@ function AuthenticatedView({
       onDeselectAll={deselectAll}
       onSelectAllVisible={selectAllVisible}
       onBulkFavorite={() => void handleBulkFavorite()}
-      onBulkTag={(tag) => {
-        void handleBulkAddTag(tag).then((count) => {
-          setImportToast(t('toast.addedTag', { tag, count }));
-          window.setTimeout(() => setImportToast(null), 3000);
-        });
-      }}
+      onBulkTag={applyBulkTag}
       onBulkMoveToFolder={handleBulkMoveToFolder}
       onBulkExport={() => void handleBulkExport()}
       onBulkTrash={requestBulkTrash}
@@ -4231,9 +4294,11 @@ function AuthenticatedView({
           // that does not show it.
           const created = await createNote('', buildLinkBody(url), inheritedTags(), false, 'link', inheritedFolderId());
           await refresh();
-          // Set BEFORE selecting: the focus effect consumes the flag on the
-          // selection's render pass - the same choreography handleNew runs.
-          pendingTitleFocus.current = true;
+          // The title, not the body: the address is already in the form and
+          // the name is what is left to type. Set BEFORE selecting: the focus
+          // effect consumes the flag on the selection's render pass - the
+          // same choreography handleNew runs.
+          pendingFocus.current = 'title';
           await selectBookmarkForEdit(created.id);
           void runSync();
         })();
@@ -4259,12 +4324,7 @@ function AuthenticatedView({
       onDeselectAll={deselectAll}
       onSelectAllVisible={selectAllVisible}
       onBulkFavorite={() => void handleBulkFavorite()}
-      onBulkTag={(tag) => {
-        void handleBulkAddTag(tag).then((count) => {
-          setImportToast(t('toast.addedTag', { tag, count }));
-          window.setTimeout(() => setImportToast(null), 3000);
-        });
-      }}
+      onBulkTag={applyBulkTag}
       onBulkMoveToFolder={handleBulkMoveToFolder}
       onBulkExport={() => void handleBulkExport()}
       onBulkTrash={requestBulkTrash}
@@ -4315,12 +4375,7 @@ function AuthenticatedView({
       onToggleSelected={toggleSelected}
       onRangeSelect={rangeSelect}
       onBulkFavorite={() => void handleBulkFavorite()}
-      onBulkTag={(tag) => {
-        void handleBulkAddTag(tag).then((count) => {
-          setImportToast(t('toast.addedTag', { tag, count }));
-          window.setTimeout(() => setImportToast(null), 3000);
-        });
-      }}
+      onBulkTag={applyBulkTag}
       onBulkMoveToFolder={handleBulkMoveToFolder}
       foldersUnlocked={foldersUnlocked}
       onBulkExport={() => void handleBulkExport()}
@@ -4449,12 +4504,17 @@ function AuthenticatedView({
           </button>
         </div>
       )}
-      {/* Hidden file input for the Files view upload button. */}
+      {/* Hidden file input for the Files view upload button. Carries no
+          `accept` attribute, which is the only portable way to say "every
+          type": the vault takes any file, and WebKit turns a wildcard MIME
+          accept into a dynamic UTI that no file on disk conforms to, so the
+          picker greys out everything and offers folders alone.
+          Spec: ops/docs/gotchas.md (a wildcard MIME accept is a dead filter
+          in WebKit) */}
       <input
         ref={filesUploadRef}
         type="file"
         multiple
-        accept={FILE_ACCEPT}
         className="hidden"
         onChange={handleFilesSelected}
       />
@@ -5057,6 +5117,8 @@ function AuthenticatedView({
           onViewModeChange={(m) => mutateSettings((prev) => ({ ...prev, viewMode: m }))}
           editorMode={userSettings.editorMode}
           onEditorModeChange={handleEditorModeChange}
+          lineSpacing={userSettings.lineSpacing}
+          onLineSpacingChange={(next) => mutateSettings((prev) => ({ ...prev, lineSpacing: next }))}
           hiddenViews={userSettings.hiddenViews}
           hiddenInAll={userSettings.hiddenInAll}
           onToggleHidden={handleToggleHiddenView}
@@ -5246,7 +5308,35 @@ function AuthenticatedView({
           </ConfirmModal>
         );
       })()}
-      {bulkTrashPending && (
+      {tagPickerFor && (
+        <TagPicker
+          allTags={tagCounts.tags}
+          onSelect={(tag) => {
+            const ids = tagPickerFor;
+            setTagPickerFor(null);
+            applyTagTo(ids, tag);
+          }}
+          onClose={() => setTagPickerFor(null)}
+        />
+      )}
+      {bulkTrashPending && bulkTrashPending.ids.length === 0 && (
+        <ConfirmModal
+          title={t('bulkTrash.readOnlyTitle')}
+          confirmLabel={t('bulkTrash.readOnlyAcknowledge')}
+          cancelLabel={null}
+          variant="warning"
+          onConfirm={dismissBulkTrash}
+          onClose={dismissBulkTrash}
+        >
+          <Trans
+            i18nKey="notes:bulkTrash.readOnlyBlocked"
+            count={bulkTrashPending.skipped}
+            values={{ count: bulkTrashPending.skipped }}
+            components={{ highlight: <span className="font-medium text-pn" /> }}
+          />
+        </ConfirmModal>
+      )}
+      {bulkTrashPending && bulkTrashPending.ids.length > 0 && (
         <ConfirmModal
           title={t('bulkTrash.title')}
           confirmLabel={t('bulkTrash.title')}
@@ -5256,10 +5346,11 @@ function AuthenticatedView({
         >
           <Trans
             i18nKey="notes:bulkTrash.body"
-            count={bulkTrashPending.length}
-            values={{ count: bulkTrashPending.length }}
+            count={bulkTrashPending.ids.length}
+            values={{ count: bulkTrashPending.ids.length }}
             components={{ highlight: <span className="font-medium text-pn" /> }}
           />
+          <ReadOnlySkipNotice count={bulkTrashPending.skipped} />
         </ConfirmModal>
       )}
       {bulkDeletePending && (
@@ -5279,20 +5370,31 @@ function AuthenticatedView({
           <NeverBackedUpNotice ids={bulkDeletePending} />
         </ConfirmModal>
       )}
-      {tagConfirm && (
+      {tagConfirm && (() => {
+        // Every note behind "delete tag and notes" can be read-only, and
+        // then there is nothing left to ask: the modal states the reason
+        // and offers one way out instead of a choice.
+        const tagTrashBlocked =
+          tagConfirm.type === 'delete-with-notes' &&
+          tagConfirm.count === 0 &&
+          (tagConfirm.skipped ?? 0) > 0;
+        const tagTitle =
+          tagTrashBlocked ? t('bulkTrash.readOnlyTitle')
+          : tagConfirm.type === 'merge' ? t('tagConfirm.mergeTitle')
+          : tagConfirm.type === 'delete' ? t('tagConfirm.deleteTitle')
+          : t('tagConfirm.deleteWithNotesTitle');
+        const tagConfirmLabel =
+          tagTrashBlocked ? t('bulkTrash.readOnlyAcknowledge')
+          : tagConfirm.type === 'merge' ? t('tagConfirm.mergeConfirm')
+          : tagConfirm.type === 'delete' ? t('tagConfirm.deleteConfirm')
+          : t('tagConfirm.moveToTrash');
+        return (
         <ConfirmModal
-          title={
-            tagConfirm.type === 'merge' ? t('tagConfirm.mergeTitle')
-            : tagConfirm.type === 'delete' ? t('tagConfirm.deleteTitle')
-            : t('tagConfirm.deleteWithNotesTitle')
-          }
-          confirmLabel={
-            tagConfirm.type === 'merge' ? t('tagConfirm.mergeConfirm')
-            : tagConfirm.type === 'delete' ? t('tagConfirm.deleteConfirm')
-            : t('tagConfirm.moveToTrash')
-          }
-          variant={tagConfirm.type === 'delete-with-notes' ? 'danger' : 'warning'}
-          onConfirm={tagConfirm.onConfirm}
+          title={tagTitle}
+          confirmLabel={tagConfirmLabel}
+          cancelLabel={tagTrashBlocked ? null : undefined}
+          variant={tagConfirm.type === 'delete-with-notes' && !tagTrashBlocked ? 'danger' : 'warning'}
+          onConfirm={tagTrashBlocked ? () => setTagConfirm(null) : tagConfirm.onConfirm}
           onClose={() => setTagConfirm(null)}
         >
           {tagConfirm.type === 'merge' && (
@@ -5311,16 +5413,28 @@ function AuthenticatedView({
               components={{ highlight: <span className="font-medium text-pn" /> }}
             />
           )}
-          {tagConfirm.type === 'delete-with-notes' && (
+          {tagConfirm.type === 'delete-with-notes' && !tagTrashBlocked && (
+            <>
+              <Trans
+                i18nKey="notes:tagConfirm.deleteWithNotesBody"
+                count={tagConfirm.count}
+                values={{ tag: tagConfirm.tag, count: tagConfirm.count }}
+                components={{ highlight: <span className="font-medium text-pn" /> }}
+              />
+              <ReadOnlySkipNotice count={tagConfirm.skipped ?? 0} />
+            </>
+          )}
+          {tagTrashBlocked && (
             <Trans
-              i18nKey="notes:tagConfirm.deleteWithNotesBody"
-              count={tagConfirm.count}
-              values={{ tag: tagConfirm.tag, count: tagConfirm.count }}
+              i18nKey="notes:bulkTrash.readOnlyBlocked"
+              count={tagConfirm.skipped ?? 0}
+              values={{ count: tagConfirm.skipped ?? 0 }}
               components={{ highlight: <span className="font-medium text-pn" /> }}
             />
           )}
         </ConfirmModal>
-      )}
+        );
+      })()}
       {wikiLinkAmbiguous !== null && (
         <ConfirmModal
           title={t('ambiguousLink.title')}

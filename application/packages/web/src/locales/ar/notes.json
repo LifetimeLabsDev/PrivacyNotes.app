@@ -45,7 +45,6 @@
     "keys": "مفاتيح"
   },
   "journal": {
-    "backfillHover": "يومية جديدة ليوم سابق",
     "newEntry": "تدوينة يومية جديدة",
     "newEntryHover": "تدوينة يومية جديدة ({{hotkey}})"
   },
@@ -254,7 +253,21 @@
     "body_zero": "هل تريد نقل <highlight>{{count}} عناصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا.",
     "body_two": "هل تريد نقل <highlight>{{count}} عنصرين</highlight> إلى المهملات؟ يمكنك استعادتهما لاحقًا.",
     "body_few": "هل تريد نقل <highlight>{{count}} عناصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا.",
-    "body_many": "هل تريد نقل <highlight>{{count}} عنصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا."
+    "body_many": "هل تريد نقل <highlight>{{count}} عنصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا.",
+    "readOnlyTitle": "للقراءة فقط",
+    "readOnlyAcknowledge": "فهمت",
+    "readOnlyBlocked_zero": "<highlight>{{count}} عناصر</highlight> للقراءة فقط، لذلك لا يمكن نقل أي منها إلى المهملات. أوقف خيار «للقراءة فقط» من خيارات الملاحظة أولاً.",
+    "readOnlyBlocked_one": "هذا العنصر <highlight>للقراءة فقط</highlight>، لذلك لا يمكن نقله إلى المهملات. أوقف خيار «للقراءة فقط» من خيارات الملاحظة أولاً.",
+    "readOnlyBlocked_two": "<highlight>{{count}} عنصرين</highlight> كلاهما للقراءة فقط، لذلك لا يمكن نقل أي منهما إلى المهملات. أوقف خيار «للقراءة فقط» من خيارات الملاحظة أولاً.",
+    "readOnlyBlocked_few": "<highlight>{{count}} عناصر</highlight> كلها للقراءة فقط، لذلك لا يمكن نقل أي منها إلى المهملات. أوقف خيار «للقراءة فقط» من خيارات الملاحظة أولاً.",
+    "readOnlyBlocked_many": "<highlight>{{count}} عنصرًا</highlight> كلها للقراءة فقط، لذلك لا يمكن نقل أي منها إلى المهملات. أوقف خيار «للقراءة فقط» من خيارات الملاحظة أولاً.",
+    "readOnlyBlocked_other": "<highlight>{{count}} عنصر</highlight> كلها للقراءة فقط، لذلك لا يمكن نقل أي منها إلى المهملات. أوقف خيار «للقراءة فقط» من خيارات الملاحظة أولاً.",
+    "readOnlySkipped_zero": "<highlight>{{count}} عناصر</highlight> للقراءة فقط وتبقى في مكانها.",
+    "readOnlySkipped_one": "<highlight>{{count}} عنصر</highlight> للقراءة فقط ويبقى في مكانه.",
+    "readOnlySkipped_two": "<highlight>{{count}} عنصرين</highlight> للقراءة فقط ويبقيان في مكانهما.",
+    "readOnlySkipped_few": "<highlight>{{count}} عناصر</highlight> للقراءة فقط وتبقى في مكانها.",
+    "readOnlySkipped_many": "<highlight>{{count}} عنصرًا</highlight> للقراءة فقط وتبقى في مكانها.",
+    "readOnlySkipped_other": "<highlight>{{count}} عنصر</highlight> للقراءة فقط وتبقى في مكانها."
   },
   "bulkDelete": {
     "body_one": "هل تريد حذف <highlight>{{count}} ملاحظة</highlight> نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",

@@ -18,13 +18,20 @@
  *    link or a vault login, and the off switch for the proxy request.
  * 7. Invisible characters - paints nothing. The editor drives the
  *    extension's show/hide commands from it.
+ * 8. Line spacing - sets `data-line-spacing` on <html>, drives
+ *    --pn-para-gap, the gap between two paragraphs.
  *
- * Every axis persists to localStorage and NONE of them reaches the
+ * Axes 1 to 7 persist to localStorage and NONE of them reaches the
  * server: each is a property of the screen in front of you rather than
  * of the account, and a desktop and a phone can reasonably disagree.
  * A sign-out leaves them standing for that same reason. The one thing
  * that clears them is a different account arriving on this install -
  * see `resetAppearance`.
+ *
+ * Line spacing is the exception and owns no state here. It describes how
+ * somebody writes rather than the screen they write on, so it lives on
+ * UserSettings, syncs with everything else there, and this module only
+ * paints what it is handed.
  */
 import { useCallback, useSyncExternalStore } from 'react';
 
@@ -267,6 +274,51 @@ function applyTextSize(size: TextSize): void {
   activeTextSize = size;
   document.documentElement.dataset.textSize = size;
   localStorage.setItem(TEXT_SIZE_KEY, size);
+}
+
+// ------------------------------------------------------------------
+// Line spacing axis
+// ------------------------------------------------------------------
+
+/**
+ * The gap between two paragraphs. Drives `--pn-para-gap` in index.css,
+ * which the shared `.prose` block reads - the editor, the burn note
+ * viewer, the note history modal and the markdown file pane at once.
+ *
+ * 'compact' is zero, so Enter costs the same line as Shift+Enter. It is
+ * also the absent state, which is what a surface with no account behind
+ * it paints: a burn page, and any note opened before settings arrive.
+ *
+ * The one axis in this file the ACCOUNT owns rather than the device.
+ * Everything else here is a property of the screen in front of you; this
+ * is a property of how somebody writes, and it should follow them from
+ * the phone they typed the note on to the laptop they read it on. So the
+ * value lives on UserSettings and syncs, this module only paints it, and
+ * there is deliberately no localStorage key below.
+ * Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
+ */
+export const LINE_SPACINGS = ['compact', 'normal'] as const;
+export type LineSpacing = (typeof LINE_SPACINGS)[number];
+
+/** Type guard, for the settings blob's decode step. */
+export function isLineSpacing(v: unknown): v is LineSpacing {
+  return typeof v === 'string' && (LINE_SPACINGS as readonly string[]).includes(v);
+}
+
+/** Paint a line spacing on <html>. The caller owns the value. */
+export function applyLineSpacing(spacing: LineSpacing): void {
+  document.documentElement.dataset.lineSpacing = spacing;
+}
+
+/**
+ * The spacing currently painted. For the two places that need the value
+ * without the settings blob in reach: the export stylesheet, which builds a
+ * standalone file, and the editor's clipboard serializer. Absent reads as
+ * compact, which is also what those two surfaces should produce before any
+ * account has been loaded.
+ */
+export function readLineSpacing(): LineSpacing {
+  return document.documentElement.dataset.lineSpacing === 'normal' ? 'normal' : 'compact';
 }
 
 // ------------------------------------------------------------------

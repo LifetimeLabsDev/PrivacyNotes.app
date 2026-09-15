@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { zipEntryText } from './zipEntry';
 import { normalizeTag } from '../notesRepo';
 import { linkifyMarkdown } from './linkify';
 import { ARCHIVED_TAG } from './types';
@@ -347,7 +348,7 @@ async function extractBackupJson(
         `This zip doesn't contain a "${BACKUP_FILENAME}" file. Make sure you picked the Standard Notes export zip.`
       );
     }
-    return entry.async('string');
+    return zipEntryText(entry);
   }
 
   // .txt or .json or anything else - read as text and hope for the best.
