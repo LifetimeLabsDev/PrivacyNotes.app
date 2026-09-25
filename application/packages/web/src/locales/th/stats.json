@@ -1,0 +1,179 @@
+{
+  "title": "สถิติ",
+  "tabs": {
+    "writing": "การเขียน",
+    "wellness": "สุขภาวะ"
+  },
+  "writing": {
+    "notes": "โน้ต",
+    "words": "คำ",
+    "tags": "แท็ก",
+    "currentStreak": "ต่อเนื่องตอนนี้",
+    "longestStreak": "ต่อเนื่องนานสุด",
+    "streakValue_other": "{{count}} วัน",
+    "timeRangeAria": "ช่วงเวลาของกิจกรรม",
+    "modeActivity": "กิจกรรม",
+    "modeMood": "อารมณ์",
+    "tooltipMood": "{{date}}: อารมณ์ {{mood}}/10",
+    "tooltipNoMood": "{{date}}: ไม่มีบันทึกอารมณ์",
+    "tooltipEdits_other": "{{date}}: แก้ไข {{count}} ครั้ง",
+    "longestNote": "โน้ตที่ยาวที่สุด: <name>{{title}}</name> ({{count}} คำ)"
+  },
+  "range": {
+    "7d": "7 วัน",
+    "14d": "14 วัน",
+    "30d": "30 วัน",
+    "3mo": "3 เดือน",
+    "6mo": "6 เดือน",
+    "12mo": "12 เดือน"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "ทั้งหมด",
+      "sleepActivity": "การนอนและกิจกรรม",
+      "medication": "ยา",
+      "patterns": "รูปแบบ"
+    },
+    "empty": {
+      "title": "ยังไม่มีข้อมูลสุขภาวะ",
+      "hint": "เปิดบันทึกประจำวันแล้วบันทึกอารมณ์เพื่อเริ่มต้น"
+    },
+    "overview": {
+      "daysTracked": "จำนวนวันที่ติดตาม",
+      "avgMood": "อารมณ์เฉลี่ย",
+      "avgSleep": "การนอนเฉลี่ย",
+      "medAdherence": "การใช้ยา",
+      "moodTrend": "แนวโน้มอารมณ์",
+      "moodByDayOfWeek": "อารมณ์ตามวันในสัปดาห์",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "ส่งออก",
+      "allTime": "ทั้งหมด",
+      "last90Days": "90 วันล่าสุด",
+      "last30Days": "30 วันล่าสุด",
+      "last7Days": "7 วันล่าสุด",
+      "downloadJSON": "ดาวน์โหลด JSON",
+      "doctorPDF": "PDF สำหรับแพทย์",
+      "copyAIPrompt": "คัดลอกพรอมต์ AI",
+      "copied": "คัดลอกแล้ว!",
+      "saveFailed": "บันทึกไม่สำเร็จ ไฟล์จึงอาจว่างเปล่าหรือไม่สมบูรณ์ ลองอีกครั้ง หรือเลือกโฟลเดอร์อื่น",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "คุณภาพการนอน",
+      "activity": "กิจกรรม",
+      "avgSleepPerNight": "การนอนเฉลี่ยต่อคืน"
+    },
+    "medication": {
+      "adherence": "การใช้ยาตามกำหนด",
+      "empty": {
+        "title": "ยังไม่มีข้อมูลยา",
+        "hint": "เพิ่มยาในการตั้งค่าตัวติดตาม แล้วบันทึกทุกวัน"
+      },
+      "dosageTimeline": "ไทม์ไลน์ขนาดยา",
+      "started": "เริ่ม {{dosage}}",
+      "changedTo": "เปลี่ยนเป็น {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "ความรู้สึกที่พบบ่อย",
+      "insights": "ข้อสังเกต",
+      "proBadge": "PRO",
+      "insightsLocked_other": "พบข้อสังเกต {{count}} รายการ อัปเกรดเป็น Pro เพื่อดู",
+      "weekInReview": "สรุปประจำสัปดาห์",
+      "weekInReviewLocked": "อัปเกรดเป็น Pro เพื่อดูสรุปสุขภาวะรายสัปดาห์"
+    },
+    "week": {
+      "range": "{{start}} ถึง {{end}}",
+      "daysLogged": "บันทึก {{count}}/7 วัน",
+      "avgMood": "อารมณ์เฉลี่ย",
+      "moodDelta": "{{delta}} เทียบกับสัปดาห์ที่แล้ว",
+      "avgSleep": "การนอนเฉลี่ย",
+      "medsTaken": "ใช้ยาแล้ว",
+      "topActivity": "กิจกรรมหลัก",
+      "topEmotions": "ความรู้สึกที่พบบ่อย",
+      "reflection": "ทบทวน",
+      "reflectionPlaceholder": "สัปดาห์นี้โดยรวมเป็นอย่างไร มีความคิดอะไรอยากจดไว้..."
+    },
+    "units": {
+      "days_other": "{{count}} วัน"
+    },
+    "insights": {
+      "sleep": "ในวันที่นอนหลับดี อารมณ์เฉลี่ยอยู่ที่ {{good}} และในวันที่นอนไม่ดีอยู่ที่ {{bad}}",
+      "activity": "ในวันที่ทำกิจกรรมมาก อารมณ์เฉลี่ยอยู่ที่ {{active}} และในวันที่นั่งเป็นส่วนใหญ่อยู่ที่ {{sedentary}}",
+      "dayOfWeek": "วันที่ดีที่สุดมักเป็น{{best}} (เฉลี่ย {{bestAvg}}) และวันที่หนักที่สุดคือ{{worst}} (เฉลี่ย {{worstAvg}})",
+      "medication": "ตั้งแต่เริ่มใช้ {{name}} เมื่อ {{date}} อารมณ์เฉลี่ยเปลี่ยนจาก {{before}} เป็น {{after}}",
+      "streak_other": "บันทึกอารมณ์ติดต่อกัน {{count}} วันแล้ว ทำต่อไปนะ!",
+      "trend": "อารมณ์เฉลี่ยในสองสัปดาห์ที่ผ่านมาอยู่ที่ {{recent}} เทียบกับค่าเฉลี่ยรวม {{overall}}"
+    },
+    "aiPrompt": {
+      "intro": "ฉันบันทึกอารมณ์และสุขภาวะมาระยะหนึ่ง ช่วยวิเคราะห์ข้อมูลด้านล่างเพื่อหารูปแบบ แนวโน้ม และข้อแนะนำที่นำไปใช้ได้",
+      "overview": "ภาพรวม",
+      "daysTracked": "จำนวนวันที่ติดตาม: {{days}}",
+      "avgMood": "อารมณ์เฉลี่ย: {{mood}}/10",
+      "avgSleep": "การนอนเฉลี่ย: {{hours}} ชม.",
+      "adherence": "การใช้ยาตามกำหนด: {{pct}}%",
+      "topEmotions": "ความรู้สึกที่พบบ่อย: {{list}}",
+      "moodTrend": "แนวโน้มอารมณ์ (30 วันล่าสุด)",
+      "columnDate": "วันที่",
+      "columnMood": "อารมณ์",
+      "sleepDistribution": "การกระจายของคุณภาพการนอน",
+      "activityDistribution": "การกระจายของระดับกิจกรรม",
+      "adherenceHeading": "การใช้ยาตามกำหนด",
+      "adherenceLine": "{{name}}: ใช้ยา {{taken}} จาก {{total}} วันที่ติดตาม ({{pct}}%)",
+      "dosageTimeline": "ไทม์ไลน์ขนาดยา",
+      "patterns": "รูปแบบที่ตรวจพบ",
+      "questions": "สิ่งที่อยากรู้",
+      "question1": "อารมณ์ของฉันมีรูปแบบอะไรเมื่อเวลาผ่านไปหรือไม่",
+      "question2": "คุณภาพการนอนและระดับกิจกรรมสัมพันธ์กับอารมณ์หรือไม่",
+      "question3": "มีแนวโน้มที่น่ากังวลซึ่งควรปรึกษาแพทย์หรือไม่",
+      "question4": "คำแนะนำที่นำไปใช้ได้จากข้อมูลนี้",
+      "footer": "สร้างโดย PrivacyNotes (privacynotes.app)"
+    },
+    "report": {
+      "documentTitle": "รายงานสุขภาวะ",
+      "heading": "รายงานอารมณ์และสุขภาวะ",
+      "meta": "สร้างเมื่อ {{date}} | ช่วงเวลา: {{from}} ถึง {{to}} | จำนวนวันที่ติดตาม: {{days}}",
+      "overview": "ภาพรวม",
+      "columnMetric": "ตัวชี้วัด",
+      "columnValue": "ค่า",
+      "avgMood": "อารมณ์เฉลี่ย",
+      "avgSleep": "การนอนเฉลี่ย",
+      "adherence": "การใช้ยาตามกำหนด",
+      "daysTracked": "จำนวนวันที่ติดตาม",
+      "moodTrend": "แนวโน้มอารมณ์ (90 วันล่าสุด)",
+      "legend": "แดง = 1-2, ส้ม = 3-4, เหลือง = 5-6, เขียว = 7-8, น้ำเงิน = 9-10",
+      "sleepDistribution": "การกระจายของคุณภาพการนอน",
+      "columnQuality": "คุณภาพ",
+      "columnDays": "วัน",
+      "activityDistribution": "การกระจายของระดับกิจกรรม",
+      "columnLevel": "ระดับ",
+      "adherenceHeading": "การใช้ยาตามกำหนด",
+      "adherenceNote": "สัดส่วนของยาที่ใช้เทียบกับวันที่มีบันทึกประจำวันและมีการติดตามยานั้น วันที่ไม่ได้ทำเครื่องหมายยาจะนับว่าไม่ได้ใช้ยา วันที่ไม่มีบันทึกประจำวันจะไม่นับรวมทั้งสองกรณี",
+      "columnMedication": "ยา",
+      "columnTaken": "ใช้แล้ว/วัน",
+      "columnRate": "อัตรา",
+      "dosageTimeline": "ไทม์ไลน์ขนาดยา",
+      "started": "เริ่ม {{dosage}} เมื่อ {{date}}",
+      "changedTo": "เปลี่ยนเป็น {{dosage}} เมื่อ {{date}}",
+      "unknownDose": "ไม่ทราบขนาดยา",
+      "topEmotions": "ความรู้สึกที่พบบ่อยที่สุด",
+      "patterns": "รูปแบบที่ตรวจพบ",
+      "footer": "สร้างโดย PrivacyNotes - privacynotes.app"
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "ปลดล็อกหลักชัยแล้ว"
+  },
+  "milestone": {
+    "notes_other": "เขียนโน้ตไปแล้ว {{count}} รายการ",
+    "streak": "เขียนต่อเนื่อง {{count}} วัน",
+    "words_other": "เขียนไปแล้ว {{formatted}} คำ",
+    "age30": "30 วันกับ PrivacyNotes",
+    "age365": "1 ปีกับ PrivacyNotes",
+    "age730": "2 ปีกับ PrivacyNotes",
+    "age1825": "5 ปีกับ PrivacyNotes",
+    "ageDefault": "ใช้งานมาแล้ว {{count}} วัน"
+  }
+}

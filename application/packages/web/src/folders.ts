@@ -64,7 +64,7 @@ export interface FolderTree {
  * absence. Six months does; a week would not.
  * Spec: ops/docs/design-decisions.md (folder tombstone retention)
  */
-const TOMBSTONE_RETENTION_MS = 180 * 24 * 60 * 60 * 1000;
+export const TOMBSTONE_RETENTION_MS = 180 * 24 * 60 * 60 * 1000;
 
 /** Upper bound on the tombstone list, newest kept. The blob is pushed whole
  *  on every settings change, so an unbounded list is a growing tax on it. */
@@ -449,17 +449,31 @@ export function folderNamePath(folders: FolderDef[], id: string | null): string[
  * imported folder id to its final id in the merged tree, so callers can
  * remap every note's folderId.
  *
- * Precondition: `imported` lists parents before children (buildFolderTree
- * creates ancestors first), so a folder's parent is already mapped when we
- * reach it.
+ * `originalIds` comes from our own backup: the id each imported folder had
+ * in the account that wrote it. A folder `existing` still holds under that
+ * id is that folder, renamed or moved since or not, and is reused before any
+ * name is compared, which is the only thing that tells two same-named
+ * siblings apart. A deleted folder is not in `existing`, so its id never
+ * comes back; the name path builds a new folder in its place.
+ *
+ * Precondition: `imported` lists parents before children (every importer's
+ * tree builder creates ancestors first), so a folder's parent is already
+ * mapped when we reach it.
  */
 export function reconcileImportedFolders(
   existing: FolderDef[],
-  imported: FolderDef[]
+  imported: FolderDef[],
+  originalIds?: ReadonlyMap<string, string>,
 ): { folders: FolderDef[]; idMap: Map<string, string> } {
   let folders = [...existing];
+  const live = new Set(existing.map((f) => f.id));
   const idMap = new Map<string, string>();
   for (const inc of imported) {
+    const original = originalIds?.get(inc.id);
+    if (original && live.has(original)) {
+      idMap.set(inc.id, original);
+      continue;
+    }
     const parentId = inc.parentId ? idMap.get(inc.parentId) ?? null : null;
     const match = folders.find(
       (f) => f.parentId === parentId && f.name === inc.name
@@ -481,9 +495,13 @@ export function reconcileImportedFolders(
 }
 
 /**
- * Sanitize a raw folders array from a settings blob. Drops entries with
- * missing/empty names, unknown parents, or cycles; coerces a bad `order`
- * to append. Used by userSettings hydrate and by the backup restore merge.
+ * Sanitize a raw folders array from a settings blob. Drops an entry with no
+ * id, a repeated id or an empty name, and coerces a bad `order` to append.
+ * A folder whose parent is missing from the set, or that sits in a cycle, is
+ * kept and moved to the root, never dropped: a merge in which one device
+ * deleted the parent while another edited the child leaves the child pointing
+ * at nothing, and `deleteFolder` relies on this when its re-parent is lost
+ * that way.
  */
 export function validateFolders(raw: unknown): FolderDef[] {
   if (!Array.isArray(raw)) return [];

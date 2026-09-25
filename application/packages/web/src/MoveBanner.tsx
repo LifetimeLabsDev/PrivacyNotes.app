@@ -3,12 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from './auth';
 import { db } from './db';
 import { sync } from './sync';
-import {
-  startMove,
-  hasMovedFromApexFlag,
-  clearMovedFromApexFlag,
-} from './migrate';
-import { isApexHost, isAppHost } from './hosts';
+import { hasMovedFromApexFlag, clearMovedFromApexFlag } from './migrate';
+import { APP_ORIGIN, isApexHost, isAppHost } from './hosts';
 import { isDemoMode } from './demo';
 import { detectPlatform } from './devices';
 import { X } from './icons';
@@ -20,18 +16,16 @@ import type { NoteConflict } from './sync';
  * pattern from ui-patterns.md section 39 - a bar in the flow cannot
  * occlude anything):
  *
- *   - MoveBanner (apex): offers the one-click move. Unlike the ?move=1
- *     test switch it refuses to leave with unsynced work: it runs a
- *     full sync, then counts dirty rows, and only a clean state hands
- *     off to use.privacynotes.app via startMove(). Nothing on the apex
- *     is ever wiped. Since the apex retirement (2026-08-25) NotesView
- *     on the apex is reachable only through the MoveScreen's
- *     stuck-state escape hatch, so this banner is the second chance at
- *     the move after the user fixed what blocked it.
+ *   - MoveBanner (apex): the MoveScreen in one line. It says where the
+ *     app lives and how to sign in there, and its button refuses to leave
+ *     with unsynced work: it runs a full sync, then counts dirty rows,
+ *     and only a clean state opens use.privacynotes.app. Nothing on the
+ *     apex is ever wiped. NotesView on the apex is reachable only
+ *     through the MoveScreen's stuck-state escape hatch, so this banner
+ *     is the second chance after the user fixed what blocked the sync.
  *
  *   - MovedBookmarkHint (app host): one-time "update your bookmark"
- *     notice after a successful migration handoff, keyed off the
- *     movedFromApex flag App.tsx sets on confirm.
+ *     notice, keyed off the movedFromApex flag (migrate.ts).
  *
  * Spec: ops/docs/domain-split.md (cutover checklist: move trigger +
  * user comms)
@@ -41,7 +35,9 @@ type MoveState = 'idle' | 'syncing' | 'error' | 'conflict';
 
 const DISMISS_KEY = 'pn:moveBannerDismissed';
 
-/** Cutover banner on the apex: one-click move with a forced-sync gate. */
+const APP_HOME = `${APP_ORIGIN}/`;
+
+/** Retirement banner on the apex: a button to the app host behind a forced sync. */
 export function MoveBanner({ onConflict }: { onConflict: (conflict: NoteConflict) => void }) {
   const { t } = useTranslation('notesChrome');
   const { auth, supabase } = useAuth();
@@ -60,10 +56,8 @@ export function MoveBanner({ onConflict }: { onConflict: (conflict: NoteConflict
 
   // Capture the authenticated fields for the async handler: the state
   // union narrows here, and the handler must not re-read a possibly
-  // changed auth object mid-flight. The phrase rides along because the
-  // handoff must use the in-memory copy - app lock strips the stored
-  // one (see startMove).
-  const { phrase, pubkey, encryptionKey, deviceId } = auth;
+  // changed auth object mid-flight.
+  const { pubkey, encryptionKey, deviceId } = auth;
 
   async function handleMove() {
     setState('syncing');
@@ -97,8 +91,9 @@ export function MoveBanner({ onConflict }: { onConflict: (conflict: NoteConflict
       setState('error');
       return;
     }
-    // Clean state confirmed - hand off. Navigates away; nothing wiped.
-    startMove(phrase);
+    // Clean state confirmed - leave for the app host's sign-in screen.
+    // Navigates away; nothing wiped.
+    window.location.assign(APP_HOME);
   }
 
   function handleDismiss() {
@@ -118,7 +113,7 @@ export function MoveBanner({ onConflict }: { onConflict: (conflict: NoteConflict
         className={`min-w-0 flex-1 text-[13px] leading-snug text-pn ${showFeedback ? '' : 'truncate'}`}
       >
         <span className={showFeedback ? 'hidden sm:inline font-semibold' : 'font-semibold'}>
-          {t('moveBanner.title')}
+          {t('moveScreen.title')}
         </span>
         {/* Mini on phones: the description drops, leaving title + CTA.
             Error/conflict feedback instead REPLACES the title there and
@@ -132,7 +127,7 @@ export function MoveBanner({ onConflict }: { onConflict: (conflict: NoteConflict
             ? t('moveBanner.conflict')
             : state === 'error'
               ? t('moveBanner.error')
-              : t('moveBanner.body')}
+              : t('moveBanner.bodySignIn', { scanQr: t('importPhrase.scanQr', { ns: 'auth' }) })}
         </span>
       </p>
       <button
@@ -156,9 +151,8 @@ export function MoveBanner({ onConflict }: { onConflict: (conflict: NoteConflict
 }
 
 /**
- * One-time bookmark hint on the app host after a migration handoff.
- * Visibility keys off the movedFromApex flag (set by App.tsx when a
- * fragment sign-in carried a deviceSecret); Got it clears the flag.
+ * One-time bookmark hint on the app host. Visible while the movedFromApex
+ * flag is set on this install (migrate.ts); Got it clears it.
  */
 export function MovedBookmarkHint() {
   const { t } = useTranslation('notesChrome');

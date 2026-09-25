@@ -10,6 +10,7 @@
     "intro": {
       "storage": "Större uppladdningar och mer utrymme är en Pro-funktion. Uppgradera för 50 MB-filer och 500 MB lagring.",
       "folders": "Mappar är en Pro-funktion. Organisera dina anteckningar i mappar med undermappar, så djupt du vill, och håll varje projekt för sig.",
+      "looks": "Ikoner och färger för mappar och taggar är en Pro-funktion. Ge var och en ett eget utseende som du känner igen direkt.",
       "lock": "Att låsa en anteckning är en Pro-funktion. Uppgradera för att skydda vilken anteckning som helst mot oavsiktliga ändringar.",
       "protect": "Att PIN-skydda en anteckning är en Pro-funktion. Uppgradera för att lägga känsliga anteckningar bakom din PIN.",
       "history": "Anteckningshistorik är en Pro-funktion. Uppgradera för att få en tidslinje över varje sparad version.",
@@ -57,6 +58,7 @@
     "title": "Anteckningshistorik",
     "subtitle": "Upp till 20 versioner per anteckning. De äldsta gallras bort automatiskt.",
     "empty": "Ingen historik än. Versioner börjar samlas efter nästa ändring. Kom tillbaka senare.",
+    "loadFailed": "Historiken kunde inte hämtas. Kontrollera anslutningen och försök igen.",
     "selectPrompt": "Välj en version för att förhandsgranska.",
     "emptyBody": "(tom)",
     "restore": "Återställ",
@@ -64,7 +66,7 @@
   },
   "donation": {
     "eyebrow": "Du låste upp",
-    "intro": "<brand/> är gratis, och kommer alltid att vara det. Inga annonser, ingen spårning, ingen e-postadress sparad. Om appen har hjälpt dig att tänka, skriva eller minnas, överväg att stötta utvecklingen. Det håller lamporna tända och bekostar nästa funktioner.",
+    "intro": "<brand/> är gratis, och kommer alltid att vara det. Inga annonser, inga spårare och ingen e-postadress sparad, om du inte loggade in med en. Om appen har hjälpt dig att tänka, skriva eller minnas, överväg att stötta utvecklingen. Det håller lamporna tända och bekostar nästa funktioner.",
     "proBenefits": "Att stötta låser också upp Pro-fördelar när de kommer: obegränsat antal enheter, bilagor, krypterade säkerhetskopior i molnet.",
     "maybeLater": "Kanske senare",
     "support": "Stötta →"

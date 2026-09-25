@@ -11,9 +11,11 @@ import {
   fetchMyStorageSubs,
   manageStorageSub,
   previewStorageUpgrade,
+  isStorageQuoteRefusal,
   type DeviceRow,
   type QuotaUsage,
   type StorageSubRow,
+  type StorageUpgradeQuote,
 } from './devices';
 import { groupDeviceSlots, shortDeviceId, type DeviceSlot } from './deviceSlots';
 import { readPanelCache, writePanelCache } from './accountPanelCache';
@@ -133,10 +135,17 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
   // priceLabel is the already-formatted renewal price (store string on native,
   // "$4.80" on web), so the confirm step quotes the same figure as the tile.
   const [confirmingUpgrade, setConfirmingUpgrade] = useState<{ gb: number; priceId: string; pricePerYear: number; priceLabel: string } | null>(null);
-  const [upgradeDue, setUpgradeDue] = useState<string | null>(null);
-  const [upgradePreviewLoading, setUpgradePreviewLoading] = useState(false);
+  const [upgradeDue, setUpgradeDue] = useState<StorageUpgradeQuote | null>(null);
+  const [upgradePreviewFailed, setUpgradePreviewFailed] = useState(false);
+  // Bumped by the dialog's retry, which re-runs the preview.
+  const [upgradePreviewRun, setUpgradePreviewRun] = useState(0);
   // One active storage sub per user under the package model.
   const activeStorageSub = storageSubs && storageSubs.length > 0 ? storageSubs[0] : null;
+  // Play and Apple upgrades complete in the store's own sheet, which shows the
+  // charge. Every other upgrade goes through manage-storage-sub, which charges
+  // the card on file the moment the confirm is pressed, so that confirm waits
+  // for the exact figure.
+  const storeSheetUpgrade = activeStorageSub?.source === 'play' || activeStorageSub?.source === 'apple';
   // Tab is controllable: when the shell drives it (rail items), `controlledTab`
   // wins and the internal tab strip is hidden. Otherwise local state runs it.
   const [internalTab, setInternalTab] = useState<'plan' | 'storage' | 'sync' | 'me'>('plan');
@@ -186,45 +195,37 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
     };
   }, [authed, supabase, isPro, tab]);
 
-  // Fetch the real prorated amount when the upgrade dialog opens.
+  // Fetch the real prorated amount when the upgrade dialog opens, and again
+  // on each retry.
   useEffect(() => {
-    if (!confirmingUpgrade || !authed) {
-      setUpgradeDue(null);
-      return;
-    }
-    let cancelled = false;
     setUpgradeDue(null);
-    setUpgradePreviewLoading(true);
+    setUpgradePreviewFailed(false);
+    if (!confirmingUpgrade || !authed) return;
+    // Native-store subs (Play/Apple) have no server-side proration preview -
+    // the store's own sheet shows the exact charge. Skip the Paddle preview
+    // (it would 404 on a store purchase token) and let the dialog render its
+    // generic "prorated amount" copy.
+    if (storeSheetUpgrade) return;
+    let cancelled = false;
     void (async () => {
       const sub = activeStorageSub;
-      // Native-store subs (Play/Apple) have no server-side proration preview -
-      // the store's own sheet shows the exact charge. Skip the Paddle preview
-      // (it would 404 on a store purchase token) and let the dialog render its
-      // generic "prorated amount" copy.
-      if (sub && sub.source && sub.source !== 'paddle') {
-        if (!cancelled) setUpgradePreviewLoading(false);
-        return;
-      }
       const { data: sessData } = await supabase.auth.getSession();
       const token = sessData.session?.access_token;
-      if (!token || !sub) {
-        if (!cancelled) setUpgradePreviewLoading(false);
-        return;
-      }
-      const due = await previewStorageUpgrade({
-        supabase,
-        accessToken: token,
-        subscriptionId: sub.subscription_id,
-        priceId: confirmingUpgrade.priceId,
-      });
-      if (!cancelled) {
-        setUpgradeDue(due);
-        setUpgradePreviewLoading(false);
-      }
+      const due = token && sub
+        ? await previewStorageUpgrade({
+          supabase,
+          accessToken: token,
+          subscriptionId: sub.subscription_id,
+          priceId: confirmingUpgrade.priceId,
+        })
+        : null;
+      if (cancelled) return;
+      setUpgradeDue(due);
+      setUpgradePreviewFailed(due === null);
     })();
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [confirmingUpgrade, authed, supabase]);
+  }, [confirmingUpgrade, authed, supabase, upgradePreviewRun]);
 
   // Esc closes only the upgrade dialog when it's open (topmost wins via the
   // hook's LIFO stack), leaving the Settings shell behind it open.
@@ -254,7 +255,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
     setRestoreBusy(false);
   }
 
-  async function handleStorageAction(action: 'cancel' | 'switch', target?: { priceId: string; gb: number }) {
+  async function handleStorageAction(action: 'cancel' | 'switch', target?: { priceId: string; gb: number; quote?: string }) {
     if (!authed || !activeStorageSub || storageActionBusy) return;
     const source = activeStorageSub.source ?? 'paddle';
 
@@ -325,6 +326,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
         subscriptionId: activeStorageSub.subscription_id,
         action,
         priceId: target?.priceId,
+        quote: target?.quote,
       });
       if (action === 'cancel') setCancelDone(true);
       // The Paddle webhook updates the row; refetch shortly after.
@@ -334,7 +336,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
       }, 1500);
     } catch (err) {
       console.error('Storage action error:', err);
-      setError(t('errors.storageUpdateFailed'));
+      setError(t(isStorageQuoteRefusal(err) ? 'storage.upgradeAmountChanged' : 'errors.storageUpdateFailed'));
     } finally {
       setStorageActionBusy(false);
     }
@@ -519,7 +521,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                 restore: entitlement follows the pubkey server-side. */}
             {authed && isNativeStoreBuild() && (
               <div className="rounded-md border border-divider bg-surface-1 p-4">
-                <SectionEyebrow className="mb-1">{t('plan.restore.heading')}</SectionEyebrow>
+                <SectionEyebrow setting="plan.restorePurchases" className="mb-1">{t('plan.restore.heading')}</SectionEyebrow>
                 <p className={`${SETTINGS_HELP} leading-relaxed`}>{t('plan.restore.body')}</p>
                 <button
                   type="button"
@@ -554,7 +556,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
             <HelpChip surface="storage" />
             {/* Storage quota + add-on packages */}
             {authed && quota && isPro !== null && (
-              <div>
+              <div data-setting="storage.quota">
                 <div className="space-y-6">
                   {isPro ? (
                     <>
@@ -577,7 +579,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                       </p>
                       {(activeStorageSub || isStorageConfigured()) ? (
                           <div>
-                            <SectionEyebrow className="mb-1">
+                            <SectionEyebrow setting="storage.addon" className="mb-1">
                               {t('storage.addonHeading')}
                             </SectionEyebrow>
                             <SettingsCallout className="mb-4">
@@ -867,7 +869,9 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                   </div>
                                   <div className="rounded-md bg-track px-3 py-2.5 text-sm text-start text-pn-soft leading-relaxed mb-4">
                                     {(() => {
-                                      const amount = upgradeDue ?? (upgradePreviewLoading ? '…' : t('storage.proratedAmount'));
+                                      const amount = storeSheetUpgrade || upgradePreviewFailed
+                                        ? t('storage.proratedAmount')
+                                        : (upgradeDue?.dueToday ?? '…');
                                       const renewPrice = confirmingUpgrade.priceLabel;
                                       // Apple runs the opposite mechanic to the other two rails, so it
                                       // needs its own sentence. Paddle and Play both charge the
@@ -885,13 +889,25 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                         ? t('storage.upgradeChargeUntil', { amount, date: formatPlanDate(activeStorageSub.current_period_ends_at), price: renewPrice })
                                         : t('storage.upgradeCharge', { amount, price: renewPrice });
                                     })()}
+                                    {upgradePreviewFailed && (
+                                      <div role="alert" className="mt-2 text-xs text-red-600 dark:text-red-400">
+                                        {t('storage.upgradeAmountFailed')}{' '}
+                                        <button
+                                          type="button"
+                                          onClick={() => setUpgradePreviewRun((n) => n + 1)}
+                                          className="font-medium text-accent hover:underline"
+                                        >
+                                          {t('storage.upgradeAmountRetry')}
+                                        </button>
+                                      </div>
+                                    )}
                                   </div>
                                   <div className="flex flex-col gap-2">
                                     <button
                                       type="button"
-                                      disabled={storageActionBusy}
+                                      disabled={storageActionBusy || (!storeSheetUpgrade && !upgradeDue)}
                                       onClick={() => {
-                                        const target = { priceId: confirmingUpgrade.priceId, gb: confirmingUpgrade.gb };
+                                        const target = { priceId: confirmingUpgrade.priceId, gb: confirmingUpgrade.gb, quote: upgradeDue?.quote };
                                         setConfirmingUpgrade(null);
                                         void handleStorageAction('switch', target);
                                       }}
@@ -1066,7 +1082,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
           <>
             {/* Active devices */}
             <div>
-              <SectionEyebrow className="mb-2">
+              <SectionEyebrow setting="plan.devices" className="mb-2">
                 {t('devices.heading')}
               </SectionEyebrow>
               <HelpChip surface={isPro ? 'devicesPro' : 'devices'} className="mb-3" />
@@ -1172,6 +1188,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
             {!isPro && authed && (
               <button
                 type="button"
+                data-setting="plan.upgrade"
                 onClick={onOpenUpgrade}
                 disabled={!onOpenUpgrade}
                 className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-accent hover:bg-accent-hover text-white text-sm font-semibold px-3 py-2.5 transition disabled:opacity-60 disabled:cursor-not-allowed"
@@ -1185,6 +1202,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
             {authed && onSignOut && (
               <button
                 type="button"
+                data-setting="plan.signOut"
                 onClick={() => {
                   onClose();
                   onSignOut();

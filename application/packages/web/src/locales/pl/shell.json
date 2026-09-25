@@ -138,6 +138,7 @@
     "closeMenu": "Zamknij menu",
     "close": "Zamknij",
     "views": "Zawartość",
+    "resizeSplit": "Zmień podział między Zawartością a tagami lub folderami",
     "sidebarOptions": "Opcje paska bocznego",
     "showInSidebar": "Pokaż na pasku bocznym",
     "allOptions": "Opcje widoku Wszystkie",
@@ -465,6 +466,7 @@
     "openAction": "Otwórz",
     "copiedUrl": "Link skopiowany",
     "moveToTrash": "Przenieś do kosza",
+    "rowMenu": "Więcej akcji",
     "emptyNone": "Nie masz jeszcze zakładek.",
     "emptyTitle": "Zapisuj strony warte zachowania",
     "emptyAdd": "Dodaj zakładkę",
@@ -601,5 +603,8 @@
     "retargetedToast_other": "Zaktualizowano {{count}} linków do notatek na nowy tytuł.",
     "retargetedToast_few": "Zaktualizowano {{count}} linki do notatek na nowy tytuł.",
     "retargetedToast_many": "Zaktualizowano {{count}} linków do notatek na nowy tytuł."
+  },
+  "looks": {
+    "menu": "Ikona i kolor"
   }
 }

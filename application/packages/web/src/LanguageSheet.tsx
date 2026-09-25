@@ -60,7 +60,7 @@ export function LanguageSheet({ embedded = false }: Props) {
           already knew it was there.
           Spec: ops/docs/design-decisions.md (Spell check is the engine's,
           not ours) */}
-      <div>
+      <div data-setting="language.spellCheck">
         <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
           {t('appearance.spellCheckTitle')}
         </p>
@@ -85,7 +85,7 @@ export function LanguageSheet({ embedded = false }: Props) {
         </div>
       </div>
 
-      <div className="mt-4">
+      <div data-setting="language.language" className="mt-4">
         <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
           {t('appearance.language')}
         </p>
@@ -133,6 +133,7 @@ export function LanguageSheet({ embedded = false }: Props) {
         href="https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new?template=translation.yml"
         target="_blank"
         rel="noopener noreferrer"
+        data-setting="language.reportMistake"
         className="mt-1.5 inline-flex items-center gap-2 max-w-full text-[13px] text-red-600 hover:underline dark:text-red-400"
       >
         <span className="flex h-5 shrink-0 items-center">

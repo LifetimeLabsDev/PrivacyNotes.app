@@ -3,6 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useAuth } from './auth';
 import { deleteAccountServer } from './devices';
 import { deleteEntireLocalDatabase } from './notesRepo';
+import { useOnlyOnThisDevice } from './neverBackedUp';
 import { setDeletingAccount } from './sync';
 import { SectionEyebrow } from './settingsUI';
 import { isDemoMode, isDemoOwnedKey } from './demo';
@@ -92,12 +93,29 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
     return () => { cancelled = true; };
   }, [expanded, authed, supabase]);
 
+  // What the local wipe destroys outright. Live while the panel is open,
+  // and released before the wipe starts.
+  const atStake = useOnlyOnThisDevice(expanded && authed !== null && !busy);
+
   if (!authed) return null;
 
   // Deleting the server account always implies wiping local state too -
   // without a valid auth.users row the local session is dead anyway.
   const effectiveDeleteLocal = deleteLocal || deleteServer;
   const blockedByStorageSub = deleteServer && hasActiveSub === true;
+  // "Delete local data" on its own pushes nothing first, so it names the
+  // notes and files that exist only on this device before the DELETE field.
+  // An account deletion takes the server copy as well, and says so above.
+  const localOnly = deleteLocal && !deleteServer;
+  const notesAtStake = t('danger.unsyncedNotes', { count: atStake.notes });
+  const filesAtStake = t('danger.unsyncedFiles', { count: atStake.files });
+  const itemsAtStake =
+    atStake.notes > 0 && atStake.files > 0
+      ? t('danger.unsyncedBoth', { notes: notesAtStake, files: filesAtStake })
+      : atStake.notes > 0 ? notesAtStake : filesAtStake;
+  const totalAtStake = atStake.notes + atStake.files;
+  const atStakeLine =
+    totalAtStake > 0 ? t('danger.localUnsynced', { count: totalAtStake, items: itemsAtStake }) : null;
   const canDelete =
     confirmText.toUpperCase() === 'DELETE' &&
     (deleteLocal || deleteServer) &&
@@ -226,7 +244,7 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
 
   return (
     <div className="rounded-md border border-red-300 dark:border-red-900/60 p-4 space-y-3">
-      <SectionEyebrow danger>
+      <SectionEyebrow danger setting="plan.dangerZone">
         {t('danger.heading')}
       </SectionEyebrow>
 
@@ -275,6 +293,12 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
           </span>
         </span>
       </label>
+      )}
+
+      {localOnly && atStakeLine && (
+        <div className="rounded-md border border-amber-400/40 bg-amber-50 dark:border-amber-600/30 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 text-xs leading-relaxed px-3 py-2">
+          {atStakeLine}
+        </div>
       )}
 
       <div>

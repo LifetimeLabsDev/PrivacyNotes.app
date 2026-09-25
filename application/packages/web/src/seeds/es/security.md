@@ -19,7 +19,7 @@ Esa es nuestra base de datos real en Zúrich, no un dibujo. Tu nota va en la col
 
 ## Quién tiene tu clave
 
-Todas las opciones mantienen tus notas cifradas de extremo a extremo. Se diferencian en dónde vive tu frase.
+Todas las opciones mantienen tus notas cifradas en tu dispositivo. Se diferencian en dónde vive tu frase.
 
 | Opción | Dónde vive tu frase | Qué te da |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Todas las opciones mantienen tus notas cifradas de extremo a extremo. Se diferen
 
 Con las dos últimas no podríamos leer una nota ni aunque nos obligaran. La primera cambia eso por comodidad: tu frase está en nuestro servidor bajo una clave nuestra, así que un dispositivo nuevo no necesita nada más que tu cuenta. Si alguna vez atacaran nuestro servidor, esa clave podría quedar expuesta.
 
-No estás atado a la que elegiste. Cámbiala en **Ajustes > Seguridad > Tu frase**.
+¿Has iniciado sesión con Google, Apple o GitHub? Puedes cambiar entre las dos primeras más adelante, en **Ajustes > Seguridad > Tu frase**. Con una cuenta de solo frase, la frase siempre se queda contigo.
 
 > [!warning] Guarda tu propia copia de la frase
 > Tu frase abre tus notas. Si la pierdes, nadie puede recuperarla, nosotros incluidos. <span style="color: #e03131">Escríbela en papel hoy.</span>
@@ -44,7 +44,7 @@ No estás atado a la que elegiste. Cámbiala en **Ajustes > Seguridad > Tu frase
 | Qué | Dónde |
 | --- | --- |
 | El cifrado en sí | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| La estructura de la base de datos | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| Qué recibe nuestro servidor | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | Qué puede y qué no puede hacer un atacante | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | Cómo informar de un fallo | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

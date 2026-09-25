@@ -10,6 +10,7 @@
     "intro": {
       "storage": "Caricamenti più grandi e più spazio sono una funzione Pro. Passa a Pro per file da 50 MB e 500 MB di spazio.",
       "folders": "Le cartelle sono una funzione Pro. Organizza le tue note in cartelle nidificate, profonde quanto ti serve, e tieni ogni progetto separato.",
+      "looks": "Le icone e i colori di cartelle e tag sono una funzione Pro. Dai a ciascuno un aspetto riconoscibile a colpo d'occhio.",
       "lock": "Bloccare una nota è una funzione Pro. Passa a Pro per proteggere qualsiasi nota dalle modifiche accidentali.",
       "protect": "Proteggere una nota con PIN è una funzione Pro. Passa a Pro per proteggere le note sensibili dietro il tuo PIN.",
       "history": "La cronologia delle note è una funzione Pro. Passa a Pro per conservare una cronologia di ogni salvataggio.",
@@ -57,6 +58,7 @@
     "title": "Cronologia delle note",
     "subtitle": "Fino a 20 versioni per nota. Le più vecchie vengono eliminate automaticamente.",
     "empty": "Ancora nessuna cronologia. Le versioni iniziano ad accumularsi dopo la prossima modifica. Torna più tardi.",
+    "loadFailed": "Non è stato possibile caricare la cronologia. Controlla la connessione e riprova.",
     "selectPrompt": "Seleziona una versione per l'anteprima.",
     "emptyBody": "(vuoto)",
     "restore": "Ripristina",
@@ -64,7 +66,7 @@
   },
   "donation": {
     "eyebrow": "Hai sbloccato",
-    "intro": "<brand/> è gratis, e lo sarà sempre. Niente pubblicità, niente tracciamento, nessuna email registrata. Se ti ha aiutato a pensare, scrivere o ricordare, valuta di sostenere lo sviluppo. Ci aiuta a mandare avanti il progetto e finanzia le prossime funzioni.",
+    "intro": "<brand/> è gratis, e lo sarà sempre. Niente pubblicità, niente tracker e nessuna email registrata, a meno che tu non abbia effettuato l'accesso con una. Se ti ha aiutato a pensare, scrivere o ricordare, valuta di sostenere lo sviluppo. Ci aiuta a mandare avanti il progetto e finanzia le prossime funzioni.",
     "proBenefits": "Il tuo supporto sblocca anche i vantaggi Pro una volta disponibili: dispositivi illimitati, allegati, backup cifrati nel cloud.",
     "maybeLater": "Forse più tardi",
     "support": "Sostieni →"

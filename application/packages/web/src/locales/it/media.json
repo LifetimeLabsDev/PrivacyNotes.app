@@ -12,7 +12,9 @@
     "uploadFailed": "Caricamento non riuscito: {{message}}",
     "storeUnavailable": "Archivio immagini non disponibile",
     "loadFailed": "Impossibile caricare l'immagine",
-    "notFound": "Immagine non trovata"
+    "notFound": "Immagine non trovata",
+    "saveFailed": "Il salvataggio non è riuscito, quindi il file potrebbe essere vuoto o incompleto.",
+    "viewAria": "Visualizza immagine"
   },
   "attachment": {
     "fallbackName": "Allegato",
@@ -26,7 +28,6 @@
     "deleteConfirm": "Eliminare?",
     "copied": "Copiato",
     "download": "Scarica",
-    "downloadToPlay": "Scarica per riprodurre",
     "play": "Riproduci",
     "pause": "Pausa",
     "fileNotFound": "File non trovato",
@@ -37,6 +38,29 @@
     "downloadFailed": "Download non riuscito",
     "playbackFailed": "Riproduzione non riuscita",
     "uploadFailed": "Caricamento non riuscito: {{message}}",
-    "unknownError": "Errore sconosciuto"
+    "unknownError": "Errore sconosciuto",
+    "view": "Visualizza",
+    "more": "Altre azioni"
+  },
+  "viewer": {
+    "previous": "Precedente",
+    "next": "Successivo",
+    "position": "{{index}} di {{count}}",
+    "zoomIn": "Ingrandisci",
+    "zoomOut": "Riduci",
+    "pdfLoading": "Apertura del PDF...",
+    "pdfFailed": "Impossibile aprire questo PDF. Scaricalo per aprirlo in un'altra app.",
+    "pdfPassword": "Questo PDF è protetto da password. Scaricalo per aprirlo in un'altra app.",
+    "saveFailed": "Il salvataggio non è riuscito, quindi il file potrebbe essere vuoto o incompleto.",
+    "pageCount_one": "{{count}} pagina",
+    "pageCount_other": "{{count}} pagine",
+    "pageLabel": "{{name}}, pagina {{page}} di {{count}}"
+  },
+  "picker": {
+    "title": "Immagini in File",
+    "search": "Cerca immagini",
+    "empty": "Ancora nessuna immagine in File. Caricane una lì, poi aggiungila qui.",
+    "noMatch": "Nessuna immagine corrisponde alla tua ricerca.",
+    "noCopy": "Un'immagine aggiunta qui rimanda al file in File, quindi non occupa altro spazio di archiviazione."
   }
 }

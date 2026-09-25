@@ -119,6 +119,7 @@
     "enable": "Aktivera biometrisk upplåsning",
     "lockOnOpen": "Lås appen vid start",
     "lockOnOpenHint": "Kräv biometri eller PIN när appen öppnas.",
+    "lockHidesOnSwitch": "Döljer också dina anteckningar när du byter app.",
     "lockNeedsCredential": "Applåset kräver en PIN eller biometrisk upplåsning på den här enheten.",
     "setUpPin": "Ange en PIN",
     "confirmPinForLock": "Ange din PIN för att slå på det här. Den låser en kopia av din återställningsfras, så att bara din PIN kan öppna appen.",
@@ -129,6 +130,9 @@
     "disableConfirmLabel": "Inaktivera",
     "disableConfirmBody": "Vill du inaktivera biometrisk upplåsning på den här enheten?",
     "disableConfirmBodyAppLock": "Vill du inaktivera biometrisk upplåsning på den här enheten? Applåset stängs också av."
+  },
+  "appLock": {
+    "phraseNotSaved": "Den här enheten kunde inte spara din återställningsfras, så inget ändrades. Försök igen."
   },
   "pinSetup": {
     "title": "Skapa en PIN",

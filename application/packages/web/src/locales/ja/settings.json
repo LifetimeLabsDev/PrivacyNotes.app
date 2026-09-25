@@ -58,6 +58,9 @@
     "upgradeCharge": "本日、今年の残り期間分として{{amount}}が請求されます。その後は{{price}}/年で更新されます。",
     "upgradeChargeUntil": "本日、今年の残り期間({{date}}まで)分として{{amount}}が請求されます。その後は{{price}}/年で更新されます。",
     "upgradeChargeApple": "本日{{price}}が請求されます。現在の年の未使用分はAppleが自動的に返金し、新しい年が今から始まります。",
+    "upgradeAmountFailed": "本日のお支払い金額を読み込めませんでした。",
+    "upgradeAmountRetry": "もう一度試す",
+    "upgradeAmountChanged": "本日のお支払い金額が変わったか、確認できなかったため、請求は行われていません。パッケージをもう一度選んで、新しい金額を確認してください。",
     "upgrading": "アップグレード中…",
     "upgradeAndPay": "アップグレードして今すぐ支払う",
     "maybeLater": "また今度",
@@ -173,7 +176,12 @@
     "contentWidthWide": "広い",
     "contentWidthFull": "全幅",
     "lineSpacingTitle": "行間",
-    "lineSpacingDesc": "執筆中の段落と段落の間隔。",
+    "tintNotesTitle": "ノートの背景を色付け",
+    "tintNotesDesc": "ノートにタグまたはフォルダの色が付きます。",
+    "lineSpacingDesc": "執筆中の行と段落の間隔。",
+    "lineSpacingTight": "狭め",
+    "resetDefaults": "標準に戻す",
+    "resetDefaultsConfirm": "リセットを確認",
     "lineSpacingCompact": "コンパクト",
     "lineSpacingNormal": "標準",
     "lineSpacingExample": "例",
@@ -201,10 +209,10 @@
   },
   "conflict": {
     "title": "同期の競合",
-    "explanation": "このデバイスに未保存の変更がある間に、このノートが別のデバイスで編集されました。<em>新しいバージョン</em>(別のデバイス、{{date}})を使用します。",
+    "explanation": "このデバイスでの変更がまだ同期されていないうちに、このノートが別のデバイスでも変更され、2つのバージョンの本文が異なっています。特に選ばなければ、<em>別のデバイスのバージョン</em>({{date}})を保持します。",
     "willBeKept": "保持されます",
     "showLocal": "このデバイスのバージョンを表示({{date}})",
-    "useNewer": "OK、新しい方を使う",
+    "useNewer": "もう一方のバージョンを使う",
     "useMine": "自分の方を使う",
     "keepBoth": "両方を別々のノートとして残す"
   },
@@ -216,6 +224,10 @@
     "localLabel": "ローカルデータを削除",
     "localDesc": "このデバイスからノート、画像、キャッシュデータを消去します。アカウントは削除されず、このブラウザが掃除されるだけです。",
     "localRequired": "(アカウント削除時は必須)",
+    "localUnsynced_other": "このデバイスの{{items}}が同期されていません。ローカルデータを削除すると、完全に失われます。",
+    "unsyncedNotes_other": "{{count}}件のノート",
+    "unsyncedFiles_other": "{{count}}件のファイル",
+    "unsyncedBoth": "{{notes}}と{{files}}",
     "cloudLabel": "クラウドデータとアカウントを削除",
     "cloudDesc": "同期されたすべてのノート、画像、デバイス、設定、アカウントをサーバーから完全に削除します。その後、再登録は可能です。",
     "confirmPrompt": "確認のため<kbd>DELETE</kbd>と入力してください",
@@ -253,7 +265,9 @@
     "notBackedUp": "未バックアップ",
     "notSynced": "未同期",
     "notBackedUpTooltip_other": "{{count}}件のノートがバックアップされていません。クリックすると理由を確認できます。",
-    "notBackedUpAria_other": "{{count}}件のノートがバックアップされていません"
+    "notBackedUpAria_other": "{{count}}件のノートがバックアップされていません",
+    "haltedTooltip_other": "同期が停止し、{{count}}件のノートがバックアップされていません。クリックすると理由を確認できます。",
+    "haltedAria_other": "同期が停止し、{{count}}件のノートがバックアップされていません"
   },
   "errors": {
     "noSession": "有効なセッションがありません。もう一度サインインしてみてください。",
@@ -298,7 +312,8 @@
     "reasonTooLarge": "1 MBの上限を超えています",
     "reasonFailed": "失敗: {{message}}",
     "openNote": "開く",
-    "passPushFailed_other": "{{count}}件失敗"
+    "passPushFailed_other": "{{count}}件失敗",
+    "passHalted_other": "停止、{{count}}件が待機中"
   },
   "language": {
     "reportMistake": "翻訳の誤りを報告"

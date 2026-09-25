@@ -2,6 +2,8 @@ import { normalizeTag } from '../notesRepo';
 import { serializeLoginBody } from '../LoginForm';
 import { serializeCardBody } from '../CardForm';
 import { serializeSshKeyBody } from '../SshKeyForm';
+import { BW_EXPORTED_BY, BW_OWN_FIELDS } from '../export';
+import { buildFolderTree } from './folderImport';
 import { linkifyMarkdown } from './linkify';
 import type { Importer, ImportedNote, ParsedImport } from './types';
 
@@ -18,9 +20,12 @@ import type { Importer, ImportedNote, ParsedImport } from './types';
  *   4 = Identity -> PN 'note' (structured as readable text)
  *   5 = SSH Key -> PN 'ssh-key' vault item
  *
- * Folders map to tags. Favorites map to starred. Reprompt (1) maps to
+ * Folders map to tags, except in a file our own vault export wrote, where
+ * they come back as folders. Favorites map to starred. Reprompt (1) maps to
  * pinProtected. TOTP authenticator keys are kept as-is on the login item.
- * Custom fields are appended to the notes field so nothing is lost.
+ * The custom fields our vault export writes for what Bitwarden has no slot
+ * for go back into their places; every other custom field is appended to the
+ * notes field so nothing is lost.
  */
 
 // Bitwarden export schema - intentionally loose, only the fields we use.
@@ -95,6 +100,7 @@ interface BwFolder {
 }
 interface BwExport {
   encrypted?: boolean;
+  exportedBy?: string;
   folders?: BwFolder[];
   items?: BwItem[];
 }
@@ -141,7 +147,10 @@ export const bitwardenImporter: Importer = {
       );
     }
 
-    // Build folder ID -> name map for tag assignment.
+    const ownExport = data.exportedBy === BW_EXPORTED_BY;
+
+    // Build folder ID -> name map: tags for a Bitwarden file, folders for
+    // our own.
     const folderMap = new Map<string, string>();
     if (Array.isArray(data.folders)) {
       for (const f of data.folders) {
@@ -175,12 +184,25 @@ export const bitwardenImporter: Importer = {
       }
 
       const tags: string[] = [];
-      if (item.folderId && folderMap.has(item.folderId)) {
-        const folderName = folderMap.get(item.folderId)!;
-        // Bitwarden uses "/" for nested folders. Split into individual tags.
-        for (const part of folderName.split('/')) {
-          const t = normalizeTag(part.trim());
+      // Bitwarden uses "/" for nested folders. Split into individual tags,
+      // or keep the path to rebuild the folder when the file is our own.
+      const folderPath = (item.folderId ? folderMap.get(item.folderId) ?? '' : '')
+        .split('/').map((part) => part.trim()).filter(Boolean);
+      if (!ownExport) {
+        for (const part of folderPath) {
+          const t = normalizeTag(part);
           if (t) tags.push(t);
+        }
+      }
+      const { own, rest } = takeOwnFields(item.fields, item.type);
+      // A set for the duplicate check: a crafted file can carry tens of
+      // thousands of tags in one field, and a list scan per tag is quadratic.
+      const seen = new Set(tags);
+      for (const part of (own.tags ?? '').split(',')) {
+        const t = normalizeTag(part);
+        if (t && !seen.has(t)) {
+          seen.add(t);
+          tags.push(t);
         }
       }
 
@@ -193,13 +215,14 @@ export const bitwardenImporter: Importer = {
       const createdAt = isoOrNow(item.creationDate);
       const updatedAt = isoOrNow(item.revisionDate ?? item.creationDate);
 
+      const pushedAt = notes.length;
       switch (item.type) {
         case BW_TYPE_LOGIN: {
           loginCount++;
           const login = item.login ?? {};
           const uri = login.uris?.[0]?.uri ?? '';
-          const itemNotes = appendCustomFields(item.notes ?? '', item.fields);
-          if (item.fields?.length) customFieldCount += item.fields.length;
+          const itemNotes = appendCustomFields(item.notes ?? '', rest);
+          customFieldCount += rest.length;
 
           if (login.totp) totpCount++;
 
@@ -225,8 +248,8 @@ export const bitwardenImporter: Importer = {
         case BW_TYPE_CARD: {
           cardCount++;
           const card = item.card ?? {};
-          const itemNotes = appendCustomFields(item.notes ?? '', item.fields);
-          if (item.fields?.length) customFieldCount += item.fields.length;
+          const itemNotes = appendCustomFields(item.notes ?? '', rest);
+          customFieldCount += rest.length;
 
           notes.push({
             title: item.name ?? '',
@@ -236,7 +259,7 @@ export const bitwardenImporter: Importer = {
               expMonth: card.expMonth ?? '',
               expYear: card.expYear ?? '',
               cvv: card.code ?? '',
-              billingZip: '',
+              billingZip: own.billingZip ?? '',
               notes: itemNotes,
             }),
             tags,
@@ -251,8 +274,8 @@ export const bitwardenImporter: Importer = {
 
         case BW_TYPE_SECURE_NOTE: {
           secureNoteCount++;
-          let body = appendCustomFields(item.notes ?? '', item.fields);
-          if (item.fields?.length) customFieldCount += item.fields.length;
+          let body = appendCustomFields(item.notes ?? '', rest);
+          customFieldCount += rest.length;
           const original = body;
           body = linkifyMarkdown(body);
           if (body !== original) linkifiedCount++;
@@ -272,8 +295,8 @@ export const bitwardenImporter: Importer = {
 
         case BW_TYPE_IDENTITY: {
           identityCount++;
-          const identityNotes = appendCustomFields(item.notes ?? '', item.fields);
-          if (item.fields?.length) customFieldCount += item.fields.length;
+          const identityNotes = appendCustomFields(item.notes ?? '', rest);
+          customFieldCount += rest.length;
           // Identity is bitwarden's SECOND markdown body producer and the only
           // one that is not a structured vault type: formatIdentity returns
           // plain `Label: value` lines pushed as type 'note', carrying both the
@@ -302,16 +325,16 @@ export const bitwardenImporter: Importer = {
         case BW_TYPE_SSH_KEY: {
           sshKeyCount++;
           const ssh = item.sshKey ?? {};
-          const itemNotes = appendCustomFields(item.notes ?? '', item.fields);
-          if (item.fields?.length) customFieldCount += item.fields.length;
+          const itemNotes = appendCustomFields(item.notes ?? '', rest);
+          customFieldCount += rest.length;
 
           notes.push({
             title: item.name ?? '',
             body: serializeSshKeyBody({
-              label: ssh.keyFingerprint ?? '',
+              label: own.label ?? ssh.keyFingerprint ?? '',
               privateKey: ssh.privateKey ?? '',
               publicKey: ssh.publicKey ?? '',
-              passphrase: '',
+              passphrase: own.passphrase ?? '',
               notes: itemNotes,
             }),
             tags,
@@ -328,6 +351,22 @@ export const bitwardenImporter: Importer = {
           warnings.push(
             `Skipped item "${item.name ?? '(unnamed)'}" with unknown type ${item.type}.`
           );
+      }
+      if (ownExport && folderPath.length > 0 && notes.length > pushedAt) {
+        notes[pushedAt]!.folderPath = folderPath;
+      }
+    }
+
+    // Our own export's folders, rebuilt once across all paths so siblings
+    // share their ancestors. The apply step reuses a folder the account
+    // already has under the same path instead of making a second one.
+    const rebuilt = ownExport
+      ? buildFolderTree(notes.map((n) => (n.folderPath ?? []).join('/')).filter(Boolean))
+      : null;
+    if (rebuilt) {
+      for (const n of notes) {
+        const key = (n.folderPath ?? []).join('/');
+        if (key) n.folderId = rebuilt.dirToFolderId.get(key) ?? null;
       }
     }
 
@@ -393,9 +432,40 @@ export const bitwardenImporter: Importer = {
         uniqueTags: uniqueTags.size,
       },
       source: 'bitwarden',
+      ...(rebuilt ? { folders: rebuilt.folders } : {}),
     } satisfies ParsedImport;
   },
 };
+
+/**
+ * Split an item's custom fields into the ones our vault export writes for
+ * what Bitwarden has no slot for, and the rest. A named field is taken only on
+ * an item type that has its place, and only once; anything else stays with
+ * the rest, which goes into the notes.
+ */
+function takeOwnFields(
+  fields: BwField[] | null | undefined,
+  type: number
+): { own: Partial<Record<keyof typeof BW_OWN_FIELDS, string>>; rest: BwField[] } {
+  const keys: (keyof typeof BW_OWN_FIELDS)[] =
+    type === BW_TYPE_SSH_KEY ? ['tags', 'label', 'passphrase']
+      : type === BW_TYPE_CARD ? ['tags', 'billingZip']
+        : ['tags'];
+  const own: Partial<Record<keyof typeof BW_OWN_FIELDS, string>> = {};
+  const rest: BwField[] = [];
+  for (const f of fields ?? []) {
+    // Only a text value has a place to go back to; a hand-made file that
+    // puts a number or a boolean under one of the names keeps it as a
+    // custom field in the notes, the way every other field is kept.
+    const key =
+      typeof f.value === 'string'
+        ? keys.find((k) => f.name === BW_OWN_FIELDS[k] && own[k] === undefined)
+        : undefined;
+    if (key) own[key] = f.value as string;
+    else rest.push(f);
+  }
+  return { own, rest };
+}
 
 /**
  * Append Bitwarden custom fields to a notes string. Custom fields are

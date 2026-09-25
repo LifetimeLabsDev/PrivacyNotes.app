@@ -10,6 +10,7 @@
     "intro": {
       "storage": "Větší soubory a víc místa jsou funkce Pro. Přejdi na Pro a získáš soubory do 50 MB a 500 MB úložiště.",
       "folders": "Složky jsou funkce Pro. Uspořádej si poznámky do vnořených složek, jak hluboko potřebuješ, a drž každý projekt zvlášť.",
+      "looks": "Ikony a barvy složek a značek jsou funkce Pro. Dej každé z nich vzhled, který poznáš na první pohled.",
       "lock": "Zamknutí poznámky je funkce Pro. Přejdi na Pro a ochraň jakoukoli poznámku před nechtěnými úpravami.",
       "protect": "Ochrana poznámky PINem je funkce Pro. Přejdi na Pro a schovej citlivé poznámky za svůj PIN.",
       "history": "Historie poznámek je funkce Pro. Přejdi na Pro a uchovávej si časovou osu každého uložení.",
@@ -57,6 +58,7 @@
     "title": "Historie poznámky",
     "subtitle": "Až 20 verzí na poznámku. Nejstarší se automaticky mažou.",
     "empty": "Zatím žádná historie. Verze se začnou hromadit po další úpravě. Vrať se později.",
+    "loadFailed": "Historii se nepodařilo načíst. Zkontroluj připojení a zkus to znovu.",
     "selectPrompt": "Vyber verzi pro náhled.",
     "emptyBody": "(prázdné)",
     "restore": "Obnovit",
@@ -64,7 +66,7 @@
   },
   "donation": {
     "eyebrow": "Máš odemčeno",
-    "intro": "<brand/> je zdarma a vždycky bude. Žádné reklamy, žádné sledování, žádný e-mail v evidenci. Pokud ti pomohl myslet, psát nebo si pamatovat, zvaž podporu dalšího vývoje. Drží to projekt v provozu a platí to další funkce.",
+    "intro": "<brand/> je zdarma a vždycky bude. Žádné reklamy, žádné sledovací prvky a žádný e-mail v evidenci, pokud se nepřihlašuješ účtem s e-mailem. Pokud ti pomohl myslet, psát nebo si pamatovat, zvaž podporu dalšího vývoje. Drží to projekt v provozu a platí to další funkce.",
     "proBenefits": "Podpora ti navíc odemkne výhody Pro, jakmile vyjdou: neomezený počet zařízení, přílohy a šifrované zálohy v cloudu.",
     "maybeLater": "Možná později",
     "support": "Podpořit →"

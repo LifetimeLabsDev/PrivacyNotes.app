@@ -19,7 +19,7 @@ Tohle je naše opravdová databáze v Curychu, ne kresba. Tvoje poznámka jde do
 
 ## Kdo má tvůj klíč
 
-Každá možnost drží tvoje poznámky šifrované od konce ke konci. Liší se tím, kde tvoje fráze leží.
+U každé možnosti se tvoje poznámky šifrují na tvém zařízení. Liší se tím, kde tvoje fráze leží.
 
 | Možnost | Kde tvoje fráze leží | Co ti to dá |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Každá možnost drží tvoje poznámky šifrované od konce ke konci. Liší se
 
 U spodních dvou bychom poznámku nepřečetli, ani kdyby nás k tomu donutili. První to mění za pohodlí: tvoje fráze leží na našem serveru pod naším klíčem, takže novému zařízení stačí tvůj účet. Kdyby náš server někdy prolomili, ten klíč by se mohl dostat ven.
 
-Svojí volbou nejsi svázaný. Změň ji v **Nastavení > Zabezpečení > Tvoje fráze**.
+Přihlašuješ se přes Google, Apple nebo GitHub? Mezi prvními dvěma možnostmi můžeš později přepnout v **Nastavení > Zabezpečení > Tvoje fráze**. U účtu jen s frází zůstává fráze vždycky u tebe.
 
 > [!warning] Měj vlastní kopii fráze
 > Tvoje fráze otevírá tvoje poznámky. Když ji ztratíš, nikdo ti ji neobnoví, my taky ne. <span style="color: #e03131">Napiš si ji dnes na papír.</span>
@@ -44,7 +44,7 @@ Svojí volbou nejsi svázaný. Změň ji v **Nastavení > Zabezpečení > Tvoje 
 | Co | Kde |
 | --- | --- |
 | Samotné šifrování | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| Struktura databáze | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| Co dostává náš server | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | Co útočník může a nemůže | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | Jak nahlásit díru | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

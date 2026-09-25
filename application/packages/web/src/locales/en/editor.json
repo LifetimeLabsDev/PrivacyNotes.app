@@ -33,7 +33,8 @@
     "math": "Math formula",
     "blockMath": "Block formula",
     "align": "Alignment",
-    "font": "Font"
+    "font": "Font",
+    "pictureFromFiles": "Picture from Files"
   },
   "align": {
     "left": "Align left",
@@ -104,6 +105,7 @@
     "addColumnLeft": "Add column left",
     "addColumnRight": "Add column right",
     "toggleHeaderRow": "Toggle header row",
+    "equalColumnWidths": "Make columns equal",
     "deleteRow": "Delete row",
     "deleteColumn": "Delete column",
     "deleteTable": "Delete table"
@@ -187,7 +189,8 @@
   "codeBlock": {
     "copy": "Copy",
     "copied": "Copied",
-    "copyFailed": "Failed"
+    "copyFailed": "Failed",
+    "wrap": "Wrap long lines"
   },
   "math": {
     "sourceLabel": "LaTeX source"

@@ -12,7 +12,9 @@
     "uploadFailed": "O envio falhou: {{message}}",
     "storeUnavailable": "Armazenamento de imagens indisponível",
     "loadFailed": "Falha ao carregar a imagem",
-    "notFound": "Imagem não encontrada"
+    "notFound": "Imagem não encontrada",
+    "saveFailed": "Não foi possível guardar, por isso o ficheiro pode estar vazio ou incompleto.",
+    "viewAria": "Ver imagem"
   },
   "attachment": {
     "fallbackName": "Anexo",
@@ -26,7 +28,6 @@
     "deleteConfirm": "Eliminar?",
     "copied": "Copiado",
     "download": "Transferir",
-    "downloadToPlay": "Transfere para reproduzir",
     "play": "Reproduzir",
     "pause": "Pausar",
     "fileNotFound": "Ficheiro não encontrado",
@@ -37,6 +38,29 @@
     "downloadFailed": "A transferência falhou",
     "playbackFailed": "A reprodução falhou",
     "uploadFailed": "O envio falhou: {{message}}",
-    "unknownError": "Erro desconhecido"
+    "unknownError": "Erro desconhecido",
+    "view": "Ver",
+    "more": "Mais ações"
+  },
+  "viewer": {
+    "previous": "Anterior",
+    "next": "Seguinte",
+    "position": "{{index}} de {{count}}",
+    "zoomIn": "Ampliar",
+    "zoomOut": "Reduzir",
+    "pdfLoading": "A abrir o PDF...",
+    "pdfFailed": "Não é possível abrir este PDF. Transfere-o para o abrires noutra app.",
+    "pdfPassword": "Este PDF tem palavra-passe. Transfere-o para o abrires noutra app.",
+    "saveFailed": "Não foi possível guardar, por isso o ficheiro pode estar vazio ou incompleto.",
+    "pageCount_one": "{{count}} página",
+    "pageCount_other": "{{count}} páginas",
+    "pageLabel": "{{name}}, página {{page}} de {{count}}"
+  },
+  "picker": {
+    "title": "Imagens em Ficheiros",
+    "search": "Procurar imagens",
+    "empty": "Ainda não há imagens em Ficheiros. Carrega uma lá e depois adiciona-a aqui.",
+    "noMatch": "Nenhuma imagem corresponde à tua pesquisa.",
+    "noCopy": "Uma imagem que adicionas aqui aponta para o ficheiro em Ficheiros, por isso não ocupa armazenamento extra."
   }
 }

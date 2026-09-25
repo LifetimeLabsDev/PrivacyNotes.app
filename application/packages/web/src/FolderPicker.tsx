@@ -4,6 +4,9 @@ import { useEscapeToClose } from './useEscapeToClose';
 import { ContextMenu, useContextMenu, type ContextMenuItem } from './ContextMenu';
 import { FolderTreeView } from './FolderTreeView';
 import { FolderNameInput } from './FolderNameInput';
+import { SIDEBAR_ROW_MENU_BUTTON } from './sidebarUI';
+import { textMatcher } from './textMatch';
+import { FolderGlyph } from './looks/LookGlyph';
 import {
   flattenFolderRows,
   INDENT_PX,
@@ -154,11 +157,12 @@ export function FolderPicker({
   /** Search: flat matches, ancestor path shown as a muted prefix. */
   const searching = query.trim().length > 0;
   const matches = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = query.trim();
     if (!q) return [];
+    const match = textMatcher(q);
     return flattenFolderRows(folders, { isExpanded: () => true, respectCollapse: false, sortSiblings })
       .map((row) => row.folder)
-      .filter((folder) => folder.name.toLowerCase().includes(q));
+      .filter((folder) => match(folder.name));
   }, [folders, query, sortSiblings]);
 
   function pathLabel(folder: FolderDef): string {
@@ -246,11 +250,10 @@ export function FolderPicker({
 
   const trailingFor = (folder: FolderDef, withMenu = false) => (
     <>
-      {/* The same "..." the sidebar row wears, with the same reveal-on-hover
-          rule. Right-click alone used to be the only way into this menu here,
-          which on a desktop is undiscoverable and on a trackpad is a two-hand
-          job. Not drawn on a search result: those rows are a flat list of
-          destinations, not the tree. */}
+      {/* The same "..." the sidebar row wears, from the same class token.
+          Right-click alone is undiscoverable on a desktop, a two-hand job on
+          a trackpad and absent on a phone. Not drawn on a search result:
+          those rows are a flat list of destinations, not the tree. */}
       {withMenu && !isDisabled(folder) && (
         <button
           type="button"
@@ -259,7 +262,7 @@ export function FolderPicker({
             rowMenu.open(e, buildRowMenu(folder));
           }}
           aria-label={t('folders.actionsForFolder', { folder: folder.name })}
-          className="shrink-0 inline-flex items-center justify-center w-6 h-6 rounded text-neutral-500 hover:text-accent hover:bg-neutral-300/60 dark:hover:bg-neutral-800/60 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+          className={SIDEBAR_ROW_MENU_BUTTON}
         >
           <DotsThree />
         </button>
@@ -338,7 +341,7 @@ export function FolderPicker({
                   }`}
                 >
                   <span className={`inline-flex shrink-0 ${disabled ? '' : 'text-amber-600/80 dark:text-amber-500/80'}`}>
-                    <Folder size={15} />
+                    <FolderGlyph folderId={folder.id} size={15} />
                   </span>
                   <span className="flex-1 min-w-0 truncate">
                     {path && <span className="text-neutral-400 dark:text-neutral-500">{path} / </span>}

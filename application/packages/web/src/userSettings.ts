@@ -55,6 +55,7 @@ import {
 } from './notesViewUtils';
 import { credentialKey, isDemoMode } from './demo';
 import { settingsLocalKey } from './settingsLocalKey';
+import { applyPrivacyScreen } from './privacyScreen';
 import { isTrustedDevice } from './trustStorage';
 import { hasPinWrap } from './pin';
 import type { View } from './views';
@@ -72,6 +73,13 @@ import {
   type FolderTombstone,
   type FolderTree,
 } from './folders';
+import {
+  deletedFolderIds,
+  itemStylesEqual,
+  mergeItemStyles,
+  validateItemStyles,
+  type ItemStyles,
+} from './itemStyles';
 
 // ------------------------------------------------------------------
 // Shape
@@ -291,7 +299,8 @@ export type UserSettings = {
   editorMode: 'formatted' | 'markdown';
   /**
    * The gap between two paragraphs in a note body: 'compact' (none, so
-   * Enter costs the same line as Shift+Enter) or 'normal'. Synced like
+   * Enter costs the same line as Shift+Enter), 'tight' (no gap and closer
+   * lines) or 'normal'. Synced like
    * editorMode, because it describes how somebody writes rather than the
    * screen they write on, and a note typed on a phone is read on a
    * laptop. A blob with no value means compact, so every account lands
@@ -328,6 +337,21 @@ export type UserSettings = {
    * folder its owner deleted. Pruned in `validateFolderTombstones`.
    */
   foldersDeleted: FolderTombstone[];
+  /**
+   * Pro: the look of each folder and tag, an icon and a color, keyed
+   * `f:<folder id>` or `t:<tag>`. A map of registers that merges per value at
+   * every sync point, beside the folder tree rather than inside it - see
+   * itemStyles.ts for why.
+   * Spec: ops/docs/plans/folder-tag-icons.md (section 5)
+   */
+  itemStyles: ItemStyles;
+  /**
+   * Whether a note takes its folder or tag color as its background: the open
+   * note, its list row and its grid tile. One switch for all notes, synced
+   * like the theme.
+   * Spec: ops/docs/plans/folder-tag-icons.md (section 4.6)
+   */
+  tintNotes: boolean;
   /**
    * How the folder tree orders siblings. Synced, unlike the tag sort and
    * unlike which folders are open: 'custom' displays the order the user
@@ -442,7 +466,7 @@ export type UserSettings = {
   };
 };
 
-function defaultSettings(): UserSettings {
+export function defaultSettings(): UserSettings {
   return {
     favoriteTags: [],
     dismissedAnnouncements: [],
@@ -479,6 +503,9 @@ function defaultSettings(): UserSettings {
     journalTitleSuffix: '',
     folders: [],
     foldersDeleted: [],
+    itemStyles: {},
+    // Spec: ops/docs/plans/folder-tag-icons.md (decision D10, on)
+    tintNotes: true,
     folderSort: { field: 'name', dir: 'asc' },
     sidebarBrowse: 'tags', // Spec: ops/specs/folders.md (sidebarBrowse default)
     // Spec: ops/docs/plans/image-quality-handoff.md (section 3, both default on)
@@ -724,6 +751,12 @@ function hydrate(raw: unknown): UserSettings {
       base.folders = validateFolders(base.folders.filter((f) => !gone.has(f.id)));
     }
   }
+  if (obj.itemStyles !== undefined) {
+    base.itemStyles = validateItemStyles(obj.itemStyles);
+  }
+  if (typeof obj.tintNotes === 'boolean') {
+    base.tintNotes = obj.tintNotes;
+  }
   if (obj.folderSort && typeof obj.folderSort === 'object') {
     const raw = obj.folderSort as { field?: unknown; dir?: unknown };
     base.folderSort = {
@@ -782,6 +815,25 @@ function hydrate(raw: unknown): UserSettings {
     if (typeof pg.addSymbol === 'boolean') dpg.addSymbol = pg.addSymbol;
   }
   return base;
+}
+
+/**
+ * Scalars that clients in the field can predate. A blob such a client pushed
+ * has no key for one, and `hydrate` fills in the default, which reads as the
+ * person switching it back. Where the blob lacks the key, this device's value
+ * stands. A merged collection needs no entry: its merge never reads absence
+ * as a reset.
+ */
+const NEWER_SCALARS = ['tintNotes'] as const;
+
+/** `hydrate`, keeping this device's value of a newer scalar the blob lacks. */
+function hydrateOver(local: UserSettings, raw: unknown): UserSettings {
+  const out = hydrate(raw);
+  if (!raw || typeof raw !== 'object') return out;
+  for (const key of NEWER_SCALARS) {
+    if (!(key in raw)) out[key] = local[key];
+  }
+  return out;
 }
 
 /** The earlier of two optional ISO stamps; null only when both are null. */
@@ -955,7 +1007,23 @@ function readLocal(): LocalCache {
   }
 }
 
+/**
+ * Whether a save landed after `seen` was read. A pass that waited on the
+ * network must not write over it. Both fields, because every save steps the
+ * counter, and two saves in one millisecond carry the same stamp.
+ */
+function savedSince(seen: LocalCache): boolean {
+  const now = readLocal();
+  return now.updatedAt !== seen.updatedAt || now.settings.settingsRev !== seen.settings.settingsRev;
+}
+
 function writeLocal(cache: LocalCache): void {
+  // Every source of a change lands here: the toggle in Security, a blob that
+  // arrives from another device, and the recovery paths. Arming on one of
+  // them and disarming on none is the half of this that breaks in silence, so
+  // the cover follows the value from the single place the value is written.
+  // Spec: ops/docs/plans/app-switcher-privacy-screen.md
+  applyPrivacyScreen(cache.settings.appLockEnabled);
   const { wrapWithheld, syncedRev, ...stored } = cache;
   const trusted = isTrustedDevice();
   // A trusted device that knows its wrap writes exactly the shape it always
@@ -1079,6 +1147,11 @@ export function updateLocalSettings(
   const prev = readLocal().settings;
   const next = updater(prev);
   return next === prev ? prev : saveLocalSettings(next);
+}
+
+/** Whether this device holds a settings change the server has not seen. */
+export function hasUnpushedSettings(): boolean {
+  return readLocal().dirty;
 }
 
 /**
@@ -1221,6 +1294,29 @@ function mergeTrackerSettings(
 }
 
 /**
+ * The folder tree and the folder and tag looks, merged together at every
+ * sync point that merges either. One call, so the looks can never be merged
+ * at three of the four points and replaced wholesale at the fourth, which is
+ * the shape of write that cost two accounts their folders.
+ */
+function mergeTreeAndLooks(
+  local: Pick<UserSettings, 'folders' | 'foldersDeleted' | 'itemStyles'>,
+  remote: Pick<UserSettings, 'folders' | 'foldersDeleted' | 'itemStyles'>,
+  unstampedWinner: Winner,
+): Pick<UserSettings, 'folders' | 'foldersDeleted' | 'itemStyles'> {
+  const tree = mergeFolderTrees(
+    { folders: local.folders, deleted: local.foldersDeleted },
+    { folders: remote.folders, deleted: remote.foldersDeleted },
+    unstampedWinner,
+  );
+  return {
+    folders: tree.folders,
+    foldersDeleted: tree.deleted,
+    itemStyles: mergeItemStyles(local.itemStyles, remote.itemStyles, deletedFolderIds(tree.deleted)),
+  };
+}
+
+/**
  * Merge local and remote settings when a push conflict is detected.
  *
  * General strategy: server wins for scalar prefs (it's newer). For
@@ -1238,13 +1334,8 @@ function mergeSettings(
   // Folders are not a scalar and must not follow the base. Whichever side is
   // newer, the other one can hold a folder it has never seen, and taking the
   // base wholesale is what let one device's copy stand in for the account's.
-  const tree = mergeFolderTrees(
-    { folders: local.folders, deleted: local.foldersDeleted },
-    { folders: remote.folders, deleted: remote.foldersDeleted },
-    foldersUnstampedWinner,
-  );
-  merged.folders = tree.folders;
-  merged.foldersDeleted = tree.deleted;
+  // The looks ride along for the same reason.
+  Object.assign(merged, mergeTreeAndLooks(local, remote, foldersUnstampedWinner));
 
   // Medications: tombstone-aware union merge.
   merged.medications = mergeMedications(local.medications, remote.medications);
@@ -1312,11 +1403,21 @@ let claimGateLogged = false;
  * won, the local copy if it won, or the default if both were empty).
  * Callers should feed this back into their React state so the UI
  * reflects any remote changes.
+ *
+ * `report.readServer` comes back true only when this call read the
+ * account's row (or proved there is none), decrypted every copy of it it
+ * met, and left a cache with nothing unpushed: the cache then holds what
+ * this pass read from the server. Callers pass a fresh `false` and only the
+ * line before the final return sets it, so a failed request, an
+ * undecryptable row, a deferred push or any early return leaves it false.
+ * hasSettingsPulled() cannot say this, because it stays true once any pass
+ * has ever pulled.
  */
 export async function syncUserSettings(
   supabase: SupabaseClient,
   pubkey: string,
-  encryptionKey: Uint8Array
+  encryptionKey: Uint8Array,
+  report?: { readServer: boolean },
 ): Promise<UserSettings> {
   // Demo mode never syncs settings to the server - return local only.
   if (isDemoMode()) return readLocal().settings;
@@ -1366,6 +1467,7 @@ export async function syncUserSettings(
     .maybeSingle();
 
   let effective: LocalCache = local;
+  let decryptFailed = false;
 
   if (pullErr) {
     console.error('[settings] pull failed:', pullErr);
@@ -1381,7 +1483,8 @@ export async function syncUserSettings(
       !local.dirty && (row.updated_at > local.updatedAt || local.wrapWithheld);
     if (remoteWins) {
       try {
-        const remoteSettings = hydrate(
+        const remoteSettings = hydrateOver(
+          local.settings,
           decryptJson(
             base64ToBytes(row.ciphertext),
             base64ToBytes(row.nonce),
@@ -1440,28 +1543,24 @@ export async function syncUserSettings(
           remoteSettings.firstSeenAt
         );
         if (local.settings.ratingDone) remoteSettings.ratingDone = true;
-        // Folders merge on the way in as well as on the way out. The server
-        // copy is newer, but newer is not the same as complete: it can have
-        // been written by a device that never knew about a folder this one
-        // holds, or by a client too old to merge at all. Whatever the merge
-        // adds back has to be pushed, or this device alone would hold the
-        // repaired tree, so a merge that changed anything re-arms the dirty
-        // flag. 'remote' settles a tie because a clean local cache cannot be
+        // Folders and their looks merge on the way in as well as on the way
+        // out. The server copy is newer, but newer is not the same as
+        // complete: it can have been written by a device that never knew
+        // about a folder this one holds, or by a client too old to merge at
+        // all. Whatever the merge adds back has to be pushed, or this device
+        // alone would hold the repair, so a merge that changed anything
+        // re-arms the dirty flag. 'remote' settles a tie because a clean local cache cannot be
         // hiding an edit that never left the device.
-        const pulledTree = mergeFolderTrees(
-          { folders: local.settings.folders, deleted: local.settings.foldersDeleted },
+        const pulled = mergeTreeAndLooks(local.settings, remoteSettings, 'remote');
+        const treeRepaired = !folderTreesEqual(
+          { folders: pulled.folders, deleted: pulled.foldersDeleted },
           { folders: remoteSettings.folders, deleted: remoteSettings.foldersDeleted },
-          'remote',
         );
-        const treeRepaired = !folderTreesEqual(pulledTree, {
-          folders: remoteSettings.folders,
-          deleted: remoteSettings.foldersDeleted,
-        });
-        remoteSettings.folders = pulledTree.folders;
-        remoteSettings.foldersDeleted = pulledTree.deleted;
+        const looksRepaired = !itemStylesEqual(pulled.itemStyles, remoteSettings.itemStyles);
+        Object.assign(remoteSettings, pulled);
         if (treeRepaired) {
           logAuthEvent('settings:folders-repaired', {
-            folders: pulledTree.folders.length,
+            folders: pulled.folders.length,
           });
         }
         // A repair has to carry a NEW stamp. Keeping the server row's own
@@ -1470,8 +1569,8 @@ export async function syncUserSettings(
         // already seen this row and none of them would ever pull the repair.
         effective = {
           settings: remoteSettings,
-          updatedAt: treeRepaired ? new Date().toISOString() : row.updated_at,
-          dirty: treeRepaired,
+          updatedAt: treeRepaired || looksRepaired ? new Date().toISOString() : row.updated_at,
+          dirty: treeRepaired || looksRepaired,
           everPulled: true,
           // The row is the account's, wrap fields included.
           wrapWithheld: false,
@@ -1481,8 +1580,11 @@ export async function syncUserSettings(
         // than anything this pass read, so it stands and the pass leaves the
         // cache alone. Without the check the pull silently erased it, dirty
         // flag included, and the change never reached the server.
+        // Any save counts, whatever its stamp says: the cache can hold the
+        // stamp of a device whose clock runs ahead, and a save here carries
+        // this device's clock.
         const current = readLocal();
-        if (current.updatedAt > local.updatedAt) {
+        if (savedSince(local)) {
           // The cache is what stands, so it is also what this pass carries
           // forward: the push below reads `effective`, and the caller sets
           // React state from what is returned. Handing back the discarded
@@ -1498,9 +1600,12 @@ export async function syncUserSettings(
         // one: the local copy stands and the pass continues to the push,
         // which is what puts this device's newer blob back on the server.
         if (err instanceof SettingsRollbackError) {
-          effective = { ...local, dirty: true };
+          // The cache as it is now: a save that landed during the pull is
+          // newer than `local`, and the push below has to carry it.
+          effective = { ...readLocal(), dirty: true };
           writeLocal(effective);
         } else {
+          decryptFailed = true;
           console.error('[settings] decrypt failed:', err);
         }
       }
@@ -1513,14 +1618,15 @@ export async function syncUserSettings(
     if (!local.everPulled) {
       // No row means the account holds no wrap either, so four nulls are
       // the truth here rather than an unknown.
-      effective = { ...local, everPulled: true, wrapWithheld: false, syncedRev: 0 };
+      // From the cache as it is now, so a save during the pull is pushed.
+      effective = { ...readLocal(), everPulled: true, wrapWithheld: false, syncedRev: 0 };
       writeLocal(effective);
     }
   }
 
   // ── 2. PUSH (conflict-aware) ────────────────────────────────────
   if (effective.dirty) {
-    const snapshotUpdatedAt = effective.updatedAt;
+    const snapshot = effective;
 
     // Medications (and archived medications) must never be blind-overwritten
     // by the fast update path below. When local is dirty the PULL above is
@@ -1559,7 +1665,8 @@ export async function syncUserSettings(
     }
     if (preRow) {
       try {
-        const serverSettings = hydrate(
+        const serverSettings = hydrateOver(
+          effective.settings,
           decryptJson(
             base64ToBytes((preRow as RemoteRow).ciphertext),
             base64ToBytes((preRow as RemoteRow).nonce),
@@ -1584,17 +1691,12 @@ export async function syncUserSettings(
           outgoing = mergeSettings(effective.settings, serverSettings, 'remote');
         } else {
           // Same rule as the medication templates below, and the one that
-          // matters most: this device's tree can be stale, and writing it
-          // whole removes every folder another device made in the meantime.
-          const pushTree = mergeFolderTrees(
-            { folders: effective.settings.folders, deleted: effective.settings.foldersDeleted },
-            { folders: serverSettings.folders, deleted: serverSettings.foldersDeleted },
-            'local',
-          );
+          // matters most: this device's tree and looks can be stale, and
+          // writing them whole removes every folder and every pick another
+          // device made in the meantime.
           outgoing = {
             ...effective.settings,
-            folders: pushTree.folders,
-            foldersDeleted: pushTree.deleted,
+            ...mergeTreeAndLooks(effective.settings, serverSettings, 'local'),
             medications: mergeMedications(
               effective.settings.medications,
               serverSettings.medications
@@ -1623,6 +1725,10 @@ export async function syncUserSettings(
               serverSettings.firstSeenAt
             ),
             ratingDone: effective.settings.ratingDone || serverSettings.ratingDone,
+            // Never lower, as in mergeSettings: a count below the row's reads
+            // as a rollback to the device that wrote it, and that device then
+            // pushes its own settings back over this change.
+            settingsRev: Math.max(effective.settings.settingsRev, serverSettings.settingsRev),
           };
           // The cache withheld the wrap and no pass has read it in this tab,
           // so the four nulls in `effective.settings` mean "unknown", and
@@ -1639,6 +1745,7 @@ export async function syncUserSettings(
           }
         }
       } catch (err) {
+        decryptFailed = true;
         console.error('[settings] pre-push merge decrypt failed:', err);
         // Same rule as the failed read above: a never-pulled device must
         // not blind-overwrite a row it could not merge with, and neither
@@ -1693,7 +1800,7 @@ export async function syncUserSettings(
           console.error('[settings] insert failed:', insertErr);
         } else {
           const current = readLocal();
-          if (current.updatedAt === snapshotUpdatedAt) {
+          if (!savedSince(snapshot)) {
             // The insert proves the server held no row - nothing existed
             // for this device to have missed.
             const cleaned: LocalCache = { ...current, dirty: false, everPulled: true, wrapWithheld: false, syncedRev: current.settings.settingsRev };
@@ -1710,7 +1817,8 @@ export async function syncUserSettings(
         // that has seen less.
         console.warn('[settings] conflict detected - merging');
         try {
-          const serverSettings = hydrate(
+          const serverSettings = hydrateOver(
+            outgoing,
             decryptJson(
               base64ToBytes(existing.ciphertext),
               base64ToBytes(existing.nonce),
@@ -1732,38 +1840,39 @@ export async function syncUserSettings(
             console.warn('[settings] conflict row is older than this device holds - keeping ours');
           }
           // A refused rollback keeps this device's blob, and even then the
-          // folders merge: refusing the server's SCALARS is not a reason to
-          // drop a folder the server holds and this device has not seen.
+          // folders and their looks merge: refusing the server's SCALARS is
+          // not a reason to drop a folder or a pick the server holds and this
+          // device has not seen.
           const merged = rolledBack
-            ? {
-                ...outgoing,
-                ...(() => {
-                  const tree = mergeFolderTrees(
-                    { folders: outgoing.folders, deleted: outgoing.foldersDeleted },
-                    { folders: serverSettings.folders, deleted: serverSettings.foldersDeleted },
-                    'local',
-                  );
-                  return { folders: tree.folders, foldersDeleted: tree.deleted };
-                })(),
-              }
+            ? { ...outgoing, ...mergeTreeAndLooks(outgoing, serverSettings, 'local') }
             : mergeSettings(outgoing, serverSettings, effective.everPulled ? 'local' : 'remote');
           const mergedAt = new Date().toISOString();
           const enc = encryptJson(merged, passKey);
-          const { error: mergeErr } = await supabase
+          // Guarded on the row this merge was built from, like the notes
+          // merge in sync.ts: a device that wrote after the conflict read
+          // would otherwise lose that write to a merge that never saw it.
+          // No match leaves the cache dirty, and the next pass merges again.
+          const { data: mergedRows, error: mergeErr } = await supabase
             .from('user_settings')
             .update({
               ciphertext: bytesToBase64(enc.ciphertext),
               nonce: bytesToBase64(enc.nonce),
               updated_at: mergedAt,
             })
-            .eq('user_pubkey', pubkey);
+            .eq('user_pubkey', pubkey)
+            .lte('updated_at', existing.updated_at)
+            .select('user_pubkey');
           if (mergeErr) {
             console.error('[settings] merge push failed:', mergeErr);
-          } else {
+          } else if (!mergedRows || mergedRows.length === 0) {
+            console.warn('[settings] the row changed again during the merge - the next pass retries');
+          } else if (!savedSince(snapshot)) {
+            // A save that landed during the merge stays in the cache, dirty.
             effective = { settings: merged, updatedAt: mergedAt, dirty: false, everPulled: true, wrapWithheld: false, syncedRev: merged.settingsRev };
             writeLocal(effective);
           }
         } catch (err) {
+          decryptFailed = true;
           console.error('[settings] merge decrypt failed:', err);
         }
       }
@@ -1773,7 +1882,7 @@ export async function syncUserSettings(
       // the server row is strictly newer). Guarded so a local mutation that
       // landed mid-push is not clobbered.
       const current = readLocal();
-      if (current.updatedAt === snapshotUpdatedAt) {
+      if (!savedSince(snapshot)) {
         // Either the pre-push merge above decrypted the server row, or no
         // row existed - both count as having seen the server.
         const cleaned: LocalCache = { settings: outgoing, updatedAt: current.updatedAt, dirty: false, everPulled: true, wrapWithheld: false, syncedRev: outgoing.settingsRev };
@@ -1783,6 +1892,7 @@ export async function syncUserSettings(
     }
   }
 
+  if (report) report.readServer = !pullErr && !decryptFailed && !readLocal().dirty;
   return effective.settings;
   } finally {
     passKey.fill(0);

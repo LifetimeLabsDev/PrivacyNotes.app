@@ -4,7 +4,7 @@
 // ArabicNormalizer behaves. Kept out of search.ts so cjkSegment.ts and
 // arabicFold.ts both read as small, single-purpose script-handling modules
 // consumed by the same index-and-query pipeline.
-// Spec: ops/docs/archive/rtl-handoff.md (Arabic search folding)
+// Spec: ops/docs/design-decisions.md (search folding)
 
 // Covers every character this function touches: tashkeel, tatweel, the alef
 // variants, alef maqsura, teh marbuta, and both Arabic-Indic digit blocks.
@@ -34,4 +34,34 @@ export function foldArabic(term: string): string {
       const code = d.codePointAt(0) as number;
       return String(code <= 0x0669 ? code - 0x0660 : code - 0x06f0);
     });
+}
+
+// The definite article as Arabic writes it, joined to its word: alone, or
+// behind a one-letter conjunction or preposition (li- drops the article's
+// alef). One per line, so the list does not reorder on screen.
+const ARTICLES = [
+  'وال', // wa-al
+  'بال', // bi-al
+  'كال', // ka-al
+  'فال', // fa-al
+  'لل', // li-l
+  'ال', // al
+];
+
+/**
+ * The word without the definite article joined to it, or null when it has
+ * none. Arabic writes the article as part of the word, so "الأمان" (the
+ * security) is one token, and a prefix search for "أمان" cannot reach it; the
+ * index stores this bare form beside the whole word. At least two letters
+ * must remain, the Lucene light-stemmer rule, so a short word that only
+ * begins with the same letters ("الم", pain) stays whole. Takes a term that
+ * has been through foldArabic, which turns a written "أل" into "ال".
+ */
+export function withoutArabicArticle(term: string): string | null {
+  const first = term.charCodeAt(0);
+  if (!(first >= 0x0600 && first <= 0x06ff)) return null;
+  for (const article of ARTICLES) {
+    if (term.length >= article.length + 2 && term.startsWith(article)) return term.slice(article.length);
+  }
+  return null;
 }

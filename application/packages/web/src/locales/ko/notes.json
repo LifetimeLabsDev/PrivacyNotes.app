@@ -55,7 +55,7 @@
     "empty": "비우기",
     "emptyHover": "휴지통의 모든 노트 삭제",
     "storage": "저장 공간",
-    "autoDelete": "30일 자동 삭제"
+    "autoDelete": "30일 후 자동 삭제"
   },
   "search": {
     "sortOptions": "정렬 및 보기 옵션",
@@ -159,8 +159,8 @@
     "invisiblesShow": "서식 기호 보기",
     "invisiblesHide": "서식 기호 숨기기",
     "findInNote": "노트에서 찾기",
-    "navPrev": "이전 노트",
-    "navNext": "다음 노트",
+    "navPrev": "이전",
+    "navNext": "다음",
     "undo": "실행 취소",
     "redo": "다시 실행",
     "hide": "숨기기",
@@ -174,7 +174,8 @@
     "titlePlaceholderLink": "북마크 이름",
     "titlePlaceholderContact": "이름",
     "notBackedUpTooLarge": "1 MB 제한을 넘어 백업되지 않았어요. 사진을 첨부 파일로 옮기거나 노트를 나눠 주세요.",
-    "notBackedUpFailed": "백업되지 않았어요. 마지막 오류: {{message}}. 다시 시도하는 중이에요."
+    "notBackedUpFailed": "백업되지 않았어요. 마지막 오류: {{message}}. 다시 시도하는 중이에요.",
+    "unknownType": "이 항목은 더 새로운 버전의 PrivacyNotes에서 만들어졌어요. 열려면 앱을 업데이트하세요."
   },
   "share": {
     "hover": "공유 / 내보내기",

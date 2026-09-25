@@ -19,7 +19,7 @@ Das ist unsere echte Datenbank in Zürich, keine Zeichnung davon. Deine Notiz la
 
 ## Wer deinen Schlüssel hat
 
-Jede Möglichkeit hält deine Notizen Ende-zu-Ende verschlüsselt. Sie unterscheiden sich darin, wo deine Phrase liegt.
+Jede Möglichkeit hält deine Notizen auf deinem Gerät verschlüsselt. Sie unterscheiden sich darin, wo deine Phrase liegt.
 
 | Möglichkeit | Wo deine Phrase liegt | Was du davon hast |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Jede Möglichkeit hält deine Notizen Ende-zu-Ende verschlüsselt. Sie untersche
 
 Bei den unteren beiden könnten wir eine Notiz nicht lesen, selbst wenn man uns dazu zwänge. Die erste tauscht das gegen Bequemlichkeit: Deine Phrase liegt auf unserem Server unter einem Schlüssel von uns, also braucht ein neues Gerät nichts außer deinem Login. Würde unser Server je angegriffen, könnte dieser Schlüssel offengelegt werden.
 
-Du bist an deine Wahl nicht gebunden. Ändere sie unter **Einstellungen > Sicherheit > Deine Phrase**.
+Mit Google, Apple oder GitHub angemeldet? Zwischen den ersten beiden kannst du später wechseln, unter **Einstellungen > Sicherheit > Deine Phrase**. Bei einem reinen Phrasen-Konto bleibt die Phrase immer bei dir.
 
 > [!warning] Behalte eine eigene Kopie der Phrase
 > Deine Phrase öffnet deine Notizen. Wenn du sie verlierst, kann sie niemand wiederherstellen, wir eingeschlossen. <span style="color: #e03131">Schreib sie heute auf Papier.</span>
@@ -44,7 +44,7 @@ Du bist an deine Wahl nicht gebunden. Ändere sie unter **Einstellungen > Sicher
 | Was | Wo |
 | --- | --- |
 | Die Verschlüsselung selbst | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| Der Aufbau der Datenbank | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| Was unser Server empfängt | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | Was ein Angreifer kann und was nicht | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | Wie man eine Lücke meldet | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

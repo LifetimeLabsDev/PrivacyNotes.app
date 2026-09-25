@@ -36,6 +36,10 @@ export function NoteHistoryModal({
   const { t } = useTranslation('billing');
   useEscapeToClose(onClose);
   const [versions, setVersions] = useState<NoteVersion[] | null>(null);
+  // A read that failed, kept apart from an empty history: listNoteVersions
+  // throws on failure, and the panel says so in the reader's language
+  // instead of showing either the error text or "No history yet".
+  const [loadFailed, setLoadFailed] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -48,9 +52,9 @@ export function NoteHistoryModal({
         if (cancelled) return;
         setVersions(list);
         setSelectedId(list[0]?.id ?? null);
-      } catch (e) {
+      } catch {
         if (cancelled) return;
-        setErr((e as Error).message);
+        setLoadFailed(true);
       }
     })();
     return () => {
@@ -108,8 +112,11 @@ export function NoteHistoryModal({
               boundary as the arithmetic allows, so the cut survives the row
               growing or shrinking with the script a locale is written in. */}
           <div className="max-h-52 sm:max-h-none sm:w-56 shrink-0 border-b sm:border-b-0 sm:border-e border-divider overflow-y-auto">
-            {versions === null && !err && (
+            {versions === null && !err && !loadFailed && (
               <div className="p-4 text-[13px] text-neutral-500">{t('common:state.loading')}</div>
+            )}
+            {loadFailed && (
+              <div className="p-4 text-[13px] text-red-500">{t('history.loadFailed')}</div>
             )}
             {err && (
               <div className="p-4 text-[13px] text-red-500">{err}</div>

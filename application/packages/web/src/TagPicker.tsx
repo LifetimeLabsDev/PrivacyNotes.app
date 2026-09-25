@@ -1,8 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { normalizeTag } from './notesRepo';
+import { textMatcher } from './textMatch';
+import { isImeComposing } from './imeComposing';
 import { useEscapeToClose } from './useEscapeToClose';
 import { MagnifyingGlass, X } from './icons';
+import { TagMark } from './looks/LookGlyph';
 
 /**
  * Pick a tag for one item or for a selection: filter the existing tags,
@@ -30,11 +33,12 @@ export function TagPicker({
 
   useEscapeToClose(onClose);
 
-  const needle = filter.toLowerCase().replace(/^#/, '').trim();
+  const needle = filter.replace(/^#/, '').trim();
   const filtered = useMemo(() => {
     const sorted = [...allTags].sort((a, b) => a[0].localeCompare(b[0]));
     if (!needle) return sorted;
-    return sorted.filter(([tag]) => tag.toLowerCase().includes(needle));
+    const match = textMatcher(needle);
+    return sorted.filter(([tag]) => match(tag));
   }, [allTags, needle]);
 
   // The create row appears when what was typed is not already a tag.
@@ -44,7 +48,7 @@ export function TagPicker({
     !allTags.some(([tag]) => tag.toLowerCase() === normalizedFilter.toLowerCase());
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key !== 'Enter') return;
+    if (e.key !== 'Enter' || isImeComposing(e)) return;
     e.preventDefault();
     if (showCreate) onSelect(normalizedFilter);
     else if (filtered.length === 1 && filtered[0]) onSelect(filtered[0][0]);
@@ -97,7 +101,9 @@ export function TagPicker({
               onClick={() => onSelect(tag)}
               className="w-full flex items-center gap-2 px-2.5 py-2 rounded-md text-[14px] cursor-pointer hover:bg-surface-1 transition min-h-[36px]"
             >
-              <span className="text-neutral-400 dark:text-neutral-600 text-xs shrink-0">#</span>
+              <span className="text-neutral-400 dark:text-neutral-600 text-xs shrink-0 inline-flex">
+                <TagMark tag={tag} size={13} />
+              </span>
               <span className="truncate text-start">{tag}</span>
               <span className="ms-auto shrink-0 text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">{count}</span>
             </button>

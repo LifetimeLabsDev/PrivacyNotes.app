@@ -119,6 +119,7 @@
     "enable": "Zapnout biometrické odemknutí",
     "lockOnOpen": "Zamykat aplikaci při spuštění",
     "lockOnOpenHint": "Při otevření aplikace vyžadovat biometriku nebo PIN.",
+    "lockHidesOnSwitch": "Skryje tvoje poznámky také při přepínání aplikací.",
     "lockNeedsCredential": "Zámek aplikace potřebuje na tomto zařízení PIN nebo biometrické odemknutí.",
     "setUpPin": "Nastavit PIN",
     "confirmPinForLock": "Zadej svůj PIN a zapneš to. Uzamkne kopii tvé obnovovací fráze, takže aplikaci otevře jen tvůj PIN.",
@@ -129,6 +130,9 @@
     "disableConfirmLabel": "Vypnout",
     "disableConfirmBody": "Vypnout na tomto zařízení biometrické odemknutí?",
     "disableConfirmBodyAppLock": "Vypnout na tomto zařízení biometrické odemknutí? Vypne se tím i zámek aplikace."
+  },
+  "appLock": {
+    "phraseNotSaved": "Toto zařízení nemohlo uložit tvou obnovovací frázi, takže se nic nezměnilo. Zkus to znovu."
   },
   "pinSetup": {
     "title": "Nastav si PIN",

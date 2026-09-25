@@ -29,8 +29,11 @@ import { activeLocale } from './i18n';
 export const FORCE_EN = { lng: 'en' } as const;
 
 const CJK = ['ja', 'ko', 'zh-TW'] as const;
-// The Latin target locales (en is the source and always shows its own text).
-const LATIN = ['de', 'fr', 'it', 'es', 'nl', 'pl', 'pt-PT', 'pt-BR', 'ca', 'cs', 'tr', 'sv'] as const;
+// The target locales whose labels are measured slot by slot: Latin script,
+// plus Cyrillic and Thai, which run as long or as wide. The name predates the
+// non-Latin ones, and tools/check-help-paths.mjs and tools/locale-review.mjs
+// read the list by it. (en is the source and always shows its own text.)
+const LATIN = ['de', 'fr', 'it', 'es', 'nl', 'pl', 'pt-PT', 'pt-BR', 'ca', 'cs', 'tr', 'sv', 'uk', 'ru', 'th'] as const;
 // Every translated locale EXCEPT the few whose translation overflows a given
 // slot. CJK forms are short and always fit, so they are always included.
 const allBut = (...tooWide: string[]): readonly string[] => [
@@ -104,7 +107,8 @@ const RENDER_TRANSLATED: Record<string, readonly string[]> = {
   // re-measure in-browser (2026-07-21 method) if the row layout changes.
   // sv "Nedladdningar" (13) lands in the fr/pt-PT class here; tr "İndirmeler"
   // (10) matches cs "Ke stažení" (10), which already fits this pill.
-  'shell:tagsRail.downloads': allBut('fr', 'pt-PT', 'sv'),
+  // uk "Завантаження" (12) joins the sv class; ru "Загрузки" (8) fits.
+  'shell:tagsRail.downloads': allBut('fr', 'pt-PT', 'sv', 'uk'),
 
   // The footer Settings label, the sync-status pill beside it, and the settings
   // rail "Import & Export" label are English in EVERY Latin locale (translated
@@ -191,7 +195,8 @@ export function exemptOpts(qualifiedKey: string): typeof FORCE_EN | undefined {
 // overflows; the CJK forms (新規 / 추가 / 新增) fit too. Kept as its own helper
 // because it is the one key whose Latin allow list is non-empty.
 // sv "Ny" (2) is shorter than German "Neu"; tr "Yeni" (4) matches Czech "Nový".
-const NEW_BUTTON_FITS = ['de', 'cs', 'tr', 'sv', ...CJK] as const;
+// th "สร้าง" draws three columns wide, narrower than "Neu".
+const NEW_BUTTON_FITS = ['de', 'cs', 'tr', 'sv', 'th', ...CJK] as const;
 
 export function newButtonOpts(): typeof FORCE_EN | undefined {
   return fits(NEW_BUTTON_FITS) ? undefined : FORCE_EN;

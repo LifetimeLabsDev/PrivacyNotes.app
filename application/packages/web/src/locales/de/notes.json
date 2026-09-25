@@ -55,7 +55,7 @@
     "empty": "Leeren",
     "emptyHover": "Alle Notizen im Papierkorb löschen",
     "storage": "Speicher",
-    "autoDelete": "Autolöschen: 30 Tage"
+    "autoDelete": "Nach 30 Tagen automatisch löschen"
   },
   "search": {
     "sortOptions": "Sortier- und Ansichtsoptionen",
@@ -161,8 +161,8 @@
     "invisiblesShow": "Unsichtbare Zeichen anzeigen",
     "invisiblesHide": "Unsichtbare Zeichen ausblenden",
     "findInNote": "In Notiz suchen",
-    "navPrev": "Vorherige Notiz",
-    "navNext": "Nächste Notiz",
+    "navPrev": "Vorherige",
+    "navNext": "Nächste",
     "undo": "Rückgängig",
     "redo": "Wiederholen",
     "hide": "Verbergen",
@@ -176,7 +176,8 @@
     "titlePlaceholderLink": "Name des Lesezeichens",
     "titlePlaceholderContact": "Name",
     "notBackedUpTooLarge": "Über dem 1-MB-Limit, daher nicht gesichert. Verschiebe Bilder in Anhänge oder teile die Notiz auf.",
-    "notBackedUpFailed": "Nicht gesichert. Letzter Fehler: {{message}}. Neuer Versuch läuft."
+    "notBackedUpFailed": "Nicht gesichert. Letzter Fehler: {{message}}. Neuer Versuch läuft.",
+    "unknownType": "Dieses Element wurde mit einer neueren Version von PrivacyNotes erstellt. Aktualisiere die App, um es zu öffnen."
   },
   "share": {
     "hover": "Teilen / Exportieren",

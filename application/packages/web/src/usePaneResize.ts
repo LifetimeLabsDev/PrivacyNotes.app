@@ -6,9 +6,12 @@
  * the behaviour the strips always had), movement past it is a resize that
  * clamps to [min, max] - dragging below the minimum just pins at min.
  * Arrow keys resize in 16px steps when the strip is focused, Enter/Space
- * collapses, Escape cancels an in-flight drag (width snaps back). Collapse
- * is click/keyboard ONLY: drag-to-collapse (snap past the minimum) was
- * tried and cut as twitchy (design call, #211). The COLLAPSED expand
+ * collapses, Escape cancels an in-flight drag (width snaps back). A drag
+ * that carries the pointer well past the limit on the collapsing side is
+ * magnetic: the badge names the collapse, and a RELEASE there collapses the
+ * pane. The width never jumps during the drag, it stays at the limit, so
+ * the snap only happens once and on release; the sidebar divider between
+ * Content and the tags works the same way (useSidebarSplit.ts). The COLLAPSED expand
  * strips stay plain click-to-expand buttons with no resize affordance: a
  * drag there would act on an unmounted pane with no visual feedback, so
  * advertising it would mislead (design call, #211).
@@ -94,6 +97,9 @@ const STRIP_W = 12;
 export const STRIPS_W = STRIP_W * 2;
 const DRAG_THRESHOLD_PX = 4;
 const KEY_STEP_PX = 16;
+// How far past the limit the pointer travels before a release collapses.
+// Spec: ops/docs/ui-patterns.md section 56
+const SNAP_PX = 56;
 
 type DragState = {
   pointerId: number;
@@ -101,6 +107,8 @@ type DragState = {
   startWidth: number;
   moved: boolean;
   lastWidth: number | null;
+  /** The pointer is past the limit: a release collapses. */
+  snap: boolean;
   /** The strip element captured at pointerdown - cleanup must not depend
       on a later event delivering the same currentTarget. */
   el: HTMLElement;
@@ -133,6 +141,12 @@ export function usePaneResize(cfg: {
   width: number;
   onCommitWidth: (w: number) => void;
   onCollapse: () => void;
+  /** The badge text while a release would collapse the pane. */
+  snapLabel: string;
+  /** Which end collapses: 'min' for a pane that shrinks away (sidebar,
+      list), 'max' when growing this pane squeezes out its neighbour (the
+      docked editor, whose growth collapses the grid). */
+  snapAt: 'min' | 'max';
 }): { stripProps: PaneResizeStripProps } {
   const dragRef = useRef<DragState | null>(null);
 
@@ -158,6 +172,7 @@ export function usePaneResize(cfg: {
     dragRef.current = null;
     drag.removeWindowListeners();
     delete drag.el.dataset.dragging;
+    delete drag.el.dataset.snap;
     cfg.rootRef.current?.classList.remove('pn-col-dragging');
     const b = cfg.badgeRef.current;
     if (b) delete b.dataset.on;
@@ -181,6 +196,10 @@ export function usePaneResize(cfg: {
     if (!drag) return;
     if (!drag.moved) {
       // Clean click: the strip's historical collapse toggle.
+      if (released) cfg.onCollapse();
+      return;
+    }
+    if (drag.snap) {
       if (released) cfg.onCollapse();
       return;
     }
@@ -225,6 +244,7 @@ export function usePaneResize(cfg: {
       startWidth: cfg.width,
       moved: false,
       lastWidth: null,
+      snap: false,
       el,
       removeWindowListeners: () => {
         window.removeEventListener('pointerup', onWinEnd, true);
@@ -254,10 +274,14 @@ export function usePaneResize(cfg: {
       cfg.rootRef.current?.classList.add('pn-col-dragging');
       drag.el.dataset.dragging = '1';
     }
-    const w = clampWidth(drag.startWidth + dx);
+    const raw = drag.startWidth + dx;
+    const w = clampWidth(raw);
+    drag.snap = cfg.snapAt === 'min' ? raw < cfg.min - SNAP_PX : raw > cfg.getMax() + SNAP_PX;
+    if (drag.snap) drag.el.dataset.snap = '1';
+    else delete drag.el.dataset.snap;
     drag.lastWidth = w;
     setVar(w);
-    badge(e, `${w}px`);
+    badge(e, drag.snap ? cfg.snapLabel : `${w}px`);
   };
 
   const onRelease = () => finishDrag(true);
@@ -283,6 +307,63 @@ export function usePaneResize(cfg: {
       onPointerCancel: onAbandon,
       onLostPointerCapture: onAbandon,
       onKeyDown,
+    },
+  };
+}
+
+/**
+ * A collapsed pane's strip: a click expands it, and so does a drag outward
+ * past the snap distance, released. The pane is not mounted, so there is no
+ * width to show during the drag; the strip's accent line says "let go and it
+ * opens", and the pane opens at its stored width.
+ * Spec: ops/docs/ui-patterns.md section 56
+ */
+export function useExpandDrag(onExpand: () => void, direction: 1 | -1) {
+  const drag = useRef<{ pointerId: number; startX: number; el: HTMLElement; ready: boolean } | null>(null);
+  const dragged = useRef(false);
+  const end = (release: boolean) => {
+    const d = drag.current;
+    if (!d) return;
+    drag.current = null;
+    delete d.el.dataset.dragging;
+    try {
+      d.el.releasePointerCapture(d.pointerId);
+    } catch {
+      /* capture already gone */
+    }
+    if (release && d.ready) {
+      dragged.current = true;
+      onExpand();
+    }
+  };
+  return {
+    onPointerDown: (e: React.PointerEvent<HTMLElement>) => {
+      if (e.button !== 0) return;
+      dragged.current = false;
+      drag.current = { pointerId: e.pointerId, startX: e.clientX, el: e.currentTarget, ready: false };
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch {
+        /* the release still ends the drag */
+      }
+    },
+    onPointerMove: (e: React.PointerEvent<HTMLElement>) => {
+      const d = drag.current;
+      if (!d || d.pointerId !== e.pointerId) return;
+      d.ready = (e.clientX - d.startX) * direction > SNAP_PX / 2;
+      if (d.ready) d.el.dataset.dragging = '1';
+      else delete d.el.dataset.dragging;
+    },
+    onPointerUp: () => end(true),
+    onPointerCancel: () => end(false),
+    onLostPointerCapture: () => end(false),
+    onClick: () => {
+      // The release of a drag already expanded; its click must not act twice.
+      if (dragged.current) {
+        dragged.current = false;
+        return;
+      }
+      onExpand();
     },
   };
 }

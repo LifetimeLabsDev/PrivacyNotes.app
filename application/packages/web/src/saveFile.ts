@@ -7,15 +7,18 @@
  * on desktop. On native we instead open a Save As dialog and write the bytes
  * with the fs plugin.
  *
- * The web branch runs synchronously up to the anchor click, so callers that do
- * not await still trigger the download inside the user-gesture task.
+ * The web branch runs synchronously up to the anchor click, so the download
+ * starts inside the user-gesture task that made the call.
  *
  * The native branch verifies what actually landed on disk before it resolves.
  * On Android `save()` is ACTION_CREATE_DOCUMENT, which creates the file the
- * moment the user taps Save - so every way the following write can fail leaves
- * a real, empty, 0-byte file behind. A caller that does not hear about the
+ * moment the user taps Save, and on iOS the dialog exports an empty placeholder
+ * before the app writes - so every way the following write can fail leaves a
+ * real, empty or partial file behind. A caller that does not hear about the
  * failure is worse than useless here: the user walks away holding a backup
- * that will not restore. Reported as issue #193.
+ * that will not restore. Reported as issue #193. So `saveBlob` never throws:
+ * it resolves to what became of the file, and the sink check refuses any call
+ * whose result is dropped.
  *
  * Spec: ops/docs/gotchas.md (native webview has no download handler; Android
  * SAF writes need a truncate-free retry and a size check)
@@ -23,7 +26,17 @@
 import { detectPlatform } from './devices';
 import i18n from './i18n';
 
-export async function saveBlob(blob: Blob, filename: string): Promise<void> {
+/**
+ * What became of the file. A dismissed Save As dialog is the reader's own
+ * choice, not a failure. A failed save may have left an empty or partial file
+ * behind, so the caller tells the reader to check it.
+ */
+export type SaveResult =
+  | { ok: true }
+  | { ok: false; reason: 'cancelled' }
+  | { ok: false; reason: 'failed'; error: unknown };
+
+export async function saveBlob(blob: Blob, filename: string): Promise<SaveResult> {
   if (detectPlatform() === 'web') {
     const url = URL.createObjectURL(blob);
     try {
@@ -37,9 +50,20 @@ export async function saveBlob(blob: Blob, filename: string): Promise<void> {
       // Defer revoke so the browser has time to start the download.
       setTimeout(() => URL.revokeObjectURL(url), 10_000);
     }
-    return;
+    // The browser owns the download from here and reports nothing back.
+    return { ok: true };
   }
 
+  try {
+    return (await saveNative(blob, filename)) ? { ok: true } : { ok: false, reason: 'cancelled' };
+  } catch (error) {
+    return { ok: false, reason: 'failed', error };
+  }
+}
+
+/** False when the reader dismisses the dialog; throws when the bytes did not
+ *  all land. */
+async function saveNative(blob: Blob, filename: string): Promise<boolean> {
   // Native: the webview cannot download, so prompt for a location and write the
   // bytes ourselves. `save` returns null when the user cancels the dialog.
   const [{ save }, fs] = await Promise.all([
@@ -47,7 +71,7 @@ export async function saveBlob(blob: Blob, filename: string): Promise<void> {
     import('@tauri-apps/plugin-fs'),
   ]);
   const path = await save({ defaultPath: filename });
-  if (!path) return;
+  if (!path) return false;
   const bytes = new Uint8Array(await blob.arrayBuffer());
 
   try {
@@ -77,6 +101,7 @@ export async function saveBlob(blob: Blob, filename: string): Promise<void> {
       }),
     );
   }
+  return true;
 }
 
 /** Bytes currently on disk at `path`, or null when the size cannot be read

@@ -21,7 +21,7 @@ export default {
   hero: {
     badge: 'Free, in your browser, right now',
     h1: 'Free markdown editor. Private by default.',
-    sub: 'Live preview, keyboard-first, works offline. No account to start writing, and when you do sync, your text is encrypted on your device before it goes anywhere. We could not read your drafts if we tried.',
+    sub: 'Live preview, keyboard-first, works offline. No account to start writing, and when you do sync, your text is always encrypted, on your device and on the way to the server. We could not read your drafts if we tried.',
     cta: 'Start writing, no signup',
     ctaSecondary: 'Download the apps',
     micro:

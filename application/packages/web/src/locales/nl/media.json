@@ -12,7 +12,9 @@
     "uploadFailed": "Uploaden mislukt: {{message}}",
     "storeUnavailable": "Afbeeldingsopslag niet beschikbaar",
     "loadFailed": "Afbeelding kon niet worden geladen",
-    "notFound": "Afbeelding niet gevonden"
+    "notFound": "Afbeelding niet gevonden",
+    "saveFailed": "Opslaan is mislukt, dus het bestand kan leeg of onvolledig zijn.",
+    "viewAria": "Afbeelding bekijken"
   },
   "attachment": {
     "fallbackName": "Bijlage",
@@ -26,7 +28,6 @@
     "deleteConfirm": "Verwijderen?",
     "copied": "Gekopieerd",
     "download": "Downloaden",
-    "downloadToPlay": "Download om af te spelen",
     "play": "Afspelen",
     "pause": "Pauzeren",
     "fileNotFound": "Bestand niet gevonden",
@@ -37,6 +38,29 @@
     "downloadFailed": "Downloaden mislukt",
     "playbackFailed": "Afspelen mislukt",
     "uploadFailed": "Uploaden mislukt: {{message}}",
-    "unknownError": "Onbekende fout"
+    "unknownError": "Onbekende fout",
+    "view": "Bekijken",
+    "more": "Meer acties"
+  },
+  "viewer": {
+    "previous": "Vorige",
+    "next": "Volgende",
+    "position": "{{index}} van {{count}}",
+    "zoomIn": "Inzoomen",
+    "zoomOut": "Uitzoomen",
+    "pdfLoading": "PDF openen...",
+    "pdfFailed": "Deze PDF kan niet worden geopend. Download hem om hem in een andere app te openen.",
+    "pdfPassword": "Deze PDF heeft een wachtwoord. Download hem om hem in een andere app te openen.",
+    "saveFailed": "Opslaan is mislukt, dus het bestand kan leeg of onvolledig zijn.",
+    "pageCount_one": "{{count}} pagina",
+    "pageCount_other": "{{count}} pagina's",
+    "pageLabel": "{{name}}, pagina {{page}} van {{count}}"
+  },
+  "picker": {
+    "title": "Afbeeldingen in Bestanden",
+    "search": "Afbeeldingen zoeken",
+    "empty": "Nog geen afbeeldingen in Bestanden. Upload er daar een en voeg hem dan hier toe.",
+    "noMatch": "Geen afbeeldingen komen overeen met je zoekopdracht.",
+    "noCopy": "Een afbeelding die je hier toevoegt, verwijst naar het bestand in Bestanden en neemt dus geen extra opslag in beslag."
   }
 }

@@ -82,6 +82,26 @@
 	     ONLY if a documentation record with a real key value ever exists, which
 	     realistically means France being added back after an ANSSI filing.
 	     Spec: ops/docs/tsu-notification.md (the filing, and what is still open) -->
+	<!-- iOS 27 TERMINATES an app that has not adopted the scene life cycle. The
+	     check is _UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption and
+	     it kills the process during launch, so the app never draws a frame. The
+	     same binary runs on iOS 26.5, which is how the runtime was identified as
+	     the trigger rather than the SDK or the build machine (2026-09-18).
+
+	     tao already implements a scene delegate and an
+	     application:configurationForConnectingSceneSession: that returns it. It
+	     registers neither unless this manifest says multiple scenes are supported,
+	     so the flag below is what switches tao's scene path on. It is a gate, not
+	     a preference: tao reads this exact key.
+
+	     Consequence to know about: on iPad this also permits more than one window
+	     of the app. Nothing here has been exercised with two windows open.
+	     Spec: ops/docs/plans/app-switcher-privacy-screen.md (section 13) -->
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<true/>
+	</dict>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
 	<key>CFBundleURLTypes</key>

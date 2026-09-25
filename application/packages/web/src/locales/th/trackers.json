@@ -1,0 +1,165 @@
+{
+  "labels": {
+    "mood": "อารมณ์",
+    "emotions": "ความรู้สึก",
+    "sleep": "การนอน",
+    "sleepScore": "คะแนนการนอน",
+    "heartRate": "อัตราการเต้นของหัวใจ",
+    "activity": "กิจกรรม",
+    "medication": "การใช้ยา",
+    "meds": "ยา",
+    "energy": "พลังงาน",
+    "focus": "สมาธิ",
+    "weight": "น้ำหนัก",
+    "steps": "จำนวนก้าว",
+    "water": "น้ำ",
+    "screenTime": "เวลาหน้าจอ",
+    "caffeine": "คาเฟอีน",
+    "pain": "อาการปวด",
+    "social": "การเข้าสังคม",
+    "custom": "กำหนดเอง"
+  },
+  "units": {
+    "hoursSuffix": " ชม.",
+    "bpm": "ครั้ง/นาที",
+    "kg": "กก.",
+    "lb": "ปอนด์",
+    "steps_other": "ก้าว",
+    "hrs": "ชม.",
+    "glasses_other": " แก้ว",
+    "cups_other": " ถ้วย"
+  },
+  "scaleEnds": {
+    "low": "น้อย",
+    "high": "มาก",
+    "none": "ไม่มี",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "รุนแรง",
+    "socialLow": "โดดเดี่ยว",
+    "socialHigh": "เข้าสังคมมาก"
+  },
+  "mood": {
+    "prompt": "รู้สึกอย่างไรบ้าง (1-10)",
+    "low": "แย่มาก",
+    "high": "ยอดเยี่ยม",
+    "anchor": {
+      "1": "แย่มาก",
+      "3": "ไม่ค่อยดี",
+      "5": "พอใช้",
+      "7": "ดี",
+      "10": "ยอดเยี่ยม"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "ตอนนี้มีความรู้สึกอะไรบ้าง",
+    "count_other": "{{count}} ความรู้สึก",
+    "valence": {
+      "positive": "เชิงบวก",
+      "neutral": "เป็นกลาง",
+      "negative": "เชิงลบ"
+    },
+    "tags": {
+      "happy": "มีความสุข",
+      "calm": "สงบ",
+      "relaxed": "ผ่อนคลาย",
+      "grateful": "รู้สึกขอบคุณ",
+      "loved": "รู้สึกเป็นที่รัก",
+      "motivated": "มีแรงจูงใจ",
+      "confident": "มั่นใจ",
+      "productive": "มีประสิทธิภาพ",
+      "focused": "มีสมาธิ",
+      "energetic": "กระปรี้กระเปร่า",
+      "tired": "เหนื่อย",
+      "restless": "กระสับกระส่าย",
+      "distracted": "วอกแวก",
+      "numb": "ไร้ความรู้สึก",
+      "overwhelmed": "รับมือไม่ไหว",
+      "anxious": "วิตกกังวล",
+      "stressed": "เครียด",
+      "frustrated": "คับข้องใจ",
+      "irritable": "หงุดหงิดง่าย",
+      "sad": "เศร้า",
+      "lonely": "เหงา",
+      "guilty": "รู้สึกผิด",
+      "hopeless": "สิ้นหวัง",
+      "angry": "โกรธ"
+    }
+  },
+  "sleep": {
+    "prompt": "นอนหลับเป็นอย่างไรบ้าง",
+    "hoursLabel": "ชั่วโมง:",
+    "quality": {
+      "terrible": "แย่มาก",
+      "poor": "ไม่ดี",
+      "okay": "พอใช้",
+      "good": "ดี",
+      "great": "ดีมาก"
+    }
+  },
+  "sleepScore": {
+    "prompt": "คะแนนการนอน"
+  },
+  "heartRate": {
+    "prompt": "อัตราการเต้นของหัวใจเฉลี่ย"
+  },
+  "activity": {
+    "prompt": "วันนี้ทำกิจกรรมมากแค่ไหน",
+    "level": {
+      "sedentary": "นั่งเป็นส่วนใหญ่",
+      "light": "เบา",
+      "moderate": "ปานกลาง",
+      "active": "กระฉับกระเฉง",
+      "intense": "หนัก"
+    }
+  },
+  "medication": {
+    "heading": "ยา",
+    "empty": "ยังไม่ได้ตั้งค่ายา",
+    "takenCount_other": "ทานแล้ว {{count}}",
+    "namePlaceholder": "ชื่อยา",
+    "dosagePlaceholder": "ขนาดยา (เช่น 50 มก.)",
+    "addMedication": "+ เพิ่มยา",
+    "editMedication": "แก้ไขยา",
+    "removeMedication": "นำยาออก",
+    "confirmRemove": "นำ <highlight>{{name}}</highlight> ออกหรือไม่?",
+    "yes": "ใช่",
+    "no": "ไม่",
+    "taken": "ทานแล้ว",
+    "skip": "ข้าม"
+  },
+  "custom": {
+    "yes": "ใช่",
+    "no": "ไม่",
+    "typeLabels": {
+      "scale10": "สเกล (0-10)",
+      "scale5": "สเกล (0-5)",
+      "slider100": "แถบเลื่อน (0-100)",
+      "number": "ตัวเลข",
+      "yesno": "ใช่ / ไม่"
+    }
+  },
+  "config": {
+    "configureTrackers": "ตั้งค่าตัวติดตาม",
+    "title": "ตัวติดตาม",
+    "categoryMoodMind": "อารมณ์และจิตใจ",
+    "categoryBodyHealth": "ร่างกายและสุขภาพ",
+    "categoryLifestyle": "ไลฟ์สไตล์",
+    "customHeading": "กำหนดเอง",
+    "resume": "ติดตามต่อ",
+    "stop": "หยุด",
+    "addCustomTracker": "เพิ่มตัวติดตามแบบกำหนดเอง",
+    "addCustomTrackerCount": "เพิ่มตัวติดตามแบบกำหนดเอง ({{count}}/{{max}})",
+    "addCustomTrackerHint": "ติดตามอะไรก็ได้",
+    "maxReached": "มีตัวติดตามแบบกำหนดเองครบ {{max}} รายการแล้ว",
+    "customTrackers": "ตัวติดตามแบบกำหนดเอง",
+    "newCustomTracker": "ตัวติดตามแบบกำหนดเองใหม่",
+    "trackerNamePlaceholder": "ชื่อตัวติดตาม",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "ประเภท:",
+    "colorLabel": "สี:"
+  }
+}

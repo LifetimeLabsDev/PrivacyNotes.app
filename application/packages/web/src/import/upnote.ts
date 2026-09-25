@@ -1139,7 +1139,7 @@ function convertSingleMarkdown(
     seg
       // Empty headings ("#### <br>") and standalone <br> spacer lines.
       .replace(/^#{1,6}\s*(?:<br\s*\/?>\s*)+$/gim, '')
-      .replace(/^(?:\s*<br\s*\/?>\s*)+$/gim, '')
+      .replace(/^\s*(?:<br\s*\/?>\s*)+$/gim, '')
       // Leftover inline <br> (table cells): delete with the whitespace
       // before it, so "**header  <br>**" closes its bold cleanly.
       .replace(/\s*<br\s*\/?>/gi, '')

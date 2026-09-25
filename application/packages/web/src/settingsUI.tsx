@@ -33,14 +33,17 @@ export function SectionEyebrow({
   children,
   className,
   danger = false,
+  setting,
 }: {
   children: ReactNode;
   /** Layout-only classes (spacing), e.g. "mb-2". */
   className?: string;
   danger?: boolean;
+  /** The settings search id of the section this header names. */
+  setting?: string;
 }) {
   const base = danger ? SETTINGS_EYEBROW_DANGER : SETTINGS_EYEBROW;
-  return <div className={className ? `${base} ${className}` : base}>{children}</div>;
+  return <div data-setting={setting} className={className ? `${base} ${className}` : base}>{children}</div>;
 }
 
 /**

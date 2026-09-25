@@ -32,7 +32,7 @@ async function hashBytes(data: Uint8Array): Promise<string> {
   return hex;
 }
 
-/** Errors that will never succeed on retry - don't keep pendingUpload. */
+/** Errors that will never succeed on retry - mark the row refused. */
 function isPermanentError(msg: string): boolean {
   return (
     msg.includes('exceeded the maximum allowed size') ||
@@ -40,6 +40,15 @@ function isPermanentError(msg: string): boolean {
     msg.includes('413')
   );
 }
+
+/**
+ * pendingUpload value for a blob the server refused for good. The retry
+ * sweep and every pending count look for 1, so the row is never retried
+ * or shown as waiting. The local cache still holds the only copy, and the
+ * row's encryptedSize was never charged, so deferDelete keeps it the way
+ * it keeps a pending blob.
+ */
+const UPLOAD_REFUSED = 2;
 
 /** Quota failures are retryable (e.g. after the user frees space or upgrades). */
 function isQuotaError(msg: string): boolean {
@@ -244,8 +253,9 @@ export class ImageStore {
 
   /**
    * Upload encrypted blob to Supabase and adjust quota.
-   * On permanent failure: clears pendingUpload but keeps local cache
-   * so restored/pasted images remain viewable offline.
+   * On permanent failure: marks the row UPLOAD_REFUSED and keeps the
+   * local cache, now the only copy, so restored/pasted images remain
+   * viewable offline.
    * On transient failure: keeps pendingUpload for retry on next init.
    */
   private async _backgroundUpload(uuid: string, encrypted: Uint8Array): Promise<void> {
@@ -288,11 +298,11 @@ export class ImageStore {
       if (error) {
         const msg = error.message || '';
         if (isPermanentError(msg)) {
-          // Keep local cache so restored/pasted images remain viewable offline.
-          // Just clear pendingUpload so we don't retry a doomed upload.
+          // Keep local cache so restored/pasted images remain viewable offline,
+          // and mark the row refused so the doomed upload is never retried.
           const dedup = await db.imageDedup.where('uuid').equals(uuid).first();
           if (dedup) {
-            await db.imageDedup.put({ ...dedup, pendingUpload: 0 });
+            await db.imageDedup.put({ ...dedup, pendingUpload: UPLOAD_REFUSED });
           }
           this.onBackgroundError?.(msg);
           console.error('[imageStore] permanent upload failure, kept local cache:', uuid, msg);
@@ -328,11 +338,12 @@ export class ImageStore {
           return;
         }
         if (isPermanentError(msg)) {
-          // Remove the remote blob we just uploaded, but keep local cache.
+          // Remove the remote blob we just uploaded; the local cache stays,
+          // refused, as the only copy.
           await this.supabase.storage.from(BUCKET).remove([path]).catch(() => {});
           const dedupRec = await db.imageDedup.where('uuid').equals(uuid).first();
           if (dedupRec) {
-            await db.imageDedup.put({ ...dedupRec, pendingUpload: 0 });
+            await db.imageDedup.put({ ...dedupRec, pendingUpload: UPLOAD_REFUSED });
           }
           this.onBackgroundError?.(msg);
           console.error('[imageStore] permanent upload failure, kept local cache:', uuid, msg);
@@ -555,21 +566,30 @@ export class ImageStore {
    * (imageGC.ts) can remove the remote object later, once a clean sync
    * pull has proven the local mirror is complete enough to trust the
    * reference re-check. See imageGC.ts for the full two-phase design.
+   *
+   * A blob whose upload is still pending, or was refused for good,
+   * exists nowhere but this cache, and a cut and paste or an undo brings
+   * its reference back a moment later, so its bytes and dedup row stay:
+   * processPendingUploads needs both. It is queued at size 0, since no
+   * upload was ever charged for it, and the sweep drops its local rows
+   * once the re-check finds it unreferenced.
    */
   async deferDelete(uuids: string[]): Promise<void> {
     if (uuids.length === 0) return;
 
-    // Demo mode never uploaded these blobs and makes zero server calls -
-    // fall back to the immediate local-only delete, no queue entry.
-    if (isDemoMode()) {
-      await this.deleteImages(uuids);
-      return;
-    }
+    // The demo never uploads and never sweeps, so its cache holds the only
+    // copy of every blob. Nothing is deleted: the demo database is
+    // discarded with the tab session.
+    if (isDemoMode()) return;
 
     let totalSize = 0;
     const now = new Date().toISOString();
     for (const uuid of uuids) {
       const dedup = await db.imageDedup.where('uuid').equals(uuid).first();
+      if (dedup?.pendingUpload === 1 || dedup?.pendingUpload === UPLOAD_REFUSED) {
+        await db.blobGC.put({ uuid, kind: 'image', size: 0, enqueuedAt: now });
+        continue;
+      }
       const size = dedup?.encryptedSize ?? 0;
       totalSize += size;
 
@@ -654,9 +674,9 @@ export class ImageStore {
 
   /**
    * Remove Storage objects only - no local row deletion, no quota
-   * adjustment (both already happened at deferDelete time). Used by
-   * sweepBlobGC once a queued uuid has cleared the grace period and
-   * the reference re-check.
+   * adjustment (deferDelete settled quota when it queued the uuid, and
+   * sweepBlobGC drops any local rows it kept). Used by sweepBlobGC once
+   * a queued uuid has cleared the grace period and the reference re-check.
    *
    * The Supabase JS client's storage.remove() reports one aggregate
    * error for the whole batch, not per-path, so on error we can't tell
@@ -682,7 +702,8 @@ export class ImageStore {
   }
 
   /**
-   * Delete multiple images at once (used for GC and note hard-delete).
+   * Delete multiple images at once, Storage object included. The GC never
+   * calls this: every removal waits in deferDelete's queue for the sweep.
    */
   async deleteImages(uuids: string[]): Promise<void> {
     if (uuids.length === 0) return;

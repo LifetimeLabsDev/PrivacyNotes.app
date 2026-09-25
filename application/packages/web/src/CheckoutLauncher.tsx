@@ -31,6 +31,40 @@ import { EARLY_PRICE, PRO_PRICE } from './pricing';
 
 type State = 'confirm' | 'opening' | 'done' | 'error';
 
+/** Query parameters an auth server's answer can carry. The page reads none of them. */
+const AUTH_RESPONSE_PARAMS = [
+  'code',
+  'access_token',
+  'refresh_token',
+  'expires_in',
+  'expires_at',
+  'token_type',
+  'provider_token',
+  'provider_refresh_token',
+  'type',
+  'error',
+  'error_code',
+  'error_description',
+  'state',
+];
+
+/**
+ * The address this page may hold while Paddle's script runs, or null when
+ * `href` already is that address. This is the one page that loads a payment
+ * script, and that script never runs while the address holds a fragment or
+ * the query parameters of a sign-in response, which is where an auth server
+ * puts tokens and codes. Everything else in the query stays: `_ptxn` is how
+ * Paddle.js finds its transaction, and the purchase parameters are read below.
+ */
+export function scrubbedCheckoutUrl(href: string): string | null {
+  const url = new URL(href);
+  const present = AUTH_RESPONSE_PARAMS.filter((name) => url.searchParams.has(name));
+  if (present.length === 0 && !href.includes('#')) return null;
+  for (const name of present) url.searchParams.delete(name);
+  url.hash = '';
+  return url.href;
+}
+
 /** What the link asks to buy, once the URL has been read and checked. */
 type Purchase =
   | { kind: 'pro'; pubkey: string; price: number }
@@ -44,6 +78,10 @@ export default function CheckoutLauncher() {
   const onDone = () => setState('done');
 
   useEffect(() => {
+    // First, before any branch below can load Paddle.
+    const scrubbed = scrubbedCheckoutUrl(window.location.href);
+    if (scrubbed) window.history.replaceState(null, '', scrubbed);
+
     const params = new URLSearchParams(window.location.search);
     const product = params.get('product');
     const pubkey = params.get('pubkey') ?? '';

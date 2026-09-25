@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { OverflowTip } from './OverflowTip';
 import { folderIndentPx, INDENT_PX, MAX_INDENT_LEVEL, useFolderExpansion } from './folderTreeState';
 import { ancestorIds, canMoveFolder, childrenOf, subtreeIds, type FolderDef } from './folders';
-import { CaretDown, DotsSixVertical, Folder } from './icons';
+import { CaretDown, DotsSixVertical } from './icons';
+import { FolderGlyph } from './looks/LookGlyph';
 
 /**
  * The folder tree itself - carets, guide lines, indent, the tinted expanded
@@ -426,7 +427,7 @@ export function FolderTreeView({
               data-no-drag
               aria-label={expanded ? t('folders.collapse') : t('folders.expand')}
               className={`shrink-0 inline-flex items-center justify-center ${
-                rail ? 'w-5 h-8 lg:w-4 lg:h-6 ms-0.5' : 'w-4 h-7'
+                rail ? 'w-5 h-8 ms-0.5' : 'w-4 h-7'
               } text-neutral-400 dark:text-neutral-600 hover:text-accent transition`}
             >
               <CaretDown
@@ -436,16 +437,16 @@ export function FolderTreeView({
               />
             </button>
           ) : (
-            <span className={`shrink-0 ${rail ? 'w-5 lg:w-4 ms-0.5' : 'w-4'}`} aria-hidden="true" />
+            <span className={`shrink-0 ${rail ? 'w-5 ms-0.5' : 'w-4'}`} aria-hidden="true" />
           )}
           {editing ? (
             <div
               className={`flex-1 min-w-0 flex items-center ${
-                rail ? 'gap-2 lg:gap-1.5 py-2 lg:py-1 pe-1' : 'gap-2 py-2 pe-1'
+                rail ? 'gap-2 py-2 pe-1' : 'gap-2 py-2 pe-1'
               }`}
             >
               <span className="inline-flex shrink-0 text-amber-600/80 dark:text-amber-500/80">
-                <Folder size={rail ? 16 : 15} className={rail ? 'lg:w-3.5 lg:h-3.5' : undefined} />
+                <FolderGlyph folderId={folder.id} size={rail ? 16 : 15} />
               </span>
               {renderName?.(folder)}
             </div>
@@ -464,7 +465,7 @@ export function FolderTreeView({
                   onSelect(folder);
                 }}
                 className={`flex-1 min-w-0 flex items-center text-start ${
-                  rail ? 'gap-2 lg:gap-1.5 py-2 lg:py-1 pe-1' : 'gap-2 py-2 pe-1'
+                  rail ? 'gap-2 py-2 pe-1' : 'gap-2 py-2 pe-1'
                 } ${disabled ? 'cursor-not-allowed' : ''}`}
               >
                 <span
@@ -472,14 +473,19 @@ export function FolderTreeView({
                     disabled ? '' : active ? 'text-accent' : 'text-amber-600/80 dark:text-amber-500/80'
                   }`}
                 >
-                  <Folder size={rail ? 16 : 15} className={rail ? 'lg:w-3.5 lg:h-3.5' : undefined} />
+                  <FolderGlyph folderId={folder.id} size={rail ? 16 : 15} />
                 </span>
                 {renderName ? renderName(folder) : <span className="truncate">{folder.name}</span>}
               </button>
             </OverflowTip>
           )}
           {renderTrailing && (
-            <span data-no-drag className="shrink-0 inline-flex items-center">
+            <span
+              data-no-drag
+              // Full row height on touch, so the row menu button inside can
+              // fill it (SIDEBAR_ROW_MENU_BUTTON in sidebarUI.ts).
+              className="shrink-0 inline-flex items-center [@media(hover:none)]:self-stretch"
+            >
               {renderTrailing(folder)}
             </span>
           )}
@@ -543,7 +549,7 @@ function rowClass({
   inside: boolean;
 }): string {
   const base = `pn-ftree-row relative w-full flex items-center group transition ${
-    rail ? 'rounded text-[15px] lg:text-[13px] font-medium' : 'rounded-md text-[14px] px-1'
+    rail ? 'rounded text-[15px] font-medium' : 'rounded-md text-[14px] px-1'
   }`;
   // "Drop inside" outlines the whole row, because the thing being said is
   // "into this folder", not "between two rows". The line says the other one.

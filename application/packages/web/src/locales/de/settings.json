@@ -59,6 +59,9 @@
     "upgradeCharge": "Heute fällig: {{amount}} für den Rest deines laufenden Jahres. Danach verlängert sich das Add-on für {{price}}/Jahr.",
     "upgradeChargeUntil": "Heute fällig: {{amount}} für den Rest deines laufenden Jahres, bis {{date}}. Danach verlängert sich das Add-on für {{price}}/Jahr.",
     "upgradeChargeApple": "Heute fällig: {{price}}. Apple erstattet dir den nicht genutzten Teil deines laufenden Jahres automatisch, und dein neues Jahr beginnt jetzt.",
+    "upgradeAmountFailed": "Der heute fällige Betrag konnte nicht geladen werden.",
+    "upgradeAmountRetry": "Erneut versuchen",
+    "upgradeAmountChanged": "Der heute fällige Betrag hat sich geändert oder konnte nicht geprüft werden, deshalb wurde dir nichts abgebucht. Wähle das Paket noch einmal, um den neuen Betrag zu sehen.",
     "upgrading": "Wird hochgestuft…",
     "upgradeAndPay": "Upgraden und jetzt bezahlen",
     "maybeLater": "Vielleicht später",
@@ -183,7 +186,12 @@
     "contentWidthWide": "Breit",
     "contentWidthFull": "Voll",
     "lineSpacingTitle": "Zeilenabstand",
-    "lineSpacingDesc": "Der Abstand zwischen Absätzen beim Schreiben.",
+    "tintNotesTitle": "Notizhintergründe einfärben",
+    "tintNotesDesc": "Notizen übernehmen die Farbe ihres Tags oder Ordners.",
+    "lineSpacingDesc": "Der Abstand zwischen Zeilen und Absätzen beim Schreiben.",
+    "lineSpacingTight": "Eng",
+    "resetDefaults": "Auf Standard zurücksetzen",
+    "resetDefaultsConfirm": "Zurücksetzen bestätigen",
     "lineSpacingCompact": "Kompakt",
     "lineSpacingNormal": "Normal",
     "lineSpacingExample": "Beispiel",
@@ -211,10 +219,10 @@
   },
   "conflict": {
     "title": "Sync-Konflikt",
-    "explanation": "Diese Notiz wurde auf einem anderen Gerät bearbeitet, während du hier ungespeicherte Änderungen hattest. Wir verwenden die <em>neuere Version</em> (vom anderen Gerät, {{date}}).",
+    "explanation": "Diese Notiz wurde auf einem anderen Gerät geändert, während dieses Gerät noch nicht synchronisierte Änderungen hatte, und der Text ist auf beiden Geräten unterschiedlich. Wir behalten die <em>Version vom anderen Gerät</em> ({{date}}), sofern du nichts anderes wählst.",
     "willBeKept": "Wird behalten",
     "showLocal": "Version von diesem Gerät anzeigen ({{date}})",
-    "useNewer": "OK, neuere verwenden",
+    "useNewer": "Andere Version verwenden",
     "useMine": "Stattdessen meine verwenden",
     "keepBoth": "Beide als separate Notizen behalten"
   },
@@ -226,6 +234,13 @@
     "localLabel": "Lokale Daten löschen",
     "localDesc": "Löscht Notizen, Bilder und zwischengespeicherte Daten von diesem Gerät. Dadurch wird dein Konto nicht gelöscht, es wird nur dieser Browser bereinigt.",
     "localRequired": "(erforderlich beim Löschen des Kontos)",
+    "localUnsynced_one": "{{items}} auf diesem Gerät ist nicht synchronisiert. Das Löschen der lokalen Daten vernichtet sie endgültig.",
+    "localUnsynced_other": "{{items}} auf diesem Gerät sind nicht synchronisiert. Das Löschen der lokalen Daten vernichtet sie endgültig.",
+    "unsyncedNotes_one": "{{count}} Notiz",
+    "unsyncedNotes_other": "{{count}} Notizen",
+    "unsyncedFiles_one": "{{count}} Datei",
+    "unsyncedFiles_other": "{{count}} Dateien",
+    "unsyncedBoth": "{{notes}} und {{files}}",
     "cloudLabel": "Cloud-Daten und Konto löschen",
     "cloudDesc": "Entfernt dauerhaft alle synchronisierten Notizen, Bilder, Geräte, Einstellungen und dein Konto vom Server. Du kannst dich danach erneut registrieren.",
     "confirmPrompt": "Tippe <kbd>DELETE</kbd> zur Bestätigung",
@@ -267,7 +282,11 @@
     "notBackedUpTooltip_one": "{{count}} Notiz ist nicht gesichert. Klicke, um zu sehen, warum.",
     "notBackedUpTooltip_other": "{{count}} Notizen sind nicht gesichert. Klicke, um zu sehen, warum.",
     "notBackedUpAria_one": "{{count}} Notiz ist nicht gesichert",
-    "notBackedUpAria_other": "{{count}} Notizen sind nicht gesichert"
+    "notBackedUpAria_other": "{{count}} Notizen sind nicht gesichert",
+    "haltedTooltip_one": "Sync gestoppt, {{count}} Notiz ist nicht gesichert. Klicke, um zu sehen, warum.",
+    "haltedTooltip_other": "Sync gestoppt, {{count}} Notizen sind nicht gesichert. Klicke, um zu sehen, warum.",
+    "haltedAria_one": "Sync gestoppt, {{count}} Notiz ist nicht gesichert",
+    "haltedAria_other": "Sync gestoppt, {{count}} Notizen sind nicht gesichert"
   },
   "errors": {
     "noSession": "Keine aktive Sitzung. Versuch, dich erneut anzumelden.",
@@ -319,7 +338,9 @@
     "reasonFailed": "Fehlgeschlagen: {{message}}",
     "openNote": "Öffnen",
     "passPushFailed_one": "{{count}} fehlgeschlagen",
-    "passPushFailed_other": "{{count}} fehlgeschlagen"
+    "passPushFailed_other": "{{count}} fehlgeschlagen",
+    "passHalted_one": "gestoppt, {{count}} wartet",
+    "passHalted_other": "gestoppt, {{count}} warten"
   },
   "language": {
     "reportMistake": "Übersetzungsfehler melden"

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { FOLDER_NAME_MAX_LENGTH } from './folders';
 import { Check, X } from './icons';
+import { isImeComposing } from './imeComposing';
 
 /**
  * The inline "name this folder" field, used wherever a folder is created or
@@ -44,6 +45,7 @@ export function FolderNameInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => {
+          if (isImeComposing(e)) return;
           if (e.key === 'Enter') {
             e.preventDefault();
             onCommit();

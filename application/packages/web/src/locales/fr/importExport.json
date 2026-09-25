@@ -14,7 +14,7 @@
   "footer": {
     "exportNote": "Les exports se font en local. Rien n'est envoyé.",
     "restoreNote": "Ton fichier est lu et déchiffré en local.",
-    "importNote": "Tout est chiffré avant de quitter ton appareil pour se synchroniser."
+    "importNote": "Tout est toujours chiffré, sur ton appareil et pendant la synchronisation."
   },
   "importPick": {
     "autoTagLabel": "Étiqueter les notes importées par source",
@@ -74,6 +74,11 @@
     "encryptedBackupTitle": "Sauvegarde chiffrée (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Restaure une sauvegarde chiffrée avec la clé de ta phrase. Un .pnbackupz ramène tout, fichiers compris ; un .pnbackup ne contient que le texte et les métadonnées. Tu dois être connecté avec le même compte que celui qui l'a créée."
   },
+  "restoreGate": {
+    "wait": "La restauration attend que cet appareil soit en ligne et ait terminé une synchronisation, pour que ta sauvegarde soit mise en correspondance avec les notes déjà présentes dans ton compte au lieu de les ajouter en double.",
+    "paused": "La restauration attend la synchronisation, pour que ta sauvegarde soit mise en correspondance avec les notes déjà présentes dans ton compte, et la synchronisation est en pause sur cet appareil : désactive « Mettre en pause » dans Paramètres > ID & Sync.",
+    "belowFloor": "La restauration attend la synchronisation, pour que ta sauvegarde soit mise en correspondance avec les notes déjà présentes dans ton compte, et cette version de l'application est trop ancienne pour synchroniser : mets d'abord l'application à jour."
+  },
   "encryptedBackupLabel": "Sauvegarde chiffrée",
   "status": {
     "readingFile": "Lecture du fichier…",
@@ -85,7 +90,9 @@
   "errors": {
     "genericParse": "Une erreur s'est produite.",
     "decryptionFailed": "Le déchiffrement a échoué. Mauvaise phrase ou fichier corrompu.",
-    "blobImportFailed": "Tes notes ont été importées, mais pas leurs images ni leurs fichiers : {{detail}} Rien n'a été modifié dans le fichier que tu as choisi, tu peux donc supprimer les notes importées et relancer l'import."
+    "blobImportFailed": "Tes notes ont été importées, mais pas leurs images ni leurs fichiers : {{detail}} Rien n'a été modifié dans le fichier que tu as choisi, tu peux donc supprimer les notes importées et relancer l'import.",
+    "blobsNotInBackup_one": "Tes notes ont été restaurées, mais {{items}} listé dans la sauvegarde en est absent.",
+    "blobsNotInBackup_other": "Tes notes ont été restaurées, mais {{items}} listés dans la sauvegarde en sont absents."
   },
   "preview": {
     "sourceLabel": "Source",
@@ -99,6 +106,7 @@
     "duplicateWarning": "l'import les ajoute comme de nouvelles notes. Si tu le lances deux fois, tu auras des doublons. Il n'y a pas encore de déduplication automatique.",
     "duplicateSkipNote": "les signets que tu as déjà enregistrés sont ignorés, donc relancer cet import ne crée aucun doublon.",
     "contactSkipNote": "les personnes déjà enregistrées sont ignorées et restent telles quelles, donc un second passage ne créera aucun doublon.",
+    "restoreMergeNote": "les notes de ta propre sauvegarde sont associées par identifiant. Une note que tu as déjà n'est mise à jour que si la copie de la sauvegarde est plus récente, et une note de ta corbeille en ressort.",
     "quotaExceeded": "<strong>Stockage trop faible pour importer.</strong> Environ {{needed}} nécessaires, {{available}} disponibles. Libère de l'espace ou passe à la version supérieure avant d'importer.",
     "quotaWarning": "Attention : cet import utilisera environ {{needed}} de tes {{available}} de stockage restant.",
     "oversizeAttachments_one": "1 fichier dépasse la limite de {{limit}} par fichier de ton offre. Il s'importe sur cet appareil, mais ne se synchronisera pas vers tes autres appareils tant que tu ne passes pas à Pro.",
@@ -150,13 +158,25 @@
   "exportProgress": {
     "failedTitle": "L'export a échoué",
     "completeTitle": "Export terminé",
+    "incompleteTitle": "Export incomplet",
     "exportingTitle": "Export de la sauvegarde...",
     "preparing": "Préparation...",
     "exporting": "Export...",
     "imagesProgress": "Export des images... {{done}} sur {{total}}",
     "filesProgress": "Export des fichiers... {{done}} sur {{total}}",
     "building": "Construction de la sauvegarde...",
-    "compressing": "Compression..."
+    "compressing": "Compression...",
+    "missingFailed_one": "Cet appareil n'a pas pu télécharger {{items}}, donc ton export ne l'inclut pas. Vérifie ta connexion et exporte à nouveau.",
+    "missingFailed_other": "Cet appareil n'a pas pu télécharger {{items}}, donc ton export ne les inclut pas. Vérifie ta connexion et exporte à nouveau.",
+    "missingNotFound_one": "{{items}} n'est ni sur cet appareil ni sur le serveur, donc ton export ne l'inclut pas.",
+    "missingNotFound_other": "{{items}} ne sont ni sur cet appareil ni sur le serveur, donc ton export ne les inclut pas."
+  },
+  "missing": {
+    "pictures_one": "{{count}} image",
+    "pictures_other": "{{count}} images",
+    "files_one": "{{count}} fichier",
+    "files_other": "{{count}} fichiers",
+    "both": "{{pictures}} et {{files}}"
   },
   "upload": {
     "completeTitle": "Envoi terminé",

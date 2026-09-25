@@ -10,6 +10,7 @@
     "intro": {
       "storage": "Subidas más grandes y más espacio son una función Pro. Mejora tu plan para archivos de 50 MB y 500 MB de almacenamiento.",
       "folders": "Las carpetas son una función Pro. Organiza tus notas en carpetas anidadas, tan profundas como necesites, y mantén cada proyecto separado.",
+      "looks": "Los iconos y los colores de carpetas y etiquetas son una función Pro. Dale a cada una un aspecto que reconozcas de un vistazo.",
       "lock": "Bloquear una nota es una función Pro. Mejora tu plan para proteger cualquier nota de ediciones accidentales.",
       "protect": "Proteger una nota con PIN es una función Pro. Mejora tu plan para resguardar notas sensibles tras tu PIN.",
       "history": "El historial de notas es una función Pro. Mejora tu plan para mantener una cronología de cada guardado.",
@@ -57,6 +58,7 @@
     "title": "Historial de notas",
     "subtitle": "Hasta 20 versiones por nota. Las más antiguas se eliminan automáticamente.",
     "empty": "Aún no hay historial. Las versiones empiezan a acumularse tras la próxima edición. Vuelve más tarde.",
+    "loadFailed": "No se pudo cargar el historial. Comprueba tu conexión e inténtalo de nuevo.",
     "selectPrompt": "Selecciona una versión para previsualizarla.",
     "emptyBody": "(vacío)",
     "restore": "Restaurar",
@@ -64,7 +66,7 @@
   },
   "donation": {
     "eyebrow": "Has desbloqueado",
-    "intro": "<brand/> es gratis, y siempre lo será. Sin anuncios, sin rastreo, sin correo registrado. Si te ha ayudado a pensar, escribir o recordar, plantéate apoyar el desarrollo. Mantiene el proyecto en marcha y paga las próximas funciones.",
+    "intro": "<brand/> es gratis, y siempre lo será. Sin anuncios, sin rastreadores y sin correo registrado, salvo que hayas iniciado sesión con uno. Si te ha ayudado a pensar, escribir o recordar, plantéate apoyar el desarrollo. Mantiene el proyecto en marcha y paga las próximas funciones.",
     "proBenefits": "Apoyar también desbloquea las ventajas Pro cuando se lancen: dispositivos ilimitados, adjuntos y copias de seguridad cifradas en la nube.",
     "maybeLater": "Quizás más tarde",
     "support": "Apoyar →"

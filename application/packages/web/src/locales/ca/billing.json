@@ -10,6 +10,7 @@
     "intro": {
       "storage": "Els fitxers més grans i més espai són una funció Pro. Millora per pujar fitxers de 50 MB i tenir 500 MB d'emmagatzematge.",
       "folders": "Les carpetes són una funció Pro. Organitza les notes en carpetes imbricades, tan profundes com necessitis, i mantén cada projecte separat.",
+      "looks": "Les icones i els colors de carpetes i etiquetes són una funció Pro. Dona a cadascuna un aspecte que reconeguis d'un cop d'ull.",
       "lock": "Blocar una nota és una funció Pro. Millora per protegir qualsevol nota d'edicions accidentals.",
       "protect": "Protegir una nota amb PIN és una funció Pro. Millora per amagar les notes sensibles darrere del teu PIN.",
       "history": "L'historial de notes és una funció Pro. Millora per conservar una cronologia de cada desada.",
@@ -57,6 +58,7 @@
     "title": "Historial de la nota",
     "subtitle": "Fins a 20 versions per nota. Les més antigues s'eliminen automàticament.",
     "empty": "Encara no hi ha historial. Les versions es comencen a acumular a partir de la propera edició. Torna més tard.",
+    "loadFailed": "No s'ha pogut carregar l'historial. Comprova la connexió i torna-ho a provar.",
     "selectPrompt": "Selecciona una versió per previsualitzar-la.",
     "emptyBody": "(buida)",
     "restore": "Restaura",
@@ -64,7 +66,7 @@
   },
   "donation": {
     "eyebrow": "Has desbloquejat",
-    "intro": "<brand/> és gratuïta, i sempre ho serà. Sense anuncis, sense seguiment, sense cap correu registrat. Si t'ha ajudat a pensar, escriure o recordar, considera donar suport al desenvolupament. Manté el projecte en marxa i paga les properes funcions.",
+    "intro": "<brand/> és gratuïta, i sempre ho serà. Sense anuncis, sense rastrejadors i sense cap correu registrat, llevat que hagis iniciat la sessió amb un. Si t'ha ajudat a pensar, escriure o recordar, considera donar suport al desenvolupament. Manté el projecte en marxa i paga les properes funcions.",
     "proBenefits": "Donar suport també desbloqueja els avantatges Pro quan arribin: dispositius il·limitats, fitxers adjunts, còpies de seguretat xifrades al núvol.",
     "maybeLater": "Potser més tard",
     "support": "Dona suport →"

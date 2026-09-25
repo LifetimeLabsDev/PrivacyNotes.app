@@ -19,7 +19,7 @@ Quello è il nostro database vero a Zurigo, non un disegno. La tua nota finisce 
 
 ## Chi ha la tua chiave
 
-Ogni opzione tiene le tue note cifrate end-to-end. Cambia solo dove vive la tua frase.
+Ogni opzione tiene le tue note cifrate sul tuo dispositivo. Cambia solo dove vive la tua frase.
 
 | Opzione | Dove vive la tua frase | Cosa ti dà |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Ogni opzione tiene le tue note cifrate end-to-end. Cambia solo dove vive la tua 
 
 Con le ultime due non potremmo leggere una nota nemmeno se ci costringessero. La prima scambia questo con la comodità: la tua frase sta sul nostro server sotto una chiave nostra, così a un dispositivo nuovo basta il tuo account. Se il nostro server venisse mai violato, quella chiave potrebbe essere esposta.
 
-Non sei legato alla scelta fatta. Cambiala in **Impostazioni > Sicurezza > La tua frase**.
+Accesso con Google, Apple o GitHub? Più avanti puoi passare dall'una all'altra delle prime due, in **Impostazioni > Sicurezza > La tua frase**. Con un account di sola frase, la frase resta sempre con te.
 
 > [!warning] Tieni una tua copia della frase
 > La tua frase apre le tue note. Se la perdi, nessuno può recuperarla, noi compresi. <span style="color: #e03131">Scrivila su carta oggi.</span>
@@ -44,7 +44,7 @@ Non sei legato alla scelta fatta. Cambiala in **Impostazioni > Sicurezza > La tu
 | Cosa | Dove |
 | --- | --- |
 | La cifratura vera e propria | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| La struttura del database | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| Cosa riceve il nostro server | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | Cosa può e non può fare un attaccante | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | Come segnalare una falla | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

@@ -119,6 +119,7 @@
     "enable": "Ativar o desbloqueio biométrico",
     "lockOnOpen": "Bloquear a app ao abrir",
     "lockOnOpenHint": "Exigir biometria ou PIN ao abrir a app.",
+    "lockHidesOnSwitch": "Esconde também as tuas notas quando mudas de app.",
     "lockNeedsCredential": "O bloqueio da app precisa de um PIN ou do desbloqueio biométrico neste dispositivo.",
     "setUpPin": "Definir um PIN",
     "confirmPinForLock": "Introduz o teu PIN para ativar isto. Ele tranca uma cópia da tua frase de recuperação, para que só o teu PIN possa abrir a app.",
@@ -129,6 +130,9 @@
     "disableConfirmLabel": "Desativar",
     "disableConfirmBody": "Desativar o desbloqueio biométrico neste dispositivo?",
     "disableConfirmBodyAppLock": "Desativar o desbloqueio biométrico neste dispositivo? O bloqueio da app também será desligado."
+  },
+  "appLock": {
+    "phraseNotSaved": "Este dispositivo não conseguiu guardar a tua frase de recuperação, por isso nada foi alterado. Tenta outra vez."
   },
   "pinSetup": {
     "title": "Definir um PIN",

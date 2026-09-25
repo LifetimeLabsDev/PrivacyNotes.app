@@ -74,7 +74,7 @@
       "q": "Ai-je besoin d'une adresse e-mail pour m'inscrire ?",
       "a": [
         "Non. Un nouveau compte, c'est une phrase de récupération de 12 mots fraîchement générée, rien d'autre. Pas d'e-mail, pas de nom d'utilisateur, pas de numéro de téléphone, pas d'étape de vérification. Si tu te connectes avec la phrase, on ne pourrait même pas t'écrire si on le voulait : on ne sait jamais qui tu es.",
-        "Tu préfères un parcours familier ? La connexion avec Google, Apple ou GitHub fonctionne aussi. Cette voie nous révèle forcément l'e-mail lié à cette connexion, mais tes notes restent chiffrées de bout en bout dans tous les cas, et tu obtiens quand même une phrase sous le capot."
+        "Tu préfères un parcours familier ? La connexion avec Google, Apple ou GitHub fonctionne aussi. Cette voie nous révèle forcément l'e-mail lié à cette connexion, mais tes notes restent chiffrées sur ton appareil dans tous les cas, et tu obtiens quand même une phrase sous le capot."
       ]
     },
     "import-from-other-apps": {
@@ -94,7 +94,7 @@
     "what-can-you-see": {
       "q": "Que peut voir PrivacyNotes de mes notes ?",
       "a": [
-        "Rien de lisible. Notes, titres, étiquettes et pièces jointes sont chiffrés sur ton appareil avant de se synchroniser. Le serveur stocke un texte chiffré qu'il ne peut pas déchiffrer, et il n'existe aucune clé de notre côté pour changer ça.",
+        "Rien de lisible. Notes, titres, étiquettes et pièces jointes sont toujours chiffrés, sur ton appareil et en route vers le serveur, donc le serveur ne stocke que du texte chiffré. En autoconservation, ce qui est le cas de tout compte à phrase, aucune clé pour le déchiffrer n'existe de notre côté. Quand tu t'inscris avec Google, Apple ou GitHub, on te demande où vit ta clé, et l'écran part de \"Reste simple et pratique\" : cette option stocke ta phrase sur notre serveur, chiffrée sous une clé à nous. Paramètres > Sécurité > Ta phrase indique quel mode tu as et te permet d'en changer.",
         "Ce que nous voyons, c'est le minimum pour faire tourner le service : la quantité de stockage chiffré que tu occupes, le nombre d'appareils liés, et des horodatages de sync. Si tu te connectes avec une phrase plutôt qu'avec Google, Apple ou GitHub, nous ne connaissons même pas ton adresse e-mail."
       ]
     },
@@ -102,18 +102,18 @@
       "q": "Pourquoi une phrase de récupération plutôt qu'un identifiant et un mot de passe ?",
       "a": [
         "Ça semble contre-intuitif au début, mais une phrase de récupération unique est la construction la plus solide. Avec identifiant et mot de passe, l'identifiant n'est pas un secret (il apparaît dans toutes les fuites de données), toute la sécurité repose donc sur le mot de passe - et les mots de passe choisis par des humains plafonnent en moyenne à 30 ou 40 bits d'entropie. Ta phrase de 12 mots, ce sont 128 bits garantis, générés par ton appareil, jamais choisis par un humain et jamais réutilisés d'un autre site.",
-        "Il n'y a rien à perdre chez nous non plus. Une connexion par mot de passe implique que le serveur stocke au moins un hash de mot de passe, qui peut fuiter, être cassé ou hameçonné. Ta phrase ne quitte jamais ton appareil : elle dérive tes clés de chiffrement localement, et le serveur ne voit jamais que des données chiffrées. Il n'y a pas de hash à voler ni de réinitialisation de mot de passe à détourner.",
-        "Si taper 12 mots te paraît lourd : tu peux enregistrer la phrase dans ton gestionnaire de mots de passe en un geste (Paramètres > Sécurité > Ta phrase), et la connexion ressemble à n'importe quelle autre. Tu préfères la voie classique ? La connexion avec Google, Apple ou GitHub marche aussi, et tu obtiens quand même une phrase sous le capot."
+        "Il n'y a pas non plus de mot de passe à perdre chez nous. Une connexion par mot de passe implique que le serveur stocke au moins un hash de mot de passe, qui peut fuiter, être cassé ou hameçonné. En autoconservation, ta phrase ne quitte jamais ton appareil : elle dérive tes clés de chiffrement localement, et le serveur ne voit jamais que des données chiffrées. Il n'y a pas de hash à voler ni de réinitialisation de mot de passe à détourner.",
+        "Si taper 12 mots te paraît lourd : tu peux enregistrer la phrase dans ton gestionnaire de mots de passe en un geste (Paramètres > Sécurité > Ta phrase), et la connexion ressemble à n'importe quelle autre. Tu préfères la voie classique ? La connexion avec Google, Apple ou GitHub marche aussi : tu obtiens quand même une phrase sous le capot, et tu choisis si elle reste sur ton appareil ou si nous la conservons pour toi."
       ]
     },
     "threat-model-levels": {
       "q": "Puis-je choisir mon propre équilibre entre confort et confidentialité ?",
       "a": [
-        "Oui, et c'est voulu. Tout le monde ne se défend pas contre les mêmes menaces, le modèle de compte est donc une échelle plutôt qu'un dogme unique. À chaque barreau, tes notes restent chiffrées de bout en bout ; ce qui change, c'est qui détient la clé et ce que nous savons de toi.",
-        "Le bout confortable : connecte-toi avec Google, Apple ou GitHub et choisis \"Reste simple et pratique\" quand on te le propose. Nous conservons ta phrase de récupération pour toi, chiffrée au repos sur notre serveur : chaque appareil se connecte avec cette seule connexion, et il n'y a rien à sauvegarder ni à perdre. En échange, nous connaissons l'e-mail derrière cette connexion, et c'est nous qui gardons ta clé plutôt que toi. Si ta menace réaliste est de perdre tes propres identifiants plutôt qu'une intrusion ciblée, c'est le bon échelon.",
+        "Oui, et c'est voulu. Tout le monde ne se défend pas contre les mêmes menaces, le modèle de compte est donc une échelle plutôt qu'un dogme unique. À chaque barreau, tes notes restent chiffrées sur ton appareil ; ce qui change, c'est qui détient la clé et ce que nous savons de toi.",
+        "Le bout confortable : connecte-toi avec Google, Apple ou GitHub et laisse \"Reste simple et pratique\" sélectionné quand on te le propose, puisque c'est l'option par défaut de cet écran. Nous conservons ta phrase de récupération pour toi, chiffrée au repos sur notre serveur : chaque appareil se connecte avec cette seule connexion, et il n'y a rien à sauvegarder ni à perdre. En échange, nous connaissons l'e-mail derrière cette connexion, et c'est nous qui gardons ta clé plutôt que toi. Si ta menace réaliste est de perdre tes propres identifiants plutôt qu'une intrusion ciblée, c'est le bon échelon.",
         "Le milieu : connecte-toi avec Google, Apple ou GitHub mais choisis \"Sécurité et confidentialité maximales\". Ta phrase ne touche jamais nos serveurs et le chiffrement est entièrement zero-knowledge ; un nouvel appareil demande la phrase ou un scan QR depuis un appareil déjà connecté. Nous connaissons forcément encore l'e-mail derrière cette connexion, mais nous ne pourrions pas lire une seule note, même sous contrainte.",
         "Le bout privé : ignore les connexions et n'utilise que la phrase de 12 mots. Pas d'e-mail, pas de nom, pas d'identité - et associé à un [achat Pro anonyme](/fr/help/buy-pro-anonymously/), même payer ne laisse ton nom nulle part. En échange, la garde de la clé t'appartient entièrement : perds la phrase sans plus aucun appareil connecté, et personne ne peut aider.",
-        "Tu n’es pas enfermé dans le niveau que tu as choisi. Réglages > Sécurité > Ta phrase affiche les deux modes côte à côte avec ce que chacun coûte, et tu peux passer de l’un à l’autre quand tu veux. Passer à l’autoconservation supprime notre copie et te demande d’abord de retaper trois de tes douze mots, puisque ceux qui cliquent sont justement ceux qui ne les ont jamais notés. Revenir en arrière renvoie la phrase et demande un choix explicite. Les deux sens sont signés avec ta propre clé de compte, une session volée ne peut donc pas changer ton mode. Et chaque niveau accepte les couches locales par-dessus : verrouillage par PIN, déverrouillage biométrique et protection par note."
+        "Avec une connexion Google, Apple ou GitHub, tu n’es pas enfermé dans le niveau que tu as choisi. Paramètres > Sécurité > Ta phrase affiche les deux modes côte à côte avec ce que chacun coûte, et tu peux passer de l’un à l’autre quand tu veux. Passer à l’autoconservation supprime notre copie et te demande d’abord de retaper trois de tes douze mots, puisque ceux qui cliquent sont justement ceux qui ne les ont jamais notés. Revenir en arrière renvoie la phrase et demande un choix explicite. Les deux sens sont signés avec ta propre clé de compte, une session volée ne peut donc pas changer ton mode. Un compte à phrase seule reste du côté privé, car il n’y a aucune connexion avec laquelle récupérer une clé stockée. Et chaque niveau accepte les couches locales par-dessus : verrouillage par PIN, déverrouillage biométrique et protection par note."
       ]
     },
     "twelve-word-phrase": {
@@ -159,7 +159,7 @@
     "no-ai": {
       "q": "PrivacyNotes utilise-t-il de l'IA sur mes notes ?",
       "a": [
-        "Non. Il n'y a aucune fonction d'IA dans l'appli, aucun traitement d'IA en arrière-plan et aucun entraînement de modèle sur tes contenus. Tes notes sont chiffrées avant de quitter ton appareil - il n'y a donc rien de lisible sur nos serveurs à donner à quoi que ce soit.",
+        "Non. Il n'y a aucune fonction d'IA dans l'appli, aucun traitement d'IA en arrière-plan et aucun entraînement de modèle sur tes contenus. Tes notes sont toujours chiffrées, sur ton appareil et en route vers le serveur - il n'y a donc rien de lisible sur nos serveurs à donner à quoi que ce soit.",
         "Si nous construisons un jour une fonction dans cette direction, elle devra tourner entièrement sur ton appareil et être strictement opt-in. Envoyer des notes en clair à un modèle cloud briserait la promesse zero-knowledge, c'est donc hors de question."
       ]
     },
@@ -188,7 +188,7 @@
       "q": "J'ai perdu ma phrase de récupération. Pouvez-vous récupérer mon compte ?",
       "a": [
         "Si tu es encore connecté sur n'importe quel appareil : oui, tu peux la récupérer toi-même. Ouvre Paramètres > Sécurité > Ta phrase et enregistre-la tout de suite dans ton gestionnaire de mots de passe.",
-        "Si tu n'as plus ni appareil connecté ni phrase : non, et personne ne le peut. Ta phrase n'atteint jamais nos serveurs, il n'y a donc rien à réinitialiser et aucun ticket de support qui puisse aider. Ce n'est pas une règle que nous pourrions assouplir - c'est la définition même du chiffrement de bout en bout. Tout service capable de restaurer tes données chiffrées après une perte totale détient tes clés.",
+        "Si tu n'as plus ni appareil connecté ni phrase, tout dépend de qui détient la clé. Si tu nous as laissé la conserver en t'inscrivant avec Google, Apple ou GitHub, connecte-toi avec ce compte et tu retrouves l'accès. En autoconservation, personne ne le peut : ta phrase n'atteint jamais nos serveurs, il n'y a donc rien à réinitialiser et aucun ticket de support qui puisse aider. Tout service capable de restaurer tes données chiffrées après une perte totale détient tes clés.",
         "La précaution coûte dix secondes : range la phrase dans un gestionnaire de mots de passe le jour où tu crées ton compte. Si elle est déjà perdue et que tu paies un module de stockage, Paddle te facture directement et peut le résilier sans ta phrase : voir [changer ou résilier un module](/fr/help/manage-storage-addon/)."
       ]
     },
@@ -203,7 +203,7 @@
       "q": "J'ai oublié mon PIN. Comment revenir dans l'app ?",
       "a": [
         "Rien n'est perdu, et tu peux effacer le PIN toi-même avec ta phrase de récupération. Le PIN est un verrou d'écran, pas une clé de chiffrement : tes notes sont chiffrées avec des clés dérivées de la phrase, donc c'est la phrase qui les ouvre. Lier le chiffrement à quatre chiffres ferait qu'un PIN oublié détruirait des données. Ici, jamais.",
-        "Partout où l'app demande le PIN, choisis **PIN oublié ?** et saisis tes 12 mots. C'est sur l'écran de verrouillage, sur une note protégée et dans **Réglages > Sécurité > PIN**. Le PIN est effacé sur tous tes appareils, et tu peux en définir un nouveau tout de suite. Le déverrouillage biométrique n'est pas affecté."
+        "Partout où l'app demande le PIN, choisis **PIN oublié ?** et saisis tes 12 mots. C'est sur l'écran de verrouillage, sur une note protégée et dans **Paramètres > Sécurité > PIN**. Le PIN est effacé sur tous tes appareils, et tu peux en définir un nouveau tout de suite. Le déverrouillage biométrique n'est pas affecté."
       ]
     },
     "delete-account": {
@@ -223,14 +223,14 @@
     "offline": {
       "q": "PrivacyNotes fonctionne-t-il hors ligne ?",
       "a": [
-        "Oui. L'appli est local-first : tes notes vivent dans une base de données sur ton appareil, donc lire, écrire et chercher fonctionnent sans aucune connexion. Les changements se synchronisent automatiquement dès que tu repasses en ligne."
+        "Oui. L'appli est local-first : tes notes vivent dans une base de données sur ton appareil, donc lire, écrire et chercher fonctionnent sans aucune connexion. Les changements se synchronisent automatiquement dès que tu repasses en ligne, et une image ou un fichier ajouté hors ligne attend sur cet appareil et s'envoie à ce moment-là aussi."
       ]
     },
     "sync-conflicts": {
       "q": "Que se passe-t-il si je modifie la même note sur deux appareils en même temps ?",
       "a": [
-        "Rien n'est écrasé en silence. Si les deux appareils ont modifié la même note chacun de leur côté (l'un étant hors ligne, par exemple), l'appli détecte la collision à la sync suivante et affiche une boîte de dialogue de conflit : garder la version de cet appareil, garder l'autre, ou garder les deux comme notes séparées.",
-        "Au quotidien, tu le verras rarement. En ligne, les modifications se synchronisent en quelques secondes, et la boîte de dialogue n'apparaît que quand deux versions de la même note ont réellement divergé."
+        "Tes appareils fusionnent la note détail par détail quand ils se synchronisent à nouveau, donc une modification faite sur un seul d'entre eux est conservée. Si les deux ont modifié le texte chacun de leur côté (l'un étant hors ligne, par exemple), l'appareil qui se synchronise en second affiche une boîte de dialogue de conflit : garder la version de cet appareil, garder l'autre ou garder les deux comme notes séparées. Les deux versions sont conservées tant que tu n'as pas choisi.",
+        "Quand les deux appareils ont modifié le même détail chacun de leur côté, comme l'épinglage, le dossier ou le titre, c'est le détail de l'appareil qui a modifié la note en dernier qui est conservé, sans boîte de dialogue. Une note supprimée définitivement sur un appareil est supprimée partout, y compris une modification qu'un autre appareil y a apportée pendant qu'ils étaient séparés."
       ]
     },
     "remove-device": {
@@ -244,8 +244,8 @@
       "q": "Où mes données sont-elles stockées ?",
       "a": [
         "D'abord sur ton appareil, et c'est cette copie que tu utilises : l'appli est local-first, donc tes notes s'ouvrent et se modifient hors ligne. La copie de sync vit sur des serveurs à Zurich, en Suisse. Ce qui s'y trouve : ta clé publique, des blobs chiffrés de tes notes, fichiers et réglages, plus les horodatages et les tailles dont une sync a besoin. Aucun titre, aucun texte, aucun tag.",
-        "Le pays compte moins que le chiffrement. Tout est chiffré sur ton appareil avant d'en sortir, donc cette copie serait illisible où qu'elle se trouve : la Suisse est un bonus, pas la promesse. [Ce qui se synchronise](/fr/help/what-syncs/) le détaille point par point.",
-        "La copie sur ton appareil est chiffrée elle aussi. Les notes sont scellées sur le disque avec une clé dérivée de ta phrase de récupération au déverrouillage, donc un profil de navigateur copié, un vidage de stockage ou une sauvegarde volée contient des données chiffrées, pas tes notes."
+        "Le pays compte moins que le chiffrement. Tout est toujours chiffré, sur ton appareil et en route vers le serveur, donc cette copie serait illisible où qu'elle se trouve : la Suisse est un bonus, pas la promesse. [Ce qui se synchronise](/fr/help/what-syncs/) le détaille point par point.",
+        "La copie sur ton appareil est chiffrée elle aussi. Les notes sont scellées sur le disque avec une clé dérivée de ta phrase de récupération au déverrouillage, donc une copie du stockage de l'appli sur ton appareil, ou une sauvegarde volée de celui-ci, contient des données chiffrées, pas tes notes."
       ]
     },
     "data-on-disk": {
@@ -253,28 +253,28 @@
       "a": [
         "Dans un dossier par installation, dans l'espace de données applicatives de ton compte. Son emplacement dépend de la plateforme :",
         "- **macOS** : `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows** : `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux** : `~/.local/share/app.privacynotes`, ou `app.privacynotes.appimage` pour l'AppImage, qui embarque son propre moteur web et garde donc son propre profil\n- **Android, iOS** : le stockage privé de l'app, qu'aucune autre app ne peut ouvrir\n- **Navigateur** : ton profil de navigateur, sous `use.privacynotes.app`",
-        "Ce qui s'y trouve, ce sont des données chiffrées. Chaque note est un bloc scellé qui contient le titre, le texte et les tags, ouvert par une clé dérivée de ta phrase de récupération au déverrouillage. Seul ce dont l'index local a besoin reste en clair : identifiants, horodatages et marqueurs comme favori ou supprimé.",
+        "Ce qui s'y trouve, ce sont des données chiffrées. Chaque note est un bloc scellé qui contient le titre, le texte et les tags, ouvert par une clé dérivée de ta phrase de récupération au déverrouillage, donc un dossier copié ne contient rien de lisible. Seul ce dont l'index local a besoin reste en clair : identifiants, horodatages, le type d'élément et marqueurs comme épinglé ou supprimé.",
         "Pour transférer tes notes sur un autre appareil, ou en garder une copie, utilise **Paramètres > Import & Export > Exporter** et choisis \"Sauvegarde complète chiffrée (.pnbackupz)\". Elle contient tout, elle est chiffrée avec la clé de ta phrase et se restaure avec ta phrase sur n'importe quel appareil. [En savoir plus sur les sauvegardes](/fr/help/backup-strategy/)."
       ]
     },
     "export": {
       "q": "Puis-je exporter mes notes, ou suis-je enfermé ?",
       "a": [
-        "Tu peux tout exporter à tout moment, entièrement généré sur ton appareil : des fichiers Markdown dans un zip avec les pièces jointes, une sauvegarde JSON complète, ou du HTML autonome - par note ou pour tout le compte. Les éléments du coffre ont leur propre voie, \"Export du coffre (.json)\", qui écrit le format de Bitwarden et emporte tes identifiants, mots de passe, URL, données de carte et clés 2FA vers Bitwarden, 1Password ou KeePass.",
-        "Tout se trouve dans Paramètres > Import & Export > Export. L'import marche pareil, depuis Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden et d'autres : la liste complète est dans [arriver depuis une autre appli](/fr/help/import-from-other-apps/). L'enfermement ne fait pas partie du modèle économique."
+        "Tu peux tout exporter à tout moment, entièrement généré sur ton appareil : des fichiers Markdown dans un zip avec les pièces jointes, du JSON brut, ou du HTML autonome - par note ou pour tout le compte. Le zip, c'est la \"Sauvegarde PrivacyNotes (.zip)\", et elle se restaure, comme les sauvegardes chiffrées ; le JSON et le HTML servent à la lecture et à ta prochaine appli. Les éléments du coffre ont leur propre voie, \"Export du coffre (.json)\", qui écrit le format de Bitwarden et emporte tes identifiants, mots de passe, URL, données de carte et clés 2FA vers Bitwarden, 1Password ou KeePass.",
+        "Tout se trouve dans Paramètres > Import & Export > Exporter. L'import marche pareil, depuis Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden et d'autres : la liste complète est dans [arriver depuis une autre appli](/fr/help/import-from-other-apps/). L'enfermement ne fait pas partie du modèle économique."
       ]
     },
     "attachment-limits": {
       "q": "Quels fichiers puis-je joindre, et quelle taille peuvent-ils faire ?",
       "a": [
-        "N'importe quel type de fichier : images, PDF, audio, archives, tout ce que tu déposes. Chaque fichier est chiffré sur ton appareil avant l'envoi, exactement comme le texte des notes, et la vue Fichiers rassemble toutes les pièces jointes au même endroit.",
+        "N'importe quel type de fichier : images, PDF, audio, archives, tout ce que tu déposes. Chaque fichier est toujours chiffré, sur ton appareil et en route vers le serveur, exactement comme le texte des notes, et la vue Fichiers rassemble toutes les pièces jointes au même endroit.",
         "La limite par fichier est de 5 Mo dans l'offre gratuite et de 50 Mo avec Pro. Les fichiers comptent dans ton stockage de sync total (50 Mo gratuit, 500 Mo avec Pro, extensible à 5,5 Go avec les modules de stockage), et la barre de stockage dans Paramètres > Stockage montre toujours où tu en es."
       ]
     },
     "vault": {
       "q": "Qu'est-ce que le Coffre ?",
       "a": [
-        "Le Coffre est un espace dédié aux secrets structurés : identifiants avec nom d'utilisateur et mot de passe, cartes de crédit et de débit, et clés SSH. Les entrées ont de vrais champs plutôt que du texte libre, les identifiants affichent l'icône du site, et tout est chiffré de bout en bout comme le reste de tes données.",
+        "Le Coffre est un espace dédié aux secrets structurés : identifiants avec nom d'utilisateur et mot de passe, cartes de crédit et de débit, et clés SSH. Les entrées ont de vrais champs plutôt que du texte libre, les identifiants affichent l'icône du site, et tout est chiffré sur ton appareil comme le reste de tes données.",
         "Il offre un endroit rangé et protégé à la poignée d'identifiants qui finissent sinon éparpillés dans les notes. Combine-le avec le verrouillage de l'appli et la protection PIN pour une seconde barrière devant tes entrées les plus sensibles. Un import Bitwarden atterrit ici automatiquement."
       ]
     },
@@ -289,21 +289,21 @@
     "shutdown": {
       "q": "Qu'arrive-t-il à mes notes si PrivacyNotes ferme ?",
       "a": [
-        "Tu ne perds rien. L'intégralité des données est déjà sur ton appareil puisque l'appli est local-first, et l'export en Markdown, JSON ou HTML fonctionne entièrement hors ligne.",
+        "Tu les gardes. Tes notes, tâches, entrées de journal et éléments du coffre vivent sur ton appareil puisque l'appli est local-first, et les exporter en Markdown, JSON ou HTML fonctionne hors ligne. Une image ou un fichier reste sur un appareil dès que tu l'y ajoutes ou l'y ouvres, et ceux que cet appareil n'a jamais ouverts sont récupérés quand tu les ouvres. Garde donc une sauvegarde complète : elle récupère chaque image et chaque fichier qui manque à cet appareil, et te le signale si l'un d'eux ne peut pas être récupéré.",
         "Le code de chiffrement est lui aussi [open source](https://github.com/LifetimeLabsDev/PrivacyNotes.app) : le format reste lisible de façon indépendante, même dans un monde où nos serveurs disparaîtraient du jour au lendemain."
       ]
     },
     "free-vs-pro": {
       "q": "Qu'est-ce qui est gratuit et qu'est-ce qui est Pro ?",
       "a": [
-        "Le gratuit est le produit complet, pas un amuse-bouche : notes, tâches, journal et coffre chiffrés de bout en bout, usage hors ligne, import et export - sur jusqu'à 2 appareils avec 50 Mo de stockage de sync.",
+        "Le gratuit est le produit complet, pas un amuse-bouche : notes, tâches, journal et coffre, tous chiffrés sur ton appareil, usage hors ligne, import et export - sur jusqu'à 2 appareils avec 50 Mo de stockage de sync.",
         "Pro est un achat unique qui ajoute des appareils illimités, 500 Mo de stockage de sync (extensible), l'historique de versions des notes, des pièces jointes plus grandes, le verrouillage de notes et la protection PIN, le suivi bien-être avancé, le mode zen et tous les thèmes de couleur."
       ]
     },
     "one-time-pricing": {
       "q": "Comment un paiement unique peut-il financer un service de sync pour toujours ?",
       "a": [
-        "Parce que le service est volontairement peu coûteux à faire tourner. L'appli est local-first et les notes sont de petits blobs chiffrés : le serveur ne fait guère plus que les stocker et les relayer entre tes appareils. Pas de pipeline d'analytics, pas de fonctions d'IA qui brûlent du calcul, pas de service client.",
+        "Parce que le service est volontairement peu coûteux à faire tourner. L'appli est local-first et les notes sont de petits blobs chiffrés : le serveur ne fait guère plus que les stocker et les relayer entre tes appareils. Aucune analyse de ce que tu écris, pas de pixels ni de traceurs tiers, pas de fonctions d'IA qui brûlent du calcul, pas de service client.",
         "Le seul coût qui grandit avec le temps est le stockage, et il est tarifé en conséquence : le stockage au-delà des 500 Mo inclus est un petit module annuel. Les coûts uniques se paient une fois, les coûts récurrents se paient en récurrent. Le modèle doit seulement s'autofinancer, et c'est le cas."
       ]
     },
@@ -332,7 +332,7 @@
       "q": "Qu'apprenez-vous sur moi quand je paie ?",
       "a": [
         "Moins que tu ne l'imagines. Le paiement passe par [Paddle](https://www.paddle.com), le merchant of record : ton nom, ton numéro de carte et ton adresse de facturation vont chez Paddle pour le paiement et les taxes, et ne touchent jamais nos serveurs.",
-        "Ce qui nous parvient, c'est la confirmation que la clé publique de ton compte est désormais Pro, plus le montant de la commande. La relation de facturation, y compris l'e-mail de reçu saisi au paiement, reste chez Paddle. Un compte à phrase seule reste donc pseudonyme pour nous, même en client payant : nous savons que tu as payé, pas qui tu es."
+        "Paddle détient tes informations de facturation ; ce qui arrive dans notre base de données, c'est ta clé publique, le montant et l'identifiant de commande, et pour un module de stockage, sa taille et ses dates de renouvellement. Notre compte Paddle peut voir les deux côtés, et nous n'allons pas chercher qui tu es. Pour garder ton nom hors de l'achat, paie avec un [alias e-mail et une carte masquée](/fr/help/buy-pro-anonymously/)."
       ]
     },
     "buy-pro-anonymously": {
@@ -340,15 +340,15 @@
       "a": [
         "Oui, avec deux outils standards. Pour le reçu, utilise un alias e-mail : [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) ou [addy.io](https://addy.io) transfèrent tous vers ta vraie boîte sans l'exposer. Pour le paiement, utilise une carte masquée : [privacy.com](https://privacy.com) aux États-Unis génère des cartes virtuelles qui acceptent n'importe quel nom, et beaucoup de banques et services ailleurs ([Revolut](https://www.revolut.com), par exemple) proposent des cartes virtuelles jetables qui font le même travail.",
         "Au paiement, Paddle demande un e-mail, un moyen de paiement et un pays (plus un code postal dans certaines régions) pour calculer la taxe. L'alias reçoit le reçu, la carte masquée porte le nom que tu lui as donné, et la localisation fiscale ne te situe qu'à l'échelle d'une région, rien de plus. Garde l'alias vivant, cela dit : l'e-mail de reçu est ta preuve d'achat et ton canal de remboursement.",
-        "Combiné à un compte à phrase, aucune partie ne détient au final le tableau complet : ta banque voit une recharge de carte, Paddle voit un alias et une carte masquée, et nous voyons seulement qu'une clé publique est passée Pro."
+        "Combiné à un compte à phrase, aucune partie ne détient au final le tableau complet : ta banque voit une recharge de carte, Paddle voit un alias et une carte masquée, et nous voyons une clé publique passée Pro, à côté de cet alias dans notre compte Paddle."
       ]
     },
     "platforms": {
       "q": "Sur quelles plateformes PrivacyNotes fonctionne-t-il ?",
       "a": [
-        "Web, macOS, Windows, Linux, iOS et Android. Chaque appli est bâtie sur le même cœur avec le même chiffrement de bout en bout et se synchronise via le même compte. La [section téléchargements](https://privacynotes.app/fr#downloads) a toujours les derniers builds.",
-        "Les applis natives ont besoin de macOS 13 ou plus récent, Windows 10 ou plus récent, iOS 15 ou plus récent, Android 7.0 ou plus récent, ou une distribution Linux avec webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ ou équivalent). En dessous, l'appli ne s'installe ni ne démarre : passe par l'appli web.",
-        "L'appli web est un citoyen de première classe, pas une roue de secours : elle garde une copie locale complète de tes données et fonctionne hors ligne - n'importe quel navigateur moderne est donc toujours une porte d'entrée."
+        "Web, macOS, Windows, Linux, iOS et Android. Chaque appli est bâtie sur le même cœur, chiffre tes notes sur ton appareil de la même façon et se synchronise via le même compte. La [section téléchargements](https://privacynotes.app/fr#downloads) a toujours les derniers builds.",
+        "Les applis natives ont besoin de macOS 13 ou plus récent, Windows 10 ou plus récent, iOS 17.4 ou plus récent, Android 7.0 ou plus récent, ou une distribution Linux avec webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ ou équivalent). En dessous, l'appli ne s'installe ni ne démarre : passe par l'appli web.",
+        "L'appli web est un citoyen de première classe, pas une roue de secours : elle garde tes notes sur ton appareil et fonctionne hors ligne - n'importe quel navigateur moderne est donc toujours une porte d'entrée."
       ]
     },
     "feature-requests": {
@@ -381,14 +381,14 @@
     "languages": {
       "q": "Quelles langues parle l'appli ?",
       "a": [
-        "Anglais, allemand, français, italien, espagnol, néerlandais, polonais, tchèque, catalan, turc, suédois, japonais, coréen, chinois traditionnel, arabe et portugais, en variantes européenne et brésilienne. L'appli suit ta langue système par défaut, ou tu en fixes une explicitement dans Paramètres > Langue sur chaque appareil.",
+        "Anglais, allemand, français, italien, espagnol, néerlandais, polonais, tchèque, catalan, turc, suédois, ukrainien, russe, japonais, coréen, chinois traditionnel, thaï, arabe et portugais, en variantes européenne et brésilienne. L'appli suit ta langue système par défaut, ou tu en fixes une explicitement dans Paramètres > Langue sur chaque appareil.",
         "Les traductions sont gratuites pour tout le monde, pas un avantage Pro. D'autres langues sont prévues ; si la tienne manque, dis-le-nous sur [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) ou [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
     "translation-quality": {
       "q": "Comment les traductions de l'app sont-elles faites ?",
       "a": [
-        "L'anglais, nous l'écrivons, et toutes les autres langues sont traduites par une machine à partir d'un guide de style écrit pour chacune : le bon registre, le bon mot pour chaque terme d'interface, et une vérification automatique à chaque version pour que rien ne manque et que rien ne reste en anglais sans qu'on le voie. Les traductions sont incluses dans toutes les formules, jamais un extra Pro.",
+        "Nous écrivons d'abord l'anglais. Un agent d'IA traduit ensuite chaque langue à partir d'un glossaire commun, dans le registre fixé pour cette langue, et un second agent relit chaque lot pour l'exactitude, la terminologie et le registre avant sa publication. Des locuteurs natifs relisent un échantillon, en commençant par les langues les plus récentes et les textes de sécurité, de connexion et de facturation, et deux vérifications automatiques font échouer le build tant qu'une traduction manque ou n'est plus à jour. Les traductions sont incluses dans toutes les formules, jamais un extra Pro.",
         "Tu peux améliorer n'importe laquelle. Si une phrase sonne mal dans ta langue, [signale la traduction](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new?template=translation.yml) : ta langue, l'écran où elle apparaît, et ce qui devrait être écrit à la place. Les corrections arrivent dans la version suivante."
       ]
     },
@@ -396,14 +396,14 @@
       "q": "Quelle syntaxe Markdown l'éditeur comprend-il ?",
       "a": [
         "Les formats Markdown standards se mettent en forme à mesure que tu tapes : titres, emphase, barré et surlignage, listes à puces et listes numérotées, listes de tâches (Tab et Maj+Tab imbriquent toute liste, checklists comprises), citations, séparateurs, code en ligne et blocs de code avec coloration syntaxique, formules mathématiques en ligne et en bloc (KaTeX), et note-links entre notes avec autocomplétion.",
-        "La barre de mise en forme et son menu Insérer ajoutent le reste : tableaux, callouts en neuf types qui peuvent se replier, souligné, exposant et indice, alignement du texte, couleurs de texte et de surlignage, polices, liens, images et pièces jointes. Tout fait l'aller-retour en Markdown : \"Afficher le markdown\" sous n'importe quelle note révèle la source brute, et les exports sont des fichiers .md propres, donc rien de ce que tu écris n'est enfermé dans un format propriétaire."
+        "La barre de mise en forme et son menu Insérer ajoutent le reste : tableaux, callouts qui peuvent se replier, souligné, exposant et indice, alignement du texte, couleurs de texte et de surlignage, polices, liens, images et pièces jointes. Tout fait l'aller-retour en Markdown : \"Afficher le markdown\" sous n'importe quelle note révèle la source brute, et les exports sont des fichiers .md propres, donc rien de ce que tu écris n'est enfermé dans un format propriétaire."
       ]
     },
     "tasks": {
       "q": "Comment fonctionnent les tâches ?",
       "a": [
         "Toute ligne que tu écris sous la forme - [ ] dans n'importe quelle note devient une tâche, et la vue Tâches dans la barre latérale les rassemble toutes au même endroit. Y cocher une tâche met à jour la note où elle vit, et ouvrir une tâche saute vers cette note. Il n'y a pas de base de tâches distincte à maintenir : les tâches ne sont que des lignes dans tes notes, chiffrées comme tout le reste.",
-        "Le champ d'ajout rapide en haut de Tâches ajoute à une note appelée Quick Tasks (créée pour toi à la première utilisation), donc noter une tâche isolée prend une frappe, pas une décision de classement. La même vue propose trois dispositions (Hybride, Agrégé, Liste), un basculement des tâches terminées, et la recherche de tâches, et le bouton Nouveau sur la vue Tout peut démarrer une note de tâches directement."
+        "Le champ d'ajout rapide en haut de Tâches ajoute à une note appelée Quick Tasks (créée pour toi à la première utilisation), donc noter une tâche isolée prend une frappe, pas une décision de classement. La même vue propose trois dispositions (Hybride, Agrégé, Liste), un basculement des tâches terminées, et la recherche de tâches, et le bouton New sur la vue Tout peut démarrer une note de tâches directement."
       ]
     },
     "journal": {
@@ -416,7 +416,7 @@
     "bookmarks": {
       "q": "Puis-je enregistrer les favoris de mon navigateur dans PrivacyNotes ?",
       "a": [
-        "Oui. Les favoris forment un pilier à part dans la barre latérale, à côté des notes, des tâches et du journal, et ils sont gratuits dans toutes les formules. Colle un lien dans la barre d’ajout rapide pour en enregistrer un. Pour transférer les tiens, exporte un fichier de favoris (.html) depuis ton navigateur, puis dépose-le dans Paramètres > Import & Export > Importer > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave et Vivaldi contiennent le même fichier, et tes dossiers et tes dates suivent. Safari l’enveloppe dans un .zip, que tu peux déposer sans l’ouvrir.",
+        "Oui. Les favoris forment un pilier à part dans la barre latérale, à côté des notes, des tâches et du journal, et ils sont gratuits dans toutes les formules. Colle un lien dans la barre d’ajout rapide pour en enregistrer un. Pour transférer les tiens, exporte un fichier de favoris (.html) depuis ton navigateur, puis dépose-le dans Paramètres > Import & Export > Importer > \"Signets du navigateur\". Chrome, Firefox, Safari, Edge, Opera, Brave et Vivaldi contiennent le même fichier, et tes dossiers et tes dates suivent. Safari l’enveloppe dans un .zip, que tu peux déposer sans l’ouvrir.",
         "Tes adresses ne quittent jamais ton appareil : nous ne chargeons pas la page derrière un lien, et c’est pourquoi un favori que tu ajoutes toi-même porte son domaine comme nom jusqu’à ce que tu en saisisses un. Les icônes de site sont la seule exception, et tu peux les désactiver. L’export écrit le même fichier standard, tes favoris repartent donc aussi facilement ([guide d’import](/fr/help/import/browser-bookmarks/))."
       ]
     },
@@ -438,7 +438,7 @@
     "keyboard-shortcuts": {
       "q": "Quels raccourcis clavier existe-t-il ?",
       "a": [
-        "Appuie sur ? n'importe où dans l'appli pour l'aide-mémoire intégré, aussi disponible sous Paramètres > À propos et aide. Les raccourcis couvrent la navigation, les actions sur les notes, la mise en forme et les vues - et sur Windows et Linux, chaque Cmd se lit comme Ctrl et Option comme Alt.",
+        "Appuie sur ? n'importe où dans l'appli pour l'aide-mémoire intégré, aussi disponible sous Paramètres > À propos. Les raccourcis couvrent la navigation, les actions sur les notes, la mise en forme et les vues - et sur Windows et Linux, chaque Cmd se lit comme Ctrl et Option comme Alt.",
         "L'essentiel : Cmd+K place le focus sur la recherche, J et K parcourent la liste, Alt+Shift+N démarre une nouvelle note, Cmd+Backspace met la note sélectionnée à la corbeille, Cmd+, ouvre Paramètres. Pendant l'écriture : Cmd+B gras, Cmd+I italique, Cmd+Shift+K insère un lien, Cmd+Shift+9 démarre une liste de tâches, Cmd+F cherche dans la note, Cmd+Shift+O bascule le plan. Cmd+\\ masque la barre latérale, Cmd+Shift+L change le thème, Cmd+Shift+F entre en mode zen (Pro), et Esc annule presque tout."
       ]
     },
@@ -446,7 +446,7 @@
       "q": "Existe-t-il un aide-mémoire des raccourcis à imprimer ?",
       "a": [
         "Oui. L'[aide-mémoire à imprimer](/help/keyboard-shortcuts/cheat-sheet) présente tous les raccourcis sur une seule page A4, en deux colonnes, prête à être affichée à côté de ton écran. Il est généré à partir de la même liste que celle affichée dans l'appli, donc il ne peut jamais être en retard sur une version.",
-        "Ouvre-le et appuie sur le bouton Imprimer (ou Cmd+P / Ctrl+P). Pour garder un fichier plutôt que du papier, choisis PDF comme destination dans la boîte de dialogue d'impression. L'aide-mémoire est aussi accessible au-dessus et en dessous de la liste des raccourcis dans l'appli (Paramètres > À propos et aide > Raccourcis), ainsi que dans le pied de page de ce site."
+        "Ouvre-le et appuie sur le bouton Imprimer (ou Cmd+P / Ctrl+P). Pour garder un fichier plutôt que du papier, choisis PDF comme destination dans la boîte de dialogue d'impression. L'aide-mémoire est aussi accessible au-dessus et en dessous de la liste des raccourcis dans l'appli (Paramètres > À propos > Raccourcis), ainsi que dans le pied de page de ce site."
       ]
     },
     "ask-an-ai": {
@@ -460,7 +460,7 @@
     "locked-vs-protected": {
       "q": "Quelle est la différence entre les notes en lecture seule et celles protégées par PIN ?",
       "a": [
-        "\"Lecture seule\" (dans le menu d'options de la note, Pro) verrouille une note contre les modifications pour qu'un document terminé ne soit pas abîmé par accident ; ça ne cache rien. \"Protéger\" (même menu, Pro) cache le titre et le contenu d'une note derrière ton PIN ou ton déverrouillage biométrique, pour les choses que tu préfères ne pas laisser visibles sur un écran que d'autres voient parfois.",
+        "\"Lecture seule\" (dans le menu d'options de la note, Pro) verrouille une note contre les modifications pour qu'un document terminé ne soit pas abîmé par accident ; ça ne cache rien. \"Protéger\" (même menu, Pro) cache le contenu d'une note derrière ton PIN ou ton déverrouillage biométrique, pour les choses que tu préfères ne pas laisser visibles sur un écran que d'autres voient parfois. Son titre reste visible dans la liste, alors garde le secret hors du titre.",
         "Les deux sont des verrous d'écran, pas une seconde couche de chiffrement. Les indicateurs voyagent à l'intérieur des données chiffrées de la note, et la note n'est délibérément pas rechiffrée avec ton PIN : ainsi un PIN oublié ne peut jamais détruire de données. La phrase reste la vraie frontière : protège-la d'abord, et sers-toi de ces verrous pour l'écran que d'autres voient parfois."
       ]
     },
@@ -512,14 +512,14 @@
       "q": "Comment restaurer une sauvegarde ?",
       "a": [
         "Ouvre Paramètres > Import & Export > Restaurer et choisis le format que tu as. \"Sauvegarde complète (.zip)\" reprend tout l’export : notes, journal, coffre-fort, tâches, images, audio et fichiers. \"Sauvegarde chiffrée (.pnbackup, .pnbackupz)\" reprend les deux exports chiffrés. Ton fichier est lu et déchiffré sur ton appareil, et la restauration est gratuite dans toutes les formules.",
-        "Tout arrive sous forme de nouveaux éléments, et rien de ce que tu as déjà n’est écrasé. Restaurer deux fois le même fichier te laisse donc deux copies de chaque note. Les deux formats chiffrés ne s’ouvrent que dans le compte qui les a créés, parce qu’ils sont chiffrés avec la clé de sa phrase ; une .zip se restaure dans n’importe quel coffre ([quelle sauvegarde faire](/fr/help/backup-strategy/))."
+        "Une restauration associe les notes par identifiant. Une note que tu as déjà n’est mise à jour que si la copie de la sauvegarde est plus récente, une note dans ta corbeille en ressort, une note qui te manque est ajoutée une seule fois, et restaurer à nouveau le même fichier ne change rien, sauf si tu as modifié une note restaurée entre-temps, auquel cas l’ancienne copie revient à côté de ta modification. Un fichier sans nos identifiants, venant d’une autre appli ou d’une sauvegarde faite par une ancienne version de celle-ci, ajoute ses notes comme nouvelles à chaque fois. Les deux formats chiffrés ne s’ouvrent que dans le compte qui les a créés, parce qu’ils sont chiffrés avec la clé de sa phrase ; une .zip se restaure dans n’importe quel coffre ([quelle sauvegarde faire](/fr/help/backup-strategy/))."
       ]
     },
     "image-quality": {
       "q": "PrivacyNotes modifie-t-il ou compresse-t-il mes images ?",
       "a": [
         "Oui. Les deux réglages sont activés par défaut parce que nous aimons nos utilisateurs : nous voulons que tu économises de l'espace de stockage et que tu gardes ta vie privée. Économiseur d'espace réduit une grande image à 2048 pixels et l'enregistre en JPEG à 85 % de qualité, ce qui garde tout le détail qu'un écran peut afficher. Supprimer les données de localisation retire les métadonnées EXIF qu'un appareil photo écrit dans une photo, position GPS comprise, avant l'enregistrement de l'image. Les deux s'appliquent à chaque image de l'app : collée dans une note, ajoutée comme fichier ou importée.",
-        "Désactive l'un ou l'autre dans **Réglages > Images**, où les photos de contact ont un troisième interrupteur qui les garde à 512 pixels. Les réglages ne concernent que les nouvelles images ; les fichiers qui ne sont pas des images sont stockés exactement tels quels. Les images HEIC et TIFF sont converties en JPEG, parce que seul Safari peut les afficher. Une sauvegarde que tu restaures est réécrite octet par octet."
+        "Désactive l'un ou l'autre dans **Paramètres > Images**, où les photos de contact ont un troisième interrupteur qui les garde à 512 pixels. Les réglages ne concernent que les nouvelles images ; les fichiers qui ne sont pas des images sont stockés exactement tels quels. Les images HEIC et TIFF sont converties en JPEG, parce que seul Safari peut les afficher. Une sauvegarde que tu restaures est réécrite octet par octet."
       ]
     },
     "storage-usage": {
@@ -533,14 +533,14 @@
       "q": "Pourquoi l'envoi de mon fichier a-t-il échoué ?",
       "a": [
         "L'erreur te dit quel plafond tu as atteint. Par fichier : 5 Mo en gratuit, 50 Mo avec Pro, 100 Mo avec n'importe quel module de stockage. Au total : tout ce que tu synchronises doit tenir dans le stockage de ton compte (50 Mo en gratuit, 500 Mo avec Pro, plus avec les modules), donc un quota plein fait échouer un envoi même quand le fichier est petit. Tout type de fichier est accepté.",
-        "Vérifie la barre de stockage dans la vue Fichiers ou sous Paramètres > Stockage, puis choisis la solution la moins coûteuse : [libère de l'espace](/fr/help/storage-usage/), passe à Pro, ou réduis le fichier (les photos de téléphone sont souvent des originaux de plusieurs Mo ; un JPEG compressé pèse une fraction de la taille). Les envois ont aussi besoin d'une connexion : les fichiers ne se mettent pas en file d'attente hors ligne."
+        "Vérifie la barre de stockage dans la vue Fichiers ou sous Paramètres > Stockage, puis choisis la solution la moins coûteuse : [libère de l'espace](/fr/help/storage-usage/), passe à Pro, ou réduis le fichier (les photos de téléphone sont souvent des originaux de plusieurs Mo ; un JPEG compressé pèse une fraction de la taille). Un envoi qui échoue faute de connexion est conservé, pas perdu : le fichier reste sur cet appareil et part tout seul dès que tu repasses en ligne, et Paramètres > ID & Sync le compte comme en attente jusque-là."
       ]
     },
     "trash-auto-delete": {
       "q": "Pourquoi des notes ont-elles disparu de ma corbeille ?",
       "a": [
-        "La corbeille n'est pas une archive : par défaut, tout ce qui s'y trouve est définitivement supprimé après 30 jours. L'interrupteur est dans la vue Corbeille elle-même, intitulé \"Suppression automatique après 30 jours\" - désactive-le là si tu veux garder la corbeille pour toujours, et le réglage se synchronise sur tous tes appareils. Le nettoyage s'exécute sur ton appareil à l'ouverture de l'appli, car le serveur ne peut pas voir quelles notes chiffrées sont à la corbeille.",
-        "Définitivement supprimé veut dire disparu : aucune copie serveur et aucun chemin de récupération. Si tu utilises la corbeille comme une pile de \"peut-être un jour\", désactive la suppression automatique ou restaure les notes avant le 30e jour. En attendant, les notes à la corbeille comptent encore dans [ton stockage](/fr/help/storage-usage/) - \"Vider\" dans la même vue libère cet espace immédiatement."
+        "La corbeille n'est pas une archive : par défaut, tout ce qui s'y trouve est définitivement supprimé après 30 jours. L'interrupteur est dans la vue Corbeille elle-même, intitulé \"Supprimer après 30 jours\" - désactive-le là si tu veux garder la corbeille pour toujours, et le réglage se synchronise sur tous tes appareils. Le nettoyage s'exécute sur ton appareil à l'ouverture de l'appli, car le serveur ne peut pas voir quelles notes chiffrées sont à la corbeille.",
+        "Définitivement supprimé veut dire disparu : aucun appareil ni personne de notre côté ne peut le faire revenir, seule une sauvegarde faite auparavant le peut. Si tu utilises la corbeille comme une pile de \"peut-être un jour\", désactive la suppression automatique ou restaure les notes avant le 30e jour. En attendant, les notes à la corbeille comptent encore dans [ton stockage](/fr/help/storage-usage/) - \"Vider\" dans la même vue libère cet espace immédiatement."
       ]
     },
     "leaving": {
@@ -561,8 +561,8 @@
       "q": "Enregistrez-vous depuis quel site je viens ?",
       "a": [
         "Oui, et cela concerne la publicité. Nous achetons des placements sur d’autres sites et rémunérons des créateurs, donc nous devons savoir lesquels amènent vraiment du monde. L’argent publicitaire gaspillé est de toute façon une charge pour le produit, alors nous le mesurons sous la forme la plus simple qui réponde à la question.",
-        "Le site vitrine compte les visites et le lien qui t’a amené, uniquement sous forme de totaux : aucun cookie, aucune fiche visiteur, aucun script tiers. Si tu crées un compte, il enregistre deux mots courts issus d’une liste publiée : le lien par lequel tu es arrivé, s’il y en avait un, et la façon dont tu as installé l’application, par exemple « android-play ».",
-        "Les deux mots sont écrits une seule fois à la création du compte, jamais mis à jour, et supprimés avec ton compte. Rien d’autre sur ton arrivée n’est conservé. Si tu fermes l’onglet avant de t’inscrire, ou si ton navigateur retire le lien, nous n’enregistrons rien du tout. Les applications elles-mêmes ne mesurent rien te concernant : ouvre l’onglet réseau et vérifie."
+        "Le site vitrine compte les clics sur nos liens sous forme de totaux, par lien et par pays, sans aucun identifiant : aucun cookie, aucune fiche visiteur, aucun script tiers. Si tu crées un compte, il enregistre deux mots courts issus d’une liste publiée : le lien par lequel tu es arrivé, s’il y en avait un, et la façon dont tu as installé l’application, par exemple « android-play ».",
+        "Les deux mots sont écrits une seule fois à la création du compte, jamais mis à jour, et supprimés avec ton compte. Rien d’autre sur ton arrivée n’est conservé. Si tu fermes l’onglet avant de t’inscrire, ou si ton navigateur retire le lien, aucun mot n’est enregistré. Les applications ne contiennent aucune analyse de ce que tu écris, aucun pixel et aucun traceur tiers : ouvre l’onglet réseau et vérifie."
       ]
     },
     "pro-not-active": {
@@ -575,7 +575,7 @@
     "manage-storage-addon": {
       "q": "Comment changer ou résilier mon module de stockage ?",
       "a": [
-        "Paramètres > Stockage est le panneau de contrôle. Passer à un forfait plus grand s'applique immédiatement, et la confirmation montre le montant exact au prorata débité aujourd'hui avant que tu valides ; la date de renouvellement ne bouge pas. \"Annuler le stockage\" garde ton espace supplémentaire jusqu'à la fin de la période déjà payée. Pour un forfait plus petit, résilie l'actuel et achète le plus petit à la fin de la période.",
+        "Paramètres > Stockage est le panneau de contrôle. Passer à un forfait plus grand s'applique immédiatement. Sur le web, la confirmation montre le montant exact au prorata débité aujourd'hui avant que tu valides, et la date de renouvellement ne bouge pas ; sur le Play Store et l'App Store, c'est la fiche de paiement du store qui affiche le montant, et Apple rembourse la partie non utilisée de ton année en cours et en démarre une nouvelle. \"Annuler le stockage\" garde ton espace supplémentaire jusqu'à la fin de la période déjà payée. Pour un forfait plus petit, résilie l'actuel et achète le plus petit à la fin de la période.",
         "Si tes données tiennent encore dans la limite restante après expiration, c'est terminé ; sinon, rien n'est supprimé et le [cycle de 90 jours en cas de dépassement](/fr/help/over-quota/) commence. Un renouvellement échoué affiche une bannière avec un lien \"Mettre à jour la carte\" pour corriger le paiement dans Paddle.",
         "Résilier depuis l'extérieur de l'appli marche aussi, et c'est la réponse quand tu ne peux pas te connecter. Paddle est notre revendeur officiel et te facture directement : utilise le lien \"Gérer l'abonnement\" dans ton e-mail de reçu, ou le chat d'assistance sur [paddle.net](https://paddle.net). Un build de boutique, c'est la même idée, donc résilie là-bas dans les réglages d'abonnement de la boutique."
       ]
@@ -583,7 +583,7 @@
     "store-purchases": {
       "q": "Les achats sont-ils transférés entre le web, Google Play et l'App Store ?",
       "a": [
-        "Oui. Pro et le stockage se rattachent à ton compte, pas à une plateforme ou une boutique. Achète sur le web et chaque appli où tu te connectes est Pro, y compris les builds de boutique ; achète dans un build de boutique et les applis web et desktop se débloquent de la même façon. Se connecter est la restauration, car le droit suit le compte. Un build de boutique porte aussi un bouton **Restaurer les achats** dans Paramètres > Forfait, qui demande à Apple ou Google ce que tu possèdes et le débloque à nouveau après une réinstallation.",
+        "Oui. Pro et le stockage se rattachent à ton compte, pas à une plateforme ou une boutique. Achète sur le web et chaque appli où tu te connectes est Pro, y compris les builds de boutique ; achète dans un build de boutique et les applis web et desktop se débloquent de la même façon. Se connecter est la restauration, car le droit suit le compte. Un build de boutique porte aussi un bouton **Restaurer les achats** dans Paramètres > Compte, qui demande à Apple ou Google ce que tu possèdes et le débloque à nouveau après une réinstallation.",
         "La seule différence, c'est qui te facture. Les achats web passent par Paddle et se gèrent dans l'appli sous Paramètres > Stockage. Les achats faits dans un build de boutique (l'App Store aujourd'hui, Google Play une fois cette appli livrée) sont facturés par cette boutique : le stockage récurrent se résilie dans les réglages d'abonnement de la boutique, et les remboursements suivent le processus de la boutique. Dans les deux cas, c'est le même compte et le même Pro partout - y compris les plateformes qui n'existent pas encore."
       ]
     },
@@ -674,8 +674,8 @@
     "android-backup": {
       "q": "Mes notes sont-elles dans la sauvegarde de mon téléphone Android ?",
       "a": [
-        "Non. L'app Android garde ses données hors de la sauvegarde cloud du téléphone, donc rien n'arrive sur Google Drive. La raison, c'est la clé, pas les notes : là où tu as choisi **Faire confiance à cet appareil**, tes 12 mots sont gardés sur cet appareil pour te garder connecté, et une sauvegarde cloud n'est pas un endroit pour la clé d'un compte chiffré de bout en bout.",
-        "Un nouveau téléphone démarre donc vide : installe l'app, connecte-toi avec tes 12 mots, et tout ce qui était synchronisé arrive. Ce qui ne l'a jamais été ne vit que sur l'ancien téléphone, alors vérifie d'abord que le pied de page indique \"Synced\", ou emporte une \"Sauvegarde PrivacyNotes (.zip)\" depuis Paramètres > Import & Export > Exporter ([quelle sauvegarde faire](/fr/help/backup-strategy/)).",
+        "Non. L'app Android garde ses données hors de la sauvegarde cloud du téléphone, donc rien n'arrive sur Google Drive. La raison, c'est la clé, pas les notes : là où tu as choisi **Faire confiance à cet appareil**, tes 12 mots sont gardés sur cet appareil pour te garder connecté, et une sauvegarde cloud n'est pas un endroit pour la clé qui déchiffre tes notes.",
+        "Un nouveau téléphone démarre donc vide : installe l'app, connecte-toi avec tes 12 mots, et tout ce qui était synchronisé arrive. La restauration attend cette première synchronisation, pour qu'une sauvegarde que tu apportes soit rapprochée de ce que contient le compte au lieu d'être ajoutée en double. Ce qui n'a jamais été synchronisé ne vit que sur l'ancien téléphone, alors vérifie d'abord que le pied de page indique \"Synced\", ou emporte une \"Sauvegarde PrivacyNotes (.zip)\" depuis Paramètres > Import & Export > Exporter ([quelle sauvegarde faire](/fr/help/backup-strategy/)).",
         "Un transfert direct de téléphone à téléphone pendant la configuration, c'est autre chose : certains téléphones déplacent alors les données d'app, et Android ne donne à une app aucun moyen fiable de le refuser. Cette copie ne quitte jamais tes deux appareils, alors efface l'ancien téléphone ensuite."
       ]
     },
@@ -724,9 +724,9 @@
     "signup-options": {
       "q": "Quelle option d'inscription choisir ?",
       "a": [
-        "Celle qui correspond à ton niveau de menace. Il y en a trois. Un : \"Continuer avec Google\" ou \"Continuer avec Apple\", avec ta clé conservée sur notre serveur. Deux : le même bouton, mais ta clé ne quitte pas ton appareil. Trois : \"Générer une phrase\", sans e-mail, sans nom et sans aucune connexion. Les trois gardent tes notes chiffrées de bout en bout, et ce qui les sépare, c'est qui détient la clé et ce que nous apprenons sur toi.",
-        "Le bouton Google, Apple ou GitHub demande ensuite où vit ta clé. \"Reste simple et pratique\" la stocke chiffrée sur notre serveur : n'importe quel nouvel appareil se connecte avec cette seule connexion et tu n'as rien à conserver. C'est le bon niveau si ce que tu crains, c'est de perdre tes propres identifiants. \"Sécurité et confidentialité maximales\" garde la clé sur ton appareil : nous ne pourrions lire aucune note sous aucune pression, et un nouvel appareil réclame tes 12 mots ou un scan de QR code depuis un appareil déjà connecté.",
-        "La voie de la phrase seule est le niveau le plus haut : pas d'e-mail, pas de nom, rien qui relie le compte à une personne. En échange, la clé n'appartient qu'à toi : la perdre sans appareil connecté, c'est un cas où personne ne peut aider. Rien n'est définitif pour autant. Paramètres > Sécurité > Ta phrase te fait passer d'un mode à l'autre quand tu veux, et chaque niveau peut ajouter un PIN ou un verrou biométrique par-dessus. L'échelle complète, avec le prix de chaque barreau, est dans [l'échelle des niveaux de menace](/fr/help/threat-model-levels/)."
+        "Celle qui correspond à ton niveau de menace. Il y en a trois. Un : la connexion avec Google, Apple ou GitHub, avec ta clé conservée sur notre serveur. Deux : la même connexion, mais ta clé ne quitte pas ton appareil. Trois : \"Générer une phrase\", sans e-mail, sans nom et sans aucune connexion. Les trois gardent tes notes chiffrées sur ton appareil, et ce qui les sépare, c'est qui détient la clé et ce que nous apprenons sur toi.",
+        "Se connecter avec l'un de ces trois demande ensuite où vit ta clé, en partant de \"Reste simple et pratique\". Cette option la stocke chiffrée sur notre serveur : n'importe quel nouvel appareil se connecte avec cette seule connexion et tu n'as rien à conserver. C'est le bon niveau si ce que tu crains, c'est de perdre tes propres identifiants. \"Sécurité et confidentialité maximales\" garde la clé sur ton appareil : nous ne pourrions lire aucune note sous aucune pression, et un nouvel appareil réclame tes 12 mots ou un scan de QR code depuis un appareil déjà connecté.",
+        "La voie de la phrase seule est le niveau le plus haut : pas d'e-mail, pas de nom, rien qui relie le compte à une personne. En échange, la clé n'appartient qu'à toi : la perdre sans appareil connecté, c'est un cas où personne ne peut aider. Le mode de clé d'une connexion n'est pas définitif : Paramètres > Sécurité > Ta phrase le change quand tu veux, tandis qu'un compte à phrase seule garde sa clé sur l'appareil. Chaque niveau peut ajouter un PIN ou un verrou biométrique par-dessus. L'échelle complète, avec le prix de chaque barreau, est dans [l'échelle des niveaux de menace](/fr/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { isEditableTarget } from './ContextMenu';
+import { isImeComposing } from './imeComposing';
 import type { LocalNote } from './db';
 import type { View } from './views';
 
@@ -38,7 +39,7 @@ export interface KeyboardShortcutHandlers {
   // Settings
   setShowSettings: (v: boolean) => void;
 
-  // About & Help (hotkeys tab)
+  // About modal (hotkeys tab)
   showAbout: false | { tab?: 'about' | 'changelog' | 'hotkeys' };
   setShowAbout: (v: false | { tab?: 'about' | 'changelog' | 'hotkeys' }) => void;
 
@@ -59,6 +60,7 @@ export function useKeyboardShortcuts(h: KeyboardShortcutHandlers) {
   // ── Zen mode: Cmd/Ctrl+Shift+Z toggle, Esc exits ──
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
+      if (isImeComposing(e)) return;
       // Cmd/Ctrl+Shift+F ("focus"), deliberately NOT Z: Cmd+Shift+Z is the
       // editor's redo, and sharing the key meant zen either double-fired
       // with redo or (guarded) was unreachable from the editor - the place
@@ -209,6 +211,9 @@ export function useKeyboardShortcuts(h: KeyboardShortcutHandlers) {
   };
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
+      // Escape clears the search even while its field has focus, so an
+      // Escape that cancels a conversion there would empty the search.
+      if (isImeComposing(e)) return;
       shortcutHandlerRef.current(e);
     }
     window.addEventListener('keydown', onKey);
@@ -218,6 +223,7 @@ export function useKeyboardShortcuts(h: KeyboardShortcutHandlers) {
   // ── Multi-select keyboard: Esc exits, Cmd/Ctrl+A selects all visible ──
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
+      if (isImeComposing(e)) return;
       if (e.key === 'Escape' && h.selectionMode) {
         h.clearSelection();
         return;

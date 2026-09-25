@@ -14,7 +14,7 @@
   "footer": {
     "exportNote": "Exports run locally. Nothing is uploaded.",
     "restoreNote": "Your file is read and decrypted locally.",
-    "importNote": "Everything is encrypted before it leaves your device to sync."
+    "importNote": "Everything is always encrypted, on your device and when it syncs."
   },
   "importPick": {
     "autoTagLabel": "Tag imported notes by source",
@@ -74,6 +74,11 @@
     "encryptedBackupTitle": "Encrypted backup (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Restore an encrypted backup with your phrase key. A .pnbackupz brings everything back, files included; a .pnbackup carries text content and metadata only. You must be signed in with the same account that created it."
   },
+  "restoreGate": {
+    "wait": "Restore waits until this device is online and has completed a sync, so your backup is matched to the notes already in your account instead of adding them twice.",
+    "paused": "Restore waits for sync, so your backup is matched to the notes already in your account, and sync is paused on this device: turn off Pause sync in Settings > ID & Sync.",
+    "belowFloor": "Restore waits for sync, so your backup is matched to the notes already in your account, and this version of the app is too old to sync: update the app first."
+  },
   "encryptedBackupLabel": "Encrypted backup",
   "status": {
     "readingFile": "Reading file…",
@@ -85,7 +90,9 @@
   "errors": {
     "genericParse": "Something went wrong.",
     "decryptionFailed": "Decryption failed. Wrong phrase or corrupted file.",
-    "blobImportFailed": "Your notes imported, but their images and files did not: {{detail}} Nothing in the file you picked was changed, so you can delete the imported notes and run the import again."
+    "blobImportFailed": "Your notes imported, but their images and files did not: {{detail}} Nothing in the file you picked was changed, so you can delete the imported notes and run the import again.",
+    "blobsNotInBackup_one": "Your notes were restored, but {{items}} listed in the backup is missing from it.",
+    "blobsNotInBackup_other": "Your notes were restored, but {{items}} listed in the backup are missing from it."
   },
   "preview": {
     "sourceLabel": "Source",
@@ -99,6 +106,7 @@
     "duplicateWarning": "importing adds these as new notes. If you run this twice, you’ll get duplicates. There’s no automatic dedupe yet.",
     "duplicateSkipNote": "bookmarks you have already saved are skipped, so running this twice will not duplicate anything.",
     "contactSkipNote": "people you have already saved are skipped and left as they are, so running this twice will not duplicate anyone.",
+    "restoreMergeNote": "notes from your own backup are matched by id. A note you already have is updated only when the backup's copy is newer, a note in your trash comes back out of it.",
     "quotaExceeded": "<strong>Storage too low to import.</strong> Estimated {{needed}} needed, {{available}} available. Free up space or upgrade before importing.",
     "quotaWarning": "Heads up: this import will use roughly {{needed}} of your {{available}} remaining storage.",
     "oversizeAttachments_one": "1 file is larger than the {{limit}} per-file limit on your plan. It imports to this device, but it will not sync to your other devices until you upgrade.",
@@ -150,13 +158,25 @@
   "exportProgress": {
     "failedTitle": "Export failed",
     "completeTitle": "Export complete",
+    "incompleteTitle": "Export incomplete",
     "exportingTitle": "Exporting backup...",
     "preparing": "Preparing...",
     "exporting": "Exporting...",
     "imagesProgress": "Exporting images... {{done}} of {{total}}",
     "filesProgress": "Exporting files... {{done}} of {{total}}",
     "building": "Building backup...",
-    "compressing": "Compressing..."
+    "compressing": "Compressing...",
+    "missingFailed_one": "This device could not download {{items}}, so your export leaves it out. Check your connection and export again.",
+    "missingFailed_other": "This device could not download {{items}}, so your export leaves them out. Check your connection and export again.",
+    "missingNotFound_one": "{{items}} is not on this device or on the server, so your export leaves it out.",
+    "missingNotFound_other": "{{items}} are not on this device or on the server, so your export leaves them out."
+  },
+  "missing": {
+    "pictures_one": "{{count}} picture",
+    "pictures_other": "{{count}} pictures",
+    "files_one": "{{count}} file",
+    "files_other": "{{count}} files",
+    "both": "{{pictures}} and {{files}}"
   },
   "upload": {
     "completeTitle": "Upload complete",

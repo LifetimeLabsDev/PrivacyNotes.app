@@ -10,7 +10,8 @@
     "tags": "Tags",
     "currentStreak": "Current streak",
     "longestStreak": "Longest streak",
-    "streakValue": "{{count}}d",
+    "streakValue_one": "{{count}} day",
+    "streakValue_other": "{{count}} days",
     "timeRangeAria": "Activity time range",
     "modeActivity": "Activity",
     "modeMood": "Mood",
@@ -59,6 +60,7 @@
       "doctorPDF": "Doctor PDF",
       "copyAIPrompt": "Copy AI prompt",
       "copied": "Copied!",
+      "saveFailed": "Saving failed, so the file may be empty or incomplete. Try again, or pick a different folder.",
       "proBadge": "PRO"
     },
     "sleepActivity": {

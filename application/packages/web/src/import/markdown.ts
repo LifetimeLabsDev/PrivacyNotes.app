@@ -5,9 +5,10 @@ import type JSZip from 'jszip';
 import { zipEntryText } from './zipEntry';
 import type { FolderDef } from '../folders';
 import { extractInlineTags, normalizeTag } from '../notesRepo';
+import { oneLineTitle } from '../oneLineTitle';
 import { FRONT_MATTER, SUPPORTED_EXT } from '../markdownFolder/adapter';
 import { isUntitledStem } from '../exportNames';
-import { stripFrontMatterPadding } from '../noteMarkdown';
+import { stripFrontMatterPadding, unescapeQuotes } from '../noteMarkdown';
 import { ATTACHMENT_EXT, isBlobReferenced, mimeFromExt } from './blobImport';
 import { buildFolderTree, commonRootPrefix, parseFolderPath } from './folderImport';
 import { linkifyMarkdown } from './linkify';
@@ -70,10 +71,15 @@ function parseTags(raw: string | undefined): string[] {
     .filter(Boolean);
 }
 
-/** Strip surrounding quotes from a YAML string value. */
+/** A YAML string value without its quotes. Only the outer pair goes, so a
+ *  title written as `"'quoted'"` keeps its own single quotes, and a
+ *  double-quoted value also loses the writer's escape (`unescapeQuotes`). */
 function unquote(s: string | undefined): string {
   if (!s) return '';
-  return s.replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1');
+  if (s.length < 2) return s;
+  if (s.startsWith('"') && s.endsWith('"')) return unescapeQuotes(s.slice(1, -1));
+  if (s.startsWith("'") && s.endsWith("'")) return s.slice(1, -1);
+  return s;
 }
 
 /** Derive a title from a filename (strip extension, un-slugify). A default
@@ -299,7 +305,10 @@ function parseSingleMd(file: File, text: string): ParsedOne {
  * nothing the user owns loses its front matter. A copy is a copy.
  */
 export function parseMarkdownFile(filename: string, content: string): ImportedNote {
-  return parseOneMd(content, filename, null).note;
+  const note = parseOneMd(content, filename, null).note;
+  // This door stores through createNote rather than applyImport, so it gives
+  // the title the one-line rule applyImport gives every other import.
+  return { ...note, title: oneLineTitle(note.title) };
 }
 
 export async function parseMarkdown(

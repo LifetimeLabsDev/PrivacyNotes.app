@@ -1,0 +1,3 @@
+[default]
+description = "Default permissions for the auth-session plugin"
+permissions = ["allow-start"]

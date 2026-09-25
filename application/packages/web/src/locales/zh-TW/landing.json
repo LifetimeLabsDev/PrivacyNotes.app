@@ -13,11 +13,11 @@
     "themeToggle": "切換淺色與深色模式"
   },
   "hero": {
-    "badge": "端對端加密，可稽核",
+    "badge": "在你的裝置上加密，可稽核",
     "headline": "筆記。任務。<br />檔案。保險庫。<stroke>零知識。</stroke>",
-    "subhead": "一個加密空間，收好所有你絕不會公開的東西。內容在離開裝置前就已加密，我們想讀也讀不到。",
+    "subhead": "一個加密空間，收好所有你絕不會公開的東西。在你的裝置上加密；金鑰自己保管，我們想讀也讀不到。",
     "tryDemo": "試用示範版",
-    "microcopy": "永久免費。不需信用卡。可用 Google、Apple 登入，或只用 12 個單字的助憶詞。",
+    "microcopy": "永久免費。不需信用卡。可用 Google、Apple、GitHub 登入，或只用 12 個單字的助憶詞。",
     "alreadyHaveVault": "已經有保險庫了？登入",
     "trustSigned": "GitHub 上的已簽署版本"
   },
@@ -91,7 +91,7 @@
     "bip39": "BIP-39",
     "ed25519": "Ed25519",
     "swissServers": "瑞士伺服器",
-    "noTracking": "零追蹤",
+    "noTracking": "無追蹤器",
     "rls": "資料列層級安全性"
   },
   "downloads": {
@@ -116,7 +116,7 @@
     "linuxDebDesc": "安裝程式，更新需重新下載",
     "checksumAria": "{{label}} 的 SHA-256 校驗碼",
     "debFootnote": "要更新已經安裝的 <highlight>.deb</highlight> 嗎？不必先解除安裝。雙擊檔案只會停在 Ubuntu 的 App Center，那裡只會顯示應用程式已安裝，所以請從終端機把新版直接裝在舊版上。請選擇符合你電腦的那一行，不確定的話可以用 dpkg --print-architecture 查看：",
-    "availability": "現已推出：macOS 13 以上、Windows 10 以上、iOS 15 以上、Linux 與 Android。",
+    "availability": "現已推出：macOS 13 以上、Windows 10 以上、iOS 17.4 以上、Linux 與 Android。",
     "betaNote": "我們所有的應用程式都還在 beta，可能仍有 bug，目前以網頁版最穩定。每個應用程式都會自動更新，而且我們幾乎每天推出修正。",
     "pkgToggle": "使用套件管理器安裝 ({{platforms}})",
     "pkgBrewDesc": "應用程式會自我更新，brew upgrade 不會。",
@@ -145,7 +145,7 @@
     "freeMood": "心情與身心追蹤",
     "freeTheme": "深色與淺色模式",
     "freeAnon": "匿名登入，不需電子郵件",
-    "freeGoogle": "Google 登入",
+    "freeGoogle": "Google、Apple 或 GitHub 登入",
     "noSubscription": "免訂閱",
     "proLabel": "Pro · 付一次",
     "earlyAdopterBadge": "早鳥",
@@ -174,8 +174,8 @@
     "phraseDesc": "12 個單字，Ed25519 簽章",
     "rlsTerm": "資料列層級安全性",
     "rlsDesc": "RLS 以你的公鑰為鍵",
-    "trackingTerm": "零追蹤",
-    "trackingDesc": "沒有分析程式，沒有追蹤像素",
+    "trackingTerm": "零追蹤器",
+    "trackingDesc": "沒有追蹤像素，沒有第三方追蹤器",
     "authTerm": "匿名驗證",
     "authDesc": "不用電子郵件，不用密碼",
     "serversTerm": "瑞士伺服器",
@@ -190,7 +190,7 @@
   "mood": {
     "kicker": "心情與身心追蹤",
     "heading": "記錄你真實的感受。",
-    "intro": "心情、情緒、睡眠、用藥與活動量，幾下點按就能記錄。所有內容都會在同步之前，先在你的裝置上完成加密。",
+    "intro": "心情、情緒、睡眠、用藥與活動量，幾下點按就能記錄。所有內容無論在你的裝置上還是同步時，都始終保持加密。",
     "cardEmotionsTitle": "心情（1-10）+ 24 種情緒標籤",
     "cardEmotionsBody": "24 種有研究依據的情緒標籤。為當下的感受命名，隨時間看出模式，並匯出你的心理師或醫師能實際運用的資料。",
     "cardSleepTitle": "睡眠品質 + 活動量",
@@ -215,8 +215,8 @@
     "themSeparate": "各自獨立的 App，年年收費",
     "usAllInOne": "筆記、任務、檔案、保險庫、日誌、書籤。一個 App",
     "usTracking": "心情、活力、睡眠、用藥追蹤",
-    "usEncrypted": "端對端加密，同步至瑞士",
-    "usSignIn": "匿名或 Google 登入，加密方式相同",
+    "usEncrypted": "在你的裝置上加密，同步至瑞士",
+    "usSignIn": "匿名，或用 Google、Apple、GitHub 登入，加密方式都相同",
     "usExport": "模式偵測 + 醫師 PDF 匯出",
     "usSync": "桌面 + 行動裝置，無上限同步",
     "usPriceBeta": "永久免費，或一次付 ${{earlyPrice}} 升級 Pro（早鳥價）",
@@ -248,7 +248,7 @@
     "para1": "多數筆記 App 會挖掘你的內容。在購物清單加上「買台新電視」，接下來幾頁全是電視廣告。你的採買清單、你的日誌、你的私密想法，全被餵進廣告投放管線，被建檔、被販售。這就是每個靠廣告撐起的「免費」筆記 App 的商業模式。",
     "para2": "就連不放廣告的 App，也仍把你的筆記以明文存在他們的伺服器上：員工讀得到、外洩偷得走、一紙傳票就能調閱。你的資料成了他們的籌碼。",
     "differenceLabel": "差別在這裡",
-    "differenceBody": "<brand/> 採端對端加密，金鑰從不離開你的裝置，因此我們和我們的伺服器都讀不到你寫的內容。沒有追蹤、沒有分析、沒有廣告、沒有側寫，未來也不會有。你寫下的，永遠是你的。",
+    "differenceBody": "<brand/> 在你的裝置上加密你的筆記，而在自我保管下，金鑰從不離開你的裝置，因此我們和我們的伺服器一個字都讀不到。沒有廣告、沒有追蹤像素、沒有第三方追蹤器，也不分析你寫的內容，未來也不會有。我們的網站會按國家統計下載連結與合作夥伴連結的點擊次數，不帶任何識別碼。你寫下的，永遠是你的。",
     "keyboardNote": "<b>關於裝置鍵盤的提醒。</b>第三方鍵盤（例如 Gboard、SwiftKey 或 Samsung 鍵盤）可能會把你輸入的內容傳到它們自己的伺服器。這發生在作業系統層級，任何 App 都管不到。建議在鍵盤設定中停用雲端功能，或改用純離線鍵盤。"
   },
   "readIt": {
@@ -263,13 +263,13 @@
   },
   "wontFind": {
     "kicker": "你在這個應用程式裡找不到的東西",
-    "noTracking": "沒有追蹤",
+    "noTracking": "沒有追蹤器",
     "noAds": "沒有廣告",
     "noHarvesting": "沒有資料蒐集",
     "noAiTraining": "沒有 AI 訓練",
     "noLockIn": "沒有平台鎖定",
     "noEmail": "不需要電子郵件",
-    "noTelemetry": "沒有遙測",
+    "noTelemetry": "不分析你的筆記",
     "noCookieBanner": "沒有 Cookie 橫幅",
     "noPasswords": "沒有密碼",
     "noDarkPatterns": "沒有誘導設計",
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "你的助憶詞就是你的金鑰",
-    "body": "沒有助憶詞，就沒有筆記。我們救不回來，任何人都救不回來。這是端對端加密的代價：在自我保管下，只有你握有金鑰，所以聯絡開發團隊也無法把筆記找回來。",
+    "body": "沒有助憶詞，就沒有筆記。我們救不回來，任何人都救不回來。這是自我保管的代價：只有你握有金鑰，所以聯絡開發團隊也無法把筆記找回來。",
     "noRecoveryTerm": "無法救援",
     "noRecoveryDesc": "遺失助憶詞，就失去筆記",
     "deviceTerm": "裝置端產生",
@@ -290,8 +290,8 @@
     "writeDesc": "紙本備份，收在安全的地方",
     "printTerm": "從設定列印",
     "printDesc": "隨時檢視並匯出你的助憶詞",
-    "googleTerm": "用 Google 登入？",
-    "googleDesc": "你仍會有一組助憶詞，記得備份"
+    "googleTerm": "用 Google、Apple 或 GitHub 登入？",
+    "googleDesc": "預設由我們保管金鑰，你也可以自己備份助憶詞"
   },
   "closing": {
     "kicker": "隨時可以開始",

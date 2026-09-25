@@ -140,6 +140,13 @@ export async function createNoteVersion(
 /**
  * List all versions for a note, newest first. Decrypted in memory
  * so the caller can render previews without a second round trip.
+ *
+ * A read that fails throws; an empty list means the note has no
+ * versions. The blob GC depends on that difference: it skips when the
+ * read throws, because history it could not read may still hold a blob.
+ * postgrest-js reports a failed fetch, offline included, as an error
+ * object rather than a rejection, so the check below is what turns it
+ * into a throw.
  */
 export async function listNoteVersions(
   supabase: SupabaseClient,
@@ -165,7 +172,7 @@ export async function listNoteVersions(
     .order('created_at', { ascending: false });
   if (error) {
     console.error('[note_versions] list failed:', error);
-    return [];
+    throw new Error(error.message || 'note_versions list failed');
   }
   const rows = (data ?? []) as RemoteRow[];
   const out: NoteVersion[] = [];

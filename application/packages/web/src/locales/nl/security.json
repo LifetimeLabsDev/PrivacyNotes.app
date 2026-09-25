@@ -119,6 +119,7 @@
     "enable": "Biometrisch ontgrendelen inschakelen",
     "lockOnOpen": "App vergrendelen bij openen",
     "lockOnOpenHint": "Vraag om biometrie of een PIN bij het openen van de app.",
+    "lockHidesOnSwitch": "Verbergt je notities ook wanneer je van app wisselt.",
     "lockNeedsCredential": "De app-vergrendeling heeft op dit apparaat een PIN of biometrisch ontgrendelen nodig.",
     "setUpPin": "PIN instellen",
     "confirmPinForLock": "Voer je PIN in om dit aan te zetten. Die vergrendelt een kopie van je herstelzin, zodat alleen je PIN de app kan openen.",
@@ -129,6 +130,9 @@
     "disableConfirmLabel": "Uitschakelen",
     "disableConfirmBody": "Biometrisch ontgrendelen op dit apparaat uitschakelen?",
     "disableConfirmBodyAppLock": "Biometrisch ontgrendelen op dit apparaat uitschakelen? Het vergrendelen van de app gaat dan ook uit."
+  },
+  "appLock": {
+    "phraseNotSaved": "Dit apparaat kon je herstelzin niet opslaan, dus er is niets veranderd. Probeer het opnieuw."
   },
   "pinSetup": {
     "title": "Stel een PIN in",

@@ -13,11 +13,11 @@
     "themeToggle": "Zwischen Hell und Dunkel wechseln"
   },
   "hero": {
-    "badge": "Ende-zu-Ende-verschlüsselt, prüfbar",
+    "badge": "Auf deinem Gerät verschlüsselt, prüfbar",
     "headline": "Notizen. Aufgaben.<br />Dateien. Tresor.<stroke>Zero-Knowledge.</stroke>",
-    "subhead": "Ein verschlüsselter Ort für alles, was du nie posten würdest. Verschlüsselt auf deinem Gerät, bevor es irgendwohin geht. Wir könnten es nicht lesen, selbst wenn wir wollten.",
+    "subhead": "Ein verschlüsselter Ort für alles, was du nie posten würdest. Auf deinem Gerät verschlüsselt; verwahre deinen Schlüssel selbst, und wir könnten es nicht lesen, selbst wenn wir wollten.",
     "tryDemo": "Demo ausprobieren",
-    "microcopy": "Für immer kostenlos. Keine Kreditkarte. Anmeldung mit Google, Apple oder einfach einer 12-Wort-Phrase.",
+    "microcopy": "Für immer kostenlos. Keine Kreditkarte. Anmeldung mit Google, Apple, GitHub oder einfach einer 12-Wort-Phrase.",
     "alreadyHaveVault": "Du hast schon einen Tresor? Anmelden",
     "trustSigned": "Signierte Versionen auf GitHub"
   },
@@ -91,7 +91,7 @@
     "bip39": "BIP-39",
     "ed25519": "Ed25519",
     "swissServers": "Schweizer Server",
-    "noTracking": "Kein Tracking",
+    "noTracking": "Keine Tracker",
     "rls": "Row-Level-Security"
   },
   "downloads": {
@@ -116,7 +116,7 @@
     "linuxDebDesc": "Installer, zum Aktualisieren neu herunterladen",
     "checksumAria": "SHA-256-Prüfsumme für {{label}}",
     "debFootnote": "Du aktualisierst eine bestehende <highlight>.deb-Installation</highlight>? Deinstalliere sie vorher nicht. Ein Doppelklick auf die Datei landet in Ubuntus App Center in einer Sackgasse, dort steht nur, dass die App installiert ist. Installiere die neue Version im Terminal einfach über die alte. Nimm die Zeile, die zu deinem Rechner passt; dpkg --print-architecture sagt dir, welche das ist:",
-    "availability": "Jetzt verfügbar: macOS 13+, Windows 10+, iOS 15+, Linux und Android.",
+    "availability": "Jetzt verfügbar: macOS 13+, Windows 10+, iOS 17.4+, Linux und Android.",
     "betaNote": "Alle unsere Apps sind in der Beta-Phase und können noch Fehler enthalten, daher ist die Web-Version derzeit die stabilste. Jede App aktualisiert sich automatisch, und wir liefern fast täglich Fixes.",
     "pkgToggle": "Mit einem Paketmanager installieren ({{platforms}})",
     "pkgBrewDesc": "Die App aktualisiert sich selbst, brew upgrade nicht.",
@@ -145,7 +145,7 @@
     "freeMood": "Stimmungs- und Wohlbefindens-Tracking",
     "freeTheme": "Dunkler und heller Modus",
     "freeAnon": "Anonyme Anmeldung, ohne E-Mail",
-    "freeGoogle": "Google-Anmeldung",
+    "freeGoogle": "Anmeldung mit Google, Apple oder GitHub",
     "noSubscription": "Kein Abo",
     "proLabel": "Pro · Einmalig zahlen",
     "earlyAdopterBadge": "Early Adopter",
@@ -174,8 +174,8 @@
     "phraseDesc": "12 Wörter, Ed25519-Signatur",
     "rlsTerm": "Row-Level-Security",
     "rlsDesc": "RLS an deinen Public Key gebunden",
-    "trackingTerm": "Null Tracking",
-    "trackingDesc": "Keine Analyse, keine Pixel",
+    "trackingTerm": "Null Tracker",
+    "trackingDesc": "Keine Pixel, keine Tracker von Drittanbietern",
     "authTerm": "Anonyme Anmeldung",
     "authDesc": "Keine E-Mail, kein Passwort",
     "serversTerm": "Schweizer Server",
@@ -190,7 +190,7 @@
   "mood": {
     "kicker": "Stimmungs- & Wohlbefindens-Tracking",
     "heading": "Erfasse, was du wirklich fühlst.",
-    "intro": "Stimmung, Emotionen, Schlaf, Medikamente und Aktivitätslevel, alles mit wenigen Fingertipps. Alles wird auf deinem Gerät verschlüsselt, bevor es synchronisiert wird.",
+    "intro": "Stimmung, Emotionen, Schlaf, Medikamente und Aktivitätslevel, alles mit wenigen Fingertipps. Alles ist immer verschlüsselt, auf deinem Gerät und beim Synchronisieren.",
     "cardEmotionsTitle": "Stimmung (1-10) + 24 Emotions-Tags",
     "cardEmotionsBody": "24 forschungsbasierte Emotions-Tags. Benenne, was du fühlst, erkenne Muster über die Zeit und exportiere Daten, mit denen deine Therapeutin oder dein Arzt arbeiten kann.",
     "cardSleepTitle": "Schlafqualität + Aktivitätslevel",
@@ -215,8 +215,8 @@
     "themSeparate": "Separate Apps, wiederkehrende Gebühren",
     "usAllInOne": "Notizen, Aufgaben, Dateien, Tresor, Tagebuch, Lesezeichen. Eine App",
     "usTracking": "Stimmungs-, Energie-, Schlaf-, Medikamenten-Tracking",
-    "usEncrypted": "Ende-zu-Ende-verschlüsselt, synchronisiert in die Schweiz",
-    "usSignIn": "Anonyme oder Google-Anmeldung, dieselbe Verschlüsselung in beiden Fällen",
+    "usEncrypted": "Auf deinem Gerät verschlüsselt, synchronisiert in die Schweiz",
+    "usSignIn": "Anonym oder per Google, Apple oder GitHub anmelden, dieselbe Verschlüsselung in jedem Fall",
     "usExport": "Mustererkennung + Arzt-PDF-Export",
     "usSync": "Desktop + Mobil, unbegrenzter Sync",
     "usPriceBeta": "Für immer kostenlos oder {{earlyPrice}} $ einmalig für Pro (Early-Adopter-Preis)",
@@ -248,7 +248,7 @@
     "para1": "Die meisten Notiz-Apps werten deine Inhalte aus. Schreib „neuen Fernseher kaufen“ auf deine Einkaufsliste, und deine nächsten Seiten füllen sich mit Fernseher-Werbung. Deine Einkaufsliste, dein Tagebuch, deine privaten Gedanken, alles in Werbe-Targeting-Pipelines eingespeist, profiliert und verkauft. Das ist das Geschäftsmodell jeder „kostenlosen“, werbefinanzierten Notiz-App.",
     "para2": "Selbst Apps, die keine Werbung zeigen, speichern deine Notizen im Klartext auf ihren Servern, lesbar für Mitarbeitende, angreifbar bei Datenlecks und verfügbar für jeden mit einer richterlichen Anordnung. Deine Daten werden zu ihrem Druckmittel.",
     "differenceLabel": "Der Unterschied",
-    "differenceBody": "<brand/> ist Ende-zu-Ende-verschlüsselt mit Schlüsseln, die dein Gerät nie verlassen, also können weder wir noch unsere Server lesen, was du schreibst. Es gibt kein Tracking, keine Analyse, keine Werbung und kein Profiling, und das wird auch so bleiben. Was du schreibst, bleibt deins.",
+    "differenceBody": "<brand/> verschlüsselt deine Notizen auf deinem Gerät, und bei Selbstverwahrung verlässt der Schlüssel es nie, also können weder wir noch unsere Server ein Wort lesen. Es gibt keine Werbung, keine Pixel, keine Tracker von Drittanbietern und keine Analyse dessen, was du schreibst, und das wird auch so bleiben. Unsere Website zählt Klicks auf ihre Download- und Partnerlinks nach Land, ohne jede Kennung. Was du schreibst, bleibt deins.",
     "keyboardNote": "<b>Ein Hinweis zu Gerätetastaturen.</b> Tastaturen von Drittanbietern (wie Gboard, SwiftKey oder Samsung Keyboard) senden möglicherweise, was du tippst, an ihre eigenen Server. Das geschieht auf Betriebssystem-Ebene, außerhalb der Kontrolle jeder App. Erwäge, Cloud-Funktionen in deinen Tastatur-Einstellungen zu deaktivieren oder eine reine Offline-Tastatur zu nutzen."
   },
   "readIt": {
@@ -263,13 +263,13 @@
   },
   "wontFind": {
     "kicker": "Was du in der App nicht findest",
-    "noTracking": "Kein Tracking",
+    "noTracking": "Keine Tracker",
     "noAds": "Keine Werbung",
     "noHarvesting": "Kein Datensammeln",
     "noAiTraining": "Kein KI-Training",
     "noLockIn": "Kein Lock-in",
     "noEmail": "Keine E-Mail nötig",
-    "noTelemetry": "Keine Telemetrie",
+    "noTelemetry": "Keine Analyse deiner Notizen",
     "noCookieBanner": "Kein Cookie-Banner",
     "noPasswords": "Keine Passwörter",
     "noDarkPatterns": "Keine Dark Patterns",
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "Deine Phrase ist dein Schlüssel",
-    "body": "Keine Phrase, keine Notizen. Wir können sie nicht wiederherstellen, und niemand sonst kann es. Das ist der Preis für Ende-zu-Ende-Verschlüsselung: bei Selbstverwahrung hast nur du den Schlüssel, deshalb kann auch eine Nachricht an unser Team deine Notizen nicht zurückholen.",
+    "body": "Keine Phrase, keine Notizen. Wir können sie nicht wiederherstellen, und niemand sonst kann es. Das ist der Preis der Selbstverwahrung: Nur du hast den Schlüssel, deshalb kann auch eine Nachricht an unser Team deine Notizen nicht zurückholen.",
     "noRecoveryTerm": "Keine Wiederherstellung",
     "noRecoveryDesc": "Phrase verloren, Notizen verloren",
     "deviceTerm": "Auf dem Gerät erzeugt",
@@ -290,8 +290,8 @@
     "writeDesc": "Papier-Backup, sicher aufbewahrt",
     "printTerm": "Aus den Einstellungen drucken",
     "printDesc": "Deine Phrase jederzeit ansehen und exportieren",
-    "googleTerm": "Google-Anmeldung?",
-    "googleDesc": "Du bekommst trotzdem eine Phrase. Sichere sie"
+    "googleTerm": "Anmeldung mit Google, Apple oder GitHub?",
+    "googleDesc": "Standardmäßig verwahren wir deinen Schlüssel, oder du sicherst deine Phrase selbst"
   },
   "closing": {
     "kicker": "Wenn du bereit bist",

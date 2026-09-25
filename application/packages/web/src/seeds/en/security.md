@@ -22,7 +22,7 @@ That is our live database in Zurich, not a drawing of one. Your note goes in the
 
 ## Who holds your key
 
-Every option keeps your notes end-to-end encrypted. They differ in where your phrase lives.
+Every option keeps your notes encrypted on your device. They differ in where your phrase lives.
 
 | Option | Where your phrase lives | What that buys you |
 | --- | --- | --- |
@@ -32,7 +32,7 @@ Every option keeps your notes end-to-end encrypted. They differ in where your ph
 
 The bottom two mean we could not read a note even if we were compelled to. The first trades that away for convenience: your phrase sits on our server under a key of ours, so a new device needs nothing but your login. If our server were ever breached, that key could be exposed.
 
-You are not locked into the one you picked. Change it in **Settings > Security > Your Phrase**.
+Signed in with Google, Apple or GitHub? You can switch between the first two later, in **Settings > Security > Your Phrase**. With a phrase-only account, the phrase always stays with you.
 
 > [!warning] Keep your own copy of the phrase
 > Your phrase opens your notes. If you lose it, nobody can recover it for you, us included. <span style="color: #e03131">Write it on paper today.</span>
@@ -47,7 +47,7 @@ You are not locked into the one you picked. Change it in **Settings > Security >
 | What | Where |
 | --- | --- |
 | The encryption itself | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| The database layout | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| What our server receives | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | What an attacker can and cannot do | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | How to report a hole | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

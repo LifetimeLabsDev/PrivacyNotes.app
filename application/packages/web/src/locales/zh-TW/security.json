@@ -119,6 +119,7 @@
     "enable": "啟用生物辨識解鎖",
     "lockOnOpen": "開啟時鎖定應用程式",
     "lockOnOpenHint": "開啟應用程式時要求生物辨識或 PIN 碼。",
+    "lockHidesOnSwitch": "切換應用程式時也會隱藏你的筆記。",
     "lockNeedsCredential": "應用程式鎖定需要在這台裝置上設定 PIN 碼或啟用生物辨識解鎖。",
     "setUpPin": "設定 PIN 碼",
     "confirmPinForLock": "輸入 PIN 碼即可開啟這項功能。它會鎖住一份你的復原助憶詞副本，只有你的 PIN 碼能打開應用程式。",
@@ -129,6 +130,9 @@
     "disableConfirmLabel": "停用",
     "disableConfirmBody": "要在此裝置停用生物辨識解鎖嗎？",
     "disableConfirmBodyAppLock": "要在此裝置停用生物辨識解鎖嗎？應用程式鎖定也會一併關閉。"
+  },
+  "appLock": {
+    "phraseNotSaved": "這部裝置無法儲存你的復原助憶詞，因此沒有任何變更。請再試一次。"
   },
   "pinSetup": {
     "title": "設定 PIN 碼",

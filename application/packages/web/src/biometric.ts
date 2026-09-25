@@ -457,6 +457,7 @@ export function hasSamePinWrap(blob: Pick<PinWrapBlob, 'pinWrapSalt' | 'pinWrapC
  * The cost is deliberate and small: on an untrusted device app lock does not
  * light up automatically from synced settings. Setting a PIN on that device
  * still works, because that path writes its own blob.
+ * Test: tests/pinWrapUntrusted.test.ts
  */
 export function hydrateLocalPinWrap(blob: PinWrapBlob): void {
   if (!isTrustedDevice()) return;

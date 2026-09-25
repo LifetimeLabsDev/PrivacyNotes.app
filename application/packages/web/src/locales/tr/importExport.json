@@ -14,7 +14,7 @@
   "footer": {
     "exportNote": "Dışa aktarma cihazınızda çalışır. Hiçbir şey yüklenmez.",
     "restoreNote": "Dosyanız cihazınızda okunup şifresi çözülür.",
-    "importNote": "Her şey eşitlenmek üzere cihazınızdan ayrılmadan önce şifrelenir."
+    "importNote": "Her şey cihazınızda da eşitlenirken de her zaman şifrelidir."
   },
   "importPick": {
     "autoTagLabel": "İçe aktarılan notları kaynağına göre etiketle",
@@ -74,6 +74,11 @@
     "encryptedBackupTitle": "Şifreli yedek (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Şifreli bir yedeği ifade anahtarınızla geri yükleyin. Bir .pnbackupz dosyası dosyalar dahil her şeyi geri getirir; .pnbackup yalnızca metin içeriği ve üst verileri içerir. Yedeği oluşturan hesapla giriş yapmış olmanız gerekir."
   },
+  "restoreGate": {
+    "wait": "Geri yükleme, bu cihaz çevrimiçi olup bir eşitlemeyi tamamlayana kadar bekler; böylece yedeğinizdeki notlar iki kez eklenmek yerine hesabınızda zaten bulunan notlarla eşleştirilir.",
+    "paused": "Geri yükleme eşitlemeyi bekler; böylece yedeğinizdeki notlar hesabınızda zaten bulunan notlarla eşleştirilir. Bu cihazda eşitleme duraklatıldı: Ayarlar > ID & Sync bölümünde “Eşitlemeyi duraklat” seçeneğini kapatın.",
+    "belowFloor": "Geri yükleme eşitlemeyi bekler; böylece yedeğinizdeki notlar hesabınızda zaten bulunan notlarla eşleştirilir. Uygulamanın bu sürümü eşitleme için çok eski: önce uygulamayı güncelleyin."
+  },
   "encryptedBackupLabel": "Şifreli yedek",
   "status": {
     "readingFile": "Dosya okunuyor…",
@@ -85,7 +90,9 @@
   "errors": {
     "genericParse": "Bir şeyler ters gitti.",
     "decryptionFailed": "Şifre çözme başarısız oldu. İfade yanlış veya dosya bozuk.",
-    "blobImportFailed": "Notlarınız aktarıldı, ama görselleri ve dosyaları aktarılmadı: {{detail}} Seçtiğiniz dosyada hiçbir şey değişmedi, yani aktarılan notları silip içe aktarmayı yeniden çalıştırabilirsiniz."
+    "blobImportFailed": "Notlarınız aktarıldı, ama görselleri ve dosyaları aktarılmadı: {{detail}} Seçtiğiniz dosyada hiçbir şey değişmedi, yani aktarılan notları silip içe aktarmayı yeniden çalıştırabilirsiniz.",
+    "blobsNotInBackup_one": "Notlarınız geri yüklendi, ancak yedekte listelenen {{items}} yedeğin içinde yok.",
+    "blobsNotInBackup_other": "Notlarınız geri yüklendi, ancak yedekte listelenen {{items}} yedeğin içinde yok."
   },
   "preview": {
     "sourceLabel": "Kaynak",
@@ -99,6 +106,7 @@
     "duplicateWarning": "içe aktarma bunları yeni not olarak ekler. Bunu iki kez çalıştırırsanız kopyalar oluşur. Henüz otomatik kopya ayıklama yok.",
     "duplicateSkipNote": "zaten kaydettiğiniz yer imleri atlanır, bu yüzden ikinci kez çalıştırmak hiçbir şeyi çoğaltmaz.",
     "contactSkipNote": "zaten kaydettiğiniz kişiler atlanır ve olduğu gibi kalır, bu yüzden iki kez çalıştırmak kimseyi çoğaltmaz.",
+    "restoreMergeNote": "kendi yedeğinizdeki notlar kimliklerine göre eşleştirilir. Zaten sahip olduğunuz bir not yalnızca yedekteki kopya daha yeniyse güncellenir, çöp kutusundaki bir not da oradan geri alınır.",
     "quotaExceeded": "<strong>Depolama alanı içe aktarmaya yetmiyor.</strong> Tahmini {{needed}} gerekiyor, {{available}} boş. İçe aktarmadan önce yer açın veya yükseltin.",
     "quotaWarning": "Dikkat: bu içe aktarma, kalan {{available}} depolama alanınızın yaklaşık {{needed}} kadarını kullanacak.",
     "oversizeAttachments_one": "1 dosya, planınızdaki {{limit}} dosya başı sınırından büyük. Bu cihaza aktarılır, ama siz yükseltene kadar diğer cihazlarınıza eşitlenmez.",
@@ -150,13 +158,25 @@
   "exportProgress": {
     "failedTitle": "Dışa aktarma başarısız oldu",
     "completeTitle": "Dışa aktarma tamamlandı",
+    "incompleteTitle": "Dışa aktarma eksik",
     "exportingTitle": "Yedek dışa aktarılıyor...",
     "preparing": "Hazırlanıyor...",
     "exporting": "Dışa aktarılıyor...",
     "imagesProgress": "Görseller dışa aktarılıyor... {{total}} görselden {{done}} tanesi",
     "filesProgress": "Dosyalar dışa aktarılıyor... {{total}} dosyadan {{done}} tanesi",
     "building": "Yedek oluşturuluyor...",
-    "compressing": "Sıkıştırılıyor..."
+    "compressing": "Sıkıştırılıyor...",
+    "missingFailed_one": "Bu cihaz şunu indiremedi: {{items}}. Bu yüzden dışa aktarmanızda yok. Bağlantınızı kontrol edip yeniden dışa aktarın.",
+    "missingFailed_other": "Bu cihaz şunları indiremedi: {{items}}. Bu yüzden dışa aktarmanızda yok. Bağlantınızı kontrol edip yeniden dışa aktarın.",
+    "missingNotFound_one": "{{items}} ne bu cihazda ne de sunucuda var, bu yüzden dışa aktarmanızda yok.",
+    "missingNotFound_other": "{{items}} ne bu cihazda ne de sunucuda var, bu yüzden dışa aktarmanızda yok."
+  },
+  "missing": {
+    "pictures_one": "{{count}} resim",
+    "pictures_other": "{{count}} resim",
+    "files_one": "{{count}} dosya",
+    "files_other": "{{count}} dosya",
+    "both": "{{pictures}} ve {{files}}"
   },
   "upload": {
     "completeTitle": "Yükleme tamamlandı",

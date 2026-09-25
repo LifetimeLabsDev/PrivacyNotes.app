@@ -1,0 +1,303 @@
+{
+  "noteRow": {
+    "created": "Создано",
+    "modified": "Изменено",
+    "select": "Выбрать заметку",
+    "deselect": "Отменить выбор заметки",
+    "pinProtected": "Защищено PIN-кодом",
+    "readOnly": "Только для чтения",
+    "file": "Файл",
+    "empty": "Пусто",
+    "noContent": "Нет содержимого",
+    "notBackedUp": "Нет резервной копии"
+  },
+  "header": {
+    "new": "Создать",
+    "newNote": "Новая заметка",
+    "newNoteHover": "Новая заметка ({{hotkey}})",
+    "trash": "Корзина"
+  },
+  "folderChip": {
+    "clear": "Очистить фильтр папки: {{folder}}"
+  },
+  "tagChip": {
+    "clear": "Очистить фильтр тега: {{tag}}"
+  },
+  "vaultNew": {
+    "ariaLabel": "Новый элемент сейфа",
+    "login": "Логин",
+    "card": "Кредитная карта",
+    "sshKey": "SSH-ключ"
+  },
+  "newMenu": {
+    "note": "Заметка",
+    "task": "Задача",
+    "journal": "Дневник",
+    "login": "Логин",
+    "file": "Файл",
+    "bookmark": "Закладка",
+    "contact": "Контакт"
+  },
+  "vaultFilter": {
+    "all": "Все",
+    "logins": "Логины",
+    "cards": "Кредитные карты",
+    "keys": "Ключи"
+  },
+  "journal": {
+    "newEntry": "Новая запись в дневнике",
+    "newEntryHover": "Новая запись в дневнике ({{hotkey}})"
+  },
+  "tasks": {
+    "newTitle": "Задачи на {{date}}"
+  },
+  "trash": {
+    "empty": "Очистить",
+    "emptyHover": "Удалить все заметки из корзины",
+    "storage": "Хранилище",
+    "autoDelete": "Автоудаление через 30 дней"
+  },
+  "search": {
+    "sortOptions": "Сортировка и вид",
+    "placeholderVault": "Поиск в сейфе…",
+    "placeholderNotes": "Поиск заметок…"
+  },
+  "selection": {
+    "countOf": "Выбрано {{selected}} из {{total}}",
+    "selectAll": "Выбрать все",
+    "deselectAll": "Снять выделение"
+  },
+  "empty": {
+    "noMatches": "Ничего не найдено.",
+    "vault": "Сейф пуст.",
+    "notes": "Заметок пока нет.",
+    "filtered": "Ни один элемент не соответствует фильтрам.",
+    "clearFilters": "Очистите фильтры",
+    "filteredAfter": "чтобы их показать."
+  },
+  "headerLabel": {
+    "allItems": "Все",
+    "untagged": "Без тегов",
+    "journals": "Дневники",
+    "vault": "Сейф",
+    "pinned": "Закреплённые",
+    "notes": "Заметки"
+  },
+  "footerStats": {
+    "journals": "Дневников",
+    "items": "Элементов",
+    "trashed": "В корзине",
+    "notes": "Заметок",
+    "bookmarks": "Закладок",
+    "contacts": "Контактов"
+  },
+  "toast": {
+    "imageUploadFailed": "Не удалось отправить изображение: {{error}}",
+    "imageError": "Ошибка изображения: {{error}}",
+    "uploadFailedFor": "Не удалось отправить «{{filename}}»: {{error}}",
+    "importedSyncing_one": "Импортирована {{count}} заметка. Синхронизация…",
+    "importedSyncing_few": "Импортированы {{count}} заметки. Синхронизация…",
+    "importedSyncing_many": "Импортировано {{count}} заметок. Синхронизация…",
+    "importedSyncing_other": "Импортировано {{count}} заметки. Синхронизация…",
+    "addedTag_one": "#{{tag}} добавлен к {{count}} элементу",
+    "addedTag_few": "#{{tag}} добавлен к {{count}} элементам",
+    "addedTag_many": "#{{tag}} добавлен к {{count}} элементам",
+    "addedTag_other": "#{{tag}} добавлен к {{count}} элемента",
+    "restoreSummary": "Восстановлено. Добавлено: {{added}}, обновлено: {{updated}}, без изменений: {{unchanged}}."
+  },
+  "burn": {
+    "mediaOnly": "Эта заметка содержит только медиафайлы, поэтому ей нельзя поделиться через одноразовую ссылку.",
+    "shareTitle": "Зашифрованная заметка"
+  },
+  "loadError": {
+    "message": "Не удалось загрузить ваши заметки. Соединение с локальной базой данных прервалось. Такое бывает, если приложение долго работало в фоне.",
+    "reload": "Перезагрузить"
+  },
+  "banner": {
+    "dismiss": "Скрыть",
+    "proActivationPending": "Оплата получена, но активация Pro занимает больше времени, чем обычно. Обновите страницу через минуту или обратитесь в поддержку, если Pro так и не включится.",
+    "snapshotPaused": "История заметок приостановлена. Похоже, ваш тариф Pro неактивен. Новые изменения не будут сохраняться в истории, пока Pro не будет восстановлен.",
+    "restorePro": "Восстановить Pro",
+    "storagePastDue": "Не удалось оплатить подписку на хранилище. Обновите карту в Paddle, чтобы не потерять дополнительный объём.",
+    "updateCard": "Обновить карту"
+  },
+  "sidebar": {
+    "collapse": "Свернуть боковую панель",
+    "expand": "Развернуть боковую панель"
+  },
+  "notesList": {
+    "collapse": "Свернуть список заметок",
+    "expand": "Развернуть список заметок"
+  },
+  "paneResize": {
+    "hintCollapse": "Нажмите, чтобы свернуть · Перетащите, чтобы изменить размер"
+  },
+  "emptyEditor": {
+    "selectFile": "Выберите файл для просмотра",
+    "uploadFiles": "Или загрузите новые файлы в своё зашифрованное хранилище.",
+    "selectNote": "Выберите заметку или создайте новую.",
+    "selectMarkdown": "Откройте файл Markdown, чтобы прочитать его здесь."
+  },
+  "zen": {
+    "exit": "Выйти из дзена",
+    "exitHover": "Выйти из режима дзен (Esc)",
+    "enterHover": "Включить режим дзен",
+    "proHover": "Режим дзен (Pro)",
+    "enterAriaShortcut": "Включить режим дзен (⌘⇧F)"
+  },
+  "editor": {
+    "backToList": "Назад к списку заметок",
+    "backToGrid": "Назад к сетке",
+    "titlePlaceholder": "Без названия (нажмите, чтобы изменить, или название появится само)",
+    "titlePlaceholderLogin": "например, GitHub",
+    "titlePlaceholderCard": "например, Visa с окончанием 4242",
+    "titlePlaceholderSshKey": "например, ключ развёртывания для GitHub",
+    "pin": "Закрепить",
+    "unpin": "Открепить",
+    "restore": "Восстановить",
+    "deleteForever": "Удалить навсегда",
+    "moveToTrash": "Переместить в корзину",
+    "noteOptions": "Параметры заметки",
+    "readOnlyToggle": "Только для чтения. Отключить можно в",
+    "menu": "Меню",
+    "showMarkdown": "Показать Markdown",
+    "showFormatted": "Показать с форматированием",
+    "invisiblesShow": "Показать непечатаемые символы",
+    "invisiblesHide": "Скрыть непечатаемые символы",
+    "findInNote": "Найти в заметке",
+    "navPrev": "Предыдущее",
+    "navNext": "Следующее",
+    "undo": "Отменить",
+    "redo": "Повторить",
+    "hide": "Скрыть",
+    "show": "Показать",
+    "hideToolbar": "Скрыть панель форматирования",
+    "showToolbar": "Показать панель форматирования",
+    "widthDefault": "Стандартная ширина",
+    "widthWide": "Шире",
+    "widthFull": "На всю ширину",
+    "burn": "Поделиться и сжечь после прочтения",
+    "titlePlaceholderLink": "Название закладки",
+    "titlePlaceholderContact": "Имя",
+    "notBackedUpTooLarge": "Превышен лимит 1 МБ, поэтому резервной копии нет. Перенесите изображения во вложения или разделите заметку.",
+    "notBackedUpFailed": "Резервной копии нет. Последняя ошибка: {{message}}. Повторная попытка.",
+    "unknownType": "Этот элемент создан в более новой версии PrivacyNotes. Обновите приложение, чтобы его открыть."
+  },
+  "share": {
+    "hover": "Поделиться / Экспорт",
+    "ariaLabel": "Поделиться или экспортировать",
+    "currentMdTitle": "Текущая заметка (.md)",
+    "currentMdDesc": "Исходный Markdown с front matter.",
+    "currentHtmlTitle": "Текущая заметка (.html)",
+    "currentHtmlDesc": "Для печати: Markdown, отображённый на белой странице.",
+    "printTitle": "Печать / Сохранить как PDF",
+    "printDesc": "Открывает диалог печати. Сохраните как PDF или отправьте на принтер.",
+    "burnTitle": "Поделиться и сжечь после прочтения",
+    "burnDesc": "Опубликуйте эту заметку как ссылку для одноразового просмотра. Ссылка самоуничтожается после прочтения. Ваша заметка остаётся в безопасности в вашем аккаунте."
+  },
+  "weekReview": {
+    "title": "Итоги недели",
+    "daysLogged": "Записано: {{count}}/7",
+    "mood": "Настроение",
+    "sleep": "Сон",
+    "meds": "Лекарства",
+    "activity": "Активность"
+  },
+  "footer": {
+    "settings": "Настройки",
+    "viewShortcuts": "Посмотреть все горячие клавиши",
+    "newNote": "Создать",
+    "newNoteHintMac": "Option + Shift + N",
+    "newNoteHintOther": "Alt + Shift + N",
+    "openStats": "Открыть статистику",
+    "words": "Слов",
+    "zen": "Дзен",
+    "appearance": "Внешний вид",
+    "signOut": "Выйти",
+    "signingOut": "Выход…",
+    "switchToLight": "Включить светлую тему",
+    "switchToDark": "Включить тёмную тему"
+  },
+  "settings": {
+    "groupYourNotes": "Ваши заметки",
+    "groupAccount": "Аккаунт и данные",
+    "groupBrand": "PrivacyNotes",
+    "statsLabel": "Статистика",
+    "journalsLabel": "Дневники",
+    "importLabel": "Импорт и экспорт",
+    "planLabel": "Аккаунт",
+    "storageLabel": "Хранилище",
+    "imagesLabel": "Изображения",
+    "securityLabel": "Безопасность",
+    "accountLabel": "ID и синхронизация",
+    "appearanceLabel": "Внешний вид",
+    "helpLabel": "Справка",
+    "aboutLabel": "О приложении",
+    "languageLabel": "Язык",
+    "languageDesc": "Выберите язык интерфейса PrivacyNotes."
+  },
+  "importStore": {
+    "title": "Импортировать или сохранить?",
+    "confirm": "Импортировать как заметки",
+    "cancel": "Сохранить как файлы",
+    "bodySingle": "<strong>{{filename}}</strong> похож на файл Markdown. Импортировать его как заметку, чтобы читать и редактировать, или сохранить как зашифрованное вложение?",
+    "bodyMulti": "Эти файлы ({{count}}) похожи на Markdown. Импортировать их как заметки, чтобы читать и редактировать, или сохранить как зашифрованные вложения?"
+  },
+  "bulkTrash": {
+    "title": "Переместить в корзину",
+    "body_one": "Переместить <highlight>{{count}} элемент</highlight> в корзину? Позже его можно будет восстановить.",
+    "body_few": "Переместить <highlight>{{count}} элемента</highlight> в корзину? Позже их можно будет восстановить.",
+    "body_many": "Переместить <highlight>{{count}} элементов</highlight> в корзину? Позже их можно будет восстановить.",
+    "body_other": "Переместить <highlight>{{count}} элемента</highlight> в корзину? Позже их можно будет восстановить.",
+    "readOnlyTitle": "Только для чтения",
+    "readOnlyAcknowledge": "Понятно",
+    "readOnlyBlocked_one": "<highlight>{{count}} элемент</highlight> доступен только для чтения, поэтому его нельзя переместить в корзину. Сначала отключите режим «только для чтения» в меню параметров заметки.",
+    "readOnlyBlocked_few": "Все <highlight>{{count}} элемента</highlight> доступны только для чтения, поэтому ни один из них нельзя переместить в корзину. Сначала отключите режим «только для чтения» в меню параметров заметки.",
+    "readOnlyBlocked_many": "Все <highlight>{{count}} элементов</highlight> доступны только для чтения, поэтому ни один из них нельзя переместить в корзину. Сначала отключите режим «только для чтения» в меню параметров заметки.",
+    "readOnlyBlocked_other": "Все <highlight>{{count}} элемента</highlight> доступны только для чтения, поэтому ни один из них нельзя переместить в корзину. Сначала отключите режим «только для чтения» в меню параметров заметки.",
+    "readOnlySkipped_one": "<highlight>{{count}} элемент</highlight> доступен только для чтения и останется на месте.",
+    "readOnlySkipped_few": "<highlight>{{count}} элемента</highlight> доступны только для чтения и останутся на месте.",
+    "readOnlySkipped_many": "<highlight>{{count}} элементов</highlight> доступны только для чтения и останутся на месте.",
+    "readOnlySkipped_other": "<highlight>{{count}} элемента</highlight> доступны только для чтения и останутся на месте."
+  },
+  "bulkDelete": {
+    "body_one": "Удалить <highlight>{{count}} заметку</highlight> навсегда? Это действие нельзя отменить.",
+    "body_few": "Удалить <highlight>{{count}} заметки</highlight> навсегда? Это действие нельзя отменить.",
+    "body_many": "Удалить <highlight>{{count}} заметок</highlight> навсегда? Это действие нельзя отменить.",
+    "body_other": "Удалить <highlight>{{count}} заметки</highlight> навсегда? Это действие нельзя отменить."
+  },
+  "tagConfirm": {
+    "mergeTitle": "Объединить теги",
+    "deleteTitle": "Удалить тег",
+    "deleteWithNotesTitle": "Удалить тег и заметки",
+    "mergeConfirm": "Объединить",
+    "deleteConfirm": "Удалить тег",
+    "moveToTrash": "Переместить в корзину",
+    "mergeBody_one": "Тег <highlight>«{{targetTag}}»</highlight> уже существует. Объединить с ним <highlight>{{count}} заметку</highlight> с тегом «{{tag}}»?",
+    "mergeBody_few": "Тег <highlight>«{{targetTag}}»</highlight> уже существует. Объединить с ним <highlight>{{count}} заметки</highlight> с тегом «{{tag}}»?",
+    "mergeBody_many": "Тег <highlight>«{{targetTag}}»</highlight> уже существует. Объединить с ним <highlight>{{count}} заметок</highlight> с тегом «{{tag}}»?",
+    "mergeBody_other": "Тег <highlight>«{{targetTag}}»</highlight> уже существует. Объединить с ним <highlight>{{count}} заметки</highlight> с тегом «{{tag}}»?",
+    "deleteBody_one": "Убрать тег <highlight>«{{tag}}»</highlight> с <highlight>{{count}} заметки</highlight>? Сами заметки не будут удалены.",
+    "deleteBody_few": "Убрать тег <highlight>«{{tag}}»</highlight> с <highlight>{{count}} заметок</highlight>? Сами заметки не будут удалены.",
+    "deleteBody_many": "Убрать тег <highlight>«{{tag}}»</highlight> с <highlight>{{count}} заметок</highlight>? Сами заметки не будут удалены.",
+    "deleteBody_other": "Убрать тег <highlight>«{{tag}}»</highlight> с <highlight>{{count}} заметки</highlight>? Сами заметки не будут удалены.",
+    "deleteWithNotesBody_one": "Удалить тег <highlight>«{{tag}}»</highlight> и переместить <highlight>{{count}} заметку</highlight> в корзину? Оттуда её можно будет восстановить.",
+    "deleteWithNotesBody_few": "Удалить тег <highlight>«{{tag}}»</highlight> и переместить <highlight>{{count}} заметки</highlight> в корзину? Оттуда их можно будет восстановить.",
+    "deleteWithNotesBody_many": "Удалить тег <highlight>«{{tag}}»</highlight> и переместить <highlight>{{count}} заметок</highlight> в корзину? Оттуда их можно будет восстановить.",
+    "deleteWithNotesBody_other": "Удалить тег <highlight>«{{tag}}»</highlight> и переместить <highlight>{{count}} заметки</highlight> в корзину? Оттуда их можно будет восстановить."
+  },
+  "createNote": {
+    "title": "Создать заметку?",
+    "confirm": "Создать заметку",
+    "body": "Заметки с названием <highlight>«{{title}}»</highlight> нет. Такое бывает, если связанную заметку переименовали. Создать новую заметку с этим названием?"
+  },
+  "freshVault": {
+    "title": "Создан новый сейф",
+    "confirm": "Понятно",
+    "body": "Ни один существующий сейф не соответствует введённой фразе, поэтому создан новый пустой. Если вы ожидали увидеть свои заметки, выйдите и внимательно введите фразу ещё раз: одно другое слово открывает другой сейф."
+  },
+  "ambiguousLink": {
+    "title": "Две заметки называются одинаково",
+    "body": "Название <highlight>«{{title}}»</highlight> носят несколько заметок, поэтому ссылка не указывает, какую именно. Переименуйте одну из них, и ссылка будет вести на другую."
+  }
+}

@@ -135,17 +135,17 @@ const COPY: CopyBlock[] = [
   {
     id: 'cp-short',
     label: 'Short',
-    text: 'An end-to-end encrypted workspace for notes, tasks, files, and journal. A 12-word key only you hold. No trackers, no ads.',
+    text: 'An end-to-end encrypted workspace for notes, tasks, files, and journal. Self-custody: a 12-word key only you hold. No trackers, no ads.',
   },
   {
     id: 'cp-meta',
     label: 'Meta description',
-    text: 'Your notes, encrypted on your device before they ever leave it. A 12-word key only you hold, so not even we can read them. No trackers, no ads, free to start.',
+    text: 'Your notes, always encrypted on your device and on the way to the server. With self-custody, not even we can read them. No trackers, no ads, free to start.',
   },
   {
     id: 'cp-boiler',
     label: 'Boilerplate, press',
-    text: 'PrivacyNotes is an end-to-end encrypted workspace for your notes, tasks, files, and journal. Every note is encrypted on your device before it syncs, and the only key is a 12-word recovery phrase that never leaves your hands. Lifetime Labs stores ciphertext, nothing else: no trackers, no ads, no telemetry. PrivacyNotes runs on the web and as native apps, and its apps are open source: the clients, the encryption layer and the database schema are all published for review. The free tier is free forever; Pro is a one-time purchase.',
+    text: 'PrivacyNotes is an end-to-end encrypted workspace for your notes, tasks, files, and journal. Every note is always encrypted, on your device and on the way to the server, under a key from a 12-word recovery phrase that, with self-custody, never leaves your hands. Lifetime Labs stores your notes only as ciphertext, with no trackers, no ads and no analytics of what you write. PrivacyNotes runs on the web and as native apps, and its apps are open source: the clients, the encryption layer and the threat model are all published for review. The free tier is free forever; Pro is a one-time purchase.',
   },
 ];
 

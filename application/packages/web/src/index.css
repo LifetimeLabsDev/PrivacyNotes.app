@@ -132,12 +132,21 @@
    The value is an em of the PARAGRAPH, not of the root, so one number
    holds at all four text sizes and in the burn viewer's own body size.
 
-   Adding a step means adding a data-line-spacing block here and an
-   entry to LINE_SPACINGS in theme.ts, nothing else.
+   Tight keeps Compact's gap and sets the lines closer, for people who
+   want more text on the screen (GitHub #255). The line height is a
+   variable for the same reason as the gap: the task checkbox is
+   centred on the first line and has to follow it.
+
+   Adding a step means adding a data-line-spacing block here, an
+   entry to LINE_SPACINGS in theme.ts and its lengths in paragraphGapCss
+   and lineHeightCss beside it, nothing else.
    Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
    ------------------------------------------------------------------ */
 @layer base {
-  :root { --pn-para-gap: 0; }
+  :root { --pn-para-gap: 0; --pn-line-height: 1.7; }
+  /* Both lengths are copied for markup that leaves the app:
+     paragraphGapCss and lineHeightCss in theme.ts. */
+  :root[data-line-spacing='tight'] { --pn-line-height: 1.4; }
   :root[data-line-spacing='normal'] { --pn-para-gap: 0.75em; }
 }
 
@@ -153,6 +162,17 @@
      and the collapsed outline pill's own row. That row IS the start-of-note
      gap, so the body keeps only a hairline of its own padding - the two
      stacked read as a crater. Read-only notes have no row and keep the 16px. */
+  /* A colored note: the body takes the color, the title bar, the tag row and
+     the toolbar keep the pane's own surface. Spec:
+     ops/docs/plans/folder-tag-icons.md (section 4.5) */
+  .pn-editor-pane .ProseMirror {
+    background-image: linear-gradient(var(--pn-note-tint, transparent), var(--pn-note-tint, transparent));
+    /* The ring carries the same color past the text, so the words keep their
+       place under the toolbar and still get a margin inside the color. */
+    box-shadow: 0 0 0 14px var(--pn-note-tint, transparent);
+    border-radius: 2px;
+  }
+
   .pn-editor-topgapped .ProseMirror {
     padding-top: 4px;
   }
@@ -186,7 +206,7 @@
        vars derive from --pn-text-scale, so they move together - see the
        type-scale block at the top of this file. */
     font-size: var(--pn-editor-base);
-    line-height: 1.7;
+    line-height: var(--pn-line-height);
     /* Wide content (tables, pre blocks) scrolls here, below the
          sticky toolbar, instead of pushing the outer scroll container
          and dragging the toolbar off-screen (GitHub #95). */
@@ -292,12 +312,12 @@
     & table.pn-table {
       border-collapse: collapse;
       width: 100%;
-      /* Every column gets the same share of the width, and text wraps inside
-         it. Sizing from content instead lets one long sentence swallow the
-         table, and there is no drag handle to undo that with - column resizing
-         is off, because a stored column width cannot be written into a pipe
-         table.
-         Spec: ops/docs/design-decisions.md (Table column widths) */
+      /* Every column gets an equal share of the width unless someone drags a
+         border, and text wraps inside its cell. Sizing from content instead
+         lets one long sentence swallow the table. A dragged width is a
+         percentage on the table's <col>, written by the node view in
+         tableColumnResize.ts, so the table always fills the note.
+         Spec: ops/docs/plans/table-column-widths.md */
       table-layout: fixed;
       overflow: hidden;
       /* Prose gives <table> its own 2em top/bottom margin, and the table sits
@@ -312,11 +332,44 @@
     & table.pn-table td > p {
       margin: 0;
     }
-    /* TipTap leaves stale <colgroup>/<col> elements after column deletion,
-       causing the remaining column to stay at its old width fraction.
-       Hiding the colgroup forces the browser to size columns from cell content. */
-    & table.pn-table colgroup {
-      display: none;
+    /* The border a drag would move: a line along the cell's end edge, drawn
+       in every cell of the column (widget decorations from
+       tableColumnResize.ts). The cursor shows on the whole editor while a
+       border is under the pointer, and on the whole page during a drag, so it
+       stays when the pointer leaves the note. */
+    & .pn-col-resize-handle {
+      position: absolute;
+      inset-block: -1px;
+      inset-inline-end: -2px;
+      width: 3px;
+      background: rgb(var(--pn-accent));
+      pointer-events: none;
+      z-index: 1;
+    }
+    &.pn-col-resize-cursor {
+      cursor: col-resize;
+    }
+    /* The symmetry guide during a column drag (tableColumnResize.ts): dashed
+       where the border would mirror its partner, solid on both borders once
+       it does. Placed in px from the wrapper's own left, which is physical in
+       either direction. */
+    & .tableWrapper {
+      position: relative;
+    }
+    & .pn-col-guide {
+      position: absolute;
+      width: 0;
+      margin-left: -1px; /* rtl-ok: centres a line placed by a physical left */
+      border-left: 2px dashed rgb(var(--pn-accent) / 0.45); /* rtl-ok: a vertical line, same both ways */
+      pointer-events: none;
+      z-index: 2;
+    }
+    & .pn-col-guide-partner {
+      border-left-color: transparent; /* rtl-ok: see above */
+    }
+    & .pn-col-guide.is-matched {
+      border-left-style: solid; /* rtl-ok: see above */
+      border-left-color: rgb(var(--pn-accent)); /* rtl-ok: see above */
     }
     & table.pn-table td {
       border: 1px solid rgb(var(--pn-divider));
@@ -745,6 +798,57 @@
     :root.dark & :where(code):not(:where(pre code)):not(:where([class~='not-prose'] *)) {
       background: rgb(255 255 255 / 0.09);
     }
+    /* Code block (CodeBlockWithCopy in editorExtensions.ts). The pre keeps
+       typography's box - margins, colours, radius - and the span inside it
+       scrolls, carrying the padding the pre had, so the text sits where it
+       always did. The tools are absolute in the pre, outside the scroller,
+       which is what keeps them in the corner while a long line scrolls
+       (GitHub #340). The pre's own overflow and white-space are set by the
+       unlayered `.tiptap.ProseMirror pre` rule further down. */
+    & .pn-codeblock {
+      position: relative;
+      padding: 0;
+    }
+    & .pn-codeblock-scroll {
+      display: block;
+      overflow-x: auto;
+      white-space: pre;
+      /* Typography's pre padding in its own units, so both sides of the
+         move measure the same at every text size. */
+      padding: 0.8571429em 1.1428571em;
+    }
+    /* Wrap is a device setting (codeWrap.ts), painted on <html>. */
+    :root.pn-wrap-code & .pn-codeblock-scroll {
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+    }
+    & .pn-codeblock-tools {
+      position: absolute;
+      top: 0.5rem;
+      inset-inline-end: 0.5rem;
+      display: flex;
+      gap: 0.25rem;
+      opacity: 0;
+      transition: opacity 0.12s ease;
+      /* App chrome, not code: without these the buttons and the wrap tip
+         inherit the pre's monospace and the editor's tall line height. */
+      font-family: var(--font-sans);
+      line-height: 1.5;
+    }
+    & .pn-codeblock:hover .pn-codeblock-tools,
+    & .pn-codeblock-tools:focus-within {
+      opacity: 1;
+    }
+    /* No hover on touch: the tools stay visible, and the scroller keeps a
+       band above the first line for them, so they never sit on code. */
+    @media (hover: none) {
+      & .pn-codeblock-tools {
+        opacity: 1;
+      }
+      & .pn-codeblock-scroll {
+        padding-top: 2.75rem;
+      }
+    }
     /* Syntax highlighting token colors (CodeBlockLowlight emits hljs
        classes). One hand-picked palette instead of a highlight.js theme
        import: the code panel is dark in BOTH app themes, so a single
@@ -925,7 +1029,7 @@
       /* Match the first line's line-height so we can center the checkbox
          vertically inside it - this locks the box to the middle of the
          first line regardless of font-size. */
-      height: 1.7em;
+      height: calc(var(--pn-line-height) * 1em);
       display: inline-flex;
       align-items: center;
       user-select: none;
@@ -1109,6 +1213,17 @@
       margin: 1em 0;
       -webkit-overflow-scrolling: touch;
     }
+  }
+}
+
+@layer editor {
+  /* A column drag in progress (tableColumnResize.ts): the resize cursor
+     everywhere, and no text selection, while the pointer is anywhere on the
+     page. */
+  html.pn-col-resizing,
+  html.pn-col-resizing * {
+    cursor: col-resize !important;
+    user-select: none !important;
   }
 }
 
@@ -1454,6 +1569,12 @@
       outline: 2px solid rgb(var(--pn-accent));
       outline-offset: -2px;
     }
+    /* In a note nobody can edit, a click on a picture opens the viewer
+       (EncryptedImage.tsx, handleSelect). Read off the live attribute, so a
+       note locked while open changes cursor without a re-render. */
+    .ProseMirror[contenteditable='false'] & img {
+      cursor: zoom-in;
+    }
   }
 }
 
@@ -1768,6 +1889,30 @@
        themes take gold from the :root.dark block below.
        Spec: ops/docs/design-decisions.md (Pro mark colour) */
     --pn-pro: 180 83 9; /* #B45309 - burnt amber */
+    /* Folder and tag colors, keyed to MODE like the Pro mark: every light theme
+       shares these. `ink` draws a glyph on any surface (3:1 or better, cream
+       sidebar the worst at 3.98); `tint` is an open note's background, light
+       enough that body and secondary text keep 4.5:1 and dates 3:1 on every
+       theme. tests/labelContrast.test.ts holds both floors.
+       Spec: ops/docs/plans/folder-tag-icons.md (section 4.2) */
+    --pn-label-gray-ink: #5a6168;
+    --pn-label-red-ink: #ba1c1c;
+    --pn-label-orange-ink: #a43f08;
+    --pn-label-yellow-ink: #8d5200;
+    --pn-label-green-ink: #206d2f;
+    --pn-label-teal-ink: #096878;
+    --pn-label-blue-ink: #1661a7;
+    --pn-label-purple-ink: #653ae6;
+    --pn-label-pink-ink: #b52356;
+    --pn-label-gray-tint: rgb(134 142 150 / 0.12);
+    --pn-label-red-tint: rgb(255 107 107 / 0.12);
+    --pn-label-orange-tint: rgb(255 146 43 / 0.12);
+    --pn-label-yellow-tint: rgb(250 204 21 / 0.12);
+    --pn-label-green-tint: rgb(64 192 87 / 0.12);
+    --pn-label-teal-tint: rgb(18 184 134 / 0.12);
+    --pn-label-blue-tint: rgb(51 154 240 / 0.12);
+    --pn-label-purple-tint: rgb(151 117 250 / 0.12);
+    --pn-label-pink-tint: rgb(240 101 149 / 0.12);
   }
 
   /* === Default dark: warm-charcoal =================================== */
@@ -1778,6 +1923,27 @@
        default and only needs a --pn-pro line if it is unusually light or
        dark for its mode. Spec: ops/docs/design-decisions.md (Pro mark colour) */
     --pn-pro: 245 197 24; /* #F5C518 - gold */
+    /* Folder and tag colors for every dark theme. A tint lightens a dark
+       surface, so it is weaker here, and yellow the weakest: at 0.10 it would
+       take dates on Soft dark under 3:1. */
+    --pn-label-gray-ink: #8e969d;
+    --pn-label-red-ink: #ea7171;
+    --pn-label-orange-ink: #f46d24;
+    --pn-label-yellow-ink: #f08c00;
+    --pn-label-green-ink: #33aa49;
+    --pn-label-teal-ink: #0fa4bc;
+    --pn-label-blue-ink: #469ae7;
+    --pn-label-purple-ink: #a085f0;
+    --pn-label-pink-ink: #e36f98;
+    --pn-label-gray-tint: rgb(134 142 150 / 0.10);
+    --pn-label-red-tint: rgb(255 107 107 / 0.10);
+    --pn-label-orange-tint: rgb(255 146 43 / 0.10);
+    --pn-label-yellow-tint: rgb(250 204 21 / 0.08);
+    --pn-label-green-tint: rgb(64 192 87 / 0.10);
+    --pn-label-teal-tint: rgb(18 184 134 / 0.10);
+    --pn-label-blue-tint: rgb(51 154 240 / 0.10);
+    --pn-label-purple-tint: rgb(151 117 250 / 0.10);
+    --pn-label-pink-tint: rgb(240 101 149 / 0.10);
     --pn-accent: 74 144 217; /* #4A90D9 */
     --pn-accent-hover: 58 123 192; /* #3A7BC0 */
     --pn-surface-0: 23 21 20; /* #171514 - sidebar */
@@ -2082,6 +2248,59 @@
 .pn-strip:focus-visible .pn-strip-dots { opacity: 0.9; }
 .pn-strip[data-dragging]::after { opacity: 1; }
 .pn-strip[data-dragging] .pn-strip-dots { opacity: 0.9; }
+/* Past the limit: a release collapses. The badge names it; the line and
+   the dots go faint so the snap reads as "let go and it folds". */
+.pn-strip[data-snap]::after { opacity: 0.35; }
+/* The sidebar's own divider, between Content and the tags or folders
+   (useSidebarSplit.ts): the strip above turned on its side, with the same
+   12px band, borders and surfaces (TagsRail.tsx), one row of grip dots, and
+   the accent line on hover, focus and drag. */
+.pn-hstrip {
+  position: relative;
+  touch-action: none;
+  cursor: row-resize;
+}
+.pn-hstrip::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: var(--color-accent);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.pn-hstrip-dots {
+  position: absolute;
+  top: 50%;
+  left: calc(50% - 19px);
+  transform: translateY(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow:
+    7px 0 0 currentColor, 14px 0 0 currentColor, 21px 0 0 currentColor,
+    28px 0 0 currentColor, 35px 0 0 currentColor;
+  opacity: 0.3;
+  transition: opacity 0.12s ease;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .pn-hstrip:hover::after { opacity: 0.35; }
+  .pn-hstrip:hover .pn-hstrip-dots { opacity: 0.9; }
+}
+.pn-hstrip:focus-visible { outline: none; }
+.pn-hstrip:focus-visible::after { opacity: 0.35; }
+.pn-hstrip:focus-visible .pn-hstrip-dots { opacity: 0.9; }
+.pn-hstrip[data-dragging]::after { opacity: 1; }
+.pn-hstrip[data-dragging] .pn-hstrip-dots { opacity: 0.9; }
+.pn-row-dragging,
+.pn-row-dragging * { cursor: row-resize !important; }
+.pn-row-dragging { user-select: none; }
+.pn-row-dragging .pn-tip { display: none !important; }
 .pn-drag-badge {
   position: fixed;
   z-index: 50;
@@ -2476,16 +2695,19 @@
   }
 }
 
-/* Code blocks scroll horizontally instead of wrapping. Wrapped code lies about
-   its own line structure - one logical line reads as three - and every editor
-   in the reference class (Obsidian, Craft, GitHub) scrolls. Kept UNLAYERED on
+/* A code block's pre neither wraps nor scrolls: the span inside it
+   (.pn-codeblock-scroll) does both, so the tools in the pre's corner stay put
+   while a long line moves under them. Whether lines wrap is a device setting,
+   default on, painted as `pn-wrap-code` on <html> (codeWrap.ts). overflow:
+   hidden clips the span's scrollbar to the rounded corners. Kept UNLAYERED on
    purpose: prosemirror-view runtime-injects `.ProseMirror pre { white-space:
    pre-wrap }` unlayered and after our stylesheet, so an @layer rule can never
    beat it - same physics as the gapcursor override below. The extra .tiptap
-   class wins the specificity tie regardless of injection order. */
+   class wins the specificity tie regardless of injection order.
+   Spec: ops/docs/design-decisions.md (code blocks wrap by default) */
 .tiptap.ProseMirror pre {
   white-space: pre;
-  overflow-x: auto;
+  overflow: hidden;
 }
 /* Gap cursor visibility. Kept UNLAYERED on purpose: prosemirror-gapcursor ships
    its default unlayered, and an @layer rule can never beat an unlayered one, so

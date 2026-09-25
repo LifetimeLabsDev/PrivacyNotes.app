@@ -177,7 +177,7 @@
           "h": "Var sakerna hamnar",
           "p": [
             "Inloggningar blir inloggningsposter i Valvet (med sina webbplatsikoner), kort blir kortposter, SSH-nycklar blir SSH-nyckelposter, och säkra anteckningar och identiteter kommer in som läsbara anteckningar. Mappar från Bitwarden blir taggar, och favoriter kommer in stjärnmärkta. Autentiseringsnycklar (TOTP) följer också med, så dina 2FA-koder fortsätter att fungera.",
-            "Exportfilen innehåller dina lösenord i klartext, så importera den, kontrollera att allt kom fram och radera sedan filen ordentligt. Inne i PrivacyNotes är alltihop totalsträckskrypterat igen."
+            "Exportfilen innehåller dina lösenord i klartext, så importera den, kontrollera att allt kom fram och radera sedan filen ordentligt. Inne i PrivacyNotes är alltihop krypterat igen, på din enhet och på vägen till servern."
           ]
         }
       ]
@@ -568,7 +568,7 @@
         {
           "h": "Radera exportfilen när du är klar: den är dina lösenord i klartext",
           "p": [
-            "Inget i den exporterade .csv-filen är krypterat, vare sig den kommer i en .zip eller inte. Den som öppnar den läser varje lösenord du har sparat, så ha den bara på din egen dator, importera den, kontrollera att allt kom fram och radera den sedan och töm papperskorgen. Inuti PrivacyNotes är allt ändpunkt-till-ändpunkt-krypterat igen."
+            "Inget i den exporterade .csv-filen är krypterat, vare sig den kommer i en .zip eller inte. Den som öppnar den läser varje lösenord du har sparat, så ha den bara på din egen dator, importera den, kontrollera att allt kom fram och radera den sedan och töm papperskorgen. Inuti PrivacyNotes är allt krypterat igen, på din enhet och på vägen till servern."
           ]
         }
       ]

@@ -28,6 +28,7 @@ import { FunnelSimple, Download, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
  */
 export function ContactsList({
   contacts,
+  isNoteLocked,
   listPrefs,
   listPrefsStore,
   onListPrefsChange,
@@ -69,6 +70,9 @@ export function ContactsList({
   /** Active (non-trashed) contact notes, already folder/tag scoped and
    *  searched by the owner (NotesView's displayNotes). */
   contacts: LocalNote[];
+  /** The view's lock predicate: a gated contact's row keeps its name and
+   *  draws no photo and no number. */
+  isNoteLocked: (n: LocalNote) => boolean;
   listPrefs: ListPrefs;
   listPrefsStore: ListPrefsStore;
   onListPrefsChange: (next: ListPrefsStore) => void;
@@ -269,7 +273,7 @@ export function ContactsList({
                 note={n}
                 isOpen={selectedId === n.id && !selectionMode}
                 listPrefs={listPrefs}
-                isNoteLocked={false}
+                isNoteLocked={isNoteLocked(n)}
                 onClick={(e) => onRowClick(e, n.id)}
                 onContextMenu={(e) => { setContextTargetId(n.id); onRowContextMenu(n, e); }}
                 isContextTarget={contextTargetId === n.id}
@@ -292,7 +296,7 @@ export function ContactsList({
                 note={n}
                 isOpen={selectedId === n.id && !selectionMode}
                 listPrefs={listPrefs}
-                isNoteLocked={false}
+                isNoteLocked={isNoteLocked(n)}
                 onClick={(e) => onRowClick(e, n.id)}
                 onContextMenu={(e) => { setContextTargetId(n.id); onRowContextMenu(n, e); }}
                 isContextTarget={contextTargetId === n.id}

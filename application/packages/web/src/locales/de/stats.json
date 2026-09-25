@@ -10,7 +10,8 @@
     "tags": "Tags",
     "currentStreak": "Aktuelle Serie",
     "longestStreak": "Längste Serie",
-    "streakValue": "{{count}} T.",
+    "streakValue_one": "{{count}} Tag",
+    "streakValue_other": "{{count}} Tage",
     "timeRangeAria": "Aktivitätszeitraum",
     "modeActivity": "Aktivität",
     "modeMood": "Stimmung",
@@ -59,6 +60,7 @@
       "doctorPDF": "Arzt-PDF",
       "copyAIPrompt": "KI-Prompt kopieren",
       "copied": "Kopiert!",
+      "saveFailed": "Das Speichern ist fehlgeschlagen, die Datei kann also leer oder unvollständig sein. Versuche es noch einmal oder wähle einen anderen Ordner.",
       "proBadge": "PRO"
     },
     "sleepActivity": {

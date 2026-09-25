@@ -59,6 +59,9 @@
     "upgradeCharge": "İçinde bulunduğunuz yılın kalanı için bugün {{amount}} tahsil edilir. Sonrasında yılda {{price}} olarak yenilenir.",
     "upgradeChargeUntil": "İçinde bulunduğunuz yılın kalanı için, {{date}} tarihine kadar, bugün {{amount}} tahsil edilir. Sonrasında yılda {{price}} olarak yenilenir.",
     "upgradeChargeApple": "Bugün {{price}} tahsil edilir. Apple, içinde bulunduğunuz yılın kullanılmayan kısmını otomatik olarak iade eder ve yeni yılınız şimdi başlar.",
+    "upgradeAmountFailed": "Bugün ödenecek tutar yüklenemedi.",
+    "upgradeAmountRetry": "Tekrar dene",
+    "upgradeAmountChanged": "Bugün ödenecek tutar değişti ya da doğrulanamadı, bu yüzden sizden ücret alınmadı. Yeni tutarı görmek için paketi yeniden seçin.",
     "upgrading": "Yükseltiliyor…",
     "upgradeAndPay": "Yükselt ve şimdi öde",
     "maybeLater": "Belki sonra",
@@ -183,7 +186,12 @@
     "contentWidthWide": "Geniş",
     "contentWidthFull": "Tam",
     "lineSpacingTitle": "Satır aralığı",
-    "lineSpacingDesc": "Yazarken paragraflar arasındaki boşluk.",
+    "tintNotesTitle": "Renkli not arka planları",
+    "tintNotesDesc": "Notlar, etiketlerinin veya klasörlerinin rengini alır.",
+    "lineSpacingDesc": "Yazarken satırlar ve paragraflar arasındaki boşluk.",
+    "lineSpacingTight": "Sıkı",
+    "resetDefaults": "Varsayılanlara sıfırla",
+    "resetDefaultsConfirm": "Sıfırlamayı onayla",
     "lineSpacingCompact": "Kompakt",
     "lineSpacingNormal": "Normal",
     "lineSpacingExample": "Örnek",
@@ -211,10 +219,10 @@
   },
   "conflict": {
     "title": "Eşitleme çakışması",
-    "explanation": "Bu not, sizin burada kaydedilmemiş değişiklikleriniz varken başka bir cihazda düzenlendi. <em>Daha yeni sürümü</em> kullanacağız (diğer cihazdan, {{date}}).",
+    "explanation": "Bu not, bu cihazda henüz eşitlenmemiş değişiklikler varken başka bir cihazda değiştirildi ve iki sürümün metinleri birbirinden farklı. Aksini seçmediğiniz sürece <em>diğer cihazdan gelen sürümü</em> ({{date}}) saklayacağız.",
     "willBeKept": "Saklanacak",
     "showLocal": "Bu cihazdaki sürümü göster ({{date}})",
-    "useNewer": "Tamam, yenisini kullan",
+    "useNewer": "Diğer sürümü kullan",
     "useMine": "Bunun yerine benimkini kullan",
     "keepBoth": "İkisini de ayrı not olarak sakla"
   },
@@ -226,6 +234,13 @@
     "localLabel": "Yerel verileri sil",
     "localDesc": "Notları, görselleri ve önbelleğe alınmış verileri bu cihazdan siler. Bu, hesabınızı silmez, yalnızca bu tarayıcıyı temizler.",
     "localRequired": "(hesap silinirken zorunlu)",
+    "localUnsynced_one": "Bu cihazdaki {{items}} eşitlenmedi. Yerel verileri silerseniz kalıcı olarak yok olur.",
+    "localUnsynced_other": "Bu cihazdaki {{items}} eşitlenmedi. Yerel verileri silerseniz kalıcı olarak yok olur.",
+    "unsyncedNotes_one": "{{count}} not",
+    "unsyncedNotes_other": "{{count}} not",
+    "unsyncedFiles_one": "{{count}} dosya",
+    "unsyncedFiles_other": "{{count}} dosya",
+    "unsyncedBoth": "{{notes}} ve {{files}}",
     "cloudLabel": "Buluttaki verileri ve hesabı sil",
     "cloudDesc": "Eşitlenmiş tüm notları, görselleri, cihazları, ayarları ve hesabınızı sunucudan kalıcı olarak kaldırır. Sonrasında yeniden kayıt olabilirsiniz.",
     "confirmPrompt": "Onaylamak için <kbd>DELETE</kbd> yazın",
@@ -267,7 +282,11 @@
     "notBackedUpTooltip_one": "{{count}} not yedeklenmedi. Nedenini görmek için tıklayın.",
     "notBackedUpTooltip_other": "{{count}} not yedeklenmedi. Nedenini görmek için tıklayın.",
     "notBackedUpAria_one": "{{count}} not yedeklenmedi",
-    "notBackedUpAria_other": "{{count}} not yedeklenmedi"
+    "notBackedUpAria_other": "{{count}} not yedeklenmedi",
+    "haltedTooltip_one": "Eşitleme durdu, {{count}} not yedeklenmedi. Nedenini görmek için tıklayın.",
+    "haltedTooltip_other": "Eşitleme durdu, {{count}} not yedeklenmedi. Nedenini görmek için tıklayın.",
+    "haltedAria_one": "Eşitleme durdu, {{count}} not yedeklenmedi",
+    "haltedAria_other": "Eşitleme durdu, {{count}} not yedeklenmedi"
   },
   "errors": {
     "noSession": "Etkin oturum yok. Tekrar oturum açmayı deneyin.",
@@ -319,7 +338,9 @@
     "reasonFailed": "Başarısız: {{message}}",
     "openNote": "Aç",
     "passPushFailed_one": "{{count}} başarısız",
-    "passPushFailed_other": "{{count}} başarısız"
+    "passPushFailed_other": "{{count}} başarısız",
+    "passHalted_one": "durdu, {{count}} bekliyor",
+    "passHalted_other": "durdu, {{count}} bekliyor"
   },
   "language": {
     "reportMistake": "Çeviri hatası bildir"

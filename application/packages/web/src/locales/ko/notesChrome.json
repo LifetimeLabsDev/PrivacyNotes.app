@@ -2,8 +2,7 @@
   "dismiss": "닫기",
   "close": "닫기",
   "moveBanner": {
-    "title": "앱이 use.privacynotes.app 으로 이사해요",
-    "body": "지금 이 세션을 옮기세요. 몇 초면 끝나고 노트도 그대로 따라와요.",
+    "bodySignIn": "거기에서 시크릿 문구나 \"{{scanQr}}\"로 로그인하세요.",
     "cta": "지금 옮기기",
     "syncing": "노트를 동기화하는 중…",
     "error": "지금은 모두 동기화하지 못했어요. 연결을 확인하고 다시 시도해 주세요.",
@@ -15,8 +14,9 @@
   },
   "moveScreen": {
     "title": "앱이 use.privacynotes.app 으로 이사했어요",
-    "body": "지금 이 기기를 옮기세요. 몇 초면 끝나고 노트도 그대로 따라와요. 여기에서는 아무것도 삭제되지 않아요.",
+    "bodySignIn": "거기에서 12단어 시크릿 문구나 \"{{scanQr}}\"로 로그인하세요. 이 기기가 먼저 동기화하니까 모든 노트가 거기에서 기다리고 있고, 여기 있는 것은 지워지지 않아요.",
     "openNotes": "문제를 해결하려면 여기에서 노트를 한 번 열어 주세요",
+    "showPhrase": "내 시크릿 문구 보기",
     "website": "대신 웹사이트 둘러보기"
   },
   "quota": {
@@ -49,11 +49,15 @@
     "body": "문구는 다시 들어올 수 있는 <only>유일한</only> 방법이에요. 이메일 재설정도, 고객센터 전화도 없어요. 저희는 당신이 누군지 몰라요. 그렇게 설계했으니까요. 아직 적어 두지 않았다면 <action>아니요, 문구 보기</action>를 누르세요. 지금 바로 열어 드릴게요.",
     "unsyncedWarn_other": "이 기기에 아직 동기화되지 않은 노트가 {{count}}개 있어요. 로그아웃할 때 업로드하지 못하면 영구적으로 사라져요.",
     "unsyncedKept_other": "이 기기에 아직 동기화되지 않은 노트가 {{count}}개 있어요. 노트는 이 기기에 남아 있다가 다시 로그인하면 동기화돼요.",
+    "unsyncedFilesWarn_other": "이 기기에 동기화되지 않은 파일이 {{count}}개 있어요. 로그아웃하면 영구적으로 삭제돼요.",
     "dontRemind": "다시 알리지 않기",
     "showPhrase": "아니요, 문구 보기",
     "confirm": "네, 로그아웃할게요",
     "stay": "로그인 유지",
     "signOutLose_other": "로그아웃하고 노트 {{count}}개 잃기",
+    "signOutLoseFiles_other": "로그아웃하고 파일 {{count}}개 잃기",
+    "signOutLoseBoth_other": "로그아웃하고 노트 {{count}}개와 {{files}} 잃기",
+    "fileCount_other": "파일 {{count}}개",
     "neverBackedUp_other": "이 기기에만 있어요:",
     "moreNotes": "외 {{count}}개",
     "appLockHint": "공유 기기인가요? 설정 > 보안에서 앱 잠금을 켜 주세요."

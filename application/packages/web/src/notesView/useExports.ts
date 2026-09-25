@@ -19,8 +19,12 @@ import {
   exportContactsVcf,
   printNote as basePrintNote,
   decryptBackup,
+  describeMissing,
+  type MissingBlob,
 } from '../export';
 import { applyRestoredFolders, validateFolders } from '../folders';
+import { RESTORE_WAIT_LINE, restoreGateNow } from '../pullState';
+import { deletedFolderIds, itemStylesEqual, mergeItemStyles, validateItemStyles } from '../itemStyles';
 import type { ImageStore } from '../imageStore';
 import type { AttachmentStore } from '../attachmentStore';
 import type { UserSettings } from '../userSettings';
@@ -67,29 +71,38 @@ export function useExports({
       });
     }
   };
+  // A file saved without a picture or a file its notes refer to is kept,
+  // because a partial copy beats none, and the progress window says what it
+  // lacks: a finished export carries a status only then, and the window
+  // never calls it complete. A single note opens the window only for that.
+  const reportMissing = (missing: MissingBlob[]) => {
+    if (missing.length > 0) setExportProgress({ status: describeMissing(missing), done: true });
+  };
   const exportSingleMarkdown = (n: LocalNote) =>
-    runExport('md', () => baseExportSingleMarkdown(n, imageStoreRef.current, userSettings.folders));
+    runExport('md', async () => reportMissing(
+      await baseExportSingleMarkdown(n, imageStoreRef.current, userSettings.folders, attachmentStoreRef.current)));
   const exportSingleHtml = (n: LocalNote) =>
-    runExport('html', () => baseExportSingleHtml(n, imageStoreRef.current, userSettings.folders));
+    runExport('html', async () => reportMissing(
+      await baseExportSingleHtml(n, imageStoreRef.current, userSettings.folders, attachmentStoreRef.current)));
   // Both bulk zips open the progress window and both report the same two
   // phases. An empty opening status is deliberate: the modal owns the
   // "Preparing..." wording, in every language.
   const exportAllMarkdownZip = async (ns: LocalNote[]) => {
     setExportProgress({ status: '', done: false });
     await runExport('md-zip', async () => {
-      await baseExportAllMarkdownZip(ns, imageStoreRef.current, attachmentStoreRef.current, (msg) => {
+      const missing = await baseExportAllMarkdownZip(ns, imageStoreRef.current, attachmentStoreRef.current, (msg) => {
         setExportProgress({ status: msg, done: false });
       }, userSettings.folders);
-      setExportProgress({ status: '', done: true });
+      setExportProgress({ status: describeMissing(missing), done: true });
     });
   };
   const exportEncryptedFullBackup = async (ns: LocalNote[]) => {
     setExportProgress({ status: '', done: false });
     await runExport('encrypted-zip', async () => {
-      await baseExportEncryptedFullBackup(ns, imageStoreRef.current, attachmentStoreRef.current, auth.encryptionKey, (msg) => {
+      const missing = await baseExportEncryptedFullBackup(ns, imageStoreRef.current, attachmentStoreRef.current, auth.encryptionKey, (msg) => {
         setExportProgress({ status: msg, done: false });
       }, userSettings.folders);
-      setExportProgress({ status: '', done: true });
+      setExportProgress({ status: describeMissing(missing), done: true });
     });
   };
   /** Decrypt a picked .pnbackupz into the plain full-backup zip. The
@@ -111,46 +124,64 @@ export function useExports({
   const exportAllHtmlZip = async (ns: LocalNote[]) => {
     setExportProgress({ status: '', done: false });
     await runExport('html-zip', async () => {
-      await baseExportAllHtmlZip(ns, imageStoreRef.current, userSettings.folders, (msg) => {
+      const missing = await baseExportAllHtmlZip(ns, imageStoreRef.current, userSettings.folders, (msg) => {
         setExportProgress({ status: msg, done: false });
-      });
-      setExportProgress({ status: '', done: true });
+      }, attachmentStoreRef.current);
+      setExportProgress({ status: describeMissing(missing), done: true });
     });
   };
   const exportAllJson = (ns: LocalNote[]) =>
-    runExport('json', () => baseExportAllJson(ns, userSettings.folders));
+    runExport('json', () => baseExportAllJson(ns, userSettings.folders, userSettings.itemStyles));
   const exportEncryptedBackup = (ns: LocalNote[]) =>
     runExport('encrypted', () =>
-      baseExportEncryptedBackup(ns, auth.encryptionKey, userSettings.folders));
+      baseExportEncryptedBackup(ns, auth.encryptionKey, userSettings.folders, userSettings.itemStyles));
   const exportVault = (ns: LocalNote[]) =>
-    runExport('vault', () => exportVaultBitwarden(ns));
+    runExport('vault', () => exportVaultBitwarden(ns, userSettings.folders));
   const exportBookmarks = (ns: LocalNote[]) =>
     runExport('bookmarks', () => exportBookmarksHtml(ns, userSettings.folders));
   const exportContacts = (ns: LocalNote[]) =>
     runExport('contacts', () => exportContactsVcf(ns));
   const printNote = async (n: LocalNote) => {
-    await basePrintNote(n, imageStoreRef.current, userSettings.folders);
+    await basePrintNote(n, imageStoreRef.current, userSettings.folders, attachmentStoreRef.current);
     recordAdminEvent(supabase, 'export', 'pdf');
   };
   const importEncryptedBackup = async (file: File): Promise<{ imported: number; updated: number; unchanged: number }> => {
+    // The restore matches the backup's notes by id against this device's
+    // copy, so it waits for this device's first clean pull (pullState.ts).
+    const gate = restoreGateNow();
+    if (gate !== 'open') throw new Error(i18n.t(RESTORE_WAIT_LINE[gate]));
     const buf = new Uint8Array(await file.arrayBuffer());
     const backup = decryptBackup(buf, auth.encryptionKey);
     recordAdminEvent(supabase, 'import', 'encrypted');
     // v3 backups carry the folder definitions - merge them by id so the
     // restored notes' folderId pointers resolve to a real tree.
     const restoredFolders = validateFolders(backup.folders);
-    if (restoredFolders.length > 0) {
-      // Through the same helper as the folders-only restore, so a folder the
-      // backup brings back also spends its tombstone. Without that, restoring
-      // a backup to recover a folder you deleted puts it on screen and the
-      // next merge takes it away again.
+    const restoredLooks = validateItemStyles(backup.itemStyles);
+    // Through the same helper as the folders-only restore: additive by id,
+    // and a folder this account deleted stays deleted, because its tombstone
+    // is final. The looks merge after the folders, per value like every sync
+    // point: a newer pick in the vault wins over the backup's, a second
+    // restore changes nothing, and a deleted folder does not get its look
+    // back.
+    if (restoredFolders.length > 0 || Object.keys(restoredLooks).length > 0) {
       mutateSettings((prev) => {
         const result = applyRestoredFolders(
           { folders: prev.folders, deleted: prev.foldersDeleted },
           restoredFolders,
         );
-        if (result.added === 0) return prev;
-        return { ...prev, folders: result.tree.folders, foldersDeleted: result.tree.deleted };
+        const itemStyles = mergeItemStyles(
+          prev.itemStyles,
+          restoredLooks,
+          deletedFolderIds(result.tree.deleted),
+        );
+        const looksChanged = !itemStylesEqual(itemStyles, prev.itemStyles);
+        if (result.added === 0 && !looksChanged) return prev;
+        return {
+          ...prev,
+          folders: result.tree.folders,
+          foldersDeleted: result.tree.deleted,
+          ...(looksChanged ? { itemStyles } : {}),
+        };
       });
     }
     const { applyImport } = await import('../import/apply');

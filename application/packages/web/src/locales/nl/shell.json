@@ -136,6 +136,7 @@
     "closeMenu": "Menu sluiten",
     "close": "Sluiten",
     "views": "Inhoud",
+    "resizeSplit": "Formaat van Inhoud en de tags of mappen wijzigen",
     "sidebarOptions": "Zijbalkopties",
     "showInSidebar": "Tonen in zijbalk",
     "allOptions": "Opties voor Alles",
@@ -455,6 +456,7 @@
     "openAction": "Openen",
     "copiedUrl": "Link gekopieerd",
     "moveToTrash": "Naar prullenbak",
+    "rowMenu": "Meer acties",
     "emptyNone": "Nog geen bladwijzers.",
     "emptyTitle": "Bewaar de sites die het waard zijn",
     "emptyAdd": "Bladwijzer toevoegen",
@@ -585,5 +587,8 @@
   "noteLinks": {
     "retargetedToast_one": "{{count}} notitielink bijgewerkt naar de nieuwe titel.",
     "retargetedToast_other": "{{count}} notitielinks bijgewerkt naar de nieuwe titel."
+  },
+  "looks": {
+    "menu": "Icoon en kleur"
   }
 }

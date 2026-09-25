@@ -59,6 +59,9 @@
     "upgradeCharge": "Du debiteras {{amount}} i dag för resten av ditt pågående år. Därefter förnyas det för {{price}}/år.",
     "upgradeChargeUntil": "Du debiteras {{amount}} i dag för resten av ditt pågående år, fram till {{date}}. Därefter förnyas det för {{price}}/år.",
     "upgradeChargeApple": "Du debiteras {{price}} i dag. Apple återbetalar automatiskt den oanvända delen av ditt pågående år, och ditt nya år börjar nu.",
+    "upgradeAmountFailed": "Beloppet som dras i dag kunde inte hämtas.",
+    "upgradeAmountRetry": "Försök igen",
+    "upgradeAmountChanged": "Beloppet som dras i dag har ändrats eller kunde inte kontrolleras, så inget har dragits. Välj paketet igen för att se det nya beloppet.",
     "upgrading": "Uppgraderar…",
     "upgradeAndPay": "Uppgradera och betala nu",
     "maybeLater": "Kanske senare",
@@ -183,7 +186,12 @@
     "contentWidthWide": "Bred",
     "contentWidthFull": "Maximal",
     "lineSpacingTitle": "Radavstånd",
-    "lineSpacingDesc": "Avståndet mellan stycken när du skriver.",
+    "tintNotesTitle": "Färga anteckningarnas bakgrund",
+    "tintNotesDesc": "Anteckningar får färgen från sin tagg eller mapp.",
+    "lineSpacingDesc": "Avståndet mellan rader och stycken när du skriver.",
+    "lineSpacingTight": "Tät",
+    "resetDefaults": "Återställ standard",
+    "resetDefaultsConfirm": "Bekräfta återställning",
     "lineSpacingCompact": "Kompakt",
     "lineSpacingNormal": "Normal",
     "lineSpacingExample": "Exempel",
@@ -211,10 +219,10 @@
   },
   "conflict": {
     "title": "Synkkonflikt",
-    "explanation": "Den här anteckningen redigerades på en annan enhet medan du hade osparade ändringar här. Vi använder den <em>nyare versionen</em> (från den andra enheten, {{date}}).",
+    "explanation": "Den här anteckningen ändrades på en annan enhet medan den här enheten hade ändringar som inte hade synkats än, och texten skiljer sig åt mellan dem. Vi behåller <em>versionen från den andra enheten</em> ({{date}}) om du inte väljer något annat.",
     "willBeKept": "Behålls",
     "showLocal": "Visa versionen från den här enheten ({{date}})",
-    "useNewer": "OK, använd den nyare",
+    "useNewer": "Använd den andra versionen",
     "useMine": "Använd min i stället",
     "keepBoth": "Behåll båda som separata anteckningar"
   },
@@ -226,6 +234,13 @@
     "localLabel": "Radera lokal data",
     "localDesc": "Rensar anteckningar, bilder och cachad data från den här enheten. Det raderar inte ditt konto, det städar bara den här webbläsaren.",
     "localRequired": "(krävs när kontot raderas)",
+    "localUnsynced_one": "{{items}} på den här enheten har inte synkats. Om du raderar lokal data förstörs den för alltid.",
+    "localUnsynced_other": "{{items}} på den här enheten har inte synkats. Om du raderar lokal data förstörs de för alltid.",
+    "unsyncedNotes_one": "{{count}} anteckning",
+    "unsyncedNotes_other": "{{count}} anteckningar",
+    "unsyncedFiles_one": "{{count}} fil",
+    "unsyncedFiles_other": "{{count}} filer",
+    "unsyncedBoth": "{{notes}} och {{files}}",
     "cloudLabel": "Radera molndata och konto",
     "cloudDesc": "Tar permanent bort alla synkade anteckningar, bilder, enheter, inställningar och ditt konto från servern. Du kan skapa ett nytt konto efteråt.",
     "confirmPrompt": "Skriv <kbd>DELETE</kbd> för att bekräfta",
@@ -267,7 +282,11 @@
     "notBackedUpTooltip_one": "{{count}} anteckning är inte säkerhetskopierad. Klicka för att se varför.",
     "notBackedUpTooltip_other": "{{count}} anteckningar är inte säkerhetskopierade. Klicka för att se varför.",
     "notBackedUpAria_one": "{{count}} anteckning är inte säkerhetskopierad",
-    "notBackedUpAria_other": "{{count}} anteckningar är inte säkerhetskopierade"
+    "notBackedUpAria_other": "{{count}} anteckningar är inte säkerhetskopierade",
+    "haltedTooltip_one": "Synkroniseringen stoppades, {{count}} anteckning är inte säkerhetskopierad. Klicka för att se varför.",
+    "haltedTooltip_other": "Synkroniseringen stoppades, {{count}} anteckningar är inte säkerhetskopierade. Klicka för att se varför.",
+    "haltedAria_one": "Synkroniseringen stoppades, {{count}} anteckning är inte säkerhetskopierad",
+    "haltedAria_other": "Synkroniseringen stoppades, {{count}} anteckningar är inte säkerhetskopierade"
   },
   "errors": {
     "noSession": "Ingen aktiv session. Försök logga in igen.",
@@ -319,7 +338,9 @@
     "reasonFailed": "Misslyckades: {{message}}",
     "openNote": "Öppna",
     "passPushFailed_one": "{{count}} misslyckades",
-    "passPushFailed_other": "{{count}} misslyckades"
+    "passPushFailed_other": "{{count}} misslyckades",
+    "passHalted_one": "stoppad, {{count}} väntar",
+    "passHalted_other": "stoppad, {{count}} väntar"
   },
   "language": {
     "reportMistake": "Rapportera ett översättningsfel"

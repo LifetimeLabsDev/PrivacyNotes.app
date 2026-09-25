@@ -34,28 +34,34 @@ export function commonRootPrefix(paths: string[]): string {
 }
 
 /**
- * Build a folder tree from a set of directory paths (e.g. an Obsidian
- * vault's subfolders), rebuilding the full path as real folders at any
- * depth.
- *
- * Returns the created folder defs plus a map from each input directory
- * path to the id of the deepest folder created for it (for note.folderId).
- */
-/**
  * Split a `folder: A/B/C` front-matter value into path segments.
  *
  * The readable counterpart to `folderId`, written by `noteToMarkdown` and
  * read by BOTH markdown importers, which is why it lives here rather than
- * privately in one of them. A folder name may itself contain a slash, so
- * the writer escapes those as `\\/` and this undoes it.
+ * privately in one of them. It takes the value exactly as written and is the
+ * inverse of the writer: a quoted value loses its quotes and their `\"`
+ * escapes first, then `\/` is a slash inside a name, `\\` a backslash inside
+ * one, and a bare `/` ends a name.
+ *
+ * A backslash before anything else is kept as it stands, so a file whose
+ * writer left backslashes unescaped still reads. Such a file is ambiguous in
+ * two places, and both read the escaped way: a parent name ending in a
+ * backslash was written as `\/`, the bytes of a slash inside a name, so the
+ * parent and its child come back as one folder; and `\\` comes back as one
+ * backslash. The saved `folderId` still files those notes in their own
+ * folder when the restore is into the account that wrote the file.
  */
 export function parseFolderPath(raw: string | undefined): string[] {
   if (!raw || !raw.trim()) return [];
+  let s = raw.trim();
+  if (s.length > 1 && s.startsWith('"') && s.endsWith('"')) {
+    s = s.slice(1, -1).replace(/\\"/g, '"');
+  }
   const segs: string[] = [];
   let cur = '';
-  const s = raw.trim();
   for (let i = 0; i < s.length; i++) {
-    if (s[i] === '\\' && s[i + 1] === '/') { cur += '/'; i++; continue; }
+    const next = s[i + 1];
+    if (s[i] === '\\' && (next === '/' || next === '\\')) { cur += next; i++; continue; }
     if (s[i] === '/') { segs.push(cur); cur = ''; continue; }
     cur += s[i];
   }
@@ -77,6 +83,18 @@ export function parseFolderPath(raw: string | undefined): string[] {
  */
 export const IMPORT_FOLDER_LIMIT = 2_000;
 
+/**
+ * Build a folder tree from a set of directory paths (e.g. an Obsidian
+ * vault's subfolders), rebuilding the full path as real folders at any
+ * depth.
+ *
+ * A slash is always a delimiter here, because no directory name can hold
+ * one. Our own backup names folders that can, so it rebuilds its tree from
+ * the decoded name paths instead (`import/privacynotes.ts`).
+ *
+ * Returns the created folder defs plus a map from each input directory
+ * path to the id of the deepest folder created for it (for note.folderId).
+ */
 export function buildFolderTree(dirPaths: string[]): {
   folders: FolderDef[];
   dirToFolderId: Map<string, string>;

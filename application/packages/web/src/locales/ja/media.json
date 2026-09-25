@@ -12,7 +12,9 @@
     "uploadFailed": "アップロードに失敗しました: {{message}}",
     "storeUnavailable": "画像ストアを利用できません",
     "loadFailed": "画像を読み込めませんでした",
-    "notFound": "画像が見つかりません"
+    "notFound": "画像が見つかりません",
+    "saveFailed": "保存に失敗したため、ファイルが空か不完全な可能性があります。",
+    "viewAria": "画像を表示"
   },
   "attachment": {
     "fallbackName": "添付ファイル",
@@ -26,7 +28,6 @@
     "deleteConfirm": "削除しますか?",
     "copied": "コピーしました",
     "download": "ダウンロード",
-    "downloadToPlay": "ダウンロードして再生",
     "play": "再生",
     "pause": "一時停止",
     "fileNotFound": "ファイルが見つかりません",
@@ -37,6 +38,28 @@
     "downloadFailed": "ダウンロードに失敗しました",
     "playbackFailed": "再生に失敗しました",
     "uploadFailed": "アップロードに失敗しました: {{message}}",
-    "unknownError": "不明なエラー"
+    "unknownError": "不明なエラー",
+    "view": "表示",
+    "more": "その他の操作"
+  },
+  "viewer": {
+    "previous": "前へ",
+    "next": "次へ",
+    "position": "{{index}} / {{count}}",
+    "zoomIn": "拡大",
+    "zoomOut": "縮小",
+    "pdfLoading": "PDFを開いています...",
+    "pdfFailed": "このPDFを開けません。ダウンロードして別のアプリで開いてください。",
+    "pdfPassword": "このPDFにはパスワードが設定されています。ダウンロードして別のアプリで開いてください。",
+    "saveFailed": "保存に失敗したため、ファイルが空か不完全な可能性があります。",
+    "pageCount_other": "{{count}}ページ",
+    "pageLabel": "{{name}}、{{count}}ページ中{{page}}ページ目"
+  },
+  "picker": {
+    "title": "ファイル内の画像",
+    "search": "画像を検索",
+    "empty": "ファイルにはまだ画像がありません。ファイルでアップロードしてから、ここで追加してください。",
+    "noMatch": "検索に一致する画像はありません。",
+    "noCopy": "ここで追加した画像はファイル内の元のファイルを参照するため、ストレージを追加で使いません。"
   }
 }

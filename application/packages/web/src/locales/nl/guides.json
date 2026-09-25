@@ -177,7 +177,7 @@
           "h": "Waar alles belandt",
           "p": [
             "Logins worden login-items in de Kluis (met de icoontjes van hun site), kaarten worden kaartitems, SSH-sleutels worden SSH-sleutelitems, en beveiligde notities plus identiteiten komen binnen als leesbare notities. Bitwarden-mappen worden tags, en favorieten komen met een ster binnen. Authenticator-sleutels (TOTP) komen ook mee, dus je 2FA-codes blijven werken.",
-            "Het exportbestand bevat je wachtwoorden in leesbare tekst, dus importeer het, controleer of alles goed is aangekomen en verwijder het bestand daarna netjes. Binnen PrivacyNotes is alles weer end-to-end versleuteld."
+            "Het exportbestand bevat je wachtwoorden in leesbare tekst, dus importeer het, controleer of alles goed is aangekomen en verwijder het bestand daarna netjes. Binnen PrivacyNotes is alles weer versleuteld, op je apparaat en onderweg naar de server."
           ]
         }
       ]
@@ -568,7 +568,7 @@
         {
           "h": "Verwijder het exportbestand als je klaar bent: het zijn je wachtwoorden in platte tekst",
           "p": [
-            "In de geëxporteerde .csv is niets versleuteld, of hij nu in een .zip aankomt of niet. Wie hem opent leest elk wachtwoord dat je hebt bewaard, dus houd hem op je eigen machine, importeer hem, controleer of alles is aangekomen en gooi het bestand daarna weg en leeg de prullenbak. Binnen PrivacyNotes is alles weer eind-tot-eind versleuteld."
+            "In de geëxporteerde .csv is niets versleuteld, of hij nu in een .zip aankomt of niet. Wie hem opent leest elk wachtwoord dat je hebt bewaard, dus houd hem op je eigen machine, importeer hem, controleer of alles is aangekomen en gooi het bestand daarna weg en leeg de prullenbak. Binnen PrivacyNotes is alles weer versleuteld, op je apparaat en onderweg naar de server."
           ]
         }
       ]

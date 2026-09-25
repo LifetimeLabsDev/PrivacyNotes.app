@@ -1,0 +1,303 @@
+{
+  "noteRow": {
+    "created": "Створено",
+    "modified": "Змінено",
+    "select": "Вибрати нотатку",
+    "deselect": "Скасувати вибір нотатки",
+    "pinProtected": "Захищено PIN-кодом",
+    "readOnly": "Лише для читання",
+    "file": "Файл",
+    "empty": "Порожньо",
+    "noContent": "Немає вмісту",
+    "notBackedUp": "Резервної копії немає"
+  },
+  "header": {
+    "new": "Створити",
+    "newNote": "Нова нотатка",
+    "newNoteHover": "Нова нотатка ({{hotkey}})",
+    "trash": "Кошик"
+  },
+  "folderChip": {
+    "clear": "Очистити фільтр папки: {{folder}}"
+  },
+  "tagChip": {
+    "clear": "Очистити фільтр тегу: {{tag}}"
+  },
+  "vaultNew": {
+    "ariaLabel": "Новий елемент сейфа",
+    "login": "Логін",
+    "card": "Кредитна картка",
+    "sshKey": "SSH-ключ"
+  },
+  "newMenu": {
+    "note": "Нотатка",
+    "task": "Завдання",
+    "journal": "Щоденник",
+    "login": "Логін",
+    "file": "Файл",
+    "bookmark": "Закладка",
+    "contact": "Контакт"
+  },
+  "vaultFilter": {
+    "all": "Усі",
+    "logins": "Логіни",
+    "cards": "Кредитні картки",
+    "keys": "Ключі"
+  },
+  "journal": {
+    "newEntry": "Новий запис у щоденнику",
+    "newEntryHover": "Новий запис у щоденнику ({{hotkey}})"
+  },
+  "tasks": {
+    "newTitle": "Завдання на {{date}}"
+  },
+  "trash": {
+    "empty": "Очистити",
+    "emptyHover": "Видалити всі нотатки з кошика",
+    "storage": "Сховище",
+    "autoDelete": "Автовидалення через 30 днів"
+  },
+  "search": {
+    "sortOptions": "Сортування й вигляд",
+    "placeholderVault": "Пошук у сейфі…",
+    "placeholderNotes": "Пошук нотаток…"
+  },
+  "selection": {
+    "countOf": "Вибрано {{selected}} з {{total}}",
+    "selectAll": "Вибрати все",
+    "deselectAll": "Скасувати вибір"
+  },
+  "empty": {
+    "noMatches": "Нічого не знайдено.",
+    "vault": "Сейф порожній.",
+    "notes": "Нотаток ще немає.",
+    "filtered": "Жоден елемент не відповідає фільтрам.",
+    "clearFilters": "Очистіть фільтри",
+    "filteredAfter": "щоб їх показати."
+  },
+  "headerLabel": {
+    "allItems": "Усе",
+    "untagged": "Без тегів",
+    "journals": "Щоденники",
+    "vault": "Сейф",
+    "pinned": "Закріплені",
+    "notes": "Нотатки"
+  },
+  "footerStats": {
+    "journals": "Щоденників",
+    "items": "Елементів",
+    "trashed": "У кошику",
+    "notes": "Нотаток",
+    "bookmarks": "Закладок",
+    "contacts": "Контактів"
+  },
+  "toast": {
+    "imageUploadFailed": "Не вдалося вивантажити зображення: {{error}}",
+    "imageError": "Помилка зображення: {{error}}",
+    "uploadFailedFor": "Не вдалося вивантажити «{{filename}}»: {{error}}",
+    "importedSyncing_one": "Імпортовано {{count}} нотатку. Синхронізація…",
+    "importedSyncing_few": "Імпортовано {{count}} нотатки. Синхронізація…",
+    "importedSyncing_many": "Імпортовано {{count}} нотаток. Синхронізація…",
+    "importedSyncing_other": "Імпортовано {{count}} нотатки. Синхронізація…",
+    "addedTag_one": "Додано #{{tag}} до {{count}} елемента",
+    "addedTag_few": "Додано #{{tag}} до {{count}} елементів",
+    "addedTag_many": "Додано #{{tag}} до {{count}} елементів",
+    "addedTag_other": "Додано #{{tag}} до {{count}} елемента",
+    "restoreSummary": "Відновлено. Додано: {{added}}, оновлено: {{updated}}, без змін: {{unchanged}}."
+  },
+  "burn": {
+    "mediaOnly": "Ця нотатка містить лише медіафайли, тому нею не можна поділитися через одноразове посилання.",
+    "shareTitle": "Зашифрована нотатка"
+  },
+  "loadError": {
+    "message": "Не вдалося завантажити ваші нотатки. З’єднання з локальною базою даних перервалося. Таке трапляється, коли застосунок довго працює у фоні.",
+    "reload": "Перезавантажити"
+  },
+  "banner": {
+    "dismiss": "Приховати",
+    "proActivationPending": "Оплату отримано, але активація Pro триває довше, ніж зазвичай. Оновіть сторінку за хвилину або зверніться в підтримку, якщо Pro так і не ввімкнеться.",
+    "snapshotPaused": "Історію нотаток призупинено. Схоже, ваш тариф Pro неактивний. Нові зміни не зберігатимуться в історії, доки Pro не буде відновлено.",
+    "restorePro": "Відновити Pro",
+    "storagePastDue": "Не вдалося оплатити підписку на сховище. Оновіть картку в Paddle, щоб не втратити додатковий обсяг.",
+    "updateCard": "Оновити картку"
+  },
+  "sidebar": {
+    "collapse": "Згорнути бічну панель",
+    "expand": "Розгорнути бічну панель"
+  },
+  "notesList": {
+    "collapse": "Згорнути список нотаток",
+    "expand": "Розгорнути список нотаток"
+  },
+  "paneResize": {
+    "hintCollapse": "Натисніть, щоб згорнути · Перетягніть, щоб змінити розмір"
+  },
+  "emptyEditor": {
+    "selectFile": "Виберіть файл для перегляду",
+    "uploadFiles": "Або вивантажте нові файли у своє зашифроване сховище.",
+    "selectNote": "Виберіть нотатку або створіть нову.",
+    "selectMarkdown": "Відкрийте файл Markdown, щоб прочитати його тут."
+  },
+  "zen": {
+    "exit": "Вийти з дзену",
+    "exitHover": "Вийти з режиму дзен (Esc)",
+    "enterHover": "Увімкнути режим дзен",
+    "proHover": "Режим дзен (Pro)",
+    "enterAriaShortcut": "Увімкнути режим дзен (⌘⇧F)"
+  },
+  "editor": {
+    "backToList": "Назад до списку нотаток",
+    "backToGrid": "Назад до сітки",
+    "titlePlaceholder": "Без назви (натисніть, щоб змінити, або назва з’явиться сама)",
+    "titlePlaceholderLogin": "напр., GitHub",
+    "titlePlaceholderCard": "напр., Visa із закінченням 4242",
+    "titlePlaceholderSshKey": "напр., ключ розгортання для GitHub",
+    "pin": "Закріпити",
+    "unpin": "Відкріпити",
+    "restore": "Відновити",
+    "deleteForever": "Видалити назавжди",
+    "moveToTrash": "Перемістити в кошик",
+    "noteOptions": "Параметри нотатки",
+    "readOnlyToggle": "Лише для читання. Вимкнути можна в",
+    "menu": "Меню",
+    "showMarkdown": "Показати Markdown",
+    "showFormatted": "Показати з форматуванням",
+    "invisiblesShow": "Показати недруковані символи",
+    "invisiblesHide": "Сховати недруковані символи",
+    "findInNote": "Знайти в нотатці",
+    "navPrev": "Попереднє",
+    "navNext": "Наступне",
+    "undo": "Скасувати дію",
+    "redo": "Повторити",
+    "hide": "Сховати",
+    "show": "Показати",
+    "hideToolbar": "Сховати панель форматування",
+    "showToolbar": "Показати панель форматування",
+    "widthDefault": "Стандартна ширина",
+    "widthWide": "Ширше",
+    "widthFull": "На всю ширину",
+    "burn": "Поділитися й спалити після прочитання",
+    "titlePlaceholderLink": "Назва закладки",
+    "titlePlaceholderContact": "Ім’я",
+    "notBackedUpTooLarge": "Перевищено ліміт 1 МБ, тому резервної копії немає. Перенесіть зображення у вкладення або розділіть нотатку.",
+    "notBackedUpFailed": "Резервної копії немає. Остання помилка: {{message}}. Повторна спроба.",
+    "unknownType": "Цей елемент створено в новішій версії PrivacyNotes. Оновіть застосунок, щоб його відкрити."
+  },
+  "share": {
+    "hover": "Поділитися / Експорт",
+    "ariaLabel": "Поділитися або експортувати",
+    "currentMdTitle": "Поточна нотатка (.md)",
+    "currentMdDesc": "Сирий Markdown із front matter.",
+    "currentHtmlTitle": "Поточна нотатка (.html)",
+    "currentHtmlDesc": "Для друку: Markdown, відображений на білій сторінці.",
+    "printTitle": "Друк / Зберегти як PDF",
+    "printDesc": "Відкриває діалог друку. Збережіть як PDF або надішліть на принтер.",
+    "burnTitle": "Поділитися й спалити після прочитання",
+    "burnDesc": "Опублікуйте цю нотатку як посилання для одноразового перегляду. Посилання самознищується після прочитання. Ваша нотатка залишається в безпеці у вашому обліковому записі."
+  },
+  "weekReview": {
+    "title": "Підсумки тижня",
+    "daysLogged": "Записано: {{count}}/7",
+    "mood": "Настрій",
+    "sleep": "Сон",
+    "meds": "Ліки",
+    "activity": "Активність"
+  },
+  "footer": {
+    "settings": "Налаштування",
+    "viewShortcuts": "Переглянути всі гарячі клавіші",
+    "newNote": "Створити",
+    "newNoteHintMac": "Option + Shift + N",
+    "newNoteHintOther": "Alt + Shift + N",
+    "openStats": "Відкрити статистику",
+    "words": "Слів",
+    "zen": "Дзен",
+    "appearance": "Вигляд",
+    "signOut": "Вийти",
+    "signingOut": "Вихід…",
+    "switchToLight": "Увімкнути світлу тему",
+    "switchToDark": "Увімкнути темну тему"
+  },
+  "settings": {
+    "groupYourNotes": "Ваші нотатки",
+    "groupAccount": "Обліковий запис і дані",
+    "groupBrand": "PrivacyNotes",
+    "statsLabel": "Статистика",
+    "journalsLabel": "Щоденники",
+    "importLabel": "Імпорт і експорт",
+    "planLabel": "Обліковий запис",
+    "storageLabel": "Сховище",
+    "imagesLabel": "Зображення",
+    "securityLabel": "Безпека",
+    "accountLabel": "ID і синхронізація",
+    "appearanceLabel": "Вигляд",
+    "helpLabel": "Довідка",
+    "aboutLabel": "Про застосунок",
+    "languageLabel": "Мова",
+    "languageDesc": "Виберіть мову інтерфейсу PrivacyNotes."
+  },
+  "importStore": {
+    "title": "Імпортувати чи зберегти?",
+    "confirm": "Імпортувати як нотатки",
+    "cancel": "Зберегти як файли",
+    "bodySingle": "<strong>{{filename}}</strong> схожий на файл Markdown. Імпортувати його як нотатку, щоб читати й редагувати, чи зберегти як зашифроване вкладення?",
+    "bodyMulti": "Ці файли ({{count}}) схожі на Markdown. Імпортувати їх як нотатки, щоб читати й редагувати, чи зберегти як зашифровані вкладення?"
+  },
+  "bulkTrash": {
+    "title": "Перемістити в кошик",
+    "body_one": "Перемістити <highlight>{{count}} елемент</highlight> у кошик? Пізніше його можна буде відновити.",
+    "body_few": "Перемістити <highlight>{{count}} елементи</highlight> у кошик? Пізніше їх можна буде відновити.",
+    "body_many": "Перемістити <highlight>{{count}} елементів</highlight> у кошик? Пізніше їх можна буде відновити.",
+    "body_other": "Перемістити <highlight>{{count}} елемента</highlight> у кошик? Пізніше їх можна буде відновити.",
+    "readOnlyTitle": "Лише для читання",
+    "readOnlyAcknowledge": "Зрозуміло",
+    "readOnlyBlocked_one": "<highlight>{{count}} елемент</highlight> доступний лише для читання, тому його не можна перемістити в кошик. Спершу вимкніть режим «лише для читання» в меню параметрів нотатки.",
+    "readOnlyBlocked_few": "Усі <highlight>{{count}} елементи</highlight> доступні лише для читання, тому жоден із них не можна перемістити в кошик. Спершу вимкніть режим «лише для читання» в меню параметрів нотатки.",
+    "readOnlyBlocked_many": "Усі <highlight>{{count}} елементів</highlight> доступні лише для читання, тому жоден із них не можна перемістити в кошик. Спершу вимкніть режим «лише для читання» в меню параметрів нотатки.",
+    "readOnlyBlocked_other": "Усі <highlight>{{count}} елемента</highlight> доступні лише для читання, тому жоден із них не можна перемістити в кошик. Спершу вимкніть режим «лише для читання» в меню параметрів нотатки.",
+    "readOnlySkipped_one": "<highlight>{{count}} елемент</highlight> доступний лише для читання й залишиться на місці.",
+    "readOnlySkipped_few": "<highlight>{{count}} елементи</highlight> доступні лише для читання й залишаться на місці.",
+    "readOnlySkipped_many": "<highlight>{{count}} елементів</highlight> доступні лише для читання й залишаться на місці.",
+    "readOnlySkipped_other": "<highlight>{{count}} елемента</highlight> доступні лише для читання й залишаться на місці."
+  },
+  "bulkDelete": {
+    "body_one": "Остаточно видалити <highlight>{{count}} нотатку</highlight>? Цю дію не можна скасувати.",
+    "body_few": "Остаточно видалити <highlight>{{count}} нотатки</highlight>? Цю дію не можна скасувати.",
+    "body_many": "Остаточно видалити <highlight>{{count}} нотаток</highlight>? Цю дію не можна скасувати.",
+    "body_other": "Остаточно видалити <highlight>{{count}} нотатки</highlight>? Цю дію не можна скасувати."
+  },
+  "tagConfirm": {
+    "mergeTitle": "Об’єднати теги",
+    "deleteTitle": "Видалити тег",
+    "deleteWithNotesTitle": "Видалити тег і нотатки",
+    "mergeConfirm": "Об’єднати",
+    "deleteConfirm": "Видалити тег",
+    "moveToTrash": "Перемістити в кошик",
+    "mergeBody_one": "Тег <highlight>«{{targetTag}}»</highlight> уже існує. Об’єднати з ним <highlight>{{count}} нотатку</highlight> з тегом «{{tag}}»?",
+    "mergeBody_few": "Тег <highlight>«{{targetTag}}»</highlight> уже існує. Об’єднати з ним <highlight>{{count}} нотатки</highlight> з тегом «{{tag}}»?",
+    "mergeBody_many": "Тег <highlight>«{{targetTag}}»</highlight> уже існує. Об’єднати з ним <highlight>{{count}} нотаток</highlight> з тегом «{{tag}}»?",
+    "mergeBody_other": "Тег <highlight>«{{targetTag}}»</highlight> уже існує. Об’єднати з ним <highlight>{{count}} нотатки</highlight> з тегом «{{tag}}»?",
+    "deleteBody_one": "Прибрати тег <highlight>«{{tag}}»</highlight> з <highlight>{{count}} нотатки</highlight>? Самі нотатки не буде видалено.",
+    "deleteBody_few": "Прибрати тег <highlight>«{{tag}}»</highlight> з <highlight>{{count}} нотаток</highlight>? Самі нотатки не буде видалено.",
+    "deleteBody_many": "Прибрати тег <highlight>«{{tag}}»</highlight> з <highlight>{{count}} нотаток</highlight>? Самі нотатки не буде видалено.",
+    "deleteBody_other": "Прибрати тег <highlight>«{{tag}}»</highlight> з <highlight>{{count}} нотатки</highlight>? Самі нотатки не буде видалено.",
+    "deleteWithNotesBody_one": "Видалити тег <highlight>«{{tag}}»</highlight> і перемістити <highlight>{{count}} нотатку</highlight> в кошик? Звідти її можна буде відновити.",
+    "deleteWithNotesBody_few": "Видалити тег <highlight>«{{tag}}»</highlight> і перемістити <highlight>{{count}} нотатки</highlight> в кошик? Звідти їх можна буде відновити.",
+    "deleteWithNotesBody_many": "Видалити тег <highlight>«{{tag}}»</highlight> і перемістити <highlight>{{count}} нотаток</highlight> в кошик? Звідти їх можна буде відновити.",
+    "deleteWithNotesBody_other": "Видалити тег <highlight>«{{tag}}»</highlight> і перемістити <highlight>{{count}} нотатки</highlight> в кошик? Звідти їх можна буде відновити."
+  },
+  "createNote": {
+    "title": "Створити нотатку?",
+    "confirm": "Створити нотатку",
+    "body": "Нотатки з назвою <highlight>«{{title}}»</highlight> немає. Таке буває, якщо пов’язану нотатку перейменували. Створити нову нотатку з цією назвою?"
+  },
+  "freshVault": {
+    "title": "Створено новий сейф",
+    "confirm": "Зрозуміло",
+    "body": "Жоден наявний сейф не відповідає введеній фразі, тому створено новий порожній. Якщо ви очікували побачити свої нотатки, вийдіть і уважно введіть фразу ще раз: одне інше слово відкриває інший сейф."
+  },
+  "ambiguousLink": {
+    "title": "Дві нотатки мають таку назву",
+    "body": "Назву <highlight>«{{title}}»</highlight> мають кілька нотаток, тому посилання не вказує, яку саме. Перейменуйте одну з них, і посилання вестиме на іншу."
+  }
+}

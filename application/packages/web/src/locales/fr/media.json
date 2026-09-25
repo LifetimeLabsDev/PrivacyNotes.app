@@ -12,7 +12,9 @@
     "uploadFailed": "L'envoi a échoué : {{message}}",
     "storeUnavailable": "Stockage d'images indisponible",
     "loadFailed": "Échec du chargement de l'image",
-    "notFound": "Image introuvable"
+    "notFound": "Image introuvable",
+    "saveFailed": "L'enregistrement a échoué, donc le fichier peut être vide ou incomplet.",
+    "viewAria": "Afficher l'image"
   },
   "attachment": {
     "fallbackName": "Pièce jointe",
@@ -26,7 +28,6 @@
     "deleteConfirm": "Supprimer ?",
     "copied": "Copié",
     "download": "Télécharger",
-    "downloadToPlay": "Télécharger pour lire",
     "play": "Lire",
     "pause": "Pause",
     "fileNotFound": "Fichier introuvable",
@@ -37,6 +38,29 @@
     "downloadFailed": "Le téléchargement a échoué",
     "playbackFailed": "La lecture a échoué",
     "uploadFailed": "L'envoi a échoué : {{message}}",
-    "unknownError": "Erreur inconnue"
+    "unknownError": "Erreur inconnue",
+    "view": "Afficher",
+    "more": "Plus d'actions"
+  },
+  "viewer": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "position": "{{index}} sur {{count}}",
+    "zoomIn": "Zoom avant",
+    "zoomOut": "Zoom arrière",
+    "pdfLoading": "Ouverture du PDF...",
+    "pdfFailed": "Impossible d'ouvrir ce PDF. Télécharge-le pour l'ouvrir dans une autre app.",
+    "pdfPassword": "Ce PDF est protégé par un mot de passe. Télécharge-le pour l'ouvrir dans une autre app.",
+    "saveFailed": "L'enregistrement a échoué, donc le fichier peut être vide ou incomplet.",
+    "pageCount_one": "{{count}} page",
+    "pageCount_other": "{{count}} pages",
+    "pageLabel": "{{name}}, page {{page}} sur {{count}}"
+  },
+  "picker": {
+    "title": "Images dans Fichiers",
+    "search": "Rechercher des images",
+    "empty": "Pas encore d'images dans Fichiers. Importes-en une là-bas, puis ajoute-la ici.",
+    "noMatch": "Aucune image ne correspond à ta recherche.",
+    "noCopy": "Une image ajoutée ici renvoie au fichier dans Fichiers, elle n'occupe donc pas d'espace de stockage en plus."
   }
 }

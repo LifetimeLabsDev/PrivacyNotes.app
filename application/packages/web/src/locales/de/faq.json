@@ -74,7 +74,7 @@
       "q": "Brauche ich eine E-Mail-Adresse für die Registrierung?",
       "a": [
         "Nein. Ein neues Konto ist eine frisch generierte 12-Wort-Phrase, sonst nichts. Keine E-Mail, kein Benutzername, keine Telefonnummer, kein Bestätigungsschritt. Wenn du dich mit der Phrase anmeldest, könnten wir dir nicht einmal eine E-Mail schreiben, selbst wenn wir wollten - wir erfahren nie, wer du bist.",
-        "Du bevorzugst den vertrauten Weg? Anmelden mit Google, Apple oder GitHub geht auch. Dabei erfahren wir zwangsläufig die E-Mail-Adresse hinter diesem Login, aber deine Notizen bleiben so oder so Ende-zu-Ende-verschlüsselt, und unter der Haube bekommst du trotzdem eine Phrase."
+        "Du bevorzugst den vertrauten Weg? Anmelden mit Google, Apple oder GitHub geht auch. Dabei erfahren wir zwangsläufig die E-Mail-Adresse hinter diesem Login, aber deine Notizen bleiben so oder so auf deinem Gerät verschlüsselt, und unter der Haube bekommst du trotzdem eine Phrase."
       ]
     },
     "import-from-other-apps": {
@@ -94,7 +94,7 @@
     "what-can-you-see": {
       "q": "Was kann PrivacyNotes über meine Notizen sehen?",
       "a": [
-        "Nichts Lesbares. Notizen, Titel, Tags und Anhänge werden auf deinem Gerät verschlüsselt, bevor sie synchronisiert werden. Der Server speichert Chiffretext, den er nicht entschlüsseln kann, und es gibt auf unserer Seite keinen Schlüssel, der das ändern könnte.",
+        "Nichts Lesbares. Notizen, Titel, Tags und Anhänge sind immer verschlüsselt, auf deinem Gerät und auf dem Weg zum Server, der Server speichert also nur Chiffretext. Bei Selbstverwahrung, die jedes Phrasen-Konto hat, gibt es auf unserer Seite keinen Schlüssel dazu. Wenn du dich mit Google, Apple oder GitHub registrierst, wirst du gefragt, wo dein Schlüssel liegen soll, und die Auswahl beginnt bei \"Einfach und bequem\": Diese Option legt deine Phrase auf unserem Server ab, verschlüsselt unter einem Schlüssel von uns. Unter Einstellungen > Sicherheit > Deine Phrase siehst du, welchen Modus du hast, und kannst wechseln.",
         "Was wir sehen können, ist das Minimum, um den Dienst zu betreiben: wie viel verschlüsselten Speicher du belegst, wie viele Geräte du verknüpft hast, und Sync-Zeitstempel. Wenn du dich mit einer Phrase statt mit Google, Apple oder GitHub anmeldest, kennen wir nicht einmal deine E-Mail-Adresse."
       ]
     },
@@ -102,18 +102,18 @@
       "q": "Warum eine Wiederherstellungsphrase statt Benutzername und Passwort?",
       "a": [
         "Es fühlt sich zuerst verkehrt an, aber eine einzelne Wiederherstellungsphrase ist die stärkere Konstruktion. Bei Benutzername und Passwort ist der Benutzername kein Geheimnis (er taucht in jedem Breach-Dump auf), die ganze Sicherheit hängt also am Passwort - und von Menschen gewählte Passwörter kommen im Schnitt auf vielleicht 30 bis 40 Bit Entropie. Deine 12-Wort-Phrase kommt auf garantierte 128 Bit, von deinem Gerät generiert, nie von einem Menschen gewählt und nie von einer anderen Website wiederverwendet.",
-        "Es gibt bei uns auch nichts zu verlieren. Ein Passwort-Login heißt, der Server speichert mindestens einen Passwort-Hash, der geleakt, geknackt oder gephisht werden kann. Deine Phrase verlässt dein Gerät nie: Sie leitet deine Verschlüsselungsschlüssel lokal ab, und der Server sieht immer nur verschlüsselte Daten. Es gibt keinen Hash zu stehlen und keinen Passwort-Reset, den ein Angreifer missbrauchen könnte.",
-        "Falls dir das Eintippen von 12 Wörtern umständlich vorkommt: Du kannst die Phrase mit einem Tipp in deinen Passwort-Manager übernehmen (Einstellungen > Sicherheit > Deine Phrase), und die Anmeldung fühlt sich an wie jeder andere Login. Lieber der vertraute Weg? Anmelden mit Google, Apple oder GitHub geht auch, und unter der Haube bekommst du trotzdem eine Phrase."
+        "Es gibt bei uns auch kein Passwort zu verlieren. Ein Passwort-Login heißt, der Server speichert mindestens einen Passwort-Hash, der geleakt, geknackt oder gephisht werden kann. Bei Selbstverwahrung verlässt deine Phrase dein Gerät nie: Sie leitet deine Verschlüsselungsschlüssel lokal ab, und der Server sieht immer nur verschlüsselte Daten. Es gibt keinen Hash zu stehlen und keinen Passwort-Reset, den ein Angreifer missbrauchen könnte.",
+        "Falls dir das Eintippen von 12 Wörtern umständlich vorkommt: Du kannst die Phrase mit einem Tipp in deinen Passwort-Manager übernehmen (Einstellungen > Sicherheit > Deine Phrase), und die Anmeldung fühlt sich an wie jeder andere Login. Lieber der vertraute Weg? Anmelden mit Google, Apple oder GitHub geht auch: Unter der Haube bekommst du trotzdem eine Phrase, und du entscheidest, ob sie auf deinem Gerät bleibt oder wir sie für dich verwahren."
       ]
     },
     "threat-model-levels": {
       "q": "Kann ich meine eigene Balance zwischen Komfort und Privatsphäre wählen?",
       "a": [
-        "Ja, ganz bewusst. Nicht alle verteidigen sich gegen dieselben Bedrohungen, deshalb ist das Kontomodell eine Leiter statt eines einzigen Dogmas. Auf jeder Sprosse bleiben deine Notizen Ende-zu-Ende-verschlüsselt; was sich ändert, ist, wer den Schlüssel hält und was wir über dich wissen.",
-        "Das bequeme Ende: Melde dich mit Google, Apple oder GitHub an und wähle auf Nachfrage \"Einfach und bequem\". Wir verwahren deine Wiederherstellungsphrase für dich, verschlüsselt auf unserem Server, sodass sich jedes Gerät allein mit diesem Login anmeldet und es nichts zu sichern oder zu verlieren gibt. Im Gegenzug kennen wir die E-Mail hinter diesem Login, und wir halten deinen Schlüssel statt du. Wenn deine realistische Bedrohung das Verlieren eigener Zugangsdaten ist und kein gezielter Einbruch, ist das die richtige Stufe.",
+        "Ja, ganz bewusst. Nicht alle verteidigen sich gegen dieselben Bedrohungen, deshalb ist das Kontomodell eine Leiter statt eines einzigen Dogmas. Auf jeder Sprosse bleiben deine Notizen auf deinem Gerät verschlüsselt; was sich ändert, ist, wer den Schlüssel hält und was wir über dich wissen.",
+        "Das bequeme Ende: Melde dich mit Google, Apple oder GitHub an und lass auf Nachfrage \"Einfach und bequem\" ausgewählt, das ist dort die Voreinstellung. Wir verwahren deine Wiederherstellungsphrase für dich, verschlüsselt auf unserem Server, sodass sich jedes Gerät allein mit diesem Login anmeldet und es nichts zu sichern oder zu verlieren gibt. Im Gegenzug kennen wir die E-Mail hinter diesem Login, und wir halten deinen Schlüssel statt du. Wenn deine realistische Bedrohung das Verlieren eigener Zugangsdaten ist und kein gezielter Einbruch, ist das die richtige Stufe.",
         "Die Mitte: Melde dich mit Google, Apple oder GitHub an, wähle aber \"Maximale Sicherheit und Privatsphäre\". Deine Phrase berührt unsere Server nie und die Verschlüsselung ist vollständig zero-knowledge; neue Geräte brauchen die Phrase oder einen QR-Scan von einem bereits angemeldeten Gerät. Die E-Mail hinter diesem Login kennen wir zwangsläufig weiterhin, aber wir könnten keine einzige Notiz lesen, selbst unter Zwang.",
         "Das private Ende: Verzichte ganz auf die Logins und nutze nur die 12-Wort-Phrase. Keine E-Mail, kein Name, keine Identität - und kombiniert mit einem [anonymen Pro-Kauf](/de/help/buy-pro-anonymously/) hinterlässt selbst das Bezahlen nirgendwo einen Namen. Im Gegenzug liegt die Schlüsselverwahrung komplett bei dir: Verlierst du die Phrase ohne ein angemeldetes Gerät, kann niemand helfen.",
-        "Du bist nicht an die Stufe gebunden, die du gewählt hast. Unter Einstellungen > Sicherheit > Deine Phrase stehen beide Modi nebeneinander samt ihren Kosten, und du kannst jederzeit in beide Richtungen wechseln. Der Wechsel zur Selbstverwaltung löscht unsere Kopie und verlangt vorher, dass du drei deiner zwölf Wörter erneut eintippst, denn wer darauf klickt, hat sie meist nie aufgeschrieben. Der Weg zurück lädt die Phrase wieder hoch und verlangt eine ausdrückliche Entscheidung. Beide Richtungen werden mit deinem eigenen Kontoschlüssel signiert, eine gestohlene Sitzung kann deinen Modus also nicht ändern. Und auf jeder Stufe kommen die lokalen Schichten obendrauf: PIN-Sperre, biometrisches Entsperren und Schutz einzelner Notizen."
+        "Mit einem Google-, Apple- oder GitHub-Login bist du nicht an die Stufe gebunden, die du gewählt hast. Unter Einstellungen > Sicherheit > Deine Phrase stehen beide Modi nebeneinander samt ihren Kosten, und du kannst jederzeit in beide Richtungen wechseln. Der Wechsel zur Selbstverwahrung löscht unsere Kopie und verlangt vorher, dass du drei deiner zwölf Wörter erneut eintippst, denn wer darauf klickt, hat sie meist nie aufgeschrieben. Der Weg zurück lädt die Phrase wieder hoch und verlangt eine ausdrückliche Entscheidung. Beide Richtungen werden mit deinem eigenen Kontoschlüssel signiert, eine gestohlene Sitzung kann deinen Modus also nicht ändern. Ein reines Phrasen-Konto bleibt am privaten Ende, denn es gibt keinen Login, mit dem sich ein gespeicherter Schlüssel abrufen ließe. Und auf jeder Stufe kommen die lokalen Schichten obendrauf: PIN-Sperre, biometrisches Entsperren und Schutz einzelner Notizen."
       ]
     },
     "twelve-word-phrase": {
@@ -159,7 +159,7 @@
     "no-ai": {
       "q": "Nutzt PrivacyNotes KI auf meinen Notizen?",
       "a": [
-        "Nein. Es gibt keine KI-Funktionen in der App, keine KI-Verarbeitung im Hintergrund und kein Modelltraining mit deinen Inhalten. Deine Notizen werden verschlüsselt, bevor sie dein Gerät verlassen - auf unseren Servern gibt es also nichts Lesbares, das man irgendwo einspeisen könnte.",
+        "Nein. Es gibt keine KI-Funktionen in der App, keine KI-Verarbeitung im Hintergrund und kein Modelltraining mit deinen Inhalten. Deine Notizen sind immer verschlüsselt, auf deinem Gerät und auf dem Weg zum Server - auf unseren Servern gibt es also nichts Lesbares, das man irgendwo einspeisen könnte.",
         "Sollten wir je ein Feature in diese Richtung bauen, müsste es vollständig auf deinem Gerät laufen und strikt opt-in sein. Klartext-Notizen an ein Cloud-Modell zu schicken würde das Zero-Knowledge-Versprechen brechen und kommt deshalb nicht infrage."
       ]
     },
@@ -188,7 +188,7 @@
       "q": "Ich habe meine Wiederherstellungsphrase verloren. Könnt ihr mein Konto wiederherstellen?",
       "a": [
         "Wenn du auf irgendeinem Gerät noch angemeldet bist: ja, das kannst du selbst. Öffne Einstellungen > Sicherheit > Deine Phrase und speichere sie jetzt sofort in deinen Passwort-Manager.",
-        "Wenn du kein angemeldetes Gerät und keine Phrase mehr hast: nein, und niemand kann das. Deine Phrase erreicht unsere Server nie, es gibt also nichts zurückzusetzen und kein Support-Ticket, das helfen könnte. Das ist keine Richtlinie, die wir beugen könnten - das ist die Bedeutung von Ende-zu-Ende-Verschlüsselung. Jeder Dienst, der deine verschlüsselten Daten nach einem Totalverlust wiederherstellen kann, hält deine Schlüssel.",
+        "Wenn du kein angemeldetes Gerät und keine Phrase mehr hast, kommt es darauf an, wer den Schlüssel hält. Hast du ihn bei der Registrierung mit Google, Apple oder GitHub bei uns speichern lassen, meldest du dich mit diesem Login an und bist wieder drin. Bei Selbstverwahrung kann das niemand: Deine Phrase erreicht unsere Server nie, es gibt also nichts zurückzusetzen und kein Support-Ticket, das helfen könnte. Jeder Dienst, der deine verschlüsselten Daten nach einem Totalverlust wiederherstellen kann, hält deine Schlüssel.",
         "Die Vorsorge kostet zehn Sekunden: Speichere die Phrase am Tag der Kontoerstellung in einem Passwort-Manager. Ist sie schon weg und du zahlst für ein Speicher-Add-on: Paddle rechnet direkt mit dir ab und kann es ohne deine Phrase kündigen, siehe [Add-on ändern oder kündigen](/de/help/manage-storage-addon/)."
       ]
     },
@@ -223,14 +223,14 @@
     "offline": {
       "q": "Funktioniert PrivacyNotes offline?",
       "a": [
-        "Ja. Die App ist local-first: Deine Notizen liegen in einer Datenbank auf deinem Gerät, also funktionieren Lesen, Schreiben und Suchen ganz ohne Verbindung. Änderungen synchronisieren sich automatisch, sobald du wieder online bist."
+        "Ja. Die App ist local-first: Deine Notizen liegen in einer Datenbank auf deinem Gerät, also funktionieren Lesen, Schreiben und Suchen ganz ohne Verbindung. Änderungen synchronisieren sich automatisch, sobald du wieder online bist, und ein Bild oder eine Datei, die du offline hinzufügst, wartet auf diesem Gerät und wird dann ebenfalls hochgeladen."
       ]
     },
     "sync-conflicts": {
       "q": "Was passiert, wenn ich dieselbe Notiz auf zwei Geräten gleichzeitig bearbeite?",
       "a": [
-        "Nichts wird stillschweigend überschrieben. Haben beide Geräte dieselbe Notiz getrennt voneinander geändert (etwa weil eines offline war), erkennt die App die Kollision beim nächsten Sync und zeigt einen Konflikt-Dialog: die Version dieses Geräts behalten, die andere behalten, oder beide als separate Notizen behalten.",
-        "Im Alltag wirst du ihn selten sehen. Online synchronisieren sich Änderungen innerhalb von Sekunden, und der Dialog erscheint nur, wenn zwei Versionen derselben Notiz wirklich auseinandergelaufen sind."
+        "Deine Geräte führen die Notiz Detail für Detail zusammen, sobald sie sich wieder synchronisieren, sodass eine Änderung, die nur auf einem von ihnen vorgenommen wurde, erhalten bleibt. Haben beide getrennt voneinander den Text bearbeitet (etwa weil eines offline war), zeigt das Gerät, das sich als zweites synchronisiert, einen Konflikt-Dialog: die Version auf diesem Gerät behalten, die andere behalten oder beide als separate Notizen behalten. Bis du dich entscheidest, bleiben beide Versionen erhalten.",
+        "Haben beide Geräte getrennt voneinander dasselbe Detail geändert, etwa das Anpinnen, den Ordner oder den Titel, behält die App ohne Dialog das Detail von dem Gerät, das die Notiz zuletzt bearbeitet hat. Eine auf einem Gerät endgültig gelöschte Notiz wird überall gelöscht, einschließlich einer Änderung, die ein anderes Gerät an ihr vorgenommen hat, während beide getrennt waren."
       ]
     },
     "remove-device": {
@@ -244,8 +244,8 @@
       "q": "Wo werden meine Daten gespeichert?",
       "a": [
         "Zuerst auf deinem Gerät, und das ist die Kopie, mit der du arbeitest: Die App ist local-first, deine Notizen öffnen und bearbeiten sich also auch offline. Die Sync-Kopie liegt auf Servern in Zürich, Schweiz. Dort liegen dein öffentlicher Schlüssel, verschlüsselte Blobs deiner Notizen, Dateien und Einstellungen sowie die Zeitstempel und Größen, die ein Sync braucht. Keine Titel, kein Text, keine Tags.",
-        "Das Land zählt weniger als die Verschlüsselung. Alles wird auf deinem Gerät verschlüsselt, bevor es das Gerät verlässt, diese Kopie wäre also unlesbar, egal wo sie läge: Die Schweiz ist ein Bonus, nicht das Versprechen. [Was synchronisiert wird](/de/help/what-syncs/) listet es Punkt für Punkt auf.",
-        "Die Kopie auf deinem Gerät ist ebenfalls verschlüsselt. Notizen liegen versiegelt auf der Festplatte, unter einem Schlüssel, der beim Entsperren aus deiner Wiederherstellungsphrase abgeleitet wird, also enthält ein kopiertes Browser-Profil, ein Speicherabzug oder ein gestohlenes Backup verschlüsselte Daten und nicht deine Notizen."
+        "Das Land zählt weniger als die Verschlüsselung. Alles ist immer verschlüsselt, auf deinem Gerät und auf dem Weg zum Server, diese Kopie wäre also unlesbar, egal wo sie läge: Die Schweiz ist ein Bonus, nicht das Versprechen. [Was synchronisiert wird](/de/help/what-syncs/) listet es Punkt für Punkt auf.",
+        "Die Kopie auf deinem Gerät ist ebenfalls verschlüsselt. Notizen liegen versiegelt auf der Festplatte, unter einem Schlüssel, der beim Entsperren aus deiner Wiederherstellungsphrase abgeleitet wird, also enthält eine Kopie des App-Speichers auf deinem Gerät oder ein gestohlenes Backup davon verschlüsselte Daten und nicht deine Notizen."
       ]
     },
     "data-on-disk": {
@@ -253,28 +253,28 @@
       "a": [
         "In einem Ordner pro Installation, in deinem App-Daten-Bereich. Wo dieser Ordner liegt, hängt von der Plattform ab:",
         "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, beim AppImage `app.privacynotes.appimage`, das seine eigene Web-Engine mitbringt und deshalb ein eigenes Profil behält\n- **Android, iOS**: der private Speicher der App, den keine andere App öffnen kann\n- **Browser**: dein Browser-Profil, unter `use.privacynotes.app`",
-        "Was dort liegt, sind verschlüsselte Daten. Jede Notiz ist ein versiegelter Block mit Titel, Text und Tags darin, geöffnet von einem Schlüssel, der beim Entsperren aus deiner Wiederherstellungsphrase abgeleitet wird. Klar lesbar bleibt nur, was der lokale Index braucht: IDs, Zeitstempel und Markierungen wie favorisiert oder gelöscht.",
+        "Was dort liegt, sind verschlüsselte Daten. Jede Notiz ist ein versiegelter Block mit Titel, Text und Tags darin, geöffnet von einem Schlüssel, der beim Entsperren aus deiner Wiederherstellungsphrase abgeleitet wird, ein kopierter Ordner enthält also nichts Lesbares. Klar lesbar bleibt nur, was der lokale Index braucht: IDs, Zeitstempel, die Art des Eintrags und Markierungen wie angepinnt oder gelöscht.",
         "Um deine Notizen auf ein anderes Gerät zu bringen oder eine eigene Kopie zu behalten, nutze **Einstellungen > Import & Export > Export** und wähle \"Verschlüsseltes Voll-Backup (.pnbackupz)\". Es enthält alles, ist mit deinem Phrasenschlüssel verschlüsselt und lässt sich mit deiner Phrase auf jedem Gerät wiederherstellen. [Mehr zu Backups](/de/help/backup-strategy/)."
       ]
     },
     "export": {
       "q": "Kann ich meine Notizen exportieren, oder bin ich eingesperrt?",
       "a": [
-        "Du kannst jederzeit alles exportieren, vollständig auf deinem Gerät erzeugt: Markdown-Dateien als Zip inklusive Anhängen, ein komplettes JSON-Backup oder eigenständiges HTML - pro Notiz oder für das ganze Konto. Tresor-Einträge haben ihren eigenen Weg, \"Tresor-Export (.json)\", der Bitwardens Format schreibt und deine Benutzernamen, Passwörter, URLs, Kartendaten und 2FA-Schlüssel nach Bitwarden, 1Password oder KeePass mitnimmt.",
+        "Du kannst jederzeit alles exportieren, vollständig auf deinem Gerät erzeugt: Markdown-Dateien als Zip inklusive Anhängen, einfaches JSON oder eigenständiges HTML - pro Notiz oder für das ganze Konto. Die Zip-Datei ist das \"PrivacyNotes-Backup (.zip)\", und sie lässt sich wiederherstellen, wie die verschlüsselten Backups auch; JSON und HTML sind zum Lesen und für deine nächste App. Tresor-Einträge haben ihren eigenen Weg, \"Tresor-Export (.json)\", der Bitwardens Format schreibt und deine Benutzernamen, Passwörter, URLs, Kartendaten und 2FA-Schlüssel nach Bitwarden, 1Password oder KeePass mitnimmt.",
         "Das alles steht unter Einstellungen > Import & Export > Export. Der Import läuft genauso, aus Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden und mehr: Die vollständige Liste steht unter [aus einer anderen App umziehen](/de/help/import-from-other-apps/). Lock-in ist kein Teil des Geschäftsmodells."
       ]
     },
     "attachment-limits": {
       "q": "Welche Dateien kann ich anhängen, und wie groß dürfen sie sein?",
       "a": [
-        "Jeder Dateityp: Bilder, PDFs, Audio, Archive, was immer du hineinziehst. Jede Datei wird vor dem Upload auf deinem Gerät verschlüsselt, genau wie Notiztext, und die Dateien-Ansicht sammelt alle Anhänge an einem Ort.",
+        "Jeder Dateityp: Bilder, PDFs, Audio, Archive, was immer du hineinziehst. Jede Datei ist immer verschlüsselt, auf deinem Gerät und auf dem Weg zum Server, genau wie Notiztext, und die Dateien-Ansicht sammelt alle Anhänge an einem Ort.",
         "Das Limit pro Datei liegt bei 5 MB im kostenlosen Tarif und 50 MB mit Pro. Dateien werden auf deinen gesamten Sync-Speicher angerechnet (50 MB kostenlos, 500 MB mit Pro, erweiterbar auf 5,5 GB mit Speicher-Add-ons), und die Speicherleiste unter Einstellungen > Speicher zeigt dir jederzeit, wo du stehst."
       ]
     },
     "vault": {
       "q": "Was ist der Tresor?",
       "a": [
-        "Der Tresor ist ein eigener Bereich für strukturierte Geheimnisse: Logins mit Benutzername und Passwort, Kredit- und Debitkarten sowie SSH-Schlüssel. Einträge bekommen richtige Felder statt Freitext, Logins zeigen ein Website-Icon, und alles ist Ende-zu-Ende-verschlüsselt wie der Rest deiner Daten.",
+        "Der Tresor ist ein eigener Bereich für strukturierte Geheimnisse: Logins mit Benutzername und Passwort, Kredit- und Debitkarten sowie SSH-Schlüssel. Einträge bekommen richtige Felder statt Freitext, Logins zeigen ein Website-Icon, und alles ist auf deinem Gerät verschlüsselt wie der Rest deiner Daten.",
         "Er gibt der Handvoll Zugangsdaten, die sonst über Notizen verstreut landen, ein aufgeräumtes, geschütztes Zuhause. Kombiniere ihn mit App-Sperre und PIN-Schutz für eine zweite Hürde vor deinen sensibelsten Einträgen. Ein Bitwarden-Import landet automatisch hier."
       ]
     },
@@ -289,21 +289,21 @@
     "shutdown": {
       "q": "Was passiert mit meinen Notizen, wenn PrivacyNotes dichtmacht?",
       "a": [
-        "Du verlierst nichts. Der komplette Datenbestand liegt bereits auf deinem Gerät, weil die App local-first ist, und der Export nach Markdown, JSON oder HTML funktioniert vollständig offline.",
+        "Du behältst sie. Deine Notizen, Aufgaben, Tagebucheinträge und Tresor-Einträge liegen auf deinem Gerät, weil die App local-first ist, und der Export nach Markdown, JSON oder HTML funktioniert offline. Ein Bild oder eine Datei bleibt auf einem Gerät, sobald du sie dort hinzufügst oder öffnest, und was dieses Gerät nie geöffnet hat, wird beim Öffnen geladen. Leg dir deshalb ein vollständiges Backup an: Es lädt jedes Bild und jede Datei, die diesem Gerät fehlen, und sagt dir, wenn sich eines davon nicht laden lässt.",
         "Der Verschlüsselungscode ist ebenfalls [Open Source](https://github.com/LifetimeLabsDev/PrivacyNotes.app) - das Format bleibt also unabhängig lesbar, selbst in einer Welt, in der unsere Server über Nacht verschwinden."
       ]
     },
     "free-vs-pro": {
       "q": "Was ist kostenlos und was ist Pro?",
       "a": [
-        "Kostenlos ist das volle Produkt, kein Appetithappen: Ende-zu-Ende-verschlüsselte Notizen, Aufgaben, Tagebuch und Tresor, Offline-Nutzung, Import und Export - auf bis zu 2 Geräten mit 50 MB Sync-Speicher.",
+        "Kostenlos ist das volle Produkt, kein Appetithappen: Notizen, Aufgaben, Tagebuch und Tresor, alles auf deinem Gerät verschlüsselt, Offline-Nutzung, Import und Export - auf bis zu 2 Geräten mit 50 MB Sync-Speicher.",
         "Pro ist ein Einmalkauf und ergänzt unbegrenzte Geräte, 500 MB Sync-Speicher (erweiterbar), Notiz-Versionshistorie, größere Dateianhänge, Notiz-Sperre und PIN-Schutz, erweitertes Wohlbefindens-Tracking, Zen-Modus und alle Farbschemata."
       ]
     },
     "one-time-pricing": {
       "q": "Wie kann eine Einmalzahlung einen Sync-Dienst für immer finanzieren?",
       "a": [
-        "Weil der Dienst bewusst günstig zu betreiben ist. Die App ist local-first und Notizen sind kleine verschlüsselte Blobs - der Server tut kaum mehr, als sie zu speichern und zwischen deinen Geräten weiterzureichen. Keine Analytics-Pipeline, keine KI-Features, die Rechenleistung verbrennen, keine Support-Abteilung.",
+        "Weil der Dienst bewusst günstig zu betreiben ist. Die App ist local-first und Notizen sind kleine verschlüsselte Blobs - der Server tut kaum mehr, als sie zu speichern und zwischen deinen Geräten weiterzureichen. Keine Analyse dessen, was du schreibst, keine Pixel oder Tracker von Drittanbietern, keine KI-Features, die Rechenleistung verbrennen, keine Support-Abteilung.",
         "Der eine Kostenpunkt, der mit der Zeit wächst, ist Speicher - und genau so ist er bepreist: Speicher über die enthaltenen 500 MB hinaus ist ein kleines Jahres-Add-on. Einmalige Kosten werden einmal bezahlt, wiederkehrende Kosten wiederkehrend. Das Modell muss sich nur selbst tragen, und das tut es."
       ]
     },
@@ -332,7 +332,7 @@
       "q": "Was erfahrt ihr über mich, wenn ich bezahle?",
       "a": [
         "Weniger, als du vielleicht denkst. Der Checkout läuft über [Paddle](https://www.paddle.com), den Merchant of Record: Dein Name, deine Kartennummer und deine Rechnungsadresse gehen für Zahlung und Steuern an Paddle und berühren unsere Server nie.",
-        "Bei uns kommt eine Bestätigung an, dass der öffentliche Schlüssel deines Kontos jetzt Pro ist, plus der Bestellbetrag. Die Rechnungsbeziehung, inklusive der Beleg-E-Mail aus dem Checkout, bleibt bei Paddle. Ein reines Phrasen-Konto bleibt für uns also selbst als zahlender Kunde pseudonym: Wir wissen, dass du bezahlt hast, nicht wer du bist."
+        "Paddle verwahrt deine Rechnungsdaten; in unserer Datenbank landen dein öffentlicher Schlüssel, der Betrag und die Bestell-ID, bei einem Speicher-Add-on außerdem seine Größe und die Verlängerungstermine. Unser Paddle-Konto kann beide Seiten sehen, und wir sehen dort nicht nach, wer du bist. Damit dein Name nicht am Kauf hängt, bezahl mit einem [E-Mail-Alias und einer maskierten Karte](/de/help/buy-pro-anonymously/)."
       ]
     },
     "buy-pro-anonymously": {
@@ -340,15 +340,15 @@
       "a": [
         "Ja, mit zwei Standard-Werkzeugen. Für den Beleg nimm einen E-Mail-Alias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) oder [addy.io](https://addy.io) leiten alle an dein echtes Postfach weiter, ohne es offenzulegen. Für die Zahlung nimm eine maskierte Karte: [privacy.com](https://privacy.com) erzeugt in den USA virtuelle Karten, die mit jedem eingetippten Namen funktionieren, und viele Banken und Dienste anderswo (zum Beispiel [Revolut](https://www.revolut.com)) bieten virtuelle Einmalkarten, die denselben Job machen.",
         "Im Checkout fragt Paddle nach einer E-Mail, einer Zahlungsmethode und einem Land (in manchen Regionen plus Postleitzahl) für die Steuerberechnung. Der Alias empfängt den Beleg, die maskierte Karte trägt den Namen, den du ihr gegeben hast, und der Steuer-Standort grenzt dich höchstens auf eine Region ein. Halte den Alias aber am Leben: Die Beleg-E-Mail ist dein Kaufnachweis und dein Weg zur Rückerstattung.",
-        "Kombiniert mit einem Phrasen-Konto hält am Ende keine einzelne Partei das Gesamtbild: Deine Bank sieht eine Kartenaufladung, Paddle sieht einen Alias und eine maskierte Karte, und wir sehen nur, dass ein öffentlicher Schlüssel Pro wurde."
+        "Kombiniert mit einem Phrasen-Konto hält am Ende keine einzelne Partei das Gesamtbild: Deine Bank sieht eine Kartenaufladung, Paddle sieht einen Alias und eine maskierte Karte, und wir sehen einen öffentlichen Schlüssel, der Pro wurde, neben diesem Alias in unserem Paddle-Konto."
       ]
     },
     "platforms": {
       "q": "Auf welchen Plattformen läuft PrivacyNotes?",
       "a": [
-        "Web, macOS, Windows, Linux, iOS und Android. Jede App entsteht aus demselben Kern mit derselben Ende-zu-Ende-Verschlüsselung und synchronisiert über dasselbe Konto. Im [Downloads-Bereich](https://privacynotes.app/de#downloads) liegen immer die neuesten Builds.",
-        "Die nativen Apps brauchen macOS 13 oder neuer, Windows 10 oder neuer, iOS 15 oder neuer, Android 7.0 oder neuer, oder eine Linux-Distribution mit webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ oder gleichwertig). Darunter lässt sich die App weder installieren noch starten - nimm dann die Web-App.",
-        "Die Web-App ist vollwertig, kein Notnagel: Sie hält eine komplette lokale Kopie deiner Daten und funktioniert offline - jeder moderne Browser ist also immer ein Zugang."
+        "Web, macOS, Windows, Linux, iOS und Android. Jede App entsteht aus demselben Kern, verschlüsselt deine Notizen auf dieselbe Weise auf deinem Gerät und synchronisiert über dasselbe Konto. Im [Downloads-Bereich](https://privacynotes.app/de#downloads) liegen immer die neuesten Builds.",
+        "Die nativen Apps brauchen macOS 13 oder neuer, Windows 10 oder neuer, iOS 17.4 oder neuer, Android 7.0 oder neuer, oder eine Linux-Distribution mit webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ oder gleichwertig). Darunter lässt sich die App weder installieren noch starten - nimm dann die Web-App.",
+        "Die Web-App ist vollwertig, kein Notnagel: Sie hält deine Notizen auf deinem Gerät und funktioniert offline - jeder moderne Browser ist also immer ein Zugang."
       ]
     },
     "feature-requests": {
@@ -381,14 +381,14 @@
     "languages": {
       "q": "Welche Sprachen spricht die App?",
       "a": [
-        "Englisch, Deutsch, Französisch, Italienisch, Spanisch, Niederländisch, Polnisch, Tschechisch, Katalanisch, Türkisch, Schwedisch, Japanisch, Koreanisch, Traditionelles Chinesisch, Arabisch und Portugiesisch in europäischer und brasilianischer Variante. Die App folgt standardmäßig deiner Systemsprache, oder du legst unter Einstellungen > Sprache auf jedem Gerät eine fest.",
+        "Englisch, Deutsch, Französisch, Italienisch, Spanisch, Niederländisch, Polnisch, Tschechisch, Katalanisch, Türkisch, Schwedisch, Ukrainisch, Russisch, Japanisch, Koreanisch, Traditionelles Chinesisch, Thailändisch, Arabisch und Portugiesisch in europäischer und brasilianischer Variante. Die App folgt standardmäßig deiner Systemsprache, oder du legst unter Einstellungen > Sprache auf jedem Gerät eine fest.",
         "Übersetzungen sind für alle kostenlos, kein Pro-Vorteil. Weitere Sprachen sind geplant; fehlt deine, sag uns auf [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) oder [Reddit](https://www.reddit.com/r/PrivacyNotes/) Bescheid."
       ]
     },
     "translation-quality": {
       "q": "Wie entstehen die Übersetzungen der App?",
       "a": [
-        "Das Englische schreiben wir, und jede andere Sprache ist maschinell übersetzt, nach einem eigens dafür geschriebenen Stilleitfaden: das richtige Register, das richtige Wort für jeden Oberflächenbegriff und eine automatische Prüfung bei jeder Version, damit nichts fehlt und nichts stillschweigend auf Englisch stehen bleibt. Übersetzungen gibt es in jedem Tarif, nie als Pro-Extra.",
+        "Wir schreiben zuerst das Englische. Dann übersetzt ein KI-Agent jede Sprache anhand eines gemeinsamen Glossars, im Register, das für diese Sprache festgelegt ist, und ein zweiter Agent prüft jeden Durchgang vor der Veröffentlichung auf Genauigkeit, Terminologie und Register. Muttersprachler prüfen eine Stichprobe, zuerst die neuesten Sprachen und die Texte zu Sicherheit, Anmeldung und Abrechnung, und zwei automatische Prüfungen lassen den Build scheitern, solange eine Übersetzung fehlt oder veraltet ist. Übersetzungen gibt es in jedem Tarif, nie als Pro-Extra.",
         "Du kannst jede davon verbessern. Wenn ein Satz in deiner Sprache schief klingt, [melde die Übersetzung](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new?template=translation.yml): deine Sprache, der Bildschirm, auf dem sie steht, und was dort stehen sollte. Korrekturen kommen mit der nächsten Version."
       ]
     },
@@ -396,7 +396,7 @@
       "q": "Welche Markdown-Syntax versteht der Editor?",
       "a": [
         "Standard-Markdown formatiert sich live beim Tippen: Überschriften, Betonung, Durchstreichen und Hervorheben, Aufzählungen und nummerierte Listen, Aufgabenlisten (Tab und Umschalt+Tab verschachteln jede Liste, auch Checklisten), Zitate, Trennlinien, Inline-Code und Codeblöcke mit Syntaxhervorhebung, Mathe inline und als Block (KaTeX) und note-links zwischen Notizen mit Autovervollständigung.",
-        "Die Formatierungsleiste und ihr Menü \"Einfügen\" ergänzen den Rest: Tabellen, Callouts in neun Typen, die sich zuklappen lassen, Unterstreichen, Hoch- und Tiefstellen, Textausrichtung, Text- und Hervorhebungsfarben, Schriftarten, Links, Bilder und Dateianhänge. Alles bleibt vollständig Markdown: \"Markdown anzeigen\" unter jeder Notiz zeigt den Rohtext, und Exporte sind saubere .md-Dateien - nichts, was du schreibst, ist in ein proprietäres Format eingesperrt."
+        "Die Formatierungsleiste und ihr Menü \"Einfügen\" ergänzen den Rest: Tabellen, Callouts, die sich zuklappen lassen, Unterstreichen, Hoch- und Tiefstellen, Textausrichtung, Text- und Hervorhebungsfarben, Schriftarten, Links, Bilder und Dateianhänge. Alles bleibt vollständig Markdown: \"Markdown anzeigen\" unter jeder Notiz zeigt den Rohtext, und Exporte sind saubere .md-Dateien - nichts, was du schreibst, ist in ein proprietäres Format eingesperrt."
       ]
     },
     "tasks": {
@@ -416,7 +416,7 @@
     "bookmarks": {
       "q": "Kann ich meine Browser-Lesezeichen in PrivacyNotes speichern?",
       "a": [
-        "Ja. Lesezeichen sind eine eigene Säule in der Seitenleiste, neben Notizen, Aufgaben und Tagebüchern, und sie sind in jedem Tarif kostenlos. Füge einen Link über die Schnelleingabe hinzu. Deine vorhandenen bringst du mit: Exportiere eine Lesezeichen-Datei (.html) aus deinem Browser und lege sie unter Einstellungen > Import & Export > Import > \"Browser bookmarks\" ab. Chrome, Firefox, Safari, Edge, Opera, Brave und Vivaldi enthalten dieselbe Datei, und Ordner und Daten kommen mit. Safari packt sie in eine .zip, die du ungeöffnet ablegen kannst.",
+        "Ja. Lesezeichen sind eine eigene Säule in der Seitenleiste, neben Notizen, Aufgaben und Tagebüchern, und sie sind in jedem Tarif kostenlos. Füge einen Link über die Schnelleingabe hinzu. Deine vorhandenen bringst du mit: Exportiere eine Lesezeichen-Datei (.html) aus deinem Browser und lege sie unter Einstellungen > Import & Export > Import > \"Browser-Lesezeichen\" ab. Chrome, Firefox, Safari, Edge, Opera, Brave und Vivaldi enthalten dieselbe Datei, und Ordner und Daten kommen mit. Safari packt sie in eine .zip, die du ungeöffnet ablegen kannst.",
         "Deine Adressen verlassen dein Gerät nie: Wir rufen die Seite hinter einem Link nicht ab, deshalb trägt ein selbst angelegtes Lesezeichen die Domain als Namen, bis du einen eingibst. Website-Symbole sind die einzige Ausnahme, und du kannst sie abschalten. Der Export schreibt dieselbe Standarddatei, deine Lesezeichen gehen also genauso leicht wieder ([Import-Anleitung](/de/help/import/browser-bookmarks/))."
       ]
     },
@@ -424,7 +424,7 @@
       "q": "Kann ich ein Adressbuch in PrivacyNotes führen?",
       "a": [
         "Ja. Kontakte sind eine eigene Säule in der Seitenleiste, neben Notizen, Aufgaben und Tagebüchern, und sie sind in jedem Tarif kostenlos. Ein Kontakt fasst Namen, Nummern, E-Mail-Adressen, Anschriften, Websites, Daten, eine Firma und eine Notiz. Tippe auf eine Nummer, um sie zu wählen, auf eine E-Mail-Adresse, um zu schreiben, oder auf eine beliebige Zeile, um sie zu kopieren. Alles andere, was dein Telefon in die Datei geschrieben hat, bleibt unter **Auch in dieser Datei** und wird beim Export zurückgeschrieben.",
-        "Deine vorhandenen bringst du mit: Exportiere eine vCard (.vcf) von deinem Telefon, deinem Mac oder aus Google Contacts und lege sie unter Einstellungen > Import & Export > Import > \"Contacts (vCard)\" ab. Legst du dieselbe Datei später erneut ab, werden bereits vorhandene Personen erkannt statt verdoppelt. Der Export schreibt eine normale vCard zurück, also verlässt dein Adressbuch die App so leicht, wie es hereinkam ([mehr zum Import](/de/help/import-from-other-apps/))."
+        "Deine vorhandenen bringst du mit: Exportiere eine vCard (.vcf) von deinem Telefon, deinem Mac oder aus Google Contacts und lege sie unter Einstellungen > Import & Export > Import > \"Kontakte (vCard)\" ab. Legst du dieselbe Datei später erneut ab, werden bereits vorhandene Personen erkannt statt verdoppelt. Der Export schreibt eine normale vCard zurück, also verlässt dein Adressbuch die App so leicht, wie es hereinkam ([mehr zum Import](/de/help/import-from-other-apps/))."
       ]
     },
     "what-to-keep": {
@@ -438,7 +438,7 @@
     "keyboard-shortcuts": {
       "q": "Welche Tastenkürzel gibt es?",
       "a": [
-        "Drücke ? irgendwo in der App für die eingebaute Kurzübersicht, ebenfalls verfügbar unter Einstellungen > Über & Hilfe. Tastenkürzel decken Navigation, Notiz-Aktionen, Formatierung und Ansichten ab - und unter Windows und Linux liest sich jedes Cmd als Ctrl und Option als Alt.",
+        "Drücke ? irgendwo in der App für die eingebaute Kurzübersicht, ebenfalls verfügbar unter Einstellungen > Über. Tastenkürzel decken Navigation, Notiz-Aktionen, Formatierung und Ansichten ab - und unter Windows und Linux liest sich jedes Cmd als Ctrl und Option als Alt.",
         "Die wichtigsten: Cmd+K fokussiert die Suche, J und K bewegen sich durch die Liste, Alt+Shift+N startet eine neue Notiz, Cmd+Backspace wirft die ausgewählte in den Papierkorb, Cmd+, öffnet die Einstellungen. Beim Schreiben: Cmd+B fett, Cmd+I kursiv, Cmd+Shift+K fügt einen Link ein, Cmd+Shift+9 startet eine Aufgabenliste, Cmd+F sucht in der Notiz, Cmd+Shift+O blendet die Gliederung ein und aus. Cmd+\\ blendet die Seitenleiste aus, Cmd+Shift+L wechselt das Farbschema, Cmd+Shift+F öffnet den Zen-Modus (Pro), und Esc bricht fast alles ab."
       ]
     },
@@ -446,7 +446,7 @@
       "q": "Gibt es die Tastenkürzel als druckbare Übersicht?",
       "a": [
         "Ja. Die [druckbare Kurzübersicht](/help/keyboard-shortcuts/cheat-sheet) zeigt jedes Tastenkürzel auf einer einzigen A4-Seite in zwei Spalten - bereit, neben deinem Bildschirm zu hängen. Sie wird aus derselben Liste erzeugt, die auch die App anzeigt, und kann daher nie hinter einem Release zurückbleiben.",
-        "Öffne sie und drücke den Drucken-Button (oder Cmd+P / Ctrl+P). Für eine Datei statt Papier wähle im Druckdialog PDF als Ziel. Die Übersicht ist außerdem über und unter der Tastenkürzel-Liste in der App verlinkt (Einstellungen > Über & Hilfe > Tastenkürzel) sowie im Footer dieser Website."
+        "Öffne sie und drücke den Drucken-Button (oder Cmd+P / Ctrl+P). Für eine Datei statt Papier wähle im Druckdialog PDF als Ziel. Die Übersicht ist außerdem über und unter der Tastenkürzel-Liste in der App verlinkt (Einstellungen > Über > Tastenkürzel) sowie im Footer dieser Website."
       ]
     },
     "ask-an-ai": {
@@ -460,7 +460,7 @@
     "locked-vs-protected": {
       "q": "Was ist der Unterschied zwischen schreibgeschützten und PIN-geschützten Notizen?",
       "a": [
-        "\"Schreibgeschützt\" (im Notiz-Optionsmenü, Pro) sperrt eine Notiz gegen Änderungen, damit ein fertiges Dokument nicht aus Versehen zerpflückt wird; es verbirgt nichts. \"Schützen\" (dasselbe Menü, Pro) verbirgt Titel und Inhalt einer Notiz hinter deiner PIN oder deinem biometrischen Entsperren, für die Dinge, die du lieber nicht auf einem Bildschirm sehen möchtest, auf den manchmal andere blicken.",
+        "\"Schreibgeschützt\" (im Notiz-Optionsmenü, Pro) sperrt eine Notiz gegen Änderungen, damit ein fertiges Dokument nicht aus Versehen zerpflückt wird; es verbirgt nichts. \"Schützen\" (dasselbe Menü, Pro) verbirgt den Inhalt einer Notiz hinter deiner PIN oder deinem biometrischen Entsperren, für die Dinge, die du lieber nicht auf einem Bildschirm sehen möchtest, auf den manchmal andere blicken. Ihr Titel bleibt in der Liste sichtbar, also lass das Geheimnis aus dem Titel heraus.",
         "Beides sind Sperren für den Bildschirm, keine zweite Verschlüsselungsschicht. Die Markierungen reisen in den verschlüsselten Daten der Notiz mit, und die Notiz wird bewusst nicht mit deiner PIN neu verschlüsselt: So kann eine vergessene PIN niemals Daten vernichten. Die Phrase bleibt die eigentliche Grenze - schütze sie zuerst und nutze diese Sperren für den Bildschirm, den andere manchmal sehen."
       ]
     },
@@ -512,7 +512,7 @@
       "q": "Wie stelle ich ein Backup wieder her?",
       "a": [
         "Öffne Einstellungen > Import & Export > Wiederherstellung und wähle das Format, das du hast. \"Vollständiges Backup (.zip)\" nimmt den kompletten Export: Notizen, Tagebücher, Tresor-Einträge, Aufgaben, Bilder, Audio und Dateien. \"Verschlüsseltes Backup (.pnbackup, .pnbackupz)\" nimmt beide verschlüsselten Exporte. Deine Datei wird auf deinem Gerät gelesen und entschlüsselt, und das Wiederherstellen ist in jedem Tarif kostenlos.",
-        "Alles kommt als neue Einträge an, und nichts von dem, was du schon hast, wird überschrieben. Stellst du dieselbe Datei zweimal wieder her, hast du also von jeder Notiz zwei Kopien. Beide verschlüsselten Formate öffnen sich nur in dem Konto, das sie erstellt hat, weil sie mit dessen Phrasen-Schlüssel verschlüsselt sind; eine .zip passt in jeden Tresor ([welches Backup du machst](/de/help/backup-strategy/))."
+        "Eine Wiederherstellung ordnet Notizen anhand ihrer ID zu. Eine Notiz, die du schon hast, wird nur aktualisiert, wenn die Fassung im Backup neuer ist, eine Notiz im Papierkorb wird wieder herausgeholt, eine Notiz, die dir fehlt, wird einmal hinzugefügt, und dieselbe Datei erneut wiederherzustellen ändert nichts, außer du hast zwischendurch eine wiederhergestellte Notiz bearbeitet: Dann kommt die ältere Fassung neben deiner Bearbeitung zurück. Eine Datei ohne IDs von uns, aus einer anderen App oder aus einem Backup einer älteren Version dieser App, fügt ihre Notizen jedes Mal als neue hinzu. Beide verschlüsselten Formate öffnen sich nur in dem Konto, das sie erstellt hat, weil sie mit dessen Phrasen-Schlüssel verschlüsselt sind; eine .zip passt in jeden Tresor ([welches Backup du machst](/de/help/backup-strategy/))."
       ]
     },
     "image-quality": {
@@ -533,14 +533,14 @@
       "q": "Warum ist mein Datei-Upload fehlgeschlagen?",
       "a": [
         "Der Fehler nennt dir, welche Obergrenze du erreicht hast. Pro Datei: 5 MB kostenlos, 50 MB mit Pro, 100 MB mit einem Speicher-Add-on. Insgesamt: Alles, was du synchronisierst, muss in den Speicher deines Kontos passen (50 MB kostenlos, 500 MB mit Pro, mehr mit Add-ons), ein volles Speicherlimit lässt also einen Upload scheitern, selbst wenn die Datei klein ist. Jeder Dateityp wird akzeptiert.",
-        "Prüfe die Speicherleiste in der Dateien-Ansicht oder unter Einstellungen > Speicher und wähle dann die günstigste Lösung: [Schaffe Platz](/de/help/storage-usage/), führe ein Upgrade durch oder verkleinere die Datei (Handyfotos sind oft mehrere MB große Originale; ein komprimiertes JPEG ist ein Bruchteil davon). Uploads brauchen außerdem eine Verbindung: Dateien werden offline nicht in eine Warteschlange gestellt."
+        "Prüfe die Speicherleiste in der Dateien-Ansicht oder unter Einstellungen > Speicher und wähle dann die günstigste Lösung: [Schaffe Platz](/de/help/storage-usage/), führe ein Upgrade durch oder verkleinere die Datei (Handyfotos sind oft mehrere MB große Originale; ein komprimiertes JPEG ist ein Bruchteil davon). Ein Upload, der mangels Verbindung scheitert, bleibt erhalten, statt verloren zu gehen: Die Datei bleibt auf diesem Gerät und wird von selbst hochgeladen, sobald du wieder online bist, und Einstellungen > ID & Sync zählt sie bis dahin als wartend."
       ]
     },
     "trash-auto-delete": {
       "q": "Warum sind Notizen aus meinem Papierkorb verschwunden?",
       "a": [
-        "Der Papierkorb ist kein Archiv: Standardmäßig wird alles darin nach 30 Tagen dauerhaft gelöscht. Der Schalter sitzt in der Papierkorb-Ansicht selbst, beschriftet mit \"Automatische Löschung nach 30 Tagen\" - schalte ihn dort aus, wenn du den Papierkorb für immer behalten willst, und die Einstellung synchronisiert sich auf alle deine Geräte. Die Bereinigung läuft auf deinem Gerät, wenn die App öffnet, weil der Server nicht sehen kann, welche verschlüsselten Notizen im Papierkorb liegen.",
-        "Dauerhaft gelöscht heißt weg: keine Server-Kopie und kein Weg zurück. Wenn du den Papierkorb als Irgendwann-vielleicht-Stapel nutzt, deaktiviere die automatische Löschung oder stelle Notizen vor Tag 30 wieder her. Bis dahin zählen Notizen im Papierkorb weiter zu [deinem Speicher](/de/help/storage-usage/) - \"Leeren\" in derselben Ansicht gibt diesen Platz sofort frei."
+        "Der Papierkorb ist kein Archiv: Standardmäßig wird alles darin nach 30 Tagen dauerhaft gelöscht. Der Schalter sitzt in der Papierkorb-Ansicht selbst, beschriftet mit \"Nach 30 Tagen automatisch löschen\" - schalte ihn dort aus, wenn du den Papierkorb für immer behalten willst, und die Einstellung synchronisiert sich auf alle deine Geräte. Die Bereinigung läuft auf deinem Gerät, wenn die App öffnet, weil der Server nicht sehen kann, welche verschlüsselten Notizen im Papierkorb liegen.",
+        "Dauerhaft gelöscht heißt weg: Kein Gerät und niemand auf unserer Seite kann es zurückholen, nur ein Backup, das du vorher gemacht hast. Wenn du den Papierkorb als Irgendwann-vielleicht-Stapel nutzt, deaktiviere die automatische Löschung oder stelle Notizen vor Tag 30 wieder her. Bis dahin zählen Notizen im Papierkorb weiter zu [deinem Speicher](/de/help/storage-usage/) - \"Leeren\" in derselben Ansicht gibt diesen Platz sofort frei."
       ]
     },
     "leaving": {
@@ -561,8 +561,8 @@
       "q": "Erfasst ihr, von welcher Website ich komme?",
       "a": [
         "Ja, und es geht um Werbung. Wir kaufen Platzierungen auf anderen Seiten und bezahlen Creator, also müssen wir wissen, welche davon wirklich Leute bringen. Verschwendetes Werbegeld trägt das Produkt so oder so, deshalb messen wir es in der kleinsten Form, die die Frage beantwortet.",
-        "Die Marketing-Website zählt Besuche und welcher Link dich gebracht hat, ausschließlich als Summen: kein Cookie, kein Besucherprofil, kein Skript von Dritten. Wenn du ein Konto erstellst, speichert es zwei kurze Wörter aus einer veröffentlichten Liste: über welchen Link du kamst, falls es einen gab, und wie du die App installiert hast, zum Beispiel „android-play“.",
-        "Beide Wörter werden einmal beim Erstellen des Kontos geschrieben, nie aktualisiert und mit deinem Konto gelöscht. Sonst wird nichts über deine Ankunft aufbewahrt. Wenn du den Tab schließt, bevor du dich registrierst, oder dein Browser den Link kürzt, erfassen wir gar nichts. Die Apps selbst messen nichts über dich: Öffne deinen Netzwerk-Tab und sieh nach."
+        "Die Marketing-Website zählt die Klicks auf unsere Links als Summen, nach Link und Land, ohne jede Kennung: kein Cookie, kein Besucherprofil, kein Skript von Dritten. Wenn du ein Konto erstellst, speichert es zwei kurze Wörter aus einer veröffentlichten Liste: über welchen Link du kamst, falls es einen gab, und wie du die App installiert hast, zum Beispiel „android-play“.",
+        "Beide Wörter werden einmal beim Erstellen des Kontos geschrieben, nie aktualisiert und mit deinem Konto gelöscht. Sonst wird nichts über deine Ankunft aufbewahrt. Wenn du den Tab schließt, bevor du dich registrierst, oder dein Browser den Link kürzt, wird kein Wort gespeichert. Die Apps enthalten keine Analyse dessen, was du schreibst, keine Pixel und keine Tracker von Drittanbietern: Öffne deinen Netzwerk-Tab und sieh nach."
       ]
     },
     "pro-not-active": {
@@ -575,7 +575,7 @@
     "manage-storage-addon": {
       "q": "Wie ändere oder kündige ich mein Speicher-Add-on?",
       "a": [
-        "Einstellungen > Speicher ist die Schaltzentrale. Ein Upgrade auf ein größeres Paket gilt sofort, und die Bestätigung zeigt den genauen anteiligen Betrag, der heute abgebucht wird, bevor du zusagst; das Verlängerungsdatum verschiebt sich nicht. \"Speicher kündigen\" behält deinen zusätzlichen Platz bis zum Ende des bereits bezahlten Zeitraums. Für ein kleineres Paket kündigst du das aktuelle und kaufst das kleinere, wenn der Zeitraum endet.",
+        "Einstellungen > Speicher ist die Schaltzentrale. Ein Upgrade auf ein größeres Paket gilt sofort. Im Web zeigt die Bestätigung den genauen anteiligen Betrag, der heute abgebucht wird, bevor du zusagst, und das Verlängerungsdatum verschiebt sich nicht; im Play Store und im App Store zeigt das Zahlungsblatt des Stores den Betrag, und Apple erstattet den ungenutzten Teil deines laufenden Jahres und startet ein neues. \"Speicher kündigen\" behält deinen zusätzlichen Platz bis zum Ende des bereits bezahlten Zeitraums. Für ein kleineres Paket kündigst du das aktuelle und kaufst das kleinere, wenn der Zeitraum endet.",
         "Passen deine Daten nach Ablauf noch in das verbleibende Limit, ist damit alles erledigt; wenn nicht, wird nichts gelöscht und der [90-tägige Über-Limit-Zyklus](/de/help/over-quota/) beginnt. Eine fehlgeschlagene Verlängerung zeigt ein Banner mit einem Link \"Karte aktualisieren\", um die Zahlung in Paddle zu korrigieren.",
         "Kündigen von außerhalb der App geht auch, und das ist die Antwort, wenn du dich nicht anmelden kannst. Paddle ist unser Händler und rechnet direkt mit dir ab: Nutze den Link \"Abo verwalten\" in deiner Rechnungs-E-Mail oder den Support-Chat auf [paddle.net](https://paddle.net). Bei einem Store-Build ist es dasselbe, also kündige dort in den Abo-Einstellungen des Stores."
       ]
@@ -583,7 +583,7 @@
     "store-purchases": {
       "q": "Werden Käufe zwischen Web, Google Play und dem App Store übernommen?",
       "a": [
-        "Ja. Pro und Speicher hängen an deinem Konto, nicht an einer Plattform oder einem Store. Kaufe im Web, und jede App, in der du dich anmeldest, ist Pro, auch Store-Builds; kaufe innerhalb eines Store-Builds, und die Web- und Desktop-Apps schalten sich genauso frei. Das Anmelden ist die Wiederherstellung, denn die Berechtigung folgt dem Konto. Ein Store-Build hat außerdem eine Schaltfläche **Käufe wiederherstellen** unter Einstellungen > Tarif, die bei Apple oder Google nachfragt, was dir gehört, und es nach einer Neuinstallation wieder freischaltet.",
+        "Ja. Pro und Speicher hängen an deinem Konto, nicht an einer Plattform oder einem Store. Kaufe im Web, und jede App, in der du dich anmeldest, ist Pro, auch Store-Builds; kaufe innerhalb eines Store-Builds, und die Web- und Desktop-Apps schalten sich genauso frei. Das Anmelden ist die Wiederherstellung, denn die Berechtigung folgt dem Konto. Ein Store-Build hat außerdem eine Schaltfläche **Käufe wiederherstellen** unter Einstellungen > Konto, die bei Apple oder Google nachfragt, was dir gehört, und es nach einer Neuinstallation wieder freischaltet.",
         "Der eine Unterschied ist, wer dir abrechnet. Web-Käufe laufen über Paddle und werden in der App unter Einstellungen > Speicher verwaltet. Käufe innerhalb eines Store-Builds (der App Store heute, Google Play sobald diese App erscheint) werden von diesem Store abgerechnet: Wiederkehrender Speicher wird in den Abo-Einstellungen des Stores gekündigt, und Rückerstattungen folgen dem Prozess des Stores. So oder so ist es überall dasselbe Konto und dasselbe Pro - auch auf Plattformen, die es noch nicht gibt."
       ]
     },
@@ -674,8 +674,8 @@
     "android-backup": {
       "q": "Sind meine Notizen im Backup meines Android-Handys?",
       "a": [
-        "Nein. Die Android-App hält ihre Daten aus dem Cloud-Backup des Handys heraus, es landet also nichts davon in Google Drive. Der Grund ist der Schlüssel, nicht die Notizen: Wo du **Diesem Gerät vertrauen** gewählt hast, liegen deine 12 Wörter auf diesem Gerät, damit du angemeldet bleibst, und ein Cloud-Backup ist kein Ort für den Schlüssel zu einem Ende-zu-Ende-verschlüsselten Konto.",
-        "Ein neues Handy startet deshalb leer: App installieren, mit deinen 12 Wörtern anmelden, und alles Synchronisierte kommt an. Was nie synchronisiert wurde, liegt nur auf dem alten Handy, prüfe also zuerst, ob die Fußzeile \"Synced\" sagt, oder nimm ein \"PrivacyNotes-Backup (.zip)\" aus Einstellungen > Import & Export > Export mit ([welches Backup du machst](/de/help/backup-strategy/)).",
+        "Nein. Die Android-App hält ihre Daten aus dem Cloud-Backup des Handys heraus, es landet also nichts davon in Google Drive. Der Grund ist der Schlüssel, nicht die Notizen: Wo du **Diesem Gerät vertrauen** gewählt hast, liegen deine 12 Wörter auf diesem Gerät, damit du angemeldet bleibst, und ein Cloud-Backup ist kein Ort für den Schlüssel, der deine Notizen entschlüsselt.",
+        "Ein neues Handy startet deshalb leer: App installieren, mit deinen 12 Wörtern anmelden, und alles Synchronisierte kommt an. Die Wiederherstellung wartet auf diese erste Synchronisierung, damit ein mitgebrachtes Backup mit dem abgeglichen wird, was das Konto schon enthält, statt doppelt hinzugefügt zu werden. Was nie synchronisiert wurde, liegt nur auf dem alten Handy, prüfe also zuerst, ob die Fußzeile \"Synced\" sagt, oder nimm ein \"PrivacyNotes-Backup (.zip)\" aus Einstellungen > Import & Export > Export mit ([welches Backup du machst](/de/help/backup-strategy/)).",
         "Eine direkte Übertragung von Handy zu Handy bei der Einrichtung ist etwas anderes: Manche Handys übertragen dabei App-Daten, und Android gibt einer App keine verlässliche Möglichkeit, das abzulehnen. Diese Kopie verlässt deine beiden Geräte nie, lösche das alte Handy danach also vollständig."
       ]
     },
@@ -724,9 +724,9 @@
     "signup-options": {
       "q": "Welche Anmeldeoption soll ich wählen?",
       "a": [
-        "Die, die zu deiner Bedrohungsstufe passt. Es gibt drei davon. Erstens: \"Mit Google fortfahren\" oder \"Mit Apple fortfahren\", mit deinem Schlüssel auf unserem Server. Zweitens: derselbe Knopf, aber dein Schlüssel bleibt nur auf deinem Gerät. Drittens: \"Phrase erzeugen\", ohne E-Mail, ohne Namen und ganz ohne Login. Alle drei halten deine Notizen Ende-zu-Ende verschlüsselt, und was sie trennt, ist, wer den Schlüssel hält und wie viel wir über dich erfahren.",
-        "Der Google-, Apple- oder GitHub-Knopf fragt danach, wo dein Schlüssel liegt. \"Einfach und bequem\" legt ihn verschlüsselt auf unserem Server ab, jedes neue Gerät meldet sich also allein mit diesem Login an und du musst nichts aufbewahren. Das ist die richtige Stufe, wenn du fürchtest, deine eigenen Zugangsdaten zu verlieren. \"Maximale Sicherheit und Privatsphäre\" hält den Schlüssel auf deinem Gerät: Wir könnten unter keinem Druck eine Notiz lesen, und ein neues Gerät braucht deine 12 Wörter oder einen QR-Scan von einem bereits angemeldeten.",
-        "Der Weg mit der Phrase allein ist die höchste Stufe: keine E-Mail, kein Name, nichts, was das Konto an einen Menschen bindet. Dafür gehört der Schlüssel dir allein, wer ihn ohne angemeldetes Gerät verliert, dem kann niemand helfen. Nichts davon ist endgültig: Einstellungen > Sicherheit > Deine Phrase bringt dich jederzeit von einem Modus zum anderen, und jede Stufe kann eine PIN oder eine biometrische Sperre obendrauf setzen. Die ganze Leiter, mit dem Preis jeder Sprosse, steht in [der Bedrohungsstufen-Leiter](/de/help/threat-model-levels/)."
+        "Die, die zu deiner Bedrohungsstufe passt. Es gibt drei davon. Erstens: Anmeldung mit Google, Apple oder GitHub, mit deinem Schlüssel auf unserem Server. Zweitens: dieselbe Anmeldung, aber dein Schlüssel bleibt nur auf deinem Gerät. Drittens: \"Phrase erzeugen\", ohne E-Mail, ohne Namen und ganz ohne Login. Alle drei halten deine Notizen auf deinem Gerät verschlüsselt, und was sie trennt, ist, wer den Schlüssel hält und wie viel wir über dich erfahren.",
+        "Meldest du dich mit einem der drei an, wirst du danach gefragt, wo dein Schlüssel liegen soll, und die Auswahl beginnt bei \"Einfach und bequem\". Diese Option legt ihn verschlüsselt auf unserem Server ab, jedes neue Gerät meldet sich also allein mit diesem Login an und du musst nichts aufbewahren. Das ist die richtige Stufe, wenn du fürchtest, deine eigenen Zugangsdaten zu verlieren. \"Maximale Sicherheit und Privatsphäre\" hält den Schlüssel auf deinem Gerät: Wir könnten unter keinem Druck eine Notiz lesen, und ein neues Gerät braucht deine 12 Wörter oder einen QR-Scan von einem bereits angemeldeten.",
+        "Der Weg mit der Phrase allein ist die höchste Stufe: keine E-Mail, kein Name, nichts, was das Konto an einen Menschen bindet. Dafür gehört der Schlüssel dir allein, wer ihn ohne angemeldetes Gerät verliert, dem kann niemand helfen. Der Schlüsselmodus eines Logins ist nicht endgültig: Einstellungen > Sicherheit > Deine Phrase wechselt ihn, wann immer du willst, während ein reines Phrasen-Konto seinen Schlüssel auf dem Gerät behält. Jede Stufe kann eine PIN oder eine biometrische Sperre obendrauf setzen. Die ganze Leiter, mit dem Preis jeder Sprosse, steht in [der Bedrohungsstufen-Leiter](/de/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

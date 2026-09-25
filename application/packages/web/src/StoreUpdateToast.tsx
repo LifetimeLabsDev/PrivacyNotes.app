@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UpdateToast } from './UpdateToast';
 import { detectPlatform } from './devices';
+import { APP_STORE_URL } from './hosts';
 import { reportVersionFloor, useBelowVersionFloor } from './versionFloor';
 
 /**
@@ -38,7 +39,7 @@ const POLICY_URL = IS_IOS
 // device (verified app links), so no market:// / itms-apps:// schemes needed.
 // Package id + Apple ID: ops/docs/mobile-release-status.md (app records).
 const STORE_URL = IS_IOS
-  ? 'https://apps.apple.com/app/id6785958812'
+  ? APP_STORE_URL
   : 'https://play.google.com/store/apps/details?id=app.privacynotes';
 
 // Same cadence as AndroidUpdateToast: mobile OSes freeze webview timers in

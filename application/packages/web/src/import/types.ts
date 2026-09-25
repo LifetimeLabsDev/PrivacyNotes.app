@@ -75,6 +75,11 @@ export interface ImportedNote {
    *  address-bar keywords. `withBrowserTags` merges them into `tags`.
    *  Not persisted. */
   browserTags?: string[];
+  /** Transient: a folder and tag color key the source gave the note (Google
+   *  Keep's note colors). The import turns it into a tag named after the
+   *  color, in the reader's language, and gives that tag the color. Not
+   *  persisted on the note. Spec: ops/docs/plans/folder-tag-icons.md (section 4.7) */
+  colorKey?: string;
 }
 
 /** What an importer returns after successfully parsing a file. */
@@ -128,6 +133,12 @@ export interface ParsedImport {
    * time so each note's folderId resolves to a real folder.
    */
   folders?: FolderDef[];
+  /**
+   * Our own full backup only: rebuilt folder id -> the id that folder had in
+   * the account that wrote the backup. The merge reuses a folder still live
+   * under that id before it matches any name (`reconcileImportedFolders`).
+   */
+  originalFolderIds?: Map<string, string>;
 }
 
 /** Importer identifiers - add new ones here as adapters land. */

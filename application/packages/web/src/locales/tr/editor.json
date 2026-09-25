@@ -33,7 +33,8 @@
     "math": "Matematik formülü",
     "blockMath": "Blok formül",
     "align": "Hizalama",
-    "font": "Yazı tipi"
+    "font": "Yazı tipi",
+    "pictureFromFiles": "Dosyalar'dan görsel"
   },
   "align": {
     "left": "Sola hizala",
@@ -104,6 +105,7 @@
     "addColumnLeft": "Sola sütun ekle",
     "addColumnRight": "Sağa sütun ekle",
     "toggleHeaderRow": "Başlık satırını aç/kapat",
+    "equalColumnWidths": "Sütunları eşitle",
     "deleteRow": "Satırı sil",
     "deleteColumn": "Sütunu sil",
     "deleteTable": "Tabloyu sil"
@@ -187,7 +189,8 @@
   "codeBlock": {
     "copy": "Kopyala",
     "copied": "Kopyalandı",
-    "copyFailed": "Başarısız"
+    "copyFailed": "Başarısız",
+    "wrap": "Uzun satırları kaydır"
   },
   "math": {
     "sourceLabel": "LaTeX kodu"

@@ -19,7 +19,7 @@ Aquesta és la nostra base de dades de debò a Zuric, no un dibuix. La teva nota
 
 ## Qui té la teva clau
 
-Totes les opcions mantenen les teves notes xifrades d'extrem a extrem. Es diferencien en on viu la teva frase.
+Totes les opcions mantenen les teves notes xifrades al teu dispositiu. Es diferencien en on viu la teva frase.
 
 | Opció | On viu la teva frase | Què t'aporta |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Totes les opcions mantenen les teves notes xifrades d'extrem a extrem. Es difere
 
 Amb les dues últimes no podríem llegir una nota ni que ens hi obliguessin. La primera ho canvia per comoditat: la teva frase és al nostre servidor sota una clau nostra, així que un dispositiu nou no necessita res més que el teu compte. Si algun dia atacaven el nostre servidor, aquesta clau podria quedar exposada.
 
-No estàs lligat a la tria que has fet. Canvia-la a **Configuració > Seguretat > La teva frase**.
+Has iniciat la sessió amb Google, Apple o GitHub? Més endavant pots canviar entre les dues primeres, a **Configuració > Seguretat > La teva frase**. Amb un compte només amb frase, la frase sempre es queda amb tu.
 
 > [!warning] Guarda la teva pròpia còpia de la frase
 > La teva frase obre les teves notes. Si la perds, ningú no la pot recuperar, nosaltres inclosos. <span style="color: #e03131">Escriu-la en paper avui.</span>
@@ -44,7 +44,7 @@ No estàs lligat a la tria que has fet. Canvia-la a **Configuració > Seguretat 
 | Què | On |
 | --- | --- |
 | El xifratge mateix | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| L'estructura de la base de dades | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| Què rep el nostre servidor | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | Què pot i què no pot fer un atacant | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | Com informar d'un forat | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

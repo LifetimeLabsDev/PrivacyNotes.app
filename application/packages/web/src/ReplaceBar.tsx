@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { Editor as TipTapEditor } from '@tiptap/react';
 import { MagnifyingGlass, ArrowsLeftRight, TextAa, X } from './icons';
 import { HoverLabel } from './HoverLabel';
+import { isImeComposing } from './imeComposing';
 import { BAR_BTN, MatchNav } from './MatchNav';
 import {
   setSearchQuery,
@@ -128,14 +129,14 @@ export function ReplaceBar({ editor, focusTick, onClose }: Props) {
   }, [editor, replacement, refresh]);
 
   const onSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !isImeComposing(e)) {
       e.preventDefault();
       go(e.shiftKey ? -1 : 1);
     }
   };
 
   const onReplaceKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !isImeComposing(e)) {
       e.preventDefault();
       replaceOne();
     }

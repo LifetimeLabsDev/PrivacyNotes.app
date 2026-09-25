@@ -14,7 +14,7 @@
   "footer": {
     "exportNote": "Export běží lokálně. Nic se nikam nenahrává.",
     "restoreNote": "Tvůj soubor se načte a dešifruje lokálně.",
-    "importNote": "Všechno se zašifruje, ještě než to kvůli synchronizaci opustí tvoje zařízení."
+    "importNote": "Všechno je vždy zašifrované, na tvém zařízení i při synchronizaci."
   },
   "importPick": {
     "autoTagLabel": "Označit importované poznámky podle zdroje",
@@ -80,6 +80,11 @@
     "encryptedBackupTitle": "Šifrovaná záloha (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Obnov šifrovanou zálohu klíčem z tvojí fráze. Soubor .pnbackupz vrátí všechno včetně souborů; .pnbackup obsahuje jen text a metadata. Vyžaduje přihlášení pod stejným účtem, který zálohu vytvořil."
   },
+  "restoreGate": {
+    "wait": "Obnovení čeká, dokud toto zařízení nebude online a nedokončí synchronizaci, aby se záloha spárovala s poznámkami, které už máš v účtu, a nepřidala je podruhé.",
+    "paused": "Obnovení čeká na synchronizaci, aby se záloha spárovala s poznámkami, které už máš v účtu, a synchronizace je v tomto zařízení pozastavená: vypni „Pozastavit synchronizaci“ v Nastavení > ID & Sync.",
+    "belowFloor": "Obnovení čeká na synchronizaci, aby se záloha spárovala s poznámkami, které už máš v účtu, a tahle verze aplikace je na synchronizaci příliš stará: nejdřív aplikaci aktualizuj."
+  },
   "encryptedBackupLabel": "Šifrovaná záloha",
   "status": {
     "readingFile": "Načítám soubor…",
@@ -91,7 +96,11 @@
   "errors": {
     "genericParse": "Něco se pokazilo.",
     "decryptionFailed": "Dešifrování selhalo. Špatná fráze nebo poškozený soubor.",
-    "blobImportFailed": "Tvoje poznámky se naimportovaly, ale jejich obrázky a soubory ne: {{detail}} V souboru, který jsi vybral, se nic nezměnilo, takže naimportované poznámky můžeš smazat a spustit import znovu."
+    "blobImportFailed": "Tvoje poznámky se naimportovaly, ale jejich obrázky a soubory ne: {{detail}} V souboru, který jsi vybral, se nic nezměnilo, takže naimportované poznámky můžeš smazat a spustit import znovu.",
+    "blobsNotInBackup_one": "Tvoje poznámky se obnovily, ale {{items}} uvedený v záloze v ní chybí.",
+    "blobsNotInBackup_few": "Tvoje poznámky se obnovily, ale {{items}} uvedené v záloze v ní chybí.",
+    "blobsNotInBackup_many": "Tvoje poznámky se obnovily, ale {{items}} uvedených v záloze v ní chybí.",
+    "blobsNotInBackup_other": "Tvoje poznámky se obnovily, ale {{items}} uvedených v záloze v ní chybí."
   },
   "preview": {
     "sourceLabel": "Zdroj",
@@ -105,6 +114,7 @@
     "duplicateWarning": "import je přidá jako nové poznámky. Když ho spustíš dvakrát, budeš mít duplikáty. Automatické slučování duplikátů zatím nemáme.",
     "duplicateSkipNote": "záložky, které už máš uložené, se přeskočí, takže druhý průchod nic nezduplikuje.",
     "contactSkipNote": "lidé, které už máš uložené, se přeskočí a zůstanou, jak jsou, takže druhé spuštění nikoho nezdvojí.",
+    "restoreMergeNote": "poznámky z tvé vlastní zálohy se párují podle identifikátoru. Poznámka, kterou už máš, se aktualizuje jen tehdy, když je verze v záloze novější, a poznámka v koši se z něj vrátí.",
     "quotaExceeded": "<strong>Na import máš málo místa.</strong> Odhadem je potřeba {{needed}}, k dispozici je {{available}}. Před importem uvolni místo nebo přejdi na vyšší tarif.",
     "quotaWarning": "Pozor: tento import spotřebuje přibližně {{needed}} z {{available}} zbývajícího místa.",
     "oversizeAttachments_one": "1 soubor je větší než limit {{limit}} na soubor v tvém plánu. Naimportuje se do tohoto zařízení, ale nesynchronizuje se s tvými dalšími zařízeními, dokud nepřejdeš na vyšší tarif.",
@@ -170,13 +180,33 @@
   "exportProgress": {
     "failedTitle": "Export selhal",
     "completeTitle": "Export dokončen",
+    "incompleteTitle": "Export je neúplný",
     "exportingTitle": "Exportuji zálohu...",
     "preparing": "Připravuji...",
     "exporting": "Exportuji...",
     "imagesProgress": "Exportuji obrázky... {{done}} z {{total}}",
     "filesProgress": "Exportuji soubory... {{done}} z {{total}}",
     "building": "Vytvářím zálohu...",
-    "compressing": "Komprimuji..."
+    "compressing": "Komprimuji...",
+    "missingFailed_one": "Toto zařízení nemohlo stáhnout {{items}}, takže v exportu chybí. Zkontroluj připojení a exportuj znovu.",
+    "missingFailed_few": "Toto zařízení nemohlo stáhnout {{items}}, takže v exportu chybí. Zkontroluj připojení a exportuj znovu.",
+    "missingFailed_many": "Toto zařízení nemohlo stáhnout {{items}}, takže v exportu chybí. Zkontroluj připojení a exportuj znovu.",
+    "missingFailed_other": "Toto zařízení nemohlo stáhnout {{items}}, takže v exportu chybí. Zkontroluj připojení a exportuj znovu.",
+    "missingNotFound_one": "{{items}} není ani na tomto zařízení, ani na serveru, takže v exportu chybí.",
+    "missingNotFound_few": "{{items}} nejsou ani na tomto zařízení, ani na serveru, takže v exportu chybí.",
+    "missingNotFound_many": "{{items}} není ani na tomto zařízení, ani na serveru, takže v exportu chybí.",
+    "missingNotFound_other": "{{items}} není ani na tomto zařízení, ani na serveru, takže v exportu chybí."
+  },
+  "missing": {
+    "pictures_one": "{{count}} obrázek",
+    "pictures_few": "{{count}} obrázky",
+    "pictures_many": "{{count}} obrázku",
+    "pictures_other": "{{count}} obrázků",
+    "files_one": "{{count}} soubor",
+    "files_few": "{{count}} soubory",
+    "files_many": "{{count}} souboru",
+    "files_other": "{{count}} souborů",
+    "both": "{{pictures}} a {{files}}"
   },
   "upload": {
     "completeTitle": "Nahrávání dokončeno",

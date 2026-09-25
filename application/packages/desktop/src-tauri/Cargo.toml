@@ -1,7 +1,7 @@
 [package]
 name = "privacynotes"
-version = "0.518.1"
-description = "PrivacyNotes - end-to-end encrypted notes"
+version = "0.534.0"
+description = "PrivacyNotes - private notes, encrypted on your device"
 authors = ["Lifetime Labs LLC <hi@lifetimelabs.dev>"]
 homepage = "https://privacynotes.app"
 edition = "2021"
@@ -19,6 +19,14 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
+
+# For the iOS entitlements append in build.rs: the helper that finds and
+# rewrites the generated entitlements file, and the plist types it hands over.
+# Mac hosts only, because only a Mac builds iOS and the helper exists nowhere else.
+[target.'cfg(target_os = "macos")'.build-dependencies]
+tauri-plugin = { version = "2", features = ["build"] }
+plist = "1"
+serde_json = "1"
 
 [dependencies]
 # Pinned to the 2.11 minor: Tauri's build rejects a Rust-crate vs @tauri-apps/api
@@ -108,15 +116,42 @@ tauri-plugin-iap = "0.9"
 # In-app OAuth presentation (ASWebAuthenticationSession). iOS only: App Review
 # guideline 4 rejects sign-in that bounces through the external browser
 # (rejected 2026-08-22), and the session sheet is Apple's sanctioned fix.
-# Android keeps the system-browser + deep-link flow, so the plugin is not
-# compiled there. Pinned exact: third-party code on the auth path, review the
-# diff before any bump (ops/docs/dependency-migration.md).
+# Android keeps the system-browser + App Link flow, so the plugin is not
+# compiled there. A path dependency, never the registry crate: the fork in
+# plugins/auth-session completes the sheet on an https return address bound
+# to this app, and no version bump may swap the custom scheme back in.
+# Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.2)
 [target.'cfg(target_os = "ios")'.dependencies]
-tauri-plugin-auth-session = "=0.2.2"
+tauri-plugin-auth-session = { path = "plugins/auth-session" }
+
+# swift-rs compiles the Swift half of every Tauri iOS plugin. Xcode 27 keeps a
+# Swift package's C entry points internal, and 1.0.8 re-exports them for each
+# package's own object but not for the shared runtime shim, so the iOS link
+# fails on _retain_object and friends. patches/swift-rs is 1.0.8 plus the
+# two-line fix of upstream pull request 82. Drop the directory and this
+# section once a release carries the fix. Only the iOS targets compile it.
+[patch.crates-io]
+swift-rs = { path = "patches/swift-rs" }
+# tao is the window layer under Tauri. With the scene manifest the iOS 27 SDK
+# requires, 0.35.3 frees the scene configuration before UIKit retains it, and
+# every release build dies at launch; debug builds only survive by the timing
+# of the autorelease pool. patches/tao is 0.35.3 plus the one-line fix of
+# upstream pull request 1245, which Tauri 2.11 cannot reach because it pins
+# tao 0.35. Drop the directory and this line once `cargo tree -i tao` shows a
+# version that carries it.
+tao = { path = "patches/tao" }
 
 [features]
 default = []
 devtools = ["tauri/devtools"]
+
+# A byte range over a `str` panics when it ends inside a character, and with
+# `panic = "abort"` below that ends the process. Launch arguments, file names
+# and URLs all come from outside, so compare bytes (`as_bytes().get(..n)`)
+# instead; a slice that is provably on a boundary carries an `expect` with
+# its reason.
+[lints.clippy]
+string_slice = "deny"
 
 [profile.release]
 panic = "abort"
@@ -124,3 +159,9 @@ codegen-units = 1
 lto = true
 opt-level = "s"
 strip = true
+
+[profile.dev]
+incremental = false
+
+[profile.dev.package."*"]
+debug = false

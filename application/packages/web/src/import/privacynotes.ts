@@ -1,13 +1,20 @@
 /**
  * PrivacyNotes backup importer - restores a full backup .zip produced
- * by exportAllMarkdownZip (v0.113.0+).
+ * by exportAllMarkdownZip (v0.113.0+), and a .pnbackupz once it is
+ * decrypted into that zip.
  *
  * Detection: zip contains manifest.json with format: "privacynotes-backup".
  *
  * Flow:
- *   1. Read manifest.json → validate format + version.
+ *   1. Read manifest.json → require format "privacynotes-backup". The
+ *      manifest's `version` is not read: a backup from a newer build parses
+ *      with the front-matter keys this build knows and drops the rest. A
+ *      note count that differs from the manifest's is a warning.
  *   2. Parse each .md file in the zip root → extract YAML frontmatter
- *      (type, starred, locked, pinProtected, trackers, tags, timestamps).
+ *      (id, type, starred, trashed, locked, pinProtected, trackers, tags,
+ *      timestamps, folder and folderId). The id is what applyImport matches
+ *      a restore on; a backup written before ids were carried has none, and
+ *      its notes come in as new ones.
  *   3. Rewrite body refs from relative paths back to pn:img/ and pn:file/ format.
  *   4. Return ParsedImport for applyImport (writes notes to Dexie).
  *   5. After applyImport: restoreBlobs() reads image/attachment files from
@@ -17,15 +24,16 @@
 
 import JSZip from 'jszip';
 import { zipEntryText } from './zipEntry';
-import type { BackupManifest } from '../export';
-import { stripFrontMatterPadding } from '../noteMarkdown';
+import type { BackupManifest, MissingBlob } from '../export';
+import { stripFrontMatterPadding, unescapeQuotes } from '../noteMarkdown';
 import { FRONT_MATTER } from '../markdownFolder/adapter';
 import type { ParsedImport, ImportedNote } from './types';
 import type { NoteType } from '@notes/shared';
 import { db } from '../db';
 import type { AttachmentMeta } from '../attachmentStore';
 import { sha256hex } from './blobImport';
-import { buildFolderTree, parseFolderPath } from './folderImport';
+import { createFolder, type FolderDef } from '../folders';
+import { IMPORT_FOLDER_LIMIT, parseFolderPath } from './folderImport';
 
 // ─── YAML frontmatter parser (minimal, no dependency) ────────────────
 
@@ -48,9 +56,13 @@ function parseFrontmatter(md: string): { meta: Record<string, unknown>; body: st
     let val = line.slice(colon + 1).trim();
     if (!key) continue;
 
+    // A folder path is text whatever it looks like, so it is kept exactly as
+    // written for parseFolderPath, which owns its quoting and escapes: a root
+    // folder named 2024, true or [draft] is a name.
+    if (key === 'folder') meta[key] = val;
     // Handle quoted strings
-    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-      meta[key] = val.slice(1, -1).replace(/\\"/g, '"');
+    else if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+      meta[key] = unescapeQuotes(val.slice(1, -1));
     }
     // Handle YAML arrays [a, b, c]
     else if (val.startsWith('[') && val.endsWith(']')) {
@@ -99,13 +111,16 @@ function rewriteAttachmentsForImport(
   }
   // Match [name](target) or [name](<target>); the angle-bracket form carries
   // names with spaces or parens. target points into an attachment folder.
+  // A leading `!` is a picture placed from Files, which shows the file
+  // rather than listing it, so it goes back to a picture of the same blob.
   return body.replace(
-    /\[([^\]]*)\]\((?:<((?:audio|video|docs|files)\/[^>]+)>|((?:audio|video|docs|files)\/[^)\s]+))\)/g,
-    (match, name: string, bracketed: string | undefined, bare: string | undefined) => {
+    /(!?)\[([^\]]*)\]\((?:<((?:audio|video|docs|files)\/[^>]+)>|((?:audio|video|docs|files)\/[^)\s]+))\)/g,
+    (match, bang: string, name: string, bracketed: string | undefined, bare: string | undefined) => {
       const target = bracketed ?? bare;
       if (!target) return match;
       const uuid = pathToUuid.get(target);
       if (!uuid) return match;
+      if (bang) return `![${name}](pn:file/${uuid})`;
       const info = manifest.attachments[uuid]!;
       const sizeStr = formatSize(info.size);
       // The link's own text first: one file can be referenced twice under
@@ -130,6 +145,63 @@ function extFromName(name: string): string {
 }
 
 // sha256hex imported from blobImport.ts (shared across all importers)
+
+// ─── Folder tree (import direction) ───────────────────────────────────
+
+/**
+ * Rebuild the folder tree the backup's notes name, and point each note that
+ * carries a path at its folder in it.
+ *
+ * A folder is known by its parent and its whole name, never by a joined path:
+ * a name may hold a slash, and a string split on slashes again cuts it in
+ * two. Two siblings may also share a name, and only the `folderId` each note
+ * saved tells them apart, so a folder already claimed by one saved id gives a
+ * note with another its own folder of that name. `originalIds` holds the
+ * claims, rebuilt id to saved id, and `reconcileImportedFolders` reuses a
+ * folder still live under its saved id before it matches any name, which is
+ * what puts a restore into the account that wrote the backup back exactly
+ * where it was. In a vault that holds none of those ids the names decide, so
+ * same-named siblings arrive there as one folder.
+ */
+function rebuildFolders(notes: ImportedNote[]): {
+  folders: FolderDef[];
+  originalIds: Map<string, string>;
+} {
+  let folders: FolderDef[] = [];
+  const known = new Map<string, string>();
+  const originalIds = new Map<string, string>();
+  // Sorted by path, so siblings land in a stable, predictable order.
+  const byPath = notes
+    .map((note) => ({ note, key: (note.folderPath ?? []).join('/') }))
+    .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+  for (const { note } of byPath) {
+    const path = note.folderPath ?? [];
+    let parentId: string | null = null;
+    for (let depth = 0; depth < path.length; depth++) {
+      const name = path[depth]!;
+      const saved = depth === path.length - 1 ? note.folderId : null;
+      let key = JSON.stringify([parentId, name]);
+      let id = known.get(key);
+      const claimed = id ? originalIds.get(id) : undefined;
+      if (saved && claimed && claimed !== saved) {
+        key = JSON.stringify([parentId, name, saved]);
+        id = known.get(key);
+      }
+      if (!id) {
+        if (folders.length >= IMPORT_FOLDER_LIMIT) break;
+        const res = createFolder(folders, name, parentId);
+        if (!res) break;
+        folders = res.folders;
+        id = res.created.id;
+        known.set(key, id);
+      }
+      if (saved && !originalIds.has(id)) originalIds.set(id, saved);
+      parentId = id;
+    }
+    if (parentId) note.folderId = parentId;
+  }
+  return { folders, originalIds };
+}
 
 // ─── Parse function (returns ParsedImport for applyImport) ────────────
 
@@ -211,11 +283,10 @@ export async function parsePrivacyNotesBackup(
     };
 
     // The readable folder path, when the backup carries one. `folderId` is a
-    // UUID from the account that WROTE the backup, so restoring into a fresh
-    // vault used to leave every filed note pointing at a folder that did not
-    // exist. The path is rebuilt into real folders below. Backups written
-    // before this line existed carry no `folder:` and keep their old
-    // behaviour, which is why the id above is still read.
+    // UUID from the account that WROTE the backup and names nothing in any
+    // other vault, so the path is rebuilt into real folders below, and the
+    // saved id rides along to be preferred wherever it is still a folder. A
+    // backup without a `folder:` line keeps the saved id alone.
     const folderPath = parseFolderPath(
       typeof meta.folder === 'string' ? meta.folder : undefined,
     );
@@ -224,19 +295,7 @@ export async function parsePrivacyNotesBackup(
     notes.push(note);
   }
 
-  // Rebuild the tree from the paths, then point each note at its new folder.
-  // `reconcileImportedFolders` at apply time reuses any folder whose path
-  // already matches, so restoring into the account that made the backup
-  // lands the notes back in their own folders instead of duplicating them.
-  const { folders: rebuiltFolders, dirToFolderId } = buildFolderTree(
-    notes.map((n) => (n.folderPath ?? []).join('/')).filter(Boolean),
-  );
-  for (const n of notes) {
-    const key = (n.folderPath ?? []).join('/');
-    if (!key) continue;
-    const id = dirToFolderId.get(key);
-    if (id) n.folderId = id;
-  }
+  const { folders: rebuiltFolders, originalIds } = rebuildFolders(notes);
 
   if (notes.length === 0) {
     throw new Error('No markdown files found in the backup zip.');
@@ -279,6 +338,7 @@ export async function parsePrivacyNotesBackup(
 
   return {
     folders: rebuiltFolders,
+    originalFolderIds: originalIds,
     notes,
     warnings,
     transforms: [],
@@ -300,20 +360,25 @@ export async function parsePrivacyNotesBackup(
  *
  * Writes to imageCache/imageDedup and attachmentCache/attachmentDedup
  * with pendingUpload=1 so the next sync pass uploads them to Supabase.
+ * `missing` is every blob the manifest lists that the zip does not carry,
+ * plus every blob the export itself could not read (the manifest's own
+ * `missing`), which the caller reports: the notes that show it come back
+ * without it.
  *
  * Call this AFTER applyImport has written the notes.
  */
 export async function restoreBlobs(
   file: File,
   onProgress?: (msg: string) => void,
-): Promise<{ images: number; attachments: number }> {
+): Promise<{ images: number; attachments: number; missing: Pick<MissingBlob, 'id' | 'kind'>[] }> {
   const zip = await JSZip.loadAsync(await file.arrayBuffer());
   const manifestFile = zip.file('manifest.json');
-  if (!manifestFile) return { images: 0, attachments: 0 };
+  if (!manifestFile) return { images: 0, attachments: 0, missing: [] };
 
   const manifest: BackupManifest = JSON.parse(await zipEntryText(manifestFile));
   let imgCount = 0;
   let attCount = 0;
+  const missing: Pick<MissingBlob, 'id' | 'kind'>[] = [];
   const now = new Date().toISOString();
 
   // Restore images
@@ -329,7 +394,7 @@ export async function restoreBlobs(
       || zip.file(`images/${uuid}.gif`)
       || zip.file(`images/${uuid}.bmp`);
     if (!imgFile) {
-      console.warn(`Restore: image ${uuid} listed in manifest but not found in zip`);
+      missing.push({ id: uuid, kind: 'image' });
       continue;
     }
     // The ids come out of the archive, and a `put` replaces. Every other
@@ -361,7 +426,7 @@ export async function restoreBlobs(
 
     const attFile = zip.file(zipPath);
     if (!attFile) {
-      console.warn(`Restore: attachment ${uuid} (${zipPath}) not found in zip`);
+      missing.push({ id: uuid, kind: 'file' });
       continue;
     }
     if (await db.attachmentCache.get(uuid)) continue;
@@ -381,5 +446,12 @@ export async function restoreBlobs(
     onProgress?.(`Restoring files... ${attCount} of ${attEntries.length}`);
   }
 
-  return { images: imgCount, attachments: attCount };
+  // The manifest comes from the file, so only well-formed entries count.
+  for (const entry of Array.isArray(manifest.missing) ? manifest.missing : []) {
+    if (typeof entry?.id === 'string' && (entry.kind === 'image' || entry.kind === 'file')) {
+      missing.push({ id: entry.id, kind: entry.kind });
+    }
+  }
+
+  return { images: imgCount, attachments: attCount, missing };
 }

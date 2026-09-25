@@ -15,6 +15,7 @@
 import { faviconUrl } from './favicon';
 import { unescapeMarkdownText } from './fileNames';
 import { getFavicons } from './theme';
+import { widthsFromTableLines } from './tableColumnWidths';
 
 // ─── Obsidian callout types ────────────────────────────────────────────
 //
@@ -631,14 +632,38 @@ function renderInline(raw: string): string {
 // Properties that let inline content reposition or overlay other content,
 // which is how a crafted note or a stranger's burn note would build a
 // clickjacking overlay on the origin that holds the phrase. `inset` is the
-// shorthand for top/right/bottom/left, and `translate`/`rotate`/`scale` are
-// the individual transform properties (CSS Transforms Level 2) that do what
-// `transform` does, so blocking `transform` alone left the door open. Added
-// 2026-08-28 after the pre-launch audit. `margin` is deliberately NOT here:
-// the renderer emits `margin` in its own favicon image styles, and a nudge
-// is not an overlay; the positioning vectors above are the real risk.
+// shorthand for top/right/bottom/left; `translate`/`rotate`/`scale` are the
+// individual transform properties (CSS Transforms Level 2) that do what
+// `transform` does; the `offset` family (CSS Motion Path) moves a static
+// element along a path, which is a transform under another name. The test
+// runs on the name as the CSS tokenizer reads it, with a vendor prefix
+// stripped, because `-webkit-transform` is the same property. `margin` is
+// deliberately NOT here: the renderer emits `margin` in its own favicon image
+// styles, and a nudge is not an overlay; the positioning vectors above are
+// the real risk.
 const UNSAFE_CSS_PROPS =
-  /^(position|z-index|top|right|bottom|left|inset|transform|translate|rotate|scale|pointer-events)$/i;
+  /^(position|z-index|top|right|bottom|left|inset|transform|translate|rotate|scale|offset|offset-path|offset-distance|offset-position|offset-anchor|offset-rotate|pointer-events)$/i;
+
+/**
+ * A declaration as the CSS tokenizer reads it: a backslash escape (`\70`,
+ * `\70 `, `\p`) is one character, so `pos\69 tion` reaches the engine as
+ * `position`, and the name test has to see that form rather than the bytes
+ * in the attribute. One pass, on purpose: an escape that decodes to a
+ * backslash is a literal backslash to the engine and never a second escape,
+ * so a second pass here would see `position` where the browser does not.
+ */
+function cssUnescape(text: string): string {
+  return text.replace(
+    /\\(?:([0-9a-f]{1,6})(?:\r\n|[ \t\n\r\f])?|([^\n\r\f]))/gi,
+    (_m: string, hex: string | undefined, ch: string | undefined) => {
+      if (hex === undefined) return ch ?? '';
+      const cp = parseInt(hex, 16);
+      return cp === 0 || cp > 0x10ffff || (cp >= 0xd800 && cp <= 0xdfff)
+        ? '\uFFFD'
+        : String.fromCodePoint(cp);
+    },
+  );
+}
 
 function sanitizeEditorHtml(html: string): string {
   const doc = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html');
@@ -670,11 +695,19 @@ function sanitizeEditorHtml(html: string): string {
       ) {
         el.removeAttribute(attr.name);
       } else if (name === 'style') {
+        // Comments come out first, from the whole attribute, because the
+        // engine drops them wherever they sit: `/**/position` is `position`,
+        // and a `;` inside one is no separator, so a comment left in place
+        // would be joined back around a declaration the filter never saw.
+        // Each surviving declaration is emitted as written; only the
+        // decision reads the unescaped form.
         const kept = attr.value
+          .replace(/\/\*[\s\S]*?\*\//g, '')
           .split(';')
           .filter((decl) => {
-            const prop = decl.split(':')[0]?.trim() ?? '';
-            return prop !== '' && !UNSAFE_CSS_PROPS.test(prop) && !/url\s*\(/i.test(decl);
+            const seen = cssUnescape(decl);
+            const prop = (seen.split(':')[0] ?? '').trim().toLowerCase().replace(/^-[a-z]+-/, '');
+            return prop !== '' && !UNSAFE_CSS_PROPS.test(prop) && !/url\s*\(/i.test(seen);
           })
           .join(';');
         if (kept.trim()) el.setAttribute('style', kept);
@@ -1212,7 +1245,15 @@ export function renderMarkdown(md: string): string {
           })
         : [];
 
-      const tableHtml: string[] = ['<table style="border-collapse:collapse;width:100%;margin:1em 0">'];
+      // Widths the editor stored as dash counts (tableColumnWidths.ts). The
+      // fixed layout goes inline because the burn viewer has no stylesheet
+      // rule for it, and without it the cols are only a hint.
+      const widths = hasSep ? widthsFromTableLines(rows[0]!, rows[1]!) : null;
+      const tableHtml: string[] = [
+        widths
+          ? `<table style="border-collapse:collapse;width:100%;margin:1em 0;table-layout:fixed"><colgroup>${widths.map((w) => `<col style="width:${w}%">`).join('')}</colgroup>`
+          : '<table style="border-collapse:collapse;width:100%;margin:1em 0">',
+      ];
       if (hasSep) {
         tableHtml.push('<thead><tr>');
         headerRow.forEach((cell, idx) => {

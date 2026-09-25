@@ -9,6 +9,7 @@ import {
 } from './icons';
 import { type Editor as TipTapEditor } from '@tiptap/react';
 import { HoverLabel } from './HoverLabel';
+import { clearTableWidths, tableWidths } from './tableColumnResize';
 
 // ------------------------------------------------------------------
 // Table Controls (floating toolbar glued below the active table)
@@ -26,6 +27,7 @@ function activeTablePos(editor: TipTapEditor): number {
 export function TableControls({ editor }: { editor: TipTapEditor }) {
   const { t } = useTranslation('editor');
   const toolbarRef = useRef<HTMLDivElement>(null);
+  const equalRef = useRef<HTMLSpanElement>(null);
 
   /**
    * Visibility and position both come from the editor, never from a React
@@ -69,6 +71,10 @@ export function TableControls({ editor }: { editor: TipTapEditor }) {
       if (!wrapper) return hide();
       const wrapperRect = wrapper.getBoundingClientRect();
       const tableRect = tableDOM.getBoundingClientRect();
+
+      // "Make columns equal" shows only on a table that has widths to reset.
+      const table = editor.state.doc.nodeAt(tablePos);
+      if (equalRef.current) equalRef.current.style.display = table && tableWidths(table) ? 'contents' : 'none';
 
       toolbar.style.display = '';
       toolbar.style.top = `${tableRect.bottom - wrapperRect.top}px`;
@@ -131,6 +137,14 @@ export function TableControls({ editor }: { editor: TipTapEditor }) {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 5h16v4H4z" fill="currentColor" stroke="none"/><rect x="3" y="4" width="18" height="16" rx="1"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="12" y1="9" x2="12" y2="20"/></svg>
         </button>
       </HoverLabel>
+      {/* Column widths back to equal shares; hidden while they already are. */}
+      <span ref={equalRef} style={{ display: 'none' }}>
+        <HoverLabel label={t('table.equalColumnWidths')} position="below">
+          <button type="button" className="pn-table-toolbar-btn" onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); const pos = activeTablePos(editor); if (pos >= 0) clearTableWidths(editor.view, pos); editor.commands.focus(); }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="1"/><line x1="9" y1="4" x2="9" y2="20"/><line x1="15" y1="4" x2="15" y2="20"/></svg>
+          </button>
+        </HoverLabel>
+      </span>
       <div className="pn-table-toolbar-divider" />
       {/* Delete row */}
       <HoverLabel label={t('table.deleteRow')} position="below">

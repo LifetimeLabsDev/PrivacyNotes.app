@@ -171,7 +171,8 @@ export async function verifySync(supabase: SupabaseClient): Promise<SyncReport> 
       staleLocally,
       neverPushed,
       pendingTombstones,
-      dirty: local.filter((n) => n.dirty === 1).length,
+      // Unsynced in either at-rest writer mode: 1 plaintext, 2 sealed.
+      dirty: local.filter((n) => n.dirty === 1 || n.dirty === 2).length,
       cursor,
     };
 
@@ -182,7 +183,10 @@ export async function verifySync(supabase: SupabaseClient): Promise<SyncReport> 
       // Unpushed work is only a problem when it is not queued: a dirty
       // row is on its way, an undirty row the server has never seen is
       // a push that silently failed.
-      neverPushed.some((id) => localById.get(id)?.dirty !== 1);
+      neverPushed.some((id) => {
+        const d = localById.get(id)?.dirty;
+        return d !== 1 && d !== 2;
+      });
 
     if (before !== after) report.verdict = 'busy';
     else if (diverged) report.verdict = 'diverged';

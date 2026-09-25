@@ -14,7 +14,7 @@
   "footer": {
     "exportNote": "Exporter körs lokalt. Ingenting laddas upp.",
     "restoreNote": "Din fil läses och dekrypteras lokalt.",
-    "importNote": "Allt krypteras innan det lämnar din enhet för att synkas."
+    "importNote": "Allt är alltid krypterat, på din enhet och när det synkas."
   },
   "importPick": {
     "autoTagLabel": "Tagga importerade anteckningar efter källa",
@@ -74,6 +74,11 @@
     "encryptedBackupTitle": "Krypterad säkerhetskopia (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Återställ en krypterad säkerhetskopia med din frasnyckel. En .pnbackupz tar tillbaka allt, filer inräknade; en .pnbackup innehåller bara text och metadata. Du måste vara inloggad med samma konto som skapade den."
   },
+  "restoreGate": {
+    "wait": "Återställningen väntar tills den här enheten är online och har slutfört en synkning, så att din säkerhetskopia matchas mot anteckningarna som redan finns i ditt konto i stället för att de läggs till två gånger.",
+    "paused": "Återställningen väntar på synkningen, så att din säkerhetskopia matchas mot anteckningarna som redan finns i ditt konto, och synkningen är pausad på den här enheten: stäng av ”Pausa synkning” under Inställningar > ID & Sync.",
+    "belowFloor": "Återställningen väntar på synkningen, så att din säkerhetskopia matchas mot anteckningarna som redan finns i ditt konto, och den här versionen av appen är för gammal för att synka: uppdatera appen först."
+  },
   "encryptedBackupLabel": "Krypterad säkerhetskopia",
   "status": {
     "readingFile": "Läser filen…",
@@ -85,7 +90,9 @@
   "errors": {
     "genericParse": "Något gick fel.",
     "decryptionFailed": "Dekrypteringen misslyckades. Fel fras eller skadad fil.",
-    "blobImportFailed": "Dina anteckningar importerades, men inte deras bilder och filer: {{detail}} Ingenting i filen du valde ändrades, så du kan radera de importerade anteckningarna och köra importen igen."
+    "blobImportFailed": "Dina anteckningar importerades, men inte deras bilder och filer: {{detail}} Ingenting i filen du valde ändrades, så du kan radera de importerade anteckningarna och köra importen igen.",
+    "blobsNotInBackup_one": "Dina anteckningar återställdes, men {{items}} som listas i säkerhetskopian saknas i den.",
+    "blobsNotInBackup_other": "Dina anteckningar återställdes, men {{items}} som listas i säkerhetskopian saknas i den."
   },
   "preview": {
     "sourceLabel": "Källa",
@@ -99,6 +106,7 @@
     "duplicateWarning": "importen lägger till de här som nya anteckningar. Kör du den två gånger får du dubbletter. Det finns ingen automatisk dubblettrensning ännu.",
     "duplicateSkipNote": "bokmärken du redan sparat hoppas över, så att köra det här två gånger dubblerar ingenting.",
     "contactSkipNote": "personer du redan har sparat hoppas över och lämnas som de är, så att köra det två gånger dubblerar ingen.",
+    "restoreMergeNote": "anteckningar från din egen säkerhetskopia matchas på id. En anteckning du redan har uppdateras bara när säkerhetskopians version är nyare, och en anteckning i papperskorgen tas ut ur den.",
     "quotaExceeded": "<strong>För lite lagring för att importera.</strong> Uppskattningsvis {{needed}} behövs, {{available}} tillgängligt. Frigör utrymme eller uppgradera innan du importerar.",
     "quotaWarning": "Obs: den här importen använder ungefär {{needed}} av ditt återstående lagringsutrymme på {{available}}.",
     "oversizeAttachments_one": "1 fil är större än gränsen på {{limit}} per fil i din plan. Den importeras till den här enheten, men synkas inte till dina andra enheter förrän du uppgraderar.",
@@ -150,13 +158,25 @@
   "exportProgress": {
     "failedTitle": "Exporten misslyckades",
     "completeTitle": "Exporten är klar",
+    "incompleteTitle": "Exporten är ofullständig",
     "exportingTitle": "Exporterar säkerhetskopia...",
     "preparing": "Förbereder...",
     "exporting": "Exporterar...",
     "imagesProgress": "Exporterar bilder... {{done}} av {{total}}",
     "filesProgress": "Exporterar filer... {{done}} av {{total}}",
     "building": "Bygger säkerhetskopian...",
-    "compressing": "Komprimerar..."
+    "compressing": "Komprimerar...",
+    "missingFailed_one": "Den här enheten kunde inte hämta {{items}}, så din export lämnar den utanför. Kontrollera anslutningen och exportera igen.",
+    "missingFailed_other": "Den här enheten kunde inte hämta {{items}}, så din export lämnar dem utanför. Kontrollera anslutningen och exportera igen.",
+    "missingNotFound_one": "{{items}} finns varken på den här enheten eller på servern, så din export lämnar den utanför.",
+    "missingNotFound_other": "{{items}} finns varken på den här enheten eller på servern, så din export lämnar dem utanför."
+  },
+  "missing": {
+    "pictures_one": "{{count}} bild",
+    "pictures_other": "{{count}} bilder",
+    "files_one": "{{count}} fil",
+    "files_other": "{{count}} filer",
+    "both": "{{pictures}} och {{files}}"
   },
   "upload": {
     "completeTitle": "Uppladdningen är klar",

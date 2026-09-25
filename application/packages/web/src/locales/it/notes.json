@@ -55,7 +55,7 @@
     "empty": "Svuota",
     "emptyHover": "Elimina tutte le note nel cestino",
     "storage": "Spazio",
-    "autoDelete": "Eliminazione auto: 30 g"
+    "autoDelete": "Elimina dopo 30 giorni"
   },
   "search": {
     "sortOptions": "Opzioni di ordinamento e visualizzazione",
@@ -161,8 +161,8 @@
     "invisiblesShow": "Mostra caratteri invisibili",
     "invisiblesHide": "Nascondi caratteri invisibili",
     "findInNote": "Trova nella nota",
-    "navPrev": "Nota precedente",
-    "navNext": "Nota successiva",
+    "navPrev": "Precedente",
+    "navNext": "Successivo",
     "undo": "Annulla",
     "redo": "Ripeti",
     "hide": "Nascondi",
@@ -176,7 +176,8 @@
     "titlePlaceholderLink": "Nome del segnalibro",
     "titlePlaceholderContact": "Nome",
     "notBackedUpTooLarge": "Oltre il limite di 1 MB, quindi senza backup. Sposta le immagini negli allegati o dividi la nota.",
-    "notBackedUpFailed": "Senza backup. Ultimo errore: {{message}}. Nuovo tentativo in corso."
+    "notBackedUpFailed": "Senza backup. Ultimo errore: {{message}}. Nuovo tentativo in corso.",
+    "unknownType": "Questo elemento è stato creato con una versione più recente di PrivacyNotes. Aggiorna l'app per aprirlo."
   },
   "share": {
     "hover": "Condividi / Esporta",

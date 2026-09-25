@@ -46,20 +46,21 @@ import { isPinWrapWithheld, type UserSettings } from './userSettings';
  * this device simply stops locking while every device that kept a door keeps
  * using it.
  *
- * `phrase` is read on a device that is left with no door at all, to put the
- * phrase back at rest so the next boot has a session to restore. Arming app
- * lock strips the stored copy, which makes the wrap this function just
- * deleted the only one.
+ * `phrase` goes back at rest on a device whose wrap is its last door, so the
+ * next boot has a session to restore. Arming app lock strips the stored copy,
+ * which makes the wrap the only one; the flag is not the test, because it can
+ * come off on another device while this one still holds only the wrap.
+ *
+ * Answers null, having changed nothing, when that phrase does not read back:
+ * the wrap stays, and so does the PIN that opens it. Callers keep the PIN and
+ * say so. Pinned by tests/pinRecovery.test.ts.
  */
-export function clearPin(settings: UserSettings, phrase: string): UserSettings {
-  const hasBio = hasBiometricCredential();
+export async function clearPin(settings: UserSettings, phrase: string): Promise<UserSettings | null> {
+  // The phrase lands before the wrap goes, so a start in between still has
+  // the wrap to open. The write can take a moment and can be refused.
+  const lastDoor = hasPinWrappedPhrase() && !hasBiometricCredential() && !hasStoredPhrase();
+  if (lastDoor && !(await persistStoredPhrase(phrase))) return null;
   removePinWrappedPhrase();
-  if (!hasBio && settings.appLockEnabled) {
-    // Fire-and-forget: persist wraps the phrase at rest and falls back to
-    // a plain write on a degraded browser, so a boot after this still
-    // finds a session.
-    void persistStoredPhrase(phrase);
-  }
   const next = clearPinFromSettings(settings);
   // Somebody who just proved the phrase has no business sitting out a
   // backoff earned by guessing at the PIN they replaced.
@@ -89,13 +90,15 @@ export function clearPin(settings: UserSettings, phrase: string): UserSettings {
  * device, and the settings this reads can be an older blob than the one it
  * already had: the freshness test is a server-controlled timestamp and the
  * ciphertext binds none of its own. Left alone, the next boot would ask for
- * twelve words the person may never have written down. So a device left with
- * no door at all puts the phrase back at rest, which is the same trade
+ * twelve words the person may never have written down. So a device the
+ * removal would leave with no door puts the phrase back at rest first, and
+ * the wrap comes off only once the phrase reads back, which is the same trade
  * clearPin makes above: the app lock switches itself off, and nothing is
- * lost. Making the wrap stick instead would bring back a PIN removed on one
+ * lost. A write the store refuses keeps the wrap until a later pass lands
+ * it. Making the wrap stick for good would bring back a PIN removed on one
  * device still unlocking every other one.
  */
-export function syncPinWrap(settings: UserSettings, phrase?: string): void {
+export async function syncPinWrap(settings: UserSettings, phrase?: string): Promise<void> {
   if (settings.pinWrapSalt && settings.pinWrapIV && settings.pinWrapCiphertext) {
     const blob = {
       pinWrapSalt: settings.pinWrapSalt,
@@ -121,14 +124,14 @@ export function syncPinWrap(settings: UserSettings, phrase?: string): void {
   // and acting on it would take a door the account still holds. Pinned by
   // tests/pinRecovery.test.ts.
   if (isPinWrapWithheld()) return;
-  removePinWrappedPhrase();
-  // A door is a wrap, a fingerprint, or a phrase already at rest. With none
-  // of the three there is nothing for the next boot to restore a session
-  // from. Fire-and-forget, the same as clearPin: persist falls back to a
-  // plain write on a degraded browser rather than leaving nothing.
+  // A door is a wrap, a fingerprint, or a phrase already at rest. With
+  // neither of the last two, the phrase lands before the wrap goes. With no
+  // phrase to write, the wrap goes anyway: a PIN the account removed must
+  // stop opening this device.
   if (phrase && !hasBiometricCredential() && !hasStoredPhrase()) {
-    void persistStoredPhrase(phrase);
+    if (!(await persistStoredPhrase(phrase))) return;
   }
+  removePinWrappedPhrase();
 }
 
 // Spec: ops/docs/biometric-unlock.md (PIN wrap PBKDF2 count before it was

@@ -7,7 +7,7 @@ title: L'emménagement
 
 Tu peux faire venir quatre sortes de choses : des notes, des entrées de journal, des signets et des mots de passe.
 
-Tout commence au même endroit : **Paramètres > Import et export**.
+Tout commence au même endroit : **Paramètres > Import & Export**.
 
 ## Ce que tu peux faire venir
 
@@ -41,7 +41,7 @@ Une entrée de journal contient plus que du texte. Au-dessus de la zone d'écrit
 ## Signets
 
 - [ ] Exporte les signets de ton navigateur dans un fichier `.html`
-- [ ] Importe ce fichier : **Paramètres > Import et export > Importer > Signets du navigateur**
+- [ ] Importe ce fichier : **Paramètres > Import & Export > Importer > Signets du navigateur**
 
 Tu peux aussi coller un lien dans une note vide. Le titre et l'icône du site arrivent tout seuls : [privacynotes.app/fr/help/import/browser-bookmarks](https://privacynotes.app/fr/help/import/browser-bookmarks)
 

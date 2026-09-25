@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
 import { HoverLabel } from './HoverLabel';
-import { PencilSimple, Trash } from './icons';
+import { useIsTouchDevice } from './useIsMobile';
+import { DotsThreeOutlineVertical, PencilSimple, Trash } from './icons';
 
 /**
  * The edit / delete pair a bookmark row wears on hover.
@@ -19,24 +20,50 @@ import { PencilSimple, Trash } from './icons';
  * silence disarms. Each row owns that state, so arming one never disturbs
  * another.
  *
- * Spec: ops/docs/ui-patterns.md (section 74)
+ * On touch the pair is one "..." button that opens the row menu, which
+ * carries edit, delete and everything else a right-click offers. Touch has
+ * no hover to hide the pair behind, so two permanent buttons sat on every
+ * title (GitHub #339), and a bookmark row cannot be the way in instead:
+ * tapping it opens the website.
+ *
+ * Spec: ops/docs/ui-patterns.md (sections 74 and 104)
  */
 export function BookmarkRowActions({
   note,
   onEdit,
   onTrash,
+  onMenu,
   tipPos,
 }: {
   note: LocalNote;
   onEdit: (note: LocalNote) => void;
   onTrash: (note: LocalNote) => void;
+  /** Opens the row menu at the tap. Touch only. */
+  onMenu: (note: LocalNote, e: React.MouseEvent) => void;
   /** Grid tiles put the tip above the cluster; list rows put it before it. */
   tipPos: 'above-start' | 'start';
 }) {
   const { t } = useTranslation('shell');
+  const isTouch = useIsTouchDevice();
   const [armed, setArmed] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+
+  if (isTouch) {
+    return (
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); onMenu(note, e); }}
+        // The row's long press selects it; a finger resting on this button
+        // is aiming at the menu, not at the row.
+        onTouchStart={(e) => e.stopPropagation()}
+        aria-label={t('bookmarks.rowMenu')}
+        className="w-7 h-7 rounded-md border border-divider bg-surface-1 text-neutral-500 dark:text-neutral-400 inline-flex items-center justify-center transition active:scale-95"
+      >
+        <DotsThreeOutlineVertical size={14} />
+      </button>
+    );
+  }
 
   function arm(e: React.MouseEvent) {
     e.stopPropagation();

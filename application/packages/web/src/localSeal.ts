@@ -8,6 +8,11 @@
  *    The content fields live inside the ciphertext as one JSON payload.
  *    Base64 STRINGS on purpose: Dexie's liveQuery cache does not
  *    preserve Uint8Array fields.
+ *  - The notes side field (the sync base):
+ *      syncBaseSealed: { n: <base64 nonce>, ct: <base64 ciphertext> }
+ *    Its own envelope beside the blob, under its own AAD, and left
+ *    sealed on reads (readSideField). A bundle without the field keeps
+ *    the envelope on every write and still opens the row.
  *  - Bytes tables (imageCache, attachmentCache):
  *      sv: 1, sealed: { n: Uint8Array, ct: Uint8Array }
  *    The data bytes seal RAW - a JSON detour would multiply a 50 MB
@@ -94,6 +99,12 @@ interface TableSealConfig {
   jsonField?: string;
   /** notes only: map dirty 1 -> 2 on seal (the stale-bundle fence). */
   fenceDirty?: boolean;
+  /** json mode: a field sealed in its own envelope, `<field>Sealed`,
+   *  and never unsealed by a read. It stays out of `fields` because a
+   *  bundle that predates it refuses a payload carrying a key it does
+   *  not know: an envelope it carries through untouched keeps a
+   *  rollback or a stale tab able to open every row. */
+  sideField?: string;
 }
 
 /** The tables the middleware covers, and what it seals in each. */
@@ -104,6 +115,7 @@ const SEALED_TABLES: Record<string, TableSealConfig> = {
     mode: 'json',
     fields: ['title', 'body', 'tags', 'trackers'],
     fenceDirty: true,
+    sideField: 'syncBase',
   },
   editorDocCache: { pk: 'noteId', aad: 'editorDocCache', mode: 'json', fields: ['body', 'json'] },
   imageCache: { pk: 'id', aad: 'img', mode: 'bytes', bytesField: 'data' },
@@ -127,9 +139,18 @@ export class LocalSealReadError extends Error {
   }
 }
 
+/**
+ * Whether the shipped app writes sealed rows. main.tsx boots with it and
+ * the sync simulator's devices start from it, so the suite runs the mode
+ * users run. false is the reader release: sealed rows open, writes land
+ * plaintext.
+ * Spec: ops/docs/plans/local-at-rest.md (5.1, the two releases)
+ */
+export const SEALED_WRITES_IN_PRODUCTION = true;
+
 let sealedWrites = false;
 
-/** Writer-release switch (main.tsx). The reader release never calls this. */
+/** The mode switch main.tsx sets at boot from SEALED_WRITES_IN_PRODUCTION. */
 export function setSealedWrites(on: boolean): void {
   sealedWrites = on;
 }
@@ -178,6 +199,37 @@ function requireKey(): Uint8Array {
   const key = localDataKeyCopy();
   if (!key) throw new LocalSealKeyMissing();
   return key;
+}
+
+function sideSlot(field: string): string {
+  return `${field}Sealed`;
+}
+
+/** Its own AAD tag, so neither envelope authenticates in the other's slot. */
+function sideAad(cfg: TableSealConfig, id: unknown): string {
+  return `${AAD_PREFIX}:${cfg.aad}.${cfg.sideField}:${String(id)}`;
+}
+
+/** Move a plain side value into its envelope; a row without one comes
+ *  back as it is. An explicit undefined drops the envelope as well. */
+function sealSideField(cfg: TableSealConfig, row: RawRow): RawRow {
+  const f = cfg.sideField;
+  if (!f || !(f in row)) return row;
+  const out: RawRow = { ...row };
+  const value = out[f];
+  delete out[f];
+  if (value === undefined) {
+    delete out[sideSlot(f)];
+    return out;
+  }
+  const key = requireKey();
+  try {
+    const { ciphertext, nonce } = encryptJsonAad(value, key, sideAad(cfg, row[cfg.pk]));
+    out[sideSlot(f)] = { n: bytesToBase64(nonce), ct: bytesToBase64(ciphertext) };
+  } finally {
+    key.fill(0);
+  }
+  return out;
 }
 
 // ------------------------------------------------------------------
@@ -308,21 +360,64 @@ export function sealRow(table: string, row: RawRow): RawRow {
     if (isSealedRow(row)) return row;
     return sealBytesRow(cfg, row);
   }
-  const present = cfg.fields!.filter((f) => f in row);
-  if (isSealedRow(row)) {
+  const r = sealSideField(cfg, row);
+  const present = cfg.fields!.filter((f) => f in r);
+  if (isSealedRow(r)) {
     // A genuinely sealed raw row. Plaintext fields beside the blob mean
     // a lower layer patched the stored value: merge and re-seal.
-    if (present.length === 0) return row;
-    const payload = openJsonPayload(table, cfg, row);
+    if (present.length === 0) return r;
+    const payload = openJsonPayload(table, cfg, r);
     const merged = { ...payload };
-    for (const f of present) merged[f] = row[f];
-    return sealJsonPayload(table, cfg, row, merged);
+    for (const f of present) merged[f] = r[f];
+    return sealJsonPayload(table, cfg, r, merged);
   }
   // Plaintext row - including modify/update values, which carry a stale
   // sv marker and no blob. The blob decides, never the marker.
   const payload: Record<string, unknown> = {};
-  for (const f of cfg.fields!) payload[f] = row[f];
-  return sealJsonPayload(table, cfg, row, payload);
+  for (const f of cfg.fields!) payload[f] = r[f];
+  return sealJsonPayload(table, cfg, r, payload);
+}
+
+/**
+ * A row's side field in whatever form the row holds it, the plain value or
+ * its envelope, for a writer that rebuilds the row from scratch and must
+ * keep it (a restore replacing a note it matched by id).
+ */
+export function carrySideField(table: string, row: object): Record<string, unknown> {
+  const f = SEALED_TABLES[table]?.sideField;
+  if (!f) return {};
+  const r = row as RawRow;
+  const out: Record<string, unknown> = {};
+  if (r[f] !== undefined) out[f] = r[f];
+  if (r[sideSlot(f)] !== undefined) out[sideSlot(f)] = r[sideSlot(f)];
+  return out;
+}
+
+/**
+ * A row's side field, for the one reader that needs it (sync.ts). Plain
+ * when the row was written with sealed writes off, which is also the newer
+ * value when a row carries both; opened from its envelope otherwise. An
+ * envelope that does not open reads as absent: the field is advisory, and
+ * a note never becomes unreadable over it.
+ */
+export function readSideField(table: string, row: object): unknown {
+  const cfg = SEALED_TABLES[table];
+  const f = cfg?.sideField;
+  if (!cfg || !f) return undefined;
+  const r = row as RawRow;
+  if (r[f] !== undefined) return r[f];
+  const env = r[sideSlot(f)] as { n?: unknown; ct?: unknown } | undefined;
+  if (!env || typeof env.n !== 'string' || typeof env.ct !== 'string') return undefined;
+  const key = localDataKeyCopy();
+  if (!key) return undefined;
+  try {
+    return decryptJsonAad(base64ToBytes(env.ct), base64ToBytes(env.n), key, sideAad(cfg, r[cfg.pk]));
+  } catch {
+    logAuthEvent('seal:side-open-failed', { message: `${table}/${String(r[cfg.pk])}` });
+    return undefined;
+  } finally {
+    key.fill(0);
+  }
 }
 
 /** Open one raw row into the plaintext shape. Throws; never partial. */

@@ -136,6 +136,7 @@
     "closeMenu": "Menüyü kapat",
     "close": "Kapat",
     "views": "İçerik",
+    "resizeSplit": "İçerik ile etiketler veya klasörler arasını yeniden boyutlandır",
     "sidebarOptions": "Kenar çubuğu seçenekleri",
     "showInSidebar": "Kenar çubuğunda göster",
     "allOptions": "Tümü seçenekleri",
@@ -455,6 +456,7 @@
     "openAction": "Aç",
     "copiedUrl": "Bağlantı kopyalandı",
     "moveToTrash": "Çöp kutusuna taşı",
+    "rowMenu": "Diğer işlemler",
     "emptyNone": "Henüz yer imi yok.",
     "emptyTitle": "Saklamaya değer siteleri kaydedin",
     "emptyAdd": "Yer imi ekle",
@@ -585,5 +587,8 @@
   "noteLinks": {
     "retargetedToast_one": "{{count}} not bağlantısı yeni başlığa göre güncellendi.",
     "retargetedToast_other": "{{count}} not bağlantısı yeni başlığa göre güncellendi."
+  },
+  "looks": {
+    "menu": "Simge ve renk"
   }
 }

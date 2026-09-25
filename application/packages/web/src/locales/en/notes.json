@@ -55,7 +55,7 @@
     "empty": "Empty",
     "emptyHover": "Delete all notes in trash",
     "storage": "Storage",
-    "autoDelete": "30d auto-delete"
+    "autoDelete": "Auto-delete after 30 days"
   },
   "search": {
     "sortOptions": "Sort and view options",
@@ -161,8 +161,8 @@
     "invisiblesShow": "Show invisible characters",
     "invisiblesHide": "Hide invisible characters",
     "findInNote": "Find in note",
-    "navPrev": "Previous note",
-    "navNext": "Next note",
+    "navPrev": "Previous",
+    "navNext": "Next",
     "undo": "Undo",
     "redo": "Redo",
     "hide": "Hide",
@@ -176,7 +176,8 @@
     "titlePlaceholderLink": "Bookmark name",
     "titlePlaceholderContact": "Name",
     "notBackedUpTooLarge": "Over the 1 MB limit, so not backed up. Move pictures to attachments or split the note.",
-    "notBackedUpFailed": "Not backed up. Last error: {{message}}. Retrying."
+    "notBackedUpFailed": "Not backed up. Last error: {{message}}. Retrying.",
+    "unknownType": "This item was made by a newer version of PrivacyNotes. Update the app to open it."
   },
   "share": {
     "hover": "Share / Export",

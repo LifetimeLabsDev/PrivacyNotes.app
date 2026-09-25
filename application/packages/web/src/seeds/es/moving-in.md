@@ -7,7 +7,7 @@ title: La mudanza
 
 Puedes traer cuatro tipos de cosas: notas, entradas de diario, marcadores y contraseñas.
 
-Todas empiezan en el mismo sitio: **Ajustes > Importar y exportar**.
+Todas empiezan en el mismo sitio: **Ajustes > Import & Export**.
 
 ## Qué puedes traer
 
@@ -41,7 +41,7 @@ Una entrada de diario guarda algo más que texto. Encima del área de escritura 
 ## Marcadores
 
 - [ ] Exporta los marcadores de tu navegador como archivo `.html`
-- [ ] Importa ese archivo: **Ajustes > Importar y exportar > Importar > Marcadores del navegador**
+- [ ] Importa ese archivo: **Ajustes > Import & Export > Importar > Marcadores del navegador**
 
 También puedes pegar un enlace en una nota vacía. El título y el icono del sitio llegan solos: [privacynotes.app/es/help/import/browser-bookmarks](https://privacynotes.app/es/help/import/browser-bookmarks)
 

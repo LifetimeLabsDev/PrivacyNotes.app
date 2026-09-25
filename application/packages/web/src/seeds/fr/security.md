@@ -19,7 +19,7 @@ Voilà notre vraie base de données à Zurich, pas un dessin. Ta note va dans la
 
 ## Qui détient ta clé
 
-Toutes les options gardent tes notes chiffrées de bout en bout. Elles diffèrent par l'endroit où vit ta phrase.
+Toutes les options gardent tes notes chiffrées sur ton appareil. Elles diffèrent par l'endroit où vit ta phrase.
 
 | Option | Où vit ta phrase | Ce que ça t'apporte |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Toutes les options gardent tes notes chiffrées de bout en bout. Elles diffèren
 
 Avec les deux dernières, nous ne pourrions pas lire une note même si on nous y contraignait. La première échange cela contre du confort : ta phrase est sur notre serveur sous une clé à nous, donc un nouvel appareil n'a besoin que de ton compte. Si notre serveur était un jour compromis, cette clé pourrait être exposée.
 
-Tu n'es pas enfermé dans ton choix. Change-le dans **Paramètres > Sécurité > Ta phrase**.
+Connecté avec Google, Apple ou GitHub ? Tu peux basculer entre les deux premières plus tard, dans **Paramètres > Sécurité > Ta phrase**. Avec un compte à phrase seule, la phrase reste toujours avec toi.
 
 > [!warning] Garde ta propre copie de la phrase
 > Ta phrase ouvre tes notes. Si tu la perds, personne ne peut la retrouver, nous compris. <span style="color: #e03131">Écris-la sur du papier aujourd'hui.</span>
@@ -44,7 +44,7 @@ Tu n'es pas enfermé dans ton choix. Change-le dans **Paramètres > Sécurité >
 | Quoi | Où |
 | --- | --- |
 | Le chiffrement lui-même | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| La structure de la base de données | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| Ce que reçoit notre serveur | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | Ce qu'un attaquant peut et ne peut pas faire | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | Comment signaler une faille | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

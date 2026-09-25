@@ -39,7 +39,7 @@ type Props = {
 /** Which Pro feature opened the modal; picks the intro line. */
 export type UpgradeTrigger =
   | 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage'
-  | 'callout' | 'fileSize' | 'folders' | 'totp' | 'replace' | 'passphrase' | null;
+  | 'callout' | 'fileSize' | 'folders' | 'looks' | 'totp' | 'replace' | 'passphrase' | null;
 
 const FEATURES: Array<{ icon: React.JSX.Element; labelKey: string }> = [
   { icon: <IconDevices />, labelKey: 'upgrade.features.devices' },
@@ -69,6 +69,8 @@ function introKey(trigger: Props['trigger']): string {
       return 'upgrade.intro.storage';
     case 'folders':
       return 'upgrade.intro.folders';
+    case 'looks':
+      return 'upgrade.intro.looks';
     case 'callout':
       return 'upgrade.intro.callout';
     case 'totp':
@@ -293,6 +295,17 @@ export function IconUpgrade({ size = 18 }: { size?: number }) {
   // in it at 11px; the solid body is what makes the mark legible.
   // Spec: ops/docs/design-decisions.md (Pro mark colour)
   return <RocketLaunch size={size} weight="fill" className="text-pro" aria-hidden="true" />;
+}
+
+/** The rocket and the word, at the end of a menu row that opens a Pro
+ *  feature: the mark `ContextMenu` draws for an item with `pro`. It keys off
+ *  `!isPro`, never `proUnlocked`, so the demo still labels what it unlocks. */
+export function ProMark() {
+  return (
+    <span className="shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold text-accent">
+      <IconUpgrade size={12} /> Pro
+    </span>
+  );
 }
 
 function IconDevices() {

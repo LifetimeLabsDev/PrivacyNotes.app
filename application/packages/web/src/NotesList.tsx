@@ -16,6 +16,7 @@ import { Key, CreditCard, Lock, NotePencil, CaretDown, Trash, SquaresFour, Book,
 import { ActiveFilterEntry, ActiveSearchEntry, FilteredEmpty, ListFilterChips } from './ListFilterChips';
 import { BookmarkRowActions } from './BookmarkRowActions';
 import { ListSearchInput } from './ListSearchInput';
+import { Switch } from './Switch';
 import { exemptOpts, newButtonOpts } from './i18nExempt';
 import type { View } from './views';
 import { ListNav } from './notesView/ListNav';
@@ -83,6 +84,9 @@ export interface NotesListProps {
   // Row handlers
   onRowClick: (e: React.MouseEvent, id: string) => void;
   onContextMenu: (e: React.MouseEvent, items: ContextMenuItem[]) => void;
+  /** Opens a menu from a tap on a row's own button. The context-menu path
+   *  above swallows touch on purpose, because a long press selects. */
+  onOpenMenu: (e: React.MouseEvent, items: ContextMenuItem[]) => void;
   buildNoteMenu: (n: LocalNote) => ContextMenuItem[];
   onLongPressStart: (id: string) => void;
   onLongPressEnd: () => void;
@@ -244,6 +248,7 @@ export function NotesList({
   allTags,
   onRowClick,
   onContextMenu,
+  onOpenMenu,
   buildNoteMenu,
   onLongPressStart,
   onLongPressEnd,
@@ -560,28 +565,13 @@ export function NotesList({
       )}
       {/* Auto-delete toggle - shown in trash view. */}
       {view === 'trash' && (
-        <div className="shrink-0 px-4 py-2 flex items-center justify-between">
-          <span className="text-xs text-neutral-600 dark:text-neutral-400">
-            {t('trash.autoDelete')}
-          </span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={autoDeleteTrashDays > 0}
-            onClick={() => onAutoDeleteTrashDaysChange(autoDeleteTrashDays > 0 ? 0 : 30)}
-            className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition ${
-              autoDeleteTrashDays > 0
-                ? 'bg-accent'
-                : 'bg-neutral-300 dark:bg-neutral-700'
-            }`}
-          >
-            <span
-              className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${
-                autoDeleteTrashDays > 0 ? 'translate-x-4 rtl:-translate-x-4' : 'translate-x-0.5 rtl:-translate-x-0.5'
-              }`}
-            />
-          </button>
-        </div>
+        <Switch
+          label={t('trash.autoDelete')}
+          checked={autoDeleteTrashDays > 0}
+          onChange={(on) => onAutoDeleteTrashDaysChange(on ? 30 : 0)}
+          className="shrink-0 px-4 py-2 gap-2 select-none"
+          labelClassName="text-xs text-neutral-600 dark:text-neutral-400"
+        />
       )}
       {/* Vault sub-filter pills - narrow by item type.
           `overflow-x-auto` + per-pill `shrink-0 whitespace-nowrap` because four
@@ -743,6 +733,7 @@ export function NotesList({
                 note={n}
                 onEdit={onEditBookmark}
                 onTrash={onTrashBookmark}
+                onMenu={(note, e) => onOpenMenu(e, buildNoteMenu(note))}
                 tipPos={viewMode === 'grid' ? 'above-start' : 'start'}
               />
             ) : undefined}

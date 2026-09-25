@@ -13,9 +13,9 @@ src-tauri/target/
 # English starter notes and English UI for a user who asked for neither.
 # Nothing fails when that array is lost: the app builds, runs, and is quietly
 # wrong for every non-English user. Android has no such gate, which is why only
-# iOS needs this. Keep the array in step with SUPPORTED_LOCALES in
-# `packages/web/src/i18n.ts` (`zh-TW` is declared as `zh-Hant` there, the tag
-# iOS knows).
+# iOS needs this. `scripts/sync-version.mjs` writes the array from
+# SUPPORTED_LOCALES in `packages/web/src/i18n.ts` before every build (`zh-TW`
+# is declared as `zh-Hant` there, the tag iOS knows).
 #
 # Extended 2026-08-28: the private repo is now the full dev-environment backup,
 # so the hand-editable platform config joins the carve-out. The test is whether

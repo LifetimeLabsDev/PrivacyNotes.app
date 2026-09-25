@@ -19,6 +19,8 @@ import { newButtonOpts } from './i18nExempt';
 import type { View } from './views';
 import { ListNav } from './notesView/ListNav';
 import { ImportPromptEntry, useImportPrompt } from './ImportPrompt';
+import { textMatcher } from './textMatch';
+import { isImeComposing } from './imeComposing';
 
 export interface TasksListProps {
   allTasks: TaskItem[];
@@ -164,22 +166,26 @@ export default function TasksList({
     return m;
   }, [activeNotes]);
 
-  // Group tasks by parent note for the Tasks view.
+  // Group tasks by parent note for the Tasks view. The task lines of a note
+  // the PIN guards right now are its content, so they stay out of the list
+  // entirely; the note's own row, with its title and shield, is where it
+  // opens the gate.
   const taskGroups = useMemo(() => {
-    const q = search.trim().toLowerCase();
+    const q = search.trim();
+    const match = q ? textMatcher(q) : null;
     const groups = new Map<
       string,
       { noteId: string; noteTitle: string; updatedAt: string; tasks: TaskItem[] }
     >();
+    const openTasks = allTasks.filter((t) => {
+      const n = notesById.get(t.noteId);
+      return n !== undefined && !isNoteLocked(n);
+    });
     const doneFiltered = showDoneTasks
-      ? allTasks
-      : allTasks.filter((t) => !t.checked);
-    const searchFiltered = q
-      ? doneFiltered.filter(
-          (t) =>
-            t.text.toLowerCase().includes(q) ||
-            t.noteTitle.toLowerCase().includes(q)
-        )
+      ? openTasks
+      : openTasks.filter((t) => !t.checked);
+    const searchFiltered = match
+      ? doneFiltered.filter((t) => match(t.text) || match(t.noteTitle))
       : doneFiltered;
     for (const t of searchFiltered) {
       const g = groups.get(t.noteId);
@@ -201,13 +207,13 @@ export default function TasksList({
       if (na && nb) return compareNotes(na, nb, listPrefs);
       return a.updatedAt < b.updatedAt ? 1 : -1;
     });
-  }, [allTasks, showDoneTasks, search, notesById, listPrefs]);
+  }, [allTasks, showDoneTasks, search, notesById, listPrefs, isNoteLocked]);
 
   // Notes that belong in the Tasks pillar. Shared with NotesView, which
   // needs the identical list for multi-select - see selectTaskNotes.
   const taskContainingNotes = useMemo(
-    () => selectTaskNotes(activeNotes, allTasks, search, listPrefs),
-    [activeNotes, allTasks, search, listPrefs]
+    () => selectTaskNotes(activeNotes, allTasks, search, listPrefs, isNoteLocked),
+    [activeNotes, allTasks, search, listPrefs, isNoteLocked]
   );
 
   /**
@@ -525,7 +531,7 @@ export default function TasksList({
             value={taskDraft}
             onChange={(e) => onSetTaskDraft(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && taskDraft.trim()) {
+              if (e.key === 'Enter' && taskDraft.trim() && !isImeComposing(e)) {
                 e.preventDefault();
                 const text = taskDraft;
                 onSetTaskDraft('');

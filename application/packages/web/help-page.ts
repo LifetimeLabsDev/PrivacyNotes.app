@@ -10,6 +10,8 @@ import { LOCALE_TO_SLUG, RTL_LOCALES, helpPath } from './src/localeRoutes.ts';
 import { FAQ_SOURCES, SOURCE_FILES, sourceUrl } from './src/faqSources.ts';
 import { PUBLISHED_DOCS, REPO_URL, docFiles, docMd, docSize, docSourceUrl, docUrl, docsIndexMd } from './publishedDocs.ts';
 import { VERSION } from './src/version.ts';
+import { foldText } from './src/textFold.ts';
+import { SEARCH_CORE_SCRIPT_TAG } from './search-core-script.ts';
 import { LANDING_PAGES_PUBLIC } from './landing-pages.ts';
 import { Flag, LANGUAGE_META, sortByNative } from './src/languageData.tsx';
 
@@ -59,7 +61,7 @@ const LOCALES_DIR = path.resolve(__dirname, 'src/locales');
 const ORIGIN = 'https://privacynotes.app';
 
 /** Locales with static Help pages. English first: it is the fallback. */
-const HELP_LOCALES = ['en', 'de', 'fr', 'it', 'es', 'nl', 'pl', 'pt-PT', 'pt-BR', 'ja', 'ko', 'zh-TW', 'ca', 'cs', 'tr', 'sv', 'ar'] as const;
+const HELP_LOCALES = ['en', 'de', 'fr', 'it', 'es', 'nl', 'pl', 'pt-PT', 'pt-BR', 'ja', 'ko', 'zh-TW', 'ca', 'cs', 'tr', 'sv', 'ar', 'uk', 'ru', 'th'] as const;
 type HelpLocale = (typeof HELP_LOCALES)[number];
 
 /** `dir="rtl"` for RTL locales, empty string otherwise - splice straight into `<html lang="${locale}"${htmlDir(locale)}>`. */
@@ -363,12 +365,9 @@ function absoluteLinks(s: string): string {
   return s.replace(/\]\((\/[^)]*)\)/g, `](${ORIGIN}$1)`);
 }
 
-/** Lowercased, diacritics-stripped haystack for the client-side search. */
+/** The haystack for the client-side search, folded as the app folds text. */
 function normalize(s: string): string {
-  return stripMd(s)
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase();
+  return foldText(stripMd(s));
 }
 
 /** Excerpt for a meta description (~155 chars, word boundary). */
@@ -849,34 +848,58 @@ function feedbackBlock(prompt: string): string {
  */
 const CONTENT_BASELINE = '2026-08-26';
 const CONTENT_UPDATED: Record<string, string> = {
+  'need-email': '2026-09-25',
+  'phrase-vs-password': '2026-09-25',
+  'lost-phrase': '2026-09-25',
+  'offline': '2026-09-25',
+  'export': '2026-09-25',
+  'vault': '2026-09-25',
+  'free-vs-pro': '2026-09-25',
+  'one-time-pricing': '2026-09-25',
+  'paddle-privacy': '2026-09-25',
+  'buy-pro-anonymously': '2026-09-25',
+  'platforms': '2026-09-25',
+  'markdown-syntax': '2026-09-25',
+  'trash-auto-delete': '2026-09-25',
+  'referral-links': '2026-09-25',
+  'signup-options': '2026-09-25',
+  'sync-conflicts': '2026-09-25',
+  'what-can-you-see': '2026-09-25',
+  'no-ai': '2026-09-23',
+  'data-location': '2026-09-24',
+  'shutdown': '2026-09-25',
+  'attachment-limits': '2026-09-23',
+  'languages': '2026-09-23',
+  'keyboard-shortcuts': '2026-09-23',
+  'hotkey-cheat-sheet': '2026-09-23',
+  'store-purchases': '2026-09-23',
   'markdown-folder-mobile': '2026-09-14',
   'image-quality': '2026-09-08',
-  'data-location': '2026-08-28',
-  'data-on-disk': '2026-09-02',
+  'data-on-disk': '2026-09-25',
   'open-source': '2026-08-30',
   'report-vulnerability': '2026-08-31',
   'bip39-wordlist': '2026-08-30',
   'leaving': '2026-08-30',
-  'android-backup': '2026-08-31',
+  'android-backup': '2026-09-25',
   'try-before-signup': '2026-08-31',
-  'threat-model-levels': '2026-08-31',
+  'threat-model-levels': '2026-09-25',
   'twelve-word-phrase': '2026-08-31',
   'why-no-2fa': '2026-08-31',
   'remove-device': '2026-08-31',
   'note-size-limit': '2026-08-31',
   'feature-requests': '2026-08-31',
   'android-updates': '2026-08-31',
-  'translation-quality': '2026-08-31',
+  'translation-quality': '2026-09-25',
   'bookmarks': '2026-08-31',
   'ask-an-ai': '2026-08-31',
-  'locked-vs-protected': '2026-08-31',
+  'locked-vs-protected': '2026-09-25',
   'phrase-compromised': '2026-08-31',
   'lost-device': '2026-08-31',
   'device-limit': '2026-08-31',
   'backup-strategy': '2026-08-31',
-  'restore-backup': '2026-08-31',
-  'upload-failed': '2026-08-31',
-  'manage-storage-addon': '2026-08-31',
+  'restore-backup': '2026-09-25',
+  'upload-failed': '2026-09-25',
+  'manage-storage-addon': '2026-09-24',
   'play-vs-apk': '2026-08-31',
   'markdown-folder': '2026-08-31',
   'note-links': '2026-08-31',
@@ -1151,6 +1174,7 @@ ${ogLocaleTag(locale)}
 ${OG_IMAGE_TAGS}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 ${THEME_SCRIPT_TAG}
+${SEARCH_CORE_SCRIPT_TAG}
 <script src="/static-pages.js" defer></script>`;
 }
 
@@ -1413,8 +1437,8 @@ function renderMarkdownShowcase(label: string, p: Record<string, string>): strin
     ),
     mdDemo(
       p.mdDemoCode ?? 'Code block',
-      '\`\`\`js\n// encrypted before it leaves\nconst keys = deriveKeys(phrase);\n\`\`\`',
-      '<pre class="d-cb"><code><span class="t-c">// encrypted before it leaves</span>\n<span class="t-k">const</span> keys = <span class="t-f">deriveKeys</span>(phrase);</code></pre>'
+      '\`\`\`js\n// keys never leave your device\nconst keys = deriveKeys(phrase);\n\`\`\`',
+      '<pre class="d-cb"><code><span class="t-c">// keys never leave your device</span>\n<span class="t-k">const</span> keys = <span class="t-f">deriveKeys</span>(phrase);</code></pre>'
     ),
     mdDemo(
       p.mdDemoScripts ?? 'Superscript, subscript, underline',

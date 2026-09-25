@@ -59,6 +59,9 @@
     "upgradeCharge": "Je betaalt vandaag {{amount}} voor de rest van je huidige jaar. Daarna wordt het verlengd voor {{price}} per jaar.",
     "upgradeChargeUntil": "Je betaalt vandaag {{amount}} voor de rest van je huidige jaar, tot {{date}}. Daarna wordt het verlengd voor {{price}} per jaar.",
     "upgradeChargeApple": "Je betaalt vandaag {{price}}. Apple vergoedt automatisch het ongebruikte deel van je huidige jaar, en je nieuwe jaar begint nu.",
+    "upgradeAmountFailed": "Het bedrag dat je vandaag betaalt kon niet worden geladen.",
+    "upgradeAmountRetry": "Opnieuw proberen",
+    "upgradeAmountChanged": "Het bedrag dat je vandaag betaalt is veranderd of kon niet worden gecontroleerd, dus er is niets in rekening gebracht. Kies het pakket opnieuw om het nieuwe bedrag te zien.",
     "upgrading": "Upgraden…",
     "upgradeAndPay": "Upgraden & nu betalen",
     "maybeLater": "Misschien later",
@@ -183,7 +186,12 @@
     "contentWidthWide": "Breed",
     "contentWidthFull": "Volledig",
     "lineSpacingTitle": "Regelafstand",
-    "lineSpacingDesc": "De ruimte tussen alinea's tijdens het schrijven.",
+    "tintNotesTitle": "Notitieachtergronden kleuren",
+    "tintNotesDesc": "Notities krijgen de kleur van hun tag of map.",
+    "lineSpacingDesc": "De ruimte tussen regels en alinea's tijdens het schrijven.",
+    "lineSpacingTight": "Krap",
+    "resetDefaults": "Standaardwaarden herstellen",
+    "resetDefaultsConfirm": "Herstellen bevestigen",
     "lineSpacingCompact": "Compact",
     "lineSpacingNormal": "Normaal",
     "lineSpacingExample": "Voorbeeld",
@@ -211,10 +219,10 @@
   },
   "conflict": {
     "title": "Synchronisatieconflict",
-    "explanation": "Deze notitie is op een ander apparaat bewerkt terwijl je hier nog niet-opgeslagen wijzigingen had. We gebruiken de <em>nieuwere versie</em> (van het andere apparaat, {{date}}).",
+    "explanation": "Deze notitie is op een ander apparaat aangepast terwijl dit apparaat wijzigingen had die nog niet gesynchroniseerd waren, en de tekst verschilt tussen beide. We bewaren de <em>versie van het andere apparaat</em> ({{date}}), tenzij je iets anders kiest.",
     "willBeKept": "Wordt bewaard",
     "showLocal": "Toon de versie van dit apparaat ({{date}})",
-    "useNewer": "Oké, gebruik de nieuwere",
+    "useNewer": "Gebruik de andere versie",
     "useMine": "Gebruik toch die van mij",
     "keepBoth": "Bewaar beide als aparte notities"
   },
@@ -226,6 +234,13 @@
     "localLabel": "Lokale gegevens verwijderen",
     "localDesc": "Wist notities, afbeeldingen en gegevens uit de cache van dit apparaat. Dit verwijdert je account niet, het ruimt alleen deze browser op.",
     "localRequired": "(verplicht bij het verwijderen van je account)",
+    "localUnsynced_one": "{{items}} op dit apparaat is niet gesynchroniseerd en gaat definitief verloren als je de lokale gegevens verwijdert.",
+    "localUnsynced_other": "{{items}} op dit apparaat zijn niet gesynchroniseerd en gaan definitief verloren als je de lokale gegevens verwijdert.",
+    "unsyncedNotes_one": "{{count}} notitie",
+    "unsyncedNotes_other": "{{count}} notities",
+    "unsyncedFiles_one": "{{count}} bestand",
+    "unsyncedFiles_other": "{{count}} bestanden",
+    "unsyncedBoth": "{{notes}} en {{files}}",
     "cloudLabel": "Cloudgegevens & account verwijderen",
     "cloudDesc": "Verwijdert alle gesynchroniseerde notities, afbeeldingen, apparaten, instellingen en je account definitief van de server. Je kunt je daarna opnieuw aanmelden.",
     "confirmPrompt": "Typ <kbd>DELETE</kbd> om te bevestigen",
@@ -267,7 +282,11 @@
     "notBackedUpTooltip_one": "{{count}} notitie heeft geen back-up. Klik om te zien waarom.",
     "notBackedUpTooltip_other": "{{count}} notities hebben geen back-up. Klik om te zien waarom.",
     "notBackedUpAria_one": "{{count}} notitie heeft geen back-up",
-    "notBackedUpAria_other": "{{count}} notities hebben geen back-up"
+    "notBackedUpAria_other": "{{count}} notities hebben geen back-up",
+    "haltedTooltip_one": "Synchronisatie gestopt, {{count}} notitie heeft geen back-up. Klik om te zien waarom.",
+    "haltedTooltip_other": "Synchronisatie gestopt, {{count}} notities hebben geen back-up. Klik om te zien waarom.",
+    "haltedAria_one": "Synchronisatie gestopt, {{count}} notitie heeft geen back-up",
+    "haltedAria_other": "Synchronisatie gestopt, {{count}} notities hebben geen back-up"
   },
   "errors": {
     "noSession": "Geen actieve sessie. Probeer je opnieuw aan te melden.",
@@ -319,7 +338,9 @@
     "reasonFailed": "Mislukt: {{message}}",
     "openNote": "Openen",
     "passPushFailed_one": "{{count}} mislukt",
-    "passPushFailed_other": "{{count}} mislukt"
+    "passPushFailed_other": "{{count}} mislukt",
+    "passHalted_one": "gestopt, {{count}} wacht",
+    "passHalted_other": "gestopt, {{count}} wachten"
   },
   "language": {
     "reportMistake": "Vertaalfout melden"

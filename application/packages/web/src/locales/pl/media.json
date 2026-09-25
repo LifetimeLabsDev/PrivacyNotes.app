@@ -12,7 +12,9 @@
     "uploadFailed": "Przesyłanie nie powiodło się: {{message}}",
     "storeUnavailable": "Magazyn obrazów jest niedostępny",
     "loadFailed": "Nie udało się wczytać obrazu",
-    "notFound": "Nie znaleziono obrazu"
+    "notFound": "Nie znaleziono obrazu",
+    "saveFailed": "Zapis się nie udał, więc plik może być pusty albo niekompletny.",
+    "viewAria": "Wyświetl obraz"
   },
   "attachment": {
     "fallbackName": "Załącznik",
@@ -26,7 +28,6 @@
     "deleteConfirm": "Usunąć?",
     "copied": "Skopiowano",
     "download": "Pobierz",
-    "downloadToPlay": "Pobierz, aby odtworzyć",
     "play": "Odtwórz",
     "pause": "Wstrzymaj",
     "fileNotFound": "Nie znaleziono pliku",
@@ -37,6 +38,31 @@
     "downloadFailed": "Pobieranie nie powiodło się",
     "playbackFailed": "Odtwarzanie nie powiodło się",
     "uploadFailed": "Przesyłanie nie powiodło się: {{message}}",
-    "unknownError": "Nieznany błąd"
+    "unknownError": "Nieznany błąd",
+    "view": "Wyświetl",
+    "more": "Więcej akcji"
+  },
+  "viewer": {
+    "previous": "Poprzedni",
+    "next": "Następny",
+    "position": "{{index}} z {{count}}",
+    "zoomIn": "Powiększ",
+    "zoomOut": "Pomniejsz",
+    "pdfLoading": "Otwieranie PDF...",
+    "pdfFailed": "Nie można otworzyć tego pliku PDF. Pobierz go, aby otworzyć go w innej aplikacji.",
+    "pdfPassword": "Ten plik PDF jest chroniony hasłem. Pobierz go, aby otworzyć go w innej aplikacji.",
+    "saveFailed": "Zapis się nie udał, więc plik może być pusty albo niekompletny.",
+    "pageCount_one": "{{count}} strona",
+    "pageCount_few": "{{count}} strony",
+    "pageCount_many": "{{count}} stron",
+    "pageCount_other": "{{count}} strony",
+    "pageLabel": "{{name}}, strona {{page}} z {{count}}"
+  },
+  "picker": {
+    "title": "Obrazy w Plikach",
+    "search": "Szukaj obrazów",
+    "empty": "W Plikach nie ma jeszcze obrazów. Prześlij tam jeden, a potem dodaj go tutaj.",
+    "noMatch": "Żaden obraz nie pasuje do wyszukiwania.",
+    "noCopy": "Obraz dodany tutaj wskazuje na plik w Plikach, więc nie zajmuje dodatkowego miejsca."
   }
 }

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Sync the native build version from the single source of truth (web/src/version.ts)
-// into tauri.conf.json, Cargo.toml and the Android version stamp. Runs automatically
-// before every Tauri dev/build (wired into beforeDevCommand/beforeBuildCommand in
-// tauri.conf.json).
+// into tauri.conf.json, Cargo.toml and the Android version stamp, and the language
+// list (SUPPORTED_LOCALES in web/src/i18n.ts) into both Info.plist files. Runs
+// automatically before every Tauri dev/build (wired into
+// beforeDevCommand/beforeBuildCommand in tauri.conf.json).
 // Spec: ops/docs/commit-workflow.md (version single source)
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -66,6 +67,46 @@ if (existsSync(androidPropsPath)) {
   if (propsNext !== props) {
     writeFileSync(androidPropsPath, propsNext);
     updated.push(`tauri.properties (versionCode ${versionCode})`);
+  }
+}
+
+// CFBundleLocalizations: the languages the macOS and iOS bundles declare. iOS hands
+// the webview only those of the phone's languages the bundle declares, so a missing
+// entry opens the app in English on a phone set to that language. The shared
+// Info.plist is the one that ships: the macOS bundle takes it as it is, and Tauri
+// merges it over the generated iOS plist on every iOS build, whole arrays included.
+// The generated copy is written too, so the tracked file matches what that merge
+// writes back into it; a freshly re-initialized one without the key is left alone,
+// because the next iOS build merges the key in. Apple knows Traditional Chinese by
+// its script tag.
+// Spec: ops/docs/i18n-spec.md section 10d (wiring checklist)
+const i18nPath = resolve(root, 'packages/web/src/i18n.ts');
+const declared = readFileSync(i18nPath, 'utf8').match(/SUPPORTED_LOCALES = \[([\s\S]*?)\] as const;/);
+if (!declared) {
+  console.error('sync-version: could not find SUPPORTED_LOCALES in', i18nPath);
+  process.exit(1);
+}
+const localizations = [...(declared[1] ?? '').matchAll(/'([^']+)'/g)].map((m) =>
+  m[1] === 'zh-TW' ? 'zh-Hant' : m[1],
+);
+const LOCALIZATIONS = /(<key>CFBundleLocalizations<\/key>\s*<array>)[\s\S]*?\n([ \t]*)(<\/array>)/;
+for (const [plistRel, required] of [
+  ['Info.plist', true],
+  ['gen/apple/privacynotes_iOS/Info.plist', false],
+]) {
+  const plistPath = resolve(root, 'packages/desktop/src-tauri', plistRel);
+  const plist = existsSync(plistPath) ? readFileSync(plistPath, 'utf8') : '';
+  if (!LOCALIZATIONS.test(plist)) {
+    if (!required) continue;
+    console.error('sync-version: no CFBundleLocalizations array in', plistPath);
+    process.exit(1);
+  }
+  const plistNext = plist.replace(LOCALIZATIONS, (_, open, indent, close) =>
+    [open, ...localizations.map((tag) => `${indent}\t<string>${tag}</string>`), `${indent}${close}`].join('\n'),
+  );
+  if (plistNext !== plist) {
+    writeFileSync(plistPath, plistNext);
+    updated.push(`${plistRel} (CFBundleLocalizations)`);
   }
 }
 

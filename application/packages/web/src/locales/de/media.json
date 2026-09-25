@@ -12,7 +12,9 @@
     "uploadFailed": "Upload fehlgeschlagen: {{message}}",
     "storeUnavailable": "Bildspeicher nicht verfügbar",
     "loadFailed": "Bild konnte nicht geladen werden",
-    "notFound": "Bild nicht gefunden"
+    "notFound": "Bild nicht gefunden",
+    "saveFailed": "Das Speichern ist fehlgeschlagen, die Datei kann also leer oder unvollständig sein.",
+    "viewAria": "Bild ansehen"
   },
   "attachment": {
     "fallbackName": "Anhang",
@@ -26,7 +28,6 @@
     "deleteConfirm": "Löschen?",
     "copied": "Kopiert",
     "download": "Herunterladen",
-    "downloadToPlay": "Zum Abspielen herunterladen",
     "play": "Abspielen",
     "pause": "Pause",
     "fileNotFound": "Datei nicht gefunden",
@@ -37,6 +38,29 @@
     "downloadFailed": "Download fehlgeschlagen",
     "playbackFailed": "Wiedergabe fehlgeschlagen",
     "uploadFailed": "Upload fehlgeschlagen: {{message}}",
-    "unknownError": "Unbekannter Fehler"
+    "unknownError": "Unbekannter Fehler",
+    "view": "Ansehen",
+    "more": "Weitere Aktionen"
+  },
+  "viewer": {
+    "previous": "Vorherige",
+    "next": "Nächste",
+    "position": "{{index}} von {{count}}",
+    "zoomIn": "Vergrößern",
+    "zoomOut": "Verkleinern",
+    "pdfLoading": "PDF wird geöffnet...",
+    "pdfFailed": "Dieses PDF lässt sich nicht öffnen. Lade es herunter, um es in einer anderen App zu öffnen.",
+    "pdfPassword": "Dieses PDF hat ein Passwort. Lade es herunter, um es in einer anderen App zu öffnen.",
+    "saveFailed": "Das Speichern ist fehlgeschlagen, die Datei kann also leer oder unvollständig sein.",
+    "pageCount_one": "{{count}} Seite",
+    "pageCount_other": "{{count}} Seiten",
+    "pageLabel": "{{name}}, Seite {{page}} von {{count}}"
+  },
+  "picker": {
+    "title": "Bilder in Dateien",
+    "search": "Bilder durchsuchen",
+    "empty": "Noch keine Bilder in Dateien. Lade dort eines hoch und füge es dann hier ein.",
+    "noMatch": "Keine Bilder passen zu deiner Suche.",
+    "noCopy": "Ein Bild, das du hier einfügst, verweist auf die Datei in Dateien und belegt keinen zusätzlichen Speicher."
   }
 }

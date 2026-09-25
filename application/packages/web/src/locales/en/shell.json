@@ -136,6 +136,7 @@
     "closeMenu": "Close menu",
     "close": "Close",
     "views": "Content",
+    "resizeSplit": "Resize Content and the tags or folders",
     "sidebarOptions": "Sidebar options",
     "showInSidebar": "Show in sidebar",
     "allOptions": "All options",
@@ -455,6 +456,7 @@
     "openAction": "Open",
     "copiedUrl": "Link copied",
     "moveToTrash": "Move to Trash",
+    "rowMenu": "More actions",
     "emptyNone": "No bookmarks yet.",
     "emptyTitle": "Save the sites worth keeping",
     "emptyAdd": "Add a bookmark",
@@ -585,5 +587,8 @@
   "noteLinks": {
     "retargetedToast_one": "Updated {{count}} note-link to the new title.",
     "retargetedToast_other": "Updated {{count}} note-links to the new title."
+  },
+  "looks": {
+    "menu": "Icon and color"
   }
 }

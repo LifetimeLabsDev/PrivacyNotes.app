@@ -13,6 +13,8 @@
  * Spec: ops/docs/backlog.md (#69 - favicon concurrency cap + IDB cache)
  */
 
+import { isDemoMode } from './demo';
+
 // ── Concurrency queue ────────────────────────────────────────────
 
 // Spec: ops/docs/backlog.md (#69 - client concurrency cap of 5)
@@ -167,6 +169,10 @@ export async function clearFaviconCache(): Promise<void> {
  * on failure / offline-with-no-cache.
  */
 export async function prefetchFavicon(url: string): Promise<string | null> {
+  // The demo sends nothing, so it has no icons: whatever URL a caller built,
+  // nothing is fetched and nothing cached is read.
+  if (isDemoMode()) return null;
+
   // 1. Already resolved this session - return immediately.
   const existing = blobUrls.get(url);
   if (existing) return existing;

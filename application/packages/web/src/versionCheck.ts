@@ -10,6 +10,7 @@
  */
 
 import { VERSION } from './version';
+import { isDemoMode } from './demo';
 
 const VERSION_URL = '/version.json';
 const POLL_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
@@ -55,8 +56,12 @@ async function fetchServerVersion(): Promise<string | null> {
  * Start polling the server for newer versions. Calls `onNewer` with the
  * server version string whenever a newer build is detected. Returns a
  * cleanup function that stops polling and removes listeners.
+ *
+ * The demo polls nothing. It promises its visitor that nothing leaves the
+ * browser, and a stale demo tab risks nothing, because it syncs nothing.
  */
 export function startVersionPolling(onNewer: (serverVersion: string) => void): () => void {
+  if (isDemoMode()) return () => {};
   let cancelled = false;
   let pollTimer: ReturnType<typeof setTimeout> | null = null;
 

@@ -1,0 +1,199 @@
+{
+  "placeholder": "เริ่มเขียน…",
+  "toolbar": {
+    "bold": "ตัวหนา",
+    "italic": "ตัวเอียง",
+    "underline": "ขีดเส้นใต้",
+    "heading": "หัวเรื่อง",
+    "taskList": "รายการงาน",
+    "bulletList": "รายการแบบสัญลักษณ์",
+    "addLink": "เพิ่มลิงก์ (Cmd+Shift+K)",
+    "noteLink": "ลิงก์ไปยังโน้ตอื่น (หรือพิมพ์ [[)",
+    "numberedList": "รายการแบบตัวเลข",
+    "textColor": "สีข้อความ",
+    "textColorApply": "สีข้อความ: {{color}}",
+    "pickColor": "เลือกสีข้อความ",
+    "table": "ตาราง",
+    "quote": "ข้อความอ้างอิง",
+    "callout": "กล่องเน้นข้อความ",
+    "inlineCode": "โค้ดในบรรทัด",
+    "strikethrough": "ขีดทับ",
+    "codeBlock": "บล็อกโค้ด",
+    "divider": "เส้นคั่น",
+    "moreFormatting": "การจัดรูปแบบเพิ่มเติม",
+    "fewerFormatting": "ลดตัวเลือกการจัดรูปแบบ",
+    "image": "รูปภาพ",
+    "attachFile": "แนบไฟล์",
+    "insert": "แทรก",
+    "highlight": "ไฮไลต์",
+    "highlightApply": "ไฮไลต์: {{color}}",
+    "pickHighlight": "เลือกสีไฮไลต์",
+    "superscript": "ตัวยก",
+    "subscript": "ตัวห้อย",
+    "math": "สูตรคณิตศาสตร์",
+    "blockMath": "สูตรแบบบล็อก",
+    "align": "การจัดแนว",
+    "font": "แบบอักษร",
+    "pictureFromFiles": "รูปภาพจากไฟล์"
+  },
+  "align": {
+    "left": "จัดชิดซ้าย",
+    "center": "จัดกึ่งกลาง",
+    "right": "จัดชิดขวา",
+    "justify": "จัดเต็มแนว"
+  },
+  "font": {
+    "families": {
+      "sans": "ไม่มีเชิง",
+      "serif": "มีเชิง",
+      "mono": "ความกว้างคงที่"
+    },
+    "sizes": {
+      "small": "เล็ก",
+      "large": "ใหญ่",
+      "huge": "ใหญ่มาก"
+    },
+    "reset": "รีเซ็ตแบบอักษร"
+  },
+  "heading": {
+    "normalText": "ข้อความปกติ",
+    "level": "หัวเรื่อง {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "แทรกกล่องเน้นข้อความ",
+    "remove": "นำกล่องเน้นข้อความออก",
+    "collapse": "ย่อกล่องเน้นข้อความ",
+    "expand": "ขยายกล่องเน้นข้อความ",
+    "types": {
+      "info": "ข้อมูล",
+      "success": "สำเร็จ",
+      "warning": "คำเตือน",
+      "tip": "เคล็ดลับ",
+      "danger": "อันตราย",
+      "question": "คำถาม",
+      "quote": "คำพูด",
+      "example": "ตัวอย่าง",
+      "bug": "ข้อผิดพลาด",
+      "note": "หมายเหตุ",
+      "abstract": "บทคัดย่อ",
+      "failure": "ล้มเหลว"
+    }
+  },
+  "color": {
+    "remove": "นำสีออก",
+    "removeHighlight": "นำไฮไลต์ออก",
+    "names": {
+      "gray": "สีเทา",
+      "red": "สีแดง",
+      "orange": "สีส้ม",
+      "yellow": "สีเหลือง",
+      "green": "สีเขียว",
+      "teal": "สีเขียวอมฟ้า",
+      "blue": "สีน้ำเงิน",
+      "purple": "สีม่วง",
+      "pink": "สีชมพู"
+    }
+  },
+  "insertGroup": {
+    "insert": "แทรก",
+    "blocks": "บล็อก",
+    "notation": "สัญลักษณ์"
+  },
+  "table": {
+    "addRowAbove": "เพิ่มแถวด้านบน",
+    "addRowBelow": "เพิ่มแถวด้านล่าง",
+    "addColumnLeft": "เพิ่มคอลัมน์ด้านซ้าย",
+    "addColumnRight": "เพิ่มคอลัมน์ด้านขวา",
+    "toggleHeaderRow": "เปิด / ปิดแถวหัวตาราง",
+    "equalColumnWidths": "ปรับคอลัมน์ให้กว้างเท่ากัน",
+    "deleteRow": "ลบแถว",
+    "deleteColumn": "ลบคอลัมน์",
+    "deleteTable": "ลบตาราง"
+  },
+  "find": {
+    "placeholder": "ค้นหาในโน้ต",
+    "label": "ค้นหาในโน้ต",
+    "previous": "รายการที่ตรงก่อนหน้า (Shift+Enter)",
+    "previousTitle": "ก่อนหน้า (Shift+Enter)",
+    "next": "รายการที่ตรงถัดไป (Enter)",
+    "nextTitle": "ถัดไป (Enter)",
+    "close": "ปิดการค้นหา",
+    "closeTitle": "ปิด (⌘F)",
+    "replacePlaceholder": "แทนที่ด้วย",
+    "replaceLabel": "แทนที่ด้วย",
+    "replace": "แทนที่",
+    "replaceTitle": "แทนที่รายการนี้ (Enter)",
+    "replaceAll": "ทั้งหมด",
+    "replaceAllTitle": "แทนที่ทุกรายการที่ตรง",
+    "caseSensitive": "ตรงตามตัวพิมพ์",
+    "caseSensitiveTitle": "ตรงตามตัวพิมพ์",
+    "closeReplace": "ปิดการค้นหาและแทนที่",
+    "closeReplaceTitle": "ปิด (⌥⌘F)",
+    "replacedCount_other": "แทนที่แล้ว {{count}} รายการ"
+  },
+  "outline": {
+    "show": "แสดงเค้าโครง",
+    "showTitle": "เค้าโครง (Cmd/Ctrl+Shift+O)",
+    "title": "เค้าโครง",
+    "ariaLabel": "เค้าโครงของโน้ต",
+    "hide": "ซ่อนเค้าโครง",
+    "hideTitle": "ซ่อนเค้าโครง (Esc)"
+  },
+  "topRow": {
+    "add": "เพิ่มบรรทัดที่ด้านบน"
+  },
+  "link": {
+    "popoverLabel": "เพิ่มลิงก์",
+    "placeholder": "วางหรือพิมพ์ URL",
+    "apply": "ใช้",
+    "addTitle": "เพิ่มลิงก์",
+    "editTitle": "แก้ไขลิงก์",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "ใส่ URL",
+    "errorInvalidUrl": "ใส่ URL ที่ถูกต้อง",
+    "textLabel": "ข้อความลิงก์",
+    "textPlaceholder": "ไม่บังคับ เว้นว่างไว้เพื่อแสดง URL",
+    "selectedTextHint": "ข้อความที่เลือกจะกลายเป็นลิงก์",
+    "update": "อัปเดต",
+    "menuOpen": "เปิดลิงก์",
+    "menuCopy": "คัดลอกลิงก์",
+    "menuEdit": "แก้ไขลิงก์",
+    "menuRemove": "นำลิงก์ออก"
+  },
+  "audio": {
+    "uploadingRecording": "กำลังอัปโหลดเสียงที่บันทึก...",
+    "uploading": "กำลังอัปโหลด...",
+    "stopRecording": "หยุดบันทึกเสียง",
+    "recordAudio": "บันทึกเสียง",
+    "savingRecording": "กำลังจัดเก็บไฟล์เสียง...",
+    "recording": "กำลังบันทึก",
+    "secondsLeft": "เหลือ {{count}} วินาที",
+    "stop": "หยุด"
+  },
+  "wordCount": {
+    "words_other": "{{formatted}} คำ",
+    "characters_other": "{{formatted}} ตัวอักษร",
+    "tooLargeToSync": " อาจใหญ่เกินกว่าจะซิงค์ได้ ให้แยกเป็นโน้ตใหม่",
+    "veryLong": " ยาวมาก การแก้ไขอาจช้าและกระตุก",
+    "gettingLong": " เริ่มยาวแล้ว อาจหน่วงบนอุปกรณ์ที่ช้า",
+    "largeTableWarning": "ตารางขนาดใหญ่ ({{rows}} แถว) อาจทำให้แก้ไขโน้ตนี้ได้ช้า ลองแยกตาราง"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "ไม่พบโน้ตที่ตรงกัน",
+    "create": "สร้าง “{{query}}”"
+  },
+  "codeBlock": {
+    "copy": "คัดลอก",
+    "copied": "คัดลอกแล้ว",
+    "copyFailed": "ล้มเหลว",
+    "wrap": "ตัดบรรทัดยาว"
+  },
+  "math": {
+    "sourceLabel": "ซอร์ส LaTeX"
+  },
+  "noteLink": {
+    "open": "เปิดโน้ต",
+    "remove": "นำลิงก์ออก"
+  }
+}

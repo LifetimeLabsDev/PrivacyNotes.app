@@ -2,6 +2,7 @@ import katex, { type KatexOptions } from 'katex';
 import type { NodeViewRendererProps } from '@tiptap/core';
 import type { NodeView } from '@tiptap/pm/view';
 import i18n from './i18n';
+import { isImeComposing } from './imeComposing';
 
 /**
  * Math node view: KaTeX output that swaps to its own LaTeX source in place.
@@ -122,6 +123,7 @@ export function mathNodeView(config: { block: boolean; katexOptions?: KatexOptio
       // Escape meant to discard a formula edit closed the note instead.
       event.stopPropagation();
       const key = event as KeyboardEvent;
+      if (isImeComposing(key)) return;
       if (key.key === 'Escape') {
         event.preventDefault();
         close(false, true);

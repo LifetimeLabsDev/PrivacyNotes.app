@@ -14,13 +14,14 @@ import {
   trustAwareStorage,
   setTrustedDevice,
 } from './trustStorage';
-import { detectPlatform, invokeFnWithRetry } from './devices';
+import { detectPlatform, invokeFnWithRetry, type Platform } from './devices';
 import { appLockArmed, isWrappedEnvelope, persistStoredPhrase } from './phraseAtRest';
 import { APP_ORIGIN, isApexHost } from './hosts';
 import {
   PHRASE_STORAGE_KEY,
   OAUTH_FLAG_KEY,
-  OAUTH_NATIVE_REDIRECT,
+  OAUTH_APP_LINK_REDIRECT,
+  OAUTH_DESKTOP_RETURN,
   switchWouldWipe,
 } from './authStorage';
 import { logAuthEvent } from './authDiag';
@@ -57,16 +58,43 @@ export async function custodialPhraseMatchesAccount(
 }
 
 /**
- * True when a URL the OS handed the app is an OAuth callback for it.
+ * The redirect a native build asks the auth server to return to.
+ *
+ * Android and iOS get the same https address: on Android an App Link, which
+ * the operating system hands only to the package and signing certificate
+ * named in assetlinks.json; on iOS the callback the in-app auth sheet
+ * completes on, which iOS grants only to the app whose entitlement names the
+ * host. Desktop gets a page on our own origin, because no desktop operating
+ * system can say which application owns a custom scheme; the person carries
+ * the code back from there.
+ *
+ * Every one of these is a return address that no other application can
+ * silently receive. No native build asks for the custom scheme.
+ * Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8)
+ */
+export function nativeOAuthRedirect(platform: Platform): string {
+  if (platform === 'desktop') return OAUTH_DESKTOP_RETURN;
+  return OAUTH_APP_LINK_REDIRECT;
+}
+
+/**
+ * True when a URL the OS handed the app is the OAuth callback this platform
+ * asked for.
  *
  * The deep-link plugin emits every opened URL, and the desktop build claims
  * Markdown files, so a note opened during a pending sign-in arrives at the
- * same handler. The scheme comes from the redirect the app gives providers,
- * so the two cannot drift apart.
+ * same handler. The expected form comes from the redirect the app gives
+ * providers, so the two cannot drift apart: one exact https origin and path,
+ * with the code in the query. A custom-scheme URL has no origin and never
+ * matches, so the scheme the builds still register cannot reach the exchange
+ * on any platform. Desktop asks for a page rather than a deep link, so no
+ * callback URL reaches this function there at all.
  */
-export function isOAuthCallbackUrl(rawUrl: string): boolean {
+export function isOAuthCallbackUrl(rawUrl: string, platform: Platform): boolean {
   try {
-    return new URL(rawUrl).protocol === new URL(OAUTH_NATIVE_REDIRECT).protocol;
+    const url = new URL(rawUrl);
+    const expected = new URL(nativeOAuthRedirect(platform));
+    return url.origin === expected.origin && url.pathname === expected.pathname;
   } catch {
     return false;
   }
@@ -79,6 +107,7 @@ export function useOAuthFlows({
   supabase,
   authInFlight,
   userAuthGen,
+  vaultOpenRef,
 }: {
   authenticateWithPhrase: (
     phrase: string,
@@ -98,6 +127,8 @@ export function useOAuthFlows({
   supabase: SupabaseClient;
   authInFlight: { current: boolean };
   userAuthGen: { current: number };
+  /** True while the vault is open on this install. See auth.tsx. */
+  vaultOpenRef: { current: boolean };
 }) {
   function registerOAuthListener(): () => void {
     // No stored phrase - listen for an OAuth redirect-return session.
@@ -382,6 +413,7 @@ export function useOAuthFlows({
           if (appLockArmed()) {
             logAuthEvent('auth:phrase-persist-skipped-applock');
           } else {
+            logAuthEvent('auth:phrase-persisted', { by: 'oauth-hydrate' });
             await persistStoredPhrase(custodialPhrase);
           }
           trustAwareStorage.setItem(OAUTH_FLAG_KEY, '1');
@@ -521,14 +553,16 @@ export function useOAuthFlows({
       setTrustedDevice(true);
 
       // Native (Tauri) apps cannot run OAuth inside the embedded webview -
-      // Google rejects it as a "disallowed_useragent". Open the provider in
-      // the system browser instead and catch the redirect via the
-      // privacynotes:// deep link (handled by the effect below).
-      if (detectPlatform() !== 'web') {
+      // Google rejects it as a "disallowed_useragent". Open the provider
+      // outside it and take the return this platform asked for: the App Link
+      // on Android (handled by the effect below), the auth sheet's own
+      // callback on iOS, the return page on desktop.
+      const platform = detectPlatform();
+      if (platform !== 'web') {
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider,
           options: {
-            redirectTo: OAUTH_NATIVE_REDIRECT,
+            redirectTo: nativeOAuthRedirect(platform),
             skipBrowserRedirect: true,
           },
         });
@@ -536,26 +570,34 @@ export function useOAuthFlows({
         if (!data?.url) {
           return { ok: false as const, error: 'Could not start sign-in.' };
         }
-        // The callback handler trusts a privacynotes:// URL only while this
-        // marker is fresh and unconsumed, so it must exist before the browser
-        // or the iOS sheet can send one back. One call covers every platform:
-        // the iOS branch below feeds the same handler.
+        // The callback handler trusts a callback URL only while this marker
+        // is fresh and unconsumed, so it must exist before the browser or the
+        // iOS sheet can send one back. One call covers every platform: the
+        // iOS branch below feeds the same handler.
         // Spec: ops/docs/plans/deep-link-callback-hardening.md (section 2.2)
         markOAuthPending();
         // iOS presents the flow in-app (ASWebAuthenticationSession) instead
         // of bouncing to Safari: App Review guideline 4 rejects the external
-        // browser for sign-in (rejected 2026-08-22). The session intercepts
-        // the privacynotes:// redirect itself and resolves with the callback
-        // URL, so the deep-link listener below never fires for it and the
-        // same handler runs either way. Android and desktop keep the system
-        // browser: Custom Tabs is not required there, and desktop has no
-        // in-app equivalent.
-        if (detectPlatform() === 'ios') {
+        // browser for sign-in (rejected 2026-08-22). The sheet completes on
+        // the https return address above, which iOS grants only to the app
+        // whose associated-domains entitlement names that host, and resolves
+        // with the callback URL, so the deep-link listener below never fires
+        // for it and the same handler runs either way. The host and path are
+        // read off the address the provider was given, so the two cannot
+        // drift. Android and desktop keep the system browser: Custom Tabs is
+        // not required there, and desktop has no in-app equivalent.
+        // Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.2)
+        if (platform === 'ios') {
           const { invoke } = await import('@tauri-apps/api/core');
+          const returnTo = new URL(nativeOAuthRedirect(platform));
           try {
             const callbackUrl = await invoke<string>(
               'plugin:auth-session|start',
-              { authUrl: data.url, callbackUrlScheme: 'privacynotes' },
+              {
+                authUrl: data.url,
+                callbackHost: returnTo.hostname,
+                callbackPath: returnTo.pathname,
+              },
             );
             void handleNativeOAuthCallback(callbackUrl);
             return { ok: true as const };
@@ -571,7 +613,12 @@ export function useOAuthFlows({
         }
         const { openUrl } = await import('@tauri-apps/plugin-opener');
         await openUrl(data.url);
-        return { ok: true as const };
+        // Desktop gets no callback back: the browser stops on our return
+        // page and the person carries the code across. Say so, or the
+        // sign-in screen sits on "Redirecting..." for ever waiting for a
+        // deep link that is never coming.
+        // Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.3)
+        return { ok: true as const, awaitPastedCode: platform === 'desktop' };
       }
 
       const { error } = await supabase.auth.signInWithOAuth({
@@ -597,9 +644,9 @@ export function useOAuthFlows({
   }
 
   // Receives the OAuth redirect on native (Tauri) after the system browser
-  // completes sign-in. Exchanges the PKCE ?code= off the privacynotes://
-  // deep link for a session, then hydrates directly (this handler owns
-  // native OAuth hydration). Tokens in the URL fragment are never read: the
+  // completes sign-in. Exchanges the PKCE ?code= off the deep link for a
+  // session, then hydrates directly (this handler owns native OAuth
+  // hydration). Tokens in the URL fragment are never read: the
   // client runs PKCE, so a real return never carries them, and a URL that
   // does is not ours.
   //
@@ -619,21 +666,36 @@ export function useOAuthFlows({
   // would otherwise destroy this device's local data and stored phrase.
   // Spec: ops/docs/plans/deep-link-callback-hardening.md (sections 2.2 and 3)
   async function handleNativeOAuthCallback(rawUrl: string) {
-    // Anything that is not our own callback scheme is somebody else's URL,
-    // and the marker is worth one acceptance per flow: spending it on an
-    // opened Markdown file strands the sign-in that follows.
-    if (!isOAuthCallbackUrl(rawUrl)) {
+    // Anything that is not the callback this platform asked for is somebody
+    // else's URL, and the marker is worth one acceptance per flow: spending
+    // it on an opened Markdown file strands the sign-in that follows.
+    if (!isOAuthCallbackUrl(rawUrl, detectPlatform())) {
       logAuthEvent('auth:oauth-callback-refused', { reason: 'scheme' });
       return;
     }
     // Consumed synchronously, before the first await: two deliveries of one
     // URL (onOpenUrl and the resume check can both fire) cannot both pass.
     const gate = consumeOAuthPending();
-    const signedIn = hasStoredPhrase();
+    // Signed in means the vault is open, not merely that a phrase sits on
+    // disk. A session the library ends on its own leaves the phrase behind
+    // and lands the person on the sign-in screen, and reading the blob alone
+    // refused every provider button there for ever, in silence.
+    // Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.8)
+    const signedIn = hasStoredPhrase() && vaultOpenRef.current;
     if (gate !== 'ok' || signedIn) {
       const reason = signedIn ? 'signed-in' : gate;
       logAuthEvent('auth:oauth-callback-refused', { reason });
-      if (reason === 'stale') {
+      // A marker that was present proves THIS install started the flow, so
+      // the person is watching a button that reads "Redirecting..." and
+      // `Onboarding` resets it only on an error return. Refusing in silence
+      // there strands them for ever: the button stays disabled and the only
+      // way out is restarting the app. Observed on a signed-out phone whose
+      // stored phrase had outlived its session, where the refusal was
+      // `signed-in` and the screen never moved again. A missing marker is
+      // the opposite case, a URL this install never asked for, and it stays
+      // silent, because an answer hands an unsolicited link an oracle.
+      // Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.8)
+      if (gate !== 'missing') {
         setAuth({ status: 'oauth_hydrate_failed', trust: true });
       }
       return;
@@ -661,28 +723,80 @@ export function useOAuthFlows({
         setAuth({ status: 'oauth_hydrate_failed', trust: true });
         return;
       }
-      // The exchange reads the verifier signInWithOAuth stored in this
-      // install's auth storage and deletes it; a replayed or foreign code
-      // fails here.
-      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-      const token = data?.session?.access_token;
-      if (error || !token) {
-        logAuthEvent('auth:oauth-code-exchange-failed', {
-          name: error?.name,
-          status: (error as { status?: number } | null)?.status,
-        });
-        setAuth({ status: 'oauth_hydrate_failed', trust: true });
-        return;
-      }
-      // Drive hydration here rather than leaning on onAuthStateChange.
-      // That listener is only registered on the logged-out boot path, so
-      // after a logged-in boot + sign-out it does not exist and the
-      // sign-in hangs until a manual reload. This deep-link handler is
-      // always registered on native, so it owns native OAuth hydration.
-      await hydrateFromOAuthSession(token, /*trust*/ true);
+      await exchangeAndHydrate(code);
     } catch (e) {
       console.error('Failed to handle OAuth deep link:', e);
       setAuth({ status: 'oauth_hydrate_failed', trust: true });
+    }
+  }
+
+  /**
+   * Turn a one-time code into a signed-in session.
+   *
+   * Shared by the two ways a code reaches a native build: a deep link the
+   * operating system delivered, and a code the person pasted from the
+   * desktop return page. The exchange reads the verifier `signInWithOAuth`
+   * stored in this install's auth storage and deletes it, so a replayed
+   * code, a foreign code, or a code meant for another install fails here.
+   */
+  async function exchangeAndHydrate(code: string): Promise<boolean> {
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+    const token = data?.session?.access_token;
+    if (error || !token) {
+      logAuthEvent('auth:oauth-code-exchange-failed', {
+        name: error?.name,
+        status: (error as { status?: number } | null)?.status,
+      });
+      setAuth({ status: 'oauth_hydrate_failed', trust: true });
+      return false;
+    }
+    // Drive hydration here rather than leaning on onAuthStateChange. That
+    // listener is only registered on the logged-out boot path, so after a
+    // logged-in boot and a sign-out it does not exist and the sign-in hangs
+    // until a manual reload. This module owns native OAuth hydration.
+    await hydrateFromOAuthSession(token, /*trust*/ true);
+    return true;
+  }
+
+  /**
+   * Finish a desktop sign-in from the code the person pasted back.
+   *
+   * The pending marker is spent here for the same reason the deep-link
+   * handler spends it: it proves this install started a sign-in recently,
+   * and it is worth one acceptance, so a code pasted twice cannot run the
+   * hydration twice. A code that was never ours fails the exchange anyway,
+   * because the verifier is this install's.
+   *
+   * Errors are returned rather than thrown so the sign-in screen can show
+   * them beside the box the person typed into, which is where they are
+   * looking.
+   * Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.3)
+   */
+  async function completeDesktopOAuth(
+    rawCode: string,
+  ): Promise<{ ok: true } | { ok: false; error: string }> {
+    const code = rawCode.trim();
+    if (!code) return { ok: false as const, error: 'Paste the code from the browser first.' };
+    const gate = consumeOAuthPending();
+    if (gate !== 'ok') {
+      logAuthEvent('auth:oauth-paste-refused', { reason: gate });
+      return {
+        ok: false as const,
+        error:
+          gate === 'stale'
+            ? 'That sign-in took too long. Start it again.'
+            : 'Start the sign-in from this app first, then paste the code.',
+      };
+    }
+    logAuthEvent('auth:oauth-paste-accepted');
+    try {
+      return (await exchangeAndHydrate(code))
+        ? { ok: true as const }
+        : { ok: false as const, error: 'That code did not work. Start the sign-in again.' };
+    } catch (e) {
+      console.error('Failed to complete the desktop sign-in:', e);
+      setAuth({ status: 'oauth_hydrate_failed', trust: true });
+      return { ok: false as const, error: (e as Error).message };
     }
   }
 
@@ -810,6 +924,7 @@ export function useOAuthFlows({
   return {
     registerOAuthListener,
     signInWithOAuth,
+    completeDesktopOAuth,
     retryOAuthHydration,
     abandonOAuthHydration,
   };

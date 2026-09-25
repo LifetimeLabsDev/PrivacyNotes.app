@@ -82,7 +82,7 @@
           "p": [
             "La tua struttura di cartelle viene ricostruita come cartelle vere, non appiattita in tag, per quanto in profondità sia annidata. Una nota in Work/Projects finisce in una cartella Work > Projects. Se reimporti lo stesso vault, le cartelle già create vengono riutilizzate invece di essere duplicate.",
             "Nel piano gratuito puoi sfogliare queste cartelle da subito; creare, rinominare e spostare cartelle è una funzione Pro, quindi un'importazione da Obsidian è un buon modo per provarla prima di passare a Pro.",
-            "Il frontmatter YAML viene compreso: tag, alias e date di creazione sono rispettati, e i #tag nel testo vengono uniti al campo tag. Durante l'importazione puoi anche attivare l'assegnazione di tag alle note in base al nome della cartella, comodo se ti piace filtrare per tag.",
+            "Il frontmatter YAML viene compreso: tag, alias e date di creazione sono rispettati, e i #tag nel testo vengono uniti al campo tag. Durante l'importazione puoi anche spuntare \"Aggiungi anche un tag per cartella\" per aggiungere ogni nome di cartella come tag, comodo se ti piace filtrare per tag.",
             "I tuoi collegamenti [[...]] continuano a funzionare: PrivacyNotes li mostra come note-link, quindi le connessioni tra le note sopravvivono al trasloco. Le cartelle .obsidian (configurazione) e .trash vengono saltate automaticamente."
           ]
         }
@@ -177,7 +177,7 @@
           "h": "Dove finiscono le cose",
           "p": [
             "Le credenziali diventano voci di accesso della Cassaforte (con le icone dei siti), le carte diventano voci carta, le chiavi SSH voci chiave SSH, e le note sicure più le identità arrivano come note leggibili. Le cartelle di Bitwarden diventano tag, i preferiti arrivano con la stella. Anche le chiavi di autenticazione (TOTP) arrivano con te, così i tuoi codici 2FA continuano a funzionare.",
-            "Il file esportato contiene le tue password in chiaro, quindi importalo, verifica che sia arrivato tutto e poi elimina il file per bene. Dentro PrivacyNotes è di nuovo tutto cifrato end-to-end."
+            "Il file esportato contiene le tue password in chiaro, quindi importalo, verifica che sia arrivato tutto e poi elimina il file per bene. Dentro PrivacyNotes è di nuovo tutto cifrato, sul tuo dispositivo e nel tragitto verso il server."
           ]
         }
       ]
@@ -568,7 +568,7 @@
         {
           "h": "Elimina il file esportato quando hai finito: sono le tue password in chiaro",
           "p": [
-            "Nel .csv esportato non c’è nulla di cifrato, che arrivi dentro uno .zip o no. Chi lo apre legge ogni password che hai salvato, quindi tienilo sulla tua macchina, importalo, controlla che sia arrivato tutto, poi cancella il file e svuota il cestino. Dentro PrivacyNotes torna cifrato end-to-end."
+            "Nel .csv esportato non c’è nulla di cifrato, che arrivi dentro uno .zip o no. Chi lo apre legge ogni password che hai salvato, quindi tienilo sulla tua macchina, importalo, controlla che sia arrivato tutto, poi cancella il file e svuota il cestino. Dentro PrivacyNotes torna tutto cifrato, sul tuo dispositivo e nel tragitto verso il server."
           ]
         }
       ]

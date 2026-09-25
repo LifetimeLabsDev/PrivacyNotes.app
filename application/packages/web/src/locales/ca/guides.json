@@ -177,7 +177,7 @@
           "h": "On va a parar cada cosa",
           "p": [
             "Els inicis de sessió es converteixen en entrades d'inici de sessió de la Caixa forta (amb la icona del lloc web), les targetes en entrades de targeta i les claus SSH en entrades de clau SSH, i les notes segures i les identitats arriben com a notes llegibles. Les carpetes de Bitwarden es transformen en etiquetes, i els preferits arriben amb estrella. Les claus d'autenticació (TOTP) també vénen amb tu, així que els teus codis 2FA continuen funcionant.",
-            "El fitxer d'exportació conté les teves contrasenyes en text clar, així que importa'l, comprova que tot hagi arribat i després suprimeix el fitxer com cal. Dins de PrivacyNotes torna a quedar tot xifrat d'extrem a extrem."
+            "El fitxer d'exportació conté les teves contrasenyes en text clar, així que importa'l, comprova que tot hagi arribat i després suprimeix el fitxer com cal. Dins de PrivacyNotes torna a quedar tot xifrat, al teu dispositiu i de camí al servidor."
           ]
         }
       ]
@@ -568,7 +568,7 @@
         {
           "h": "Esborra el fitxer d'exportació quan acabis: són les teves contrasenyes en text pla",
           "p": [
-            "Al .csv exportat no hi ha res xifrat, tant si arriba dins d’un .zip com si no. Qui l’obri llegeix totes les contrasenyes que has desat, així que guarda’l a la teva màquina, importa’l, comprova que ha arribat tot i després esborra el fitxer i buida la paperera. Dins de PrivacyNotes torna a estar xifrat d’extrem a extrem."
+            "Al .csv exportat no hi ha res xifrat, tant si arriba dins d’un .zip com si no. Qui l’obri llegeix totes les contrasenyes que has desat, així que guarda’l a la teva màquina, importa’l, comprova que ha arribat tot i després esborra el fitxer i buida la paperera. Dins de PrivacyNotes torna a estar xifrat, al teu dispositiu i de camí al servidor."
           ]
         }
       ]

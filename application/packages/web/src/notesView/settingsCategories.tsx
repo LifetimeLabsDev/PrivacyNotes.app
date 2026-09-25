@@ -14,7 +14,7 @@ import { Book, ChartBar, CreditCard, Database, Image as ImageIcon, Info, Questio
 import { activeLocale } from '../languages';
 import { helpPath } from '../localeRoutes';
 import { updateNote } from '../notesRepo';
-import { isWeekJournal } from '../notesViewUtils';
+import { weekReflectionFor } from '../notesViewUtils';
 import type { View } from '../views';
 import type { SettingsCategory } from '../SettingsShell';
 import { siteHref } from '../siteLinks';
@@ -51,6 +51,8 @@ export const SecurityModal = lazyModal(() => import('../SecurityModal').then((m)
 export const SyncOptionsModal = lazyModal(() => import('../SyncOptionsModal').then((m) => m.SyncOptionsModal));
 export const NoteHistoryModal = lazyModal(() => import('../NoteHistoryModal').then((m) => m.NoteHistoryModal));
 export const ImportModal = lazyModal(() => import('../import/ImportModal').then((m) => m.ImportModal));
+export const MediaViewer = lazyModal(() => import('../MediaViewer').then((m) => m.MediaViewer));
+export const PicturePicker = lazyModal(() => import('../PicturePicker').then((m) => m.PicturePicker));
 
 type Authed = Extract<AuthState, { status: 'authenticated' }>;
 
@@ -63,6 +65,7 @@ type Authed = Extract<AuthState, { status: 'authenticated' }>;
 export function buildSettingsCategories({
   t,
   notes,
+  isNoteLocked,
   userSettings,
   mutateSettings,
   onEditorModeChange,
@@ -75,6 +78,7 @@ export function buildSettingsCategories({
   setImportToast,
   handleSignOutClick,
   mergeImportedFolders,
+  applyImportedTagColors,
   exportAllMarkdownZip,
   exportAllHtmlZip,
   exportAllJson,
@@ -93,6 +97,8 @@ export function buildSettingsCategories({
 }: {
   t: TFunction;
   notes: LocalNote[];
+  /** The view's lock predicate, for the readers of a journal's trackers. */
+  isNoteLocked: (n: LocalNote) => boolean;
   userSettings: UserSettings;
   mutateSettings: (updater: (prev: UserSettings) => UserSettings) => void;
   /** Sets userSettings.editorMode AFTER flushing buffered body edits -
@@ -112,7 +118,11 @@ export function buildSettingsCategories({
   setShowUpgrade: (next: { trigger: 'theme' | null }) => void;
   setImportToast: Dispatch<SetStateAction<string | null>>;
   handleSignOutClick: () => void;
-  mergeImportedFolders: (incoming: FolderDef[]) => Map<string, string>;
+  mergeImportedFolders: (
+    incoming: FolderDef[],
+    originalIds?: ReadonlyMap<string, string>,
+  ) => Map<string, string>;
+  applyImportedTagColors: (colors: Map<string, string>) => void;
   exportAllMarkdownZip: (ns: LocalNote[]) => Promise<void>;
   exportAllHtmlZip: (ns: LocalNote[]) => Promise<void>;
   exportAllJson: (ns: LocalNote[]) => Promise<void>;
@@ -136,10 +146,12 @@ export function buildSettingsCategories({
               label: t('settings.statsLabel'),
               group: t('settings.groupYourNotes'),
               icon: <ChartBar size={18} aria-hidden="true" />,
-              render: () => (
+              render: ({ initialTab }) => (
                 <StatsModal
                   embedded
+                  initialTab={initialTab === 'wellness' ? 'wellness' : 'writing'}
                   notes={notes}
+                  isNoteLocked={isNoteLocked}
                   // Deleted medications included on purpose: their log
                   // entries already count toward adherence, and without the
                   // template nothing can resolve the id back into a name.
@@ -147,12 +159,7 @@ export function buildSettingsCategories({
                   isPro={auth.isPro}
                   onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: null }); }}
                   onClose={() => setShowSettings(false)}
-                  weekReflection={(() => {
-                    const entry = notes.find((n) => n.deleted === 0 && n.trashed === 0 && n.type === 'journal' && isWeekJournal(n));
-                    const trackers = entry?.trackers as Record<string, unknown> | undefined;
-                    return (trackers?.weekReflection as string) ?? '';
-                  })()}
-                  onWeekReflectionChange={(text) => void saveWeekReflection(text)}
+                  {...weekReflectionFor(notes, isNoteLocked, (text) => void saveWeekReflection(text))}
                 />
               ),
             },
@@ -178,13 +185,14 @@ export function buildSettingsCategories({
               label: t('settings.importLabel', exemptOpts('notes:settings.importLabel')),
               group: t('settings.groupYourNotes'),
               icon: <Repeat size={18} aria-hidden="true" />,
-              render: () => (
+              render: ({ initialTab }) => (
                 <ImportModal
                   embedded
                   onClose={() => setShowSettings(false)}
-                  initialTab="import"
+                  initialTab={initialTab === 'export' || initialTab === 'restore' || initialTab === 'vault' ? initialTab : 'import'}
                   notes={notes}
                   onImportFolders={mergeImportedFolders}
+                  onImportTagColors={applyImportedTagColors}
                   onExportAllMdZip={(ns) => void exportAllMarkdownZip(ns)}
                   onExportAllHtmlZip={(ns) => void exportAllHtmlZip(ns)}
                   onExportAllJson={exportAllJson}
@@ -281,11 +289,11 @@ export function buildSettingsCategories({
               label: t('settings.securityLabel'),
               group: t('settings.groupAccount'),
               icon: <Shield size={18} aria-hidden="true" />,
-              render: () => (
+              render: ({ initialTab }) => (
                 <SecurityModal
                   embedded
                   phrase={auth.phrase}
-                  defaultTab="pin"
+                  defaultTab={initialTab === 'biometric' || initialTab === 'phrase' ? initialTab : 'pin'}
                   pinTimeoutMinutes={userSettings.pinTimeoutMinutes}
                   onPinTimeoutChange={(minutes) => {
                     mutateSettings((prev) => ({ ...prev, pinTimeoutMinutes: minutes }));
@@ -326,9 +334,10 @@ export function buildSettingsCategories({
               label: t('settings.appearanceLabel'),
               group: t('settings.groupBrand'),
               icon: <Sun size={18} aria-hidden="true" />,
-              render: () => (
+              render: ({ initialTab }) => (
                 <AppearanceSheet
                   embedded
+                  initialTab={initialTab === 'lists' ? 'lists' : 'style'}
                   isPro={auth.isPro ?? false}
                   viewMode={userSettings.viewMode}
                   onViewModeChange={(m) => mutateSettings((prev) => ({ ...prev, viewMode: m }))}
@@ -341,6 +350,8 @@ export function buildSettingsCategories({
                   onToggleHidden={onToggleHiddenView}
                   startView={userSettings.startView}
                   onStartViewChange={(next) => mutateSettings((prev) => ({ ...prev, startView: next }))}
+                  tintNotes={userSettings.tintNotes}
+                  onTintNotesChange={(on) => mutateSettings((prev) => ({ ...prev, tintNotes: on }))}
                   onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: 'theme' }); }}
                   onClose={() => setShowSettings(false)}
                 />
@@ -361,8 +372,12 @@ export function buildSettingsCategories({
               label: t('settings.aboutLabel'),
               group: t('settings.groupBrand'),
               icon: <Info size={18} aria-hidden="true" />,
-              render: () => (
-                <AboutModal embedded onClose={() => setShowSettings(false)} />
+              render: ({ initialTab }) => (
+                <AboutModal
+                  embedded
+                  onClose={() => setShowSettings(false)}
+                  initialTab={initialTab === 'changelog' || initialTab === 'hotkeys' || initialTab === 'rating' ? initialTab : 'about'}
+                />
               ),
             },
             {

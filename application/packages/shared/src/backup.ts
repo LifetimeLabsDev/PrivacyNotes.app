@@ -3,7 +3,7 @@
  * exercised headlessly.
  *
  * Binary layout: [24-byte nonce][xchacha20poly1305 ciphertext]. The plaintext
- * is JSON: { version: 3, exportedAt, notes: [...], folders?: [...] }, the same
+ * is JSON: { version: 3, exportedAt, notes: [...], folders?: [...], itemStyles?: {...} }, the same
  * payload structure the plaintext JSON backup uses. This module is
  * deliberately pure (no DOM, no i18n, no download glue) so
  * tools/backup-kat.mjs can test the REAL encode/decode path in CI instead of
@@ -60,6 +60,10 @@ export interface BackupPayload {
   /** v3+: folder definitions. The restore flow validates these with
    *  validateFolders() before merging; this module treats them as opaque. */
   folders?: unknown;
+  /** Folder and tag looks, the `itemStyles` settings map. Optional, so the
+   *  version stays 3: an older restore ignores a field it does not know. The
+   *  restore flow validates it with validateItemStyles(); opaque here. */
+  itemStyles?: unknown;
 }
 
 /**
@@ -67,14 +71,16 @@ export interface BackupPayload {
  *
  * Field mapping notes, preserved from the original export code: `type`
  * defaults to 'note' for rows predating note types, `folderId` and `trackers`
- * are omitted rather than written empty, and `folders` is omitted entirely
- * when there are none, so old and new payloads stay byte-compatible.
+ * are omitted rather than written empty, and `folders` and `itemStyles` are
+ * omitted entirely when there are none, so old and new payloads stay
+ * byte-compatible.
  * `exportedAt` is injectable so tests can build deterministic payloads.
  */
 export function buildBackupPayload(
   notes: BackupNote[],
   folders: unknown[] = [],
   exportedAt: string = new Date().toISOString(),
+  itemStyles: Record<string, unknown> = {},
 ): BackupPayload {
   return {
     version: BACKUP_VERSION,
@@ -95,6 +101,7 @@ export function buildBackupPayload(
       ...(n.trackers && Object.keys(n.trackers).length > 0 ? { trackers: n.trackers } : {}),
     })),
     ...(folders.length > 0 ? { folders } : {}),
+    ...(Object.keys(itemStyles).length > 0 ? { itemStyles } : {}),
   };
 }
 

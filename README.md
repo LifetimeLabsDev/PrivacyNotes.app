@@ -10,7 +10,7 @@
 <br><br>
 
 **End-to-end encrypted notes, tasks, and journal.**<br>
-Your 12-word phrase is your identity and your key. No email, no password, no account to leak.
+Your 12-word phrase is your identity and your key. With a phrase sign-up there is no email, no password and no account to leak.
 
 [**Website**](https://privacynotes.app/en) &nbsp;·&nbsp; [**Try it, no account**](https://try.privacynotes.app) &nbsp;·&nbsp; [**Verify it yourself**](VERIFY.md) &nbsp;·&nbsp; [**Security**](SECURITY.md) &nbsp;·&nbsp; [**Threat model**](THREAT_MODEL.md)
 
@@ -41,10 +41,10 @@ no account, nothing saved, the real app with the real encryption.</em>
 
 ### What your data looks like on our server
 
-<img src="assets/database.webp" alt="Real rows from the notes table, containing only ciphertext the server cannot read" width="760">
+<img src="assets/database.webp" alt="Real rows from the notes table, containing only ciphertext" width="760">
 
 <em>Real rows from the <code>notes</code> table in production. A public key, a ciphertext, a nonce.<br>
-No title, no body, no tags. Just bytes we cannot read.</em>
+No title, no body, no tags. Just bytes that only your phrase opens.</em>
 
 <br>
 
@@ -58,7 +58,7 @@ No title, no body, no tags. Just bytes we cannot read.</em>
 
 ## What PrivacyNotes is
 
-An end-to-end encrypted notes, tasks and journal app for macOS, Windows, Linux, Android, iOS and the browser. You get a 12-word phrase instead of an account, and everything you write is encrypted on your device under a key only you hold, on disk and on the way to us. Notes, journal entries, tasks, a password vault, and file attachments all live under that one key.
+An end-to-end encrypted notes, tasks and journal app for macOS, Windows, Linux, Android, iOS and the browser. You get a 12-word phrase instead of an account, and everything you write is encrypted on your device under a key derived from it, on disk and on the way to us. Under self-custody, that key is yours alone. Notes, journal entries, tasks, a password vault, and file attachments all live under that one key.
 
 ---
 
@@ -70,13 +70,13 @@ Three claims we make, and where to check each one without taking our word for it
 
 | The claim | Check it here |
 | :--- | :--- |
-| Your phrase never leaves your device | [`crypto/crypto.ts`](crypto/crypto.ts), and the derivation strings in the live bundle |
+| Under self-custody, your phrase never leaves your device | [`crypto/crypto.ts`](crypto/crypto.ts), and the derivation strings in the live bundle |
 | Notes are encrypted before they touch our server | [`crypto/crypto.ts`](crypto/crypto.ts), the XChaCha20-Poly1305 path |
 | The server stores only ciphertext | [VERIFY.md](VERIFY.md) tier 1: watch your own notes leave in your browser's network tab |
 
 If any of those stops holding, the claim is broken and you can prove it. That is the entire point of this repo.
 
-The first claim has one exception, chosen at signup and off unless you pick it: [custodial mode](#custodial-mode-the-exception-to-the-first-claim).
+The first claim holds under self-custody, which every phrase sign-up uses. Its exception is [custodial mode](#custodial-mode-the-exception-to-the-first-claim), which a sign-up with Google, Apple or GitHub preselects.
 
 ---
 
@@ -155,7 +155,7 @@ Every honest end-to-end encrypted project has these. Here are ours.
 
 ### Custodial mode, the exception to the first claim
 
-By default your phrase never leaves your device. At OAuth signup (Google, Apple or GitHub) you can instead ask us to store it, so a new device is one click instead of twelve words. Pick that and the phrase sits on our servers encrypted under a key WE hold: a valid legal order, a deep enough compromise, or a dishonest future version of us could reach your plaintext. We count capabilities, not intentions, and that capability is on our side. Self-custody users are exposed to none of it.
+Sign up with a phrase and you get self-custody: the phrase never leaves your device. Sign up with Google, Apple or GitHub and the next screen asks where your phrase lives, and it preselects our storing it, which makes a new device one click instead of twelve words. Keep that choice and the phrase sits on our servers encrypted under a key WE hold: a valid legal order, a deep enough compromise, or a dishonest future version of us could reach your plaintext. We count capabilities, not intentions, and that capability is on our side. Self-custody users are exposed to none of it.
 
 The choice is reversible either way from Settings > Security > Your Phrase, both directions signed with your own account key. [SECURITY.md](SECURITY.md) is the full statement of what each mode protects and what it does not. If you want the version of PrivacyNotes this document describes, use the phrase flow.
 

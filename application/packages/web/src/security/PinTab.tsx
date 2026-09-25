@@ -175,12 +175,19 @@ export function PinTab({
 
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
 
-  function doRemovePin() {
+  async function doRemovePin() {
     // The same clear the phrase route performs, so the two cannot drift.
     // App lock is left alone: it is a synced setting and an enrolled
     // fingerprint is not, so removing a PIN here used to switch off a lock
-    // another device could still open. clearPin carries the reasoning.
-    onSettingsChange(clearPin(userSettings, phrase), userSettings);
+    // another device could still open. clearPin carries the reasoning, and
+    // answers null, having removed nothing, when the wrap is this device's
+    // last door and the phrase did not read back at rest.
+    const cleared = await clearPin(userSettings, phrase);
+    if (!cleared) {
+      setError(t('appLock.phraseNotSaved'));
+      return;
+    }
+    onSettingsChange(cleared, userSettings);
     setPinExists(false);
     setOldPinVerified(false);
     reset();
@@ -304,7 +311,7 @@ export function PinTab({
             <p className="text-sm text-accent text-center">{t('pinTab.pinSaved')}</p>
           )}
 
-          <div className="flex gap-2">
+          <div data-setting="security.setPin" className="flex gap-2">
             <button
               onClick={() => void submit(pin, confirm)}
               disabled={busy || pin.length !== 4 || confirm.length !== 4}
@@ -314,6 +321,7 @@ export function PinTab({
             </button>
             {pinExists && (
               <button
+                data-setting="security.removePin"
                 onClick={() => setShowRemoveConfirm(true)}
                 disabled={busy}
                 className="rounded-md border border-divider text-pn-muted hover:bg-surface-1 hover:text-red-500 dark:hover:text-red-400 px-4 py-2 text-sm transition"
@@ -328,7 +336,7 @@ export function PinTab({
       {/* One window for the phrase view and every PIN-protected note, from
           the moment of the unlock. Disabled when no PIN is set (nothing to
           time). */}
-      <div className="pt-3 border-t border-divider">
+      <div data-setting="security.reaskAfter" className="pt-3 border-t border-divider">
         <label className="block">
           <SectionEyebrow className="mb-1.5">
             {t('pinTab.reaskAfter')}
@@ -356,7 +364,7 @@ export function PinTab({
       {showRemoveConfirm && (
         <RemovePinDialog
           onConfirm={() => {
-            doRemovePin();
+            void doRemovePin();
             setShowRemoveConfirm(false);
           }}
           onClose={() => setShowRemoveConfirm(false)}

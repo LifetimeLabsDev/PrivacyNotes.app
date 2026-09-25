@@ -9,6 +9,7 @@ import { useCopyToClipboard } from './clipboard';
 import { loadLocalSettings, saveLocalSettings, type UserSettings } from './userSettings';
 import { proUnlocked } from './demo';
 import { PasswordText } from './PasswordText';
+import { isImeComposing } from './imeComposing';
 import {
   EXACT_COUNT_MAX,
   PASSPHRASE_WORDS,
@@ -147,7 +148,7 @@ function CountSlider({ label, value, min, max, onChange }: {
           if (n >= min && n <= max) onChange(n);
         }}
         onBlur={commitDraft}
-        onKeyDown={(e) => { if (e.key === 'Enter') commitDraft(); }}
+        onKeyDown={(e) => { if (e.key === 'Enter' && !isImeComposing(e)) commitDraft(); }}
         aria-label={label}
         className="w-14 shrink-0 text-xs text-center tabular-nums px-1.5 py-1 rounded border border-divider bg-surface-0"
       />

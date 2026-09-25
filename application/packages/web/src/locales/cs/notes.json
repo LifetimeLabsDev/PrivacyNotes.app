@@ -55,7 +55,7 @@
     "empty": "Vysypat",
     "emptyHover": "Smazat všechny poznámky v koši",
     "storage": "Úložiště",
-    "autoDelete": "Auto-mazání: 30 dní"
+    "autoDelete": "Automaticky mazat po 30 dnech"
   },
   "search": {
     "sortOptions": "Možnosti řazení a zobrazení",
@@ -165,8 +165,8 @@
     "invisiblesShow": "Zobrazit netisknutelné znaky",
     "invisiblesHide": "Skrýt netisknutelné znaky",
     "findInNote": "Najít v poznámce",
-    "navPrev": "Předchozí poznámka",
-    "navNext": "Další poznámka",
+    "navPrev": "Předchozí",
+    "navNext": "Další",
     "undo": "Vrátit zpět",
     "redo": "Znovu",
     "hide": "Skrýt",
@@ -180,7 +180,8 @@
     "titlePlaceholderLink": "Název záložky",
     "titlePlaceholderContact": "Jméno",
     "notBackedUpTooLarge": "Nad limitem 1 MB, proto bez zálohy. Přesuň obrázky do příloh nebo poznámku rozděl.",
-    "notBackedUpFailed": "Bez zálohy. Poslední chyba: {{message}}. Zkouší se znovu."
+    "notBackedUpFailed": "Bez zálohy. Poslední chyba: {{message}}. Zkouší se znovu.",
+    "unknownType": "Tuto položku vytvořila novější verze PrivacyNotes. Aktualizuj aplikaci, aby se dala otevřít."
   },
   "share": {
     "hover": "Sdílet / exportovat",

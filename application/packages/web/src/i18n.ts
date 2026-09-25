@@ -39,6 +39,9 @@ export const SUPPORTED_LOCALES = [
   'tr',
   'sv',
   'ar',
+  'uk',
+  'ru',
+  'th',
 ] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 
@@ -59,7 +62,7 @@ export type Locale = (typeof SUPPORTED_LOCALES)[number];
 // load and drops fourteen lazy chunks entirely.
 // Spec: ops/docs/bundle-size.md (build-only catalogs)
 const enModules = import.meta.glob<{ default: Record<string, unknown> }>(
-  ['./locales/en/*.json', '!./locales/en/faq.json', '!./locales/en/guides.json'],
+  ['./locales/en/*.json', '!./locales/en/faq.json', '!./locales/en/guides.json', '!./locales/en/looks.json', '!./locales/en/settingsSearch.json'],
   { eager: true },
 );
 const localeModules = import.meta.glob<{ default: Record<string, unknown> }>([
@@ -67,7 +70,19 @@ const localeModules = import.meta.glob<{ default: Record<string, unknown> }>([
   '!./locales/en/*.json',
   '!./locales/*/faq.json',
   '!./locales/*/guides.json',
+  '!./locales/*/looks.json',
+  '!./locales/*/settingsSearch.json',
 ]);
+// `looks` is the one namespace that loads on its own, English included: the
+// folder and tag look picker is its only reader, and its icon names have no
+// business in any boot. ensureLooksLoaded() fetches it.
+// Spec: ops/docs/plans/folder-tag-icons.md (section 10)
+const looksModules = import.meta.glob<{ default: Record<string, unknown> }>('./locales/*/looks.json');
+const looksLoaded = new Set<string>();
+// `settingsSearch` loads the same way: its keywords and result lines are
+// read only once the settings search field has been focused.
+const settingsSearchModules = import.meta.glob<{ default: Record<string, unknown> }>('./locales/*/settingsSearch.json');
+const settingsSearchLoaded = new Set<string>();
 
 type Catalogs = Record<string, Record<string, unknown>>;
 
@@ -96,6 +111,9 @@ export function normalizeLocale(tag: string | null | undefined): Locale {
   // answer than Traditional. Mirrors seo.ts.
   if (lower.startsWith('zh-hant') || lower === 'zh-hk' || lower === 'zh-mo') return 'zh-TW';
   if (lower.startsWith('zh')) return 'en';
+  // Kazakh reads Russian, the one fallback that crosses languages
+  // (FALLBACK_BEFORE_ENGLISH below says why).
+  if (lower === 'kk' || lower.startsWith('kk-')) return 'ru';
   // Region-stripped match, but only against the bare locales (de-AT -> de).
   const two = lower.slice(0, 2);
   return SUPPORTED_LOCALES.find((l) => !l.includes('-') && l === two) ?? 'en';
@@ -194,6 +212,11 @@ const FALLBACK_BEFORE_ENGLISH: Record<string, string[]> = {
   'zh-Hant': ['zh-TW'],
   'zh-HK': ['zh-TW'],
   'zh-MO': ['zh-TW'],
+  // Kazakh readers get Russian before English: Russian is an official language
+  // of Kazakhstan and the one we ship that most of them read. Belarusian gets
+  // no entry on purpose, and falls to English: which language a Belarusian
+  // reader wants is not ours to assume. Mirrored in normalizeLocale.
+  kk: ['ru'],
 };
 
 /**
@@ -261,6 +284,43 @@ export async function ensureLocaleLoaded(tag: string): Promise<void> {
     i18n.addResourceBundle(lng, ns, bundle, true, true);
   }
   loadedLocales.add(lng);
+}
+
+/**
+ * Load the `looks` namespace for the language on screen and for English, its
+ * fallback. Resolves when both are in; a failed fetch leaves the keys to
+ * fall back, and the next call tries again.
+ */
+export async function ensureLooksLoaded(): Promise<void> {
+  const langs = [...new Set<string>(['en', activeLocale()])];
+  await Promise.all(
+    langs.map(async (lng) => {
+      if (looksLoaded.has(lng)) return;
+      const load = looksModules[`./locales/${lng}/looks.json`];
+      if (!load) return;
+      const mod = await load();
+      i18n.addResourceBundle(lng, 'looks', mod.default, true, true);
+      looksLoaded.add(lng);
+    }),
+  );
+}
+
+/**
+ * Load the `settingsSearch` namespace for the language on screen and for
+ * English, as `ensureLooksLoaded` does for `looks`.
+ */
+export async function ensureSettingsSearchLoaded(): Promise<void> {
+  const langs = [...new Set<string>(['en', activeLocale()])];
+  await Promise.all(
+    langs.map(async (lng) => {
+      if (settingsSearchLoaded.has(lng)) return;
+      const load = settingsSearchModules[`./locales/${lng}/settingsSearch.json`];
+      if (!load) return;
+      const mod = await load();
+      i18n.addResourceBundle(lng, 'settingsSearch', mod.default, true, true);
+      settingsSearchLoaded.add(lng);
+    }),
+  );
 }
 
 /**

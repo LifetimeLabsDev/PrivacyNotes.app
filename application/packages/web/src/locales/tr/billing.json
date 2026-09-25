@@ -10,6 +10,7 @@
     "intro": {
       "storage": "Daha büyük yüklemeler ve daha çok alan bir Pro özelliğidir. 50 MB'lık dosyalar ve 500 MB depolama için yükseltin.",
       "folders": "Klasörler bir Pro özelliğidir. Notlarınızı istediğiniz kadar derin iç içe klasörlerde düzenleyin, her projeyi ayrı tutun.",
+      "looks": "Klasörler ve etiketler için simgeler ve renkler bir Pro özelliğidir. Her birine ilk bakışta fark edeceğiniz bir görünüm verin.",
       "lock": "Bir notu kilitlemek bir Pro özelliğidir. Herhangi bir notu yanlışlıkla yapılan düzenlemelere karşı korumak için yükseltin.",
       "protect": "Bir notu PIN ile korumak bir Pro özelliğidir. Hassas notları PIN'inizin arkasına kilitlemek için yükseltin.",
       "history": "Not geçmişi bir Pro özelliğidir. Her kaydın zaman çizelgesini tutmak için yükseltin.",
@@ -57,6 +58,7 @@
     "title": "Not geçmişi",
     "subtitle": "Not başına en fazla 20 sürüm. En eskiler otomatik silinir.",
     "empty": "Henüz geçmiş yok. Sürümler bir sonraki düzenlemeden sonra birikmeye başlar. Sonra tekrar uğrayın.",
+    "loadFailed": "Geçmiş yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
     "selectPrompt": "Önizlemek için bir sürüm seçin.",
     "emptyBody": "(boş)",
     "restore": "Geri yükle",
@@ -64,7 +66,7 @@
   },
   "donation": {
     "eyebrow": "Kilidini açtınız",
-    "intro": "<brand/> ücretsizdir ve hep öyle kalacak. Reklam yok, takip yok, kayıtlı e-posta yok. Düşünmenize, yazmanıza veya hatırlamanıza yardımı olduysa geliştirmeyi desteklemeyi düşünün. Çarkların dönmesini sağlar ve sıradaki özelliklerin masrafını karşılar.",
+    "intro": "<brand/> ücretsizdir ve hep öyle kalacak. Reklam yok, izleyici yok, e-postalı bir hesapla giriş yapmadıysanız kayıtlı e-posta da yok. Düşünmenize, yazmanıza veya hatırlamanıza yardımı olduysa geliştirmeyi desteklemeyi düşünün. Çarkların dönmesini sağlar ve sıradaki özelliklerin masrafını karşılar.",
     "proBenefits": "Destek olmak, çıktıklarında Pro avantajlarının da kilidini açar: sınırsız cihaz, ek dosyalar, şifreli bulut yedekleri.",
     "maybeLater": "Belki sonra",
     "support": "Destekle →"

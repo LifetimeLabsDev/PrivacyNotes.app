@@ -1,0 +1,276 @@
+{
+  "noteRow": {
+    "created": "สร้างเมื่อ",
+    "modified": "แก้ไขเมื่อ",
+    "select": "เลือกโน้ต",
+    "deselect": "ยกเลิกการเลือกโน้ต",
+    "pinProtected": "ป้องกันด้วย PIN",
+    "readOnly": "อ่านอย่างเดียว",
+    "file": "ไฟล์",
+    "empty": "ว่างเปล่า",
+    "noContent": "ไม่มีเนื้อหา",
+    "notBackedUp": "ยังไม่ได้สำรอง"
+  },
+  "header": {
+    "new": "สร้าง",
+    "newNote": "โน้ตใหม่",
+    "newNoteHover": "โน้ตใหม่ ({{hotkey}})",
+    "trash": "ถังขยะ"
+  },
+  "folderChip": {
+    "clear": "ล้างตัวกรองโฟลเดอร์: {{folder}}"
+  },
+  "tagChip": {
+    "clear": "ล้างตัวกรองแท็ก: {{tag}}"
+  },
+  "vaultNew": {
+    "ariaLabel": "รายการใหม่ในตู้นิรภัย",
+    "login": "ล็อกอิน",
+    "card": "บัตรเครดิต",
+    "sshKey": "คีย์ SSH"
+  },
+  "newMenu": {
+    "note": "โน้ต",
+    "task": "งาน",
+    "journal": "บันทึกประจำวัน",
+    "login": "ล็อกอิน",
+    "file": "ไฟล์",
+    "bookmark": "บุ๊กมาร์ก",
+    "contact": "ผู้ติดต่อ"
+  },
+  "vaultFilter": {
+    "all": "ทั้งหมด",
+    "logins": "ล็อกอิน",
+    "cards": "บัตรเครดิต",
+    "keys": "คีย์"
+  },
+  "journal": {
+    "newEntry": "บันทึกประจำวันใหม่",
+    "newEntryHover": "บันทึกประจำวันใหม่ ({{hotkey}})"
+  },
+  "tasks": {
+    "newTitle": "งานสำหรับ {{date}}"
+  },
+  "trash": {
+    "empty": "ล้าง",
+    "emptyHover": "ลบโน้ตทั้งหมดในถังขยะ",
+    "storage": "พื้นที่จัดเก็บ",
+    "autoDelete": "ลบอัตโนมัติหลัง 30 วัน"
+  },
+  "search": {
+    "sortOptions": "ตัวเลือกการเรียงและมุมมอง",
+    "placeholderVault": "ค้นหาในตู้นิรภัย…",
+    "placeholderNotes": "ค้นหาโน้ต…"
+  },
+  "selection": {
+    "countOf": "เลือกแล้ว {{selected}} จาก {{total}}",
+    "selectAll": "เลือกทั้งหมด",
+    "deselectAll": "ยกเลิกการเลือกทั้งหมด"
+  },
+  "empty": {
+    "noMatches": "ไม่พบรายการที่ตรงกัน",
+    "vault": "ตู้นิรภัยว่างเปล่า",
+    "notes": "ยังไม่มีโน้ต",
+    "filtered": "ไม่มีรายการที่ตรงกับตัวกรอง",
+    "clearFilters": "ล้างตัวกรอง",
+    "filteredAfter": "เพื่อแสดงรายการ"
+  },
+  "headerLabel": {
+    "allItems": "ทั้งหมด",
+    "untagged": "ไม่มีแท็ก",
+    "journals": "บันทึกประจำวัน",
+    "vault": "ตู้นิรภัย",
+    "pinned": "ปักหมุด",
+    "notes": "โน้ต"
+  },
+  "footerStats": {
+    "journals": "บันทึกประจำวัน",
+    "items": "รายการ",
+    "trashed": "ในถังขยะ",
+    "notes": "โน้ต",
+    "bookmarks": "บุ๊กมาร์ก",
+    "contacts": "ผู้ติดต่อ"
+  },
+  "toast": {
+    "imageUploadFailed": "อัปโหลดรูปภาพไม่สำเร็จ: {{error}}",
+    "imageError": "ข้อผิดพลาดของรูปภาพ: {{error}}",
+    "uploadFailedFor": "อัปโหลด “{{filename}}” ไม่สำเร็จ: {{error}}",
+    "importedSyncing_other": "นำเข้าโน้ต {{count}} รายการแล้ว กำลังซิงค์…",
+    "addedTag_other": "เพิ่ม #{{tag}} ให้ {{count}} รายการแล้ว",
+    "restoreSummary": "กู้คืนแล้ว เพิ่ม {{added}} อัปเดต {{updated}} เป็นปัจจุบันอยู่แล้ว {{unchanged}}"
+  },
+  "burn": {
+    "mediaOnly": "โน้ตนี้มีแต่สื่อ จึงแชร์ผ่านลิงก์เผาไม่ได้",
+    "shareTitle": "โน้ตที่เข้ารหัส"
+  },
+  "loadError": {
+    "message": "โหลดโน้ตไม่สำเร็จ การเชื่อมต่อฐานข้อมูลในเครื่องถูกขัดจังหวะ อาจเกิดขึ้นหลังจากแอปทำงานเบื้องหลังเป็นเวลานาน",
+    "reload": "โหลดใหม่"
+  },
+  "banner": {
+    "dismiss": "ปิด",
+    "proActivationPending": "ได้รับการชำระเงินแล้ว แต่การเปิดใช้งาน Pro ใช้เวลานานกว่าปกติ รีเฟรชในอีกสักครู่ หรือติดต่อฝ่ายสนับสนุนหากยังไม่เปิดใช้งาน",
+    "snapshotPaused": "ประวัติโน้ตหยุดชั่วคราว แพ็กเกจ Pro ของคุณดูเหมือนไม่ได้ใช้งาน การแก้ไขใหม่จะไม่ถูกเก็บในประวัติจนกว่าจะกู้คืน Pro",
+    "restorePro": "กู้คืน Pro",
+    "storagePastDue": "ชำระค่าสมัครพื้นที่จัดเก็บไม่สำเร็จ อัปเดตบัตรใน Paddle เพื่อไม่ให้เสียพื้นที่เพิ่มเติม",
+    "updateCard": "อัปเดตบัตร"
+  },
+  "sidebar": {
+    "collapse": "ยุบแถบด้านข้าง",
+    "expand": "ขยายแถบด้านข้าง"
+  },
+  "notesList": {
+    "collapse": "ยุบรายการโน้ต",
+    "expand": "ขยายรายการโน้ต"
+  },
+  "paneResize": {
+    "hintCollapse": "คลิกเพื่อยุบ · ลากเพื่อปรับขนาด"
+  },
+  "emptyEditor": {
+    "selectFile": "เลือกไฟล์เพื่อดูตัวอย่าง",
+    "uploadFiles": "หรืออัปโหลดไฟล์ใหม่ไปยังพื้นที่จัดเก็บที่เข้ารหัส",
+    "selectNote": "เลือกโน้ตหรือสร้างโน้ตใหม่",
+    "selectMarkdown": "เปิดไฟล์ Markdown เพื่ออ่านที่นี่"
+  },
+  "zen": {
+    "exit": "ออกจากเซน",
+    "exitHover": "ออกจากโหมดเซน (Esc)",
+    "enterHover": "เข้าสู่โหมดเซน",
+    "proHover": "โหมดเซน (Pro)",
+    "enterAriaShortcut": "เข้าสู่โหมดเซน (⌘⇧F)"
+  },
+  "editor": {
+    "backToList": "กลับไปที่รายการโน้ต",
+    "backToGrid": "กลับไปที่ตาราง",
+    "titlePlaceholder": "ไม่มีชื่อ (คลิกเพื่อแก้ไข หรือปล่อยให้สร้างอัตโนมัติ)",
+    "titlePlaceholderLogin": "เช่น GitHub",
+    "titlePlaceholderCard": "เช่น Visa ลงท้าย 4242",
+    "titlePlaceholderSshKey": "เช่น คีย์ deploy สำหรับ GitHub",
+    "pin": "ปักหมุด",
+    "unpin": "เลิกปักหมุด",
+    "restore": "กู้คืน",
+    "deleteForever": "ลบถาวร",
+    "moveToTrash": "ย้ายไปที่ถังขยะ",
+    "noteOptions": "ตัวเลือกโน้ต",
+    "readOnlyToggle": "อ่านอย่างเดียว ปิดได้ที่",
+    "menu": "เมนู",
+    "showMarkdown": "แสดง Markdown",
+    "showFormatted": "แสดงแบบจัดรูปแบบ",
+    "invisiblesShow": "แสดงอักขระที่มองไม่เห็น",
+    "invisiblesHide": "ซ่อนอักขระที่มองไม่เห็น",
+    "findInNote": "ค้นหาในโน้ต",
+    "navPrev": "ก่อนหน้า",
+    "navNext": "ถัดไป",
+    "undo": "เลิกทำ",
+    "redo": "ทำซ้ำ",
+    "hide": "ซ่อน",
+    "show": "แสดง",
+    "hideToolbar": "ซ่อนแถบเครื่องมือจัดรูปแบบ",
+    "showToolbar": "แสดงแถบเครื่องมือจัดรูปแบบ",
+    "widthDefault": "ความกว้างปกติ",
+    "widthWide": "กว้างขึ้น",
+    "widthFull": "เต็มความกว้าง",
+    "burn": "แชร์และเผาหลังอ่าน",
+    "titlePlaceholderLink": "ชื่อบุ๊กมาร์ก",
+    "titlePlaceholderContact": "ชื่อ",
+    "notBackedUpTooLarge": "เกินขีดจำกัด 1 MB จึงยังไม่ได้สำรอง ย้ายรูปภาพไปเป็นไฟล์แนบหรือแยกโน้ต",
+    "notBackedUpFailed": "ยังไม่ได้สำรอง ข้อผิดพลาดล่าสุด: {{message}} กำลังลองใหม่",
+    "unknownType": "รายการนี้สร้างด้วย PrivacyNotes เวอร์ชันที่ใหม่กว่า อัปเดตแอปเพื่อเปิดรายการนี้"
+  },
+  "share": {
+    "hover": "แชร์ / ส่งออก",
+    "ariaLabel": "แชร์หรือส่งออก",
+    "currentMdTitle": "โน้ตปัจจุบัน (.md)",
+    "currentMdDesc": "Markdown ดิบพร้อม front matter",
+    "currentHtmlTitle": "โน้ตปัจจุบัน (.html)",
+    "currentHtmlDesc": "เหมาะสำหรับพิมพ์ แสดง Markdown บนหน้ากระดาษสีขาว",
+    "printTitle": "พิมพ์ / บันทึกเป็น PDF",
+    "printDesc": "เปิดหน้าต่างพิมพ์ บันทึกเป็น PDF หรือส่งไปยังเครื่องพิมพ์",
+    "burnTitle": "แชร์และเผาหลังอ่าน",
+    "burnDesc": "เผยแพร่โน้ตนี้เป็นลิงก์ที่ดูได้ครั้งเดียว ลิงก์จะทำลายตัวเองหลังอ่าน โน้ตของคุณยังปลอดภัยในบัญชี"
+  },
+  "weekReview": {
+    "title": "สรุปประจำสัปดาห์",
+    "daysLogged": "บันทึกแล้ว {{count}}/7",
+    "mood": "อารมณ์",
+    "sleep": "การนอน",
+    "meds": "ยา",
+    "activity": "กิจกรรม"
+  },
+  "footer": {
+    "settings": "การตั้งค่า",
+    "viewShortcuts": "ดูแป้นพิมพ์ลัดทั้งหมด",
+    "newNote": "สร้าง",
+    "newNoteHintMac": "Option + Shift + N",
+    "newNoteHintOther": "Alt + Shift + N",
+    "openStats": "เปิดสถิติ",
+    "words": "คำ",
+    "zen": "เซน",
+    "appearance": "รูปลักษณ์",
+    "signOut": "ออกจากระบบ",
+    "signingOut": "กำลังออกจากระบบ…",
+    "switchToLight": "สลับเป็นโหมดสว่าง",
+    "switchToDark": "สลับเป็นโหมดมืด"
+  },
+  "settings": {
+    "groupYourNotes": "โน้ตของคุณ",
+    "groupAccount": "บัญชีและข้อมูล",
+    "groupBrand": "PrivacyNotes",
+    "statsLabel": "สถิติ",
+    "journalsLabel": "บันทึกประจำวัน",
+    "importLabel": "นำเข้าและส่งออก",
+    "planLabel": "บัญชี",
+    "storageLabel": "พื้นที่จัดเก็บ",
+    "imagesLabel": "รูปภาพ",
+    "securityLabel": "ความปลอดภัย",
+    "accountLabel": "ID และการซิงค์",
+    "appearanceLabel": "รูปลักษณ์",
+    "helpLabel": "ความช่วยเหลือ",
+    "aboutLabel": "เกี่ยวกับ",
+    "languageLabel": "ภาษา",
+    "languageDesc": "เลือกภาษาที่ใช้แสดง PrivacyNotes"
+  },
+  "importStore": {
+    "title": "นำเข้าหรือจัดเก็บ?",
+    "confirm": "นำเข้าเป็นโน้ต",
+    "cancel": "จัดเก็บเป็นไฟล์",
+    "bodySingle": "<strong>{{filename}}</strong> ดูเหมือนไฟล์ Markdown นำเข้าเป็นโน้ตเพื่ออ่านและแก้ไข หรือจัดเก็บเป็นไฟล์แนบที่เข้ารหัส?",
+    "bodyMulti": "ไฟล์ {{count}} รายการนี้ดูเหมือน Markdown นำเข้าเป็นโน้ตเพื่ออ่านและแก้ไข หรือจัดเก็บเป็นไฟล์แนบที่เข้ารหัส?"
+  },
+  "bulkTrash": {
+    "title": "ย้ายไปที่ถังขยะ",
+    "body_other": "ย้าย <highlight>{{count}} รายการ</highlight> ไปที่ถังขยะหรือไม่? กู้คืนได้ภายหลัง",
+    "readOnlyTitle": "อ่านอย่างเดียว",
+    "readOnlyAcknowledge": "เข้าใจแล้ว",
+    "readOnlyBlocked_other": "<highlight>{{count}} รายการ</highlight> เป็นแบบอ่านอย่างเดียว จึงย้ายไปที่ถังขยะไม่ได้ ปิดโหมดอ่านอย่างเดียวในเมนูตัวเลือกโน้ตก่อน",
+    "readOnlySkipped_other": "<highlight>{{count}} รายการ</highlight> เป็นแบบอ่านอย่างเดียวและจะอยู่ที่เดิม"
+  },
+  "bulkDelete": {
+    "body_other": "ลบ <highlight>โน้ต {{count}} รายการ</highlight> อย่างถาวรหรือไม่? การดำเนินการนี้ย้อนกลับไม่ได้"
+  },
+  "tagConfirm": {
+    "mergeTitle": "รวมแท็ก",
+    "deleteTitle": "ลบแท็ก",
+    "deleteWithNotesTitle": "ลบแท็กและโน้ต",
+    "mergeConfirm": "รวม",
+    "deleteConfirm": "ลบแท็ก",
+    "moveToTrash": "ย้ายไปที่ถังขยะ",
+    "mergeBody_other": "แท็ก <highlight>“{{targetTag}}”</highlight> มีอยู่แล้ว รวม<highlight>โน้ต {{count}} รายการ</highlight>ที่มีแท็ก “{{tag}}” เข้าด้วยกันหรือไม่?",
+    "deleteBody_other": "นำแท็ก <highlight>“{{tag}}”</highlight> ออกจาก<highlight>โน้ต {{count}} รายการ</highlight>หรือไม่? ตัวโน้ตจะไม่ถูกลบ",
+    "deleteWithNotesBody_other": "ลบแท็ก <highlight>“{{tag}}”</highlight> และย้าย<highlight>โน้ต {{count}} รายการ</highlight>ไปที่ถังขยะหรือไม่? กู้คืนได้จากที่นั่น"
+  },
+  "createNote": {
+    "title": "สร้างโน้ตหรือไม่?",
+    "confirm": "สร้างโน้ต",
+    "body": "ไม่มีโน้ตชื่อ <highlight>“{{title}}”</highlight> อาจเป็นเพราะโน้ตที่ลิงก์ไว้ถูกเปลี่ยนชื่อ สร้างโน้ตใหม่ด้วยชื่อนี้หรือไม่?"
+  },
+  "freshVault": {
+    "title": "สร้างตู้นิรภัยใหม่แล้ว",
+    "confirm": "เข้าใจแล้ว",
+    "body": "ไม่มีตู้นิรภัยที่ตรงกับวลีที่ใส่ จึงสร้างตู้นิรภัยใหม่ที่ว่างเปล่า หากคาดว่าจะเห็นโน้ตของคุณ ให้ออกจากระบบแล้วใส่วลีอีกครั้งอย่างระมัดระวัง แค่คำเดียวที่ต่างไปจะเปิดตู้นิรภัยคนละตู้"
+  },
+  "ambiguousLink": {
+    "title": "มีโน้ตสองรายการใช้ชื่อนี้",
+    "body": "มีโน้ตมากกว่าหนึ่งรายการชื่อ <highlight>“{{title}}”</highlight> ลิงก์นี้จึงไม่รู้ว่าหมายถึงรายการใด เปลี่ยนชื่อรายการหนึ่ง แล้วลิงก์จะชี้ไปที่อีกรายการ"
+  }
+}

@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { type Editor as TipTapEditor } from '@tiptap/react';
 import { getActiveMatchRange } from './editorSearch';
+import { isImeComposing } from './imeComposing';
 import { readOutlinePref, writeOutlinePref } from './editorPrefs';
 import { proUnlocked } from './demo';
 
@@ -167,6 +168,7 @@ export function useEditorPanels({
   useEffect(() => {
     if (readOnly) return;
     const onKeyDown = (e: KeyboardEvent) => {
+      if (isImeComposing(e)) return;
       const root = rootRef.current;
       if (!root) return;
       const ae = document.activeElement as HTMLElement | null;

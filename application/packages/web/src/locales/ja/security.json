@@ -119,6 +119,7 @@
     "enable": "生体認証によるロック解除を有効にする",
     "lockOnOpen": "起動時にアプリをロック",
     "lockOnOpenHint": "アプリを開くときに、生体認証またはPINを要求します。",
+    "lockHidesOnSwitch": "アプリを切り替えるときにも、ノートを隠します。",
     "lockNeedsCredential": "アプリロックには、このデバイスでPINまたは生体認証によるロック解除が必要です。",
     "setUpPin": "PINを設定",
     "confirmPinForLock": "オンにするには、PINを入力してください。リカバリーフレーズのコピーをロックし、PINだけがアプリを開けるようにします。",
@@ -129,6 +130,9 @@
     "disableConfirmLabel": "無効にする",
     "disableConfirmBody": "このデバイスで生体認証によるロック解除を無効にしますか?",
     "disableConfirmBodyAppLock": "このデバイスで生体認証によるロック解除を無効にしますか?アプリのロックもオフになります。"
+  },
+  "appLock": {
+    "phraseNotSaved": "この端末ではリカバリーフレーズを保存できなかったため、何も変更されていません。もう一度お試しください。"
   },
   "pinSetup": {
     "title": "PINを設定",

@@ -200,7 +200,7 @@ export const VS_GROUP_LABELS: Record<VsRow['group'], string> = {
 export const SHARED_FAQS = {
   'verify-encryption': {
     q: 'Do I have to trust you on the encryption?',
-    a: 'No. Notes are encrypted on your device with XChaCha20-Poly1305, keys derived from your phrase, and the encryption code, database schema and threat model are published. You can watch the ciphertext leave your own browser in the network tab.',
+    a: 'No. Notes are encrypted on your device with XChaCha20-Poly1305, keys derived from your phrase, and the encryption code and threat model are published. You can watch the ciphertext leave your own browser in the network tab.',
   },
   'lose-phrase': {
     q: 'What if I lose my 12-word phrase?',
@@ -212,6 +212,6 @@ export const SHARED_FAQS = {
   },
   'account-needed': {
     q: 'Do I need an account?',
-    a: 'Not to try it: the demo is a full app with no signup. To keep notes and sync them you create a vault, which needs a 12-word phrase, or a Google or Apple sign-in if you prefer. An email address is never required.',
+    a: 'Not to try it: the demo is a full app with no signup. To keep notes and sync them you create a vault, which needs a 12-word phrase, or a Google, Apple, or GitHub sign-in if you prefer. An email address is never required.',
   },
 } as const;

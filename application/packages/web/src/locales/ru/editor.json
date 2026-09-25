@@ -1,0 +1,208 @@
+{
+  "placeholder": "Начните писать…",
+  "toolbar": {
+    "bold": "Жирный",
+    "italic": "Курсив",
+    "underline": "Подчёркнутый",
+    "heading": "Заголовок",
+    "taskList": "Список задач",
+    "bulletList": "Маркированный список",
+    "addLink": "Добавить ссылку (Cmd+Shift+K)",
+    "noteLink": "Ссылка на другую заметку (или введите [[)",
+    "numberedList": "Нумерованный список",
+    "textColor": "Цвет текста",
+    "textColorApply": "Цвет текста: {{color}}",
+    "pickColor": "Выберите цвет текста",
+    "table": "Таблица",
+    "quote": "Цитата",
+    "callout": "Выноска",
+    "inlineCode": "Код в строке",
+    "strikethrough": "Зачёркнутый",
+    "codeBlock": "Блок кода",
+    "divider": "Разделитель",
+    "moreFormatting": "Больше форматирования",
+    "fewerFormatting": "Меньше параметров форматирования",
+    "image": "Изображение",
+    "attachFile": "Прикрепить файл",
+    "insert": "Вставить",
+    "highlight": "Выделение цветом",
+    "highlightApply": "Выделение: {{color}}",
+    "pickHighlight": "Выберите цвет выделения",
+    "superscript": "Верхний индекс",
+    "subscript": "Нижний индекс",
+    "math": "Математическая формула",
+    "blockMath": "Формула отдельным блоком",
+    "align": "Выравнивание",
+    "font": "Шрифт",
+    "pictureFromFiles": "Изображение из Файлов"
+  },
+  "align": {
+    "left": "По левому краю",
+    "center": "По центру",
+    "right": "По правому краю",
+    "justify": "По ширине"
+  },
+  "font": {
+    "families": {
+      "sans": "Без засечек",
+      "serif": "С засечками",
+      "mono": "Моноширинный"
+    },
+    "sizes": {
+      "small": "Мелкий",
+      "large": "Крупный",
+      "huge": "Огромный"
+    },
+    "reset": "Сбросить шрифт"
+  },
+  "heading": {
+    "normalText": "Обычный текст",
+    "level": "Заголовок {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "Вставить выноску",
+    "remove": "Убрать выноску",
+    "collapse": "Свернуть выноску",
+    "expand": "Развернуть выноску",
+    "types": {
+      "info": "Информация",
+      "success": "Успех",
+      "warning": "Предупреждение",
+      "tip": "Совет",
+      "danger": "Опасность",
+      "question": "Вопрос",
+      "quote": "Цитата",
+      "example": "Пример",
+      "bug": "Ошибка",
+      "note": "Примечание",
+      "abstract": "Аннотация",
+      "failure": "Сбой"
+    }
+  },
+  "color": {
+    "remove": "Убрать цвет",
+    "removeHighlight": "Убрать выделение",
+    "names": {
+      "gray": "Серый",
+      "red": "Красный",
+      "orange": "Оранжевый",
+      "yellow": "Жёлтый",
+      "green": "Зелёный",
+      "teal": "Бирюзовый",
+      "blue": "Синий",
+      "purple": "Фиолетовый",
+      "pink": "Розовый"
+    }
+  },
+  "insertGroup": {
+    "insert": "Вставить",
+    "blocks": "Блоки",
+    "notation": "Нотация"
+  },
+  "table": {
+    "addRowAbove": "Добавить строку выше",
+    "addRowBelow": "Добавить строку ниже",
+    "addColumnLeft": "Добавить столбец слева",
+    "addColumnRight": "Добавить столбец справа",
+    "toggleHeaderRow": "Включить / выключить строку заголовка",
+    "equalColumnWidths": "Выровнять ширину столбцов",
+    "deleteRow": "Удалить строку",
+    "deleteColumn": "Удалить столбец",
+    "deleteTable": "Удалить таблицу"
+  },
+  "find": {
+    "placeholder": "Найти в заметке",
+    "label": "Найти в заметке",
+    "previous": "Предыдущее совпадение (Shift+Enter)",
+    "previousTitle": "Предыдущее (Shift+Enter)",
+    "next": "Следующее совпадение (Enter)",
+    "nextTitle": "Следующее (Enter)",
+    "close": "Закрыть поиск",
+    "closeTitle": "Закрыть (⌘F)",
+    "replacePlaceholder": "Заменить на",
+    "replaceLabel": "Заменить на",
+    "replace": "Заменить",
+    "replaceTitle": "Заменить это совпадение (Enter)",
+    "replaceAll": "Все",
+    "replaceAllTitle": "Заменить все совпадения",
+    "caseSensitive": "Учитывать регистр",
+    "caseSensitiveTitle": "Учитывать регистр",
+    "closeReplace": "Закрыть поиск и замену",
+    "closeReplaceTitle": "Закрыть (⌥⌘F)",
+    "replacedCount_one": "Заменено: {{count}}",
+    "replacedCount_few": "Заменено: {{count}}",
+    "replacedCount_many": "Заменено: {{count}}",
+    "replacedCount_other": "Заменено: {{count}}"
+  },
+  "outline": {
+    "show": "Показать структуру",
+    "showTitle": "Структура (Cmd/Ctrl+Shift+O)",
+    "title": "Структура",
+    "ariaLabel": "Структура заметки",
+    "hide": "Скрыть структуру",
+    "hideTitle": "Скрыть структуру (Esc)"
+  },
+  "topRow": {
+    "add": "Добавить строку сверху"
+  },
+  "link": {
+    "popoverLabel": "Добавить ссылку",
+    "placeholder": "Вставьте или введите URL",
+    "apply": "Применить",
+    "addTitle": "Добавить ссылку",
+    "editTitle": "Изменить ссылку",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "Введите URL",
+    "errorInvalidUrl": "Введите корректный URL",
+    "textLabel": "Текст ссылки",
+    "textPlaceholder": "Необязательно, оставьте пустым, чтобы показать URL",
+    "selectedTextHint": "Выделенный текст станет ссылкой",
+    "update": "Обновить",
+    "menuOpen": "Открыть ссылку",
+    "menuCopy": "Копировать ссылку",
+    "menuEdit": "Изменить ссылку",
+    "menuRemove": "Убрать ссылку"
+  },
+  "audio": {
+    "uploadingRecording": "Отправка записи...",
+    "uploading": "Отправка...",
+    "stopRecording": "Остановить запись",
+    "recordAudio": "Записать аудио",
+    "savingRecording": "Сохранение записи...",
+    "recording": "Запись",
+    "secondsLeft": "Осталось {{count}} с",
+    "stop": "Стоп"
+  },
+  "wordCount": {
+    "words_one": "{{formatted}} слово",
+    "words_few": "{{formatted}} слова",
+    "words_many": "{{formatted}} слов",
+    "words_other": "{{formatted}} слова",
+    "characters_one": "{{formatted}} символ",
+    "characters_few": "{{formatted}} символа",
+    "characters_many": "{{formatted}} символов",
+    "characters_other": "{{formatted}} символа",
+    "tooLargeToSync": ", может оказаться слишком большой для синхронизации, разделите её на новую заметку",
+    "veryLong": ", очень длинная, редактирование может тормозить",
+    "gettingLong": ", становится длинной, на медленных устройствах может тормозить",
+    "largeTableWarning": "Большая таблица (строк: {{rows}}) может замедлить редактирование этой заметки, лучше разделить её"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "Нет подходящих заметок",
+    "create": "Создать «{{query}}»"
+  },
+  "codeBlock": {
+    "copy": "Копировать",
+    "copied": "Скопировано",
+    "copyFailed": "Ошибка",
+    "wrap": "Переносить длинные строки"
+  },
+  "math": {
+    "sourceLabel": "Код LaTeX"
+  },
+  "noteLink": {
+    "open": "Открыть заметку",
+    "remove": "Убрать ссылку"
+  }
+}

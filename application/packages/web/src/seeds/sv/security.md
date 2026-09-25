@@ -19,7 +19,7 @@ Det där är vår riktiga databas i Zürich, inte en teckning av den. Din anteck
 
 ## Vem som har din nyckel
 
-Alla alternativ håller dina anteckningar totalsträckskrypterade. De skiljer sig i var din fras bor.
+Alla alternativ håller dina anteckningar krypterade på din enhet. De skiljer sig i var din fras bor.
 
 | Alternativ | Var din fras bor | Vad du får ut av det |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Alla alternativ håller dina anteckningar totalsträckskrypterade. De skiljer si
 
 Med de två nedersta kunde vi inte läsa en anteckning ens om vi tvingades. Det första byter bort det mot bekvämlighet: din fras ligger på vår server under en nyckel som är vår, så en ny enhet behöver inget mer än ditt konto. Om vår server någonsin bröts in i kunde den nyckeln bli blottad.
 
-Du är inte låst vid det du valde. Ändra det under **Inställningar > Säkerhet > Din fras**.
+Inloggad med Google, Apple eller GitHub? Du kan byta mellan de två första senare, under **Inställningar > Säkerhet > Din fras**. Med ett fraskonto stannar frasen alltid hos dig.
 
 > [!warning] Ha en egen kopia av frasen
 > Din fras öppnar dina anteckningar. Tappar du bort den kan ingen hämta tillbaka den, inte vi heller. <span style="color: #e03131">Skriv ner den på papper idag.</span>
@@ -44,7 +44,7 @@ Du är inte låst vid det du valde. Ändra det under **Inställningar > Säkerhe
 | Vad | Var |
 | --- | --- |
 | Själva krypteringen | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| Databasens uppbyggnad | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| Vad vår server tar emot | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | Vad en angripare kan och inte kan | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | Hur man rapporterar ett hål | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

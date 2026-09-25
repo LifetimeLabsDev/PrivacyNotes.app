@@ -10,7 +10,8 @@
     "tags": "Tags",
     "currentStreak": "Huidige reeks",
     "longestStreak": "Langste reeks",
-    "streakValue": "{{count}}d",
+    "streakValue_one": "{{count}} dag",
+    "streakValue_other": "{{count}} dagen",
     "timeRangeAria": "Periode van activiteit",
     "modeActivity": "Activiteit",
     "modeMood": "Stemming",
@@ -59,6 +60,7 @@
       "doctorPDF": "PDF voor je arts",
       "copyAIPrompt": "AI-prompt kopiëren",
       "copied": "Gekopieerd!",
+      "saveFailed": "Opslaan is mislukt, dus het bestand kan leeg of onvolledig zijn. Probeer het opnieuw, of kies een andere map.",
       "proBadge": "PRO"
     },
     "sleepActivity": {

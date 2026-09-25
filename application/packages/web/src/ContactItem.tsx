@@ -21,10 +21,9 @@ import { useCopyToClipboard } from './clipboard';
 import { openExternal } from './openExternal';
 import { activeLocale } from './languages';
 import { HoverLabel } from './HoverLabel';
-import { ArrowSquareOut, At, Cake, Calendar, CaretDown, ChatCircle, EnvelopeSimple, Globe, MapPin, Phone, User, Users, X } from './icons';
+import { ArrowSquareOut, At, Cake, Calendar, CaretDown, ChatCircle, EnvelopeSimple, Globe, MapPin, Phone, User, Users } from './icons';
 import { DETAIL_COLUMN, DETAIL_TILE_PX, DetailAction, DetailCopyAction, DetailGroup, DetailHero, DetailLink, DetailNotes, DetailRow } from './detailPane';
-import { loadEncryptedImageUrl } from './EncryptedImage';
-import { useEscapeToClose } from './useEscapeToClose';
+import { openMediaViewer } from './mediaRefs';
 
 
 /** A stored contact with nothing in it: the New state. */
@@ -203,68 +202,6 @@ function webHref(value: string): string | null {
   return null;
 }
 
-/**
- * The photo at its stored size, in the panel every dialog shares: the header
- * row carries the name and the standard close button, and the picture sits
- * flush under it with no frame. The picture is never scaled up: a small
- * photo shows small, centred with some room around it.
- */
-function ContactPhotoLightbox({ photo, name, onClose }: { photo: string; name: string; onClose: () => void }) {
-  const { t } = useTranslation('common');
-  useEscapeToClose(onClose);
-  // Same two shapes the chip reads: a stored blob, or the static path the
-  // seeded contact carries.
-  const staticSrc = photo.startsWith('/') ? photo : '';
-  const uuid = photo.startsWith('pn:img/') ? photo.slice('pn:img/'.length) : '';
-  const [url, setUrl] = useState<string | null>(null);
-  const [small, setSmall] = useState(false);
-  useEffect(() => {
-    if (!uuid) { setUrl(null); return; }
-    let alive = true;
-    void loadEncryptedImageUrl(uuid).then((u) => { if (alive) setUrl(u); });
-    return () => { alive = false; };
-  }, [uuid]);
-  return (
-    <div
-      className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 sm:p-6 z-50"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={name}
-    >
-      <div
-        className="bg-surface-2 border border-divider text-pn rounded-lg overflow-hidden min-w-[14rem] max-w-[calc(100vw-2rem)]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-b border-divider">
-          <h2 className="text-sm font-semibold truncate" dir="auto">{name}</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="shrink-0 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1"
-            aria-label={t('actions.close')}
-          >
-            <X size={18} />
-          </button>
-        </div>
-        <div className={`flex justify-center ${small ? 'p-6' : ''}`}>
-          {staticSrc || url ? (
-            <img
-              src={staticSrc || url!}
-              alt={name}
-              onLoad={(e) => setSmall(e.currentTarget.naturalWidth < 200)}
-              className="block max-w-full max-h-[75vh]"
-              draggable={false}
-            />
-          ) : (
-            <div className="w-56 h-56 bg-surface-1" />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function ContactView({ note, contact, locked, onEdit }: {
   note: LocalNote;
   contact: Contact;
@@ -274,7 +211,6 @@ function ContactView({ note, contact, locked, onEdit }: {
   const { t } = useTranslation('shell');
   const { copy, copied } = useCopyToClipboard();
   const [extrasOpen, setExtrasOpen] = useState(false);
-  const [photoOpen, setPhotoOpen] = useState(false);
   const locale = activeLocale();
   const name = contactDisplayName(note.title, contact) || t('contacts.unnamed');
   const subtitle = [contact.jobTitle.trim(), contact.org.trim()].filter(Boolean).join(', ');
@@ -309,7 +245,9 @@ function ContactView({ note, contact, locked, onEdit }: {
           <HoverLabel label={t('contacts.showPhoto')} position="end">
             <button
               type="button"
-              onClick={() => setPhotoOpen(true)}
+              // The shared viewer, as a list of one: the photo at its stored
+              // size, never scaled up. ui-patterns.md section 98.
+              onClick={() => openMediaViewer({ items: [{ src: contact.photo, name, mime: '' }], index: 0 })}
               aria-label={t('contacts.showPhoto')}
               className="shrink-0 rounded-full hover:opacity-90 focus-visible:outline-2 focus-visible:outline-accent transition"
             >
@@ -324,9 +262,6 @@ function ContactView({ note, contact, locked, onEdit }: {
         onEdit={locked ? undefined : onEdit}
         editLabel={t('common:actions.edit')}
       />
-      {photoOpen && contact.photo && (
-        <ContactPhotoLightbox photo={contact.photo} name={name} onClose={() => setPhotoOpen(false)} />
-      )}
 
       {contact.phones.length > 0 && group(t('contacts.groupPhone'), contact.phones.map((p, i) => (
         <DetailRow

@@ -55,7 +55,7 @@
     "empty": "Töm",
     "emptyHover": "Radera alla anteckningar i papperskorgen",
     "storage": "Lagring",
-    "autoDelete": "Autoradering: 30 d"
+    "autoDelete": "Radera automatiskt efter 30 dagar"
   },
   "search": {
     "sortOptions": "Sorterings- och visningsalternativ",
@@ -161,8 +161,8 @@
     "invisiblesShow": "Visa osynliga tecken",
     "invisiblesHide": "Dölj osynliga tecken",
     "findInNote": "Sök i anteckning",
-    "navPrev": "Föregående anteckning",
-    "navNext": "Nästa anteckning",
+    "navPrev": "Föregående",
+    "navNext": "Nästa",
     "undo": "Ångra",
     "redo": "Gör om",
     "hide": "Dölj",
@@ -176,7 +176,8 @@
     "titlePlaceholderLink": "Bokmärkesnamn",
     "titlePlaceholderContact": "Namn",
     "notBackedUpTooLarge": "Över gränsen på 1 MB, alltså inte säkerhetskopierad. Flytta bilder till bilagor eller dela upp anteckningen.",
-    "notBackedUpFailed": "Inte säkerhetskopierad. Senaste fel: {{message}}. Försöker igen."
+    "notBackedUpFailed": "Inte säkerhetskopierad. Senaste fel: {{message}}. Försöker igen.",
+    "unknownType": "Det här objektet skapades med en nyare version av PrivacyNotes. Uppdatera appen för att öppna det."
   },
   "share": {
     "hover": "Dela / Exportera",

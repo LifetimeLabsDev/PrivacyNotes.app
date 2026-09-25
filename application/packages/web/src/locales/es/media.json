@@ -12,7 +12,9 @@
     "uploadFailed": "La subida falló: {{message}}",
     "storeUnavailable": "Almacén de imágenes no disponible",
     "loadFailed": "No se pudo cargar la imagen",
-    "notFound": "Imagen no encontrada"
+    "notFound": "Imagen no encontrada",
+    "saveFailed": "No se pudo guardar, así que el archivo puede estar vacío o incompleto.",
+    "viewAria": "Ver imagen"
   },
   "attachment": {
     "fallbackName": "Adjunto",
@@ -26,7 +28,6 @@
     "deleteConfirm": "¿Eliminar?",
     "copied": "Copiado",
     "download": "Descargar",
-    "downloadToPlay": "Descargar para reproducir",
     "play": "Reproducir",
     "pause": "Pausar",
     "fileNotFound": "Archivo no encontrado",
@@ -37,6 +38,29 @@
     "downloadFailed": "La descarga falló",
     "playbackFailed": "La reproducción falló",
     "uploadFailed": "La subida falló: {{message}}",
-    "unknownError": "Error desconocido"
+    "unknownError": "Error desconocido",
+    "view": "Ver",
+    "more": "Más acciones"
+  },
+  "viewer": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "position": "{{index}} de {{count}}",
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar",
+    "pdfLoading": "Abriendo el PDF...",
+    "pdfFailed": "No se puede abrir este PDF. Descárgalo para abrirlo en otra app.",
+    "pdfPassword": "Este PDF tiene contraseña. Descárgalo para abrirlo en otra app.",
+    "saveFailed": "No se pudo guardar, así que el archivo puede estar vacío o incompleto.",
+    "pageCount_one": "{{count}} página",
+    "pageCount_other": "{{count}} páginas",
+    "pageLabel": "{{name}}, página {{page}} de {{count}}"
+  },
+  "picker": {
+    "title": "Imágenes en Archivos",
+    "search": "Buscar imágenes",
+    "empty": "Aún no hay imágenes en Archivos. Sube una allí y luego añádela aquí.",
+    "noMatch": "Ninguna imagen coincide con tu búsqueda.",
+    "noCopy": "Una imagen que añades aquí apunta al archivo en Archivos, así que no ocupa almacenamiento extra."
   }
 }

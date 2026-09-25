@@ -436,6 +436,7 @@ function ToggleItem({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={pro ? undefined : checked}
       className="w-full flex items-start gap-3 px-4 py-2 text-start text-[14px] text-pn hover:bg-surface-1 transition"
     >
       <span className="shrink-0 mt-0.5 text-accent">

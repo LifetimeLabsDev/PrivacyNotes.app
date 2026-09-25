@@ -59,6 +59,9 @@
     "upgradeCharge": "Ti viene addebitato {{amount}} oggi per il resto del tuo anno in corso. Dopodiché si rinnova a {{price}}/anno.",
     "upgradeChargeUntil": "Ti viene addebitato {{amount}} oggi per il resto del tuo anno in corso, fino al {{date}}. Dopodiché si rinnova a {{price}}/anno.",
     "upgradeChargeApple": "Ti vengono addebitati {{price}} oggi. Apple ti rimborsa automaticamente la parte non utilizzata del tuo anno in corso e il tuo nuovo anno parte adesso.",
+    "upgradeAmountFailed": "Non è stato possibile caricare l'importo dovuto oggi.",
+    "upgradeAmountRetry": "Riprova",
+    "upgradeAmountChanged": "L'importo dovuto oggi è cambiato o non è stato possibile verificarlo, quindi non ti è stato addebitato nulla. Scegli di nuovo il pacchetto per vedere il nuovo importo.",
     "upgrading": "Aggiornamento…",
     "upgradeAndPay": "Aggiorna e paga ora",
     "maybeLater": "Forse più tardi",
@@ -183,7 +186,12 @@
     "contentWidthWide": "Larga",
     "contentWidthFull": "Piena",
     "lineSpacingTitle": "Interlinea",
-    "lineSpacingDesc": "Lo spazio tra i paragrafi mentre scrivi.",
+    "tintNotesTitle": "Colora lo sfondo delle note",
+    "tintNotesDesc": "Le note prendono il colore del tag o della cartella.",
+    "lineSpacingDesc": "Lo spazio tra le righe e i paragrafi mentre scrivi.",
+    "lineSpacingTight": "Stretta",
+    "resetDefaults": "Ripristina i valori predefiniti",
+    "resetDefaultsConfirm": "Conferma il ripristino",
     "lineSpacingCompact": "Compatta",
     "lineSpacingNormal": "Normale",
     "lineSpacingExample": "Esempio",
@@ -211,10 +219,10 @@
   },
   "conflict": {
     "title": "Conflitto di sincronizzazione",
-    "explanation": "Questa nota è stata modificata su un altro dispositivo mentre qui avevi modifiche non salvate. Useremo la <em>versione più recente</em> (dall'altro dispositivo, {{date}}).",
+    "explanation": "Questa nota è stata modificata su un altro dispositivo mentre questo dispositivo aveva modifiche non ancora sincronizzate, e il testo è diverso tra i due. Manterremo la <em>versione dell'altro dispositivo</em> ({{date}}), a meno che tu non scelga diversamente.",
     "willBeKept": "Verrà mantenuta",
     "showLocal": "Mostra la versione di questo dispositivo ({{date}})",
-    "useNewer": "OK, usa la più recente",
+    "useNewer": "Usa l'altra versione",
     "useMine": "Usa invece la mia",
     "keepBoth": "Mantieni entrambe come note separate"
   },
@@ -226,6 +234,13 @@
     "localLabel": "Elimina i dati locali",
     "localDesc": "Cancella note, immagini e dati nella cache da questo dispositivo. Questo non elimina il tuo account, ripulisce solo questo browser.",
     "localRequired": "(obbligatorio quando si elimina l'account)",
+    "localUnsynced_one": "Su questo dispositivo c'è {{items}}. Se elimini i dati locali, si perde per sempre.",
+    "localUnsynced_other": "Su questo dispositivo ci sono {{items}}. Se elimini i dati locali, si perdono per sempre.",
+    "unsyncedNotes_one": "{{count}} nota non sincronizzata",
+    "unsyncedNotes_other": "{{count}} note non sincronizzate",
+    "unsyncedFiles_one": "{{count}} file non sincronizzato",
+    "unsyncedFiles_other": "{{count}} file non sincronizzati",
+    "unsyncedBoth": "{{notes}} e {{files}}",
     "cloudLabel": "Elimina i dati nel cloud e l'account",
     "cloudDesc": "Rimuove definitivamente dal server tutte le note sincronizzate, le immagini, i dispositivi, le impostazioni e il tuo account. Puoi registrarti di nuovo in seguito.",
     "confirmPrompt": "Digita <kbd>DELETE</kbd> per confermare",
@@ -267,7 +282,11 @@
     "notBackedUpTooltip_one": "{{count}} nota non ha un backup. Clicca per vedere perché.",
     "notBackedUpTooltip_other": "{{count}} note non hanno un backup. Clicca per vedere perché.",
     "notBackedUpAria_one": "{{count}} nota non ha un backup",
-    "notBackedUpAria_other": "{{count}} note non hanno un backup"
+    "notBackedUpAria_other": "{{count}} note non hanno un backup",
+    "haltedTooltip_one": "Sincronizzazione interrotta, {{count}} nota non ha un backup. Clicca per vedere perché.",
+    "haltedTooltip_other": "Sincronizzazione interrotta, {{count}} note non hanno un backup. Clicca per vedere perché.",
+    "haltedAria_one": "Sincronizzazione interrotta, {{count}} nota non ha un backup",
+    "haltedAria_other": "Sincronizzazione interrotta, {{count}} note non hanno un backup"
   },
   "errors": {
     "noSession": "Nessuna sessione attiva. Prova ad accedere di nuovo.",
@@ -319,7 +338,9 @@
     "reasonFailed": "Non riuscito: {{message}}",
     "openNote": "Apri",
     "passPushFailed_one": "{{count}} non riuscito",
-    "passPushFailed_other": "{{count}} non riusciti"
+    "passPushFailed_other": "{{count}} non riusciti",
+    "passHalted_one": "interrotta, {{count}} in attesa",
+    "passHalted_other": "interrotta, {{count}} in attesa"
   },
   "language": {
     "reportMistake": "Segnala un errore di traduzione"

@@ -10,6 +10,7 @@
     "intro": {
       "storage": "Envios maiores e mais espaço são um recurso Pro. Faça upgrade para arquivos de 50 MB e 500 MB de armazenamento.",
       "folders": "As pastas são um recurso Pro. Organize suas notas em pastas aninhadas, na profundidade que você precisar, e mantenha cada projeto separado.",
+      "looks": "Ícones e cores para pastas e etiquetas são um recurso Pro. Dê a cada uma um visual que você reconhece de relance.",
       "lock": "Bloquear uma nota é um recurso Pro. Faça upgrade para proteger qualquer nota contra edições acidentais.",
       "protect": "Proteger uma nota com PIN é um recurso Pro. Faça upgrade para proteger notas sensíveis com seu PIN.",
       "history": "O histórico de notas é um recurso Pro. Faça upgrade para manter uma linha do tempo de cada salvamento.",
@@ -57,6 +58,7 @@
     "title": "Histórico de notas",
     "subtitle": "Até 20 versões por nota. As mais antigas são removidas automaticamente.",
     "empty": "Nenhum histórico ainda. As versões começam a se acumular após a próxima edição. Volte depois.",
+    "loadFailed": "Não foi possível carregar o histórico. Verifique a conexão e tente de novo.",
     "selectPrompt": "Selecione uma versão para visualizar.",
     "emptyBody": "(vazia)",
     "restore": "Restaurar",
@@ -64,7 +66,7 @@
   },
   "donation": {
     "eyebrow": "Você liberou",
-    "intro": "O <brand/> é gratuito, e sempre será. Sem anúncios, sem rastreamento, sem e-mail cadastrado. Se ele ajudou você a pensar, escrever ou lembrar, considere apoiar o desenvolvimento. É o que mantém tudo funcionando e paga os próximos recursos.",
+    "intro": "O <brand/> é gratuito, e sempre será. Sem anúncios, sem rastreadores e sem e-mail cadastrado, a não ser que você tenha entrado com um. Se ele ajudou você a pensar, escrever ou lembrar, considere apoiar o desenvolvimento. É o que mantém tudo funcionando e paga os próximos recursos.",
     "proBenefits": "Apoiar também libera os benefícios Pro quando eles chegarem: dispositivos ilimitados, anexos, backups criptografados na nuvem.",
     "maybeLater": "Talvez depois",
     "support": "Apoiar →"

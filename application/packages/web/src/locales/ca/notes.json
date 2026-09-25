@@ -55,7 +55,7 @@
     "empty": "Buida",
     "emptyHover": "Suprimeix totes les notes de la paperera",
     "storage": "Emmagatzematge",
-    "autoDelete": "Supressió auto.: 30 d"
+    "autoDelete": "Suprimeix després de 30 dies"
   },
   "search": {
     "sortOptions": "Opcions d'ordenació i visualització",
@@ -163,8 +163,8 @@
     "invisiblesShow": "Mostra els caràcters invisibles",
     "invisiblesHide": "Amaga els caràcters invisibles",
     "findInNote": "Cerca dins la nota",
-    "navPrev": "Nota anterior",
-    "navNext": "Nota següent",
+    "navPrev": "Anterior",
+    "navNext": "Següent",
     "undo": "Desfés",
     "redo": "Refés",
     "hide": "Amaga",
@@ -178,7 +178,8 @@
     "titlePlaceholderLink": "Nom del marcador",
     "titlePlaceholderContact": "Nom",
     "notBackedUpTooLarge": "Supera el límit d'1 MB, per tant no té còpia de seguretat. Mou les imatges a adjunts o divideix la nota.",
-    "notBackedUpFailed": "Sense còpia de seguretat. Darrer error: {{message}}. Tornant-ho a provar."
+    "notBackedUpFailed": "Sense còpia de seguretat. Darrer error: {{message}}. Tornant-ho a provar.",
+    "unknownType": "Aquest element s'ha creat amb una versió més recent de PrivacyNotes. Actualitza l'aplicació per obrir-lo."
   },
   "share": {
     "hover": "Comparteix / Exporta",

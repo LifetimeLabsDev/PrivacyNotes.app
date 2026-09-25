@@ -4,9 +4,9 @@ You should not have to take our word for any of this.
 
 This page is three ways to check that PrivacyNotes encrypts your notes on your device before they reach our server. They take about a minute, about ten minutes, and about a weekend. The first one needs nothing but a browser, and it is the one that actually settles the question.
 
-Accurate as of v0.488.3 (2026-08-31). The payloads below are real, captured from an actual sync.
+Accurate as of v0.530.2 (2026-09-25). The payloads below are real, captured from an actual sync.
 
-**One caveat before you start.** Everything below describes self-custody, the default. If you signed up with Google, Apple or GitHub and chose the custodial option, the server holds your phrase and can decrypt your notes - the trade is spelled out in [SECURITY.md](SECURITY.md) - though tier 1 still shows you ciphertext on the wire either way.
+**One caveat before you start.** Everything below describes self-custody, which every phrase sign-up uses. A sign-up with Google, Apple or GitHub preselects the custodial option instead, and if your account uses it, the server holds your phrase and can decrypt your notes - the trade is spelled out in [SECURITY.md](SECURITY.md) - though tier 1 still shows you ciphertext on the wire either way.
 
 ---
 
@@ -68,7 +68,7 @@ Be suspicious of anyone who shows you only the good part, so here is the rest of
 
 - **`user_pubkey`** is your public identity, derived from your phrase. The server needs it to know which rows are yours. It also rides in the query string of update and fetch requests, for the same reason.
 - **`id`, `created_at`, `updated_at`** are the note's id and timestamps, in the clear. Our server therefore knows how many notes you have and when you touched them. It cannot know what any of them say.
-- **`nonce`** is a fresh 24 random bytes for every single write. It is not secret and it is not a key.
+- **`nonce`** is a fresh 24 random bytes for every single write. It is not secret and it is not a key. An update also carries the previous write's nonce in its query string, so it lands only on the version this device last synced.
 
 That is the complete list. The full accounting of what our server can observe, including device records and quota counters, is in [THREAT_MODEL.md](THREAT_MODEL.md).
 
@@ -141,7 +141,7 @@ No secrets, no signing keys, no cooperation from us. Run what you built, point y
 | Third-party security audit report | Planned, published in full or in summary when it is done |
 | Sync backend, including the database schema | Closed. See the note under this table |
 
-The sync backend is closed because the hosted service is what funds the product, and the database schema is part of it. Nothing in the three tiers depends on either. The client you can read encrypts before upload, and tier 1 shows you from the outside exactly what reaches the server: ciphertext, nonces, a public key and timestamps, and nothing else. That is a stronger check than reading our table definitions, because it measures what actually leaves your machine rather than what we say we store. If self-hosting ever ships, the schema ships with it.
+The sync backend is closed because the hosted service is what funds the product, and the database schema is part of it. Nothing in the three tiers depends on either. The client you can read encrypts your notes on your device, and tier 1 shows you from the outside exactly what reaches the server: ciphertext, nonces, a public key and timestamps, and nothing else. That is a stronger check than reading our table definitions, because it measures what actually leaves your machine rather than what we say we store. If self-hosting ever ships, the schema ships with it.
 
 
 ---

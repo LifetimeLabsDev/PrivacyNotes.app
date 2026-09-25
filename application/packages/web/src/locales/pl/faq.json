@@ -74,7 +74,7 @@
       "q": "Czy potrzebuję adresu e-mail, żeby się zarejestrować?",
       "a": [
         "Nie. Nowy sejf to świeżo wygenerowana fraza odzyskiwania z 12 słów i nic więcej. Bez e-maila, bez nazwy użytkownika, bez numeru telefonu, bez kroku weryfikacji. Jeśli logujesz się frazą, nie moglibyśmy wysłać Ci e-maila, nawet gdybyśmy chcieli, bo nigdy nie dowiadujemy się, kim jesteś.",
-        "Wolisz znajomy sposób? Logowanie przez Google, Apple albo GitHub też działa. Ta droga siłą rzeczy zdradza nam adres e-mail powiązany z tym logowaniem, ale Twoje notatki i tak pozostają szyfrowane end-to-end, a pod spodem i tak dostajesz frazę."
+        "Wolisz znajomy sposób? Logowanie przez Google, Apple albo GitHub też działa. Ta droga siłą rzeczy zdradza nam adres e-mail powiązany z tym logowaniem, ale Twoje notatki i tak pozostają zaszyfrowane na Twoim urządzeniu, a pod spodem i tak dostajesz frazę."
       ]
     },
     "import-from-other-apps": {
@@ -94,7 +94,7 @@
     "what-can-you-see": {
       "q": "Co PrivacyNotes widzi z moich notatek?",
       "a": [
-        "Nic czytelnego. Notatki, tytuły, tagi i załączniki są szyfrowane na Twoim urządzeniu, zanim się zsynchronizują. Serwer przechowuje szyfrogram, którego nie potrafi odszyfrować, i po naszej stronie nie ma żadnego klucza, który by to zmienił.",
+        "Nic czytelnego. Notatki, tytuły, tagi i załączniki są zawsze zaszyfrowane, na Twoim urządzeniu i w drodze na serwer, więc serwer przechowuje wyłącznie szyfrogram. Przy samodzielnym przechowywaniu, a ma je każde konto oparte na frazie, po naszej stronie nie istnieje żaden klucz, który mógłby ten szyfrogram odszyfrować. Rejestracja przez Google, Apple albo GitHub pyta, gdzie ma być Twój klucz, i zaczyna od opcji „Prosto i wygodnie”, która przechowuje Twoją frazę na naszym serwerze, zaszyfrowaną naszym kluczem. Ustawienia > Bezpieczeństwo > Twoja fraza pokazuje, który tryb masz, i pozwala go zmienić.",
         "To, co widzimy, to absolutne minimum potrzebne do działania usługi: ile zaszyfrowanej pamięci zajmujesz, ile urządzeń podłączyłeś i znaczniki czasu synchronizacji. Jeśli logujesz się frazą, a nie przez Google, Apple czy GitHub, nie znamy nawet Twojego adresu e-mail."
       ]
     },
@@ -102,18 +102,18 @@
       "q": "Dlaczego fraza odzyskiwania zamiast nazwy użytkownika i hasła?",
       "a": [
         "Na początku może to wyglądać na krok wstecz, ale pojedyncza fraza odzyskiwania to mocniejsza konstrukcja. Przy nazwie użytkownika i haśle nazwa użytkownika nie jest tajemnicą (pojawia się w każdym wycieku), więc całe bezpieczeństwo opiera się na haśle, a hasła wybierane przez ludzi mają średnio jakieś 30 do 40 bitów entropii. Twoja fraza z 12 słów to gwarantowane 128 bitów, wygenerowane przez Twoje urządzenie, nigdy nie wybrane przez człowieka i nigdy nie użyte ponownie na innej stronie.",
-        "Nie ma też czego stracić po naszej stronie. Logowanie hasłem oznacza, że serwer przechowuje przynajmniej skrót hasła, który można wykraść, złamać albo wyłudzić. Twoja fraza nigdy nie opuszcza urządzenia: wyprowadza klucze szyfrowania lokalnie, a serwer widzi wyłącznie zaszyfrowane dane. Nie ma skrótu do kradzieży ani procedury resetu hasła, którą atakujący mógłby wykorzystać.",
-        "Jeśli wpisywanie 12 słów wydaje się niewygodne: możesz zapisać frazę w menedżerze haseł jednym dotknięciem (Ustawienia > Bezpieczeństwo > Twoja fraza), a logowanie będzie wyglądać jak każde inne. Wolisz znajomy sposób? Logowanie przez Google, Apple albo GitHub też działa, a pod spodem i tak dostajesz frazę."
+        "Nie ma też hasła, które moglibyśmy stracić. Logowanie hasłem oznacza, że serwer przechowuje przynajmniej skrót hasła, który można wykraść, złamać albo wyłudzić. Przy samodzielnym przechowywaniu Twoja fraza nigdy nie opuszcza urządzenia: wyprowadza klucze szyfrowania lokalnie, a serwer widzi wyłącznie zaszyfrowane dane. Nie ma skrótu do kradzieży ani procedury resetu hasła, którą atakujący mógłby wykorzystać.",
+        "Jeśli wpisywanie 12 słów wydaje się niewygodne: możesz zapisać frazę w menedżerze haseł jednym dotknięciem (Ustawienia > Bezpieczeństwo > Twoja fraza), a logowanie będzie wyglądać jak każde inne. Wolisz znajomy sposób? Logowanie przez Google, Apple albo GitHub też działa: pod spodem i tak dostajesz frazę, a Ty decydujesz, czy zostaje na Twoim urządzeniu, czy przechowujemy ją za Ciebie."
       ]
     },
     "threat-model-levels": {
       "q": "Czy mogę sam wybrać równowagę między wygodą a prywatnością?",
       "a": [
-        "Tak, całkiem świadomie. Nie każdy broni się przed tymi samymi zagrożeniami, więc model konta to drabina, a nie jeden dogmat. Każdy szczebel trzyma Twoje notatki zaszyfrowane end-to-end; zmienia się to, kto trzyma klucz i co o Tobie wiemy.",
-        "Wygodny koniec: zaloguj się przez Google, Apple albo GitHub i wybierz „Prosto i wygodnie”, gdy zapytamy. Przechowujemy Twoją frazę odzyskiwania za Ciebie, zaszyfrowaną na naszym serwerze, więc każde urządzenie loguje się samym logowaniem Google, Apple albo GitHub i nie ma czego zabezpieczać ani gubić. W zamian znamy adres e-mail stojący za tym logowaniem, a Twój klucz trzymamy my, a nie Ty. Jeśli Twoim realnym zagrożeniem jest utrata własnych danych logowania, a nie celowany atak, to właściwy szczebel.",
+        "Tak, całkiem świadomie. Nie każdy broni się przed tymi samymi zagrożeniami, więc model konta to drabina, a nie jeden dogmat. Na każdym szczeblu Twoje notatki są szyfrowane na Twoim urządzeniu; zmienia się to, kto trzyma klucz i co o Tobie wiemy.",
+        "Wygodny koniec: zaloguj się przez Google, Apple albo GitHub i zostaw zaznaczoną opcję „Prosto i wygodnie”, gdy zapytamy; od niej ten ekran się zaczyna. Przechowujemy Twoją frazę odzyskiwania za Ciebie, zaszyfrowaną na naszym serwerze, więc każde urządzenie loguje się samym tym logowaniem i nie ma czego zabezpieczać ani gubić. W zamian znamy adres e-mail stojący za tym logowaniem, a Twój klucz trzymamy my, a nie Ty. Jeśli Twoim realnym zagrożeniem jest utrata własnych danych logowania, a nie celowany atak, to właściwy szczebel.",
         "Środek: zaloguj się przez Google, Apple albo GitHub, ale wybierz „Maksymalne bezpieczeństwo i prywatność”. Twoja fraza nigdy nie trafia na nasze serwery, a szyfrowanie jest w pełni zero-knowledge; nowe urządzenia potrzebują frazy albo skanu kodu QR z urządzenia już zalogowanego. Nadal siłą rzeczy znamy e-mail stojący za tym logowaniem, ale nie odczytalibyśmy ani jednej notatki nawet pod przymusem.",
         "Prywatny koniec: pomiń logowania całkowicie i używaj wyłącznie frazy z 12 słów. Bez e-maila, bez nazwiska, bez tożsamości, a w połączeniu z [anonimowym zakupem Pro](/pl/help/buy-pro-anonymously/) nawet płatność nie zostawia nigdzie Twojego nazwiska. W zamian pieczę nad kluczem masz wyłącznie Ty: zgub frazę, nie mając już żadnego zalogowanego urządzenia, a nikt Ci nie pomoże.",
-        "Nie jesteś przywiązany do wybranego szczebla. W Ustawienia > Bezpieczeństwo > Twoja fraza oba tryby stoją obok siebie wraz z kosztami, a przejść możesz w dowolną stronę i o dowolnej porze. Przejście na samodzielne zarządzanie usuwa naszą kopię i najpierw prosi o przepisanie trzech z dwunastu słów, bo klikają w to zwykle ci, którzy nigdy ich nie zapisali. Powrót wysyła frazę z powrotem i wymaga wyraźnej decyzji. Obie strony są podpisane kluczem Twojego konta, więc skradziona sesja nie zmieni Twojego trybu. A na każdym szczeblu dochodzą warstwy lokalne: blokada PIN-em, odblokowanie biometryczne i ochrona pojedynczych notatek."
+        "Przy logowaniu przez Google, Apple albo GitHub wybrany szczebel nie jest ostateczny. W Ustawienia > Bezpieczeństwo > Twoja fraza oba tryby stoją obok siebie wraz z kosztami, a przejść możesz w dowolną stronę i o dowolnej porze. Przejście na samodzielne przechowywanie usuwa naszą kopię i najpierw prosi o przepisanie trzech z dwunastu słów, bo klikają w to zwykle ci, którzy nigdy ich nie zapisali. Powrót wysyła frazę z powrotem i wymaga wyraźnej decyzji. Obie strony są podpisane kluczem Twojego konta, więc skradziona sesja nie zmieni Twojego trybu. Konto oparte na samej frazie zostaje na prywatnym końcu, bo nie ma logowania, którym dałoby się pobrać przechowywany klucz. A na każdym szczeblu dochodzą warstwy lokalne: blokada PIN-em, odblokowanie biometryczne i ochrona pojedynczych notatek."
       ]
     },
     "twelve-word-phrase": {
@@ -159,7 +159,7 @@
     "no-ai": {
       "q": "Czy PrivacyNotes używa AI na moich notatkach?",
       "a": [
-        "Nie. W aplikacji nie ma żadnych funkcji AI, żadnego przetwarzania AI w tle i żadnego trenowania modeli na Twoich treściach. Twoje notatki są szyfrowane, zanim opuszczą urządzenie, więc na naszych serwerach nie ma niczego czytelnego, czym można by cokolwiek nakarmić.",
+        "Nie. W aplikacji nie ma żadnych funkcji AI, żadnego przetwarzania AI w tle i żadnego trenowania modeli na Twoich treściach. Twoje notatki są zawsze zaszyfrowane, na Twoim urządzeniu i w drodze na serwer, więc na naszych serwerach nie ma niczego czytelnego, czym można by cokolwiek nakarmić.",
         "Gdybyśmy kiedyś wypuścili funkcję w tym kierunku, musiałaby działać w całości na Twoim urządzeniu i być ściśle opcjonalna. Wysyłanie jawnych notatek do modelu w chmurze złamałoby obietnicę zero-knowledge, więc to nie wchodzi w grę."
       ]
     },
@@ -188,7 +188,7 @@
       "q": "Zgubiłem frazę odzyskiwania. Czy możecie odzyskać moje konto?",
       "a": [
         "Jeśli jesteś jeszcze zalogowany na jakimkolwiek urządzeniu: tak, możesz ją odzyskać sam. Otwórz Ustawienia > Bezpieczeństwo > Twoja fraza i zapisz ją teraz w menedżerze haseł.",
-        "Jeśli nie masz żadnego zalogowanego urządzenia ani frazy: nie, i nikt inny też nie może. Twoja fraza nigdy nie trafia na nasze serwery, więc nie ma czego zresetować i nie ma zgłoszenia do wsparcia, które by pomogło. To nie polityka, którą moglibyśmy nagiąć - to właśnie znaczy szyfrowanie end-to-end. Każda usługa, która potrafi odtworzyć Twoje zaszyfrowane dane po całkowitej utracie, trzyma Twoje klucze.",
+        "Jeśli nie masz żadnego zalogowanego urządzenia ani frazy, wszystko zależy od tego, kto trzyma klucz. Jeśli przy rejestracji przez Google, Apple albo GitHub klucz został u nas, zaloguj się tym kontem i wracasz do środka. Przy samodzielnym przechowywaniu nikt tego nie zrobi: Twoja fraza nigdy nie trafia na nasze serwery, więc nie ma czego zresetować i nie ma zgłoszenia do wsparcia, które by pomogło. Każda usługa, która potrafi odtworzyć Twoje zaszyfrowane dane po całkowitej utracie, trzyma Twoje klucze.",
         "Zabezpieczenie kosztuje dziesięć sekund: zapisz frazę w menedżerze haseł tego samego dnia, w którym zakładasz konto. Jeśli fraza już przepadła, a płacisz za dodatek pamięci: rozlicza Cię bezpośrednio Paddle i może go anulować bez Twojej frazy, zobacz [zmiana albo anulowanie dodatku](/pl/help/manage-storage-addon/)."
       ]
     },
@@ -223,14 +223,14 @@
     "offline": {
       "q": "Czy PrivacyNotes działa offline?",
       "a": [
-        "Tak. Aplikacja jest local-first: Twoje notatki żyją w bazie danych na Twoim urządzeniu, więc czytanie, pisanie i wyszukiwanie działają bez połączenia. Zmiany synchronizują się automatycznie, gdy wrócisz online."
+        "Tak. Aplikacja jest local-first: Twoje notatki żyją w bazie danych na Twoim urządzeniu, więc czytanie, pisanie i wyszukiwanie działają bez połączenia. Zmiany synchronizują się automatycznie, gdy wrócisz online, a obraz albo plik dodany offline czeka na tym urządzeniu i wtedy też zostaje przesłany."
       ]
     },
     "sync-conflicts": {
       "q": "Co się stanie, jeśli edytuję tę samą notatkę na dwóch urządzeniach naraz?",
       "a": [
-        "Nic nie zostanie po cichu nadpisane. Jeśli oba urządzenia zmieniły tę samą notatkę, będąc osobno (na przykład jedno było offline), aplikacja wykrywa kolizję przy ponownej synchronizacji i pokazuje okno konfliktu: zachowaj wersję z tego urządzenia, zachowaj tę drugą albo zachowaj obie jako osobne notatki.",
-        "W codziennym użyciu rzadko to zobaczysz. Zmiany synchronizują się w kilka sekund, gdy jesteś online, a okno pojawia się tylko wtedy, gdy dwie wersje tej samej notatki naprawdę się rozjechały."
+        "Gdy Twoje urządzenia znów się synchronizują, scalają notatkę szczegół po szczególe, więc zmiana wprowadzona tylko na jednym z nich zostaje zachowana. Jeśli oba edytowały tekst, będąc osobno (na przykład jedno było offline), urządzenie, które synchronizuje się jako drugie, pokazuje okno konfliktu: zachowaj wersję z tego urządzenia, zachowaj tę drugą albo zachowaj obie jako osobne notatki. Obie wersje zostają zachowane, dopóki nie wybierzesz.",
+        "Gdy oba urządzenia, będąc osobno, zmieniły ten sam szczegół, na przykład przypięcie, folder albo tytuł, bez okna konfliktu zostaje zachowany szczegół z urządzenia, które jako ostatnie edytowało notatkę. Notatka usunięta na zawsze na jednym urządzeniu zostaje usunięta wszędzie, razem ze zmianą, którą wprowadziło w niej inne urządzenie, gdy urządzenia były osobno."
       ]
     },
     "remove-device": {
@@ -244,8 +244,8 @@
       "q": "Gdzie przechowywane są moje dane?",
       "a": [
         "Najpierw na Twoim urządzeniu i to na tej kopii pracujesz: aplikacja jest local-first, więc notatki otwierasz i edytujesz też offline. Kopia do synchronizacji leży na serwerach w Zurychu, w Szwajcarii. Są tam Twój klucz publiczny, zaszyfrowane bloby notatek, plików i ustawień oraz znaczniki czasu i rozmiary potrzebne do synchronizacji. Żadnych tytułów, żadnego tekstu, żadnych tagów.",
-        "Kraj liczy się mniej niż szyfrowanie. Wszystko jest szyfrowane na Twoim urządzeniu, zanim je opuści, więc ta kopia byłaby nieczytelna, gdziekolwiek by leżała: Szwajcaria to bonus, a nie obietnica. [Co się synchronizuje](/pl/help/what-syncs/) wylicza to punkt po punkcie.",
-        "Kopia na Twoim urządzeniu też jest zaszyfrowana. Notatki są zapieczętowane na dysku kluczem wyprowadzonym z Twojej frazy odzyskiwania przy odblokowaniu, więc skopiowany profil przeglądarki, zrzut pamięci czy skradziona kopia zapasowa zawierają zaszyfrowane dane, a nie Twoje notatki."
+        "Kraj liczy się mniej niż szyfrowanie. Wszystko jest zawsze zaszyfrowane, na Twoim urządzeniu i w drodze na serwer, więc ta kopia byłaby nieczytelna, gdziekolwiek by leżała: Szwajcaria to bonus, a nie obietnica. [Co się synchronizuje](/pl/help/what-syncs/) wylicza to punkt po punkcie.",
+        "Kopia na Twoim urządzeniu też jest zaszyfrowana. Notatki są zapieczętowane na dysku kluczem wyprowadzonym z Twojej frazy odzyskiwania przy odblokowaniu, więc kopia pamięci aplikacji na Twoim urządzeniu albo skradziona kopia zapasowa tej pamięci zawiera zaszyfrowane dane, a nie Twoje notatki."
       ]
     },
     "data-on-disk": {
@@ -253,28 +253,28 @@
       "a": [
         "W jednym folderze na instalację, w obszarze danych aplikacji Twojego konta. To, gdzie ten folder leży, zależy od platformy:",
         "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, albo `app.privacynotes.appimage` w przypadku AppImage, który niesie własny silnik przeglądarki i dlatego trzyma własny profil\n- **Android, iOS**: prywatna pamięć aplikacji, której nie otworzy żadna inna aplikacja\n- **Przeglądarka**: profil Twojej przeglądarki, pod `use.privacynotes.app`",
-        "To, co tam leży, to zaszyfrowane dane. Każda notatka to jeden zapieczętowany blok z tytułem, treścią i tagami w środku, otwierany kluczem wyprowadzonym z Twojej frazy odzyskiwania przy odblokowaniu. Jawne zostaje tylko to, czego potrzebuje lokalny indeks: identyfikatory, znaczniki czasu i flagi takie jak ulubiona czy usunięta.",
+        "To, co tam leży, to zaszyfrowane dane. Każda notatka to jeden zapieczętowany blok z tytułem, treścią i tagami w środku, otwierany kluczem wyprowadzonym z Twojej frazy odzyskiwania przy odblokowaniu, więc skopiowany folder nie zawiera niczego czytelnego. Jawne zostaje tylko to, czego potrzebuje lokalny indeks: identyfikatory, znaczniki czasu, rodzaj elementu i flagi takie jak przypięta czy usunięta.",
         "Żeby przenieść notatki na inne urządzenie albo zachować własną kopię, użyj **Ustawienia > Import & Export > Eksport** i wybierz „Zaszyfrowana pełna kopia zapasowa (.pnbackupz)”. Zawiera wszystko, jest zaszyfrowana kluczem Twojej frazy i przywraca się Twoją frazą na dowolnym urządzeniu. [Więcej o kopiach zapasowych](/pl/help/backup-strategy/)."
       ]
     },
     "export": {
       "q": "Czy mogę wyeksportować swoje notatki, czy jestem uwięziony?",
       "a": [
-        "Możesz wyeksportować wszystko w każdej chwili, generowane w całości na Twoim urządzeniu: pliki Markdown w zipie razem z załącznikami, pełną kopię JSON albo samodzielny HTML - dla pojedynczej notatki lub całego konta. Wpisy z sejfu mają własną drogę, „Eksport sejfu (.json)”, który zapisuje format Bitwardena i przenosi Twoje nazwy użytkownika, hasła, adresy URL, dane kart i klucze 2FA do Bitwardena, 1Password albo KeePass.",
-        "Wszystko znajdziesz w Ustawienia > Import & Export > Export. Import działa tak samo, z Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden i nie tylko: pełna lista jest w [przenosiny z innej aplikacji](/pl/help/import-from-other-apps/). Uwięzienie u nas nie jest częścią modelu biznesowego."
+        "Możesz wyeksportować wszystko w każdej chwili, generowane w całości na Twoim urządzeniu: pliki Markdown w zipie razem z załącznikami, zwykły JSON albo samodzielny HTML - dla pojedynczej notatki lub całego konta. Zip to „Kopia zapasowa PrivacyNotes (.zip)” i da się go przywrócić, tak jak zaszyfrowane kopie; JSON i HTML służą do czytania i do przeniesienia się do kolejnej aplikacji. Wpisy z sejfu mają własną drogę, „Eksport sejfu (.json)”, który zapisuje format Bitwardena i przenosi Twoje nazwy użytkownika, hasła, adresy URL, dane kart i klucze 2FA do Bitwardena, 1Password albo KeePass.",
+        "Wszystko znajdziesz w Ustawienia > Import & Export > Eksport. Import działa tak samo, z Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden i nie tylko: pełna lista jest w [przenosiny z innej aplikacji](/pl/help/import-from-other-apps/). Uwięzienie u nas nie jest częścią modelu biznesowego."
       ]
     },
     "attachment-limits": {
       "q": "Jakie pliki mogę załączać i jak duże mogą być?",
       "a": [
-        "Dowolny typ pliku: obrazy, PDF-y, dźwięk, archiwa, cokolwiek upuścisz. Każdy plik jest szyfrowany na Twoim urządzeniu przed wysłaniem, dokładnie tak jak tekst notatki, a widok Pliki zbiera wszystkie załączniki w jednym miejscu.",
+        "Dowolny typ pliku: obrazy, PDF-y, dźwięk, archiwa, cokolwiek upuścisz. Każdy plik jest zawsze zaszyfrowany, na Twoim urządzeniu i w drodze na serwer, dokładnie tak jak tekst notatki, a widok Pliki zbiera wszystkie załączniki w jednym miejscu.",
         "Limit na plik to 5 MB w planie darmowym i 50 MB w Pro. Pliki liczą się do Twojej całkowitej pamięci synchronizacji (50 MB za darmo, 500 MB w Pro, rozszerzalne do 5,5 GB dodatkami pamięci), a pasek pamięci w Ustawienia > Pamięć zawsze pokazuje, jak stoisz."
       ]
     },
     "vault": {
       "q": "Czym jest Sejf?",
       "a": [
-        "Sejf to osobna sekcja na ustrukturyzowane sekrety: loginy z nazwami użytkownika i hasłami, karty kredytowe i debetowe oraz klucze SSH. Wpisy dostają porządne pola zamiast dowolnego tekstu, loginy pokazują ikonę strony, a wszystko jest szyfrowane end-to-end jak reszta Twoich danych.",
+        "Sejf to osobna sekcja na ustrukturyzowane sekrety: loginy z nazwami użytkownika i hasłami, karty kredytowe i debetowe oraz klucze SSH. Wpisy dostają porządne pola zamiast dowolnego tekstu, loginy pokazują ikonę strony, a wszystko jest szyfrowane na Twoim urządzeniu jak reszta Twoich danych.",
         "Daje to garstce danych logowania, które inaczej rozłażą się po notatkach, uporządkowany i chroniony dom. Połącz go z blokadą aplikacji i ochroną PIN-em, aby postawić drugą bramkę przed najwrażliwszymi wpisami. Import z Bitwarden ląduje tu automatycznie."
       ]
     },
@@ -289,21 +289,21 @@
     "shutdown": {
       "q": "Co stanie się z moimi notatkami, jeśli PrivacyNotes zniknie?",
       "a": [
-        "Nic nie tracisz. Komplet danych jest już na Twoim urządzeniu, bo aplikacja jest local-first, a eksport do Markdown, JSON albo HTML działa całkowicie offline.",
+        "Zostają z Tobą. Twoje notatki, zadania, wpisy dziennika i wpisy sejfu żyją na Twoim urządzeniu, bo aplikacja jest local-first, a eksport do Markdown, JSON albo HTML działa offline. Obraz albo plik zostaje na urządzeniu, gdy tylko go na nim dodasz albo otworzysz, a taki, którego to urządzenie nigdy nie otworzyło, jest pobierany przy otwarciu, więc rób pełną kopię zapasową: pobiera ona każdy obraz i plik, którego brakuje na tym urządzeniu, i mówi Ci, jeśli któregoś nie da się pobrać.",
         "Kod szyfrowania też jest [open source](https://github.com/LifetimeLabsDev/PrivacyNotes.app), więc format pozostaje niezależnie czytelny nawet w świecie, w którym nasze serwery znikają z dnia na dzień."
       ]
     },
     "free-vs-pro": {
       "q": "Co jest darmowe, a co jest w Pro?",
       "a": [
-        "Darmowy plan to pełny produkt, a nie zajawka: szyfrowane end-to-end notatki, zadania, dziennik i sejf, praca offline, import i eksport - na maksymalnie 2 urządzeniach z 50 MB pamięci synchronizacji.",
+        "Darmowy plan to pełny produkt, a nie zajawka: notatki, zadania, dziennik i sejf, wszystko szyfrowane na Twoim urządzeniu, praca offline, import i eksport - na maksymalnie 2 urządzeniach z 50 MB pamięci synchronizacji.",
         "Pro to jednorazowy zakup, który dokłada nieograniczoną liczbę urządzeń, 500 MB pamięci synchronizacji (rozszerzalnej), historię wersji notatek, większe załączniki, blokowanie notatek i ochronę PIN-em, zaawansowane śledzenie samopoczucia, tryb Zen i wszystkie motywy kolorystyczne."
       ]
     },
     "one-time-pricing": {
       "q": "Jak jednorazowa płatność może finansować usługę synchronizacji na zawsze?",
       "a": [
-        "Bo utrzymanie tej usługi jest celowo tanie. Aplikacja jest local-first, a notatki to małe zaszyfrowane bloby, więc serwer robi niewiele więcej niż ich przechowywanie i przekazywanie między Twoimi urządzeniami. Żadnej maszynerii analitycznej, żadnych funkcji AI palących moc obliczeniową, żadnego działu wsparcia.",
+        "Bo utrzymanie tej usługi jest celowo tanie. Aplikacja jest local-first, a notatki to małe zaszyfrowane bloby, więc serwer robi niewiele więcej niż ich przechowywanie i przekazywanie między Twoimi urządzeniami. Żadnej analityki tego, co piszesz, żadnych pikseli ani elementów śledzących firm trzecich, żadnych funkcji AI palących moc obliczeniową, żadnego działu wsparcia.",
         "Jedyny koszt, który rośnie z czasem, to pamięć, i dlatego jest wyceniona odpowiednio: pamięć powyżej wliczonych 500 MB to niewielki dodatek roczny. Koszty jednorazowe wycenia się raz, koszty cykliczne są cykliczne. Model musi tylko na siebie zarabiać i zarabia."
       ]
     },
@@ -332,7 +332,7 @@
       "q": "Czego się o mnie dowiadujecie, gdy płacę?",
       "a": [
         "Mniej, niż mógłbyś się spodziewać. Płatność idzie przez [Paddle](https://www.paddle.com), sprzedawcę formalnego: Twoje imię i nazwisko, numer karty i adres rozliczeniowy trafiają do Paddle na potrzeby płatności i podatków i nigdy nie dotykają naszych serwerów.",
-        "Do nas dociera potwierdzenie, że klucz publiczny Twojego konta ma teraz Pro, plus kwota zamówienia. Relacja rozliczeniowa, w tym adres e-mail podany przy płatności, zostaje po stronie Paddle. Więc konto oparte na samej frazie pozostaje dla nas pseudonimowe nawet jako płacący klient: wiemy, że zapłaciłeś, a nie kim jesteś."
+        "Twoje dane rozliczeniowe trzyma Paddle; do naszej bazy danych trafia Twój klucz publiczny, kwota i identyfikator zamówienia, a w przypadku dodatku pamięci także jego rozmiar i daty odnowienia. Nasze konto w Paddle widzi obie strony, ale nie sprawdzamy, kim jesteś. Żeby Twoje nazwisko nie widniało przy zakupie, zapłać, używając [aliasu e-mail i karty maskowanej](/pl/help/buy-pro-anonymously/)."
       ]
     },
     "buy-pro-anonymously": {
@@ -340,15 +340,15 @@
       "a": [
         "Tak, przy pomocy dwóch standardowych narzędzi. Na potwierdzenie użyj aliasu e-mail: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) albo [addy.io](https://addy.io) przekierują wszystko do Twojej prawdziwej skrzynki, nie odsłaniając jej. Do płatności użyj karty maskowanej: [privacy.com](https://privacy.com) w USA generuje wirtualne karty działające z dowolnym wpisanym nazwiskiem, a wiele banków i usług gdzie indziej ([Revolut](https://www.revolut.com) na przykład) oferuje jednorazowe karty wirtualne robiące to samo.",
         "Przy płatności Paddle prosi o e-mail, metodę płatności i kraj (a w niektórych regionach też kod pocztowy), aby naliczyć podatek. Alias odbiera potwierdzenie, karta maskowana niesie takie nazwisko, jakie jej nadałeś, a lokalizacja podatkowa zawęża Cię do regionu i nic więcej. Utrzymuj jednak alias przy życiu: e-mail z potwierdzeniem to Twój dowód zakupu i Twój kanał do zwrotu.",
-        "W połączeniu z kontem na frazie żadna pojedyncza strona nie ma pełnego obrazu: Twój bank widzi doładowanie karty, Paddle widzi alias i kartę maskowaną, a my widzimy tylko, że jakiś klucz publiczny dostał Pro."
+        "W połączeniu z kontem na frazie żadna pojedyncza strona nie ma pełnego obrazu: Twój bank widzi doładowanie karty, Paddle widzi alias i kartę maskowaną, a my widzimy klucz publiczny, który dostał Pro, obok tego aliasu w naszym koncie Paddle."
       ]
     },
     "platforms": {
       "q": "Na jakich platformach działa PrivacyNotes?",
       "a": [
-        "W przeglądarce oraz na macOS, Windows, Linux, iOS i Android. Każda aplikacja jest zbudowana z tego samego rdzenia, z tym samym szyfrowaniem end-to-end, i synchronizuje się przez to samo konto. W [sekcji pobierania](https://privacynotes.app/pl#downloads) zawsze są najnowsze wersje.",
-        "Aplikacje natywne wymagają macOS 13 lub nowszego, Windows 10 lub nowszego, iOS 15 lub nowszego, Androida 7.0 lub nowszego, albo dystrybucji Linuksa z webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ lub równoważna). Poniżej tych wersji aplikacja się nie zainstaluje ani nie uruchomi - skorzystaj wtedy z wersji w przeglądarce.",
-        "Aplikacja w przeglądarce to pełnoprawny obywatel, a nie rozwiązanie awaryjne: trzyma pełną lokalną kopię Twoich danych i działa offline, więc każda nowoczesna przeglądarka zawsze jest drogą do środka."
+        "W przeglądarce oraz na macOS, Windows, Linux, iOS i Android. Każda aplikacja jest zbudowana z tego samego rdzenia, tak samo szyfruje Twoje notatki na Twoim urządzeniu i synchronizuje się przez to samo konto. W [sekcji pobierania](https://privacynotes.app/pl#downloads) zawsze są najnowsze wersje.",
+        "Aplikacje natywne wymagają macOS 13 lub nowszego, Windows 10 lub nowszego, iOS 17.4 lub nowszego, Androida 7.0 lub nowszego, albo dystrybucji Linuksa z webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ lub równoważna). Poniżej tych wersji aplikacja się nie zainstaluje ani nie uruchomi - skorzystaj wtedy z wersji w przeglądarce.",
+        "Aplikacja w przeglądarce to pełnoprawny obywatel, a nie rozwiązanie awaryjne: trzyma Twoje notatki na Twoim urządzeniu i działa offline, więc każda nowoczesna przeglądarka zawsze jest drogą do środka."
       ]
     },
     "feature-requests": {
@@ -381,14 +381,14 @@
     "languages": {
       "q": "W jakich językach mówi aplikacja?",
       "a": [
-        "Po angielsku, niemiecku, francusku, włosku, hiszpańsku, niderlandzku, polsku, czesku, katalońsku, turecku, szwedzku, japońsku, koreańsku, po chińsku tradycyjnym, po arabsku oraz po portugalsku w odmianie europejskiej i brazylijskiej. Aplikacja domyślnie idzie za językiem systemu, albo możesz wybrać jeden na stałe w Ustawienia > Język na każdym urządzeniu.",
+        "Po angielsku, niemiecku, francusku, włosku, hiszpańsku, niderlandzku, polsku, czesku, katalońsku, turecku, szwedzku, ukraińsku, rosyjsku, japońsku, koreańsku, po chińsku tradycyjnym, po tajsku, po arabsku oraz po portugalsku w odmianie europejskiej i brazylijskiej. Aplikacja domyślnie idzie za językiem systemu, albo możesz wybrać jeden na stałe w Ustawienia > Język na każdym urządzeniu.",
         "Tłumaczenia są darmowe dla wszystkich, to nie dodatek Pro. Planujemy kolejne języki; jeśli brakuje Twojego, napisz nam na [GitHubie](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) albo [Reddicie](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
     "translation-quality": {
       "q": "Jak powstają tłumaczenia aplikacji?",
       "a": [
-        "Angielski piszemy sami, a każdy inny język tłumaczy maszyna według przewodnika stylu napisanego specjalnie dla tego języka: właściwy rejestr, właściwe słowo na każdy termin z interfejsu i automatyczna kontrola przy każdym wydaniu, żeby nie brakowało tekstu i żeby nic po cichu nie zostało po angielsku. Tłumaczenia są w każdym planie, nigdy jako dodatek Pro.",
+        "Najpierw piszemy wersję angielską. Potem agent AI tłumaczy każdy język według wspólnego glosariusza, w rejestrze ustalonym dla tego języka, a drugi agent przed wydaniem sprawdza każdą partię pod kątem dokładności, terminologii i rejestru. Rodzimi użytkownicy języka przeglądają próbkę, zaczynając od najnowszych języków oraz tekstów o bezpieczeństwie, logowaniu i płatnościach, a dwie automatyczne kontrole blokują kompilację, dopóki brakuje jakiegoś tłumaczenia albo jest ono nieaktualne. Tłumaczenia są w każdym planie, nigdy jako dodatek Pro.",
         "Każde z nich możesz poprawić. Jeśli jakieś zdanie brzmi krzywo w twoim języku, [zgłoś tłumaczenie](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new?template=translation.yml): swój język, ekran, na którym się pojawia, i to, co powinno tam być. Poprawki wychodzą w kolejnej wersji."
       ]
     },
@@ -396,14 +396,14 @@
       "q": "Jaką składnię Markdown rozumie edytor?",
       "a": [
         "Standardowe formaty Markdown formatują się na żywo, gdy piszesz: nagłówki, pogrubienie i kursywa, przekreślenie i podświetlenie, listy punktowane i numerowane, listy zadań (Tab i Shift+Tab zagnieżdżają każdą listę, także checklisty), cytaty, separatory, kod w tekście i bloki kodu z podświetlaniem składni, wzory matematyczne w tekście i w bloku (KaTeX) oraz note-linki między notatkami z autouzupełnianiem.",
-        "Pasek formatowania i jego menu Wstaw dodają resztę: tabele, ramki informacyjne w dziewięciu typach, które można zwijać, podkreślenie, indeks górny i dolny, wyrównanie tekstu, kolory tekstu i podświetlenia, czcionki, linki, obrazy i załączniki plików. Wszystko zapisuje się z powrotem jako Markdown: „Pokaż markdown” pod każdą notatką odsłania surowe źródło, a eksporty to czyste pliki .md, więc nic, co napiszesz, nie zostaje zamknięte w zastrzeżonym formacie."
+        "Pasek formatowania i jego menu Wstaw dodają resztę: tabele, ramki informacyjne, które można zwijać, podkreślenie, indeks górny i dolny, wyrównanie tekstu, kolory tekstu i podświetlenia, czcionki, linki, obrazy i załączniki plików. Wszystko zapisuje się z powrotem jako Markdown: „Pokaż markdown” pod każdą notatką odsłania surowe źródło, a eksporty to czyste pliki .md, więc nic, co napiszesz, nie zostaje zamknięte w zastrzeżonym formacie."
       ]
     },
     "tasks": {
       "q": "Jak działają zadania?",
       "a": [
         "Każda linia, którą zapiszesz jako - [ ] w dowolnej notatce, staje się zadaniem, a widok Zadania na pasku bocznym zbiera je wszystkie w jednym miejscu. Odhaczenie zadania tam aktualizuje notatkę, w której ono żyje, a otwarcie zadania przeskakuje do tej notatki. Nie ma osobnej bazy zadań do utrzymywania: zadania to po prostu linie w Twoich notatkach, zaszyfrowane jak wszystko inne.",
-        "Pole szybkiego dodawania na górze widoku Zadania dopisuje do notatki o nazwie Quick Tasks (tworzonej dla Ciebie przy pierwszym użyciu), więc złapanie luźnego zadania zajmuje jedno naciśnięcie klawisza, a nie decyzję, gdzie je umieścić. Ten sam widok oferuje trzy układy (Hybrydowy, Zbiorczy, Lista), przełącznik ukończonych zadań oraz wyszukiwanie zadań, a przycisk Nowa w widoku Wszystkie może od razu utworzyć notatkę-zadanie."
+        "Pole szybkiego dodawania na górze widoku Zadania dopisuje do notatki o nazwie Quick Tasks (tworzonej dla Ciebie przy pierwszym użyciu), więc złapanie luźnego zadania zajmuje jedno naciśnięcie klawisza, a nie decyzję, gdzie je umieścić. Ten sam widok oferuje trzy układy (Hybrydowy, Zbiorczy, Lista), przełącznik ukończonych zadań oraz wyszukiwanie zadań, a przycisk New w widoku Wszystkie może od razu utworzyć notatkę-zadanie."
       ]
     },
     "journal": {
@@ -416,7 +416,7 @@
     "bookmarks": {
       "q": "Czy mogę zapisać zakładki z przeglądarki w PrivacyNotes?",
       "a": [
-        "Tak. Zakładki to osobny filar na pasku bocznym, obok notatek, zadań i dzienników, i są bezpłatne w każdym planie. Wklej link w pasku szybkiego dodawania, żeby zapisać jedną. Swoje dotychczasowe przeniesiesz tak: wyeksportuj z przeglądarki plik zakładek (.html) i upuść go w Ustawienia > Import & Export > Import > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave i Vivaldi zawierają ten sam plik, a foldery i daty przychodzą razem z nim. Safari pakuje go do .zip, który możesz upuścić bez rozpakowywania.",
+        "Tak. Zakładki to osobny filar na pasku bocznym, obok notatek, zadań i dzienników, i są bezpłatne w każdym planie. Wklej link w pasku szybkiego dodawania, żeby zapisać jedną. Swoje dotychczasowe przeniesiesz tak: wyeksportuj z przeglądarki plik zakładek (.html) i upuść go w Ustawienia > Import & Export > Import > \"Zakładki przeglądarki\". Chrome, Firefox, Safari, Edge, Opera, Brave i Vivaldi zawierają ten sam plik, a foldery i daty przychodzą razem z nim. Safari pakuje go do .zip, który możesz upuścić bez rozpakowywania.",
         "Twoje adresy nigdy nie opuszczają urządzenia: nie pobieramy strony kryjącej się za linkiem, i dlatego zakładka dodana ręcznie nosi swoją domenę jako nazwę, dopóki jej nie wpiszesz. Ikony stron to jedyny wyjątek i możesz je wyłączyć. Eksport zapisuje ten sam standardowy plik, więc zakładki wychodzą równie łatwo, jak weszły ([poradnik importu](/pl/help/import/browser-bookmarks/))."
       ]
     },
@@ -424,7 +424,7 @@
       "q": "Czy mogę prowadzić książkę adresową w PrivacyNotes?",
       "a": [
         "Tak. Kontakty to osobny filar na pasku bocznym, obok notatek, zadań i dzienników, i są bezpłatne w każdym planie. Jeden kontakt mieści imiona i nazwiska, numery, adresy e-mail, adresy, strony, daty, firmę i notatkę. Dotknij numeru, żeby zadzwonić, adresu e-mail, żeby napisać, albo dowolnego wiersza, żeby go skopiować. Wszystko inne, co telefon wpisał do pliku, zostaje pod **Również w tym pliku** i wraca przy eksporcie.",
-        "Swoje dotychczasowe przeniesiesz tak: wyeksportuj wizytówkę vCard (.vcf) z telefonu, Maca albo z Google Contacts i upuść ją w Ustawienia > Import & Export > Import > \"Contacts (vCard)\". Jeśli później upuścisz ten sam plik jeszcze raz, osoby już zapisane zostaną rozpoznane, a nie zdublowane. Eksport zapisuje zwykłą wizytówkę vCard, więc książka adresowa wychodzi tak łatwo, jak weszła ([więcej o imporcie](/pl/help/import-from-other-apps/))."
+        "Swoje dotychczasowe przeniesiesz tak: wyeksportuj wizytówkę vCard (.vcf) z telefonu, Maca albo z Google Contacts i upuść ją w Ustawienia > Import & Export > Import > \"Kontakty (vCard)\". Jeśli później upuścisz ten sam plik jeszcze raz, osoby już zapisane zostaną rozpoznane, a nie zdublowane. Eksport zapisuje zwykłą wizytówkę vCard, więc książka adresowa wychodzi tak łatwo, jak weszła ([więcej o imporcie](/pl/help/import-from-other-apps/))."
       ]
     },
     "what-to-keep": {
@@ -438,7 +438,7 @@
     "keyboard-shortcuts": {
       "q": "Jakie są skróty klawiszowe?",
       "a": [
-        "Naciśnij ? w dowolnym miejscu aplikacji, aby otworzyć wbudowaną ściągawkę, dostępną też w Ustawienia > O aplikacji i pomoc. Skróty obejmują nawigację, akcje na notatkach, formatowanie i widoki - a na Windowsie i Linuksie każdy Cmd czyta się jako Ctrl, a Option jako Alt.",
+        "Naciśnij ? w dowolnym miejscu aplikacji, aby otworzyć wbudowaną ściągawkę, dostępną też w Ustawienia > O aplikacji. Skróty obejmują nawigację, akcje na notatkach, formatowanie i widoki - a na Windowsie i Linuksie każdy Cmd czyta się jako Ctrl, a Option jako Alt.",
         "Najważniejsze: Cmd+K ustawia kursor w wyszukiwaniu, J i K przechodzą po liście, Alt+Shift+N zaczyna nową notatkę, Cmd+Backspace wyrzuca zaznaczoną do kosza, Cmd+, otwiera Ustawienia. Podczas pisania: Cmd+B pogrubia, Cmd+I pochyla, Cmd+Shift+K wstawia link, Cmd+Shift+9 zaczyna listę zadań, Cmd+F szuka w notatce, Cmd+Shift+O przełącza konspekt. Cmd+\\ chowa pasek boczny, Cmd+Shift+L zmienia motyw, Cmd+Shift+F włącza tryb Zen (Pro), a Esc wycofuje z niemal wszystkiego."
       ]
     },
@@ -446,7 +446,7 @@
       "q": "Czy jest ściągawka ze skrótami do wydrukowania?",
       "a": [
         "Tak. [Ściągawka do druku](/help/keyboard-shortcuts/cheat-sheet) zbiera wszystkie skróty na jednej stronie A4, w dwóch kolumnach - gotowa do powieszenia obok ekranu. Powstaje z tej samej listy, którą pokazuje aplikacja, więc nigdy nie zostanie w tyle za wydaniem.",
-        "Otwórz ją i naciśnij przycisk Drukuj (albo Cmd+P / Ctrl+P). Jeśli wolisz plik zamiast papieru, wybierz PDF jako miejsce docelowe w oknie drukowania. Ściągawka jest też podlinkowana nad i pod listą skrótów w aplikacji (Ustawienia > O aplikacji i pomoc > Skróty) oraz w stopce tej strony."
+        "Otwórz ją i naciśnij przycisk Drukuj (albo Cmd+P / Ctrl+P). Jeśli wolisz plik zamiast papieru, wybierz PDF jako miejsce docelowe w oknie drukowania. Ściągawka jest też podlinkowana nad i pod listą skrótów w aplikacji (Ustawienia > O aplikacji > Skróty) oraz w stopce tej strony."
       ]
     },
     "ask-an-ai": {
@@ -460,7 +460,7 @@
     "locked-vs-protected": {
       "q": "Jaka jest różnica między notatkami tylko do odczytu a chronionymi PIN-em?",
       "a": [
-        "„Tylko do odczytu” (w menu opcji notatki, Pro) blokuje notatkę przed edycją, żeby gotowego dokumentu nie dało się przypadkiem popsuć; nic nie ukrywa. „Chroń” (to samo menu, Pro) chowa tytuł i treść notatki za Twoim PIN-em albo odblokowaniem biometrycznym, dla rzeczy, których wolisz nie mieć widocznych na ekranie, który czasem widzą inni.",
+        "„Tylko do odczytu” (w menu opcji notatki, Pro) blokuje notatkę przed edycją, żeby gotowego dokumentu nie dało się przypadkiem popsuć; nic nie ukrywa. „Chroń” (to samo menu, Pro) chowa treść notatki za Twoim PIN-em albo odblokowaniem biometrycznym, dla rzeczy, których wolisz nie mieć widocznych na ekranie, który czasem widzą inni. Jej tytuł pozostaje widoczny na liście, więc nie umieszczaj sekretu w tytule.",
         "Oba to bramki na ekran, a nie druga warstwa szyfrowania. Te flagi podróżują wewnątrz zaszyfrowanych danych notatki, a notatka celowo nie jest ponownie szyfrowana Twoim PIN-em: dzięki temu zapomniany PIN nigdy nie zniszczy danych. Prawdziwą granicą pozostaje fraza: chroń najpierw ją, a tych bramek używaj do ekranu, który czasem widzą inni."
       ]
     },
@@ -512,7 +512,7 @@
       "q": "Jak przywrócić kopię zapasową?",
       "a": [
         "Otwórz Ustawienia > Import & Export > Przywracanie i wybierz format, który masz. \"Pełna kopia zapasowa (.zip)\" bierze cały eksport: notatki, dzienniki, wpisy sejfu, zadania, obrazy, dźwięk i pliki. \"Zaszyfrowana kopia zapasowa (.pnbackup, .pnbackupz)\" bierze oba zaszyfrowane eksporty. Twój plik jest czytany i odszyfrowywany na twoim urządzeniu, a przywracanie jest bezpłatne w każdym planie.",
-        "Wszystko trafia jako nowe wpisy i nic z tego, co już masz, nie jest nadpisywane, więc przywrócenie tego samego pliku dwa razy zostawi ci po dwie kopie każdej notatki. Oba zaszyfrowane formaty otworzysz tylko na koncie, które je stworzyło, bo są zaszyfrowane kluczem jego frazy; .zip wejdzie do dowolnego sejfu ([jaką kopię robić](/pl/help/backup-strategy/))."
+        "Przywracanie dopasowuje notatki po identyfikatorze. Notatka, którą już masz, zostaje zaktualizowana tylko wtedy, gdy wersja w kopii jest nowsza, notatka w koszu wraca z niego, notatka, której nie masz, zostaje dodana raz, a ponowne przywrócenie tego samego pliku niczego nie zmienia, chyba że w międzyczasie zmienisz przywróconą notatkę: wtedy starsza wersja wraca obok Twojej zmiany. Plik bez naszych identyfikatorów, z innej aplikacji albo z kopii zrobionej starszą wersją tej aplikacji, za każdym razem dodaje swoje notatki jako nowe. Oba zaszyfrowane formaty otworzysz tylko na koncie, które je stworzyło, bo są zaszyfrowane kluczem jego frazy; .zip wejdzie do dowolnego sejfu ([jaką kopię robić](/pl/help/backup-strategy/))."
       ]
     },
     "image-quality": {
@@ -533,14 +533,14 @@
       "q": "Dlaczego przesyłanie pliku się nie powiodło?",
       "a": [
         "Błąd mówi, w który pułap trafiłeś. Na plik: 5 MB w planie darmowym, 50 MB w Pro, 100 MB z dowolnym dodatkiem pamięci. Łącznie: wszystko, co synchronizujesz, musi zmieścić się w pamięci Twojego konta (50 MB za darmo, 500 MB w Pro, więcej z dodatkami), więc pełny limit blokuje przesłanie, nawet gdy plik jest mały. Akceptowany jest dowolny typ pliku.",
-        "Sprawdź pasek pamięci w widoku Pliki albo w Ustawienia > Pamięć, a potem wybierz najtańsze rozwiązanie: [zwolnij miejsce](/pl/help/storage-usage/), przejdź na wyższy plan albo zmniejsz plik (zdjęcia z telefonu to często oryginały po kilka MB; skompresowany JPEG waży ułamek tego). Przesyłanie potrzebuje też połączenia: pliki nie czekają w kolejce, gdy jesteś offline."
+        "Sprawdź pasek pamięci w widoku Pliki albo w Ustawienia > Pamięć, a potem wybierz najtańsze rozwiązanie: [zwolnij miejsce](/pl/help/storage-usage/), przejdź na wyższy plan albo zmniejsz plik (zdjęcia z telefonu to często oryginały po kilka MB; skompresowany JPEG waży ułamek tego). Przesyłanie, które nie udało się z braku połączenia, nie przepada: plik zostaje na tym urządzeniu i sam trafi na serwer, gdy wrócisz online, a do tego czasu Ustawienia > ID & Sync liczą go jako oczekujący."
       ]
     },
     "trash-auto-delete": {
       "q": "Dlaczego notatki zniknęły z mojego kosza?",
       "a": [
-        "Kosz to nie archiwum: domyślnie wszystko, co w nim jest, zostaje trwale usunięte po 30 dniach. Przełącznik siedzi w samym widoku Kosz, podpisany „Automatyczne usuwanie po 30 dniach” - wyłącz go tam, jeśli chcesz trzymać kosz w nieskończoność, a ustawienie zsynchronizuje się na wszystkie Twoje urządzenia. Czyszczenie działa na Twoim urządzeniu przy otwarciu aplikacji, bo serwer nie widzi, które zaszyfrowane notatki są w koszu.",
-        "Trwale usunięte znaczy przepadłe: żadnej kopii na serwerze i żadnej drogi odzyskania. Jeśli traktujesz kosz jak stertę „może kiedyś”, wyłącz automatyczne usuwanie albo przywróć notatki przed 30. dniem. Do tego czasu notatki w koszu wciąż liczą się do [Twojej pamięci](/pl/help/storage-usage/) - „Opróżnij” w tym samym widoku od razu zwalnia to miejsce."
+        "Kosz to nie archiwum: domyślnie wszystko, co w nim jest, zostaje trwale usunięte po 30 dniach. Przełącznik siedzi w samym widoku Kosz, podpisany „Automatycznie usuwaj po 30 dniach” - wyłącz go tam, jeśli chcesz trzymać kosz w nieskończoność, a ustawienie zsynchronizuje się na wszystkie Twoje urządzenia. Czyszczenie działa na Twoim urządzeniu przy otwarciu aplikacji, bo serwer nie widzi, które zaszyfrowane notatki są w koszu.",
+        "Trwale usunięte znaczy przepadłe: nie przywróci tego żadne urządzenie ani nikt po naszej stronie, tylko wcześniej zrobiona kopia zapasowa. Jeśli traktujesz kosz jak stertę „może kiedyś”, wyłącz automatyczne usuwanie albo przywróć notatki przed 30. dniem. Do tego czasu notatki w koszu wciąż liczą się do [Twojej pamięci](/pl/help/storage-usage/) - „Opróżnij” w tym samym widoku od razu zwalnia to miejsce."
       ]
     },
     "leaving": {
@@ -561,8 +561,8 @@
       "q": "Czy zapisujecie, z jakiej strony przychodzę?",
       "a": [
         "Tak, i chodzi o reklamę. Kupujemy miejsca na innych stronach i płacimy twórcom, więc musimy wiedzieć, które z nich naprawdę przyprowadzają ludzi. Zmarnowane pieniądze na reklamę i tak obciążają produkt, dlatego mierzymy to w najmniejszej formie, która odpowiada na pytanie.",
-        "Strona marketingowa liczy wizyty i to, który link cię przyprowadził, wyłącznie jako sumy: bez ciasteczek, bez profilu odwiedzającego, bez skryptów zewnętrznych. Jeśli założysz konto, zapisuje ono dwa krótkie słowa z opublikowanej listy: z jakiego linku przyszedłeś, jeśli jakiś był, oraz jak zainstalowałeś aplikację, na przykład „android-play”.",
-        "Oba słowa są zapisywane raz, przy zakładaniu konta, nigdy nie są aktualizowane i znikają razem z twoim kontem. Nic więcej o twoim przyjściu nie jest przechowywane. Jeśli zamkniesz kartę przed rejestracją albo przeglądarka usunie link, nie zapisujemy niczego. Same aplikacje nie mierzą niczego na twój temat: otwórz kartę sieci i sprawdź."
+        "Strona marketingowa liczy kliknięcia w nasze linki wyłącznie jako sumy, według linku i kraju, bez żadnego identyfikatora: bez ciasteczek, bez profilu odwiedzającego, bez skryptów zewnętrznych. Jeśli założysz konto, zapisuje ono dwa krótkie słowa z opublikowanej listy: z jakiego linku przyszedłeś, jeśli jakiś był, oraz jak zainstalowałeś aplikację, na przykład „android-play”.",
+        "Oba słowa są zapisywane raz, przy zakładaniu konta, nigdy nie są aktualizowane i znikają razem z twoim kontem. Nic więcej o twoim przyjściu nie jest przechowywane. Jeśli zamkniesz kartę przed rejestracją albo przeglądarka usunie link, żadne słowo nie zostaje zapisane. Same aplikacje nie mają analityki tego, co piszesz, pikseli ani elementów śledzących firm trzecich: otwórz kartę sieci i sprawdź."
       ]
     },
     "pro-not-active": {
@@ -575,7 +575,7 @@
     "manage-storage-addon": {
       "q": "Jak zmienić albo anulować dodatek pamięci?",
       "a": [
-        "Ustawienia > Pamięć to Twój panel sterowania. Przejście na większy pakiet działa od razu, a potwierdzenie pokazuje dokładną proporcjonalną kwotę pobraną dzisiaj, zanim to zatwierdzisz; data odnowienia się nie przesuwa. „Anuluj pamięć” zachowuje Twoje dodatkowe miejsce do końca okresu, który już opłaciłeś. Żeby przejść na mniejszy pakiet, anuluj obecny i kup mniejszy, gdy okres się skończy.",
+        "Ustawienia > Pamięć to Twój panel sterowania. Przejście na większy pakiet działa od razu. W wersji webowej potwierdzenie pokazuje dokładną proporcjonalną kwotę pobraną dzisiaj, zanim to zatwierdzisz, a data odnowienia się nie przesuwa; w Play Store i App Store kwotę pokazuje arkusz płatności sklepu, a Apple zwraca niewykorzystaną część bieżącego roku i zaczyna nowy. „Anuluj pamięć” zachowuje Twoje dodatkowe miejsce do końca okresu, który już opłaciłeś. Żeby przejść na mniejszy pakiet, anuluj obecny i kup mniejszy, gdy okres się skończy.",
         "Jeśli po wygaśnięciu Twoje dane wciąż mieszczą się w pozostałym limicie, to koniec sprawy; jeśli nie, nic nie jest usuwane i zaczyna się [90-dniowy cykl przekroczenia limitu](/pl/help/over-quota/). Nieudane odnowienie pokazuje baner z linkiem „Zaktualizuj kartę”, żeby naprawić płatność w Paddle.",
         "Anulowanie spoza aplikacji też działa i to jest odpowiedź, gdy nie możesz się zalogować. Paddle jest naszym sprzedawcą i rozlicza Cię bezpośrednio: skorzystaj z linku „Zarządzaj subskrypcją” w e-mailu z potwierdzeniem albo z czatu wsparcia na [paddle.net](https://paddle.net). W wersji ze sklepu jest tak samo, więc anuluj tam, w ustawieniach subskrypcji sklepu."
       ]
@@ -583,7 +583,7 @@
     "store-purchases": {
       "q": "Czy zakupy przechodzą między wersją w przeglądarce, Google Play i App Store?",
       "a": [
-        "Tak. Pro i pamięć przypinają się do Twojego konta, nie do platformy czy sklepu. Kup w przeglądarce, a każda aplikacja, do której się zalogujesz, ma Pro, wliczając wersje ze sklepów; kup w wersji ze sklepu, a aplikacje w przeglądarce i na komputerze odblokują się tak samo. Przywróceniem jest samo zalogowanie się, bo uprawnienie idzie za kontem. Wersja ze sklepu ma dodatkowo przycisk **Przywróć zakupy** w Ustawienia > Plan, który pyta Apple albo Google, co masz, i po ponownej instalacji znowu to odblokowuje.",
+        "Tak. Pro i pamięć przypinają się do Twojego konta, nie do platformy czy sklepu. Kup w przeglądarce, a każda aplikacja, do której się zalogujesz, ma Pro, wliczając wersje ze sklepów; kup w wersji ze sklepu, a aplikacje w przeglądarce i na komputerze odblokują się tak samo. Przywróceniem jest samo zalogowanie się, bo uprawnienie idzie za kontem. Wersja ze sklepu ma dodatkowo przycisk **Przywróć zakupy** w Ustawienia > Konto, który pyta Apple albo Google, co masz, i po ponownej instalacji znowu to odblokowuje.",
         "Jedyna różnica to kto Cię rozlicza. Zakupy w przeglądarce idą przez Paddle i zarządzasz nimi w aplikacji w Ustawienia > Pamięć. Zakupy zrobione w wersji ze sklepu (App Store już teraz, Google Play gdy ta aplikacja się pojawi) rozlicza ten sklep: cykliczną pamięć anulujesz w ustawieniach subskrypcji sklepu, a zwroty idą jego procedurą. Tak czy inaczej to wszędzie to samo konto i to samo Pro - wliczając platformy, które jeszcze nie istnieją."
       ]
     },
@@ -674,8 +674,8 @@
     "android-backup": {
       "q": "Czy moje notatki są w kopii zapasowej telefonu z Androidem?",
       "a": [
-        "Nie. Aplikacja na Androida trzyma swoje dane poza kopią zapasową telefonu w chmurze, więc nic z nich nie trafia na Google Drive. Powodem jest klucz, nie notatki: tam, gdzie masz zaznaczone **Ufaj temu urządzeniu**, twoje 12 słów zostaje na tym urządzeniu, żeby utrzymać zalogowanie, a kopia w chmurze to nie miejsce na klucz do konta szyfrowanego end-to-end.",
-        "Nowy telefon startuje więc pusty: zainstaluj aplikację, zaloguj się swoimi 12 słowami i przyjdzie wszystko, co się zsynchronizowało. To, co nigdy się nie zsynchronizowało, żyje tylko na starym telefonie, więc najpierw sprawdź, czy stopka mówi \"Synced\", albo zabierz ze sobą „Kopię zapasową PrivacyNotes (.zip)” z Ustawienia > Import & Export > Eksport ([jaką kopię robić](/pl/help/backup-strategy/)).",
+        "Nie. Aplikacja na Androida trzyma swoje dane poza kopią zapasową telefonu w chmurze, więc nic z nich nie trafia na Google Drive. Powodem jest klucz, nie notatki: tam, gdzie masz zaznaczone **Ufaj temu urządzeniu**, twoje 12 słów zostaje na tym urządzeniu, żeby utrzymać zalogowanie, a kopia w chmurze to nie miejsce na klucz, który odszyfrowuje twoje notatki.",
+        "Nowy telefon startuje więc pusty: zainstaluj aplikację, zaloguj się swoimi 12 słowami i przyjdzie wszystko, co się zsynchronizowało. Przywracanie czeka na tę pierwszą synchronizację, więc kopia zapasowa, którą przenosisz, zostaje dopasowana do tego, co już jest na koncie, zamiast być dodana drugi raz. To, co nigdy się nie zsynchronizowało, żyje tylko na starym telefonie, więc najpierw sprawdź, czy stopka mówi \"Synced\", albo zabierz ze sobą „Kopia zapasowa PrivacyNotes (.zip)” z Ustawienia > Import & Export > Eksport ([jaką kopię robić](/pl/help/backup-strategy/)).",
         "Bezpośredni transfer z telefonu na telefon przy konfiguracji to co innego: niektóre telefony przenoszą wtedy dane aplikacji, a Android nie daje aplikacji żadnego pewnego sposobu, by odmówić. Ta kopia nigdy nie opuszcza twoich dwóch urządzeń, więc potem wyczyść stary telefon."
       ]
     },
@@ -724,9 +724,9 @@
     "signup-options": {
       "q": "Którą opcję rejestracji wybrać?",
       "a": [
-        "Tę, która pasuje do twojego poziomu zagrożenia. Są trzy. Po pierwsze: \"Kontynuuj z Google\" albo \"Kontynuuj z Apple\", z kluczem trzymanym na naszym serwerze. Po drugie: ten sam przycisk, ale klucz zostaje wyłącznie na twoim urządzeniu. Po trzecie: \"Wygeneruj frazę\", bez e-maila, bez imienia i całkiem bez logowania. Wszystkie trzy trzymają twoje notatki zaszyfrowane end-to-end, a różni je to, kto ma klucz i ile się o tobie dowiadujemy.",
-        "Przycisk Google, Apple albo GitHub pyta potem, gdzie mieszka twój klucz. \"Prosto i wygodnie\" trzyma go zaszyfrowanego na naszym serwerze, więc każde nowe urządzenie loguje się samym logowaniem Google, Apple albo GitHub, a ty nie masz czego pilnować. To właściwy poziom, jeśli boisz się utraty własnych danych logowania. \"Maksymalne bezpieczeństwo i prywatność\" zostawia klucz na twoim urządzeniu: nie przeczytalibyśmy notatki pod żadną presją, a nowe urządzenie poprosi o twoje 12 słów albo o zeskanowanie kodu QR z urządzenia już zalogowanego.",
-        "Droga z samą frazą to poziom najwyższy: bez e-maila, bez imienia, bez niczego, co wiąże konto z człowiekiem. W zamian klucz należy tylko do ciebie, więc jeśli go zgubisz, nie mając żadnego zalogowanego urządzenia, nikt ci nie pomoże. Nic z tego nie jest ostateczne: Ustawienia > Bezpieczeństwo > Twoja fraza przenosi cię między trybami, kiedy zechcesz, a każdy poziom może dołożyć na wierzch PIN albo blokadę biometryczną. Cała drabina, z ceną każdego szczebla, jest w [drabinie poziomów zagrożenia](/pl/help/threat-model-levels/)."
+        "Tę, która pasuje do twojego poziomu zagrożenia. Są trzy. Po pierwsze: logowanie przez Google, Apple albo GitHub, z kluczem przechowywanym na naszym serwerze. Po drugie: to samo logowanie, ale klucz zostaje wyłącznie na twoim urządzeniu. Po trzecie: \"Wygeneruj frazę\", bez e-maila, bez imienia i całkiem bez logowania. We wszystkich trzech twoje notatki są szyfrowane na twoim urządzeniu, a różni je to, kto ma klucz i ile się o tobie dowiadujemy.",
+        "Logowanie przez jedną z tych trzech usług pyta potem, gdzie mieszka twój klucz, i zaczyna od \"Prosto i wygodnie\". Ta opcja trzyma go zaszyfrowanego na naszym serwerze, więc każde nowe urządzenie loguje się samym tym logowaniem, a ty nie masz czego pilnować. To właściwy poziom, jeśli boisz się utraty własnych danych logowania. \"Maksymalne bezpieczeństwo i prywatność\" zostawia klucz na twoim urządzeniu: nie przeczytalibyśmy notatki pod żadną presją, a nowe urządzenie poprosi o twoje 12 słów albo o zeskanowanie kodu QR z urządzenia już zalogowanego.",
+        "Droga z samą frazą to poziom najwyższy: bez e-maila, bez imienia, bez niczego, co wiąże konto z człowiekiem. W zamian klucz należy tylko do ciebie, więc jeśli go zgubisz, nie mając żadnego zalogowanego urządzenia, nikt ci nie pomoże. Tryb klucza przy logowaniu nie jest ostateczny: Ustawienia > Bezpieczeństwo > Twoja fraza zmienia go, kiedy zechcesz, a konto oparte na samej frazie trzyma swój klucz na urządzeniu. Każdy poziom może dołożyć na wierzch PIN albo blokadę biometryczną. Cała drabina, z ceną każdego szczebla, jest w [drabinie poziomów zagrożenia](/pl/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

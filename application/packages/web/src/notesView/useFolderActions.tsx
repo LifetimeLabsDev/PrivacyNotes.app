@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CaretDown, Folder } from '../icons';
+import { FolderGlyph } from '../looks/LookGlyph';
 import { IconUpgrade } from '../UpgradeModal';
 import type { LocalNote } from '../db';
 import {
@@ -16,6 +17,7 @@ import {
   validateFolders,
   type FolderDef,
 } from '../folders';
+import { dropFolderLooks } from '../itemStyles';
 import { bulkMoveToFolder } from '../notesRepo';
 import type { UserSettings } from '../userSettings';
 import type { View } from '../views';
@@ -77,12 +79,13 @@ export function useFolderActions({
 
   // Merge folders rebuilt by an importer (Obsidian) into the settings tree.
   // Reuses any existing folder whose path already matches (so re-importing
-  // the same vault does not duplicate the tree) and returns imported-id ->
-  // final-id so the caller can remap each note's folderId. Free accounts can
-  // browse the imported folders (folder actions stay Pro-gated); an upgrade
-  // unlocks editing them with no re-import.
+  // the same vault does not duplicate the tree), or, for our own backup, the
+  // folder still live under the id the backup saved for it, and returns
+  // imported-id -> final-id so the caller can remap each note's folderId.
+  // Free accounts can browse the imported folders (folder actions stay
+  // Pro-gated); an upgrade unlocks editing them with no re-import.
   const mergeImportedFolders = useCallback(
-    (incoming: FolderDef[]): Map<string, string> => {
+    (incoming: FolderDef[], originalIds?: ReadonlyMap<string, string>): Map<string, string> => {
       if (incoming.length === 0) return new Map();
       // Reconciled against the tree the updater is handed, never against a
       // copy from render: that copy can predate the first pull, and a tree
@@ -91,7 +94,7 @@ export function useFolderActions({
       // filled by the time the caller reads it.
       let idMap = new Map<string, string>();
       mutateSettings((prev) => {
-        const merged = reconcileImportedFolders(prev.folders, incoming);
+        const merged = reconcileImportedFolders(prev.folders, incoming, originalIds);
         idMap = merged.idMap;
         return { ...prev, folders: validateFolders(merged.folders) };
       });
@@ -228,7 +231,12 @@ export function useFolderActions({
     mutateSettings((prev) => {
       const next = deleteFolder({ folders: prev.folders, deleted: prev.foldersDeleted }, id);
       reparentTo = next.reparentTo;
-      return { ...prev, folders: next.folders, foldersDeleted: next.deleted };
+      return {
+        ...prev,
+        folders: next.folders,
+        foldersDeleted: next.deleted,
+        itemStyles: dropFolderLooks(prev.itemStyles, [id]),
+      };
     });
     if (memberIds.length > 0) {
       await bulkMoveToFolder(memberIds, reparentTo);
@@ -288,7 +296,15 @@ export function useFolderActions({
         {/* The sidebar's folder mark, unchanged: same amber, same default
             weight. One folder looks like a folder everywhere, and the chip
             is not the place to fork that. */}
-        <Folder size={12} className="shrink-0 text-amber-600/80 dark:text-amber-500/80" />
+        {noteFolder ? (
+          <FolderGlyph
+            folderId={noteFolder.id}
+            size={12}
+            className="shrink-0 text-amber-600/80 dark:text-amber-500/80"
+          />
+        ) : (
+          <Folder size={12} className="shrink-0 text-amber-600/80 dark:text-amber-500/80" />
+        )}
         <span className="truncate max-w-[120px]">
           {noteFolder ? noteFolder.name : t('shell:folders.chipUnfiled')}
         </span>

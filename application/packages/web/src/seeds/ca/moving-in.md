@@ -7,7 +7,7 @@ title: La mudança
 
 Pots portar quatre menes de coses: notes, entrades de diari, marcadors i contrasenyes.
 
-Totes comencen al mateix lloc: **Configuració > Importa i exporta**.
+Totes comencen al mateix lloc: **Configuració > Import & Export**.
 
 ## Què pots portar
 
@@ -41,7 +41,7 @@ Una entrada de diari conté més que text. Sobre l'àrea d'escriptura hi ha els 
 ## Marcadors
 
 - [ ] Exporta els marcadors del navegador com a fitxer `.html`
-- [ ] Importa aquest fitxer: **Configuració > Importa i exporta > Importa > Marcadors del navegador**
+- [ ] Importa aquest fitxer: **Configuració > Import & Export > Importa > Marcadors del navegador**
 
 També pots enganxar un enllaç en una nota buida. El títol i la icona del lloc arriben sols: [privacynotes.app/ca/help/import/browser-bookmarks](https://privacynotes.app/ca/help/import/browser-bookmarks)
 

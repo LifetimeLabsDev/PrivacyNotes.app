@@ -1,7 +1,9 @@
 /**
  * Full-app lock screen.
  *
- * Shown when `appLockEnabled` is true and the session has timed out.
+ * Shown when `appLockEnabled` is true and the session has timed out, and on
+ * any start where a PIN wrap or a fingerprint is the only way back into the
+ * session because no phrase is at rest, whatever the flag says (App.tsx).
  * Supports biometric unlock (WebAuthn PRF) and PIN unlock, with
  * full phrase re-entry as last resort.
  *

@@ -138,6 +138,7 @@
     "closeMenu": "Zavřít menu",
     "close": "Zavřít",
     "views": "Obsah",
+    "resizeSplit": "Změnit poměr mezi Obsahem a značkami nebo složkami",
     "sidebarOptions": "Možnosti postranního panelu",
     "showInSidebar": "Zobrazit na postranním panelu",
     "allOptions": "Možnosti sekce Vše",
@@ -465,6 +466,7 @@
     "openAction": "Otevřít",
     "copiedUrl": "Odkaz zkopírován",
     "moveToTrash": "Přesunout do koše",
+    "rowMenu": "Další akce",
     "emptyNone": "Zatím žádné záložky.",
     "emptyTitle": "Ukládej si weby, které stojí za to",
     "emptyAdd": "Přidat záložku",
@@ -599,5 +601,8 @@
     "retargetedToast_one": "Aktualizován {{count}} odkaz na poznámku podle nového názvu.",
     "retargetedToast_other": "Aktualizováno {{count}} odkazů na poznámky podle nového názvu.",
     "retargetedToast_few": "Aktualizovány {{count}} odkazy na poznámky podle nového názvu."
+  },
+  "looks": {
+    "menu": "Ikona a barva"
   }
 }

@@ -42,6 +42,7 @@ import i18n from './i18n';
 import { toLocalIso } from './notesViewUtils';
 import { loadLocalSettings, saveLocalSettings } from './userSettings';
 import { SEED_FOLDER_IDS, type FolderDef } from './folders';
+import { folderLookKey, seedIcons, tagLookKey } from './itemStyles';
 import { buildLinkBody } from './linkBody';
 import { buildContactBody, emptyContact } from './contactBody';
 import { loadSeeds, type SeedDoc } from './seeds';
@@ -455,6 +456,8 @@ interface SeedFolder {
   nameKey?: string;
   parentId: string | null;
   order: number;
+  /** Its look icon (looks/lookIcons.ts), a starting point the user can change. */
+  icon: string;
 }
 
 const SEED_FOLDERS: Record<string, SeedFolder> = {
@@ -463,12 +466,14 @@ const SEED_FOLDERS: Record<string, SeedFolder> = {
     name: 'PrivacyNotes',
     parentId: null,
     order: 0,
+    icon: 'lock',
   },
   Markdown: {
     id: SEED_FOLDER_IDS.Markdown,
     name: 'Markdown',
     parentId: SEED_FOLDER_IDS.PrivacyNotes,
     order: 0,
+    icon: 'pencil',
   },
   Security: {
     id: SEED_FOLDER_IDS.Security,
@@ -476,6 +481,7 @@ const SEED_FOLDERS: Record<string, SeedFolder> = {
     nameKey: 'shell:folders.seedSecurity',
     parentId: SEED_FOLDER_IDS.PrivacyNotes,
     order: 1,
+    icon: 'shield',
   },
   Travel: {
     id: SEED_FOLDER_IDS.Travel,
@@ -483,7 +489,22 @@ const SEED_FOLDERS: Record<string, SeedFolder> = {
     nameKey: 'shell:folders.seedTravel',
     parentId: null,
     order: 1,
+    icon: 'airplane',
   },
+};
+
+/**
+ * The look icon of each tag the seeds use. Seed tags are the same English
+ * words in every language, so the keys are fixed.
+ * Spec: ops/docs/plans/folder-tag-icons.md (section 6.2)
+ */
+export const SEED_TAG_ICONS: Record<string, string> = {
+  encryption: 'key',
+  privacy: 'fingerprint',
+  recipes: 'cooking-pot',
+  tokyo: 'map-pin',
+  rating: 'star',
+  work: 'briefcase',
 };
 
 /** The tree as the settings blob stores it, named in the user's language. */
@@ -516,8 +537,9 @@ const DEMO_EXTRA_TRACKERS: BuiltinTrackerId[] = [
 ];
 
 /**
- * Prepare the vault's settings: the starter folder tree for everyone, and
- * the wider pill set in the demo.
+ * Prepare the vault's settings: the starter folder tree and the icons of
+ * the starter folders and tags for everyone, and the wider pill set in the
+ * demo.
  *
  * Additive by id, so a name, an order or a nesting the user changed is
  * never reset. It does NOT remember a deletion, which is safe only
@@ -541,9 +563,18 @@ async function seedFolderTree(): Promise<void> {
     ? DEMO_EXTRA_TRACKERS.filter((id) => !active.includes(id))
     : [];
 
-  if (missingFolders.length === 0 && missingPills.length === 0) return;
+  // Icons for the starter folders still in the tree and for the seed tags.
+  const icons: Record<string, string> = {};
+  for (const f of Object.values(SEED_FOLDERS)) {
+    if (!removed.has(f.id)) icons[folderLookKey(f.id)] = f.icon;
+  }
+  for (const [tag, icon] of Object.entries(SEED_TAG_ICONS)) icons[tagLookKey(tag)] = icon;
+  const itemStyles = seedIcons(settings.itemStyles, icons);
+
+  if (missingFolders.length === 0 && missingPills.length === 0 && itemStyles === settings.itemStyles) return;
   saveLocalSettings({
     ...settings,
+    itemStyles,
     folders: [...settings.folders, ...missingFolders],
     trackerSettings: {
       ...settings.trackerSettings,

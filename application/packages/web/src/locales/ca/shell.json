@@ -136,6 +136,7 @@
     "closeMenu": "Tanca el menú",
     "close": "Tanca",
     "views": "Contingut",
+    "resizeSplit": "Redimensiona Contingut i les etiquetes o carpetes",
     "sidebarOptions": "Opcions de la barra lateral",
     "showInSidebar": "Mostra a la barra lateral",
     "allOptions": "Opcions de Tot",
@@ -459,6 +460,7 @@
     "openAction": "Obre",
     "copiedUrl": "Enllaç copiat",
     "moveToTrash": "Mou a la paperera",
+    "rowMenu": "Més accions",
     "emptyNone": "Encara no hi ha marcadors.",
     "emptyTitle": "Desa els llocs que val la pena conservar",
     "emptyAdd": "Afegeix un marcador",
@@ -589,5 +591,8 @@
   "noteLinks": {
     "retargetedToast_one": "{{count}} enllaç entre notes actualitzat al títol nou.",
     "retargetedToast_other": "{{count}} enllaços entre notes actualitzats al títol nou."
+  },
+  "looks": {
+    "menu": "Icona i color"
   }
 }

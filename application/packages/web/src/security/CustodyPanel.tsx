@@ -241,7 +241,7 @@ export function CustodyPanel({ phrase }: { phrase: string }) {
     // forces the common desktop case to stack in order to tidy a
     // cosmetic wrap in some languages.
     <div className="@container border-t border-divider pt-4 space-y-2.5">
-      <SectionEyebrow>{t('custody.eyebrow')}</SectionEyebrow>
+      <SectionEyebrow setting="security.custody">{t('custody.eyebrow')}</SectionEyebrow>
 
       {done && (
         <p className="text-[13px] leading-relaxed text-pn flex items-start gap-2">

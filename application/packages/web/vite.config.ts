@@ -7,9 +7,11 @@ import { fileURLToPath } from 'node:url';
 import { changelogPagePlugin } from './changelog-page.ts';
 import { helpPagePlugin } from './help-page.ts';
 import { roadmapPagePlugin } from './roadmap-page.ts';
+import { searchCoreScriptPlugin } from './search-core-script.ts';
 import { brandPagePlugin } from './brand-page.ts';
 import { marketingShellPlugin } from './marketing-shell.ts';
 import { landingPagesPlugin } from './landing-pages.ts';
+import { authDesktopPagePlugin } from './auth-desktop-page.ts';
 // @ts-expect-error - plain .mjs tool script, no types; this file is not type-checked
 import { syncHelpChips } from '../../tools/sync-help-chips.mjs';
 
@@ -218,6 +220,43 @@ function stripMarketingAssets(): Plugin {
   };
 }
 
+// pdf.js decodes the JBIG2 and JPEG 2000 images that scanned PDFs are made of
+// with WebAssembly, which our content security policy does not allow, so it
+// falls back to two plain modules it imports by fixed name from its `wasmUrl`
+// directory. Fixed names cannot go through the hashed asset pipeline: this
+// copies them to pdfjs/<version>/ in the build and serves them there in dev.
+// The version in the path keeps a new pdf.js from meeting a cached old decoder.
+// Spec: packages/web/src/PdfPages.tsx (header)
+const PDFJS_DECODERS = ['openjpeg_nowasm_fallback.js', 'jbig2_nowasm_fallback.js'];
+
+function pdfjsDecoders(): Plugin {
+  const pkgFile = path.resolve(__dirname, 'node_modules/pdfjs-dist/package.json');
+  const sourceDir = path.join(path.dirname(fs.realpathSync(pkgFile)), 'wasm');
+  const version = (JSON.parse(fs.readFileSync(pkgFile, 'utf8')) as { version: string }).version;
+  const urlDir = `pdfjs/${version}/`;
+  return {
+    name: 'pn-pdfjs-decoders',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const pathname = (req.url ?? '').split('?')[0]!;
+        const name = pathname.startsWith(`/${urlDir}`) ? pathname.slice(urlDir.length + 1) : '';
+        if (!PDFJS_DECODERS.includes(name)) return next();
+        res.setHeader('Content-Type', 'text/javascript');
+        res.end(fs.readFileSync(path.join(sourceDir, name)));
+      });
+    },
+    generateBundle() {
+      for (const name of PDFJS_DECODERS) {
+        this.emitFile({
+          type: 'asset',
+          fileName: `${urlDir}${name}`,
+          source: fs.readFileSync(path.join(sourceDir, name)),
+        });
+      }
+    },
+  };
+}
+
 // The marketing homepage and the auth card live in the lazily imported
 // Onboarding chunk: a signed-out visitor's first paint waits on the entry
 // graph, and only then discovers and fetches that chunk, one extra
@@ -309,7 +348,19 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // items added to the public changelog. That entry is data in the entry
   // chunk, so curating a release moves this number and nothing else does.
   // Raised to 79 for the same reason it went to 78.
-  '(entry)': 79,
+  // 86.32 kB gz on 2026-09-17, 7.32 over. WHAT GREW: react-dom 19.3.0, and
+  // nothing else. Measured by holding react and react-dom at 19.2.8 with the
+  // rest of the same dependency batch installed: this chunk did not move at
+  // all, and the boot path grew 1.01 kB instead of 9.45. Vite 8.3.0 was ruled
+  // out the same way, pinned back to 8.2.2 for one build with no effect. React
+  // is the framework and sits in the entry by construction, so there is no
+  // lazy boundary to hide it behind. Raised to 87.
+  // 87.38 kB gz on 2026-09-18, 0.38 over. WHAT GREW: the screen a failed
+  // render leaves behind, in main.tsx. Isolated at +1.05 by building the same
+  // tree with that one file at HEAD (86.33 against 87.38). It cannot sit
+  // behind a lazy boundary, because it is what renders when a chunk fails to
+  // load. Raised to 88.
+  '(entry)': 88,
   // NEW CHUNK, not new bytes: the whole shared package in one piece, 62.91 kB
   // gz. It has to stay one chunk - splitting it is what put a white page in
   // production. See the advancedChunks comment in `build` for the mechanism.
@@ -406,7 +457,15 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // 63.01 on 2026-09-11 with the generator's second mode: twenty-odd short
   // strings for the toggle, the steppers, the strength tiers and the
   // passphrase options, +0.24 kB gz. Raised to 64.
-  i18n: 64,
+  // 64.15 on 2026-09-23 with the picture viewer, the PDF view and the Files
+  // picture picker: nineteen short strings, +0.32 kB gz. Raised to 65.
+  // 65.17 on 2026-09-24 with a batch of reliability fixes: the export
+  // missing-blob sentences, the storage-upgrade retry and refusal lines, the
+  // save-failure lines and the history read error, +0.45 kB gz. Raised to 66.
+  // 66.19 on 2026-09-25 with the settings search: one lazy-import stub per
+  // locale for its catalog, and the sidebar divider's label, +0.29 kB gz.
+  // Raised to 67.
+  i18n: 67,
   // 209.51 kB gz since katex became its own chunk below (278.11 with it inside,
   // against a 300 budget). Retightened in the same change that moved it: a
   // budget carrying 90 kB of slack is decoration, not a gate.
@@ -420,10 +479,21 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // editor and so fetches this only for a note that actually contains a `$`.
   // Budget set a few percent above the measured number, like its neighbours.
   katex: 80,
-  EncryptedImage: 110, // 95.94 kB gz - split out of NotesView by rolldown
+  // The attachment node and the code the picture node shares with it, 104.42
+  // kB gz on 2026-09-24; the picture node itself is a chunk of its own
+  // (EncryptedImage, 5.30, under the default budget). Rolldown names the big
+  // chunk after one of the two modules, so if the name flips back, this key
+  // has to follow it.
+  EncryptedAttachment: 110,
   // Lazy, and enormous, but only fetched by someone who drops in a HEIC file.
   // Why it still ships: ops/docs/bundle-size.md section 8.
   'heic-to': 770, // 728.90 kB gz, unchanged by the bundler swap
+  // Lazy: pdf.js, fetched the first time somebody opens a PDF. 147.54 kB gz
+  // for the legacy build (the modern one needs newer WebKit than our oldest
+  // supported iOS). Its worker ships as a separate asset, outside any budget.
+  // Why it ships at all, and what it costs the app download:
+  // ops/docs/bundle-size.md section 8.
+  PdfPages: 155,
 };
 
 // Everything not named above, including the per-locale catalog chunks. Loose
@@ -777,7 +847,112 @@ const DEFAULT_CHUNK_BUDGET_KB = 60;
 // NotesView, contextMenus, useMultiSelect and the tag picker. All of it is
 // static under NotesView, so all of it lands here. Three rather than one,
 // so the next row added to that list is not a budget question.
-const BOOT_PATH_BUDGET_KB = 940;
+// 940 -> 948 (2026-09-17): 946.60 kB gz in build-smoke's units with the
+// dependency batch. WHAT GREW: react-dom 19.3.0 carries 8.35 kB gz of it in
+// the entry chunk, isolated by rebuilding with react held at 19.2.8; the
+// remaining 1.10 is shared (supabase-js 2.116.0), auth, jsx-runtime and katex,
+// none above 0.61. Eight rather than seven, so the next small fix on this path
+// is not a build failure, and still under 0.2% of headroom.
+// 948 -> 950 (2026-09-18): 948.41 kB gz in build-smoke's units. WHAT GREW:
+// 1.05 is the boot error screen in the entry chunk, isolated the same way as
+// the entry budget above; the other 0.76 predates this change and arrived with
+// v0.519.0 to v0.521.0 (auth +0.56, i18n +0.17). Two rather than one, so the
+// next small fix on this path is not a budget question.
+// 950 -> 953 (2026-09-23): 951.16 kB gz in build-smoke's units. WHAT GREW:
+// Ukrainian, Russian and Thai, +1.23: i18n +0.62 is one lazy-import stub per
+// new catalog in the locale glob, and (entry) +0.61 is their endonyms, flags
+// and marketing titles, all read at boot. The rest (Editor +0.48, NotesView
+// +0.35, folderImport +0.18, markdownRender +0.17) arrived with v0.522.0 to
+// v0.525.1 inside the old headroom. Two rather than one, so the next small
+// fix on this path is not a budget question.
+// 953 -> 958 (2026-09-23): 956.00 kB gz in build-smoke's units, +4.73 measured
+// against the same commit without the change, with the same env values. WHAT
+// GREW: the picture viewer's boot half, which is everything that opens it -
+// the file card and clickable thumbnail in the attachment node, thumbnails
+// for uploaded pictures in the Files grid (LazyPicture +1.00, mediaUrls
+// +0.17), the request host and the picker entry (NotesView +0.30), and the
+// English strings (i18n +0.32). The attachment node now shares a chunk with
+// the picture node (EncryptedImage +7.48, Editor -5.30), and the shared icon
+// chunks regrouped for a net +1.04. The viewer, the picker and pdf.js stay
+// lazy. Two above the number, so the next small fix is not a budget question.
+// 958 -> 961 (2026-09-24): 958.80 kB gz in build-smoke's units, +2.61 measured
+// against the same commit without the change, with the same env values. WHAT
+// GREW: the file chip's new controls (the labelled View or Download, the tile
+// button, the menu wiring), the PDF first-page cache and the near-screen hook
+// that gates it, and the viewer's save path. The media chunk split in two,
+// 104.42 under the attachment's name and 5.30 for the picture node, where it
+// was 105.94 as one, and the small shared chunks regrouped around it
+// (usePendingUploads, hosts, HoverLabel, two icons); a build without the
+// ContextMenu import measured the same, so the menu costs nothing here. The
+// stage and pdf.js stay lazy. Two above the number, as before.
+// 961 -> 966 (2026-09-24): 965.64 kB gz in build-smoke's units, +6.84 against
+// the v0.528.0 baseline. WHAT GREW: icons and colors for folders and tags. The
+// glyphs the sidebar draws at boot, the context that feeds them and the note
+// tint the list rows and grid tiles share (LookGlyph +1.77), the per-value
+// merge, validation and color rule that every sync runs (itemStyles +1.41), and
+// the provider, the open note's tint and the Keep color import in NotesView
+// (+1.25). The editor's color swatch became a component the lazy picker shares
+// (ColorSwatch +1.53), and two icons the picker also draws moved into chunks of
+// their own (RocketLaunch +1.26, Star +1.09); the other movers net -1.47. The
+// picker, its strings and the icon paths stay lazy. The budget sits just above
+// the number.
+// 966 -> 968 (2026-09-24): 966.78 kB gz in build-smoke's units, +1.14 against
+// the v0.529.0 baseline, from a batch of reliability fixes. WHAT GREW:
+// the trash-purge module and its gate in the orchestrator, the storage-upgrade
+// quote and its two refusal states (devices +0.11), the export missing-blob
+// list and the i18n strings above (+0.45). export +26.04 is not growth: the
+// same code left the NotesView (-9.71) and adminEvents (-15.96) chunks, which
+// net to -25.67, as the export helpers the import modal now shares regrouped
+// the graph. The budget sits just above the number.
+// 968 -> 970 (2026-09-24): +1.86 kB gz in build-smoke's units is the note-sync
+// merge, measured against the same commit without the change, with the same
+// env values (967.47 -> 969.33): the per-field merge and the sync base
+// fingerprints in noteMerge.ts, with the generation guard, the base records,
+// the base heal and the conflict dialog's answers in sync.ts (auth +1.72,
+// NotesView -0.33 as the answers left the orchestrator), the sealed envelope
+// that stores the base (db +0.27) and the English conflict strings (i18n
+// +0.13). The rest of the tree's growth is the batch's other changes.
+// 970 -> 973 (2026-09-25): batch 6 of the same wave, measured 972.31 in
+// build-smoke's units: the wipe-door counts (`neverBackedUp.tsx` now on the
+// boot path through the Danger zone) +1.0, the restore gate, the demo bucket,
+// the kept stash and the note type table together +1.9 with the strings.
+// 973 -> 974 (2026-09-25): 973.74 kB gz in build-smoke's units, +1.14 against
+// the v0.530.4 tree. WHAT GREW: the search core. Its matcher (`textMatch.ts`),
+// which every list now filters through, sits on the boot path because
+// NotesView imports the tag picker, the folder picker and the note-link list
+// directly, and it lands in the notesViewUtils chunk with the phrase check
+// that calls it, together with the kana fold (notesViewUtils +0.89). The
+// input method guard and its call sites (EncryptedAttachment +0.14) and the
+// notes list's folded copies make up the rest. The budget sits just above
+// the number.
+// 974 -> 975 (2026-09-25): 974.69 kB gz in build-smoke's units, +0.69 against
+// the v0.531.0 tree. WHAT GREW: a batch of reliability fixes, each on the
+// boot path by construction. The folder path reader that keeps a slash in a
+// name and reuses a saved folder id (folderImport +0.15), the phrase write
+// that reads itself back before a lock door comes off (auth +0.15), the
+// freshest-body helper the four single-note exports share (NotesView +0.13),
+// the one-line title rule in its own module (oneLineTitle +0.12) and the
+// halted-push strings (i18n +0.11). The budget sits just above the number.
+// 975 -> 977 (2026-09-25): 976.05 kB gz in build-smoke's units, +1.61 against
+// the v0.531.2 tree. WHAT GREW: the sidebar divider between Content and the
+// tags or folders (useSidebarSplit, the Trash row that stays under a folded
+// list), the magnetic pane strips, the picker's Cancel snapshot in TagsRail,
+// and two small modules the lazy look picker now shares with the boot path,
+// which the bundler moves into chunks of their own (softKeyboard, textMatch).
+// The settings window went lazy in the same change (SettingsShell loads
+// SettingsWindow), which is what keeps its search off the boot path. The
+// budget sits just above the number.
+// 977 -> 979 (2026-09-25): 978.10 kB gz in build-smoke's units, +1.51 against
+// the v0.532.0 baseline, all of it in the Editor chunk. WHAT GREW: the
+// clipboard module that keeps blank lines across a paste and a copy on both
+// line spacings (clipboardSpacing). It is part of the editor, which is on
+// the boot path. The budget sits just above the number.
+// 979 -> 983 (2026-09-25): 982.22 kB gz in build-smoke's units. WHAT GREW:
+// table column widths (the drag and the node view in the Editor chunk, and
+// tableColumnWidths plus tableDelimiterRow, which the editor and the note
+// list read). All of it is editor code on the boot path. The budget sits just
+// above the number.
+const BOOT_PATH_BUDGET_KB = 983;
 
 // The budget above is stated in ONE environment's units: build-smoke's, which
 // is ubuntu with the synthetic values from tools/ci-vite-env.mjs. Every other
@@ -1136,6 +1311,7 @@ export default defineConfig({
     emitVersionJson(),
     katexWoff2Only(),
     phosphorTrimWeights(),
+    pdfjsDecoders(),
     // See isAppBuild above: the native apps embed dist/ wholesale, and the
     // static site is web-only.
     announceBuildTarget(),
@@ -1143,7 +1319,7 @@ export default defineConfig({
     preloadOnboarding(),
     ...(isAppBuild
       ? []
-      : [changelogPagePlugin(), helpPagePlugin(), roadmapPagePlugin(), brandPagePlugin(), marketingShellPlugin(), landingPagesPlugin()]),
+      : [changelogPagePlugin(), helpPagePlugin(), roadmapPagePlugin(), brandPagePlugin(), marketingShellPlugin(), landingPagesPlugin(), authDesktopPagePlugin(), searchCoreScriptPlugin()]),
     chunkBudgets(),
     chunkCycles(),
   ],

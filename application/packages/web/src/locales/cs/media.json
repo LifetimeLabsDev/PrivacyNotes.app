@@ -12,7 +12,9 @@
     "uploadFailed": "Odeslání se nezdařilo: {{message}}",
     "storeUnavailable": "Úložiště obrázků není dostupné",
     "loadFailed": "Obrázek se nepodařilo načíst",
-    "notFound": "Obrázek nenalezen"
+    "notFound": "Obrázek nenalezen",
+    "saveFailed": "Uložení se nezdařilo, takže soubor může být prázdný nebo neúplný.",
+    "viewAria": "Zobrazit obrázek"
   },
   "attachment": {
     "fallbackName": "Příloha",
@@ -26,7 +28,6 @@
     "deleteConfirm": "Smazat?",
     "copied": "Zkopírováno",
     "download": "Stáhnout",
-    "downloadToPlay": "Stáhnout k přehrání",
     "play": "Přehrát",
     "pause": "Pozastavit",
     "fileNotFound": "Soubor nenalezen",
@@ -37,6 +38,31 @@
     "downloadFailed": "Stažení se nezdařilo",
     "playbackFailed": "Přehrávání se nezdařilo",
     "uploadFailed": "Odeslání se nezdařilo: {{message}}",
-    "unknownError": "Neznámá chyba"
+    "unknownError": "Neznámá chyba",
+    "view": "Zobrazit",
+    "more": "Další akce"
+  },
+  "viewer": {
+    "previous": "Předchozí",
+    "next": "Další",
+    "position": "{{index}} z {{count}}",
+    "zoomIn": "Přiblížit",
+    "zoomOut": "Oddálit",
+    "pdfLoading": "Otevírám PDF...",
+    "pdfFailed": "Toto PDF nejde otevřít. Stáhni si ho a otevři v jiné aplikaci.",
+    "pdfPassword": "Toto PDF má heslo. Stáhni si ho a otevři v jiné aplikaci.",
+    "saveFailed": "Uložení se nezdařilo, takže soubor může být prázdný nebo neúplný.",
+    "pageCount_one": "{{count}} stránka",
+    "pageCount_few": "{{count}} stránky",
+    "pageCount_many": "{{count}} stránky",
+    "pageCount_other": "{{count}} stránek",
+    "pageLabel": "{{name}}, stránka {{page}} z {{count}}"
+  },
+  "picker": {
+    "title": "Obrázky v Souborech",
+    "search": "Hledat obrázky",
+    "empty": "V Souborech zatím nejsou žádné obrázky. Nahraj tam nějaký a pak ho přidej sem.",
+    "noMatch": "Hledání neodpovídá žádný obrázek.",
+    "noCopy": "Obrázek přidaný sem odkazuje na soubor v Souborech, takže nezabírá další úložiště."
   }
 }

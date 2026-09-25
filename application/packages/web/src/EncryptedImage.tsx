@@ -3,7 +3,9 @@
  *
  * Built from scratch on @tiptap/core (the stock image extension is not used), with:
  * - A React nodeView that resolves `pn:img/<uuid>` URIs by fetching
- *   encrypted blobs from Supabase Storage, decrypting, and rendering.
+ *   encrypted blobs from Supabase Storage, decrypting, and rendering. A
+ *   `pn:file/<uuid>` source is a picture placed from the Files pillar: it
+ *   points at that upload's attachment blob instead of storing a copy.
  * - Paste/drop/upload interception that processes images client-side
  *   (resize, WebP encode, EXIF strip) then encrypts + uploads.
  *
@@ -20,13 +22,16 @@ import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
+import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
-import { Download, Trash } from './icons';
+import { ArrowsOutSimple, Download, Trash } from './icons';
 import { currentImageOptions, processImage } from './imageProcessing';
+import { cachedAttachmentUrl, loadAttachmentData, loadAttachmentUrl } from './EncryptedAttachment';
+import { FILE_REF_PREFIX, openMediaViewerInDoc, type MediaRef } from './mediaRefs';
 import { validateAttachment } from './attachmentValidation';
 import { suppressSoftKeyboard } from './softKeyboard';
 import type { ImageStore } from './imageStore';
-import { saveBlob } from './saveFile';
+import { saveBlob, type SaveResult } from './saveFile';
 import i18n from './i18n';
 
 /** Prefix for our custom image URIs. */
@@ -60,10 +65,46 @@ export function isEncryptedImageSrc(src: string): boolean {
   return src.startsWith(IMAGE_URI_PREFIX);
 }
 
-/** Extract the UUID from a pn:img/<uuid> URI. */
-function extractImageId(src: string): string | null {
-  if (!src.startsWith(IMAGE_URI_PREFIX)) return null;
-  return src.slice(IMAGE_URI_PREFIX.length);
+/** A source that names one of our encrypted blobs, as opposed to a path. */
+function isBlobRef(src: string): boolean {
+  return src.startsWith(IMAGE_URI_PREFIX) || src.startsWith(FILE_REF_PREFIX);
+}
+
+/**
+ * Which store a picture's bytes live in. `img` is the picture store; `file`
+ * is an upload's attachment blob, which a picture placed from Files points at
+ * so the one upload is stored once however many notes show it.
+ */
+type BlobSource = { store: 'img' | 'file'; uuid: string };
+
+function blobSource(src: string): BlobSource | null {
+  if (src.startsWith(IMAGE_URI_PREFIX)) return { store: 'img', uuid: src.slice(IMAGE_URI_PREFIX.length) };
+  if (src.startsWith(FILE_REF_PREFIX)) return { store: 'file', uuid: src.slice(FILE_REF_PREFIX.length) };
+  return null;
+}
+
+function cachedSourceUrl(source: BlobSource | null): string | null {
+  if (!source) return null;
+  return source.store === 'img'
+    ? (blobUrlCache.get(source.uuid) ?? null)
+    : cachedAttachmentUrl(source.uuid);
+}
+
+/**
+ * Read a picture's bytes into a cached object URL. Null means "not here and
+ * not on the server yet", which the node view retries; a throw is an error.
+ */
+async function fetchSourceUrl(source: BlobSource): Promise<string | null> {
+  if (source.store === 'file') return loadAttachmentUrl(source.uuid);
+  const store = getImageStore();
+  if (!store) throw new Error(i18n.t('media:image.storeUnavailable'));
+  const bytes = await store.getImage(source.uuid);
+  if (!bytes) return null;
+  const existing = blobUrlCache.get(source.uuid);
+  if (existing) return existing;
+  const url = URL.createObjectURL(new Blob([bytes as BlobPart]));
+  blobUrlCache.set(source.uuid, url);
+  return url;
 }
 
 // ------------------------------------------------------------------
@@ -89,6 +130,7 @@ type ImageNodeViewProps = {
     isEditable: boolean;
     commands: { setNodeSelection: (pos: number) => boolean };
     view: { focus: () => void; dom: HTMLElement };
+    state: { doc: ProseMirrorNode };
   };
   /** Document position of this image, or undefined once the node is gone. */
   getPos: () => number | undefined;
@@ -98,16 +140,18 @@ type ImageNodeViewProps = {
 
 /**
  * Floating toolbar shown above a selected image.
- * Provides size presets (25/50/75/100%), download, and delete.
+ * Provides size presets (25/50/75/100%), view, download, and delete.
  */
 function ImageToolbar({
   width,
   onResize,
+  onView,
   onDownload,
   onDelete,
 }: {
   width: ImageWidth;
   onResize: (w: ImageWidth) => void;
+  onView: () => void;
   onDownload: () => void;
   onDelete: () => void;
 }) {
@@ -132,6 +176,16 @@ function ImageToolbar({
           </button>
         ))}
       </div>
+      <div className="pn-image-toolbar-divider" />
+      <button
+        type="button"
+        className="pn-image-toolbar-btn"
+        aria-label={t('image.viewAria')}
+        onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onView(); }}
+      >
+        <ArrowsOutSimple size={16} />
+      </button>
       <div className="pn-image-toolbar-divider" />
       <button
         type="button"
@@ -173,10 +227,15 @@ const EncryptedImageView = memo(function EncryptedImageView({
 }: ImageNodeViewProps) {
   const { t } = useTranslation('media');
   const { src, alt, width, textAlign } = node.attrs;
-  const imageId = extractImageId(src);
-  const cachedUrl = imageId ? (blobUrlCache.get(imageId) ?? null) : null;
+  const source = blobSource(src);
+  // One key per blob, whichever store holds it: the retry set below is shared.
+  const imageId = source ? `${source.store}:${source.uuid}` : null;
+  const cachedUrl = cachedSourceUrl(source);
   const [objectUrl, setObjectUrl] = useState<string | null>(cachedUrl);
   const [error, setError] = useState<string | null>(null);
+  // A failed native save can leave an empty or partial file, so the message
+  // stays until a save succeeds; a dismissed dialog changes nothing.
+  const [saveFailed, setSaveFailed] = useState(false);
   const [loading, setLoading] = useState(!cachedUrl);
   // True once a person taps this image, and what the size/download/delete bar
   // hangs on. It separates an image someone chose from the one ProseMirror
@@ -196,14 +255,13 @@ const EncryptedImageView = memo(function EncryptedImageView({
 
     let cancelled = false;
 
-    if (!imageId) {
+    if (!source || !imageId) {
       setObjectUrl(src);
       setLoading(false);
       return;
     }
 
-    const store = getImageStore();
-    if (!store) {
+    if (source.store === 'img' && !getImageStore()) {
       setError(t('image.storeUnavailable'));
       setLoading(false);
       return;
@@ -223,23 +281,15 @@ const EncryptedImageView = memo(function EncryptedImageView({
         }
 
         try {
-          const blob = await store.getImage(imageId);
+          const url = await fetchSourceUrl(source);
           if (cancelled) return;
-          if (blob) {
-            const existing = blobUrlCache.get(imageId);
-            if (existing) {
-              setObjectUrl(existing);
-              setLoading(false);
-              return;
-            }
-            const url = URL.createObjectURL(new Blob([blob as BlobPart]));
-            blobUrlCache.set(imageId, url);
+          if (url) {
             setObjectUrl(url);
             setLoading(false);
             pendingRetryIds.delete(imageId);
             return;
           }
-          // blob is null - image not on server yet, retry if attempts remain
+          // null - not on the server yet, retry if attempts remain
         } catch (err) {
           if (cancelled) return;
           // On last attempt, surface the error
@@ -266,27 +316,20 @@ const EncryptedImageView = memo(function EncryptedImageView({
   }, [src, imageId, cachedUrl]);
 
   // Re-attempt download when a sync completes - the uploading device's
-  // background upload may have finished by now. Only fires for images
-  // that exhausted the initial retry window. GitHub #134.
+  // background upload may have finished by now. The listener is installed
+  // whenever the image has nothing to show, and the pending set is read when
+  // the event fires: the ladder above adds this id only after its last
+  // attempt, and React watches no dependency that changes at that moment, so
+  // a listener gated at mount would never exist for the image that needs it.
+  // GitHub #134.
   useEffect(() => {
-    if (!imageId || objectUrl || !pendingRetryIds.has(imageId)) return;
+    if (!source || !imageId || objectUrl) return;
 
     const onSyncComplete = async () => {
-      const store = getImageStore();
-      if (!store) return;
+      if (!pendingRetryIds.has(imageId)) return;
       try {
-        const blob = await store.getImage(imageId);
-        if (!blob) return;
-        const existing = blobUrlCache.get(imageId);
-        if (existing) {
-          setObjectUrl(existing);
-          setError(null);
-          setLoading(false);
-          pendingRetryIds.delete(imageId);
-          return;
-        }
-        const url = URL.createObjectURL(new Blob([blob as BlobPart]));
-        blobUrlCache.set(imageId, url);
+        const url = await fetchSourceUrl(source);
+        if (!url) return;
         setObjectUrl(url);
         setError(null);
         setLoading(false);
@@ -305,15 +348,24 @@ const EncryptedImageView = memo(function EncryptedImageView({
   }, [updateAttributes]);
 
   const handleDownload = useCallback(async () => {
-    if (!imageId) return;
-    const store = getImageStore();
-    if (!store) return;
-    const bytes = await store.getImage(imageId);
-    if (!bytes) return;
-    const name = alt || imageId || 'image';
-    const ext = name.includes('.') ? '' : '.webp';
-    await saveBlob(new Blob([bytes as BlobPart]), `${name}${ext}`);
-  }, [imageId, alt]);
+    if (!source) return;
+    let saved: SaveResult | null;
+    if (source.store === 'file') {
+      // The upload keeps its own name and type; the alt text may be empty.
+      const att = await loadAttachmentData(source.uuid);
+      if (!att) return;
+      saved = await saveBlob(new Blob([att.data as BlobPart], { type: att.meta.mime }), att.meta.name || alt || 'image');
+    } else {
+      saved = await saveStoredImage(source.uuid, alt);
+    }
+    if (saved?.ok) setSaveFailed(false);
+    else if (saved?.reason === 'failed') setSaveFailed(true);
+  }, [src, alt]);
+
+  const handleView = useCallback(() => {
+    const pos = getPos();
+    if (typeof pos === 'number') openMediaViewerInDoc(editor.state.doc, pos);
+  }, [editor, getPos]);
 
   const handleDelete = useCallback(() => {
     deleteNode();
@@ -342,7 +394,12 @@ const EncryptedImageView = memo(function EncryptedImageView({
   // so mouse behavior is unchanged.
   // Fix: GitHub #240 (image options do not appear on Android)
   const handleSelect = useCallback(() => {
-    if (!editor.isEditable) return;
+    // A note nobody can edit has no caret for a click to place and no bar to
+    // show, so the click is free to open the picture.
+    if (!editor.isEditable) {
+      handleView();
+      return;
+    }
     const pos = getPos();
     if (typeof pos !== 'number') return;
     if (softPress.current) setTapped(true);
@@ -354,7 +411,7 @@ const EncryptedImageView = memo(function EncryptedImageView({
     // tell an image a person chose from the one the initial selection landed
     // on.
     if (!softPress.current) editor.view.focus();
-  }, [editor, getPos]);
+  }, [editor, getPos, handleView]);
 
   // Arm the keyboard suppression as the press starts, while there is still
   // time for it to count. Skipping focus below is not enough once the editor
@@ -466,9 +523,13 @@ const EncryptedImageView = memo(function EncryptedImageView({
           <ImageToolbar
             width={widthPercent as ImageWidth}
             onResize={handleResize}
+            onView={handleView}
             onDownload={handleDownload}
             onDelete={handleDelete}
           />
+        )}
+        {(selected || tapped) && saveFailed && (
+          <p className="mt-1 text-xs text-red-600 dark:text-red-400">{t('image.saveFailed')}</p>
         )}
       </div>
     </NodeViewWrapper>
@@ -493,6 +554,21 @@ export function setImageStore(store: ImageStore | null) {
 
 function getImageStore(): ImageStore | null {
   return _imageStore;
+}
+
+/**
+ * Save a stored picture under its alt text, or its id when it has none. The
+ * upload pipeline stores WebP, so a name without an extension gets that one.
+ * Null when the picture cannot be read.
+ */
+export async function saveStoredImage(uuid: string, alt: string): Promise<SaveResult | null> {
+  const store = getImageStore();
+  if (!store) return null;
+  const bytes = await store.getImage(uuid);
+  if (!bytes) return null;
+  const name = alt || uuid || 'image';
+  const ext = name.includes('.') ? '' : '.webp';
+  return saveBlob(new Blob([bytes as BlobPart]), `${name}${ext}`);
 }
 
 /**
@@ -648,16 +724,21 @@ async function handleImageUpload(
   // Replace placeholder with the real image node.
   const placeholderPos = findPlaceholderPos(view, placeholderId);
   removePlaceholder(view, placeholderId);
+  placeImage(view, `${IMAGE_URI_PREFIX}${uuid}`, result.image.name, placeholderPos ?? view.state.selection.to);
+}
 
+/**
+ * Put a picture node at `targetPos`, by the rules every picture insert uses:
+ * an empty paragraph is replaced rather than left above it, a table cell
+ * keeps the picture inside the cell, and anywhere else it goes after the
+ * current block.
+ */
+function placeImage(view: EditorView, src: string, alt: string, targetPos: number): void {
   const { schema, doc } = view.state;
   const imageNode = schema.nodes['image'];
   if (!imageNode) return;
-  const node = imageNode.create({
-    src: `${IMAGE_URI_PREFIX}${uuid}`,
-    alt: result.image.name,
-  });
+  const node = imageNode.create({ src, alt });
 
-  const targetPos = placeholderPos ?? view.state.selection.to;
   const $pos = doc.resolve(Math.min(targetPos, doc.content.size));
 
   // If the cursor is inside an empty paragraph, replace it with the
@@ -690,6 +771,17 @@ async function handleImageUpload(
     const tr = view.state.tr.insert(insertAfter, node);
     view.dispatch(tr.scrollIntoView());
   }
+}
+
+/**
+ * Show a picture that is already stored, at the caret. Nothing is uploaded:
+ * the note points at the same blob the Files pillar holds, and the garbage
+ * collector keeps a blob while any note still names it (imageGC.ts,
+ * findRefsInOtherNotes). Issue #330.
+ */
+export function insertPictureRef(view: EditorView, ref: MediaRef): void {
+  placeImage(view, ref.src, ref.name, view.state.selection.to);
+  view.focus();
 }
 
 /**
@@ -739,7 +831,7 @@ function extractImgSrcsFromHtml(html: string): string[] {
   while ((match = re.exec(html)) !== null) {
     const src = match[1];
     // Only collect non-pn: sources - our own encrypted images are fine.
-    if (src && !src.startsWith(IMAGE_URI_PREFIX)) {
+    if (src && !isBlobRef(src)) {
       srcs.push(src);
     }
   }
@@ -814,7 +906,7 @@ export function sanitizePastedHtml(html: string): string {
     // (its `src` is the placeholder GIF). Reading only `src` made a copied
     // image a stray and dropped it on paste. Fix: GitHub #239
     const ref = img.getAttribute(IMAGE_REF_ATTR) ?? img.getAttribute('src') ?? '';
-    if (ref.startsWith(IMAGE_URI_PREFIX)) return false;
+    if (isBlobRef(ref)) return false;
     // A root-relative path is ours too: that is how the starter notes ship
     // their pictures. It is same-origin and already on the page, so there is
     // nothing to recover and nothing to strip - and dropping it meant a seed
@@ -1031,7 +1123,7 @@ export const EncryptedImage = Node.create({
   renderHTML({ HTMLAttributes }: { HTMLAttributes: Record<string, string> }) {
     const attrs = mergeAttributes(HTMLAttributes);
     // Emit a transparent placeholder in the DOM so the browser never
-    // tries to load the custom pn:img/ protocol (which CSP blocks).
+    // tries to load the custom pn:img/ or pn:file/ scheme (which CSP blocks).
     // The React NodeView replaces this with the decrypted blob: URL.
     //
     // Keep the real ref in a data attribute on the way out. This is also
@@ -1039,7 +1131,7 @@ export const EncryptedImage = Node.create({
     // through here, so with the ref only in `src` the clipboard held a
     // 1x1 GIF, sanitizePastedHtml threw it out as a foreign image, and
     // cut-and-paste inside a note silently did nothing (GitHub #239).
-    if (typeof attrs.src === 'string' && attrs.src.startsWith(IMAGE_URI_PREFIX)) {
+    if (typeof attrs.src === 'string' && isBlobRef(attrs.src)) {
       attrs[IMAGE_REF_ATTR] = attrs.src;
       attrs.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     }

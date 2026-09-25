@@ -1,0 +1,26 @@
+# Advisories the crate scan (pnpm check:crates) prints but does not fail on,
+# each with its reason and a date after which it fails again. `cargo update`
+# moves a crate only within the range its dependents allow, so a fix outside
+# that range is not one this manifest can take; it waits on the dependent.
+# One entry per advisory: the scanner matches the GitHub alias of each id too.
+# Spec: ops/docs/dependency-migration.md (crate advisories)
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0429"
+ignoreUntil = 2026-12-31
+reason = "glib 0.18 -> 0.20 is a major bump behind the gtk 0.18 stack tauri pins; Linux AppImage only, and the unsound path has no caller in our tree (dependency-migration.md). Waits on Tauri."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0194"
+ignoreUntil = 2026-12-31
+reason = "quick-xml 0.38 -> 0.41 is a major bump behind plist 1.8, which tauri pins. plist reads the app's own property lists, never a stranger's XML."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0195"
+ignoreUntil = 2026-12-31
+reason = "Same crate and same constraint as RUSTSEC-2026-0194."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0097"
+ignoreUntil = 2026-12-31
+reason = "rand 0.7 enters only through phf_generator's build script inside tauri-utils: it runs on the build machine, never ships in a binary, and no compatible update exists (dependency-migration.md)."

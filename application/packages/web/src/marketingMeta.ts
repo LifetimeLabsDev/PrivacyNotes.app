@@ -36,6 +36,9 @@ export const HREFLANG: Record<string, string> = {
   tr: 'tr',
   sv: 'sv',
   ar: 'ar',
+  uk: 'uk',
+  ru: 'ru',
+  th: 'th',
 };
 
 /**
@@ -126,6 +129,18 @@ export const META: Record<string, { title: string; description: string }> = {
     title: 'PrivacyNotes: خزنتك المشفّرة للملاحظات والمهام واليوميات',
     description: 'دوّن أفكارك ومهامك ويومياتك - مشفّرة دائمًا. تشفير من طرف إلى طرف دون تتبع، مع استضافة في سويسرا.',
   },
+  uk: {
+    title: 'PrivacyNotes: ваш зашифрований сейф для нотаток, завдань і щоденника',
+    description: 'Записуйте думки, завдання й щоденник, завжди зашифровані. Наскрізне шифрування без стеження, із серверами у Швейцарії.',
+  },
+  ru: {
+    title: 'PrivacyNotes: ваш зашифрованный сейф для заметок, задач и дневника',
+    description: 'Записывайте мысли, задачи и дневник, всегда в зашифрованном виде. Сквозное шифрование без слежки, с серверами в Швейцарии.',
+  },
+  th: {
+    title: 'PrivacyNotes: ตู้นิรภัยเข้ารหัสสำหรับโน้ต งาน และบันทึกประจำวันของคุณ',
+    description: 'จดความคิด งาน และบันทึกประจำวันของคุณ เข้ารหัสอยู่เสมอ เข้ารหัสแบบต้นทางถึงปลายทาง ไม่มีการติดตาม และโฮสต์ในสวิตเซอร์แลนด์',
+  },
 };
 
 /**
@@ -196,6 +211,9 @@ const OG_LOCALE: Record<string, string> = {
   // to pick a country for Arabic. Spec: ops/docs/i18n-spec.md (per-locale
   // route maps).
   ar: 'ar_AR',
+  uk: 'uk_UA',
+  ru: 'ru_RU',
+  th: 'th_TH',
 };
 
 export function ogLocale(locale: string): string {

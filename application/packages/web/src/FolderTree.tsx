@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePointMenuPosition } from './usePopoverPosition';
-import { SIDEBAR_ACTIVE } from './sidebarUI';
+import { SIDEBAR_ACTIVE, SIDEBAR_ROW_MENU_BUTTON } from './sidebarUI';
 import { FolderTreeView } from './FolderTreeView';
 import { INDENT_PX, MAX_INDENT_LEVEL, useFolderExpansion } from './folderTreeState';
 import { FolderNameInput } from './FolderNameInput';
+import { ProMark } from './UpgradeModal';
 import {
   canCreateChild,
   canDeleteFolder,
@@ -19,6 +20,7 @@ import {
   DotsThree,
   Folder,
   FolderPlus,
+  Palette,
   PencilSimple,
   Prohibit,
   Trash,
@@ -66,6 +68,10 @@ export interface FolderTreeProps {
    *  is stuck with (canDeleteFolder in folders.ts carries the reason). */
   locked?: boolean;
   onLockedAction?: () => void;
+  /** Opens the look picker (icon and color) at the point the menu stood. */
+  onEditLook?: (id: string) => void;
+  /** The Pro mark on the "Icon and color" row: a free account, and the demo. */
+  looksProMark?: boolean;
   /** Sibling sort (persisted per-device in NotesView, like tag sort). */
   sortField: FolderSortField;
   sortDir: FolderSortDir;
@@ -85,6 +91,8 @@ export function FolderTree({
   onReorderFolders,
   locked = false,
   onLockedAction,
+  onEditLook,
+  looksProMark = false,
   sortField,
   sortDir,
   mobileTabIndex,
@@ -225,7 +233,7 @@ export function FolderTree({
                   }
                 }}
                 aria-label={t('folders.actionsForFolder', { folder: f.name })}
-                className="shrink-0 inline-flex items-center justify-center w-6 h-6 rounded text-neutral-500 hover:text-accent hover:bg-neutral-300/60 dark:hover:bg-neutral-800/60 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+                className={SIDEBAR_ROW_MENU_BUTTON}
               >
                 <DotsThree />
               </button>
@@ -360,7 +368,7 @@ export function FolderTree({
                     }}
                     className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
                   >
-                    <FolderPlus />
+                    <FolderPlus className="text-accent" />
                     {t('folders.newSubfolder')}
                   </button>
                 )}
@@ -371,7 +379,7 @@ export function FolderTree({
                   }}
                   className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
                 >
-                  <ArrowElbowDownRight />
+                  <ArrowElbowDownRight className="text-accent" />
                   {t('folders.move')}
                 </button>
                 <button
@@ -382,9 +390,22 @@ export function FolderTree({
                   }}
                   className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
                 >
-                  <PencilSimple />
+                  <PencilSimple className="text-accent" />
                   {t('folders.rename')}
                 </button>
+                {onEditLook && (
+                  <button
+                    onClick={() => {
+                      setMenu(null);
+                      onEditLook(menuFolder.id);
+                    }}
+                    className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
+                  >
+                    <Palette className="text-accent" />
+                    <span className="flex-1">{t('looks.menu')}</span>
+                    {looksProMark && <ProMark />}
+                  </button>
+                )}
                 <div className="my-1 border-t border-divider" />
               </>
             )}

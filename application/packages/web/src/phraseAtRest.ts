@@ -29,6 +29,7 @@
  * non-extractable device key)
  */
 
+import { isValidPhrase } from '@notes/shared';
 import { db, reopenDb } from './db';
 import { PHRASE_STORAGE_KEY } from './authStorage';
 import { trustAwareStorage } from './trustStorage';
@@ -106,21 +107,6 @@ async function readWrapKey(): Promise<CryptoKey | null> {
 }
 
 /**
- * Persist the session phrase into trust-aware storage as a wrapped
- * envelope. Replaces every former plaintext write site, including the
- * boot-time migration of an existing plaintext value (same slot, so
- * the overwrite IS the migration; a per-store setItem either lands or
- * leaves the old value intact - there is no torn state).
- *
- * The wrap is proven before it is trusted: the key is re-read from
- * IndexedDB after any create (a key that cannot be read back cannot
- * open the envelope on the next boot) and the ciphertext is decrypted
- * and compared before the write. Any failure falls back to the old
- * plaintext write with a breadcrumb, which is exactly the pre-wrap
- * behavior: a degraded browser keeps the account usable and never
- * strands the user (auth session audit, section 0).
- */
-/**
  * True when the app lock is the only door: the setting is on AND a PIN
  * or biometric wrap exists to open it.
  *
@@ -157,7 +143,29 @@ export function appLockArmed(): boolean {
   }
 }
 
-export async function persistStoredPhrase(phrase: string): Promise<void> {
+/**
+ * Persist the session phrase into trust-aware storage as a wrapped
+ * envelope. Replaces every former plaintext write site, including the
+ * boot-time migration of an existing plaintext value (same slot, so
+ * the overwrite IS the migration; a per-store setItem either lands or
+ * leaves the old value intact - there is no torn state).
+ *
+ * The wrap is proven before it is trusted: the key is re-read from
+ * IndexedDB after any create (a key that cannot be read back cannot
+ * open the envelope on the next boot) and the ciphertext is decrypted
+ * and compared before the write. Any failure falls back to the old
+ * plaintext write with a breadcrumb, which is exactly the pre-wrap
+ * behavior: a degraded browser keeps the account usable and never
+ * strands the user (auth session audit, section 0).
+ *
+ * Answers whether the phrase is at rest afterwards, read back the way
+ * the next start reads it. trustAwareStorage swallows a refused write
+ * (quota, storage switched off), so a caller about to remove this
+ * device's last lock door, or to commit the flag that stops the lock
+ * screen, acts on this answer and never on the call having returned.
+ * Pinned by tests/phraseAtRest.test.ts.
+ */
+export async function persistStoredPhrase(phrase: string): Promise<boolean> {
   try {
     await getOrCreateWrapKey();
     // Re-read through the committed transaction: encrypt with the key
@@ -182,6 +190,9 @@ export async function persistStoredPhrase(phrase: string): Promise<void> {
     });
     trustAwareStorage.setItem(PHRASE_STORAGE_KEY, phrase);
   }
+  if ((await readResumablePhrase()) === phrase) return true;
+  logAuthEvent('auth:phrase-persist-unconfirmed');
+  return false;
 }
 
 /**
@@ -227,4 +238,35 @@ export async function unwrapStoredEnvelope(value: string): Promise<string | null
     }
   }
   return null;
+}
+
+/**
+ * The phrase this install is holding, when it is holding a usable one.
+ *
+ * An install can sit on the sign-in screen with a phrase still on disk: a
+ * boot that cannot finish its handshake demotes there on purpose, because an
+ * unreachable server or a storage hiccup is not a verdict, and re-entering the
+ * phrase repairs everything. A deliberate sign-out is NOT one of those cases
+ * and removes the phrase before that screen appears.
+ *
+ * In that state the app asks for something it is already holding. This reader
+ * is what lets the sign-in screen offer to carry on instead. It answers null
+ * for anything it cannot use: nothing stored, an envelope that will not open,
+ * or a value that is not a phrase. The app lock needs no special case here,
+ * because arming it removes this copy and the lock screen owns the unlock.
+ * Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.8)
+ */
+export async function readResumablePhrase(): Promise<string | null> {
+  let stored: string | null = null;
+  try {
+    stored = trustAwareStorage.getItem(PHRASE_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+  if (!stored) return null;
+  if (isWrappedEnvelope(stored)) {
+    const opened = await unwrapStoredEnvelope(stored).catch(() => null);
+    return opened && isValidPhrase(opened) ? opened : null;
+  }
+  return isValidPhrase(stored) ? stored : null;
 }

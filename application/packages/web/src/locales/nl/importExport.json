@@ -14,7 +14,7 @@
   "footer": {
     "exportNote": "Exporteren gebeurt lokaal. Er wordt niets geüpload.",
     "restoreNote": "Je bestand wordt lokaal gelezen en ontsleuteld.",
-    "importNote": "Alles wordt versleuteld voordat het je apparaat verlaat om te synchroniseren."
+    "importNote": "Alles is altijd versleuteld, op je apparaat en tijdens het synchroniseren."
   },
   "importPick": {
     "autoTagLabel": "Geïmporteerde notities taggen per bron",
@@ -74,6 +74,11 @@
     "encryptedBackupTitle": "Versleutelde back-up (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Herstel een versleutelde back-up met de sleutel van je herstelzin. Een .pnbackupz brengt alles terug, bestanden inbegrepen; een .pnbackup bevat alleen tekst en metagegevens. Je moet aangemeld zijn met hetzelfde account dat hem heeft gemaakt."
   },
+  "restoreGate": {
+    "wait": "Herstellen wacht tot dit apparaat online is en een synchronisatie heeft voltooid, zodat je back-up wordt gekoppeld aan de notities die al in je account staan, in plaats van ze dubbel toe te voegen.",
+    "paused": "Herstellen wacht op synchronisatie, zodat je back-up wordt gekoppeld aan de notities die al in je account staan, en de synchronisatie is op dit apparaat gepauzeerd: zet “Synchronisatie pauzeren” uit in Instellingen > ID & Sync.",
+    "belowFloor": "Herstellen wacht op synchronisatie, zodat je back-up wordt gekoppeld aan de notities die al in je account staan, en deze versie van de app is te oud om te synchroniseren: werk de app eerst bij."
+  },
   "encryptedBackupLabel": "Versleutelde back-up",
   "status": {
     "readingFile": "Bestand lezen…",
@@ -85,7 +90,9 @@
   "errors": {
     "genericParse": "Er ging iets mis.",
     "decryptionFailed": "Ontsleutelen mislukt. Verkeerde herstelzin of beschadigd bestand.",
-    "blobImportFailed": "Je notities zijn geïmporteerd, maar hun afbeeldingen en bestanden niet: {{detail}} Er is niets veranderd in het bestand dat je hebt gekozen, dus je kunt de geïmporteerde notities verwijderen en de import opnieuw uitvoeren."
+    "blobImportFailed": "Je notities zijn geïmporteerd, maar hun afbeeldingen en bestanden niet: {{detail}} Er is niets veranderd in het bestand dat je hebt gekozen, dus je kunt de geïmporteerde notities verwijderen en de import opnieuw uitvoeren.",
+    "blobsNotInBackup_one": "Je notities zijn teruggezet, maar {{items}} uit de lijst in de back-up ontbreekt erin.",
+    "blobsNotInBackup_other": "Je notities zijn teruggezet, maar {{items}} uit de lijst in de back-up ontbreken erin."
   },
   "preview": {
     "sourceLabel": "Bron",
@@ -99,6 +106,7 @@
     "duplicateWarning": "importeren voegt deze toe als nieuwe notities. Doe je dit twee keer, dan krijg je dubbele notities. Er is nog geen automatische ontdubbeling.",
     "duplicateSkipNote": "bladwijzers die je al bewaard hebt worden overgeslagen, dus dit twee keer doen levert niets dubbels op.",
     "contactSkipNote": "mensen die je al hebt opgeslagen worden overgeslagen en blijven zoals ze zijn, dus twee keer draaien maakt van niemand een dubbel.",
+    "restoreMergeNote": "notities uit je eigen back-up worden op id gekoppeld. Een notitie die je al hebt wordt alleen bijgewerkt als de versie in de back-up nieuwer is, en een notitie in je prullenbak komt er weer uit.",
     "quotaExceeded": "<strong>Te weinig opslag om te importeren.</strong> Naar schatting {{needed}} nodig, {{available}} beschikbaar. Maak ruimte vrij of upgrade voordat je importeert.",
     "quotaWarning": "Let op: deze import gebruikt ongeveer {{needed}} van je resterende {{available}} opslag.",
     "oversizeAttachments_one": "1 bestand is groter dan de limiet van {{limit}} per bestand op je abonnement. Het wordt op dit apparaat geïmporteerd, maar synchroniseert pas naar je andere apparaten als je upgrade.",
@@ -150,13 +158,25 @@
   "exportProgress": {
     "failedTitle": "Exporteren mislukt",
     "completeTitle": "Export voltooid",
+    "incompleteTitle": "Export onvolledig",
     "exportingTitle": "Back-up exporteren...",
     "preparing": "Voorbereiden...",
     "exporting": "Exporteren...",
     "imagesProgress": "Afbeeldingen exporteren... {{done}} van {{total}}",
     "filesProgress": "Bestanden exporteren... {{done}} van {{total}}",
     "building": "Back-up samenstellen...",
-    "compressing": "Comprimeren..."
+    "compressing": "Comprimeren...",
+    "missingFailed_one": "Dit apparaat kon {{items}} niet downloaden, dus je export laat het weg. Controleer je verbinding en exporteer opnieuw.",
+    "missingFailed_other": "Dit apparaat kon {{items}} niet downloaden, dus je export laat ze weg. Controleer je verbinding en exporteer opnieuw.",
+    "missingNotFound_one": "{{items}} staat niet op dit apparaat en niet op de server, dus je export laat het weg.",
+    "missingNotFound_other": "{{items}} staan niet op dit apparaat en niet op de server, dus je export laat ze weg."
+  },
+  "missing": {
+    "pictures_one": "{{count}} afbeelding",
+    "pictures_other": "{{count}} afbeeldingen",
+    "files_one": "{{count}} bestand",
+    "files_other": "{{count}} bestanden",
+    "both": "{{pictures}} en {{files}}"
   },
   "upload": {
     "completeTitle": "Uploaden voltooid",

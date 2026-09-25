@@ -9,6 +9,7 @@ import {
   trashNotesWithTag,
 } from '../notesRepo';
 import type { UserSettings } from '../userSettings';
+import { renameTagLook } from '../itemStyles';
 import type { View } from '../views';
 
 export function useTagActions({
@@ -122,12 +123,18 @@ export function useTagActions({
         await renameTagEverywhere(oldTag, normalized);
         // Migrate favorite flag too: if the old slug was starred, the
         // new slug inherits it (unless the new slug was already a
-        // favorite, in which case nothing changes).
+        // favorite, in which case nothing changes). The look moves the
+        // same way, and a merge target keeps a look of its own.
         mutateSettings((prev) => {
-          if (!prev.favoriteTags.includes(oldTag)) return prev;
-          const next = prev.favoriteTags.filter((t) => t !== oldTag);
-          if (!next.includes(normalized)) next.push(normalized);
-          return { ...prev, favoriteTags: next };
+          const itemStyles = renameTagLook(prev.itemStyles, oldTag, normalized);
+          const starred = prev.favoriteTags.includes(oldTag);
+          if (!starred && itemStyles === prev.itemStyles) return prev;
+          let favoriteTags = prev.favoriteTags;
+          if (starred) {
+            favoriteTags = favoriteTags.filter((t) => t !== oldTag);
+            if (!favoriteTags.includes(normalized)) favoriteTags.push(normalized);
+          }
+          return { ...prev, favoriteTags, itemStyles };
         });
         // If the currently selected tag filter was the old slug, point
         // it at the new one so the user keeps seeing the same notes.

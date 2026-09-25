@@ -27,10 +27,11 @@
 	     bundle carries no .lproj directories (the UI is localized in the webview
 	     by i18next, not by NSLocalizedString), so without this key both stores
 	     report the app as English-only no matter how many catalogs ship.
-	     Mirrors SUPPORTED_LOCALES in packages/web/src/i18n.ts - keep in sync when
-	     adding a locale. Traditional Chinese is declared as the script tag
-	     zh-Hant, matching the fallbackLng map that serves TW, HK and Macau from
-	     the one zh-TW catalog.
+	     packages/desktop/scripts/sync-version.mjs writes the array from
+	     SUPPORTED_LOCALES in packages/web/src/i18n.ts before every desktop and
+	     iOS build, so a language is added there, never here. Traditional Chinese
+	     is declared as the script tag zh-Hant, matching the fallbackLng map that
+	     serves TW, HK and Macau from the one zh-TW catalog.
 	     Spec: ops/docs/i18n-spec.md section 10d (wiring checklist) -->
 	<key>CFBundleLocalizations</key>
 	<array>
@@ -51,6 +52,9 @@
 		<string>tr</string>
 		<string>sv</string>
 		<string>ar</string>
+		<string>uk</string>
+		<string>ru</string>
+		<string>th</string>
 	</array>
 </dict>
 </plist>

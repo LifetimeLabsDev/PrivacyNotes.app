@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react';
+import type { PushHalt } from './sync';
 
 /**
  * Device-local log of the last sync passes, for the sync panel: the
@@ -7,8 +8,10 @@ import { useSyncExternalStore } from 'react';
  * Written by useSyncOrchestrator around each real pass (demo, floor,
  * pause and mutex skips never log - they are non-events). Persisted so
  * the panel can answer "when did this device last sync" across a
- * restart. Counts are taken from SyncResult: `up` is the dirty rows the
- * push phase attempted, `down` is rows plus tombstones the pull applied.
+ * restart. Counts are taken from SyncResult: `up` is the rows the server
+ * accepted, `down` is rows plus tombstones the pull applied, `failed` is
+ * the notes the pass could not push, each with its own reason, and
+ * `halted` is a push that stopped before it reached every dirty row.
  */
 
 export type SyncPassEntry = {
@@ -18,14 +21,18 @@ export type SyncPassEntry = {
   ms: number;
   /** False when the pull failed or the pass threw. */
   ok: boolean;
+  /** Rows the server accepted. */
   up: number;
   down: number;
   /** Coalesced "nothing to do" streak length (see recordSyncPass). */
   n?: number;
-  /** Dirty rows this pass attempted and could not push. `up` counts the
-   *  accepted ones only, so a pass that failed every push reads as
-   *  "3 failed", never as "No changes". */
+  /** Notes this pass could not push, each with a reason of its own: the
+   *  notes the "Not backed up" list names. A pass that failed every push
+   *  reads as "3 failed", never as "No changes". */
   failed?: number;
+  /** The push stopped before it reached every dirty row, and how many it
+   *  left behind. Such a pass reads as stopped, never as "No changes". */
+  halted?: PushHalt;
 };
 
 const STORAGE_KEY = 'privacynotes.syncLog';
@@ -58,7 +65,7 @@ export function recordSyncPass(entry: SyncPassEntry): void {
   // instead of filling the log with one "nothing to do" row per 30s
   // tick. The list then only grows when something actually happened.
   const last = entries[entries.length - 1];
-  const isNoop = (e: SyncPassEntry) => e.ok && e.up === 0 && e.down === 0 && !(e.failed && e.failed > 0);
+  const isNoop = (e: SyncPassEntry) => e.ok && e.up === 0 && e.down === 0 && !(e.failed && e.failed > 0) && !e.halted;
   if (last && isNoop(entry) && isNoop(last)) {
     entries = [...entries.slice(0, -1), { ...entry, n: (last.n ?? 1) + 1 }];
   } else {

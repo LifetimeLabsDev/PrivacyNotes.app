@@ -10,6 +10,7 @@
     "intro": {
       "storage": "Größere Uploads und mehr Speicher sind eine Pro-Funktion. Rüste auf für 50-MB-Dateien und 500 MB Speicher.",
       "folders": "Ordner sind eine Pro-Funktion. Organisiere deine Notizen in verschachtelten Ordnern, so tief du willst, und halte jedes Projekt getrennt.",
+      "looks": "Symbole und Farben für Ordner und Tags sind eine Pro-Funktion. Gib jedem ein eigenes Aussehen, das du auf einen Blick erkennst.",
       "lock": "Eine Notiz zu sperren ist eine Pro-Funktion. Rüste auf, um jede Notiz vor versehentlichen Änderungen zu schützen.",
       "protect": "Eine Notiz mit PIN zu schützen ist eine Pro-Funktion. Rüste auf, um sensible Notizen hinter deiner PIN zu sichern.",
       "history": "Der Notizverlauf ist eine Pro-Funktion. Rüste auf, um eine Chronik jeder Speicherung zu behalten.",
@@ -57,6 +58,7 @@
     "title": "Notizverlauf",
     "subtitle": "Bis zu 20 Versionen pro Notiz. Älteste werden automatisch entfernt.",
     "empty": "Noch kein Verlauf. Versionen sammeln sich nach der nächsten Bearbeitung an. Schau später wieder vorbei.",
+    "loadFailed": "Der Verlauf konnte nicht geladen werden. Prüfe deine Verbindung und versuche es noch einmal.",
     "selectPrompt": "Wähle eine Version für die Vorschau.",
     "emptyBody": "(leer)",
     "restore": "Wiederherstellen",
@@ -64,7 +66,7 @@
   },
   "donation": {
     "eyebrow": "Du hast freigeschaltet",
-    "intro": "<brand/> ist kostenlos und wird es immer bleiben. Keine Werbung, kein Tracking, keine E-Mail gespeichert. Wenn es dir geholfen hat zu denken, zu schreiben oder dich zu erinnern, denk über eine Unterstützung der Entwicklung nach. Sie hält den Betrieb am Laufen und finanziert die nächsten Funktionen.",
+    "intro": "<brand/> ist kostenlos und wird es immer bleiben. Keine Werbung, keine Tracker und keine hinterlegte E-Mail, außer du hast dich mit einer angemeldet. Wenn es dir geholfen hat zu denken, zu schreiben oder dich zu erinnern, denk über eine Unterstützung der Entwicklung nach. Sie hält den Betrieb am Laufen und finanziert die nächsten Funktionen.",
     "proBenefits": "Mit deiner Unterstützung schaltest du außerdem Pro-Vorteile frei, sobald sie verfügbar sind: unbegrenzt viele Geräte, Anhänge, verschlüsselte Cloud-Backups.",
     "maybeLater": "Vielleicht später",
     "support": "Unterstützen →"

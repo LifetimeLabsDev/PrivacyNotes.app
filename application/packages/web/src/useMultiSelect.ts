@@ -12,8 +12,10 @@ import {
   bulkSetPinProtected,
   bulkDuplicate,
   bulkAddTag,
+  duplicateNote,
 } from './notesRepo';
 import { gcOnNotesDelete } from './imageGC';
+import type { PinGatePurpose } from './ProtectedNoteGate';
 
 interface UseMultiSelectArgs {
   notes: LocalNote[];
@@ -34,8 +36,11 @@ interface UseMultiSelectArgs {
   exportAllHtmlZip: (notes: LocalNote[]) => Promise<void>;
   /** Returns true if the note is currently PIN-locked. */
   isNoteLocked: (n: LocalNote) => boolean;
-  /** Show PIN modal; resolves when user verifies or rejects. */
-  requestPinGate: (action: () => Promise<void>) => void;
+  /** Show the PIN modal, worded for `purpose`; runs `action` once the PIN
+   *  is verified. */
+  requestPinGate: (action: () => Promise<void>, purpose: PinGatePurpose) => void;
+  /** Keep a new copy gated until the next unlock (a copy of a gated note). */
+  gateCopy: (id: string) => void;
 }
 
 /** What the trash modal is asking about: the ids that can move to trash,
@@ -109,6 +114,7 @@ export function useMultiSelect({
   exportAllHtmlZip,
   isNoteLocked,
   requestPinGate,
+  gateCopy,
 }: UseMultiSelectArgs): UseMultiSelectReturn {
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
@@ -277,7 +283,7 @@ export function useMultiSelect({
         clearSelection();
         await refresh();
         void runSync();
-      });
+      }, 'delete');
       return;
     }
     await bulkTrash(ids);
@@ -315,17 +321,14 @@ export function useMultiSelect({
     const ids = bulkDeletePending;
     setBulkDeletePending(null);
     if (!ids || ids.length === 0) return;
-    // GC blobs before deleting the notes - one batch call, so a blob
-    // shared by two selected notes cannot hide behind its batch-mate in
-    // the reference check.
-    if (imageStoreRef.current) {
-      const batch = ids
-        .map((id) => notes.find((n) => n.id === id))
-        .filter((n): n is NonNullable<typeof n> => n != null)
-        .map((n) => ({ id: n.id, body: n.body }));
-      void gcOnNotesDelete(imageStoreRef.current, batch, attachmentStoreRef.current);
+    const deleted = await bulkPermanentlyDelete(ids);
+    // GC after the write and only over the rows it tombstoned: a selected
+    // note a pull restored keeps its images and files. One batch call, so a
+    // blob shared by two of them cannot hide behind its batch-mate in the
+    // reference check.
+    if (imageStoreRef.current && deleted.length > 0) {
+      void gcOnNotesDelete(imageStoreRef.current, deleted, attachmentStoreRef.current);
     }
-    await bulkPermanentlyDelete(ids);
     if (selectedId && ids.includes(selectedId)) setSelectedId(null);
     clearSelection();
     await refresh();
@@ -348,18 +351,24 @@ export function useMultiSelect({
     void runSync();
   }
 
-  async function handleBulkExport() {
-    const ids = Array.from(selectedIds);
-    if (ids.length === 0) return;
-    const picked = notes.filter((n) => selectedIds.has(n.id));
+  /** A selection holding a note the PIN guards leaves the device only after
+   *  the PIN, the same bar Trash sets for it. Tested in
+   *  tests/lockGateReads.test.ts. */
+  async function exportPicked(picked: LocalNote[], exportZip: (notes: LocalNote[]) => Promise<void>) {
     if (picked.length === 0) return;
-    await exportAllMarkdownZip(picked);
+    if (picked.some(isNoteLocked)) {
+      requestPinGate(() => exportZip(picked), 'unlock');
+      return;
+    }
+    await exportZip(picked);
+  }
+
+  async function handleBulkExport() {
+    await exportPicked(notes.filter((n) => selectedIds.has(n.id)), exportAllMarkdownZip);
   }
 
   async function handleBulkExportHtml() {
-    const picked = notes.filter((n) => selectedIds.has(n.id));
-    if (picked.length === 0) return;
-    await exportAllHtmlZip(picked);
+    await exportPicked(notes.filter((n) => selectedIds.has(n.id)), exportAllHtmlZip);
   }
 
   async function handleAddTagTo(ids: string[], tag: string): Promise<number> {
@@ -399,13 +408,21 @@ export function useMultiSelect({
       await bulkSetPinProtected(ids, false);
       await refresh();
       void runSync();
-    });
+    }, 'unlock');
   }
 
+  /** A copy of a note the PIN guards right now is made one at a time, so it
+   *  can be gated the way the single-note Duplicate gates its copy. Tested
+   *  in tests/lockGateWrites.test.ts. */
   async function handleBulkDuplicate() {
     const ids = Array.from(selectedIds);
     if (ids.length === 0) return;
-    await bulkDuplicate(ids);
+    const gated = new Set(notes.filter((n) => selectedIds.has(n.id) && isNoteLocked(n)).map((n) => n.id));
+    await bulkDuplicate(ids.filter((id) => !gated.has(id)));
+    for (const id of gated) {
+      const copy = await duplicateNote(id);
+      if (copy) gateCopy(copy.id);
+    }
     clearSelection();
     await refresh();
     void runSync();

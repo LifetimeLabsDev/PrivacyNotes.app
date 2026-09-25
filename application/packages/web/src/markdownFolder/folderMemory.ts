@@ -24,7 +24,13 @@
  * Spec: ops/docs/plans/markdown-folder.md (section 5)
  */
 
+import { isDemoMode } from '../demo';
+
 const DB_NAME = 'privacynotes-markdown';
+// `?demo=1` runs on the same origin as a real install, so the demo keeps its
+// folder in a database of its own, the way DEMO_DB_NAME keeps its notes: a
+// demo tab can neither reopen the real remembered folder nor forget it.
+const DEMO_DB = 'privacynotes-markdown-demo';
 const STORE = 'folder';
 const KEY = 'last';
 
@@ -34,7 +40,7 @@ export type StoredFolder =
 
 function open(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, 1);
+    const req = indexedDB.open(isDemoMode() ? DEMO_DB : DB_NAME, 1);
     req.onupgradeneeded = () => {
       if (!req.result.objectStoreNames.contains(STORE)) req.result.createObjectStore(STORE);
     };

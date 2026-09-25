@@ -51,6 +51,9 @@ export const LANGUAGE_META: Record<string, { native: string }> = {
   tr: { native: 'Türkçe' },
   sv: { native: 'Svenska' },
   ar: { native: 'العربية' },
+  uk: { native: 'Українська' },
+  ru: { native: 'Русский' },
+  th: { native: 'ไทย' },
 };
 
 /**
@@ -162,6 +165,14 @@ export function Flag({ code }: { code: string }): ReactNode {
     // fix.
     case 'ar':
       return <svg {...FLAG_BOX}><rect x="0" y="0" width="15" height="40" fill="#FF0000" /><rect x="15" y="0" width="45" height="13.4" fill="#00843D" /><rect x="15" y="13.4" width="45" height="13.3" fill="#FFFFFF" /><rect x="15" y="26.7" width="45" height="13.3" fill="#000000" /></svg>;
+    case 'uk':
+      return <svg {...FLAG_BOX}><rect width="60" height="40" fill="#FFD700" /><rect width="60" height="20" fill="#0057B7" /></svg>;
+    // White top band, so it takes the same hairline as pl and ja.
+    case 'ru':
+      return <svg {...FLAG_BOX}><rect width="60" height="40" fill="#fff" /><rect y="13.3" width="60" height="13.4" fill="#0039A6" /><rect y="26.7" width="60" height="13.3" fill="#D52B1E" /><rect x="0.5" y="0.5" width="59" height="39" fill="none" stroke="rgba(0,0,0,0.18)" strokeWidth="1" /></svg>;
+    // Thailand: five bands in the ratio 1:1:2:1:1, the blue one double height.
+    case 'th':
+      return <svg {...FLAG_BOX}><rect width="60" height="40" fill="#A51931" /><rect y="6.67" width="60" height="26.66" fill="#F4F5F8" /><rect y="13.33" width="60" height="13.34" fill="#2D2A4A" /></svg>;
     default:
       return <svg {...FLAG_BOX}><rect width="60" height="40" fill="#012169" /><path d="M0,0 60,40 M60,0 0,40" stroke="#fff" strokeWidth="8" /><path d="M0,0 60,40 M60,0 0,40" stroke="#C8102E" strokeWidth="4" /><rect x="25" width="10" height="40" fill="#fff" /><rect y="15" width="60" height="10" fill="#fff" /><rect x="27" width="6" height="40" fill="#C8102E" /><rect y="17" width="60" height="6" fill="#C8102E" /></svg>;
   }

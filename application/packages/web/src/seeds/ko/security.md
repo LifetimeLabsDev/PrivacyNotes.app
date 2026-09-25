@@ -19,7 +19,7 @@ title: 노트가 어떻게 보호되나요
 
 ## 열쇠를 누가 가지나요
 
-어떤 방식이든 노트는 끝에서 끝까지 암호화된 채로 있어요. 다른 건 문구가 어디 있느냐예요.
+어떤 방식이든 노트는 기기에서 암호화된 채로 있어요. 다른 건 문구가 어디 있느냐예요.
 
 | 방식 | 문구가 있는 곳 | 무엇을 얻나요 |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ title: 노트가 어떻게 보호되나요
 
 아래 두 방식에서는 강제로 요구받아도 저희가 노트를 읽을 수 없어요. 첫 번째는 그것을 편리함과 맞바꿔요. 문구가 저희 열쇠 아래 서버에 있으니, 새 기기는 로그인 말고는 아무것도 필요 없어요. 저희 서버가 뚫린다면 그 열쇠가 드러날 수 있어요.
 
-한 번 고른 방식에 묶이지 않아요. **설정 > 보안 > 내 문구**에서 바꾸세요.
+Google, Apple, GitHub로 로그인했나요? 처음 두 가지는 나중에 **설정 > 보안 > 내 문구**에서 서로 바꿀 수 있어요. 문구만 쓰는 계정이라면 문구는 언제나 당신에게 있어요.
 
 > [!warning] 문구는 따로 적어 두세요
 > 문구가 노트를 열어요. 잃어버리면 아무도 되찾아 줄 수 없어요. 저희도요. <span style="color: #e03131">오늘 종이에 적어 두세요.</span>
@@ -44,7 +44,7 @@ title: 노트가 어떻게 보호되나요
 | 무엇을 | 어디서 |
 | --- | --- |
 | 암호화 그 자체 | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| 데이터베이스 구조 | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| 저희 서버가 받는 것 | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | 공격자가 할 수 있는 것과 없는 것 | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | 취약점을 알리는 방법 | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

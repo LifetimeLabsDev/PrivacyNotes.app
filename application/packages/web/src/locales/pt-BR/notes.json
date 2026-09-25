@@ -55,7 +55,7 @@
     "empty": "Esvaziar",
     "emptyHover": "Excluir todas as notas da lixeira",
     "storage": "Armazenamento",
-    "autoDelete": "Exclusão automática: 30 d"
+    "autoDelete": "Excluir automaticamente após 30 dias"
   },
   "search": {
     "sortOptions": "Opções de ordenação e visão",
@@ -161,8 +161,8 @@
     "invisiblesShow": "Ver caracteres invisíveis",
     "invisiblesHide": "Ocultar caracteres invisíveis",
     "findInNote": "Buscar na nota",
-    "navPrev": "Nota anterior",
-    "navNext": "Próxima nota",
+    "navPrev": "Anterior",
+    "navNext": "Próximo",
     "undo": "Desfazer",
     "redo": "Refazer",
     "hide": "Ocultar",
@@ -176,7 +176,8 @@
     "titlePlaceholderLink": "Nome do marcador",
     "titlePlaceholderContact": "Nome",
     "notBackedUpTooLarge": "Acima do limite de 1 MB, então sem backup. Mova as imagens para anexos ou divida a nota.",
-    "notBackedUpFailed": "Sem backup. Último erro: {{message}}. Tentando de novo."
+    "notBackedUpFailed": "Sem backup. Último erro: {{message}}. Tentando de novo.",
+    "unknownType": "Este item foi criado com uma versão mais recente do PrivacyNotes. Atualize o aplicativo para abri-lo."
   },
   "share": {
     "hover": "Compartilhar / Exportar",

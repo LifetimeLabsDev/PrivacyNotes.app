@@ -18,9 +18,12 @@ import { Check } from './icons';
  * editable text (inputs, textareas, contenteditable) so copy/paste,
  * spellcheck, and dictionary lookups still work.
  *
- * This is a right-click affordance only. A touch long-press is the
- * platform's own gesture (select + copy) and the app's multi-select
- * gesture, so it never opens this menu - see isTouchContextMenu.
+ * On touch a long-press is the platform's own gesture (select + copy) and
+ * the app's multi-select gesture on list rows, so it does not open this
+ * menu there - see isTouchContextMenu. Touch reaches it two ways: an
+ * explicit button that calls `open` from its click (the "..." a bookmark
+ * row wears on touch), and a note-link's long press (NoteLink.tsx), the one
+ * place that gesture belongs to the app.
  *
  * Usage:
  *   const ctx = useContextMenu();
@@ -173,7 +176,12 @@ export function ContextMenu({
     const onCtx = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) onClose();
     };
-    const onScroll = () => onClose();
+    // A scroll inside the menu is the menu being read, not the page moving
+    // under it: a long menu on a short screen scrolls itself.
+    const onScroll = (e: Event) => {
+      if (ref.current && e.target instanceof Node && ref.current.contains(e.target)) return;
+      onClose();
+    };
     // A soft keyboard sliding in or out changes the viewport height and leaves
     // the width alone. That is chrome moving, not the page under the menu, and
     // it is the ordinary case on a phone: a long press takes focus off the
@@ -269,7 +277,10 @@ export function ContextMenu({
       style={style}
       onContextMenu={(e) => e.preventDefault()}
       // A floor, not a width: no ceiling, so a long translation widens the menu.
-      className="z-[1000] min-w-[160px] py-1 rounded-md border border-divider bg-surface-2/95 backdrop-blur shadow-xl text-[13px] text-pn select-none"
+      // Touch opens it from a tap (a bookmark row's "..." button), so the rows
+      // grow to a finger's size there, and a menu taller than the screen
+      // scrolls instead of running off it.
+      className="z-[1000] min-w-[160px] max-h-[calc(100dvh-16px)] overflow-y-auto py-1 rounded-md border border-divider bg-surface-2/95 backdrop-blur shadow-xl text-[13px] [@media(hover:none)]:text-[14px] text-pn select-none"
     >
       {state.items.map((it, i) => {
         if ('type' in it && it.type === 'separator') {
@@ -293,7 +304,7 @@ export function ContextMenu({
         const item = it;
         const active = activeIdx === i && !item.disabled;
         const base =
-          'w-full text-start flex items-center gap-2.5 px-3 py-1.5 outline-none';
+          'w-full text-start flex items-center gap-2.5 px-3 py-1.5 [@media(hover:none)]:py-2.5 outline-none';
         const tone = item.disabled
           ? 'opacity-40 cursor-default'
           : active

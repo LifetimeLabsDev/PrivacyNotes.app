@@ -21,6 +21,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import type { Editor, Range } from '@tiptap/core';
 import { PluginKey } from '@tiptap/pm/state';
+import { textMatcher } from './textMatch';
 
 /* ------------------------------------------------------------------ */
 /* Note titles provider - set from NotesView                          */
@@ -164,20 +165,17 @@ const SuggestionList = forwardRef<SuggestionListRef, SuggestionListProps>(
 );
 SuggestionList.displayName = 'SuggestionList';
 
-/** Highlight the matching substring in a title. */
+/** Highlight the matching part of a title, at the matcher's own offsets. */
 function highlightMatch(title: string, query: string) {
-  if (!query) return title;
-  const lower = title.toLowerCase();
-  const qLower = query.toLowerCase();
-  const idx = lower.indexOf(qLower);
-  if (idx < 0) return title;
+  const match = textMatcher(query)(title);
+  if (!match) return title;
   return (
     <>
-      {title.slice(0, idx)}
+      {title.slice(0, match.start)}
       <span className="font-semibold text-accent">
-        {title.slice(idx, idx + query.length)}
+        {title.slice(match.start, match.end)}
       </span>
-      {title.slice(idx + query.length)}
+      {title.slice(match.end)}
     </>
   );
 }
@@ -202,10 +200,16 @@ export function wikiLinkSuggestion(editor: Editor): ReturnType<typeof Suggestion
     items: ({ query }) => {
       const titles = getNoteTitles(editor);
       if (!query) return titles.slice(0, 20);
-      const lower = query.toLowerCase();
+      // The best rank first, then the note order, so a title that starts
+      // with the query is never pushed past the cap by one that holds it
+      // inside a word. Array sort is stable.
+      const match = textMatcher(query);
       return titles
-        .filter((t) => t.title.toLowerCase().includes(lower))
-        .slice(0, 20);
+        .map((entry) => ({ entry, rank: match(entry.title)?.rank ?? 0 }))
+        .filter((r) => r.rank > 0)
+        .sort((a, b) => b.rank - a.rank)
+        .slice(0, 20)
+        .map((r) => r.entry);
     },
 
     command: ({ editor: ed, range, props }) => {

@@ -136,6 +136,7 @@
     "closeMenu": "Stäng menyn",
     "close": "Stäng",
     "views": "Innehåll",
+    "resizeSplit": "Ändra storlek på Innehåll och taggarna eller mapparna",
     "sidebarOptions": "Sidofältsalternativ",
     "showInSidebar": "Visa i sidofältet",
     "allOptions": "Alternativ för Alla",
@@ -455,6 +456,7 @@
     "openAction": "Öppna",
     "copiedUrl": "Länk kopierad",
     "moveToTrash": "Flytta till papperskorgen",
+    "rowMenu": "Fler åtgärder",
     "emptyNone": "Inga bokmärken än.",
     "emptyTitle": "Spara sidorna som är värda att behålla",
     "emptyAdd": "Lägg till bokmärke",
@@ -585,5 +587,8 @@
   "noteLinks": {
     "retargetedToast_one": "{{count}} anteckningslänk uppdaterad till den nya titeln.",
     "retargetedToast_other": "{{count}} anteckningslänkar uppdaterade till den nya titeln."
+  },
+  "looks": {
+    "menu": "Ikon och färg"
   }
 }

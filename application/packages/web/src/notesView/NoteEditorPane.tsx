@@ -22,7 +22,7 @@ import { TITLE_MAX_LENGTH } from '../useNoteEditing';
 import { proUnlocked } from '../demo';
 import { usePushFailure } from '../pushFailures';
 import { VaultItem } from '../VaultItem';
-import { isWeekJournal, toLocalIso } from '../notesViewUtils';
+import { hasStructuredBody, isKnownNoteType, isWeekJournal, shareSurface, toLocalIso } from '../notesViewUtils';
 import type { View } from '../views';
 import { WordCount } from '../WordCount';
 import { TrackerPills } from '../TrackerPills';
@@ -31,6 +31,7 @@ import { ShareMenu } from './ShareMenu';
 import { NoteQuickActions, HeaderDivider, type QuickActionsTier } from './NoteQuickActions';
 import type { NoteActionGuardDeps } from '../noteActionGuards';
 import { WeekInReview } from './WeekInReview';
+import { isImeComposing } from '../imeComposing';
 
 type Authed = Extract<AuthState, { status: 'authenticated' }>;
 
@@ -133,7 +134,10 @@ export interface NoteEditorPaneProps {
 
   /** How many quick-action groups the header row fits. Measured in NotesView. */
   quickActionsTier: QuickActionsTier;
-  /** Previous/next note in the list (GitHub #246). Never hides. */
+  /** The header row is phone-narrow: previous/next and share leave it, and
+   *  share moves into the "..." menu. Measured in NotesView. */
+  headerCompact: boolean;
+  /** Previous/next note in the list (GitHub #246). Hidden on a compact header. */
   canGoPrev: boolean;
   canGoNext: boolean;
   onNavigateList: (direction: 'prev' | 'next') => void;
@@ -227,7 +231,9 @@ export interface NoteEditorPaneProps {
    *  Set by the two menus; cleared here when the gate is done with it. */
   removeProtectionFor: string | null;
   setRemoveProtectionFor: Dispatch<SetStateAction<string | null>>;
-  setHistoryForNoteId: Dispatch<SetStateAction<string | null>>;
+  /** Open a note's version history. NotesView asks for the PIN first when
+   *  the note is gated, so no version is listed past the gate. */
+  openHistory: (n: LocalNote) => void;
   setShowUpgrade: Dispatch<SetStateAction<null | { trigger: UpgradeTrigger }>>;
   setShowSecurity: Dispatch<SetStateAction<null | { tab: 'pin' | 'phrase' | 'biometric'; reason?: 'protect' }>>;
   onPinUnlocked: () => void;
@@ -261,6 +267,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     zenToolbar,
     setZenToolbar,
     quickActionsTier,
+    headerCompact,
     canGoPrev,
     canGoNext,
     onNavigateList,
@@ -324,7 +331,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     onRequestRemoveProtection,
     removeProtectionFor,
     setRemoveProtectionFor,
-    setHistoryForNoteId,
+    openHistory,
     setShowUpgrade,
     setShowSecurity,
     onPinUnlocked,
@@ -333,16 +340,18 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
   // True while a menu has asked to take this note's protection off. The gate
   // does the asking, so an open note gets the same two checks as a locked one.
   const removingProtection = removeProtectionFor === selected.id;
-  const structuredBody =
-    selected.type === 'login' || selected.type === 'card' ||
-    selected.type === 'ssh-key' || selected.type === 'link' || selected.type === 'contact';
+  /** A type a newer build added. This build cannot read its body, so the item
+   *  is read-only here and the body area holds a notice instead of an editor. */
+  const knownType = isKnownNoteType(selected.type);
+  const structuredBody = hasStructuredBody(selected.type);
   /**
    * True when the markdown editor is the thing under the header, so Zen's
    * markdown toggle has a toolbar to switch. Two states fail that test.
-   * Bookmarks and vault items replace the editor with a structured form,
-   * which has no toolbar at any width. A PIN-protected note replaces it with
-   * the unlock gate until the user enters the PIN. In both the toggle shows
-   * and switches a bar that is not on screen.
+   * Bookmarks, contacts and vault items replace the editor with a structured
+   * form, which has no toolbar at any width, and a type this build does not
+   * know replaces it with a notice. A PIN-protected note replaces it with the
+   * unlock gate until the user enters the PIN. In both the toggle shows and
+   * switches a bar that is not on screen.
    */
   const markdownBody = !structuredBody && !isNoteLocked(selected);
   /**
@@ -374,6 +383,8 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
    * the trash. Two entry points, one condition.
    */
   const canSwitchEditorMode = markdownBody && view !== 'trash' && selected.locked !== 1;
+  /** Where Share sits for this note: nowhere while it is gated (shareSurface). */
+  const share = shareSurface(isNoteLocked(selected), zenMode || headerCompact);
   /**
    * Flip this note between the note and journal types.
    *
@@ -414,7 +425,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     },
     onOpenHistory: () => {
       setShowNoteOptions(false);
-      setHistoryForNoteId(selected.id);
+      openHistory(selected);
     },
     onSetPin: () => setShowSecurity({ tab: 'pin', reason: 'protect' }),
     onMoveToFolder: () => {
@@ -495,41 +506,44 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           </HoverLabel>
         )}
         {/* Previous and next note in the list, in the browser's own place
-            and order (GitHub #246). They never hide, not even in zen or
-            under 560px: on a phone the list is not on screen at all, which
-            is exactly where stepping through it without going back and
-            forth matters most. Chevrons, never the curved arrows the tag
-            row uses for undo - two identical pairs one row apart would
-            read as one control drawn twice - and never plain arrows,
-            because the mobile back-to-list arrow sits right beside
-            them. */}
-        <div className="shrink-0 flex items-center">
-          <HoverLabel label={t('editor.navPrev')} position="below-start">
-            <button
-              type="button"
-              tabIndex={mobileTabIndex}
-              onClick={() => onNavigateList('prev')}
-              disabled={!canGoPrev}
-              aria-label={t('editor.navPrev')}
-              className={HEADER_BTN_NARROW}
-            >
-              <CaretLeft size={HEADER_ICON} />
-            </button>
-          </HoverLabel>
-          <HoverLabel label={t('editor.navNext')} position="below-start">
-            <button
-              type="button"
-              tabIndex={mobileTabIndex}
-              onClick={() => onNavigateList('next')}
-              disabled={!canGoNext}
-              aria-label={t('editor.navNext')}
-              className={HEADER_BTN_NARROW}
-            >
-              <CaretRight size={HEADER_ICON} />
-            </button>
-          </HoverLabel>
-        </div>
-        <HeaderDivider />
+            and order (GitHub #246). A compact header drops the pair and the
+            divider after it: on a phone they cost the title more than they
+            save, and the back arrow is the way to the list there. Chevrons,
+            never the curved arrows the tag row uses for undo - two
+            identical pairs one row apart would read as one control drawn
+            twice - and never plain arrows, because the mobile back-to-list
+            arrow sits right beside them. */}
+        {!headerCompact && (
+          <>
+            <div className="shrink-0 flex items-center">
+              <HoverLabel label={t('editor.navPrev')} position="below-start">
+                <button
+                  type="button"
+                  tabIndex={mobileTabIndex}
+                  onClick={() => onNavigateList('prev')}
+                  disabled={!canGoPrev}
+                  aria-label={t('editor.navPrev')}
+                  className={HEADER_BTN_NARROW}
+                >
+                  <CaretLeft size={HEADER_ICON} />
+                </button>
+              </HoverLabel>
+              <HoverLabel label={t('editor.navNext')} position="below-start">
+                <button
+                  type="button"
+                  tabIndex={mobileTabIndex}
+                  onClick={() => onNavigateList('next')}
+                  disabled={!canGoNext}
+                  aria-label={t('editor.navNext')}
+                  className={HEADER_BTN_NARROW}
+                >
+                  <CaretRight size={HEADER_ICON} />
+                </button>
+              </HoverLabel>
+            </div>
+            <HeaderDivider />
+          </>
+        )}
         <textarea
           ref={titleInputRef}
           dir="auto"
@@ -541,6 +555,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             handleTitleChange(selected.id, clean);
           }}
           onKeyDown={(e) => {
+            if (isImeComposing(e)) return;
             // Block Enter - no newlines in titles.
             if (e.key === 'Enter') { e.preventDefault(); return; }
             // Tab from title → tag input (skipping the star/trash
@@ -568,8 +583,8 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             : selected.type === 'ssh-key' ? t('editor.titlePlaceholderSshKey')
             : t('editor.titlePlaceholder')
           }
-          disabled={view === 'trash' || selected.locked === 1}
-          readOnly={selected.locked === 1}
+          disabled={view === 'trash' || selected.locked === 1 || !knownType}
+          readOnly={selected.locked === 1 || !knownType}
           // Single line (wrap="off"): the header stays a fixed height so
           // the column dividers line up. A too-long title scrolls and is
           // softly faded at the right edge (not hard-clipped) as a "more
@@ -614,8 +629,8 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             already had a permanent row in the "..." menu, and the header was
             carrying up to thirteen icons beside a title it kept truncating.
             Share is the one that stayed, because it is the one people reach
-            for, and it now holds its place at every width instead of
-            dropping out on a narrow pane.
+            for. It leaves in zen and on a compact header, where the "..."
+            strip carries it instead.
             Spec: ops/docs/design-decisions.md (share holds the header) */}
         {view === 'trash' ? (
           <>
@@ -645,13 +660,14 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               </button>
             </HoverLabel>
           </>
-        ) : (
+        ) : share === 'none' ? null : (
           <>
           <ShareMenu
             open={showShareMenu}
             onClose={() => setShowShareMenu(false)}
             onToggle={() => setShowShareMenu((v) => !v)}
-            zenMode={zenMode}
+            triggerHidden={share === 'menu'}
+            fallbackAnchorRef={noteOptionsButtonRef}
             selected={selected}
             exportSingleMarkdown={exportSingleMarkdown}
             exportSingleHtml={exportSingleHtml}
@@ -749,9 +765,10 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               }
               // Share is the one strip cell that comes and goes, because it
               // is the one action still in the header: two copies at one
-              // width would read as the same control drawn twice. Zen hides
-              // the header's copy, so zen is where the cell earns its place.
-              {...(zenMode ? { onShare: () => setShowShareMenu(true) } : {})}
+              // width would read as the same control drawn twice. Zen and a
+              // compact header hide the header's copy, so those are where
+              // the cell earns its place.
+              {...(share === 'menu' ? { onShare: () => setShowShareMenu(true) } : {})}
               onTrash={() => requestTrash([selected.id])}
               onConvertType={() => void convertNoteType()}
               {...(canSwitchEditorMode
@@ -825,6 +842,17 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               mutateSettings((prev) => withCredentialChanges(prev, base, next));
             }}
           />
+        </div>
+      ) : !knownType ? (
+        /* Neither the editor nor a form: either would read the body as
+           something it is not, and a keystroke in the editor writes markdown
+           over it. The title above is read-only and the tag row stays out;
+           the menus still pin, protect, move and trash the item like any
+           other. */
+        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
+          <p className="max-w-sm text-[15px] text-neutral-500 dark:text-neutral-400">
+            {t('editor.unknownType')}
+          </p>
         </div>
       ) : structuredBody ? (
         /* The same centered reading column the notes editor uses - the
@@ -1042,7 +1070,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             />
           )}
           {proUnlocked(auth.isPro) && selected.type === 'journal' && isWeekJournal(selected) && (
-            <WeekInReview notes={notes} medications={userSettings.medications} />
+            <WeekInReview notes={notes} medications={userSettings.medications} isNoteLocked={isNoteLocked} />
           )}
           {selected.locked === 1 && view !== 'trash' && (
             <div className="mx-4 sm:mx-6 mt-1 mb-3 flex items-center gap-2 text-[13px] text-amber-600 dark:text-amber-500">
@@ -1090,6 +1118,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                 onRenameFile={selected.type === 'file'
                   ? (name) => { void handleTitleChange(selected.id, name); }
                   : undefined}
+                fileNote={selected.type === 'file'}
                 bodyControls={bodyControls}
               />
             )}

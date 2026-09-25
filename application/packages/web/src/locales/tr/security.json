@@ -119,6 +119,7 @@
     "enable": "Biyometrik kilit açmayı etkinleştir",
     "lockOnOpen": "Açılışta uygulamayı kilitle",
     "lockOnOpenHint": "Uygulamayı açarken biyometrik ya da PIN iste.",
+    "lockHidesOnSwitch": "Uygulama değiştirirken notlarını da gizler.",
     "lockNeedsCredential": "Uygulama kilidi bu cihazda bir PIN ya da biyometrik kilit açma gerektirir.",
     "setUpPin": "PIN oluştur",
     "confirmPinForLock": "Bunu açmak için PIN'inizi girin. Kurtarma ifadenizin bir kopyasını kilitler, böylece uygulamayı yalnızca PIN'iniz açabilir.",
@@ -129,6 +130,9 @@
     "disableConfirmLabel": "Devre dışı bırak",
     "disableConfirmBody": "Bu cihazda biyometrik kilit açma devre dışı bırakılsın mı?",
     "disableConfirmBodyAppLock": "Bu cihazda biyometrik kilit açma devre dışı bırakılsın mı? Uygulama kilidi de kapatılacak."
+  },
+  "appLock": {
+    "phraseNotSaved": "Bu cihaz kurtarma ifadenizi kaydedemedi, bu yüzden hiçbir şey değişmedi. Yeniden deneyin."
   },
   "pinSetup": {
     "title": "Bir PIN oluşturun",

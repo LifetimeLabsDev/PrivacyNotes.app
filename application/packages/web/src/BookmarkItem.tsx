@@ -8,6 +8,7 @@ import { openExternal } from './openExternal';
 import { hasPin } from './pin';
 import { PinInfoModal } from './PinInfoModal';
 import { ArrowSquareOut, CaretDown, Check, Copy, Info } from './icons';
+import { isImeComposing } from './imeComposing';
 
 /**
  * The bookmark column, the vault's `VAULT_COLUMN` one size up: the URL row
@@ -94,7 +95,7 @@ export function BookmarkItem({
   }
 
   return (
-    <div className={`flex-1 p-6 ${BOOKMARK_COLUMN}`}>
+    <div className={`@container flex-1 p-6 ${BOOKMARK_COLUMN}`}>
       {/* The pane holds one field, so the label carries it as a heading
           rather than the form-label 12px it used to wear. Two steps under
           `pn-note-title` above it - H3 to the title's H1 - because at H2 a
@@ -102,33 +103,45 @@ export function BookmarkItem({
       <label className="block text-base lg:text-lg font-semibold tracking-tight text-neutral-800 dark:text-neutral-100 mb-3">
         {t('bookmarks.urlLabel')}
       </label>
-      <div className="flex items-center gap-1.5">
-        {/* The row chip, in the editor. It is the SAME `SiteChip` the list
-            row draws, so an item looks like itself on both sides of a click,
-            and it is fixed-size in every state (favicon, loading, globe
-            fallback) - the field can never jump when an icon resolves. The
-            domain comes from the SAVED url, so a half-typed value fetches
-            nothing; the icon appears when the edit commits. */}
-        <SiteChip
-          domain={linkDomain(savedUrl)}
-          tall
-          trashTint={isTrash}
-          fallback={isTrash ? 'bookmark' : 'globe'}
-        />
-        <input
-          value={draft}
-          onChange={(e) => { setDraft(e.target.value); setInvalid(false); setDuplicate(false); }}
-          onBlur={() => commit(draft)}
-          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commit(draft); } }}
-          readOnly={isTrash || note.locked === 1}
-          dir="ltr"
-          enterKeyHint="done"
-          className={`w-full rounded-md bg-surface-1 border px-3 py-2 text-sm focus:outline-none focus:border-accent ${invalid ? 'border-red-500' : duplicate ? 'border-amber-500' : 'border-divider'}`}
-        />
+      {/* One row while the pane holds it. Under 30rem the field would be
+          squeezed to a sliver beside two buttons (a phone left it about
+          115px), so the field takes its own line and the buttons share the
+          next one. A container query, because the pane is a column the user
+          drags and a viewport breakpoint cannot see it.
+          Spec: ops/docs/ui-patterns.md (section 77) */}
+      <div className="flex items-center gap-1.5 @max-[30rem]:flex-wrap">
+        {/* The website icon sits inside the field, behind a hairline, where a
+            browser's address bar carries it: no extra line, and the address
+            keeps the width a chip beside the field used to take. It is the
+            SAME `SiteChip` the list row draws, so an item looks like itself
+            on both sides of a click, and it is fixed-size in every state
+            (favicon, loading, globe fallback) - the address can never jump
+            when an icon resolves. The domain comes from the SAVED url, so a
+            half-typed value fetches nothing; the icon appears when the edit
+            commits. */}
+        <div className={`flex items-stretch min-w-0 flex-1 rounded-md bg-surface-1 border focus-within:border-accent ${invalid ? 'border-red-500' : duplicate ? 'border-amber-500' : 'border-divider'} @max-[30rem]:basis-full`}>
+          <span className="shrink-0 flex items-center px-1.5 border-e border-divider">
+            <SiteChip
+              domain={linkDomain(savedUrl)}
+              trashTint={isTrash}
+              fallback={isTrash ? 'bookmark' : 'globe'}
+            />
+          </span>
+          <input
+            value={draft}
+            onChange={(e) => { setDraft(e.target.value); setInvalid(false); setDuplicate(false); }}
+            onBlur={() => commit(draft)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && !isImeComposing(e)) { e.preventDefault(); commit(draft); } }}
+            readOnly={isTrash || note.locked === 1}
+            dir="ltr"
+            enterKeyHint="done"
+            className="w-full min-w-0 bg-transparent px-3 py-2 text-sm focus:outline-none"
+          />
+        </div>
         <button
           type="button"
           onClick={() => copy(savedUrl, 'url')}
-          className="shrink-0 inline-flex items-center gap-1.5 h-9 rounded-md border border-divider bg-surface-1 px-3 text-[13px] text-neutral-600 dark:text-neutral-300 transition hover:text-accent hover:border-accent"
+          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 rounded-md border border-divider bg-surface-1 px-3 text-[13px] text-neutral-600 dark:text-neutral-300 transition hover:text-accent hover:border-accent @max-[30rem]:flex-1"
         >
           {/* The label never changes - a wider "copied" caption resized
               the button and squeezed the URL field mid-click. The green
@@ -139,7 +152,7 @@ export function BookmarkItem({
         <button
           type="button"
           onClick={() => openExternal(savedUrl)}
-          className="shrink-0 inline-flex items-center gap-1.5 h-9 rounded-md bg-accent/10 px-3 text-[13px] font-semibold text-accent transition hover:bg-accent/20"
+          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 rounded-md bg-accent/10 px-3 text-[13px] font-semibold text-accent transition hover:bg-accent/20 @max-[30rem]:flex-1"
         >
           <ArrowSquareOut size={15} />
           {t('bookmarks.openAction')}

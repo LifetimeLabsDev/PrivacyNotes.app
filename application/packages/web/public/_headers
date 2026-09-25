@@ -9,6 +9,12 @@
 /version.json
   Cache-Control: no-cache
 
+# Apple's app-site-association file, which iOS fetches to check that the app
+# may complete a sign-in on this host. It has no extension, so the assets
+# layer sends no type at all, and Apple wants JSON.
+/.well-known/apple-app-site-association
+  Content-Type: application/json
+
 # The plain-text twins of the help pages (help-page.ts), for AI agents.
 # Markdown is the format, but text/plain is the transport on purpose: with
 # text/markdown a browser downloads the file instead of showing it, and

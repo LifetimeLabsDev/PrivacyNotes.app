@@ -17,6 +17,10 @@ import { Plugin, PluginKey, TextSelection, Selection } from '@tiptap/pm/state';
 import { selectionCell } from '@tiptap/pm/tables';
 import { isSoftKeyboardDevice, suppressSoftKeyboard } from './softKeyboard';
 import { mathNodeView } from './editorMath';
+import { getCodeWrap, setCodeWrap, subscribeCodeWrap } from './codeWrap';
+import { TIP_PILL, positionClasses } from './HoverLabel';
+import { delimiterRow } from './tableColumnWidths';
+import { ColumnWidthTableView, columnResizePlugin, registerTableWidthsMarkdown, renderTableHTML, tableWidths } from './tableColumnResize';
 
 /**
  * Text color support.
@@ -285,10 +289,11 @@ export function cleanEmptyTaskItems(md: string): string {
  */
 export function collapseMediaGaps(md: string): string {
   // Media line patterns:
-  //   Image:      ![...](pn:img/...){width=N align=X} (optional attr suffix)
+  //   Image:      ![...](pn:img/...){width=N align=X} (optional attr suffix),
+  //               or pn:file/... for a picture placed from Files
   //   Attachment:  [...|...|...](pn:file/...)
   const mediaLine =
-    '(?:!\\[.*?\\]\\(pn:img\\/[^)]+\\)(?:\\{[^}\\n]*\\})?|\\[.*?\\|.*?\\|.*?\\]\\(pn:file\\/[^)]+\\))';
+    '(?:!\\[.*?\\]\\(pn:(?:img|file)\\/[^)]+\\)(?:\\{[^}\\n]*\\})?|\\[.*?\\|.*?\\|.*?\\]\\(pn:file\\/[^)]+\\))';
   return md.replace(
     new RegExp(`(${mediaLine})\\n{3,}(?=${mediaLine})`, 'g'),
     '$1\n\n',
@@ -336,14 +341,20 @@ export const CodeBlockPlainCopy = Extension.create({
 });
 
 /**
- * Code block with a hover-revealed "Copy" button in the top-right. On
- * touch devices (`@media (hover: none)`) the button is always visible
- * since there is no hover state to reveal it. Click writes the block's
- * raw text to the clipboard via `navigator.clipboard.writeText`. We mark
- * the button `contenteditable="false"` and stop pointer events so
- * ProseMirror doesn't try to manage it as content or steal the click.
+ * Code block with a Copy button and a wrap toggle in its top corner.
  *
- * Spec: ops/docs/design-decisions.md (code-block copy button)
+ * The pre is the visible box and keeps every typography rule (margins,
+ * colours, radius, the spacing after a heading). A span inside it is the
+ * element that scrolls sideways, and the tools hang off the pre, not the
+ * span: a control inside the scroller travels with the text, and a long
+ * line scrolled it out of the block (GitHub #340).
+ *
+ * The tools show on hover where there is one and always on touch, where the
+ * scroller reserves a band above the first line for them so they never
+ * cover code. Copy writes the node's raw text; the wrap toggle flips one
+ * device-wide setting (codeWrap.ts), so every block follows.
+ *
+ * Spec: ops/docs/design-decisions.md (code blocks wrap by default)
  *
  * Base is CodeBlockLowlight (same node name `codeBlock`, so markdown
  * round-trip and toggleCodeBlockSmart are unchanged): its ProseMirror
@@ -356,42 +367,109 @@ export const CodeBlockPlainCopy = Extension.create({
  */
 export const lowlight = createLowlight(common);
 
+/** Phosphor's ArrowElbowDownLeft, bold: the return glyph editors use for
+ *  wrap. A node view is plain DOM, so the icon is markup, not a component. */
+const WRAP_ICON =
+  '<svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor" aria-hidden="true">' +
+  '<path d="M204,32V176a12,12,0,0,1-12,12H77l27.52,27.51a12,12,0,0,1-17,17l-48-48a12,12,0,0,1,0-17l48-48a12,12,0,1,1,17,17L77,164H180V32a12,12,0,0,1,24,0Z"/></svg>';
+
+const CODE_TOOL_BTN =
+  'inline-flex items-center justify-center h-5 rounded text-xs transition ' +
+  '[@media(hover:none)]:h-7';
+
 export const CodeBlockWithCopy = CodeBlockLowlight.extend({
   addNodeView() {
     return ({ node }: NodeViewRendererProps) => {
-      const pre = document.createElement('pre');
-      pre.className = 'pn-codeblock group relative';
-      const code = document.createElement('code');
-      pre.appendChild(code);
+      // ProseMirror keeps this view while the text inside changes, so Copy
+      // reads the node `update` last handed over, never the one the view
+      // was built with.
+      let current = node;
 
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.contentEditable = 'false';
+      const pre = document.createElement('pre');
+      pre.className = 'pn-codeblock';
+      const scroller = document.createElement('span');
+      scroller.className = 'pn-codeblock-scroll';
+      const code = document.createElement('code');
+      scroller.appendChild(code);
+      pre.appendChild(scroller);
+
+      const tools = document.createElement('span');
+      tools.className = 'pn-codeblock-tools';
+      tools.contentEditable = 'false';
+
+      const wrapBtn = document.createElement('button');
+      wrapBtn.type = 'button';
+      wrapBtn.innerHTML = WRAP_ICON;
       // Module-level node view - no useTranslation hook here, so the
       // i18n instance is called directly (the non-component pattern
-      // from i18n.ts). Snapshot at node-view creation; a language
-      // switch re-labels on the next note open.
-      btn.textContent = i18n.t('editor:codeBlock.copy');
-      btn.className =
-        'pn-codeblock-copy absolute top-2 end-2 px-2 py-0.5 text-xs rounded ' +
-        'bg-neutral-700/80 text-neutral-100 hover:bg-neutral-700 ' +
-        'opacity-0 group-hover:opacity-100 transition ' +
-        '[@media(hover:none)]:opacity-100';
-      btn.addEventListener('mousedown', (e) => e.preventDefault());
-      btn.addEventListener('click', async (e) => {
+      // from i18n.ts).
+      const wrapLabel = i18n.t('editor:codeBlock.wrap');
+      wrapBtn.setAttribute('aria-label', wrapLabel);
+      // HoverLabel's `start` tip built as DOM, from HoverLabel's own
+      // classes. It opens to the left: the pre is an LTR island, and its
+      // overflow: hidden would cut a tip above a button 8px from its top.
+      const wrapTip = document.createElement('span');
+      wrapTip.className = 'relative group/tip inline-flex';
+      const tip = document.createElement('span');
+      tip.className = `${TIP_PILL} ${positionClasses.start} flex items-center gap-2 whitespace-nowrap`;
+      tip.textContent = wrapLabel;
+      wrapTip.append(wrapBtn, tip);
+      const paintWrap = () => {
+        const on = getCodeWrap();
+        wrapBtn.setAttribute('aria-pressed', String(on));
+        wrapBtn.className = `${CODE_TOOL_BTN} w-6 [@media(hover:none)]:w-8 ${
+          on
+            ? 'bg-accent text-white hover:bg-accent/90'
+            : 'bg-neutral-700/80 text-neutral-300 hover:bg-neutral-700 hover:text-neutral-100'
+        }`;
+      };
+      paintWrap();
+      const unsubscribe = subscribeCodeWrap(paintWrap);
+      wrapBtn.addEventListener('mousedown', (e) => e.preventDefault());
+      wrapBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setCodeWrap(!getCodeWrap());
+      });
+
+      const copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      // Snapshot at node-view creation; a language switch re-labels on the
+      // next note open.
+      copyBtn.textContent = i18n.t('editor:codeBlock.copy');
+      copyBtn.className =
+        `${CODE_TOOL_BTN} px-2 [@media(hover:none)]:px-2.5 ` +
+        'bg-neutral-700/80 text-neutral-100 hover:bg-neutral-700';
+      copyBtn.addEventListener('mousedown', (e) => e.preventDefault());
+      copyBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
         try {
-          await navigator.clipboard.writeText(node.textContent);
-          btn.textContent = i18n.t('editor:codeBlock.copied');
+          await navigator.clipboard.writeText(current.textContent);
+          copyBtn.textContent = i18n.t('editor:codeBlock.copied');
         } catch {
-          btn.textContent = i18n.t('editor:codeBlock.copyFailed');
+          copyBtn.textContent = i18n.t('editor:codeBlock.copyFailed');
         }
-        window.setTimeout(() => { btn.textContent = i18n.t('editor:codeBlock.copy'); }, 1500);
+        window.setTimeout(() => { copyBtn.textContent = i18n.t('editor:codeBlock.copy'); }, 1500);
       });
-      pre.appendChild(btn);
 
-      return { dom: pre, contentDOM: code };
+      tools.append(wrapTip, copyBtn);
+      pre.appendChild(tools);
+
+      return {
+        dom: pre,
+        contentDOM: code,
+        update: (next: ProseMirrorNode) => {
+          if (next.type !== current.type) return false;
+          current = next;
+          return true;
+        },
+        // The tools are not document content: their clicks, label changes
+        // and class flips are not edits for ProseMirror to read back.
+        stopEvent: (e: Event) => tools.contains(e.target as Node),
+        ignoreMutation: (m: { target: Node }) => tools.contains(m.target),
+        destroy: unsubscribe,
+      };
     };
   },
 });
@@ -1236,6 +1314,14 @@ export const TaskListWithMarkdown = TaskList.extend({
  *
  * Fix: GitHub #101 (empty line spacing removed after reopening notes)
  */
+function breaksOnly(node: ProseMirrorNode): boolean {
+  let only = node.childCount > 0;
+  node.forEach((child) => {
+    if (child.type.name !== 'hardBreak') only = false;
+  });
+  return only;
+}
+
 export const ParagraphWithMarkdown = Paragraph.extend({
   addStorage() {
     return {
@@ -1244,6 +1330,14 @@ export const ParagraphWithMarkdown = Paragraph.extend({
           if (serializeAlignedBlock(state, node)) return;
           if (node.content.size === 0) {
             state.write('&nbsp;');
+          } else if (breaksOnly(node)) {
+            // A hard break writes nothing unless text follows it, so a
+            // paragraph of breaks alone saved as nothing and drew as N + 1
+            // lines. It is written as that many empty paragraphs instead.
+            for (let i = 0; i <= node.childCount; i++) {
+              if (i > 0) state.closeBlock(node);
+              state.write('&nbsp;');
+            }
           } else {
             state.renderInline(node);
           }
@@ -1377,7 +1471,9 @@ function serializeTableToMarkdown(this: any, state: any, node: any, _parent: any
   }
 
   state.inTable = true;
+  const widths = tableWidths(node);
   node.forEach((row: any, _p: number, i: number) => {
+    const rowStart: number = state.out.length;
     state.write('| ');
     row.forEach((col: any, _p2: number, j: number) => {
       if (j) state.write(' | ');
@@ -1394,20 +1490,16 @@ function serializeTableToMarkdown(this: any, state: any, node: any, _parent: any
       escapeCellPipes(state, cellStart);
     });
     state.write(' |');
+    const written: string = state.out.slice(rowStart);
     state.ensureNewLine();
     if (!i) {
-      // Column alignment lives on the header cells' own `align` attr (the
-      // tiptap table cell parses it off `text-align` in the style markdown-it
-      // writes for `:---:`), and the delimiter row is the only place a pipe
-      // table can say it - a bare `---` here silently un-aligned every
-      // column on the first edit after an import.
-      const delimiterRow = cellsOf(row)
-        .map((col) => {
-          const align = col.attrs?.['align'];
-          return align === 'center' ? ':---:' : align === 'right' ? '---:' : '---';
-        })
-        .join(' | ');
-      state.write(`| ${delimiterRow} |`);
+      // The delimiter row is the only place a pipe table can say how its
+      // columns align (the cell's `align` attr, which the tiptap table cell
+      // parses off the `text-align` markdown-it writes for `:---:`) and how
+      // wide they are (dash counts, see tableColumnWidths.ts). A bare `---`
+      // here would drop both on the first edit after an import.
+      const aligns = cellsOf(row).map((col) => col.attrs?.['align']);
+      state.write(delimiterRow(written.slice(written.indexOf('|')), widths, aligns));
       state.ensureNewLine();
     }
   });
@@ -1420,15 +1512,31 @@ function serializeTableToMarkdown(this: any, state: any, node: any, _parent: any
  * onCreate monkey-patch that died silently when v3 made extension.storage a
  * per-access rebuild (see ParagraphWithMarkdown's HISTORY note; this one was
  * caught the same day when tables started saving as raw HTML instead of pipe
- * tables). Providing only `serialize` is deliberate: tiptap-markdown's
- * getMarkdownSpec merges this over its default table spec, so `parse` is
- * preserved.
+ * tables). tiptap-markdown's getMarkdownSpec merges this over its default
+ * table spec, whose `parse` is empty; ours reads the column widths.
+ *
+ * Column widths: `colwidth` holds a relative weight, so the node view and
+ * `renderHTML` are replaced (TipTap's read it as pixels), and a plugin drags
+ * a border. `resizable` stays false, which keeps prosemirror-tables' own
+ * pixel resizer out. Spec: ops/docs/plans/table-column-widths.md
  */
 export const TableWithMarkdown = Table.extend({
+  addOptions() {
+    return { ...this.parent!(), View: ColumnWidthTableView };
+  },
+  renderHTML({ node, HTMLAttributes }) {
+    return renderTableHTML(node, { ...this.options.HTMLAttributes, ...HTMLAttributes });
+  },
+  addProseMirrorPlugins() {
+    return [...(this.parent?.() ?? []), columnResizePlugin()];
+  },
   addStorage() {
     return {
       markdown: {
         serialize: serializeTableToMarkdown,
+        parse: {
+          setup: registerTableWidthsMarkdown,
+        },
       },
     };
   },
@@ -1759,6 +1867,13 @@ function tidyClipboardLines(markdown: string): string {
     blanks = 0;
     const trail = i === lines.length - 1 ? undefined : /\\+$/.exec(text)?.[0];
     out.push(trail && trail.length % 2 === 1 ? `${text.slice(0, -1)}  ` : text);
+  }
+  // Select all ends on the empty paragraph the editor keeps below the last
+  // block. A paste target prints it as blank lines under the text, and its
+  // tight join leaves two spaces on the last line, a break before nothing.
+  if (!fence) {
+    while (out.length > 0 && !/\S/.test(out[out.length - 1]!)) out.pop();
+    if (out.length > 0) out[out.length - 1] = out[out.length - 1]!.replace(/ +$/, '');
   }
   return out.join('\n');
 }

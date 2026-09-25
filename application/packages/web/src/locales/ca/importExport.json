@@ -14,7 +14,7 @@
   "footer": {
     "exportNote": "Les exportacions s'executen localment. No es puja res.",
     "restoreNote": "El teu fitxer es llegeix i es desxifra localment.",
-    "importNote": "Tot es xifra abans de sortir del teu dispositiu per sincronitzar-se."
+    "importNote": "Tot està sempre xifrat, al teu dispositiu i durant la sincronització."
   },
   "importPick": {
     "autoTagLabel": "Etiqueta les notes importades segons l'origen",
@@ -74,6 +74,11 @@
     "encryptedBackupTitle": "Còpia de seguretat xifrada (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Restaura una còpia de seguretat xifrada amb la clau de la teva frase. Un .pnbackupz ho retorna tot, fitxers inclosos; un .pnbackup només conté text i metadades. Has d'haver iniciat la sessió amb el mateix compte que la va crear."
   },
+  "restoreGate": {
+    "wait": "La restauració espera que aquest dispositiu estigui en línia i hagi completat una sincronització, perquè la teva còpia de seguretat es faci coincidir amb les notes que ja hi ha al teu compte en lloc d'afegir-les dues vegades.",
+    "paused": "La restauració espera la sincronització, perquè la teva còpia de seguretat es faci coincidir amb les notes que ja hi ha al teu compte, i la sincronització està en pausa en aquest dispositiu: desactiva “Posa la sincronització en pausa” a Configuració > ID & Sync.",
+    "belowFloor": "La restauració espera la sincronització, perquè la teva còpia de seguretat es faci coincidir amb les notes que ja hi ha al teu compte, i aquesta versió de l'aplicació és massa antiga per sincronitzar: actualitza primer l'aplicació."
+  },
   "encryptedBackupLabel": "Còpia de seguretat xifrada",
   "status": {
     "readingFile": "S'està llegint el fitxer…",
@@ -85,7 +90,9 @@
   "errors": {
     "genericParse": "Alguna cosa ha anat malament.",
     "decryptionFailed": "El desxifratge ha fallat. Frase incorrecta o fitxer malmès.",
-    "blobImportFailed": "Les teves notes s'han importat, però les imatges i els fitxers no: {{detail}} No s'ha modificat res del fitxer que vas triar, així que pots suprimir les notes importades i tornar a executar la importació."
+    "blobImportFailed": "Les teves notes s'han importat, però les imatges i els fitxers no: {{detail}} No s'ha modificat res del fitxer que vas triar, així que pots suprimir les notes importades i tornar a executar la importació.",
+    "blobsNotInBackup_one": "Les teves notes s'han restaurat, però {{items}} que figura a la còpia de seguretat no hi és.",
+    "blobsNotInBackup_other": "Les teves notes s'han restaurat, però {{items}} que figuren a la còpia de seguretat no hi són."
   },
   "preview": {
     "sourceLabel": "Origen",
@@ -99,6 +106,7 @@
     "duplicateWarning": "la importació afegeix aquests elements com a notes noves. Si l'executes dues vegades, tindràs duplicats. Encara no hi ha deduplicació automàtica.",
     "duplicateSkipNote": "els marcadors que ja tens desats s'ometen, així que repetir aquesta importació no duplica res.",
     "contactSkipNote": "les persones que ja has desat s'ometen i queden tal com són, així que executar-ho dues vegades no duplicarà ningú.",
+    "restoreMergeNote": "les notes de la teva pròpia còpia de seguretat es fan coincidir per identificador. Una nota que ja tens només s'actualitza si la versió de la còpia és més recent, i una nota de la paperera en surt.",
     "quotaExceeded": "<strong>No tens prou emmagatzematge per importar.</strong> Es calcula que calen {{needed}}, i en queden {{available}} de disponibles. Allibera espai o millora el pla abans d'importar.",
     "quotaWarning": "Atenció: aquesta importació farà servir aproximadament {{needed}} dels {{available}} d'emmagatzematge que et queden.",
     "oversizeAttachments_one": "1 fitxer supera el límit de {{limit}} per fitxer del teu pla. S'importa en aquest dispositiu, però no se sincronitzarà amb els altres dispositius fins que no milloris a Pro.",
@@ -156,13 +164,25 @@
   "exportProgress": {
     "failedTitle": "L'exportació ha fallat",
     "completeTitle": "Exportació completada",
+    "incompleteTitle": "Exportació incompleta",
     "exportingTitle": "S'està exportant la còpia de seguretat...",
     "preparing": "S'està preparant...",
     "exporting": "S'està exportant...",
     "imagesProgress": "S'estan exportant les imatges... {{done}} de {{total}}",
     "filesProgress": "S'estan exportant els fitxers... {{done}} de {{total}}",
     "building": "S'està construint la còpia de seguretat...",
-    "compressing": "S'està comprimint..."
+    "compressing": "S'està comprimint...",
+    "missingFailed_one": "Aquest dispositiu no ha pogut baixar {{items}}, així que la teva exportació no l'inclou. Comprova la connexió i torna a exportar.",
+    "missingFailed_other": "Aquest dispositiu no ha pogut baixar {{items}}, així que la teva exportació no els inclou. Comprova la connexió i torna a exportar.",
+    "missingNotFound_one": "{{items}} no és ni en aquest dispositiu ni al servidor, així que la teva exportació no l'inclou.",
+    "missingNotFound_other": "{{items}} no són ni en aquest dispositiu ni al servidor, així que la teva exportació no els inclou."
+  },
+  "missing": {
+    "pictures_one": "{{count}} imatge",
+    "pictures_other": "{{count}} imatges",
+    "files_one": "{{count}} fitxer",
+    "files_other": "{{count}} fitxers",
+    "both": "{{pictures}} i {{files}}"
   },
   "upload": {
     "completeTitle": "Pujada completada",

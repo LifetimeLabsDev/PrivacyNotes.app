@@ -33,7 +33,8 @@
     "math": "Fórmula",
     "blockMath": "Fórmula em bloco",
     "align": "Alinhamento",
-    "font": "Fonte"
+    "font": "Fonte",
+    "pictureFromFiles": "Imagem de Arquivos"
   },
   "align": {
     "left": "Alinhar à esquerda",
@@ -104,6 +105,7 @@
     "addColumnLeft": "Adicionar coluna à esquerda",
     "addColumnRight": "Adicionar coluna à direita",
     "toggleHeaderRow": "Ativar ou desativar a linha de cabeçalho",
+    "equalColumnWidths": "Igualar colunas",
     "deleteRow": "Excluir linha",
     "deleteColumn": "Excluir coluna",
     "deleteTable": "Excluir tabela"
@@ -187,7 +189,8 @@
   "codeBlock": {
     "copy": "Copiar",
     "copied": "Copiado",
-    "copyFailed": "Falhou"
+    "copyFailed": "Falhou",
+    "wrap": "Quebrar linhas longas"
   },
   "math": {
     "sourceLabel": "Código LaTeX"

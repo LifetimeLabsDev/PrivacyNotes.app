@@ -1,0 +1,200 @@
+{
+  "title": "Статистика",
+  "tabs": {
+    "writing": "Письмо",
+    "wellness": "Самопочуття"
+  },
+  "writing": {
+    "notes": "Нотатки",
+    "words": "Слова",
+    "tags": "Теги",
+    "currentStreak": "Поточна серія",
+    "longestStreak": "Найдовша серія",
+    "streakValue_one": "{{count}} день",
+    "streakValue_few": "{{count}} дні",
+    "streakValue_many": "{{count}} днів",
+    "streakValue_other": "{{count}} дня",
+    "timeRangeAria": "Часовий діапазон активності",
+    "modeActivity": "Активність",
+    "modeMood": "Настрій",
+    "tooltipMood": "{{date}}: настрій {{mood}}/10",
+    "tooltipNoMood": "{{date}}: настрій не записано",
+    "tooltipEdits_one": "{{date}}: {{count}} редагування",
+    "tooltipEdits_few": "{{date}}: {{count}} редагування",
+    "tooltipEdits_many": "{{date}}: {{count}} редагувань",
+    "tooltipEdits_other": "{{date}}: {{count}} редагування",
+    "longestNote": "Найдовша нотатка: <name>{{title}}</name> (слів: {{count}})"
+  },
+  "range": {
+    "7d": "7 днів",
+    "14d": "14 днів",
+    "30d": "30 днів",
+    "3mo": "3 місяці",
+    "6mo": "6 місяців",
+    "12mo": "12 місяців"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Усе",
+      "sleepActivity": "Сон і активність",
+      "medication": "Ліки",
+      "patterns": "Закономірності"
+    },
+    "empty": {
+      "title": "Даних про самопочуття ще немає.",
+      "hint": "Відкрийте запис у щоденнику й запишіть настрій, щоб почати."
+    },
+    "overview": {
+      "daysTracked": "Днів відстежено",
+      "avgMood": "Сер. настрій",
+      "avgSleep": "Сер. сон",
+      "medAdherence": "Прийом ліків",
+      "moodTrend": "Динаміка настрою",
+      "moodByDayOfWeek": "Настрій за днями тижня",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Експорт",
+      "allTime": "За весь час",
+      "last90Days": "Останні 90 днів",
+      "last30Days": "Останні 30 днів",
+      "last7Days": "Останні 7 днів",
+      "downloadJSON": "Завантажити JSON",
+      "doctorPDF": "PDF для лікаря",
+      "copyAIPrompt": "Копіювати запит для ШІ",
+      "copied": "Скопійовано!",
+      "saveFailed": "Не вдалося зберегти, тому файл може бути порожнім або неповним. Спробуйте ще раз або виберіть іншу теку.",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Якість сну",
+      "activity": "Активність",
+      "avgSleepPerNight": "Середній сон за ніч"
+    },
+    "medication": {
+      "adherence": "Дотримання",
+      "empty": {
+        "title": "Даних про ліки ще немає.",
+        "hint": "Додайте ліки в налаштуваннях трекерів і записуйте прийом щодня."
+      },
+      "dosageTimeline": "Хронологія дозування",
+      "started": "Початок: {{dosage}}",
+      "changedTo": "Змінено на {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Найчастіші емоції",
+      "insights": "Висновки",
+      "proBadge": "PRO",
+      "insightsLocked_one": "Виявлено висновків: {{count}}. Перейдіть на Pro, щоб переглянути",
+      "insightsLocked_few": "Виявлено висновків: {{count}}. Перейдіть на Pro, щоб переглянути",
+      "insightsLocked_many": "Виявлено висновків: {{count}}. Перейдіть на Pro, щоб переглянути",
+      "insightsLocked_other": "Виявлено висновків: {{count}}. Перейдіть на Pro, щоб переглянути",
+      "weekInReview": "Підсумки тижня",
+      "weekInReviewLocked": "Перейдіть на Pro, щоб бачити щотижневий підсумок самопочуття"
+    },
+    "week": {
+      "range": "з {{start}} по {{end}}",
+      "daysLogged": "Записано днів: {{count}}/7",
+      "avgMood": "Сер. настрій",
+      "moodDelta": "{{delta}} порівняно з минулим тижнем",
+      "avgSleep": "Сер. сон",
+      "medsTaken": "Прийнято ліків",
+      "topActivity": "Основна активність",
+      "topEmotions": "Найчастіші емоції",
+      "reflection": "Роздуми",
+      "reflectionPlaceholder": "Яким був цей тиждень загалом? Запишіть свої думки..."
+    },
+    "units": {
+      "days_one": "{{count}} день",
+      "days_few": "{{count}} дні",
+      "days_many": "{{count}} днів",
+      "days_other": "{{count}} дня"
+    },
+    "insights": {
+      "sleep": "У дні, коли ви добре спите, ваш середній настрій {{good}}, а коли погано, {{bad}}.",
+      "activity": "В активні дні ваш середній настрій {{active}}, а в малорухливі {{sedentary}}.",
+      "dayOfWeek": "Ваш найкращий день зазвичай {{best}} (у середньому {{bestAvg}}), а найважчий {{worst}} (у середньому {{worstAvg}}).",
+      "medication": "Відколи ви почали приймати {{name}} ({{date}}), ваш середній настрій змінився з {{before}} на {{after}}.",
+      "streak_one": "Ви записуєте настрій {{count}} день поспіль. Так тримати!",
+      "streak_few": "Ви записуєте настрій {{count}} дні поспіль. Так тримати!",
+      "streak_many": "Ви записуєте настрій {{count}} днів поспіль. Так тримати!",
+      "streak_other": "Ви записуєте настрій {{count}} дня поспіль. Так тримати!",
+      "trend": "Ваш середній настрій за останні два тижні {{recent}}, а загалом {{overall}}."
+    },
+    "aiPrompt": {
+      "intro": "Я відстежую свій настрій і самопочуття. Проаналізуйте, будь ласка, дані нижче й знайдіть закономірності, тенденції та практичні висновки.",
+      "overview": "Огляд",
+      "daysTracked": "Днів відстежено: {{days}}",
+      "avgMood": "Середній настрій: {{mood}}/10",
+      "avgSleep": "Середній сон: {{hours}} год",
+      "adherence": "Дотримання схеми прийому ліків: {{pct}}%",
+      "topEmotions": "Найчастіші емоції: {{list}}",
+      "moodTrend": "Динаміка настрою (останні 30 днів)",
+      "columnDate": "Дата",
+      "columnMood": "Настрій",
+      "sleepDistribution": "Розподіл якості сну",
+      "activityDistribution": "Розподіл рівня активності",
+      "adherenceHeading": "Дотримання схеми прийому ліків",
+      "adherenceLine": "{{name}}: прийнято в {{taken}} з {{total}} відстежених днів ({{pct}}%)",
+      "dosageTimeline": "Хронологія дозування",
+      "patterns": "Виявлені закономірності",
+      "questions": "Що я хочу дізнатися",
+      "question1": "Чи є закономірності в моєму настрої з часом?",
+      "question2": "Чи пов’язані якість сну й рівень активності з настроєм?",
+      "question3": "Чи є тривожні тенденції, які варто обговорити з лікарем?",
+      "question4": "Практичні поради на основі цих даних.",
+      "footer": "Створено в PrivacyNotes (privacynotes.app)"
+    },
+    "report": {
+      "documentTitle": "Звіт про самопочуття",
+      "heading": "Звіт про настрій і самопочуття",
+      "meta": "Створено {{date}} | Період: з {{from}} по {{to}} | Днів відстежено: {{days}}",
+      "overview": "Огляд",
+      "columnMetric": "Показник",
+      "columnValue": "Значення",
+      "avgMood": "Середній настрій",
+      "avgSleep": "Середній сон",
+      "adherence": "Дотримання схеми прийому ліків",
+      "daysTracked": "Днів відстежено",
+      "moodTrend": "Динаміка настрою (останні 90 днів)",
+      "legend": "Червоний = 1-2, помаранчевий = 3-4, жовтий = 5-6, зелений = 7-8, синій = 9-10",
+      "sleepDistribution": "Розподіл якості сну",
+      "columnQuality": "Якість",
+      "columnDays": "Дні",
+      "activityDistribution": "Розподіл рівня активності",
+      "columnLevel": "Рівень",
+      "adherenceHeading": "Дотримання схеми прийому ліків",
+      "adherenceNote": "Частка прийнятих доз серед днів із записами в щоденнику, коли кожні ліки відстежувалися. День, коли ліки не позначено, вважається днем без прийому. Дні без запису в щоденнику не враховуються взагалі.",
+      "columnMedication": "Ліки",
+      "columnTaken": "Прийнято/Днів",
+      "columnRate": "Частка",
+      "dosageTimeline": "Хронологія дозування ліків",
+      "started": "Початок: {{dosage}}, {{date}}",
+      "changedTo": "Змінено на {{dosage}}, {{date}}",
+      "unknownDose": "невідома доза",
+      "topEmotions": "Найчастіші емоції",
+      "patterns": "Виявлені закономірності",
+      "footer": "Створено в PrivacyNotes - privacynotes.app"
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Досягнення відкрито"
+  },
+  "milestone": {
+    "notes_one": "{{count}} нотатку написано",
+    "notes_few": "{{count}} нотатки написано",
+    "notes_many": "{{count}} нотаток написано",
+    "notes_other": "{{count}} нотатки написано",
+    "streak": "Серія письма: {{count}} дн. поспіль",
+    "words_one": "{{formatted}} слово написано",
+    "words_few": "{{formatted}} слова написано",
+    "words_many": "{{formatted}} слів написано",
+    "words_other": "{{formatted}} слова написано",
+    "age30": "30 днів із PrivacyNotes",
+    "age365": "1 рік із PrivacyNotes",
+    "age730": "2 роки з PrivacyNotes",
+    "age1825": "5 років із PrivacyNotes",
+    "ageDefault": "Уже {{count}} дн. разом"
+  }
+}

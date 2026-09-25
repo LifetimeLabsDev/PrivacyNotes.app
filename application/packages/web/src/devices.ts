@@ -71,86 +71,6 @@ function getOrCreateDeviceSecret(): Uint8Array {
   return fresh;
 }
 
-/** Hard-reset the local install identity. Next sign-in will register a brand-new device row. */
-export function resetDeviceSecret(): void {
-  window.localStorage.removeItem(DEVICE_SECRET_KEY);
-}
-
-/** Read the stored deviceSecret hex without minting one. Null when this install has none yet. */
-export function getStoredDeviceSecretHex(): string | null {
-  try {
-    const stored = window.localStorage.getItem(DEVICE_SECRET_KEY);
-    return stored && /^[0-9a-f]{64}$/i.test(stored) ? stored.toLowerCase() : null;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Adopt a deviceSecret carried over from the old origin during the domain
- * move (see migrate.ts). Deliberately overwrites any local secret: the
- * carried identity is the one with the registered device row, so keeping
- * it means register-device derives the SAME device_id and the move does
- * not burn a slot against the free-tier device cap. Rejects anything that
- * is not 32 bytes of hex.
- * Spec: ops/docs/domain-split.md (free plan caps devices at 2, FREE_DEVICE_LIMIT)
- */
-export function importDeviceSecret(hex: string): boolean {
-  if (!/^[0-9a-f]{64}$/i.test(hex)) return false;
-  try {
-    window.localStorage.setItem(DEVICE_SECRET_KEY, hex.toLowerCase());
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// ------------------------------------------------------------------
-// Interrupted-swap journal for the secret import above. The confirm
-// flow must import the carried secret BEFORE signInWithPhrase (the
-// registration inside derives the device_id from it), and it rolls
-// back on a FAILED sign-in - but a tab closed mid-sign-in ran neither
-// path, leaving the install with a device identity it never
-// registered (session audit 2026-08-25). The journal closes that gap:
-// the caller arms it with the PRIOR secret before importing, clears
-// it on a resolved sign-in (either outcome), and the next boot
-// restores any journal it finds - by then the sign-in can only have
-// been interrupted.
-// ------------------------------------------------------------------
-
-const SECRET_SWAP_JOURNAL_KEY = 'privacynotes.deviceSecretSwapJournal';
-
-/** Arm the journal with the pre-import secret ('' = none existed). */
-export function armSecretSwapJournal(priorHex: string | null): void {
-  try {
-    window.localStorage.setItem(SECRET_SWAP_JOURNAL_KEY, priorHex ?? '');
-  } catch { /* ignore */ }
-}
-
-/** The sign-in resolved (ok or failed) - the caller now owns cleanup. */
-export function clearSecretSwapJournal(): void {
-  try {
-    window.localStorage.removeItem(SECRET_SWAP_JOURNAL_KEY);
-  } catch { /* ignore */ }
-}
-
-/**
- * Boot-time recovery: an armed journal means the last confirm never
- * resolved. Put the prior secret back (or remove the imported one when
- * none existed before) and clear the journal. Called once at module
- * init, before anything derives a device id.
- */
-function restoreInterruptedSecretSwap(): void {
-  try {
-    const prior = window.localStorage.getItem(SECRET_SWAP_JOURNAL_KEY);
-    if (prior === null) return;
-    if (prior === '') window.localStorage.removeItem(DEVICE_SECRET_KEY);
-    else window.localStorage.setItem(DEVICE_SECRET_KEY, prior);
-    window.localStorage.removeItem(SECRET_SWAP_JOURNAL_KEY);
-  } catch { /* ignore */ }
-}
-if (typeof window !== 'undefined') restoreInterruptedSecretSwap();
-
 export function getDeviceId(pubkey: string): string {
   return deriveDeviceId(pubkey, getOrCreateDeviceSecret());
 }
@@ -270,6 +190,37 @@ export async function invokeFnWithRetry(
     result = await supabase.functions.invoke(name, options);
   }
   return result;
+}
+
+// One-shot per app load: the isolates stay warm for minutes once
+// booted, so re-warming on StrictMode remounts or back-and-forth
+// onboarding navigation would only waste requests.
+let edgeWarmupFired = false;
+
+/**
+ * Boot the sign-in edge functions' isolates once a visitor starts a
+ * sign-in. Cold starts cost 1-3.5s each and sit exactly on the sign-in
+ * critical path (link-pubkey, then register-device). A bare OPTIONS
+ * request only runs each function's CORS branch: no auth, no body, no
+ * database - it exists purely to spin up the isolate so the real calls
+ * during sign-in hit warm instances. Fire-and-forget; failures are
+ * expected offline and must never affect onboarding.
+ *
+ * Call it on intent, never on mount. The marketing pages render the
+ * onboarding component too, and a visitor who only reads them must send
+ * nothing to the sync backend: these URLs name link-pubkey and
+ * register-device, so in a network tab they read as a sign-in that never
+ * happened.
+ */
+export function warmAuthEdgeFunctions(): void {
+  if (edgeWarmupFired || isDemoMode()) return;
+  edgeWarmupFired = true;
+  const base = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+  if (!base) return;
+  const fns = ['link-pubkey', 'register-device'];
+  for (const fn of fns) {
+    void fetch(`${base}/functions/v1/${fn}`, { method: 'OPTIONS' }).catch(() => {});
+  }
 }
 
 /**
@@ -675,6 +626,11 @@ export type ManageStorageArgs = {
   action: 'cancel' | 'switch';
   /** Required for 'switch' - the target package's Paddle price ID. */
   priceId?: string;
+  /**
+   * For 'switch': the `quote` of the preview the confirm showed. The server
+   * then charges only while a fresh preview still gives that figure.
+   */
+  quote?: string;
 };
 
 /**
@@ -683,7 +639,7 @@ export type ManageStorageArgs = {
  * resulting Paddle webhook, so callers should refetch after a moment.
  */
 export async function manageStorageSub(args: ManageStorageArgs): Promise<void> {
-  const { supabase, accessToken, authUid, signingPrivateKey, subscriptionId, action, priceId } = args;
+  const { supabase, accessToken, authUid, signingPrivateKey, subscriptionId, action, priceId, quote } = args;
   const signature = await signStorageManageChallenge(
     signingPrivateKey,
     authUid,
@@ -697,6 +653,7 @@ export async function manageStorageSub(args: ManageStorageArgs): Promise<void> {
       subscription_id: subscriptionId,
       action,
       ...(action === 'switch' ? { price_id: priceId } : {}),
+      ...(action === 'switch' && quote ? { quote } : {}),
       signature: bytesToHex(signature),
     },
   });
@@ -704,23 +661,45 @@ export async function manageStorageSub(args: ManageStorageArgs): Promise<void> {
     const body = (await readFnErrorBody(error as FnError)) as
       | { error?: string }
       | null;
-    throw new Error(
-      `manage-storage-sub failed: ${body?.error ?? (error as Error).message}`,
+    throw Object.assign(
+      new Error(`manage-storage-sub failed: ${body?.error ?? (error as Error).message}`),
+      { code: body?.error },
     );
   }
 }
 
 /**
- * Preview an upgrade: returns the real prorated amount due today (formatted,
- * e.g. "$11.40") for switching to priceId, without applying it. Returns null
- * if unavailable - callers should show the dialog without a figure.
+ * True when manage-storage-sub refused a switch because the amount the
+ * confirm showed no longer matched, or could not be checked. Nothing was
+ * charged, and choosing the package again shows the current figure.
+ */
+export function isStorageQuoteRefusal(err: unknown): boolean {
+  const code = (err as { code?: unknown } | null)?.code;
+  return code === 'quote_mismatch' || code === 'preview_unavailable';
+}
+
+/** What an upgrade preview returns: the amount due today, and its quote. */
+export type StorageUpgradeQuote = {
+  /** Formatted for display, e.g. "$11.40". */
+  dueToday: string;
+  /**
+   * The same figure as the server compares it. Handed back with the switch;
+   * absent when the server sent none, and the switch then goes without it.
+   */
+  quote?: string;
+};
+
+/**
+ * Preview an upgrade: the real prorated amount due today for switching to
+ * priceId, without applying it. Returns null if unavailable; the confirm then
+ * offers a retry and never charges without a figure.
  */
 export async function previewStorageUpgrade(args: {
   supabase: SupabaseClient;
   accessToken: string;
   subscriptionId: string;
   priceId: string;
-}): Promise<string | null> {
+}): Promise<StorageUpgradeQuote | null> {
   const { supabase, accessToken, subscriptionId, priceId } = args;
   try {
     const { data, error } = await supabase.functions.invoke('manage-storage-sub', {
@@ -728,8 +707,9 @@ export async function previewStorageUpgrade(args: {
       body: { action: 'preview', subscription_id: subscriptionId, price_id: priceId },
     });
     if (error) return null;
-    const d = data as { ok?: boolean; due_today?: string } | null;
-    return d?.ok && d.due_today ? d.due_today : null;
+    const d = data as { ok?: boolean; due_today?: string; quote?: string } | null;
+    if (!d?.ok || !d.due_today) return null;
+    return typeof d.quote === 'string' ? { dueToday: d.due_today, quote: d.quote } : { dueToday: d.due_today };
   } catch {
     return null;
   }
@@ -936,4 +916,17 @@ export async function recalculateQuota(supabase: SupabaseClient): Promise<void> 
     // Best-effort - the RPC may not be deployed yet. Log and move on.
     console.warn('[devices] recalculate_my_quota failed:', error.message);
   }
+}
+
+/**
+ * True on builds whose purchases live in a native store account (iOS App
+ * Store, Google Play build). Desktop and the direct Android APK buy through
+ * Paddle, where the entitlement follows the pubkey server-side - there is
+ * nothing device-local to restore, so restore UI must not appear there.
+ * Spec: ops/docs/plans/iap-restore-handoff.md (restore UI only appears on iOS or Play builds, not Paddle purchases)
+ */
+export function isNativeStoreBuild(): boolean {
+  const platform = detectPlatform();
+  if (platform === 'ios') return true;
+  return platform === 'android' && import.meta.env.VITE_ANDROID_DIST !== 'direct';
 }

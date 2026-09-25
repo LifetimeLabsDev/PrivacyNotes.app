@@ -55,7 +55,7 @@
     "empty": "Boşalt",
     "emptyHover": "Çöp kutusundaki tüm notları sil",
     "storage": "Depolama",
-    "autoDelete": "Otomatik silme: 30 gün"
+    "autoDelete": "30 gün sonra otomatik olarak sil"
   },
   "search": {
     "sortOptions": "Sıralama ve görünüm seçenekleri",
@@ -161,8 +161,8 @@
     "invisiblesShow": "Görünmez karakterleri göster",
     "invisiblesHide": "Görünmez karakterleri gizle",
     "findInNote": "Notta bul",
-    "navPrev": "Önceki not",
-    "navNext": "Sonraki not",
+    "navPrev": "Önceki",
+    "navNext": "Sonraki",
     "undo": "Geri al",
     "redo": "Yinele",
     "hide": "Gizle",
@@ -176,7 +176,8 @@
     "titlePlaceholderLink": "Yer imi adı",
     "titlePlaceholderContact": "Ad",
     "notBackedUpTooLarge": "1 MB sınırının üzerinde olduğu için yedeklenmedi. Görselleri eklere taşıyın veya notu bölün.",
-    "notBackedUpFailed": "Yedeklenmedi. Son hata: {{message}}. Yeniden deneniyor."
+    "notBackedUpFailed": "Yedeklenmedi. Son hata: {{message}}. Yeniden deneniyor.",
+    "unknownType": "Bu öğe, PrivacyNotes'un daha yeni bir sürümüyle oluşturuldu. Açmak için uygulamayı güncelleyin."
   },
   "share": {
     "hover": "Paylaş / Dışa aktar",

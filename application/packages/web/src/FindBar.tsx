@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { Editor as TipTapEditor } from '@tiptap/react';
 import { MagnifyingGlass, X } from './icons';
 import { HoverLabel } from './HoverLabel';
+import { isImeComposing } from './imeComposing';
 import { BAR_BTN, MatchNav } from './MatchNav';
 import {
   setSearchQuery,
@@ -117,7 +118,7 @@ export function FindBar({ editor, focusTick, initialQuery, onClose }: Props) {
    * is the mouse equivalent and calls onClose directly.
    */
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !isImeComposing(e)) {
       e.preventDefault();
       go(e.shiftKey ? -1 : 1);
     }

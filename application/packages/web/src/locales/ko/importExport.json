@@ -14,7 +14,7 @@
   "footer": {
     "exportNote": "내보내기는 로컬에서 실행돼요. 아무것도 업로드되지 않아요.",
     "restoreNote": "파일은 로컬에서 읽고 복호화해요.",
-    "importNote": "모든 데이터는 동기화를 위해 기기를 떠나기 전에 암호화돼요."
+    "importNote": "모든 데이터는 기기에서도, 동기화할 때도 항상 암호화돼 있어요."
   },
   "importPick": {
     "autoTagLabel": "가져온 노트에 출처 태그 달기",
@@ -71,6 +71,11 @@
     "encryptedBackupTitle": "암호화 백업 (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "문구 키로 암호화 백업을 복원해요. .pnbackupz는 파일까지 전부 되돌리고, .pnbackup은 텍스트 콘텐츠와 메타데이터만 담고 있어요. 백업을 만든 계정과 같은 계정으로 로그인되어 있어야 해요."
   },
+  "restoreGate": {
+    "wait": "복원은 이 기기가 온라인이 되고 동기화를 마칠 때까지 기다려요. 백업을 계정에 이미 있는 노트와 대조해서 노트가 두 번 추가되지 않도록 하기 위해서예요.",
+    "paused": "복원은 동기화가 끝날 때까지 기다려요. 백업을 계정에 이미 있는 노트와 대조하기 위해서예요. 이 기기는 동기화가 일시중지되어 있으니 설정 > ID & Sync에서 \"동기화 일시중지\"를 끄세요.",
+    "belowFloor": "복원은 동기화가 끝날 때까지 기다려요. 백업을 계정에 이미 있는 노트와 대조하기 위해서예요. 이 버전의 앱은 너무 오래되어 동기화할 수 없으니 먼저 앱을 업데이트하세요."
+  },
   "encryptedBackupLabel": "암호화 백업",
   "status": {
     "readingFile": "파일 읽는 중…",
@@ -82,7 +87,8 @@
   "errors": {
     "genericParse": "문제가 발생했어요.",
     "decryptionFailed": "복호화에 실패했어요. 문구가 틀렸거나 파일이 손상됐어요.",
-    "blobImportFailed": "노트는 가져왔지만 이미지와 파일은 가져오지 못했어요: {{detail}} 선택한 파일 안의 내용은 전혀 바뀌지 않았으니, 가져온 노트를 지우고 다시 가져오기를 실행해도 괜찮아요."
+    "blobImportFailed": "노트는 가져왔지만 이미지와 파일은 가져오지 못했어요: {{detail}} 선택한 파일 안의 내용은 전혀 바뀌지 않았으니, 가져온 노트를 지우고 다시 가져오기를 실행해도 괜찮아요.",
+    "blobsNotInBackup_other": "노트는 복원됐지만, 백업에 적힌 {{items}}이(가) 백업 안에 없어요."
   },
   "preview": {
     "sourceLabel": "출처",
@@ -96,6 +102,7 @@
     "duplicateWarning": "가져오면 이 항목들이 새 노트로 추가돼요. 두 번 실행하면 중복이 생겨요. 자동 중복 제거는 아직 없어요.",
     "duplicateSkipNote": "이미 저장한 북마크는 건너뛰기 때문에 두 번 실행해도 중복되지 않아요.",
     "contactSkipNote": "이미 저장한 사람은 건너뛰고 그대로 두기 때문에 두 번 실행해도 아무도 중복되지 않아요.",
+    "restoreMergeNote": "직접 만든 백업의 노트는 ID로 대조돼요. 이미 있는 노트는 백업의 사본이 더 새로울 때만 업데이트하고, 휴지통에 있는 노트는 다시 꺼내요.",
     "quotaExceeded": "<strong>저장 공간이 부족해서 가져올 수 없어요.</strong> 약 {{needed}} 필요, {{available}} 사용 가능. 공간을 확보하거나 업그레이드한 뒤 가져오세요.",
     "quotaWarning": "참고: 이번 가져오기는 남은 저장 공간 {{available}} 중 약 {{needed}}를 사용해요.",
     "oversizeAttachments_other": "{{count}}개의 파일이 요금제의 파일당 한도 {{limit}}보다 커요. 이 기기에는 가져오지만, 업그레이드하기 전까지는 다른 기기와 동기화되지 않아요."
@@ -140,13 +147,21 @@
   "exportProgress": {
     "failedTitle": "내보내기 실패",
     "completeTitle": "내보내기 완료",
+    "incompleteTitle": "내보내기 미완료",
     "exportingTitle": "백업 내보내는 중...",
     "preparing": "준비 중...",
     "exporting": "내보내는 중...",
     "imagesProgress": "이미지 내보내는 중... {{total}}개 중 {{done}}개",
     "filesProgress": "파일 내보내는 중... {{total}}개 중 {{done}}개",
     "building": "백업 만드는 중...",
-    "compressing": "압축 중..."
+    "compressing": "압축 중...",
+    "missingFailed_other": "이 기기에서 {{items}}을(를) 다운로드하지 못해서 내보내기에 빠져 있어요. 연결을 확인하고 다시 내보내세요.",
+    "missingNotFound_other": "{{items}}은(는) 이 기기에도 서버에도 없어서 내보내기에 빠져 있어요."
+  },
+  "missing": {
+    "pictures_other": "사진 {{count}}장",
+    "files_other": "파일 {{count}}개",
+    "both": "{{pictures}}과(와) {{files}}"
   },
   "upload": {
     "completeTitle": "업로드 완료",

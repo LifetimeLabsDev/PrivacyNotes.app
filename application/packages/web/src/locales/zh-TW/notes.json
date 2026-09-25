@@ -55,7 +55,7 @@
     "empty": "清空",
     "emptyHover": "刪除垃圾桶中的所有筆記",
     "storage": "儲存空間",
-    "autoDelete": "30 天自動刪除"
+    "autoDelete": "30 天後自動刪除"
   },
   "search": {
     "sortOptions": "排序與檢視選項",
@@ -159,8 +159,8 @@
     "invisiblesShow": "顯示編輯標記",
     "invisiblesHide": "隱藏編輯標記",
     "findInNote": "在筆記中尋找",
-    "navPrev": "上一則筆記",
-    "navNext": "下一則筆記",
+    "navPrev": "上一個",
+    "navNext": "下一個",
     "undo": "復原",
     "redo": "重做",
     "hide": "隱藏",
@@ -174,7 +174,8 @@
     "titlePlaceholderLink": "書籤名稱",
     "titlePlaceholderContact": "姓名",
     "notBackedUpTooLarge": "超過 1 MB 上限，因此尚未備份。請把圖片改為附件，或將筆記拆成兩則。",
-    "notBackedUpFailed": "尚未備份。最近的錯誤：{{message}}。正在重試。"
+    "notBackedUpFailed": "尚未備份。最近的錯誤：{{message}}。正在重試。",
+    "unknownType": "這個項目是由較新版本的 PrivacyNotes 建立的。請更新應用程式後再開啟。"
   },
   "share": {
     "hover": "分享／匯出",

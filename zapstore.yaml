@@ -38,7 +38,7 @@ summary: Notes. Tasks. Files. Vault. Zero knowledge.
 # left out for the same reason: the renderer turns "- " into a list item and
 # prints "**" as two asterisks, so emphasis reads as punctuation.
 description: |
-  One encrypted place for everything you'd never post. Encrypted on your device before it goes anywhere. We couldn't read it if we tried.
+  One encrypted place for everything you'd never post. Encrypted on your device; hold your own key and we couldn't read it if we tried.
 
   - Notes: rich live editor, tags, instant search.
   - Tasks: every checkbox, one view.

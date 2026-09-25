@@ -10,7 +10,9 @@
     "tags": "Étiquettes",
     "currentStreak": "Série actuelle",
     "longestStreak": "Plus longue série",
-    "streakValue": "{{count}}j",
+    "streakValue_one": "{{count}} jour",
+    "streakValue_many": "{{count}} jours",
+    "streakValue_other": "{{count}} jours",
     "timeRangeAria": "Plage de temps d'activité",
     "modeActivity": "Activité",
     "modeMood": "Humeur",
@@ -59,6 +61,7 @@
       "doctorPDF": "PDF médecin",
       "copyAIPrompt": "Copier le prompt IA",
       "copied": "Copié !",
+      "saveFailed": "L'enregistrement a échoué, donc le fichier peut être vide ou incomplet. Réessaie, ou choisis un autre dossier.",
       "proBadge": "PRO"
     },
     "sleepActivity": {

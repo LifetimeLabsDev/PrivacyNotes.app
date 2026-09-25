@@ -33,7 +33,8 @@
     "math": "수학 수식",
     "blockMath": "블록 수식",
     "align": "정렬",
-    "font": "글꼴"
+    "font": "글꼴",
+    "pictureFromFiles": "파일에서 이미지"
   },
   "align": {
     "left": "왼쪽 정렬",
@@ -104,6 +105,7 @@
     "addColumnLeft": "왼쪽에 열 추가",
     "addColumnRight": "오른쪽에 열 추가",
     "toggleHeaderRow": "머리글 행 전환",
+    "equalColumnWidths": "열 너비 같게",
     "deleteRow": "행 삭제",
     "deleteColumn": "열 삭제",
     "deleteTable": "표 삭제"
@@ -184,7 +186,8 @@
   "codeBlock": {
     "copy": "복사",
     "copied": "복사됨",
-    "copyFailed": "실패"
+    "copyFailed": "실패",
+    "wrap": "긴 줄 줄바꿈"
   },
   "math": {
     "sourceLabel": "LaTeX 소스"

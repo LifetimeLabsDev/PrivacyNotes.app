@@ -1,9 +1,13 @@
 /**
  * Custom TipTap extension for encrypted file attachments.
  *
- * Renders as an inline chip: [icon] filename - size [download].
- * Files are encrypted client-side and stored in the same Supabase
- * Storage bucket as images. Never renders file content inline.
+ * Renders as a one-line chip: [preview tile] filename, type and size
+ * [actions]. A chip that holds a picture or a PDF shows it in the tile, and a
+ * click on the tile opens the shared viewer. In a note the Files pillar made
+ * that holds one file, a picture or a PDF renders as a card with the file
+ * itself on it instead (the `filePreview` option, `showsFileCard`). Files are
+ * encrypted client-side and stored in the same Supabase Storage bucket as
+ * images.
  *
  * URI scheme: pn:file/<uuid> in markdown link syntax:
  *   [filename](pn:file/<uuid>)
@@ -11,20 +15,25 @@
  * Markdown roundtrip is handled by custom serialize/parse hooks.
  */
 
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { estimateBlobBytes } from './notesViewUtils';
+import { lazy, Suspense, useState, useCallback, useRef, useEffect } from 'react';
+import { estimateBlobBytes, mimeToLabel } from './notesViewUtils';
 import { useTranslation } from 'react-i18next';
 import { saveBlob } from './saveFile';
 import { Node, mergeAttributes, type Editor as TipTapEditor } from '@tiptap/core';
 import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
-import { AttachmentStore, type AttachmentMeta } from './attachmentStore';
+import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
+import { AttachmentStore, type AttachmentMeta, type DecryptedAttachment } from './attachmentStore';
 import { validateAttachment, isImageFile, formatFileSize } from './attachmentValidation';
 import { currentImageOptions, isSupportedImage, processImage } from './imageProcessing';
+import { isPdf, isPictureMime, openMediaViewerInDoc } from './mediaRefs';
 import { HoverLabel } from './HoverLabel';
+import { ContextMenu, useContextMenu, type ContextMenuItem } from './ContextMenu';
+import { suppressSoftKeyboard } from './softKeyboard';
+import { useNearScreen } from './useNearScreen';
 import { useBlobQuotaBlocked } from './usePendingUploads';
-import { MusicNotes, VideoCamera, Image, Archive, File as FileGlyph, Pause, Play, Trash, Check, Copy, Download, PencilSimple, X } from './icons';
+import { MusicNotes, VideoCamera, Image, Archive, File as FileGlyph, Pause, Play, Trash, Check, Download, DotsThree, Eye, X, iconCopy, iconEditPencil, iconTrash } from './icons';
 import { formatDuration } from './formatDuration';
 import {
   FILE_NAME_MAX_LENGTH,
@@ -34,12 +43,23 @@ import {
   splitFileName,
 } from './fileNames';
 import i18n from './i18n';
+import { isImeComposing } from './imeComposing';
 
 // ------------------------------------------------------------------
 // Constants
 // ------------------------------------------------------------------
 
 const FILE_URI_PREFIX = 'pn:file/';
+
+/** The narrowest the chip menu draws (ContextMenu's floor), so a menu opened
+ *  from the chip's end lines its end edge up with the button. */
+const MENU_MIN_WIDTH_PX = 160;
+
+// The glyph inside a chip button takes no pointer events, so a press on it
+// lands on the button itself. The editor ignores a press on a button and
+// handles one on anything else, so a press on a bare glyph would also select
+// the chip under the button's own action.
+const BUTTON_CONTENT = '[&>*]:pointer-events-none';
 
 // ------------------------------------------------------------------
 // Rename requests from outside the editor
@@ -105,57 +125,180 @@ export function extractAttachmentIds(body: string): Set<string> {
 // ------------------------------------------------------------------
 
 /** SVG icon for file type - replaces emoji for a cleaner look. */
-function FileTypeIcon({ mime }: { mime: string }) {
+function FileTypeIcon({ mime, size = 18 }: { mime: string; size?: number }) {
   // Audio
   if (mime.startsWith('audio/')) {
-    return <MusicNotes size={18} />;
+    return <MusicNotes size={size} />;
   }
   // Video
   if (mime.startsWith('video/')) {
-    return <VideoCamera size={18} />;
+    return <VideoCamera size={size} />;
   }
   // Image
   if (mime.startsWith('image/')) {
-    return <Image size={18} />;
+    return <Image size={size} />;
   }
   // Archive
   if (mime === 'application/zip' || mime.includes('compressed') || mime.includes('archive')) {
-    return <Archive size={18} />;
+    return <Archive size={size} />;
   }
   // Default: generic file
-  return <FileGlyph size={18} />;
+  return <FileGlyph size={size} />;
 }
 
 // ------------------------------------------------------------------
-// Shared action button - icon-only, no border, hover bg
+// The file card's preview
 // ------------------------------------------------------------------
 
-function ActionButton({ onClick, label, disabled, danger, children }: {
-  onClick: () => void;
-  label: string;
-  disabled?: boolean;
-  danger?: boolean;
-  children: React.ReactNode;
+/** Answered once per document: every chip in a note asks after each edit,
+ *  and a document is never changed in place. */
+const oneFileDocs = new WeakMap<ProseMirrorNode, boolean>();
+
+/**
+ * Whether a document holds exactly one file chip. A picture placed from Files
+ * is a picture node, not a chip, so it is not one of the note's files.
+ */
+export function holdsOneFile(doc: ProseMirrorNode): boolean {
+  let one = oneFileDocs.get(doc);
+  if (one === undefined) {
+    let chips = 0;
+    doc.descendants((node) => {
+      if (node.type.name === 'attachment') chips += 1;
+      // A chip is a block, so the inside of a paragraph never holds one.
+      return !node.isTextblock;
+    });
+    one = chips === 1;
+    oneFileDocs.set(doc, one);
+  }
+  return one;
+}
+
+/**
+ * Whether a note's picture or PDF draws as the file card: only in a note the
+ * Files pillar made, and only while that note holds one file. A note of
+ * several files reads as a list, and a card per file would make it a gallery.
+ * Spec: ops/docs/ui-patterns.md (section 107, the file card)
+ */
+export function showsFileCard(fileNote: boolean, doc: ProseMirrorNode): boolean {
+  return fileNote && holdsOneFile(doc);
+}
+
+// pdf.js is fetched the first time a PDF card or the viewer needs it, never
+// on the way to the first render.
+const PdfCover = lazy(() => import('./PdfPages').then((m) => ({ default: m.PdfCover })));
+
+/**
+ * The file itself, on the card a Files upload opens as: a picture at its
+ * stored size, never scaled up, or a PDF's first page with its page count.
+ * The whole area opens the viewer, which is where the arrows and the pages
+ * are; the card previews, it does not read.
+ *
+ * Spans rather than divs throughout, because this is the content of a button.
+ */
+function FilePreview({ uuid, pdf, name, onOpen }: {
+  uuid: string;
+  pdf: boolean;
+  name: string;
+  onOpen: () => void;
 }) {
+  const { t } = useTranslation('media');
+  const [url, setUrl] = useState<string | null>(() => (pdf ? null : cachedAttachmentUrl(uuid)));
+  const [missing, setMissing] = useState(false);
+
+  useEffect(() => {
+    if (pdf || url) return;
+    let alive = true;
+    void loadAttachmentUrl(uuid).then((loaded) => {
+      if (!alive) return;
+      if (loaded) setUrl(loaded);
+      else setMissing(true);
+    });
+    return () => { alive = false; };
+  }, [uuid, pdf, url]);
+
   return (
-    <HoverLabel label={label} position="above">
     <button
       type="button"
       onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
-      onClick={(e) => { e.stopPropagation(); onClick(); }}
+      onClick={(e) => { e.stopPropagation(); onOpen(); }}
+      aria-label={t('attachment.view')}
+      className={`block w-full bg-surface-1 cursor-zoom-in outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent ${BUTTON_CONTENT}`}
+    >
+      {pdf ? (
+        <Suspense fallback={<span className="block py-16" />}>
+          <PdfCover uuid={uuid} name={name} />
+        </Suspense>
+      ) : url ? (
+        <span className="flex justify-center p-3">
+          <img
+            src={url}
+            alt={name}
+            draggable={false}
+            className="block max-w-full max-h-[60vh] !my-0 rounded-md"
+          />
+        </span>
+      ) : (
+        <span className="block px-4 py-16 text-sm text-center text-neutral-400 dark:text-neutral-500">
+          {missing ? t('image.notFound') : t('image.loading')}
+        </span>
+      )}
+    </button>
+  );
+}
+
+// ------------------------------------------------------------------
+// Action buttons
+// ------------------------------------------------------------------
+
+/** Icon-only, no border, hover background. The last one in a chip takes
+ *  `tip="above-end"`, because the chip's end can be the screen's edge. */
+function ActionButton({ onClick, label, disabled, tip = 'above', children }: {
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  label: string;
+  disabled?: boolean;
+  tip?: 'above' | 'above-end';
+  children: React.ReactNode;
+}) {
+  return (
+    <HoverLabel label={label} position={tip}>
+    <button
+      type="button"
+      onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+      onClick={(e) => { e.stopPropagation(); onClick(e); }}
       disabled={disabled}
       aria-label={label}
-      className={`shrink-0 w-[30px] h-[30px] rounded-md flex items-center justify-center transition cursor-pointer select-none ${
+      className={`shrink-0 w-[30px] h-[30px] rounded-md flex items-center justify-center transition cursor-pointer select-none text-neutral-400 dark:text-neutral-500 hover:text-accent hover:bg-neutral-100 dark:hover:bg-neutral-800 ${BUTTON_CONTENT} ${
         disabled ? 'opacity-50 pointer-events-none' : ''
-      } ${
-        danger
-          ? 'text-neutral-400 dark:text-neutral-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30'
-          : 'text-neutral-400 dark:text-neutral-500 hover:text-accent hover:bg-neutral-100 dark:hover:bg-neutral-800'
       }`}
     >
       {children}
     </button>
     </HoverLabel>
+  );
+}
+
+/**
+ * The chip's one labelled action: View for what the viewer shows, Download
+ * for every other file. A label reads as the thing to press where a row of
+ * grey glyphs does not.
+ */
+function LabelledAction({ onClick, disabled, children }: {
+  onClick: () => void;
+  disabled?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+      onClick={(e) => { e.stopPropagation(); onClick(); }}
+      disabled={disabled}
+      className={`shrink-0 inline-flex items-center gap-1.5 h-[30px] px-2.5 me-1 rounded-lg bg-accent/10 dark:bg-accent/20 text-accent text-xs font-medium transition cursor-pointer select-none hover:bg-accent/15 dark:hover:bg-accent/30 ${BUTTON_CONTENT} ${
+        disabled ? 'opacity-50 pointer-events-none' : ''
+      }`}
+    >
+      {children}
+    </button>
   );
 }
 
@@ -214,6 +357,8 @@ type AttachmentNodeViewProps = {
   deleteNode: () => void;
   updateAttributes: (attrs: Record<string, unknown>) => void;
   editor: TipTapEditor;
+  /** Document position of this chip, or undefined once the node is gone. */
+  getPos: () => number | undefined;
   extension: { options: AttachmentOptions };
 };
 
@@ -223,6 +368,7 @@ function EncryptedAttachmentView({
   deleteNode,
   updateAttributes,
   editor,
+  getPos,
   extension,
 }: AttachmentNodeViewProps) {
   const { t } = useTranslation('media');
@@ -263,7 +409,6 @@ function EncryptedAttachmentView({
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrlRef = useRef<string | null>(null);
-  const thumbnailUrlRef = useRef<string | null>(null);
   const deleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const uuid = src?.startsWith(FILE_URI_PREFIX)
@@ -277,24 +422,60 @@ function EncryptedAttachmentView({
 
   const isAudio = mimetype?.startsWith('audio/') ?? false;
   const isImage = mimetype?.startsWith('image/') ?? false;
+  // What the shared viewer can open. A HEIC stored before the upload pipeline
+  // re-encoded pictures keeps its thumbnail attempt but opens nothing.
+  const isPicture = Boolean(uuid) && isPictureMime(mimetype || '');
+  const isPdfFile = Boolean(uuid) && isPdf(mimetype || '', filename || '');
+  const viewable = isPicture || isPdfFile;
+  // A Files note that holds one file shows that file, not only its name, and
+  // reads as a list once it holds a second. The count follows every edit, so
+  // a file dropped into the note turns the card back into a row at once.
+  const fileNote = extension.options.filePreview;
+  const [cardNote, setCardNote] = useState(() => showsFileCard(fileNote, editor.state.doc));
+  useEffect(() => {
+    if (!fileNote) return;
+    const sync = () => setCardNote(showsFileCard(fileNote, editor.state.doc));
+    sync();
+    editor.on('update', sync);
+    return () => { editor.off('update', sync); };
+  }, [editor, fileNote]);
+  const showPreview = viewable && cardNote;
 
-  // Load thumbnail for image attachments.
+  const openViewer = useCallback(() => {
+    const pos = getPos();
+    if (typeof pos === 'number') openMediaViewerInDoc(editor.state.doc, pos);
+  }, [editor, getPos]);
+
+  // A PDF's tile shows its first page, drawn once the chip comes near the
+  // screen, so a note of many PDFs reads only the ones somebody scrolls to.
+  const tileRef = useRef<HTMLDivElement>(null);
+  const [pdfCover, setPdfCover] = useState<PdfCoverImage | null>(() =>
+    isPdfFile && uuid ? cachedPdfCover(uuid) : null,
+  );
+  const pdfNear = useNearScreen(tileRef, isPdfFile && !showPreview && !pdfCover);
+  useEffect(() => {
+    if (!pdfNear || !uuid || pdfCover) return;
+    let alive = true;
+    // A PDF that cannot be drawn keeps the file glyph.
+    loadPdfCover(uuid).then((cover) => { if (alive) setPdfCover(cover); }, () => {});
+    return () => { alive = false; };
+  }, [pdfNear, uuid, pdfCover]);
+
+  const menu = useContextMenu();
+
+  // Load thumbnail for image attachments. The URL belongs to the shared
+  // cache, which the Files grid and the viewer read too, so it outlives this
+  // chip and is not revoked here.
   useEffect(() => {
     if (!isImage || !uuid) return;
     let cancelled = false;
-    const store = getAttachmentStore();
-    if (!store) return;
-    store.getAttachment(uuid).then((att) => {
-      if (cancelled || !att) return;
-      const blob = new Blob([att.data as BlobPart], { type: att.meta.mime || 'image/*' });
-      const url = URL.createObjectURL(blob);
-      thumbnailUrlRef.current = url;
-      setThumbnailUrl(url);
-    }).catch(() => {});
+    void loadAttachmentUrl(uuid).then((url) => {
+      if (!cancelled && url) setThumbnailUrl(url);
+    });
     return () => { cancelled = true; };
   }, [isImage, uuid]);
 
-  // Stop audio and free blob URLs on unmount (e.g. navigating to another note)
+  // Stop audio and free its blob URL on unmount (e.g. navigating to another note)
   useEffect(() => {
     return () => {
       if (audioRef.current) {
@@ -305,10 +486,6 @@ function EncryptedAttachmentView({
       if (audioUrlRef.current) {
         URL.revokeObjectURL(audioUrlRef.current);
         audioUrlRef.current = null;
-      }
-      if (thumbnailUrlRef.current) {
-        URL.revokeObjectURL(thumbnailUrlRef.current);
-        thumbnailUrlRef.current = null;
       }
       if (deleteTimerRef.current) {
         clearTimeout(deleteTimerRef.current);
@@ -353,7 +530,10 @@ function EncryptedAttachmentView({
       setMissingRemote(false);
       const mime = attachment.meta.mime || 'application/octet-stream';
       const blob = new Blob([attachment.data as BlobPart], { type: mime });
-      await saveBlob(blob, filename || 'download');
+      const saved = await saveBlob(blob, filename || 'download');
+      // The catch below turns the reason into the message; a dismissed dialog
+      // is not a failure.
+      if (!saved.ok && saved.reason === 'failed') throw saved.error;
     } catch (err) {
       setError(err instanceof Error ? err.message : t('attachment.downloadFailed'));
     } finally {
@@ -476,64 +656,140 @@ function EncryptedAttachmentView({
   }, [playing, mimetype, fetchBlobUrl, t]);
 
   const sizeStr = filesize || '';
+  // The type, then a PDF's page count once its first page is drawn, then the size.
+  const metaStr = [
+    mimeToLabel(isPdfFile ? 'application/pdf' : mimetype || ''),
+    pdfCover ? t('viewer.pageCount', { count: pdfCover.pages }) : '',
+    sizeStr,
+  ].filter(Boolean).join(' · ');
+  const playable = isAudio && !formatUnsupported;
+  // The tile opens the viewer, and the rest of the chip stays the editor's to
+  // select, drag and delete. On the file card the picture above is the trigger.
+  const tileOpens = viewable && !showPreview;
 
-  return (
-    <NodeViewWrapper
-      // my-6 (24px) is one line of body copy (15px x 1.7). With the ghost
-      // paragraph gone, this margin IS the gap between stacked chips - 12px
-      // read as a solid block, and the old two-line crater was 75px.
-      className="encrypted-attachment-wrapper my-6 leading-none"
-      // Same defect as EncryptedImage: the node spec sets draggable: true, but
-      // a React node view also needs this attribute or TipTap never starts the
-      // drag. Fixed together because the two are the media-block pair
-      // everywhere else (MEDIA_NODE_NAMES, MediaGapCleaner), and an attachment
-      // chip that cannot be reordered is the same bug.
-      data-drag-handle
+  const armDelete = useCallback(() => {
+    if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+    setConfirmingDelete(true);
+    deleteTimerRef.current = setTimeout(() => setConfirmingDelete(false), 3000);
+  }, []);
+
+  // Rename, copy and delete are wanted now and then, so they wait in a menu
+  // and the row keeps one labelled action.
+  const openMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const items: ContextMenuItem[] = [];
+    if (editable) items.push({ label: t('attachment.rename'), icon: iconEditPencil(), onSelect: startRename });
+    items.push({ label: t('common:actions.copy'), icon: iconCopy(), onSelect: handleCopy });
+    if (editable) {
+      items.push({ type: 'separator' });
+      items.push({ label: t('common:actions.delete'), icon: iconTrash(), destructive: true, onSelect: armDelete });
+    }
+    const r = e.currentTarget.getBoundingClientRect();
+    const rtl = document.documentElement.dir === 'rtl';
+    menu.open(
+      {
+        clientX: rtl ? r.left : r.right - MENU_MIN_WIDTH_PX,
+        clientY: r.bottom + 4,
+        preventDefault: () => {},
+        stopPropagation: () => {},
+      },
+      items,
+    );
+  };
+
+  // On the file card the frame carries the border and the row becomes its
+  // footer; everywhere else the row is the whole chip.
+  const frameTone = selected
+    ? 'border-accent'
+    : error ? 'border-red-300 dark:border-red-800' : 'border-divider';
+  const rowClass = showPreview
+    ? `flex flex-wrap items-center gap-2.5 gap-y-1 px-3.5 py-2.5 border-t transition ${
+        selected ? 'border-accent bg-accent/10 dark:bg-accent/20' : 'border-divider'
+      }`
+    : `flex flex-wrap items-center gap-3 gap-y-1 ps-2 pe-3 py-2 rounded-xl border transition ${
+        selected
+          ? 'border-accent bg-accent/10 dark:bg-accent/20'
+          : 'border-divider bg-surface-2'
+      } ${error ? 'border-red-300 dark:border-red-800' : ''}`;
+
+  const tileContent = isImage && thumbnailUrl && !showPreview ? (
+    <img
+      src={thumbnailUrl}
+      // The name stands beside it, so a picture that opens needs no alt of its own.
+      alt={isPicture ? '' : filename || t('attachment.imageAlt')}
+      draggable={false}
+      className="block w-full h-full rounded-lg object-cover !m-0"
+    />
+  ) : pdfCover && !showPreview ? (
+    <img
+      src={pdfCover.url}
+      alt=""
+      draggable={false}
+      className="block max-w-[40px] max-h-[40px] !m-0 bg-white border border-divider"
+    />
+  ) : playable ? (
+    <HoverLabel label={playing ? t('attachment.pause') : t('attachment.play')} position="above">
+    <button
+      type="button"
+      onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+      onClick={(e) => { e.stopPropagation(); handlePlayPause(); }}
+      aria-label={playing ? t('attachment.pause') : t('attachment.play')}
+      className={`rounded p-0.5 text-accent hover:text-accent-hover transition ${BUTTON_CONTENT}`}
     >
+      {playing ? (
+        <Pause size={20} />
+      ) : (
+        <Play size={20} weight="fill" />
+      )}
+    </button>
+    </HoverLabel>
+  ) : (
+    <FileTypeIcon
+      mime={mimetype || (isPdfFile ? 'application/pdf' : 'application/octet-stream')}
+      size={showPreview ? 18 : 20}
+    />
+  );
+  const tileFace = 'w-full h-full rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-500 dark:text-neutral-400';
+
+  const row = (
       <div
         // Wrapping, with a floor under the name block and another under the
         // action cluster: on a chip too narrow for one row the cluster drops
         // to a second line and the name takes the full width, rather than
-        // truncating to nothing behind four buttons. The floors measure the
+        // truncating to nothing behind the buttons. The floors measure the
         // CHIP, so an editor pane dragged narrow wraps at the same point a
         // phone does, and the cluster's floor is what stops the chip
         // un-wrapping mid-edit when its three actions become two.
-        className={`flex flex-wrap items-center gap-2.5 gap-y-1 px-3.5 py-2.5 rounded-xl border transition ${
-          selected
-            ? 'border-accent bg-accent/10 dark:bg-accent/20'
-            : 'border-divider bg-surface-2'
-        } ${error ? 'border-red-300 dark:border-red-800' : ''}`}
+        className={rowClass}
       >
-        {/* ---- Icon / thumbnail box ---- */}
-        {isImage && thumbnailUrl ? (
-          <img
-            src={thumbnailUrl}
-            alt={filename || t('attachment.imageAlt')}
-            className="shrink-0 w-9 h-9 rounded-lg object-cover bg-neutral-100 dark:bg-neutral-800 !m-0"
-          />
-        ) : (
-        <div className="shrink-0 w-9 h-9 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-500 dark:text-neutral-400">
-          {isAudio && !formatUnsupported ? (
-            <HoverLabel label={playing ? t('attachment.pause') : t('attachment.play')} position="above">
-            <button
-              type="button"
-              onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
-              onClick={(e) => { e.stopPropagation(); handlePlayPause(); }}
-              aria-label={playing ? t('attachment.pause') : t('attachment.play')}
-              className="rounded p-0.5 text-accent hover:text-accent-hover transition"
-            >
-              {playing ? (
-                <Pause size={18} />
-              ) : (
-                <Play size={18} weight="fill" />
-              )}
-            </button>
+        {/* ---- Preview tile ----
+            A picture or a PDF opens from here, the way a thumbnail does
+            everywhere. The View button beside the name is the same action
+            for the keyboard and a screen reader, so the tile keeps out of
+            the tab order and out of the accessibility tree. */}
+        <div
+          ref={tileRef}
+          aria-hidden={tileOpens ? 'true' : undefined}
+          className={`shrink-0 ${showPreview ? 'w-9 h-9' : 'w-12 h-12'}`}
+        >
+          {tileOpens ? (
+            <HoverLabel label={t('attachment.view')} position="above" className="w-full h-full">
+              <button
+                type="button"
+                tabIndex={-1}
+                // A tap must not raise the keyboard on its way into the
+                // viewer: the same suppression the picture node arms.
+                onPointerDown={(e) => { if (e.pointerType !== 'mouse') suppressSoftKeyboard(editor.view.dom); }}
+                onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                onClick={(e) => { e.stopPropagation(); openViewer(); }}
+                className={`${tileFace} cursor-zoom-in transition hover:ring-2 hover:ring-accent/60 ${BUTTON_CONTENT}`}
+              >
+                {tileContent}
+              </button>
             </HoverLabel>
           ) : (
-            <FileTypeIcon mime={mimetype || 'application/octet-stream'} />
+            <div className={tileFace}>{tileContent}</div>
           )}
         </div>
-        )}
 
         {/* ---- Filename + meta ---- */}
         <div className="flex-1 min-w-[170px]">
@@ -545,6 +801,7 @@ function EncryptedAttachmentView({
                 value={renameValue}
                 onChange={(e) => setRenameValue(e.target.value)}
                 onKeyDown={(e) => {
+                  if (isImeComposing(e)) return;
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     commitRename();
@@ -587,7 +844,7 @@ function EncryptedAttachmentView({
             {formatUnsupported && (
               <span className="text-amber-600 dark:text-amber-400">{t('attachment.cantPlay')}</span>
             )}
-            {!formatUnsupported && sizeStr}
+            {!formatUnsupported && metaStr}
             {localOnly && (
               <span className="text-amber-600 dark:text-amber-400 ms-1">
                 {t('attachment.localOnly')}
@@ -621,7 +878,7 @@ function EncryptedAttachmentView({
               not reflow under the reader. It is inert until the file is
               loaded, because filling it in advance would mean decrypting
               every recording in the note on open. */}
-          {isAudio && !formatUnsupported && (
+          {playable && (
             <div className="flex items-center gap-2 mt-1.5">
               <span className="shrink-0 text-[11px] text-neutral-400 dark:text-neutral-500 tabular-nums">
                 {formatDuration(position)}
@@ -658,15 +915,17 @@ function EncryptedAttachmentView({
         </div>
 
         {/* ---- Actions ----
-            The minimum width holds the wrap decision steady while the
-            rename field is open with only two buttons beside it. */}
+            One labelled action (View, or Download for a file the viewer
+            cannot show; a recording plays from its tile), Download beside
+            it, and the menu. The minimum width holds the wrap decision
+            steady while the rename field is open with two buttons. */}
         <div className="shrink-0 flex items-center justify-end gap-0.5 min-w-[126px] ms-auto">
           {renaming ? (
             <>
               <ActionButton onClick={commitRename} label={t('attachment.saveName')}>
                 <Check size={15} className="text-accent" />
               </ActionButton>
-              <ActionButton onClick={cancelRename} label={t('common:actions.cancel')}>
+              <ActionButton onClick={cancelRename} label={t('common:actions.cancel')} tip="above-end">
                 <X size={15} />
               </ActionButton>
             </>
@@ -680,43 +939,62 @@ function EncryptedAttachmentView({
                 setConfirmingDelete(false);
                 deleteNode();
               }}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-xs font-medium transition hover:bg-red-100 dark:hover:bg-red-950/50 cursor-pointer select-none"
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-xs font-medium transition hover:bg-red-100 dark:hover:bg-red-950/50 cursor-pointer select-none ${BUTTON_CONTENT}`}
             >
               <Trash size={13} />
               {t('attachment.deleteConfirm')}
             </button>
           ) : (
             <>
-              {editable && (
-                <ActionButton onClick={startRename} label={t('attachment.rename')}>
-                  <PencilSimple size={15} />
+              {viewable ? (
+                <LabelledAction onClick={openViewer}>
+                  <Eye size={15} />
+                  {t('attachment.view')}
+                </LabelledAction>
+              ) : playable ? null : (
+                <LabelledAction onClick={() => void handleDownload()} disabled={downloading}>
+                  <Download size={15} />
+                  {t('attachment.download')}
+                </LabelledAction>
+              )}
+              {(viewable || playable) && (
+                <ActionButton onClick={() => void handleDownload()} disabled={downloading} label={t('attachment.download')}>
+                  <Download size={15} />
                 </ActionButton>
               )}
-              <ActionButton onClick={handleCopy} label={copied ? t('attachment.copied') : t('common:actions.copy')}>
+              <ActionButton onClick={openMenu} label={copied ? t('attachment.copied') : t('attachment.more')} tip="above-end">
                 {copied ? (
                   <Check size={15} className="text-green-500" />
                 ) : (
-                  <Copy size={15} />
+                  <DotsThree size={18} weight="bold" />
                 )}
               </ActionButton>
-              <ActionButton onClick={handleDownload} disabled={downloading} label={formatUnsupported ? t('attachment.downloadToPlay') : t('attachment.download')}>
-                <Download size={15} />
-              </ActionButton>
-              {/* A read-only note's editor refuses to save, so a delete
-                  there removes the chip on screen and loses it on the next
-                  load. Same gate as the rename beside it. */}
-              {editable && (
-                <ActionButton onClick={() => {
-                  setConfirmingDelete(true);
-                  deleteTimerRef.current = setTimeout(() => setConfirmingDelete(false), 3000);
-                }} label={t('common:actions.delete')} danger>
-                  <Trash size={15} />
-                </ActionButton>
-              )}
             </>
           )}
         </div>
       </div>
+  );
+
+  return (
+    <NodeViewWrapper
+      // my-6 (24px) is one line of body copy (15px x 1.7). With the ghost
+      // paragraph gone, this margin IS the gap between stacked chips - 12px
+      // read as a solid block, and the old two-line crater was 75px.
+      className="encrypted-attachment-wrapper my-6 leading-none"
+      // Same defect as EncryptedImage: the node spec sets draggable: true, but
+      // a React node view also needs this attribute or TipTap never starts the
+      // drag. Fixed together because the two are the media-block pair
+      // everywhere else (MEDIA_NODE_NAMES, MediaGapCleaner), and an attachment
+      // chip that cannot be reordered is the same bug.
+      data-drag-handle
+    >
+      {showPreview && uuid ? (
+        <div className={`rounded-xl border overflow-hidden bg-surface-2 transition ${frameTone}`}>
+          <FilePreview uuid={uuid} pdf={isPdfFile} name={filename || ''} onOpen={openViewer} />
+          {row}
+        </div>
+      ) : row}
+      <ContextMenu state={menu.state} onClose={menu.close} />
     </NodeViewWrapper>
   );
 }
@@ -733,6 +1011,82 @@ export function setAttachmentStore(store: AttachmentStore | null) {
 
 function getAttachmentStore(): AttachmentStore | null {
   return _attachmentStore;
+}
+
+/** A decrypted attachment, or null when it is neither here nor on the server. */
+export async function loadAttachmentData(uuid: string): Promise<DecryptedAttachment | null> {
+  const store = getAttachmentStore();
+  if (!store) return null;
+  try {
+    return await store.getAttachment(uuid);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Attachment pictures as object URLs, kept for the session the way the
+ * picture cache in EncryptedImage.tsx is, so a chip, a Files tile, a picture
+ * placed from Files and the viewer that show one file decrypt it once.
+ */
+const attachmentUrlCache = new Map<string, string>();
+
+/**
+ * An object URL for an attachment's bytes, or null when it cannot be read.
+ * Typed by the stored MIME, because an SVG in an untyped blob does not draw.
+ */
+export async function loadAttachmentUrl(uuid: string): Promise<string | null> {
+  const cached = attachmentUrlCache.get(uuid);
+  if (cached) return cached;
+  const att = await loadAttachmentData(uuid);
+  if (!att) return null;
+  const existing = attachmentUrlCache.get(uuid);
+  if (existing) return existing;
+  const url = URL.createObjectURL(new Blob([att.data as BlobPart], { type: att.meta.mime || '' }));
+  attachmentUrlCache.set(uuid, url);
+  return url;
+}
+
+/** The cached URL, without reading anything. Lets a node view paint on its first frame. */
+export function cachedAttachmentUrl(uuid: string): string | null {
+  return attachmentUrlCache.get(uuid) ?? null;
+}
+
+/** A PDF's first page as a picture, with the document's page count. */
+export type PdfCoverImage = { url: string; pages: number };
+
+/** Draws in flight or done, by attachment uuid. A chip mounts again on every
+ *  edit near it, and re-reading a large PDF each time would show; holding the
+ *  promise also lets the chip, the card and a Files tile share one draw. */
+const pdfCoverDraws = new Map<string, Promise<PdfCoverImage>>();
+/** The same covers once drawn, so a remount paints on its first frame. */
+const pdfCovers = new Map<string, PdfCoverImage>();
+
+/**
+ * The first page of a stored PDF, drawn once per session per file. pdf.js is
+ * fetched by the first call. Rejects when the file cannot be read or opened,
+ * and a failure is not remembered: the file may arrive with the next sync.
+ */
+export function loadPdfCover(uuid: string): Promise<PdfCoverImage> {
+  let pending = pdfCoverDraws.get(uuid);
+  if (!pending) {
+    pending = (async () => {
+      const [{ drawCover }, att] = await Promise.all([import('./PdfPages'), loadAttachmentData(uuid)]);
+      if (!att) throw new Error('missing');
+      // pdf.js takes ownership of the bytes it is given, so it gets a copy.
+      const cover = await drawCover(new Uint8Array(att.data));
+      pdfCovers.set(uuid, cover);
+      return cover;
+    })();
+    pdfCoverDraws.set(uuid, pending);
+    pending.catch(() => pdfCoverDraws.delete(uuid));
+  }
+  return pending;
+}
+
+/** The drawn cover, without reading anything. */
+export function cachedPdfCover(uuid: string): PdfCoverImage | null {
+  return pdfCovers.get(uuid) ?? null;
 }
 
 // ------------------------------------------------------------------
@@ -924,6 +1278,13 @@ export type AttachmentOptions = {
    * `Editor.tsx`.
    */
   onRename: ((name: string) => void) | null;
+  /**
+   * The note is one the Files pillar made. While it holds one file, that file
+   * is the whole note and its name alone previews nothing, so a picture or a
+   * PDF draws as a card with the file itself on it instead of a one-line
+   * chip. A note of several files keeps its chips (`showsFileCard`).
+   */
+  filePreview: boolean;
 };
 
 export const EncryptedAttachment = Node.create<AttachmentOptions>({
@@ -933,7 +1294,7 @@ export const EncryptedAttachment = Node.create<AttachmentOptions>({
   draggable: true,
 
   addOptions() {
-    return { onRename: null };
+    return { onRename: null, filePreview: false };
   },
 
   addAttributes() {

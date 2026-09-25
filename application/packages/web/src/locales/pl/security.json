@@ -119,6 +119,7 @@
     "enable": "Włącz odblokowanie biometryczne",
     "lockOnOpen": "Blokuj aplikację przy uruchomieniu",
     "lockOnOpenHint": "Wymagaj biometrii lub PIN-u przy otwieraniu aplikacji.",
+    "lockHidesOnSwitch": "Ukrywa też twoje notatki przy przełączaniu aplikacji.",
     "lockNeedsCredential": "Blokada aplikacji wymaga PIN-u lub odblokowania biometrycznego na tym urządzeniu.",
     "setUpPin": "Ustaw PIN",
     "confirmPinForLock": "Wpisz swój PIN, aby to włączyć. Zamyka on kopię Twojej frazy odzyskiwania, więc tylko Twój PIN może otworzyć aplikację.",
@@ -129,6 +130,9 @@
     "disableConfirmLabel": "Wyłącz",
     "disableConfirmBody": "Wyłączyć odblokowanie biometryczne na tym urządzeniu?",
     "disableConfirmBodyAppLock": "Wyłączyć odblokowanie biometryczne na tym urządzeniu? Blokada aplikacji również zostanie wyłączona."
+  },
+  "appLock": {
+    "phraseNotSaved": "To urządzenie nie mogło zapisać twojej frazy odzyskiwania, więc nic nie zostało zmienione. Spróbuj ponownie."
   },
   "pinSetup": {
     "title": "Ustaw PIN",

@@ -15,6 +15,7 @@
 
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
+import { isImeComposing } from './imeComposing';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
 import { usePopoverPosition } from './usePopoverPosition';
@@ -185,6 +186,7 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
         value={url}
         onChange={(e) => { setUrl(e.target.value); if (urlError) setUrlError(''); }}
         onKeyDown={(e) => {
+          if (isImeComposing(e)) return;
           if (e.key === 'Enter') { e.preventDefault(); apply(); }
           if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); onClose(); }
         }}
@@ -208,6 +210,7 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
+          if (isImeComposing(e)) return;
           if (e.key === 'Enter') { e.preventDefault(); apply(); }
           if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); onClose(); }
         }}

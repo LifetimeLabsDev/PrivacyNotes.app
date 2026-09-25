@@ -177,7 +177,7 @@
           "h": "Gdzie co trafia",
           "p": [
             "Loginy stają się wpisami logowania w Sejfie (razem z ikonami stron), karty stają się wpisami kart, klucze SSH wpisami kluczy SSH, a bezpieczne notatki i tożsamości trafiają jako czytelne notatki. Foldery Bitwarden mapują się na tagi, a ulubione przychodzą z gwiazdką. Klucze uwierzytelniające (TOTP) też jadą z tobą, więc twoje kody 2FA nadal działają.",
-            "Plik eksportu zawiera Twoje hasła jawnym tekstem, więc zaimportuj go, sprawdź, czy wszystko dotarło, a potem porządnie go usuń. Wewnątrz PrivacyNotes wszystko jest znów szyfrowane end-to-end."
+            "Plik eksportu zawiera Twoje hasła jawnym tekstem, więc zaimportuj go, sprawdź, czy wszystko dotarło, a potem porządnie go usuń. Wewnątrz PrivacyNotes wszystko jest znów zaszyfrowane, na Twoim urządzeniu i w drodze na serwer."
           ]
         }
       ]
@@ -568,7 +568,7 @@
         {
           "h": "Usuń plik eksportu, gdy skończysz: to twoje hasła jawnym tekstem",
           "p": [
-            "W wyeksportowanym .csv nic nie jest zaszyfrowane, niezależnie od tego, czy przychodzi w .zip, czy nie. Kto go otworzy, przeczyta każde zapisane hasło, więc trzymaj go na własnym komputerze, zaimportuj, sprawdź, czy wszystko dotarło, a potem usuń plik i opróżnij kosz. W PrivacyNotes wszystko znów jest szyfrowane od końca do końca."
+            "W wyeksportowanym .csv nic nie jest zaszyfrowane, niezależnie od tego, czy przychodzi w .zip, czy nie. Kto go otworzy, przeczyta każde zapisane hasło, więc trzymaj go na własnym komputerze, zaimportuj, sprawdź, czy wszystko dotarło, a potem usuń plik i opróżnij kosz. W PrivacyNotes wszystko znów jest zaszyfrowane, na Twoim urządzeniu i w drodze na serwer."
           ]
         }
       ]

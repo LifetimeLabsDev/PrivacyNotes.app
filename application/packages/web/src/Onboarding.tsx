@@ -10,8 +10,9 @@ import { useAuth } from './auth';
 import type { OAuthProvider } from './auth';
 import { QrScannerModal } from './QrScannerModal';
 import { TurnstileWidget } from './TurnstileWidget';
-import { detectPlatform, isLinuxNative } from './devices';
-import { isDemoMode } from './demo';
+import { readResumablePhrase } from './phraseAtRest';
+import { isTrustedDevice } from './trustStorage';
+import { detectPlatform, isLinuxNative, warmAuthEdgeFunctions } from './devices';
 import { isAppHost } from './hosts';
 import { applyStoredTheme } from './theme';
 import { ConfirmModal } from './ConfirmModal';
@@ -21,38 +22,13 @@ import { LandingPage, FX_CSS } from './LandingPage';
 import { LogoIcon } from './LogoIcon';
 import { Brand } from './Brand';
 import { PrivacyLadder } from './PrivacyLadder';
+import { isImeComposing } from './imeComposing';
 
 /** Native (Tauri) build - desktop or mobile wrapper, not the web app. */
 const IS_DESKTOP = detectPlatform() !== 'web';
 
 /** Native iOS app: surface Sign in with Apple above Google (App Store expectation). */
 const IS_IOS = detectPlatform() === 'ios';
-
-// One-shot per app load: the isolates stay warm for minutes once
-// booted, so re-warming on StrictMode remounts or back-and-forth
-// onboarding navigation would only waste requests.
-let edgeWarmupFired = false;
-
-/**
- * Boot the sign-in edge functions' isolates while the user is still
- * reading the onboarding screens. Cold starts cost 1-3.5s each and sit
- * exactly on the sign-in critical path (link-pubkey, then
- * register-device). A bare OPTIONS
- * request only runs each function's CORS branch: no auth, no body, no
- * database - it exists purely to spin up the isolate so the real calls
- * during sign-in hit warm instances. Fire-and-forget; failures are
- * expected offline and must never affect onboarding.
- */
-function warmAuthEdgeFunctions(): void {
-  if (edgeWarmupFired || isDemoMode()) return;
-  edgeWarmupFired = true;
-  const base = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-  if (!base) return;
-  const fns = ['link-pubkey', 'register-device'];
-  for (const fn of fns) {
-    void fetch(`${base}/functions/v1/${fn}`, { method: 'OPTIONS' }).catch(() => {});
-  }
-}
 
 type Mode = 'choose' | 'create' | 'import' | 'signin';
 
@@ -61,7 +37,7 @@ type Mode = 'choose' | 'create' | 'import' | 'signin';
  * Minimal full-screen wrapper for post-OAuth steps (custody choice,
  * phrase entry for returning users). Shows only the logo + a centered
  * card - no hero text, feature pillars, or pricing. Gives the user a
- * clear visual break after the Google redirect.
+ * clear visual break after the provider redirect.
  */
 function OAuthSetupScreen({ children }: { children: ReactNode }) {
   return (
@@ -110,11 +86,6 @@ export function Onboarding({ onAuthedEnterApp }: { onAuthedEnterApp?: () => void
     if (auth.status !== 'loading') setOauthLoading(false);
   }, [auth.status]);
 
-  // Pre-warm the sign-in edge functions - see warmAuthEdgeFunctions.
-  useEffect(() => {
-    warmAuthEdgeFunctions();
-  }, []);
-
   // Returning OAuth users: hydrate sets this flag so we show a focused
   // "enter your phrase" screen instead of the full landing page.
   // Once set, stays true through the entire import->signin flow so the
@@ -144,16 +115,18 @@ export function Onboarding({ onAuthedEnterApp }: { onAuthedEnterApp?: () => void
   // NotesView's useTheme hook runs.
   const inOAuthFlow = oauthLoading || oauthHandoff || auth.status === 'oauth_custody_choice';
 
-  // Warm the NotesView chunk as soon as the visitor commits to an auth
-  // flow (any phrase step, or any OAuth setup screen). The chunk then
-  // downloads in parallel with the sign-in round-trips, so the post-auth
-  // <Suspense> fallback in App.tsx resolves instantly instead of showing
-  // a second full-screen typewriter while the notes app downloads.
-  // Pure marketing visitors never trigger this, so the code-split still
-  // pays off where it matters. Repeat calls hit the module cache.
+  // Warm the NotesView chunk and the sign-in edge functions as soon as the
+  // visitor commits to an auth flow (any phrase step, or any OAuth setup
+  // screen). The chunk then downloads in parallel with the sign-in
+  // round-trips, so the post-auth <Suspense> fallback in App.tsx resolves
+  // instantly instead of showing a second full-screen typewriter while the
+  // notes app downloads. Pure marketing visitors never trigger this, so the
+  // code-split still pays off where it matters and they send nothing to the
+  // sync backend. Repeat calls hit the module cache and the warm-up's guard.
   useEffect(() => {
     if (inOAuthFlow || mode !== 'choose') {
       void import('./NotesView');
+      warmAuthEdgeFunctions();
     }
   }, [inOAuthFlow, mode]);
   useEffect(() => {
@@ -228,7 +201,7 @@ export function Onboarding({ onAuthedEnterApp }: { onAuthedEnterApp?: () => void
   if (oauthHandoff) {
     let content: ReactNode;
     if (mode === 'choose') {
-      // Initial handoff: "Google verified, enter your phrase"
+      // Initial handoff: "sign-in verified, enter your phrase"
       content = <OAuthHandoffStep onEnterPhrase={() => setMode('import')} onBack={() => setOauthHandoff(false)} />;
     } else if (mode === 'import') {
       content = (
@@ -285,6 +258,8 @@ export function Onboarding({ onAuthedEnterApp }: { onAuthedEnterApp?: () => void
  */
 function OAuthHandoffStep({ onEnterPhrase, onBack }: { onEnterPhrase: () => void; onBack: () => void }) {
   const { t } = useTranslation('auth');
+  const provider = useSessionProvider();
+  if (provider === undefined) return <LoadingScreen inline />;
   return (
     <div className="space-y-5">
       {/* Success confirmation */}
@@ -293,7 +268,9 @@ function OAuthHandoffStep({ onEnterPhrase, onBack }: { onEnterPhrase: () => void
           <Check size={18} className="text-white" aria-hidden="true" />
         </div>
         <h3 className="text-lg font-bold text-[var(--wl-ink)] mt-3">
-          {t('oauthHandoff.verifiedTitle')}
+          {provider
+            ? t('oauthHandoff.verifiedTitle', { provider: OAUTH_META[provider].name })
+            : t('oauthHandoff.verifiedTitleGeneric')}
         </h3>
         <p className="text-sm text-[var(--wl-sub)] leading-relaxed">
           {t('oauthHandoff.verifiedBody')}
@@ -326,12 +303,39 @@ function OAuthHandoffStep({ onEnterPhrase, onBack }: { onEnterPhrase: () => void
 
 function ChooseMode({ onPick }: { onPick: (m: Mode) => void }) {
   const { t } = useTranslation('auth');
-  const { signInWithOAuth } = useAuth();
+  const { signInWithOAuth, completeDesktopOAuth, signInWithPhrase } = useAuth();
   const [oauthPending, setOauthPending] = useState<null | 'google' | 'apple' | 'github'>(
     null
   );
   const [oauthError, setOauthError] = useState<string | null>(null);
   const [ladderOpen, setLadderOpen] = useState(false);
+  // Non-null once a desktop sign-in is waiting for the code the browser is
+  // showing. Desktop gets no callback of its own: no desktop operating system
+  // can say which application owns a custom scheme, so the browser stops on
+  // our own return page and the person carries the code across.
+  // Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.3)
+  const [pastedCode, setPastedCode] = useState<string | null>(null);
+  const [pasteBusy, setPasteBusy] = useState(false);
+  // Set when this install is still holding a usable phrase while showing this
+  // screen. A boot that could not finish its handshake lands here on purpose
+  // and leaves the phrase alone, because an unreachable server is not a
+  // verdict; a deliberate sign-out clears it first and never reaches this.
+  // Without this the app asks for something it already has, and the only way
+  // through is retyping twelve words it is holding.
+  // Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.8)
+  const [resumable, setResumable] = useState<string | null>(null);
+  const [resumeBusy, setResumeBusy] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    void readResumablePhrase().then((p) => {
+      if (cancelled) return;
+      setResumable(p);
+      // A held phrase makes the resume button the likely next click, and
+      // it starts the handshake at once.
+      if (p) warmAuthEdgeFunctions();
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   // Reset "Redirecting..." state when the user navigates back via browser
   // Back button. The OAuth redirect navigates away entirely; if the user
@@ -355,13 +359,48 @@ function ChooseMode({ onPick }: { onPick: (m: Mode) => void }) {
   async function handleOAuth(provider: 'google' | 'apple' | 'github') {
     setOauthError(null);
     setOauthPending(provider);
+    // The handshake follows the provider round trip, which gives the
+    // isolates time to boot.
+    warmAuthEdgeFunctions();
     const result = await signInWithOAuth(provider);
-    // On success the browser navigates away; on failure we surface the
-    // error inline and clear the pending state so the user can retry.
+    // On failure we surface the error inline and clear the pending state so
+    // the user can retry. On success the browser takes over, except on
+    // desktop, where it stops on our return page and hands the code back
+    // through the person: show the box that asks for it, or the button sits
+    // on "Redirecting..." waiting for a callback that never arrives.
     if (!result.ok) {
       setOauthError(result.error);
       setOauthPending(null);
+      return;
     }
+    if (result.awaitPastedCode) {
+      setOauthPending(null);
+      setPastedCode('');
+    }
+  }
+
+  async function handleResume() {
+    if (!resumable || resumeBusy) return;
+    setOauthError(null);
+    setResumeBusy(true);
+    // Trust stays as this device already had it: the phrase is on disk
+    // because a previous sign-in put it there, so carrying on is not a new
+    // trust decision. A failure leaves the offer in place and says why.
+    const ok = await signInWithPhrase(resumable, isTrustedDevice());
+    setResumeBusy(false);
+    if (!ok) setOauthError(t('chooseMode.resumeFailed'));
+  }
+
+  async function handlePastedCode() {
+    if (pasteBusy) return;
+    setOauthError(null);
+    setPasteBusy(true);
+    const result = await completeDesktopOAuth(pastedCode ?? '');
+    setPasteBusy(false);
+    // A success replaces this whole screen, so only a failure needs handling:
+    // keep the box open with the reason beside it, because the person is
+    // looking at the box rather than at the buttons above it.
+    if (!result.ok) setOauthError(result.error);
   }
 
   // ---------- Default: normal login options ----------
@@ -370,6 +409,27 @@ function ChooseMode({ onPick }: { onPick: (m: Mode) => void }) {
       <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[var(--wl-ink)]">
         {t('chooseMode.welcomeBack')}
       </h3>
+
+      {resumable && (
+        <div className="rounded-2xl border border-[var(--wl-line)] bg-[var(--wl-bg)] shadow-sm p-5 flex flex-col gap-3">
+          <div>
+            <div className="text-sm font-semibold text-[var(--wl-ink)]">
+              {t('chooseMode.resumeTitle')}
+            </div>
+            <div className="text-xs text-[var(--wl-sub)] mt-0.5">
+              {t('chooseMode.resumeSubtitle')}
+            </div>
+          </div>
+          <button
+            type="button"
+            disabled={resumeBusy}
+            onClick={() => void handleResume()}
+            className="w-full rounded-lg bg-[var(--wl-pro)] text-white hover:bg-[var(--wl-pro)]/90 px-4 py-3 font-medium transition shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {resumeBusy ? t('chooseMode.resumeWorking') : t('chooseMode.resumeAction')}
+          </button>
+        </div>
+      )}
 
       <div className="grid sm:grid-cols-2 gap-4">
         {/* Easy & Convenient - OAuth providers */}
@@ -399,6 +459,46 @@ function ChooseMode({ onPick }: { onPick: (m: Mode) => void }) {
               );
             })}
           </div>
+          {pastedCode !== null && (
+            <div className="rounded-lg border border-[var(--wl-line)] bg-[var(--wl-tint)] p-3 space-y-2">
+              <div className="text-sm font-semibold text-[var(--wl-ink)]">
+                {t('chooseMode.desktopCodeTitle')}
+              </div>
+              <div className="text-xs text-[var(--wl-sub)]">
+                {t('chooseMode.desktopCodeHint')}
+              </div>
+              <input
+                type="text"
+                autoFocus
+                spellCheck={false}
+                autoCapitalize="none"
+                autoCorrect="off"
+                value={pastedCode}
+                onChange={(e) => setPastedCode(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter' && !isImeComposing(e)) void handlePastedCode(); }}
+                placeholder={t('chooseMode.desktopCodePlaceholder')}
+                className="w-full rounded-lg border border-[var(--wl-line)] bg-[var(--wl-card)] px-3 py-2 text-sm text-[var(--wl-ink)] font-mono"
+              />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  disabled={pasteBusy || !pastedCode.trim()}
+                  onClick={() => void handlePastedCode()}
+                  className="flex-1 rounded-lg bg-[var(--wl-pro)] text-white px-3 py-2 text-sm font-medium transition disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {pasteBusy ? t('chooseMode.desktopCodeWorking') : t('chooseMode.desktopCodeContinue')}
+                </button>
+                <button
+                  type="button"
+                  disabled={pasteBusy}
+                  onClick={() => { setPastedCode(null); setOauthError(null); }}
+                  className="rounded-lg border border-[var(--wl-line)] bg-[var(--wl-card)] px-3 py-2 text-sm text-[var(--wl-ink)] transition disabled:opacity-60"
+                >
+                  {t('chooseMode.desktopCodeCancel')}
+                </button>
+              </div>
+            </div>
+          )}
           {oauthError && (
             <p className="text-sm text-red-500 dark:text-red-400">{oauthError}</p>
           )}
@@ -520,11 +620,43 @@ const OAUTH_ORDER: readonly OAuthProvider[] = IS_IOS
   ? ['apple', 'google', 'github']
   : ['google', 'apple', 'github'];
 
-const OAUTH_META: Record<OAuthProvider, { Icon: () => ReactNode; labelKey: string }> = {
-  google: { Icon: GoogleIcon, labelKey: 'chooseMode.continueGoogle' },
-  apple: { Icon: AppleIcon, labelKey: 'chooseMode.continueApple' },
-  github: { Icon: GithubIcon, labelKey: 'chooseMode.continueGithub' },
+const OAUTH_META: Record<OAuthProvider, {
+  Icon: () => ReactNode;
+  labelKey: string;
+  /** The brand, printed untranslated in every language. */
+  name: string;
+}> = {
+  google: { Icon: GoogleIcon, labelKey: 'chooseMode.continueGoogle', name: 'Google' },
+  apple: { Icon: AppleIcon, labelKey: 'chooseMode.continueApple', name: 'Apple' },
+  github: { Icon: GithubIcon, labelKey: 'chooseMode.continueGithub', name: 'GitHub' },
 };
+
+/**
+ * The provider the OAuth session carries (`app_metadata.provider`, the claim
+ * Settings reads): undefined while the read is in flight, null when it names
+ * no provider offered here. Never a guess: a wrong name can send the reader to
+ * a different, empty account on their next device.
+ */
+function useSessionProvider(): OAuthProvider | null | undefined {
+  const { supabase } = useAuth();
+  const [provider, setProvider] = useState<OAuthProvider | null | undefined>(undefined);
+  useEffect(() => {
+    let cancelled = false;
+    void supabase.auth.getSession().then(
+      ({ data }) => {
+        const claim = data.session?.user?.app_metadata?.provider;
+        if (!cancelled) setProvider(OAUTH_ORDER.find((p) => p === claim) ?? null);
+      },
+      () => {
+        if (!cancelled) setProvider(null);
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase]);
+  return provider;
+}
 
 /**
  * Key custody choice screen for new OAuth users.
@@ -537,6 +669,7 @@ function KeyCustodyChoice({ onBack }: { onBack: () => void }) {
   const [choice, setChoice] = useState<'custodial' | 'self-custody'>('custodial');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const provider = useSessionProvider();
 
   async function handleContinue() {
     if (choice === 'self-custody') {
@@ -567,7 +700,7 @@ function KeyCustodyChoice({ onBack }: { onBack: () => void }) {
     // App.tsx renders NotesView. No phrase reveal needed.
   }
 
-  if (busy) {
+  if (busy || provider === undefined) {
     return <LoadingScreen inline />;
   }
 
@@ -583,7 +716,9 @@ function KeyCustodyChoice({ onBack }: { onBack: () => void }) {
           <Check size={18} className="text-white" aria-hidden="true" />
         </div>
         <h3 className="text-lg font-bold text-[var(--wl-ink)] mt-3">
-          {t('custody.signedInGoogle')}
+          {provider
+            ? t('custody.signedIn', { provider: OAUTH_META[provider].name })
+            : t('custody.signedInGeneric')}
         </h3>
         <p className="text-sm text-[var(--wl-sub)]">
           {t('custody.intro')}
@@ -724,6 +859,10 @@ function CreatePhrase({
   const [phrase] = useState(() => generatePhrase());
   const [confirmed, setConfirmed] = useState(false);
   const [copied, setCopied] = useState(false);
+  // The phrase files whose last save failed. A failed native save can leave an
+  // empty or partial file, so a file's message stays until that same file
+  // saves; a dismissed dialog changes nothing.
+  const [failedFiles, setFailedFiles] = useState<ReadonlySet<string>>(() => new Set());
   const qrWrapperRef = useRef<HTMLDivElement | null>(null);
 
   const words = phrase.split(' ');
@@ -741,18 +880,25 @@ function CreatePhrase({
   // Download only. Never route the phrase through `navigator.share` -
   // it decrypts the entire vault. Direct local save only (same rule as
   // PhraseView's Save QR).
-  function downloadBlob(blob: Blob, filename: string) {
+  async function savePhraseFile(blob: Blob, filename: string) {
     // Direct local save only (web download / native Save As).
-    void saveBlob(blob, filename);
+    const saved = await saveBlob(blob, filename);
+    if (!saved.ok && saved.reason === 'cancelled') return;
+    setFailedFiles((files) => {
+      const next = new Set(files);
+      if (saved.ok) next.delete(filename);
+      else next.add(filename);
+      return next;
+    });
   }
 
-  function handleDownloadTxt() {
+  async function handleDownloadTxt() {
     const text = buildPhraseFile(phrase, {
       title: t('createPhrase.txtTitle'),
       oneLine: t('createPhrase.txtOneLine'),
       footer: t('createPhrase.txtFooter'),
     });
-    downloadBlob(new Blob([text], { type: 'text/plain' }), PHRASE_FILE_NAME);
+    await savePhraseFile(new Blob([text], { type: 'text/plain' }), PHRASE_FILE_NAME);
   }
 
   async function handleDownloadQR() {
@@ -766,7 +912,7 @@ function CreatePhrase({
       }
     });
     if (!blob) return;
-    downloadBlob(blob, 'privacynotes-phrase-qr.png');
+    await savePhraseFile(blob, 'privacynotes-phrase-qr.png');
   }
 
   return (
@@ -817,7 +963,7 @@ function CreatePhrase({
           )}
         </button>
         <button
-          onClick={handleDownloadTxt}
+          onClick={() => { void handleDownloadTxt(); }}
           className="inline-flex items-center justify-center gap-1.5 rounded-md border border-[var(--wl-line)] hover:bg-[var(--wl-tint)] px-3 py-2 text-sm transition"
         >
           <FileText aria-hidden="true" />
@@ -831,6 +977,10 @@ function CreatePhrase({
           {t('createPhrase.downloadQr')}
         </button>
       </div>
+
+      {failedFiles.size > 0 && (
+        <p className="text-sm text-red-500 dark:text-red-400">{t('createPhrase.saveFailed')}</p>
+      )}
 
       {/* Hidden QR canvas: stays mounted so Download QR can always read
           it. marginSize=4 bakes a spec-compliant quiet zone into the
@@ -1194,13 +1344,23 @@ function SignInStep({
       <ConfirmModal
         title={t('signIn.switchTitle')}
         confirmLabel={t('signIn.switchConfirm')}
-        variant="warning"
+        variant="info"
         onConfirm={() => {
           switchConfirmed.current = true;
           setAskSwitch(false);
           void finish();
         }}
-        onClose={onBack}
+        // The confirm button runs onConfirm and then onClose, so a plain
+        // `onBack` here answered the question and then walked away from the
+        // answer: the sign-in it had just started was unmounted, the create
+        // step remounted, and a brand new phrase was generated under a user
+        // who had already written the old one down. The dismiss routes -
+        // backdrop, Escape, the cancel button - still go back, which is what
+        // declining the switch means.
+        onClose={() => {
+          if (switchConfirmed.current) return;
+          onBack();
+        }}
       >
         {t('signIn.switchBody')}
       </ConfirmModal>

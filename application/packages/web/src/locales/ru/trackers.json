@@ -1,0 +1,180 @@
+{
+  "labels": {
+    "mood": "Настроение",
+    "emotions": "Эмоции",
+    "sleep": "Сон",
+    "sleepScore": "Оценка сна",
+    "heartRate": "Пульс",
+    "activity": "Активность",
+    "medication": "Приём лекарств",
+    "meds": "Лекарства",
+    "energy": "Энергия",
+    "focus": "Фокус",
+    "weight": "Вес",
+    "steps": "Шаги",
+    "water": "Вода",
+    "screenTime": "Экранное время",
+    "caffeine": "Кофеин",
+    "pain": "Боль",
+    "social": "Общение",
+    "custom": "Свой"
+  },
+  "units": {
+    "hoursSuffix": " ч",
+    "bpm": "уд/мин",
+    "kg": "кг",
+    "lb": "фунт",
+    "steps_one": "шаг",
+    "steps_few": "шага",
+    "steps_many": "шагов",
+    "steps_other": "шага",
+    "hrs": "ч",
+    "glasses_one": " стакан",
+    "glasses_few": " стакана",
+    "glasses_many": " стаканов",
+    "glasses_other": " стакана",
+    "cups_one": " чашка",
+    "cups_few": " чашки",
+    "cups_many": " чашек",
+    "cups_other": " чашки"
+  },
+  "scaleEnds": {
+    "low": "мало",
+    "high": "много",
+    "none": "нет",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "сильная",
+    "socialLow": "изолированно",
+    "socialHigh": "очень активно"
+  },
+  "mood": {
+    "prompt": "Как вы себя чувствуете? (1-10)",
+    "low": "ужасно",
+    "high": "прекрасно",
+    "anchor": {
+      "1": "ужасно",
+      "3": "плохо",
+      "5": "нормально",
+      "7": "хорошо",
+      "10": "прекрасно"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "Какие эмоции вы испытываете?",
+    "count_one": "{{count}} эмоция",
+    "count_few": "{{count}} эмоции",
+    "count_many": "{{count}} эмоций",
+    "count_other": "{{count}} эмоции",
+    "valence": {
+      "positive": "позитивные",
+      "neutral": "нейтральные",
+      "negative": "негативные"
+    },
+    "tags": {
+      "happy": "Радость",
+      "calm": "Спокойствие",
+      "relaxed": "Расслабленность",
+      "grateful": "Благодарность",
+      "loved": "Любовь",
+      "motivated": "Мотивация",
+      "confident": "Уверенность",
+      "productive": "Продуктивность",
+      "focused": "Сосредоточенность",
+      "energetic": "Бодрость",
+      "tired": "Усталость",
+      "restless": "Беспокойство",
+      "distracted": "Рассеянность",
+      "numb": "Опустошённость",
+      "overwhelmed": "Перегруженность",
+      "anxious": "Тревога",
+      "stressed": "Стресс",
+      "frustrated": "Фрустрация",
+      "irritable": "Раздражительность",
+      "sad": "Грусть",
+      "lonely": "Одиночество",
+      "guilty": "Вина",
+      "hopeless": "Безнадёжность",
+      "angry": "Злость"
+    }
+  },
+  "sleep": {
+    "prompt": "Как вы спали?",
+    "hoursLabel": "Часов:",
+    "quality": {
+      "terrible": "Ужасно",
+      "poor": "Плохо",
+      "okay": "Нормально",
+      "good": "Хорошо",
+      "great": "Отлично"
+    }
+  },
+  "sleepScore": {
+    "prompt": "Оценка сна"
+  },
+  "heartRate": {
+    "prompt": "Средний пульс"
+  },
+  "activity": {
+    "prompt": "Уровень активности сегодня?",
+    "level": {
+      "sedentary": "Сидячий",
+      "light": "Лёгкий",
+      "moderate": "Умеренный",
+      "active": "Активный",
+      "intense": "Интенсивный"
+    }
+  },
+  "medication": {
+    "heading": "Лекарства",
+    "empty": "Лекарства ещё не настроены.",
+    "takenCount_one": "Принято: {{count}}",
+    "takenCount_few": "Принято: {{count}}",
+    "takenCount_many": "Принято: {{count}}",
+    "takenCount_other": "Принято: {{count}}",
+    "namePlaceholder": "Название лекарства",
+    "dosagePlaceholder": "Дозировка (например, 50 мг)",
+    "addMedication": "+ Добавить лекарство",
+    "editMedication": "Изменить лекарство",
+    "removeMedication": "Убрать лекарство",
+    "confirmRemove": "Убрать <highlight>{{name}}</highlight>?",
+    "yes": "Да",
+    "no": "Нет",
+    "taken": "Принято",
+    "skip": "Пропустить"
+  },
+  "custom": {
+    "yes": "Да",
+    "no": "Нет",
+    "typeLabels": {
+      "scale10": "Шкала (0-10)",
+      "scale5": "Шкала (0-5)",
+      "slider100": "Ползунок (0-100)",
+      "number": "Число",
+      "yesno": "Да / Нет"
+    }
+  },
+  "config": {
+    "configureTrackers": "Настроить трекеры",
+    "title": "Трекеры",
+    "categoryMoodMind": "Настроение и разум",
+    "categoryBodyHealth": "Тело и здоровье",
+    "categoryLifestyle": "Образ жизни",
+    "customHeading": "Свои",
+    "resume": "Возобновить",
+    "stop": "Остановить",
+    "addCustomTracker": "Добавить свой трекер",
+    "addCustomTrackerCount": "Добавить свой трекер ({{count}}/{{max}})",
+    "addCustomTrackerHint": "Отслеживайте что угодно",
+    "maxReached": "Достигнут максимум: {{max}} своих трекеров.",
+    "customTrackers": "Свои трекеры",
+    "newCustomTracker": "Новый свой трекер",
+    "trackerNamePlaceholder": "Название трекера",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "Тип:",
+    "colorLabel": "Цвет:"
+  }
+}

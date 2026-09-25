@@ -24,7 +24,7 @@ import type { Importer, ImportedNote, ParsedImport } from './types';
  *     "isPinned":     true | false,  // Keep's "pinned to top" flag
  *     "isArchived":   true | false,  // Keep's "archive" flag (hidden view)
  *     "isTrashed":    true | false,  // Keep's trash
- *     "color":        "DEFAULT" | "RED" | …,  // UI accent, discarded
+ *     "color":        "DEFAULT" | "RED" | …,  // note color, see KEEP_COLORS
  *     "labels":       [ { "name": "work" }, … ],   // flat tag list
  *     "createdTimestampUsec":     1775902197012000, // microseconds
  *     "userEditedTimestampUsec":  1775902572714000
@@ -79,6 +79,25 @@ interface KeepNote {
   createdTimestampUsec?: number;
   userEditedTimestampUsec?: number;
 }
+
+/**
+ * Keep's note colors, as the colors of a folder or tag look. Keep has a few
+ * more: cerulean reads as blue, brown as orange. DEFAULT maps to none.
+ * Spec: ops/docs/plans/folder-tag-icons.md (section 4.7)
+ */
+const KEEP_COLORS: Readonly<Record<string, string>> = {
+  RED: 'red',
+  ORANGE: 'orange',
+  YELLOW: 'yellow',
+  GREEN: 'green',
+  TEAL: 'teal',
+  BLUE: 'blue',
+  CERULEAN: 'blue',
+  PURPLE: 'purple',
+  PINK: 'pink',
+  BROWN: 'orange',
+  GRAY: 'gray',
+};
 
 export const googleKeepImporter: Importer = {
   id: 'google-keep',
@@ -276,6 +295,7 @@ export const googleKeepImporter: Importer = {
         ),
         starred: pinned,
         trashed,
+        ...(raw.color && KEEP_COLORS[raw.color] ? { colorKey: KEEP_COLORS[raw.color] } : {}),
       });
     }
 

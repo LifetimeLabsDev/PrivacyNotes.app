@@ -13,11 +13,11 @@
     "themeToggle": "Switch between light and dark"
   },
   "hero": {
-    "badge": "End-to-End encrypted, auditable",
+    "badge": "Encrypted on your device, auditable",
     "headline": "Notes. Tasks.<br />Files. Vault.<stroke>Zero knowledge.</stroke>",
-    "subhead": "One encrypted place for everything you’d never post. Encrypted on your device before it goes anywhere. We couldn’t read it if we tried.",
+    "subhead": "One encrypted place for everything you’d never post. Encrypted on your device; hold your own key and we couldn’t read it if we tried.",
     "tryDemo": "Try the demo",
-    "microcopy": "Free forever. No credit card. Sign in with Google, Apple, or just a 12-word phrase.",
+    "microcopy": "Free forever. No credit card. Sign in with Google, Apple, GitHub, or just a 12-word phrase.",
     "alreadyHaveVault": "Already have a vault? Log in",
     "trustSigned": "Signed releases on GitHub"
   },
@@ -91,7 +91,7 @@
     "bip39": "BIP-39",
     "ed25519": "Ed25519",
     "swissServers": "Swiss servers",
-    "noTracking": "No tracking",
+    "noTracking": "No trackers",
     "rls": "Row-level security"
   },
   "downloads": {
@@ -116,7 +116,7 @@
     "linuxDebDesc": "Installer, re-download to update",
     "checksumAria": "SHA-256 checksum for {{label}}",
     "debFootnote": "Updating an existing <highlight>.deb install</highlight>? Do not uninstall it first. Double-clicking the file dead-ends in Ubuntu's App Center, which only reports that the app is installed, so install the new one over the old one from a terminal. Use the line that matches your machine; dpkg --print-architecture prints which one you need:",
-    "availability": "Available now: macOS 13+, Windows 10+, iOS 15+, Linux and Android.",
+    "availability": "Available now: macOS 13+, Windows 10+, iOS 17.4+, Linux and Android.",
     "betaNote": "All our apps are in beta and may still have bugs, so the web version is the most stable for now. Every app auto-updates and we ship fixes almost daily.",
     "pkgToggle": "Install with a package manager ({{platforms}})",
     "pkgBrewDesc": "brew upgrade skips it: the app updates itself.",
@@ -145,7 +145,7 @@
     "freeMood": "Mood and wellness tracking",
     "freeTheme": "Dark and light mode",
     "freeAnon": "Anonymous sign-in, no email",
-    "freeGoogle": "Google sign-in",
+    "freeGoogle": "Google, Apple, or GitHub sign-in",
     "noSubscription": "No subscription",
     "proLabel": "Pro · Pay once",
     "earlyAdopterBadge": "Early Adopter",
@@ -174,8 +174,8 @@
     "phraseDesc": "12 words, Ed25519 signing",
     "rlsTerm": "Row-level security",
     "rlsDesc": "RLS keyed to your pubkey",
-    "trackingTerm": "Zero tracking",
-    "trackingDesc": "No analytics, no pixels",
+    "trackingTerm": "Zero trackers",
+    "trackingDesc": "No pixels, no third-party trackers",
     "authTerm": "Anonymous auth",
     "authDesc": "No email, no password",
     "serversTerm": "Swiss servers",
@@ -190,7 +190,7 @@
   "mood": {
     "kicker": "Mood & wellness tracking",
     "heading": "Track what you actually feel.",
-    "intro": "Mood, emotions, sleep, medication and activity level, all in a few taps. Everything is encrypted on your device before it syncs.",
+    "intro": "Mood, emotions, sleep, medication and activity level, all in a few taps. Everything is always encrypted, on your device and when it syncs.",
     "cardEmotionsTitle": "Mood (1-10) + 24 emotion tags",
     "cardEmotionsBody": "24 research-backed emotion tags. Name what you feel, spot patterns over time, and export data your therapist or doctor can work with.",
     "cardSleepTitle": "Sleep quality + activity level",
@@ -215,8 +215,8 @@
     "themSeparate": "Separate apps, recurring fees",
     "usAllInOne": "Notes, tasks, files, vault, journal, bookmarks. One app",
     "usTracking": "Mood, energy, sleep, medication tracking",
-    "usEncrypted": "End-to-end encrypted, synced to Switzerland",
-    "usSignIn": "Anonymous or Google sign-in, same encryption either way",
+    "usEncrypted": "Encrypted on your device, synced to Switzerland",
+    "usSignIn": "Anonymous, or Google, Apple, or GitHub sign-in, same encryption either way",
     "usExport": "Pattern detection + doctor PDF export",
     "usSync": "Desktop + mobile, unlimited sync",
     "usPriceBeta": "Free forever, or ${{earlyPrice}} once for Pro (early adopter price)",
@@ -248,7 +248,7 @@
     "para1": "Most note apps mine your content. Add “buy a new TV” to your shopping list and your next few pages fill up with TV ads. Your grocery list, your journal, your private thoughts, all fed into ad-targeting pipelines, profiled, and sold. That is the business model of every “free” note app backed by advertising.",
     "para2": "Even apps that don’t show ads still store your notes in plaintext on their servers, readable by employees, hackable in breaches, and available to anyone with a subpoena. Your data becomes their leverage.",
     "differenceLabel": "The difference",
-    "differenceBody": "<brand/> is end-to-end encrypted with keys that never leave your device, so neither we nor our servers can read what you write. There is no tracking, no analytics, no advertising and no profiling, and there never will be. What you write stays yours.",
+    "differenceBody": "<brand/> encrypts your notes on your device, and with self-custody the key never leaves it, so neither we nor our servers can read a word. There are no ads, no pixels, no third-party trackers and no analytics of what you write, and there never will be. Our website counts clicks on its download and partner links by country, without any identifier. What you write stays yours.",
     "keyboardNote": "<b>A note on device keyboards.</b> Third-party keyboards (such as Gboard, SwiftKey, or Samsung Keyboard) may send what you type to their own servers. This happens at the operating-system level, outside any app’s control. Consider disabling cloud features in your keyboard settings or using an offline-only keyboard."
   },
   "readIt": {
@@ -263,13 +263,13 @@
   },
   "wontFind": {
     "kicker": "What you won’t find in the app",
-    "noTracking": "No tracking",
+    "noTracking": "No trackers",
     "noAds": "No ads",
     "noHarvesting": "No data harvesting",
     "noAiTraining": "No AI training",
     "noLockIn": "No lock-in",
     "noEmail": "No email required",
-    "noTelemetry": "No telemetry",
+    "noTelemetry": "No analytics of your notes",
     "noCookieBanner": "No cookie banner",
     "noPasswords": "No passwords",
     "noDarkPatterns": "No dark patterns",
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "Your phrase is your key",
-    "body": "No phrase, no notes. We cannot recover them, and neither can anyone else. That is the trade-off for end-to-end encryption: under self-custody you are the only one holding the key, so writing to our team cannot bring your notes back.",
+    "body": "No phrase, no notes. We cannot recover them, and neither can anyone else. That is the trade-off for self-custody: you are the only one holding the key, so writing to our team cannot bring your notes back.",
     "noRecoveryTerm": "No recovery",
     "noRecoveryDesc": "Lose your phrase, lose your notes",
     "deviceTerm": "Device-generated",
@@ -290,8 +290,8 @@
     "writeDesc": "Paper backup, stored somewhere safe",
     "printTerm": "Print from settings",
     "printDesc": "View and export your phrase any time",
-    "googleTerm": "Google sign-in?",
-    "googleDesc": "You still get a phrase. Back it up"
+    "googleTerm": "Google, Apple, or GitHub sign-in?",
+    "googleDesc": "We store your key by default, or you back up your own phrase"
   },
   "closing": {
     "kicker": "Ready when you are",

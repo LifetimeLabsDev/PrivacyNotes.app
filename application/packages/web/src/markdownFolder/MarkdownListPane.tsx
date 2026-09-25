@@ -39,7 +39,13 @@ import {
 } from './fileAccess';
 import type { FileMeta } from './useTagIndex';
 import { MarkdownEmptyState } from './MarkdownEmptyState';
+import { LooksContext, NO_LOOKS } from '../looks/LookGlyph';
+import { textMatcher } from '../textMatch';
+import { isImeComposing } from '../imeComposing';
 import type { OpenedMarkdownDir, OpenedMarkdownFile } from './types';
+
+/** A file on disk carries no PIN flag, so no row in this pane is ever behind the gate. */
+const DISK_FILE_LOCKED = false;
 
 export function MarkdownListPane({
   onSelectView,
@@ -415,7 +421,7 @@ export function MarkdownListPane({
   useEffect(() => {
     if (!selectionMode) return;
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') exitSelection();
+      if (e.key === 'Escape' && !isImeComposing(e)) exitSelection();
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -463,13 +469,14 @@ export function MarkdownListPane({
   // a whole index and belongs with one, not with a keystroke handler.
   const matches = useMemo(() => {
     if (!dir) return [];
-    const q = filter.trim().toLowerCase();
+    const q = filter.trim();
+    const match = q ? textMatcher(q) : null;
     const filtered = dir.entries.filter((e) => {
       // A folder selection includes everything beneath it, which is what
       // clicking a folder means to anyone who has used a file manager.
       if (dirFilter !== null && !e.dir.startsWith(dirFilter)) return false;
       if (tagFilter !== null && !(tagsByPath.get(e.relPath)?.tags ?? []).includes(tagFilter)) return false;
-      if (q && !e.relPath.toLowerCase().includes(q)) return false;
+      if (match && !match(e.relPath)) return false;
       return true;
     });
 
@@ -854,6 +861,8 @@ export function MarkdownListPane({
                   : t('markdown.folderEmpty')}
             </p>
           ) : (
+            // A file's tags are its own, so no vault tag lends it a look.
+            <LooksContext.Provider value={NO_LOOKS}>
             <ul className={gridMode ? 'grid content-start gap-3 p-4 pn-notes-grid' : ''}>
               {matches.slice(0, reveal.visible).map(({ entry, note }) => (
                 <ItemComponent
@@ -864,7 +873,7 @@ export function MarkdownListPane({
                   // suppressed until it finishes rather than rendering a blank
                   // line and an empty date for every unread file.
                   listPrefs={{ ...listPrefs, showPreview: listPrefs.showPreview && tagsScanned, showDate: listPrefs.showDate && tagsScanned }}
-                  isNoteLocked={false}
+                  isNoteLocked={DISK_FILE_LOCKED}
                   // The routing `useMultiSelect.handleRowClick` does, mirrored:
                   // shift extends the range once a selection exists, Cmd/Ctrl
                   // toggles and is the mouse's way INTO selection mode (the
@@ -912,6 +921,7 @@ export function MarkdownListPane({
                 />
               ))}
             </ul>
+            </LooksContext.Provider>
           )
         ) : opened ? (
           <SingleFileCard opened={opened} onClose={() => onOpened(null)} onOpenFile={() => void handleOpenFile()} />

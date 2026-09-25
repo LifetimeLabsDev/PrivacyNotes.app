@@ -18,11 +18,36 @@ export const PHRASE_STORAGE_KEY = credentialKey('privacynotes.phrase');
 // reminder, etc). Cleared on sign-out.
 export const OAUTH_FLAG_KEY = 'privacynotes.oauth.active';
 
-// Custom URL scheme the native (Tauri) apps register for the OAuth redirect
-// back from the system browser. Must be listed in Supabase Auth's allowed
-// redirect URLs. Web uses window.location.origin instead.
-// Spec: ops/docs/macos-ios-setup.md (native OAuth)
-export const OAUTH_NATIVE_REDIRECT = 'privacynotes://auth-callback';
+// One-shot flag: open Security > Phrase once after an OAuth signup, so the
+// new user sees the words. Demo-bucketed like the credential keys: a
+// `?demo=1` boot on a real install must not consume the real account's
+// reveal.
+export const SHOW_PHRASE_ONCE_KEY = credentialKey('privacynotes.oauth.showPhraseOnce');
+
+// The https address both mobile builds ask providers to return to. A custom
+// scheme is a first-come claim any installed app can make, so a redirect to
+// one can land in an app that is not ours, and no native build asks for one.
+// On Android this is an App Link, delivered by the OS only to the package and
+// signing certificate that the assetlinks.json served on this host names. On
+// iOS the in-app auth sheet completes on it, which iOS grants only to the app
+// whose associated-domains entitlement names the host, checked against the
+// apple-app-site-association file served here. Host and path must match the
+// app-link entry under `plugins.deep-link.mobile` in tauri.conf.json and the
+// entitlement; tests/desktopCapabilities.test.ts holds them together.
+// Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (sections 8.1, 8.2)
+export const OAUTH_APP_LINK_REDIRECT = 'https://use.privacynotes.app/auth/callback';
+
+// Where a DESKTOP sign-in comes back to. No desktop operating system can say
+// which application owns a custom scheme, and none has an equivalent of the
+// mobile app-link bindings, so a desktop build stops asking for an address it
+// cannot own. The browser lands on this page instead, the page shows the
+// one-time code, and the person carries it back to the app, which exchanges
+// it with the verifier it generated before the browser opened. The page is
+// static and deliberately does not load the application bundle, whose client
+// would otherwise spend the code in the browser.
+// Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.3)
+export const OAUTH_DESKTOP_RETURN = 'https://use.privacynotes.app/auth/desktop';
+
 
 // Tracks which pubkey "owns" the local IndexedDB. Compared against the
 // incoming pubkey at the top of every authenticate call; on mismatch

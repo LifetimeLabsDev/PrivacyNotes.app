@@ -13,11 +13,11 @@
     "themeToggle": "Växla mellan ljust och mörkt"
   },
   "hero": {
-    "badge": "Totalsträckskrypterad, granskningsbar",
+    "badge": "Krypterad på din enhet, granskningsbar",
     "headline": "Anteckningar. Uppgifter.<br />Filer. Valv.<stroke>Zero knowledge.</stroke>",
-    "subhead": "En krypterad plats för allt du aldrig skulle lägga ut. Krypteras på din enhet innan det går någonstans. Vi skulle inte kunna läsa det ens om vi försökte.",
+    "subhead": "En krypterad plats för allt du aldrig skulle lägga ut. Krypterat på din enhet; håll din egen nyckel, så skulle vi inte kunna läsa det ens om vi försökte.",
     "tryDemo": "Testa demot",
-    "microcopy": "Gratis för alltid. Inget kreditkort. Logga in med Google, Apple eller bara en fras på 12 ord.",
+    "microcopy": "Gratis för alltid. Inget kreditkort. Logga in med Google, Apple, GitHub eller bara en fras på 12 ord.",
     "alreadyHaveVault": "Har du redan ett valv? Logga in",
     "trustSigned": "Signerade utgåvor på GitHub"
   },
@@ -91,7 +91,7 @@
     "bip39": "BIP-39",
     "ed25519": "Ed25519",
     "swissServers": "Schweiziska servrar",
-    "noTracking": "Ingen spårning",
+    "noTracking": "Inga spårare",
     "rls": "Radnivåsäkerhet"
   },
   "downloads": {
@@ -116,7 +116,7 @@
     "linuxDebDesc": "Installationsprogram, ladda ner på nytt för att uppdatera",
     "checksumAria": "SHA-256-kontrollsumma för {{label}}",
     "debFootnote": "Uppdaterar du en befintlig <highlight>.deb-installation</highlight>? Avinstallera den inte först. Att dubbelklicka på filen kör fast i Ubuntus App Center, som bara meddelar att appen redan är installerad, så installera den nya över den gamla från en terminal. Använd raden som passar din dator; dpkg --print-architecture visar vilken du behöver:",
-    "availability": "Finns nu: macOS 13+, Windows 10+, iOS 15+, Linux och Android.",
+    "availability": "Finns nu: macOS 13+, Windows 10+, iOS 17.4+, Linux och Android.",
     "betaNote": "Alla våra appar är i beta och kan fortfarande ha buggar, så webbversionen är stabilast just nu. Varje app uppdaterar sig själv och vi släpper rättningar nästan dagligen.",
     "pkgToggle": "Installera med en pakethanterare ({{platforms}})",
     "pkgBrewDesc": "Appen uppdaterar sig själv, inte brew upgrade.",
@@ -145,7 +145,7 @@
     "freeMood": "Humör- och må-bra-spårning",
     "freeTheme": "Mörkt och ljust läge",
     "freeAnon": "Anonym inloggning, utan e-post",
-    "freeGoogle": "Google-inloggning",
+    "freeGoogle": "Inloggning med Google, Apple eller GitHub",
     "noSubscription": "Ingen prenumeration",
     "proLabel": "Pro · Betala en gång",
     "earlyAdopterBadge": "Tidig användare",
@@ -174,8 +174,8 @@
     "phraseDesc": "12 ord, signering med Ed25519",
     "rlsTerm": "Radnivåsäkerhet",
     "rlsDesc": "RLS knuten till din publika nyckel",
-    "trackingTerm": "Noll spårning",
-    "trackingDesc": "Ingen analys, inga pixlar",
+    "trackingTerm": "Noll spårare",
+    "trackingDesc": "Inga pixlar, inga spårare från tredje part",
     "authTerm": "Anonym inloggning",
     "authDesc": "Ingen e-post, inget lösenord",
     "serversTerm": "Schweiziska servrar",
@@ -190,7 +190,7 @@
   "mood": {
     "kicker": "Humör- och må-bra-spårning",
     "heading": "Spåra det du faktiskt känner.",
-    "intro": "Humör, känslor, sömn, medicin och aktivitetsnivå, allt med några tryck. Allt krypteras på din enhet innan det synkas.",
+    "intro": "Humör, känslor, sömn, medicin och aktivitetsnivå, allt med några tryck. Allt är alltid krypterat, på din enhet och när det synkas.",
     "cardEmotionsTitle": "Humör (1-10) + 24 känslotaggar",
     "cardEmotionsBody": "24 forskningsbaserade känslotaggar. Sätt ord på det du känner, se mönster över tid och exportera data som din terapeut eller läkare kan arbeta med.",
     "cardSleepTitle": "Sömnkvalitet + aktivitetsnivå",
@@ -215,8 +215,8 @@
     "themSeparate": "Separata appar, återkommande avgifter",
     "usAllInOne": "Anteckningar, uppgifter, filer, valv, dagbok, bokmärken. En app",
     "usTracking": "Spårning av humör, energi, sömn och medicin",
-    "usEncrypted": "Totalsträckskrypterat, synkat till Schweiz",
-    "usSignIn": "Anonym inloggning eller Google, samma kryptering hur du än väljer",
+    "usEncrypted": "Krypterat på din enhet, synkat till Schweiz",
+    "usSignIn": "Anonym inloggning, eller inloggning med Google, Apple eller GitHub, samma kryptering hur du än väljer",
     "usExport": "Mönsterigenkänning + PDF-export till läkaren",
     "usSync": "Dator + mobil, obegränsad synk",
     "usPriceBeta": "Gratis för alltid, eller {{earlyPrice}} $ en gång för Pro (pris för tidiga användare)",
@@ -248,7 +248,7 @@
     "para1": "De flesta anteckningsappar gräver i ditt innehåll. Lägg till ”köp en ny tv” i inköpslistan och de närmaste sidorna du besöker fylls med tv-annonser. Din matlista, din dagbok, dina privata tankar, allt matas in i annonsmaskineriet, profileras och säljs vidare. Det är affärsmodellen för varje ”gratis” anteckningsapp som lever på reklam.",
     "para2": "Även appar som inte visar annonser lagrar dina anteckningar i klartext på sina servrar, läsbara för anställda, åtkomliga vid intrång och tillgängliga för var och en med ett domstolsbeslut. Dina uppgifter blir deras påtryckningsmedel.",
     "differenceLabel": "Skillnaden",
-    "differenceBody": "<brand/> är totalsträckskrypterad med nycklar som aldrig lämnar din enhet, så varken vi eller våra servrar kan läsa det du skriver. Det finns ingen spårning, ingen analys, inga annonser och ingen profilering, och det kommer det aldrig att göra. Det du skriver förblir ditt.",
+    "differenceBody": "<brand/> krypterar dina anteckningar på din enhet, och med egen förvaring lämnar nyckeln den aldrig, så varken vi eller våra servrar kan läsa ett enda ord. Det finns inga annonser, inga pixlar, inga spårare från tredje part och ingen analys av det du skriver, och det kommer det aldrig att göra. Vår webbplats räknar klick på sina nedladdnings- och partnerlänkar per land, utan någon identifierare. Det du skriver förblir ditt.",
     "keyboardNote": "<b>En kommentar om tangentbord på enheten.</b> Tredjepartstangentbord (som Gboard, SwiftKey eller Samsung Keyboard) kan skicka det du skriver till sina egna servrar. Det sker på operativsystemsnivå, utanför alla appars kontroll. Överväg att stänga av molnfunktioner i tangentbordets inställningar, eller att använda ett tangentbord som bara kör offline."
   },
   "readIt": {
@@ -263,13 +263,13 @@
   },
   "wontFind": {
     "kicker": "Det du inte hittar i appen",
-    "noTracking": "Ingen spårning",
+    "noTracking": "Inga spårare",
     "noAds": "Inga annonser",
     "noHarvesting": "Ingen datainsamling",
     "noAiTraining": "Ingen AI-träning",
     "noLockIn": "Ingen inlåsning",
     "noEmail": "Ingen e-post krävs",
-    "noTelemetry": "Ingen telemetri",
+    "noTelemetry": "Ingen analys av dina anteckningar",
     "noCookieBanner": "Ingen cookiebanner",
     "noPasswords": "Inga lösenord",
     "noDarkPatterns": "Inga dark patterns",
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "Din fras är din nyckel",
-    "body": "Ingen fras, inga anteckningar. Vi kan inte återställa dem, och det kan ingen annan heller. Det är priset för totalsträckskryptering: med egen förvaring är du den enda som har nyckeln, så att skriva till vårt team hämtar inte tillbaka dina anteckningar.",
+    "body": "Ingen fras, inga anteckningar. Vi kan inte återställa dem, och det kan ingen annan heller. Det är priset för egen förvaring: du är den enda som har nyckeln, så att skriva till vårt team hämtar inte tillbaka dina anteckningar.",
     "noRecoveryTerm": "Ingen återställning",
     "noRecoveryDesc": "Tappar du frasen tappar du anteckningarna",
     "deviceTerm": "Skapad på enheten",
@@ -290,8 +290,8 @@
     "writeDesc": "Säkerhetskopia på papper, förvarad tryggt",
     "printTerm": "Skriv ut från inställningarna",
     "printDesc": "Visa och exportera din fras när du vill",
-    "googleTerm": "Google-inloggning?",
-    "googleDesc": "Du får ändå en fras. Säkerhetskopiera den"
+    "googleTerm": "Inloggning med Google, Apple eller GitHub?",
+    "googleDesc": "Vi förvarar din nyckel som standard, eller så säkerhetskopierar du din egen fras"
   },
   "closing": {
     "kicker": "Redo när du är det",

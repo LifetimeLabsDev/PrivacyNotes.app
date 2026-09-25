@@ -14,10 +14,13 @@ import {
 import { hasPin, markPinUnlocked, verifyPin } from '../pin';
 import { PinInput, type PinInputHandle } from '../PinInput';
 import { SectionEyebrow, SETTINGS_HELP, SettingsCallout } from '../settingsUI';
+import { Switch } from '../Switch';
 import { isTrustedDevice } from '../trustStorage';
 import { isDemoMode } from '../demo';
 import { persistStoredPhrase } from '../phraseAtRest';
 import type { UserSettings } from '../userSettings';
+import { detectPlatform } from '../devices';
+import { shouldArmPrivacyScreen } from '../privacyScreen';
 import { TIMEOUT_OPTIONS } from './timeoutOptions';
 import { HelpChip } from '../HelpChip';
 
@@ -26,6 +29,9 @@ import { HelpChip } from '../HelpChip';
  * (Touch ID, Face ID, Windows Hello) plus the app-lock toggle and the
  * app lock's own re-lock window.
  */
+/** True only where a backgrounded app leaves a picture behind. */
+const COVERS_ON_SWITCH = shouldArmPrivacyScreen(true, detectPlatform());
+
 export function BiometricTab({
   phrase,
   pubkey,
@@ -101,12 +107,19 @@ export function BiometricTab({
 
   const [showDisableConfirm, setShowDisableConfirm] = useState(false);
 
-  function doDisable() {
-    removeBiometricCredential();
-    if (!hasPinWrappedPhrase()) {
-      void persistStoredPhrase(phrase);
-      onSettingsChange({ ...userSettings, appLockEnabled: false }, userSettings);
+  async function doDisable() {
+    // With no PIN wrap behind it the fingerprint is this device's last door,
+    // and the app lock goes with it. The phrase goes back at rest first, and
+    // the fingerprint and the flag come off only once it reads back: a write
+    // the store refused leaves both where they were.
+    const lastDoor = !hasPinWrappedPhrase();
+    setError(null);
+    if (lastDoor && !(await persistStoredPhrase(phrase))) {
+      setError(t('appLock.phraseNotSaved'));
+      return;
     }
+    removeBiometricCredential();
+    if (lastDoor) onSettingsChange({ ...userSettings, appLockEnabled: false }, userSettings);
     setEnrolled(false);
   }
 
@@ -146,7 +159,7 @@ export function BiometricTab({
     onSettingsChange({ ...userSettings, appLockEnabled: true, ...blob }, userSettings);
   }
 
-  function handleAppLockToggle() {
+  async function handleAppLockToggle() {
     const next = !userSettings.appLockEnabled;
     // Inside the handler as well as in the markup above, so a third caller
     // cannot reintroduce the write by forgetting it - which is how the wrap
@@ -158,14 +171,18 @@ export function BiometricTab({
     if (next && !lockReady) return;
     if (!next) {
       // Arming the lock strips the phrase at rest, so a door is the only way
-      // back into this device - and every door here opens through the lock
-      // screen, which stops rendering the moment the flag goes false. The
-      // wrap and the fingerprint that survive the switch-off are therefore
-      // not a way in; they are two things that can no longer be reached. The
-      // phrase goes back first, before the flag commits, so a boot between
-      // the two still has a session to restore.
-      void persistStoredPhrase(phrase);
+      // back into this device, and a door opens only through the lock
+      // screen. The switch-off puts the phrase back; with it at rest and the
+      // flag off, App.tsx starts straight into the session and the wrap and
+      // the fingerprint that survive stay unused. The flag commits only once
+      // the phrase reads back: a start in between still meets the lock
+      // screen, and a write the store refused keeps the lock on and says so.
       setPinConfirm(false);
+      setError(null);
+      if (!(await persistStoredPhrase(phrase))) {
+        setError(t('appLock.phraseNotSaved'));
+        return;
+      }
       onSettingsChange({ ...userSettings, appLockEnabled: false }, userSettings);
       return;
     }
@@ -231,6 +248,7 @@ export function BiometricTab({
         ) : (
           <div className="space-y-2">
             <button
+              data-setting="security.enableBiometric"
               onClick={() => void handleEnroll()}
               disabled={busy}
               className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2.5 text-sm font-medium transition disabled:opacity-50"
@@ -249,38 +267,31 @@ export function BiometricTab({
           to turn one off. */}
       {(trusted || userSettings.appLockEnabled) && (
         <div className="pt-4 border-t border-divider">
-          <label
-            className={`flex items-center justify-between ${lockReady ? 'cursor-pointer' : 'cursor-default'}`}
-          >
-            <div>
-              <div className={`text-sm font-medium ${lockReady ? 'text-pn' : 'text-pn-muted'}`}>
-                {t('biometricTab.lockOnOpen')}
-              </div>
-              <div className="text-xs text-pn-soft mt-0.5">
+          {/* The switch shows what this device does, not what the synced
+              flag says. The flag can arrive from another device and sit
+              true here with nothing to open the lock with, where the lock
+              never engages - a switch reading "on" over a line explaining
+              that it cannot work is the confusing half of that state. */}
+          <Switch
+            setting="security.appLock"
+            label={t('biometricTab.lockOnOpen')}
+            labelClassName={`text-sm font-medium ${lockReady ? 'text-pn' : 'text-pn-muted'}`}
+            description={
+              <>
                 {t('biometricTab.lockOnOpenHint')}
-              </div>
-            </div>
-            <div className="relative">
-              {/* The switch shows what this device does, not what the synced
-                  flag says. The flag can arrive from another device and sit
-                  true here with nothing to open the lock with, where the lock
-                  never engages - a switch reading "on" over a line explaining
-                  that it cannot work is the confusing half of that state. */}
-              <input
-                type="checkbox"
-                checked={lockReady && userSettings.appLockEnabled}
-                onChange={handleAppLockToggle}
-                disabled={!lockReady}
-                className="sr-only peer"
-              />
-              <div
-                className={`w-9 h-5 rounded-full transition-colors ${lockReady ? 'bg-pn-muted/35 peer-checked:bg-accent' : 'bg-pn-muted/20'}`}
-              />
-              <div
-                className={`absolute start-0.5 top-0.5 w-4 h-4 rounded-full shadow-sm transition-transform peer-checked:translate-x-4 peer-checked:rtl:-translate-x-4 ${lockReady ? 'bg-white' : 'bg-white/50'}`}
-              />
-            </div>
-          </label>
+                {/* Phone only. The desktop apps and the browser show no stored
+                    picture of a backgrounded app, so there is nothing to cover
+                    and the sentence would be untrue on three platforms.
+                    Spec: ops/docs/plans/app-switcher-privacy-screen.md */}
+                {COVERS_ON_SWITCH && (
+                  <span className="block mt-0.5">{t('biometricTab.lockHidesOnSwitch')}</span>
+                )}
+              </>
+            }
+            checked={lockReady && userSettings.appLockEnabled}
+            onChange={() => void handleAppLockToggle()}
+            disabled={!lockReady}
+          />
           {/* The switch used to be absent instead of dim, which left the tab
               silent about the app lock on a device with neither credential -
               nothing on screen said the feature existed or what it wanted. */}
@@ -354,7 +365,7 @@ export function BiometricTab({
       )}
 
       {(enrolled || hasPin()) && userSettings.appLockEnabled && (
-        <div>
+        <div data-setting="security.relockAfter">
           <label className="block">
             <SectionEyebrow className="mb-2">
               {t('biometricTab.relockAfter')}
@@ -388,7 +399,7 @@ export function BiometricTab({
           title={t('biometricTab.disableConfirmTitle')}
           confirmLabel={t('biometricTab.disableConfirmLabel')}
           variant="warning"
-          onConfirm={doDisable}
+          onConfirm={() => void doDisable()}
           onClose={() => setShowDisableConfirm(false)}
         >
           {hasPinWrappedPhrase()

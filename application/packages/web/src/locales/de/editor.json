@@ -33,7 +33,8 @@
     "math": "Formel",
     "blockMath": "Formelblock",
     "align": "Ausrichtung",
-    "font": "Schrift"
+    "font": "Schrift",
+    "pictureFromFiles": "Bild aus Dateien"
   },
   "align": {
     "left": "Linksbündig",
@@ -104,6 +105,7 @@
     "addColumnLeft": "Spalte links einfügen",
     "addColumnRight": "Spalte rechts einfügen",
     "toggleHeaderRow": "Kopfzeile umschalten",
+    "equalColumnWidths": "Spalten gleich breit machen",
     "deleteRow": "Zeile löschen",
     "deleteColumn": "Spalte löschen",
     "deleteTable": "Tabelle löschen"
@@ -187,7 +189,8 @@
   "codeBlock": {
     "copy": "Kopieren",
     "copied": "Kopiert",
-    "copyFailed": "Fehlgeschlagen"
+    "copyFailed": "Fehlgeschlagen",
+    "wrap": "Lange Zeilen umbrechen"
   },
   "math": {
     "sourceLabel": "LaTeX-Quelltext"

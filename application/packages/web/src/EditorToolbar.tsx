@@ -30,6 +30,7 @@ import {
   Link as LinkIcon,
   BracketsSquare as BracketsIcon,
   Image as ImageIcon,
+  Images as ImagesIcon,
   Paperclip as PaperclipIcon,
   DotsThree as MoreIcon,
   Plus as PlusIcon,
@@ -42,13 +43,14 @@ import {
   TextAlignRight as TextAlignRightIcon,
   TextAlignJustify as TextAlignJustifyIcon,
   Trash as TrashIcon,
-  Prohibit as ProhibitIcon,
   Megaphone as MegaphoneIcon,
   RocketLaunch as RocketIcon,
 } from './icons';
 import { useEditorState, type Editor as TipTapEditor } from '@tiptap/react';
 import { triggerAttachmentUpload } from './EncryptedAttachment';
+import { openPicturePicker } from './mediaRefs';
 import { HoverLabel } from './HoverLabel';
+import { ColorSwatch } from './ColorSwatch';
 import { AudioRecorder, type AudioRecordingState } from './AudioRecorder';
 import { isLinuxNative } from './devices';
 import { TEXT_COLORS, HIGHLIGHT_COLORS, DEFAULT_HIGHLIGHT, FONT_FAMILIES, FONT_SIZES } from './editorColors';
@@ -875,47 +877,33 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
           }}
         >
           <div className="grid grid-cols-5 gap-1.5">
-            {TEXT_COLORS.map((c) => {
-              const selected = currentColor?.toLowerCase() === c.value.toLowerCase();
-              const colorName = t(`color.names.${c.name.toLowerCase()}`);
-              return (
-                <HoverLabel key={c.value} label={colorName} position="above">
-                  <button
-                    type="button"
-                    aria-label={colorName}
-                    onPointerDown={(e) => {
-                      e.preventDefault();
-                      editor.chain().focus().setColor(c.value).run();
-                      // Every pick trains the button. Remove does not: it is
-                      // not a choice of colour.
-                      setTextMemory(c.name.toLowerCase());
-                      writeColorPref('text', c.name.toLowerCase());
-                      setColorOpen(false);
-                    }}
-                    className={`block w-6 h-6 rounded-full transition [@media(hover:hover)]:hover:scale-110 ${
-                      selected ? 'ring-2 ring-offset-1 ring-accent ring-offset-surface-1' : 'border border-divider'
-                    }`}
-                    style={{ background: c.value }}
-                  />
-                </HoverLabel>
-              );
-            })}
-            <HoverLabel label={t('color.remove')} position="above">
-              <button
-                type="button"
-                aria-label={t('color.remove')}
+            {TEXT_COLORS.map((c) => (
+              <ColorSwatch
+                key={c.value}
+                label={t(`color.names.${c.name.toLowerCase()}`)}
+                background={c.value}
+                selected={currentColor?.toLowerCase() === c.value.toLowerCase()}
                 onPointerDown={(e) => {
                   e.preventDefault();
-                  editor.chain().focus().unsetColor().run();
+                  editor.chain().focus().setColor(c.value).run();
+                  // Every pick trains the button. Remove does not: it is
+                  // not a choice of colour.
+                  setTextMemory(c.name.toLowerCase());
+                  writeColorPref('text', c.name.toLowerCase());
                   setColorOpen(false);
                 }}
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-neutral-500 dark:text-neutral-400 transition [@media(hover:hover)]:hover:scale-110 ${
-                  currentColor ? 'border border-divider' : 'ring-2 ring-offset-1 ring-accent ring-offset-surface-1 border border-divider'
-                }`}
-              >
-                <ProhibitIcon size={13} />
-              </button>
-            </HoverLabel>
+              />
+            ))}
+            <ColorSwatch
+              label={t('color.remove')}
+              none
+              selected={!currentColor}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                editor.chain().focus().unsetColor().run();
+                setColorOpen(false);
+              }}
+            />
           </div>
         </div>,
         document.body,
@@ -1244,58 +1232,46 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
               // highlighted: without that check the palette's first entry
               // (color === null) would read as selected on unhighlighted text.
               const selected = highlightOn && normalizeCssColor(currentHighlight) === normalizeCssColor(c.value ?? undefined);
-              const colorName = t(`color.names.${c.name.toLowerCase()}`);
               return (
-                <HoverLabel key={c.name} label={colorName} position="above">
-                  <button
-                    type="button"
-                    aria-label={colorName}
-                    onPointerDown={(e) => {
-                      e.preventDefault();
-                      // setHighlight MERGES attributes onto an active mark, so
-                      // the default entry has to clear the old color rather
-                      // than omit one: picking Yellow over a green run would
-                      // otherwise leave it green.
-                      const chain = editor.chain().focus();
-                      (c.value
-                        ? chain.setHighlight({ color: c.value })
-                        : chain.unsetHighlight().setHighlight()
-                      ).run();
-                      setHighlightMemory(c.name.toLowerCase());
-                      writeColorPref('highlight', c.name.toLowerCase());
-                      setHighlightOpen(false);
-                    }}
-                    className={`block w-6 h-6 rounded-full transition [@media(hover:hover)]:hover:scale-110 ${
-                      c.value ? '' : 'pn-hl-default '
-                    }${
-                      selected ? 'ring-2 ring-offset-1 ring-accent ring-offset-surface-1' : 'border border-divider'
-                    }`}
-                    // The wash is translucent by design, so the swatch shows
-                    // it over the popover's own surface - which is the same
-                    // light-or-dark ground it will sit on in the note. The
-                    // default entry has no stored color and takes its themed
-                    // pair from the .pn-hl-default class instead.
-                    style={c.value ? { background: c.value } : undefined}
-                  />
-                </HoverLabel>
+                <ColorSwatch
+                  key={c.name}
+                  label={t(`color.names.${c.name.toLowerCase()}`)}
+                  // The wash is translucent by design, so the swatch shows
+                  // it over the popover's own surface - which is the same
+                  // light-or-dark ground it will sit on in the note. The
+                  // default entry has no stored color and takes its themed
+                  // pair from the .pn-hl-default class instead.
+                  background={c.value ?? undefined}
+                  className={c.value ? '' : 'pn-hl-default'}
+                  selected={selected}
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    // setHighlight MERGES attributes onto an active mark, so
+                    // the default entry has to clear the old color rather
+                    // than omit one: picking Yellow over a green run would
+                    // otherwise leave it green.
+                    const chain = editor.chain().focus();
+                    (c.value
+                      ? chain.setHighlight({ color: c.value })
+                      : chain.unsetHighlight().setHighlight()
+                    ).run();
+                    setHighlightMemory(c.name.toLowerCase());
+                    writeColorPref('highlight', c.name.toLowerCase());
+                    setHighlightOpen(false);
+                  }}
+                />
               );
             })}
-            <HoverLabel label={t('color.removeHighlight')} position="above">
-              <button
-                type="button"
-                aria-label={t('color.removeHighlight')}
-                onPointerDown={(e) => {
-                  e.preventDefault();
-                  editor.chain().focus().unsetHighlight().run();
-                  setHighlightOpen(false);
-                }}
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-neutral-500 dark:text-neutral-400 transition [@media(hover:hover)]:hover:scale-110 ${
-                  highlightOn ? 'border border-divider' : 'ring-2 ring-offset-1 ring-accent ring-offset-surface-1 border border-divider'
-                }`}
-              >
-                <ProhibitIcon size={13} />
-              </button>
-            </HoverLabel>
+            <ColorSwatch
+              label={t('color.removeHighlight')}
+              none
+              selected={!highlightOn}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                editor.chain().focus().unsetHighlight().run();
+                setHighlightOpen(false);
+              }}
+            />
           </div>
         </div>,
         document.body,
@@ -1430,6 +1406,27 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                     active: isActive('orderedList'),
                     run: () => editor.chain().focus().toggleOrderedList().run(),
                   },
+                  // A picture already in Files, shown here without a copy
+                  // (#330). A modal rather than a popover, so the menu closing
+                  // under the press cannot close it (see section 92). Hidden
+                  // where the media buttons are: a Markdown folder cannot hold
+                  // a reference to our encrypted store.
+                  ...(hideEncryptedMedia ? [] : [{
+                    key: 'fromFiles',
+                    group: 'insert',
+                    Icon: ImagesIcon,
+                    label: t('toolbar.pictureFromFiles'),
+                    hint: null,
+                    active: false,
+                    run: () => {
+                      const view = editor.view;
+                      openPicturePicker({
+                        onPick: (ref) => {
+                          void import('./EncryptedImage').then(({ insertPictureRef }) => insertPictureRef(view, ref));
+                        },
+                      });
+                    },
+                  }]),
                   {
                     key: 'quote',
                     group: 'blocks',

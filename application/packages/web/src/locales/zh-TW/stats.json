@@ -10,7 +10,7 @@
     "tags": "標籤",
     "currentStreak": "目前連續天數",
     "longestStreak": "最長連續天數",
-    "streakValue": "{{count}} 天",
+    "streakValue_other": "{{count}} 天",
     "timeRangeAria": "活動時間範圍",
     "modeActivity": "活動",
     "modeMood": "心情",
@@ -58,6 +58,7 @@
       "doctorPDF": "醫師 PDF",
       "copyAIPrompt": "複製 AI 提示詞",
       "copied": "已複製！",
+      "saveFailed": "儲存失敗，所以檔案可能是空的或不完整。請再試一次，或改選另一個資料夾。",
       "proBadge": "PRO"
     },
     "sleepActivity": {

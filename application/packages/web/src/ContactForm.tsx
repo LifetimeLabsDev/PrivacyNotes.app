@@ -15,6 +15,7 @@ import {
 import { ContactChip } from './NoteRow';
 import { CaretDown, Info, Minus, NotePencil, Plus, User } from './icons';
 import { FIELD_CLASS, FieldLabel, GroupHeading } from './formFields';
+import { isImeComposing } from './imeComposing';
 
 /**
  * The contact form: the edit state of ContactItem, seated beside
@@ -246,7 +247,7 @@ export function ContactForm({
           value={label}
           onChange={(e) => (kind === 'addresses' ? setAddress(index, { label: e.target.value }) : setRow(kind, index, { label: e.target.value }))}
           onBlur={() => setCustomLabel(null)}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); setCustomLabel(null); } }}
+          onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === 'Escape') && !isImeComposing(e)) { e.preventDefault(); setCustomLabel(null); } }}
           placeholder={t('contacts.labelNone')}
           maxLength={LABEL_MAX}
           className="w-28 shrink-0 rounded-md border border-accent bg-surface-1 px-2 py-2 text-xs focus:outline-none"

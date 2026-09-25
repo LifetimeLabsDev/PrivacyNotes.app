@@ -12,7 +12,9 @@
     "uploadFailed": "Uppladdningen misslyckades: {{message}}",
     "storeUnavailable": "Bildlagringen är inte tillgänglig",
     "loadFailed": "Kunde inte ladda bilden",
-    "notFound": "Bilden hittades inte"
+    "notFound": "Bilden hittades inte",
+    "saveFailed": "Det gick inte att spara, så filen kan vara tom eller ofullständig.",
+    "viewAria": "Visa bild"
   },
   "attachment": {
     "fallbackName": "Bilaga",
@@ -26,7 +28,6 @@
     "deleteConfirm": "Radera?",
     "copied": "Kopierad",
     "download": "Ladda ner",
-    "downloadToPlay": "Ladda ner för att spela upp",
     "play": "Spela upp",
     "pause": "Pausa",
     "fileNotFound": "Filen hittades inte",
@@ -37,6 +38,29 @@
     "downloadFailed": "Nedladdningen misslyckades",
     "playbackFailed": "Uppspelningen misslyckades",
     "uploadFailed": "Uppladdningen misslyckades: {{message}}",
-    "unknownError": "Okänt fel"
+    "unknownError": "Okänt fel",
+    "view": "Visa",
+    "more": "Fler åtgärder"
+  },
+  "viewer": {
+    "previous": "Föregående",
+    "next": "Nästa",
+    "position": "{{index}} av {{count}}",
+    "zoomIn": "Zooma in",
+    "zoomOut": "Zooma ut",
+    "pdfLoading": "Öppnar PDF...",
+    "pdfFailed": "Den här PDF:en går inte att öppna. Ladda ner den för att öppna den i en annan app.",
+    "pdfPassword": "Den här PDF:en har ett lösenord. Ladda ner den för att öppna den i en annan app.",
+    "saveFailed": "Det gick inte att spara, så filen kan vara tom eller ofullständig.",
+    "pageCount_one": "{{count}} sida",
+    "pageCount_other": "{{count}} sidor",
+    "pageLabel": "{{name}}, sida {{page}} av {{count}}"
+  },
+  "picker": {
+    "title": "Bilder i Filer",
+    "search": "Sök bilder",
+    "empty": "Inga bilder i Filer än. Ladda upp en där och lägg sedan till den här.",
+    "noMatch": "Inga bilder matchar din sökning.",
+    "noCopy": "En bild som du lägger till här pekar på filen i Filer, så den tar inget extra lagringsutrymme."
   }
 }

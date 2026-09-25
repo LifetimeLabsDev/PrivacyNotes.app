@@ -15,8 +15,11 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { normalizeTag, sortTags, TAG_MAX_LENGTH } from './notesRepo';
+import { textMatcher } from './textMatch';
+import { isImeComposing } from './imeComposing';
 import { useIsMobile } from './useIsMobile';
 import { useTheme } from './theme';
+import { TagMark } from './looks/LookGlyph';
 
 type Props = {
   tags: string[];
@@ -98,14 +101,14 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
   // `tags` prop, so the chip a user sees last is the chip Backspace takes.
   const shown = useMemo(() => sortTags(tags), [tags]);
 
-  // Prefix-filtered suggestions, excluding tags already on this note.
+  // Suggestions that start with the draft (rank 3 of the one matcher, so
+  // "sec" suggests "Sécurité"), excluding tags already on this note.
   const suggestions = useMemo(() => {
     if (!allTags || draft.length === 0) return [];
-    const needle = draft.toLowerCase().replace(/^#/, '');
-    if (!needle) return [];
+    const match = textMatcher(draft.replace(/^#/, ''));
     const currentLower = new Set(tags.map((t) => t.toLowerCase()));
     return allTags
-      .filter(([t]) => !currentLower.has(t.toLowerCase()) && t.toLowerCase().startsWith(needle))
+      .filter(([t]) => !currentLower.has(t.toLowerCase()) && match(t)?.rank === 3)
       .sort((a, b) => b[1] - a[1]) // most-used first
       .slice(0, MAX_SUGGESTIONS);
   }, [allTags, draft, tags]);
@@ -179,6 +182,9 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
   }
 
   function handleKey(e: KeyboardEvent<HTMLInputElement>) {
+    // Space, comma and Enter commit a tag, and each one is also a key the
+    // input method uses to convert a reading.
+    if (isImeComposing(e)) return;
     // Arrow nav (desktop only).
     if (!isMobile && hasDropdown) {
       if (e.key === 'ArrowDown') {
@@ -300,8 +306,22 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
     };
   }, []);
 
+  // The part of a suggestion the draft matched, in bold. The offsets come
+  // from the matcher, because the fold changes lengths ("İ", "ß").
+  const prefixMatch = textMatcher(draft.replace(/^#/, ''));
+  function boldPrefix(tag: string) {
+    const match = prefixMatch(tag);
+    if (!match) return tag;
+    return (
+      <>
+        {tag.slice(0, match.start)}
+        <span className="font-semibold">{tag.slice(match.start, match.end)}</span>
+        {tag.slice(match.end)}
+      </>
+    );
+  }
+
   // Render the dropdown via portal.
-  const needle = draft.toLowerCase().replace(/^#/, '');
 
   const dropdown = hasDropdown && dropdownPos
     ? createPortal(
@@ -328,16 +348,7 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
               } ${isMobile ? 'min-h-[44px] py-2.5' : 'py-2'}`}
             >
               <span className="text-neutral-400 dark:text-neutral-600 text-xs">#</span>
-              <span className="text-pn truncate">
-                {needle && tag.toLowerCase().startsWith(needle) ? (
-                  <>
-                    <span className="font-semibold">{tag.slice(0, needle.length)}</span>
-                    {tag.slice(needle.length)}
-                  </>
-                ) : (
-                  tag
-                )}
-              </span>
+              <span className="text-pn truncate">{boldPrefix(tag)}</span>
               <span className="ml-auto text-xs text-neutral-400 dark:text-neutral-600 tabular-nums shrink-0">
                 {count}
               </span>
@@ -401,7 +412,10 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
             className="group inline-flex shrink-0 items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-accent/10 text-accent hover:bg-accent/20 transition whitespace-nowrap"
             dir="auto"
           >
-            #{tag}
+            <span className="inline-flex items-center">
+              <TagMark tag={tag} size={11} />
+              {tag}
+            </span>
             <button
               onClick={() => remove(tag)}
               className="text-accent/60 hover:text-red-500 dark:hover:text-red-400 transition text-[11px] leading-none"

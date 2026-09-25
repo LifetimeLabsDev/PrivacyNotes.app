@@ -12,7 +12,9 @@
     "uploadFailed": "Yükleme başarısız: {{message}}",
     "storeUnavailable": "Görsel deposu kullanılamıyor",
     "loadFailed": "Görsel yüklenemedi",
-    "notFound": "Görsel bulunamadı"
+    "notFound": "Görsel bulunamadı",
+    "saveFailed": "Kaydetme başarısız oldu, bu yüzden dosya boş ya da eksik olabilir.",
+    "viewAria": "Görseli görüntüle"
   },
   "attachment": {
     "fallbackName": "Ek",
@@ -26,7 +28,6 @@
     "deleteConfirm": "Silinsin mi?",
     "copied": "Kopyalandı",
     "download": "İndir",
-    "downloadToPlay": "Oynatmak için indirin",
     "play": "Oynat",
     "pause": "Duraklat",
     "fileNotFound": "Dosya bulunamadı",
@@ -37,6 +38,29 @@
     "downloadFailed": "İndirme başarısız",
     "playbackFailed": "Oynatma başarısız",
     "uploadFailed": "Yükleme başarısız: {{message}}",
-    "unknownError": "Bilinmeyen hata"
+    "unknownError": "Bilinmeyen hata",
+    "view": "Görüntüle",
+    "more": "Diğer işlemler"
+  },
+  "viewer": {
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "position": "{{index}} / {{count}}",
+    "zoomIn": "Yakınlaştır",
+    "zoomOut": "Uzaklaştır",
+    "pdfLoading": "PDF açılıyor...",
+    "pdfFailed": "Bu PDF açılamıyor. Başka bir uygulamada açmak için indirin.",
+    "pdfPassword": "Bu PDF parola korumalı. Başka bir uygulamada açmak için indirin.",
+    "saveFailed": "Kaydetme başarısız oldu, bu yüzden dosya boş ya da eksik olabilir.",
+    "pageCount_one": "{{count}} sayfa",
+    "pageCount_other": "{{count}} sayfa",
+    "pageLabel": "{{name}}, sayfa {{page}} / {{count}}"
+  },
+  "picker": {
+    "title": "Dosyalar'daki görseller",
+    "search": "Görsellerde ara",
+    "empty": "Dosyalar'da henüz görsel yok. Önce oraya bir görsel yükleyin, sonra buraya ekleyin.",
+    "noMatch": "Aramanızla eşleşen görsel yok.",
+    "noCopy": "Buraya eklediğiniz görsel Dosyalar'daki dosyayı gösterir, bu yüzden ek depolama alanı kullanmaz."
   }
 }

@@ -10,7 +10,8 @@
     "tags": "Etiketler",
     "currentStreak": "Mevcut seri",
     "longestStreak": "En uzun seri",
-    "streakValue": "{{count}} gün",
+    "streakValue_one": "{{count}} gün",
+    "streakValue_other": "{{count}} gün",
     "timeRangeAria": "Etkinlik zaman aralığı",
     "modeActivity": "Etkinlik",
     "modeMood": "Ruh hali",
@@ -59,6 +60,7 @@
       "doctorPDF": "Doktor PDF'i",
       "copyAIPrompt": "Yapay zekâ istemini kopyala",
       "copied": "Kopyalandı!",
+      "saveFailed": "Kaydetme başarısız oldu, bu yüzden dosya boş ya da eksik olabilir. Tekrar deneyin ya da başka bir klasör seçin.",
       "proBadge": "PRO"
     },
     "sleepActivity": {

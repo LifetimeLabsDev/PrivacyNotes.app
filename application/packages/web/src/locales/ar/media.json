@@ -12,7 +12,9 @@
     "uploadFailed": "فشل الرفع: {{message}}",
     "storeUnavailable": "مخزن الصور غير متاح",
     "loadFailed": "فشل تحميل الصورة",
-    "notFound": "الصورة غير موجودة"
+    "notFound": "الصورة غير موجودة",
+    "saveFailed": "فشل الحفظ، لذا قد يكون الملف فارغًا أو ناقصًا.",
+    "viewAria": "عرض الصورة"
   },
   "attachment": {
     "fallbackName": "مرفق",
@@ -26,7 +28,6 @@
     "deleteConfirm": "حذف؟",
     "copied": "تم النسخ",
     "download": "تنزيل",
-    "downloadToPlay": "التنزيل للتشغيل",
     "play": "تشغيل",
     "pause": "إيقاف مؤقت",
     "fileNotFound": "الملف غير موجود",
@@ -37,6 +38,33 @@
     "downloadFailed": "فشل التنزيل",
     "playbackFailed": "فشل التشغيل",
     "uploadFailed": "فشل الرفع: {{message}}",
-    "unknownError": "خطأ غير معروف"
+    "unknownError": "خطأ غير معروف",
+    "view": "عرض",
+    "more": "مزيد من الإجراءات"
+  },
+  "viewer": {
+    "previous": "السابق",
+    "next": "التالي",
+    "position": "{{index}} من {{count}}",
+    "zoomIn": "تكبير",
+    "zoomOut": "تصغير",
+    "pdfLoading": "جارٍ فتح ملف PDF...",
+    "pdfFailed": "تعذّر فتح ملف PDF هذا. نزّله لفتحه في تطبيق آخر.",
+    "pdfPassword": "ملف PDF هذا محمي بكلمة مرور. نزّله لفتحه في تطبيق آخر.",
+    "saveFailed": "فشل الحفظ، لذا قد يكون الملف فارغًا أو ناقصًا.",
+    "pageCount_zero": "{{count}} صفحات",
+    "pageCount_one": "{{count}} صفحة",
+    "pageCount_two": "{{count}} صفحتان",
+    "pageCount_few": "{{count}} صفحات",
+    "pageCount_many": "{{count}} صفحةً",
+    "pageCount_other": "{{count}} صفحة",
+    "pageLabel": "{{name}}، الصفحة {{page}} من {{count}}"
+  },
+  "picker": {
+    "title": "الصور في «الملفات»",
+    "search": "ابحث في الصور",
+    "empty": "لا توجد صور في «الملفات» بعد. ارفع صورة هناك ثم أضفها هنا.",
+    "noMatch": "لا توجد صور تطابق بحثك.",
+    "noCopy": "تشير الصورة التي تضيفها هنا إلى الملف في «الملفات»، لذا لا تشغل مساحة تخزين إضافية."
   }
 }

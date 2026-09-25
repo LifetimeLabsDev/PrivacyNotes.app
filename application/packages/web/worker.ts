@@ -40,6 +40,43 @@ interface AnalyticsEngineDataset {
   }): void;
 }
 
+/**
+ * The rest of the Cloudflare runtime this file uses, typed by hand for the
+ * same reason. Each shape is only the subset called here, so the Worker type
+ * check (tsconfig.worker.json) reports a call outside it instead of letting
+ * it reach the edge unchecked.
+ */
+interface Fetcher {
+  fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
+}
+
+/** The module Worker contract: the runtime calls `fetch` for every request. */
+interface ExportedHandler<E> {
+  fetch?(request: Request, env: E): Response | Promise<Response>;
+}
+
+interface RewriterElement {
+  append(content: string, options?: { html?: boolean }): RewriterElement;
+}
+
+declare global {
+  interface CacheStorage {
+    /** The zone's edge cache, which both image proxies read and write. */
+    readonly default: Cache;
+  }
+  interface RequestInit {
+    /** Cloudflare's cache controls for a subrequest the Worker makes. */
+    cf?: { cacheTtl?: number; cacheEverything?: boolean };
+  }
+  class HTMLRewriter {
+    on(
+      selector: string,
+      handlers: { element?(element: RewriterElement): void | Promise<void> },
+    ): HTMLRewriter;
+    transform(response: Response): Response;
+  }
+}
+
 // Spec: ops/docs/backlog.md (#69 - 90-day edge cache TTL)
 const CACHE_TTL = 90 * 24 * 60 * 60;
 
@@ -236,6 +273,9 @@ const LOCALE_SLUGS = new Set([
   '/tr',
   '/sv',
   '/ar',
+  '/uk',
+  '/ru',
+  '/th',
 ]);
 
 // Flat SEO landing pages (landing-pages.ts). Mirrors src/landingData/pages
@@ -259,6 +299,17 @@ const OFFSITE: Record<string, string> = {
   '/privacy': 'https://lifetimelabs.dev/privacy/',
   '/terms': 'https://lifetimelabs.dev/terms/',
 };
+
+/**
+ * A redirect target with an empty fragment of its own. When a redirect target
+ * names no fragment, the browser carries over the fragment of the address it
+ * left, and an auth server returns its tokens in exactly that fragment. An
+ * empty one on the target replaces whatever the request arrived with, so a
+ * redirect to the page that loads a payment script, or to another site,
+ * never carries it along. The other redirects keep the inherited fragment,
+ * which is how a link's anchor survives the hop.
+ */
+const withEmptyFragment = (target: string): string => `${target}#`;
 
 // robots.txt is served per-hostname because one Worker serves both the
 // apex and the demo subdomain: the apex advertises the sitemap index and
@@ -341,7 +392,8 @@ export default {
         p === '/llms-index.txt' ||
         p.startsWith('/sitemap')
       ) {
-        return Response.redirect(`${APEX_ORIGIN}${p}${url.search}`, 301);
+        const target = `${APEX_ORIGIN}${p}${url.search}`;
+        return Response.redirect(p === CHECKOUT_PATH ? withEmptyFragment(target) : target, 301);
       }
     }
 
@@ -386,7 +438,7 @@ export default {
 
     // ── Policy pages moved off-site (301) ───────────────────────
     const offsite = OFFSITE[url.pathname];
-    if (offsite) return Response.redirect(offsite, 301);
+    if (offsite) return Response.redirect(withEmptyFragment(offsite), 301);
 
     // ── Client-side app routes: serve the SPA shell ─────────────
     // Fetched as "/" rather than "/index.html" so html_handling has
@@ -650,14 +702,20 @@ function resolveReferrer(referer: string, rows: SourceRow[]): string | null {
   return null;
 }
 
-/** Download tiles we count. Anything else 404s rather than redirecting. */
+/**
+ * Download tiles we count. Any other platform is not counted and redirects to
+ * the marketing home, like an unresolved /go link.
+ */
 const DOWNLOAD_TARGETS: Record<string, string> = {
   mac: 'https://releases.privacynotes.app/latest/mac',
   windows: 'https://releases.privacynotes.app/latest/windows',
   linux: 'https://releases.privacynotes.app/latest/linux',
   apk: 'https://releases.privacynotes.app/latest/apk',
   play: 'https://play.google.com/store/apps/details?id=app.privacynotes',
-  appstore: 'https://apps.apple.com/app/privacynotes/id6749376533',
+  // APP_STORE_URL in src/hosts.ts, copied because that module reads `window`
+  // and this file is type-checked without it. tests/appStoreId.test.ts holds
+  // the two equal.
+  appstore: 'https://apps.apple.com/app/id6785958812',
 };
 
 /** Shape only. Membership is decided against the fetched list. */
@@ -732,7 +790,9 @@ async function handleCampaignRoute(
     const platform = parts[1] ?? '';
     const dest = DOWNLOAD_TARGETS[platform];
     if (!dest) return Response.redirect(home, 302);
-    target = dest;
+    // A download target is a store or a release host, and a fragment the link
+    // arrived with has nothing to do there.
+    target = withEmptyFragment(dest);
     blobs = ['dl', platform, '', country];
   } else {
     const slug = normalizeSlug(parts[1], await loadSources());

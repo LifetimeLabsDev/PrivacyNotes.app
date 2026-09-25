@@ -431,12 +431,15 @@ export function hasMedia(body: string): boolean {
 
 /**
  * Strip image and attachment references from a markdown body.
- * Removes full markdown image syntax `![...](pn:img/<uuid>)` and
- * link syntax `[...](pn:file/<uuid>)`, then collapses leftover blank lines.
+ * Removes full markdown image syntax `![...](pn:img/<uuid>)` - and
+ * `![...](pn:file/<uuid>)`, a picture placed from Files - and link syntax
+ * `[...](pn:file/<uuid>)`, then collapses leftover blank lines. The pictures
+ * go first: the link pattern would otherwise take the `[...](...)` inside
+ * one and leave its `!` and size suffix behind.
  */
 export function stripMediaReferences(body: string): string {
   return body
-    .replace(/!\[[^\]]*\]\(pn:img\/[0-9a-f-]{36}\)(?:\{[^}]*\})?\n?/g, '')
+    .replace(/!\[[^\]]*\]\(pn:(?:img|file)\/[0-9a-f-]{36}\)(?:\{[^}]*\})?\n?/g, '')
     .replace(/\[[^\]]*\]\(pn:file\/[0-9a-f-]{36}\)\n?/g, '')
     // Clean up orphaned hard-break markers (\ on a line by itself)
     // left behind when the stripped media was preceded by a hard break.

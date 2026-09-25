@@ -18,6 +18,12 @@ mod file_assoc;
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 mod print;
 
+/// The cover iOS photographs in place of the notes when the app leaves the
+/// screen. Android does the same job with a window property of its own, set
+/// from MainActivity.kt, so nothing here is compiled for it.
+/// Spec: ops/docs/plans/app-switcher-privacy-screen.md
+mod privacy_screen;
+
 /// Files the OS asked us to open before the webview was ready to hear about it.
 ///
 /// A cold start from a double-click delivers the path within milliseconds, long
@@ -44,11 +50,16 @@ const APP_SCHEME: &str = "privacynotes:";
 /// True when the argument is one of our own deep links.
 ///
 /// Case-insensitively, because a scheme is case-insensitive and the shell
-/// hands over whatever the sender typed.
+/// hands over whatever the sender typed. Compared as bytes, because every
+/// launch argument reaches this, argv[0] included, and a range over a `str`
+/// panics when it ends inside a character: a per-user Windows install puts
+/// the profile folder name in argv[0], and for José or 田中 byte 13 is
+/// mid-character.
 #[cfg(desktop)]
 fn announces_app_scheme(arg: &str) -> bool {
-    arg.len() >= APP_SCHEME.len()
-        && arg[..APP_SCHEME.len()].eq_ignore_ascii_case(APP_SCHEME)
+    arg.as_bytes()
+        .get(..APP_SCHEME.len())
+        .is_some_and(|head| head.eq_ignore_ascii_case(APP_SCHEME.as_bytes()))
 }
 
 #[cfg(desktop)]
@@ -73,8 +84,7 @@ fn is_openable(path: &str) -> bool {
 /// past an earlier version of this test.
 #[cfg(desktop)]
 fn has_url_scheme(arg: &str) -> bool {
-    let Some(colon) = arg.find(':') else { return false };
-    let scheme = &arg[..colon];
+    let Some((scheme, _)) = arg.split_once(':') else { return false };
     if scheme.len() < 2 || scheme.contains('/') || scheme.contains('\\') {
         return false;
     }
@@ -400,8 +410,50 @@ fn rendezvous_is_ours(_config: &tauri::Config) -> bool {
     true
 }
 
+/// The arguments to restart with when a launch argument after argv[0] is
+/// not valid Unicode, or None when there is nothing to drop.
+///
+/// argv[0] is never examined. Every argument a restart passes on is a
+/// `String`, so the restarted process always gets None here and a restart
+/// can never lead to another.
+#[cfg(all(desktop, unix))]
+fn restart_without_non_unicode_args(
+    args: impl Iterator<Item = std::ffi::OsString>,
+) -> Option<Vec<String>> {
+    let mut kept = Vec::new();
+    let mut dropped = false;
+    for arg in args.skip(1) {
+        match arg.into_string() {
+            Ok(arg) => kept.push(arg),
+            Err(_) => dropped = true,
+        }
+    }
+    dropped.then_some(kept)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // On Linux and macOS, no launch argument after argv[0] reaches the
+    // builder unless it is valid Unicode. The deep-link plugin (every Linux
+    // launch) and the single-instance plugin (a second launch, on Linux and
+    // macOS) read `std::env::args()` inside `Builder::build`, and it panics
+    // on an argument that will not convert, which a Linux file name is free
+    // to be. Such an argument is dropped and the process restarts without
+    // it: that file does not open, and the app does. `exec` returns only
+    // when the restart failed, and the launch then goes on as it would have.
+    // A failed `current_exe()` skips the restart, and the launch goes on the
+    // same way.
+    // Windows is left out: an argument there fails to convert only when it
+    // carries an unpaired UTF-16 surrogate.
+    #[cfg(all(desktop, unix))]
+    if let Some(kept) = restart_without_non_unicode_args(std::env::args_os()) {
+        if let Ok(exe) = std::env::current_exe() {
+            use std::os::unix::process::CommandExt;
+            let err = std::process::Command::new(exe).args(kept).exec();
+            eprintln!("could not restart without the non-Unicode arguments: {err}");
+        }
+    }
+
     // WebKitGTK's DMA-BUF renderer paints nothing on some Linux GPUs (NVIDIA
     // proprietary drivers, certain Wayland compositors): the window opens but
     // stays blank. Force the stable render path. Must run before any GTK code,
@@ -497,13 +549,15 @@ pub fn run() {
         take_pending_opens,
         markdown_assoc_status,
         markdown_assoc_claim,
-        markdown_assoc_open_os_settings
+        markdown_assoc_open_os_settings,
+        set_privacy_screen
     ]);
     #[cfg(mobile)]
     let builder = builder.invoke_handler(tauri::generate_handler![
         biometric_available,
         biometric_authenticate,
-        print_html
+        print_html,
+        set_privacy_screen
     ]);
 
     builder
@@ -518,14 +572,16 @@ pub fn run() {
                 // is in our own argv. macOS does not use argv for this - it
                 // sends an Apple Event, handled by RunEvent::Opened below.
                 //
-                // `args_os` and not `args`: `std::env::args()` PANICS on any
-                // argument that is not valid Unicode, and a Linux filename is a
-                // byte string with no encoding guarantee at all. Double-clicking
-                // a legally-named file would have taken the app down on launch,
-                // which is a worse failure than not opening it. Arguments that
-                // will not convert are dropped rather than lossily mangled: the
-                // frontend takes a path as a `String`, so a replacement-character
-                // path could not be read anyway and would only fail later, in a
+                // `args_os` and not `args`: `std::env::args()` panics on any
+                // argument that is not valid Unicode, and a Linux file name is a
+                // byte string with no encoding guarantee at all. This read is
+                // not what keeps such a launch alive: the plugins call
+                // `std::env::args()` inside `Builder::build`, before `setup`,
+                // so on Linux and macOS `run()` drops those arguments and
+                // restarts before the builder exists. A path that will not
+                // convert is dropped rather than lossily mangled: the frontend
+                // takes a path as a `String`, so a replacement-character path
+                // could not be read anyway and would only fail later, in a
                 // place that does not name the cause.
                 queue_from_args(std::env::args_os().filter_map(|a| a.into_string().ok()));
                 if let Some(window) = app.get_webview_window("main") {
@@ -587,6 +643,15 @@ pub fn run() {
                     }
                 });
             }
+
+            // Start watching for the app leaving the screen. Registered here
+            // rather than on the frontend's first push, because the observers
+            // have to be in place before the first backgrounding and the push
+            // arrives only once the web bundle has booted. They read a flag
+            // that is false until it does, so an early transition covers
+            // nothing, which is the right answer at that point.
+            // Spec: ops/docs/plans/app-switcher-privacy-screen.md
+            privacy_screen::observe();
 
             let _ = &app;
             Ok(())
@@ -767,6 +832,17 @@ async fn print_html(app: tauri::AppHandle, html: String, job_name: String) -> Re
     }
 }
 
+/// Arm or disarm the cover the operating system photographs in place of the
+/// notes. The frontend is the only side that knows whether the app lock is on,
+/// and it pushes from the one place local settings are written.
+///
+/// The cover is black on every theme, so nothing but the switch crosses the
+/// bridge. Spec: ops/docs/plans/app-switcher-privacy-screen.md
+#[tauri::command]
+fn set_privacy_screen(enabled: bool) {
+    privacy_screen::set(enabled);
+}
+
 /// Opens (or focuses) the custom About window. The web bundle renders it:
 /// main.tsx branches to AboutWindow.tsx when the URL carries ?about-window=1.
 /// Fixed-size and closable only, mimicking the standard macOS About panel;
@@ -814,6 +890,12 @@ fn open_about_window(app: &tauri::AppHandle) {
 #[cfg(all(test, desktop))]
 mod tests {
     use super::*;
+
+    /// `PENDING_OPEN` is one queue for the whole process and the harness
+    /// runs tests on parallel threads, so every test that fills it holds
+    /// this for its whole run. Its poisoning is ignored: a test that fails
+    /// while holding it has already reported that failure.
+    static QUEUE: std::sync::Mutex<()> = std::sync::Mutex::new(());
 
     #[test]
     fn claims_the_registered_extensions_and_nothing_else() {
@@ -901,6 +983,7 @@ mod tests {
 
     #[test]
     fn a_batch_carrying_the_app_scheme_queues_nothing() {
+        let _queue = QUEUE.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
         // What the Windows forwarder produces from one crafted link: the
         // scheme token, then the payload, which announces nothing and ends in
         // a registered extension. A UNC name is the sharp one - opening it is
@@ -926,6 +1009,7 @@ mod tests {
 
     #[test]
     fn a_network_path_still_opens_when_nobody_smuggled_it() {
+        let _queue = QUEUE.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
         // The refusal is about the delivery, not the shape: a double-click on
         // a note that lives on a real file server is an ordinary open.
         PENDING_OPEN.lock().unwrap().clear();
@@ -993,6 +1077,7 @@ mod tests {
 
     #[test]
     fn queue_skips_argv_zero_and_keeps_the_order_given() {
+        let _queue = QUEUE.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
         PENDING_OPEN.lock().unwrap().clear();
         queue_from_args([
             "/Applications/PrivacyNotes.app/Contents/MacOS/a.md".to_string(),
@@ -1003,5 +1088,97 @@ mod tests {
         let queued = PENDING_OPEN.lock().unwrap().clone();
         assert_eq!(queued, vec!["/tmp/first.md", "/tmp/second.txt"]);
         PENDING_OPEN.lock().unwrap().clear();
+    }
+
+    /// Launch arguments whose byte 13, the scheme's length, falls inside a
+    /// character: argv[0] of a per-user Windows install under each of these
+    /// profile names, and a Linux note path. The first assertion pins that,
+    /// so the fixtures keep testing the boundary if the scheme changes.
+    #[test]
+    fn a_non_ascii_launch_argument_is_not_a_link() {
+        for arg in [
+            "C:\\Users\\José\\AppData\\Local\\PrivacyNotes\\privacynotes.exe",
+            "C:\\Users\\René\\AppData\\Local\\PrivacyNotes\\privacynotes.exe",
+            "C:\\Users\\María\\AppData\\Local\\PrivacyNotes\\privacynotes.exe",
+            "C:\\Users\\田中\\AppData\\Local\\PrivacyNotes\\privacynotes.exe",
+            "C:\\Users\\김철수\\AppData\\Local\\PrivacyNotes\\privacynotes.exe",
+            "C:\\Users\\さくら\\AppData\\Local\\PrivacyNotes\\privacynotes.exe",
+            "/home/wang/文档/note.md",
+        ] {
+            assert!(!arg.is_char_boundary(APP_SCHEME.len()), "{arg}");
+            assert!(!announces_app_scheme(arg), "{arg}");
+        }
+        // Still a scheme test: ASCII case is ignored, and an argument
+        // shorter than the scheme is never a link.
+        assert!(announces_app_scheme("PrivacyNotes://auth-callback"));
+        assert!(!announces_app_scheme("privacynote"));
+    }
+
+    /// The restart decision `run()` acts on before the builder exists, one
+    /// case per outcome.
+    #[cfg(unix)]
+    #[test]
+    fn a_restart_drops_only_non_unicode_arguments_after_argv_zero() {
+        use std::ffi::OsString;
+        use std::os::unix::ffi::OsStringExt;
+
+        // argv[0] is never examined, so a restart cannot lead to another.
+        assert_eq!(
+            restart_without_non_unicode_args(
+                [OsString::from_vec(b"/opt/caf\xe9/privacynotes".to_vec())].into_iter(),
+            ),
+            None,
+        );
+        // The argument that will not convert is dropped, argv[0] is not
+        // passed on, and the rest keep their order.
+        assert_eq!(
+            restart_without_non_unicode_args(
+                [
+                    OsString::from("/usr/bin/privacynotes"),
+                    OsString::from_vec(b"/home/anna/caf\xe9.md".to_vec()),
+                    OsString::from("/home/wang/文档/note.md"),
+                    OsString::from("/home/anna/second.md"),
+                ]
+                .into_iter(),
+            ),
+            Some(vec![
+                "/home/wang/文档/note.md".to_string(),
+                "/home/anna/second.md".to_string(),
+            ]),
+        );
+        // Nothing to drop, no restart.
+        assert_eq!(
+            restart_without_non_unicode_args(
+                [
+                    OsString::from("/usr/bin/privacynotes"),
+                    OsString::from("/home/wang/文档/note.md"),
+                ]
+                .into_iter(),
+            ),
+            None,
+        );
+    }
+
+    /// The same launches end to end: a Windows cold start from a profile
+    /// folder named José, and a Linux double-click on a note in a folder
+    /// named in Cyrillic. Each has to queue its file, not abort the app.
+    #[test]
+    fn a_non_ascii_launch_still_queues_its_file() {
+        let _queue = QUEUE.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+        PENDING_OPEN.lock().unwrap().clear();
+        queue_from_args([
+            "C:\\Users\\José\\AppData\\Local\\PrivacyNotes\\privacynotes.exe".to_string(),
+            "C:\\Users\\José\\Documents\\note.md".to_string(),
+        ]);
+        queue_from_args([
+            "/usr/bin/privacynotes".to_string(),
+            "/home/max/Документы/x.md".to_string(),
+        ]);
+        let queued = PENDING_OPEN.lock().unwrap().clone();
+        PENDING_OPEN.lock().unwrap().clear();
+        assert_eq!(
+            queued,
+            vec!["C:\\Users\\José\\Documents\\note.md", "/home/max/Документы/x.md"],
+        );
     }
 }

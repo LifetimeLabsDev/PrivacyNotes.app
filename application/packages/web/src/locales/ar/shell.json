@@ -140,6 +140,7 @@
     "closeMenu": "إغلاق القائمة",
     "close": "إغلاق",
     "views": "المحتوى",
+    "resizeSplit": "تغيير حجم «المحتوى» والوسوم أو المجلدات",
     "sidebarOptions": "خيارات الشريط الجانبي",
     "showInSidebar": "العرض في الشريط الجانبي",
     "allOptions": "خيارات «الكل»",
@@ -337,7 +338,7 @@
     "duplicate": "تكرار",
     "moveToFolder": "نقل إلى مجلد",
     "exportAsMarkdown": "التصدير كـ Markdown",
-    "shareBurnAfterReading": "مشاركة والحذف بعد القراءة",
+    "shareBurnAfterReading": "مشاركة وحرق بعد القراءة",
     "exportAsHtml": "التصدير كـ HTML",
     "printSaveAsPdf": "طباعة / حفظ كـ PDF",
     "moveToTrash": "نقل إلى المهملات",
@@ -475,6 +476,7 @@
     "openAction": "فتح",
     "copiedUrl": "تم نسخ الرابط",
     "moveToTrash": "نقل إلى المهملات",
+    "rowMenu": "مزيد من الإجراءات",
     "emptyNone": "لا إشارات مرجعية بعد.",
     "emptyTitle": "احفظ المواقع التي تستحق البقاء",
     "emptyAdd": "إضافة إشارة مرجعية",
@@ -617,5 +619,8 @@
     "retargetedToast_two": "تم تحديث {{count}} رابطين بين الملاحظات إلى العنوان الجديد.",
     "retargetedToast_few": "تم تحديث {{count}} روابط بين الملاحظات إلى العنوان الجديد.",
     "retargetedToast_many": "تم تحديث {{count}} رابطًا بين الملاحظات إلى العنوان الجديد."
+  },
+  "looks": {
+    "menu": "الأيقونة واللون"
   }
 }

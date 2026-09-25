@@ -29,6 +29,9 @@ const SLUG_TO_LOCALE: Record<string, string> = {
   tr: 'tr',
   sv: 'sv',
   ar: 'ar',
+  uk: 'uk',
+  ru: 'ru',
+  th: 'th',
 };
 
 export const LOCALE_TO_SLUG: Record<string, string> = {
@@ -49,6 +52,9 @@ export const LOCALE_TO_SLUG: Record<string, string> = {
   tr: '/tr',
   sv: '/sv',
   ar: '/ar',
+  uk: '/uk',
+  ru: '/ru',
+  th: '/th',
 };
 
 /** The locale named by the first path segment (/de, /pt, /br), or null at apex. */

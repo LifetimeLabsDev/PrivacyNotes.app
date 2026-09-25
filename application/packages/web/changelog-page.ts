@@ -3,6 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss } from './static-page-theme.ts';
+import { SEARCH_CORE_SCRIPT_TAG } from './search-core-script.ts';
+import { foldText } from './src/textFold.ts';
 import { brandMark, BUG_ICON, CHROME_CSS, LINK_ICON, OG_IMAGE_TAGS, ogLocaleTag, RSS_ICON, SITE_FOOTER, siteNav, TEXT_ICON } from './static-page-chrome.ts';
 
 // Pre-renders a static /changelog page from the single source of
@@ -116,14 +118,14 @@ function monthKey(iso: string): string {
 }
 
 /**
- * Everything a query can match on one release, lowercased: title, every item
- * body, the version, and the date in both the shapes a reader might type
- * ("0.294", "august", "aug 4, 2026", "2026-08-04"). Matching only the prose
- * would make the obvious searches - a version number, a month - come back
- * empty on a page whose whole job is versions and months.
+ * Everything a query can match on one release, folded as the app folds text:
+ * title, every item body, the version, and the date in both the shapes a
+ * reader might type ("0.294", "august", "aug 4, 2026", "2026-08-04"). Matching
+ * only the prose would make the obvious searches - a version number, a month -
+ * come back empty on a page whose whole job is versions and months.
  */
 function haystack(r: ChangelogRelease): string {
-  return (
+  return foldText(
     [
       r.title,
       r.items.map((i) => `${LABEL[i.type]} ${i.text}`).join(' '),
@@ -132,14 +134,8 @@ function haystack(r: ChangelogRelease): string {
       r.date,
       fmtDate(r.date),
       fmtMonth(r.date),
-    ].join(' ')
-    // Must match norm() in public/static-pages.js exactly: that function
-    // strips diacritics off the QUERY, so a haystack that keeps them would
-    // silently stop matching every accented word.
-  )
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase();
+    ].join(' '),
+  );
 }
 
 const SEARCH_ICON =
@@ -330,6 +326,7 @@ ${ogLocaleTag()}
 ${OG_IMAGE_TAGS}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 ${THEME_SCRIPT_TAG}
+${SEARCH_CORE_SCRIPT_TAG}
 <script src="/static-pages.js" defer></script>
 <style>
 ${themeVarsCss(

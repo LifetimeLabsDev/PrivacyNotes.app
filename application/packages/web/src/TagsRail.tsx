@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePointMenuPosition } from './usePopoverPosition';
 import { VERSION } from './version';
@@ -11,19 +11,40 @@ import { SidebarOptionsPopover } from './SidebarOptionsPopover';
 import { allViewRows, sidebarViewRows } from './viewRows';
 import { TAG_MAX_LENGTH } from './notesRepo';
 import type { UserSettings } from './userSettings';
-import type { FolderDef } from './folders';
+import { subtreeIds, type FolderDef } from './folders';
 import { FolderTree, type FolderTreeProps } from './FolderTree';
 import type { FolderSortDir, FolderSortField } from './folders';
-import { IconUpgrade } from './UpgradeModal';
-import { Star, Hash, DotsThree, PencilSimple, Trash, X, CaretDown, SquaresFour, List, Sparkle, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, type Icon, PILLAR_GLYPHS } from './icons';
+import { IconUpgrade, ProMark } from './UpgradeModal';
+import { Star, Hash, DotsThree, PencilSimple, Palette, Trash, X, CaretDown, SquaresFour, List, Sparkle, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, type Icon, PILLAR_GLYPHS } from './icons';
 import { isViewShown, type View } from './views';
 import { exemptOpts } from './i18nExempt';
-import { SIDEBAR_ACTIVE } from './sidebarUI';
+import { SIDEBAR_ACTIVE, SIDEBAR_ROW_MENU_BUTTON } from './sidebarUI';
 import { marketingHomeHref, siteHref } from './siteLinks';
 import { useUpdateAvailable } from './updateAvailable';
 import { UpdateDot } from './UpdateDot';
 import { helpPath } from './localeRoutes';
 import { activeLocale } from './languages';
+import { proUnlocked } from './demo';
+import {
+  folderColor,
+  folderLookKey,
+  isLookColor,
+  restoreLooks,
+  setFolderColor,
+  setItemLook,
+  setSubfolderColors,
+  snapshotLooks,
+  tagLookKey,
+  type Look,
+} from './itemStyles';
+import { TagGlyph } from './looks/LookGlyph';
+import type { LookTarget } from './looks/LookPicker';
+import { useSidebarSplit } from './useSidebarSplit';
+import { isImeComposing } from './imeComposing';
+
+// The look picker is its own chunk: it opens from a row menu, so no boot
+// path has to carry it.
+const LookPicker = lazy(() => import('./looks/LookPicker').then((m) => ({ default: m.LookPicker })));
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -135,8 +156,13 @@ export interface TagsRailProps {
   handleDeleteTagAndNotes: (tag: string) => void;
 
   // Global view mode
-  userSettings: Pick<UserSettings, 'viewMode' | 'hiddenViews' | 'hiddenInAll'>;
+  userSettings: Pick<UserSettings, 'viewMode' | 'hiddenViews' | 'hiddenInAll' | 'itemStyles' | 'tintNotes'>;
   mutateSettings: (fn: (prev: UserSettings) => UserSettings) => void;
+  /** A free account asked for a folder or tag look: open the upgrade window. */
+  onLooksLocked: () => void;
+  /** The look picker closed after a change: push the settings now, as a
+   *  folder action does, rather than at the next poll. */
+  onLooksSaved: () => void;
   /** Owned by NotesView, because switching off the OPEN view also leaves it -
    *  a decision the rail cannot make on its own. Shared with the Appearance
    *  table so the two surfaces cannot drift.
@@ -299,6 +325,8 @@ export function TagsRail(props: TagsRailProps) {
     handleDeleteTagAndNotes,
     userSettings,
     mutateSettings,
+    onLooksLocked,
+    onLooksSaved,
     onToggleHidden,
     setImportExportModal,
     mobileTabIndex,
@@ -306,6 +334,42 @@ export function TagsRail(props: TagsRailProps) {
   } = props;
 
   const newTagInputRef = useRef<HTMLInputElement | null>(null);
+  // The divider between Content and the tags or folders (useSidebarSplit).
+  const contentSectionRef = useRef<HTMLDivElement | null>(null);
+  const browseListRef = useRef<HTMLDivElement | null>(null);
+  const split = useSidebarSplit(contentSectionRef, browseListRef);
+  // A set height only applies while both parts are open; the Markdown pillar
+  // has its own rail below the list and no divider.
+  const splitActive = !markdownRail && !viewsCollapsed;
+  // The look picker, opened from a folder or a tag row menu at the point the
+  // menu stood. Pro, like every folder action; a free account gets the
+  // upgrade window instead.
+  // `before` is what Cancel puts back: every pick saves at once.
+  const [lookEdit, setLookEdit] = useState<{
+    target: LookTarget;
+    before: { looks: Record<string, Look>; tintNotes: boolean };
+  } | null>(null);
+  const lookSaved = useRef(false);
+  const lookSubfolderIds = useMemo(() => {
+    const id = lookEdit?.target.kind === 'folder' ? lookEdit.target.folderId : undefined;
+    return id ? [...subtreeIds(folders, id)].filter((f) => f !== id) : [];
+  }, [folders, lookEdit]);
+  const foldersById = useMemo(() => new Map(folders.map((f) => [f.id, f])), [folders]);
+  function openLook(target: LookTarget) {
+    if (!proUnlocked(isPro)) {
+      onLooksLocked();
+      return;
+    }
+    // A folder's color can reach every folder below it (the subfolder
+    // switch), so Cancel keeps their looks too.
+    const keys = target.folderId
+      ? [...subtreeIds(folders, target.folderId)].map(folderLookKey)
+      : [target.lookKey];
+    setLookEdit({
+      target,
+      before: { looks: snapshotLooks(userSettings.itemStyles, keys), tintNotes: userSettings.tintNotes },
+    });
+  }
   const [tagSortOpen, setTagSortOpen] = useState(false);
   // The two sidebar option menus: the gear beside the Views caption (which
   // rows the rail draws) and the funnel in the All row (which item types the
@@ -345,6 +409,26 @@ export function TagsRail(props: TagsRailProps) {
   const sidebarOptionRows = sidebarViewRows(t);
   const allOptionRows = allViewRows(t);
 
+  // Trash scrolls with the tags, and stays under the switch while they are folded.
+  const trashRow = (
+    <div className="mt-2 -mx-3 px-3 border-t border-divider pt-2">
+      <button
+        onClick={() => handleSelectView('trash')}
+        className={viewBtnClass(view === 'trash')}
+      >
+        <span className="flex items-center gap-2">
+          <span className="text-accent inline-flex">
+            <Trash size={16} />
+          </span>
+          {t('tagsRail.trash')}
+        </span>
+        <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
+          {trashedCount}
+        </span>
+      </button>
+    </div>
+  );
+
   // ── renderTagRow ───────────────────────────────────────────────────
 
   const renderTagRow = (tag: string, count: number, isFavorite: boolean) => {
@@ -356,7 +440,7 @@ export function TagsRail(props: TagsRailProps) {
     // it. The two rails sit in the same slot behind one toggle, so a tag row
     // that is taller and heavier than a folder row reads as a different
     // component rather than the same list of filters.
-    const rowClass = `w-full rounded text-[15px] lg:text-[13px] font-medium transition flex items-center group ${
+    const rowClass = `w-full rounded text-[15px] font-medium transition flex items-center group ${
       active
         ? SIDEBAR_ACTIVE
         : 'text-neutral-900 hover:bg-neutral-200/60 dark:text-white dark:hover:bg-neutral-900/60'
@@ -384,22 +468,18 @@ export function TagsRail(props: TagsRailProps) {
               // view composing, nothing else in the rail would.
               void handleSelectTag(active ? null : tag);
             }}
-            className="flex-1 min-w-0 flex items-center gap-2 lg:gap-1.5 px-2 py-2 lg:py-1 text-start"
+            className="flex-1 min-w-0 flex items-center gap-2 px-2 py-2 text-start"
           >
             {/* Amber, like a folder glyph, and accent while the row is
                 active - the same two states FolderTree.renderRow uses. A tag
                 and a folder are the same kind of thing (a filter you keep),
                 and amber is what this app now paints filters with: the chips
                 in the list pane, the folder rail, this rail. A favourite
-                keeps its brighter amber-400 star on top of that. */}
+                keeps its brighter amber-400 on top of that, around its star
+                or around the icon it wears. A tag's own color wins over
+                both (TagGlyph). */}
             <span className={`inline-flex shrink-0 ${active ? 'text-accent' : isFavorite ? 'text-amber-400' : 'text-amber-600/80 dark:text-amber-500/80'}`}>
-              {isFavorite ? (
-                // filled star for favorites
-                <Star size={16} weight="fill" className="lg:w-3.5 lg:h-3.5" />
-              ) : (
-                // hash icon
-                <Hash size={16} className="lg:w-3.5 lg:h-3.5" />
-              )}
+              <TagGlyph tag={tag} favorite={isFavorite} size={16} />
             </span>
             {isRenaming ? (
               <input
@@ -408,6 +488,7 @@ export function TagsRail(props: TagsRailProps) {
                 value={renameBuffer}
                 onChange={(e) => setRenameBuffer(e.target.value)}
                 onKeyDown={(e) => {
+                  if (isImeComposing(e)) return;
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     void commitRenameTag(tag, renameBuffer);
@@ -418,7 +499,7 @@ export function TagsRail(props: TagsRailProps) {
                 }}
                 onBlur={() => setRenamingTag(null)}
                 onClick={(e) => e.stopPropagation()}
-                className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-[15px] lg:text-[13px] font-medium text-pn"
+                className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-[15px] font-medium text-pn"
               />
             ) : (
               <span className="truncate">{tag}</span>
@@ -436,7 +517,7 @@ export function TagsRail(props: TagsRailProps) {
                 }
               }}
               aria-label={t('tagsRail.actionsForTag', { tag })}
-              className="shrink-0 inline-flex items-center justify-center w-6 h-6 rounded text-neutral-500 hover:text-accent hover:bg-neutral-300/60 dark:hover:bg-neutral-800/60 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+              className={SIDEBAR_ROW_MENU_BUTTON}
             >
               <DotsThree />
             </button>
@@ -470,7 +551,7 @@ export function TagsRail(props: TagsRailProps) {
                 }}
                 className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
               >
-                <Star weight={isFavorite ? 'fill' : 'bold'} className={isFavorite ? 'text-amber-400' : ''} />
+                <Star weight={isFavorite ? 'fill' : 'bold'} className={isFavorite ? 'text-amber-400' : 'text-accent'} />
                 {isFavorite ? t('tagsRail.removeFavorite') : t('tagsRail.markAsFavorite')}
               </button>
               <button
@@ -481,8 +562,19 @@ export function TagsRail(props: TagsRailProps) {
                 }}
                 className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
               >
-                <PencilSimple />
+                <PencilSimple className="text-accent" />
                 {t('tagsRail.renameTag')}
+              </button>
+              <button
+                onClick={() => {
+                  setOpenTagMenu(null);
+                  openLook({ kind: 'tag', lookKey: tagLookKey(tag), name: tag, favorite: isFavorite });
+                }}
+                className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
+              >
+                <Palette className="text-accent" />
+                <span className="flex-1">{t('looks.menu')}</span>
+                {!isPro && <ProMark />}
               </button>
               <button
                 onClick={() => {
@@ -492,7 +584,7 @@ export function TagsRail(props: TagsRailProps) {
                 }}
                 className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
               >
-                <Plus />
+                <Plus className="text-accent" />
                 {t('tagsRail.createTag')}
               </button>
               <div className="my-1 border-t border-divider" />
@@ -611,7 +703,11 @@ export function TagsRail(props: TagsRailProps) {
           survived while the list was long and was cut the moment the list
           folded, because the box then shrank to the caption itself (reported
           2026-08-22). Spec: ops/docs/plans/sidebar-views.md */}
-      <div className="shrink min-h-0 flex flex-col py-3 border-b border-divider">
+      <div
+        ref={contentSectionRef}
+        className={`min-h-0 flex flex-col py-3 ${markdownRail ? 'shrink border-b border-divider' : split.folded ? 'flex-1' : 'shrink'}`}
+        style={splitActive && !split.folded && split.height !== null ? { flex: `0 1 ${split.height}px` } : undefined}
+      >
         <div className="shrink-0 px-3">
         {/* Caption and gear are SIBLINGS. The caption is a button (it folds the
             list) and a button cannot contain another one. The gear sits outside
@@ -780,6 +876,16 @@ export function TagsRail(props: TagsRailProps) {
           data and must not be reachable while that pillar is open. Passed in as
           an element so this file never learns what a Markdown folder is. */}
       {markdownRail ?? (<>
+      {/* The divider: drag to share the height, drag to the bottom to fold
+          the tags or folders, double-click to put it back. It draws the
+          line the Content part used to carry as its bottom border. */}
+      <div
+        {...split.separatorProps}
+        aria-label={t('tagsRail.resizeSplit')}
+        className="pn-hstrip shrink-0 h-3 border-t border-b border-divider bg-surface-0 hover:bg-surface-1 text-pn-muted hover:text-accent transition"
+      >
+        <span className="pn-hstrip-dots" aria-hidden="true" />
+      </div>
       {/* Browse toggle (Tags | Folders) + tag sort popover - pinned (shrink-0)
          above the scrollable list so its height is always reserved (never
          overlapped when the sidebar is short) and the absolute sort popover
@@ -893,7 +999,10 @@ export function TagsRail(props: TagsRailProps) {
           >
             <button
               type="button"
-              onClick={() => onBrowseChange('tags')}
+              onClick={() => {
+                split.unfold();
+                onBrowseChange('tags');
+              }}
               aria-pressed={browseMode === 'tags'}
               className={`flex-auto min-w-0 inline-flex items-center justify-center gap-1 px-1.5 py-1 text-[12px] font-medium transition ${
                 browseMode === 'tags'
@@ -906,7 +1015,10 @@ export function TagsRail(props: TagsRailProps) {
             </button>
             <button
               type="button"
-              onClick={() => onBrowseChange('folders')}
+              onClick={() => {
+                split.unfold();
+                onBrowseChange('folders');
+              }}
               aria-pressed={browseMode === 'folders'}
               className={`flex-auto min-w-0 inline-flex items-center justify-center gap-1 px-1.5 py-1 text-[12px] font-medium transition ${
                 browseMode === 'folders'
@@ -921,7 +1033,8 @@ export function TagsRail(props: TagsRailProps) {
           </div>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-3 min-h-0">
+      {!split.folded && (
+      <div ref={browseListRef} className="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-3 min-h-0">
         {browseMode === 'folders' ? (
           <FolderTree
             folders={folders}
@@ -935,7 +1048,16 @@ export function TagsRail(props: TagsRailProps) {
             onReorderFolders={onReorderFolders}
             onRequestDelete={onRequestDeleteFolder}
             locked={foldersLocked}
+            looksProMark={!isPro}
             onLockedAction={onFoldersLockedAction}
+            onEditLook={(id) =>
+              openLook({
+                kind: 'folder',
+                lookKey: folderLookKey(id),
+                folderId: id,
+                name: foldersById.get(id)?.name ?? '',
+              })
+            }
             sortField={folderSortField}
             sortDir={folderSortDir}
             mobileTabIndex={mobileTabIndex}
@@ -964,6 +1086,7 @@ export function TagsRail(props: TagsRailProps) {
                 value={newTagDraft}
                 onChange={(e) => setNewTagDraft(e.target.value)}
                 onKeyDown={(e) => {
+                  if (isImeComposing(e)) return;
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     void handleCreateTag(newTagDraft);
@@ -984,7 +1107,7 @@ export function TagsRail(props: TagsRailProps) {
                 maxLength={TAG_MAX_LENGTH + 5}
                 placeholder={t('tagsRail.tagNamePlaceholder')}
                 enterKeyHint="done"
-                className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-[15px] lg:text-[13px] font-medium text-pn placeholder:text-neutral-400 dark:placeholder:text-neutral-600"
+                className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-[15px] font-medium text-pn placeholder:text-neutral-400 dark:placeholder:text-neutral-600"
               />
             </div>
           </div>
@@ -1000,24 +1123,24 @@ export function TagsRail(props: TagsRailProps) {
                plain row reads as one more tag. The two rails share one slot
                behind one toggle, so they share this button too.
                Spec: ops/docs/ui-patterns.md (section 76) */
-            className="w-full mt-2 rounded-md border border-dashed border-divider hover:border-accent/50 text-[15px] lg:text-[13px] font-medium transition flex items-center justify-center gap-2 lg:gap-1.5 px-2 py-2 lg:py-1.5 text-pn-muted hover:text-accent"
+            className="w-full mt-2 rounded-md border border-dashed border-divider hover:border-accent/50 text-[15px] font-medium transition flex items-center justify-center gap-2 px-2 py-2 text-pn-muted hover:text-accent"
           >
-            <Plus size={16} className="shrink-0 lg:w-3.5 lg:h-3.5 text-amber-600/80 dark:text-amber-500/80" />
+            <Plus size={16} className="shrink-0 text-amber-600/80 dark:text-amber-500/80" />
             <span className="truncate">{t('tagsRail.createTag')}</span>
           </button>
         )}
         {tagCounts.untagged > 0 && (
           <button
             onClick={() => handleSelectTag(selectedTag === '__untagged__' ? null : '__untagged__')}
-            className={`w-full text-start px-2 py-2 lg:py-1.5 rounded text-[15px] lg:text-[13px] font-medium transition flex justify-between items-center ${
+            className={`w-full text-start px-2 py-2 rounded text-[15px] font-medium transition flex justify-between items-center ${
               selectedTag === '__untagged__'
                 ? SIDEBAR_ACTIVE
                 : 'text-neutral-400 hover:bg-neutral-200/60 hover:text-neutral-600 dark:text-neutral-600 dark:hover:bg-neutral-900/60 dark:hover:text-neutral-400'
             }`}
           >
-            <span className="flex items-center gap-2 lg:gap-1.5 min-w-0">
+            <span className="flex items-center gap-2 min-w-0">
               <span className="inline-flex shrink-0">
-                <Prohibit size={16} className="lg:w-3.5 lg:h-3.5" />
+                <Prohibit size={16} />
               </span>
               <span className="truncate">{t('tagsRail.untagged')}</span>
             </span>
@@ -1028,25 +1151,12 @@ export function TagsRail(props: TagsRailProps) {
         )}
         </>)}
 
-        {/* Trash - scrolls with tags */}
-        <div className="mt-2 -mx-3 px-3 border-t border-divider pt-2">
-          <button
-            onClick={() => handleSelectView('trash')}
-            className={viewBtnClass(view === 'trash')}
-          >
-            <span className="flex items-center gap-2">
-              <span className="text-accent inline-flex">
-                <Trash size={16} />
-              </span>
-              {t('tagsRail.trash')}
-            </span>
-            <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
-              {trashedCount}
-            </span>
-          </button>
-        </div>
+        {trashRow}
 
       </div>
+      )}
+      {/* Folded: Trash stays in reach under the switch. */}
+      {split.folded && <div className="shrink-0 px-3 pb-3">{trashRow}</div>}
       </>)}
 
       {/* Footer actions - five icon buttons: Help, Downloads | Import,
@@ -1102,6 +1212,66 @@ export function TagsRail(props: TagsRailProps) {
         />
         <FooterAction icon={Star} label={t('tagsRail.rate')} onClick={onRate} />
       </div>
+      {lookEdit && (
+        <Suspense fallback={null}>
+          <LookPicker
+            target={lookEdit.target}
+            styles={userSettings.itemStyles}
+            subfolderIds={lookSubfolderIds}
+            tintNotes={userSettings.tintNotes}
+            onPick={(patch) => {
+              lookSaved.current = true;
+              mutateSettings((prev) => {
+                const { kind, lookKey, folderId } = lookEdit.target;
+                let itemStyles: typeof prev.itemStyles;
+                if (kind === 'folder' && folderId && patch.color !== undefined) {
+                  // Through the folder writer, so the copies below follow
+                  // while the subfolder switch is on.
+                  const { color, ...rest } = patch;
+                  itemStyles = setFolderColor(prev.itemStyles, folderId, prev.folders, isLookColor(color) ? color : null);
+                  itemStyles = setItemLook(itemStyles, lookKey, rest);
+                } else {
+                  itemStyles = setItemLook(prev.itemStyles, lookKey, patch);
+                }
+                return itemStyles === prev.itemStyles ? prev : { ...prev, itemStyles };
+              });
+            }}
+            onSubfoldersFollow={(on) => {
+              const id = lookEdit.target.folderId;
+              if (!id) return;
+              lookSaved.current = true;
+              mutateSettings((prev) => {
+                const color = folderColor(id, prev.itemStyles);
+                if (!color) return prev;
+                // Off clears only the copies, never a color a subfolder chose.
+                const itemStyles = on
+                  ? setSubfolderColors(prev.itemStyles, id, prev.folders, color)
+                  : setSubfolderColors(prev.itemStyles, id, prev.folders, null, color);
+                return itemStyles === prev.itemStyles ? prev : { ...prev, itemStyles };
+              });
+            }}
+            onTintNotes={(on) => {
+              lookSaved.current = true;
+              mutateSettings((prev) => (prev.tintNotes === on ? prev : { ...prev, tintNotes: on }));
+            }}
+            onCancel={() => {
+              const { before } = lookEdit;
+              mutateSettings((prev) => {
+                const itemStyles = restoreLooks(prev.itemStyles, before.looks);
+                if (itemStyles === prev.itemStyles && prev.tintNotes === before.tintNotes) return prev;
+                return { ...prev, itemStyles, tintNotes: before.tintNotes };
+              });
+            }}
+            onClose={() => {
+              setLookEdit(null);
+              if (lookSaved.current) {
+                lookSaved.current = false;
+                onLooksSaved();
+              }
+            }}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

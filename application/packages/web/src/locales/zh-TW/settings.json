@@ -58,6 +58,9 @@
     "upgradeCharge": "今天會向你收取 {{amount}}，涵蓋本年度剩餘期間；之後每年以 {{price}} 續約。",
     "upgradeChargeUntil": "今天會向你收取 {{amount}}，涵蓋本年度剩餘期間（至 {{date}}）；之後每年以 {{price}} 續約。",
     "upgradeChargeApple": "今天會向你收取 {{price}}。本年度未使用的部分由 Apple 自動退款，你的新年度從現在開始。",
+    "upgradeAmountFailed": "無法載入今天應付的金額。",
+    "upgradeAmountRetry": "再試一次",
+    "upgradeAmountChanged": "今天應付的金額已變動或無法核對，所以沒有向你收費。請重新選擇方案，查看新的金額。",
     "upgrading": "升級中…",
     "upgradeAndPay": "升級並立即付款",
     "maybeLater": "之後再說",
@@ -173,7 +176,12 @@
     "contentWidthWide": "寬",
     "contentWidthFull": "全寬",
     "lineSpacingTitle": "行距",
-    "lineSpacingDesc": "寫作時段落之間的間距。",
+    "tintNotesTitle": "為筆記背景上色",
+    "tintNotesDesc": "筆記會套用所屬標籤或資料夾的顏色。",
+    "lineSpacingDesc": "寫作時行與段落之間的間距。",
+    "lineSpacingTight": "緊密",
+    "resetDefaults": "恢復預設值",
+    "resetDefaultsConfirm": "確認重設",
     "lineSpacingCompact": "緊湊",
     "lineSpacingNormal": "標準",
     "lineSpacingExample": "範例",
@@ -201,10 +209,10 @@
   },
   "conflict": {
     "title": "同步衝突",
-    "explanation": "這篇筆記在另一部裝置上被編輯，而你在這裡也有未儲存的變更。我們將採用<em>較新的版本</em>（來自另一部裝置，{{date}}）。",
+    "explanation": "此裝置還有尚未同步的變更時，這篇筆記在另一部裝置上被修改了，而且兩個版本的內文不同。除非你另作選擇，否則我們會保留<em>另一部裝置上的版本</em>（{{date}}）。",
     "willBeKept": "將保留",
     "showLocal": "顯示此裝置上的版本（{{date}}）",
-    "useNewer": "好，用較新的",
+    "useNewer": "使用另一個版本",
     "useMine": "改用我的",
     "keepBoth": "兩個都保留為個別筆記"
   },
@@ -216,6 +224,10 @@
     "localLabel": "刪除本機資料",
     "localDesc": "抹除此裝置上的筆記、圖片與快取資料。這不會刪除你的帳號，只會清理這個瀏覽器。",
     "localRequired": "（刪除帳號時必選）",
+    "localUnsynced_other": "此裝置上有 {{items}}尚未同步。刪除本機資料會將其永久銷毀。",
+    "unsyncedNotes_other": "{{count}} 則筆記",
+    "unsyncedFiles_other": "{{count}} 個檔案",
+    "unsyncedBoth": "{{notes}}和 {{files}}",
     "cloudLabel": "刪除雲端資料與帳號",
     "cloudDesc": "永久移除伺服器上所有已同步的筆記、圖片、裝置、設定與你的帳號。之後可以重新註冊。",
     "confirmPrompt": "輸入 <kbd>DELETE</kbd> 以確認",
@@ -253,7 +265,9 @@
     "notBackedUp": "未備份",
     "notSynced": "未同步",
     "notBackedUpTooltip_other": "{{count}} 則筆記尚未備份。點一下查看原因。",
-    "notBackedUpAria_other": "{{count}} 則筆記尚未備份"
+    "notBackedUpAria_other": "{{count}} 則筆記尚未備份",
+    "haltedTooltip_other": "同步已停止，{{count}} 則筆記尚未備份。點一下查看原因。",
+    "haltedAria_other": "同步已停止，{{count}} 則筆記尚未備份"
   },
   "errors": {
     "noSession": "沒有有效的工作階段，請重新登入再試。",
@@ -298,7 +312,8 @@
     "reasonTooLarge": "超過 1 MB 上限",
     "reasonFailed": "失敗：{{message}}",
     "openNote": "開啟",
-    "passPushFailed_other": "{{count}} 則失敗"
+    "passPushFailed_other": "{{count}} 則失敗",
+    "passHalted_other": "已停止，{{count}} 則等待中"
   },
   "language": {
     "reportMistake": "回報翻譯錯誤"

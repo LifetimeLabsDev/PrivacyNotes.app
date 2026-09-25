@@ -10,6 +10,7 @@
     "intro": {
       "storage": "Grotere uploads en meer ruimte zijn een Pro-functie. Upgrade voor bestanden tot 50 MB en 500 MB opslag.",
       "folders": "Mappen zijn een Pro-functie. Orden je notities in submappen, zo diep als je wilt, en houd elk project gescheiden.",
+      "looks": "Iconen en kleuren voor mappen en tags zijn een Pro-functie. Geef ze elk een eigen uiterlijk dat je in één oogopslag herkent.",
       "lock": "Een notitie vergrendelen is een Pro-functie. Upgrade om notities te beschermen tegen onbedoelde wijzigingen.",
       "protect": "Een notitie met een PIN beveiligen is een Pro-functie. Upgrade om gevoelige notities achter je PIN te zetten.",
       "history": "Notitiegeschiedenis is een Pro-functie. Upgrade om een tijdlijn van elke opgeslagen versie te bewaren.",
@@ -57,6 +58,7 @@
     "title": "Notitiegeschiedenis",
     "subtitle": "Tot 20 versies per notitie. De oudste worden automatisch opgeruimd.",
     "empty": "Nog geen geschiedenis. Versies worden vanaf de volgende bewerking bewaard. Kom later terug.",
+    "loadFailed": "De geschiedenis kon niet worden geladen. Controleer je verbinding en probeer het opnieuw.",
     "selectPrompt": "Kies een versie om te bekijken.",
     "emptyBody": "(leeg)",
     "restore": "Herstellen",
@@ -64,7 +66,7 @@
   },
   "donation": {
     "eyebrow": "Je hebt ontgrendeld",
-    "intro": "<brand/> is gratis, en dat blijft het. Geen advertenties, geen tracking, geen e-mailadres in onze administratie. Als het je heeft geholpen om te denken, te schrijven of dingen te onthouden, overweeg dan de ontwikkeling te steunen. Daarmee blijft het project draaien en worden de volgende functies betaald.",
+    "intro": "<brand/> is gratis, en dat blijft het. Geen advertenties, geen trackers en geen e-mailadres in onze administratie, tenzij je je met een e-mailadres hebt aangemeld. Als het je heeft geholpen om te denken, te schrijven of dingen te onthouden, overweeg dan de ontwikkeling te steunen. Daarmee blijft het project draaien en worden de volgende functies betaald.",
     "proBenefits": "Met je steun ontgrendel je ook de Pro-voordelen zodra die er zijn: onbeperkt veel apparaten, bijlagen, versleutelde back-ups in de cloud.",
     "maybeLater": "Misschien later",
     "support": "Steunen →"

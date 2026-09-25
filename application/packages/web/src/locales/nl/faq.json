@@ -74,7 +74,7 @@
       "q": "Heb ik een e-mailadres nodig om me aan te melden?",
       "a": [
         "Nee. Een nieuwe kluis is een vers gegenereerde herstelzin van 12 woorden, meer niet. Geen e-mail, geen gebruikersnaam, geen telefoonnummer, geen verificatiestap. Meld je je aan met de herstelzin, dan zouden we je niet eens kunnen mailen als we het wilden, want we komen nooit te weten wie je bent.",
-        "Heb je liever een vertrouwde manier? Aanmelden met Google, Apple of GitHub kan ook. Die route vertelt ons onvermijdelijk het e-mailadres dat aan die login hangt, maar je notities blijven hoe dan ook end-to-end versleuteld, en onder de motorkap krijg je nog steeds een herstelzin."
+        "Heb je liever een vertrouwde manier? Aanmelden met Google, Apple of GitHub kan ook. Die route vertelt ons onvermijdelijk het e-mailadres dat aan die login hangt, maar je notities blijven hoe dan ook versleuteld op je apparaat, en onder de motorkap krijg je nog steeds een herstelzin."
       ]
     },
     "import-from-other-apps": {
@@ -94,7 +94,7 @@
     "what-can-you-see": {
       "q": "Wat kan PrivacyNotes zien van mijn notities?",
       "a": [
-        "Niets leesbaars. Notities, titels, tags en bijlagen worden op je apparaat versleuteld voordat ze synchroniseren. De server bewaart cijfertekst die hij niet kan ontsleutelen, en er is aan onze kant geen sleutel die daar iets aan verandert.",
+        "Niets leesbaars. Notities, titels, tags en bijlagen zijn altijd versleuteld, op je apparaat en onderweg naar de server, dus de server bewaart alleen cijfertekst. Bij eigen beheer, dat elk herstelzinaccount heeft, bestaat er aan onze kant geen sleutel om die te ontsleutelen. Maak je een account aan met Google, Apple of GitHub, dan wordt gevraagd waar je sleutel woont, en de keuze staat eerst op \"Houd het simpel & gemakkelijk\": dat bewaart je herstelzin op onze server, versleuteld met een sleutel van ons. Instellingen > Beveiliging > Je herstelzin toont welke je hebt en laat je wisselen.",
         "Wat we wel zien, is het minimum dat nodig is om de dienst te draaien: hoeveel versleutelde opslag je gebruikt, hoeveel apparaten je hebt gekoppeld, en tijdstempels van de synchronisatie. Meld je je aan met een herstelzin in plaats van met Google, Apple of GitHub, dan kennen we niet eens je e-mailadres."
       ]
     },
@@ -102,18 +102,18 @@
       "q": "Waarom een herstelzin in plaats van een gebruikersnaam en wachtwoord?",
       "a": [
         "Het voelt in het begin misschien achterstevoren, maar één herstelzin is de sterkere constructie. Bij een gebruikersnaam en wachtwoord is de gebruikersnaam geen geheim (die duikt op in elk datalek), dus rust alle veiligheid op het wachtwoord, en door mensen gekozen wachtwoorden halen gemiddeld zo'n 30 tot 40 bits entropie. Jouw zin van 12 woorden is gegarandeerd 128 bits, gegenereerd door je apparaat, nooit door een mens gekozen, en nooit hergebruikt van een andere site.",
-        "Bovendien valt er bij ons niets te verliezen. Een wachtwoordlogin betekent dat de server minstens een wachtwoordhash bewaart, en die kan lekken, gekraakt of gephisht worden. Jouw herstelzin verlaat je apparaat nooit: hij leidt je encryptiesleutels lokaal af, en de server ziet alleen ooit versleutelde gegevens. Er is geen hash om te stelen en geen wachtwoordherstel dat een aanvaller kan misbruiken.",
-        "Voelt het typen van 12 woorden onhandig: je kunt de herstelzin met één tik in je wachtwoordmanager opslaan (Instellingen > Beveiliging > Je herstelzin), en dan voelt aanmelden als elke andere login. Heb je liever een vertrouwde manier? Aanmelden met Google, Apple of GitHub kan ook, en onder de motorkap krijg je nog steeds een herstelzin."
+        "Bovendien is er bij ons geen wachtwoord dat we kunnen verliezen. Een wachtwoordlogin betekent dat de server minstens een wachtwoordhash bewaart, en die kan lekken, gekraakt of gephisht worden. Bij eigen beheer verlaat jouw herstelzin je apparaat nooit: hij leidt je encryptiesleutels lokaal af, en de server ziet alleen ooit versleutelde gegevens. Er is geen hash om te stelen en geen wachtwoordherstel dat een aanvaller kan misbruiken.",
+        "Voelt het typen van 12 woorden onhandig: je kunt de herstelzin met één tik in je wachtwoordmanager opslaan (Instellingen > Beveiliging > Je herstelzin), en dan voelt aanmelden als elke andere login. Heb je liever een vertrouwde manier? Aanmelden met Google, Apple of GitHub kan ook: onder de motorkap krijg je nog steeds een herstelzin, en jij kiest of die op je apparaat blijft of dat wij hem voor je bewaren."
       ]
     },
     "threat-model-levels": {
       "q": "Kan ik zelf de balans kiezen tussen gemak en privacy?",
       "a": [
-        "Ja, met opzet. Niet iedereen verdedigt zich tegen dezelfde dreigingen, dus het accountmodel is een ladder in plaats van één dogma. Elke trede houdt je notities end-to-end versleuteld; wat verandert, is wie de sleutel heeft en wat wij over jou weten.",
-        "Het gemakkelijke uiteinde: meld je aan met Google, Apple of GitHub en kies \"Houd het simpel & gemakkelijk\" als daarom wordt gevraagd. Wij bewaren je herstelzin voor je, versleuteld op onze server, zodat elk apparaat zich aanmeldt met alleen die login en er niets is om te bewaren of kwijt te raken. In ruil kennen wij het e-mailadres achter die login, en houden wij je sleutel in plaats van jij. Is je realistische risico eerder dat je je eigen inloggegevens kwijtraakt dan een gerichte inbraak, dan is dit de juiste trede.",
+        "Ja, met opzet. Niet iedereen verdedigt zich tegen dezelfde dreigingen, dus het accountmodel is een ladder in plaats van één dogma. Elke trede houdt je notities versleuteld op je apparaat; wat verandert, is wie de sleutel heeft en wat wij over jou weten.",
+        "Het gemakkelijke uiteinde: meld je aan met Google, Apple of GitHub en laat \"Houd het simpel & gemakkelijk\" geselecteerd als daarom wordt gevraagd; daar begint dat scherm mee. Wij bewaren je herstelzin voor je, versleuteld op onze server, zodat elk apparaat zich aanmeldt met alleen die login en er niets is om te bewaren of kwijt te raken. In ruil kennen wij het e-mailadres achter die login, en houden wij je sleutel in plaats van jij. Is je realistische risico eerder dat je je eigen inloggegevens kwijtraakt dan een gerichte inbraak, dan is dit de juiste trede.",
         "Het midden: meld je aan met Google, Apple of GitHub maar kies \"Maximale veiligheid & privacy\". Je herstelzin raakt onze servers nooit en de versleuteling is volledig zero-knowledge; nieuwe apparaten hebben de herstelzin nodig of een QR-scan van een apparaat dat al aangemeld is. We kennen dan nog steeds onvermijdelijk het e-mailadres achter die login, maar we zouden geen enkele notitie kunnen lezen, zelfs niet onder dwang.",
         "Het private uiteinde: sla de logins helemaal over en gebruik alleen de zin van 12 woorden. Geen e-mail, geen naam, geen identiteit, en in combinatie met een [anonieme Pro-aankoop](/nl/help/buy-pro-anonymously/) laat zelfs betalen nergens een naam achter. In ruil daarvoor beheer je de sleutel volledig zelf: raak je de herstelzin kwijt zonder aangemeld apparaat, dan kan niemand je helpen.",
-        "Je zit niet vast aan de trede die je koos. Bij Instellingen > Beveiliging > Je herstelzin staan beide modi naast elkaar met wat ze kosten, en je kunt altijd beide kanten op. Overstappen op zelfbeheer wist onze kopie en vraagt je eerst drie van je twaalf woorden opnieuw te typen, want wie hierop klikt heeft ze meestal nooit opgeschreven. Terug gaan uploadt de herstelzin weer en vergt een uitdrukkelijke keuze. Beide richtingen worden ondertekend met je eigen accountsleutel, dus een gestolen sessie kan je modus niet wijzigen. En elke trede kan de lokale lagen erbovenop: PIN-vergrendeling, biometrisch ontgrendelen en bescherming per notitie."
+        "Met een Google-, Apple- of GitHub-login zit je niet vast aan de trede die je koos. Bij Instellingen > Beveiliging > Je herstelzin staan beide modi naast elkaar met wat ze kosten, en je kunt altijd beide kanten op. Overstappen op eigen beheer wist onze kopie en vraagt je eerst drie van je twaalf woorden opnieuw te typen, want wie hierop klikt heeft ze meestal nooit opgeschreven. Terug gaan uploadt de herstelzin weer en vergt een uitdrukkelijke keuze. Beide richtingen worden ondertekend met je eigen accountsleutel, dus een gestolen sessie kan je modus niet wijzigen. Een account met alleen een herstelzin blijft aan de private kant, want er is geen login waarmee een bewaarde sleutel op te halen valt. En elke trede kan de lokale lagen erbovenop: PIN-vergrendeling, biometrisch ontgrendelen en bescherming per notitie."
       ]
     },
     "twelve-word-phrase": {
@@ -159,7 +159,7 @@
     "no-ai": {
       "q": "Gebruikt PrivacyNotes AI op mijn notities?",
       "a": [
-        "Nee. Er zitten geen AI-functies in de app, er draait geen AI-verwerking op de achtergrond, en er wordt geen model op je inhoud getraind. Je notities worden versleuteld voordat ze je apparaat verlaten, dus er staat op onze servers niets leesbaars om ergens in te stoppen.",
+        "Nee. Er zitten geen AI-functies in de app, er draait geen AI-verwerking op de achtergrond, en er wordt geen model op je inhoud getraind. Je notities zijn altijd versleuteld, op je apparaat en onderweg naar de server, dus er staat op onze servers niets leesbaars om ergens in te stoppen.",
         "Mochten we ooit iets in die richting uitbrengen, dan zou het volledig op je apparaat moeten draaien en strikt op eigen initiatief aan te zetten zijn. Leesbare notities naar een cloudmodel sturen zou de zero-knowledge belofte breken, dus dat is uitgesloten."
       ]
     },
@@ -188,7 +188,7 @@
       "q": "Ik ben mijn herstelzin kwijt. Kunnen jullie mijn account herstellen?",
       "a": [
         "Ben je nog op een apparaat aangemeld: ja, dan kun je hem zelf terughalen. Open Instellingen > Beveiliging > Je herstelzin en sla hem nu meteen op in je wachtwoordmanager.",
-        "Heb je geen aangemeld apparaat en geen herstelzin: nee, en niemand kan dat. Je herstelzin bereikt onze servers nooit, dus er valt niets te resetten en geen supportticket kan helpen. Dit is geen beleid dat we zouden kunnen buigen - het is wat end-to-end versleuteling betekent. Elke dienst die je versleutelde gegevens na een totaal verlies wél kan herstellen, heeft je sleutels in handen.",
+        "Heb je geen aangemeld apparaat en geen herstelzin, dan hangt het ervan af wie de sleutel heeft. Liet je ons hem bewaren toen je je aanmeldde met Google, Apple of GitHub, meld je dan aan met die login en je bent weer binnen. Bij eigen beheer kan niemand dat: je herstelzin bereikt onze servers nooit, dus er valt niets te resetten en geen supportticket kan helpen. Elke dienst die je versleutelde gegevens na een totaal verlies wél kan herstellen, heeft je sleutels in handen.",
         "De oplossing kost tien seconden: bewaar de herstelzin in een wachtwoordmanager op de dag dat je je account aanmaakt. Is hij al weg en betaal je voor een opslaguitbreiding, dan factureert Paddle je rechtstreeks en kan Paddle die stopzetten zonder je herstelzin: zie [een uitbreiding wijzigen of stopzetten](/nl/help/manage-storage-addon/)."
       ]
     },
@@ -223,14 +223,14 @@
     "offline": {
       "q": "Werkt PrivacyNotes offline?",
       "a": [
-        "Ja. De app is local-first: je notities staan in een database op je apparaat, dus lezen, schrijven en zoeken werken allemaal zonder verbinding. Wijzigingen synchroniseren automatisch zodra je weer online bent."
+        "Ja. De app is local-first: je notities staan in een database op je apparaat, dus lezen, schrijven en zoeken werken allemaal zonder verbinding. Wijzigingen synchroniseren automatisch zodra je weer online bent, en een afbeelding of bestand dat je offline toevoegt, wacht op dit apparaat en wordt dan ook geüpload."
       ]
     },
     "sync-conflicts": {
       "q": "Wat gebeurt er als ik dezelfde notitie op twee apparaten tegelijk bewerk?",
       "a": [
-        "Er wordt niets stilletjes overschreven. Hebben beide apparaten dezelfde notitie gewijzigd terwijl ze los van elkaar stonden (bijvoorbeeld omdat er één offline was), dan merkt de app de botsing op zodra ze weer synchroniseren en toont een conflictvenster: houd de versie op dit apparaat, houd die van het andere, of houd beide als aparte notities.",
-        "In het dagelijks gebruik zie je het zelden. Bewerkingen synchroniseren binnen enkele seconden zolang je online bent, en het venster verschijnt alleen als twee versies van dezelfde notitie echt uit elkaar zijn gelopen."
+        "Je apparaten voegen de notitie detail voor detail samen zodra ze weer synchroniseren, dus een wijziging die op maar één ervan is gemaakt, blijft behouden. Hebben beide de tekst bewerkt terwijl ze los van elkaar stonden (bijvoorbeeld omdat er één offline was), dan toont het apparaat dat als tweede synchroniseert een conflictvenster: houd de versie op dit apparaat, houd die van het andere, of houd beide als aparte notities. Beide versies blijven bewaard tot je een keuze maakt.",
+        "Hebben beide apparaten los van elkaar hetzelfde detail gewijzigd, zoals het vastzetten, de map of de titel, dan wordt zonder venster het detail bewaard van het apparaat dat de notitie als laatste heeft bewerkt. Een notitie die op één apparaat definitief wordt verwijderd, wordt overal verwijderd, inclusief een wijziging die een ander apparaat erin aanbracht terwijl ze los van elkaar stonden."
       ]
     },
     "remove-device": {
@@ -244,8 +244,8 @@
       "q": "Waar worden mijn gegevens opgeslagen?",
       "a": [
         "Eerst op je apparaat, en dat is de kopie waar je mee werkt: de app is local-first, dus je notities openen en bewerken ook offline. De synckopie staat op servers in Zürich, Zwitserland. Daar staan je publieke sleutel, versleutelde blobs van je notities, bestanden en instellingen, plus de tijdstempels en groottes die een sync nodig heeft. Geen titels, geen tekst, geen tags.",
-        "Het land telt minder dan de versleuteling. Alles wordt op je apparaat versleuteld voordat het vertrekt, dus die kopie zou onleesbaar zijn waar hij ook stond: Zwitserland is een bonus, niet de belofte. [Wat er synchroniseert](/nl/help/what-syncs/) somt het punt voor punt op.",
-        "De kopie op je apparaat is ook versleuteld. Notities worden op schijf verzegeld met een sleutel die bij het ontgrendelen uit je herstelzin wordt afgeleid, dus een gekopieerd browserprofiel, een opslagdump of een gestolen back-up bevat versleutelde data, niet je notities."
+        "Het land telt minder dan de versleuteling. Alles is altijd versleuteld, op je apparaat en onderweg naar de server, dus die kopie zou onleesbaar zijn waar hij ook stond: Zwitserland is een bonus, niet de belofte. [Wat er synchroniseert](/nl/help/what-syncs/) somt het punt voor punt op.",
+        "De kopie op je apparaat is ook versleuteld. Notities worden op schijf verzegeld met een sleutel die bij het ontgrendelen uit je herstelzin wordt afgeleid, dus een kopie van de opslag van de app op je apparaat, of een gestolen back-up daarvan, bevat versleutelde data, niet je notities."
       ]
     },
     "data-on-disk": {
@@ -253,28 +253,28 @@
       "a": [
         "In één map per installatie, in het app-datagebied van je account. Waar die map staat, hangt af van het platform:",
         "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, of `app.privacynotes.appimage` bij de AppImage, die zijn eigen web-engine meebrengt en dus een eigen profiel houdt\n- **Android, iOS**: de privéopslag van de app, die geen enkele andere app kan openen\n- **Browser**: je browserprofiel, onder `use.privacynotes.app`",
-        "Wat daar staat is versleutelde data. Elke notitie is één verzegeld blok met de titel, de tekst en de tags erin, geopend door een sleutel die bij het ontgrendelen uit je herstelzin wordt afgeleid. Alleen wat de lokale index nodig heeft blijft leesbaar: id's, tijdstempels en markeringen zoals favoriet of verwijderd.",
+        "Wat daar staat is versleutelde data. Elke notitie is één verzegeld blok met de titel, de tekst en de tags erin, geopend door een sleutel die bij het ontgrendelen uit je herstelzin wordt afgeleid, dus een gekopieerde map bevat niets leesbaars. Alleen wat de lokale index nodig heeft blijft leesbaar: id's, tijdstempels, het soort item en markeringen zoals vastgezet of verwijderd.",
         "Wil je je notities naar een ander apparaat halen of zelf een kopie bewaren, gebruik dan **Instellingen > Import & Export > Exporteren** en kies \"Versleutelde volledige back-up (.pnbackupz)\". Hij bevat alles, is versleuteld met de sleutel van je herstelzin en herstelt met je herstelzin op elk apparaat. [Meer over back-ups](/nl/help/backup-strategy/)."
       ]
     },
     "export": {
       "q": "Kan ik mijn notities exporteren, of zit ik vast?",
       "a": [
-        "Je kunt op elk moment alles exporteren, volledig op je eigen apparaat gemaakt: Markdown-bestanden in een zip met bijlagen erbij, een volledige JSON-back-up, of zelfstandige HTML - per notitie of voor je hele account. Kluisitems hebben hun eigen route, \"Kluisexport (.json)\", die het formaat van Bitwarden schrijft en je gebruikersnamen, wachtwoorden, URL's, kaartgegevens en 2FA-sleutels meeneemt naar Bitwarden, 1Password of KeePass.",
-        "Het staat allemaal onder Instellingen > Import & Export > Export. Importeren gaat net zo, vanuit Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden en meer: de volledige lijst staat in [overstappen vanuit een andere app](/nl/help/import-from-other-apps/). Lock-in hoort niet bij het verdienmodel."
+        "Je kunt op elk moment alles exporteren, volledig op je eigen apparaat gemaakt: Markdown-bestanden in een zip met bijlagen erbij, gewone JSON, of zelfstandige HTML - per notitie of voor je hele account. De zip is de \"PrivacyNotes-back-up (.zip)\", en die kun je herstellen, net als de versleutelde back-ups; JSON en HTML zijn om te lezen en voor je volgende app. Kluisitems hebben hun eigen route, \"Kluisexport (.json)\", die het formaat van Bitwarden schrijft en je gebruikersnamen, wachtwoorden, URL's, kaartgegevens en 2FA-sleutels meeneemt naar Bitwarden, 1Password of KeePass.",
+        "Het staat allemaal onder Instellingen > Import & Export > Exporteren. Importeren gaat net zo, vanuit Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden en meer: de volledige lijst staat in [overstappen vanuit een andere app](/nl/help/import-from-other-apps/). Lock-in hoort niet bij het verdienmodel."
       ]
     },
     "attachment-limits": {
       "q": "Welke bestanden kan ik bijvoegen, en hoe groot mogen ze zijn?",
       "a": [
-        "Elk bestandstype: afbeeldingen, pdf's, audio, archieven, wat je er ook in sleept. Elk bestand wordt op je apparaat versleuteld voordat het geüpload wordt, net als notitietekst, en de weergave Bestanden verzamelt alle bijlagen op één plek.",
+        "Elk bestandstype: afbeeldingen, pdf's, audio, archieven, wat je er ook in sleept. Elk bestand is altijd versleuteld, op je apparaat en onderweg naar de server, net als notitietekst, en de weergave Bestanden verzamelt alle bijlagen op één plek.",
         "De limiet per bestand is 5 MB op het gratis plan en 50 MB op Pro. Bestanden tellen mee voor je totale syncopslag (50 MB gratis, 500 MB op Pro, uit te breiden tot 5,5 GB met opslaguitbreidingen), en de opslagbalk bij Instellingen > Opslag laat altijd zien hoe je ervoor staat."
       ]
     },
     "vault": {
       "q": "Wat is de Kluis?",
       "a": [
-        "De Kluis is een apart onderdeel voor gestructureerde geheimen: logins met gebruikersnamen en wachtwoorden, creditcards en betaalpassen, en SSH-sleutels. Items krijgen echte velden in plaats van vrije tekst, logins tonen een icoontje van de site, en alles is end-to-end versleuteld, net als de rest van je gegevens.",
+        "De Kluis is een apart onderdeel voor gestructureerde geheimen: logins met gebruikersnamen en wachtwoorden, creditcards en betaalpassen, en SSH-sleutels. Items krijgen echte velden in plaats van vrije tekst, logins tonen een icoontje van de site, en alles is versleuteld op je apparaat, net als de rest van je gegevens.",
         "Het geeft die handvol inloggegevens die anders verspreid over je notities belanden een nette, beschermde plek. Combineer het met het slot op de app en PIN-beveiliging voor een dubbele beveiliging van je gevoeligste items. Een Bitwarden-import belandt hier automatisch."
       ]
     },
@@ -289,21 +289,21 @@
     "shutdown": {
       "q": "Wat gebeurt er met mijn notities als PrivacyNotes ermee stopt?",
       "a": [
-        "Je verliest niets. De volledige dataset staat al op je apparaat omdat de app local-first is, en exporteren naar Markdown, JSON of HTML werkt volledig offline.",
+        "Je houdt ze. Je notities, taken, dagboeknotities en kluisitems staan op je apparaat omdat de app local-first is, en ze exporteren naar Markdown, JSON of HTML werkt offline. Een afbeelding of bestand blijft op een apparaat zodra je het daar toevoegt of opent, en een bestand dat dit apparaat nooit heeft geopend, wordt opgehaald als je het opent. Maak daarom een volledige back-up: die haalt elke afbeelding en elk bestand op dat dit apparaat mist, en meldt het als er een niet opgehaald kan worden.",
         "De encryptiecode is bovendien [open source](https://github.com/LifetimeLabsDev/PrivacyNotes.app), dus het formaat blijft onafhankelijk leesbaar, zelfs in een wereld waarin onze servers van de ene op de andere dag verdwijnen."
       ]
     },
     "free-vs-pro": {
       "q": "Wat is gratis en wat is Pro?",
       "a": [
-        "Gratis is het volledige product, geen voorproefje: end-to-end versleutelde notities, taken, dagboek en kluis, offline gebruik, importeren en exporteren - op maximaal 2 apparaten met 50 MB syncopslag.",
+        "Gratis is het volledige product, geen voorproefje: notities, taken, dagboek en kluis, allemaal versleuteld op je apparaat, offline gebruik, importeren en exporteren - op maximaal 2 apparaten met 50 MB syncopslag.",
         "Pro is een eenmalige aankoop die daar een onbeperkt aantal apparaten aan toevoegt, plus 500 MB syncopslag (uit te breiden), versiegeschiedenis van notities, grotere bijlagen, notities vergrendelen en met een PIN beveiligen, uitgebreide welzijnsanalyse, zen-modus en alle kleurenthema's."
       ]
     },
     "one-time-pricing": {
       "q": "Hoe kan een eenmalige betaling een syncdienst voor altijd bekostigen?",
       "a": [
-        "Omdat de dienst met opzet goedkoop te draaien is. De app is local-first en notities zijn kleine versleutelde blobs, dus de server doet weinig meer dan ze bewaren en tussen je apparaten doorgeven. Geen analyticspijplijn, geen AI-functies die rekenkracht opslurpen, geen supportafdeling.",
+        "Omdat de dienst met opzet goedkoop te draaien is. De app is local-first en notities zijn kleine versleutelde blobs, dus de server doet weinig meer dan ze bewaren en tussen je apparaten doorgeven. Geen analyse van wat je schrijft, geen pixels of trackers van derden, geen AI-functies die rekenkracht opslurpen, geen supportafdeling.",
         "De enige kostenpost die wél groeit met de tijd is opslag, en die is navenant geprijsd: opslag boven de inbegrepen 500 MB is een kleine jaarlijkse uitbreiding. Eenmalige kosten reken je één keer, terugkerende kosten keren terug. Het model hoeft alleen zichzelf te bedruipen, en dat doet het."
       ]
     },
@@ -332,7 +332,7 @@
       "q": "Wat komen jullie over mij te weten als ik betaal?",
       "a": [
         "Minder dan je misschien denkt. Het afrekenen loopt via [Paddle](https://www.paddle.com), de merchant of record: je naam, kaartnummer en factuuradres gaan naar Paddle voor de betaling en de belasting, en raken onze servers nooit.",
-        "Wat ons bereikt, is een bevestiging dat de publieke sleutel van je account nu Pro is, plus het bedrag van de bestelling. De factuurrelatie, inclusief het e-mailadres voor de bon dat je bij het afrekenen invult, blijft bij Paddle. Een account met alleen een herstelzin blijft voor ons dus pseudoniem, zelfs als betalende klant: we weten dát je betaald hebt, niet wie je bent."
+        "Paddle beheert je factuurgegevens; wat onze database bereikt, is je publieke sleutel, het bedrag en het ordernummer, en bij een opslaguitbreiding de grootte en de verlengingsdata. Ons Paddle-account kan beide kanten zien, en wij zoeken niet op wie je bent. Wil je je naam buiten de aankoop houden, betaal dan met een [e-mailalias en een gemaskeerde kaart](/nl/help/buy-pro-anonymously/)."
       ]
     },
     "buy-pro-anonymously": {
@@ -340,15 +340,15 @@
       "a": [
         "Ja, met twee gangbare hulpmiddelen. Gebruik voor de bon een e-mailalias: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) en [addy.io](https://addy.io) sturen allemaal door naar je echte inbox zonder die bloot te geven. Gebruik voor de betaling een gemaskeerde kaart: [privacy.com](https://privacy.com) genereert in de VS virtuele kaarten die werken met elke naam die je invult, en veel banken en diensten elders ([Revolut](https://www.revolut.com) bijvoorbeeld) bieden wegwerpkaarten die hetzelfde doen.",
         "Bij het afrekenen vraagt Paddle om een e-mailadres, een betaalmethode en een land (plus in sommige regio's een postcode) om de belasting te berekenen. De alias ontvangt de bon, de gemaskeerde kaart draagt de naam die je hem gaf, en de belastinglocatie herleidt je tot een regio, meer niet. Houd de alias wel in leven: de e-mail met de bon is je aankoopbewijs en je kanaal voor een terugbetaling.",
-        "Gecombineerd met een herstelzinaccount heeft geen enkele partij het volledige plaatje: je bank ziet een kaartoplading, Paddle ziet een alias en een gemaskeerde kaart, en wij zien alleen dat een publieke sleutel Pro is geworden."
+        "Gecombineerd met een herstelzinaccount heeft geen enkele partij het volledige plaatje: je bank ziet een kaartoplading, Paddle ziet een alias en een gemaskeerde kaart, en wij zien een publieke sleutel die Pro is geworden, naast die alias in ons Paddle-account."
       ]
     },
     "platforms": {
       "q": "Op welke platforms draait PrivacyNotes?",
       "a": [
-        "Op web, macOS, Windows, Linux, iOS en Android. Elke app is uit dezelfde kern gebouwd met dezelfde end-to-end versleuteling en synchroniseert via hetzelfde account. In de [downloadsectie](https://privacynotes.app/nl#downloads) staan altijd de nieuwste versies.",
-        "De native apps hebben macOS 13 of nieuwer, Windows 10 of nieuwer, iOS 15 of nieuwer, Android 7.0 of nieuwer, of een Linux-distributie met webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ of gelijkwaardig) nodig. Daaronder installeert of start de app niet, dus gebruik dan de webapp.",
-        "De webapp is volwaardig, geen noodoplossing: hij houdt een volledige lokale kopie van je gegevens bij en werkt offline, dus elke moderne browser is altijd een manier om binnen te komen."
+        "Op web, macOS, Windows, Linux, iOS en Android. Elke app is uit dezelfde kern gebouwd, versleutelt je notities op dezelfde manier op je apparaat en synchroniseert via hetzelfde account. In de [downloadsectie](https://privacynotes.app/nl#downloads) staan altijd de nieuwste versies.",
+        "De native apps hebben macOS 13 of nieuwer, Windows 10 of nieuwer, iOS 17.4 of nieuwer, Android 7.0 of nieuwer, of een Linux-distributie met webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ of gelijkwaardig) nodig. Daaronder installeert of start de app niet, dus gebruik dan de webapp.",
+        "De webapp is volwaardig, geen noodoplossing: hij bewaart je notities op je apparaat en werkt offline, dus elke moderne browser is altijd een manier om binnen te komen."
       ]
     },
     "feature-requests": {
@@ -381,14 +381,14 @@
     "languages": {
       "q": "Welke talen spreekt de app?",
       "a": [
-        "Engels, Duits, Frans, Italiaans, Spaans, Nederlands, Pools, Tsjechisch, Catalaans, Turks, Zweeds, Japans, Koreaans, traditioneel Chinees, Arabisch en Portugees, in zowel de Europese als de Braziliaanse variant. De app volgt standaard je systeemtaal, of je zet er op elk apparaat expliciet een vast bij Instellingen > Taal.",
+        "Engels, Duits, Frans, Italiaans, Spaans, Nederlands, Pools, Tsjechisch, Catalaans, Turks, Zweeds, Oekraïens, Russisch, Japans, Koreaans, traditioneel Chinees, Thai, Arabisch en Portugees, in zowel de Europese als de Braziliaanse variant. De app volgt standaard je systeemtaal, of je zet er op elk apparaat expliciet een vast bij Instellingen > Taal.",
         "Vertalingen zijn gratis voor iedereen, geen Pro-extraatje. Er staan meer talen op de planning; ontbreekt die van jou, laat het ons weten op [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) of [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
     "translation-quality": {
       "q": "Hoe worden de vertalingen van de app gemaakt?",
       "a": [
-        "Het Engels schrijven we zelf, en elke andere taal is machinaal vertaald aan de hand van een stijlgids die speciaal voor die taal is geschreven: het juiste register, het juiste woord voor elke term in de interface, en een automatische controle bij elke versie zodat er geen tekst ontbreekt en niets ongemerkt in het Engels blijft staan. Vertalingen zitten in elk plan, nooit als Pro-extra.",
+        "We schrijven eerst het Engels. Daarna vertaalt een AI-agent elke taal aan de hand van een gedeelde woordenlijst, in het register dat voor die taal is vastgelegd, en een tweede agent controleert elke batch op nauwkeurigheid, terminologie en register voordat die live gaat. Moedertaalsprekers controleren een steekproef, te beginnen met de nieuwste talen en de teksten over beveiliging, aanmelden en betalingen, en twee automatische controles laten de build mislukken zolang er een vertaling ontbreekt of verouderd is. Vertalingen zitten in elk plan, nooit als Pro-extra.",
         "Je kunt ze allemaal verbeteren. Klinkt een zin scheef in jouw taal, [meld de vertaling](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new?template=translation.yml): jouw taal, het scherm waar hij staat, en wat er zou moeten staan. Correcties komen in de volgende versie."
       ]
     },
@@ -396,14 +396,14 @@
       "q": "Welke Markdown-syntaxis begrijpt de editor?",
       "a": [
         "Standaard Markdown-opmaak verschijnt terwijl je typt: koppen, nadruk, doorhalen en markeren, opsommings- en genummerde lijsten, takenlijsten (Tab en Shift+Tab nesten elke lijst, ook checklists), citaten, scheidingslijnen, inline code en codeblokken met syntaxiskleuring, wiskunde inline en als blok (KaTeX), en notitielinks tussen notities met autoaanvulling.",
-        "De opmaakwerkbalk en het bijbehorende Invoegen-menu voegen de rest toe: tabellen, aandachtsblokken in negen soorten die je kunt dichtklappen, onderstrepen, superscript en subscript, tekstuitlijning, tekst- en markeerkleuren, lettertypen, links, afbeeldingen en bijlagen. Alles gaat heen en weer als Markdown: \"Markdown tonen\" onder elke notitie laat de ruwe bron zien, en exports zijn nette .md-bestanden, dus niets van wat je schrijft zit vast in een eigen formaat."
+        "De opmaakwerkbalk en het bijbehorende Invoegen-menu voegen de rest toe: tabellen, aandachtsblokken die je kunt dichtklappen, onderstrepen, superscript en subscript, tekstuitlijning, tekst- en markeerkleuren, lettertypen, links, afbeeldingen en bijlagen. Alles gaat heen en weer als Markdown: \"Markdown tonen\" onder elke notitie laat de ruwe bron zien, en exports zijn nette .md-bestanden, dus niets van wat je schrijft zit vast in een eigen formaat."
       ]
     },
     "tasks": {
       "q": "Hoe werken taken?",
       "a": [
         "Elke regel die je als - [ ] schrijft, in welke notitie dan ook, wordt een taak, en de weergave Taken in de zijbalk verzamelt ze allemaal op één plek. Een taak daar afvinken werkt de notitie bij waarin hij staat, en een taak openen springt naar die notitie. Er is geen aparte takendatabase om bij te houden: taken zijn gewoon regels in je notities, versleuteld net als al het andere.",
-        "Het snelinvoervak boven aan Taken voegt toe aan een notitie die Quick Tasks heet (bij het eerste gebruik voor je aangemaakt), zodat een losse to-do vastleggen één toetsaanslag kost en geen archiveerbeslissing. Diezelfde weergave biedt drie indelingen (Hybride, Gebundeld, Lijst), een schakelaar voor afgeronde taken en zoeken in taken, en de knop Nieuw in de weergave Alles kan meteen een taaknotitie starten."
+        "Het snelinvoervak boven aan Taken voegt toe aan een notitie die Quick Tasks heet (bij het eerste gebruik voor je aangemaakt), zodat een losse to-do vastleggen één toetsaanslag kost en geen archiveerbeslissing. Diezelfde weergave biedt drie indelingen (Hybride, Gebundeld, Lijst), een schakelaar voor afgeronde taken en zoeken in taken, en de knop New in de weergave Alles kan meteen een taaknotitie starten."
       ]
     },
     "journal": {
@@ -416,7 +416,7 @@
     "bookmarks": {
       "q": "Kan ik mijn browserbladwijzers in PrivacyNotes bewaren?",
       "a": [
-        "Ja. Bladwijzers zijn een eigen pijler in de zijbalk, naast notities, taken en dagboeken, en ze zijn gratis in elk plan. Plak een link in de snelinvoerbalk om er een te bewaren. Neem je bestaande mee: exporteer een bladwijzerbestand (.html) uit je browser en zet het neer bij Instellingen > Import & Export > Importeren > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave en Vivaldi bevatten hetzelfde bestand, en je mappen en datums gaan mee. Safari verpakt het in een .zip, die je ongeopend kunt neerzetten.",
+        "Ja. Bladwijzers zijn een eigen pijler in de zijbalk, naast notities, taken en dagboeken, en ze zijn gratis in elk plan. Plak een link in de snelinvoerbalk om er een te bewaren. Neem je bestaande mee: exporteer een bladwijzerbestand (.html) uit je browser en zet het neer bij Instellingen > Import & Export > Importeren > \"Browserbladwijzers\". Chrome, Firefox, Safari, Edge, Opera, Brave en Vivaldi bevatten hetzelfde bestand, en je mappen en datums gaan mee. Safari verpakt het in een .zip, die je ongeopend kunt neerzetten.",
         "Je adressen verlaten je apparaat nooit: we halen de pagina achter een link niet op, en daarom draagt een bladwijzer die je zelf toevoegt zijn domein als naam totdat je er een typt. Site-iconen zijn de enige uitzondering, en je kunt ze uitzetten. De export schrijft hetzelfde standaardbestand, dus je bladwijzers vertrekken net zo makkelijk ([importgids](/nl/help/import/browser-bookmarks/))."
       ]
     },
@@ -424,7 +424,7 @@
       "q": "Kan ik een adresboek in PrivacyNotes bijhouden?",
       "a": [
         "Ja. Contacten zijn een eigen pijler in de zijbalk, naast notities, taken en dagboeken, en ze zijn gratis in elk plan. Een contact bevat namen, nummers, e-mailadressen, adressen, websites, datums, een bedrijf en een notitie. Tik op een nummer om te bellen, op een e-mailadres om te schrijven, of op een willekeurige regel om die te kopiëren. Al het andere dat je telefoon in het bestand zette, blijft onder **Ook in dit bestand** staan en gaat bij het exporteren weer mee.",
-        "Neem je bestaande mee: exporteer een vCard (.vcf) uit je telefoon, je Mac of Google Contacts en zet die neer bij Instellingen > Import & Export > Importeren > \"Contacts (vCard)\". Zet je later hetzelfde bestand nog eens neer, dan worden mensen die er al staan herkend in plaats van verdubbeld. Het exporteren schrijft een gewone vCard terug, dus je adresboek gaat er net zo makkelijk uit als het erin kwam ([meer over importeren](/nl/help/import-from-other-apps/))."
+        "Neem je bestaande mee: exporteer een vCard (.vcf) uit je telefoon, je Mac of Google Contacts en zet die neer bij Instellingen > Import & Export > Importeren > \"Contacten (vCard)\". Zet je later hetzelfde bestand nog eens neer, dan worden mensen die er al staan herkend in plaats van verdubbeld. Het exporteren schrijft een gewone vCard terug, dus je adresboek gaat er net zo makkelijk uit als het erin kwam ([meer over importeren](/nl/help/import-from-other-apps/))."
       ]
     },
     "what-to-keep": {
@@ -438,7 +438,7 @@
     "keyboard-shortcuts": {
       "q": "Welke sneltoetsen zijn er?",
       "a": [
-        "Druk ergens in de app op ? voor het ingebouwde spiekbriefje, ook te vinden onder Instellingen > Over & help. De sneltoetsen bestrijken navigatie, notitieacties, opmaak en weergaven - en op Windows en Linux lees je elke Cmd als Ctrl en Option als Alt.",
+        "Druk ergens in de app op ? voor het ingebouwde spiekbriefje, ook te vinden onder Instellingen > Over. De sneltoetsen bestrijken navigatie, notitieacties, opmaak en weergaven - en op Windows en Linux lees je elke Cmd als Ctrl en Option als Alt.",
         "De basis: Cmd+K activeert het zoeken, met J en K loop je door de lijst, Alt+Shift+N begint een nieuwe notitie, Cmd+Backspace gooit de geselecteerde in de prullenbak, Cmd+, opent Instellingen. Tijdens het schrijven: Cmd+B vet, Cmd+I cursief, Cmd+Shift+K voegt een link in, Cmd+Shift+9 begint een takenlijst, Cmd+F zoekt in de notitie, Cmd+Shift+O toont of verbergt het overzicht. Cmd+\\ verbergt de zijbalk, Cmd+Shift+L wisselt het thema, Cmd+Shift+F opent de zen-modus (Pro), en Esc brengt je uit bijna alles terug."
       ]
     },
@@ -446,7 +446,7 @@
       "q": "Is er een afdrukbaar spiekbriefje met de sneltoetsen?",
       "a": [
         "Ja. Het [spiekbriefje om af te drukken](/help/keyboard-shortcuts/cheat-sheet) zet alle sneltoetsen op één A4-pagina in twee kolommen, klaar om naast je scherm te hangen. Het wordt gegenereerd uit dezelfde lijst die de app zelf toont, dus het kan nooit achterlopen op een release.",
-        "Open het en druk op de knop Afdrukken (of Cmd+P / Ctrl+P). Wil je een bestand in plaats van papier, kies dan PDF als bestemming in het afdrukvenster. Het spiekbriefje is ook gelinkt boven en onder de sneltoetsenlijst in de app (Instellingen > Over & help > Sneltoetsen) en in de footer van deze site."
+        "Open het en druk op de knop Afdrukken (of Cmd+P / Ctrl+P). Wil je een bestand in plaats van papier, kies dan PDF als bestemming in het afdrukvenster. Het spiekbriefje is ook gelinkt boven en onder de sneltoetsenlijst in de app (Instellingen > Over > Sneltoetsen) en in de footer van deze site."
       ]
     },
     "ask-an-ai": {
@@ -460,7 +460,7 @@
     "locked-vs-protected": {
       "q": "Wat is het verschil tussen alleen-lezen en met een PIN beveiligde notities?",
       "a": [
-        "\"Alleen-lezen\" (in het menu met notitieopties, Pro) vergrendelt een notitie tegen bewerken, zodat een afgerond document niet per ongeluk verhaspeld raakt; het verbergt niets. \"Beveiligen\" (zelfde menu, Pro) verbergt de titel en inhoud van een notitie achter je PIN of biometrisch ontgrendelen, voor de dingen die je liever niet zichtbaar hebt op een scherm waar soms anderen op meekijken.",
+        "\"Alleen-lezen\" (in het menu met notitieopties, Pro) vergrendelt een notitie tegen bewerken, zodat een afgerond document niet per ongeluk verhaspeld raakt; het verbergt niets. \"Beveiligen\" (zelfde menu, Pro) verbergt de inhoud van een notitie achter je PIN of biometrisch ontgrendelen, voor de dingen die je liever niet zichtbaar hebt op een scherm waar soms anderen op meekijken. De titel blijft zichtbaar in de lijst, dus houd het geheim uit de titel.",
         "Beide zijn drempels voor het scherm, geen tweede laag versleuteling. De markeringen reizen mee in de versleutelde gegevens van de notitie, en de notitie wordt bewust niet opnieuw versleuteld met je PIN: zo kan een vergeten PIN nooit gegevens vernietigen. De herstelzin blijft de echte grens: bescherm die eerst, en gebruik deze drempels voor het scherm dat anderen soms zien."
       ]
     },
@@ -512,7 +512,7 @@
       "q": "Hoe herstel ik een back-up?",
       "a": [
         "Open Instellingen > Import & Export > Herstellen en kies het formaat dat je hebt. \"Volledige back-up (.zip)\" neemt de hele export: notities, dagboeken, kluisitems, taken, afbeeldingen, audio en bestanden. \"Versleutelde back-up (.pnbackup, .pnbackupz)\" neemt beide versleutelde exports. Je bestand wordt op je apparaat gelezen en ontsleuteld, en herstellen is gratis in elk plan.",
-        "Alles komt binnen als nieuwe items en niets van wat je al hebt wordt overschreven, dus dezelfde back-up twee keer herstellen laat je met twee kopieën van elke notitie achter. Beide versleutelde formaten gaan alleen open in het account dat ze maakte, omdat ze met de zinsleutel van dat account versleuteld zijn; een .zip past in elke kluis ([welke back-up je maakt](/nl/help/backup-strategy/))."
+        "Een herstel koppelt notities op id. Een notitie die je al hebt wordt alleen bijgewerkt als de versie in de back-up nieuwer is, een notitie in je prullenbak komt er weer uit, een notitie die je mist wordt één keer toegevoegd, en hetzelfde bestand opnieuw herstellen verandert niets, tenzij je tussendoor een herstelde notitie hebt bewerkt: dan komt de oudere versie terug naast je bewerking. Een bestand zonder id's van ons, uit een andere app of uit een back-up van een oudere versie van deze app, voegt zijn notities elke keer als nieuwe toe. Beide versleutelde formaten gaan alleen open in het account dat ze maakte, omdat ze met de zinsleutel van dat account versleuteld zijn; een .zip past in elke kluis ([welke back-up je maakt](/nl/help/backup-strategy/))."
       ]
     },
     "image-quality": {
@@ -533,14 +533,14 @@
       "q": "Waarom is het uploaden van mijn bestand mislukt?",
       "a": [
         "De foutmelding noemt welk plafond je raakte. Per bestand: 5 MB op het gratis plan, 50 MB op Pro, 100 MB met een opslaguitbreiding. In totaal: alles wat je synchroniseert moet in de opslag van je account passen (50 MB gratis, 500 MB op Pro, meer met uitbreidingen), dus een vol quotum laat een upload mislukken, zelfs als het bestand klein is. Elk bestandstype is toegestaan.",
-        "Bekijk de opslagbalk in de weergave Bestanden of onder Instellingen > Opslag, en kies dan de goedkoopste oplossing: [maak ruimte vrij](/nl/help/storage-usage/), upgrade, of verklein het bestand (telefoonfoto's zijn vaak originelen van meerdere MB; een gecomprimeerde JPEG is een fractie van de grootte). Uploaden vraagt ook een verbinding: bestanden komen niet in de wachtrij terwijl je offline bent."
+        "Bekijk de opslagbalk in de weergave Bestanden of onder Instellingen > Opslag, en kies dan de goedkoopste oplossing: [maak ruimte vrij](/nl/help/storage-usage/), upgrade, of verklein het bestand (telefoonfoto's zijn vaak originelen van meerdere MB; een gecomprimeerde JPEG is een fractie van de grootte). Een upload die mislukt doordat er geen verbinding is, blijft bewaard en gaat niet verloren: het bestand blijft op dit apparaat en gaat vanzelf omhoog zodra je weer online bent, en tot die tijd telt Instellingen > ID & Sync het als wachtend."
       ]
     },
     "trash-auto-delete": {
       "q": "Waarom zijn er notities uit mijn prullenbak verdwenen?",
       "a": [
-        "De prullenbak is geen archief: standaard wordt alles erin na 30 dagen definitief verwijderd. De schakelaar zit in de weergave Prullenbak zelf, met het label \"Wordt na 30 dagen automatisch verwijderd\" - zet hem daar uit als je de prullenbak voor altijd wilt bewaren, en de instelling synchroniseert naar al je apparaten. Het opschonen draait op je apparaat wanneer de app opent, omdat de server niet kan zien welke versleutelde notities in de prullenbak zitten.",
-        "Definitief verwijderd betekent weg: geen serverkopie en geen weg terug. Gebruik je de prullenbak als een ooit-misschien-stapel, zet dan automatisch verwijderen uit of herstel notities vóór dag 30. Tot die tijd tellen notities in de prullenbak nog mee voor [je opslag](/nl/help/storage-usage/) - \"Legen\" in dezelfde weergave maakt die ruimte meteen vrij."
+        "De prullenbak is geen archief: standaard wordt alles erin na 30 dagen definitief verwijderd. De schakelaar zit in de weergave Prullenbak zelf, met het label \"Na 30 dagen automatisch verwijderen\" - zet hem daar uit als je de prullenbak voor altijd wilt bewaren, en de instelling synchroniseert naar al je apparaten. Het opschonen draait op je apparaat wanneer de app opent, omdat de server niet kan zien welke versleutelde notities in de prullenbak zitten.",
+        "Definitief verwijderd betekent weg: geen apparaat en niemand aan onze kant kan het terughalen, alleen een back-up die je eerder hebt gemaakt. Gebruik je de prullenbak als een ooit-misschien-stapel, zet dan automatisch verwijderen uit of herstel notities vóór dag 30. Tot die tijd tellen notities in de prullenbak nog mee voor [je opslag](/nl/help/storage-usage/) - \"Legen\" in dezelfde weergave maakt die ruimte meteen vrij."
       ]
     },
     "leaving": {
@@ -561,8 +561,8 @@
       "q": "Leggen jullie vast van welke website ik kom?",
       "a": [
         "Ja, en het gaat om advertenties. We kopen plaatsingen op andere sites en betalen creators, dus we moeten weten welke daarvan echt mensen opleveren. Verspild advertentiegeld draagt het product hoe dan ook, dus meten we het in de kleinste vorm die de vraag beantwoordt.",
-        "De marketingwebsite telt bezoeken en welke link je bracht, uitsluitend als totalen: geen cookie, geen bezoekersprofiel, geen script van derden. Als je een account aanmaakt, slaat dat twee korte woorden op uit een gepubliceerde lijst: via welke link je binnenkwam, als die er was, en hoe je de app hebt geïnstalleerd, bijvoorbeeld “android-play”.",
-        "Beide woorden worden één keer geschreven bij het aanmaken van het account, nooit bijgewerkt, en verwijderd met je account. Verder wordt er niets over je aankomst bewaard. Sluit je het tabblad voordat je je aanmeldt, of haalt je browser de link weg, dan leggen we helemaal niets vast. De apps zelf meten niets over jou: open je netwerktabblad en controleer het."
+        "De marketingwebsite telt de klikken op onze links als totalen, per link en per land, zonder enige identificatiecode: geen cookie, geen bezoekersprofiel, geen script van derden. Als je een account aanmaakt, slaat dat twee korte woorden op uit een gepubliceerde lijst: via welke link je binnenkwam, als die er was, en hoe je de app hebt geïnstalleerd, bijvoorbeeld “android-play”.",
+        "Beide woorden worden één keer geschreven bij het aanmaken van het account, nooit bijgewerkt, en verwijderd met je account. Verder wordt er niets over je aankomst bewaard. Sluit je het tabblad voordat je je aanmeldt, of haalt je browser de link weg, dan wordt er geen woord opgeslagen. De apps bevatten geen analyse van wat je schrijft, geen pixels en geen trackers van derden: open je netwerktabblad en controleer het."
       ]
     },
     "pro-not-active": {
@@ -575,7 +575,7 @@
     "manage-storage-addon": {
       "q": "Hoe wijzig of stop ik mijn opslaguitbreiding?",
       "a": [
-        "Instellingen > Opslag is het bedieningspaneel. Overstappen naar een groter pakket gaat meteen in, en de bevestiging toont het exacte bedrag naar rato dat vandaag in rekening wordt gebracht voordat je bevestigt; de verlengdatum verschuift niet. \"Opslag stopzetten\" houdt je extra ruimte tot het einde van de periode die je al betaald hebt. Wil je naar een kleiner pakket, zet het huidige stop en koop het kleinere zodra de periode afloopt.",
+        "Instellingen > Opslag is het bedieningspaneel. Overstappen naar een groter pakket gaat meteen in. Op het web toont de bevestiging het exacte bedrag naar rato dat vandaag in rekening wordt gebracht voordat je bevestigt, en de verlengdatum verschuift niet; in de Play Store en de App Store toont het betaalvenster van de winkel het bedrag, en Apple betaalt het ongebruikte deel van je lopende jaar terug en start een nieuw jaar. \"Opslag stopzetten\" houdt je extra ruimte tot het einde van de periode die je al betaald hebt. Wil je naar een kleiner pakket, zet het huidige stop en koop het kleinere zodra de periode afloopt.",
         "Past je gegevens na afloop nog binnen de resterende limiet, dan houdt het daarmee op; zo niet, dan wordt er niets verwijderd en begint de [levenscyclus van 90 dagen boven de limiet](/nl/help/over-quota/). Een mislukte verlenging toont een banner met een link \"Kaart bijwerken\" om de betaling in Paddle te herstellen.",
         "Stopzetten van buiten de app kan ook, en dat is het antwoord als je niet kunt inloggen. Paddle is onze verkoper van record en factureert je rechtstreeks: gebruik de link \"Abonnement beheren\" in je bonmail, of de supportchat op [paddle.net](https://paddle.net). Bij een store-build is het hetzelfde idee, dus stop het daar in de eigen abonnementsinstellingen van de store."
       ]
@@ -583,7 +583,7 @@
     "store-purchases": {
       "q": "Gaan aankopen over tussen het web, Google Play en de App Store?",
       "a": [
-        "Ja. Pro en opslag hangen aan je account, niet aan een platform of store. Koop op het web en elke app waarop je je aanmeldt is Pro, ook de store-builds; koop in een store-build en de web- en desktop-apps ontgrendelen op dezelfde manier. Aanmelden ís het herstellen, want het recht volgt het account. Een store-build heeft daarnaast een knop **Aankopen herstellen** onder Instellingen > Plan, die aan Apple of Google vraagt wat je bezit en het na een herinstallatie opnieuw ontgrendelt.",
+        "Ja. Pro en opslag hangen aan je account, niet aan een platform of store. Koop op het web en elke app waarop je je aanmeldt is Pro, ook de store-builds; koop in een store-build en de web- en desktop-apps ontgrendelen op dezelfde manier. Aanmelden ís het herstellen, want het recht volgt het account. Een store-build heeft daarnaast een knop **Aankopen herstellen** onder Instellingen > Account, die aan Apple of Google vraagt wat je bezit en het na een herinstallatie opnieuw ontgrendelt.",
         "Het enige verschil is wie je factureert. Webaankopen lopen via Paddle en beheer je in de app onder Instellingen > Opslag. Aankopen binnen een store-build (de App Store vandaag, Google Play zodra die app uitkomt) worden door die store gefactureerd: terugkerende opslag zet je stop in de abonnementsinstellingen van de store, en terugbetalingen volgen het proces van de store. Hoe dan ook is het overal hetzelfde account en dezelfde Pro - ook op platforms die nog niet bestaan."
       ]
     },
@@ -674,8 +674,8 @@
     "android-backup": {
       "q": "Staan mijn notities in de back-up van mijn Android-telefoon?",
       "a": [
-        "Nee. De Android-app houdt zijn gegevens buiten de cloudback-up van de telefoon, dus er komt niets van in Google Drive terecht. De reden is de sleutel, niet de notities: waar je **Dit apparaat vertrouwen** koos, staan je 12 woorden op dat apparaat om je ingelogd te houden, en een cloudback-up is geen plek voor de sleutel van een end-to-end versleuteld account.",
-        "Een nieuwe telefoon begint dus leeg: installeer de app, log in met je 12 woorden en alles wat gesynchroniseerd was komt binnen. Wat nooit synchroniseerde staat alleen op de oude telefoon, dus controleer eerst of de voettekst \"Synced\" zegt, of neem een \"PrivacyNotes-back-up (.zip)\" mee uit Instellingen > Import & Export > Exporteren ([welke back-up je maakt](/nl/help/backup-strategy/)).",
+        "Nee. De Android-app houdt zijn gegevens buiten de cloudback-up van de telefoon, dus er komt niets van in Google Drive terecht. De reden is de sleutel, niet de notities: waar je **Dit apparaat vertrouwen** koos, staan je 12 woorden op dat apparaat om je ingelogd te houden, en een cloudback-up is geen plek voor de sleutel die je notities ontsleutelt.",
+        "Een nieuwe telefoon begint dus leeg: installeer de app, log in met je 12 woorden en alles wat gesynchroniseerd was komt binnen. Herstellen wacht op die eerste synchronisatie, zodat een back-up die je meeneemt wordt afgestemd op wat het account al bevat in plaats van dubbel te worden toegevoegd. Wat nooit synchroniseerde staat alleen op de oude telefoon, dus controleer eerst of de voettekst \"Synced\" zegt, of neem een \"PrivacyNotes-back-up (.zip)\" mee uit Instellingen > Import & Export > Exporteren ([welke back-up je maakt](/nl/help/backup-strategy/)).",
         "Een directe overdracht van telefoon naar telefoon bij het instellen is iets anders: sommige telefoons verplaatsen daarbij app-gegevens, en Android geeft een app geen betrouwbare manier om dat te weigeren. Die kopie verlaat je twee apparaten nooit, dus wis de oude telefoon daarna."
       ]
     },
@@ -683,7 +683,7 @@
       "q": "Kan ik een notitie afdrukken of als PDF opslaan?",
       "a": [
         "Ja. Klik met rechts op een notitie, of open haar deelmenu, en kies \"Afdrukken / opslaan als PDF\". Het afdrukvenster van je systeem opent, dus je stuurt hem naar een printer of slaat er een PDF op. De pagina wordt netjes op wit gezet met je opmaak intact, welk thema je in de app ook gebruikt.",
-        "Hij ontstaat op je apparaat zoals elke andere [export](/nl/help/export/), dus er wordt niets geüpload om hem te maken. Voor meerdere notities tegelijk: selecteer ze en exporteer als HTML, dan krijg je één afdrukbare pagina per notitie. De \"Dokter-PDF\" onder Statistieken is een apart welzijnsrapport dat daarvoor gebouwd is en Pro vraagt."
+        "Hij ontstaat op je apparaat zoals elke andere [export](/nl/help/export/), dus er wordt niets geüpload om hem te maken. Voor meerdere notities tegelijk: selecteer ze en exporteer als HTML, dan krijg je één afdrukbare pagina per notitie. De \"PDF voor je arts\" onder Statistieken is een apart welzijnsrapport dat daarvoor gebouwd is en Pro vraagt."
       ]
     },
     "note-history": {
@@ -697,7 +697,7 @@
       "q": "Kan de Kluis mijn 2FA-authenticatorsleutels bewaren (TOTP / MFA-codes)?",
       "a": [
         "Ja. Een login in de Kluis heeft een veld \"2FA-code\" dat een base32-geheim of een hele otpauth://-link aanneemt, en een Bitwarden-import brengt bestaande sleutels mee. De sleutel wordt versleuteld opgeslagen en gesynchroniseerd in elk plan, ook het gratis. Pro maakt er de rollende code met aftelling van, dus je hebt geen tweede app ernaast nodig.",
-        "Een wachtwoord en zijn eenmalige code in dezelfde kluis betekent dat één ontgrendeld apparaat beide factoren draagt, dezelfde afweging die elke wachtwoordmanager met ingebouwde codes maakt. Voor de meeste accounts wint het gemak, zeker met de app-vergrendeling of een pincode ervoor. Wil je de twee factoren liever scheiden voor je e-mail of je bank, zet die codes dan elders en laat de [Kluis](/nl/help/vault/) de rest dragen."
+        "Een wachtwoord en zijn eenmalige code in dezelfde kluis betekent dat één ontgrendeld apparaat beide factoren draagt, dezelfde afweging die elke wachtwoordmanager met ingebouwde codes maakt. Voor de meeste accounts wint het gemak, zeker met de app-vergrendeling of een PIN ervoor. Wil je de twee factoren liever scheiden voor je e-mail of je bank, zet die codes dan elders en laat de [Kluis](/nl/help/vault/) de rest dragen."
       ]
     },
     "verify-download": {
@@ -724,9 +724,9 @@
     "signup-options": {
       "q": "Welke aanmeldoptie moet ik kiezen?",
       "a": [
-        "Die past bij jouw dreigingsniveau. Er zijn er drie. Een: \"Doorgaan met Google\" of \"Doorgaan met Apple\", met je sleutel opgeslagen op onze server. Twee: dezelfde knop, maar je sleutel blijft alleen op je apparaat. Drie: \"Genereer een herstelzin\", zonder e-mail, zonder naam en zonder login. Alle drie houden je notities eind-tot-eind versleuteld, en wat ze onderscheidt is wie de sleutel heeft en hoeveel wij over je te weten komen.",
-        "De Google-, Apple- of GitHub-knop vraagt daarna waar je sleutel woont. \"Houd het simpel & gemakkelijk\" bewaart hem versleuteld op onze server, zodat elk nieuw apparaat alleen met die login inlogt en jij niets hoeft te bewaren. Dat is het juiste niveau als je vooral vreest je eigen inloggegevens kwijt te raken. \"Maximale veiligheid & privacy\" houdt de sleutel op je apparaat: wij zouden onder geen enkele druk een notitie kunnen lezen, en een nieuw apparaat vraagt je 12 woorden of een QR-scan van een apparaat dat al ingelogd is.",
-        "De route met alleen de herstelzin is het hoogste niveau: geen e-mail, geen naam, niets dat het account aan een persoon bindt. Daartegenover staat dat de sleutel alleen van jou is, dus hem kwijtraken zonder ingelogd apparaat betekent dat niemand kan helpen. Niets hiervan ligt vast: Instellingen > Beveiliging > Je herstelzin brengt je wanneer je wilt van de ene modus naar de andere, en elk niveau kan er een pincode of biometrische vergrendeling bovenop zetten. De hele ladder, met wat elke sport kost, staat in [de ladder van dreigingsniveaus](/nl/help/threat-model-levels/)."
+        "Die past bij jouw dreigingsniveau. Er zijn er drie. Een: aanmelden met Google, Apple of GitHub, met je sleutel opgeslagen op onze server. Twee: dezelfde aanmelding, maar je sleutel blijft alleen op je apparaat. Drie: \"Genereer een herstelzin\", zonder e-mail, zonder naam en zonder login. Alle drie houden je notities versleuteld op je apparaat, en wat ze onderscheidt is wie de sleutel heeft en hoeveel wij over je te weten komen.",
+        "Aanmelden met een van die drie vraagt daarna waar je sleutel woont, te beginnen bij \"Houd het simpel & gemakkelijk\". Die optie bewaart hem versleuteld op onze server, zodat elk nieuw apparaat alleen met die login inlogt en jij niets hoeft te bewaren. Dat is het juiste niveau als je vooral vreest je eigen inloggegevens kwijt te raken. \"Maximale veiligheid & privacy\" houdt de sleutel op je apparaat: wij zouden onder geen enkele druk een notitie kunnen lezen, en een nieuw apparaat vraagt je 12 woorden of een QR-scan van een apparaat dat al ingelogd is.",
+        "De route met alleen de herstelzin is het hoogste niveau: geen e-mail, geen naam, niets dat het account aan een persoon bindt. Daartegenover staat dat de sleutel alleen van jou is, dus hem kwijtraken zonder ingelogd apparaat betekent dat niemand kan helpen. De sleutelmodus van een login ligt niet vast: Instellingen > Beveiliging > Je herstelzin wisselt hem wanneer je wilt, terwijl een account met alleen een herstelzin zijn sleutel op het apparaat houdt. Elk niveau kan er een PIN of biometrische vergrendeling bovenop zetten. De hele ladder, met wat elke sport kost, staat in [de ladder van dreigingsniveaus](/nl/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

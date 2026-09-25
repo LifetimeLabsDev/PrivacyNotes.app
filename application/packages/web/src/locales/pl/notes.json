@@ -55,7 +55,7 @@
     "empty": "Opróżnij",
     "emptyHover": "Usuń wszystkie notatki z kosza",
     "storage": "Pamięć",
-    "autoDelete": "Auto-usuwanie: 30 dni"
+    "autoDelete": "Automatycznie usuwaj po 30 dniach"
   },
   "search": {
     "sortOptions": "Opcje sortowania i widoku",
@@ -165,8 +165,8 @@
     "invisiblesShow": "Pokaż znaki niedrukowalne",
     "invisiblesHide": "Ukryj znaki niedrukowalne",
     "findInNote": "Znajdź w notatce",
-    "navPrev": "Poprzednia notatka",
-    "navNext": "Następna notatka",
+    "navPrev": "Poprzedni",
+    "navNext": "Następny",
     "undo": "Cofnij",
     "redo": "Ponów",
     "hide": "Ukryj",
@@ -180,7 +180,8 @@
     "titlePlaceholderLink": "Nazwa zakładki",
     "titlePlaceholderContact": "Imię i nazwisko",
     "notBackedUpTooLarge": "Powyżej limitu 1 MB, więc bez kopii zapasowej. Przenieś obrazy do załączników lub podziel notatkę.",
-    "notBackedUpFailed": "Bez kopii zapasowej. Ostatni błąd: {{message}}. Ponawianie."
+    "notBackedUpFailed": "Bez kopii zapasowej. Ostatni błąd: {{message}}. Ponawianie.",
+    "unknownType": "Ten element został utworzony w nowszej wersji PrivacyNotes. Zaktualizuj aplikację, aby go otworzyć."
   },
   "share": {
     "hover": "Udostępnij / eksportuj",

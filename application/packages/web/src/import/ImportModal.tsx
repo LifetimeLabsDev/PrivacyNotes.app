@@ -7,16 +7,19 @@ import { IMPORTERS } from './registry';
 import { applyImport } from './apply';
 import { withFolderPathTags } from './folderImport';
 import { withBrowserTags } from './browserBookmarks';
+import { normalizeTag } from '../notesRepo';
 import type { Importer, ParsedImport, ImportedNote, RestoreCounts } from './types';
 import { useAuth } from '../auth';
 import { recordAdminEvent, type ImportSource } from '../adminEvents';
 import type { LocalNote } from '../db';
+import { missingItemsLabel } from '../export';
 import type { FolderDef } from '../folders';
 import { useEscapeToClose } from '../useEscapeToClose';
 import { ArrowCounterClockwise, BookOpenText, BracketsCurly, Check, CircleNotch, Download, FileHtml, FileZip, Key, Lock, Upload, X, AddressBook } from '../icons';
 import { fetchQuotaUsage, recalculateQuota } from '../devices';
 import { estimateNoteStoredBytes, estimateBlobBytes } from '../notesViewUtils';
 import { proUnlocked } from '../demo';
+import { RESTORE_WAIT_LINE, restoreGateNow, useRestoreGate, type RestoreGate } from '../pullState';
 import { formatBytes } from '../formatBytes';
 import { perFileLimit } from '../attachmentValidation';
 import { contactPhotoOptions, processImage } from '../imageProcessing';
@@ -179,6 +182,7 @@ export function ImportModal({
   decryptFullBackup,
   onBlobsRestored,
   onImportFolders,
+  onImportTagColors,
   embedded = false,
 }: {
   onClose: () => void;
@@ -203,10 +207,17 @@ export function ImportModal({
    *  Parent should re-trigger processPendingUploads so blobs reach Supabase. */
   onBlobsRestored?: () => void;
   /** Merge folders rebuilt by an importer (Obsidian) into the settings
-   *  folder tree, reusing any existing folder whose path already matches.
-   *  Returns imported-id -> final-id so we can remap each note's folderId
-   *  before writing. */
-  onImportFolders?: (folders: FolderDef[]) => Map<string, string> | void;
+   *  folder tree, reusing any existing folder whose path already matches,
+   *  or, for our own backup, the one still live under its saved id
+   *  (`ParsedImport.originalFolderIds`). Returns imported-id -> final-id so
+   *  we can remap each note's folderId before writing. */
+  onImportFolders?: (
+    folders: FolderDef[],
+    originalIds?: ReadonlyMap<string, string>,
+  ) => Map<string, string> | void;
+  /** Give imported tags their colors (Google Keep's note colors): tag ->
+   *  color key. The parent colors only a tag that has no color yet. */
+  onImportTagColors?: (colors: Map<string, string>) => void;
 }) {
   const { t } = useTranslation('importExport');
   const { auth, supabase } = useAuth();
@@ -221,6 +232,7 @@ export function ImportModal({
   useEscapeToClose(onClose, !embedded);
   const [tab, setTab] = useState<'import' | 'export' | 'restore' | 'vault'>(initialTab);
   const [phase, setPhase] = useState<Phase>({ kind: 'pick' });
+  const restoreGate = useRestoreGate();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   /** Keep the raw file around so restoreBlobs can re-read it after applyImport. */
   const selectedFileRef = useRef<File | null>(null);
@@ -365,15 +377,25 @@ export function ImportModal({
   async function handleConfirm() {
     if (phase.kind !== 'preview') return;
     const { importer, parsed } = phase;
+    // Our own backups match their notes by id against this device's copy, so
+    // they wait for its first clean pull, before the folder merge below or
+    // any other write (pullState.ts).
+    if (importer.id === 'privacynotes') {
+      const gate = restoreGateNow();
+      if (gate !== 'open') {
+        setPhase({ kind: 'error', importer, message: t(RESTORE_WAIT_LINE[gate]) });
+        return;
+      }
+    }
     setPhase({ kind: 'applying', importer });
-    // Obsidian vaults and Notesnook notebooks rebuild a folder tree:
-    // merge it into settings so notes' folderId pointers resolve, then
-    // derive folder tags per the toggle (see folderImport).
+    // Obsidian vaults, Notesnook notebooks and our own backups rebuild a
+    // folder tree: merge it into settings so notes' folderId pointers
+    // resolve, then derive folder tags per the toggle (see folderImport).
     let notesForApply = parsed.notes;
     if (parsed.folders && parsed.folders.length > 0) {
       // Merge the tree into settings (reusing existing folders) and remap
       // note folderIds to the ids that survived reconciliation.
-      const idMap = onImportFolders?.(parsed.folders);
+      const idMap = onImportFolders?.(parsed.folders, parsed.originalFolderIds);
       const remapped =
         idMap && idMap.size > 0
           ? parsed.notes.map((n) =>
@@ -382,9 +404,29 @@ export function ImportModal({
                 : n
             )
           : parsed.notes;
-      notesForApply = withFolderPathTags(remapped, folderTags);
+      // The toggle lives on the Import tab. A restore puts notes back as the
+      // backup holds them, and its preview counts no folder tags, so a
+      // backup takes none.
+      notesForApply = importer.id === 'privacynotes'
+        ? remapped
+        : withFolderPathTags(remapped, folderTags);
     }
     notesForApply = withBrowserTags(notesForApply, browserTags);
+    // A note color from the source (Google Keep) becomes a tag named after
+    // the color, in the reader's language, and that tag takes the color:
+    // colors live on tags here, never on a note.
+    // Spec: ops/docs/plans/folder-tag-icons.md (section 4.7)
+    const colorTags = new Map<string, string>();
+    if (notesForApply.some((n) => n.colorKey)) {
+      notesForApply = notesForApply.map((n) => {
+        if (!n.colorKey) return n;
+        const tag = normalizeTag(t(`editor:color.names.${n.colorKey}`));
+        if (!tag) return n;
+        colorTags.set(tag, n.colorKey);
+        return n.tags.includes(tag) ? n : { ...n, tags: [...n.tags, tag] };
+      });
+      if (colorTags.size > 0) onImportTagColors?.(colorTags);
+    }
     let parsedForApply =
       notesForApply === parsed.notes
         ? parsed
@@ -402,6 +444,9 @@ export function ImportModal({
     // stays open on it - the notes land either way, so this is reported ON
     // TOP of a real import, never instead of one.
     let mediaError: string | null = null;
+    // A backup that lists a picture or a file and does not carry it is
+    // reported the same way.
+    let missingMessage: string | null = null;
 
     // Generic blob import: any importer that populates parsed.blobs gets
     // its images/attachments stored in IndexedDB and its note bodies
@@ -456,7 +501,7 @@ export function ImportModal({
       });
       try {
         const { restoreBlobs } = await import('./privacynotes');
-        await restoreBlobs(selectedFileRef.current, (msg) =>
+        const restored = await restoreBlobs(selectedFileRef.current, (msg) =>
           setPhase((prev) =>
             prev.kind === 'parsing' ? { ...prev, status: msg } : prev
           )
@@ -465,6 +510,12 @@ export function ImportModal({
         // Without this, blobs sit in local cache but never get uploaded,
         // making them unavailable on other devices.
         onBlobsRestored?.();
+        if (restored.missing.length > 0) {
+          missingMessage = t('errors.blobsNotInBackup', {
+            count: restored.missing.length,
+            items: missingItemsLabel(restored.missing),
+          });
+        }
       } catch (err) {
         // Notes are already imported, so this never rolls anything back -
         // but a backup that restored its notes and lost its images is not
@@ -487,12 +538,11 @@ export function ImportModal({
     // parent hears about them first: the list has to refresh and the sync
     // has to run even when the error phase below keeps the modal open.
     onImported(result.imported, result.skippedDuplicates, { updated: result.updated ?? 0, unchanged: result.unchanged ?? 0 });
-    if (mediaError) {
-      setPhase({
-        kind: 'error',
-        importer,
-        message: t('errors.blobImportFailed', { detail: mediaError }),
-      });
+    const message = mediaError
+      ? t('errors.blobImportFailed', { detail: mediaError })
+      : missingMessage;
+    if (message) {
+      setPhase({ kind: 'error', importer, message });
       return;
     }
     onClose();
@@ -546,15 +596,16 @@ export function ImportModal({
           className="shrink-0 flex items-stretch border-b border-divider px-6 overflow-x-auto"
         >
           {([
-            { id: 'import' as const, label: t('shell.tabImport'), icon: <Download aria-hidden="true" /> },
-            { id: 'export' as const, label: t('shell.tabExport'), icon: <Upload aria-hidden="true" /> },
-            { id: 'restore' as const, label: t('shell.tabRestore'), icon: <ArrowCounterClockwise aria-hidden="true" /> },
+            { id: 'import' as const, setting: 'import.import', label: t('shell.tabImport'), icon: <Download aria-hidden="true" /> },
+            { id: 'export' as const, setting: 'import.export', label: t('shell.tabExport'), icon: <Upload aria-hidden="true" /> },
+            { id: 'restore' as const, setting: 'import.restore', label: t('shell.tabRestore'), icon: <ArrowCounterClockwise aria-hidden="true" /> },
             // Key, not a padlock: the same glyph the sidebar gives the Vault
             // pillar (PILLAR_GLYPHS.vault), so the two surfaces agree.
-            { id: 'vault' as const, label: t('shell.tabVault'), icon: <Key aria-hidden="true" /> },
+            { id: 'vault' as const, setting: 'import.vault', label: t('shell.tabVault'), icon: <Key aria-hidden="true" /> },
           ]).map((tb) => (
             <button
               key={tb.id}
+              data-setting={tb.setting}
               role="tab"
               aria-selected={tab === tb.id}
               onClick={() => setTab(tb.id)}
@@ -625,6 +676,7 @@ export function ImportModal({
             <>
               {phase.kind === 'pick' && (
                 <RestorePickPhase
+                  gate={restoreGate}
                   onPickRestore={handlePickImporter}
                   onImportEncrypted={async (file) => {
                     // A .pnbackupz is the full-backup zip sealed under
@@ -950,6 +1002,7 @@ function ImporterRow({ imp, onPick }: { imp: Importer; onPick: (imp: Importer) =
     // frame's only internal line. Do NOT add `overflow-hidden` here - it would
     // clip the rail's hover tip. Spec: ops/docs/ui-patterns.md (section 18)
     <div
+      data-setting={`import.source.${imp.id}`}
       className={`flex items-stretch rounded-lg border transition ${
         imp.enabled ? 'border-divider hover:border-accent' : 'border-divider opacity-40'
       }`}
@@ -1004,7 +1057,7 @@ function ImportPickPhase({ onPick, autoTag, onAutoTagChange }: { onPick: (imp: I
 
   return (
     <div className="space-y-3">
-      <label className="flex items-start gap-2 rounded-lg border border-divider p-3 cursor-pointer hover:bg-surface-1 transition">
+      <label data-setting="import.autoTag" className="flex items-start gap-2 rounded-lg border border-divider p-3 cursor-pointer hover:bg-surface-1 transition">
         <input
           type="checkbox"
           checked={autoTag}
@@ -1062,7 +1115,8 @@ function VaultPickPhase({ onPick }: { onPick: (imp: Importer) => void }) {
 }
 
 /** Restore tab pick phase - PrivacyNotes backup restore, 1-col with full descriptions. */
-function RestorePickPhase({ onPickRestore, onImportEncrypted }: {
+function RestorePickPhase({ gate, onPickRestore, onImportEncrypted }: {
+  gate: RestoreGate;
   onPickRestore: (imp: Importer) => void;
   onImportEncrypted: (file: File) => void;
 }) {
@@ -1078,21 +1132,27 @@ function RestorePickPhase({ onPickRestore, onImportEncrypted }: {
 
       <HelpChip surface="restore" />
 
+      {gate !== 'open' && <SettingsCallout>{t(RESTORE_WAIT_LINE[gate])}</SettingsCallout>}
+
       <div className="space-y-1.5">
         <ActionRow
+          setting="restore.fullBackup"
           title={t('restorePick.fullBackupTitle')}
           description={t('restorePick.fullBackupDesc')}
           glyph={<FileZip size={20} aria-hidden="true" />}
+          disabled={gate !== 'open'}
           onClick={() => {
             const imp = importerMap['privacynotes'];
             if (imp) onPickRestore(imp);
           }}
         />
         <ActionRow
+          setting="restore.encryptedBackup"
           title={t('restorePick.encryptedBackupTitle')}
           description={t('restorePick.encryptedBackupDesc')}
           locked
           src={PN_ICON}
+          disabled={gate !== 'open'}
           onClick={() => encFileRef.current?.click()}
         />
       </div>
@@ -1197,15 +1257,21 @@ function PreviewPhase({
   const typeCounts = computeTypeCounts(notes);
   const hasMultipleTypes = typeCounts.length > 1;
   // Every importer that rebuilds a folder tree (Obsidian vaults,
-  // Notesnook notebooks) gets the folder-tag toggle. Sources that carry
-  // folderIds without a tree of their own (PrivacyNotes backups) do not
-  // populate parsed.folders, so they fall through unchanged.
+  // Notesnook notebooks) gets the folder-tag toggle. Our own backups
+  // rebuild one too, but the Restore tab passes no toggle and a restore
+  // adds no folder tags.
   const showFolderTags = (parsed.folders?.length ?? 0) > 0;
   // Only Firefox writes these, and only for bookmarks the user labelled,
   // so the toggle appears only when the file actually carries some.
   const showBrowserTags = notes.some((n) => (n.browserTags?.length ?? 0) > 0);
   const allLinks = notes.length > 0 && notes.every((n) => n.type === 'link');
   const allContacts = notes.length > 0 && notes.every((n) => n.type === 'contact');
+  // Our own backups carry each note's id, and a restore matches it to the
+  // copy the vault holds. A backup written before ids were carried adds
+  // everything again, so it keeps the duplicates warning. Only the
+  // PrivacyNotes backup formats set an id (ImportedNote.id), so this reads
+  // the file itself rather than the importer that opened it.
+  const allOwn = notes.length > 0 && notes.every((n) => !!n.id);
   // Reflect the folder tags the import is about to add (reactive to the
   // toggle) so the tag counts match what actually lands, not the raw
   // parse-time count. Non-folder imports fall through to notes unchanged.
@@ -1392,9 +1458,19 @@ function PreviewPhase({
         <strong className="text-pn">
           {t('preview.headsUpLabel')}
         </strong>{' '}
-        {/* Bookmarks are the one source apply.ts dedupes, on exact URL, so
-            the standing "you will get duplicates" line is false for them. */}
-        {allLinks ? t('preview.duplicateSkipNote') : allContacts ? t('preview.contactSkipNote') : t('preview.duplicateWarning')}
+        {/* Our own backups, bookmarks and contacts are the sources apply.ts
+            matches against the vault, so the standing "you will get
+            duplicates" line is false for them. The id match comes first
+            because apply.ts runs it before the bookmark and contact rules:
+            a newer copy of a contact from our own backup updates its row,
+            it is not skipped as a lookalike. */}
+        {allOwn
+          ? t('preview.restoreMergeNote')
+          : allLinks
+            ? t('preview.duplicateSkipNote')
+            : allContacts
+              ? t('preview.contactSkipNote')
+              : t('preview.duplicateWarning')}
       </SettingsCallout>
     </div>
   );
@@ -1495,12 +1571,14 @@ function ExportPanel({
         </SectionEyebrow>
         <div className="space-y-1.5">
           <ActionRow
+            setting="export.zipBackup"
             title={t('export.zipBackupTitle')}
             description={t('export.zipBackupDesc')}
             glyph={<FileZip size={20} aria-hidden="true" />}
             onClick={() => onExportAllMdZip(notes)}
           />
           <ActionRow
+            setting="export.encryptedZip"
             title={t('export.encryptedZipBackupTitle')}
             description={t('export.encryptedZipBackupDesc')}
             locked
@@ -1508,6 +1586,7 @@ function ExportPanel({
             onClick={() => onExportEncryptedZip(notes)}
           />
           <ActionRow
+            setting="export.encryptedBackup"
             title={t('export.encryptedBackupTitle')}
             description={t('export.encryptedBackupDesc')}
             locked
@@ -1523,12 +1602,14 @@ function ExportPanel({
         </SectionEyebrow>
         <div className="space-y-1.5">
           <ActionRow
+            setting="export.htmlArchive"
             title={t('export.htmlArchiveTitle')}
             description={t('export.htmlArchiveDesc')}
             glyph={<FileHtml size={20} aria-hidden="true" />}
             onClick={() => onExportAllHtmlZip(notes)}
           />
           <ActionRow
+            setting="export.textBackup"
             title={t('export.textBackupTitle')}
             description={t('export.textBackupDesc')}
             glyph={<BracketsCurly size={20} aria-hidden="true" />}
@@ -1544,6 +1625,7 @@ function ExportPanel({
           </SectionEyebrow>
           <div className="space-y-1.5">
             <ActionRow
+              setting="export.bookmarks"
               title={t('export.bookmarksExportTitle')}
               description={t('export.bookmarksExportDesc')}
               glyph={<FileHtml size={20} aria-hidden="true" />}
@@ -1560,6 +1642,7 @@ function ExportPanel({
           </SectionEyebrow>
           <div className="space-y-1.5">
             <ActionRow
+              setting="export.contacts"
               title={t('export.contactsExportTitle')}
               description={t('export.contactsExportDesc')}
               glyph={<AddressBook size={20} aria-hidden="true" />}
@@ -1576,6 +1659,7 @@ function ExportPanel({
           </SectionEyebrow>
           <div className="space-y-1.5">
             <ActionRow
+              setting="export.vault"
               title={t('export.vaultExportTitle')}
               description={t('export.vaultExportDesc')}
               glyph={<BracketsCurly size={20} aria-hidden="true" />}
@@ -1597,24 +1681,33 @@ function ExportPanel({
  *  the mark names the FORMAT (.zip, .html, .json), and our own two formats
  *  take the app icon. */
 function ActionRow({
+  setting,
   title,
   description,
   locked,
   glyph,
   src,
+  disabled,
   onClick,
 }: {
+  /** The settings search id of this row. */
+  setting: string;
   title: string;
   description: string;
   locked?: boolean;
   glyph?: ReactNode;
   src?: string;
+  disabled?: boolean;
   onClick: () => void;
 }) {
   return (
     <button
+      data-setting={setting}
       onClick={onClick}
-      className="w-full text-start rounded-lg border border-divider hover:border-accent hover:bg-accent/5 cursor-pointer px-3 py-2.5 transition flex items-center gap-3"
+      disabled={disabled}
+      className={`w-full text-start rounded-lg border border-divider px-3 py-2.5 transition flex items-center gap-3 ${
+        disabled ? 'opacity-40 cursor-not-allowed' : 'hover:border-accent hover:bg-accent/5 cursor-pointer'
+      }`}
     >
       <RowIcon src={src} glyph={glyph} />
       <span className="min-w-0">

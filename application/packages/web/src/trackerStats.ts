@@ -150,8 +150,13 @@ function hasTrackerData(data: JournalTrackerData): boolean {
  * day, so entries are collapsed per day: later-created data wins key by
  * key. Left un-collapsed, one day counted twice in `trackedDays`, drew
  * two points on the mood chart, and rendered duplicate React keys.
+ *
+ * A journal the PIN guards right now (`isGated`) is left out: its mood,
+ * sleep and doses are its content, and every reader below (the charts, the
+ * insights, the doctor report, the AI prompt, Week in review, the JSON
+ * export) comes through here.
  */
-function extractEntries(notes: LocalNote[]): JournalEntry[] {
+function extractEntries(notes: LocalNote[], isGated: (n: LocalNote) => boolean): JournalEntry[] {
   const byDate = new Map<string, JournalEntry>();
   const sourceOrder = [...notes].sort((a, b) =>
     a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0,
@@ -159,6 +164,9 @@ function extractEntries(notes: LocalNote[]): JournalEntry[] {
   for (const n of sourceOrder) {
     if (n.deleted === 1 || n.trashed === 1) continue;
     if (n.type !== 'journal') continue;
+    // The type makes every caller in the app pass the predicate; a call that
+    // passes none reads every journal.
+    if (isGated?.(n)) continue;
     const data = n.trackers as JournalTrackerData | undefined;
     // Presence of `trackers` alone used to qualify, so every journal
     // created since the date stamp shipped counted as a tracked day.
@@ -190,11 +198,17 @@ function extractEntries(notes: LocalNote[]): JournalEntry[] {
 // Main computation
 // ------------------------------------------------------------------
 
+/**
+ * `isGated` is the view's lock predicate, passed by every caller: a journal
+ * behind a closed gate is left out, and counts again once its gate opens.
+ * Tested in tests/lockGateReads.test.ts.
+ */
 export function computeTrackerStats(
   notes: LocalNote[],
   medications: MedicationTemplate[],
+  isGated: (n: LocalNote) => boolean,
 ): TrackerStats {
-  const entries = extractEntries(notes);
+  const entries = extractEntries(notes, isGated);
   if (entries.length === 0) {
     return {
       trackedDays: 0,
@@ -860,10 +874,11 @@ ${stats.patterns.length > 0 ? `<h2>${esc(r('patterns'))}</h2><ul>${stats.pattern
 
 export function exportTrackerJSON(
   notes: LocalNote[],
-  dateFrom?: string,
-  dateTo?: string,
+  dateFrom: string | undefined,
+  dateTo: string | undefined,
+  isGated: (n: LocalNote) => boolean,
 ): string {
-  const entries = extractEntries(notes);
+  const entries = extractEntries(notes, isGated);
   const filtered = entries.filter((e) => {
     if (dateFrom && e.date < dateFrom) return false;
     if (dateTo && e.date > dateTo) return false;

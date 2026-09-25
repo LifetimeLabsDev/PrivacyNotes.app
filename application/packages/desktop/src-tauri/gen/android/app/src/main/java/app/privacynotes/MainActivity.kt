@@ -11,6 +11,9 @@ import android.print.PrintManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
@@ -31,6 +34,12 @@ class MainActivity : TauriActivity() {
   // it, which prints blank; Android's own "print an HTML document" guidance
   // keeps the same field for the same reason. See PrintBridge below.
   private var printWebView: WebView? = null
+  // Whether the app lock is on, pushed by the web layer through the
+  // __pnPrivacy bridge below. Decides whether the recents card shows the
+  // notes. Spec: ops/docs/plans/app-switcher-privacy-screen.md
+  private var privacyScreenArmed = false
+  // The black view laid over the content while the window has no focus.
+  private var privacyCover: View? = null
   // Back press routing (#174). TauriActivity sets wry's
   // handleBackNavigation to false, so with no callback of our own a
   // back press finishes the activity - the app appears to quit from
@@ -59,6 +68,7 @@ class MainActivity : TauriActivity() {
     webView.addJavascriptInterface(BarsBridge(), "__pnBars")
     webView.addJavascriptInterface(PrintBridge(), "__pnPrint")
     webView.addJavascriptInterface(InstallerBridge(), "__pnInstaller")
+    webView.addJavascriptInterface(PrivacyBridge(), "__pnPrivacy")
 
     onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
       override fun handleOnBackPressed() {
@@ -142,6 +152,120 @@ class MainActivity : TauriActivity() {
     WindowCompat.getInsetsController(window, window.decorView).apply {
       isAppearanceLightStatusBars = !dark
       isAppearanceLightNavigationBars = !dark
+    }
+  }
+
+  /**
+   * Hide the notes from the recents card while the app lock is on.
+   *
+   * Android photographs an activity as it leaves the screen and shows that
+   * picture in recents. An open note is readable there, and the app lock never
+   * runs, because the app was never opened.
+   *
+   * Two halves, because the overview draws the card two different ways and each
+   * way needs its own answer. FLAG_SECURE marks the window's surface secure and
+   * the snapshot system refuses a secure surface, so the stored picture is never
+   * taken. That covers the card you meet coming back from another app. It does
+   * NOT cover the card you meet pressing recents from inside the app, because
+   * that one composites the live window rather than a stored picture, and a
+   * live window is not something a flag can withhold. Only changing what the
+   * window draws reaches it, which is what showPrivacyCover does, and it is the
+   * same thing the iOS half does with a UIView.
+   *
+   * Both are raised the moment the window loses focus.
+   *
+   * The hook is onWindowFocusChanged and NOT onPause, which is the whole
+   * difference between this working and not. Pressing the recents button from
+   * inside the app does not pause the activity at all: the overview opens, the
+   * system photographs the window, and onPause arrives later or never. Measured
+   * on a Pixel 10 on Android 16, where the flag was absent from the window at
+   * the moment the card was drawn. Losing window focus happens first, on every
+   * route out of the app, so that is where the flag belongs.
+   *
+   * Focus also goes when a dialog, the notification shade or the biometric
+   * prompt comes up. Raising the flag there costs nothing: the app is behind
+   * something the user is already looking at, and focus returning clears it.
+   *
+   * The API 33 alternative, setRecentsScreenshotEnabled(false), reads like the
+   * better fit because it touches nothing but the card. It was tried first and
+   * does not hold: on a Pixel 10 running Android 16 the card still showed the
+   * live screen with the flag set. Its own documentation calls it a hint, and
+   * the system falls back to the window's theme background only when it feels
+   * like it.
+   *
+   * FLAG_SECURE also blocks screenshots and screen recording, which would be
+   * the wrong trade if it were always on. It is not: onPause raises it and
+   * onResume clears it, and taking a screenshot does not pause an activity, so
+   * a user photographing their own notes is unaffected.
+   *
+   * Tracked in git; restore after any `tauri android init`.
+   * Spec: ops/docs/android-setup.md (re-apply checklist)
+   */
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+    super.onWindowFocusChanged(hasFocus)
+    if (hasFocus) {
+      // Cleared whatever the armed state is: a user who turns the app lock off
+      // while the app is away must not come back to a covered window that
+      // still refuses screenshots.
+      window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+      hidePrivacyCover()
+    } else if (privacyScreenArmed) {
+      window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+      showPrivacyCover()
+    }
+  }
+
+  /**
+   * Lay a black view over everything the window draws.
+   *
+   * FLAG_SECURE answers the picture the system stores, which is what the card
+   * shows once the app has stopped. It does not answer the first moment: the
+   * overview opened from inside the app composites the live window, and a live
+   * window is not a stored picture. Only changing what the window draws
+   * reaches that, which is the same thing the iOS half does with a UIView.
+   *
+   * The decor background goes black with it, because the view is laid out
+   * inside the decor's padding and the bar strips would otherwise keep the
+   * theme colour around a black rectangle.
+   */
+  private fun showPrivacyCover() {
+    if (privacyCover != null) return
+    val decor = window.decorView as? ViewGroup ?: return
+    val cover = View(this)
+    cover.setBackgroundColor(Color.BLACK)
+    cover.layoutParams = ViewGroup.LayoutParams(
+      ViewGroup.LayoutParams.MATCH_PARENT,
+      ViewGroup.LayoutParams.MATCH_PARENT,
+    )
+    decor.addView(cover)
+    decor.setBackgroundColor(Color.BLACK)
+    privacyCover = cover
+  }
+
+  private fun hidePrivacyCover() {
+    val cover = privacyCover ?: return
+    (cover.parent as? ViewGroup)?.removeView(cover)
+    privacyCover = null
+    applyDecorBackground()
+  }
+
+  /**
+   * JS -> native channel for the app lock state. `set` is called from
+   * applyPrivacyScreen() in packages/web/src/privacyScreen.ts, from the one
+   * place local settings are written, so turning the lock off disarms this on
+   * the same path that turning it on arms it.
+   *
+   * @JavascriptInterface methods arrive on a binder thread, hence the hop.
+   */
+  private inner class PrivacyBridge {
+    @JavascriptInterface
+    fun set(enabled: Boolean) {
+      runOnUiThread {
+        privacyScreenArmed = enabled
+        if (!enabled) {
+          window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+      }
     }
   }
 

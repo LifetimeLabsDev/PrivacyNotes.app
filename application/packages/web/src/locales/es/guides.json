@@ -82,7 +82,7 @@
           "p": [
             "Tu estructura de carpetas se reconstruye como carpetas reales, no se aplana en etiquetas, por muy profundo que sea el anidado. Una nota en Work/Projects acaba en una carpeta Work > Projects. Si vuelves a importar la misma bóveda, se reutilizan las carpetas ya creadas en lugar de duplicarlas.",
             "En el plan gratuito puedes explorar estas carpetas de inmediato; crear, renombrar y mover carpetas es una función Pro, así que una importación de Obsidian es una buena forma de probarla antes de mejorar tu plan.",
-            "El frontmatter YAML se entiende: etiquetas, alias y fechas de creación se respetan, y los #tags del cuerpo se fusionan en el campo de etiquetas. Al importar también puedes activar el etiquetado de notas por nombre de carpeta, útil si te gusta filtrar por etiquetas.",
+            "El frontmatter YAML se entiende: etiquetas, alias y fechas de creación se respetan, y los #tags del cuerpo se fusionan en el campo de etiquetas. Al importar también puedes marcar \"Etiquetar también las notas por carpeta\" para añadir cada nombre de carpeta como etiqueta, útil si te gusta filtrar por etiquetas.",
             "Tus enlaces [[...]] siguen funcionando: PrivacyNotes los muestra como note-links, así que las conexiones entre notas sobreviven a la mudanza. La carpeta de configuración .obsidian y .trash se omiten automáticamente."
           ]
         }
@@ -177,7 +177,7 @@
           "h": "Dónde aterriza cada cosa",
           "p": [
             "Los inicios de sesión se vuelven entradas de acceso de la Bóveda (con el icono de su sitio), las tarjetas entradas de tarjeta, las claves SSH entradas de clave SSH, y las notas seguras más las identidades llegan como notas legibles. Las carpetas de Bitwarden se vuelven etiquetas, y los favoritos llegan con estrella. Las claves de autenticación (TOTP) también vienen contigo, así que tus códigos 2FA siguen funcionando.",
-            "El archivo exportado contiene tus contraseñas en claro, así que impórtalo, verifica que llegó todo y luego borra el archivo a conciencia. Dentro de PrivacyNotes todo vuelve a estar cifrado de extremo a extremo."
+            "El archivo exportado contiene tus contraseñas en claro, así que impórtalo, verifica que llegó todo y luego borra el archivo a conciencia. Dentro de PrivacyNotes todo vuelve a estar cifrado, en tu dispositivo y de camino al servidor."
           ]
         }
       ]
@@ -568,7 +568,7 @@
         {
           "h": "Borra el archivo exportado cuando termines: son tus contraseñas en texto plano",
           "p": [
-            "En el .csv exportado no hay nada cifrado, llegue dentro de un .zip o no. Quien lo abra lee todas las contraseñas que has guardado, así que guárdalo en tu propio equipo, impórtalo, comprueba que ha llegado todo y luego borra el archivo y vacía la papelera. Dentro de PrivacyNotes vuelve a estar cifrado de extremo a extremo."
+            "En el .csv exportado no hay nada cifrado, llegue dentro de un .zip o no. Quien lo abra lee todas las contraseñas que has guardado, así que guárdalo en tu propio equipo, impórtalo, comprueba que ha llegado todo y luego borra el archivo y vacía la papelera. Dentro de PrivacyNotes vuelve a estar cifrado, en tu dispositivo y de camino al servidor."
           ]
         }
       ]

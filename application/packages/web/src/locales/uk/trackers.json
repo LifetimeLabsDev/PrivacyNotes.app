@@ -1,0 +1,180 @@
+{
+  "labels": {
+    "mood": "Настрій",
+    "emotions": "Емоції",
+    "sleep": "Сон",
+    "sleepScore": "Оцінка сну",
+    "heartRate": "Пульс",
+    "activity": "Активність",
+    "medication": "Прийом ліків",
+    "meds": "Ліки",
+    "energy": "Енергія",
+    "focus": "Фокус",
+    "weight": "Вага",
+    "steps": "Кроки",
+    "water": "Вода",
+    "screenTime": "Екранний час",
+    "caffeine": "Кофеїн",
+    "pain": "Біль",
+    "social": "Спілкування",
+    "custom": "Власний"
+  },
+  "units": {
+    "hoursSuffix": " год",
+    "bpm": "уд/хв",
+    "kg": "кг",
+    "lb": "фунт",
+    "steps_one": "крок",
+    "steps_few": "кроки",
+    "steps_many": "кроків",
+    "steps_other": "кроку",
+    "hrs": "год",
+    "glasses_one": " склянка",
+    "glasses_few": " склянки",
+    "glasses_many": " склянок",
+    "glasses_other": " склянки",
+    "cups_one": " чашка",
+    "cups_few": " чашки",
+    "cups_many": " чашок",
+    "cups_other": " чашки"
+  },
+  "scaleEnds": {
+    "low": "мало",
+    "high": "багато",
+    "none": "немає",
+    "waterHigh": "10+",
+    "caffeineHigh": "5+",
+    "painHigh": "сильний",
+    "socialLow": "ізольовано",
+    "socialHigh": "дуже активно"
+  },
+  "mood": {
+    "prompt": "Як ви почуваєтеся? (1-10)",
+    "low": "жахливо",
+    "high": "чудово",
+    "anchor": {
+      "1": "жахливо",
+      "3": "погано",
+      "5": "нормально",
+      "7": "добре",
+      "10": "чудово"
+    }
+  },
+  "scalePill": {
+    "prompt": "{{label}} ({{min}}-{{max}})"
+  },
+  "emotions": {
+    "prompt": "Які емоції ви відчуваєте?",
+    "count_one": "{{count}} емоція",
+    "count_few": "{{count}} емоції",
+    "count_many": "{{count}} емоцій",
+    "count_other": "{{count}} емоції",
+    "valence": {
+      "positive": "позитивні",
+      "neutral": "нейтральні",
+      "negative": "негативні"
+    },
+    "tags": {
+      "happy": "Радість",
+      "calm": "Спокій",
+      "relaxed": "Розслабленість",
+      "grateful": "Вдячність",
+      "loved": "Любов",
+      "motivated": "Мотивація",
+      "confident": "Упевненість",
+      "productive": "Продуктивність",
+      "focused": "Зосередженість",
+      "energetic": "Бадьорість",
+      "tired": "Втома",
+      "restless": "Неспокій",
+      "distracted": "Розсіяність",
+      "numb": "Спустошеність",
+      "overwhelmed": "Перевантаженість",
+      "anxious": "Тривога",
+      "stressed": "Стрес",
+      "frustrated": "Фрустрація",
+      "irritable": "Дратівливість",
+      "sad": "Смуток",
+      "lonely": "Самотність",
+      "guilty": "Провина",
+      "hopeless": "Безнадія",
+      "angry": "Гнів"
+    }
+  },
+  "sleep": {
+    "prompt": "Як ви спали?",
+    "hoursLabel": "Годин:",
+    "quality": {
+      "terrible": "Жахливо",
+      "poor": "Погано",
+      "okay": "Нормально",
+      "good": "Добре",
+      "great": "Чудово"
+    }
+  },
+  "sleepScore": {
+    "prompt": "Оцінка сну"
+  },
+  "heartRate": {
+    "prompt": "Середній пульс"
+  },
+  "activity": {
+    "prompt": "Рівень активності сьогодні?",
+    "level": {
+      "sedentary": "Сидячий",
+      "light": "Легкий",
+      "moderate": "Помірний",
+      "active": "Активний",
+      "intense": "Інтенсивний"
+    }
+  },
+  "medication": {
+    "heading": "Ліки",
+    "empty": "Ліки ще не налаштовано.",
+    "takenCount_one": "Прийнято: {{count}}",
+    "takenCount_few": "Прийнято: {{count}}",
+    "takenCount_many": "Прийнято: {{count}}",
+    "takenCount_other": "Прийнято: {{count}}",
+    "namePlaceholder": "Назва ліків",
+    "dosagePlaceholder": "Дозування (напр., 50 мг)",
+    "addMedication": "+ Додати ліки",
+    "editMedication": "Редагувати ліки",
+    "removeMedication": "Прибрати ліки",
+    "confirmRemove": "Прибрати <highlight>{{name}}</highlight>?",
+    "yes": "Так",
+    "no": "Ні",
+    "taken": "Прийнято",
+    "skip": "Пропустити"
+  },
+  "custom": {
+    "yes": "Так",
+    "no": "Ні",
+    "typeLabels": {
+      "scale10": "Шкала (0-10)",
+      "scale5": "Шкала (0-5)",
+      "slider100": "Повзунок (0-100)",
+      "number": "Число",
+      "yesno": "Так / Ні"
+    }
+  },
+  "config": {
+    "configureTrackers": "Налаштувати трекери",
+    "title": "Трекери",
+    "categoryMoodMind": "Настрій і розум",
+    "categoryBodyHealth": "Тіло і здоров’я",
+    "categoryLifestyle": "Спосіб життя",
+    "customHeading": "Власні",
+    "resume": "Відновити",
+    "stop": "Зупинити",
+    "addCustomTracker": "Додати власний трекер",
+    "addCustomTrackerCount": "Додати власний трекер ({{count}}/{{max}})",
+    "addCustomTrackerHint": "Відстежуйте що завгодно",
+    "maxReached": "Досягнуто максимуму: {{max}} власних трекерів.",
+    "customTrackers": "Власні трекери",
+    "newCustomTracker": "Новий власний трекер",
+    "trackerNamePlaceholder": "Назва трекера",
+    "nameCount": "{{count}}/{{max}}",
+    "typeLabel": "Тип:",
+    "colorLabel": "Колір:"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "webcredentials": {
+    "apps": ["PV88JJL329.app.privacynotes"]
+  },
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["PV88JJL329.app.privacynotes"],
+        "components": [
+          { "/": "/auth/callback" }
+        ]
+      }
+    ]
+  }
+}

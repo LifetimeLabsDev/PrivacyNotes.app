@@ -14,7 +14,7 @@
   "footer": {
     "exportNote": "匯出在本機執行，不會上傳任何資料。",
     "restoreNote": "你的檔案會在本機讀取並解密。",
-    "importNote": "所有內容都會先在你的裝置上加密，才離開裝置進行同步。"
+    "importNote": "所有內容無論在你的裝置上還是同步時，都始終保持加密。"
   },
   "importPick": {
     "autoTagLabel": "依來源為匯入的筆記加上標籤",
@@ -71,6 +71,11 @@
     "encryptedBackupTitle": "加密備份（.pnbackup、.pnbackupz）",
     "encryptedBackupDesc": "以你的助憶詞金鑰還原加密備份。.pnbackupz 會還原全部內容，包含檔案；.pnbackup 只含文字內容與中繼資料。必須以建立備份時的同一個帳號登入。"
   },
+  "restoreGate": {
+    "wait": "還原會等到這部裝置連上網路並完成一次同步，這樣你的備份才能與帳號中已有的筆記比對，而不會重複新增。",
+    "paused": "還原會等待同步完成，這樣你的備份才能與帳號中已有的筆記比對。這部裝置的同步已暫停，請到「設定 > ID & Sync」關閉「暫停同步」。",
+    "belowFloor": "還原會等待同步完成，這樣你的備份才能與帳號中已有的筆記比對。這個版本的應用程式太舊，無法同步，請先更新應用程式。"
+  },
   "encryptedBackupLabel": "加密備份",
   "status": {
     "readingFile": "讀取檔案中…",
@@ -82,7 +87,8 @@
   "errors": {
     "genericParse": "發生錯誤。",
     "decryptionFailed": "解密失敗。助憶詞錯誤或檔案已損毀。",
-    "blobImportFailed": "你的筆記已經匯入，但圖片與檔案沒有：{{detail}} 你選取的檔案內容完全沒有變動，所以可以刪除已匯入的筆記，再重新匯入一次。"
+    "blobImportFailed": "你的筆記已經匯入，但圖片與檔案沒有：{{detail}} 你選取的檔案內容完全沒有變動，所以可以刪除已匯入的筆記，再重新匯入一次。",
+    "blobsNotInBackup_other": "你的筆記已還原，但備份清單中列出的{{items}}並不在備份裡。"
   },
   "preview": {
     "sourceLabel": "來源",
@@ -96,6 +102,7 @@
     "duplicateWarning": "匯入會把這些內容新增為新筆記。執行兩次就會出現重複項目，目前還沒有自動去重。",
     "duplicateSkipNote": "已經存過的書籤會自動略過，所以重跑一次也不會重複。",
     "contactSkipNote": "已經存過的人會略過並保持原樣，所以執行兩次不會讓任何人重複。",
+    "restoreMergeNote": "你自己的備份中的筆記會依 ID 比對。已有的筆記只有在備份中的副本較新時才會更新；垃圾桶裡的筆記會移出垃圾桶。",
     "quotaExceeded": "<strong>儲存空間不足，無法匯入。</strong>預估需要 {{needed}}，目前可用 {{available}}。請先釋出空間或升級再匯入。",
     "quotaWarning": "提醒：這次匯入大約會用掉 {{needed}}，你剩餘的儲存空間為 {{available}}。",
     "oversizeAttachments_other": "{{count}} 個檔案超過你方案的單檔上限 {{limit}}。它們會匯入到這台裝置，但在你升級之前不會同步到你的其他裝置。"
@@ -140,13 +147,21 @@
   "exportProgress": {
     "failedTitle": "匯出失敗",
     "completeTitle": "匯出完成",
+    "incompleteTitle": "匯出不完整",
     "exportingTitle": "正在匯出備份…",
     "preparing": "準備中…",
     "exporting": "匯出中…",
     "imagesProgress": "正在匯出圖片… {{done}}/{{total}}",
     "filesProgress": "正在匯出檔案… {{done}}/{{total}}",
     "building": "正在建立備份…",
-    "compressing": "壓縮中…"
+    "compressing": "壓縮中…",
+    "missingFailed_other": "這部裝置無法下載{{items}}，所以匯出時略過了。請檢查連線後再匯出一次。",
+    "missingNotFound_other": "{{items}}不在這部裝置上，也不在伺服器上，所以匯出時略過了。"
+  },
+  "missing": {
+    "pictures_other": "{{count}} 張圖片",
+    "files_other": "{{count}} 個檔案",
+    "both": "{{pictures}}和{{files}}"
   },
   "upload": {
     "completeTitle": "上傳完成",

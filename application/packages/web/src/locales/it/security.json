@@ -119,6 +119,7 @@
     "enable": "Attiva lo sblocco biometrico",
     "lockOnOpen": "Blocca l'app all'apertura",
     "lockOnOpenHint": "Richiedi il blocco biometrico o il PIN all'apertura dell'app.",
+    "lockHidesOnSwitch": "Nasconde anche le tue note quando cambi app.",
     "lockNeedsCredential": "Il blocco dell'app richiede un PIN o lo sblocco biometrico su questo dispositivo.",
     "setUpPin": "Imposta un PIN",
     "confirmPinForLock": "Inserisci il tuo PIN per attivarlo. Blocca una copia della tua frase di recupero, così solo il tuo PIN può aprire l'app.",
@@ -129,6 +130,9 @@
     "disableConfirmLabel": "Disattiva",
     "disableConfirmBody": "Disattivare lo sblocco biometrico su questo dispositivo?",
     "disableConfirmBodyAppLock": "Disattivare lo sblocco biometrico su questo dispositivo? Verrà disattivato anche il blocco dell'app."
+  },
+  "appLock": {
+    "phraseNotSaved": "Questo dispositivo non è riuscito a salvare la tua frase di recupero, quindi non è cambiato nulla. Riprova."
   },
   "pinSetup": {
     "title": "Imposta un PIN",

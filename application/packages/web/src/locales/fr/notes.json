@@ -55,7 +55,7 @@
     "empty": "Vider",
     "emptyHover": "Supprimer toutes les notes de la corbeille",
     "storage": "Stockage",
-    "autoDelete": "Suppression auto : 30 j"
+    "autoDelete": "Supprimer après 30 jours"
   },
   "search": {
     "sortOptions": "Options de tri et d'affichage",
@@ -161,8 +161,8 @@
     "invisiblesShow": "Afficher les caractères invisibles",
     "invisiblesHide": "Masquer les caractères invisibles",
     "findInNote": "Rechercher dans la note",
-    "navPrev": "Note précédente",
-    "navNext": "Note suivante",
+    "navPrev": "Précédent",
+    "navNext": "Suivant",
     "undo": "Annuler",
     "redo": "Rétablir",
     "hide": "Masquer",
@@ -176,7 +176,8 @@
     "titlePlaceholderLink": "Nom du signet",
     "titlePlaceholderContact": "Nom",
     "notBackedUpTooLarge": "Au-delà de la limite de 1 Mo, donc non sauvegardée. Déplace les images en pièces jointes ou scinde la note.",
-    "notBackedUpFailed": "Non sauvegardée. Dernière erreur : {{message}}. Nouvel essai en cours."
+    "notBackedUpFailed": "Non sauvegardée. Dernière erreur : {{message}}. Nouvel essai en cours.",
+    "unknownType": "Cet élément a été créé avec une version plus récente de PrivacyNotes. Mets à jour l'application pour l'ouvrir."
   },
   "share": {
     "hover": "Partager / Exporter",

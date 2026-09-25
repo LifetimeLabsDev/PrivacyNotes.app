@@ -13,11 +13,11 @@
     "themeToggle": "Canvia entre clar i fosc"
   },
   "hero": {
-    "badge": "Xifrat d'extrem a extrem, auditable",
+    "badge": "Xifrat al teu dispositiu, auditable",
     "headline": "Notes. Tasques.<br />Fitxers. Caixa forta.<stroke>Coneixement zero.</stroke>",
-    "subhead": "Un sol lloc xifrat per a tot allò que mai no publicaries. Es xifra al teu dispositiu abans d'anar enlloc. No podríem llegir-ho ni volent.",
+    "subhead": "Un sol lloc xifrat per a tot allò que mai no publicaries. Xifrat al teu dispositiu; si la clau la tens tu, no podríem llegir-ho ni volent.",
     "tryDemo": "Prova la demo",
-    "microcopy": "Gratuït per sempre. Sense targeta de crèdit. Inicia la sessió amb Google, amb Apple o només amb una frase de 12 paraules.",
+    "microcopy": "Gratuït per sempre. Sense targeta de crèdit. Inicia la sessió amb Google, amb Apple, amb GitHub o només amb una frase de 12 paraules.",
     "alreadyHaveVault": "Ja tens una caixa forta? Inicia la sessió",
     "trustSigned": "Versions signades a GitHub"
   },
@@ -91,7 +91,7 @@
     "bip39": "BIP-39",
     "ed25519": "Ed25519",
     "swissServers": "Servidors suïssos",
-    "noTracking": "Sense seguiment",
+    "noTracking": "Sense rastrejadors",
     "rls": "Seguretat a nivell de fila"
   },
   "downloads": {
@@ -116,7 +116,7 @@
     "linuxDebDesc": "Instal·lador, torna'l a baixar per actualitzar",
     "checksumAria": "Suma de verificació SHA-256 de {{label}}",
     "debFootnote": "Estàs actualitzant una <highlight>instal·lació .deb</highlight> que ja tens? No la desinstal·lis abans. Fer doble clic al fitxer acaba en un carreró sense sortida a l'App Center d'Ubuntu, que només diu que l'aplicació està instal·lada: instal·la la nova sobre l'antiga des d'un terminal. Fes servir la línia que correspon al teu ordinador; dpkg --print-architecture et diu quina és:",
-    "availability": "Ja disponible: macOS 13+, Windows 10+, iOS 15+, Linux i Android.",
+    "availability": "Ja disponible: macOS 13+, Windows 10+, iOS 17.4+, Linux i Android.",
     "betaNote": "Totes les nostres aplicacions són en beta i encara poden tenir errors, així que de moment la versió web és la més estable. Totes les aplicacions s'actualitzen soles i publiquem correccions gairebé cada dia.",
     "pkgToggle": "Instal·la amb un gestor de paquets ({{platforms}})",
     "pkgBrewDesc": "L'aplicació s'actualitza sola, no pas brew upgrade.",
@@ -145,7 +145,7 @@
     "freeMood": "Registre d'ànim i benestar",
     "freeTheme": "Mode fosc i clar",
     "freeAnon": "Inici de sessió anònim, sense correu",
-    "freeGoogle": "Inici de sessió amb Google",
+    "freeGoogle": "Inici de sessió amb Google, Apple o GitHub",
     "noSubscription": "Sense subscripció",
     "proLabel": "Pro · Un sol pagament",
     "earlyAdopterBadge": "Pioner",
@@ -174,8 +174,8 @@
     "phraseDesc": "12 paraules, signatura Ed25519",
     "rlsTerm": "Seguretat a nivell de fila",
     "rlsDesc": "RLS lligada a la teva clau pública",
-    "trackingTerm": "Zero seguiment",
-    "trackingDesc": "Sense analítiques, sense píxels",
+    "trackingTerm": "Zero rastrejadors",
+    "trackingDesc": "Sense píxels, sense rastrejadors de tercers",
     "authTerm": "Autenticació anònima",
     "authDesc": "Sense correu, sense contrasenya",
     "serversTerm": "Servidors suïssos",
@@ -190,7 +190,7 @@
   "mood": {
     "kicker": "Registre d'ànim i benestar",
     "heading": "Registra el que sents de debò.",
-    "intro": "Ànim, emocions, son, medicació i nivell d'activitat, tot amb uns quants tocs. Tot es xifra al teu dispositiu abans de sincronitzar-se.",
+    "intro": "Ànim, emocions, son, medicació i nivell d'activitat, tot amb uns quants tocs. Tot està sempre xifrat, al teu dispositiu i durant la sincronització.",
     "cardEmotionsTitle": "Ànim (1-10) + 24 etiquetes d'emocions",
     "cardEmotionsBody": "24 etiquetes d'emocions amb base científica. Posa nom al que sents, detecta patrons al llarg del temps i exporta dades amb què el teu terapeuta o metge pugui treballar.",
     "cardSleepTitle": "Qualitat del son + nivell d'activitat",
@@ -215,8 +215,8 @@
     "themSeparate": "Aplicacions separades, quotes recurrents",
     "usAllInOne": "Notes, tasques, fitxers, caixa forta, diari, marcadors. Una sola aplicació",
     "usTracking": "Registre d'ànim, energia, son i medicació",
-    "usEncrypted": "Xifrat d'extrem a extrem, sincronitzat a Suïssa",
-    "usSignIn": "Inici de sessió anònim o amb Google, el mateix xifratge en tots dos casos",
+    "usEncrypted": "Xifrat al teu dispositiu, sincronitzat a Suïssa",
+    "usSignIn": "Inici de sessió anònim, o amb Google, Apple o GitHub, el mateix xifratge en tots els casos",
     "usExport": "Detecció de patrons + exportació de PDF per al metge",
     "usSync": "Escriptori + mòbil, sincronització il·limitada",
     "usPriceBeta": "Gratuït per sempre, o ${{earlyPrice}} una sola vegada per Pro (preu per a pioners)",
@@ -248,7 +248,7 @@
     "para1": "La majoria d'aplicacions de notes exploten el teu contingut. Afegeix “comprar un televisor nou” a la llista de la compra i les properes pàgines que visitis s'ompliran d'anuncis de televisors. La llista de la compra, el teu diari, els teus pensaments privats, tot alimentant circuits de publicitat dirigida, perfilat i venut. És el model de negoci de totes les aplicacions de notes “gratuïtes” que viuen de la publicitat.",
     "para2": "Fins i tot les aplicacions que no mostren anuncis guarden les teves notes en text clar als seus servidors: llegibles pels empleats, exposades a filtracions i a l'abast de qualsevol requeriment judicial. Les teves dades es converteixen en el seu avantatge.",
     "differenceLabel": "La diferència",
-    "differenceBody": "<brand/> està xifrada d'extrem a extrem amb claus que no surten mai del teu dispositiu, de manera que ni nosaltres ni els nostres servidors podem llegir el que escrius. No hi ha seguiment, ni analítiques, ni anuncis, ni perfils, i mai no n'hi haurà. El que escrius és teu.",
+    "differenceBody": "<brand/> xifra les teves notes al teu dispositiu, i amb l'autocustòdia la clau no en surt mai, de manera que ni nosaltres ni els nostres servidors en podem llegir ni una paraula. No hi ha anuncis, ni píxels, ni rastrejadors de tercers, ni analítiques del que escrius, i mai no n'hi haurà. El nostre lloc web compta els clics als seus enllaços de baixada i de socis per país, sense cap identificador. El que escrius és teu.",
     "keyboardNote": "<b>Un apunt sobre els teclats del dispositiu.</b> Els teclats de tercers (com Gboard, SwiftKey o Samsung Keyboard) poden enviar el que escrius als seus propis servidors. Això passa a nivell del sistema operatiu, fora del control de qualsevol aplicació. Considera desactivar les funcions al núvol a la configuració del teclat o fer servir un teclat només fora de línia."
   },
   "readIt": {
@@ -263,13 +263,13 @@
   },
   "wontFind": {
     "kicker": "El que no trobaràs a l’aplicació",
-    "noTracking": "Sense seguiment",
+    "noTracking": "Sense rastrejadors",
     "noAds": "Sense anuncis",
     "noHarvesting": "Sense recollida de dades",
     "noAiTraining": "Sense entrenament d'IA",
     "noLockIn": "Sense lligams",
     "noEmail": "Sense correu",
-    "noTelemetry": "Sense telemetria",
+    "noTelemetry": "Sense analítiques de les teves notes",
     "noCookieBanner": "Sense avís de galetes",
     "noPasswords": "Sense contrasenyes",
     "noDarkPatterns": "Sense patrons foscos",
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "La teva frase és la teva clau",
-    "body": "Sense frase, no hi ha notes. No les podem recuperar, i ningú més no ho pot fer. Aquest és el preu del xifratge d'extrem a extrem: amb autocustòdia només tu tens la clau, així que escriure al nostre equip no et tornarà les notes.",
+    "body": "Sense frase, no hi ha notes. No les podem recuperar, i ningú més no ho pot fer. Aquest és el preu de l'autocustòdia: només tu tens la clau, així que escriure al nostre equip no et tornarà les notes.",
     "noRecoveryTerm": "Sense recuperació",
     "noRecoveryDesc": "Perds la frase, perds les notes",
     "deviceTerm": "Generada al dispositiu",
@@ -290,8 +290,8 @@
     "writeDesc": "Còpia en paper, desada en un lloc segur",
     "printTerm": "Imprimeix-la des de la configuració",
     "printDesc": "Mira i exporta la teva frase quan vulguis",
-    "googleTerm": "Inici de sessió amb Google?",
-    "googleDesc": "També tens una frase. Fes-ne còpia"
+    "googleTerm": "Inici de sessió amb Google, Apple o GitHub?",
+    "googleDesc": "Per defecte guardem la teva clau, o bé fas còpia de la teva pròpia frase"
   },
   "closing": {
     "kicker": "Quan vulguis",
@@ -332,7 +332,7 @@
   "trust": {
     "openSourceHeading": "Codi obert",
     "openSourceLink": "Llegeix el codi a GitHub.com",
-    "openSourceBody": "L'aplicació i el xifratge que porta dins estan publicats, així que qualsevol pot comprovar les nostres afirmacions zero-knowledge.",
+    "openSourceBody": "L'aplicació i el xifratge que porta dins estan publicats, així que qualsevol pot comprovar les nostres afirmacions de coneixement zero.",
     "dataStorageHeading": "Emmagatzematge de dades",
     "dataStorageBody": "Blobs xifrats emmagatzemats a Zuric, 🇨🇭 Suïssa.",
     "faviconsHeading": "Icones dels llocs web",

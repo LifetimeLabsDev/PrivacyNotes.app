@@ -135,6 +135,7 @@
     "closeMenu": "關閉選單",
     "close": "關閉",
     "views": "內容",
+    "resizeSplit": "調整內容與標籤或資料夾的大小",
     "sidebarOptions": "側邊欄選項",
     "showInSidebar": "顯示於側邊欄",
     "allOptions": "「全部」選項",
@@ -450,6 +451,7 @@
     "openAction": "開啟",
     "copiedUrl": "已複製連結",
     "moveToTrash": "移至垃圾桶",
+    "rowMenu": "更多動作",
     "emptyNone": "還沒有書籤。",
     "emptyTitle": "把值得留下的網站存起來",
     "emptyAdd": "新增書籤",
@@ -577,5 +579,8 @@
   },
   "noteLinks": {
     "retargetedToast_other": "已將 {{count}} 個筆記連結更新為新標題。"
+  },
+  "looks": {
+    "menu": "圖示與顏色"
   }
 }

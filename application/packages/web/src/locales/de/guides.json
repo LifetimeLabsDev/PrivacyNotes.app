@@ -82,7 +82,7 @@
           "p": [
             "Deine Ordnerstruktur wird als echte Ordner nachgebaut, nicht in Tags umgewandelt, egal wie tief sie verschachtelt ist. Eine Notiz in Work/Projects landet in einem Ordner Work > Projects. Importierst du denselben Vault erneut, werden die bereits erstellten Ordner wiederverwendet statt dupliziert.",
             "Im kostenlosen Tarif kannst du diese Ordner sofort durchstöbern; Ordner anlegen, umbenennen und verschieben ist eine Pro-Funktion, ein Obsidian-Import ist also eine gute Gelegenheit, sie vor dem Upgrade auszuprobieren.",
-            "YAML-Frontmatter wird verstanden: Tags, Aliase und Erstellungsdaten werden übernommen, und #Tags im Text werden ins Tag-Feld übernommen. Beim Import kannst du zusätzlich Notizen nach Ordnernamen taggen lassen, praktisch, wenn du auch gern nach Tags filterst.",
+            "YAML-Frontmatter wird verstanden: Tags, Aliase und Erstellungsdaten werden übernommen, und #Tags im Text werden ins Tag-Feld übernommen. Beim Import kannst du außerdem \"Notizen zusätzlich nach Ordner taggen\" anhaken, dann wird jeder Ordnername auch als Tag hinzugefügt, praktisch, wenn du auch gern nach Tags filterst.",
             "Deine [[...]]-Verknüpfungen funktionieren weiter: PrivacyNotes stellt sie als note-links dar, die Verbindungen zwischen Notizen überleben den Umzug also. Der .obsidian-Konfigurationsordner und .trash werden automatisch übersprungen."
           ]
         }
@@ -177,7 +177,7 @@
           "h": "Wo die Dinge landen",
           "p": [
             "Logins werden zu Tresor-Login-Einträgen (mit ihren Website-Icons), Karten zu Karten-Einträgen, SSH-Schlüssel zu SSH-Schlüssel-Einträgen, und sichere Notizen plus Identitäten kommen als lesbare Notizen an. Bitwarden-Ordner werden zu Tags, Favoriten kommen mit Stern an. Authenticator-Schlüssel (TOTP) kommen ebenfalls mit, deine 2FA-Codes funktionieren also weiter.",
-            "Die Export-Datei enthält deine Passwörter im Klartext. Importiere sie, prüfe, ob alles angekommen ist, und lösche die Datei dann endgültig. In PrivacyNotes ist wieder alles Ende-zu-Ende-verschlüsselt."
+            "Die Export-Datei enthält deine Passwörter im Klartext. Importiere sie, prüfe, ob alles angekommen ist, und lösche die Datei dann endgültig. In PrivacyNotes ist wieder alles verschlüsselt, auf deinem Gerät und auf dem Weg zum Server."
           ]
         }
       ]
@@ -568,7 +568,7 @@
         {
           "h": "Lösch die Export-Datei, wenn du fertig bist: sie sind deine Passwörter im Klartext",
           "p": [
-            "In der exportierten .csv ist nichts verschlüsselt, ob sie nun in einer .zip ankommt oder nicht. Wer sie öffnet, liest jedes Passwort, das du gespeichert hast. Behalte sie also auf deinem eigenen Rechner, importiere sie, prüf, ob alles angekommen ist, und lösch die Datei danach samt Papierkorb. In PrivacyNotes ist alles wieder Ende-zu-Ende verschlüsselt."
+            "In der exportierten .csv ist nichts verschlüsselt, ob sie nun in einer .zip ankommt oder nicht. Wer sie öffnet, liest jedes Passwort, das du gespeichert hast. Behalte sie also auf deinem eigenen Rechner, importiere sie, prüf, ob alles angekommen ist, und lösch die Datei danach samt Papierkorb. In PrivacyNotes ist alles wieder verschlüsselt, auf deinem Gerät und auf dem Weg zum Server."
           ]
         }
       ]

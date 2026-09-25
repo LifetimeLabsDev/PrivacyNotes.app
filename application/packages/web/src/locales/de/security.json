@@ -119,6 +119,7 @@
     "enable": "Biometrische Entsperrung aktivieren",
     "lockOnOpen": "App beim Öffnen sperren",
     "lockOnOpenHint": "Beim Öffnen der App Biometrie oder PIN verlangen.",
+    "lockHidesOnSwitch": "Verbirgt deine Notizen außerdem beim Wechseln der App.",
     "lockNeedsCredential": "Die App-Sperre braucht auf diesem Gerät eine PIN oder biometrische Entsperrung.",
     "setUpPin": "PIN festlegen",
     "confirmPinForLock": "Gib deine PIN ein, um das einzuschalten. Sie verschließt eine Kopie deiner Wiederherstellungsphrase, sodass nur deine PIN die App öffnen kann.",
@@ -129,6 +130,9 @@
     "disableConfirmLabel": "Deaktivieren",
     "disableConfirmBody": "Biometrische Entsperrung auf diesem Gerät deaktivieren?",
     "disableConfirmBodyAppLock": "Biometrische Entsperrung auf diesem Gerät deaktivieren? Die App-Sperre wird dann ebenfalls ausgeschaltet."
+  },
+  "appLock": {
+    "phraseNotSaved": "Dieses Gerät konnte deine Wiederherstellungsphrase nicht speichern, deshalb wurde nichts geändert. Versuche es noch einmal."
   },
   "pinSetup": {
     "title": "PIN festlegen",

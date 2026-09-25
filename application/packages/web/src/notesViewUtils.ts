@@ -3,17 +3,25 @@
  * date formatting. Extracted from NotesView.tsx for maintainability.
  */
 
+import type { NoteType } from '@notes/shared';
 import type { LocalNote } from './db';
 import { indexedBodyText, isPhraseQuery } from './search';
+import { textMatcher } from './textMatch';
+import { MARKDOWN_NOTE_TYPES } from './noteTypes';
+export { MARKDOWN_NOTE_TYPES, isKnownNoteType } from './noteTypes';
 import type { ListPrefs } from './listPrefs';
 import { formatBytes } from './formatBytes';
 import i18n from './i18n';
 import { intlLocale } from './languages';
 import { parseLinkBody, linkDomain } from './linkBody';
 import { contactDisplayName, contactPhotoBytes, contactSecondLine, parseContactBody } from './contactBody';
+import type { PinGatePurpose } from './ProtectedNoteGate';
+import type { NoteConflict } from './sync';
+import { isDelimiterRow } from './tableDelimiterRow';
 
-/** Regex to match pn:file/ links in note bodies. */
-const FILE_LINK_STRIP = /\[[^\]]*\]\(pn:file\/[0-9a-f-]{36}\)/g;
+/** Regex to match pn:file/ links in note bodies. Not a picture placed from
+ *  Files (`![...](pn:file/...)`), which shows a file rather than holding one. */
+const FILE_LINK_STRIP = /(?<!!)\[[^\]]*\]\(pn:file\/[0-9a-f-]{36}\)/g;
 
 /** Regex to extract size strings from pn:file/ links: [name|size|mime](pn:file/uuid) */
 const ATT_SIZE_RE = /\[[^|]*\|([^|]*)\|[^\]]*\]\(pn:file\/[0-9a-f-]{36}\)/g;
@@ -274,14 +282,15 @@ export function stripToPlainText(line: string): string {
  * (`indexedBodyText`, so a vault password is never consulted) or in the
  * title. Case, runs of whitespace and inline markup do not count, because
  * the reader is matching what the editor shows; the raw line is tried too,
- * for a string the stripper would eat, like a name with underscores. One
- * term is never a phrase. The list holds only the hits that say the phrase
- * (GitHub #288).
+ * for a string the stripper would eat, like a name with underscores. The
+ * check is `textMatcher`, the matcher every other list uses, and it folds
+ * both sides as the index does, so the differences the index ignores, such
+ * as accents, do not count here either. One term is never a phrase. The list
+ * holds only the hits that say the phrase (GitHub #288).
  */
 export function noteSaysPhrase(n: LocalNote, query: string): boolean {
   if (!isPhraseQuery(query)) return false;
-  const phrase = query.trim().replace(/\s+/g, ' ').toLowerCase();
-  const says = (text: string) => text.replace(/\s+/g, ' ').toLowerCase().includes(phrase);
+  const says = textMatcher(query);
   if (says(n.title)) return true;
   for (const line of indexedBodyText(n).split(/\r?\n/)) {
     if (says(stripToPlainText(line)) || says(line)) return true;
@@ -323,17 +332,21 @@ export function deriveTitleFromContent(n: LocalNote): string {
   if (n.type === 'link') return linkDomain(parseLinkBody(n.body).url);
   // Contacts: the name the fields spell, else the company, else an address.
   if (n.type === 'contact') return contactDisplayName('', parseContactBody(n.body));
-  // Vault items never derive one: their body is JSON, and the first line of it
-  // is not a title in any language.
-  if (n.type === 'login' || n.type === 'card' || n.type === 'ssh-key') return '';
+  // Every other structured body derives none. A vault item's is JSON, and a
+  // type this build does not know holds a body it cannot read; the first line
+  // of either is not a title in any language.
+  if (hasStructuredBody(n.type)) return '';
   return firstBodyLine(n.body).slice(0, 80);
 }
 
 // Title shown in the notes-list row: what the content spells, else the
 // stand-in for that note type. Every stand-in is translated, so a row in a
-// Portuguese list does not read "Unnamed contact".
-export function deriveDisplayTitle(n: LocalNote): string {
-  const derived = deriveTitleFromContent(n);
+// Portuguese list does not read "Unnamed contact". A note behind a closed
+// gate (`gated`) is named by its stored title alone: a name its content
+// spells - a contact's email or number, a bookmark's domain, a first line -
+// is content the gate keeps, so the stand-in takes its place.
+export function deriveDisplayTitle(n: LocalNote, gated = false): string {
+  const derived = gated ? (n.title ?? '').trim() : deriveTitleFromContent(n);
   if (derived) return derived;
   if (n.type === 'contact') return i18n.t('shell:contacts.unnamed');
   if (n.type === 'login') return i18n.t('shell:vaultItem.untitledLogin');
@@ -352,28 +365,26 @@ export function deriveDisplayTitle(n: LocalNote): string {
  */
 export function emptyExcerptLabel(n: LocalNote): string {
   if (n.type === 'file') return i18n.t('notes:noteRow.file');
-  if (n.type === 'login' || n.type === 'card' || n.type === 'ssh-key') return i18n.t('notes:noteRow.empty');
+  if (n.type === 'login' || n.type === 'card' || n.type === 'ssh-key' || n.type === 'link') return i18n.t('notes:noteRow.empty');
   if (n.type === 'contact') return '';
   return i18n.t('notes:noteRow.noContent');
 }
 
 /**
- * Note types whose body is JSON consumed by a form, not markdown: a bookmark's
- * `{url}`, a contact, a login, a card, an SSH key.
+ * Whether a note's body is anything but markdown: the JSON document of a form,
+ * or the body of a type this build does not know, which it can neither parse
+ * nor safely rewrite. The answer is "not a markdown pillar", so an unknown
+ * type is structured by construction, and every pass that skips a structured
+ * body skips it too.
  *
- * Three passes ask this question - the note-link retarget, the body flush into
- * React state, and the derived-title commit - and each carried its own copy of
- * the list, which is how the contacts pillar came to be missing from all three
- * (GitHub #305). One list, one answer.
+ * The editor pane, the note-link retarget, the body flush into React state,
+ * the derived-title commit and the title derivation all ask this. Each once
+ * carried its own copy of the list, which is how the contacts pillar came to
+ * be missing from three of them (GitHub #305). One list, one answer.
+ * Test: tests/unknownNoteType.test.ts
  */
 export function hasStructuredBody(type: string | undefined): boolean {
-  return (
-    type === 'link' ||
-    type === 'contact' ||
-    type === 'login' ||
-    type === 'card' ||
-    type === 'ssh-key'
-  );
+  return !MARKDOWN_NOTE_TYPES.includes((type ?? 'note') as NoteType);
 }
 
 /**
@@ -423,12 +434,93 @@ export function isPlaceholderTitle(n: LocalNote): boolean {
  *
  * Used by every note-link surface: the autocomplete list, resolution, and the
  * rename pass. They must agree, so they read this. Spec: packages/web/src/noteLinks.ts
+ *
+ * A bookmark behind a closed gate (`gated`) offers its stored title alone:
+ * its domain is content the gate keeps.
  */
-export function noteLinkName(n: LocalNote): string {
+export function noteLinkName(n: LocalNote, gated = false): string {
   const t = (n.title ?? '').trim();
   if (t) return t;
-  if (n.type === 'link') return linkDomain(parseLinkBody(n.body).url);
+  if (n.type === 'link' && !gated) return linkDomain(parseLinkBody(n.body).url);
   return '';
+}
+
+// ── The PIN gate outside a note's pane ────────────────────────────
+// Each decision NotesView makes about a note behind a closed gate lives here,
+// so it can be tested without rendering the view; tests/lockGateWiring.test.ts
+// pins that the view calls them with its own lock predicate.
+
+type RequestPinGate = (action: () => Promise<void>, purpose: PinGatePurpose) => void;
+
+/**
+ * Run `action` at once when `gated` is false. When it is true the action is
+ * refused until the PIN: `requestPinGate` asks, with the unlock wording, and
+ * runs it once the PIN is verified. Every single-note export, print, burn
+ * link, history and bookmark address goes through here.
+ */
+export async function runBehindGate(
+  gated: boolean,
+  requestPinGate: RequestPinGate,
+  action: () => Promise<void> | void,
+): Promise<void> {
+  if (gated) requestPinGate(async () => { await action(); }, 'unlock');
+  else await action();
+}
+
+/**
+ * A Settings export that writes notes out readable, asking for the PIN once
+ * when any note it carries is behind a closed gate.
+ */
+export function gateExportAll(
+  run: (ns: LocalNote[]) => Promise<void>,
+  isNoteLocked: (n: LocalNote) => boolean,
+  requestPinGate: RequestPinGate,
+): (ns: LocalNote[]) => Promise<void> {
+  return (ns) => runBehindGate(ns.some(isNoteLocked), requestPinGate, () => run(ns));
+}
+
+/**
+ * Whether a click on a row opens a bookmark's address rather than selecting
+ * it: a live bookmark whose gate is open. In the Trash the row selects, so it
+ * can be inspected and restored; behind the PIN it selects, so its pane asks.
+ */
+export function opensBookmarkOnClick(n: LocalNote, gated: boolean): boolean {
+  return n.type === 'link' && n.trashed !== 1 && !gated;
+}
+
+/**
+ * The week reflection the Stats card may show and write: the week journal's
+ * text and its writer, or, while that journal's gate is closed, neither. The
+ * text is its content, and an empty field typed into would overwrite it.
+ */
+export function weekReflectionFor(
+  notes: LocalNote[],
+  isNoteLocked: (n: LocalNote) => boolean,
+  save: (text: string) => void,
+): { weekReflection: string; onWeekReflectionChange?: (text: string) => void } {
+  const entry = notes.find((n) => n.deleted === 0 && n.trashed === 0 && n.type === 'journal' && isWeekJournal(n));
+  if (entry && isNoteLocked(entry)) return { weekReflection: '' };
+  const trackers = entry?.trackers as Record<string, unknown> | undefined;
+  return { weekReflection: (trackers?.weekReflection as string) ?? '', onWeekReflectionChange: save };
+}
+
+/**
+ * Where Share is offered for the open note: nowhere while the PIN guards it;
+ * otherwise the header button, or, in zen and a compact header where that
+ * button stands down, the "..." menu's cell.
+ */
+export function shareSurface(gated: boolean, zenOrCompact: boolean): 'header' | 'menu' | 'none' {
+  if (gated) return 'none';
+  return zenOrCompact ? 'menu' : 'header';
+}
+
+/**
+ * The copy of a conflict the dialog shows for a note behind a closed gate:
+ * both versions keep their stored titles and lose their bodies, so the dialog
+ * names each by its title or as untitled, never by its first line.
+ */
+export function conflictShownWhileGated(c: NoteConflict): NoteConflict {
+  return { ...c, serverBody: '', localNote: { ...c.localNote, body: '' } };
 }
 
 /**
@@ -576,7 +668,7 @@ export function deriveExcerpt(n: LocalNote): string {
   if (explicitTitle && explicitTitle !== 'Untitled') {
     for (const line of n.body.split(/\r?\n/)) {
       const t = line.trim();
-      if (!t) continue;
+      if (!t || isDelimiterRow(t)) continue;
       const c = stripToPlainText(t);
       if (c) return c.slice(0, 80);
     }
@@ -585,7 +677,9 @@ export function deriveExcerpt(n: LocalNote): string {
   let skipped = false;
   for (const line of n.body.split(/\r?\n/)) {
     const t = line.trim();
-    if (!t) continue;
+    // A table's dash row says nothing, and with column widths it can run to
+    // dozens of dashes.
+    if (!t || isDelimiterRow(t)) continue;
     if (!skipped) {
       skipped = true;
       continue;

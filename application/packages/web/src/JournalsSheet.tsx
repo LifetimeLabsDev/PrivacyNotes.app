@@ -65,7 +65,7 @@ export function JournalsSheet({ format, onFormatChange, suffix, onSuffixChange }
       </div>
 
       <div className="px-6 pb-4">
-        <SectionEyebrow className="mb-0.5">{t('journals.suffixTitle')}</SectionEyebrow>
+        <SectionEyebrow setting="journals.suffix" className="mb-0.5">{t('journals.suffixTitle')}</SectionEyebrow>
         <p className={`${SETTINGS_HELP} mb-2`}>{t('journals.suffixDesc')}</p>
         <input
           type="text"

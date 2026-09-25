@@ -10,10 +10,11 @@ import { parseLoginBody, domainFromUrl } from './LoginForm';
 import { parseLinkBody, linkDomain } from './linkBody';
 import { contactHue, contactInitials, contactInitialsFor, parseContactBody } from './contactBody';
 import { loadEncryptedImageUrl } from './EncryptedImage';
-import { Check, PushPin, Shield, PencilSimpleSlash, Book, CheckSquare, File, Image, MusicNotes, Key, CreditCard, Lock, Globe, BookmarkSimple, Folder, Warning, User, type Icon } from './icons';
+import { Check, PushPin, Shield, PencilSimpleSlash, Book, CheckSquare, File, Image, MusicNotes, Key, CreditCard, Lock, Globe, BookmarkSimple, Warning, User, type Icon } from './icons';
 import { useFolderName } from './folderNames';
 import { sortTags } from './notesRepo';
 import { usePushFailure } from './pushFailures';
+import { FolderGlyph, TagMark, tintStyle, useNoteColor } from './looks/LookGlyph';
 
 
 export interface NoteRowProps {
@@ -112,6 +113,9 @@ export default React.memo(function NoteRow({
   // Subscribed per row: the set changes once per pass at most, and only
   // when a note's verdict changes, so this costs nothing while idle.
   const pushFailure = usePushFailure(n.id);
+  // The tag or folder color; never in the trash, which keeps its own look.
+  const noteColor = useNoteColor(n.tags, n.folderId);
+  const color = trashTint ? null : noteColor;
   const isVault = n.type === 'login' || n.type === 'card' || n.type === 'ssh-key';
   const isLink = n.type === 'link';
   const isFile = n.type === 'file';
@@ -128,7 +132,7 @@ export default React.memo(function NoteRow({
   // row each time - cheap per note, but it adds up on a large vault. displayNotes
   // keeps object identity for unchanged notes, so keying on `n` means they only
   // recompute when that note actually changes.
-  const displayTitle = useMemo(() => deriveDisplayTitle(n), [n, activeLocale()]);
+  const displayTitle = useMemo(() => deriveDisplayTitle(n, locked), [n, locked, activeLocale()]);
   const excerpt = useMemo(() => deriveExcerpt(n), [n, activeLocale()]);
   /** Shared with `NoteCard` so the row and the tile cannot disagree about when
    *  a size appears. `noteSizeBytes` memoizes per note, so this is a map lookup
@@ -163,10 +167,12 @@ export default React.memo(function NoteRow({
           ? 'bg-neutral-200/70 hover:bg-neutral-200/80 dark:bg-neutral-800/70 dark:hover:bg-neutral-800/80'
           : 'hover:bg-neutral-200/50 dark:hover:bg-neutral-900/50'
       } ${selectionMode ? 'ps-10' : ''}`}
+      style={tintStyle(color)}
+      data-color={color ?? undefined}
     >
       {/* Bookmark ribbon - the saved-link marker, see the .pn-ribbon rules in
           index.css. Vault logins stay unmarked. */}
-      {isLink && <span className="pn-ribbon" aria-hidden="true" />}
+      {isLink && <span data-slot="ribbon" className="pn-ribbon" aria-hidden="true" />}
       {selectionMode && (
         <span
           onClick={(e) => {
@@ -197,13 +203,15 @@ export default React.memo(function NoteRow({
           one-line layout when the preview is hidden or the note is locked. */}
       {(n.type === 'login' || isLink) && listPrefs.showPreview && !locked ? (
         <div className="flex gap-2.5">
-          {iconOverride ?? <RowIcon note={n} isVault={isVault} isFile={isFile} isJournal={isJournal} hasTasks={hasTasks} trashTint={trashTint} tall />}
+          <span data-slot="icon" className="contents">
+            {iconOverride ?? <RowIcon note={n} isVault={isVault} isFile={isFile} isJournal={isJournal} hasTasks={hasTasks} trashTint={trashTint} locked={locked} tall />}
+          </span>
           <div className="min-w-0 flex-1">
-            <div className="text-sm font-semibold truncate text-neutral-900 dark:text-white" dir="auto">
+            <div data-slot="title" className="text-sm font-semibold truncate text-neutral-900 dark:text-white" dir="auto">
               {displayTitle}
             </div>
-            <div className="text-[13px] text-neutral-500 dark:text-neutral-400 truncate mt-0.5" dir={isLink ? 'ltr' : 'auto'}>
-              {excerpt || t('noteRow.empty')}
+            <div data-slot="preview" className="text-[13px] text-neutral-500 dark:text-neutral-400 truncate mt-0.5" dir={isLink ? 'ltr' : 'auto'}>
+              {excerpt || emptyExcerptLabel(n)}
             </div>
           </div>
           {trailing && <span className="pn-row-actions shrink-0 self-center flex items-center gap-1">{trailing}</span>}
@@ -211,15 +219,17 @@ export default React.memo(function NoteRow({
       ) : (
       <>
       <div className="flex items-center gap-2.5">
-        {iconOverride ?? <RowIcon note={n} isVault={isVault} isFile={isFile} isJournal={isJournal} hasTasks={hasTasks} trashTint={trashTint} />}
-        <div className="min-w-0 flex-1 text-sm font-semibold truncate text-neutral-900 dark:text-white" dir="auto">
+        <span data-slot="icon" className="contents">
+          {iconOverride ?? <RowIcon note={n} isVault={isVault} isFile={isFile} isJournal={isJournal} hasTasks={hasTasks} trashTint={trashTint} locked={locked} />}
+        </span>
+        <div data-slot="title" className="min-w-0 flex-1 text-sm font-semibold truncate text-neutral-900 dark:text-white" dir="auto">
           {displayTitle}
         </div>
         {trailing && <span className="pn-row-actions shrink-0 flex items-center gap-1">{trailing}</span>}
       </div>
       {/* Preview - full width */}
       {listPrefs.showPreview && !locked && (
-        <div className="text-[13px] text-neutral-500 dark:text-neutral-400 truncate mt-1" dir="auto">
+        <div data-slot="preview" className="text-[13px] text-neutral-500 dark:text-neutral-400 truncate mt-1" dir="auto">
           {excerpt || emptyExcerptLabel(n)}
         </div>
       )}
@@ -234,11 +244,11 @@ export default React.memo(function NoteRow({
       {(listPrefs.showDate || hasStatusIcons || sizeText) && (
         <div className="mt-0.5 flex items-center gap-1.5">
           {listPrefs.showDate && (
-            <span className="min-w-0 text-[12px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap overflow-hidden text-ellipsis">
+            <span data-slot="date" className="min-w-0 text-[12px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap overflow-hidden text-ellipsis">
               {dateLabel} {dateValue}
             </span>
           )}
-          <span className="shrink-0 flex items-center gap-1.5 text-accent">
+          <span data-slot="flags" className="shrink-0 flex items-center gap-1.5 text-accent">
             {pushFailure && (
               <Warning size={12} className="text-amber-500 dark:text-amber-400" aria-label={t('noteRow.notBackedUp')} />
             )}
@@ -261,7 +271,7 @@ export default React.memo(function NoteRow({
               for the original reason - there it competed with the filename for
               the space that matters most. */}
           {sizeText && (
-            <span className="shrink-0 text-[11px] text-neutral-400 dark:text-neutral-500 font-medium tabular-nums">
+            <span data-slot="size" className="shrink-0 text-[11px] text-neutral-400 dark:text-neutral-500 font-medium tabular-nums">
               {sizeText}
             </span>
           )}
@@ -306,30 +316,35 @@ export function noteFaviconDomain(note: LocalNote): string {
 /** 28px icon box rendered for every row type. Color is type-based,
  *  overridden to amber when `trashTint` is true. Vault logins use
  *  favicon instead of a generic icon. */
-export function RowIcon({ note, isVault, isFile, isJournal, hasTasks, trashTint, tall = false }: {
+export function RowIcon({ note, isVault, isFile, isJournal, hasTasks, trashTint, locked, tall = false }: {
   note: LocalNote;
   isVault: boolean;
   isFile: boolean;
   isJournal: boolean;
   hasTasks: boolean;
   trashTint: boolean;
+  /** The note is behind the PIN right now. The chip then reads nothing from
+   *  its body: no photo, no favicon (whose lookup would also send the
+   *  domain out), no file type, and no initials but the stored title's;
+   *  the note's type still shows. */
+  locked: boolean;
   /** 36px chip spanning the title + sub-line pair (vault logins, bookmarks). */
   tall?: boolean;
 }) {
   // Contacts - the round chip: initials, or the photo when there is one.
   if (note.type === 'contact') {
     const c = parseContactBody(note.body);
-    return <ContactChip name={deriveDisplayTitle(note)} initials={contactInitialsFor(note.title, c)} photo={c.photo} size={tall ? 36 : 28} trashTint={trashTint} />;
+    return <ContactChip name={deriveDisplayTitle(note, locked)} initials={locked ? contactInitials(note.title) : contactInitialsFor(note.title, c)} photo={locked ? '' : c.photo} size={tall ? 36 : 28} trashTint={trashTint} />;
   }
   // Bookmarks - favicon chip, globe fallback.
   // In Trash the link row wears the amber BOOKMARK icon, the same rule
   // vault logins follow (login icon there, favicon only while live).
-  if (note.type === 'link') return <SiteChip domain={noteFaviconDomain(note)} tall={tall} trashTint={trashTint} fallback={trashTint ? 'bookmark' : 'globe'} />;
+  if (note.type === 'link') return <SiteChip domain={locked ? '' : noteFaviconDomain(note)} tall={tall} trashTint={trashTint} fallback={trashTint ? 'bookmark' : 'globe'} />;
   // Vault - favicon for logins, colored icon for cards/keys
-  if (isVault) return <VaultRowIcon note={note} trashTint={trashTint} tall={tall} />;
+  if (isVault) return <VaultRowIcon note={note} trashTint={trashTint} locked={locked} tall={tall} />;
 
   // Files share one boxed icon with the Files view - see FileTileIcon.
-  if (isFile) return <FileTileIcon mime={fileMimeFromBody(note.body)} />;
+  if (isFile) return <FileTileIcon mime={locked ? '' : fileMimeFromBody(note.body)} />;
 
   // Determine color classes (non-file types)
   let bg: string;
@@ -477,9 +492,9 @@ export function ContactChip({ name, initials: given, photo, size, trashTint = fa
 }
 
 /** Vault row icon - favicon chip for logins, type icon for cards/keys. */
-function VaultRowIcon({ note, trashTint, tall = false }: { note: LocalNote; trashTint: boolean; tall?: boolean }) {
+function VaultRowIcon({ note, trashTint, locked, tall = false }: { note: LocalNote; trashTint: boolean; locked: boolean; tall?: boolean }) {
   if (note.type === 'login') {
-    if (!trashTint) {
+    if (!trashTint && !locked) {
       const domain = noteFaviconDomain(note);
       if (domain) return <SiteChip domain={domain} tall={tall} fallback="lock" />;
     }
@@ -535,10 +550,10 @@ export function TagChips({ tags, folderId }: { tags: string[]; folderId?: string
   const folderName = useFolderName(folderId);
   if (visible.length === 0 && !folderName) return null;
   return (
-    <div className="mt-1.5 flex flex-wrap gap-1">
-      {folderName && (
-        <span className="inline-flex items-center gap-1 max-w-[12rem] text-[11px] px-1.5 py-0.5 rounded bg-accent/10 text-accent">
-          <Folder size={11} className="shrink-0 text-amber-600/80 dark:text-amber-500/80" aria-hidden="true" />
+    <div data-slot="tags" className="mt-1.5 flex flex-wrap gap-1">
+      {folderName && folderId && (
+        <span data-slot="folder" className="inline-flex items-center gap-1 max-w-[12rem] text-[11px] px-1.5 py-0.5 rounded bg-accent/10 text-accent">
+          <FolderGlyph folderId={folderId} size={11} className="shrink-0 text-amber-600/80 dark:text-amber-500/80" />
           <span className="truncate" dir="auto">{folderName}</span>
         </span>
       )}
@@ -546,9 +561,10 @@ export function TagChips({ tags, folderId }: { tags: string[]; folderId?: string
         <span
           key={t}
           dir="auto"
-          className="text-[11px] px-1.5 py-0.5 rounded bg-accent/10 text-accent"
+          className="inline-flex items-center text-[11px] px-1.5 py-0.5 rounded bg-accent/10 text-accent"
         >
-          #{t}
+          <TagMark tag={t} size={11} />
+          {t}
         </span>
       ))}
     </div>

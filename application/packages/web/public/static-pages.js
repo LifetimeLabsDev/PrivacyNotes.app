@@ -9,12 +9,17 @@
 // Wired from help-page.ts, changelog-page.ts and brand-page.ts via
 // <script src="/static-pages.js" defer>. Which behavior applies is
 // selected by <body data-static-page="help|help-leaf|help-guide|changelog|
-// brand|landing|cheatsheet">.
+// brand|landing|cheatsheet|auth-desktop">.
 (function () {
   'use strict';
 
-  function norm(s) {
-    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  // The app's own matcher (src/textMatch.ts), bundled into /search-core.js,
+  // which the pages that search load before this file: a query folds here as
+  // it does in every list of the app. Null for an empty query, and when that
+  // script did not load, so a search then shows everything instead of failing.
+  function matcher(query) {
+    var core = window.pnSearch;
+    return query && core ? core.textMatcher(query) : null;
   }
 
   function fill(template, vars) {
@@ -34,27 +39,28 @@
     root.normalize();
   }
 
+  // Marks every hit in the text under `root`, at the offsets the matcher
+  // gives, so a hit the fold found ("securite" in "Sécurité") is marked too.
   function markIn(root, query) {
-    var q = query.toLowerCase();
-    if (!q) return;
+    var match = matcher(query);
+    if (!match) return;
     var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     var nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
     nodes.forEach(function (node) {
       if (node.parentElement && node.parentElement.tagName === 'MARK') return;
-      var text = node.textContent;
-      var idx = text.toLowerCase().indexOf(q);
-      if (idx < 0) return;
+      var rest = node.textContent;
+      var hit = match(rest);
+      if (!hit) return;
       var frag = document.createDocumentFragment();
-      var rest = text;
       var guard = 0;
-      while (idx >= 0 && guard < 20) {
-        frag.appendChild(document.createTextNode(rest.slice(0, idx)));
+      while (hit && guard < 20) {
+        frag.appendChild(document.createTextNode(rest.slice(0, hit.start)));
         var mark = document.createElement('mark');
-        mark.textContent = rest.slice(idx, idx + q.length);
+        mark.textContent = rest.slice(hit.start, hit.end);
         frag.appendChild(mark);
-        rest = rest.slice(idx + q.length);
-        idx = rest.toLowerCase().indexOf(q);
+        rest = rest.slice(hit.end);
+        hit = rest ? match(rest) : null;
         guard++;
       }
       frag.appendChild(document.createTextNode(rest));
@@ -263,9 +269,6 @@
       return;
     }
     if (!rows.length) return;
-    var hay = rows.map(function (r) {
-      return norm(r[0]);
-    });
     var allTpl = form.getAttribute('data-search-all') || '';
     var hubPath = form.getAttribute('action') || '/help';
     var clear = document.getElementById('faq-lclear');
@@ -273,24 +276,32 @@
 
     function render(raw) {
       var typed = raw.trim();
-      var q = norm(typed);
       form.classList.toggle('has-q', raw.length > 0);
       out.textContent = '';
       active = -1;
-      if (!q) {
+      if (!typed) {
         out.hidden = true;
         return;
       }
-      var shown = 0;
-      for (var i = 0; i < rows.length && shown < 8; i++) {
-        if (hay[i].indexOf(q) < 0) continue;
+      // The list keeps eight, so the best rank goes first: a title that
+      // starts with the query is never cut for one that holds it inside a
+      // word. Array sort is stable.
+      var match = matcher(typed);
+      var hits = [];
+      rows.forEach(function (row) {
+        var m = match ? match(row[0]) : { rank: 1 };
+        if (m) hits.push({ row: row, rank: m.rank });
+      });
+      hits.sort(function (a, b) {
+        return b.rank - a.rank;
+      });
+      hits.slice(0, 8).forEach(function (h) {
         var hit = document.createElement('a');
         hit.className = 'sr-item';
-        hit.href = rows[i][1];
-        hit.textContent = rows[i][0];
+        hit.href = h.row[1];
+        hit.textContent = h.row[0];
         out.appendChild(hit);
-        shown++;
-      }
+      });
       // Always last, hit or miss: titles are only half the index, so the
       // way out of a leaf search is never a dead end.
       var all = document.createElement('a');
@@ -375,6 +386,7 @@
   if (page === 'brand') { initBrand(); initBrandRail(); }
   if (page === 'landing') initLanding();
   if (page === 'cheatsheet') initCheatSheet();
+  if (page === 'auth-desktop') initAuthDesktop();
 
   // The printable hotkey cheat sheet (help-page.ts). Two enhancements, and
   // the page renders complete without either: the Print button, and the
@@ -694,7 +706,8 @@
     }
 
     function applyFilter(raw) {
-      var q = norm(raw.trim());
+      var typed = raw.trim();
+      var match = matcher(typed);
       search.classList.toggle('has-q', raw.length > 0);
 
       autoOpened.forEach(function (entry) {
@@ -706,7 +719,7 @@
         entry.hidden = false;
       });
 
-      if (!q) {
+      if (!match) {
         groups.forEach(function (g) {
           g.hidden = false;
           setRail(g, null);
@@ -721,7 +734,7 @@
 
       var shown = 0;
       entries.forEach(function (entry) {
-        var hit = (entry.getAttribute('data-s') || '').indexOf(q) >= 0;
+        var hit = !!match(entry.getAttribute('data-s') || '');
         entry.hidden = !hit;
         if (hit) shown++;
       });
@@ -733,19 +746,19 @@
       });
 
       guideItems.forEach(function (r) {
-        r.classList.toggle('dim', (r.getAttribute('data-s') || '').indexOf(q) < 0);
+        r.classList.toggle('dim', !match(r.getAttribute('data-s') || ''));
       });
 
       var visible = entries.filter(function (e) {
         return !e.hidden;
       });
       visible.forEach(function (entry) {
-        markIn(entry, raw.trim());
+        markIn(entry, typed);
         // Auto-expand when the evidence would otherwise be invisible: the
         // match sits in the answer body, not the (always visible) question.
         // With 3 or fewer matches, expand everything.
         var qEl = entry.querySelector('.q');
-        var qHit = qEl && norm(qEl.textContent).indexOf(q) >= 0;
+        var qHit = qEl && match(qEl.textContent);
         if ((visible.length <= 3 || !qHit) && !entry.open) {
           entry.open = true;
           autoOpened.push(entry);
@@ -897,8 +910,8 @@
 
     // --- the one filter -----------------------------------------------------
     function apply(opts) {
-      var q = norm(state.q.trim());
       var raw = state.q.trim();
+      var match = matcher(raw);
 
       typeRows.forEach(function (r) {
         r.classList.toggle('on', r.getAttribute('data-t') === state.t);
@@ -915,7 +928,7 @@
 
       releases.forEach(function (rel) {
         unmark(rel);
-        var hit = !q || (rel.getAttribute('data-s') || '').indexOf(q) >= 0;
+        var hit = !match || !!match(rel.getAttribute('data-s') || '');
         var inMonth = !state.m || rel.getAttribute('data-m') === state.m;
         var hasItems = rel.querySelector('li.item:not([hidden])') != null;
         rel.hidden = !(hit && inMonth && hasItems);
@@ -956,12 +969,12 @@
         var key = r.getAttribute('data-m');
         var n = releases.filter(function (rel) {
           if (rel.getAttribute('data-m') !== key) return false;
-          if (q && (rel.getAttribute('data-s') || '').indexOf(q) < 0) return false;
+          if (match && !match(rel.getAttribute('data-s') || '')) return false;
           return state.t === 'all' || rel.querySelector('li.item[data-t="' + state.t + '"]') != null;
         }).length;
         r.classList.toggle('dim', n === 0);
         var ct = r.querySelector('.rct');
-        if (ct) ct.textContent = q || state.t !== 'all' ? String(n) : ct.getAttribute('data-full');
+        if (ct) ct.textContent = raw || state.t !== 'all' ? String(n) : ct.getAttribute('data-full');
       });
 
       var totalMatched = matched.length;
@@ -975,11 +988,11 @@
 
       search.classList.toggle('has-q', state.q.length > 0);
 
-      if (!q && state.t === 'all' && !state.m) {
+      if (!raw && state.t === 'all' && !state.m) {
         count.textContent = total + ' releases';
       } else if (!totalMatched) {
         count.textContent = '';
-      } else if (q) {
+      } else if (raw) {
         // A query matches a RELEASE (its title, its changes, its version or
         // its date), so report releases. Reporting "82 changes" here would
         // be counting every change in the 9 releases that matched, which
@@ -1156,5 +1169,78 @@
       var el = document.getElementById(id);
       if (el) io.observe(el);
     });
+  }
+
+  // /auth/desktop: show the one-time sign-in code the desktop app asks for.
+  //
+  // The page is the return address a desktop sign-in uses, because no desktop
+  // operating system can say which application owns a custom scheme. The code
+  // is read here and shown for the person to carry back to the app; it is
+  // never sent anywhere and never stored.
+  //
+  // The page ships with the code block hidden and a plain sentence visible
+  // that points at the address bar, so a browser with scripting off still
+  // tells the truth instead of showing an empty box.
+  // Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.3)
+  function initAuthDesktop() {
+    function role(name) {
+      return document.querySelector('[data-role="' + name + '"]');
+    }
+    var nojs = role('nojs');
+    if (nojs) nojs.hidden = true;
+
+    var code = null;
+    try {
+      code = new URL(window.location.href).searchParams.get('code');
+    } catch (e) {
+      code = null;
+    }
+
+    if (!code) {
+      var missing = role('missing');
+      if (missing) missing.hidden = false;
+      return;
+    }
+
+    var out = role('code');
+    if (out) out.textContent = code;
+    ['lede', 'codebox', 'steps'].forEach(function (n) {
+      var el = role(n);
+      if (el) el.hidden = false;
+    });
+
+    var btn = role('copy');
+    if (!btn) return;
+    var label = btn.textContent;
+    var timer = null;
+    btn.addEventListener('click', function () {
+      function done(ok) {
+        btn.textContent = ok ? 'Copied' : 'Press Ctrl+C';
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(function () {
+          btn.textContent = label;
+        }, 2000);
+      }
+      // A clipboard write needs a secure context and a permission the browser
+      // may refuse, so selecting the code is the fallback: it leaves the
+      // person one keystroke away rather than with a button that did nothing.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(function () { done(true); }, function () { selectCode(); done(false); });
+      } else {
+        selectCode();
+        done(false);
+      }
+    });
+
+    function selectCode() {
+      if (!out) return;
+      try {
+        var range = document.createRange();
+        range.selectNodeContents(out);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } catch (e) { /* selection is a convenience, never a requirement */ }
+    }
   }
 })();

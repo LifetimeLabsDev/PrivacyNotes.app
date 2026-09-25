@@ -10,7 +10,10 @@
     "tags": "Značky",
     "currentStreak": "Aktuální série",
     "longestStreak": "Nejdelší série",
-    "streakValue": "{{count}} d",
+    "streakValue_one": "{{count}} den",
+    "streakValue_few": "{{count}} dny",
+    "streakValue_many": "{{count}} dne",
+    "streakValue_other": "{{count}} dní",
     "timeRangeAria": "Časové rozmezí aktivity",
     "modeActivity": "Aktivita",
     "modeMood": "Nálada",
@@ -61,6 +64,7 @@
       "doctorPDF": "PDF pro lékaře",
       "copyAIPrompt": "Kopírovat prompt pro AI",
       "copied": "Zkopírováno!",
+      "saveFailed": "Uložení se nezdařilo, takže soubor může být prázdný nebo neúplný. Zkus to znovu nebo vyber jinou složku.",
       "proBadge": "PRO"
     },
     "sleepActivity": {

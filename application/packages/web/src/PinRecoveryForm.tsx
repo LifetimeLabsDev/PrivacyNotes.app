@@ -39,7 +39,7 @@ export function PinRecoveryForm({
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  function submit() {
+  async function submit() {
     if (!input.trim()) return;
     if (!phraseMatches(input, phrase)) {
       // One message for every failure. Naming the word that was wrong
@@ -47,7 +47,12 @@ export function PinRecoveryForm({
       setError(t('pinRecovery.wrongPhrase'));
       return;
     }
-    onSettingsChange(clearPin(userSettings, phrase), userSettings);
+    const cleared = await clearPin(userSettings, phrase);
+    if (!cleared) {
+      setError(t('appLock.phraseNotSaved'));
+      return;
+    }
+    onSettingsChange(cleared, userSettings);
     onCleared();
   }
 
@@ -84,7 +89,7 @@ export function PinRecoveryForm({
         </button>
         <button
           type="button"
-          onClick={submit}
+          onClick={() => void submit()}
           disabled={!input.trim()}
           className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
         >

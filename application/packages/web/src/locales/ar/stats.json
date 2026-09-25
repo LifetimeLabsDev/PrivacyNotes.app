@@ -10,7 +10,12 @@
     "tags": "الوسوم",
     "currentStreak": "السلسلة الحالية",
     "longestStreak": "أطول سلسلة",
-    "streakValue": "{{count}} يوم",
+    "streakValue_zero": "{{count}} أيام",
+    "streakValue_one": "{{count}} يوم",
+    "streakValue_two": "{{count}} يومان",
+    "streakValue_few": "{{count}} أيام",
+    "streakValue_many": "{{count}} يومًا",
+    "streakValue_other": "{{count}} يوم",
     "timeRangeAria": "النطاق الزمني للنشاط",
     "modeActivity": "النشاط",
     "modeMood": "المزاج",
@@ -63,6 +68,7 @@
       "doctorPDF": "تقرير PDF للطبيب",
       "copyAIPrompt": "نسخ موجّه الذكاء الاصطناعي",
       "copied": "تم النسخ!",
+      "saveFailed": "فشل الحفظ، لذا قد يكون الملف فارغًا أو ناقصًا. حاول مرة أخرى أو اختر مجلدًا آخر.",
       "proBadge": "PRO"
     },
     "sleepActivity": {

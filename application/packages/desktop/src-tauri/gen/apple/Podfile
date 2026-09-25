@@ -1,7 +1,7 @@
 # Uncomment the next line to define a global platform for your project
 
 target 'privacynotes_iOS' do
-platform :ios, '15.0'
+platform :ios, '17.4'
   # Pods for privacynotes_iOS
 end
 

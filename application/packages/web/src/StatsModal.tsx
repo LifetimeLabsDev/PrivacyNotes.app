@@ -19,6 +19,9 @@ import { HelpChip } from './HelpChip';
 
 type Props = {
   notes: LocalNote[];
+  /** The view's lock predicate: the wellness readers leave out a journal
+   *  whose gate is closed, and count it again once the gate opens. */
+  isNoteLocked: (n: LocalNote) => boolean;
   medications: MedicationTemplate[];
   isPro: boolean;
   onOpenUpgrade?: () => void;
@@ -29,6 +32,8 @@ type Props = {
   onWeekReflectionChange?: (text: string) => void;
   /** Render inline as a settings pane (no overlay, no own header/footer/escape). */
   embedded?: boolean;
+  /** Which tab to open on. Defaults to Writing. */
+  initialTab?: Tab;
 };
 
 type Tab = 'writing' | 'wellness';
@@ -37,13 +42,13 @@ type Tab = 'writing' | 'wellness';
  * Stats overlay with two tabs: Writing (heatmap + streaks) and
  * Wellness (tracker analytics).
  */
-export function StatsModal({ notes, onClose, medications, isPro, onOpenUpgrade, weekReflection, onWeekReflectionChange, embedded = false }: Props) {
+export function StatsModal({ notes, isNoteLocked, onClose, medications, isPro, onOpenUpgrade, weekReflection, onWeekReflectionChange, embedded = false, initialTab = 'writing' }: Props) {
   const { t } = useTranslation('stats');
   const { t: tc } = useTranslation('common');
   useEscapeToClose(onClose, !embedded);
-  const [tab, setTab] = useState<Tab>('writing');
+  const [tab, setTab] = useState<Tab>(initialTab);
   const stats = useMemo(() => computeStats(notes), [notes]);
-  const tStats = useMemo(() => computeTrackerStats(notes, medications), [notes, medications]);
+  const tStats = useMemo(() => computeTrackerStats(notes, medications, isNoteLocked), [notes, medications, isNoteLocked]);
 
   const tabClass = (t: Tab) =>
     `px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
@@ -80,10 +85,10 @@ export function StatsModal({ notes, onClose, medications, isPro, onOpenUpgrade, 
 
         {/* Tabs */}
         <div className="flex gap-1 px-6 pt-2 border-b border-divider">
-          <button type="button" className={tabClass('writing')} onClick={() => setTab('writing')}>
+          <button type="button" data-setting="stats.writing" className={tabClass('writing')} onClick={() => setTab('writing')}>
             {t('tabs.writing')}
           </button>
-          <button type="button" className={tabClass('wellness')} onClick={() => setTab('wellness')}>
+          <button type="button" data-setting="stats.wellness" className={tabClass('wellness')} onClick={() => setTab('wellness')}>
             {t('tabs.wellness')}
           </button>
         </div>
@@ -95,6 +100,7 @@ export function StatsModal({ notes, onClose, medications, isPro, onOpenUpgrade, 
             <WellnessTab
               stats={tStats}
               notes={notes}
+              isNoteLocked={isNoteLocked}
               medications={medications}
               isPro={isPro}
               onOpenUpgrade={onOpenUpgrade}
@@ -224,7 +230,7 @@ function WritingTab({
         <Stat label={t('writing.notes')} value={stats.totalNotes} />
         <Stat label={t('writing.words')} value={stats.totalWords.toLocaleString(intlLocale())} />
         <Stat label={t('writing.tags')} value={stats.uniqueTags} />
-        <Stat label={t('writing.currentStreak')} value={t('writing.streakValue', { count: stats.currentStreak })} />
+        <Stat setting="stats.streak" label={t('writing.currentStreak')} value={t('writing.streakValue', { count: stats.currentStreak })} />
         <Stat label={t('writing.longestStreak')} value={t('writing.streakValue', { count: stats.longestStreak })} />
       </div>
       <div>
@@ -356,6 +362,7 @@ type WellnessSubTab = 'overview' | 'sleep_activity' | 'medication' | 'patterns';
 function WellnessTab({
   stats,
   notes,
+  isNoteLocked,
   medications,
   isPro,
   onOpenUpgrade,
@@ -364,6 +371,7 @@ function WellnessTab({
 }: {
   stats: TrackerStats;
   notes: LocalNote[];
+  isNoteLocked: (n: LocalNote) => boolean;
   medications: MedicationTemplate[];
   isPro: boolean;
   onOpenUpgrade?: () => void;
@@ -374,6 +382,9 @@ function WellnessTab({
   const { t: tt } = useTranslation('trackers');
   const [sub, setSub] = useState<WellnessSubTab>('overview');
   const [copied, setCopied] = useState(false);
+  // A failed native save can leave an empty or partial file, so the message
+  // stays until a save succeeds; a dismissed dialog changes nothing.
+  const [saveFailed, setSaveFailed] = useState(false);
   const [exportRange, setExportRange] = useState<'all' | '30' | '90' | '7'>('all');
   // Insights, week in review, the doctor report, the AI prompt and the
   // medication timeline are Pro, and all of them run entirely on local
@@ -381,15 +392,17 @@ function WellnessTab({
   // keying off isPro so they stay marked as Pro features.
   const unlocked = proUnlocked(isPro);
 
-  const handleExportJSON = useCallback(() => {
+  const handleExportJSON = useCallback(async () => {
     const from = exportRange === '7' ? daysAgoStr(6)
       : exportRange === '30' ? daysAgoStr(29)
       : exportRange === '90' ? daysAgoStr(89)
       : undefined;
-    const json = exportTrackerJSON(notes, from);
+    const json = exportTrackerJSON(notes, from, undefined, isNoteLocked);
     const blob = new Blob([json], { type: 'application/json' });
-    void saveBlob(blob, `privacy-notes-wellness-${new Date().toISOString().slice(0, 10)}.json`);
-  }, [notes, exportRange]);
+    const saved = await saveBlob(blob, `privacy-notes-wellness-${new Date().toISOString().slice(0, 10)}.json`);
+    if (saved.ok) setSaveFailed(false);
+    else if (saved.reason === 'failed') setSaveFailed(true);
+  }, [notes, exportRange, isNoteLocked]);
 
   const handleCopyAIPrompt = useCallback(() => {
     if (!unlocked) { onOpenUpgrade?.(); return; }
@@ -441,7 +454,7 @@ function WellnessTab({
           {/* Mood trend */}
           {stats.moodTrend.length > 0 && (
             <div>
-              <SectionEyebrow className="mb-2">{t('wellness.overview.moodTrend')}</SectionEyebrow>
+              <SectionEyebrow setting="stats.moodTrend" className="mb-2">{t('wellness.overview.moodTrend')}</SectionEyebrow>
               <div className="flex items-end gap-[3px] h-24">
                 {stats.moodTrend.slice(-30).map((d) => {
                   const pct = (d.mood / 10) * 100;
@@ -487,7 +500,7 @@ function WellnessTab({
 
           {/* Export */}
           <div className="border-t border-divider pt-4">
-            <SectionEyebrow className="mb-3">{t('wellness.export.heading')}</SectionEyebrow>
+            <SectionEyebrow setting="stats.wellnessExport" className="mb-3">{t('wellness.export.heading')}</SectionEyebrow>
             <div className="flex flex-wrap items-center gap-2">
               <select
                 value={exportRange}
@@ -514,7 +527,9 @@ function WellnessTab({
                     // The webview can't open a print window; save the report as
                     // HTML the user can open and print in a real browser.
                     const blob = new Blob([html], { type: 'text/html' });
-                    await saveBlob(blob, `privacy-notes-doctor-report-${new Date().toISOString().slice(0, 10)}.html`);
+                    const saved = await saveBlob(blob, `privacy-notes-doctor-report-${new Date().toISOString().slice(0, 10)}.html`);
+                    if (saved.ok) setSaveFailed(false);
+                    else if (saved.reason === 'failed') setSaveFailed(true);
                   }
                 }}
                 className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium border border-divider hover:bg-surface-1 transition-colors"
@@ -531,6 +546,9 @@ function WellnessTab({
                 {!isPro && <span className="inline-flex items-center px-1 py-0 rounded text-[8px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">{t('wellness.export.proBadge')}</span>}
               </button>
             </div>
+            {saveFailed && (
+              <p className="mt-2 text-xs text-red-500 dark:text-red-400">{t('wellness.export.saveFailed')}</p>
+            )}
           </div>
         </>
       )}
@@ -811,16 +829,20 @@ function WeekCard({ week, reflection, onReflectionChange }: {
           </div>
         </div>
       )}
-      {/* Editable weekly reflection */}
+      {/* Editable weekly reflection. Absent while the week's journal is
+          behind a closed gate: the text is its content, and an empty field
+          typed into would overwrite what the gate hides. */}
+      {onReflectionChange && (
       <div>
         <SectionEyebrow className="mb-1">{t('wellness.week.reflection')}</SectionEyebrow>
         <textarea
           placeholder={t('wellness.week.reflectionPlaceholder')}
           className="w-full rounded-md border border-divider bg-surface-0 text-xs text-pn-soft p-2 resize-none h-16 placeholder:text-pn-muted"
           value={reflection ?? ''}
-          onChange={(e) => onReflectionChange?.(e.target.value)}
+          onChange={(e) => onReflectionChange(e.target.value)}
         />
       </div>
+      )}
     </div>
   );
 }
@@ -852,10 +874,10 @@ function daysAgoStr(n: number): string {
   return toLocalIso(d);
 }
 
-function Stat({ label, value }: { label: string; value: number | string }) {
+function Stat({ label, value, setting }: { label: string; value: number | string; setting?: string }) {
   return (
-    <div>
-      <div className="text-2xl font-semibold tabular-nums">{value}</div>
+    <div data-setting={setting}>
+      <div className="text-2xl font-semibold tabular-nums whitespace-nowrap">{value}</div>
       <SectionEyebrow className="mt-0.5">
         {label}
       </SectionEyebrow>

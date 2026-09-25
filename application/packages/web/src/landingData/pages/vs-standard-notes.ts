@@ -101,7 +101,7 @@ export default {
     h2: 'Both encrypt. Almost everything else differs.',
     lead: 'Once two apps both encrypt end-to-end, the comparison moves to what you hand over, what the free tier really is, and what the price buys.',
     us: [
-      { dt: 'Identity', dd: 'A 12-word phrase. Optional Google or Apple sign-in, same encryption either way.' },
+      { dt: 'Identity', dd: 'A 12-word phrase. Optional Google, Apple, or GitHub sign-in, same encryption either way.' },
       { dt: 'Free tier', dd: 'The whole app, smaller. All seven pillars including markdown, 2 devices, files to 5 MB.' },
       { dt: 'Paying', dd: '{price} once: unlimited devices, note history, PIN-protect, 500 MB of encrypted files.' },
       { dt: 'Keys', dd: 'Derived from your phrase on your device. XChaCha20-Poly1305 per note.' },

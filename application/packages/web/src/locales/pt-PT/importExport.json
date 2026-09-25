@@ -14,7 +14,7 @@
   "footer": {
     "exportNote": "As exportações correm localmente. Nada é enviado.",
     "restoreNote": "O teu ficheiro é lido e desencriptado localmente.",
-    "importNote": "Tudo é encriptado antes de sair do teu dispositivo para sincronizar."
+    "importNote": "Tudo está sempre encriptado, no teu dispositivo e durante a sincronização."
   },
   "importPick": {
     "autoTagLabel": "Etiquetar as notas importadas pela origem",
@@ -74,6 +74,11 @@
     "encryptedBackupTitle": "Backup encriptado (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Restaura um backup encriptado com a chave da tua frase. Um .pnbackupz traz tudo de volta, ficheiros incluídos; um .pnbackup contém apenas texto e metadados. Tens de ter sessão iniciada com a mesma conta que o criou."
   },
+  "restoreGate": {
+    "wait": "O restauro espera até este dispositivo estar online e ter concluído uma sincronização, para que o teu backup seja associado às notas que já estão na tua conta em vez de as adicionar duas vezes.",
+    "paused": "O restauro espera pela sincronização, para que o teu backup seja associado às notas que já estão na tua conta, e a sincronização está em pausa neste dispositivo: desliga “Pausar sincronização” em Definições > ID & Sync.",
+    "belowFloor": "O restauro espera pela sincronização, para que o teu backup seja associado às notas que já estão na tua conta, e esta versão da aplicação é demasiado antiga para sincronizar: atualiza primeiro a aplicação."
+  },
   "encryptedBackupLabel": "Backup encriptado",
   "status": {
     "readingFile": "A ler o ficheiro…",
@@ -85,7 +90,9 @@
   "errors": {
     "genericParse": "Algo correu mal.",
     "decryptionFailed": "A desencriptação falhou. Frase errada ou ficheiro corrompido.",
-    "blobImportFailed": "As tuas notas foram importadas, mas as imagens e os ficheiros delas não: {{detail}} Nada no ficheiro que escolheste foi alterado, por isso podes eliminar as notas importadas e voltar a executar a importação."
+    "blobImportFailed": "As tuas notas foram importadas, mas as imagens e os ficheiros delas não: {{detail}} Nada no ficheiro que escolheste foi alterado, por isso podes eliminar as notas importadas e voltar a executar a importação.",
+    "blobsNotInBackup_one": "As tuas notas foram restauradas, mas {{items}} listado na cópia de segurança não está nela.",
+    "blobsNotInBackup_other": "As tuas notas foram restauradas, mas {{items}} listados na cópia de segurança não estão nela."
   },
   "preview": {
     "sourceLabel": "Origem",
@@ -99,6 +106,7 @@
     "duplicateWarning": "a importação adiciona estas como notas novas. Se a correres duas vezes, ficas com duplicados. Ainda não há remoção automática de duplicados.",
     "duplicateSkipNote": "os marcadores que já guardaste são ignorados, por isso repetir esta importação não duplica nada.",
     "contactSkipNote": "as pessoas que já guardaste são ignoradas e ficam como estão, por isso correr isto duas vezes não duplica ninguém.",
+    "restoreMergeNote": "as notas do teu próprio backup são associadas pelo identificador. Uma nota que já tens só é atualizada se a cópia do backup for mais recente, e uma nota no lixo sai de lá.",
     "quotaExceeded": "<strong>Armazenamento demasiado baixo para importar.</strong> Estimados {{needed}} necessários, {{available}} disponíveis. Liberta espaço ou passa para Pro antes de importares.",
     "quotaWarning": "Atenção: esta importação vai usar cerca de {{needed}} dos teus {{available}} de armazenamento restante.",
     "oversizeAttachments_one": "1 ficheiro é maior do que o limite de {{limit}} por ficheiro do teu plano. Importa-se para este dispositivo, mas não vai sincronizar com os teus outros dispositivos até passares para Pro.",
@@ -150,13 +158,25 @@
   "exportProgress": {
     "failedTitle": "A exportação falhou",
     "completeTitle": "Exportação concluída",
+    "incompleteTitle": "Exportação incompleta",
     "exportingTitle": "A exportar o backup...",
     "preparing": "A preparar...",
     "exporting": "A exportar...",
     "imagesProgress": "A exportar imagens... {{done}} de {{total}}",
     "filesProgress": "A exportar ficheiros... {{done}} de {{total}}",
     "building": "A montar o backup...",
-    "compressing": "A comprimir..."
+    "compressing": "A comprimir...",
+    "missingFailed_one": "Este dispositivo não conseguiu transferir {{items}}, por isso a tua exportação não o inclui. Verifica a ligação e exporta outra vez.",
+    "missingFailed_other": "Este dispositivo não conseguiu transferir {{items}}, por isso a tua exportação não os inclui. Verifica a ligação e exporta outra vez.",
+    "missingNotFound_one": "{{items}} não está neste dispositivo nem no servidor, por isso a tua exportação não o inclui.",
+    "missingNotFound_other": "{{items}} não estão neste dispositivo nem no servidor, por isso a tua exportação não os inclui."
+  },
+  "missing": {
+    "pictures_one": "{{count}} imagem",
+    "pictures_other": "{{count}} imagens",
+    "files_one": "{{count}} ficheiro",
+    "files_other": "{{count}} ficheiros",
+    "both": "{{pictures}} e {{files}}"
   },
   "upload": {
     "completeTitle": "Envio concluído",

@@ -55,7 +55,7 @@
     "empty": "Legen",
     "emptyHover": "Alle notities in de prullenbak verwijderen",
     "storage": "Opslag",
-    "autoDelete": "Auto-verwijderen: 30 d"
+    "autoDelete": "Na 30 dagen automatisch verwijderen"
   },
   "search": {
     "sortOptions": "Sorteer- en weergaveopties",
@@ -161,8 +161,8 @@
     "invisiblesShow": "Onzichtbare tekens tonen",
     "invisiblesHide": "Onzichtbare tekens verbergen",
     "findInNote": "Zoeken in notitie",
-    "navPrev": "Vorige notitie",
-    "navNext": "Volgende notitie",
+    "navPrev": "Vorige",
+    "navNext": "Volgende",
     "undo": "Ongedaan maken",
     "redo": "Opnieuw",
     "hide": "Verbergen",
@@ -176,7 +176,8 @@
     "titlePlaceholderLink": "Naam van bladwijzer",
     "titlePlaceholderContact": "Naam",
     "notBackedUpTooLarge": "Boven de limiet van 1 MB, dus geen back-up. Verplaats afbeeldingen naar bijlagen of splits de notitie.",
-    "notBackedUpFailed": "Geen back-up. Laatste fout: {{message}}. Nieuwe poging bezig."
+    "notBackedUpFailed": "Geen back-up. Laatste fout: {{message}}. Nieuwe poging bezig.",
+    "unknownType": "Dit item is gemaakt met een nieuwere versie van PrivacyNotes. Werk de app bij om het te openen."
   },
   "share": {
     "hover": "Delen / exporteren",

@@ -10,6 +10,7 @@
     "intro": {
       "storage": "Większe pliki i więcej miejsca to funkcja Pro. Przejdź na Pro, aby mieć pliki do 50 MB i 500 MB pamięci.",
       "folders": "Foldery to funkcja Pro. Uporządkuj notatki w zagnieżdżonych folderach, tak głęboko, jak potrzebujesz, i trzymaj każdy projekt osobno.",
+      "looks": "Ikony i kolory folderów i tagów to funkcja Pro. Nadaj każdemu wygląd, który rozpoznasz na pierwszy rzut oka.",
       "lock": "Blokowanie notatki to funkcja Pro. Przejdź na Pro, aby chronić dowolną notatkę przed przypadkową edycją.",
       "protect": "Ochrona notatki kodem PIN to funkcja Pro. Przejdź na Pro, aby zabezpieczyć wrażliwe notatki swoim PIN-em.",
       "history": "Historia notatki to funkcja Pro. Przejdź na Pro, aby zachować oś czasu każdego zapisu.",
@@ -57,6 +58,7 @@
     "title": "Historia notatki",
     "subtitle": "Do 20 wersji na notatkę. Najstarsze usuwane automatycznie.",
     "empty": "Brak historii. Wersje zaczną się pojawiać po następnej edycji. Zajrzyj tu później.",
+    "loadFailed": "Nie udało się wczytać historii. Sprawdź połączenie i spróbuj ponownie.",
     "selectPrompt": "Wybierz wersję, aby zobaczyć podgląd.",
     "emptyBody": "(pusto)",
     "restore": "Przywróć",
@@ -64,7 +66,7 @@
   },
   "donation": {
     "eyebrow": "Odblokowano",
-    "intro": "<brand/> jest darmowe i zawsze takie pozostanie. Bez reklam, bez śledzenia, bez adresu e-mail w bazie. Jeśli pomogło Ci myśleć, pisać lub pamiętać, rozważ wsparcie rozwoju. Dzięki temu projekt żyje i powstają kolejne funkcje.",
+    "intro": "<brand/> jest darmowe i zawsze takie pozostanie. Bez reklam, bez elementów śledzących i bez adresu e-mail w bazie, chyba że logujesz się kontem z e-mailem. Jeśli pomogło Ci myśleć, pisać lub pamiętać, rozważ wsparcie rozwoju. Dzięki temu projekt żyje i powstają kolejne funkcje.",
     "proBenefits": "Wsparcie odblokowuje też korzyści Pro, gdy tylko będą gotowe: nieograniczoną liczbę urządzeń, załączniki i szyfrowane kopie zapasowe w chmurze.",
     "maybeLater": "Może później",
     "support": "Wesprzyj →"

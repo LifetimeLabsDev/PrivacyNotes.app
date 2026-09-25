@@ -554,16 +554,21 @@ function BootstrapMode({
 }
 
 /* ────────────────────────────────────────────────────────────────
- * PinGateModal - modal overlay for PIN verification before
- * destructive actions (delete, shred) on protected notes.
+ * PinGateModal - modal overlay for PIN verification before an action on
+ * a protected note: a destructive one (delete, shred), or one that reads
+ * the note out (an export, its history), which is worded as an unlock.
  * ──────────────────────────────────────────────────────────────── */
+
+export type PinGatePurpose = 'delete' | 'unlock';
 
 export function PinGateModal({
   onUnlock,
   onCancel,
+  purpose,
 }: {
   onUnlock: () => void;
   onCancel: () => void;
+  purpose: PinGatePurpose;
 }) {
   const { t } = useTranslation('security');
   const pinIsSet = hasPin();
@@ -585,7 +590,7 @@ export function PinGateModal({
             compact
           />
         ) : pinIsSet ? (
-          <ModalVerifyMode onUnlock={onUnlock} showBiometric={bioEnrolled} />
+          <ModalVerifyMode onUnlock={onUnlock} showBiometric={bioEnrolled} purpose={purpose} />
         ) : (
           /* No PIN set - can't gate; just allow the action. */
           (() => { onUnlock(); return null; })()
@@ -603,14 +608,18 @@ export function PinGateModal({
 
 /**
  * Compact verify mode for the modal - same logic as VerifyMode but
- * with a shorter subtitle and no top margin.
+ * with a shorter subtitle and no top margin. A delete asks in red with the
+ * delete wording; anything else asks with the unlock wording the note pane
+ * uses, so an export never reads as a deletion.
  */
 function ModalVerifyMode({
   onUnlock,
   showBiometric = false,
+  purpose,
 }: {
   onUnlock: () => void;
   showBiometric?: boolean;
+  purpose: PinGatePurpose;
 }) {
   const { t } = useTranslation('security');
   const [value, setValue] = useState('');
@@ -654,7 +663,11 @@ function ModalVerifyMode({
 
   return (
     <div className="space-y-4 text-center">
-      <GateHeader title={t('protectedGate.pinRequired')} subtitle={t('protectedGate.deleteSubtitle')} />
+      {purpose === 'delete' ? (
+        <GateHeader title={t('protectedGate.pinRequired')} subtitle={t('protectedGate.deleteSubtitle')} />
+      ) : (
+        <GateHeader title={t('protectedGate.protectedItem')} subtitle={t('protectedGate.verifySubtitle')} />
+      )}
       <PinInput
         ref={inputRef}
         value={value}
@@ -678,9 +691,13 @@ function ModalVerifyMode({
         <button
           onClick={() => void submit(value)}
           disabled={value.length !== 4 || disabled}
-          className="w-full rounded-md bg-red-500 text-white hover:bg-red-600 px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+          className={`w-full rounded-md text-white px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed ${
+            purpose === 'delete' ? 'bg-red-500 hover:bg-red-600' : 'bg-accent hover:bg-accent-hover'
+          }`}
         >
-          {busy ? t('protectedGate.checking') : t('protectedGate.confirmDelete')}
+          {busy
+            ? t('protectedGate.checking')
+            : purpose === 'delete' ? t('protectedGate.confirmDelete') : t('protectedGate.unlock')}
         </button>
         {showBiometric && (
           <button

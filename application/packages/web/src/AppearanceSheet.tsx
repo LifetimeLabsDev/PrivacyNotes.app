@@ -16,18 +16,21 @@ import {
   TEXT_SIZES,
   CONTENT_WIDTHS,
   LINE_SPACINGS,
+  resetStyleAxes,
   type LineSpacing,
 } from './theme';
 import { IconUpgrade } from './UpgradeModal';
 import { proUnlocked } from './demo';
-import { X, List, ListBullets, Palette, SquaresFour, Sparkle, DotsThreeOutlineVertical, CaretDown, PILLAR_GLYPHS, type Icon } from './icons';
+import { X, List, ListBullets, Palette, SquaresFour, Sparkle, DotsThreeOutlineVertical, CaretDown, Globe, PILLAR_GLYPHS, type Icon } from './icons';
 import { exemptOpts } from './i18nExempt';
 import { AccentBar, HeadlineRule, SETTINGS_EYEBROW, SETTINGS_HELP } from './settingsUI';
+import { Switch } from './Switch';
 import { faviconUrl } from './favicon';
 import { ViewCheckBox } from './SidebarOptionsPopover';
 import { allViewRows, resolveStartView, sidebarViewRows, startViewRows } from './viewRows';
 import { ViewMenu } from './ViewMenu';
 import type { View } from './views';
+import { defaultSettings } from './userSettings';
 
 type Props = {
   isPro: boolean;
@@ -54,6 +57,12 @@ type Props = {
    *  Spec: ops/docs/plans/start-view.md */
   startView: View;
   onStartViewChange: (next: View) => void;
+  /** Whether a note takes its folder or tag color as its background: the open
+   *  note, its list row and its grid tile. The same switch the look picker shows. Spec: ops/docs/plans/folder-tag-icons.md (section 4.6) */
+  tintNotes: boolean;
+  onTintNotesChange: (on: boolean) => void;
+  /** Which tab of the embedded pane to open on. Defaults to Style. */
+  initialTab?: 'style' | 'lists';
 };
 
 /** Translation key per text size. Keeps the order in TEXT_SIZES. */
@@ -66,6 +75,7 @@ const TEXT_SIZE_LABEL: Record<TextSize, string> = {
 
 /** Translation key per line spacing. Keeps the order in LINE_SPACINGS. */
 const LINE_SPACING_LABEL: Record<LineSpacing, string> = {
+  tight: 'appearance.lineSpacingTight',
   compact: 'appearance.lineSpacingCompact',
   normal: 'appearance.lineSpacingNormal',
 };
@@ -120,6 +130,45 @@ function IconWord({ icon: Glyph, children }: { icon: Icon; children?: ReactNode 
   );
 }
 
+/**
+ * "Reset to defaults" at the foot of a tab. Armed, not immediate: the first
+ * click turns it into a confirm for three seconds, because one stray click
+ * would otherwise undo every choice on the tab at once.
+ */
+function ResetDefaultsButton({ onReset }: { onReset: () => void }) {
+  const { t } = useTranslation('settings');
+  const [armed, setArmed] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+
+  function click() {
+    if (timer.current) clearTimeout(timer.current);
+    if (armed) {
+      setArmed(false);
+      onReset();
+      return;
+    }
+    setArmed(true);
+    timer.current = setTimeout(() => setArmed(false), 3000);
+  }
+
+  return (
+    <div className="pt-4">
+      <button
+        type="button"
+        onClick={click}
+        className={`rounded-md border px-3 py-1.5 text-sm font-medium transition ${
+          armed
+            ? 'border-red-500/40 text-red-600 dark:text-red-400'
+            : 'border-divider text-pn-soft hover:text-pn'
+        }`}
+      >
+        {armed ? t('appearance.resetDefaultsConfirm') : t('appearance.resetDefaults')}
+      </button>
+    </div>
+  );
+}
+
 /** Segmented-control option states, shared by both layouts. */
 const SEG_ACTIVE = 'bg-surface-2 shadow-sm text-pn font-semibold';
 const SEG_IDLE = 'text-pn-soft hover:text-pn font-medium';
@@ -130,7 +179,7 @@ const SEG_IDLE = 'text-pn-soft hover:text-pn font-medium';
  */
 const SEG_FILL = 'flex-1 px-3 lg:flex-none';
 
-export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = false, viewMode, onViewModeChange, editorMode, onEditorModeChange, lineSpacing, onLineSpacingChange, hiddenViews, hiddenInAll, onToggleHidden, startView, onStartViewChange }: Props) {
+export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = false, viewMode, onViewModeChange, editorMode, onEditorModeChange, lineSpacing, onLineSpacingChange, hiddenViews, hiddenInAll, onToggleHidden, startView, onStartViewChange, tintNotes, onTintNotesChange, initialTab = 'style' }: Props) {
   const { t } = useTranslation('settings');
   // The table's row labels are the sidebar's own strings, so the pane and the
   // rail can never disagree in any language.
@@ -138,7 +187,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   // Which half of the embedded pane shows: Style is how the app is painted,
   // Lists is what its lists hold. The footer popover has no tab strip - it
   // renders a subset of Style only. Spec: ops/docs/ui-patterns.md section 36
-  const [tab, setTab] = useState<'style' | 'lists'>('style');
+  const [tab, setTab] = useState<'style' | 'lists'>(initialTab);
   const [startMenuOpen, setStartMenuOpen] = useState(false);
   // The example starts closed: the pane already runs a long column of rows,
   // and a sample that is always open makes one group several times the height
@@ -154,6 +203,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   const startBtnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const { theme, themeMode, setThemeMode, colorTheme, setColorTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, favicons, setFavicons, invisibles, setInvisibles } = useTheme();
+  const exampleFavicon = faviconUrl('google.com');
 
   // The public demo unlocks every palette so visitors can try them for
   // real (they persist, no revert). The rocket badge on each card still
@@ -244,6 +294,26 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     // Free user clicked a pro theme: preview visually (no localStorage
     // write) so the user sees it live but it won't survive a reload.
     previewColor(t);
+  }
+
+  // Each tab resets exactly the rows it shows. The device axes go back in
+  // theme.ts; the synced ones go through the same callbacks their rows use,
+  // so the defaults are read from the settings blob's own and never copied.
+  function resetStyle() {
+    const d = defaultSettings();
+    resetStyleAxes();
+    savedThemeRef.current = 'default';
+    onLineSpacingChange(d.lineSpacing);
+    onTintNotesChange(d.tintNotes);
+    onEditorModeChange(d.editorMode);
+  }
+
+  function resetLists() {
+    const d = defaultSettings();
+    onStartViewChange(d.startView);
+    onViewModeChange(d.viewMode);
+    for (const v of hiddenViews) onToggleHidden('hiddenViews', v);
+    for (const v of hiddenInAll) onToggleHidden('hiddenInAll', v);
   }
 
   const modeButtons = THEME_MODES.map((mode) => (
@@ -351,7 +421,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
       <>
         {/* Mode - Auto / Light / Dark. Auto follows the OS and re-resolves
             live when it flips (see watchSystemTheme in theme.ts). */}
-        <div className={row}>
+        <div data-setting="appearance.mode" className={row}>
           <div className="min-w-0">
             <p className="text-sm font-medium">{t('appearance.modeTitle')}</p>
             <p className={helpExplain}>{t('appearance.modeDesc')}</p>
@@ -361,7 +431,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
 
         {/* Theme - swatch chips; the upgrade nudge stays inside the row's
             divider segment so it reads as part of this setting. */}
-        <div className="py-3">
+        <div data-setting="appearance.theme" className="py-3">
           <div className={rowLayout}>
             <p className="text-sm font-medium">
               {isDark ? t('appearance.darkThemes') : t('appearance.lightThemes')}
@@ -431,14 +501,14 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             height of anything else for a reader who never asked to see it.
             Spec: ops/docs/design-decisions.md (editor paragraph rhythm) */}
         <div>
-          <div className={row}>
+          <div data-setting="appearance.textSize" className={row}>
             <div className="min-w-0">
               <p className="text-sm font-medium">{t('appearance.textSizeTitle')}</p>
               <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.textSizeDesc')}</p>
             </div>
             <div className={track}>{textSizeButtons}</div>
           </div>
-          <div className={`${row} pt-0`}>
+          <div data-setting="appearance.lineSpacing" className={`${row} pt-0`}>
             <div className="min-w-0">
               <p className="text-sm font-medium">{t('appearance.lineSpacingTitle')}</p>
               <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.lineSpacingDesc')}</p>
@@ -456,7 +526,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
               {t('appearance.lineSpacingExample')}
             </button>
             {spacingExampleOpen && (
-              <div className="mt-2 rounded-md bg-track px-3 py-2 text-[length:var(--pn-editor-body)] leading-[1.7]">
+              <div className="mt-2 rounded-md bg-track px-3 py-2 text-[length:var(--pn-editor-body)] leading-[var(--pn-line-height)]">
                 {(['lineSpacingExample1', 'lineSpacingExample2', 'lineSpacingExample3'] as const).map((key) => (
                   <p key={key} style={{ marginBlock: 'var(--pn-para-gap)' }}>{t(`appearance.${key}`)}</p>
                 ))}
@@ -465,11 +535,22 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           </div>
         </div>
 
+        {/* Note backgrounds - the switch the look picker also shows. A
+            switch row, the idiom of the image settings (ImagesSheet.tsx). */}
+        <Switch
+          setting="appearance.tintNotes"
+          label={t('appearance.tintNotesTitle')}
+          description={t('appearance.tintNotesDesc')}
+          checked={tintNotes}
+          onChange={onTintNotesChange}
+          className="gap-x-5 py-3"
+        />
+
         {/* Editor width - the cap on the note's reading column. Device-local
             for the text-size reason: a phone never reaches the cap at all.
             The editor's own toggle only shows on a pane wider than the
             default cap, so this row is the way in at every other width. */}
-        <div className={row}>
+        <div data-setting="appearance.contentWidth" className={row}>
           <div className="min-w-0">
             <p className="text-sm font-medium">{t('appearance.contentWidthTitle')}</p>
             <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.contentWidthDesc')}</p>
@@ -481,7 +562,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             opens in; the per-note "Show markdown" link in the editor footer
             overrides it for one note only.
             Spec: ops/specs/editor-mode-toggle.md */}
-        <div className={row}>
+        <div data-setting="appearance.editor" className={row}>
           <div className="min-w-0">
             <p className="text-sm font-medium">{t('appearance.editorTitle')}</p>
             <p className={helpExplain}>{t('appearance.editorDesc')}</p>
@@ -506,44 +587,45 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             thing they cost is a request per new domain to our proxy, so the
             off switch is device-local like text size, not synced. The full
             privacy story lives in About > Trust; the row keeps the one-line
-            version. Switch idiom: security/BiometricTab.tsx (Lock on open).
+            version.
             Spec: ops/docs/design-decisions.md (Website icons toggle) */}
-        <label className="flex items-center justify-between gap-x-5 py-3 cursor-pointer">
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium">{t('appearance.faviconsTitle')}</p>
-            {/* The example is live: real domain, real proxy response, and the
-                icon disappears with the toggle, so the control demonstrates
-                itself rather than describing itself. */}
-            <p className={`${SETTINGS_HELP} mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5`}>
-              <span>{t('appearance.faviconsDesc')}</span>
-              <span className="inline-flex items-center gap-1.5">
-                {t('appearance.faviconsExample')}
-                {favicons && (
-                  <img
-                    src={faviconUrl('google.com')}
-                    alt=""
-                    width={14}
-                    height={14}
-                    className="rounded-[3px]"
-                    onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
-                  />
-                )}
-                <span className="text-accent">google.com</span>
+        <Switch
+          setting="appearance.favicons"
+          label={t('appearance.faviconsTitle')}
+          description={
+            <>
+              {/* The example is live: real domain, real proxy response, and the
+                  icon disappears with the toggle, so the control demonstrates
+                  itself rather than describing itself. Where there is no lookup
+                  (the demo) it draws the globe the rows draw instead. */}
+              <span className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                <span>{t('appearance.faviconsDesc')}</span>
+                <span className="inline-flex items-center gap-1.5">
+                  {t('appearance.faviconsExample')}
+                  {favicons && (exampleFavicon ? (
+                    <img
+                      src={exampleFavicon}
+                      alt=""
+                      width={14}
+                      height={14}
+                      className="rounded-[3px]"
+                      onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
+                    />
+                  ) : (
+                    <Globe size={14} aria-hidden="true" />
+                  ))}
+                  <span className="text-accent">google.com</span>
+                </span>
               </span>
-            </p>
-            <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.faviconsProxy')}</p>
-          </div>
-          <div className="relative shrink-0">
-            <input
-              type="checkbox"
-              checked={favicons}
-              onChange={(e) => setFavicons(e.target.checked)}
-              className="sr-only peer"
-            />
-            <div className="w-9 h-5 bg-pn-muted/35 peer-checked:bg-accent rounded-full transition-colors" />
-            <div className="absolute start-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-4 peer-checked:rtl:-translate-x-4" />
-          </div>
-        </label>
+              {/* The proxy line describes the lookup, so it shows only where
+                  there is one. */}
+              {exampleFavicon && <span className="block mt-0.5">{t('appearance.faviconsProxy')}</span>}
+            </>
+          }
+          checked={favicons}
+          onChange={setFavicons}
+          className="gap-x-5 py-3"
+        />
 
         {/* Invisible characters - the pilcrow, the space dots and the line
             breaks the editor can draw. This is a taste somebody sets once
@@ -552,22 +634,14 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             editor keeps the quick toggle beside the word count for the
             person who wants it on for one note.
             Spec: ops/docs/design-decisions.md (the editor corner holds only controls that can hide themselves) */}
-        <label className="flex items-center justify-between gap-x-5 py-3 cursor-pointer">
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium">{t('appearance.invisiblesTitle')}</p>
-            <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.invisiblesDesc')}</p>
-          </div>
-          <div className="relative shrink-0">
-            <input
-              type="checkbox"
-              checked={invisibles}
-              onChange={(e) => setInvisibles(e.target.checked)}
-              className="sr-only peer"
-            />
-            <div className="w-9 h-5 bg-pn-muted/35 peer-checked:bg-accent rounded-full transition-colors" />
-            <div className="absolute start-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-4 peer-checked:rtl:-translate-x-4" />
-          </div>
-        </label>
+        <Switch
+          setting="appearance.invisibles"
+          label={t('appearance.invisiblesTitle')}
+          description={t('appearance.invisiblesDesc')}
+          checked={invisibles}
+          onChange={setInvisibles}
+          className="gap-x-5 py-3"
+        />
       </>
     );
 
@@ -579,7 +653,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             the phone pillar switcher uses, so a pillar added later appears in
             both without a second list.
             Spec: ops/docs/plans/start-view.md */}
-        <div className={row}>
+        <div data-setting="appearance.startView" className={row}>
           <div className="min-w-0">
             <p className="text-sm font-medium">{t('appearance.startViewTitle')}</p>
           </div>
@@ -609,7 +683,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
         </div>
 
         {/* View - list / grid / auto layout. */}
-        <div className={row}>
+        <div data-setting="appearance.view" className={row}>
           <div className="min-w-0">
             <p className="text-sm font-medium">{t('appearance.viewTitle')}</p>
             <p className={helpExplain}>{t('appearance.viewDesc')}</p>
@@ -640,7 +714,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             the All row) - the same field shown twice, exactly as the
             List/Grid choice already is.
             Spec: ops/docs/plans/sidebar-views.md */}
-        <div className="py-3">
+        <div data-setting="appearance.sidebar" className="py-3">
           {/* The heading names the two columns using the two glyphs the column
               headers carry, so the words below are already recognisable. Each
               glyph is bound to its word by a Trans tag rather than dropped in
@@ -755,11 +829,12 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           className="shrink-0 flex items-stretch border-b border-divider px-6"
         >
           {([
-            { id: 'style' as const, label: t('appearance.tabStyle'), icon: <Palette aria-hidden="true" /> },
-            { id: 'lists' as const, label: t('appearance.tabLists'), icon: <ListBullets aria-hidden="true" /> },
+            { id: 'style' as const, setting: 'appearance.style', label: t('appearance.tabStyle'), icon: <Palette aria-hidden="true" /> },
+            { id: 'lists' as const, setting: 'appearance.lists', label: t('appearance.tabLists'), icon: <ListBullets aria-hidden="true" /> },
           ]).map((tb) => (
             <button
               key={tb.id}
+              data-setting={tb.setting}
               role="tab"
               aria-selected={tab === tb.id}
               onClick={() => setTab(tb.id)}
@@ -776,8 +851,11 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto">
-          <div className="px-6 pb-4 divide-y divide-divider">
+          <div className="px-6 divide-y divide-divider">
             {tab === 'style' ? styleRows : listRows}
+          </div>
+          <div className="px-6 pb-4">
+            <ResetDefaultsButton key={tab} onReset={tab === 'style' ? resetStyle : resetLists} />
           </div>
         </div>
       </div>
@@ -895,6 +973,18 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           {t('appearance.lineSpacingDesc')}
         </p>
         <div className="flex gap-1 rounded-md p-1 bg-track">{lineSpacingButtons}</div>
+      </div>
+
+      {/* Note backgrounds - see the embedded row above. */}
+      <div className="px-6 pb-4">
+        <Switch
+          label={t('appearance.tintNotesTitle')}
+          labelClassName={SETTINGS_EYEBROW}
+          description={t('appearance.tintNotesDesc')}
+          checked={tintNotes}
+          onChange={onTintNotesChange}
+          className="gap-x-4"
+        />
       </div>
 
       {/* Editor width - see the embedded row above for the reasoning. */}

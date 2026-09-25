@@ -19,7 +19,7 @@ title: ノートはどう守られているか
 
 ## 鍵を誰が持つか
 
-どの方式でも、ノートは端から端まで暗号化されたままです。違うのは、フレーズがどこにあるかです。
+どの方式でも、ノートはデバイス上で暗号化されたままです。違うのは、フレーズがどこにあるかです。
 
 | 方式 | フレーズの置き場所 | 得られるもの |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ title: ノートはどう守られているか
 
 下の2つでは、たとえ強制されても私たちはノートを読めません。1つ目はそれを利便性と引き換えにします。フレーズは当社の鍵で守られてサーバーに置かれるので、新しい端末はログインだけで済みます。もし当社のサーバーが破られれば、その鍵が露出する可能性があります。
 
-一度選んだ方式に縛られることはありません。**設定 > セキュリティ > あなたのフレーズ**で変更してください。
+Google、Apple、GitHubでサインインした場合は、上の2つを後から**設定 > セキュリティ > あなたのフレーズ**で切り替えられます。フレーズだけのアカウントでは、フレーズは常にあなたの手元にあります。
 
 > [!warning] フレーズは自分でも控えておいてください
 > フレーズはノートを開く鍵です。失うと誰にも取り戻せません。私たちにもできません。<span style="color: #e03131">今日のうちに紙に書いてください。</span>
@@ -44,7 +44,7 @@ title: ノートはどう守られているか
 | 何を | どこで |
 | --- | --- |
 | 暗号化そのもの | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| データベースの構造 | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| 私たちのサーバーが受け取るもの | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | 攻撃者にできること、できないこと | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | 穴を報告する方法 | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

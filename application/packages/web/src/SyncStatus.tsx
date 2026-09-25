@@ -9,7 +9,7 @@ import { isDemoMode } from './demo';
 import { useBelowVersionFloor } from './versionFloor';
 import { useSyncPaused } from './syncPause';
 import { useFilesWifiOnly } from './wifiOnly';
-import { usePushFailures } from './pushFailures';
+import { usePushFailures, usePushHalt } from './pushFailures';
 
 interface SyncStatusProps {
   /** Icon size in px - 14 for mobile header, 13 for footers. */
@@ -23,14 +23,21 @@ interface SyncStatusProps {
    * Omitted where there is nowhere to navigate to (lock screen, demo).
    */
   onOpen?: () => void;
+  /**
+   * Where the tooltip opens. Start-aligned suits the desktop footer, where
+   * the status sits at the start of its zone; the phone footer centres it,
+   * so its tooltip centres too instead of hanging past the screen's edge.
+   */
+  tipPosition?: 'above-start' | 'above';
 }
 
 /**
  * Sync status indicator with offline awareness.
  * Offline (amber) > Syncing (accent spinner) > Not synced (amber, the
- * last pass could not push a note; the footer slot fits one short word,
- * so the fuller "not backed up" lives in the tooltip and in ID & Sync) >
- * Uploading (accent spinner, blobs still queued) > Synced (green check).
+ * last pass could not push a note, or its push stopped before it reached
+ * every note; the footer slot fits one short word, so the fuller "not
+ * backed up" lives in the tooltip and in ID & Sync) > Uploading (accent
+ * spinner, blobs still queued) > Synced (green check).
  *
  * The green check is a promise that nothing is still on its way up, so
  * it must not show while blobs wait in the upload queue - "Synced" next
@@ -43,7 +50,7 @@ interface SyncStatusProps {
  * what an added "N files waiting to upload" line did. That count now
  * lives in ID & Sync, one click away.
  */
-export function SyncStatus({ size = 13, onOpen }: SyncStatusProps) {
+export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: SyncStatusProps) {
   const { t } = useTranslation('settings');
   const online = useOnlineStatus();
   const pendingUploads = usePendingUploads();
@@ -54,12 +61,13 @@ export function SyncStatus({ size = 13, onOpen }: SyncStatusProps) {
   const paused = useSyncPaused();
   const wifi = useFilesWifiOnly();
   const failures = usePushFailures();
+  const halt = usePushHalt();
 
   // Demo mode never saves anything - don't show a green "Synced" check
   // that implies durability. Say so plainly instead.
   if (isDemoMode()) {
     return (
-      <HoverLabel label={t('syncStatus.demoTooltip')} position="above-start" multiline>
+      <HoverLabel label={t('syncStatus.demoTooltip')} position={tipPosition} multiline>
         <span
           className="inline-flex items-center gap-1.5"
           aria-live="polite"
@@ -134,21 +142,27 @@ export function SyncStatus({ size = 13, onOpen }: SyncStatusProps) {
           aria: t('syncStatus.syncingAria'),
           needsOpenHint: true,
         }
-      : failures.size > 0
+      : failures.size > 0 || halt
         ? {
-            // The last pass could not push these notes (pushFailures.ts).
-            // Outranks every upload state below: a green check or an
-            // "Uploading" spinner would claim the notes are on their way
-            // while the server has refused them. The count and the reason
-            // per note live in ID & Sync, one click away.
+            // The last pass could not push these notes (pushFailures.ts),
+            // or its push stopped with notes still waiting. Outranks every
+            // upload state below: a green check or an "Uploading" spinner
+            // would claim the notes are on their way while the server has
+            // refused them or was never reached. The stop speaks for the
+            // pass; the count and the reason per note live in ID & Sync,
+            // one click away.
             body: (
               <>
                 <Warning size={size} className="text-amber-500 dark:text-amber-400" />
                 <span className="text-amber-600 dark:text-amber-400">{t('syncStatus.notSynced', exemptOpts('settings:syncStatus.notSynced'))}</span>
               </>
             ),
-            tip: t('syncStatus.notBackedUpTooltip', { count: failures.size }),
-            aria: t('syncStatus.notBackedUpAria', { count: failures.size }),
+            tip: halt
+              ? t('syncStatus.haltedTooltip', { count: halt.unreached })
+              : t('syncStatus.notBackedUpTooltip', { count: failures.size }),
+            aria: halt
+              ? t('syncStatus.haltedAria', { count: halt.unreached })
+              : t('syncStatus.notBackedUpAria', { count: failures.size }),
             needsOpenHint: true,
           }
       : pendingUploads.count > 0 && wifi.held
@@ -209,7 +223,7 @@ export function SyncStatus({ size = 13, onOpen }: SyncStatusProps) {
     : state.tip;
 
   return (
-    <HoverLabel label={tip} position="above-start" multiline={!!onOpen}>
+    <HoverLabel label={tip} position={tipPosition} multiline={!!onOpen}>
       {onOpen ? (
         <button
           type="button"

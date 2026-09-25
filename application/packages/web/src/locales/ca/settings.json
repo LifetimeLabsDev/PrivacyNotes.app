@@ -60,6 +60,9 @@
     "upgradeCharge": "Avui se't cobra {{amount}} per la resta del teu any actual. Després es renova a {{price}}/any.",
     "upgradeChargeUntil": "Avui se't cobra {{amount}} per la resta del teu any actual, fins al {{date}}. Després es renova a {{price}}/any.",
     "upgradeChargeApple": "Avui se't cobren {{price}}. Apple et retorna automàticament la part no utilitzada del teu any actual, i el teu any nou comença ara.",
+    "upgradeAmountFailed": "No s'ha pogut carregar l'import a pagar avui.",
+    "upgradeAmountRetry": "Torna-ho a provar",
+    "upgradeAmountChanged": "L'import a pagar avui ha canviat o no s'ha pogut comprovar, així que no se t'ha cobrat res. Torna a triar el paquet per veure el nou import.",
     "upgrading": "S'està ampliant…",
     "upgradeAndPay": "Amplia i paga ara",
     "maybeLater": "Potser més tard",
@@ -187,7 +190,12 @@
     "contentWidthWide": "Ampla",
     "contentWidthFull": "Completa",
     "lineSpacingTitle": "Interlineat",
-    "lineSpacingDesc": "L'espai entre paràgrafs mentre escrius.",
+    "tintNotesTitle": "Acoloreix el fons de les notes",
+    "tintNotesDesc": "Les notes prenen el color de la seva etiqueta o carpeta.",
+    "lineSpacingDesc": "L'espai entre línies i paràgrafs mentre escrius.",
+    "lineSpacingTight": "Ajustat",
+    "resetDefaults": "Restableix els valors per defecte",
+    "resetDefaultsConfirm": "Confirma el restabliment",
     "lineSpacingCompact": "Compacte",
     "lineSpacingNormal": "Normal",
     "lineSpacingExample": "Exemple",
@@ -215,10 +223,10 @@
   },
   "conflict": {
     "title": "Conflicte de sincronització",
-    "explanation": "Aquesta nota s'ha editat en un altre dispositiu mentre aquí hi tenies canvis sense desar. Farem servir la <em>versió més recent</em> (la de l'altre dispositiu, {{date}}).",
+    "explanation": "Aquesta nota s'ha modificat en un altre dispositiu mentre aquest dispositiu tenia canvis que encara no s'havien sincronitzat, i el text difereix d'un a l'altre. Conservarem la <em>versió de l'altre dispositiu</em> ({{date}}), tret que triïs una altra opció.",
     "willBeKept": "Es conservarà",
     "showLocal": "Mostra la versió d'aquest dispositiu ({{date}})",
-    "useNewer": "D'acord, fes servir la nova",
+    "useNewer": "Fes servir l'altra versió",
     "useMine": "Fes servir la meva",
     "keepBoth": "Conserva totes dues com a notes separades"
   },
@@ -230,6 +238,13 @@
     "localLabel": "Suprimeix les dades locals",
     "localDesc": "Esborra les notes, les imatges i les dades en memòria cau d'aquest dispositiu. No suprimeix el teu compte, només neteja aquest navegador.",
     "localRequired": "(obligatori en suprimir el compte)",
+    "localUnsynced_one": "Aquest dispositiu té {{items}}. Si suprimeixes les dades locals, es perd per sempre.",
+    "localUnsynced_other": "Aquest dispositiu té {{items}}. Si suprimeixes les dades locals, es perden per sempre.",
+    "unsyncedNotes_one": "{{count}} nota sense sincronitzar",
+    "unsyncedNotes_other": "{{count}} notes sense sincronitzar",
+    "unsyncedFiles_one": "{{count}} fitxer sense sincronitzar",
+    "unsyncedFiles_other": "{{count}} fitxers sense sincronitzar",
+    "unsyncedBoth": "{{notes}} i {{files}}",
     "cloudLabel": "Suprimeix les dades del núvol i el compte",
     "cloudDesc": "Elimina permanentment del servidor totes les notes sincronitzades, les imatges, els dispositius, la configuració i el teu compte. Després t'hi pots tornar a registrar.",
     "confirmPrompt": "Escriu <kbd>DELETE</kbd> per confirmar",
@@ -271,7 +286,11 @@
     "notBackedUpTooltip_one": "{{count}} nota no té còpia de seguretat. Fes clic per veure per què.",
     "notBackedUpTooltip_other": "{{count}} notes no tenen còpia de seguretat. Fes clic per veure per què.",
     "notBackedUpAria_one": "{{count}} nota no té còpia de seguretat",
-    "notBackedUpAria_other": "{{count}} notes no tenen còpia de seguretat"
+    "notBackedUpAria_other": "{{count}} notes no tenen còpia de seguretat",
+    "haltedTooltip_one": "Sincronització aturada, {{count}} nota no té còpia de seguretat. Fes clic per veure per què.",
+    "haltedTooltip_other": "Sincronització aturada, {{count}} notes no tenen còpia de seguretat. Fes clic per veure per què.",
+    "haltedAria_one": "Sincronització aturada, {{count}} nota no té còpia de seguretat",
+    "haltedAria_other": "Sincronització aturada, {{count}} notes no tenen còpia de seguretat"
   },
   "errors": {
     "noSession": "No hi ha cap sessió activa. Torna a iniciar la sessió.",
@@ -323,7 +342,9 @@
     "reasonFailed": "Ha fallat: {{message}}",
     "openNote": "Obre",
     "passPushFailed_one": "{{count}} ha fallat",
-    "passPushFailed_other": "{{count}} han fallat"
+    "passPushFailed_other": "{{count}} han fallat",
+    "passHalted_one": "aturada, {{count}} en espera",
+    "passHalted_other": "aturada, {{count}} en espera"
   },
   "language": {
     "reportMistake": "Informa d’un error de traducció"

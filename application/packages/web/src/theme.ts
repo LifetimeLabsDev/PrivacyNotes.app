@@ -19,9 +19,13 @@
  * 7. Invisible characters - paints nothing. The editor drives the
  *    extension's show/hide commands from it.
  * 8. Line spacing - sets `data-line-spacing` on <html>, drives
- *    --pn-para-gap, the gap between two paragraphs.
+ *    --pn-para-gap, the gap between two paragraphs, and --pn-line-height.
+ * 9. Code wrap - toggles `pn-wrap-code` on <html>, which folds long lines
+ *    in every code block. Its state lives in codeWrap.ts, because the
+ *    editor reads it and must not load this module; boot and the reset
+ *    below still paint and clear it here.
  *
- * Axes 1 to 7 persist to localStorage and NONE of them reaches the
+ * Axes 1 to 7 and 9 persist to localStorage and NONE of them reaches the
  * server: each is a property of the screen in front of you rather than
  * of the account, and a desktop and a phone can reasonably disagree.
  * A sign-out leaves them standing for that same reason. The one thing
@@ -34,6 +38,7 @@
  * paints what it is handed.
  */
 import { useCallback, useSyncExternalStore } from 'react';
+import { paintCodeWrap, setCodeWrap } from './codeWrap';
 
 // ------------------------------------------------------------------
 // Light / dark axis
@@ -232,6 +237,7 @@ export function initTheme(): Theme {
   initColorTheme();
   applyTextSize(getStoredTextSize());
   applyContentWidth(getStoredContentWidth());
+  paintCodeWrap();
   return theme;
 }
 
@@ -281,11 +287,14 @@ function applyTextSize(size: TextSize): void {
 // ------------------------------------------------------------------
 
 /**
- * The gap between two paragraphs. Drives `--pn-para-gap` in index.css,
- * which the shared `.prose` block reads - the editor, the burn note
- * viewer, the note history modal and the markdown file pane at once.
+ * The gap between two paragraphs, and on 'tight' the line height as well.
+ * Drives `--pn-para-gap` in index.css, which the shared `.prose` block
+ * reads - the editor, the burn note viewer, the note history modal and the
+ * markdown file pane at once - and `--pn-line-height`, which the editor
+ * reads.
  *
- * 'compact' is zero, so Enter costs the same line as Shift+Enter. It is
+ * 'compact' has no gap, so Enter costs the same line as Shift+Enter.
+ * 'tight' keeps that and sets the lines closer (GitHub #255). 'compact' is
  * also the absent state, which is what a surface with no account behind
  * it paints: a burn page, and any note opened before settings arrive.
  *
@@ -297,7 +306,7 @@ function applyTextSize(size: TextSize): void {
  * there is deliberately no localStorage key below.
  * Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
  */
-export const LINE_SPACINGS = ['compact', 'normal'] as const;
+export const LINE_SPACINGS = ['tight', 'compact', 'normal'] as const;
 export type LineSpacing = (typeof LINE_SPACINGS)[number];
 
 /** Type guard, for the settings blob's decode step. */
@@ -318,7 +327,24 @@ export function applyLineSpacing(spacing: LineSpacing): void {
  * account has been loaded.
  */
 export function readLineSpacing(): LineSpacing {
-  return document.documentElement.dataset.lineSpacing === 'normal' ? 'normal' : 'compact';
+  const painted = document.documentElement.dataset.lineSpacing;
+  return isLineSpacing(painted) ? painted : 'compact';
+}
+
+/**
+ * The paragraph gap as a CSS length, for markup that leaves the app and so
+ * cannot read `--pn-para-gap`: the export stylesheet and the HTML flavour of
+ * a copy. Keep it equal to the values in index.css.
+ * Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
+ */
+export function paragraphGapCss(): string {
+  return readLineSpacing() === 'normal' ? '0.75em' : '0';
+}
+
+/** The line height as a CSS number, for the export stylesheet. Keep it equal
+ *  to `--pn-line-height` in index.css. */
+export function lineHeightCss(): string {
+  return readLineSpacing() === 'tight' ? '1.4' : '1.7';
 }
 
 // ------------------------------------------------------------------
@@ -616,14 +642,27 @@ function initColorTheme(): void {
  */
 export function resetAppearance(): void {
   try {
-    applyThemeMode('auto');
-    applyColorTheme('default');
-    applyTextSize('md');
-    applyContentWidth('default');
+    applyStyleDefaults();
     applySpellcheck(true);
-    applyFavicons(true);
-    applyInvisibles(false);
+    setCodeWrap(true);
   } catch { /* ignore */ }
+  emitThemeChange();
+}
+
+/** The device axes that Settings > Appearance > Style shows. */
+function applyStyleDefaults(): void {
+  applyThemeMode('auto');
+  applyColorTheme('default');
+  applyTextSize('md');
+  applyContentWidth('default');
+  applyFavicons(true);
+  applyInvisibles(false);
+}
+
+/** The Style tab's "Reset to defaults", for the axes this device owns. The
+ *  synced ones on that tab go back through the settings blob. */
+export function resetStyleAxes(): void {
+  try { applyStyleDefaults(); } catch { /* ignore */ }
   emitThemeChange();
 }
 

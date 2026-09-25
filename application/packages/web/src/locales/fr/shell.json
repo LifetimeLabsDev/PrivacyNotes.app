@@ -136,6 +136,7 @@
     "closeMenu": "Fermer le menu",
     "close": "Fermer",
     "views": "Contenu",
+    "resizeSplit": "Redimensionner Contenu et les étiquettes ou dossiers",
     "sidebarOptions": "Options de la barre latérale",
     "showInSidebar": "Afficher dans la barre latérale",
     "allOptions": "Options de « Tout »",
@@ -455,6 +456,7 @@
     "openAction": "Ouvrir",
     "copiedUrl": "Lien copié",
     "moveToTrash": "Mettre à la corbeille",
+    "rowMenu": "Plus d'actions",
     "emptyNone": "Aucun signet pour l'instant.",
     "emptyTitle": "Garde les sites qui comptent",
     "emptyAdd": "Ajouter un signet",
@@ -585,5 +587,8 @@
   "noteLinks": {
     "retargetedToast_one": "{{count}} lien de note mis à jour vers le nouveau titre.",
     "retargetedToast_other": "{{count}} liens de note mis à jour vers le nouveau titre."
+  },
+  "looks": {
+    "menu": "Icône et couleur"
   }
 }

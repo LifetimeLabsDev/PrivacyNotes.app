@@ -7,7 +7,7 @@ title: Il trasloco
 
 Puoi portare qui quattro tipi di cose: note, voci di diario, segnalibri e password.
 
-Partono tutte dallo stesso posto: **Impostazioni > Importa ed esporta**.
+Partono tutte dallo stesso posto: **Impostazioni > Import & Export**.
 
 ## Cosa puoi portare
 
@@ -41,7 +41,7 @@ Una voce di diario contiene più del testo. Sopra l'area di scrittura ci sono i 
 ## Segnalibri
 
 - [ ] Esporta i segnalibri del browser come file `.html`
-- [ ] Importa quel file: **Impostazioni > Importa ed esporta > Importa > Segnalibri del browser**
+- [ ] Importa quel file: **Impostazioni > Import & Export > Importa > Segnalibri del browser**
 
 Puoi anche incollare un link in una nota vuota. Titolo e icona del sito arrivano da soli: [privacynotes.app/it/help/import/browser-bookmarks](https://privacynotes.app/it/help/import/browser-bookmarks)
 

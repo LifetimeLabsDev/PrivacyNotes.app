@@ -119,6 +119,7 @@
     "enable": "Activa el desbloqueig biomètric",
     "lockOnOpen": "Bloca l'aplicació en obrir-la",
     "lockOnOpenHint": "Demana biometria o PIN en obrir l'aplicació.",
+    "lockHidesOnSwitch": "També amaga les teves notes quan canvies d'aplicació.",
     "lockNeedsCredential": "El bloqueig de l'aplicació necessita un PIN o el desbloqueig biomètric en aquest dispositiu.",
     "setUpPin": "Crea un PIN",
     "confirmPinForLock": "Introdueix el teu PIN per activar-ho. Tanca amb clau una còpia de la teva frase de recuperació, de manera que només el teu PIN pot obrir l'aplicació.",
@@ -129,6 +130,9 @@
     "disableConfirmLabel": "Desactiva",
     "disableConfirmBody": "Vols desactivar el desbloqueig biomètric en aquest dispositiu?",
     "disableConfirmBodyAppLock": "Vols desactivar el desbloqueig biomètric en aquest dispositiu? El bloqueig de l'aplicació també es desactivarà."
+  },
+  "appLock": {
+    "phraseNotSaved": "Aquest dispositiu no ha pogut desar la teva frase de recuperació, així que no s'ha canviat res. Torna-ho a provar."
   },
   "pinSetup": {
     "title": "Estableix un PIN",

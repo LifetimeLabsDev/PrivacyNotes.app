@@ -8,9 +8,16 @@
  */
 
 import { hasCJK, segmentWords } from './cjkSegment';
+import { isDelimiterRow } from './tableDelimiterRow';
 
 export function stripMarkdown(md: string): string {
   return md
+    // A table's delimiter row carries no words, and its dash counts are the
+    // column widths: left in, each column read as a word and every dash as a
+    // character, so resizing a column changed the note's count.
+    .split('\n')
+    .filter((line) => !isDelimiterRow(line))
+    .join('\n')
     // Strip raw HTML the editor emits into the markdown body before counting:
     // the table fallback serializer writes full <table>...</table> HTML, and
     // colored text serializes as <span style="color:...">. Without this every
@@ -29,7 +36,6 @@ export function stripMarkdown(md: string): string {
     .replace(/!\[.*?\]\(.*?\)/g, '')        // images
     .replace(/\[([^\]]*)\]\(.*?\)/g, '$1')  // links → keep text
     .replace(/\|/g, ' ')                    // table pipes → spaces
-    .replace(/^[ :]-+[ :]$/gm, '')          // table separator rows
     .replace(/[*_~`]+/g, '');               // bold / italic / strikethrough / inline code
 }
 

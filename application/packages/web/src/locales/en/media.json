@@ -12,7 +12,9 @@
     "uploadFailed": "Upload failed: {{message}}",
     "storeUnavailable": "Image store not available",
     "loadFailed": "Failed to load image",
-    "notFound": "Image not found"
+    "notFound": "Image not found",
+    "saveFailed": "Saving failed, so the file may be empty or incomplete.",
+    "viewAria": "View image"
   },
   "attachment": {
     "fallbackName": "Attachment",
@@ -26,7 +28,6 @@
     "deleteConfirm": "Delete?",
     "copied": "Copied",
     "download": "Download",
-    "downloadToPlay": "Download to play",
     "play": "Play",
     "pause": "Pause",
     "fileNotFound": "File not found",
@@ -37,6 +38,29 @@
     "downloadFailed": "Download failed",
     "playbackFailed": "Playback failed",
     "uploadFailed": "Upload failed: {{message}}",
-    "unknownError": "Unknown error"
+    "unknownError": "Unknown error",
+    "view": "View",
+    "more": "More actions"
+  },
+  "viewer": {
+    "previous": "Previous",
+    "next": "Next",
+    "position": "{{index}} of {{count}}",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "pdfLoading": "Opening PDF...",
+    "pdfFailed": "Can't open this PDF. Download it to open it in another app.",
+    "pdfPassword": "This PDF has a password. Download it to open it in another app.",
+    "saveFailed": "Saving failed, so the file may be empty or incomplete.",
+    "pageCount_one": "{{count}} page",
+    "pageCount_other": "{{count}} pages",
+    "pageLabel": "{{name}}, page {{page}} of {{count}}"
+  },
+  "picker": {
+    "title": "Pictures in Files",
+    "search": "Search pictures",
+    "empty": "No pictures in Files yet. Upload one there, then add it here.",
+    "noMatch": "No pictures match your search.",
+    "noCopy": "A picture you add here points to the file in Files, so it takes up no extra storage."
   }
 }

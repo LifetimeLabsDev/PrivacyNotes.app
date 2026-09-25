@@ -136,6 +136,7 @@
     "closeMenu": "Fechar o menu",
     "close": "Fechar",
     "views": "Conteúdo",
+    "resizeSplit": "Redimensionar o Conteúdo e as etiquetas ou pastas",
     "sidebarOptions": "Opções da barra lateral",
     "showInSidebar": "Mostrar na barra lateral",
     "allOptions": "Opções de Todos",
@@ -455,6 +456,7 @@
     "openAction": "Abrir",
     "copiedUrl": "Link copiado",
     "moveToTrash": "Mover para o Lixo",
+    "rowMenu": "Mais ações",
     "emptyNone": "Ainda não há marcadores.",
     "emptyTitle": "Guarda os sites que valem a pena",
     "emptyAdd": "Adicionar um marcador",
@@ -585,5 +587,8 @@
   "noteLinks": {
     "retargetedToast_one": "{{count}} ligação entre notas atualizada para o novo título.",
     "retargetedToast_other": "{{count}} ligações entre notas atualizadas para o novo título."
+  },
+  "looks": {
+    "menu": "Ícone e cor"
   }
 }

@@ -10,7 +10,7 @@
     "tags": "태그",
     "currentStreak": "현재 스트릭",
     "longestStreak": "최장 스트릭",
-    "streakValue": "{{count}}일",
+    "streakValue_other": "{{count}}일",
     "timeRangeAria": "활동 기간",
     "modeActivity": "활동",
     "modeMood": "기분",
@@ -58,6 +58,7 @@
       "doctorPDF": "의사용 PDF",
       "copyAIPrompt": "AI 프롬프트 복사",
       "copied": "복사됨!",
+      "saveFailed": "저장에 실패해서 파일이 비어 있거나 불완전할 수 있어요. 다시 시도하거나 다른 폴더를 골라 보세요.",
       "proBadge": "PRO"
     },
     "sleepActivity": {

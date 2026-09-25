@@ -10,6 +10,7 @@
     "intro": {
       "storage": "Envios maiores e mais espaço são uma funcionalidade Pro. Passa para Pro e tens ficheiros de 50 MB e 500 MB de armazenamento.",
       "folders": "As pastas são uma funcionalidade Pro. Organiza as tuas notas em pastas aninhadas, tão fundo quanto precisares, e mantém cada projeto separado.",
+      "looks": "Os ícones e as cores para pastas e etiquetas são uma funcionalidade Pro. Dá a cada uma um aspeto que reconheces num relance.",
       "lock": "Bloquear uma nota é uma funcionalidade Pro. Passa para Pro e protege qualquer nota contra edições acidentais.",
       "protect": "Proteger uma nota com PIN é uma funcionalidade Pro. Passa para Pro e tranca as notas sensíveis com o teu PIN.",
       "history": "O histórico de notas é uma funcionalidade Pro. Passa para Pro e mantém uma cronologia de cada gravação.",
@@ -57,6 +58,7 @@
     "title": "Histórico de notas",
     "subtitle": "Até 20 versões por nota. As mais antigas são removidas automaticamente.",
     "empty": "Ainda não há histórico. As versões começam a acumular-se depois da próxima edição. Volta mais tarde.",
+    "loadFailed": "Não foi possível carregar o histórico. Verifica a ligação e tenta de novo.",
     "selectPrompt": "Seleciona uma versão para pré-visualizar.",
     "emptyBody": "(vazia)",
     "restore": "Restaurar",
@@ -64,7 +66,7 @@
   },
   "donation": {
     "eyebrow": "Desbloqueaste",
-    "intro": "O <brand/> é gratuito, e será sempre. Sem anúncios, sem rastreio, sem e-mail registado. Se te ajudou a pensar, escrever ou lembrar, considera apoiar o desenvolvimento. É o que mantém isto a funcionar e paga as próximas funcionalidades.",
+    "intro": "O <brand/> é gratuito, e será sempre. Sem anúncios, sem rastreadores e sem e-mail registado, a não ser que tenhas iniciado sessão com um. Se te ajudou a pensar, escrever ou lembrar, considera apoiar o desenvolvimento. É o que mantém isto a funcionar e paga as próximas funcionalidades.",
     "proBenefits": "Apoiar também desbloqueia os benefícios Pro quando chegarem: dispositivos ilimitados, anexos, backups encriptados na nuvem.",
     "maybeLater": "Talvez mais tarde",
     "support": "Apoiar →"

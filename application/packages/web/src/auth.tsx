@@ -38,7 +38,7 @@ import {
 // PIN state is account-scoped: the hash rides in the synced settings
 // blob, and clearPinCache (pin.ts) wipes every local PIN artifact at
 // sign-out and on the owner-mismatch wipe.
-import { clearLocalSettings, loadLocalSettings, saveLocalSettings } from './userSettings';
+import { clearLocalSettings, hasUnpushedSettings, loadLocalSettings, saveLocalSettings, syncUserSettings } from './userSettings';
 import { isDemoMode } from './demo';
 import { buildDemoAuthState } from './demoAuth';
 import { ConfirmModal } from './ConfirmModal';
@@ -78,6 +78,7 @@ import { clearPinCache } from './pin';
 import {
   PHRASE_STORAGE_KEY,
   OAUTH_FLAG_KEY,
+  SHOW_PHRASE_ONCE_KEY,
   PUBKEY_OWNER_KEY,
   ownsLocalData,
   clearAccountScopedUiState,
@@ -85,6 +86,7 @@ import {
   switchWouldWipe,
   readCachedAccountFlags,
   writeCachedAccountFlags,
+  patchCachedCustodial,
   clearCachedAccountFlags,
   hasRecentRegistration,
   markRegistered,
@@ -296,6 +298,15 @@ type AuthContextValue = {
   unlockLocally: (phrase: string) => Promise<boolean>;
   signInWithOAuth: (
     provider: OAuthProvider
+  ) => Promise<{ ok: true; awaitPastedCode?: boolean } | { ok: false; error: string }>;
+  /**
+   * Finish a desktop sign-in from the code the person pasted back from the
+   * return page. Desktop receives no callback of its own, because no desktop
+   * operating system can say which application owns a custom scheme.
+   * Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.3)
+   */
+  completeDesktopOAuth: (
+    code: string
   ) => Promise<{ ok: true } | { ok: false; error: string }>;
   /**
    * True when boot-time background revalidation hit a definitive
@@ -430,6 +441,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // on the first try (and worked on retry, because hydration had
   // finished by then).
   const userAuthGen = useRef(0);
+
+  // Whether the vault is actually open right now, kept in a ref because the
+  // native callback handler is registered once and would otherwise read a
+  // status frozen at registration time.
+  //
+  // The native OAuth gate refuses a callback while this install is signed in,
+  // so an unsolicited link can never switch a working app to another account.
+  // That test used to be "a phrase is on disk", which is a proxy rather than
+  // the thing: a session the library ends on its own leaves the phrase behind
+  // and drops the app to the sign-in screen, and every provider button on that
+  // screen was then refused in silence, for ever. Read the status instead, so
+  // the refusal covers an app that IS signed in and nothing else.
+  // Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.8)
+  const vaultOpenRef = useRef(false);
+  vaultOpenRef.current =
+    auth.status === 'authenticated' || auth.status === 'device_limit_reached';
 
   // Pending backoff for a re-mint refused on quota. One timer at a
   // time; `attempt` drives the delay and resets the moment a re-mint
@@ -1627,6 +1654,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           phrase = opened;
         } else {
           phrase = stored;
+          logAuthEvent('auth:phrase-persisted', { by: 'boot-rewrap' });
           void persistStoredPhrase(stored);
         }
 
@@ -1847,6 +1875,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (appLockArmed()) {
         logAuthEvent('auth:phrase-persist-skipped-applock');
       } else {
+        // Named because a write landing here AFTER a sign-out is how an
+        // install ends up holding a phrase it is not using, and the log is
+        // the only place that race is visible.
+        // Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.8)
+        logAuthEvent('auth:phrase-persisted', { by: 'authenticate' });
         await persistStoredPhrase(trimmed);
       }
       // A phrase-sign-in clears any stale OAuth flag - someone can
@@ -1901,6 +1934,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const {
     registerOAuthListener,
     signInWithOAuth,
+    completeDesktopOAuth,
     retryOAuthHydration,
     abandonOAuthHydration,
   } = useOAuthFlows({
@@ -1910,6 +1944,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase,
     authInFlight,
     userAuthGen,
+    vaultOpenRef,
   });
 
   /**
@@ -1939,7 +1974,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // never falls through to signInAnonymously (#131). The phrase was
       // generated this second, so this is a fresh vault: seed during
       // authentication instead of after the first sync round trip.
-      const authenticated = await authenticateWithPhrase(phrase, 'oauth', isCustodial, {
+      //
+      // Self-custody until the server confirms it holds the phrase. The
+      // custodial flag says the account can be recovered without the
+      // phrase, and a flag raised before a store that then fails leaves
+      // that claim on the device with nothing behind it: the phrase is
+      // never shown and the sign-out reminder stays quiet. The store needs
+      // the linked pubkey this call creates, so the order cannot be the
+      // other way round; the flag is raised below, after the store, the
+      // way adoptCustody in authCustody.ts does it.
+      const authenticated = await authenticateWithPhrase(phrase, 'oauth', false, {
         accessToken,
         authUid,
       }, true);
@@ -1952,6 +1996,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!authenticated) {
         throw new Error('Sign-in is already in progress. Please try again.');
       }
+      logAuthEvent('auth:phrase-persisted', { by: 'oauth-custody' });
       await persistStoredPhrase(phrase);
       trustAwareStorage.setItem(OAUTH_FLAG_KEY, '1');
 
@@ -1965,7 +2010,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // pubkey is linked and the signature the endpoint now demands
         // can be produced. Derive the signing key from the phrase
         // rather than plumbing it out of the auth state.
-        const { privateKey: storeSigningKey } = await deriveSigningKey(
+        const { privateKey: storeSigningKey, publicKey: storePublicKey } = await deriveSigningKey(
           phraseToSeed(phrase),
         );
         try {
@@ -1977,16 +2022,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             phrase,
           });
         } catch (storeErr) {
-          // Fatal: without the server-side phrase, the user will be
-          // treated as a new user on every sign-in and lose their
-          // notes (#131). Surface the error so it can be retried.
+          // The account is self-custody, because that is what it is: the
+          // server holds no phrase, so a new device has nothing to sign in
+          // with but the words (#131). The choice screen is gone by now,
+          // so the phrase is shown the way the self-custody branch shows
+          // it, and the one copy in existence gets seen.
+          trustAwareStorage.setItem(SHOW_PHRASE_ONCE_KEY, '1');
           throw new Error(
             `Failed to store custodial phrase: ${(storeErr as Error).message}`,
           );
         }
+        const storedPubkey = bytesToHex(storePublicKey);
+        patchCachedCustodial(storedPubkey, true);
+        setAuth((prev) =>
+          prev.status === 'authenticated' && prev.pubkey === storedPubkey
+            ? { ...prev, isCustodial: true }
+            : prev,
+        );
       } else {
         // Self-custody: show phrase once so user can write it down.
-        trustAwareStorage.setItem('privacynotes.oauth.showPhraseOnce', '1');
+        trustAwareStorage.setItem(SHOW_PHRASE_ONCE_KEY, '1');
       }
 
       return { ok: true, phrase };
@@ -2044,6 +2099,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
       sessionRef.current = null;
+      // This return shows the sign-in screen WITHOUT clearing the phrase, so
+      // it is one of the two ways an install ends up holding a phrase it is
+      // not using. Name it, or the next report is another evening of
+      // inference: the reason says which half of the test sent us here.
+      // Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.8)
+      logAuthEvent('auth:signout-early-return', {
+        reason: tabPubkey === null ? 'no-pubkey' : 'not-owner',
+        status: auth.status,
+      });
       setAuth({ status: 'onboarding' });
       return;
     }
@@ -2069,6 +2133,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const timeout = (ms: number) =>
         new Promise<void>((resolve) => setTimeout(resolve, ms));
       const dirtyCount = await countUnsyncedNotes();
+      // A settings change waits for the next pass, up to 30 seconds, and the
+      // wipe below removes the cache that holds it.
+      const settingsDirty = hasUnpushedSettings();
       flushSettled = false;
       const work = (async () => {
         try {
@@ -2082,6 +2149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               await timeout(250);
             }
           }
+          if (settingsDirty) await syncUserSettings(supabase, auth.pubkey, auth.encryptionKey);
         } catch {
           // Dead session or offline - nothing more this side can do;
           // the wipe below decides what survives.
@@ -2107,7 +2175,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         flushSettled = true;
       })();
-      await Promise.race([work, timeout(dirtyCount > 0 ? 10000 : 2000)]);
+      await Promise.race([work, timeout(dirtyCount > 0 || settingsDirty ? 10000 : 2000)]);
     }
 
     // Best-effort zeroing of key material in memory before dropping refs.
@@ -2144,6 +2212,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // mean a user who bio-unlocked once, signed out, and re-signed-in
       // would default to untrusted (sessionStorage) and lose their
       // trusted-device convenience. See gap #28.
+      logAuthEvent('auth:signout-wipe', { keepUnsynced: !!opts?.keepUnsyncedNotes });
       trustAwareStorage.removeItem(PHRASE_STORAGE_KEY);
       trustAwareStorage.removeItem(OAUTH_FLAG_KEY);
       trustAwareStorage.removeItem('privacynotes.lastSync');
@@ -2245,6 +2314,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         unlockLocally,
         revalidationExpired,
         signInWithOAuth,
+        completeDesktopOAuth,
         signOut,
         resolveDeviceLimit,
         forceSignOut,
@@ -2261,7 +2331,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         <ConfirmModal
           title={i18n.t('auth:signIn.switchTitle')}
           confirmLabel={i18n.t('auth:signIn.switchConfirm')}
-          variant="warning"
+          variant="info"
           onConfirm={() => answerAccountSwitch(true)}
           onClose={() => answerAccountSwitch(false)}
         >

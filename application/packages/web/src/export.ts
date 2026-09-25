@@ -27,10 +27,11 @@ import { parseCardBody, detectCardNetwork } from './CardForm';
 import { parseSshKeyBody } from './SshKeyForm';
 import { vaultContent, vaultToMarkdown } from './vaultFields';
 import type { VaultContent } from './vaultFields';
-import { folderNamePath, type FolderDef } from './folders';
+import { ancestorIds, folderNamePath, type FolderDef } from './folders';
+import type { ItemStyles } from './itemStyles';
 import { linkExportMarkdown } from './linkBody';
 import { slugify, zipEntryStems } from './exportNames';
-import { readLineSpacing } from './theme';
+import { lineHeightCss, paragraphGapCss } from './theme';
 
 /** Export helpers. All exports are generated client-side as Blob downloads. */
 
@@ -47,24 +48,90 @@ import { readLineSpacing } from './theme';
 const IMAGE_URI_RE = /pn:img\/([0-9a-f-]{36})/g;
 
 /**
- * Resolve all pn:img/ references in a body, returning a Map of uuid → Uint8Array.
- * Missing or failed images are silently skipped (logged to console).
+ * A picture or file a note refers to that an export could not put in its
+ * file. `failed`: the read threw, which for a blob this device never opened
+ * means the download failed (offline, a link that drops, a server error).
+ * `notFound`: neither this device nor the server has it.
  */
+export interface MissingBlob {
+  id: string;
+  /** The store it lives in: `image` for `pn:img/`, `file` for `pn:file/`. */
+  kind: 'image' | 'file';
+  reason: 'failed' | 'notFound';
+}
+
+/**
+ * Read one blob for an export. A blob it cannot read goes on `missing`,
+ * never only to the console: every export returns that list, and a file
+ * saved without something its notes refer to is never reported complete.
+ * Without a store every read fails.
+ */
+async function readForExport<T>(
+  read: (() => Promise<T | null>) | null | undefined,
+  blob: Pick<MissingBlob, 'id' | 'kind'>,
+  missing: MissingBlob[],
+): Promise<T | null> {
+  if (!read) {
+    missing.push({ ...blob, reason: 'failed' });
+    return null;
+  }
+  try {
+    const data = await read();
+    if (data) return data;
+    missing.push({ ...blob, reason: 'notFound' });
+  } catch (err) {
+    console.warn(`Export: failed to read ${blob.kind} ${blob.id}:`, err);
+    missing.push({ ...blob, reason: 'failed' });
+  }
+  return null;
+}
+
+/** "3 pictures and 1 file", in the reader's language. */
+export function missingItemsLabel(missing: ReadonlyArray<Pick<MissingBlob, 'kind'>>): string {
+  const pictures = missing.filter((m) => m.kind === 'image').length;
+  const files = missing.length - pictures;
+  const p = i18n.t('importExport:missing.pictures', { count: pictures });
+  const f = i18n.t('importExport:missing.files', { count: files });
+  if (pictures > 0 && files > 0) return i18n.t('importExport:missing.both', { pictures: p, files: f });
+  return pictures > 0 ? p : f;
+}
+
+/** What the export window says about a file saved without some of the
+ *  pictures and files its notes refer to. Empty when nothing is missing. */
+export function describeMissing(missing: readonly MissingBlob[]): string {
+  const failed = missing.filter((m) => m.reason === 'failed');
+  const notFound = missing.filter((m) => m.reason === 'notFound');
+  const lines: string[] = [];
+  if (failed.length > 0) {
+    lines.push(i18n.t('importExport:exportProgress.missingFailed', {
+      count: failed.length,
+      items: missingItemsLabel(failed),
+    }));
+  }
+  if (notFound.length > 0) {
+    lines.push(i18n.t('importExport:exportProgress.missingNotFound', {
+      count: notFound.length,
+      items: missingItemsLabel(notFound),
+    }));
+  }
+  return lines.join(' ');
+}
+
+/** Read every pn:img/ picture in a body, keyed by uuid. */
 async function resolveImages(
   body: string,
-  imageStore: ImageStore,
+  imageStore: ImageStore | null | undefined,
+  missing: MissingBlob[],
 ): Promise<Map<string, Uint8Array>> {
-  const ids = extractImageIds(body);
   const resolved = new Map<string, Uint8Array>();
   await Promise.all(
-    [...ids].map(async (uuid) => {
-      try {
-        const data = await imageStore.getImage(uuid);
-        if (data) resolved.set(uuid, data);
-        else console.warn(`Export: image ${uuid} not found, skipping`);
-      } catch (err) {
-        console.warn(`Export: failed to resolve image ${uuid}:`, err);
-      }
+    [...extractImageIds(body)].map(async (uuid) => {
+      const data = await readForExport(
+        imageStore && (() => imageStore.getImage(uuid)),
+        { id: uuid, kind: 'image' },
+        missing,
+      );
+      if (data) resolved.set(uuid, data);
     }),
   );
   return resolved;
@@ -111,13 +178,56 @@ function replaceWithDataUris(
   });
 }
 
-/** Resolve all pn:img/ references in a body to inline data URIs. No-op if no imageStore or no images. */
-async function resolveBodyImages(body: string, imageStore?: ImageStore | null): Promise<string> {
-  if (!imageStore) return body;
-  const ids = extractImageIds(body);
-  if (!ids.size) return body;
-  const images = await resolveImages(body, imageStore);
-  return replaceWithDataUris(body, images);
+/**
+ * A picture placed from the Files pillar: `![alt](pn:file/<uuid>)`. It shows
+ * an upload's attachment blob instead of a copy in the picture store, so
+ * every export that resolves `pn:img/` refs has to resolve these too. Groups
+ * exclude newlines, like the attachment link pattern below.
+ */
+const FILE_PICTURE_RE = /!\[([^\]\n]*)\]\(pn:file\/([0-9a-f-]{36})\)/g;
+
+/** Resolve all picture references in a body to inline data URIs: `pn:img/`
+ *  through the picture store, pictures placed from Files through the
+ *  attachment store. A picture it cannot read stays a reference and is
+ *  returned in `missing`. */
+async function resolveBodyImages(
+  source: string,
+  imageStore?: ImageStore | null,
+  attachmentStore?: AttachmentStore | null,
+): Promise<{ body: string; missing: MissingBlob[] }> {
+  const missing: MissingBlob[] = [];
+  let body = source;
+  if (extractImageIds(body).size > 0) {
+    body = replaceWithDataUris(body, await resolveImages(body, imageStore, missing));
+  }
+  body = await resolveFilePictures(body, attachmentStore, missing);
+  return { body, missing };
+}
+
+/** Replace pictures placed from Files with data URIs. Unresolved ones stay. */
+async function resolveFilePictures(
+  body: string,
+  attachmentStore: AttachmentStore | null | undefined,
+  missing: MissingBlob[],
+): Promise<string> {
+  const ids = new Set<string>();
+  for (const m of body.matchAll(FILE_PICTURE_RE)) ids.add(m[2]!);
+  if (ids.size === 0) return body;
+  const uris = new Map<string, string>();
+  for (const uuid of ids) {
+    const att = await readForExport(
+      attachmentStore && (() => attachmentStore.getAttachment(uuid)),
+      { id: uuid, kind: 'file' },
+      missing,
+    );
+    if (!att) continue;
+    const mime = att.meta.mime.startsWith('image/') ? att.meta.mime : sniffImageMime(att.data);
+    uris.set(uuid, `data:${mime};base64,${uint8ToBase64(att.data)}`);
+  }
+  return body.replace(FILE_PICTURE_RE, (match, alt: string, uuid: string) => {
+    const uri = uris.get(uuid);
+    return uri ? `![${alt}](${uri})` : match;
+  });
 }
 
 // ─── Attachment resolution helpers ────────────────────────────────────
@@ -238,6 +348,10 @@ export interface BackupManifest {
     folder: string;
     file?: string;
   }>;
+  /** What the export could not read. Written only when there is something
+   *  to list, so a whole backup's manifest has no such key; a restore of a
+   *  backup that has one reports each entry. */
+  missing?: Pick<MissingBlob, 'id' | 'kind'>[];
 }
 
 /**
@@ -255,6 +369,13 @@ function rewriteBodyForExport(
     if (!ext) return match;
     return `images/${uuid}.${ext}`;
   });
+  // Pictures placed from Files point at the upload's file in the zip, and
+  // the restore maps that path back (import/privacynotes.ts).
+  result = result.replace(FILE_PICTURE_RE, (match, alt: string, uuid: string) => {
+    const info = attachmentMap.get(uuid);
+    if (!info) return match;
+    return `![${alt}](${mdLinkTarget(info.path)})`;
+  });
   // Rewrite attachments: [name|size|mime](pn:file/<uuid>) → [name](<folder/original name.ext>)
   result = result.replace(ATTACHMENT_LINK_RE, (match, name: string, _size: string, _mime: string, uuid: string) => {
     const info = attachmentMap.get(uuid);
@@ -268,26 +389,29 @@ function rewriteBodyForExport(
 }
 
 /** Cross-platform save: web anchor-download trick, native Save As dialog.
- *  Returns the save promise - every caller must propagate it, because on
- *  native this is the step that can fail (issue #193) and a dropped promise
- *  turns a failed export into a silent one. */
-function downloadBlob(blob: Blob, filename: string): Promise<void> {
-  return saveBlob(blob, filename);
+ *  Throws when the save failed, which saveBlob reports rather than throws:
+ *  every export caller shows a thrown error, and a failed save that resolved
+ *  would read as a finished export (issue #193). A dismissed dialog is the
+ *  reader's choice, not a failure. */
+async function downloadBlob(blob: Blob, filename: string): Promise<void> {
+  const saved = await saveBlob(blob, filename);
+  if (!saved.ok && saved.reason === 'failed') throw saved.error;
 }
 
 // noteToMarkdown lives in ./noteMarkdown so the round-trip test can drive it
 // without going through a browser download - see that file's header.
 
 /**
- * Export a single note as .md. If an ImageStore is provided, pn:img/
- * references are resolved to inline data URIs so the .md file is
- * self-contained. Without an ImageStore, images are left as-is.
+ * Export a single note as .md. Picture references are resolved to inline
+ * data URIs so the .md file is self-contained. Returns the pictures it could
+ * not read, which stay references in the file.
  */
 export async function exportSingleMarkdown(
   note: LocalNote,
   imageStore?: ImageStore | null,
   folders: FolderDef[] = [],
-): Promise<void> {
+  attachmentStore?: AttachmentStore | null,
+): Promise<MissingBlob[]> {
   // A vault item is written out readable here, and as its stored JSON in the
   // backup zip below. Nothing reads a single .md back as a vault item - it
   // carries no `type` line and `import/markdown.ts` reads none - so the blob
@@ -295,15 +419,16 @@ export async function exportSingleMarkdown(
   const vault = vaultContent(note);
   // A bookmark exports as its bare autolink - readable as text in the
   // .md file, clickable everywhere markdown renders. See linkExportMarkdown.
-  const body = linkExportMarkdown(note)
-    ?? (vault
-      ? vaultToMarkdown(vault)
-      : await resolveBodyImages(note.body, imageStore));
+  const plain = linkExportMarkdown(note) ?? (vault ? vaultToMarkdown(vault) : null);
+  const { body, missing } = plain === null
+    ? await resolveBodyImages(note.body, imageStore, attachmentStore)
+    : { body: plain, missing: [] };
   const md = noteToMarkdown({ ...note, body }, false, folderNamePath(folders, note.folderId));
   await downloadBlob(
     new Blob([md], { type: 'text/markdown;charset=utf-8' }),
     `${slugify(note.title)}.md`
   );
+  return missing;
 }
 
 /**
@@ -320,6 +445,8 @@ export async function exportSingleMarkdown(
  *
  * Images and attachments are resolved one at a time (streamed) so peak
  * memory is one file + the growing zip buffer, not the entire account.
+ *
+ * Every blob a note refers to ends up either in the zip or in `missing`.
  */
 async function buildFullBackupZip(
   notes: LocalNote[],
@@ -327,7 +454,7 @@ async function buildFullBackupZip(
   attachmentStore?: AttachmentStore | null,
   onProgress?: (msg: string) => void,
   folders: FolderDef[] = [],
-): Promise<Blob> {
+): Promise<{ blob: Blob; missing: MissingBlob[] }> {
   const { default: JSZip } = await import('jszip');
   const zip = new JSZip();
 
@@ -343,29 +470,35 @@ async function buildFullBackupZip(
       if (!allAttLinks.has(uuid)) allAttLinks.set(uuid, meta);
     }
   }
+  // A picture placed from Files carries the upload's blob too. Collected
+  // after every chip, so a chip's name wins over the picture's empty one and
+  // the blob is still exported when no chip in this export names it.
+  for (const note of notes) {
+    for (const m of note.body.matchAll(FILE_PICTURE_RE)) {
+      if (!allAttLinks.has(m[2]!)) allAttLinks.set(m[2]!, { name: '', size: '', mime: '' });
+    }
+  }
 
   // ── 2. Resolve and add images to zip ────────────────────────────────
 
   const resolvedImageExts = new Map<string, string>();
   const manifestImages: BackupManifest['images'] = {};
+  const missing: MissingBlob[] = [];
 
-  if (imageStore && allImageIds.size > 0) {
+  if (allImageIds.size > 0) {
     let done = 0;
     for (const uuid of allImageIds) {
       onProgress?.(i18n.t('importExport:exportProgress.imagesProgress', { done: ++done, total: allImageIds.size }));
-      try {
-        const data = await imageStore.getImage(uuid);
-        if (data) {
-          const ext = sniffImageExt(data);
-          zip.file(`images/${uuid}.${ext}`, data);
-          resolvedImageExts.set(uuid, ext);
-          manifestImages[uuid] = { folder: 'images' };
-        } else {
-          console.warn(`Export: image ${uuid} not found, skipping`);
-        }
-      } catch (err) {
-        console.warn(`Export: failed to resolve image ${uuid}:`, err);
-      }
+      const data = await readForExport(
+        imageStore && (() => imageStore.getImage(uuid)),
+        { id: uuid, kind: 'image' },
+        missing,
+      );
+      if (!data) continue;
+      const ext = sniffImageExt(data);
+      zip.file(`images/${uuid}.${ext}`, data);
+      resolvedImageExts.set(uuid, ext);
+      manifestImages[uuid] = { folder: 'images' };
     }
   }
 
@@ -379,40 +512,37 @@ async function buildFullBackupZip(
   // a name get -2, -3 suffixes instead of overwriting each other.
   const takenAttPaths = new Set<string>();
 
-  if (attachmentStore && allAttLinks.size > 0) {
+  if (allAttLinks.size > 0) {
     let done = 0;
     for (const [uuid] of allAttLinks) {
       onProgress?.(i18n.t('importExport:exportProgress.filesProgress', { done: ++done, total: allAttLinks.size }));
-      try {
-        const att = await attachmentStore.getAttachment(uuid);
-        if (att) {
-          // The name the user sees is the link text, which a rename changes;
-          // the blob header keeps whatever the file was called when it was
-          // uploaded. The zip follows the reader, so a renamed file arrives
-          // under the name they gave it. Size and mime still come from the
-          // header, because those describe the bytes rather than the label.
-          const shownName = unescapeMarkdownText(allAttLinks.get(uuid)?.name || '') || att.meta.name;
-          const folder = attachmentFolder(att.meta.mime);
-          const ext = extensionFromName(shownName, att.meta.mime);
-          const filename = uniqueAttachmentName(shownName, ext, folder, takenAttPaths);
-          const path = `${folder}/${filename}`;
-          zip.file(path, att.data);
-          attachmentMap.set(uuid, { path, name: shownName });
-          manifestAttachments[uuid] = {
-            // Restoring rebuilds the link from this, so a stale name here
-            // would undo the rename on the way back in.
-            name: shownName,
-            mime: att.meta.mime,
-            size: att.meta.size,
-            folder,
-            file: filename,
-          };
-        } else {
-          console.warn(`Export: attachment ${uuid} not found, skipping`);
-        }
-      } catch (err) {
-        console.warn(`Export: failed to resolve attachment ${uuid}:`, err);
-      }
+      const att = await readForExport(
+        attachmentStore && (() => attachmentStore.getAttachment(uuid)),
+        { id: uuid, kind: 'file' },
+        missing,
+      );
+      if (!att) continue;
+      // The name the user sees is the link text, which a rename changes;
+      // the blob header keeps whatever the file was called when it was
+      // uploaded. The zip follows the reader, so a renamed file arrives
+      // under the name they gave it. Size and mime still come from the
+      // header, because those describe the bytes rather than the label.
+      const shownName = unescapeMarkdownText(allAttLinks.get(uuid)?.name || '') || att.meta.name;
+      const folder = attachmentFolder(att.meta.mime);
+      const ext = extensionFromName(shownName, att.meta.mime);
+      const filename = uniqueAttachmentName(shownName, ext, folder, takenAttPaths);
+      const path = `${folder}/${filename}`;
+      zip.file(path, att.data);
+      attachmentMap.set(uuid, { path, name: shownName });
+      manifestAttachments[uuid] = {
+        // Restoring rebuilds the link from this, so a stale name here
+        // would undo the rename on the way back in.
+        name: shownName,
+        mime: att.meta.mime,
+        size: att.meta.size,
+        folder,
+        file: filename,
+      };
     }
   }
 
@@ -437,25 +567,30 @@ async function buildFullBackupZip(
     noteCount: notes.length,
     images: manifestImages,
     attachments: manifestAttachments,
+    ...(missing.length > 0 ? { missing: missing.map(({ id, kind }) => ({ id, kind })) } : {}),
   };
   zip.file('manifest.json', JSON.stringify(manifest, null, 2));
 
   // ── 6. Generate and download ────────────────────────────────────────
 
   onProgress?.(i18n.t('importExport:exportProgress.compressing'));
-  return zip.generateAsync({ type: 'blob' });
+  return { blob: await zip.generateAsync({ type: 'blob' }), missing };
 }
 
+/** Returns the pictures and files the zip could not include. The zip is
+ *  saved either way, because a backup short of a few blobs beats none, and
+ *  the caller says which ones are missing. */
 export async function exportAllMarkdownZip(
   notes: LocalNote[],
   imageStore?: ImageStore | null,
   attachmentStore?: AttachmentStore | null,
   onProgress?: (msg: string) => void,
   folders: FolderDef[] = [],
-): Promise<void> {
-  const blob = await buildFullBackupZip(notes, imageStore, attachmentStore, onProgress, folders);
+): Promise<MissingBlob[]> {
+  const { blob, missing } = await buildFullBackupZip(notes, imageStore, attachmentStore, onProgress, folders);
   const stamp = new Date().toISOString().slice(0, 10);
   await downloadBlob(blob, `privacynotes-backup-${stamp}.zip`);
+  return missing;
 }
 
 /**
@@ -463,6 +598,7 @@ export async function exportAllMarkdownZip(
  * encrypted as one blob under the sync encryption key (.pnbackupz,
  * format in packages/shared/src/backup.ts). It opens with the phrase on
  * any device, like the .pnbackup - and unlike it, carries the blobs.
+ * Returns what the zip could not include, like exportAllMarkdownZip.
  */
 export async function exportEncryptedFullBackup(
   notes: LocalNote[],
@@ -471,14 +607,15 @@ export async function exportEncryptedFullBackup(
   encryptionKey: Uint8Array,
   onProgress?: (msg: string) => void,
   folders: FolderDef[] = [],
-): Promise<void> {
-  const blob = await buildFullBackupZip(notes, imageStore, attachmentStore, onProgress, folders);
+): Promise<MissingBlob[]> {
+  const { blob, missing } = await buildFullBackupZip(notes, imageStore, attachmentStore, onProgress, folders);
   const sealed = encodeZipBackup(new Uint8Array(await blob.arrayBuffer()), encryptionKey);
   const stamp = new Date().toISOString().slice(0, 10);
   await downloadBlob(
     new Blob([sealed as BlobPart], { type: 'application/octet-stream' }),
     `privacynotes-backup-${stamp}.pnbackupz`,
   );
+  return missing;
 }
 
 /**
@@ -491,13 +628,14 @@ export async function exportEncryptedFullBackup(
 export async function exportAllJson(
   notes: LocalNote[],
   folders: FolderDef[] = [],
+  itemStyles: ItemStyles = {},
 ): Promise<void> {
   // Same payload builder as the encrypted .pnbackup, folders included since
   // 2026-08-26. It used to pass none, which meant every note carried a
   // `folderId` pointing at a folder the file did not contain: a restore had
   // the membership and no tree to hang it on. The field is additive, so an
   // older reader ignores it.
-  const payload = buildBackupPayload(notes, folders);
+  const payload = buildBackupPayload(notes, folders, undefined, itemStyles);
   const blob = new Blob([JSON.stringify(payload, null, 2)], {
     type: 'application/json',
   });
@@ -614,17 +752,6 @@ function renderVaultHtml(vault: VaultContent): string {
  * earlier in the sheet is more specific than a bare `.vault-fields`, so
  * without it that rule keeps winning `border-collapse` and no frame appears.
  */
-/**
- * The paragraph gap the reader has chosen, as a literal for the export
- * stylesheet. Read off <html>, where NotesView paints the synced Line
- * spacing setting, because an exported file carries no attribute of its own
- * and threading the value through three call sites would only copy it.
- * Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
- */
-function paragraphGapCss(): string {
-  return readLineSpacing() === 'normal' ? '0.75em' : '0';
-}
-
 function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): string {
   const title = note.title.trim() || 'Untitled';
   const vault = vaultContent(note);
@@ -698,7 +825,7 @@ function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): stri
     color: #111111;
     font-family: var(--pn-sans);
     font-size: 16px;
-    line-height: 1.7;
+    line-height: ${lineHeightCss()};
     /* The app renders with class="antialiased" on its own body. Without
        the same two declarations the very same stack renders heavier here
        than in the editor on macOS, which reads as a different, muddier
@@ -865,8 +992,10 @@ function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): stri
   .content table {
     border-collapse: collapse;
     width: 100%;
-    /* Equal columns, matching the editor. Sizing from content here would give
-       the same table different proportions on paper than on screen. */
+    /* Equal columns unless the note stores widths (markdownRender writes
+       them as a colgroup), matching the editor. Sizing from content here
+       would give the same table different proportions on paper than on
+       screen. */
     table-layout: fixed;
     margin: 1em 0;
   }
@@ -1075,18 +1204,20 @@ ${bodyHtml}
 
 /**
  * Export a single note as self-contained .html with images embedded
- * as data URIs. Falls back to pn:img/ refs if no ImageStore provided.
+ * as data URIs. Returns the pictures it could not read, which stay
+ * pn: references in the file.
  */
 export async function exportSingleHtml(
   note: LocalNote,
   imageStore?: ImageStore | null,
   folders: FolderDef[] = [],
-): Promise<void> {
-  let body = await resolveBodyImages(note.body, imageStore);
+  attachmentStore?: AttachmentStore | null,
+): Promise<MissingBlob[]> {
+  const resolved = await resolveBodyImages(note.body, imageStore, attachmentStore);
   // Fetch and inline any remaining same-origin image paths
   // (e.g. /onboarding/japan.jpg) so the .html is self-contained
   // when opened from disk.
-  body = await inlineSameOriginImages(body);
+  let body = await inlineSameOriginImages(resolved.body);
   // KaTeX and lowlight are fetched on demand, only for a body that needs them.
   await prepareRender(body);
   let html = buildNoteHtmlDocument({ ...note, body }, folderNamePath(folders, note.folderId));
@@ -1096,6 +1227,7 @@ export async function exportSingleHtml(
     new Blob([html], { type: 'text/html;charset=utf-8' }),
     `${slugify(note.title)}.html`
   );
+  return resolved.missing;
 }
 
 /**
@@ -1105,23 +1237,27 @@ export async function exportSingleHtml(
  */
 /**
  * Bulk HTML zip. Images are embedded as data URIs in each .html file
- * so every file is self-contained and works offline.
+ * so every file is self-contained and works offline. Returns each picture
+ * it could not read, once however many notes show it.
  */
 export async function exportAllHtmlZip(
   notes: LocalNote[],
   imageStore?: ImageStore | null,
   folders: FolderDef[] = [],
   onProgress?: (msg: string) => void,
-): Promise<void> {
+  attachmentStore?: AttachmentStore | null,
+): Promise<MissingBlob[]> {
   const { default: JSZip } = await import('jszip');
   const zip = new JSZip();
   const stems = zipEntryStems(notes);
+  const missing = new Map<string, MissingBlob>();
   onProgress?.(i18n.t('importExport:exportProgress.building'));
   for (const [i, note] of notes.entries()) {
     const filename = `${stems[i]!}.html`;
 
-    let body = await resolveBodyImages(note.body, imageStore);
-    body = await inlineSameOriginImages(body);
+    const resolved = await resolveBodyImages(note.body, imageStore, attachmentStore);
+    for (const gap of resolved.missing) if (!missing.has(gap.id)) missing.set(gap.id, gap);
+    let body = await inlineSameOriginImages(resolved.body);
     await prepareRender(body);
     let noteHtml = buildNoteHtmlDocument({ ...note, body }, folderNamePath(folders, note.folderId));
     noteHtml = await inlineRenderedFavicons(noteHtml);
@@ -1131,6 +1267,7 @@ export async function exportAllHtmlZip(
   const blob = await zip.generateAsync({ type: 'blob' });
   const stamp = new Date().toISOString().slice(0, 10);
   await downloadBlob(blob, `privacynotes-backup-${stamp}-html.zip`);
+  return [...missing.values()];
 }
 
 declare global {
@@ -1184,9 +1321,10 @@ export async function printNote(
   note: LocalNote,
   imageStore?: ImageStore | null,
   folders: FolderDef[] = [],
+  attachmentStore?: AttachmentStore | null,
 ): Promise<void> {
-  let body = await resolveBodyImages(note.body, imageStore);
-  body = await inlineSameOriginImages(body);
+  const resolved = await resolveBodyImages(note.body, imageStore, attachmentStore);
+  let body = await inlineSameOriginImages(resolved.body);
   // KaTeX and lowlight are fetched on demand, only for a body that needs them.
   await prepareRender(body);
   let html = buildNoteHtmlDocument({ ...note, body }, folderNamePath(folders, note.folderId));
@@ -1281,9 +1419,11 @@ export async function exportEncryptedBackup(
   encryptionKey: Uint8Array,
   /** Folder definitions (userSettings.folders) so a restore can rebuild
    *  the tree, not just the per-note membership pointers. */
-  folders: FolderDef[] = []
+  folders: FolderDef[] = [],
+  /** Folder and tag looks (userSettings.itemStyles). */
+  itemStyles: ItemStyles = {},
 ): Promise<void> {
-  const out = encodeBackup(buildBackupPayload(notes, folders), encryptionKey);
+  const out = encodeBackup(buildBackupPayload(notes, folders, undefined, itemStyles), encryptionKey);
 
   const stamp = new Date().toISOString().slice(0, 10);
   await downloadBlob(
@@ -1335,6 +1475,30 @@ export function decryptBackup(
 //
 // Bitwarden item types: 1=Login, 2=SecureNote, 3=Card, 5=SshKey
 // (type 4=Identity is not used here - we don't store identities).
+//
+// What Bitwarden has no slot for travels as a custom field on its item, so
+// every manager that reads the file shows it: an SSH key's label and
+// passphrase, a card's billing ZIP, and the tags. Folders are Bitwarden
+// folders. The Bitwarden importer puts each of them back in its place.
+
+/**
+ * The custom fields written for what Bitwarden has no slot for. The names
+ * are part of the file format: the Bitwarden importer finds the fields by
+ * name, so renaming one strands every file already written.
+ */
+export const BW_OWN_FIELDS = {
+  tags: 'PrivacyNotes tags',
+  label: 'PrivacyNotes key label',
+  passphrase: 'PrivacyNotes key passphrase',
+  billingZip: 'PrivacyNotes billing ZIP',
+} as const;
+
+/**
+ * The file's `exportedBy`. The Bitwarden importer turns a folder into tags,
+ * which is the documented mapping for a file Bitwarden wrote; in a file
+ * carrying this, a folder comes back as a folder.
+ */
+export const BW_EXPORTED_BY = 'PrivacyNotes';
 
 interface BwExportUri {
   match: null;
@@ -1363,15 +1527,30 @@ interface BwExportSshKey {
   keyFingerprint: string;
 }
 
+/** Bitwarden's custom field. Type 0 is text, 1 is hidden. */
+interface BwExportField {
+  name: string;
+  value: string;
+  type: 0 | 1;
+  linkedId: null;
+}
+
+interface BwExportFolder {
+  id: string;
+  /** The full path, "Parent/Child", because Bitwarden nests folders by name. */
+  name: string;
+}
+
 interface BwExportItem {
   id: string;
   organizationId: null;
-  folderId: null;
+  folderId: string | null;
   type: number;
   reprompt: number;
   name: string;
   notes: string;
   favorite: boolean;
+  fields?: BwExportField[];
   login?: BwExportLogin | null;
   card?: BwExportCard | null;
   sshKey?: BwExportSshKey | null;
@@ -1381,24 +1560,38 @@ interface BwExportItem {
 
 interface BwExportPayload {
   encrypted: false;
-  folders: [];
+  exportedBy: typeof BW_EXPORTED_BY;
+  folders: BwExportFolder[];
   items: BwExportItem[];
 }
 
 /**
  * Export vault items (logins, cards, SSH keys) in Bitwarden's
- * unencrypted JSON format. Non-vault notes are excluded.
+ * unencrypted JSON format. Non-vault notes are excluded. `folders` is the
+ * account's folder tree, which names the folders the items sit in.
  */
-export async function exportVaultBitwarden(notes: LocalNote[]): Promise<void> {
+export async function exportVaultBitwarden(notes: LocalNote[], folders: FolderDef[]): Promise<void> {
   const vaultNotes = notes.filter(
     (n) => n.type === 'login' || n.type === 'card' || n.type === 'ssh-key',
   );
+
+  // Each folder an item sits in goes out under its full path, with every
+  // ancestor beside it: Bitwarden nests by name, and a child whose parent is
+  // missing shows there as one flat folder.
+  const bwFolders = new Map<string, BwExportFolder>();
+  for (const id of new Set(vaultNotes.map((n) => n.folderId))) {
+    if (!id) continue;
+    for (const fid of [...ancestorIds(folders, id).reverse(), id]) {
+      const path = folderNamePath(folders, fid);
+      if (path.length > 0 && !bwFolders.has(fid)) bwFolders.set(fid, { id: fid, name: path.join('/') });
+    }
+  }
 
   const items: BwExportItem[] = vaultNotes.map((note) => {
     const base: BwExportItem = {
       id: note.id,
       organizationId: null,
-      folderId: null,
+      folderId: note.folderId && bwFolders.has(note.folderId) ? note.folderId : null,
       type: 1,
       reprompt: note.pinProtected === 1 ? 1 : 0,
       name: note.title || 'Untitled',
@@ -1406,6 +1599,10 @@ export async function exportVaultBitwarden(notes: LocalNote[]): Promise<void> {
       favorite: note.starred === 1,
       creationDate: note.createdAt,
       revisionDate: note.updatedAt,
+    };
+    const fields: BwExportField[] = [];
+    const addField = (name: string, value: string, type: 0 | 1 = 0) => {
+      if (value) fields.push({ name, value, type, linkedId: null });
     };
 
     if (note.type === 'login') {
@@ -1430,6 +1627,7 @@ export async function exportVaultBitwarden(notes: LocalNote[]): Promise<void> {
         expYear: card.expYear,
         code: card.cvv,
       };
+      addField(BW_OWN_FIELDS.billingZip, card.billingZip);
     } else if (note.type === 'ssh-key') {
       const key = parseSshKeyBody(note.body);
       base.type = 5;
@@ -1439,14 +1637,20 @@ export async function exportVaultBitwarden(notes: LocalNote[]): Promise<void> {
         publicKey: key.publicKey,
         keyFingerprint: '',
       };
+      addField(BW_OWN_FIELDS.label, key.label);
+      addField(BW_OWN_FIELDS.passphrase, key.passphrase, 1);
     }
 
+    // One field for all of them: a tag cannot hold a comma.
+    addField(BW_OWN_FIELDS.tags, note.tags.join(', '));
+    if (fields.length > 0) base.fields = fields;
     return base;
   });
 
   const payload: BwExportPayload = {
     encrypted: false,
-    folders: [],
+    exportedBy: BW_EXPORTED_BY,
+    folders: [...bwFolders.values()],
     items,
   };
 

@@ -32,6 +32,9 @@ body:
         - Turkish (Türkçe)
         - Swedish (Svenska)
         - Arabic (العربية)
+        - Ukrainian (Українська)
+        - Russian (Русский)
+        - Thai (ไทย)
         - English
     validations:
       required: true

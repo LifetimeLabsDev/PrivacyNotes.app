@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { isImeComposing } from './imeComposing';
 
 /**
  * Global Escape-to-close hook for modals.
@@ -51,6 +52,8 @@ export function useEscapeToClose(onClose: () => void, enabled = true) {
     escStack.push({ id, close: () => cbRef.current() });
     function handler(e: KeyboardEvent) {
       if (e.key !== 'Escape') return;
+      // An Escape that cancels a conversion belongs to the input method.
+      if (isImeComposing(e)) return;
       if (e.defaultPrevented) return;
       // Only the topmost open handler responds.
       if (escStack[escStack.length - 1]?.id !== id) return;

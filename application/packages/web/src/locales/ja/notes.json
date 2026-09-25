@@ -55,7 +55,7 @@
     "empty": "空にする",
     "emptyHover": "ゴミ箱のノートをすべて削除",
     "storage": "ストレージ",
-    "autoDelete": "30日で自動削除"
+    "autoDelete": "30日後に自動削除"
   },
   "search": {
     "sortOptions": "並び替えと表示オプション",
@@ -159,8 +159,8 @@
     "invisiblesShow": "編集記号を表示",
     "invisiblesHide": "編集記号を非表示",
     "findInNote": "ノート内を検索",
-    "navPrev": "前のノート",
-    "navNext": "次のノート",
+    "navPrev": "前へ",
+    "navNext": "次へ",
     "undo": "元に戻す",
     "redo": "やり直す",
     "hide": "隠す",
@@ -174,7 +174,8 @@
     "titlePlaceholderLink": "ブックマーク名",
     "titlePlaceholderContact": "名前",
     "notBackedUpTooLarge": "1 MBの上限を超えているため、バックアップされていません。画像を添付ファイルに移すか、ノートを分割してください。",
-    "notBackedUpFailed": "バックアップされていません。直近のエラー: {{message}}。再試行中です。"
+    "notBackedUpFailed": "バックアップされていません。直近のエラー: {{message}}。再試行中です。",
+    "unknownType": "このアイテムは新しいバージョンのPrivacyNotesで作成されました。開くには、アプリをアップデートしてください。"
   },
   "share": {
     "hover": "共有 / 書き出し",

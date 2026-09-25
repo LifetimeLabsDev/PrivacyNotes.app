@@ -2,6 +2,7 @@ import { db, reopenDb, requestPersistence, type LocalNote } from './db';
 import { bumpNotesCreated } from './notesCreated';
 import { perfSpan } from './perf';
 import { clearFaviconCache } from './faviconQueue';
+import { resetPulledClean } from './pullState';
 
 /**
  * Pure Dexie CRUD. No network, and no crypto of its own: wire
@@ -31,24 +32,7 @@ export function normalizeTag(raw: string): string {
     .slice(0, TAG_MAX_LENGTH);
 }
 
-/**
- * A note's tags in reading order: alphabetical, case-insensitive, with
- * digit runs compared as numbers so `tag2` precedes `tag10`. Same collator
- * settings as the folder sibling sorter, so a folder chip and the tag chips
- * beside it order their names by one rule.
- *
- * A DISPLAY order, never a stored one. The array on the note keeps the order
- * the tags were typed in, so nothing is rewritten and no note is marked dirty;
- * every existing note reads sorted from the moment it is drawn. Call it at
- * each place tags are rendered, and derive any position-based action (which
- * chip is last) from the result rather than from the note's own array.
- * Spec: issue #259.
- */
-export function sortTags(tags: string[]): string[] {
-  return tags
-    .slice()
-    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base', numeric: true }));
-}
+export { sortTags } from './tagOrder';
 
 /**
  * Tags out of a YAML front-matter block, in the three shapes Obsidian writes.
@@ -164,10 +148,11 @@ export function extractInlineTags(
  * be strictly newer than the row's current stamp (a second edit in the same
  * millisecond, a clock that stepped back, a pulled server stamp from a skewed
  * peer) - then one millisecond past the current stamp. Strictly monotonic
- * per-row generations mean the sync guards (push `.lte`, pull-apply skip)
- * never see two of THIS device's generations carrying an equal stamp (#156).
+ * per-row generations mean the pull-apply skip never sees two of THIS
+ * device's generations carrying an equal stamp (#156), and the merge's
+ * later-stamp rule for a detail both devices changed reads a true order.
  */
-function nextStamp(current: string | undefined): string {
+export function nextStamp(current: string | undefined): string {
   const now = Date.now();
   const cur = current ? Date.parse(current) : NaN;
   return new Date(Number.isFinite(cur) && cur >= now ? cur + 1 : now).toISOString();
@@ -255,18 +240,35 @@ export async function createNote(
   return note;
 }
 
+/**
+ * Write a patch to one note. Returns true when the row was written, and false
+ * when nothing was: there is no such note, or the patch changes the title or
+ * the body of a read-only note. "Read-only" promises no edits until the
+ * switch is turned off, so that refusal belongs to this write rather than to
+ * the routes into it; a read-only note still takes its tags, folder, type and
+ * trackers. Tested in tests/lockGateWrites.test.ts.
+ */
 export async function updateNote(
   id: string,
   patch: Partial<Pick<LocalNote, 'title' | 'body' | 'tags' | 'type' | 'trackers' | 'folderId'>>,
   /** Pass an explicit timestamp to avoid bumping updatedAt (e.g. derived-title commit). */
   updatedAt?: string
-): Promise<void> {
+): Promise<boolean> {
   void requestPersistence();
-  if (updatedAt !== undefined) {
-    await db.notes.update(id, { ...patch, updatedAt, dirty: 1 });
-    return;
-  }
-  await touchNote(id, patch);
+  return db.transaction('rw', db.notes, async () => {
+    const current = await db.notes.get(id);
+    if (!current) return false;
+    const changesText =
+      (patch.title !== undefined && patch.title !== current.title) ||
+      (patch.body !== undefined && patch.body !== current.body);
+    if (current.locked === 1 && changesText) return false;
+    await db.notes.update(id, {
+      ...patch,
+      updatedAt: updatedAt ?? nextStamp(current.updatedAt),
+      dirty: 1,
+    });
+    return true;
+  });
 }
 
 /**
@@ -283,35 +285,49 @@ export async function restoreNote(id: string): Promise<void> {
 }
 
 /**
- * Permanently delete a single note. Sets the `deleted=1` tombstone so
- * the next sync removes it from the server and then purges it locally.
+ * Permanently delete a single note from the trash. Sets the `deleted=1`
+ * tombstone so the next sync removes it from the server and then purges it
+ * locally. A tombstone is final on every device, so the row is re-read inside
+ * the write: one that is not in the trash (a pull restored it since the
+ * caller looked) or is already a tombstone is left alone. Returns the row
+ * this call tombstoned, the only body the blob GC may take, or null when it
+ * wrote nothing.
  */
-export async function permanentlyDelete(id: string): Promise<void> {
-  await touchNote(id, { deleted: 1 });
+export async function permanentlyDelete(id: string): Promise<{ id: string; body: string } | null> {
+  const deleted = await db.transaction('rw', db.notes, async () => {
+    const current = await db.notes.get(id);
+    if (!current || current.trashed !== 1 || current.deleted === 1) return null;
+    await db.notes.update(id, { deleted: 1, updatedAt: nextStamp(current.updatedAt), dirty: 1 });
+    return { id, body: current.body };
+  });
   // Drop the parsed-doc cache row (#150) - stale rows are harmless (exact
   // body match) but a big note's row is ~3x its body in disk.
-  await db.editorDocCache.delete(id).catch(() => { /* best-effort */ });
+  if (deleted) await db.editorDocCache.delete(id).catch(() => { /* best-effort */ });
+  return deleted;
 }
 
 /** Hard-delete every trashed note. Used by the "Empty trash" button.
- *  Wrapped in a single Dexie transaction so a force-close mid-way
- *  can't leave the trash half-emptied (all-or-nothing). (#91) */
-export async function emptyTrash(): Promise<number> {
-  const trashed = await db.notes
-    .where('trashed')
-    .equals(1)
-    .and((n) => n.deleted === 0)
-    .toArray();
-  if (trashed.length === 0) return 0;
-  await db.transaction('rw', db.notes, async () => {
+ *  One Dexie transaction reads the trash and writes the tombstones, so a
+ *  force-close mid-way can't leave the trash half-emptied (#91) and no write
+ *  can land between the read and the tombstones: a note a pull restored is
+ *  not in the set. Returns the rows it tombstoned, the only ones the blob GC
+ *  may take. */
+export async function emptyTrash(): Promise<Array<{ id: string; body: string }>> {
+  const emptied = await db.transaction('rw', db.notes, async () => {
+    const trashed = await db.notes
+      .where('trashed')
+      .equals(1)
+      .and((n) => n.deleted === 0)
+      .toArray();
     for (const n of trashed) {
       await db.notes.update(n.id, { deleted: 1, updatedAt: nextStamp(n.updatedAt), dirty: 1 });
     }
+    return trashed.map((n) => ({ id: n.id, body: n.body }));
   });
   // Same parsed-doc cache cleanup as permanentlyDelete (#150); outside the
   // transaction on purpose - cache rows are disposable, note tombstones are not.
-  await db.editorDocCache.bulkDelete(trashed.map((n) => n.id)).catch(() => { /* best-effort */ });
-  return trashed.length;
+  await db.editorDocCache.bulkDelete(emptied.map((n) => n.id)).catch(() => { /* best-effort */ });
+  return emptied;
 }
 
 /**
@@ -434,18 +450,21 @@ export async function bulkRestore(ids: string[]): Promise<number> {
   return count;
 }
 
-export async function bulkPermanentlyDelete(ids: string[]): Promise<number> {
-  if (ids.length === 0) return 0;
-  let count = 0;
-  await db.transaction('rw', db.notes, async () => {
+/** permanentlyDelete for a selection, in one transaction, with the same
+ *  re-read: rows not in the trash are left alone. Returns the rows it
+ *  tombstoned, the only ones the blob GC may take. */
+export async function bulkPermanentlyDelete(ids: string[]): Promise<Array<{ id: string; body: string }>> {
+  if (ids.length === 0) return [];
+  return db.transaction('rw', db.notes, async () => {
+    const deleted: Array<{ id: string; body: string }> = [];
     for (const id of ids) {
       const note = await db.notes.get(id);
-      if (!note) continue;
+      if (!note || note.trashed !== 1 || note.deleted === 1) continue;
       await db.notes.update(id, { deleted: 1, updatedAt: nextStamp(note.updatedAt), dirty: 1 });
-      count++;
+      deleted.push({ id, body: note.body });
     }
+    return deleted;
   });
-  return count;
 }
 
 /**
@@ -681,6 +700,9 @@ export async function deleteTagEverywhere(tag: string): Promise<number> {
  * under the new user's key (cross-account leak).
  */
 export async function clearLocalDatabase(opts?: { keepUnsyncedNotes?: boolean }): Promise<void> {
+  // From here the copy stops holding what the last pull brought, so a restore
+  // of our own backup waits for the next one (pullState.ts).
+  resetPulledClean();
   if (opts?.keepUnsyncedNotes) {
     // Forced sign-outs (device revoked, session expired) preserve rows
     // the server has not confirmed (either dirty value, pending
@@ -698,32 +720,36 @@ export async function clearLocalDatabase(opts?: { keepUnsyncedNotes?: boolean })
     const allNoteIds = await db.notes.toCollection().primaryKeys();
     const keepNotes = new Set(await db.notes.where('dirty').anyOf(1, 2).primaryKeys());
     await db.notes.bulkDelete(allNoteIds.filter((id) => !keepNotes.has(id)));
-    // Blobs that never reached the server (pendingUpload=1) are the
-    // same class of data. Keep the dedup record AND its cached bytes
+    // Blobs that never reached the server (pendingUpload=1, or 2 when the
+    // server refused them for good) are the same class of data: the cache
+    // is their only copy. Keep the dedup record AND its cached bytes
     // together - processPendingUploads needs both to finish the upload
     // after the same user signs back in (a dedup row without bytes is
     // deleted as an orphan on init, losing the blob). Everything the
     // server already has is wiped as usual. The dedup tables are never
     // sealed, so value filters are safe THERE; the cache tables are
     // deleted by key for the same reason as the notes above.
-    const pendingImg = await db.imageDedup.filter((r) => r.pendingUpload === 1).toArray();
+    const onlyCopy = (r: { pendingUpload?: number }) => r.pendingUpload === 1 || r.pendingUpload === 2;
+    const pendingImg = await db.imageDedup.filter(onlyCopy).toArray();
     const keepImg = new Set(pendingImg.map((r) => r.uuid));
     const imgIds = await db.imageCache.toCollection().primaryKeys();
     await db.imageCache.bulkDelete(imgIds.filter((id) => !keepImg.has(id)));
-    await db.imageDedup.filter((r) => r.pendingUpload !== 1).delete();
-    const pendingAtt = await db.attachmentDedup.filter((r) => r.pendingUpload === 1).toArray();
+    await db.imageDedup.filter((r) => !onlyCopy(r)).delete();
+    const pendingAtt = await db.attachmentDedup.filter(onlyCopy).toArray();
     const keepAtt = new Set(pendingAtt.map((r) => r.uuid));
     const attIds = await db.attachmentCache.toCollection().primaryKeys();
     await db.attachmentCache.bulkDelete(attIds.filter((id) => !keepAtt.has(id)));
-    await db.attachmentDedup.filter((r) => r.pendingUpload !== 1).delete();
+    await db.attachmentDedup.filter((r) => !onlyCopy(r)).delete();
     // The parsed-doc cache holds note bodies (sealed at rest like the
     // notes) and is rebuildable derived data - clear it on every
     // sign-out, kept dirty rows included (they re-cache on next open).
     await db.editorDocCache.clear();
-    // blobGC has no pendingUpload concept - every queue entry is
-    // deferred-deletion metadata for a blob already gone from the note
-    // body, never something a resuming same-user sign-in needs to
-    // finish uploading. Clear it unconditionally like the wipe below.
+    // Every queue entry is deferred-deletion metadata for a blob already
+    // gone from the note body. One that was still waiting to upload keeps
+    // its bytes and dedup row through the rule above, so once its queue
+    // row is cleared here it uploads after the next sign-in, and if
+    // nothing references it by then the orphan reconcile reclaims it with
+    // its local rows. Cleared unconditionally like the wipe below.
     await db.blobGC.clear();
     // Favicons are derived, never unsynced user data, so a forced sign-out
     // clears them like any other sign-out.
@@ -757,6 +783,7 @@ export async function countUnsyncedNotes(): Promise<number> {
  * and the page must reload.
  */
 export async function deleteEntireLocalDatabase(): Promise<void> {
+  resetPulledClean();
   // db.delete() drops the Dexie database only; the favicon cache is its own
   // IndexedDB and would outlive account deletion by up to 90 days without this.
   await clearFaviconCache();

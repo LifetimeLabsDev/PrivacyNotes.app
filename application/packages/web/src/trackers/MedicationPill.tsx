@@ -12,6 +12,7 @@ import { TRACKER_ICONS } from './icons';
 import { X } from '../icons';
 import { HoverLabel } from '../HoverLabel';
 import { toLocalIso } from '../notesViewUtils';
+import { isImeComposing } from '../imeComposing';
 
 // Caps on medication template fields. Long unbroken names/dosages overflow
 // the pill row layout (truncation only hides display overflow, not input).
@@ -204,7 +205,7 @@ export function MedicationPill({
                   className="w-full px-2 py-1 rounded-md text-xs border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200"
                   autoFocus
                   placeholder={t('medication.namePlaceholder')}
-                  onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') setEditingId(null); }}
+                  onKeyDown={(e) => { if (isImeComposing(e)) return; if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') setEditingId(null); }}
                 />
                 <input
                   type="text"
@@ -213,7 +214,7 @@ export function MedicationPill({
                   onChange={(e) => setEditDosage(e.target.value)}
                   className="w-full px-2 py-1 rounded-md text-xs border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200"
                   placeholder={t('medication.dosagePlaceholder')}
-                  onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') setEditingId(null); }}
+                  onKeyDown={(e) => { if (isImeComposing(e)) return; if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') setEditingId(null); }}
                 />
                 <div className="flex gap-1">
                   <button
@@ -333,7 +334,7 @@ export function MedicationPill({
               onChange={(e) => setNewName(e.target.value)}
               className="w-full px-2 py-1 rounded-md text-xs border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200"
               autoFocus
-              onKeyDown={(e) => { if (e.key === 'Enter') handleAddMed(); }}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !isImeComposing(e)) handleAddMed(); }}
             />
             <input
               type="text"
@@ -342,7 +343,7 @@ export function MedicationPill({
               maxLength={MED_DOSAGE_MAX}
               onChange={(e) => setNewDosage(e.target.value)}
               className="w-full px-2 py-1 rounded-md text-xs border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200"
-              onKeyDown={(e) => { if (e.key === 'Enter') handleAddMed(); }}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !isImeComposing(e)) handleAddMed(); }}
             />
             <div className="flex gap-1">
               <button

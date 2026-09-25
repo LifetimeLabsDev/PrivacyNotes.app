@@ -1,0 +1,208 @@
+{
+  "placeholder": "Почніть писати…",
+  "toolbar": {
+    "bold": "Жирний",
+    "italic": "Курсив",
+    "underline": "Підкреслений",
+    "heading": "Заголовок",
+    "taskList": "Список завдань",
+    "bulletList": "Маркований список",
+    "addLink": "Додати посилання (Cmd+Shift+K)",
+    "noteLink": "Посилання на іншу нотатку (або введіть [[)",
+    "numberedList": "Нумерований список",
+    "textColor": "Колір тексту",
+    "textColorApply": "Колір тексту: {{color}}",
+    "pickColor": "Виберіть колір тексту",
+    "table": "Таблиця",
+    "quote": "Цитата",
+    "callout": "Виноска",
+    "inlineCode": "Код у рядку",
+    "strikethrough": "Закреслений",
+    "codeBlock": "Блок коду",
+    "divider": "Роздільник",
+    "moreFormatting": "Більше форматування",
+    "fewerFormatting": "Менше параметрів форматування",
+    "image": "Зображення",
+    "attachFile": "Прикріпити файл",
+    "insert": "Вставити",
+    "highlight": "Виділення кольором",
+    "highlightApply": "Виділення: {{color}}",
+    "pickHighlight": "Виберіть колір виділення",
+    "superscript": "Верхній індекс",
+    "subscript": "Нижній індекс",
+    "math": "Математична формула",
+    "blockMath": "Формула окремим блоком",
+    "align": "Вирівнювання",
+    "font": "Шрифт",
+    "pictureFromFiles": "Зображення з Файлів"
+  },
+  "align": {
+    "left": "По лівому краю",
+    "center": "По центру",
+    "right": "По правому краю",
+    "justify": "По ширині"
+  },
+  "font": {
+    "families": {
+      "sans": "Без засічок",
+      "serif": "Із засічками",
+      "mono": "Моноширинний"
+    },
+    "sizes": {
+      "small": "Малий",
+      "large": "Великий",
+      "huge": "Величезний"
+    },
+    "reset": "Скинути шрифт"
+  },
+  "heading": {
+    "normalText": "Звичайний текст",
+    "level": "Заголовок {{level}}"
+  },
+  "callout": {
+    "pickerLabel": "Вставити виноску",
+    "remove": "Прибрати виноску",
+    "collapse": "Згорнути виноску",
+    "expand": "Розгорнути виноску",
+    "types": {
+      "info": "Інформація",
+      "success": "Успіх",
+      "warning": "Попередження",
+      "tip": "Порада",
+      "danger": "Небезпека",
+      "question": "Питання",
+      "quote": "Цитата",
+      "example": "Приклад",
+      "bug": "Помилка",
+      "note": "Примітка",
+      "abstract": "Анотація",
+      "failure": "Невдача"
+    }
+  },
+  "color": {
+    "remove": "Прибрати колір",
+    "removeHighlight": "Прибрати виділення",
+    "names": {
+      "gray": "Сірий",
+      "red": "Червоний",
+      "orange": "Помаранчевий",
+      "yellow": "Жовтий",
+      "green": "Зелений",
+      "teal": "Бірюзовий",
+      "blue": "Синій",
+      "purple": "Фіолетовий",
+      "pink": "Рожевий"
+    }
+  },
+  "insertGroup": {
+    "insert": "Вставити",
+    "blocks": "Блоки",
+    "notation": "Нотація"
+  },
+  "table": {
+    "addRowAbove": "Додати рядок вище",
+    "addRowBelow": "Додати рядок нижче",
+    "addColumnLeft": "Додати стовпець ліворуч",
+    "addColumnRight": "Додати стовпець праворуч",
+    "toggleHeaderRow": "Увімкнути / вимкнути рядок заголовка",
+    "equalColumnWidths": "Вирівняти ширину стовпців",
+    "deleteRow": "Видалити рядок",
+    "deleteColumn": "Видалити стовпець",
+    "deleteTable": "Видалити таблицю"
+  },
+  "find": {
+    "placeholder": "Знайти в нотатці",
+    "label": "Знайти в нотатці",
+    "previous": "Попередній збіг (Shift+Enter)",
+    "previousTitle": "Попередній (Shift+Enter)",
+    "next": "Наступний збіг (Enter)",
+    "nextTitle": "Наступний (Enter)",
+    "close": "Закрити пошук",
+    "closeTitle": "Закрити (⌘F)",
+    "replacePlaceholder": "Замінити на",
+    "replaceLabel": "Замінити на",
+    "replace": "Замінити",
+    "replaceTitle": "Замінити цей збіг (Enter)",
+    "replaceAll": "Усі",
+    "replaceAllTitle": "Замінити всі збіги",
+    "caseSensitive": "Враховувати регістр",
+    "caseSensitiveTitle": "Враховувати регістр",
+    "closeReplace": "Закрити пошук і заміну",
+    "closeReplaceTitle": "Закрити (⌥⌘F)",
+    "replacedCount_one": "Замінено: {{count}}",
+    "replacedCount_few": "Замінено: {{count}}",
+    "replacedCount_many": "Замінено: {{count}}",
+    "replacedCount_other": "Замінено: {{count}}"
+  },
+  "outline": {
+    "show": "Показати структуру",
+    "showTitle": "Структура (Cmd/Ctrl+Shift+O)",
+    "title": "Структура",
+    "ariaLabel": "Структура нотатки",
+    "hide": "Сховати структуру",
+    "hideTitle": "Сховати структуру (Esc)"
+  },
+  "topRow": {
+    "add": "Додати рядок угорі"
+  },
+  "link": {
+    "popoverLabel": "Додати посилання",
+    "placeholder": "Вставте або введіть URL",
+    "apply": "Застосувати",
+    "addTitle": "Додати посилання",
+    "editTitle": "Редагувати посилання",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "errorEnterUrl": "Введіть URL",
+    "errorInvalidUrl": "Введіть правильний URL",
+    "textLabel": "Текст посилання",
+    "textPlaceholder": "Необов’язково, залиште порожнім, щоб показати URL",
+    "selectedTextHint": "Виділений текст стане посиланням",
+    "update": "Оновити",
+    "menuOpen": "Відкрити посилання",
+    "menuCopy": "Копіювати посилання",
+    "menuEdit": "Редагувати посилання",
+    "menuRemove": "Прибрати посилання"
+  },
+  "audio": {
+    "uploadingRecording": "Вивантаження запису...",
+    "uploading": "Вивантаження...",
+    "stopRecording": "Зупинити запис",
+    "recordAudio": "Записати аудіо",
+    "savingRecording": "Збереження запису...",
+    "recording": "Запис",
+    "secondsLeft": "Залишилося {{count}} с",
+    "stop": "Зупинити"
+  },
+  "wordCount": {
+    "words_one": "{{formatted}} слово",
+    "words_few": "{{formatted}} слова",
+    "words_many": "{{formatted}} слів",
+    "words_other": "{{formatted}} слова",
+    "characters_one": "{{formatted}} символ",
+    "characters_few": "{{formatted}} символи",
+    "characters_many": "{{formatted}} символів",
+    "characters_other": "{{formatted}} символу",
+    "tooLargeToSync": ", може бути завеликою для синхронізації, розділіть її на нову нотатку",
+    "veryLong": ", дуже довга, редагування може гальмувати",
+    "gettingLong": ", стає довгою, на повільних пристроях може гальмувати",
+    "largeTableWarning": "Велика таблиця (рядків: {{rows}}) може сповільнити редагування цієї нотатки, варто її розділити"
+  },
+  "noteLinkSuggestion": {
+    "noMatches": "Немає відповідних нотаток",
+    "create": "Створити «{{query}}»"
+  },
+  "codeBlock": {
+    "copy": "Копіювати",
+    "copied": "Скопійовано",
+    "copyFailed": "Помилка",
+    "wrap": "Переносити довгі рядки"
+  },
+  "math": {
+    "sourceLabel": "Код LaTeX"
+  },
+  "noteLink": {
+    "open": "Відкрити нотатку",
+    "remove": "Прибрати посилання"
+  }
+}

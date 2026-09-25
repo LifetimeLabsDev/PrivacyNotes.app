@@ -60,6 +60,7 @@ fi
 # whenever gen/apple is deleted, hence this block.
 GEN="$HERE/src-tauri/gen/apple"
 cp "$HERE/src-tauri/PrivacyInfo.xcprivacy" "$GEN/PrivacyInfo.xcprivacy"
+SPEC_CHANGED=0
 if ! grep -q "PrivacyInfo.xcprivacy" "$GEN/project.yml"; then
   python3 - "$GEN/project.yml" <<'PYEOF'
 import sys
@@ -72,13 +73,44 @@ if anchor not in s:
              "Tauri changed its template, re-derive the resource entry by hand")
 open(p, "w").write(s.replace(anchor, anchor + add, 1))
 PYEOF
-  # project.yml is only read by xcodegen, and Tauri already ran it during init -
-  # so the edit above is invisible until xcodegen runs again. Do it here rather
-  # than making the caller remember a second init.
-  (cd "$GEN" && xcodegen generate --spec project.yml >/dev/null)
-  echo "Registered PrivacyInfo.xcprivacy as a bundle resource and regenerated the Xcode project."
+  SPEC_CHANGED=1
+  echo "Registered PrivacyInfo.xcprivacy as a bundle resource."
 else
   echo "PrivacyInfo.xcprivacy already registered in project.yml, skipping."
+fi
+
+# The Externals folder holds the Rust library per configuration. Tauri's
+# template lists it as a plain source folder, so xcodegen copies every
+# libapp.a it finds there into the bundle as a resource, and Xcode refuses
+# the build as soon as a debug and a release artifact both exist. A fresh
+# init never sees that, because the wipe empties the folder; every later
+# xcodegen run does. `buildPhase: none` keeps the folder in the navigator
+# and out of every build phase; the library is linked through
+# LIBRARY_SEARCH_PATHS. tests/desktopCapabilities.test.ts pins the line.
+if ! grep -q "buildPhase: none" "$GEN/project.yml"; then
+  python3 - "$GEN/project.yml" <<'PYEOF'
+import sys
+p = sys.argv[1]
+s = open(p).read()
+anchor = "      - path: Externals\n"
+add = "        buildPhase: none\n"
+if anchor not in s:
+    sys.exit("apply-ios-appearance-icons: project.yml Externals entry not found; "
+             "Tauri changed its template, re-derive the entry by hand")
+open(p, "w").write(s.replace(anchor, anchor + add, 1))
+PYEOF
+  SPEC_CHANGED=1
+  echo "Took the Externals folder out of every build phase."
+else
+  echo "Externals already carries buildPhase: none, skipping."
+fi
+
+# project.yml is only read by xcodegen, and Tauri already ran it during init -
+# so an edit above is invisible until xcodegen runs again. Do it here rather
+# than making the caller remember a second init.
+if [ "$SPEC_CHANGED" = 1 ]; then
+  (cd "$GEN" && xcodegen generate --spec project.yml >/dev/null)
+  echo "Regenerated the Xcode project from the patched spec."
 fi
 
 echo "Rebuild with 'pnpm ios:dev' or in Xcode to see the changes."

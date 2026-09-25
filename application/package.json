@@ -6,27 +6,28 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "pnpm --filter web dev",
-    "build": "pnpm --filter shared build && pnpm --filter web build",
-    "shared:build": "pnpm --filter shared build",
-    "shared:watch": "pnpm --filter shared build --watch",
-    "desktop:dev": "pnpm --filter desktop dev",
-    "desktop:build": "pnpm --filter desktop build",
-    "desktop:icon": "pnpm --filter desktop icon",
-    "ios:init": "pnpm --filter desktop ios:init",
-    "ios:dev": "pnpm --filter desktop ios:dev",
-    "ios:build": "pnpm --filter desktop ios:build",
-    "typecheck": "pnpm --filter shared build && pnpm --filter web exec tsc --noEmit",
+    "dev": "pnpm --filter web --fail-if-no-match dev",
+    "build": "pnpm --filter shared --fail-if-no-match build && pnpm --filter web --fail-if-no-match build",
+    "shared:build": "pnpm --filter shared --fail-if-no-match build",
+    "shared:watch": "pnpm --filter shared --fail-if-no-match build --watch",
+    "desktop:dev": "pnpm --filter desktop --fail-if-no-match dev",
+    "desktop:build": "pnpm --filter desktop --fail-if-no-match build",
+    "desktop:icon": "pnpm --filter desktop --fail-if-no-match icon",
+    "ios:init": "pnpm --filter desktop --fail-if-no-match ios:init",
+    "ios:dev": "pnpm --filter desktop --fail-if-no-match ios:dev",
+    "ios:build": "pnpm --filter desktop --fail-if-no-match ios:build",
+    "typecheck": "pnpm --filter shared --fail-if-no-match build && pnpm --filter web --fail-if-no-match exec tsc --noEmit",
+    "check:worker-types": "pnpm --filter web --fail-if-no-match exec tsc -p tsconfig.worker.json --noEmit",
     "check:help-chips": "node tools/sync-help-chips.mjs --check",
     "bundle:baseline": "PN_BUNDLE_BASELINE=1 pnpm build",
-    "test:crypto": "pnpm --filter shared build && node --test tools/crypto-kat.mjs",
-    "test:backup": "pnpm --filter shared build && node --test tools/backup-kat.mjs"
+    "test:crypto": "pnpm --filter shared --fail-if-no-match build && node --test tools/crypto-kat.mjs",
+    "test:backup": "pnpm --filter shared --fail-if-no-match build && node --test tools/backup-kat.mjs"
   },
   "devDependencies": {
     "fake-indexeddb": "^6.2.5",
-    "jsdom": "^30.0.1",
-    "knip": "6.34.0",
-    "playwright-core": "^1.62.1",
-    "vitest": "^4.1.10"
+    "jsdom": "^30.1.0",
+    "knip": "6.37.0",
+    "playwright-core": "^1.63.0",
+    "vitest": "^4.1.11"
   }
 }

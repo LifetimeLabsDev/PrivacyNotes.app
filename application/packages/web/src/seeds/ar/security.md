@@ -19,7 +19,7 @@ title: كيف تُحمى ملاحظاتك
 
 ## من يملك مفتاحك
 
-كل الخيارات تُبقي ملاحظاتك مشفَّرة من الطرف إلى الطرف. والفرق بينها هو مكان عبارتك.
+كل الخيارات تُبقي ملاحظاتك مشفَّرة على جهازك. والفرق بينها هو مكان عبارتك.
 
 | الخيار | أين تقيم عبارتك | ما الذي تكسبه |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ title: كيف تُحمى ملاحظاتك
 
 في الخيارين الأخيرين لا نستطيع قراءة ملاحظة حتى لو أُجبرنا. أما الأول فيبادل ذلك بالراحة: عبارتك تقيم على خادمنا تحت مفتاح يخصنا، فلا يحتاج الجهاز الجديد إلى شيء سوى حسابك. ولو اخترق أحد خادمنا يومًا، فقد ينكشف ذلك المفتاح.
 
-لست محبوسًا في الخيار الذي انتقيته. غيّره من **الإعدادات > الأمان > عبارتك**.
+هل سجّلت الدخول عبر Google أو Apple أو GitHub؟ يمكنك التبديل بين الخيارين الأولين لاحقًا، من **الإعدادات > الأمان > عبارتك**. أما مع حساب العبارة وحدها، فتبقى العبارة معك دائمًا.
 
 > [!warning] احتفظ بنسختك الخاصة من العبارة
 > عبارتك تفتح ملاحظاتك. إن فقدتها فلا أحد يستعيدها لك، ونحن منهم. <span style="color: #e03131">اكتبها على ورق اليوم.</span>
@@ -44,7 +44,7 @@ title: كيف تُحمى ملاحظاتك
 | ماذا | أين |
 | --- | --- |
 | التشفير نفسه | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| بنية قاعدة البيانات | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| ما يتلقاه خادمنا | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | ما يستطيعه المهاجم وما لا يستطيعه | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | كيفية الإبلاغ عن ثغرة | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

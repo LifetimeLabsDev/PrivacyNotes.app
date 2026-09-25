@@ -18,9 +18,12 @@
  * a real, unrecoverable data loss. So:
  *
  * - Phase 1 (here, at GC time): local cache + dedup rows are removed
- *   and quota is decremented right away (unchanged UX), but the
- *   Supabase Storage object is left alone. The uuid is enqueued in
- *   db.blobGC instead - see ImageStore.deferDelete / AttachmentStore.deferDelete.
+ *   and quota is decremented right away, but the Supabase Storage
+ *   object is left alone. The uuid is enqueued in db.blobGC instead -
+ *   see ImageStore.deferDelete / AttachmentStore.deferDelete. A blob
+ *   whose upload is still pending keeps its local rows: they are its
+ *   only copy, and a cut and paste or an undo brings its reference back
+ *   a moment later.
  * - Phase 2 (sweepBlobGC, below): runs only right after a sync pass
  *   whose pull completed cleanly, so the local mirror is as complete
  *   as it can be. Queue entries past the grace period get a fresh
@@ -28,7 +31,8 @@
  *   trashed and not-yet-confirmed tombstoned ones (an unconfirmed
  *   tombstone means the server may still be serving that note
  *   elsewhere). Still-referenced entries are cancelled and their quota
- *   re-credited; the rest have their Storage object actually removed.
+ *   re-credited; the rest have their Storage object actually removed,
+ *   along with any local rows phase 1 kept.
  *
  * The actual object deletion depends on db.blobGC, which is device-local
  * and unreplicated, so a blob can still end up in Storage with nothing
@@ -174,6 +178,9 @@ export async function gcOnBodyChange(
         for (const id of extractAttachmentIds(v.body)) versionAttIds.add(id);
       }
     } catch {
+      // listNoteVersions throws on any failed read, offline included.
+      // The sweep never looks at history, so this is the only check that
+      // keeps a snapshot's blobs alive.
       return;
     }
     const orphanedImgs = imgCandidates.filter((id) => !versionImgIds.has(id));
@@ -270,6 +277,22 @@ async function findRefsAnywhere(uuids: string[]): Promise<Set<string>> {
 }
 
 /**
+ * Delete this device's cached bytes and dedup rows for blobs that are gone
+ * for good. A dedup row must not outlive its object: uploadImage and
+ * uploadAttachment answer identical bytes with the recorded uuid and skip
+ * the upload, so the next insert of the same file would point every other
+ * device at nothing. Blob uuids are unique across both kinds, so each one
+ * is cleared from both sets of tables.
+ */
+async function dropLocalCopies(uuids: string[]): Promise<void> {
+  if (uuids.length === 0) return;
+  await db.imageCache.bulkDelete(uuids);
+  await db.imageDedup.where('uuid').anyOf(uuids).delete();
+  await db.attachmentCache.bulkDelete(uuids);
+  await db.attachmentDedup.where('uuid').anyOf(uuids).delete();
+}
+
+/**
  * Phase 2 of deferred blob GC: actually remove Storage objects for
  * queue entries that have cleared the grace period, after re-checking
  * references against the full local mirror. Must only be called right
@@ -325,14 +348,18 @@ export async function sweepBlobGC(
     const settled: string[] = [];
     if (imgUuids.length > 0) {
       const { removed } = await imageStore.removeRemoteOnly(imgUuids);
-      if (removed.length > 0) await db.blobGC.bulkDelete(removed);
       settled.push(...removed);
     }
     if (attUuids.length > 0 && attachmentStore) {
       const { removed } = await attachmentStore.removeRemoteOnly(attUuids);
-      if (removed.length > 0) await db.blobGC.bulkDelete(removed);
       settled.push(...removed);
     }
+    // Local rows go before the queue rows: an entry that survives an
+    // interruption is settled again next pass, while a pending blob whose
+    // entry went first would upload with nothing left to collect it but
+    // the orphan reconcile.
+    await dropLocalCopies(settled);
+    if (settled.length > 0) await db.blobGC.bulkDelete(settled);
 
     // Retire the server-side pending rows for everything that is settled:
     // objects actually deleted, plus cancelled deletions whose blobs are
@@ -496,6 +523,7 @@ export async function reconcileOrphanBlobs(
     const { removed } = await imageStore.removeRemoteOnly(candidates);
     if (removed.length > 0) {
       console.warn('[imageGC] reconcile reclaimed', removed.length, 'orphaned blobs');
+      await dropLocalCopies(removed);
       await recalculateQuota(supabase);
     }
     localStorage.setItem(RECONCILE_AT_KEY, String(Date.now()));

@@ -74,7 +74,7 @@
       "q": "Kayıt olmak için e-posta adresi gerekiyor mu?",
       "a": [
         "Hayır. Yeni bir kasa, yeni üretilmiş 12 kelimelik bir kurtarma ifadesinden ibarettir, başka hiçbir şey yok. E-posta yok, kullanıcı adı yok, telefon numarası yok, doğrulama adımı yok. İfadeyle giriş yaparsanız, istesek bile size e-posta gönderemeyiz, çünkü kim olduğunuzu hiçbir zaman öğrenmeyiz.",
-        "Tanıdık bir akış mı istiyorsunuz? Google, Apple veya GitHub ile giriş de var. Bu yol doğal olarak o girişe bağlı e-postayı bize gösterir, ama notlarınız her iki durumda da uçtan uca şifreli kalır ve arka planda yine bir ifadeniz olur."
+        "Tanıdık bir akış mı istiyorsunuz? Google, Apple veya GitHub ile giriş de var. Bu yol doğal olarak o girişe bağlı e-postayı bize gösterir, ama notlarınız her iki durumda da cihazınızda şifreli kalır ve arka planda yine bir ifadeniz olur."
       ]
     },
     "import-from-other-apps": {
@@ -94,7 +94,7 @@
     "what-can-you-see": {
       "q": "PrivacyNotes notlarım hakkında ne görebilir?",
       "a": [
-        "Okunabilir hiçbir şeyi. Notlar, başlıklar, etiketler ve ekler eşitlenmeden önce cihazınızda şifrelenir. Sunucu, çözemediği şifreli veriyi saklar ve bunu değiştirecek bir anahtar bizde yok.",
+        "Okunabilir hiçbir şeyi. Notlar, başlıklar, etiketler ve ekler cihazınızda da sunucuya giderken de her zaman şifrelidir, bu yüzden sunucu yalnızca şifreli veri saklar. Her ifade hesabında geçerli olan kendi saklamada bizde bu veriyi çözecek bir anahtar yoktur. Google, Apple veya GitHub ile kaydolduğunuzda anahtarınızın nerede duracağı sorulur ve ekran “Basit ve pratik olsun” seçili olarak açılır; bu seçenek ifadenizi sunucumuzda, bizim bir anahtarımızla şifrelenmiş olarak saklar. Ayarlar > Güvenlik > Kurtarma ifadeniz hangisinin sizde olduğunu gösterir ve değiştirmenize izin verir.",
         "Görebildiğimiz şey, hizmeti yürütmek için gereken asgari bilgi: ne kadar şifreli depolama kullandığınız, kaç cihaz bağladığınız ve eşitleme zaman damgaları. Google, Apple veya GitHub yerine bir ifadeyle giriş yapıyorsanız, e-posta adresinizi bile bilmeyiz."
       ]
     },
@@ -102,18 +102,18 @@
       "q": "Neden kullanıcı adı ve parola yerine kurtarma ifadesi?",
       "a": [
         "İlk bakışta ters gelebilir, ama tek bir kurtarma ifadesi daha sağlam bir kurgudur. Kullanıcı adı ve parolada kullanıcı adı bir sır değildir (her sızıntı listesinde görünür), yani tüm güvenlik parolanın omzundadır ve insanların seçtiği parolalar ortalama 30 ila 40 bit entropi taşır. 12 kelimelik ifadeniz ise garanti 128 bittir: cihazınız üretir, hiçbir insan seçmez ve başka bir siteden devşirilmez.",
-        "Ayrıca bizim kaybedecek bir şeyimiz yok. Parolayla giriş, sunucunun en azından bir parola özeti saklaması demektir; bu özet sızdırılabilir, kırılabilir ya da oltalamayla alınabilir. İfadeniz cihazınızdan hiç çıkmaz: şifreleme anahtarlarınızı yerelde türetir ve sunucu yalnızca şifreli veriyi görür. Çalınacak bir özet yok, saldırganın istismar edeceği bir parola sıfırlama akışı da yok.",
-        "12 kelime yazmak zahmetli geliyorsa: ifadeyi tek dokunuşla parola yöneticinize kaydedebilirsiniz (Ayarlar > Güvenlik > Kurtarma ifadeniz) ve giriş yapmak diğer tüm girişler gibi hissettirir. Tanıdık bir akış mı istiyorsunuz? Google, Apple veya GitHub ile giriş de var; arka planda yine bir ifadeniz olur."
+        "Ayrıca kaybedebileceğimiz bir parola da yok. Parolayla giriş, sunucunun en azından bir parola özeti saklaması demektir; bu özet sızdırılabilir, kırılabilir ya da oltalamayla alınabilir. Kendi saklamada ifadeniz cihazınızdan hiç çıkmaz: şifreleme anahtarlarınızı yerelde türetir ve sunucu yalnızca şifreli veriyi görür. Çalınacak bir özet yok, saldırganın istismar edeceği bir parola sıfırlama akışı da yok.",
+        "12 kelime yazmak zahmetli geliyorsa: ifadeyi tek dokunuşla parola yöneticinize kaydedebilirsiniz (Ayarlar > Güvenlik > Kurtarma ifadeniz) ve giriş yapmak diğer tüm girişler gibi hissettirir. Tanıdık bir akış mı istiyorsunuz? Google, Apple veya GitHub ile giriş de var: arka planda yine bir ifadeniz olur ve cihazınızda mı kalacağını yoksa bizim mi saklayacağımızı siz seçersiniz."
       ]
     },
     "threat-model-levels": {
       "q": "Kolaylık ile gizlilik arasındaki dengeyi kendim seçebilir miyim?",
       "a": [
-        "Evet, bilerek öyle. Herkesin savunduğu tehditler aynı değil, bu yüzden hesap modeli tek bir dogma değil, bir merdiven. Her basamak notlarınızı uçtan uca şifreli tutar; değişen şey, anahtarı kimin tuttuğu ve sizin hakkınızda ne bildiğimiz.",
-        "Kolay uç: Google, Apple veya GitHub ile giriş yapın ve sorulduğunda “Basit ve pratik olsun”u seçin. Kurtarma ifadenizi sizin adınıza, sunucumuzda şifreli olarak saklarız; böylece her cihaz yalnızca o girişle açılır ve yedeklenecek ya da kaybedilecek bir şey kalmaz. Karşılığında o girişin arkasındaki e-postayı biliriz ve anahtarınızı siz değil biz tutarız. Gerçekçi tehdidiniz hedefli bir sızma değil de kendi giriş bilgilerinizi kaybetmekse, doğru basamak budur.",
+        "Evet, bilerek öyle. Herkesin savunduğu tehditler aynı değil, bu yüzden hesap modeli tek bir dogma değil, bir merdiven. Her basamakta notlarınız cihazınızda şifrelenir; değişen şey, anahtarı kimin tuttuğu ve sizin hakkınızda ne bildiğimiz.",
+        "Kolay uç: Google, Apple veya GitHub ile giriş yapın ve sorulduğunda “Basit ve pratik olsun”u seçili bırakın; o ekran zaten bununla açılır. Kurtarma ifadenizi sizin adınıza, sunucumuzda şifreli olarak saklarız; böylece her cihaz yalnızca o girişle açılır ve yedeklenecek ya da kaybedilecek bir şey kalmaz. Karşılığında o girişin arkasındaki e-postayı biliriz ve anahtarınızı siz değil biz tutarız. Gerçekçi tehdidiniz hedefli bir sızma değil de kendi giriş bilgilerinizi kaybetmekse, doğru basamak budur.",
         "Orta yol: Google, Apple veya GitHub ile giriş yapın ama “Azami güvenlik ve gizlilik”i seçin. İfadeniz sunucularımıza hiç uğramaz ve şifreleme tam anlamıyla sıfır bilgi ilkesine dayanır; yeni cihazlar ifadeyi ya da zaten giriş yapmış bir cihazdan QR taramasını ister. O girişin e-postasını yine zorunlu olarak biliriz, ama zorlansak bile tek bir notu okuyamayız.",
         "Gizli uç: girişleri tamamen atlayın ve yalnızca 12 kelimelik ifadeyi kullanın. E-posta yok, isim yok, kimlik yok; [anonim bir Pro satın alımıyla](/tr/help/buy-pro-anonymously/) birleştiğinde ödeme bile hiçbir yerde isim bırakmaz. Karşılığında anahtarın sorumluluğu tümüyle sizde: giriş yapmış bir cihaz kalmadan ifadeyi kaybederseniz kimse yardım edemez.",
-        "Seçtiğiniz basamağa mahkûm değilsiniz. Ayarlar > Güvenlik > Kurtarma ifadeniz her iki modu, neye mal olduklarıyla birlikte yan yana gösterir ve istediğiniz zaman iki yöne de geçebilirsiniz. Anahtarı kendi sorumluluğunuza almak bizdeki kopyayı siler ve önce on iki kelimenizden üçünü yeniden yazmanızı ister, çünkü o düğmeye basma ihtimali en yüksek kişiler onları hiç yazmamış olanlardır. Geri dönmek ifadeyi tekrar yükler ve açık bir tercih gerektirir. Her iki yön de kendi hesap anahtarınızla imzalanır, yani çalınmış bir oturum sorumluluk modunuzu değiştiremez. Ve her basamak yerel katmanları üstüne ekleyebilir: PIN'li uygulama kilidi, biyometrik kilit açma ve not başına koruma."
+        "Google, Apple veya GitHub girişiyle seçtiğiniz basamağa mahkûm değilsiniz. Ayarlar > Güvenlik > Kurtarma ifadeniz her iki modu, neye mal olduklarıyla birlikte yan yana gösterir ve istediğiniz zaman iki yöne de geçebilirsiniz. Kendi saklamaya geçmek bizdeki kopyayı siler ve önce on iki kelimenizden üçünü yeniden yazmanızı ister, çünkü o düğmeye basma ihtimali en yüksek kişiler onları hiç yazmamış olanlardır. Geri dönmek ifadeyi tekrar yükler ve açık bir tercih gerektirir. Her iki yön de kendi hesap anahtarınızla imzalanır, yani çalınmış bir oturum saklama modunuzu değiştiremez. Yalnızca ifadeyle açılmış bir hesap gizli uçta kalır, çünkü saklanan bir anahtarı getirecek bir giriş yoktur. Ve her basamak yerel katmanları üstüne ekleyebilir: PIN'li uygulama kilidi, biyometrik kilit açma ve not başına koruma."
       ]
     },
     "twelve-word-phrase": {
@@ -159,7 +159,7 @@
     "no-ai": {
       "q": "PrivacyNotes notlarımda yapay zekâ kullanıyor mu?",
       "a": [
-        "Hayır. Uygulamada yapay zekâ özelliği yok, arka planda çalışan bir yapay zekâ işlemi yok ve içeriğinizle model eğitimi yok. Notlarınız cihazınızdan çıkmadan önce şifrelenir, yani sunucularımızda bir şeye beslenecek okunabilir hiçbir şey yok.",
+        "Hayır. Uygulamada yapay zekâ özelliği yok, arka planda çalışan bir yapay zekâ işlemi yok ve içeriğinizle model eğitimi yok. Notlarınız cihazınızda da sunucuya giderken de her zaman şifrelidir, yani sunucularımızda bir şeye beslenecek okunabilir hiçbir şey yok.",
         "Bu yönde bir özellik çıkarırsak, tamamen cihazınızda çalışması ve kesinlikle isteğe bağlı olması gerekir. Düz metin notları bir bulut modeline göndermek sıfır bilgi sözünü bozardı, o yüzden gündemde değil."
       ]
     },
@@ -188,7 +188,7 @@
       "q": "Kurtarma ifademi kaybettim. Hesabımı kurtarabilir misiniz?",
       "a": [
         "Hâlâ herhangi bir cihazda giriş yapmış durumdaysanız: evet, kendiniz kurtarabilirsiniz. Ayarlar > Güvenlik > Kurtarma ifadeniz bölümünü açın ve hemen şimdi parola yöneticinize kaydedin.",
-        "Giriş yapmış bir cihazınız ve ifadeniz yoksa: hayır, kimse yapamaz. İfadeniz sunucularımıza hiç ulaşmaz, yani sıfırlanacak bir şey ve yardımcı olabilecek bir destek talebi yok. Bu esnetebileceğimiz bir politika değil - uçtan uca şifrelemenin anlamı bu. Tam bir kayıptan sonra şifreli verinizi geri getirebilen her hizmet, anahtarlarınızı elinde tutuyordur.",
+        "Giriş yapmış bir cihazınız ve ifadeniz yoksa, bu anahtarı kimin tuttuğuna bağlıdır. Google, Apple veya GitHub ile kaydolurken anahtarı bizim saklamamıza izin verdiyseniz, o girişle oturum açın ve içeridesiniz. Kendi saklamada ise kimse yapamaz: ifadeniz sunucularımıza hiç ulaşmaz, yani sıfırlanacak bir şey ve yardımcı olabilecek bir destek talebi yok. Tam bir kayıptan sonra şifreli verinizi geri getirebilen her hizmet, anahtarlarınızı elinde tutuyordur.",
         "Çözümü on saniye sürüyor: hesabınızı oluşturduğunuz gün ifadeyi bir parola yöneticisinde saklayın. İfade çoktan gittiyse ve bir depolama paketi ödüyorsanız, faturayı doğrudan Paddle keser ve paketi ifadeniz olmadan iptal edebilir: bkz. [paketi değiştirme veya iptal etme](/tr/help/manage-storage-addon/)."
       ]
     },
@@ -223,14 +223,14 @@
     "offline": {
       "q": "PrivacyNotes çevrimdışı çalışır mı?",
       "a": [
-        "Evet. Uygulama yerel öncelikli: notlarınız cihazınızdaki bir veritabanında durur, yani okuma, yazma ve arama bağlantı olmadan çalışır. Değişiklikler siz tekrar çevrimiçi olduğunuzda otomatik eşitlenir."
+        "Evet. Uygulama yerel öncelikli: notlarınız cihazınızdaki bir veritabanında durur, yani okuma, yazma ve arama bağlantı olmadan çalışır. Değişiklikler siz tekrar çevrimiçi olduğunuzda otomatik eşitlenir; çevrimdışıyken eklediğiniz bir resim ya da dosya da bu cihazda bekler ve o zaman yüklenir."
       ]
     },
     "sync-conflicts": {
       "q": "Aynı notu iki cihazda aynı anda düzenlersem ne olur?",
       "a": [
-        "Hiçbir şey sessizce üzerine yazılmaz. İki cihaz da ayrıyken aynı notu değiştirdiyse (diyelim biri çevrimdışıydı), uygulama tekrar eşitlendiklerinde çakışmayı fark eder ve bir çakışma penceresi gösterir: bu cihazdaki sürümü tut, diğerini tut ya da ikisini ayrı notlar olarak sakla.",
-        "Günlük kullanımda bunu nadiren görürsünüz. Çevrimiçiyken düzenlemeler saniyeler içinde eşitlenir ve pencere yalnızca aynı notun iki sürümü gerçekten ayrıştığında çıkar."
+        "Cihazlarınız tekrar eşitlendiğinde notu ayrıntı ayrıntı birleştirir, böylece yalnızca birinde yapılan bir değişiklik korunur. İkisi de ayrıyken metni düzenlediyse (diyelim biri çevrimdışıydı), ikinci sırada eşitlenen cihaz bir çakışma penceresi gösterir: bu cihazdaki sürümü tut, diğerini tut ya da ikisini ayrı notlar olarak sakla. Siz seçim yapana kadar iki sürüm de korunur.",
+        "İki cihaz da ayrıyken sabitleme, klasör ya da başlık gibi aynı ayrıntıyı değiştirdiğinde, pencere çıkmadan notu en son düzenleyen cihazdan gelen ayrıntı korunur. Bir cihazda kalıcı olarak silinen not her yerden silinir; cihazlar ayrıyken başka bir cihazın o notta yaptığı düzenleme de buna dahildir."
       ]
     },
     "remove-device": {
@@ -244,8 +244,8 @@
       "q": "Verilerim nerede saklanıyor?",
       "a": [
         "Önce cihazınızda ve asıl çalıştığınız kopya odur: uygulama yerel öncelikli, yani notlarınız çevrimdışıyken de açılır ve düzenlenir. Eşitleme kopyası İsviçre'nin Zürih şehrindeki sunucularda durur. Orada duran şey açık anahtarınız, notlarınızın, dosyalarınızın ve ayarlarınızın şifreli blobları, bir de eşitlemenin ihtiyaç duyduğu zaman damgaları ile boyutlardır. Başlık yok, metin yok, etiket yok.",
-        "Ülke, şifrelemeden daha az önemli. Her şey cihazınızdan çıkmadan önce cihazınızda şifrelenir, yani o kopya nerede dursa okunamaz olurdu: İsviçre bir ekstra, verilen söz değil. [Neler eşitlenir](/tr/help/what-syncs/) bunu tek tek sayıyor.",
-        "Cihazınızdaki kopya da şifrelidir. Notlar, kilidi açtığınızda kurtarma ifadenizden türetilen bir anahtarla diskte mühürlenir; bu yüzden kopyalanmış bir tarayıcı profili, bir depolama dökümü ya da çalınmış bir yedek, notlarınızı değil şifreli veriyi taşır."
+        "Ülke, şifrelemeden daha az önemli. Her şey cihazınızda da sunucuya giderken de her zaman şifrelidir, yani o kopya nerede dursa okunamaz olurdu: İsviçre bir ekstra, verilen söz değil. [Neler eşitlenir](/tr/help/what-syncs/) bunu tek tek sayıyor.",
+        "Cihazınızdaki kopya da şifrelidir. Notlar, kilidi açtığınızda kurtarma ifadenizden türetilen bir anahtarla diskte mühürlenir; bu yüzden cihazınızdaki uygulama depolamasının bir kopyası ya da onun çalınmış bir yedeği, notlarınızı değil şifreli veriyi taşır."
       ]
     },
     "data-on-disk": {
@@ -253,28 +253,28 @@
       "a": [
         "Kurulum başına tek bir klasörde, hesabınızın uygulama verisi alanında. Bu klasörün yeri platforma göre değişir:",
         "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, AppImage için `app.privacynotes.appimage`; AppImage kendi web motorunu taşıdığı için kendi profilini de ayrı tutar\n- **Android, iOS**: uygulamanın özel deposu, başka hiçbir uygulama açamaz\n- **Tarayıcı**: `use.privacynotes.app` altındaki tarayıcı profiliniz",
-        "Orada duran şey şifreli veridir. Her not, başlığı, metni ve etiketleri içinde taşıyan mühürlü tek bir bloktur ve kilidi açtığınızda kurtarma ifadenizden türetilen bir anahtarla açılır. Açıkta yalnızca yerel dizinin ihtiyaç duyduğu şeyler kalır: kimlikler, zaman damgaları ve favori ya da silinmiş gibi işaretler.",
+        "Orada duran şey şifreli veridir. Her not, başlığı, metni ve etiketleri içinde taşıyan mühürlü tek bir bloktur ve kilidi açtığınızda kurtarma ifadenizden türetilen bir anahtarla açılır; bu yüzden kopyalanan bir klasörde okunabilir hiçbir şey olmaz. Açıkta yalnızca yerel dizinin ihtiyaç duyduğu şeyler kalır: kimlikler, zaman damgaları, öğenin türü ve sabitlenmiş ya da silinmiş gibi işaretler.",
         "Notlarınızı başka bir cihaza taşımak ya da kendinize bir kopya saklamak için **Ayarlar > Import & Export > Dışa aktar** altından “Şifreli tam yedek (.pnbackupz)” dosyasını seçin. Her şeyi içerir, ifade anahtarınızla şifrelenir ve ifadenizle her cihazda geri yüklenir. [Yedekler hakkında daha fazlası](/tr/help/backup-strategy/)"
       ]
     },
     "export": {
       "q": "Notlarımı dışa aktarabilir miyim, yoksa kilitli miyim?",
       "a": [
-        "Her şeyi istediğiniz zaman dışa aktarabilirsiniz ve hepsi cihazınızda üretilir: ekleriyle birlikte zip içinde Markdown dosyaları, tam bir JSON yedeği ya da kendi kendine yeten HTML - not başına veya tüm hesap için. Kasa öğelerinin kendi yolu var: “Kasa dışa aktarımı (.json)” Bitwarden biçiminde yazar ve kullanıcı adlarınızı, parolalarınızı, adreslerinizi, kart bilgilerinizi ve 2FA anahtarlarınızı Bitwarden, 1Password veya KeePass tarafına taşır.",
-        "Hepsi Ayarlar > Import & Export > Export altında. İçe aktarma da aynı şekilde çalışır: Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden ve daha fazlası. Tam liste [başka bir uygulamadan taşınma](/tr/help/import-from-other-apps/) sayfasında. Sizi kilitlemek iş modelimizin parçası değil."
+        "Her şeyi istediğiniz zaman dışa aktarabilirsiniz ve hepsi cihazınızda üretilir: ekleriyle birlikte zip içinde Markdown dosyaları, düz JSON ya da kendi kendine yeten HTML - not başına veya tüm hesap için. Zip, “PrivacyNotes yedeği (.zip)” biçimidir ve şifreli yedekler gibi geri yüklenebilir; JSON ve HTML okumak ve bir sonraki uygulamanız içindir. Kasa öğelerinin kendi yolu var: “Kasa dışa aktarımı (.json)” Bitwarden biçiminde yazar ve kullanıcı adlarınızı, parolalarınızı, adreslerinizi, kart bilgilerinizi ve 2FA anahtarlarınızı Bitwarden, 1Password veya KeePass tarafına taşır.",
+        "Hepsi Ayarlar > Import & Export > Dışa aktar altında. İçe aktarma da aynı şekilde çalışır: Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden ve daha fazlası. Tam liste [başka bir uygulamadan taşınma](/tr/help/import-from-other-apps/) sayfasında. Sizi kilitlemek iş modelimizin parçası değil."
       ]
     },
     "attachment-limits": {
       "q": "Hangi dosyaları ekleyebilirim ve ne kadar büyük olabilirler?",
       "a": [
-        "Her dosya türü: görseller, PDF'ler, ses, arşivler, aklınıza ne gelirse. Her dosya tıpkı not metni gibi cihazınızda şifrelenip yüklenir ve Dosyalar görünümü tüm ekleri tek yerde toplar.",
+        "Her dosya türü: görseller, PDF'ler, ses, arşivler, aklınıza ne gelirse. Her dosya, tıpkı not metni gibi, cihazınızda da sunucuya giderken de her zaman şifrelidir; Dosyalar görünümü ise tüm ekleri tek yerde toplar.",
         "Dosya başına sınır ücretsiz planda 5 MB, Pro'da 50 MB'tır. Dosyalar toplam eşitleme depolamanızdan düşer (ücretsizde 50 MB, Pro'da 500 MB, depolama paketleriyle 5,5 GB'a kadar genişletilebilir) ve Ayarlar > Depolama'daki çubuk nerede olduğunuzu her zaman gösterir."
       ]
     },
     "vault": {
       "q": "Kasa nedir?",
       "a": [
-        "Kasa, yapılandırılmış sırlar için ayrılmış bir bölümdür: kullanıcı adı ve parolalı girişler, kredi ve banka kartları ve SSH anahtarları. Girdiler serbest metin yerine düzgün alanlar alır, girişler site simgesini gösterir ve her şey verilerinizin geri kalanı gibi uçtan uca şifrelidir.",
+        "Kasa, yapılandırılmış sırlar için ayrılmış bir bölümdür: kullanıcı adı ve parolalı girişler, kredi ve banka kartları ve SSH anahtarları. Girdiler serbest metin yerine düzgün alanlar alır, girişler site simgesini gösterir ve her şey verilerinizin geri kalanı gibi cihazınızda şifrelenir.",
         "Yoksa notlara dağılıp giden birkaç kimlik bilgisine derli toplu, korumalı bir yuva verir. En hassas girdileriniz için ikinci bir kapı olarak uygulama kilidi ve PIN korumasıyla birlikte kullanın. Bir Bitwarden içe aktarımı doğrudan buraya iner."
       ]
     },
@@ -289,21 +289,21 @@
     "shutdown": {
       "q": "PrivacyNotes kapanırsa notlarıma ne olur?",
       "a": [
-        "Hiçbir şey kaybetmezsiniz. Uygulama yerel öncelikli olduğu için veri kümesinin tamamı zaten cihazınızda ve Markdown, JSON veya HTML'e dışa aktarma tamamen çevrimdışı çalışır.",
+        "Onlar sizde kalır. Uygulama yerel öncelikli olduğu için notlarınız, görevleriniz, günlük kayıtlarınız ve kasa öğeleriniz cihazınızda durur ve bunları Markdown, JSON veya HTML'e dışa aktarmak çevrimdışı çalışır. Bir resim ya da dosya, onu bir cihazda eklediğiniz ya da açtığınız anda orada kalır; bu cihazın hiç açmadığı biri ise siz açtığınızda indirilir. Bu yüzden tam bir yedek alın: bu cihazda eksik olan her resmi ve dosyayı indirir ve indirilemeyen olursa bunu söyler.",
         "Şifreleme kodu da [açık kaynak](https://github.com/LifetimeLabsDev/PrivacyNotes.app), yani sunucularımızın bir gecede yok olduğu bir dünyada bile format bağımsız olarak okunabilir kalır."
       ]
     },
     "free-vs-pro": {
       "q": "Ücretsizde ne var, Pro'da ne var?",
       "a": [
-        "Ücretsiz sürüm bir tanıtım değil, ürünün tamamı: uçtan uca şifreli notlar, görevler, günlük ve kasa, çevrimdışı kullanım, içe ve dışa aktarma - 2 cihaza kadar ve 50 MB eşitleme depolamasıyla.",
+        "Ücretsiz sürüm bir tanıtım değil, ürünün tamamı: notlar, görevler, günlük ve kasa, hepsi cihazınızda şifreli, çevrimdışı kullanım, içe ve dışa aktarma - 2 cihaza kadar ve 50 MB eşitleme depolamasıyla.",
         "Pro tek seferlik bir satın alımdır ve şunları ekler: sınırsız cihaz, 500 MB eşitleme depolaması (genişletilebilir), not sürüm geçmişi, daha büyük dosya ekleri, not kilitleme ve PIN koruması, gelişmiş sağlık takibi, zen modu ve tüm renk temaları."
       ]
     },
     "one-time-pricing": {
       "q": "Tek seferlik bir ödeme bir eşitleme hizmetini nasıl sonsuza dek finanse edebilir?",
       "a": [
-        "Çünkü hizmeti işletmek bilerek ucuz. Uygulama yerel öncelikli ve notlar küçük şifreli veri yığınları, yani sunucu bunları saklamak ve cihazlarınız arasında iletmekten fazlasını neredeyse hiç yapmıyor. Analitik altyapısı yok, işlemci yakan yapay zekâ özellikleri yok, destek departmanı yok.",
+        "Çünkü hizmeti işletmek bilerek ucuz. Uygulama yerel öncelikli ve notlar küçük şifreli veri yığınları, yani sunucu bunları saklamak ve cihazlarınız arasında iletmekten fazlasını neredeyse hiç yapmıyor. Yazdıklarınız üzerinde analitik yok, piksel ya da üçüncü taraf izleyici yok, işlemci yakan yapay zekâ özellikleri yok, destek departmanı yok.",
         "Zamanla büyüyen tek maliyet depolama ve fiyatı da ona göre: 500 MB'lık dâhil alanın ötesi küçük, yıllık bir ek pakettir. Tek seferlik maliyetler bir kez fiyatlanır, tekrar eden maliyetler tekrar eder. Modelin tek yapması gereken kendini finanse etmek ve ediyor."
       ]
     },
@@ -332,7 +332,7 @@
       "q": "Ödeme yaptığımda hakkımda ne öğreniyorsunuz?",
       "a": [
         "Sandığınızdan azını. Ödeme, kayıtlı satıcı [Paddle](https://www.paddle.com) üzerinden yürür: adınız, kart numaranız ve fatura adresiniz ödeme ve vergi amacıyla Paddle'a gider, sunucularımıza hiç uğramaz.",
-        "Bize ulaşan şey, hesabınızın genel anahtarının artık Pro olduğuna dair bir onay ve sipariş tutarıdır. Ödeme sırasında girdiğiniz makbuz e-postası dâhil, faturalandırma ilişkisi Paddle'da kalır. Yani yalnızca ifadeyle açılmış bir hesap, ödeme yapan bir müşteri olduğunda bile bizim için takma kimlikli kalır: ödediğinizi biliriz, kim olduğunuzu değil."
+        "Fatura bilgileriniz Paddle'da durur; veritabanımıza ulaşan şey genel anahtarınız, tutar ve sipariş kimliğidir, bir depolama paketi için de boyutu ve yenileme tarihleri. Paddle hesabımız iki tarafı da görebilir, ama kim olduğunuza bakmayız. Adınızın satın almayla ilişkilendirilmemesi için [bir e-posta takma adı ve maskeli bir kartla](/tr/help/buy-pro-anonymously/) ödeyin."
       ]
     },
     "buy-pro-anonymously": {
@@ -340,15 +340,15 @@
       "a": [
         "Evet, iki standart araçla. Makbuz için bir e-posta takma adı kullanın: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) ve [addy.io](https://addy.io) gerçek gelen kutunuzu açığa çıkarmadan yönlendirir. Ödeme için maskeli bir kart kullanın: ABD'de [privacy.com](https://privacy.com) yazdığınız her isimle çalışan sanal kartlar üretir, başka ülkelerdeki birçok banka ve hizmet de (örneğin [Revolut](https://www.revolut.com)) aynı işi gören tek kullanımlık sanal kartlar sunar.",
         "Ödeme sırasında Paddle, vergiyi hesaplamak için bir e-posta, bir ödeme yöntemi ve bir ülke (bazı bölgelerde ayrıca bir posta kodu) ister. Takma ad makbuzu alır, maskeli kart ona verdiğiniz ismi taşır ve vergi konumu sizi bir bölgeye kadar daraltır, fazlasına değil. Yine de takma adı canlı tutun: makbuz e-postası hem satın alma kanıtınız hem de iade kanalınızdır.",
-        "İfadeyle açılmış bir hesapla birleştiğinde hiçbir taraf resmin tamamını görmez: bankanız bir kart yüklemesi görür, Paddle bir takma ad ve maskeli bir kart görür, biz ise yalnızca bir genel anahtarın Pro olduğunu görürüz."
+        "İfadeyle açılmış bir hesapla birleştiğinde hiçbir taraf resmin tamamını görmez: bankanız bir kart yüklemesi görür, Paddle bir takma ad ve maskeli bir kart görür, biz ise Pro olan bir genel anahtarı, Paddle hesabımızda o takma adın yanında görürüz."
       ]
     },
     "platforms": {
       "q": "PrivacyNotes hangi platformlarda çalışıyor?",
       "a": [
-        "Web, macOS, Windows, Linux, iOS ve Android. Her uygulama aynı çekirdekten, aynı uçtan uca şifrelemeyle üretilir ve aynı hesap üzerinden eşitlenir. [İndirmeler bölümünde](https://privacynotes.app/tr#downloads) her zaman en güncel sürümler bulunur.",
-        "Yerel uygulamalar macOS 13 veya üzeri, Windows 10 veya üzeri, iOS 15 veya üzeri, Android 7.0 veya üzeri ya da webkit2gtk 4.1 içeren bir Linux sürümü (Ubuntu 22.04+, Debian 12+ veya eşdeğeri) gerektirir. Bu sürümlerin altında uygulama kurulmaz ya da açılmaz, o yüzden web uygulamasını kullanın.",
-        "Web uygulaması bir yedek çözüm değil, tam donanımlı bir uygulamadır: verilerinizin tam bir yerel kopyasını tutar ve çevrimdışı çalışır, yani modern her tarayıcı her zaman bir giriş yoludur."
+        "Web, macOS, Windows, Linux, iOS ve Android. Her uygulama aynı çekirdekten üretilir, notlarınızı cihazınızda aynı şekilde şifreler ve aynı hesap üzerinden eşitlenir. [İndirmeler bölümünde](https://privacynotes.app/tr#downloads) her zaman en güncel sürümler bulunur.",
+        "Yerel uygulamalar macOS 13 veya üzeri, Windows 10 veya üzeri, iOS 17.4 veya üzeri, Android 7.0 veya üzeri ya da webkit2gtk 4.1 içeren bir Linux sürümü (Ubuntu 22.04+, Debian 12+ veya eşdeğeri) gerektirir. Bu sürümlerin altında uygulama kurulmaz ya da açılmaz, o yüzden web uygulamasını kullanın.",
+        "Web uygulaması bir yedek çözüm değil, tam donanımlı bir uygulamadır: notlarınızı cihazınızda tutar ve çevrimdışı çalışır, yani modern her tarayıcı her zaman bir giriş yoludur."
       ]
     },
     "feature-requests": {
@@ -381,14 +381,14 @@
     "languages": {
       "q": "Uygulama hangi dilleri konuşuyor?",
       "a": [
-        "İngilizce, Almanca, Fransızca, İtalyanca, İspanyolca, Felemenkçe, Lehçe, Çekçe, Katalanca, Türkçe, İsveççe, Japonca, Korece, Geleneksel Çince, Arapça ve hem Avrupa hem Brezilya varyantıyla Portekizce. Uygulama varsayılan olarak sistem dilinizi izler ya da her cihazda Ayarlar > Dil altında bir dili sabitleyebilirsiniz.",
+        "İngilizce, Almanca, Fransızca, İtalyanca, İspanyolca, Felemenkçe, Lehçe, Çekçe, Katalanca, Türkçe, İsveççe, Ukraynaca, Rusça, Japonca, Korece, Geleneksel Çince, Tayca, Arapça ve hem Avrupa hem Brezilya varyantıyla Portekizce. Uygulama varsayılan olarak sistem dilinizi izler ya da her cihazda Ayarlar > Dil altında bir dili sabitleyebilirsiniz.",
         "Çeviriler bir Pro ayrıcalığı değil, herkes için ücretsiz. Daha fazla dil planlanıyor; sizinki eksikse [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) veya [Reddit](https://www.reddit.com/r/PrivacyNotes/) üzerinden bize söyleyin."
       ]
     },
     "translation-quality": {
       "q": "Uygulamanın çevirileri nasıl yapılıyor?",
       "a": [
-        "İngilizceyi kendimiz yazıyoruz, diğer bütün diller ise her dil için ayrı yazılmış bir üslup kılavuzuna göre makineyle çevriliyor: doğru üslup, her arayüz terimi için doğru karşılık ve her sürümde otomatik bir denetim; böylece eksik metin kalmıyor ve hiçbir yer sessizce İngilizce kalmıyor. Çeviriler her planda vardır, hiçbir zaman Pro ek özelliği değildir.",
+        "Önce İngilizceyi yazıyoruz. Ardından bir yapay zekâ ajanı her dili ortak bir sözlüğe göre, o dil için belirlenmiş üslupla çeviriyor ve ikinci bir ajan her grubu yayımlanmadan önce doğruluk, terim ve üslup açısından inceliyor. Ana dili konuşanlar bir örneklemi gözden geçiriyor; önce en yeni diller ile güvenlik, giriş ve ödeme metinleri geliyor. İki otomatik denetim de herhangi bir çeviri eksik ya da güncel değilken derlemeyi durduruyor. Çeviriler her planda vardır, hiçbir zaman Pro ek özelliği değildir.",
         "Herhangi birini iyileştirebilirsiniz. Bir cümle dilinizde kulağa ters geliyorsa [çeviriyi bildirin](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new?template=translation.yml): diliniz, cümlenin göründüğü ekran ve orada ne yazması gerektiği. Düzeltmeler bir sonraki sürümde çıkıyor."
       ]
     },
@@ -396,7 +396,7 @@
       "q": "Düzenleyici hangi Markdown sözdizimini anlıyor?",
       "a": [
         "Standart Markdown siz yazarken canlı biçimlenir: başlıklar, vurgu, üstü çizili ve vurgulu metin, madde işaretli ve numaralı listeler, görev listeleri (Tab ve Shift+Tab her listeyi iç içe yerleştirir, kontrol listeleri dahil), alıntılar, ayırıcılar, satır içi kod ve sözdizimi renklendirmeli kod blokları, satır içi ve blok matematik (KaTeX) ve notlar arasında otomatik tamamlamalı note-link'ler.",
-        "Gerisini biçimlendirme araç çubuğu ve onun Ekle menüsü ekler: tablolar, katlanabilen dokuz tür bilgi kutusu, altı çizili metin, üst simge ve alt simge, metin hizalama, metin ve vurgu renkleri, yazı tipleri, bağlantılar, görseller ve dosya ekleri. Her şey Markdown olarak gidip gelir: herhangi bir notun altındaki “Markdown'ı göster” ham kaynağı açar ve dışa aktarımlar temiz .md dosyalarıdır, yani yazdığınız hiçbir şey tescilli bir formata hapsolmaz."
+        "Gerisini biçimlendirme araç çubuğu ve onun Ekle menüsü ekler: tablolar, katlanabilen bilgi kutuları, altı çizili metin, üst simge ve alt simge, metin hizalama, metin ve vurgu renkleri, yazı tipleri, bağlantılar, görseller ve dosya ekleri. Her şey Markdown olarak gidip gelir: herhangi bir notun altındaki “Markdown'ı göster” ham kaynağı açar ve dışa aktarımlar temiz .md dosyalarıdır, yani yazdığınız hiçbir şey tescilli bir formata hapsolmaz."
       ]
     },
     "tasks": {
@@ -416,7 +416,7 @@
     "bookmarks": {
       "q": "Tarayıcı yer imlerimi PrivacyNotes’a kaydedebilir miyim?",
       "a": [
-        "Evet. Yer imleri kenar çubuğunda kendi başına bir sütun; notların, görevlerin ve günlüklerin yanında durur ve her planda ücretsizdir. Bir bağlantıyı hızlı ekleme çubuğuna yapıştırın, kaydedilsin. Mevcut yer imlerinizi taşımak için tarayıcınızdan bir yer imi dosyası (.html) dışa aktarın ve Ayarlar > Import & Export > İçe aktar > \"Browser bookmarks\" alanına bırakın. Chrome, Firefox, Safari, Edge, Opera, Brave ve Vivaldi aynı dosyayı içerir; klasörleriniz ve tarihleriniz de birlikte gelir. Safari onu bir .zip içine koyar; o .zip'i açmadan bırakabilirsiniz.",
+        "Evet. Yer imleri kenar çubuğunda kendi başına bir sütun; notların, görevlerin ve günlüklerin yanında durur ve her planda ücretsizdir. Bir bağlantıyı hızlı ekleme çubuğuna yapıştırın, kaydedilsin. Mevcut yer imlerinizi taşımak için tarayıcınızdan bir yer imi dosyası (.html) dışa aktarın ve Ayarlar > Import & Export > İçe aktar > \"Tarayıcı yer imleri\" alanına bırakın. Chrome, Firefox, Safari, Edge, Opera, Brave ve Vivaldi aynı dosyayı içerir; klasörleriniz ve tarihleriniz de birlikte gelir. Safari onu bir .zip içine koyar; o .zip'i açmadan bırakabilirsiniz.",
         "Adresleriniz cihazınızdan hiç çıkmaz: bir bağlantının arkasındaki sayfayı getirmeyiz, bu yüzden elle eklediğiniz bir yer imi siz bir ad yazana kadar alan adını taşır. Site simgeleri tek istisnadır ve onları kapatabilirsiniz. Dışa aktarma da aynı standart dosyayı yazar, yani yer imleriniz geldikleri kolaylıkla çıkar ([içe aktarma kılavuzu](/tr/help/import/browser-bookmarks/))."
       ]
     },
@@ -424,7 +424,7 @@
       "q": "PrivacyNotes’ta bir adres defteri tutabilir miyim?",
       "a": [
         "Evet. Kişiler kenar çubuğunda kendi başına bir sütun; notların, görevlerin ve günlüklerin yanında durur ve her planda ücretsizdir. Bir kişi kaydı adları, numaraları, e-postaları, adresleri, siteleri, tarihleri, bir şirketi ve bir notu taşır. Aramak için numaraya, yazmak için e-posta adresine, kopyalamak için herhangi bir satıra dokunun. Telefonunuzun dosyaya yazdığı diğer her şey **Bu dosyada ayrıca** altında kalır ve dışa aktarırken geri yazılır.",
-        "Mevcut kişilerinizi taşımak için telefonunuzdan, Mac’inizden ya da Google Kişiler’den bir vCard (.vcf) dışa aktarın ve Ayarlar > Import & Export > İçe aktar > \"Contacts (vCard)\" alanına bırakın. Aynı dosyayı sonra bir kez daha bıraktığınızda, zaten kayıtlı olan kişiler kopyalanmaz, eşleştirilir. Dışa aktarma standart bir vCard yazar; böylece adres defteriniz girdiği kolaylıkla çıkar ([içe aktarma hakkında daha fazlası](/tr/help/import-from-other-apps/))."
+        "Mevcut kişilerinizi taşımak için telefonunuzdan, Mac’inizden ya da Google Kişiler’den bir vCard (.vcf) dışa aktarın ve Ayarlar > Import & Export > İçe aktar > \"Kişiler (vCard)\" alanına bırakın. Aynı dosyayı sonra bir kez daha bıraktığınızda, zaten kayıtlı olan kişiler kopyalanmaz, eşleştirilir. Dışa aktarma standart bir vCard yazar; böylece adres defteriniz girdiği kolaylıkla çıkar ([içe aktarma hakkında daha fazlası](/tr/help/import-from-other-apps/))."
       ]
     },
     "what-to-keep": {
@@ -438,7 +438,7 @@
     "keyboard-shortcuts": {
       "q": "Hangi klavye kısayolları var?",
       "a": [
-        "Uygulamanın herhangi bir yerinde ? tuşuna basın, yerleşik kısayol kartı açılır; Ayarlar > Hakkında ve Yardım altında da bulunur. Kısayollar gezinmeyi, not işlemlerini, biçimlendirmeyi ve görünümleri kapsar - Windows ve Linux'ta her Cmd Ctrl, her Option Alt olarak okunur.",
+        "Uygulamanın herhangi bir yerinde ? tuşuna basın, yerleşik kısayol kartı açılır; Ayarlar > Hakkında altında da bulunur. Kısayollar gezinmeyi, not işlemlerini, biçimlendirmeyi ve görünümleri kapsar - Windows ve Linux'ta her Cmd Ctrl, her Option Alt olarak okunur.",
         "Temel olanlar: Cmd+K aramaya odaklanır, J ve K listede gezinir, Alt+Shift+N yeni not başlatır, Cmd+Backspace seçili notu çöpe atar, Cmd+, Ayarlar'ı açar. Yazarken: Cmd+B kalın, Cmd+I italik, Cmd+Shift+K bağlantı ekler, Cmd+Shift+9 görev listesi başlatır, Cmd+F notta arar, Cmd+Shift+O ana hattı açıp kapatır. Cmd+\\ kenar çubuğunu gizler, Cmd+Shift+L temayı değiştirir, Cmd+Shift+F zen moduna girer (Pro) ve Esc neredeyse her şeyden geri çıkmanızı sağlar."
       ]
     },
@@ -446,7 +446,7 @@
       "q": "Kısayolların yazdırılabilir bir kartı var mı?",
       "a": [
         "Evet. [Yazdırılabilir kısayol kartı](/help/keyboard-shortcuts/cheat-sheet) tüm kısayolları tek bir A4 sayfasında, iki sütun halinde toplar - ekranınızın yanına asmaya hazır. Uygulamanın gösterdiği listeden üretilir, bu yüzden hiçbir sürümün gerisinde kalamaz.",
-        "Kartı açın ve Yazdır düğmesine basın (veya Cmd+P / Ctrl+P). Kâğıt yerine dosya isterseniz yazdırma penceresinde hedef olarak PDF'yi seçin. Kart ayrıca uygulamadaki kısayol listesinin (Ayarlar > Hakkında ve Yardım > Kısayollar) üstünden ve altından, bir de bu sitenin alt bilgisinden bağlantılıdır."
+        "Kartı açın ve Yazdır düğmesine basın (veya Cmd+P / Ctrl+P). Kâğıt yerine dosya isterseniz yazdırma penceresinde hedef olarak PDF'yi seçin. Kart ayrıca uygulamadaki kısayol listesinin (Ayarlar > Hakkında > Kısayollar) üstünden ve altından, bir de bu sitenin alt bilgisinden bağlantılıdır."
       ]
     },
     "ask-an-ai": {
@@ -460,14 +460,14 @@
     "locked-vs-protected": {
       "q": "Salt okunur notlarla PIN korumalı notlar arasındaki fark nedir?",
       "a": [
-        "“Salt okunur” (not seçenekleri menüsünde, Pro) bir notu düzenlemeye karşı kilitler, böylece bitmiş bir belge yanlışlıkla bozulmaz; hiçbir şeyi gizlemez. “Koru” (aynı menü, Pro) ise notun başlığını ve içeriğini PIN'inizin veya biyometrik kilit açmanızın arkasına saklar; başkalarının da ara sıra gördüğü bir ekranda görünmesini istemediğiniz şeyler için.",
+        "“Salt okunur” (not seçenekleri menüsünde, Pro) bir notu düzenlemeye karşı kilitler, böylece bitmiş bir belge yanlışlıkla bozulmaz; hiçbir şeyi gizlemez. “Koru” (aynı menü, Pro) ise notun içeriğini PIN'inizin veya biyometrik kilit açmanızın arkasına saklar; başkalarının da ara sıra gördüğü bir ekranda görünmesini istemediğiniz şeyler için. Başlığı listede görünür kalır, bu yüzden sırrı başlığa yazmayın.",
         "İkisi de ekran için birer kapıdır, ikinci bir şifreleme katmanı değil. Bu işaretler notun şifreli verisinin içinde taşınır ve not bilerek PIN'inizle yeniden şifrelenmez: böylece unutulan bir PIN hiçbir zaman veri yok edemez. Asıl sınır ifade olarak kalır: önce onu koruyun, bu kapıları da başkalarının ara sıra gördüğü ekran için kullanın."
       ]
     },
     "biometric-unlock": {
       "q": "Biyometrik kilit açma çalışmayı bıraktı. Ne yapabilirim?",
       "a": [
-        "Asla dışarıda kalmazsınız. Kilit ekranı her zaman bir geri dönüş sunar: “PIN ile aç” ya da “Kurtarma ifadesiyle giriş yap”. Biyometri yerel bir kapıdır, şifreleme anahtarı değil, yani notlarınız her hâlükârda el değmemiş kalır.",
+        "Asla dışarıda kalmazsınız. Kilit ekranı her zaman bir geri dönüş sunar: “PIN ile kilidi aç” ya da “Kurtarma ifadesiyle giriş yap”. Biyometri yerel bir kapıdır, şifreleme anahtarı değil, yani notlarınız her hâlükârda el değmemiş kalır.",
         "Sonra kapıyı onarın. Kayıt cihaz başınadır, yani yeni bir telefon, yeni bir tarayıcı profili veya yeniden kurulum yeniden kayıt ister: Ayarlar > Güvenlik > “Biyometrik kilit”, kapatın, sonra tekrar “Biyometrik kilit açmayı etkinleştir”. Ayrıca “Bu cihaza güven” gerekir (güvenilmeyen oturumlar sekme kapanınca temizlenir) ve platform doğrulayıcısı olan bir donanım (Touch ID, Face ID, Windows Hello). Sistem istemi yerine Bitwarden ya da 1Password gibi bir parola yöneticisi açılırsa onu kapatıp tekrar deneyin veya o site için geçiş anahtarı yakalamasını kapatın - uygulama yerleşik doğrulayıcıyı ister, ama bazı yöneticiler yine de araya girer."
       ]
     },
@@ -512,7 +512,7 @@
       "q": "Bir yedeği nasıl geri yüklerim?",
       "a": [
         "Ayarlar > Import & Export > Geri yükle bölümünü açın ve elinizdeki biçimi seçin. \"Tam yedek (.zip)\" dışa aktarmanın tamamını alır: notlar, günlükler, kasa ögeleri, görevler, görseller, ses ve dosyalar. \"Şifreli yedek (.pnbackup, .pnbackupz)\" iki şifreli dışa aktarmayı da alır. Dosyanız cihazınızda okunup çözülür ve geri yükleme her planda ücretsizdir.",
-        "Her şey yeni öge olarak gelir ve elinizdeki hiçbir şeyin üzerine yazılmaz; bu yüzden aynı dosyayı iki kez geri yüklerseniz her notun iki kopyası olur. Her iki şifreli biçim de yalnızca onları oluşturan hesapta açılır, çünkü o hesabın söz öbeği anahtarıyla şifrelenmiştir; .zip ise her kasaya girer ([hangi yedeği almalı](/tr/help/backup-strategy/))."
+        "Geri yükleme notları kimliklerine göre eşleştirir. Zaten sahip olduğunuz bir not yalnızca yedekteki kopya daha yeniyse güncellenir, çöp kutusundaki bir not oradan geri alınır, sizde olmayan bir not bir kez eklenir ve aynı dosyayı yeniden geri yüklemek, arada geri yüklenmiş bir notu düzenlemediyseniz hiçbir şeyi değiştirmez; düzenlediyseniz eski kopya düzenlemenizin yanına geri gelir. Bizim kimliklerimizi taşımayan bir dosya, yani başka bir uygulamadan ya da bu uygulamanın eski bir sürümüyle alınmış bir yedekten gelen dosya, notlarını her seferinde yeni not olarak ekler. Her iki şifreli biçim de yalnızca onları oluşturan hesapta açılır, çünkü o hesabın ifade anahtarıyla şifrelenmiştir; .zip ise her kasaya girer ([hangi yedeği almalı](/tr/help/backup-strategy/))."
       ]
     },
     "image-quality": {
@@ -533,14 +533,14 @@
       "q": "Dosya yüklemem neden başarısız oldu?",
       "a": [
         "Hata, hangi tavana çarptığınızı söyler. Dosya başına: Ücretsizde 5 MB, Pro'da 50 MB, herhangi bir depolama paketiyle 100 MB. Toplamda: eşitlediğiniz her şey hesabınızın depolamasına sığmalıdır (Ücretsizde 50 MB, Pro'da 500 MB, paketlerle daha fazlası), yani dolu bir kota, dosya küçük olsa bile yüklemeyi başarısız kılar. Her dosya türü kabul edilir.",
-        "Dosyalar görünümündeki ya da Ayarlar > Depolama altındaki depolama çubuğunu kontrol edin, sonra en ucuz çözümü seçin: [yer açın](/tr/help/storage-usage/), yükseltin ya da dosyayı küçültün (telefon fotoğrafları çoğu zaman birkaç MB'lık orijinallerdir; sıkıştırılmış bir JPEG bunun küçük bir kesridir). Yüklemeler ayrıca bağlantı ister: dosyalar çevrimdışıyken sıraya girmez."
+        "Dosyalar görünümündeki ya da Ayarlar > Depolama altındaki depolama çubuğunu kontrol edin, sonra en ucuz çözümü seçin: [yer açın](/tr/help/storage-usage/), yükseltin ya da dosyayı küçültün (telefon fotoğrafları çoğu zaman birkaç MB'lık orijinallerdir; sıkıştırılmış bir JPEG bunun küçük bir kesridir). Bağlantı olmadığı için başarısız olan bir yükleme kaybolmaz, bekletilir: dosya bu cihazda kalır ve tekrar çevrimiçi olduğunuzda kendiliğinden yüklenir; o zamana kadar Ayarlar > ID & Sync onu bekleyen olarak sayar."
       ]
     },
     "trash-auto-delete": {
       "q": "Notlar çöp kutumdan neden kayboldu?",
       "a": [
-        "Çöp kutusu bir arşiv değildir: varsayılan olarak içindeki her şey 30 gün sonra kalıcı olarak silinir. Bu seçenek, Çöp kutusu görünümünün kendisinde “30 gün sonra otomatik silinir” etiketiyle duruyor - çöpün sonsuza dek kalmasını istiyorsanız oradan kapatın; ayar tüm cihazlarınıza eşitlenir. Temizlik uygulama açıldığında cihazınızda çalışır, çünkü sunucu hangi şifreli notların çöpte olduğunu göremez.",
-        "Kalıcı silme gerçekten gitti demektir: sunucuda kopya yok, geri dönüş yolu yok. Çöp kutusunu “belki bir gün” yığını olarak kullanıyorsanız otomatik silmeyi kapatın ya da notları 30. günden önce geri yükleyin. O zamana kadar çöpteki notlar [depolamanızdan](/tr/help/storage-usage/) düşmeye devam eder - aynı görünümdeki “Boşalt” o yeri anında serbest bırakır."
+        "Çöp kutusu bir arşiv değildir: varsayılan olarak içindeki her şey 30 gün sonra kalıcı olarak silinir. Bu seçenek, Çöp kutusu görünümünün kendisinde “30 gün sonra otomatik olarak sil” etiketiyle duruyor - çöpün sonsuza dek kalmasını istiyorsanız oradan kapatın; ayar tüm cihazlarınıza eşitlenir. Temizlik uygulama açıldığında cihazınızda çalışır, çünkü sunucu hangi şifreli notların çöpte olduğunu göremez.",
+        "Kalıcı silme gerçekten gitti demektir: hiçbir cihaz ve bizim tarafımızda hiç kimse onu geri getiremez, yalnızca daha önce aldığınız bir yedek getirebilir. Çöp kutusunu “belki bir gün” yığını olarak kullanıyorsanız otomatik silmeyi kapatın ya da notları 30. günden önce geri yükleyin. O zamana kadar çöpteki notlar [depolamanızdan](/tr/help/storage-usage/) düşmeye devam eder - aynı görünümdeki “Boşalt” o yeri anında serbest bırakır."
       ]
     },
     "leaving": {
@@ -561,8 +561,8 @@
       "q": "Hangi siteden geldiğimi kaydediyor musunuz?",
       "a": [
         "Evet, ve konu reklam. Başka sitelerde yerleşim satın alıyor, içerik üreticilerine ödeme yapıyoruz; bu yüzden hangilerinin gerçekten insan getirdiğini bilmemiz gerekiyor. Boşa giden reklam parasını zaten ürün karşılıyor, o yüzden bunu soruyu yanıtlayan en küçük biçimde ölçüyoruz.",
-        "Pazarlama sitesi ziyaretleri ve sizi hangi bağlantının getirdiğini yalnızca toplam olarak sayar: çerez yok, ziyaretçi kaydı yok, üçüncü taraf betiği yok. Hesap oluşturursanız, yayımlanmış bir listeden iki kısa kelime saklanır: varsa hangi bağlantıdan geldiğiniz ve uygulamayı nasıl kurduğunuz, örneğin “android-play”.",
-        "Her iki kelime de hesap oluşturulurken bir kez yazılır, hiçbir zaman güncellenmez ve hesabınızla birlikte silinir. Gelişinizle ilgili başka hiçbir şey saklanmaz. Kaydolmadan önce sekmeyi kapatırsanız ya da tarayıcınız bağlantıyı kırparsa, hiçbir şey kaydetmeyiz. Uygulamaların kendisi sizinle ilgili hiçbir şey ölçmez: ağ sekmesini açıp bakın."
+        "Pazarlama sitesi bağlantılarımıza yapılan tıklamaları yalnızca toplam olarak, bağlantıya ve ülkeye göre, hiçbir tanımlayıcı olmadan sayar: çerez yok, ziyaretçi kaydı yok, üçüncü taraf betiği yok. Hesap oluşturursanız, yayımlanmış bir listeden iki kısa kelime saklanır: varsa hangi bağlantıdan geldiğiniz ve uygulamayı nasıl kurduğunuz, örneğin “android-play”.",
+        "Her iki kelime de hesap oluşturulurken bir kez yazılır, hiçbir zaman güncellenmez ve hesabınızla birlikte silinir. Gelişinizle ilgili başka hiçbir şey saklanmaz. Kaydolmadan önce sekmeyi kapatırsanız ya da tarayıcınız bağlantıyı kırparsa, hiçbir kelime saklanmaz. Uygulamalarda yazdıklarınız üzerinde analitik, piksel ya da üçüncü taraf izleyici yoktur: ağ sekmesini açıp bakın."
       ]
     },
     "pro-not-active": {
@@ -575,7 +575,7 @@
     "manage-storage-addon": {
       "q": "Depolama paketimi nasıl değiştirir veya iptal ederim?",
       "a": [
-        "Kontrol paneli Ayarlar > Depolama. Daha büyük bir pakete yükseltmek hemen geçerli olur ve onay ekranı, siz kesinleştirmeden önce bugün tahsil edilecek oranlanmış tutarı birebir gösterir; yenileme tarihi kaymaz. “Depolamayı iptal et”, zaten ödediğiniz dönemin sonuna kadar ek alanınızı korur. Daha küçük bir pakete geçmek için mevcut paketi iptal edin ve dönem bitince küçüğünü alın.",
+        "Kontrol paneli Ayarlar > Depolama. Daha büyük bir pakete yükseltmek hemen geçerli olur. Web'de onay ekranı, siz kesinleştirmeden önce bugün tahsil edilecek oranlanmış tutarı birebir gösterir ve yenileme tarihi kaymaz; Play Store ve App Store'da tutarı mağazanın kendi ödeme ekranı gösterir ve Apple, içinde bulunduğunuz yılın kullanılmayan kısmını iade edip yeni bir yıl başlatır. “Depolamayı iptal et”, zaten ödediğiniz dönemin sonuna kadar ek alanınızı korur. Daha küçük bir pakete geçmek için mevcut paketi iptal edin ve dönem bitince küçüğünü alın.",
         "Süre dolduğunda veriniz kalan sınıra sığıyorsa mesele orada biter; sığmıyorsa hiçbir şey silinmez ve [90 günlük kota aşımı döngüsü](/tr/help/over-quota/) başlar. Başarısız bir yenileme, ödemeyi Paddle'da düzeltmeniz için “Kartı güncelle” bağlantılı bir şerit gösterir.",
         "Uygulamanın dışından iptal de işe yarar; giriş yapamadığınızda cevap budur. Paddle kayıtlı satıcımızdır ve size doğrudan fatura keser: makbuz e-postanızdaki “Aboneliği yönet” bağlantısını ya da [paddle.net](https://paddle.net) adresindeki destek sohbetini kullanın. Mağaza sürümünde de fikir aynıdır, yani iptali mağazanın kendi abonelik ayarlarından yaparsınız."
       ]
@@ -583,7 +583,7 @@
     "store-purchases": {
       "q": "Satın alımlar web, Google Play ve App Store arasında geçerli olur mu?",
       "a": [
-        "Evet. Pro ve depolama bir platforma ya da mağazaya değil, hesabınıza bağlanır. Web'den alın, giriş yaptığınız her uygulama Pro olur, mağaza sürümleri dâhil; bir mağaza sürümünün içinden alın, web ve masaüstü uygulamaları aynı şekilde açılır. Geri yükleme zaten giriş yapmanın kendisi, çünkü hak hesabı takip eder. Mağaza sürümünde ayrıca Ayarlar > Plan altında bir **Satın alımları geri yükle** düğmesi bulunur; Apple ya da Google'a neye sahip olduğunuzu sorar ve yeniden kurulumdan sonra yine açar.",
+        "Evet. Pro ve depolama bir platforma ya da mağazaya değil, hesabınıza bağlanır. Web'den alın, giriş yaptığınız her uygulama Pro olur, mağaza sürümleri dâhil; bir mağaza sürümünün içinden alın, web ve masaüstü uygulamaları aynı şekilde açılır. Geri yükleme zaten giriş yapmanın kendisi, çünkü hak hesabı takip eder. Mağaza sürümünde ayrıca Ayarlar > Hesap altında bir **Satın alımları geri yükle** düğmesi bulunur; Apple ya da Google'a neye sahip olduğunuzu sorar ve yeniden kurulumdan sonra yine açar.",
         "Tek fark, faturayı kimin kestiği. Web satın alımları Paddle üzerinden yürür ve uygulamada Ayarlar > Depolama altından yönetilir. Bir mağaza sürümünün içinde yapılan satın alımların (App Store şu anda, Google Play o uygulama çıktığında) faturasını o mağaza keser: tekrar eden depolama mağazanın abonelik ayarlarından iptal edilir ve iadeler mağazanın sürecini izler. Her hâlükârda aynı hesap ve her yerde aynı Pro - henüz var olmayan platformlar dâhil."
       ]
     },
@@ -674,8 +674,8 @@
     "android-backup": {
       "q": "Notlarım Android telefon yedeğime dahil mi?",
       "a": [
-        "Hayır. Android uygulaması kendi verisini telefonun bulut yedeğinin dışında tutar, yani hiçbiri Google Drive'a gitmez. Sebep notlar değil, anahtar: **Bu cihaza güven** dediğiniz cihazda oturumunuz açık kalsın diye 12 kelimeniz o cihazda durur ve uçtan uca şifreli bir hesabın anahtarının yeri bir bulut yedeği değildir.",
-        "Yeni bir telefon bu yüzden boş başlar: uygulamayı kurun, 12 kelimenizle oturum açın, eşitlenmiş olan her şey gelir. Hiç eşitlenmemiş olan yalnızca eski telefonda yaşar, o yüzden önce alt bilgi çubuğunun \"Synced\" dediğinden emin olun ya da Ayarlar > Import & Export > Dışa aktar altından bir “PrivacyNotes yedeği (.zip)” götürün ([hangi yedeği almalı](/tr/help/backup-strategy/)).",
+        "Hayır. Android uygulaması kendi verisini telefonun bulut yedeğinin dışında tutar, yani hiçbiri Google Drive'a gitmez. Sebep notlar değil, anahtar: **Bu cihaza güven** dediğiniz cihazda oturumunuz açık kalsın diye 12 kelimeniz o cihazda durur ve notlarınızın şifresini çözen anahtarın yeri bir bulut yedeği değildir.",
+        "Yeni bir telefon bu yüzden boş başlar: uygulamayı kurun, 12 kelimenizle oturum açın, eşitlenmiş olan her şey gelir. Geri yükleme bu ilk eşitlemeyi bekler; böylece getirdiğiniz bir yedek iki kez eklenmek yerine hesaptakilerle eşleştirilir. Hiç eşitlenmemiş olan yalnızca eski telefonda yaşar, o yüzden önce alt bilgi çubuğunun \"Synced\" dediğinden emin olun ya da Ayarlar > Import & Export > Dışa aktar altından bir “PrivacyNotes yedeği (.zip)” götürün ([hangi yedeği almalı](/tr/help/backup-strategy/)).",
         "İlk kurulumdaki doğrudan telefondan telefona aktarım ayrı bir durum: bazı telefonlar orada uygulama verisini taşır ve Android bir uygulamaya bunu reddetmesi için güvenilir bir yol vermez. O kopya iki cihazınızdan hiç çıkmaz, o yüzden eski telefonu sonrasında silin."
       ]
     },
@@ -724,9 +724,9 @@
     "signup-options": {
       "q": "Hangi kayıt seçeneğini seçmeliyim?",
       "a": [
-        "Tehdit düzeyinize uyanı. Üç tane var. Bir: \"Google ile devam et\" ya da \"Apple ile devam et\", anahtarınız sunucumuzda saklanır. İki: aynı düğme, ama anahtar yalnızca cihazınızda kalır. Üç: \"Bir ifade oluştur\", ne e-posta, ne isim, ne de herhangi bir giriş. Üçü de notlarınızı uçtan uca şifreli tutar; onları ayıran şey, anahtarı kimin tuttuğu ve sizin hakkınızda ne kadar şey öğrendiğimizdir.",
-        "Google, Apple ya da GitHub düğmesi ardından anahtarınızın nerede duracağını sorar. \"Basit ve pratik olsun\", anahtarı sunucumuzda şifreli tutar; böylece her yeni cihaz yalnızca o girişle açılır ve sizin saklayacağınız bir şey olmaz. Korktuğunuz şey kendi giriş bilgilerinizi kaybetmekse doğru düzey budur. \"Azami güvenlik ve gizlilik\" anahtarı cihazınızda tutar: hiçbir baskı altında bir notu okuyamayız ve yeni bir cihaz 12 kelimenizi ya da zaten oturum açmış bir cihazdan QR taramasını ister.",
-        "Yalnızca ifadeyle giden yol en yüksek düzeydir: e-posta yok, isim yok, hesabı bir kişiye bağlayan hiçbir şey yok. Karşılığında anahtar yalnızca sizindir; oturum açmış tek bir cihaz kalmadan onu kaybetmek, kimsenin yardım edemeyeceği anlamına gelir. Yine de hiçbiri kalıcı değildir: Ayarlar > Güvenlik > Kurtarma ifadeniz sizi istediğiniz zaman bir moddan diğerine taşır ve her düzey üstüne bir PIN ya da biyometrik kilit ekleyebilir. Her basamağın bedeliyle birlikte merdivenin tamamı [tehdit düzeyi merdiveninde](/tr/help/threat-model-levels/) anlatılıyor."
+        "Tehdit düzeyinize uyanı. Üç tane var. Bir: Google, Apple veya GitHub ile giriş, anahtarınız sunucumuzda saklanır. İki: aynı giriş, ama anahtar yalnızca cihazınızda kalır. Üç: \"Bir ifade oluştur\", ne e-posta, ne isim, ne de herhangi bir giriş. Üçünde de notlarınız cihazınızda şifrelenir; onları ayıran şey, anahtarı kimin tuttuğu ve sizin hakkınızda ne kadar şey öğrendiğimizdir.",
+        "Bu üçünden biriyle giriş yapmak ardından anahtarınızın nerede duracağını sorar ve \"Basit ve pratik olsun\" seçili olarak başlar. Bu seçenek anahtarı sunucumuzda şifreli tutar; böylece her yeni cihaz yalnızca o girişle açılır ve sizin saklayacağınız bir şey olmaz. Korktuğunuz şey kendi giriş bilgilerinizi kaybetmekse doğru düzey budur. \"Azami güvenlik ve gizlilik\" anahtarı cihazınızda tutar: hiçbir baskı altında bir notu okuyamayız ve yeni bir cihaz 12 kelimenizi ya da zaten oturum açmış bir cihazdan QR taramasını ister.",
+        "Yalnızca ifadeyle giden yol en yüksek düzeydir: e-posta yok, isim yok, hesabı bir kişiye bağlayan hiçbir şey yok. Karşılığında anahtar yalnızca sizindir; oturum açmış tek bir cihaz kalmadan onu kaybetmek, kimsenin yardım edemeyeceği anlamına gelir. Bir girişin anahtar modu kalıcı değildir: Ayarlar > Güvenlik > Kurtarma ifadeniz onu istediğiniz zaman değiştirir, yalnızca ifadeyle açılmış bir hesap ise anahtarını cihazda tutar. Her düzey üstüne bir PIN ya da biyometrik kilit ekleyebilir. Her basamağın bedeliyle birlikte merdivenin tamamı [tehdit düzeyi merdiveninde](/tr/help/threat-model-levels/) anlatılıyor."
       ]
     },
     "storage-after-delete": {

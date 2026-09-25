@@ -219,7 +219,7 @@ export const PUBLIC_ROADMAP: RoadmapItem[] = [
     title: 'Android app',
     status: 'shipped',
     description:
-      'A native Android app with the same end-to-end encryption, available now as a direct download (APK).',
+      'A native Android app with the same on-device encryption, available now as a direct download (APK).',
     icon: 'android',
   },
   {
@@ -243,7 +243,7 @@ export const PUBLIC_ROADMAP: RoadmapItem[] = [
     title: 'Folders',
     status: 'shipped',
     description:
-      'Organize notes, tasks, journals, and vault items into a nested tree. Folders sync end-to-end encrypted, combine with any view, and deleting one never deletes what is inside it.',
+      'Organize notes, tasks, journals, and vault items into a nested tree. Folders sync encrypted, combine with any view, and deleting one never deletes what is inside it.',
     icon: 'folder',
   },
   {
@@ -387,7 +387,7 @@ export const PUBLIC_ROADMAP: RoadmapItem[] = [
     title: 'iOS app',
     status: 'shipped',
     description:
-      'A native iPhone and iPad app with the same end-to-end encryption, on the App Store.',
+      'A native iPhone and iPad app with the same on-device encryption, on the App Store.',
     icon: 'apple',
   },
   {

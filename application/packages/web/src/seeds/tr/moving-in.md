@@ -7,7 +7,7 @@ title: Taşınma
 
 Dört tür şeyi buraya getirebilirsiniz: notlar, günlük kayıtları, yer imleri ve parolalar.
 
-Hepsi aynı yerden başlar: **Ayarlar > İçe ve dışa aktarma**.
+Hepsi aynı yerden başlar: **Ayarlar > Import & Export**.
 
 ## Neleri getirebilirsiniz
 
@@ -41,7 +41,7 @@ Bir günlük kaydı metinden fazlasını tutar. Yazma alanının üstünde takip
 ## Yer imleri
 
 - [ ] Tarayıcınızın yer imlerini `.html` dosyası olarak dışa aktarın
-- [ ] O dosyayı içe aktarın: **Ayarlar > İçe ve dışa aktarma > İçe aktar > Tarayıcı yer imleri**
+- [ ] O dosyayı içe aktarın: **Ayarlar > Import & Export > İçe aktar > Tarayıcı yer imleri**
 
 Boş bir nota bağlantı da yapıştırabilirsiniz. Başlık ve site simgesi kendiliğinden gelir: [privacynotes.app/tr/help/import/browser-bookmarks](https://privacynotes.app/tr/help/import/browser-bookmarks)
 

@@ -119,6 +119,7 @@
     "enable": "Enable biometric unlock",
     "lockOnOpen": "Lock app on open",
     "lockOnOpenHint": "Require biometric or PIN when opening the app.",
+    "lockHidesOnSwitch": "Also hides your notes when you switch apps.",
     "lockNeedsCredential": "The app lock needs a PIN or biometric unlock on this device.",
     "setUpPin": "Set a PIN",
     "confirmPinForLock": "Enter your PIN to turn this on. It locks a copy of your recovery phrase so only your PIN can open the app.",
@@ -129,6 +130,9 @@
     "disableConfirmLabel": "Disable",
     "disableConfirmBody": "Disable biometric unlock on this device?",
     "disableConfirmBodyAppLock": "Disable biometric unlock on this device? App lock will also be turned off."
+  },
+  "appLock": {
+    "phraseNotSaved": "This device could not save your recovery phrase, so nothing was changed. Try again."
   },
   "pinSetup": {
     "title": "Set a PIN",

@@ -10,7 +10,9 @@
     "tags": "Etiquetes",
     "currentStreak": "Ratxa actual",
     "longestStreak": "Ratxa més llarga",
-    "streakValue": "{{count}} d",
+    "streakValue_one": "{{count}} dia",
+    "streakValue_many": "{{count}} dies",
+    "streakValue_other": "{{count}} dies",
     "timeRangeAria": "Interval de temps de l'activitat",
     "modeActivity": "Activitat",
     "modeMood": "Ànim",
@@ -60,6 +62,7 @@
       "doctorPDF": "PDF per al metge",
       "copyAIPrompt": "Copia la indicació per a la IA",
       "copied": "Copiat!",
+      "saveFailed": "No s'ha pogut desar, així que el fitxer pot estar buit o incomplet. Torna-ho a provar o tria una altra carpeta.",
       "proBadge": "PRO"
     },
     "sleepActivity": {

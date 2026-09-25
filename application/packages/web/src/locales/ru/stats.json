@@ -1,0 +1,200 @@
+{
+  "title": "Статистика",
+  "tabs": {
+    "writing": "Письмо",
+    "wellness": "Самочувствие"
+  },
+  "writing": {
+    "notes": "Заметки",
+    "words": "Слова",
+    "tags": "Теги",
+    "currentStreak": "Текущая серия",
+    "longestStreak": "Лучшая серия",
+    "streakValue_one": "{{count}} день",
+    "streakValue_few": "{{count}} дня",
+    "streakValue_many": "{{count}} дней",
+    "streakValue_other": "{{count}} дня",
+    "timeRangeAria": "Временной диапазон активности",
+    "modeActivity": "Активность",
+    "modeMood": "Настроение",
+    "tooltipMood": "{{date}}: настроение {{mood}}/10",
+    "tooltipNoMood": "{{date}}: настроение не записано",
+    "tooltipEdits_one": "{{date}}: {{count}} правка",
+    "tooltipEdits_few": "{{date}}: {{count}} правки",
+    "tooltipEdits_many": "{{date}}: {{count}} правок",
+    "tooltipEdits_other": "{{date}}: {{count}} правки",
+    "longestNote": "Самая длинная заметка: <name>{{title}}</name> (слов: {{count}})"
+  },
+  "range": {
+    "7d": "7 дней",
+    "14d": "14 дней",
+    "30d": "30 дней",
+    "3mo": "3 месяца",
+    "6mo": "6 месяцев",
+    "12mo": "12 месяцев"
+  },
+  "wellness": {
+    "subTabs": {
+      "all": "Все",
+      "sleepActivity": "Сон и активность",
+      "medication": "Лекарства",
+      "patterns": "Закономерности"
+    },
+    "empty": {
+      "title": "Данных о самочувствии пока нет.",
+      "hint": "Откройте запись в дневнике и запишите настроение, чтобы начать."
+    },
+    "overview": {
+      "daysTracked": "Дней отслежено",
+      "avgMood": "Ср. настроение",
+      "avgSleep": "Ср. сон",
+      "medAdherence": "Приём лекарств",
+      "moodTrend": "Динамика настроения",
+      "moodByDayOfWeek": "Настроение по дням недели",
+      "moodTrendTooltip": "{{date}}: {{mood}}/10",
+      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
+    },
+    "export": {
+      "heading": "Экспорт",
+      "allTime": "За всё время",
+      "last90Days": "Последние 90 дней",
+      "last30Days": "Последние 30 дней",
+      "last7Days": "Последние 7 дней",
+      "downloadJSON": "Скачать JSON",
+      "doctorPDF": "PDF для врача",
+      "copyAIPrompt": "Копировать запрос для ИИ",
+      "copied": "Скопировано!",
+      "saveFailed": "Не удалось сохранить, поэтому файл может быть пустым или неполным. Попробуйте ещё раз или выберите другую папку.",
+      "proBadge": "PRO"
+    },
+    "sleepActivity": {
+      "sleepQuality": "Качество сна",
+      "activity": "Активность",
+      "avgSleepPerNight": "Средний сон за ночь"
+    },
+    "medication": {
+      "adherence": "Соблюдение",
+      "empty": {
+        "title": "Данных о лекарствах пока нет.",
+        "hint": "Добавьте лекарство в настройках трекеров и отмечайте приём каждый день."
+      },
+      "dosageTimeline": "Хронология дозировки",
+      "started": "Начало: {{dosage}}",
+      "changedTo": "Изменено на {{dosage}}"
+    },
+    "patterns": {
+      "topEmotions": "Самые частые эмоции",
+      "insights": "Выводы",
+      "proBadge": "PRO",
+      "insightsLocked_one": "Найдено выводов: {{count}}. Перейдите на Pro, чтобы посмотреть",
+      "insightsLocked_few": "Найдено выводов: {{count}}. Перейдите на Pro, чтобы посмотреть",
+      "insightsLocked_many": "Найдено выводов: {{count}}. Перейдите на Pro, чтобы посмотреть",
+      "insightsLocked_other": "Найдено выводов: {{count}}. Перейдите на Pro, чтобы посмотреть",
+      "weekInReview": "Итоги недели",
+      "weekInReviewLocked": "Перейдите на Pro, чтобы видеть еженедельную сводку самочувствия"
+    },
+    "week": {
+      "range": "с {{start}} по {{end}}",
+      "daysLogged": "Записано дней: {{count}}/7",
+      "avgMood": "Ср. настроение",
+      "moodDelta": "{{delta}} по сравнению с прошлой неделей",
+      "avgSleep": "Ср. сон",
+      "medsTaken": "Принято лекарств",
+      "topActivity": "Основная активность",
+      "topEmotions": "Самые частые эмоции",
+      "reflection": "Размышления",
+      "reflectionPlaceholder": "Какой была эта неделя в целом? Запишите свои мысли..."
+    },
+    "units": {
+      "days_one": "{{count}} день",
+      "days_few": "{{count}} дня",
+      "days_many": "{{count}} дней",
+      "days_other": "{{count}} дня"
+    },
+    "insights": {
+      "sleep": "В дни, когда вы хорошо спите, ваше среднее настроение {{good}}, а когда плохо, {{bad}}.",
+      "activity": "В активные дни ваше среднее настроение {{active}}, а в малоподвижные {{sedentary}}.",
+      "dayOfWeek": "Ваш лучший день обычно {{best}} (в среднем {{bestAvg}}), а самый тяжёлый {{worst}} (в среднем {{worstAvg}}).",
+      "medication": "С тех пор как вы начали принимать {{name}} ({{date}}), ваше среднее настроение изменилось с {{before}} до {{after}}.",
+      "streak_one": "Вы записываете настроение {{count}} день подряд. Так держать!",
+      "streak_few": "Вы записываете настроение {{count}} дня подряд. Так держать!",
+      "streak_many": "Вы записываете настроение {{count}} дней подряд. Так держать!",
+      "streak_other": "Вы записываете настроение {{count}} дня подряд. Так держать!",
+      "trend": "Ваше среднее настроение за последние две недели {{recent}}, а в целом {{overall}}."
+    },
+    "aiPrompt": {
+      "intro": "Я отслеживаю своё настроение и самочувствие. Пожалуйста, проанализируйте данные ниже и найдите закономерности, тенденции и практические выводы.",
+      "overview": "Обзор",
+      "daysTracked": "Дней отслежено: {{days}}",
+      "avgMood": "Среднее настроение: {{mood}}/10",
+      "avgSleep": "Средний сон: {{hours}} ч",
+      "adherence": "Соблюдение схемы приёма лекарств: {{pct}}%",
+      "topEmotions": "Самые частые эмоции: {{list}}",
+      "moodTrend": "Динамика настроения (последние 30 дней)",
+      "columnDate": "Дата",
+      "columnMood": "Настроение",
+      "sleepDistribution": "Распределение качества сна",
+      "activityDistribution": "Распределение уровня активности",
+      "adherenceHeading": "Соблюдение схемы приёма лекарств",
+      "adherenceLine": "{{name}}: принято в {{taken}} из {{total}} отслеженных дней ({{pct}}%)",
+      "dosageTimeline": "Хронология дозировки",
+      "patterns": "Выявленные закономерности",
+      "questions": "Что я хочу узнать",
+      "question1": "Есть ли закономерности в моём настроении со временем?",
+      "question2": "Связаны ли качество сна и уровень активности с настроением?",
+      "question3": "Есть ли тревожные тенденции, которые стоит обсудить с врачом?",
+      "question4": "Практические советы на основе этих данных.",
+      "footer": "Создано в PrivacyNotes (privacynotes.app)"
+    },
+    "report": {
+      "documentTitle": "Отчёт о самочувствии",
+      "heading": "Отчёт о настроении и самочувствии",
+      "meta": "Создано {{date}} | Период: с {{from}} по {{to}} | Дней отслежено: {{days}}",
+      "overview": "Обзор",
+      "columnMetric": "Показатель",
+      "columnValue": "Значение",
+      "avgMood": "Среднее настроение",
+      "avgSleep": "Средний сон",
+      "adherence": "Соблюдение схемы приёма лекарств",
+      "daysTracked": "Дней отслежено",
+      "moodTrend": "Динамика настроения (последние 90 дней)",
+      "legend": "Красный = 1-2, оранжевый = 3-4, жёлтый = 5-6, зелёный = 7-8, синий = 9-10",
+      "sleepDistribution": "Распределение качества сна",
+      "columnQuality": "Качество",
+      "columnDays": "Дни",
+      "activityDistribution": "Распределение уровня активности",
+      "columnLevel": "Уровень",
+      "adherenceHeading": "Соблюдение схемы приёма лекарств",
+      "adherenceNote": "Доля принятых доз среди дней с записями в дневнике, когда каждое лекарство отслеживалось. День, когда лекарство не отмечено, считается днём без приёма. Дни без записи в дневнике не учитываются вообще.",
+      "columnMedication": "Лекарство",
+      "columnTaken": "Принято/Дней",
+      "columnRate": "Доля",
+      "dosageTimeline": "Хронология дозировки лекарств",
+      "started": "Начало: {{dosage}}, {{date}}",
+      "changedTo": "Изменено на {{dosage}}, {{date}}",
+      "unknownDose": "неизвестная доза",
+      "topEmotions": "Самые частые эмоции",
+      "patterns": "Выявленные закономерности",
+      "footer": "Создано в PrivacyNotes - privacynotes.app"
+    }
+  },
+  "milestoneToast": {
+    "unlocked": "Достижение открыто"
+  },
+  "milestone": {
+    "notes_one": "{{count}} заметка написана",
+    "notes_few": "{{count}} заметки написаны",
+    "notes_many": "{{count}} заметок написано",
+    "notes_other": "{{count}} заметки написано",
+    "streak": "Серия письма: {{count}} дн. подряд",
+    "words_one": "{{formatted}} слово написано",
+    "words_few": "{{formatted}} слова написано",
+    "words_many": "{{formatted}} слов написано",
+    "words_other": "{{formatted}} слова написано",
+    "age30": "30 дней с PrivacyNotes",
+    "age365": "1 год с PrivacyNotes",
+    "age730": "2 года с PrivacyNotes",
+    "age1825": "5 лет с PrivacyNotes",
+    "ageDefault": "Уже {{count}} дн. вместе"
+  }
+}

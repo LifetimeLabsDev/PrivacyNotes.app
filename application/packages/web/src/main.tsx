@@ -1,18 +1,20 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { AuthProvider } from './auth';
 import { LoadingScreen } from './LoadingScreen';
 import { initTheme } from './theme';
 import { clearFreshDemoCredentials, isDemoMode } from './demo';
-import { APP_ORIGIN, isApexHost, isAppHost } from './hosts';
+import { isAppHost } from './hosts';
+import { dropApexPhraseFragment } from './qrSignIn';
 import { detectPlatform, isLinuxNative } from './devices';
 import { IconDefaults } from './icons';
 import { installAndroidBackBridge } from './androidBack';
 import { installStrayDropGuard } from './strayDropGuard';
 import { i18nReady } from './i18n';
 import { initWriterGenListener, announceSealedWriter } from './writerGen';
-import { setSealedWrites } from './localSeal';
+import { SEALED_WRITES_IN_PRODUCTION, setSealedWrites } from './localSeal';
+import { VERSION } from './version';
 import './index.css';
 
 initTheme();
@@ -47,11 +49,11 @@ clearFreshDemoCredentials();
 // Spec: ops/docs/plans/local-at-rest.md (5.2, mechanism 2)
 initWriterGenListener();
 // THE writer switch: with it on, every note-content write is sealed at
-// rest and this tab announces itself to retire reader-mode tabs.
-// Setting it to false is exactly the reader release (read sealed rows,
+// rest and this tab announces itself to retire reader-mode tabs. The
+// constant is false in exactly the reader release (read sealed rows,
 // write plaintext) - the rollout's release A ships that way.
 // Spec: ops/docs/plans/local-at-rest.md (5.1, the two releases)
-setSealedWrites(true);
+setSealedWrites(SEALED_WRITES_IN_PRODUCTION);
 announceSealedWriter();
 
 if (isDemoMode() || isAppHost()) {
@@ -61,20 +63,11 @@ if (isDemoMode() || isAppHost()) {
   document.head.appendChild(robots);
 }
 
-// A #phrase= fragment on the apex is a paper credential - a sign-in or
-// backup QR minted before the domain split. Sessions live on the app
-// host since the retirement, so forward it there with the fragment
-// intact (fragments never reach any server) instead of letting App.tsx
-// consume it and mint a session onto the retired origin. Lives in the
-// bundle, not an inline head script, because the CSP allows only
-// 'self'. The render below is skipped: the QR prompt must appear once,
-// on the destination.
+// An old paper QR opened on the apex: the fragment is cleared, the page
+// leaves for the app host's sign-in screen with no fragment, and "Scan QR
+// with camera" there reads the paper again. Nothing renders here.
 // Spec: ops/docs/domain-split.md (retirement phase, #phrase forwarder)
-const forwardingPhrase =
-  isApexHost() && window.location.hash.startsWith('#phrase=');
-if (forwardingPhrase) {
-  window.location.replace(`${APP_ORIGIN}/${window.location.hash}`);
-}
+const leavingApex = dropApexPhraseFragment();
 
 // Vite emits `vite:preloadError` on `window` when a dynamically-imported
 // chunk 404s - almost always because the user had a tab open across a
@@ -131,27 +124,197 @@ if (pathname === '/terms') {
   window.location.replace('https://lifetimelabs.dev/terms/');
 }
 
+// ── The screen a failed render leaves behind ──────────────────────
+//
+// Without a boundary a throw anywhere in the tree empties the document,
+// so the window shows the html background from index.css and nothing
+// else: no message, no version, no way back. On a packaged desktop
+// build the error is then unreadable to the user AND to us, because a
+// release build carries no web inspector, and a report costs one guess
+// per round trip.
+//
+// ENGLISH ONLY, ON PURPOSE. DO NOT TRANSLATE THIS SCREEN, and do not
+// route its text through i18n. Every other user-facing string in this
+// app ships in every locale; this one is the single exception, agreed
+// 2026-09-18, and a locale batch must skip it. The reason is the whole
+// point of the screen: i18n is one of the things that can throw, and a
+// translator call on this path fails exactly when the screen is needed,
+// which leaves the user with the empty window this code exists to
+// replace. The same rule rules out the icon set, the theme, the auth
+// provider, and bugReportUrl.ts, which reaches into platform detection:
+// the link below is a plain constant for that reason. Inline styles
+// rather than classes, because the stylesheet can be missing too.
+//
+// `pnpm check:house` enforces it. Nothing between here and the end
+// marker below may call a translator.
+// Spec: ops/docs/i18n-spec.md (the boot error screen)
+const ISSUES_URL = 'https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues';
+
+/** Everything a reporter should hand over, in one selectable block. */
+function bootErrorReport(error: Error): string {
+  return [
+    `PrivacyNotes ${VERSION}`,
+    navigator.userAgent,
+    `${error.name}: ${error.message}`,
+    error.stack ?? '(no stack)',
+  ].join('\n');
+}
+
+function BootErrorScreen({ error }: { error: Error }) {
+  // Asks for light and lands on dark when the platform cannot answer,
+  // which is the same way round as the theme module's own resolver.
+  const dark =
+    typeof window.matchMedia !== 'function' ||
+    !window.matchMedia('(prefers-color-scheme: light)').matches;
+  const c = dark
+    ? { bg: '#171514', card: '#23211E', line: '#302D29', text: '#D9D4CC', dim: '#958E84', link: '#4A90D9' }
+    : { bg: '#F5F5F5', card: '#FFFFFF', line: '#D9D9D9', text: '#1F1F1F', dim: '#6B6B6B', link: '#1D4ED8' };
+
+  const report = bootErrorReport(error);
+  const reportRef = useRef<HTMLPreElement>(null);
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'selected'>('idle');
+
+  const button: React.CSSProperties = {
+    font: 'inherit',
+    padding: '8px 14px',
+    borderRadius: 8,
+    border: `1px solid ${c.line}`,
+    background: c.card,
+    color: c.text,
+    cursor: 'pointer',
+  };
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(report);
+      setCopyState('copied');
+      return;
+    } catch {
+      // No clipboard, or permission refused. A button that does nothing
+      // strands the one person who came here to send us the text, so
+      // select the block and let the keyboard finish it.
+    }
+    const block = reportRef.current;
+    if (block) {
+      const range = document.createRange();
+      range.selectNodeContents(block);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    }
+    setCopyState('selected');
+  }
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        overflow: 'auto',
+        background: c.bg,
+        color: c.text,
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: 15,
+        lineHeight: 1.5,
+        padding: 24,
+      }}
+    >
+      <div style={{ maxWidth: 640, margin: '0 auto' }}>
+        <h1 style={{ fontSize: 20, fontWeight: 600, margin: '8px 0 12px' }}>
+          PrivacyNotes could not start
+        </h1>
+        <p style={{ margin: '0 0 16px', color: c.dim }}>
+          Something failed while the screen was being drawn. Your notes are
+          untouched. Copy the details below into a bug report and we will fix
+          it.
+        </p>
+        <pre
+          ref={reportRef}
+          style={{
+            margin: '0 0 16px',
+            padding: 12,
+            maxHeight: '40vh',
+            overflow: 'auto',
+            background: c.card,
+            border: `1px solid ${c.line}`,
+            borderRadius: 8,
+            fontSize: 12,
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+          }}
+        >
+          {report}
+        </pre>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <button type="button" style={button} onClick={copy}>
+            {copyState === 'copied'
+              ? 'Copied'
+              : copyState === 'selected'
+                ? 'Selected, now copy it'
+                : 'Copy details'}
+          </button>
+          <button type="button" style={button} onClick={() => window.location.reload()}>
+            Reload
+          </button>
+        </div>
+        <p style={{ margin: '16px 0 0', color: c.dim, fontSize: 13 }}>
+          Report it at{' '}
+          <a href={ISSUES_URL} style={{ color: c.link }}>
+            {ISSUES_URL}
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+class BootErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { error: Error | null }
+> {
+  state: { error: Error | null } = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    // The component stack exists here and nowhere else. It reaches a
+    // console on the web and in a dev build; the screen carries what a
+    // packaged build can hand over instead.
+    console.error('[boot] render failed', error, info.componentStack);
+  }
+
+  render() {
+    const { error } = this.state;
+    return error ? <BootErrorScreen error={error} /> : this.props.children;
+  }
+}
+// ── end of the failed-render screen ───────────────────────────────
+
 const tree = (
   <React.StrictMode>
-    <IconDefaults>
-      {isAboutWindow ? (
-        <Suspense fallback={null}>
-          <AboutWindow />
-        </Suspense>
-      ) : isBurnRoute ? (
-        <Suspense fallback={<LoadingScreen />}>
-          <BurnNote />
-        </Suspense>
-      ) : isCheckoutRoute ? (
-        <Suspense fallback={<LoadingScreen />}>
-          <CheckoutLauncher />
-        </Suspense>
-      ) : (
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      )}
-    </IconDefaults>
+    <BootErrorBoundary>
+      <IconDefaults>
+        {isAboutWindow ? (
+          <Suspense fallback={null}>
+            <AboutWindow />
+          </Suspense>
+        ) : isBurnRoute ? (
+          <Suspense fallback={<LoadingScreen />}>
+            <BurnNote />
+          </Suspense>
+        ) : isCheckoutRoute ? (
+          <Suspense fallback={<LoadingScreen />}>
+            <CheckoutLauncher />
+          </Suspense>
+        ) : (
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        )}
+      </IconDefaults>
+    </BootErrorBoundary>
   </React.StrictMode>
 );
 
@@ -161,6 +324,6 @@ const tree = (
 // a failed fetch resolves having kept English - so the app always mounts.
 // English visitors resolve on the microtask queue and pay nothing.
 void i18nReady.then(() => {
-  if (forwardingPhrase) return;
+  if (leavingApex) return;
   ReactDOM.createRoot(document.getElementById('root')!).render(tree);
 });

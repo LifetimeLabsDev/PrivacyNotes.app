@@ -10,6 +10,7 @@
     "intro": {
       "storage": "Des envois plus volumineux et plus d'espace sont une fonctionnalité Pro. Passe à Pro pour des fichiers de 50 Mo et 500 Mo de stockage.",
       "folders": "Les dossiers sont une fonctionnalité Pro. Organise tes notes dans des dossiers imbriqués, aussi profonds que tu veux, et garde chaque projet séparé.",
+      "looks": "Les icônes et les couleurs des dossiers et des étiquettes sont une fonctionnalité Pro. Donne à chacun un style reconnaissable au premier coup d'œil.",
       "lock": "Verrouiller une note est une fonctionnalité Pro. Passe à Pro pour protéger toute note des modifications accidentelles.",
       "protect": "Protéger une note par PIN est une fonctionnalité Pro. Passe à Pro pour protéger les notes sensibles derrière ton PIN.",
       "history": "L'historique des notes est une fonctionnalité Pro. Passe à Pro pour conserver une chronologie de chaque enregistrement.",
@@ -57,6 +58,7 @@
     "title": "Historique des notes",
     "subtitle": "Jusqu'à 20 versions par note. Les plus anciennes sont automatiquement élaguées.",
     "empty": "Pas encore d'historique. Les versions commencent à s'accumuler après la prochaine modification. Reviens plus tard.",
+    "loadFailed": "Impossible de charger l'historique. Vérifie ta connexion et réessaie.",
     "selectPrompt": "Sélectionne une version pour l'aperçu.",
     "emptyBody": "(vide)",
     "restore": "Restaurer",
@@ -64,7 +66,7 @@
   },
   "donation": {
     "eyebrow": "Tu as débloqué",
-    "intro": "<brand/> est gratuit, et le restera toujours. Pas de pubs, pas de pistage, aucun e-mail enregistré. S'il t'a aidé à penser, écrire ou te souvenir, envisage de soutenir le développement. Ça garde le projet en vie et finance les prochaines fonctionnalités.",
+    "intro": "<brand/> est gratuit, et le restera toujours. Pas de pubs, pas de traceurs, et aucun e-mail enregistré, sauf si tu t'es connecté avec un. S'il t'a aidé à penser, écrire ou te souvenir, envisage de soutenir le développement. Ça garde le projet en vie et finance les prochaines fonctionnalités.",
     "proBenefits": "Soutenir débloque aussi les avantages Pro dès leur sortie : appareils illimités, pièces jointes, sauvegardes cloud chiffrées.",
     "maybeLater": "Plus tard",
     "support": "Soutenir →"

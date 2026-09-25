@@ -19,7 +19,7 @@ title: 你的筆記如何受到保護
 
 ## 誰握有你的鑰匙
 
-每一種做法都讓筆記維持端對端加密。差別只在助憶詞放在哪裡。
+每一種做法都會在你的裝置上加密筆記。差別只在助憶詞放在哪裡。
 
 | 做法 | 助憶詞放在哪 | 你得到什麼 |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ title: 你的筆記如何受到保護
 
 下面兩種做法，就算有人逼我們，我們也讀不到筆記。第一種把這件事換成方便：你的助憶詞放在我們的伺服器上，由我們的一把鑰匙保護，所以新裝置只需要你的登入。萬一我們的伺服器被入侵，那把鑰匙就有可能外洩。
 
-你不會被自己選過的做法綁住。到 **設定 > 安全性 > 你的助憶詞** 就能換。
+用 Google、Apple 或 GitHub 登入的話，之後可以到 **設定 > 安全性 > 你的助憶詞** 在前兩種做法之間切換。只用助憶詞的帳號，助憶詞永遠留在你手上。
 
 > [!warning] 自己也留一份助憶詞
 > 助憶詞能打開你的筆記。弄丟了就沒有人救得回來，我們也不行。<span style="color: #e03131">今天就抄在紙上。</span>
@@ -44,7 +44,7 @@ title: 你的筆記如何受到保護
 | 內容 | 位置 |
 | --- | --- |
 | 加密本身 | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| 資料庫結構 | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| 我們的伺服器收到什麼 | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | 攻擊者做得到與做不到的事 | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | 怎麼回報漏洞 | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

@@ -10,7 +10,9 @@
     "tags": "Etiquetas",
     "currentStreak": "Racha actual",
     "longestStreak": "Racha más larga",
-    "streakValue": "{{count}}d",
+    "streakValue_one": "{{count}} día",
+    "streakValue_many": "{{count}} días",
+    "streakValue_other": "{{count}} días",
     "timeRangeAria": "Rango de tiempo de actividad",
     "modeActivity": "Actividad",
     "modeMood": "Estado de ánimo",
@@ -59,6 +61,7 @@
       "doctorPDF": "PDF para el médico",
       "copyAIPrompt": "Copiar prompt de IA",
       "copied": "¡Copiado!",
+      "saveFailed": "No se pudo guardar, así que el archivo puede estar vacío o incompleto. Inténtalo de nuevo o elige otra carpeta.",
       "proBadge": "PRO"
     },
     "sleepActivity": {

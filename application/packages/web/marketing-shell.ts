@@ -165,7 +165,7 @@ function llmsTxt(): string {
   const proPrice = process.env.VITE_PADDLE_BETA_DISCOUNT_ID ? EARLY_PRICE : PRO_PRICE;
   return `# PrivacyNotes
 
-> An end-to-end encrypted notes, tasks, journal and vault app. Everything is encrypted on your device before it is stored or synced, so the server holds ciphertext it cannot read. Hosted in Switzerland, with no tracking and no analytics.
+> An end-to-end encrypted notes, tasks, journal and vault app: your notes are encrypted on your device, before they are stored or synced. The server holds ciphertext, which under self-custody it cannot read. Hosted in Switzerland, with no trackers and no analytics of what you write.
 
 Signing up needs no email address: a new account is a generated 12-word recovery phrase and nothing else. Google, Apple and GitHub sign-in are available for people who want them, and the encryption key is still generated on the reader's own device either way.
 

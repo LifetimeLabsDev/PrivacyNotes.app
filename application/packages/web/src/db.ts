@@ -1,6 +1,7 @@
 import Dexie, { type EntityTable } from 'dexie';
 import type { NoteType } from '@notes/shared';
 import type { AttachmentMeta } from './attachmentStore';
+import type { SyncBase } from './noteMerge';
 import { isDemoMode, DEMO_DB_NAME } from './demo';
 import { localSealMiddleware } from './localSeal';
 
@@ -47,9 +48,19 @@ export interface LocalNote {
    * echo from a foreign row carrying an EQUAL updated_at stamp (#156):
    * same stamp + same nonce = our own push coming back, skip; same stamp +
    * different nonce = another device won an equal-stamp race, apply it.
-   * Absent on rows that never synced (pre-upgrade rows included).
+   * The per-note push is guarded by it. Absent on rows that never synced
+   * from this device, whose push always meets the conflict read.
    */
   syncedNonce?: string;
+  /**
+   * What this device last synced of the note, field by field (noteMerge.ts),
+   * bound to the generation `syncedNonce` names; the conflict path merges
+   * against it. Recorded wherever `syncedNonce` is. Written in this plain
+   * form, but at rest the seal keeps it in an envelope beside the row
+   * (localSeal.ts), so a read finds it only through `noteBaseOf` in sync.ts.
+   * Absent on rows that never synced from this device.
+   */
+  syncBase?: SyncBase;
 }
 
 /**
@@ -72,7 +83,9 @@ interface ImageDedup {
   uuid: string;
   /** Encrypted blob size in bytes (for image_bytes quota tracking). */
   encryptedSize?: number;
-  /** 1 = blob cached locally but not yet uploaded to Supabase. */
+  /** 1 = cached locally and not yet uploaded; 2 = the server refused it for
+   *  good, so the cache is its only copy and the GC keeps it while the retry
+   *  sweep skips it; 0 or absent = uploaded. */
   pendingUpload?: number;
   /** 1 = pending upload known not to fit the storage quota. The retry
    *  sweep skips it without touching the wire and the status surfaces
@@ -99,7 +112,9 @@ interface AttachmentDedup {
   hash: string;
   uuid: string;
   encryptedSize?: number;
-  /** 1 = blob cached locally but not yet uploaded to Supabase. */
+  /** 1 = cached locally and not yet uploaded; 2 = the server refused it for
+   *  good, so the cache is its only copy and the GC keeps it while the retry
+   *  sweep skips it; 0 or absent = uploaded. */
   pendingUpload?: number;
   /** 1 = pending upload known not to fit the storage quota - see ImageDedup. */
   quotaBlocked?: number;
@@ -190,6 +205,20 @@ class NotesDb extends Dexie {
     // shares storage with a real install. See demo.ts.
     super(isDemoMode() ? DEMO_DB_NAME : 'privacynotes');
 
+    // Sealed rows (localSeal.ts) can sit in a database at version 13 or later:
+    // the seal shipped with no version bump. Every upgrade declared after 13
+    // runs when such a database opens, and the app opens it at boot, before
+    // the phrase has given the local data key. So an upgrade after 13 never
+    // reads or backfills the rows of notes, editorDocCache, imageCache or
+    // attachmentCache: through the seal middleware the read throws
+    // LocalSealKeyMissing and the app cannot open its database, and on the raw
+    // rows the sealed fields are absent, and a default written beside the
+    // blob is dropped by the next sealed write. The v2, v5, v7, v8 and v9
+    // upgrades read or backfill content and are safe only because they run
+    // below 13. A change to sealed
+    // content runs after unlock instead, the way the sweep does.
+    // Test: tests/dbUpgradeSealed.test.ts
+    // Spec: ops/docs/plans/local-at-rest.md (section 5.1)
     // v1 - original schema.
     this.version(1).stores({
       notes: 'id, updatedAt, dirty, deleted',

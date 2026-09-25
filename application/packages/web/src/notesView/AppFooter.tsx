@@ -244,7 +244,7 @@ export function MiniFooter({
           </button>
         </div>
         <span className="shrink-0">
-          <SyncStatus onOpen={openSyncVerify} />
+          <SyncStatus onOpen={openSyncVerify} tipPosition="above" />
         </span>
         {/* Stats readout - md+ only. Below md the phone row is too tight;
             at md-lg the same three phone controls span a tablet-width row,

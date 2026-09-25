@@ -135,6 +135,7 @@
     "closeMenu": "메뉴 닫기",
     "close": "닫기",
     "views": "콘텐츠",
+    "resizeSplit": "콘텐츠와 태그 또는 폴더 크기 조절",
     "sidebarOptions": "사이드바 옵션",
     "showInSidebar": "사이드바에 표시",
     "allOptions": "전체 옵션",
@@ -450,6 +451,7 @@
     "openAction": "열기",
     "copiedUrl": "링크를 복사했어요",
     "moveToTrash": "휴지통으로 이동",
+    "rowMenu": "추가 작업",
     "emptyNone": "아직 북마크가 없어요.",
     "emptyTitle": "간직할 만한 사이트를 저장하세요",
     "emptyAdd": "북마크 추가",
@@ -577,5 +579,8 @@
   },
   "noteLinks": {
     "retargetedToast_other": "노트 링크 {{count}}개를 새 제목으로 바꿨어요."
+  },
+  "looks": {
+    "menu": "아이콘 및 색상"
   }
 }

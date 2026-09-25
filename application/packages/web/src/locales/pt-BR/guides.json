@@ -177,7 +177,7 @@
           "h": "Onde as coisas aterrissam",
           "p": [
             "Logins viram entradas de acesso do Cofre (com os ícones dos sites), cartões viram entradas de cartão, chaves SSH viram entradas de chave SSH, e notas seguras mais identidades chegam como notas legíveis. Pastas do Bitwarden viram tags, e favoritos chegam com estrela. As chaves de autenticação (TOTP) vêm junto, então seus códigos 2FA continuam funcionando.",
-            "O arquivo exportado contém suas senhas em texto puro, então importe, confira se chegou tudo e depois apague o arquivo de vez. Dentro do PrivacyNotes tudo volta a ser criptografado de ponta a ponta."
+            "O arquivo exportado contém suas senhas em texto puro, então importe, confira se chegou tudo e depois apague o arquivo de vez. Dentro do PrivacyNotes tudo volta a ser criptografado, no seu dispositivo e a caminho do servidor."
           ]
         }
       ]
@@ -568,7 +568,7 @@
         {
           "h": "Apague o arquivo exportado quando terminar: são as suas senhas em texto puro",
           "p": [
-            "No .csv exportado nada é criptografado, chegando dentro de um .zip ou não. Quem abrir ele lê todas as senhas que você salvou, então guarde ele na sua própria máquina, importe, confira se chegou tudo e depois apague o arquivo e esvazie a lixeira. Dentro do PrivacyNotes tudo volta a ser criptografado de ponta a ponta."
+            "No .csv exportado nada é criptografado, chegando dentro de um .zip ou não. Quem abrir ele lê todas as senhas que você salvou, então guarde ele na sua própria máquina, importe, confira se chegou tudo e depois apague o arquivo e esvazie a lixeira. Dentro do PrivacyNotes tudo volta a ser criptografado, no seu dispositivo e a caminho do servidor."
           ]
         }
       ]

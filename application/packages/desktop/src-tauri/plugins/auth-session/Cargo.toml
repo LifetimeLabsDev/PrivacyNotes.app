@@ -1,0 +1,56 @@
+# The in-app OAuth sheet for iOS: an ASWebAuthenticationSession that completes
+# on an https return address bound to this app.
+#
+# Forked from tauri-plugin-auth-session 0.2.2 (MIT OR Apache-2.0), which
+# completes the sheet on a custom URL scheme. A scheme is a first-come claim
+# that any app can make, so the auth server must not accept one as a return
+# address, and the upstream crate cannot ask for anything else. This copy asks
+# for an https host and path, which iOS hands only to the app that proves it
+# owns the host through its associated-domains entitlement. It compiles for
+# iOS alone: Android keeps the system browser and an App Link, and desktop
+# returns to a page. README.md lists every change from upstream.
+# Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 8.2)
+[package]
+name = "tauri-plugin-auth-session"
+version = "0.2.2"
+description = "In-app OAuth sheet for iOS, completed on an https callback bound to the app"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/yanqianglu/tauri-plugin-auth-session"
+edition = "2021"
+rust-version = "1.77"
+links = "tauri-plugin-auth-session"
+publish = false
+
+[dependencies]
+tauri = { version = "2", features = [] }
+
+[target.'cfg(target_os = "ios")'.dependencies]
+objc2 = "0.6"
+objc2-foundation = { version = "0.3", features = [
+    "NSSet",
+    "NSArray",
+    "NSString",
+    "NSURL",
+    "NSError",
+] }
+# ASWebAuthenticationSessionCallback is the https callback (iOS 17.4); the
+# upstream manifest never enables it.
+objc2-authentication-services = { version = "0.3", features = [
+    "ASWebAuthenticationSession",
+    "ASWebAuthenticationSessionCallback",
+    "block2",
+] }
+objc2-ui-kit = { version = "0.3", features = [
+    "UIApplication",
+    "UIScene",
+    "UIWindowScene",
+    "UIView",
+    "UIResponder",
+    "UIWindow",
+] }
+block2 = "0.6"
+dispatch2 = "0.3"
+tokio = { version = "1", features = ["sync"] }
+
+[build-dependencies]
+tauri-plugin = { version = "2", features = ["build"] }

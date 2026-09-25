@@ -58,6 +58,9 @@
     "upgradeCharge": "오늘은 현재 결제 연도의 남은 기간만큼 {{amount}}가 청구돼요. 이후에는 연 {{price}}에 갱신돼요.",
     "upgradeChargeUntil": "오늘은 {{date}}까지, 현재 결제 연도의 남은 기간만큼 {{amount}}가 청구돼요. 이후에는 연 {{price}}에 갱신돼요.",
     "upgradeChargeApple": "오늘 {{price}}가 청구돼요. 현재 연도의 사용하지 않은 기간은 Apple이 자동으로 환불해 주고, 새 연도가 지금부터 시작돼요.",
+    "upgradeAmountFailed": "오늘 결제할 금액을 불러오지 못했어요.",
+    "upgradeAmountRetry": "다시 시도",
+    "upgradeAmountChanged": "오늘 결제할 금액이 바뀌었거나 확인할 수 없어서 청구되지 않았어요. 패키지를 다시 선택하면 새 금액을 볼 수 있어요.",
     "upgrading": "업그레이드 중…",
     "upgradeAndPay": "업그레이드하고 지금 결제",
     "maybeLater": "다음에 할게요",
@@ -173,7 +176,12 @@
     "contentWidthWide": "넓게",
     "contentWidthFull": "전체",
     "lineSpacingTitle": "줄 간격",
-    "lineSpacingDesc": "쓰는 동안 문단 사이의 간격이에요.",
+    "tintNotesTitle": "노트 배경에 색상 적용",
+    "tintNotesDesc": "노트에 태그나 폴더의 색상이 적용돼요.",
+    "lineSpacingDesc": "쓰는 동안 줄과 문단 사이의 간격이에요.",
+    "lineSpacingTight": "더 좁게",
+    "resetDefaults": "기본값으로 재설정",
+    "resetDefaultsConfirm": "재설정 확인",
     "lineSpacingCompact": "좁게",
     "lineSpacingNormal": "보통",
     "lineSpacingExample": "예시",
@@ -201,10 +209,10 @@
   },
   "conflict": {
     "title": "동기화 충돌",
-    "explanation": "여기에 저장하지 않은 변경 사항이 있는 동안 이 노트가 다른 기기에서 수정됐어요. <em>더 새로운 버전</em>(다른 기기, {{date}})을 사용할게요.",
+    "explanation": "이 기기에 아직 동기화되지 않은 변경 사항이 있는 동안 이 노트가 다른 기기에서 바뀌었고, 두 버전의 본문이 서로 달라요. 따로 선택하지 않으면 <em>다른 기기의 버전</em>({{date}})을 유지할게요.",
     "willBeKept": "유지될 버전",
     "showLocal": "이 기기의 버전 보기 ({{date}})",
-    "useNewer": "네, 새 버전 사용",
+    "useNewer": "다른 버전 사용",
     "useMine": "내 버전 사용",
     "keepBoth": "둘 다 별개 노트로 유지"
   },
@@ -216,6 +224,10 @@
     "localLabel": "로컬 데이터 삭제",
     "localDesc": "이 기기에서 노트, 이미지, 캐시 데이터를 지워요. 계정은 삭제되지 않고 이 브라우저만 정리돼요.",
     "localRequired": "(계정 삭제 시 필수)",
+    "localUnsynced_other": "이 기기의 {{items}}가 동기화되지 않았어요. 로컬 데이터를 삭제하면 영구적으로 사라져요.",
+    "unsyncedNotes_other": "노트 {{count}}개",
+    "unsyncedFiles_other": "파일 {{count}}개",
+    "unsyncedBoth": "{{notes}}와 {{files}}",
     "cloudLabel": "클라우드 데이터 & 계정 삭제",
     "cloudDesc": "동기화된 모든 노트, 이미지, 기기, 설정, 그리고 계정을 서버에서 영구적으로 제거해요. 이후 다시 가입할 수 있어요.",
     "confirmPrompt": "확인하려면 <kbd>DELETE</kbd>를 입력하세요",
@@ -253,7 +265,9 @@
     "notBackedUp": "백업 안 됨",
     "notSynced": "동기화 안 됨",
     "notBackedUpTooltip_other": "노트 {{count}}개가 백업되지 않았어요. 클릭하면 이유를 볼 수 있어요.",
-    "notBackedUpAria_other": "노트 {{count}}개가 백업되지 않았어요"
+    "notBackedUpAria_other": "노트 {{count}}개가 백업되지 않았어요",
+    "haltedTooltip_other": "동기화가 중단되어 노트 {{count}}개가 백업되지 않았어요. 클릭하면 이유를 볼 수 있어요.",
+    "haltedAria_other": "동기화 중단, 노트 {{count}}개가 백업되지 않았어요"
   },
   "errors": {
     "noSession": "활성 세션이 없어요. 다시 로그인해 보세요.",
@@ -298,7 +312,8 @@
     "reasonTooLarge": "1 MB 제한 초과",
     "reasonFailed": "실패: {{message}}",
     "openNote": "열기",
-    "passPushFailed_other": "{{count}}개 실패"
+    "passPushFailed_other": "{{count}}개 실패",
+    "passHalted_other": "중단됨, {{count}}개 대기 중"
   },
   "language": {
     "reportMistake": "번역 오류 신고하기"

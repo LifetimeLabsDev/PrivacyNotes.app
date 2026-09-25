@@ -5,16 +5,17 @@ import { invalidateDeviceRegistration } from './authStorage';
 import type { SupabaseClient } from '@notes/shared';
 import { createNote, listNotes } from './notesRepo';
 import { db, type LocalNote } from './db';
-import { sync, CaptchaRequiredError, DeviceRevokedError, QuotaExceededError, SessionExpiredError, type NoteConflict } from './sync';
+import { sync, pushConflictAnswer, writeConflictAnswer, CaptchaRequiredError, DeviceRevokedError, QuotaExceededError, SessionExpiredError, type NoteConflict, type PushHalt } from './sync';
 import { logAuthEvent } from './authDiag';
 import { fetchQuotaUsage } from './devices';
 import { hasSettingsPulled, syncUserSettings, updateLocalSettings, type UserSettings } from './userSettings';
 import { syncPinCache } from './pin';
 import { syncPinWrap } from './pinRecovery';
 import { seedOnboardingNotes, SEED_MEDICATION } from './welcomeNote';
-import { mergeTrackers, trackersEqual } from './trackerTypes';
 import { isDemoMode } from './demo';
 import { reconcileOrphanBlobs, sweepBlobGC } from './imageGC';
+import { pullOpensTrashPurge } from './trashPurge';
+import { markPulledClean, wipeGenerationNow } from './pullState';
 import { perfSpan } from './perf';
 import { setSyncingFlag } from './syncingStore';
 import { recordSyncPass } from './syncLog';
@@ -29,6 +30,30 @@ const PENDING_BLOB_RETRY_MS = 30 * 60_000;
 
 type Authed = Extract<AuthState, { status: 'authenticated' }>;
 
+/**
+ * The "Keep both" copy of a conflicted note: the local title and body as a
+ * new note, carrying the protection and the read-only flag of either side.
+ * The flags are written in the same transaction as the row, so no sync pass
+ * can push the copy unprotected, and its list row never shows the body a
+ * protected note keeps behind the PIN. Tested in tests/lockGateWrites.test.ts.
+ */
+export async function forkConflictCopy(
+  conflict: NoteConflict,
+  local: LocalNote,
+  title: string,
+  body: string,
+): Promise<LocalNote> {
+  const flags = {
+    pinProtected: local.pinProtected === 1 || conflict.serverPinProtected ? 1 : 0,
+    locked: local.locked === 1 || conflict.serverLocked ? 1 : 0,
+  } as const;
+  return db.transaction('rw', db.notes, async () => {
+    const copy = await createNote(title, body, conflict.localNote.tags, conflict.localNote.starred === 1, conflict.localNote.type ?? 'note');
+    await db.notes.update(copy.id, flags);
+    return { ...copy, ...flags };
+  });
+}
+
 export function useSyncOrchestrator({
   auth,
   supabase,
@@ -42,6 +67,8 @@ export function useSyncOrchestrator({
   editingBodyRef,
   setEditorRevision,
   editorFocusedRef,
+  isNoteLocked,
+  gateCopy,
 }: {
   auth: Authed;
   supabase: SupabaseClient;
@@ -55,6 +82,10 @@ export function useSyncOrchestrator({
   editingBodyRef: { readonly current: Map<string, string> };
   setEditorRevision: Dispatch<SetStateAction<number>>;
   editorFocusedRef: { readonly current: boolean };
+  /** The view's lock predicate, for the conflict copy below. */
+  isNoteLocked: (n: LocalNote) => boolean;
+  /** Keep a new copy gated until the next unlock, as a duplicate is. */
+  gateCopy: (id: string) => void;
 }) {
   const [quotaExceeded, setQuotaExceeded] = useState(false);
   /** ISO timestamp of when the user first exceeded quota (from server). */
@@ -91,6 +122,9 @@ export function useSyncOrchestrator({
   // "New vault created" notice for the sign-in-with-existing-phrase
   // path when the server has no data for the derived pubkey.
   const [freshVaultNotice, setFreshVaultNotice] = useState(false);
+  /** True once a pass in this app session ran, finished its notes pull, and
+   *  read the settings from the server. The trash auto-purge waits for it. */
+  const [trashPurgeReady, setTrashPurgeReady] = useState(false);
   // Monotonic counter bumped on every local settings mutation.
   // runSync snapshots it before calling syncUserSettings and skips
   // the setUserSettings write if it changed mid-flight (GitHub #71).
@@ -137,9 +171,11 @@ export function useSyncOrchestrator({
     let passErrors: { count: number; lastMessage: string } | null = null;
     // Every failure of this pass by note id, for pushFailures.ts. Recorded
     // only after a pass that ran: a skipped pass attempted nothing, so its
-    // empty list says nothing about the notes that failed last time.
+    // empty list says nothing about the notes that failed last time. A pass
+    // whose push halted hands its halt along, for the same reason.
     const passFailures: Array<{ id: string; message: string }> = [];
     let passRan = false;
+    let passHalt: PushHalt | null = null;
     const onPushError = (id: string, message: string) => {
       passFailures.push({ id, message });
       // An RLS rejection means this session's pubkey link is broken
@@ -174,21 +210,26 @@ export function useSyncOrchestrator({
       const localCount = await db.notes.count();
       const onBatch = localCount === 0 ? refresh : undefined;
       const passStartedAt = Date.now();
+      // Captured before the pass: a wipe that lands while it runs makes its
+      // pull stale, and the mark below is then refused (pullState.ts).
+      const wipeGen = wipeGenerationNow();
       const syncResult = await sync(supabase, auth.pubkey, auth.encryptionKey, auth.deviceId, onBatch, onPushError, enqueueConflict);
       passRan = syncResult.ran;
+      passHalt = syncResult.halted ?? null;
       // Feed the sync activity log (syncLog.ts). Skipped passes (demo,
       // floor, pause, mutex) report ran: false and are non-events.
       if (syncResult.ran) {
-        // `pushed` counts attempted rows; the log separates the accepted
-        // ones from the refused, so a stuck note never reads as "1 up".
-        const failedCount = new Set(passFailures.map((f) => f.id)).size;
+        // `pushed` counts the rows the server accepted. A note that failed
+        // with a reason of its own reads as failed; the rows a halted push
+        // left behind travel in `halted`, so neither ever reads as "up".
         recordSyncPass({
           at: passStartedAt,
           ms: Date.now() - passStartedAt,
           ok: syncResult.pullOk,
-          up: Math.max(0, (syncResult.pushed ?? 0) - failedCount),
+          up: syncResult.pushed ?? 0,
           down: syncResult.pulled ?? 0,
-          failed: failedCount,
+          failed: new Set(passFailures.map((f) => f.id)).size,
+          ...(syncResult.halted ? { halted: syncResult.halted } : {}),
         });
       }
       // A pass that actually ran proves the session carries this vault's
@@ -203,13 +244,14 @@ export function useSyncOrchestrator({
       // notes first so the user's newest edits land fastest, settings
       // second so a favorites toggle doesn't block a note upload.
       const settingsGen = settingsGenRef.current;
-      let merged = await syncUserSettings(supabase, auth.pubkey, auth.encryptionKey);
+      const settingsPass = { readServer: false };
+      let merged = await syncUserSettings(supabase, auth.pubkey, auth.encryptionKey, settingsPass);
       syncPinCache(merged);
 
       // Carries the account's PIN wrap onto this device, and off it again
       // when the account no longer has one. The phrase goes with it so a
       // device the removal leaves with no door can put it back at rest.
-      syncPinWrap(merged, auth.phrase);
+      await syncPinWrap(merged, auth.phrase);
 
       // One-shot welcome-note seed. Runs exactly once per user, ever
       // - gated on the synced `welcomeNoteSeeded` flag so a second
@@ -336,6 +378,11 @@ export function useSyncOrchestrator({
           JSON.stringify(prev) === JSON.stringify(effective) ? prev : effective,
         );
       }
+      // Only a pass that read the settings from the server this time opens
+      // the purge: its day count must be the account's, not a cached one
+      // left by an earlier pass (trashPurge.ts).
+      if (pullOpensTrashPurge(syncResult, settingsPass.readServer)) setTrashPurgeReady(true);
+      if (pullOpensTrashPurge(syncResult, settingsPass.readServer)) markPulledClean(wipeGen);
       // Skip the vault-sized rebuild when the pass moved nothing: at a
       // few thousand notes refresh() costs ~300 ms of main-thread work,
       // and the 30 s poller was paying it on every idle tick (#130).
@@ -520,14 +567,14 @@ export function useSyncOrchestrator({
         pushErrorsDismissedKey.current = null;
       }
       setPushErrors(passErrors);
-      if (passRan) recordPassPushFailures(passFailures);
+      if (passRan) recordPassPushFailures(passFailures, Date.now(), passHalt);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supabase, auth.pubkey, auth.encryptionKey, auth.deviceId, auth.isPro, refresh, forceSignOut, enqueueConflict]);
 
   /** Resolve a queued note conflict. Called from ConflictModal. */
   const resolveConflict = useCallback(async (conflict: NoteConflict, resolution: 'local' | 'server' | 'both') => {
-    const { noteId, localNote, serverUpdatedAt } = conflict;
+    const { noteId, localNote } = conflict;
     // One decision per conflict. Every ConflictModal button calls
     // onResolve AND then onClose, and onClose is wired to a second,
     // contradictory 'server' resolution - so "Use mine" force-pushed the
@@ -537,182 +584,85 @@ export function useSyncOrchestrator({
     // conflict has left the queue and the modal is gone.
     if (resolvingConflictsRef.current.has(noteId)) return;
     resolvingConflictsRef.current.add(noteId);
-    const now = new Date().toISOString();
+    // Snapshot the key synchronously, before any await: signOut zeroes
+    // auth.encryptionKey in place, and encrypting with a zeroed key pushes
+    // undecryptable ciphertext the server accepts as valid. (Sync passes
+    // carry their own key copy for the same reason - see sync.ts.)
+    const keySnapshot = new Uint8Array(auth.encryptionKey);
     try {
       if (resolution === 'local') {
-        // Snapshot the key synchronously, before the import await:
-        // signOut zeroes auth.encryptionKey in place, and encrypting
-        // with a zeroed key pushes undecryptable ciphertext the server
-        // accepts as valid. An all-zero snapshot means sign-out already
-        // began - bail; the note stays dirty for the next authenticated
-        // pass to re-detect. (Sync passes carry their own key copy for
-        // the same reason - see sync.ts.)
-        const keySnapshot = new Uint8Array(auth.encryptionKey);
         if (keySnapshot.every((b) => b === 0)) {
+          // Sign-out already began: the note stays dirty for the next
+          // authenticated pass to re-detect.
           console.warn('[conflict] sign-out in progress - keep-mine deferred for', noteId);
           return;
         }
-        // The modal asks which BODY to keep. A journal entry's medication
-        // log is not part of that question, and the losing side's day was
-        // being thrown away with it - so trackers merge field-by-field
-        // whichever body wins. Same rule as sync.ts's auto-merge.
-        const keptTrackers = mergeTrackers(localNote.trackers, conflict.serverTrackers);
-        // Force-push the local version (unconditional update).
-        const { encryptNote: enc, bytesToBase64: b64 } = await import('@notes/shared');
-        const { ciphertext, nonce } = enc(
-          {
-            title: localNote.title,
-            body: localNote.body,
-            tags: localNote.tags,
-            trashed: localNote.trashed === 1,
-            starred: localNote.starred === 1,
-            locked: localNote.locked === 1,
-            pinProtected: localNote.pinProtected === 1,
-            type: localNote.type ?? 'note',
-            trackers: keptTrackers,
-            folderId: localNote.folderId ?? null,
-          },
-          keySnapshot
-        );
-        const { data: forced, error: forceErr } = await supabase
-          .from('notes')
-          .update({
-            ciphertext: b64(ciphertext),
-            nonce: b64(nonce),
-            updated_at: now,
-          })
-          .eq('id', noteId)
-          .eq('user_pubkey', auth.pubkey)
-          .select('id');
-        if (!forceErr && forced && forced.length > 0) {
-          await db.notes.update(noteId, { dirty: 0, updatedAt: now, trackers: keptTrackers, syncedNonce: b64(nonce) });
-        } else {
-          // The write did not land: supabase-js reports network and
-          // HTTP failures via `error` without throwing, and a write to
-          // a row tombstoned while the modal was open is silently
-          // dropped by the 0034 trigger (204, zero rows). Recording
-          // either as synced stranded the kept version on this device
-          // only, forever, under a green Synced check. Keep it dirty
-          // with the fresh timestamp instead: the next pass force-
-          // pushes it through the lte guard, or the tombstone pull
-          // removes it - sync owns the truth either way.
-          console.error('[conflict] keep-mine push did not land for', noteId, forceErr);
-          await db.notes.update(noteId, { dirty: 1, updatedAt: now });
-        }
-      } else if (resolution === 'server') {
-        // Accept the server version - write it locally. The tracker
-        // payload merges rather than being replaced (see the keep-mine
-        // branch above): "use the newer version" is a statement about the
-        // text, not a decision to discard this device's medication log.
-        const mergedTrackers = mergeTrackers(localNote.trackers, conflict.serverTrackers);
-        const trackersDiverged = !trackersEqual(mergedTrackers, conflict.serverTrackers);
-        await db.notes.update(noteId, {
-          title: conflict.serverTitle,
-          body: conflict.serverBody,
-          tags: conflict.serverTags,
-          trackers: mergedTrackers,
-          starred: conflict.serverStarred ? 1 : 0,
-          trashed: conflict.serverTrashed ? 1 : 0,
-          locked: conflict.serverLocked ? 1 : 0,
-          pinProtected: conflict.serverPinProtected ? 1 : 0,
-          type: conflict.serverType,
-          folderId: conflict.serverFolderId,
-          // A merge that added anything is a local change the server has
-          // not seen. Leaving it clean would strand it on this device
-          // under a green tick - the exact shape of the loss reports.
-          updatedAt: trackersDiverged ? now : serverUpdatedAt,
-          dirty: trackersDiverged ? 1 : 0,
+        // The chosen body over the merged rest, pushed over the version
+        // the dialog showed (sync.ts pushConflictAnswer), sealed here with
+        // the snapshot. The shared crypto arrives through a dynamic import:
+        // it is the app's only dynamic import of the shared package, and the
+        // bundler's chunk graph forms around it. A build that imports it
+        // statically here folds the auth chunk into the entry and grows the
+        // entry and NotesView chunks past their budgets.
+        const { encryptNote, bytesToBase64 } = await import('@notes/shared');
+        await pushConflictAnswer(supabase, auth.pubkey, conflict, (fields) => {
+          const { ciphertext, nonce } = encryptNote(fields, keySnapshot);
+          return { ciphertext: bytesToBase64(ciphertext), nonce: bytesToBase64(nonce) };
         });
-        // The editor may still be holding a stale in-flight body for this
-        // note in editingBodyRef - if we leave it, the next flush writes
-        // it back into React state with dirty=1 and re-pushes it, silently
-        // undoing the "use newer" choice. Clear the buffer and reload from
-        // Dexie (same pattern as the history-restore path below) so the
-        // open editor re-renders the server content instead.
-        if (selectedId === noteId) {
-          editingBodyRef.current.delete(noteId);
-        }
-        // Order matters: reload state BEFORE bumping the editor key. The
-        // bump remounts the editor with whatever body React state holds
-        // at that render - bumping first remounted it with the stale
-        // local body, and the fresh server body arriving one render
-        // later was ignored (Editor treats `value` as initial content).
-        await refresh();
-        if (selectedId === noteId) {
-          setEditorRevision((r) => r + 1);
-        }
       } else {
-        // Keep both: accept server version for the original note,
-        // create a duplicate with the local version. Capture the freshest
-        // local content first (buffered keystrokes, else the current Dexie
-        // row, else the conflict snapshot) so the duplicate doesn't lose
-        // anything typed after the conflict was detected.
+        // "Keep both" first captures the freshest local content (buffered
+        // keystrokes, else the current row, else the conflict snapshot) so
+        // the copy keeps anything typed after the conflict was detected.
         const buffered = editingBodyRef.current.get(noteId);
         const row = await db.notes.get(noteId);
         const freshBody = buffered ?? row?.body ?? localNote.body;
         const freshTitle = row?.title ?? localNote.title;
-        // The whole tracker payload lands on the ORIGINAL, merged from
-        // both sides. It used to be overwritten with the server's copy
-        // here and forked into the duplicate from a stale snapshot, so
-        // this device's medication log for the day ended up on neither
-        // note the user was looking at. `row` is the freshest local copy.
-        const keptTrackers = mergeTrackers(
-          (row?.trackers as Record<string, unknown> | undefined) ?? localNote.trackers,
-          conflict.serverTrackers
-        );
-        const trackersDiverged = !trackersEqual(keptTrackers, conflict.serverTrackers);
-        await db.notes.update(noteId, {
-          title: conflict.serverTitle,
-          body: conflict.serverBody,
-          tags: conflict.serverTags,
-          trackers: keptTrackers,
-          starred: conflict.serverStarred ? 1 : 0,
-          trashed: conflict.serverTrashed ? 1 : 0,
-          locked: conflict.serverLocked ? 1 : 0,
-          pinProtected: conflict.serverPinProtected ? 1 : 0,
-          type: conflict.serverType,
-          folderId: conflict.serverFolderId,
-          updatedAt: trackersDiverged ? now : serverUpdatedAt,
-          dirty: trackersDiverged ? 1 : 0,
-        });
-        // Same stale-buffer hazard as the 'server' branch above - clear it
-        // and reload so the open editor shows the resolved server content
-        // rather than the body that just got forked into the duplicate.
-        if (selectedId === noteId) {
-          editingBodyRef.current.delete(noteId);
+        const outcome = await writeConflictAnswer(supabase, auth.pubkey, keySnapshot, conflict, resolution);
+        if (outcome === 'written') {
+          // The editor may still be holding a stale in-flight body for this
+          // note in editingBodyRef - if we leave it, the next flush writes
+          // it back into React state with dirty=1 and re-pushes it, silently
+          // undoing the choice. Clear the buffer and reload from Dexie (same
+          // pattern as the history-restore path) so the open editor
+          // re-renders the chosen content instead.
+          if (selectedId === noteId) {
+            editingBodyRef.current.delete(noteId);
+          }
+          // Order matters: reload state BEFORE bumping the editor key. The
+          // bump remounts the editor with whatever body React state holds
+          // at that render - bumping first remounted it with the stale
+          // local body, and the fresh server body arriving one render
+          // later was ignored (Editor treats `value` as initial content).
+          await refresh();
+          if (selectedId === noteId) {
+            setEditorRevision((r) => r + 1);
+          }
+          if (resolution === 'both') {
+            // The copy holds this device's body, protected and read-only
+            // when either side was, and gated like a duplicate of a note
+            // behind a closed gate. It is deliberately a BODY fork with no
+            // tracker payload: the original already carries both sides'
+            // trackers, and copying them would give a journal entry a twin
+            // with the same `journalDate` - two entries for one calendar
+            // day, which every statistic then has to collapse.
+            const suffix = ' (conflict)';
+            const dupTitle = (freshTitle || 'Untitled') + suffix;
+            const local = row ?? localNote;
+            const dup = await forkConflictCopy(conflict, local, dupTitle, freshBody);
+            if (isNoteLocked({ ...local, pinProtected: dup.pinProtected })) gateCopy(dup.id);
+          }
         }
-        // Reload before the key bump - same ordering rationale as the
-        // 'server' branch above.
-        await refresh();
-        if (selectedId === noteId) {
-          setEditorRevision((r) => r + 1);
-        }
-        // Create the duplicate with local content.
-        const suffix = ' (conflict)';
-        const dupTitle = (freshTitle || 'Untitled') + suffix;
-        const dup = await createNote(
-          dupTitle,
-          freshBody,
-          localNote.tags,
-          localNote.starred === 1,
-          localNote.type ?? 'note',
-        );
-        // The duplicate is deliberately a BODY fork with no tracker
-        // payload. The merge above already carries both sides' trackers
-        // on the original, and copying them here would give a journal
-        // entry a twin with the same `journalDate` - two entries for one
-        // calendar day, which every statistic then has to collapse.
-
       }
     } catch (err) {
       console.error('[conflict] resolution failed for', noteId, err);
     } finally {
+      keySnapshot.fill(0);
       resolvingConflictsRef.current.delete(noteId);
     }
     // Remove from queue.
     setConflictQueue((q) => q.filter((c) => c.noteId !== noteId));
     await refresh();
-  }, [supabase, auth.pubkey, auth.encryptionKey, refresh, selectedId]);
+  }, [supabase, auth.pubkey, auth.encryptionKey, refresh, selectedId, isNoteLocked, gateCopy]);
 
   // Fold back any body edit stashed by the close-flush path
   // (flushStash.ts). Runs once at mount; an applied stash marks the
@@ -774,6 +724,7 @@ export function useSyncOrchestrator({
     setStoragePastDueDismissed,
     freshVaultNotice,
     setFreshVaultNotice,
+    trashPurgeReady,
     settingsGenRef,
     quotaRef,
   };

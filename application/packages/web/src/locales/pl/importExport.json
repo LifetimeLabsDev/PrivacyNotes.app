@@ -14,7 +14,7 @@
   "footer": {
     "exportNote": "Eksport działa lokalnie. Nic nie jest wysyłane.",
     "restoreNote": "Twój plik jest odczytywany i odszyfrowywany lokalnie.",
-    "importNote": "Wszystko jest szyfrowane, zanim opuści Twoje urządzenie w celu synchronizacji."
+    "importNote": "Wszystko jest zawsze zaszyfrowane, na Twoim urządzeniu i podczas synchronizacji."
   },
   "importPick": {
     "autoTagLabel": "Oznacz zaimportowane notatki tagiem źródła",
@@ -80,6 +80,11 @@
     "encryptedBackupTitle": "Zaszyfrowana kopia zapasowa (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Przywróć zaszyfrowaną kopię zapasową kluczem z Twojej frazy. Plik .pnbackupz przywraca wszystko, razem z plikami; .pnbackup zawiera tylko tekst i metadane. Musisz być zalogowany na tym samym koncie, które ją utworzyło."
   },
+  "restoreGate": {
+    "wait": "Przywracanie czeka, aż to urządzenie będzie online i ukończy synchronizację, żeby dopasować kopię zapasową do notatek, które już są na Twoim koncie, zamiast dodawać je po raz drugi.",
+    "paused": "Przywracanie czeka na synchronizację, żeby dopasować kopię zapasową do notatek, które już są na Twoim koncie, a synchronizacja jest na tym urządzeniu wstrzymana: wyłącz „Wstrzymaj synchronizację” w Ustawienia > ID & Sync.",
+    "belowFloor": "Przywracanie czeka na synchronizację, żeby dopasować kopię zapasową do notatek, które już są na Twoim koncie, a ta wersja aplikacji jest za stara, aby synchronizować: najpierw zaktualizuj aplikację."
+  },
   "encryptedBackupLabel": "Zaszyfrowana kopia zapasowa",
   "status": {
     "readingFile": "Odczytywanie pliku…",
@@ -91,7 +96,11 @@
   "errors": {
     "genericParse": "Coś poszło nie tak.",
     "decryptionFailed": "Odszyfrowywanie nie powiodło się. Zła fraza lub uszkodzony plik.",
-    "blobImportFailed": "Twoje notatki zaimportowały się, ale ich obrazy i pliki nie: {{detail}} Nic w pliku, który wybrałeś, nie zostało zmienione, więc możesz usunąć zaimportowane notatki i uruchomić import ponownie."
+    "blobImportFailed": "Twoje notatki zaimportowały się, ale ich obrazy i pliki nie: {{detail}} Nic w pliku, który wybrałeś, nie zostało zmienione, więc możesz usunąć zaimportowane notatki i uruchomić import ponownie.",
+    "blobsNotInBackup_one": "Twoje notatki zostały przywrócone, ale w kopii zapasowej brakuje wymienionego w niej elementu: {{items}}.",
+    "blobsNotInBackup_few": "Twoje notatki zostały przywrócone, ale w kopii zapasowej brakuje wymienionych w niej elementów: {{items}}.",
+    "blobsNotInBackup_many": "Twoje notatki zostały przywrócone, ale w kopii zapasowej brakuje wymienionych w niej elementów: {{items}}.",
+    "blobsNotInBackup_other": "Twoje notatki zostały przywrócone, ale w kopii zapasowej brakuje wymienionych w niej elementów: {{items}}."
   },
   "preview": {
     "sourceLabel": "Źródło",
@@ -105,6 +114,7 @@
     "duplicateWarning": "import dodaje je jako nowe notatki. Jeśli uruchomisz go dwa razy, dostaniesz duplikaty. Nie ma jeszcze automatycznego usuwania duplikatów.",
     "duplicateSkipNote": "zakładki, które już masz zapisane, zostaną pominięte, więc powtórzenie tego importu niczego nie zduplikuje.",
     "contactSkipNote": "osoby, które już zapisałeś, są pomijane i zostają bez zmian, więc drugie uruchomienie nikogo nie zduplikuje.",
+    "restoreMergeNote": "notatki z Twojej własnej kopii zapasowej są dopasowywane po identyfikatorze. Notatka, którą już masz, zostaje zaktualizowana tylko wtedy, gdy wersja z kopii jest nowsza, a notatka z kosza wraca z niego.",
     "quotaExceeded": "<strong>Za mało pamięci, aby zaimportować.</strong> Szacowane zapotrzebowanie: {{needed}}, dostępne: {{available}}. Zwolnij miejsce lub przejdź na wyższy plan przed importem.",
     "quotaWarning": "Uwaga: ten import zajmie mniej więcej {{needed}} z Twoich {{available}} pozostałej pamięci.",
     "oversizeAttachments_one": "1 plik jest większy niż limit {{limit}} na plik w Twoim planie. Zaimportuje się na to urządzenie, ale nie zsynchronizuje się z innymi urządzeniami, dopóki nie przejdziesz na wyższy plan.",
@@ -170,13 +180,33 @@
   "exportProgress": {
     "failedTitle": "Eksport nie powiódł się",
     "completeTitle": "Eksport zakończony",
+    "incompleteTitle": "Eksport niekompletny",
     "exportingTitle": "Eksportowanie kopii zapasowej...",
     "preparing": "Przygotowywanie...",
     "exporting": "Eksportowanie...",
     "imagesProgress": "Eksportowanie obrazów... {{done}} z {{total}}",
     "filesProgress": "Eksportowanie plików... {{done}} z {{total}}",
     "building": "Tworzenie kopii zapasowej...",
-    "compressing": "Kompresowanie..."
+    "compressing": "Kompresowanie...",
+    "missingFailed_one": "To urządzenie nie mogło pobrać: {{items}}. Twój eksport tego nie zawiera. Sprawdź połączenie i wyeksportuj ponownie.",
+    "missingFailed_few": "To urządzenie nie mogło pobrać: {{items}}. Twój eksport ich nie zawiera. Sprawdź połączenie i wyeksportuj ponownie.",
+    "missingFailed_many": "To urządzenie nie mogło pobrać: {{items}}. Twój eksport ich nie zawiera. Sprawdź połączenie i wyeksportuj ponownie.",
+    "missingFailed_other": "To urządzenie nie mogło pobrać: {{items}}. Twój eksport ich nie zawiera. Sprawdź połączenie i wyeksportuj ponownie.",
+    "missingNotFound_one": "Nie ma na tym urządzeniu ani na serwerze: {{items}}. Twój eksport tego nie zawiera.",
+    "missingNotFound_few": "Nie ma na tym urządzeniu ani na serwerze: {{items}}. Twój eksport ich nie zawiera.",
+    "missingNotFound_many": "Nie ma na tym urządzeniu ani na serwerze: {{items}}. Twój eksport ich nie zawiera.",
+    "missingNotFound_other": "Nie ma na tym urządzeniu ani na serwerze: {{items}}. Twój eksport ich nie zawiera."
+  },
+  "missing": {
+    "pictures_one": "{{count}} obraz",
+    "pictures_few": "{{count}} obrazy",
+    "pictures_many": "{{count}} obrazów",
+    "pictures_other": "{{count}} obrazu",
+    "files_one": "{{count}} plik",
+    "files_few": "{{count}} pliki",
+    "files_many": "{{count}} plików",
+    "files_other": "{{count}} pliku",
+    "both": "{{pictures}} i {{files}}"
   },
   "upload": {
     "completeTitle": "Przesyłanie zakończone",

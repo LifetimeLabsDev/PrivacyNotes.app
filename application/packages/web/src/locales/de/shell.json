@@ -136,6 +136,7 @@
     "closeMenu": "Menü schließen",
     "close": "Schließen",
     "views": "Inhalte",
+    "resizeSplit": "Aufteilung zwischen Inhalten und Tags oder Ordnern anpassen",
     "sidebarOptions": "Seitenleisten-Optionen",
     "showInSidebar": "In der Seitenleiste anzeigen",
     "allOptions": "Optionen für „Alle“",
@@ -455,6 +456,7 @@
     "openAction": "Öffnen",
     "copiedUrl": "Link kopiert",
     "moveToTrash": "In den Papierkorb",
+    "rowMenu": "Weitere Aktionen",
     "emptyNone": "Noch keine Lesezeichen.",
     "emptyTitle": "Speichere die Seiten, die es wert sind",
     "emptyAdd": "Lesezeichen hinzufügen",
@@ -585,5 +587,8 @@
   "noteLinks": {
     "retargetedToast_one": "{{count}} Notiz-Link auf den neuen Titel aktualisiert.",
     "retargetedToast_other": "{{count}} Notiz-Links auf den neuen Titel aktualisiert."
+  },
+  "looks": {
+    "menu": "Symbol und Farbe"
   }
 }

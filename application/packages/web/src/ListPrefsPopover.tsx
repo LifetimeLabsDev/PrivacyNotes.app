@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
 import { HoverLabel } from './HoverLabel';
+import { Switch } from './Switch';
 import { ArrowDown, ArrowUp, PencilSimpleSlash, Shield } from './icons';
 import {
   resolvePrefs,
@@ -290,29 +291,14 @@ function ToggleRow({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <label className="flex items-center justify-between gap-2 py-1 cursor-pointer select-none">
-      <span className="flex items-center gap-1.5 text-[14px] text-pn">
-        {icon}
-        {label}
-      </span>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition ${
-          checked
-            ? 'bg-accent'
-            : 'bg-neutral-300 dark:bg-neutral-700'
-        }`}
-      >
-        <span
-          className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-            checked ? 'translate-x-4 rtl:-translate-x-4' : 'translate-x-0.5 rtl:-translate-x-0.5'
-          }`}
-        />
-      </button>
-    </label>
+    <Switch
+      label={label}
+      icon={icon}
+      checked={checked}
+      onChange={onChange}
+      className="gap-2 py-1 select-none"
+      labelClassName="flex items-center gap-1.5 text-[14px] text-pn"
+    />
   );
 }
 

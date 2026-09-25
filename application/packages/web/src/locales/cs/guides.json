@@ -177,7 +177,7 @@
           "h": "Kam se co uloží",
           "p": [
             "Z přihlašovacích údajů se stanou položky přihlašovacích údajů v Trezoru (i s ikonami webů), z karet položky karet, z SSH klíčů položky SSH klíčů a zabezpečené poznámky i identity dorazí jako čitelné poznámky. Složky z Bitwardenu se převedou na značky a oblíbené položky dorazí s hvězdičkou. Ověřovací klíče (TOTP) putují s sebou, takže tvoje kódy 2FA fungují dál.",
-            "Exportovaný soubor obsahuje tvoje hesla v čitelné podobě, takže ho naimportuj, zkontroluj, že všechno dorazilo, a pak ho pořádně smaž. V PrivacyNotes je pak všechno zase end-to-end šifrované."
+            "Exportovaný soubor obsahuje tvoje hesla v čitelné podobě, takže ho naimportuj, zkontroluj, že všechno dorazilo, a pak ho pořádně smaž. V PrivacyNotes je pak všechno zase zašifrované, na tvém zařízení i cestou na server."
           ]
         }
       ]
@@ -568,7 +568,7 @@
         {
           "h": "Až budeš hotový, smaž exportovaný soubor: jsou to tvoje hesla v čitelné podobě",
           "p": [
-            "Ve vyexportovaném .csv není nic šifrované, ať už přijde v .zip, nebo ne. Kdo ho otevře, přečte si každé heslo, které sis uložil, tak si ho nech na vlastním počítači, naimportuj ho, ověř, že dorazilo všechno, a pak soubor smaž a vysyp koš. Uvnitř PrivacyNotes je zase všechno šifrované od konce ke konci."
+            "Ve vyexportovaném .csv není nic šifrované, ať už přijde v .zip, nebo ne. Kdo ho otevře, přečte si každé heslo, které sis uložil, tak si ho nech na vlastním počítači, naimportuj ho, ověř, že dorazilo všechno, a pak soubor smaž a vysyp koš. Uvnitř PrivacyNotes je zase všechno zašifrované, na tvém zařízení i cestou na server."
           ]
         }
       ]

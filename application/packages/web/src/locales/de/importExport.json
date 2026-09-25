@@ -14,7 +14,7 @@
   "footer": {
     "exportNote": "Exporte laufen lokal. Es wird nichts hochgeladen.",
     "restoreNote": "Deine Datei wird lokal gelesen und entschlüsselt.",
-    "importNote": "Alles wird verschlüsselt, bevor es dein Gerät zum Synchronisieren verlässt."
+    "importNote": "Alles ist immer verschlüsselt, auf deinem Gerät und beim Synchronisieren."
   },
   "importPick": {
     "autoTagLabel": "Importierte Notizen nach Quelle taggen",
@@ -74,6 +74,11 @@
     "encryptedBackupTitle": "Verschlüsseltes Backup (.pnbackup, .pnbackupz)",
     "encryptedBackupDesc": "Stelle ein verschlüsseltes Backup mit deinem Phrasenschlüssel wieder her. Eine .pnbackupz-Datei bringt alles zurück, Dateien eingeschlossen; eine .pnbackup-Datei enthält nur Textinhalte und Metadaten. Du musst mit demselben Konto angemeldet sein, das es erstellt hat."
   },
+  "restoreGate": {
+    "wait": "Die Wiederherstellung wartet, bis dieses Gerät online ist und eine Synchronisierung abgeschlossen hat, damit dein Backup mit den Notizen abgeglichen wird, die schon in deinem Konto sind, und sie nicht doppelt angelegt werden.",
+    "paused": "Die Wiederherstellung wartet auf die Synchronisierung, damit dein Backup mit den Notizen abgeglichen wird, die schon in deinem Konto sind. Auf diesem Gerät ist die Synchronisierung pausiert: Schalte „Synchronisierung pausieren“ unter Einstellungen > ID & Sync aus.",
+    "belowFloor": "Die Wiederherstellung wartet auf die Synchronisierung, damit dein Backup mit den Notizen abgeglichen wird, die schon in deinem Konto sind. Diese Version der App ist zu alt, um zu synchronisieren: Aktualisiere zuerst die App."
+  },
   "encryptedBackupLabel": "Verschlüsseltes Backup",
   "status": {
     "readingFile": "Datei wird gelesen…",
@@ -85,7 +90,9 @@
   "errors": {
     "genericParse": "Etwas ist schiefgelaufen.",
     "decryptionFailed": "Entschlüsselung fehlgeschlagen. Falsche Phrase oder beschädigte Datei.",
-    "blobImportFailed": "Deine Notizen wurden importiert, aber ihre Bilder und Dateien nicht: {{detail}} Nichts in der Datei, die du ausgewählt hast, wurde verändert, du kannst die importierten Notizen also löschen und den Import erneut starten."
+    "blobImportFailed": "Deine Notizen wurden importiert, aber ihre Bilder und Dateien nicht: {{detail}} Nichts in der Datei, die du ausgewählt hast, wurde verändert, du kannst die importierten Notizen also löschen und den Import erneut starten.",
+    "blobsNotInBackup_one": "Deine Notizen wurden wiederhergestellt, aber {{items}}, das im Backup aufgeführt ist, fehlt darin.",
+    "blobsNotInBackup_other": "Deine Notizen wurden wiederhergestellt, aber {{items}}, die im Backup aufgeführt sind, fehlen darin."
   },
   "preview": {
     "sourceLabel": "Quelle",
@@ -99,6 +106,7 @@
     "duplicateWarning": "beim Importieren werden diese als neue Notizen hinzugefügt. Wenn du das zweimal ausführst, erhältst du Duplikate. Eine automatische Duplikaterkennung gibt es noch nicht.",
     "duplicateSkipNote": "Lesezeichen, die du schon gespeichert hast, werden übersprungen. Ein zweiter Durchlauf legt also nichts doppelt an.",
     "contactSkipNote": "Personen, die du schon gespeichert hast, werden übersprungen und bleiben, wie sie sind. Ein zweiter Durchlauf legt also niemanden doppelt an.",
+    "restoreMergeNote": "Notizen aus deinem eigenen Backup werden anhand ihrer ID zugeordnet. Eine Notiz, die du schon hast, wird nur aktualisiert, wenn die Fassung im Backup neuer ist, und eine Notiz im Papierkorb wird wieder herausgeholt.",
     "quotaExceeded": "<strong>Zu wenig Speicher zum Importieren.</strong> Geschätzt {{needed}} benötigt, {{available}} verfügbar. Schaffe Platz oder rüste auf, bevor du importierst.",
     "quotaWarning": "Hinweis: Dieser Import wird etwa {{needed}} deines verbleibenden Speichers von {{available}} belegen.",
     "oversizeAttachments_one": "1 Datei ist größer als das {{limit}}-Limit pro Datei deines Tarifs. Sie wird auf dieses Gerät importiert, synchronisiert aber erst mit deinen anderen Geräten, wenn du upgradest.",
@@ -150,13 +158,25 @@
   "exportProgress": {
     "failedTitle": "Export fehlgeschlagen",
     "completeTitle": "Export abgeschlossen",
+    "incompleteTitle": "Export unvollständig",
     "exportingTitle": "Backup wird exportiert...",
     "preparing": "Wird vorbereitet...",
     "exporting": "Wird exportiert...",
     "imagesProgress": "Bilder werden exportiert... {{done}} von {{total}}",
     "filesProgress": "Dateien werden exportiert... {{done}} von {{total}}",
     "building": "Backup wird erstellt...",
-    "compressing": "Wird komprimiert..."
+    "compressing": "Wird komprimiert...",
+    "missingFailed_one": "Dieses Gerät konnte {{items}} nicht herunterladen, deshalb fehlt es in deinem Export. Prüfe deine Verbindung und exportiere noch einmal.",
+    "missingFailed_other": "Dieses Gerät konnte {{items}} nicht herunterladen, deshalb fehlen sie in deinem Export. Prüfe deine Verbindung und exportiere noch einmal.",
+    "missingNotFound_one": "{{items}} ist weder auf diesem Gerät noch auf dem Server, deshalb fehlt es in deinem Export.",
+    "missingNotFound_other": "{{items}} sind weder auf diesem Gerät noch auf dem Server, deshalb fehlen sie in deinem Export."
+  },
+  "missing": {
+    "pictures_one": "{{count}} Bild",
+    "pictures_other": "{{count}} Bilder",
+    "files_one": "{{count}} Datei",
+    "files_other": "{{count}} Dateien",
+    "both": "{{pictures}} und {{files}}"
   },
   "upload": {
     "completeTitle": "Upload abgeschlossen",

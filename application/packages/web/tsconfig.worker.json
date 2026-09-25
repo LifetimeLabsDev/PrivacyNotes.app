@@ -1,0 +1,16 @@
+{
+  // The Worker (worker.ts and anything it imports) runs on Cloudflare's edge,
+  // not in a page, so it is checked against the Web Worker library instead of
+  // the DOM: a reference to `window` or `document` fails here as it would fail
+  // at the edge. `types: []` keeps Node's globals out for the same reason, since
+  // the Worker runs without the Node compatibility flag. The Cloudflare-only
+  // surface it uses (bindings, the edge cache, HTMLRewriter) is declared in
+  // worker.ts itself. Run by `pnpm check:worker-types`.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "WebWorker"],
+    "types": [],
+    "noEmit": true
+  },
+  "files": ["worker.ts"]
+}

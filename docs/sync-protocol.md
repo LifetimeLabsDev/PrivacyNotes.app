@@ -1,4 +1,4 @@
-> Status: living reference. Last verified: v0.413.2 (2026-08-19, #156 equal-stamp fix verified against the simulator; prior full verification v0.294.1 2026-08-04, `changed_at` becomes a pure server clock via trigger - migration 0066; session claim gate, key-copy-per-pass, cursor persists at end of pull, heal flags commit only after a clean sweep, suspend/resume around the sign-out wipe, guarded auto-merge and keep-mine writes). Section 7 amended 2026-08-19: the LWW bullet gained its precise firing condition, and the equal-stamp divergence limit (#156) was closed the same day (monotonic edit stamps + syncedNonce echo detection), both simulator-pinned. Section 6's shared-browser hazard list was corrected against the at-rest seal on 2026-08-31: the blob caches are ciphertext at rest, and the rest of the section stands. Not yet measured in a browser: the per-note push in step 4 runs at `PUSH_CONCURRENCY = 8` rather than strictly serially (backlog #129). Treat that paragraph as unverified until the measurement protocol in backlog #129 has been run.
+> Status: living reference. Last verified: v0.530.0 (2026-09-25); section 2's stop-short paragraph against the tree UNCOMMITTED at v0.530.4 (2026-09-25, halted-push change-set).
 
 # Sync protocol
 
@@ -39,7 +39,7 @@ tombstone." After a successful push the row is `bulkDelete`d locally.
 
 ---
 
-## 2. Pull-then-push, last-write-wins
+## 2. Pull-then-push, guarded by generation
 
 Each sync pass runs in this order:
 
@@ -90,8 +90,8 @@ Each sync pass runs in this order:
    content everywhere), and a skewed clock on delete either stranded
    the tombstone behind peer cursors or inflated every peer's cursor
    into the future. Server time only, by trigger, closes the whole
-   class; `updated_at` stays fully client-authoritative for
-   last-write-wins.
+   class; `updated_at` stays fully client-authoritative as the edit
+   stamp, which the merge compares when both devices changed one field.
 
    **Ascending and keyset, not DESC and offset, is the whole point.**
    Offset paging assumes the result set holds still. It does not: a
@@ -145,7 +145,7 @@ Each sync pass runs in this order:
    ids the server does not have yet are **bulk-inserted in chunks of
    50**, because a row that does not exist server-side has nothing to
    conflict with; everything else goes through the per-note conditional
-   update (`lte` guard on `updated_at`) that detects conflicts. A failed
+   update, guarded by generation (below), that detects conflicts. A failed
    insert batch falls back to the per-note path so one malformed row
    cannot fail its neighbours, and a failed probe falls back entirely
    rather than risk bulk-inserting over live rows. A row above the
@@ -169,39 +169,149 @@ Each sync pass runs in this order:
    the sync mutex held, roughly 40 s at an 80 ms RTT - which is what
    backlog #129 was actually hitting, in the bulk-trash step rather than
    the empty-trash step it named. Concurrency is safe because each push
-   is independent and order-free: the `lte` guard, the zero-rows
-   conflict probe and the `clearDirty` timestamp re-check are all keyed
+   is independent and order-free: the generation guard, the zero-rows
+   conflict probe and the `recordPushed` timestamp re-check are all keyed
    on a single `note.id`, and no cross-note ordering exists server-side
    either, since every write gets its own trigger-stamped `changed_at`
    and the pull applies rows one at a time. The first
    `SessionExpiredError` or `QuotaExceededError` stops workers claiming
    further notes and is re-thrown once the pool drains, matching the old
    loop's throw; requests already in flight are allowed to settle, since
-   abandoning one could skip `clearDirty` on a write the server accepted.
+   abandoning one could skip `recordPushed` on a write the server accepted.
    Spec: `ops/docs/design-decisions.md` (sync push concurrency).
 
-   The conflict path's auto-merge writes carry the same `lte` guard
-   plus `.select('id')` as the main conditional update: unguarded,
-   they overwrote a newer version pushed by another device in the
-   window since the conflict read, and a merge the 0034 trigger
-   silently dropped looked identical to success. Zero merged rows
-   means the server moved again - the note stays dirty and the next
-   pass re-detects. When no conflict handler is wired (the sign-out
-   rescue flush), a conflicted note is left dirty rather than resolved
-   server-wins: overwriting the local body and clearing dirty moments
-   before the wipe destroyed the unsynced edit on both sides, because
-   `keepUnsyncedNotes` can only rescue rows still flagged dirty.
+   **A push that stops short says so.** Two stops end the push phase on
+   purpose and quietly, every remaining row left dirty and no per-note
+   error raised: a write the server refuses under row-level security
+   (`42501`, a verdict about the session, so walking the rest of the queue
+   into it would only raise one error per note), and an account change
+   under the pass (the session claim, the owner marker or the sync
+   generation, re-checked at every write boundary). The pass reports the
+   stop as `SyncResult.halted`: the reason, and the count of dirty rows it
+   left off the server, the refused write's rows included. `pushed` counts
+   only rows the server accepted, added where each acceptance is recorded
+   (`recordPushed`, a merge that landed, a delete it confirmed), so a row
+   refused, handed to the ConflictModal or never sent is never counted.
+   The activity log, the pill and ID & Sync read both, and a halted pass
+   keeps the "Not backed up" markers of the notes it never reached.
 
-Conflict policy is last-write-wins on `updated_at`, with a safety
-valve: the conditional push detects when the server is newer, metadata
-and title-only divergence auto-merges (guarded, see step 4), and a
-body-vs-body conflict surfaces the ConflictModal (keep mine / keep
-server / keep both). "Keep mine" verifies its force-push actually
-landed (`.select('id')`); a write that did not land leaves the note
-dirty instead of recording an unpushed version as synced. Tombstones
-override local edits - if a note was permanently deleted on device A,
-an offline edit on device B is discarded along with the row on B's
-next sync.
+   **The guard is the server generation, not the stamp.** The
+   conditional update lands only while the server row still carries the
+   nonce this device recorded as synced (`LocalNote.syncedNonce`):
+   `.eq('nonce', syncedNonce)` in the query string, with the PATCH body
+   unchanged (`{ciphertext, nonce, updated_at}`). A stamp cannot say
+   which version an edit was made on: a copy that missed another
+   device's edit takes a fresh stamp the moment anyone stars, retags,
+   files or trashes it, and a guard on `updated_at` would let that
+   copy's old body replace the newer one on every device with no dialog.
+   A row that records no generation (never pushed, or last synced before
+   generations were recorded) guards on `UNRECORDED_GENERATION`, a value
+   no nonce matches, so its update always misses. Zero rows lead to the
+   conflict read, which decides: an insert when the server lacks the
+   row, a merge with no base when it holds one. No push writes over a
+   version it has not seen.
+
+   **Every row the server holds carries its generation.** A row last
+   synced before generations were recorded gets one from the base heal
+   (`BASE_HEAL_KEY`), a one-time full re-read committed only after a
+   clean sweep: a clean row that lacks its record takes the server's
+   version whatever the stamps say, since it holds nothing the server
+   lacks, and then merges per field against its base like any other. A
+   row with an unsynced change keeps its content, and merges with no
+   base on its next push. A restored copy takes the record of the local
+   row it replaces (`import/apply.ts`).
+
+   **Every accepted push records its generation and its base.**
+   `recordPushed` writes `syncedNonce` and `syncBase` for the bulk
+   insert, the per-note update and the per-note insert, even when the
+   row was edited while the push was in flight: that edit was made on
+   the very copy that was pushed, so the next push goes out over this
+   generation instead of meeting its own write as a conflict. Only a
+   row with no such edit is marked clean (the timestamp guard).
+
+   **The base.** `LocalNote.syncBase` (`noteMerge.ts`) is one short
+   fingerprint per payload field and one per tag, plus the nonce of the
+   generation it describes; it holds no content. It is recorded
+   wherever `syncedNonce` is: pull apply (`processBatch`, so the
+   `applyPage` re-check writes it too), `recordPushed`, the merge write
+   and the adoption below, and the dialog's answers
+   (`pushConflictAnswer`, `writeConflictAnswer`). It is trusted only
+   while its nonce equals the row's `syncedNonce`; a base some other
+   writer left behind when it moved `syncedNonce` reads as no base. At
+   rest it is sealed in its own envelope beside the row
+   (`syncBaseSealed`, `localSeal.ts`), kept
+   out of the main sealed payload because a bundle that predates it
+   refuses a payload carrying a key it does not know, while it carries
+   an unknown envelope through every write untouched.
+
+   **The conflict path merges field by field against the base**
+   (`mergeNoteFields`). Fields: title, body, tags, trashed, starred,
+   locked, pinProtected, type, folderId, trackers. Unchanged on both
+   sides: the base value. Changed on one side only: that side,
+   whichever stamp is newer. Changed on both to the same value: that
+   value. Changed on both to different values: the body opens the
+   ConflictModal; tags take a three-way set merge (the base plus what
+   either side added, minus what either side removed); trackers take
+   `mergeTrackers`; every other field takes the side whose row carries
+   the later `updated_at`, silently (equal stamps favour the server).
+   A row carries one stamp, not one per field, so that is the side
+   whose device edited the note last, whatever field that edit touched.
+   With no trusted base, a field equal on both sides is kept, a field
+   that differs takes the later stamp (tags included, since a set merge
+   needs a base), trackers still take `mergeTrackers`, the rule written
+   for exactly that case, and a differing body opens the modal.
+
+   When no body is in question the result is written without asking.
+   If it equals the server's version (everything this device changed is
+   already there, or yielded to the other side under the rule above), the
+   row adopts that generation as synced with no write. Otherwise the
+   merged row is pushed with `.eq('nonce', <the conflict read's nonce>)`
+   plus `.select('id')`, stamped `nextStamp(later of both stamps)`: a
+   peer pull skips a row older than the copy it holds, so a merge
+   stamped by a clock running behind would never reach the devices
+   holding the version it replaced. On success every merged field lands
+   locally with the new nonce and base, because the next pull skips the
+   row as its own echo and a field left stale would stay stale for good;
+   a row edited while the merge was in flight is left as it is, and the
+   next pass merges it against the new generation. Zero merged rows
+   mean the server moved again (or the row was tombstoned) - the note
+   stays dirty and the next pass re-detects.
+
+   When both sides changed the body and a handler is wired, the note
+   goes to the ConflictModal and stays dirty with its body while the
+   modal waits, so nothing is lost on either side. Each answer applies
+   the chosen body over the rest merged by the same rule, recomputed
+   over the row as it stands when the person answers (a star set here
+   while the dialog waited is merged, not overwritten): "Use mine"
+   pushes the local body with `.eq('nonce', <the nonce the modal
+   showed>)` and stays dirty on zero rows; "Use the other version"
+   (also what dismissing the dialog does) writes the other device's
+   body; "Keep both" does the same and forks the local body into a
+   copy. Those two read the server row first: a pull skips an unsynced
+   row, so its cursor may already have passed a version pushed while
+   the dialog was open, and the answer then applies to that version
+   instead of the one the dialog showed. A result equal to the server's version is recorded clean at
+   that generation; anything else stays dirty over it, with the server
+   version as its base. A queued conflict whose row has moved on since
+   (a later pass merged it) is dropped without a write. When no
+   conflict handler is wired (the sign-out rescue flush), a body
+   conflict is left dirty rather than resolved server-wins: overwriting
+   the local body and clearing dirty moments before the wipe destroyed
+   the unsynced edit on both sides, because `keepUnsyncedNotes` can only
+   rescue rows still flagged dirty.
+
+Conflict policy: a change made on one device only is kept, whichever
+device pushes first and whatever its stamp; a body both devices changed
+while apart opens the ConflictModal on the device that pushes second
+(use mine / use the other version / keep both), with both bodies kept
+until the person chooses; any other field both devices changed keeps the
+value from the device that edited the note last, without a dialog
+(section 7). "Use mine"
+verifies its push actually landed (`.select('id')`); a write that did
+not land leaves the note dirty instead of recording an unpushed version
+as synced. Tombstones override local edits - if a note was permanently
+deleted on device A, an offline edit on device B is discarded along
+with the row on B's next sync.
 
 ### Flush-only mode
 
@@ -352,6 +462,13 @@ and does nothing for users already stranded.
 through. That is correct and must stay correct - the fix belongs in the
 cursor, not in the data.
 
+One bound on that pass-through: a stamp later
+than the importing device's clock, or one that does not parse, is
+replaced by the arrival time and never outranks a live row on a restore.
+A past stamp, however old, still passes through untouched, so the
+chronology the importers parse survives and the `ingested_at` reasoning
+above stands.
+
 The deeper flaw is unfixed: `updated_at` is still a plaintext column
 doing triple duty as cursor, conflict guard, and user-visible edit date.
 Moving the display timestamp into the encrypted blob and leaving the
@@ -483,35 +600,55 @@ Out of scope for this doc.
 
 ## 7. Known limits / accepted trade-offs
 
-- **Last-write-wins drops concurrent edits.** No CRDT, no conflict
-  UI. If you edit the same note on two offline devices simultaneously,
-  one of the edits is silently lost. Documented in `ops/docs/roadmap.md`.
-  Precisely: the ConflictModal fires only when the EARLIER-stamped edit
-  pushes second (the `lte` guard finds the server newer); a LATER-stamped
-  edit pushing second overwrites silently. Both orderings are pinned by
-  `tests/sync/scenarios-concurrent-edit.test.ts` (2026-08-19, the #139
-  investigation).
-- **Equal-timestamp concurrent edits converge by push order (#156,
-  fixed 2026-08-19).** The push guard passes on equality, so the second
-  pusher wins the tie by push order - unchanged. What #156 fixed is the
-  divergence that used to follow: the loser's pull-apply skip
-  (`local.updatedAt >= row.updated_at`) never applied the winning row,
-  leaving both devices clean with different bodies until the next edit.
-  Two mechanisms close it. (1) Edit stamps are strictly monotonic per
-  row: `nextStamp` in `notesRepo.ts` stamps `max(now, current + 1ms)`
-  on every edit path, so one device (or two windows sharing one
-  IndexedDB) can never produce two generations with an equal stamp.
-  (2) For genuinely cross-device ties, the client records the nonce of
-  the server generation its row matches (`LocalNote.syncedNonce`, set
-  on push success and pull apply); the pull-apply skip on an EQUAL
-  stamp now applies the row when its nonce differs from the recorded
-  one - a foreign write that won the tie - and still skips the row when
-  the nonce matches (our own echo) or when no nonce was ever recorded
-  (pre-upgrade rows; keeps cursor heals from re-applying the vault).
-  The loser's copy is dropped in favor of the winner - the LWW residual
-  above, minus the divergence. Pinned green by
-  `tests/sync/scenarios-concurrent-edit.test.ts` (tie-break pin + the
-  promoted convergence scenario).
+- **A field both devices changed while apart takes the value from the
+  device that edited the note last.** The per-field merge (section 2,
+  step 4) keeps every change made on one side only, merges tags as sets
+  and trackers through `mergeTrackers`, and asks about a body both sides
+  changed. Any other field both sides changed to different values
+  (title, star, folder, trash flag, lock, protection, type) takes the side
+  whose row carries the later `updated_at`, silently. A row carries one
+  stamp, not one per field, so a later edit to ANY field of the note
+  decides: a device that renamed first and starred afterwards keeps its
+  rename over a later rename from the other device. The stamps are
+  device clocks, so a device whose clock runs ahead wins such a race.
+  One tracker key or medication entry both sides set keeps this
+  device's value whatever the stamps (`mergeTrackers` keeps the local
+  side), and the dialog's answer is a whole body, never a merge of two.
+  Merging against a base cannot see a server value that changed and
+  changed back since this device synced: a field that went A to B to A
+  on the other devices reads as unchanged, so this device's own change
+  of it wins. Pinned by `tests/sync/scenarios-stale-writes.test.ts`,
+  `scenarios-concurrent-edit.test.ts` and `scenarios-merge-base.test.ts`;
+  the write oracle accepts either value for a field two devices changed
+  while apart, and still fails a one-sided change that vanished.
+- **Rows without a record merge by stamps.** The base heal (section 2,
+  step 4) records every clean row's generation and base on the first
+  full pull after the update. A row that already carried an unsynced
+  change then, or that lost its record since (a restore from a stale
+  tab of an older version writes one), merges with no base: a field
+  that differs takes the later stamp and a differing body opens the
+  dialog, so a one-sided change on it can still lose to a newer stamp.
+  A restored copy takes the record of the local row it replaces, and a
+  restore whose note this device no longer holds brings it back as a
+  new note under a fresh id. The starter notes are the one set of ids
+  two devices mint alike (`welcomeNote.ts` derives them from the
+  pubkey): two devices seeding a new account at the same moment meet in
+  the conflict path, where two identical seeds merge with no dialog.
+  The #156 echo detection stays: edit stamps are strictly monotonic per
+  row (`nextStamp` in `notesRepo.ts`), and on an EQUAL stamp the pull
+  applies a row whose nonce differs from the recorded `syncedNonce` - a
+  foreign write that carried the same stamp, which a write that kept
+  its stamp produces (the derived-title commit) - and skips its own echo
+  or a row with no recorded nonce. Push order never decides an
+  equal-stamp race: the second pusher meets the conflict path. Pinned
+  green by `tests/sync/scenarios-concurrent-edit.test.ts` and
+  `scenarios-merge-base.test.ts`.
+- **An answer given while the server moves can land on the version it
+  read.** "Use the other version" and "keep both" read the server row
+  and apply to what they read. A version pushed in the moment between
+  that read and the local write, and pulled by a concurrent pass in the
+  same moment, would be skipped by that pass (the row was unsynced) and
+  missed until the note changes again. The window is one round trip.
 - **Resurrection-blocked edits are silently discarded.** Offline edit
   on a note deleted elsewhere → the edit is dropped, no toast. The
   note disappears on the next pull. Acceptable for MVP; future hook

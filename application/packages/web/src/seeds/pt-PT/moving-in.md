@@ -7,7 +7,7 @@ title: A mudança
 
 Podes trazer quatro tipos de coisas: notas, entradas de diário, marcadores e palavras-passe.
 
-Começam todas no mesmo sítio: **Definições > Importar e Exportar**.
+Começam todas no mesmo sítio: **Definições > Import & Export**.
 
 ## O que podes trazer
 
@@ -41,7 +41,7 @@ Uma entrada de diário guarda mais do que texto. Por cima da área de escrita es
 ## Marcadores
 
 - [ ] Exporta os marcadores do teu navegador como ficheiro `.html`
-- [ ] Importa esse ficheiro: **Definições > Importar e Exportar > Importar > Marcadores do navegador**
+- [ ] Importa esse ficheiro: **Definições > Import & Export > Importar > Marcadores do navegador**
 
 Também podes colar uma ligação numa nota vazia. O título e o ícone do site chegam sozinhos: [privacynotes.app/pt/help/import/browser-bookmarks](https://privacynotes.app/pt/help/import/browser-bookmarks)
 

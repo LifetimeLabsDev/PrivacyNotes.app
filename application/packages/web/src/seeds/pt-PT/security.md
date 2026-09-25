@@ -19,7 +19,7 @@ Aquela é a nossa base de dados a sério em Zurique, não um desenho. A tua nota
 
 ## Quem tem a tua chave
 
-Todas as opções mantêm as tuas notas cifradas de ponta a ponta. Diferem em onde vive a tua frase.
+Todas as opções mantêm as tuas notas cifradas no teu dispositivo. Diferem em onde vive a tua frase.
 
 | Opção | Onde vive a tua frase | O que te dá |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Todas as opções mantêm as tuas notas cifradas de ponta a ponta. Diferem em on
 
 Nas duas de baixo não conseguiríamos ler uma nota nem que nos obrigassem. A primeira troca isso por comodidade: a tua frase fica no nosso servidor sob uma chave nossa, por isso um dispositivo novo não precisa de mais nada além da tua conta. Se o nosso servidor fosse alguma vez comprometido, essa chave podia ficar exposta.
 
-Não ficas preso à escolha que fizeste. Muda-a em **Definições > Segurança > A tua frase**.
+Iniciaste sessão com Google, Apple ou GitHub? Podes alternar entre as duas primeiras mais tarde, em **Definições > Segurança > A tua frase**. Com uma conta só de frase, a frase fica sempre contigo.
 
 > [!warning] Guarda a tua própria cópia da frase
 > A tua frase abre as tuas notas. Se a perderes, ninguém a recupera por ti, nós incluídos. <span style="color: #e03131">Escreve-a em papel hoje.</span>
@@ -44,7 +44,7 @@ Não ficas preso à escolha que fizeste. Muda-a em **Definições > Segurança >
 | O quê | Onde |
 | --- | --- |
 | A cifra em si | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| A estrutura da base de dados | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| O que o nosso servidor recebe | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | O que um atacante pode e não pode fazer | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | Como comunicar uma falha | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

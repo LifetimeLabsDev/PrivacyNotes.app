@@ -18,6 +18,7 @@ import { CaretLeft, Check, Gear, Plus, X } from './icons';
 import { useEscapeToClose } from './useEscapeToClose';
 import { proUnlocked } from './demo';
 import { HoverLabel } from './HoverLabel';
+import { isImeComposing } from './imeComposing';
 import {
   type BuiltinTrackerId,
   type TrackerSettings,
@@ -511,7 +512,7 @@ function AddCustomView({
           className="w-full px-3 py-2 rounded-md text-[13px] border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200"
           autoFocus
           maxLength={24}
-          onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(); }}
+          onKeyDown={(e) => { if (e.key === 'Enter' && !isImeComposing(e)) handleSubmit(); }}
         />
         <div className={`text-[11px] text-end -mt-1 ${name.length >= 24 ? 'text-red-500 dark:text-red-400' : 'text-neutral-400 dark:text-neutral-500'}`}>
           {t('config.nameCount', { count: name.length, max: 24 })}

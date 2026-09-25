@@ -19,7 +19,7 @@ import { PRO_PRICE, EARLY_PRICE, STORAGE_ADDON_PRICE } from './pricing';
 import { detectPlatform } from './devices';
 import { useAuth } from './auth';
 import { isDemoMode } from './demo';
-import { APP_ORIGIN, isAppHost, isApexHost } from './hosts';
+import { APP_ORIGIN, APP_STORE_URL, isAppHost, isApexHost } from './hosts';
 import { captureSource, withSource } from './campaignSource';
 import { marketingHomeHref } from './siteLinks';
 import { GUIDE_META, GUIDE_ORDER } from './guides';
@@ -34,15 +34,6 @@ const IS_DESKTOP = detectPlatform() !== 'web';
  * // Spec: ops/docs/macos-ios-setup.md (publish to R2 - stable latest/ alias)
  */
 const MAC_DMG_URL = 'https://releases.privacynotes.app/latest/PrivacyNotes_universal.dmg';
-
-/**
- * App Store listing for the iPhone and iPad app. Country-less form: Apple
- * redirects it to the reader's own storefront. StoreUpdateToast.tsx carries
- * the same URL for the in-app floor toast, because that file ships inside the
- * native binaries and must not import marketing code.
- * // Spec: ops/docs/mobile-release-status.md (app records - Apple ID 6785958812)
- */
-const APP_STORE_URL = 'https://apps.apple.com/app/id6785958812';
 
 /** All-platform release archive on the public GitHub repo, one page per version, signed builds. */
 const GITHUB_RELEASES_URL = 'https://github.com/LifetimeLabsDev/PrivacyNotes.app/releases';

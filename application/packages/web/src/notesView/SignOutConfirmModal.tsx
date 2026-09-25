@@ -12,10 +12,13 @@ import { WarningCircle, X } from '../icons';
  * unsyncedCount > 0 adds an amber warning: this device holds notes the
  * server has not confirmed. unsyncedKept picks the copy - forced
  * sign-outs (dead session) preserve those rows through the wipe, a
- * voluntary sign-out destroys them if the final flush fails. The
- * warning also forces this modal open even for users who opted out of
- * the phrase reminder (see handleSignOutClick): they consented to
- * skipping a reminder, not to data loss. Same principle as #121.
+ * voluntary sign-out destroys them if the final flush fails.
+ * unsyncedFiles > 0 adds the pictures and files the server does not hold.
+ * No sign-out uploads one first; a voluntary sign-out deletes them and a
+ * forced one keeps them, so only the voluntary copy names them. Either
+ * count forces this modal open even for users who opted out of the phrase
+ * reminder (maySkipSignOutConfirm): they consented to skipping a
+ * reminder, not to data loss. Same principle as #121.
  */
 export function SignOutConfirmModal({
   dontRemind,
@@ -24,6 +27,7 @@ export function SignOutConfirmModal({
   onConfirmSignOut,
   onStay,
   unsyncedCount,
+  unsyncedFiles,
   unsyncedKept,
   neverBackedUp,
 }: {
@@ -32,20 +36,32 @@ export function SignOutConfirmModal({
   onShowPhrase: () => void;
   onConfirmSignOut: () => void;
   /** Closes the confirm and keeps the session. The default action while
-   *  unsynced notes are at stake: the rows rest sealed on this device,
-   *  so staying costs nothing and signing out destroys them. */
+   *  unsynced notes or files are at stake: they rest sealed on this
+   *  device, so staying costs nothing and signing out destroys them. */
   onStay: () => void;
-  /** Local rows with dirty=1 at the moment the modal opened. */
+  /** Local rows with an unsynced change (dirty 1 or 2) when the modal opened. */
   unsyncedCount: number;
+  /** Pictures and files waiting to upload or refused for good at the
+   *  moment the modal opened (countOnlyOnThisDevice). */
+  unsyncedFiles: number;
   /** True when the sign-out preserves unsynced rows (forced context). */
   unsyncedKept: boolean;
   /** The subset that exists on this device only (neverBackedUp.ts). */
   neverBackedUp: ReadonlyArray<{ id: string; title: string }>;
 }) {
   const { t } = useTranslation('notesChrome');
-  // With unsynced rows at stake, every dismissal keeps the session; the
-  // phrase escape hatch stays as an explicit button.
-  const risky = unsyncedCount > 0 && !unsyncedKept;
+  // With unsynced rows or files at stake, every dismissal keeps the
+  // session; the phrase escape hatch stays as an explicit button.
+  const filesAtRisk = unsyncedFiles > 0 && !unsyncedKept;
+  const risky = (unsyncedCount > 0 && !unsyncedKept) || filesAtRisk;
+  const loseLabel = !filesAtRisk
+    ? t('signOutConfirm.signOutLose', { count: unsyncedCount })
+    : unsyncedCount > 0
+      ? t('signOutConfirm.signOutLoseBoth', {
+          count: unsyncedCount,
+          files: t('signOutConfirm.fileCount', { count: unsyncedFiles }),
+        })
+      : t('signOutConfirm.signOutLoseFiles', { count: unsyncedFiles });
   const dismiss = risky ? onStay : onShowPhrase;
   useEscapeToClose(dismiss);
   const shown = neverBackedUp.slice(0, 5);
@@ -77,15 +93,18 @@ export function SignOutConfirmModal({
             components={{ only: <strong />, action: <strong /> }}
           />
         </p>
-        {unsyncedCount > 0 && (
+        {(unsyncedCount > 0 || filesAtRisk) && (
           <div className="flex items-start gap-2 rounded-md border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 text-[13px] leading-snug p-3">
             <WarningCircle size={16} className="shrink-0 mt-0.5" />
             <div className="space-y-2">
-              <span>
-                {t(unsyncedKept ? 'signOutConfirm.unsyncedKept' : 'signOutConfirm.unsyncedWarn', {
-                  count: unsyncedCount,
-                })}
-              </span>
+              {unsyncedCount > 0 && (
+                <p>
+                  {t(unsyncedKept ? 'signOutConfirm.unsyncedKept' : 'signOutConfirm.unsyncedWarn', {
+                    count: unsyncedCount,
+                  })}
+                </p>
+              )}
+              {filesAtRisk && <p>{t('signOutConfirm.unsyncedFilesWarn', { count: unsyncedFiles })}</p>}
               {risky && shown.length > 0 && (
                 <div>
                   <p className="font-medium">{t('signOutConfirm.neverBackedUp', { count: neverBackedUp.length })}</p>
@@ -112,7 +131,7 @@ export function SignOutConfirmModal({
         </label>
         {risky ? (
           // Data at stake: the primary action keeps it, and the sign-out
-          // names its cost. Two clicks to lose notes is the point.
+          // names its cost. Two clicks to lose data is the point.
           <div className="space-y-2 pt-2">
             <div className="flex gap-2">
               <button
@@ -132,7 +151,7 @@ export function SignOutConfirmModal({
               onClick={onConfirmSignOut}
               className="w-full rounded-md border border-red-300 dark:border-red-900 text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 px-4 py-2 text-sm transition"
             >
-              {t('signOutConfirm.signOutLose', { count: unsyncedCount })}
+              {loseLabel}
             </button>
           </div>
         ) : (

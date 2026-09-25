@@ -42,7 +42,8 @@ declare module '@tiptap/core' {
 import { invisibleCharacterBuilders, LazyInvisibleCharacters } from './editorInvisibles';
 import { FaviconChips, refreshFavicons } from './editorFavicons';
 import { EncryptedImage, sanitizePastedHtml } from './EncryptedImage';
-import { EncryptedAttachment, requestAttachmentRename } from './EncryptedAttachment';
+import { ClipboardSpacing } from './clipboardSpacing';
+import { EncryptedAttachment, holdsOneFile, requestAttachmentRename } from './EncryptedAttachment';
 import { WikiLink } from './NoteLink';
 import { AudioRecordingBanner, type AudioRecordingState } from './AudioRecorder';
 import { LinkSheet } from './LinkSheet';
@@ -127,6 +128,12 @@ type Props = {
    * one file - see the wiring below.
    */
   onRenameFile?: (name: string) => void;
+  /**
+   * The note is one the Files pillar made. While it holds one file, a picture
+   * or a PDF in it renders as a card showing the file rather than as a chip;
+   * a note of several files keeps its chips.
+   */
+  fileNote?: boolean;
 };
 
 /**
@@ -175,7 +182,7 @@ export type EditorHandle = {
 };
 
 const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }>(function EditorInner(
-  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, bodyControls, onRenameFile },
+  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, bodyControls, onRenameFile, fileNote = false },
   ref
 ) {
   const { t } = useTranslation('editor');
@@ -409,15 +416,13 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           // several, or a file pasted into a written note, has a title of
           // its own that a single chip must not overwrite.
           const ed = editorRef.current;
-          if (!ed) return;
-          let files = 0;
-          ed.state.doc.descendants((child) => {
-            if (child.type.name === 'attachment') files += 1;
-            return true;
-          });
-          if (files !== 1) return;
+          if (!ed || !holdsOneFile(ed.state.doc)) return;
           onRenameFileRef.current?.(name);
         },
+        // Read once: the editor is keyed by note, so a note changing type
+        // remounts it with the new value. Whether the note holds one file is
+        // the chip's own question, asked again after every edit.
+        filePreview: fileNote,
       }),
       WikiLink,
       CalloutTitle,
@@ -426,6 +431,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       MediaGapCleaner,
       NbspParagraphCleaner,
       MixedListSplitter,
+      ClipboardSpacing,
       // defaultLanguage 'plaintext': an untagged fence stays plain instead
       // of lowlight auto-guessing a grammar and tinting random words.
       CodeBlockWithCopy.configure({ lowlight, defaultLanguage: 'plaintext' }),
@@ -527,7 +533,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         return markdownForClipboard(
           slice.content,
           (fragment) => ser.serialize(fragment),
-          readLineSpacing() === 'compact',
+          readLineSpacing() !== 'normal',
         );
       },
       // Strip <img> tags with external/blob sources from pasted HTML so

@@ -112,16 +112,16 @@ export function SecurityModal({
 
         {/* Tab strip - underlined, full-width, minimal chrome. */}
         <div className="flex border-b border-divider -mx-6 px-6">
-          <TabButton active={tab === 'pin'} onClick={() => pickTab('pin')}>
+          <TabButton setting="security.pin" active={tab === 'pin'} onClick={() => pickTab('pin')}>
             <Lock className="text-accent" aria-hidden="true" />
             {t('modal.tabPin')}
           </TabButton>
-          <TabButton active={tab === 'biometric'} onClick={() => pickTab('biometric')}>
+          <TabButton setting="security.biometric" active={tab === 'biometric'} onClick={() => pickTab('biometric')}>
             <Fingerprint className="text-accent" aria-hidden="true" />
             <span className="sm:hidden">{t('modal.tabBiometricShort')}</span>
             <span className="hidden sm:inline">{t('modal.tabBiometric')}</span>
           </TabButton>
-          <TabButton active={tab === 'phrase'} onClick={() => pickTab('phrase')}>
+          <TabButton setting="security.phrase" active={tab === 'phrase'} onClick={() => pickTab('phrase')}>
             <Key className="text-accent" aria-hidden="true" />
             <span className="sm:hidden">{t('modal.tabPhraseShort')}</span>
             <span className="hidden sm:inline">{t('modal.tabPhrase')}</span>
@@ -178,14 +178,18 @@ function TabButton({
   active,
   onClick,
   children,
+  setting,
 }: {
   active: boolean;
   onClick: () => void;
   children: ReactNode;
+  /** The settings search id of this tab. */
+  setting: string;
 }) {
   return (
     <button
       type="button"
+      data-setting={setting}
       onClick={onClick}
       aria-pressed={active}
       className={`inline-flex items-center gap-1.5 px-4 py-2 -mb-px text-sm font-medium border-b-2 transition ${

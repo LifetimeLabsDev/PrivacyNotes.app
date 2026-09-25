@@ -495,14 +495,74 @@ async function writeHandleAsset(
 }
 
 /**
- * The same single write body for the desktop backend, and the same reason: text
- * and bytes differ by one call, so they share the path join and the mkdir.
+ * Where a desktop write is staged: beside its target, so the rename never
+ * crosses a file system. Never dot-prefixed, although that would hide it:
+ * with `requireLiteralLeadingDot` on, neither `$HOME/**` nor the `<root>/**`
+ * a picked folder is granted reaches a name starting with a dot, so the write
+ * would be refused. The scan skips it because `pn-tmp` is no extension it
+ * opens. One fixed name per target, because nothing here may delete a file:
+ * a copy a crash leaves behind is overwritten and renamed away by that file's
+ * next save.
+ */
+function stagingPath(path: string): string {
+  return `${path}.pn-tmp`;
+}
+
+/** One desktop write per path at a time. Saves of a file share its staging
+ *  path, and two writers in it at once would rename a mix of both over it. */
+const writesInFlight = new Map<string, Promise<void>>();
+
+/**
+ * Replace a file's contents so that no failure leaves it cut short.
  *
- * `exclusive` is `createFile`'s create-or-fail contract. `writeTextFile`
- * truncates whatever is there, so without the check a new note silently eats an
- * existing file - and unlike the web backend there is no swap-on-close to leave
- * the old contents behind. An `exists` that cannot answer rejects rather than
- * writing: refusing costs the user a second attempt, guessing costs them a file.
+ * The plugin's own write truncates its target and then writes, so a crash, a
+ * kill or a full disk in between empties the person's file, which has no
+ * server copy and no history. Staged and renamed over, the file holds its old
+ * contents or its new ones and nothing between: a failed write or a failed
+ * rename rejects with the target untouched. A rename replaces the file rather
+ * than writing into it, so the permission bits are carried across by hand,
+ * and a read-only file is refused the way an overwrite would have been.
+ *
+ * A file whose neighbours the scope does not cover is written in place, the
+ * one write the ACL allows it. A file opened on its own is granted as that
+ * single path, so outside `$HOME`, or with a dot-name anywhere on its path, its
+ * staging path is refused; `exists` answers under the same scope, which makes
+ * it the probe.
+ */
+function replaceTauriFile(
+  fs: TauriFs,
+  path: string,
+  payload: string | Uint8Array<ArrayBuffer>,
+): Promise<void> {
+  const run = (writesInFlight.get(path) ?? Promise.resolve()).then(async () => {
+    const info = await fs.stat(path).catch(() => null);
+    if (info?.readonly) throw new Error(`read_only: ${path}`);
+    const staging = stagingPath(path);
+    const beside = await fs.exists(staging).then(() => true, () => false);
+    const dest = beside ? staging : path;
+    const options = info?.mode == null ? undefined : { mode: info.mode & 0o777 };
+    if (typeof payload === 'string') await fs.writeTextFile(dest, payload, options);
+    else await fs.writeFile(dest, payload, options);
+    if (beside) await fs.rename(staging, path);
+  });
+  const settled = run.then(() => {}, () => {});
+  writesInFlight.set(path, settled);
+  void settled.then(() => {
+    if (writesInFlight.get(path) === settled) writesInFlight.delete(path);
+  });
+  return run;
+}
+
+/**
+ * The same single write body for the desktop backend, and the same reason: text
+ * and bytes differ by one call, so they share the path join, the mkdir and the
+ * staged replace.
+ *
+ * `exclusive` is `createFile`'s create-or-fail contract, checked against the
+ * final path, because the write replaces whatever is there: without the check
+ * a new note silently eats an existing file. An `exists` that cannot answer
+ * rejects rather than writing: refusing costs the user a second attempt,
+ * guessing costs them a file.
  */
 async function writeTauriFile(
   fs: TauriFs,
@@ -515,8 +575,7 @@ async function writeTauriFile(
   if (exclusive && await fs.exists(full)) throw new FileExistsError(relPath);
   const dir = full.slice(0, full.lastIndexOf('/'));
   await fs.mkdir(dir, { recursive: true }).catch(() => {});
-  if (typeof payload === 'string') await fs.writeTextFile(full, payload);
-  else await fs.writeFile(full, payload);
+  await replaceTauriFile(fs, full, payload);
   return full;
 }
 
@@ -587,7 +646,7 @@ function tauriFileRef(fs: TauriFs, path: string, location: string): OpenedFileRe
     name,
     location,
     read: () => fs.readTextFile(path),
-    write: (text) => fs.writeTextFile(path, text),
+    write: (text) => replaceTauriFile(fs, path, text),
     stamp: async () => {
       try {
         const s = await fs.stat(path);

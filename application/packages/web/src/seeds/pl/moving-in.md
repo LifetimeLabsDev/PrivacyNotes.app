@@ -7,7 +7,7 @@ title: Przeprowadzka
 
 Możesz przenieść cztery rodzaje rzeczy: notatki, wpisy dziennika, zakładki i hasła.
 
-Wszystkie zaczynają się w tym samym miejscu: **Ustawienia > Import i eksport**.
+Wszystkie zaczynają się w tym samym miejscu: **Ustawienia > Import & Export**.
 
 ## Co możesz przenieść
 
@@ -41,7 +41,7 @@ Wpis dziennika mieści więcej niż tekst. Nad polem pisania siedzą pomiary: na
 ## Zakładki
 
 - [ ] Wyeksportuj zakładki przeglądarki jako plik `.html`
-- [ ] Zaimportuj ten plik: **Ustawienia > Import i eksport > Import > Zakładki przeglądarki**
+- [ ] Zaimportuj ten plik: **Ustawienia > Import & Export > Import > Zakładki przeglądarki**
 
 Możesz też wkleić link do pustej notatki. Tytuł i ikona strony przychodzą same: [privacynotes.app/pl/help/import/browser-bookmarks](https://privacynotes.app/pl/help/import/browser-bookmarks)
 

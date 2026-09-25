@@ -13,11 +13,11 @@
     "themeToggle": "Alterna tra chiaro e scuro"
   },
   "hero": {
-    "badge": "Crittografia end-to-end, verificabile",
+    "badge": "Cifrato sul tuo dispositivo, verificabile",
     "headline": "Note. Attività.<br />File. Cassaforte.<stroke>Zero knowledge.</stroke>",
-    "subhead": "Un unico posto cifrato per tutto ciò che non pubblicheresti mai. Cifrato sul tuo dispositivo prima ancora di uscirne. Non potremmo leggerlo nemmeno volendo.",
+    "subhead": "Un unico posto cifrato per tutto ciò che non pubblicheresti mai. Cifrato sul tuo dispositivo; tieni tu la chiave e non potremmo leggerlo nemmeno volendo.",
     "tryDemo": "Prova la demo",
-    "microcopy": "Gratis per sempre. Niente carta di credito. Accedi con Google, Apple o semplicemente una frase di 12 parole.",
+    "microcopy": "Gratis per sempre. Niente carta di credito. Accedi con Google, Apple, GitHub o semplicemente una frase di 12 parole.",
     "alreadyHaveVault": "Hai già una cassaforte? Accedi",
     "trustSigned": "Release firmate su GitHub"
   },
@@ -91,7 +91,7 @@
     "bip39": "BIP-39",
     "ed25519": "Ed25519",
     "swissServers": "Server svizzeri",
-    "noTracking": "Nessun tracciamento",
+    "noTracking": "Nessun tracker",
     "rls": "Sicurezza a livello di riga"
   },
   "downloads": {
@@ -116,7 +116,7 @@
     "linuxDebDesc": "Installer, riscaricalo per aggiornare",
     "checksumAria": "Checksum SHA-256 di {{label}}",
     "debFootnote": "Stai aggiornando un'<highlight>installazione .deb</highlight> esistente? Non disinstallarla prima. Il doppio clic sul file finisce in un vicolo cieco nell'App Center di Ubuntu, che dice soltanto che l'app è installata: installa la nuova sopra la vecchia da un terminale. Usa la riga che corrisponde al tuo computer; dpkg --print-architecture ti dice quale:",
-    "availability": "Già disponibile: macOS 13+, Windows 10+, iOS 15+, Linux e Android.",
+    "availability": "Già disponibile: macOS 13+, Windows 10+, iOS 17.4+, Linux e Android.",
     "betaNote": "Tutte le nostre app sono in beta e potrebbero avere ancora dei bug, quindi per ora la versione web è la più stabile. Ogni app si aggiorna automaticamente e rilasciamo correzioni quasi ogni giorno.",
     "pkgToggle": "Installa con un gestore di pacchetti ({{platforms}})",
     "pkgBrewDesc": "L'app si aggiorna da sola, non brew upgrade.",
@@ -145,7 +145,7 @@
     "freeMood": "Monitoraggio dell'umore e del benessere",
     "freeTheme": "Modalità chiara e scura",
     "freeAnon": "Accesso anonimo, senza email",
-    "freeGoogle": "Accesso con Google",
+    "freeGoogle": "Accesso con Google, Apple o GitHub",
     "noSubscription": "Nessun abbonamento",
     "proLabel": "Pro · Paghi una volta sola",
     "earlyAdopterBadge": "Early Adopter",
@@ -174,8 +174,8 @@
     "phraseDesc": "12 parole, firma Ed25519",
     "rlsTerm": "Sicurezza a livello di riga",
     "rlsDesc": "RLS legata alla tua pubkey",
-    "trackingTerm": "Zero tracciamento",
-    "trackingDesc": "Nessuna analitica, nessun pixel",
+    "trackingTerm": "Zero tracker",
+    "trackingDesc": "Nessun pixel, nessun tracker di terze parti",
     "authTerm": "Autenticazione anonima",
     "authDesc": "Niente email, niente password",
     "serversTerm": "Server svizzeri",
@@ -190,7 +190,7 @@
   "mood": {
     "kicker": "Monitoraggio dell'umore e del benessere",
     "heading": "Tieni traccia di ciò che senti davvero.",
-    "intro": "Umore, emozioni, sonno, farmaci e livello di attività, tutto con pochi tocchi. Tutto viene cifrato sul tuo dispositivo prima della sincronizzazione.",
+    "intro": "Umore, emozioni, sonno, farmaci e livello di attività, tutto con pochi tocchi. Tutto è sempre cifrato, sul tuo dispositivo e durante la sincronizzazione.",
     "cardEmotionsTitle": "Umore (1-10) + 24 tag emotivi",
     "cardEmotionsBody": "24 tag emotivi basati sulla ricerca scientifica. Dai un nome a ciò che senti, individua pattern nel tempo ed esporta dati con cui il tuo terapeuta o medico può lavorare.",
     "cardSleepTitle": "Qualità del sonno + livello di attività",
@@ -215,8 +215,8 @@
     "themSeparate": "App separate, costi ricorrenti",
     "usAllInOne": "Note, attività, file, cassaforte, diario, segnalibri. Un'unica app",
     "usTracking": "Monitoraggio di umore, energia, sonno e farmaci",
-    "usEncrypted": "Cifrato end-to-end, sincronizzato in Svizzera",
-    "usSignIn": "Accesso anonimo o con Google, stessa crittografia in entrambi i casi",
+    "usEncrypted": "Cifrato sul tuo dispositivo, sincronizzato in Svizzera",
+    "usSignIn": "Accesso anonimo o con Google, Apple o GitHub, stessa crittografia in ogni caso",
     "usExport": "Rilevamento di pattern + esportazione PDF per il medico",
     "usSync": "Desktop + mobile, sincronizzazione illimitata",
     "usPriceBeta": "Gratis per sempre, oppure ${{earlyPrice}} una tantum per Pro (prezzo early adopter)",
@@ -248,7 +248,7 @@
     "para1": "La maggior parte delle app di note sfrutta i tuoi contenuti. Aggiungi “comprare una TV nuova” alla lista della spesa e le pagine successive si riempiono di pubblicità di TV. La tua lista della spesa, il tuo diario, i tuoi pensieri privati, tutto incanalato nelle pipeline di profilazione pubblicitaria, profilato e venduto. È il modello di business di ogni app di note “gratuita” finanziata dalla pubblicità.",
     "para2": "Anche le app che non mostrano pubblicità conservano comunque le tue note in chiaro sui loro server, leggibili dai dipendenti, vulnerabili alle violazioni e a disposizione di chiunque abbia un mandato. I tuoi dati diventano la loro leva.",
     "differenceLabel": "La differenza",
-    "differenceBody": "<brand/> è cifrato end-to-end con chiavi che non lasciano mai il tuo dispositivo, quindi né noi né i nostri server possiamo leggere ciò che scrivi. Non c'è tracciamento, non c'è analitica, non c'è pubblicità e non c'è profilazione, e non ci saranno mai. Ciò che scrivi resta tuo.",
+    "differenceBody": "<brand/> cifra le tue note sul tuo dispositivo, e con la custodia personale la chiave non lo lascia mai, quindi né noi né i nostri server possiamo leggerne una parola. Non ci sono pubblicità, pixel, tracker di terze parti né analisi di ciò che scrivi, e non ci saranno mai. Il nostro sito conta i clic sui suoi link di download e dei partner per paese, senza alcun identificativo. Ciò che scrivi resta tuo.",
     "keyboardNote": "<b>Una nota sulle tastiere del dispositivo.</b> Le tastiere di terze parti (come Gboard, SwiftKey o Samsung Keyboard) potrebbero inviare ciò che scrivi ai propri server. Questo avviene a livello di sistema operativo, al di fuori del controllo di qualsiasi app. Valuta di disattivare le funzioni cloud nelle impostazioni della tastiera o di usare una tastiera solo offline."
   },
   "readIt": {
@@ -263,13 +263,13 @@
   },
   "wontFind": {
     "kicker": "Cosa non troverai nell’app",
-    "noTracking": "Nessun tracciamento",
+    "noTracking": "Nessun tracker",
     "noAds": "Nessuna pubblicità",
     "noHarvesting": "Nessuna raccolta di dati",
     "noAiTraining": "Nessun addestramento di IA",
     "noLockIn": "Nessun vincolo",
     "noEmail": "Nessuna email",
-    "noTelemetry": "Nessuna telemetria",
+    "noTelemetry": "Nessuna analisi delle tue note",
     "noCookieBanner": "Nessun banner dei cookie",
     "noPasswords": "Nessuna password",
     "noDarkPatterns": "Nessun dark pattern",
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "La tua frase è la tua chiave",
-    "body": "Niente frase, niente note. Non possiamo recuperarle, e non può farlo nessun altro. È il compromesso della crittografia end-to-end: con la custodia personale sei l'unico ad avere la chiave, quindi scrivere al nostro team non riporterà indietro le tue note.",
+    "body": "Niente frase, niente note. Non possiamo recuperarle, e non può farlo nessun altro. È il compromesso della custodia personale: sei l'unico ad avere la chiave, quindi scrivere al nostro team non riporterà indietro le tue note.",
     "noRecoveryTerm": "Nessun recupero",
     "noRecoveryDesc": "Perdi la frase, perdi le note",
     "deviceTerm": "Generata dal dispositivo",
@@ -290,8 +290,8 @@
     "writeDesc": "Backup su carta, conservato in un posto sicuro",
     "printTerm": "Stampala dalle impostazioni",
     "printDesc": "Visualizza ed esporta la tua frase in qualsiasi momento",
-    "googleTerm": "Accesso con Google?",
-    "googleDesc": "Ottieni comunque una frase. Fanne un backup"
+    "googleTerm": "Accesso con Google, Apple o GitHub?",
+    "googleDesc": "Per impostazione predefinita custodiamo noi la tua chiave, oppure fai tu il backup della tua frase"
   },
   "closing": {
     "kicker": "Quando vuoi",

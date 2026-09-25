@@ -10,7 +10,10 @@
     "tags": "Tagi",
     "currentStreak": "Aktualna seria",
     "longestStreak": "Najdłuższa seria",
-    "streakValue": "{{count}} d",
+    "streakValue_one": "{{count}} dzień",
+    "streakValue_few": "{{count}} dni",
+    "streakValue_many": "{{count}} dni",
+    "streakValue_other": "{{count}} dnia",
     "timeRangeAria": "Zakres czasu aktywności",
     "modeActivity": "Aktywność",
     "modeMood": "Nastrój",
@@ -61,6 +64,7 @@
       "doctorPDF": "PDF dla lekarza",
       "copyAIPrompt": "Kopiuj prompt AI",
       "copied": "Skopiowano!",
+      "saveFailed": "Zapis się nie udał, więc plik może być pusty albo niekompletny. Spróbuj ponownie albo wybierz inny folder.",
       "proBadge": "PRO"
     },
     "sleepActivity": {

@@ -29,12 +29,13 @@ import { useBelowVersionFloor } from './versionFloor';
 import { setSyncPaused, useSyncPaused } from './syncPause';
 import { setFilesWifiOnly, useFilesWifiOnly, wifiOnlyAvailable } from './wifiOnly';
 import { useSyncLog, lastOkSyncAt, type SyncPassEntry } from './syncLog';
-import { usePushFailures, type PushFailure } from './pushFailures';
+import { usePushFailures, usePushHalt, type PushFailure } from './pushFailures';
 import { db } from './db';
 import { readAuthLog } from './authDiag';
 import { deriveDisplayTitle } from './notesViewUtils';
 import { useVerifyStamp } from './verifyStamp';
 import { SETTINGS_EYEBROW } from './settingsUI';
+import { Switch } from './Switch';
 import { VERSION } from './version';
 
 /**
@@ -76,6 +77,7 @@ export function SyncPanel({
   const log = useSyncLog();
   const stamp = useVerifyStamp();
   const failures = usePushFailures();
+  const halt = usePushHalt();
 
   // Titles for the not-backed-up list, read on demand: the failing notes
   // are the few the last pass refused, never the whole vault.
@@ -165,7 +167,7 @@ export function SyncPanel({
     : paused ? 'paused'
     : !online ? 'offline'
     : syncing ? 'syncing'
-    : failures.size > 0 ? 'notBackedUp'
+    : failures.size > 0 || halt ? 'notBackedUp'
     : pending.count > 0 && wifi.held ? 'wifiHold'
     : pending.count > 0 && pending.blocked >= pending.count ? 'storageFull'
     : pending.count > 0 ? 'uploading'
@@ -196,7 +198,10 @@ export function SyncPanel({
     : state === 'floor' ? t('syncStatus.updateRequiredTooltip')
     : state === 'paused' ? t('syncPanel.pausedBody')
     : state === 'offline' ? t('syncStatus.offlineTooltip')
-    : state === 'notBackedUp' ? t('syncStatus.notBackedUpAria', { count: failures.size })
+    : state === 'notBackedUp'
+      ? halt
+        ? t('syncStatus.haltedAria', { count: halt.unreached })
+        : t('syncStatus.notBackedUpAria', { count: failures.size })
     : state === 'wifiHold' ? t('syncStatus.wifiHoldTooltip')
     : state === 'storageFull' ? t('syncStatus.pendingBlobsBlocked', { count: pending.blocked })
     : state === 'uploading' ? t('syncStatus.pendingBlobs', { count: pending.count })
@@ -400,7 +405,7 @@ export function SyncPanel({
 
       {/* ── Device + data path ── */}
       <div className="grid gap-3 sm:grid-cols-5">
-        <div className="flex flex-col rounded-lg border border-divider px-3.5 py-3 sm:col-span-2">
+        <div data-setting="me.thisDevice" className="flex flex-col rounded-lg border border-divider px-3.5 py-3 sm:col-span-2">
           <span className={`${SETTINGS_EYEBROW} block mb-2`}>{t('syncPanel.thisDevice')}</span>
           <div className="flex items-center gap-2 text-sm font-medium">
             <span className="relative flex h-2 w-2" aria-hidden="true">
@@ -422,6 +427,7 @@ export function SyncPanel({
               has, so they would be controls over nothing. */}
           {!demo && (
             <SwitchRow
+              setting="me.pauseSync"
               className="mt-auto border-t border-divider pt-2.5"
               label={t('syncPanel.pauseSync')}
               checked={paused}
@@ -430,6 +436,7 @@ export function SyncPanel({
           )}
           {!demo && wifiOnlyAvailable() && (
             <SwitchRow
+              setting="me.filesWifiOnly"
               className="border-t border-divider pt-2.5 mt-2.5"
               label={t('syncPanel.filesWifiOnly')}
               checked={wifi.enabled}
@@ -438,7 +445,7 @@ export function SyncPanel({
           )}
         </div>
 
-        <div className="flex flex-col rounded-lg border border-divider px-3.5 py-3 sm:col-span-3">
+        <div data-setting="me.where" className="flex flex-col rounded-lg border border-divider px-3.5 py-3 sm:col-span-3">
           <span className={`${SETTINGS_EYEBROW} block mb-2`}>{t('syncPanel.whereTitle')}</span>
           <div className="flex items-center gap-1.5 flex-wrap text-xs text-pn-soft">
             <span className="rounded-md border border-divider bg-track px-2 py-1 whitespace-nowrap">{t('syncPanel.nodeDevice')}</span>
@@ -472,38 +479,29 @@ function SwitchRow({
   checked,
   onChange,
   className = '',
+  setting,
 }: {
   label: string;
   checked: boolean;
   onChange: (v: boolean) => void;
   className?: string;
+  setting: string;
 }) {
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <span className="flex-1 text-[13px] font-medium">{label}</span>
-      {/* Same switch idiom as ListPrefsPopover / NotesList - one design. */}
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        aria-label={label}
-        onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition ${
-          checked ? 'bg-accent' : 'bg-neutral-300 dark:bg-neutral-700'
-        }`}
-      >
-        <span
-          className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-            checked ? 'translate-x-4 rtl:-translate-x-4' : 'translate-x-0.5 rtl:-translate-x-0.5'
-          }`}
-        />
-      </button>
-    </div>
+    <Switch
+      setting={setting}
+      label={label}
+      checked={checked}
+      onChange={onChange}
+      className={`gap-3 ${className}`}
+      labelClassName="text-[13px] font-medium"
+    />
   );
 }
 
 /**
- * The last passes as small bars, oldest first. Green ran clean, red
+ * The last passes as small bars, oldest first. Green ran clean, amber
+ * left notes behind (refused one by one, or a push that stopped), red
  * failed; height tracks how much the pass moved. Purely glanceable -
  * the exact numbers live in the activity list below.
  */
@@ -513,7 +511,7 @@ function PassBars({ log }: { log: SyncPassEntry[] }) {
   return (
     <div className="mt-2.5 flex items-end gap-[3px] h-5" aria-hidden="true">
       {bars.map((e, i) => {
-        const h = 30 + Math.min(70, (e.up + e.down + (e.failed ?? 0)) * 7);
+        const h = 30 + Math.min(70, (e.up + e.down + (e.failed ?? 0) + (e.halted?.unreached ?? 0)) * 7);
         // Older passes fade: the newest bar is fully opaque, the oldest
         // sits at 45%, so a red failure from hours ago reads as history
         // instead of a live alarm.
@@ -521,7 +519,7 @@ function PassBars({ log }: { log: SyncPassEntry[] }) {
         return (
           <span
             key={`${e.at}-${i}`}
-            className={`flex-1 rounded-[2px] ${!e.ok ? 'bg-red-500/60' : e.failed ? 'bg-amber-500/60' : 'bg-emerald-500/50'}`}
+            className={`flex-1 rounded-[2px] ${!e.ok ? 'bg-red-500/60' : e.failed || e.halted ? 'bg-amber-500/60' : 'bg-emerald-500/50'}`}
             style={{ height: `${e.ok ? h : 60}%`, opacity: 0.45 + 0.55 * age }}
           />
         );
@@ -571,7 +569,7 @@ function AccountIdRow({
             '',
             'Recent passes (newest first):',
             ...[...log].reverse().map((e) =>
-              `  ${new Date(e.at).toISOString()}  ${e.ok ? 'ok' : 'FAILED'}  up=${e.up} down=${e.down}${e.failed ? ` failed=${e.failed}` : ''}${(e.n ?? 1) > 1 ? ` x${e.n}` : ''}  ${e.ms}ms`,
+              `  ${new Date(e.at).toISOString()}  ${e.ok ? 'ok' : 'FAILED'}  up=${e.up} down=${e.down}${e.failed ? ` failed=${e.failed}` : ''}${e.halted ? ` halted=${e.halted.reason}:${e.halted.unreached}` : ''}${(e.n ?? 1) > 1 ? ` x${e.n}` : ''}  ${e.ms}ms`,
             ),
             '',
             'Auth breadcrumbs (newest first):',
@@ -596,7 +594,7 @@ function AccountIdRow({
     // form: narrow panes give the ID the whole line with the two buttons
     // in a 2-column row beneath (a one-line squeeze truncated the ID to
     // four characters on phones); wide panes keep everything on one line.
-    <div className="pn-account-id rounded-lg border border-divider px-3.5 py-3">
+    <div data-setting="me.accountId" className="pn-account-id rounded-lg border border-divider px-3.5 py-3">
       <span className={`${SETTINGS_EYEBROW} block mb-2`}>{t('accountId.heading')}</span>
       <div className="pn-account-id-row">
         <code className="min-w-0 rounded bg-track px-2.5 py-1.5 text-xs font-mono truncate">{pubkey}</code>
@@ -650,7 +648,7 @@ function ActivityList({ log }: { log: SyncPassEntry[] }) {
   if (log.length === 0) return null;
   const rows = [...log].reverse().slice(0, 6);
   return (
-    <div className="rounded-lg border border-divider overflow-hidden">
+    <div data-setting="me.activity" className="rounded-lg border border-divider overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -668,10 +666,10 @@ function ActivityList({ log }: { log: SyncPassEntry[] }) {
                 <td className="px-3.5 py-1.5 tabular-nums text-pn-muted">
                   {new Date(e.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </td>
-                <td className={`px-2 py-1.5 ${!e.ok ? 'text-red-500 dark:text-red-400' : e.failed ? 'text-amber-600 dark:text-amber-400' : ''}`}>
+                <td className={`px-2 py-1.5 ${!e.ok ? 'text-red-500 dark:text-red-400' : e.failed || e.halted ? 'text-amber-600 dark:text-amber-400' : ''}`}>
                   {!e.ok
                     ? t('syncPanel.passFailed')
-                    : e.up === 0 && e.down === 0 && !e.failed
+                    : e.up === 0 && e.down === 0 && !e.failed && !e.halted
                       ? (e.n ?? 1) > 1
                         ? t('syncPanel.passNothingRepeat', { count: e.n })
                         : t('syncPanel.passNothing')
@@ -679,6 +677,7 @@ function ActivityList({ log }: { log: SyncPassEntry[] }) {
                           e.up > 0 ? t('syncPanel.passUp', { count: e.up }) : null,
                           e.down > 0 ? t('syncPanel.passDown', { count: e.down }) : null,
                           e.failed ? t('syncPanel.passPushFailed', { count: e.failed }) : null,
+                          e.halted ? t('syncPanel.passHalted', { count: e.halted.unreached }) : null,
                         ].filter(Boolean).join(', ')}
                 </td>
                 <td className="px-3.5 py-1.5 text-end tabular-nums text-pn-muted">

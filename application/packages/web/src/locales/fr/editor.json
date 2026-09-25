@@ -33,7 +33,8 @@
     "math": "Formule",
     "blockMath": "Formule en bloc",
     "align": "Alignement",
-    "font": "Police"
+    "font": "Police",
+    "pictureFromFiles": "Image depuis Fichiers"
   },
   "align": {
     "left": "Aligner à gauche",
@@ -104,6 +105,7 @@
     "addColumnLeft": "Ajouter une colonne à gauche",
     "addColumnRight": "Ajouter une colonne à droite",
     "toggleHeaderRow": "Activer ou désactiver la ligne d'en-tête",
+    "equalColumnWidths": "Égaliser les colonnes",
     "deleteRow": "Supprimer la ligne",
     "deleteColumn": "Supprimer la colonne",
     "deleteTable": "Supprimer le tableau"
@@ -187,7 +189,8 @@
   "codeBlock": {
     "copy": "Copier",
     "copied": "Copié",
-    "copyFailed": "Échec"
+    "copyFailed": "Échec",
+    "wrap": "Retour automatique à la ligne"
   },
   "math": {
     "sourceLabel": "Source LaTeX"

@@ -13,11 +13,11 @@
     "themeToggle": "Açık ve koyu tema arasında geçiş yapın"
   },
   "hero": {
-    "badge": "Uçtan uca şifreli, denetlenebilir",
+    "badge": "Cihazınızda şifreli, denetlenebilir",
     "headline": "Notlar. Görevler.<br />Dosyalar. Kasa.<stroke>Sıfır bilgi.</stroke>",
-    "subhead": "Asla paylaşmayacağınız her şey için tek bir şifreli yer. Hiçbir yere gitmeden önce cihazınızda şifrelenir. İstesek de okuyamazdık.",
+    "subhead": "Asla paylaşmayacağınız her şey için tek bir şifreli yer. Cihazınızda şifrelenir; anahtarınızı kendiniz tutarsanız istesek de okuyamayız.",
     "tryDemo": "Demoyu deneyin",
-    "microcopy": "Sonsuza kadar ücretsiz. Kredi kartı yok. Google, Apple veya sadece 12 kelimelik bir ifadeyle giriş yapın.",
+    "microcopy": "Sonsuza kadar ücretsiz. Kredi kartı yok. Google, Apple, GitHub veya sadece 12 kelimelik bir ifadeyle giriş yapın.",
     "alreadyHaveVault": "Kasanız var mı? Giriş yapın",
     "trustSigned": "GitHub'da imzalı sürümler"
   },
@@ -91,7 +91,7 @@
     "bip39": "BIP-39",
     "ed25519": "Ed25519",
     "swissServers": "İsviçre sunucuları",
-    "noTracking": "Takip yok",
+    "noTracking": "İzleyici yok",
     "rls": "Satır düzeyinde güvenlik"
   },
   "downloads": {
@@ -116,7 +116,7 @@
     "linuxDebDesc": "Kurulum dosyası, güncellemek için yeniden indirin",
     "checksumAria": "{{label}} için SHA-256 sağlama toplamı",
     "debFootnote": "Mevcut bir <highlight>.deb kurulumunu</highlight> mu güncelliyorsunuz? Önce kaldırmayın. Dosyaya çift tıklamak Ubuntu'nun App Center'ında çıkmaz sokağa girer, orası yalnızca uygulamanın kurulu olduğunu söyler; bu yüzden yenisini eskisinin üzerine terminalden kurun. Makinenize uyan satırı kullanın; hangisine ihtiyacınız olduğunu dpkg --print-architecture yazdırır:",
-    "availability": "Şu anda mevcut: macOS 13+, Windows 10+, iOS 15+, Linux ve Android.",
+    "availability": "Şu anda mevcut: macOS 13+, Windows 10+, iOS 17.4+, Linux ve Android.",
     "betaNote": "Tüm uygulamalarımız beta aşamasında ve hâlâ hata içerebilir, bu yüzden şimdilik en kararlısı web sürümü. Her uygulama kendini günceller ve neredeyse her gün düzeltme yayınlıyoruz.",
     "pkgToggle": "Paket yöneticisiyle kurun ({{platforms}})",
     "pkgBrewDesc": "Uygulama kendini günceller, brew upgrade değil.",
@@ -145,7 +145,7 @@
     "freeMood": "Ruh hali ve sağlık takibi",
     "freeTheme": "Koyu ve açık mod",
     "freeAnon": "Anonim giriş, e-posta olmadan",
-    "freeGoogle": "Google ile giriş",
+    "freeGoogle": "Google, Apple veya GitHub ile giriş",
     "noSubscription": "Abonelik yok",
     "proLabel": "Pro · Tek seferlik ödeme",
     "earlyAdopterBadge": "Erken Kullanıcı",
@@ -174,8 +174,8 @@
     "phraseDesc": "12 kelime, Ed25519 imzalama",
     "rlsTerm": "Satır düzeyinde güvenlik",
     "rlsDesc": "Genel anahtarınıza bağlı RLS",
-    "trackingTerm": "Sıfır takip",
-    "trackingDesc": "Analitik yok, piksel yok",
+    "trackingTerm": "Sıfır izleyici",
+    "trackingDesc": "Piksel yok, üçüncü taraf izleyici yok",
     "authTerm": "Anonim kimlik doğrulama",
     "authDesc": "E-posta yok, parola yok",
     "serversTerm": "İsviçre sunucuları",
@@ -190,7 +190,7 @@
   "mood": {
     "kicker": "Ruh hali ve sağlık takibi",
     "heading": "Gerçekten ne hissettiğinizi takip edin.",
-    "intro": "Ruh hali, duygular, uyku, ilaç ve aktivite düzeyi, hepsi birkaç dokunuşla. Her şey senkronize edilmeden önce cihazınızda şifrelenir.",
+    "intro": "Ruh hali, duygular, uyku, ilaç ve aktivite düzeyi, hepsi birkaç dokunuşla. Her şey cihazınızda da senkronize edilirken de her zaman şifrelidir.",
     "cardEmotionsTitle": "Ruh hali (1-10) + 24 duygu etiketi",
     "cardEmotionsBody": "Araştırmaya dayalı 24 duygu etiketi. Hissettiğinize bir ad verin, zaman içindeki örüntüleri görün ve terapistinizin ya da doktorunuzun işine yarayacak veriyi dışa aktarın.",
     "cardSleepTitle": "Uyku kalitesi + aktivite düzeyi",
@@ -215,8 +215,8 @@
     "themSeparate": "Ayrı uygulamalar, yinelenen ücretler",
     "usAllInOne": "Notlar, görevler, dosyalar, kasa, günlük, yer imleri. Tek uygulama",
     "usTracking": "Ruh hali, enerji, uyku ve ilaç takibi",
-    "usEncrypted": "Uçtan uca şifreli, İsviçre'ye eşitlenir",
-    "usSignIn": "Anonim ya da Google girişi, ikisinde de aynı şifreleme",
+    "usEncrypted": "Cihazınızda şifreli, İsviçre'ye eşitlenir",
+    "usSignIn": "Anonim ya da Google, Apple veya GitHub ile giriş, her durumda aynı şifreleme",
     "usExport": "Örüntü tespiti + doktor PDF dışa aktarımı",
     "usSync": "Masaüstü + mobil, sınırsız eşitleme",
     "usPriceBeta": "Sonsuza kadar ücretsiz ya da Pro için tek seferlik {{earlyPrice}} $ (erken kullanıcı fiyatı)",
@@ -248,7 +248,7 @@
     "para1": "Çoğu not uygulaması içeriğinizden veri devşirir. Alışveriş listenize “yeni televizyon al” yazın, sonraki birkaç sayfanız televizyon reklamıyla dolar. Market listeniz, günlüğünüz, en özel düşünceleriniz; hepsi reklam hedefleme sistemlerine akıyor, profilleniyor ve satılıyor. Bu, reklamla ayakta duran her “ücretsiz” not uygulamasının iş modeli.",
     "para2": "Reklam göstermeyen uygulamalar bile notlarınızı sunucularında düz metin olarak tutuyor: çalışanlar okuyabiliyor, ihlallerde sızabiliyor, mahkeme kararı olan herkes erişebiliyor. Verileriniz onların kozu oluyor.",
     "differenceLabel": "Aradaki fark",
-    "differenceBody": "<brand/> uçtan uca şifrelidir ve anahtarlar cihazınızdan hiç çıkmaz; bu yüzden yazdıklarınızı ne biz ne de sunucularımız okuyabilir. Takip, analitik, reklam ve profilleme yok, bundan sonra da olmayacak. Yazdığınız sizde kalır.",
+    "differenceBody": "<brand/> notlarınızı cihazınızda şifreler ve kendi saklamanızda anahtar oradan hiç çıkmaz; bu yüzden yazdıklarınızın tek bir kelimesini bile ne biz ne de sunucularımız okuyabilir. Reklam yok, piksel yok, üçüncü taraf izleyici yok, yazdıklarınız üzerinde analitik de yok; bundan sonra da olmayacak. Web sitemiz, indirme ve iş ortağı bağlantılarına yapılan tıklamaları hiçbir tanımlayıcı olmadan ülkeye göre sayar. Yazdığınız sizde kalır.",
     "keyboardNote": "<b>Cihaz klavyeleri hakkında bir not.</b> Üçüncü taraf klavyeler (Gboard, SwiftKey veya Samsung Klavye gibi) yazdıklarınızı kendi sunucularına gönderebilir. Bu, işletim sistemi düzeyinde, herhangi bir uygulamanın denetimi dışında olur. Klavye ayarlarınızdaki bulut özelliklerini kapatmayı ya da yalnızca çevrimdışı çalışan bir klavye kullanmayı düşünün."
   },
   "readIt": {
@@ -263,13 +263,13 @@
   },
   "wontFind": {
     "kicker": "Uygulamada bulamayacaklarınız",
-    "noTracking": "Takip yok",
+    "noTracking": "İzleyici yok",
     "noAds": "Reklam yok",
     "noHarvesting": "Veri toplama yok",
     "noAiTraining": "Yapay zekâ eğitimi yok",
     "noLockIn": "Bağımlılık yok",
     "noEmail": "E-posta gerekmez",
-    "noTelemetry": "Telemetri yok",
+    "noTelemetry": "Notlarınız üzerinde analitik yok",
     "noCookieBanner": "Çerez bildirimi yok",
     "noPasswords": "Şifre yok",
     "noDarkPatterns": "Aldatıcı tasarım yok",
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "İfadeniz anahtarınızdır",
-    "body": "İfade yoksa not da yok. Biz geri getiremeyiz, başka kimse de getiremez. Uçtan uca şifrelemenin bedeli bu: kendi saklamanızda anahtar yalnızca sizde olduğu için, ekibimize yazmanız da notlarınızı geri getirmez.",
+    "body": "İfade yoksa not da yok. Biz geri getiremeyiz, başka kimse de getiremez. Kendi saklamanın bedeli bu: anahtar yalnızca sizde olduğu için, ekibimize yazmanız da notlarınızı geri getirmez.",
     "noRecoveryTerm": "Kurtarma yok",
     "noRecoveryDesc": "İfadenizi kaybederseniz notlarınızı da kaybedersiniz",
     "deviceTerm": "Cihazda üretilir",
@@ -290,8 +290,8 @@
     "writeDesc": "Kâğıda yedek, güvenli bir yerde saklanır",
     "printTerm": "Ayarlardan yazdırın",
     "printDesc": "İfadenizi istediğiniz zaman görün ve dışa aktarın",
-    "googleTerm": "Google ile mi girdiniz?",
-    "googleDesc": "Yine bir ifade alırsınız. Yedeğini alın"
+    "googleTerm": "Google, Apple veya GitHub ile mi girdiniz?",
+    "googleDesc": "Varsayılan olarak anahtarınızı biz saklarız ya da kendi ifadenizin yedeğini siz alırsınız"
   },
   "closing": {
     "kicker": "Siz hazır olunca",

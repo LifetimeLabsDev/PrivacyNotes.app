@@ -19,7 +19,7 @@ To nasza prawdziwa baza danych w Zurychu, nie rysunek. Twoja notatka trafia do k
 
 ## Kto ma twój klucz
 
-Każda opcja trzyma twoje notatki zaszyfrowane od końca do końca. Różnią się tym, gdzie leży twoja fraza.
+W każdej opcji twoje notatki są szyfrowane na twoim urządzeniu. Różnią się tym, gdzie leży twoja fraza.
 
 | Opcja | Gdzie leży twoja fraza | Co ci to daje |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Każda opcja trzyma twoje notatki zaszyfrowane od końca do końca. Różnią si
 
 Przy dwóch ostatnich nie odczytalibyśmy notatki, nawet gdyby nas zmuszono. Pierwsza wymienia to na wygodę: twoja fraza leży na naszym serwerze pod naszym kluczem, więc nowemu urządzeniu wystarczy twoje konto. Gdyby nasz serwer kiedyś padł ofiarą włamania, ten klucz mógłby wyciec.
 
-Nie jesteś przywiązany do swojego wyboru. Zmień go w **Ustawienia > Bezpieczeństwo > Twoja fraza**.
+Logujesz się przez Google, Apple albo GitHub? Między dwiema pierwszymi opcjami możesz później przełączać się w **Ustawienia > Bezpieczeństwo > Twoja fraza**. Przy koncie opartym na samej frazie fraza zawsze zostaje u ciebie.
 
 > [!warning] Miej własną kopię frazy
 > Twoja fraza otwiera twoje notatki. Jeśli ją zgubisz, nikt jej nie odzyska, my też nie. <span style="color: #e03131">Zapisz ją dziś na papierze.</span>
@@ -44,7 +44,7 @@ Nie jesteś przywiązany do swojego wyboru. Zmień go w **Ustawienia > Bezpiecze
 | Co | Gdzie |
 | --- | --- |
 | Samo szyfrowanie | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| Budowa bazy danych | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| Co dostaje nasz serwer | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | Co napastnik może, a czego nie | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | Jak zgłosić lukę | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

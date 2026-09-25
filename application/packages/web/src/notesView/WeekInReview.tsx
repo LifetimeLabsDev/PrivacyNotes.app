@@ -6,15 +6,18 @@ import { computeTrackerStats } from '../trackerStats';
 export function WeekInReview({
   notes,
   medications,
+  isNoteLocked,
 }: {
   notes: LocalNote[];
   medications: MedicationTemplate[];
+  /** The view's lock predicate: a journal behind a closed gate stays out. */
+  isNoteLocked: (n: LocalNote) => boolean;
 }) {
   const { t } = useTranslation('notes');
   const { t: tt } = useTranslation('trackers');
   // Full list, tombstones included - a deleted medication's logged doses
   // still need a name to render against.
-  const tStats = computeTrackerStats(notes, medications);
+  const tStats = computeTrackerStats(notes, medications, isNoteLocked);
   if (!tStats.weekInReview) return null;
   const w = tStats.weekInReview;
   return (

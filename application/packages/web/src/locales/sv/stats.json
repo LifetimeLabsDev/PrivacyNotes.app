@@ -10,7 +10,8 @@
     "tags": "Taggar",
     "currentStreak": "Nuvarande svit",
     "longestStreak": "Längsta svit",
-    "streakValue": "{{count}} d",
+    "streakValue_one": "{{count}} dag",
+    "streakValue_other": "{{count}} dagar",
     "timeRangeAria": "Tidsintervall för aktivitet",
     "modeActivity": "Aktivitet",
     "modeMood": "Humör",
@@ -59,6 +60,7 @@
       "doctorPDF": "Läkar-PDF",
       "copyAIPrompt": "Kopiera AI-prompt",
       "copied": "Kopierat!",
+      "saveFailed": "Det gick inte att spara, så filen kan vara tom eller ofullständig. Försök igen, eller välj en annan mapp.",
       "proBadge": "PRO"
     },
     "sleepActivity": {

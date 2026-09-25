@@ -177,7 +177,7 @@
           "h": "Where things land",
           "p": [
             "Logins become Vault login entries (with their site icons), cards become card entries, SSH keys become SSH key entries, and secure notes plus identities arrive as readable notes. Bitwarden folders map to tags, and favorites arrive starred. Authenticator keys (TOTP) come along too, so your 2FA codes keep working.",
-            "The export file holds your passwords in plain text, so import it, verify everything arrived, and then delete the file properly. Inside PrivacyNotes it is all end-to-end encrypted again."
+            "The export file holds your passwords in plain text, so import it, verify everything arrived, and then delete the file properly. Inside PrivacyNotes it is all encrypted again, on your device and on the way to the server."
           ]
         }
       ]
@@ -501,7 +501,7 @@
         {
           "h": "Delete the export file when you are done: it is your passwords in plain text",
           "p": [
-            "Nothing in the exported .csv is encrypted, whether or not it arrives inside a .zip. Anyone who opens it reads every password you have saved, so keep it on your own machine, import it, check that everything arrived, and then delete the file and empty the trash. Inside PrivacyNotes it is end-to-end encrypted again."
+            "Nothing in the exported .csv is encrypted, whether or not it arrives inside a .zip. Anyone who opens it reads every password you have saved, so keep it on your own machine, import it, check that everything arrived, and then delete the file and empty the trash. Inside PrivacyNotes it is encrypted again, on your device and on the way to the server."
           ]
         }
       ]

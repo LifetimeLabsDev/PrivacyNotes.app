@@ -10,6 +10,7 @@ import { siteHref } from './siteLinks';
 import { PUBLIC_CHANGELOG, IN_APP_CHANGELOG_LIMIT, type ChangelogItemType } from './publicChangelog';
 import { HOTKEY_GROUPS, renderKey } from './HotkeysModal';
 import { SETTINGS_EYEBROW, SETTINGS_HELP } from './settingsUI';
+import { isTouchOnly } from './touchOnly';
 import { Brand } from './Brand';
 
 type Tab = 'about' | 'changelog' | 'hotkeys' | 'rating';
@@ -21,20 +22,14 @@ type Props = {
   embedded?: boolean;
 };
 
-const ALL_TABS: { id: Tab; labelKey: string; icon: ReactNode }[] = [
-  { id: 'about', labelKey: 'about.tabs.about', icon: <Info size={14} aria-hidden="true" /> },
-  { id: 'changelog', labelKey: 'about.tabs.changelog', icon: <ClockCounterClockwise size={14} aria-hidden="true" /> },
-  { id: 'hotkeys', labelKey: 'about.tabs.hotkeys', icon: <Keyboard size={14} aria-hidden="true" /> },
+const ALL_TABS: { id: Tab; setting: string; labelKey: string; icon: ReactNode }[] = [
+  { id: 'about', setting: 'about.about', labelKey: 'about.tabs.about', icon: <Info size={14} aria-hidden="true" /> },
+  { id: 'changelog', setting: 'about.changelog', labelKey: 'about.tabs.changelog', icon: <ClockCounterClockwise size={14} aria-hidden="true" /> },
+  { id: 'hotkeys', setting: 'about.hotkeys', labelKey: 'about.tabs.hotkeys', icon: <Keyboard size={14} aria-hidden="true" /> },
   // The one tab that asks for something instead of explaining something, so
   // it sits last and carries a filled amber star rather than an outline mark.
-  { id: 'rating', labelKey: 'about.tabs.rating', icon: <Star size={14} weight="fill" className="text-amber-400" aria-hidden="true" /> },
+  { id: 'rating', setting: 'about.rating', labelKey: 'about.tabs.rating', icon: <Star size={14} weight="fill" className="text-amber-400" aria-hidden="true" /> },
 ];
-
-/** True when the device has no physical keyboard (phone/tablet). */
-function isTouchOnly(): boolean {
-  if (typeof navigator === 'undefined') return false;
-  return 'ontouchstart' in window && !window.matchMedia('(pointer: fine)').matches;
-}
 
 /* ------------------------------------------------------------------ */
 /*  Icons                                                             */
@@ -93,7 +88,7 @@ function AboutTab({ onNavigateToChangelog }: { onNavigateToChangelog: () => void
 
       <section className="grid grid-cols-2 gap-6">
         <div>
-          <h3 className={`${SETTINGS_EYEBROW} mb-2`}>
+          <h3 data-setting="about.version" className={`${SETTINGS_EYEBROW} mb-2`}>
             {t('about.versionHeading')}
           </h3>
           <button
@@ -108,7 +103,7 @@ function AboutTab({ onNavigateToChangelog }: { onNavigateToChangelog: () => void
           {/* Reuses the retired tab's label rather than carrying a second key
               for the same word, exactly as the desktop About window does.
               /roadmap is an English-only page, so the href takes no slug. */}
-          <h3 className={`${SETTINGS_EYEBROW} mb-2`}>
+          <h3 data-setting="about.roadmap" className={`${SETTINGS_EYEBROW} mb-2`}>
             {t('about.tabs.roadmap')}
           </h3>
           <a
@@ -124,7 +119,7 @@ function AboutTab({ onNavigateToChangelog }: { onNavigateToChangelog: () => void
       </section>
 
       <section className="border-t border-divider pt-5">
-        <h3 className={`${SETTINGS_EYEBROW} mb-2`}>
+        <h3 data-setting="about.openSource" className={`${SETTINGS_EYEBROW} mb-2`}>
           {t('trust.openSourceHeading')}
         </h3>
         <a
@@ -142,7 +137,7 @@ function AboutTab({ onNavigateToChangelog }: { onNavigateToChangelog: () => void
       </section>
 
       <section className="border-t border-divider pt-5">
-        <h3 className={`${SETTINGS_EYEBROW} mb-3`}>
+        <h3 data-setting="about.feedback" className={`${SETTINGS_EYEBROW} mb-3`}>
           {t('about.feedbackHeading')}
         </h3>
         <p className="text-xs text-pn-soft mb-3">
@@ -189,7 +184,7 @@ function AboutTab({ onNavigateToChangelog }: { onNavigateToChangelog: () => void
       </section>
 
       <section className="border-t border-divider pt-5">
-        <h3 className={`${SETTINGS_EYEBROW} mb-2`}>
+        <h3 data-setting="about.dataStorage" className={`${SETTINGS_EYEBROW} mb-2`}>
           {t('trust.dataStorageHeading')}
         </h3>
         <p className="text-xs text-pn-soft leading-relaxed">
@@ -199,7 +194,7 @@ function AboutTab({ onNavigateToChangelog }: { onNavigateToChangelog: () => void
       </section>
 
       <section className="border-t border-divider pt-5">
-        <h3 className={`${SETTINGS_EYEBROW} mb-2`}>
+        <h3 data-setting="about.favicons" className={`${SETTINGS_EYEBROW} mb-2`}>
           {t('trust.faviconsHeading')}
         </h3>
         {/* One paragraph, not two: the split read as two separate claims when
@@ -210,7 +205,7 @@ function AboutTab({ onNavigateToChangelog }: { onNavigateToChangelog: () => void
       </section>
 
       <section className="border-t border-divider pt-5">
-        <h3 className={`${SETTINGS_EYEBROW} mb-3`}>
+        <h3 data-setting="about.legal" className={`${SETTINGS_EYEBROW} mb-3`}>
           {t('about.legalHeading')}
         </h3>
         <div className="flex gap-3">
@@ -435,6 +430,7 @@ export function AboutModal({ onClose, initialTab, embedded = false }: Props) {
           {tabs.map((tabItem) => (
             <button
               key={tabItem.id}
+              data-setting={tabItem.setting}
               onClick={() => setTab(tabItem.id)}
               aria-pressed={tab === tabItem.id}
               className={`inline-flex items-center gap-1.5 px-3 py-2.5 text-xs whitespace-nowrap transition border-b-2 ${

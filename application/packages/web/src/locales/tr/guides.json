@@ -177,7 +177,7 @@
           "h": "Neler nereye iniyor",
           "p": [
             "Giriş bilgileri Kasa'daki giriş kayıtlarına (site simgeleriyle birlikte), kartlar kart kayıtlarına, SSH anahtarları SSH anahtarı kayıtlarına dönüşür; güvenli notlar ve kimlikler ise okunabilir not olarak gelir. Bitwarden klasörleri etiketlere eşlenir, favoriler de yıldızlı gelir. Kimlik doğrulama anahtarları (TOTP) da birlikte gelir, böylece 2FA kodlarınız çalışmaya devam eder.",
-            "Dışa aktarılan dosya parolalarınızı düz metin olarak tutar, bu yüzden içe aktarın, her şeyin geldiğini doğrulayın, sonra dosyayı düzgünce silin. PrivacyNotes içinde her şey yeniden uçtan uca şifrelenir."
+            "Dışa aktarılan dosya parolalarınızı düz metin olarak tutar, bu yüzden içe aktarın, her şeyin geldiğini doğrulayın, sonra dosyayı düzgünce silin. PrivacyNotes içinde her şey yeniden şifrelenir, hem cihazınızda hem de sunucuya giderken."
           ]
         }
       ]
@@ -568,7 +568,7 @@
         {
           "h": "İşiniz bitince dışa aktarılan dosyayı silin: o dosya parolalarınızın düz metin hali",
           "p": [
-            "Dışa aktarılan .csv dosyasında hiçbir şey şifreli değildir; bir .zip içinde gelse de gelmese de. Onu açan herkes kaydettiğiniz her parolayı okur, bu yüzden dosyayı kendi bilgisayarınızda tutun, içe aktarın, her şeyin geldiğini kontrol edin, sonra dosyayı silin ve çöp kutusunu boşaltın. PrivacyNotes içinde her şey yeniden uçtan uca şifrelenir."
+            "Dışa aktarılan .csv dosyasında hiçbir şey şifreli değildir; bir .zip içinde gelse de gelmese de. Onu açan herkes kaydettiğiniz her parolayı okur, bu yüzden dosyayı kendi bilgisayarınızda tutun, içe aktarın, her şeyin geldiğini kontrol edin, sonra dosyayı silin ve çöp kutusunu boşaltın. PrivacyNotes içinde her şey yeniden şifrelenir, hem cihazınızda hem de sunucuya giderken."
           ]
         }
       ]

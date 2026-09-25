@@ -31,10 +31,10 @@
  *   pnpm test:backup
  *
  * KNOWN NON-GUARANTEES, on purpose:
- *  - Restore-side version gating lives in the caller (NotesView's
- *    importEncryptedBackup), not in decodeBackup; a future-versioned payload
- *    decodes fine and surfaces its version field. Asserted below so the
- *    contract is explicit.
+ *  - No restore gates on the version: decodeBackup decodes a future-versioned
+ *    payload and surfaces its version field, and importEncryptedBackup in
+ *    notesView/useExports.ts never reads it. Asserted below so the contract
+ *    is explicit.
  *  - Image/attachment blobs are not part of .pnbackup (raw pn:img/ and
  *    pn:file/ refs ride along in bodies); the zip backup covers blobs.
  *
@@ -169,6 +169,18 @@ test('payload field rules: type defaults, empty folderId/trackers/folders are om
 
   const out = decodeBackup(encodeBackup(bare, KEY), KEY);
   assert.deepEqual(out, viaJson(bare));
+});
+
+test('folder and tag looks ride along, and an empty map is omitted', () => {
+  const looks = {
+    'f:f1': { icon: { v: 'airplane', at: '2026-09-24T10:00:00.000Z' }, color: { v: 'teal', at: '2026-09-24T10:00:00.000Z' } },
+    't:urgent': { color: { v: 'red', at: '2026-09-24T10:00:00.000Z' } },
+  };
+  const payload = buildBackupPayload(NOTES, FOLDERS, '2026-07-16T12:00:00.000Z', looks);
+  const out = decodeBackup(encodeBackup(payload, KEY), KEY);
+  assert.deepEqual(out.itemStyles, looks);
+  const none = buildBackupPayload(NOTES, FOLDERS, '2026-07-16T12:00:00.000Z', {});
+  assert.ok(!('itemStyles' in none), 'no itemStyles key when no folder or tag has a look');
 });
 
 test('empty vault round-trips', () => {

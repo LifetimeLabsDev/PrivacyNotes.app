@@ -13,11 +13,11 @@
     "themeToggle": "Wissel tussen licht en donker"
   },
   "hero": {
-    "badge": "End-to-end versleuteld, controleerbaar",
+    "badge": "Versleuteld op je apparaat, controleerbaar",
     "headline": "Notities. Taken.<br />Bestanden. Kluis.<stroke>Zero knowledge.</stroke>",
-    "subhead": "Eén versleutelde plek voor alles wat je nooit zou posten. Versleuteld op je apparaat voordat het ook maar ergens heen gaat. We zouden het niet kunnen lezen, al wilden we het.",
+    "subhead": "Eén versleutelde plek voor alles wat je nooit zou posten. Versleuteld op je apparaat; houd je sleutel zelf en we zouden het niet kunnen lezen, al wilden we het.",
     "tryDemo": "Probeer de demo",
-    "microcopy": "Voor altijd gratis. Geen creditcard. Meld je aan met Google, Apple, of gewoon een zin van 12 woorden.",
+    "microcopy": "Voor altijd gratis. Geen creditcard. Meld je aan met Google, Apple, GitHub, of gewoon een zin van 12 woorden.",
     "alreadyHaveVault": "Heb je al een kluis? Inloggen",
     "trustSigned": "Ondertekende releases op GitHub"
   },
@@ -91,7 +91,7 @@
     "bip39": "BIP-39",
     "ed25519": "Ed25519",
     "swissServers": "Zwitserse servers",
-    "noTracking": "Geen tracking",
+    "noTracking": "Geen trackers",
     "rls": "Row-level security"
   },
   "downloads": {
@@ -116,7 +116,7 @@
     "linuxDebDesc": "Installer, opnieuw downloaden om bij te werken",
     "checksumAria": "SHA-256-controlesom voor {{label}}",
     "debFootnote": "Werk je een bestaande <highlight>.deb-installatie</highlight> bij? Verwijder hem niet eerst. Dubbelklikken op het bestand loopt dood in Ubuntu's App Center, dat alleen meldt dat de app geïnstalleerd is: installeer de nieuwe vanuit een terminal over de oude heen. Gebruik de regel die bij jouw machine hoort; dpkg --print-architecture laat zien welke dat is:",
-    "availability": "Nu beschikbaar: macOS 13+, Windows 10+, iOS 15+, Linux en Android.",
+    "availability": "Nu beschikbaar: macOS 13+, Windows 10+, iOS 17.4+, Linux en Android.",
     "betaNote": "Al onze apps zijn in beta en kunnen nog bugs bevatten, dus de webversie is voorlopig het stabielst. Elke app werkt zichzelf bij en we brengen bijna dagelijks verbeteringen uit.",
     "pkgToggle": "Installeren met een packagemanager ({{platforms}})",
     "pkgBrewDesc": "De app werkt zichzelf bij, brew upgrade niet.",
@@ -145,7 +145,7 @@
     "freeMood": "Stemming en welzijn bijhouden",
     "freeTheme": "Donkere en lichte modus",
     "freeAnon": "Anoniem aanmelden, zonder e-mail",
-    "freeGoogle": "Aanmelden met Google",
+    "freeGoogle": "Aanmelden met Google, Apple of GitHub",
     "noSubscription": "Geen abonnement",
     "proLabel": "Pro · Eenmalig betalen",
     "earlyAdopterBadge": "Early Adopter",
@@ -174,8 +174,8 @@
     "phraseDesc": "12 woorden, ondertekening met Ed25519",
     "rlsTerm": "Row-level security",
     "rlsDesc": "RLS gekoppeld aan je pubkey",
-    "trackingTerm": "Nul tracking",
-    "trackingDesc": "Geen analytics, geen pixels",
+    "trackingTerm": "Nul trackers",
+    "trackingDesc": "Geen pixels, geen trackers van derden",
     "authTerm": "Anonieme authenticatie",
     "authDesc": "Geen e-mail, geen wachtwoord",
     "serversTerm": "Zwitserse servers",
@@ -190,7 +190,7 @@
   "mood": {
     "kicker": "Stemming & welzijn bijhouden",
     "heading": "Houd bij wat je echt voelt.",
-    "intro": "Stemming, emoties, slaap, medicatie en activiteitsniveau, met een paar tikken. Alles wordt op je apparaat versleuteld voordat het synchroniseert.",
+    "intro": "Stemming, emoties, slaap, medicatie en activiteitsniveau, met een paar tikken. Alles is altijd versleuteld, op je apparaat en tijdens het synchroniseren.",
     "cardEmotionsTitle": "Stemming (1-10) + 24 emotietags",
     "cardEmotionsBody": "24 wetenschappelijk onderbouwde emotietags. Benoem wat je voelt, ontdek patronen door de tijd heen, en exporteer gegevens waar je therapeut of arts mee uit de voeten kan.",
     "cardSleepTitle": "Slaapkwaliteit + activiteitsniveau",
@@ -215,8 +215,8 @@
     "themSeparate": "Losse apps, terugkerende kosten",
     "usAllInOne": "Notities, taken, bestanden, kluis, dagboek, bladwijzers. Eén app",
     "usTracking": "Stemming, energie, slaap en medicatie bijhouden",
-    "usEncrypted": "End-to-end versleuteld, gesynchroniseerd naar Zwitserland",
-    "usSignIn": "Anoniem of met Google aanmelden, dezelfde versleuteling",
+    "usEncrypted": "Versleuteld op je apparaat, gesynchroniseerd naar Zwitserland",
+    "usSignIn": "Anoniem of met Google, Apple of GitHub aanmelden, altijd dezelfde versleuteling",
     "usExport": "Patronen herkennen + PDF-export voor je arts",
     "usSync": "Desktop + mobiel, onbeperkt synchroniseren",
     "usPriceBeta": "Voor altijd gratis, of eenmalig ${{earlyPrice}} voor Pro (early-adopterprijs)",
@@ -248,7 +248,7 @@
     "para1": "De meeste notitie-apps spitten je inhoud door. Zet “nieuwe tv kopen” op je boodschappenlijst en je volgende pagina's staan vol tv-advertenties. Je boodschappenlijst, je dagboek, je privégedachten, allemaal het advertentiecircuit in, geprofileerd en verkocht. Dat is het verdienmodel van elke “gratis” notitie-app die van advertenties leeft.",
     "para2": "Zelfs apps zonder advertenties bewaren je notities nog steeds als leesbare tekst op hun servers: te lezen door medewerkers, buit te maken bij een datalek, en beschikbaar voor iedereen met een gerechtelijk bevel. Jouw gegevens worden hun machtsmiddel.",
     "differenceLabel": "Het verschil",
-    "differenceBody": "<brand/> is end-to-end versleuteld met sleutels die je apparaat nooit verlaten, dus wij noch onze servers kunnen lezen wat je schrijft. Er is geen tracking, geen analytics, geen advertenties en geen profilering, en die komen er ook nooit. Wat jij schrijft, blijft van jou.",
+    "differenceBody": "<brand/> versleutelt je notities op je apparaat, en bij eigen beheer verlaat de sleutel het nooit, dus wij noch onze servers kunnen er een woord van lezen. Er zijn geen advertenties, geen pixels, geen trackers van derden en geen analyse van wat je schrijft, en die komen er ook nooit. Onze website telt klikken op zijn download- en partnerlinks per land, zonder enige identificatiecode. Wat jij schrijft, blijft van jou.",
     "keyboardNote": "<b>Een kanttekening over toetsenborden.</b> Toetsenborden van derden (zoals Gboard, SwiftKey of Samsung Keyboard) kunnen wat je typt naar hun eigen servers sturen. Dat gebeurt op het niveau van het besturingssysteem, buiten de invloed van welke app dan ook. Overweeg om de cloudfuncties in je toetsenbordinstellingen uit te zetten of een toetsenbord te gebruiken dat alleen offline werkt."
   },
   "readIt": {
@@ -263,13 +263,13 @@
   },
   "wontFind": {
     "kicker": "Wat je niet in de app vindt",
-    "noTracking": "Geen tracking",
+    "noTracking": "Geen trackers",
     "noAds": "Geen advertenties",
     "noHarvesting": "Geen dataverzameling",
     "noAiTraining": "Geen AI-training",
     "noLockIn": "Geen lock-in",
     "noEmail": "Geen e-mail nodig",
-    "noTelemetry": "Geen telemetrie",
+    "noTelemetry": "Geen analyse van je notities",
     "noCookieBanner": "Geen cookiebanner",
     "noPasswords": "Geen wachtwoorden",
     "noDarkPatterns": "Geen dark patterns",
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "Je herstelzin is je sleutel",
-    "body": "Geen herstelzin, geen notities. Wij kunnen ze niet terughalen, en niemand anders ook. Dat is de prijs van end-to-end versleuteling: bij eigen beheer heb alleen jij de sleutel, dus een mail naar ons team brengt je notities niet terug.",
+    "body": "Geen herstelzin, geen notities. Wij kunnen ze niet terughalen, en niemand anders ook. Dat is de prijs van eigen beheer: alleen jij hebt de sleutel, dus een mail naar ons team brengt je notities niet terug.",
     "noRecoveryTerm": "Geen herstel",
     "noRecoveryDesc": "Herstelzin kwijt, notities kwijt",
     "deviceTerm": "Gemaakt op je apparaat",
@@ -290,8 +290,8 @@
     "writeDesc": "Een back-up op papier, veilig opgeborgen",
     "printTerm": "Printen vanuit de instellingen",
     "printDesc": "Bekijk en exporteer je herstelzin wanneer je wilt",
-    "googleTerm": "Aangemeld met Google?",
-    "googleDesc": "Je krijgt nog steeds een herstelzin. Bewaar hem"
+    "googleTerm": "Aangemeld met Google, Apple of GitHub?",
+    "googleDesc": "Standaard bewaren wij je sleutel, of je maakt zelf een back-up van je herstelzin"
   },
   "closing": {
     "kicker": "Klaar wanneer jij het bent",

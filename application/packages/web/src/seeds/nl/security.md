@@ -19,7 +19,7 @@ Dat is onze echte database in Zürich, geen tekening ervan. Je notitie komt in d
 
 ## Wie je sleutel heeft
 
-Elke optie houdt je notities end-to-end versleuteld. Ze verschillen in waar je zin ligt.
+Elke optie houdt je notities versleuteld op je apparaat. Ze verschillen in waar je zin ligt.
 
 | Optie | Waar je zin ligt | Wat je ermee wint |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Elke optie houdt je notities end-to-end versleuteld. Ze verschillen in waar je z
 
 Bij de onderste twee zouden wij een notitie niet kunnen lezen, ook niet als we ertoe gedwongen werden. De eerste ruilt dat in voor gemak: je zin staat op onze server onder een sleutel van ons, dus een nieuw apparaat heeft niets meer nodig dan je account. Als onze server ooit gekraakt wordt, kan die sleutel bloot komen te liggen.
 
-Je zit niet vast aan je keuze. Verander hem bij **Instellingen > Beveiliging > Je herstelzin**.
+Aangemeld met Google, Apple of GitHub? Dan kun je later wisselen tussen de eerste twee, bij **Instellingen > Beveiliging > Je herstelzin**. Met een account met alleen een herstelzin blijft de zin altijd bij jou.
 
 > [!warning] Houd zelf een kopie van de zin
 > Je zin opent je notities. Raak je hem kwijt, dan kan niemand hem terughalen, wij ook niet. <span style="color: #e03131">Schrijf hem vandaag op papier.</span>
@@ -44,7 +44,7 @@ Je zit niet vast aan je keuze. Verander hem bij **Instellingen > Beveiliging > J
 | Wat | Waar |
 | --- | --- |
 | De versleuteling zelf | [crypto.ts](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/crypto/crypto.ts) |
-| De opbouw van de database | [schema.sql](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/schema/schema.sql) |
+| Wat onze server ontvangt | [VERIFY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/VERIFY.md#tier-1-one-minute-no-tools) |
 | Wat een aanvaller wel en niet kan | [THREAT_MODEL.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/THREAT_MODEL.md) |
 | Hoe je een lek meldt | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 

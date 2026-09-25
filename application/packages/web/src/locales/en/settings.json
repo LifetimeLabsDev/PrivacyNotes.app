@@ -59,6 +59,9 @@
     "upgradeCharge": "You're charged {{amount}} today for the rest of your current year. After that it renews at {{price}}/year.",
     "upgradeChargeUntil": "You're charged {{amount}} today for the rest of your current year, until {{date}}. After that it renews at {{price}}/year.",
     "upgradeChargeApple": "You're charged {{price}} today. Apple refunds the unused part of your current year automatically, and your new year starts now.",
+    "upgradeAmountFailed": "The amount due today couldn't be loaded.",
+    "upgradeAmountRetry": "Try again",
+    "upgradeAmountChanged": "The amount due today changed or couldn't be checked, so you have not been charged. Choose the package again to see the new amount.",
     "upgrading": "Upgrading…",
     "upgradeAndPay": "Upgrade & pay now",
     "maybeLater": "Maybe later",
@@ -183,7 +186,12 @@
     "contentWidthWide": "Wide",
     "contentWidthFull": "Full",
     "lineSpacingTitle": "Line spacing",
-    "lineSpacingDesc": "Space between paragraphs while you write.",
+    "tintNotesTitle": "Color note backgrounds",
+    "tintNotesDesc": "Notes take their tag or folder color.",
+    "lineSpacingDesc": "Space between lines and paragraphs while you write.",
+    "lineSpacingTight": "Tight",
+    "resetDefaults": "Reset to defaults",
+    "resetDefaultsConfirm": "Confirm reset",
     "lineSpacingCompact": "Compact",
     "lineSpacingNormal": "Normal",
     "lineSpacingExample": "Example",
@@ -211,10 +219,10 @@
   },
   "conflict": {
     "title": "Sync conflict",
-    "explanation": "This note was edited on another device while you had unsaved changes here. We'll use the <em>newer version</em> (from the other device, {{date}}).",
+    "explanation": "This note was changed on another device while this device had changes that had not synced yet, and the text differs between the two. We'll keep the <em>version from the other device</em> ({{date}}) unless you choose otherwise.",
     "willBeKept": "Will be kept",
     "showLocal": "Show version from this device ({{date}})",
-    "useNewer": "OK, use newer",
+    "useNewer": "Use the other version",
     "useMine": "Use mine instead",
     "keepBoth": "Keep both as separate notes"
   },
@@ -226,6 +234,13 @@
     "localLabel": "Delete local data",
     "localDesc": "Wipes notes, images, and cached data from this device. This does not delete your account, it only cleans up this browser.",
     "localRequired": "(required when deleting account)",
+    "localUnsynced_one": "{{items}} on this device hasn't synced. Deleting local data destroys it for good.",
+    "localUnsynced_other": "{{items}} on this device haven't synced. Deleting local data destroys them for good.",
+    "unsyncedNotes_one": "{{count}} note",
+    "unsyncedNotes_other": "{{count}} notes",
+    "unsyncedFiles_one": "{{count}} file",
+    "unsyncedFiles_other": "{{count}} files",
+    "unsyncedBoth": "{{notes}} and {{files}}",
     "cloudLabel": "Delete cloud data & account",
     "cloudDesc": "Permanently removes all synced notes, images, devices, settings, and your account from the server. You can sign up again afterward.",
     "confirmPrompt": "Type <kbd>DELETE</kbd> to confirm",
@@ -267,7 +282,11 @@
     "notBackedUpTooltip_one": "{{count}} note is not backed up. Click to see why.",
     "notBackedUpTooltip_other": "{{count}} notes are not backed up. Click to see why.",
     "notBackedUpAria_one": "{{count}} note is not backed up",
-    "notBackedUpAria_other": "{{count}} notes are not backed up"
+    "notBackedUpAria_other": "{{count}} notes are not backed up",
+    "haltedTooltip_one": "Sync stopped with {{count}} note not backed up. Click to see why.",
+    "haltedTooltip_other": "Sync stopped with {{count}} notes not backed up. Click to see why.",
+    "haltedAria_one": "Sync stopped, {{count}} note not backed up",
+    "haltedAria_other": "Sync stopped, {{count}} notes not backed up"
   },
   "errors": {
     "noSession": "No active session. Try signing in again.",
@@ -319,7 +338,9 @@
     "reasonFailed": "Failed: {{message}}",
     "openNote": "Open",
     "passPushFailed_one": "{{count}} failed",
-    "passPushFailed_other": "{{count}} failed"
+    "passPushFailed_other": "{{count}} failed",
+    "passHalted_one": "stopped, {{count}} waiting",
+    "passHalted_other": "stopped, {{count}} waiting"
   },
   "language": {
     "reportMistake": "Report a translation mistake"

@@ -135,6 +135,7 @@
     "closeMenu": "メニューを閉じる",
     "close": "閉じる",
     "views": "コンテンツ",
+    "resizeSplit": "コンテンツとタグまたはフォルダの幅を変更",
     "sidebarOptions": "サイドバーのオプション",
     "showInSidebar": "サイドバーに表示",
     "allOptions": "「すべて」のオプション",
@@ -450,6 +451,7 @@
     "openAction": "開く",
     "copiedUrl": "リンクをコピーしました",
     "moveToTrash": "ゴミ箱に移動",
+    "rowMenu": "その他の操作",
     "emptyNone": "ブックマークはまだありません。",
     "emptyTitle": "残しておきたいサイトを保存",
     "emptyAdd": "ブックマークを追加",
@@ -577,5 +579,8 @@
   },
   "noteLinks": {
     "retargetedToast_other": "{{count}}件のノートリンクを新しいタイトルに更新しました。"
+  },
+  "looks": {
+    "menu": "アイコンと色"
   }
 }

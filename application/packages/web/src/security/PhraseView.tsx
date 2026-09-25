@@ -5,7 +5,7 @@ import { CaretDown, Check, EyeSlash, FileText, Warning, iconCopy, iconDownload }
 import { buildPhraseFile, PHRASE_FILE_NAME } from '../phraseFile';
 import { buildSignInUrl } from '../qrSignIn';
 import { RevealGate } from '../RevealGate';
-import { saveBlob } from '../saveFile';
+import { saveBlob, type SaveResult } from '../saveFile';
 
 /**
  * Phrase display - words-first layout: a full-width 2-column word grid
@@ -64,6 +64,10 @@ export function PhraseView({
   const { t } = useTranslation('security');
   const words = phrase.split(' ');
   const [copied, setCopied] = useState(false);
+  // The phrase files whose last save failed. A failed native save can leave an
+  // empty or partial file, so a file's message stays until that same file
+  // saves; a dismissed dialog changes nothing.
+  const [failedFiles, setFailedFiles] = useState<ReadonlySet<string>>(() => new Set());
   const [showQR, setShowQR] = useState(false);
   // Starts covered whenever the caller gates it. Everything that can put
   // the phrase on screen, in the clipboard or in a file hangs off this.
@@ -102,6 +106,16 @@ export function PhraseView({
     }
   }
 
+  function reportSave(filename: string, saved: SaveResult) {
+    if (!saved.ok && saved.reason === 'cancelled') return;
+    setFailedFiles((files) => {
+      const next = new Set(files);
+      if (saved.ok) next.delete(filename);
+      else next.add(filename);
+      return next;
+    });
+  }
+
   async function handleDownloadQR() {
     const canvas = qrWrapperRef.current?.querySelector('canvas');
     if (!canvas) return;
@@ -124,7 +138,7 @@ export function PhraseView({
     // devices, etc. Direct local save only.
     // saveBlob is a direct local save (web download / native Save As); it never
     // touches navigator.share, so the vault-decrypting QR can't reach a share sheet.
-    await saveBlob(blob, filename);
+    reportSave(filename, await saveBlob(blob, filename));
   }
 
   // Same file the onboarding screen offers; its strings live in the auth catalog.
@@ -135,7 +149,8 @@ export function PhraseView({
       footer: t('auth:createPhrase.txtFooter'),
     });
     // Direct local save, never navigator.share: the file decrypts the vault.
-    await saveBlob(new Blob([text], { type: 'text/plain' }), PHRASE_FILE_NAME);
+    const saved = await saveBlob(new Blob([text], { type: 'text/plain' }), PHRASE_FILE_NAME);
+    reportSave(PHRASE_FILE_NAME, saved);
   }
 
   return (
@@ -213,6 +228,7 @@ export function PhraseView({
               words; the QR is only for device-to-device migration via scan. */}
           <div className="grid grid-cols-2 gap-2">
             <button
+              data-setting="security.qrCode"
               onClick={() => setShowQR((s) => !s)}
               aria-expanded={showQR}
               className="inline-flex items-center justify-center gap-1.5 rounded-md border border-divider hover:bg-surface-1 px-2 py-2 text-sm text-pn-soft transition"
@@ -263,6 +279,7 @@ export function PhraseView({
 
             <button
               onClick={handleCopy}
+              data-setting="security.copyPhrase"
               className={`inline-flex items-center justify-center gap-1.5 rounded-md border px-2 py-2 text-sm transition ${
                 copied
                   ? 'bg-accent/10 text-accent border-accent'
@@ -282,6 +299,10 @@ export function PhraseView({
               )}
             </button>
           </div>
+
+          {failedFiles.size > 0 && (
+            <p className="text-sm text-red-500 dark:text-red-400">{t('auth:createPhrase.saveFailed')}</p>
+          )}
 
           {!hideDismiss && (
             <button

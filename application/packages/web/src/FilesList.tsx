@@ -22,6 +22,7 @@ import { HoverLabel } from './HoverLabel';
 import { SelectionToolbar } from './SelectionToolbar';
 import { suppressShiftTextSelection } from './useMultiSelect';
 import { ListSearchInput } from './ListSearchInput';
+import { Switch } from './Switch';
 import { ActiveFilterEntry, ActiveSearchEntry, FilteredEmpty, ListFilterChips } from './ListFilterChips';
 import type { View } from './views';
 import { ListNav } from './notesView/ListNav';
@@ -31,9 +32,11 @@ import { isStorageConfigured } from './paddle';
 import { proUnlocked } from './demo';
 import { STORAGE_PACKAGES } from './pricing';
 import { FILE_SIZE_LIMIT_PRO, FILE_SIZE_LIMIT_STORAGE } from './attachmentValidation';
-import { loadEncryptedImageUrl } from './EncryptedImage';
+import { LazyPdfCover, LazyPicture } from './LazyPicture';
+import { isPdf, isPictureMime, openMediaViewer, type MediaRef } from './mediaRefs';
 import { useQuotaBlockedUuids } from './usePendingUploads';
 import { unescapeMarkdownText } from './fileNames';
+import { textMatcher } from './textMatch';
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -169,6 +172,49 @@ export function extractFileItems(notes: LocalNote[]): FileItem[] {
   return items;
 }
 
+/**
+ * The Files rows of notes the PIN guards right now: one per note, named by the
+ * note's title and carrying nothing its body says about the files in it - no
+ * file name, size, type or picture, and no count of them. The title stays
+ * visible here as it does in every other list, and a click opens the gate.
+ * Tested in tests/lockGateLists.test.ts.
+ */
+function listedWhileGated(items: FileItem[], gated: ReadonlySet<string>): FileItem[] {
+  if (gated.size === 0) return items;
+  const seen = new Set<string>();
+  const out: FileItem[] = [];
+  for (const item of items) {
+    if (!gated.has(item.noteId)) out.push(item);
+    else if (!seen.has(item.noteId)) {
+      seen.add(item.noteId);
+      out.push({ ...item, kind: 'attachment', name: item.noteTitle, mime: '', size: 0, sizeLabel: '' });
+    }
+  }
+  return out;
+}
+
+/** A picture the grid can draw and the viewer can show. */
+export function isPictureFileItem(item: FileItem): boolean {
+  return item.kind === 'image' || isPictureMime(item.mime);
+}
+
+/** A stored PDF: the grid draws its first page, and the viewer reads it. */
+function isPdfFileItem(item: FileItem): boolean {
+  return item.kind === 'attachment' && isPdf(item.mime, item.name);
+}
+
+/** Anything the viewer can open: a picture or a PDF. */
+function isViewableFileItem(item: FileItem): boolean {
+  return isPictureFileItem(item) || isPdfFileItem(item);
+}
+
+/** The reference a note stores for this file. */
+export function fileItemMediaRef(item: FileItem): MediaRef {
+  return item.kind === 'image'
+    ? { src: `pn:img/${item.uuid}`, name: item.name, mime: '' }
+    : { src: `pn:file/${item.uuid}`, name: item.name, mime: item.mime };
+}
+
 // ── Component ──────────────────────────────────────────────────────────
 
 interface FilesListProps {
@@ -247,6 +293,11 @@ interface FilesListProps {
   onTrash: (noteId: string) => void;
   /** Look up parent note starred status. */
   isNoteStarred: (noteId: string) => boolean;
+  /** Notes the PIN still guards. Their files open the note's gate, never the
+   *  viewer, never join the viewer's list, draw no picture on a grid tile,
+   *  and list as one row named by the note's title (listedWhileGated) - the
+   *  rule the note list applies to a guarded note's preview. */
+  gatedNoteIds: () => Set<string>;
 }
 
 /** Derive a short filetype label from mime or filename extension. */
@@ -354,41 +405,6 @@ function StorageUpsell({
   );
 }
 
-/** Lazy-loaded encrypted image background for image file tiles in grid mode.
- *  Decrypts + shows the image only once the tile scrolls near the viewport. */
-function FileTileImageBg({ uuid }: { uuid: string }) {
-  const [url, setUrl] = useState<string | null>(null);
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    let cancelled = false;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          io.disconnect();
-          void loadEncryptedImageUrl(uuid).then((u) => {
-            if (!cancelled) setUrl(u);
-          });
-        }
-      },
-      { rootMargin: '300px' },
-    );
-    io.observe(el);
-    return () => {
-      cancelled = true;
-      io.disconnect();
-    };
-  }, [uuid]);
-  return (
-    <div ref={ref} className="absolute inset-0 bg-neutral-200 dark:bg-neutral-800">
-      {url && (
-        <img src={url} alt="" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
-      )}
-    </div>
-  );
-}
-
 export function FilesList({
   fileItems,
   filesCount,
@@ -442,6 +458,7 @@ export function FilesList({
   viewMode,
   listPrefsStore,
   onListPrefsChange,
+  gatedNoteIds,
 }: FilesListProps) {
   const { t } = useTranslation(['shell', 'notes', 'media']);
   const showNote = listPrefs.showAttachedNotes;
@@ -671,17 +688,22 @@ export function FilesList({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter, showNote, selectedFileIds, isNoteStarred, onToggleStar, onTrash, onRenameFile]);
 
-  /** Base items after the three list settings. All three hold on every
-   *  tab: the type tabs pick which files are listed, not which settings
-   *  apply. `standalone` marks a file that is its own note, so with the
-   *  toggle off only files uploaded as files remain. */
+  /** Notes the PIN guards right now, and a key that changes when they do. */
+  const gatedNow = gatedNoteIds();
+  const gatedKey = [...gatedNow].sort().join(' ');
+  /** Base items after the gate and the three list settings. All three hold
+   *  on every tab: the type tabs pick which files are listed, not which
+   *  settings apply. `standalone` marks a file that is its own note, so with
+   *  the toggle off only files uploaded as files remain. */
   const visibleItems = useMemo(() => {
-    let items = fileItems;
+    let items = listedWhileGated(fileItems, gatedNow);
     if (!showNote) items = items.filter((f) => f.standalone);
     if (!listPrefs.showLocked) items = items.filter((f) => !f.locked);
     if (!listPrefs.showProtected) items = items.filter((f) => !f.pinProtected);
     return items;
-  }, [fileItems, showNote, listPrefs.showLocked, listPrefs.showProtected]);
+  // gatedKey stands in for gatedNow, which is a fresh Set on every render.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fileItems, gatedKey, showNote, listPrefs.showLocked, listPrefs.showProtected]);
 
   const filtered = useMemo(() => {
     let items = visibleItems;
@@ -689,13 +711,10 @@ export function FilesList({
       items = items.filter((f) => fileCategory(f) === filter);
     }
     // Apply search - match on file name or parent note title.
-    const q = search.trim().toLowerCase();
+    const q = search.trim();
     if (q) {
-      items = items.filter(
-        (f) =>
-          f.name.toLowerCase().includes(q) ||
-          f.noteTitle.toLowerCase().includes(q)
-      );
+      const match = textMatcher(q);
+      items = items.filter((f) => match(f.name) || match(f.noteTitle));
     }
     // Sort - pinned files always float to top, then user's chosen sort within each group.
     const dir = sortDir === 'asc' ? 1 : -1;
@@ -720,6 +739,34 @@ export function FilesList({
      reason the import offer does elsewhere: neither is a selectable item. */
   const showSearchEntry = search.trim().length > 0 && filtered.length === 0;
   const showFilterEntry = (activeFolderName !== null || activeTag !== null) && selectedFileIds.size === 0;
+
+  /**
+   * A click on a picture or a PDF opens its note, as every file click does,
+   * and the viewer over it. The viewer moves through this list as it stands,
+   * sorted, filtered and searched, and on close the pane follows it to the
+   * note of the file that was on screen. A file in a note the PIN still
+   * guards opens the gate instead, and never joins the list.
+   * Spec: ops/docs/ui-patterns.md (section 98, the picture viewer)
+   */
+  function openViewerAt(item: FileItem) {
+    if (!isViewableFileItem(item)) return;
+    const gated = gatedNoteIds();
+    if (gated.has(item.noteId)) return;
+    const shown = filtered.filter((f) => isViewableFileItem(f) && !gated.has(f.noteId));
+    const index = shown.indexOf(item);
+    if (index < 0) return;
+    const startKey = fileKey(item);
+    openMediaViewer({
+      items: shown.map(fileItemMediaRef),
+      index,
+      onClose: (last) => {
+        const landed = shown[last];
+        if (!landed || fileKey(landed) === startKey) return;
+        setActiveFileId(fileKey(landed));
+        onOpenNote(landed.noteId, landed.uuid);
+      },
+    });
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -877,22 +924,13 @@ export function FilesList({
 
       {/* ── Attachment toggle - inline like Trash's auto-delete ──── */}
       <div className="shrink-0 px-4 py-2 border-b border-divider">
-        <label className="flex items-center justify-between gap-2 cursor-pointer select-none">
-          <span className="text-xs text-neutral-600 dark:text-neutral-400">{t('filesList.showNotesWithAttachments')}</span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={showNote}
-            onClick={() => setShowNote((v) => !v)}
-            className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition ${
-              showNote ? 'bg-accent' : 'bg-neutral-300 dark:bg-neutral-700'
-            }`}
-          >
-            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-              showNote ? 'translate-x-4 rtl:-translate-x-4' : 'translate-x-0.5 rtl:-translate-x-0.5'
-            }`} />
-          </button>
-        </label>
+        <Switch
+          label={t('filesList.showNotesWithAttachments')}
+          checked={showNote}
+          onChange={setShowNote}
+          className="gap-2 select-none"
+          labelClassName="text-xs text-neutral-600 dark:text-neutral-400"
+        />
       </div>
 
       {/* ── File list ─────────────────────────────────────────────── */}
@@ -977,14 +1015,18 @@ export function FilesList({
               // filter changes (#92). Suffix the array index to guarantee
               // uniqueness; fk still drives selection/highlight state.
               const rowKey = `${fk}::${idx}`;
-              // Image thumbnails only in grid mode; list view keeps the
-              // compact icon row (previews were too heavy/odd inline).
-              const isImageBg = item.kind === 'image' && viewMode === 'grid';
+              // Picture thumbnails only in grid mode; list view keeps the
+              // compact icon row (previews were too heavy/odd inline). An
+              // uploaded picture is an attachment, and it gets one too, and a
+              // PDF tile shows its first page the same way. A note the PIN
+              // still guards shows neither, the way the note list hides its
+              // preview: its tiles keep the file icon, like any other file.
+              const isImageBg = viewMode === 'grid' && !gatedNow.has(item.noteId) && isViewableFileItem(item);
               // Preview / meta / tags are identical in both layouts, only their
               // ORDER differs: the grid keeps tags above the meta row so the date
               // can pin to the tile bottom (margin-top:auto), the list puts tags
               // last to match NoteRow.
-              const previewEl = listPrefs.showPreview && (
+              const previewEl = listPrefs.showPreview && !gatedNow.has(item.noteId) && (
                 <div className="text-[13px] text-neutral-500 dark:text-neutral-400 truncate mt-0.5">
                   {/* Type word only for a standalone file. Size belongs on the
                       meta line for both row kinds: appending it here would put
@@ -1085,6 +1127,7 @@ export function FilesList({
                     } else {
                       setActiveFileId(fk);
                       onOpenNote(item.noteId, item.uuid);
+                      openViewerAt(item);
                     }
                   }}
                   onContextMenu={(e) => {
@@ -1132,7 +1175,9 @@ export function FilesList({
                 >
                   {isImageBg ? (
                     <>
-                      <FileTileImageBg uuid={item.uuid} />
+                      {isPdfFileItem(item)
+                        ? <LazyPdfCover uuid={item.uuid} />
+                        : <LazyPicture src={fileItemMediaRef(item).src} />}
                       <div className={`absolute inset-0 pointer-events-none ${viewMode === 'grid' ? 'bg-gradient-to-t from-black/85 via-black/30 to-black/10' : 'bg-gradient-to-r from-black/80 via-black/55 to-black/25'}`} />
                       <div className={`absolute ${viewMode === 'grid' ? 'inset-x-0 bottom-0 p-2.5' : 'inset-0 px-4 py-2.5 flex flex-col justify-center'}`}>
                         <div className="text-[13px] font-semibold text-white truncate flex items-center gap-1.5">

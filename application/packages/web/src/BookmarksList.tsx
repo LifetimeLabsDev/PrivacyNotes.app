@@ -7,6 +7,7 @@ import NoteRow, { SiteChip, CardGlyph } from './NoteRow';
 import NoteCard from './NoteCard';
 import { ListNav } from './notesView/ListNav';
 import { ListSearchInput } from './ListSearchInput';
+import { Switch } from './Switch';
 import { ListPrefsPopover } from './ListPrefsPopover';
 import { ActiveFilterEntry, ActiveSearchEntry, FilteredEmpty, ListFilterChips } from './ListFilterChips';
 import { BookmarkRowActions } from './BookmarkRowActions';
@@ -15,6 +16,8 @@ import { SelectionCountStrip } from './SelectionCountStrip';
 import { HoverLabel } from './HoverLabel';
 import { ImportPromptEntry, useImportPrompt } from './ImportPrompt';
 import { normalizeUrl, linkDomain, linkDedupeKey, duplicateBookmarkId } from './linkBody';
+import { textMatcher } from './textMatch';
+import { isImeComposing } from './imeComposing';
 import { Bookmark, Bookmarks, BookmarkSimple, FunnelSimple, Plus, Download, File, CheckSquare, Book, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
 
 /**
@@ -66,6 +69,7 @@ function extractBodyLinks(body: string): { url: string; name: string }[] {
 
 export function BookmarksList({
   bookmarks,
+  isNoteLocked,
   bookmarkKeys,
   scanNotes,
   listPrefs,
@@ -90,6 +94,7 @@ export function BookmarksList({
   onSaveDerived,
   onTrash,
   onRowContextMenu,
+  onRowMenu,
   onOpenImport,
   selectionMode,
   selectedIds,
@@ -114,6 +119,9 @@ export function BookmarksList({
 }: {
   /** Active (non-trashed) link notes, already folder/tag scoped by the owner. */
   bookmarks: LocalNote[];
+  /** The view's lock predicate: a gated bookmark's row keeps its name and
+   *  draws no address and no favicon. */
+  isNoteLocked: (n: LocalNote) => boolean;
   /** Every saved bookmark URL in the ACCOUNT (buildLinkKeyMap), not just the
    *  rows above: the quick-add guard and the derived-row dedupe both have to
    *  see the copy a search or a folder filter is hiding. */
@@ -161,6 +169,9 @@ export function BookmarksList({
   onSaveDerived: (draft: BookmarkDraft) => void;
   onTrash: (note: LocalNote) => void;
   onRowContextMenu: (note: LocalNote, e: React.MouseEvent) => void;
+  /** The same menu from the touch "..." button. A tap is not a right-click,
+   *  so it cannot go through the context-menu path, which swallows touch. */
+  onRowMenu: (note: LocalNote, e: React.MouseEvent) => void;
   onOpenImport: () => void;
   // Multi-select - the same machinery every list shares (useMultiSelect
   // in NotesView owns the state; SelectionToolbar swaps into the title row).
@@ -249,17 +260,13 @@ export function BookmarksList({
      re-sorted the hits and threw the relevance order away. The derived rows
      below are the one thing no index can hold - they are not notes - so they
      keep a local match on the query. */
-  const q = search.trim().toLowerCase();
+  const q = search.trim();
 
-  const filteredDerived = useMemo(
-    () =>
-      q
-        ? derived.filter(
-            (d) => d.url.toLowerCase().includes(q) || d.name.toLowerCase().includes(q),
-          )
-        : derived,
-    [derived, q],
-  );
+  const filteredDerived = useMemo(() => {
+    if (!q) return derived;
+    const match = textMatcher(q);
+    return derived.filter((d) => match(d.url) || match(d.name));
+  }, [derived, q]);
 
   const empty = bookmarks.length === 0 && filteredDerived.length === 0 && !q;
 
@@ -310,7 +317,7 @@ export function BookmarksList({
   const tipPos = viewMode === 'grid' ? 'above-start' as const : 'start' as const;
   const itemActions = (n: LocalNote) =>
     selectionMode ? undefined : (
-      <BookmarkRowActions note={n} onEdit={onRequestEdit} onTrash={onTrash} tipPos={tipPos} />
+      <BookmarkRowActions note={n} onEdit={onRequestEdit} onTrash={onTrash} onMenu={onRowMenu} tipPos={tipPos} />
     );
 
   return (
@@ -402,27 +409,23 @@ export function BookmarksList({
 
       {/* ── Links-from-notes toggle - the Files pillar's inline row ── */}
       <div className="shrink-0 px-4 py-2 border-b border-divider">
-        <label className="flex items-center justify-between gap-2 cursor-pointer select-none">
-          <span className="text-xs text-neutral-600 dark:text-neutral-400">{t('listPrefs.showNoteLinks')}</span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={listPrefs.showNoteLinks}
-            onClick={() => onListPrefsChange(setPillarPrefs(listPrefsStore, 'bookmarks', { ...listPrefs, showNoteLinks: !listPrefs.showNoteLinks }))}
-            className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition ${
-              listPrefs.showNoteLinks ? 'bg-accent' : 'bg-neutral-300 dark:bg-neutral-700'
-            }`}
-          >
-            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-              listPrefs.showNoteLinks ? 'translate-x-4 rtl:-translate-x-4' : 'translate-x-0.5 rtl:-translate-x-0.5'
-            }`} />
-          </button>
-        </label>
+        <Switch
+          label={t('listPrefs.showNoteLinks')}
+          checked={listPrefs.showNoteLinks}
+          onChange={(on) => onListPrefsChange(setPillarPrefs(listPrefsStore, 'bookmarks', { ...listPrefs, showNoteLinks: on }))}
+          className="gap-2 select-none"
+          labelClassName="text-xs text-neutral-600 dark:text-neutral-400"
+        />
       </div>
 
       {/* ── Quick-add bar (Enter opens the form pane with the URL) ── */}
       <div className="shrink-0 p-3 border-b border-divider">
-        <div className={`flex items-center gap-2 rounded-md bg-surface-2 border px-3 py-2 focus-within:border-accent ${urlError || dupWarn ? (dupWarn ? 'border-amber-500' : 'border-red-500') : 'border-divider'}`}>
+        {/* The Add button appears once there is something to add. Enter
+            does the same, but a phone keyboard's action key is easy to miss
+            and a pasted link otherwise sits in the field with no visible way
+            forward. min-h holds the bar's height when the button comes and
+            goes, so nothing below it jumps. */}
+        <div className={`flex items-center gap-2 min-h-10 rounded-md bg-surface-2 border ps-3 py-1 ${draft.trim() ? 'pe-1' : 'pe-3'} focus-within:border-accent ${urlError || dupWarn ? (dupWarn ? 'border-amber-500' : 'border-red-500') : 'border-divider'}`}>
           <Plus size={16} className="text-neutral-400 shrink-0" />
           <input
             ref={quickInputRef}
@@ -430,7 +433,7 @@ export function BookmarksList({
             value={draft}
             onChange={(e) => { setDraft(e.target.value); setUrlError(false); setDupWarn(false); }}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === 'Enter' && !isImeComposing(e)) {
                 e.preventDefault();
                 submitQuickAdd();
               }
@@ -438,8 +441,21 @@ export function BookmarksList({
             placeholder={t('bookmarks.quickAddPlaceholder')}
             enterKeyHint="next"
             dir="ltr"
-            className="flex-1 bg-transparent text-[15px] focus:outline-none placeholder:text-neutral-400 dark:placeholder:text-neutral-600"
+            className="flex-1 min-w-0 bg-transparent text-[15px] focus:outline-none placeholder:text-neutral-400 dark:placeholder:text-neutral-600"
           />
+          {draft.trim() && (
+            <button
+              type="button"
+              // Keep focus in the field: the add moves it to the new
+              // bookmark's title, and a blur first would drop a phone's
+              // keyboard only to raise it again.
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={submitQuickAdd}
+              className="shrink-0 inline-flex items-center h-7 rounded bg-accent px-2.5 text-[13px] font-medium text-white whitespace-nowrap transition hover:bg-accent/90"
+            >
+              {t('common:actions.add')}
+            </button>
+          )}
         </div>
         {urlError && (
           <div className="text-[12px] font-medium text-red-600 dark:text-red-400 mt-1 px-1">{t('bookmarks.urlInvalid')}</div>
@@ -511,7 +527,7 @@ export function BookmarksList({
                 note={n}
                 isOpen={editingNoteId === n.id && !selectionMode}
                 listPrefs={listPrefs}
-                isNoteLocked={false}
+                isNoteLocked={isNoteLocked(n)}
                 onClick={(e) => onRowClick(e, n.id)}
                 onContextMenu={(e) => { setContextTargetId(n.id); onRowContextMenu(n, e); }}
                 isContextTarget={contextTargetId === n.id}
@@ -535,7 +551,7 @@ export function BookmarksList({
                 note={n}
                 isOpen={editingNoteId === n.id && !selectionMode}
                 listPrefs={listPrefs}
-                isNoteLocked={false}
+                isNoteLocked={isNoteLocked(n)}
                 onClick={(e) => onRowClick(e, n.id)}
                 onContextMenu={(e) => { setContextTargetId(n.id); onRowContextMenu(n, e); }}
                 isContextTarget={contextTargetId === n.id}

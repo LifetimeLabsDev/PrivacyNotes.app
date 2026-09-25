@@ -2,7 +2,7 @@ name: privacynotes
 options:
   bundleIdPrefix: app.privacynotes
   deploymentTarget:
-    iOS: 15.0
+    iOS: 17.4
 fileGroups: [../../src]
 configs:
   debug: debug
@@ -32,6 +32,7 @@ targets:
       - path: Sources
       - path: Assets.xcassets
       - path: Externals
+        buildPhase: none
       - path: privacynotes_iOS
       - path: assets
         buildPhase: resources
@@ -54,8 +55,8 @@ targets:
           - UIInterfaceOrientationPortraitUpsideDown
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
-        CFBundleShortVersionString: 0.518.1
-        CFBundleVersion: "0.518.1"
+        CFBundleShortVersionString: 0.534.0
+        CFBundleVersion: "0.534.0"
     entitlements:
       path: privacynotes_iOS/privacynotes_iOS.entitlements
     scheme:

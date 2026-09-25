@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from '../db';
@@ -10,7 +10,8 @@ export function ShareMenu({
   open,
   onClose,
   onToggle,
-  zenMode,
+  triggerHidden,
+  fallbackAnchorRef,
   selected,
   exportSingleMarkdown,
   exportSingleHtml,
@@ -20,7 +21,13 @@ export function ShareMenu({
   open: boolean;
   onClose: () => void;
   onToggle: () => void;
-  zenMode: boolean;
+  /** Zen and a compact header hide the button; the "..." strip opens the
+   *  panel instead. */
+  triggerHidden: boolean;
+  /** Where the panel opens while its own button is hidden: the "..." button
+   *  that opened it. A hidden trigger measures as a zero box at the window's
+   *  corner, and the panel opened on top of the header there. */
+  fallbackAnchorRef: RefObject<HTMLElement | null>;
   selected: LocalNote;
   exportSingleMarkdown: (n: LocalNote) => Promise<void> | void;
   exportSingleHtml: (n: LocalNote) => Promise<void> | void;
@@ -38,7 +45,7 @@ export function ShareMenu({
   // ON TOP of the button that had just been pressed. The hook measures the
   // trigger, opens below it, and flips above when there is no room.
   // Spec: ops/docs/ui-patterns.md (section 15)
-  const pos = usePopoverPosition(open, anchorRef, panelRef, { align: 'end' });
+  const pos = usePopoverPosition(open, triggerHidden ? fallbackAnchorRef : anchorRef, panelRef, { align: 'end' });
 
   // Close on an outside pointerdown, ignoring the trigger so it can toggle
   // without a re-open flicker. Same handler shape as NoteOptionsMenu.
@@ -57,12 +64,13 @@ export function ShareMenu({
 
   return (
     <>
-      {/* Share / Export button. It holds its place at every width, because
-          it is the action people reach for and the header no longer carries
-          burn, pin or trash to crowd it. Zen is the one place it stands
-          down, and the "..." menu grows a Share cell there instead. The
-          dropdown owns both per-note exports and whole-vault backups. */}
-      <div ref={anchorRef} className={`shrink-0 ${zenMode ? 'hidden' : 'block'}`}>
+      {/* Share / Export button. It holds its place on any header wide
+          enough for it, because it is the action people reach for and the
+          header no longer carries burn, pin or trash to crowd it. Zen and a
+          compact header are where it stands down, and the "..." menu grows
+          a Share cell there instead. The dropdown owns both per-note exports
+          and whole-vault backups. */}
+      <div ref={anchorRef} className={`shrink-0 ${triggerHidden ? 'hidden' : 'block'}`}>
         {/* Same tip placement as the "..." button beside it: both sit at
             the end of the row, and a centred tip on the last control is cut
             by the window edge. */}

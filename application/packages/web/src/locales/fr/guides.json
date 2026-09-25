@@ -2,7 +2,7 @@
   "page": {
     "importTitle": "Importer dans PrivacyNotes",
     "importSteps": [
-      "Ouvre PrivacyNotes et va dans Réglages > Import & Export.",
+      "Ouvre PrivacyNotes et va dans Paramètres > Import & Export.",
       "Choisis **{{app}}** comme source.",
       "Dépose le fichier que tu viens d'exporter, ou clique pour le sélectionner.",
       "Regarde ce que l'aperçu annonce, puis lance l'import."
@@ -82,7 +82,7 @@
           "p": [
             "Ta structure de dossiers est reconstruite en vrais dossiers, pas aplatie en étiquettes, quelle que soit la profondeur de l'imbrication. Une note dans Work/Projects se retrouve dans un dossier Work > Projects. Si tu réimportes le même coffre, les dossiers déjà créés sont réutilisés au lieu d'être dupliqués.",
             "Dans l'offre gratuite, tu peux parcourir ces dossiers tout de suite ; créer, renommer et déplacer des dossiers est une fonctionnalité Pro, un import Obsidian est donc une bonne façon de l'essayer avant de passer à Pro.",
-            "Le frontmatter YAML est compris : tags, alias et dates de création sont pris en compte, et les #tags du corps sont fusionnés dans le champ tags. À l'import, tu peux aussi activer l'étiquetage des notes par nom de dossier, pratique si tu aimes filtrer par étiquettes.",
+            "Le frontmatter YAML est compris : tags, alias et dates de création sont pris en compte, et les #tags du corps sont fusionnés dans le champ tags. À l'import, tu peux aussi cocher \"Étiqueter aussi les notes par dossier\" pour ajouter chaque nom de dossier comme étiquette, pratique si tu aimes filtrer par étiquettes.",
             "Tes liens [[...]] continuent de fonctionner : PrivacyNotes les affiche comme des note-links, les connexions entre notes survivent donc au déménagement. Le dossier de configuration .obsidian et .trash sont ignorés automatiquement."
           ]
         }
@@ -177,7 +177,7 @@
           "h": "Où les choses atterrissent",
           "p": [
             "Les identifiants deviennent des entrées de connexion du Coffre (avec l'icône de leur site), les cartes des entrées carte, les clés SSH des entrées clé SSH, et les notes sécurisées plus les identités arrivent en notes lisibles. Les dossiers Bitwarden deviennent des étiquettes, les favoris arrivent étoilés. Les clés d'authentification (TOTP) suivent aussi, tes codes 2FA continuent donc de fonctionner.",
-            "Le fichier d'export contient tes mots de passe en clair, alors importe-le, vérifie que tout est arrivé, puis supprime le fichier proprement. Dans PrivacyNotes, tout est de nouveau chiffré de bout en bout."
+            "Le fichier d'export contient tes mots de passe en clair, alors importe-le, vérifie que tout est arrivé, puis supprime le fichier proprement. Dans PrivacyNotes, tout est de nouveau chiffré, sur ton appareil et en route vers le serveur."
           ]
         }
       ]
@@ -503,7 +503,7 @@
         {
           "h": "Les récupérer",
           "p": [
-            "Va dans Réglages > Import & Export > Exporter et choisis \"Fichier de signets (.html)\". Tu obtiens le même fichier standard, dossiers compris, que tout navigateur sait lire. Tes signets ne sont jamais enfermés ici."
+            "Va dans Paramètres > Import & Export > Exporter et choisis \"Fichier de signets (.html)\". Tu obtiens le même fichier standard, dossiers compris, que tout navigateur sait lire. Tes signets ne sont jamais enfermés ici."
           ]
         }
       ]
@@ -568,7 +568,7 @@
         {
           "h": "Supprime le fichier d'export quand tu as fini : ce sont tes mots de passe en clair",
           "p": [
-            "Rien n’est chiffré dans le .csv exporté, qu’il arrive dans un .zip ou non. Qui l’ouvre lit tous les mots de passe que tu as enregistrés : garde-le sur ta propre machine, importe-le, vérifie que tout est bien arrivé, puis supprime le fichier et vide la corbeille. Dans PrivacyNotes, tout est de nouveau chiffré de bout en bout."
+            "Rien n’est chiffré dans le .csv exporté, qu’il arrive dans un .zip ou non. Qui l’ouvre lit tous les mots de passe que tu as enregistrés : garde-le sur ta propre machine, importe-le, vérifie que tout est bien arrivé, puis supprime le fichier et vide la corbeille. Dans PrivacyNotes, tout est de nouveau chiffré, sur ton appareil et en route vers le serveur."
           ]
         }
       ]

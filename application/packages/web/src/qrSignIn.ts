@@ -1,6 +1,6 @@
 import { isValidPhrase } from '@notes/shared';
 import { detectPlatform } from './devices';
-import { APEX_ORIGIN, APP_ORIGIN } from './hosts';
+import { APEX_ORIGIN, APP_ORIGIN, isApexHost } from './hosts';
 
 /**
  * QR sign-in flow helpers.
@@ -20,9 +20,10 @@ import { APEX_ORIGIN, APP_ORIGIN } from './hosts';
  * 3. When the app loads, `consumePhraseFragment()` runs once. It
  *    extracts the phrase, immediately blanks the fragment out of the
  *    URL via `history.replaceState`, and returns the phrase so the
- *    caller can prompt the user. Blanking the fragment is load-bearing:
- *    we do not want the master secret lingering in the address bar,
- *    the reload cache, or browser history longer than strictly needed.
+ *    caller can prompt the user. Blanking clears the address bar and
+ *    the current history entry, not the browser's own history, which
+ *    keeps the visited URL. That is why no other URL in the app carries
+ *    the phrase.
  *
  * 4. The caller (App) shows a confirmation modal - we NEVER sign in
  *    automatically from a fragment. Auto-sign-in from URL would be a
@@ -40,18 +41,15 @@ export function buildSignInUrl(phrase: string): string {
   // tauri://localhost, which no scanner can open, so a constant is the only
   // option. Strip www to avoid a redirect hop.
   //
-  // The apex is the ONE origin we never mint: it is the smart entry, so a
-  // scan lands the second device in the app on the OLD domain, complete
-  // with the move banner, and then that device has a session to migrate
-  // too. A QR is the worst place to bake a URL we are retiring - the
-  // downloadable phrase-backup QR is a paper credential with no expiry.
-  // So the apex (and www, which is why this compares origins rather than
+  // The apex is the ONE origin we never mint: sessions live on the app
+  // host, and the apex drops a phrase fragment instead of signing in with
+  // it (dropApexPhraseFragment). The downloadable phrase-backup QR is a
+  // paper credential with no expiry, so it has to name the host that signs
+  // in. The apex (and www, which is why this compares origins rather than
   // calling isApexHost) mints the app host instead, and native does the
-  // same. Existing QRs are untouched by this: they carry an apex URL that
-  // still boots the app today, `consumePhraseFragment` reads the fragment
-  // on whatever origin serves the page, `extractPhraseFromScan` accepts any
-  // http(s) URL carrying `#phrase=`, and the apex keeps a fragment
-  // forwarder after retirement precisely so old paper QRs never break.
+  // same. An older QR that names the apex still signs in through "Scan QR
+  // with camera": `extractPhraseFromScan` accepts any http(s) URL carrying
+  // `#phrase=`.
   // Spec: ops/docs/domain-split.md (retirement + sunset)
   const webOrigin =
     typeof window === 'undefined'
@@ -72,36 +70,25 @@ export function buildSignInUrl(phrase: string): string {
   return `${base}/#phrase=${encoded}`;
 }
 
-/**
- * Result of consuming a `#phrase=` fragment. The extras are only present
- * on domain-move handoffs built by migrate.ts; plain QR sign-ins carry
- * just the phrase. Extras are returned for the caller to adopt AFTER the
- * user confirms - never applied here.
- */
-export type PhraseFragment = {
-  phrase: string;
-  /** Carried deviceSecret (32-byte hex) so register-device derives the same device_id. */
-  deviceSecret: string | null;
-  /** Trust-this-device choice from the old origin. */
-  trusted: boolean | null;
-  /** Active locale from the old origin. */
-  lang: string | null;
-};
+/** True when a fragment carries a phrase the way consumePhraseFragment reads one. */
+function hasPhraseFragment(hash: string): boolean {
+  return hash.includes('phrase=');
+}
 
 /**
  * If the current URL has a `#phrase=…` fragment, extract the phrase,
- * validate it, blank the fragment out of the URL, and return it (plus
- * any domain-move extras). Returns null otherwise. Safe to call
- * unconditionally on every mount.
+ * validate it, blank the fragment out of the URL, and return it. Returns
+ * null otherwise. Anything else the fragment carries is ignored. Safe to
+ * call unconditionally on every mount.
  *
  * The fragment is cleared REGARDLESS of whether the phrase is valid, so
  * a malformed or attacker-crafted fragment still doesn't stick around
  * in the address bar.
  */
-export function consumePhraseFragment(): PhraseFragment | null {
+export function consumePhraseFragment(): string | null {
   if (typeof window === 'undefined') return null;
   const hash = window.location.hash;
-  if (!hash || !hash.includes('phrase=')) return null;
+  if (!hasPhraseFragment(hash)) return null;
 
   // Parse properly via URLSearchParams so future fragment additions
   // (e.g. `#phrase=…&source=onboarding`) don't break the simple case.
@@ -114,8 +101,8 @@ export function consumePhraseFragment(): PhraseFragment | null {
   // webviews) block replaceState. If that happens we MUST force a
   // real navigation instead of swallowing the throw - leaving the
   // phrase in the URL is worse than aborting sign-in. The user will
-  // need to re-scan, but the master secret won't leak via address bar,
-  // history, or the Referer header on outbound link clicks. See gap #21.
+  // need to re-scan, but the master secret stays out of the address bar
+  // and the Referer header on outbound link clicks. See gap #21.
   const cleanUrl =
     window.location.pathname +
     window.location.search;
@@ -130,20 +117,27 @@ export function consumePhraseFragment(): PhraseFragment | null {
   // BIP-39 words are lowercase, space-separated. Normalize whitespace
   // so we tolerate `+`, `%20`, or accidental double-spaces.
   const phrase = raw.trim().toLowerCase().replace(/\s+/g, ' ');
-  if (!isValidPhrase(phrase)) return null;
+  return isValidPhrase(phrase) ? phrase : null;
+}
 
-  // Domain-move extras (see migrate.ts). Validated here, adopted by the
-  // caller only after the explicit confirm.
-  const device = params.get('device');
-  const trust = params.get('trust');
-  const lang = params.get('lang');
-  return {
-    phrase,
-    deviceSecret:
-      device && /^[0-9a-f]{64}$/i.test(device) ? device.toLowerCase() : null,
-    trusted: trust === '1' ? true : trust === '0' ? false : null,
-    lang: lang && /^[a-z]{2}(-[A-Za-z]{2,4})?$/.test(lang) ? lang : null,
-  };
+/**
+ * The apex never signs in from a phrase fragment and never passes one on:
+ * sessions live on the app host, and the browser keeps any URL it visits,
+ * so a forwarded phrase would be written into its history a second time.
+ * The fragment is cleared and the page leaves for the app host's sign-in
+ * screen with no fragment. Returns true when it is leaving, so the caller
+ * renders nothing.
+ */
+export function dropApexPhraseFragment(): boolean {
+  if (typeof window === 'undefined' || !isApexHost()) return false;
+  if (!hasPhraseFragment(window.location.hash)) return false;
+  try {
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+  } catch {
+    /* the navigation below replaces this entry anyway */
+  }
+  window.location.replace(`${APP_ORIGIN}/`);
+  return true;
 }
 
 /**

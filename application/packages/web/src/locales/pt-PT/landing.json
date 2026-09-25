@@ -13,11 +13,11 @@
     "themeToggle": "Alterna entre claro e escuro"
   },
   "hero": {
-    "badge": "Encriptado ponta a ponta, auditável",
+    "badge": "Encriptado no teu dispositivo, auditável",
     "headline": "Notas. Tarefas.<br />Ficheiros. Cofre.<stroke>Zero conhecimento.</stroke>",
-    "subhead": "Um lugar encriptado para tudo o que nunca publicarias. Encriptado no teu dispositivo antes de ir seja para onde for. Não conseguíamos ler nem que quiséssemos.",
+    "subhead": "Um lugar encriptado para tudo o que nunca publicarias. Encriptado no teu dispositivo; guarda a tua própria chave e não conseguíamos ler nem que quiséssemos.",
     "tryDemo": "Experimenta a demo",
-    "microcopy": "Grátis para sempre. Sem cartão de crédito. Inicia sessão com Google, Apple ou apenas uma frase de 12 palavras.",
+    "microcopy": "Grátis para sempre. Sem cartão de crédito. Inicia sessão com Google, Apple, GitHub ou apenas uma frase de 12 palavras.",
     "alreadyHaveVault": "Já tens um cofre? Inicia sessão",
     "trustSigned": "Versões assinadas no GitHub"
   },
@@ -91,7 +91,7 @@
     "bip39": "BIP-39",
     "ed25519": "Ed25519",
     "swissServers": "Servidores suíços",
-    "noTracking": "Sem rastreio",
+    "noTracking": "Sem rastreadores",
     "rls": "Segurança ao nível da linha"
   },
   "downloads": {
@@ -116,7 +116,7 @@
     "linuxDebDesc": "Instalador, transfere de novo para atualizar",
     "checksumAria": "Soma de verificação SHA-256 de {{label}}",
     "debFootnote": "Vais atualizar uma <highlight>instalação .deb</highlight> existente? Não a desinstales primeiro. Fazer duplo clique no ficheiro acaba num beco sem saída no App Center do Ubuntu, que só diz que a app está instalada: instala a nova por cima da antiga a partir de um terminal. Usa a linha que corresponde à tua máquina; dpkg --print-architecture diz-te qual é:",
-    "availability": "Já disponível: macOS 13+, Windows 10+, iOS 15+, Linux e Android.",
+    "availability": "Já disponível: macOS 13+, Windows 10+, iOS 17.4+, Linux e Android.",
     "betaNote": "Todas as nossas apps estão em beta e ainda podem ter bugs, por isso, para já, a versão web é a mais estável. Cada app atualiza-se automaticamente e lançamos correções quase todos os dias.",
     "pkgToggle": "Instalar com um gestor de pacotes ({{platforms}})",
     "pkgBrewDesc": "A aplicação atualiza-se sozinha, não o brew upgrade.",
@@ -145,7 +145,7 @@
     "freeMood": "Registo de humor e bem-estar",
     "freeTheme": "Modo escuro e claro",
     "freeAnon": "Início de sessão anónimo, sem e-mail",
-    "freeGoogle": "Início de sessão com Google",
+    "freeGoogle": "Início de sessão com Google, Apple ou GitHub",
     "noSubscription": "Sem subscrição",
     "proLabel": "Pro · Paga uma vez",
     "earlyAdopterBadge": "Adoção Antecipada",
@@ -174,8 +174,8 @@
     "phraseDesc": "12 palavras, assinatura Ed25519",
     "rlsTerm": "Segurança ao nível da linha",
     "rlsDesc": "RLS associada à tua chave pública",
-    "trackingTerm": "Zero rastreio",
-    "trackingDesc": "Sem análises, sem pixels",
+    "trackingTerm": "Zero rastreadores",
+    "trackingDesc": "Sem pixels, sem rastreadores de terceiros",
     "authTerm": "Autenticação anónima",
     "authDesc": "Sem e-mail, sem palavra-passe",
     "serversTerm": "Servidores suíços",
@@ -190,7 +190,7 @@
   "mood": {
     "kicker": "Registo de humor e bem-estar",
     "heading": "Regista o que sentes de verdade.",
-    "intro": "Humor, emoções, sono, medicação e nível de atividade, tudo com alguns toques. Tudo é encriptado no teu dispositivo antes de sincronizar.",
+    "intro": "Humor, emoções, sono, medicação e nível de atividade, tudo com alguns toques. Tudo está sempre encriptado, no teu dispositivo e durante a sincronização.",
     "cardEmotionsTitle": "Humor (1-10) + 24 etiquetas de emoção",
     "cardEmotionsBody": "24 etiquetas de emoção com base científica. Dá um nome ao que sentes, deteta padrões ao longo do tempo e exporta dados com que o teu terapeuta ou médico consiga trabalhar.",
     "cardSleepTitle": "Qualidade do sono + nível de atividade",
@@ -215,8 +215,8 @@
     "themSeparate": "Apps separadas, mensalidades recorrentes",
     "usAllInOne": "Notas, tarefas, ficheiros, cofre, diário, marcadores. Uma só app",
     "usTracking": "Registo de humor, energia, sono e medicação",
-    "usEncrypted": "Encriptado ponta a ponta, sincronizado na Suíça",
-    "usSignIn": "Início de sessão anónimo ou com Google, a mesma encriptação em qualquer dos casos",
+    "usEncrypted": "Encriptado no teu dispositivo, sincronizado na Suíça",
+    "usSignIn": "Início de sessão anónimo ou com Google, Apple ou GitHub, a mesma encriptação em qualquer dos casos",
     "usExport": "Deteção de padrões + exportação de PDF para o médico",
     "usSync": "Computador + telemóvel, sincronização ilimitada",
     "usPriceBeta": "Grátis para sempre, ou {{earlyPrice}} $ uma vez pelo Pro (preço de adoção antecipada)",
@@ -248,7 +248,7 @@
     "para1": "A maioria das apps de notas vasculha o teu conteúdo. Adiciona “comprar uma TV nova” à tua lista de compras e as páginas seguintes enchem-se de anúncios a televisores. A tua lista das compras, o teu diário, os teus pensamentos íntimos, tudo despejado em sistemas de segmentação de anúncios, transformado em perfil e vendido. É o modelo de negócio de todas as apps de notas “grátis” financiadas por publicidade.",
     "para2": "Até as apps que não mostram anúncios guardam as tuas notas em texto simples nos servidores delas, legíveis por funcionários, vulneráveis a fugas de dados e disponíveis para quem tiver uma intimação judicial. Os teus dados passam a ser a moeda de troca delas.",
     "differenceLabel": "A diferença",
-    "differenceBody": "O <brand/> é encriptado ponta a ponta com chaves que nunca saem do teu dispositivo, por isso nem nós nem os nossos servidores conseguimos ler o que escreves. Não há rastreio, análises, anúncios nem criação de perfis, e nunca haverá. O que escreves continua a ser teu.",
+    "differenceBody": "O <brand/> encripta as tuas notas no teu dispositivo, e em autocustódia a chave nunca sai dele, por isso nem nós nem os nossos servidores conseguimos ler uma palavra. Não há anúncios, pixels, rastreadores de terceiros nem análise do que escreves, e nunca haverá. O nosso site conta os cliques nas suas ligações de transferência e de parceiros por país, sem qualquer identificador. O que escreves continua a ser teu.",
     "keyboardNote": "<b>Um aviso sobre os teclados dos dispositivos.</b> Os teclados de terceiros (como o Gboard, o SwiftKey ou o Samsung Keyboard) podem enviar o que escreves para os servidores deles. Isto acontece ao nível do sistema operativo, fora do controlo de qualquer app. Considera desativar as funcionalidades de nuvem nas definições do teu teclado ou usar um teclado totalmente offline."
   },
   "readIt": {
@@ -263,13 +263,13 @@
   },
   "wontFind": {
     "kicker": "O que não vais encontrar na aplicação",
-    "noTracking": "Sem rastreio",
+    "noTracking": "Sem rastreadores",
     "noAds": "Sem anúncios",
     "noHarvesting": "Sem recolha de dados",
     "noAiTraining": "Sem treino de IA",
     "noLockIn": "Sem aprisionamento",
     "noEmail": "Sem e-mail",
-    "noTelemetry": "Sem telemetria",
+    "noTelemetry": "Sem análise das tuas notas",
     "noCookieBanner": "Sem aviso de cookies",
     "noPasswords": "Sem palavras-passe",
     "noDarkPatterns": "Sem dark patterns",
@@ -279,7 +279,7 @@
   },
   "noRecovery": {
     "heading": "A tua frase é a tua chave",
-    "body": "Sem frase, sem notas. Não as conseguimos recuperar, e mais ninguém consegue. É esse o preço da encriptação ponta a ponta: em autocustódia só tu tens a chave, por isso escrever à nossa equipa não traz as tuas notas de volta.",
+    "body": "Sem frase, sem notas. Não as conseguimos recuperar, e mais ninguém consegue. É esse o preço da autocustódia: só tu tens a chave, por isso escrever à nossa equipa não traz as tuas notas de volta.",
     "noRecoveryTerm": "Sem recuperação",
     "noRecoveryDesc": "Perdes a tua frase, perdes as tuas notas",
     "deviceTerm": "Gerada no dispositivo",
@@ -290,8 +290,8 @@
     "writeDesc": "Backup em papel, guardado num sítio seguro",
     "printTerm": "Imprime nas definições",
     "printDesc": "Vê e exporta a tua frase quando quiseres",
-    "googleTerm": "Início de sessão com Google?",
-    "googleDesc": "Continuas a receber uma frase. Faz-lhe backup"
+    "googleTerm": "Início de sessão com Google, Apple ou GitHub?",
+    "googleDesc": "Por predefinição guardamos a tua chave, ou fazes tu o backup da tua própria frase"
   },
   "closing": {
     "kicker": "Quando quiseres",
@@ -332,7 +332,7 @@
   "trust": {
     "openSourceHeading": "Código Aberto",
     "openSourceLink": "Lê o código no GitHub.com",
-    "openSourceBody": "A aplicação e a encriptação que traz dentro estão publicadas, por isso qualquer pessoa pode verificar as nossas afirmações zero-knowledge.",
+    "openSourceBody": "A aplicação e a encriptação que traz dentro estão publicadas, por isso qualquer pessoa pode verificar as nossas afirmações de zero conhecimento.",
     "dataStorageHeading": "Armazenamento de Dados",
     "dataStorageBody": "Blobs encriptados guardados em Zurique, 🇨🇭 Suíça.",
     "faviconsHeading": "Ícones dos sites",

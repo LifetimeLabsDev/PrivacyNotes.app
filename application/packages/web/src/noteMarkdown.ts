@@ -1,4 +1,13 @@
 import type { LocalNote } from './db';
+import { oneLineTitle } from './oneLineTitle';
+
+/**
+ * A front-matter value a reader would not hand back as the text it is: one
+ * that looks quoted, a list, an object, a boolean or a number. Front-matter
+ * readers type an unquoted value, so a folder path like that is written
+ * quoted, and a root folder named 2024 stays a name.
+ */
+const READS_AS_DATA = /^(?:["'[{]|(?:true|false|-?\d+(?:\.\d+)?)$)/;
 
 /**
  * Serialize a note as markdown with YAML front-matter.
@@ -13,10 +22,16 @@ import type { LocalNote } from './db';
  * test from reaching an export that only a test consumes.
  *
  * The grammar, since three parsers depend on it:
- *   - `title` is always quoted, with inner `"` backslash-escaped.
+ *   - `title` is always quoted and on one line (`oneLineTitle`), with each
+ *     inner `"` backslash-escaped and nothing else (`unescapeQuotes` is the
+ *     readers' inverse).
  *   - `created` / `updated` are ISO strings.
  *   - `tags` is `[a, b]`, comma-joined and UNQUOTED. Safe because
  *     `normalizeTag` strips commas, so no tag can contain the separator.
+ *   - `folder` is the name path joined with `/`, a slash or a backslash
+ *     inside a name escaped with a backslash. It is quoted, inner `"`
+ *     escaped, when it would read as anything but text (`READS_AS_DATA`).
+ *     `parseFolderPath` in `import/folderImport.ts` is the exact inverse.
  *   - The fullMeta block is emitted only for the full backup zip, and only
  *     `import/privacynotes.ts` reads it. `folderId` and `trackers` are
  *     omitted entirely when absent rather than written empty.
@@ -31,16 +46,18 @@ export function noteToMarkdown(
   folderPath: string[] = [],
 ): string {
   const fm: string[] = ['---'];
-  fm.push(`title: "${note.title.replace(/"/g, '\\"')}"`);
+  fm.push(`title: "${oneLineTitle(note.title).replace(/"/g, '\\"')}"`);
   fm.push(`created: ${note.createdAt}`);
   fm.push(`updated: ${note.updatedAt}`);
   if (note.tags.length) fm.push(`tags: [${note.tags.join(', ')}]`);
   // The PORTABLE folder membership: names, not the UUID. `folderId` below is
   // the right key for restoring into the same account and a meaningless
-  // string anywhere else, so both are written when both are known. Slashes
-  // in a name are escaped, since the path itself is slash-separated.
+  // string anywhere else, so both are written when both are known. The path
+  // itself is slash-separated, so a slash or a backslash inside a name gets
+  // a backslash before it.
   if (folderPath.length > 0) {
-    fm.push(`folder: ${folderPath.map((n) => n.replace(/\//g, '\\/')).join('/')}`);
+    const path = folderPath.map((n) => n.replace(/[\\/]/g, '\\$&')).join('/');
+    fm.push(`folder: ${READS_AS_DATA.test(path) ? `"${path.replace(/"/g, '\\"')}"` : path}`);
   }
   if (fullMeta) {
     // The note's own id, backup flavour only. A restore matches on it and
@@ -77,6 +94,18 @@ export function noteToMarkdown(
   }
   fm.push('---');
   return `${fm.join('\n')}\n\n${note.body}\n`;
+}
+
+/**
+ * The inside of a quoted front-matter value with the writer's escape taken
+ * off: each `\"` reads as `"`, and nothing else changes. That is the exact
+ * inverse of the escape on a title above, which escapes a quote and never a
+ * backslash, so a backslash the title holds for itself comes back as itself.
+ * Not `JSON.parse`, which would read the `\n` of an exported `C:\notes` as a
+ * line feed.
+ */
+export function unescapeQuotes(inner: string): string {
+  return inner.replace(/\\"/g, '"');
 }
 
 /**

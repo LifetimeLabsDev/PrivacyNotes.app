@@ -74,7 +74,7 @@
       "q": "Preciso de um e-mail para me cadastrar?",
       "a": [
         "Não. Uma conta nova é uma frase de recuperação de 12 palavras recém-gerada, e nada mais. Sem e-mail, sem nome de usuário, sem telefone, sem etapa de verificação. Se você entra com a frase, não conseguiríamos escrever para você nem se quiséssemos: nunca sabemos quem você é.",
-        "Prefere o caminho conhecido? Entrar com Google, Apple ou GitHub também funciona. Essa rota inevitavelmente nos revela o e-mail ligado a esse login, mas suas notas continuam criptografadas de ponta a ponta de qualquer forma, e por baixo você ainda ganha uma frase."
+        "Prefere o caminho conhecido? Entrar com Google, Apple ou GitHub também funciona. Essa rota inevitavelmente nos revela o e-mail ligado a esse login, mas suas notas continuam criptografadas no seu aparelho de qualquer forma, e por baixo você ainda ganha uma frase."
       ]
     },
     "import-from-other-apps": {
@@ -94,7 +94,7 @@
     "what-can-you-see": {
       "q": "O que o PrivacyNotes consegue ver das minhas notas?",
       "a": [
-        "Nada legível. Notas, títulos, tags e anexos são criptografados no seu aparelho antes de sincronizar. O servidor armazena texto cifrado que não consegue decifrar, e do nosso lado não existe chave alguma que mude isso.",
+        "Nada legível. Notas, títulos, tags e anexos estão sempre criptografados, no seu aparelho e a caminho do servidor, então o servidor armazena só texto cifrado. Na autocustódia, que é o caso de toda conta de frase, não existe do nosso lado chave alguma para decifrá-lo. Ao se cadastrar com Google, Apple ou GitHub, o app pergunta onde a sua chave mora, e a tela começa em \"Deixe simples e prático\", que guarda a sua frase no nosso servidor, criptografada com uma chave nossa. Configurações > Segurança > Sua frase mostra qual você tem e deixa você trocar.",
         "O que conseguimos ver é o mínimo para operar o serviço: quanto armazenamento criptografado você ocupa, quantos aparelhos estão vinculados e os horários de sincronização. Se você entra com uma frase em vez de Google, Apple ou GitHub, nem o seu e-mail conhecemos."
       ]
     },
@@ -102,18 +102,18 @@
       "q": "Por que uma frase de recuperação em vez de usuário e senha?",
       "a": [
         "No começo parece ao contrário, mas uma única frase de recuperação é a construção mais forte. Com usuário e senha, o usuário não é segredo (aparece em todo vazamento), então toda a segurança repousa na senha - e senhas escolhidas por humanos ficam em média em uns 30 a 40 bits de entropia. Sua frase de 12 palavras tem 128 bits garantidos, gerados pelo seu aparelho, nunca escolhidos por um humano e nunca reaproveitados de outro site.",
-        "Do nosso lado também não há nada a perder. Login com senha significa que o servidor guarda pelo menos um hash de senha, que pode vazar, ser quebrado ou cair em phishing. Sua frase nunca sai do seu aparelho: ela deriva suas chaves de criptografia localmente, e o servidor só vê dados criptografados. Não há hash para roubar nem fluxo de redefinição de senha para um atacante abusar.",
-        "Se digitar 12 palavras parece trabalhoso: você pode salvar a frase no seu gerenciador de senhas com um toque (Configurações > Segurança > Sua frase), e entrar vira um login como outro qualquer. Prefere o fluxo conhecido? Entrar com Google, Apple ou GitHub também funciona, e por baixo você ainda ganha uma frase."
+        "Do nosso lado também não há senha nenhuma para perder. Login com senha significa que o servidor guarda pelo menos um hash de senha, que pode vazar, ser quebrado ou cair em phishing. Na autocustódia, sua frase nunca sai do seu aparelho: ela deriva suas chaves de criptografia localmente, e o servidor só vê dados criptografados. Não há hash para roubar nem fluxo de redefinição de senha para um atacante abusar.",
+        "Se digitar 12 palavras parece trabalhoso: você pode salvar a frase no seu gerenciador de senhas com um toque (Configurações > Segurança > Sua frase), e entrar vira um login como outro qualquer. Prefere o fluxo conhecido? Entrar com Google, Apple ou GitHub também funciona: por baixo você ainda ganha uma frase, e escolhe se ela fica no seu aparelho ou se a gente guarda para você."
       ]
     },
     "threat-model-levels": {
       "q": "Posso escolher meu próprio equilíbrio entre conveniência e privacidade?",
       "a": [
-        "Sim, de propósito. Nem todo mundo se defende das mesmas ameaças, então o modelo de conta é uma escada, não um dogma único. Em cada degrau suas notas continuam criptografadas de ponta a ponta; o que muda é quem guarda a chave e o que sabemos sobre você.",
-        "A ponta conveniente: entre com Google, Apple ou GitHub e escolha \"Deixe simples e prático\" quando perguntarem. Guardamos sua frase de recuperação por você, criptografada em repouso no nosso servidor: qualquer aparelho entra só com esse login e não há nada para salvar nem perder. Em troca, conhecemos o e-mail por trás desse login e somos nós que guardamos sua chave, não você. Se a sua ameaça realista é perder as próprias credenciais, e não um ataque direcionado, esse é o degrau certo.",
+        "Sim, de propósito. Nem todo mundo se defende das mesmas ameaças, então o modelo de conta é uma escada, não um dogma único. Em cada degrau suas notas continuam criptografadas no seu aparelho; o que muda é quem guarda a chave e o que sabemos sobre você.",
+        "A ponta conveniente: entre com Google, Apple ou GitHub e mantenha \"Deixe simples e prático\" selecionado quando perguntarem, que é a opção com que essa tela começa. Guardamos sua frase de recuperação por você, criptografada em repouso no nosso servidor: qualquer aparelho entra só com esse login e não há nada para salvar nem perder. Em troca, conhecemos o e-mail por trás desse login e somos nós que guardamos sua chave, não você. Se a sua ameaça realista é perder as próprias credenciais, e não um ataque direcionado, esse é o degrau certo.",
         "O meio: entre com Google, Apple ou GitHub, mas escolha \"Máxima segurança e privacidade\". Sua frase nunca toca nossos servidores e a criptografia é totalmente de conhecimento zero; um aparelho novo exige a frase ou um escaneamento de QR a partir de um aparelho já conectado. Continuamos, por força, conhecendo o e-mail por trás desse login, mas não conseguiríamos ler uma única nota, nem sob coação.",
         "A ponta privada: dispense os logins e use apenas a frase de 12 palavras. Sem e-mail, sem nome, sem identidade - e, combinada com uma [compra anônima do Pro](/br/help/buy-pro-anonymously/), nem o pagamento deixa seu nome em lugar algum. Em troca, a custódia da chave é toda sua: perca a frase sem nenhum aparelho conectado e ninguém poderá ajudar.",
-        "Você não fica preso ao degrau que escolheu. Em Configurações > Segurança > Sua frase os dois modos aparecem lado a lado com o que cada um custa, e você pode mudar em qualquer direção quando quiser. Passar para a autocustódia apaga nossa cópia e antes pede que você redigite três das suas doze palavras, porque quem clica ali costuma ser justamente quem nunca as anotou. Voltar atrás envia a frase de novo e exige uma escolha explícita. As duas direções são assinadas com a chave da sua própria conta, então uma sessão roubada não muda o seu modo. E cada degrau aceita as camadas locais por cima: bloqueio por PIN, desbloqueio biométrico e proteção por nota."
+        "Com um login do Google, da Apple ou do GitHub, você não fica preso ao degrau que escolheu. Em Configurações > Segurança > Sua frase os dois modos aparecem lado a lado com o que cada um custa, e você pode mudar em qualquer direção quando quiser. Passar para a autocustódia apaga nossa cópia e antes pede que você redigite três das suas doze palavras, porque quem clica ali costuma ser justamente quem nunca as anotou. Voltar atrás envia a frase de novo e exige uma escolha explícita. As duas direções são assinadas com a chave da sua própria conta, então uma sessão roubada não muda o seu modo. Uma conta só de frase fica na ponta privada, porque não há login com que buscar uma chave guardada. E cada degrau aceita as camadas locais por cima: bloqueio por PIN, desbloqueio biométrico e proteção por nota."
       ]
     },
     "twelve-word-phrase": {
@@ -159,7 +159,7 @@
     "no-ai": {
       "q": "O PrivacyNotes usa IA nas minhas notas?",
       "a": [
-        "Não. Não há recursos de IA no app, nenhum processamento de IA em segundo plano e nenhum treinamento de modelo com o seu conteúdo. Suas notas são criptografadas antes de sair do seu aparelho - nos nossos servidores não existe nada legível para alimentar coisa alguma.",
+        "Não. Não há recursos de IA no app, nenhum processamento de IA em segundo plano e nenhum treinamento de modelo com o seu conteúdo. Suas notas estão sempre criptografadas, no seu aparelho e a caminho do servidor - nos nossos servidores não existe nada legível para alimentar coisa alguma.",
         "Se um dia construirmos algo nessa direção, terá de rodar inteiramente no seu aparelho e ser estritamente opcional. Enviar notas em texto puro para um modelo na nuvem quebraria a promessa de zero conhecimento, então está fora de cogitação."
       ]
     },
@@ -188,7 +188,7 @@
       "q": "Perdi minha frase de recuperação. Vocês conseguem recuperar minha conta?",
       "a": [
         "Se você ainda está logado em qualquer aparelho: sim, você mesmo recupera. Abra Configurações > Segurança > Sua frase e salve-a agora no seu gerenciador de senhas.",
-        "Se você não tem mais nenhum aparelho logado nem a frase: não, e ninguém consegue. Sua frase nunca chega aos nossos servidores, então não há nada para redefinir e nenhum chamado de suporte que ajude. Não é uma política que possamos flexibilizar - é o que criptografia de ponta a ponta significa. Qualquer serviço capaz de restaurar seus dados criptografados após uma perda total está guardando as suas chaves.",
+        "Se você não tem mais nenhum aparelho logado nem a frase, depende de quem guarda a chave. Se você deixou a gente guardar a chave quando se cadastrou com Google, Apple ou GitHub, entre com esse login e você volta a ter acesso. Na autocustódia, ninguém consegue: sua frase nunca chega aos nossos servidores, então não há nada para redefinir e nenhum chamado de suporte que ajude. Qualquer serviço capaz de restaurar seus dados criptografados após uma perda total está guardando as suas chaves.",
         "A prevenção custa dez segundos: salve a frase num gerenciador de senhas no dia em que criar a conta. Se ela já se foi e você paga um adicional de armazenamento, a Paddle cobra você diretamente e consegue cancelá-lo sem a sua frase: veja [trocar ou cancelar um adicional](/br/help/manage-storage-addon/)."
       ]
     },
@@ -223,14 +223,14 @@
     "offline": {
       "q": "O PrivacyNotes funciona offline?",
       "a": [
-        "Sim. O app é local-first: suas notas vivem num banco de dados no seu aparelho, então ler, escrever e buscar funcionam sem conexão nenhuma. As mudanças sincronizam sozinhas quando você volta a ficar online."
+        "Sim. O app é local-first: suas notas vivem num banco de dados no seu aparelho, então ler, escrever e buscar funcionam sem conexão nenhuma. As mudanças sincronizam sozinhas quando você volta a ficar online, e uma imagem ou um arquivo que você adiciona offline fica esperando neste aparelho e também é enviado nessa hora."
       ]
     },
     "sync-conflicts": {
       "q": "O que acontece se eu editar a mesma nota em dois aparelhos ao mesmo tempo?",
       "a": [
-        "Nada é sobrescrito em silêncio. Se os dois aparelhos mudaram a mesma nota enquanto estavam separados (um offline, por exemplo), o app detecta a colisão na próxima sincronização e mostra um diálogo de conflito: manter a versão deste aparelho, manter a outra, ou manter as duas como notas separadas.",
-        "No dia a dia você raramente vai vê-lo. Online, as edições sincronizam em segundos, e o diálogo só aparece quando duas versões da mesma nota realmente divergiram."
+        "Seus aparelhos mesclam a nota detalhe por detalhe quando voltam a sincronizar, então uma alteração feita em apenas um deles é mantida. Se os dois editaram o texto enquanto estavam separados (um offline, por exemplo), o aparelho que sincroniza em segundo lugar mostra um diálogo de conflito: manter a versão deste aparelho, manter a outra, ou manter as duas como notas separadas. As duas versões são mantidas até você escolher.",
+        "Quando os dois aparelhos mudaram o mesmo detalhe enquanto estavam separados, como a fixação, a pasta ou o título, é mantido o detalhe do aparelho que editou a nota por último, sem diálogo. Uma nota excluída permanentemente em um aparelho é excluída em todo lugar, inclusive uma alteração que outro aparelho tenha feito nela enquanto estavam separados."
       ]
     },
     "remove-device": {
@@ -244,8 +244,8 @@
       "q": "Onde meus dados ficam armazenados?",
       "a": [
         "Primeiro no seu aparelho, e é essa a cópia que você usa: o app é local-first, então suas notas abrem e são editadas offline. A cópia de sincronização vive em servidores em Zurique, na Suíça. O que fica lá é a sua chave pública, blobs criptografados das suas notas, arquivos e configurações, além das marcas de tempo e dos tamanhos de que uma sincronização precisa. Nenhum título, nenhum texto, nenhuma tag.",
-        "O país importa menos do que a criptografia. Tudo é criptografado no seu aparelho antes de sair, então essa cópia seria ilegível onde quer que estivesse: a Suíça é um bônus, não a promessa. [O que sincroniza](/br/help/what-syncs/) lista item por item.",
-        "A cópia no seu aparelho também é criptografada. As notas são seladas no disco com uma chave derivada da sua frase de recuperação ao desbloquear, então um perfil de navegador copiado, um despejo de armazenamento ou um backup roubado contém dados criptografados, não as suas notas."
+        "O país importa menos do que a criptografia. Tudo está sempre criptografado, no seu aparelho e a caminho do servidor, então essa cópia seria ilegível onde quer que estivesse: a Suíça é um bônus, não a promessa. [O que sincroniza](/br/help/what-syncs/) lista item por item.",
+        "A cópia no seu aparelho também é criptografada. As notas são seladas no disco com uma chave derivada da sua frase de recuperação ao desbloquear, então uma cópia do armazenamento do app no seu aparelho, ou um backup roubado desse armazenamento, contém dados criptografados, não as suas notas."
       ]
     },
     "data-on-disk": {
@@ -253,28 +253,28 @@
       "a": [
         "Em uma pasta por instalação, na área de dados de apps da sua conta. Onde fica essa pasta depende da plataforma:",
         "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, ou `app.privacynotes.appimage` no AppImage, que traz o próprio motor web e por isso mantém um perfil só dele\n- **Android, iOS**: o armazenamento privado do app, que nenhum outro app consegue abrir\n- **Navegador**: o perfil do seu navegador, em `use.privacynotes.app`",
-        "O que está lá são dados criptografados. Cada nota é um bloco selado com o título, o texto e as tags dentro, aberto por uma chave derivada da sua frase de recuperação ao desbloquear. Em claro fica só o que o índice local precisa: identificadores, datas e marcações como favorita ou excluída.",
+        "O que está lá são dados criptografados. Cada nota é um bloco selado com o título, o texto e as tags dentro, aberto por uma chave derivada da sua frase de recuperação ao desbloquear, então uma pasta copiada não contém nada legível. Em claro fica só o que o índice local precisa: identificadores, datas, o tipo de item e marcações como fixada ou excluída.",
         "Para levar suas notas para outro aparelho, ou guardar uma cópia sua, use **Configurações > Import & Export > Exportar** e escolha o \"Backup completo criptografado (.pnbackupz)\". Ele tem tudo, é criptografado com a chave da sua frase e restaura com a sua frase em qualquer aparelho. [Mais sobre backups](/br/help/backup-strategy/)."
       ]
     },
     "export": {
       "q": "Posso exportar minhas notas, ou estou preso?",
       "a": [
-        "Você pode exportar tudo a qualquer momento, gerado inteiramente no seu aparelho: arquivos Markdown num zip com os anexos incluídos, um backup JSON completo, ou HTML autossuficiente - por nota ou para a conta inteira. Os itens do cofre têm a própria via, \"Exportação do cofre (.json)\", que escreve o formato da Bitwarden e leva seus nomes de usuário, senhas, URL, dados de cartão e chaves 2FA para a Bitwarden, o 1Password ou o KeePass.",
-        "Está tudo em Configurações > Import & Export > Export. A importação funciona do mesmo jeito, a partir do Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden e mais: a lista completa está em [vindo de outro app](/br/help/import-from-other-apps/). Aprisionar você não faz parte do modelo de negócio."
+        "Você pode exportar tudo a qualquer momento, gerado inteiramente no seu aparelho: arquivos Markdown num zip com os anexos incluídos, JSON simples, ou HTML autossuficiente - por nota ou para a conta inteira. O zip é o \"Backup do PrivacyNotes (.zip)\", e ele pode ser restaurado, como os backups criptografados; JSON e HTML são para leitura e para o seu próximo app. Os itens do cofre têm a própria via, \"Exportação do cofre (.json)\", que escreve o formato da Bitwarden e leva seus nomes de usuário, senhas, URL, dados de cartão e chaves 2FA para a Bitwarden, o 1Password ou o KeePass.",
+        "Está tudo em Configurações > Import & Export > Exportar. A importação funciona do mesmo jeito, a partir do Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden e mais: a lista completa está em [vindo de outro app](/br/help/import-from-other-apps/). Aprisionar você não faz parte do modelo de negócio."
       ]
     },
     "attachment-limits": {
       "q": "Que arquivos posso anexar, e de que tamanho?",
       "a": [
-        "Qualquer tipo de arquivo: imagens, PDFs, áudio, compactados, o que você arrastar. Cada arquivo é criptografado no seu aparelho antes do envio, exatamente como o texto das notas, e a visão Arquivos reúne todos os anexos num lugar só.",
+        "Qualquer tipo de arquivo: imagens, PDFs, áudio, compactados, o que você arrastar. Cada arquivo está sempre criptografado, no seu aparelho e a caminho do servidor, exatamente como o texto das notas, e a visão Arquivos reúne todos os anexos num lugar só.",
         "O limite por arquivo é de 5 MB no plano gratuito e 50 MB no Pro. Os arquivos contam no seu armazenamento total de sincronização (50 MB grátis, 500 MB no Pro, expansível até 5,5 GB com os adicionais de armazenamento), e a barra em Configurações > Armazenamento mostra sempre onde você está."
       ]
     },
     "vault": {
       "q": "O que é o Cofre?",
       "a": [
-        "O Cofre é uma seção dedicada a segredos estruturados: logins com usuário e senha, cartões de crédito e débito, e chaves SSH. As entradas têm campos de verdade em vez de texto livre, os logins mostram o ícone do site, e tudo é criptografado de ponta a ponta como o resto dos seus dados.",
+        "O Cofre é uma seção dedicada a segredos estruturados: logins com usuário e senha, cartões de crédito e débito, e chaves SSH. As entradas têm campos de verdade em vez de texto livre, os logins mostram o ícone do site, e tudo é criptografado no seu aparelho como o resto dos seus dados.",
         "Ele dá um lar organizado e protegido àquele punhado de credenciais que, de outro jeito, acaba espalhado pelas notas. Combine com o bloqueio do app e a proteção por PIN para uma segunda barreira nas entradas mais sensíveis. Uma importação do Bitwarden aterrissa aqui automaticamente."
       ]
     },
@@ -289,21 +289,21 @@
     "shutdown": {
       "q": "O que acontece com minhas notas se o PrivacyNotes fechar?",
       "a": [
-        "Você não perde nada. O conjunto completo de dados já está no seu aparelho porque o app é local-first, e a exportação para Markdown, JSON ou HTML funciona totalmente offline.",
+        "Você fica com elas. Suas notas, tarefas, entradas de diário e itens do cofre vivem no seu aparelho porque o app é local-first, e exportá-los para Markdown, JSON ou HTML funciona offline. Uma imagem ou um arquivo fica num aparelho assim que você o adiciona ou abre lá, e um que este aparelho nunca abriu é baixado quando você o abre, então mantenha um backup completo: ele baixa todas as imagens e arquivos que faltam neste aparelho, e avisa se algum não puder ser baixado.",
         "O código de criptografia também é [open source](https://github.com/LifetimeLabsDev/PrivacyNotes.app): o formato continua legível de forma independente, mesmo num mundo em que nossos servidores sumissem da noite para o dia."
       ]
     },
     "free-vs-pro": {
       "q": "O que é grátis e o que é Pro?",
       "a": [
-        "O grátis é o produto completo, não uma amostra: notas, tarefas, diário e cofre criptografados de ponta a ponta, uso offline, importação e exportação - em até 2 aparelhos com 50 MB de armazenamento de sincronização.",
+        "O grátis é o produto completo, não uma amostra: notas, tarefas, diário e cofre, tudo criptografado no seu aparelho, uso offline, importação e exportação - em até 2 aparelhos com 50 MB de armazenamento de sincronização.",
         "O Pro é uma compra única que adiciona aparelhos ilimitados, 500 MB de armazenamento (expansível), histórico de versões das notas, anexos maiores, bloqueio de notas e proteção por PIN, acompanhamento de bem-estar avançado, modo zen e todos os temas de cor."
       ]
     },
     "one-time-pricing": {
       "q": "Como um pagamento único pode bancar um serviço de sincronização para sempre?",
       "a": [
-        "Porque o serviço foi desenhado para ser barato de operar. O app é local-first e as notas são pequenos blobs criptografados: o servidor pouco faz além de guardá-los e repassá-los entre seus aparelhos. Sem pipeline de analytics, sem recursos de IA queimando computação, sem departamento de suporte.",
+        "Porque o serviço foi desenhado para ser barato de operar. O app é local-first e as notas são pequenos blobs criptografados: o servidor pouco faz além de guardá-los e repassá-los entre seus aparelhos. Sem análise do que você escreve, sem pixels nem rastreadores de terceiros, sem recursos de IA queimando computação, sem departamento de suporte.",
         "O único custo que cresce com o tempo é o armazenamento, e ele é precificado de acordo: espaço além dos 500 MB inclusos é um pequeno adicional anual. Custos únicos se pagam uma vez; custos recorrentes, de forma recorrente. O modelo só precisa se sustentar, e ele se sustenta."
       ]
     },
@@ -332,7 +332,7 @@
       "q": "O que vocês descobrem sobre mim quando eu pago?",
       "a": [
         "Menos do que você imagina. O checkout passa pela [Paddle](https://www.paddle.com), o merchant of record: seu nome, número do cartão e endereço de cobrança vão para a Paddle para pagamento e impostos, e nunca tocam nossos servidores.",
-        "O que chega até nós é a confirmação de que a chave pública da sua conta agora é Pro, mais o valor do pedido. A relação de cobrança, incluindo o e-mail de recibo digitado no checkout, fica com a Paddle. Uma conta só de frase permanece, portanto, pseudônima para nós mesmo como cliente pagante: sabemos que você pagou, não quem você é."
+        "A Paddle guarda seus dados de cobrança; o que chega ao nosso banco de dados é sua chave pública, o valor e o identificador do pedido, e, num adicional de armazenamento, o tamanho dele e as datas de renovação. Nossa conta na Paddle consegue ver os dois lados, e a gente não vai procurar quem você é. Para manter seu nome fora da compra, pague com um [alias de e-mail e um cartão mascarado](/br/help/buy-pro-anonymously/)."
       ]
     },
     "buy-pro-anonymously": {
@@ -340,15 +340,15 @@
       "a": [
         "Sim, com duas ferramentas padrão. Para o recibo, use um alias de e-mail: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) ou [addy.io](https://addy.io) encaminham todos para a sua caixa real sem expô-la. Para o pagamento, use um cartão mascarado: o [privacy.com](https://privacy.com), nos EUA, gera cartões virtuais que funcionam com qualquer nome digitado, e muitos bancos e serviços em outros lugares (o [Revolut](https://www.revolut.com), por exemplo) oferecem cartões virtuais descartáveis que fazem o mesmo trabalho.",
         "No checkout, a Paddle pede um e-mail, um método de pagamento e um país (mais um código postal em algumas regiões) para calcular impostos. O alias recebe o recibo, o cartão mascarado carrega o nome que você deu a ele, e a localização fiscal situa você, no máximo, numa região, nada além. Mantenha o alias vivo, porém: o e-mail do recibo é sua prova de compra e seu canal para reembolso.",
-        "Combinado com uma conta de frase, nenhuma parte termina com o quadro completo: seu banco vê uma recarga de cartão, a Paddle vê um alias e um cartão mascarado, e nós vemos apenas que uma chave pública virou Pro."
+        "Combinado com uma conta de frase, nenhuma parte termina com o quadro completo: seu banco vê uma recarga de cartão, a Paddle vê um alias e um cartão mascarado, e nós vemos uma chave pública que virou Pro, ao lado desse alias na nossa conta da Paddle."
       ]
     },
     "platforms": {
       "q": "Em quais plataformas o PrivacyNotes roda?",
       "a": [
-        "Web, macOS, Windows, Linux, iOS e Android. Cada app nasce do mesmo núcleo, com a mesma criptografia de ponta a ponta, e sincroniza pela mesma conta. A [seção de downloads](https://privacynotes.app/br#downloads) tem sempre as versões mais recentes.",
-        "Os apps nativos precisam de macOS 13 ou mais recente, Windows 10 ou mais recente, iOS 15 ou mais recente, Android 7.0 ou mais recente, ou uma distribuição Linux com webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ ou equivalente). Abaixo dessas versões o app não instala nem abre, então use o app web.",
-        "O app web é cidadão de primeira classe, não um plano B: mantém uma cópia local completa dos seus dados e funciona offline - qualquer navegador moderno é sempre uma porta de entrada."
+        "Web, macOS, Windows, Linux, iOS e Android. Cada app nasce do mesmo núcleo, criptografa suas notas no seu aparelho do mesmo jeito e sincroniza pela mesma conta. A [seção de downloads](https://privacynotes.app/br#downloads) tem sempre as versões mais recentes.",
+        "Os apps nativos precisam de macOS 13 ou mais recente, Windows 10 ou mais recente, iOS 17.4 ou mais recente, Android 7.0 ou mais recente, ou uma distribuição Linux com webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ ou equivalente). Abaixo dessas versões o app não instala nem abre, então use o app web.",
+        "O app web é cidadão de primeira classe, não um plano B: mantém suas notas no seu aparelho e funciona offline - qualquer navegador moderno é sempre uma porta de entrada."
       ]
     },
     "feature-requests": {
@@ -381,14 +381,14 @@
     "languages": {
       "q": "Quais idiomas o app fala?",
       "a": [
-        "Inglês, alemão, francês, italiano, espanhol, holandês, polonês, tcheco, catalão, turco, sueco, japonês, coreano, chinês tradicional, árabe e português, nas variantes europeia e do Brasil. O app segue o idioma do sistema por padrão, ou você fixa um explicitamente em Configurações > Idioma em cada aparelho.",
+        "Inglês, alemão, francês, italiano, espanhol, holandês, polonês, tcheco, catalão, turco, sueco, ucraniano, russo, japonês, coreano, chinês tradicional, tailandês, árabe e português, nas variantes europeia e do Brasil. O app segue o idioma do sistema por padrão, ou você fixa um explicitamente em Configurações > Idioma em cada aparelho.",
         "As traduções são grátis para todo mundo, não uma vantagem Pro. Mais idiomas estão nos planos; se o seu está faltando, conte para a gente no [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) ou no [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
     "translation-quality": {
       "q": "Como as traduções do app são feitas?",
       "a": [
-        "O inglês somos nós que escrevemos, e todos os outros idiomas são traduzidos por máquina a partir de um guia de estilo escrito para cada um: o registro certo, a palavra certa para cada termo da interface e uma conferência automática a cada versão para que não falte texto nem sobre nada em inglês sem a gente perceber. As traduções estão em todos os planos, nunca são um extra do Pro.",
+        "Escrevemos primeiro o inglês. Depois, um agente de IA traduz cada idioma a partir de um glossário compartilhado, no registro definido para esse idioma, e um segundo agente revisa cada lote quanto à precisão, terminologia e registro antes da publicação. Falantes nativos revisam uma amostra, começando pelos idiomas mais novos e pelos textos de segurança, login e cobrança, e duas verificações automáticas fazem o build falhar enquanto alguma tradução estiver faltando ou desatualizada. As traduções estão em todos os planos, nunca são um extra do Pro.",
         "Você pode melhorar qualquer uma delas. Se uma frase soar torta no seu idioma, [informe a tradução](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new?template=translation.yml): seu idioma, a tela em que ela aparece e o que deveria estar escrito. As correções saem na próxima versão."
       ]
     },
@@ -396,14 +396,14 @@
       "q": "Qual sintaxe Markdown o editor entende?",
       "a": [
         "Os formatos padrão de Markdown ganham vida enquanto você digita: títulos, ênfase, tachado e destaque, listas com marcadores e numeradas, listas de tarefas (Tab e Shift+Tab aninham qualquer lista, checklists incluídas), citações, divisórias, código em linha e blocos de código com realce de sintaxe, fórmulas matemáticas em linha e em bloco (KaTeX) e note-links entre notas com preenchimento automático.",
-        "A barra de formatação e o menu \"Inserir\" acrescentam o resto: tabelas, callouts em nove tipos que podem ser recolhidos, sublinhado, sobrescrito e subscrito, alinhamento do texto, cores de texto e de destaque, fontes, links, imagens e anexos. Tudo vai e volta como Markdown: \"Ver markdown\" embaixo de qualquer nota mostra o código-fonte bruto, e as exportações são arquivos .md limpos, então nada do que você escreve fica preso a um formato proprietário."
+        "A barra de formatação e o menu \"Inserir\" acrescentam o resto: tabelas, callouts que podem ser recolhidos, sublinhado, sobrescrito e subscrito, alinhamento do texto, cores de texto e de destaque, fontes, links, imagens e anexos. Tudo vai e volta como Markdown: \"Ver markdown\" embaixo de qualquer nota mostra o código-fonte bruto, e as exportações são arquivos .md limpos, então nada do que você escreve fica preso a um formato proprietário."
       ]
     },
     "tasks": {
       "q": "Como funcionam as tarefas?",
       "a": [
         "Qualquer linha que você escrever como - [ ] em qualquer nota vira uma tarefa, e a visão Tarefas na barra lateral reúne todas num lugar só. Marcar uma tarefa ali atualiza a nota em que ela vive, e abrir uma tarefa pula direto para essa nota. Não há um banco de dados de tarefas separado para manter: tarefas são só linhas nas suas notas, criptografadas como todo o resto.",
-        "A caixa de adição rápida no topo de Tarefas acrescenta a uma nota chamada Quick Tasks (criada para você no primeiro uso), então capturar um afazer avulso leva uma tecla só, não uma decisão de arquivamento. A mesma visão oferece três layouts (Híbrida, Agregada, Lista), uma opção para ver tarefas concluídas e busca de tarefas, e o botão Nova na visão Todos pode começar uma nota de tarefas direto."
+        "A caixa de adição rápida no topo de Tarefas acrescenta a uma nota chamada Quick Tasks (criada para você no primeiro uso), então capturar um afazer avulso leva uma tecla só, não uma decisão de arquivamento. A mesma visão oferece três layouts (Híbrida, Agregada, Lista), uma opção para ver tarefas concluídas e busca de tarefas, e o botão New na visão Todos pode começar uma nota de tarefas direto."
       ]
     },
     "journal": {
@@ -416,7 +416,7 @@
     "bookmarks": {
       "q": "Posso salvar os favoritos do navegador no PrivacyNotes?",
       "a": [
-        "Sim. Os favoritos são um pilar próprio na barra lateral, ao lado das notas, das tarefas e dos diários, e são gratuitos em todos os planos. Cole um link na barra de adição rápida para salvar um. Para trazer os seus, exporte um arquivo de favoritos (.html) do seu navegador e solte em Configurações > Import & Export > Importar > \"Browser bookmarks\". Chrome, Firefox, Safari, Edge, Opera, Brave e Vivaldi contêm o mesmo arquivo, e as suas pastas e datas vêm junto. O Safari embrulha ele num .zip, que você pode soltar sem abrir.",
+        "Sim. Os favoritos são um pilar próprio na barra lateral, ao lado das notas, das tarefas e dos diários, e são gratuitos em todos os planos. Cole um link na barra de adição rápida para salvar um. Para trazer os seus, exporte um arquivo de favoritos (.html) do seu navegador e solte em Configurações > Import & Export > Importar > \"Favoritos do navegador\". Chrome, Firefox, Safari, Edge, Opera, Brave e Vivaldi contêm o mesmo arquivo, e as suas pastas e datas vêm junto. O Safari embrulha ele num .zip, que você pode soltar sem abrir.",
         "Seus endereços nunca saem do seu aparelho: a gente não carrega a página por trás de um link, e é por isso que um favorito que você adiciona à mão fica com o domínio como nome até você escrever um. Os ícones dos sites são a única exceção, e você pode desligá-los. A exportação escreve o mesmo arquivo padrão, então seus favoritos saem com a mesma facilidade ([guia de importação](/br/help/import/browser-bookmarks/))."
       ]
     },
@@ -424,7 +424,7 @@
       "q": "Posso ter uma agenda de contatos no PrivacyNotes?",
       "a": [
         "Sim. Os contatos são um pilar próprio na barra lateral, ao lado das notas, das tarefas e dos diários, e são gratuitos em todos os planos. Um contato reúne nomes, números, e-mails, endereços, sites, datas, uma empresa e uma nota. Toque num número para ligar, num e-mail para escrever, ou em qualquer linha para copiá-la. Tudo o mais que o seu celular escreveu no arquivo fica em **Também neste arquivo** e volta a ser escrito quando você exporta.",
-        "Para trazer os seus, exporte um vCard (.vcf) do celular, do Mac ou do Google Contacts e solte em Configurações > Import & Export > Importar > \"Contacts (vCard)\". Se mais tarde você soltar o mesmo arquivo, as pessoas que já estão lá são reconhecidas em vez de duplicadas. A exportação escreve um vCard comum, então a sua agenda sai com a mesma facilidade com que entrou ([mais sobre importar](/br/help/import-from-other-apps/))."
+        "Para trazer os seus, exporte um vCard (.vcf) do celular, do Mac ou do Google Contacts e solte em Configurações > Import & Export > Importar > \"Contatos (vCard)\". Se mais tarde você soltar o mesmo arquivo, as pessoas que já estão lá são reconhecidas em vez de duplicadas. A exportação escreve um vCard comum, então a sua agenda sai com a mesma facilidade com que entrou ([mais sobre importar](/br/help/import-from-other-apps/))."
       ]
     },
     "what-to-keep": {
@@ -438,7 +438,7 @@
     "keyboard-shortcuts": {
       "q": "Quais atalhos de teclado existem?",
       "a": [
-        "Aperte ? em qualquer lugar do app para ver a folha de referência embutida, também disponível em Configurações > Sobre e Ajuda. Os atalhos cobrem navegação, ações de nota, formatação e visões - e no Windows e no Linux, todo Cmd equivale a Ctrl e Option a Alt.",
+        "Aperte ? em qualquer lugar do app para ver a folha de referência embutida, também disponível em Configurações > Sobre. Os atalhos cobrem navegação, ações de nota, formatação e visões - e no Windows e no Linux, todo Cmd equivale a Ctrl e Option a Alt.",
         "O essencial: Cmd+K foca a busca, J e K percorrem a lista, Alt+Shift+N começa uma nota nova, Cmd+Backspace joga a selecionada na lixeira, Cmd+, abre as Configurações. Enquanto você escreve: Cmd+B negrito, Cmd+I itálico, Cmd+Shift+K insere um link, Cmd+Shift+9 começa uma lista de tarefas, Cmd+F busca dentro da nota, Cmd+Shift+O abre e fecha a estrutura. Cmd+\\ esconde a barra lateral, Cmd+Shift+L troca o tema, Cmd+Shift+F entra no modo zen (Pro), e Esc sai de quase tudo."
       ]
     },
@@ -446,7 +446,7 @@
       "q": "Existe uma folha de referência dos atalhos para imprimir?",
       "a": [
         "Sim. A [folha de referência para imprimir](/help/keyboard-shortcuts/cheat-sheet) reúne todos os atalhos em uma única página A4, em duas colunas, pronta para pendurar ao lado da tela. Ela é gerada a partir da mesma lista que o app mostra, então nunca pode ficar para trás de uma versão.",
-        "Abra a folha e aperte o botão Imprimir (ou Cmd+P / Ctrl+P). Para ficar com um arquivo em vez de papel, escolha PDF como destino na janela de impressão. Ela também está linkada acima e abaixo da lista de atalhos no app (Configurações > Sobre e Ajuda > Atalhos) e no rodapé deste site."
+        "Abra a folha e aperte o botão Imprimir (ou Cmd+P / Ctrl+P). Para ficar com um arquivo em vez de papel, escolha PDF como destino na janela de impressão. Ela também está linkada acima e abaixo da lista de atalhos no app (Configurações > Sobre > Atalhos) e no rodapé deste site."
       ]
     },
     "ask-an-ai": {
@@ -460,7 +460,7 @@
     "locked-vs-protected": {
       "q": "Qual a diferença entre notas somente leitura e notas protegidas por PIN?",
       "a": [
-        "\"Somente leitura\" (no menu de opções da nota, Pro) trava a nota contra edições, para que um documento pronto não seja estragado sem querer; não esconde nada. \"Proteger\" (mesmo menu, Pro) esconde o título e o conteúdo de uma nota atrás do seu PIN ou desbloqueio biométrico, para aquelas coisas que você prefere não deixar à vista numa tela que outras pessoas às vezes veem.",
+        "\"Somente leitura\" (no menu de opções da nota, Pro) trava a nota contra edições, para que um documento pronto não seja estragado sem querer; não esconde nada. \"Proteger\" (mesmo menu, Pro) esconde o conteúdo de uma nota atrás do seu PIN ou desbloqueio biométrico, para aquelas coisas que você prefere não deixar à vista numa tela que outras pessoas às vezes veem. O título continua visível na lista, então deixe o segredo fora do título.",
         "Os dois são travas de tela, não uma segunda camada de criptografia. Essas marcações viajam dentro dos dados criptografados da nota, e a nota, de propósito, não é recriptografada com o seu PIN: assim, um PIN esquecido nunca pode destruir dados. A frase continua sendo a fronteira de verdade: proteja ela primeiro, e use essas travas para a tela que outras pessoas às vezes veem."
       ]
     },
@@ -512,7 +512,7 @@
       "q": "Como restauro um backup?",
       "a": [
         "Abra Configurações > Import & Export > Restaurar e escolha o formato que você tem. \"Backup completo (.zip)\" leva a exportação inteira: notas, diários, itens do cofre, tarefas, imagens, áudio e arquivos. \"Backup criptografado (.pnbackup, .pnbackupz)\" leva as duas exportações criptografadas. Seu arquivo é lido e descriptografado no seu dispositivo, e restaurar é gratuito em qualquer plano.",
-        "Tudo chega como itens novos e nada do que você já tem é sobrescrito, então restaurar o mesmo arquivo duas vezes deixa você com duas cópias de cada nota. Os dois formatos criptografados só abrem na conta que os criou, porque estão criptografados com a chave da frase dessa conta; um .zip entra em qualquer cofre ([que backup fazer](/br/help/backup-strategy/))."
+        "Uma restauração associa as notas pelo identificador. Uma nota que você já tem só é atualizada se a cópia do backup for mais recente, uma nota na lixeira sai de lá, uma nota que falta é adicionada uma única vez, e restaurar o mesmo arquivo de novo não muda nada, a não ser que você tenha editado uma nota restaurada nesse meio-tempo, o que traz a cópia mais antiga de volta ao lado da sua edição. Um arquivo sem identificadores nossos, de outro app ou de um backup feito por uma versão anterior deste, adiciona as notas dele como novas toda vez. Os dois formatos criptografados só abrem na conta que os criou, porque estão criptografados com a chave da frase dessa conta; um .zip entra em qualquer cofre ([que backup fazer](/br/help/backup-strategy/))."
       ]
     },
     "image-quality": {
@@ -533,14 +533,14 @@
       "q": "Por que o envio do meu arquivo falhou?",
       "a": [
         "O erro diz qual teto você atingiu. Por arquivo: 5 MB no plano gratuito, 50 MB no Pro, 100 MB com qualquer adicional de armazenamento. No total: tudo o que você sincroniza precisa caber no armazenamento da sua conta (50 MB no gratuito, 500 MB no Pro, mais com os adicionais), então uma cota cheia faz um envio falhar mesmo quando o arquivo é pequeno. Qualquer tipo de arquivo é aceito.",
-        "Confira a barra de armazenamento na visão Arquivos ou em Configurações > Armazenamento, depois escolha o conserto mais barato: [libere espaço](/br/help/storage-usage/), faça upgrade ou reduza o arquivo (fotos de celular costumam ser originais de vários MB; um JPEG comprimido é uma fração do tamanho). Os envios também precisam de conexão: os arquivos não entram na fila enquanto você está offline."
+        "Confira a barra de armazenamento na visão Arquivos ou em Configurações > Armazenamento, depois escolha o conserto mais barato: [libere espaço](/br/help/storage-usage/), faça upgrade ou reduza o arquivo (fotos de celular costumam ser originais de vários MB; um JPEG comprimido é uma fração do tamanho). Um envio que falha por falta de conexão fica guardado, não se perde: o arquivo fica neste aparelho e sobe sozinho assim que você voltar a ficar online, e até lá Configurações > ID & Sync conta esse envio como pendente."
       ]
     },
     "trash-auto-delete": {
       "q": "Por que notas sumiram da minha lixeira?",
       "a": [
-        "A lixeira não é um arquivo morto: por padrão, tudo que está nela é apagado permanentemente após 30 dias. O botão fica na própria visão Lixeira, com o rótulo \"Exclusão automática após 30 dias\" - desligue ali se quiser manter a lixeira para sempre, e a configuração sincroniza para todos os seus aparelhos. A limpeza roda no seu aparelho quando o app abre, porque o servidor não consegue ver quais notas criptografadas estão na lixeira.",
-        "Apagado permanentemente significa que foi embora: sem cópia no servidor e sem caminho de recuperação. Se você usa a lixeira como uma pilha de \"quem sabe um dia\", desligue a exclusão automática ou restaure as notas antes de completar 30 dias. Até lá, notas na lixeira ainda contam no [seu armazenamento](/br/help/storage-usage/) - \"Esvaziar\", na mesma visão, libera esse espaço na hora."
+        "A lixeira não é um arquivo morto: por padrão, tudo que está nela é apagado permanentemente após 30 dias. O botão fica na própria visão Lixeira, com o rótulo \"Excluir automaticamente após 30 dias\" - desligue ali se quiser manter a lixeira para sempre, e a configuração sincroniza para todos os seus aparelhos. A limpeza roda no seu aparelho quando o app abre, porque o servidor não consegue ver quais notas criptografadas estão na lixeira.",
+        "Apagado permanentemente significa que foi embora: nenhum aparelho e ninguém do nosso lado consegue trazer de volta, só um backup que você tenha feito antes. Se você usa a lixeira como uma pilha de \"quem sabe um dia\", desligue a exclusão automática ou restaure as notas antes de completar 30 dias. Até lá, notas na lixeira ainda contam no [seu armazenamento](/br/help/storage-usage/) - \"Esvaziar\", na mesma visão, libera esse espaço na hora."
       ]
     },
     "leaving": {
@@ -561,8 +561,8 @@
       "q": "Vocês registram de qual site eu vim?",
       "a": [
         "Sim, e tem a ver com publicidade. Compramos espaços em outros sites e pagamos criadores, então precisamos saber quais realmente trazem pessoas. O dinheiro de publicidade desperdiçado é um custo que o produto carrega de qualquer forma, então medimos isso na menor forma que responde à pergunta.",
-        "O site de marketing conta visitas e qual link trouxe você, apenas como totais: sem cookies, sem ficha de visitante, sem scripts de terceiros. Se você criar uma conta, ela guarda duas palavras curtas de uma lista publicada: por qual link você chegou, se houve algum, e como você instalou o aplicativo, por exemplo “android-play”.",
-        "As duas palavras são escritas uma única vez quando a conta é criada, nunca são atualizadas e são apagadas junto com a sua conta. Nada mais sobre a sua chegada é guardado. Se você fechar a aba antes de se cadastrar, ou se o seu navegador remover o link, não registramos nada. Os aplicativos em si não medem nada sobre você: abra a aba de rede e confira."
+        "O site de marketing conta os cliques nos nossos links como totais, por link e por país, sem nenhum identificador: sem cookies, sem ficha de visitante, sem scripts de terceiros. Se você criar uma conta, ela guarda duas palavras curtas de uma lista publicada: por qual link você chegou, se houve algum, e como você instalou o aplicativo, por exemplo “android-play”.",
+        "As duas palavras são escritas uma única vez quando a conta é criada, nunca são atualizadas e são apagadas junto com a sua conta. Nada mais sobre a sua chegada é guardado. Se você fechar a aba antes de se cadastrar, ou se o seu navegador remover o link, nenhuma palavra é guardada. Os aplicativos não têm análise do que você escreve, nem pixels, nem rastreadores de terceiros: abra a aba de rede e confira."
       ]
     },
     "pro-not-active": {
@@ -575,7 +575,7 @@
     "manage-storage-addon": {
       "q": "Como eu troco ou cancelo meu adicional de armazenamento?",
       "a": [
-        "Configurações > Armazenamento é o painel de controle. Trocar para um pacote maior vale na hora, e a confirmação mostra o valor proporcional exato cobrado hoje antes de você confirmar; a data de renovação não muda. \"Cancelar armazenamento\" mantém o seu espaço extra até o fim do período que você já pagou. Para ir a um pacote menor, cancele o atual e compre o menor quando o período terminar.",
+        "Configurações > Armazenamento é o painel de controle. Trocar para um pacote maior vale na hora. Na web, a confirmação mostra o valor proporcional exato cobrado hoje antes de você confirmar, e a data de renovação não muda; na Play Store e na App Store é a tela de pagamento da loja que mostra o valor, e a Apple reembolsa a parte não usada do seu ano atual e começa um novo. \"Cancelar armazenamento\" mantém o seu espaço extra até o fim do período que você já pagou. Para ir a um pacote menor, cancele o atual e compre o menor quando o período terminar.",
         "Se os seus dados ainda couberem no limite restante depois do vencimento, acabou por aí; se não, nada é apagado e começa o [ciclo de 90 dias acima do limite](/br/help/over-quota/). Uma renovação que falha mostra uma faixa com um link \"Atualizar cartão\" para acertar o pagamento na Paddle.",
         "Cancelar de fora do app também funciona, e é a resposta para quando você não consegue entrar. A Paddle é a nossa vendedora oficial e cobra você diretamente: use o link \"Gerenciar assinatura\" no e-mail do recibo, ou o chat de suporte em [paddle.net](https://paddle.net). Numa versão de loja a ideia é a mesma, então cancele lá, nas configurações de assinatura da própria loja."
       ]
@@ -583,7 +583,7 @@
     "store-purchases": {
       "q": "As compras valem entre a web, a Google Play e a App Store?",
       "a": [
-        "Sim. O Pro e o armazenamento estão vinculados à sua conta, não a uma plataforma ou loja. Compre na web e todo app em que você entrar é Pro, incluindo as versões de loja; compre dentro de uma versão de loja e os apps web e desktop liberam do mesmo jeito. Entrar já é a restauração, porque o direito segue a conta. Uma versão de loja traz também um botão **Restaurar compras** em Configurações > Plano, que pergunta à Apple ou ao Google o que você tem e libera de novo depois de uma reinstalação.",
+        "Sim. O Pro e o armazenamento estão vinculados à sua conta, não a uma plataforma ou loja. Compre na web e todo app em que você entrar é Pro, incluindo as versões de loja; compre dentro de uma versão de loja e os apps web e desktop liberam do mesmo jeito. Entrar já é a restauração, porque o direito segue a conta. Uma versão de loja traz também um botão **Restaurar compras** em Configurações > Conta, que pergunta à Apple ou ao Google o que você tem e libera de novo depois de uma reinstalação.",
         "A única diferença é quem faz a cobrança. As compras na web passam pela Paddle e são gerenciadas no app em Configurações > Armazenamento. As compras feitas dentro de uma versão de loja (a App Store hoje, Google Play quando esse app sair) são cobradas por essa loja: o armazenamento recorrente é cancelado nas configurações de assinatura da loja, e os reembolsos seguem o processo da loja. De um jeito ou de outro, é a mesma conta e o mesmo Pro em todo lugar - incluindo plataformas que ainda nem existem."
       ]
     },
@@ -674,8 +674,8 @@
     "android-backup": {
       "q": "Minhas notas estão no backup do meu celular Android?",
       "a": [
-        "Não. O app Android mantém os dados dele fora do backup na nuvem do celular, então nada disso chega ao Google Drive. O motivo é a chave, não as notas: onde você escolheu **Confiar neste dispositivo**, suas 12 palavras ficam nesse aparelho para manter você conectado, e um backup na nuvem não é lugar para a chave de uma conta criptografada de ponta a ponta.",
-        "Um celular novo começa por isso vazio: instale o app, entre com suas 12 palavras e chega tudo o que sincronizou. O que nunca sincronizou vive só no celular antigo, então confira primeiro se o rodapé diz \"Synced\", ou leve junto um \"Backup do PrivacyNotes (.zip)\" de Configurações > Import & Export > Exportar ([que backup fazer](/br/help/backup-strategy/)).",
+        "Não. O app Android mantém os dados dele fora do backup na nuvem do celular, então nada disso chega ao Google Drive. O motivo é a chave, não as notas: onde você escolheu **Confiar neste dispositivo**, suas 12 palavras ficam nesse aparelho para manter você conectado, e um backup na nuvem não é lugar para a chave que descriptografa suas notas.",
+        "Um celular novo começa por isso vazio: instale o app, entre com suas 12 palavras e chega tudo o que sincronizou. A restauração espera essa primeira sincronização, para que um backup que você trouxer seja associado ao que a conta já tem em vez de ser adicionado duas vezes. O que nunca sincronizou vive só no celular antigo, então confira primeiro se o rodapé diz \"Synced\", ou leve junto um \"Backup do PrivacyNotes (.zip)\" de Configurações > Import & Export > Exportar ([que backup fazer](/br/help/backup-strategy/)).",
         "Uma transferência direta de celular para celular durante a configuração é outra coisa: alguns celulares movem aí os dados dos apps, e o Android não dá ao app um jeito confiável de recusar. Essa cópia nunca sai dos seus dois aparelhos, então apague o celular antigo depois."
       ]
     },
@@ -724,9 +724,9 @@
     "signup-options": {
       "q": "Qual opção de cadastro devo escolher?",
       "a": [
-        "A que combina com o seu nível de ameaça. São três. Um: \"Continuar com o Google\" ou \"Continuar com a Apple\", com a sua chave guardada no nosso servidor. Dois: o mesmo botão, mas a chave fica só no seu dispositivo. Três: \"Gerar uma frase\", sem e-mail, sem nome e sem login nenhum. Os três mantêm suas notas criptografadas de ponta a ponta, e o que separa um do outro é quem tem a chave e o quanto a gente fica sabendo sobre você.",
-        "Entrar com qualquer um dos três pergunta depois onde a sua chave mora. \"Deixe simples e prático\" guarda ela criptografada no nosso servidor, então qualquer dispositivo novo entra só com esse login e você não tem nada para guardar. É o nível certo se o que você teme é perder as suas próprias credenciais. \"Máxima segurança e privacidade\" mantém a chave no seu dispositivo: a gente não conseguiria ler uma nota sob pressão nenhuma, e um dispositivo novo pede suas 12 palavras ou a leitura de um QR de um aparelho já conectado.",
-        "O caminho só com a frase é o nível mais alto: sem e-mail, sem nome, sem nada que ligue a conta a uma pessoa. Em troca, a chave é só sua, então perder ela sem nenhum dispositivo conectado significa que ninguém pode ajudar. Nada disso é definitivo: Configurações > Segurança > Sua frase leva você de um modo para o outro quando quiser, e qualquer nível pode somar um PIN ou um bloqueio biométrico por cima. A escada completa, com o preço de cada degrau, está em [a escada de níveis de ameaça](/br/help/threat-model-levels/)."
+        "A que combina com o seu nível de ameaça. São três. Um: entrar com Google, Apple ou GitHub, com a sua chave guardada no nosso servidor. Dois: o mesmo login, mas a chave fica só no seu dispositivo. Três: \"Gerar uma frase\", sem e-mail, sem nome e sem login nenhum. Os três mantêm suas notas criptografadas no seu dispositivo, e o que separa um do outro é quem tem a chave e o quanto a gente fica sabendo sobre você.",
+        "Entrar com qualquer um dos três pergunta depois onde a sua chave mora, começando em \"Deixe simples e prático\". Essa opção guarda a chave criptografada no nosso servidor, então qualquer dispositivo novo entra só com esse login e você não tem nada para guardar. É o nível certo se o que você teme é perder as suas próprias credenciais. \"Máxima segurança e privacidade\" mantém a chave no seu dispositivo: a gente não conseguiria ler uma nota sob pressão nenhuma, e um dispositivo novo pede suas 12 palavras ou a leitura de um QR de um aparelho já conectado.",
+        "O caminho só com a frase é o nível mais alto: sem e-mail, sem nome, sem nada que ligue a conta a uma pessoa. Em troca, a chave é só sua, então perder ela sem nenhum dispositivo conectado significa que ninguém pode ajudar. O modo da chave de um login não é definitivo: Configurações > Segurança > Sua frase troca esse modo quando você quiser, enquanto uma conta só de frase mantém a chave no dispositivo. Qualquer nível pode somar um PIN ou um bloqueio biométrico por cima. A escada completa, com o preço de cada degrau, está em [a escada de níveis de ameaça](/br/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

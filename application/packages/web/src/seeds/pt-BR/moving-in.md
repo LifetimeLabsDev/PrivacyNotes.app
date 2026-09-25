@@ -7,7 +7,7 @@ title: A mudança
 
 Você pode trazer quatro tipos de coisa: notas, entradas de diário, favoritos e senhas.
 
-Todas começam no mesmo lugar: **Configurações > Importar e Exportar**.
+Todas começam no mesmo lugar: **Configurações > Import & Export**.
 
 ## O que dá para trazer
 
@@ -41,7 +41,7 @@ Uma entrada de diário guarda mais do que texto. Acima da área de escrita ficam
 ## Favoritos
 
 - [ ] Exporte os favoritos do seu navegador como arquivo `.html`
-- [ ] Importe esse arquivo: **Configurações > Importar e Exportar > Importar > Favoritos do navegador**
+- [ ] Importe esse arquivo: **Configurações > Import & Export > Importar > Favoritos do navegador**
 
 Você também pode colar um link em uma nota vazia. O título e o ícone do site chegam sozinhos: [privacynotes.app/br/help/import/browser-bookmarks](https://privacynotes.app/br/help/import/browser-bookmarks)
 
