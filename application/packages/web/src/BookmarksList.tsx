@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
 import { setPillarPrefs, type ListPrefs, type ListPrefsStore } from './listPrefs';
 import type { View } from './views';
-import NoteRow, { SiteChip, CardGlyph } from './NoteRow';
+import NoteRow, { SiteChip, CardGlyph, noteLinkText } from './NoteRow';
 import NoteCard from './NoteCard';
 import { ListNav } from './notesView/ListNav';
 import { ListSearchInput } from './ListSearchInput';
@@ -14,7 +14,7 @@ import { BookmarkRowActions } from './BookmarkRowActions';
 import { SelectionToolbar } from './SelectionToolbar';
 import { SelectionCountStrip } from './SelectionCountStrip';
 import { HoverLabel } from './HoverLabel';
-import { ImportPromptEntry, useImportPrompt } from './ImportPrompt';
+import { ImportPromptEntry, importPromptFor, type ImportOffer } from './ImportPrompt';
 import { normalizeUrl, linkDomain, linkDedupeKey, duplicateBookmarkId } from './linkBody';
 import { textMatcher } from './textMatch';
 import { isImeComposing } from './imeComposing';
@@ -77,6 +77,7 @@ export function BookmarksList({
   onListPrefsChange,
   onSelectView,
   hiddenViews,
+  importOffer,
   onOpenDrawer,
   search,
   setSearch,
@@ -99,6 +100,7 @@ export function BookmarksList({
   selectionMode,
   selectedIds,
   selectionAllStarred,
+  selectionAllArchived,
   onRowClick,
   onToggleSelected,
   onRangeSelect,
@@ -108,6 +110,7 @@ export function BookmarksList({
   onDeselectAll,
   onSelectAllVisible,
   onBulkFavorite,
+  onBulkArchive,
   onBulkTag,
   onBulkMoveToFolder,
   onBulkExport,
@@ -137,6 +140,8 @@ export function BookmarksList({
   onSelectView: (v: View) => void;
   /** Passed straight to ListNav; see userSettings.hiddenViews. */
   hiddenViews?: import('./views').View[] | undefined;
+  /** The synced import-offer dismissal; see ImportPrompt.tsx. */
+  importOffer: ImportOffer;
   onOpenDrawer: () => void;
   /** The app's ONE search string, shared with Notes, Tasks and Files.
    *  This pane held a private one until 2026-08-22, which made the global
@@ -178,6 +183,7 @@ export function BookmarksList({
   selectionMode: boolean;
   selectedIds: Set<string>;
   selectionAllStarred: boolean;
+  selectionAllArchived: boolean;
   onRowClick: (e: React.MouseEvent, id: string) => void;
   onToggleSelected: (id: string) => void;
   onRangeSelect: (id: string) => void;
@@ -187,6 +193,7 @@ export function BookmarksList({
   onDeselectAll: () => void;
   onSelectAllVisible: () => void;
   onBulkFavorite: () => void;
+  onBulkArchive: () => void;
   onBulkTag: (tag: string) => void;
   onBulkMoveToFolder: () => void;
   onBulkExport: () => void;
@@ -283,9 +290,10 @@ export function BookmarksList({
     bookmarks.length === 0 && !q && (activeFolderName !== null || activeTag !== null);
 
   /* The standing import entry, shared with every other pillar that has an
-     importer (ImportPrompt.tsx owns the rules and the storage key). */
-  const importPrompt = useImportPrompt('bookmarks', {
+     importer (ImportPrompt.tsx owns the rules). */
+  const importPrompt = importPromptFor('bookmarks', {
     count: bookmarks.length,
+    offer: importOffer,
     suppressed: selectionMode || !!q || activeFolderName !== null || activeTag !== null,
   });
 
@@ -320,6 +328,9 @@ export function BookmarksList({
       <BookmarkRowActions note={n} onEdit={onRequestEdit} onTrash={onTrash} onMenu={onRowMenu} tipPos={tipPos} />
     );
 
+  /** The whole selection as note-links, in list order, for a drag. */
+  const selectionLinkText = () => noteLinkText(bookmarks.filter((n) => selectedIds.has(n.id)), isNoteLocked);
+
   return (
     <div className="flex flex-col h-full min-h-0">
       {/* ── Title row (SelectionToolbar swaps in, same h-14 border) ── */}
@@ -327,8 +338,10 @@ export function BookmarksList({
         <SelectionToolbar
           mode="normal"
           allStarred={selectionAllStarred}
+          allArchived={selectionAllArchived}
           onClear={onClearSelection}
           onFavorite={onBulkFavorite}
+          onArchive={onBulkArchive}
           onTag={onBulkTag}
           onMoveToFolder={onBulkMoveToFolder}
           foldersUnlocked={foldersUnlocked}
@@ -536,6 +549,8 @@ export function BookmarksList({
                 onTouchMove={onLongPressEnd}
                 onTouchCancel={onLongPressEnd}
                 selectionMode={selectionMode}
+                linkDrag
+                linkDragSelection={selectionLinkText}
                 isMultiSelected={selectedIds.has(n.id)}
                 onToggleSelect={(e) => {
                   if (e.shiftKey) onRangeSelect(n.id);
@@ -560,6 +575,8 @@ export function BookmarksList({
                 onTouchMove={onLongPressEnd}
                 onTouchCancel={onLongPressEnd}
                 selectionMode={selectionMode}
+                linkDrag
+                linkDragSelection={selectionLinkText}
                 isMultiSelected={selectedIds.has(n.id)}
                 onToggleSelect={(e) => {
                   if (e.shiftKey) onRangeSelect(n.id);

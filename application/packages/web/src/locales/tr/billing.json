@@ -55,14 +55,16 @@
     "openingBody": "Bir Paddle ödeme penceresi görünmeli. Görünmezse tarayıcınız açılır pencereyi engellemiş olabilir - tekrar denemek için bu sayfayı yenileyin."
   },
   "history": {
-    "title": "Not geçmişi",
-    "subtitle": "Not başına en fazla 20 sürüm. En eskiler otomatik silinir.",
+    "subtitle": "Öğe başına en fazla 20 sürüm. En eskiler otomatik silinir.",
     "empty": "Henüz geçmiş yok. Sürümler bir sonraki düzenlemeden sonra birikmeye başlar. Sonra tekrar uğrayın.",
     "loadFailed": "Geçmiş yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
     "selectPrompt": "Önizlemek için bir sürüm seçin.",
     "emptyBody": "(boş)",
     "restore": "Geri yükle",
-    "restoring": "Geri yükleniyor…"
+    "restoring": "Geri yükleniyor…",
+    "restoreSnapshotFailed": "Önce geçerli sürüm kaydedilemedi, bu yüzden hiçbir şey geri yüklenmedi. Bağlantınızı kontrol edip tekrar deneyin.",
+    "restoreFailed": "Bu sürüm geri yüklenemedi. Tekrar deneyin.",
+    "loginExtrasNotRecorded": "Bu sürüm özel alanları veya ek web sitelerini kaydetmedi. Geri yüklemek mevcut olanları korur."
   },
   "donation": {
     "eyebrow": "Kilidini açtınız",

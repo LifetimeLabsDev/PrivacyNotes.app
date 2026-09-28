@@ -1,6 +1,7 @@
 import type { LocalNote } from './db';
 import { countWords } from './wordCountUtils';
 import { toLocalIso } from './notesViewUtils';
+import { onLocalDataKeyCleared } from './localKey';
 
 /**
  * Writing statistics - all computed client-side from the local Dexie DB.
@@ -36,9 +37,41 @@ function dayKey(iso: string): string {
 
 const DAY_MS = 86_400_000;
 
+/**
+ * Word count per note, kept while the body is the same string. The footer
+ * recounts on every list change, and a refresh hands over new row objects
+ * whose bodies are the same strings, so a large vault would otherwise run
+ * the markdown strip over every body each time. The memo holds note text,
+ * so it is dropped with the local key, like the unseal memo.
+ */
+const wordMemo = new Map<string, { body: string; words: number }>();
+onLocalDataKeyCleared(() => wordMemo.clear());
+
+function wordsOf(n: LocalNote): number {
+  const hit = wordMemo.get(n.id);
+  if (hit && hit.body === n.body) return hit.words;
+  const words = countWords(n.body);
+  wordMemo.set(n.id, { body: n.body, words });
+  return words;
+}
+
+const isAlive = (n: LocalNote) => n.deleted === 0 && n.trashed === 0;
+
+/** The list footer's counts: what computeStats reports, and nothing else. */
+export function footerCounts(notes: LocalNote[]): { totalNotes: number; totalWords: number } {
+  let totalNotes = 0;
+  let totalWords = 0;
+  for (const n of notes) {
+    if (!isAlive(n)) continue;
+    totalNotes++;
+    totalWords += wordsOf(n);
+  }
+  return { totalNotes, totalWords };
+}
+
 export function computeStats(notes: LocalNote[]): Stats {
   // Exclude both hard-deleted tombstones and trashed notes from writing stats.
-  const alive = notes.filter((n) => n.deleted === 0 && n.trashed === 0);
+  const alive = notes.filter(isAlive);
 
   let totalWords = 0;
   let totalChars = 0;
@@ -53,7 +86,7 @@ export function computeStats(notes: LocalNote[]): Stats {
   const tagSet = new Set<string>();
 
   for (const n of alive) {
-    const w = countWords(n.body);
+    const w = wordsOf(n);
     totalWords += w;
     totalChars += n.body.length;
     if (w > longestWords) { longestWords = w; longestNote = n; }

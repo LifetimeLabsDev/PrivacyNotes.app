@@ -49,6 +49,7 @@
     "standardNotes": "Copia de seguridad descifrada .zip o .txt de Standard Notes (Archivo > Exportar > Descifrado).",
     "obsidian": "Bóveda de Obsidian en .zip. Conserva etiquetas, [[note links]], estructura de carpetas, #tags en línea, e imágenes y archivos incrustados.",
     "notesnook": "Exportación de Notesnook como .zip. Elige HTML al exportar para conservar el formato, los cuadernos, las etiquetas y los adjuntos.",
+    "joplin": "El archivo .jex de File > Export all > \"JEX - Joplin Export File\". Los cuadernos se convierten en carpetas, y las etiquetas, las tareas pendientes, los enlaces entre notas y los adjuntos vienen con ellos.",
     "upnote": "En UpNote: Settings > Backup > Backup now, y luego comprime en un .zip todo lo que hay en la carpeta de backup. Conserva los cuadernos, las etiquetas, las notas fijadas, los enlaces entre notas, el formato y los adjuntos. Las exportaciones nota a nota desde las apps de móvil también funcionan: elige \"Export to HTML\".",
     "markdownFolder": "Archivos .md o .txt sueltos o dentro de un .zip. Una carpeta comprimida mantiene sus subcarpetas y trae sus imágenes y adjuntos.",
     "markdownApp": "Estas notas ya son archivos Markdown dentro de una carpeta. Suelta esa carpeta como .zip y vienen con ella sus subcarpetas, sus imágenes y sus #etiquetas.",

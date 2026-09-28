@@ -22,6 +22,9 @@ import { localSealMiddleware } from './localSeal';
  * - `starred = 1`      → marked favorite; appears in the Starred view.
  * - `locked = 1`       → Pro: note is read-only. Toggle off in note options to edit again.
  * - `pinProtected = 1` → Pro: note is gated behind the user's PIN.
+ * - `archived = 1`     → kept but out of sight; listed only in the Archive
+ *                         view. Absent on rows written before the field, so
+ *                         read it as `archived === 1`, never `=== 0`.
  */
 export interface LocalNote {
   id: string;
@@ -42,6 +45,8 @@ export interface LocalNote {
   trackers?: Record<string, unknown>;
   /** Pro: id of the folder this note lives in, or null when unfiled. */
   folderId: string | null;
+  /** Not indexed, so the field needed no schema version. */
+  archived?: number;
   /**
    * Nonce (base64) of the server generation this row is known to match -
    * recorded on push success and on pull apply. Lets the pull tell its own
@@ -170,6 +175,8 @@ interface DemoNoteVersion {
   title: string;
   body: string;
   tags: string[];
+  /** A login's extras, as noteVersions.ts records them. Unindexed. */
+  login?: unknown;
 }
 
 /**

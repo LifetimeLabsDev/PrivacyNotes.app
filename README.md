@@ -157,7 +157,7 @@ Every honest end-to-end encrypted project has these. Here are ours.
 
 Sign up with a phrase and you get self-custody: the phrase never leaves your device. Sign up with Google, Apple or GitHub and the next screen asks where your phrase lives, and it preselects our storing it, which makes a new device one click instead of twelve words. Keep that choice and the phrase sits on our servers encrypted under a key WE hold: a valid legal order, a deep enough compromise, or a dishonest future version of us could reach your plaintext. We count capabilities, not intentions, and that capability is on our side. Self-custody users are exposed to none of it.
 
-The choice is reversible either way from Settings > Security > Your Phrase, both directions signed with your own account key. [SECURITY.md](SECURITY.md) is the full statement of what each mode protects and what it does not. If you want the version of PrivacyNotes this document describes, use the phrase flow.
+The choice is reversible either way from Settings > Account > Key custody, both directions signed with your own account key. [SECURITY.md](SECURITY.md) is the full statement of what each mode protects and what it does not. If you want the version of PrivacyNotes this document describes, use the phrase flow.
 
 ### Metadata
 

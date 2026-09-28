@@ -24,7 +24,7 @@
     "sport": "スポーツ",
     "tech": "科学とテクノロジー",
     "signals": "シグナル",
-    "numbers": "数字"
+    "numbers": "数字と算数"
   },
   "icons": {
     "folder": "フォルダ",
@@ -249,6 +249,8 @@
     "bone": "骨",
     "barn": "納屋",
     "tractor": "トラクター",
+    "grains": "穀物",
+    "windmill": "風車",
     "guitar": "ギター",
     "piano-keys": "ピアノ",
     "microphone-stage": "マイク",
@@ -302,6 +304,12 @@
     "info": "情報",
     "siren": "サイレン",
     "infinity": "無限",
+    "plus": "プラス",
+    "minus": "マイナス",
+    "x": "かける",
+    "divide": "割る",
+    "equals": "イコール",
+    "percent": "パーセント",
     "peace": "平和",
     "recycle": "リサイクル",
     "radioactive": "放射能",
@@ -317,6 +325,10 @@
     "file-video": "動画ファイル",
     "file-audio": "音声ファイル",
     "file-code": "コードファイル",
+    "file-html": "ウェブページ",
+    "file-lock": "ロックされたファイル",
+    "file-cloud": "クラウドファイル",
+    "file-svg": "ベクター画像",
     "fingerprint": "指紋"
   }
 }

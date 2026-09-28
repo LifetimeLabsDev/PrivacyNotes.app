@@ -138,7 +138,7 @@
     "freeSubLabel": "Bez karty kredytowej, bez limitu czasu.",
     "freeAllPillars": "Notatki, zadania, pliki, sejf, dziennik i zakładki",
     "freeSync": "Synchronizacja na 2 urządzeniach",
-    "freeVault": "Zaszyfrowany sejf plików, 5 MB na plik",
+    "freeVault": "50 MB pamięci, do 5 MB na plik",
     "freeSearch": "Wyszukiwanie pełnotekstowe + tagi",
     "freeImport": "Import i eksport, w tym Keep i Obsidian",
     "freeBurn": "Spal po przeczytaniu",
@@ -327,6 +327,7 @@
       "fixed": "Naprawione"
     },
     "changelogComingSoon": "Changelog wkrótce.",
+    "changelogLatest": "Najnowsza",
     "hotkeysFootnote": "Większość skrótów jest ignorowana, gdy piszesz w polu tekstowym, więc zwykłe klawisze jak J i K nadal wpisują J i K."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "Większość osób nigdy nam nic nie płaci i tak ma być. Ocena to piękny sposób, żeby powiedzieć dziękuję.",
     "outro": "Czytamy każdą opinię, a kilka słów od kogoś, kto używa aplikacji codziennie, dodaje nam sił.",
     "descGithub": "Dodaj gwiazdkę w serwisie GitHub",
+    "descAppStore": "Oceń PrivacyNotes w App Store",
     "descAlternativeTo": "Polub nas i oceń w serwisie AlternativeTo",
     "descCapterra": "Oceń PrivacyNotes w serwisie Capterra",
     "descSaasHub": "Polub nas i oceń w serwisie SaaSHub",

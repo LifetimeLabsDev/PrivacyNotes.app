@@ -7,6 +7,7 @@ import { foldText } from './textFold';
 import { foldForMatch, textMatcher } from './textMatch';
 import { perfSpan } from './perf';
 import { contactSearchText, parseContactBody } from './contactBody';
+import { isPublicField, loginExtrasOf } from './loginExtras';
 
 /**
  * Client-side full-text search over decrypted notes.
@@ -72,7 +73,13 @@ export function indexedBodyText(n: LocalNote): string {
   if (n.type !== 'login' && n.type !== 'card' && n.type !== 'ssh-key') return n.body;
   try {
     const d = JSON.parse(n.body);
-    if (n.type === 'login') return [d.url ?? '', d.username ?? '', d.notes ?? ''].join(' ');
+    if (n.type === 'login') {
+      // Extra websites and custom field names are searchable; a field's
+      // value only when the field is a text field.
+      const e = loginExtrasOf(n.trackers);
+      const extras = [...e.extraUrls, ...e.fields.flatMap((f) => (isPublicField(f) ? [f.label, f.value] : [f.label]))];
+      return [d.url ?? '', d.username ?? '', d.notes ?? '', ...extras].join(' ');
+    }
     if (n.type === 'card') return [d.cardholderName ?? '', d.notes ?? ''].join(' ');
     return [d.label ?? '', d.publicKey ?? '', d.notes ?? ''].join(' ');
   } catch {
@@ -89,7 +96,8 @@ export function indexedBodyText(n: LocalNote): string {
  * gate opens. Tested in tests/lockGateReads.test.ts.
  */
 export function gatedSearchCopy(n: LocalNote): LocalNote {
-  return { ...n, body: '' };
+  // A login's custom fields live in its trackers, so those go too.
+  return { ...n, body: '', ...(n.type === 'login' ? { trackers: undefined } : {}) };
 }
 
 function noteToDoc(n: LocalNote): IndexedDoc {
@@ -167,6 +175,49 @@ export function buildSearchIndex(notes: LocalNote[]): void {
   end();
 }
 
+/** True once an index exists to answer queries. */
+export function searchIndexReady(): boolean {
+  return index !== null;
+}
+
+/** True when a change is big enough that one build beats per-note updates. */
+export function wantsFullBuild(changed: { added: string[]; updated: string[] }): boolean {
+  return !index || changed.added.length + changed.updated.length > indexedIds.size / 2;
+}
+
+const SLICE_MS = 12;
+const yieldToMain = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
+
+/**
+ * The full build in slices of about SLICE_MS, yielding to the main thread
+ * between them, so a large vault never blocks input for the whole build.
+ * The index already in place keeps answering until the new one is complete,
+ * then both the index and the folded copies are swapped in at once.
+ */
+export async function buildSearchIndexSliced(notes: LocalNote[]): Promise<void> {
+  const end = perfSpan('buildSearchIndex');
+  const next = createIndex();
+  const ids = new Set<string>();
+  const folded = new Map<string, string>();
+  let sliceStart = performance.now();
+  for (const n of notes) {
+    const doc = noteToDoc(n);
+    next.add(doc);
+    ids.add(doc.id);
+    folded.set(doc.id, foldedCopy(doc, n.tags));
+    if (performance.now() - sliceStart > SLICE_MS) {
+      await yieldToMain();
+      sliceStart = performance.now();
+    }
+  }
+  index = next;
+  indexedIds.clear();
+  for (const id of ids) indexedIds.add(id);
+  foldedNotes.clear();
+  for (const [id, text] of folded) foldedNotes.set(id, text);
+  end();
+}
+
 /**
  * Incremental update - add/replace/remove only changed notes. Driven by
  * useSearchIndexSync (searchIndexSync.ts), which diffs the notes state,
@@ -178,7 +229,7 @@ export function updateSearchIndex(
   notes: LocalNote[],
   changed: { added: string[]; updated: string[]; removed: string[] },
 ): void {
-  if (!index || changed.added.length + changed.updated.length > indexedIds.size / 2) {
+  if (!index || wantsFullBuild(changed)) {
     buildSearchIndex(notes);
     return;
   }

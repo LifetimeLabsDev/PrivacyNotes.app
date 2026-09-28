@@ -400,7 +400,7 @@ export function deleteFolder(
   return { folders: next, deleted, reparentTo };
 }
 
-/** Direct-member note counts per folder id (v1: no recursive rollup). */
+/** Direct-member note counts per folder id. `folderTotals` rolls them up. */
 export function folderCounts(notes: LocalNote[]): Map<string, number> {
   const counts = new Map<string, number>();
   for (const n of notes) {
@@ -408,6 +408,39 @@ export function folderCounts(notes: LocalNote[]): Map<string, number> {
     counts.set(n.folderId, (counts.get(n.folderId) ?? 0) + 1);
   }
   return counts;
+}
+
+/**
+ * Per folder, its own items plus every descendant's. A closed row shows this
+ * number, an open row its direct count, because its subfolders show theirs
+ * below it. One pass over a parent-to-children map: calling `subtreeIds` per
+ * folder would be quadratic on a large tree.
+ */
+export function folderTotals(folders: FolderDef[], counts: Map<string, number>): Map<string, number> {
+  const kids = new Map<string, string[]>();
+  for (const f of folders) {
+    if (f.parentId === null) continue;
+    const list = kids.get(f.parentId);
+    if (list) list.push(f.id);
+    else kids.set(f.parentId, [f.id]);
+  }
+  const totals = new Map<string, number>();
+  // `validateFolders` breaks cycles; the visiting set keeps a bad tree from
+  // recursing forever anyway.
+  const visiting = new Set<string>();
+  const total = (id: string): number => {
+    const known = totals.get(id);
+    if (known !== undefined) return known;
+    if (visiting.has(id)) return 0;
+    visiting.add(id);
+    let sum = counts.get(id) ?? 0;
+    for (const child of kids.get(id) ?? []) sum += total(child);
+    visiting.delete(id);
+    totals.set(id, sum);
+    return sum;
+  };
+  for (const f of folders) total(f.id);
+  return totals;
 }
 
 /** Ancestor ids of a folder, nearest first. Empty for roots/unknown ids. */

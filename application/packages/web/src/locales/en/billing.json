@@ -55,14 +55,16 @@
     "openingBody": "A Paddle checkout window should appear. If it does not, your browser may have blocked the popup - reload this page to retry."
   },
   "history": {
-    "title": "Note history",
-    "subtitle": "Up to 20 versions per note. Oldest auto-pruned.",
+    "subtitle": "Up to 20 versions per item. Oldest auto-pruned.",
     "empty": "No history yet. Versions start piling up after the next edit. Come back later.",
     "loadFailed": "Could not load the history. Check your connection and try again.",
     "selectPrompt": "Select a version to preview.",
     "emptyBody": "(empty)",
     "restore": "Restore",
-    "restoring": "Restoring…"
+    "restoring": "Restoring…",
+    "restoreSnapshotFailed": "Could not save the current version first, so nothing was restored. Check your connection and try again.",
+    "restoreFailed": "Could not restore this version. Try again.",
+    "loginExtrasNotRecorded": "This version did not record custom fields or additional websites. Restoring it keeps the current ones."
   },
   "donation": {
     "eyebrow": "You unlocked",

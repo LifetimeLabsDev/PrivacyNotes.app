@@ -24,7 +24,7 @@
     "sport": "الرياضة",
     "tech": "العلوم والتقنية",
     "signals": "الإشارات",
-    "numbers": "الأرقام"
+    "numbers": "الأرقام والرياضيات"
   },
   "icons": {
     "folder": "مجلد",
@@ -249,6 +249,8 @@
     "bone": "عظمة",
     "barn": "حظيرة",
     "tractor": "جرار",
+    "grains": "حبوب",
+    "windmill": "طاحونة هواء",
     "guitar": "غيتار",
     "piano-keys": "بيانو",
     "microphone-stage": "ميكروفون",
@@ -302,6 +304,12 @@
     "info": "معلومات",
     "siren": "صفارة إنذار",
     "infinity": "لانهاية",
+    "plus": "زائد",
+    "minus": "ناقص",
+    "x": "ضرب",
+    "divide": "قسمة",
+    "equals": "يساوي",
+    "percent": "نسبة مئوية",
     "peace": "سلام",
     "recycle": "إعادة تدوير",
     "radioactive": "إشعاع",
@@ -317,6 +325,10 @@
     "file-video": "ملف فيديو",
     "file-audio": "ملف صوتي",
     "file-code": "ملف برمجي",
+    "file-html": "صفحة ويب",
+    "file-lock": "ملف مقفل",
+    "file-cloud": "ملف سحابي",
+    "file-svg": "رسم متجه",
     "fingerprint": "بصمة"
   }
 }

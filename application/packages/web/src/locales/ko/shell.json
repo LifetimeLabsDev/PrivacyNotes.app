@@ -108,7 +108,10 @@
     "open": "열기",
     "notesHeading": "메모",
     "fillOneField": "저장하려면 최소 한 칸은 입력하세요.",
-    "expiryNeedsBoth": "유효기간은 월과 연도를 모두 입력하거나 둘 다 비워 두세요."
+    "expiryNeedsBoth": "유효기간은 월과 연도를 모두 입력하거나 둘 다 비워 두세요.",
+    "customField": "사용자 지정 필드",
+    "fieldNeedsName": "사용자 지정 필드마다 이름을 붙여 주세요.",
+    "saveFailed": "저장하지 못했어요. 변경한 내용은 그대로 있어요."
   },
   "fileTypes": {
     "audio": "오디오",
@@ -147,6 +150,7 @@
     "allItems": "전체",
     "pinnedTooltip": "고정된 항목",
     "pinned": "고정됨",
+    "archive": "보관함",
     "notesTooltip": "모든 노트",
     "notes": "노트",
     "tasksTooltip": "모든 노트의 할 일",
@@ -213,6 +217,8 @@
     "noMatches": "일치하는 폴더가 없어요",
     "collapse": "접기",
     "expand": "펼치기",
+    "collapseAll": "모두 접기",
+    "expandAll": "모두 펼치기",
     "reorder": "{{folder}} 순서 바꾸기",
     "saveName": "폴더 이름 저장",
     "actionsForFolder": "{{folder}} 폴더 작업",
@@ -221,21 +227,27 @@
   },
   "collapsedSidebar": {
     "newNote": "새 노트",
-    "cycleView": "보기 전환 (자동, 목록, 그리드)",
     "expandSidebar": "사이드바 펼치기"
   },
   "mobileHeader": {
     "openMenu": "메뉴 열기"
   },
   "noteOptionsMenu": {
+    "color": "색상",
+    "colorNone": "색상 없음",
+    "colorUseDefault": "기본값 사용",
+    "colorFromFolder": "폴더에서: {{name}}",
+    "colorFromTag": "태그에서: #{{name}}",
+    "details": "세부 정보",
     "readOnly": "읽기 전용",
     "readOnlyDescription": "다시 끌 때까지 편집할 수 없어요.",
     "protect": "보호",
-    "protectDescription": "내용을 PIN이나 생체 인증 뒤에 숨겨요. 제목은 그대로 보여요.",
     "convertToJournal": "저널 항목으로 전환",
     "convertToNote": "노트로 전환",
     "unpin": "고정 해제",
     "pin": "고정",
+    "archive": "보관",
+    "unarchive": "보관 해제",
     "burn": "Burn",
     "share": "공유",
     "trash": "휴지통",
@@ -243,17 +255,15 @@
     "restore": "복원",
     "deleteForever": "영구 삭제",
     "moveToFolder": "폴더로 이동",
-    "noteHistory": "노트 히스토리",
-    "noteHistoryDescription": "최근 20개 버전 중 아무거나 복원해요.",
-    "showMarkdownDescription": "원본 마크다운을 편집해요.",
-    "showFormattedDescription": "서식 편집기로 돌아가요.",
+    "noteHistory": "히스토리",
     "findReplace": "찾기 및 바꾸기",
+    "uncheckAllTasks": "모든 할 일 체크 해제",
     "comingSoon": "출시 예정",
     "noteOptions": "노트 옵션",
     "lastModified": "마지막 수정: {{date}}",
     "created": "생성: {{date}}",
     "size": "사용 용량: {{size}}",
-    "sizeHint": "이 노트의 암호화된 총 크기예요.",
+    "sizeHint": "이 항목의 암호화된 총 크기예요.",
     "tagCount_other": "태그 {{count}}개"
   },
   "selectionToolbar": {
@@ -261,6 +271,8 @@
     "exitSelection": "선택 종료",
     "unpin": "고정 해제",
     "pin": "고정",
+    "archive": "보관",
+    "unarchive": "보관 해제",
     "tag": "태그",
     "export": "내보내기",
     "delete": "삭제",
@@ -272,6 +284,8 @@
   },
   "listPrefs": {
     "listPreferences": "목록 설정",
+    "layout": "레이아웃",
+    "layoutDeviceOnly": "이 기기에만 적용돼요",
     "sortBy": "정렬 기준",
     "dateCreated": "생성일",
     "dateModified": "수정일",
@@ -279,6 +293,7 @@
     "size": "크기",
     "view": "보기",
     "showPreview": "미리보기 표시",
+    "longPreview": "미리보기 길게 표시",
     "showDate": "날짜 표시",
     "showTags": "폴더 및 태그 표시",
     "other": "기타",
@@ -320,6 +335,8 @@
     "deleteForever": "영구 삭제",
     "unpin": "고정 해제",
     "pin": "고정",
+    "archive": "보관",
+    "unarchive": "보관 해제",
     "duplicate": "복제",
     "moveToFolder": "폴더로 이동",
     "exportAsMarkdown": "Markdown으로 내보내기",
@@ -331,7 +348,13 @@
     "newContact": "새 연락처",
     "openBookmark": "열기",
     "copyBookmarkUrl": "URL 복사",
-    "editBookmark": "북마크 편집"
+    "editBookmark": "북마크 편집",
+    "openInTab": "탭에서 열기",
+    "closeTab": "탭 닫기",
+    "closeOtherTabs": "다른 탭 닫기",
+    "closeAllTabs": "모든 탭 닫기",
+    "pinTab": "탭 고정",
+    "unpinTab": "탭 고정 해제"
   },
   "demoBanner": {
     "title": "부담 없이 사용해 보세요",
@@ -353,6 +376,8 @@
     "braveSteps": "이걸 Brave 주소창에 붙여넣고 \"{{flag}}\"을 Enabled로 바꾼 다음, Brave를 다시 시작하세요.",
     "braveAppAlternative": "아니면 데스크톱 앱을 쓰세요",
     "openFailed": "그 파일을 열지 못했어요.",
+    "linkNotFound": "이 폴더에 “{{target}}” 파일이 없어요.",
+    "linkNeedsFolder": "링크를 열려면 폴더를 열어 주세요.",
     "saveFailed": "디스크에 저장하지 못했어요.",
     "saving": "저장 중…",
     "savedToDisk": "디스크에 저장됨",
@@ -582,5 +607,9 @@
   },
   "looks": {
     "menu": "아이콘 및 색상"
+  },
+  "tabStrip": {
+    "label": "열린 탭",
+    "close": "{{title}} 닫기"
   }
 }

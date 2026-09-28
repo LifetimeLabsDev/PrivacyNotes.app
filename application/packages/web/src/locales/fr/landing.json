@@ -138,7 +138,7 @@
     "freeSubLabel": "Sans carte bancaire, sans limite de temps.",
     "freeAllPillars": "Notes, tâches, fichiers, coffre, journal et signets",
     "freeSync": "Synchronisation sur 2 appareils",
-    "freeVault": "Coffre à fichiers chiffré, 5 Mo par fichier",
+    "freeVault": "50 Mo de stockage, jusqu’à 5 Mo par fichier",
     "freeSearch": "Recherche plein texte + étiquettes",
     "freeImport": "Import et export, dont Keep et Obsidian",
     "freeBurn": "Burn After Reading",
@@ -327,6 +327,7 @@
       "fixed": "Corrigé"
     },
     "changelogComingSoon": "Changelog bientôt disponible.",
+    "changelogLatest": "Dernière",
     "hotkeysFootnote": "La plupart des raccourcis sont ignorés pendant que tu tapes dans un champ de texte, donc des touches comme J et K écrivent toujours J et K."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "La plupart des gens ne nous paient jamais rien, et c’est voulu. Un avis est une belle façon de dire merci.",
     "outro": "Nous lisons chaque avis, et quelques mots de quelqu’un qui utilise l’app tous les jours, c’est ce qui nous fait avancer.",
     "descGithub": "Mets une étoile sur GitHub",
+    "descAppStore": "Note PrivacyNotes sur l'App Store",
     "descAlternativeTo": "Like et avis sur AlternativeTo",
     "descCapterra": "Note PrivacyNotes sur Capterra",
     "descSaasHub": "Like et avis sur SaaSHub",

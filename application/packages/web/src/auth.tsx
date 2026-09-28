@@ -22,7 +22,7 @@ import {
   type SupabaseClient,
 } from '@notes/shared';
 import { registerLocalDataKey, clearLocalDataKey } from './localKey';
-import { clearLocalDatabase, countUnsyncedNotes } from './notesRepo';
+import { clearLocalDatabase, countUnsyncedNotes, dropReferencesToBlobsOnlyHere } from './notesRepo';
 import { db } from './db';
 import i18n from './i18n';
 import {
@@ -40,6 +40,8 @@ import {
 // sign-out and on the owner-mismatch wipe.
 import { clearLocalSettings, hasUnpushedSettings, loadLocalSettings, saveLocalSettings, syncUserSettings } from './userSettings';
 import { isDemoMode } from './demo';
+import { MfaPrompt } from './MfaPrompt';
+import { ensureLevel2, useMfaPrompt, submitMfaCode, dismissMfaPrompt, mfaSessionChanged, isMfaRefusal, MfaRequiredError, MfaCancelledError, withMfaAwareTimeout } from './mfaStep';
 import { buildDemoAuthState } from './demoAuth';
 import { ConfirmModal } from './ConfirmModal';
 import { seedOnboardingNotes, SEED_MEDICATION } from './welcomeNote';
@@ -92,6 +94,7 @@ import {
   markRegistered,
   clearRegistrationMarker,
   jwtPayloadPubkey,
+  jwtPayloadAal,
   clearSupabaseAuthKeys,
   readOwnerMirror,
   writeOwnerMirror,
@@ -102,6 +105,7 @@ import { logAuthEvent } from './authDiag';
 import { checkEarlySupporter, useProStatus } from './authProStatus';
 import { useCustody } from './authCustody';
 import { useOAuthFlows } from './authOAuth';
+import { accountOAuthFetch, detectAutomaticOAuthSession, supabaseAuthStorageKey } from './accountOAuth';
 
 /**
  * "Trust this device" storage model:
@@ -145,7 +149,9 @@ const supabase =
     import.meta.env.VITE_SUPABASE_ANON_KEY,
     {
       storage: trustAwareStorage,
-      detectSessionInUrl: true,
+      storageKey: supabaseAuthStorageKey(import.meta.env.VITE_SUPABASE_URL),
+      fetch: accountOAuthFetch(import.meta.env.VITE_SUPABASE_URL, supabaseAuthStorageKey(import.meta.env.VITE_SUPABASE_URL)),
+      detectSessionInUrl: detectAutomaticOAuthSession(),
       // PKCE for every OAuth flow, web and native: the provider returns a
       // one-time code that only the install holding the verifier can
       // exchange, so a callback URL is worthless to anyone who did not
@@ -167,6 +173,7 @@ if (import.meta.env.DEV) hmrGlobal.__pnSupabase = supabase;
 if (!hmrGlobal.__pnAuthDiagWired) {
   hmrGlobal.__pnAuthDiagWired = true;
   supabase.auth.onAuthStateChange((event, session) => {
+    mfaSessionChanged(session);
     logAuthEvent(`supabase:${event}`, {
       hasSession: session !== null,
       uid: session?.user?.id?.slice(0, 8),
@@ -384,6 +391,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [auth, setAuth] = useState<AuthState>({ status: 'loading' });
+  const mfaPrompt = useMfaPrompt();
 
   /**
    * The account-switch question, for the two doors that cannot ask for
@@ -1149,6 +1157,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           clearRegistrationMarker();
           throw new Error(i18n.t('auth:signIn.authHeaderStripped'));
         }
+        if (isMfaRefusal(linkBody)) {
+          clearRegistrationMarker();
+          throw new MfaRequiredError();
+        }
         const detail = linkBody ? `${linkError.message} - ${JSON.stringify(linkBody)}` : linkError.message;
         return failHandshake(new Error(`link-pubkey failed: ${detail}`));
       }
@@ -1173,7 +1185,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // - OAuth: no credential, no password change, plain refresh.
       // Spec: ops/docs/design-decisions.md (phrase-derived auth credential)
       let sessionEstablished = false;
-      if (method !== 'oauth') {
+      if (method !== 'oauth' && !oauthSession) {
         const { data: postLink, error: postLinkErr } =
           await supabase.auth.signInWithPassword({
             email: authEmailForPubkey(pubkey),
@@ -1181,6 +1193,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           });
         if (!postLinkErr && postLink.session?.access_token) {
           accessToken = postLink.session.access_token;
+          authUid = postLink.session.user.id;
           sessionEstablished = true;
         }
       }
@@ -1195,6 +1208,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
 
+    // Verify after the final password grant: signing in again creates an
+    // AAL1 token. Never route a pending/dismissed challenge through the
+    // cleanup in failHandshake. tests/mfaIntegration.test.ts.
+    await ensureLevel2(supabase, { allowLocalUse: vaultOpenRef.current, background: vaultOpenRef.current });
+    const verifiedSession = (await supabase.auth.getSession()).data.session;
+    if (!verifiedSession || jwtPayloadPubkey(verifiedSession.access_token) !== pubkey) {
+      throw new MfaCancelledError();
+    }
+    accessToken = verifiedSession.access_token;
+    authUid = verifiedSession.user.id;
     sessionRef.current = { accessToken, authUid };
 
     // Register this device. For free-tier users past the 2-device limit
@@ -1227,6 +1250,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           fpPepper,
         });
       } catch (err) {
+        if (isMfaRefusal(err) || (err as Error).message === 'register-device failed: mfa_required') throw new MfaRequiredError();
         return failHandshake(new Error(
           `Device registration failed: ${(err as Error).message}`,
         ));
@@ -1439,6 +1463,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return booted;
   }
 
+  async function verifiedDeviceSession(pubkey: string) {
+    await ensureLevel2(supabase, { allowLocalUse: vaultOpenRef.current });
+    const live = (await supabase.auth.getSession()).data.session;
+    if (!live || jwtPayloadPubkey(live.access_token) !== pubkey) throw new MfaCancelledError();
+    const session = { accessToken: live.access_token, authUid: live.user.id };
+    sessionRef.current = session;
+    return session;
+  }
+
   async function resolveDeviceLimit(
     targetDeviceId: string,
   ): Promise<{ ok: true } | { ok: false; error: string }> {
@@ -1451,6 +1484,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      const session = await verifiedDeviceSession(auth.pubkey);
       await revokeDevice({
         supabase,
         accessToken: session.accessToken,
@@ -1504,6 +1538,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      const session = await verifiedDeviceSession(auth.pubkey);
       const retry = await registerDevice({
         supabase,
         accessToken: session.accessToken,
@@ -1605,6 +1640,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    if (handleWebOAuthCallback()) return;
     const stored = trustAwareStorage.getItem(PHRASE_STORAGE_KEY);
     // The stored value is a wrapped envelope (phraseAtRest.ts), or
     // legacy plaintext on an install that predates the wrap. Presence
@@ -1697,12 +1733,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // (VPN, flaky mobile data, Cloudflare block) doesn't trap the
         // user on the loading screen indefinitely.
         const AUTH_TIMEOUT_MS = 15_000;
-        Promise.race([
+        withMfaAwareTimeout(
           authenticateWithPhrase(phrase, method),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error('Auth timed out - network may be unreachable.')), AUTH_TIMEOUT_MS),
-          ),
-        ]).catch((err) => {
+          AUTH_TIMEOUT_MS,
+          () => { throw new Error('Auth timed out - network may be unreachable.'); },
+        ).catch((err) => {
           console.error('Auto sign-in failed:', err);
           // Same taxonomy as the fast-boot branch above (session audit
           // 2026-08-25): a rate limit is "not now", never "sign in
@@ -1791,6 +1826,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Mark this as a user-initiated sign-in so a still-pending OAuth
       // hydration aborts instead of signing out / setAuth-ing over the
       // handshake this call is about to run. See userAuthGen.
+      dismissMfaPrompt();
       userAuthGen.current++;
       // Flip the trust flag BEFORE we authenticate so every supabase-js
       // write that happens during sign-in (session row, refresh token)
@@ -1828,10 +1864,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const provider = session?.user?.app_metadata?.provider;
         const isOAuth =
           provider === 'google' || provider === 'apple' || provider === 'github';
+        // A connected account signs in as the vault's own phrase account,
+        // so its session names no provider. When that session already
+        // passed two-factor verification for this vault, a password grant
+        // here would replace it with an unverified one and ask for a second
+        // code. The server confirms the session is still live first.
+        const verifiedForVault = Boolean(session?.access_token && !isOAuth &&
+          jwtPayloadAal(session.access_token) === 'aal2' &&
+          jwtPayloadPubkey(session.access_token) === derivedPubkey &&
+          (await supabase.auth.getUser()).data.user?.id === session.user?.id);
         if (
           session?.access_token &&
           session.user?.id &&
-          isOAuth &&
+          (isOAuth || verifiedForVault) &&
           jwtPayloadPubkey(session.access_token) === derivedPubkey
         ) {
           oauthSession = {
@@ -1933,6 +1978,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const {
     registerOAuthListener,
+    handleWebOAuthCallback,
     signInWithOAuth,
     completeDesktopOAuth,
     retryOAuthHydration,
@@ -1945,6 +1991,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     authInFlight,
     userAuthGen,
     vaultOpenRef,
+    storageKey: supabaseAuthStorageKey(import.meta.env.VITE_SUPABASE_URL),
   });
 
   /**
@@ -2051,6 +2098,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function signOut(opts?: { keepUnsyncedNotes?: boolean }) {
+    dismissMfaPrompt();
     setRevalidationExpired(false);
     // Before anything else: a pending re-mint would authenticate this
     // phrase again minutes after the user signed out.
@@ -2132,6 +2180,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // sign-out/in. #119
       const timeout = (ms: number) =>
         new Promise<void>((resolve) => setTimeout(resolve, ms));
+      // The confirm named the files this wipe destroys. Their entries go
+      // with them, or the next sign-in pulls back entries that cannot open.
+      if (!opts?.keepUnsyncedNotes) {
+        await dropReferencesToBlobsOnlyHere().catch(() => {
+          // A failed edit leaves the entries as they were; the wipe still runs.
+        });
+      }
       const dirtyCount = await countUnsyncedNotes();
       // A settings change waits for the next pass, up to 30 seconds, and the
       // wipe below removes the cache that holds it.
@@ -2327,6 +2382,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
+      {mfaPrompt && (
+        <MfaPrompt request={mfaPrompt} onSubmit={submitMfaCode} onDismiss={dismissMfaPrompt} />
+      )}
       {switchAsk && (
         <ConfirmModal
           title={i18n.t('auth:signIn.switchTitle')}

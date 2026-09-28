@@ -60,6 +60,7 @@
     "groups": {
       "navigation": "Nawigacja",
       "notes": "Notatki",
+      "lists": "Listy",
       "editor": "Edytor",
       "formatting": "Formatowanie",
       "alignment": "Wyrównanie",
@@ -102,7 +103,11 @@
       "toggleSidebar": "Przełącz panel boczny",
       "toggleTheme": "Przełącz tryb jasny / ciemny",
       "zenMode": "Tryb Zen / skupienia (Pro)",
-      "toggleHelp": "Przełącz tę pomoc"
+      "toggleHelp": "Przełącz tę pomoc",
+      "selectSeveral": "Zaznacz kilka elementów",
+      "selectRange": "Zaznacz zakres (podczas zaznaczania)",
+      "openInTab": "Otwórz w karcie (środkowy przycisk też działa)",
+      "closeTab": "Zamknij kartę"
     }
   },
   "cardForm": {

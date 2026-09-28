@@ -11,7 +11,7 @@
  *      with the front-matter keys this build knows and drops the rest. A
  *      note count that differs from the manifest's is a warning.
  *   2. Parse each .md file in the zip root → extract YAML frontmatter
- *      (id, type, starred, trashed, locked, pinProtected, trackers, tags,
+ *      (id, type, starred, archived, trashed, locked, pinProtected, trackers, tags,
  *      timestamps, folder and folderId). The id is what applyImport matches
  *      a restore on; a backup written before ids were carried has none, and
  *      its notes come in as new ones.
@@ -276,6 +276,7 @@ export async function parsePrivacyNotesBackup(
       type: (meta.type as NoteType) || 'note',
       locked: meta.locked === true,
       pinProtected: meta.pinProtected === true,
+      archived: meta.archived === true,
       trackers: (meta.trackers && typeof meta.trackers === 'object')
         ? meta.trackers as Record<string, unknown>
         : undefined,

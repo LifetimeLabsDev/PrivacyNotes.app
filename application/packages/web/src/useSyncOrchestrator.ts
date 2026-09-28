@@ -7,6 +7,7 @@ import { createNote, listNotes } from './notesRepo';
 import { db, type LocalNote } from './db';
 import { sync, pushConflictAnswer, writeConflictAnswer, CaptchaRequiredError, DeviceRevokedError, QuotaExceededError, SessionExpiredError, type NoteConflict, type PushHalt } from './sync';
 import { logAuthEvent } from './authDiag';
+import { ensureLevel2, isMfaRefusal, MfaUnavailableError } from './mfaStep';
 import { fetchQuotaUsage } from './devices';
 import { hasSettingsPulled, syncUserSettings, updateLocalSettings, type UserSettings } from './userSettings';
 import { syncPinCache } from './pin';
@@ -483,6 +484,16 @@ export function useSyncOrchestrator({
       // If the server told us this device was revoked elsewhere, blow
       // up the local session + IndexedDB copy and return the user to
       // onboarding. Any other error is just logged.
+      if (isMfaRefusal(err)) {
+        // A missing factor pauses server access, never the local vault.
+        // Dismissal preserves notes and suppresses repeated background prompts.
+        void ensureLevel2(supabase, { allowLocalUse: true, background: true }).then(
+          () => { void runSync(); },
+          () => { /* dismissed or unreachable: the next sync retries the check */ },
+        );
+        return;
+      }
+      if (err instanceof MfaUnavailableError) return;
       if (err instanceof DeviceRevokedError) {
         await forceSignOut('device revoked');
         return;

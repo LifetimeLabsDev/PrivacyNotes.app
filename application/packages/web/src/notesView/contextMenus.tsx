@@ -18,9 +18,9 @@ import type { ContextMenuItem } from '../ContextMenu';
 import type { LocalNote } from '../db';
 import {
   iconBookmark, iconCheckbox, iconCopy, iconDownload, iconEditPencil,
-  iconExternal, iconFlame, iconFolder,
+  iconExternal, iconFlame, iconFolder, iconOpenInTab,
   iconNewJournal, iconNewLogin, iconNewTask,
-  iconNote, iconPin, iconReadOnly, iconRestore, iconSettings, iconTag,
+  iconArchive, iconNote, iconPin, iconReadOnly, iconRestore, iconSettings, iconTag,
   iconShield, iconSidebar,
   iconSignOut, iconTrash, iconUpload, iconZen, NEW_GLYPHS, EXPORT_GLYPHS,
 } from '../icons';
@@ -68,6 +68,10 @@ export type ContextMenuDeps = {
   setShowSettings: Dispatch<SetStateAction<boolean>>;
   handleSignOutClick: () => void;
 
+  /** Open these items as tabs above the editor, or show the tab one already
+   *  has. Absent where the strip is not drawn. Spec: ops/docs/plans/note-tabs.md */
+  onOpenInTab?: (ids: string[]) => void;
+
   // Multi-select (used by buildNoteMenu for Select / Deselect)
   selectedIds: Set<string>;
   onToggleSelected: (id: string) => void;
@@ -75,10 +79,12 @@ export type ContextMenuDeps = {
    *  selection toolbar already calls, and each reads the current selection
    *  itself, so none of them takes a list of ids. */
   selectionAllStarred: boolean;
+  selectionAllArchived: boolean;
   selectionAllLocked: boolean;
   selectionAllProtected: boolean;
   onClearSelection: () => void;
   onBulkFavorite: () => void;
+  onBulkArchive: () => void;
   onBulkMoveToFolder: () => void;
   onBulkDuplicate: () => void;
   onBulkExportMarkdown: () => void;
@@ -96,6 +102,7 @@ export type ContextMenuDeps = {
   handlePermanentlyDelete: (id: string) => Promise<void> | void;
   requestDeleteConfirm: (id: string, title: string) => void;
   handleToggleStar: (id: string, starred: boolean) => Promise<void> | void;
+  handleToggleArchive: (id: string, archived: boolean) => Promise<void> | void;
   /** Pro: the read-only and PIN-protect toggles, gated by noteActionGuards. */
   handleSetLocked: (id: string, locked: boolean) => Promise<void> | void;
   handleSetPinProtected: (id: string, pinProtected: boolean) => Promise<void> | void;
@@ -360,6 +367,15 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
         many: oneItemOnly('the bookmark editor takes one bookmark'),
       },
     ],
+    [
+      {
+        label: () => i18n.t('shell:contextMenu.openInTab'),
+        icon: () => iconOpenInTab(),
+        when: () => deps.onOpenInTab !== undefined,
+        one: (n) => deps.onOpenInTab?.([n.id]),
+        many: (ids) => deps.onOpenInTab?.(ids),
+      },
+    ],
     [selectRow],
     [
       {
@@ -369,6 +385,14 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
         icon: (s) => iconPin(s.kind === 'many' ? deps.selectionAllStarred : s.note.starred === 1),
         one: (n) => void deps.handleToggleStar(n.id, n.starred !== 1),
         many: () => deps.onBulkFavorite(),
+      },
+      {
+        label: (s) => (s.kind === 'many' ? deps.selectionAllArchived : s.note.archived === 1)
+          ? i18n.t('shell:contextMenu.unarchive')
+          : i18n.t('shell:contextMenu.archive'),
+        icon: (s) => iconArchive(s.kind === 'many' ? deps.selectionAllArchived : s.note.archived === 1),
+        one: (n) => void deps.handleToggleArchive(n.id, n.archived !== 1),
+        many: () => deps.onBulkArchive(),
       },
       {
         label: () => i18n.t('shell:selectionToolbar.tag'),

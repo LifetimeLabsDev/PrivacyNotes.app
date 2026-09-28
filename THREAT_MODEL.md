@@ -1,6 +1,6 @@
 # Threat Model
 
-Last updated: 2026-09-25 (v0.530.2)
+Last updated: 2026-09-28 (v0.547.0)
 
 This document describes the security assumptions, trust boundaries, and known limitations of PrivacyNotes, for auditors, contributors, and users who want to know exactly what the system protects against and what it does not.
 
@@ -65,7 +65,7 @@ Images and file attachments use the same primitive via `encryptBlob` (`shared/sr
 
 ### Burn notes (one-time shares)
 
-A burn note is encrypted client-side with a fresh random key that exists only in the share URL's fragment (`/burn#id=<uuid>&k=<hex>`). Fragments are never sent over HTTP, so the server holds ciphertext it can never decrypt, with no link to any account (creation is anonymous). Opening the link calls a consume-once RPC that deletes the row and returns the ciphertext in one statement; the table has no SELECT policy, so rows cannot be listed or re-read. Unopened notes are purged after 24 hours.
+A burn note is encrypted client-side with a fresh random key that exists only in the share URL's fragment (`/burn#id=<uuid>&k=<hex>`). Fragments are never sent over HTTP, so the server holds ciphertext it can never decrypt, with no link to any account (creation is anonymous). Opening the link calls a consume-once RPC that deletes the row and returns the ciphertext in one statement; the table has no SELECT policy, so rows cannot be listed or re-read. Unopened notes are purged when the lifetime the sender picked runs out, at most 7 days.
 
 ### QR sign-in and phrase handoff
 
@@ -129,19 +129,33 @@ User-facing copy describes both as gates, not encryption.
 
 Each registered device has a server-side row: user-visible name, platform, last-seen timestamp, and four fingerprint hashes used to group multiple browsers on one physical machine into a single device entry. The signals - platform, GPU renderer string, CPU core count, browser language - are hashed client-side with HMAC-SHA256 under a per-user pepper derived from the BIP-39 seed. Raw signal values never leave the device, and the server cannot brute-force the low-entropy signals because it never holds the pepper. Hashes are incomparable across users.
 
+## Two-factor sign-in
+
+Two-factor sign-in is optional. Supabase Auth verifies six-digit TOTP codes; the setup QR is rendered on the device. The server stores the authenticator secret. This is a server access control and does not change encryption: somebody with the phrase can decrypt ciphertext they already possess, and an unlocked device remains in scope for its owner. A compromised server can bypass this access control.
+
+Enabling account management establishes one canonical Auth user for a pubkey, using the existing phrase-derived credential. The same user owns every TOTP factor. A phrase password grant reaches that user directly. An explicitly connected OAuth identity reaches it through the account-logins edge function: the native one-use PKCE exchange identifies the exact provider, the edge creates a native canonical AAL1 session, and a database transaction registers its provider origin before tokens leave the edge. Native automatic same-email linking does not make an unapproved provider connection active. Connecting a provider cannot merge two vaults or change key custody.
+
+Protected managed-account data requires the canonical user and a live session created by the phrase password grant or an active registered provider connection. When an authenticator is enabled, the same check requires a current verified factor and a current AAL2 session, not merely an AAL2 claim in an old JWT. Restrictive policies protect client data and storage; protected SECURITY DEFINER RPCs and session edge functions apply the same gate. Denials raise explicit errors, so sync cannot mistake refusal for an empty account. Caller-only setup/status RPCs remain available before this gate, with connected-account details withheld when access is denied. Intentionally public share endpoints and unmanaged accounts retain their existing contracts.
+
+Account connections and factor enrollment/removal require an Ed25519 signature over a single-use, expiring challenge bound to the user, session, pubkey, operation and exact payload digest. With MFA enabled, these mutations and custody changes require a TOTP verification from the last five minutes; account deletion checks freshness before deleting data. Native factor triggers consume a factor-specific signed intent. A client calling the native API directly cannot activate or delete a verified authenticator without that proof. The verified account-deletion service has a separate, scoped factor-cleanup function. Password identity guards reject native credential replacement while permitting native database encryption rewrapping; the integration harness pins both behaviors against Auth v2.197.0. A platform Auth upgrade needs the same integration checks.
+
+Recovery uses the reusable authenticator setup secret, named the 2FA backup key, saved outside PrivacyNotes. Setup hides the original and requires confirmation from the saved copy before activation. The key restores codes in another authenticator; it does not replace the phrase or a provider login. There is no email reset, operator recovery or alternate bypass. Losing both authenticator and backup blocks new server access. Existing locally unlocked notes remain readable and exportable. The code prompt is outside network timeouts; cancellation and service failures never wipe local data.
+
+Disconnecting a provider removes its authorization and revokes every canonical session recorded for that connection. Before removing the current provider, the app proves the phrase login and performs fresh MFA in that session. A custodial account must keep an active provider or explicitly switch to self-custody first. Account deletion removes connections and factors but keeps a pubkey revocation tombstone, so still-valid old alias JWTs cannot regain access when the other records disappear. Reclaiming a deleted pubkey requires the phrase password proof; an old provider token is insufficient.
+
 ## OAuth users
 
 OAuth (Google, Apple, GitHub) is an identity-only sign-in path. At first OAuth sign-in the user chooses a key custody model, on a screen that preselects custodial.
 
 ### Account identity and cross-provider linking
 
-Account resolution is decided by Supabase GoTrue by **confirmed email**, not the provider's `sub`: a second provider reporting the same verified email merges into the same `auth.users` row, hence the same pubkey and notes. This is the load-bearing feature that lets a Google signup later sign in with Apple.
+For accounts that have not opted into account management, account resolution is decided by Supabase GoTrue by **confirmed email**, not the provider's `sub`: a second provider reporting the same verified email merges into the same `auth.users` row, hence the same pubkey and notes. This is the load-bearing feature that lets a Google signup later sign in with Apple.
 
 **Safety condition:** this is safe only because every enabled provider proves email ownership. Merging into a victim's account requires controlling the victim's email address, at which point most of their accounts are already lost - the standard property of email-based OAuth linking.
 
 **Invariant (do not break):** never enable an auth method that can present an unverified email as confirmed (e.g. email/password without verification, a misconfigured magic-link path). Such a method would let an attacker merge into a custodial victim's account and call `get-custodial-phrase` to retrieve the plaintext phrase. Self-custody users would be unaffected; custodial users would be fully compromised.
 
-**How the session credential complies:** the email provider is enabled (password grant for the re-mint credential above) with confirmation required, so a self-serve signup can never yield a signed-in, confirmed identity. The only path that confirms an email without verification is the pubkey link itself, and it confirms exclusively `<pubkey>@phrase.privacynotes.app` - composed server-side from a pubkey proven by ed25519 signature, on a domain the project controls and no identity provider can assert. No attacker-chosen address can reach a confirmed state through it.
+**How the session credential complies:** the email provider is enabled (password grant for the re-mint credential above) with confirmation required, so a self-serve signup can never yield a signed-in, confirmed identity. The pubkey link and signed account-management activation confirm exclusively `<pubkey>@phrase.privacynotes.app` - composed server-side from a pubkey proven by ed25519 signature, on a domain the project controls and no identity provider can assert. No attacker-chosen address can reach a confirmed state through it.
 
 **Known UX failure mode (data-loss-shaped, not a security issue):** if the second provider returns a different email (Apple's "Hide My Email" relay, or simply a different address), no merge occurs and the user silently lands in a fresh, empty account. Custodial users are hit hardest, as they are least likely to have saved their phrase. Onboarding surfaces phrase / QR recovery prominently for this reason.
 
@@ -151,25 +165,29 @@ The phrase is generated client-side and never transmitted. The server stores onl
 
 ### Custodial (keep it simple)
 
-The OAuth choice screen preselects this mode, and a phrase-only account is never offered it. Continuing with it stores the phrase server-side, encrypted with AES-256-GCM under a dedicated server secret (`CUSTODIAL_PHRASE_KEY`), enabling 1-click sign-in on new devices.
+The OAuth choice screen preselects this mode. A phrase account can explicitly connect a provider in Settings and then choose custody separately. Continuing with it stores the phrase server-side, encrypted with AES-256-GCM under a dedicated server secret (`CUSTODIAL_PHRASE_KEY`), enabling 1-click sign-in on new devices.
 
 **Trust implications** (the user-facing statement is SECURITY.md's custodial section; these are the mechanics):
 
 - The server operator, or anyone holding both database access and the secret, can decrypt the user's phrase and therefore all their data. A valid legal order could compel this. Database-only breaches stay unreadable.
-- Custody is reversible from Settings > Security > Your Phrase: leaving deletes the `custodial_phrases` row, returning re-inserts it. Both directions require a live OAuth session AND an Ed25519 signature over a challenge, so a stolen session token alone cannot change custody mode. Cost of reversibility: the plaintext phrase can reach `store-custodial-phrase` from any signed-in device at any time; the signature bounds who, not when or where.
+- Custody is reversible from Settings > Account > Key custody: leaving deletes the `custodial_phrases` row, returning re-inserts it. Both directions require an eligible live account session AND an Ed25519 signature over a challenge, with fresh MFA when enabled, so a stolen session token alone cannot change custody mode. Cost of reversibility: the plaintext phrase can reach `store-custodial-phrase` from any signed-in device at any time; the signature bounds who, not when or where.
 
 **Known limitations (flagged for audit):**
 
-- `get-custodial-phrase` requires only a valid JWT - no signature challenge. A stolen session suffices to exfiltrate the phrase for as long as the session stays valid: sessions have no timebox and no inactivity timeout, so a copied session keeps refreshing until it is signed out or revoked. Refresh-token rotation ends the copy at the legitimate device's next refresh, so a device that stays closed leaves the window open. A signature challenge is not straightforward here: the user may not yet hold a signing key (the phrase is needed to derive it).
+- `get-custodial-phrase` requires a valid eligible session and current AAL2 when MFA is enabled, but no phrase signature challenge. A stolen eligible session suffices to exfiltrate the phrase for as long as the session stays valid: sessions have no timebox and no inactivity timeout, so a copied session keeps refreshing until it is signed out or revoked. Refresh-token rotation ends the copy at the legitimate device's next refresh, so a device that stays closed leaves the window open. A signature challenge is not straightforward here: the user may not yet hold a signing key (the phrase is needed to derive it).
 - `store-custodial-phrase` validates word count but not BIP-39 wordlist membership. Low risk: the call is signed, so callers can only store a phrase they already hold, corrupting only their own account.
 - Neither custodial endpoint has rate limiting beyond platform defaults, notable given what `get-custodial-phrase` returns.
 - The decrypted phrase transits isolate memory during `get-custodial-phrase` responses with no explicit zeroing; inherent to the runtime.
+
+### Native sign-in return address
+
+On Android and iOS a native sign-in returns to an https address that the operating system delivers only to our signed app (Android App Links, iOS Universal Links). No custom URL scheme is an accepted return address, because any installed app can claim a scheme. Desktop operating systems do not verify which application receives a return address, so an application installed on the same machine can impersonate the app during sign-in; that is device compromise (see "Out-of-scope threats"). `get-custodial-phrase` requires an eligible session and MFA when enabled, and the server records every release: which account, and when.
 
 **Historical note:** before v0.152.0, an edge function derived OAuth users' phrases server-side from a secret pepper, silently. It was removed in v0.173.4 after all affected users migrated; the explicit custodial opt-in replaced it.
 
 ## Out-of-scope threats
 
-- **Device compromise:** OS-level malware, keyloggers, memory or storage inspection. A hostile program running under your own user account counts as device compromise: it has the same access to the app's storage and keys as the app itself.
+- **Device compromise:** OS-level malware, keyloggers, memory or storage inspection. A hostile program running under your own user account counts as device compromise: it has the same access to the app's storage and keys as the app itself. A sandboxed app from a store does not have that access, so what it can do from inside its sandbox, such as registering a URL scheme or opening a sign-in sheet, is in scope. That is why the native sign-in return address is bound to our app.
 - **Supply-chain attacks on the web bundle:** a compromised CDN could serve malicious JS. Mitigated for desktop (bundled frontend); SRI / reproducible builds not yet implemented for web.
 - **Denial of service** against Cloudflare or Supabase.
 - **Clipboard exposure:** once a secret is copied, the OS clipboard is outside our control. We deliberately make no clipboard-wipe claims; a timed wipe from a background tab is unreliable and would be security theater.

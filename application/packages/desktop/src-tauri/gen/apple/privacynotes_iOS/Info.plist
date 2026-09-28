@@ -15,9 +15,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.534.0</string>
+	<string>0.553.1</string>
 	<key>CFBundleVersion</key>
-	<string>0.534.0</string>
+	<string>0.553.1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -76,16 +76,5 @@
 	</dict>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>app.privacynotes</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>privacynotes</string>
-			</array>
-		</dict>
-	</array>
 </dict>
 </plist>

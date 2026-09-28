@@ -2,8 +2,13 @@
  * The folder and tag look picker: a color, an icon, and the one switch that
  * decides whether an open note takes its color as its background.
  *
+ * Two tabs, Icon first, because the icon search needs the room: with the
+ * colors above it, a phone keyboard left the hits no space at all.
+ *
  * A window in the middle of the screen; a bottom sheet under `lg`, where the
- * sidebar is a drawer. A pick saves at once and keeps the picker open, so a
+ * sidebar is a drawer. While a soft keyboard is up, the sheet spans the
+ * visible viewport from its top to the keyboard, so the hits stay in view
+ * whether or not the browser resizes the page for the keyboard. A pick saves at once and keeps the picker open, so a
  * color and an icon can be set in one visit. Cancel puts back what the
  * picker found; Done, the close button, Escape and a click outside keep the
  * picks, because they are already saved. Picks happen on a
@@ -36,8 +41,10 @@ import { recentLookIcons, searchLookIcons } from './lookIconSearch';
 import i18n, { activeLocale, ensureLooksLoaded } from '../i18n';
 import { isImeComposing } from '../imeComposing';
 import { isSoftKeyboardDevice } from '../softKeyboard';
-import { AccentBar, HeadlineRule, SETTINGS_HELP } from '../settingsUI';
+import { HeadlineRule, SETTINGS_HELP } from '../settingsUI';
+import { useKeyboardOpen } from '../useKeyboardOpen';
 import { Switch } from '../Switch';
+import { ListSearchInput } from '../ListSearchInput';
 
 // Search keywords per language, from Unicode CLDR (tools/gen-look-keywords.mjs).
 // Only the reader's language and English load, with the picker.
@@ -96,7 +103,9 @@ export function LookPicker({
   const panelRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const [tab, setTab] = useState<'icon' | 'color'>('icon');
   const [query, setQuery] = useState('');
+  const keyboard = useKeyboardRect(isSheet);
   const [hoverIcon, setHoverIcon] = useState<string | null>(null);
   // The names load with the picker (i18n.ts, ensureLooksLoaded); the state
   // redraws it once they are in.
@@ -144,8 +153,8 @@ export function LookPicker({
   // Straight into the search field where a keyboard is already out; a phone
   // would otherwise raise its keyboard over the icons on open.
   useEffect(() => {
-    if (!isSoftKeyboardDevice()) searchRef.current?.focus({ preventScroll: true });
-  }, []);
+    if (tab === 'icon' && !isSoftKeyboardDevice()) searchRef.current?.focus({ preventScroll: true });
+  }, [tab]);
 
   function iconName(id: string): string {
     const n = catalog?.lookIconNumber(id) ?? null;
@@ -224,26 +233,28 @@ export function LookPicker({
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       gridRef.current?.querySelector<HTMLButtonElement>('[data-look-icon]')?.focus();
-    } else if (e.key === 'Enter' && hits?.[0]) {
+    } else if (e.key === 'Enter') {
+      // The field hands its value up after a short pause, so the hits are
+      // read from what is typed now, not from the last value handed up.
+      const typed = e.currentTarget.value;
+      const first = typed.trim() ? searchLookIcons(typed, entries)[0] : undefined;
+      if (!first) return;
       e.preventDefault();
-      onPick({ icon: hits[0] });
+      onPick({ icon: first });
     }
   }
 
   const searchField = (
-    <input
-      ref={searchRef}
-      type="text"
-      value={query}
-      onChange={(e) => setQuery(e.target.value)}
-      onKeyDown={onSearchKeyDown}
-      placeholder={t('searchPlaceholder')}
-      aria-label={t('searchPlaceholder')}
-      enterKeyHint="search"
-      autoComplete="off"
-      spellCheck={false}
-      className="mt-3 w-full h-9 [@media(hover:none)]:h-11 rounded-md bg-surface-2 border border-divider px-3 text-[14px] text-pn focus:outline-none focus:border-accent placeholder:text-pn-muted"
-    />
+    <div className="mt-3 flex">
+      <ListSearchInput
+        inputRef={searchRef}
+        value={query}
+        onChange={setQuery}
+        onKeyDown={onSearchKeyDown}
+        placeholder={t('searchPlaceholder')}
+        ariaLabel={t('searchPlaceholder')}
+      />
+    </div>
   );
 
   const header = (
@@ -316,15 +327,36 @@ export function LookPicker({
     </div>
   );
 
+  const tabs = (
+    <div role="tablist" aria-label={tShell('looks.menu')} className="mt-3 flex items-stretch border-b border-divider">
+      {(['icon', 'color'] as const).map((id) => (
+        <button
+          key={id}
+          type="button"
+          role="tab"
+          aria-selected={tab === id}
+          onClick={() => setTab(id)}
+          className={`flex-1 px-3 py-2 [@media(hover:none)]:py-3 text-sm font-medium border-b-2 -mb-px transition ${
+            tab === id ? 'border-accent text-accent' : 'border-transparent text-pn-soft hover:text-pn'
+          }`}
+        >
+          {t(id)}
+        </button>
+      ))}
+    </div>
+  );
+
   const colorSection = (
     <>
-      <SectionTitle className="mt-4 mb-2">{t('color')}</SectionTitle>
-      <div className="flex flex-wrap gap-1.5 [@media(hover:none)]:gap-2">
+      <div className="mt-4 flex flex-wrap gap-1.5 [@media(hover:none)]:gap-2">
         <ColorSwatch
           label={t('noColor')}
           none
           selected={!ownColor}
           className={TOUCH_SWATCH}
+          // The first swatch sits at the panel's start edge, where a centered
+          // tip would hang out of the panel.
+          labelPosition="below-start"
           onClick={() => onPick({ color: null })}
         />
         {LOOK_COLORS.map((c) => (
@@ -334,6 +366,7 @@ export function LookPicker({
             background={`var(--pn-label-${c}-ink)`}
             selected={ownColor === c}
             className={TOUCH_SWATCH}
+            labelPosition="below"
             onClick={() => onPick({ color: c })}
           />
         ))}
@@ -358,7 +391,6 @@ export function LookPicker({
           onChange={onTintNotes}
         />
       </div>
-      <SectionTitle className="mt-4 pb-2">{t('icon')}</SectionTitle>
     </>
   );
 
@@ -413,7 +445,7 @@ export function LookPicker({
           <div className={`mt-2 ${cellGrid}`}>{hits.map(iconButton)}</div>
         ) : (
           <p className="mt-4 text-center text-[13px] text-pn-muted" role="status">
-            {tCommon('noResults')}
+            {tCommon('state.noResults')}
           </p>
         )
       ) : (
@@ -426,25 +458,39 @@ export function LookPicker({
   );
 
   const dialogLabel = tShell('looks.menu');
+  const top = (
+    <>
+      {header}
+      {tabs}
+      {tab === 'icon' && searchField}
+    </>
+  );
+  const body = tab === 'icon' ? grid : colorSection;
 
   if (isSheet) {
     return createPortal(
       <>
+        {/* Nearly the whole screen, and a fixed height, so a search with few
+            hits does not shrink the sheet under the finger. */}
         <div className="fixed inset-0 z-[60] bg-black/30 dark:bg-black/50" {...backdropProps} />
         <div
           ref={panelRef}
           role="dialog"
           aria-label={dialogLabel}
-          className="fixed bottom-0 inset-x-0 z-[60] max-h-[80dvh] flex flex-col bg-surface-1 border-t border-divider rounded-t-xl pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+          className={`fixed inset-x-0 z-[60] flex flex-col bg-surface-1 border-divider ${
+            keyboard
+              ? 'border-b rounded-b-xl pb-2'
+              : 'bottom-0 h-[calc(100dvh-env(safe-area-inset-top)-1rem)] border-t rounded-t-xl pb-[max(0.75rem,env(safe-area-inset-bottom))]'
+          }`}
+          style={keyboard ? { top: keyboard.top, height: keyboard.height } : undefined}
         >
-          <div className="w-8 h-1 bg-neutral-300 dark:bg-neutral-700 rounded-full mx-auto mt-3 mb-3 shrink-0" />
-          <div className="px-4 shrink-0">
-            {header}
-            {searchField}
-            {colorSection}
-          </div>
-          <div className="px-4 pt-1 pb-2 overflow-y-auto min-h-0 flex-1 overscroll-contain">{grid}</div>
-          {footer}
+          {!keyboard && (
+            <div className="w-8 h-1 bg-neutral-300 dark:bg-neutral-700 rounded-full mx-auto mt-3 mb-3 shrink-0" />
+          )}
+          <div className={`px-4 shrink-0 ${keyboard ? 'pt-3' : ''}`}>{top}</div>
+          <div className="px-4 pt-1 pb-2 overflow-y-auto min-h-0 flex-1 overscroll-contain">{body}</div>
+          {/* Done is the close button, which stays in the header. */}
+          {!keyboard && footer}
         </div>
       </>,
       document.body,
@@ -465,12 +511,8 @@ export function LookPicker({
         aria-label={dialogLabel}
         className="w-[380px] [@media(hover:none)]:w-[420px] max-w-full h-[min(640px,calc(100dvh-32px))] flex flex-col bg-surface-1 border border-divider rounded-xl shadow-xl pb-3"
       >
-        <div className="px-4 pt-4 shrink-0">
-          {header}
-          {searchField}
-          {colorSection}
-        </div>
-        <div className="px-4 pt-1 pb-3 overflow-y-auto min-h-0 flex-1 overscroll-contain">{grid}</div>
+        <div className="px-4 pt-4 shrink-0">{top}</div>
+        <div className="px-4 pt-1 pb-3 overflow-y-auto min-h-0 flex-1 overscroll-contain">{body}</div>
         {footer}
       </div>
     </div>,
@@ -478,13 +520,29 @@ export function LookPicker({
   );
 }
 
-/** The settings headline (ui-patterns section 36): accent bar, title, rule. */
-function SectionTitle({ children, className }: { children: string; className: string }) {
-  return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
-      <AccentBar />
-      <span className="text-[13px] font-semibold text-pn">{children}</span>
-      <HeadlineRule />
-    </div>
-  );
+/**
+ * The part of the screen a soft keyboard leaves visible, or null while no
+ * keyboard is up. Read from the visual viewport, which shrinks for the
+ * keyboard both where the page is resized with it and where the keyboard
+ * only covers the page.
+ */
+function useKeyboardRect(enabled: boolean): { top: number; height: number } | null {
+  const open = useKeyboardOpen();
+  const [rect, setRect] = useState<{ top: number; height: number } | null>(null);
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!enabled || !open || !vv) {
+      setRect(null);
+      return;
+    }
+    const read = () => setRect({ top: vv.offsetTop, height: vv.height });
+    read();
+    vv.addEventListener('resize', read);
+    vv.addEventListener('scroll', read);
+    return () => {
+      vv.removeEventListener('resize', read);
+      vv.removeEventListener('scroll', read);
+    };
+  }, [enabled, open]);
+  return rect;
 }

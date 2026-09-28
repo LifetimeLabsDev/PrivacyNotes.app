@@ -7,11 +7,12 @@
   "delete-account": "Hoe verwijder ik mijn account?",
   "device-limit": "Wat betekent \"Apparaatlimiet bereikt\"?",
   "forgot-pin": "Ik ben mijn PIN vergeten. Hoe kom ik er weer in?",
-  "guess-phrase": "Als iemand mijn 12 woorden raadt, kan diegene dan in mijn account?",
+  "guess-phrase": "Kan iemand mijn 12 woorden raden of toevallig dezelfde krijgen?",
   "image-quality": "Verandert of comprimeert PrivacyNotes mijn afbeeldingen?",
   "journal": "Hoe werkt het dagboek, en wat kan ik bijhouden?",
   "leaving": "Hoe verlaat ik PrivacyNotes volledig?",
   "locked-vs-protected": "Wat is het verschil tussen alleen-lezen en met een PIN beveiligde notities?",
+  "lost-2fa": "Ik ben mijn 2FA-codes kwijt. Hoe kom ik weer binnen?",
   "obtainium": "Hoe installeer ik de Android-app met Obtainium?",
   "phrase-vs-password": "Waarom een herstelzin in plaats van een gebruikersnaam en wachtwoord?",
   "remove-device": "Hoe verwijder ik een apparaat dat ik niet meer gebruik?",
@@ -22,5 +23,5 @@
   "vault": "Wat is de Kluis?",
   "vault-totp": "Kan de Kluis mijn 2FA-authenticatorsleutels bewaren (TOTP / MFA-codes)?",
   "what-syncs": "Wat synchroniseert er precies tussen mijn apparaten, en wat blijft lokaal?",
-  "why-no-2fa": "Waarom is er geen tweefactorauthenticatie (2FA)?"
+  "why-no-2fa": "Hoe zet ik tweefactorauthenticatie (2FA) aan?"
 }

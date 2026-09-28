@@ -35,7 +35,7 @@ export type SettingEntry = {
   brand?: true;
   options?: readonly string[];
   keywords?: true;
-  shownOn?: 'storeBuild' | 'keyboard';
+  shownOn?: 'storeBuild' | 'keyboard' | 'paneLayout' | 'realAccount';
   /** An entry for a whole section: it opens the pane and flashes nothing. */
   isSection?: true;
 };
@@ -67,6 +67,10 @@ export const TAB_LABEL: Record<string, string> = {
   'security/pin': 'security:modal.tabPin',
   'security/biometric': 'security:modal.tabBiometric',
   'security/phrase': 'security:modal.tabPhrase',
+  'security/twoFactor': 'security:modal.tabTwoFactor',
+  'plan/connectedAccounts': 'security:accountTabs.accounts',
+  'plan/keyCustody': 'security:accountTabs.keyCustody',
+  'plan/overview': 'security:accountTabs.overview',
   'appearance/style': 'settings:appearance.tabStyle',
   'appearance/lists': 'settings:appearance.tabLists',
   'about/about': 'landing:about.tabs.about',
@@ -121,6 +125,7 @@ const ROW_ENTRIES: SettingEntry[] = [
   importer('evernote', 'Evernote'),
   importer('google-keep', 'Google Keep'),
   importer('ia-writer', 'iA Writer'),
+  importer('joplin', 'Joplin'),
   keyedImporter('markdown-folder', 'importExport:sourceLabel.markdownFolder'),
   importer('nextcloud-notes', 'Nextcloud Notes'),
   importer('notesnook', 'Notesnook'),
@@ -163,6 +168,8 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'images.contactPhotos', section: 'images', label: 'settings:images.contactTitle' },
   { id: 'images.removeLocation', section: 'images', label: 'settings:images.removeLocationTitle', keywords: true },
 
+  { id: 'account.connectedAccounts', section: 'plan', tab: 'connectedAccounts', label: 'security:connectedAccounts.title', options: ['security:connectedAccounts.providers.google', 'security:connectedAccounts.providers.apple', 'security:connectedAccounts.providers.github'], shownOn: 'realAccount' },
+
   // Security
   { id: 'security.pin', section: 'security', tab: 'pin', label: 'security:modal.tabPin', keywords: true },
   { id: 'security.setPin', section: 'security', tab: 'pin', label: 'security:pinTab.setPin', options: ['security:pinTab.updatePin'] },
@@ -173,9 +180,10 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'security.appLock', section: 'security', tab: 'biometric', label: 'security:biometricTab.lockOnOpen', keywords: true },
   { id: 'security.relockAfter', section: 'security', tab: 'biometric', label: 'security:biometricTab.relockAfter', keywords: true },
   { id: 'security.phrase', section: 'security', tab: 'phrase', label: 'security:modal.tabPhrase', keywords: true },
+  { id: 'security.twoFactor', section: 'security', tab: 'twoFactor', label: 'security:modal.tabTwoFactor', options: ['security:twoFactor.title', 'security:twoFactor.backupKey', 'security:twoFactor.start'], shownOn: 'realAccount' },
   { id: 'security.qrCode', section: 'security', tab: 'phrase', label: 'security:phraseView.showQr', options: ['security:phraseView.saveQr'] },
   { id: 'security.copyPhrase', section: 'security', tab: 'phrase', label: 'security:phraseView.copyPhrase' },
-  { id: 'security.custody', section: 'security', tab: 'phrase', label: 'security:custody.eyebrow', keywords: true },
+  { id: 'security.custody', section: 'plan', tab: 'keyCustody', label: 'security:custody.eyebrow', keywords: true, shownOn: 'realAccount' },
 
   // ID & Sync
   { id: 'me.thisDevice', section: 'me', label: 'settings:syncPanel.thisDevice', options: ['settings:syncPanel.syncNow'] },
@@ -187,15 +195,16 @@ const ROW_ENTRIES: SettingEntry[] = [
 
   // Appearance
   { id: 'appearance.style', section: 'appearance', tab: 'style', label: 'settings:appearance.tabStyle' },
+  { id: 'appearance.openInTabs', section: 'appearance', tab: 'style', label: 'settings:appearance.openInTabsTitle', keywords: true, shownOn: 'paneLayout' },
   { id: 'appearance.mode', section: 'appearance', tab: 'style', label: 'settings:appearance.modeTitle', options: ['settings:appearance.modeAuto', 'settings:appearance.light', 'settings:appearance.dark'], keywords: true },
   { id: 'appearance.theme', section: 'appearance', tab: 'style', label: 'settings:appearance.lightThemes', options: ['settings:appearance.darkThemes'], keywords: true },
-  { id: 'appearance.textSize', section: 'appearance', tab: 'style', label: 'settings:appearance.textSizeTitle', options: ['settings:appearance.textSizeSmall', 'settings:appearance.textSizeDefault', 'settings:appearance.textSizeLarge', 'settings:appearance.textSizeLargest'], keywords: true },
+  { id: 'appearance.textSize', section: 'appearance', tab: 'style', label: 'settings:appearance.textSizeTitle', options: ['settings:appearance.textSizeSmallest', 'settings:appearance.textSizeSmall', 'settings:appearance.textSizeDefault', 'settings:appearance.textSizeLarge', 'settings:appearance.textSizeLargest'], keywords: true },
   { id: 'appearance.lineSpacing', section: 'appearance', tab: 'style', label: 'settings:appearance.lineSpacingTitle', options: ['settings:appearance.lineSpacingTight', 'settings:appearance.lineSpacingCompact', 'settings:appearance.lineSpacingNormal'], keywords: true },
-  { id: 'appearance.tintNotes', section: 'appearance', tab: 'style', label: 'settings:appearance.tintNotesTitle', keywords: true },
   { id: 'appearance.contentWidth', section: 'appearance', tab: 'style', label: 'settings:appearance.contentWidthTitle', options: ['settings:appearance.contentWidthWide', 'settings:appearance.contentWidthFull'], keywords: true },
   { id: 'appearance.editor', section: 'appearance', tab: 'style', label: 'settings:appearance.editorTitle', options: ['settings:appearance.editorFormatted', 'settings:appearance.editorMarkdown'], keywords: true },
-  { id: 'appearance.favicons', section: 'appearance', tab: 'style', label: 'settings:appearance.faviconsTitle', keywords: true },
   { id: 'appearance.invisibles', section: 'appearance', tab: 'style', label: 'settings:appearance.invisiblesTitle', keywords: true },
+  { id: 'appearance.favicons', section: 'appearance', tab: 'style', label: 'settings:appearance.faviconsTitle', keywords: true },
+  { id: 'appearance.tintNotes', section: 'appearance', tab: 'style', label: 'settings:appearance.tintNotesTitle', keywords: true },
   { id: 'appearance.lists', section: 'appearance', tab: 'lists', label: 'settings:appearance.tabLists' },
   { id: 'appearance.startView', section: 'appearance', tab: 'lists', label: 'settings:appearance.startViewTitle', keywords: true },
   { id: 'appearance.view', section: 'appearance', tab: 'lists', label: 'settings:appearance.viewTitle', options: ['settings:appearance.viewList', 'settings:appearance.viewGrid'], keywords: true },

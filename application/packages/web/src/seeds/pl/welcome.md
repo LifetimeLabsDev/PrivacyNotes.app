@@ -27,7 +27,7 @@ Pasek u góry zmienia wygląd tekstu: **pogrubienie**, *kursywa*, nagłówki, li
 
 ## Jedna rzecz na dziś
 
-- [ ] Znajdź swoją **<mark style="background-color: rgba(51, 154, 240, 0.35)">frazę z 12 słów</mark>** w **Ustawienia > Bezpieczeństwo > Twoja fraza**, zapisz ją na papierze i schowaj w bezpiecznym miejscu
+- [ ] Znajdź swoją **<mark style="background-color: rgba(51, 154, 240, 0.35)">frazę z 12 słów</mark>** w **Ustawienia > Bezpieczeństwo > Fraza**, zapisz ją na papierze i schowaj w bezpiecznym miejscu
 
 Ta fraza otwiera twoje notatki. Gdzie leży, decydujesz ty, i możesz to zmienić w każdej chwili. [[Jak chronione są twoje notatki]] opisuje trzy możliwości.
 

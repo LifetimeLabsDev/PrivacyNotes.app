@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuth } from './auth';
 import { deleteAccountServer } from './devices';
@@ -9,6 +9,8 @@ import { SectionEyebrow } from './settingsUI';
 import { isDemoMode, isDemoOwnedKey } from './demo';
 import { settingsLocalKey } from './settingsLocalKey';
 import { HelpChip } from './HelpChip';
+import { ensureLevel2, MfaCancelledError, mfaSessionIdentity } from './mfaStep';
+import { jwtPayloadPubkey } from './authStorage';
 
 // ------------------------------------------------------------------
 // Danger zone - account & data deletion
@@ -68,6 +70,8 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
   const [hasActiveSub, setHasActiveSub] = useState<boolean | null>(null);
 
   const authed = auth.status === 'authenticated' ? auth : null;
+  const authRef = useRef(authed);
+  authRef.current = authed;
 
   // Preflight when the danger zone expands. Cheap RPC, returns boolean.
   useEffect(() => {
@@ -129,6 +133,13 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
     try {
       // Server deletion first (while we still have credentials).
       if (deleteServer) {
+        // A person may take longer than the network timeout to find a code.
+        // Keep this prompt before the timed deletion and bind its result to
+        // the same vault/session before touching data. tests/dangerZoneMfa.test.ts.
+        const before = (await supabase.auth.getSession()).data.session;
+        const identity = mfaSessionIdentity(before);
+        if (!identity || !before || jwtPayloadPubkey(before.access_token) !== authed.pubkey) throw new MfaCancelledError();
+        await ensureLevel2(supabase, { force: true, allowLocalUse: true });
         // Re-poll storage sub status right before deleting - the user may
         // have cancelled their sub in another tab since the DangerZone
         // expanded. Catches multi-tab races before the 409. See gap #44.
@@ -143,6 +154,7 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
         if (!session?.access_token || !session.user?.id) {
           throw new Error(t('danger.noSession'));
         }
+        if (authRef.current?.pubkey !== authed.pubkey || mfaSessionIdentity(session) !== identity || jwtPayloadPubkey(session.access_token) !== authed.pubkey) throw new MfaCancelledError();
 
         // Block any further sync calls before we kick off deletion. An
         // in-flight `sync()` started before this click can still land
@@ -186,6 +198,7 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
       // Local wipe - always runs when server is deleted (the session
       // is gone), and optionally runs on its own ("wipe this device").
       if (effectiveDeleteLocal) {
+        if (authRef.current?.pubkey !== authed.pubkey) throw new MfaCancelledError();
         // Zero key material.
         authed.encryptionKey.fill(0);
         authed.signingPrivateKey.fill(0);

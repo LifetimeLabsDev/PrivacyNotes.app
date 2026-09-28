@@ -29,6 +29,7 @@ export function useEditorPanels({
   editor,
   isMobile,
   readOnly,
+  preview,
   toolbarVisible,
   isPro,
   onOpenUpgrade,
@@ -38,6 +39,8 @@ export function useEditorPanels({
   editor: TipTapEditor | null;
   isMobile: boolean;
   readOnly: boolean;
+  /** The note history preview: no bars, no outline, no shortcuts. */
+  preview: boolean;
   toolbarVisible: boolean;
   isPro: boolean;
   /** Opens the upgrade modal when a free account asks for replace. */
@@ -128,10 +131,12 @@ export function useEditorPanels({
    * Replace is the Pro half of search, and this is its one gate: the
    * shortcut and the "..." menu row both land here, so a free account meets
    * the same upgrade pitch from either. `proUnlocked`, so the public demo
-   * hands the feature out like every other client-side gate.
+   * hands the feature out like every other client-side gate. A read-only
+   * note refuses before the pitch: it cannot take the action at all.
    * Spec: ops/docs/pro-features.md (Find and replace)
    */
   const openReplace = useCallback(() => {
+    if (readOnly) return;
     if (!proUnlocked(isPro)) {
       onOpenUpgrade?.('replace');
       return;
@@ -139,10 +144,16 @@ export function useEditorPanels({
     setBar('replace');
     setBarFocusTick((t) => t + 1);
     setOutlineOpen(false);
-  }, [isPro, onOpenUpgrade]);
+  }, [readOnly, isPro, onOpenUpgrade]);
+
+  // Turning read-only on under an open replace bar closes it. The find bar
+  // stays: finding is reading, and a read-only note keeps it.
+  useEffect(() => {
+    if (readOnly) setBar((b) => (b === 'replace' ? 'none' : b));
+  }, [readOnly]);
 
   /**
-   * The single open/close path, shared by Cmd/Ctrl+F and the tag-row magnifier
+   * The single open/close path, shared by Cmd/Ctrl+F and the corner magnifier
    * so the two cannot drift: whichever one you reach for, pressing it again
    * closes the bar. Reads the mirror ref rather than state because both callers
    * fire from event handlers, long after the effect above has synced it.
@@ -166,7 +177,7 @@ export function useEditorPanels({
   // in some other input/textarea (e.g. the note-list search) so we don't hijack
   // their shortcuts; our own UI lives inside rootRef so it still counts.
   useEffect(() => {
-    if (readOnly) return;
+    if (preview) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (isImeComposing(e)) return;
       const root = rootRef.current;
@@ -242,7 +253,7 @@ export function useEditorPanels({
     };
     document.addEventListener('keydown', onKeyDown, true);
     return () => document.removeEventListener('keydown', onKeyDown, true);
-  }, [readOnly, toggleFind, toggleReplace]);
+  }, [preview, toggleFind, toggleReplace]);
 
   // Persist the outline open/closed choice.
   useEffect(() => {

@@ -55,14 +55,16 @@
     "openingBody": "Ein Paddle-Checkout-Fenster sollte erscheinen. Falls nicht, hat dein Browser das Popup möglicherweise blockiert - lade diese Seite neu, um es erneut zu versuchen."
   },
   "history": {
-    "title": "Notizverlauf",
-    "subtitle": "Bis zu 20 Versionen pro Notiz. Älteste werden automatisch entfernt.",
+    "subtitle": "Bis zu 20 Versionen pro Eintrag. Älteste werden automatisch entfernt.",
     "empty": "Noch kein Verlauf. Versionen sammeln sich nach der nächsten Bearbeitung an. Schau später wieder vorbei.",
     "loadFailed": "Der Verlauf konnte nicht geladen werden. Prüfe deine Verbindung und versuche es noch einmal.",
     "selectPrompt": "Wähle eine Version für die Vorschau.",
     "emptyBody": "(leer)",
     "restore": "Wiederherstellen",
-    "restoring": "Wird wiederhergestellt…"
+    "restoring": "Wird wiederhergestellt…",
+    "restoreSnapshotFailed": "Die aktuelle Version konnte nicht zuerst gesichert werden, deshalb wurde nichts wiederhergestellt. Prüfe deine Verbindung und versuche es noch einmal.",
+    "restoreFailed": "Diese Version konnte nicht wiederhergestellt werden. Versuche es noch einmal.",
+    "loginExtrasNotRecorded": "Diese Version hat keine eigenen Felder und keine weiteren Websites gespeichert. Beim Wiederherstellen bleiben die aktuellen erhalten."
   },
   "donation": {
     "eyebrow": "Du hast freigeschaltet",

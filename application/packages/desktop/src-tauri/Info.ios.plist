@@ -6,26 +6,13 @@
      macOS and iOS alike, and this one carries what must NOT reach the macOS
      bundle.
 
-     Why the URL scheme lives here and not in tauri.conf.json: the deep-link
-     plugin's `plugins.deep-link.desktop.schemes` is translated into
-     CFBundleURLTypes by the macOS bundler, but `plugins.deep-link.mobile` is
-     NOT translated into CFBundleURLTypes on iOS (verified against Tauri CLI
-     2.11.4, 2026-08-15). Without this file the generated iOS Info.plist has no
-     URL scheme at all, and every `privacynotes://auth-callback` return is a
-     silent no-op: Google and Apple sign-in both dead-end after the browser
-     hands control back.
-
-     Why it must not go in the shared Info.plist: macOS already generates its
-     own CFBundleURLTypes entry (CFBundleURLName "app.privacynotes privacynotes")
-     and declaring a second one there risks overriding the bundler's on the
-     shipping DMG, where deep links carry the native OAuth return.
-
-     History, so nobody re-adds the old mechanism: until 2026-08-15 the scheme was
-     spliced into the GENERATED plist by scripts/apply-ios-appearance-icons.sh,
-     which worked but had two weaknesses - it was a string-replace against XML
-     Tauri is free to reformat, and it only ran via `ios:icons`, so an `ios:init`
-     on its own produced a build with no URL scheme and no warning. That script
-     now only asserts the key is present and fails loudly if it is not.
+     The iOS bundle registers NO custom URL scheme, and none may be added
+     here. Any installed app can claim a scheme, so a scheme cannot say which
+     app receives a sign-in. The sign-in sheet returns over the https address
+     that iOS delivers only to the app whose `webcredentials` entitlement names
+     its host, and the tests hold that address in place. Tauri does not turn
+     `plugins.deep-link.mobile` into CFBundleURLTypes on iOS, so this file is
+     the only place a scheme could come back from.
      Spec: ops/docs/macos-ios-setup.md (native Google sign-in / deep links) -->
 <plist version="1.0">
 <dict>
@@ -104,16 +91,5 @@
 	</dict>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>app.privacynotes</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>privacynotes</string>
-			</array>
-		</dict>
-	</array>
 </dict>
 </plist>

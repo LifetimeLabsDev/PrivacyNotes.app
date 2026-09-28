@@ -108,7 +108,10 @@
     "open": "Otevřít",
     "notesHeading": "Poznámky",
     "fillOneField": "Před uložením vyplň alespoň jedno pole.",
-    "expiryNeedsBoth": "Platnost vyžaduje měsíc i rok, nebo nech obě pole prázdná."
+    "expiryNeedsBoth": "Platnost vyžaduje měsíc i rok, nebo nech obě pole prázdná.",
+    "customField": "Vlastní pole",
+    "fieldNeedsName": "Pojmenuj každé vlastní pole.",
+    "saveFailed": "Uložení se nepovedlo. Tvoje změny tu pořád jsou."
   },
   "fileTypes": {
     "audio": "Zvuk",
@@ -150,6 +153,7 @@
     "allItems": "Vše",
     "pinnedTooltip": "Připnuté položky",
     "pinned": "Připnuté",
+    "archive": "Archiv",
     "notesTooltip": "Všechny poznámky",
     "notes": "Poznámky",
     "tasksTooltip": "Úkoly ze všech poznámek",
@@ -216,6 +220,8 @@
     "noMatches": "Žádné odpovídající složky",
     "collapse": "Sbalit",
     "expand": "Rozbalit",
+    "collapseAll": "Sbalit vše",
+    "expandAll": "Rozbalit vše",
     "reorder": "Změnit pořadí: {{folder}}",
     "saveName": "Uložit název složky",
     "actionsForFolder": "Akce pro složku {{folder}}",
@@ -224,21 +230,27 @@
   },
   "collapsedSidebar": {
     "newNote": "Nová poznámka",
-    "cycleView": "Přepnout zobrazení (auto, seznam, mřížka)",
     "expandSidebar": "Rozbalit boční panel"
   },
   "mobileHeader": {
     "openMenu": "Otevřít menu"
   },
   "noteOptionsMenu": {
+    "color": "Barva",
+    "colorNone": "Bez barvy",
+    "colorUseDefault": "Použít výchozí",
+    "colorFromFolder": "Ze složky: {{name}}",
+    "colorFromTag": "Ze značky: #{{name}}",
+    "details": "Podrobnosti",
     "readOnly": "Jen pro čtení",
     "readOnlyDescription": "Žádné úpravy, dokud to nevypneš.",
     "protect": "Chránit",
-    "protectDescription": "Skryj obsah za PIN nebo biometriku. Název zůstane vidět.",
     "convertToJournal": "Převést na záznam v deníku",
     "convertToNote": "Převést na poznámku",
     "unpin": "Odepnout",
     "pin": "Připnout",
+    "archive": "Archivovat",
+    "unarchive": "Zrušit archivaci",
     "burn": "Spálit",
     "share": "Sdílet",
     "trash": "Koš",
@@ -246,17 +258,15 @@
     "restore": "Obnovit",
     "deleteForever": "Smazat navždy",
     "moveToFolder": "Přesunout do složky",
-    "noteHistory": "Historie poznámky",
-    "noteHistoryDescription": "Obnov kteroukoli z posledních 20 verzí.",
-    "showMarkdownDescription": "Uprav čistý markdown.",
-    "showFormattedDescription": "Zpět do formátovaného editoru.",
+    "noteHistory": "Historie",
     "findReplace": "Najít a nahradit",
+    "uncheckAllTasks": "Odškrtnout všechny úkoly",
     "comingSoon": "Už brzy",
     "noteOptions": "Možnosti poznámky",
     "lastModified": "Naposledy upraveno: {{date}}",
     "created": "Vytvořeno: {{date}}",
     "size": "Využité místo: {{size}}",
-    "sizeHint": "Celková šifrovaná velikost této poznámky.",
+    "sizeHint": "Celková šifrovaná velikost této položky.",
     "tagCount_one": "{{count}} značka",
     "tagCount_other": "{{count}} značek",
     "tagCount_few": "{{count}} značky",
@@ -267,6 +277,8 @@
     "exitSelection": "Ukončit výběr",
     "unpin": "Odepnout",
     "pin": "Připnout",
+    "archive": "Archivovat",
+    "unarchive": "Zrušit archivaci",
     "tag": "Značka",
     "export": "Exportovat",
     "delete": "Smazat",
@@ -278,6 +290,8 @@
   },
   "listPrefs": {
     "listPreferences": "Nastavení seznamu",
+    "layout": "Rozložení",
+    "layoutDeviceOnly": "Platí jen pro toto zařízení",
     "sortBy": "Řadit podle",
     "dateCreated": "Datum vytvoření",
     "dateModified": "Datum úpravy",
@@ -285,6 +299,7 @@
     "size": "Velikost",
     "view": "Zobrazení",
     "showPreview": "Zobrazit náhled",
+    "longPreview": "Delší text náhledu",
     "showDate": "Zobrazit datum",
     "showTags": "Zobrazit složku a značky",
     "other": "Ostatní",
@@ -329,6 +344,8 @@
     "deleteForever": "Smazat navždy",
     "unpin": "Odepnout",
     "pin": "Připnout",
+    "archive": "Archivovat",
+    "unarchive": "Zrušit archivaci",
     "duplicate": "Duplikovat",
     "moveToFolder": "Přesunout do složky",
     "exportAsMarkdown": "Exportovat jako Markdown",
@@ -340,7 +357,13 @@
     "newContact": "Nový kontakt",
     "openBookmark": "Otevřít",
     "copyBookmarkUrl": "Kopírovat URL",
-    "editBookmark": "Upravit záložku"
+    "editBookmark": "Upravit záložku",
+    "openInTab": "Otevřít na kartě",
+    "closeTab": "Zavřít kartu",
+    "closeOtherTabs": "Zavřít ostatní karty",
+    "closeAllTabs": "Zavřít všechny karty",
+    "pinTab": "Připnout kartu",
+    "unpinTab": "Odepnout kartu"
   },
   "demoBanner": {
     "title": "Vyzkoušej to bez rizika",
@@ -362,6 +385,8 @@
     "braveSteps": "Vlož to do adresního řádku Brave, nastav „{{flag}}“ na Enabled a Brave restartuj.",
     "braveAppAlternative": "Nebo místo toho použij aplikaci pro počítač",
     "openFailed": "Tenhle soubor se nepodařilo otevřít.",
+    "linkNotFound": "V téhle složce není soubor „{{target}}“.",
+    "linkNeedsFolder": "Odkazy fungují až po otevření složky.",
     "saveFailed": "Uložení na disk se nepodařilo.",
     "saving": "Ukládání…",
     "savedToDisk": "Uloženo na disk",
@@ -604,5 +629,9 @@
   },
   "looks": {
     "menu": "Ikona a barva"
+  },
+  "tabStrip": {
+    "label": "Otevřené karty",
+    "close": "Zavřít {{title}}"
   }
 }

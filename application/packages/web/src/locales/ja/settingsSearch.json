@@ -65,6 +65,7 @@
     "about_dataStorage": "データ, サーバー, 保存場所, プライバシー",
     "about_changelog": "リリースノート, 更新履歴, 新機能, アップデート, 変更履歴",
     "about_hotkeys": "キーボードショートカット, ショートカット, キー, ホットキー",
-    "about_rating": "レビュー, 評価, 星, App Store"
+    "about_rating": "レビュー, 評価, 星, App Store",
+    "appearance_openInTabs": "タブ, タブバー, ブラウザ, 開く"
   }
 }

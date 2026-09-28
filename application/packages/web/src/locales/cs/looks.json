@@ -24,7 +24,7 @@
     "sport": "Sporty",
     "tech": "Věda a technika",
     "signals": "Signály",
-    "numbers": "Čísla"
+    "numbers": "Čísla a matematika"
   },
   "icons": {
     "folder": "Složka",
@@ -249,6 +249,8 @@
     "bone": "Kost",
     "barn": "Stodola",
     "tractor": "Traktor",
+    "grains": "Obilí",
+    "windmill": "Větrný mlýn",
     "guitar": "Kytara",
     "piano-keys": "Klavír",
     "microphone-stage": "Mikrofon",
@@ -302,6 +304,12 @@
     "info": "Informace",
     "siren": "Siréna",
     "infinity": "Nekonečno",
+    "plus": "Znaménko plus",
+    "minus": "Znaménko minus",
+    "x": "Krát",
+    "divide": "Děleno",
+    "equals": "Rovná se",
+    "percent": "Procento",
     "peace": "Mír",
     "recycle": "Recyklace",
     "radioactive": "Radioaktivní",
@@ -317,6 +325,10 @@
     "file-video": "Videosoubor",
     "file-audio": "Zvukový soubor",
     "file-code": "Soubor s kódem",
+    "file-html": "Webová stránka",
+    "file-lock": "Zamčený soubor",
+    "file-cloud": "Soubor v cloudu",
+    "file-svg": "Vektorová grafika",
     "fingerprint": "Otisk prstu"
   }
 }

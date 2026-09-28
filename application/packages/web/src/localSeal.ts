@@ -167,8 +167,16 @@ export function sealedWritesOn(): boolean {
 // this memo kills is the full-LIST unseal on tab focus and post-sync
 // refresh, which is a notes-table pattern.
 // ------------------------------------------------------------------
-const MEMO_MAX = 1000;
+//
+// Bounded by the ciphertext it holds, not by a row count, and full means
+// "cache no more" rather than "evict the oldest": a full read walks every
+// row in the same order, so evicting the oldest would evict exactly the
+// rows the next read wants first, and a vault over the bound would miss on
+// every row of every read. The payload objects are the ones the app state
+// holds anyway, so the ciphertext copy is what the bound counts.
+const MEMO_MAX_CT_CHARS = 48 * 1024 * 1024;
 const memo = new Map<string, { n: string; ct: string; payload: Record<string, unknown> }>();
+let memoChars = 0;
 
 function memoKey(table: string, id: unknown): string {
   return `${table}:${String(id)}`;
@@ -176,18 +184,21 @@ function memoKey(table: string, id: unknown): string {
 
 function memoSet(table: string, id: unknown, n: string, ct: string, payload: Record<string, unknown>): void {
   const key = memoKey(table, id);
-  if (memo.has(key)) memo.delete(key);
-  memo.set(key, { n, ct, payload });
-  if (memo.size > MEMO_MAX) {
-    const oldest = memo.keys().next().value;
-    if (oldest !== undefined) memo.delete(oldest);
+  const prev = memo.get(key);
+  if (prev) {
+    memoChars -= prev.ct.length;
+    memo.delete(key);
   }
+  if (memoChars + ct.length > MEMO_MAX_CT_CHARS) return;
+  memo.set(key, { n, ct, payload });
+  memoChars += ct.length;
 }
 
 /** Plaintext leaves memory with the key - wired below via the key
  *  registry's cleared-callback, so no call site can forget it. */
 function clearUnsealMemo(): void {
   memo.clear();
+  memoChars = 0;
 }
 onLocalDataKeyCleared(clearUnsealMemo);
 

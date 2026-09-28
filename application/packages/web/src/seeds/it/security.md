@@ -29,7 +29,7 @@ Ogni opzione tiene le tue note cifrate sul tuo dispositivo. Cambia solo dove viv
 
 Con le ultime due non potremmo leggere una nota nemmeno se ci costringessero. La prima scambia questo con la comodità: la tua frase sta sul nostro server sotto una chiave nostra, così a un dispositivo nuovo basta il tuo account. Se il nostro server venisse mai violato, quella chiave potrebbe essere esposta.
 
-Accesso con Google, Apple o GitHub? Più avanti puoi passare dall'una all'altra delle prime due, in **Impostazioni > Sicurezza > La tua frase**. Con un account di sola frase, la frase resta sempre con te.
+Accesso con Google, Apple o GitHub? Più avanti puoi passare dall'una all'altra delle prime due, in **Impostazioni > Account > Custodia delle chiavi**. Con un account di sola frase, la frase resta sempre con te.
 
 > [!warning] Tieni una tua copia della frase
 > La tua frase apre le tue note. Se la perdi, nessuno può recuperarla, noi compresi. <span style="color: #e03131">Scrivila su carta oggi.</span>

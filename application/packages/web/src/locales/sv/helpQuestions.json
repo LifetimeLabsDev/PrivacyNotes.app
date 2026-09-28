@@ -7,11 +7,12 @@
   "delete-account": "Hur raderar jag mitt konto?",
   "device-limit": "Vad betyder ”Enhetsgränsen är nådd”?",
   "forgot-pin": "Jag har glömt min PIN. Hur kommer jag in igen?",
-  "guess-phrase": "Om någon gissar mina 12 ord, kan de logga in på mitt konto?",
+  "guess-phrase": "Kan någon gissa mina 12 ord eller råka få samma?",
   "image-quality": "Ändrar eller komprimerar PrivacyNotes mina bilder?",
   "journal": "Hur fungerar dagboken, och vad kan jag följa?",
   "leaving": "Hur lämnar jag PrivacyNotes helt?",
   "locked-vs-protected": "Vad är skillnaden mellan skrivskyddade och PIN-skyddade anteckningar?",
+  "lost-2fa": "Jag har tappat bort mina 2FA-koder. Hur kommer jag in igen?",
   "obtainium": "Hur installerar jag Android-appen med Obtainium?",
   "phrase-vs-password": "Varför en återställningsfras i stället för användarnamn och lösenord?",
   "remove-device": "Hur tar jag bort en enhet som jag inte använder längre?",
@@ -22,5 +23,5 @@
   "vault": "Vad är Valvet?",
   "vault-totp": "Kan valvet lagra mina 2FA-nycklar (TOTP / MFA-koder)?",
   "what-syncs": "Vad exakt synkas mellan mina enheter, och vad stannar lokalt?",
-  "why-no-2fa": "Varför finns det ingen tvåfaktorsautentisering (2FA)?"
+  "why-no-2fa": "Hur aktiverar jag tvåfaktorsautentisering (2FA)?"
 }

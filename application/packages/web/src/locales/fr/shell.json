@@ -108,7 +108,10 @@
     "open": "Ouvrir",
     "notesHeading": "Notes",
     "fillOneField": "Remplis au moins un champ avant d'enregistrer.",
-    "expiryNeedsBoth": "L'expiration nécessite le mois et l'année, ou laisse les deux vides."
+    "expiryNeedsBoth": "L'expiration nécessite le mois et l'année, ou laisse les deux vides.",
+    "customField": "Champ personnalisé",
+    "fieldNeedsName": "Donne un nom à chaque champ personnalisé.",
+    "saveFailed": "Impossible d'enregistrer. Tes modifications sont toujours là."
   },
   "fileTypes": {
     "audio": "Audio",
@@ -148,6 +151,7 @@
     "allItems": "Tout",
     "pinnedTooltip": "Éléments épinglés",
     "pinned": "Épinglés",
+    "archive": "Archives",
     "notesTooltip": "Toutes les notes",
     "notes": "Notes",
     "tasksTooltip": "Tâches de toutes les notes",
@@ -214,6 +218,8 @@
     "noMatches": "Aucun dossier correspondant",
     "collapse": "Réduire",
     "expand": "Développer",
+    "collapseAll": "Tout réduire",
+    "expandAll": "Tout développer",
     "reorder": "Réorganiser {{folder}}",
     "saveName": "Enregistrer le nom du dossier",
     "actionsForFolder": "Actions pour le dossier {{folder}}",
@@ -222,21 +228,27 @@
   },
   "collapsedSidebar": {
     "newNote": "Nouvelle note",
-    "cycleView": "Changer d'affichage (auto, liste, grille)",
     "expandSidebar": "Déplier la barre latérale"
   },
   "mobileHeader": {
     "openMenu": "Ouvrir le menu"
   },
   "noteOptionsMenu": {
+    "color": "Couleur",
+    "colorNone": "Aucune couleur",
+    "colorUseDefault": "Par défaut",
+    "colorFromFolder": "Du dossier : {{name}}",
+    "colorFromTag": "De l'étiquette : #{{name}}",
+    "details": "Détails",
     "readOnly": "Lecture seule",
     "readOnlyDescription": "Aucune modification tant que tu ne le désactives pas.",
     "protect": "Protéger",
-    "protectDescription": "Masque le contenu derrière ton PIN ou ta biométrie. Le titre reste visible.",
     "convertToJournal": "Convertir en entrée de journal",
     "convertToNote": "Convertir en note",
     "unpin": "Désépingler",
     "pin": "Épingler",
+    "archive": "Archiver",
+    "unarchive": "Désarchiver",
     "burn": "Burn",
     "share": "Partager",
     "trash": "Corbeille",
@@ -244,17 +256,15 @@
     "restore": "Restaurer",
     "deleteForever": "Supprimer définitivement",
     "moveToFolder": "Déplacer vers un dossier",
-    "noteHistory": "Historique de la note",
-    "noteHistoryDescription": "Restaure n'importe laquelle des 20 dernières versions.",
-    "showMarkdownDescription": "Modifie la source markdown brute.",
-    "showFormattedDescription": "Retour à l'éditeur formaté.",
+    "noteHistory": "Historique",
     "findReplace": "Rechercher et remplacer",
+    "uncheckAllTasks": "Décocher toutes les tâches",
     "comingSoon": "Bientôt disponible",
     "noteOptions": "Options de la note",
     "lastModified": "Dernière modification : {{date}}",
     "created": "Créée le : {{date}}",
     "size": "Stockage utilisé : {{size}}",
-    "sizeHint": "Taille chiffrée totale de cette note.",
+    "sizeHint": "Taille chiffrée totale de cet élément.",
     "tagCount_one": "{{count}} étiquette",
     "tagCount_other": "{{count}} étiquettes"
   },
@@ -263,6 +273,8 @@
     "exitSelection": "Quitter la sélection",
     "unpin": "Désépingler",
     "pin": "Épingler",
+    "archive": "Archiver",
+    "unarchive": "Désarchiver",
     "tag": "Étiqueter",
     "export": "Exporter",
     "delete": "Supprimer",
@@ -274,6 +286,8 @@
   },
   "listPrefs": {
     "listPreferences": "Préférences de la liste",
+    "layout": "Disposition",
+    "layoutDeviceOnly": "S'applique uniquement à cet appareil",
     "sortBy": "Trier par",
     "dateCreated": "Date de création",
     "dateModified": "Date de modification",
@@ -281,6 +295,7 @@
     "size": "Taille",
     "view": "Affichage",
     "showPreview": "Afficher l'aperçu",
+    "longPreview": "Aperçu plus long",
     "showDate": "Afficher la date",
     "showTags": "Afficher le dossier et les étiquettes",
     "other": "Autre",
@@ -323,6 +338,8 @@
     "deleteForever": "Supprimer définitivement",
     "unpin": "Désépingler",
     "pin": "Épingler",
+    "archive": "Archiver",
+    "unarchive": "Désarchiver",
     "duplicate": "Dupliquer",
     "moveToFolder": "Déplacer vers un dossier",
     "exportAsMarkdown": "Exporter en Markdown",
@@ -334,7 +351,13 @@
     "newContact": "Nouveau contact",
     "openBookmark": "Ouvrir",
     "copyBookmarkUrl": "Copier l'URL",
-    "editBookmark": "Modifier le signet"
+    "editBookmark": "Modifier le signet",
+    "openInTab": "Ouvrir dans un onglet",
+    "closeTab": "Fermer l'onglet",
+    "closeOtherTabs": "Fermer les autres onglets",
+    "closeAllTabs": "Fermer tous les onglets",
+    "pinTab": "Épingler l'onglet",
+    "unpinTab": "Désépingler l'onglet"
   },
   "demoBanner": {
     "title": "Essaie sans aucun risque",
@@ -356,6 +379,8 @@
     "braveSteps": "Colle ça dans la barre d'adresse de Brave, mets « {{flag}} » sur Enabled, puis relance Brave.",
     "braveAppAlternative": "Ou utilise plutôt l'app desktop",
     "openFailed": "Impossible d'ouvrir ce fichier.",
+    "linkNotFound": "Aucun fichier « {{target}} » dans ce dossier.",
+    "linkNeedsFolder": "Ouvre le dossier pour suivre les liens.",
     "saveFailed": "Impossible d'enregistrer sur le disque.",
     "saving": "Enregistrement…",
     "savedToDisk": "Enregistré sur le disque",
@@ -590,5 +615,9 @@
   },
   "looks": {
     "menu": "Icône et couleur"
+  },
+  "tabStrip": {
+    "label": "Onglets ouverts",
+    "close": "Fermer {{title}}"
   }
 }

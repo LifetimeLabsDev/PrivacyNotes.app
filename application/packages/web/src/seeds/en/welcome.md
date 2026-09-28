@@ -31,7 +31,7 @@ The toolbar above changes how text looks: **bold**, *italic*, headings, checklis
 
 ## One thing to do today
 
-- [ ] Find your **<mark style="background-color: rgba(51, 154, 240, 0.35)">12-word phrase</mark>** in **Settings > Security > Your Phrase**, write it on paper, and put it somewhere safe
+- [ ] Find your **<mark style="background-color: rgba(51, 154, 240, 0.35)">12-word phrase</mark>** in **Settings > Security > Phrase**, write it on paper, and put it somewhere safe
 
 That phrase is what opens your notes. Where it is kept is your choice, and you can change that choice at any time. [[How your notes are protected]] lays out the three options.
 

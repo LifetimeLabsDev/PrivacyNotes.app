@@ -75,7 +75,21 @@
   },
   "burnShareModal": {
     "title": "Compartilhar e Queimar Após Ler",
-    "body": "<lead>Sua nota original não será excluída.</lead> Ela continua segura na sua conta. O burn link é uma cópia criptografada separada que se autodestrói depois de lida. O link expira após 24 horas, aberto ou não.",
+    "body": "<lead>Sua nota original não será excluída.</lead> Ela continua segura na sua conta. O burn link é uma cópia criptografada separada que se autodestrói depois de lida.",
+    "readTime": "Tempo de leitura",
+    "readTimeHint": "Depois some da tela",
+    "lifetime": "O link expira",
+    "lifetimeHint": "Se ninguém abrir",
+    "minutes_one": "{{count}} minuto",
+    "minutes_other": "{{count}} minutos",
+    "hours_one": "{{count}} hora",
+    "hours_other": "{{count}} horas",
+    "afterHours_one": "Após {{count}} hora",
+    "afterHours_other": "Após {{count}} horas",
+    "afterDays_one": "Após {{count}} dia",
+    "afterDays_other": "Após {{count}} dias",
+    "create": "Criar e copiar link",
+    "share": "Compartilhar link",
     "imagesStripped": "Apenas o texto é exibido, os arquivos ficam ocultos nesta nota.",
     "copied": "Copiado"
   },
@@ -89,7 +103,7 @@
     "footerTagline": "- Notas com criptografia de zero conhecimento, hospedadas na Suíça.",
     "sealed": {
       "heading": "Você recebeu uma nota criptografada.",
-      "subheading": "Esta mensagem vai se autodestruir após a leitura. Links não lidos expiram após 24 horas.",
+      "subheading": "Esta mensagem vai se autodestruir após a leitura. Links não lidos expiram sozinhos.",
       "reveal": "Revelar mensagem",
       "warning": "O servidor exclui a nota no momento em que você a revela. Não há segunda chance."
     },
@@ -105,7 +119,7 @@
     },
     "gone": {
       "heading": "Esta nota se foi.",
-      "body": "Ela já foi lida ou expirou. Burn links só podem ser abertos uma vez e expiram após 24 horas."
+      "body": "Ela já foi lida ou expirou. Burn links só podem ser abertos uma vez e expiram sozinhos."
     },
     "error": {
       "heading": "Algo deu errado.",

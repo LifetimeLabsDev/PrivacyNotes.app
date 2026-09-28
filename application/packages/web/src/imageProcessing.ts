@@ -447,3 +447,14 @@ export function stripMediaReferences(body: string): string {
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
+
+/** stripMediaReferences limited to the blobs in `ids`; every other
+ *  reference stays. Returns the body unchanged when none of them occurs. */
+export function stripMediaReferencesTo(body: string, ids: ReadonlySet<string>): string {
+  const drop = (whole: string, id: string) => (ids.has(id) ? '' : whole);
+  const next = body
+    .replace(/!\[[^\]]*\]\(pn:(?:img|file)\/([0-9a-f-]{36})\)(?:\{[^}]*\})?\n?/g, drop)
+    .replace(/\[[^\]]*\]\(pn:file\/([0-9a-f-]{36})\)\n?/g, drop);
+  if (next === body) return body;
+  return next.replace(/^\\\s*$/gm, '').replace(/\n{3,}/g, '\n\n').trim();
+}

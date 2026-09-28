@@ -66,6 +66,7 @@
     "about_dataStorage": "data, server, where stored, privacy",
     "about_changelog": "release notes, what is new, updates",
     "about_hotkeys": "keyboard shortcuts, shortcuts, keys, hotkeys",
-    "about_rating": "review, rate, stars, app store"
+    "about_rating": "review, rate, stars, app store",
+    "appearance_openInTabs": "tabs, tab bar, browser, open"
   }
 }

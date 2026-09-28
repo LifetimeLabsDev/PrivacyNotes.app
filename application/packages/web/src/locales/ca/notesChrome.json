@@ -80,7 +80,21 @@
   },
   "burnShareModal": {
     "title": "Comparteix amb Burn After Reading",
-    "body": "<lead>La teva nota original no se suprimirà.</lead> Es queda segura al teu compte. L'enllaç burn és una còpia xifrada a part que s'autodestrueix després de llegir-se. L'enllaç caduca al cap de 24 hores, s'obri o no.",
+    "body": "<lead>La teva nota original no se suprimirà.</lead> Es queda segura al teu compte. L'enllaç burn és una còpia xifrada a part que s'autodestrueix després de llegir-se.",
+    "readTime": "Temps de lectura",
+    "readTimeHint": "Després desapareix de la pantalla",
+    "lifetime": "L'enllaç caduca",
+    "lifetimeHint": "Si ningú l'obre",
+    "minutes_one": "{{count}} minut",
+    "minutes_other": "{{count}} minuts",
+    "hours_one": "{{count}} hora",
+    "hours_other": "{{count}} hores",
+    "afterHours_one": "Al cap de {{count}} hora",
+    "afterHours_other": "Al cap de {{count}} hores",
+    "afterDays_one": "Al cap de {{count}} dia",
+    "afterDays_other": "Al cap de {{count}} dies",
+    "create": "Crea i copia l'enllaç",
+    "share": "Comparteix l'enllaç",
     "imagesStripped": "Només es mostra el text; els fitxers queden ocults en aquesta nota.",
     "copied": "Copiat"
   },
@@ -94,7 +108,7 @@
     "footerTagline": "- Notes xifrades de coneixement zero, allotjades a Suïssa.",
     "sealed": {
       "heading": "Has rebut una nota xifrada.",
-      "subheading": "Aquest missatge s'autodestruirà després de llegir-lo. Els enllaços no llegits caduquen al cap de 24 hores.",
+      "subheading": "Aquest missatge s'autodestruirà després de llegir-lo. Els enllaços no llegits caduquen sols.",
       "reveal": "Mostra el missatge",
       "warning": "El servidor suprimeix la nota en el moment que la mostres. No hi ha segona oportunitat."
     },
@@ -110,7 +124,7 @@
     },
     "gone": {
       "heading": "Aquesta nota ja no existeix.",
-      "body": "Ja s'ha llegit o ha caducat. Els enllaços burn només es poden obrir una vegada i caduquen al cap de 24 hores."
+      "body": "Ja s'ha llegit o ha caducat. Els enllaços burn només es poden obrir una vegada i caduquen sols."
     },
     "error": {
       "heading": "Alguna cosa ha anat malament.",

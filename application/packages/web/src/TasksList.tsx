@@ -4,7 +4,7 @@ import type { LocalNote } from './db';
 import type { ListPrefs, ListPrefsStore } from './listPrefs';
 import type { UserSettings } from './userSettings';
 import { selectTaskNotes, type TaskItem } from './tasks';
-import NoteRow from './NoteRow';
+import NoteRow, { noteLinkText } from './NoteRow';
 import NoteCard from './NoteCard';
 import { compareNotes, stripToPlainText } from './notesViewUtils';
 import type { ContextMenuItem } from './ContextMenu';
@@ -18,7 +18,7 @@ import { Check, CheckSquare, CheckFat, NotePencil, Eye, EyeSlash, Plus, PushPin,
 import { newButtonOpts } from './i18nExempt';
 import type { View } from './views';
 import { ListNav } from './notesView/ListNav';
-import { ImportPromptEntry, useImportPrompt } from './ImportPrompt';
+import { ImportPromptEntry, importPromptFor, type ImportOffer } from './ImportPrompt';
 import { textMatcher } from './textMatch';
 import { isImeComposing } from './imeComposing';
 
@@ -35,6 +35,8 @@ export interface TasksListProps {
   onSelectView: (next: View) => void;
   /** Passed straight to ListNav; see userSettings.hiddenViews. */
   hiddenViews?: import('./views').View[] | undefined;
+  /** The synced import-offer dismissal; see ImportPrompt.tsx. */
+  importOffer: ImportOffer;
   onOpenDrawer: () => void;
   onClearFolder: () => void;
   onClearTag: () => void;
@@ -71,6 +73,7 @@ export interface TasksListProps {
   selectionMode: boolean;
   selectedIds: Set<string>;
   selectionAllStarred: boolean;
+  selectionAllArchived: boolean;
   onRowClick: (e: React.MouseEvent, id: string) => void;
   onToggleSelected: (id: string) => void;
   onRangeSelect: (id: string) => void;
@@ -79,6 +82,7 @@ export interface TasksListProps {
   onClearSelection: () => void;
   onSelectAllVisible: () => void;
   onBulkFavorite: () => void;
+  onBulkArchive: () => void;
   onBulkTag: (tag: string) => void;
   onBulkMoveToFolder: () => void;
   foldersUnlocked: boolean;
@@ -96,6 +100,7 @@ export default function TasksList({
   activeFolderName,
   onSelectView,
   hiddenViews,
+  importOffer,
   onOpenDrawer,
   onClearFolder,
   onClearTag,
@@ -128,6 +133,7 @@ export default function TasksList({
   selectionMode,
   selectedIds,
   selectionAllStarred,
+  selectionAllArchived,
   onRowClick,
   onToggleSelected,
   onRangeSelect,
@@ -136,6 +142,7 @@ export default function TasksList({
   onClearSelection,
   onSelectAllVisible,
   onBulkFavorite,
+  onBulkArchive,
   onBulkTag,
   onBulkMoveToFolder,
   foldersUnlocked,
@@ -232,14 +239,18 @@ export default function TasksList({
       />
     ) : null;
 
+  /** The whole selection as note-links, in list order, for a drag. */
+  const selectionLinkText = () => noteLinkText(taskContainingNotes.filter((n) => selectedIds.has(n.id)), isNoteLocked);
+
   const ItemComp = viewMode === 'grid' ? NoteCard : NoteRow;
 
   /* The standing import entry, shared with the other pillars
-     (ImportPrompt.tsx owns the rules and the storage keys). Tasks live inside
+     (ImportPrompt.tsx owns the rules). Tasks live inside
      notes, so the count that decides whether the offer has had its chance is
      the notes that hold them, which is exactly what this pane lists. */
-  const importPrompt = useImportPrompt('tasks', {
+  const importPrompt = importPromptFor('tasks', {
     count: taskContainingNotes.length,
+    offer: importOffer,
     suppressed:
       selectionMode || search.trim().length > 0 || activeFolderName !== null || activeTag !== null,
   });
@@ -300,6 +311,8 @@ export default function TasksList({
       onTouchMove={onLongPressEnd}
       onTouchCancel={onLongPressEnd}
       selectionMode={selectionMode}
+      linkDrag
+      linkDragSelection={selectionLinkText}
       isMultiSelected={selectedIds.has(n.id)}
       onToggleSelect={(e) => {
         if (e.shiftKey) onRangeSelect(n.id);
@@ -401,8 +414,10 @@ export default function TasksList({
         <SelectionToolbar
           mode="normal"
           allStarred={selectionAllStarred}
+          allArchived={selectionAllArchived}
           onClear={onClearSelection}
           onFavorite={onBulkFavorite}
+          onArchive={onBulkArchive}
           onTag={onBulkTag}
           onMoveToFolder={onBulkMoveToFolder}
           foldersUnlocked={foldersUnlocked}

@@ -9,7 +9,8 @@
     "file": "Fichier",
     "empty": "Vide",
     "noContent": "Aucun contenu",
-    "notBackedUp": "Non sauvegardé"
+    "notBackedUp": "Non sauvegardé",
+    "archived": "Archivé"
   },
   "header": {
     "new": "Nouveau",
@@ -71,6 +72,7 @@
     "noMatches": "Aucun résultat.",
     "vault": "Le coffre est vide.",
     "notes": "Aucune note pour l'instant.",
+    "archive": "Rien d’archivé.",
     "filtered": "Aucun élément ne correspond à tes filtres.",
     "clearFilters": "Effacer les filtres",
     "filteredAfter": "pour les afficher."
@@ -81,6 +83,7 @@
     "journals": "Journaux",
     "vault": "Coffre",
     "pinned": "Épinglés",
+    "archive": "Archives",
     "notes": "Notes"
   },
   "footerStats": {

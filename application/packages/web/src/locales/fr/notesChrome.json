@@ -75,7 +75,21 @@
   },
   "burnShareModal": {
     "title": "Partager en burn note",
-    "body": "<lead>Ta note d'origine ne sera pas supprimée.</lead> Elle reste en sécurité dans ton compte. Le lien burn est une copie chiffrée distincte qui s'autodétruit après lecture. Le lien expire après 24 heures, qu'il soit ouvert ou non.",
+    "body": "<lead>Ta note d'origine ne sera pas supprimée.</lead> Elle reste en sécurité dans ton compte. Le lien burn est une copie chiffrée distincte qui s'autodétruit après lecture.",
+    "readTime": "Temps de lecture",
+    "readTimeHint": "Disparaît ensuite de l'écran",
+    "lifetime": "Expiration du lien",
+    "lifetimeHint": "Si personne ne l'ouvre",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes",
+    "hours_one": "{{count}} heure",
+    "hours_other": "{{count}} heures",
+    "afterHours_one": "Après {{count}} heure",
+    "afterHours_other": "Après {{count}} heures",
+    "afterDays_one": "Après {{count}} jour",
+    "afterDays_other": "Après {{count}} jours",
+    "create": "Créer et copier le lien",
+    "share": "Partager le lien",
     "imagesStripped": "Seul le texte est affiché, les fichiers sont masqués dans cette note.",
     "copied": "Copié"
   },
@@ -89,7 +103,7 @@
     "footerTagline": "- Notes chiffrées en zero-knowledge, hébergées en Suisse.",
     "sealed": {
       "heading": "Tu as reçu une note chiffrée.",
-      "subheading": "Ce message s'autodétruira après lecture. Les liens non lus expirent après 24 heures.",
+      "subheading": "Ce message s'autodétruira après lecture. Les liens non lus expirent d'eux-mêmes.",
       "reveal": "Révéler le message",
       "warning": "Le serveur supprime la note dès que tu la révèles. Pas de seconde chance."
     },
@@ -105,7 +119,7 @@
     },
     "gone": {
       "heading": "Cette note a disparu.",
-      "body": "Elle a déjà été lue ou a expiré. Les liens burn ne peuvent être ouverts qu'une fois et expirent après 24 heures."
+      "body": "Elle a déjà été lue ou a expiré. Les liens burn ne peuvent être ouverts qu'une fois et expirent d'eux-mêmes."
     },
     "error": {
       "heading": "Une erreur s'est produite.",

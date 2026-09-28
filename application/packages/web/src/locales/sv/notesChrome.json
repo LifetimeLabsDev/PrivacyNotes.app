@@ -75,7 +75,21 @@
   },
   "burnShareModal": {
     "title": "Dela och bränn efter läsning",
-    "body": "<lead>Din ursprungliga anteckning raderas inte.</lead> Den ligger kvar tryggt på ditt konto. Burn-länken är en separat krypterad kopia som självförstörs efter att den lästs. Länken går ut efter 24 timmar, oavsett om den öppnas eller inte.",
+    "body": "<lead>Din ursprungliga anteckning raderas inte.</lead> Den ligger kvar tryggt på ditt konto. Burn-länken är en separat krypterad kopia som självförstörs efter att den lästs.",
+    "readTime": "Lästid",
+    "readTimeHint": "Rensas sedan från skärmen",
+    "lifetime": "Länken går ut",
+    "lifetimeHint": "Om ingen öppnar den",
+    "minutes_one": "{{count}} minut",
+    "minutes_other": "{{count}} minuter",
+    "hours_one": "{{count}} timme",
+    "hours_other": "{{count}} timmar",
+    "afterHours_one": "Efter {{count}} timme",
+    "afterHours_other": "Efter {{count}} timmar",
+    "afterDays_one": "Efter {{count}} dag",
+    "afterDays_other": "Efter {{count}} dagar",
+    "create": "Skapa och kopiera länk",
+    "share": "Dela länk",
     "imagesStripped": "Bara text visas, filer döljs i den här anteckningen.",
     "copied": "Kopierad"
   },
@@ -89,7 +103,7 @@
     "footerTagline": "- Zero-knowledge-krypterade anteckningar, med servrar i Schweiz.",
     "sealed": {
       "heading": "Du har fått en krypterad anteckning.",
-      "subheading": "Det här meddelandet självförstörs efter läsning. Olästa länkar går ut efter 24 timmar.",
+      "subheading": "Det här meddelandet självförstörs efter läsning. Olästa länkar går ut av sig själva.",
       "reveal": "Visa meddelandet",
       "warning": "Servern raderar anteckningen i samma stund som du visar den. Du får ingen andra chans."
     },
@@ -105,7 +119,7 @@
     },
     "gone": {
       "heading": "Den här anteckningen är borta.",
-      "body": "Den har redan lästs eller gått ut. Burn-länkar kan bara öppnas en gång och går ut efter 24 timmar."
+      "body": "Den har redan lästs eller gått ut. Burn-länkar kan bara öppnas en gång och går ut av sig själva."
     },
     "error": {
       "heading": "Något gick fel.",

@@ -7,11 +7,12 @@
   "delete-account": "Hesabımı nasıl silerim?",
   "device-limit": "“Cihaz sınırına ulaşıldı” ne demek?",
   "forgot-pin": "PIN'imi unuttum. Nasıl geri girerim?",
-  "guess-phrase": "Biri 12 kelimemi tahmin ederse hesabıma girebilir mi?",
+  "guess-phrase": "Biri 12 kelimemi tahmin edebilir ya da aynılarına sahip olabilir mi?",
   "image-quality": "PrivacyNotes görsellerimi değiştiriyor veya sıkıştırıyor mu?",
   "journal": "Günlük nasıl çalışıyor ve neleri takip edebilirim?",
   "leaving": "PrivacyNotes'tan tamamen nasıl ayrılırım?",
   "locked-vs-protected": "Salt okunur notlarla PIN korumalı notlar arasındaki fark nedir?",
+  "lost-2fa": "2FA kodlarımı kaybettim. Nasıl yeniden girerim?",
   "obtainium": "Android uygulamasını Obtainium ile nasıl kurarım?",
   "phrase-vs-password": "Neden kullanıcı adı ve parola yerine kurtarma ifadesi?",
   "remove-device": "Artık kullanmadığım bir cihazı nasıl kaldırırım?",
@@ -22,5 +23,5 @@
   "vault": "Kasa nedir?",
   "vault-totp": "Kasa 2FA kimlik doğrulayıcı anahtarlarımı saklayabilir mi (TOTP / MFA kodları)?",
   "what-syncs": "Cihazlarım arasında tam olarak ne eşitlenir, ne yerel kalır?",
-  "why-no-2fa": "Neden iki faktörlü kimlik doğrulama (2FA) yok?"
+  "why-no-2fa": "İki faktörlü kimlik doğrulamayı (2FA) nasıl açarım?"
 }

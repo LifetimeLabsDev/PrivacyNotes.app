@@ -138,7 +138,7 @@
     "freeSubLabel": "Sense targeta de crèdit ni límit de temps.",
     "freeAllPillars": "Notes, tasques, fitxers, caixa forta, diari i marcadors",
     "freeSync": "Sincronització entre 2 dispositius",
-    "freeVault": "Caixa forta de fitxers xifrada, 5 MB per fitxer",
+    "freeVault": "50 MB d'emmagatzematge, fins a 5 MB per fitxer",
     "freeSearch": "Cerca de text complet + etiquetes",
     "freeImport": "Importació i exportació, incloent-hi Keep i Obsidian",
     "freeBurn": "Burn After Reading",
@@ -327,6 +327,7 @@
       "fixed": "Corregit"
     },
     "changelogComingSoon": "El Changelog arribarà aviat.",
+    "changelogLatest": "Última",
     "hotkeysFootnote": "La majoria de dreceres s'ignoren mentre escrius en un camp de text, de manera que les tecles normals com la J i la K continuen escrivint J i K."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "La majoria de la gent no ens paga mai res, i és intencionat. Una valoració és una manera preciosa de dir gràcies.",
     "outro": "Llegim totes les valoracions, i unes paraules d’algú que fa servir l’app cada dia són el que ens manté en marxa.",
     "descGithub": "Dona'ns una estrella a GitHub",
+    "descAppStore": "Valora PrivacyNotes a l'App Store",
     "descAlternativeTo": "Fes m'agrada i ressenya a AlternativeTo",
     "descCapterra": "Valora PrivacyNotes a Capterra",
     "descSaasHub": "Fes m'agrada i ressenya a SaaSHub",

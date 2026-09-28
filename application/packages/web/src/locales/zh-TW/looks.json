@@ -24,7 +24,7 @@
     "sport": "運動",
     "tech": "科學與科技",
     "signals": "訊號",
-    "numbers": "數字"
+    "numbers": "數字與數學"
   },
   "icons": {
     "folder": "資料夾",
@@ -249,6 +249,8 @@
     "bone": "骨頭",
     "barn": "穀倉",
     "tractor": "曳引機",
+    "grains": "穀物",
+    "windmill": "風車",
     "guitar": "吉他",
     "piano-keys": "鋼琴",
     "microphone-stage": "麥克風",
@@ -302,6 +304,12 @@
     "info": "資訊",
     "siren": "警笛",
     "infinity": "無限",
+    "plus": "加",
+    "minus": "減",
+    "x": "乘",
+    "divide": "除",
+    "equals": "等於",
+    "percent": "百分比",
     "peace": "和平",
     "recycle": "回收",
     "radioactive": "放射性",
@@ -317,6 +325,10 @@
     "file-video": "影片檔",
     "file-audio": "音訊檔",
     "file-code": "程式碼檔",
+    "file-html": "網頁",
+    "file-lock": "已鎖定的檔案",
+    "file-cloud": "雲端檔案",
+    "file-svg": "向量圖形",
     "fingerprint": "指紋"
   }
 }

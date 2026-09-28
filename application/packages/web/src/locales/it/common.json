@@ -58,6 +58,7 @@
     "groups": {
       "navigation": "Navigazione",
       "notes": "Note",
+      "lists": "Elenchi",
       "editor": "Editor",
       "formatting": "Formattazione",
       "alignment": "Allineamento",
@@ -100,7 +101,11 @@
       "toggleSidebar": "Mostra/nascondi barra laterale",
       "toggleTheme": "Passa tra modalità chiara / scura",
       "zenMode": "Modalità Zen / focus (Pro)",
-      "toggleHelp": "Mostra/nascondi questa guida"
+      "toggleHelp": "Mostra/nascondi questa guida",
+      "selectSeveral": "Seleziona più elementi",
+      "selectRange": "Seleziona un intervallo (durante la selezione)",
+      "openInTab": "Apri in una scheda (funziona anche il clic centrale)",
+      "closeTab": "Chiudi la scheda"
     }
   },
   "cardForm": {

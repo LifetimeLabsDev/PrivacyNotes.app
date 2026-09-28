@@ -108,7 +108,10 @@
     "open": "開く",
     "notesHeading": "メモ",
     "fillOneField": "保存する前に、少なくとも1つの項目を入力してください。",
-    "expiryNeedsBoth": "有効期限は月と年の両方を入力するか、両方とも空にしてください。"
+    "expiryNeedsBoth": "有効期限は月と年の両方を入力するか、両方とも空にしてください。",
+    "customField": "カスタム項目",
+    "fieldNeedsName": "カスタム項目にはすべて名前を付けてください。",
+    "saveFailed": "保存できませんでした。変更内容はそのまま残っています。"
   },
   "fileTypes": {
     "audio": "オーディオ",
@@ -147,6 +150,7 @@
     "allItems": "すべて",
     "pinnedTooltip": "ピン留めされたアイテム",
     "pinned": "ピン留め",
+    "archive": "アーカイブ",
     "notesTooltip": "すべてのノート",
     "notes": "ノート",
     "tasksTooltip": "全ノートのタスク",
@@ -213,6 +217,8 @@
     "noMatches": "一致するフォルダがありません",
     "collapse": "折りたたむ",
     "expand": "展開",
+    "collapseAll": "すべて折りたたむ",
+    "expandAll": "すべて展開",
     "reorder": "{{folder}} を並べ替え",
     "saveName": "フォルダ名を保存",
     "actionsForFolder": "フォルダ{{folder}}の操作",
@@ -221,21 +227,27 @@
   },
   "collapsedSidebar": {
     "newNote": "新規ノート",
-    "cycleView": "表示を切り替え(自動、リスト、グリッド)",
     "expandSidebar": "サイドバーを展開"
   },
   "mobileHeader": {
     "openMenu": "メニューを開く"
   },
   "noteOptionsMenu": {
+    "color": "色",
+    "colorNone": "色なし",
+    "colorUseDefault": "標準に戻す",
+    "colorFromFolder": "フォルダから: {{name}}",
+    "colorFromTag": "タグから: #{{name}}",
+    "details": "詳細",
     "readOnly": "読み取り専用",
     "readOnlyDescription": "オフに戻すまで編集できません。",
     "protect": "保護",
-    "protectDescription": "内容をPINまたは生体認証で隠します。タイトルは表示されたままです。",
     "convertToJournal": "ジャーナルに変換",
     "convertToNote": "ノートに変換",
     "unpin": "ピン留めを解除",
     "pin": "ピン留め",
+    "archive": "アーカイブ",
+    "unarchive": "アーカイブを解除",
     "burn": "Burn",
     "share": "共有",
     "trash": "ゴミ箱",
@@ -243,17 +255,15 @@
     "restore": "復元",
     "deleteForever": "完全に削除",
     "moveToFolder": "フォルダに移動",
-    "noteHistory": "ノート履歴",
-    "noteHistoryDescription": "直近20件のどのバージョンでも復元できます。",
-    "showMarkdownDescription": "生のマークダウンを編集します。",
-    "showFormattedDescription": "書式付きエディタに戻ります。",
+    "noteHistory": "履歴",
     "findReplace": "検索と置換",
+    "uncheckAllTasks": "すべてのタスクのチェックを外す",
     "comingSoon": "近日公開",
     "noteOptions": "ノートオプション",
     "lastModified": "最終更新: {{date}}",
     "created": "作成: {{date}}",
     "size": "使用ストレージ: {{size}}",
-    "sizeHint": "このノートの暗号化後の合計サイズ。",
+    "sizeHint": "この項目の暗号化後の合計サイズ。",
     "tagCount_other": "{{count}}個のタグ"
   },
   "selectionToolbar": {
@@ -261,6 +271,8 @@
     "exitSelection": "選択を終了",
     "unpin": "ピン留めを解除",
     "pin": "ピン留め",
+    "archive": "アーカイブ",
+    "unarchive": "アーカイブを解除",
     "tag": "タグ",
     "export": "書き出し",
     "delete": "削除",
@@ -272,6 +284,8 @@
   },
   "listPrefs": {
     "listPreferences": "リスト設定",
+    "layout": "レイアウト",
+    "layoutDeviceOnly": "このデバイスにのみ適用されます",
     "sortBy": "並び順",
     "dateCreated": "作成日",
     "dateModified": "更新日",
@@ -279,6 +293,7 @@
     "size": "サイズ",
     "view": "表示",
     "showPreview": "プレビューを表示",
+    "longPreview": "プレビューを長く表示",
     "showDate": "日付を表示",
     "showTags": "フォルダとタグを表示",
     "other": "その他",
@@ -320,6 +335,8 @@
     "deleteForever": "完全に削除",
     "unpin": "ピン留めを解除",
     "pin": "ピン留め",
+    "archive": "アーカイブ",
+    "unarchive": "アーカイブを解除",
     "duplicate": "複製",
     "moveToFolder": "フォルダに移動",
     "exportAsMarkdown": "Markdownとして書き出し",
@@ -331,7 +348,13 @@
     "newContact": "新規連絡先",
     "openBookmark": "開く",
     "copyBookmarkUrl": "URLをコピー",
-    "editBookmark": "ブックマークを編集"
+    "editBookmark": "ブックマークを編集",
+    "openInTab": "タブで開く",
+    "closeTab": "タブを閉じる",
+    "closeOtherTabs": "ほかのタブを閉じる",
+    "closeAllTabs": "すべてのタブを閉じる",
+    "pinTab": "タブをピン留め",
+    "unpinTab": "タブのピン留めを解除"
   },
   "demoBanner": {
     "title": "リスクなしでお試しください",
@@ -353,6 +376,8 @@
     "braveSteps": "これをBraveのアドレスバーに貼り付け、「{{flag}}」をEnabledに設定してから、Braveを再起動してください。",
     "braveAppAlternative": "または、代わりにデスクトップアプリを使う",
     "openFailed": "そのファイルを開けませんでした。",
+    "linkNotFound": "このフォルダーに「{{target}}」というファイルはありません。",
+    "linkNeedsFolder": "リンクをたどるには、フォルダーを開いてください。",
     "saveFailed": "ディスクに保存できませんでした。",
     "saving": "保存中…",
     "savedToDisk": "ディスクに保存しました",
@@ -582,5 +607,9 @@
   },
   "looks": {
     "menu": "アイコンと色"
+  },
+  "tabStrip": {
+    "label": "開いているタブ",
+    "close": "「{{title}}」を閉じる"
   }
 }

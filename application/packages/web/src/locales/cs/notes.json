@@ -9,7 +9,8 @@
     "file": "Soubor",
     "empty": "Prázdná",
     "noContent": "Bez obsahu",
-    "notBackedUp": "Bez zálohy"
+    "notBackedUp": "Bez zálohy",
+    "archived": "Archivováno"
   },
   "header": {
     "new": "Nový",
@@ -71,6 +72,7 @@
     "noMatches": "Nic nenalezeno.",
     "vault": "Trezor je prázdný.",
     "notes": "Zatím žádné poznámky.",
+    "archive": "Nic není archivováno.",
     "filtered": "Žádné položky neodpovídají tvým filtrům.",
     "clearFilters": "Zrušit filtry",
     "filteredAfter": "abys je zobrazil."
@@ -81,6 +83,7 @@
     "journals": "Deníky",
     "vault": "Trezor",
     "pinned": "Připnuté",
+    "archive": "Archiv",
     "notes": "Poznámky"
   },
   "footerStats": {

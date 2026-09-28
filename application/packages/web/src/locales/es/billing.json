@@ -55,14 +55,16 @@
     "openingBody": "Debería aparecer una ventana de pago de Paddle. Si no aparece, puede que tu navegador haya bloqueado la ventana emergente - recarga esta página para reintentar."
   },
   "history": {
-    "title": "Historial de notas",
-    "subtitle": "Hasta 20 versiones por nota. Las más antiguas se eliminan automáticamente.",
+    "subtitle": "Hasta 20 versiones por elemento. Las más antiguas se eliminan automáticamente.",
     "empty": "Aún no hay historial. Las versiones empiezan a acumularse tras la próxima edición. Vuelve más tarde.",
     "loadFailed": "No se pudo cargar el historial. Comprueba tu conexión e inténtalo de nuevo.",
     "selectPrompt": "Selecciona una versión para previsualizarla.",
     "emptyBody": "(vacío)",
     "restore": "Restaurar",
-    "restoring": "Restaurando…"
+    "restoring": "Restaurando…",
+    "restoreSnapshotFailed": "No se pudo guardar primero la versión actual, así que no se restauró nada. Comprueba tu conexión e inténtalo de nuevo.",
+    "restoreFailed": "No se pudo restaurar esta versión. Inténtalo de nuevo.",
+    "loginExtrasNotRecorded": "Esta versión no guardó campos personalizados ni sitios web adicionales. Al restaurarla se conservan los actuales."
   },
   "donation": {
     "eyebrow": "Has desbloqueado",

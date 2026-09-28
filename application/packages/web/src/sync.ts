@@ -10,6 +10,7 @@ import { ownsLocalData } from './authStorage';
 import { db, type LocalNote } from './db';
 import { heartbeat } from './devices';
 import { isDemoMode } from './demo';
+import { assertMfaAccess, isMfaRefusal, MfaRequiredError } from './mfaStep';
 import { readSideField } from './localSeal';
 import {
   buildSyncBase,
@@ -45,6 +46,7 @@ export interface NoteConflict {
   serverPinProtected: boolean;
   serverType: import('@notes/shared').NoteType;
   serverFolderId: string | null;
+  serverArchived: boolean;
   serverUpdatedAt: string;
   /** The encrypted row from the server (for re-push after resolution). */
   serverRow: { ciphertext: string; nonce: string; updated_at: string };
@@ -141,23 +143,44 @@ function answerFields(
  * open is never replaced unseen. `seal` encrypts the payload with the
  * dialog's own key snapshot. A push that does not land leaves the row dirty
  * for the next pass.
+ *
+ * Below the release floor or under the user's pause, nothing goes to the
+ * server. The answer is kept on this device instead: the row takes the
+ * merged fields, dirty, over the generation the dialog showed, so the first
+ * pass after the block lifts pushes it there, or merges it if the server
+ * moved again. The question is not asked twice.
  */
 export async function pushConflictAnswer(
   supabase: SupabaseClient,
   pubkey: string,
   conflict: NoteConflict,
   seal: (fields: NoteFields) => { ciphertext: string; nonce: string },
-): Promise<'stale' | 'pushed' | 'not-landed'> {
+): Promise<'stale' | 'pushed' | 'not-landed' | 'deferred'> {
   const { noteId } = conflict;
   const serverNonce = conflict.serverRow.nonce;
   const fresh = await db.notes.get(noteId);
   if (!stillOpen(conflict, fresh)) return 'stale';
-  const { fields } = answerFields(
-    fresh,
-    { fields: serverFieldsOf(conflict), updatedAt: conflict.serverUpdatedAt },
-    'local',
-  );
+  const server = { fields: serverFieldsOf(conflict), updatedAt: conflict.serverUpdatedAt };
+  const { fields } = answerFields(fresh, server, 'local');
   const stamp = nextStamp(laterStamp(fresh.updatedAt, conflict.serverUpdatedAt));
+  if (isServerWriteBlocked()) {
+    const kept = await db.transaction('rw', db.notes, async () => {
+      const cur = await db.notes.get(noteId);
+      if (!stillOpen(conflict, cur)) return false;
+      // Merged over the row as it stands now, so an edit made while the
+      // dialog waited is part of the kept answer.
+      const now = answerFields(cur, server, 'local').fields;
+      await db.notes.update(noteId, {
+        ...localPatchOf(now),
+        dirty: 1,
+        updatedAt: nextStamp(laterStamp(cur.updatedAt, conflict.serverUpdatedAt)),
+        syncedNonce: serverNonce,
+        syncBase: buildSyncBase(server.fields, serverNonce),
+      });
+      return true;
+    });
+    return kept ? 'deferred' : 'stale';
+  }
   const { ciphertext, nonce } = seal(fields);
   // `.select('id')` is how a write that did not land shows: supabase-js
   // reports network and HTTP failures through `error` without throwing, and
@@ -233,6 +256,7 @@ export async function writeConflictAnswer(
           : {
               fields: fieldsOfPayload(
                 decryptNote(base64ToBytes(data.ciphertext), base64ToBytes(data.nonce), encryptionKey),
+                shown.fields.archived,
               ),
               updatedAt: data.updated_at,
               nonce: data.nonce,
@@ -548,7 +572,7 @@ type RemoteRow = {
  *    version (noteMerge.ts) and asks the user only when both sides
  *    changed the body.
  *
- * The `trashed` and `starred` flags live inside the encrypted payload, so
+ * The `trashed`, `starred` and `archived` flags live inside the encrypted payload, so
  * they roundtrip the server without leaking any metadata.
  *
  * If an offline device pushes an edit for a row that was tombstoned
@@ -663,8 +687,9 @@ export type PushHalt = {
    *  verdict about this session that no retry of the same rows changes.
    *  'aborted': the account changed under the pass (the session claim,
    *  the owner marker or the sync generation), so the rows belong to
-   *  whoever owns the storage at that point. */
-  reason: 'refused' | 'aborted';
+   *  whoever owns the storage at that point. 'blocked': the release floor
+   *  or the user's pause arrived during the pass. */
+  reason: 'refused' | 'aborted' | 'blocked';
   /** Dirty rows the stop left off the server: the rows of the refused
    *  write, and every row the pass had not sent yet. All stay dirty for
    *  the next pass. */
@@ -746,6 +771,9 @@ async function syncInner(
     throw new SessionExpiredError();
   }
   claimGateBrokenSince = 0;
+  // A denied SELECT must never look like an empty vault. This also gates
+  // the sign-out rescue flush. tests/mfaIntegration.test.ts.
+  await assertMfaAccess(supabase);
 
   let lastSync =
     localStorage.getItem(LAST_SYNC_KEY) || '1970-01-01T00:00:00Z';
@@ -910,6 +938,7 @@ async function syncInner(
       type: import('@notes/shared').NoteType;
       trackers?: Record<string, unknown>;
       folderId: string | null;
+      archived: 0 | 1;
       syncedNonce: string;
       syncBase: SyncBase;
     }>;
@@ -925,6 +954,7 @@ async function syncInner(
       type: import('@notes/shared').NoteType;
       trackers?: Record<string, unknown>;
       folderId: string | null;
+      archived: 0 | 1;
       syncedNonce: string;
       syncBase: SyncBase;
     }> = [];
@@ -975,7 +1005,13 @@ async function syncInner(
           base64ToBytes(row.nonce),
           encryptionKey
         );
-        const pulled = fieldsOfPayload(decrypted);
+        const pulled = fieldsOfPayload(decrypted, local?.archived === 1);
+        // A writer that predates Archive dropped the flag this device holds.
+        // Keeping it here is not enough: a device without the row, or one on
+        // the first Archive release, would still read the server copy as
+        // unarchived. The row goes back dirty, so this pass's push restates
+        // the flag over the generation just pulled.
+        const restate = decrypted.archived === undefined && pulled.archived;
         toPut.push({
           id: row.id,
           title: decrypted.title,
@@ -983,7 +1019,7 @@ async function syncInner(
           tags: decrypted.tags,
           createdAt: row.created_at,
           updatedAt: row.updated_at,
-          dirty: 0,
+          dirty: restate ? 1 : 0,
           deleted: 0,
           trashed: decrypted.trashed ? 1 : 0,
           starred: decrypted.starred ? 1 : 0,
@@ -994,6 +1030,7 @@ async function syncInner(
           type: decrypted.type ?? 'note',
           trackers: decrypted.trackers,
           folderId: decrypted.folderId ?? null,
+          archived: pulled.archived ? 1 : 0,
           syncedNonce: row.nonce,
           // The version this device now holds is the server's: the base
           // any later conflict on this row merges against.
@@ -1071,6 +1108,7 @@ async function syncInner(
     const { data: phase1, error: p1Err } = await phase1Promise;
 
     if (p1Err) {
+      if (isMfaRefusal(p1Err)) throw new MfaRequiredError();
       if (isAuthError(p1Err)) throw new SessionExpiredError();
       console.error('[sync] phase 1 pull failed:', p1Err);
       batchHadError = true;
@@ -1173,6 +1211,7 @@ async function syncInner(
           );
 
           if (chunkErr) {
+            if (isMfaRefusal(chunkErr)) throw new MfaRequiredError();
             if (isAuthError(chunkErr)) throw new SessionExpiredError();
             console.error('[sync] phase 2 pull failed after', cursorAt, chunkErr);
             batchHadError = true;
@@ -1226,7 +1265,16 @@ async function syncInner(
   // boundary below re-checks all three ownership signals and ends the
   // push phase quietly: no error, rows stay dirty, and the storage's
   // rightful owner decides what happens to them (the switch wipe).
+  // The release floor and the user's pause are checked at every boundary
+  // too, not only when the pass started: a floor can arrive while the pull
+  // is in flight, and every write after that moment must wait for the
+  // update like the rest of this client's writes.
+  let blockedMidPass = false;
   const pushOwnershipLost = async (): Promise<boolean> => {
+    if (isServerWriteBlocked()) {
+      blockedMidPass = true;
+      return true;
+    }
     if (generation !== syncGeneration) return true;
     if (!ownsLocalData(pubkey)) return true;
     const { data: liveSession } = await supabase.auth.getSession();
@@ -1244,7 +1292,8 @@ async function syncInner(
     for (const id of left) unreachedIds.add(id);
     if (pushEnded) return;
     pushEnded = true;
-    haltReason = stage === 'rls-refused' ? 'refused' : 'aborted';
+    haltReason = stage === 'rls-refused' ? 'refused' : blockedMidPass ? 'blocked' : 'aborted';
+    if (haltReason === 'blocked') return;
     logAuthEvent('sync:push-aborted-ownership', {
       stage,
       expectedPk: pubkey.slice(0, 8),
@@ -1309,6 +1358,7 @@ async function syncInner(
           if (checkErr) {
             // Cannot prove they are gone, so keep them dirty and retry
             // on the next pass rather than guess.
+            if (isMfaRefusal(checkErr)) throw new MfaRequiredError();
             if (isAuthError(checkErr)) throw new SessionExpiredError();
             console.error('[sync] tombstone confirmation failed', checkErr);
             if (onPushError) {
@@ -1333,6 +1383,7 @@ async function syncInner(
           pushedCount += confirmed.size;
         }
       } else {
+        if (isMfaRefusal(error)) throw new MfaRequiredError();
         if (isAuthError(error)) throw new SessionExpiredError();
         console.error('[sync] batch tombstone failed', error);
         if (onPushError) {
@@ -1412,6 +1463,7 @@ async function syncInner(
         .select('id')
         .in('id', ids);
       if (error) {
+        if (isMfaRefusal(error)) throw new MfaRequiredError();
         if (isAuthError(error)) throw new SessionExpiredError();
         // A malformed id 400s the whole chunk, and quietly treating a
         // failed probe as "none of these exist" would bulk-insert over
@@ -1451,6 +1503,7 @@ async function syncInner(
         if (rows.length === 0) continue;
         const { error } = await supabase.from('notes').insert(rows);
         if (error) {
+          if (isMfaRefusal(error)) throw new MfaRequiredError();
           if (isAuthError(error)) throw new SessionExpiredError();
           if (isQuotaError(error)) throw new QuotaExceededError(error.message);
           if (isRlsError(error)) {
@@ -1508,6 +1561,7 @@ async function syncInner(
       .select('id');
 
     if (updateErr) {
+      if (isMfaRefusal(updateErr)) throw new MfaRequiredError();
       if (isAuthError(updateErr)) throw new SessionExpiredError();
       if (isQuotaError(updateErr)) throw new QuotaExceededError(updateErr.message);
       // One oversized note breaching the per-note 1 MB CHECK is not an
@@ -1546,6 +1600,7 @@ async function syncInner(
       .maybeSingle();
 
     if (fetchErr) {
+      if (isMfaRefusal(fetchErr)) throw new MfaRequiredError();
       if (isAuthError(fetchErr)) throw new SessionExpiredError();
       console.error('[sync] conflict check failed for', note.id, fetchErr);
       if (onPushError) onPushError(note.id, fetchErr.message ?? 'conflict check failed');
@@ -1556,6 +1611,7 @@ async function syncInner(
       // No row on server - first-time insert.
       const { error: insertErr } = await supabase.from('notes').insert(row);
       if (insertErr) {
+        if (isMfaRefusal(insertErr)) throw new MfaRequiredError();
         if (isAuthError(insertErr)) throw new SessionExpiredError();
         if (isQuotaError(insertErr)) throw new QuotaExceededError(insertErr.message);
         if (isNoteTooLargeError(insertErr)) {
@@ -1582,9 +1638,12 @@ async function syncInner(
     // ── Conflict: the server holds a generation this device never synced ──
     console.warn('[sync] conflict detected for note', note.id);
     try {
-      const serverFields = fieldsOfPayload(
-        decryptNote(base64ToBytes(existing.ciphertext), base64ToBytes(existing.nonce), encryptionKey),
+      const serverPayload = decryptNote(
+        base64ToBytes(existing.ciphertext),
+        base64ToBytes(existing.nonce),
+        encryptionKey,
       );
+      const serverFields = fieldsOfPayload(serverPayload, note.archived === 1);
       // Field by field against the version this device last synced: a
       // field only one side changed takes that side, whichever stamp is
       // newer, and only a body both sides changed is left to the user.
@@ -1609,6 +1668,7 @@ async function syncInner(
             serverPinProtected: serverFields.pinProtected,
             serverType: serverFields.type,
             serverFolderId: serverFields.folderId,
+            serverArchived: serverFields.archived,
             serverUpdatedAt: existing.updated_at,
             serverRow: existing,
           });
@@ -1625,7 +1685,10 @@ async function syncInner(
       }
 
       const merged: NoteFields = { ...rest, body };
-      if (fieldsEqual(merged, serverFields)) {
+      // A server copy that lost the flag to an older writer is not "the
+      // same" as an archived merge: it is written, so the flag is restated.
+      const serverLostArchive = serverPayload.archived === undefined && merged.archived;
+      if (fieldsEqual(merged, serverFields) && !serverLostArchive) {
         // Everything this device changed is already on the server, or
         // yielded to a later change of the same field: the server's
         // generation is the result, so record it as synced without a write.

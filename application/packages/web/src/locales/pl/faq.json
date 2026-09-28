@@ -94,8 +94,8 @@
     "what-can-you-see": {
       "q": "Co PrivacyNotes widzi z moich notatek?",
       "a": [
-        "Nic czytelnego. Notatki, tytuły, tagi i załączniki są zawsze zaszyfrowane, na Twoim urządzeniu i w drodze na serwer, więc serwer przechowuje wyłącznie szyfrogram. Przy samodzielnym przechowywaniu, a ma je każde konto oparte na frazie, po naszej stronie nie istnieje żaden klucz, który mógłby ten szyfrogram odszyfrować. Rejestracja przez Google, Apple albo GitHub pyta, gdzie ma być Twój klucz, i zaczyna od opcji „Prosto i wygodnie”, która przechowuje Twoją frazę na naszym serwerze, zaszyfrowaną naszym kluczem. Ustawienia > Bezpieczeństwo > Twoja fraza pokazuje, który tryb masz, i pozwala go zmienić.",
-        "To, co widzimy, to absolutne minimum potrzebne do działania usługi: ile zaszyfrowanej pamięci zajmujesz, ile urządzeń podłączyłeś i znaczniki czasu synchronizacji. Jeśli logujesz się frazą, a nie przez Google, Apple czy GitHub, nie znamy nawet Twojego adresu e-mail."
+        "Notatki, tytuły, tagi i załączniki są szyfrowane na twoim urządzeniu, zanim trafią na serwer. Przy samodzielnym przechowywaniu, od którego zaczyna każde konto utworzone za pomocą frazy, po naszej stronie nie ma klucza do odszyfrowania. Przy rejestracji przez Google, Apple lub GitHub aplikacja pyta o miejsce przechowywania klucza i zaczyna od opcji „Prosto i wygodnie”. Zapisuje ona frazę na naszym serwerze, zaszyfrowaną naszym kluczem. W tym trybie nasz serwer może odszyfrować frazę, a więc także twoje notatki. Ustawienia > Konto > Zarządzanie kluczem pokazuje obecny tryb i pozwala go zmienić.",
+        "Widzimy informacje potrzebne do działania usługi: ile zaszyfrowanej przestrzeni zajmujesz, ile urządzeń jest połączonych i znaczniki czasu synchronizacji. Jeśli używasz tylko frazy i nie masz połączonego konta Google, Apple ani GitHub, nie znamy twojego adresu e-mail."
       ]
     },
     "phrase-vs-password": {
@@ -103,17 +103,17 @@
       "a": [
         "Na początku może to wyglądać na krok wstecz, ale pojedyncza fraza odzyskiwania to mocniejsza konstrukcja. Przy nazwie użytkownika i haśle nazwa użytkownika nie jest tajemnicą (pojawia się w każdym wycieku), więc całe bezpieczeństwo opiera się na haśle, a hasła wybierane przez ludzi mają średnio jakieś 30 do 40 bitów entropii. Twoja fraza z 12 słów to gwarantowane 128 bitów, wygenerowane przez Twoje urządzenie, nigdy nie wybrane przez człowieka i nigdy nie użyte ponownie na innej stronie.",
         "Nie ma też hasła, które moglibyśmy stracić. Logowanie hasłem oznacza, że serwer przechowuje przynajmniej skrót hasła, który można wykraść, złamać albo wyłudzić. Przy samodzielnym przechowywaniu Twoja fraza nigdy nie opuszcza urządzenia: wyprowadza klucze szyfrowania lokalnie, a serwer widzi wyłącznie zaszyfrowane dane. Nie ma skrótu do kradzieży ani procedury resetu hasła, którą atakujący mógłby wykorzystać.",
-        "Jeśli wpisywanie 12 słów wydaje się niewygodne: możesz zapisać frazę w menedżerze haseł jednym dotknięciem (Ustawienia > Bezpieczeństwo > Twoja fraza), a logowanie będzie wyglądać jak każde inne. Wolisz znajomy sposób? Logowanie przez Google, Apple albo GitHub też działa: pod spodem i tak dostajesz frazę, a Ty decydujesz, czy zostaje na Twoim urządzeniu, czy przechowujemy ją za Ciebie."
+        "Jeśli wpisywanie 12 słów wydaje się niewygodne: możesz zapisać frazę w menedżerze haseł jednym dotknięciem (Ustawienia > Bezpieczeństwo > Fraza), a logowanie będzie wyglądać jak każde inne. Wolisz znajomy sposób? Logowanie przez Google, Apple albo GitHub też działa: pod spodem i tak dostajesz frazę, a Ty decydujesz, czy zostaje na Twoim urządzeniu, czy przechowujemy ją za Ciebie."
       ]
     },
     "threat-model-levels": {
       "q": "Czy mogę sam wybrać równowagę między wygodą a prywatnością?",
       "a": [
         "Tak, całkiem świadomie. Nie każdy broni się przed tymi samymi zagrożeniami, więc model konta to drabina, a nie jeden dogmat. Na każdym szczeblu Twoje notatki są szyfrowane na Twoim urządzeniu; zmienia się to, kto trzyma klucz i co o Tobie wiemy.",
-        "Wygodny koniec: zaloguj się przez Google, Apple albo GitHub i zostaw zaznaczoną opcję „Prosto i wygodnie”, gdy zapytamy; od niej ten ekran się zaczyna. Przechowujemy Twoją frazę odzyskiwania za Ciebie, zaszyfrowaną na naszym serwerze, więc każde urządzenie loguje się samym tym logowaniem i nie ma czego zabezpieczać ani gubić. W zamian znamy adres e-mail stojący za tym logowaniem, a Twój klucz trzymamy my, a nie Ty. Jeśli Twoim realnym zagrożeniem jest utrata własnych danych logowania, a nie celowany atak, to właściwy szczebel.",
+        "Wygodny wariant: zaloguj się przez Google, Apple lub GitHub i pozostaw domyślnie zaznaczoną opcję „Prosto i wygodnie”. Przechowujemy frazę odzyskiwania zaszyfrowaną na naszym serwerze, więc nowe urządzenie może otworzyć notatki po zalogowaniu przez dostawcę i podaniu kodu z aplikacji uwierzytelniającej, jeśli 2FA jest włączone. W zamian znamy adres e-mail użyty do tego logowania, a nasz serwer może odszyfrować frazę. Zapisz frazę na wypadek utraty konta dostawcy, a jeśli włączysz logowanie dwuskładnikowe, zachowaj klucz zapasowy 2FA.",
         "Środek: zaloguj się przez Google, Apple albo GitHub, ale wybierz „Maksymalne bezpieczeństwo i prywatność”. Twoja fraza nigdy nie trafia na nasze serwery, a szyfrowanie jest w pełni zero-knowledge; nowe urządzenia potrzebują frazy albo skanu kodu QR z urządzenia już zalogowanego. Nadal siłą rzeczy znamy e-mail stojący za tym logowaniem, ale nie odczytalibyśmy ani jednej notatki nawet pod przymusem.",
         "Prywatny koniec: pomiń logowania całkowicie i używaj wyłącznie frazy z 12 słów. Bez e-maila, bez nazwiska, bez tożsamości, a w połączeniu z [anonimowym zakupem Pro](/pl/help/buy-pro-anonymously/) nawet płatność nie zostawia nigdzie Twojego nazwiska. W zamian pieczę nad kluczem masz wyłącznie Ty: zgub frazę, nie mając już żadnego zalogowanego urządzenia, a nikt Ci nie pomoże.",
-        "Przy logowaniu przez Google, Apple albo GitHub wybrany szczebel nie jest ostateczny. W Ustawienia > Bezpieczeństwo > Twoja fraza oba tryby stoją obok siebie wraz z kosztami, a przejść możesz w dowolną stronę i o dowolnej porze. Przejście na samodzielne przechowywanie usuwa naszą kopię i najpierw prosi o przepisanie trzech z dwunastu słów, bo klikają w to zwykle ci, którzy nigdy ich nie zapisali. Powrót wysyła frazę z powrotem i wymaga wyraźnej decyzji. Obie strony są podpisane kluczem Twojego konta, więc skradziona sesja nie zmieni Twojego trybu. Konto oparte na samej frazie zostaje na prywatnym końcu, bo nie ma logowania, którym dałoby się pobrać przechowywany klucz. A na każdym szczeblu dochodzą warstwy lokalne: blokada PIN-em, odblokowanie biometryczne i ochrona pojedynczych notatek."
+        "Ustawienia > Konto > Zarządzanie kluczem pokazuje oba tryby wraz z ich zaletami i ograniczeniami oraz pozwala je zmieniać. Rezygnacja z przechowywania na serwerze usuwa naszą kopię po potwierdzeniu trzech słów z zapisanej frazy. Powrót do tego trybu przesyła frazę ponownie i wymaga wyraźnego wyboru. Zmiany w obu kierunkach są podpisywane kluczem konta i wymagają nowego kodu z aplikacji uwierzytelniającej, gdy 2FA jest włączone. Konto z frazą może połączyć dostawcę w Ustawienia > Konto > Konta, a potem osobno wybrać przechowywanie na serwerze; połączenie dostawcy nie przesyła frazy. Każdy tryb może też korzystać z blokady aplikacji PIN-em, odblokowania biometrycznego i ochrony poszczególnych notatek."
       ]
     },
     "twelve-word-phrase": {
@@ -126,19 +126,26 @@
       ]
     },
     "guess-phrase": {
-      "q": "Jeśli ktoś zgadnie moje 12 słów, czy zaloguje się na moje konto?",
+      "q": "Czy ktoś może zgadnąć moje 12 słów albo dostać takie same?",
       "a": [
-        "Krótka odpowiedź: tak. Twoja fraza to klucz, więc każdy, kto ją ma, może się zalogować, tak samo jak każdy z kluczem do Twojego domu może otworzyć drzwi. Tak to zaprojektowano: to jedyny klucz główny do Twoich notatek i nic słabszego przed nim nie stoi. Prawdziwe pytanie nie brzmi więc, czy posiadanie frazy daje dostęp (daje), tylko czy ktoś mógłby ją zgadnąć, a tu odpowiedź brzmi: nie, żadnym komputerem, który istnieje albo który potrafimy sobie wyobrazić.",
-        "Oto skala. Fraza z 12 słów to jedna z 2^128 możliwości: około 340 sekstylionów, liczba 39-cyfrowa (3,4 x 10^38). Szansa na zgadnięcie Twojej za pierwszym razem to 1 do 340 sekstylionów, mniejsza niż na wygranie cztery razy z rzędu w loterii o szansach 1 do 300 milionów. Potraktowanie tego jako przeszukiwania, a nie szczęśliwego strzału, nie pomaga: nawet przy miliardzie miliardów prób na sekundę (10^18, daleko poza zasięgiem jakiegokolwiek realnego sprzętu, wliczając państwa) przejście przez wszystkie zajęłoby jakieś 10 bilionów lat, blisko 800 razy tyle, ile ma obecnie wszechświat. A to i tak wersja z bajki, bo każda realna próba musi przejść przez celowo powolny krok wyprowadzania klucza, a każdy atak sieciowy musi iść przez nasze serwery, co spowalnia faktyczne zgadywanie o wiele kolejnych rzędów wielkości. To zresztą nie jest żaden nowatorski pomysł: ta sama konstrukcja na 128 bitach zabezpiecza portfele Bitcoin od ponad dekady i nikt nigdy żadnego nie zgadł.",
-        "Kusi, żeby wyobrażać sobie frazę jak hasło, gdzie siłę dokładasz, mieszając wielkie litery, cyfry i symbole. Fraza odzyskiwania tak nie działa i nigdy nie próbuj budować ani poprawiać jej ręcznie. Twoje urządzenie generuje 128 bitów kryptograficznie bezpiecznej losowości i koduje je jako 12 słów ze stałej, publicznej listy 2048 słów: ta losowość to cała jej siła. Ostatnie słowo niesie nawet wbudowaną sumę kontrolną, więc fraza z literówką albo wymyślona jest odrzucana od razu. Kolejność słów ma znaczenie, wielkość liter nie (normalizujemy ją przy logowaniu), a dodanie symboli tylko unieważniłoby frazę. Wpisuj słowa dokładnie tak, jak je dostałeś."
+        "Nie. Nikt nie zgadnie Twoich 12 słów i nikt inny nie dostanie takich samych: nie zbliży się do tego żaden komputer, który istnieje albo który potrafimy sobie wyobrazić. Zalogować się może tylko ktoś, kto zdobędzie Twoje prawdziwe słowa, więc trzymaj je w bezpiecznym miejscu.",
+        "Twoje urządzenie losuje frazę, a liczba możliwych fraz ma 39 cyfr. Zgadnięcie Twojej za pierwszym razem jest mniej prawdopodobne niż wygranie cztery razy z rzędu głównej nagrody w loterii o szansach 1 do 300 milionów. Komputer, który sprawdzałby miliard miliardów fraz na sekundę, i tak potrzebowałby około 10 bilionów lat, żeby sprawdzić wszystkie, czyli znacznie dłużej, niż istnieje wszechświat. Nawet gdyby każdy z 8 miliardów ludzi na Ziemi miał swoją frazę, szansa, że jakieś dwie będą takie same, jest mniejsza niż wygranie tej nagrody dwa razy z rzędu.",
+        "Siła bierze się z tej losowości, a nie z wyglądu słów. Nie wymyślaj frazy i nie dodawaj do niej symboli: używaj 12 słów dokładnie tak, jak podała je aplikacja. Wielkość liter nie ma znaczenia. Ostatnie słowo działa jak kontrola, więc aplikacja odrzuca frazę z literówką albo wymyśloną."
+      ]
+    },
+    "same-phrase": {
+      "q": "Czy ktoś inny może dostać taką samą frazę odzyskiwania jak ja?",
+      "a": [
+        "Nie, w praktyce nie. Twoje urządzenie losuje frazę spośród ogromnej liczby możliwych fraz. Nawet gdyby każdy człowiek na Ziemi założył konto, dwie takie same frazy byłyby mniej prawdopodobne niż wygranie dwa razy z rzędu głównej nagrody w loterii o szansach 1 do 300 milionów. Z tych samych liczb wynika, że [nikt nie zgadnie Twojej frazy](/pl/help/guess-phrase/).",
+        "Twoje ID konta pochodzi z frazy. Jeśli więc usuniesz konto i zalogujesz się ponownie tymi samymi 12 słowami, dostaniesz nowy, pusty sejf z tym samym ID konta. Nic z usuniętego sejfu nie wraca. Po przejściu na nową frazę usuń starą z menedżera haseł, żeby nigdy przez pomyłkę nie zalogować się na stare konto."
       ]
     },
     "why-no-2fa": {
-      "q": "Dlaczego nie ma uwierzytelniania dwuskładnikowego (2FA)?",
+      "q": "Jak włączyć uwierzytelnianie dwuskładnikowe (2FA)?",
       "a": [
-        "Bo to świadomy kompromis, a nie przeoczenie. Znajomy rodzaj 2FA, kod SMS-em albo aplikacja uwierzytelniająca, istnieje po to, żeby podeprzeć słabe hasła wybierane przez ludzi, i opiera się na współdzielonym sekrecie oraz ścieżce odzyskiwania trzymanej na serwerze. To dokładnie ta powierzchnia ataku, którą model frazy usuwa: Twoje urządzenie dowodzi, że ma klucz, podpisując wyzwanie, więc nasze serwery dostają tylko klucz publiczny i podpis, nigdy frazę i nigdy skrót hasła. Doklejenie kodu na wierzchu przywróciłoby serwerową maszynerię, której ten projekt ma unikać, nie dodając nic przeciwko zgadywaniu, bo 128 bitów już zamyka te drzwi.",
-        "To, co Cię tutaj chroni, jest lokalne i jest w każdym planie: blokada aplikacji (PIN) i odblokowanie biometryczne stają przed urządzeniem, które ktoś inny podniesie. Ryzyka warte obrony to phishing i fraza podejrzana przez ramię, a nie zgadywanie. Trzymaj więc frazę w menedżerze haseł i nie wpisuj jej nigdzie poza aplikacją.",
-        "Poza tym fraza jest kluczem, więc zrób jej kopię tego samego dnia, w którym zakładasz konto: trzymaj ją w porządnym menedżerze haseł albo wydrukuj lub zapisz i schowaj tę kopię w bezpiecznym miejscu. Nigdy nie wklejaj jej nigdzie poza samą aplikacją."
+        "Włącz opcjonalne logowanie dwuskładnikowe w Ustawienia > Bezpieczeństwo > 2FA. Najpierw zaktualizuj PrivacyNotes na innych urządzeniach. Zeskanuj kod QR aplikacją uwierzytelniającą lub wpisz klucz konfiguracji ręcznie. Zapisz klucz zapasowy 2FA poza PrivacyNotes, potwierdź zapisaną kopię, a następnie wpisz aktualny kod, aby zakończyć.",
+        "Po konfiguracji nowa sesja na serwerze wymaga frazy lub połączonego dostawcy, a następnie kodu z aplikacji uwierzytelniającej. Przy samodzielnym przechowywaniu fraza nadal jest potrzebna do odszyfrowania notatek. Kontami dostawców zarządzasz w Ustawienia > Konto > Konta; połączenie konta nie zmienia sposobu przechowywania klucza.",
+        "Jeśli stracisz aplikację uwierzytelniającą, dodaj zapisany klucz zapasowy 2FA do innej aplikacji uwierzytelniającej. Utrata obu oznacza, że nie będziemy mogli przywrócić dostępu do serwera. Notatki już odblokowane na urządzeniu nadal można czytać i eksportować. Logowanie dwuskładnikowe nie dodaje szyfrowania ani nie chroni już odblokowanego urządzenia."
       ]
     },
     "bip39-wordlist": {
@@ -167,7 +174,7 @@
       "q": "Czym są notatki do spalenia?",
       "a": [
         "Notatka do spalenia to samoniszczący się sposób udostępnienia notatki komuś, kto nie korzysta z PrivacyNotes. Aplikacja szyfruje treść jednorazowym kluczem i daje Ci link. Klucz podróżuje we fragmencie adresu URL, którego przeglądarki nigdy nie wysyłają na serwery, więc nasz serwer przechowuje szyfrogram, którego nie potrafi odczytać.",
-        "Przy pierwszym otwarciu linku serwer wydaje szyfrogram i w tym samym kroku go usuwa: jeden odczyt i po sprawie. Nieotwarte linki wygasają same po 24 godzinach. Tak czy inaczej nic nie zostaje."
+        "Przy pierwszym otwarciu linku serwer wydaje szyfrogram i w tym samym kroku go usuwa: jeden odczyt i po sprawie. Nieotwarte linki wygasają same po czasie wybranym przez nadawcę, od 1 godziny do 7 dni. Tak czy inaczej nic nie zostaje."
       ]
     },
     "open-source": {
@@ -187,15 +194,23 @@
     "lost-phrase": {
       "q": "Zgubiłem frazę odzyskiwania. Czy możecie odzyskać moje konto?",
       "a": [
-        "Jeśli jesteś jeszcze zalogowany na jakimkolwiek urządzeniu: tak, możesz ją odzyskać sam. Otwórz Ustawienia > Bezpieczeństwo > Twoja fraza i zapisz ją teraz w menedżerze haseł.",
+        "Jeśli jesteś jeszcze zalogowany na jakimkolwiek urządzeniu: tak, możesz ją odzyskać sam. Otwórz Ustawienia > Bezpieczeństwo > Fraza i zapisz ją teraz w menedżerze haseł.",
         "Jeśli nie masz żadnego zalogowanego urządzenia ani frazy, wszystko zależy od tego, kto trzyma klucz. Jeśli przy rejestracji przez Google, Apple albo GitHub klucz został u nas, zaloguj się tym kontem i wracasz do środka. Przy samodzielnym przechowywaniu nikt tego nie zrobi: Twoja fraza nigdy nie trafia na nasze serwery, więc nie ma czego zresetować i nie ma zgłoszenia do wsparcia, które by pomogło. Każda usługa, która potrafi odtworzyć Twoje zaszyfrowane dane po całkowitej utracie, trzyma Twoje klucze.",
         "Zabezpieczenie kosztuje dziesięć sekund: zapisz frazę w menedżerze haseł tego samego dnia, w którym zakładasz konto. Jeśli fraza już przepadła, a płacisz za dodatek pamięci: rozlicza Cię bezpośrednio Paddle i może go anulować bez Twojej frazy, zobacz [zmiana albo anulowanie dodatku](/pl/help/manage-storage-addon/)."
+      ]
+    },
+    "lost-2fa": {
+      "q": "Nie mam kodów 2FA. Jak odzyskać dostęp?",
+      "a": [
+        "Dodaj klucz zapasowy 2FA do dowolnej aplikacji uwierzytelniającej, a potem wpisz pokazany kod, gdy PrivacyNotes o niego poprosi. Klucz zapasowy to ten zapisany przy włączaniu 2FA i działa za każdym razem, gdy go potrzebujesz.",
+        "Jeśli nie masz ani telefonu, ani klucza zapasowego, nie resetujemy 2FA, a nasze wsparcie nie może w tym pomóc. Notatki, które są już na Twoich urządzeniach, pozostają czytelne.",
+        "Aby je zachować, przejdź do Ustawienia > Import & Export > Eksport na urządzeniu, które nadal je ma. Potem utwórz nowy sejf i zaimportuj tam eksport."
       ]
     },
     "oauth-recovery": {
       "q": "Loguję się przez Google, Apple albo GitHub. Co, jeśli stracę dostęp do tego konta?",
       "a": [
-        "Nadal masz pod spodem frazę z 12 słów, a sama fraza loguje Cię na dowolnym urządzeniu - bez Google, Apple czy GitHuba. Otwórz Ustawienia > Bezpieczeństwo > Twoja fraza i zapisz ją w menedżerze haseł.",
+        "Nadal masz pod spodem frazę z 12 słów, a sama fraza loguje Cię na dowolnym urządzeniu - bez Google, Apple czy GitHuba. Otwórz Ustawienia > Bezpieczeństwo > Fraza i zapisz ją w menedżerze haseł.",
         "Zrób to raz, a utrata konta Google, Apple albo GitHub nic Cię nie kosztuje: po prostu zaloguj się frazą."
       ]
     },
@@ -468,7 +483,7 @@
       "q": "Odblokowanie biometryczne przestało działać. Co mogę zrobić?",
       "a": [
         "Nigdy nie tracisz dostępu. Ekran blokady zawsze oferuje drogę awaryjną: „Odblokuj PIN-em” albo „Zaloguj się frazą odzyskiwania”. Biometria to lokalna bramka, a nie klucz szyfrowania, więc Twoje notatki i tak pozostają nietknięte.",
-        "Potem napraw samą bramkę. Rejestracja odbywa się osobno na każdym urządzeniu, więc nowy telefon, świeży profil przeglądarki albo ponowna instalacja wymagają ponownej rejestracji: Ustawienia > Bezpieczeństwo > „Blokada biometryczna”, wyłącz, a potem znów „Włącz odblokowanie biometryczne”. Wymaga też „Ufaj temu urządzeniu” (niezaufane sesje czyszczą się przy zamknięciu karty) oraz sprzętu z uwierzytelniaczem platformy (Touch ID, Face ID, Windows Hello). Jeśli zamiast systemowego okna wyskoczy menedżer haseł w rodzaju Bitwarden albo 1Password, zamknij go i spróbuj ponownie, albo wyłącz przechwytywanie passkey dla tej strony - aplikacja prosi o wbudowany uwierzytelniacz, ale niektóre menedżery i tak się wtrącają."
+        "Potem napraw samą bramkę. Rejestracja odbywa się osobno na każdym urządzeniu, więc nowy telefon, świeży profil przeglądarki albo ponowna instalacja wymagają ponownej rejestracji: Ustawienia > Bezpieczeństwo > „Blokada”, wyłącz, a potem znów „Włącz odblokowanie biometryczne”. Wymaga też „Ufaj temu urządzeniu” (niezaufane sesje czyszczą się przy zamknięciu karty) oraz sprzętu z uwierzytelniaczem platformy (Touch ID, Face ID, Windows Hello). Jeśli zamiast systemowego okna wyskoczy menedżer haseł w rodzaju Bitwarden albo 1Password, zamknij go i spróbuj ponownie, albo wyłącz przechwytywanie passkey dla tej strony - aplikacja prosi o wbudowany uwierzytelniacz, ale niektóre menedżery i tak się wtrącają."
       ]
     },
     "phrase-compromised": {
@@ -646,7 +661,7 @@
     "add-second-device": {
       "q": "Jak zalogować się na drugim urządzeniu?",
       "a": [
-        "Na urządzeniu, którego już używasz, otwórz Ustawienia > Bezpieczeństwo > Twoja fraza. Znajdziesz tam swoje 12 słów i kod QR do logowania. Na nowym urządzeniu wybierz \"Logowanie frazą\", a potem zeskanuj ten kod aparatem, wgraj jego zdjęcie albo wpisz słowa. Twoje notatki są na miejscu w kilka sekund.",
+        "Na urządzeniu, którego już używasz, otwórz Ustawienia > Bezpieczeństwo > Fraza. Znajdziesz tam swoje 12 słów i kod QR do logowania. Na nowym urządzeniu wybierz \"Logowanie frazą\", a potem zeskanuj ten kod aparatem, wgraj jego zdjęcie albo wpisz słowa. Twoje notatki są na miejscu w kilka sekund.",
         "Darmowe konto obejmuje 2 urządzenia, a Pro tyle, ile chcesz, przy czym dwie przeglądarki na jednym komputerze liczą się jako jedno urządzenie. Traktuj kod QR dokładnie jak frazę, którą niesie: nie pokazuj go nikomu i nie pozwól mu wylądować w bibliotece zdjęć, która synchronizuje się do cudzej chmury."
       ]
     },
@@ -714,6 +729,13 @@
         "Żeby przekazać jedną konkretną rzecz, wyślij [notatkę jednorazową](/pl/help/burn-notes/) zamiast swojej frazy. Wspólne konto domowe działa dobrze, jeśli naprawdę tego chcesz: trzymaj frazę we wspólnym wpisie menedżera haseł i przyjmij, że każdy, kto ją kiedykolwiek miał, widział wszystko w środku."
       ]
     },
+    "pro-after-leak": {
+      "q": "Moja fraza odzyskiwania wyciekła. Czy tracę Pro?",
+      "a": [
+        "Pro zostaje przy koncie, na którym je kupiono, a Twoja fraza odzyskiwania to jedyny klucz do tego konta. Jeśli fraza wycieknie i przeniesiesz się do nowego sejfu, Pro nie przechodzi razem z Tobą i nikt nie może przenieść go ręcznie, my też nie. Aplikacja mówi o tym przy rejestracji i jeszcze raz przed wylogowaniem: 12 słów to jedyna droga do środka.",
+        "Jeśli kupiłeś Pro w ciągu ostatnich 30 dni, możesz dostać [pełny zwrot](/pl/help/refunds/) i kupić je ponownie na nowym sejfie. Każdy zwrot kosztuje nas opłaty za płatność, więc zostaw go na prawdziwy wyciek. Jak przenieść notatki i zamknąć stary sejf, opisuje [co zrobić, gdy fraza wycieknie](/pl/help/phrase-compromised/). Trzymaj nową frazę w menedżerze haseł i nigdzie indziej jej nie wpisuj."
+      ]
+    },
     "business-use": {
       "q": "Czy mogę używać PrivacyNotes w pracy i czy jest plan zespołowy?",
       "a": [
@@ -725,8 +747,8 @@
       "q": "Którą opcję rejestracji wybrać?",
       "a": [
         "Tę, która pasuje do twojego poziomu zagrożenia. Są trzy. Po pierwsze: logowanie przez Google, Apple albo GitHub, z kluczem przechowywanym na naszym serwerze. Po drugie: to samo logowanie, ale klucz zostaje wyłącznie na twoim urządzeniu. Po trzecie: \"Wygeneruj frazę\", bez e-maila, bez imienia i całkiem bez logowania. We wszystkich trzech twoje notatki są szyfrowane na twoim urządzeniu, a różni je to, kto ma klucz i ile się o tobie dowiadujemy.",
-        "Logowanie przez jedną z tych trzech usług pyta potem, gdzie mieszka twój klucz, i zaczyna od \"Prosto i wygodnie\". Ta opcja trzyma go zaszyfrowanego na naszym serwerze, więc każde nowe urządzenie loguje się samym tym logowaniem, a ty nie masz czego pilnować. To właściwy poziom, jeśli boisz się utraty własnych danych logowania. \"Maksymalne bezpieczeństwo i prywatność\" zostawia klucz na twoim urządzeniu: nie przeczytalibyśmy notatki pod żadną presją, a nowe urządzenie poprosi o twoje 12 słów albo o zeskanowanie kodu QR z urządzenia już zalogowanego.",
-        "Droga z samą frazą to poziom najwyższy: bez e-maila, bez imienia, bez niczego, co wiąże konto z człowiekiem. W zamian klucz należy tylko do ciebie, więc jeśli go zgubisz, nie mając żadnego zalogowanego urządzenia, nikt ci nie pomoże. Tryb klucza przy logowaniu nie jest ostateczny: Ustawienia > Bezpieczeństwo > Twoja fraza zmienia go, kiedy zechcesz, a konto oparte na samej frazie trzyma swój klucz na urządzeniu. Każdy poziom może dołożyć na wierzch PIN albo blokadę biometryczną. Cała drabina, z ceną każdego szczebla, jest w [drabinie poziomów zagrożenia](/pl/help/threat-model-levels/)."
+        "Przy logowaniu przez Google, Apple lub GitHub aplikacja pyta o miejsce przechowywania klucza i zaczyna od opcji „Prosto i wygodnie”. Ta opcja przechowuje frazę zaszyfrowaną na naszym serwerze, więc nowe urządzenie może otworzyć notatki po zalogowaniu przez dostawcę i podaniu kodu z aplikacji uwierzytelniającej, jeśli 2FA jest włączone. Zapisz frazę na wypadek utraty konta dostawcy, a jeśli włączysz logowanie dwuskładnikowe, zachowaj klucz zapasowy 2FA. „Maksymalne bezpieczeństwo i prywatność” przechowuje frazę na twoim urządzeniu: nie moglibyśmy przeczytać notatki pod żadną presją, a nowe urządzenie potrzebuje twoich 12 słów lub skanu kodu QR z już zalogowanego urządzenia.",
+        "Przy korzystaniu tylko z frazy żaden adres e-mail ani imię nie wiąże konta z osobą. W zamian frazę masz tylko ty, więc jeśli ją stracisz i nie zostanie żadne odblokowane urządzenie, nikt nie będzie mógł jej dla ciebie odzyskać. Ustawienia > Konto > Zarządzanie kluczem pokazuje obecny tryb i pozwala go zmienić. Konto z frazą musi najpierw połączyć dostawcę w Ustawienia > Konto > Konta, zanim wybierze przechowywanie na serwerze; samo połączenie nie zmienia sposobu przechowywania. Każdy tryb może dodać blokadę PIN-em lub biometrią oraz opcjonalne logowanie dwuskładnikowe. Pełne porównanie znajdziesz w [drabinie poziomów zagrożeń](/pl/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

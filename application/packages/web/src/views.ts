@@ -33,7 +33,10 @@ export type View =
   | 'bookmarks'
   /** Contacts pillar - notes of type 'contact'. Free and ungated, like
    *  bookmarks. Spec: ops/docs/plans/contacts-pillar.md (section 4, the View union member) */
-  | 'contacts';
+  | 'contacts'
+  /** Archive - items kept but out of sight. A state, like 'starred', not a
+   *  type. Spec: ops/issues/0388.md */
+  | 'archive';
 
 /**
  * Whether a view's row is drawn, given the user's hidden list and the view

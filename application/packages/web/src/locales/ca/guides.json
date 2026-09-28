@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "Les notes Super, les llistes de control i els codis 2FA mantenen la forma",
+          "p": [
+            "Les notes Super mantenen els encapçalaments, les llistes, les llistes de control, les taules, els blocs de codi, els colors i les seccions plegables. Les llistes de control van a Tasques, els fulls de càlcul es converteixen en taules i les entrades de l'autenticador es converteixen en inicis de sessió a la Caixa forta, amb la seva clau 2FA. Les etiquetes niades es converteixen en carpetes, i cada nota conserva també les seves etiquetes.",
+            "Els fitxers que vas pujar a Standard Notes es queden al seu servidor, així que la còpia només en guarda els noms. Cada nota importada marca on hi havia un fitxer. Baixa aquests fitxers de Standard Notes i torna'ls a afegir a la nota."
+          ]
+        },
+        {
           "h": "Les còpies de seguretat xifrades no s'admeten",
           "p": [
             "Una còpia de seguretat xifrada de Standard Notes és text xifrat que només la teva contrasenya de Standard Notes pot obrir, així que l'importador no la pot llegir. Si has exportat la variant xifrada, torna a exportar i tria la desxifrada. Com que el fitxer conté les teves notes en text clar, suprimeix-lo quan la importació hagi acabat.",

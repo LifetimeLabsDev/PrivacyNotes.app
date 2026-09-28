@@ -19,6 +19,7 @@ import { hasMedia, stripMediaReferences } from './imageProcessing';
 import i18n from './i18n';
 import { detectPlatform } from './devices';
 import { isDemoMode } from './demo';
+import { readLineSpacing } from './theme';
 
 // Lightweight anon client - burn shares don't require auth.
 // persistSession: false avoids creating a duplicate GoTrueClient
@@ -49,7 +50,9 @@ export type BurnResult =
 export async function createBurnLink(
   title: string,
   body: string,
-  fields?: VaultField[],
+  fields: VaultField[] | undefined,
+  readSeconds: number,
+  lifetimeHours: number,
 ): Promise<BurnResult> {
   // Demo mode makes zero server calls. A burn link is a real row in
   // burn_notes, so the sandbox has to decline rather than write one.
@@ -69,7 +72,12 @@ export async function createBurnLink(
     };
   }
 
-  const content = fields?.length ? { title, body, fields } : { title, body };
+  // The sender's line spacing and reading time travel along, so the viewer
+  // lays the note out the way the sender saw it and clears it when asked.
+  const spacing = readLineSpacing();
+  const content = fields?.length
+    ? { title, body, fields, spacing, readSeconds }
+    : { title, body, spacing, readSeconds };
   const payloadBytes = new TextEncoder().encode(JSON.stringify(content));
 
   if (payloadBytes.length > MAX_PAYLOAD_BYTES) {
@@ -103,7 +111,7 @@ export async function createBurnLink(
 
   const { error } = await supabase
     .from('burn_notes')
-    .insert({ id, ciphertext: ciphertextB64 });
+    .insert({ id, ciphertext: ciphertextB64, lifetime_hours: lifetimeHours });
 
   if (error) {
     return {

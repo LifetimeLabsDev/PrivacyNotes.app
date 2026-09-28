@@ -97,7 +97,29 @@
   },
   "burnShareModal": {
     "title": "Sdílet a spálit po přečtení",
-    "body": "<lead>Tvoje původní poznámka se nesmaže.</lead> Zůstane v bezpečí ve tvém účtu. Odkaz ke spálení je samostatná šifrovaná kopie, která se po přečtení sama zničí. Link vyprší po 24 hodinách, ať už ho někdo otevře, nebo ne.",
+    "body": "<lead>Tvoje původní poznámka se nesmaže.</lead> Zůstane v bezpečí ve tvém účtu. Odkaz ke spálení je samostatná šifrovaná kopie, která se po přečtení sama zničí.",
+    "readTime": "Doba čtení",
+    "readTimeHint": "Pak zmizí z obrazovky",
+    "lifetime": "Odkaz vyprší",
+    "lifetimeHint": "Když ho nikdo neotevře",
+    "minutes_one": "{{count}} minuta",
+    "minutes_few": "{{count}} minuty",
+    "minutes_many": "{{count}} minuty",
+    "minutes_other": "{{count}} minut",
+    "hours_one": "{{count}} hodina",
+    "hours_few": "{{count}} hodiny",
+    "hours_many": "{{count}} hodiny",
+    "hours_other": "{{count}} hodin",
+    "afterHours_one": "Po {{count}} hodině",
+    "afterHours_few": "Po {{count}} hodinách",
+    "afterHours_many": "Po {{count}} hodinách",
+    "afterHours_other": "Po {{count}} hodinách",
+    "afterDays_one": "Po {{count}} dni",
+    "afterDays_few": "Po {{count}} dnech",
+    "afterDays_many": "Po {{count}} dnech",
+    "afterDays_other": "Po {{count}} dnech",
+    "create": "Vytvořit a zkopírovat odkaz",
+    "share": "Sdílet odkaz",
     "imagesStripped": "Zobrazuje se jen text, soubory v této poznámce zůstávají skryté.",
     "copied": "Zkopírováno"
   },
@@ -111,7 +133,7 @@
     "footerTagline": "- Poznámky šifrované s nulovou znalostí, hostované ve Švýcarsku.",
     "sealed": {
       "heading": "Přišla ti zašifrovaná poznámka.",
-      "subheading": "Tato zpráva se po přečtení sama zničí. Nepřečtené linky vyprší po 24 hodinách.",
+      "subheading": "Tato zpráva se po přečtení sama zničí. Nepřečtené odkazy vyprší samy.",
       "reveal": "Zobrazit zprávu",
       "warning": "Server poznámku smaže ve chvíli, kdy si ji zobrazíš. Druhá šance není."
     },
@@ -127,7 +149,7 @@
     },
     "gone": {
       "heading": "Tato poznámka je pryč.",
-      "body": "Buď už byla přečtena, nebo vypršela. Odkazy ke spálení se dají otevřít jen jednou a vyprší po 24 hodinách."
+      "body": "Buď už byla přečtena, nebo vypršela. Odkazy ke spálení se dají otevřít jen jednou a vyprší samy."
     },
     "error": {
       "heading": "Něco se pokazilo.",

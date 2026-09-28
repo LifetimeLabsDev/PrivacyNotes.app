@@ -108,7 +108,10 @@
     "open": "Openen",
     "notesHeading": "Notities",
     "fillOneField": "Vul minstens één veld in voordat je opslaat.",
-    "expiryNeedsBoth": "Vul bij de vervaldatum zowel maand als jaar in, of laat beide leeg."
+    "expiryNeedsBoth": "Vul bij de vervaldatum zowel maand als jaar in, of laat beide leeg.",
+    "customField": "Eigen veld",
+    "fieldNeedsName": "Geef elk eigen veld een naam.",
+    "saveFailed": "Opslaan is mislukt. Je wijzigingen staan er nog."
   },
   "fileTypes": {
     "audio": "Audio",
@@ -148,6 +151,7 @@
     "allItems": "Alles",
     "pinnedTooltip": "Vastgezette items",
     "pinned": "Vastgezet",
+    "archive": "Archief",
     "notesTooltip": "Alle notities",
     "notes": "Notities",
     "tasksTooltip": "Taken uit al je notities",
@@ -214,6 +218,8 @@
     "noMatches": "Geen overeenkomende mappen",
     "collapse": "Inklappen",
     "expand": "Uitklappen",
+    "collapseAll": "Alles inklappen",
+    "expandAll": "Alles uitklappen",
     "reorder": "{{folder}} herschikken",
     "saveName": "Mapnaam opslaan",
     "actionsForFolder": "Acties voor map {{folder}}",
@@ -222,21 +228,27 @@
   },
   "collapsedSidebar": {
     "newNote": "Nieuwe notitie",
-    "cycleView": "Weergave wisselen (auto, lijst, raster)",
     "expandSidebar": "Zijbalk uitklappen"
   },
   "mobileHeader": {
     "openMenu": "Menu openen"
   },
   "noteOptionsMenu": {
+    "color": "Kleur",
+    "colorNone": "Geen kleur",
+    "colorUseDefault": "Standaard gebruiken",
+    "colorFromFolder": "Uit map: {{name}}",
+    "colorFromTag": "Uit tag: #{{name}}",
+    "details": "Details",
     "readOnly": "Alleen-lezen",
     "readOnlyDescription": "Geen bewerkingen tot je het uitzet.",
     "protect": "Beveiligen",
-    "protectDescription": "Verberg de inhoud achter je PIN of biometrie. De titel blijft zichtbaar.",
     "convertToJournal": "Omzetten naar dagboeknotitie",
     "convertToNote": "Omzetten naar notitie",
     "unpin": "Losmaken",
     "pin": "Vastzetten",
+    "archive": "Archiveren",
+    "unarchive": "Uit archief halen",
     "burn": "Vernietigen",
     "share": "Delen",
     "trash": "Prullenbak",
@@ -244,17 +256,15 @@
     "restore": "Herstellen",
     "deleteForever": "Definitief verwijderen",
     "moveToFolder": "Naar map verplaatsen",
-    "noteHistory": "Notitiegeschiedenis",
-    "noteHistoryDescription": "Herstel elk van de laatste 20 versies.",
-    "showMarkdownDescription": "Bewerk de ruwe markdown.",
-    "showFormattedDescription": "Terug naar de opgemaakte editor.",
+    "noteHistory": "Geschiedenis",
     "findReplace": "Zoeken en vervangen",
+    "uncheckAllTasks": "Alle taken uitvinken",
     "comingSoon": "Binnenkort",
     "noteOptions": "Notitieopties",
     "lastModified": "Laatst gewijzigd: {{date}}",
     "created": "Aangemaakt: {{date}}",
     "size": "Gebruikte opslag: {{size}}",
-    "sizeHint": "Totale versleutelde grootte van deze notitie.",
+    "sizeHint": "Totale versleutelde grootte van dit item.",
     "tagCount_one": "{{count}} tag",
     "tagCount_other": "{{count}} tags"
   },
@@ -263,6 +273,8 @@
     "exitSelection": "Selectie verlaten",
     "unpin": "Losmaken",
     "pin": "Vastzetten",
+    "archive": "Archiveren",
+    "unarchive": "Uit archief halen",
     "tag": "Tag",
     "export": "Exporteren",
     "delete": "Verwijderen",
@@ -274,6 +286,8 @@
   },
   "listPrefs": {
     "listPreferences": "Lijstvoorkeuren",
+    "layout": "Indeling",
+    "layoutDeviceOnly": "Geldt alleen voor dit apparaat",
     "sortBy": "Sorteren op",
     "dateCreated": "Aanmaakdatum",
     "dateModified": "Wijzigingsdatum",
@@ -281,6 +295,7 @@
     "size": "Grootte",
     "view": "Weergave",
     "showPreview": "Voorbeeld tonen",
+    "longPreview": "Langere voorbeeldtekst",
     "showDate": "Datum tonen",
     "showTags": "Map en tags tonen",
     "other": "Overig",
@@ -323,6 +338,8 @@
     "deleteForever": "Definitief verwijderen",
     "unpin": "Losmaken",
     "pin": "Vastzetten",
+    "archive": "Archiveren",
+    "unarchive": "Uit archief halen",
     "duplicate": "Dupliceren",
     "moveToFolder": "Naar map verplaatsen",
     "exportAsMarkdown": "Exporteren als Markdown",
@@ -334,7 +351,13 @@
     "newContact": "Nieuw contact",
     "openBookmark": "Openen",
     "copyBookmarkUrl": "URL kopiëren",
-    "editBookmark": "Bladwijzer bewerken"
+    "editBookmark": "Bladwijzer bewerken",
+    "openInTab": "Openen in tabblad",
+    "closeTab": "Tabblad sluiten",
+    "closeOtherTabs": "Andere tabbladen sluiten",
+    "closeAllTabs": "Alle tabbladen sluiten",
+    "pinTab": "Tabblad vastzetten",
+    "unpinTab": "Tabblad losmaken"
   },
   "demoBanner": {
     "title": "Probeer het zonder risico",
@@ -356,6 +379,8 @@
     "braveSteps": "Plak dat in de adresbalk van Brave, zet \"{{flag}}\" op Enabled en start Brave opnieuw.",
     "braveAppAlternative": "Of neem in plaats daarvan de desktop-app",
     "openFailed": "Dat bestand kon niet worden geopend.",
+    "linkNotFound": "Geen bestand “{{target}}” in deze map.",
+    "linkNeedsFolder": "Open de map om links te volgen.",
     "saveFailed": "Opslaan op schijf is mislukt.",
     "saving": "Bezig met opslaan…",
     "savedToDisk": "Opgeslagen op schijf",
@@ -590,5 +615,9 @@
   },
   "looks": {
     "menu": "Icoon en kleur"
+  },
+  "tabStrip": {
+    "label": "Open tabbladen",
+    "close": "{{title}} sluiten"
   }
 }

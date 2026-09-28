@@ -210,6 +210,7 @@ export async function applyImport(
       pinProtected: n.pinProtected ? 1 : 0,
       type: n.type || 'note',
       folderId: n.folderId ?? null,
+      ...(n.archived ? { archived: 1 } : {}),
       ...(n.trackers && Object.keys(n.trackers).length > 0 ? { trackers: n.trackers } : {}),
       // A copy that replaces the local row keeps that row's record of the
       // server version it last synced, and the base beside it: its push

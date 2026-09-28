@@ -138,7 +138,7 @@
     "freeSubLabel": "クレジットカード不要、期間制限なし。",
     "freeAllPillars": "ノート、タスク、ファイル、保管庫、ジャーナル、ブックマーク",
     "freeSync": "2台のデバイスで同期",
-    "freeVault": "暗号化ファイル保管庫、1ファイル5 MBまで",
+    "freeVault": "50 MBストレージ、1ファイル5 MBまで",
     "freeSearch": "全文検索 + タグ",
     "freeImport": "読み込みと書き出し（KeepやObsidianなど）",
     "freeBurn": "Burn After Reading",
@@ -327,6 +327,7 @@
       "fixed": "修正"
     },
     "changelogComingSoon": "Changelogは近日公開。",
+    "changelogLatest": "最新",
     "hotkeysFootnote": "テキスト入力中はほとんどのショートカットが無効になるため、JやKなどの通常のキーはそのまま文字として入力されます。"
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "ほとんどの方は一度も料金を払いません。それは意図したものです。評価は感謝を伝える素敵な方法です。",
     "outro": "届いた評価はすべて読んでいます。毎日使ってくださる方からの一言が、私たちの支えです。",
     "descGithub": "GitHubでスターを付ける",
+    "descAppStore": "App StoreでPrivacyNotesを評価",
     "descAlternativeTo": "AlternativeToでいいねとレビュー",
     "descCapterra": "CapterraでPrivacyNotesを評価",
     "descSaasHub": "SaaSHubでいいねとレビュー",

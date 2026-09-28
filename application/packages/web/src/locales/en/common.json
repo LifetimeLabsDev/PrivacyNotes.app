@@ -58,6 +58,7 @@
     "groups": {
       "navigation": "Navigation",
       "notes": "Notes",
+      "lists": "Lists",
       "editor": "Editor",
       "formatting": "Formatting",
       "alignment": "Alignment",
@@ -100,7 +101,11 @@
       "toggleSidebar": "Toggle sidebar",
       "toggleTheme": "Toggle light / dark mode",
       "zenMode": "Zen / Focus mode (Pro)",
-      "toggleHelp": "Toggle this help"
+      "toggleHelp": "Toggle this help",
+      "selectSeveral": "Select several items",
+      "selectRange": "Select a range (while selecting)",
+      "openInTab": "Open in a tab (a middle-click works too)",
+      "closeTab": "Close the tab"
     }
   },
   "cardForm": {

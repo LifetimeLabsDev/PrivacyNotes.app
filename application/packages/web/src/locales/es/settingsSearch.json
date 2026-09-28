@@ -66,6 +66,7 @@
     "about_dataStorage": "datos, servidor, dónde se guardan, almacenamiento, privacidad",
     "about_changelog": "notas de la versión, novedades, qué hay de nuevo, actualizaciones",
     "about_hotkeys": "atajos de teclado, atajos, teclas, hotkeys, accesos directos",
-    "about_rating": "reseña, valorar, puntuar, estrellas, App Store"
+    "about_rating": "reseña, valorar, puntuar, estrellas, App Store",
+    "appearance_openInTabs": "pestañas, barra de pestañas, navegador, abrir"
   }
 }

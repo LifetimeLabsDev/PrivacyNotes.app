@@ -27,7 +27,7 @@ La barra de dalt canvia l'aspecte del text: **negreta**, *cursiva*, títols, lli
 
 ## Una cosa per fer avui
 
-- [ ] Busca la teva **<mark style="background-color: rgba(51, 154, 240, 0.35)">frase de 12 paraules</mark>** a **Configuració > Seguretat > La teva frase**, escriu-la en paper i desa-la en un lloc segur
+- [ ] Busca la teva **<mark style="background-color: rgba(51, 154, 240, 0.35)">frase de 12 paraules</mark>** a **Configuració > Seguretat > Frase**, escriu-la en paper i desa-la en un lloc segur
 
 Aquesta frase és el que obre les teves notes. On viu ho decideixes tu, i pots canviar d'idea quan vulguis. [[Com estan protegides les teves notes]] explica les tres opcions.
 

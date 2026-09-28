@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "As notas Super, as listas de verificação e os códigos 2FA mantêm a forma",
+          "p": [
+            "As notas Super mantêm os títulos, as listas, as listas de verificação, as tabelas, os blocos de código, as cores e as secções recolhíveis. As listas de verificação vão para Tarefas, as folhas de cálculo passam a tabelas e as entradas do autenticador passam a inícios de sessão no Cofre, com a respetiva chave 2FA. As etiquetas aninhadas passam a pastas, e cada nota mantém também as suas etiquetas.",
+            "Os ficheiros que carregaste no Standard Notes ficam no servidor deles, por isso o backup só guarda os nomes. Cada nota importada marca onde estava um ficheiro. Descarrega esses ficheiros do Standard Notes e volta a adicioná-los à nota."
+          ]
+        },
+        {
           "h": "Os backups encriptados não são suportados",
           "p": [
             "Um backup encriptado do Standard Notes é texto cifrado que só a tua palavra-passe do Standard Notes consegue abrir, por isso o importador não o consegue ler. Se exportaste a variante encriptada, exporta de novo e escolhe desencriptado. Como o ficheiro contém as tuas notas em texto simples, apaga-o quando a importação terminar.",

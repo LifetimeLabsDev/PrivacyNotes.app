@@ -3001,7 +3001,7 @@ dependencies = [
 
 [[package]]
 name = "privacynotes"
-version = "0.534.0"
+version = "0.553.1"
 dependencies = [
  "block2",
  "libc",

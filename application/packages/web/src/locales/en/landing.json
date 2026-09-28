@@ -138,7 +138,7 @@
     "freeSubLabel": "No credit card required, no time limit.",
     "freeAllPillars": "Notes, tasks, files, vault, journal, and bookmarks",
     "freeSync": "Sync across 2 devices",
-    "freeVault": "Encrypted file vault, 5 MB per file",
+    "freeVault": "50 MB storage, 5 MB per file",
     "freeSearch": "Full-text search and tags",
     "freeImport": "Import and export, including Keep and Obsidian",
     "freeBurn": "Burn After Reading",
@@ -327,6 +327,7 @@
       "fixed": "Fixed"
     },
     "changelogComingSoon": "Changelog coming soon.",
+    "changelogLatest": "Latest",
     "hotkeysFootnote": "Most shortcuts are ignored while you're typing in a text field, so regular keys like J and K still type J and K."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "Most people never pay us anything, and that is by design. A rating is a lovely way to say thanks.",
     "outro": "We read every review that comes in, and a word from someone who uses this daily is what keeps us going.",
     "descGithub": "Star the repo on GitHub",
+    "descAppStore": "Rate PrivacyNotes on the App Store",
     "descAlternativeTo": "Like and review on AlternativeTo",
     "descCapterra": "Rate PrivacyNotes on Capterra",
     "descSaasHub": "Like and review on SaaSHub",

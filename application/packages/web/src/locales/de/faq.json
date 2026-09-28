@@ -94,8 +94,8 @@
     "what-can-you-see": {
       "q": "Was kann PrivacyNotes über meine Notizen sehen?",
       "a": [
-        "Nichts Lesbares. Notizen, Titel, Tags und Anhänge sind immer verschlüsselt, auf deinem Gerät und auf dem Weg zum Server, der Server speichert also nur Chiffretext. Bei Selbstverwahrung, die jedes Phrasen-Konto hat, gibt es auf unserer Seite keinen Schlüssel dazu. Wenn du dich mit Google, Apple oder GitHub registrierst, wirst du gefragt, wo dein Schlüssel liegen soll, und die Auswahl beginnt bei \"Einfach und bequem\": Diese Option legt deine Phrase auf unserem Server ab, verschlüsselt unter einem Schlüssel von uns. Unter Einstellungen > Sicherheit > Deine Phrase siehst du, welchen Modus du hast, und kannst wechseln.",
-        "Was wir sehen können, ist das Minimum, um den Dienst zu betreiben: wie viel verschlüsselten Speicher du belegst, wie viele Geräte du verknüpft hast, und Sync-Zeitstempel. Wenn du dich mit einer Phrase statt mit Google, Apple oder GitHub anmeldest, kennen wir nicht einmal deine E-Mail-Adresse."
+        "Notizen, Titel, Tags und Anhänge werden auf deinem Gerät verschlüsselt, bevor sie den Server erreichen. Bei eigener Schlüsselverwaltung, mit der jedes per Phrase erstellte Konto beginnt, haben wir keinen Entschlüsselungsschlüssel. Bei der Anmeldung mit Google, Apple oder GitHub wirst du gefragt, wo dein Schlüssel liegen soll. Vorausgewählt ist \"Einfach und bequem\": Dabei speichern wir deine Phrase auf unserem Server, verschlüsselt mit einem unserer Schlüssel. In diesem Modus kann unser Server die Phrase und damit auch deine Notizen entschlüsseln. Unter Einstellungen > Konto > Schlüsselverwaltung siehst du deinen aktuellen Modus und kannst ihn ändern.",
+        "Wir sehen die Informationen, die wir zum Betrieb des Dienstes brauchen: wie viel verschlüsselten Speicher du nutzt, wie viele Geräte du verknüpft hast und die Zeitpunkte der Synchronisierung. Wenn du nur deine Phrase nutzt und kein Google-, Apple- oder GitHub-Konto verbunden hast, kennen wir deine E-Mail-Adresse nicht."
       ]
     },
     "phrase-vs-password": {
@@ -103,17 +103,17 @@
       "a": [
         "Es fühlt sich zuerst verkehrt an, aber eine einzelne Wiederherstellungsphrase ist die stärkere Konstruktion. Bei Benutzername und Passwort ist der Benutzername kein Geheimnis (er taucht in jedem Breach-Dump auf), die ganze Sicherheit hängt also am Passwort - und von Menschen gewählte Passwörter kommen im Schnitt auf vielleicht 30 bis 40 Bit Entropie. Deine 12-Wort-Phrase kommt auf garantierte 128 Bit, von deinem Gerät generiert, nie von einem Menschen gewählt und nie von einer anderen Website wiederverwendet.",
         "Es gibt bei uns auch kein Passwort zu verlieren. Ein Passwort-Login heißt, der Server speichert mindestens einen Passwort-Hash, der geleakt, geknackt oder gephisht werden kann. Bei Selbstverwahrung verlässt deine Phrase dein Gerät nie: Sie leitet deine Verschlüsselungsschlüssel lokal ab, und der Server sieht immer nur verschlüsselte Daten. Es gibt keinen Hash zu stehlen und keinen Passwort-Reset, den ein Angreifer missbrauchen könnte.",
-        "Falls dir das Eintippen von 12 Wörtern umständlich vorkommt: Du kannst die Phrase mit einem Tipp in deinen Passwort-Manager übernehmen (Einstellungen > Sicherheit > Deine Phrase), und die Anmeldung fühlt sich an wie jeder andere Login. Lieber der vertraute Weg? Anmelden mit Google, Apple oder GitHub geht auch: Unter der Haube bekommst du trotzdem eine Phrase, und du entscheidest, ob sie auf deinem Gerät bleibt oder wir sie für dich verwahren."
+        "Falls dir das Eintippen von 12 Wörtern umständlich vorkommt: Du kannst die Phrase mit einem Tipp in deinen Passwort-Manager übernehmen (Einstellungen > Sicherheit > Phrase), und die Anmeldung fühlt sich an wie jeder andere Login. Lieber der vertraute Weg? Anmelden mit Google, Apple oder GitHub geht auch: Unter der Haube bekommst du trotzdem eine Phrase, und du entscheidest, ob sie auf deinem Gerät bleibt oder wir sie für dich verwahren."
       ]
     },
     "threat-model-levels": {
       "q": "Kann ich meine eigene Balance zwischen Komfort und Privatsphäre wählen?",
       "a": [
         "Ja, ganz bewusst. Nicht alle verteidigen sich gegen dieselben Bedrohungen, deshalb ist das Kontomodell eine Leiter statt eines einzigen Dogmas. Auf jeder Sprosse bleiben deine Notizen auf deinem Gerät verschlüsselt; was sich ändert, ist, wer den Schlüssel hält und was wir über dich wissen.",
-        "Das bequeme Ende: Melde dich mit Google, Apple oder GitHub an und lass auf Nachfrage \"Einfach und bequem\" ausgewählt, das ist dort die Voreinstellung. Wir verwahren deine Wiederherstellungsphrase für dich, verschlüsselt auf unserem Server, sodass sich jedes Gerät allein mit diesem Login anmeldet und es nichts zu sichern oder zu verlieren gibt. Im Gegenzug kennen wir die E-Mail hinter diesem Login, und wir halten deinen Schlüssel statt du. Wenn deine realistische Bedrohung das Verlieren eigener Zugangsdaten ist und kein gezielter Einbruch, ist das die richtige Stufe.",
+        "Das bequeme Ende: Melde dich mit Google, Apple oder GitHub an und lass auf Nachfrage \"Einfach und bequem\" ausgewählt, das ist dort die Voreinstellung. Wir speichern deine Wiederherstellungsphrase verschlüsselt auf unserem Server. Ein neues Gerät kann deine Notizen nach der Anmeldung beim Anbieter öffnen; bei aktivierter 2FA brauchst du zusätzlich einen Authenticator-Code. Im Gegenzug kennen wir die E-Mail-Adresse hinter dieser Anmeldung, und unser Server kann deine Phrase entschlüsseln. Sichere deine Phrase für den Fall, dass du den Zugang zum Anbieterkonto verlierst. Bewahre auch deinen 2FA-Sicherungsschlüssel auf, wenn du die Zwei-Faktor-Anmeldung aktivierst.",
         "Die Mitte: Melde dich mit Google, Apple oder GitHub an, wähle aber \"Maximale Sicherheit und Privatsphäre\". Deine Phrase berührt unsere Server nie und die Verschlüsselung ist vollständig zero-knowledge; neue Geräte brauchen die Phrase oder einen QR-Scan von einem bereits angemeldeten Gerät. Die E-Mail hinter diesem Login kennen wir zwangsläufig weiterhin, aber wir könnten keine einzige Notiz lesen, selbst unter Zwang.",
         "Das private Ende: Verzichte ganz auf die Logins und nutze nur die 12-Wort-Phrase. Keine E-Mail, kein Name, keine Identität - und kombiniert mit einem [anonymen Pro-Kauf](/de/help/buy-pro-anonymously/) hinterlässt selbst das Bezahlen nirgendwo einen Namen. Im Gegenzug liegt die Schlüsselverwahrung komplett bei dir: Verlierst du die Phrase ohne ein angemeldetes Gerät, kann niemand helfen.",
-        "Mit einem Google-, Apple- oder GitHub-Login bist du nicht an die Stufe gebunden, die du gewählt hast. Unter Einstellungen > Sicherheit > Deine Phrase stehen beide Modi nebeneinander samt ihren Kosten, und du kannst jederzeit in beide Richtungen wechseln. Der Wechsel zur Selbstverwahrung löscht unsere Kopie und verlangt vorher, dass du drei deiner zwölf Wörter erneut eintippst, denn wer darauf klickt, hat sie meist nie aufgeschrieben. Der Weg zurück lädt die Phrase wieder hoch und verlangt eine ausdrückliche Entscheidung. Beide Richtungen werden mit deinem eigenen Kontoschlüssel signiert, eine gestohlene Sitzung kann deinen Modus also nicht ändern. Ein reines Phrasen-Konto bleibt am privaten Ende, denn es gibt keinen Login, mit dem sich ein gespeicherter Schlüssel abrufen ließe. Und auf jeder Stufe kommen die lokalen Schichten obendrauf: PIN-Sperre, biometrisches Entsperren und Schutz einzelner Notizen."
+        "Unter Einstellungen > Konto > Schlüsselverwaltung siehst du beide Modi mit ihren Vor- und Nachteilen und kannst wechseln. Wenn du die Speicherung auf dem Server beendest, löschen wir unsere Kopie, nachdem du drei Wörter aus deiner gesicherten Phrase bestätigt hast. Der Wechsel zurück lädt die Phrase erneut hoch und erfordert deine ausdrückliche Entscheidung. Beide Richtungen werden mit deinem Kontoschlüssel signiert und brauchen bei aktivierter 2FA einen aktuellen Authenticator-Code. Mit einem Phrasen-Konto kannst du unter Konto > Konten einen Anbieter verbinden und die Speicherung auf dem Server danach separat wählen. Das Verbinden allein lädt die Phrase nicht hoch. Jeder Modus kann außerdem die PIN-App-Sperre, biometrisches Entsperren und den Schutz einzelner Notizen nutzen."
       ]
     },
     "twelve-word-phrase": {
@@ -126,19 +126,26 @@
       ]
     },
     "guess-phrase": {
-      "q": "Wenn jemand meine 12 Wörter errät, kann er sich in mein Konto einloggen?",
+      "q": "Kann jemand meine 12 Wörter erraten oder zufällig dieselben bekommen?",
       "a": [
-        "Kurze Antwort: ja. Deine Phrase ist der Schlüssel, also kann sich jeder anmelden, der sie besitzt - so wie jeder mit deinem Haustürschlüssel deine Tür öffnen kann. Das ist Absicht: Sie ist der eine Generalschlüssel zu deinen Notizen, und nichts Schwächeres steht davor. Die eigentliche Frage ist also nicht, ob die Phrase Zugang gewährt (tut sie), sondern ob jemand sie erraten könnte - und da lautet die Antwort nein, mit keinem Computer, den es gibt oder den wir absehen können.",
-        "Hier die Größenordnung. Eine 12-Wort-Phrase ist eine von 2^128 Möglichkeiten: rund 340 Sextillionen, eine 39-stellige Zahl (3,4 x 10^38). Die Chance, deine beim ersten Versuch zu erraten, ist 1 zu 340 Sextillionen - unwahrscheinlicher, als viermal hintereinander einen 1-zu-300-Millionen-Lotto-Jackpot zu gewinnen. Es als Suche statt als Glückstreffer zu behandeln hilft auch nicht: Selbst bei einer Milliarde Milliarden Versuchen pro Sekunde (10^18, weit jenseits dessen, was echte Hardware schafft, Staaten eingeschlossen) bräuchte man für alle rund 10 Billionen Jahre, fast das 800-Fache des aktuellen Alters des Universums. Und das ist die Fantasie-Version, denn jeder echte Versuch muss durch eine absichtlich langsame Schlüsselableitung, und jeder Online-Angriff durch unsere Server - was echtes Raten um viele weitere Größenordnungen verlangsamt. Neu ist das Verfahren auch nicht: Dieselbe 128-Bit-Konstruktion sichert seit über einem Jahrzehnt Bitcoin-Wallets, und noch nie hat jemand eine erraten.",
-        "Es liegt nahe, sich die Phrase wie ein Passwort vorzustellen, das man mit Großbuchstaben, Zahlen und Sonderzeichen stärker macht. So funktioniert eine Wiederherstellungsphrase nicht, und du solltest nie versuchen, eine von Hand zu bauen oder zu bearbeiten. Dein Gerät erzeugt 128 Bit kryptografisch sichere Zufälligkeit und kodiert sie als 12 Wörter aus einer festen, öffentlichen Liste von 2048 Wörtern: Diese Zufälligkeit ist die gesamte Stärke. Das letzte Wort trägt sogar eine eingebaute Prüfsumme, eine vertippte oder ausgedachte Phrase wird also sofort abgelehnt. Die Reihenfolge der Wörter zählt, Groß- und Kleinschreibung nicht (wir normalisieren sie bei der Anmeldung), und Sonderzeichen würden die Phrase nur ungültig machen. Tippe die Wörter genau so ein, wie sie ausgegeben wurden."
+        "Nein. Niemand kann deine 12 Wörter erraten, und niemand sonst bekommt dieselben: Kein Computer, den es gibt oder den wir absehen können, kommt auch nur in die Nähe. Anmelden kann sich nur, wer deine echten Wörter bekommt, also bewahre sie sicher auf.",
+        "Dein Gerät wählt deine Phrase zufällig, und die Zahl der möglichen Phrasen hat 39 Stellen. Deine beim ersten Versuch zu erraten ist unwahrscheinlicher, als viermal hintereinander einen Lotto-Jackpot mit einer Chance von 1 zu 300 Millionen zu gewinnen. Ein Computer, der jede Sekunde eine Trillion Phrasen ausprobiert, bräuchte immer noch rund 10 Billionen Jahre, um alle durchzugehen, weit länger, als es das Universum gibt. Selbst wenn alle 8 Milliarden Menschen auf der Erde je eine Phrase hätten, wäre die Chance, dass zwei davon gleich sind, kleiner, als diesen Jackpot zweimal hintereinander zu gewinnen.",
+        "Die Stärke kommt aus diesem Zufall, nicht daraus, wie die Wörter aussehen. Denk dir keine Phrase aus und füge keine Sonderzeichen hinzu: Nutze die 12 Wörter genau so, wie die App sie dir gibt. Groß- und Kleinschreibung spielen keine Rolle. Das letzte Wort dient als Prüfung, deshalb lehnt die App eine vertippte oder ausgedachte Phrase ab."
+      ]
+    },
+    "same-phrase": {
+      "q": "Kann jemand anderes dieselbe Wiederherstellungsphrase bekommen wie ich?",
+      "a": [
+        "Nein, nicht in der Praxis. Dein Gerät wählt deine Phrase zufällig aus einer riesigen Zahl möglicher Phrasen. Selbst wenn jeder Mensch auf der Erde ein Konto anlegen würde, wären zwei gleiche Phrasen unwahrscheinlicher, als zweimal hintereinander einen Lotto-Jackpot mit einer Chance von 1 zu 300 Millionen zu gewinnen. Aus denselben Zahlen folgt, dass [niemand deine Phrase erraten kann](/de/help/guess-phrase/).",
+        "Deine Konto-ID wird aus der Phrase abgeleitet. Wenn du also ein Konto löschst und dich mit denselben 12 Wörtern wieder anmeldest, bekommst du einen neuen, leeren Tresor mit derselben Konto-ID. Aus dem gelöschten Tresor kommt nichts zurück. Wenn du zu einer neuen Phrase gewechselt bist, entferne die alte aus deinem Passwort-Manager, damit du dich nie aus Versehen beim alten Konto anmeldest."
       ]
     },
     "why-no-2fa": {
-      "q": "Warum gibt es keine Zwei-Faktor-Authentifizierung (2FA)?",
+      "q": "Wie aktiviere ich die Zwei-Faktor-Authentifizierung (2FA)?",
       "a": [
-        "Weil es eine bewusste Abwägung ist, kein Versäumnis. Die vertraute Art von 2FA - ein Code per SMS oder eine Authenticator-App - existiert, um schwache, von Menschen gewählte Passwörter abzustützen, und sie stützt sich auf ein gemeinsames Geheimnis und einen Wiederherstellungspfad auf einem Server. Genau diese Angriffsfläche schafft das Phrasen-Modell ab: Dein Gerät beweist den Schlüsselbesitz, indem es eine Challenge signiert, unsere Server erhalten also immer nur einen öffentlichen Schlüssel und eine Signatur - nie die Phrase und nie einen Passwort-Hash. Einen Code obendrauf zu schrauben würde die Server-Maschinerie wieder einführen, die dieses Design gerade vermeidet, und gegen Raten hilft er nicht, denn 128 Bit schließen diese Tür bereits.",
-        "Was dich hier schützt, ist lokal, und es gibt es in jedem Tarif: App-Sperre (PIN) und biometrisches Entsperren stehen vor einem Gerät, das jemand anderes in die Hand nimmt. Die Risiken, gegen die es sich zu verteidigen lohnt, sind Phishing und eine abgeschaute Phrase, nicht Raten. Bewahre die Phrase also in einem Passwort-Manager auf und tippe sie nirgends außer in der App.",
-        "Darüber hinaus gilt: Die Phrase ist der Schlüssel, also sichere sie am Tag der Kontoerstellung: Lege sie in einen seriösen Passwort-Manager, oder drucke sie aus bzw. schreibe sie auf und verwahre die Kopie an einem sicheren Ort. Und füge sie nie irgendwo anders ein als in der App selbst."
+        "Aktiviere die optionale Zwei-Faktor-Anmeldung unter Einstellungen > Sicherheit > 2FA. Aktualisiere PrivacyNotes zuerst auf deinen anderen Geräten. Scanne den QR-Code mit einer Authenticator-App oder gib den Einrichtungsschlüssel manuell ein. Bewahre den 2FA-Sicherungsschlüssel außerhalb von PrivacyNotes auf, bestätige deine gespeicherte Kopie und gib zum Abschluss einen aktuellen Code ein.",
+        "Nach der Einrichtung braucht eine neue Serversitzung deine Phrase oder ein verbundenes Konto, gefolgt von einem Authenticator-Code. Bei eigener Schlüsselverwaltung brauchst du weiterhin deine Phrase, um Notizen zu entschlüsseln. Verwalte Anbieterkonten unter Einstellungen > Konto > Konten. Das Verbinden eines Kontos ändert die Schlüsselverwaltung nicht.",
+        "Wenn du den Authenticator verlierst, füge den gespeicherten 2FA-Sicherungsschlüssel einer anderen Authenticator-App hinzu. Wenn du beides verlierst, können wir den Serverzugriff nicht wiederherstellen. Bereits entsperrte Notizen auf einem Gerät bleiben lesbar und exportierbar. Die Zwei-Faktor-Anmeldung fügt keine Verschlüsselung hinzu und schützt kein bereits entsperrtes Gerät."
       ]
     },
     "bip39-wordlist": {
@@ -167,7 +174,7 @@
       "q": "Was sind Burn Notes?",
       "a": [
         "Eine Burn Note teilt eine Notiz mit jemandem, der PrivacyNotes nicht nutzt, und zerstört sich nach dem Lesen selbst. Die App verschlüsselt den Inhalt mit einem Einmal-Schlüssel und gibt dir einen Link. Der Schlüssel reist im Link-Fragment, das Browser nie an Server senden - unser Server speichert also Chiffretext, den er nicht lesen kann.",
-        "Beim ersten Öffnen des Links liefert der Server den Chiffretext aus und löscht ihn im selben Schritt: einmal lesen, dann ist er weg. Ungeöffnete Links laufen nach 24 Stunden von selbst ab. So oder so bleibt nichts liegen."
+        "Beim ersten Öffnen des Links liefert der Server den Chiffretext aus und löscht ihn im selben Schritt: einmal lesen, dann ist er weg. Ungeöffnete Links laufen von selbst ab, sobald die Zeit vorbei ist, die der Absender wählt: zwischen 1 Stunde und 7 Tagen. So oder so bleibt nichts liegen."
       ]
     },
     "open-source": {
@@ -187,15 +194,23 @@
     "lost-phrase": {
       "q": "Ich habe meine Wiederherstellungsphrase verloren. Könnt ihr mein Konto wiederherstellen?",
       "a": [
-        "Wenn du auf irgendeinem Gerät noch angemeldet bist: ja, das kannst du selbst. Öffne Einstellungen > Sicherheit > Deine Phrase und speichere sie jetzt sofort in deinen Passwort-Manager.",
+        "Wenn du auf irgendeinem Gerät noch angemeldet bist: ja, das kannst du selbst. Öffne Einstellungen > Sicherheit > Phrase und speichere sie jetzt sofort in deinen Passwort-Manager.",
         "Wenn du kein angemeldetes Gerät und keine Phrase mehr hast, kommt es darauf an, wer den Schlüssel hält. Hast du ihn bei der Registrierung mit Google, Apple oder GitHub bei uns speichern lassen, meldest du dich mit diesem Login an und bist wieder drin. Bei Selbstverwahrung kann das niemand: Deine Phrase erreicht unsere Server nie, es gibt also nichts zurückzusetzen und kein Support-Ticket, das helfen könnte. Jeder Dienst, der deine verschlüsselten Daten nach einem Totalverlust wiederherstellen kann, hält deine Schlüssel.",
         "Die Vorsorge kostet zehn Sekunden: Speichere die Phrase am Tag der Kontoerstellung in einem Passwort-Manager. Ist sie schon weg und du zahlst für ein Speicher-Add-on: Paddle rechnet direkt mit dir ab und kann es ohne deine Phrase kündigen, siehe [Add-on ändern oder kündigen](/de/help/manage-storage-addon/)."
+      ]
+    },
+    "lost-2fa": {
+      "q": "Ich habe meine 2FA-Codes verloren. Wie komme ich wieder rein?",
+      "a": [
+        "Füge deinen 2FA-Sicherungsschlüssel in einer beliebigen Authenticator-App hinzu und gib den angezeigten Code ein, wenn PrivacyNotes danach fragt. Der Sicherungsschlüssel ist der, den du beim Einschalten von 2FA gespeichert hast, und er funktioniert jedes Mal, wenn du ihn brauchst.",
+        "Wenn du Handy und Sicherungsschlüssel verloren hast, setzen wir 2FA nicht zurück, und unser Support kann dabei nicht helfen. Die Notizen, die schon auf deinen Geräten sind, bleiben lesbar.",
+        "Um sie zu behalten, öffne auf einem Gerät, das sie noch hat, Einstellungen > Import & Export > Export. Erstelle dann einen neuen Tresor und importiere den Export dort."
       ]
     },
     "oauth-recovery": {
       "q": "Ich melde mich mit Google, Apple oder GitHub an. Was, wenn ich den Zugriff auf dieses Konto verliere?",
       "a": [
-        "Du hast unter der Haube trotzdem eine 12-Wort-Phrase, und die Phrase allein meldet dich auf jedem Gerät an - ganz ohne Google, Apple oder GitHub. Öffne Einstellungen > Sicherheit > Deine Phrase und speichere sie in deinen Passwort-Manager.",
+        "Du hast unter der Haube trotzdem eine 12-Wort-Phrase, und die Phrase allein meldet dich auf jedem Gerät an - ganz ohne Google, Apple oder GitHub. Öffne Einstellungen > Sicherheit > Phrase und speichere sie in deinen Passwort-Manager.",
         "Tu das einmal, und der Verlust des Google-, Apple- oder GitHub-Kontos kostet dich nichts: Du meldest dich einfach stattdessen mit der Phrase an."
       ]
     },
@@ -468,7 +483,7 @@
       "q": "Das biometrische Entsperren funktioniert nicht mehr. Was kann ich tun?",
       "a": [
         "Du wirst nie ausgesperrt. Der Sperrbildschirm bietet immer einen Ausweg: \"Mit PIN entsperren\" oder \"Mit Wiederherstellungsphrase anmelden\". Die Biometrie ist eine lokale Sperre, kein Verschlüsselungsschlüssel, deine Notizen bleiben also so oder so unberührt.",
-        "Dann repariere die Sperre. Die Einrichtung gilt pro Gerät, ein neues Telefon, ein frisches Browser-Profil oder eine Neuinstallation muss also neu eingerichtet werden: Einstellungen > Sicherheit > \"Biometrische Sperre\", deaktivieren, dann wieder \"Biometrische Entsperrung aktivieren\". Es braucht außerdem \"Diesem Gerät vertrauen\" (nicht vertraute Sitzungen werden beim Schließen des Tabs gelöscht) und Hardware mit einem Plattform-Authentifikator (Touch ID, Face ID, Windows Hello). Taucht ein Passwort-Manager wie Bitwarden oder 1Password statt der System-Abfrage auf, weise ihn ab und versuche es erneut, oder schalte seine Passkey-Erfassung für die Seite aus - die App fordert den eingebauten Authentifikator an, doch manche Manager fangen ihn trotzdem ab."
+        "Dann repariere die Sperre. Die Einrichtung gilt pro Gerät, ein neues Telefon, ein frisches Browser-Profil oder eine Neuinstallation muss also neu eingerichtet werden: Einstellungen > Sicherheit > \"Sperre\", deaktivieren, dann wieder \"Biometrische Entsperrung aktivieren\". Es braucht außerdem \"Diesem Gerät vertrauen\" (nicht vertraute Sitzungen werden beim Schließen des Tabs gelöscht) und Hardware mit einem Plattform-Authentifikator (Touch ID, Face ID, Windows Hello). Taucht ein Passwort-Manager wie Bitwarden oder 1Password statt der System-Abfrage auf, weise ihn ab und versuche es erneut, oder schalte seine Passkey-Erfassung für die Seite aus - die App fordert den eingebauten Authentifikator an, doch manche Manager fangen ihn trotzdem ab."
       ]
     },
     "phrase-compromised": {
@@ -646,7 +661,7 @@
     "add-second-device": {
       "q": "Wie melde ich mich auf einem zweiten Gerät an?",
       "a": [
-        "Öffne auf dem Gerät, das du schon nutzt, Einstellungen > Sicherheit > Deine Phrase. Dort stehen deine 12 Wörter und ein Anmelde-QR-Code. Wähl auf dem neuen Gerät \"Phrase-Login\" und scanne den QR-Code mit der Kamera, lade ein Foto davon hoch oder tippe die Wörter ein. Deine Notizen sind in Sekunden da.",
+        "Öffne auf dem Gerät, das du schon nutzt, Einstellungen > Sicherheit > Phrase. Dort stehen deine 12 Wörter und ein Anmelde-QR-Code. Wähl auf dem neuen Gerät \"Phrase-Login\" und scanne den QR-Code mit der Kamera, lade ein Foto davon hoch oder tippe die Wörter ein. Deine Notizen sind in Sekunden da.",
         "Ein kostenloses Konto deckt 2 Geräte, Pro beliebig viele, und zwei Browser auf einem Computer zählen als ein einziges Gerät. Behandle den QR-Code genau wie die Phrase, die er trägt: zeig ihn niemandem, und lass ihn nie in einer Fotomediathek landen, die in die Cloud von jemand anderem synchronisiert."
       ]
     },
@@ -714,6 +729,13 @@
         "Um genau eine Sache zu übergeben, schick eine [Burn-Notiz](/de/help/burn-notes/) statt deiner Phrase. Ein gemeinsames Haushaltskonto funktioniert gut, wenn du wirklich das willst: Leg die Phrase in einen geteilten Passwortmanager-Eintrag, und behandle jeden, der sie je hatte, als hätte er alles darin gesehen."
       ]
     },
+    "pro-after-leak": {
+      "q": "Meine Wiederherstellungsphrase ist geleakt. Verliere ich Pro?",
+      "a": [
+        "Pro bleibt bei dem Konto, auf dem du es gekauft hast, und deine Wiederherstellungsphrase ist der einzige Schlüssel zu diesem Konto. Wenn die Phrase leakt und du in einen neuen Tresor umziehst, zieht Pro nicht mit, und niemand kann es von Hand übertragen, auch wir nicht. Die App sagt das bei der Registrierung und noch einmal, bevor du dich abmeldest: Die 12 Wörter sind der einzige Weg hinein.",
+        "Hast du Pro in den letzten 30 Tagen gekauft, bekommst du eine [volle Rückerstattung](/de/help/refunds/) und kannst es auf dem neuen Tresor neu kaufen. Jede Rückerstattung kostet uns Zahlungsgebühren, nutze sie also bitte nur bei einem echten Leak. Wie du deine Notizen umziehst und den alten Tresor schließt, steht unter [was tun, wenn deine Phrase geleakt ist](/de/help/phrase-compromised/). Bewahre die neue Phrase in einem Passwort-Manager auf und tippe sie nirgendwo sonst ein."
+      ]
+    },
     "business-use": {
       "q": "Kann ich PrivacyNotes bei der Arbeit nutzen, und gibt es einen Team-Tarif?",
       "a": [
@@ -725,8 +747,8 @@
       "q": "Welche Anmeldeoption soll ich wählen?",
       "a": [
         "Die, die zu deiner Bedrohungsstufe passt. Es gibt drei davon. Erstens: Anmeldung mit Google, Apple oder GitHub, mit deinem Schlüssel auf unserem Server. Zweitens: dieselbe Anmeldung, aber dein Schlüssel bleibt nur auf deinem Gerät. Drittens: \"Phrase erzeugen\", ohne E-Mail, ohne Namen und ganz ohne Login. Alle drei halten deine Notizen auf deinem Gerät verschlüsselt, und was sie trennt, ist, wer den Schlüssel hält und wie viel wir über dich erfahren.",
-        "Meldest du dich mit einem der drei an, wirst du danach gefragt, wo dein Schlüssel liegen soll, und die Auswahl beginnt bei \"Einfach und bequem\". Diese Option legt ihn verschlüsselt auf unserem Server ab, jedes neue Gerät meldet sich also allein mit diesem Login an und du musst nichts aufbewahren. Das ist die richtige Stufe, wenn du fürchtest, deine eigenen Zugangsdaten zu verlieren. \"Maximale Sicherheit und Privatsphäre\" hält den Schlüssel auf deinem Gerät: Wir könnten unter keinem Druck eine Notiz lesen, und ein neues Gerät braucht deine 12 Wörter oder einen QR-Scan von einem bereits angemeldeten.",
-        "Der Weg mit der Phrase allein ist die höchste Stufe: keine E-Mail, kein Name, nichts, was das Konto an einen Menschen bindet. Dafür gehört der Schlüssel dir allein, wer ihn ohne angemeldetes Gerät verliert, dem kann niemand helfen. Der Schlüsselmodus eines Logins ist nicht endgültig: Einstellungen > Sicherheit > Deine Phrase wechselt ihn, wann immer du willst, während ein reines Phrasen-Konto seinen Schlüssel auf dem Gerät behält. Jede Stufe kann eine PIN oder eine biometrische Sperre obendrauf setzen. Die ganze Leiter, mit dem Preis jeder Sprosse, steht in [der Bedrohungsstufen-Leiter](/de/help/threat-model-levels/)."
+        "Nach der Anmeldung mit Google, Apple oder GitHub wirst du gefragt, wo dein Schlüssel liegen soll. Vorausgewählt ist \"Einfach und bequem\". Diese Option speichert deine Phrase verschlüsselt auf unserem Server. Ein neues Gerät kann deine Notizen nach der Anmeldung beim Anbieter öffnen; bei aktivierter 2FA brauchst du zusätzlich einen Authenticator-Code. Sichere deine Phrase für den Fall, dass du den Zugang zum Anbieterkonto verlierst. Bewahre auch deinen 2FA-Sicherungsschlüssel auf, wenn du die Zwei-Faktor-Anmeldung aktivierst. \"Maximale Sicherheit und Privatsphäre\" behält die Phrase auf deinem Gerät: Wir könnten unter keinem Druck eine Notiz lesen, und ein neues Gerät braucht deine 12 Wörter oder einen QR-Scan von einem bereits angemeldeten Gerät.",
+        "Bei der reinen Phrasen-Anmeldung gibt es weder eine E-Mail-Adresse noch einen Namen, der das Konto einer Person zuordnet. Dafür liegt die Phrase allein bei dir. Verlierst du sie und hast kein entsperrtes Gerät mehr, kann niemand sie für dich wiederherstellen. Unter Einstellungen > Konto > Schlüsselverwaltung siehst du deinen aktuellen Modus und kannst ihn ändern. Mit einem Phrasen-Konto musst du zuerst unter Konto > Konten einen Anbieter verbinden, bevor du die Speicherung auf dem Server wählen kannst. Das Verbinden allein ändert die Schlüsselverwaltung nicht. Jeder Modus kann eine PIN- oder biometrische Sperre und die optionale Zwei-Faktor-Anmeldung nutzen. Den vollständigen Vergleich findest du in [der Übersicht der Schutzstufen](/de/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

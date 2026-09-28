@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "Note Super, checklist e codici 2FA mantengono la loro forma",
+          "p": [
+            "Le note Super mantengono titoli, elenchi, checklist, tabelle, blocchi di codice, colori e sezioni comprimibili. Le checklist finiscono in Attività, i fogli di calcolo diventano tabelle e le voci dell'autenticatore diventano login nella Cassaforte, con la loro chiave 2FA. I tag annidati diventano cartelle, e ogni nota mantiene anche i suoi tag.",
+            "I file che hai caricato su Standard Notes restano sul loro server, quindi il backup contiene solo i loro nomi. Ogni nota importata segna dove si trovava un file. Scarica quei file da Standard Notes e aggiungili di nuovo alla nota."
+          ]
+        },
+        {
           "h": "I backup cifrati non sono supportati",
           "p": [
             "Un backup cifrato di Standard Notes è testo cifrato che solo la tua password di Standard Notes può aprire, quindi l'importatore non può leggerlo. Se hai esportato la variante cifrata, esporta di nuovo scegliendo decifrato. Poiché il file contiene le tue note in chiaro, eliminalo a importazione conclusa.",

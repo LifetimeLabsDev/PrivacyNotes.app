@@ -1,13 +1,41 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CaretDown, Check, FloppyDisk, Scales, Warning } from '../icons';
 import { PrivacyLadder } from '../PrivacyLadder';
 import { useAuth } from '../auth';
 import { SETTINGS_HELP, SectionEyebrow } from '../settingsUI';
+import { isDemoMode } from '../demo';
+import { MfaCancelledError } from '../mfaStep';
+import { useAccountLogins } from '../accountLogins';
 
 type Mode = 'custodial' | 'self-custody';
 
 type OAuthProviderName = 'google' | 'apple' | 'github';
+type CustodySession = {
+  access_token: string;
+  user: { id: string; app_metadata: Record<string, unknown> };
+};
+type SessionState =
+  | { kind: 'loading' | 'error' | 'signedOut' | 'wrongVault' }
+  | { kind: 'ready'; provider: OAuthProviderName | null; identity: string };
+
+function sessionIdentity(session: CustodySession): string | null {
+  try {
+    const body = session.access_token.split('.')[1];
+    if (!body) return null;
+    const payload = JSON.parse(atob(body.replace(/-/g, '+').replace(/_/g, '/'))) as { session_id?: unknown };
+    return typeof payload.session_id === 'string' ? `${session.user.id}:${payload.session_id}` : null;
+  } catch { return null; }
+}
+
+function classifySession(session: CustodySession | null, pubkey: string | null): SessionState {
+  if (!session) return { kind: 'signedOut' };
+  if (!pubkey || session.user.app_metadata.pubkey !== pubkey) return { kind: 'wrongVault' };
+  const identity = sessionIdentity(session);
+  if (!identity) return { kind: 'error' };
+  const p = session.user.app_metadata.provider;
+  return { kind: 'ready', identity, provider: p === 'google' || p === 'apple' || p === 'github' ? p : null };
+}
 
 /** Brand names, deliberately not translated. */
 const PROVIDER_LABEL: Record<OAuthProviderName, string> = {
@@ -17,11 +45,10 @@ const PROVIDER_LABEL: Record<OAuthProviderName, string> = {
 };
 
 /**
- * Key custody, both directions, in Settings > Security > Your Phrase.
+ * Key custody, both directions, in Settings > Account > Key custody.
  *
- * Mounted by PhraseTab BELOW PhraseView, never above: the self-custody
- * challenge is answered from the word grid, so the words have to be on
- * screen first.
+ * The section stays visible when a provider session is unavailable.
+ * Phrase reveal lives on a separate page from the saved-copy challenge.
  *
  * Presentation is a symmetric comparison, deliberately. An earlier
  * draft put an amber hazard panel in front of the custodial option
@@ -38,17 +65,20 @@ const PROVIDER_LABEL: Record<OAuthProviderName, string> = {
  * decision, and it is paired with a three-word possession challenge.
  * Going the other way has no such precondition and gets no alarm.
  *
- * The custodial direction requires a live OAuth session: a device
- * reached by typing the phrase has no session for the endpoint to
- * authorize against, and provider-only sign-in is the entire point of
- * custodial mode, so offering it there would be offering nothing.
+ * Provider linking is a separate action. Storing a phrase still needs
+ * explicit consent and an eligible session for this exact vault.
  *
  * Spec: ops/docs/custodial-key-spec.md. Backlog #112.
  */
-export function CustodyPanel({ phrase }: { phrase: string }) {
+export function CustodyPanel({ phrase, onReleaseCheckChange, onOpenConnectedAccounts }: {
+  phrase: string;
+  onReleaseCheckChange: (checking: boolean) => void;
+  onOpenConnectedAccounts?: () => void;
+}) {
   const { t } = useTranslation('security');
   const { t: tAuth } = useTranslation('auth');
   const { auth, supabase, releaseCustody, adoptCustody } = useAuth();
+  const accountLogins = useAccountLogins();
 
   const [selected, setSelected] = useState<Mode | null>(null);
   const [answers, setAnswers] = useState<string[]>(['', '', '']);
@@ -56,13 +86,58 @@ export function CustodyPanel({ phrase }: { phrase: string }) {
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<Mode | null>(null);
   const [ladderOpen, setLadderOpen] = useState(false);
-  // undefined while we are still asking; null means no provider session.
-  // We keep the provider NAME rather than a boolean so the card can say
-  // "One click with Google" instead of "your provider only" - the word
-  // "provider" is our jargon, not the user's.
-  const [provider, setProvider] = useState<OAuthProviderName | null | undefined>(
-    undefined,
-  );
+  const [sessionState, setSessionState] = useState<SessionState>({ kind: 'loading' });
+  const [releaseCheck, setReleaseCheck] = useState(false);
+  const sessionRead = useRef(0);
+  const actionEpoch = useRef(0);
+  const activeIdentity = useRef<string | null>(null);
+  const alive = useRef(false);
+  const working = useRef(false);
+  const pubkey = auth.status === 'authenticated' ? auth.pubkey : null;
+  const provider = sessionState.kind === 'ready' ? sessionState.provider : null;
+  const canAdopt = sessionState.kind === 'ready' && accountLogins.canAdopt === true
+    && !accountLogins.loading && !accountLogins.error;
+  const adoptionBlocked = auth.status !== 'authenticated' || (!auth.isCustodial && !canAdopt);
+
+  useEffect(() => {
+    if (adoptionBlocked) setSelected((previous) => previous === 'custodial' ? null : previous);
+  }, [adoptionBlocked]);
+
+  const resetRelease = useCallback(() => {
+    setReleaseCheck(false);
+    setAnswers(['', '', '']);
+    onReleaseCheckChange(false);
+  }, [onReleaseCheckChange]);
+
+  const acceptSession = useCallback((session: CustodySession | null) => {
+    const next = classifySession(session, pubkey);
+    const identity = next.kind === 'ready' ? next.identity : null;
+    if (activeIdentity.current !== identity) {
+      actionEpoch.current++;
+      working.current = false;
+      setBusy(false);
+      setSelected(null);
+      setDone(null);
+      setError(null);
+      resetRelease();
+    }
+    activeIdentity.current = identity;
+    setSessionState(next);
+  }, [pubkey, resetRelease]);
+
+  const readSession = useCallback(async () => {
+    const read = ++sessionRead.current;
+    setSessionState({ kind: 'loading' });
+    if (isDemoMode()) { acceptSession(null); return; }
+    try {
+      const { data, error: sessionError } = await supabase.auth.getSession();
+      if (!alive.current || read !== sessionRead.current) return;
+      if (sessionError) throw sessionError;
+      acceptSession(data.session);
+    } catch {
+      if (alive.current && read === sessionRead.current) setSessionState({ kind: 'error' });
+    }
+  }, [acceptSession, supabase]);
 
   const words = useMemo(() => phrase.trim().split(/\s+/), [phrase]);
 
@@ -79,72 +154,94 @@ export function CustodyPanel({ phrase }: { phrase: string }) {
   }, [words]);
 
   useEffect(() => {
-    let cancelled = false;
-    void (async () => {
-      try {
-        const { data } = await supabase.auth.getSession();
-        const p = data.session?.user?.app_metadata?.provider;
-        if (cancelled) return;
-        setProvider(
-          p === 'google' || p === 'apple' || p === 'github' ? p : null,
-        );
-      } catch {
-        if (!cancelled) setProvider(null);
-      }
-    })();
+    alive.current = true;
+    if (isDemoMode()) { setSessionState({ kind: 'signedOut' }); return () => { alive.current = false; }; }
+    // Subscribe before the initial read. Auth events outrank older reads,
+    // and the callback never enters another SDK call under its auth lock.
+    const beforeSubscription = sessionRead.current;
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      sessionRead.current++;
+      if (alive.current) acceptSession(session);
+    });
+    if (sessionRead.current === beforeSubscription) void readSession();
     return () => {
-      cancelled = true;
+      alive.current = false;
+      sessionRead.current++;
+      actionEpoch.current++;
+      data.subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, [acceptSession, readSession, supabase]);
 
   if (auth.status !== 'authenticated') return null;
-  if (words.length !== 12) return null;
 
   const current: Mode = auth.isCustodial ? 'custodial' : 'self-custody';
-  // Nothing to offer: not custodial, and no provider session to become
-  // custodial with.
-  if (current === 'self-custody' && !provider) return null;
 
-  const pick = selected ?? current;
+  const pick = selected === 'custodial' && adoptionBlocked ? current : selected ?? current;
   const changing = pick !== current;
   const allCorrect = positions.every(
     (pos, i) =>
       answers[i]!.trim().toLowerCase() === words[pos - 1]!.toLowerCase(),
   );
-  // Leaving custodial mode is the only direction with a precondition.
-  const canConfirm = changing && (pick === 'custodial' || allCorrect);
+  // Adoption needs a confirmed connected account; release needs the saved phrase.
+  const canConfirm = changing && words.length === 12 && sessionState.kind === 'ready'
+    && (pick === 'custodial' ? canAdopt : releaseCheck && allCorrect);
 
   function reset() {
     setSelected(null);
-    setAnswers(['', '', '']);
+    resetRelease();
     setError(null);
   }
 
   async function handleConfirm() {
-    if (!canConfirm || busy) return;
+    if (!canConfirm || working.current || sessionState.kind !== 'ready' || isDemoMode()) return;
+    const identity = sessionState.identity;
+    const requested = pick;
+    const epoch = ++actionEpoch.current;
+    working.current = true;
     setBusy(true);
     setError(null);
-    const result = pick === 'custodial' ? await adoptCustody() : await releaseCustody();
-    if (result.ok) {
-      setDone(pick);
-      reset();
-    } else {
-      setError(result.error);
+    const checkSession = async () => {
+      const { data, error: sessionError } = await supabase.auth.getSession();
+      const latest = classifySession(data.session, pubkey);
+      if (!alive.current || epoch !== actionEpoch.current || sessionError || latest.kind !== 'ready'
+        || latest.identity !== identity) throw new MfaCancelledError();
+      return latest;
+    };
+    try {
+      await checkSession();
+      if (requested === 'custodial') {
+        const eligibility = await accountLogins.refresh();
+        const currentSession = await checkSession();
+        const canStore = !eligibility.deleted && !eligibility.wrong_login && (eligibility.managed
+          ? eligibility.connections.some((entry) => entry.active) : Boolean(currentSession.provider));
+        if (!canStore) throw new MfaCancelledError();
+      }
+      // The custody action owns the fresh MFA step and rechecks this binding
+      // immediately before its server call, including non-UI callers.
+      const result = requested === 'custodial' ? await adoptCustody() : await releaseCustody();
+      if (!alive.current || epoch !== actionEpoch.current) return;
+      if (result.ok) {
+        setDone(requested);
+        reset();
+      } else setError(result.error);
+    } catch (failure) {
+      if (alive.current && epoch === actionEpoch.current && !(failure instanceof MfaCancelledError)) setError(t('custody.changeFailed'));
+    } finally {
+      if (alive.current && epoch === actionEpoch.current) { working.current = false; setBusy(false); }
     }
-    setBusy(false);
   }
 
   const ROWS: { label: string; custodial: string; self: string }[] = [
     {
       label: t('custody.rowDevice'),
-      // Name the actual provider. "Your provider" is our word for it,
-      // not the user's, and they only ever have one. Falls back to a
-      // phrase-free wording when there is no live session to read it
-      // from (a custodial account reached by typing the phrase).
+      // Legacy sessions name their provider. Managed vaults may have several
+      // connected accounts and use the generic account wording instead.
       custodial: provider
-        ? t('custody.rowDeviceCustodial', { provider: PROVIDER_LABEL[provider] })
-        : t('custody.rowDeviceCustodialGeneric'),
-      self: t('custody.rowDeviceSelf'),
+        ? t('custody.rowDeviceCustodialSafe', { provider: PROVIDER_LABEL[provider] })
+        : t('custody.rowDeviceCustodialSafeGeneric'),
+      self: accountLogins.status?.managed && accountLogins.status.connections.some((entry) => entry.active)
+        ? t('custody.rowDeviceSelfConnected')
+        : provider ? t('custody.rowDeviceSelfProvider', { provider: PROVIDER_LABEL[provider] }) : t('custody.rowDeviceSelf'),
     },
     {
       label: t('custody.rowLost'),
@@ -166,19 +263,22 @@ export function CustodyPanel({ phrase }: { phrase: string }) {
 
   function card(mode: Mode) {
     const active = pick === mode;
+    const disabled = busy || (mode === 'custodial' && adoptionBlocked);
     return (
       <button
         type="button"
         onClick={() => {
           setSelected(mode);
+          setDone(null);
+          resetRelease();
           setError(null);
         }}
-        disabled={busy}
+        disabled={disabled}
         aria-pressed={active}
-        className={`text-start rounded-lg border p-3 transition ${
+        className={`text-start rounded-lg border p-3 transition disabled:opacity-50 disabled:cursor-not-allowed ${
           active
             ? 'border-accent ring-1 ring-accent/30 bg-surface-2'
-            : 'border-divider bg-surface-2 hover:bg-surface-1'
+            : 'border-divider bg-surface-2 enabled:hover:bg-surface-1'
         }`}
       >
         {/* items-start, not items-center: at narrow widths the titles
@@ -240,8 +340,36 @@ export function CustodyPanel({ phrase }: { phrase: string }) {
     // looks deliberate. Do not raise this to @2xl to prevent that: it
     // forces the common desktop case to stack in order to tidy a
     // cosmetic wrap in some languages.
-    <div className="@container border-t border-divider pt-4 space-y-2.5">
+    <div className="@container space-y-2.5">
       <SectionEyebrow setting="security.custody">{t('custody.eyebrow')}</SectionEyebrow>
+
+      {sessionState.kind === 'loading' && <p className={SETTINGS_HELP} role="status">{t('custody.checkingSession')}</p>}
+      {sessionState.kind === 'error' && (
+        <div className="space-y-2">
+          <p className={SETTINGS_HELP} role="alert">{t('custody.sessionUnavailable')}</p>
+          <button type="button" onClick={() => void readSession()} disabled={busy} className="text-sm text-accent">{t('custody.retrySession')}</button>
+        </div>
+      )}
+      {(sessionState.kind === 'signedOut' || sessionState.kind === 'wrongVault') && (
+        <p className={SETTINGS_HELP}>{t(sessionState.kind === 'wrongVault' ? 'custody.wrongVaultSession' : 'custody.signInToChange')}</p>
+      )}
+      {sessionState.kind === 'ready' && !auth.isCustodial && !canAdopt && (
+        <p className={SETTINGS_HELP}>{t('custody.connectToStore')}</p>
+      )}
+      {!isDemoMode() && sessionState.kind === 'ready' && (accountLogins.loading || accountLogins.error || accountLogins.canAdopt === null) && (
+        <div className="space-y-2">
+          <p className={SETTINGS_HELP}>{t(accountLogins.error === 'account_setup_unavailable'
+            ? 'connectedAccounts.unavailable'
+            : accountLogins.error ? 'custody.connectionsUnavailable' : 'custody.checkingConnections')}</p>
+          {accountLogins.error && <button type="button" className="text-sm text-accent" disabled={busy || accountLogins.loading}
+            onClick={() => void accountLogins.refresh().catch(() => {})}>{t('connectedAccounts.retry')}</button>}
+        </div>
+      )}
+      <p className={SETTINGS_HELP}>{t('custody.connectingIsSeparate')}</p>
+      <p className={SETTINGS_HELP}>{t('custody.mfaStillApplies')}</p>
+      {onOpenConnectedAccounts && (
+        <button type="button" className="text-sm text-accent" disabled={busy} onClick={onOpenConnectedAccounts}>{t('custody.connectedAccounts')}</button>
+      )}
 
       {done && (
         <p className="text-[13px] leading-relaxed text-pn flex items-start gap-2">
@@ -254,8 +382,7 @@ export function CustodyPanel({ phrase }: { phrase: string }) {
         </p>
       )}
 
-      {!done && (
-        <>
+      <>
           {/* Always open. This setting existed but was unreachable,
               which is the whole reason for #112; putting it behind a
               disclosure click would reproduce that in miniature. */}
@@ -270,10 +397,19 @@ export function CustodyPanel({ phrase }: { phrase: string }) {
                 <Warning size={16} aria-hidden="true" className="shrink-0 mt-0.5" />
                 <span>{t('custody.releaseWarning')}</span>
               </div>
-              <p className={`${SETTINGS_HELP} leading-relaxed`}>
-                {t('custody.challengePrompt')}
-              </p>
-              <div className="grid grid-cols-3 gap-2">
+              {!releaseCheck ? (
+                <button
+                  type="button"
+                  disabled={busy || words.length !== 12}
+                  onClick={() => { setReleaseCheck(true); onReleaseCheckChange(true); setAnswers(['', '', '']); }}
+                  className="rounded-md border border-divider px-3 py-2 text-sm text-pn-soft hover:bg-surface-1 transition"
+                >
+                  {t('custody.checkSavedPhrase')}
+                </button>
+              ) : (
+                <>
+                <p className={`${SETTINGS_HELP} leading-relaxed`}>{t('custody.hiddenChallengePrompt')}</p>
+                <div className="grid grid-cols-3 gap-2">
                 {positions.map((pos, i) => (
                   <label key={pos} className="block">
                     <span className={`block ${SETTINGS_HELP} mb-1`}>
@@ -296,12 +432,15 @@ export function CustodyPanel({ phrase }: { phrase: string }) {
                     />
                   </label>
                 ))}
-              </div>
+                </div>
+                <button type="button" disabled={busy} className="text-sm text-accent" onClick={resetRelease}>{t('common:actions.cancel')}</button>
+                </>
+              )}
             </>
           )}
 
           {error && (
-            <div className="rounded-md border border-red-300 bg-red-50 dark:border-red-900/60 dark:bg-red-950/30 text-red-700 dark:text-red-300 text-xs p-2">
+            <div role="alert" className="rounded-md border border-red-300 bg-red-50 dark:border-red-900/60 dark:bg-red-950/30 text-red-700 dark:text-red-300 text-xs p-2">
               {error}
             </div>
           )}
@@ -356,8 +495,7 @@ export function CustodyPanel({ phrase }: { phrase: string }) {
           </div>
 
           {ladderOpen && <PrivacyLadder id="pn-custody-ladder" />}
-        </>
-      )}
+      </>
     </div>
   );
 }

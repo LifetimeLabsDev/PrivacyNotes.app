@@ -27,6 +27,7 @@ export function useFolderActions({
   mutateSettings,
   notes,
   activeNotes,
+  listedNotes,
   selectedIds,
   refresh,
   runSync,
@@ -46,6 +47,8 @@ export function useFolderActions({
   mutateSettings: (updater: (prev: UserSettings) => UserSettings) => void;
   notes: LocalNote[];
   activeNotes: LocalNote[];
+  /** What the folder counts show: the items the All list holds. */
+  listedNotes: LocalNote[];
   selectedIds: Set<string>;
   refresh: () => Promise<LocalNote[]>;
   runSync: () => Promise<void>;
@@ -257,7 +260,7 @@ export function useFolderActions({
     void runSync();
   }
 
-  const folderCounts = useMemo(() => computeFolderCounts(activeNotes), [activeNotes]);
+  const folderCounts = useMemo(() => computeFolderCounts(listedNotes), [listedNotes]);
 
   /** Folder chip for the editor tag bar (filing method E) - shows where
    *  the note lives, click opens the shared picker. Used by both the

@@ -9,7 +9,8 @@
     "file": "Fitxer",
     "empty": "Buida",
     "noContent": "Sense contingut",
-    "notBackedUp": "Sense còpia de seguretat"
+    "notBackedUp": "Sense còpia de seguretat",
+    "archived": "Arxivat"
   },
   "header": {
     "new": "Nova",
@@ -71,6 +72,7 @@
     "noMatches": "Cap coincidència.",
     "vault": "La caixa forta és buida.",
     "notes": "Encara no hi ha notes.",
+    "archive": "No hi ha res arxivat.",
     "filtered": "Cap element coincideix amb els teus filtres.",
     "clearFilters": "Neteja els filtres",
     "filteredAfter": "per mostrar-los."
@@ -81,6 +83,7 @@
     "journals": "Diaris",
     "vault": "Caixa forta",
     "pinned": "Fixats",
+    "archive": "Arxiu",
     "notes": "Notes"
   },
   "footerStats": {

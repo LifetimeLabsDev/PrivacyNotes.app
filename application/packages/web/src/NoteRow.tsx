@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { activeLocale } from './languages';
 import type { LocalNote } from './db';
 import type { ListPrefs } from './listPrefs';
-import { deriveDisplayTitle, deriveExcerpt, emptyExcerptLabel, rowSizeLabel, formatModified, fileCount } from './notesViewUtils';
+import { deriveDisplayTitle, deriveExcerpt, emptyExcerptLabel, rowSizeLabel, formatModified, fileCount, noteLinkName } from './notesViewUtils';
+import { noteLinkTarget } from './noteLinks';
 import { Favicon } from './VaultItem';
 import { parseLoginBody, domainFromUrl } from './LoginForm';
 import { parseLinkBody, linkDomain } from './linkBody';
 import { contactHue, contactInitials, contactInitialsFor, parseContactBody } from './contactBody';
 import { loadEncryptedImageUrl } from './EncryptedImage';
-import { Check, PushPin, Shield, PencilSimpleSlash, Book, CheckSquare, File, Image, MusicNotes, Key, CreditCard, Lock, Globe, BookmarkSimple, Warning, User, type Icon } from './icons';
+import { Archive, Check, PushPin, Shield, PencilSimpleSlash, Book, CheckSquare, File, Image, MusicNotes, Key, CreditCard, Lock, Globe, BookmarkSimple, Warning, User, type Icon } from './icons';
 import { useFolderName } from './folderNames';
 import { sortTags } from './notesRepo';
 import { usePushFailure } from './pushFailures';
@@ -45,6 +46,9 @@ export interface NoteRowProps {
   sortAwareDate?: boolean;
   /** Tint the row icon amber (used in trash view). */
   trashTint?: boolean;
+  /** Label an archived item "Archived": set wherever one can appear outside
+   *  the Archive view, which is a search of All. */
+  showArchived?: boolean;
   /**
    * Size shown on the title row for notes that are not file-type.
    *
@@ -82,6 +86,15 @@ export interface NoteRowProps {
    * `NoteCard` - a row has no glyph.
    */
   glyphOverride?: Icon;
+  /**
+   * Lets the item be dragged into an editor as a `[[note-link]]`. Opt-in,
+   * because the Markdown folder list reuses these components for files,
+   * which are not notes a link can reach.
+   */
+  linkDrag?: boolean;
+  /** In selection mode, the link text of the whole selection, which a
+   *  selected item drags. Read only at dragstart. */
+  linkDragSelection?: () => string;
 }
 
 /** React.memo prevents re-render when only the *active* note's body
@@ -105,16 +118,19 @@ export default React.memo(function NoteRow({
   showTypeIcons = false,
   sortAwareDate = false,
   trashTint = false,
+  showArchived = false,
   sizeLabel,
   iconOverride,
   trailing,
+  linkDrag = false,
+  linkDragSelection,
 }: NoteRowProps) {
   const { t } = useTranslation('notes');
   // Subscribed per row: the set changes once per pass at most, and only
   // when a note's verdict changes, so this costs nothing while idle.
   const pushFailure = usePushFailure(n.id);
   // The tag or folder color; never in the trash, which keeps its own look.
-  const noteColor = useNoteColor(n.tags, n.folderId);
+  const noteColor = useNoteColor(n.id, n.tags, n.folderId);
   const color = trashTint ? null : noteColor;
   const isVault = n.type === 'login' || n.type === 'card' || n.type === 'ssh-key';
   const isLink = n.type === 'link';
@@ -122,8 +138,9 @@ export default React.memo(function NoteRow({
   const isJournal = n.type === 'journal';
   const isTask = n.type === 'task';
   const hasTasks = isTask;
+  const archivedFlag = showArchived && n.archived === 1;
   const hasStatusIcons =
-    (showTypeIcons && n.starred === 1) || n.pinProtected === 1 || n.locked === 1 || pushFailure !== undefined;
+    (showTypeIcons && n.starred === 1) || n.pinProtected === 1 || n.locked === 1 || pushFailure !== undefined || archivedFlag;
 
   // Per-row derived values are memoized on the note object. NotesList hands
   // every row fresh inline callback props, which defeats this component's
@@ -133,7 +150,7 @@ export default React.memo(function NoteRow({
   // keeps object identity for unchanged notes, so keying on `n` means they only
   // recompute when that note actually changes.
   const displayTitle = useMemo(() => deriveDisplayTitle(n, locked), [n, locked, activeLocale()]);
-  const excerpt = useMemo(() => deriveExcerpt(n), [n, activeLocale()]);
+  const excerpt = useMemo(() => deriveExcerpt(n, listPrefs.longPreview), [n, listPrefs.longPreview, activeLocale()]);
   /** Shared with `NoteCard` so the row and the tile cannot disagree about when
    *  a size appears. `noteSizeBytes` memoizes per note, so this is a map lookup
    *  after the first call. */
@@ -149,12 +166,16 @@ export default React.memo(function NoteRow({
 
   return (
     <li
+      // Read by the list pane's one middle-click and Alt-click handler,
+      // which opens the item as a tab. Spec: ops/docs/plans/note-tabs.md
+      data-item-id={n.id}
       onClick={onClick}
       onContextMenu={onContextMenu}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       onTouchMove={onTouchMove}
       onTouchCancel={onTouchCancel}
+      {...noteLinkDragProps({ note: n, isNoteLocked: locked, linkDrag, selectionMode, isMultiSelected, trashTint, linkDragSelection })}
       // Touch only: long-press is the multi-select gesture, so the row must
       // not also hand the WebView something to select. Desktop keeps normal
       // text selection. Spec: issue #208.
@@ -227,9 +248,10 @@ export default React.memo(function NoteRow({
         </div>
         {trailing && <span className="pn-row-actions shrink-0 flex items-center gap-1">{trailing}</span>}
       </div>
-      {/* Preview - full width */}
+      {/* Preview - full width, one line, or several with the "Longer preview
+          text" pref (.pn-preview-long) */}
       {listPrefs.showPreview && !locked && (
-        <div data-slot="preview" className="text-[13px] text-neutral-500 dark:text-neutral-400 truncate mt-1" dir="auto">
+        <div data-slot="preview" className={`text-[13px] text-neutral-500 dark:text-neutral-400 mt-1 ${listPrefs.longPreview ? 'pn-preview-long' : 'truncate'}`} dir="auto">
           {excerpt || emptyExcerptLabel(n)}
         </div>
       )}
@@ -260,6 +282,9 @@ export default React.memo(function NoteRow({
             )}
             {n.locked === 1 && (
               <PencilSimpleSlash size={12} aria-label={t('noteRow.readOnly')} />
+            )}
+            {archivedFlag && (
+              <Archive size={12} aria-label={t('noteRow.archived')} />
             )}
           </span>
           {/* Anchored to the date in normal flow, exactly like the status icons
@@ -311,6 +336,55 @@ export function noteFaviconDomain(note: LocalNote): string {
     }
   }
   return '';
+}
+
+/**
+ * The note-links for a set of items, one per line, in the order given. The
+ * target comes from `noteLinkName`, so an untitled note, and a bookmark's
+ * domain behind a closed gate, are skipped rather than linked by a body line.
+ */
+export function noteLinkText(notes: readonly LocalNote[], isLocked: (n: LocalNote) => boolean): string {
+  return notes
+    .map((n) => noteLinkTarget(noteLinkName(n, isLocked(n))))
+    .filter(Boolean)
+    .map((target) => `[[${target}]]`)
+    .join('\n');
+}
+
+/**
+ * The drag props for a row or tile that can be dropped as note-links, or none.
+ * Outside selection mode the item drags its own link; in selection mode a
+ * selected item drags the links of the whole selection, and an unselected one
+ * does not drag. The payload is `text/plain` only: the editor's paste rule
+ * turns each `[[target]]` into a link, and `text/html` would skip that path.
+ * A trashed item is not linkable.
+ */
+export function noteLinkDragProps(
+  p: Pick<NoteRowProps, 'note' | 'isNoteLocked' | 'linkDrag' | 'selectionMode' | 'isMultiSelected' | 'trashTint' | 'linkDragSelection'>,
+) {
+  if (!p.linkDrag || p.trashTint) return {};
+  let text: () => string;
+  if (p.selectionMode) {
+    if (!p.isMultiSelected || !p.linkDragSelection) return {};
+    text = p.linkDragSelection;
+  } else {
+    const own = noteLinkText([p.note], () => p.isNoteLocked);
+    if (!own) return {};
+    text = () => own;
+  }
+  return {
+    draggable: true,
+    onDragStart: (e: React.DragEvent) => {
+      const value = text();
+      if (!value) {
+        e.preventDefault();
+        return;
+      }
+      e.dataTransfer.clearData();
+      e.dataTransfer.setData('text/plain', value);
+      e.dataTransfer.effectAllowed = 'copy';
+    },
+  };
 }
 
 /** 28px icon box rendered for every row type. Color is type-based,
@@ -605,6 +679,13 @@ export function CardGlyph({ type, override, domain }: { type: LocalNote['type'];
       </span>
     );
   }
+  const { Icon, color } = typeGlyph(type);
+  return <Icon size={13} className={`pn-card-glyph shrink-0 ${color}`} aria-hidden="true" />;
+}
+
+/** The small glyph and its color for each item type, shared by the mini grid
+ *  tile and the tab strip so the two cannot name a type differently. */
+export function typeGlyph(type: LocalNote['type']): { Icon: Icon; color: string } {
   let Icon = File;
   let color = 'text-accent';
   if (type === 'file') {
@@ -634,5 +715,5 @@ export function CardGlyph({ type, override, domain }: { type: LocalNote['type'];
     Icon = User;
     color = 'text-teal-600 dark:text-teal-400';
   }
-  return <Icon size={13} className={`pn-card-glyph shrink-0 ${color}`} aria-hidden="true" />;
+  return { Icon, color };
 }

@@ -64,7 +64,17 @@
   },
   "burnShareModal": {
     "title": "分享與 Burn After Reading",
-    "body": "<lead>你的原始筆記不會被刪除。</lead>它仍安全地保留在你的帳號中。burn 連結是另外一份加密副本，被閱讀後就會自動銷毀。無論是否被開啟，連結都會在 24 小時後失效。",
+    "body": "<lead>你的原始筆記不會被刪除。</lead>它仍安全地保留在你的帳號中。burn 連結是另外一份加密副本，被閱讀後就會自動銷毀。",
+    "readTime": "閱讀時間",
+    "readTimeHint": "之後會從畫面上清除",
+    "lifetime": "連結失效",
+    "lifetimeHint": "若沒有人開啟",
+    "minutes_other": "{{count}} 分鐘",
+    "hours_other": "{{count}} 小時",
+    "afterHours_other": "{{count}} 小時後",
+    "afterDays_other": "{{count}} 天後",
+    "create": "建立並複製連結",
+    "share": "分享連結",
     "imagesStripped": "這篇筆記僅顯示文字，檔案已隱藏。",
     "copied": "已複製"
   },
@@ -78,7 +88,7 @@
     "footerTagline": "- 零知識加密筆記，主機在瑞士。",
     "sealed": {
       "heading": "你收到一篇加密筆記。",
-      "subheading": "這則訊息將在閱讀後自動銷毀。未讀的連結會在 24 小時後失效。",
+      "subheading": "這則訊息將在閱讀後自動銷毀。未讀的連結會自行失效。",
       "reveal": "顯示訊息",
       "warning": "在你顯示的那一刻，伺服器就會刪除這篇筆記。沒有第二次機會。"
     },
@@ -94,7 +104,7 @@
     },
     "gone": {
       "heading": "這篇筆記已不存在。",
-      "body": "它已被讀取或已過期。burn 連結只能開啟一次，且會在 24 小時後失效。"
+      "body": "它已被讀取或已過期。burn 連結只能開啟一次，且會自行失效。"
     },
     "error": {
       "heading": "發生錯誤。",

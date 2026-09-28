@@ -9,7 +9,8 @@
     "file": "파일",
     "empty": "비어 있음",
     "noContent": "내용 없음",
-    "notBackedUp": "백업 안 됨"
+    "notBackedUp": "백업 안 됨",
+    "archived": "보관됨"
   },
   "header": {
     "new": "추가",
@@ -71,6 +72,7 @@
     "noMatches": "일치하는 항목이 없어요.",
     "vault": "보관함이 비어 있어요.",
     "notes": "아직 노트가 없어요.",
+    "archive": "보관된 항목이 없어요.",
     "filtered": "필터와 일치하는 항목이 없어요.",
     "clearFilters": "필터 해제",
     "filteredAfter": "그러면 다시 보여요."
@@ -81,6 +83,7 @@
     "journals": "저널",
     "vault": "보관함",
     "pinned": "고정됨",
+    "archive": "보관함",
     "notes": "노트"
   },
   "footerStats": {

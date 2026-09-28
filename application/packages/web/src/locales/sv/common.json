@@ -58,6 +58,7 @@
     "groups": {
       "navigation": "Navigering",
       "notes": "Anteckningar",
+      "lists": "Listor",
       "editor": "Redigerare",
       "formatting": "Formatering",
       "alignment": "Justering",
@@ -100,7 +101,11 @@
       "toggleSidebar": "Visa/dölj sidofält",
       "toggleTheme": "Växla ljust / mörkt läge",
       "zenMode": "Zen-/fokusläge (Pro)",
-      "toggleHelp": "Visa/dölj den här hjälpen"
+      "toggleHelp": "Visa/dölj den här hjälpen",
+      "selectSeveral": "Markera flera objekt",
+      "selectRange": "Markera ett intervall (under markering)",
+      "openInTab": "Öppna i en flik (mittenklick fungerar också)",
+      "closeTab": "Stäng fliken"
     }
   },
   "cardForm": {

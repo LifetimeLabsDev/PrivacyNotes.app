@@ -37,6 +37,8 @@ export function viewRows(t: TFunction): ViewRow[] {
       : []),
     { key: 'contacts', label: t('tagsRail.contacts'), icon: PILLAR_GLYPHS.contacts },
     { key: 'bookmarks', label: t('tagsRail.bookmarks'), icon: PILLAR_GLYPHS.bookmarks },
+    // Always the last row: a place things go to leave, not a pillar.
+    { key: 'archive', label: t('tagsRail.archive'), icon: PILLAR_GLYPHS.archive },
   ];
 }
 
@@ -54,12 +56,26 @@ export function sidebarViewRows(t: TFunction): ViewRow[] {
 /**
  * The rows the "Show in All" menu offers.
  *
- * Pinned is a state rather than a type, and Markdown files live on the user's
- * disk and never enter the encrypted store, so neither contributes items the
- * All list could hold.
+ * Pinned items are in All already, and Markdown files live on the user's disk
+ * and never enter the encrypted store, so neither has a switch. Archive does:
+ * its items are out of All until the user lets them in.
  */
 export function allViewRows(t: TFunction): ViewRow[] {
   return sidebarViewRows(t).filter((r) => r.key !== 'starred' && r.key !== 'markdown');
+}
+
+/** Views that list a state of an item (pinned, archived) rather than a type. */
+function isStateView(view: View): boolean {
+  return view === 'starred' || view === 'archive';
+}
+
+/**
+ * Whether a state view's row hides because it holds nothing. An empty list is
+ * a row of dead menu space; the row stays while it IS the open view, so
+ * emptying it never pulls the row out from under the user.
+ */
+export function hiddenAtZero(view: View, count: number | undefined, current: View): boolean {
+  return isStateView(view) && !count && view !== current;
 }
 
 /**
@@ -68,11 +84,12 @@ export function allViewRows(t: TFunction): ViewRow[] {
  * Markdown follows the platform gate in `viewRows`, which is the only thing
  * that can answer it: the switcher opens at every width, and the pillar draws
  * the same title row, so a desktop user standing in Markdown has to find that
- * row marked as the current one. Pinned is a state rather than a type and the
- * sidebar owns it, which is where this list differs from the rail.
+ * row marked as the current one. Pinned and Archive are states rather than
+ * types and the sidebar owns them, which is where this list differs from the
+ * rail.
  */
 export function switcherViewRows(t: TFunction): ViewRow[] {
-  return viewRows(t).filter((r) => r.key !== 'starred');
+  return viewRows(t).filter((r) => !isStateView(r.key));
 }
 
 /**
@@ -84,7 +101,7 @@ export function switcherViewRows(t: TFunction): ViewRow[] {
  * Spec: ops/docs/plans/start-view.md (a hidden start view falls back to All)
  */
 export function startViewRows(t: TFunction, hidden: View[] | undefined): ViewRow[] {
-  return viewRows(t).filter((r) => r.key !== 'markdown' && !hidden?.includes(r.key));
+  return viewRows(t).filter((r) => r.key !== 'markdown' && r.key !== 'archive' && !hidden?.includes(r.key));
 }
 
 /**
@@ -96,7 +113,7 @@ export function startViewRows(t: TFunction, hidden: View[] | undefined): ViewRow
  */
 export function resolveStartView(stored: View, hidden: View[] | undefined): View {
   if (stored === 'home') return 'home';
-  if (stored === 'markdown' || stored === 'trash') return 'home';
+  if (stored === 'markdown' || stored === 'trash' || stored === 'archive') return 'home';
   if (hidden?.includes(stored)) return 'home';
   return stored;
 }

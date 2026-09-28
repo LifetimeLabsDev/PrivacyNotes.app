@@ -68,6 +68,7 @@
     "about_dataStorage": "dane, serwer, gdzie przechowywane, prywatność",
     "about_changelog": "informacje o wydaniu, co nowego, aktualizacje, lista zmian",
     "about_hotkeys": "skróty klawiszowe, skróty, klawisze",
-    "about_rating": "recenzja, oceń, gwiazdki, app store"
+    "about_rating": "recenzja, oceń, gwiazdki, app store",
+    "appearance_openInTabs": "karty, pasek kart, przeglądarka, otwórz, zakładki"
   }
 }

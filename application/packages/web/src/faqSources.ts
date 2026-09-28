@@ -91,7 +91,7 @@ export const FAQ_SOURCES: Readonly<Record<string, readonly FaqSource[]>> = {
     { doc: 'threatModel', heading: 'Key derivation' },
     { doc: 'threatModel', heading: 'Out-of-scope threats' },
   ],
-  'why-no-2fa': [{ doc: 'threatModel', heading: 'Out-of-scope threats' }],
+  'why-no-2fa': [{ doc: 'threatModel', heading: 'Two-factor sign-in' }],
   'bip39-wordlist': [{ doc: 'crypto' }],
   'no-ai': [{ doc: 'verify', heading: 'Tier 1: one minute, no tools' }],
   'burn-notes': [{ doc: 'threatModel', heading: 'Burn notes (one-time shares)' }],

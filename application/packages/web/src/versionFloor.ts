@@ -23,9 +23,9 @@ import { VERSION } from './version';
  * Persistence: the last reported floor is kept in localStorage so the pause
  * holds from t=0 on the next launch instead of racing the manifest fetch.
  * The comparison always runs against the CURRENT bundled VERSION, so
- * installing the update un-pauses immediately with no cleanup step. Fail
- * open everywhere: no report, unreadable storage, or a cleared floor all
- * mean "not below".
+ * installing the update un-pauses immediately with no cleanup step. No
+ * report and unreadable storage mean "not below"; an unreadable policy after
+ * a floor is known keeps that floor.
  *
  * Spec: ops/docs/android-update-check.md (sync pause below the floor)
  */
@@ -49,9 +49,11 @@ let floor: string | null = readStored();
 const listeners = new Set<() => void>();
 
 /**
- * Record the floor this channel's manifest reported (null when the manifest
- * carries none, or a 404 says the policy was withdrawn). Persisted so the
- * next launch enforces it before any network round trip.
+ * Record the floor this channel's manifest reported (null when a manifest
+ * that was read carries none). Persisted so the next launch enforces it
+ * before any network round trip. A policy that cannot be read, a 404
+ * included, is no report at all: callers keep the floor they hold, and a
+ * floor is lowered only by publishing a lower one.
  */
 export function reportVersionFloor(minVersion: string | null): void {
   if (floor === minVersion) return;
@@ -63,6 +65,11 @@ export function reportVersionFloor(minVersion: string | null): void {
     // Storage blocked - the in-memory flag still holds for this session.
   }
   for (const cb of listeners) cb();
+}
+
+/** The last reported floor, or null when none is known. */
+export function knownVersionFloor(): string | null {
+  return floor;
 }
 
 /** True when the running build is below the last reported floor. */

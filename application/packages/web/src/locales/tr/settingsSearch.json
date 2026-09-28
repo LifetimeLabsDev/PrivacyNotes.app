@@ -66,6 +66,7 @@
     "about_dataStorage": "veri, sunucu, nerede saklanıyor, gizlilik",
     "about_changelog": "sürüm notları, yenilikler, güncellemeler",
     "about_hotkeys": "klavye kısayolları, kısayollar, tuşlar, hotkeys",
-    "about_rating": "değerlendirme, puan ver, yıldız, yorum, app store"
+    "about_rating": "değerlendirme, puan ver, yıldız, yorum, app store",
+    "appearance_openInTabs": "sekmeler, sekme çubuğu, tarayıcı, aç"
   }
 }

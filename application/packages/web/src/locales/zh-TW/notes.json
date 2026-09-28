@@ -9,7 +9,8 @@
     "file": "檔案",
     "empty": "空白",
     "noContent": "沒有內容",
-    "notBackedUp": "未備份"
+    "notBackedUp": "未備份",
+    "archived": "已封存"
   },
   "header": {
     "new": "新增",
@@ -71,6 +72,7 @@
     "noMatches": "沒有符合的結果。",
     "vault": "保險庫是空的。",
     "notes": "還沒有筆記。",
+    "archive": "沒有封存的項目。",
     "filtered": "沒有項目符合篩選條件。",
     "clearFilters": "清除篩選",
     "filteredAfter": "即可顯示。"
@@ -81,6 +83,7 @@
     "journals": "日誌",
     "vault": "保險庫",
     "pinned": "已釘選",
+    "archive": "封存",
     "notes": "筆記"
   },
   "footerStats": {

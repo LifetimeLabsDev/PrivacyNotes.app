@@ -19,3 +19,23 @@ export function dashCounts(delimiter: string): number[] | null {
 export function isDelimiterRow(line: string): boolean {
   return line.includes('-') && line.includes('|') && dashCounts(line) !== null;
 }
+
+/**
+ * The line under a pipe table that holds its width when it is narrower than
+ * the note: `<!-- table-width: 60% -->`. An HTML comment, so the table stays a
+ * table everywhere and a renderer that shows HTML hides the line.
+ */
+const WIDTH_MARKER = /^<!--\s*table-width:\s*(\d{1,3})%\s*-->$/;
+
+/** The table width a marker line holds, or null when the line is not one or the width is out of range. */
+export function tableWidthFromMarker(line: string): number | null {
+  const m = WIDTH_MARKER.exec(line.trim());
+  if (!m) return null;
+  const width = Number(m[1]);
+  return width >= 20 && width < 100 ? width : null;
+}
+
+/** The marker line for a table width. */
+export function tableWidthMarker(width: number): string {
+  return `<!-- table-width: ${width}% -->`;
+}

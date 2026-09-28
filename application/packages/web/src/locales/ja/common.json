@@ -57,6 +57,7 @@
     "groups": {
       "navigation": "ナビゲーション",
       "notes": "ノート",
+      "lists": "リスト",
       "editor": "エディタ",
       "formatting": "書式",
       "alignment": "配置",
@@ -99,7 +100,11 @@
       "toggleSidebar": "サイドバーの表示を切り替え",
       "toggleTheme": "ライト / ダークモードを切り替え",
       "zenMode": "Zen/集中モード(Pro)",
-      "toggleHelp": "このヘルプの表示を切り替え"
+      "toggleHelp": "このヘルプの表示を切り替え",
+      "selectSeveral": "複数の項目を選択",
+      "selectRange": "範囲を選択（選択中）",
+      "openInTab": "タブで開く（中クリックでも開けます）",
+      "closeTab": "タブを閉じる"
     }
   },
   "cardForm": {

@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "Notatki Super, listy kontrolne i kody 2FA zachowują swój kształt",
+          "p": [
+            "Notatki Super zachowują nagłówki, listy, listy kontrolne, tabele, bloki kodu, kolory i zwijane sekcje. Listy kontrolne trafiają do Zadań, arkusze kalkulacyjne stają się tabelami, a wpisy z uwierzytelniacza stają się loginami w Sejfie, razem z kluczem 2FA. Zagnieżdżone tagi stają się folderami, a każda notatka zachowuje też swoje tagi.",
+            "Pliki przesłane do Standard Notes zostają na ich serwerze, więc kopia zawiera tylko ich nazwy. Każda zaimportowana notatka oznacza miejsce, w którym był plik. Pobierz te pliki ze Standard Notes i dodaj je ponownie do notatki."
+          ]
+        },
+        {
           "h": "Zaszyfrowane kopie nie są obsługiwane",
           "p": [
             "Zaszyfrowana kopia Standard Notes to szyfrogram, który otwiera wyłącznie Twoje hasło do Standard Notes, więc importer nie może go odczytać. Jeśli wyeksportowałeś wariant zaszyfrowany, wyeksportuj ponownie i wybierz odszyfrowany. Ponieważ plik zawiera Twoje notatki jawnym tekstem, usuń go po zakończeniu importu.",

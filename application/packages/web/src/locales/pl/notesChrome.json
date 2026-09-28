@@ -97,7 +97,29 @@
   },
   "burnShareModal": {
     "title": "Udostępnij i spal po przeczytaniu",
-    "body": "<lead>Twoja oryginalna notatka nie zostanie usunięta.</lead> Zostaje bezpiecznie na Twoim koncie. Link do spalenia to osobna zaszyfrowana kopia, która niszczy się po przeczytaniu. Link wygasa po 24 godzinach, otwarty czy nie.",
+    "body": "<lead>Twoja oryginalna notatka nie zostanie usunięta.</lead> Zostaje bezpiecznie na Twoim koncie. Link do spalenia to osobna zaszyfrowana kopia, która niszczy się po przeczytaniu.",
+    "readTime": "Czas czytania",
+    "readTimeHint": "Potem znika z ekranu",
+    "lifetime": "Link wygasa",
+    "lifetimeHint": "Jeśli nikt go nie otworzy",
+    "minutes_one": "{{count}} minuta",
+    "minutes_few": "{{count}} minuty",
+    "minutes_many": "{{count}} minut",
+    "minutes_other": "{{count}} minuty",
+    "hours_one": "{{count}} godzina",
+    "hours_few": "{{count}} godziny",
+    "hours_many": "{{count}} godzin",
+    "hours_other": "{{count}} godziny",
+    "afterHours_one": "Po {{count}} godzinie",
+    "afterHours_few": "Po {{count}} godzinach",
+    "afterHours_many": "Po {{count}} godzinach",
+    "afterHours_other": "Po {{count}} godzinach",
+    "afterDays_one": "Po {{count}} dniu",
+    "afterDays_few": "Po {{count}} dniach",
+    "afterDays_many": "Po {{count}} dniach",
+    "afterDays_other": "Po {{count}} dniach",
+    "create": "Utwórz i skopiuj link",
+    "share": "Udostępnij link",
     "imagesStripped": "Pokazywany jest tylko tekst, pliki w tej notatce są ukryte.",
     "copied": "Skopiowano"
   },
@@ -111,7 +133,7 @@
     "footerTagline": "- Notatki szyfrowane w modelu zero-knowledge, hostowane w Szwajcarii.",
     "sealed": {
       "heading": "Otrzymałeś zaszyfrowaną notatkę.",
-      "subheading": "Ta wiadomość zniszczy się po przeczytaniu. Nieprzeczytane linki wygasają po 24 godzinach.",
+      "subheading": "Ta wiadomość zniszczy się po przeczytaniu. Nieprzeczytane linki wygasają same.",
       "reveal": "Odsłoń wiadomość",
       "warning": "Serwer usuwa notatkę w chwili, gdy ją odsłonisz. Nie ma drugiej szansy."
     },
@@ -127,7 +149,7 @@
     },
     "gone": {
       "heading": "Tej notatki już nie ma.",
-      "body": "Została już przeczytana albo wygasła. Linki do spalenia można otworzyć tylko raz i wygasają po 24 godzinach."
+      "body": "Została już przeczytana albo wygasła. Linki do spalenia można otworzyć tylko raz i wygasają same."
     },
     "error": {
       "heading": "Coś poszło nie tak.",

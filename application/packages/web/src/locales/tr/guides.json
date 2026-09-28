@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "Super notlar, kontrol listeleri ve 2FA kodları biçimlerini korur",
+          "p": [
+            "Super notlar başlıklarını, listelerini, kontrol listelerini, tablolarını, kod bloklarını, renklerini ve daraltılabilir bölümlerini korur. Kontrol listeleri Görevler'e düşer, hesap tabloları tabloya dönüşür ve kimlik doğrulayıcı kayıtları 2FA anahtarlarıyla birlikte Kasa'da giriş bilgisi olur. İç içe etiketler klasöre dönüşür ve her not etiketlerini de korur.",
+            "Standard Notes'a yüklediğiniz dosyalar onların sunucusunda kalır, bu yüzden yedekte yalnızca adları bulunur. İçe aktarılan her not, bir dosyanın bulunduğu yeri işaretler. Bu dosyaları Standard Notes'tan indirin ve nota yeniden ekleyin."
+          ]
+        },
+        {
           "h": "Şifreli yedekler desteklenmiyor",
           "p": [
             "Şifreli bir Standard Notes yedeği, yalnızca Standard Notes parolanızın açabildiği bir şifreli metindir; içe aktarıcı onu okuyamaz. Şifreli biçimi dışa aktardıysanız yeniden dışa aktarın ve şifresi çözülmüş (decrypted) biçimi seçin. Dosya notlarınızı düz metin olarak taşıdığı için, içe aktarma bittikten sonra onu silin.",

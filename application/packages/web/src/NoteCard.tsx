@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { activeLocale } from './languages';
 import type { NoteRowProps } from './NoteRow';
-import { RowIcon, TagChips, CardGlyph, noteFaviconDomain } from './NoteRow';
+import { RowIcon, TagChips, CardGlyph, noteFaviconDomain, noteLinkDragProps } from './NoteRow';
 import { deriveDisplayTitle, deriveExcerpt, emptyExcerptLabel, formatModifiedShort, rowSizeLabel } from './notesViewUtils';
-import { Check, PushPin, Shield, PencilSimpleSlash, Warning } from './icons';
+import { Archive, Check, PushPin, Shield, PencilSimpleSlash, Warning } from './icons';
 import { usePushFailure } from './pushFailures';
 import { tintStyle, useNoteColor } from './looks/LookGlyph';
 
@@ -37,28 +37,32 @@ export default React.memo(function NoteCard({
   showTypeIcons = false,
   sortAwareDate = false,
   trashTint = false,
+  showArchived = false,
   sizeLabel,
   iconOverride,
   glyphOverride,
   trailing,
+  linkDrag = false,
+  linkDragSelection,
 }: NoteRowProps) {
   const { t } = useTranslation('notes');
   const pushFailure = usePushFailure(n.id);
   // The same color as the row, and never in the trash.
-  const noteColor = useNoteColor(n.tags, n.folderId);
+  const noteColor = useNoteColor(n.id, n.tags, n.folderId);
   const color = trashTint ? null : noteColor;
   const isVault = n.type === 'login' || n.type === 'card' || n.type === 'ssh-key';
   const isFile = n.type === 'file';
   const isJournal = n.type === 'journal';
   const isTask = n.type === 'task';
   const hasTasks = isTask;
+  const archivedFlag = showArchived && n.archived === 1;
   const hasStatusIcons =
-    (showTypeIcons && n.starred === 1) || n.pinProtected === 1 || n.locked === 1 || pushFailure !== undefined;
+    (showTypeIcons && n.starred === 1) || n.pinProtected === 1 || n.locked === 1 || pushFailure !== undefined || archivedFlag;
 
   const displayTitle = useMemo(() => deriveDisplayTitle(n, locked), [n, locked, activeLocale()]);
   /** Shared with `NoteRow` - one rule for when a size appears. */
   const sizeText = rowSizeLabel(n, listPrefs.sortField, sizeLabel) || undefined;
-  const excerpt = useMemo(() => deriveExcerpt(n), [n, activeLocale()]);
+  const excerpt = useMemo(() => deriveExcerpt(n, listPrefs.longPreview), [n, listPrefs.longPreview, activeLocale()]);
   /** Favicon for the mini glyph - bookmarks and logins only, never in trash
    *  (the boxed chip drops the favicon there too, for the amber icon), and
    *  never behind the PIN, where the address is the content the gate keeps. */
@@ -74,12 +78,16 @@ export default React.memo(function NoteCard({
 
   return (
     <li
+      // Read by the list pane's one middle-click and Alt-click handler,
+      // which opens the item as a tab. Spec: ops/docs/plans/note-tabs.md
+      data-item-id={n.id}
       onClick={onClick}
       onContextMenu={onContextMenu}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       onTouchMove={onTouchMove}
       onTouchCancel={onTouchCancel}
+      {...noteLinkDragProps({ note: n, isNoteLocked: locked, linkDrag, selectionMode, isMultiSelected, trashTint, linkDragSelection })}
       // Same touch-only rule as NoteRow - long-press selects the card, it
       // must not start a text selection too. Spec: issue #208.
       className={`pn-card pn-lazy-card relative flex flex-col gap-1.5 rounded-xl border p-3 cursor-pointer transition [@media(hover:none)]:select-none ${
@@ -140,9 +148,10 @@ export default React.memo(function NoteCard({
           <span data-slot="title" className="pn-card-titletext truncate" dir="auto">{displayTitle}</span>
         </div>
       </div>
-      {/* Preview - up to 2 lines (1 line on small tiles, via .pn-card-preview) */}
+      {/* Preview - up to 2 lines (.pn-card-preview),
+          more with the "Longer preview text" pref (.pn-preview-long) */}
       {listPrefs.showPreview && !locked && (
-        <div data-slot="preview" className="pn-card-preview text-[13px] text-neutral-500 dark:text-neutral-400 leading-snug" dir="auto">
+        <div data-slot="preview" className={`pn-card-preview${listPrefs.longPreview ? ' pn-preview-long' : ''} text-[13px] text-neutral-500 dark:text-neutral-400 leading-snug`} dir="auto">
           {excerpt || emptyExcerptLabel(n)}
         </div>
       )}
@@ -175,6 +184,9 @@ export default React.memo(function NoteCard({
             )}
             {n.locked === 1 && (
               <PencilSimpleSlash size={12} aria-label={t('noteRow.readOnly')} />
+            )}
+            {archivedFlag && (
+              <Archive size={12} aria-label={t('noteRow.archived')} />
             )}
           </span>
           {/* Anchored to the date, as in the row - section 66. */}

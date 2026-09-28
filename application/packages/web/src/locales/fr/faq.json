@@ -94,8 +94,8 @@
     "what-can-you-see": {
       "q": "Que peut voir PrivacyNotes de mes notes ?",
       "a": [
-        "Rien de lisible. Notes, titres, étiquettes et pièces jointes sont toujours chiffrés, sur ton appareil et en route vers le serveur, donc le serveur ne stocke que du texte chiffré. En autoconservation, ce qui est le cas de tout compte à phrase, aucune clé pour le déchiffrer n'existe de notre côté. Quand tu t'inscris avec Google, Apple ou GitHub, on te demande où vit ta clé, et l'écran part de \"Reste simple et pratique\" : cette option stocke ta phrase sur notre serveur, chiffrée sous une clé à nous. Paramètres > Sécurité > Ta phrase indique quel mode tu as et te permet d'en changer.",
-        "Ce que nous voyons, c'est le minimum pour faire tourner le service : la quantité de stockage chiffré que tu occupes, le nombre d'appareils liés, et des horodatages de sync. Si tu te connectes avec une phrase plutôt qu'avec Google, Apple ou GitHub, nous ne connaissons même pas ton adresse e-mail."
+        "Les notes, titres, étiquettes et pièces jointes sont chiffrés sur ton appareil avant d’atteindre le serveur. En gestion autonome, le mode initial de toute inscription par phrase, nous ne détenons aucune clé de déchiffrement. L’inscription avec Google, Apple ou GitHub te demande où conserver ta clé et présélectionne \"Reste simple et pratique\". Cette option stocke ta phrase sur notre serveur, chiffrée avec une clé que nous détenons. Dans ce mode, notre serveur peut déchiffrer la phrase et donc tes notes. Paramètres > Compte > Gestion des clés affiche ton mode actuel et te permet de le changer.",
+        "Nous voyons les informations nécessaires au fonctionnement du service : l’espace de stockage chiffré utilisé, le nombre d’appareils associés et les dates et heures de synchronisation. Si tu utilises uniquement ta phrase et n’as associé aucun compte Google, Apple ou GitHub, nous ne connaissons pas ton adresse e-mail."
       ]
     },
     "phrase-vs-password": {
@@ -103,17 +103,17 @@
       "a": [
         "Ça semble contre-intuitif au début, mais une phrase de récupération unique est la construction la plus solide. Avec identifiant et mot de passe, l'identifiant n'est pas un secret (il apparaît dans toutes les fuites de données), toute la sécurité repose donc sur le mot de passe - et les mots de passe choisis par des humains plafonnent en moyenne à 30 ou 40 bits d'entropie. Ta phrase de 12 mots, ce sont 128 bits garantis, générés par ton appareil, jamais choisis par un humain et jamais réutilisés d'un autre site.",
         "Il n'y a pas non plus de mot de passe à perdre chez nous. Une connexion par mot de passe implique que le serveur stocke au moins un hash de mot de passe, qui peut fuiter, être cassé ou hameçonné. En autoconservation, ta phrase ne quitte jamais ton appareil : elle dérive tes clés de chiffrement localement, et le serveur ne voit jamais que des données chiffrées. Il n'y a pas de hash à voler ni de réinitialisation de mot de passe à détourner.",
-        "Si taper 12 mots te paraît lourd : tu peux enregistrer la phrase dans ton gestionnaire de mots de passe en un geste (Paramètres > Sécurité > Ta phrase), et la connexion ressemble à n'importe quelle autre. Tu préfères la voie classique ? La connexion avec Google, Apple ou GitHub marche aussi : tu obtiens quand même une phrase sous le capot, et tu choisis si elle reste sur ton appareil ou si nous la conservons pour toi."
+        "Si taper 12 mots te paraît lourd : tu peux enregistrer la phrase dans ton gestionnaire de mots de passe en un geste (Paramètres > Sécurité > Phrase), et la connexion ressemble à n'importe quelle autre. Tu préfères la voie classique ? La connexion avec Google, Apple ou GitHub marche aussi : tu obtiens quand même une phrase sous le capot, et tu choisis si elle reste sur ton appareil ou si nous la conservons pour toi."
       ]
     },
     "threat-model-levels": {
       "q": "Puis-je choisir mon propre équilibre entre confort et confidentialité ?",
       "a": [
         "Oui, et c'est voulu. Tout le monde ne se défend pas contre les mêmes menaces, le modèle de compte est donc une échelle plutôt qu'un dogme unique. À chaque barreau, tes notes restent chiffrées sur ton appareil ; ce qui change, c'est qui détient la clé et ce que nous savons de toi.",
-        "Le bout confortable : connecte-toi avec Google, Apple ou GitHub et laisse \"Reste simple et pratique\" sélectionné quand on te le propose, puisque c'est l'option par défaut de cet écran. Nous conservons ta phrase de récupération pour toi, chiffrée au repos sur notre serveur : chaque appareil se connecte avec cette seule connexion, et il n'y a rien à sauvegarder ni à perdre. En échange, nous connaissons l'e-mail derrière cette connexion, et c'est nous qui gardons ta clé plutôt que toi. Si ta menace réaliste est de perdre tes propres identifiants plutôt qu'une intrusion ciblée, c'est le bon échelon.",
+        "Le choix pratique : connecte-toi avec Google, Apple ou GitHub et laisse \"Reste simple et pratique\" sélectionné, puisque c’est l’option par défaut de cet écran. Nous conservons ta phrase de récupération, chiffrée sur notre serveur. Un nouvel appareil peut donc ouvrir tes notes après la connexion au fournisseur et la saisie d’un code d’authentification si la 2FA est activée. En échange, nous connaissons l’adresse e-mail liée à cette connexion, et notre serveur peut déchiffrer ta phrase. Sauvegarde ta phrase au cas où tu perdrais l’accès au compte du fournisseur, ainsi que ta clé de secours 2FA si tu actives la connexion à deux facteurs.",
         "Le milieu : connecte-toi avec Google, Apple ou GitHub mais choisis \"Sécurité et confidentialité maximales\". Ta phrase ne touche jamais nos serveurs et le chiffrement est entièrement zero-knowledge ; un nouvel appareil demande la phrase ou un scan QR depuis un appareil déjà connecté. Nous connaissons forcément encore l'e-mail derrière cette connexion, mais nous ne pourrions pas lire une seule note, même sous contrainte.",
         "Le bout privé : ignore les connexions et n'utilise que la phrase de 12 mots. Pas d'e-mail, pas de nom, pas d'identité - et associé à un [achat Pro anonyme](/fr/help/buy-pro-anonymously/), même payer ne laisse ton nom nulle part. En échange, la garde de la clé t'appartient entièrement : perds la phrase sans plus aucun appareil connecté, et personne ne peut aider.",
-        "Avec une connexion Google, Apple ou GitHub, tu n’es pas enfermé dans le niveau que tu as choisi. Paramètres > Sécurité > Ta phrase affiche les deux modes côte à côte avec ce que chacun coûte, et tu peux passer de l’un à l’autre quand tu veux. Passer à l’autoconservation supprime notre copie et te demande d’abord de retaper trois de tes douze mots, puisque ceux qui cliquent sont justement ceux qui ne les ont jamais notés. Revenir en arrière renvoie la phrase et demande un choix explicite. Les deux sens sont signés avec ta propre clé de compte, une session volée ne peut donc pas changer ton mode. Un compte à phrase seule reste du côté privé, car il n’y a aucune connexion avec laquelle récupérer une clé stockée. Et chaque niveau accepte les couches locales par-dessus : verrouillage par PIN, déverrouillage biométrique et protection par note."
+        "Paramètres > Compte > Gestion des clés présente les deux modes et leurs compromis, et te permet de changer de mode. Quitter la gestion des clés sur le serveur supprime notre copie après confirmation de trois mots de ta phrase sauvegardée. Revenir à ce mode envoie à nouveau la phrase au serveur et nécessite un choix explicite. Les deux changements sont signés avec la clé de ton compte et demandent un code d’authentification récent si la 2FA est activée. Un compte créé avec une phrase peut associer un fournisseur dans Compte > Comptes, puis choisir séparément la gestion des clés sur le serveur. Associer le fournisseur n’envoie pas la phrase au serveur. Tous les modes peuvent aussi utiliser le verrouillage de l’application par PIN, le déverrouillage biométrique et la protection de notes individuelles."
       ]
     },
     "twelve-word-phrase": {
@@ -126,19 +126,26 @@
       ]
     },
     "guess-phrase": {
-      "q": "Si quelqu'un devine mes 12 mots, peut-il se connecter à mon compte ?",
+      "q": "Quelqu'un peut-il deviner mes 12 mots ou tomber sur les mêmes ?",
       "a": [
-        "Réponse courte : oui. Ta phrase est la clé, donc quiconque la détient peut se connecter, exactement comme quiconque tient la clé de ta maison peut ouvrir ta porte. C'est voulu : c'est l'unique clé maîtresse de tes notes, et rien de plus faible ne se dresse devant. La vraie question n'est donc pas de savoir si détenir la phrase donne accès (oui), mais si quelqu'un pourrait la deviner - et là, la réponse est non : aucun ordinateur existant ou prévisible n'y parviendrait.",
-        "Voici l'échelle. Une phrase de 12 mots est une possibilité parmi 2^128 : environ 340 sextillions, un nombre à 39 chiffres (3,4 x 10^38). La probabilité de deviner la tienne du premier coup est de 1 sur 340 sextillions - moins probable que de gagner quatre fois de suite un jackpot de loterie à 1 sur 300 millions. La traiter comme une recherche plutôt qu'un coup de chance n'aide pas : même à un milliard de milliards de tentatives par seconde (10^18, bien au-delà de tout matériel réel, États compris), tout parcourir prendrait environ 10 000 milliards d'années, près de 800 fois l'âge actuel de l'univers. Et c'est la version fantasmée, car chaque tentative réelle doit traverser une dérivation de clé volontairement lente, et toute attaque en ligne doit passer par nos serveurs - ce qui ralentit le vrai essai de plusieurs ordres de grandeur supplémentaires. Le procédé n'a d'ailleurs rien d'inédit : la même construction 128 bits sécurise les portefeuilles Bitcoin depuis plus d'une décennie, et personne n'en a jamais deviné un.",
-        "On est tenté d'imaginer la phrase comme un mot de passe, qu'on renforcerait avec des majuscules, des chiffres et des symboles. Une phrase de récupération ne marche pas comme ça, et tu ne dois jamais essayer d'en construire ou d'en modifier une à la main. Ton appareil génère 128 bits d'aléa cryptographiquement sûr et les encode en 12 mots issus d'une liste publique fixe de 2048 mots : cet aléa est toute la force. Le dernier mot porte même une somme de contrôle intégrée, une phrase mal tapée ou inventée est donc rejetée d'emblée. L'ordre des mots compte, la casse non (nous la normalisons à la connexion), et ajouter des symboles ne ferait que rendre la phrase invalide. Tape les mots exactement comme ils t'ont été donnés."
+        "Non. Personne ne peut deviner tes 12 mots, et personne d'autre ne tombe sur les mêmes : aucun ordinateur existant, ou que nous puissions prévoir, n'en approche. Seul quelqu'un qui obtient tes vrais mots peut se connecter, alors garde-les en lieu sûr.",
+        "Ton appareil choisit ta phrase au hasard, et le nombre de phrases possibles compte 39 chiffres. Deviner la tienne du premier coup est moins probable que de gagner quatre fois de suite un jackpot de loterie à 1 chance sur 300 millions. Un ordinateur qui essaierait un milliard de milliards de phrases chaque seconde aurait encore besoin d'environ 10 000 milliards d'années pour toutes les essayer, bien plus longtemps que l'âge de l'univers. Même si chacun des 8 milliards d'habitants de la Terre avait une phrase, la probabilité que deux d'entre elles soient identiques serait plus faible que celle de gagner ce jackpot deux fois de suite.",
+        "La force vient de ce hasard, pas de l'allure des mots. N'invente pas de phrase et n'y ajoute pas de symboles : utilise les 12 mots exactement comme l'appli te les donne. Les majuscules n'ont pas d'importance. Le dernier mot sert de contrôle, donc l'appli refuse une phrase mal tapée ou inventée."
+      ]
+    },
+    "same-phrase": {
+      "q": "Quelqu'un d'autre peut-il obtenir la même phrase de récupération que moi ?",
+      "a": [
+        "Non, pas en pratique. Ton appareil choisit ta phrase au hasard parmi un nombre énorme de phrases possibles. Même si chaque personne sur Terre créait un compte, deux phrases identiques seraient moins probables que de gagner deux fois de suite un jackpot de loterie à 1 chance sur 300 millions. Ce sont les mêmes chiffres qui font que [personne ne peut deviner ta phrase](/fr/help/guess-phrase/).",
+        "Ton ID de compte est tiré de la phrase. Donc si tu supprimes un compte et que tu te reconnectes avec les mêmes 12 mots, tu obtiens un nouveau coffre vide avec le même ID de compte. Rien du coffre supprimé ne revient. Après être passé à une nouvelle phrase, retire l'ancienne de ton gestionnaire de mots de passe, pour ne jamais te connecter par erreur à l'ancien compte."
       ]
     },
     "why-no-2fa": {
-      "q": "Pourquoi n'y a-t-il pas d'authentification à deux facteurs (2FA) ?",
+      "q": "Comment activer l’authentification à deux facteurs (2FA) ?",
       "a": [
-        "Parce que c'est un arbitrage délibéré, pas un oubli. La 2FA familière - code par SMS ou appli d'authentification - existe pour consolider des mots de passe faibles choisis par des humains, et elle repose sur un secret partagé et un chemin de récupération hébergés sur un serveur. C'est exactement la surface d'attaque que le modèle à phrase supprime : ton appareil prouve qu'il détient la clé en signant un défi, nos serveurs ne reçoivent donc jamais qu'une clé publique et une signature - jamais la phrase, jamais un hash de mot de passe. Boulonner un code par-dessus réintroduirait la machinerie serveur que ce design évite précisément, sans rien apporter contre le risque qu'on devine ta phrase, puisque 128 bits ferment déjà cette porte.",
-        "Ce qui te protège ici est local, et présent dans toutes les formules : le verrouillage de l'appli (PIN) et le déverrouillage biométrique se dressent devant un appareil que quelqu'un d'autre ramasse. Les risques qui méritent une défense sont le phishing et une phrase lue par-dessus ton épaule, pas le fait qu'on la devine. Garde donc la phrase dans un gestionnaire de mots de passe et ne la tape nulle part ailleurs que dans l'app.",
-        "Au-delà, la phrase est la clé, alors sauvegarde-la le jour où tu crées ton compte : range-la dans un gestionnaire de mots de passe sérieux, ou imprime-la ou écris-la et garde cette copie en lieu sûr. Et ne la colle jamais ailleurs que dans l'appli elle-même."
+        "Active la connexion à deux facteurs facultative dans Paramètres > Sécurité > 2FA. Mets d’abord PrivacyNotes à jour sur tes autres appareils. Scanne le QR code avec une application d’authentification ou saisis la clé de configuration manuellement. Sauvegarde la clé de secours 2FA en dehors de PrivacyNotes, confirme ta copie sauvegardée, puis saisis un code actuel pour terminer.",
+        "Après la configuration, une nouvelle session serveur nécessite ta phrase ou un compte associé, puis un code d’authentification. En gestion autonome, tu as toujours besoin de ta phrase pour déchiffrer tes notes. Gère les comptes de fournisseurs dans Paramètres > Compte > Comptes. Associer un compte ne change pas la gestion des clés.",
+        "Si tu perds ton application d’authentification, ajoute la clé de secours 2FA sauvegardée à une autre application d’authentification. Si tu perds les deux, nous ne pouvons pas rétablir l’accès au serveur. Les notes déjà déverrouillées sur un appareil restent lisibles et exportables. La connexion à deux facteurs n’ajoute pas de chiffrement et ne protège pas un appareil déjà déverrouillé."
       ]
     },
     "bip39-wordlist": {
@@ -167,7 +174,7 @@
       "q": "Que sont les burn notes ?",
       "a": [
         "Une burn note est un moyen autodestructeur de partager une note avec quelqu'un qui n'utilise pas PrivacyNotes. L'appli chiffre le contenu avec une clé à usage unique et te donne un lien. La clé voyage dans le fragment du lien, que les navigateurs n'envoient jamais aux serveurs - notre serveur stocke donc un texte chiffré qu'il ne peut pas lire.",
-        "À la première ouverture du lien, le serveur livre le texte chiffré et le supprime dans le même geste : une lecture, puis plus rien. Les liens jamais ouverts expirent d'eux-mêmes après 24 heures. Dans tous les cas, rien ne traîne."
+        "À la première ouverture du lien, le serveur livre le texte chiffré et le supprime dans le même geste : une lecture, puis plus rien. Les liens jamais ouverts expirent d'eux-mêmes au bout du délai choisi par l'expéditeur, entre 1 heure et 7 jours. Dans tous les cas, rien ne traîne."
       ]
     },
     "open-source": {
@@ -187,15 +194,23 @@
     "lost-phrase": {
       "q": "J'ai perdu ma phrase de récupération. Pouvez-vous récupérer mon compte ?",
       "a": [
-        "Si tu es encore connecté sur n'importe quel appareil : oui, tu peux la récupérer toi-même. Ouvre Paramètres > Sécurité > Ta phrase et enregistre-la tout de suite dans ton gestionnaire de mots de passe.",
+        "Si tu es encore connecté sur n'importe quel appareil : oui, tu peux la récupérer toi-même. Ouvre Paramètres > Sécurité > Phrase et enregistre-la tout de suite dans ton gestionnaire de mots de passe.",
         "Si tu n'as plus ni appareil connecté ni phrase, tout dépend de qui détient la clé. Si tu nous as laissé la conserver en t'inscrivant avec Google, Apple ou GitHub, connecte-toi avec ce compte et tu retrouves l'accès. En autoconservation, personne ne le peut : ta phrase n'atteint jamais nos serveurs, il n'y a donc rien à réinitialiser et aucun ticket de support qui puisse aider. Tout service capable de restaurer tes données chiffrées après une perte totale détient tes clés.",
         "La précaution coûte dix secondes : range la phrase dans un gestionnaire de mots de passe le jour où tu crées ton compte. Si elle est déjà perdue et que tu paies un module de stockage, Paddle te facture directement et peut le résilier sans ta phrase : voir [changer ou résilier un module](/fr/help/manage-storage-addon/)."
+      ]
+    },
+    "lost-2fa": {
+      "q": "J’ai perdu mes codes 2FA. Comment je récupère l’accès ?",
+      "a": [
+        "Ajoute ta clé de secours 2FA dans n’importe quelle application d’authentification, puis saisis le code qu’elle affiche quand PrivacyNotes t’en demande un. La clé de secours est celle que tu as enregistrée en activant la 2FA, et elle marche chaque fois que tu en as besoin.",
+        "Si tu as perdu à la fois ton téléphone et la clé de secours, nous ne réinitialisons pas la 2FA, et notre support ne peut pas t’aider sur ce point. Les notes déjà sur tes appareils restent lisibles.",
+        "Pour les garder, va dans Paramètres > Import & Export > Exporter sur un appareil qui les a encore. Crée ensuite un nouveau coffre et importe l’export dedans."
       ]
     },
     "oauth-recovery": {
       "q": "Je me connecte avec Google, Apple ou GitHub. Et si je perds l'accès à ce compte ?",
       "a": [
-        "Tu as quand même une phrase de 12 mots sous le capot, et la phrase seule te connecte sur n'importe quel appareil - sans Google, Apple ni GitHub. Ouvre Paramètres > Sécurité > Ta phrase et enregistre-la dans ton gestionnaire de mots de passe.",
+        "Tu as quand même une phrase de 12 mots sous le capot, et la phrase seule te connecte sur n'importe quel appareil - sans Google, Apple ni GitHub. Ouvre Paramètres > Sécurité > Phrase et enregistre-la dans ton gestionnaire de mots de passe.",
         "Fais-le une fois, et perdre le compte Google, Apple ou GitHub ne te coûte rien : tu te connectes simplement avec la phrase à la place."
       ]
     },
@@ -468,7 +483,7 @@
       "q": "Le déverrouillage biométrique ne fonctionne plus. Que puis-je faire ?",
       "a": [
         "Tu n'es jamais bloqué dehors. L'écran de verrouillage propose toujours une solution de repli : \"Déverrouiller avec le PIN\", ou \"Se connecter avec la phrase de récupération\". La biométrie est un verrou local, pas une clé de chiffrement, tes notes sont donc intactes dans tous les cas.",
-        "Ensuite, répare le verrou. L'enrôlement se fait par appareil, donc un nouveau téléphone, un nouveau profil de navigateur ou une réinstallation demande de recommencer l'enrôlement : Paramètres > Sécurité > \"Verrou biométrique\", désactive, puis \"Activer le déverrouillage biométrique\" à nouveau. Cela requiert aussi \"Faire confiance à cet appareil\" (les sessions non fiables s'effacent à la fermeture de l'onglet) et un matériel doté d'un authentificateur de plateforme (Touch ID, Face ID, Windows Hello). Si un gestionnaire de mots de passe comme Bitwarden ou 1Password surgit à la place de l'invite système, ferme-le et réessaie, ou désactive sa capture de passkey pour le site - l'appli demande l'authentificateur intégré, mais certains gestionnaires interceptent quand même."
+        "Ensuite, répare le verrou. L'enrôlement se fait par appareil, donc un nouveau téléphone, un nouveau profil de navigateur ou une réinstallation demande de recommencer l'enrôlement : Paramètres > Sécurité > \"Verrou\", désactive, puis \"Activer le déverrouillage biométrique\" à nouveau. Cela requiert aussi \"Faire confiance à cet appareil\" (les sessions non fiables s'effacent à la fermeture de l'onglet) et un matériel doté d'un authentificateur de plateforme (Touch ID, Face ID, Windows Hello). Si un gestionnaire de mots de passe comme Bitwarden ou 1Password surgit à la place de l'invite système, ferme-le et réessaie, ou désactive sa capture de passkey pour le site - l'appli demande l'authentificateur intégré, mais certains gestionnaires interceptent quand même."
       ]
     },
     "phrase-compromised": {
@@ -646,7 +661,7 @@
     "add-second-device": {
       "q": "Comment me connecter sur un deuxième appareil ?",
       "a": [
-        "Sur l'appareil que tu utilises déjà, ouvre Paramètres > Sécurité > Ta phrase. Tu y vois tes 12 mots et un QR code de connexion. Sur le nouvel appareil, choisis \"Connexion par phrase\", puis scanne ce QR code avec la caméra, envoie une photo, ou tape les mots. Tes notes arrivent en quelques secondes.",
+        "Sur l'appareil que tu utilises déjà, ouvre Paramètres > Sécurité > Phrase. Tu y vois tes 12 mots et un QR code de connexion. Sur le nouvel appareil, choisis \"Connexion par phrase\", puis scanne ce QR code avec la caméra, envoie une photo, ou tape les mots. Tes notes arrivent en quelques secondes.",
         "Un compte gratuit couvre 2 appareils et Pro autant que tu veux, et deux navigateurs sur un même ordinateur comptent pour un seul appareil. Traite le QR code exactement comme la phrase qu'il porte : ne le montre à personne, et ne le laisse jamais atterrir dans une photothèque qui se synchronise vers le cloud de quelqu'un d'autre."
       ]
     },
@@ -714,6 +729,13 @@
         "Pour transmettre une seule chose précise, envoie une [note éphémère](/fr/help/burn-notes/) plutôt que ta phrase. Un compte de foyer partagé fonctionne bien si c'est vraiment ce que tu veux : garde la phrase dans une entrée partagée de gestionnaire de mots de passe, et considère que toute personne l'ayant détenue un jour a vu tout ce qu'il y a dedans."
       ]
     },
+    "pro-after-leak": {
+      "q": "Ma phrase de récupération a fuité. Est-ce que je perds Pro ?",
+      "a": [
+        "Pro reste attaché au compte sur lequel tu l'as acheté, et ta phrase de récupération est la seule clé de ce compte. Si la phrase fuite et que tu passes à un nouveau coffre, Pro ne te suit pas, et personne ne peut le transférer à la main, nous compris. L'appli le dit à l'inscription, puis encore avant que tu te déconnectes : les 12 mots sont le seul moyen d'entrer.",
+        "Si tu as acheté Pro au cours des 30 derniers jours, tu peux obtenir un [remboursement complet](/fr/help/refunds/) et le racheter sur le nouveau coffre. Chaque remboursement nous coûte des frais de paiement, alors garde-le pour une vraie fuite, s'il te plaît. Les étapes pour déplacer tes notes et fermer l'ancien coffre se trouvent dans [que faire quand ta phrase a fuité](/fr/help/phrase-compromised/). Garde la nouvelle phrase dans un gestionnaire de mots de passe, et ne la tape nulle part ailleurs."
+      ]
+    },
     "business-use": {
       "q": "Puis-je utiliser PrivacyNotes au travail, et existe-t-il une formule équipe ?",
       "a": [
@@ -725,8 +747,8 @@
       "q": "Quelle option d'inscription choisir ?",
       "a": [
         "Celle qui correspond à ton niveau de menace. Il y en a trois. Un : la connexion avec Google, Apple ou GitHub, avec ta clé conservée sur notre serveur. Deux : la même connexion, mais ta clé ne quitte pas ton appareil. Trois : \"Générer une phrase\", sans e-mail, sans nom et sans aucune connexion. Les trois gardent tes notes chiffrées sur ton appareil, et ce qui les sépare, c'est qui détient la clé et ce que nous apprenons sur toi.",
-        "Se connecter avec l'un de ces trois demande ensuite où vit ta clé, en partant de \"Reste simple et pratique\". Cette option la stocke chiffrée sur notre serveur : n'importe quel nouvel appareil se connecte avec cette seule connexion et tu n'as rien à conserver. C'est le bon niveau si ce que tu crains, c'est de perdre tes propres identifiants. \"Sécurité et confidentialité maximales\" garde la clé sur ton appareil : nous ne pourrions lire aucune note sous aucune pression, et un nouvel appareil réclame tes 12 mots ou un scan de QR code depuis un appareil déjà connecté.",
-        "La voie de la phrase seule est le niveau le plus haut : pas d'e-mail, pas de nom, rien qui relie le compte à une personne. En échange, la clé n'appartient qu'à toi : la perdre sans appareil connecté, c'est un cas où personne ne peut aider. Le mode de clé d'une connexion n'est pas définitif : Paramètres > Sécurité > Ta phrase le change quand tu veux, tandis qu'un compte à phrase seule garde sa clé sur l'appareil. Chaque niveau peut ajouter un PIN ou un verrou biométrique par-dessus. L'échelle complète, avec le prix de chaque barreau, est dans [l'échelle des niveaux de menace](/fr/help/threat-model-levels/)."
+        "La connexion avec Google, Apple ou GitHub te demande ensuite où conserver ta clé, avec \"Reste simple et pratique\" présélectionné. Cette option stocke ta phrase chiffrée sur notre serveur. Un nouvel appareil peut donc ouvrir tes notes après la connexion au fournisseur et la saisie d’un code d’authentification si la 2FA est activée. Sauvegarde ta phrase au cas où tu perdrais l’accès au compte du fournisseur, ainsi que ta clé de secours 2FA si tu actives la connexion à deux facteurs. \"Sécurité et confidentialité maximales\" conserve la phrase sur ton appareil : nous ne pourrions lire aucune note, même sous contrainte, et un nouvel appareil a besoin de tes 12 mots ou d’un scan du QR code d’un appareil déjà connecté.",
+        "La connexion par phrase seule n’associe au compte ni adresse e-mail ni nom permettant d’identifier une personne. En échange, toi seul conserves la phrase. Si tu la perds et n’as plus d’appareil déverrouillé, personne ne peut la récupérer pour toi. Paramètres > Compte > Gestion des clés affiche ton mode actuel et te permet de le changer. Un compte créé avec une phrase doit d’abord associer un fournisseur dans Compte > Comptes avant de choisir la gestion des clés sur le serveur. L’association seule ne change pas la gestion des clés. Tous les modes peuvent utiliser un verrouillage par PIN ou biométrie et la connexion facultative à deux facteurs. Le comparatif complet se trouve dans [l’échelle des niveaux de protection](/fr/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

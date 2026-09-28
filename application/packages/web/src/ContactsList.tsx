@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
 import type { ListPrefs, ListPrefsStore } from './listPrefs';
 import type { View } from './views';
-import NoteRow from './NoteRow';
+import NoteRow, { noteLinkText } from './NoteRow';
 import NoteCard from './NoteCard';
 import { ListNav } from './notesView/ListNav';
 import { ListSearchInput } from './ListSearchInput';
@@ -12,7 +12,7 @@ import { ActiveFilterEntry, ActiveSearchEntry, FilteredEmpty, ListFilterChips } 
 import { SelectionToolbar } from './SelectionToolbar';
 import { SelectionCountStrip } from './SelectionCountStrip';
 import { HoverLabel } from './HoverLabel';
-import { ImportPromptEntry, useImportPrompt } from './ImportPrompt';
+import { ImportPromptEntry, importPromptFor, type ImportOffer } from './ImportPrompt';
 import { FunnelSimple, Download, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
 
 /**
@@ -34,6 +34,7 @@ export function ContactsList({
   onListPrefsChange,
   onSelectView,
   hiddenViews,
+  importOffer,
   onOpenDrawer,
   search,
   setSearch,
@@ -50,6 +51,7 @@ export function ContactsList({
   selectionMode,
   selectedIds,
   selectionAllStarred,
+  selectionAllArchived,
   onRowClick,
   onToggleSelected,
   onRangeSelect,
@@ -59,6 +61,7 @@ export function ContactsList({
   onDeselectAll,
   onSelectAllVisible,
   onBulkFavorite,
+  onBulkArchive,
   onBulkTag,
   onBulkMoveToFolder,
   onBulkExport,
@@ -78,6 +81,8 @@ export function ContactsList({
   onListPrefsChange: (next: ListPrefsStore) => void;
   onSelectView: (v: View) => void;
   hiddenViews?: View[] | undefined;
+  /** The synced import-offer dismissal; see ImportPrompt.tsx. */
+  importOffer: ImportOffer;
   onOpenDrawer: () => void;
   /** The app's ONE search string, shared with every other pillar list.
    *  Never a private copy: Cmd+K and Escape act on this one. */
@@ -98,6 +103,7 @@ export function ContactsList({
   selectionMode: boolean;
   selectedIds: Set<string>;
   selectionAllStarred: boolean;
+  selectionAllArchived: boolean;
   onRowClick: (e: React.MouseEvent, id: string) => void;
   onToggleSelected: (id: string) => void;
   onRangeSelect: (id: string) => void;
@@ -107,6 +113,7 @@ export function ContactsList({
   onDeselectAll: () => void;
   onSelectAllVisible: () => void;
   onBulkFavorite: () => void;
+  onBulkArchive: () => void;
   onBulkTag: (tag: string) => void;
   onBulkMoveToFolder: () => void;
   onBulkExport: () => void;
@@ -122,12 +129,16 @@ export function ContactsList({
   const [contextTargetId, setContextTargetId] = useState<string | null>(null);
 
   const q = search.trim().toLowerCase();
+  /** The whole selection as note-links, in list order, for a drag. */
+  const selectionLinkText = () => noteLinkText(contacts.filter((n) => selectedIds.has(n.id)), isNoteLocked);
+
   const empty = contacts.length === 0 && !q;
   const filteredAway =
     contacts.length === 0 && !q && (activeFolderName !== null || activeTag !== null);
 
-  const importPrompt = useImportPrompt('contacts', {
+  const importPrompt = importPromptFor('contacts', {
     count: contacts.length,
+    offer: importOffer,
     suppressed: selectionMode || !!q || activeFolderName !== null || activeTag !== null,
   });
 
@@ -144,8 +155,10 @@ export function ContactsList({
         <SelectionToolbar
           mode="normal"
           allStarred={selectionAllStarred}
+          allArchived={selectionAllArchived}
           onClear={onClearSelection}
           onFavorite={onBulkFavorite}
+          onArchive={onBulkArchive}
           onTag={onBulkTag}
           onMoveToFolder={onBulkMoveToFolder}
           foldersUnlocked={foldersUnlocked}
@@ -282,6 +295,8 @@ export function ContactsList({
                 onTouchMove={onLongPressEnd}
                 onTouchCancel={onLongPressEnd}
                 selectionMode={selectionMode}
+                linkDrag
+                linkDragSelection={selectionLinkText}
                 isMultiSelected={selectedIds.has(n.id)}
                 onToggleSelect={(e) => {
                   if (e.shiftKey) onRangeSelect(n.id);
@@ -305,6 +320,8 @@ export function ContactsList({
                 onTouchMove={onLongPressEnd}
                 onTouchCancel={onLongPressEnd}
                 selectionMode={selectionMode}
+                linkDrag
+                linkDragSelection={selectionLinkText}
                 isMultiSelected={selectedIds.has(n.id)}
                 onToggleSelect={(e) => {
                   if (e.shiftKey) onRangeSelect(n.id);

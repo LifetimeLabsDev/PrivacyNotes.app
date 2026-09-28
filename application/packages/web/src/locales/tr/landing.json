@@ -138,7 +138,7 @@
     "freeSubLabel": "Kredi kartı gerekmez, süre sınırı yok.",
     "freeAllPillars": "Notlar, görevler, dosyalar, kasa, günlük ve yer imleri",
     "freeSync": "2 cihaz arasında eşitleme",
-    "freeVault": "Şifreli dosya kasası, dosya başına 5 MB",
+    "freeVault": "50 MB depolama, dosya başına 5 MB",
     "freeSearch": "Tam metin arama + etiketler",
     "freeImport": "İçe ve dışa aktarma, Keep ve Obsidian dâhil",
     "freeBurn": "Okuduktan sonra yak",
@@ -327,6 +327,7 @@
       "fixed": "Düzeltildi"
     },
     "changelogComingSoon": "Changelog yakında.",
+    "changelogLatest": "En yeni",
     "hotkeysFootnote": "Bir metin alanına yazarken çoğu kısayol yok sayılır, böylece J ve K gibi normal tuşlar yine J ve K yazar."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "Çoğu kişi bize hiç ödeme yapmıyor ve bu bilinçli bir tercih. Bir değerlendirme, teşekkür etmenin güzel bir yolu.",
     "outro": "Gelen her değerlendirmeyi okuyoruz ve uygulamayı her gün kullanan birinden gelen birkaç kelime bize güç veriyor.",
     "descGithub": "GitHub'da bize yıldız verin",
+    "descAppStore": "PrivacyNotes'u App Store'da puanlayın",
     "descAlternativeTo": "AlternativeTo'da beğenin ve yorum yazın",
     "descCapterra": "PrivacyNotes'u Capterra'da puanlayın",
     "descSaasHub": "SaaSHub'da beğenin ve yorum yazın",

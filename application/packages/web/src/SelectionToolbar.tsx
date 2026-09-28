@@ -2,7 +2,7 @@
  * Selection toolbar - replaces the NotesView list header while one or
  * more notes are multi-selected. Works in two modes:
  *
- *   - 'normal': bulk Favorite / Tag / Export / Delete (move to trash)
+ *   - 'normal': bulk Favorite / Archive / Tag / Export / Delete (move to trash)
  *   - 'trash':  bulk Restore / Delete Forever
  *
  * Layout matches the header it replaces: h-14, same horizontal padding
@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { HoverLabel } from './HoverLabel';
 import { TagPicker } from './TagPicker';
 import { IconUpgrade } from './UpgradeModal';
-import { X, PushPin, Tag, Folder, Download, Trash, ArrowCounterClockwise } from './icons';
+import { X, PushPin, Tag, Folder, Download, Trash, ArrowCounterClockwise, iconArchive } from './icons';
 
 type Mode = 'normal' | 'trash';
 
@@ -24,8 +24,11 @@ type Props = {
    *  favorite button label / icon fill. Mixed selections treat as
    *  "not all starred" → clicking favorites all of them. */
   allStarred: boolean;
+  /** True iff every selected note is archived: the button then unarchives. */
+  allArchived: boolean;
   onClear: () => void;
   onFavorite: () => void;
+  onArchive: () => void;
   onTag: (tag: string) => void;
   /** Bulk move to folder (Pro). Opens the shared folder picker, or the
    *  folders upsell when the plan doesn't include them. */
@@ -44,8 +47,10 @@ type Props = {
 export function SelectionToolbar({
   mode,
   allStarred,
+  allArchived,
   onClear,
   onFavorite,
+  onArchive,
   onTag,
   onMoveToFolder,
   foldersUnlocked,
@@ -79,6 +84,11 @@ export function SelectionToolbar({
               icon={
                 <PushPin size={16} weight={allStarred ? 'fill' : 'bold'} />
               }
+            />
+            <ToolbarButton
+              label={allArchived ? t('selectionToolbar.unarchive') : t('selectionToolbar.archive')}
+              onClick={onArchive}
+              icon={iconArchive(allArchived, 16)}
             />
             <ToolbarButton
               label={t('selectionToolbar.tag')}

@@ -10,7 +10,8 @@ import { Editor, type EditorHandle } from '../Editor';
 import { MarkdownSourceEditor } from '../MarkdownSourceEditor';
 import { TagInput, type TagInputHandle } from '../TagInput';
 import { withCredentialChanges, type UserSettings } from '../userSettings';
-import { NoteOptionsMenu } from '../NoteOptionsMenu';
+import { NoteOptionsMenu, type NoteColorInfo } from '../NoteOptionsMenu';
+import type { NoteOwnColor } from '../itemStyles';
 import { ProtectedNoteGate } from '../ProtectedNoteGate';
 import { parseLinkBody, linkDomain } from '../linkBody';
 import { BookmarkItem } from '../BookmarkItem';
@@ -118,6 +119,11 @@ function ContentWidthButton({
 
 export interface NoteEditorPaneProps {
   selected: LocalNote;
+  /** The note menu's color row: the note's own pick and the color it takes
+   *  without one. */
+  noteColor: NoteColorInfo | null;
+  /** Set or clear the note's own color; null takes its tag's or folder's. */
+  onSetNoteColor: (noteId: string, color: NoteOwnColor | null) => void;
   view: View;
   notes: LocalNote[];
   /** Every saved bookmark URL in the account (buildLinkKeyMap), for the
@@ -201,14 +207,19 @@ export interface NoteEditorPaneProps {
   handleBodyChange: (id: string, body: string) => Promise<void>;
   handleTagsChange: (id: string, tags: string[]) => Promise<void>;
   handleTrackersChange: (id: string, trackers: JournalTrackerData) => Promise<void>;
+  handleVaultSave: (id: string, body: string, trackers?: Record<string, unknown>) => Promise<boolean>;
 
   handleCloseEditor: () => Promise<void>;
   handleHistory: (action: 'undo' | 'redo') => void;
   handleToggleStar: (id: string, starred: boolean) => Promise<void>;
+  handleToggleArchive: (id: string, archived: boolean) => Promise<void>;
   /** Trash the open note through the shared confirm modal. */
   requestTrash: (ids: string[]) => void;
   handleRestore: (id: string) => Promise<void>;
   handleDuplicate: (id: string) => Promise<void>;
+  /** True when the note has more than one task and at least one is checked. */
+  canUncheckAllTasks: (n: LocalNote) => boolean;
+  handleUncheckAllTasks: (n: LocalNote) => Promise<void>;
   handleSetLocked: (id: string, locked: boolean) => Promise<void>;
   handleSetPinProtected: (id: string, pinProtected: boolean) => Promise<void>;
   handleBurnShare: (n: LocalNote) => Promise<void>;
@@ -256,6 +267,8 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
   const pushFailure = usePushFailure(props.selected.id);
   const { contentWidth, cycleContentWidth } = useTheme();
   const {
+    noteColor,
+    onSetNoteColor,
     selected,
     view,
     notes,
@@ -310,12 +323,16 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     handleBodyChange,
     handleTagsChange,
     handleTrackersChange,
+    handleVaultSave,
     handleCloseEditor,
     handleHistory,
     handleToggleStar,
+    handleToggleArchive,
     requestTrash,
     handleRestore,
     handleDuplicate,
+    canUncheckAllTasks,
+    handleUncheckAllTasks,
     handleSetLocked,
     handleSetPinProtected,
     handleBurnShare,
@@ -763,6 +780,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               onToggleStar={() =>
                 void handleToggleStar(selected.id, selected.starred !== 1)
               }
+              onToggleArchive={() => void handleToggleArchive(selected.id, selected.archived !== 1)}
               // Share is the one strip cell that comes and goes, because it
               // is the one action still in the header: two copies at one
               // width would read as the same control drawn twice. Zen and a
@@ -771,6 +789,12 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               {...(share === 'menu' ? { onShare: () => setShowShareMenu(true) } : {})}
               onTrash={() => requestTrash([selected.id])}
               onConvertType={() => void convertNoteType()}
+              {...(noteColor
+                ? {
+                    color: noteColor,
+                    onSetColor: (c: NoteOwnColor | null) => onSetNoteColor(selected.id, c),
+                  }
+                : {})}
               {...(canSwitchEditorMode
                 ? { editorMode: selectedEditorMode, onToggleEditorMode: toggleEditorMode }
                 : {})}
@@ -779,6 +803,10 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               // gate is inside toggleReplace, shared with the shortcut.
               {...(canSwitchEditorMode && selectedEditorMode !== 'markdown'
                 ? { onFindReplace: () => editorRef.current?.toggleReplace() }
+                : {})}
+              // Same notes as the editor-mode row: an editable markdown body.
+              {...(canSwitchEditorMode && canUncheckAllTasks(selected)
+                ? { onUncheckAllTasks: () => void handleUncheckAllTasks(selected) }
                 : {})}
             />
           )}
@@ -905,11 +933,11 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             />
           ) : (
           <VaultItem
-            key={selected.id}
+            key={`${selected.id}-${editorRevision}`}
             note={selected}
             isTrash={view === 'trash'}
             onTitleChange={handleTitleChange}
-            onBodyChange={handleBodyChange}
+            onSave={handleVaultSave}
             onPinProtectedChange={handleSetPinProtected}
             isPro={auth.isPro}
             onOpenUpgrade={(trigger) => setShowUpgrade({ trigger })}
@@ -929,7 +957,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               stretches edge-to-edge on ultrawide displays. */}
           <div className="pn-content-col flex min-h-full flex-col" data-content-col>
           {!zenMode && view !== 'trash' && selected.locked !== 1 && (selected.type === 'note' || selected.type === 'journal' || selected.type === 'file' || selected.type === 'task') && (
-            <div ref={setStickyTagRow} className="sticky top-0 z-20 bg-surface-1/95 backdrop-blur">
+            <div ref={setStickyTagRow} className="pn-tagrow sticky top-0 z-20 bg-surface-1/95 backdrop-blur">
             <TagInput
               key={`tags-${selected.id}`}
               ref={tagInputRef}

@@ -133,6 +133,53 @@ function setTaskCheckedInBody(
 }
 
 /**
+ * Whether "Uncheck all tasks" has work to do in this body: more than one task
+ * line, and at least one of them checked. A note with a single task gets no
+ * row, because its own checkbox already does the job.
+ */
+export function canUncheckAllTasks(body: string): boolean {
+  let tasks = 0;
+  let checked = false;
+  for (const line of body.split(/\r?\n/)) {
+    const m = line.match(TASK_LINE);
+    if (!m) continue;
+    tasks++;
+    if (m[3] !== ' ') checked = true;
+  }
+  return tasks > 1 && checked;
+}
+
+/** The body with every task line unchecked; other lines are left as they are. */
+function uncheckAllTasksInBody(body: string): string {
+  return body
+    .split(/\r?\n/)
+    .map((line) => {
+      const m = line.match(TASK_LINE);
+      if (!m || m[3] === ' ') return line;
+      const [, indent, marker, , rest] = m;
+      return `${indent}${marker} [ ] ${rest ?? ''}`.replace(/\s+$/, '');
+    })
+    .join('\n');
+}
+
+/**
+ * Uncheck every task in a note, starting from `body`, which the caller takes
+ * from the open editor so that text still in its save delay is kept. Returns
+ * the body written, or null when nothing was: the note is gone or takes no
+ * edits (see `takesTaskEdit`).
+ */
+export async function uncheckAllTasksInNote(
+  noteId: string,
+  body: string,
+  isGated: (n: LocalNote) => boolean,
+): Promise<string | null> {
+  const note = await getNote(noteId);
+  if (!note || !takesTaskEdit(note, isGated)) return null;
+  const next = uncheckAllTasksInBody(body);
+  return (await updateNote(note.id, { body: next })) ? next : null;
+}
+
+/**
  * Append a new unchecked task line to the end of a body. If the body
  * doesn't already end with a blank line, one is inserted so the task
  * doesn't fuse with the previous paragraph.

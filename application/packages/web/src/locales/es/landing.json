@@ -138,7 +138,7 @@
     "freeSubLabel": "Sin tarjeta de crédito, sin límite de tiempo.",
     "freeAllPillars": "Notas, tareas, archivos, bóveda, diario y marcadores",
     "freeSync": "Sincronización en 2 dispositivos",
-    "freeVault": "Bóveda de archivos cifrada, 5 MB por archivo",
+    "freeVault": "50 MB de almacenamiento, hasta 5 MB por archivo",
     "freeSearch": "Búsqueda de texto completo + etiquetas",
     "freeImport": "Importar y exportar, incluidos Keep y Obsidian",
     "freeBurn": "Destruir tras leer",
@@ -327,6 +327,7 @@
       "fixed": "Corregido"
     },
     "changelogComingSoon": "Changelog próximamente.",
+    "changelogLatest": "Última",
     "hotkeysFootnote": "La mayoría de los atajos se ignoran mientras escribes en un campo de texto, así que teclas normales como J y K siguen escribiendo J y K."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "La mayoría de la gente nunca nos paga nada, y es intencionado. Una valoración es una forma preciosa de dar las gracias.",
     "outro": "Leemos todas las reseñas, y unas palabras de alguien que usa la app a diario son lo que nos mantiene en marcha.",
     "descGithub": "Dale una estrella en GitHub",
+    "descAppStore": "Valora PrivacyNotes en la App Store",
     "descAlternativeTo": "Like y reseña en AlternativeTo",
     "descCapterra": "Valora PrivacyNotes en Capterra",
     "descSaasHub": "Like y reseña en SaaSHub",

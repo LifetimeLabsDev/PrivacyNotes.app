@@ -7,7 +7,7 @@ import { compareSemver } from './versionCheck';
 import { VERSION } from './version';
 import { isUpdateSnoozed, snoozeUpdate } from './updateSnooze';
 import { setUpdateAvailable } from './updateAvailable';
-import { reportVersionFloor } from './versionFloor';
+import { knownVersionFloor, reportVersionFloor } from './versionFloor';
 
 const IS_DESKTOP = detectPlatform() === 'desktop';
 
@@ -55,17 +55,16 @@ type UpdateReady = { version: string; mode: 'restart' | 'download' | 'scoop'; re
  * iOS/Android update through their app stores, so this is gated on
  * detectPlatform() === 'desktop'. Spec: ops/docs/macos-ios-setup.md (iOS updates through App Store review, not this updater).
  */
-async function fetchLinuxMinVersion(): Promise<string | null> {
+async function fetchLinuxMinVersion(): Promise<string | undefined> {
   try {
     const res = await fetch(`${LINUX_POLICY_URL}?t=${Date.now()}`, { cache: 'no-store' });
-    if (!res.ok) return null;
+    if (!res.ok) return undefined;
     const p = (await res.json()) as { minVersion?: string };
-    return typeof p?.minVersion === 'string' ? p.minVersion : null;
+    return typeof p?.minVersion === 'string' ? p.minVersion : undefined;
   } catch {
-    // Offline or policy missing: treat the update as optional. Failing open
-    // costs one dismissible toast; failing closed would nag users we never
-    // meant to force.
-    return null;
+    // Offline or policy missing: no answer. The caller keeps the floor it
+    // already holds, so a network blip never lifts a pause.
+    return undefined;
   }
 }
 
@@ -98,13 +97,14 @@ async function runUpdateCheck(): Promise<UpdateReady | null> {
         return { version: update.version, mode: 'scoop' };
       }
 
-      const minVersion = await fetchLinuxMinVersion();
       // Feed the sync pause (versionFloor.ts). Only ever runs when an update
       // exists, which is sufficient: the floor is never above the newest
       // published .deb, so a below-floor build always has an update pending.
-      // A null here (policy missing OR a network blip) clears the persisted
-      // floor - fail open, the 12h re-check self-heals a blip.
-      reportVersionFloor(minVersion);
+      // Only a published floor changes it: an unreadable policy keeps the
+      // floor already held, so a blip cannot lift a pause.
+      const fetched = await fetchLinuxMinVersion();
+      if (fetched !== undefined) reportVersionFloor(fetched);
+      const minVersion = fetched ?? knownVersionFloor();
       const required = !!minVersion && compareSemver(VERSION, minVersion) < 0;
       // Dismissed within the last 48h: stay quiet. The 12h focus re-check keeps
       // running, so the toast returns on its own once the snooze lapses.
@@ -191,16 +191,17 @@ export function DesktopUpdater() {
     if (!IS_DESKTOP) return;
 
     const maybeCheck = (force: boolean) => {
-      // Once we've surfaced a result we stop checking for the session; the toast
-      // is up (a staged install awaiting Restart, or a .deb download nudge), so
-      // re-checking would just re-surface the same thing.
+      // A staged install awaiting Restart stops the checks for the session:
+      // re-checking would re-run downloadAndInstall. A download nudge does
+      // not, because its 12h re-check is how a floor raised later in the
+      // session reaches the sync pause and turns the nudge required.
       if (stagedRef.current) return;
       const now = Date.now();
       if (!force && now - lastCheckRef.current < CHECK_FLOOR_MS) return;
       lastCheckRef.current = now;
       void runUpdateCheck().then((res) => {
         if (res) {
-          stagedRef.current = true;
+          if (res.mode === 'restart') stagedRef.current = true;
           setReady(res);
         }
       });
@@ -243,13 +244,9 @@ export function DesktopUpdater() {
           : () => {
               // Only the nudge paths snooze: a staged install costs nothing
               // to re-offer on the next focus check, and Restart is one click.
-              // Re-arm the checker there too, so the toast can return once the
-              // 48h lapses on an app that is never quit. The restart path stays
-              // latched - re-checking would re-run downloadAndInstall.
-              if (!isStaged) {
-                snoozeUpdate(ready.version);
-                stagedRef.current = false;
-              }
+              // The restart path stays latched - re-checking would re-run
+              // downloadAndInstall.
+              if (!isStaged) snoozeUpdate(ready.version);
               setReady(null);
             }
       }

@@ -41,7 +41,8 @@ export const LOOK_ICON_GROUPS: readonly { key: string; ids: readonly string[] }[
     key: 'files',
     ids: [
       'file-md', 'file-txt', 'file-pdf', 'file-doc', 'file-xls', 'file-ppt', 'file-csv', 'file-zip',
-      'file-image', 'file-video', 'file-audio', 'file-code',
+      'file-image', 'file-video', 'file-audio', 'file-code', 'file-html', 'file-lock', 'file-cloud',
+      'file-svg',
     ],
   },
   {
@@ -97,7 +98,7 @@ export const LOOK_ICON_GROUPS: readonly { key: string; ids: readonly string[] }[
     key: 'animals',
     ids: [
       'dog', 'cat', 'paw-print', 'horse', 'cow', 'rabbit', 'bird', 'fish', 'butterfly', 'bug',
-      'shrimp', 'bone', 'barn', 'tractor',
+      'shrimp', 'bone', 'barn', 'tractor', 'grains', 'windmill',
     ],
   },
   {
@@ -129,22 +130,24 @@ export const LOOK_ICON_GROUPS: readonly { key: string; ids: readonly string[] }[
     key: 'signals',
     ids: [
       'fire', 'lightning', 'crown', 'thumbs-up', 'lock', 'bell', 'clock', 'hourglass', 'eye',
-      'prohibit', 'info', 'siren', 'infinity', 'peace', 'recycle', 'radioactive', 'fingerprint',
+      'prohibit', 'info', 'siren', 'infinity', 'peace', 'recycle', 'fingerprint',
     ],
   },
   {
     key: 'numbers',
-    ids: ['number-circle-zero', 'number-circle-one', 'number-circle-two', 'number-circle-three', 'number-circle-four', 'number-circle-five', 'number-circle-six', 'number-circle-seven', 'number-circle-eight', 'number-circle-nine'],
+    ids: ['number-circle-zero', 'number-circle-one', 'number-circle-two', 'number-circle-three', 'number-circle-four', 'number-circle-five', 'number-circle-six', 'number-circle-seven', 'number-circle-eight', 'number-circle-nine', 'plus', 'minus', 'x', 'divide', 'equals', 'percent'],
   },
 ];
 
 /** Ids no longer offered, still drawn. Empty so far. */
-export const RETIRED_LOOK_ICON_IDS: readonly string[] = [];
+export const RETIRED_LOOK_ICON_IDS: readonly string[] = ['radioactive'];
 
 /** Id -> the icon's paths, for every id above. */
 export const LOOK_ICONS = LOOK_ICON_PATHS;
 
-const NUMBER_IDS = LOOK_ICON_GROUPS.find((g) => g.key === 'numbers')!.ids;
+const NUMBER_IDS = LOOK_ICON_GROUPS.find((g) => g.key === 'numbers')!.ids.filter((id) =>
+  id.startsWith('number-circle-'),
+);
 
 /** The digit a number icon shows, or null for every other icon. The group
  *  runs from zero, so the position is the digit. */

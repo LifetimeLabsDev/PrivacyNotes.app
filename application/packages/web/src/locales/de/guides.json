@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "Super-Notizen, Checklisten und 2FA-Codes behalten ihre Form",
+          "p": [
+            "Super-Notizen behalten Überschriften, Listen, Checklisten, Tabellen, Codeblöcke, Farben und einklappbare Abschnitte. Checklisten landen in Aufgaben, Tabellenblätter werden zu Tabellen, und Authenticator-Einträge werden zu Logins im Tresor, samt 2FA-Schlüssel. Verschachtelte Tags werden zu Ordnern, und jede Notiz behält zusätzlich ihre Tags.",
+            "Dateien, die du in Standard Notes hochgeladen hast, bleiben auf deren Server, deshalb enthält das Backup nur ihre Namen. Jede importierte Notiz markiert, wo eine Datei war. Lade diese Dateien aus Standard Notes herunter und füge sie der Notiz wieder hinzu."
+          ]
+        },
+        {
           "h": "Verschlüsselte Backups werden nicht unterstützt",
           "p": [
             "Ein verschlüsseltes Standard-Notes-Backup ist Chiffretext, den nur dein Standard-Notes-Passwort öffnen kann, der Importer kann es also nicht lesen. Hast du die verschlüsselte Variante exportiert, exportiere erneut und wähle entschlüsselt. Da die Datei deine Notizen im Klartext enthält, lösche sie nach dem Import.",

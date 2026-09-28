@@ -17,6 +17,7 @@ import { useTheme } from './theme';
 import { parseTotpInput, generateTotpCode, totpSecondsRemaining } from '@notes/shared';
 import { proUnlocked } from './demo';
 import { PasswordText } from './PasswordText';
+import { hasLoginExtras, isPublicField, loginExtrasOf, webHref, withLoginExtras, type LoginExtras, type LoginField } from './loginExtras';
 import type { UpgradeTrigger } from './UpgradeModal';
 
 
@@ -259,6 +260,73 @@ function useCopyTip(copied: string | null) {
   return (id: string) => (copied === id ? t('vaultItem.copied') : t('vaultItem.copyField', { label: id }));
 }
 
+/** An additional website: a link when it is a web address, plain text
+ *  otherwise (an app scheme such as `androidapp://`). */
+function ExtraUrlRow({ url, id, copy, copied }: {
+  url: string;
+  id: string;
+  copy: (text: string, label: string) => void;
+  copied: string | null;
+}) {
+  const { t } = useTranslation('shell');
+  const copyTip = useCopyTip(copied);
+  const href = webHref(url);
+  const tip = copied === id ? copyTip(id) : copyTip('url');
+  return (
+    <DetailRow
+      label={t('vaultItem.fieldUrl')}
+      icon={<Globe size={13} />}
+      actions={
+        <>
+          {href && <DetailAction label={t('vaultItem.open')} onClick={() => openExternal(href)}><ArrowSquareOut size={15} /></DetailAction>}
+          <DetailCopyAction value={url} id={id} copied={copied} onCopy={copy} label={tip} />
+        </>
+      }
+    >
+      {href ? (
+        <DetailLink href={href}>{domainFromUrlString(url) || url}</DetailLink>
+      ) : (
+        <span dir="ltr" className="font-mono text-xs break-all" /* rtl-ok: an address, never reordered */>{url}</span>
+      )}
+    </DetailRow>
+  );
+}
+
+/** A custom field. Anything but a text field is masked until revealed, and
+ *  a masked value is not in the DOM at all. */
+function CustomFieldRow({ field, copy, copied }: {
+  field: LoginField;
+  copy: (text: string, label: string) => void;
+  copied: string | null;
+}) {
+  const { t } = useTranslation('shell');
+  const [shown, setShown] = useState(false);
+  const secret = !isPublicField(field);
+  const id = `field-${field.id}`;
+  const name = field.label || t('vaultItem.customField');
+  const tip = copied === id ? t('vaultItem.copied') : t('vaultItem.copyField', { label: name });
+  return (
+    <DetailRow
+      label={<span dir="auto">{name}</span>}
+      icon={secret ? <Lock size={13} /> : <Tag size={13} />}
+      actions={
+        field.value ? (
+          <>
+            {secret && <RevealAction shown={shown} onToggle={() => setShown(!shown)} />}
+            <DetailCopyAction value={field.value} id={id} copied={copied} onCopy={copy} label={tip} />
+          </>
+        ) : undefined
+      }
+    >
+      {secret && !shown ? (
+        <span dir="ltr" className="font-mono tracking-wider" /* rtl-ok: a mask, symbols only */>{field.value ? '••••••••' : ''}</span>
+      ) : (
+        <span dir="auto" className="whitespace-pre-wrap break-all">{field.value}</span>
+      )}
+    </DetailRow>
+  );
+}
+
 /* ────────────────────────────────────────────────────────────────
  * Login view mode
  * ──────────────────────────────────────────────────────────────── */
@@ -272,6 +340,7 @@ function LoginViewMode({ note, onEdit, copy, copied, isPro, onOpenUpgrade }: {
 }) {
   const { t } = useTranslation('shell');
   const data = parseLoginBody(note.body);
+  const extras = loginExtrasOf(note.trackers);
   const [showPassword, setShowPassword] = useState(false);
   const domain = domainFromUrlString(data.url);
   const fullUrl = data.url.trim() && !/^https?:\/\//i.test(data.url.trim())
@@ -333,6 +402,14 @@ function LoginViewMode({ note, onEdit, copy, copied, isPro, onOpenUpgrade }: {
             <DetailLink href={fullUrl}>{domain || data.url}</DetailLink>
           </DetailRow>
         )}
+
+        {extras.extraUrls.map((url, i) => (
+          <ExtraUrlRow key={`${i}-${url}`} url={url} id={`url-${i}`} copy={copy} copied={copied} />
+        ))}
+
+        {extras.fields.map((f) => (
+          <CustomFieldRow key={f.id} field={f} copy={copy} copied={copied} />
+        ))}
       </div>
 
       {/* Copy all button - only when there's something meaningful to copy.
@@ -559,7 +636,9 @@ export interface VaultItemProps {
   note: LocalNote;
   isTrash: boolean;
   onTitleChange: (id: string, title: string) => void;
-  onBodyChange: (id: string, body: string) => void;
+  /** Commit the form: the body, and for a login the tracker map carrying its
+   *  custom fields and extra websites. Resolves false when refused. */
+  onSave: (id: string, body: string, trackers?: Record<string, unknown>) => Promise<boolean>;
   onPinProtectedChange: (id: string, value: boolean) => void;
   /** Drives the TOTP code Pro gate (behavior only - the badge stays on
    *  plain !isPro so demo keeps advertising the feature it unlocks). */
@@ -571,19 +650,21 @@ export function VaultItem({
   note,
   isTrash,
   onTitleChange,
-  onBodyChange,
+  onSave,
   onPinProtectedChange,
   isPro,
   onOpenUpgrade,
 }: VaultItemProps) {
   const { t } = useTranslation('shell');
-  const isNew = isEmptyVaultBody(note.body, note.type);
+  const isNew = isEmptyVaultBody(note.body, note.type) && !hasLoginExtras(loginExtrasOf(note.trackers));
   const [editing, setEditing] = useState(isNew);
   // Title is NOT buffered here: the note title bar (NotesView header) is the
   // canonical title input and writes note.title live, like every other note
   // type. Buffering a draftTitle here let a stale copy clobber the live title
   // on Save (bug #136). The form's auto-derive uses the live onTitleChange.
   const [draftBody, setDraftBody] = useState(note.body);
+  const [draftExtras, setDraftExtras] = useState<LoginExtras>(() => loginExtrasOf(note.trackers));
+  const [saving, setSaving] = useState(false);
   // PIN-protect lives in draft state too - committing it immediately
   // (via the parent's setPinProtected) flips `isNoteLocked` to true,
   // which unmounts VaultItem and discards unsaved draftTitle/draftBody
@@ -597,15 +678,17 @@ export function VaultItem({
   useEffect(() => {
     if (!editing) {
       setDraftBody(note.body);
+      setDraftExtras(loginExtrasOf(note.trackers));
       setDraftPinProtected(note.pinProtected === 1);
     }
-  }, [note.body, note.pinProtected, editing]);
+  }, [note.body, note.trackers, note.pinProtected, editing]);
 
   // When selecting a new note, reset editing state.
   useEffect(() => {
-    const empty = isEmptyVaultBody(note.body, note.type);
+    const empty = isEmptyVaultBody(note.body, note.type) && !hasLoginExtras(loginExtrasOf(note.trackers));
     setEditing(empty);
     setDraftBody(note.body);
+    setDraftExtras(loginExtrasOf(note.trackers));
     setDraftPinProtected(note.pinProtected === 1);
     setSaveError('');
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -614,10 +697,11 @@ export function VaultItem({
   /** Check that at least one meaningful field has content. */
   const isBodyEmpty = useMemo(() => {
     const empty = VAULT_EMPTY_BODIES[note.type];
-    return empty ? draftBody === empty : false;
-  }, [draftBody, note.type]);
+    return empty ? draftBody === empty && !(note.type === 'login' && hasLoginExtras(draftExtras)) : false;
+  }, [draftBody, draftExtras, note.type]);
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback(async () => {
+    if (saving) return;
     if (isBodyEmpty) {
       setSaveError(t('vaultItem.fillOneField'));
       return;
@@ -630,25 +714,41 @@ export function VaultItem({
         return;
       }
     }
+    if (note.type === 'login' && draftExtras.fields.some((f) => f.value && !f.label.trim())) {
+      setSaveError(t('vaultItem.fieldNeedsName'));
+      return;
+    }
     setSaveError('');
-    onBodyChange(note.id, draftBody);
+    // A login's extras go into the latest tracker map, so a key another
+    // surface wrote while the form was open is kept.
+    const extras = { extraUrls: draftExtras.extraUrls.map((u) => u.trim()).filter(Boolean), fields: draftExtras.fields };
+    const trackers = note.type === 'login' ? withLoginExtras(note.trackers, extras) : undefined;
+    setSaving(true);
+    const ok = await onSave(note.id, draftBody, trackers).catch(() => false);
+    setSaving(false);
+    if (!ok) {
+      setSaveError(t('vaultItem.saveFailed'));
+      return;
+    }
     if (draftPinProtected !== (note.pinProtected === 1)) {
       onPinProtectedChange(note.id, draftPinProtected);
     }
     setEditing(false);
-  }, [note.id, note.pinProtected, draftBody, draftPinProtected, onBodyChange, onPinProtectedChange, isBodyEmpty, t]);
+  }, [saving, note.id, note.type, note.trackers, note.pinProtected, draftBody, draftExtras, draftPinProtected, onSave, onPinProtectedChange, isBodyEmpty, t]);
 
   const handleCancel = useCallback(() => {
     setDraftBody(note.body);
+    setDraftExtras(loginExtrasOf(note.trackers));
     setDraftPinProtected(note.pinProtected === 1);
     setEditing(false);
-  }, [note.body, note.pinProtected]);
+  }, [note.body, note.trackers, note.pinProtected]);
 
   const handleEdit = useCallback(() => {
     setDraftBody(note.body);
+    setDraftExtras(loginExtrasOf(note.trackers));
     setDraftPinProtected(note.pinProtected === 1);
     setEditing(true);
-  }, [note.body, note.pinProtected]);
+  }, [note.body, note.trackers, note.pinProtected]);
 
   const locked = isTrash || note.locked === 1;
 
@@ -673,12 +773,12 @@ export function VaultItem({
     onTitleChange,
     onBodyChange: (_id: string, b: string) => setDraftBody(b),
     onPinProtectedChange: (_id: string, v: boolean) => setDraftPinProtected(v),
-    onSave: handleSave,
+    onSave: () => void handleSave(),
     onCancel: handleCancel,
     isNew,
     saveError,
   };
-  const loginFormProps = { ...formProps, isPro, onOpenUpgrade };
+  const loginFormProps = { ...formProps, isPro, onOpenUpgrade, extras: draftExtras, onExtrasChange: setDraftExtras };
 
   return (
     <div className={`flex-1 flex flex-col min-h-0 ${DETAIL_COLUMN}`}>

@@ -1,64 +1,70 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
-import { IconUpgrade } from './UpgradeModal';
 import { useEscapeToClose } from './useEscapeToClose';
 import { proUnlocked } from './demo';
 import { noteActionGuards, type NoteActionGuardDeps } from './noteActionGuards';
 import { usePopoverPosition } from './usePopoverPosition';
 import { intlLocale } from './languages';
 import { prepareBurnPayload } from './burnShare';
-import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Trash, Repeat, Copy, Folder, Fire, ArrowCounterClockwise, FileMd, TextAa, Swap } from './icons';
+import { ColorSwatch } from './ColorSwatch';
+import { LOOK_COLORS, NOTE_NO_COLOR, type LookColor, type NoteOwnColor } from './itemStyles';
+import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Trash, Repeat, Copy, Folder, Fire, ArrowCounterClockwise, FileMd, TextAa, Swap, ListChecks, Palette, Info, CaretLeft, CaretRight, iconArchive } from './icons';
 
 /**
  * Per-note options dropdown, anchored to the "..." button in the
  * editor top bar. It is the ONE surface that carries every per-note
  * action, at every width.
  *
- * That completeness is the point. The header's own icons - burn, pin,
- * share, trash - hide as soon as the header row is under 560px, which
- * happens on a narrow editor pane long before the viewport is narrow.
- * The strip at the top of this menu catches exactly what the header
- * dropped: it appears only once those icons are gone, carries them in
- * the header's own left-to-right order, and is absent while the header
- * still shows them. Nothing is ever in both places at once.
+ * Layout, top to bottom: a strip of the three most-used actions (pin,
+ * burn, duplicate, plus share where the header hides its own copy), the
+ * color row, the editor rows, the organising rows, the per-note state
+ * rows, the details row, and trash as the last, red row on its own.
+ * The rows carry a label and at most a short value; the longer
+ * explanations live with each feature, not here, so the menu fits a
+ * short phone screen.
  *
- * The list below never moves. It opens with the markdown/formatted
- * switch, then holds the actions that were never in the toolbar - the
- * Pro toggles (read-only, PIN-protect), folders, duplicate, history,
- * and the note-to-journal conversion - then a note-info summary.
- * Duplicate belongs there rather than in the strip precisely because
- * the strip comes and goes.
+ * Color and Details open a second view inside the same popover, with a
+ * Back row, rather than a second floating layer. Escape and the Android
+ * back button step back from that view before they close the menu.
  *
- * The markdown switch is first because it is the one row that changes
- * what you are looking at right now, and because its other home - a
- * small grey link under the word count - is easy to miss. Both surfaces
- * flip the same per-note, session-only override; neither writes the
- * synced default in Settings > Appearance.
+ * The markdown switch has a second home under the word count, a small
+ * grey link that is easy to miss, which is why it is repeated here. Both
+ * surfaces flip the same per-note, session-only override; neither writes
+ * the synced default in Settings > Appearance.
  *
  * In the trash view the menu carries Restore and Delete forever and
  * nothing else - the same two actions, the same two colours and the
  * same glyphs as the right-click menu on a trashed row.
  *
- * The Pro toggles render as soft switches. Free users can still
- * flip them: doing so opens the UpgradeModal instead of applying
- * the change. This way the Pro capabilities are discoverable
- * without the free UI feeling crippled.
+ * The Pro rows stay tappable for a free user: the tap opens the
+ * UpgradeModal instead of applying the change, so the features are
+ * discoverable without the free UI feeling crippled.
+ * Spec: ops/docs/ui-patterns.md (section 80)
  */
+export interface NoteColorInfo {
+  /** The color set on the note itself; null when it takes its tag's or folder's. */
+  own: NoteOwnColor | null;
+  /** The color the note takes without its own, and where it comes from. */
+  inherited: { color: LookColor; kind: 'tag' | 'folder'; name: string } | null;
+}
+
 type Props = NoteActionGuardDeps & {
   /** Anchor so clicks on the "..." button don't count as outside. */
   anchorRef: React.RefObject<HTMLElement | null>;
 
   // Actions
   onDuplicate: () => void;
-  /** Toggle pin/star. In the strip, so it survives a narrow header. */
+  /** Toggle pin/star. */
   onToggleStar?: () => void;
-  /** Move to trash. In the strip, so it survives a narrow header. */
+  /** Move to trash. */
   onTrash?: () => void;
-  /** Open share/export UI. In the strip, so it survives a narrow header. */
+  /** Archive or unarchive. */
+  onToggleArchive?: () => void;
+  /** Open share/export UI. Passed only where the header hides its own copy. */
   onShare?: () => void;
-  /** Share and Burn After Reading. In the strip, for the same reason. */
+  /** Share and Burn After Reading. */
   onBurn?: () => void;
   /** Convert between note and journal types. */
   onConvertType?: () => void;
@@ -79,16 +85,23 @@ type Props = NoteActionGuardDeps & {
    */
   onFindReplace?: () => void;
   /**
-   * True once the header's own burn/pin/share/trash icons are hidden.
-   * The strip renders only then, so the two surfaces never show the
-   * same action twice. All four header buttons share one condition
-   * today; if they ever diverge, this becomes a set, not a boolean.
+   * Uncheck every task in the note. Present only on an editable note with
+   * more than one task and at least one of them checked.
    */
+  onUncheckAllTasks?: () => void;
+  /** The color row. Absent where a note has no color (vault items). */
+  color?: NoteColorInfo;
+  /** Pick a color, NOTE_NO_COLOR for none, or null to take the tag's or
+   *  folder's again. Free: one note at a time; coloring a whole tag or
+   *  folder is the Pro part. */
+  onSetColor?: (color: NoteOwnColor | null) => void;
   /** Trash view: the menu carries only the two trash actions. */
   isTrash?: boolean;
   onRestore?: () => void;
   onDeleteForever?: () => void;
 };
+
+type View = 'main' | 'color' | 'details';
 
 export function NoteOptionsMenu({
   note,
@@ -102,6 +115,7 @@ export function NoteOptionsMenu({
   onRequestRemoveProtection,
   onOpenHistory,
   onToggleStar,
+  onToggleArchive,
   onTrash,
   onShare,
   onBurn,
@@ -111,12 +125,19 @@ export function NoteOptionsMenu({
   editorMode,
   onToggleEditorMode,
   onFindReplace,
+  onUncheckAllTasks,
+  color,
+  onSetColor,
   isTrash,
   onRestore,
   onDeleteForever,
 }: Props) {
   const { t } = useTranslation('shell');
-  useEscapeToClose(onClose);
+  const { t: tEditor } = useTranslation('editor');
+  const [view, setView] = useState<View>('main');
+  // A sub-view steps back first, so Escape never throws away the menu
+  // the user drilled in from.
+  useEscapeToClose(() => (view === 'main' ? onClose() : setView('main')));
 
   // The "Pro" badges below key off isPro, never the demo unlock, so the
   // menu keeps advertising the features the demo hands out for free.
@@ -148,14 +169,33 @@ export function NoteOptionsMenu({
     return () => window.removeEventListener('pointerdown', handler, true);
   }, [onClose, anchorRef]);
 
-  // Both halves have to be there: the caller only passes them when this
-  // note actually has a markdown editor under the header.
+  // Focus moves into the menu on open and on every view change, so the
+  // arrow keys below have somewhere to start. The container takes it, not
+  // the first row, so a mouse user sees no ring.
+  useEffect(() => {
+    ref.current?.focus({ preventScroll: true });
+  }, [view]);
+
+  function onKeyDown(e: React.KeyboardEvent) {
+    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return;
+    const items = Array.from(
+      ref.current?.querySelectorAll<HTMLButtonElement>('button:not([disabled])') ?? [],
+    );
+    if (items.length === 0) return;
+    e.preventDefault();
+    const i = items.indexOf(document.activeElement as HTMLButtonElement);
+    const next =
+      e.key === 'Home' ? 0
+        : e.key === 'End' ? items.length - 1
+          : e.key === 'ArrowDown' ? (i + 1) % items.length
+            : i <= 0 ? items.length - 1 : i - 1;
+    items[next]?.focus();
+  }
+
   const showModeRow = !isTrash && !!onToggleEditorMode && !!editorMode;
   const showReplaceRow = !isTrash && !!onFindReplace;
-  // The caller decides which cells exist by passing or omitting each handler,
-  // so the strip has nothing to work out for itself. It just needs to know
-  // whether it drew anything, because the row below it wears the hairline.
-  const hasStrip = !isTrash && !!(onBurn || onToggleStar || onShare || onTrash);
+  const showUncheckRow = !isTrash && !!onUncheckAllTasks;
+  const showConvertRow = !!onConvertType && (note.type === 'note' || note.type === 'journal');
 
   const bytes = computeNoteTotalSize(note);
   // A media-only note has nothing left to send once images and files are
@@ -163,12 +203,17 @@ export function NoteOptionsMenu({
   // let it fail on click. Spec: burnShare.ts (prepareBurnPayload).
   const burnable = prepareBurnPayload(note) !== null;
 
+  const shownColor = color ? (color.own ?? color.inherited?.color ?? NOTE_NO_COLOR) : NOTE_NO_COLOR;
+  const colorName = shownColor === NOTE_NO_COLOR ? t('noteOptionsMenu.colorNone') : tEditor(`color.names.${shownColor}`);
+
   return createPortal(
     <div
       ref={ref}
       role="dialog"
+      tabIndex={-1}
       aria-label={t('noteOptionsMenu.noteOptions')}
-      className="fixed z-50 w-80 max-h-[calc(100vh-16px)] overflow-y-auto rounded-lg border border-divider bg-surface-2 shadow-lg"
+      onKeyDown={onKeyDown}
+      className="fixed z-50 w-80 max-w-[calc(100vw-16px)] max-h-[calc(100vh-16px)] overflow-y-auto rounded-xl border border-divider bg-surface-2 shadow-lg outline-none divide-y divide-divider"
       style={{
         top: pos?.top ?? 0,
         left: pos?.left ?? 0,
@@ -176,20 +221,17 @@ export function NoteOptionsMenu({
       }}
     >
       {/* Find-in-note deliberately does NOT live here: the magnifier sits in
-          the tag row, one row below this menu's own button, and a second
-          entry for it only made this list longer. Find AND REPLACE does live
-          here, under the editor-mode switch: it has no pill in the corner (a
-          second one would crowd the note's first line, GitHub #265) and no
-          key on a phone, so this row is its only pointer path. Neither do a
-          bookmark's
-          Open/Copy or a vault item's Edit/Copy: those render inside the item
-          itself, directly under this menu, and no width ever hides them. */}
+          the editor's corner, on every note long enough to search. Find AND
+          REPLACE does live here: it has no pill in the corner (GitHub #265)
+          and no key on a phone, so its row is its only pointer path. Neither
+          do a bookmark's Open/Copy or a vault item's Edit/Copy: those render
+          inside the item itself, directly under this menu. */}
       {isTrash ? (
-        <div className="py-1">
+        <Group>
           {onRestore && (
             <ActionItem
               label={t('noteOptionsMenu.restore')}
-              icon={<IconRestore />}
+              icon={<ArrowCounterClockwise size={16} aria-hidden="true" />}
               tone="success"
               onClick={() => { onRestore(); onClose(); }}
             />
@@ -197,163 +239,191 @@ export function NoteOptionsMenu({
           {onDeleteForever && (
             <ActionItem
               label={t('noteOptionsMenu.deleteForever')}
-              icon={<IconTrash />}
+              icon={<Trash size={16} aria-hidden="true" />}
               tone="danger"
               onClick={() => { onDeleteForever(); onClose(); }}
             />
           )}
-        </div>
+        </Group>
+      ) : view === 'color' && color && onSetColor ? (
+        <>
+          <BackRow title={t('noteOptionsMenu.color')} onBack={() => setView('main')} />
+          <NoteColorPanel color={color} onSetColor={onSetColor} />
+        </>
+      ) : view === 'details' ? (
+        <>
+          <BackRow title={t('noteOptionsMenu.details')} onBack={() => setView('main')} />
+          <div className="px-4 py-3 text-[13px] text-neutral-600 dark:text-neutral-400 space-y-1 leading-relaxed">
+            <div>{t('noteOptionsMenu.lastModified', { date: new Date(note.updatedAt).toLocaleString(intlLocale()) })}</div>
+            <div>{t('noteOptionsMenu.created', { date: new Date(note.createdAt).toLocaleString(intlLocale()) })}</div>
+            <div>
+              {t('noteOptionsMenu.size', { size: formatBytes(bytes) })}
+              {note.tags.length > 0 && <> · {t('noteOptionsMenu.tagCount', { count: note.tags.length })}</>}
+            </div>
+            <div className="text-[12px] text-neutral-400 dark:text-neutral-500">{t('noteOptionsMenu.sizeHint')}</div>
+          </div>
+        </>
       ) : (
         <>
-          {/* Burn, pin and trash. This is their only home: the editor
-              header stopped carrying them, so the strip is permanent rather
-              than a stand-in that appears when the row runs out of width.
-              Share is the exception and still comes and goes, because the
-              header kept it - the caller passes onShare only where its own
-              copy is hidden.
-              Spec: ops/docs/ui-patterns.md (section 80) */}
-          {hasStrip && (
-            <div className="flex items-stretch gap-0 p-1.5">
-              {onBurn && (
-                <StripButton
-                  label={t('noteOptionsMenu.burn')}
-                  icon={<IconBurn />}
-                  tone="burn"
-                  disabled={!burnable}
-                  title={burnable ? undefined : t('notes:burn.mediaOnly')}
-                  onClick={() => { onBurn(); onClose(); }}
-                />
-              )}
-              {onToggleStar && (
-                <StripButton
-                  label={note.starred === 1 ? t('noteOptionsMenu.unpin') : t('noteOptionsMenu.pin')}
-                  icon={<IconPin filled={note.starred === 1} size={20} />}
-                  onClick={() => { onToggleStar(); onClose(); }}
-                />
-              )}
-              {onShare && (
-                <StripButton
-                  label={t('noteOptionsMenu.share')}
-                  icon={<IconShare size={20} />}
-                  onClick={() => { onShare(); onClose(); }}
-                />
-              )}
-              {onTrash && (
-                <StripButton
-                  label={t('noteOptionsMenu.trash')}
-                  icon={<IconTrash size={20} />}
-                  tone="danger"
-                  onClick={() => { onTrash(); onClose(); }}
-                />
-              )}
-            </div>
+          {/* The three actions reached for most, as big targets. Share joins
+              them only where the header hides its own copy (zen, a compact
+              header), because two copies at one width would read as one
+              control drawn twice. */}
+          <div className="flex items-stretch p-1.5">
+            {onToggleStar && (
+              <StripButton
+                label={note.starred === 1 ? t('noteOptionsMenu.unpin') : t('noteOptionsMenu.pin')}
+                icon={<PushPin size={20} weight={note.starred === 1 ? 'fill' : 'bold'} aria-hidden="true" />}
+                pressed={note.starred === 1}
+                onClick={() => { onToggleStar(); onClose(); }}
+              />
+            )}
+            {onBurn && (
+              <StripButton
+                label={t('noteOptionsMenu.burn')}
+                icon={<Fire size={20} aria-hidden="true" />}
+                tone="burn"
+                disabled={!burnable}
+                title={burnable ? undefined : t('notes:burn.mediaOnly')}
+                onClick={() => { onBurn(); onClose(); }}
+              />
+            )}
+            <StripButton
+              label={t('noteOptionsMenu.duplicate')}
+              icon={<Copy size={20} aria-hidden="true" />}
+              onClick={() => { onDuplicate(); onClose(); }}
+            />
+            {onShare && (
+              <StripButton
+                label={t('noteOptionsMenu.share')}
+                icon={<Export size={20} aria-hidden="true" />}
+                onClick={() => { onShare(); onClose(); }}
+              />
+            )}
+          </div>
+
+          {color && onSetColor && (
+            <Group>
+              <ActionItem
+                label={t('noteOptionsMenu.color')}
+                icon={<Palette size={16} aria-hidden="true" />}
+                value={
+                  <span className="inline-flex items-center gap-2 min-w-0">
+                    <span
+                      aria-hidden
+                      className="shrink-0 w-4 h-4 rounded-full border border-divider"
+                      style={shownColor === NOTE_NO_COLOR ? undefined : { background: `var(--pn-label-${shownColor}-ink)` }}
+                    />
+                    <span className="truncate">{colorName}</span>
+                  </span>
+                }
+                chevron
+                onClick={() => setView('color')}
+              />
+            </Group>
           )}
 
-          {(showModeRow || showReplaceRow) && (
-            <div className={`${hasStrip ? 'border-t border-divider ' : ''}py-1`}>
+          {(showModeRow || showReplaceRow || showUncheckRow) && (
+            <Group>
               {showModeRow && (
                 <ActionItem
                   label={editorMode === 'markdown' ? t('notes:editor.showFormatted') : t('notes:editor.showMarkdown')}
-                  description={
-                    editorMode === 'markdown'
-                      ? t('noteOptionsMenu.showFormattedDescription')
-                      : t('noteOptionsMenu.showMarkdownDescription')
-                  }
-                  icon={editorMode === 'markdown' ? <IconFormatted /> : <IconMarkdown />}
-                  onClick={() => {
-                    onToggleEditorMode?.();
-                    onClose();
-                  }}
+                  // The glyph names the DESTINATION, so it changes with the label.
+                  icon={editorMode === 'markdown' ? <TextAa size={17} aria-hidden="true" /> : <FileMd size={17} aria-hidden="true" />}
+                  onClick={() => { onToggleEditorMode?.(); onClose(); }}
                 />
               )}
               {showReplaceRow && (
                 <ActionItem
                   label={t('noteOptionsMenu.findReplace')}
-                  icon={<IconReplace />}
+                  icon={<Swap size={16} aria-hidden="true" />}
                   pro={!isPro}
-                  onClick={() => {
-                    onFindReplace?.();
-                    onClose();
-                  }}
+                  onClick={() => { onFindReplace?.(); onClose(); }}
                 />
               )}
-            </div>
+              {showUncheckRow && (
+                <ActionItem
+                  label={t('noteOptionsMenu.uncheckAllTasks')}
+                  icon={<ListChecks size={16} aria-hidden="true" />}
+                  onClick={() => { onUncheckAllTasks?.(); onClose(); }}
+                />
+              )}
+            </Group>
           )}
 
-          <div className={`${hasStrip || showModeRow || showReplaceRow ? 'border-t border-divider ' : ''}py-1`}>
+          <Group>
+            {onMoveToFolder && (
+              <ActionItem
+                label={t('noteOptionsMenu.moveToFolder')}
+                icon={<Folder size={16} aria-hidden="true" />}
+                pro={!isPro}
+                onClick={act.moveToFolder}
+              />
+            )}
+            <ActionItem
+              label={t('noteOptionsMenu.noteHistory')}
+              icon={<ClockCounterClockwise size={16} aria-hidden="true" />}
+              pro={!isPro}
+              disabled={unlocked && !onOpenHistory}
+              value={unlocked && !onOpenHistory ? t('noteOptionsMenu.comingSoon') : undefined}
+              onClick={act.openHistory}
+            />
+            {showConvertRow && (
+              <ActionItem
+                label={note.type === 'note' ? t('noteOptionsMenu.convertToJournal') : t('noteOptionsMenu.convertToNote')}
+                icon={<Repeat size={16} aria-hidden="true" />}
+                onClick={() => { onConvertType?.(); onClose(); }}
+              />
+            )}
+          </Group>
+
+          <Group>
             <ToggleItem
               label={t('noteOptionsMenu.readOnly')}
-              description={t('noteOptionsMenu.readOnlyDescription')}
-              icon={<IconPencilSlash />}
+              icon={<PencilSimpleSlash size={16} aria-hidden="true" />}
               checked={note.locked === 1}
               pro={!isPro}
               onClick={act.toggleLock}
             />
             <ToggleItem
               label={t('noteOptionsMenu.protect')}
-              description={t('noteOptionsMenu.protectDescription')}
-              icon={<IconShield />}
+              icon={<Shield size={16} aria-hidden="true" />}
               checked={note.pinProtected === 1}
               pro={!isPro}
               onClick={act.toggleProtect}
             />
-          </div>
+            {onToggleArchive && (
+              <ActionItem
+                label={note.archived === 1 ? t('noteOptionsMenu.unarchive') : t('noteOptionsMenu.archive')}
+                icon={iconArchive(note.archived === 1, 16)}
+                onClick={() => { onToggleArchive(); onClose(); }}
+              />
+            )}
+          </Group>
 
-          <div className="border-t border-divider py-1">
-            {onMoveToFolder && (
-              <ActionItem
-                label={t('noteOptionsMenu.moveToFolder')}
-                icon={<IconFolder />}
-                pro={!isPro}
-                onClick={act.moveToFolder}
-              />
-            )}
+          <Group>
             <ActionItem
-              label={t('noteOptionsMenu.duplicate')}
-              icon={<IconCopy />}
-              onClick={() => {
-                onDuplicate();
-                onClose();
-              }}
+              label={t('noteOptionsMenu.details')}
+              icon={<Info size={16} aria-hidden="true" />}
+              tone="muted"
+              value={formatBytes(bytes)}
+              chevron
+              onClick={() => setView('details')}
             />
-            <ActionItem
-              label={t('noteOptionsMenu.noteHistory')}
-              description={t('noteOptionsMenu.noteHistoryDescription')}
-              icon={<IconHistory />}
-              pro={!isPro}
-              disabled={unlocked && !onOpenHistory}
-              suffix={unlocked && !onOpenHistory ? t('noteOptionsMenu.comingSoon') : undefined}
-              onClick={act.openHistory}
-            />
-            {onConvertType && (note.type === 'note' || note.type === 'journal') && (
+          </Group>
+
+          {onTrash && (
+            <Group>
               <ActionItem
-                label={note.type === 'note' ? t('noteOptionsMenu.convertToJournal') : t('noteOptionsMenu.convertToNote')}
-                icon={<IconRepeat />}
-                onClick={() => {
-                  onConvertType();
-                  onClose();
-                }}
+                label={t('notes:editor.moveToTrash')}
+                icon={<Trash size={16} aria-hidden="true" />}
+                tone="danger"
+                onClick={() => { onTrash(); onClose(); }}
               />
-            )}
-          </div>
+            </Group>
+          )}
         </>
       )}
-
-      {/* Note info - read-only metadata block. Matches SN's footer
-          so heavy users of the menu get their stats at a glance. */}
-      <div className="border-t border-divider px-4 py-3 text-[12px] text-neutral-500 dark:text-neutral-500 space-y-0.5 leading-relaxed">
-        <div>
-          {t('noteOptionsMenu.lastModified', { date: new Date(note.updatedAt).toLocaleString(intlLocale()) })}
-        </div>
-        <div>{t('noteOptionsMenu.created', { date: new Date(note.createdAt).toLocaleString(intlLocale()) })}</div>
-        <div>
-          {t('noteOptionsMenu.size', { size: formatBytes(bytes) })}
-          {note.tags.length > 0 && <> · {t('noteOptionsMenu.tagCount', { count: note.tags.length })}</>}
-        </div>
-        <div className="text-neutral-400 dark:text-neutral-600">
-          {t('noteOptionsMenu.sizeHint')}
-        </div>
-      </div>
     </div>,
     document.body,
   );
@@ -365,25 +435,134 @@ export function NoteOptionsMenu({
 
 /**
  * Colour of an item's icon. Blue is the standard; burn keeps the amber
- * it wears in the header, and anything that destroys keeps its red, so
- * the two actions worth a second thought are the two that stand out.
+ * it wears elsewhere, and anything that destroys keeps its red, so the
+ * two actions worth a second thought are the two that stand out.
  */
-type Tone = 'accent' | 'burn' | 'danger' | 'success';
+type Tone = 'accent' | 'burn' | 'danger' | 'success' | 'muted';
 
 const TONE_TEXT: Record<Tone, string> = {
   accent: 'text-accent',
   burn: 'text-orange-600 dark:text-orange-400',
   danger: 'text-red-500 dark:text-red-400',
   success: 'text-emerald-600 dark:text-emerald-400',
+  muted: 'text-neutral-500 dark:text-neutral-400',
 };
 
-/** One square in the strip: a 20px glyph over its own label. */
+const ROW_TEXT: Record<Tone, string> = {
+  accent: 'text-pn hover:bg-surface-1 focus-visible:bg-surface-1',
+  burn: 'text-pn hover:bg-surface-1 focus-visible:bg-surface-1',
+  muted: 'text-neutral-500 dark:text-neutral-400 hover:bg-surface-1 focus-visible:bg-surface-1',
+  danger: 'text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 focus-visible:bg-red-50 dark:focus-visible:bg-red-950/30',
+  success: 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 focus-visible:bg-emerald-50 dark:focus-visible:bg-emerald-950/30',
+};
+
+/** Compact with a mouse, a full 44px finger target on a touch screen. */
+const ROW = 'w-full flex items-center gap-3 px-4 min-h-9 py-1.5 [@media(hover:none)]:min-h-11 text-start text-[14px] outline-none transition';
+
+/** One block between two hairlines. The dividers come from the parent. */
+function Group({ children }: { children: React.ReactNode }) {
+  return <div className="py-1">{children}</div>;
+}
+
+/** The quiet Pro marker: grey, no icon, never louder than the label. */
+function ProBadge() {
+  return (
+    <span className="shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-medium leading-none bg-neutral-200/70 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+      Pro
+    </span>
+  );
+}
+
+function BackRow({ title, onBack }: { title: string; onBack: () => void }) {
+  const { t } = useTranslation('common');
+  return (
+    <div className="flex items-center gap-1 px-1.5 py-1">
+      <button
+        type="button"
+        onClick={onBack}
+        aria-label={t('actions.back')}
+        className="shrink-0 inline-flex items-center justify-center w-9 h-9 [@media(hover:none)]:w-11 [@media(hover:none)]:h-11 rounded-md text-accent hover:bg-surface-1 focus-visible:bg-surface-1 outline-none transition"
+      >
+        <CaretLeft size={16} aria-hidden="true" />
+      </button>
+      <span className="text-[14px] font-medium text-pn">{title}</span>
+    </div>
+  );
+}
+
+/**
+ * The note's color, one tap per swatch. A color the note takes from its
+ * tag or folder wears a dashed ring and names its source; a pick of its
+ * own wears the solid ring, and "Use default" hands the note back to its
+ * tag or folder. The menu stays open, so a pick can be seen on the note
+ * before it closes. Free, unlike the folder and tag looks.
+ * Spec: ops/docs/plans/folder-tag-icons.md (section 4.9)
+ */
+function NoteColorPanel({
+  color,
+  onSetColor,
+}: {
+  color: NoteColorInfo;
+  onSetColor: (color: NoteOwnColor | null) => void;
+}) {
+  const { t } = useTranslation('shell');
+  const { t: tEditor } = useTranslation('editor');
+  const { own, inherited } = color;
+  const shown = own ?? inherited?.color ?? NOTE_NO_COLOR;
+  return (
+    <div className="px-4 py-3">
+      <div className="flex flex-wrap gap-1 [@media(hover:none)]:gap-0.5">
+        <ColorSwatch
+          label={t('noteOptionsMenu.colorNone')}
+          none
+          labelPosition="above-start"
+          selected={own === NOTE_NO_COLOR || (own === null && !inherited)}
+          className={TOUCH_SWATCH}
+          onClick={() => onSetColor(NOTE_NO_COLOR)}
+        />
+        {LOOK_COLORS.map((c) => (
+          <ColorSwatch
+            key={c}
+            label={tEditor(`color.names.${c}`)}
+            background={`var(--pn-label-${c}-ink)`}
+            selected={own === c}
+            inherited={own === null && shown === c}
+            className={TOUCH_SWATCH}
+            onClick={() => onSetColor(c)}
+          />
+        ))}
+      </div>
+      {own === null && inherited && (
+        <p className="mt-2 text-[12px] text-neutral-500 dark:text-neutral-400 truncate" dir="auto">
+          {inherited.kind === 'folder'
+            ? t('noteOptionsMenu.colorFromFolder', { name: inherited.name })
+            : t('noteOptionsMenu.colorFromTag', { name: inherited.name })}
+        </p>
+      )}
+      {own !== null && (
+        <button
+          type="button"
+          onClick={() => onSetColor(null)}
+          className="mt-2 -ms-2 text-[13px] font-medium px-2 py-1 [@media(hover:none)]:min-h-11 rounded-md text-accent hover:bg-accent/10 focus-visible:bg-accent/10 outline-none transition"
+        >
+          {t('noteOptionsMenu.colorUseDefault')}
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** The touch floor of the look picker's swatches, which a finger picks from. */
+const TOUCH_SWATCH = '[@media(hover:none)]:w-11 [@media(hover:none)]:h-11';
+
+/** One cell in the strip: a 20px glyph over its own label. */
 function StripButton({
   label,
   icon,
   tone = 'accent',
   onClick,
   disabled,
+  pressed,
   title,
 }: {
   label: string;
@@ -391,6 +570,7 @@ function StripButton({
   tone?: Tone;
   onClick: () => void;
   disabled?: boolean;
+  pressed?: boolean;
   /** Native tooltip, used to say why a disabled button is disabled. */
   title?: string;
 }) {
@@ -400,15 +580,16 @@ function StripButton({
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className="flex-1 min-w-0 flex flex-col items-center gap-1.5 rounded-md py-2 hover:bg-surface-1 transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+      aria-pressed={pressed}
+      className="flex-1 min-w-0 min-h-11 flex flex-col items-center justify-center gap-1 rounded-lg py-2 hover:bg-surface-1 focus-visible:bg-surface-1 outline-none transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
     >
       <span className={TONE_TEXT[tone]}>{icon}</span>
-      {/* Five cells across a 320px menu leave ~61px each, which fits the
+      {/* Four cells across a 320px menu leave ~77px each, which fits the
           longest of these words in the languages we ship (German's
           "Duplizieren" measures 59px at this size). Keep any new strip
           label to one short word. break-words is the safety net, not the
           plan: a mid-word break here looks like a bug. */}
-      <span className="w-full text-[11px] leading-tight text-center break-words text-neutral-500 dark:text-neutral-400">
+      <span className="w-full text-[12px] leading-tight text-center break-words text-pn">
         {label}
       </span>
     </button>
@@ -417,15 +598,12 @@ function StripButton({
 
 function ToggleItem({
   label,
-  description,
   icon,
   checked,
   pro,
   onClick,
 }: {
   label: string;
-  /** One-line explainer rendered under the label. */
-  description?: string;
   icon: React.ReactNode;
   checked: boolean;
   /** When true, the feature is Pro-gated for this user. Shown as a badge. */
@@ -433,63 +611,45 @@ function ToggleItem({
   onClick: () => void;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={pro ? undefined : checked}
-      className="w-full flex items-start gap-3 px-4 py-2 text-start text-[14px] text-pn hover:bg-surface-1 transition"
-    >
-      <span className="shrink-0 mt-0.5 text-accent">
-        {icon}
-      </span>
-      <span className="flex-1 min-w-0">
-        <span className="block truncate">{label}</span>
-        {description && (
-          <span className="block text-[12px] text-neutral-500 dark:text-neutral-400 leading-snug mt-0.5">
-            {description}
-          </span>
-        )}
-      </span>
-      {pro ? (
-        <span className="shrink-0 mt-0.5 inline-flex items-center gap-1 text-[11px] font-semibold text-accent">
-          <IconUpgrade size={12} /> Pro
-        </span>
-      ) : (
+    <button type="button" onClick={onClick} aria-pressed={checked} className={`${ROW} ${ROW_TEXT.accent}`}>
+      <span className={`shrink-0 ${TONE_TEXT.accent}`}>{icon}</span>
+      <span className="flex-1 min-w-0 truncate">{label}</span>
+      {pro && <ProBadge />}
+      <span
+        aria-hidden
+        className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition ${
+          checked ? 'bg-accent' : 'bg-neutral-300 dark:bg-neutral-700'
+        }`}
+      >
         <span
-          aria-hidden
-          className={`relative mt-0.5 inline-flex h-5 w-9 shrink-0 items-center rounded-full transition ${
-            checked ? 'bg-accent' : 'bg-neutral-300 dark:bg-neutral-700'
+          className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+            checked ? 'translate-x-4 rtl:-translate-x-4' : 'translate-x-0.5 rtl:-translate-x-0.5'
           }`}
-        >
-          <span
-            className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-              checked ? 'translate-x-4 rtl:-translate-x-4' : 'translate-x-0.5 rtl:-translate-x-0.5'
-            }`}
-          />
-        </span>
-      )}
+        />
+      </span>
     </button>
   );
 }
 
 function ActionItem({
   label,
-  description,
   icon,
   onClick,
   pro,
   disabled,
-  suffix,
+  value,
+  chevron,
   tone = 'accent',
 }: {
   label: string;
-  /** One-line explainer rendered under the label. */
-  description?: string;
   icon: React.ReactNode;
   onClick: () => void;
   pro?: boolean;
   disabled?: boolean;
-  suffix?: string;
+  /** A short value at the end of the row: a size, a color. */
+  value?: React.ReactNode;
+  /** The row opens a second view of this menu. */
+  chevron?: boolean;
   tone?: Tone;
 }) {
   return (
@@ -497,103 +657,20 @@ function ActionItem({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`w-full flex items-start gap-3 px-4 py-2 text-start text-[14px] ${
-        tone === 'danger'
-          ? 'text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30'
-          : tone === 'success'
-            ? 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30'
-            : 'text-pn hover:bg-surface-1'
-      } transition disabled:opacity-50 disabled:cursor-not-allowed`}
+      className={`${ROW} ${ROW_TEXT[tone]} disabled:opacity-50 disabled:cursor-not-allowed`}
     >
-      <span className={`shrink-0 mt-0.5 ${TONE_TEXT[tone]}`}>
-        {icon}
-      </span>
-      <span className="flex-1 min-w-0">
-        <span className="block truncate">{label}</span>
-        {description && (
-          <span className="block text-[12px] text-neutral-500 dark:text-neutral-400 leading-snug mt-0.5">
-            {description}
-          </span>
-        )}
-      </span>
-      {pro && (
-        <span className="shrink-0 mt-0.5 inline-flex items-center gap-1 text-[11px] font-semibold text-accent">
-          <IconUpgrade size={12} /> Pro
+      <span className={`shrink-0 ${TONE_TEXT[tone]}`}>{icon}</span>
+      <span className="flex-1 min-w-0 truncate">{label}</span>
+      {pro && <ProBadge />}
+      {value !== undefined && (
+        <span className="shrink min-w-0 max-w-[45%] text-[13px] text-neutral-500 dark:text-neutral-400">
+          {value}
         </span>
       )}
-      {!pro && suffix && (
-        <span className="shrink-0 mt-0.5 text-[11px] text-neutral-400 dark:text-neutral-500">
-          {suffix}
-        </span>
-      )}
+      {chevron && <CaretRight size={14} aria-hidden="true" className="shrink-0 text-neutral-400 dark:text-neutral-500" />}
     </button>
   );
 }
 
 import { formatBytes } from './formatBytes';
 import { computeNoteTotalSize } from './notesViewUtils';
-
-/* ────────────────────────────────────────────────────────────────
- * Icons - thin wrappers around the shared Phosphor module.
- * ──────────────────────────────────────────────────────────────── */
-
-function IconPencilSlash() {
-  return <PencilSimpleSlash size={16} aria-hidden="true" />;
-}
-
-function IconShield() {
-  return <Shield size={16} aria-hidden="true" />;
-}
-
-function IconHistory() {
-  return <ClockCounterClockwise size={16} aria-hidden="true" />;
-}
-
-function IconPin({ filled, size = 16 }: { filled?: boolean; size?: number }) {
-  return <PushPin size={size} weight={filled ? 'fill' : 'bold'} aria-hidden="true" />;
-}
-
-function IconShare({ size = 16 }: { size?: number }) {
-  return <Export size={size} aria-hidden="true" />;
-}
-
-function IconBurn() {
-  return <Fire size={20} aria-hidden="true" />;
-}
-
-function IconTrash({ size = 16 }: { size?: number }) {
-  return <Trash size={size} aria-hidden="true" />;
-}
-
-/** Restore from trash. The same curved arrow the right-click menu uses. */
-function IconRestore() {
-  return <ArrowCounterClockwise size={16} aria-hidden="true" />;
-}
-
-function IconRepeat() {
-  return <Repeat size={16} aria-hidden="true" />;
-}
-
-function IconCopy({ size = 16 }: { size?: number }) {
-  return <Copy size={size} aria-hidden="true" />;
-}
-
-function IconFolder() {
-  return <Folder size={16} aria-hidden="true" />;
-}
-
-/* The mode row's glyph names the DESTINATION, so it changes with the row's
-   label: a markdown file when the click opens the source, an "Aa" when it
-   brings the formatted text back. The bare MarkdownLogo is deliberately not
-   used for either - the tag row wears it for the formatting bar, and that
-   is a different control. */
-function IconReplace() {
-  return <Swap size={16} aria-hidden="true" />;
-}
-
-function IconMarkdown() {
-  return <FileMd size={17} aria-hidden="true" />;
-}
-function IconFormatted() {
-  return <TextAa size={17} aria-hidden="true" />;
-}

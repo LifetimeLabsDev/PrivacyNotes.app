@@ -55,6 +55,7 @@
     "standardNotes": "Odszyfrowana kopia .zip lub .txt ze Standard Notes (File > Export > Decrypted).",
     "obsidian": "Sejf Obsidiana jako .zip. Zachowuje tagi, [[note links]], strukturę folderów, tagi #inline oraz osadzone obrazki i pliki.",
     "notesnook": "Eksport Notesnook jako .zip. Przy eksporcie wybierz HTML, aby zachować formatowanie, notesy, tagi i załączniki.",
+    "joplin": "Plik .jex z File > Export all > „JEX - Joplin Export File”. Notesy stają się folderami, a tagi, zadania do zrobienia, linki do notatek i załączniki przechodzą razem z nimi.",
     "upnote": "W UpNote: Settings > Backup > Backup now, potem spakuj wszystko z folderu kopii zapasowej do .zip. Zachowuje notesy, tagi, przypięcia, linki do notatek, formatowanie i załączniki. Eksporty pojedynczych notatek z aplikacji na telefon też działają - wybierz „Export to HTML”.",
     "markdownFolder": "Pliki .md albo .txt pojedynczo lub w .zip. Spakowany folder zachowuje podfoldery i zabiera ze sobą obrazki oraz załączniki.",
     "markdownApp": "Te notatki już są plikami Markdown w folderze. Przeciągnij ten folder jako .zip, a razem z nim przyjdą podfoldery, obrazki i #tagi.",

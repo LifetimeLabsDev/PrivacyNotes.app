@@ -49,6 +49,7 @@
     "standardNotes": "Dekrypterad .zip- eller .txt-säkerhetskopia från Standard Notes (Arkiv > Exportera > Dekrypterad).",
     "obsidian": "Obsidian-valv som .zip. Bevarar taggar, [[note links]], mappstruktur, #taggar i texten samt inbäddade bilder och filer.",
     "notesnook": "Notesnook-export som .zip. Välj HTML vid exporten för att behålla formatering, anteckningsböcker, taggar och bilagor.",
+    "joplin": "Filen .jex från File > Export all > ”JEX - Joplin Export File”. Anteckningsböcker blir mappar, och taggar, att göra-punkter, anteckningslänkar och bilagor följer med.",
     "upnote": "I UpNote: Settings > Backup > Backup now, zippa sedan allt i mappen med säkerhetskopian. Behåller anteckningsböcker, taggar, fästa anteckningar, anteckningslänkar, formatering och bilagor. Export av enskilda anteckningar från mobilapparna fungerar också - välj ”Export to HTML”.",
     "markdownFolder": ".md- eller .txt-filer var för sig eller som en .zip. En zippad mapp behåller sina undermappar och tar med sig sina bilder och bilagor.",
     "markdownApp": "De här anteckningarna är redan Markdown-filer i en mapp. Släpp mappen som .zip så följer undermappar, bilder och #taggar med.",

@@ -55,14 +55,16 @@
     "openingBody": "Une fenêtre de paiement Paddle devrait apparaître. Si ce n'est pas le cas, ton navigateur a peut-être bloqué la popup - recharge cette page pour réessayer."
   },
   "history": {
-    "title": "Historique des notes",
-    "subtitle": "Jusqu'à 20 versions par note. Les plus anciennes sont automatiquement élaguées.",
+    "subtitle": "Jusqu'à 20 versions par élément. Les plus anciennes sont automatiquement élaguées.",
     "empty": "Pas encore d'historique. Les versions commencent à s'accumuler après la prochaine modification. Reviens plus tard.",
     "loadFailed": "Impossible de charger l'historique. Vérifie ta connexion et réessaie.",
     "selectPrompt": "Sélectionne une version pour l'aperçu.",
     "emptyBody": "(vide)",
     "restore": "Restaurer",
-    "restoring": "Restauration…"
+    "restoring": "Restauration…",
+    "restoreSnapshotFailed": "Impossible d'enregistrer d'abord la version actuelle, donc rien n'a été restauré. Vérifie ta connexion et réessaie.",
+    "restoreFailed": "Impossible de restaurer cette version. Réessaie.",
+    "loginExtrasNotRecorded": "Cette version n'a pas enregistré de champs personnalisés ni de sites web supplémentaires. La restaurer conserve ceux d'aujourd'hui."
   },
   "donation": {
     "eyebrow": "Tu as débloqué",

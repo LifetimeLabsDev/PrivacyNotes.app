@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { OverflowTip } from './OverflowTip';
 import { folderIndentPx, INDENT_PX, MAX_INDENT_LEVEL, useFolderExpansion } from './folderTreeState';
 import { ancestorIds, canMoveFolder, childrenOf, subtreeIds, type FolderDef } from './folders';
 import { CaretDown, DotsSixVertical } from './icons';
-import { FolderGlyph } from './looks/LookGlyph';
+import { FolderGlyph, LooksContext, tintStyle } from './looks/LookGlyph';
+import { folderColor } from './itemStyles';
 
 /**
  * The folder tree itself - carets, guide lines, indent, the tinted expanded
@@ -60,6 +61,8 @@ export interface FolderTreeViewProps {
   isDisabled?: (folder: FolderDef) => boolean;
   onSelect: (folder: FolderDef) => void;
   onContextMenu?: (e: React.MouseEvent, folder: FolderDef) => void;
+  /** A click on the folder's own icon, in place of `onSelect`. */
+  onGlyphClick?: (folder: FolderDef) => void;
   /** Replaces the folder name, for the inline rename input. */
   renderName?: (folder: FolderDef) => ReactNode;
   /**
@@ -109,6 +112,7 @@ export function FolderTreeView({
   isDisabled,
   onSelect,
   onContextMenu,
+  onGlyphClick,
   renderName,
   isEditing,
   renderTrailing,
@@ -118,6 +122,7 @@ export function FolderTreeView({
   mobileTabIndex,
 }: FolderTreeViewProps) {
   const { t } = useTranslation('shell');
+  const looks = useContext(LooksContext);
   const { isExpanded, toggle, expand } = useFolderExpansion();
   const rowEls = useRef(new Map<string, HTMLElement>());
   const scroller = useRef<HTMLElement | null>(null);
@@ -402,6 +407,10 @@ export function FolderTreeView({
             dragging: !!dragging,
             inside: target?.place === 'inside',
           })}
+          // A colored folder tints its row the way a note row takes its
+          // note's color, drawn as an image so the active and hover colors
+          // still show through.
+          style={tintStyle(folderColor(folder.id, looks.styles))}
         >
           {target?.place === 'before' && <DropLine edge="top" level={target.level} />}
           {target?.place === 'after' && <DropLine edge="bottom" level={target.level} />}
@@ -456,10 +465,14 @@ export function FolderTreeView({
                 type="button"
                 disabled={disabled}
                 tabIndex={mobileTabIndex}
-                onClick={() => {
+                onClick={(e) => {
                   // The click that ends a drag is not a selection.
                   if (dragged.current) {
                     dragged.current = false;
+                    return;
+                  }
+                  if (onGlyphClick && (e.target as HTMLElement).closest('[data-folder-glyph]')) {
+                    onGlyphClick(folder);
                     return;
                   }
                   onSelect(folder);
@@ -469,9 +482,10 @@ export function FolderTreeView({
                 } ${disabled ? 'cursor-not-allowed' : ''}`}
               >
                 <span
+                  data-folder-glyph
                   className={`inline-flex shrink-0 ${
                     disabled ? '' : active ? 'text-accent' : 'text-amber-600/80 dark:text-amber-500/80'
-                  }`}
+                  }${onGlyphClick ? ' pn-look-glyph' : ''}`}
                 >
                   <FolderGlyph folderId={folder.id} size={rail ? 16 : 15} />
                 </span>

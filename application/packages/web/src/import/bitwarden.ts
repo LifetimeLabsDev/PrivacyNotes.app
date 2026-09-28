@@ -1,5 +1,6 @@
 import { normalizeTag } from '../notesRepo';
 import { serializeLoginBody } from '../LoginForm';
+import { newLoginField, withLoginExtras, type LoginField } from '../loginExtras';
 import { serializeCardBody } from '../CardForm';
 import { serializeSshKeyBody } from '../SshKeyForm';
 import { BW_EXPORTED_BY, BW_OWN_FIELDS } from '../export';
@@ -24,8 +25,9 @@ import type { Importer, ImportedNote, ParsedImport } from './types';
  * they come back as folders. Favorites map to starred. Reprompt (1) maps to
  * pinProtected. TOTP authenticator keys are kept as-is on the login item.
  * The custom fields our vault export writes for what Bitwarden has no slot
- * for go back into their places; every other custom field is appended to the
- * notes field so nothing is lost.
+ * for go back into their places. A login's other custom fields become its
+ * custom fields and every website it lists is kept; on any other item type
+ * they are appended to the notes field so nothing is lost.
  */
 
 // Bitwarden export schema - intentionally loose, only the fields we use.
@@ -173,6 +175,8 @@ export const bitwardenImporter: Importer = {
     let pinProtectedCount = 0;
     let linkifiedCount = 0;
     let customFieldCount = 0;
+    let loginFieldCount = 0;
+    let extraUrlCount = 0;
     let skippedOrg = 0;
 
     for (const item of data.items) {
@@ -220,21 +224,24 @@ export const bitwardenImporter: Importer = {
         case BW_TYPE_LOGIN: {
           loginCount++;
           const login = item.login ?? {};
-          const uri = login.uris?.[0]?.uri ?? '';
-          const itemNotes = appendCustomFields(item.notes ?? '', rest);
-          customFieldCount += rest.length;
+          const uris = [...new Set((login.uris ?? []).map((u) => (typeof u?.uri === 'string' ? u.uri.trim() : '')).filter(Boolean))];
+          const fields = loginFields(rest);
+          loginFieldCount += fields.length;
+          extraUrlCount += Math.max(0, uris.length - 1);
+          const trackers = withLoginExtras(undefined, { extraUrls: uris.slice(1), fields });
 
           if (login.totp) totpCount++;
 
           notes.push({
             title: item.name ?? '',
             body: serializeLoginBody({
-              url: uri,
+              url: uris[0] ?? '',
               username: login.username ?? '',
               password: login.password ?? '',
-              notes: itemNotes,
+              notes: item.notes ?? '',
               totp: login.totp ?? '',
             }),
+            ...(Object.keys(trackers).length > 0 ? { trackers } : {}),
             tags,
             createdAt,
             updatedAt,
@@ -388,6 +395,16 @@ export const bitwardenImporter: Importer = {
         `Converted ${identityCount} identit${identityCount === 1 ? 'y' : 'ies'} to notes (no identity type in PrivacyNotes).`
       );
     }
+    if (loginFieldCount > 0) {
+      transforms.push(
+        `Kept ${loginFieldCount} login custom field${loginFieldCount === 1 ? '' : 's'} as custom fields.`
+      );
+    }
+    if (extraUrlCount > 0) {
+      transforms.push(
+        `Kept ${extraUrlCount} additional website${extraUrlCount === 1 ? '' : 's'} on logins.`
+      );
+    }
     if (customFieldCount > 0) {
       transforms.push(
         `Preserved ${customFieldCount} custom field${customFieldCount === 1 ? '' : 's'} in the notes section.`
@@ -457,14 +474,34 @@ function takeOwnFields(
     // Only a text value has a place to go back to; a hand-made file that
     // puts a number or a boolean under one of the names keeps it as a
     // custom field in the notes, the way every other field is kept.
+    // Tags are public, so only a text field is read as tags: a hidden one
+    // under the same name stays a secret.
     const key =
       typeof f.value === 'string'
-        ? keys.find((k) => f.name === BW_OWN_FIELDS[k] && own[k] === undefined)
+        ? keys.find((k) => f.name === BW_OWN_FIELDS[k] && own[k] === undefined && (k !== 'tags' || (f.type ?? 0) === 0))
         : undefined;
     if (key) own[key] = f.value as string;
     else rest.push(f);
   }
   return { own, rest };
+}
+
+/**
+ * A login's Bitwarden custom fields as its own custom fields. Text stays
+ * text, a boolean becomes its text value, and a linked field (type 3, a
+ * pointer with no value of its own) is skipped. Hidden and any type this
+ * build does not know import hidden: the safe side for a value we cannot
+ * classify.
+ */
+function loginFields(fields: BwField[]): LoginField[] {
+  const out: LoginField[] = [];
+  for (const f of fields) {
+    if (f.type === 3) continue;
+    const value = f.value == null ? '' : String(f.value);
+    const type = f.type === 0 || f.type === 2 || f.type === undefined ? 'text' : 'hidden';
+    out.push(newLoginField(type, f.name ?? '', value));
+  }
+  return out;
 }
 
 /**

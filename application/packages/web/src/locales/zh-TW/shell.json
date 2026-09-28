@@ -108,7 +108,10 @@
     "open": "開啟",
     "notesHeading": "備註",
     "fillOneField": "儲存前至少填寫一個欄位。",
-    "expiryNeedsBoth": "有效期限需要同時填月份與年份，或兩者都留空。"
+    "expiryNeedsBoth": "有效期限需要同時填月份與年份，或兩者都留空。",
+    "customField": "自訂欄位",
+    "fieldNeedsName": "請為每個自訂欄位命名。",
+    "saveFailed": "無法儲存。你的變更都還在。"
   },
   "fileTypes": {
     "audio": "音訊",
@@ -147,6 +150,7 @@
     "allItems": "全部",
     "pinnedTooltip": "已釘選項目",
     "pinned": "已釘選",
+    "archive": "封存",
     "notesTooltip": "所有筆記",
     "notes": "筆記",
     "tasksTooltip": "所有筆記中的任務",
@@ -213,6 +217,8 @@
     "noMatches": "沒有符合的資料夾",
     "collapse": "收合",
     "expand": "展開",
+    "collapseAll": "全部收合",
+    "expandAll": "全部展開",
     "reorder": "重新排序 {{folder}}",
     "saveName": "儲存資料夾名稱",
     "actionsForFolder": "資料夾 {{folder}} 的動作",
@@ -221,21 +227,27 @@
   },
   "collapsedSidebar": {
     "newNote": "新增筆記",
-    "cycleView": "切換檢視（自動、清單、格狀）",
     "expandSidebar": "展開側邊欄"
   },
   "mobileHeader": {
     "openMenu": "開啟選單"
   },
   "noteOptionsMenu": {
+    "color": "顏色",
+    "colorNone": "無顏色",
+    "colorUseDefault": "恢復預設",
+    "colorFromFolder": "來自資料夾：{{name}}",
+    "colorFromTag": "來自標籤：#{{name}}",
+    "details": "詳細資料",
     "readOnly": "唯讀",
     "readOnlyDescription": "關掉之前都不能編輯。",
     "protect": "保護",
-    "protectDescription": "把內容藏在 PIN 碼或生物辨識後面，標題仍會顯示。",
     "convertToJournal": "轉換為日誌",
     "convertToNote": "轉換為筆記",
     "unpin": "取消釘選",
     "pin": "釘選",
+    "archive": "封存",
+    "unarchive": "取消封存",
     "burn": "Burn",
     "share": "分享",
     "trash": "垃圾桶",
@@ -243,17 +255,15 @@
     "restore": "還原",
     "deleteForever": "永久刪除",
     "moveToFolder": "移至資料夾",
-    "noteHistory": "筆記歷史",
-    "noteHistoryDescription": "還原最近 20 個版本中的任何一個。",
-    "showMarkdownDescription": "編輯原始 markdown。",
-    "showFormattedDescription": "回到排版編輯器。",
+    "noteHistory": "歷史記錄",
     "findReplace": "尋找與取代",
+    "uncheckAllTasks": "取消勾選所有任務",
     "comingSoon": "即將推出",
     "noteOptions": "筆記選項",
     "lastModified": "最後修改：{{date}}",
     "created": "建立：{{date}}",
     "size": "使用空間：{{size}}",
-    "sizeHint": "這篇筆記加密後的總大小。",
+    "sizeHint": "這個項目加密後的總大小。",
     "tagCount_other": "{{count}} 個標籤"
   },
   "selectionToolbar": {
@@ -261,6 +271,8 @@
     "exitSelection": "離開選取",
     "unpin": "取消釘選",
     "pin": "釘選",
+    "archive": "封存",
+    "unarchive": "取消封存",
     "tag": "標籤",
     "export": "匯出",
     "delete": "刪除",
@@ -272,6 +284,8 @@
   },
   "listPrefs": {
     "listPreferences": "清單偏好設定",
+    "layout": "版面配置",
+    "layoutDeviceOnly": "僅套用於這部裝置",
     "sortBy": "排序方式",
     "dateCreated": "建立日期",
     "dateModified": "修改日期",
@@ -279,6 +293,7 @@
     "size": "大小",
     "view": "檢視",
     "showPreview": "顯示預覽",
+    "longPreview": "較長的預覽文字",
     "showDate": "顯示日期",
     "showTags": "顯示資料夾與標籤",
     "other": "其他",
@@ -320,6 +335,8 @@
     "deleteForever": "永久刪除",
     "unpin": "取消釘選",
     "pin": "釘選",
+    "archive": "封存",
+    "unarchive": "取消封存",
     "duplicate": "建立副本",
     "moveToFolder": "移至資料夾",
     "exportAsMarkdown": "匯出為 Markdown",
@@ -331,7 +348,13 @@
     "newContact": "新增聯絡人",
     "openBookmark": "開啟",
     "copyBookmarkUrl": "複製網址",
-    "editBookmark": "編輯書籤"
+    "editBookmark": "編輯書籤",
+    "openInTab": "在分頁中開啟",
+    "closeTab": "關閉分頁",
+    "closeOtherTabs": "關閉其他分頁",
+    "closeAllTabs": "關閉所有分頁",
+    "pinTab": "釘選分頁",
+    "unpinTab": "取消釘選分頁"
   },
   "demoBanner": {
     "title": "零風險試用",
@@ -353,6 +376,8 @@
     "braveSteps": "把它貼進 Brave 的網址列，將「{{flag}}」設為 Enabled，然後重新啟動 Brave。",
     "braveAppAlternative": "或者改用桌面應用程式",
     "openFailed": "無法開啟那個檔案。",
+    "linkNotFound": "這個資料夾裡沒有「{{target}}」檔案。",
+    "linkNeedsFolder": "開啟資料夾後才能開啟連結。",
     "saveFailed": "無法存到硬碟。",
     "saving": "儲存中…",
     "savedToDisk": "已存到硬碟",
@@ -582,5 +607,9 @@
   },
   "looks": {
     "menu": "圖示與顏色"
+  },
+  "tabStrip": {
+    "label": "已開啟的分頁",
+    "close": "關閉「{{title}}」"
   }
 }

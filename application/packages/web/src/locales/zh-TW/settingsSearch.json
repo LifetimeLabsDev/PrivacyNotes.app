@@ -65,6 +65,7 @@
     "about_dataStorage": "資料, 伺服器, 儲存位置, 隱私",
     "about_changelog": "版本說明, 更新紀錄, 新功能, 更新",
     "about_hotkeys": "鍵盤快速鍵, 快捷鍵, 快速鍵, 按鍵",
-    "about_rating": "評論, 評分, 星星, App Store"
+    "about_rating": "評論, 評分, 星星, App Store",
+    "appearance_openInTabs": "分頁, 分頁列, 瀏覽器, 開啟"
   }
 }

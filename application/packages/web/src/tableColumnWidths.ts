@@ -211,3 +211,17 @@ export function commitWidths(widths: readonly number[]): number[] | null {
   if (!out.every((w) => w >= floor)) return effectiveWidths(widths);
   return Math.max(...out) - Math.min(...out) <= 1 ? null : out;
 }
+
+/** The narrowest a whole table may get, in percent of the note. */
+export const TABLE_MIN_WIDTH = 20;
+
+/**
+ * The table width after dragging its outer end edge by `delta` percent of
+ * the note: on the drag grid, never under TABLE_MIN_WIDTH, never wider than
+ * the note. Null means full width, which stores nothing.
+ */
+export function dragTableWidth(start: number, delta: number): number | null {
+  const width = Math.min(100, Math.max(TABLE_MIN_WIDTH, Math.round((start + delta) / GRID) * GRID));
+  return width >= 100 ? null : width;
+}
+

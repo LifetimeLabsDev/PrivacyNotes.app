@@ -57,6 +57,11 @@ export interface DecryptedNote {
   /** Pro: gate this note behind the user's PIN. */
   pinProtected?: boolean;
   /**
+   * Kept but out of sight: listed only in the Archive view. Optional, and
+   * written only when true, so older ciphertexts decrypt without it.
+   */
+  archived?: boolean;
+  /**
    * Note type. Defaults to 'note' for backward compatibility -
    * ciphertexts written before this field existed decrypt without it.
    */

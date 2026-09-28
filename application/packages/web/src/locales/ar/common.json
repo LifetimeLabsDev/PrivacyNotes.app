@@ -62,6 +62,7 @@
     "groups": {
       "navigation": "التنقل",
       "notes": "الملاحظات",
+      "lists": "القوائم",
       "editor": "المحرر",
       "formatting": "التنسيق",
       "alignment": "المحاذاة",
@@ -104,7 +105,11 @@
       "toggleSidebar": "تبديل الشريط الجانبي",
       "toggleTheme": "تبديل الوضع الفاتح / الداكن",
       "zenMode": "وضع Zen / التركيز (Pro)",
-      "toggleHelp": "تبديل هذه المساعدة"
+      "toggleHelp": "تبديل هذه المساعدة",
+      "selectSeveral": "تحديد عدة عناصر",
+      "selectRange": "تحديد نطاق (أثناء التحديد)",
+      "openInTab": "الفتح في علامة تبويب (النقر بالزر الأوسط يعمل أيضًا)",
+      "closeTab": "إغلاق علامة التبويب"
     }
   },
   "cardForm": {

@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "Super notes, checklists and 2FA codes keep their shape",
+          "p": [
+            "Super notes keep their headings, lists, checklists, tables, code blocks, colors and collapsible sections. Checklists land in Tasks, spreadsheets become tables, and authenticator entries become logins in the Vault with their 2FA key. Nested tags become folders, and each note keeps its tags as well.",
+            "Files you uploaded to Standard Notes stay on their server, so the backup holds only their names. Each imported note marks where a file was. Download those files from Standard Notes and add them to the note again."
+          ]
+        },
+        {
           "h": "Encrypted backups are not supported",
           "p": [
             "An encrypted Standard Notes backup is ciphertext that only your Standard Notes password can open, so the importer cannot read it. If you exported the encrypted variant, export again and pick decrypted. Since the file contains your notes in plain text, delete it after the import is done.",

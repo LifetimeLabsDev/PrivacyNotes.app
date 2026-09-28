@@ -27,7 +27,7 @@ Yukarıdaki çubuk metnin görünüşünü değiştirir: **kalın**, *italik*, b
 
 ## Bugün yapılacak tek şey
 
-- [ ] **<mark style="background-color: rgba(51, 154, 240, 0.35)">12 kelimelik ifadenizi</mark>** **Ayarlar > Güvenlik > Kurtarma ifadeniz** altında bulun, kâğıda yazın ve güvenli bir yere koyun
+- [ ] **<mark style="background-color: rgba(51, 154, 240, 0.35)">12 kelimelik ifadenizi</mark>** **Ayarlar > Güvenlik > İfade** altında bulun, kâğıda yazın ve güvenli bir yere koyun
 
 O ifade notlarınızı açan şeydir. Nerede duracağına siz karar verirsiniz ve bu kararı istediğiniz zaman değiştirebilirsiniz. [[Notlarınız nasıl korunuyor]] üç seçeneği anlatır.
 

@@ -138,7 +138,7 @@
     "freeSubLabel": "Inget kreditkort krävs, ingen tidsgräns.",
     "freeAllPillars": "Anteckningar, uppgifter, filer, valv, dagbok och bokmärken",
     "freeSync": "Synk mellan 2 enheter",
-    "freeVault": "Krypterat filvalv, 5 MB per fil",
+    "freeVault": "50 MB lagring, upp till 5 MB per fil",
     "freeSearch": "Fritextsökning + taggar",
     "freeImport": "Import och export, inklusive Keep och Obsidian",
     "freeBurn": "Burn After Reading",
@@ -327,6 +327,7 @@
       "fixed": "Fixat"
     },
     "changelogComingSoon": "Changelog kommer snart.",
+    "changelogLatest": "Senaste",
     "hotkeysFootnote": "De flesta kortkommandon ignoreras medan du skriver i ett textfält, så vanliga tangenter som J och K skriver fortfarande J och K."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "De flesta betalar oss aldrig något, och det är med flit. Ett betyg är ett fint sätt att säga tack.",
     "outro": "Vi läser varenda recension, och några ord från någon som använder appen varje dag är det som håller oss igång.",
     "descGithub": "Ge oss en stjärna på GitHub",
+    "descAppStore": "Betygsätt PrivacyNotes i App Store",
     "descAlternativeTo": "Gilla och recensera på AlternativeTo",
     "descCapterra": "Betygsätt PrivacyNotes på Capterra",
     "descSaasHub": "Gilla och recensera på SaaSHub",

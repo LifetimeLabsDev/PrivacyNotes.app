@@ -60,6 +60,7 @@
     "groups": {
       "navigation": "Navigace",
       "notes": "Poznámky",
+      "lists": "Seznamy",
       "editor": "Editor",
       "formatting": "Formátování",
       "alignment": "Zarovnání",
@@ -102,7 +103,11 @@
       "toggleSidebar": "Přepnout boční panel",
       "toggleTheme": "Přepnout světlý / tmavý režim",
       "zenMode": "Režim Zen / soustředění (Pro)",
-      "toggleHelp": "Přepnout tuto nápovědu"
+      "toggleHelp": "Přepnout tuto nápovědu",
+      "selectSeveral": "Vybrat více položek",
+      "selectRange": "Vybrat rozsah (během výběru)",
+      "openInTab": "Otevřít na kartě (funguje i prostřední tlačítko)",
+      "closeTab": "Zavřít kartu"
     }
   },
   "cardForm": {

@@ -29,7 +29,7 @@ Jede Möglichkeit hält deine Notizen auf deinem Gerät verschlüsselt. Sie unte
 
 Bei den unteren beiden könnten wir eine Notiz nicht lesen, selbst wenn man uns dazu zwänge. Die erste tauscht das gegen Bequemlichkeit: Deine Phrase liegt auf unserem Server unter einem Schlüssel von uns, also braucht ein neues Gerät nichts außer deinem Login. Würde unser Server je angegriffen, könnte dieser Schlüssel offengelegt werden.
 
-Mit Google, Apple oder GitHub angemeldet? Zwischen den ersten beiden kannst du später wechseln, unter **Einstellungen > Sicherheit > Deine Phrase**. Bei einem reinen Phrasen-Konto bleibt die Phrase immer bei dir.
+Mit Google, Apple oder GitHub angemeldet? Zwischen den ersten beiden kannst du später wechseln, unter **Einstellungen > Konto > Schlüsselverwaltung**. Bei einem reinen Phrasen-Konto bleibt die Phrase immer bei dir.
 
 > [!warning] Behalte eine eigene Kopie der Phrase
 > Deine Phrase öffnet deine Notizen. Wenn du sie verlierst, kann sie niemand wiederherstellen, wir eingeschlossen. <span style="color: #e03131">Schreib sie heute auf Papier.</span>

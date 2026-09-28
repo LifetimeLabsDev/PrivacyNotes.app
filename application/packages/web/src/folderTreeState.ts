@@ -111,6 +111,10 @@ export interface FolderExpansion {
   expand: (folders: FolderDef[], id: string) => void;
   /** Open the whole path down to `id`, so a selection is never hidden. */
   expandAncestors: (folders: FolderDef[], id: string) => void;
+  /** Close every folder, top level included. */
+  collapseAll: (folders: FolderDef[]) => void;
+  /** Open every folder that has children. */
+  expandAll: (folders: FolderDef[]) => void;
 }
 
 export function useFolderExpansion(): FolderExpansion {
@@ -144,9 +148,21 @@ export function useFolderExpansion(): FolderExpansion {
     );
   }, []);
 
+  // Both rebuild the set from scratch, because every per-folder choice is
+  // overruled: a closed top-level folder is an exception, an open nested one
+  // is not.
+  const collapseAll = useCallback((folders: FolderDef[]) => {
+    publish(new Set(folders.filter((f) => f.parentId === null).map((f) => f.id)));
+  }, []);
+
+  const expandAll = useCallback((folders: FolderDef[]) => {
+    const parents = new Set(folders.map((f) => f.parentId));
+    publish(new Set(folders.filter((f) => f.parentId !== null && parents.has(f.id)).map((f) => f.id)));
+  }, []);
+
   return useMemo(
-    () => ({ isExpanded, toggle, expand, expandAncestors }),
-    [isExpanded, toggle, expand, expandAncestors],
+    () => ({ isExpanded, toggle, expand, expandAncestors, collapseAll, expandAll }),
+    [isExpanded, toggle, expand, expandAncestors, collapseAll, expandAll],
   );
 }
 

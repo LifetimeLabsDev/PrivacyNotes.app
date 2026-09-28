@@ -24,7 +24,7 @@
     "sport": "Idrott",
     "tech": "Vetenskap och teknik",
     "signals": "Signaler",
-    "numbers": "Siffror"
+    "numbers": "Siffror och matte"
   },
   "icons": {
     "folder": "Mapp",
@@ -249,6 +249,8 @@
     "bone": "Benknota",
     "barn": "Lada",
     "tractor": "Traktor",
+    "grains": "Spannmål",
+    "windmill": "Väderkvarn",
     "guitar": "Gitarr",
     "piano-keys": "Piano",
     "microphone-stage": "Mikrofon",
@@ -302,6 +304,12 @@
     "info": "Information",
     "siren": "Siren",
     "infinity": "Oändlighet",
+    "plus": "Plustecken",
+    "minus": "Minustecken",
+    "x": "Gånger",
+    "divide": "Delat med",
+    "equals": "Lika med",
+    "percent": "Procent",
     "peace": "Fred",
     "recycle": "Återvinning",
     "radioactive": "Radioaktivt",
@@ -317,6 +325,10 @@
     "file-video": "Videofil",
     "file-audio": "Ljudfil",
     "file-code": "Kodfil",
+    "file-html": "Webbsida",
+    "file-lock": "Låst fil",
+    "file-cloud": "Molnfil",
+    "file-svg": "Vektorgrafik",
     "fingerprint": "Fingeravtryck"
   }
 }

@@ -74,10 +74,41 @@ function clickOpensLink(editable: boolean, event: { metaKey: boolean; ctrlKey: b
   return !editable || isTouchPointer();
 }
 
-export const LinkModifierOpen = Extension.create({
+/**
+ * Opens a link that names a file rather than an address, and answers whether
+ * it did. Only the Markdown folder pane installs one, because only there does
+ * `[text](other.md)` point at something the app can open. Everywhere else a
+ * relative href has nowhere to go and the click stays a caret placement.
+ */
+type LocalLinkOpener = (href: string) => boolean;
+
+type LinkOpenStorage = { openLocal: LocalLinkOpener | null };
+
+function linkOpenStorage(editor: { storage: unknown }): LinkOpenStorage | undefined {
+  return (editor.storage as Record<string, LinkOpenStorage | undefined>).linkModifierOpen;
+}
+
+/** Install or clear the local opener on one editor instance. */
+export function setLocalLinkOpener(editor: { storage: unknown } | null, fn: LocalLinkOpener | null): void {
+  const store = editor ? linkOpenStorage(editor) : undefined;
+  if (store) store.openLocal = fn;
+}
+
+/** The link menu's "Open": the local opener first, the browser otherwise. */
+export function openLinkHref(editor: { storage: unknown }, href: string): void {
+  if (linkOpenStorage(editor)?.openLocal?.(href)) return;
+  openExternal(href);
+}
+
+export const LinkModifierOpen = Extension.create<object, LinkOpenStorage>({
   name: 'linkModifierOpen',
 
+  addStorage() {
+    return { openLocal: null };
+  },
+
   addProseMirrorPlugins() {
+    const storage = this.storage;
     return [
       new Plugin({
         key: new PluginKey('linkModifierOpen'),
@@ -86,6 +117,11 @@ export const LinkModifierOpen = Extension.create({
             if (event.button !== 0) return false;
             const href = linkHrefAt(view.state, pos);
             if (!href) return false;
+            // A file link follows the same caret-first rule as an address,
+            // minus the native hand-off: the anchor interceptor only takes
+            // addresses, so nothing else would open it on a native build.
+            const follow = isOpenLinkModifier(event) || !view.editable || isTouchPointer();
+            if (follow && storage.openLocal?.(href)) return true;
             if (!clickOpensLink(view.editable, event)) return false;
             openExternal(href);
             return true;

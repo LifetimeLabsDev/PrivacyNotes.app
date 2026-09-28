@@ -8,6 +8,7 @@ import {
   bulkRestore,
   bulkPermanentlyDelete,
   bulkSetStarred,
+  bulkSetArchived,
   bulkSetLocked,
   bulkSetPinProtected,
   bulkDuplicate,
@@ -53,6 +54,7 @@ interface UseMultiSelectReturn {
   selectionMode: boolean;
   selectedIds: Set<string>;
   selectionAllStarred: boolean;
+  selectionAllArchived: boolean;
   /** True when every item in the selection already carries the flag. The
    *  menus read these to decide which way their toggles go. */
   selectionAllLocked: boolean;
@@ -77,6 +79,7 @@ interface UseMultiSelectReturn {
   executeBulkDelete: () => Promise<void>;
   dismissBulkDelete: () => void;
   handleBulkFavorite: () => Promise<void>;
+  handleBulkArchive: () => Promise<void>;
   handleBulkExport: () => Promise<void>;
   handleBulkAddTag: (tag: string) => Promise<number>;
   handleAddTagTo: (ids: string[], tag: string) => Promise<number>;
@@ -351,6 +354,19 @@ export function useMultiSelect({
     void runSync();
   }
 
+  /** Same rule as the pin: all archived unarchives, anything else archives
+   *  all. The items leave the list they sit in, so the selection ends. */
+  async function handleBulkArchive() {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    const picked = notes.filter((n) => selectedIds.has(n.id));
+    const allArchived = picked.length > 0 && picked.every((n) => n.archived === 1);
+    await bulkSetArchived(ids, !allArchived);
+    clearSelection();
+    await refresh();
+    void runSync();
+  }
+
   /** A selection holding a note the PIN guards leaves the device only after
    *  the PIN, the same bar Trash sets for it. Tested in
    *  tests/lockGateReads.test.ts. */
@@ -472,6 +488,10 @@ export function useMultiSelect({
       .filter((n) => selectedIds.has(n.id))
       .every((n) => n.starred === 1);
 
+  const selectionAllArchived =
+    selectedIds.size > 0 &&
+    notes.filter((n) => selectedIds.has(n.id)).every((n) => n.archived === 1);
+
   // Same rule for the two per-note switches the selection menu carries:
   // the toggle turns a flag off only when every item already has it on.
   const selectionAllLocked =
@@ -485,6 +505,7 @@ export function useMultiSelect({
     selectionMode,
     selectedIds,
     selectionAllStarred,
+    selectionAllArchived,
     selectionAllLocked,
     selectionAllProtected,
     displayNotesRef,
@@ -507,6 +528,7 @@ export function useMultiSelect({
     executeBulkDelete,
     dismissBulkDelete: () => setBulkDeletePending(null),
     handleBulkFavorite,
+    handleBulkArchive,
     handleBulkExport,
     handleBulkAddTag,
     handleAddTagTo,

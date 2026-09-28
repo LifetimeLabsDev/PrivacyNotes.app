@@ -21,11 +21,12 @@ export type SettingsCategory = {
   href?: string;
   /**
    * Renders the pane body. Required unless `href` is set. `navigate` opens
-   * a sibling category from inside a pane, which is how a pane can carry a
-   * link to another pane without knowing the shell. `initialTab` is the
-   * inner tab a search result points at; the pane opens on it.
+   * a sibling category from inside a pane, on one of its inner tabs when
+   * `tab` is given, which is how a pane can carry a link to another pane
+   * without knowing the shell. `initialTab` is the inner tab a search result
+   * or a `navigate` points at; the pane opens on it.
    */
-  render?: (tools: { navigate: (id: string) => void; initialTab?: string }) => ReactNode;
+  render?: (tools: { navigate: (id: string, tab?: string) => void; initialTab?: string }) => ReactNode;
 };
 
 export type SettingsShellProps = {

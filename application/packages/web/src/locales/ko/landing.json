@@ -138,7 +138,7 @@
     "freeSubLabel": "신용카드도, 시간제한도 없어요.",
     "freeAllPillars": "노트, 할 일, 파일, 보관함, 저널, 북마크",
     "freeSync": "기기 2대 동기화",
-    "freeVault": "암호화 파일 보관함, 파일당 5 MB",
+    "freeVault": "50 MB 저장 공간, 파일당 5 MB",
     "freeSearch": "전문 검색 + 태그",
     "freeImport": "가져오기와 내보내기, Keep와 Obsidian 포함",
     "freeBurn": "Burn After Reading",
@@ -327,6 +327,7 @@
       "fixed": "수정"
     },
     "changelogComingSoon": "Changelog가 곧 제공돼요.",
+    "changelogLatest": "최신",
     "hotkeysFootnote": "텍스트 입력 중에는 대부분의 단축키가 무시돼요. 그래서 J, K 같은 일반 키는 그대로 J, K로 입력돼요."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "대부분은 저희에게 한 번도 돈을 내지 않아요. 의도한 것이에요. 평가는 고마움을 전하는 멋진 방법이에요.",
     "outro": "들어오는 평가는 하나도 빠짐없이 읽어요. 매일 쓰시는 분의 한마디가 저희를 계속 나아가게 해요.",
     "descGithub": "GitHub에서 스타 누르기",
+    "descAppStore": "App Store에서 PrivacyNotes 평가하기",
     "descAlternativeTo": "AlternativeTo에서 좋아요와 리뷰 남기기",
     "descCapterra": "Capterra에서 PrivacyNotes 평가하기",
     "descSaasHub": "SaaSHub에서 좋아요와 리뷰 남기기",

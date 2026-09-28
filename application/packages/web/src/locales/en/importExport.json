@@ -49,6 +49,7 @@
     "standardNotes": "Decrypted .zip or .txt backup from Standard Notes (File > Export > Decrypted).",
     "obsidian": "Obsidian vault as .zip. Preserves tags, [[note links]], folder structure, inline #tags, and embedded images and files.",
     "notesnook": "Notesnook export as .zip. Pick HTML when exporting to keep formatting, notebooks, tags, and attachments.",
+    "joplin": "The .jex file from File > Export all > \"JEX - Joplin Export File\". Notebooks become folders, and tags, to-dos, note links and attachments come along.",
     "upnote": "In UpNote: Settings > Backup > Backup now, then zip everything in the backup folder. Keeps notebooks, tags, pins, note links, formatting, and attachments. Per-note exports from the phone apps work too - pick \"Export to HTML\".",
     "markdownFolder": ".md or .txt files individually or as a .zip. A zipped folder keeps its subfolders and brings its images and attachments along.",
     "markdownApp": "These notes are already Markdown files in a folder. Drop that folder in as a .zip and its subfolders, images, and #tags come with it.",

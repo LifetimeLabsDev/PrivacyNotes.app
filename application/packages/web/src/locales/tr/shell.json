@@ -108,7 +108,10 @@
     "open": "Aç",
     "notesHeading": "Notlar",
     "fillOneField": "Kaydetmeden önce en az bir alanı doldurun.",
-    "expiryNeedsBoth": "Son kullanma için hem ay hem yıl gerekir; ya da ikisini de boş bırakın."
+    "expiryNeedsBoth": "Son kullanma için hem ay hem yıl gerekir; ya da ikisini de boş bırakın.",
+    "customField": "Özel alan",
+    "fieldNeedsName": "Her özel alana bir ad verin.",
+    "saveFailed": "Kaydedilemedi. Değişiklikleriniz hâlâ burada."
   },
   "fileTypes": {
     "audio": "Ses",
@@ -148,6 +151,7 @@
     "allItems": "Tümü",
     "pinnedTooltip": "Sabitlenmiş öğeler",
     "pinned": "Sabitlenmiş",
+    "archive": "Arşiv",
     "notesTooltip": "Tüm notlar",
     "notes": "Notlar",
     "tasksTooltip": "Tüm notlardaki görevler",
@@ -214,6 +218,8 @@
     "noMatches": "Eşleşen klasör yok",
     "collapse": "Daralt",
     "expand": "Genişlet",
+    "collapseAll": "Tümünü daralt",
+    "expandAll": "Tümünü genişlet",
     "reorder": "{{folder}} klasörünü yeniden sırala",
     "saveName": "Klasör adını kaydet",
     "actionsForFolder": "{{folder}} klasörü için işlemler",
@@ -222,21 +228,27 @@
   },
   "collapsedSidebar": {
     "newNote": "Yeni not",
-    "cycleView": "Görünümü değiştir (otomatik, liste, ızgara)",
     "expandSidebar": "Kenar çubuğunu genişlet"
   },
   "mobileHeader": {
     "openMenu": "Menüyü aç"
   },
   "noteOptionsMenu": {
+    "color": "Renk",
+    "colorNone": "Renksiz",
+    "colorUseDefault": "Varsayılanı kullan",
+    "colorFromFolder": "Klasörden: {{name}}",
+    "colorFromTag": "Etiketten: #{{name}}",
+    "details": "Ayrıntılar",
     "readOnly": "Salt okunur",
     "readOnlyDescription": "Kapatana kadar düzenleme yapılamaz.",
     "protect": "Koru",
-    "protectDescription": "İçeriği PIN'inizin veya biyometrinizin arkasına gizleyin. Başlık görünür kalır.",
     "convertToJournal": "Günlük kaydına dönüştür",
     "convertToNote": "Nota dönüştür",
     "unpin": "Sabitlemeyi kaldır",
     "pin": "Sabitle",
+    "archive": "Arşivle",
+    "unarchive": "Arşivden çıkar",
     "burn": "Yak",
     "share": "Paylaş",
     "trash": "Çöp kutusu",
@@ -244,17 +256,15 @@
     "restore": "Geri yükle",
     "deleteForever": "Kalıcı olarak sil",
     "moveToFolder": "Klasöre taşı",
-    "noteHistory": "Not geçmişi",
-    "noteHistoryDescription": "Son 20 sürümden herhangi birini geri yükleyin.",
-    "showMarkdownDescription": "Ham markdown kaynağını düzenleyin.",
-    "showFormattedDescription": "Biçimlendirilmiş düzenleyiciye dönün.",
+    "noteHistory": "Geçmiş",
     "findReplace": "Bul ve değiştir",
+    "uncheckAllTasks": "Tüm görevlerin işaretini kaldır",
     "comingSoon": "Yakında",
     "noteOptions": "Not seçenekleri",
     "lastModified": "Son değişiklik: {{date}}",
     "created": "Oluşturulma: {{date}}",
     "size": "Kullanılan alan: {{size}}",
-    "sizeHint": "Bu notun toplam şifrelenmiş boyutu.",
+    "sizeHint": "Bu öğenin toplam şifrelenmiş boyutu.",
     "tagCount_one": "{{count}} etiket",
     "tagCount_other": "{{count}} etiket"
   },
@@ -263,6 +273,8 @@
     "exitSelection": "Seçimden çık",
     "unpin": "Sabitlemeyi kaldır",
     "pin": "Sabitle",
+    "archive": "Arşivle",
+    "unarchive": "Arşivden çıkar",
     "tag": "Etiketle",
     "export": "Dışa aktar",
     "delete": "Sil",
@@ -274,6 +286,8 @@
   },
   "listPrefs": {
     "listPreferences": "Liste tercihleri",
+    "layout": "Düzen",
+    "layoutDeviceOnly": "Yalnızca bu cihaz için geçerli",
     "sortBy": "Sıralama ölçütü",
     "dateCreated": "Oluşturulma tarihi",
     "dateModified": "Değiştirilme tarihi",
@@ -281,6 +295,7 @@
     "size": "Boyut",
     "view": "Görünüm",
     "showPreview": "Önizlemeyi göster",
+    "longPreview": "Daha uzun önizleme metni",
     "showDate": "Tarihi göster",
     "showTags": "Klasörü ve etiketleri göster",
     "other": "Diğer",
@@ -323,6 +338,8 @@
     "deleteForever": "Kalıcı olarak sil",
     "unpin": "Sabitlemeyi kaldır",
     "pin": "Sabitle",
+    "archive": "Arşivle",
+    "unarchive": "Arşivden çıkar",
     "duplicate": "Çoğalt",
     "moveToFolder": "Klasöre taşı",
     "exportAsMarkdown": "Markdown olarak dışa aktar",
@@ -334,7 +351,13 @@
     "newContact": "Yeni Kişi",
     "openBookmark": "Aç",
     "copyBookmarkUrl": "URL'yi kopyala",
-    "editBookmark": "Yer imini düzenle"
+    "editBookmark": "Yer imini düzenle",
+    "openInTab": "Sekmede aç",
+    "closeTab": "Sekmeyi kapat",
+    "closeOtherTabs": "Diğer sekmeleri kapat",
+    "closeAllTabs": "Tüm sekmeleri kapat",
+    "pinTab": "Sekmeyi sabitle",
+    "unpinTab": "Sekmenin sabitlemesini kaldır"
   },
   "demoBanner": {
     "title": "Risksiz deneyin",
@@ -356,6 +379,8 @@
     "braveSteps": "Bunu Brave'in adres çubuğuna yapıştırın, \"{{flag}}\" ayarını Enabled yapın, sonra Brave'i yeniden başlatın.",
     "braveAppAlternative": "Ya da bunun yerine masaüstü uygulamasını kullanın",
     "openFailed": "Bu dosya açılamadı.",
+    "linkNotFound": "Bu klasörde “{{target}}” dosyası yok.",
+    "linkNeedsFolder": "Bağlantıları açmak için klasörü açın.",
     "saveFailed": "Diske kaydedilemedi.",
     "saving": "Kaydediliyor…",
     "savedToDisk": "Diske kaydedildi",
@@ -590,5 +615,9 @@
   },
   "looks": {
     "menu": "Simge ve renk"
+  },
+  "tabStrip": {
+    "label": "Açık sekmeler",
+    "close": "Kapat: {{title}}"
   }
 }

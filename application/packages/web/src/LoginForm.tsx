@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, Copy, Eye, EyeSlash, FloppyDisk, Globe, Info, Lock, NotePencil, Password, Shield, User } from './icons';
+import { Check, Copy, Eye, EyeSlash, FloppyDisk, Globe, Info, Lock, NotePencil, Password, Plus, Shield, Tag, Trash, User } from './icons';
 import { hasPin } from './pin';
 import { PinInfoModal } from './PinInfoModal';
 import { HoverLabel } from './HoverLabel';
@@ -11,6 +11,7 @@ import { PasswordField } from './PasswordText';
 import { FIELD_BUTTON, FIELD_CLASS, FieldLabel } from './formFields';
 import { PasswordGeneratorModal } from './PasswordGenerator';
 import type { UpgradeTrigger } from './UpgradeModal';
+import { newLoginField, type LoginExtras, type LoginField } from './loginExtras';
 
 /* ────────────────────────────────────────────────────────────────
  * LoginData - the JSON blob stored in the note body for login-type
@@ -113,6 +114,9 @@ interface LoginFormProps {
    *  gates the generator's passphrase mode. */
   isPro: boolean | null;
   onOpenUpgrade: (trigger: UpgradeTrigger) => void;
+  /** Custom fields and additional websites, buffered with the body draft. */
+  extras: LoginExtras;
+  onExtrasChange: (extras: LoginExtras) => void;
 }
 
 export function LoginForm({
@@ -130,6 +134,8 @@ export function LoginForm({
   saveError,
   isPro,
   onOpenUpgrade,
+  extras,
+  onExtrasChange,
 }: LoginFormProps) {
   const { t } = useTranslation('auth');
   const data = parseLoginBody(body);
@@ -142,6 +148,11 @@ export function LoginForm({
   const [showPassword, setShowPassword] = useState(false);
   const [showGenerator, setShowGenerator] = useState(false);
   const urlRef = useRef<HTMLInputElement>(null);
+  const [revealed, setRevealed] = useState<Set<string>>(() => new Set());
+  const setUrls = (extraUrls: string[]) => onExtrasChange({ ...extras, extraUrls });
+  const setFields = (fields: LoginField[]) => onExtrasChange({ ...extras, fields });
+  const patchField = (id: string, patch: Partial<LoginField>) =>
+    setFields(extras.fields.map((f) => (f.id === id ? { ...f, ...patch } : f)));
 
   /** Soft URL hint - shown when the field has content that doesn't
    *  look like a URL. Not a hard block; users can store anything. */
@@ -333,7 +344,140 @@ export function LoginForm({
           {urlHint && (
             <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-400">{urlHint}</p>
           )}
+          {extras.extraUrls.map((url, i) => (
+            <div key={i} className="flex gap-1.5 mt-1.5">
+              <input
+                type="url"
+                value={url}
+                onChange={(e) => setUrls(extras.extraUrls.map((u, j) => (j === i ? e.target.value : u)))}
+                placeholder="https://"
+                disabled={locked}
+                autoComplete="off"
+                aria-label={t('loginForm.websiteLabel')}
+                className={fieldClass}
+              />
+              <CopyBtn onClick={() => copy(url, `url-${i}`)} active={copied === `url-${i}`} title={t('loginForm.copyUrl')} />
+              {!locked && (
+                <HoverLabel label={t('loginForm.removeWebsite')} position="start">
+                  <button type="button" onClick={() => setUrls(extras.extraUrls.filter((_, j) => j !== i))} aria-label={t('loginForm.removeWebsite')} className={FIELD_BUTTON}>
+                    <Trash size={16} />
+                  </button>
+                </HoverLabel>
+              )}
+            </div>
+          ))}
+          {!locked && (
+            <button
+              type="button"
+              onClick={() => setUrls([...extras.extraUrls, ''])}
+              className="inline-flex items-center gap-1 mt-1 text-[11px] text-accent bg-accent/8 hover:bg-accent/15 px-2 py-0.5 rounded-full transition"
+            >
+              <Plus size={11} />
+              {t('loginForm.addWebsite')}
+            </button>
+          )}
         </div>
+
+        {/* Custom fields - a name and a value each. A hidden field is masked
+            and never searchable; a text field is both visible and searchable. */}
+        {(extras.fields.length > 0 || !locked) && (
+          <div>
+            <FieldLabel icon={<Tag size={13} />}>{t('loginForm.customFieldsLabel')}</FieldLabel>
+            <div className="space-y-2">
+              {extras.fields.map((f) => {
+                const hidden = f.type !== 'text';
+                const shown = !hidden || revealed.has(f.id);
+                return (
+                  <div key={f.id} className="flex flex-col gap-1.5 rounded-md border border-divider p-2">
+                    <div className="flex gap-1.5">
+                      <input
+                        type="text"
+                        dir="auto"
+                        value={f.label}
+                        onChange={(e) => patchField(f.id, { label: e.target.value })}
+                        placeholder={t('loginForm.fieldNamePlaceholder')}
+                        aria-label={t('loginForm.fieldNamePlaceholder')}
+                        disabled={locked}
+                        autoComplete="off"
+                        className={`${fieldClass} min-w-0 flex-1`}
+                      />
+                      <select
+                        value={hidden ? 'hidden' : 'text'}
+                        onChange={(e) => patchField(f.id, { type: e.target.value })}
+                        disabled={locked}
+                        aria-label={t('loginForm.fieldTypeLabel')}
+                        className={`${fieldClass.replace('w-full', 'w-auto')} shrink-0`}
+                      >
+                        <option value="text">{t('loginForm.fieldTypeText')}</option>
+                        <option value="hidden">{t('loginForm.fieldTypeHidden')}</option>
+                      </select>
+                      {!locked && (
+                        <HoverLabel label={t('loginForm.removeField')} position="start">
+                          <button type="button" onClick={() => setFields(extras.fields.filter((x) => x.id !== f.id))} aria-label={t('loginForm.removeField')} className={FIELD_BUTTON}>
+                            <Trash size={16} />
+                          </button>
+                        </HoverLabel>
+                      )}
+                    </div>
+                    <div className="flex gap-1.5">
+                      {shown ? (
+                        <textarea
+                          value={f.value}
+                          onChange={(e) => patchField(f.id, { value: e.target.value })}
+                          placeholder={t('loginForm.fieldValuePlaceholder')}
+                          aria-label={t('loginForm.fieldValuePlaceholder')}
+                          disabled={locked}
+                          rows={1}
+                          spellCheck={!hidden}
+                          className={`${fieldClass} resize-y`}
+                        />
+                      ) : (
+                        <PasswordField
+                          value={f.value}
+                          onChange={(e) => patchField(f.id, { value: e.target.value })}
+                          revealed={false}
+                          disabled={locked}
+                          placeholder={t('loginForm.fieldValuePlaceholder')}
+                          fieldClass={fieldClass}
+                        />
+                      )}
+                      {hidden && (
+                        <HoverLabel label={shown ? t('loginForm.hidePassword') : t('loginForm.showPassword')} position="above">
+                          <button
+                            type="button"
+                            onClick={() => setRevealed((prev) => {
+                              const next = new Set(prev);
+                              if (!next.delete(f.id)) next.add(f.id);
+                              return next;
+                            })}
+                            aria-label={shown ? t('loginForm.hidePassword') : t('loginForm.showPassword')}
+                            className={FIELD_BUTTON}
+                          >
+                            {shown ? <EyeSlash size={16} /> : <Eye size={16} />}
+                          </button>
+                        </HoverLabel>
+                      )}
+                      <CopyBtn onClick={() => copy(f.value, `field-${f.id}`)} active={copied === `field-${f.id}`} title={t('loginForm.copyField')} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {!locked && (
+              <button
+                type="button"
+                onClick={() => setFields([...extras.fields, newLoginField('text')])}
+                className="inline-flex items-center gap-1 mt-1.5 text-[11px] text-accent bg-accent/8 hover:bg-accent/15 px-2 py-0.5 rounded-full transition"
+              >
+                <Plus size={11} />
+                {t('loginForm.addField')}
+              </button>
+            )}
+            {extras.fields.some((f) => f.type === 'text') && (
+              <p className="mt-1 text-[11px] text-neutral-400 dark:text-neutral-500">{t('loginForm.textFieldSearchable')}</p>
+            )}
+          </div>
+        )}
 
         {/* Notes */}
         <div>

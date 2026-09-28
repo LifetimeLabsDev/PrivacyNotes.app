@@ -49,6 +49,7 @@
     "standardNotes": "Ontsleutelde back-up in .zip of .txt uit Standard Notes (File > Export > Decrypted).",
     "obsidian": "Obsidian-vault als .zip. Behoudt tags, [[note links]], mappenstructuur, inline #tags en ingesloten afbeeldingen en bestanden.",
     "notesnook": "Notesnook-export als .zip. Kies bij het exporteren HTML om opmaak, notitieboeken, tags en bijlagen te behouden.",
+    "joplin": "Het .jex-bestand uit File > Export all > \"JEX - Joplin Export File\". Notitieboeken worden mappen, en tags, taken, notitielinks en bijlagen komen mee.",
     "upnote": "In UpNote: Settings > Backup > Backup now, en zip daarna alles in de back-upmap. Behoudt notitieboeken, tags, vastgezette notities, notitielinks, opmaak en bijlagen. Exports per notitie uit de telefoon-apps werken ook - kies \"Export to HTML\".",
     "markdownFolder": ".md- of .txt-bestanden los of als .zip. Een gezipte map houdt zijn submappen en neemt zijn afbeeldingen en bijlagen mee.",
     "markdownApp": "Deze notities zijn al Markdown-bestanden in een map. Sleep die map als .zip hierin en de submappen, afbeeldingen en #tags komen mee.",

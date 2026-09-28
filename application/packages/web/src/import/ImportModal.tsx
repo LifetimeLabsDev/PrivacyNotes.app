@@ -23,7 +23,7 @@ import { RESTORE_WAIT_LINE, restoreGateNow, useRestoreGate, type RestoreGate } f
 import { formatBytes } from '../formatBytes';
 import { perFileLimit } from '../attachmentValidation';
 import { contactPhotoOptions, processImage } from '../imageProcessing';
-import { SectionEyebrow, SettingsCallout } from '../settingsUI';
+import { SectionEyebrow, SettingsCallout, SettingsTabStrip, settingsTabClass } from '../settingsUI';
 import { activeLocale } from '../languages';
 import { helpPath } from '../localeRoutes';
 import { siteHref } from '../siteLinks';
@@ -583,17 +583,10 @@ export function ImportModal({
           </div>
         )}
 
-        {/* `overflow-x-auto` + `shrink-0` + `whitespace-nowrap` mirror the
-            AboutModal tab strip: four labeled tabs overflow a phone-width
-            modal, and without a scroll container the last tab just clips
-            (reported on an iPhone 2026-08-26, "Passwords" cut off). shrink-0
-            is load-bearing for the same reason as there - a scroll container
-            has an automatic minimum size of 0, so the flex column may
-            otherwise squeeze the strip when a tall tab fills the pane. */}
-        <div
+        <SettingsTabStrip
           role="tablist"
           aria-label={t('shell.tablistLabel')}
-          className="shrink-0 flex items-stretch border-b border-divider px-6 overflow-x-auto"
+          className="shrink-0 px-4 sm:px-6"
         >
           {([
             { id: 'import' as const, setting: 'import.import', label: t('shell.tabImport'), icon: <Download aria-hidden="true" /> },
@@ -609,17 +602,13 @@ export function ImportModal({
               role="tab"
               aria-selected={tab === tb.id}
               onClick={() => setTab(tb.id)}
-              className={`inline-flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 -mb-px transition ${
-                tab === tb.id
-                  ? 'border-accent text-accent'
-                  : 'border-transparent text-pn-soft hover:text-pn'
-              }`}
+              className={settingsTabClass(tab === tb.id)}
             >
               {tb.icon}
-              {tb.label}
+              <span>{tb.label}</span>
             </button>
           ))}
-        </div>
+        </SettingsTabStrip>
 
         <div className="flex-1 overflow-y-auto px-6 py-4">
           {(tab === 'import' || tab === 'vault') ? (
@@ -881,6 +870,7 @@ const IMPORT_ICON: Record<string, string> = {
   'standard-notes': '/help/icons/standard-notes.webp',
   'obsidian': '/help/icons/obsidian.svg',
   'notesnook': '/help/icons/notesnook.svg',
+  'joplin': '/help/icons/joplin.svg',
   'upnote': '/help/icons/upnote.svg',
   'markdown-folder': '/help/icons/markdown.svg',
   'bitwarden': '/help/icons/bitwarden.svg',
@@ -955,6 +945,7 @@ const SOURCE_DESC_KEY: Record<string, string> = {
   'standard-notes': 'sourceDesc.standardNotes',
   'obsidian': 'sourceDesc.obsidian',
   'notesnook': 'sourceDesc.notesnook',
+  'joplin': 'sourceDesc.joplin',
   'upnote': 'sourceDesc.upnote',
   'markdown-folder': 'sourceDesc.markdownFolder',
   // One shared line for the four markdown-app aliases: the parser is the
@@ -1053,7 +1044,7 @@ function ImportPickPhase({ onPick, autoTag, onAutoTagChange }: { onPick: (imp: I
   // Browser bookmarks leads on purpose; everything below it is
   // alphabetical. It is the only entry that is not a note app, and it is
   // the one people arrive looking for. Spec: ops/docs/plans/bookmarks-pillar.md
-  const noteIds = ['browser-bookmarks', 'vcard', 'apple-journal', 'apple-notes', 'evernote', 'google-keep', 'ia-writer', 'markdown-folder', 'nextcloud-notes', 'notesnook', 'obsidian', 'samsung-notes', 'simplenote', 'standard-notes', 'typora', 'upnote', 'zettlr'];
+  const noteIds = ['browser-bookmarks', 'vcard', 'apple-journal', 'apple-notes', 'evernote', 'google-keep', 'ia-writer', 'joplin', 'markdown-folder', 'nextcloud-notes', 'notesnook', 'obsidian', 'samsung-notes', 'simplenote', 'standard-notes', 'typora', 'upnote', 'zettlr'];
 
   return (
     <div className="space-y-3">

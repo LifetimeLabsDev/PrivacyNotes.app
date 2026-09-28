@@ -57,6 +57,7 @@
     "groups": {
       "navigation": "導覽",
       "notes": "筆記",
+      "lists": "清單",
       "editor": "編輯器",
       "formatting": "格式",
       "alignment": "對齊",
@@ -99,7 +100,11 @@
       "toggleSidebar": "切換側邊欄",
       "toggleTheme": "切換淺色／深色模式",
       "zenMode": "Zen／專注模式（Pro）",
-      "toggleHelp": "切換此說明"
+      "toggleHelp": "切換此說明",
+      "selectSeveral": "選取多個項目",
+      "selectRange": "選取範圍（選取時）",
+      "openInTab": "在分頁中開啟（按滑鼠中鍵也可以）",
+      "closeTab": "關閉分頁"
     }
   },
   "cardForm": {

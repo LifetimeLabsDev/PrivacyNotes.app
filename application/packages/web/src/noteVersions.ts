@@ -2,7 +2,8 @@
  * Client helpers for Pro note-history (server-backed snapshots).
  *
  * Each saved version is an encrypted snapshot of the note's
- * title/body/tags at the moment of save. The server never sees
+ * title/body/tags at the moment of save, plus a login's custom fields
+ * and extra websites. The server never sees
  * plaintext. Versions live in the `note_versions` table with a
  * BEFORE INSERT trigger that caps each note at 20 rows.
  *
@@ -43,8 +44,22 @@ export type NoteVersion = {
   title: string;
   body: string;
   tags: string[];
+  /** A login's custom fields and extra websites as recorded: undefined when
+   *  the version did not record them (an older client, or not a login), null
+   *  when it recorded none. */
+  login?: unknown;
   bodyBytes: number;
 };
+
+/** What a snapshot records beside the title, body and tags: for a login,
+ *  its extras, with null standing for "recorded, and there were none". */
+function loginOf(note: LocalNote): { login?: unknown } {
+  return note.type === 'login' ? { login: note.trackers?.login ?? null } : {};
+}
+
+function loginFromTrackers(trackers: Record<string, unknown> | undefined): { login?: unknown } {
+  return trackers && Object.prototype.hasOwnProperty.call(trackers, 'login') ? { login: trackers.login } : {};
+}
 
 type RemoteRow = {
   id: string;
@@ -97,6 +112,7 @@ export async function createNoteVersion(
         title: note.title,
         body: note.body,
         tags: note.tags,
+        ...loginOf(note),
       });
       const ids = await db.demoVersions.where('noteId').equals(note.id).sortBy('createdAt');
       if (ids.length > MAX_VERSIONS) {
@@ -117,6 +133,8 @@ export async function createNoteVersion(
         starred: note.starred === 1,
         locked: note.locked === 1,
         pinProtected: note.pinProtected === 1,
+        type: note.type,
+        ...(note.type === 'login' ? { trackers: loginOf(note) } : {}),
       },
       encryptionKey
     );
@@ -162,6 +180,7 @@ export async function listNoteVersions(
       title: v.title,
       body: v.body,
       tags: v.tags,
+      ...(v.login !== undefined ? { login: v.login } : {}),
       bodyBytes: computeSnapshotTotalSize(v.title, v.body, v.tags),
     }));
   }
@@ -190,6 +209,7 @@ export async function listNoteVersions(
         title: decrypted.title,
         body: decrypted.body,
         tags: decrypted.tags,
+        ...loginFromTrackers(decrypted.trackers),
         bodyBytes: computeSnapshotTotalSize(
           decrypted.title ?? '', decrypted.body ?? '', decrypted.tags ?? [],
         ),

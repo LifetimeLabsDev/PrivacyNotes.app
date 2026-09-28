@@ -1234,3 +1234,29 @@ export async function parseNotesnook(
     folders,
   };
 }
+
+/**
+ * The same HTML conversion for a note from another app that stores HTML with
+ * no export folder around it, so there are no relative links or attachment
+ * files to resolve. Standard Notes' rich-text editors are the caller.
+ */
+export function htmlNoteToMarkdown(html: string): string {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return htmlToMarkdown(doc.body, {
+    baseDir: '',
+    attachmentTokens: new Map(),
+    pathToTitle: new Map(),
+    flags: {
+      underline: 0,
+      highlights: 0,
+      checklists: 0,
+      tables: 0,
+      codeBlocks: 0,
+      aligned: 0,
+      droppedStyling: 0,
+      droppedAlign: 0,
+      noteLinks: 0,
+      math: 0,
+    },
+  });
+}

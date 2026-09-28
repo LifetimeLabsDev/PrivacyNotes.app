@@ -193,8 +193,11 @@ export function clearAccountScopedUiState(): void {
     localStorage.removeItem('privacynotes.movedFromApex'); // migrate.ts / MoveBanner.tsx
     // When this account last verified its sync, and how many rows matched.
     localStorage.removeItem('privacynotes.verifyStamp'); // verifyStamp.ts
-    // Which offers this account dismissed: the site announcement, and one
-    // key per pillar for the import prompt.
+    // Which items this account had open as tabs: ids only, but this account's.
+    localStorage.removeItem('privacynotes.openTabs'); // notesView/useOpenTabs.ts
+    // Which offers this account dismissed: the site announcement, and the
+    // per-pillar import prompt keys an older build wrote. The import prompt
+    // dismissal itself is synced in the settings blob.
     localStorage.removeItem('privacynotes.announcementsDismissed'); // announcements.ts
     for (const kind of ['notes', 'journal', 'tasks', 'vault', 'bookmarks', 'contacts']) {
       localStorage.removeItem(`privacynotes.importPrompt.hidden.${kind}`); // ImportPrompt.tsx
@@ -432,6 +435,18 @@ export function clearRegistrationMarker(): void {
  */
 export function invalidateDeviceRegistration(): void {
   clearRegistrationMarker();
+}
+
+/** The `aal` claim of a JWT payload, or null when unreadable. No verification. */
+export function jwtPayloadAal(token: string): string | null {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const payload = JSON.parse(atob(parts[1]!.replace(/-/g, '+').replace(/_/g, '/')));
+    return typeof payload?.aal === 'string' ? payload.aal : null;
+  } catch {
+    return null;
+  }
 }
 
 /**

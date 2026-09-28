@@ -55,14 +55,16 @@
     "openingBody": "Hauria d'aparèixer una finestra de pagament de Paddle. Si no apareix, potser el navegador ha blocat la finestra emergent; torna a carregar aquesta pàgina per provar-ho de nou."
   },
   "history": {
-    "title": "Historial de la nota",
-    "subtitle": "Fins a 20 versions per nota. Les més antigues s'eliminen automàticament.",
+    "subtitle": "Fins a 20 versions per element. Les més antigues s'eliminen automàticament.",
     "empty": "Encara no hi ha historial. Les versions es comencen a acumular a partir de la propera edició. Torna més tard.",
     "loadFailed": "No s'ha pogut carregar l'historial. Comprova la connexió i torna-ho a provar.",
     "selectPrompt": "Selecciona una versió per previsualitzar-la.",
     "emptyBody": "(buida)",
     "restore": "Restaura",
-    "restoring": "S'està restaurant…"
+    "restoring": "S'està restaurant…",
+    "restoreSnapshotFailed": "No s'ha pogut desar primer la versió actual, així que no s'ha restaurat res. Comprova la connexió i torna-ho a provar.",
+    "restoreFailed": "No s'ha pogut restaurar aquesta versió. Torna-ho a provar.",
+    "loginExtrasNotRecorded": "Aquesta versió no va desar camps personalitzats ni llocs web addicionals. Restaurar-la manté els actuals."
   },
   "donation": {
     "eyebrow": "Has desbloquejat",

@@ -29,7 +29,7 @@ W każdej opcji twoje notatki są szyfrowane na twoim urządzeniu. Różnią si�
 
 Przy dwóch ostatnich nie odczytalibyśmy notatki, nawet gdyby nas zmuszono. Pierwsza wymienia to na wygodę: twoja fraza leży na naszym serwerze pod naszym kluczem, więc nowemu urządzeniu wystarczy twoje konto. Gdyby nasz serwer kiedyś padł ofiarą włamania, ten klucz mógłby wyciec.
 
-Logujesz się przez Google, Apple albo GitHub? Między dwiema pierwszymi opcjami możesz później przełączać się w **Ustawienia > Bezpieczeństwo > Twoja fraza**. Przy koncie opartym na samej frazie fraza zawsze zostaje u ciebie.
+Logujesz się przez Google, Apple albo GitHub? Między dwiema pierwszymi opcjami możesz później przełączać się w **Ustawienia > Konto > Zarządzanie kluczem**. Przy koncie opartym na samej frazie fraza zawsze zostaje u ciebie.
 
 > [!warning] Miej własną kopię frazy
 > Twoja fraza otwiera twoje notatki. Jeśli ją zgubisz, nikt jej nie odzyska, my też nie. <span style="color: #e03131">Zapisz ją dziś na papierze.</span>

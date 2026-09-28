@@ -24,7 +24,7 @@
     "sport": "Sport",
     "tech": "Nauka i technika",
     "signals": "Sygnały",
-    "numbers": "Cyfry"
+    "numbers": "Cyfry i matematyka"
   },
   "icons": {
     "folder": "Folder",
@@ -249,6 +249,8 @@
     "bone": "Kość",
     "barn": "Stodoła",
     "tractor": "Ciągnik",
+    "grains": "Zboże",
+    "windmill": "Wiatrak",
     "guitar": "Gitara",
     "piano-keys": "Pianino",
     "microphone-stage": "Mikrofon",
@@ -302,6 +304,12 @@
     "info": "Informacja",
     "siren": "Syrena",
     "infinity": "Nieskończoność",
+    "plus": "Znak plus",
+    "minus": "Znak minus",
+    "x": "Razy",
+    "divide": "Podzielić",
+    "equals": "Równa się",
+    "percent": "Procent",
     "peace": "Pokój",
     "recycle": "Recykling",
     "radioactive": "Radioaktywność",
@@ -317,6 +325,10 @@
     "file-video": "Plik wideo",
     "file-audio": "Plik audio",
     "file-code": "Plik z kodem",
+    "file-html": "Strona internetowa",
+    "file-lock": "Zablokowany plik",
+    "file-cloud": "Plik w chmurze",
+    "file-svg": "Grafika wektorowa",
     "fingerprint": "Odcisk palca"
   }
 }

@@ -9,7 +9,8 @@
     "file": "File",
     "empty": "Empty",
     "noContent": "No content",
-    "notBackedUp": "Not backed up"
+    "notBackedUp": "Not backed up",
+    "archived": "Archived"
   },
   "header": {
     "new": "New",
@@ -71,6 +72,7 @@
     "noMatches": "No matches.",
     "vault": "Vault is empty.",
     "notes": "No notes yet.",
+    "archive": "Nothing archived.",
     "filtered": "No items match your filters.",
     "clearFilters": "Clear filters",
     "filteredAfter": "To display them."
@@ -81,6 +83,7 @@
     "journals": "Journals",
     "vault": "Vault",
     "pinned": "Pinned",
+    "archive": "Archive",
     "notes": "Notes"
   },
   "footerStats": {

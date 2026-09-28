@@ -46,6 +46,7 @@
     "standardNotes": "Standard Notesの復号済み.zipまたは.txtバックアップ(File > Export > Decrypted)。",
     "obsidian": "Obsidianの保管庫を.zipで。タグ、[[note links]]、フォルダ構造、本文中の#タグ、埋め込んだ画像とファイルを保持します。",
     "notesnook": "Notesnookの書き出しデータを.zipで。書き出し時にHTMLを選ぶと、書式、ノートブック、タグ、添付ファイルが保持されます。",
+    "joplin": "File > Export all > 「JEX - Joplin Export File」で書き出した.jexファイル。ノートブックはフォルダになり、タグ、ToDo、ノートリンク、添付ファイルも引き継がれます。",
     "upnote": "UpNoteの設定 > 「Backup」で「Backup now」を実行し、バックアップフォルダの中身をすべてzipにしてください。ノートブック、タグ、ピン留め、ノートリンク、書式、添付ファイルを保持します。スマートフォンアプリからのノート単位の書き出しにも対応しています。その場合は「Export to HTML」を選んでください。",
     "markdownFolder": ".mdまたは.txtファイルを個別に、あるいは.zipでまとめて。zipにしたフォルダはサブフォルダを保ち、画像や添付ファイルも一緒に運びます。",
     "markdownApp": "これらのノートは、すでにフォルダの中のMarkdownファイルです。そのフォルダを.zipにしてドロップすれば、サブフォルダも画像も#タグも一緒に入ってきます。",

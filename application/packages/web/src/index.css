@@ -90,6 +90,7 @@
     --pn-editor-base: calc(18px * var(--pn-text-scale));
     --pn-editor-body: calc(15px * var(--pn-text-scale));
   }
+  :root[data-text-size='xs'] { --pn-text-scale: 0.75; }
   :root[data-text-size='sm'] { --pn-text-scale: 0.875; }
   :root[data-text-size='lg'] { --pn-text-scale: 1.125; }
   :root[data-text-size='xl'] { --pn-text-scale: 1.25; }
@@ -157,20 +158,23 @@
 }
 
 @layer editor {
-  /* Editable notes render a click row above the body (Editor.tsx): it is the
+  /* Every note renders a click row above the body (Editor.tsx): it is the
      line you can always reach above a first block you cannot type in front of,
-     and the collapsed outline pill's own row. That row IS the start-of-note
-     gap, so the body keeps only a hairline of its own padding - the two
-     stacked read as a crater. Read-only notes have no row and keep the 16px. */
-  /* A colored note: the body takes the color, the title bar, the tag row and
-     the toolbar keep the pane's own surface. Spec:
-     ops/docs/plans/folder-tag-icons.md (section 4.5) */
-  .pn-editor-pane .ProseMirror {
+     and the collapsed outline pill's own row. A read-only note keeps it as an
+     inert spacer. That row IS the start-of-note gap, so the body keeps only a
+     hairline of its own padding - the two stacked read as a crater. Only the
+     history preview has no row and keeps the 16px. */
+  /* A colored note takes the color on the whole pane: the title bar, the tag
+     row, the toolbar and the body. The tint is translucent, so it is laid on
+     the pane and again on every opaque surface inside it: each such surface
+     covers the layer below before it adds its own, and the color comes out
+     the same everywhere. The sticky tag row and toolbar are nearly opaque, so
+     they take the layer too. Spec: ops/docs/plans/folder-tag-icons.md (section 4.5) */
+  .pn-editor-pane,
+  .pn-editor-pane .bg-surface-2,
+  .pn-editor-pane .pn-tagrow,
+  .pn-editor-pane .pn-editor-toolbar {
     background-image: linear-gradient(var(--pn-note-tint, transparent), var(--pn-note-tint, transparent));
-    /* The ring carries the same color past the text, so the words keep their
-       place under the toolbar and still get a margin inside the color. */
-    box-shadow: 0 0 0 14px var(--pn-note-tint, transparent);
-    border-radius: 2px;
   }
 
   .pn-editor-topgapped .ProseMirror {
@@ -195,8 +199,8 @@
        block, whatever its type. Block top-margins are zeroed on the
        first child (see the first-child rule in the rhythm block), so
        this padding is the single source of the "start of note" gap.
-       Editable notes hand that job to the click row above the body
-       instead - see the .pn-editor-topgapped rule after this block. */
+       Notes hand that job to the click row above the body instead - see
+       the .pn-editor-topgapped rule after this block. */
     padding-top: 16px;
     /* CAUTION: this is NOT the visible body size. The utilities in
        Editor.tsx (text-[15px] + prose-p/li/blockquote:text-[15px]) pin
@@ -345,6 +349,10 @@
       background: rgb(var(--pn-accent));
       pointer-events: none;
       z-index: 1;
+    }
+    /* The table's own end edge: inside the cell, because the table clips. */
+    & .pn-col-resize-handle.is-edge {
+      inset-inline-end: 0;
     }
     &.pn-col-resize-cursor {
       cursor: col-resize;
@@ -1004,18 +1012,12 @@
     & ul[data-type='taskList'] {
       list-style: none;
       padding-inline-start: 0;
-      /* Flex column so checked items can sink to the bottom via `order`
-         below. This is a VISUAL reorder only - the underlying document
-         order is untouched, so unchecking an item drops it straight back
-         into its original slot and ticking a box never rewrites the note
-         (no sync churn). Equal `order` values keep source order, so active
-         items stay in their authored sequence at the top and completed
-         items stack in completion-independent authored order at the bottom. */
+      /* Flex column keeps the item margins from collapsing. A checked task
+         sinks by moving in the document (moveTaskToGroupEdge in
+         editorExtensions.ts), never through CSS `order`: a visual-only
+         reorder leaves the caret and a selection walking a hidden order. */
       display: flex;
       flex-direction: column;
-    }
-    & ul[data-type='taskList'] li[data-checked='true'] {
-      order: 1;
     }
     & ul[data-type='taskList'] li {
       display: flex;
@@ -2179,11 +2181,22 @@
   content-visibility: auto;
   contain-intrinsic-block-size: auto 180px;
 }
+/* Settings tab strips: SettingsTabStrip in settingsUI.tsx sets data-row when
+   every label fits on one line beside its icon. The gap and padding here are
+   the ROW_GAP and ROW_PAD it measures with. A phone always stacks, so every
+   strip on a phone looks the same. */
+@media (min-width: 640px) {
+  .pn-tab-strip[data-row] > .pn-tab { flex-direction: row; justify-content: center; gap: 6px; padding-inline: 8px; white-space: nowrap; }
+}
+
 /* Fallback for engines without container-query support: fluid auto-fill. */
 .pn-notes-grid {
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
-@container pn-list (min-width: 320px)  { .pn-notes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Two columns from 260px, not 320px: a phone with a large display size or a
+   narrow cover screen reports under 320 CSS px and fell back to one column,
+   which is the list with extra padding (GitHub #257). */
+@container pn-list (min-width: 260px)  { .pn-notes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @container pn-list (min-width: 700px)  { .pn-notes-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @container pn-list (min-width: 1040px) { .pn-notes-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @container pn-list (min-width: 1380px) { .pn-notes-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
@@ -2397,6 +2410,28 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+/* "Longer preview text" (listPrefs.longPreview). The excerpt keeps the note's
+   line breaks, and the clamp decides how many lines show: 4 on a list row, 6 on
+   a tile, 5 on a mini tile (below). */
+.pn-preview-long {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.pn-card-preview.pn-preview-long {
+  -webkit-line-clamp: 6;
+}
+/* Estimates for never-rendered items, so the scrollbar does not jump when
+   taller previews scroll into view. */
+.pn-lazy-row:has(.pn-preview-long) {
+  contain-intrinsic-block-size: auto 130px;
+}
+[data-lazy-tiles='on'] .pn-lazy-card:has(.pn-preview-long) {
+  contain-intrinsic-block-size: auto 250px;
+}
 .pn-card-glyph {
   display: none;
   margin-inline-end: 4px;
@@ -2512,8 +2547,25 @@
    is measured from, and only the rows that carry a ribbon pay for the lane.
    Spec: ops/docs/ui-patterns.md section 78 (bookmark ribbon) */
 @media (hover: none) {
-  .pn-notes-grid .pn-ribbon {
-    inset-inline-end: 0;
+  /* A tile keeps its ribbon at the resting 12px, clear of the 12px corner
+     radius: at the tile's very edge the notch sat on the rounded border and
+     read as clipped. The buttons move inboard of it instead, and the title
+     leaves room for them, because on touch they never fade and would
+     otherwise sit on top of its text. `--pn-act-*` is the cluster's end
+     inset and width, `--pn-pad` the tile's own padding. */
+  .pn-notes-grid .pn-card {
+    --pn-act-end: 6px;
+    --pn-act-w: 28px;
+    --pn-pad: 12px;
+  }
+  .pn-notes-grid .pn-card:has(.pn-ribbon) {
+    --pn-act-end: 28px;
+  }
+  .pn-notes-grid .pn-card:has(.pn-card-actions > :nth-child(2)) {
+    --pn-act-w: 60px;
+  }
+  .pn-notes-grid .pn-card:has(.pn-card-actions) .pn-card-title {
+    padding-inline-end: calc(var(--pn-act-end) + var(--pn-act-w) + 4px - var(--pn-pad));
   }
   /* Scoped with :has(), so a row without a bookmark mark keeps its trailing
      controls where every other row puts them. A browser without :has()
@@ -2523,7 +2575,7 @@
     padding-inline-end: 22px;
   }
   .pn-notes-grid .pn-card-actions {
-    inset-inline-end: 16px;
+    inset-inline-end: var(--pn-act-end);
   }
 }
 
@@ -2596,7 +2648,10 @@
     overflow-wrap: anywhere;
   }
   .pn-notes-grid .pn-card-preview {
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 2;
+  }
+  .pn-notes-grid .pn-card-preview.pn-preview-long {
+    -webkit-line-clamp: 5;
   }
   .pn-notes-grid .pn-card-date {
     font-size: 11px;
@@ -2611,12 +2666,28 @@
     width: 10px;
     height: 13px;
   }
-  /* The touch rule above sends the ribbon to the tile's edge, but this block
-     comes later and would put it straight back under the always-visible trash
-     button (measured: 1px apart on a 166px tile). Repeat it at mini scale. */
+  /* The touch lane again, at mini scale: a 10px ribbon at the 10px padding,
+     the buttons inboard of it. A mini title wraps to three lines, so it clears
+     the buttons with a float as tall as the 28px buttons (`float: inline-end`
+     keeps it right in RTL), not with a padding that narrows every line. */
   @media (hover: none) {
     .pn-notes-grid .pn-ribbon {
-      inset-inline-end: 0;
+      inset-inline-end: 10px;
+    }
+    .pn-notes-grid .pn-card {
+      --pn-pad: 10px;
+    }
+    .pn-notes-grid .pn-card:has(.pn-ribbon) {
+      --pn-act-end: 22px;
+    }
+    .pn-notes-grid .pn-card:has(.pn-card-actions) .pn-card-title {
+      padding-inline-end: 0;
+    }
+    .pn-notes-grid .pn-card:has(.pn-card-actions) .pn-card-titletext::before {
+      content: '';
+      float: inline-end;
+      width: calc(var(--pn-act-end) + var(--pn-act-w) + 4px - var(--pn-pad));
+      height: 26px;
     }
   }
   /* The selection indent again, at mini scale. It has to repeat here because
@@ -2692,6 +2763,15 @@
   .pn-ftree-row:hover .pn-ftree-grip,
   .pn-ftree-row:focus-within .pn-ftree-grip {
     opacity: 1;
+  }
+  /* A folder or tag icon that opens the look picker says so on hover. Mouse
+     only: on touch the icon is part of the row a thumb taps to open. */
+  .pn-look-glyph {
+    border-radius: 4px;
+    transition: box-shadow 0.12s ease;
+  }
+  .pn-look-glyph:hover {
+    box-shadow: 0 0 0 3px rgb(var(--pn-accent) / 0.25);
   }
 }
 

@@ -12,6 +12,8 @@ export interface SupabaseAuthStorage {
 }
 
 export type CreateSupabaseClientOptions = {
+  /** The app's audited OAuth response guard wraps the default transport. */
+  fetch?: typeof fetch;
   /**
    * Optional storage backing for the auth session. When omitted,
    * supabase-js falls back to its own default (localStorage in a
@@ -60,6 +62,7 @@ export function createSupabaseClient(
   options?: CreateSupabaseClientOptions
 ): SupabaseClient {
   return createClient(url, anonKey, {
+    ...(options?.fetch ? { global: { fetch: options.fetch } } : {}),
     auth: {
       persistSession: options?.persistSession ?? true,
       autoRefreshToken: options?.persistSession ?? true,

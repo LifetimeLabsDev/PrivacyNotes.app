@@ -58,6 +58,7 @@
     "groups": {
       "navigation": "Navegação",
       "notes": "Notas",
+      "lists": "Listas",
       "editor": "Editor",
       "formatting": "Formatação",
       "alignment": "Alinhamento",
@@ -100,7 +101,11 @@
       "toggleSidebar": "Alternar a barra lateral",
       "toggleTheme": "Alternar modo claro / escuro",
       "zenMode": "Modo Zen / foco (Pro)",
-      "toggleHelp": "Alternar esta ajuda"
+      "toggleHelp": "Alternar esta ajuda",
+      "selectSeveral": "Selecionar vários itens",
+      "selectRange": "Selecionar um intervalo (durante a seleção)",
+      "openInTab": "Abrir num separador (o clique do meio também funciona)",
+      "closeTab": "Fechar o separador"
     }
   },
   "cardForm": {

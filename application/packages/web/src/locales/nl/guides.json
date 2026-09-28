@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "Super-notities, checklists en 2FA-codes houden hun vorm",
+          "p": [
+            "Super-notities houden hun koppen, lijsten, checklists, tabellen, codeblokken, kleuren en inklapbare secties. Checklists komen in Taken terecht, spreadsheets worden tabellen en authenticator-items worden logins in de Kluis, met hun 2FA-sleutel. Geneste tags worden mappen, en elke notitie houdt ook haar tags.",
+            "Bestanden die je naar Standard Notes hebt geüpload blijven op hun server, dus de back-up bevat alleen hun namen. Elke geïmporteerde notitie geeft aan waar een bestand stond. Download die bestanden uit Standard Notes en voeg ze opnieuw toe aan de notitie."
+          ]
+        },
+        {
           "h": "Versleutelde back-ups worden niet ondersteund",
           "p": [
             "Een versleutelde back-up van Standard Notes is cijfertekst die alleen je Standard Notes-wachtwoord kan openen, dus de importer kan hem niet lezen. Heb je de versleutelde variant geëxporteerd, exporteer dan opnieuw en kies ontsleuteld. Omdat het bestand je notities in leesbare tekst bevat, verwijder je het zodra de import klaar is.",

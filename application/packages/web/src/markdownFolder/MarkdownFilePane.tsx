@@ -7,16 +7,20 @@
  *
  * Spec: ops/docs/plans/markdown-folder.md (section 7)
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownSourceEditor } from '../MarkdownSourceEditor';
 import { WordCount } from '../WordCount';
-import { Editor } from '../Editor';
+import { Editor, type EditorHandle } from '../Editor';
+import { setWikiLinkNavigator } from '../NoteLink';
+import { setWikiLinkNoteTitles } from '../NoteLinkSuggestion';
+import { setLocalLinkOpener } from '../editorLinks';
 import { ArrowLeft, FileMd, FileTxt, Lock, Trash, X } from '../icons';
 import { HoverLabel } from '../HoverLabel';
 import { adaptFile, isTextFile } from './adapter';
 import { stampsMatch } from './fileAccess';
 import { applyAssets, restoreAssets, useAssets } from './useAssets';
+import { isLocalHref, noteLinkPathFor, resolveNoteLinkPath, resolveRelativeLinkPath } from './links';
 import type { OpenedMarkdownDir, OpenedMarkdownFile, SaveState } from './types';
 
 /** Idle gap before an edit reaches the disk. Longer than the encrypted
@@ -54,6 +58,7 @@ export function MarkdownFilePane({
   onImportToNotes,
   onClose,
   gridMode,
+  onNotice,
 }: {
   opened: OpenedMarkdownFile;
   onUpdated: (next: OpenedMarkdownFile) => void;
@@ -80,6 +85,8 @@ export function MarkdownFilePane({
    * boundary stays one-way by construction, not by care.
    */
   onImportToNotes: (filename: string, raw: string) => void;
+  /** A short message for the app's toast: a link that leads nowhere. */
+  onNotice: (message: string) => void;
 }) {
   const { t } = useTranslation('shell');
   const [state, setState] = useState<SaveState>({ kind: 'idle' });
@@ -119,6 +126,67 @@ export function MarkdownFilePane({
   openedRef.current = opened;
   const onUpdatedRef = useRef(onUpdated);
   onUpdatedRef.current = onUpdated;
+  const editorRef = useRef<EditorHandle>(null);
+
+  // Links resolve inside this folder and nowhere else: a local file never
+  // names an encrypted note, and an encrypted note never names a file.
+  // Spec: ops/docs/plans/markdown-folder.md (section 3, note-links)
+  const relPaths = useMemo(() => (dir?.entries ?? []).map((e) => e.relPath), [dir]);
+  const linkTitles = useMemo(
+    () => relPaths.map((rel) => ({ id: rel, title: noteLinkPathFor(rel) })),
+    [relPaths],
+  );
+
+  /** Open another file of the folder in this pane. A pending edit to the
+   *  file on screen still lands in it: the flush below names its own file. */
+  async function openLinked(relPath: string) {
+    const entry = dir?.entries.find((e) => e.relPath === relPath);
+    if (!entry || entry.ref.location === openedRef.current.ref.location) return;
+    try {
+      const raw = await entry.ref.read();
+      onUpdatedRef.current({ ref: entry.ref, raw, stamp: await entry.ref.stamp(), adapted: adaptFile(entry.ref.name, raw), reloadToken: 0 });
+    } catch {
+      onNotice(t('markdown.openFailed'));
+    }
+  }
+
+  /** The file on screen as a path in the scan, or null for a lone file. */
+  function currentRelPath(): string | null {
+    const loc = openedRef.current.ref.location;
+    return dir?.entries.some((e) => e.relPath === loc) ? loc : null;
+  }
+
+  function followNoteLink(target: string) {
+    if (currentRelPath() === null) {
+      onNotice(t('markdown.linkNeedsFolder'));
+      return;
+    }
+    const hit = resolveNoteLinkPath(relPaths, target);
+    if (hit) void openLinked(hit);
+    else onNotice(t('markdown.linkNotFound', { target: target.split('#')[0]!.trim() }));
+  }
+
+  function followRelativeLink(href: string): boolean {
+    if (!isLocalHref(href)) return false;
+    const from = currentRelPath();
+    if (from === null) {
+      onNotice(t('markdown.linkNeedsFolder'));
+      return true;
+    }
+    const hit = resolveRelativeLinkPath(relPaths, from, href);
+    if (hit) void openLinked(hit);
+    else onNotice(t('markdown.linkNotFound', { target: href }));
+    return true;
+  }
+
+  // Re-installed on every render, because the handlers close over the
+  // current folder and file. The editor reads them at click time.
+  useEffect(() => {
+    const ed = editorRef.current?.getEditor() ?? null;
+    setWikiLinkNavigator(ed, followNoteLink);
+    setWikiLinkNoteTitles(ed, linkTitles);
+    setLocalLinkOpener(ed, followRelativeLink);
+  });
 
   // A different file is a different save state, and a different default mode.
   // Without this, opening a second file from the list inherits the first one's
@@ -483,6 +551,7 @@ export function MarkdownFilePane({
       >
         {mode === 'rich' ? (
           <Editor
+            ref={editorRef}
             key={`rich:${opened.ref.location}:${opened.reloadToken}:${assets.size}`}
             // The BODY, not the raw file. A front-matter block rendered as
             // body text comes out as a horizontal rule followed by a setext

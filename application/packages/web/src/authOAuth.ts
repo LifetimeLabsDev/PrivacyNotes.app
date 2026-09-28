@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useRef,
   type Dispatch,
   type SetStateAction,
 } from 'react';
@@ -23,9 +24,13 @@ import {
   OAUTH_APP_LINK_REDIRECT,
   OAUTH_DESKTOP_RETURN,
   switchWouldWipe,
+  hasLocalAccountState,
+  PUBKEY_OWNER_KEY,
 } from './authStorage';
 import { logAuthEvent } from './authDiag';
+import { ensureLevel2, MfaCancelledError, mfaSessionIdentity } from './mfaStep';
 import { consumeOAuthPending, markOAuthPending } from './oauthPending';
+import { exchangeAccountOAuth, type AccountOAuthProvider } from './accountOAuth';
 import type { AuthState, AuthMethod, OAuthProvider } from './auth';
 
 /**
@@ -86,8 +91,8 @@ export function nativeOAuthRedirect(platform: Platform): string {
  * same handler. The expected form comes from the redirect the app gives
  * providers, so the two cannot drift apart: one exact https origin and path,
  * with the code in the query. A custom-scheme URL has no origin and never
- * matches, so the scheme the builds still register cannot reach the exchange
- * on any platform. Desktop asks for a page rather than a deep link, so no
+ * matches, so the scheme the desktop builds register cannot reach the
+ * exchange. Desktop asks for a page rather than a deep link, so no
  * callback URL reaches this function there at all.
  */
 export function isOAuthCallbackUrl(rawUrl: string, platform: Platform): boolean {
@@ -108,6 +113,7 @@ export function useOAuthFlows({
   authInFlight,
   userAuthGen,
   vaultOpenRef,
+  storageKey,
 }: {
   authenticateWithPhrase: (
     phrase: string,
@@ -129,14 +135,15 @@ export function useOAuthFlows({
   userAuthGen: { current: number };
   /** True while the vault is open on this install. See auth.tsx. */
   vaultOpenRef: { current: boolean };
+  storageKey: string;
 }) {
+  const oauthExchangeInFlight = useRef(false);
+  const brokerProvider = useRef<{ identity: string; provider: AccountOAuthProvider } | null>(null);
+
   function registerOAuthListener(): () => void {
-    // No stored phrase - listen for an OAuth redirect-return session.
-    // With detectSessionInUrl: true, supabase-js exchanges the PKCE
-    // ?code= (and still consumes a legacy #access_token fragment)
-    // asynchronously during _initialize(). A one-shot getSession() call
-    // races with that and often returns null. onAuthStateChange fires
-    // reliably once the return is consumed.
+    // No stored phrase: restore an existing provider session or a legacy
+    // implicit return. PKCE codes go through broker preflight before boot
+    // reaches this listener and never auto-exchange inside SDK initialization.
     let handled = false;
     // Armed when INITIAL_SESSION(null) arrives while an access_token hash
     // is still unconsumed (see that branch below). If the token turns out
@@ -157,6 +164,9 @@ export function useOAuthFlows({
     const OAUTH_CALLBACK_FALLBACK_MS = 20_000;
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        // Callback exchanges own hydration, including managed canonical
+        // sessions whose original provider metadata can be "email".
+        if (oauthExchangeInFlight.current) return;
         // Any auth event means supabase-js is alive and progressing, so
         // the pending-callback fallback is no longer needed. The branch
         // that arms it re-arms on every run.
@@ -201,10 +211,8 @@ export function useOAuthFlows({
             },
           );
         } else if (event === 'INITIAL_SESSION' && !session) {
-          // A PKCE ?code= still in the URL here is dead: supabase-js
-          // exchanges it during init, before this event, so a code that
-          // survived was refused (no verifier for it in this storage, or
-          // the server rejected it) and no SIGNED_IN follows. Drop it from
+          // An unhandled ?code= here has no callback owned by this boot.
+          // The normal preflight path runs before this listener. Drop it from
           // the address bar and say so, loudly: the user came back from
           // the provider, and a silent sign-in screen reads as "nothing
           // happened".
@@ -242,8 +250,8 @@ export function useOAuthFlows({
             return;
           }
           // Native (Tauri): the OAuth token never rides in
-          // window.location.hash - it arrives later via the
-          // privacynotes:// deep link as a SIGNED_IN event. Show the login
+          // window.location.hash - it arrives later, after the native
+          // callback is exchanged, as a SIGNED_IN event. Show the login
           // screen now, but do NOT lock `handled`, or that later SIGNED_IN
           // hits the `if (handled) return` guard above and the user stays
           // stuck on "Redirecting..." (session saved, UI never advances
@@ -308,13 +316,13 @@ export function useOAuthFlows({
    *
    * Spec: ops/docs/custodial-key-spec.md, ops/docs/oauth-zk-fix.md
    */
-  async function hydrateFromOAuthSession(accessToken: string, trust: boolean) {
+  async function hydrateFromOAuthSession(accessToken: string, trust: boolean, verifiedProvider?: AccountOAuthProvider, expectedGeneration?: number) {
     // Abort marker: true once the user has started their own phrase
     // sign-in (or one is mid-flight). Checked before every side effect
     // below - a superseded hydration must neither sign out the session
     // the user's handshake is riding on, nor stomp the auth state their
     // flow is about to set. See userAuthGen above.
-    const genAtStart = userAuthGen.current;
+    const genAtStart = expectedGeneration ?? userAuthGen.current;
     const superseded = () =>
       authInFlight.current || userAuthGen.current !== genAtStart;
 
@@ -324,10 +332,40 @@ export function useOAuthFlows({
     // on first signup. This claim is service-role-only (not user-
     // writable) so it's trustworthy.
     const { data: { session } } = await supabase.auth.getSession();
+    const identity = mfaSessionIdentity(session);
+    if (superseded()) return;
+    // A live session that is not the one exchanged gets a visible retry,
+    // never a silent return that leaves the boot spinner up.
+    if (!session || !identity || identity !== mfaSessionIdentity({ access_token: accessToken, user: session.user })) {
+      setAuth({ status: 'oauth_hydrate_failed', trust });
+      return;
+    }
+    accessToken = session.access_token;
+    const provider = verifiedProvider ?? session.user.app_metadata?.provider;
+    if (provider !== 'google' && provider !== 'apple' && provider !== 'github') {
+      setAuth({ status: 'onboarding' });
+      return;
+    }
     const existingPubkey = session?.user?.app_metadata?.pubkey;
     const authUid = session?.user?.id;
 
     if (existingPubkey && authUid) {
+      // Custodial phrases are account data: the MFA gate precedes their
+      // retrieval. Verification rotates the token. tests/mfaIntegration.test.ts.
+      try {
+        await ensureLevel2(supabase);
+        if (superseded()) return;
+        const verified = (await supabase.auth.getSession()).data.session;
+        if (!verified || verified.user.id !== authUid || verified.user.app_metadata?.pubkey !== existingPubkey) {
+          setAuth({ status: 'oauth_hydrate_failed', trust });
+          return;
+        }
+        accessToken = verified.access_token;
+      } catch (error) {
+        if (superseded()) return;
+        setAuth({ status: error instanceof MfaCancelledError ? 'onboarding' : 'oauth_hydrate_failed', trust });
+        return;
+      }
       // --- Branch (a): try custodial phrase retrieval first ---
       // Spec: ops/docs/custodial-key-spec.md (custodial to self-custody is one-way, never back)
       //
@@ -389,6 +427,7 @@ export function useOAuthFlows({
             setAuth({ status: 'onboarding' });
             return;
           }
+          if (superseded()) return;
           // Custodial user - 1-click sign-in! Pass the OAuth session
           // explicitly so _authenticateWithPhrase never falls through
           // to signInAnonymously (#131).
@@ -471,7 +510,7 @@ export function useOAuthFlows({
       // self-custody user to the fresh-account screen - the
       // data-orphaning footgun this block exists to prevent. Session
       // audit 2026-08-25.
-      if (!countErr && noteCount === 0) {
+      if (!verifiedProvider && !countErr && noteCount === 0) {
         // Zombie account: pubkey on file but no data to unlock.
         // Redirect to custody choice so they can start fresh.
         setAuth({
@@ -546,6 +585,7 @@ export function useOAuthFlows({
    */
   async function signInWithOAuth(provider: OAuthProvider) {
     try {
+      userAuthGen.current++;
       // Trust the device for OAuth flows - the whole point of OAuth is
       // re-authentication convenience, so persisting across reloads is
       // the expected UX. Users who want session-only behaviour should
@@ -621,6 +661,7 @@ export function useOAuthFlows({
         return { ok: true as const, awaitPastedCode: platform === 'desktop' };
       }
 
+      markOAuthPending();
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
@@ -650,9 +691,10 @@ export function useOAuthFlows({
   // client runs PKCE, so a real return never carries them, and a URL that
   // does is not ours.
   //
-  // The scheme is open to the world: on Android any app or web page can send
-  // a privacynotes:// URL with no permission, and desktop and iOS ask only
-  // "Open PrivacyNotes?". Two locks keep a foreign URL out. The pending-
+  // Any URL the OS hands the app reaches this handler, and some are open to
+  // the world: the desktop builds register the privacynotes:// scheme, which
+  // any web page can send behind one "Open PrivacyNotes?" prompt. Two locks
+  // keep a foreign URL out. The pending-
   // sign-in marker: the URL is acted on only when signInWithOAuth started a
   // flow within the marker's time limit, at most once per flow, and never
   // while a signed-in phrase is stored; anything else is dropped before it
@@ -673,6 +715,9 @@ export function useOAuthFlows({
       logAuthEvent('auth:oauth-callback-refused', { reason: 'scheme' });
       return;
     }
+    // Connected-account proof has its own PKCE/state coordinator. Its code
+    // never becomes a sign-in session and cannot spend a sign-in marker.
+    if (new URL(rawUrl).searchParams.has('pn_connect')) return;
     // Consumed synchronously, before the first await: two deliveries of one
     // URL (onOpenUrl and the resume check can both fire) cannot both pass.
     const gate = consumeOAuthPending();
@@ -723,7 +768,7 @@ export function useOAuthFlows({
         setAuth({ status: 'oauth_hydrate_failed', trust: true });
         return;
       }
-      await exchangeAndHydrate(code);
+      await exchangeAndHydrate(code, u.searchParams.get('sb_flow_id') ?? undefined);
     } catch (e) {
       console.error('Failed to handle OAuth deep link:', e);
       setAuth({ status: 'oauth_hydrate_failed', trust: true });
@@ -739,22 +784,71 @@ export function useOAuthFlows({
    * stored in this install's auth storage and deletes it, so a replayed
    * code, a foreign code, or a code meant for another install fails here.
    */
-  async function exchangeAndHydrate(code: string): Promise<boolean> {
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    const token = data?.session?.access_token;
-    if (error || !token) {
-      logAuthEvent('auth:oauth-code-exchange-failed', {
-        name: error?.name,
-        status: (error as { status?: number } | null)?.status,
-      });
-      setAuth({ status: 'oauth_hydrate_failed', trust: true });
+  async function exchangeAndHydrate(code: string, flowId?: string): Promise<boolean> {
+    if (oauthExchangeInFlight.current) return false;
+    oauthExchangeInFlight.current = true;
+    const generation = userAuthGen.current;
+    const storedPhrase = trustAwareStorage.getItem(PHRASE_STORAGE_KEY);
+    const owner = trustAwareStorage.getItem(PUBKEY_OWNER_KEY);
+    const isCurrent = () => userAuthGen.current === generation && !authInFlight.current && !vaultOpenRef.current &&
+      trustAwareStorage.getItem(PHRASE_STORAGE_KEY) === storedPhrase && trustAwareStorage.getItem(PUBKEY_OWNER_KEY) === owner;
+    try {
+      const result = await exchangeAccountOAuth(supabase, code, { storageKey, flowId, isCurrent });
+      if (!isCurrent()) throw new MfaCancelledError();
+      const identity = mfaSessionIdentity(result.session);
+      brokerProvider.current = result.provider && identity ? { identity, provider: result.provider } : null;
+      await hydrateFromOAuthSession(result.session.access_token, true, result.provider, generation);
+      return true;
+    } catch (error) {
+      if (isCurrent()) {
+        // A cancelled step returns to the sign-in screen. The callback
+        // paths register no listener, so staying silent would hang boot.
+        if (error instanceof MfaCancelledError) setAuth({ status: 'onboarding' });
+        else {
+          logAuthEvent('auth:oauth-code-exchange-failed', { name: (error as Error).name });
+          setAuth({ status: 'oauth_hydrate_failed', trust: true });
+        }
+      }
+      return false;
+    } finally {
+      oauthExchangeInFlight.current = false;
+    }
+  }
+
+  /** Runs before cached-phrase boot. A callback may replace a local account
+   * only when this install explicitly started the provider sign-in. */
+  function handleWebOAuthCallback(): boolean {
+    if (detectPlatform() !== 'web') return false;
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get('code');
+    if (!code) return false;
+    if (oauthExchangeInFlight.current) return true;
+    const webGate = consumeOAuthPending();
+    const clearCode = () => {
+      const current = new URL(window.location.href);
+      if (current.searchParams.get('code') !== code) return;
+      current.searchParams.delete('code'); current.searchParams.delete('sb_flow_id');
+      history.replaceState(null, '', current.pathname + current.search + current.hash);
+    };
+    const localAccount = hasStoredPhrase() || vaultOpenRef.current || !!trustAwareStorage.getItem(PUBKEY_OWNER_KEY);
+    if (url.pathname !== '/' || (localAccount && webGate !== 'ok')) {
+      clearCode();
+      logAuthEvent('auth:oauth-callback-refused', { reason: 'no-current-intent' });
       return false;
     }
-    // Drive hydration here rather than leaning on onAuthStateChange. That
-    // listener is only registered on the logged-out boot path, so after a
-    // logged-in boot and a sign-out it does not exist and the sign-in hangs
-    // until a manual reload. This module owns native OAuth hydration.
-    await hydrateFromOAuthSession(token, /*trust*/ true);
+    const generation = userAuthGen.current;
+    void (async () => {
+      // Old clients did not mark web redirects. They can finish a first
+      // login with their PKCE verifier, but cannot replace retained data.
+      if (webGate !== 'ok' && await hasLocalAccountState()) {
+        if (userAuthGen.current === generation && !vaultOpenRef.current) setAuth({ status: 'onboarding' });
+        return;
+      }
+      if (userAuthGen.current !== generation || authInFlight.current || vaultOpenRef.current) return;
+      await exchangeAndHydrate(code, url.searchParams.get('sb_flow_id') ?? undefined);
+    })().catch(() => {
+      if (userAuthGen.current === generation && !vaultOpenRef.current) setAuth({ status: 'oauth_hydrate_failed', trust: true });
+    }).finally(clearCode);
     return true;
   }
 
@@ -902,7 +996,9 @@ export function useOAuthFlows({
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.access_token) {
-        await hydrateFromOAuthSession(session.access_token, trust);
+        const verified = brokerProvider.current;
+        await hydrateFromOAuthSession(session.access_token, trust,
+          verified?.identity === mfaSessionIdentity(session) ? verified.provider : undefined);
         return;
       }
     } catch (err) {
@@ -917,12 +1013,15 @@ export function useOAuthFlows({
 
   /** Give up on a failed hydration: local sign-out, back to sign-in options. */
   async function abandonOAuthHydration() {
+    userAuthGen.current++;
+    brokerProvider.current = null;
     await supabase.auth.signOut({ scope: 'local' }).catch(() => { /* ignore */ });
     setAuth({ status: 'onboarding' });
   }
 
   return {
     registerOAuthListener,
+    handleWebOAuthCallback,
     signInWithOAuth,
     completeDesktopOAuth,
     retryOAuthHydration,

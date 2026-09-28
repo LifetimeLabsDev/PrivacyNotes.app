@@ -13,14 +13,15 @@ import { TextAlign } from '@tiptap/extension-text-align';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Extension, InputRule, getHTMLFromFragment, type NodeViewRendererProps } from '@tiptap/core';
 import { Fragment, type Node as ProseMirrorNode } from '@tiptap/pm/model';
-import { Plugin, PluginKey, TextSelection, Selection } from '@tiptap/pm/state';
+import { Plugin, PluginKey, TextSelection, Selection, type Transaction } from '@tiptap/pm/state';
 import { selectionCell } from '@tiptap/pm/tables';
 import { isSoftKeyboardDevice, suppressSoftKeyboard } from './softKeyboard';
 import { mathNodeView } from './editorMath';
 import { getCodeWrap, setCodeWrap, subscribeCodeWrap } from './codeWrap';
 import { TIP_PILL, positionClasses } from './HoverLabel';
-import { delimiterRow } from './tableColumnWidths';
-import { ColumnWidthTableView, columnResizePlugin, registerTableWidthsMarkdown, renderTableHTML, tableWidths } from './tableColumnResize';
+import { TABLE_MIN_WIDTH, delimiterRow } from './tableColumnWidths';
+import { tableWidthMarker } from './tableDelimiterRow';
+import { ColumnWidthTableView, columnResizePlugin, registerTableWidthsMarkdown, renderTableHTML, tableWidthOf, tableWidths } from './tableColumnResize';
 
 /**
  * Text color support.
@@ -123,6 +124,48 @@ export const TaskListInputRule = Extension.create({
 });
 
 /**
+ * Moves the task item at `pos` to sit right after the last open task among
+ * its siblings, or to the top of the list when no other task is open. A
+ * checked task lands at the top of the done group and an unchecked one at
+ * the end of the open group. The move is in the document, not only on
+ * screen, so the caret, a selection, the markdown and an export all see the
+ * order the reader sees. Returns the item's new position, or null when it is
+ * already in place.
+ */
+function moveTaskToGroupEdge(tr: Transaction, pos: number): number | null {
+  const $pos = tr.doc.resolve(pos);
+  const list = $pos.parent;
+  const self = $pos.index();
+  const item = list.child(self);
+  let target = $pos.start();
+  let offset = $pos.start();
+  list.forEach((child, _, index) => {
+    offset += child.nodeSize;
+    if (index !== self && !child.attrs.checked) target = offset;
+  });
+  if (target === pos || target === pos + item.nodeSize) return null;
+  tr.delete(pos, pos + item.nodeSize);
+  const insertAt = tr.mapping.map(target);
+  tr.insert(insertAt, item);
+  return insertAt;
+}
+
+/**
+ * Slides a moved task from where it was to where it is, so the reader sees
+ * where the task went instead of a different task under the pointer.
+ */
+function slideIn(dom: Node | null, topBefore: number) {
+  if (!(dom instanceof HTMLElement) || typeof dom.animate !== 'function') return;
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+  const dy = topBefore - dom.getBoundingClientRect().top;
+  if (!dy) return;
+  dom.animate(
+    [{ transform: `translateY(${dy}px)` }, { transform: 'none' }],
+    { duration: 180, easing: 'ease-out' },
+  );
+}
+
+/**
  * TaskItem whose checkbox doesn't open the on-screen keyboard on mobile.
  *
  * Takes TWO things, and the first alone is not enough - v0.223.5 shipped it
@@ -189,6 +232,8 @@ export const TaskItemMobileSafe = TaskItem.extend({
         }
         const { checked } = event.target as HTMLInputElement;
         if (editor.isEditable && typeof getPos === 'function') {
+          const topBefore = listItem.getBoundingClientRect().top;
+          let movedTo: number | null = null;
           const chain = editor.chain();
           // Skip the focus on touch devices so toggling a checkbox doesn't
           // pop the soft keyboard (#153). The setNodeMarkup command below
@@ -207,9 +252,11 @@ export const TaskItemMobileSafe = TaskItem.extend({
                 ...currentNode?.attrs,
                 checked,
               });
+              movedTo = moveTaskToGroupEdge(tr, position);
               return true;
             })
             .run();
+          if (movedTo !== null) slideIn(editor.view.nodeDOM(movedTo), topBefore);
         }
         if (!editor.isEditable && this.options.onReadOnlyChecked) {
           if (!this.options.onReadOnlyChecked(node, checked)) {
@@ -1322,6 +1369,41 @@ function breaksOnly(node: ProseMirrorNode): boolean {
   return only;
 }
 
+/**
+ * Markdown has no indent for a paragraph: markdown-it trims the spaces at the
+ * start of a paragraph and after a line break, so a typed indent was lost on
+ * the next load (GitHub #273). The run at the start of the paragraph is
+ * written as `&nbsp;`, because markdown-it's trim also removes a literal
+ * non-breaking space there. After a line break a literal one is enough, since
+ * the break rule trims only plain spaces and tabs. Both load back as
+ * non-breaking spaces, which this also matches, so the indent survives every
+ * later save.
+ */
+const LEADING_INDENT = /^[ \u00a0]+/;
+
+function renderIndentedInline(state: any, node: ProseMirrorNode): void {
+  let lead = 0;
+  let lineStart = true;
+  const children: ProseMirrorNode[] = [];
+  node.forEach((child, _offset, index) => {
+    if (lineStart && child.isText) {
+      const run = LEADING_INDENT.exec(child.text!)?.[0].length ?? 0;
+      if (run > 0) {
+        const rest = child.text!.slice(run);
+        if (index === 0) lead = run;
+        else children.push(child.type.schema.text('\u00a0'.repeat(run), child.marks));
+        if (rest) children.push(child.type.schema.text(rest, child.marks));
+        lineStart = false;
+        return;
+      }
+    }
+    lineStart = child.type.name === 'hardBreak';
+    children.push(child);
+  });
+  if (lead > 0) state.write('&nbsp;'.repeat(lead));
+  state.renderInline(node.copy(Fragment.fromArray(children)));
+}
+
 export const ParagraphWithMarkdown = Paragraph.extend({
   addStorage() {
     return {
@@ -1339,7 +1421,7 @@ export const ParagraphWithMarkdown = Paragraph.extend({
               state.write('&nbsp;');
             }
           } else {
-            state.renderInline(node);
+            renderIndentedInline(state, node);
           }
           state.closeBlock(node);
         },
@@ -1503,6 +1585,11 @@ function serializeTableToMarkdown(this: any, state: any, node: any, _parent: any
       state.ensureNewLine();
     }
   });
+  const tableWidth = tableWidthOf(node);
+  if (tableWidth) {
+    state.write(tableWidthMarker(tableWidth));
+    state.ensureNewLine();
+  }
   state.closeBlock(node);
   state.inTable = false;
 }
@@ -1523,6 +1610,22 @@ function serializeTableToMarkdown(this: any, state: any, node: any, _parent: any
 export const TableWithMarkdown = Table.extend({
   addOptions() {
     return { ...this.parent!(), View: ColumnWidthTableView };
+  },
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      // The table's width in percent of the note, null for full width.
+      // Written as a marker line under a pipe table, as data-table-width on
+      // the HTML one; renderTableHTML draws it.
+      tableWidth: {
+        default: null,
+        parseHTML: (element: HTMLElement) => {
+          const width = Number(element.getAttribute('data-table-width'));
+          return width >= TABLE_MIN_WIDTH && width < 100 ? width : null;
+        },
+        renderHTML: () => ({}),
+      },
+    };
   },
   renderHTML({ node, HTMLAttributes }) {
     return renderTableHTML(node, { ...this.options.HTMLAttributes, ...HTMLAttributes });
@@ -1633,6 +1736,38 @@ export function indentListItem(editor: TipTapEditor, dir: number): boolean {
       : editor.chain().focus().sinkListItem(name).run();
   }
   return false;
+}
+
+/** What one Tab press adds outside a list or a table. */
+const TAB_INDENT = '    ';
+
+/**
+ * Tab in a paragraph or a code block adds TAB_INDENT at the caret, and
+ * Shift+Tab removes up to that many spaces before it. Markdown keeps no
+ * leading spaces in a heading, so a heading is left alone, and so is a list,
+ * where Tab moves the item instead. A range selection is left alone too, so
+ * a stray Tab never replaces selected text.
+ */
+export function indentText(editor: TipTapEditor, dir: number): boolean {
+  const { selection } = editor.state;
+  if (!selection.empty) return false;
+  const { $from } = selection;
+  const parent = $from.parent.type.name;
+  if (parent !== 'paragraph' && parent !== 'codeBlock') return false;
+  for (let depth = $from.depth; depth > 0; depth--) {
+    const name = $from.node(depth).type.name;
+    if (name === 'listItem' || name === 'taskItem') return false;
+  }
+  if (dir > 0) {
+    return editor.chain().focus().command(({ tr }) => {
+      tr.insertText(TAB_INDENT);
+      return true;
+    }).run();
+  }
+  const before = $from.parent.textBetween(0, $from.parentOffset, undefined, '\ufffc');
+  const run = /[ \u00a0]{1,4}$/.exec(before)?.[0].length ?? 0;
+  if (run === 0) return false;
+  return editor.chain().focus().deleteRange({ from: $from.pos - run, to: $from.pos }).run();
 }
 
 /**
@@ -1802,6 +1937,19 @@ export function markdownForClipboard(
   serialize: (fragment: Fragment) => string,
   tightParagraphs: boolean,
 ): string {
+  // A copy keeps every parent of the selection, so a command copied out of a
+  // list item arrives as a list and pastes with a `- ` in front of it. A
+  // selection inside one line of text copies that text and its inline marks,
+  // never the block syntax around it, which the screen does not show either.
+  // The line goes to the serializer as a paragraph, which writes its marks;
+  // handed bare inline nodes it writes their text alone.
+  const line = singleTextblock(content);
+  if (line) {
+    const paragraph = line.type.schema.nodes.paragraph!.create(null, line.content);
+    const md = serialize(Fragment.from(paragraph));
+    return tidyClipboardLines(md === EMPTY_PARAGRAPH_MARKDOWN ? '' : md);
+  }
+
   const blocks: { node: ProseMirrorNode; md: string }[] = [];
   let at = 0;
   content.forEach((node) => {
@@ -1823,6 +1971,16 @@ export function markdownForClipboard(
     joined += cur.md;
   }
   return tidyClipboardLines(joined);
+}
+
+/** The one textblock a fragment reduces to when every level above it holds a
+ *  single child, or null when the fragment spans more than one block. */
+function singleTextblock(content: Fragment): ProseMirrorNode | null {
+  let node = content.childCount === 1 ? content.firstChild : null;
+  while (node && !node.isTextblock) {
+    node = node.childCount === 1 ? node.firstChild : null;
+  }
+  return node;
 }
 
 /** How ParagraphWithMarkdown writes a paragraph with nothing in it. */
@@ -1858,13 +2016,15 @@ function tidyClipboardLines(markdown: string): string {
       out.push(line);
       continue;
     }
-    const text = line === EMPTY_PARAGRAPH_MARKDOWN ? '' : line;
-    if (text === '') {
+    const raw = line === EMPTY_PARAGRAPH_MARKDOWN ? '' : line;
+    if (raw === '') {
       blanks += 1;
       if (blanks <= 2) out.push('');
       continue;
     }
     blanks = 0;
+    // A paragraph indent is written as `&nbsp;` runs; a paste target wants spaces.
+    const text = raw.replace(/^(?:&nbsp;)+/, (run) => ' '.repeat(run.length / 6));
     const trail = i === lines.length - 1 ? undefined : /\\+$/.exec(text)?.[0];
     out.push(trail && trail.length % 2 === 1 ? `${text.slice(0, -1)}  ` : text);
   }

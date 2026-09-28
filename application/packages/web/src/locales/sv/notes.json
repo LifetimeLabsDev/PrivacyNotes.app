@@ -9,7 +9,8 @@
     "file": "Fil",
     "empty": "Tom",
     "noContent": "Inget innehåll",
-    "notBackedUp": "Inte säkerhetskopierad"
+    "notBackedUp": "Inte säkerhetskopierad",
+    "archived": "Arkiverad"
   },
   "header": {
     "new": "Ny",
@@ -71,6 +72,7 @@
     "noMatches": "Inga träffar.",
     "vault": "Valvet är tomt.",
     "notes": "Inga anteckningar än.",
+    "archive": "Inget arkiverat.",
     "filtered": "Inga objekt matchar dina filter.",
     "clearFilters": "Rensa filter",
     "filteredAfter": "för att visa dem."
@@ -81,6 +83,7 @@
     "journals": "Dagböcker",
     "vault": "Valv",
     "pinned": "Fästa",
+    "archive": "Arkiv",
     "notes": "Anteckningar"
   },
   "footerStats": {

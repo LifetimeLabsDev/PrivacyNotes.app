@@ -171,7 +171,8 @@ export function FullFooter({
                 this category, so the button reads as "open", not "toggle". */}
             <HoverLabel hiddenAtXl label={t('footer.appearance')} position="above-end">
               <button
-                onClick={() => setShowAppearance(true)}
+                onClick={() => setShowAppearance((open) => !open)}
+                data-appearance-trigger
                 aria-label={t('footer.appearance')}
                 className="rounded-md inline-flex items-center gap-1.5 px-2 py-1 font-medium text-pn hover:bg-neutral-100 dark:hover:bg-neutral-900 transition"
               >
@@ -299,7 +300,8 @@ export function MiniFooter({
             </button>
           ) : (
             <button
-              onClick={() => setShowAppearance(true)}
+              onClick={() => setShowAppearance((open) => !open)}
+              data-appearance-trigger
               aria-label={t('footer.appearance')}
               className="inline-flex items-center gap-1 text-[13px] text-neutral-600 dark:text-neutral-400 hover:text-accent transition shrink-0"
             >

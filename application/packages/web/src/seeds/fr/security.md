@@ -29,7 +29,7 @@ Toutes les options gardent tes notes chiffrées sur ton appareil. Elles diffère
 
 Avec les deux dernières, nous ne pourrions pas lire une note même si on nous y contraignait. La première échange cela contre du confort : ta phrase est sur notre serveur sous une clé à nous, donc un nouvel appareil n'a besoin que de ton compte. Si notre serveur était un jour compromis, cette clé pourrait être exposée.
 
-Connecté avec Google, Apple ou GitHub ? Tu peux basculer entre les deux premières plus tard, dans **Paramètres > Sécurité > Ta phrase**. Avec un compte à phrase seule, la phrase reste toujours avec toi.
+Connecté avec Google, Apple ou GitHub ? Tu peux basculer entre les deux premières plus tard, dans **Paramètres > Compte > Gestion des clés**. Avec un compte à phrase seule, la phrase reste toujours avec toi.
 
 > [!warning] Garde ta propre copie de la phrase
 > Ta phrase ouvre tes notes. Si tu la perds, personne ne peut la retrouver, nous compris. <span style="color: #e03131">Écris-la sur du papier aujourd'hui.</span>

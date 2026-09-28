@@ -11,6 +11,9 @@ import type { IconProps } from '@phosphor-icons/react';
 import { IconContext } from '@phosphor-icons/react';
 import {
   AddressBook,
+  Archive,
+  BoxArrowDown,
+  BoxArrowUp,
   ArrowCounterClockwise,
   ArrowSquareOut,
   UserPlus,
@@ -25,6 +28,7 @@ import {
   PencilSimple,
   PlusSquare,
   ShieldPlus,
+  Browsers,
   SquaresFour,
   ArrowElbowDownRight as PhArrowElbowDownRight,
   ArrowLeft as PhArrowLeft,
@@ -129,6 +133,7 @@ export const PILLAR_GLYPHS = {
   markdown: FileMd,
   bookmarks: PhBookmarks,
   contacts: AddressBook,
+  archive: Archive,
   trash: Trash,
 } as const;
 
@@ -181,11 +186,18 @@ export function iconNewJournal() {
 export function iconExternal() {
   return <ArrowSquareOut size={14} />;
 }
+export function iconOpenInTab() {
+  return <Browsers size={14} />;
+}
 export function iconEditPencil() {
   return <PencilSimple size={14} />;
 }
 export function iconPin(filled: boolean) {
   return <PushPin size={14} weight={filled ? ICON_WEIGHT_ACTIVE : ICON_WEIGHT} />;
+}
+/** Archive (box, arrow in) or Unarchive (box, arrow out): the action, never the view. */
+export function iconArchive(archived: boolean, size = 14) {
+  return archived ? <BoxArrowUp size={size} /> : <BoxArrowDown size={size} />;
 }
 export function iconCopy() {
   return <Copy size={14} />;

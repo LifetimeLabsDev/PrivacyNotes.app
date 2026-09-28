@@ -4,15 +4,9 @@
 # single 1024px icon with Light / Dark / Tinted appearance variants, because
 # `tauri icon` only generates the light one.
 #
-# This script USED to also splice CFBundleURLTypes into the generated Info.plist,
-# because the deep-link plugin does not inject it (`plugins.deep-link.mobile` is
-# not translated into a URL scheme on iOS - only the desktop half is, and only by
-# the macOS bundler). That job moved to `src-tauri/Info.ios.plist` on 2026-08-15,
-# which Tauri merges at init. Two reasons for the move: the plist is declarative
-# rather than a string-replace against generated XML that Tauri is free to
-# reformat, and it applies even when someone runs `ios:init` without `ios:icons`.
-# Do not re-add the splice here - a second writer would be invisible until the
-# day the two disagreed.
+# The iOS bundle registers no URL scheme, and this script must never splice
+# CFBundleURLTypes into the generated Info.plist: any app can claim a scheme.
+# Spec: ops/docs/plans/oauth-redirect-binding-handoff.md (section 13)
 #
 # Run from packages/desktop:
 #   bash scripts/apply-ios-appearance-icons.sh
@@ -41,16 +35,6 @@ cp "$SRC/Contents.json"           "$DEST/"
 
 echo "Applied Light/Dark/Tinted app icons to:"
 echo "  $DEST"
-
-# The URL scheme comes from src-tauri/Info.ios.plist, which Tauri merges at BUILD
-# time, not at init - so its absence here is expected and this is a note, not a
-# failure. The check that matters runs against the BUILT bundle; see the iOS
-# section of ops/docs/mobile-dev-runbook.md. Without the scheme, OAuth sign-in
-# dead-ends with no error anywhere, so it is worth confirming before you ship.
-PLIST="$(ls "$HERE"/src-tauri/gen/apple/*_iOS/Info.plist 2>/dev/null | head -1)"
-if [ -n "${PLIST:-}" ] && ! grep -q "CFBundleURLTypes" "$PLIST"; then
-  echo "note: CFBundleURLTypes not in the generated plist yet - Info.ios.plist merges at build."
-fi
 
 # Apple's privacy manifest. It MUST sit at the bundle root: dropping the file in
 # the target's source directory does nothing (xcodegen ignores unknown types

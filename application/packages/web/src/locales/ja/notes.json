@@ -9,7 +9,8 @@
     "file": "ファイル",
     "empty": "空",
     "noContent": "内容なし",
-    "notBackedUp": "未バックアップ"
+    "notBackedUp": "未バックアップ",
+    "archived": "アーカイブ済み"
   },
   "header": {
     "new": "新規",
@@ -71,6 +72,7 @@
     "noMatches": "一致なし。",
     "vault": "保管庫は空です。",
     "notes": "まだノートがありません。",
+    "archive": "アーカイブした項目はありません。",
     "filtered": "フィルターに一致する項目はありません。",
     "clearFilters": "フィルターを解除",
     "filteredAfter": "すると表示されます。"
@@ -81,6 +83,7 @@
     "journals": "ジャーナル",
     "vault": "保管庫",
     "pinned": "ピン留め",
+    "archive": "アーカイブ",
     "notes": "ノート"
   },
   "footerStats": {

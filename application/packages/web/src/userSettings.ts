@@ -1,3 +1,4 @@
+import { assertMfaAccess, isMfaRefusal, MfaRequiredError } from './mfaStep';
 /**
  * Synced user settings.
  *
@@ -80,6 +81,12 @@ import {
   validateItemStyles,
   type ItemStyles,
 } from './itemStyles';
+import {
+  deviceLabelsEqual,
+  mergeDeviceLabels,
+  validateDeviceLabels,
+  type DeviceLabels,
+} from './deviceLabels';
 
 // ------------------------------------------------------------------
 // Shape
@@ -250,8 +257,10 @@ export type UserSettings = {
   /**
    * Which layout notes render in: 'list' (narrow rows), 'grid'
    * (full-width tiles), or 'auto' (grid on wide screens, list on
-   * narrow). Global across every view and synced, so a phone and a
-   * desktop agree.
+   * narrow). Global across every view. The pick itself is stored per
+   * device (`viewMode.ts`), because a phone and a desktop want different
+   * layouts; this synced value is only read as the start value for a
+   * device that never picked, and nothing in the app writes it.
    * Default 'list' so new accounts land on the familiar list + editor
    * layout; an explicit Auto/Grid toggle switches away from it.
    */
@@ -276,6 +285,14 @@ export type UserSettings = {
    * Spec: ops/docs/plans/sidebar-views.md (synced account-wide, not per-device)
    */
   hiddenInAll: View[];
+  /**
+   * Whether the All list, and the tag and folder views built on it, also
+   * hold archived items. The one All switch stored as ON rather than as a
+   * removal: archived items are out of All by default, and a removal list
+   * could only express the opposite default.
+   * Spec: ops/issues/0388.md (archived items in All, off by default)
+   */
+  archivedInAll: boolean;
   /**
    * The view the app opens on at a cold start. 'home' is the All list,
    * which is what the app has always done and stays the default.
@@ -346,6 +363,12 @@ export type UserSettings = {
    */
   itemStyles: ItemStyles;
   /**
+   * The names a person gave their registered devices, by device id. Merged
+   * per device at every sync point, like the looks - see deviceLabels.ts.
+   * Spec: ops/docs/design-decisions.md (device labels live in the settings blob)
+   */
+  deviceLabels: DeviceLabels;
+  /**
    * Whether a note takes its folder or tag color as its background: the open
    * note, its list row and its grid tile. One switch for all notes, synced
    * like the theme.
@@ -407,6 +430,12 @@ export type UserSettings = {
    * second ask reads as nagging. Never flipped back to false.
    */
   ratingDone: boolean;
+  /**
+   * Whether the user closed the import offer that the list panes show. One
+   * dismissal hides it in every pillar and on every device, and it never
+   * comes back. Spec: ops/docs/design-decisions.md (the import offer lives in the list)
+   */
+  importPromptDismissed: boolean;
   /**
    * Freshness counter, and the one field the server cannot forge. It lives
    * INSIDE the encrypted blob, so a server that keeps an old ciphertext and
@@ -494,6 +523,7 @@ export function defaultSettings(): UserSettings {
     viewMode: 'list', // Spec: ops/specs/grid-view.md (default view mode)
     hiddenViews: [],
     hiddenInAll: [],
+    archivedInAll: false,
     startView: 'home', // Spec: ops/docs/plans/start-view.md (All is the default)
     editorMode: 'formatted', // Spec: ops/specs/editor-mode-toggle.md (default editor mode)
     // Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
@@ -504,6 +534,7 @@ export function defaultSettings(): UserSettings {
     folders: [],
     foldersDeleted: [],
     itemStyles: {},
+    deviceLabels: {},
     // Spec: ops/docs/plans/folder-tag-icons.md (decision D10, on)
     tintNotes: true,
     folderSort: { field: 'name', dir: 'asc' },
@@ -516,6 +547,7 @@ export function defaultSettings(): UserSettings {
     milestonesSeen: [],
     firstSeenAt: null,
     ratingDone: false,
+    importPromptDismissed: false,
     settingsRev: 0,
     pwGen: {
       length: 20,
@@ -548,11 +580,20 @@ export function toggleHiddenView(
   field: 'hiddenViews' | 'hiddenInAll',
   key: View,
 ): UserSettings {
+  // Archive's All switch is its own field; see archivedInAll.
+  if (field === 'hiddenInAll' && key === 'archive') {
+    return { ...prev, archivedInAll: !prev.archivedInAll };
+  }
   const list = prev[field];
   return {
     ...prev,
     [field]: list.includes(key) ? list.filter((v) => v !== key) : [...list, key],
   };
+}
+
+/** Whether the All list holds a view's items: the checkbox state. */
+export function isShownInAll(s: Pick<UserSettings, 'hiddenInAll' | 'archivedInAll'>, key: View): boolean {
+  return key === 'archive' ? s.archivedInAll : !s.hiddenInAll.includes(key);
 }
 
 /**
@@ -718,6 +759,9 @@ function hydrate(raw: unknown): UserSettings {
   if (Array.isArray(obj.hiddenInAll)) {
     base.hiddenInAll = obj.hiddenInAll.filter((v) => typeof v === 'string') as View[];
   }
+  if (typeof obj.archivedInAll === 'boolean') {
+    base.archivedInAll = obj.archivedInAll;
+  }
   // Not validated against the View union, for the reason above: an older
   // client that refused a value it did not recognise and wrote the blob back
   // would reset a newer client's choice. resolveStartView filters at read.
@@ -754,6 +798,9 @@ function hydrate(raw: unknown): UserSettings {
   if (obj.itemStyles !== undefined) {
     base.itemStyles = validateItemStyles(obj.itemStyles);
   }
+  if (obj.deviceLabels !== undefined) {
+    base.deviceLabels = validateDeviceLabels(obj.deviceLabels);
+  }
   if (typeof obj.tintNotes === 'boolean') {
     base.tintNotes = obj.tintNotes;
   }
@@ -784,6 +831,9 @@ function hydrate(raw: unknown): UserSettings {
   }
   if (typeof obj.ratingDone === 'boolean') {
     base.ratingDone = obj.ratingDone;
+  }
+  if (typeof obj.importPromptDismissed === 'boolean') {
+    base.importPromptDismissed = obj.importPromptDismissed;
   }
   // Anything that is not a finite, non-negative number reads as 0, which is
   // the value a blob written before this field existed effectively carries.
@@ -824,7 +874,7 @@ function hydrate(raw: unknown): UserSettings {
  * stands. A merged collection needs no entry: its merge never reads absence
  * as a reset.
  */
-const NEWER_SCALARS = ['tintNotes'] as const;
+const NEWER_SCALARS = ['tintNotes', 'archivedInAll'] as const;
 
 /** `hydrate`, keeping this device's value of a newer scalar the blob lacks. */
 function hydrateOver(local: UserSettings, raw: unknown): UserSettings {
@@ -1081,7 +1131,7 @@ export function loadLocalSettings(): UserSettings {
  * state value.
  */
 export function saveLocalSettings(next: UserSettings): UserSettings {
-  // Four fields are write-once-forward and must survive a stale save:
+  // These fields are write-once-forward and must survive a stale save:
   // callers hand us whole settings objects out of React state, and that
   // state can predate a write another code path made in the meantime
   // (createNote bumps the counter outside React entirely). Roll-back
@@ -1104,6 +1154,9 @@ export function saveLocalSettings(next: UserSettings): UserSettings {
   }
   if (stored.ratingDone && !next.ratingDone) {
     next = { ...next, ratingDone: true };
+  }
+  if (stored.importPromptDismissed && !next.importPromptDismissed) {
+    next = { ...next, importPromptDismissed: true };
   }
   // The freshness counter is derived here rather than trusted from the caller,
   // which hands us whole settings objects out of React state that can predate
@@ -1293,17 +1346,21 @@ function mergeTrackerSettings(
   };
 }
 
+/** The fields `mergeAtEverySyncPoint` owns. */
+type EntryMerged = 'folders' | 'foldersDeleted' | 'itemStyles' | 'deviceLabels';
+
 /**
- * The folder tree and the folder and tag looks, merged together at every
- * sync point that merges either. One call, so the looks can never be merged
- * at three of the four points and replaced wholesale at the fourth, which is
- * the shape of write that cost two accounts their folders.
+ * The folder tree, the folder and tag looks and the device labels, merged
+ * together at every sync point that merges any of them. One call, so a field
+ * can never be merged at three of the four points and replaced wholesale at
+ * the fourth, which is the shape of write that cost two accounts their
+ * folders. A new per-entry field goes in here and nowhere else.
  */
-function mergeTreeAndLooks(
-  local: Pick<UserSettings, 'folders' | 'foldersDeleted' | 'itemStyles'>,
-  remote: Pick<UserSettings, 'folders' | 'foldersDeleted' | 'itemStyles'>,
+function mergeAtEverySyncPoint(
+  local: Pick<UserSettings, EntryMerged>,
+  remote: Pick<UserSettings, EntryMerged>,
   unstampedWinner: Winner,
-): Pick<UserSettings, 'folders' | 'foldersDeleted' | 'itemStyles'> {
+): Pick<UserSettings, EntryMerged> {
   const tree = mergeFolderTrees(
     { folders: local.folders, deleted: local.foldersDeleted },
     { folders: remote.folders, deleted: remote.foldersDeleted },
@@ -1313,6 +1370,7 @@ function mergeTreeAndLooks(
     folders: tree.folders,
     foldersDeleted: tree.deleted,
     itemStyles: mergeItemStyles(local.itemStyles, remote.itemStyles, deletedFolderIds(tree.deleted)),
+    deviceLabels: mergeDeviceLabels(local.deviceLabels, remote.deviceLabels),
   };
 }
 
@@ -1335,7 +1393,7 @@ function mergeSettings(
   // newer, the other one can hold a folder it has never seen, and taking the
   // base wholesale is what let one device's copy stand in for the account's.
   // The looks ride along for the same reason.
-  Object.assign(merged, mergeTreeAndLooks(local, remote, foldersUnstampedWinner));
+  Object.assign(merged, mergeAtEverySyncPoint(local, remote, foldersUnstampedWinner));
 
   // Medications: tombstone-aware union merge.
   merged.medications = mergeMedications(local.medications, remote.medications);
@@ -1372,6 +1430,7 @@ function mergeSettings(
   merged.firstSeenAt = olderStamp(local.firstSeenAt, remote.firstSeenAt);
 
   if (local.ratingDone) merged.ratingDone = true;
+  if (local.importPromptDismissed) merged.importPromptDismissed = true;
 
   // Monotonic, like notesCreated: a merged blob must never push a number
   // lower than one either side has already seen, or its own push reads as a
@@ -1445,6 +1504,9 @@ export async function syncUserSettings(
     return readLocal().settings;
   }
   claimGateLogged = false;
+  // Settings also run outside note sync, including sign-out. A filtered
+  // row is not proof that this account has no settings.
+  await assertMfaAccess(supabase);
   // Private copy of the key for this pass: signOut zeroes the caller's
   // Uint8Array in place once sign-out begins, and a pass still in flight
   // at that moment used to encrypt/decrypt with the zeroed buffer -
@@ -1469,6 +1531,7 @@ export async function syncUserSettings(
   let effective: LocalCache = local;
   let decryptFailed = false;
 
+  if (isMfaRefusal(pullErr)) throw new MfaRequiredError();
   if (pullErr) {
     console.error('[settings] pull failed:', pullErr);
   } else if (remoteRow) {
@@ -1543,6 +1606,7 @@ export async function syncUserSettings(
           remoteSettings.firstSeenAt
         );
         if (local.settings.ratingDone) remoteSettings.ratingDone = true;
+        if (local.settings.importPromptDismissed) remoteSettings.importPromptDismissed = true;
         // Folders and their looks merge on the way in as well as on the way
         // out. The server copy is newer, but newer is not the same as
         // complete: it can have been written by a device that never knew
@@ -1551,12 +1615,14 @@ export async function syncUserSettings(
         // alone would hold the repair, so a merge that changed anything
         // re-arms the dirty flag. 'remote' settles a tie because a clean local cache cannot be
         // hiding an edit that never left the device.
-        const pulled = mergeTreeAndLooks(local.settings, remoteSettings, 'remote');
+        const pulled = mergeAtEverySyncPoint(local.settings, remoteSettings, 'remote');
         const treeRepaired = !folderTreesEqual(
           { folders: pulled.folders, deleted: pulled.foldersDeleted },
           { folders: remoteSettings.folders, deleted: remoteSettings.foldersDeleted },
         );
-        const looksRepaired = !itemStylesEqual(pulled.itemStyles, remoteSettings.itemStyles);
+        const looksRepaired =
+          !itemStylesEqual(pulled.itemStyles, remoteSettings.itemStyles) ||
+          !deviceLabelsEqual(pulled.deviceLabels, remoteSettings.deviceLabels);
         Object.assign(remoteSettings, pulled);
         if (treeRepaired) {
           logAuthEvent('settings:folders-repaired', {
@@ -1659,6 +1725,7 @@ export async function syncUserSettings(
     // this device's copy of them wholesale - which is the shape of write that
     // cost two accounts their folders. Deferring costs one pass; the dirty
     // flag stays set and the next pass does the whole thing.
+    if (isMfaRefusal(preErr)) throw new MfaRequiredError();
     if (preErr) {
       console.error('[settings] pre-push read failed - push deferred:', preErr);
       return effective.settings;
@@ -1696,7 +1763,7 @@ export async function syncUserSettings(
           // device made in the meantime.
           outgoing = {
             ...effective.settings,
-            ...mergeTreeAndLooks(effective.settings, serverSettings, 'local'),
+            ...mergeAtEverySyncPoint(effective.settings, serverSettings, 'local'),
             medications: mergeMedications(
               effective.settings.medications,
               serverSettings.medications
@@ -1725,6 +1792,8 @@ export async function syncUserSettings(
               serverSettings.firstSeenAt
             ),
             ratingDone: effective.settings.ratingDone || serverSettings.ratingDone,
+            importPromptDismissed:
+              effective.settings.importPromptDismissed || serverSettings.importPromptDismissed,
             // Never lower, as in mergeSettings: a count below the row's reads
             // as a rollback to the device that wrote it, and that device then
             // pushes its own settings back over this change.
@@ -1780,6 +1849,7 @@ export async function syncUserSettings(
       .lte('updated_at', effective.updatedAt)
       .select('user_pubkey');
 
+    if (isMfaRefusal(updateErr)) throw new MfaRequiredError();
     if (updateErr) {
       console.error('[settings] push failed:', updateErr);
     } else if (!updated || updated.length === 0) {
@@ -1796,6 +1866,7 @@ export async function syncUserSettings(
         const { error: insertErr } = await supabase
           .from('user_settings')
           .insert(payload);
+        if (isMfaRefusal(insertErr)) throw new MfaRequiredError();
         if (insertErr) {
           console.error('[settings] insert failed:', insertErr);
         } else {
@@ -1844,7 +1915,7 @@ export async function syncUserSettings(
           // not a reason to drop a folder or a pick the server holds and this
           // device has not seen.
           const merged = rolledBack
-            ? { ...outgoing, ...mergeTreeAndLooks(outgoing, serverSettings, 'local') }
+            ? { ...outgoing, ...mergeAtEverySyncPoint(outgoing, serverSettings, 'local') }
             : mergeSettings(outgoing, serverSettings, effective.everPulled ? 'local' : 'remote');
           const mergedAt = new Date().toISOString();
           const enc = encryptJson(merged, passKey);
@@ -1862,6 +1933,7 @@ export async function syncUserSettings(
             .eq('user_pubkey', pubkey)
             .lte('updated_at', existing.updated_at)
             .select('user_pubkey');
+          if (isMfaRefusal(mergeErr)) throw new MfaRequiredError();
           if (mergeErr) {
             console.error('[settings] merge push failed:', mergeErr);
           } else if (!mergedRows || mergedRows.length === 0) {

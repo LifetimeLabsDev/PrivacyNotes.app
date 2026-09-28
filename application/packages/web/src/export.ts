@@ -21,8 +21,9 @@ import type { ImageStore } from './imageStore';
 import type { AttachmentStore } from './attachmentStore';
 import { unescapeMarkdownText } from './fileNames';
 import { extractImageIds } from './imageProcessing';
-import { escapeHtml, renderMarkdown, prepareRender, inlineSameOriginImages, inlineRenderedFavicons } from './markdownRender';
+import { escapeHtml, renderMarkdown, renderNoteBody, prepareRender, inlineSameOriginImages, inlineRenderedFavicons } from './markdownRender';
 import { parseLoginBody, domainFromUrl } from './LoginForm';
+import { isPublicField, loginExtrasOf } from './loginExtras';
 import { parseCardBody, detectCardNetwork } from './CardForm';
 import { parseSshKeyBody } from './SshKeyForm';
 import { vaultContent, vaultToMarkdown } from './vaultFields';
@@ -31,7 +32,7 @@ import { ancestorIds, folderNamePath, type FolderDef } from './folders';
 import type { ItemStyles } from './itemStyles';
 import { linkExportMarkdown } from './linkBody';
 import { slugify, zipEntryStems } from './exportNames';
-import { lineHeightCss, paragraphGapCss } from './theme';
+import { lineHeightCss, paragraphGapCss, readLineSpacing } from './theme';
 
 /** Export helpers. All exports are generated client-side as Blob downloads. */
 
@@ -752,15 +753,16 @@ function renderVaultHtml(vault: VaultContent): string {
  * earlier in the sheet is more specific than a bare `.vault-fields`, so
  * without it that rule keeps winning `border-collapse` and no frame appears.
  */
-function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): string {
+export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): string {
   const title = note.title.trim() || 'Untitled';
   const vault = vaultContent(note);
   const linkMd = linkExportMarkdown(note);
-  const bodyHtml = linkMd
+  const rendered = linkMd
     ? renderMarkdown(linkMd)
     : vault
       ? renderVaultHtml(vault)
       : renderMarkdown(note.body || '');
+  const bodyHtml = renderNoteBody(rendered, readLineSpacing());
   const tagsHtml =
     note.tags.length > 0
       ? `<div class="tags">${note.tags
@@ -1604,13 +1606,20 @@ export async function exportVaultBitwarden(notes: LocalNote[], folders: FolderDe
     const addField = (name: string, value: string, type: 0 | 1 = 0) => {
       if (value) fields.push({ name, value, type, linkedId: null });
     };
+    // A login's own custom fields, written after ours so the importer finds
+    // our tags field first even when a user field carries the same name.
+    const userFields: BwExportField[] = [];
 
     if (note.type === 'login') {
       const login = parseLoginBody(note.body);
+      const extras = loginExtrasOf(note.trackers);
       base.type = 1;
       base.notes = login.notes;
+      for (const f of extras.fields) {
+        userFields.push({ name: f.label, value: f.value, type: isPublicField(f) ? 0 : 1, linkedId: null });
+      }
       base.login = {
-        uris: login.url ? [{ match: null, uri: login.url }] : [],
+        uris: [login.url, ...extras.extraUrls].filter(Boolean).map((uri) => ({ match: null, uri })),
         username: login.username,
         password: login.password,
         totp: login.totp || null,
@@ -1643,6 +1652,7 @@ export async function exportVaultBitwarden(notes: LocalNote[], folders: FolderDe
 
     // One field for all of them: a tag cannot hold a comma.
     addField(BW_OWN_FIELDS.tags, note.tags.join(', '));
+    fields.push(...userFields);
     if (fields.length > 0) base.fields = fields;
     return base;
   });

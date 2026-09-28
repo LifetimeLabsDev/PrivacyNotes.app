@@ -12,6 +12,7 @@ import {
   permanentlyDelete,
   emptyTrash,
   setStarred,
+  setArchived,
   setLocked,
   setPinProtected,
   duplicateNote,
@@ -31,7 +32,16 @@ import { parseLinkBody, buildLinkBody, buildLinkKeyMap } from './linkBody';
 import { canDeleteFolder, subtreeIds, UNFILED_ID } from './folders';
 import { FolderNamesContext } from './folderNames';
 import { LooksContext, noteTintVars } from './looks/LookGlyph';
-import { importTagColors, resolveItemColor } from './itemStyles';
+import {
+  importTagColors,
+  noteLookKey,
+  noteOwnColor,
+  resolveItemColorSource,
+  resolveNoteColor,
+  setItemLook,
+  type NoteOwnColor,
+} from './itemStyles';
+import { setDeviceLabel } from './deviceLabels';
 import { db, reopenDb, type LocalNote } from './db';
 import { ConflictModal } from './ConflictModal';
 import { fetchQuotaUsage, heartbeat, recalculateQuota, type QuotaUsage } from './devices';
@@ -63,6 +73,7 @@ import { startPinKeepAlive } from './pinKeepAlive';
 import { hasBiometricCredential, unlockWithBiometric } from './biometric';
 import { rememberOpenNote, takeReopenNote } from './appReLock';
 import { createNoteVersion } from './noteVersions';
+import { loginExtrasOf, withLoginExtras } from './loginExtras';
 import { HoverLabel } from './HoverLabel';
 import { useNoteEditing } from './useNoteEditing';
 import { useSyncOrchestrator } from './useSyncOrchestrator';
@@ -90,13 +101,15 @@ import {
   optsOutOfAppMenu,
   type ContextMenuItem,
 } from './ContextMenu';
-import { computeStats } from './stats';
+import { footerCounts } from './stats';
+import { usePinExpiryPoll } from './usePinExpiryPoll';
 import { countWords } from './wordCountUtils';
 import { isDemoMode, proUnlocked } from './demo';
+import { useViewMode, ViewModeContext } from './viewMode';
 import { SHOW_PHRASE_ONCE_KEY } from './authStorage';
 import { trustAwareStorage } from './trustStorage';
 import { recordAdminEvent } from './adminEvents';
-import { createBurnLink, prepareBurnPayload } from './burnShare';
+import { prepareBurnPayload } from './burnShare';
 import { ImageStore, readImageSizes, listImageSizes } from './imageStore';
 import { EmptyTrashModal } from './EmptyTrashModal';
 import { DeleteNoteModal } from './DeleteNoteModal';
@@ -112,6 +125,8 @@ import {
   selectTaskNotes,
   toggleTaskInNote,
   appendQuickTask,
+  canUncheckAllTasks,
+  uncheckAllTasksInNote,
   type TaskItem,
 } from './tasks';
 import { useIsMobile } from './useIsMobile';
@@ -197,6 +212,8 @@ import { useExports } from './notesView/useExports';
 import { createContextMenuBuilders } from './notesView/contextMenus';
 import { MobileDrawer } from './notesView/MobileDrawer';
 import { NoteEditorPane } from './notesView/NoteEditorPane';
+import TabStrip from './notesView/TabStrip';
+import { useOpenItemsInTabs, useOpenTabs } from './notesView/useOpenTabs';
 import type { QuickActionsTier } from './notesView/NoteQuickActions';
 import { QuotaExceededBanner } from './notesView/QuotaExceededBanner';
 import { isStorageConfigured } from './paddle';
@@ -225,6 +242,7 @@ import { usePendingFileOpens } from './markdownFolder/usePendingFileOpens';
 import { useFolderRestore } from './markdownFolder/useFolderRestore';
 import { useFolderRefresh } from './markdownFolder/useFolderRefresh';
 import TasksList from './TasksList';
+import { takeLegacyImportDismissal } from './ImportPrompt';
 
 /** Does a plain note created from this pillar land somewhere the user can see
  *  it? A pillar that answers `false` renders something other than the notes
@@ -247,6 +265,8 @@ const NEW_NOTE_IS_VISIBLE: Record<View, boolean> = {
   markdown: false,
   bookmarks: false,
   contacts: false,
+  // A new note is never born archived, so it lands in Notes instead.
+  archive: false,
 };
 
 type Authed = Extract<AuthState, { status: 'authenticated' }>;
@@ -365,6 +385,9 @@ function AuthenticatedView({
    *  loads from IndexedDB, and the auto-select effect would read the restored
    *  note as a stale selection and clear it before it ever appeared. */
   const linkTargetRef = useRef<string | null>(selectedId);
+  // Items open as tabs above the editor. Spec: ops/docs/plans/note-tabs.md
+  const openTabs = useOpenTabs(notes);
+  const [openItemsInTabs] = useOpenItemsInTabs();
   /** Set once when an RLS-rejected snapshot insert is detected (Pro
    *  lapsed mid-edit). Banner is dismissible; the flag persists for
    *  the rest of the session so we don't re-prompt on every edit.
@@ -384,10 +407,12 @@ function AuthenticatedView({
   const [search, setSearch] = useState('');
   const deferredSearch = useDeferredValue(search);
   const [showStats, setShowStats] = useState(false);
-  const [showAbout, setShowAbout] = useState<false | { tab?: 'about' | 'changelog' | 'hotkeys' }>(false);
+  const [showAbout, setShowAbout] = useState<false | { tab?: 'about' | 'changelog' | 'hotkeys' | 'rating' }>(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [showRate, setShowRate] = useState(false);
   const [showSyncOptions, setShowSyncOptions] = useState(false);
+  const [syncOptionsSection, setSyncOptionsSection] = useState<'overview' | 'keyCustody'>('overview');
+  useEffect(() => { if (!showSyncOptions) setSyncOptionsSection('overview'); }, [showSyncOptions]);
   const [showAppearance, setShowAppearance] = useState(false);
   // SecurityModal replaces the old Phrase+PinPrompt pair. `null` =
   // closed; the object tells the modal which tab to open on.
@@ -496,10 +521,10 @@ function AuthenticatedView({
     setImportToast(message);
     window.setTimeout(() => setImportToast(null), 3000);
   }
-  const [burnShareUrl, setBurnShareUrl] = useState<string | null>(null);
-  const [burnCopied, setBurnCopied] = useState(false);
+  const [burnTarget, setBurnTarget] = useState<
+    { title: string } & NonNullable<ReturnType<typeof prepareBurnPayload>> | null
+  >(null);
   const [burnError, setBurnError] = useState<string | null>(null);
-  const [burnImagesStripped, setBurnImagesStripped] = useState(false);
   /**
    * The view the app opens on, from the Start in setting.
    *
@@ -611,6 +636,7 @@ function AuthenticatedView({
     if (parsed.trackers) await updateNote(created.id, { trackers: parsed.trackers });
     setNotes((prev) => [created, ...prev]);
     setView('all');
+    tabNewItem(created.id);
     setSelectedId(created.id);
     flashToast(t('shell:markdown.importedToast', { title: parsed.title }));
   }
@@ -828,7 +854,7 @@ function AuthenticatedView({
    * unlock, or `shouldPromptForPin` says we're outside the unlock window.
    *
    * React re-renders on every `setPinUnlockVersion` bump (the poll
-   * interval + unlock handler both call it), which is how the UI
+   * poll, when the answer changed, and the unlock handler both call it), which is how the UI
    * stays in sync with the sessionStorage unlock timestamp - the
    * state value itself is never read, only its "something changed"
    * signal.
@@ -841,16 +867,11 @@ function AuthenticatedView({
     if (!hasPin()) return true;
     return shouldPromptForPin(userSettings.pinTimeoutMinutes);
   }
-  // Poll sessionStorage so an expired timeout re-locks an already-open
-  // note without requiring interaction. 30s granularity is fine - a
-  // 5-minute timeout with up to 30s of drift is well within UX norms.
-  useEffect(() => {
-    if (userSettings.pinTimeoutMinutes === -1) return;
-    const t = setInterval(() => {
-      setPinUnlockVersion((v) => v + 1);
-    }, 30_000);
-    return () => clearInterval(t);
-  }, [userSettings.pinTimeoutMinutes]);
+  usePinExpiryPoll(userSettings.pinTimeoutMinutes, () => setPinUnlockVersion((v) => v + 1));
+  // The note the history window is open on. It closes (render below) when
+  // the note is gone or its PIN gate shuts again, so decrypted versions of a
+  // guarded item never stay on screen past the unlock window.
+  const historyNote = historyForNoteId ? notes.find((n) => n.id === historyForNoteId) : undefined;
 
   // The full-text index follows this state - see searchIndexSync.ts. A note
   // the PIN guards right now goes in as its stored title and its tags, never
@@ -916,6 +937,9 @@ function AuthenticatedView({
   const [mdScreen, setMdScreen] = useState<boolean>(
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches,
   );
+  // The tab strip lives where the editor is a pane of its own, the same md
+  // step: below it the list and the editor take turns on one screen.
+  const tabsShown = mdScreen;
   const [notesListCollapsed, setNotesListCollapsed] = useState<boolean>(
     () => mdScreen && readUiBool('privacynotes.ui.notesListCollapsed', false)
   );
@@ -1548,6 +1572,22 @@ function AuthenticatedView({
     []
   );
 
+  // One "x" on any pillar's import offer hides it everywhere, on every device.
+  const dismissImportPrompt = useCallback(
+    () =>
+      mutateSettings((prev) =>
+        prev.importPromptDismissed ? prev : { ...prev, importPromptDismissed: true },
+      ),
+    [mutateSettings],
+  );
+  const importOffer = useMemo(
+    () => ({ dismissed: userSettings.importPromptDismissed, onDismiss: dismissImportPrompt }),
+    [userSettings.importPromptDismissed, dismissImportPrompt],
+  );
+  useEffect(() => {
+    if (takeLegacyImportDismissal()) dismissImportPrompt();
+  }, [dismissImportPrompt]);
+
   // Folder sort control - SYNCED, unlike the tag sort above it. 'entries' =
   // direct note count, 'custom' = the order the user dragged the folders
   // into (FolderDef.order, which syncs too, so the choice has to follow it
@@ -1659,11 +1699,12 @@ function AuthenticatedView({
     rememberOpenNote(selectedId);
   }, [selectedId]);
 
-  // Commit-on-blur: when the user navigates away from a note (selects
-  // another, creates a new one, switches view, trashes, logs out - all
-  // of which change or clear selectedId), persist the derived title if
-  // the user never set one. This closes the gap where the list card
-  // showed a derived title but the editor's title field stayed empty.
+  // Commit the derived title of an untitled note twice: when it opens, and
+  // when the user leaves it. The write on open means an untitled note that
+  // already has a body shows its first line as its title the first time it
+  // is opened (GitHub #337); the write on leave catches a note that opened
+  // empty, which is every new note. Leaving covers every way selectedId
+  // changes or clears: another note, a new one, a view switch, trash, logout.
   //
   // Only fires when the stored title is empty. An explicit title, even
   // the literal word "Untitled", is respected. If the user later clears
@@ -1676,37 +1717,37 @@ function AuthenticatedView({
   // so the captured id is the outgoing note, not the incoming one.
   useEffect(() => {
     const id = selectedId;
-    return () => {
-      if (!id) return;
-      void (async () => {
-        const n = await getNote(id);
-        if (!n) return;
-        // Structured notes are named by their own form, or at render time from
-        // their own body: a bookmark by its domain, a contact by the name its
-        // fields spell, a vault item by what its form derives. Every one of
-        // those answers is recomputed each time it is shown, so a copy stored
-        // here is a name that goes stale the moment the body changes - which
-        // is exactly what the bookmarks pillar forbids (GitHub #305).
-        if (hasStructuredBody(n.type)) return;
-        if ((n.title ?? '').trim()) return;
-        // A protected note keeps its title out of its content: the title
-        // stays visible behind the gate, so a first line committed into it
-        // would outlive every unlock. The flag, not the gate, because the
-        // gate closes again after this note is left.
-        if (n.pinProtected === 1) return;
-        // The value that CONTENT spells, never a display stand-in: this line
-        // writes into the note's own title and syncs it, so "Untitled" or
-        // "Unnamed contact" landing here would become the user's data.
-        const derived = deriveTitleFromContent(n);
-        if (!derived) return;
-        // Use existing updatedAt - committing a derived title shouldn't
-        // re-sort the note to the top of the list.
-        const ts = n.updatedAt ?? new Date().toISOString();
-        patchLocal(id, { title: derived }, ts);
-        await updateNote(id, { title: derived }, ts);
-        scheduleSync();
-      })();
+    if (!id) return;
+    const commitDerivedTitle = async () => {
+      const n = await getNote(id);
+      if (!n) return;
+      // Structured notes are named by their own form, or at render time from
+      // their own body: a bookmark by its domain, a contact by the name its
+      // fields spell, a vault item by what its form derives. Every one of
+      // those answers is recomputed each time it is shown, so a copy stored
+      // here is a name that goes stale the moment the body changes - which
+      // is exactly what the bookmarks pillar forbids (GitHub #305).
+      if (hasStructuredBody(n.type)) return;
+      if ((n.title ?? '').trim()) return;
+      // A protected note keeps its title out of its content: the title
+      // stays visible behind the gate, so a first line committed into it
+      // would outlive every unlock. The flag, not the gate, because the
+      // gate closes again after this note is left.
+      if (n.pinProtected === 1) return;
+      // The value that CONTENT spells, never a display stand-in: this line
+      // writes into the note's own title and syncs it, so "Untitled" or
+      // "Unnamed contact" landing here would become the user's data.
+      const derived = deriveTitleFromContent(n);
+      if (!derived) return;
+      // Use existing updatedAt - committing a derived title shouldn't
+      // re-sort the note to the top of the list.
+      const ts = n.updatedAt ?? new Date().toISOString();
+      patchLocal(id, { title: derived }, ts);
+      await updateNote(id, { title: derived }, ts);
+      scheduleSync();
     };
+    void commitDerivedTitle();
+    return () => { void commitDerivedTitle(); };
   }, [selectedId]);
 
   // Quota for the storage bars (Files view + Trash view).
@@ -1730,11 +1771,26 @@ function AuthenticatedView({
       });
   }, [supabase, auth.isPro]);
 
-  // Only non-trashed notes count toward sidebar tag totals + All count.
+  // Every live item, archived ones included: what must still FIND an item
+  // reads this - note-link resolution, the duplicate guards, tag actions.
   const activeNotes = useMemo(
     () => notes.filter((n) => n.trashed === 0),
     [notes]
   );
+  // What the lists and the counts show: live and not archived. An archived
+  // item appears in the Archive view, and in a search of All, and nowhere
+  // else. Spec: ops/issues/0388.md (section 3, the three groups)
+  const listedNotes = useMemo(
+    () => activeNotes.filter((n) => n.archived !== 1),
+    [activeNotes]
+  );
+  const archivedNotes = useMemo(
+    () => activeNotes.filter((n) => n.archived === 1),
+    [activeNotes]
+  );
+  // What All and the tag and folder views built on it hold, so their counts
+  // match their lists: archived items join when the All switch lets them in.
+  const allViewNotes = userSettings.archivedInAll ? activeNotes : listedNotes;
   const trashedNotes = useMemo(
     () => notes.filter((n) => n.trashed === 1),
     [notes]
@@ -1836,14 +1892,14 @@ function AuthenticatedView({
   }, [auth.status, auth.isPro, userSettings.firstSeenAt, mutateSettings]);
 
   const starredCount = useMemo(
-    () => activeNotes.filter((n) => n.starred === 1).length,
-    [activeNotes]
+    () => listedNotes.filter((n) => n.starred === 1).length,
+    [listedNotes]
   );
 
   // Plain-notes count for sidebar badge (type === 'note' only).
   const plainNotesCount = useMemo(
-    () => activeNotes.filter((n) => n.type === 'note').length,
-    [activeNotes]
+    () => listedNotes.filter((n) => n.type === 'note').length,
+    [listedNotes]
   );
 
   // Tasks view - derived from the same `activeNotes` list. Every
@@ -1851,7 +1907,7 @@ function AuthenticatedView({
   // new storage, no new entity: the body of each note IS the task list.
   // Re-runs whenever any note body changes, which is fine - parsing a
   // few thousand lines of markdown is instant.
-  const allTasks = useMemo(() => extractAllTasks(activeNotes), [activeNotes]);
+  const allTasks = useMemo(() => extractAllTasks(listedNotes), [listedNotes]);
   const openTaskCount = useMemo(
     () => allTasks.reduce((n, t) => n + (t.checked ? 0 : 1), 0),
     [allTasks]
@@ -1905,14 +1961,14 @@ function AuthenticatedView({
 
   // Journal count - derived before tagCounts so the sidebar badge stays live.
   const journalCount = useMemo(
-    () => activeNotes.filter((n) => n.type === 'journal').length,
-    [activeNotes]
+    () => listedNotes.filter((n) => n.type === 'journal').length,
+    [listedNotes]
   );
 
   // Vault count - structured types only (logins, cards, ssh keys).
   const vaultCount = useMemo(
-    () => activeNotes.filter((n) => n.type === 'login' || n.type === 'card' || n.type === 'ssh-key').length,
-    [activeNotes]
+    () => listedNotes.filter((n) => n.type === 'login' || n.type === 'card' || n.type === 'ssh-key').length,
+    [listedNotes]
   );
 
   /** Every live bookmark, unscoped - the pillar count and the duplicate
@@ -1921,10 +1977,13 @@ function AuthenticatedView({
     () => activeNotes.filter((n) => n.type === 'link'),
     [activeNotes]
   );
-  const bookmarksCount = allLinkNotes.length;
+  const bookmarksCount = useMemo(
+    () => allLinkNotes.filter((n) => n.archived !== 1).length,
+    [allLinkNotes]
+  );
   const contactsCount = useMemo(
-    () => activeNotes.filter((n) => n.type === 'contact').length,
-    [activeNotes]
+    () => listedNotes.filter((n) => n.type === 'contact').length,
+    [listedNotes]
   );
 
   /** Notes the PIN guards right now. Only protected notes are read, so this
@@ -1954,8 +2013,8 @@ function AuthenticatedView({
 
   // Files view - extract all image + attachment references from note bodies.
   const rawFileItems = useMemo(
-    () => extractFileItems(activeNotes),
-    [activeNotes]
+    () => extractFileItems(listedNotes),
+    [listedNotes]
   );
 
   // Enrich image items with sizes - local cache first, then Supabase Storage.
@@ -1973,6 +2032,7 @@ function AuthenticatedView({
    */
   const viewCounts = useMemo<Partial<Record<View, number>>>(() => ({
     starred: starredCount,
+    archive: archivedNotes.length,
     all: plainNotesCount,
     tasks: openTaskCount,
     vault: vaultCount,
@@ -1981,7 +2041,7 @@ function AuthenticatedView({
     contacts: contactsCount,
     bookmarks: bookmarksCount,
     markdown: markdownDir?.entries.length,
-  }), [starredCount, plainNotesCount, openTaskCount, vaultCount, fileItems.length,
+  }), [starredCount, archivedNotes.length, plainNotesCount, openTaskCount, vaultCount, fileItems.length,
        journalCount, contactsCount, bookmarksCount, markdownDir]);
 
   useEffect(() => {
@@ -2054,7 +2114,7 @@ function AuthenticatedView({
     // across those formats gives wrong results.
     const lastModified = new Map<string, number>();
     let untagged = 0;
-    for (const n of activeNotes) {
+    for (const n of allViewNotes) {
       if (n.tags.length === 0) untagged++;
       for (const t of n.tags) {
         counts.set(t, (counts.get(t) ?? 0) + 1);
@@ -2081,13 +2141,13 @@ function AuthenticatedView({
       return tagSortDir === 'asc' ? cmp : -cmp;
     });
     return { tags: entries, untagged };
-  }, [activeNotes, tagSortField, tagSortDir]);
+  }, [allViewNotes, tagSortField, tagSortDir]);
 
   // Unfiled count - the folder sibling of tagCounts.untagged. Drives the
   // muted "Unfiled" row under the folder tree (GitHub #235).
   const unfiledCount = useMemo(
-    () => activeNotes.filter((n) => !n.folderId).length,
-    [activeNotes]
+    () => allViewNotes.filter((n) => !n.folderId).length,
+    [allViewNotes]
   );
 
   // Split the sorted tag list into Favorites + Regular, based on the
@@ -2182,24 +2242,31 @@ function AuthenticatedView({
       // exempt like the two filters further down so nothing is marooned there,
       // and Pinned answers to the pin, not to this. The tag and folder views
       // come along for free - a tag click sets view to 'home'.
+      // A search of All also finds archived items, so nothing is lost, and
+      // the All switch can let them in for good; the row marks them.
+      // Spec: ops/issues/0388.md (search finds archived, archived in All)
+      const pool = deferredSearch.trim() || userSettings.archivedInAll ? activeNotes : listedNotes;
       list = hiddenTypesInAll.size
-        ? activeNotes.filter((n) => !hiddenTypesInAll.has(n.type))
-        : activeNotes;
+        ? pool.filter((n) => !hiddenTypesInAll.has(n.type))
+        : pool;
+    } else if (view === 'archive') {
+      // Every type, pinned first through compareNotes like any list.
+      list = archivedNotes;
     } else if (view === 'starred') {
-      list = activeNotes.filter((n) => n.starred === 1);
+      list = listedNotes.filter((n) => n.starred === 1);
     } else if (view === 'journal') {
-      list = activeNotes.filter((n) => n.type === 'journal');
+      list = listedNotes.filter((n) => n.type === 'journal');
     } else if (view === 'vault') {
-      list = activeNotes.filter((n) =>
+      list = listedNotes.filter((n) =>
         (n.type === 'login' || n.type === 'card' || n.type === 'ssh-key') && (vaultFilter === 'all' || n.type === vaultFilter)
       );
     } else if (view === 'bookmarks') {
-      list = activeNotes.filter((n) => n.type === 'link');
+      list = listedNotes.filter((n) => n.type === 'link');
     } else if (view === 'contacts') {
-      list = activeNotes.filter((n) => n.type === 'contact');
+      list = listedNotes.filter((n) => n.type === 'contact');
     } else {
       // Notes pillar - only plain notes (excludes journals, files, vault types).
-      list = activeNotes.filter((n) => n.type === 'note');
+      list = listedNotes.filter((n) => n.type === 'note');
     }
     // Tag + folder scope. Both apply in every view, and to each other.
     if (selectedTag || selectedFolder) list = list.filter(inScope);
@@ -2255,24 +2322,24 @@ function AuthenticatedView({
   // searchIndexVersion: searchNotes reads a module-level index that
   // updates AFTER the render a state change triggers - the version bump
   // is what re-runs this memo against the fresh index.
-  }, [activeNotes, trashedNotes, deferredSearch, inScope, selectedTag, selectedFolder, view, listPrefs, vaultFilter, hiddenTypesInAll, searchIndexVersion, gatedIdsKey]);
+  }, [activeNotes, listedNotes, archivedNotes, userSettings.archivedInAll, trashedNotes, deferredSearch, inScope, selectedTag, selectedFolder, view, listPrefs, vaultFilter, hiddenTypesInAll, searchIndexVersion, gatedIdsKey]);
 
   // Tag + folder + view compose: when either filter is active, the Tasks and
   // Files pillars (which render from their own data feeds, not displayNotes)
   // get scoped copies. Sidebar counts intentionally stay global.
   const scopeNoteIds = useMemo(
     () => (selectedTag || selectedFolder
-      ? new Set(activeNotes.filter(inScope).map((n) => n.id))
+      ? new Set(listedNotes.filter(inScope).map((n) => n.id))
       : null),
-    [activeNotes, inScope, selectedTag, selectedFolder]
+    [listedNotes, inScope, selectedTag, selectedFolder]
   );
   const scopedAllTasks = useMemo(
     () => (scopeNoteIds ? allTasks.filter((t) => scopeNoteIds.has(t.noteId)) : allTasks),
     [allTasks, scopeNoteIds]
   );
   const scopedActiveNotes = useMemo(
-    () => (scopeNoteIds ? activeNotes.filter((n) => scopeNoteIds.has(n.id)) : activeNotes),
-    [activeNotes, scopeNoteIds]
+    () => (scopeNoteIds ? listedNotes.filter((n) => scopeNoteIds.has(n.id)) : listedNotes),
+    [listedNotes, scopeNoteIds]
   );
   const scopedFileItems = useMemo(
     () => (scopeNoteIds ? fileItems.filter((f) => scopeNoteIds.has(f.noteId)) : fileItems),
@@ -2313,9 +2380,13 @@ function AuthenticatedView({
     mq.addEventListener('change', on);
     return () => mq.removeEventListener('change', on);
   }, []);
+  // The layout choice is per device (viewMode.ts); the synced value is only
+  // the start value for a device that never picked.
+  const [viewMode, setViewMode] = useViewMode(userSettings.viewMode);
+  const viewModeCtx = useMemo(() => ({ mode: viewMode, set: setViewMode }), [viewMode, setViewMode]);
   const effectiveViewMode: 'list' | 'grid' =
-    userSettings.viewMode === 'list' || userSettings.viewMode === 'grid'
-      ? userSettings.viewMode
+    viewMode === 'list' || viewMode === 'grid'
+      ? viewMode
       : wideScreen
         ? 'grid'
         : 'list';
@@ -2344,8 +2415,13 @@ function AuthenticatedView({
     const isDesktop =
       typeof window !== 'undefined' &&
       window.matchMedia('(min-width: 768px)').matches;
+    // An item with a tab is a valid selection wherever the strip is drawn,
+    // even when the list's filter hides it. See ops/docs/plans/note-tabs.md
+    // (section 5).
     const selectionInList =
-      selectedId != null && displayNotes.some((n) => n.id === selectedId);
+      selectedId != null &&
+      (displayNotes.some((n) => n.id === selectedId) ||
+        (tabsShown && openTabs.tabIds.has(selectedId)));
     // A note-link jump outranks this effect until the list catches up with
     // it. Any other selection retires the jump, and so does the target
     // arriving in the list. See `linkTargetRef`.
@@ -2371,7 +2447,7 @@ function AuthenticatedView({
       const first = displayNotes[0];
       if (first) setSelectedId(first.id);
     }
-  }, [displayNotes, selectedId, view, gridMode]);
+  }, [displayNotes, selectedId, view, gridMode, tabsShown, openTabs.tabIds]);
 
   // Pop the Security → Phrase tab once for new OAuth users so they
   // see their recovery phrase and can write it down. The flag is set
@@ -2577,8 +2653,8 @@ function AuthenticatedView({
         label: t('shell:markdown.footerFiles'),
       };
     }
-    const pool = (view === 'tasks' || view === 'files') ? activeNotes : displayNotes;
-    const s = computeStats(pool);
+    const pool = (view === 'tasks' || view === 'files') ? listedNotes : displayNotes;
+    const s = footerCounts(pool);
     const label =
       view === 'journal' ? t('footerStats.journals')
       : view === 'vault' ? t('footerStats.items')
@@ -2589,7 +2665,7 @@ function AuthenticatedView({
     return { notes: s.totalNotes, words: s.totalWords, label };
     // t in the deps: its identity changes on language switch and on lazy
     // catalog load, or the label stays cached in the boot language forever.
-  }, [view, activeNotes, displayNotes, markdownDir, markdownTags, t]);
+  }, [view, listedNotes, displayNotes, markdownDir, markdownTags, t]);
 
   /**
    * "Empty" = no title, no body, no tags. Used to decide whether a
@@ -2653,8 +2729,12 @@ function AuthenticatedView({
    * days instead of a tombstone synced to every device, which is the
    * only failure direction a zero-knowledge app can afford. (#122)
    */
-  async function discardIfEmpty(id: string | null): Promise<boolean> {
+  async function discardIfEmpty(id: string | null, evenWithTab = false): Promise<boolean> {
     if (!id) return false;
+    // A draft with its own tab is kept on purpose: a person may open a new
+    // note and a new journal entry side by side before typing in either. It
+    // goes when its tab closes (closeTabs below). Spec: ops/docs/plans/note-tabs.md
+    if (!evenWithTab && tabsShown && openTabs.tabIds.has(id)) return false;
     const note = await getNote(id);
     // Never auto-delete a note the user already filed away. The desktop
     // auto-select effect makes displayNotes[0] the selection without a
@@ -2714,6 +2794,7 @@ function AuthenticatedView({
       // one here (it searches live notes), ID & Sync can.
       const targetView: View =
         match.trashed === 1 ? 'trash' :
+        match.archived === 1 ? 'archive' :
         match.type === 'journal' ? 'journal' :
         match.type === 'task' ? 'tasks' :
         match.type === 'file' ? 'files' :
@@ -2806,11 +2887,12 @@ function AuthenticatedView({
       }
       if (search) setSearch('');
       linkTargetRef.current = note.id;
+      tabNewItem(note.id);
       setSelectedId(note.id);
       setDrawerOpen(false);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [refresh, inScope, search]
+    [refresh, inScope, search, openItemsInTabs, tabsShown]
   );
 
   // Wire the navigator + autocomplete titles into the editor whenever
@@ -2988,6 +3070,7 @@ function AuthenticatedView({
     // everything else opens in the body.
     pendingFocus.current = effectiveVaultType ? 'title' : 'body';
     if (isTasks) pendingTaskList.current = true;
+    tabNewItem(note.id);
     setSelectedId(note.id);
     setDrawerOpen(false);
   }
@@ -3107,6 +3190,7 @@ function AuthenticatedView({
       },
     }, note.updatedAt);
     await refresh();
+    tabNewItem(note.id);
     setSelectedId(note.id);
     setDrawerOpen(false);
   }
@@ -3309,6 +3393,7 @@ function AuthenticatedView({
     selectionMode,
     selectedIds,
     selectionAllStarred,
+    selectionAllArchived,
     selectionAllLocked,
     selectionAllProtected,
     displayNotesRef,
@@ -3331,6 +3416,7 @@ function AuthenticatedView({
     executeBulkDelete,
     dismissBulkDelete,
     handleBulkFavorite,
+    handleBulkArchive,
     handleBulkExport,
     handleBulkAddTag,
     handleAddTagTo,
@@ -3350,7 +3436,17 @@ function AuthenticatedView({
     refresh,
     runSync,
     refreshStorage,
-    handleSelectNote,
+    // A row click only: J and K, the arrows and search results still step
+    // without opening a tab each, which would bury the strip in one keypress.
+    handleSelectNote: (id: string) => {
+      const clicked = notes.find((n) => n.id === id);
+      const opensUrl = clicked !== undefined && opensBookmarkOnClick(clicked, isNoteLocked(clicked));
+      if (openItemsInTabs && tabsShown && view !== 'trash' && view !== 'markdown' && !opensUrl) {
+        openInTab([id]);
+        return Promise.resolve();
+      }
+      return handleSelectNote(id);
+    },
     exportAllMarkdownZip,
     exportAllHtmlZip,
     isNoteLocked,
@@ -3382,6 +3478,7 @@ function AuthenticatedView({
     mutateSettings,
     notes,
     activeNotes,
+    listedNotes: allViewNotes,
     selectedIds,
     refresh,
     runSync,
@@ -3540,6 +3637,20 @@ function AuthenticatedView({
   }
 
   /**
+   * Uncheck every task in the open note, for a checklist that is reused, from
+   * the "..." menu. It starts from the editor's body, so typing still in the
+   * save delay is kept, then remounts the editor the way a single toggle does.
+   */
+  async function handleUncheckAllTasks(n: LocalNote) {
+    const nextBody = await uncheckAllTasksInNote(n.id, withFreshestBody(n).body, isNoteLocked);
+    if (nextBody == null) return;
+    patchLocal(n.id, { body: nextBody }, new Date().toISOString());
+    editingBodyRef.current.delete(n.id);
+    setEditorRevision((r) => r + 1);
+    scheduleSync();
+  }
+
+  /**
    * Append a new unchecked task to the Quick Tasks note, made on demand.
    * Used by both the quick-add input at the top of the Tasks view and the
    * "New Task" right-click menu item. The Tasks view re-derives on next
@@ -3548,7 +3659,7 @@ function AuthenticatedView({
    * (appendQuickTask).
    */
   async function handleAddQuickTask(text: string) {
-    const id = await appendQuickTask(text, activeNotes, isNoteLocked);
+    const id = await appendQuickTask(text, listedNotes, isNoteLocked);
     if (!id) return;
     await refresh();
     setSelectedId(id);
@@ -3639,6 +3750,7 @@ function AuthenticatedView({
     if (!copy) return;
     if (source && isNoteLocked(source)) gateCopy(copy.id);
     await refresh();
+    tabNewItem(copy.id);
     setSelectedId(copy.id);
     scheduleSync();
   }
@@ -3650,8 +3762,16 @@ function AuthenticatedView({
     scheduleSync();
   }
 
-  /** Generate a Share & Burn After Reading link for a note. Desktop: modal. Mobile: native share sheet. */
-  async function handleBurnShare(n: LocalNote) {
+  /** Archive or unarchive a note. It leaves the list it sits in, and the
+   *  auto-select moves on the same way it does after a trash. */
+  async function handleToggleArchive(id: string, archived: boolean) {
+    await setArchived(id, archived);
+    await refresh();
+    scheduleSync();
+  }
+
+  /** Open the Share & Burn After Reading modal, which creates the link. */
+  function handleBurnShare(n: LocalNote) {
     // What travels is decided in one place, so the "..." menu can dim the
     // Burn button on exactly the notes this refuses. Spec: burnShare.ts.
     const payload = prepareBurnPayload(n);
@@ -3660,41 +3780,7 @@ function AuthenticatedView({
       setTimeout(() => setBurnError(null), 5000);
       return;
     }
-    const { body, stripped } = payload;
-    const result = await createBurnLink(n.title, body, payload.fields);
-    if (!result.ok) {
-      setBurnError(result.error);
-      setTimeout(() => setBurnError(null), 5000);
-      return;
-    }
-    recordAdminEvent(supabase, 'export', 'burn');
-    // Mobile - use native share sheet. Desktop gets the burn modal even if
-    // the browser supports navigator.share (Chrome/Safari on macOS do, but
-    // the native macOS share sheet is unhelpful for a one-time URL).
-    if (isMobile && typeof navigator.share === 'function') {
-      try {
-        await navigator.share({ title: n.title || t('burn.shareTitle'), url: result.url });
-      } catch (e: unknown) {
-        // User cancelled the share sheet - not an error.
-        if (e instanceof DOMException && e.name === 'AbortError') return;
-        // Fallback: copy to clipboard.
-        try { await navigator.clipboard.writeText(result.url); } catch { /* ignore */ }
-      }
-      return;
-    }
-    // Desktop - show the burn share modal.
-    setBurnShareUrl(result.url);
-    setBurnCopied(false);
-    setBurnImagesStripped(stripped);
-  }
-
-  /** Copy the burn URL to clipboard from the modal. */
-  async function handleBurnCopy() {
-    if (!burnShareUrl) return;
-    try {
-      await navigator.clipboard.writeText(burnShareUrl);
-      setBurnCopied(true);
-    } catch { /* clipboard blocked - url is still selectable */ }
+    setBurnTarget({ title: n.title, ...payload });
   }
 
   // ── Keyboard shortcuts (extracted to useKeyboardShortcuts.ts) ──
@@ -3709,6 +3795,9 @@ function AuthenticatedView({
       if (view === 'bookmarks') { handleNewBookmark(); return; }
       if (view === 'contacts') { handleNewContact(); return; }
       void handleNew();
+    },
+    closeActiveTab: () => {
+      if (tabsShown && selectedId && openTabs.tabIds.has(selectedId)) closeTab(selectedId);
     },
     searchInputRef,
     setSidebarCollapsed,
@@ -3813,6 +3902,7 @@ function AuthenticatedView({
     createContextMenuBuilders({
       view,
       handleSelectView,
+      onOpenInTab: tabsShown ? openInTab : undefined,
       isPro: auth.isPro ?? false,
       zenUnlocked,
       foldersUnlocked,
@@ -3849,10 +3939,12 @@ function AuthenticatedView({
       selectedIds,
       onToggleSelected: toggleSelected,
       selectionAllStarred,
+      selectionAllArchived,
       selectionAllLocked,
       selectionAllProtected,
       onClearSelection: clearSelection,
       onBulkFavorite: () => void handleBulkFavorite(),
+      onBulkArchive: () => void handleBulkArchive(),
       onBulkMoveToFolder: handleBulkMoveToFolder,
       onBulkDuplicate: () => void handleBulkDuplicate(),
       onBulkExportMarkdown: () => void handleBulkExport(),
@@ -3867,6 +3959,7 @@ function AuthenticatedView({
       handlePermanentlyDelete,
       requestDeleteConfirm: (id: string, title: string) => setDeleteConfirm({ id, title }),
       handleToggleStar,
+      handleToggleArchive,
       handleSetLocked,
       handleSetPinProtected,
       requestRemoveProtection: (id: string) => void requestRemoveProtection(id),
@@ -3947,6 +4040,7 @@ function AuthenticatedView({
     handleBodyChange,
     handleTagsChange,
     handleTrackersChange,
+    handleVaultSave,
     scheduleSync,
     patchLocal,
     contentHash,
@@ -4147,10 +4241,36 @@ function AuthenticatedView({
     },
     [auth.isPro, mutateSettings],
   );
-  const noteTint =
-    userSettings.tintNotes && selected
-      ? resolveItemColor(selected.tags, selected.folderId, userSettings.itemStyles, colorFilter)
+  const noteTint = selected
+    ? resolveNoteColor(selected.id, selected.tags, selected.folderId, userSettings.itemStyles, userSettings.tintNotes, colorFilter)
+    : null;
+  // What the note menu's color row shows: the note's own pick, and the color
+  // it would take without one, with where that color comes from.
+  const noteColorInfo = useMemo(() => {
+    if (!selected) return null;
+    const source = userSettings.tintNotes
+      ? resolveItemColorSource(selected.tags, selected.folderId, userSettings.itemStyles, colorFilter)
       : null;
+    return {
+      own: noteOwnColor(userSettings.itemStyles, selected.id),
+      inherited: source
+        ? {
+            color: source.color,
+            kind: source.kind,
+            name: source.kind === 'folder' ? folderNames.get(source.id) ?? '' : source.id,
+          }
+        : null,
+    };
+  }, [selected, userSettings.itemStyles, userSettings.tintNotes, colorFilter, folderNames]);
+  const setNoteColor = useCallback(
+    (noteId: string, color: NoteOwnColor | null) => {
+      mutateSettings((prev) => {
+        const itemStyles = setItemLook(prev.itemStyles, noteLookKey(noteId), { color });
+        return itemStyles === prev.itemStyles ? prev : { ...prev, itemStyles };
+      });
+    },
+    [mutateSettings],
+  );
   const activeFolderName = selectedFolder
     ? selectedFolder === UNFILED_ID
       ? t('shell:folders.unfiled')
@@ -4168,12 +4288,15 @@ function AuthenticatedView({
           ? t('headerLabel.vault')
           : view === 'starred'
             ? t('headerLabel.pinned')
-            : t('headerLabel.notes');
+            : view === 'archive'
+              ? t('headerLabel.archive')
+              : t('headerLabel.notes');
 
   const tasksList = (
     <TasksList
       onSelectView={handleSelectView}
       hiddenViews={userSettings.hiddenViews}
+      importOffer={importOffer}
       onOpenDrawer={() => setDrawerOpen(true)}
       allTasks={scopedAllTasks}
       activeNotes={scopedActiveNotes}
@@ -4213,6 +4336,7 @@ function AuthenticatedView({
       selectionMode={selectionMode}
       selectedIds={selectedIds}
       selectionAllStarred={selectionAllStarred}
+      selectionAllArchived={selectionAllArchived}
       onRowClick={handleRowClick}
       onToggleSelected={toggleSelected}
       onRangeSelect={rangeSelect}
@@ -4221,6 +4345,7 @@ function AuthenticatedView({
       onClearSelection={clearSelection}
       onSelectAllVisible={selectAllVisible}
       onBulkFavorite={() => void handleBulkFavorite()}
+      onBulkArchive={() => void handleBulkArchive()}
       onBulkTag={applyBulkTag}
       onBulkMoveToFolder={handleBulkMoveToFolder}
       foldersUnlocked={foldersUnlocked}
@@ -4274,6 +4399,7 @@ function AuthenticatedView({
       selectionMode={selectionMode}
       selectedIds={selectedIds}
       selectionAllStarred={selectionAllStarred}
+      selectionAllArchived={selectionAllArchived}
       onRowClick={handleRowClick}
       onToggleSelected={toggleSelected}
       onRangeSelect={rangeSelect}
@@ -4283,6 +4409,7 @@ function AuthenticatedView({
       onDeselectAll={deselectAll}
       onSelectAllVisible={selectAllVisible}
       onBulkFavorite={() => void handleBulkFavorite()}
+      onBulkArchive={() => void handleBulkArchive()}
       onBulkMoveToFolder={handleBulkMoveToFolder}
       foldersUnlocked={foldersUnlocked}
       onBulkExport={() => void handleBulkExport()}
@@ -4349,6 +4476,58 @@ function AuthenticatedView({
     }
   }
 
+  /** Show a tab's item. It goes through the bookmark path because a plain
+   *  selection of a bookmark opens its address, and a tab shows the bookmark.
+   *  Trash and Markdown cannot show a live item, so they are left for All
+   *  items first. Spec: ops/docs/plans/note-tabs.md (section 4) */
+  function showTab(id: string) {
+    if (view === 'trash' || view === 'markdown') setView('home');
+    void selectBookmarkForEdit(id);
+  }
+
+  /** With "Open items in tabs" on, a new item opens in a tab as well. Called
+   *  once the item is in `notes`, never before: the tab list prunes an id it
+   *  cannot find there. */
+  function tabNewItem(id: string) {
+    if (openItemsInTabs && tabsShown) openTabs.addTabs([id]);
+  }
+
+  /** Open items as tabs; an item that already has one keeps it. Shows the
+   *  first item that had no tab yet, or the first item when all had one. */
+  function openInTab(ids: string[]) {
+    const first = ids.find((id) => !openTabs.tabIds.has(id)) ?? ids[0];
+    openTabs.addTabs(ids);
+    if (first) showTab(first);
+  }
+
+  /** Closing the open item's tab moves to the tab beside it, the way a
+   *  browser does. The last tab leaves its item open with no tab. */
+  function closeTab(id: string) {
+    if (openTabs.pinnedIds.has(id)) return;
+    let stays = false;
+    if (id === selectedId) {
+      const at = openTabs.tabs.findIndex((n) => n.id === id);
+      const next = openTabs.tabs[at + 1] ?? openTabs.tabs[at - 1];
+      if (next) showTab(next.id);
+      else stays = true;
+    }
+    closeTabs(stays ? [] : [id], [id]);
+  }
+
+  /** Close tabs, then drop the empty drafts a tab was keeping: the rule every
+   *  draft follows, applied late. `dropIds` leaves out an item that is still
+   *  on screen; that one goes when the person leaves it, as any draft does. */
+  function closeTabs(dropIds: string[], ids: string[] = dropIds) {
+    openTabs.closeTabs(ids);
+    const drafts = dropIds.filter((x) => !openTabs.pinnedIds.has(x));
+    if (drafts.length === 0) return;
+    void (async () => {
+      let dropped = false;
+      for (const x of drafts) dropped = (await discardIfEmpty(x, true)) || dropped;
+      if (dropped) { await refresh(); void runSync(); }
+    })();
+  }
+
   /** New contact: an empty contact note, selected into the editor, which
    *  opens in edit mode because the body is empty. The empty draft is
    *  discarded on the way out by the same rule every empty note follows.
@@ -4368,6 +4547,7 @@ function AuthenticatedView({
       await handleSelectView('contacts');
       const created = await createNote('', '{}', tags, starred, 'contact', folderId);
       await refresh();
+      tabNewItem(created.id);
       await selectBookmarkForEdit(created.id);
       void runSync();
     })();
@@ -4382,6 +4562,7 @@ function AuthenticatedView({
       onListPrefsChange={handleListPrefsChange}
       onSelectView={handleSelectView}
       hiddenViews={userSettings.hiddenViews}
+      importOffer={importOffer}
       onOpenDrawer={() => setDrawerOpen(true)}
       search={search}
       setSearch={setSearch}
@@ -4399,6 +4580,7 @@ function AuthenticatedView({
       selectionMode={selectionMode}
       selectedIds={selectedIds}
       selectionAllStarred={selectionAllStarred}
+      selectionAllArchived={selectionAllArchived}
       onRowClick={handleRowClick}
       onToggleSelected={toggleSelected}
       onRangeSelect={rangeSelect}
@@ -4408,6 +4590,7 @@ function AuthenticatedView({
       onDeselectAll={deselectAll}
       onSelectAllVisible={selectAllVisible}
       onBulkFavorite={() => void handleBulkFavorite()}
+      onBulkArchive={() => void handleBulkArchive()}
       onBulkTag={applyBulkTag}
       onBulkMoveToFolder={handleBulkMoveToFolder}
       onBulkExport={() => void handleBulkExport()}
@@ -4433,6 +4616,7 @@ function AuthenticatedView({
       onListPrefsChange={handleListPrefsChange}
       onSelectView={handleSelectView}
       hiddenViews={userSettings.hiddenViews}
+      importOffer={importOffer}
       onOpenDrawer={() => setDrawerOpen(true)}
       search={search}
       setSearch={setSearch}
@@ -4457,6 +4641,7 @@ function AuthenticatedView({
           // effect consumes the flag on the selection's render pass - the
           // same choreography handleNew runs.
           pendingFocus.current = 'title';
+          tabNewItem(created.id);
           await selectBookmarkForEdit(created.id);
           void runSync();
         })();
@@ -4473,6 +4658,7 @@ function AuthenticatedView({
       selectionMode={selectionMode}
       selectedIds={selectedIds}
       selectionAllStarred={selectionAllStarred}
+      selectionAllArchived={selectionAllArchived}
       onRowClick={handleRowClick}
       onToggleSelected={toggleSelected}
       onRangeSelect={rangeSelect}
@@ -4482,6 +4668,7 @@ function AuthenticatedView({
       onDeselectAll={deselectAll}
       onSelectAllVisible={selectAllVisible}
       onBulkFavorite={() => void handleBulkFavorite()}
+      onBulkArchive={() => void handleBulkArchive()}
       onBulkTag={applyBulkTag}
       onBulkMoveToFolder={handleBulkMoveToFolder}
       onBulkExport={() => void handleBulkExport()}
@@ -4503,6 +4690,7 @@ function AuthenticatedView({
     <NotesList
       onSelectView={handleSelectView}
       hiddenViews={userSettings.hiddenViews}
+      importOffer={importOffer}
       onOpenDrawer={() => setDrawerOpen(true)}
       view={view}
       displayNotes={displayNotes}
@@ -4528,12 +4716,14 @@ function AuthenticatedView({
       selectionMode={selectionMode}
       selectedIds={selectedIds}
       selectionAllStarred={selectionAllStarred}
+      selectionAllArchived={selectionAllArchived}
       onClearSelection={clearSelection}
       onDeselectAll={deselectAll}
       onSelectAllVisible={selectAllVisible}
       onToggleSelected={toggleSelected}
       onRangeSelect={rangeSelect}
       onBulkFavorite={() => void handleBulkFavorite()}
+      onBulkArchive={() => void handleBulkArchive()}
       onBulkTag={applyBulkTag}
       onBulkMoveToFolder={handleBulkMoveToFolder}
       foldersUnlocked={foldersUnlocked}
@@ -4573,6 +4763,7 @@ function AuthenticatedView({
 
   return (
     <LooksContext.Provider value={looks}>
+    <ViewModeContext.Provider value={viewModeCtx}>
     <div
       // Status-bar safe area, applied ONCE at the root. It used to hang off
       // the mobile wordmark bar, but that bar is gone (its drawer button and
@@ -4774,9 +4965,7 @@ function AuthenticatedView({
               selectedFolder={selectedFolder}
               viewCounts={viewCounts}
               trashedCount={trashedNotes.length}
-              viewMode={userSettings.viewMode}
               hiddenViews={userSettings.hiddenViews}
-              onToggleViewMode={() => mutateSettings((prev) => ({ ...prev, viewMode: prev.viewMode === 'auto' ? 'list' : prev.viewMode === 'list' ? 'grid' : 'auto' }))}
             />
           </aside>
         )}
@@ -4804,6 +4993,27 @@ function AuthenticatedView({
             // Swipe-right anywhere in this pane opens the mobile drawer
             // (the useEdgeSwipe eligibility guard keys off this attribute).
             data-drawer-swipe
+            // Middle-click and Alt-click on any row or tile open it as a tab.
+            // Cmd-click stays the multi-select gesture it already is.
+            // Spec: ops/docs/plans/note-tabs.md (section 2)
+            onClickCapture={(e) => {
+              if (!tabsShown || !e.altKey || e.metaKey || e.ctrlKey || e.shiftKey) return;
+              const id = (e.target as HTMLElement).closest<HTMLElement>('[data-item-id]')?.dataset.itemId;
+              if (!id || view === 'trash') return;
+              e.preventDefault();
+              e.stopPropagation();
+              openInTab([id]);
+            }}
+            onMouseDown={(e) => {
+              if (tabsShown && e.button === 1 && (e.target as HTMLElement).closest('[data-item-id]')) e.preventDefault();
+            }}
+            onAuxClick={(e) => {
+              if (!tabsShown || e.button !== 1) return;
+              const id = (e.target as HTMLElement).closest<HTMLElement>('[data-item-id]')?.dataset.itemId;
+              if (!id || view === 'trash') return;
+              e.preventDefault();
+              openInTab([id]);
+            }}
             // Width formulas live in the --pn-* render vars on the root div.
             // Grid mode keeps the inverted model (grid is the fluid pane,
             // editor docks at --pn-editor-render-dock); the docked grid gets
@@ -4908,6 +5118,28 @@ function AuthenticatedView({
           }
           style={noteTintVars(noteTint)}
         >
+          {tabsShown && !zenMode && openTabs.tabs.length > 0 && (
+            <TabStrip
+              tabs={openTabs.tabs}
+              activeId={selectedId}
+              pinnedIds={openTabs.pinnedIds}
+              titleOf={(n) => deriveDisplayTitle(n, isNoteLocked(n))}
+              isGated={isNoteLocked}
+              onActivate={showTab}
+              onClose={closeTab}
+              onCloseOthers={(id) => {
+                showTab(id);
+                closeTabs(openTabs.tabs.filter((n) => n.id !== id).map((n) => n.id));
+              }}
+              onCloseAll={() => {
+                const ids = openTabs.tabs.map((n) => n.id);
+                closeTabs(ids.filter((x) => x !== selectedId), ids);
+              }}
+              onTogglePin={(id) => openTabs.setPinned(id, !openTabs.pinnedIds.has(id))}
+              onMove={openTabs.moveTab}
+              onContextMenu={(e, items) => ctxMenu.open(e, items)}
+            />
+          )}
           {/* Markdown owns this pane outright: its files are read from disk and
               never become notes, so `selected` is always null here and the
               note-shaped empty state below would be nonsense. The wide pane is
@@ -4923,6 +5155,7 @@ function AuthenticatedView({
                 onImportToNotes={(filename, raw) => void handleImportMarkdown(filename, raw)}
                 onClose={() => setMarkdownFile(null)}
                 gridMode={gridMode}
+                onNotice={flashToast}
               />
             ) : markdownDir ? (
               // A folder is open and no file is picked yet. The prompt alone
@@ -4976,6 +5209,8 @@ function AuthenticatedView({
           ) : (
             <NoteEditorPane
               selected={selected}
+              noteColor={noteColorInfo}
+              onSetNoteColor={setNoteColor}
               view={view}
               notes={notes}
               bookmarkKeys={bookmarkKeys}
@@ -5029,12 +5264,16 @@ function AuthenticatedView({
               handleBodyChange={handleBodyChange}
               handleTagsChange={handleTagsChange}
               handleTrackersChange={handleTrackersChange}
+              handleVaultSave={handleVaultSave}
               handleCloseEditor={handleCloseEditor}
               handleHistory={handleHistory}
               handleToggleStar={handleToggleStar}
+              handleToggleArchive={handleToggleArchive}
               requestTrash={requestTrash}
               handleRestore={handleRestore}
               handleDuplicate={handleDuplicate}
+              canUncheckAllTasks={(n) => canUncheckAllTasks(editingBodyRef.current.get(n.id) ?? n.body)}
+              handleUncheckAllTasks={handleUncheckAllTasks}
               handleSetLocked={handleSetLocked}
               handleSetPinProtected={handleSetPinProtected}
               handleBurnShare={gatedExports.handleBurnShare}
@@ -5159,6 +5398,8 @@ function AuthenticatedView({
             userSettings,
             mutateSettings,
             onEditorModeChange: handleEditorModeChange,
+            viewMode,
+            onViewModeChange: setViewMode,
             onToggleHiddenView: handleToggleHiddenView,
             auth,
             settingsAutoVerify,
@@ -5253,6 +5494,21 @@ function AuthenticatedView({
       {showSyncOptions && (
         <SyncOptionsModal
           onClose={() => setShowSyncOptions(false)}
+          initialSection={syncOptionsSection}
+          custodySettings={{ hasPin: Boolean(userSettings.pinHash && userSettings.pinSalt), pinCredential: `${userSettings.pinHash ?? ''}:${userSettings.pinSalt ?? ''}`, pinTimeoutMinutes: userSettings.pinTimeoutMinutes,
+                    userSettings, onSettingsChange: (next, base) => mutateSettings((prev) => withCredentialChanges(prev, base, next)) }}
+          onOpenPhrase={() => { setShowSyncOptions(false); setShowSecurity({ tab: 'phrase' }); }}
+          deviceLabels={userSettings.deviceLabels}
+          onRenameDevice={(deviceId, name, serverName) =>
+            mutateSettings((prev) => ({
+              ...prev,
+              deviceLabels: setDeviceLabel(prev.deviceLabels, deviceId, name, serverName),
+            }))
+          }
+          onOpenRating={() => {
+            setShowSyncOptions(false);
+            setShowAbout({ tab: 'rating' });
+          }}
           onSyncNow={runSync}
           onOpenImageSettings={() => {
             setShowSyncOptions(false);
@@ -5269,14 +5525,15 @@ function AuthenticatedView({
       {showAppearance && (
         <AppearanceSheet
           isPro={auth.isPro ?? false}
-          viewMode={userSettings.viewMode}
-          onViewModeChange={(m) => mutateSettings((prev) => ({ ...prev, viewMode: m }))}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
           editorMode={userSettings.editorMode}
           onEditorModeChange={handleEditorModeChange}
           lineSpacing={userSettings.lineSpacing}
           onLineSpacingChange={(next) => mutateSettings((prev) => ({ ...prev, lineSpacing: next }))}
           hiddenViews={userSettings.hiddenViews}
           hiddenInAll={userSettings.hiddenInAll}
+          archivedInAll={userSettings.archivedInAll}
           onToggleHidden={handleToggleHiddenView}
           startView={userSettings.startView}
           onStartViewChange={(next) => mutateSettings((prev) => ({ ...prev, startView: next }))}
@@ -5287,6 +5544,11 @@ function AuthenticatedView({
             setShowUpgrade({ trigger: 'theme' });
           }}
           onClose={() => setShowAppearance(false)}
+          onOpenAll={() => {
+            setShowAppearance(false);
+            setSettingsCategory('appearance');
+            setShowSettings(true);
+          }}
         />
       )}
       {showSecurity && (
@@ -5307,6 +5569,7 @@ function AuthenticatedView({
             mutateSettings((prev) => withCredentialChanges(prev, base, next));
           }}
           onClose={() => setShowSecurity(null)}
+          onOpenCustody={() => { setShowSecurity(null); setSyncOptionsSection('keyCustody'); setShowSyncOptions(true); }}
           pubkey={auth.pubkey}
         />
       )}
@@ -5327,63 +5590,46 @@ function AuthenticatedView({
           }}
         />
       )}
-      {historyForNoteId && (
+      {historyNote && !isNoteLocked(historyNote) && (
         <NoteHistoryModal
-          noteId={historyForNoteId}
+          noteId={historyNote.id}
+          noteType={historyNote.type}
           supabase={supabase}
           encryptionKey={auth.encryptionKey}
           onClose={() => setHistoryForNoteId(null)}
           onRestore={async (v) => {
-            // Force-snapshot the current (pre-restore) state BEFORE
-            // overwriting. We bypass the usual 60s rate limit on
-            // purpose: if the user had unsnapshotted in-flight edits
-            // (typed within the last 60s), a plain
-            // scheduleVersionSnapshot call below would be rate-
-            // limited and lose those edits permanently.
-            const current = await getNote(historyForNoteId);
+            const id = historyNote.id;
+            const current = await getNote(id);
+            if (!current) throw new Error(t('billing:history.restoreFailed'));
             // A read-only note takes no restore (updateNote refuses its text),
             // so the dialog stays open and says why rather than closing on a
             // restore that did not happen.
-            if (current?.locked === 1) throw new Error(t('shell:noteOptionsMenu.readOnlyDescription'));
-            if (current && proUnlocked(auth.isPro)) {
-              const h = await contentHash(current);
-              // Only snapshot if the current state differs from the
-              // most recent version we've already recorded in this
-              // session - avoids duplicating a version that's
-              // already on the server.
-              if (lastVersionHashRef.current.get(historyForNoteId) !== h) {
-                lastVersionHashRef.current.set(historyForNoteId, h);
-                lastVersionAtRef.current.set(historyForNoteId, Date.now());
-                await createNoteVersion(
-                  supabase,
-                  auth.pubkey,
-                  auth.encryptionKey,
-                  current
-                );
-              }
+            if (current.locked === 1) throw new Error(t('shell:noteOptionsMenu.readOnlyDescription'));
+            // A login's extras come back only from a version that recorded
+            // them; an older version leaves the current ones as they are.
+            const trackers = current.type === 'login' && v.login !== undefined
+              ? withLoginExtras(current.trackers, loginExtrasOf({ login: v.login }))
+              : undefined;
+            const restored = { ...current, title: v.title, body: v.body, tags: v.tags, ...(trackers ? { trackers } : {}) };
+            if ((await contentHash(restored)) === (await contentHash(current))) return;
+            // Save the current state as a version first, past the usual 60s
+            // gap, and stop if that fails: a restore must never be the only
+            // copy of what it replaces.
+            if (proUnlocked(auth.isPro)) {
+              const snap = await createNoteVersion(supabase, auth.pubkey, auth.encryptionKey, current);
+              if (!snap.ok) throw new Error(t('billing:history.restoreSnapshotFailed'));
+              lastVersionHashRef.current.set(id, await contentHash(current));
+              lastVersionAtRef.current.set(id, Date.now());
             }
-
-            // Apply the version's content to the live note.
-            const now = new Date().toISOString();
-            patchLocal(
-              historyForNoteId,
-              { title: v.title, body: v.body, tags: v.tags },
-              now
-            );
-            await updateNote(historyForNoteId, {
-              title: v.title,
-              body: v.body,
-              tags: v.tags,
-            });
-            // Remount the open editor so TipTap re-parses the restored
-            // body. Without this the live note's data updates but the
-            // editor keeps showing the pre-restore content until the user
-            // switches to another note and back. Same key-bump pattern as
-            // the task quick-add and convert-to-task paths. Clear any
-            // buffered in-flight body first so flushEditingBody can't
-            // clobber the restored text on the next flush.
-            if (selectedId === historyForNoteId) {
-              editingBodyRef.current.delete(historyForNoteId);
+            const patch = { title: v.title, body: v.body, tags: v.tags, ...(trackers ? { trackers } : {}) };
+            if (!(await updateNote(id, patch))) throw new Error(t('billing:history.restoreFailed'));
+            patchLocal(id, patch, new Date().toISOString());
+            // Remount the open editor or vault item so it shows the restored
+            // content, and drop any buffered body so a later flush cannot
+            // write the pre-restore text back. A vault form's unsaved draft
+            // goes with the remount.
+            if (selectedId === id) {
+              editingBodyRef.current.delete(id);
               setEditorRevision((r) => r + 1);
             }
             scheduleSync();
@@ -5719,13 +5965,15 @@ function AuthenticatedView({
           {burnError}
         </div>
       )}
-      {burnShareUrl && (
+      {burnTarget && (
         <BurnShareModal
-          url={burnShareUrl}
-          copied={burnCopied}
-          imagesStripped={burnImagesStripped}
-          onCopy={() => void handleBurnCopy()}
-          onClose={() => setBurnShareUrl(null)}
+          title={burnTarget.title}
+          body={burnTarget.body}
+          fields={burnTarget.fields}
+          imagesStripped={burnTarget.stripped}
+          isMobile={isMobile}
+          onCreated={() => recordAdminEvent(supabase, 'export', 'burn')}
+          onClose={() => setBurnTarget(null)}
         />
       )}
       {conflictQueue.length > 0 && conflictQueue[0] != null && (
@@ -5784,7 +6032,7 @@ function AuthenticatedView({
         />
       )}
     </div>
+    </ViewModeContext.Provider>
     </LooksContext.Provider>
   );
 }
-

@@ -15,6 +15,8 @@ export interface KeyboardShortcutHandlers {
 
   // New note
   handleNew: () => void;
+  /** Close the open item's tab; does nothing when the item has none. */
+  closeActiveTab: () => void;
 
   // Search
   searchInputRef: React.RefObject<HTMLInputElement | null>;
@@ -40,8 +42,8 @@ export interface KeyboardShortcutHandlers {
   setShowSettings: (v: boolean) => void;
 
   // About modal (hotkeys tab)
-  showAbout: false | { tab?: 'about' | 'changelog' | 'hotkeys' };
-  setShowAbout: (v: false | { tab?: 'about' | 'changelog' | 'hotkeys' }) => void;
+  showAbout: false | { tab?: 'about' | 'changelog' | 'hotkeys' | 'rating' };
+  setShowAbout: (v: false | { tab?: 'about' | 'changelog' | 'hotkeys' | 'rating' }) => void;
 
   // J/K navigation
   displayNotesRef: React.RefObject<LocalNote[]>;
@@ -89,11 +91,21 @@ export function useKeyboardShortcuts(h: KeyboardShortcutHandlers) {
   // discardIfEmpty(previousId) never cleaned up empty drafts. Fix: #46.
   const handleNewRef = useRef(h.handleNew);
   handleNewRef.current = h.handleNew;
+  const closeActiveTabRef = useRef(h.closeActiveTab);
+  closeActiveTabRef.current = h.closeActiveTab;
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.altKey && e.shiftKey && !e.metaKey && !e.ctrlKey && e.code === 'KeyN') {
+      if (!e.altKey || !e.shiftKey || e.metaKey || e.ctrlKey) return;
+      if (e.code === 'KeyN') {
         e.preventDefault();
         void handleNewRef.current();
+      }
+      // Alt/Option+Shift+W closes the open item's tab. Cmd/Ctrl+W belongs to
+      // the browser, which closes its own tab before a page can refuse it.
+      // Spec: ops/docs/plans/note-tabs.md (section 3)
+      if (e.code === 'KeyW') {
+        e.preventDefault();
+        closeActiveTabRef.current();
       }
     }
     window.addEventListener('keydown', onKey);

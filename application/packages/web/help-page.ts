@@ -848,6 +848,7 @@ function feedbackBlock(prompt: string): string {
  */
 const CONTENT_BASELINE = '2026-08-26';
 const CONTENT_UPDATED: Record<string, string> = {
+  'guess-phrase': '2026-09-26',
   'need-email': '2026-09-25',
   'phrase-vs-password': '2026-09-25',
   'lost-phrase': '2026-09-25',
@@ -862,9 +863,9 @@ const CONTENT_UPDATED: Record<string, string> = {
   'markdown-syntax': '2026-09-25',
   'trash-auto-delete': '2026-09-25',
   'referral-links': '2026-09-25',
-  'signup-options': '2026-09-25',
+  'signup-options': '2026-09-27',
   'sync-conflicts': '2026-09-25',
-  'what-can-you-see': '2026-09-25',
+  'what-can-you-see': '2026-09-27',
   'no-ai': '2026-09-23',
   'data-location': '2026-09-24',
   'shutdown': '2026-09-25',
@@ -882,9 +883,9 @@ const CONTENT_UPDATED: Record<string, string> = {
   'leaving': '2026-08-30',
   'android-backup': '2026-09-25',
   'try-before-signup': '2026-08-31',
-  'threat-model-levels': '2026-09-25',
+  'threat-model-levels': '2026-09-27',
   'twelve-word-phrase': '2026-08-31',
-  'why-no-2fa': '2026-08-31',
+  'why-no-2fa': '2026-09-27',
   'remove-device': '2026-08-31',
   'note-size-limit': '2026-08-31',
   'feature-requests': '2026-08-31',
@@ -915,6 +916,7 @@ const CONTENT_UPDATED: Record<string, string> = {
   'upnote': '2026-08-31',
   'browser-passwords': '2026-08-31',
   'nextcloud-notes': '2026-08-31',
+  'standard-notes': '2026-09-26',
 };
 
 /** The day one page last changed, or the baseline when it has not since. */

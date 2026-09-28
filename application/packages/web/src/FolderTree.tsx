@@ -10,6 +10,7 @@ import {
   canCreateChild,
   canDeleteFolder,
   folderSiblingSorter,
+  folderTotals,
   type FolderSortDir,
   type FolderSortField,
   UNFILED_ID,
@@ -17,6 +18,8 @@ import {
 } from './folders';
 import {
   ArrowElbowDownRight,
+  ArrowsInLineVertical,
+  ArrowsOutLineVertical,
   DotsThree,
   Folder,
   FolderPlus,
@@ -70,6 +73,9 @@ export interface FolderTreeProps {
   onLockedAction?: () => void;
   /** Opens the look picker (icon and color) at the point the menu stood. */
   onEditLook?: (id: string) => void;
+  /** A click on a folder's icon opens its look picker. Omit to let the icon
+   *  select like the rest of the row. */
+  onGlyphClick?: (id: string) => void;
   /** The Pro mark on the "Icon and color" row: a free account, and the demo. */
   looksProMark?: boolean;
   /** Sibling sort (persisted per-device in NotesView, like tag sort). */
@@ -92,13 +98,14 @@ export function FolderTree({
   locked = false,
   onLockedAction,
   onEditLook,
+  onGlyphClick,
   looksProMark = false,
   sortField,
   sortDir,
   mobileTabIndex,
 }: FolderTreeProps) {
   const { t } = useTranslation('shell');
-  const { expand, expandAncestors } = useFolderExpansion();
+  const { isExpanded, expand, expandAncestors, collapseAll, expandAll } = useFolderExpansion();
   /** Parent id the inline "new folder" input is nested under; undefined = closed. */
   const [creatingUnder, setCreatingUnder] = useState<string | null | undefined>(undefined);
   const [createDraft, setCreateDraft] = useState('');
@@ -128,9 +135,13 @@ export function FolderTree({
     };
   }, [menu]);
 
+  // A closed row counts its whole subtree, an open row its own items. The
+  // Entries sort reads the totals, so opening a folder never reorders it.
+  const totals = useMemo(() => folderTotals(folders, counts), [folders, counts]);
+
   const sortSiblings = useMemo(
-    () => folderSiblingSorter(sortField, sortDir, counts),
-    [sortField, sortDir, counts],
+    () => folderSiblingSorter(sortField, sortDir, totals),
+    [sortField, sortDir, totals],
   );
 
   const menuFolder = menu ? folders.find((f) => f.id === menu.id) : undefined;
@@ -197,6 +208,7 @@ export function FolderTree({
           e.stopPropagation();
           openMenuAt(f.id, e.clientX, e.clientY);
         }}
+        onGlyphClick={onGlyphClick ? (f) => onGlyphClick(f.id) : undefined}
         // A drag while the tree is sorted by name or entries would vanish
         // under the sort that overrules it, so the drop switches this device
         // to Custom and keeps what the user just did. Locked accounts get
@@ -238,7 +250,7 @@ export function FolderTree({
                 <DotsThree />
               </button>
               <span className="text-xs lg:text-[11px] text-neutral-400 dark:text-neutral-600 tabular-nums ms-1 me-2 lg:me-1.5 shrink-0">
-                {counts.get(f.id) ?? 0}
+                {(isExpanded(f) ? counts : totals).get(f.id) ?? 0}
               </span>
             </>
           )
@@ -406,6 +418,27 @@ export function FolderTree({
                     {looksProMark && <ProMark />}
                   </button>
                 )}
+                <div className="my-1 border-t border-divider" />
+                <button
+                  onClick={() => {
+                    setMenu(null);
+                    expandAll(folders);
+                  }}
+                  className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
+                >
+                  <ArrowsOutLineVertical className="text-accent" />
+                  {t('folders.expandAll')}
+                </button>
+                <button
+                  onClick={() => {
+                    setMenu(null);
+                    collapseAll(folders);
+                  }}
+                  className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
+                >
+                  <ArrowsInLineVertical className="text-accent" />
+                  {t('folders.collapseAll')}
+                </button>
                 <div className="my-1 border-t border-divider" />
               </>
             )}

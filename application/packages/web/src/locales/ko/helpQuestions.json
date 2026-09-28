@@ -7,11 +7,12 @@
   "delete-account": "계정을 어떻게 삭제하나요?",
   "device-limit": "\"기기 한도 도달\"은 무슨 뜻인가요?",
   "forgot-pin": "PIN을 잊었어요. 어떻게 다시 들어가나요?",
-  "guess-phrase": "누군가 제 12단어를 맞히면 제 계정에 로그인할 수 있나요?",
+  "guess-phrase": "누군가 제 12단어를 맞히거나 같은 단어를 갖게 될 수 있나요?",
   "image-quality": "PrivacyNotes가 내 이미지를 바꾸거나 압축하나요?",
   "journal": "저널은 어떻게 작동하고, 무엇을 기록할 수 있나요?",
   "leaving": "PrivacyNotes를 완전히 떠나려면 어떻게 하나요?",
   "locked-vs-protected": "읽기 전용 노트와 PIN 보호 노트는 어떻게 다른가요?",
+  "lost-2fa": "2FA 코드를 잃어버렸어요. 어떻게 다시 들어가나요?",
   "obtainium": "Obtainium으로 안드로이드 앱을 어떻게 설치하나요?",
   "phrase-vs-password": "왜 사용자 이름과 비밀번호 대신 시크릿 문구를 쓰나요?",
   "remove-device": "더 이상 쓰지 않는 기기를 어떻게 제거하나요?",
@@ -22,5 +23,5 @@
   "vault": "보관함이 뭔가요?",
   "vault-totp": "Vault에 2FA 인증 키(TOTP / MFA 코드)를 저장할 수 있나요?",
   "what-syncs": "기기 간에 정확히 무엇이 동기화되고, 무엇이 로컬에 남나요?",
-  "why-no-2fa": "왜 2단계 인증(2FA)이 없나요?"
+  "why-no-2fa": "2단계 인증(2FA)은 어떻게 켜나요?"
 }

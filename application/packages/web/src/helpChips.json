@@ -61,5 +61,8 @@
   ],
   "about": [
     "data-location"
+  ],
+  "twoFactor": [
+    "lost-2fa"
   ]
 }

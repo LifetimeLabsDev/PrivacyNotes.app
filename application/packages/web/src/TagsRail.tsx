@@ -8,14 +8,15 @@ import { HoverLabel } from './HoverLabel';
 import { SortRow } from './ListPrefsPopover';
 import { useEscapeToClose } from './useEscapeToClose';
 import { SidebarOptionsPopover } from './SidebarOptionsPopover';
-import { allViewRows, sidebarViewRows } from './viewRows';
+import { allViewRows, hiddenAtZero, sidebarViewRows } from './viewRows';
 import { TAG_MAX_LENGTH } from './notesRepo';
-import type { UserSettings } from './userSettings';
+import { isShownInAll, type UserSettings } from './userSettings';
 import { subtreeIds, type FolderDef } from './folders';
 import { FolderTree, type FolderTreeProps } from './FolderTree';
+import { useFolderExpansion } from './folderTreeState';
 import type { FolderSortDir, FolderSortField } from './folders';
 import { IconUpgrade, ProMark } from './UpgradeModal';
-import { Star, Hash, DotsThree, PencilSimple, Palette, Trash, X, CaretDown, SquaresFour, List, Sparkle, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, type Icon, PILLAR_GLYPHS } from './icons';
+import { Star, Hash, DotsThree, PencilSimple, Palette, Trash, X, CaretDown, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, ArrowsInLineVertical, ArrowsOutLineVertical, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, type Icon, PILLAR_GLYPHS } from './icons';
 import { isViewShown, type View } from './views';
 import { exemptOpts } from './i18nExempt';
 import { SIDEBAR_ACTIVE, SIDEBAR_ROW_MENU_BUTTON } from './sidebarUI';
@@ -29,6 +30,7 @@ import {
   folderColor,
   folderLookKey,
   isLookColor,
+  lookOf,
   restoreLooks,
   setFolderColor,
   setItemLook,
@@ -37,7 +39,8 @@ import {
   tagLookKey,
   type Look,
 } from './itemStyles';
-import { TagGlyph } from './looks/LookGlyph';
+import { TagGlyph, tintStyle } from './looks/LookGlyph';
+import { useKeyboardOpen } from './useKeyboardOpen';
 import type { LookTarget } from './looks/LookPicker';
 import { useSidebarSplit } from './useSidebarSplit';
 import { isImeComposing } from './imeComposing';
@@ -69,7 +72,7 @@ export interface TagsRailProps {
   setDrawerOpen: (open: boolean) => void;
 
   // About modal
-  setShowAbout: (v: false | { tab?: 'about' | 'changelog' | 'hotkeys' }) => void;
+  setShowAbout: (v: false | { tab?: 'about' | 'changelog' | 'hotkeys' | 'rating' }) => void;
 
   // Feedback modal
   onFeedback: () => void;
@@ -156,7 +159,7 @@ export interface TagsRailProps {
   handleDeleteTagAndNotes: (tag: string) => void;
 
   // Global view mode
-  userSettings: Pick<UserSettings, 'viewMode' | 'hiddenViews' | 'hiddenInAll' | 'itemStyles' | 'tintNotes'>;
+  userSettings: Pick<UserSettings, 'hiddenViews' | 'hiddenInAll' | 'archivedInAll' | 'itemStyles' | 'tintNotes'>;
   mutateSettings: (fn: (prev: UserSettings) => UserSettings) => void;
   /** A free account asked for a folder or tag look: open the upgrade window. */
   onLooksLocked: () => void;
@@ -260,6 +263,10 @@ function FooterAction({
 
 export function TagsRail(props: TagsRailProps) {
   const { t } = useTranslation('shell');
+  const tagColorOf = (tag: string) => {
+    const color = lookOf(props.userSettings.itemStyles, tagLookKey(tag)).color;
+    return isLookColor(color) ? color : null;
+  };
   // Null on web and wherever no updater runs (Play build, iOS), so the dot is
   // absent rather than pointing at a downloads page that isn't the remedy.
   const updateVersion = useUpdateAvailable();
@@ -341,6 +348,10 @@ export function TagsRail(props: TagsRailProps) {
   // A set height only applies while both parts are open; the Markdown pillar
   // has its own rail below the list and no divider.
   const splitActive = !markdownRail && !viewsCollapsed;
+  // A phone keyboard takes half the drawer, and the only fields here are in
+  // the tags and folders part (a new folder, a rename), so the Content part
+  // steps aside while it is up instead of squeezing that field to a sliver.
+  const keyboardUp = useKeyboardOpen() && !markdownRail && !split.folded;
   // The look picker, opened from a folder or a tag row menu at the point the
   // menu stood. Pro, like every folder action; a free account gets the
   // upgrade window instead.
@@ -355,6 +366,18 @@ export function TagsRail(props: TagsRailProps) {
     return id ? [...subtreeIds(folders, id)].filter((f) => f !== id) : [];
   }, [folders, lookEdit]);
   const foldersById = useMemo(() => new Map(folders.map((f) => [f.id, f])), [folders]);
+  // One row in the sort popover folds the whole tree back to its top level,
+  // or opens it all when nothing is open. Locked accounts browse the tree
+  // too, so it is not only in the row menu, which is their upsell gate.
+  const folderExpansion = useFolderExpansion();
+  const folderParents = useMemo(() => new Set(folders.map((f) => f.parentId)), [folders]);
+  const treeHasBranches = folders.some((f) => folderParents.has(f.id));
+  const anyFolderOpen = folders.some((f) => folderParents.has(f.id) && folderExpansion.isExpanded(f));
+  // A click on a folder or tag icon opens its look picker, for the accounts
+  // that can use it. Mouse only: on touch the icon is part of the row a
+  // thumb taps to open, and the row menu still carries "Icon and color".
+  const glyphOpensLook =
+    proUnlocked(isPro) && typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches;
   function openLook(target: LookTarget) {
     if (!proUnlocked(isPro)) {
       onLooksLocked();
@@ -368,6 +391,14 @@ export function TagsRail(props: TagsRailProps) {
     setLookEdit({
       target,
       before: { looks: snapshotLooks(userSettings.itemStyles, keys), tintNotes: userSettings.tintNotes },
+    });
+  }
+  function openFolderLook(id: string) {
+    openLook({
+      kind: 'folder',
+      lookKey: folderLookKey(id),
+      folderId: id,
+      name: foldersById.get(id)?.name ?? '',
     });
   }
   const [tagSortOpen, setTagSortOpen] = useState(false);
@@ -449,6 +480,8 @@ export function TagsRail(props: TagsRailProps) {
       <div key={tag} className="relative">
         <div
           className={rowClass}
+          // The tag's color on its row, as on a folder row (FolderTreeView).
+          style={tintStyle(tagColorOf(tag))}
           onContextMenu={(e) => {
             // Right-click opens the tag actions menu at the cursor,
             // mirroring the folder tree rows. Suppress the app's
@@ -461,8 +494,12 @@ export function TagsRail(props: TagsRailProps) {
         >
           <button
             type="button"
-            onClick={() => {
+            onClick={(e) => {
               if (isRenaming) return;
+              if (glyphOpensLook && (e.target as HTMLElement).closest('[data-tag-glyph]')) {
+                openLook({ kind: 'tag', lookKey: tagLookKey(tag), name: tag, favorite: isFavorite });
+                return;
+              }
               // Second click on the active tag clears the filter, the way a
               // folder row does (FolderTree.renderRow). With tag + folder +
               // view composing, nothing else in the rail would.
@@ -478,7 +515,10 @@ export function TagsRail(props: TagsRailProps) {
                 keeps its brighter amber-400 on top of that, around its star
                 or around the icon it wears. A tag's own color wins over
                 both (TagGlyph). */}
-            <span className={`inline-flex shrink-0 ${active ? 'text-accent' : isFavorite ? 'text-amber-400' : 'text-amber-600/80 dark:text-amber-500/80'}`}>
+            <span
+              data-tag-glyph
+              className={`inline-flex shrink-0 ${active ? 'text-accent' : isFavorite ? 'text-amber-400' : 'text-amber-600/80 dark:text-amber-500/80'}${glyphOpensLook ? ' pn-look-glyph' : ''}`}
+            >
               <TagGlyph tag={tag} favorite={isFavorite} size={16} />
             </span>
             {isRenaming ? (
@@ -659,42 +699,6 @@ export function TagsRail(props: TagsRailProps) {
           <span>{t('common:actions.close')}</span>
         </button>
       </div>
-      {/* View toggle - Auto icon + List / Grid segmented. Global, every view. */}
-      <div className="shrink-0 px-3 pt-3 flex items-stretch gap-1.5">
-        <HoverLabel label={t('tagsRail.viewAuto', exemptOpts('shell:tagsRail.viewAuto'))} position="end">
-          <button
-            type="button"
-            onClick={() => mutateSettings((prev) => ({ ...prev, viewMode: 'auto' }))}
-            aria-pressed={userSettings.viewMode === 'auto'}
-            aria-label={t('tagsRail.viewAuto', exemptOpts('shell:tagsRail.viewAuto'))}
-            className={`h-full px-2 rounded-md border inline-flex items-center justify-center transition ${
-              userSettings.viewMode === 'auto'
-                ? `${SIDEBAR_ACTIVE} border-accent`
-                : 'border-divider text-neutral-500 hover:text-accent hover:border-accent/50 dark:text-neutral-400 dark:hover:text-accent'
-            }`}
-          >
-            <Sparkle size={15} />
-          </button>
-        </HoverLabel>
-        <div className="flex-1 min-w-0 flex rounded-md border border-divider overflow-hidden">
-          {(['list', 'grid'] as const).map((mode) => (
-            <button
-              key={mode}
-              type="button"
-              onClick={() => mutateSettings((prev) => ({ ...prev, viewMode: mode }))}
-              aria-pressed={userSettings.viewMode === mode}
-              className={`flex-auto min-w-0 inline-flex items-center justify-center gap-1 px-1.5 py-1 text-[12px] font-medium transition ${
-                userSettings.viewMode === mode
-                  ? SIDEBAR_ACTIVE
-                  : 'text-neutral-500 hover:text-accent dark:text-neutral-400 dark:hover:text-accent'
-              }`}
-            >
-              {mode === 'list' ? <List size={13} className="shrink-0" /> : <SquaresFour size={13} className="shrink-0" />}
-              <span className="truncate">{mode === 'list' ? t('tagsRail.viewList') : t('tagsRail.viewGrid')}</span>
-            </button>
-          ))}
-        </div>
-      </div>
       {/* The caption row sits OUTSIDE the scrolling box below, and that is what
           lets it carry a tip at all. The row list is `overflow-y-auto`, and CSS
           forces overflow-x to `auto` with it, so that box clips on BOTH axes -
@@ -705,7 +709,7 @@ export function TagsRail(props: TagsRailProps) {
           2026-08-22). Spec: ops/docs/plans/sidebar-views.md */}
       <div
         ref={contentSectionRef}
-        className={`min-h-0 flex flex-col py-3 ${markdownRail ? 'shrink border-b border-divider' : split.folded ? 'flex-1' : 'shrink'}`}
+        className={`min-h-0 flex flex-col py-3 ${keyboardUp ? 'hidden' : ''} ${markdownRail ? 'shrink border-b border-divider' : split.folded ? 'flex-1' : 'shrink'}`}
         style={splitActive && !split.folded && split.height !== null ? { flex: `0 1 ${split.height}px` } : undefined}
       >
         <div className="shrink-0 px-3">
@@ -811,7 +815,7 @@ export function TagsRail(props: TagsRailProps) {
               onToggle={(key) => onToggleHidden('hiddenInAll', key)}
               options={allOptionRows.map((r) => ({
                 ...r,
-                checked: !userSettings.hiddenInAll.includes(r.key),
+                checked: isShownInAll(userSettings, r.key),
               }))}
             />
           )}
@@ -826,11 +830,9 @@ export function TagsRail(props: TagsRailProps) {
             Spec: ops/docs/plans/start-view.md (one row list, one label namespace) */}
         {sidebarViewRows(t).map((r) => {
           if (!showRow(r.key)) return null;
-          // Pinned hides at zero (same rule as Untagged further down) - an
-          // empty list is a row of dead menu space. It stays while it IS the
-          // current view so unpinning the last note doesn't yank the row
-          // you're standing on out from under you.
-          if (r.key === 'starred' && !(viewCounts.starred ?? 0) && view !== 'starred') return null;
+          // Pinned and Archive hide at zero (same rule as Untagged further
+          // down), and stay while they are the open view.
+          if (hiddenAtZero(r.key, viewCounts[r.key], view)) return null;
           const count = viewCounts[r.key];
           const row = (
             <button
@@ -882,7 +884,7 @@ export function TagsRail(props: TagsRailProps) {
       <div
         {...split.separatorProps}
         aria-label={t('tagsRail.resizeSplit')}
-        className="pn-hstrip shrink-0 h-3 border-t border-b border-divider bg-surface-0 hover:bg-surface-1 text-pn-muted hover:text-accent transition"
+        className={`pn-hstrip shrink-0 h-3 border-t${keyboardUp ? ' hidden' : ''} border-b border-divider bg-surface-0 hover:bg-surface-1 text-pn-muted hover:text-accent transition`}
       >
         <span className="pn-hstrip-dots" aria-hidden="true" />
       </div>
@@ -894,8 +896,8 @@ export function TagsRail(props: TagsRailProps) {
          onBrowseChange (NotesView). */}
       <div className="shrink-0 relative px-3 pt-3">
         <div className="flex items-stretch gap-1.5 mb-1">
-          {/* Sort button on the left, pill on the right - the exact
-              composition of the Auto + List/Grid row above. The hover
+          {/* Sort button on the left, pill on the right - the same
+              composition as the layout switch (ViewModeToggle). The hover
               label is suppressed while the popover is open so the two
               never overlap. */}
           {(browseMode === 'tags' ? tagCounts.tags.length > 0 : folders.length > 0) && (
@@ -987,6 +989,26 @@ export function TagsRail(props: TagsRailProps) {
                         />
                       </div>
                     )}
+                    {browseMode === 'folders' && treeHasBranches && (
+                      <div className="mt-2 pt-2 border-t border-divider">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (anyFolderOpen) folderExpansion.collapseAll(folders);
+                            else folderExpansion.expandAll(folders);
+                            setTagSortOpen(false);
+                          }}
+                          className="w-full flex items-center gap-2 px-2 py-1.5 rounded text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 transition"
+                        >
+                          {anyFolderOpen ? (
+                            <ArrowsInLineVertical className="text-accent" aria-hidden="true" />
+                          ) : (
+                            <ArrowsOutLineVertical className="text-accent" aria-hidden="true" />
+                          )}
+                          {anyFolderOpen ? t('folders.collapseAll') : t('folders.expandAll')}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -1050,14 +1072,8 @@ export function TagsRail(props: TagsRailProps) {
             locked={foldersLocked}
             looksProMark={!isPro}
             onLockedAction={onFoldersLockedAction}
-            onEditLook={(id) =>
-              openLook({
-                kind: 'folder',
-                lookKey: folderLookKey(id),
-                folderId: id,
-                name: foldersById.get(id)?.name ?? '',
-              })
-            }
+            onEditLook={openFolderLook}
+            onGlyphClick={glyphOpensLook ? openFolderLook : undefined}
             sortField={folderSortField}
             sortDir={folderSortDir}
             mobileTabIndex={mobileTabIndex}

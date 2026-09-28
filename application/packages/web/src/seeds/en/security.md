@@ -32,7 +32,7 @@ Every option keeps your notes encrypted on your device. They differ in where you
 
 The bottom two mean we could not read a note even if we were compelled to. The first trades that away for convenience: your phrase sits on our server under a key of ours, so a new device needs nothing but your login. If our server were ever breached, that key could be exposed.
 
-Signed in with Google, Apple or GitHub? You can switch between the first two later, in **Settings > Security > Your Phrase**. With a phrase-only account, the phrase always stays with you.
+Signed in with Google, Apple or GitHub? You can switch between the first two later, in **Settings > Account > Key custody**. With a phrase-only account, the phrase always stays with you.
 
 > [!warning] Keep your own copy of the phrase
 > Your phrase opens your notes. If you lose it, nobody can recover it for you, us included. <span style="color: #e03131">Write it on paper today.</span>

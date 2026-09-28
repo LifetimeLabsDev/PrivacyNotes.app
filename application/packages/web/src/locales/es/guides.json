@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "Las notas Super, las listas de verificación y los códigos 2FA conservan su forma",
+          "p": [
+            "Las notas Super conservan sus encabezados, listas, listas de verificación, tablas, bloques de código, colores y secciones plegables. Las listas de verificación llegan a Tareas, las hojas de cálculo se convierten en tablas y las entradas del autenticador se convierten en inicios de sesión en la Bóveda, con su clave 2FA. Las etiquetas anidadas se convierten en carpetas, y cada nota conserva también sus etiquetas.",
+            "Los archivos que subiste a Standard Notes se quedan en su servidor, así que la copia solo guarda sus nombres. Cada nota importada marca dónde había un archivo. Descarga esos archivos de Standard Notes y vuelve a añadirlos a la nota."
+          ]
+        },
+        {
           "h": "Las copias cifradas no se admiten",
           "p": [
             "Una copia cifrada de Standard Notes es texto cifrado que solo tu contraseña de Standard Notes puede abrir, así que el importador no puede leerla. Si exportaste la variante cifrada, exporta de nuevo eligiendo descifrado. Como el archivo contiene tus notas en claro, bórralo al terminar la importación.",

@@ -43,6 +43,19 @@ export const HOTKEY_GROUPS: HotkeyGroup[] = [
     ],
   },
   {
+    // Mouse gestures on a list row or grid tile. Cmd-click is the platform's
+    // multi-select, so opening a tab takes Option-click, the one modifier a
+    // row leaves free. Spec: ops/docs/plans/note-tabs.md (section 2)
+    title: 'Lists',
+    i18nKey: 'lists',
+    rows: [
+      { keys: '⌘Click', label: 'Select several items', i18nKey: 'selectSeveral' },
+      { keys: '⇧Click', label: 'Select a range (while selecting)', i18nKey: 'selectRange' },
+      { keys: '⌥Click', label: 'Open in a tab (a middle-click works too)', i18nKey: 'openInTab' },
+      { keys: '⌥⇧W', label: 'Close the tab', i18nKey: 'closeTab' },
+    ],
+  },
+  {
     title: 'Editor',
     i18nKey: 'editor',
     rows: [

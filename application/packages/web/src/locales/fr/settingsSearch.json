@@ -66,6 +66,7 @@
     "about_dataStorage": "données, serveur, lieu de stockage, où sont stockées, confidentialité",
     "about_changelog": "notes de version, nouveautés, quoi de neuf, mises à jour",
     "about_hotkeys": "raccourcis clavier, raccourcis, touches, hotkeys",
-    "about_rating": "avis, noter, évaluer, étoiles, App Store"
+    "about_rating": "avis, noter, évaluer, étoiles, App Store",
+    "appearance_openInTabs": "onglets, barre d'onglets, navigateur, ouvrir"
   }
 }

@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "Poznámky Super, zaškrtávací seznamy a kódy 2FA si zachovají podobu",
+          "p": [
+            "Poznámky Super si zachovají nadpisy, seznamy, zaškrtávací seznamy, tabulky, bloky kódu, barvy a sbalitelné sekce. Zaškrtávací seznamy skončí v Úkolech, tabulkové poznámky se stanou tabulkami a položky autentizátoru se stanou přihlašovacími údaji v Trezoru i s klíčem 2FA. Vnořené značky se stanou složkami a každá poznámka si navíc ponechá své značky.",
+            "Soubory nahrané do Standard Notes zůstávají na jejich serveru, takže záloha obsahuje jen jejich názvy. Každá importovaná poznámka označí místo, kde byl soubor. Stáhni tyto soubory ze Standard Notes a přidej je do poznámky znovu."
+          ]
+        },
+        {
           "h": "Šifrované zálohy nepodporujeme",
           "p": [
             "Šifrovaná záloha ze Standard Notes je šifrovaný text, který otevře jedině tvoje heslo ke Standard Notes, takže ji PrivacyNotes nepřečte. Pokud ti vznikla šifrovaná varianta, exportuj znovu a zvol dešifrovanou. Soubor obsahuje tvoje poznámky v čitelné podobě, takže ho po dokončení importu smaž.",

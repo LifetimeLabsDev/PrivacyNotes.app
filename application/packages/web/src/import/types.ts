@@ -18,18 +18,6 @@
 
 import type { FolderDef } from '../folders';
 
-/**
- * Tag applied to notes the source app had archived (Standard Notes,
- * Google Keep). PrivacyNotes has no archive view, and sending them to
- * the trash would hand them to the auto-purge, which permanently deletes
- * anything that outlives the retention window - so an archive would
- * quietly become a 30-day timer. They import as ordinary notes wearing
- * this tag instead, which gives the user a one-click filter that behaves
- * like the archive they came from. Shared so both importers, and the
- * next one that needs it, agree on the name.
- */
-export const ARCHIVED_TAG = 'archived';
-
 /** One note, normalized to the shape PrivacyNotes cares about. */
 export interface ImportedNote {
   /**
@@ -55,6 +43,8 @@ export interface ImportedNote {
   trashed?: boolean;
   /** Optional - only set if the source format has a star/pin flag. */
   starred?: boolean;
+  /** Optional - only set if the source format has an archive flag. */
+  archived?: boolean;
   /** Note type - 'note' | 'login' | 'card' | 'ssh-key'. Defaults to 'note'. */
   type?: import('@notes/shared').NoteType;
   /** Pro: prevent accidental edits. */
@@ -147,6 +137,7 @@ export type ImporterId =
   | 'google-keep'
   | 'obsidian'
   | 'notesnook'
+  | 'joplin'
   | 'upnote'
   | 'apple-notes'
   | 'apple-journal'

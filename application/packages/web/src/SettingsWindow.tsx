@@ -95,10 +95,12 @@ export function SettingsWindow({ categories, initialCategory, defaultCategory, f
     changeQuery('');
   }
 
-  function openCategory(id: string) {
+  function openCategory(id: string, tab?: string) {
     if (query) clearSearch();
-    setLanding(null);
+    setLanding(tab ? { id, tab, flash: false } : null);
     setActiveId(id);
+    // A landing on a tab remounts the pane, which opens on it.
+    if (tab) setPaneKey((k) => k + 1);
   }
 
   function pick(hit: Hit) {

@@ -1,4 +1,4 @@
-> Status: living reference. Last verified: v0.530.0 (2026-09-25); section 2's stop-short paragraph against the tree UNCOMMITTED at v0.530.4 (2026-09-25, halted-push change-set).
+> Status: living reference. Last verified: v0.551.1 (2026-09-28).
 
 # Sync protocol
 
@@ -27,8 +27,22 @@ nonce per row, keyed by client-generated UUID, scoped by
 | `deleted_at`  | timestamptz | Tombstone. NULL = live. Set on permanent delete    |
 
 Plaintext `title`, `body`, `tags`, `trashed`, `starred`, `locked`,
-`pinProtected`, `type`, and `trackers` all ride inside the encrypted
-payload. The server never sees them.
+`pinProtected`, `type`, `trackers`, `folderId` and `archived` all ride
+inside the encrypted payload. The server never sees them.
+
+`archived` is always written, `false` included. A client before v0.551.0
+rebuilds the payload from a fixed field list, so everything it writes
+lacks the field, and v0.551.0 itself wrote it only when true. A reader
+therefore takes an absent `archived` as "this writer did not know" and
+keeps the value it holds for the note (`fieldsOfPayload`'s
+`archivedIfAbsent`: the local row's flag on a pull and in the push
+merge). A pull that kept a flag the payload lacked leaves the row dirty,
+so the same pass restates it on the server and a device without the row
+reads it too. Two residuals: an unarchive made on a v0.551.0 client is
+not seen by later clients, and a device that missed a newer explicit
+`false` and then pulls an older client's edit restores its own `true`.
+`tests/sync/scenarios-archive-compat.test.ts` runs a v0.550.1 writer
+(`tests/sync/legacy-0550/`) against current clients.
 
 Local mirror lives in Dexie (`packages/web/src/db.ts`, table `notes`)
 with extra bookkeeping columns: `dirty` (1 = unsynced local change),
@@ -246,8 +260,8 @@ Each sync pass runs in this order:
 
    **The conflict path merges field by field against the base**
    (`mergeNoteFields`). Fields: title, body, tags, trashed, starred,
-   locked, pinProtected, type, folderId, trackers. Unchanged on both
-   sides: the base value. Changed on one side only: that side,
+   locked, pinProtected, type, folderId, trackers, archived. Unchanged
+   on both sides: the base value. Changed on one side only: that side,
    whichever stamp is newer. Changed on both to the same value: that
    value. Changed on both to different values: the body opens the
    ConflictModal; tags take a three-way set merge (the base plus what
@@ -309,7 +323,14 @@ value from the device that edited the note last, without a dialog
 (section 7). "Use mine"
 verifies its push actually landed (`.select('id')`); a write that did
 not land leaves the note dirty instead of recording an unpushed version
-as synced. Tombstones override local edits - if a note was permanently
+as synced. Below the release floor or under the user's pause, "Use
+mine" writes nothing to the server: it keeps the answer on the row,
+dirty over the generation the dialog showed with that version as its
+base, so the first pass after the block lifts pushes it there (or merges
+it, if the server moved again) without asking twice. The push phase also
+re-checks the block before every write batch, so a floor that arrives
+while a pass is running stops that pass (`halted.reason: 'blocked'`)
+with its rows still dirty. Tombstones override local edits - if a note was permanently
 deleted on device A, an offline edit on device B is discarded along
 with the row on B's next sync.
 

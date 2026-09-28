@@ -108,7 +108,10 @@
     "open": "Obre",
     "notesHeading": "Notes",
     "fillOneField": "Omple almenys un camp abans de desar.",
-    "expiryNeedsBoth": "La caducitat necessita mes i any, o deixa tots dos camps buits."
+    "expiryNeedsBoth": "La caducitat necessita mes i any, o deixa tots dos camps buits.",
+    "customField": "Camp personalitzat",
+    "fieldNeedsName": "Posa nom a cada camp personalitzat.",
+    "saveFailed": "No s'ha pogut desar. Els teus canvis encara hi són."
   },
   "fileTypes": {
     "audio": "Àudio",
@@ -148,6 +151,7 @@
     "allItems": "Tot",
     "pinnedTooltip": "Elements fixats",
     "pinned": "Fixats",
+    "archive": "Arxiu",
     "notesTooltip": "Totes les notes",
     "notes": "Notes",
     "tasksTooltip": "Tasques de totes les notes",
@@ -214,6 +218,8 @@
     "noMatches": "Cap carpeta coincident",
     "collapse": "Replega",
     "expand": "Desplega",
+    "collapseAll": "Replega-ho tot",
+    "expandAll": "Desplega-ho tot",
     "reorder": "Reordena {{folder}}",
     "saveName": "Desa el nom de la carpeta",
     "actionsForFolder": "Accions per a la carpeta {{folder}}",
@@ -222,21 +228,27 @@
   },
   "collapsedSidebar": {
     "newNote": "Nota nova",
-    "cycleView": "Canvia la vista (auto, llista, graella)",
     "expandSidebar": "Desplega la barra lateral"
   },
   "mobileHeader": {
     "openMenu": "Obre el menú"
   },
   "noteOptionsMenu": {
+    "color": "Color",
+    "colorNone": "Sense color",
+    "colorUseDefault": "Per defecte",
+    "colorFromFolder": "De la carpeta: {{name}}",
+    "colorFromTag": "De l'etiqueta: #{{name}}",
+    "details": "Detalls",
     "readOnly": "Només de lectura",
     "readOnlyDescription": "Cap edició fins que ho desactivis.",
     "protect": "Protegeix",
-    "protectDescription": "Amaga el contingut darrere el PIN o la biometria. El títol continua visible.",
     "convertToJournal": "Converteix en entrada de diari",
     "convertToNote": "Converteix en nota",
     "unpin": "Desfixa",
     "pin": "Fixa",
+    "archive": "Arxiva",
+    "unarchive": "Desarxiva",
     "burn": "Burn",
     "share": "Comparteix",
     "trash": "Paperera",
@@ -244,17 +256,15 @@
     "restore": "Restaura",
     "deleteForever": "Suprimeix per sempre",
     "moveToFolder": "Mou a una carpeta",
-    "noteHistory": "Historial de la nota",
-    "noteHistoryDescription": "Restaura qualsevol de les 20 últimes versions.",
-    "showMarkdownDescription": "Edita el markdown en brut.",
-    "showFormattedDescription": "Torna a l'editor amb format.",
+    "noteHistory": "Historial",
     "findReplace": "Cerca i substitueix",
+    "uncheckAllTasks": "Desmarca totes les tasques",
     "comingSoon": "Properament",
     "noteOptions": "Opcions de la nota",
     "lastModified": "Última modificació: {{date}}",
     "created": "Creada: {{date}}",
     "size": "Emmagatzematge usat: {{size}}",
-    "sizeHint": "Mida xifrada total d'aquesta nota.",
+    "sizeHint": "Mida xifrada total d'aquest element.",
     "tagCount_one": "{{count}} etiqueta",
     "tagCount_other": "{{count}} etiquetes",
     "tagCount_many": "{{count}} etiquetes"
@@ -264,6 +274,8 @@
     "exitSelection": "Surt de la selecció",
     "unpin": "Desfixa",
     "pin": "Fixa",
+    "archive": "Arxiva",
+    "unarchive": "Desarxiva",
     "tag": "Etiqueta",
     "export": "Exporta",
     "delete": "Suprimeix",
@@ -275,6 +287,8 @@
   },
   "listPrefs": {
     "listPreferences": "Preferències de la llista",
+    "layout": "Disseny",
+    "layoutDeviceOnly": "S'aplica només a aquest dispositiu",
     "sortBy": "Ordena per",
     "dateCreated": "Data de creació",
     "dateModified": "Data de modificació",
@@ -282,6 +296,7 @@
     "size": "Mida",
     "view": "Visualització",
     "showPreview": "Mostra la previsualització",
+    "longPreview": "Text de previsualització més llarg",
     "showDate": "Mostra la data",
     "showTags": "Mostra la carpeta i les etiquetes",
     "other": "Altres",
@@ -325,6 +340,8 @@
     "deleteForever": "Suprimeix per sempre",
     "unpin": "Desfixa",
     "pin": "Fixa",
+    "archive": "Arxiva",
+    "unarchive": "Desarxiva",
     "duplicate": "Duplica",
     "moveToFolder": "Mou a una carpeta",
     "exportAsMarkdown": "Exporta com a Markdown",
@@ -336,7 +353,13 @@
     "newContact": "Contacte nou",
     "openBookmark": "Obre",
     "copyBookmarkUrl": "Copia l'URL",
-    "editBookmark": "Edita el marcador"
+    "editBookmark": "Edita el marcador",
+    "openInTab": "Obre en una pestanya",
+    "closeTab": "Tanca la pestanya",
+    "closeOtherTabs": "Tanca les altres pestanyes",
+    "closeAllTabs": "Tanca totes les pestanyes",
+    "pinTab": "Fixa la pestanya",
+    "unpinTab": "Desfixa la pestanya"
   },
   "demoBanner": {
     "title": "Prova-ho sense cap risc",
@@ -358,6 +381,8 @@
     "braveSteps": "Enganxa això a la barra d'adreces del Brave, posa \"{{flag}}\" a Enabled i reinicia el Brave.",
     "braveAppAlternative": "O fes servir l'aplicació d'escriptori",
     "openFailed": "No s'ha pogut obrir aquest fitxer.",
+    "linkNotFound": "No hi ha cap fitxer «{{target}}» en aquesta carpeta.",
+    "linkNeedsFolder": "Obre la carpeta per seguir els enllaços.",
     "saveFailed": "No s'ha pogut desar al disc.",
     "saving": "S'està desant…",
     "savedToDisk": "Desat al disc",
@@ -594,5 +619,9 @@
   },
   "looks": {
     "menu": "Icona i color"
+  },
+  "tabStrip": {
+    "label": "Pestanyes obertes",
+    "close": "Tanca {{title}}"
   }
 }

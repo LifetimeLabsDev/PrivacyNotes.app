@@ -75,7 +75,21 @@
   },
   "burnShareModal": {
     "title": "Share & Burn After Reading",
-    "body": "<lead>Your original note will not be deleted.</lead> It stays safe in your account. The burn link is a separate encrypted copy that self-destructs after being read. Link expires after 24 hours, whether opened or not.",
+    "body": "<lead>Your original note will not be deleted.</lead> It stays safe in your account. The burn link is a separate encrypted copy that self-destructs after being read.",
+    "readTime": "Reading time",
+    "readTimeHint": "Clears from the screen after",
+    "lifetime": "Link expires",
+    "lifetimeHint": "If nobody opens it",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes",
+    "hours_one": "{{count}} hour",
+    "hours_other": "{{count}} hours",
+    "afterHours_one": "After {{count}} hour",
+    "afterHours_other": "After {{count}} hours",
+    "afterDays_one": "After {{count}} day",
+    "afterDays_other": "After {{count}} days",
+    "create": "Create and copy link",
+    "share": "Share link",
     "imagesStripped": "Only text is shown, files are hidden in this note.",
     "copied": "Copied"
   },
@@ -89,7 +103,7 @@
     "footerTagline": "- Zero-knowledge encrypted notes, hosted in Switzerland.",
     "sealed": {
       "heading": "You received an encrypted note.",
-      "subheading": "This message will self-destruct after reading. Unread links expire after 24 hours.",
+      "subheading": "This message will self-destruct after reading. Unread links expire on their own.",
       "reveal": "Reveal Message",
       "warning": "The server deletes the note the moment you reveal it. No second chances."
     },
@@ -105,7 +119,7 @@
     },
     "gone": {
       "heading": "This note is gone.",
-      "body": "It was already read or has expired. Burn links can only be opened once and expire after 24 hours."
+      "body": "It was already read or has expired. Burn links can only be opened once and expire on their own."
     },
     "error": {
       "heading": "Something went wrong.",

@@ -203,6 +203,7 @@ export function useExports({
         pinProtected: n.pinProtected === 1,
         trackers: n.trackers,
         folderId: n.folderId ?? null,
+        archived: n.archived === 1,
       })),
       warnings: [],
       transforms: [],

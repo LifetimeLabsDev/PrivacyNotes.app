@@ -138,7 +138,7 @@
     "freeSubLabel": "Bez platební karty, bez časového omezení.",
     "freeAllPillars": "Poznámky, úkoly, soubory, trezor, deník a záložky",
     "freeSync": "Synchronizace mezi 2 zařízeními",
-    "freeVault": "Šifrovaný trezor souborů, 5 MB na soubor",
+    "freeVault": "50 MB místa, až 5 MB na soubor",
     "freeSearch": "Fulltextové hledání + značky",
     "freeImport": "Import a export, včetně Keep a Obsidianu",
     "freeBurn": "Spálit po přečtení",
@@ -327,6 +327,7 @@
       "fixed": "Opraveno"
     },
     "changelogComingSoon": "Changelog bude už brzy.",
+    "changelogLatest": "Nejnovější",
     "hotkeysFootnote": "Většina zkratek se ignoruje, když píšeš do textového pole, takže obyčejné klávesy jako J a K pořád píšou J a K."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "Většina lidí nám nikdy nic nezaplatí a je to tak schválně. Hodnocení je krásný způsob, jak poděkovat.",
     "outro": "Čteme každé hodnocení a pár slov od někoho, kdo aplikaci používá denně, nás drží nad vodou.",
     "descGithub": "Dej nám hvězdičku na GitHubu",
+    "descAppStore": "Ohodnoť PrivacyNotes v App Storu",
     "descAlternativeTo": "Ohodnoť nás a napiš recenzi na webu AlternativeTo",
     "descCapterra": "Ohodnoť PrivacyNotes na webu Capterra",
     "descSaasHub": "Ohodnoť nás a napiš recenzi na webu SaaSHub",

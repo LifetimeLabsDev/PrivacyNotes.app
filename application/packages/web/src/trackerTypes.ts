@@ -8,6 +8,8 @@
  * See ops/docs/mood-wellness-tracker.md for the full feature spec.
  */
 
+import { mergeLoginExtras } from './loginExtras';
+
 // ------------------------------------------------------------------
 // Emotion tags - 24 fixed tags, clinically validated (PANAS-X, PHQ-9, GAD-7)
 // ------------------------------------------------------------------
@@ -260,7 +262,21 @@ const POUND_REGIONS = new Set(['US', 'LR', 'MM']);
 
 function defaultWeightUnit(): WeightUnit {
   if (typeof navigator === 'undefined') return 'kg';
-  const region = new Intl.Locale(navigator.language || 'en').region;
+  // The platform decides what `navigator.language` says, and nothing
+  // requires it to be a tag Intl accepts. A Linux box whose system locale
+  // is `C`, or one that reports the POSIX underscore form `en_US`, hands
+  // over exactly that string, and the constructor answers with a
+  // RangeError rather than an empty region. This runs while the first
+  // screen is being built, so the throw reaches React before anything is
+  // painted. Kilograms is the answer for every region outside the set
+  // above, which makes it the right answer for a region that cannot be
+  // read at all.
+  let region: string | undefined;
+  try {
+    region = new Intl.Locale(navigator.language || 'en').region;
+  } catch {
+    return 'kg';
+  }
   return region && POUND_REGIONS.has(region) ? 'lb' : 'kg';
 }
 
@@ -385,6 +401,8 @@ function unionById(
  *   different entries both survive; the same entry resolves local-wins.
  * - `emotions` unions as a set. A tag re-appearing is one tap to undo; a
  *   tag vanishing is invisible.
+ * - `login` (a login's custom fields and extra websites) merges the same
+ *   way, in mergeLoginExtras.
  * - Every other key resolves local-wins, unchanged from before: without a
  *   common base there is no way to tell which side moved a scalar, and
  *   local is the more recent intent on this device.
@@ -404,6 +422,9 @@ export function mergeTrackers(
     const l = Array.isArray(local.emotions) ? local.emotions : [];
     const r = Array.isArray(remote.emotions) ? remote.emotions : [];
     merged.emotions = [...new Set([...r, ...l])];
+  }
+  if (local.login !== undefined && remote.login !== undefined) {
+    merged.login = mergeLoginExtras(local.login, remote.login);
   }
   return merged;
 }

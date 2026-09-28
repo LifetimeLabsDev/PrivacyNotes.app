@@ -51,6 +51,8 @@ export interface BackupNote {
   pinProtected?: number;
   trackers?: Record<string, unknown>;
   folderId?: string | null;
+  /** Written sparsely, like `trashed`: present only when 1. */
+  archived?: number;
 }
 
 export interface BackupPayload {
@@ -98,6 +100,7 @@ export function buildBackupPayload(
       locked: n.locked,
       pinProtected: n.pinProtected,
       ...(n.folderId ? { folderId: n.folderId } : {}),
+      ...(n.archived ? { archived: 1 } : {}),
       ...(n.trackers && Object.keys(n.trackers).length > 0 ? { trackers: n.trackers } : {}),
     })),
     ...(folders.length > 0 ? { folders } : {}),

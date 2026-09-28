@@ -138,7 +138,7 @@
     "freeSubLabel": "Sem cartão de crédito, sem prazo.",
     "freeAllPillars": "Notas, tarefas, ficheiros, cofre, diário e marcadores",
     "freeSync": "Sincronização entre 2 dispositivos",
-    "freeVault": "Cofre de ficheiros encriptado, 5 MB por ficheiro",
+    "freeVault": "50 MB de armazenamento, até 5 MB por ficheiro",
     "freeSearch": "Pesquisa em texto integral + etiquetas",
     "freeImport": "Importação e exportação, incluindo Keep e Obsidian",
     "freeBurn": "Queimar Após Ler",
@@ -327,6 +327,7 @@
       "fixed": "Corrigido"
     },
     "changelogComingSoon": "Changelog em breve.",
+    "changelogLatest": "Mais recente",
     "hotkeysFootnote": "A maioria dos atalhos é ignorada enquanto escreves num campo de texto, por isso teclas normais como J e K continuam a escrever J e K."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "A maioria das pessoas nunca nos paga nada, e isso é intencional. Uma avaliação é uma forma bonita de dizer obrigado.",
     "outro": "Lemos todas as avaliações, e umas palavras de quem usa a app todos os dias é o que nos mantém a andar.",
     "descGithub": "Dá uma estrela no GitHub",
+    "descAppStore": "Avalia o PrivacyNotes na App Store",
     "descAlternativeTo": "Marca gosto e avalia no AlternativeTo",
     "descCapterra": "Avalia o PrivacyNotes no Capterra",
     "descSaasHub": "Marca gosto e avalia no SaaSHub",

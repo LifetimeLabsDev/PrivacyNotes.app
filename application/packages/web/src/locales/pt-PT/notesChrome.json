@@ -75,7 +75,21 @@
   },
   "burnShareModal": {
     "title": "Partilhar e Queimar Após Ler",
-    "body": "<lead>A tua nota original não será eliminada.</lead> Continua segura na tua conta. O burn link é uma cópia encriptada separada que se autodestrói depois de lida. O link expira ao fim de 24 horas, aberto ou não.",
+    "body": "<lead>A tua nota original não será eliminada.</lead> Continua segura na tua conta. O burn link é uma cópia encriptada separada que se autodestrói depois de lida.",
+    "readTime": "Tempo de leitura",
+    "readTimeHint": "Depois desaparece do ecrã",
+    "lifetime": "O link expira",
+    "lifetimeHint": "Se ninguém o abrir",
+    "minutes_one": "{{count}} minuto",
+    "minutes_other": "{{count}} minutos",
+    "hours_one": "{{count}} hora",
+    "hours_other": "{{count}} horas",
+    "afterHours_one": "Ao fim de {{count}} hora",
+    "afterHours_other": "Ao fim de {{count}} horas",
+    "afterDays_one": "Ao fim de {{count}} dia",
+    "afterDays_other": "Ao fim de {{count}} dias",
+    "create": "Criar e copiar link",
+    "share": "Partilhar link",
     "imagesStripped": "Apenas o texto é apresentado, os ficheiros ficam ocultos nesta nota.",
     "copied": "Copiado"
   },
@@ -89,7 +103,7 @@
     "footerTagline": "- Notas com encriptação de zero conhecimento, alojadas na Suíça.",
     "sealed": {
       "heading": "Recebeste uma nota encriptada.",
-      "subheading": "Esta mensagem vai autodestruir-se após a leitura. Os links não lidos expiram ao fim de 24 horas.",
+      "subheading": "Esta mensagem vai autodestruir-se após a leitura. Os links não lidos expiram sozinhos.",
       "reveal": "Revelar mensagem",
       "warning": "O servidor elimina a nota no momento em que a revelas. Não há segunda oportunidade."
     },
@@ -105,7 +119,7 @@
     },
     "gone": {
       "heading": "Esta nota desapareceu.",
-      "body": "Já foi lida ou expirou. Os burn links só podem ser abertos uma vez e expiram ao fim de 24 horas."
+      "body": "Já foi lida ou expirou. Os burn links só podem ser abertos uma vez e expiram sozinhos."
     },
     "error": {
       "heading": "Algo correu mal.",

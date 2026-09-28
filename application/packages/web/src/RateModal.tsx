@@ -11,7 +11,7 @@ type Props = {
 };
 
 // The review platforms where a public rating helps discovery. Opened from the
-// sidebar footer; the About modal's Rating tab renders the same three strings
+// sidebar footer; the About modal's Rating tab renders the same strings
 // and the same list, both from `rateLinks.tsx`.
 export function RateModal({ onClose, onRated }: Props) {
   const { t } = useTranslation('landing');
@@ -25,6 +25,7 @@ export function RateModal({ onClose, onRated }: Props) {
       links={links}
       outro={<RateOutro />}
       onLinkClick={onRated}
+      grid
       onClose={onClose}
     />
   );

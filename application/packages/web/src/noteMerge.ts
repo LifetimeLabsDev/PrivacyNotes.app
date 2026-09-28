@@ -26,6 +26,7 @@ export interface NoteFields {
   type: NoteType;
   folderId: string | null;
   trackers: Record<string, unknown> | undefined;
+  archived: boolean;
 }
 
 /** Every field but the body: the part the merge always settles itself. */
@@ -43,6 +44,7 @@ export const NOTE_FIELDS = [
   'type',
   'folderId',
   'trackers',
+  'archived',
 ] as const;
 type FieldName = (typeof NOTE_FIELDS)[number];
 
@@ -113,6 +115,15 @@ export function buildSyncBase(fields: NoteFields, nonce: string): SyncBase {
 }
 
 /**
+ * A field's fingerprint in the base. `archived` came after the first bases
+ * were written, and no row was archived then, so a base without it means
+ * "not archived" rather than "no base": every stored base stays usable.
+ */
+function baseFingerprint(base: SyncBase, name: FieldName): string {
+  return base.f[name] ?? (name === 'archived' ? fingerprint(false) : '');
+}
+
+/**
  * The stored base, when the row may merge against it: well formed, and
  * describing the generation the row records as synced. A base left behind
  * by a writer that moved `syncedNonce` without it (an older bundle's push,
@@ -124,13 +135,15 @@ export function trustedBase(raw: unknown, syncedNonce: string | undefined): Sync
   if (b.v !== 1 || b.n !== syncedNonce || !b.f || typeof b.f !== 'object') return undefined;
   if (!Array.isArray(b.t) || !b.t.every((x) => typeof x === 'string')) return undefined;
   const f = b.f as Record<string, unknown>;
-  if (!NOTE_FIELDS.every((name) => typeof f[name] === 'string')) return undefined;
+  if (!NOTE_FIELDS.every((name) => typeof f[name] === 'string' || (name === 'archived' && f[name] === undefined))) {
+    return undefined;
+  }
   return b as SyncBase;
 }
 
 /** A local row's payload, exactly as the push encrypts it. */
 export function fieldsOfLocal(
-  n: Pick<LocalNote, 'title' | 'body' | 'tags' | 'trashed' | 'starred' | 'locked' | 'pinProtected' | 'type' | 'folderId' | 'trackers'>,
+  n: Pick<LocalNote, 'title' | 'body' | 'tags' | 'trashed' | 'starred' | 'locked' | 'pinProtected' | 'type' | 'folderId' | 'trackers' | 'archived'>,
 ): NoteFields {
   return {
     title: n.title,
@@ -143,11 +156,20 @@ export function fieldsOfLocal(
     type: n.type ?? 'note',
     folderId: n.folderId ?? null,
     trackers: n.trackers,
+    archived: n.archived === 1,
   };
 }
 
-/** A decrypted server payload, with the defaults older ciphertexts need. */
-export function fieldsOfPayload(p: EncryptedPayload): NoteFields {
+/**
+ * A decrypted server payload, with the defaults older ciphertexts need.
+ *
+ * A payload without `archived` came from a client that predates Archive and
+ * rebuilt the note without the field; every current writer states it. That
+ * writer said nothing about Archive, so the reader keeps what it already
+ * knows (`archivedIfAbsent`: the local row's flag) instead of reading an
+ * unarchive into the omission.
+ */
+export function fieldsOfPayload(p: EncryptedPayload, archivedIfAbsent = false): NoteFields {
   return {
     title: p.title,
     body: p.body,
@@ -159,6 +181,7 @@ export function fieldsOfPayload(p: EncryptedPayload): NoteFields {
     type: p.type ?? 'note',
     folderId: p.folderId ?? null,
     trackers: p.trackers,
+    archived: p.archived ?? archivedIfAbsent,
   };
 }
 
@@ -174,6 +197,7 @@ export function serverFieldsOf(c: {
   serverPinProtected: boolean;
   serverType: NoteType;
   serverFolderId: string | null;
+  serverArchived: boolean;
 }): NoteFields {
   return {
     title: c.serverTitle,
@@ -186,13 +210,14 @@ export function serverFieldsOf(c: {
     type: c.serverType,
     folderId: c.serverFolderId,
     trackers: c.serverTrackers,
+    archived: c.serverArchived,
   };
 }
 
 /** The fields as a local row stores them. */
 export function localPatchOf(f: NoteFields): Pick<
   LocalNote,
-  'title' | 'body' | 'tags' | 'trashed' | 'starred' | 'locked' | 'pinProtected' | 'type' | 'folderId' | 'trackers'
+  'title' | 'body' | 'tags' | 'trashed' | 'starred' | 'locked' | 'pinProtected' | 'type' | 'folderId' | 'trackers' | 'archived'
 > {
   return {
     title: f.title,
@@ -205,6 +230,7 @@ export function localPatchOf(f: NoteFields): Pick<
     type: f.type,
     folderId: f.folderId,
     trackers: f.trackers,
+    archived: f.archived ? 1 : 0,
   };
 }
 
@@ -223,6 +249,7 @@ export function fieldsEqual(a: NoteFields, b: NoteFields): boolean {
     a.pinProtected === b.pinProtected &&
     a.type === b.type &&
     a.folderId === b.folderId &&
+    a.archived === b.archived &&
     trackersEqual(a.trackers, b.trackers)
   );
 }
@@ -265,7 +292,7 @@ export function mergeNoteFields(
 ): { rest: NoteRest; body: string | null } {
   const localLater = Date.parse(local.updatedAt) > Date.parse(server.updatedAt);
   const changed = (name: FieldName, fields: NoteFields) =>
-    fingerprint(comparable(fields, name)) !== base!.f[name];
+    fingerprint(comparable(fields, name)) !== baseFingerprint(base!, name);
 
   function pick<K extends FieldName>(
     name: K,
@@ -297,6 +324,7 @@ export function mergeNoteFields(
       pinProtected: pick('pinProtected', eq).value,
       type: pick('type', eq).value,
       folderId: pick('folderId', eq).value,
+      archived: pick('archived', eq).value,
       trackers: trackers.bothChanged
         ? mergeTrackers(local.fields.trackers, server.fields.trackers)
         : trackers.value,

@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "Super-anteckningar, checklistor och 2FA-koder behåller sin form",
+          "p": [
+            "Super-anteckningar behåller rubriker, listor, checklistor, tabeller, kodblock, färger och hopfällbara avsnitt. Checklistor hamnar i Uppgifter, kalkylblad blir tabeller och poster från autentiseraren blir inloggningar i Valvet, med sin 2FA-nyckel. Nästlade taggar blir mappar, och varje anteckning behåller även sina taggar.",
+            "Filer som du har laddat upp till Standard Notes ligger kvar på deras server, så säkerhetskopian innehåller bara deras namn. Varje importerad anteckning visar var en fil fanns. Ladda ner filerna från Standard Notes och lägg till dem i anteckningen igen."
+          ]
+        },
+        {
           "h": "Krypterade säkerhetskopior stöds inte",
           "p": [
             "En krypterad säkerhetskopia från Standard Notes är chiffertext som bara ditt Standard Notes-lösenord kan öppna, så importverktyget kan inte läsa den. Har du exporterat den krypterade varianten, exportera igen och välj den dekrypterade. Eftersom filen innehåller dina anteckningar i klartext, bör du radera den när importen är klar.",

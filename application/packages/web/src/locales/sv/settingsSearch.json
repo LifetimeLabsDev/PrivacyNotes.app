@@ -66,6 +66,7 @@
     "about_dataStorage": "data, server, var lagras, integritet",
     "about_changelog": "versionsinformation, release notes, nyheter, uppdateringar",
     "about_hotkeys": "kortkommandon, snabbkommandon, tangenter, genvägar, hotkeys",
-    "about_rating": "recension, betygsätt, betyg, stjärnor, app store"
+    "about_rating": "recension, betygsätt, betyg, stjärnor, app store",
+    "appearance_openInTabs": "flikar, flikfält, webbläsare, öppna"
   }
 }

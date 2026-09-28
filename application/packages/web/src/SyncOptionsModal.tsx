@@ -19,7 +19,9 @@ import {
 } from './devices';
 import { groupDeviceSlots, shortDeviceId, type DeviceSlot } from './deviceSlots';
 import { readPanelCache, writePanelCache } from './accountPanelCache';
-import { Check, SignOut, X } from './icons';
+import { ArrowsClockwise, Check, CreditCard, Database, Devices, Key, PencilSimple, SignIn, SignOut, Star, User, X } from './icons';
+import { InlineRenameField } from './InlineRenameField';
+import { DEVICE_LABEL_MAX, deviceLabelOf, type DeviceLabels } from './deviceLabels';
 import { HoverLabel } from './HoverLabel';
 import { DangerZone } from './DangerZone';
 import { QuotaRing } from './QuotaRing';
@@ -29,9 +31,15 @@ import { startStorageCheckout, startStorageUpgrade, openNativeSubscriptionManage
 import { STORAGE_ADDON_PRICE, PRO_PRICE, EARLY_PRICE } from './pricing';
 import { useStorePrices, type StorePrice } from './storePrices';
 import { formatRelative } from './intlFormat';
-import { AccentBar, HeadlineRule, SectionEyebrow, SettingsCallout, SETTINGS_HELP } from './settingsUI';
+import { AccentBar, HeadlineRule, SectionEyebrow, SettingsCallout, SETTINGS_HELP, SettingsTabStrip, settingsTabClass } from './settingsUI';
 import { SyncPanel } from './SyncPanel';
 import { HelpChip } from './HelpChip';
+import { AccountLoginsPanel } from './AccountLoginsPanel';
+import { KeyCustodyTab } from './security/KeyCustodyTab';
+import type { UserSettings } from './userSettings';
+import { isDemoMode } from './demo';
+import { DemoAccountTeaser } from './DemoAccountTeaser';
+import { BetaFlask } from './BetaReportLink';
 
 type Props = {
   onClose: () => void;
@@ -70,6 +78,16 @@ type Props = {
   tab?: 'plan' | 'storage' | 'sync' | 'me';
   /** Called when the controlled tab should change (unused while embedded). */
   onTabChange?: (tab: 'plan' | 'storage' | 'sync' | 'me') => void;
+  /** The names given to devices (userSettings.deviceLabels). */
+  deviceLabels?: DeviceLabels;
+  /** Renames a device; an empty name resets it. Absent: no rename control. */
+  onRenameDevice?: (deviceId: string, name: string, serverName: string) => void;
+  /** Opens About > Rating. Absent where no caller can navigate. */
+  onOpenRating?: () => void;
+  onOpenPhrase?: () => void;
+  custodySettings?: { hasPin: boolean; pinCredential: string; pinTimeoutMinutes: number;
+    userSettings?: UserSettings; onSettingsChange?: (next: UserSettings, base: UserSettings) => void };
+  initialSection?: 'overview' | 'connectedAccounts' | 'keyCustody';
 };
 
 /** What Remove acts on: one row of a slot, or every row in it. */
@@ -92,7 +110,7 @@ type RevokeTarget = { slot: DeviceSlot; rows: [DeviceRow, ...DeviceRow[]] };
  * Pro status is surfaced with a badge + an upsell block for free
  * users.
  */
-export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow, embedded = false, autoVerify = false, onOpenNote, onOpenImageSettings, tab: controlledTab, onTabChange }: Props) {
+export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow, embedded = false, autoVerify = false, onOpenNote, onOpenImageSettings, tab: controlledTab, onTabChange, deviceLabels = {}, onRenameDevice, onOpenRating, onOpenPhrase, custodySettings, initialSection }: Props) {
   const { t } = useTranslation('settings');
   // Real App Store / Play prices, already in the user's storefront currency.
   // Null everywhere else, and every use below falls back to the Paddle USD
@@ -151,6 +169,11 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
   const [internalTab, setInternalTab] = useState<'plan' | 'storage' | 'sync' | 'me'>('plan');
   const tab = controlledTab ?? internalTab;
   const setTab = onTabChange ?? setInternalTab;
+  const [selectedAccountSection, setAccountSection] = useState<'overview' | 'connectedAccounts' | 'keyCustody'>(initialSection ?? 'overview');
+  const accountPagesAvailable = Boolean(authed && !isDemoMode() && custodySettings && onOpenPhrase);
+  const demoAccountPages = isDemoMode();
+  const accountSection = accountPagesAvailable || demoAccountPages ? selectedAccountSection : 'overview';
+  useEffect(() => { setAccountSection(initialSection ?? 'overview'); }, [initialSection]);
 
   useEffect(() => {
     if (!authed) return;
@@ -446,71 +469,122 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
 
         {/* Tab bar - hidden when embedded; the shell rail drives the tab. */}
         {!embedded && (
-        <div className="flex border-b border-divider -mx-6 px-6">
-          {(['plan', 'storage', 'sync', 'me'] as const).map((tabId) => (
+        <SettingsTabStrip className="-mx-6 px-4 sm:px-6">
+          {([
+            { tabId: 'plan', Icon: CreditCard },
+            { tabId: 'storage', Icon: Database },
+            { tabId: 'sync', Icon: ArrowsClockwise },
+            { tabId: 'me', Icon: User },
+          ] as const).map(({ tabId, Icon }) => (
             <button
               key={tabId}
               type="button"
               onClick={() => setTab(tabId)}
-              className={`pb-2 px-3 text-sm capitalize transition border-b-2 ${
-                tab === tabId
-                  ? 'border-accent text-accent font-medium'
-                  : 'border-transparent text-pn-soft hover:text-pn'
-              }`}
+              aria-pressed={tab === tabId}
+              className={settingsTabClass(tab === tabId)}
             >
-              {t(`tabs.${tabId}`)}
+              <Icon aria-hidden="true" />
+              <span className="capitalize">{t(`tabs.${tabId}`)}</span>
             </button>
           ))}
-        </div>
+        </SettingsTabStrip>
         )}
 
-        {/* ── Plan tab ── */}
-        {tab === 'plan' && (
+        {tab === 'plan' && (accountPagesAvailable || demoAccountPages) && <SettingsTabStrip className="-mx-6 px-4 sm:px-6">
+          {([
+            { section: 'overview', label: 'overview', Icon: Devices },
+            { section: 'connectedAccounts', label: 'accounts', Icon: SignIn },
+            { section: 'keyCustody', label: 'keyCustody', Icon: Key },
+          ] as const).map(({ section, label, Icon }) => <button key={section}
+            type="button" aria-pressed={accountSection === section} onClick={() => setAccountSection(section)}
+            className={settingsTabClass(accountSection === section)}>
+            <Icon className="shrink-0 text-accent" aria-hidden="true" />
+            {section === 'connectedAccounts' ? <span className="inline-flex min-w-0 items-center gap-1.5">
+              <span className="min-w-0">{t(`security:accountTabs.${label}`)}</span>
+              <HoverLabel inline position="below" label={t('security:beta.label')}><BetaFlask /></HoverLabel>
+            </span> : <span className="min-w-0">{t(`security:accountTabs.${label}`)}</span>}
+          </button>)}
+        </SettingsTabStrip>}
+
+        {/* ── Account overview ── */}
+        {tab === 'plan' && accountSection === 'overview' && (
           <>
             {/* Plan badge */}
             {authed && isPro !== null && (
               isPro ? (
-                <div className="flex items-center gap-4 rounded-md border border-divider bg-surface-1 p-4">
-                  {/* Rocket medallion with hanging ribbon tails - the Pro mark, gilded for everyone. */}
-                  <div className="shrink-0 w-9 text-center">
-                    <div className="relative z-[2] mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/15">
-                      <IconUpgrade size={20} />
+                <div className="rounded-md border border-divider bg-surface-1 p-4">
+                  <div className="flex items-center gap-4">
+                    {/* Rocket medallion with hanging ribbon tails - the Pro mark, gilded for everyone. */}
+                    <div className="shrink-0 w-9 text-center">
+                      <div className="relative z-[2] mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/15">
+                        <IconUpgrade size={20} />
+                      </div>
+                      <div className="relative -mt-1 h-[18px]">
+                        <span
+                          className="absolute start-1.5 top-0 h-[18px] w-2.5 bg-amber-500"
+                          style={{ clipPath: 'polygon(0 0,100% 0,100% 100%,50% 70%,0 100%)', transform: 'skewX(-8deg)' }}
+                        />
+                        <span
+                          className="absolute end-1.5 top-0 h-[18px] w-2.5 bg-amber-600"
+                          style={{ clipPath: 'polygon(0 0,100% 0,100% 100%,50% 70%,0 100%)', transform: 'skewX(8deg)' }}
+                        />
+                      </div>
                     </div>
-                    <div className="relative -mt-1 h-[18px]">
-                      <span
-                        className="absolute start-1.5 top-0 h-[18px] w-2.5 bg-amber-500"
-                        style={{ clipPath: 'polygon(0 0,100% 0,100% 100%,50% 70%,0 100%)', transform: 'skewX(-8deg)' }}
-                      />
-                      <span
-                        className="absolute end-1.5 top-0 h-[18px] w-2.5 bg-amber-600"
-                        style={{ clipPath: 'polygon(0 0,100% 0,100% 100%,50% 70%,0 100%)', transform: 'skewX(8deg)' }}
-                      />
+                    <div className="flex-1 text-xs leading-relaxed">
+                      <div className="flex items-baseline gap-2">
+                        <strong className="text-sm text-pn">Pro</strong>
+                        <span className="text-pn-soft">{t('plan.proUnlimited')}</span>
+                      </div>
+                      <p className="mt-1 text-amber-700 dark:text-amber-400">
+                        {isEarlySupporter ? t('plan.earlySupporterThanks') : t('plan.proThanks')}
+                      </p>
                     </div>
                   </div>
-                  <div className="flex-1 text-xs leading-relaxed">
-                    <div className="flex items-baseline gap-2">
-                      <strong className="text-sm text-pn">Pro</strong>
-                      <span className="text-pn-soft">{t('plan.proUnlimited')}</span>
+                  {onOpenRating && (
+                    <div className="mt-3 flex items-center gap-3 border-t border-divider pt-3 text-xs">
+                      <Star size={16} weight="fill" className="shrink-0 text-amber-400" aria-hidden="true" />
+                      <span className="flex-1 text-pn-soft">{t('plan.ratePro')}</span>
+                      <button type="button" onClick={onOpenRating} className={RATE_BUTTON}>
+                        {t('plan.rateCta')}
+                      </button>
                     </div>
-                    <p className="mt-1 text-amber-700 dark:text-amber-400">
-                      {isEarlySupporter
-                        ? t('plan.earlySupporterThanks')
-                        : t('plan.proThanks')}{' '}
-                      💛
-                    </p>
-                  </div>
+                  )}
                 </div>
               ) : (
-                <div className="rounded-md border p-3 text-xs leading-relaxed border-divider bg-track text-pn-soft">
-                  <Trans
-                    i18nKey="settings:plan.freeLimit"
-                    values={{ count: freeLimit }}
-                    components={{ strong: <strong /> }}
-                  />{' '}
+                <div className="rounded-md border border-divider bg-surface-1 p-4 text-xs leading-relaxed">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                    <span className="text-pn-soft">
+                      <Trans
+                        i18nKey="settings:plan.freeLimit"
+                        values={{ count: freeLimit }}
+                        components={{ strong: <strong className="text-pn" /> }}
+                      />
+                    </span>
+                    {devices && (
+                      <span className="text-pn-muted tabular-nums">
+                        {t('plan.freeUsage', { used: slots.length, limit: freeLimit })}
+                      </span>
+                    )}
+                  </div>
                   {devices && (
-                    <>
-                      {t('plan.freeUsage', { used: slots.length, limit: freeLimit })}
-                    </>
+                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-divider" aria-hidden="true">
+                      <div
+                        className={`h-full rounded-full ${slots.length >= freeLimit ? 'bg-amber-500' : 'bg-accent'}`}
+                        style={{ width: `${Math.min(slots.length / freeLimit, 1) * 100}%` }}
+                      />
+                    </div>
+                  )}
+                  {onOpenRating && (
+                    <div className="mt-3 flex items-center gap-3 rounded-md bg-surface-2 p-3">
+                      <Star size={18} weight="fill" className="shrink-0 text-amber-400" aria-hidden="true" />
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-medium text-pn">{t('plan.rateFreeTitle')}</div>
+                        <div className="text-pn-soft">{t('plan.rateFreeBody')}</div>
+                      </div>
+                      <button type="button" onClick={onOpenRating} className={RATE_BUTTON}>
+                        {t('plan.rateCta')}
+                      </button>
+                    </div>
                   )}
                 </div>
               )
@@ -548,6 +622,18 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
             )}
 
           </>
+        )}
+
+        {tab === 'plan' && demoAccountPages && accountSection !== 'overview' && (
+          <DemoAccountTeaser kind={accountSection === 'keyCustody' ? 'keyCustody' : 'accounts'} />
+        )}
+        {tab === 'plan' && accountPagesAvailable && accountSection === 'connectedAccounts' && (
+          <AccountLoginsPanel onOpenCustody={() => setAccountSection('keyCustody')} onOpenPhrase={onOpenPhrase} />
+        )}
+        {tab === 'plan' && accountPagesAvailable && accountSection === 'keyCustody' && authed && custodySettings && onOpenPhrase && (
+          <KeyCustodyTab phrase={authed.phrase} pubkey={authed.pubkey} {...custodySettings}
+            onCancel={() => setAccountSection('overview')} onOpenPhrase={onOpenPhrase}
+            onOpenConnectedAccounts={() => setAccountSection('connectedAccounts')} />
         )}
 
         {/* ── Storage tab ── */}
@@ -1078,7 +1164,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
         )}
 
         {/* ── Plan tab: devices ── */}
-        {tab === 'plan' && (
+        {tab === 'plan' && accountSection === 'overview' && (
           <>
             {/* Active devices */}
             <div>
@@ -1100,7 +1186,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                         key={slot.key}
                         className="flex items-center justify-between gap-3 rounded-md border border-divider px-3 py-2"
                       >
-                        <DeviceRowLabel row={slot.rows[0]} isSelf={slot.isSelf} />
+                        <DeviceRowLabel row={slot.rows[0]} isSelf={slot.isSelf} label={deviceLabelOf(deviceLabels, slot.rows[0].device_id)} onRename={onRenameDevice} />
                         <button
                           type="button"
                           onClick={() => setConfirm({ slot, rows: slot.rows })}
@@ -1122,7 +1208,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                         <ul className="divide-y divide-divider">
                           {slot.rows.map((row) => (
                             <li key={row.device_id} className="flex items-center justify-between gap-3 py-2">
-                              <DeviceRowLabel row={row} isSelf={authed?.deviceId === row.device_id} />
+                              <DeviceRowLabel row={row} isSelf={authed?.deviceId === row.device_id} label={deviceLabelOf(deviceLabels, row.device_id)} onRename={onRenameDevice} />
                               <button
                                 type="button"
                                 onClick={() => setConfirm({ slot, rows: [row] })}
@@ -1165,7 +1251,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                     >
                       <div className="min-w-0">
                         <div className="text-sm font-medium truncate text-pn-muted">
-                          {d.device_name}
+                          <span dir="auto">{deviceLabelOf(deviceLabels, d.device_id) ?? d.device_name}</span>
                           <span className="font-mono text-[11px] font-normal ms-2">{shortDeviceId(d.device_id)}</span>
                         </div>
                         <div className="text-[11px] text-pn-muted/75">
@@ -1245,6 +1331,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
       {confirm && authed && (
         <RevokeConfirm
           target={confirm}
+          labels={deviceLabels}
           isPro={isPro}
           busy={busy}
           selfDeviceId={authed.deviceId}
@@ -1256,24 +1343,85 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
   );
 }
 
+const RATE_BUTTON =
+  'shrink-0 rounded-md border border-divider bg-surface-2 hover:bg-track px-2.5 py-1.5 text-xs font-medium text-pn transition';
+
 const REMOVE_BUTTON =
   'text-xs rounded-md border border-red-300 text-red-700 hover:bg-red-50 dark:border-red-900/60 dark:text-red-300 dark:hover:bg-red-950/30 px-2.5 py-1.5 transition disabled:opacity-50';
 
-/** Name line plus the meta that tells two identically named rows apart. */
-function DeviceRowLabel({ row, isSelf }: { row: DeviceRow; isSelf: boolean }) {
+/**
+ * Name line plus the meta that tells two identically named rows apart. The
+ * name is the label the person gave the device when it has one, and the
+ * server's name then moves into the meta line.
+ */
+function DeviceRowLabel({
+  row,
+  isSelf,
+  label,
+  onRename,
+}: {
+  row: DeviceRow;
+  isSelf: boolean;
+  label: string | null;
+  onRename?: (deviceId: string, name: string, serverName: string) => void;
+}) {
   const { t } = useTranslation('settings');
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState('');
+  // The settings window closes on a capture-phase Escape; while the field is
+  // open it is the topmost overlay, so Escape cancels the rename instead.
+  useEscapeToClose(() => setEditing(false), editing);
+
+  const start = () => {
+    setValue(label ?? row.device_name);
+    setEditing(true);
+  };
+  const commit = () => {
+    setEditing(false);
+    onRename?.(row.device_id, value, row.device_name);
+  };
+
   return (
-    <div className="min-w-0">
-      <div className="text-sm font-medium truncate flex items-center gap-2">
-        {row.device_name}
+    <div className="min-w-0 flex-1">
+      <div className="text-sm font-medium flex items-center gap-2 min-w-0">
+        {editing ? (
+          <InlineRenameField
+            value={value}
+            onValueChange={setValue}
+            onCommit={commit}
+            onCancel={() => setEditing(false)}
+            // Opens selected: a new name usually replaces the old one whole.
+            onFocus={(e) => e.currentTarget.select()}
+            maxLength={DEVICE_LABEL_MAX}
+            placeholder={row.device_name}
+            aria-label={t('devices.renameField')}
+            className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-sm font-medium text-pn"
+          />
+        ) : (
+          <>
+            <span className="truncate" dir="auto">{label ?? row.device_name}</span>
+            {onRename && (
+              <HoverLabel label={t('devices.rename')}>
+                <button
+                  type="button"
+                  onClick={start}
+                  aria-label={t('devices.rename')}
+                  className="shrink-0 -m-1.5 p-1.5 rounded text-pn-muted hover:text-pn hover:bg-surface-1 transition"
+                >
+                  <PencilSimple size={14} aria-hidden="true" />
+                </button>
+              </HoverLabel>
+            )}
+          </>
+        )}
         {isSelf && (
-          <span className="text-[10px] uppercase tracking-wide text-accent">
+          <span className="shrink-0 text-[10px] uppercase tracking-wide text-accent">
             {t('devices.thisDevice')}
           </span>
         )}
       </div>
       <div className="text-[11px] text-pn-muted">
-        {row.platform}
+        {label ? <span dir="auto">{row.device_name}</span> : row.platform}
         {' · '}
         <span className="font-mono">{shortDeviceId(row.device_id)}</span>
         {` · ${t('devices.added', { time: formatRelative(row.created_at) })}`}
@@ -1289,6 +1437,7 @@ function DeviceRowLabel({ row, isSelf }: { row: DeviceRow; isSelf: boolean }) {
 
 function RevokeConfirm({
   target,
+  labels,
   isPro,
   busy,
   selfDeviceId,
@@ -1296,6 +1445,7 @@ function RevokeConfirm({
   onConfirm,
 }: {
   target: RevokeTarget;
+  labels: DeviceLabels;
   isPro: boolean | null;
   busy: string | null;
   selfDeviceId: string | null;
@@ -1311,6 +1461,7 @@ function RevokeConfirm({
   const removesSelf = rows.some((row) => row.device_id === selfDeviceId);
   const row = rows[0];
   const othersLeft = slot.rows.length - rows.length;
+  const name = deviceLabelOf(labels, row.device_id) ?? row.device_name;
 
   return (
     <div
@@ -1322,11 +1473,11 @@ function RevokeConfirm({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-lg font-semibold">
-          {wholeSlot ? t('revoke.title', { name: row.device_name }) : t('revoke.titleInstall')}
+          {wholeSlot ? t('revoke.title', { name }) : t('revoke.titleInstall')}
         </h2>
         {!wholeSlot && (
           <p className="text-sm text-pn-soft">
-            {row.device_name}
+            <span dir="auto">{name}</span>
             {' · '}
             <span className="font-mono">{shortDeviceId(row.device_id)}</span>
             {` · ${t('devices.added', { time: formatRelative(row.created_at) })} · ${t('devices.lastActive', { time: formatRelative(row.last_seen_at) })}`}
@@ -1371,5 +1522,3 @@ function formatPlanDate(iso: string): string {
   if (Number.isNaN(d.getTime())) return iso;
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
-
-

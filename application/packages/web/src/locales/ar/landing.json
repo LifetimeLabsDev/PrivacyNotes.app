@@ -138,7 +138,7 @@
     "freeSubLabel": "دون بطاقة ائتمان، ودون حد زمني.",
     "freeAllPillars": "ملاحظات ومهام وملفات وخزنة ويوميات وإشارات مرجعية",
     "freeSync": "مزامنة عبر جهازين",
-    "freeVault": "خزنة ملفات مشفّرة، 5 ميغابايت لكل ملف",
+    "freeVault": "مساحة تخزين 50 ميغابايت، حتى 5 ميغابايت لكل ملف",
     "freeSearch": "بحث في النص الكامل + وسوم",
     "freeImport": "استيراد وتصدير، بما في ذلك Keep وObsidian",
     "freeBurn": "الحرق بعد القراءة",
@@ -327,6 +327,7 @@
       "fixed": "مُصلَح"
     },
     "changelogComingSoon": "Changelog قريبًا.",
+    "changelogLatest": "الأحدث",
     "hotkeysFootnote": "تُتجاهَل معظم الاختصارات أثناء الكتابة في حقل نصي، لذا تبقى المفاتيح العادية مثل J وK تكتب J وK كالمعتاد."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "معظم الناس لا يدفعون لنا شيئًا أبدًا، وهذا مقصود. التقييم طريقة جميلة لقول شكرًا.",
     "outro": "نقرأ كل تقييم يصلنا، وكلمة من شخص يستخدم التطبيق يوميًا هي ما يبقينا مستمرين.",
     "descGithub": "امنحنا نجمة على GitHub",
+    "descAppStore": "قيّم PrivacyNotes على App Store",
     "descAlternativeTo": "أعجب به وقيّمه على AlternativeTo",
     "descCapterra": "قيّم PrivacyNotes على Capterra",
     "descSaasHub": "أعجب به وقيّمه على SaaSHub",

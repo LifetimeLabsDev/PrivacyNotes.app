@@ -11,7 +11,7 @@ import { searchCoreScriptPlugin } from './search-core-script.ts';
 import { brandPagePlugin } from './brand-page.ts';
 import { marketingShellPlugin } from './marketing-shell.ts';
 import { landingPagesPlugin } from './landing-pages.ts';
-import { authDesktopPagePlugin } from './auth-desktop-page.ts';
+import { authConnectPagePlugin, authDesktopPagePlugin } from './auth-desktop-page.ts';
 // @ts-expect-error - plain .mjs tool script, no types; this file is not type-checked
 import { syncHelpChips } from '../../tools/sync-help-chips.mjs';
 
@@ -360,7 +360,12 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // tree with that one file at HEAD (86.33 against 87.38). It cannot sit
   // behind a lazy boundary, because it is what renders when a chunk fails to
   // load. Raised to 88.
-  '(entry)': 88,
+  // 111.02 kB gz on 2026-09-27, NOT new bytes: the boot path shrank 0.49 kB.
+  // The sign-in prompt started importing PinInput, and the bundler moved
+  // auth.tsx, sync.ts and their helpers out of a shared boot chunk into the
+  // entry (PinInput went the other way). Found by diffing the entry's source
+  // map against a build of the previous commit. Raised to 112.
+  '(entry)': 112,
   // NEW CHUNK, not new bytes: the whole shared package in one piece, 62.91 kB
   // gz. It has to stay one chunk - splitting it is what put a white page in
   // production. See the advancedChunks comment in `build` for the mechanism.
@@ -465,7 +470,9 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // 66.19 on 2026-09-25 with the settings search: one lazy-import stub per
   // locale for its catalog, and the sidebar divider's label, +0.29 kB gz.
   // Raised to 67.
-  i18n: 67,
+  // 70.27 on 2026-09-27: English account connection, custody and 2FA setup,
+  // recovery and refusal copy. Other locales still load on demand.
+  i18n: 71,
   // 209.51 kB gz since katex became its own chunk below (278.11 with it inside,
   // against a 300 budget). Retightened in the same change that moved it: a
   // budget carrying 90 kB of slack is decoration, not a gate.
@@ -952,7 +959,46 @@ const DEFAULT_CHUNK_BUDGET_KB = 60;
 // tableColumnWidths plus tableDelimiterRow, which the editor and the note
 // list read). All of it is editor code on the boot path. The budget sits just
 // above the number.
-const BOOT_PATH_BUDGET_KB = 983;
+// 983 -> 984 (2026-09-25): the same tree measured 983.34 kB gz on the CI
+// runner, where darwin predicted 982.22 with the old 1.1 kB correction. No
+// code grew; the correction is now 2.3 and the budget sits just above the CI
+// number.
+// 984 -> 985 (2026-09-26): +0.58 kB gz, the table's own width (the outer
+// edge drag in the Editor chunk and the marker line helpers). The budget sits
+// just above the number.
+// 985 -> 987 (2026-09-26): +1.18 kB gz, a note's own color (the color row
+// in the note menu and its resolver), the look picker's tabs and its shared
+// search field.
+// 987 -> 988 (2026-09-26): +0.35 kB gz, device labels (the shared register
+// merge in the settings blob, reached from auth) and the device rename field.
+// 988 -> 993 (2026-09-26): +2.8 kB gz, the item tabs above the editor (the
+// strip, its stored list with the pins, the "Open items in tabs" switch and
+// the NotesView wiring). The budget sits just above the number.
+// 993 -> 994 (2026-09-26): +1.1 kB gz, copy and paste keep a note's lines in
+// every app (the line join shared by the copy, the export and the burn page,
+// and the paste rules in the Editor chunk).
+// 994 -> 995 (2026-09-26): +0.8 kB gz, the "Can somebody guess my phrase?"
+// card in the phrase tab (its copy and its icons).
+// 995 -> 1006 (2026-09-27): +9.34 kB gz since v0.542.0. Auth +4.72
+// for the guarded account exchange and MFA session storage, i18n +3.27
+// for the new English copy, PIN +1.24 for the shared custody gate; icons
+// and wiring account for the remainder. Management panels stay lazy.
+// 1006 -> 1007 (2026-09-28): +0.6 kB gz, the settings tab strip that
+// measures its labels, and the App Store row in the rating list.
+// 1007 -> 1008 (2026-09-28): +0.8 kB gz, the burn link modal picks its
+// reading time and link lifetime (its copy and the option lists).
+// 1008 -> 1009 (2026-09-28): +0.8 kB gz since v0.547.0, the bug report
+// link (+0.45) and the per-device layout switch in the list menu, with the
+// longer preview option.
+// 1009 -> 1010 (2026-09-28): +1.0 kB gz since v0.549.2, the archive (its
+// three icons +0.73, the view, the menu rows and the list split in NotesView).
+// 1010 -> 1011 (2026-09-28): +0.9 kB gz, the archive write guards in sync,
+// the sliced search build, the footer word-count memo and the stable row
+// handlers in the notes list.
+// 1011 -> 1016 (2026-09-28): 1015.53 kB gz, login custom fields and extra
+// websites (the form rows, the view rows, loginExtras.ts) and the guarded
+// history restore. The vault history preview is a lazy chunk of its own.
+const BOOT_PATH_BUDGET_KB = 1016;
 
 // The budget above is stated in ONE environment's units: build-smoke's, which
 // is ubuntu with the synthetic values from tools/ci-vite-env.mjs. Every other
@@ -983,8 +1029,9 @@ const ENV_SPREAD_KB = 1.5;
 //
 // macOS: 0.79 at commit 53632f85 (849.31 macOS against 850.10 ubuntu, both
 // env-less), 1.05 at v0.448.0 (870.35 against build-smoke's 871.40, both with
-// deploy-shaped values), and 1.09 at v0.452.0 (871.64 against 872.73). It
-// tracks the bundle, so take the newest and round up rather than average.
+// deploy-shaped values), 1.09 at v0.452.0 (871.64 against 872.73), and 2.22
+// at v0.534.0 (981.12 against 983.34). It tracks the bundle, so take the
+// newest and round up rather than average.
 //
 // A platform nobody has measured corrects by zero, deliberately: an
 // unmeasured guess that runs high fails builds for bytes that do not exist,
@@ -992,7 +1039,7 @@ const ENV_SPREAD_KB = 1.5;
 // which is the gate that actually runs on every push.
 // Spec: ops/docs/bundle-size.md (section 6)
 const PLATFORM_SPREAD_KB: Record<string, number> = {
-  darwin: 1.1,
+  darwin: 2.3,
   win32: 0,
 };
 
@@ -1319,7 +1366,7 @@ export default defineConfig({
     preloadOnboarding(),
     ...(isAppBuild
       ? []
-      : [changelogPagePlugin(), helpPagePlugin(), roadmapPagePlugin(), brandPagePlugin(), marketingShellPlugin(), landingPagesPlugin(), authDesktopPagePlugin(), searchCoreScriptPlugin()]),
+      : [changelogPagePlugin(), helpPagePlugin(), roadmapPagePlugin(), brandPagePlugin(), marketingShellPlugin(), landingPagesPlugin(), authDesktopPagePlugin(), authConnectPagePlugin(), searchCoreScriptPlugin()]),
     chunkBudgets(),
     chunkCycles(),
   ],

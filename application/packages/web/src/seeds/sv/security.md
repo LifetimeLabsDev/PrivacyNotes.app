@@ -29,7 +29,7 @@ Alla alternativ håller dina anteckningar krypterade på din enhet. De skiljer s
 
 Med de två nedersta kunde vi inte läsa en anteckning ens om vi tvingades. Det första byter bort det mot bekvämlighet: din fras ligger på vår server under en nyckel som är vår, så en ny enhet behöver inget mer än ditt konto. Om vår server någonsin bröts in i kunde den nyckeln bli blottad.
 
-Inloggad med Google, Apple eller GitHub? Du kan byta mellan de två första senare, under **Inställningar > Säkerhet > Din fras**. Med ett fraskonto stannar frasen alltid hos dig.
+Inloggad med Google, Apple eller GitHub? Du kan byta mellan de två första senare, under **Inställningar > Konto > Nyckelförvaring**. Med ett fraskonto stannar frasen alltid hos dig.
 
 > [!warning] Ha en egen kopia av frasen
 > Din fras öppnar dina anteckningar. Tappar du bort den kan ingen hämta tillbaka den, inte vi heller. <span style="color: #e03131">Skriv ner den på papper idag.</span>

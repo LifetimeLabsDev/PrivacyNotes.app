@@ -8,15 +8,16 @@
  */
 
 import { hasCJK, segmentWords } from './cjkSegment';
-import { isDelimiterRow } from './tableDelimiterRow';
+import { isDelimiterRow, tableWidthFromMarker } from './tableDelimiterRow';
 
 export function stripMarkdown(md: string): string {
   return md
     // A table's delimiter row carries no words, and its dash counts are the
     // column widths: left in, each column read as a word and every dash as a
-    // character, so resizing a column changed the note's count.
+    // character, so resizing a column changed the note's count. The width
+    // marker under a narrower table carries none either.
     .split('\n')
-    .filter((line) => !isDelimiterRow(line))
+    .filter((line) => !isDelimiterRow(line) && tableWidthFromMarker(line) === null)
     .join('\n')
     // Strip raw HTML the editor emits into the markdown body before counting:
     // the table fallback serializer writes full <table>...</table> HTML, and

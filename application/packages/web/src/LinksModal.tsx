@@ -16,6 +16,8 @@ type Props = {
   outro?: ReactNode;
   /** Forwarded to LinksList - see there. */
   onLinkClick?: () => void;
+  /** Forwarded to LinksList, and widens the modal so two columns fit. */
+  grid?: boolean;
   onClose: () => void;
 };
 
@@ -23,7 +25,7 @@ type Props = {
 // with title + close, an intro line, then one row per link with icon, label,
 // description and an external-arrow affordance. Extracted from FeedbackModal
 // when the Rate modal reused the same layout.
-export function LinksModal({ title, titleIcon, intro, links, outro, onLinkClick, onClose }: Props) {
+export function LinksModal({ title, titleIcon, intro, links, outro, onLinkClick, onClose, grid = false }: Props) {
   const { t } = useTranslation('common');
   useEscapeToClose(onClose);
 
@@ -33,7 +35,7 @@ export function LinksModal({ title, titleIcon, intro, links, outro, onLinkClick,
       onClick={onClose}
     >
       <div
-        className="bg-surface-2 border border-divider text-pn rounded-lg max-w-sm w-full overflow-hidden"
+        className={`bg-surface-2 border border-divider text-pn rounded-lg ${grid ? 'max-w-2xl' : 'max-w-sm'} w-full max-h-full overflow-y-auto`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -54,7 +56,7 @@ export function LinksModal({ title, titleIcon, intro, links, outro, onLinkClick,
         {/* Body */}
         <div className="px-5 py-4">
           <p className="text-sm text-neutral-500 mb-3">{intro}</p>
-          <LinksList links={links} onLinkClick={onLinkClick} />
+          <LinksList links={links} onLinkClick={onLinkClick} grid={grid} />
           {outro && (
             <p className="mt-3 pt-3 border-t border-divider text-xs leading-relaxed text-neutral-500">
               {outro}

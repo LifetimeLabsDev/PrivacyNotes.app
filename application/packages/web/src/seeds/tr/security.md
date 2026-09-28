@@ -29,7 +29,7 @@ Her seçenekte notlarınız cihazınızda şifrelenir. Aralarındaki fark, ifade
 
 Alttaki ikisinde, zorlansak bile bir notu okuyamayız. İlki bunu rahatlığa takas eder: ifadeniz bizim bir anahtarımızın altında sunucumuzda durur, böylece yeni bir cihaza hesabınızdan başka bir şey gerekmez. Sunucumuz bir gün ele geçirilirse o anahtar açığa çıkabilir.
 
-Google, Apple veya GitHub ile mi giriş yaptınız? İlk ikisi arasında daha sonra **Ayarlar > Güvenlik > Kurtarma ifadeniz** altından geçiş yapabilirsiniz. Yalnızca ifadeyle açılmış bir hesapta ifade her zaman sizde kalır.
+Google, Apple veya GitHub ile mi giriş yaptınız? İlk ikisi arasında daha sonra **Ayarlar > Hesap > Anahtar saklama** altından geçiş yapabilirsiniz. Yalnızca ifadeyle açılmış bir hesapta ifade her zaman sizde kalır.
 
 > [!warning] İfadenin kendi kopyanızı saklayın
 > İfadeniz notlarınızı açar. Kaybederseniz kimse geri getiremez, biz de dahil. <span style="color: #e03131">Bugün kâğıda yazın.</span>

@@ -29,7 +29,7 @@ U každé možnosti se tvoje poznámky šifrují na tvém zařízení. Liší se
 
 U spodních dvou bychom poznámku nepřečetli, ani kdyby nás k tomu donutili. První to mění za pohodlí: tvoje fráze leží na našem serveru pod naším klíčem, takže novému zařízení stačí tvůj účet. Kdyby náš server někdy prolomili, ten klíč by se mohl dostat ven.
 
-Přihlašuješ se přes Google, Apple nebo GitHub? Mezi prvními dvěma možnostmi můžeš později přepnout v **Nastavení > Zabezpečení > Tvoje fráze**. U účtu jen s frází zůstává fráze vždycky u tebe.
+Přihlašuješ se přes Google, Apple nebo GitHub? Mezi prvními dvěma možnostmi můžeš později přepnout v **Nastavení > Účet > Správa klíče**. U účtu jen s frází zůstává fráze vždycky u tebe.
 
 > [!warning] Měj vlastní kopii fráze
 > Tvoje fráze otevírá tvoje poznámky. Když ji ztratíš, nikdo ti ji neobnoví, my taky ne. <span style="color: #e03131">Napiš si ji dnes na papír.</span>

@@ -138,7 +138,7 @@
     "freeSubLabel": "不需信用卡，沒有時間限制。",
     "freeAllPillars": "筆記、任務、檔案、保險庫、日誌與書籤",
     "freeSync": "2 部裝置同步",
-    "freeVault": "加密檔案保險庫，每個檔案 5 MB",
+    "freeVault": "50 MB 儲存空間，每個檔案 5 MB",
     "freeSearch": "全文搜尋 + 標籤",
     "freeImport": "匯入與匯出，包含 Keep 與 Obsidian",
     "freeBurn": "Burn After Reading（閱後即焚筆記）",
@@ -327,6 +327,7 @@
       "fixed": "修正"
     },
     "changelogComingSoon": "Changelog 即將推出。",
+    "changelogLatest": "最新",
     "hotkeysFootnote": "在文字欄位輸入時多數快速鍵會被忽略，因此 J、K 等一般按鍵仍會照常輸入。"
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "多數人從來不需要付我們一毛錢，這是刻意的設計。留下評分是道謝的好方式。",
     "outro": "每一則評論我們都會看，來自每天使用的人的一句話，就是我們繼續下去的動力。",
     "descGithub": "在 GitHub 為我們加星",
+    "descAppStore": "在 App Store 為 PrivacyNotes 評分",
     "descAlternativeTo": "在 AlternativeTo 按讚並評論",
     "descCapterra": "在 Capterra 為 PrivacyNotes 評分",
     "descSaasHub": "在 SaaSHub 按讚並評論",

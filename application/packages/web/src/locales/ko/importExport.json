@@ -46,6 +46,7 @@
     "standardNotes": "Standard Notes의 복호화된 .zip 또는 .txt 백업(File > Export > Decrypted).",
     "obsidian": "Obsidian 볼트를 .zip으로. 태그, [[note links]], 폴더 구조, 본문 속 #태그, 삽입한 이미지와 파일을 유지해요.",
     "notesnook": "Notesnook 내보내기를 .zip으로. 내보낼 때 HTML을 선택하면 서식, 노트북, 태그, 첨부 파일이 유지돼요.",
+    "joplin": "File > Export all > \"JEX - Joplin Export File\"로 내보낸 .jex 파일. 노트북은 폴더가 되고, 태그, 할 일, note-link, 첨부 파일도 함께 와요.",
     "upnote": "UpNote에서 Settings > Backup > Backup now를 실행한 다음, 백업 폴더 안의 모든 것을 zip으로 압축하세요. 노트북, 태그, 고정, note-link, 서식, 첨부 파일이 유지돼요. 휴대폰 앱의 노트별 내보내기도 받아요. \"Export to HTML\"을 선택하세요.",
     "markdownFolder": ".md 또는 .txt 파일을 하나씩, 또는 .zip으로. 압축한 폴더는 하위 폴더를 그대로 두고 이미지와 첨부 파일도 함께 가져와요.",
     "markdownApp": "이 노트들은 이미 폴더 안의 Markdown 파일이에요. 그 폴더를 .zip으로 놓으면 하위 폴더와 이미지, #태그가 같이 들어와요.",

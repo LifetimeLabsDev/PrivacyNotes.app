@@ -38,6 +38,9 @@ interface UseNoteEditingReturn {
   handleBodyChange: (id: string, body: string) => Promise<void>;
   handleTagsChange: (id: string, tags: string[]) => Promise<void>;
   handleTrackersChange: (id: string, trackers: JournalTrackerData) => Promise<void>;
+  /** Commit a vault form's Save: the body, and for a login its tracker map,
+   *  in one write. Resolves false when the write was refused. */
+  handleVaultSave: (id: string, body: string, trackers?: Record<string, unknown>) => Promise<boolean>;
   scheduleSync: () => void;
   patchLocal: (id: string, patch: Partial<LocalNote>, nextUpdatedAt: string) => void;
   contentHash: (n: LocalNote) => Promise<string>;
@@ -97,7 +100,10 @@ export function useNoteEditing({
   }
 
   async function contentHash(n: LocalNote): Promise<string> {
-    const payload = JSON.stringify([n.title, n.body, n.tags]);
+    // A login's custom fields are part of what a version records.
+    const payload = JSON.stringify(
+      n.type === 'login' ? [n.title, n.body, n.tags, n.trackers?.login ?? null] : [n.title, n.body, n.tags],
+    );
     const bytes = new TextEncoder().encode(payload);
     const digest = await crypto.subtle.digest('SHA-256', bytes);
     return Array.from(new Uint8Array(digest))
@@ -126,9 +132,17 @@ export function useNoteEditing({
       if (note.syncedNonce == null && !isDemoMode()) return;
       const h = await contentHash(note);
       if (lastVersionHashRef.current.get(id) === h) return;
+      // Claim the slot before the insert so a burst of edits sends one, and
+      // give it back if the insert fails, so the next edit tries again.
+      const prevHash = lastVersionHashRef.current.get(id);
       lastVersionHashRef.current.set(id, h);
       lastVersionAtRef.current.set(id, Date.now());
       const result = await createNoteVersion(supabase, auth.pubkey, auth.encryptionKey, note);
+      if (!result.ok) {
+        if (prevHash === undefined) lastVersionHashRef.current.delete(id);
+        else lastVersionHashRef.current.set(id, prevHash);
+        lastVersionAtRef.current.set(id, lastAt);
+      }
       // RLS rejection - Pro lapsed mid-edit. Bubble to the caller
       // (NotesView), which dedupes to one banner per session.
       if (!result.ok && result.code === '42501') {
@@ -324,6 +338,17 @@ export function useNoteEditing({
     scheduleSync();
   }
 
+  async function handleVaultSave(id: string, body: string, trackers?: Record<string, unknown>): Promise<boolean> {
+    const patch = trackers === undefined ? { body } : { body, trackers };
+    const ok = await updateNote(id, patch);
+    if (!ok) return false;
+    editingBodyRef.current.delete(id);
+    patchLocal(id, patch, new Date().toISOString());
+    scheduleSync();
+    scheduleVersionSnapshot(id);
+    return true;
+  }
+
   return {
     handleTitleChange,
     handleTitleFocus,
@@ -331,6 +356,7 @@ export function useNoteEditing({
     handleBodyChange,
     handleTagsChange,
     handleTrackersChange,
+    handleVaultSave,
     scheduleSync,
     patchLocal,
     contentHash,

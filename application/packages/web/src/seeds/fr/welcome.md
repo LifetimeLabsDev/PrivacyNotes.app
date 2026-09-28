@@ -27,7 +27,7 @@ La barre du haut change l'apparence du texte : **gras**, *italique*, titres, lis
 
 ## Une chose à faire aujourd'hui
 
-- [ ] Trouve ta **<mark style="background-color: rgba(51, 154, 240, 0.35)">phrase de 12 mots</mark>** dans **Paramètres > Sécurité > Ta phrase**, écris-la sur du papier et range-la en lieu sûr
+- [ ] Trouve ta **<mark style="background-color: rgba(51, 154, 240, 0.35)">phrase de 12 mots</mark>** dans **Paramètres > Sécurité > Phrase**, écris-la sur du papier et range-la en lieu sûr
 
 Cette phrase est ce qui ouvre tes notes. C'est toi qui décides où elle vit, et tu peux changer d'avis à tout moment. [[Comment tes notes sont protégées]] présente les trois options.
 

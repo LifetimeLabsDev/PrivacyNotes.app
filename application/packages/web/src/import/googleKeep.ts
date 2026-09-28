@@ -3,7 +3,6 @@ import { zipEntryText } from './zipEntry';
 import { normalizeTag } from '../notesRepo';
 import { linkifyMarkdown } from './linkify';
 import { importBlobs } from './blobImport';
-import { ARCHIVED_TAG } from './types';
 import type { Importer, ImportedNote, ParsedImport } from './types';
 
 /**
@@ -34,8 +33,7 @@ import type { Importer, ImportedNote, ParsedImport } from './types';
  *   - isPinned   → starred (Keep has no separate "favorite"; pinned is
  *                  the only "this matters" bit - same call we made for SN)
  *   - isTrashed  → trashed
- *   - isArchived → active + `archived` tag (no archive view yet, and the
- *                  trash auto-purges, so trashing them would delete them)
+ *   - isArchived → archived
  *   - labels[].name → tags (through shared normalizeTagList)
  *
  * Lists (`listContent`) are handled via a heuristic because Keep uses
@@ -128,7 +126,7 @@ export const googleKeepImporter: Importer = {
     let linkifiedCount = 0;
     let starredCount = 0;
     let trashedImportCount = 0;
-    let archivedTaggedCount = 0;
+    let archivedCount = 0;
     let checklistNoteCount = 0;
     let taskItemCount = 0;
     let proseFromListCount = 0;
@@ -254,14 +252,6 @@ export const googleKeepImporter: Importer = {
         .filter((n) => n.length > 0);
 
       const pinned = raw.isPinned === true;
-      // Archived in Keep means out of sight but kept on purpose.
-      // PrivacyNotes has no archive view, and routing these to the trash
-      // would hand them straight to the auto-purge, which permanently
-      // deletes anything that outlives the retention window - so
-      // "archive" would quietly mean "delete in 30 days". Import them as
-      // ordinary notes carrying an `archived` tag instead: nothing is
-      // destroyed, and the tag gives a one-click filter that behaves
-      // like the archive they came from.
       const archived = raw.isArchived === true;
       const trashed = raw.isTrashed === true;
 
@@ -270,7 +260,7 @@ export const googleKeepImporter: Importer = {
       if (rawTags.length === 0) untaggedCount++;
       if (pinned) starredCount++;
       if (trashed) trashedImportCount++;
-      if (archived) archivedTaggedCount++;
+      if (archived) archivedCount++;
       if (noteHadFormatting) formattedCount++;
 
       // Same linkify pass we run on every importer - Keep stores bare
@@ -288,13 +278,14 @@ export const googleKeepImporter: Importer = {
         // title stays empty and the derivation in NotesView does its job.
         title: rawTitle,
         body,
-        tags: normalizeTagList(archived ? [...rawTags, ARCHIVED_TAG] : rawTags),
+        tags: normalizeTagList(rawTags),
         createdAt: usecToIso(raw.createdTimestampUsec),
         updatedAt: usecToIso(
           raw.userEditedTimestampUsec ?? raw.createdTimestampUsec
         ),
         starred: pinned,
         trashed,
+        ...(archived ? { archived: true } : {}),
         ...(raw.color && KEEP_COLORS[raw.color] ? { colorKey: KEEP_COLORS[raw.color] } : {}),
       });
     }
@@ -315,9 +306,9 @@ export const googleKeepImporter: Importer = {
         `Restored ${trashedImportCount} trashed note${trashedImportCount === 1 ? '' : 's'} into the trash.`
       );
     }
-    if (archivedTaggedCount > 0) {
+    if (archivedCount > 0) {
       transforms.push(
-        `Tagged ${archivedTaggedCount} archived note${archivedTaggedCount === 1 ? '' : 's'} "${ARCHIVED_TAG}" and kept ${archivedTaggedCount === 1 ? 'it' : 'them'} out of the trash.`
+        `Kept ${archivedCount} archived note${archivedCount === 1 ? '' : 's'} in the archive.`
       );
     }
 

@@ -55,14 +55,16 @@
     "openingBody": "Powinno pojawić się okno płatności Paddle. Jeśli się nie pojawi, przeglądarka mogła zablokować wyskakujące okienko - odśwież tę stronę, aby spróbować ponownie."
   },
   "history": {
-    "title": "Historia notatki",
-    "subtitle": "Do 20 wersji na notatkę. Najstarsze usuwane automatycznie.",
+    "subtitle": "Do 20 wersji na element. Najstarsze usuwane automatycznie.",
     "empty": "Brak historii. Wersje zaczną się pojawiać po następnej edycji. Zajrzyj tu później.",
     "loadFailed": "Nie udało się wczytać historii. Sprawdź połączenie i spróbuj ponownie.",
     "selectPrompt": "Wybierz wersję, aby zobaczyć podgląd.",
     "emptyBody": "(pusto)",
     "restore": "Przywróć",
-    "restoring": "Przywracanie…"
+    "restoring": "Przywracanie…",
+    "restoreSnapshotFailed": "Nie udało się najpierw zapisać bieżącej wersji, więc nic nie przywrócono. Sprawdź połączenie i spróbuj ponownie.",
+    "restoreFailed": "Nie udało się przywrócić tej wersji. Spróbuj ponownie.",
+    "loginExtrasNotRecorded": "Ta wersja nie zapisała pól własnych ani dodatkowych stron. Przywrócenie jej zachowa obecne."
   },
   "donation": {
     "eyebrow": "Odblokowano",

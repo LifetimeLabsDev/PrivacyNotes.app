@@ -4,7 +4,8 @@ import type { DOMOutputSpec, Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { Plugin, PluginKey, type EditorState, type Transaction } from '@tiptap/pm/state';
 import { TableMap } from '@tiptap/pm/tables';
 import { Decoration, DecorationSet, type EditorView } from '@tiptap/pm/view';
-import { commitWidths, dragWidths, effectiveWidths, mirrorEdge, widthsFromTableLines } from './tableColumnWidths';
+import { commitWidths, dragTableWidth, dragWidths, effectiveWidths, mirrorEdge, widthsFromTableLines } from './tableColumnWidths';
+import { tableWidthFromMarker } from './tableDelimiterRow';
 
 /**
  * Column widths in the editor: reading them out of the markdown, drawing
@@ -54,7 +55,15 @@ function colSpecs(table: ProseMirrorNode): DOMOutputSpec[] {
  * a pipe table.
  */
 export function renderTableHTML(node: ProseMirrorNode, attrs: Record<string, unknown>): DOMOutputSpec {
-  return ['table', mergeAttributes(attrs), ['colgroup', {}, ...colSpecs(node)], ['tbody', 0]];
+  const width = tableWidthOf(node);
+  const own = width ? { 'data-table-width': String(width), style: `width: ${width}%` } : {};
+  return ['table', mergeAttributes(attrs, own), ['colgroup', {}, ...colSpecs(node)], ['tbody', 0]];
+}
+
+/** The table's own width in percent of the note, or null for full width. */
+export function tableWidthOf(table: ProseMirrorNode): number | null {
+  const width = table.attrs['tableWidth'];
+  return typeof width === 'number' && width > 0 && width < 100 ? width : null;
 }
 
 function applyColumnWidths(node: ProseMirrorNode, table: HTMLTableElement, colgroup: HTMLElement, cellMinWidth: number): void {
@@ -65,7 +74,8 @@ function applyColumnWidths(node: ProseMirrorNode, table: HTMLTableElement, colgr
   Array.from(colgroup.children).forEach((col, i) => {
     (col as HTMLElement).style.cssText = widths ? `width: ${widths[i]}%` : '';
   });
-  table.style.width = '';
+  const width = tableWidthOf(node);
+  table.style.width = width ? `${width}%` : '';
   table.style.minWidth = `${count * cellMinWidth}px`;
 }
 
@@ -97,6 +107,7 @@ interface MdToken {
 }
 interface MdBlockState {
   src: string;
+  line: number;
   bMarks: number[];
   tShift: number[];
   eMarks: number[];
@@ -138,14 +149,20 @@ export function registerTableWidthsMarkdown(md: MdInstance): void {
     const ok = original(state, startLine, endLine, silent);
     if (!ok || silent) return ok;
     const widths = widthsFromTableLines(sourceLine(state, startLine), sourceLine(state, startLine + 1));
-    if (!widths) return ok;
     let col = 0;
-    for (const token of state.tokens.slice(first)) {
+    for (const token of widths ? state.tokens.slice(first) : []) {
       if (token.type === 'tr_open') col = 0;
       if (token.type === 'th_open' || token.type === 'td_open') {
-        const width = widths[col++];
+        const width = widths![col++];
         if (width) token.attrSet('colwidth', String(width));
       }
+    }
+    // The width marker sits on the line right under the table, where an HTML
+    // comment ends the table. It is consumed here so no comment block is left.
+    const tableWidth = state.line < endLine ? tableWidthFromMarker(sourceLine(state, state.line)) : null;
+    if (tableWidth) {
+      state.tokens[first]?.attrSet('data-table-width', String(tableWidth));
+      state.line += 1;
     }
     return ok;
   };
@@ -224,7 +241,7 @@ function borderAt(view: EditorView, event: PointerEvent): Handle | null {
     const cellPos = $pos.before(depth) - tablePos - 1;
     const first = map.colCount(cellPos);
     const last = first + ($pos.node(depth).attrs['colspan'] ?? 1) - 1;
-    if (Math.abs(event.clientX - endEdge) <= HANDLE_REACH && last < map.width - 1) return { table: tablePos, border: last };
+    if (Math.abs(event.clientX - endEdge) <= HANDLE_REACH) return { table: tablePos, border: last };
     if (Math.abs(event.clientX - startEdge) <= HANDLE_REACH && first > 0) return { table: tablePos, border: first - 1 };
     return null;
   }
@@ -239,14 +256,60 @@ function handleDecorations(state: EditorState, handle: Handle): DecorationSet {
   for (let row = 0; row < map.height; row++) {
     const index = row * map.width + handle.border;
     const pos = map.map[index]!;
-    if (map.map[index + 1] === pos) continue;
+    const edge = handle.border === map.width - 1;
+    if (!edge && map.map[index + 1] === pos) continue;
     if (row > 0 && map.map[index - map.width] === pos) continue;
     const cell = table.nodeAt(pos)!;
     const dom = document.createElement('div');
-    dom.className = 'pn-col-resize-handle';
+    dom.className = edge ? 'pn-col-resize-handle is-edge' : 'pn-col-resize-handle';
     decorations.push(Decoration.widget(handle.table + 1 + pos + cell.nodeSize - 1, dom));
   }
   return DecorationSet.create(state.doc, decorations);
+}
+
+/**
+ * Drag the table's outer end edge: the whole table gets narrower or wider,
+ * in steps of the note's width, and its columns keep their shares. Full
+ * width stores nothing; anything narrower is the marker line under the table.
+ */
+function startEdgeDrag(view: EditorView, handle: Handle, event: PointerEvent, wrapper: HTMLElement, tableEl: HTMLElement, table: ProseMirrorNode): void {
+  const stored = tableWidthOf(table);
+  const start = stored ?? 100;
+  const rtl = getComputedStyle(tableEl).direction === 'rtl';
+  const noteWidth = wrapper.getBoundingClientRect().width;
+  const startX = event.clientX;
+  let current: number | null = stored;
+
+  const move = (ev: PointerEvent) => {
+    current = dragTableWidth(start, ((ev.clientX - startX) / noteWidth) * 100 * (rtl ? -1 : 1));
+    tableEl.style.width = current ? `${current}%` : '';
+  };
+  const finish = (commit: boolean) => {
+    window.removeEventListener('pointermove', move);
+    window.removeEventListener('pointerup', onUp);
+    window.removeEventListener('pointercancel', onCancel);
+    window.removeEventListener('keydown', onKey, true);
+    document.documentElement.classList.remove('pn-col-resizing');
+    const tr = view.state.tr.setMeta(resizeKey, { handle: null, dragging: false });
+    if (commit && current !== stored) tr.setNodeMarkup(handle.table, null, { ...table.attrs, tableWidth: current });
+    else tableEl.style.width = stored ? `${stored}%` : '';
+    view.dispatch(tr);
+  };
+  const onUp = () => finish(true);
+  const onCancel = () => finish(false);
+  const onKey = (ev: KeyboardEvent) => {
+    if (ev.key !== 'Escape') return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    finish(false);
+  };
+
+  document.documentElement.classList.add('pn-col-resizing');
+  window.addEventListener('pointermove', move);
+  window.addEventListener('pointerup', onUp);
+  window.addEventListener('pointercancel', onCancel);
+  window.addEventListener('keydown', onKey, true);
+  view.dispatch(view.state.tr.setMeta(resizeKey, { handle, dragging: true }));
 }
 
 function startDrag(view: EditorView, handle: Handle, event: PointerEvent): void {
@@ -254,6 +317,10 @@ function startDrag(view: EditorView, handle: Handle, event: PointerEvent): void 
   const tableEl = wrapper instanceof HTMLTableElement ? wrapper : wrapper?.querySelector('table');
   const table = view.state.doc.nodeAt(handle.table);
   if (!tableEl || !table) return;
+  if (handle.border === TableMap.get(table).width - 1) {
+    if (wrapper && wrapper !== tableEl) startEdgeDrag(view, handle, event, wrapper, tableEl, table);
+    return;
+  }
   const cols = Array.from(tableEl.querySelectorAll<HTMLElement>(':scope > colgroup > col'));
   const stored = tableWidths(table);
   const count = TableMap.get(table).width;

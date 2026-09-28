@@ -64,7 +64,17 @@
   },
   "burnShareModal": {
     "title": "공유 & Burn After Reading",
-    "body": "<lead>원본 노트는 삭제되지 않아요.</lead> 계정에 안전하게 남아요. burn 링크는 읽힌 뒤 스스로 파기되는 별도의 암호화 사본이에요. 링크는 열리든 안 열리든 24시간 후 만료돼요.",
+    "body": "<lead>원본 노트는 삭제되지 않아요.</lead> 계정에 안전하게 남아요. burn 링크는 읽힌 뒤 스스로 파기되는 별도의 암호화 사본이에요.",
+    "readTime": "읽기 시간",
+    "readTimeHint": "이후 화면에서 사라져요",
+    "lifetime": "링크 만료",
+    "lifetimeHint": "아무도 열지 않으면",
+    "minutes_other": "{{count}}분",
+    "hours_other": "{{count}}시간",
+    "afterHours_other": "{{count}}시간 후",
+    "afterDays_other": "{{count}}일 후",
+    "create": "링크 만들고 복사",
+    "share": "링크 공유",
     "imagesStripped": "이 노트에서는 텍스트만 표시되고 파일은 숨겨져요.",
     "copied": "복사됨"
   },
@@ -78,7 +88,7 @@
     "footerTagline": "- 영지식 암호화 노트, 스위스에서 호스팅.",
     "sealed": {
       "heading": "암호화된 노트를 받았어요.",
-      "subheading": "이 메시지는 읽으면 자동으로 파기돼요. 읽지 않은 링크는 24시간 후 만료돼요.",
+      "subheading": "이 메시지는 읽으면 자동으로 파기돼요. 읽지 않은 링크는 저절로 만료돼요.",
       "reveal": "메시지 열기",
       "warning": "여는 순간 서버에서 노트가 삭제돼요. 두 번째 기회는 없어요."
     },
@@ -94,7 +104,7 @@
     },
     "gone": {
       "heading": "이 노트는 사라졌어요.",
-      "body": "이미 읽혔거나 만료됐어요. burn 링크는 한 번만 열 수 있고 24시간 후 만료돼요."
+      "body": "이미 읽혔거나 만료됐어요. burn 링크는 한 번만 열 수 있고 저절로 만료돼요."
     },
     "error": {
       "heading": "문제가 발생했어요.",

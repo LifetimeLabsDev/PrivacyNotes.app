@@ -46,6 +46,7 @@
     "standardNotes": "Standard Notes 的已解密 .zip 或 .txt 備份（File > Export > Decrypted）。",
     "obsidian": "Obsidian vault 的 .zip。保留標籤、[[note links]]、資料夾結構、內文中的 #tags，以及嵌入的圖片和檔案。",
     "notesnook": "Notesnook 匯出的 .zip。匯出時選 HTML 可保留格式、筆記本、標籤與附件。",
+    "joplin": "從 File > Export all >「JEX - Joplin Export File」匯出的 .jex 檔。筆記本會變成資料夾，標籤、待辦事項、筆記連結與附件也會一起帶過來。",
     "upnote": "在 UpNote 中：Settings > Backup >「Backup now」，然後把備份資料夾裡的所有內容壓成 zip。保留筆記本、標籤、釘選、筆記連結、格式與附件。手機應用程式的逐篇匯出也可以：請選「Export to HTML」。",
     "markdownFolder": "單獨的 .md 或 .txt 檔，或是一個 .zip。壓成 zip 的資料夾會保留子資料夾，並把圖片和附件一起帶過來。",
     "markdownApp": "這些筆記本來就是資料夾裡的 Markdown 檔。把那個資料夾壓成 .zip 拖進來，子資料夾、圖片和 #標籤都會跟著過來。",

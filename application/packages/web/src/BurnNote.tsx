@@ -1,12 +1,13 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, type CSSProperties } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Fire, Lock, Moon, Sun } from './icons';
 import { RevealGate } from './RevealGate';
-import { useTheme } from './theme';
+import { isLineSpacing, lineHeightCss, paragraphGapCss, useTheme, type LineSpacing } from './theme';
 import { decryptJson, hexToBytes, createSupabaseClient } from '@notes/shared';
-import { renderMarkdownSafe, prepareRender } from './markdownRender';
+import { renderMarkdownSafe, renderNoteBody, prepareRender } from './markdownRender';
 import { marketingHomeHref } from './siteLinks';
 import { Brand } from './Brand';
+import { readBurnSeconds } from './burnOptions';
 
 /**
  * Burn-After-Reading viewer - renders at /burn.
@@ -65,7 +66,7 @@ export default function BurnNote() {
   const { t } = useTranslation('notesChrome');
   const { theme, setTheme } = useTheme();
   const [phase, setPhase] = useState<Phase>('sealed');
-  const [note, setNote] = useState<{ title: string; body: string; fields: BurnField[] } | null>(null);
+  const [note, setNote] = useState<{ title: string; body: string; fields: BurnField[]; spacing: LineSpacing } | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -130,7 +131,7 @@ export default function BurnNote() {
       const key = hexToBytes(keyHex);
       const nonce = raw.slice(0, 24);
       const ciphertext = raw.slice(24);
-      const result = decryptJson<{ title?: unknown; body?: unknown; fields?: unknown }>(
+      const result = decryptJson<{ title?: unknown; body?: unknown; fields?: unknown; spacing?: unknown; readSeconds?: unknown }>(
         ciphertext,
         nonce,
         key,
@@ -146,9 +147,12 @@ export default function BurnNote() {
         title: typeof result.title === 'string' ? result.title : '',
         body: typeof result.body === 'string' ? result.body : '',
         fields: readFields(result.fields),
+        // The sender's line spacing, so the note lays out as they saw it. A
+        // link made before it was sent reads as Compact, the app's default.
+        spacing: isLineSpacing(result.spacing) ? result.spacing : 'compact',
       });
       setPhase('revealed');
-      setCountdown(120);
+      setCountdown(readBurnSeconds(result.readSeconds));
     } catch {
       setErrorMsg(t('burnView.error.network'));
       setPhase('error');
@@ -185,8 +189,8 @@ export default function BurnNote() {
   // Memoize rendered markdown so the 1Hz countdown tick doesn't
   // re-render the body HTML every second.
   const bodyHtml = useMemo(
-    () => (note?.body ? renderMarkdownSafe(note.body) : ''),
-    [note?.body, renderReady],
+    () => (note?.body ? renderNoteBody(renderMarkdownSafe(note.body), note.spacing) : ''),
+    [note?.body, note?.spacing, renderReady],
   );
 
   // A shared note can contain math or fenced code, and rendering those needs
@@ -307,7 +311,10 @@ export default function BurnNote() {
                 )}
                 {note.body ? (
                   <div
-                    className="prose prose-neutral dark:prose-invert max-w-none prose-headings:tracking-tight prose-p:leading-relaxed prose-img:rounded-md"
+                    className="prose prose-neutral dark:prose-invert max-w-none prose-headings:tracking-tight prose-img:rounded-md"
+                    // The sender's rhythm, on this block only: the page root
+                    // carries the reader's own spacing if they use the app.
+                    style={{ '--pn-para-gap': paragraphGapCss(note.spacing), lineHeight: lineHeightCss(note.spacing) } as CSSProperties}
                     dangerouslySetInnerHTML={{ __html: bodyHtml }}
                   />
                 ) : note.fields.length === 0 ? (

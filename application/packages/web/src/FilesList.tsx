@@ -269,6 +269,7 @@ interface FilesListProps {
   selectionMode: boolean;
   selectedIds: Set<string>;
   selectionAllStarred: boolean;
+  selectionAllArchived: boolean;
   onRowClick: (e: React.MouseEvent, noteId: string) => void;
   onToggleSelected: (id: string) => void;
   onRangeSelect: (id: string) => void;
@@ -278,6 +279,7 @@ interface FilesListProps {
   onDeselectAll: () => void;
   onSelectAllVisible: () => void;
   onBulkFavorite: () => void;
+  onBulkArchive: () => void;
   onBulkExport: () => void;
   onBulkMoveToFolder: () => void;
   foldersUnlocked: boolean;
@@ -435,6 +437,7 @@ export function FilesList({
   selectionMode,
   selectedIds,
   selectionAllStarred,
+  selectionAllArchived,
   onRowClick,
   onToggleSelected,
   onRangeSelect,
@@ -444,6 +447,7 @@ export function FilesList({
   onDeselectAll,
   onSelectAllVisible,
   onBulkFavorite,
+  onBulkArchive,
   onBulkExport,
   onBulkMoveToFolder,
   foldersUnlocked,
@@ -775,8 +779,10 @@ export function FilesList({
         <SelectionToolbar
           mode="normal"
           allStarred={selectionAllStarred}
+          allArchived={selectionAllArchived}
           onClear={clearFileSelection}
           onFavorite={onBulkFavorite}
+          onArchive={onBulkArchive}
           onTag={onBulkTag}
           onMoveToFolder={onBulkMoveToFolder}
           foldersUnlocked={foldersUnlocked}

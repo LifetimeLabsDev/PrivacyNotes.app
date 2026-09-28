@@ -1,18 +1,22 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Fingerprint, Key, Lock, X } from './icons';
-import { AccentBar, HeadlineRule } from './settingsUI';
+import { Fingerprint, Key, Lock, Shield, X } from './icons';
+import { isDemoMode } from './demo';
+import { DemoAccountTeaser } from './DemoAccountTeaser';
+import { AccentBar, HeadlineRule, SettingsTabStrip, settingsTabClass } from './settingsUI';
 import { BiometricTab } from './security/BiometricTab';
 import { PhraseTab } from './security/PhraseTab';
 import { PinTab } from './security/PinTab';
+import { TwoFactorTab } from './security/TwoFactorTab';
 import type { UserSettings } from './userSettings';
 import { useEscapeToClose } from './useEscapeToClose';
 
-type Tab = 'pin' | 'phrase' | 'biometric';
+type Tab = 'pin' | 'phrase' | 'biometric' | 'twoFactor';
 
 type Props = {
   phrase: string;
   onClose: () => void;
+  onOpenCustody?: () => void;
   /** Which tab to open on. Defaults to 'pin'. */
   defaultTab?: Tab;
   /** Why the PIN tab was opened, when something else opened it. */
@@ -40,7 +44,7 @@ type Props = {
 };
 
 /**
- * Security modal - three-tab dialog for biometric enrollment, PIN
+ * Security modal - dialog for biometric enrollment, PIN, two-factor sign-in
  * management, and viewing the recovery phrase. The tab bodies live in
  * `./security/`; this file owns the chrome (overlay, tab strip, close
  * handling) and dispatches to the active tab.
@@ -48,6 +52,7 @@ type Props = {
 export function SecurityModal({
   phrase,
   onClose,
+  onOpenCustody,
   defaultTab = 'pin',
   reason,
   pinTimeoutMinutes,
@@ -111,22 +116,26 @@ export function SecurityModal({
         )}
 
         {/* Tab strip - underlined, full-width, minimal chrome. */}
-        <div className="flex border-b border-divider -mx-6 px-6">
+        <SettingsTabStrip className="-mx-6 px-4 sm:px-6">
           <TabButton setting="security.pin" active={tab === 'pin'} onClick={() => pickTab('pin')}>
             <Lock className="text-accent" aria-hidden="true" />
-            {t('modal.tabPin')}
+            <span>{t('modal.tabPin')}</span>
           </TabButton>
           <TabButton setting="security.biometric" active={tab === 'biometric'} onClick={() => pickTab('biometric')}>
             <Fingerprint className="text-accent" aria-hidden="true" />
-            <span className="sm:hidden">{t('modal.tabBiometricShort')}</span>
-            <span className="hidden sm:inline">{t('modal.tabBiometric')}</span>
+            <span>{t('modal.tabBiometricShort')}</span>
           </TabButton>
           <TabButton setting="security.phrase" active={tab === 'phrase'} onClick={() => pickTab('phrase')}>
             <Key className="text-accent" aria-hidden="true" />
-            <span className="sm:hidden">{t('modal.tabPhraseShort')}</span>
-            <span className="hidden sm:inline">{t('modal.tabPhrase')}</span>
+            <span>{t('modal.tabPhraseShort')}</span>
           </TabButton>
-        </div>
+          <TabButton setting="security.twoFactor" active={tab === 'twoFactor'} onClick={() => pickTab('twoFactor')}>
+            <Shield className="text-accent" aria-hidden="true" />
+            <span>{t('modal.tabTwoFactor')}</span>
+          </TabButton>
+        </SettingsTabStrip>
+
+        {tab === 'twoFactor' && (isDemoMode() ? <DemoAccountTeaser kind="twoFactor" /> : <TwoFactorTab />)}
 
         {tab === 'pin' && (
           <PinTab
@@ -162,11 +171,15 @@ export function SecurityModal({
         {tab === 'phrase' && (
           <PhraseTab
             phrase={phrase}
+            pubkey={pubkey}
             pinTimeoutMinutes={pinTimeoutMinutes}
             // Derived from synced settings, NOT pin.hasPin() - on a
             // fresh device the localStorage cache lags settings sync.
             hasPin={Boolean(userSettings.pinHash && userSettings.pinSalt)}
             onCancel={onClose}
+            pinCredential={`${userSettings.pinHash ?? ''}:${userSettings.pinSalt ?? ''}`}
+            onOpenCustody={isDemoMode() ? undefined : onOpenCustody}
+            recovery={{ phrase, userSettings, onSettingsChange }}
           />
         )}
       </div>
@@ -192,11 +205,7 @@ function TabButton({
       data-setting={setting}
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex items-center gap-1.5 px-4 py-2 -mb-px text-sm font-medium border-b-2 transition ${
-        active
-          ? 'border-accent text-pn'
-          : 'border-transparent text-pn-soft hover:text-pn dark:hover:text-white'
-      }`}
+      className={settingsTabClass(active)}
     >
       {children}
     </button>

@@ -94,8 +94,8 @@
     "what-can-you-see": {
       "q": "Co o mých poznámkách PrivacyNotes vidí?",
       "a": [
-        "Nic čitelného. Poznámky, názvy, značky a přílohy jsou vždy zašifrované, na tvém zařízení i cestou na server, takže server ukládá jen šifrovaná data. Při vlastní správě, kterou má každý účet s frází, k nim na naší straně žádný klíč neexistuje. Registrace přes Google, Apple nebo GitHub se zeptá, kde má tvůj klíč bydlet, a začíná na možnosti „Ať je to jednoduché a pohodlné“, která ukládá tvoji frázi na náš server, zašifrovanou naším klíčem. Nastavení > Zabezpečení > Tvoje fráze ukáže, který režim máš, a dovolí ho přepnout.",
-        "Vidíme jen nutné minimum pro provoz služby: kolik šifrovaného úložiště využíváš, kolik máš připojených zařízení a časy synchronizace. Pokud se přihlašuješ frází, a ne přes Google, Apple nebo GitHub, neznáme ani tvou e-mailovou adresu."
+        "Poznámky, názvy, štítky a přílohy se šifrují na tvém zařízení, než dorazí na server. Při vlastní správě, se kterou začíná každý účet vytvořený pomocí fráze, na naší straně není žádný dešifrovací klíč. Při registraci přes Google, Apple nebo GitHub se aplikace zeptá, kde má být klíč uložený, a začne možností „Ať je to jednoduché a pohodlné“. Ta uloží frázi na náš server zašifrovanou naším klíčem. V tomto režimu může náš server dešifrovat frázi, a tedy i tvoje poznámky. Nastavení > Účet > Správa klíče ukazuje aktuální režim a umožňuje ho změnit.",
+        "Vidíme údaje potřebné k provozu služby: kolik zašifrovaného úložiště využíváš, kolik zařízení máš propojených a časové údaje synchronizace. Pokud používáš jen frázi a nemáš propojený účet Google, Apple ani GitHub, neznáme tvou e-mailovou adresu."
       ]
     },
     "phrase-vs-password": {
@@ -103,17 +103,17 @@
       "a": [
         "Zpočátku to může působit obráceně, ale jedna obnovovací fráze je silnější konstrukce. U jména a hesla není jméno tajné (objeví se v každém uniklém seznamu), takže celá bezpečnost leží na heslu, a hesla vymyšlená lidmi mají v průměru možná 30 až 40 bitů entropie. Tvoje fráze z 12 slov má garantovaných 128 bitů, vygenerovalo je tvoje zařízení, nevymýšlel je člověk a nikde jinde je nepoužíváš.",
         "A my nemáme žádné heslo, které bychom mohli ztratit. Přihlášení heslem znamená, že server ukládá aspoň hash hesla, a ten může uniknout, dá se prolomit nebo vyphishovat. Při vlastní správě tvoje fráze nikdy neopustí tvoje zařízení: šifrovací klíče z ní vznikají lokálně a server vždycky vidí jen šifrovaná data. Není co ukrást a není tu žádné obnovení hesla, které by šlo zneužít.",
-        "Pokud ti psaní 12 slov přijde nepraktické: frázi si můžeš jedním klepnutím uložit do správce hesel (Nastavení > Zabezpečení > Tvoje fráze) a přihlašování pak vypadá jako každé jiné. Máš radši známý postup? Funguje i přihlášení přes Google, Apple nebo GitHub: fráze na tebe pod povrchem čeká taky a ty si vybereš, jestli zůstane na tvém zařízení, nebo ji uložíme my."
+        "Pokud ti psaní 12 slov přijde nepraktické: frázi si můžeš jedním klepnutím uložit do správce hesel (Nastavení > Zabezpečení > Fráze) a přihlašování pak vypadá jako každé jiné. Máš radši známý postup? Funguje i přihlášení přes Google, Apple nebo GitHub: fráze na tebe pod povrchem čeká taky a ty si vybereš, jestli zůstane na tvém zařízení, nebo ji uložíme my."
       ]
     },
     "threat-model-levels": {
       "q": "Můžu si vybrat vlastní rovnováhu mezi pohodlím a soukromím?",
       "a": [
         "Ano, a záměrně. Ne každý se brání stejným hrozbám, takže model účtu je žebřík, ne jediné dogma. Na každé příčce se tvoje poznámky šifrují na tvém zařízení; mění se to, kdo drží klíč a co o tobě víme.",
-        "Pohodlná strana: přihlas se přes Google, Apple nebo GitHub a na dotaz nech vybranou možnost „Ať je to jednoduché a pohodlné“, na které ta obrazovka začíná. Obnovovací frázi ti uložíme my, zašifrovanou na našem serveru, takže se každé zařízení přihlásí jen tímto přihlášením a není co zálohovat ani ztratit. Výměnou známe e-mail za tímto přihlášením a tvůj klíč držíme my, ne ty. Pokud je tvou reálnou hrozbou spíš to, že přijdeš o vlastní přihlašovací údaje, než cílený útok, je tohle ten správný stupeň.",
+        "Pohodlná varianta: přihlas se přes Google, Apple nebo GitHub a na příslušné obrazovce nech vybranou výchozí možnost „Ať je to jednoduché a pohodlné“. Obnovovací frázi uchováváme zašifrovanou na našem serveru, takže nové zařízení může otevřít poznámky po přihlášení přes poskytovatele a zadání kódu z autentizátoru, pokud je 2FA zapnuté. Výměnou za to známe e-mail použitý k přihlášení a náš server může frázi dešifrovat. Ulož si frázi pro případ ztráty účtu poskytovatele a při zapnutí dvoufaktorového přihlášení si uchovej záložní klíč 2FA.",
         "Uprostřed: přihlas se přes Google, Apple nebo GitHub, ale vyber „Maximální bezpečnost a soukromí“. Tvoje fráze se našich serverů nikdy nedotkne a šifrování je plně s nulovou znalostí; nová zařízení potřebují frázi nebo QR kód naskenovaný ze zařízení, které už je přihlášené. E-mail za tímto přihlášením nutně známe dál, ale nepřečetli bychom ani jednu poznámku, ani kdyby nás k tomu někdo nutil.",
         "Soukromá strana: přihlášení vynech úplně a používej jen frázi z 12 slov. Žádný e-mail, žádné jméno, žádná identita, a ve spojení s [anonymním nákupem Pro](/cs/help/buy-pro-anonymously/) po sobě ani platba nikde nenechá jméno. Na druhou stranu je správa klíče celá na tobě: když frázi ztratíš a nezůstane ti přihlášené žádné zařízení, nikdo ti nepomůže.",
-        "S přihlášením přes Google, Apple nebo GitHub není zvolený stupeň konečný. V Nastavení > Zabezpečení > Tvoje fráze stojí oba režimy vedle sebe i s tím, co každý stojí, a přepnout můžeš kdykoli oběma směry. Přechod na vlastní správu smaže naši kopii a nejdřív po tobě chce přepsat tři z dvanácti slov, protože kdo na to klikne, obvykle si je nikdy nezapsal. Cesta zpátky frázi zase nahraje a vyžaduje výslovné rozhodnutí. Oba směry se podepisují klíčem tvého účtu, takže ukradená relace ti režim nezmění. Účet jen s frází zůstává na soukromé straně, protože nemá žádné přihlášení, kterým by se dal uložený klíč stáhnout. A na každém stupni se dají přidat místní vrstvy: zámek PINem, biometrické odemknutí a ochrana jednotlivých poznámek."
+        "Nastavení > Účet > Správa klíče ukazuje oba režimy s jejich výhodami a nevýhodami a umožňuje mezi nimi přepínat. Po ukončení správy na serveru smažeme naši kopii, jakmile potvrdíš tři slova z uložené fráze. Přepnutí zpět frázi znovu nahraje a vyžaduje výslovnou volbu. Oba směry změny se podepisují klíčem tvého účtu a při zapnutém 2FA vyžadují nový kód z autentizátoru. Účet s frází může propojit poskytovatele v Nastavení > Účet > Účty a pak zvlášť zvolit správu na serveru; samotné propojení poskytovatele frázi nenahrává. Každý režim může používat i zámek aplikace s PINem, biometrické odemykání a ochranu jednotlivých poznámek."
       ]
     },
     "twelve-word-phrase": {
@@ -126,19 +126,26 @@
       ]
     },
     "guess-phrase": {
-      "q": "Když někdo uhodne mých 12 slov, dostane se mi do účtu?",
+      "q": "Může někdo uhodnout mých 12 slov nebo dostat stejná?",
       "a": [
-        "Krátká odpověď: ano. Fráze je klíč, takže kdokoli, kdo ji drží, se může přihlásit, stejně jako kdokoli s klíčem od tvého domu může otevřít dveře. Tak je to navržené: je to jediný hlavní klíč k tvým poznámkám a nic slabšího před ním nestojí. Skutečná otázka tedy není, jestli držení fráze dává přístup (dává), ale jestli by ji někdo mohl uhodnout - a tam je odpověď ne, ne s žádným počítačem, jaký existuje nebo jaký si dokážeme představit.",
-        "Tady je ten rozměr. Fráze z 12 slov je jedna z 2^128 možností: asi 340 sextilionů, 39místné číslo (3,4 x 10^38). Šance, že tu tvoji někdo uhodne na první pokus, je 1 ku 340 sextilionům, což je méně pravděpodobné než čtyřikrát za sebou vyhrát loterijní jackpot se šancí 1 ku 300 milionům. Brát to jako prohledávání místo šťastného tipu nepomůže: i při trilionu pokusů za sekundu (10^18, hluboko za tím, čeho by dosáhl jakýkoli reálný hardware, včetně toho státního) by trvalo asi 10 bilionů let projít je všechny, téměř 800násobek současného věku vesmíru. A to je ještě ta pohádková verze, protože každý skutečný pokus musí projít záměrně pomalým krokem derivace klíče a každý útok po síti musí přes naše servery, což skutečné hádání zpomalí o mnoho dalších řádů. Není to ani žádné nové schéma: stejná 128bitová konstrukce chrání bitcoinové peněženky víc než deset let a nikdo nikdy žádnou neuhodl.",
-        "Je lákavé představovat si frázi jako heslo, kde silu přidáš tím, že přimícháš velká písmena, čísla a symboly. Obnovovací fráze takhle nefunguje a nikdy se ji nesnaž vyrobit ani upravovat ručně. Tvoje zařízení vygeneruje 128 bitů kryptograficky bezpečné náhodnosti a zakóduje je jako 12 slov z pevného veřejného seznamu 2048 slov: ta náhodnost je celá její síla. Poslední slovo navíc nese vestavěný kontrolní součet, takže překlepnutá nebo vymyšlená fráze se odmítne na první pohled. Na pořadí slov záleží, na velikosti písmen ne (při přihlášení ji normalizujeme) a přidávání symbolů by frázi jen znehodnotilo. Piš slova přesně tak, jak ti byla vydána."
+        "Ne. Tvých 12 slov nikdo neuhodne a nikdo jiný nedostane stejná: žádný počítač, který existuje nebo jaký si dokážeme představit, se k tomu ani nepřiblíží. Přihlásit se může jen ten, kdo získá tvoje skutečná slova, tak je dobře ukryj.",
+        "Tvoje zařízení vybere frázi náhodně a počet možných frází má 39 číslic. Uhodnout tu tvoji na první pokus je méně pravděpodobné než čtyřikrát za sebou vyhrát loterijní jackpot se šancí 1 ku 300 milionům. Počítač, který by zkoušel miliardu miliard frází každou sekundu, by na vyzkoušení všech i tak potřeboval asi 10 bilionů let, mnohem déle, než existuje vesmír. I kdyby každý z 8 miliard lidí na Zemi měl svou frázi, šance, že se nějaké dvě shodují, je menší než vyhrát ten jackpot dvakrát za sebou.",
+        "Síla pochází z té náhodnosti, ne z toho, jak slova vypadají. Frázi si nevymýšlej a nepřidávej do ní symboly: používej 12 slov přesně tak, jak ti je aplikace dala. Na velikosti písmen nezáleží. Poslední slovo slouží jako kontrola, takže aplikace frázi s překlepem nebo vymyšlenou frázi odmítne."
+      ]
+    },
+    "same-phrase": {
+      "q": "Může někdo jiný dostat stejnou obnovovací frázi jako já?",
+      "a": [
+        "Ne, v praxi ne. Tvoje zařízení vybere frázi náhodně z obrovského množství možných frází. I kdyby si účet založil každý člověk na Zemi, dvě stejné fráze by byly méně pravděpodobné než dvakrát za sebou vyhrát loterijní jackpot se šancí 1 ku 300 milionům. Ze stejných čísel plyne, proč [tvoji frázi nikdo neuhodne](/cs/help/guess-phrase/).",
+        "Tvoje ID účtu vychází z fráze. Když tedy účet smažeš a znovu se přihlásíš stejnými 12 slovy, dostaneš nový, prázdný trezor se stejným ID účtu. Nic ze smazaného trezoru se nevrátí. Po přechodu na novou frázi smaž tu starou ze správce hesel, ať se nikdy omylem nepřihlásíš do starého účtu."
       ]
     },
     "why-no-2fa": {
-      "q": "Proč tu není dvoufaktorové ověření (2FA)?",
+      "q": "Jak zapnout dvoufaktorové ověřování (2FA)?",
       "a": [
-        "Protože je to záměrný kompromis, ne opomenutí. Známý druh 2FA, kód v SMS nebo autentikátorová aplikace, existuje kvůli vyztužení slabých hesel vymyšlených lidmi a opírá se o společné tajemství a záložní cestu uloženou na serveru. Přesně tuhle plochu k útoku model s frází odstraňuje: tvoje zařízení dokazuje držení klíče podepsáním výzvy, takže naše servery dostanou vždycky jen veřejný klíč a podpis, nikdy frázi a nikdy hash hesla. Přišroubovat navrch kód by vrátilo zpátky serverovou mašinerii, kvůli které tenhle návrh vůbec vznikl, a proti hádání by nepřidalo nic, protože 128 bitů tyhle dveře už zavřelo.",
-        "Co tě tady chrání, je lokální a je to v každém tarifu: zámek aplikace (PIN) a biometrické odemknutí stojí před zařízením, které někdo jiný zvedne. Rizika, proti kterým se vyplatí bránit, jsou phishing a fráze okoukaná přes rameno, ne hádání. Měj proto frázi ve správci hesel a nikde kromě aplikace ji nepiš.",
-        "Jinak platí, že fráze je klíč, takže si ji zazáloguj hned v den, kdy si zakládáš účet: ulož si ji do renomovaného správce hesel, nebo si ji vytiskni či opiš a tu kopii schovej na bezpečné místo. Nikdy ji nevkládej nikam jinam než do samotné aplikace."
+        "Volitelné dvoufaktorové přihlášení zapneš v Nastavení > Zabezpečení > 2FA. Nejdřív aktualizuj PrivacyNotes na ostatních zařízeních. Naskenuj QR kód aplikací autentizátoru nebo zadej nastavovací klíč ručně. Ulož záložní klíč 2FA mimo PrivacyNotes, potvrď uloženou kopii a pro dokončení zadej aktuální kód.",
+        "Po nastavení potřebuje nová relace na serveru frázi nebo propojeného poskytovatele a pak kód z autentizátoru. Při vlastní správě je fráze stále potřeba k dešifrování poznámek. Účty poskytovatelů spravuješ v Nastavení > Účet > Účty; propojení účtu nemění správu klíče.",
+        "Pokud ztratíš autentizátor, přidej uložený záložní klíč 2FA do jiné aplikace autentizátoru. Pokud ztratíš obojí, nemůžeme obnovit přístup k serveru. Poznámky už odemčené na zařízení zůstávají čitelné a dají se exportovat. Dvoufaktorové přihlášení nepřidává šifrování ani nechrání už odemčené zařízení."
       ]
     },
     "bip39-wordlist": {
@@ -167,7 +174,7 @@
       "q": "Co jsou sebezničující poznámky (burn notes)?",
       "a": [
         "Burn note je sebezničující způsob, jak sdílet poznámku s někým, kdo PrivacyNotes nepoužívá. Aplikace obsah zašifruje jednorázovým klíčem a dá ti odkaz. Klíč cestuje ve fragmentu odkazu, který prohlížeče nikdy neposílají na server, takže náš server ukládá šifrovaná data, která nepřečte.",
-        "Při prvním otevření odkazu server šifrovaná data vydá a ve stejném kroku je smaže: jedno přečtení a je to. Neotevřené odkazy samy vyprší po 24 hodinách. Tak či tak nic nezůstává."
+        "Při prvním otevření odkazu server šifrovaná data vydá a ve stejném kroku je smaže: jedno přečtení a je to. Neotevřené odkazy samy vyprší po době, kterou zvolí odesílatel, od 1 hodiny do 7 dnů. Tak či tak nic nezůstává."
       ]
     },
     "open-source": {
@@ -187,15 +194,23 @@
     "lost-phrase": {
       "q": "Nemám obnovovací frázi. Můžete mi obnovit účet?",
       "a": [
-        "Pokud máš ještě někde přihlášené zařízení: ano, dostaneš se k ní. Otevři Nastavení > Zabezpečení > Tvoje fráze a hned si ji ulož do správce hesel.",
+        "Pokud máš ještě někde přihlášené zařízení: ano, dostaneš se k ní. Otevři Nastavení > Zabezpečení > Fráze a hned si ji ulož do správce hesel.",
         "Pokud nemáš přihlášené zařízení ani frázi, záleží na tom, kdo drží klíč. Pokud klíč při registraci přes Google, Apple nebo GitHub zůstal uložený u nás, přihlas se tímto přihlášením a jsi zpátky. Při vlastní správě to nedokáže nikdo: tvoje fráze se na naše servery nikdy nedostane, takže není co resetovat a nepomůže ani žádný ticket na podporu. Každá služba, která ti po úplné ztrátě dokáže obnovit šifrovaná data, drží tvoje klíče.",
         "Náprava zabere deset sekund: ulož si frázi do správce hesel v den, kdy si zakládáš účet. Pokud je fráze už pryč a platíš si rozšíření úložiště: účtuje ti ho přímo Paddle a dokáže ho zrušit i bez tvojí fráze, viz [změna nebo zrušení rozšíření](/cs/help/manage-storage-addon/)."
+      ]
+    },
+    "lost-2fa": {
+      "q": "Nemám kódy 2FA. Jak se dostanu zpátky?",
+      "a": [
+        "Přidej záložní klíč 2FA do libovolné aplikace autentizátoru a zadej kód, který ukáže, když si o něj PrivacyNotes řekne. Záložní klíč je ten uložený při zapnutí 2FA a funguje pokaždé, když ho potřebuješ.",
+        "Pokud nemáš telefon ani záložní klíč, 2FA neresetujeme a naše podpora s tím nepomůže. Poznámky, které už máš v zařízeních, zůstávají čitelné.",
+        "Pokud si je chceš nechat, otevři Nastavení > Import & Export > Export na zařízení, které je ještě má. Pak založ nový trezor a export do něj naimportuj."
       ]
     },
     "oauth-recovery": {
       "q": "Přihlašuju se přes Google, Apple nebo GitHub. Co když o ten účet přijdu?",
       "a": [
-        "Pod povrchem máš i tak frázi z 12 slov a samotná fráze tě přihlásí na jakémkoli zařízení - Google, Apple ani GitHub k tomu nepotřebuješ. Otevři Nastavení > Zabezpečení > Tvoje fráze a ulož si ji do správce hesel.",
+        "Pod povrchem máš i tak frázi z 12 slov a samotná fráze tě přihlásí na jakémkoli zařízení - Google, Apple ani GitHub k tomu nepotřebuješ. Otevři Nastavení > Zabezpečení > Fráze a ulož si ji do správce hesel.",
         "Udělej to jednou a ztráta účtu Google, Apple nebo GitHub tě nebude stát nic: prostě se přihlas frází."
       ]
     },
@@ -468,7 +483,7 @@
       "q": "Biometrické odemknutí přestalo fungovat. Co s tím?",
       "a": [
         "O přístup nikdy nepřijdeš. Uzamykací obrazovka vždycky nabízí náhradní cestu: „Odemknout PINem“ nebo „Přihlásit se obnovovací frází“. Biometrika je lokální branka, ne šifrovací klíč, takže tvoje poznámky jsou tak i tak nedotčené.",
-        "Pak sprav samotnou branku. Registrace je pro každé zařízení zvlášť, takže nový telefon, čerstvý profil prohlížeče nebo reinstalace potřebují novou registraci: Nastavení > Zabezpečení > „Biometrický zámek“, vypnout a pak znovu „Zapnout biometrické odemknutí“. Vyžaduje to taky „Věřit tomuto zařízení“ (nedůvěryhodná sezení se zavřením karty vymažou) a hardware s platformním autentikátorem (Touch ID, Face ID, Windows Hello). Pokud místo systémového dialogu vyskočí správce hesel jako Bitwarden nebo 1Password, zavři ho a zkus to znovu, nebo mu pro tuhle stránku vypni zachytávání passkeys - aplikace si žádá vestavěný autentikátor, ale někteří správci ho stejně odchytí."
+        "Pak sprav samotnou branku. Registrace je pro každé zařízení zvlášť, takže nový telefon, čerstvý profil prohlížeče nebo reinstalace potřebují novou registraci: Nastavení > Zabezpečení > „Zámek“, vypnout a pak znovu „Zapnout biometrické odemknutí“. Vyžaduje to taky „Věřit tomuto zařízení“ (nedůvěryhodná sezení se zavřením karty vymažou) a hardware s platformním autentikátorem (Touch ID, Face ID, Windows Hello). Pokud místo systémového dialogu vyskočí správce hesel jako Bitwarden nebo 1Password, zavři ho a zkus to znovu, nebo mu pro tuhle stránku vypni zachytávání passkeys - aplikace si žádá vestavěný autentikátor, ale někteří správci ho stejně odchytí."
       ]
     },
     "phrase-compromised": {
@@ -646,7 +661,7 @@
     "add-second-device": {
       "q": "Jak se přihlásím na druhém zařízení?",
       "a": [
-        "Na zařízení, které už používáš, otevři Nastavení > Zabezpečení > Tvoje fráze. Najdeš tam svých 12 slov a přihlašovací QR kód. Na novém zařízení zvol \"Přihlášení frází\" a naskenuj ten QR kód fotoaparátem, nahraj jeho fotku, nebo slova napiš. Tvoje poznámky dorazí během pár sekund.",
+        "Na zařízení, které už používáš, otevři Nastavení > Zabezpečení > Fráze. Najdeš tam svých 12 slov a přihlašovací QR kód. Na novém zařízení zvol \"Přihlášení frází\" a naskenuj ten QR kód fotoaparátem, nahraj jeho fotku, nebo slova napiš. Tvoje poznámky dorazí během pár sekund.",
         "Bezplatný účet pokryje 2 zařízení, Pro tolik, kolik chceš, a dva prohlížeče na jednom počítači se počítají jako jedno zařízení. Zacházej s QR kódem přesně jako s frází, kterou nese: nikomu ho neukazuj a nikdy ho nenech spadnout do fotogalerie, která se synchronizuje do cizího cloudu."
       ]
     },
@@ -714,6 +729,13 @@
         "Když chceš předat jednu konkrétní věc, pošli [vyhořelou poznámku](/cs/help/burn-notes/) místo své fráze. Sdílený domácí účet funguje dobře, jestli je to opravdu to, co chceš: nech frázi ve sdílené položce správce hesel a počítej s tím, že kdokoli ji kdy držel, viděl všechno uvnitř."
       ]
     },
+    "pro-after-leak": {
+      "q": "Unikla mi obnovovací fráze. Přijdu o Pro?",
+      "a": [
+        "Pro zůstává na účtu, na kterém sis ho koupil, a tvoje obnovovací fráze je jediný klíč k tomuto účtu. Když fráze unikne a přejdeš do nového trezoru, Pro s tebou nepřejde a nikdo ho nemůže přesunout ručně, ani my. Aplikace to říká při registraci a znovu před odhlášením: 12 slov je jediná cesta dovnitř.",
+        "Pokud jsi Pro koupil v posledních 30 dnech, můžeš dostat [plné vrácení peněz](/cs/help/refunds/) a koupit ho znovu na nový trezor. Každé vrácení peněz nás stojí poplatky za platbu, tak si ho prosím nech pro skutečný únik. Jak přesunout poznámky a zavřít starý trezor, najdeš v článku [co dělat, když fráze unikne](/cs/help/phrase-compromised/). Novou frázi měj ve správci hesel a nikam jinam ji nepiš."
+      ]
+    },
     "business-use": {
       "q": "Můžu PrivacyNotes používat v práci a existuje týmový tarif?",
       "a": [
@@ -725,8 +747,8 @@
       "q": "Kterou možnost registrace si mám vybrat?",
       "a": [
         "Tu, která odpovídá tvé úrovni ohrožení. Jsou tři. Za prvé: přihlášení přes Google, Apple nebo GitHub, s klíčem uloženým na našem serveru. Za druhé: stejné přihlášení, ale klíč zůstane jen na tvém zařízení. Za třetí: \"Vygenerovat frázi\", bez e-mailu, bez jména a úplně bez přihlášení. Ve všech třech se tvoje poznámky šifrují na tvém zařízení a liší se tím, kdo drží klíč a kolik se o tobě dozvíme.",
-        "Přihlášení přes jednu z těch tří služeb se pak zeptá, kde tvůj klíč bydlí, a začíná na \"Ať je to jednoduché a pohodlné\". Tahle možnost ho uloží zašifrovaný na náš server, takže se každé nové zařízení přihlásí jen tímto přihlášením a ty nemusíš nic opatrovat. To je správná úroveň, když se bojíš ztráty vlastních přihlašovacích údajů. \"Maximální bezpečnost a soukromí\" nechá klíč na tvém zařízení: nepřečetli bychom poznámku pod žádným tlakem a nové zařízení si řekne o tvých 12 slov nebo o naskenování QR kódu ze zařízení, které už je přihlášené.",
-        "Cesta jen s frází je nejvyšší úroveň: žádný e-mail, žádné jméno, nic, co váže účet k člověku. Výměnou je klíč jen tvůj, takže ztratit ho bez jediného přihlášeného zařízení znamená, že nikdo nepomůže. Režim klíče u přihlášení není napevno: Nastavení > Zabezpečení > Tvoje fráze ho přepne, kdykoli chceš, zatímco účet jen s frází drží svůj klíč na zařízení. Každá úroveň si může navrch přidat PIN nebo biometrický zámek. Celý žebřík i s cenou každé příčky je v [žebříku úrovní ohrožení](/cs/help/threat-model-levels/)."
+        "Při přihlášení přes Google, Apple nebo GitHub se aplikace zeptá, kde má být klíč uložený, a začne možností „Ať je to jednoduché a pohodlné“. Ta uloží frázi zašifrovanou na náš server, takže nové zařízení může otevřít poznámky po přihlášení přes poskytovatele a zadání kódu z autentizátoru, pokud je 2FA zapnuté. Ulož si frázi pro případ ztráty účtu poskytovatele a při zapnutí dvoufaktorového přihlášení si uchovej záložní klíč 2FA. „Maximální bezpečnost a soukromí“ nechává frázi na tvém zařízení: nepřečetli bychom poznámku pod žádným tlakem a nové zařízení potřebuje tvých 12 slov nebo naskenování QR kódu ze zařízení, které už je přihlášené.",
+        "Při používání pouze fráze účet nespojuje s člověkem žádný e-mail ani jméno. Frázi ale máš jen ty, takže pokud ji ztratíš a nezůstane žádné odemčené zařízení, nikdo ti ji nemůže obnovit. Nastavení > Účet > Správa klíče ukazuje aktuální režim a umožňuje ho změnit. Účet s frází musí před zvolením správy na serveru nejdřív propojit poskytovatele v Nastavení > Účet > Účty; samotné propojení správu nemění. Každý režim může přidat PIN nebo biometrický zámek a volitelné dvoufaktorové přihlášení. Úplné srovnání najdeš v [přehledu úrovní ohrožení](/cs/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

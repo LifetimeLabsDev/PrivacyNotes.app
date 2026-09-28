@@ -75,7 +75,21 @@
   },
   "burnShareModal": {
     "title": "Delen & vernietigen na lezen",
-    "body": "<lead>Je oorspronkelijke notitie wordt niet verwijderd.</lead> Die blijft veilig in je account. De burn-link is een aparte versleutelde kopie die zichzelf vernietigt zodra hij gelezen is. De link verloopt na 24 uur, of hij nu geopend is of niet.",
+    "body": "<lead>Je oorspronkelijke notitie wordt niet verwijderd.</lead> Die blijft veilig in je account. De burn-link is een aparte versleutelde kopie die zichzelf vernietigt zodra hij gelezen is.",
+    "readTime": "Leestijd",
+    "readTimeHint": "Verdwijnt daarna van het scherm",
+    "lifetime": "Link verloopt",
+    "lifetimeHint": "Als niemand hem opent",
+    "minutes_one": "{{count}} minuut",
+    "minutes_other": "{{count}} minuten",
+    "hours_one": "{{count}} uur",
+    "hours_other": "{{count}} uur",
+    "afterHours_one": "Na {{count}} uur",
+    "afterHours_other": "Na {{count}} uur",
+    "afterDays_one": "Na {{count}} dag",
+    "afterDays_other": "Na {{count}} dagen",
+    "create": "Link maken en kopiëren",
+    "share": "Link delen",
     "imagesStripped": "Alleen tekst wordt getoond, bestanden in deze notitie blijven verborgen.",
     "copied": "Gekopieerd"
   },
@@ -89,7 +103,7 @@
     "footerTagline": "- Zero-knowledge versleutelde notities, gehost in Zwitserland.",
     "sealed": {
       "heading": "Je hebt een versleutelde notitie ontvangen.",
-      "subheading": "Dit bericht vernietigt zichzelf na het lezen. Ongelezen links verlopen na 24 uur.",
+      "subheading": "Dit bericht vernietigt zichzelf na het lezen. Ongelezen links verlopen vanzelf.",
       "reveal": "Bericht tonen",
       "warning": "De server verwijdert de notitie op het moment dat je hem toont. Je krijgt geen tweede kans."
     },
@@ -105,7 +119,7 @@
     },
     "gone": {
       "heading": "Deze notitie is weg.",
-      "body": "Hij was al gelezen of is verlopen. Burn-links kunnen maar één keer worden geopend en verlopen na 24 uur."
+      "body": "Hij was al gelezen of is verlopen. Burn-links kunnen maar één keer worden geopend en verlopen vanzelf."
     },
     "error": {
       "heading": "Er ging iets mis.",

@@ -3,6 +3,7 @@ import { bumpNotesCreated } from './notesCreated';
 import { perfSpan } from './perf';
 import { clearFaviconCache } from './faviconQueue';
 import { resetPulledClean } from './pullState';
+import { hasMedia, stripMediaReferencesTo } from './imageProcessing';
 
 /**
  * Pure Dexie CRUD. No network, and no crypto of its own: wire
@@ -242,11 +243,11 @@ export async function createNote(
 
 /**
  * Write a patch to one note. Returns true when the row was written, and false
- * when nothing was: there is no such note, or the patch changes the title or
- * the body of a read-only note. "Read-only" promises no edits until the
+ * when nothing was: there is no such note, or the patch changes the title, the
+ * body or a login's custom fields of a read-only note. "Read-only" promises no edits until the
  * switch is turned off, so that refusal belongs to this write rather than to
  * the routes into it; a read-only note still takes its tags, folder, type and
- * trackers. Tested in tests/lockGateWrites.test.ts.
+ * journal trackers. Tested in tests/lockGateWrites.test.ts.
  */
 export async function updateNote(
   id: string,
@@ -260,7 +261,10 @@ export async function updateNote(
     if (!current) return false;
     const changesText =
       (patch.title !== undefined && patch.title !== current.title) ||
-      (patch.body !== undefined && patch.body !== current.body);
+      (patch.body !== undefined && patch.body !== current.body) ||
+      // A login's custom fields and extra websites are content, not metadata.
+      (patch.trackers !== undefined && current.type === 'login' &&
+        JSON.stringify(patch.trackers?.login) !== JSON.stringify(current.trackers?.login));
     if (current.locked === 1 && changesText) return false;
     await db.notes.update(id, {
       ...patch,
@@ -359,8 +363,9 @@ export async function duplicateNote(id: string): Promise<LocalNote | null> {
     locked: 0,
     pinProtected: src.pinProtected,
     type: src.type ?? 'note',
-    // The duplicate stays in the source note's folder.
+    // The duplicate stays in the source note's folder, and in the archive.
     folderId: src.folderId ?? null,
+    ...(src.archived === 1 ? { archived: 1 } : {}),
     // Deep-copy tracker data so journal duplicates preserve mood/sleep/etc.
     ...(src.trackers ? { trackers: structuredClone(src.trackers) } : {}),
   };
@@ -371,6 +376,11 @@ export async function duplicateNote(id: string): Promise<LocalNote | null> {
 /** Toggle or set the starred flag on a note. */
 export async function setStarred(id: string, starred: boolean): Promise<void> {
   await touchNote(id, { starred: starred ? 1 : 0 });
+}
+
+/** Move a note into the archive, or back out. The pin is kept either way. */
+export async function setArchived(id: string, archived: boolean): Promise<void> {
+  await touchNote(id, { archived: archived ? 1 : 0 });
 }
 
 /**
@@ -523,14 +533,24 @@ export async function bulkDuplicate(ids: string[]): Promise<number> {
  * Caller decides the target value - this just applies it.
  */
 export async function bulkSetStarred(ids: string[], starred: boolean): Promise<number> {
+  return bulkSetFlag(ids, 'starred', starred);
+}
+
+/** Archive or unarchive several notes in one transaction. The pins stay. */
+export async function bulkSetArchived(ids: string[], archived: boolean): Promise<number> {
+  return bulkSetFlag(ids, 'archived', archived);
+}
+
+async function bulkSetFlag(ids: string[], field: 'starred' | 'archived', on: boolean): Promise<number> {
   if (ids.length === 0) return 0;
-  const value: 0 | 1 = starred ? 1 : 0;
+  const value: 0 | 1 = on ? 1 : 0;
   let count = 0;
   await db.transaction('rw', db.notes, async () => {
     for (const id of ids) {
       const note = await db.notes.get(id);
       if (!note) continue;
-      await db.notes.update(id, { starred: value, updatedAt: nextStamp(note.updatedAt), dirty: 1 });
+      const patch: Partial<LocalNote> = field === 'starred' ? { starred: value } : { archived: value };
+      await db.notes.update(id, { ...patch, updatedAt: nextStamp(note.updatedAt), dirty: 1 });
       count++;
     }
   });
@@ -767,6 +787,41 @@ export async function clearLocalDatabase(opts?: { keepUnsyncedNotes?: boolean })
   // db.*.clear() above. It holds a per-domain record derived from the user's
   // links, so it must go on sign-out too. See clearFaviconCache.
   await clearFaviconCache();
+}
+
+/**
+ * A chosen sign-out destroys every picture and file the server does not hold
+ * (the full wipe above takes the blob caches). The notes that point at them
+ * have synced, so without this they come back on the next sign-in as entries
+ * that can never open. Run before the sign-out's final flush: it removes each
+ * such reference, and tombstones a Files entry left with no media at all, so
+ * the flush carries the removal to the server. Returns the rows it wrote.
+ */
+export async function dropReferencesToBlobsOnlyHere(): Promise<number> {
+  const onlyHere = (r: { pendingUpload?: number }) => r.pendingUpload === 1 || r.pendingUpload === 2;
+  const lost = new Set([
+    ...(await db.imageDedup.filter(onlyHere).toArray()).map((r) => r.uuid),
+    ...(await db.attachmentDedup.filter(onlyHere).toArray()).map((r) => r.uuid),
+  ]);
+  if (lost.size === 0) return 0;
+  return db.transaction('rw', db.notes, async () => {
+    const rows = await db.notes.where('deleted').equals(0).toArray();
+    let written = 0;
+    for (const n of rows) {
+      const body = stripMediaReferencesTo(n.body, lost);
+      if (body === n.body) continue;
+      const updatedAt = nextStamp(n.updatedAt);
+      // A read-only note is edited too: the content it points at is gone
+      // whatever the switch says.
+      if (n.type === 'file' && !hasMedia(body)) {
+        await db.notes.update(n.id, { deleted: 1, updatedAt, dirty: 1 });
+      } else {
+        await db.notes.update(n.id, { body, updatedAt, dirty: 1 });
+      }
+      written++;
+    }
+    return written;
+  });
 }
 
 /** Count of local rows with unsynced changes (either dirty value),

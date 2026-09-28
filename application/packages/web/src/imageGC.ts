@@ -38,8 +38,8 @@
  * and unreplicated, so a blob can still end up in Storage with nothing
  * local tracking it: the queue is wiped on sign-out and on any local-data
  * clear, and a few paths never enqueue at all (a note dropped by sync for
- * an invalid uuid, an import whose body rewrite matched nothing, a blob
- * whose last reference was a pruned version snapshot). Batch deletes are
+ * an invalid uuid, a blob whose last reference was a pruned version
+ * snapshot). Batch deletes are
  * not on that list: gcOnNotesDelete excludes the whole batch from the
  * reference check, so a shared blob cannot hide behind a batch-mate. The
  * server-side pending_blob_gc set (migration 0068, re-asserted by every

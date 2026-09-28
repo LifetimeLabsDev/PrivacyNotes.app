@@ -19,6 +19,8 @@ import type { View } from '../views';
 import type { SettingsCategory } from '../SettingsShell';
 import { siteHref } from '../siteLinks';
 import { withCredentialChanges, type UserSettings } from '../userSettings';
+import type { ViewMode } from '../viewMode';
+import { setDeviceLabel } from '../deviceLabels';
 
 /**
  * Code-split a modal component while keeping its call sites identical.
@@ -69,6 +71,8 @@ export function buildSettingsCategories({
   userSettings,
   mutateSettings,
   onEditorModeChange,
+  viewMode,
+  onViewModeChange,
   onToggleHiddenView,
   auth,
   settingsAutoVerify,
@@ -105,6 +109,9 @@ export function buildSettingsCategories({
    *  the mode swap remounts the open note's editor from selected.body.
    *  Built in NotesView; never write editorMode through mutateSettings. */
   onEditorModeChange: (m: 'formatted' | 'markdown') => void;
+  /** This device's layout choice (`viewMode.ts`), never the synced value. */
+  viewMode: ViewMode;
+  onViewModeChange: (m: ViewMode) => void;
   /** Switches one view off, or back on, in the sidebar or in the All list.
    *  Built in NotesView because hiding the OPEN view also leaves it, which
    *  this module cannot do; never write hiddenViews/hiddenInAll through
@@ -237,10 +244,22 @@ export function buildSettingsCategories({
               label: t('settings.planLabel'),
               group: t('settings.groupAccount'),
               icon: <CreditCard size={18} aria-hidden="true" />,
-              render: () => (
+              render: ({ navigate, initialTab }) => (
                 <SyncOptionsModal
                   embedded
                   tab="plan"
+                  initialSection={initialTab === 'connectedAccounts' || initialTab === 'keyCustody' ? initialTab : 'overview'}
+                  custodySettings={{ hasPin: Boolean(userSettings.pinHash && userSettings.pinSalt), pinCredential: `${userSettings.pinHash ?? ''}:${userSettings.pinSalt ?? ''}`, pinTimeoutMinutes: userSettings.pinTimeoutMinutes,
+                    userSettings, onSettingsChange: (next, base) => mutateSettings((prev) => withCredentialChanges(prev, base, next)) }}
+                  onOpenPhrase={() => navigate('security', 'phrase')}
+                  deviceLabels={userSettings.deviceLabels}
+                  onRenameDevice={(deviceId, name, serverName) =>
+                    mutateSettings((prev) => ({
+                      ...prev,
+                      deviceLabels: setDeviceLabel(prev.deviceLabels, deviceId, name, serverName),
+                    }))
+                  }
+                  onOpenRating={() => navigate('about', 'rating')}
                   onSyncNow={runSync}
                   onOpenNote={onOpenNote}
                   onClose={() => setShowSettings(false)}
@@ -289,11 +308,11 @@ export function buildSettingsCategories({
               label: t('settings.securityLabel'),
               group: t('settings.groupAccount'),
               icon: <Shield size={18} aria-hidden="true" />,
-              render: ({ initialTab }) => (
+              render: ({ initialTab, navigate }) => (
                 <SecurityModal
                   embedded
                   phrase={auth.phrase}
-                  defaultTab={initialTab === 'biometric' || initialTab === 'phrase' ? initialTab : 'pin'}
+                  defaultTab={initialTab === 'biometric' || initialTab === 'phrase' || initialTab === 'twoFactor' ? initialTab : 'pin'}
                   pinTimeoutMinutes={userSettings.pinTimeoutMinutes}
                   onPinTimeoutChange={(minutes) => {
                     mutateSettings((prev) => ({ ...prev, pinTimeoutMinutes: minutes }));
@@ -307,6 +326,7 @@ export function buildSettingsCategories({
                     mutateSettings((prev) => withCredentialChanges(prev, base, next));
                   }}
                   onClose={() => setShowSettings(false)}
+                  onOpenCustody={() => navigate('plan', 'keyCustody')}
                   pubkey={auth.pubkey}
                 />
               ),
@@ -339,14 +359,15 @@ export function buildSettingsCategories({
                   embedded
                   initialTab={initialTab === 'lists' ? 'lists' : 'style'}
                   isPro={auth.isPro ?? false}
-                  viewMode={userSettings.viewMode}
-                  onViewModeChange={(m) => mutateSettings((prev) => ({ ...prev, viewMode: m }))}
+                  viewMode={viewMode}
+                  onViewModeChange={onViewModeChange}
                   editorMode={userSettings.editorMode}
                   onEditorModeChange={onEditorModeChange}
                   lineSpacing={userSettings.lineSpacing}
                   onLineSpacingChange={(next) => mutateSettings((prev) => ({ ...prev, lineSpacing: next }))}
                   hiddenViews={userSettings.hiddenViews}
                   hiddenInAll={userSettings.hiddenInAll}
+                  archivedInAll={userSettings.archivedInAll}
                   onToggleHidden={onToggleHiddenView}
                   startView={userSettings.startView}
                   onStartViewChange={(next) => mutateSettings((prev) => ({ ...prev, startView: next }))}

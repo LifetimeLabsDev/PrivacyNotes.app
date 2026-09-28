@@ -2,11 +2,13 @@ import { Fragment, useEffect, useRef, type ReactNode } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import i18n, { activeLocale } from '../i18n';
 import { isNativeStoreBuild } from '../devices';
+import { isDemoMode } from '../demo';
 import { ArrowSquareOut } from '../icons';
 import { helpPath } from '../localeRoutes';
 import { SETTINGS_EYEBROW } from '../settingsUI';
 import { siteHref } from '../siteLinks';
 import { isTouchOnly } from '../touchOnly';
+import { tabsFit } from '../notesView/useOpenTabs';
 import { SECTION_LABEL, TAB_LABEL, type SectionId, type SettingEntry } from './registry';
 import { searchSettings, type SettingHit } from './searchSettings';
 
@@ -23,6 +25,8 @@ function fromCatalog(lng: string, key: string): string | undefined {
 function isShown(entry: SettingEntry): boolean {
   if (entry.shownOn === 'storeBuild') return isNativeStoreBuild();
   if (entry.shownOn === 'keyboard') return !isTouchOnly();
+  if (entry.shownOn === 'paneLayout') return tabsFit();
+  if (entry.shownOn === 'realAccount') return !isDemoMode();
   return true;
 }
 

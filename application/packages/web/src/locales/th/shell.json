@@ -108,7 +108,10 @@
     "open": "เปิด",
     "notesHeading": "โน้ต",
     "fillOneField": "กรอกอย่างน้อยหนึ่งช่องก่อนบันทึก",
-    "expiryNeedsBoth": "วันหมดอายุต้องมีทั้งเดือนและปี หรือเว้นว่างทั้งสองช่อง"
+    "expiryNeedsBoth": "วันหมดอายุต้องมีทั้งเดือนและปี หรือเว้นว่างทั้งสองช่อง",
+    "customField": "ช่องที่กำหนดเอง",
+    "fieldNeedsName": "ตั้งชื่อให้ทุกช่องที่กำหนดเอง",
+    "saveFailed": "บันทึกไม่ได้ การแก้ไขของคุณยังอยู่"
   },
   "fileTypes": {
     "audio": "เสียง",
@@ -147,6 +150,7 @@
     "allItems": "ทั้งหมด",
     "pinnedTooltip": "รายการที่ปักหมุด",
     "pinned": "ปักหมุด",
+    "archive": "เก็บถาวร",
     "notesTooltip": "โน้ตทั้งหมด",
     "notes": "โน้ต",
     "tasksTooltip": "งานจากทุกโน้ต",
@@ -213,6 +217,8 @@
     "noMatches": "ไม่พบโฟลเดอร์ที่ตรงกัน",
     "collapse": "ยุบ",
     "expand": "ขยาย",
+    "collapseAll": "ยุบทั้งหมด",
+    "expandAll": "ขยายทั้งหมด",
     "reorder": "จัดลำดับ {{folder}} ใหม่",
     "saveName": "บันทึกชื่อโฟลเดอร์",
     "actionsForFolder": "การดำเนินการสำหรับโฟลเดอร์ {{folder}}",
@@ -221,21 +227,27 @@
   },
   "collapsedSidebar": {
     "newNote": "โน้ตใหม่",
-    "cycleView": "สลับมุมมอง (อัตโนมัติ รายการ ตาราง)",
     "expandSidebar": "ขยายแถบด้านข้าง"
   },
   "mobileHeader": {
     "openMenu": "เปิดเมนู"
   },
   "noteOptionsMenu": {
+    "color": "สี",
+    "colorNone": "ไม่มีสี",
+    "colorUseDefault": "ใช้ค่าเริ่มต้น",
+    "colorFromFolder": "จากโฟลเดอร์: {{name}}",
+    "colorFromTag": "จากแท็ก: #{{name}}",
+    "details": "รายละเอียด",
     "readOnly": "อ่านอย่างเดียว",
     "readOnlyDescription": "แก้ไขไม่ได้จนกว่าจะปิดตัวเลือกนี้",
     "protect": "ป้องกัน",
-    "protectDescription": "ซ่อนเนื้อหาไว้หลัง PIN หรือไบโอเมตริก ชื่อยังมองเห็นได้",
     "convertToJournal": "แปลงเป็นบันทึกประจำวัน",
     "convertToNote": "แปลงเป็นโน้ต",
     "unpin": "เลิกปักหมุด",
     "pin": "ปักหมุด",
+    "archive": "เก็บถาวร",
+    "unarchive": "เลิกเก็บถาวร",
     "burn": "เผา",
     "share": "แชร์",
     "trash": "ถังขยะ",
@@ -243,17 +255,15 @@
     "restore": "กู้คืน",
     "deleteForever": "ลบถาวร",
     "moveToFolder": "ย้ายไปที่โฟลเดอร์",
-    "noteHistory": "ประวัติโน้ต",
-    "noteHistoryDescription": "กู้คืนเวอร์ชันใดก็ได้จาก 20 เวอร์ชันล่าสุด",
-    "showMarkdownDescription": "แก้ไขซอร์ส Markdown ดิบ",
-    "showFormattedDescription": "กลับไปที่ตัวแก้ไขแบบจัดรูปแบบ",
+    "noteHistory": "ประวัติ",
     "findReplace": "ค้นหาและแทนที่",
+    "uncheckAllTasks": "ยกเลิกการเลือกงานทั้งหมด",
     "comingSoon": "เร็ว ๆ นี้",
     "noteOptions": "ตัวเลือกโน้ต",
     "lastModified": "แก้ไขล่าสุด: {{date}}",
     "created": "สร้างเมื่อ: {{date}}",
     "size": "พื้นที่ที่ใช้: {{size}}",
-    "sizeHint": "ขนาดที่เข้ารหัสทั้งหมดของโน้ตนี้",
+    "sizeHint": "ขนาดที่เข้ารหัสทั้งหมดของรายการนี้",
     "tagCount_other": "{{count}} แท็ก"
   },
   "selectionToolbar": {
@@ -261,6 +271,8 @@
     "exitSelection": "ออกจากการเลือก",
     "unpin": "เลิกปักหมุด",
     "pin": "ปักหมุด",
+    "archive": "เก็บถาวร",
+    "unarchive": "เลิกเก็บถาวร",
     "tag": "แท็ก",
     "export": "ส่งออก",
     "delete": "ลบ",
@@ -272,6 +284,8 @@
   },
   "listPrefs": {
     "listPreferences": "การตั้งค่ารายการ",
+    "layout": "เลย์เอาต์",
+    "layoutDeviceOnly": "ใช้กับอุปกรณ์นี้เท่านั้น",
     "sortBy": "เรียงตาม",
     "dateCreated": "วันที่สร้าง",
     "dateModified": "วันที่แก้ไข",
@@ -279,6 +293,7 @@
     "size": "ขนาด",
     "view": "มุมมอง",
     "showPreview": "แสดงตัวอย่าง",
+    "longPreview": "ข้อความตัวอย่างที่ยาวขึ้น",
     "showDate": "แสดงวันที่",
     "showTags": "แสดงโฟลเดอร์และแท็ก",
     "other": "อื่น ๆ",
@@ -320,6 +335,8 @@
     "deleteForever": "ลบถาวร",
     "unpin": "เลิกปักหมุด",
     "pin": "ปักหมุด",
+    "archive": "เก็บถาวร",
+    "unarchive": "เลิกเก็บถาวร",
     "duplicate": "ทำสำเนา",
     "moveToFolder": "ย้ายไปที่โฟลเดอร์",
     "exportAsMarkdown": "ส่งออกเป็น Markdown",
@@ -331,7 +348,13 @@
     "newContact": "ผู้ติดต่อใหม่",
     "openBookmark": "เปิด",
     "copyBookmarkUrl": "คัดลอก URL",
-    "editBookmark": "แก้ไขบุ๊กมาร์ก"
+    "editBookmark": "แก้ไขบุ๊กมาร์ก",
+    "openInTab": "เปิดในแท็บ",
+    "closeTab": "ปิดแท็บ",
+    "closeOtherTabs": "ปิดแท็บอื่น",
+    "closeAllTabs": "ปิดแท็บทั้งหมด",
+    "pinTab": "ปักหมุดแท็บ",
+    "unpinTab": "เลิกปักหมุดแท็บ"
   },
   "demoBanner": {
     "title": "ลองใช้ได้โดยไม่มีความเสี่ยง",
@@ -353,6 +376,8 @@
     "braveSteps": "วางข้อความนี้ในแถบที่อยู่ของ Brave ตั้ง “{{flag}}” เป็น Enabled แล้วเปิด Brave ใหม่",
     "braveAppAlternative": "หรือใช้แอปเดสก์ท็อปแทน",
     "openFailed": "เปิดไฟล์นั้นไม่ได้",
+    "linkNotFound": "ไม่มีไฟล์ “{{target}}” ในโฟลเดอร์นี้",
+    "linkNeedsFolder": "เปิดโฟลเดอร์ก่อนจึงจะเปิดลิงก์ได้",
     "saveFailed": "บันทึกลงดิสก์ไม่ได้",
     "saving": "กำลังบันทึก…",
     "savedToDisk": "บันทึกลงดิสก์แล้ว",
@@ -582,5 +607,9 @@
   },
   "looks": {
     "menu": "ไอคอนและสี"
+  },
+  "tabStrip": {
+    "label": "แท็บที่เปิดอยู่",
+    "close": "ปิด {{title}}"
   }
 }

@@ -9,9 +9,11 @@ import { RateOutro, useRateLinks } from './rateLinks';
 import { siteHref } from './siteLinks';
 import { PUBLIC_CHANGELOG, IN_APP_CHANGELOG_LIMIT, type ChangelogItemType } from './publicChangelog';
 import { HOTKEY_GROUPS, renderKey } from './HotkeysModal';
-import { SETTINGS_EYEBROW, SETTINGS_HELP } from './settingsUI';
+import { SETTINGS_EYEBROW, SETTINGS_HELP, SettingsTabStrip, settingsTabClass } from './settingsUI';
 import { isTouchOnly } from './touchOnly';
 import { Brand } from './Brand';
+import { activeLocale } from './i18n';
+import './changelogRelease.css';
 
 type Tab = 'about' | 'changelog' | 'hotkeys' | 'rating';
 
@@ -26,9 +28,7 @@ const ALL_TABS: { id: Tab; setting: string; labelKey: string; icon: ReactNode }[
   { id: 'about', setting: 'about.about', labelKey: 'about.tabs.about', icon: <Info size={14} aria-hidden="true" /> },
   { id: 'changelog', setting: 'about.changelog', labelKey: 'about.tabs.changelog', icon: <ClockCounterClockwise size={14} aria-hidden="true" /> },
   { id: 'hotkeys', setting: 'about.hotkeys', labelKey: 'about.tabs.hotkeys', icon: <Keyboard size={14} aria-hidden="true" /> },
-  // The one tab that asks for something instead of explaining something, so
-  // it sits last and carries a filled amber star rather than an outline mark.
-  { id: 'rating', setting: 'about.rating', labelKey: 'about.tabs.rating', icon: <Star size={14} weight="fill" className="text-amber-400" aria-hidden="true" /> },
+  { id: 'rating', setting: 'about.rating', labelKey: 'about.tabs.rating', icon: <Star size={14} weight="fill" aria-hidden="true" /> },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -250,14 +250,11 @@ const TYPE_LABEL_KEY: Record<ChangelogItemType, string> = {
   fixed: 'about.changelogType.fixed',
 };
 
-const TYPE_COLOR: Record<ChangelogItemType, string> = {
-  new: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
-  improved: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400',
-  fixed: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
-};
-
 function ChangelogTab() {
   const { t } = useTranslation('landing');
+  // Noon UTC keeps the calendar day the same in every time zone.
+  const fmtDate = (iso: string) =>
+    new Date(`${iso}T12:00:00Z`).toLocaleDateString(activeLocale(), { month: 'short', day: 'numeric', year: 'numeric' });
   const releases = PUBLIC_CHANGELOG.slice(0, IN_APP_CHANGELOG_LIMIT);
 
   if (releases.length === 0) {
@@ -273,33 +270,32 @@ function ChangelogTab() {
   return (
     <div className="space-y-6">
       <OpenOnWebLink path="/changelog" label={t('about.viewFullChangelog')} />
-      {releases.map((release) => (
-        <section key={release.version}>
-          <div className="flex items-baseline gap-2 mb-2">
-            <span className="font-mono text-xs font-medium text-pn-soft">
-              v{release.version}
-            </span>
-            <span className="text-[11px] text-pn-muted/75">
-              {release.date}
-            </span>
-          </div>
-          <p className="text-xs text-pn-soft mb-3">
-            {release.title}
-          </p>
-          <ul className="space-y-1.5">
-            {release.items.map((item, i) => (
-              <li key={i} className="flex items-start gap-2 text-xs">
-                <span className={`inline-block shrink-0 mt-px rounded px-1.5 py-0.5 text-[10px] font-medium leading-tight ${TYPE_COLOR[item.type]}`}>
-                  {t(TYPE_LABEL_KEY[item.type])}
-                </span>
-                <span className="text-pn-soft leading-relaxed">
-                  {item.text}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
+      {/* The markup and classes match the static /changelog page, and
+          changelogRelease.css styles both. */}
+      <div className="pn-cl pn-cl-app">
+        {releases.map((release, index) => (
+          <article key={release.version} className="release">
+            <div className="meta">
+              <span className="vpill">v{release.version}</span>
+              <div className="date">{fmtDate(release.date)}</div>
+              {index === 0 && <span className="latest">{t('about.changelogLatest')}</span>}
+            </div>
+            <div className="body">
+              <div className="rhead">
+                <h3>{release.title}</h3>
+              </div>
+              <ul className="items">
+                {release.items.map((item, i) => (
+                  <li key={i} className="item">
+                    <span className={`tag tag-${item.type}`}>{t(TYPE_LABEL_KEY[item.type])}</span>
+                    <span className="txt">{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))}
+      </div>
       <OpenOnWebLink path="/changelog" label={t('about.viewFullChangelog')} align="left" />
     </div>
   );
@@ -312,7 +308,7 @@ function RatingTab() {
   return (
     <div>
       <p className="text-sm text-neutral-500 mb-3">{t('rate.intro')}</p>
-      <LinksList links={links} />
+      <LinksList links={links} grid />
       <p className="mt-3 pt-3 border-t border-divider text-xs leading-relaxed text-neutral-500">
         <RateOutro />
       </p>
@@ -419,31 +415,20 @@ export function AboutModal({ onClose, initialTab, embedded = false }: Props) {
           </div>
         )}
 
-        {/* Tab strip. `shrink-0` is load-bearing: `overflow-x-auto` makes this
-            a scroll container, whose automatic minimum size is 0, so the flex
-            column was free to squeeze it to a sliver whenever a tall tab
-            (Hotkeys, Changelog) filled the pane - the labels were cut in half
-            and the tabs themselves were barely clickable. The header and the
-            footer need no such guard: they are not scroll containers, so
-            `min-height: auto` already floors them at their content. */}
-        <div className="shrink-0 px-6 flex border-b border-divider overflow-x-auto">
+        <SettingsTabStrip className="shrink-0 px-4 sm:px-6">
           {tabs.map((tabItem) => (
             <button
               key={tabItem.id}
               data-setting={tabItem.setting}
               onClick={() => setTab(tabItem.id)}
               aria-pressed={tab === tabItem.id}
-              className={`inline-flex items-center gap-1.5 px-3 py-2.5 text-xs whitespace-nowrap transition border-b-2 ${
-                tab === tabItem.id
-                  ? 'border-accent text-pn font-medium'
-                  : 'border-transparent text-pn-soft hover:text-pn'
-              }`}
+              className={settingsTabClass(tab === tabItem.id)}
             >
-              <span className="text-accent">{tabItem.icon}</span>
-              {t(tabItem.labelKey)}
+              {tabItem.icon}
+              <span>{t(tabItem.labelKey)}</span>
             </button>
           ))}
-        </div>
+        </SettingsTabStrip>
 
         {/* Tab content */}
         <div className="flex-1 overflow-y-auto p-6 text-sm">

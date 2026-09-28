@@ -27,7 +27,7 @@ La barra de arriba cambia el aspecto del texto: **negrita**, *cursiva*, títulos
 
 ## Una cosa que hacer hoy
 
-- [ ] Busca tu **<mark style="background-color: rgba(51, 154, 240, 0.35)">frase de 12 palabras</mark>** en **Ajustes > Seguridad > Tu frase**, escríbela en papel y guárdala en un sitio seguro
+- [ ] Busca tu **<mark style="background-color: rgba(51, 154, 240, 0.35)">frase de 12 palabras</mark>** en **Ajustes > Seguridad > Frase**, escríbela en papel y guárdala en un sitio seguro
 
 Esa frase es lo que abre tus notas. Dónde se guarda lo decides tú, y puedes cambiar esa decisión cuando quieras. [[Cómo se protegen tus notas]] explica las tres opciones.
 

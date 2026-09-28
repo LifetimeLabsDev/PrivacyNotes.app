@@ -1,0 +1,37 @@
+/* One release block of the changelog: version pill, date and Latest badge in
+   a narrow meta column, then the title and the typed items. The static
+   /changelog page inlines this file (changelog-page.ts) and the About modal's
+   Changelog tab imports it, so the two cannot drift apart.
+
+   The rules read only custom properties. Each host defines them: the static
+   page in its theme vars, the app in .pn-cl-app below. The stack switches
+   on the list's own width, not the viewport, because the app shows it in a
+   settings pane that can be narrow on a wide screen. */
+.pn-cl{container:pn-cl/inline-size}
+.pn-cl .release{display:flex;gap:24px;padding:26px 0;border-top:1px solid var(--line);scroll-margin-top:16px}
+.pn-cl .meta{flex:0 0 104px;display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding-top:2px}
+.pn-cl .vpill{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;font-weight:600;color:var(--accent);background:var(--imp-bg);padding:3px 8px;border-radius:7px}
+.pn-cl .date{font-size:12.5px;color:var(--faint)}
+.pn-cl .latest{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--new-fg);background:var(--new-bg);padding:2px 7px;border-radius:6px}
+.pn-cl .body{flex:1;min-width:0}
+.pn-cl .rhead{display:flex;align-items:flex-start;gap:8px;margin:0 0 16px}
+.pn-cl .body h3{font-size:var(--cl-h3,18px);font-weight:600;margin:0;letter-spacing:-.01em;flex:1;min-width:0;color:var(--fg)}
+.pn-cl .items{list-style:none;margin:0;padding:0}
+.pn-cl .item{display:flex;gap:10px;margin-bottom:11px;align-items:flex-start}
+.pn-cl .item:last-child{margin-bottom:0}
+.pn-cl .txt{font-size:var(--cl-txt,15px);color:var(--fg)}
+.pn-cl .tag{flex:0 0 auto;min-width:66px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.01em;padding:3px 6px;box-sizing:border-box;border-radius:6px;margin-top:1px}
+.pn-cl .tag-new{background:var(--new-bg);color:var(--new-fg)}
+.pn-cl .tag-improved{background:var(--imp-bg);color:var(--imp-fg)}
+.pn-cl .tag-fixed{background:var(--fix-bg);color:var(--fix-fg)}
+@container pn-cl (max-width:520px){
+.pn-cl .release{flex-direction:column;gap:10px;padding:22px 0}
+.pn-cl .meta{flex-direction:row;align-items:center;gap:8px;flex:none;padding-top:0}
+.pn-cl .tag{min-width:60px}
+}
+
+/* The app host. Text and lines follow the active color theme; the three
+   type colors keep the static page's values, which read on every theme. */
+.pn-cl-app{--line:rgb(var(--pn-divider));--fg:rgb(var(--pn-text-soft));--faint:rgb(var(--pn-text-muted));--accent:rgb(var(--pn-accent));--new-bg:#eaf3de;--new-fg:#3b6d11;--imp-bg:#eff6ff;--imp-fg:#0c447c;--fix-bg:#faeeda;--fix-fg:#854f0b;--cl-h3:16px;--cl-txt:14px;line-height:1.55}
+.dark .pn-cl-app{--new-bg:#1c2a14;--new-fg:#a7cf6f;--imp-bg:#11233a;--imp-fg:#85b7eb;--fix-bg:#2e2410;--fix-fg:#e3a84e}
+.pn-cl-app .release:first-child{border-top:0;padding-top:4px}

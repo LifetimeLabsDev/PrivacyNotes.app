@@ -9,7 +9,8 @@
     "file": "Datei",
     "empty": "Leer",
     "noContent": "Kein Inhalt",
-    "notBackedUp": "Nicht gesichert"
+    "notBackedUp": "Nicht gesichert",
+    "archived": "Archiviert"
   },
   "header": {
     "new": "Neu",
@@ -71,6 +72,7 @@
     "noMatches": "Keine Treffer.",
     "vault": "Der Tresor ist leer.",
     "notes": "Noch keine Notizen.",
+    "archive": "Nichts archiviert.",
     "filtered": "Keine Einträge passen zu deinen Filtern.",
     "clearFilters": "Filter aufheben",
     "filteredAfter": "damit sie wieder erscheinen."
@@ -81,6 +83,7 @@
     "journals": "Tagebücher",
     "vault": "Tresor",
     "pinned": "Angepinnt",
+    "archive": "Archiv",
     "notes": "Notizen"
   },
   "footerStats": {

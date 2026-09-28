@@ -55,8 +55,8 @@ targets:
           - UIInterfaceOrientationPortraitUpsideDown
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
-        CFBundleShortVersionString: 0.534.0
-        CFBundleVersion: "0.534.0"
+        CFBundleShortVersionString: 0.553.1
+        CFBundleVersion: "0.553.1"
     entitlements:
       path: privacynotes_iOS/privacynotes_iOS.entitlements
     scheme:

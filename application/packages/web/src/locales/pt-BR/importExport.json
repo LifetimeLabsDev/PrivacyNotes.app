@@ -49,6 +49,7 @@
     "standardNotes": "Backup .zip ou .txt descriptografado do Standard Notes (Arquivo > Exportar > Descriptografado).",
     "obsidian": "Vault do Obsidian em .zip. Preserva tags, [[note links]], estrutura de pastas, #tags no texto, e imagens e arquivos embutidos.",
     "notesnook": "Export do Notesnook como .zip. Escolha HTML ao exportar para manter formatação, cadernos, tags e anexos.",
+    "joplin": "O arquivo .jex de File > Export all > \"JEX - Joplin Export File\". Cadernos viram pastas, e tags, tarefas, note links e anexos vêm junto.",
     "upnote": "No UpNote: Settings > Backup > Backup now, depois compacte tudo na pasta de backup. Mantém cadernos, tags, notas fixadas, note links, formatação e anexos. Exports por nota dos apps de celular também funcionam - escolha \"Export to HTML\".",
     "markdownFolder": "Arquivos .md ou .txt avulsos ou dentro de um .zip. Uma pasta compactada mantém as subpastas e traz as imagens e os anexos.",
     "markdownApp": "Essas notas já são arquivos Markdown numa pasta. Solte essa pasta como .zip e as subpastas, as imagens e as #tags vêm junto.",

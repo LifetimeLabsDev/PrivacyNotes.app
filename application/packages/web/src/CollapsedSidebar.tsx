@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { LogoIcon } from './LogoIcon';
 import { HoverLabel } from './HoverLabel';
 import { IconUpgrade } from './UpgradeModal';
-import { Plus, SquaresFour, List, Sparkle, PushPin, File, CheckSquare, Shield, Folder, Book, Hash, Trash, Question, CaretRight, Devices, FileMd, BookmarkSimple, NotePencil, CheckFat, Notebook, Bookmarks, Key } from './icons';
+import { Plus, PushPin, File, CheckSquare, Shield, Folder, Book, Hash, Trash, Question, CaretRight, Devices, FileMd, BookmarkSimple, NotePencil, CheckFat, Notebook, Bookmarks, Key } from './icons';
 import { isViewShown, type View } from './views';
-import { viewRows } from './viewRows';
+import { hiddenAtZero, viewRows } from './viewRows';
 import { exemptOpts } from './i18nExempt';
 import { SIDEBAR_ACTIVE } from './sidebarUI';
 import { useUpdateAvailable } from './updateAvailable';
@@ -27,8 +27,6 @@ interface CollapsedSidebarProps {
   onExpandToFolders: () => void;
   /** Drives the rocket overlay on the folders button (shown while not Pro). */
   isPro: boolean;
-  viewMode: 'auto' | 'list' | 'grid';
-  onToggleViewMode: () => void;
   /** Item count per pillar row, for the hover labels. An absent entry draws
    *  no count, which is not a zero: the Markdown pillar scans nothing until a
    *  folder is chosen.
@@ -115,8 +113,6 @@ export function CollapsedSidebar({
   onExpandToTags,
   onExpandToFolders,
   isPro,
-  viewMode,
-  onToggleViewMode,
   viewCounts,
   trashedCount,
   hiddenViews,
@@ -157,21 +153,6 @@ export function CollapsedSidebar({
         </button>
       </HoverLabel>
 
-      {/* View mode - cycles auto -> list -> grid; icon shows the current mode.
-          pn-rail-optional: shed on short rails (the sort/view popover keeps
-          this reachable) so core pillars never overlap the footer below.
-          Spec: ops/docs/ui-patterns.md section 40 (rail fit tiers) */}
-      <HoverLabel label={t('collapsedSidebar.cycleView')} className="pn-rail-optional">
-        <button
-          type="button"
-          onClick={onToggleViewMode}
-          aria-label={t('collapsedSidebar.cycleView')}
-          className="w-9 h-9 flex items-center justify-center rounded-lg text-neutral-500 hover:bg-neutral-200/60 hover:text-accent dark:text-neutral-500 dark:hover:bg-neutral-900/60 dark:hover:text-accent transition"
-        >
-          {viewMode === 'auto' ? <Sparkle size={18} /> : viewMode === 'list' ? <List size={18} /> : <SquaresFour size={18} />}
-        </button>
-      </HoverLabel>
-
       <div className="w-7 border-t border-divider my-1" />
 
       {/* Views, from the same shared list the wide rail draws. Collapsing the
@@ -181,10 +162,8 @@ export function CollapsedSidebar({
       {viewRows(t).map((r) => {
         // All is never hideable - the logo above goes there too.
         if (r.key !== 'home' && !showRow(r.key)) return null;
-        // Hidden at zero, same as the expanded rail. Kept while it is the
-        // current view, so unpinning the last note does not move the row you
-        // are standing on.
-        if (r.key === 'starred' && !(viewCounts.starred ?? 0) && view !== 'starred') return null;
+        // Pinned and Archive hide at zero, the same rule as the expanded rail.
+        if (hiddenAtZero(r.key, viewCounts[r.key], view)) return null;
         return (
           <HoverLabel key={r.key} label={r.label} count={viewCounts[r.key]}>
             <button type="button" onClick={() => handleSelectView(r.key)} className={iconBtn(view === r.key)} aria-label={r.label}>

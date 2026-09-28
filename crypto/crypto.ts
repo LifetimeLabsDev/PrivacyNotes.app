@@ -115,6 +115,16 @@ export async function signLinkChallenge(
   return ed.signAsync(message, privateKey);
 }
 
+/** The account action has already validated the server nonce and recomputed
+ * this exact challenge from its own session and normalized payload. */
+export async function signAccountLoginsChallenge(privateKey: Uint8Array, challenge: {
+  nonceId: string; authUid: string; sessionId: string; pubkey: string;
+  operation: 'activate' | 'connect' | 'disconnect' | 'enroll-mfa' | 'unenroll-mfa'; bodyDigest: string;
+}): Promise<Uint8Array> {
+  const { nonceId, authUid, sessionId, pubkey, operation, bodyDigest } = challenge;
+  return ed.signAsync(utf8.encode(`account-logins:${nonceId}:${authUid}:${sessionId}:${pubkey}:${operation}:${bodyDigest}`), privateKey);
+}
+
 // ------------------------------------------------------------------
 // Device identity
 // ------------------------------------------------------------------
@@ -421,7 +431,7 @@ export function base64urlToBytes(b64url: string): Uint8Array {
  */
 export type EncryptedPayload = Pick<
   DecryptedNote,
-  'title' | 'body' | 'tags' | 'trashed' | 'starred' | 'locked' | 'pinProtected' | 'type' | 'trackers' | 'folderId'
+  'title' | 'body' | 'tags' | 'trashed' | 'starred' | 'locked' | 'pinProtected' | 'type' | 'trackers' | 'folderId' | 'archived'
 >;
 
 export function encryptNote(
@@ -442,6 +452,9 @@ export function encryptNote(
       type: note.type,
       ...(note.trackers ? { trackers: note.trackers } : {}),
       ...(note.folderId ? { folderId: note.folderId } : {}),
+      // Always present, so a reader can tell "not archived" from a payload
+      // written by a client that predates Archive and drops the field.
+      archived: note.archived === true,
     })
   );
   const ciphertext = cipher.encrypt(plaintext);
@@ -476,6 +489,10 @@ export function decryptNote(
     type: parsed.type ?? 'note',
     trackers: (parsed as Record<string, unknown>).trackers as Record<string, unknown> | undefined,
     folderId: parsed.folderId ?? null,
+    // Absent means the writer did not carry Archive at all: an older
+    // client that rebuilt the payload without it. Callers decide what an
+    // unknown value means for them (noteMerge.ts fieldsOfPayload).
+    archived: typeof parsed.archived === 'boolean' ? parsed.archived : undefined,
   };
 }
 

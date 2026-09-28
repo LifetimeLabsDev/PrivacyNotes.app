@@ -108,7 +108,10 @@
     "open": "فتح",
     "notesHeading": "ملاحظات",
     "fillOneField": "يرجى تعبئة حقل واحد على الأقل قبل الحفظ.",
-    "expiryNeedsBoth": "يتطلب تاريخ الانتهاء كلًا من الشهر والسنة، أو اتركهما فارغين."
+    "expiryNeedsBoth": "يتطلب تاريخ الانتهاء كلًا من الشهر والسنة، أو اتركهما فارغين.",
+    "customField": "حقل مخصص",
+    "fieldNeedsName": "أعطِ كل حقل مخصص اسمًا.",
+    "saveFailed": "تعذّر الحفظ. تغييراتك لا تزال هنا."
   },
   "fileTypes": {
     "audio": "صوت",
@@ -152,6 +155,7 @@
     "allItems": "الكل",
     "pinnedTooltip": "العناصر المثبتة",
     "pinned": "المثبتة",
+    "archive": "الأرشيف",
     "notesTooltip": "جميع الملاحظات",
     "notes": "الملاحظات",
     "tasksTooltip": "المهام في جميع الملاحظات",
@@ -218,6 +222,8 @@
     "noMatches": "لا توجد مجلدات مطابقة",
     "collapse": "طي",
     "expand": "توسيع",
+    "collapseAll": "طي الكل",
+    "expandAll": "توسيع الكل",
     "reorder": "إعادة ترتيب {{folder}}",
     "saveName": "حفظ اسم المجلد",
     "actionsForFolder": "إجراءات المجلد {{folder}}",
@@ -226,21 +232,27 @@
   },
   "collapsedSidebar": {
     "newNote": "ملاحظة جديدة",
-    "cycleView": "تبديل طريقة العرض (تلقائي، قائمة، شبكة)",
     "expandSidebar": "توسيع الشريط الجانبي"
   },
   "mobileHeader": {
     "openMenu": "فتح القائمة"
   },
   "noteOptionsMenu": {
+    "color": "اللون",
+    "colorNone": "بلا لون",
+    "colorUseDefault": "استخدام الافتراضي",
+    "colorFromFolder": "من المجلد: {{name}}",
+    "colorFromTag": "من الوسم: #{{name}}",
+    "details": "التفاصيل",
     "readOnly": "للقراءة فقط",
     "readOnlyDescription": "لا تعديلات حتى توقف هذا الخيار.",
     "protect": "حماية",
-    "protectDescription": "أخفِ المحتوى خلف رمز PIN أو القياسات الحيوية. يبقى العنوان ظاهرًا.",
     "convertToJournal": "تحويل إلى مدخل يوميات",
     "convertToNote": "تحويل إلى ملاحظة",
     "unpin": "إلغاء التثبيت",
     "pin": "تثبيت",
+    "archive": "أرشفة",
+    "unarchive": "إلغاء الأرشفة",
     "burn": "حرق",
     "share": "مشاركة",
     "trash": "المهملات",
@@ -248,17 +260,15 @@
     "restore": "استعادة",
     "deleteForever": "حذف نهائي",
     "moveToFolder": "نقل إلى مجلد",
-    "noteHistory": "سجل الملاحظة",
-    "noteHistoryDescription": "استعد أيًّا من آخر 20 نسخة.",
-    "showMarkdownDescription": "حرّر مصدر markdown الخام.",
-    "showFormattedDescription": "العودة إلى المحرّر المنسّق.",
+    "noteHistory": "السجل",
     "findReplace": "البحث والاستبدال",
+    "uncheckAllTasks": "إلغاء تحديد كل المهام",
     "comingSoon": "قريبًا",
     "noteOptions": "خيارات الملاحظة",
     "lastModified": "آخر تعديل: {{date}}",
     "created": "تاريخ الإنشاء: {{date}}",
     "size": "المساحة المستخدمة: {{size}}",
-    "sizeHint": "الحجم الإجمالي المشفّر لهذه الملاحظة.",
+    "sizeHint": "الحجم الإجمالي المشفّر لهذا العنصر.",
     "tagCount_one": "{{count}} وسم",
     "tagCount_other": "{{count}} وسم",
     "tagCount_zero": "{{count}} وسوم",
@@ -271,6 +281,8 @@
     "exitSelection": "الخروج من التحديد",
     "unpin": "إلغاء التثبيت",
     "pin": "تثبيت",
+    "archive": "أرشفة",
+    "unarchive": "إلغاء الأرشفة",
     "tag": "وسم",
     "export": "تصدير",
     "delete": "حذف",
@@ -282,6 +294,8 @@
   },
   "listPrefs": {
     "listPreferences": "تفضيلات القائمة",
+    "layout": "التخطيط",
+    "layoutDeviceOnly": "ينطبق على هذا الجهاز فقط",
     "sortBy": "الفرز حسب",
     "dateCreated": "تاريخ الإنشاء",
     "dateModified": "تاريخ التعديل",
@@ -289,6 +303,7 @@
     "size": "الحجم",
     "view": "طريقة العرض",
     "showPreview": "إظهار المعاينة",
+    "longPreview": "نص معاينة أطول",
     "showDate": "إظهار التاريخ",
     "showTags": "إظهار المجلد والوسوم",
     "other": "أخرى",
@@ -335,6 +350,8 @@
     "deleteForever": "حذف نهائي",
     "unpin": "إلغاء التثبيت",
     "pin": "تثبيت",
+    "archive": "أرشفة",
+    "unarchive": "إلغاء الأرشفة",
     "duplicate": "تكرار",
     "moveToFolder": "نقل إلى مجلد",
     "exportAsMarkdown": "التصدير كـ Markdown",
@@ -346,7 +363,13 @@
     "newContact": "جهة اتصال جديدة",
     "openBookmark": "فتح",
     "copyBookmarkUrl": "نسخ عنوان URL",
-    "editBookmark": "تعديل الإشارة المرجعية"
+    "editBookmark": "تعديل الإشارة المرجعية",
+    "openInTab": "فتح في علامة تبويب",
+    "closeTab": "إغلاق علامة التبويب",
+    "closeOtherTabs": "إغلاق علامات التبويب الأخرى",
+    "closeAllTabs": "إغلاق كل علامات التبويب",
+    "pinTab": "تثبيت علامة التبويب",
+    "unpinTab": "إلغاء تثبيت علامة التبويب"
   },
   "demoBanner": {
     "title": "جرّبه بلا أي مخاطرة",
@@ -368,6 +391,8 @@
     "braveSteps": "الصق ذلك في شريط عناوين Brave، واضبط «{{flag}}» على Enabled، ثم أعد تشغيل Brave.",
     "braveAppAlternative": "أو استخدم تطبيق سطح المكتب بدلًا من ذلك",
     "openFailed": "تعذّر فتح هذا الملف.",
+    "linkNotFound": "لا يوجد ملف «{{target}}» في هذا المجلد.",
+    "linkNeedsFolder": "افتح المجلد لتتبّع الروابط.",
     "saveFailed": "تعذّر الحفظ على القرص.",
     "saving": "جارٍ الحفظ…",
     "savedToDisk": "محفوظ على القرص",
@@ -622,5 +647,9 @@
   },
   "looks": {
     "menu": "الأيقونة واللون"
+  },
+  "tabStrip": {
+    "label": "علامات التبويب المفتوحة",
+    "close": "إغلاق {{title}}"
   }
 }

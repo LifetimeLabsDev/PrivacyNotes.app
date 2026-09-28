@@ -9,7 +9,8 @@
     "file": "Ficheiro",
     "empty": "Vazia",
     "noContent": "Sem conteúdo",
-    "notBackedUp": "Sem cópia de segurança"
+    "notBackedUp": "Sem cópia de segurança",
+    "archived": "Arquivado"
   },
   "header": {
     "new": "Nova",
@@ -71,6 +72,7 @@
     "noMatches": "Sem resultados.",
     "vault": "O cofre está vazio.",
     "notes": "Ainda não há notas.",
+    "archive": "Nada arquivado.",
     "filtered": "Nenhum item corresponde aos teus filtros.",
     "clearFilters": "Remover os filtros",
     "filteredAfter": "para os mostrar."
@@ -81,6 +83,7 @@
     "journals": "Diários",
     "vault": "Cofre",
     "pinned": "Fixados",
+    "archive": "Arquivo",
     "notes": "Notas"
   },
   "footerStats": {

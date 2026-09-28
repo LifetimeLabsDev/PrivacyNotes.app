@@ -70,6 +70,7 @@
     "about_dataStorage": "بيانات, خادم, أين تُخزن, خصوصية",
     "about_changelog": "ملاحظات الإصدار, ما الجديد, تحديثات",
     "about_hotkeys": "اختصارات لوحة المفاتيح, اختصارات, مفاتيح",
-    "about_rating": "مراجعة, تقييم, نجوم, app store"
+    "about_rating": "مراجعة, تقييم, نجوم, app store",
+    "appearance_openInTabs": "علامات التبويب, شريط علامات التبويب, متصفح, فتح"
   }
 }

@@ -75,7 +75,21 @@
   },
   "burnShareModal": {
     "title": "Paylaş ve okunduktan sonra yak",
-    "body": "<lead>Orijinal notunuz silinmeyecek.</lead> Hesabınızda güvende kalır. Yakma bağlantısı, okunduktan sonra kendini imha eden ayrı bir şifreli kopyadır. Bağlantı, açılsa da açılmasa da 24 saat sonra geçerliliğini yitirir.",
+    "body": "<lead>Orijinal notunuz silinmeyecek.</lead> Hesabınızda güvende kalır. Yakma bağlantısı, okunduktan sonra kendini imha eden ayrı bir şifreli kopyadır.",
+    "readTime": "Okuma süresi",
+    "readTimeHint": "Sonra ekrandan silinir",
+    "lifetime": "Bağlantının süresi",
+    "lifetimeHint": "Kimse açmazsa",
+    "minutes_one": "{{count}} dakika",
+    "minutes_other": "{{count}} dakika",
+    "hours_one": "{{count}} saat",
+    "hours_other": "{{count}} saat",
+    "afterHours_one": "{{count}} saat sonra",
+    "afterHours_other": "{{count}} saat sonra",
+    "afterDays_one": "{{count}} gün sonra",
+    "afterDays_other": "{{count}} gün sonra",
+    "create": "Bağlantıyı oluştur ve kopyala",
+    "share": "Bağlantıyı paylaş",
     "imagesStripped": "Bu notta yalnızca metin gösterilir, dosyalar gizlenir.",
     "copied": "Kopyalandı"
   },
@@ -89,7 +103,7 @@
     "footerTagline": "- İsviçre'de barındırılan, sıfır bilgi ilkesiyle şifrelenmiş notlar.",
     "sealed": {
       "heading": "Size şifreli bir not gönderildi.",
-      "subheading": "Bu mesaj okunduktan sonra kendini imha edecek. Okunmayan bağlantılar 24 saat sonra geçerliliğini yitirir.",
+      "subheading": "Bu mesaj okunduktan sonra kendini imha edecek. Okunmayan bağlantılar kendiliğinden geçerliliğini yitirir.",
       "reveal": "Mesajı göster",
       "warning": "Sunucu, notu gösterdiğiniz anda siler. İkinci bir şans yok."
     },
@@ -105,7 +119,7 @@
     },
     "gone": {
       "heading": "Bu not artık yok.",
-      "body": "Ya okunmuş ya da süresi dolmuş. Yakma bağlantıları yalnızca bir kez açılabilir ve 24 saat sonra geçerliliğini yitirir."
+      "body": "Ya okunmuş ya da süresi dolmuş. Yakma bağlantıları yalnızca bir kez açılabilir ve kendiliğinden geçerliliğini yitirir."
     },
     "error": {
       "heading": "Bir şeyler ters gitti.",

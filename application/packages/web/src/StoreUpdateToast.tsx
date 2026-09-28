@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { UpdateToast } from './UpdateToast';
 import { detectPlatform } from './devices';
 import { APP_STORE_URL } from './hosts';
-import { reportVersionFloor, useBelowVersionFloor } from './versionFloor';
+import { knownVersionFloor, reportVersionFloor, useBelowVersionFloor } from './versionFloor';
 
 /**
  * Release-floor check for the STORE builds (Google Play, iOS App Store).
@@ -20,8 +20,11 @@ import { reportVersionFloor, useBelowVersionFloor } from './versionFloor';
  * the downloads page, which is a lie on a store install - same reason web
  * never sets it).
  *
- * Fail open: an unreachable policy means no floor. A 404 means the policy was
- * withdrawn (or never published), so it also clears any persisted floor.
+ * Only a published `minVersion` changes the floor. An unreachable, missing
+ * (404) or malformed policy keeps the floor already held, so a CDN error
+ * never lifts a pause; a floor is lowered by publishing a lower one. With no
+ * floor held yet, the first check runs at once and a failed one retries
+ * within a minute, so a first launch is not left unguarded for a full poll.
  *
  * Spec: ops/docs/android-update-check.md (store builds)
  */
@@ -47,6 +50,7 @@ const STORE_URL = IS_IOS
 // floor) is what actually keeps a daily-opened-never-closed app current.
 const POLL_INTERVAL_MS = 6 * 60 * 60 * 1000; // 6h
 const INITIAL_DELAY_MS = 20 * 1000;
+const FIRST_REPORT_RETRY_MS = 60 * 1000;
 
 export function StoreUpdateToast() {
   const { t } = useTranslation('common');
@@ -69,32 +73,35 @@ export function StoreUpdateToast() {
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | null = null;
 
-    async function check(): Promise<void> {
-      if (cancelled) return;
+    /** True when the policy was read and carried a floor. */
+    async function check(): Promise<boolean> {
+      if (cancelled) return false;
       lastCheckRef.current = Date.now();
       try {
         const res = await fetch(`${POLICY_URL}?t=${Date.now()}`, { cache: 'no-store' });
-        if (cancelled) return;
-        if (res.status === 404) {
-          // Policy not published (or withdrawn): explicitly no floor.
-          reportVersionFloor(null);
-          return;
-        }
-        if (!res.ok) return;
+        if (cancelled || !res.ok) return false;
         const p = (await res.json()) as { minVersion?: string };
-        if (cancelled) return;
-        reportVersionFloor(typeof p?.minVersion === 'string' ? p.minVersion : null);
+        if (cancelled || typeof p?.minVersion !== 'string') return false;
+        reportVersionFloor(p.minVersion);
+        return true;
       } catch {
         // Offline or blocked: keep whatever versionFloor.ts already holds.
+        return false;
       }
     }
 
-    const initial = setTimeout(function run(): void {
-      void check();
-      timer = setTimeout(run, POLL_INTERVAL_MS);
-    }, INITIAL_DELAY_MS);
+    const run = async (): Promise<void> => {
+      const reported = await check();
+      if (cancelled) return;
+      const unguarded = !reported && knownVersionFloor() === null;
+      timer = setTimeout(() => void run(), unguarded ? FIRST_REPORT_RETRY_MS : POLL_INTERVAL_MS);
+    };
+    const initial = setTimeout(
+      () => void run(),
+      knownVersionFloor() === null ? 0 : INITIAL_DELAY_MS,
+    );
 
-    // No latch, unlike AndroidUpdateToast: the toast here is a pure render of
+    // No latch: the toast here is a pure render of
     // floor state, so polling stays on for the whole session and a floor that
     // gets LOWERED (a rollback) un-pauses within one poll instead of waiting
     // for a relaunch.

@@ -7,11 +7,12 @@
   "delete-account": "Jak usunąć konto?",
   "device-limit": "Co oznacza „Osiągnięto limit urządzeń”?",
   "forgot-pin": "Nie pamiętam PIN-u. Jak wrócić do aplikacji?",
-  "guess-phrase": "Jeśli ktoś zgadnie moje 12 słów, czy zaloguje się na moje konto?",
+  "guess-phrase": "Czy ktoś może zgadnąć moje 12 słów albo dostać takie same?",
   "image-quality": "Czy PrivacyNotes zmienia lub kompresuje moje obrazy?",
   "journal": "Jak działa dziennik i co mogę śledzić?",
   "leaving": "Jak całkowicie odejść z PrivacyNotes?",
   "locked-vs-protected": "Jaka jest różnica między notatkami tylko do odczytu a chronionymi PIN-em?",
+  "lost-2fa": "Nie mam kodów 2FA. Jak odzyskać dostęp?",
   "obtainium": "Jak zainstalować aplikację na Androida przez Obtainium?",
   "phrase-vs-password": "Dlaczego fraza odzyskiwania zamiast nazwy użytkownika i hasła?",
   "remove-device": "Jak usunąć urządzenie, którego już nie używam?",
@@ -22,5 +23,5 @@
   "vault": "Czym jest Sejf?",
   "vault-totp": "Czy Sejf pomieści moje klucze 2FA (kody TOTP / MFA)?",
   "what-syncs": "Co dokładnie synchronizuje się między urządzeniami, a co zostaje lokalnie?",
-  "why-no-2fa": "Dlaczego nie ma uwierzytelniania dwuskładnikowego (2FA)?"
+  "why-no-2fa": "Jak włączyć uwierzytelnianie dwuskładnikowe (2FA)?"
 }

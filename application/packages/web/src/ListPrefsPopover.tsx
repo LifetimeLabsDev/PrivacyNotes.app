@@ -1,8 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
 import { HoverLabel } from './HoverLabel';
 import { Switch } from './Switch';
+import { ViewModeContext } from './viewMode';
+import { ViewModeToggle } from './ViewModeToggle';
 import { ArrowDown, ArrowUp, PencilSimpleSlash, Shield } from './icons';
 import {
   resolvePrefs,
@@ -15,8 +17,9 @@ import {
 
 /**
  * Preferences popover for the notes list:
+ *   - LAYOUT: Auto / List / Grid, this device only (viewMode.ts)
  *   - SORT BY: Modified / Created / Title + asc/desc arrow
- *   - VIEW: Show preview / Show date / Show tags
+ *   - VIEW: Show preview (+ Longer preview text) / Show date / Show tags
  *   - OTHER: Show read-only / Show protected (with matching icons)
  *
  * Two pillar-specific switches deliberately do NOT live here: Files' "Show
@@ -77,6 +80,7 @@ export function ListPrefsPopover({
   const prefs: ListPrefs = resolvePrefs(store, pillar);
   const resolvedTitleLabel = titleLabel ?? t('listPrefs.title');
 
+  const layout = useContext(ViewModeContext);
   const popoverRef = useRef<HTMLDivElement | null>(null);
 
   // Click-outside to close. Pointerdown beats click so drags don't
@@ -116,6 +120,17 @@ export function ListPrefsPopover({
       aria-label={t('listPrefs.listPreferences')}
       className={`z-50 w-72 rounded-lg border border-divider bg-surface-2 shadow-lg ${className}`}
     >
+      {/* ── LAYOUT ───────────────────────────────────────────────── */}
+      {layout && (
+      <div className="px-4 pt-3 pb-3 border-b border-divider">
+        <div className="text-[10px] font-semibold tracking-wider text-neutral-500 dark:text-neutral-400 uppercase mb-1.5 mt-1">
+          {t('listPrefs.layout')}
+        </div>
+        <ViewModeToggle mode={layout.mode} onChange={layout.set} />
+        <div className="mt-1.5 text-[11.5px] text-pn-muted">{t('listPrefs.layoutDeviceOnly')}</div>
+      </div>
+      )}
+
       {/* ── SORT BY ──────────────────────────────────────────────── */}
       <div className="px-4 pt-3 pb-2">
         <div className="text-[10px] font-semibold tracking-wider text-neutral-500 dark:text-neutral-400 uppercase mb-1.5 mt-1">
@@ -165,6 +180,13 @@ export function ListPrefsPopover({
             checked={prefs.showPreview}
             onChange={(v) => update('showPreview', v)}
           />
+          {prefs.showPreview && (
+            <ToggleRow
+              label={t('listPrefs.longPreview')}
+              checked={prefs.longPreview}
+              onChange={(v) => update('longPreview', v)}
+            />
+          )}
           <ToggleRow
             label={t('listPrefs.showDate')}
             checked={prefs.showDate}

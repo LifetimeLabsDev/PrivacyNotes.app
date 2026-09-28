@@ -3,12 +3,7 @@
  * encrypted settings blob as `itemStyles`.
  *
  * Every value is a register, `{ v, at }`, and each register merges on its
- * own: the later stamp wins, and nothing that one device merely lacks is ever
- * taken away. That is what makes the map safe in a row every device writes
- * whole. A device holding an older copy can push it, and the next device to
- * merge puts the newer values back. A null value is a reset to the default,
- * stamped like any pick, so a reset travels and ages out after the folder
- * tombstone window.
+ * own; registers.ts holds the rules.
  *
  * The map sits BESIDE the folder tree, never inside it: an older client
  * rebuilds each folder from the fields it knows and would strip a look on
@@ -18,16 +13,18 @@
  *
  * Spec: ops/docs/plans/folder-tag-icons.md (section 5)
  */
-import { subtreeIds, TOMBSTONE_RETENTION_MS, type FolderDef, type FolderTombstone } from './folders';
+import { subtreeIds, type FolderDef, type FolderTombstone } from './folders';
+import {
+  mergeRegisterMaps,
+  registerMapsEqual,
+  stampAfter,
+  validateRegisterMap,
+  type RegisterMap,
+} from './registers';
 import { sortTags } from './tagOrder';
 
-interface StyleRegister {
-  /** An icon id or a color key; null is "back to the default". */
-  v: string | null;
-  /** When it was written, ISO. */
-  at: string;
-}
-type ItemStyle = Record<string, StyleRegister>;
+/** One register per attribute: an icon id or a color key. */
+type ItemStyle = RegisterMap;
 export type ItemStyles = Record<string, ItemStyle>;
 export type LookAttr = 'icon' | 'color';
 export interface Look {
@@ -65,24 +62,28 @@ export function tagLookKey(tag: string): string {
   return `t:${tag}`;
 }
 
+/** A note's own color. A key kind older builds do not know, which their
+ *  validator and merge pass through untouched. */
+export function noteLookKey(id: string): string {
+  return `n:${id}`;
+}
+
+/** The color value of a note that shows no color even where its tag or
+ *  folder has one. A missing or reset register means "take theirs". */
+export const NOTE_NO_COLOR = 'none';
+export type NoteOwnColor = LookColor | typeof NOTE_NO_COLOR;
+
+/** The color set on the note itself, or null when it takes its tag's or
+ *  folder's. */
+export function noteOwnColor(styles: ItemStyles, noteId: string): NoteOwnColor | null {
+  const v = styles[noteLookKey(noteId)]?.color?.v;
+  return v === NOTE_NO_COLOR || isLookColor(v) ? v : null;
+}
+
 const KEY_PATTERN = /^[a-z]:[\s\S]{1,200}$/;
 const NAME_PATTERN = /^[A-Za-z]{1,32}$/;
 const VALUE_MAX = 64;
-
-function agedOut(reg: StyleRegister, now: number): boolean {
-  return reg.v === null && now - Date.parse(reg.at) > TOMBSTONE_RETENTION_MS;
-}
-
-function readRegister(raw: unknown): StyleRegister | null {
-  if (!raw || typeof raw !== 'object') return null;
-  const r = raw as Partial<StyleRegister>;
-  if (typeof r.at !== 'string' || Number.isNaN(Date.parse(r.at))) return null;
-  if (r.v === null) return { v: null, at: r.at };
-  if (typeof r.v === 'string' && r.v.length >= 1 && r.v.length <= VALUE_MAX) {
-    return { v: r.v, at: r.at };
-  }
-  return null;
-}
+const nameOk = (name: string) => NAME_PATTERN.test(name);
 
 /** Sanitize a raw map from a settings blob or a backup. Drops malformed
  *  shapes and aged-out resets, and nothing else. */
@@ -90,30 +91,11 @@ export function validateItemStyles(raw: unknown, now = Date.now()): ItemStyles {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
   const out: ItemStyles = {};
   for (const [key, entry] of Object.entries(raw as Record<string, unknown>)) {
-    if (!KEY_PATTERN.test(key) || !entry || typeof entry !== 'object' || Array.isArray(entry)) {
-      continue;
-    }
-    const kept: ItemStyle = {};
-    for (const [name, value] of Object.entries(entry as Record<string, unknown>)) {
-      if (!NAME_PATTERN.test(name)) continue;
-      const reg = readRegister(value);
-      if (reg && !agedOut(reg, now)) kept[name] = reg;
-    }
+    if (!KEY_PATTERN.test(key)) continue;
+    const kept = validateRegisterMap(entry, nameOk, VALUE_MAX, now);
     if (Object.keys(kept).length > 0) out[key] = kept;
   }
   return out;
-}
-
-/** The later write. On an equal stamp both sides of a merge must choose the
- *  same register, so the value decides: null lowest, then string order. */
-function later(a: StyleRegister, b: StyleRegister): StyleRegister {
-  const ta = Date.parse(a.at);
-  const tb = Date.parse(b.at);
-  if (ta !== tb) return ta > tb ? a : b;
-  if (a.v === b.v) return a.at >= b.at ? a : b;
-  if (a.v === null) return b;
-  if (b.v === null) return a;
-  return a.v > b.v ? a : b;
 }
 
 /** Ids of the folders a tree's tombstones delete, for `mergeItemStyles`. */
@@ -135,15 +117,7 @@ export function mergeItemStyles(
   const out: ItemStyles = {};
   for (const key of new Set([...Object.keys(remote), ...Object.keys(local)])) {
     if (key.startsWith('f:') && deletedFolders.has(key.slice(2))) continue;
-    const a = local[key] ?? {};
-    const b = remote[key] ?? {};
-    const merged: ItemStyle = {};
-    for (const name of new Set([...Object.keys(b), ...Object.keys(a)])) {
-      const ra = a[name];
-      const rb = b[name];
-      const pick = ra && rb ? later(ra, rb) : (ra ?? rb)!;
-      if (!agedOut(pick, now)) merged[name] = pick;
-    }
+    const merged = mergeRegisterMaps(local[key] ?? {}, remote[key] ?? {}, now);
     if (Object.keys(merged).length > 0) out[key] = merged;
   }
   return out;
@@ -155,27 +129,10 @@ export function itemStylesEqual(a: ItemStyles, b: ItemStyles): boolean {
   const keys = Object.keys(a);
   if (keys.length !== Object.keys(b).length) return false;
   for (const key of keys) {
-    const ea = a[key]!;
     const eb = b[key];
-    if (!eb) return false;
-    const names = Object.keys(ea);
-    if (names.length !== Object.keys(eb).length) return false;
-    for (const name of names) {
-      const ra = ea[name]!;
-      const rb = eb[name];
-      if (!rb || ra.v !== rb.v || ra.at !== rb.at) return false;
-    }
+    if (!eb || !registerMapsEqual(a[key]!, eb)) return false;
   }
   return true;
-}
-
-/** A stamp later than `prev` and never earlier than now: the rule of
- *  `nextStamp` in notesRepo.ts. A new pick then outranks the value it
- *  replaces even when another device's clock runs ahead. */
-function stampAfter(prev: string | undefined): string {
-  const now = Date.now();
-  const cur = prev ? Date.parse(prev) : Number.NaN;
-  return new Date(Number.isFinite(cur) && cur >= now ? cur + 1 : now).toISOString();
 }
 
 /**
@@ -372,17 +329,56 @@ export function resolveItemColor(
   styles: ItemStyles,
   filter?: ColorFilter,
 ): LookColor | null {
+  return resolveItemColorSource(tags, folderId, styles, filter)?.color ?? null;
+}
+
+export interface ColorSource {
+  color: LookColor;
+  kind: 'tag' | 'folder';
+  /** The tag, or the folder id. */
+  id: string;
+}
+
+/** `resolveItemColor`, with the tag or folder the color comes from. */
+export function resolveItemColorSource(
+  tags: readonly string[],
+  folderId: string | null | undefined,
+  styles: ItemStyles,
+  filter?: ColorFilter,
+): ColorSource | null {
   if (filter?.tag && tags.includes(filter.tag)) {
     const color = styles[tagLookKey(filter.tag)]?.color?.v;
-    if (isLookColor(color)) return color;
+    if (isLookColor(color)) return { color, kind: 'tag', id: filter.tag };
   }
   if (filter?.folderId && folderId && filter.folderIds.has(folderId)) {
     const color = folderColor(filter.folderId, styles);
-    if (color) return color;
+    if (color) return { color, kind: 'folder', id: filter.folderId };
   }
   for (const tag of sortTags([...tags])) {
     const color = styles[tagLookKey(tag)]?.color?.v;
-    if (isLookColor(color)) return color;
+    if (isLookColor(color)) return { color, kind: 'tag', id: tag };
   }
-  return folderColor(folderId, styles);
+  const color = folderColor(folderId, styles);
+  return color && folderId ? { color, kind: 'folder', id: folderId } : null;
+}
+
+/**
+ * The color a note shows. Its own color wins over everything, a filter
+ * included, because it is the one choice made about this note alone, and it
+ * shows while the note-background switch is off, because someone picked it
+ * for this note. Without one, the tag or folder color, and only while the
+ * switch is on.
+ */
+export function resolveNoteColor(
+  noteId: string,
+  tags: readonly string[],
+  folderId: string | null | undefined,
+  styles: ItemStyles,
+  tintNotes: boolean,
+  filter?: ColorFilter,
+): LookColor | null {
+  const own = noteOwnColor(styles, noteId);
+  if (own === NOTE_NO_COLOR) return null;
+  if (own) return own;
+  return tintNotes ? resolveItemColor(tags, folderId, styles, filter) : null;
 }

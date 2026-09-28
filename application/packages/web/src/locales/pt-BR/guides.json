@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "Notas Super, checklists e códigos 2FA mantêm o formato",
+          "p": [
+            "As notas Super mantêm títulos, listas, checklists, tabelas, blocos de código, cores e seções recolhíveis. As checklists vão para Tarefas, as planilhas viram tabelas e as entradas do autenticador viram logins no Cofre, com a chave 2FA. Tags aninhadas viram pastas, e cada nota mantém também as suas tags.",
+            "Os arquivos que você enviou ao Standard Notes ficam no servidor deles, então o backup guarda apenas os nomes. Cada nota importada marca onde havia um arquivo. Baixe esses arquivos do Standard Notes e adicione-os à nota de novo."
+          ]
+        },
+        {
           "h": "Backups criptografados não são suportados",
           "p": [
             "Um backup criptografado do Standard Notes é texto cifrado que só a sua senha do Standard Notes consegue abrir, então o importador não consegue lê-lo. Se você exportou a variante criptografada, exporte de novo escolhendo descriptografado. Como o arquivo contém suas notas em texto puro, apague-o quando a importação terminar.",

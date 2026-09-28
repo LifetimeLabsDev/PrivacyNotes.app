@@ -17,7 +17,7 @@ export type PinInputHandle = {
 type Props = {
   value: string;
   onChange: (value: string) => void;
-  /** Called when all 4 digits are filled. Receives the full value. */
+  /** Called when every box is filled. Receives the full value. */
   onComplete?: (value: string) => void;
   /** Auto-focus the first box on mount. */
   autoFocus?: boolean;
@@ -28,9 +28,12 @@ type Props = {
    *  there the PIN is the only thing on screen and the box is the target a
    *  thumb aims at. */
   compact?: boolean;
+  /** Number of boxes. A PIN has 4; an authenticator code has 6. */
+  length?: number;
+  /** Paint the digits. Only for a one-time code, which expires in seconds and
+   *  is read off another screen; a PIN is always masked. */
+  reveal?: boolean;
 };
-
-const LENGTH = 4;
 
 /**
  * The field holds the digit and never paints it. The bullet beside each box
@@ -54,8 +57,9 @@ const LENGTH = 4;
 const HIDDEN_TEXT = { color: 'transparent', caretColor: 'transparent' } as const;
 
 /**
- * Four separate boxes for a 4-digit PIN. Handles auto-advance, backspace,
- * arrow navigation, paste, and iOS one-time-code autofill.
+ * One box per digit, for the 4-digit PIN and the 6-digit authenticator code.
+ * Handles auto-advance, backspace, arrow navigation, paste, and iOS
+ * one-time-code autofill.
  */
 export const PinInput = forwardRef<PinInputHandle, Props>(function PinInput(
   {
@@ -66,9 +70,12 @@ export const PinInput = forwardRef<PinInputHandle, Props>(function PinInput(
     disabled = false,
     ariaLabel,
     compact = false,
+    length: LENGTH = 4,
+    reveal = false,
   },
   ref,
 ) {
+  const mask = !reveal;
   const { t } = useTranslation('security');
   const groupLabel = ariaLabel ?? t('pinInput.ariaLabel');
   const inputs = useRef<Array<HTMLInputElement | null>>([]);
@@ -182,22 +189,24 @@ export const PinInput = forwardRef<PinInputHandle, Props>(function PinInput(
             ref={(el) => {
               inputs.current[i] = el;
             }}
-            type="password"
+            type={mask ? 'password' : 'text'}
             inputMode="numeric"
             pattern="[0-9]*"
             autoComplete={i === 0 ? 'one-time-code' : 'off'}
-            maxLength={1}
+            // The first box takes a whole code, so a clipboard suggestion or
+            // autofill that types instead of pasting is not cut to one digit.
+            maxLength={i === 0 ? LENGTH : 1}
             value={d}
             onChange={(e) => handleChange(i, e)}
             onKeyDown={(e) => handleKeyDown(i, e)}
             onPaste={(e) => handlePaste(i, e)}
             onFocus={(e) => e.currentTarget.select()}
             disabled={disabled}
-            style={HIDDEN_TEXT}
+            style={mask ? HIDDEN_TEXT : undefined}
             aria-label={t('pinInput.digitAriaLabel', { index: i + 1 })}
-            className={`w-full h-full rounded-md bg-track border border-divider focus:border-accent dark:focus:border-accent text-center font-mono focus:outline-none disabled:cursor-not-allowed ${compact ? 'text-xl' : 'text-2xl'}`}
+            className={`w-full h-full rounded-md bg-track text-pn border border-divider focus:border-accent dark:focus:border-accent text-center font-mono focus:outline-none disabled:cursor-not-allowed ${compact ? 'text-xl' : 'text-2xl'}`}
           />
-          {d && (
+          {d && mask && (
             // The bullet the field no longer draws. Same glyph, size and
             // family the browser used, so the boxes look untouched.
             <span

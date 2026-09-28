@@ -55,14 +55,16 @@
     "openingBody": "Dovrebbe comparire una finestra di pagamento Paddle. In caso contrario, il tuo browser potrebbe aver bloccato il popup - ricarica questa pagina per riprovare."
   },
   "history": {
-    "title": "Cronologia delle note",
-    "subtitle": "Fino a 20 versioni per nota. Le più vecchie vengono eliminate automaticamente.",
+    "subtitle": "Fino a 20 versioni per elemento. Le più vecchie vengono eliminate automaticamente.",
     "empty": "Ancora nessuna cronologia. Le versioni iniziano ad accumularsi dopo la prossima modifica. Torna più tardi.",
     "loadFailed": "Non è stato possibile caricare la cronologia. Controlla la connessione e riprova.",
     "selectPrompt": "Seleziona una versione per l'anteprima.",
     "emptyBody": "(vuoto)",
     "restore": "Ripristina",
-    "restoring": "Ripristino…"
+    "restoring": "Ripristino…",
+    "restoreSnapshotFailed": "Non è stato possibile salvare prima la versione attuale, quindi non è stato ripristinato nulla. Controlla la connessione e riprova.",
+    "restoreFailed": "Non è stato possibile ripristinare questa versione. Riprova.",
+    "loginExtrasNotRecorded": "Questa versione non ha registrato campi personalizzati né siti web aggiuntivi. Ripristinarla mantiene quelli attuali."
   },
   "donation": {
     "eyebrow": "Hai sbloccato",

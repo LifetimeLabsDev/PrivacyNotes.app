@@ -501,6 +501,10 @@ function withSecurityHeaders(response: Response, url: URL, status?: number): Res
   }
   // Prevent edge cache from serving stale HTML without headers.
   headers.set('Cache-Control', 'no-cache');
+  if (url.pathname === '/auth/connect') {
+    headers.set('Cache-Control', 'no-store');
+    headers.set('Referrer-Policy', 'no-referrer');
+  }
   return new Response(response.body, { status: status ?? response.status, headers });
 }
 

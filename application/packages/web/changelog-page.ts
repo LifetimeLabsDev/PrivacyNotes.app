@@ -39,6 +39,9 @@ import { brandMark, BUG_ICON, CHROME_CSS, LINK_ICON, OG_IMAGE_TAGS, ogLocaleTag,
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CHANGELOG_SRC = path.resolve(__dirname, 'src/publicChangelog.ts');
+/** The release block's styles, shared with the in-app Changelog tab. Read
+ *  per render so the dev server picks up an edit without a restart. */
+const RELEASE_CSS = path.resolve(__dirname, 'src/changelogRelease.css');
 
 const ORIGIN = 'https://privacynotes.app';
 const FEED_PATH = '/changelog/feed.xml';
@@ -254,16 +257,8 @@ ${months}
 
 const PAGE_CSS = `.cl-month{margin:30px 0 4px;scroll-margin-top:16px}
 .cl-month:first-of-type{margin-top:16px}
-.release{display:flex;gap:24px;padding:26px 0;border-top:1px solid var(--line);scroll-margin-top:16px}
 .cl-month + .release{border-top:0}
 .release[hidden],li.item[hidden],.cl-month[hidden],.rail[hidden]{display:none}
-.meta{flex:0 0 104px;display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding-top:2px}
-.vpill{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;font-weight:600;color:var(--accent);background:var(--imp-bg);padding:3px 8px;border-radius:7px}
-.date{font-size:12.5px;color:var(--faint)}
-.latest{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--new-fg);background:var(--new-bg);padding:2px 7px;border-radius:6px}
-.body{flex:1;min-width:0}
-.rhead{display:flex;align-items:flex-start;gap:8px;margin:0 0 16px}
-.body h3{font-size:18px;font-weight:600;margin:0;letter-spacing:-.01em;flex:1;min-width:0}
 /* Revealed on hover like the Help leaves' perma, and always visible once
    focused so it is reachable from the keyboard. */
 .perma{flex:0 0 auto;display:inline-flex;align-items:center;padding:2px;margin-top:2px;border:0;background:none;color:var(--faint);cursor:pointer;opacity:0;transition:opacity .12s ease}
@@ -271,14 +266,6 @@ const PAGE_CSS = `.cl-month{margin:30px 0 4px;scroll-margin-top:16px}
 .release:hover .perma,.perma:focus-visible{opacity:1}
 .perma:hover{color:var(--accent)}
 .perma.done{opacity:1;color:var(--new-fg)}
-.items{list-style:none;margin:0;padding:0}
-.item{display:flex;gap:10px;margin-bottom:11px;align-items:flex-start}
-.item:last-child{margin-bottom:0}
-.txt{font-size:15px;color:var(--fg)}
-.tag{flex:0 0 auto;width:66px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.01em;padding:3px 0;border-radius:6px;margin-top:1px}
-.tag-new{background:var(--new-bg);color:var(--new-fg)}
-.tag-improved{background:var(--imp-bg);color:var(--imp-fg)}
-.tag-fixed{background:var(--fix-bg);color:var(--fix-fg)}
 .rail-extra{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
 /* The only red control on the site's static pages: it is the only one that
    files something against us, and it should not read as a section link. */
@@ -300,9 +287,6 @@ const PAGE_CSS = `.cl-month{margin:30px 0 4px;scroll-margin-top:16px}
 .rail-extra{margin-top:14px;padding-top:0;border-top:0}
 }
 @media(max-width:600px){
-.release{flex-direction:column;gap:10px;padding:22px 0}
-.meta{flex-direction:row;align-items:center;gap:8px;flex:none;padding-top:0}
-.tag{width:60px}
 .cl-origin{padding:20px}
 }`;
 
@@ -335,6 +319,7 @@ ${themeVarsCss(
 )}
 ${THEME_TOGGLE_CSS}
 ${CHROME_CSS}
+${fs.readFileSync(RELEASE_CSS, 'utf8')}
 ${PAGE_CSS}
 </style>
 </head>
@@ -354,7 +339,7 @@ ${SEARCH_ICON}
 </div>
 <p class="count" id="cl-count"></p>
 </div>
-<div class="col-body" id="cl-list">
+<div class="col-body pn-cl" id="cl-list">
 ${renderReleases(releases)}
 <div class="noresults" id="cl-empty" hidden>
 <p id="cl-empty-lead"></p>

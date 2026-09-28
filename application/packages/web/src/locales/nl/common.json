@@ -58,6 +58,7 @@
     "groups": {
       "navigation": "Navigatie",
       "notes": "Notities",
+      "lists": "Lijsten",
       "editor": "Editor",
       "formatting": "Opmaak",
       "alignment": "Uitlijning",
@@ -100,7 +101,11 @@
       "toggleSidebar": "Zijbalk in-/uitklappen",
       "toggleTheme": "Licht / donker wisselen",
       "zenMode": "Zen-/focusmodus (Pro)",
-      "toggleHelp": "Deze hulp tonen/verbergen"
+      "toggleHelp": "Deze hulp tonen/verbergen",
+      "selectSeveral": "Meerdere items selecteren",
+      "selectRange": "Een reeks selecteren (tijdens het selecteren)",
+      "openInTab": "Openen in een tabblad (middelklik werkt ook)",
+      "closeTab": "Tabblad sluiten"
     }
   },
   "cardForm": {

@@ -12,10 +12,13 @@
  * scoped hand-rolled renderer is less churn than pulling in marked / etc.
  */
 
+import { joinParagraphLinesHtml } from './paragraphLines';
+import type { LineSpacing } from './theme';
 import { faviconUrl } from './favicon';
 import { unescapeMarkdownText } from './fileNames';
 import { getFavicons } from './theme';
 import { widthsFromTableLines } from './tableColumnWidths';
+import { tableWidthFromMarker } from './tableDelimiterRow';
 
 // ─── Obsidian callout types ────────────────────────────────────────────
 //
@@ -222,6 +225,16 @@ async function prepareMath(md: string): Promise<void> {
  * one-time note is gone. Plain text the reader can still copy beats nothing.
  * Nothing in the renderer is known to throw, which is what a net is for.
  */
+/**
+ * A note body as HTML for a page that leaves the editor (the burn viewer, the
+ * HTML and PDF export), laid out for the given line spacing: on Compact and
+ * Tight a run of paragraphs is one paragraph with a break per line, so a copy
+ * out of the page keeps the note's blank lines. Spec: paragraphLines.ts
+ */
+export function renderNoteBody(html: string, spacing: LineSpacing): string {
+  return spacing === 'normal' ? html : joinParagraphLinesHtml(html);
+}
+
 export function renderMarkdownSafe(md: string): string {
   try {
     return renderMarkdown(md);
@@ -1249,10 +1262,14 @@ export function renderMarkdown(md: string): string {
       // fixed layout goes inline because the burn viewer has no stylesheet
       // rule for it, and without it the cols are only a hint.
       const widths = hasSep ? widthsFromTableLines(rows[0]!, rows[1]!) : null;
+      // A table narrower than the note carries its width on the next line.
+      const tableWidth = tableWidthFromMarker(lines[i] ?? '');
+      if (tableWidth) i++;
+      const width = `width:${tableWidth ?? 100}%`;
       const tableHtml: string[] = [
         widths
-          ? `<table style="border-collapse:collapse;width:100%;margin:1em 0;table-layout:fixed"><colgroup>${widths.map((w) => `<col style="width:${w}%">`).join('')}</colgroup>`
-          : '<table style="border-collapse:collapse;width:100%;margin:1em 0">',
+          ? `<table style="border-collapse:collapse;${width};margin:1em 0;table-layout:fixed"><colgroup>${widths.map((w) => `<col style="width:${w}%">`).join('')}</colgroup>`
+          : `<table style="border-collapse:collapse;${width};margin:1em 0">`,
       ];
       if (hasSep) {
         tableHtml.push('<thead><tr>');

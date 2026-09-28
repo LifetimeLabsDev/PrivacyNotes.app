@@ -65,6 +65,7 @@
     "about_dataStorage": "데이터, 서버, 저장 위치, 개인정보",
     "about_changelog": "릴리스 노트, 새로운 기능, 업데이트, 변경 사항",
     "about_hotkeys": "키보드 단축키, 단축키, 키, 핫키",
-    "about_rating": "리뷰, 평가, 별점, 앱 스토어, App Store"
+    "about_rating": "리뷰, 평가, 별점, 앱 스토어, App Store",
+    "appearance_openInTabs": "탭, 탭 표시줄, 브라우저, 열기"
   }
 }

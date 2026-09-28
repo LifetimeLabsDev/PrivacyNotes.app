@@ -24,7 +24,7 @@
     "sport": "Sport",
     "tech": "Wetenschap en techniek",
     "signals": "Signalen",
-    "numbers": "Cijfers"
+    "numbers": "Cijfers en rekenen"
   },
   "icons": {
     "folder": "Map",
@@ -249,6 +249,8 @@
     "bone": "Bot",
     "barn": "Schuur",
     "tractor": "Tractor",
+    "grains": "Graan",
+    "windmill": "Windmolen",
     "guitar": "Gitaar",
     "piano-keys": "Piano",
     "microphone-stage": "Microfoon",
@@ -302,6 +304,12 @@
     "info": "Informatie",
     "siren": "Sirene",
     "infinity": "Oneindig",
+    "plus": "Plusteken",
+    "minus": "Min",
+    "x": "Keer",
+    "divide": "Gedeeld door",
+    "equals": "Is gelijk aan",
+    "percent": "Procent",
     "peace": "Vrede",
     "recycle": "Recycling",
     "radioactive": "Radioactief",
@@ -317,6 +325,10 @@
     "file-video": "Videobestand",
     "file-audio": "Audiobestand",
     "file-code": "Codebestand",
+    "file-html": "Webpagina",
+    "file-lock": "Vergrendeld bestand",
+    "file-cloud": "Cloudbestand",
+    "file-svg": "Vectorafbeelding",
     "fingerprint": "Vingerafdruk"
   }
 }

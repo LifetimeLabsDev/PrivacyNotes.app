@@ -55,6 +55,7 @@
     "standardNotes": "Dešifrovaná záloha .zip nebo .txt ze Standard Notes (File > Export > Decrypted).",
     "obsidian": "Vault Obsidianu jako .zip. Zachová štítky, [[note links]], strukturu složek, inline #tagy i vložené obrázky a soubory.",
     "notesnook": "Export z Notesnooku jako .zip. Při exportu zvol HTML, aby se zachovalo formátování, zápisníky, značky a přílohy.",
+    "joplin": "Soubor .jex z File > Export all > „JEX - Joplin Export File“. Zápisníky se stanou složkami a značky, úkoly, note-linky i přílohy přejdou s nimi.",
     "upnote": "V UpNote: Settings > Backup > Backup now, pak zabal do zipu všechno ve složce se zálohou. Zachová zápisníky, značky, připnutí, note-linky, formátování a přílohy. Fungují i exporty jednotlivých poznámek z mobilních aplikací - zvol „Export to HTML“.",
     "markdownFolder": "Soubory .md nebo .txt jednotlivě, nebo jako .zip. Zabalená složka si udrží podsložky a vezme s sebou obrázky i přílohy.",
     "markdownApp": "Tyhle poznámky už jsou soubory Markdown ve složce. Přetáhni tu složku jako .zip a přijdou s ní podsložky, obrázky i #štítky.",

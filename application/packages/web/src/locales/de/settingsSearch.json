@@ -66,6 +66,7 @@
     "about_dataStorage": "Daten, Server, Speicherort, wo gespeichert, Datenschutz",
     "about_changelog": "Versionshinweise, Neuigkeiten, was ist neu, Updates",
     "about_hotkeys": "Tastenkürzel, Tastaturkürzel, Shortcuts, Tasten, Hotkeys",
-    "about_rating": "Bewertung, bewerten, Sterne, App Store"
+    "about_rating": "Bewertung, bewerten, Sterne, App Store",
+    "appearance_openInTabs": "Tabs, Tab-Leiste, Registerkarten, Browser, öffnen"
   }
 }

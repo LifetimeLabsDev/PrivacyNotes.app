@@ -94,8 +94,8 @@
     "what-can-you-see": {
       "q": "Què pot veure PrivacyNotes de les meves notes?",
       "a": [
-        "Res de llegible. Les notes, els títols, les etiquetes i els fitxers adjunts estan sempre xifrats, al teu dispositiu i de camí al servidor, de manera que el servidor només emmagatzema text xifrat. Amb l'autocustòdia, que tenen tots els comptes amb frase, a la nostra banda no hi ha cap clau per desxifrar-lo. Si et registres amb Google, Apple o GitHub, se't pregunta on viu la teva clau i l'opció que surt marcada és «Mantén-ho simple i còmode», que desa la teva frase al nostre servidor, xifrada amb una clau nostra. Configuració > Seguretat > La teva frase mostra quin mode tens i et deixa canviar-lo.",
-        "El que sí que podem veure és el mínim necessari per fer funcionar el servei: quant emmagatzematge xifrat fas servir, quants dispositius tens vinculats i les marques de temps de sincronització. Si inicies la sessió amb una frase en lloc de Google, Apple o GitHub, ni tan sols sabem la teva adreça electrònica."
+        "Les notes, els títols, les etiquetes i els adjunts es xifren al dispositiu abans d'arribar al servidor. Amb autocustòdia, que és el punt de partida de tots els comptes creats amb una frase, no tenim cap clau de desxifratge. Si et registres amb Google, Apple o GitHub, l'app et pregunta on vols guardar la clau i comença amb «Mantén-ho simple i còmode», que desa la frase al nostre servidor, xifrada amb una clau nostra. En aquest mode, el nostre servidor pot desxifrar la frase i, per tant, les teves notes. Configuració > Compte > Custòdia de la clau mostra el mode actual i et permet canviar-lo.",
+        "Podem veure la informació necessària per fer funcionar el servei: quant d'emmagatzematge xifrat utilitzes, quants dispositius tens vinculats i les marques de temps de sincronització. Si només utilitzes la frase i no has connectat cap compte de Google, Apple o GitHub, no sabem la teva adreça de correu electrònic."
       ]
     },
     "phrase-vs-password": {
@@ -103,17 +103,17 @@
       "a": [
         "D'entrada pot semblar al revés del que toca, però una única frase de recuperació és la construcció més sòlida. Amb nom d'usuari i contrasenya, el nom d'usuari no és cap secret (surt a totes les filtracions), de manera que tota la seguretat recau en la contrasenya, i les contrasenyes triades per persones ronden de mitjana els 30 o 40 bits d'entropia. La teva frase de 12 paraules són 128 bits garantits, generats pel teu dispositiu, mai triats per una persona i mai reutilitzats d'un altre lloc web.",
         "A més, nosaltres no tenim cap contrasenya que puguem perdre. Un inici de sessió amb contrasenya vol dir que el servidor guarda com a mínim un resum (hash) de la contrasenya, que es pot filtrar, trencar o robar amb phishing. Amb l'autocustòdia, la teva frase no surt mai del teu dispositiu: en deriva les claus de xifratge localment, i el servidor només veu dades xifrades. No hi ha cap hash per robar ni cap procés de restabliment de contrasenya que un atacant pugui explotar.",
-        "Si escriure 12 paraules et sembla feixuc: pots desar la frase al teu gestor de contrasenyes amb un sol toc (Configuració > Seguretat > La teva frase), i iniciar la sessió és com qualsevol altre inici de sessió. Prefereixes un procés familiar? També pots iniciar la sessió amb Google, Apple o GitHub: sota el capó igualment tens una frase, i tries tu si es queda al teu dispositiu o si te la guardem nosaltres."
+        "Si escriure 12 paraules et sembla feixuc: pots desar la frase al teu gestor de contrasenyes amb un sol toc (Configuració > Seguretat > Frase), i iniciar la sessió és com qualsevol altre inici de sessió. Prefereixes un procés familiar? També pots iniciar la sessió amb Google, Apple o GitHub: sota el capó igualment tens una frase, i tries tu si es queda al teu dispositiu o si te la guardem nosaltres."
       ]
     },
     "threat-model-levels": {
       "q": "Puc triar el meu propi equilibri entre comoditat i privadesa?",
       "a": [
         "Sí, i és volgut. No tothom es defensa de les mateixes amenaces, així que el model de comptes és una escala, no pas un dogma únic. A tots els esglaons les teves notes es mantenen xifrades al teu dispositiu; el que canvia és qui té la clau i què sabem de tu.",
-        "L'extrem còmode: inicia la sessió amb Google, Apple o GitHub i deixa marcada «Mantén-ho simple i còmode» quan t'ho pregunti, que és l'opció amb què comença aquella pantalla. Guardem la teva frase de recuperació per tu, xifrada en repòs al nostre servidor, de manera que qualsevol dispositiu inicia la sessió només amb aquell inici de sessió i no hi ha res de què fer còpia de seguretat ni res que es pugui perdre. A canvi, sabem el correu que hi ha darrere d'aquell inici de sessió i la clau la guardem nosaltres, no pas tu. Si la teva amenaça realista és perdre les teves pròpies credencials i no pas un atac dirigit, aquest és el graó que et toca.",
+        "L'extrem còmode: inicia la sessió amb Google, Apple o GitHub i deixa seleccionat «Mantén-ho simple i còmode» quan se't pregunti, que és l'opció inicial de la pantalla. Desem la frase de recuperació per tu, xifrada al nostre servidor, perquè un dispositiu nou pugui obrir les notes després d'iniciar la sessió amb el proveïdor i introduir un codi de l'autenticador si 2FA està activat. A canvi, sabem el correu electrònic d'aquest inici de sessió i el nostre servidor pot desxifrar la frase. Desa la frase per si perds el compte del proveïdor i conserva la clau de còpia de seguretat de 2FA si actives l'inici de sessió en dos passos.",
         "El punt mitjà: inicia la sessió amb Google, Apple o GitHub però tria «Màxima seguretat i privadesa». La teva frase no toca mai els nostres servidors i el xifratge és totalment de coneixement zero; els dispositius nous necessiten la frase o escanejar un codi QR des d'un dispositiu que ja tingui la sessió iniciada. Continuem sabent necessàriament el correu d'aquell inici de sessió, però no podríem llegir ni una sola nota, ni tan sols sota coacció.",
         "L'extrem privat: prescindeix del tot d'aquests inicis de sessió i fes servir només la frase de 12 paraules. Sense correu, sense nom, sense identitat, i combinat amb una [compra de Pro anònima](/ca/help/buy-pro-anonymously/), ni tan sols pagar deixa cap nom enlloc. A canvi, la custòdia de la clau és tota teva: si perds la frase sense cap dispositiu amb la sessió iniciada, ningú no et podrà ajudar.",
-        "Amb un inici de sessió de Google, Apple o GitHub, l’esglaó que vas triar no és definitiu. A Configuració > Seguretat > La teva frase hi ha els dos modes de costat amb el que costa cadascun, i pots canviar en qualsevol direcció quan vulguis. Passar a l’autocustòdia esborra la nostra còpia i abans et demana reescriure tres de les teves dotze paraules, perquè qui hi clica sol ser justament qui mai no les va apuntar. Tornar enrere torna a pujar la frase i exigeix una decisió explícita. Totes dues direccions se signen amb la clau del teu compte, així que una sessió robada no pot canviar-te el mode. Un compte només amb frase es queda a l’extrem privat, perquè no hi ha cap inici de sessió amb què recuperar una clau desada. I cada esglaó admet les capes locals a sobre: bloqueig amb PIN, desbloqueig biomètric i protecció per nota."
+        "Configuració > Compte > Custòdia de la clau mostra els dos modes amb els seus avantatges i inconvenients i et permet canviar-los. En deixar la custòdia del servidor, eliminem la còpia que guardem després que confirmis tres paraules de la frase desada. Tornar-hi a canviar puja la frase una altra vegada i requereix una decisió explícita. Els canvis en qualsevol sentit se signen amb la clau del teu compte i necessiten un codi nou de l'autenticador si 2FA està activat. Un compte de frase pot connectar un proveïdor a Configuració > Compte > Comptes i després triar la custòdia del servidor per separat; connectar el proveïdor no puja la frase. Tots els modes també poden utilitzar el bloqueig de l'app amb PIN, el desbloqueig biomètric i la protecció de notes individuals."
       ]
     },
     "twelve-word-phrase": {
@@ -126,19 +126,26 @@
       ]
     },
     "guess-phrase": {
-      "q": "Si algú endevina les meves 12 paraules, pot entrar al meu compte?",
+      "q": "Algú pot endevinar les meves 12 paraules o acabar tenint les mateixes?",
       "a": [
-        "Resposta curta: sí. La teva frase és la clau, de manera que qualsevol que la tingui pot iniciar la sessió, igual que qualsevol que tingui la clau de casa teva pot obrir-te la porta. És així per disseny: és l'única clau mestra de les teves notes, i no hi ha res més feble posat al davant. Així doncs, la pregunta real no és si tenir la frase dona accés (el dona), sinó si algú la podria endevinar, i aquí la resposta és que no: ni amb cap ordinador que existeixi ni amb cap que puguem preveure.",
-        "Vet aquí l'escala. Una frase de 12 paraules és una entre 2^128 possibilitats: uns 340 sextilions, un nombre de 39 xifres (3,4 x 10^38). La probabilitat d'endevinar la teva al primer intent és d'1 entre 340 sextilions, més improbable que guanyar quatre vegades seguides el primer premi d'una loteria d'1 entre 300 milions. Tractar-ho com una cerca en lloc d'un cop de sort tampoc no ajuda: fins i tot a un trilió d'intents per segon (10^18, molt més enllà del que podria assolir cap maquinari real, estats inclosos), recórrer-les totes trigaria uns 10 bilions d'anys, prop de 800 vegades l'edat actual de l'univers. I això és la versió de fantasia, perquè cada intent real ha d'executar un pas de derivació de claus deliberadament lent i qualsevol atac en línia ha de passar pels nostres servidors, cosa que fa l'endevinació real més lenta per molts ordres de magnitud més. Tampoc no és cap esquema nou: la mateixa construcció de 128 bits protegeix els moneders de Bitcoin des de fa més d'una dècada, i ningú no n'ha endevinat mai cap.",
-        "És temptador imaginar-se la frase com una contrasenya, que reforces barrejant-hi majúscules, números i símbols. Una frase de recuperació no funciona així, i no hauries d'intentar mai construir-ne ni retocar-ne una a mà. El teu dispositiu genera 128 bits d'aleatorietat criptogràficament segura i els codifica en 12 paraules d'una llista pública fixa de 2048 paraules: aquesta aleatorietat és tota la força. L'última paraula porta fins i tot una suma de verificació incorporada, de manera que una frase mal escrita o inventada es rebutja a l'acte. L'ordre de les paraules importa, les majúscules no (les normalitzem quan inicies la sessió), i afegir-hi símbols només faria la frase invàlida. Escriu les paraules exactament tal com se t'han donat."
+        "No. Ningú no pot endevinar les teves 12 paraules, i ningú més no acaba tenint les mateixes: cap ordinador que existeixi, o que puguem preveure, s'hi acosta. Només pot iniciar la sessió qui aconsegueixi les teves paraules reals, així que guarda-les bé.",
+        "El teu dispositiu tria la frase a l'atzar, i el nombre de frases possibles té 39 xifres. Endevinar la teva al primer intent és menys probable que guanyar quatre vegades seguides el primer premi d'una loteria d'1 entre 300 milions. Un ordinador que provés mil milions de milions de frases cada segon encara necessitaria uns 10 bilions d'anys per provar-les totes, molt més temps del que fa que existeix l'univers. Fins i tot si cadascuna de les 8.000 milions de persones de la Terra tingués una frase, la probabilitat que dues coincidissin seria menor que guanyar aquest premi dues vegades seguides.",
+        "La força ve d'aquest atzar, no de l'aspecte de les paraules. No t'inventis una frase ni hi afegeixis símbols: fes servir les 12 paraules exactament com te les dona l'aplicació. Les majúscules no importen. L'última paraula serveix de comprovació, així que l'aplicació rebutja una frase mal escrita o inventada."
+      ]
+    },
+    "same-phrase": {
+      "q": "Algú altre pot tenir la mateixa frase de recuperació que jo?",
+      "a": [
+        "No, a la pràctica no. El teu dispositiu tria la frase a l'atzar entre un nombre enorme de frases possibles. Encara que totes les persones de la Terra es fessin un compte, que dues frases coincidissin seria menys probable que guanyar dues vegades seguides el primer premi d'una loteria d'1 entre 300 milions. Els mateixos números expliquen per què [ningú no pot endevinar la teva frase](/ca/help/guess-phrase/).",
+        "El teu ID del compte surt de la frase. Per tant, si suprimeixes un compte i tornes a iniciar la sessió amb les mateixes 12 paraules, obtens una caixa forta nova i buida amb el mateix ID del compte. No torna res de la caixa forta suprimida. Quan passis a una frase nova, treu l'antiga del gestor de contrasenyes, perquè no iniciïs mai la sessió al compte antic per error."
       ]
     },
     "why-no-2fa": {
-      "q": "Per què no hi ha autenticació de dos factors (2FA)?",
+      "q": "Com activo l'autenticació de dos factors (2FA)?",
       "a": [
-        "Perquè és una decisió deliberada, no pas un descuit. La 2FA de sempre, un codi per SMS o una aplicació d'autenticació, existeix per apuntalar contrasenyes febles triades per persones, i es recolza en un secret compartit i una via de recuperació guardats en un servidor. Aquesta és exactament la superfície d'atac que el model de frase elimina: el teu dispositiu demostra que té la clau signant un repte, així que els nostres servidors no reben mai res més que una clau pública i una signatura: mai la frase, mai cap hash de contrasenya. Cargolar-hi un codi al damunt reintroduiria la maquinària de servidor que aquest disseny existeix per evitar, i no aportaria res contra l'endevinació, perquè 128 bits ja tanquen aquesta porta.",
-        "El que aquí et protegeix és local, i hi és a tots els plans: el bloqueig de l'aplicació (PIN) i el desbloqueig biomètric es planten davant d'un dispositiu que agafa una altra persona. Els riscos que val la pena defensar són el phishing i una frase espiada per damunt de l'espatlla, no pas l'endevinació. Desa doncs la frase en un gestor de contrasenyes i no la teclegis enlloc que no sigui l'app.",
-        "Més enllà d'això, la frase és la clau, així que fes-ne una còpia de seguretat el mateix dia que creïs el compte: guarda-la en un gestor de contrasenyes de confiança, o imprimeix-la o escriu-la a mà i desa aquesta còpia en un lloc segur. No l'enganxis mai enlloc que no sigui la mateixa aplicació."
+        "Activa l'inici de sessió en dos passos opcional a Configuració > Seguretat > 2FA. Actualitza primer PrivacyNotes als altres dispositius. Escaneja el codi QR amb una app d'autenticació o introdueix la clau de configuració manualment. Desa la clau de còpia de seguretat de 2FA fora de PrivacyNotes, confirma la còpia desada i introdueix un codi actual per acabar.",
+        "Després de configurar-ho, una sessió nova del servidor necessita la frase o un proveïdor connectat i, a continuació, un codi de l'autenticador. Els usuaris amb autocustòdia continuen necessitant la frase per desxifrar les notes. Gestiona els comptes de proveïdors a Configuració > Compte > Comptes; connectar-ne un no canvia la custòdia de la clau.",
+        "Si perds l'autenticador, afegeix la clau de còpia de seguretat de 2FA desada a una altra app d'autenticació. Si perds tots dos, no podem restaurar l'accés al servidor. Les notes que ja estan desbloquejades en un dispositiu es poden continuar llegint i exportant. L'inici de sessió en dos passos no afegeix xifratge ni protegeix un dispositiu que ja està desbloquejat."
       ]
     },
     "bip39-wordlist": {
@@ -167,7 +174,7 @@
       "q": "Què són les burn notes?",
       "a": [
         "Una burn note és una manera autodestructiva de compartir una nota amb algú que no fa servir PrivacyNotes. L'aplicació xifra el contingut amb una clau d'un sol ús i et dona un enllaç. La clau viatja al fragment de l'enllaç, que els navegadors no envien mai als servidors, així que el nostre servidor emmagatzema text xifrat que no pot llegir.",
-        "El primer cop que s'obre l'enllaç, el servidor lliura el text xifrat i el suprimeix en el mateix pas: una lectura, i ja no hi és. Els enllaços no oberts caduquen sols al cap de 24 hores. Sigui com sigui, no en queda res."
+        "El primer cop que s'obre l'enllaç, el servidor lliura el text xifrat i el suprimeix en el mateix pas: una lectura, i ja no hi és. Els enllaços no oberts caduquen sols quan passa el temps que tria qui els envia, d'1 hora a 7 dies. Sigui com sigui, no en queda res."
       ]
     },
     "open-source": {
@@ -187,15 +194,23 @@
     "lost-phrase": {
       "q": "He perdut la frase de recuperació. Em podeu recuperar el compte?",
       "a": [
-        "Si encara tens la sessió iniciada en algun dispositiu: sí, la pots recuperar tu mateix. Obre Configuració > Seguretat > La teva frase i desa-la ara mateix al teu gestor de contrasenyes.",
+        "Si encara tens la sessió iniciada en algun dispositiu: sí, la pots recuperar tu mateix. Obre Configuració > Seguretat > Frase i desa-la ara mateix al teu gestor de contrasenyes.",
         "Si no tens cap dispositiu amb la sessió iniciada ni la frase, depèn de qui tingui la clau. Si en registrar-te amb Google, Apple o GitHub ens vas deixar guardar-la, inicia la sessió amb aquell compte i tornes a ser a dins. Amb l'autocustòdia, ningú no pot: la teva frase no arriba mai als nostres servidors, així que no hi ha res a restablir ni cap tiquet de suport que hi pugui fer res. Qualsevol servei que et pugui restaurar les dades xifrades després d'una pèrdua total és que et guarda les claus.",
         "La solució costa deu segons: desa la frase en un gestor de contrasenyes el mateix dia que creïs el compte. Si ja s'ha perdut i pagues un complement d'emmagatzematge, Paddle et factura directament i el pot cancel·lar sense la teva frase: mira [canviar o cancel·lar un complement](/ca/help/manage-storage-addon/)."
+      ]
+    },
+    "lost-2fa": {
+      "q": "He perdut els codis 2FA. Com hi torno a entrar?",
+      "a": [
+        "Afegeix la clau de còpia de seguretat de 2FA a qualsevol app d'autenticació i introdueix el codi que mostra quan PrivacyNotes te'l demani. La clau de còpia de seguretat és la que vas desar en activar el 2FA, i funciona cada cop que la necessitis.",
+        "Si has perdut el telèfon i la clau de còpia de seguretat, no restablim el 2FA, i el nostre suport no hi pot ajudar. Les notes que ja tens als dispositius continuen llegibles.",
+        "Per conservar-les, ves a Configuració > Import & Export > Exporta en un dispositiu que encara les tingui. Després crea una caixa forta nova i importa-hi l'exportació."
       ]
     },
     "oauth-recovery": {
       "q": "Inicio la sessió amb Google, Apple o GitHub. I si perdo l'accés a aquell compte?",
       "a": [
-        "Sota el capó també tens una frase de 12 paraules, i la frase per si sola et permet iniciar la sessió en qualsevol dispositiu - sense Google, Apple ni GitHub. Obre Configuració > Seguretat > La teva frase i desa-la al teu gestor de contrasenyes.",
+        "Sota el capó també tens una frase de 12 paraules, i la frase per si sola et permet iniciar la sessió en qualsevol dispositiu - sense Google, Apple ni GitHub. Obre Configuració > Seguretat > Frase i desa-la al teu gestor de contrasenyes.",
         "Fes-ho un cop i perdre el compte de Google, Apple o GitHub no et costarà res: senzillament, inicia la sessió amb la frase."
       ]
     },
@@ -468,7 +483,7 @@
       "q": "El desbloqueig biomètric ha deixat de funcionar. Què puc fer?",
       "a": [
         "Mai no et quedes fora. La pantalla de bloqueig sempre ofereix una alternativa: «Desbloqueja amb el PIN» o «Inicia la sessió amb la frase de recuperació». La biometria és una barrera local, no pas una clau de xifratge, així que les teves notes queden intactes en tots dos casos.",
-        "Després, arregla la barrera. El registre és per dispositiu, així que un telèfon nou, un perfil de navegador acabat de fer o una reinstal·lació s'han de tornar a registrar: Configuració > Seguretat > «Bloqueig biomètric», desactiva'l i torna a «Activa el desbloqueig biomètric». També cal «Confia en aquest dispositiu» (les sessions no fiables s'esborren en tancar la pestanya) i maquinari amb un autenticador de plataforma (Touch ID, Face ID, Windows Hello). Si un gestor de contrasenyes com ara Bitwarden o 1Password apareix en lloc de la sol·licitud del sistema, descarta'l i torna-ho a provar, o desactiva-li la captura de claus d'accés per a aquest lloc - l'aplicació demana l'autenticador integrat, però alguns gestors l'intercepten igualment."
+        "Després, arregla la barrera. El registre és per dispositiu, així que un telèfon nou, un perfil de navegador acabat de fer o una reinstal·lació s'han de tornar a registrar: Configuració > Seguretat > «Bloqueig», desactiva'l i torna a «Activa el desbloqueig biomètric». També cal «Confia en aquest dispositiu» (les sessions no fiables s'esborren en tancar la pestanya) i maquinari amb un autenticador de plataforma (Touch ID, Face ID, Windows Hello). Si un gestor de contrasenyes com ara Bitwarden o 1Password apareix en lloc de la sol·licitud del sistema, descarta'l i torna-ho a provar, o desactiva-li la captura de claus d'accés per a aquest lloc - l'aplicació demana l'autenticador integrat, però alguns gestors l'intercepten igualment."
       ]
     },
     "phrase-compromised": {
@@ -646,7 +661,7 @@
     "add-second-device": {
       "q": "Com inicio la sessió en un segon dispositiu?",
       "a": [
-        "Al dispositiu que ja fas servir, obre Configuració > Seguretat > La teva frase. Hi trobaràs les teves 12 paraules i un codi QR d'inici de sessió. Al dispositiu nou tria \"Accés amb frase\" i escaneja aquest QR amb la càmera, puja'n una foto, o teclegia les paraules. Les teves notes hi arriben en segons.",
+        "Al dispositiu que ja fas servir, obre Configuració > Seguretat > Frase. Hi trobaràs les teves 12 paraules i un codi QR d'inici de sessió. Al dispositiu nou tria \"Accés amb frase\" i escaneja aquest QR amb la càmera, puja'n una foto, o teclegia les paraules. Les teves notes hi arriben en segons.",
         "Un compte gratuït cobreix 2 dispositius i Pro tants com vulguis, i dos navegadors al mateix ordinador compten com un sol dispositiu. Tracta el QR exactament com la frase que porta: no l'ensenyis a ningú i no deixis mai que acabi en una fototeca que se sincronitza al núvol d'algú altre."
       ]
     },
@@ -714,6 +729,13 @@
         "Per passar una cosa concreta, envia una [nota autodestructiva](/ca/help/burn-notes/) en comptes de la teva frase. Un compte de casa compartit funciona bé si és realment el que vols: guarda la frase en una entrada compartida del gestor de contrasenyes, i dona per fet que qui l'hagi tinguda alguna vegada ho ha vist tot."
       ]
     },
+    "pro-after-leak": {
+      "q": "S'ha filtrat la meva frase de recuperació. Perdo Pro?",
+      "a": [
+        "Pro es queda al compte on el vas comprar, i la teva frase de recuperació és l'única clau d'aquest compte. Si la frase es filtra i passes a una caixa forta nova, Pro no ve amb tu, i ningú no el pot traspassar a mà, ni tan sols nosaltres. L'aplicació ho diu quan et registres i un altre cop abans de tancar la sessió: les 12 paraules són l'única manera d'entrar.",
+        "Si vas comprar Pro en els últims 30 dies, pots obtenir un [reemborsament complet](/ca/help/refunds/) i tornar-lo a comprar a la caixa forta nova. Cada reemborsament ens costa comissions de pagament, així que reserva'l per a una filtració real. Els passos per traslladar les notes i tancar la caixa forta antiga són a [què fer si se't filtra la frase](/ca/help/phrase-compromised/). Desa la frase nova en un gestor de contrasenyes i no l'escriguis enlloc més."
+      ]
+    },
     "business-use": {
       "q": "Puc fer servir PrivacyNotes a la feina i hi ha un pla d'equip?",
       "a": [
@@ -725,8 +747,8 @@
       "q": "Quina opció de registre hauria de triar?",
       "a": [
         "La que encaixi amb el teu nivell d'amenaça. N'hi ha tres. Un: iniciar la sessió amb Google, Apple o GitHub, amb la teva clau desada al nostre servidor. Dos: el mateix inici de sessió, però la clau es queda només al teu dispositiu. Tres: \"Genera una frase\", sense correu, sense nom i sense cap inici de sessió. Tots tres mantenen les teves notes xifrades al teu dispositiu, i el que els separa és qui té la clau i quant aprenem de tu.",
-        "En iniciar la sessió amb un d'aquests tres, després se't pregunta on viu la teva clau, començant per \"Mantén-ho simple i còmode\". Aquesta opció la desa xifrada al nostre servidor, així qualsevol dispositiu nou entra només amb aquell inici de sessió i tu no has de guardar res. És el nivell correcte si el que temes és perdre les teves pròpies credencials. \"Màxima seguretat i privadesa\" manté la clau al teu dispositiu: no podríem llegir cap nota sota cap pressió, i un dispositiu nou demana les teves 12 paraules o escanejar un QR des d'un que ja tingui la sessió iniciada.",
-        "El camí només amb la frase és el nivell més alt: sense correu, sense nom, sense res que lligui el compte a una persona. A canvi, la clau és només teva, així que perdre-la sense cap dispositiu amb sessió iniciada vol dir que ningú no et pot ajudar. El mode de clau d'un inici de sessió no és definitiu: Configuració > Seguretat > La teva frase el canvia quan vulguis, mentre que un compte només amb frase manté la clau al dispositiu. Qualsevol nivell pot afegir-hi a sobre un PIN o un bloqueig biomètric. L'escala completa, amb el que costa cada esglaó, és a [l'escala de nivells d'amenaça](/ca/help/threat-model-levels/)."
+        "Si inicies la sessió amb Google, Apple o GitHub, l'app et pregunta on vols guardar la clau i comença amb «Mantén-ho simple i còmode». Aquesta opció desa la frase xifrada al nostre servidor, perquè un dispositiu nou pugui obrir les notes després d'iniciar la sessió amb el proveïdor i introduir un codi de l'autenticador si 2FA està activat. Desa la frase per si perds el compte del proveïdor i conserva la clau de còpia de seguretat de 2FA si actives l'inici de sessió en dos passos. «Màxima seguretat i privadesa» manté la frase al dispositiu: no podríem llegir cap nota sota cap pressió i un dispositiu nou necessita les teves 12 paraules o escanejar un QR des d'un que ja tingui la sessió iniciada.",
+        "L'opció de només frase no té cap correu electrònic ni nom que vinculi el compte a una persona. A canvi, només tu tens la frase, així que, si la perds i no queda cap dispositiu desbloquejat, ningú no te la pot recuperar. Configuració > Compte > Custòdia de la clau mostra el mode actual i et permet canviar-lo. Un compte de frase primer ha de connectar un proveïdor a Configuració > Compte > Comptes abans de triar la custòdia del servidor; connectar-lo no canvia la custòdia. Tots els modes poden afegir un bloqueig amb PIN o biomètric i l'inici de sessió en dos passos opcional. Tens la comparació completa a [l'escala de nivells d'amenaça](/ca/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

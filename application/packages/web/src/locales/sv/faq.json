@@ -94,8 +94,8 @@
     "what-can-you-see": {
       "q": "Vad kan PrivacyNotes se om mina anteckningar?",
       "a": [
-        "Ingenting läsbart. Anteckningar, titlar, taggar och bilagor är alltid krypterade, på din enhet och på vägen till servern, så servern lagrar bara chiffertext. Med egen förvaring, som varje fraskonto har, finns ingen nyckel till den på vår sida. Registrerar du dig med Google, Apple eller GitHub får du frågan var din nyckel ska bo, och valet börjar på ”Håll det enkelt och bekvämt”, som lagrar din fras på vår server, krypterad under en nyckel som är vår. Inställningar > Säkerhet > Din fras visar vilket du har och låter dig byta.",
-        "Det vi kan se är det minsta som krävs för att driva tjänsten: hur mycket krypterat lagringsutrymme du använder, hur många enheter du har kopplat och tidsstämplar för synk. Loggar du in med en fras i stället för Google, Apple eller GitHub känner vi inte ens till din e-postadress."
+        "Anteckningar, titlar, taggar och bilagor krypteras på din enhet innan de når servern. Med egen nyckelförvaring, som varje registrering med fras börjar med, har vi ingen dekrypteringsnyckel. Registrerar du dig med Google, Apple eller GitHub får du välja var din nyckel ska förvaras. Förvalet är ”Håll det enkelt och bekvämt”, som lagrar din fras på vår server, krypterad med en nyckel som vi har. I det läget kan vår server dekryptera frasen och därmed dina anteckningar. Inställningar > Konto > Nyckelförvaring visar ditt aktuella läge och låter dig byta.",
+        "Vi kan se den information som behövs för att driva tjänsten: hur mycket krypterat lagringsutrymme du använder, hur många enheter du har anslutit och tidsstämplar för synkronisering. Om du bara använder din fras och inte har anslutit ett Google-, Apple- eller GitHub-konto känner vi inte till din e-postadress."
       ]
     },
     "phrase-vs-password": {
@@ -103,17 +103,17 @@
       "a": [
         "Det kan kännas bakvänt först, men en enda återställningsfras är den starkare konstruktionen. Med användarnamn och lösenord är användarnamnet ingen hemlighet (det dyker upp i varje läcka), så hela säkerheten vilar på lösenordet, och lösenord som människor väljer landar på kanske 30 till 40 bitars entropi. Din fras på 12 ord ger garanterat 128 bitar, genererade av din enhet, aldrig valda av en människa och aldrig återanvända från en annan sajt.",
         "Det finns inte heller något lösenord för oss att förlora. En lösenordsinloggning innebär att servern lagrar åtminstone en lösenordshash, och den kan läcka, knäckas eller nätfiskas. Med egen förvaring lämnar din fras aldrig din enhet: den härleder dina krypteringsnycklar lokalt, och servern ser bara krypterade data. Det finns ingen hash att stjäla och inget flöde för lösenordsåterställning som en angripare kan utnyttja.",
-        "Känns det klumpigt att skriva 12 ord? Du kan spara frasen i din lösenordshanterare med ett tryck (Inställningar > Säkerhet > Din fras), och då känns inloggningen som vilken annan som helst. Vill du hellre ha ett välbekant flöde? Inloggning med Google, Apple eller GitHub fungerar också: du får ändå en fras under huven, och du väljer själv om den stannar på din enhet eller om vi förvarar den åt dig."
+        "Känns det klumpigt att skriva 12 ord? Du kan spara frasen i din lösenordshanterare med ett tryck (Inställningar > Säkerhet > Fras), och då känns inloggningen som vilken annan som helst. Vill du hellre ha ett välbekant flöde? Inloggning med Google, Apple eller GitHub fungerar också: du får ändå en fras under huven, och du väljer själv om den stannar på din enhet eller om vi förvarar den åt dig."
       ]
     },
     "threat-model-levels": {
       "q": "Kan jag själv välja balansen mellan bekvämlighet och integritet?",
       "a": [
         "Ja, helt medvetet. Alla försvarar sig inte mot samma hot, så kontomodellen är en stege snarare än en enda dogm. Varje steg håller dina anteckningar krypterade på din enhet; det som ändras är vem som har nyckeln och vad vi vet om dig.",
-        "Den bekväma änden: logga in med Google, Apple eller GitHub och låt ”Håll det enkelt och bekvämt” vara valt när du får frågan, det är där den skärmen börjar. Vi förvarar din återställningsfras åt dig, krypterad i vila på vår server, så vilken enhet som helst loggar in med bara den inloggningen och det finns ingenting att säkerhetskopiera eller tappa bort. I utbyte känner vi till e-postadressen bakom den inloggningen, och det är vi som håller din nyckel i stället för du. Om ditt realistiska hot är att tappa bort dina egna inloggningsuppgifter snarare än ett riktat intrång är det här rätt steg.",
+        "Den bekväma änden: logga in med Google, Apple eller GitHub och låt ”Håll det enkelt och bekvämt” vara valt när du får frågan. Det är förvalet på den skärmen. Vi förvarar din återställningsfras krypterad på vår server, så att en ny enhet kan öppna dina anteckningar efter inloggning hos leverantören och en autentiseringskod om 2FA är aktiverat. I utbyte känner vi till e-postadressen bakom inloggningen och vår server kan dekryptera din fras. Spara din fras ifall du förlorar leverantörskontot och behåll reservnyckeln för 2FA om du aktiverar tvåfaktorsinloggning.",
         "Mitten: logga in med Google, Apple eller GitHub men välj ”Maximal säkerhet och integritet”. Din fras rör aldrig våra servrar och krypteringen är fullt zero-knowledge; nya enheter behöver frasen eller en QR-skanning från en enhet som redan är inloggad. Vi känner fortfarande oundvikligen till e-postadressen bakom den inloggningen, men vi skulle inte kunna läsa en enda anteckning ens under tvång.",
         "Den privata änden: hoppa över inloggningarna helt och använd bara frasen på 12 ord. Ingen e-post, inget namn, ingen identitet, och i kombination med ett [anonymt Pro-köp](/sv/help/buy-pro-anonymously/) lämnar inte ens betalningen något namn någonstans. I utbyte ligger nyckelansvaret helt hos dig: tappar du frasen utan någon inloggad enhet kvar kan ingen hjälpa dig.",
-        "Med en inloggning via Google, Apple eller GitHub sitter du inte fast i det steg du valde. Inställningar > Säkerhet > Din fras visar båda lägena sida vid sida med vad de kostar, och du kan byta åt vilket håll du vill när du vill. Att gå över till egen förvaring raderar vår sparade kopia och ber dig först skriva in tre av dina tolv ord, eftersom de som är mest benägna att klicka är just de som aldrig skrev ner dem. Att gå tillbaka laddar upp frasen igen och kräver ett uttryckligt val. Båda riktningarna signeras med din egen kontonyckel, så en stulen session kan inte ändra din förvaringsmodell. Ett fraskonto stannar i den privata änden, eftersom det inte finns någon inloggning att hämta en lagrad nyckel med. Och varje steg kan lägga på de lokala lagren: PIN-lås för appen, biometrisk upplåsning och skydd per anteckning."
+        "Inställningar > Konto > Nyckelförvaring visar båda lägena med deras för- och nackdelar och låter dig byta. När du lämnar serverförvaring raderar vi vår kopia efter att du bekräftat tre ord från din sparade fras. Att byta tillbaka laddar upp frasen igen och kräver ett uttryckligt val. Båda ändringarna signeras med din kontonyckel och kräver en ny autentiseringskod om 2FA är aktiverat. Ett fraskonto kan ansluta en leverantör under Konto > Konton och sedan välja serverförvaring separat; anslutningen laddar inte upp frasen. Alla lägen kan också använda PIN-lås för appen, biometrisk upplåsning och skydd per anteckning."
       ]
     },
     "twelve-word-phrase": {
@@ -126,19 +126,26 @@
       ]
     },
     "guess-phrase": {
-      "q": "Om någon gissar mina 12 ord, kan de logga in på mitt konto?",
+      "q": "Kan någon gissa mina 12 ord eller råka få samma?",
       "a": [
-        "Kort svar: ja. Din fras är nyckeln, så den som har den kan logga in, precis som den som har din husnyckel kan öppna din dörr. Så är det tänkt: det är huvudnyckeln till dina anteckningar, och ingenting svagare står framför den. Den riktiga frågan är alltså inte om frasen ger åtkomst (det gör den), utan om någon skulle kunna gissa den, och där är svaret nej, inte med någon dator som finns eller som vi kan föreställa oss.",
-        "Här är skalan. En fras på 12 ord är en av 2^128 möjligheter: ungefär 340 sextiljoner, ett tal med 39 siffror (3,4 x 10^38). Chansen att gissa din på första försöket är 1 på 340 sextiljoner, sämre odds än att vinna en jackpot med 1 chans på 300 miljoner fyra gånger i rad. Att behandla det som en systematisk sökning i stället för en lyckträff hjälper inte: även med en miljard miljarder försök i sekunden (10^18, långt bortom vad någon verklig hårdvara skulle klara, nationalstater inräknade) tar det runt 10 biljoner år att beta av alla, nästan 800 gånger universums nuvarande ålder. Och det är fantasiversionen, för varje verkligt försök måste köra ett medvetet långsamt nyckelhärledningssteg, och varje attack över nätet måste gå via våra servrar, vilket gör gissandet långsammare med många fler storleksordningar. Det här är inte heller något nytt påhitt: samma 128-bitarskonstruktion har skyddat Bitcoin-plånböcker i över ett decennium, och ingen har någonsin gissat en.",
-        "Det är frestande att tänka på frasen som ett lösenord, där man ökar styrkan genom att blanda in versaler, siffror och symboler. En återställningsfras fungerar inte så, och du ska aldrig försöka bygga eller redigera en för hand. Din enhet genererar 128 bitar kryptografiskt säker slump och kodar dem som 12 ord ur en fast, offentlig lista på 2048 ord: den slumpen är hela styrkan. Sista ordet bär till och med en inbyggd kontrollsumma, så en felskriven eller påhittad fras avvisas direkt. Ordningen på orden spelar roll, versaler spelar ingen roll (vi normaliserar dem när du loggar in), och att lägga till symboler skulle bara göra frasen ogiltig. Skriv orden exakt som de gavs."
+        "Nej. Ingen kan gissa dina 12 ord, och ingen annan får samma: ingen dator som finns, eller som vi kan förutse, kommer i närheten. Bara den som får tag i dina faktiska ord kan logga in, så förvara dem säkert.",
+        "Din enhet väljer din fras slumpmässigt, och antalet möjliga fraser har 39 siffror. Att gissa din på första försöket är mindre sannolikt än att vinna en jackpot med 1 chans på 300 miljoner fyra gånger i rad. En dator som provade en miljard miljarder fraser i sekunden skulle ändå behöva runt 10 biljoner år för att prova alla, långt längre än universum har funnits. Även om alla 8 miljarder människor på jorden hade var sin fras är chansen att två av dem är likadana mindre än att vinna den jackpotten två gånger i rad.",
+        "Styrkan kommer från den slumpen, inte från hur orden ser ut. Hitta inte på en egen fras och lägg inte till symboler: använd de 12 orden exakt som appen ger dig dem. Versaler spelar ingen roll. Sista ordet fungerar som en kontroll, så appen avvisar en felskriven eller påhittad fras."
+      ]
+    },
+    "same-phrase": {
+      "q": "Kan någon annan få samma återställningsfras som jag?",
+      "a": [
+        "Nej, inte i praktiken. Din enhet väljer din fras slumpmässigt bland ett enormt antal möjliga fraser. Även om varje människa på jorden skapade ett konto vore två likadana fraser mindre sannolikt än att vinna en jackpot med 1 chans på 300 miljoner två gånger i rad. Samma siffror är skälet till att [ingen kan gissa din fras](/sv/help/guess-phrase/).",
+        "Ditt konto-ID kommer från frasen. Om du raderar ett konto och loggar in igen med samma 12 ord får du alltså ett nytt, tomt valv med samma konto-ID. Ingenting från det raderade valvet kommer tillbaka. När du har flyttat till en ny fras, ta bort den gamla ur din lösenordshanterare, så att du aldrig loggar in på det gamla kontot av misstag."
       ]
     },
     "why-no-2fa": {
-      "q": "Varför finns det ingen tvåfaktorsautentisering (2FA)?",
+      "q": "Hur aktiverar jag tvåfaktorsautentisering (2FA)?",
       "a": [
-        "För att det är en medveten avvägning, inte ett förbiseende. Den välkända sortens 2FA, en kod via sms eller en autentiseringsapp, finns för att stötta upp svaga lösenord som människor valt, och den bygger på en delad hemlighet och en återställningsväg som ligger på en server. Det är exakt den attackytan som frasmodellen tar bort: din enhet bevisar att den har nyckeln genom att signera en utmaning, så våra servrar får bara en publik nyckel och en signatur, aldrig frasen och aldrig en lösenordshash. Att klistra på en kod ovanpå skulle återinföra just det servermaskineri som den här designen finns till för att undvika, utan att tillföra något mot gissningar, eftersom 128 bitar redan stänger den dörren.",
-        "Det som skyddar dig här är lokalt, och det finns i varje plan: applåset (PIN) och biometrisk upplåsning står framför en enhet som någon annan plockar upp. Riskerna värda att försvara sig mot är nätfiske och en fras som läses av över axeln, inte gissningar. Håll alltså frasen i en lösenordshanterare och skriv in den ingen annanstans än i appen.",
-        "I övrigt är frasen nyckeln, så säkerhetskopiera den samma dag du skapar ditt konto: förvara den i en välrenommerad lösenordshanterare, eller skriv ut den eller skriv ner den och lägg kopian någonstans säkert. Klistra aldrig in den någon annanstans än i appen själv."
+        "Aktivera valfri tvåfaktorsinloggning i Inställningar > Säkerhet > 2FA. Uppdatera först PrivacyNotes på dina andra enheter. Skanna QR-koden med en autentiseringsapp eller ange konfigurationsnyckeln manuellt. Spara reservnyckeln för 2FA utanför PrivacyNotes, bekräfta den sparade kopian och ange en aktuell kod för att slutföra.",
+        "Efter inställningen kräver en ny serversession din fras eller en ansluten leverantör, följt av en autentiseringskod. Med egen nyckelförvaring behöver du fortfarande frasen för att dekryptera anteckningar. Hantera leverantörer i Inställningar > Konto > Konton; att ansluta en leverantör ändrar inte nyckelförvaringen.",
+        "Om du förlorar autentiseringsappen kan du lägga till den sparade reservnyckeln för 2FA i en annan autentiseringsapp. Om du förlorar båda kan vi inte återställa åtkomsten till servern. Anteckningar som redan är upplåsta på en enhet går fortfarande att läsa och exportera. Tvåfaktorsinloggning lägger inte till kryptering och skyddar inte en enhet som redan är upplåst."
       ]
     },
     "bip39-wordlist": {
@@ -167,7 +174,7 @@
       "q": "Vad är burn notes?",
       "a": [
         "En burn note är ett självförstörande sätt att dela en anteckning med någon som inte använder PrivacyNotes. Appen krypterar innehållet med en engångsnyckel och ger dig en länk. Nyckeln färdas i länkens fragment, som webbläsare aldrig skickar till servrar, så vår server lagrar chiffertext den inte kan läsa.",
-        "Första gången länken öppnas lämnar servern ifrån sig chiffertexten och raderar den i samma steg: en läsning, sedan är den borta. Oöppnade länkar går ut av sig själva efter 24 timmar. Hur som helst blir ingenting kvar."
+        "Första gången länken öppnas lämnar servern ifrån sig chiffertexten och raderar den i samma steg: en läsning, sedan är den borta. Oöppnade länkar går ut av sig själva efter den tid avsändaren väljer, från 1 timme till 7 dagar. Hur som helst blir ingenting kvar."
       ]
     },
     "open-source": {
@@ -187,15 +194,23 @@
     "lost-phrase": {
       "q": "Jag har tappat bort min återställningsfras. Kan ni återställa mitt konto?",
       "a": [
-        "Är du fortfarande inloggad på någon enhet: ja, då kan du hämta den själv. Öppna Inställningar > Säkerhet > Din fras och spara den i din lösenordshanterare på en gång.",
+        "Är du fortfarande inloggad på någon enhet: ja, då kan du hämta den själv. Öppna Inställningar > Säkerhet > Fras och spara den i din lösenordshanterare på en gång.",
         "Har du varken en inloggad enhet eller frasen beror det på vem som har nyckeln. Lät du oss förvara den när du registrerade dig med Google, Apple eller GitHub, logga in med den inloggningen så är du inne igen. Med egen förvaring kan ingen: din fras når aldrig våra servrar, så det finns ingenting att återställa och inget supportärende som hjälper. Varje tjänst som kan återskapa dina krypterade data efter en total förlust sitter på dina nycklar.",
         "Åtgärden tar tio sekunder: lägg frasen i en lösenordshanterare samma dag du skapar ditt konto. Är den redan borta och du betalar för ett lagringstillägg: Paddle fakturerar dig direkt och kan säga upp det utan din fras, se [ändra eller säga upp ett tillägg](/sv/help/manage-storage-addon/)."
+      ]
+    },
+    "lost-2fa": {
+      "q": "Jag har tappat bort mina 2FA-koder. Hur kommer jag in igen?",
+      "a": [
+        "Lägg till din reservnyckel för 2FA i valfri autentiseringsapp och ange sedan koden den visar när PrivacyNotes ber om en. Reservnyckeln är den du sparade när du slog på 2FA, och den fungerar varje gång du behöver den.",
+        "Om du har förlorat både telefonen och reservnyckeln återställer vi inte 2FA, och vår support kan inte hjälpa till med det. Anteckningarna som redan finns på dina enheter går fortfarande att läsa.",
+        "För att behålla dem går du till Inställningar > Import & Export > Exportera på en enhet som fortfarande har dem. Skapa sedan ett nytt valv och importera exporten där."
       ]
     },
     "oauth-recovery": {
       "q": "Jag loggar in med Google, Apple eller GitHub. Vad händer om jag förlorar tillgången till det kontot?",
       "a": [
-        "Du har fortfarande en fras på 12 ord under huven, och frasen ensam loggar in dig på vilken enhet som helst - varken Google, Apple eller GitHub behövs. Öppna Inställningar > Säkerhet > Din fras och spara den i din lösenordshanterare.",
+        "Du har fortfarande en fras på 12 ord under huven, och frasen ensam loggar in dig på vilken enhet som helst - varken Google, Apple eller GitHub behövs. Öppna Inställningar > Säkerhet > Fras och spara den i din lösenordshanterare.",
         "Gör det en gång så kostar det dig ingenting att förlora Google-, Apple- eller GitHub-kontot: logga bara in med frasen i stället."
       ]
     },
@@ -468,7 +483,7 @@
       "q": "Biometrisk upplåsning slutade fungera. Vad kan jag göra?",
       "a": [
         "Du blir aldrig utelåst. Låsskärmen erbjuder alltid en reservväg: ”Lås upp med PIN” eller ”Logga in med återställningsfras”. Biometrin är en lokal grind, inte en krypteringsnyckel, så dina anteckningar är orörda i vilket fall.",
-        "Fixa sedan grinden. Registreringen sker per enhet, så en ny telefon, en ny webbläsarprofil eller en ominstallation kräver ny registrering: Inställningar > Säkerhet > ”Biometriskt lås”, stäng av, sedan ”Aktivera biometrisk upplåsning” igen. Det kräver också ”Lita på den här enheten” (sessioner på enheter du inte litar på rensas när fliken stängs) och hårdvara med en plattformsautentiserare (Touch ID, Face ID, Windows Hello). Om en lösenordshanterare som Bitwarden eller 1Password dyker upp i stället för systemdialogen, stäng den och försök igen, eller stäng av dess passkey-hantering för sajten - appen ber om den inbyggda autentiseraren, men vissa hanterare lägger sig i ändå."
+        "Fixa sedan grinden. Registreringen sker per enhet, så en ny telefon, en ny webbläsarprofil eller en ominstallation kräver ny registrering: Inställningar > Säkerhet > ”Lås”, stäng av, sedan ”Aktivera biometrisk upplåsning” igen. Det kräver också ”Lita på den här enheten” (sessioner på enheter du inte litar på rensas när fliken stängs) och hårdvara med en plattformsautentiserare (Touch ID, Face ID, Windows Hello). Om en lösenordshanterare som Bitwarden eller 1Password dyker upp i stället för systemdialogen, stäng den och försök igen, eller stäng av dess passkey-hantering för sajten - appen ber om den inbyggda autentiseraren, men vissa hanterare lägger sig i ändå."
       ]
     },
     "phrase-compromised": {
@@ -646,7 +661,7 @@
     "add-second-device": {
       "q": "Hur loggar jag in på en andra enhet?",
       "a": [
-        "På enheten du redan använder, öppna Inställningar > Säkerhet > Din fras. Där står dina 12 ord och en QR-kod för inloggning. På den nya enheten väljer du \"Logga in med fras\" och skannar QR-koden med kameran, laddar upp ett foto av den, eller skriver in orden. Dina anteckningar är på plats inom sekunder.",
+        "På enheten du redan använder, öppna Inställningar > Säkerhet > Fras. Där står dina 12 ord och en QR-kod för inloggning. På den nya enheten väljer du \"Logga in med fras\" och skannar QR-koden med kameran, laddar upp ett foto av den, eller skriver in orden. Dina anteckningar är på plats inom sekunder.",
         "Ett gratiskonto täcker 2 enheter och Pro hur många du vill, och två webbläsare på samma dator räknas som en enda enhet. Behandla QR-koden precis som frasen den bär: visa den inte för någon, och låt den aldrig hamna i ett fotobibliotek som synkar till någon annans moln."
       ]
     },
@@ -714,6 +729,13 @@
         "Ska du lämna över en enda specifik sak, skicka en [burn note](/sv/help/burn-notes/) i stället för din fras. Ett delat hushållskonto fungerar bra om det verkligen är det du vill ha: håll frasen i en delad post i lösenordshanteraren, och utgå från att var och en som någon gång haft den har sett allt i den."
       ]
     },
+    "pro-after-leak": {
+      "q": "Min återställningsfras har läckt. Förlorar jag Pro?",
+      "a": [
+        "Pro stannar på kontot du köpte det på, och din återställningsfras är den enda nyckeln till det kontot. Om frasen läcker och du flyttar till ett nytt valv följer Pro inte med, och ingen kan flytta det för hand, inte vi heller. Appen säger det vid registreringen och igen innan du loggar ut: de 12 orden är den enda vägen in.",
+        "Om du köpte Pro under de senaste 30 dagarna kan du få [full återbetalning](/sv/help/refunds/) och köpa igen på det nya valvet. Varje återbetalning kostar oss betalningsavgifter, så spara den till en verklig läcka. Stegen för att flytta dina anteckningar och stänga det gamla valvet finns i [vad du gör när din fras har läckt](/sv/help/phrase-compromised/). Håll den nya frasen i en lösenordshanterare och skriv in den ingen annanstans."
+      ]
+    },
     "business-use": {
       "q": "Kan jag använda PrivacyNotes på jobbet, och finns det en teamplan?",
       "a": [
@@ -725,8 +747,8 @@
       "q": "Vilket registreringsalternativ ska jag välja?",
       "a": [
         "Det som matchar din hotnivå. Det finns tre. Ett: logga in med Google, Apple eller GitHub, med din nyckel lagrad på vår server. Två: samma inloggning, men nyckeln stannar bara på din enhet. Tre: \"Skapa en fras\", utan e-post, utan namn och helt utan inloggning. Alla tre håller dina anteckningar krypterade på din enhet, och det som skiljer dem åt är vem som håller nyckeln och hur mycket vi får veta om dig.",
-        "Loggar du in med någon av de tre får du sedan frågan var din nyckel ska bo, och valet börjar på \"Håll det enkelt och bekvämt\". Det alternativet lagrar den krypterad på vår server, så varje ny enhet loggar in med bara den inloggningen och du har inget att förvara. Det är rätt nivå om det du fruktar är att tappa dina egna inloggningsuppgifter. \"Maximal säkerhet och integritet\" håller nyckeln på din enhet: vi skulle inte kunna läsa en anteckning under någon press, och en ny enhet kräver dina 12 ord eller en QR-skanning från en enhet som redan är inloggad.",
-        "Vägen med bara frasen är den högsta nivån: ingen e-post, inget namn, inget som binder kontot till en person. I utbyte är nyckeln bara din, så att tappa den utan någon inloggad enhet kvar betyder att ingen kan hjälpa. Nyckelläget för en inloggning är inte för alltid: Inställningar > Säkerhet > Din fras byter det när du vill, medan ett fraskonto håller sin nyckel på enheten. Varje nivå kan lägga en PIN eller ett biometriskt lås ovanpå. Hela stegen, med vad varje pinne kostar, finns i [stegen över hotnivåer](/sv/help/threat-model-levels/)."
+        "När du loggar in med Google, Apple eller GitHub får du sedan välja var din nyckel ska förvaras, med ”Håll det enkelt och bekvämt” som förval. Det alternativet lagrar din fras krypterad på vår server, så att en ny enhet kan öppna dina anteckningar efter inloggning hos leverantören och en autentiseringskod om 2FA är aktiverat. Spara din fras ifall du förlorar leverantörskontot och behåll reservnyckeln för 2FA om du aktiverar tvåfaktorsinloggning. ”Maximal säkerhet och integritet” håller frasen på din enhet: vi skulle inte kunna läsa en anteckning under någon press. En ny enhet behöver dina 12 ord eller en QR-skanning från en redan inloggad enhet.",
+        "Med enbart frasen finns ingen e-postadress eller något namn som kopplar kontot till en person. I utbyte ansvarar du själv för frasen, så om du förlorar den utan någon upplåst enhet kvar kan ingen återställa den åt dig. Inställningar > Konto > Nyckelförvaring visar ditt aktuella läge och låter dig ändra det. Ett fraskonto måste först ansluta en leverantör under Konto > Konton innan du kan välja serverförvaring; anslutningen i sig ändrar inte förvaringen. Alla lägen kan lägga till PIN-lås eller biometriskt lås och valfri tvåfaktorsinloggning. Hela jämförelsen finns i [stegen över hotnivåer](/sv/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

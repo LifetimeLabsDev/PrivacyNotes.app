@@ -58,6 +58,7 @@
     "groups": {
       "navigation": "Gezinme",
       "notes": "Notlar",
+      "lists": "Listeler",
       "editor": "Düzenleyici",
       "formatting": "Biçimlendirme",
       "alignment": "Hizalama",
@@ -100,7 +101,11 @@
       "toggleSidebar": "Kenar çubuğunu aç/kapat",
       "toggleTheme": "Açık / koyu modu değiştir",
       "zenMode": "Zen / odak modu (Pro)",
-      "toggleHelp": "Bu yardımı aç/kapat"
+      "toggleHelp": "Bu yardımı aç/kapat",
+      "selectSeveral": "Birden çok öğe seç",
+      "selectRange": "Aralık seç (seçim sırasında)",
+      "openInTab": "Sekmede aç (orta tıklama da çalışır)",
+      "closeTab": "Sekmeyi kapat"
     }
   },
   "cardForm": {

@@ -7,7 +7,7 @@ import { SelectionToolbar } from './SelectionToolbar';
 import { SelectionCountStrip } from './SelectionCountStrip';
 import { suppressShiftTextSelection } from './useMultiSelect';
 import { ListPrefsPopover } from './ListPrefsPopover';
-import NoteRow from './NoteRow';
+import NoteRow, { noteLinkText } from './NoteRow';
 import NoteCard from './NoteCard';
 import { StorageBar } from './StorageBar';
 import { HoverLabel } from './HoverLabel';
@@ -21,7 +21,7 @@ import { exemptOpts, newButtonOpts } from './i18nExempt';
 import type { View } from './views';
 import { ListNav } from './notesView/ListNav';
 import { useProgressiveReveal } from './useProgressiveReveal';
-import { ImportPromptEntry, useImportPrompt, type ImportPromptKind } from './ImportPrompt';
+import { ImportPromptEntry, importPromptFor, type ImportOffer, type ImportPromptKind } from './ImportPrompt';
 
 type VaultFilter = 'all' | 'login' | 'card' | 'ssh-key';
 
@@ -46,6 +46,8 @@ export interface NotesListProps {
   onSelectView: (next: View) => void;
   /** Passed straight to ListNav; see userSettings.hiddenViews. */
   hiddenViews?: import('./views').View[] | undefined;
+  /** The synced import-offer dismissal; see ImportPrompt.tsx. */
+  importOffer: ImportOffer;
   onOpenDrawer: () => void;
   search: string;
   setSearch: (v: string) => void;
@@ -63,6 +65,7 @@ export interface NotesListProps {
   selectionMode: boolean;
   selectedIds: Set<string>;
   selectionAllStarred: boolean;
+  selectionAllArchived: boolean;
   onClearSelection: () => void;
   onDeselectAll: () => void;
   onSelectAllVisible: () => void;
@@ -71,6 +74,7 @@ export interface NotesListProps {
 
   // Bulk actions
   onBulkFavorite: () => void;
+  onBulkArchive: () => void;
   onBulkTag: (tag: string) => void;
   onBulkMoveToFolder: () => void;
   foldersUnlocked: boolean;
@@ -207,6 +211,13 @@ function NewDropdown({ options, ariaLabel, icon }: { options: NewMenuOption[]; a
   );
 }
 
+type RowHandlers = {
+  onClick: (e: React.MouseEvent) => void;
+  onContextMenu: (e: React.MouseEvent) => void;
+  onTouchStart: () => void;
+  onToggleSelect: (e: React.MouseEvent) => void;
+};
+
 export function NotesList({
   view,
   displayNotes,
@@ -220,6 +231,7 @@ export function NotesList({
   listHeaderLabel,
   onSelectView,
   hiddenViews,
+  importOffer,
   onOpenDrawer,
   search,
   setSearch,
@@ -232,12 +244,14 @@ export function NotesList({
   selectionMode,
   selectedIds,
   selectionAllStarred,
+  selectionAllArchived,
   onClearSelection,
   onDeselectAll,
   onSelectAllVisible,
   onToggleSelected,
   onRangeSelect,
   onBulkFavorite,
+  onBulkArchive,
   onBulkTag,
   onBulkMoveToFolder,
   foldersUnlocked,
@@ -286,6 +300,37 @@ export function NotesList({
     return () => window.removeEventListener('click', clear, true);
   }, [contextTargetId]);
 
+  // One set of handlers per note id, the same functions on every render.
+  // The rows are memoized, and a fresh closure per row per render made every
+  // revealed row render again whenever this list did: after a pause in
+  // typing, that is every row the user ever scrolled past. The handlers read
+  // the latest props when they run, so none of them can act on a stale one.
+  const latest = useRef({ displayNotes, onRowClick, onContextMenu, buildNoteMenu, onLongPressStart, onLongPressEnd, onToggleSelected, onRangeSelect });
+  latest.current = { displayNotes, onRowClick, onContextMenu, buildNoteMenu, onLongPressStart, onLongPressEnd, onToggleSelected, onRangeSelect };
+  const rowHandlers = useRef(new Map<string, RowHandlers>()).current;
+  const endLongPress = useRef(() => latest.current.onLongPressEnd()).current;
+  const handlersFor = (id: string): RowHandlers => {
+    let h = rowHandlers.get(id);
+    if (!h) {
+      h = {
+        onClick: (e) => latest.current.onRowClick(e, id),
+        onContextMenu: (e) => {
+          const note = latest.current.displayNotes.find((x) => x.id === id);
+          if (!note) return;
+          setContextTargetId(id);
+          latest.current.onContextMenu(e, latest.current.buildNoteMenu(note));
+        },
+        onTouchStart: () => latest.current.onLongPressStart(id),
+        onToggleSelect: (e) => {
+          if (e.shiftKey) latest.current.onRangeSelect(id);
+          else latest.current.onToggleSelected(id);
+        },
+      };
+      rowHandlers.set(id, h);
+    }
+    return h;
+  };
+
   /* ── Scroll position across a hide/show of the list pane (#186) ──────
    * On mobile, opening a note puts the list pane at `display: none`. That
    * destroys the `.pn-list-panel` query container, so EVERY `@container
@@ -316,11 +361,9 @@ export function NotesList({
   const reveal = useProgressiveReveal();
 
   /* The standing import entry, shared with every other pillar that has an
-     importer (ImportPrompt.tsx owns the rules and the storage keys). Pinned
-     and Trash are left out on purpose: both are views OF items that already
-     exist, so an offer to bring more in answers nothing there. The hook runs
-     on every view - hooks cannot be conditional - and `suppressed` carries
-     the answer for the views that show nothing. */
+     importer (ImportPrompt.tsx owns the rules). Pinned and Trash are left
+     out on purpose: both are views OF items that already exist, so an offer
+     to bring more in answers nothing there. */
   // 'all' is the Notes pillar and 'home' is the All list, which read
   // backwards from their labels - see VIEW_NOTE_TYPES in views.ts.
   const importKind: ImportPromptKind | null =
@@ -331,8 +374,9 @@ export function NotesList({
         : view === 'home' || view === 'all'
           ? 'notes'
           : null;
-  const importPrompt = useImportPrompt(importKind ?? 'notes', {
+  const importPrompt = importPromptFor(importKind ?? 'notes', {
     count: displayNotes.length,
+    offer: importOffer,
     suppressed:
       importKind === null ||
       selectionMode ||
@@ -398,6 +442,15 @@ export function NotesList({
     }
   });
 
+  /** The whole selection as note-links, in list order, for a drag. One
+   *  function for every render, like the row handlers, so rows stay memoized. */
+  const selection = useRef({ displayNotes, selectedIds, isNoteLocked });
+  selection.current = { displayNotes, selectedIds, isNoteLocked };
+  const selectionLinkText = useRef(() => {
+    const { displayNotes: all, selectedIds: ids, isNoteLocked: gated } = selection.current;
+    return noteLinkText(all.filter((n) => ids.has(n.id)), gated);
+  }).current;
+
   const ItemComponent = viewMode === 'grid' ? NoteCard : NoteRow;
 
   // Vault view "New" menu - structured secret types.
@@ -444,8 +497,10 @@ export function NotesList({
         <SelectionToolbar
           mode={view === 'trash' ? 'trash' : 'normal'}
           allStarred={selectionAllStarred}
+          allArchived={selectionAllArchived}
           onClear={onClearSelection}
           onFavorite={onBulkFavorite}
+          onArchive={onBulkArchive}
           onTag={onBulkTag}
           onMoveToFolder={onBulkMoveToFolder}
           foldersUnlocked={foldersUnlocked}
@@ -474,6 +529,8 @@ export function NotesList({
               <PILLAR_GLYPHS.vault size={26} className="text-accent shrink-0" aria-hidden="true" />
             ) : view === 'starred' ? (
               <PILLAR_GLYPHS.pinned size={26} className="text-accent shrink-0" aria-hidden="true" />
+            ) : view === 'archive' ? (
+              <PILLAR_GLYPHS.archive size={26} className="text-accent shrink-0" aria-hidden="true" />
             ) : (
               <PILLAR_GLYPHS.notes size={26} className="text-accent shrink-0" aria-hidden="true" />
             )
@@ -489,7 +546,8 @@ export function NotesList({
             {t('trash.empty')}
           </button>
           </HoverLabel>
-        ) : view !== 'trash' ? (
+        ) : view !== 'trash' && view !== 'archive' ? (
+          /* No New in Archive, as in Trash: nothing is born archived. */
           <div className="shrink-0 flex items-center gap-1.5">
             {view === 'vault' ? (
               <NewDropdown ariaLabel={t('vaultNew.ariaLabel')} options={vaultNewOptions} icon={<NEW_GLYPHS.login size={18} />} />
@@ -692,7 +750,7 @@ export function NotesList({
               />
             ) : (
               <p className="p-4 text-[13px] text-neutral-500 dark:text-neutral-600 text-center">
-                {search.trim() ? t('empty.noMatches') : view === 'vault' ? t('empty.vault') : t('empty.notes')}
+                {search.trim() ? t('empty.noMatches') : view === 'vault' ? t('empty.vault') : view === 'archive' ? t('empty.archive') : t('empty.notes')}
               </p>
             )}
           </li>
@@ -700,29 +758,23 @@ export function NotesList({
         {displayNotes.slice(0, reveal.visible).map((n) => (
           <ItemComponent
             key={n.id}
+            {...handlersFor(n.id)}
             note={n}
             isOpen={selectedId === n.id && !selectionMode}
             listPrefs={listPrefs}
             isNoteLocked={isNoteLocked(n)}
-            onClick={(e) => onRowClick(e, n.id)}
-            onContextMenu={(e) => {
-              setContextTargetId(n.id);
-              onContextMenu(e, buildNoteMenu(n));
-            }}
             isContextTarget={contextTargetId === n.id}
-            onTouchStart={() => onLongPressStart(n.id)}
-            onTouchEnd={onLongPressEnd}
-            onTouchMove={onLongPressEnd}
-            onTouchCancel={onLongPressEnd}
+            onTouchEnd={endLongPress}
+            onTouchMove={endLongPress}
+            onTouchCancel={endLongPress}
             selectionMode={selectionMode}
+            linkDrag
+            linkDragSelection={selectionLinkText}
             isMultiSelected={selectedIds.has(n.id)}
-            onToggleSelect={(e) => {
-              if (e.shiftKey) onRangeSelect(n.id);
-              else onToggleSelected(n.id);
-            }}
             showTypeIcons
             sortAwareDate
             trashTint={view === 'trash'}
+            showArchived={view !== 'archive'}
             /* A bookmark is a bookmark in every pillar: the same hover pair
                the Bookmarks pane draws, because a link row here opens its URL
                on click and would otherwise offer no way to edit or delete it.

@@ -29,7 +29,7 @@ Todas as opções mantêm suas notas criptografadas no seu dispositivo. Elas dif
 
 Nas duas de baixo não conseguiríamos ler uma nota nem se fôssemos obrigados. A primeira troca isso por comodidade: sua frase fica no nosso servidor sob uma chave nossa, então um dispositivo novo não precisa de nada além da sua conta. Se o nosso servidor fosse invadido algum dia, essa chave poderia ficar exposta.
 
-Entrou com Google, Apple ou GitHub? Você pode alternar entre as duas primeiras depois, em **Configurações > Segurança > Sua frase**. Com uma conta só de frase, a frase fica sempre com você.
+Entrou com Google, Apple ou GitHub? Você pode alternar entre as duas primeiras depois, em **Configurações > Conta > Custódia da chave**. Com uma conta só de frase, a frase fica sempre com você.
 
 > [!warning] Tenha sua própria cópia da frase
 > Sua frase abre suas notas. Se você perder, ninguém recupera, nós inclusive. <span style="color: #e03131">Escreva no papel hoje.</span>

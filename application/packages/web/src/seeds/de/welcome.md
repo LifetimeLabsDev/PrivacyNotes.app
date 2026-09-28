@@ -27,7 +27,7 @@ Die Leiste oben ändert, wie Text aussieht: **fett**, *kursiv*, Überschriften, 
 
 ## Eine Sache für heute
 
-- [ ] Finde deine **<mark style="background-color: rgba(51, 154, 240, 0.35)">12-Wort-Phrase</mark>** unter **Einstellungen > Sicherheit > Deine Phrase**, schreib sie auf Papier und leg sie an einen sicheren Ort
+- [ ] Finde deine **<mark style="background-color: rgba(51, 154, 240, 0.35)">12-Wort-Phrase</mark>** unter **Einstellungen > Sicherheit > Phrase**, schreib sie auf Papier und leg sie an einen sicheren Ort
 
 Diese Phrase öffnet deine Notizen. Wo sie liegt, entscheidest du, und du kannst das jederzeit ändern. [[Wie deine Notizen geschützt sind]] erklärt die drei Möglichkeiten.
 

@@ -31,12 +31,16 @@ export function ListSearchInput({
   placeholder,
   inputRef,
   tabIndex,
+  onKeyDown,
+  ariaLabel,
 }: {
   value: string;
   onChange: (v: string) => void;
   placeholder: string;
   inputRef?: React.RefObject<HTMLInputElement | null> | undefined;
   tabIndex?: number | undefined;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  ariaLabel?: string;
 }) {
   const { t } = useTranslation('common');
   const [draft, setDraft] = useState(value);
@@ -84,6 +88,8 @@ export function ListSearchInput({
         value={draft}
         onChange={(e) => handleChange(e.target.value)}
         placeholder={placeholder}
+        aria-label={ariaLabel}
+        onKeyDown={onKeyDown}
         enterKeyHint="search"
         className={`w-full h-10 rounded-md bg-surface-2 border border-divider ps-3 ${
           draft ? 'pe-10' : 'pe-3'

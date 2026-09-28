@@ -21,7 +21,7 @@ import {
   folderLookKey,
   isLookColor,
   lookOf,
-  resolveItemColor,
+  resolveNoteColor,
   tagLookKey,
   type ColorFilter,
   type ItemStyles,
@@ -43,12 +43,12 @@ export const LooksContext = createContext<LooksValue>({ styles: {}, tintNotes: f
  *  of their own, which must not take a vault tag's look. */
 export const NO_LOOKS: LooksValue = { styles: {}, tintNotes: false };
 
-/** A note's color, or null while the switch is off or none applies. */
-export function useNoteColor(tags: readonly string[], folderId: string | null): LookColor | null {
+/** A note's color, or null when none applies (resolveNoteColor). */
+export function useNoteColor(noteId: string, tags: readonly string[], folderId: string | null): LookColor | null {
   const { styles, tintNotes, filter } = useContext(LooksContext);
   return useMemo(
-    () => (tintNotes ? resolveItemColor(tags, folderId, styles, filter) : null),
-    [tags, folderId, styles, tintNotes, filter],
+    () => resolveNoteColor(noteId, tags, folderId, styles, tintNotes, filter),
+    [noteId, tags, folderId, styles, tintNotes, filter],
   );
 }
 
@@ -61,7 +61,7 @@ export function tintStyle(color: LookColor | null): CSSProperties | undefined {
 }
 
 /** The open note's color, as a variable the note body reads (index.css,
- *  `--pn-note-tint`), so the body takes it and the chrome around it does not. */
+ *  `--pn-note-tint`), on the whole pane. */
 export function noteTintVars(color: LookColor | null): CSSProperties | undefined {
   return color ? ({ '--pn-note-tint': `var(--pn-label-${color}-tint)` } as CSSProperties) : undefined;
 }

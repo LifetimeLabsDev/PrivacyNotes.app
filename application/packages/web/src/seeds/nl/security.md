@@ -29,7 +29,7 @@ Elke optie houdt je notities versleuteld op je apparaat. Ze verschillen in waar 
 
 Bij de onderste twee zouden wij een notitie niet kunnen lezen, ook niet als we ertoe gedwongen werden. De eerste ruilt dat in voor gemak: je zin staat op onze server onder een sleutel van ons, dus een nieuw apparaat heeft niets meer nodig dan je account. Als onze server ooit gekraakt wordt, kan die sleutel bloot komen te liggen.
 
-Aangemeld met Google, Apple of GitHub? Dan kun je later wisselen tussen de eerste twee, bij **Instellingen > Beveiliging > Je herstelzin**. Met een account met alleen een herstelzin blijft de zin altijd bij jou.
+Aangemeld met Google, Apple of GitHub? Dan kun je later wisselen tussen de eerste twee, bij **Instellingen > Account > Sleutelbeheer**. Met een account met alleen een herstelzin blijft de zin altijd bij jou.
 
 > [!warning] Houd zelf een kopie van de zin
 > Je zin opent je notities. Raak je hem kwijt, dan kan niemand hem terughalen, wij ook niet. <span style="color: #e03131">Schrijf hem vandaag op papier.</span>

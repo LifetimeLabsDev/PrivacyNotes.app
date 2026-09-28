@@ -57,6 +57,7 @@
     "groups": {
       "navigation": "탐색",
       "notes": "노트",
+      "lists": "목록",
       "editor": "편집기",
       "formatting": "서식",
       "alignment": "정렬",
@@ -99,7 +100,11 @@
       "toggleSidebar": "사이드바 표시/숨기기",
       "toggleTheme": "라이트 / 다크 모드 전환",
       "zenMode": "Zen / 집중 모드 (Pro)",
-      "toggleHelp": "이 도움말 표시/숨기기"
+      "toggleHelp": "이 도움말 표시/숨기기",
+      "selectSeveral": "여러 항목 선택",
+      "selectRange": "범위 선택 (선택 중)",
+      "openInTab": "탭에서 열기 (가운데 클릭도 돼요)",
+      "closeTab": "탭 닫기"
     }
   },
   "cardForm": {

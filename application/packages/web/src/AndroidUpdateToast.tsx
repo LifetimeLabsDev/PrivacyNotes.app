@@ -61,7 +61,6 @@ export function AndroidUpdateToast() {
   const { t } = useTranslation('common');
   const [update, setUpdate] = useState<AndroidManifest | null>(null);
   const lastCheckRef = useRef(0);
-  const foundRef = useRef(false);
 
   useEffect(() => {
     // Dev-only console hook. The toast is gated on the direct-APK build, so it
@@ -87,7 +86,7 @@ export function AndroidUpdateToast() {
     let timer: ReturnType<typeof setTimeout> | null = null;
 
     async function check(): Promise<void> {
-      if (cancelled || foundRef.current) return;
+      if (cancelled) return;
       lastCheckRef.current = Date.now();
       try {
         const res = await fetch(`${MANIFEST_URL}?t=${Date.now()}`, { cache: 'no-store' });
@@ -112,10 +111,10 @@ export function AndroidUpdateToast() {
         // Badge the rail's Downloads button first, so the dot stays put even
         // when the toast below is snoozed away.
         setUpdateAvailable(m.version);
-        // Dismissed within the last 48h: stay quiet, but do NOT set foundRef -
-        // polling has to continue so the toast returns once the snooze lapses.
+        // Dismissed within the last 48h: stay quiet. Polling never stops
+        // once a toast is up either: a floor raised later in the session
+        // must still reach versionFloor.ts and turn the toast required.
         if (!isRequired(m) && isUpdateSnoozed(m.version)) return;
-        foundRef.current = true;
         setUpdate(m);
       } catch {
         // Offline or manifest missing - ignore and try again next poll.
@@ -134,7 +133,7 @@ export function AndroidUpdateToast() {
     // visibilitychange rather than focus: Android WebView fires it reliably on
     // background/resume, while window focus does not.
     const onVisible = (): void => {
-      if (document.hidden || foundRef.current) return;
+      if (document.hidden) return;
       if (Date.now() - lastCheckRef.current < POLL_INTERVAL_MS) return;
       void check();
     };
@@ -172,8 +171,6 @@ export function AndroidUpdateToast() {
           : () => {
               snoozeUpdate(update.version);
               setUpdate(null);
-              // Let polling resume so the toast can return after the snooze.
-              foundRef.current = false;
             }
       }
     />

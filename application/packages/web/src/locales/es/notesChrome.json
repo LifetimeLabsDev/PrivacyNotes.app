@@ -75,7 +75,21 @@
   },
   "burnShareModal": {
     "title": "Compartir y destruir tras leer",
-    "body": "<lead>Tu nota original no se eliminará.</lead> Se mantiene a salvo en tu cuenta. El enlace de autodestrucción es una copia cifrada aparte que se autodestruye tras ser leída. El enlace caduca a las 24 horas, se abra o no.",
+    "body": "<lead>Tu nota original no se eliminará.</lead> Se mantiene a salvo en tu cuenta. El enlace de autodestrucción es una copia cifrada aparte que se autodestruye tras ser leída.",
+    "readTime": "Tiempo de lectura",
+    "readTimeHint": "Luego desaparece de la pantalla",
+    "lifetime": "El enlace caduca",
+    "lifetimeHint": "Si nadie lo abre",
+    "minutes_one": "{{count}} minuto",
+    "minutes_other": "{{count}} minutos",
+    "hours_one": "{{count}} hora",
+    "hours_other": "{{count}} horas",
+    "afterHours_one": "Tras {{count}} hora",
+    "afterHours_other": "Tras {{count}} horas",
+    "afterDays_one": "Tras {{count}} día",
+    "afterDays_other": "Tras {{count}} días",
+    "create": "Crear y copiar enlace",
+    "share": "Compartir enlace",
     "imagesStripped": "Solo se muestra el texto, los archivos se ocultan en esta nota.",
     "copied": "Copiado"
   },
@@ -89,7 +103,7 @@
     "footerTagline": "- Notas cifradas de cero conocimiento, alojadas en Suiza.",
     "sealed": {
       "heading": "Has recibido una nota cifrada.",
-      "subheading": "Este mensaje se autodestruirá tras leerlo. Los enlaces sin leer caducan a las 24 horas.",
+      "subheading": "Este mensaje se autodestruirá tras leerlo. Los enlaces sin leer caducan solos.",
       "reveal": "Mostrar mensaje",
       "warning": "El servidor elimina la nota en el momento en que la muestras. No hay segundas oportunidades."
     },
@@ -105,7 +119,7 @@
     },
     "gone": {
       "heading": "Esta nota ya no existe.",
-      "body": "Ya se leyó o ha caducado. Los enlaces de autodestrucción solo se pueden abrir una vez y caducan a las 24 horas."
+      "body": "Ya se leyó o ha caducado. Los enlaces de autodestrucción solo se pueden abrir una vez y caducan solos."
     },
     "error": {
       "heading": "Algo salió mal.",

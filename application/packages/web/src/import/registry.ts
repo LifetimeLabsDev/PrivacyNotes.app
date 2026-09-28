@@ -4,6 +4,7 @@ import { googleKeepImporter } from './googleKeep';
 import { parseMarkdown } from './markdown';
 import { parseObsidian } from './obsidian';
 import { parseNotesnook } from './notesnook';
+import { parseJoplin } from './joplin';
 import { parseUpNote } from './upnote';
 import { parseAppleNotes } from './appleNotes';
 import { parseAppleJournal } from './appleJournal';
@@ -136,6 +137,16 @@ export const IMPORTERS: Importer[] = [
     enabled: true,
     sourceTag: 'notesnook',
     parse: parseNotesnook,
+  },
+  {
+    id: 'joplin',
+    label: 'Joplin',
+    description:
+      'In Joplin: File > Export all > "JEX - Joplin Export File", then drop the .jex file here. Keeps notebooks as folders, tags, to-dos, note links, and attachments.',
+    accept: '.jex,.zip',
+    enabled: true,
+    sourceTag: 'joplin',
+    parse: parseJoplin,
   },
   {
     id: 'upnote',

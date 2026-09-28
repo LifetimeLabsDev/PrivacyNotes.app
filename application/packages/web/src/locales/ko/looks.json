@@ -24,7 +24,7 @@
     "sport": "스포츠",
     "tech": "과학과 기술",
     "signals": "신호",
-    "numbers": "숫자"
+    "numbers": "숫자와 수학"
   },
   "icons": {
     "folder": "폴더",
@@ -249,6 +249,8 @@
     "bone": "뼈",
     "barn": "헛간",
     "tractor": "트랙터",
+    "grains": "곡물",
+    "windmill": "풍차",
     "guitar": "기타",
     "piano-keys": "피아노",
     "microphone-stage": "마이크",
@@ -302,6 +304,12 @@
     "info": "정보",
     "siren": "사이렌",
     "infinity": "무한",
+    "plus": "더하기",
+    "minus": "빼기",
+    "x": "곱하기",
+    "divide": "나누기",
+    "equals": "같음",
+    "percent": "퍼센트",
     "peace": "평화",
     "recycle": "재활용",
     "radioactive": "방사능",
@@ -317,6 +325,10 @@
     "file-video": "동영상 파일",
     "file-audio": "오디오 파일",
     "file-code": "코드 파일",
+    "file-html": "웹 페이지",
+    "file-lock": "잠긴 파일",
+    "file-cloud": "클라우드 파일",
+    "file-svg": "벡터 그래픽",
     "fingerprint": "지문"
   }
 }

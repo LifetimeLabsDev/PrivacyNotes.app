@@ -7,11 +7,12 @@
   "delete-account": "Como elimino a minha conta?",
   "device-limit": "O que significa \"Limite de dispositivos atingido\"?",
   "forgot-pin": "Esqueci-me do PIN. Como volto a entrar?",
-  "guess-phrase": "Se alguém adivinhar as minhas 12 palavras, consegue entrar na minha conta?",
+  "guess-phrase": "Alguém consegue adivinhar as minhas 12 palavras ou acabar com as mesmas?",
   "image-quality": "O PrivacyNotes altera ou comprime as minhas imagens?",
   "journal": "Como funciona o diário, e o que posso registar?",
   "leaving": "Como saio do PrivacyNotes por completo?",
   "locked-vs-protected": "Qual é a diferença entre notas apenas de leitura e notas protegidas por PIN?",
+  "lost-2fa": "Perdi os meus códigos 2FA. Como volto a entrar?",
   "obtainium": "Como instalo a app Android com o Obtainium?",
   "phrase-vs-password": "Porquê uma frase de recuperação em vez de utilizador e palavra-passe?",
   "remove-device": "Como removo um dispositivo que já não uso?",
@@ -22,5 +23,5 @@
   "vault": "O que é o Cofre?",
   "vault-totp": "O Cofre pode guardar as minhas chaves 2FA (códigos TOTP / MFA)?",
   "what-syncs": "O que é que sincroniza exatamente entre os meus dispositivos, e o que fica local?",
-  "why-no-2fa": "Porque é que não existe autenticação de dois fatores (2FA)?"
+  "why-no-2fa": "Como ativo a autenticação de dois fatores (2FA)?"
 }

@@ -51,8 +51,7 @@ import { Callout, CalloutTitle } from './Callout';
 import { useIsMobile } from './useIsMobile';
 import { ContextMenu, useContextMenu, isTouchContextMenu, type ContextMenuItem } from './ContextMenu';
 import { iconCopy, iconEditPencil, iconExternal, iconTrash } from './icons';
-import { LinkModifierOpen, SelfLinkTyping, linkHrefAt, linkSelectionIfUrl } from './editorLinks';
-import { openExternal } from './openExternal';
+import { LinkModifierOpen, SelfLinkTyping, linkHrefAt, linkSelectionIfUrl, openLinkHref } from './editorLinks';
 import { createLongPressGuard } from './softKeyboard';
 import { useTheme, readLineSpacing } from './theme';
 import { SearchHighlight, setSearchQuery, getSearchInfo, clearSearch } from './editorSearch';
@@ -84,6 +83,7 @@ import {
   TableWithMarkdown,
   goToAdjacentCell,
   indentListItem,
+  indentText,
   NbspParagraphCleaner,
   MixedListSplitter,
   markdownForClipboard,
@@ -97,8 +97,16 @@ type Props = {
   /** Id of the note being edited - enables the synchronous close-flush
    *  stash (flushStash.ts) so a tab closed mid-debounce loses nothing. */
   noteId?: string;
-  /** When true, the editor and toolbar are non-interactive (trash view). */
+  /** When true, nothing edits the note: no toolbar, no click row, no
+   *  replace. Find and the outline stay, because they only read it. */
   readOnly?: boolean;
+  /**
+   * A static rendering: the note history preview. Read-only, and without the
+   * corner, the bars or their shortcuts. The note editor stays mounted
+   * behind that modal, so a second editor claiming Cmd/Ctrl+F would open a
+   * second bar.
+   */
+  preview?: boolean;
   /** Called when the editor gains or loses focus. */
   onFocusChange?: (focused: boolean) => void;
   /**
@@ -151,7 +159,7 @@ export type EditorHandle = {
   focus: () => void;
   toggleTaskList: () => void;
   /** Open the find-in-note bar, or close it if it is already open. The
-   *  tag-row magnifier and Cmd/Ctrl+F share this one action. */
+   *  corner magnifier and Cmd/Ctrl+F share this one action. */
   toggleFind: () => void;
   /** Open the find-and-replace bar, or close it if it is already open. The
    *  "..." menu row and Option/Alt+Cmd/Ctrl+F share this one action, and the
@@ -165,7 +173,7 @@ export type EditorHandle = {
   startRenameFile: (uuid: string) => void;
   /** Open the find bar on the first of `candidates` the text holds, hits
    *  marked: the list search following into the open note (GitHub #288). A
-   *  no-op on a read-only note, which has no bar, and when the text as
+   *  no-op in the history preview, which has no bar, and when the text as
    *  written holds none of them. */
   highlightSearch: (candidates: string[]) => void;
   /** Close the find bar if the search opened it; a bar the reader opened
@@ -182,7 +190,7 @@ export type EditorHandle = {
 };
 
 const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }>(function EditorInner(
-  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, bodyControls, onRenameFile, fileNote = false },
+  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, bodyControls, onRenameFile, fileNote = false, preview = false },
   ref
 ) {
   const { t } = useTranslation('editor');
@@ -264,7 +272,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     // Remove both act on the mark the caret is in.
     ed.chain().focus().setTextSelection(at.pos).run();
     const items: ContextMenuItem[] = [
-      { label: t('link.menuOpen'), onSelect: () => openExternal(href), icon: iconExternal() },
+      { label: t('link.menuOpen'), onSelect: () => openLinkHref(ed, href), icon: iconExternal() },
       {
         label: t('link.menuCopy'),
         onSelect: () => { void navigator.clipboard.writeText(href).catch(() => { /* denied: no clipboard, no feedback */ }); },
@@ -641,10 +649,10 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           // Indent / outdent the item, checkbox lists included - this
           // handler runs BEFORE every plugin keymap, so TaskItem's own Tab
           // shortcut never gets a turn and the type has to be resolved
-          // here. Outside a list it is a no-op: we deliberately do NOT
-          // insert a literal tab character, plain prose does not want tabs,
-          // and the goal here is just "don't jump focus".
-          indentListItem(editor, event.shiftKey ? -1 : 1);
+          // here. Outside a list, a paragraph or a code block takes spaces
+          // (indentText), never a tab character, which Markdown would read
+          // as the start of a code block.
+          if (!indentListItem(editor, event.shiftKey ? -1 : 1)) indentText(editor, event.shiftKey ? -1 : 1);
           return true;
         }
         return false;
@@ -714,7 +722,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     closeBar,
     toggleFind,
     toggleReplace,
-  } = useEditorPanels({ rootRef, editorRef, editor, isMobile, readOnly, toolbarVisible, isPro, onOpenUpgrade });
+  } = useEditorPanels({ rootRef, editorRef, editor, isMobile, readOnly, preview, toolbarVisible, isPro, onOpenUpgrade });
 
   /**
    * Put the caret on a line above everything else in the note - the action
@@ -831,7 +839,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         requestAttachmentRename(uuid);
       },
       highlightSearch: (candidates: string[]) => {
-        if (!editor || readOnly || editor.isDestroyed) return;
+        if (!editor || preview || editor.isDestroyed) return;
         // Synchronous, unlike scrollToFile: the match list is computed from
         // the ProseMirror document, which is complete once the editor exists,
         // and the bar scrolls to the current hit itself. A deferred frame
@@ -854,15 +862,16 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         if (editor) flushNow(editor);
       },
     }),
-    [editor, readOnly, openFindWith, closeSeededFind]
+    [editor, preview, openFindWith, closeSeededFind]
   );
 
   return (
     <div
       ref={rootRef}
       // pn-editor-topgapped hands the "start of note" gap to the click row
-      // below, so the body's own top padding doesn't stack on top of it.
-      className={`relative flex flex-col min-h-0${readOnly ? '' : ' pn-editor-topgapped'}`}
+      // (or its read-only spacer) below, so the body's own top padding
+      // doesn't stack on top of it.
+      className={`relative flex flex-col min-h-0${preview ? '' : ' pn-editor-topgapped'}`}
       onContextMenu={openLinkMenu}
     >
       {/* Toolbar must be a direct child of the Editor root - wrapping it
@@ -900,7 +909,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           zero-height sticky wrapper keeps it floating over the note content
           (no reserved row) and pinned on scroll; the inner bar handles
           pointer events. Sticky top = tag row + measured toolbar height. */}
-      {bar !== 'none' && !readOnly && editor && (
+      {bar !== 'none' && !preview && editor && (
         <div
           className="sticky z-[5] flex h-0 items-start justify-end overflow-visible pointer-events-none"
           style={{ top: 'calc(var(--pn-tagrow-h, 0px) + var(--pn-editor-toolbar-h, 0px))' }}
@@ -924,7 +933,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           recording is running: the floating pill sits exactly on the
           banner's Stop button otherwise (reported during the TipTap 3
           verification pass). */}
-      {bar === 'none' && !readOnly && editor && audioState === 'idle' && (
+      {bar === 'none' && !preview && editor && audioState === 'idle' && (
         <div
           className="sticky z-[5] flex h-0 items-start justify-end gap-1.5 overflow-visible pointer-events-none"
           style={{ top: 'calc(var(--pn-tagrow-h, 0px) + var(--pn-editor-toolbar-h, 0px))' }}
@@ -948,12 +957,17 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           onStop={() => audioStopRef.current?.()}
         />
       )}
-      {/* The click row above the body. Always rendered, on every note: it is
-          both the guaranteed way in above a first block you can't type in
-          front of (image, table, quote) and the collapsed outline pill's own
-          row, which is what stops the pill sitting on the note's first lines.
-          onMouseDown is swallowed so focus never leaves the editor - the
-          handler puts the caret where it belongs itself. */}
+      {/* The click row above the body, on every note but the history
+          preview: it is both the guaranteed way in above a first block you
+          can't type in front of (image, table, quote) and the collapsed
+          outline pill's own row, which is what stops the pill sitting on the
+          note's first lines. A read-only note keeps the row as an inert
+          spacer, because the pills still park there. onMouseDown is
+          swallowed so focus never leaves the editor - the handler puts the
+          caret where it belongs itself. */}
+      {readOnly && !preview && (
+        <div aria-hidden="true" className="shrink-0" style={{ height: EDITOR_TOP_GAP_PX }} />
+      )}
       {!readOnly && (
         <button
           type="button"

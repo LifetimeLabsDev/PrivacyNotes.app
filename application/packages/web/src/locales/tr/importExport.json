@@ -49,6 +49,7 @@
     "standardNotes": "Standard Notes'tan alınmış şifresi çözülmüş .zip veya .txt yedeği (Dosya > Dışa Aktar > Şifresi Çözülmüş).",
     "obsidian": "Obsidian kasası .zip olarak. Etiketleri, [[note link]] bağlantılarını, klasör yapısını, metin içi #etiketleri ve gömülü görsel ile dosyaları korur.",
     "notesnook": "Notesnook dışa aktarımı .zip olarak. Biçimlendirmeyi, not defterlerini, etiketleri ve ekleri korumak için dışa aktarırken HTML seçin.",
+    "joplin": "File > Export all > \"JEX - Joplin Export File\" ile alınan .jex dosyası. Not defterleri klasöre dönüşür; etiketler, yapılacaklar, note-link'ler ve ekler de gelir.",
     "upnote": "UpNote'ta: Settings > Backup > Backup now, ardından yedek klasöründeki her şeyi zipleyin. Not defterlerini, etiketleri, sabitlemeleri, note-link'leri, biçimlendirmeyi ve ekleri korur. Telefon uygulamalarından tekil not dışa aktarmaları da çalışır - \"Export to HTML\" seçin.",
     "markdownFolder": "Tek tek ya da bir .zip içinde .md veya .txt dosyaları. Ziplenmiş bir klasör alt klasörlerini korur, görsellerini ve eklerini de birlikte getirir.",
     "markdownApp": "Bu notlar zaten bir klasördeki Markdown dosyaları. Klasörü .zip olarak bırakın; alt klasörleri, görselleri ve #etiketleri de birlikte gelsin.",

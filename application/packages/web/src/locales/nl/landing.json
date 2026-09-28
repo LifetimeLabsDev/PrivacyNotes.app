@@ -138,7 +138,7 @@
     "freeSubLabel": "Geen creditcard nodig, geen tijdslimiet.",
     "freeAllPillars": "Notities, taken, bestanden, kluis, dagboek en bladwijzers",
     "freeSync": "Synchroniseer op 2 apparaten",
-    "freeVault": "Versleutelde bestandskluis, 5 MB per bestand",
+    "freeVault": "50 MB opslag, tot 5 MB per bestand",
     "freeSearch": "Zoeken in de volledige tekst + tags",
     "freeImport": "Importeren en exporteren, waaronder Keep en Obsidian",
     "freeBurn": "Vernietigen na lezen",
@@ -327,6 +327,7 @@
       "fixed": "Opgelost"
     },
     "changelogComingSoon": "Changelog volgt binnenkort.",
+    "changelogLatest": "Nieuwste",
     "hotkeysFootnote": "De meeste sneltoetsen worden genegeerd terwijl je in een tekstveld typt, dus gewone toetsen als J en K typen gewoon J en K."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "De meeste mensen betalen ons nooit iets, en dat is met opzet. Een beoordeling is een mooie manier om bedankt te zeggen.",
     "outro": "We lezen elke beoordeling, en een paar woorden van iemand die de app dagelijks gebruikt houden ons op de been.",
     "descGithub": "Geef ons een ster op GitHub",
+    "descAppStore": "Beoordeel PrivacyNotes in de App Store",
     "descAlternativeTo": "Like en review op AlternativeTo",
     "descCapterra": "Beoordeel PrivacyNotes op Capterra",
     "descSaasHub": "Like en review op SaaSHub",

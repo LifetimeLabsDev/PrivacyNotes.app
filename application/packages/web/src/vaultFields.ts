@@ -19,12 +19,16 @@ import { parseCardBody, detectCardNetwork } from './CardForm';
 import { parseSshKeyBody } from './SshKeyForm';
 import { formatAddressLines, formatContactDate, parseContactBody } from './contactBody';
 import { activeLocale } from './languages';
+import { isPublicField, loginExtrasOf } from './loginExtras';
 
 export interface VaultField {
   label: string;
   value: string;
   /** Keys and other opaque strings read better in a monospace face. */
   mono?: boolean;
+  /** A value the history preview masks until revealed. Exports ignore it:
+   *  an export the user asked for carries every value. */
+  secret?: boolean;
 }
 
 export interface VaultContent {
@@ -38,16 +42,23 @@ export interface VaultContent {
  * Break a vault note into display rows, or null when the note is not a
  * vault item (a plain note, journal entry or task list renders as markdown).
  */
-export function vaultContent(note: LocalNote): VaultContent | null {
+export function vaultContent(note: Pick<LocalNote, 'type' | 'body' | 'trackers'>): VaultContent | null {
   if (note.type === 'login') {
     const l = parseLoginBody(note.body);
-    // Credentials first, the address last: the same order the form and the
-    // view use, so a printed login reads like the one on screen.
+    const extras = loginExtrasOf(note.trackers);
+    // Credentials first, the addresses after, custom fields last: the same
+    // order the form and the view use, so a printed login reads like the one
+    // on screen.
     const fields: VaultField[] = [];
     if (l.username) fields.push({ label: i18n.t('auth:loginForm.usernameLabel'), value: l.username });
-    if (l.password) fields.push({ label: i18n.t('auth:loginForm.passwordLabel'), value: l.password });
-    if (l.totp) fields.push({ label: i18n.t('auth:loginForm.totpLabel'), value: l.totp, mono: true });
-    if (l.url) fields.push({ label: i18n.t('auth:loginForm.websiteLabel'), value: l.url });
+    if (l.password) fields.push({ label: i18n.t('auth:loginForm.passwordLabel'), value: l.password, secret: true });
+    if (l.totp) fields.push({ label: i18n.t('auth:loginForm.totpLabel'), value: l.totp, mono: true, secret: true });
+    for (const url of [l.url, ...extras.extraUrls]) {
+      if (url) fields.push({ label: i18n.t('auth:loginForm.websiteLabel'), value: url });
+    }
+    for (const f of extras.fields) {
+      if (f.value) fields.push({ label: f.label || i18n.t('shell:vaultItem.customField'), value: f.value, secret: !isPublicField(f) });
+    }
     return { fields, notes: l.notes, notesLabel: i18n.t('auth:loginForm.notesLabel') };
   }
 
@@ -58,10 +69,10 @@ export function vaultContent(note: LocalNote): VaultContent | null {
     const network = detectCardNetwork(c.cardNumber);
     const fields: VaultField[] = [];
     if (c.cardholderName) fields.push({ label: i18n.t('common:cardForm.cardholderName'), value: c.cardholderName });
-    if (grouped) fields.push({ label: i18n.t('common:cardForm.cardNumber'), value: grouped });
+    if (grouped) fields.push({ label: i18n.t('common:cardForm.cardNumber'), value: grouped, secret: true });
     if (network) fields.push({ label: i18n.t('common:cardForm.network'), value: network });
     if (c.expMonth || c.expYear) fields.push({ label: i18n.t('common:cardForm.expiry'), value: `${c.expMonth}/${c.expYear}` });
-    if (c.cvv) fields.push({ label: i18n.t('common:cardForm.cvv'), value: c.cvv });
+    if (c.cvv) fields.push({ label: i18n.t('common:cardForm.cvv'), value: c.cvv, secret: true });
     if (c.billingZip) fields.push({ label: i18n.t('common:cardForm.billingZip'), value: c.billingZip });
     return { fields, notes: c.notes, notesLabel: i18n.t('common:cardForm.notes') };
   }
@@ -71,8 +82,8 @@ export function vaultContent(note: LocalNote): VaultContent | null {
     const fields: VaultField[] = [];
     if (s.label) fields.push({ label: i18n.t('common:sshKeyForm.label'), value: s.label, mono: true });
     if (s.publicKey) fields.push({ label: i18n.t('common:sshKeyForm.publicKey', exemptOpts('common:sshKeyForm.publicKey')), value: s.publicKey, mono: true });
-    if (s.privateKey) fields.push({ label: i18n.t('common:sshKeyForm.privateKey', exemptOpts('common:sshKeyForm.privateKey')), value: s.privateKey, mono: true });
-    if (s.passphrase) fields.push({ label: i18n.t('common:sshKeyForm.passphrase'), value: s.passphrase, mono: true });
+    if (s.privateKey) fields.push({ label: i18n.t('common:sshKeyForm.privateKey', exemptOpts('common:sshKeyForm.privateKey')), value: s.privateKey, mono: true, secret: true });
+    if (s.passphrase) fields.push({ label: i18n.t('common:sshKeyForm.passphrase'), value: s.passphrase, mono: true, secret: true });
     return { fields, notes: s.notes, notesLabel: i18n.t('common:sshKeyForm.notes') };
   }
 
@@ -105,7 +116,9 @@ export function vaultContent(note: LocalNote): VaultContent | null {
  * because a password is arbitrary bytes and an unfenced one renders its
  * asterisks as emphasis.
  */
-function fieldBlock(label: string, value: string): string {
+function fieldBlock(rawLabel: string, value: string): string {
+  // A custom field's name is user input: keep it one line and literal.
+  const label = rawLabel.replace(/\s+/g, ' ').replace(/[\\`*_[\]<>#|~]/g, '\\$&');
   const ticks = (value.match(/`+/g) ?? []).reduce((n, run) => Math.max(n, run.length), 0);
   if (value.includes('\n')) {
     const fence = '`'.repeat(Math.max(3, ticks + 1));

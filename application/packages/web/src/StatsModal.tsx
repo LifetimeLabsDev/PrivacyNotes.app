@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { X } from './icons';
+import { ChartLine, Heartbeat, MoonStars, PencilSimple, Pill, SquaresFour, X } from './icons';
 import type { LocalNote } from './db';
 import { computeStats } from './stats';
 import { countWords } from './wordCountUtils';
@@ -12,7 +12,7 @@ import { MOOD_ANCHORS } from './trackerTypes';
 import { saveBlob } from './saveFile';
 import { detectPlatform } from './devices';
 import { proUnlocked } from './demo';
-import { SectionEyebrow, SETTINGS_EYEBROW } from './settingsUI';
+import { SectionEyebrow, SETTINGS_EYEBROW, SettingsTabStrip, settingsTabClass } from './settingsUI';
 import { intlLocale } from './languages';
 import { weekdayDate, weekdayLabel } from './intlFormat';
 import { HelpChip } from './HelpChip';
@@ -50,13 +50,6 @@ export function StatsModal({ notes, isNoteLocked, onClose, medications, isPro, o
   const stats = useMemo(() => computeStats(notes), [notes]);
   const tStats = useMemo(() => computeTrackerStats(notes, medications, isNoteLocked), [notes, medications, isNoteLocked]);
 
-  const tabClass = (t: Tab) =>
-    `px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
-      tab === t
-        ? 'text-accent border-b-2 border-accent'
-        : 'text-pn-soft hover:text-pn'
-    }`;
-
   return (
     <div
       className={embedded ? 'contents' : 'fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 sm:p-6 z-50'}
@@ -84,14 +77,16 @@ export function StatsModal({ notes, isNoteLocked, onClose, medications, isPro, o
         )}
 
         {/* Tabs */}
-        <div className="flex gap-1 px-6 pt-2 border-b border-divider">
-          <button type="button" data-setting="stats.writing" className={tabClass('writing')} onClick={() => setTab('writing')}>
-            {t('tabs.writing')}
+        <SettingsTabStrip className="shrink-0 px-4 sm:px-6 pt-2">
+          <button type="button" data-setting="stats.writing" aria-pressed={tab === 'writing'} className={settingsTabClass(tab === 'writing')} onClick={() => setTab('writing')}>
+            <PencilSimple aria-hidden="true" />
+            <span>{t('tabs.writing')}</span>
           </button>
-          <button type="button" data-setting="stats.wellness" className={tabClass('wellness')} onClick={() => setTab('wellness')}>
-            {t('tabs.wellness')}
+          <button type="button" data-setting="stats.wellness" aria-pressed={tab === 'wellness'} className={settingsTabClass(tab === 'wellness')} onClick={() => setTab('wellness')}>
+            <Heartbeat aria-hidden="true" />
+            <span>{t('tabs.wellness')}</span>
           </button>
-        </div>
+        </SettingsTabStrip>
 
         <div className="flex-1 overflow-y-auto p-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden space-y-6">
           {tab === 'writing' ? (
@@ -422,22 +417,27 @@ function WellnessTab({
     );
   }
 
-  const subTabClass = (t: WellnessSubTab) =>
-    `px-3 py-1.5 text-[11px] font-medium rounded-md transition-colors whitespace-nowrap ${
-      sub === t
-        ? 'bg-accent/10 text-accent'
-        : 'text-pn-soft hover:text-pn hover:bg-surface-1'
-    }`;
-
   return (
     <>
       {/* Sub-tab bar */}
-      <div className="flex gap-1 overflow-x-auto pb-1 -mt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <button type="button" className={subTabClass('overview')} onClick={() => setSub('overview')}>{t('wellness.subTabs.all')}</button>
-        <button type="button" className={subTabClass('sleep_activity')} onClick={() => setSub('sleep_activity')}>{t('wellness.subTabs.sleepActivity')}</button>
-        <button type="button" className={subTabClass('medication')} onClick={() => setSub('medication')}>{t('wellness.subTabs.medication')}</button>
-        <button type="button" className={subTabClass('patterns')} onClick={() => setSub('patterns')}>{t('wellness.subTabs.patterns')}</button>
-      </div>
+      <SettingsTabStrip className="-mt-1">
+        <button type="button" aria-pressed={sub === 'overview'} className={settingsTabClass(sub === 'overview')} onClick={() => setSub('overview')}>
+          <SquaresFour aria-hidden="true" />
+          <span>{t('wellness.subTabs.all')}</span>
+        </button>
+        <button type="button" aria-pressed={sub === 'sleep_activity'} className={settingsTabClass(sub === 'sleep_activity')} onClick={() => setSub('sleep_activity')}>
+          <MoonStars aria-hidden="true" />
+          <span>{t('wellness.subTabs.sleepActivity')}</span>
+        </button>
+        <button type="button" aria-pressed={sub === 'medication'} className={settingsTabClass(sub === 'medication')} onClick={() => setSub('medication')}>
+          <Pill aria-hidden="true" />
+          <span>{t('wellness.subTabs.medication')}</span>
+        </button>
+        <button type="button" aria-pressed={sub === 'patterns'} className={settingsTabClass(sub === 'patterns')} onClick={() => setSub('patterns')}>
+          <ChartLine aria-hidden="true" />
+          <span>{t('wellness.subTabs.patterns')}</span>
+        </button>
+      </SettingsTabStrip>
 
       <HelpChip surface="wellness" className="pt-1" />
 

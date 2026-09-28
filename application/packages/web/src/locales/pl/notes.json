@@ -9,7 +9,8 @@
     "file": "Plik",
     "empty": "Pusta",
     "noContent": "Brak treści",
-    "notBackedUp": "Bez kopii zapasowej"
+    "notBackedUp": "Bez kopii zapasowej",
+    "archived": "Zarchiwizowane"
   },
   "header": {
     "new": "Nowa",
@@ -71,6 +72,7 @@
     "noMatches": "Brak dopasowań.",
     "vault": "Sejf jest pusty.",
     "notes": "Brak notatek.",
+    "archive": "Nic nie zarchiwizowano.",
     "filtered": "Żadne elementy nie pasują do Twoich filtrów.",
     "clearFilters": "Usuń filtry",
     "filteredAfter": "aby je wyświetlić."
@@ -81,6 +83,7 @@
     "journals": "Dzienniki",
     "vault": "Sejf",
     "pinned": "Przypięte",
+    "archive": "Archiwum",
     "notes": "Notatki"
   },
   "footerStats": {

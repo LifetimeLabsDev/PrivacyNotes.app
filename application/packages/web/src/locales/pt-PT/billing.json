@@ -55,14 +55,16 @@
     "openingBody": "Deve aparecer uma janela de checkout do Paddle. Se não aparecer, o teu navegador pode ter bloqueado o pop-up - recarrega esta página para tentar de novo."
   },
   "history": {
-    "title": "Histórico de notas",
-    "subtitle": "Até 20 versões por nota. As mais antigas são removidas automaticamente.",
+    "subtitle": "Até 20 versões por item. As mais antigas são removidas automaticamente.",
     "empty": "Ainda não há histórico. As versões começam a acumular-se depois da próxima edição. Volta mais tarde.",
     "loadFailed": "Não foi possível carregar o histórico. Verifica a ligação e tenta de novo.",
     "selectPrompt": "Seleciona uma versão para pré-visualizar.",
     "emptyBody": "(vazia)",
     "restore": "Restaurar",
-    "restoring": "A restaurar…"
+    "restoring": "A restaurar…",
+    "restoreSnapshotFailed": "Não foi possível guardar primeiro a versão atual, por isso nada foi restaurado. Verifica a ligação e tenta de novo.",
+    "restoreFailed": "Não foi possível restaurar esta versão. Tenta de novo.",
+    "loginExtrasNotRecorded": "Esta versão não registou campos personalizados nem sites adicionais. Restaurá-la mantém os atuais."
   },
   "donation": {
     "eyebrow": "Desbloqueaste",

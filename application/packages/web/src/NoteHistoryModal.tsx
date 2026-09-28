@@ -1,24 +1,35 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { SupabaseClient } from '@notes/shared';
+import type { NoteType, SupabaseClient } from '@notes/shared';
 import { useEscapeToClose } from './useEscapeToClose';
 import { X } from './icons';
 import { intlLocale } from './languages';
 import { listNoteVersions, type NoteVersion } from './noteVersions';
 import { Editor } from './Editor';
 
+// Its own chunk: the vault rows pull in the vault forms and the detail
+// rows, which the plain note preview never needs.
+const VaultVersionPreview = lazy(() => import('./VaultVersionPreview').then((m) => ({ default: m.VaultVersionPreview })));
+
 /**
  * Pro: browse + restore note versions.
  *
  * Versions are fetched and decrypted in a single round trip. The
  * user picks one from the list; the right pane previews the full
- * contents. Clicking Restore calls `onRestore` with the version's
- * title/body/tags - the parent writes them back to the live note,
- * which triggers a new version snapshot from the scheduled
- * debouncer. So restoring never loses the current state.
+ * contents. Clicking Restore calls `onRestore` with the version; the
+ * parent saves the current state as a version first and refuses to
+ * restore when that save fails.
+ *
+ * A login, card or SSH key previews as labelled rows, never as its raw
+ * JSON body: a secret value stays out of the DOM until its row is
+ * revealed.
  */
+const VAULT_TYPES: ReadonlySet<NoteType> = new Set(['login', 'card', 'ssh-key']);
+
 type Props = {
   noteId: string;
+  /** The live note's type: a snapshot does not record it. */
+  noteType: NoteType;
   supabase: SupabaseClient;
   encryptionKey: Uint8Array;
   onClose: () => void;
@@ -28,6 +39,7 @@ type Props = {
 
 export function NoteHistoryModal({
   noteId,
+  noteType,
   supabase,
   encryptionKey,
   onClose,
@@ -87,7 +99,7 @@ export function NoteHistoryModal({
       >
         <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-divider shrink-0">
           <div>
-            <h2 className="text-lg font-semibold">{t('history.title')}</h2>
+            <h2 className="text-lg font-semibold">{t('shell:noteOptionsMenu.noteHistory')}</h2>
             <p className="text-[12px] text-neutral-500 mt-0.5">
               {t('history.subtitle')}
             </p>
@@ -191,7 +203,11 @@ export function NoteHistoryModal({
                     switch so TipTap re-parses the new markdown body
                     cleanly instead of trying to diff it. */}
                 <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
-                  {selected.body.trim() ? (
+                  {VAULT_TYPES.has(noteType) ? (
+                    <Suspense fallback={null}>
+                      <VaultVersionPreview key={selected.id} version={selected} type={noteType} />
+                    </Suspense>
+                  ) : selected.body.trim() ? (
                     <Editor
                       key={selected.id}
                       value={selected.body}
@@ -199,6 +215,7 @@ export function NoteHistoryModal({
                         /* readOnly - never fires */
                       }}
                       readOnly
+                      preview
                     />
                   ) : (
                     <div className="text-neutral-400 italic">{t('history.emptyBody')}</div>

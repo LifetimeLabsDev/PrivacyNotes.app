@@ -27,7 +27,7 @@ Lišta nahoře mění, jak text vypadá: **tučně**, *kurzivou*, nadpisy, zašk
 
 ## Jedna věc na dnešek
 
-- [ ] Najdi svoji **<mark style="background-color: rgba(51, 154, 240, 0.35)">frázi z 12 slov</mark>** v **Nastavení > Zabezpečení > Tvoje fráze**, napiš ji na papír a ulož na bezpečné místo
+- [ ] Najdi svoji **<mark style="background-color: rgba(51, 154, 240, 0.35)">frázi z 12 slov</mark>** v **Nastavení > Zabezpečení > Fráze**, napiš ji na papír a ulož na bezpečné místo
 
 Ta fráze je to, co tvoje poznámky otevírá. Kde bude ležet, rozhoduješ ty, a můžeš to kdykoli změnit. [[Jak jsou tvoje poznámky chráněné]] popisuje tři možnosti.
 

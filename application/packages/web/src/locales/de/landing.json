@@ -138,7 +138,7 @@
     "freeSubLabel": "Keine Kreditkarte nötig, kein Zeitlimit.",
     "freeAllPillars": "Notizen, Aufgaben, Dateien, Tresor, Tagebuch und Lesezeichen",
     "freeSync": "Sync über 2 Geräte",
-    "freeVault": "Verschlüsselter Dateitresor, 5 MB pro Datei",
+    "freeVault": "50 MB Speicher, bis 5 MB pro Datei",
     "freeSearch": "Volltextsuche + Tags",
     "freeImport": "Import und Export, darunter Keep und Obsidian",
     "freeBurn": "Nach dem Lesen vernichten",
@@ -327,6 +327,7 @@
       "fixed": "Behoben"
     },
     "changelogComingSoon": "Changelog folgt bald.",
+    "changelogLatest": "Neueste",
     "hotkeysFootnote": "Die meisten Tastenkürzel werden ignoriert, während du in ein Textfeld tippst, sodass normale Tasten wie J und K weiterhin J und K schreiben."
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "Die meisten zahlen uns nie etwas, und das ist Absicht. Eine Bewertung ist eine schöne Art, Danke zu sagen.",
     "outro": "Wir lesen jede Bewertung, und ein paar Worte von jemandem, der die App täglich nutzt, halten uns am Laufen.",
     "descGithub": "Gib uns einen Stern auf GitHub",
+    "descAppStore": "Bewerte PrivacyNotes im App Store",
     "descAlternativeTo": "Like und Bewertung auf AlternativeTo",
     "descCapterra": "Bewerte PrivacyNotes auf Capterra",
     "descSaasHub": "Like und Bewertung auf SaaSHub",

@@ -1,4 +1,3 @@
-import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ListEntryCard } from './ListEntryCard';
 import { Download } from './icons';
@@ -36,16 +35,32 @@ const IMPORT_PROMPT_MAX_ITEMS: Record<ImportPromptKind, number> = {
   contacts: 50,
 };
 
-/** Device-local UI chrome, like the sidebar collapse flags. One key per
- *  pillar: hiding the passwords offer says nothing about the notes one. */
-const storageKey = (kind: ImportPromptKind) => `privacynotes.importPrompt.hidden.${kind}`;
+/**
+ * One dismissal hides the offer in every pillar and on every device: it is
+ * the synced `importPromptDismissed` flag, never a per-pillar key. A person
+ * who closes "Import notes" and then meets "Import journal" reads the second
+ * one as the first coming back.
+ */
+export type ImportOffer = { dismissed: boolean; onDismiss: () => void };
 
-function readHidden(kind: ImportPromptKind): boolean {
+const LEGACY_KINDS: ImportPromptKind[] = ['notes', 'journal', 'tasks', 'vault', 'bookmarks', 'contacts'];
+const legacyKey = (kind: ImportPromptKind) => `privacynotes.importPrompt.hidden.${kind}`;
+
+/**
+ * True when this device holds a dismissal from the per-pillar keys that came
+ * before the synced flag. The keys are removed, so the answer is given once.
+ */
+export function takeLegacyImportDismissal(): boolean {
+  let found = false;
   try {
-    return localStorage.getItem(storageKey(kind)) === '1';
+    for (const kind of LEGACY_KINDS) {
+      if (localStorage.getItem(legacyKey(kind)) === '1') found = true;
+      localStorage.removeItem(legacyKey(kind));
+    }
   } catch {
-    return false;
+    /* storage unavailable - nothing to carry over */
   }
+  return found;
 }
 
 /**
@@ -54,29 +69,15 @@ function readHidden(kind: ImportPromptKind): boolean {
  * (a promo among scoped results reads as a result, and the slot belongs to the
  * `ActiveFilterEntry` that explains the scope), and selection mode (it is the
  * one entry that cannot be selected).
- *
- * The hidden flag is READ per render rather than seeded into state, because
- * one NotesList instance serves Notes, Journals and the Vault: state seeded
- * at mount would carry one pillar's dismissal into the next view the user
- * switches to.
  */
-export function useImportPrompt(
+export function importPromptFor(
   kind: ImportPromptKind,
-  { count, suppressed = false }: { count: number; suppressed?: boolean },
+  { count, suppressed = false, offer }: { count: number; suppressed?: boolean; offer: ImportOffer },
 ) {
-  const [dismissals, setDismissals] = useState(0);
-  const hidden = useMemo(() => readHidden(kind), [kind, dismissals]);
-
-  function dismiss() {
-    try {
-      localStorage.setItem(storageKey(kind), '1');
-    } catch {
-      /* storage full / disabled - the entry just comes back next session */
-    }
-    setDismissals((n) => n + 1);
-  }
-
-  return { show: !hidden && !suppressed && count < IMPORT_PROMPT_MAX_ITEMS[kind], dismiss };
+  return {
+    show: !offer.dismissed && !suppressed && count < IMPORT_PROMPT_MAX_ITEMS[kind],
+    dismiss: offer.onDismiss,
+  };
 }
 
 export function ImportPromptEntry({

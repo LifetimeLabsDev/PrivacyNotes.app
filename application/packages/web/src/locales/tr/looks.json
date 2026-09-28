@@ -24,7 +24,7 @@
     "sport": "Spor",
     "tech": "Bilim ve teknoloji",
     "signals": "İşaretler",
-    "numbers": "Sayılar"
+    "numbers": "Sayılar ve matematik"
   },
   "icons": {
     "folder": "Klasör",
@@ -249,6 +249,8 @@
     "bone": "Kemik",
     "barn": "Ahır",
     "tractor": "Traktör",
+    "grains": "Tahıl",
+    "windmill": "Yel değirmeni",
     "guitar": "Gitar",
     "piano-keys": "Piyano",
     "microphone-stage": "Mikrofon",
@@ -302,6 +304,12 @@
     "info": "Bilgi",
     "siren": "Siren",
     "infinity": "Sonsuz",
+    "plus": "Artı",
+    "minus": "Eksi",
+    "x": "Çarpı",
+    "divide": "Bölü",
+    "equals": "Eşittir",
+    "percent": "Yüzde",
     "peace": "Barış",
     "recycle": "Geri dönüşüm",
     "radioactive": "Radyoaktif",
@@ -317,6 +325,10 @@
     "file-video": "Video dosyası",
     "file-audio": "Ses dosyası",
     "file-code": "Kod dosyası",
+    "file-html": "Web sayfası",
+    "file-lock": "Kilitli dosya",
+    "file-cloud": "Bulut dosyası",
+    "file-svg": "Vektör grafik",
     "fingerprint": "Parmak izi"
   }
 }

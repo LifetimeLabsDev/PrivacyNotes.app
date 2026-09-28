@@ -55,14 +55,16 @@
     "openingBody": "Mělo by se objevit platební okno Paddle. Pokud se neobjeví, prohlížeč možná zablokoval vyskakovací okno - obnov tuto stránku a zkus to znovu."
   },
   "history": {
-    "title": "Historie poznámky",
-    "subtitle": "Až 20 verzí na poznámku. Nejstarší se automaticky mažou.",
+    "subtitle": "Až 20 verzí na položku. Nejstarší se automaticky mažou.",
     "empty": "Zatím žádná historie. Verze se začnou hromadit po další úpravě. Vrať se později.",
     "loadFailed": "Historii se nepodařilo načíst. Zkontroluj připojení a zkus to znovu.",
     "selectPrompt": "Vyber verzi pro náhled.",
     "emptyBody": "(prázdné)",
     "restore": "Obnovit",
-    "restoring": "Obnovování…"
+    "restoring": "Obnovování…",
+    "restoreSnapshotFailed": "Aktuální verzi se nepodařilo nejdřív uložit, takže se nic neobnovilo. Zkontroluj připojení a zkus to znovu.",
+    "restoreFailed": "Tuto verzi se nepodařilo obnovit. Zkus to znovu.",
+    "loginExtrasNotRecorded": "Tato verze neuložila vlastní pole ani další weby. Její obnovení ponechá ty současné."
   },
   "donation": {
     "eyebrow": "Máš odemčeno",

@@ -29,6 +29,13 @@ export type ListPrefs = {
    */
   showPreview: boolean;
   /**
+   * Whether the preview runs over several lines of the note instead of one:
+   * a list of short notes can then be read without opening them. Only takes
+   * effect while `showPreview` is on, and the menu hides it otherwise.
+   * Default false.
+   */
+  longPreview: boolean;
+  /**
    * Whether a row carries its date. Default true, off in the pillars whose
    * rows say it already; see PILLAR_DEFAULTS.
    * Spec: ops/docs/design-decisions.md (per-pillar list settings)
@@ -96,6 +103,7 @@ const DEFAULT_PREFS: ListPrefs = {
   sortField: 'modified',
   sortDir: 'desc',
   showPreview: true,
+  longPreview: false,
   showDate: true,
   showTags: true,
   showLocked: true,
@@ -169,6 +177,7 @@ function hydratePrefs(raw: unknown): ListPrefs {
     base.sortDir = obj.sortDir;
   }
   if (typeof obj.showPreview === 'boolean') base.showPreview = obj.showPreview;
+  if (typeof obj.longPreview === 'boolean') base.longPreview = obj.longPreview;
   if (typeof obj.showDate === 'boolean') base.showDate = obj.showDate;
   if (typeof obj.showTags === 'boolean') base.showTags = obj.showTags;
   if (typeof obj.showLocked === 'boolean') base.showLocked = obj.showLocked;
@@ -240,7 +249,7 @@ export function setPillarPrefs(
 
 /**
  * Map the app's internal `view` state to a pillar. Views that don't
- * correspond to a pillar ('trash', 'starred', 'markdown') map to 'global' so
+ * correspond to a pillar ('trash', 'starred', 'archive', 'markdown') map to 'global' so
  * they always inherit and never own an override.
  *
  * Takes `View` rather than a local restatement of it. A local union would be

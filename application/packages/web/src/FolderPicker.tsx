@@ -17,6 +17,7 @@ import {
   canCreateChild,
   canMoveFolder,
   folderSiblingSorter,
+  folderTotals,
   subtreeIds,
   type FolderDef,
   type FolderSortDir,
@@ -116,7 +117,7 @@ export function FolderPicker({
   onClose,
 }: FolderPickerProps) {
   const { t } = useTranslation('shell');
-  const { expand } = useFolderExpansion();
+  const { expand, isExpanded } = useFolderExpansion();
   useEscapeToClose(onClose);
   const [query, setQuery] = useState('');
   /** Parent id the inline "new folder" input is nested under; undefined = closed.
@@ -129,9 +130,11 @@ export function FolderPicker({
 
   const byId = useMemo(() => new Map(folders.map((f) => [f.id, f])), [folders]);
 
+  const totals = useMemo(() => folderTotals(folders, counts), [folders, counts]);
+
   const sortSiblings = useMemo(
-    () => folderSiblingSorter(sortField, sortDir, counts),
-    [sortField, sortDir, counts],
+    () => folderSiblingSorter(sortField, sortDir, totals),
+    [sortField, sortDir, totals],
   );
 
   /** Folder mode: the moved folder's own subtree can never be its parent. */
@@ -248,7 +251,8 @@ export function FolderPicker({
       ? currentFolderId !== null
       : folders.find((f) => f.id === movingFolderId)?.parentId != null;
 
-  const trailingFor = (folder: FolderDef, withMenu = false) => (
+  /** A search hit shows no subfolders below it, so it counts them in. */
+  const trailingFor = (folder: FolderDef, withMenu = false, open = false) => (
     <>
       {/* The same "..." the sidebar row wears, from the same class token.
           Right-click alone is undiscoverable on a desktop, a two-hand job on
@@ -268,7 +272,7 @@ export function FolderPicker({
         </button>
       )}
       <span className="text-[11px] text-neutral-400 dark:text-neutral-600 tabular-nums ms-1 shrink-0">
-        {counts.get(folder.id) ?? 0}
+        {(open ? counts : totals).get(folder.id) ?? 0}
       </span>
       {checkedId === folder.id ? (
         <Check size={14} className="ms-1.5 me-1 shrink-0 text-accent" />
@@ -384,7 +388,7 @@ export function FolderPicker({
                   <span className="truncate">{f.name}</span>
                 )
               }
-              renderTrailing={(f) => (renamingId === f.id ? null : trailingFor(f, true))}
+              renderTrailing={(f) => (renamingId === f.id ? null : trailingFor(f, true, isExpanded(f)))}
               renderAfter={(f, level) =>
                 creatingUnder === f.id ? (
                   <div

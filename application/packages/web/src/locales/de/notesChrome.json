@@ -75,7 +75,21 @@
   },
   "burnShareModal": {
     "title": "Teilen und nach dem Lesen vernichten",
-    "body": "<lead>Deine ursprüngliche Notiz wird nicht gelöscht.</lead> Sie bleibt sicher in deinem Konto. Der Burn-Link ist eine separate verschlüsselte Kopie, die sich nach dem Lesen selbst zerstört. Der Link läuft nach 24 Stunden ab, ob geöffnet oder nicht.",
+    "body": "<lead>Deine ursprüngliche Notiz wird nicht gelöscht.</lead> Sie bleibt sicher in deinem Konto. Der Burn-Link ist eine separate verschlüsselte Kopie, die sich nach dem Lesen selbst zerstört.",
+    "readTime": "Lesezeit",
+    "readTimeHint": "Verschwindet danach vom Bildschirm",
+    "lifetime": "Link läuft ab",
+    "lifetimeHint": "Wenn ihn niemand öffnet",
+    "minutes_one": "{{count}} Minute",
+    "minutes_other": "{{count}} Minuten",
+    "hours_one": "{{count}} Stunde",
+    "hours_other": "{{count}} Stunden",
+    "afterHours_one": "Nach {{count}} Stunde",
+    "afterHours_other": "Nach {{count}} Stunden",
+    "afterDays_one": "Nach {{count}} Tag",
+    "afterDays_other": "Nach {{count}} Tagen",
+    "create": "Link erstellen und kopieren",
+    "share": "Link teilen",
     "imagesStripped": "Es wird nur Text angezeigt, Dateien sind in dieser Notiz ausgeblendet.",
     "copied": "Kopiert"
   },
@@ -89,7 +103,7 @@
     "footerTagline": "- Zero-Knowledge-verschlüsselte Notizen, gehostet in der Schweiz.",
     "sealed": {
       "heading": "Du hast eine verschlüsselte Notiz erhalten.",
-      "subheading": "Diese Nachricht zerstört sich nach dem Lesen selbst. Ungelesene Links laufen nach 24 Stunden ab.",
+      "subheading": "Diese Nachricht zerstört sich nach dem Lesen selbst. Ungelesene Links laufen von selbst ab.",
       "reveal": "Nachricht anzeigen",
       "warning": "Der Server löscht die Notiz in dem Moment, in dem du sie anzeigst. Keine zweite Chance."
     },
@@ -105,7 +119,7 @@
     },
     "gone": {
       "heading": "Diese Notiz ist weg.",
-      "body": "Sie wurde bereits gelesen oder ist abgelaufen. Burn-Links können nur einmal geöffnet werden und laufen nach 24 Stunden ab."
+      "body": "Sie wurde bereits gelesen oder ist abgelaufen. Burn-Links können nur einmal geöffnet werden und laufen von selbst ab."
     },
     "error": {
       "heading": "Etwas ist schiefgelaufen.",

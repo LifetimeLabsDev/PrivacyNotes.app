@@ -74,6 +74,7 @@ export function noteToMarkdown(
     fm.push(`trashed: ${note.trashed === 1}`);
     fm.push(`locked: ${note.locked === 1}`);
     fm.push(`pinProtected: ${note.pinProtected === 1}`);
+    if (note.archived === 1) fm.push('archived: true');
     if (note.folderId) fm.push(`folderId: ${note.folderId}`);
   } else if (note.type === 'journal') {
     // The ONE type a single .md may declare. A journal's body is its real
@@ -88,8 +89,9 @@ export function noteToMarkdown(
   // Written for every export, not only the full backup: trackers are the one
   // field a single exported journal entry would otherwise lose silently - the
   // body and tags round-trip intact, so nothing flags the missing mood, sleep
-  // and step counts.
-  if (note.trackers && Object.keys(note.trackers).length > 0) {
+  // and step counts. A login's are the exception: the readable export already
+  // prints its custom fields, and the raw map would print them a second time.
+  if (note.trackers && Object.keys(note.trackers).length > 0 && (fullMeta || note.type !== 'login')) {
     fm.push(`trackers: ${JSON.stringify(note.trackers)}`);
   }
   fm.push('---');

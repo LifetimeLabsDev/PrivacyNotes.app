@@ -24,7 +24,7 @@
     "sport": "Esport",
     "tech": "Ciència i tecnologia",
     "signals": "Senyals",
-    "numbers": "Números"
+    "numbers": "Números i matemàtiques"
   },
   "icons": {
     "folder": "Carpeta",
@@ -249,6 +249,8 @@
     "bone": "Os",
     "barn": "Graner",
     "tractor": "Tractor",
+    "grains": "Cereals",
+    "windmill": "Molí de vent",
     "guitar": "Guitarra",
     "piano-keys": "Piano",
     "microphone-stage": "Micròfon",
@@ -302,6 +304,12 @@
     "info": "Informació",
     "siren": "Sirena",
     "infinity": "Infinit",
+    "plus": "Més",
+    "minus": "Menys",
+    "x": "Per",
+    "divide": "Dividit",
+    "equals": "Igual",
+    "percent": "Percentatge",
     "peace": "Pau",
     "recycle": "Reciclatge",
     "radioactive": "Radioactiu",
@@ -317,6 +325,10 @@
     "file-video": "Fitxer de vídeo",
     "file-audio": "Fitxer d'àudio",
     "file-code": "Fitxer de codi",
+    "file-html": "Pàgina web",
+    "file-lock": "Fitxer bloquejat",
+    "file-cloud": "Fitxer al núvol",
+    "file-svg": "Gràfic vectorial",
     "fingerprint": "Empremta dactilar"
   }
 }

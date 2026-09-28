@@ -55,14 +55,16 @@
     "openingBody": "Er hoort een Paddle-afrekenvenster te verschijnen. Gebeurt dat niet, dan heeft je browser de pop-up misschien geblokkeerd - herlaad deze pagina om het opnieuw te proberen."
   },
   "history": {
-    "title": "Notitiegeschiedenis",
-    "subtitle": "Tot 20 versies per notitie. De oudste worden automatisch opgeruimd.",
+    "subtitle": "Tot 20 versies per item. De oudste worden automatisch opgeruimd.",
     "empty": "Nog geen geschiedenis. Versies worden vanaf de volgende bewerking bewaard. Kom later terug.",
     "loadFailed": "De geschiedenis kon niet worden geladen. Controleer je verbinding en probeer het opnieuw.",
     "selectPrompt": "Kies een versie om te bekijken.",
     "emptyBody": "(leeg)",
     "restore": "Herstellen",
-    "restoring": "Herstellen…"
+    "restoring": "Herstellen…",
+    "restoreSnapshotFailed": "De huidige versie kon niet eerst worden bewaard, dus er is niets hersteld. Controleer je verbinding en probeer het opnieuw.",
+    "restoreFailed": "Deze versie kon niet worden hersteld. Probeer het opnieuw.",
+    "loginExtrasNotRecorded": "Deze versie heeft geen eigen velden of extra websites bewaard. Herstellen houdt de huidige."
   },
   "donation": {
     "eyebrow": "Je hebt ontgrendeld",

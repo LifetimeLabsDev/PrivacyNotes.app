@@ -258,7 +258,7 @@ const TEXT_SIZE_KEY = 'privacynotes.textSize';
  * mean fixing it on one device and breaking it on another. Same
  * reasoning as the light/dark mode above.
  */
-export const TEXT_SIZES = ['sm', 'md', 'lg', 'xl'] as const;
+export const TEXT_SIZES = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
 export type TextSize = (typeof TEXT_SIZES)[number];
 
 /** Type guard. */
@@ -306,6 +306,8 @@ function applyTextSize(size: TextSize): void {
  * there is deliberately no localStorage key below.
  * Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
  */
+// The values are stored and synced, so they never change; the labels the
+// reader sees are Tight, Default and Relaxed (settings.json lineSpacing*).
 export const LINE_SPACINGS = ['tight', 'compact', 'normal'] as const;
 export type LineSpacing = (typeof LINE_SPACINGS)[number];
 
@@ -333,18 +335,19 @@ export function readLineSpacing(): LineSpacing {
 
 /**
  * The paragraph gap as a CSS length, for markup that leaves the app and so
- * cannot read `--pn-para-gap`: the export stylesheet and the HTML flavour of
- * a copy. Keep it equal to the values in index.css.
+ * cannot read `--pn-para-gap`: the export stylesheet, the HTML flavour of a
+ * copy, and the burn viewer, which lays a note out in its sender's spacing.
+ * Keep it equal to the values in index.css.
  * Spec: ops/docs/design-decisions.md (editor paragraph rhythm)
  */
-export function paragraphGapCss(): string {
-  return readLineSpacing() === 'normal' ? '0.75em' : '0';
+export function paragraphGapCss(spacing: LineSpacing = readLineSpacing()): string {
+  return spacing === 'normal' ? '0.75em' : '0';
 }
 
-/** The line height as a CSS number, for the export stylesheet. Keep it equal
- *  to `--pn-line-height` in index.css. */
-export function lineHeightCss(): string {
-  return readLineSpacing() === 'tight' ? '1.4' : '1.7';
+/** The line height as a CSS number, for the export stylesheet and the burn
+ *  viewer. Keep it equal to `--pn-line-height` in index.css. */
+export function lineHeightCss(spacing: LineSpacing = readLineSpacing()): string {
+  return spacing === 'tight' ? '1.4' : '1.7';
 }
 
 // ------------------------------------------------------------------

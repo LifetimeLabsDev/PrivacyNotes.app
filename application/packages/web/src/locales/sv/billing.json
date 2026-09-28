@@ -55,14 +55,16 @@
     "openingBody": "Ett kassafönster från Paddle bör dyka upp. Om det inte gör det kan webbläsaren ha blockerat popup-fönstret - ladda om sidan för att försöka igen."
   },
   "history": {
-    "title": "Anteckningshistorik",
-    "subtitle": "Upp till 20 versioner per anteckning. De äldsta gallras bort automatiskt.",
+    "subtitle": "Upp till 20 versioner per objekt. De äldsta gallras bort automatiskt.",
     "empty": "Ingen historik än. Versioner börjar samlas efter nästa ändring. Kom tillbaka senare.",
     "loadFailed": "Historiken kunde inte hämtas. Kontrollera anslutningen och försök igen.",
     "selectPrompt": "Välj en version för att förhandsgranska.",
     "emptyBody": "(tom)",
     "restore": "Återställ",
-    "restoring": "Återställer…"
+    "restoring": "Återställer…",
+    "restoreSnapshotFailed": "Den aktuella versionen kunde inte sparas först, så inget återställdes. Kontrollera anslutningen och försök igen.",
+    "restoreFailed": "Den här versionen kunde inte återställas. Försök igen.",
+    "loginExtrasNotRecorded": "Den här versionen sparade inga egna fält eller extra webbplatser. Om du återställer den behålls de nuvarande."
   },
   "donation": {
     "eyebrow": "Du låste upp",

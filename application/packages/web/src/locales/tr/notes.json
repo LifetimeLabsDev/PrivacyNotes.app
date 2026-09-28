@@ -9,7 +9,8 @@
     "file": "Dosya",
     "empty": "Boş",
     "noContent": "İçerik yok",
-    "notBackedUp": "Yedeklenmedi"
+    "notBackedUp": "Yedeklenmedi",
+    "archived": "Arşivlendi"
   },
   "header": {
     "new": "Yeni",
@@ -71,6 +72,7 @@
     "noMatches": "Eşleşme yok.",
     "vault": "Kasa boş.",
     "notes": "Henüz not yok.",
+    "archive": "Arşivlenmiş öğe yok.",
     "filtered": "Filtrelerinizle eşleşen öğe yok.",
     "clearFilters": "Filtreleri temizle",
     "filteredAfter": "ve hepsini görün."
@@ -81,6 +83,7 @@
     "journals": "Günlükler",
     "vault": "Kasa",
     "pinned": "Sabitlenmiş",
+    "archive": "Arşiv",
     "notes": "Notlar"
   },
   "footerStats": {

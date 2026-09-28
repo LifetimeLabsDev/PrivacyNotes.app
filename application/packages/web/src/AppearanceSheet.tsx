@@ -21,16 +21,17 @@ import {
 } from './theme';
 import { IconUpgrade } from './UpgradeModal';
 import { proUnlocked } from './demo';
-import { X, List, ListBullets, Palette, SquaresFour, Sparkle, DotsThreeOutlineVertical, CaretDown, Globe, PILLAR_GLYPHS, type Icon } from './icons';
+import { X, List, ListBullets, Palette, SquaresFour, Sparkle, DotsThreeOutlineVertical, CaretDown, CaretRight, Globe, PILLAR_GLYPHS, type Icon } from './icons';
 import { exemptOpts } from './i18nExempt';
-import { AccentBar, HeadlineRule, SETTINGS_EYEBROW, SETTINGS_HELP } from './settingsUI';
+import { AccentBar, HeadlineRule, SETTINGS_EYEBROW, SETTINGS_HELP, SettingsTabStrip, settingsTabClass } from './settingsUI';
 import { Switch } from './Switch';
+import { useOpenItemsInTabs, useTabsFit } from './notesView/useOpenTabs';
 import { faviconUrl } from './favicon';
 import { ViewCheckBox } from './SidebarOptionsPopover';
 import { allViewRows, resolveStartView, sidebarViewRows, startViewRows } from './viewRows';
 import { ViewMenu } from './ViewMenu';
 import type { View } from './views';
-import { defaultSettings } from './userSettings';
+import { defaultSettings, isShownInAll } from './userSettings';
 
 type Props = {
   isPro: boolean;
@@ -52,6 +53,7 @@ type Props = {
    *  same field shown twice, like View. Spec: ops/docs/plans/sidebar-views.md */
   hiddenViews: View[];
   hiddenInAll: View[];
+  archivedInAll: boolean;
   onToggleHidden: (field: 'hiddenViews' | 'hiddenInAll', key: View) => void;
   /** The view the app opens on at a cold start, and its setter.
    *  Spec: ops/docs/plans/start-view.md */
@@ -63,10 +65,14 @@ type Props = {
   onTintNotesChange: (on: boolean) => void;
   /** Which tab of the embedded pane to open on. Defaults to Style. */
   initialTab?: 'style' | 'lists';
+  /** Popover only: open Settings on the Appearance page, where the rows the
+   *  popover has no room for live. */
+  onOpenAll?: () => void;
 };
 
 /** Translation key per text size. Keeps the order in TEXT_SIZES. */
 const TEXT_SIZE_LABEL: Record<TextSize, string> = {
+  xs: 'appearance.textSizeSmallest',
   sm: 'appearance.textSizeSmall',
   md: 'appearance.textSizeDefault',
   lg: 'appearance.textSizeLarge',
@@ -91,6 +97,7 @@ const CONTENT_WIDTH_LABEL: Record<ContentWidth, string> = {
     the "A" is a size preview, not copy; the translated size word stays as
     the option's aria-label and title. */
 const TEXT_SIZE_GLYPH: Record<TextSize, string> = {
+  xs: 'text-[9px]',
   sm: 'text-[11px]',
   md: 'text-[13px]',
   lg: 'text-[15px]',
@@ -179,7 +186,7 @@ const SEG_IDLE = 'text-pn-soft hover:text-pn font-medium';
  */
 const SEG_FILL = 'flex-1 px-3 lg:flex-none';
 
-export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = false, viewMode, onViewModeChange, editorMode, onEditorModeChange, lineSpacing, onLineSpacingChange, hiddenViews, hiddenInAll, onToggleHidden, startView, onStartViewChange, tintNotes, onTintNotesChange, initialTab = 'style' }: Props) {
+export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = false, viewMode, onViewModeChange, editorMode, onEditorModeChange, lineSpacing, onLineSpacingChange, hiddenViews, hiddenInAll, archivedInAll, onToggleHidden, startView, onStartViewChange, tintNotes, onTintNotesChange, initialTab = 'style', onOpenAll }: Props) {
   const { t } = useTranslation('settings');
   // The table's row labels are the sidebar's own strings, so the pane and the
   // rail can never disagree in any language.
@@ -203,6 +210,9 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   const startBtnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const { theme, themeMode, setThemeMode, colorTheme, setColorTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, favicons, setFavicons, invisibles, setInvisibles } = useTheme();
+  const [openItemsInTabs, setOpenItemsInTabs] = useOpenItemsInTabs();
+  // No strip below the pane layout, so no switch for it either.
+  const tabsFit = useTabsFit();
   const exampleFavicon = faviconUrl('google.com');
 
   // The public demo unlocks every palette so visitors can try them for
@@ -237,11 +247,15 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
 
   useEscapeToClose(() => handleClose(), !embedded);
 
-  // Close on click outside
+  // Close on click outside. A press on the footer button that opened the
+  // popover is left to that button, which toggles it: closing here as well
+  // would let the same click open it again.
   useEffect(() => {
     if (embedded) return;
     function onClick(e: PointerEvent) {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+      const target = e.target as Element;
+      if (target.closest?.('[data-appearance-trigger]')) return;
+      if (panelRef.current && !panelRef.current.contains(target)) {
         handleClose();
       }
     }
@@ -314,6 +328,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     onViewModeChange(d.viewMode);
     for (const v of hiddenViews) onToggleHidden('hiddenViews', v);
     for (const v of hiddenInAll) onToggleHidden('hiddenInAll', v);
+    if (archivedInAll) onToggleHidden('hiddenInAll', 'archive');
   }
 
   const modeButtons = THEME_MODES.map((mode) => (
@@ -334,7 +349,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     </button>
   ));
 
-  // The "A" glyph row. Words live in aria-label/title so the four size
+  // The "A" glyph row. Words live in aria-label/title so the size
   // names stay translated without spending the row's width on them.
   const textSizeButtons = TEXT_SIZES.map((size) => (
     <button
@@ -419,6 +434,20 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     const startRow = startRows.find((r) => r.key === resolveStartView(startView, hiddenViews));
     const styleRows = (
       <>
+        {/* Open items in tabs - a row click opens a tab. First on the tab
+            because it changes how the whole app is used. Device-local, like
+            the tabs themselves. Spec: ops/docs/plans/note-tabs.md */}
+        {tabsFit && (
+          <Switch
+            setting="appearance.openInTabs"
+            label={t('appearance.openInTabsTitle')}
+            description={t('appearance.openInTabsDesc')}
+            checked={openItemsInTabs}
+            onChange={setOpenItemsInTabs}
+            className="gap-x-5 py-3"
+          />
+        )}
+
         {/* Mode - Auto / Light / Dark. Auto follows the OS and re-resolves
             live when it flips (see watchSystemTheme in theme.ts). */}
         <div data-setting="appearance.mode" className={row}>
@@ -535,17 +564,6 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           </div>
         </div>
 
-        {/* Note backgrounds - the switch the look picker also shows. A
-            switch row, the idiom of the image settings (ImagesSheet.tsx). */}
-        <Switch
-          setting="appearance.tintNotes"
-          label={t('appearance.tintNotesTitle')}
-          description={t('appearance.tintNotesDesc')}
-          checked={tintNotes}
-          onChange={onTintNotesChange}
-          className="gap-x-5 py-3"
-        />
-
         {/* Editor width - the cap on the note's reading column. Device-local
             for the text-size reason: a phone never reaches the cap at all.
             The editor's own toggle only shows on a pane wider than the
@@ -582,6 +600,22 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             ))}
           </div>
         </div>
+
+        {/* Invisible characters - the pilcrow, the space dots and the line
+            breaks the editor can draw. This is a taste somebody sets once
+            and leaves, which is what makes a settings row the right home for
+            it and a permanent button over the note text the wrong one. The
+            editor keeps the quick toggle beside the word count for the
+            person who wants it on for one note.
+            Spec: ops/docs/design-decisions.md (the editor corner holds only controls that can hide themselves) */}
+        <Switch
+          setting="appearance.invisibles"
+          label={t('appearance.invisiblesTitle')}
+          description={t('appearance.invisiblesDesc')}
+          checked={invisibles}
+          onChange={setInvisibles}
+          className="gap-x-5 py-3"
+        />
 
         {/* Website icons - the site logo on links and vault logins. The one
             thing they cost is a request per new domain to our proxy, so the
@@ -627,19 +661,14 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           className="gap-x-5 py-3"
         />
 
-        {/* Invisible characters - the pilcrow, the space dots and the line
-            breaks the editor can draw. This is a taste somebody sets once
-            and leaves, which is what makes a settings row the right home for
-            it and a permanent button over the note text the wrong one. The
-            editor keeps the quick toggle beside the word count for the
-            person who wants it on for one note.
-            Spec: ops/docs/design-decisions.md (the editor corner holds only controls that can hide themselves) */}
+        {/* Note backgrounds - the switch the look picker also shows. A
+            switch row, the idiom of the image settings (ImagesSheet.tsx). */}
         <Switch
-          setting="appearance.invisibles"
-          label={t('appearance.invisiblesTitle')}
-          description={t('appearance.invisiblesDesc')}
-          checked={invisibles}
-          onChange={setInvisibles}
+          setting="appearance.tintNotes"
+          label={t('appearance.tintNotesTitle')}
+          description={t('appearance.tintNotesDesc')}
+          checked={tintNotes}
+          onChange={onTintNotesChange}
           className="gap-x-5 py-3"
         />
       </>
@@ -796,12 +825,12 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
                         <button
                           type="button"
                           role="checkbox"
-                          aria-checked={!hiddenInAll.includes(r.key)}
+                          aria-checked={isShownInAll({ hiddenInAll, archivedInAll }, r.key)}
                           aria-label={`${t('appearance.colInAll')}: ${r.label}`}
                           onClick={() => onToggleHidden('hiddenInAll', r.key)}
                           className="inline-flex items-center justify-center p-1"
                         >
-                          <ViewCheckBox checked={!hiddenInAll.includes(r.key)} />
+                          <ViewCheckBox checked={isShownInAll({ hiddenInAll, archivedInAll }, r.key)} />
                         </button>
                       ) : (
                         <span className={SETTINGS_HELP} aria-hidden="true">-</span>
@@ -818,15 +847,11 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
 
     return (
       <div className="flex-1 min-h-0 flex flex-col text-pn">
-        {/* Tab strip - the pane holds two subjects, so it splits rather than
-            scrolls: how the app is painted, and what its lists show. It copies
-            import/ImportModal's strip (the underline sits on the border, the
-            options carry an icon), not StatsModal's, which is the older
-            rounded-top pair. Spec: ops/docs/ui-patterns.md section 36 */}
-        <div
+        {/* Settings tabs share the Account pane's layout and icon treatment. */}
+        <SettingsTabStrip
           role="tablist"
           aria-label={t('appearance.tablistLabel')}
-          className="shrink-0 flex items-stretch border-b border-divider px-6"
+          className="shrink-0 px-4 sm:px-6"
         >
           {([
             { id: 'style' as const, setting: 'appearance.style', label: t('appearance.tabStyle'), icon: <Palette aria-hidden="true" /> },
@@ -838,17 +863,13 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
               role="tab"
               aria-selected={tab === tb.id}
               onClick={() => setTab(tb.id)}
-              className={`inline-flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium border-b-2 -mb-px transition ${
-                tab === tb.id
-                  ? 'border-accent text-accent'
-                  : 'border-transparent text-pn-soft hover:text-pn'
-              }`}
+              className={settingsTabClass(tab === tb.id)}
             >
               {tb.icon}
-              {tb.label}
+              <span>{tb.label}</span>
             </button>
           ))}
-        </div>
+        </SettingsTabStrip>
 
         <div className="flex-1 min-h-0 overflow-y-auto">
           <div className="px-6 divide-y divide-divider">
@@ -863,10 +884,11 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   }
 
   // ---- Popover: the footer quick pass ------------------------------------
-  // Mode, theme and text size only. View, Editor and Website icons are
-  // set-once-and-forget writing defaults, not things anyone reaches for
-  // mid-session, so they render only in the embedded settings pane above
-  // (View already has a one-click List/Grid toggle in the sidebar).
+  // The settings reached for mid-session; the rest render only in the
+  // embedded pane above, one click away through the last row. The popover
+  // opens upward from the footer, so the pointer arrives from the bottom: the
+  // rows run in the REVERSE of the full page's order, the most important one
+  // nearest the button that opened it.
   return (
     <div
       ref={panelRef}
@@ -886,16 +908,42 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
         </button>
       </div>
 
-      {/* Mode - Auto / Light / Dark. Auto follows the OS and re-resolves
-          live when it flips (see watchSystemTheme in theme.ts). */}
+      {/* Editor width - see the embedded row above for the reasoning. */}
       <div className="px-6 pb-4">
         <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
-          {t('appearance.modeTitle')}
+          {t('appearance.contentWidthTitle')}
         </p>
         <p className={`${SETTINGS_HELP} mb-2`}>
-          {t('appearance.modeDesc')}
+          {t('appearance.contentWidthDesc')}
         </p>
-        <div className="flex gap-1 rounded-md p-1 bg-track">{modeButtons}</div>
+        <div className="flex gap-1 rounded-md p-1 bg-track">{contentWidthButtons}</div>
+      </div>
+
+      {/* Line spacing - see the embedded row above for the reasoning. No
+          example block here: this popover opens from the editor footer with
+          the note still on screen behind it, so the note is the example, and
+          a sample would double the height of a panel this narrow. */}
+      <div className="px-6 pb-4">
+        <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
+          {t('appearance.lineSpacingTitle')}
+        </p>
+        <p className={`${SETTINGS_HELP} mb-2`}>
+          {t('appearance.lineSpacingDesc')}
+        </p>
+        <div className="flex gap-1 rounded-md p-1 bg-track">{lineSpacingButtons}</div>
+      </div>
+
+      {/* Text size - the writing surface only. Device-local, never synced
+          (theme.ts explains why). App chrome does not scale: most of it is
+          pinned to literal pixel sizes. */}
+      <div className="px-6 pb-4">
+        <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
+          {t('appearance.textSizeTitle')}
+        </p>
+        <p className={`${SETTINGS_HELP} mb-2`}>
+          {t('appearance.textSizeDesc')}
+        </p>
+        <div className="flex gap-1 rounded-md p-1 bg-track">{textSizeButtons}</div>
       </div>
 
       {/* Theme cards */}
@@ -948,55 +996,45 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
         )}
       </div>
 
-      {/* Text size - the writing surface only. Device-local, never synced
-          (theme.ts explains why). App chrome does not scale: most of it is
-          pinned to literal pixel sizes. */}
+      {/* Mode - Auto / Light / Dark. Auto follows the OS and re-resolves
+          live when it flips (see watchSystemTheme in theme.ts). */}
       <div className="px-6 pb-4">
         <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
-          {t('appearance.textSizeTitle')}
+          {t('appearance.modeTitle')}
         </p>
         <p className={`${SETTINGS_HELP} mb-2`}>
-          {t('appearance.textSizeDesc')}
+          {t('appearance.modeDesc')}
         </p>
-        <div className="flex gap-1 rounded-md p-1 bg-track">{textSizeButtons}</div>
+        <div className="flex gap-1 rounded-md p-1 bg-track">{modeButtons}</div>
       </div>
 
-      {/* Line spacing - see the embedded row above for the reasoning. No
-          example block here: this popover opens from the editor footer with
-          the note still on screen behind it, so the note is the example, and
-          a sample would double the height of a panel this narrow. */}
-      <div className="px-6 pb-4">
-        <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
-          {t('appearance.lineSpacingTitle')}
-        </p>
-        <p className={`${SETTINGS_HELP} mb-2`}>
-          {t('appearance.lineSpacingDesc')}
-        </p>
-        <div className="flex gap-1 rounded-md p-1 bg-track">{lineSpacingButtons}</div>
-      </div>
+      {/* Open items in tabs - the first row of the full page, so the row
+          nearest the pointer here. */}
+      {tabsFit && (
+        <div className="px-6 pb-4">
+          <Switch
+            label={t('appearance.openInTabsTitle')}
+            labelClassName={SETTINGS_EYEBROW}
+            description={t('appearance.openInTabsDesc')}
+            checked={openItemsInTabs}
+            onChange={setOpenItemsInTabs}
+            className="gap-x-4"
+          />
+        </div>
+      )}
 
-      {/* Note backgrounds - see the embedded row above. */}
-      <div className="px-6 pb-4">
-        <Switch
-          label={t('appearance.tintNotesTitle')}
-          labelClassName={SETTINGS_EYEBROW}
-          description={t('appearance.tintNotesDesc')}
-          checked={tintNotes}
-          onChange={onTintNotesChange}
-          className="gap-x-4"
-        />
-      </div>
-
-      {/* Editor width - see the embedded row above for the reasoning. */}
-      <div className="px-6 pb-4">
-        <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
-          {t('appearance.contentWidthTitle')}
-        </p>
-        <p className={`${SETTINGS_HELP} mb-2`}>
-          {t('appearance.contentWidthDesc')}
-        </p>
-        <div className="flex gap-1 rounded-md p-1 bg-track">{contentWidthButtons}</div>
-      </div>
+      {/* The popover holds the settings reached for mid-session; everything
+          else is one click away on the full page. */}
+      {onOpenAll && (
+        <button
+          type="button"
+          onClick={onOpenAll}
+          className="w-full flex items-center justify-between gap-2 px-6 py-3 border-t border-divider text-sm font-medium text-accent hover:bg-neutral-100 dark:hover:bg-neutral-800 transition rounded-b-[inherit]"
+        >
+          {t('appearance.allSettings')}
+          <CaretRight size={14} aria-hidden="true" />
+        </button>
+      )}
 
       {/* Spell check moved to LanguageSheet in v0.300.0 - it is a language
           setting, not a look-and-feel one, and it sat here only because it

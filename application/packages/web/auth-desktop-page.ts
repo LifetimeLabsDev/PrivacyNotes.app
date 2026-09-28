@@ -61,19 +61,23 @@ button.copy:hover{background:var(--tint)}
 [hidden]{display:none!important}
 `;
 
-function renderHtml(): string {
+function renderHtml(connect = false): string {
+  const title = connect ? 'Finish connecting your account' : TITLE;
+  const description = connect ? 'Return to PrivacyNotes to finish connecting this sign-in account to your vault.' : DESC;
+  const canonical = connect ? 'https://use.privacynotes.app/auth/connect' : CANONICAL;
   return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${TITLE} - PrivacyNotes</title>
-<meta name="description" content="${DESC}">
+<title>${title} - PrivacyNotes</title>
+<meta name="description" content="${description}">
+<meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex, nofollow">
-<link rel="canonical" href="${CANONICAL}">
-<meta property="og:title" content="${TITLE}">
-<meta property="og:description" content="${DESC}">
-<meta property="og:url" content="${CANONICAL}">
+<link rel="canonical" href="${canonical}">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="${description}">
+<meta property="og:url" content="${canonical}">
 ${ogLocaleTag('en')}
 <style>
 ${themeVarsCss(
@@ -86,15 +90,15 @@ ${PAGE_CSS}
 </style>
 ${THEME_SCRIPT_TAG}
 </head>
-<body data-static-page="auth-desktop">
+<body ${connect ? 'data-static-page="auth-connect"' : 'data-static-page="auth-desktop"'}>
 <div class="wrap">
   <div class="card">
-    <h1>${TITLE}</h1>
+    <h1>${title}</h1>
 
-    <p class="lede" data-role="lede" hidden>You are signed in here. Copy this code and paste it into ${brandMark()} on your computer.</p>
+    <p class="lede" data-role="lede" hidden>${connect ? 'Return to PrivacyNotes. If the account is not connected yet, copy this return link and paste it into the Connected accounts screen.' : `You are signed in here. Copy this code and paste it into ${brandMark()} on your computer.`}</p>
     <div class="codebox" data-role="codebox" hidden>
       <code class="code" data-role="code"></code>
-      <button type="button" class="copy" data-role="copy">Copy</button>
+      <button type="button" class="copy" data-role="copy">${connect ? 'Copy return link' : 'Copy'}</button>
     </div>
     <ol class="steps" data-role="steps" hidden>
       <li>Switch back to the PrivacyNotes app.</li>
@@ -102,14 +106,14 @@ ${THEME_SCRIPT_TAG}
       <li>You can close this tab afterwards.</li>
     </ol>
 
-    <p class="nojs" data-role="nojs">The code is in this page's address, after <code>code=</code>. Copy it from the address bar and paste it into ${brandMark()} on your computer.</p>
+    <p class="nojs" data-role="nojs">${connect ? 'Copy this page\'s full address and paste it into the Connected accounts screen in PrivacyNotes.' : `The code is in this page's address, after <code>code=</code>. Copy it from the address bar and paste it into ${brandMark()} on your computer.`}</p>
 
-    <p class="lede" data-role="missing" hidden>This page has no sign-in code in its address, so there is nothing to copy. Start the sign-in again from the app.</p>
+    <p class="lede" data-role="missing" hidden>${connect ? 'This connection could not be completed. Return to Connected accounts and try again. Your existing accounts are unchanged.' : 'This page has no sign-in code in its address, so there is nothing to copy. Start the sign-in again from the app.'}</p>
 
     <p class="note">The code works once, expires shortly, and is useless to anyone but the app that started this sign-in. Never paste it into any other program.</p>
   </div>
 </div>
-<script src="/static-pages.js" defer></script>
+${connect ? '<script src="/auth-connect.js" defer></script>' : '<script src="/static-pages.js" defer></script>'}
 </body>
 </html>`;
 }
@@ -128,6 +132,25 @@ export function authDesktopPagePlugin(): Plugin {
       server.middlewares.use('/auth/desktop', (_req, res) => {
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.end(renderHtml());
+      });
+    },
+  };
+}
+
+/** Isolated connect returns never boot the app or exchange an OAuth code.
+ * tests/accountConnection.test.ts covers the message/copy bridge. */
+export function authConnectPagePlugin(): Plugin {
+  return {
+    name: 'emit-auth-connect-page',
+    generateBundle() {
+      this.emitFile({ type: 'asset', fileName: 'auth/connect/index.html', source: renderHtml(true) });
+    },
+    configureServer(server) {
+      server.middlewares.use('/auth/connect', (_req, res) => {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.setHeader('Referrer-Policy', 'no-referrer');
+        res.setHeader('Cache-Control', 'no-store');
+        res.end(renderHtml(true));
       });
     },
   };

@@ -24,6 +24,7 @@
     "test:backup": "pnpm --filter shared --fail-if-no-match build && node --test tools/backup-kat.mjs"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
     "fake-indexeddb": "^6.2.5",
     "jsdom": "^30.1.0",
     "knip": "6.37.0",

@@ -108,7 +108,10 @@
     "open": "Открыть",
     "notesHeading": "Заметки",
     "fillOneField": "Перед сохранением заполните хотя бы одно поле.",
-    "expiryNeedsBoth": "Для срока действия нужны и месяц, и год, или оставьте оба поля пустыми."
+    "expiryNeedsBoth": "Для срока действия нужны и месяц, и год, или оставьте оба поля пустыми.",
+    "customField": "Своё поле",
+    "fieldNeedsName": "Дайте название каждому своему полю.",
+    "saveFailed": "Не удалось сохранить. Ваши изменения никуда не делись."
   },
   "fileTypes": {
     "audio": "Аудио",
@@ -150,6 +153,7 @@
     "allItems": "Все",
     "pinnedTooltip": "Закреплённые элементы",
     "pinned": "Закреплённые",
+    "archive": "Архив",
     "notesTooltip": "Все заметки",
     "notes": "Заметки",
     "tasksTooltip": "Задачи из всех заметок",
@@ -216,6 +220,8 @@
     "noMatches": "Подходящих папок нет",
     "collapse": "Свернуть",
     "expand": "Развернуть",
+    "collapseAll": "Свернуть все",
+    "expandAll": "Развернуть все",
     "reorder": "Изменить порядок: {{folder}}",
     "saveName": "Сохранить название папки",
     "actionsForFolder": "Действия с папкой {{folder}}",
@@ -224,21 +230,27 @@
   },
   "collapsedSidebar": {
     "newNote": "Новая заметка",
-    "cycleView": "Сменить вид (авто, список, сетка)",
     "expandSidebar": "Развернуть боковую панель"
   },
   "mobileHeader": {
     "openMenu": "Открыть меню"
   },
   "noteOptionsMenu": {
+    "color": "Цвет",
+    "colorNone": "Без цвета",
+    "colorUseDefault": "Сбросить",
+    "colorFromFolder": "Из папки: {{name}}",
+    "colorFromTag": "Из тега: #{{name}}",
+    "details": "Подробности",
     "readOnly": "Только для чтения",
     "readOnlyDescription": "Никаких изменений, пока вы это не отключите.",
     "protect": "Защитить",
-    "protectDescription": "Скрывает содержимое за вашим PIN или биометрией. Название остаётся видимым.",
     "convertToJournal": "Превратить в запись дневника",
     "convertToNote": "Превратить в заметку",
     "unpin": "Открепить",
     "pin": "Закрепить",
+    "archive": "Архивировать",
+    "unarchive": "Разархивировать",
     "burn": "Сжечь",
     "share": "Поделиться",
     "trash": "В корзину",
@@ -246,17 +258,15 @@
     "restore": "Восстановить",
     "deleteForever": "Удалить навсегда",
     "moveToFolder": "Переместить в папку",
-    "noteHistory": "История заметки",
-    "noteHistoryDescription": "Восстановите любую из последних 20 версий.",
-    "showMarkdownDescription": "Редактировать исходный Markdown.",
-    "showFormattedDescription": "Назад к редактору с форматированием.",
+    "noteHistory": "История",
     "findReplace": "Найти и заменить",
+    "uncheckAllTasks": "Снять отметки со всех задач",
     "comingSoon": "Скоро",
     "noteOptions": "Параметры заметки",
     "lastModified": "Изменено: {{date}}",
     "created": "Создано: {{date}}",
     "size": "Занимает: {{size}}",
-    "sizeHint": "Общий зашифрованный размер этой заметки.",
+    "sizeHint": "Общий зашифрованный размер этого элемента.",
     "tagCount_one": "{{count}} тег",
     "tagCount_few": "{{count}} тега",
     "tagCount_many": "{{count}} тегов",
@@ -267,6 +277,8 @@
     "exitSelection": "Выйти из выделения",
     "unpin": "Открепить",
     "pin": "Закрепить",
+    "archive": "Архивировать",
+    "unarchive": "Разархивировать",
     "tag": "Тег",
     "export": "Экспорт",
     "delete": "Удалить",
@@ -278,6 +290,8 @@
   },
   "listPrefs": {
     "listPreferences": "Параметры списка",
+    "layout": "Макет",
+    "layoutDeviceOnly": "Действует только на этом устройстве",
     "sortBy": "Сортировать по",
     "dateCreated": "Дате создания",
     "dateModified": "Дате изменения",
@@ -285,6 +299,7 @@
     "size": "Размеру",
     "view": "Вид",
     "showPreview": "Показывать предпросмотр",
+    "longPreview": "Длинный предпросмотр",
     "showDate": "Показывать дату",
     "showTags": "Показывать папку и теги",
     "other": "Другое",
@@ -329,6 +344,8 @@
     "deleteForever": "Удалить навсегда",
     "unpin": "Открепить",
     "pin": "Закрепить",
+    "archive": "Архивировать",
+    "unarchive": "Разархивировать",
     "duplicate": "Дублировать",
     "moveToFolder": "Переместить в папку",
     "exportAsMarkdown": "Экспортировать как Markdown",
@@ -340,7 +357,13 @@
     "newContact": "Новый контакт",
     "openBookmark": "Открыть",
     "copyBookmarkUrl": "Копировать URL",
-    "editBookmark": "Изменить закладку"
+    "editBookmark": "Изменить закладку",
+    "openInTab": "Открыть во вкладке",
+    "closeTab": "Закрыть вкладку",
+    "closeOtherTabs": "Закрыть другие вкладки",
+    "closeAllTabs": "Закрыть все вкладки",
+    "pinTab": "Закрепить вкладку",
+    "unpinTab": "Открепить вкладку"
   },
   "demoBanner": {
     "title": "Попробуйте без всякого риска",
@@ -362,6 +385,8 @@
     "braveSteps": "Вставьте это в адресную строку Brave, установите для «{{flag}}» значение Enabled и перезапустите Brave.",
     "braveAppAlternative": "Или воспользуйтесь приложением для компьютера",
     "openFailed": "Не удалось открыть этот файл.",
+    "linkNotFound": "В этой папке нет файла «{{target}}».",
+    "linkNeedsFolder": "Откройте папку, чтобы переходить по ссылкам.",
     "saveFailed": "Не удалось сохранить на диск.",
     "saving": "Сохранение…",
     "savedToDisk": "Сохранено на диск",
@@ -606,5 +631,9 @@
   },
   "looks": {
     "menu": "Значок и цвет"
+  },
+  "tabStrip": {
+    "label": "Открытые вкладки",
+    "close": "Закрыть {{title}}"
   }
 }

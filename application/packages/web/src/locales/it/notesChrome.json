@@ -75,7 +75,21 @@
   },
   "burnShareModal": {
     "title": "Condividi & Burn After Reading",
-    "body": "<lead>La tua nota originale non verrà eliminata.</lead> Resta al sicuro nel tuo account. Il burn link è una copia cifrata separata che si autodistrugge dopo essere stata letta. Il link scade dopo 24 ore, che venga aperto o meno.",
+    "body": "<lead>La tua nota originale non verrà eliminata.</lead> Resta al sicuro nel tuo account. Il burn link è una copia cifrata separata che si autodistrugge dopo essere stata letta.",
+    "readTime": "Tempo di lettura",
+    "readTimeHint": "Poi sparisce dallo schermo",
+    "lifetime": "Il link scade",
+    "lifetimeHint": "Se nessuno lo apre",
+    "minutes_one": "{{count}} minuto",
+    "minutes_other": "{{count}} minuti",
+    "hours_one": "{{count}} ora",
+    "hours_other": "{{count}} ore",
+    "afterHours_one": "Dopo {{count}} ora",
+    "afterHours_other": "Dopo {{count}} ore",
+    "afterDays_one": "Dopo {{count}} giorno",
+    "afterDays_other": "Dopo {{count}} giorni",
+    "create": "Crea e copia il link",
+    "share": "Condividi il link",
     "imagesStripped": "Viene mostrato solo il testo, i file sono nascosti in questa nota.",
     "copied": "Copiato"
   },
@@ -89,7 +103,7 @@
     "footerTagline": "- Note cifrate zero-knowledge, ospitate in Svizzera.",
     "sealed": {
       "heading": "Hai ricevuto una nota cifrata.",
-      "subheading": "Questo messaggio si autodistruggerà dopo la lettura. I link non letti scadono dopo 24 ore.",
+      "subheading": "Questo messaggio si autodistruggerà dopo la lettura. I link non letti scadono da soli.",
       "reveal": "Mostra messaggio",
       "warning": "Il server elimina la nota nel momento in cui la mostri. Nessuna seconda possibilità."
     },
@@ -105,7 +119,7 @@
     },
     "gone": {
       "heading": "Questa nota non c'è più.",
-      "body": "È già stata letta o è scaduta. I burn link possono essere aperti una sola volta e scadono dopo 24 ore."
+      "body": "È già stata letta o è scaduta. I burn link possono essere aperti una sola volta e scadono da soli."
     },
     "error": {
       "heading": "Qualcosa è andato storto.",

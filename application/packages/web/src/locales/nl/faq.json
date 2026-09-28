@@ -94,8 +94,8 @@
     "what-can-you-see": {
       "q": "Wat kan PrivacyNotes zien van mijn notities?",
       "a": [
-        "Niets leesbaars. Notities, titels, tags en bijlagen zijn altijd versleuteld, op je apparaat en onderweg naar de server, dus de server bewaart alleen cijfertekst. Bij eigen beheer, dat elk herstelzinaccount heeft, bestaat er aan onze kant geen sleutel om die te ontsleutelen. Maak je een account aan met Google, Apple of GitHub, dan wordt gevraagd waar je sleutel woont, en de keuze staat eerst op \"Houd het simpel & gemakkelijk\": dat bewaart je herstelzin op onze server, versleuteld met een sleutel van ons. Instellingen > Beveiliging > Je herstelzin toont welke je hebt en laat je wisselen.",
-        "Wat we wel zien, is het minimum dat nodig is om de dienst te draaien: hoeveel versleutelde opslag je gebruikt, hoeveel apparaten je hebt gekoppeld, en tijdstempels van de synchronisatie. Meld je je aan met een herstelzin in plaats van met Google, Apple of GitHub, dan kennen we niet eens je e-mailadres."
+        "Notities, titels, tags en bijlagen worden op je apparaat versleuteld voordat ze de server bereiken. Bij eigen sleutelbeheer, waarmee elk nieuw herstelzinaccount begint, hebben wij geen ontsleutelsleutel. Bij registratie met Google, Apple of GitHub kies je waar je sleutel wordt bewaard. De standaardkeuze is \"Houd het simpel & gemakkelijk\": je herstelzin staat dan op onze server, versleuteld met een sleutel van ons. In die modus kan onze server je herstelzin en daarmee je notities ontsleutelen. Instellingen > Account > Sleutelbeheer toont je huidige modus en laat je wisselen.",
+        "Wij zien de informatie die nodig is om de dienst te draaien: hoeveel versleutelde opslag je gebruikt, hoeveel apparaten je hebt gekoppeld en tijdstempels van de synchronisatie. Gebruik je alleen je herstelzin en heb je geen Google-, Apple- of GitHub-account gekoppeld, dan kennen we je e-mailadres niet."
       ]
     },
     "phrase-vs-password": {
@@ -103,17 +103,17 @@
       "a": [
         "Het voelt in het begin misschien achterstevoren, maar één herstelzin is de sterkere constructie. Bij een gebruikersnaam en wachtwoord is de gebruikersnaam geen geheim (die duikt op in elk datalek), dus rust alle veiligheid op het wachtwoord, en door mensen gekozen wachtwoorden halen gemiddeld zo'n 30 tot 40 bits entropie. Jouw zin van 12 woorden is gegarandeerd 128 bits, gegenereerd door je apparaat, nooit door een mens gekozen, en nooit hergebruikt van een andere site.",
         "Bovendien is er bij ons geen wachtwoord dat we kunnen verliezen. Een wachtwoordlogin betekent dat de server minstens een wachtwoordhash bewaart, en die kan lekken, gekraakt of gephisht worden. Bij eigen beheer verlaat jouw herstelzin je apparaat nooit: hij leidt je encryptiesleutels lokaal af, en de server ziet alleen ooit versleutelde gegevens. Er is geen hash om te stelen en geen wachtwoordherstel dat een aanvaller kan misbruiken.",
-        "Voelt het typen van 12 woorden onhandig: je kunt de herstelzin met één tik in je wachtwoordmanager opslaan (Instellingen > Beveiliging > Je herstelzin), en dan voelt aanmelden als elke andere login. Heb je liever een vertrouwde manier? Aanmelden met Google, Apple of GitHub kan ook: onder de motorkap krijg je nog steeds een herstelzin, en jij kiest of die op je apparaat blijft of dat wij hem voor je bewaren."
+        "Voelt het typen van 12 woorden onhandig: je kunt de herstelzin met één tik in je wachtwoordmanager opslaan (Instellingen > Beveiliging > Herstelzin), en dan voelt aanmelden als elke andere login. Heb je liever een vertrouwde manier? Aanmelden met Google, Apple of GitHub kan ook: onder de motorkap krijg je nog steeds een herstelzin, en jij kiest of die op je apparaat blijft of dat wij hem voor je bewaren."
       ]
     },
     "threat-model-levels": {
       "q": "Kan ik zelf de balans kiezen tussen gemak en privacy?",
       "a": [
         "Ja, met opzet. Niet iedereen verdedigt zich tegen dezelfde dreigingen, dus het accountmodel is een ladder in plaats van één dogma. Elke trede houdt je notities versleuteld op je apparaat; wat verandert, is wie de sleutel heeft en wat wij over jou weten.",
-        "Het gemakkelijke uiteinde: meld je aan met Google, Apple of GitHub en laat \"Houd het simpel & gemakkelijk\" geselecteerd als daarom wordt gevraagd; daar begint dat scherm mee. Wij bewaren je herstelzin voor je, versleuteld op onze server, zodat elk apparaat zich aanmeldt met alleen die login en er niets is om te bewaren of kwijt te raken. In ruil kennen wij het e-mailadres achter die login, en houden wij je sleutel in plaats van jij. Is je realistische risico eerder dat je je eigen inloggegevens kwijtraakt dan een gerichte inbraak, dan is dit de juiste trede.",
+        "Het gemakkelijke uiteinde: meld je aan met Google, Apple of GitHub en laat \"Houd het simpel & gemakkelijk\" geselecteerd als daarom wordt gevraagd. Dat is de standaardkeuze. Wij bewaren je herstelzin versleuteld op onze server, zodat een nieuw apparaat je notities kan openen na aanmelding bij de provider en een authenticatorcode als 2FA aanstaat. In ruil kennen wij het e-mailadres achter die aanmelding en kan onze server je herstelzin ontsleutelen. Bewaar je herstelzin voor het geval je het provideraccount kwijtraakt, en bewaar je 2FA-reservesleutel als je aanmelden in twee stappen aanzet.",
         "Het midden: meld je aan met Google, Apple of GitHub maar kies \"Maximale veiligheid & privacy\". Je herstelzin raakt onze servers nooit en de versleuteling is volledig zero-knowledge; nieuwe apparaten hebben de herstelzin nodig of een QR-scan van een apparaat dat al aangemeld is. We kennen dan nog steeds onvermijdelijk het e-mailadres achter die login, maar we zouden geen enkele notitie kunnen lezen, zelfs niet onder dwang.",
         "Het private uiteinde: sla de logins helemaal over en gebruik alleen de zin van 12 woorden. Geen e-mail, geen naam, geen identiteit, en in combinatie met een [anonieme Pro-aankoop](/nl/help/buy-pro-anonymously/) laat zelfs betalen nergens een naam achter. In ruil daarvoor beheer je de sleutel volledig zelf: raak je de herstelzin kwijt zonder aangemeld apparaat, dan kan niemand je helpen.",
-        "Met een Google-, Apple- of GitHub-login zit je niet vast aan de trede die je koos. Bij Instellingen > Beveiliging > Je herstelzin staan beide modi naast elkaar met wat ze kosten, en je kunt altijd beide kanten op. Overstappen op eigen beheer wist onze kopie en vraagt je eerst drie van je twaalf woorden opnieuw te typen, want wie hierop klikt heeft ze meestal nooit opgeschreven. Terug gaan uploadt de herstelzin weer en vergt een uitdrukkelijke keuze. Beide richtingen worden ondertekend met je eigen accountsleutel, dus een gestolen sessie kan je modus niet wijzigen. Een account met alleen een herstelzin blijft aan de private kant, want er is geen login waarmee een bewaarde sleutel op te halen valt. En elke trede kan de lokale lagen erbovenop: PIN-vergrendeling, biometrisch ontgrendelen en bescherming per notitie."
+        "Instellingen > Account > Sleutelbeheer toont beide modi met hun voor- en nadelen en laat je wisselen. Als je het serverbeheer verlaat, verwijderen wij onze kopie nadat je drie woorden uit je opgeslagen herstelzin hebt bevestigd. Terugschakelen uploadt de herstelzin opnieuw en vraagt om een uitdrukkelijke keuze. Beide wijzigingen worden ondertekend met je accountsleutel en vereisen een verse authenticatorcode als 2FA aanstaat. Een herstelzinaccount kan een provider koppelen via Account > Accounts en daarna apart voor serverbeheer kiezen; koppelen uploadt de herstelzin niet. Elke modus ondersteunt ook een PIN-appslot, biometrisch ontgrendelen en bescherming per notitie."
       ]
     },
     "twelve-word-phrase": {
@@ -126,19 +126,26 @@
       ]
     },
     "guess-phrase": {
-      "q": "Als iemand mijn 12 woorden raadt, kan diegene dan in mijn account?",
+      "q": "Kan iemand mijn 12 woorden raden of toevallig dezelfde krijgen?",
       "a": [
-        "Kort antwoord: ja. Je herstelzin is de sleutel, dus wie hem heeft kan zich aanmelden, net zoals wie jouw huissleutel heeft je deur kan openen. Dat is met opzet: het is de ene hoofdsleutel tot je notities, en er zit niets zwakkers voor. De echte vraag is dus niet of de herstelzin toegang geeft (dat doet hij), maar of iemand hem zou kunnen raden, en daar is het antwoord nee, niet met een computer die bestaat of die wij kunnen voorzien.",
-        "Even over de schaal. Een zin van 12 woorden is één van 2^128 mogelijkheden: ongeveer 340 sextiljoen, een getal van 39 cijfers (3,4 x 10^38). De kans dat iemand die van jou in één keer raadt, is 1 op 340 sextiljoen, kleiner dan vier keer op rij een jackpot van 1 op 300 miljoen winnen. Het als zoektocht aanpakken in plaats van als gokje helpt niet: zelfs bij een miljard miljard pogingen per seconde (10^18, ver voorbij wat echte hardware ooit haalt, inclusief die van staten) zou ze allemaal aflopen zo'n 10 biljoen jaar duren, bijna 800 keer de huidige leeftijd van het heelal. En dat is nog de fantasieversie, want elke echte poging moet door een bewust trage sleutelafleiding heen, en elke online aanval moet langs onze servers, wat het daadwerkelijke raden nog vele ordes van grootte trager maakt. Het is bovendien geen nieuw bedenksel: dezelfde 128-bitsconstructie beveiligt Bitcoin-wallets al ruim tien jaar, en niemand heeft er ooit een geraden.",
-        "Het is verleidelijk om de herstelzin voor te stellen als een wachtwoord, waar je hem sterker maakt met hoofdletters, cijfers en symbolen. Zo werkt een herstelzin niet, en je moet er nooit zelf een verzinnen of aanpassen. Je apparaat genereert 128 bits cryptografisch veilige willekeur en codeert die als 12 woorden uit een vaste, openbare lijst van 2048 woorden: die willekeur is de hele sterkte. Het laatste woord bevat zelfs een ingebouwde controlesom, dus een verkeerd getypte of verzonnen herstelzin wordt meteen geweigerd. De volgorde van de woorden telt, hoofdletters niet (die normaliseren we bij het aanmelden), en symbolen toevoegen zou de herstelzin alleen maar ongeldig maken. Typ de woorden precies zoals je ze hebt gekregen."
+        "Nee. Niemand kan je 12 woorden raden, en niemand anders krijgt dezelfde: geen computer die bestaat, of die wij kunnen voorzien, komt ook maar in de buurt. Alleen wie je echte woorden in handen krijgt, kan zich aanmelden, dus bewaar ze goed.",
+        "Je apparaat kiest je herstelzin willekeurig, en het aantal mogelijke zinnen heeft 39 cijfers. De jouwe in één keer raden is minder waarschijnlijk dan vier keer op rij een jackpot van 1 op 300 miljoen winnen. Een computer die elke seconde een miljard miljard zinnen probeert, zou nog steeds zo'n 10 biljoen jaar nodig hebben om ze allemaal te proberen, veel langer dan het heelal bestaat. Zelfs als alle 8 miljard mensen op aarde elk een herstelzin hadden, is de kans dat er twee gelijk zijn kleiner dan twee keer op rij die jackpot winnen.",
+        "De sterkte komt uit die willekeur, niet uit hoe de woorden eruitzien. Verzin geen herstelzin en voeg er geen symbolen aan toe: gebruik de 12 woorden precies zoals de app ze je geeft. Hoofdletters maken niet uit. Het laatste woord werkt als controle, dus de app weigert een verkeerd getypte of verzonnen herstelzin."
+      ]
+    },
+    "same-phrase": {
+      "q": "Kan iemand anders dezelfde herstelzin krijgen als ik?",
+      "a": [
+        "Nee, in de praktijk niet. Je apparaat kiest je herstelzin willekeurig uit een enorm aantal mogelijke zinnen. Zelfs als iedereen op aarde een account zou maken, zijn twee gelijke herstelzinnen minder waarschijnlijk dan twee keer op rij een jackpot van 1 op 300 miljoen winnen. Door diezelfde getallen [kan niemand je herstelzin raden](/nl/help/guess-phrase/).",
+        "Je Account-ID komt voort uit de herstelzin. Verwijder je dus een account en meld je je opnieuw aan met dezelfde 12 woorden, dan krijg je een nieuwe, lege kluis met dezelfde Account-ID. Niets uit de verwijderde kluis komt terug. Ben je overgestapt naar een nieuwe herstelzin, haal de oude dan uit je wachtwoordmanager, zodat je je nooit per ongeluk bij het oude account aanmeldt."
       ]
     },
     "why-no-2fa": {
-      "q": "Waarom is er geen tweefactorauthenticatie (2FA)?",
+      "q": "Hoe zet ik tweefactorauthenticatie (2FA) aan?",
       "a": [
-        "Omdat het een bewuste afweging is, geen omissie. De bekende soort 2FA, een code per sms of een authenticator-app, bestaat om zwakke, door mensen gekozen wachtwoorden te schragen, en leunt op een gedeeld geheim en een herstelroute op een server. Dat is precies het aanvalsoppervlak dat het herstelzinmodel weghaalt: je apparaat bewijst dat het de sleutel heeft door een uitdaging te ondertekenen, dus onze servers krijgen alleen ooit een publieke sleutel en een handtekening, nooit de herstelzin en nooit een wachtwoordhash. Er een code op schroeven zou juist de machinerie op de server terugbrengen die dit ontwerp wil vermijden, zonder iets toe te voegen tegen raden, want 128 bits heeft die deur al gesloten.",
-        "Wat je hier beschermt is lokaal, en het zit in elk plan: het slot op de app (PIN) en biometrisch ontgrendelen staan voor een apparaat dat iemand anders oppakt. De risico's die verdediging verdienen zijn phishing en een herstelzin die over je schouder wordt meegelezen, niet raden. Bewaar de herstelzin dus in een wachtwoordmanager en typ hem nergens anders dan in de app.",
-        "Verder geldt: de herstelzin is de sleutel, dus maak er een back-up van op de dag dat je je account aanmaakt: bewaar hem in een betrouwbare wachtwoordmanager, of print hem of schrijf hem op en berg die kopie veilig op. Plak hem nooit ergens anders in dan in de app zelf."
+        "Zet de optionele aanmelding in twee stappen aan via Instellingen > Beveiliging > 2FA. Werk PrivacyNotes eerst bij op je andere apparaten. Scan de QR-code met een authenticator-app of voer de instelsleutel handmatig in. Bewaar de 2FA-reservesleutel buiten PrivacyNotes, bevestig de opgeslagen kopie en voer een actuele code in om af te ronden.",
+        "Na het instellen heb je voor een nieuwe serversessie je herstelzin of een gekoppelde provider nodig, gevolgd door een authenticatorcode. Bij eigen sleutelbeheer heb je nog steeds je herstelzin nodig om notities te ontsleutelen. Beheer providers via Instellingen > Account > Accounts; koppelen verandert het sleutelbeheer niet.",
+        "Ben je je authenticator kwijt, voeg dan de opgeslagen 2FA-reservesleutel toe aan een andere authenticator-app. Als je beide kwijtraakt, kunnen we de toegang tot de server niet herstellen. Notities die al ontgrendeld zijn op een apparaat blijven leesbaar en exporteerbaar. Aanmelden in twee stappen voegt geen versleuteling toe en beschermt geen apparaat dat al ontgrendeld is."
       ]
     },
     "bip39-wordlist": {
@@ -167,7 +174,7 @@
       "q": "Wat zijn burn-notities?",
       "a": [
         "Een burn-notitie is een manier om een notitie te delen met iemand die PrivacyNotes niet gebruikt, waarbij de notitie zichzelf vernietigt. De app versleutelt de inhoud met een eenmalige sleutel en geeft je een link. De sleutel reist mee in het fragment van de link, dat browsers nooit naar servers sturen, dus onze server bewaart cijfertekst die hij niet kan lezen.",
-        "Zodra de link voor het eerst geopend wordt, geeft de server de cijfertekst af en verwijdert hem in dezelfde stap: één keer lezen, en dan is hij weg. Links die niet geopend worden, verlopen vanzelf na 24 uur. Hoe dan ook blijft er niets hangen."
+        "Zodra de link voor het eerst geopend wordt, geeft de server de cijfertekst af en verwijdert hem in dezelfde stap: één keer lezen, en dan is hij weg. Links die niet geopend worden, verlopen vanzelf na de tijd die de afzender kiest, van 1 uur tot 7 dagen. Hoe dan ook blijft er niets hangen."
       ]
     },
     "open-source": {
@@ -187,15 +194,23 @@
     "lost-phrase": {
       "q": "Ik ben mijn herstelzin kwijt. Kunnen jullie mijn account herstellen?",
       "a": [
-        "Ben je nog op een apparaat aangemeld: ja, dan kun je hem zelf terughalen. Open Instellingen > Beveiliging > Je herstelzin en sla hem nu meteen op in je wachtwoordmanager.",
+        "Ben je nog op een apparaat aangemeld: ja, dan kun je hem zelf terughalen. Open Instellingen > Beveiliging > Herstelzin en sla hem nu meteen op in je wachtwoordmanager.",
         "Heb je geen aangemeld apparaat en geen herstelzin, dan hangt het ervan af wie de sleutel heeft. Liet je ons hem bewaren toen je je aanmeldde met Google, Apple of GitHub, meld je dan aan met die login en je bent weer binnen. Bij eigen beheer kan niemand dat: je herstelzin bereikt onze servers nooit, dus er valt niets te resetten en geen supportticket kan helpen. Elke dienst die je versleutelde gegevens na een totaal verlies wél kan herstellen, heeft je sleutels in handen.",
         "De oplossing kost tien seconden: bewaar de herstelzin in een wachtwoordmanager op de dag dat je je account aanmaakt. Is hij al weg en betaal je voor een opslaguitbreiding, dan factureert Paddle je rechtstreeks en kan Paddle die stopzetten zonder je herstelzin: zie [een uitbreiding wijzigen of stopzetten](/nl/help/manage-storage-addon/)."
+      ]
+    },
+    "lost-2fa": {
+      "q": "Ik ben mijn 2FA-codes kwijt. Hoe kom ik weer binnen?",
+      "a": [
+        "Voeg je 2FA-reservesleutel toe aan een willekeurige authenticator-app en voer de code in die hij toont wanneer PrivacyNotes erom vraagt. De reservesleutel is de sleutel die je opsloeg toen je 2FA aanzette, en hij werkt elke keer dat je hem nodig hebt.",
+        "Ben je zowel je telefoon als de reservesleutel kwijt, dan resetten we 2FA niet, en onze support kan daar niet bij helpen. De notities die al op je apparaten staan, blijven leesbaar.",
+        "Om ze te bewaren, ga je op een apparaat dat ze nog heeft naar Instellingen > Import & Export > Exporteren. Maak daarna een nieuwe kluis aan en importeer de export daar."
       ]
     },
     "oauth-recovery": {
       "q": "Ik meld me aan met Google, Apple of GitHub. Wat als ik de toegang tot dat account verlies?",
       "a": [
-        "Je hebt onder de motorkap nog steeds een zin van 12 woorden, en die zin alleen meldt je op elk apparaat aan - Google, Apple of GitHub is niet nodig. Open Instellingen > Beveiliging > Je herstelzin en sla hem op in je wachtwoordmanager.",
+        "Je hebt onder de motorkap nog steeds een zin van 12 woorden, en die zin alleen meldt je op elk apparaat aan - Google, Apple of GitHub is niet nodig. Open Instellingen > Beveiliging > Herstelzin en sla hem op in je wachtwoordmanager.",
         "Doe dat één keer en het verliezen van je Google-, Apple- of GitHub-account kost je niets: meld je gewoon aan met de herstelzin."
       ]
     },
@@ -468,7 +483,7 @@
       "q": "Biometrisch ontgrendelen werkt niet meer. Wat kan ik doen?",
       "a": [
         "Je wordt nooit buitengesloten. Het vergrendelscherm biedt altijd een uitweg: \"Ontgrendelen met PIN\", of \"Aanmelden met herstelzin\". De biometrie is een lokale drempel, geen encryptiesleutel, dus je notities blijven hoe dan ook onaangeroerd.",
-        "Herstel daarna de drempel. Inschrijven gebeurt per apparaat, dus een nieuwe telefoon, een vers browserprofiel of een herinstallatie moet opnieuw worden ingeschreven: Instellingen > Beveiliging > \"Biometrisch slot\", uitzetten, en dan opnieuw \"Biometrisch ontgrendelen inschakelen\". Het vereist ook \"Dit apparaat vertrouwen\" (niet-vertrouwde sessies verdwijnen zodra het tabblad sluit) en hardware met een platform-authenticator (Touch ID, Face ID, Windows Hello). Duikt er een wachtwoordmanager als Bitwarden of 1Password op in plaats van de systeemvraag, sluit die dan en probeer opnieuw, of zet zijn passkey-overname voor de site uit - de app vraagt om de ingebouwde authenticator, maar sommige managers onderscheppen het toch."
+        "Herstel daarna de drempel. Inschrijven gebeurt per apparaat, dus een nieuwe telefoon, een vers browserprofiel of een herinstallatie moet opnieuw worden ingeschreven: Instellingen > Beveiliging > \"Slot\", uitzetten, en dan opnieuw \"Biometrisch ontgrendelen inschakelen\". Het vereist ook \"Dit apparaat vertrouwen\" (niet-vertrouwde sessies verdwijnen zodra het tabblad sluit) en hardware met een platform-authenticator (Touch ID, Face ID, Windows Hello). Duikt er een wachtwoordmanager als Bitwarden of 1Password op in plaats van de systeemvraag, sluit die dan en probeer opnieuw, of zet zijn passkey-overname voor de site uit - de app vraagt om de ingebouwde authenticator, maar sommige managers onderscheppen het toch."
       ]
     },
     "phrase-compromised": {
@@ -646,7 +661,7 @@
     "add-second-device": {
       "q": "Hoe meld ik me aan op een tweede apparaat?",
       "a": [
-        "Open op het apparaat dat je al gebruikt Instellingen > Beveiliging > Je herstelzin. Daar staan je 12 woorden en een QR-code om in te loggen. Kies op het nieuwe apparaat \"Inloggen met herstelzin\" en scan die QR met de camera, upload er een foto van, of typ de woorden. Je notities zijn er binnen seconden.",
+        "Open op het apparaat dat je al gebruikt Instellingen > Beveiliging > Herstelzin. Daar staan je 12 woorden en een QR-code om in te loggen. Kies op het nieuwe apparaat \"Inloggen met herstelzin\" en scan die QR met de camera, upload er een foto van, of typ de woorden. Je notities zijn er binnen seconden.",
         "Een gratis account dekt 2 apparaten en Pro zoveel als je wilt, en twee browsers op één computer tellen als één apparaat. Behandel de QR precies als de herstelzin die hij draagt: laat hem aan niemand zien en laat hem nooit belanden in een fotobibliotheek die naar de cloud van iemand anders synchroniseert."
       ]
     },
@@ -714,6 +729,13 @@
         "Wil je één specifiek ding overhandigen, stuur dan een [burn-notitie](/nl/help/burn-notes/) in plaats van je herstelzin. Een gedeeld huishoudaccount werkt prima als dat echt is wat je wilt: bewaar de zin in een gedeeld item in de wachtwoordmanager, en ga ervan uit dat iedereen die hem ooit had alles erin heeft gezien."
       ]
     },
+    "pro-after-leak": {
+      "q": "Mijn herstelzin is gelekt. Raak ik Pro kwijt?",
+      "a": [
+        "Pro blijft bij het account waarop je het hebt gekocht, en je herstelzin is de enige sleutel tot dat account. Lekt de herstelzin en stap je over naar een nieuwe kluis, dan verhuist Pro niet mee, en niemand kan het met de hand overzetten, wij ook niet. De app zegt dit bij de registratie en nog een keer voordat je je afmeldt: de 12 woorden zijn de enige weg naar binnen.",
+        "Heb je Pro in de afgelopen 30 dagen gekocht, dan kun je een [volledige terugbetaling](/nl/help/refunds/) krijgen en het opnieuw kopen op de nieuwe kluis. Elke terugbetaling kost ons transactiekosten, dus bewaar die alsjeblieft voor een echt lek. Hoe je je notities verhuist en de oude kluis sluit, staat in [wat te doen als je herstelzin gelekt is](/nl/help/phrase-compromised/). Bewaar de nieuwe herstelzin in een wachtwoordmanager en typ hem nergens anders in."
+      ]
+    },
     "business-use": {
       "q": "Kan ik PrivacyNotes op het werk gebruiken, en is er een teamplan?",
       "a": [
@@ -725,8 +747,8 @@
       "q": "Welke aanmeldoptie moet ik kiezen?",
       "a": [
         "Die past bij jouw dreigingsniveau. Er zijn er drie. Een: aanmelden met Google, Apple of GitHub, met je sleutel opgeslagen op onze server. Twee: dezelfde aanmelding, maar je sleutel blijft alleen op je apparaat. Drie: \"Genereer een herstelzin\", zonder e-mail, zonder naam en zonder login. Alle drie houden je notities versleuteld op je apparaat, en wat ze onderscheidt is wie de sleutel heeft en hoeveel wij over je te weten komen.",
-        "Aanmelden met een van die drie vraagt daarna waar je sleutel woont, te beginnen bij \"Houd het simpel & gemakkelijk\". Die optie bewaart hem versleuteld op onze server, zodat elk nieuw apparaat alleen met die login inlogt en jij niets hoeft te bewaren. Dat is het juiste niveau als je vooral vreest je eigen inloggegevens kwijt te raken. \"Maximale veiligheid & privacy\" houdt de sleutel op je apparaat: wij zouden onder geen enkele druk een notitie kunnen lezen, en een nieuw apparaat vraagt je 12 woorden of een QR-scan van een apparaat dat al ingelogd is.",
-        "De route met alleen de herstelzin is het hoogste niveau: geen e-mail, geen naam, niets dat het account aan een persoon bindt. Daartegenover staat dat de sleutel alleen van jou is, dus hem kwijtraken zonder ingelogd apparaat betekent dat niemand kan helpen. De sleutelmodus van een login ligt niet vast: Instellingen > Beveiliging > Je herstelzin wisselt hem wanneer je wilt, terwijl een account met alleen een herstelzin zijn sleutel op het apparaat houdt. Elk niveau kan er een PIN of biometrische vergrendeling bovenop zetten. De hele ladder, met wat elke sport kost, staat in [de ladder van dreigingsniveaus](/nl/help/threat-model-levels/)."
+        "Bij aanmelden met Google, Apple of GitHub kies je vervolgens waar je sleutel wordt bewaard, met \"Houd het simpel & gemakkelijk\" als standaardkeuze. Die optie bewaart je herstelzin versleuteld op onze server, zodat een nieuw apparaat je notities kan openen na aanmelding bij de provider en een authenticatorcode als 2FA aanstaat. Bewaar je herstelzin voor het geval je het provideraccount kwijtraakt, en bewaar je 2FA-reservesleutel als je aanmelden in twee stappen aanzet. \"Maximale veiligheid & privacy\" houdt de herstelzin op je apparaat: wij zouden onder geen enkele druk een notitie kunnen lezen. Een nieuw apparaat heeft je 12 woorden nodig of een QR-scan vanaf een apparaat dat al is aangemeld.",
+        "De route met alleen de herstelzin koppelt geen e-mailadres of naam aan een persoon. In ruil beheer je de herstelzin zelf. Raak je hem kwijt zonder ontgrendeld apparaat, dan kan niemand hem voor je herstellen. Instellingen > Account > Sleutelbeheer toont je huidige modus en laat je die veranderen. Een herstelzinaccount moet eerst via Account > Accounts een provider koppelen voordat je serverbeheer kunt kiezen; koppelen verandert het beheer niet. Elke modus kan een PIN of biometrisch slot gebruiken, plus optioneel aanmelden in twee stappen. De volledige vergelijking staat in [de ladder van dreigingsniveaus](/nl/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

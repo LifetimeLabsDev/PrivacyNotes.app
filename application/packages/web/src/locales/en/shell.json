@@ -108,7 +108,10 @@
     "open": "Open",
     "notesHeading": "Notes",
     "fillOneField": "Fill in at least one field before saving.",
-    "expiryNeedsBoth": "Expiry needs both month and year, or leave both empty."
+    "expiryNeedsBoth": "Expiry needs both month and year, or leave both empty.",
+    "customField": "Custom field",
+    "fieldNeedsName": "Give each custom field a name.",
+    "saveFailed": "Could not save. Your changes are still here."
   },
   "fileTypes": {
     "audio": "Audio",
@@ -148,6 +151,7 @@
     "allItems": "All",
     "pinnedTooltip": "Pinned items",
     "pinned": "Pinned",
+    "archive": "Archive",
     "notesTooltip": "All notes",
     "notes": "Notes",
     "tasksTooltip": "Tasks across all notes",
@@ -214,6 +218,8 @@
     "noMatches": "No matching folders",
     "collapse": "Collapse",
     "expand": "Expand",
+    "collapseAll": "Collapse all",
+    "expandAll": "Expand all",
     "reorder": "Reorder {{folder}}",
     "saveName": "Save folder name",
     "actionsForFolder": "Actions for folder {{folder}}",
@@ -222,21 +228,27 @@
   },
   "collapsedSidebar": {
     "newNote": "New note",
-    "cycleView": "Switch view (auto, list, grid)",
     "expandSidebar": "Expand sidebar"
   },
   "mobileHeader": {
     "openMenu": "Open menu"
   },
   "noteOptionsMenu": {
+    "color": "Color",
+    "colorNone": "No color",
+    "colorUseDefault": "Use default",
+    "colorFromFolder": "From folder: {{name}}",
+    "colorFromTag": "From tag: #{{name}}",
+    "details": "Details",
     "readOnly": "Read-only",
     "readOnlyDescription": "No edits until you toggle it off.",
     "protect": "Protect",
-    "protectDescription": "Hide the contents behind your PIN or biometric. The title stays visible.",
     "convertToJournal": "Convert to journal entry",
     "convertToNote": "Convert to note",
     "unpin": "Unpin",
     "pin": "Pin",
+    "archive": "Archive",
+    "unarchive": "Unarchive",
     "burn": "Burn",
     "share": "Share",
     "trash": "Trash",
@@ -244,17 +256,15 @@
     "restore": "Restore",
     "deleteForever": "Delete forever",
     "moveToFolder": "Move to folder",
-    "noteHistory": "Note history",
-    "noteHistoryDescription": "Restore any of the last 20 versions.",
-    "showMarkdownDescription": "Edit the raw markdown source.",
-    "showFormattedDescription": "Back to the formatted editor.",
+    "noteHistory": "History",
     "findReplace": "Find and replace",
+    "uncheckAllTasks": "Uncheck all tasks",
     "comingSoon": "Coming soon",
     "noteOptions": "Note options",
     "lastModified": "Last modified: {{date}}",
     "created": "Created: {{date}}",
     "size": "Storage used: {{size}}",
-    "sizeHint": "Total encrypted size of this note.",
+    "sizeHint": "Total encrypted size of this item.",
     "tagCount_one": "{{count}} tag",
     "tagCount_other": "{{count}} tags"
   },
@@ -263,6 +273,8 @@
     "exitSelection": "Exit selection",
     "unpin": "Unpin",
     "pin": "Pin",
+    "archive": "Archive",
+    "unarchive": "Unarchive",
     "tag": "Tag",
     "export": "Export",
     "delete": "Delete",
@@ -274,6 +286,8 @@
   },
   "listPrefs": {
     "listPreferences": "List preferences",
+    "layout": "Layout",
+    "layoutDeviceOnly": "Applies to this device only",
     "sortBy": "Sort by",
     "dateCreated": "Date created",
     "dateModified": "Date modified",
@@ -281,6 +295,7 @@
     "size": "Size",
     "view": "View",
     "showPreview": "Show preview",
+    "longPreview": "Longer preview text",
     "showDate": "Show date",
     "showTags": "Show folder & tags",
     "other": "Other",
@@ -323,6 +338,8 @@
     "deleteForever": "Delete forever",
     "unpin": "Unpin",
     "pin": "Pin",
+    "archive": "Archive",
+    "unarchive": "Unarchive",
     "duplicate": "Duplicate",
     "moveToFolder": "Move to Folder",
     "exportAsMarkdown": "Export as Markdown",
@@ -334,7 +351,13 @@
     "newContact": "New Contact",
     "openBookmark": "Open",
     "copyBookmarkUrl": "Copy URL",
-    "editBookmark": "Edit bookmark"
+    "editBookmark": "Edit bookmark",
+    "openInTab": "Open in tab",
+    "closeTab": "Close tab",
+    "closeOtherTabs": "Close other tabs",
+    "closeAllTabs": "Close all tabs",
+    "pinTab": "Pin tab",
+    "unpinTab": "Unpin tab"
   },
   "demoBanner": {
     "title": "Try it with zero risk",
@@ -356,6 +379,8 @@
     "braveSteps": "Paste that into Brave's address bar, set \"{{flag}}\" to Enabled, then relaunch Brave.",
     "braveAppAlternative": "Or use the desktop app instead",
     "openFailed": "Couldn't open that file.",
+    "linkNotFound": "No file at “{{target}}” in this folder.",
+    "linkNeedsFolder": "Open the folder to follow links.",
     "saveFailed": "Couldn't save to disk.",
     "saving": "Saving…",
     "savedToDisk": "Saved to disk",
@@ -590,5 +615,9 @@
   },
   "looks": {
     "menu": "Icon and color"
+  },
+  "tabStrip": {
+    "label": "Open tabs",
+    "close": "Close {{title}}"
   }
 }

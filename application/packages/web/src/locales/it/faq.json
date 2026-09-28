@@ -94,8 +94,8 @@
     "what-can-you-see": {
       "q": "Cosa può vedere PrivacyNotes delle mie note?",
       "a": [
-        "Niente di leggibile. Note, titoli, tag e allegati sono sempre cifrati, sul tuo dispositivo e nel tragitto verso il server, quindi il server conserva solo testo cifrato. Con la custodia personale, che hanno tutti gli account a frase, dalla nostra parte non esiste alcuna chiave per decifrarlo. Se ti registri con Google, Apple o GitHub, ti viene chiesto dove vive la tua chiave e si parte da \"Mantieni tutto semplice e comodo\", che conserva la tua frase sul nostro server, cifrata con una chiave nostra. Impostazioni > Sicurezza > La tua frase mostra quale modalità hai e ti permette di cambiarla.",
-        "Ciò che possiamo vedere è il minimo per far funzionare il servizio: quanto spazio cifrato occupi, quanti dispositivi hai collegato, e i timestamp di sync. Se accedi con una frase invece che con Google, Apple o GitHub, non conosciamo nemmeno il tuo indirizzo email."
+        "Note, titoli, tag e allegati vengono cifrati sul tuo dispositivo prima di raggiungere il server. Con la custodia autonoma, con cui inizia ogni iscrizione tramite frase, non abbiamo alcuna chiave di decifratura. L’iscrizione con Google, Apple o GitHub chiede dove conservare la chiave e preseleziona \"Mantieni tutto semplice e comodo\". Questa opzione salva la frase sul nostro server, cifrata con una chiave che possediamo noi. In questa modalità, il nostro server può decifrare la frase e quindi le tue note. Impostazioni > Account > Custodia delle chiavi mostra la modalità attuale e ti permette di cambiarla.",
+        "Possiamo vedere le informazioni necessarie al funzionamento del servizio: quanto spazio cifrato usi, quanti dispositivi hai collegato e le date e gli orari di sincronizzazione. Se usi solo la frase e non hai collegato un account Google, Apple o GitHub, non conosciamo il tuo indirizzo email."
       ]
     },
     "phrase-vs-password": {
@@ -103,17 +103,17 @@
       "a": [
         "All'inizio sembra il contrario, ma una singola frase di recupero è la costruzione più solida. Con nome utente e password, il nome utente non è un segreto (compare in ogni archivio di dati violati), quindi tutta la sicurezza poggia sulla password - e le password scelte dalle persone si fermano in media a 30 o 40 bit scarsi di entropia. La tua frase di 12 parole sono 128 bit garantiti, generati dal tuo dispositivo, mai scelti da un essere umano e mai già usati su un altro sito.",
         "Da noi, inoltre, non c'è nessuna password da perdere. Un login con password significa che il server conserva almeno un hash della password, che può trapelare, essere craccato o rubato con il phishing. Con la custodia personale, la tua frase non lascia mai il tuo dispositivo: deriva le tue chiavi di cifratura in locale, e il server vede sempre e solo dati cifrati. Non c'è alcun hash da rubare né un flusso di reset password da sfruttare.",
-        "Se digitare 12 parole ti sembra scomodo: puoi salvare la frase nel tuo password manager con un tocco (Impostazioni > Sicurezza > La tua frase), e l'accesso diventa come qualsiasi altro login. Preferisci la via familiare? Funziona anche l'accesso con Google, Apple o GitHub: sotto il cofano ottieni comunque una frase, e scegli tu se resta sul tuo dispositivo o se la custodiamo noi per te."
+        "Se digitare 12 parole ti sembra scomodo: puoi salvare la frase nel tuo password manager con un tocco (Impostazioni > Sicurezza > Frase), e l'accesso diventa come qualsiasi altro login. Preferisci la via familiare? Funziona anche l'accesso con Google, Apple o GitHub: sotto il cofano ottieni comunque una frase, e scegli tu se resta sul tuo dispositivo o se la custodiamo noi per te."
       ]
     },
     "threat-model-levels": {
       "q": "Posso scegliere il mio equilibrio tra comodità e privacy?",
       "a": [
         "Sì, di proposito. Non tutti si difendono dalle stesse minacce, quindi il modello di account è una scala, non un dogma unico. Su ogni gradino le tue note restano cifrate sul tuo dispositivo; ciò che cambia è chi custodisce la chiave e cosa sappiamo di te.",
-        "L'estremo comodo: accedi con Google, Apple o GitHub e lascia selezionato \"Mantieni tutto semplice e comodo\" quando ti viene proposto, perché è l'opzione da cui parte quella schermata. Custodiamo noi la tua frase di recupero, cifrata a riposo sul nostro server: ogni dispositivo accede con quel solo accesso e non c'è nulla da salvare o da perdere. In cambio conosciamo l'email dietro quell'accesso, e la chiave la teniamo noi anziché tu. Se la tua minaccia realistica è perdere le tue credenziali, non un attacco mirato, questo è il gradino giusto.",
+        "La scelta comoda: accedi con Google, Apple o GitHub e lascia selezionato \"Mantieni tutto semplice e comodo\", perché è l’opzione iniziale di quella schermata. Conserviamo la tua frase di recupero cifrata sul nostro server. Un nuovo dispositivo può quindi aprire le note dopo l’accesso al provider e l’inserimento di un codice di autenticazione se la 2FA è attiva. In cambio conosciamo l’email collegata a quell’accesso e il nostro server può decifrare la frase. Salva la frase nel caso in cui perdessi l’accesso all’account del provider e conserva la chiave di backup 2FA se attivi l’accesso a due fattori.",
         "Il mezzo: accedi con Google, Apple o GitHub ma scegli \"Massima sicurezza e privacy\". La tua frase non tocca mai i nostri server e la cifratura è interamente zero-knowledge; un nuovo dispositivo richiede la frase o una scansione QR da un dispositivo già connesso. Per forza di cose conosciamo ancora l'email dietro quell'accesso, ma non potremmo leggere una sola nota, nemmeno sotto costrizione.",
         "L'estremo privato: salta del tutto gli accessi e usa solo la frase di 12 parole. Niente email, niente nome, niente identità - e abbinato a un [acquisto Pro anonimo](/it/help/buy-pro-anonymously/), nemmeno pagare lascia il tuo nome da qualche parte. In cambio, la custodia della chiave è tutta tua: se perdi la frase e non ti resta nessun dispositivo connesso, nessuno può aiutarti.",
-        "Con un accesso Google, Apple o GitHub non sei vincolato al gradino che hai scelto. In Impostazioni > Sicurezza > La tua frase trovi i due modi affiancati con quello che ciascuno costa, e puoi spostarti in entrambe le direzioni quando vuoi. Passare alla custodia personale cancella la nostra copia e prima ti chiede di ridigitare tre delle tue dodici parole, perché chi ci clicca è proprio chi non le ha mai scritte. Tornare indietro ricarica la frase e richiede una scelta esplicita. Entrambe le direzioni sono firmate con la chiave del tuo account, quindi una sessione rubata non può cambiare la tua modalità. Un account di sola frase resta all’estremo privato, perché non c’è alcun accesso con cui recuperare una chiave custodita. E ogni gradino accetta i livelli locali sopra: blocco con PIN, sblocco biometrico e protezione per nota."
+        "Impostazioni > Account > Custodia delle chiavi mostra entrambe le modalità con i rispettivi compromessi e ti permette di cambiarle. Uscire dalla custodia sul server elimina la nostra copia dopo che hai confermato tre parole della frase salvata. Tornare a questa modalità carica di nuovo la frase e richiede una scelta esplicita. Entrambi i cambiamenti sono firmati con la chiave del tuo account e richiedono un codice di autenticazione recente se la 2FA è attiva. Un account creato con una frase può collegare un provider in Impostazioni > Account > Account e poi scegliere separatamente la custodia sul server. Collegare il provider non carica la frase. Ogni modalità può anche usare il blocco app con PIN, lo sblocco biometrico e la protezione delle singole note."
       ]
     },
     "twelve-word-phrase": {
@@ -126,19 +126,26 @@
       ]
     },
     "guess-phrase": {
-      "q": "Se qualcuno indovina le mie 12 parole, può entrare nel mio account?",
+      "q": "Qualcuno può indovinare le mie 12 parole o ritrovarsi con le stesse?",
       "a": [
-        "Risposta breve: sì. La tua frase è la chiave, quindi chiunque la possieda può accedere, esattamente come chiunque abbia la chiave di casa tua può aprire la tua porta. È così per scelta: è l'unica chiave maestra delle tue note, e davanti non c'è nulla di più debole. La vera domanda quindi non è se possedere la frase dia accesso (lo dà), ma se qualcuno possa indovinarla - e lì la risposta è no, con nessun computer esistente o prevedibile.",
-        "Ecco la scala. Una frase di 12 parole è una tra 2^128 possibilità: circa 340 sestilioni, un numero di 39 cifre (3,4 x 10^38). Le probabilità di indovinare la tua al primo colpo sono 1 su 340 sestilioni - più improbabile che vincere quattro volte di fila un jackpot della lotteria da 1 su 300 milioni. Trattarla come una ricerca invece che come un colpo di fortuna non aiuta: anche a un miliardo di miliardi di tentativi al secondo (10^18, ben oltre qualsiasi hardware reale, Stati inclusi), scorrerle tutte richiederebbe circa 10.000 miliardi di anni, quasi 800 volte l'età attuale dell'universo. E questa è la versione di fantasia, perché ogni tentativo reale deve attraversare una derivazione della chiave volutamente lenta, e ogni attacco online deve passare dai nostri server - il che rallenta il tentativo vero di molti altri ordini di grandezza. Il metodo non è nemmeno una novità: la stessa costruzione a 128 bit protegge i wallet Bitcoin da oltre un decennio, e nessuno ne ha mai indovinato uno.",
-        "Viene naturale immaginare la frase come una password, da rinforzare con maiuscole, numeri e simboli. Una frase di recupero non funziona così, e non dovresti mai provare a costruirne o modificarne una a mano. Il tuo dispositivo genera 128 bit di casualità crittograficamente sicura e li codifica in 12 parole da una lista pubblica fissa di 2048 parole: quella casualità è tutta la forza. L'ultima parola porta perfino un checksum integrato, quindi una frase digitata male o inventata viene respinta all'istante. L'ordine delle parole conta, maiuscole e minuscole no (le normalizziamo all'accesso), e aggiungere simboli renderebbe la frase solo invalida. Digita le parole esattamente come ti sono state consegnate."
+        "No. Nessuno può indovinare le tue 12 parole, e nessun altro si ritrova con le stesse: nessun computer esistente, o che possiamo prevedere, ci va nemmeno vicino. Può accedere solo chi ottiene le tue parole vere, quindi tienile al sicuro.",
+        "Il tuo dispositivo sceglie la tua frase a caso, e il numero di frasi possibili ha 39 cifre. Indovinare la tua al primo tentativo è meno probabile che vincere quattro volte di fila un jackpot della lotteria con probabilità di 1 su 300 milioni. Un computer che provasse un miliardo di miliardi di frasi ogni secondo avrebbe comunque bisogno di circa 10.000 miliardi di anni per provarle tutte, molto più a lungo di quanto esista l'universo. Anche se ognuno degli 8 miliardi di persone sulla Terra avesse una frase, la probabilità che due coincidano sarebbe più bassa di vincere quel jackpot due volte di fila.",
+        "La forza viene da quella casualità, non dall'aspetto delle parole. Non inventare una frase e non aggiungerci simboli: usa le 12 parole esattamente come te le dà l'app. Maiuscole e minuscole non contano. L'ultima parola fa da controllo, quindi l'app rifiuta una frase digitata male o inventata."
+      ]
+    },
+    "same-phrase": {
+      "q": "Qualcun altro può ottenere la mia stessa frase di recupero?",
+      "a": [
+        "No, non nella pratica. Il tuo dispositivo sceglie la tua frase a caso tra un numero enorme di frasi possibili. Anche se ogni persona sulla Terra creasse un account, due frasi uguali sarebbero meno probabili che vincere due volte di fila un jackpot della lotteria con probabilità di 1 su 300 milioni. Sono gli stessi numeri per cui [nessuno può indovinare la tua frase](/it/help/guess-phrase/).",
+        "Il tuo ID account deriva dalla frase. Quindi se elimini un account e accedi di nuovo con le stesse 12 parole, ottieni una cassaforte nuova e vuota con lo stesso ID account. Dalla cassaforte eliminata non torna nulla. Dopo essere passato a una nuova frase, rimuovi quella vecchia dal tuo password manager, così non accedi mai per sbaglio al vecchio account."
       ]
     },
     "why-no-2fa": {
-      "q": "Perché non c'è l'autenticazione a due fattori (2FA)?",
+      "q": "Come attivo l’autenticazione a due fattori (2FA)?",
       "a": [
-        "Perché è un compromesso deliberato, non una svista. La 2FA che conosci - un codice via SMS o un'app di autenticazione - esiste per puntellare password deboli scelte dalle persone, e si appoggia a un segreto condiviso e a un percorso di recupero custoditi su un server. È esattamente la superficie d'attacco che il modello a frase elimina: il tuo dispositivo dimostra di possedere la chiave firmando una sfida, quindi i nostri server ricevono sempre e solo una chiave pubblica e una firma - mai la frase, mai un hash di password. Avvitarci sopra un codice reintrodurrebbe la macchina lato server che questo design evita apposta, senza aggiungere nulla contro i tentativi di indovinare, perché 128 bit chiudono già quella porta.",
-        "Quello che qui ti protegge è locale, ed è presente in ogni piano: il blocco app (PIN) e lo sblocco biometrico si mettono davanti a un dispositivo che qualcun altro raccoglie. I rischi da cui vale la pena difendersi sono il phishing e una frase sbirciata alle tue spalle, non il tentativo di indovinarla. Tieni quindi la frase in un password manager e non digitarla da nessuna parte se non nell'app.",
-        "Oltre a questo, la frase è la chiave, quindi mettila al sicuro il giorno stesso in cui crei l'account: salvala in un password manager affidabile, oppure stampala o scrivila e conserva quella copia in un posto sicuro. E non incollarla mai da nessuna parte se non nell'app stessa."
+        "Attiva l’accesso facoltativo a due fattori in Impostazioni > Sicurezza > 2FA. Prima aggiorna PrivacyNotes sugli altri dispositivi. Scansiona il codice QR con un’app di autenticazione oppure inserisci manualmente la chiave di configurazione. Salva la chiave di backup 2FA fuori da PrivacyNotes, conferma la copia salvata, poi inserisci un codice attuale per completare la configurazione.",
+        "Dopo la configurazione, una nuova sessione sul server richiede la tua frase o un account collegato, seguito da un codice di autenticazione. Con la custodia autonoma, hai comunque bisogno della frase per decifrare le note. Gestisci gli account dei provider in Impostazioni > Account > Account. Collegare un account non cambia la custodia delle chiavi.",
+        "Se perdi l’app di autenticazione, aggiungi la chiave di backup 2FA salvata a un’altra app di autenticazione. Se perdi entrambe, non possiamo ripristinare l’accesso al server. Le note già sbloccate su un dispositivo restano leggibili ed esportabili. L’accesso a due fattori non aggiunge crittografia e non protegge un dispositivo già sbloccato."
       ]
     },
     "bip39-wordlist": {
@@ -167,7 +174,7 @@
       "q": "Cosa sono le burn note?",
       "a": [
         "Una burn note ti permette di condividere una nota in forma autodistruggente con chi non usa PrivacyNotes. L'app cifra il contenuto con una chiave usa e getta e ti consegna un link. La chiave viaggia nel frammento del link, che i browser non inviano mai ai server - il nostro server conserva quindi testo cifrato che non può leggere.",
-        "Alla prima apertura del link, il server consegna il testo cifrato e lo elimina nello stesso passaggio: una lettura, poi sparisce. I link mai aperti scadono da soli dopo 24 ore. In ogni caso, non resta nulla in giro."
+        "Alla prima apertura del link, il server consegna il testo cifrato e lo elimina nello stesso passaggio: una lettura, poi sparisce. I link mai aperti scadono da soli dopo il tempo scelto da chi li invia, da 1 ora a 7 giorni. In ogni caso, non resta nulla in giro."
       ]
     },
     "open-source": {
@@ -187,15 +194,23 @@
     "lost-phrase": {
       "q": "Ho perso la mia frase di recupero. Potete recuperare il mio account?",
       "a": [
-        "Se sei ancora connesso su un dispositivo qualsiasi: sì, puoi recuperarla da solo. Apri Impostazioni > Sicurezza > La tua frase e salvala subito nel tuo password manager.",
+        "Se sei ancora connesso su un dispositivo qualsiasi: sì, puoi recuperarla da solo. Apri Impostazioni > Sicurezza > Frase e salvala subito nel tuo password manager.",
         "Se non hai più né un dispositivo connesso né la frase, dipende da chi custodisce la chiave. Se ce l'hai affidata quando ti sei registrato con Google, Apple o GitHub, accedi con quell'account e sei di nuovo dentro. Con la custodia personale non può nessuno: la tua frase non raggiunge mai i nostri server, quindi non c'è nulla da reimpostare e nessun ticket di supporto che possa aiutare. Qualsiasi servizio capace di ripristinare i tuoi dati cifrati dopo una perdita totale sta custodendo le tue chiavi.",
         "La prevenzione costa dieci secondi: salva la frase in un password manager il giorno in cui crei l'account. Se è già persa e paghi un pacchetto di archiviazione, Paddle ti fattura direttamente e può disdirlo senza la tua frase: vedi [cambiare o disdire un pacchetto](/it/help/manage-storage-addon/)."
+      ]
+    },
+    "lost-2fa": {
+      "q": "Ho perso i codici 2FA. Come rientro?",
+      "a": [
+        "Aggiungi la chiave di backup 2FA a una qualsiasi app di autenticazione, poi inserisci il codice che mostra quando PrivacyNotes te lo chiede. La chiave di backup è quella che hai salvato quando hai attivato la 2FA, e funziona ogni volta che ti serve.",
+        "Se hai perso sia il telefono sia la chiave di backup, non reimpostiamo la 2FA e il nostro supporto non può aiutarti in questo. Le note già presenti sui tuoi dispositivi restano leggibili.",
+        "Per tenerle, vai in Impostazioni > Import & Export > Esporta su un dispositivo che le ha ancora. Poi crea una nuova cassaforte e importa lì l’esportazione."
       ]
     },
     "oauth-recovery": {
       "q": "Accedo con Google, Apple o GitHub. E se perdo l'accesso a quell'account?",
       "a": [
-        "Sotto il cofano hai comunque una frase di 12 parole, e la frase da sola ti fa accedere su qualsiasi dispositivo - senza Google, Apple né GitHub. Apri Impostazioni > Sicurezza > La tua frase e salvala nel tuo password manager.",
+        "Sotto il cofano hai comunque una frase di 12 parole, e la frase da sola ti fa accedere su qualsiasi dispositivo - senza Google, Apple né GitHub. Apri Impostazioni > Sicurezza > Frase e salvala nel tuo password manager.",
         "Fallo una volta, e perdere l'account Google, Apple o GitHub non ti costa nulla: accedi semplicemente con la frase al suo posto."
       ]
     },
@@ -468,7 +483,7 @@
       "q": "Lo sblocco biometrico ha smesso di funzionare. Cosa posso fare?",
       "a": [
         "Non rimani mai chiuso fuori. La schermata di blocco offre sempre un'alternativa: \"Sblocca con il PIN\" oppure \"Accedi con la frase di recupero\". La biometria è una barriera locale, non una chiave di cifratura, quindi le tue note restano intatte in entrambi i casi.",
-        "Poi sistema la barriera. La registrazione è per dispositivo, quindi un telefono nuovo, un profilo browser pulito o una reinstallazione richiedono una nuova registrazione: Impostazioni > Sicurezza > \"Blocco biometrico\", disattiva, poi di nuovo \"Attiva lo sblocco biometrico\". Serve anche \"Considera attendibile questo dispositivo\" (le sessioni non attendibili si azzerano alla chiusura della scheda) e un hardware con un autenticatore di piattaforma (Touch ID, Face ID, Windows Hello). Se un password manager come Bitwarden o 1Password compare al posto della richiesta di sistema, chiudilo e riprova, oppure disattiva la sua acquisizione delle passkey per il sito - l'app richiede l'autenticatore integrato, ma alcuni manager si intromettono comunque."
+        "Poi sistema la barriera. La registrazione è per dispositivo, quindi un telefono nuovo, un profilo browser pulito o una reinstallazione richiedono una nuova registrazione: Impostazioni > Sicurezza > \"Blocco\", disattiva, poi di nuovo \"Attiva lo sblocco biometrico\". Serve anche \"Considera attendibile questo dispositivo\" (le sessioni non attendibili si azzerano alla chiusura della scheda) e un hardware con un autenticatore di piattaforma (Touch ID, Face ID, Windows Hello). Se un password manager come Bitwarden o 1Password compare al posto della richiesta di sistema, chiudilo e riprova, oppure disattiva la sua acquisizione delle passkey per il sito - l'app richiede l'autenticatore integrato, ma alcuni manager si intromettono comunque."
       ]
     },
     "phrase-compromised": {
@@ -646,7 +661,7 @@
     "add-second-device": {
       "q": "Come accedo su un secondo dispositivo?",
       "a": [
-        "Sul dispositivo che già usi apri Impostazioni > Sicurezza > La tua frase. Lì trovi le tue 12 parole e un codice QR di accesso. Sul nuovo dispositivo scegli \"Accesso con frase\", poi scansiona quel QR con la fotocamera, carica una foto o digita le parole. Le tue note arrivano in pochi secondi.",
+        "Sul dispositivo che già usi apri Impostazioni > Sicurezza > Frase. Lì trovi le tue 12 parole e un codice QR di accesso. Sul nuovo dispositivo scegli \"Accesso con frase\", poi scansiona quel QR con la fotocamera, carica una foto o digita le parole. Le tue note arrivano in pochi secondi.",
         "Un account gratuito copre 2 dispositivi, Pro quanti ne vuoi, e due browser sullo stesso computer contano come un solo dispositivo. Tratta il QR esattamente come la frase che contiene: non mostrarlo a nessuno e non lasciarlo mai finire in una libreria foto che si sincronizza sul cloud di qualcun altro."
       ]
     },
@@ -714,6 +729,13 @@
         "Per passare una cosa sola, manda una [nota che si autodistrugge](/it/help/burn-notes/) invece della tua frase. Un account di casa condiviso funziona bene se è davvero quello che vuoi: tieni la frase in una voce condivisa del gestore di password, e considera che chiunque l'abbia avuta anche una sola volta ha visto tutto ciò che contiene."
       ]
     },
+    "pro-after-leak": {
+      "q": "La mia frase di recupero è trapelata. Perdo Pro?",
+      "a": [
+        "Pro resta legato all'account su cui l'hai acquistato, e la tua frase di recupero è l'unica chiave di quell'account. Se la frase trapela e passi a una nuova cassaforte, Pro non si sposta con te, e nessuno può spostarlo a mano, nemmeno noi. L'app lo dice alla registrazione e di nuovo prima che ti disconnetti: le 12 parole sono l'unico modo per entrare.",
+        "Se hai acquistato Pro negli ultimi 30 giorni, puoi ottenere un [rimborso completo](/it/help/refunds/) e riacquistarlo sulla nuova cassaforte. Ogni rimborso ci costa commissioni di pagamento, quindi per favore usalo solo per una fuga vera. I passaggi per spostare le tue note e chiudere la vecchia cassaforte sono in [cosa fare se la tua frase è trapelata](/it/help/phrase-compromised/). Tieni la nuova frase in un password manager e non digitarla da nessun'altra parte."
+      ]
+    },
     "business-use": {
       "q": "Posso usare PrivacyNotes al lavoro, ed esiste un piano per team?",
       "a": [
@@ -725,8 +747,8 @@
       "q": "Quale opzione di registrazione devo scegliere?",
       "a": [
         "Quella che corrisponde al tuo livello di minaccia. Ce ne sono tre. Uno: l'accesso con Google, Apple o GitHub, con la tua chiave conservata sul nostro server. Due: lo stesso accesso, ma la chiave resta solo sul tuo dispositivo. Tre: \"Genera una frase\", senza email, senza nome e senza alcun accesso. Tutte e tre tengono le tue note cifrate sul tuo dispositivo, e quello che le separa è chi ha la chiave e quanto impariamo su di te.",
-        "Accedere con uno di questi tre chiede poi dove vive la tua chiave, partendo da \"Mantieni tutto semplice e comodo\". Questa opzione la conserva cifrata sul nostro server, così ogni nuovo dispositivo accede con quel solo accesso e tu non devi custodire niente. È il livello giusto se quello che temi è perdere le tue credenziali. \"Massima sicurezza e privacy\" tiene la chiave sul tuo dispositivo: non potremmo leggere una nota sotto nessuna pressione, e un nuovo dispositivo chiede le tue 12 parole o la scansione di un QR da un dispositivo già connesso.",
-        "La via della sola frase è il livello più alto: nessuna email, nessun nome, niente che leghi l'account a una persona. In cambio la chiave è solo tua, quindi perderla senza più nessun dispositivo connesso significa che nessuno può aiutarti. La modalità della chiave di un accesso non è definitiva: Impostazioni > Sicurezza > La tua frase la cambia quando vuoi, mentre un account di sola frase tiene la sua chiave sul dispositivo. Ogni livello può aggiungere sopra un PIN o un blocco biometrico. La scala completa, con il prezzo di ogni gradino, è in [la scala dei livelli di minaccia](/it/help/threat-model-levels/)."
+        "L’accesso con Google, Apple o GitHub chiede poi dove conservare la chiave, con \"Mantieni tutto semplice e comodo\" preselezionato. Questa opzione salva la frase cifrata sul nostro server. Un nuovo dispositivo può quindi aprire le note dopo l’accesso al provider e l’inserimento di un codice di autenticazione se la 2FA è attiva. Salva la frase nel caso in cui perdessi l’accesso all’account del provider e conserva la chiave di backup 2FA se attivi l’accesso a due fattori. \"Massima sicurezza e privacy\" mantiene la frase sul tuo dispositivo: non potremmo leggere una nota nemmeno sotto costrizione, e un nuovo dispositivo ha bisogno delle tue 12 parole o di scansionare un QR da uno già connesso.",
+        "L’accesso con la sola frase non ha un’email o un nome che colleghino l’account a una persona. In cambio, la frase è custodita solo da te: se la perdi e non hai più un dispositivo sbloccato, nessuno può recuperarla per te. Impostazioni > Account > Custodia delle chiavi mostra la modalità attuale e ti permette di cambiarla. Un account creato con una frase deve prima collegare un provider in Impostazioni > Account > Account per poter scegliere la custodia sul server. Il solo collegamento non cambia la custodia. Ogni modalità può aggiungere un blocco con PIN o biometrico e l’accesso facoltativo a due fattori. Il confronto completo è nella [scala dei livelli di protezione](/it/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

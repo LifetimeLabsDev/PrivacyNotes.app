@@ -27,7 +27,7 @@ A barra em cima muda o aspeto do texto: **negrito**, *itálico*, títulos, lista
 
 ## Uma coisa para fazer hoje
 
-- [ ] Encontra a tua **<mark style="background-color: rgba(51, 154, 240, 0.35)">frase de 12 palavras</mark>** em **Definições > Segurança > A tua frase**, escreve-a em papel e guarda-a num sítio seguro
+- [ ] Encontra a tua **<mark style="background-color: rgba(51, 154, 240, 0.35)">frase de 12 palavras</mark>** em **Definições > Segurança > Frase**, escreve-a em papel e guarda-a num sítio seguro
 
 Essa frase é o que abre as tuas notas. Onde ela fica és tu que decides, e podes mudar de ideias quando quiseres. [[Como as tuas notas estão protegidas]] explica as três opções.
 

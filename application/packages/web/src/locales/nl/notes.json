@@ -9,7 +9,8 @@
     "file": "Bestand",
     "empty": "Leeg",
     "noContent": "Geen inhoud",
-    "notBackedUp": "Geen back-up"
+    "notBackedUp": "Geen back-up",
+    "archived": "Gearchiveerd"
   },
   "header": {
     "new": "Nieuw",
@@ -71,6 +72,7 @@
     "noMatches": "Geen resultaten.",
     "vault": "De kluis is leeg.",
     "notes": "Nog geen notities.",
+    "archive": "Niets gearchiveerd.",
     "filtered": "Geen items voldoen aan je filters.",
     "clearFilters": "Filters wissen",
     "filteredAfter": "om ze te tonen."
@@ -81,6 +83,7 @@
     "journals": "Dagboeken",
     "vault": "Kluis",
     "pinned": "Vastgezet",
+    "archive": "Archief",
     "notes": "Notities"
   },
   "footerStats": {

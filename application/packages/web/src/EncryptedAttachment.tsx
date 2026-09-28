@@ -43,7 +43,7 @@ import {
   splitFileName,
 } from './fileNames';
 import i18n from './i18n';
-import { isImeComposing } from './imeComposing';
+import { InlineRenameField } from './InlineRenameField';
 
 // ------------------------------------------------------------------
 // Constants
@@ -795,25 +795,11 @@ function EncryptedAttachmentView({
         <div className="flex-1 min-w-[170px]">
           {renaming ? (
             <div className="flex items-baseline gap-1">
-              <input
-                autoFocus
-                dir="auto"
+              <InlineRenameField
                 value={renameValue}
-                onChange={(e) => setRenameValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (isImeComposing(e)) return;
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    commitRename();
-                  } else if (e.key === 'Escape') {
-                    // Escape belongs to the field while it is open; without
-                    // the stop it reaches the editor's own handlers.
-                    e.preventDefault();
-                    e.stopPropagation();
-                    cancelRename();
-                  }
-                }}
-                onBlur={commitRename}
+                onValueChange={setRenameValue}
+                onCommit={commitRename}
+                onCancel={cancelRename}
                 onClick={(e) => e.stopPropagation()}
                 // Stop the press reaching the chip WITHOUT preventing it: the
                 // sibling buttons prevent their mousedown to keep the node
@@ -826,7 +812,6 @@ function EncryptedAttachmentView({
                 maxLength={FILE_NAME_MAX_LENGTH}
                 placeholder={t('attachment.renamePlaceholder')}
                 aria-label={t('attachment.renamePlaceholder')}
-                enterKeyHint="done"
                 className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-sm font-medium text-neutral-800 dark:text-neutral-200"
               />
               {nameExt && (

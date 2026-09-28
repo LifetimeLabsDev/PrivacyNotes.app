@@ -55,14 +55,16 @@
     "openingBody": "Paddle 結帳視窗應該會出現。如果沒有，可能是瀏覽器攔截了彈出視窗，請重新載入此頁面再試。"
   },
   "history": {
-    "title": "筆記歷史",
-    "subtitle": "每篇筆記最多 20 個版本，最舊的會自動清除。",
+    "subtitle": "每個項目最多 20 個版本，最舊的會自動清除。",
     "empty": "還沒有歷史紀錄。下次編輯後版本就會開始累積，之後再回來看看。",
     "loadFailed": "無法載入歷史紀錄。請檢查連線後再試一次。",
     "selectPrompt": "選擇一個版本以預覽。",
     "emptyBody": "（空白）",
     "restore": "還原",
-    "restoring": "還原中…"
+    "restoring": "還原中…",
+    "restoreSnapshotFailed": "無法先儲存目前的版本，所以沒有還原任何內容。請檢查連線後再試一次。",
+    "restoreFailed": "無法還原這個版本。請再試一次。",
+    "loginExtrasNotRecorded": "這個版本沒有記錄自訂欄位或其他網站。還原後會保留目前的內容。"
   },
   "donation": {
     "eyebrow": "你解鎖了",

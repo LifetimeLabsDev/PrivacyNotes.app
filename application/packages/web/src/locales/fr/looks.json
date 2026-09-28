@@ -24,7 +24,7 @@
     "sport": "Sports",
     "tech": "Sciences et technologie",
     "signals": "Signaux",
-    "numbers": "Chiffres"
+    "numbers": "Chiffres et maths"
   },
   "icons": {
     "folder": "Dossier",
@@ -249,6 +249,8 @@
     "bone": "Os",
     "barn": "Grange",
     "tractor": "Tracteur",
+    "grains": "Céréales",
+    "windmill": "Moulin à vent",
     "guitar": "Guitare",
     "piano-keys": "Piano",
     "microphone-stage": "Micro",
@@ -302,6 +304,12 @@
     "info": "Infos",
     "siren": "Gyrophare",
     "infinity": "Infini",
+    "plus": "Signe plus",
+    "minus": "Moins",
+    "x": "Fois",
+    "divide": "Divisé",
+    "equals": "Égal",
+    "percent": "Pourcentage",
     "peace": "Symbole de paix",
     "recycle": "Recyclage",
     "radioactive": "Radioactif",
@@ -317,6 +325,10 @@
     "file-video": "Fichier vidéo",
     "file-audio": "Fichier audio",
     "file-code": "Fichier de code",
+    "file-html": "Page web",
+    "file-lock": "Fichier verrouillé",
+    "file-cloud": "Fichier cloud",
+    "file-svg": "Image vectorielle",
     "fingerprint": "Empreinte digitale"
   }
 }

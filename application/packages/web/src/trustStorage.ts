@@ -8,6 +8,7 @@
 
 import { logAuthEvent } from './authDiag';
 import { credentialKey, isDemoMode } from './demo';
+import { assertSessionWrite } from './sessionWriteGuard';
 
 const TRUST_KEY = 'privacynotes.trusted';
 
@@ -116,6 +117,13 @@ export const trustAwareStorage: Storage = {
     }
   },
   setItem(key: string, value: string): void {
+    // MFA verification may finish after sign-out or an account switch. The
+    // SDK saves its result before notifying the app, so reject stale writes
+    // here, outside the quota-error catch and before removing either copy.
+    if (key.startsWith('sb-')) {
+      const current = trustAwareStorage.getItem(key);
+      assertSessionWrite(key, current, value);
+    }
     if (isDemoAuthKey(key)) {
       demoAuthKeys.set(key, value);
       return;

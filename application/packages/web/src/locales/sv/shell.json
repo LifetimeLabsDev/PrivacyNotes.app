@@ -108,7 +108,10 @@
     "open": "Öppna",
     "notesHeading": "Anteckningar",
     "fillOneField": "Fyll i minst ett fält innan du sparar.",
-    "expiryNeedsBoth": "Ange både månad och år, eller lämna båda tomma."
+    "expiryNeedsBoth": "Ange både månad och år, eller lämna båda tomma.",
+    "customField": "Eget fält",
+    "fieldNeedsName": "Ge varje eget fält ett namn.",
+    "saveFailed": "Det gick inte att spara. Dina ändringar finns kvar."
   },
   "fileTypes": {
     "audio": "Ljud",
@@ -148,6 +151,7 @@
     "allItems": "Alla",
     "pinnedTooltip": "Fästa objekt",
     "pinned": "Fästa",
+    "archive": "Arkiv",
     "notesTooltip": "Alla anteckningar",
     "notes": "Anteckningar",
     "tasksTooltip": "Uppgifter i alla anteckningar",
@@ -214,6 +218,8 @@
     "noMatches": "Inga matchande mappar",
     "collapse": "Fäll ihop",
     "expand": "Fäll ut",
+    "collapseAll": "Fäll ihop alla",
+    "expandAll": "Fäll ut alla",
     "reorder": "Ändra ordning på {{folder}}",
     "saveName": "Spara mappnamnet",
     "actionsForFolder": "Åtgärder för mappen {{folder}}",
@@ -222,21 +228,27 @@
   },
   "collapsedSidebar": {
     "newNote": "Ny anteckning",
-    "cycleView": "Byt vy (auto, lista, rutnät)",
     "expandSidebar": "Fäll ut sidofältet"
   },
   "mobileHeader": {
     "openMenu": "Öppna menyn"
   },
   "noteOptionsMenu": {
+    "color": "Färg",
+    "colorNone": "Ingen färg",
+    "colorUseDefault": "Använd standard",
+    "colorFromFolder": "Från mappen: {{name}}",
+    "colorFromTag": "Från taggen: #{{name}}",
+    "details": "Detaljer",
     "readOnly": "Skrivskyddad",
     "readOnlyDescription": "Inga ändringar förrän du stänger av det.",
     "protect": "Skydda",
-    "protectDescription": "Dölj innehållet bakom din PIN eller biometri. Titeln syns fortfarande.",
     "convertToJournal": "Gör om till dagboksinlägg",
     "convertToNote": "Gör om till anteckning",
     "unpin": "Lossa",
     "pin": "Fäst",
+    "archive": "Arkivera",
+    "unarchive": "Ta ur arkivet",
     "burn": "Bränn",
     "share": "Dela",
     "trash": "Papperskorg",
@@ -244,17 +256,15 @@
     "restore": "Återställ",
     "deleteForever": "Radera för alltid",
     "moveToFolder": "Flytta till mapp",
-    "noteHistory": "Anteckningens historik",
-    "noteHistoryDescription": "Återställ vilken som helst av de 20 senaste versionerna.",
-    "showMarkdownDescription": "Redigera rå markdown.",
-    "showFormattedDescription": "Tillbaka till den formaterade redigeraren.",
+    "noteHistory": "Historik",
     "findReplace": "Sök och ersätt",
+    "uncheckAllTasks": "Avmarkera alla uppgifter",
     "comingSoon": "Kommer snart",
     "noteOptions": "Anteckningsalternativ",
     "lastModified": "Senast ändrad: {{date}}",
     "created": "Skapad: {{date}}",
     "size": "Använt utrymme: {{size}}",
-    "sizeHint": "Total krypterad storlek för den här anteckningen.",
+    "sizeHint": "Total krypterad storlek för det här objektet.",
     "tagCount_one": "{{count}} tagg",
     "tagCount_other": "{{count}} taggar"
   },
@@ -263,6 +273,8 @@
     "exitSelection": "Avsluta markering",
     "unpin": "Lossa",
     "pin": "Fäst",
+    "archive": "Arkivera",
+    "unarchive": "Ta ur arkivet",
     "tag": "Tagga",
     "export": "Exportera",
     "delete": "Radera",
@@ -274,6 +286,8 @@
   },
   "listPrefs": {
     "listPreferences": "Listinställningar",
+    "layout": "Visningsläge",
+    "layoutDeviceOnly": "Gäller bara den här enheten",
     "sortBy": "Sortera efter",
     "dateCreated": "Skapat datum",
     "dateModified": "Ändrat datum",
@@ -281,6 +295,7 @@
     "size": "Storlek",
     "view": "Vy",
     "showPreview": "Visa förhandsvisning",
+    "longPreview": "Längre förhandsvisningstext",
     "showDate": "Visa datum",
     "showTags": "Visa mapp och taggar",
     "other": "Övrigt",
@@ -323,6 +338,8 @@
     "deleteForever": "Radera för alltid",
     "unpin": "Lossa",
     "pin": "Fäst",
+    "archive": "Arkivera",
+    "unarchive": "Ta ur arkivet",
     "duplicate": "Duplicera",
     "moveToFolder": "Flytta till mapp",
     "exportAsMarkdown": "Exportera som Markdown",
@@ -334,7 +351,13 @@
     "newContact": "Ny kontakt",
     "openBookmark": "Öppna",
     "copyBookmarkUrl": "Kopiera URL",
-    "editBookmark": "Redigera bokmärke"
+    "editBookmark": "Redigera bokmärke",
+    "openInTab": "Öppna i flik",
+    "closeTab": "Stäng flik",
+    "closeOtherTabs": "Stäng andra flikar",
+    "closeAllTabs": "Stäng alla flikar",
+    "pinTab": "Fäst flik",
+    "unpinTab": "Lossa flik"
   },
   "demoBanner": {
     "title": "Testa helt utan risk",
@@ -356,6 +379,8 @@
     "braveSteps": "Klistra in det i Braves adressfält, sätt ”{{flag}}” till Enabled och starta om Brave.",
     "braveAppAlternative": "Eller använd skrivbordsappen i stället",
     "openFailed": "Filen kunde inte öppnas.",
+    "linkNotFound": "Det finns ingen fil ”{{target}}” i den här mappen.",
+    "linkNeedsFolder": "Öppna mappen för att följa länkar.",
     "saveFailed": "Kunde inte spara till disk.",
     "saving": "Sparar…",
     "savedToDisk": "Sparad till disk",
@@ -590,5 +615,9 @@
   },
   "looks": {
     "menu": "Ikon och färg"
+  },
+  "tabStrip": {
+    "label": "Öppna flikar",
+    "close": "Stäng {{title}}"
   }
 }

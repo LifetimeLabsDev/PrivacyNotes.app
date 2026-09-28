@@ -17,7 +17,7 @@ import { parseLinkBody, linkDomain } from './linkBody';
 import { contactDisplayName, contactPhotoBytes, contactSecondLine, parseContactBody } from './contactBody';
 import type { PinGatePurpose } from './ProtectedNoteGate';
 import type { NoteConflict } from './sync';
-import { isDelimiterRow } from './tableDelimiterRow';
+import { isDelimiterRow, tableWidthFromMarker } from './tableDelimiterRow';
 
 /** Regex to match pn:file/ links in note bodies. Not a picture placed from
  *  Files (`![...](pn:file/...)`), which shows a file rather than holding one. */
@@ -94,6 +94,7 @@ function estimateNoteCiphertextBytes(n: LocalNote): number {
   // encryptNote OMITS folderId when unset - mirror that, or every unfiled
   // note is overestimated by the bytes of '"folderId":null'.
   if (n.folderId) payload.folderId = n.folderId;
+  payload.archived = n.archived === 1;
   return estimateCiphertextBytes(payload);
 }
 
@@ -109,7 +110,7 @@ export function estimateNoteStoredBytes(
   return estimateCiphertextBytes({
     title, body, tags,
     trashed: false, starred: false, locked: false, pinProtected: false,
-    type: 'note',
+    type: 'note', archived: false,
   });
 }
 
@@ -613,7 +614,18 @@ export function mimeToLabel(mime: string): string {
   return i18n.t('shell:fileTypes.file');
 }
 
-export function deriveExcerpt(n: LocalNote): string {
+/** Lines and characters a long preview takes from the body. The clamps in
+ *  index.css (`.pn-preview-long`) decide how many of them a row or tile shows. */
+const LONG_EXCERPT_LINES = 8;
+const LONG_EXCERPT_CHARS = 400;
+
+/**
+ * The preview text under a row's title. `long` is the "Longer preview text"
+ * list preference: a note then gives its first body lines, joined by line
+ * breaks, instead of one line cut at 80 characters. Other types have one
+ * natural second line (a username, a URL) and ignore it.
+ */
+export function deriveExcerpt(n: LocalNote, long = false): string {
   // File-type notes - show file count + friendly type.
   if (n.type === 'file') {
     const count = fileCount(n.body);
@@ -665,28 +677,26 @@ export function deriveExcerpt(n: LocalNote): string {
   // (the Evernote one names an untitled note that), not a stand-in this file
   // produces. Nothing here writes it any more - `deriveTitleFromContent` never
   // returns a stand-in, and the display stand-ins are translated.
-  if (explicitTitle && explicitTitle !== 'Untitled') {
-    for (const line of n.body.split(/\r?\n/)) {
-      const t = line.trim();
-      if (!t || isDelimiterRow(t)) continue;
-      const c = stripToPlainText(t);
-      if (c) return c.slice(0, 80);
-    }
-    return imageExcerpt(n.body);
-  }
-  let skipped = false;
+  // Without a real title the first line IS the displayed title, so it is
+  // skipped here rather than said twice.
+  let skipped = !!explicitTitle && explicitTitle !== 'Untitled';
+  const lines: string[] = [];
   for (const line of n.body.split(/\r?\n/)) {
     const t = line.trim();
-    // A table's dash row says nothing, and with column widths it can run to
-    // dozens of dashes.
-    if (!t || isDelimiterRow(t)) continue;
+    // A table's dash row and its width marker say nothing, and with column
+    // widths the dash row can run to dozens of dashes.
+    if (!t || isDelimiterRow(t) || tableWidthFromMarker(t) !== null) continue;
     if (!skipped) {
       skipped = true;
       continue;
     }
     const c = stripToPlainText(t);
-    if (c) return c.slice(0, 80);
+    if (!c) continue;
+    if (!long) return c.slice(0, 80);
+    lines.push(c);
+    if (lines.length >= LONG_EXCERPT_LINES) break;
   }
+  if (lines.length) return lines.join('\n').slice(0, LONG_EXCERPT_CHARS);
   return imageExcerpt(n.body);
 }
 

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import type { ModalLink } from './LinksList';
-import { ArrowsLeftRight, GithubLogo, Heart, ShieldCheck, SquaresFour, Star } from './icons';
+import { APP_STORE_URL } from './hosts';
+import { AppleLogo, ArrowsLeftRight, GithubLogo, Heart, ShieldCheck, SquaresFour, Star } from './icons';
 
 /**
  * The review platforms where a public rating helps discovery.
@@ -21,6 +22,15 @@ export function useRateLinks(): ModalLink[] {
       desc: t('rate.descGithub'),
       rel: 'noopener noreferrer',
       icon: <GithubLogo size={16} weight="fill" className="shrink-0" />,
+    },
+    {
+      // `action=write-review` opens the review sheet straight away on iOS;
+      // on any other device it lands on the listing.
+      href: `${APP_STORE_URL}?action=write-review`,
+      label: 'App Store',
+      desc: t('rate.descAppStore'),
+      rel: 'noopener noreferrer',
+      icon: <AppleLogo size={16} weight="fill" className="shrink-0" />,
     },
     {
       href: 'https://alternativeto.net/software/privacynotes/about/',

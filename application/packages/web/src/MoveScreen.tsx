@@ -141,6 +141,7 @@ export function MoveScreen({ onOpenNotes }: { onOpenNotes: () => void }) {
           <Suspense fallback={null}>
             <PhraseTab
               phrase={phrase}
+              pubkey={pubkey}
               pinTimeoutMinutes={phraseGate.pinTimeoutMinutes}
               hasPin={phraseGate.hasPin}
               onCancel={() => setPhraseGate(null)}

@@ -58,6 +58,7 @@
     "groups": {
       "navigation": "Navigation",
       "notes": "Notizen",
+      "lists": "Listen",
       "editor": "Editor",
       "formatting": "Formatierung",
       "alignment": "Ausrichtung",
@@ -100,7 +101,11 @@
       "toggleSidebar": "Seitenleiste ein-/ausblenden",
       "toggleTheme": "Hell / Dunkel umschalten",
       "zenMode": "Zen-/Fokusmodus (Pro)",
-      "toggleHelp": "Diese Hilfe ein-/ausblenden"
+      "toggleHelp": "Diese Hilfe ein-/ausblenden",
+      "selectSeveral": "Mehrere Einträge auswählen",
+      "selectRange": "Bereich auswählen (während der Auswahl)",
+      "openInTab": "In einem Tab öffnen (Mittelklick geht auch)",
+      "closeTab": "Tab schließen"
     }
   },
   "cardForm": {

@@ -104,6 +104,13 @@
           ]
         },
         {
+          "h": "Les notes Super, les listes de contrôle et les codes 2FA gardent leur forme",
+          "p": [
+            "Les notes Super gardent leurs titres, listes, listes de contrôle, tableaux, blocs de code, couleurs et sections repliables. Les listes de contrôle arrivent dans Tâches, les feuilles de calcul deviennent des tableaux, et les entrées de l'authentificateur deviennent des identifiants dans le Coffre, avec leur clé 2FA. Les étiquettes imbriquées deviennent des dossiers, et chaque note garde aussi ses étiquettes.",
+            "Les fichiers que tu as envoyés sur Standard Notes restent sur leur serveur : la sauvegarde ne contient que leurs noms. Chaque note importée indique où se trouvait un fichier. Télécharge ces fichiers depuis Standard Notes et ajoute-les de nouveau à la note."
+          ]
+        },
+        {
           "h": "Les sauvegardes chiffrées ne sont pas prises en charge",
           "p": [
             "Une sauvegarde Standard Notes chiffrée est du texte chiffré que seul ton mot de passe Standard Notes peut ouvrir, l'importateur ne peut donc pas la lire. Si tu as exporté la variante chiffrée, exporte à nouveau en choisissant déchiffré. Comme le fichier contient tes notes en clair, supprime-le une fois l'import terminé.",

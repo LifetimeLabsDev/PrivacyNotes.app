@@ -59,6 +59,7 @@
     "groups": {
       "navigation": "Navegació",
       "notes": "Notes",
+      "lists": "Llistes",
       "editor": "Editor",
       "formatting": "Format",
       "alignment": "Alineació",
@@ -101,7 +102,11 @@
       "toggleSidebar": "Mostra o amaga la barra lateral",
       "toggleTheme": "Canvia entre mode clar i fosc",
       "zenMode": "Mode Zen / concentració (Pro)",
-      "toggleHelp": "Mostra o amaga aquesta ajuda"
+      "toggleHelp": "Mostra o amaga aquesta ajuda",
+      "selectSeveral": "Selecciona diversos elements",
+      "selectRange": "Selecciona un interval (mentre selecciones)",
+      "openInTab": "Obre en una pestanya (el clic del mig també funciona)",
+      "closeTab": "Tanca la pestanya"
     }
   },
   "cardForm": {

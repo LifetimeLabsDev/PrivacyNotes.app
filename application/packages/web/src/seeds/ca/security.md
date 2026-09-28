@@ -29,7 +29,7 @@ Totes les opcions mantenen les teves notes xifrades al teu dispositiu. Es difere
 
 Amb les dues últimes no podríem llegir una nota ni que ens hi obliguessin. La primera ho canvia per comoditat: la teva frase és al nostre servidor sota una clau nostra, així que un dispositiu nou no necessita res més que el teu compte. Si algun dia atacaven el nostre servidor, aquesta clau podria quedar exposada.
 
-Has iniciat la sessió amb Google, Apple o GitHub? Més endavant pots canviar entre les dues primeres, a **Configuració > Seguretat > La teva frase**. Amb un compte només amb frase, la frase sempre es queda amb tu.
+Has iniciat la sessió amb Google, Apple o GitHub? Més endavant pots canviar entre les dues primeres, a **Configuració > Compte > Custòdia de la clau**. Amb un compte només amb frase, la frase sempre es queda amb tu.
 
 > [!warning] Guarda la teva pròpia còpia de la frase
 > La teva frase obre les teves notes. Si la perds, ningú no la pot recuperar, nosaltres inclosos. <span style="color: #e03131">Escriu-la en paper avui.</span>

@@ -138,7 +138,7 @@
     "freeSubLabel": "ไม่ต้องใช้บัตรเครดิต ไม่จำกัดเวลา",
     "freeAllPillars": "โน้ต งาน ไฟล์ ตู้นิรภัย บันทึกประจำวัน และบุ๊กมาร์ก",
     "freeSync": "ซิงค์ได้ 2 อุปกรณ์",
-    "freeVault": "ที่เก็บไฟล์เข้ารหัส 5 MB ต่อไฟล์",
+    "freeVault": "พื้นที่จัดเก็บ 50 MB, 5 MB ต่อไฟล์",
     "freeSearch": "ค้นหาทั้งข้อความและแท็ก",
     "freeImport": "นำเข้าและส่งออก รวมถึง Keep และ Obsidian",
     "freeBurn": "เผาหลังอ่าน",
@@ -327,6 +327,7 @@
       "fixed": "แก้ไข"
     },
     "changelogComingSoon": "Changelog จะมาเร็ว ๆ นี้",
+    "changelogLatest": "ล่าสุด",
     "hotkeysFootnote": "ขณะพิมพ์ในช่องข้อความ แป้นพิมพ์ลัดส่วนใหญ่จะไม่ทำงาน ปุ่มธรรมดาอย่าง J และ K จึงยังพิมพ์ J และ K ตามปกติ"
   },
   "trust": {
@@ -354,6 +355,7 @@
     "intro": "คนส่วนใหญ่ไม่เคยจ่ายเงินให้เรา และเราตั้งใจให้เป็นแบบนั้น การให้คะแนนเป็นวิธีขอบคุณที่น่ารัก",
     "outro": "เราอ่านทุกรีวิวที่ส่งมา และคำพูดจากคนที่ใช้แอปทุกวันคือแรงผลักดันให้เราทำต่อไป",
     "descGithub": "กดดาวให้ repo บน GitHub",
+    "descAppStore": "ให้คะแนน PrivacyNotes บน App Store",
     "descAlternativeTo": "กดถูกใจและรีวิวบน AlternativeTo",
     "descCapterra": "ให้คะแนน PrivacyNotes บน Capterra",
     "descSaasHub": "กดถูกใจและรีวิวบน SaaSHub",

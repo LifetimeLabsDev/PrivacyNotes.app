@@ -94,8 +94,8 @@
     "what-can-you-see": {
       "q": "PrivacyNotes notlarım hakkında ne görebilir?",
       "a": [
-        "Okunabilir hiçbir şeyi. Notlar, başlıklar, etiketler ve ekler cihazınızda da sunucuya giderken de her zaman şifrelidir, bu yüzden sunucu yalnızca şifreli veri saklar. Her ifade hesabında geçerli olan kendi saklamada bizde bu veriyi çözecek bir anahtar yoktur. Google, Apple veya GitHub ile kaydolduğunuzda anahtarınızın nerede duracağı sorulur ve ekran “Basit ve pratik olsun” seçili olarak açılır; bu seçenek ifadenizi sunucumuzda, bizim bir anahtarımızla şifrelenmiş olarak saklar. Ayarlar > Güvenlik > Kurtarma ifadeniz hangisinin sizde olduğunu gösterir ve değiştirmenize izin verir.",
-        "Görebildiğimiz şey, hizmeti yürütmek için gereken asgari bilgi: ne kadar şifreli depolama kullandığınız, kaç cihaz bağladığınız ve eşitleme zaman damgaları. Google, Apple veya GitHub yerine bir ifadeyle giriş yapıyorsanız, e-posta adresinizi bile bilmeyiz."
+        "Notlar, başlıklar, etiketler ve ekler sunucuya ulaşmadan önce cihazınızda şifrelenir. İfadeyle açılan her hesabın başlangıç modu olan kendi saklama modunda, bizde şifre çözme anahtarı bulunmaz. Google, Apple veya GitHub ile kayıt olurken anahtarınızın nerede saklanacağını sorarız; başlangıçta \"Basit ve pratik olsun\" seçilidir. Bu seçenek ifadenizi bize ait bir anahtarla şifreleyerek sunucumuzda saklar. Bu modda sunucumuz ifadenizin, dolayısıyla notlarınızın şifresini çözebilir. Ayarlar > Hesap > Anahtar saklama mevcut modunuzu gösterir ve değiştirmenizi sağlar.",
+        "Görebildiğimiz bilgiler hizmeti çalıştırmak için gerekenlerdir: ne kadar şifreli depolama kullandığınız, kaç cihaz bağladığınız ve eşitleme zamanları. Yalnızca ifadenizi kullanıyor ve bir Google, Apple veya GitHub hesabı bağlamadıysanız e-posta adresinizi bilmeyiz."
       ]
     },
     "phrase-vs-password": {
@@ -103,17 +103,17 @@
       "a": [
         "İlk bakışta ters gelebilir, ama tek bir kurtarma ifadesi daha sağlam bir kurgudur. Kullanıcı adı ve parolada kullanıcı adı bir sır değildir (her sızıntı listesinde görünür), yani tüm güvenlik parolanın omzundadır ve insanların seçtiği parolalar ortalama 30 ila 40 bit entropi taşır. 12 kelimelik ifadeniz ise garanti 128 bittir: cihazınız üretir, hiçbir insan seçmez ve başka bir siteden devşirilmez.",
         "Ayrıca kaybedebileceğimiz bir parola da yok. Parolayla giriş, sunucunun en azından bir parola özeti saklaması demektir; bu özet sızdırılabilir, kırılabilir ya da oltalamayla alınabilir. Kendi saklamada ifadeniz cihazınızdan hiç çıkmaz: şifreleme anahtarlarınızı yerelde türetir ve sunucu yalnızca şifreli veriyi görür. Çalınacak bir özet yok, saldırganın istismar edeceği bir parola sıfırlama akışı da yok.",
-        "12 kelime yazmak zahmetli geliyorsa: ifadeyi tek dokunuşla parola yöneticinize kaydedebilirsiniz (Ayarlar > Güvenlik > Kurtarma ifadeniz) ve giriş yapmak diğer tüm girişler gibi hissettirir. Tanıdık bir akış mı istiyorsunuz? Google, Apple veya GitHub ile giriş de var: arka planda yine bir ifadeniz olur ve cihazınızda mı kalacağını yoksa bizim mi saklayacağımızı siz seçersiniz."
+        "12 kelime yazmak zahmetli geliyorsa: ifadeyi tek dokunuşla parola yöneticinize kaydedebilirsiniz (Ayarlar > Güvenlik > İfade) ve giriş yapmak diğer tüm girişler gibi hissettirir. Tanıdık bir akış mı istiyorsunuz? Google, Apple veya GitHub ile giriş de var: arka planda yine bir ifadeniz olur ve cihazınızda mı kalacağını yoksa bizim mi saklayacağımızı siz seçersiniz."
       ]
     },
     "threat-model-levels": {
       "q": "Kolaylık ile gizlilik arasındaki dengeyi kendim seçebilir miyim?",
       "a": [
         "Evet, bilerek öyle. Herkesin savunduğu tehditler aynı değil, bu yüzden hesap modeli tek bir dogma değil, bir merdiven. Her basamakta notlarınız cihazınızda şifrelenir; değişen şey, anahtarı kimin tuttuğu ve sizin hakkınızda ne bildiğimiz.",
-        "Kolay uç: Google, Apple veya GitHub ile giriş yapın ve sorulduğunda “Basit ve pratik olsun”u seçili bırakın; o ekran zaten bununla açılır. Kurtarma ifadenizi sizin adınıza, sunucumuzda şifreli olarak saklarız; böylece her cihaz yalnızca o girişle açılır ve yedeklenecek ya da kaybedilecek bir şey kalmaz. Karşılığında o girişin arkasındaki e-postayı biliriz ve anahtarınızı siz değil biz tutarız. Gerçekçi tehdidiniz hedefli bir sızma değil de kendi giriş bilgilerinizi kaybetmekse, doğru basamak budur.",
+        "Pratik uç: Google, Apple veya GitHub ile giriş yapın ve sorulduğunda başlangıçta seçili olan \"Basit ve pratik olsun\" seçeneğini koruyun. Kurtarma ifadenizi sunucumuzda şifreli saklarız. Böylece yeni bir cihaz, sağlayıcıyla giriş yaptıktan ve 2FA açıksa doğrulama uygulamasının kodu girildikten sonra notlarınızı açabilir. Bunun karşılığında o hesabın e-postasını biliriz ve sunucumuz ifadenizin şifresini çözebilir. Sağlayıcı hesabınızı kaybetme ihtimaline karşı ifadenizi kaydedin; iki faktörlü girişi açarsanız 2FA yedek anahtarınızı da saklayın.",
         "Orta yol: Google, Apple veya GitHub ile giriş yapın ama “Azami güvenlik ve gizlilik”i seçin. İfadeniz sunucularımıza hiç uğramaz ve şifreleme tam anlamıyla sıfır bilgi ilkesine dayanır; yeni cihazlar ifadeyi ya da zaten giriş yapmış bir cihazdan QR taramasını ister. O girişin e-postasını yine zorunlu olarak biliriz, ama zorlansak bile tek bir notu okuyamayız.",
         "Gizli uç: girişleri tamamen atlayın ve yalnızca 12 kelimelik ifadeyi kullanın. E-posta yok, isim yok, kimlik yok; [anonim bir Pro satın alımıyla](/tr/help/buy-pro-anonymously/) birleştiğinde ödeme bile hiçbir yerde isim bırakmaz. Karşılığında anahtarın sorumluluğu tümüyle sizde: giriş yapmış bir cihaz kalmadan ifadeyi kaybederseniz kimse yardım edemez.",
-        "Google, Apple veya GitHub girişiyle seçtiğiniz basamağa mahkûm değilsiniz. Ayarlar > Güvenlik > Kurtarma ifadeniz her iki modu, neye mal olduklarıyla birlikte yan yana gösterir ve istediğiniz zaman iki yöne de geçebilirsiniz. Kendi saklamaya geçmek bizdeki kopyayı siler ve önce on iki kelimenizden üçünü yeniden yazmanızı ister, çünkü o düğmeye basma ihtimali en yüksek kişiler onları hiç yazmamış olanlardır. Geri dönmek ifadeyi tekrar yükler ve açık bir tercih gerektirir. Her iki yön de kendi hesap anahtarınızla imzalanır, yani çalınmış bir oturum saklama modunuzu değiştiremez. Yalnızca ifadeyle açılmış bir hesap gizli uçta kalır, çünkü saklanan bir anahtarı getirecek bir giriş yoktur. Ve her basamak yerel katmanları üstüne ekleyebilir: PIN'li uygulama kilidi, biyometrik kilit açma ve not başına koruma."
+        "Ayarlar > Hesap > Anahtar saklama iki modu avantajları ve bedelleriyle gösterir ve aralarında geçiş yapmanızı sağlar. Sunucuda saklamadan çıkarken, kaydettiğiniz ifadeden 3 kelimeyi doğruladıktan sonra kopyamızı sileriz. Geri dönmek ifadeyi yeniden yükler ve açıkça seçim yapmanızı gerektirir. Her iki yöndeki değişiklik de hesap anahtarınızla imzalanır ve 2FA açıksa doğrulama uygulamasından yeni bir kod gerektirir. İfadeyle açılan bir hesap, Ayarlar > Hesap > Hesaplar bölümünden bir sağlayıcı bağlayıp ardından sunucuda saklamayı ayrıca seçebilir; sağlayıcıyı bağlamak ifadeyi yüklemez. Her modda PIN uygulama kilidi, biyometrik kilit açma ve tek tek not koruması da kullanılabilir."
       ]
     },
     "twelve-word-phrase": {
@@ -126,19 +126,26 @@
       ]
     },
     "guess-phrase": {
-      "q": "Biri 12 kelimemi tahmin ederse hesabıma girebilir mi?",
+      "q": "Biri 12 kelimemi tahmin edebilir ya da aynılarına sahip olabilir mi?",
       "a": [
-        "Kısa yanıt: evet. İfadeniz anahtardır, dolayısıyla onu elinde tutan herkes giriş yapabilir; tıpkı ev anahtarınızı elinde tutan herkesin kapınızı açabilmesi gibi. Bu tasarım gereğidir: notlarınızın tek ana anahtarıdır ve önünde daha zayıf bir şey durmaz. Yani asıl soru, ifadeyi elinde tutmanın erişim sağlayıp sağlamadığı değil (sağlıyor), birinin onu tahmin edip edemeyeceğidir; oradaki yanıt ise hayır: var olan ya da öngörebildiğimiz hiçbir bilgisayarla değil.",
-        "Ölçek şöyle. 12 kelimelik bir ifade 2^128 olasılıktan biridir: yaklaşık 340 undesilyon, 39 haneli bir sayı (3,4 x 10^38). Sizinkini ilk denemede tahmin etme olasılığı 340 undesilyonda birdir; 300 milyonda bir şansı olan bir piyango ikramiyesini üst üste dört kez kazanmaktan daha düşük bir ihtimal. Bunu şanslı bir tahmin yerine sistemli bir arama saymak da kurtarmaz: saniyede milyar kere milyar deneme yapılsa bile (10^18, ulus devletler dâhil hiçbir gerçek donanımın ulaşamayacağı bir hız), hepsini bitirmek yaklaşık 10 trilyon yıl sürerdi, yani evrenin şu anki yaşının neredeyse 800 katı. Üstelik bu, hayali senaryo: her gerçek deneme bilerek yavaşlatılmış bir anahtar türetme adımından geçmek zorunda ve her çevrimiçi saldırı sunucularımızdan geçmek zorunda, bu da gerçek tahmini kat kat daha yavaş yapıyor. Bu ayrıca yeni bir yöntem de değil: aynı 128 bitlik kurgu on yılı aşkın süredir Bitcoin cüzdanlarını koruyor ve bugüne kadar kimse bir tanesini bile tahmin edemedi.",
-        "İfadeyi bir parola gibi düşünmek cazip geliyor; büyük harf, rakam ve sembol karıştırarak güçlendirdiğiniz bir şey. Kurtarma ifadesi böyle çalışmaz ve asla elle bir ifade kurmaya ya da düzenlemeye kalkışmayın. Cihazınız kriptografik olarak güvenli 128 bit rastgelelik üretir ve bunu 2048 kelimelik sabit, herkese açık bir listeden 12 kelime olarak kodlar: gücün tamamı o rastgelelikten gelir. Son kelime yerleşik bir sağlama toplamı bile taşır, yani yanlış yazılmış ya da uydurulmuş bir ifade daha ilk bakışta reddedilir. Kelime sırası önemlidir, büyük-küçük harf önemli değildir (giriş yaparken normalleştiriyoruz) ve sembol eklemek ifadeyi yalnızca geçersiz kılar. Kelimeleri size verildiği gibi birebir yazın."
+        "Hayır. 12 kelimenizi kimse tahmin edemez ve başka hiç kimse aynı kelimelere sahip olmaz: var olan ya da öngörebildiğimiz hiçbir bilgisayar buna yaklaşamaz bile. Yalnızca gerçek kelimelerinizi ele geçiren biri giriş yapabilir, bu yüzden onları güvende tutun.",
+        "Cihazınız ifadenizi rastgele seçer ve olası ifadelerin sayısı 39 basamaklıdır. Sizinkini ilk denemede tahmin etmek, 300 milyonda bir şansı olan bir piyango ikramiyesini üst üste dört kez kazanmaktan daha düşük bir ihtimaldir. Saniyede milyar kere milyar ifade deneyen bir bilgisayarın bile hepsini denemesi yaklaşık 10 trilyon yıl sürerdi; bu, evrenin var olduğu süreden çok daha uzun. Dünyadaki 8 milyar insanın her birinin bir ifadesi olsa bile, herhangi ikisinin aynı olma ihtimali o ikramiyeyi üst üste iki kez kazanmaktan daha düşüktür.",
+        "Güç o rastgelelikten gelir, kelimelerin nasıl göründüğünden değil. Kendiniz bir ifade uydurmayın ve ona sembol eklemeyin: 12 kelimeyi uygulamanın size verdiği gibi birebir kullanın. Büyük harfler önemli değildir. Son kelime bir kontrol görevi görür, bu yüzden uygulama yanlış yazılmış ya da uydurulmuş bir ifadeyi reddeder."
+      ]
+    },
+    "same-phrase": {
+      "q": "Başka biri benimle aynı kurtarma ifadesini alabilir mi?",
+      "a": [
+        "Hayır, pratikte değil. Cihazınız ifadenizi çok büyük sayıda olası ifade arasından rastgele seçer. Dünyadaki herkes bir hesap açsa bile iki ifadenin aynı çıkması, 300 milyonda bir şansı olan bir piyango ikramiyesini üst üste iki kez kazanmaktan daha düşük bir ihtimaldir. [Kimsenin ifadenizi tahmin edememesinin](/tr/help/guess-phrase/) nedeni de aynı sayılardır.",
+        "Hesap kimliğiniz ifadeden türetilir. Bu yüzden bir hesabı silip aynı 12 kelimeyle yeniden giriş yaparsanız, aynı Hesap kimliğine sahip yeni ve boş bir kasa elde edersiniz. Silinen kasadan hiçbir şey geri gelmez. Yeni bir ifadeye geçtikten sonra eskisini parola yöneticinizden silin, böylece yanlışlıkla eski hesaba asla giriş yapmazsınız."
       ]
     },
     "why-no-2fa": {
-      "q": "Neden iki faktörlü kimlik doğrulama (2FA) yok?",
+      "q": "İki faktörlü kimlik doğrulamayı (2FA) nasıl açarım?",
       "a": [
-        "Çünkü bu bir gözden kaçma değil, bilinçli bir takas. Tanıdık 2FA türü, yani SMS ile gelen kod ya da bir doğrulayıcı uygulaması, insanların seçtiği zayıf parolaları desteklemek için vardır ve sunucuda tutulan paylaşılmış bir sırra ve bir kurtarma yoluna yaslanır. İfade modelinin ortadan kaldırdığı saldırı yüzeyi tam olarak budur: cihazınız bir doğrulama isteğini imzalayarak anahtarı elinde tuttuğunu kanıtlar, yani sunucularımıza yalnızca bir genel anahtar ve bir imza ulaşır; ne ifade ne de bir parola özeti. Üstüne bir kod eklemek, bu tasarımın kaçınmak için var olduğu sunucu tarafı düzeneği geri getirir ve tahmine karşı hiçbir şey katmaz, çünkü 128 bit o kapıyı zaten kapatıyor.",
-        "Burada sizi koruyan şey yereldir ve her planda vardır: uygulama kilidi (PIN) ve biyometrik kilit açma, başkasının eline geçen bir cihazın önünde durur. Savunmaya değer riskler oltalama ve omuz üstünden okunan bir ifadedir, tahmin değil. Bu yüzden ifadeyi bir parola yöneticisinde tutun ve uygulamanın dışında hiçbir yere yazmayın.",
-        "Bunun ötesinde ifade anahtardır, o yüzden hesabınızı oluşturduğunuz gün yedekleyin: saygın bir parola yöneticisinde tutun ya da yazdırıp veya elle yazıp o kopyayı güvenli bir yerde saklayın. Uygulamanın kendisi dışında hiçbir yere yapıştırmayın."
+        "İsteğe bağlı iki faktörlü girişi Ayarlar > Güvenlik > 2FA bölümünden açın. Önce diğer cihazlarınızdaki PrivacyNotes'u güncelleyin. QR kodunu bir doğrulama uygulamasıyla tarayın veya kurulum anahtarını elle girin. 2FA yedek anahtarını PrivacyNotes dışında kaydedin, kayıtlı kopyayı doğrulayın ve bitirmek için güncel bir kod girin.",
+        "Kurulumdan sonra yeni bir sunucu oturumu için ifadeniz veya bağlı bir sağlayıcı hesabı, ardından doğrulama uygulamasından kod gerekir. Kendi saklama modundaki kullanıcıların notların şifresini çözmek için hâlâ ifadelerine ihtiyacı vardır. Sağlayıcı hesaplarını Ayarlar > Hesap > Hesaplar bölümünden yönetin; hesap bağlamak anahtar saklama ayarını değiştirmez.",
+        "Doğrulama uygulamanızı kaybederseniz kayıtlı 2FA yedek anahtarını başka bir doğrulama uygulamasına ekleyin. İkisini de kaybederseniz sunucu erişimini geri getiremeyiz. Bir cihazda kilidi zaten açılmış notlar okunabilir ve dışa aktarılabilir kalır. İki faktörlü giriş şifreleme eklemez ve kilidi açık bir cihazı korumaz."
       ]
     },
     "bip39-wordlist": {
@@ -167,7 +174,7 @@
       "q": "Burn note nedir?",
       "a": [
         "Burn note, bir notu PrivacyNotes kullanmayan biriyle paylaşmanın kendi kendini imha eden yoludur. Uygulama içeriği tek kullanımlık bir anahtarla şifreler ve size bir bağlantı verir. Anahtar, tarayıcıların sunuculara hiç göndermediği bağlantı parçasında taşınır, yani sunucumuz okuyamadığı şifreli veriyi saklar.",
-        "Bağlantı ilk kez açıldığında sunucu şifreli veriyi teslim eder ve aynı adımda siler: bir okuma, sonrası yok. Açılmayan bağlantılar 24 saat sonra kendiliğinden sona erer. Her hâlükârda geride bir şey kalmaz."
+        "Bağlantı ilk kez açıldığında sunucu şifreli veriyi teslim eder ve aynı adımda siler: bir okuma, sonrası yok. Açılmayan bağlantılar, gönderenin seçtiği süre (1 saatten 7 güne) dolunca kendiliğinden sona erer. Her hâlükârda geride bir şey kalmaz."
       ]
     },
     "open-source": {
@@ -187,15 +194,23 @@
     "lost-phrase": {
       "q": "Kurtarma ifademi kaybettim. Hesabımı kurtarabilir misiniz?",
       "a": [
-        "Hâlâ herhangi bir cihazda giriş yapmış durumdaysanız: evet, kendiniz kurtarabilirsiniz. Ayarlar > Güvenlik > Kurtarma ifadeniz bölümünü açın ve hemen şimdi parola yöneticinize kaydedin.",
+        "Hâlâ herhangi bir cihazda giriş yapmış durumdaysanız: evet, kendiniz kurtarabilirsiniz. Ayarlar > Güvenlik > İfade bölümünü açın ve hemen şimdi parola yöneticinize kaydedin.",
         "Giriş yapmış bir cihazınız ve ifadeniz yoksa, bu anahtarı kimin tuttuğuna bağlıdır. Google, Apple veya GitHub ile kaydolurken anahtarı bizim saklamamıza izin verdiyseniz, o girişle oturum açın ve içeridesiniz. Kendi saklamada ise kimse yapamaz: ifadeniz sunucularımıza hiç ulaşmaz, yani sıfırlanacak bir şey ve yardımcı olabilecek bir destek talebi yok. Tam bir kayıptan sonra şifreli verinizi geri getirebilen her hizmet, anahtarlarınızı elinde tutuyordur.",
         "Çözümü on saniye sürüyor: hesabınızı oluşturduğunuz gün ifadeyi bir parola yöneticisinde saklayın. İfade çoktan gittiyse ve bir depolama paketi ödüyorsanız, faturayı doğrudan Paddle keser ve paketi ifadeniz olmadan iptal edebilir: bkz. [paketi değiştirme veya iptal etme](/tr/help/manage-storage-addon/)."
+      ]
+    },
+    "lost-2fa": {
+      "q": "2FA kodlarımı kaybettim. Nasıl yeniden girerim?",
+      "a": [
+        "2FA yedek anahtarınızı herhangi bir doğrulama uygulamasına ekleyin, ardından PrivacyNotes kod istediğinde uygulamanın gösterdiği kodu girin. Yedek anahtar, 2FA'yı açarken kaydettiğiniz anahtardır ve her ihtiyacınız olduğunda çalışır.",
+        "Hem telefonunuzu hem de yedek anahtarı kaybettiyseniz 2FA'yı sıfırlamıyoruz ve destek ekibimiz bu konuda yardımcı olamaz. Cihazlarınızda zaten bulunan notlar okunabilir kalır.",
+        "Onları saklamak için notların hâlâ bulunduğu bir cihazda Ayarlar > Import & Export > Dışa aktar bölümüne gidin. Ardından yeni bir kasa oluşturun ve dışa aktarılan dosyayı oraya içe aktarın."
       ]
     },
     "oauth-recovery": {
       "q": "Google, Apple veya GitHub ile giriş yapıyorum. O hesaba erişimimi kaybedersem ne olur?",
       "a": [
-        "Arka planda yine 12 kelimelik bir ifadeniz var ve ifade tek başına sizi her cihazda içeri alır - Google, Apple ya da GitHub gerekmez. Ayarlar > Güvenlik > Kurtarma ifadeniz bölümünü açın ve parola yöneticinize kaydedin.",
+        "Arka planda yine 12 kelimelik bir ifadeniz var ve ifade tek başına sizi her cihazda içeri alır - Google, Apple ya da GitHub gerekmez. Ayarlar > Güvenlik > İfade bölümünü açın ve parola yöneticinize kaydedin.",
         "Bunu bir kez yapın, Google, Apple ya da GitHub hesabını kaybetmek size hiçbir şeye mal olmaz: onun yerine ifadeyle giriş yaparsınız."
       ]
     },
@@ -468,7 +483,7 @@
       "q": "Biyometrik kilit açma çalışmayı bıraktı. Ne yapabilirim?",
       "a": [
         "Asla dışarıda kalmazsınız. Kilit ekranı her zaman bir geri dönüş sunar: “PIN ile kilidi aç” ya da “Kurtarma ifadesiyle giriş yap”. Biyometri yerel bir kapıdır, şifreleme anahtarı değil, yani notlarınız her hâlükârda el değmemiş kalır.",
-        "Sonra kapıyı onarın. Kayıt cihaz başınadır, yani yeni bir telefon, yeni bir tarayıcı profili veya yeniden kurulum yeniden kayıt ister: Ayarlar > Güvenlik > “Biyometrik kilit”, kapatın, sonra tekrar “Biyometrik kilit açmayı etkinleştir”. Ayrıca “Bu cihaza güven” gerekir (güvenilmeyen oturumlar sekme kapanınca temizlenir) ve platform doğrulayıcısı olan bir donanım (Touch ID, Face ID, Windows Hello). Sistem istemi yerine Bitwarden ya da 1Password gibi bir parola yöneticisi açılırsa onu kapatıp tekrar deneyin veya o site için geçiş anahtarı yakalamasını kapatın - uygulama yerleşik doğrulayıcıyı ister, ama bazı yöneticiler yine de araya girer."
+        "Sonra kapıyı onarın. Kayıt cihaz başınadır, yani yeni bir telefon, yeni bir tarayıcı profili veya yeniden kurulum yeniden kayıt ister: Ayarlar > Güvenlik > “Kilit”, kapatın, sonra tekrar “Biyometrik kilit açmayı etkinleştir”. Ayrıca “Bu cihaza güven” gerekir (güvenilmeyen oturumlar sekme kapanınca temizlenir) ve platform doğrulayıcısı olan bir donanım (Touch ID, Face ID, Windows Hello). Sistem istemi yerine Bitwarden ya da 1Password gibi bir parola yöneticisi açılırsa onu kapatıp tekrar deneyin veya o site için geçiş anahtarı yakalamasını kapatın - uygulama yerleşik doğrulayıcıyı ister, ama bazı yöneticiler yine de araya girer."
       ]
     },
     "phrase-compromised": {
@@ -646,7 +661,7 @@
     "add-second-device": {
       "q": "İkinci bir cihazda nasıl oturum açarım?",
       "a": [
-        "Zaten kullandığınız cihazda Ayarlar > Güvenlik > Kurtarma ifadeniz bölümünü açın. Orada 12 kelimeniz ve bir oturum açma QR kodu bulunur. Yeni cihazda \"İfadeyle giriş\"i seçin, sonra o QR'ı kamerayla tarayın, fotoğrafını yükleyin ya da kelimeleri yazın. Notlarınız saniyeler içinde gelir.",
+        "Zaten kullandığınız cihazda Ayarlar > Güvenlik > İfade bölümünü açın. Orada 12 kelimeniz ve bir oturum açma QR kodu bulunur. Yeni cihazda \"İfadeyle giriş\"i seçin, sonra o QR'ı kamerayla tarayın, fotoğrafını yükleyin ya da kelimeleri yazın. Notlarınız saniyeler içinde gelir.",
         "Ücretsiz hesap 2 cihazı, Pro ise istediğiniz kadarını kapsar; aynı bilgisayardaki iki tarayıcı tek cihaz sayılır. QR koduna, taşıdığı ifadenin kendisi gibi davranın: kimseye göstermeyin ve başkasının bulutuna eşitlenen bir fotoğraf galerisine düşmesine asla izin vermeyin."
       ]
     },
@@ -714,6 +729,13 @@
         "Tek bir şeyi devretmek için ifadeniz yerine bir [yanan not](/tr/help/burn-notes/) gönderin. Paylaşılan bir ev hesabı gerçekten istediğiniz şeyse iyi işler: ifadeyi parola yöneticisinde paylaşılan bir kayıtta tutun ve onu bir kez bile eline almış herkesin içindeki her şeyi görmüş olduğunu varsayın."
       ]
     },
+    "pro-after-leak": {
+      "q": "Kurtarma ifadem sızdı. Pro'yu kaybeder miyim?",
+      "a": [
+        "Pro, satın aldığınız hesapta kalır ve kurtarma ifadeniz o hesabın tek anahtarıdır. İfade sızar ve yeni bir kasaya geçerseniz Pro sizinle birlikte gelmez ve onu kimse elle taşıyamaz, biz de dâhil. Uygulama bunu kayıt sırasında ve çıkış yapmadan önce bir kez daha söyler: 12 kelime tek giriş yoludur.",
+        "Pro'yu son 30 gün içinde satın aldıysanız [tam iade](/tr/help/refunds/) alabilir ve yeni kasada yeniden satın alabilirsiniz. Her iade bize ödeme ücretlerine mal olur, bu yüzden lütfen bunu gerçek bir sızıntı için saklayın. Notlarınızı taşıma ve eski kasayı kapatma adımları [ifadeniz sızdığında ne yapmalı](/tr/help/phrase-compromised/) sayfasında. Yeni ifadeyi bir parola yöneticisinde tutun ve başka hiçbir yere yazmayın."
+      ]
+    },
     "business-use": {
       "q": "PrivacyNotes'u işte kullanabilir miyim ve bir ekip planı var mı?",
       "a": [
@@ -725,8 +747,8 @@
       "q": "Hangi kayıt seçeneğini seçmeliyim?",
       "a": [
         "Tehdit düzeyinize uyanı. Üç tane var. Bir: Google, Apple veya GitHub ile giriş, anahtarınız sunucumuzda saklanır. İki: aynı giriş, ama anahtar yalnızca cihazınızda kalır. Üç: \"Bir ifade oluştur\", ne e-posta, ne isim, ne de herhangi bir giriş. Üçünde de notlarınız cihazınızda şifrelenir; onları ayıran şey, anahtarı kimin tuttuğu ve sizin hakkınızda ne kadar şey öğrendiğimizdir.",
-        "Bu üçünden biriyle giriş yapmak ardından anahtarınızın nerede duracağını sorar ve \"Basit ve pratik olsun\" seçili olarak başlar. Bu seçenek anahtarı sunucumuzda şifreli tutar; böylece her yeni cihaz yalnızca o girişle açılır ve sizin saklayacağınız bir şey olmaz. Korktuğunuz şey kendi giriş bilgilerinizi kaybetmekse doğru düzey budur. \"Azami güvenlik ve gizlilik\" anahtarı cihazınızda tutar: hiçbir baskı altında bir notu okuyamayız ve yeni bir cihaz 12 kelimenizi ya da zaten oturum açmış bir cihazdan QR taramasını ister.",
-        "Yalnızca ifadeyle giden yol en yüksek düzeydir: e-posta yok, isim yok, hesabı bir kişiye bağlayan hiçbir şey yok. Karşılığında anahtar yalnızca sizindir; oturum açmış tek bir cihaz kalmadan onu kaybetmek, kimsenin yardım edemeyeceği anlamına gelir. Bir girişin anahtar modu kalıcı değildir: Ayarlar > Güvenlik > Kurtarma ifadeniz onu istediğiniz zaman değiştirir, yalnızca ifadeyle açılmış bir hesap ise anahtarını cihazda tutar. Her düzey üstüne bir PIN ya da biyometrik kilit ekleyebilir. Her basamağın bedeliyle birlikte merdivenin tamamı [tehdit düzeyi merdiveninde](/tr/help/threat-model-levels/) anlatılıyor."
+        "Google, Apple veya GitHub ile giriş yaptıktan sonra anahtarınızın nerede saklanacağını sorarız; başlangıçta \"Basit ve pratik olsun\" seçilidir. Bu seçenek ifadenizi sunucumuzda şifreli saklar. Böylece yeni bir cihaz, sağlayıcıyla giriş yaptıktan ve 2FA açıksa doğrulama uygulamasının kodu girildikten sonra notlarınızı açabilir. Sağlayıcı hesabınızı kaybetme ihtimaline karşı ifadenizi kaydedin; iki faktörlü girişi açarsanız 2FA yedek anahtarınızı da saklayın. \"Azami güvenlik ve gizlilik\" ifadeyi cihazınızda tutar: hiçbir baskı altında bir notu okuyamayız ve yeni bir cihaz 12 kelimenizi ya da zaten giriş yapılmış bir cihazdan QR taramasını ister.",
+        "Yalnızca ifadeyle kullanımda, hesabı bir kişiye bağlayan e-posta veya ad bulunmaz. Bunun karşılığında ifade yalnızca sizdedir; kilidi açık bir cihaz kalmadığında ifadeyi kaybederseniz kimse sizin için geri getiremez. Ayarlar > Hesap > Anahtar saklama mevcut modunuzu gösterir ve değiştirmenizi sağlar. İfadeyle açılan bir hesap, sunucuda saklamayı seçmeden önce Ayarlar > Hesap > Hesaplar bölümünden bir sağlayıcı bağlamalıdır; yalnızca bağlamak saklama modunu değiştirmez. Her modda PIN veya biyometrik kilit ve isteğe bağlı iki faktörlü giriş kullanılabilir. Tam karşılaştırma [tehdit düzeyleri merdiveninde](/tr/help/threat-model-levels/)."
       ]
     },
     "storage-after-delete": {

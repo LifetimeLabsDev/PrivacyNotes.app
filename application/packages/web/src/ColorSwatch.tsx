@@ -1,5 +1,5 @@
 import type { MouseEvent, PointerEvent } from 'react';
-import { HoverLabel } from './HoverLabel';
+import { HoverLabel, type positionClasses } from './HoverLabel';
 import { Prohibit } from './icons';
 
 /**
@@ -17,8 +17,10 @@ export function ColorSwatch({
   label,
   background,
   selected,
+  inherited = false,
   none = false,
   className = '',
+  labelPosition = 'above',
   onPointerDown,
   onClick,
 }: {
@@ -26,14 +28,20 @@ export function ColorSwatch({
   /** Any CSS background. Left out for the "no color" swatch. */
   background?: string;
   selected: boolean;
+  /** The color an item takes from elsewhere, not its own pick: a dashed
+   *  ring where a pick has a solid one. */
+  inherited?: boolean;
   /** The "no color" swatch: a struck circle instead of a fill. */
   none?: boolean;
   className?: string;
+  /** Where the name shows on hover. Below, where the space above is the
+   *  clipped top of a scrolling box. */
+  labelPosition?: keyof typeof positionClasses;
   onPointerDown?: (e: PointerEvent<HTMLButtonElement>) => void;
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 }) {
   return (
-    <HoverLabel label={label} position="above">
+    <HoverLabel label={label} position={labelPosition}>
       <button
         type="button"
         aria-label={label}
@@ -45,7 +53,13 @@ export function ColorSwatch({
             ? 'flex items-center justify-center text-neutral-500 dark:text-neutral-400 border border-divider'
             : 'block'
         } ${
-          selected ? 'ring-2 ring-offset-1 ring-accent ring-offset-surface-1' : none ? '' : 'border border-divider'
+          selected
+            ? 'ring-2 ring-offset-1 ring-accent ring-offset-surface-1'
+            : inherited
+              ? 'outline-2 outline-dashed outline-offset-2 outline-neutral-400 dark:outline-neutral-500'
+              : none
+                ? ''
+                : 'border border-divider'
         } ${className}`}
         style={background ? { background } : undefined}
       >

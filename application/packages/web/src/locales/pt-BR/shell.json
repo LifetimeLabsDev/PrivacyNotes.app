@@ -108,7 +108,10 @@
     "open": "Abrir",
     "notesHeading": "Notas",
     "fillOneField": "Preencha pelo menos um campo antes de salvar.",
-    "expiryNeedsBoth": "A validade precisa de mês e ano, ou deixe os dois em branco."
+    "expiryNeedsBoth": "A validade precisa de mês e ano, ou deixe os dois em branco.",
+    "customField": "Campo personalizado",
+    "fieldNeedsName": "Dê um nome a cada campo personalizado.",
+    "saveFailed": "Não foi possível salvar. Suas alterações continuam aqui."
   },
   "fileTypes": {
     "audio": "Áudio",
@@ -148,6 +151,7 @@
     "allItems": "Todos",
     "pinnedTooltip": "Itens fixados",
     "pinned": "Fixados",
+    "archive": "Arquivo",
     "notesTooltip": "Todas as notas",
     "notes": "Notas",
     "tasksTooltip": "Tarefas de todas as notas",
@@ -214,6 +218,8 @@
     "noMatches": "Nenhuma pasta correspondente",
     "collapse": "Recolher",
     "expand": "Expandir",
+    "collapseAll": "Recolher tudo",
+    "expandAll": "Expandir tudo",
     "reorder": "Reordenar {{folder}}",
     "saveName": "Salvar o nome da pasta",
     "actionsForFolder": "Ações para a pasta {{folder}}",
@@ -222,21 +228,27 @@
   },
   "collapsedSidebar": {
     "newNote": "Nova nota",
-    "cycleView": "Alternar visão (auto, lista, grade)",
     "expandSidebar": "Expandir barra lateral"
   },
   "mobileHeader": {
     "openMenu": "Abrir menu"
   },
   "noteOptionsMenu": {
+    "color": "Cor",
+    "colorNone": "Sem cor",
+    "colorUseDefault": "Usar padrão",
+    "colorFromFolder": "Da pasta: {{name}}",
+    "colorFromTag": "Da etiqueta: #{{name}}",
+    "details": "Detalhes",
     "readOnly": "Somente leitura",
     "readOnlyDescription": "Sem edições até você desativar.",
     "protect": "Proteger",
-    "protectDescription": "Esconda o conteúdo atrás do seu PIN ou biometria. O título continua visível.",
     "convertToJournal": "Converter em entrada de diário",
     "convertToNote": "Converter em nota",
     "unpin": "Desafixar",
     "pin": "Fixar",
+    "archive": "Arquivar",
+    "unarchive": "Desarquivar",
     "burn": "Queimar",
     "share": "Compartilhar",
     "trash": "Lixeira",
@@ -244,17 +256,15 @@
     "restore": "Restaurar",
     "deleteForever": "Excluir para sempre",
     "moveToFolder": "Mover para pasta",
-    "noteHistory": "Histórico da nota",
-    "noteHistoryDescription": "Restaure qualquer uma das últimas 20 versões.",
-    "showMarkdownDescription": "Edite o markdown puro.",
-    "showFormattedDescription": "Volte para o editor formatado.",
+    "noteHistory": "Histórico",
     "findReplace": "Buscar e substituir",
+    "uncheckAllTasks": "Desmarcar todas as tarefas",
     "comingSoon": "Em breve",
     "noteOptions": "Opções da nota",
     "lastModified": "Última modificação: {{date}}",
     "created": "Criada: {{date}}",
     "size": "Armazenamento usado: {{size}}",
-    "sizeHint": "Tamanho criptografado total desta nota.",
+    "sizeHint": "Tamanho criptografado total deste item.",
     "tagCount_one": "{{count}} etiqueta",
     "tagCount_other": "{{count}} etiquetas"
   },
@@ -263,6 +273,8 @@
     "exitSelection": "Sair da seleção",
     "unpin": "Desafixar",
     "pin": "Fixar",
+    "archive": "Arquivar",
+    "unarchive": "Desarquivar",
     "tag": "Etiquetar",
     "export": "Exportar",
     "delete": "Excluir",
@@ -274,6 +286,8 @@
   },
   "listPrefs": {
     "listPreferences": "Preferências da lista",
+    "layout": "Disposição",
+    "layoutDeviceOnly": "Vale só para este dispositivo",
     "sortBy": "Ordenar por",
     "dateCreated": "Data de criação",
     "dateModified": "Data de modificação",
@@ -281,6 +295,7 @@
     "size": "Tamanho",
     "view": "Visão",
     "showPreview": "Mostrar prévia",
+    "longPreview": "Texto de prévia mais longo",
     "showDate": "Mostrar data",
     "showTags": "Mostrar pasta e etiquetas",
     "other": "Outros",
@@ -323,6 +338,8 @@
     "deleteForever": "Excluir para sempre",
     "unpin": "Desafixar",
     "pin": "Fixar",
+    "archive": "Arquivar",
+    "unarchive": "Desarquivar",
     "duplicate": "Duplicar",
     "moveToFolder": "Mover para Pasta",
     "exportAsMarkdown": "Exportar como Markdown",
@@ -334,7 +351,13 @@
     "newContact": "Novo contato",
     "openBookmark": "Abrir",
     "copyBookmarkUrl": "Copiar URL",
-    "editBookmark": "Editar marcador"
+    "editBookmark": "Editar marcador",
+    "openInTab": "Abrir em uma aba",
+    "closeTab": "Fechar aba",
+    "closeOtherTabs": "Fechar as outras abas",
+    "closeAllTabs": "Fechar todas as abas",
+    "pinTab": "Fixar aba",
+    "unpinTab": "Desafixar aba"
   },
   "demoBanner": {
     "title": "Experimente sem risco nenhum",
@@ -356,6 +379,8 @@
     "braveSteps": "Cole isso na barra de endereço do Brave, defina \"{{flag}}\" como Enabled e reinicie o Brave.",
     "braveAppAlternative": "Ou use o app para desktop",
     "openFailed": "Não foi possível abrir esse arquivo.",
+    "linkNotFound": "Não há nenhum arquivo “{{target}}” nesta pasta.",
+    "linkNeedsFolder": "Abra a pasta para seguir os links.",
     "saveFailed": "Não foi possível salvar no disco.",
     "saving": "Salvando…",
     "savedToDisk": "Salvo no disco",
@@ -590,5 +615,9 @@
   },
   "looks": {
     "menu": "Ícone e cor"
+  },
+  "tabStrip": {
+    "label": "Abas abertas",
+    "close": "Fechar {{title}}"
   }
 }
