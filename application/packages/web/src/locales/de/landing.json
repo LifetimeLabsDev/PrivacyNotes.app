@@ -46,7 +46,7 @@
     "dismiss": "Ankündigung ausblenden"
   },
   "pillars": {
-    "kicker": "Sieben Säulen, sechs unter einem Schlüssel - und eine auf deiner Festplatte",
+    "kicker": "Acht Säulen, sieben unter einem Schlüssel - und eine auf deiner Festplatte",
     "notesName": "Notizen",
     "notesBlurb": "Live-Editor, Tags, sofortige Suche.",
     "tasksName": "Aufgaben",
@@ -59,6 +59,8 @@
     "filesBlurb": "Verschlüsselte Bilder, Dokumente, Audio und Video.",
     "bookmarksName": "Lesezeichen-Sync",
     "bookmarksBlurb": "Gespeicherte Links mit Website-Icons. Importiere deine Browser-Lesezeichen.",
+    "contactsName": "Kontakte",
+    "contactsBlurb": "Nummern, E-Mails, Adressen. Importiere dein ganzes Adressbuch.",
     "markdownFree": "Gratis"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "Für immer kostenlos",
     "freeSubLabel": "Keine Kreditkarte nötig, kein Zeitlimit.",
-    "freeAllPillars": "Notizen, Aufgaben, Dateien, Tresor, Tagebuch und Lesezeichen",
+    "freeAllPillars": "Notizen, Aufgaben, Dateien, Tresor, Tagebuch, Kontakte und Lesezeichen",
     "freeSync": "Sync über 2 Geräte",
     "freeVault": "50 MB Speicher, bis 5 MB pro Datei",
     "freeSearch": "Volltextsuche + Tags",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask, 72 $/Jahr",
     "themDaylio": "Daylio, 48 $/Jahr (unverschlüsselte Stimmungsdaten)",
     "themSeparate": "Separate Apps, wiederkehrende Gebühren",
-    "usAllInOne": "Notizen, Aufgaben, Dateien, Tresor, Tagebuch, Lesezeichen. Eine App",
+    "usAllInOne": "Notizen, Aufgaben, Dateien, Tresor, Tagebuch, Kontakte, Lesezeichen. Eine App",
     "usTracking": "Stimmungs-, Energie-, Schlaf-, Medikamenten-Tracking",
     "usEncrypted": "Auf deinem Gerät verschlüsselt, synchronisiert in die Schweiz",
     "usSignIn": "Anonym oder per Google, Apple oder GitHub anmelden, dieselbe Verschlüsselung in jedem Fall",
@@ -228,6 +230,7 @@
     "passwordVault": "Passwort-Tresor",
     "cardStorage": "Kreditkarten-Speicher",
     "browserImport": "Browser-Lesezeichen-Import",
+    "contactImport": "vCard-Kontaktimport",
     "moodScale": "Stimmung (Skala 1-10)",
     "emotionTags": "24 forschungsbasierte Emotions-Tags",
     "sleepTracking": "Schlaf-Tracking",

@@ -140,7 +140,7 @@
         "O teu ID da conta vem da frase. Por isso, se eliminares uma conta e voltares a iniciar sessão com as mesmas 12 palavras, recebes um cofre novo e vazio com o mesmo ID da conta. Nada do cofre eliminado volta. Depois de mudares para uma frase nova, remove a antiga do teu gestor de palavras-passe, para nunca iniciares sessão na conta antiga por engano."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "Como ativo a autenticação de dois fatores (2FA)?",
       "a": [
         "Ativa o início de sessão opcional em dois passos em Definições > Segurança > 2FA. Atualiza primeiro o PrivacyNotes nos outros dispositivos. Lê o código QR com uma app de autenticação ou introduz a chave de configuração manualmente. Guarda a chave de cópia de segurança de 2FA fora do PrivacyNotes, confirma a cópia guardada e introduz um código atual para concluir.",

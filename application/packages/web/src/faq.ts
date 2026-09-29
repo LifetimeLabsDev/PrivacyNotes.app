@@ -63,7 +63,7 @@ export const FAQ_STRUCTURE: ReadonlyArray<{ id: string; group: FaqGroupKey }> = 
   { id: 'twelve-word-phrase', group: 'securityPrivacy' },
   { id: 'guess-phrase', group: 'securityPrivacy' },
   { id: 'same-phrase', group: 'securityPrivacy' },
-  { id: 'why-no-2fa', group: 'securityPrivacy' },
+  { id: 'enable-2fa', group: 'securityPrivacy' },
   { id: 'bip39-wordlist', group: 'securityPrivacy' },
   { id: 'search-local', group: 'securityPrivacy' },
   { id: 'no-ai', group: 'securityPrivacy' },

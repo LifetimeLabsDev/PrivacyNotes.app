@@ -6,6 +6,7 @@
   "data-location": "Waar worden mijn gegevens opgeslagen?",
   "delete-account": "Hoe verwijder ik mijn account?",
   "device-limit": "Wat betekent \"Apparaatlimiet bereikt\"?",
+  "enable-2fa": "Hoe zet ik tweefactorauthenticatie (2FA) aan?",
   "forgot-pin": "Ik ben mijn PIN vergeten. Hoe kom ik er weer in?",
   "guess-phrase": "Kan iemand mijn 12 woorden raden of toevallig dezelfde krijgen?",
   "image-quality": "Verandert of comprimeert PrivacyNotes mijn afbeeldingen?",
@@ -22,6 +23,5 @@
   "translation-quality": "Hoe worden de vertalingen van de app gemaakt?",
   "vault": "Wat is de Kluis?",
   "vault-totp": "Kan de Kluis mijn 2FA-authenticatorsleutels bewaren (TOTP / MFA-codes)?",
-  "what-syncs": "Wat synchroniseert er precies tussen mijn apparaten, en wat blijft lokaal?",
-  "why-no-2fa": "Hoe zet ik tweefactorauthenticatie (2FA) aan?"
+  "what-syncs": "Wat synchroniseert er precies tussen mijn apparaten, en wat blijft lokaal?"
 }

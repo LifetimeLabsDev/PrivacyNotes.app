@@ -140,7 +140,7 @@
         "Ditt konto-ID kommer från frasen. Om du raderar ett konto och loggar in igen med samma 12 ord får du alltså ett nytt, tomt valv med samma konto-ID. Ingenting från det raderade valvet kommer tillbaka. När du har flyttat till en ny fras, ta bort den gamla ur din lösenordshanterare, så att du aldrig loggar in på det gamla kontot av misstag."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "Hur aktiverar jag tvåfaktorsautentisering (2FA)?",
       "a": [
         "Aktivera valfri tvåfaktorsinloggning i Inställningar > Säkerhet > 2FA. Uppdatera först PrivacyNotes på dina andra enheter. Skanna QR-koden med en autentiseringsapp eller ange konfigurationsnyckeln manuellt. Spara reservnyckeln för 2FA utanför PrivacyNotes, bekräfta den sparade kopian och ange en aktuell kod för att slutföra.",

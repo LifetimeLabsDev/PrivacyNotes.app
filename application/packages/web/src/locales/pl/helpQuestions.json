@@ -6,6 +6,7 @@
   "data-location": "Gdzie przechowywane są moje dane?",
   "delete-account": "Jak usunąć konto?",
   "device-limit": "Co oznacza „Osiągnięto limit urządzeń”?",
+  "enable-2fa": "Jak włączyć uwierzytelnianie dwuskładnikowe (2FA)?",
   "forgot-pin": "Nie pamiętam PIN-u. Jak wrócić do aplikacji?",
   "guess-phrase": "Czy ktoś może zgadnąć moje 12 słów albo dostać takie same?",
   "image-quality": "Czy PrivacyNotes zmienia lub kompresuje moje obrazy?",
@@ -22,6 +23,5 @@
   "translation-quality": "Jak powstają tłumaczenia aplikacji?",
   "vault": "Czym jest Sejf?",
   "vault-totp": "Czy Sejf pomieści moje klucze 2FA (kody TOTP / MFA)?",
-  "what-syncs": "Co dokładnie synchronizuje się między urządzeniami, a co zostaje lokalnie?",
-  "why-no-2fa": "Jak włączyć uwierzytelnianie dwuskładnikowe (2FA)?"
+  "what-syncs": "Co dokładnie synchronizuje się między urządzeniami, a co zostaje lokalnie?"
 }

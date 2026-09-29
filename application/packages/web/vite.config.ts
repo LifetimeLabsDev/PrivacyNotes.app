@@ -998,7 +998,10 @@ const DEFAULT_CHUNK_BUDGET_KB = 60;
 // 1011 -> 1016 (2026-09-28): 1015.53 kB gz, login custom fields and extra
 // websites (the form rows, the view rows, loginExtras.ts) and the guarded
 // history restore. The vault history preview is a lazy chunk of its own.
-const BOOT_PATH_BUDGET_KB = 1016;
+// 1016 -> 1017 (2026-09-28): +0.9 kB gz, the checkout confirm copy in the
+// English catalog and the Sparkle icon, shared with the lazy checkout page,
+// splitting out of the boot chunk that already held it.
+const BOOT_PATH_BUDGET_KB = 1017;
 
 // The budget above is stated in ONE environment's units: build-smoke's, which
 // is ubuntu with the synthetic values from tools/ci-vite-env.mjs. Every other

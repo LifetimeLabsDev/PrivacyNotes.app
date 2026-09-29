@@ -46,7 +46,7 @@
     "dismiss": "Zavřít oznámení"
   },
   "pillars": {
-    "kicker": "Sedm pilířů, šest pod jedním klíčem - a jeden na tvém disku",
+    "kicker": "Osm pilířů, sedm pod jedním klíčem - a jeden na tvém disku",
     "notesName": "Poznámky",
     "notesBlurb": "Živý formátovaný editor, značky, okamžité hledání.",
     "tasksName": "Úkoly",
@@ -59,6 +59,8 @@
     "filesBlurb": "Šifrované obrázky, dokumenty, zvuk a video.",
     "bookmarksName": "Sync záložek",
     "bookmarksBlurb": "Uložené odkazy s ikonami webů. Naimportuj si záložky z prohlížeče.",
+    "contactsName": "Kontakty",
+    "contactsBlurb": "Čísla, e-maily, adresy. Naimportuj si celý adresář.",
     "markdownFree": "Zdarma"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "Navždy zdarma",
     "freeSubLabel": "Bez platební karty, bez časového omezení.",
-    "freeAllPillars": "Poznámky, úkoly, soubory, trezor, deník a záložky",
+    "freeAllPillars": "Poznámky, úkoly, soubory, trezor, deník, kontakty a záložky",
     "freeSync": "Synchronizace mezi 2 zařízeními",
     "freeVault": "50 MB místa, až 5 MB na soubor",
     "freeSearch": "Fulltextové hledání + značky",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask, 72 $/rok",
     "themDaylio": "Daylio, 48 $/rok (nezašifrovaná data o náladě)",
     "themSeparate": "Samostatné aplikace, opakované platby",
-    "usAllInOne": "Poznámky, úkoly, soubory, trezor, deník, záložky. Jedna aplikace",
+    "usAllInOne": "Poznámky, úkoly, soubory, trezor, deník, kontakty, záložky. Jedna aplikace",
     "usTracking": "Sledování nálady, energie, spánku a léků",
     "usEncrypted": "Šifrované na tvém zařízení, synchronizované do Švýcarska",
     "usSignIn": "Přihlášení anonymně, nebo přes Google, Apple či GitHub, šifrování stejné v každém případě",
@@ -228,6 +230,7 @@
     "passwordVault": "Trezor hesel",
     "cardStorage": "Uložení platebních karet",
     "browserImport": "Import záložek z prohlížeče",
+    "contactImport": "Import kontaktů vCard",
     "moodScale": "Nálada (škála 1-10)",
     "emotionTags": "24 značek emocí podložených výzkumem",
     "sleepTracking": "Sledování spánku",

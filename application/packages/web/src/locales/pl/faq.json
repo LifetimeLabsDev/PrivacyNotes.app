@@ -140,7 +140,7 @@
         "Twoje ID konta pochodzi z frazy. Jeśli więc usuniesz konto i zalogujesz się ponownie tymi samymi 12 słowami, dostaniesz nowy, pusty sejf z tym samym ID konta. Nic z usuniętego sejfu nie wraca. Po przejściu na nową frazę usuń starą z menedżera haseł, żeby nigdy przez pomyłkę nie zalogować się na stare konto."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "Jak włączyć uwierzytelnianie dwuskładnikowe (2FA)?",
       "a": [
         "Włącz opcjonalne logowanie dwuskładnikowe w Ustawienia > Bezpieczeństwo > 2FA. Najpierw zaktualizuj PrivacyNotes na innych urządzeniach. Zeskanuj kod QR aplikacją uwierzytelniającą lub wpisz klucz konfiguracji ręcznie. Zapisz klucz zapasowy 2FA poza PrivacyNotes, potwierdź zapisaną kopię, a następnie wpisz aktualny kod, aby zakończyć.",

@@ -6,6 +6,7 @@
   "data-location": "Where is my data stored?",
   "delete-account": "How do I delete my account?",
   "device-limit": "What does \"Device limit reached\" mean?",
+  "enable-2fa": "How do I turn on two-factor authentication (2FA)?",
   "forgot-pin": "I forgot my PIN. How do I get back in?",
   "guess-phrase": "Can someone guess my 12 words or end up with the same ones?",
   "image-quality": "Does PrivacyNotes change or compress my images?",
@@ -22,6 +23,5 @@
   "translation-quality": "How are the app's translations made?",
   "vault": "What is the Vault?",
   "vault-totp": "Can the Vault store my 2FA authenticator keys (TOTP / MFA codes)?",
-  "what-syncs": "What exactly syncs across my devices, and what stays local?",
-  "why-no-2fa": "How do I turn on two-factor authentication (2FA)?"
+  "what-syncs": "What exactly syncs across my devices, and what stays local?"
 }

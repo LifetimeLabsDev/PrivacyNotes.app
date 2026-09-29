@@ -140,7 +140,7 @@
         "El teu ID del compte surt de la frase. Per tant, si suprimeixes un compte i tornes a iniciar la sessió amb les mateixes 12 paraules, obtens una caixa forta nova i buida amb el mateix ID del compte. No torna res de la caixa forta suprimida. Quan passis a una frase nova, treu l'antiga del gestor de contrasenyes, perquè no iniciïs mai la sessió al compte antic per error."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "Com activo l'autenticació de dos factors (2FA)?",
       "a": [
         "Activa l'inici de sessió en dos passos opcional a Configuració > Seguretat > 2FA. Actualitza primer PrivacyNotes als altres dispositius. Escaneja el codi QR amb una app d'autenticació o introdueix la clau de configuració manualment. Desa la clau de còpia de seguretat de 2FA fora de PrivacyNotes, confirma la còpia desada i introdueix un codi actual per acabar.",

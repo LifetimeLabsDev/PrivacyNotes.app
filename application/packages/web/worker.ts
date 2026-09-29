@@ -295,6 +295,14 @@ const LANDING_SLUGS = new Set(['/markdown-editor']);
 // reliably, and /privacy sat in GSC as "Crawled - currently not indexed".
 // A 301 here costs nothing and is unambiguous. The main.tsx branches stay
 // for the desktop build, which never goes through this Worker.
+// A help entry's id is its public URL. When an id is renamed, the old one
+// stays here so indexed links, the .md twin and every locale slug land on the
+// new page in one hop. Only ids listed here redirect.
+const HELP_RENAMED: Record<string, string> = {
+  'why-no-2fa': 'enable-2fa',
+};
+const HELP_ENTRY = /^(\/(?:[a-z]{2}\/)?help\/)([a-z0-9-]+)(\.md)?\/?$/;
+
 const OFFSITE: Record<string, string> = {
   '/privacy': 'https://lifetimelabs.dev/privacy/',
   '/terms': 'https://lifetimelabs.dev/terms/',
@@ -421,6 +429,13 @@ export default {
       // no-slash canonical in one hop instead of two.
       if (target.length > 1 && target.endsWith('/')) target = target.slice(0, -1);
       return Response.redirect(`${url.origin}${target}${url.search}`, 301);
+    }
+
+    // ── Renamed help entries (301) ──────────────────────────────
+    const helpMatch = url.pathname.match(HELP_ENTRY);
+    const renamed = helpMatch?.[2] ? HELP_RENAMED[helpMatch[2]] : undefined;
+    if (helpMatch && renamed) {
+      return Response.redirect(`${url.origin}${helpMatch[1]}${renamed}${helpMatch[3] ?? ''}${url.search}`, 301);
     }
 
     // ── Strip trailing slash on every other path (301) ──────────

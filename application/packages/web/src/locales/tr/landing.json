@@ -46,7 +46,7 @@
     "dismiss": "Duyuruyu kapat"
   },
   "pillars": {
-    "kicker": "Yedi sütun, altısı tek anahtarla - ve biri diskinizde",
+    "kicker": "Sekiz sütun, yedisi tek anahtarla - ve biri diskinizde",
     "notesName": "Notlar",
     "notesBlurb": "Biçimlendirilmiş canlı düzenleyici, etiketler, anında arama.",
     "tasksName": "Görevler",
@@ -59,6 +59,8 @@
     "filesBlurb": "Şifreli görseller, belgeler, ses ve video.",
     "bookmarksName": "Yer imi eşitleme",
     "bookmarksBlurb": "Site simgeleriyle kaydedilen bağlantılar. Tarayıcı yer imlerinizi içe aktarın.",
+    "contactsName": "Kişiler",
+    "contactsBlurb": "Numaralar, e-postalar, adresler. Tüm adres defterinizi içe aktarın.",
     "markdownFree": "Ücretsiz"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "Sonsuza kadar ücretsiz",
     "freeSubLabel": "Kredi kartı gerekmez, süre sınırı yok.",
-    "freeAllPillars": "Notlar, görevler, dosyalar, kasa, günlük ve yer imleri",
+    "freeAllPillars": "Notlar, görevler, dosyalar, kasa, günlük, kişiler ve yer imleri",
     "freeSync": "2 cihaz arasında eşitleme",
     "freeVault": "50 MB depolama, dosya başına 5 MB",
     "freeSearch": "Tam metin arama + etiketler",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask, 72 $/yıl",
     "themDaylio": "Daylio, 48 $/yıl (şifrelenmemiş ruh hali verisi)",
     "themSeparate": "Ayrı uygulamalar, yinelenen ücretler",
-    "usAllInOne": "Notlar, görevler, dosyalar, kasa, günlük, yer imleri. Tek uygulama",
+    "usAllInOne": "Notlar, görevler, dosyalar, kasa, günlük, kişiler, yer imleri. Tek uygulama",
     "usTracking": "Ruh hali, enerji, uyku ve ilaç takibi",
     "usEncrypted": "Cihazınızda şifreli, İsviçre'ye eşitlenir",
     "usSignIn": "Anonim ya da Google, Apple veya GitHub ile giriş, her durumda aynı şifreleme",
@@ -228,6 +230,7 @@
     "passwordVault": "Parola kasası",
     "cardStorage": "Kredi kartı saklama",
     "browserImport": "Tarayıcı yer imi içe aktarma",
+    "contactImport": "vCard kişi içe aktarma",
     "moodScale": "Ruh hali (1-10 ölçeği)",
     "emotionTags": "Araştırmaya dayalı 24 duygu etiketi",
     "sleepTracking": "Uyku takibi",

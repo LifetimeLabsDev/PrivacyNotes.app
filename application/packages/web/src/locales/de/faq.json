@@ -140,7 +140,7 @@
         "Deine Konto-ID wird aus der Phrase abgeleitet. Wenn du also ein Konto löschst und dich mit denselben 12 Wörtern wieder anmeldest, bekommst du einen neuen, leeren Tresor mit derselben Konto-ID. Aus dem gelöschten Tresor kommt nichts zurück. Wenn du zu einer neuen Phrase gewechselt bist, entferne die alte aus deinem Passwort-Manager, damit du dich nie aus Versehen beim alten Konto anmeldest."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "Wie aktiviere ich die Zwei-Faktor-Authentifizierung (2FA)?",
       "a": [
         "Aktiviere die optionale Zwei-Faktor-Anmeldung unter Einstellungen > Sicherheit > 2FA. Aktualisiere PrivacyNotes zuerst auf deinen anderen Geräten. Scanne den QR-Code mit einer Authenticator-App oder gib den Einrichtungsschlüssel manuell ein. Bewahre den 2FA-Sicherungsschlüssel außerhalb von PrivacyNotes auf, bestätige deine gespeicherte Kopie und gib zum Abschluss einen aktuellen Code ein.",

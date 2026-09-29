@@ -140,7 +140,7 @@
         "Il tuo ID account deriva dalla frase. Quindi se elimini un account e accedi di nuovo con le stesse 12 parole, ottieni una cassaforte nuova e vuota con lo stesso ID account. Dalla cassaforte eliminata non torna nulla. Dopo essere passato a una nuova frase, rimuovi quella vecchia dal tuo password manager, così non accedi mai per sbaglio al vecchio account."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "Come attivo l’autenticazione a due fattori (2FA)?",
       "a": [
         "Attiva l’accesso facoltativo a due fattori in Impostazioni > Sicurezza > 2FA. Prima aggiorna PrivacyNotes sugli altri dispositivi. Scansiona il codice QR con un’app di autenticazione oppure inserisci manualmente la chiave di configurazione. Salva la chiave di backup 2FA fuori da PrivacyNotes, conferma la copia salvata, poi inserisci un codice attuale per completare la configurazione.",

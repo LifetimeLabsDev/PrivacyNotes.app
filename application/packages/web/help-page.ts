@@ -885,7 +885,7 @@ const CONTENT_UPDATED: Record<string, string> = {
   'try-before-signup': '2026-08-31',
   'threat-model-levels': '2026-09-27',
   'twelve-word-phrase': '2026-08-31',
-  'why-no-2fa': '2026-09-27',
+  'enable-2fa': '2026-09-27',
   'remove-device': '2026-08-31',
   'note-size-limit': '2026-08-31',
   'feature-requests': '2026-08-31',

@@ -6,6 +6,7 @@
   "data-location": "我的資料存放在哪裡？",
   "delete-account": "要怎麼刪除帳號？",
   "device-limit": "「已達裝置上限」是什麼意思？",
+  "enable-2fa": "如何開啟雙因素驗證（2FA）？",
   "forgot-pin": "我忘記 PIN 碼了，要怎麼回到應用程式？",
   "guess-phrase": "有人能猜中我的 12 個助憶詞，或剛好拿到和我一樣的一組嗎？",
   "image-quality": "PrivacyNotes 會更改或壓縮我的圖片嗎？",
@@ -22,6 +23,5 @@
   "translation-quality": "這個 app 的翻譯是怎麼做的？",
   "vault": "什麼是保險庫？",
   "vault-totp": "保險庫可以存我的 2FA 驗證金鑰嗎（TOTP／MFA 驗證碼）？",
-  "what-syncs": "哪些內容會在裝置間同步？哪些只留在本機？",
-  "why-no-2fa": "如何開啟雙因素驗證（2FA）？"
+  "what-syncs": "哪些內容會在裝置間同步？哪些只留在本機？"
 }

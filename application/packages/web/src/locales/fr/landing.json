@@ -46,7 +46,7 @@
     "dismiss": "Fermer l'annonce"
   },
   "pillars": {
-    "kicker": "Sept piliers, six sous une seule clé - et un sur ton disque",
+    "kicker": "Huit piliers, sept sous une seule clé - et un sur ton disque",
     "notesName": "Notes",
     "notesBlurb": "Éditeur en direct, étiquettes, recherche instantanée.",
     "tasksName": "Tâches",
@@ -59,6 +59,8 @@
     "filesBlurb": "Images, documents, audio et vidéo chiffrés.",
     "bookmarksName": "Synchro des signets",
     "bookmarksBlurb": "Liens enregistrés avec l'icône du site. Importe les signets de ton navigateur.",
+    "contactsName": "Contacts",
+    "contactsBlurb": "Numéros, e-mails, adresses. Importe tout ton carnet d'adresses.",
     "markdownFree": "Gratuit"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "Gratuit pour toujours",
     "freeSubLabel": "Sans carte bancaire, sans limite de temps.",
-    "freeAllPillars": "Notes, tâches, fichiers, coffre, journal et signets",
+    "freeAllPillars": "Notes, tâches, fichiers, coffre, journal, contacts et signets",
     "freeSync": "Synchronisation sur 2 appareils",
     "freeVault": "50 Mo de stockage, jusqu’à 5 Mo par fichier",
     "freeSearch": "Recherche plein texte + étiquettes",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask, 72 $/an",
     "themDaylio": "Daylio, 48 $/an (données d'humeur non chiffrées)",
     "themSeparate": "Applis séparées, frais récurrents",
-    "usAllInOne": "Notes, tâches, fichiers, coffre, journal, signets. Une seule appli",
+    "usAllInOne": "Notes, tâches, fichiers, coffre, journal, contacts, signets. Une seule appli",
     "usTracking": "Suivi de l'humeur, de l'énergie, du sommeil, des médicaments",
     "usEncrypted": "Chiffré sur ton appareil, synchronisé vers la Suisse",
     "usSignIn": "Connexion anonyme ou avec Google, Apple ou GitHub, même chiffrement dans tous les cas",
@@ -228,6 +230,7 @@
     "passwordVault": "Coffre à mots de passe",
     "cardStorage": "Stockage de cartes bancaires",
     "browserImport": "Import des signets du navigateur",
+    "contactImport": "Import de contacts vCard",
     "moodScale": "Humeur (échelle de 1 à 10)",
     "emotionTags": "24 étiquettes d'émotions fondées sur la recherche",
     "sleepTracking": "Suivi du sommeil",

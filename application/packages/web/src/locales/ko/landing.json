@@ -46,7 +46,7 @@
     "dismiss": "공지 닫기"
   },
   "pillars": {
-    "kicker": "일곱 기둥, 여섯은 하나의 키로. 그리고 하나는 내 디스크에",
+    "kicker": "여덟 기둥, 일곱은 하나의 키로. 그리고 하나는 내 디스크에",
     "notesName": "노트",
     "notesBlurb": "풍부한 실시간 에디터, 태그, 즉시 검색.",
     "tasksName": "할 일",
@@ -59,6 +59,8 @@
     "filesBlurb": "암호화된 이미지, 문서, 오디오, 비디오.",
     "bookmarksName": "북마크 동기화",
     "bookmarksBlurb": "사이트 아이콘과 함께 저장한 링크. 브라우저 북마크를 가져와요.",
+    "contactsName": "연락처",
+    "contactsBlurb": "번호, 이메일, 주소. 주소록을 통째로 가져오세요.",
     "markdownFree": "무료"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "평생 무료",
     "freeSubLabel": "신용카드도, 시간제한도 없어요.",
-    "freeAllPillars": "노트, 할 일, 파일, 보관함, 저널, 북마크",
+    "freeAllPillars": "노트, 할 일, 파일, 보관함, 저널, 연락처, 북마크",
     "freeSync": "기기 2대 동기화",
     "freeVault": "50 MB 저장 공간, 파일당 5 MB",
     "freeSearch": "전문 검색 + 태그",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask, 연 $72",
     "themDaylio": "Daylio, 연 $48 (기분 데이터 암호화 없음)",
     "themSeparate": "제각각인 앱, 반복되는 요금",
-    "usAllInOne": "노트, 할 일, 파일, 보관함, 저널, 북마크. 앱 하나",
+    "usAllInOne": "노트, 할 일, 파일, 보관함, 저널, 연락처, 북마크. 앱 하나",
     "usTracking": "기분, 에너지, 수면, 복약 트래킹",
     "usEncrypted": "기기에서 암호화, 스위스로 동기화",
     "usSignIn": "익명 또는 Google, Apple, GitHub 로그인, 어느 쪽이든 같은 암호화",
@@ -228,6 +230,7 @@
     "passwordVault": "비밀번호 보관함",
     "cardStorage": "신용카드 보관",
     "browserImport": "브라우저 북마크 가져오기",
+    "contactImport": "vCard 연락처 가져오기",
     "moodScale": "기분 (1-10 척도)",
     "emotionTags": "연구 기반 감정 태그 24종",
     "sleepTracking": "수면 트래킹",

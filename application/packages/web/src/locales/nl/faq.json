@@ -140,7 +140,7 @@
         "Je Account-ID komt voort uit de herstelzin. Verwijder je dus een account en meld je je opnieuw aan met dezelfde 12 woorden, dan krijg je een nieuwe, lege kluis met dezelfde Account-ID. Niets uit de verwijderde kluis komt terug. Ben je overgestapt naar een nieuwe herstelzin, haal de oude dan uit je wachtwoordmanager, zodat je je nooit per ongeluk bij het oude account aanmeldt."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "Hoe zet ik tweefactorauthenticatie (2FA) aan?",
       "a": [
         "Zet de optionele aanmelding in twee stappen aan via Instellingen > Beveiliging > 2FA. Werk PrivacyNotes eerst bij op je andere apparaten. Scan de QR-code met een authenticator-app of voer de instelsleutel handmatig in. Bewaar de 2FA-reservesleutel buiten PrivacyNotes, bevestig de opgeslagen kopie en voer een actuele code in om af te ronden.",

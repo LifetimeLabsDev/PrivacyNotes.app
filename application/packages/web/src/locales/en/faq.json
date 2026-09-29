@@ -140,7 +140,7 @@
         "Your Account ID comes from the phrase. So if you delete an account and sign in again with the same 12 words, you get a new, empty vault with the same Account ID. Nothing from the deleted vault comes back. After you move to a new phrase, remove the old one from your password manager, so you never sign in to the old account by mistake."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "How do I turn on two-factor authentication (2FA)?",
       "a": [
         "Turn on optional two-factor sign-in in Settings > Security > 2FA. Update PrivacyNotes on your other devices first. Scan the QR code with an authenticator app, or enter the setup key manually. Save the 2FA backup key outside PrivacyNotes, confirm the saved copy, then enter a current code to finish.",

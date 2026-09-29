@@ -140,7 +140,7 @@
         "Ton ID de compte est tiré de la phrase. Donc si tu supprimes un compte et que tu te reconnectes avec les mêmes 12 mots, tu obtiens un nouveau coffre vide avec le même ID de compte. Rien du coffre supprimé ne revient. Après être passé à une nouvelle phrase, retire l'ancienne de ton gestionnaire de mots de passe, pour ne jamais te connecter par erreur à l'ancien compte."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "Comment activer l’authentification à deux facteurs (2FA) ?",
       "a": [
         "Active la connexion à deux facteurs facultative dans Paramètres > Sécurité > 2FA. Mets d’abord PrivacyNotes à jour sur tes autres appareils. Scanne le QR code avec une application d’authentification ou saisis la clé de configuration manuellement. Sauvegarde la clé de secours 2FA en dehors de PrivacyNotes, confirme ta copie sauvegardée, puis saisis un code actuel pour terminer.",

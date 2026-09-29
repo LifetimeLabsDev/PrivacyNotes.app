@@ -6,6 +6,7 @@
   "data-location": "Wo werden meine Daten gespeichert?",
   "delete-account": "Wie lösche ich mein Konto?",
   "device-limit": "Was bedeutet \"Gerätelimit erreicht\"?",
+  "enable-2fa": "Wie aktiviere ich die Zwei-Faktor-Authentifizierung (2FA)?",
   "forgot-pin": "Ich habe meine PIN vergessen. Wie komme ich wieder rein?",
   "guess-phrase": "Kann jemand meine 12 Wörter erraten oder zufällig dieselben bekommen?",
   "image-quality": "Verändert oder komprimiert PrivacyNotes meine Bilder?",
@@ -22,6 +23,5 @@
   "translation-quality": "Wie entstehen die Übersetzungen der App?",
   "vault": "Was ist der Tresor?",
   "vault-totp": "Kann der Tresor meine 2FA-Authenticator-Schlüssel speichern (TOTP / MFA-Codes)?",
-  "what-syncs": "Was genau wird zwischen meinen Geräten synchronisiert, und was bleibt lokal?",
-  "why-no-2fa": "Wie aktiviere ich die Zwei-Faktor-Authentifizierung (2FA)?"
+  "what-syncs": "Was genau wird zwischen meinen Geräten synchronisiert, und was bleibt lokal?"
 }

@@ -6,6 +6,7 @@
   "data-location": "Kde jsou moje data uložená?",
   "delete-account": "Jak smažu svůj účet?",
   "device-limit": "Co znamená „Dosažen limit zařízení“?",
+  "enable-2fa": "Jak zapnout dvoufaktorové ověřování (2FA)?",
   "forgot-pin": "Zapomněl jsem PIN. Jak se dostanu zpátky?",
   "guess-phrase": "Může někdo uhodnout mých 12 slov nebo dostat stejná?",
   "image-quality": "Mění nebo komprimuje PrivacyNotes moje obrázky?",
@@ -22,6 +23,5 @@
   "translation-quality": "Jak vznikají překlady aplikace?",
   "vault": "Co je Trezor?",
   "vault-totp": "Uloží Trezor moje 2FA klíče (kódy TOTP / MFA)?",
-  "what-syncs": "Co přesně se mezi zařízeními synchronizuje a co zůstává lokálně?",
-  "why-no-2fa": "Jak zapnout dvoufaktorové ověřování (2FA)?"
+  "what-syncs": "Co přesně se mezi zařízeními synchronizuje a co zůstává lokálně?"
 }

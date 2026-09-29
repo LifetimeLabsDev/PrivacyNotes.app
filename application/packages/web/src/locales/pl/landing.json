@@ -46,7 +46,7 @@
     "dismiss": "Zamknij ogłoszenie"
   },
   "pillars": {
-    "kicker": "Siedem filarów, sześć pod jednym kluczem - i jeden na Twoim dysku",
+    "kicker": "Osiem filarów, siedem pod jednym kluczem - i jeden na Twoim dysku",
     "notesName": "Notatki",
     "notesBlurb": "Sformatowany edytor na żywo, tagi, błyskawiczne wyszukiwanie.",
     "tasksName": "Zadania",
@@ -59,6 +59,8 @@
     "filesBlurb": "Zaszyfrowane obrazy, dokumenty, dźwięk i wideo.",
     "bookmarksName": "Sync zakładek",
     "bookmarksBlurb": "Zapisane linki z ikonami stron. Zaimportuj zakładki ze swojej przeglądarki.",
+    "contactsName": "Kontakty",
+    "contactsBlurb": "Numery, e-maile, adresy. Zaimportuj całą książkę adresową.",
     "markdownFree": "Darmowe"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "Darmowe na zawsze",
     "freeSubLabel": "Bez karty kredytowej, bez limitu czasu.",
-    "freeAllPillars": "Notatki, zadania, pliki, sejf, dziennik i zakładki",
+    "freeAllPillars": "Notatki, zadania, pliki, sejf, dziennik, kontakty i zakładki",
     "freeSync": "Synchronizacja na 2 urządzeniach",
     "freeVault": "50 MB pamięci, do 5 MB na plik",
     "freeSearch": "Wyszukiwanie pełnotekstowe + tagi",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask, 72 $/rok",
     "themDaylio": "Daylio, 48 $/rok (niezaszyfrowane dane o nastroju)",
     "themSeparate": "Osobne aplikacje, opłaty cykliczne",
-    "usAllInOne": "Notatki, zadania, pliki, sejf, dziennik, zakładki. Jedna aplikacja",
+    "usAllInOne": "Notatki, zadania, pliki, sejf, dziennik, kontakty, zakładki. Jedna aplikacja",
     "usTracking": "Śledzenie nastroju, energii, snu i leków",
     "usEncrypted": "Szyfrowane na Twoim urządzeniu, synchronizowane do Szwajcarii",
     "usSignIn": "Logowanie anonimowe albo przez Google, Apple lub GitHub, to samo szyfrowanie w każdym przypadku",
@@ -228,6 +230,7 @@
     "passwordVault": "Sejf haseł",
     "cardStorage": "Przechowywanie kart kredytowych",
     "browserImport": "Import zakładek z przeglądarki",
+    "contactImport": "Import kontaktów vCard",
     "moodScale": "Nastrój (skala 1-10)",
     "emotionTags": "24 tagi emocji oparte na badaniach",
     "sleepTracking": "Śledzenie snu",

@@ -46,7 +46,7 @@
     "dismiss": "Dispensar o anúncio"
   },
   "pillars": {
-    "kicker": "Sete pilares, seis sob uma só chave - e um no seu disco",
+    "kicker": "Oito pilares, sete sob uma só chave - e um no seu disco",
     "notesName": "Notas",
     "notesBlurb": "Editor ao vivo formatado, etiquetas, busca instantânea.",
     "tasksName": "Tarefas",
@@ -59,6 +59,8 @@
     "filesBlurb": "Imagens, documentos, áudio e vídeo criptografados.",
     "bookmarksName": "Sync de marcadores",
     "bookmarksBlurb": "Links salvos com o ícone do site. Importe os marcadores do seu navegador.",
+    "contactsName": "Contatos",
+    "contactsBlurb": "Números, e-mails, endereços. Importe toda a sua lista de contatos.",
     "markdownFree": "Grátis"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "Grátis para sempre",
     "freeSubLabel": "Sem cartão de crédito, sem prazo.",
-    "freeAllPillars": "Notas, tarefas, arquivos, cofre, diário e marcadores",
+    "freeAllPillars": "Notas, tarefas, arquivos, cofre, diário, contatos e marcadores",
     "freeSync": "Sincronização entre 2 aparelhos",
     "freeVault": "50 MB de armazenamento, até 5 MB por arquivo",
     "freeSearch": "Busca em texto completo + etiquetas",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask, US$ 72/ano",
     "themDaylio": "Daylio, US$ 48/ano (dados de humor sem criptografia)",
     "themSeparate": "Apps separados, taxas recorrentes",
-    "usAllInOne": "Notas, tarefas, arquivos, cofre, diário, marcadores. Um só app",
+    "usAllInOne": "Notas, tarefas, arquivos, cofre, diário, contatos, marcadores. Um só app",
     "usTracking": "Acompanhamento de humor, energia, sono e medicação",
     "usEncrypted": "Criptografado no seu aparelho, sincronizado na Suíça",
     "usSignIn": "Entrada anônima ou com Google, Apple ou GitHub, a mesma criptografia de qualquer jeito",
@@ -228,6 +230,7 @@
     "passwordVault": "Cofre de senhas",
     "cardStorage": "Armazenamento de cartões de crédito",
     "browserImport": "Importação de marcadores do navegador",
+    "contactImport": "Importação de contatos vCard",
     "moodScale": "Humor (escala de 1 a 10)",
     "emotionTags": "24 etiquetas de emoção com base científica",
     "sleepTracking": "Acompanhamento do sono",

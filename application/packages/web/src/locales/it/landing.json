@@ -46,7 +46,7 @@
     "dismiss": "Chiudi l'annuncio"
   },
   "pillars": {
-    "kicker": "Sette pilastri, sei sotto un'unica chiave - e uno sul tuo disco",
+    "kicker": "Otto pilastri, sette sotto un'unica chiave - e uno sul tuo disco",
     "notesName": "Note",
     "notesBlurb": "Editor live, tag, ricerca istantanea.",
     "tasksName": "Attività",
@@ -59,6 +59,8 @@
     "filesBlurb": "Immagini, documenti, audio e video cifrati.",
     "bookmarksName": "Sync segnalibri",
     "bookmarksBlurb": "Link salvati con l'icona del sito. Importa i segnalibri del tuo browser.",
+    "contactsName": "Contatti",
+    "contactsBlurb": "Numeri, email, indirizzi. Importa tutta la tua rubrica.",
     "markdownFree": "Gratis"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "Gratis per sempre",
     "freeSubLabel": "Nessuna carta di credito richiesta, nessun limite di tempo.",
-    "freeAllPillars": "Note, attività, file, cassaforte, diario e segnalibri",
+    "freeAllPillars": "Note, attività, file, cassaforte, diario, contatti e segnalibri",
     "freeSync": "Sincronizzazione su 2 dispositivi",
     "freeVault": "50 MB di spazio, fino a 5 MB per file",
     "freeSearch": "Ricerca full-text + tag",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask, $72/anno",
     "themDaylio": "Daylio, $48/anno (dati sull'umore non cifrati)",
     "themSeparate": "App separate, costi ricorrenti",
-    "usAllInOne": "Note, attività, file, cassaforte, diario, segnalibri. Un'unica app",
+    "usAllInOne": "Note, attività, file, cassaforte, diario, contatti, segnalibri. Un'unica app",
     "usTracking": "Monitoraggio di umore, energia, sonno e farmaci",
     "usEncrypted": "Cifrato sul tuo dispositivo, sincronizzato in Svizzera",
     "usSignIn": "Accesso anonimo o con Google, Apple o GitHub, stessa crittografia in ogni caso",
@@ -228,6 +230,7 @@
     "passwordVault": "Cassaforte delle password",
     "cardStorage": "Archiviazione carte di credito",
     "browserImport": "Importazione segnalibri del browser",
+    "contactImport": "Importazione contatti vCard",
     "moodScale": "Umore (scala 1-10)",
     "emotionTags": "24 tag emotivi basati sulla ricerca scientifica",
     "sleepTracking": "Monitoraggio del sonno",

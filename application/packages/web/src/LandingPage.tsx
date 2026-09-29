@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { CSSProperties, ReactNode } from 'react';
-import { AndroidLogo, AppleLogo, Archive, ArrowLeft, ArrowUpRight, Book, Bookmarks, CaretDown, ChartBar, Check, CheckCircle, CheckFat, CheckSquare, Copy, Cube, FileText, Folder, GithubLogo, GooglePlayLogo, Key, List, Lock, LockSimple, Moon, Package, Pill, SealCheck, Shield, Smiley, Square, Sun, TerminalWindow, WindowsLogo, X } from './icons';
+import { AndroidLogo, AppleLogo, Archive, ArrowLeft, ArrowUpRight, Book, Bookmarks, CaretDown, ChartBar, Check, CheckCircle, CheckFat, CheckSquare, Copy, Cube, FileText, Folder, GithubLogo, GooglePlayLogo, Key, List, Lock, LockSimple, Moon, Package, Pill, SealCheck, Shield, Smiley, Square, Sun, TerminalWindow, UserCheck, WindowsLogo, X } from './icons';
 import { LogoIcon } from './LogoIcon';
 import { Brand } from './Brand';
 import { openExternal } from './openExternal';
@@ -712,6 +712,8 @@ export const FX_CSS = `
 .pn-fx-draw:hover .pn-fx-draw-rect rect{stroke-dashoffset:0}
 .pn-fx-ants{border:2px solid transparent;background:linear-gradient(var(--tile-bg,var(--wl-tint-amber)),var(--tile-bg,var(--wl-tint-amber))) padding-box,repeating-linear-gradient(45deg,#f59e0b 0 8px,transparent 8px 16px) border-box}
 .pn-fx-ants:hover{animation:pn-ants .5s linear infinite}
+.pn-fx-fill{background-image:linear-gradient(110deg,rgb(var(--pn-accent)/.10) 50%,transparent 50%);background-size:230% 100%;background-position:100% 0;transition:background-position .3s ease}
+.pn-fx-fill:hover{background-position:0 0}
 .pn-fx-ribbon{position:relative;overflow:hidden}
 .pn-fx-ribbon::before{content:"";position:absolute;top:-2px;inset-inline-end:26px;width:22px;height:40px;background:rgb(var(--pn-accent));clip-path:polygon(0 0,100% 0,100% 100%,50% 74%,0 100%);transition:top .3s cubic-bezier(.34,1.56,.64,1)}
 .pn-fx-ribbon:hover::before{top:-44px}
@@ -733,7 +735,7 @@ export const FX_CSS = `
    halves of those rules (the gradient, the scanlines) stay; they cost one
    paint, not a frame budget. */
 @media (hover:none){.pn-fx-conic-btn:hover,.group:hover .pn-fx-conic-btn,.pn-fx-conic-tile:hover,.pn-fx-scan:hover::after,.pn-fx-ants:hover{animation:none!important}}
-@media (prefers-reduced-motion:reduce){.pn-sticky,.pn-fx-conic-btn,.pn-fx-conic-tile,.pn-fx-popmix>span,.pn-fx-shake:hover,.pn-fx-slab,.pn-fx-scan:hover::after,.pn-fx-stamp::after,.pn-fx-type:hover .pn-fx-icons svg,.pn-fx-ants:hover,.pn-fx-meter-fill{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){.pn-sticky,.pn-fx-conic-btn,.pn-fx-conic-tile,.pn-fx-popmix>span,.pn-fx-shake:hover,.pn-fx-slab,.pn-fx-scan:hover::after,.pn-fx-stamp::after,.pn-fx-type:hover .pn-fx-icons svg,.pn-fx-ants:hover,.pn-fx-meter-fill,.pn-fx-fill{animation:none!important;transition:none!important}}
 `;
 
 export function LandingPage({
@@ -1584,15 +1586,30 @@ export function LandingPage({
                 <span className="pn-fx-meter-fill block h-full rounded-full bg-[var(--wl-ink)]" />
               </span>
             </div>
-            {/* The accent bookmark ribbon sits tucked into the tile at rest
-                (a bookmark IS the feature) and slides away on hover - the
-                inverse of its original drop-in, flipped 2026-08-24. Still
-                the one hover on this grid that moves on the vertical axis;
-                every sibling animates a border, a stamp or a background. */}
-            <div className="pn-fx-ribbon col-span-2 sm:col-span-2 rounded-2xl bg-[var(--wl-tile-marks)] border-2 border-[var(--wl-line)] p-4 sm:p-6">
-              <Bookmarks size={30} weight="duotone" className="text-accent" />
-              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.bookmarksName')}</div>
+            {/* A faint accent wash slides across from the left, the one hover
+                on this grid that fills rather than outlines. A person glyph
+                rather than an address card: the pillar's own row chips are
+                circles holding initials, and the tile carries that reading
+                up to the homepage. */}
+            <div className="pn-fx-fill col-span-2 sm:col-span-2 rounded-2xl bg-[var(--wl-card)] border-2 border-[var(--wl-line)] p-4 sm:p-6">
+              <UserCheck size={30} weight="duotone" className="text-accent" />
+              <div className="mt-2.5 sm:mt-3 text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--wl-ink)]">{t('pillars.contactsName')}</div>
               <p className="mt-1 text-sm leading-relaxed text-[var(--wl-sub)]">
+                {t('pillars.contactsBlurb')}
+              </p>
+            </div>
+            {/* The full-width strip that closes the grid. It is a strip rather
+                than a seventh square because the row above it seats three, and
+                the shape lets the accent ribbon read as a bookmark tucked into
+                a page edge: it sits in the tile at rest (a bookmark IS the
+                feature) and slides away on hover, the one hover here that
+                moves on the vertical axis. The name and the blurb sit on one
+                line from sm up and stack below it, where a 52-character blurb
+                beside a label leaves the label no room. */}
+            <div className="pn-fx-ribbon col-span-2 sm:col-span-6 rounded-2xl bg-[var(--wl-tile-marks)] border-2 border-[var(--wl-line)] p-4 sm:px-6 sm:py-4 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+              <Bookmarks size={30} weight="duotone" className="text-accent shrink-0" />
+              <div className="text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--wl-ink)] shrink-0">{t('pillars.bookmarksName')}</div>
+              <p className="text-sm leading-relaxed text-[var(--wl-sub)]">
                 {t('pillars.bookmarksBlurb')}
               </p>
             </div>
@@ -2344,6 +2361,7 @@ export function LandingPage({
           <FeaturePill>{t('extras.passwordVault')}</FeaturePill>
           <FeaturePill>{t('extras.cardStorage')}</FeaturePill>
           <FeaturePill>{t('extras.browserImport')}</FeaturePill>
+          <FeaturePill>{t('extras.contactImport')}</FeaturePill>
           <FeaturePill>{t('extras.moodScale')}</FeaturePill>
           <FeaturePill>{t('extras.emotionTags')}</FeaturePill>
           <FeaturePill>{t('extras.sleepTracking')}</FeaturePill>

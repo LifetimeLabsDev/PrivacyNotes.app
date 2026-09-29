@@ -6,6 +6,7 @@
   "data-location": "¿Dónde se guardan mis datos?",
   "delete-account": "¿Cómo elimino mi cuenta?",
   "device-limit": "¿Qué significa \"Límite de dispositivos alcanzado\"?",
+  "enable-2fa": "¿Cómo activo la autenticación en dos pasos (2FA)?",
   "forgot-pin": "Olvidé mi PIN. ¿Cómo vuelvo a entrar?",
   "guess-phrase": "¿Alguien puede adivinar mis 12 palabras o acabar con las mismas?",
   "image-quality": "¿PrivacyNotes cambia o comprime mis imágenes?",
@@ -22,6 +23,5 @@
   "translation-quality": "¿Cómo se hacen las traducciones de la app?",
   "vault": "¿Qué es la Bóveda?",
   "vault-totp": "¿La Caja fuerte puede guardar mis claves 2FA (códigos TOTP / MFA)?",
-  "what-syncs": "¿Qué se sincroniza exactamente entre mis dispositivos y qué se queda en local?",
-  "why-no-2fa": "¿Cómo activo la autenticación en dos pasos (2FA)?"
+  "what-syncs": "¿Qué se sincroniza exactamente entre mis dispositivos y qué se queda en local?"
 }

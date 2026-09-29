@@ -140,7 +140,7 @@
         "Hesap kimliğiniz ifadeden türetilir. Bu yüzden bir hesabı silip aynı 12 kelimeyle yeniden giriş yaparsanız, aynı Hesap kimliğine sahip yeni ve boş bir kasa elde edersiniz. Silinen kasadan hiçbir şey geri gelmez. Yeni bir ifadeye geçtikten sonra eskisini parola yöneticinizden silin, böylece yanlışlıkla eski hesaba asla giriş yapmazsınız."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "İki faktörlü kimlik doğrulamayı (2FA) nasıl açarım?",
       "a": [
         "İsteğe bağlı iki faktörlü girişi Ayarlar > Güvenlik > 2FA bölümünden açın. Önce diğer cihazlarınızdaki PrivacyNotes'u güncelleyin. QR kodunu bir doğrulama uygulamasıyla tarayın veya kurulum anahtarını elle girin. 2FA yedek anahtarını PrivacyNotes dışında kaydedin, kayıtlı kopyayı doğrulayın ve bitirmek için güncel bir kod girin.",

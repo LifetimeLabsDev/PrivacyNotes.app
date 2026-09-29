@@ -6,6 +6,7 @@
   "data-location": "Où mes données sont-elles stockées ?",
   "delete-account": "Comment supprimer mon compte ?",
   "device-limit": "Que signifie \"Limite d'appareils atteinte\" ?",
+  "enable-2fa": "Comment activer l’authentification à deux facteurs (2FA) ?",
   "forgot-pin": "J'ai oublié mon PIN. Comment revenir dans l'app ?",
   "guess-phrase": "Quelqu'un peut-il deviner mes 12 mots ou tomber sur les mêmes ?",
   "image-quality": "PrivacyNotes modifie-t-il ou compresse-t-il mes images ?",
@@ -22,6 +23,5 @@
   "translation-quality": "Comment les traductions de l'app sont-elles faites ?",
   "vault": "Qu'est-ce que le Coffre ?",
   "vault-totp": "Le coffre peut-il stocker mes clés d'authentification 2FA (codes TOTP / MFA) ?",
-  "what-syncs": "Qu'est-ce qui se synchronise exactement entre mes appareils, et qu'est-ce qui reste local ?",
-  "why-no-2fa": "Comment activer l’authentification à deux facteurs (2FA) ?"
+  "what-syncs": "Qu'est-ce qui se synchronise exactement entre mes appareils, et qu'est-ce qui reste local ?"
 }

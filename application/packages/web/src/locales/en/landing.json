@@ -46,7 +46,7 @@
     "dismiss": "Dismiss announcement"
   },
   "pillars": {
-    "kicker": "Seven pillars, six under one key - and one on your disk",
+    "kicker": "Eight pillars, seven under one key - and one on your disk",
     "notesName": "Notes",
     "notesBlurb": "Rich live editor, tags, instant search.",
     "tasksName": "Tasks",
@@ -59,6 +59,8 @@
     "filesBlurb": "Encrypted images, docs, audio, and video.",
     "bookmarksName": "Bookmark Sync",
     "bookmarksBlurb": "Saved links with website icons. Import your browser bookmarks.",
+    "contactsName": "Contacts",
+    "contactsBlurb": "Numbers, emails, addresses. Import your whole address book.",
     "markdownFree": "Free"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "Free forever",
     "freeSubLabel": "No credit card required, no time limit.",
-    "freeAllPillars": "Notes, tasks, files, vault, journal, and bookmarks",
+    "freeAllPillars": "Notes, tasks, files, vault, journal, contacts, and bookmarks",
     "freeSync": "Sync across 2 devices",
     "freeVault": "50 MB storage, 5 MB per file",
     "freeSearch": "Full-text search and tags",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask, $72/yr",
     "themDaylio": "Daylio, $48/yr (unencrypted mood data)",
     "themSeparate": "Separate apps, recurring fees",
-    "usAllInOne": "Notes, tasks, files, vault, journal, bookmarks. One app",
+    "usAllInOne": "Notes, tasks, files, vault, journal, contacts, bookmarks. One app",
     "usTracking": "Mood, energy, sleep, medication tracking",
     "usEncrypted": "Encrypted on your device, synced to Switzerland",
     "usSignIn": "Anonymous, or Google, Apple, or GitHub sign-in, same encryption either way",
@@ -228,6 +230,7 @@
     "passwordVault": "Password vault",
     "cardStorage": "Credit card storage",
     "browserImport": "Browser bookmark import",
+    "contactImport": "vCard contact import",
     "moodScale": "Mood (1-10 scale)",
     "emotionTags": "24 research-backed emotion tags",
     "sleepTracking": "Sleep tracking",

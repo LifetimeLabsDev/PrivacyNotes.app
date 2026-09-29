@@ -140,7 +140,7 @@
         "Tvoje ID účtu vychází z fráze. Když tedy účet smažeš a znovu se přihlásíš stejnými 12 slovy, dostaneš nový, prázdný trezor se stejným ID účtu. Nic ze smazaného trezoru se nevrátí. Po přechodu na novou frázi smaž tu starou ze správce hesel, ať se nikdy omylem nepřihlásíš do starého účtu."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "Jak zapnout dvoufaktorové ověřování (2FA)?",
       "a": [
         "Volitelné dvoufaktorové přihlášení zapneš v Nastavení > Zabezpečení > 2FA. Nejdřív aktualizuj PrivacyNotes na ostatních zařízeních. Naskenuj QR kód aplikací autentizátoru nebo zadej nastavovací klíč ručně. Ulož záložní klíč 2FA mimo PrivacyNotes, potvrď uloženou kopii a pro dokončení zadej aktuální kód.",

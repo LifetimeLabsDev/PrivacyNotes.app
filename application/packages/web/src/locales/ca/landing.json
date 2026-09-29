@@ -46,7 +46,7 @@
     "dismiss": "Descarta l'anunci"
   },
   "pillars": {
-    "kicker": "Set pilars, sis sota una sola clau - i un al teu disc",
+    "kicker": "Vuit pilars, set sota una sola clau - i un al teu disc",
     "notesName": "Notes",
     "notesBlurb": "Editor en viu amb format, etiquetes, cerca instantània.",
     "tasksName": "Tasques",
@@ -59,6 +59,8 @@
     "filesBlurb": "Imatges, documents, àudio i vídeo xifrats.",
     "bookmarksName": "Sync de marcadors",
     "bookmarksBlurb": "Enllaços desats amb la icona del lloc. Importa els marcadors del teu navegador.",
+    "contactsName": "Contactes",
+    "contactsBlurb": "Números, correus, adreces. Importa tota la teva llibreta d'adreces.",
     "markdownFree": "Gratuït"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "Gratuït per sempre",
     "freeSubLabel": "Sense targeta de crèdit ni límit de temps.",
-    "freeAllPillars": "Notes, tasques, fitxers, caixa forta, diari i marcadors",
+    "freeAllPillars": "Notes, tasques, fitxers, caixa forta, diari, contactes i marcadors",
     "freeSync": "Sincronització entre 2 dispositius",
     "freeVault": "50 MB d'emmagatzematge, fins a 5 MB per fitxer",
     "freeSearch": "Cerca de text complet + etiquetes",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask, $72/any",
     "themDaylio": "Daylio, $48/any (dades d'ànim sense xifrar)",
     "themSeparate": "Aplicacions separades, quotes recurrents",
-    "usAllInOne": "Notes, tasques, fitxers, caixa forta, diari, marcadors. Una sola aplicació",
+    "usAllInOne": "Notes, tasques, fitxers, caixa forta, diari, contactes, marcadors. Una sola aplicació",
     "usTracking": "Registre d'ànim, energia, son i medicació",
     "usEncrypted": "Xifrat al teu dispositiu, sincronitzat a Suïssa",
     "usSignIn": "Inici de sessió anònim, o amb Google, Apple o GitHub, el mateix xifratge en tots els casos",
@@ -228,6 +230,7 @@
     "passwordVault": "Caixa forta de contrasenyes",
     "cardStorage": "Emmagatzematge de targetes de crèdit",
     "browserImport": "Importació de marcadors del navegador",
+    "contactImport": "Importació de contactes vCard",
     "moodScale": "Ànim (escala 1-10)",
     "emotionTags": "24 etiquetes d'emocions amb base científica",
     "sleepTracking": "Registre del son",

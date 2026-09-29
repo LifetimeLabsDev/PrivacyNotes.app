@@ -46,7 +46,7 @@
     "dismiss": "お知らせを閉じる"
   },
   "pillars": {
-    "kicker": "7つの柱、6つは1つの鍵で。そしてもう1つは、あなたのディスクの上に",
+    "kicker": "8つの柱、7つは1つの鍵で。そしてもう1つは、あなたのディスクの上に",
     "notesName": "ノート",
     "notesBlurb": "リッチなライブエディタ、タグ、瞬時の検索。",
     "tasksName": "タスク",
@@ -59,6 +59,8 @@
     "filesBlurb": "画像、文書、音声、動画を暗号化して保存。",
     "bookmarksName": "ブックマーク同期",
     "bookmarksBlurb": "サイトのアイコン付きで保存したリンク。ブラウザのブックマークをインポートできます。",
+    "contactsName": "連絡先",
+    "contactsBlurb": "電話番号、メール、住所。アドレス帳をまるごとインポートできます。",
     "markdownFree": "無料"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "ずっと無料",
     "freeSubLabel": "クレジットカード不要、期間制限なし。",
-    "freeAllPillars": "ノート、タスク、ファイル、保管庫、ジャーナル、ブックマーク",
+    "freeAllPillars": "ノート、タスク、ファイル、保管庫、ジャーナル、連絡先、ブックマーク",
     "freeSync": "2台のデバイスで同期",
     "freeVault": "50 MBストレージ、1ファイル5 MBまで",
     "freeSearch": "全文検索 + タグ",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask、$72/年",
     "themDaylio": "Daylio、$48/年(気分データは暗号化されず)",
     "themSeparate": "バラバラのアプリ、繰り返す支払い",
-    "usAllInOne": "ノート、タスク、ファイル、保管庫、ジャーナル、ブックマーク。1つのアプリで",
+    "usAllInOne": "ノート、タスク、ファイル、保管庫、ジャーナル、連絡先、ブックマーク。1つのアプリで",
     "usTracking": "気分、エネルギー、睡眠、服薬の記録",
     "usEncrypted": "デバイス上で暗号化、スイスに同期",
     "usSignIn": "匿名でも、Google、Apple、GitHubでのサインインでも、暗号化は同じ",
@@ -228,6 +230,7 @@
     "passwordVault": "パスワード保管庫",
     "cardStorage": "クレジットカードの保存",
     "browserImport": "ブラウザのブックマークをインポート",
+    "contactImport": "vCard 連絡先インポート",
     "moodScale": "気分(1〜10段階)",
     "emotionTags": "研究に基づく24種類の感情タグ",
     "sleepTracking": "睡眠の記録",

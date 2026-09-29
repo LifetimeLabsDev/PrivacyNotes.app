@@ -6,6 +6,7 @@
   "data-location": "Onde é que os meus dados são armazenados?",
   "delete-account": "Como elimino a minha conta?",
   "device-limit": "O que significa \"Limite de dispositivos atingido\"?",
+  "enable-2fa": "Como ativo a autenticação de dois fatores (2FA)?",
   "forgot-pin": "Esqueci-me do PIN. Como volto a entrar?",
   "guess-phrase": "Alguém consegue adivinhar as minhas 12 palavras ou acabar com as mesmas?",
   "image-quality": "O PrivacyNotes altera ou comprime as minhas imagens?",
@@ -22,6 +23,5 @@
   "translation-quality": "Como são feitas as traduções da app?",
   "vault": "O que é o Cofre?",
   "vault-totp": "O Cofre pode guardar as minhas chaves 2FA (códigos TOTP / MFA)?",
-  "what-syncs": "O que é que sincroniza exatamente entre os meus dispositivos, e o que fica local?",
-  "why-no-2fa": "Como ativo a autenticação de dois fatores (2FA)?"
+  "what-syncs": "O que é que sincroniza exatamente entre os meus dispositivos, e o que fica local?"
 }

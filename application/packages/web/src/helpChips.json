@@ -34,7 +34,7 @@
   ],
   "biometric": [
     "biometric-unlock",
-    "why-no-2fa"
+    "enable-2fa"
   ],
   "phrase": [
     "phrase-vs-password",

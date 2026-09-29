@@ -46,7 +46,7 @@
     "dismiss": "關閉公告"
   },
   "pillars": {
-    "kicker": "七大支柱，六個共用一把金鑰，還有一個在你的硬碟上",
+    "kicker": "八大支柱，七個共用一把金鑰，還有一個在你的硬碟上",
     "notesName": "筆記",
     "notesBlurb": "豐富的即時編輯器、標籤、即時搜尋。",
     "tasksName": "任務",
@@ -59,6 +59,8 @@
     "filesBlurb": "加密的圖片、文書、音訊與影片。",
     "bookmarksName": "書籤同步",
     "bookmarksBlurb": "儲存的連結會顯示網站圖示。可匯入瀏覽器書籤。",
+    "contactsName": "聯絡人",
+    "contactsBlurb": "電話、電子郵件、地址。整本通訊錄一次匯入。",
     "markdownFree": "免費"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "永久免費",
     "freeSubLabel": "不需信用卡，沒有時間限制。",
-    "freeAllPillars": "筆記、任務、檔案、保險庫、日誌與書籤",
+    "freeAllPillars": "筆記、任務、檔案、保險庫、日誌、聯絡人與書籤",
     "freeSync": "2 部裝置同步",
     "freeVault": "50 MB 儲存空間，每個檔案 5 MB",
     "freeSearch": "全文搜尋 + 標籤",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask，每年 $72",
     "themDaylio": "Daylio，每年 $48（心情資料未加密）",
     "themSeparate": "各自獨立的 App，年年收費",
-    "usAllInOne": "筆記、任務、檔案、保險庫、日誌、書籤。一個 App",
+    "usAllInOne": "筆記、任務、檔案、保險庫、日誌、聯絡人、書籤。一個 App",
     "usTracking": "心情、活力、睡眠、用藥追蹤",
     "usEncrypted": "在你的裝置上加密，同步至瑞士",
     "usSignIn": "匿名，或用 Google、Apple、GitHub 登入，加密方式都相同",
@@ -228,6 +230,7 @@
     "passwordVault": "密碼保險庫",
     "cardStorage": "信用卡保存",
     "browserImport": "匯入瀏覽器書籤",
+    "contactImport": "vCard 聯絡人匯入",
     "moodScale": "心情（1-10 量表）",
     "emotionTags": "24 種有研究依據的情緒標籤",
     "sleepTracking": "睡眠追蹤",

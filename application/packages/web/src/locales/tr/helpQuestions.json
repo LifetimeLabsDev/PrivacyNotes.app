@@ -6,6 +6,7 @@
   "data-location": "Verilerim nerede saklanıyor?",
   "delete-account": "Hesabımı nasıl silerim?",
   "device-limit": "“Cihaz sınırına ulaşıldı” ne demek?",
+  "enable-2fa": "İki faktörlü kimlik doğrulamayı (2FA) nasıl açarım?",
   "forgot-pin": "PIN'imi unuttum. Nasıl geri girerim?",
   "guess-phrase": "Biri 12 kelimemi tahmin edebilir ya da aynılarına sahip olabilir mi?",
   "image-quality": "PrivacyNotes görsellerimi değiştiriyor veya sıkıştırıyor mu?",
@@ -22,6 +23,5 @@
   "translation-quality": "Uygulamanın çevirileri nasıl yapılıyor?",
   "vault": "Kasa nedir?",
   "vault-totp": "Kasa 2FA kimlik doğrulayıcı anahtarlarımı saklayabilir mi (TOTP / MFA kodları)?",
-  "what-syncs": "Cihazlarım arasında tam olarak ne eşitlenir, ne yerel kalır?",
-  "why-no-2fa": "İki faktörlü kimlik doğrulamayı (2FA) nasıl açarım?"
+  "what-syncs": "Cihazlarım arasında tam olarak ne eşitlenir, ne yerel kalır?"
 }

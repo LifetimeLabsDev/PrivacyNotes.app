@@ -128,8 +128,12 @@ In the meantime, the app and its cryptographic code live in this repository, so 
 
 Email privacynotes@lifetimelabs.dev. That contact is also published in our PGP-signed security.txt (https://privacynotes.app/.well-known/security.txt), so you can confirm it's authentic, and if you'd like to encrypt your report our public key is at https://privacynotes.app/.well-known/pgp-key.txt. If a fix requires coordination, we'll work with you on timing before public disclosure. There is no paid bounty program yet.
 
+Before you send a report, please check it against the current release and against [THREAT_MODEL.md](THREAT_MODEL.md), which lists the limitations we already know about and accept. A report we can act on names one concrete issue, the version or commit, and the steps that reproduce it. AI tools are welcome when you check what they find. What we cannot absorb is unchecked output: a scan that restates a documented limitation as a new finding, or that was never tried against the app, takes as long to answer as a real report, and that time comes out of building the app. If you are not sure a result is real, please verify it first, or tell us plainly what you did and did not check. We read every report, and we may answer an unverified one briefly.
+
 ## Acknowledgments
 
 We thank the independent researchers who report issues to us.
 
+- **NotAFlightRisk** ([GitHub](https://github.com/NotAFlightRisk)), September 2026: reported [GHSA-mxc4-qf2j-q5xq](https://github.com/LifetimeLabsDev/PrivacyNotes.app/security/advisories/GHSA-mxc4-qf2j-q5xq), a `privacynotes://` link that could switch a native app to another account. Fixed in v0.507.5.
+- **lissy93** ([GitHub](https://github.com/lissy93)), September 2026: made the observation behind GHSA-mxc4-qf2j-q5xq, and reported [GHSA-f4h8-458p-85xg](https://github.com/LifetimeLabsDev/PrivacyNotes.app/security/advisories/GHSA-f4h8-458p-85xg), a sign-in that another app could start and catch through the same scheme. Fixed on the server, with the apps at 0.534.0 or later.
 - **Eduardo Camarillo** ([noir0x63.org](https://noir0x63.org), [GitHub](https://github.com/Noir0x64)), September 2026: an unsolicited source review of the public client. Six defects and one documented limitation; four fixed in v0.522.1, one answered with a correction to the threat model, one an accepted residual that is now recorded as such.

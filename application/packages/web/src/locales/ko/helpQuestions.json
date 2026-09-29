@@ -6,6 +6,7 @@
   "data-location": "제 데이터는 어디에 저장되나요?",
   "delete-account": "계정을 어떻게 삭제하나요?",
   "device-limit": "\"기기 한도 도달\"은 무슨 뜻인가요?",
+  "enable-2fa": "2단계 인증(2FA)은 어떻게 켜나요?",
   "forgot-pin": "PIN을 잊었어요. 어떻게 다시 들어가나요?",
   "guess-phrase": "누군가 제 12단어를 맞히거나 같은 단어를 갖게 될 수 있나요?",
   "image-quality": "PrivacyNotes가 내 이미지를 바꾸거나 압축하나요?",
@@ -22,6 +23,5 @@
   "translation-quality": "앱의 번역은 어떻게 만드나요?",
   "vault": "보관함이 뭔가요?",
   "vault-totp": "Vault에 2FA 인증 키(TOTP / MFA 코드)를 저장할 수 있나요?",
-  "what-syncs": "기기 간에 정확히 무엇이 동기화되고, 무엇이 로컬에 남나요?",
-  "why-no-2fa": "2단계 인증(2FA)은 어떻게 켜나요?"
+  "what-syncs": "기기 간에 정확히 무엇이 동기화되고, 무엇이 로컬에 남나요?"
 }

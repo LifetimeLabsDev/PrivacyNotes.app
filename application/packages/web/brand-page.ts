@@ -130,22 +130,22 @@ const COPY: CopyBlock[] = [
   {
     id: 'cp-oneliner',
     label: 'One-liner',
-    text: 'The end-to-end encrypted home for your notes, tasks, files, and journal.',
+    text: 'The end-to-end encrypted home for your notes, tasks, files, passwords, journal, bookmarks, and contacts.',
   },
   {
     id: 'cp-short',
     label: 'Short',
-    text: 'An end-to-end encrypted workspace for notes, tasks, files, and journal. Self-custody: a 12-word key only you hold. No trackers, no ads.',
+    text: 'An end-to-end encrypted workspace for notes, tasks, files, passwords, journal, bookmarks, and contacts, plus a free Markdown editor for folders on your disk. Self-custody: a 12-word key only you hold. No trackers, no ads.',
   },
   {
     id: 'cp-meta',
     label: 'Meta description',
-    text: 'Your notes, always encrypted on your device and on the way to the server. With self-custody, not even we can read them. No trackers, no ads, free to start.',
+    text: 'An end-to-end encrypted workspace for notes, tasks, files, passwords, journal, bookmarks, and contacts. Open source, no trackers, no ads, free to start.',
   },
   {
     id: 'cp-boiler',
     label: 'Boilerplate, press',
-    text: 'PrivacyNotes is an end-to-end encrypted workspace for your notes, tasks, files, and journal. Every note is always encrypted, on your device and on the way to the server, under a key from a 12-word recovery phrase that, with self-custody, never leaves your hands. Lifetime Labs stores your notes only as ciphertext, with no trackers, no ads and no analytics of what you write. PrivacyNotes runs on the web and as native apps, and its apps are open source: the clients, the encryption layer and the threat model are all published for review. The free tier is free forever; Pro is a one-time purchase.',
+    text: 'PrivacyNotes is an end-to-end encrypted workspace for your notes, tasks, files, passwords, journal, bookmarks, and contacts, with a free Markdown editor for the folders already on your disk. Everything you store is always encrypted, on your device and on the way to the server, under a key from a 12-word recovery phrase that, with self-custody, never leaves your hands. Lifetime Labs stores your data only as ciphertext, with no trackers, no ads and no analytics of what you write. PrivacyNotes runs on the web and as native apps, and its apps are open source: the clients, the encryption layer and the threat model are all published for review. The free tier is free forever; Pro is a one-time purchase.',
   },
 ];
 

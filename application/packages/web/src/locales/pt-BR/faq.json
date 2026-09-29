@@ -140,7 +140,7 @@
         "Seu ID da conta vem da frase. Então, se você excluir uma conta e entrar de novo com as mesmas 12 palavras, recebe um cofre novo e vazio com o mesmo ID da conta. Nada do cofre excluído volta. Depois de migrar para uma frase nova, remova a antiga do seu gerenciador de senhas, para nunca entrar na conta antiga por engano."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "Como ativo a autenticação de dois fatores (2FA)?",
       "a": [
         "Ative o login opcional em duas etapas em Configurações > Segurança > 2FA. Atualize o PrivacyNotes nos outros dispositivos primeiro. Leia o código QR com um app autenticador ou digite a chave de configuração manualmente. Salve a chave de backup 2FA fora do PrivacyNotes, confirme a cópia salva e digite um código atual para concluir.",

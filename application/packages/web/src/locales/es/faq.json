@@ -140,7 +140,7 @@
         "Tu ID de cuenta sale de la frase. Así que si eliminas una cuenta y vuelves a iniciar sesión con las mismas 12 palabras, obtienes una bóveda nueva y vacía con el mismo ID de cuenta. No vuelve nada de la bóveda eliminada. Cuando te cambies a una frase nueva, quita la antigua de tu gestor de contraseñas, para no iniciar nunca sesión en la cuenta antigua por error."
       ]
     },
-    "why-no-2fa": {
+    "enable-2fa": {
       "q": "¿Cómo activo la autenticación en dos pasos (2FA)?",
       "a": [
         "Activa el inicio de sesión en dos pasos opcional en Ajustes > Seguridad > 2FA. Actualiza primero PrivacyNotes en tus otros dispositivos. Escanea el código QR con una app de autenticación o introduce la clave de configuración a mano. Guarda la clave de respaldo de 2FA fuera de PrivacyNotes, confirma la copia guardada e introduce un código actual para terminar.",

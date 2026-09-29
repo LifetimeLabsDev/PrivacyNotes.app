@@ -46,7 +46,7 @@
     "dismiss": "Stäng meddelandet"
   },
   "pillars": {
-    "kicker": "Sju pelare, sex under en nyckel - och en på din disk",
+    "kicker": "Åtta pelare, sju under en nyckel - och en på din disk",
     "notesName": "Anteckningar",
     "notesBlurb": "Formaterad live-redigerare, taggar, direktsökning.",
     "tasksName": "Uppgifter",
@@ -59,6 +59,8 @@
     "filesBlurb": "Krypterade bilder, dokument, ljud och video.",
     "bookmarksName": "Bokmärkessynk",
     "bookmarksBlurb": "Sparade länkar med webbplatsikoner. Importera dina bokmärken från webbläsaren.",
+    "contactsName": "Kontakter",
+    "contactsBlurb": "Nummer, e-post, adresser. Importera hela din adressbok.",
     "markdownFree": "Gratis"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "Gratis för alltid",
     "freeSubLabel": "Inget kreditkort krävs, ingen tidsgräns.",
-    "freeAllPillars": "Anteckningar, uppgifter, filer, valv, dagbok och bokmärken",
+    "freeAllPillars": "Anteckningar, uppgifter, filer, valv, dagbok, kontakter och bokmärken",
     "freeSync": "Synk mellan 2 enheter",
     "freeVault": "50 MB lagring, upp till 5 MB per fil",
     "freeSearch": "Fritextsökning + taggar",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask, 72 $/år",
     "themDaylio": "Daylio, 48 $/år (okrypterade humördata)",
     "themSeparate": "Separata appar, återkommande avgifter",
-    "usAllInOne": "Anteckningar, uppgifter, filer, valv, dagbok, bokmärken. En app",
+    "usAllInOne": "Anteckningar, uppgifter, filer, valv, dagbok, kontakter, bokmärken. En app",
     "usTracking": "Spårning av humör, energi, sömn och medicin",
     "usEncrypted": "Krypterat på din enhet, synkat till Schweiz",
     "usSignIn": "Anonym inloggning, eller inloggning med Google, Apple eller GitHub, samma kryptering hur du än väljer",
@@ -228,6 +230,7 @@
     "passwordVault": "Lösenordsvalv",
     "cardStorage": "Lagring av kreditkort",
     "browserImport": "Import av bokmärken från webbläsaren",
+    "contactImport": "vCard-kontaktimport",
     "moodScale": "Humör (skala 1-10)",
     "emotionTags": "24 forskningsbaserade känslotaggar",
     "sleepTracking": "Sömnspårning",

@@ -46,7 +46,7 @@
     "dismiss": "Aankondiging sluiten"
   },
   "pillars": {
-    "kicker": "Zeven pijlers, zes onder één sleutel - en één op je schijf",
+    "kicker": "Acht pijlers, zeven onder één sleutel - en één op je schijf",
     "notesName": "Notities",
     "notesBlurb": "Live-editor met opmaak, tags, direct zoeken.",
     "tasksName": "Taken",
@@ -59,6 +59,8 @@
     "filesBlurb": "Versleutelde afbeeldingen, documenten, audio en video.",
     "bookmarksName": "Bladwijzer-sync",
     "bookmarksBlurb": "Opgeslagen links met website-iconen. Importeer je browserbladwijzers.",
+    "contactsName": "Contacten",
+    "contactsBlurb": "Nummers, e-mails, adressen. Importeer je hele adresboek.",
     "markdownFree": "Gratis"
   },
   "mdEditor": {
@@ -136,7 +138,7 @@
   "pricing": {
     "freeLabel": "Voor altijd gratis",
     "freeSubLabel": "Geen creditcard nodig, geen tijdslimiet.",
-    "freeAllPillars": "Notities, taken, bestanden, kluis, dagboek en bladwijzers",
+    "freeAllPillars": "Notities, taken, bestanden, kluis, dagboek, contacten en bladwijzers",
     "freeSync": "Synchroniseer op 2 apparaten",
     "freeVault": "50 MB opslag, tot 5 MB per bestand",
     "freeSearch": "Zoeken in de volledige tekst + tags",
@@ -213,7 +215,7 @@
     "themLunatask": "Lunatask, $72/jaar",
     "themDaylio": "Daylio, $48/jaar (onversleutelde stemmingsgegevens)",
     "themSeparate": "Losse apps, terugkerende kosten",
-    "usAllInOne": "Notities, taken, bestanden, kluis, dagboek, bladwijzers. Eén app",
+    "usAllInOne": "Notities, taken, bestanden, kluis, dagboek, contacten, bladwijzers. Eén app",
     "usTracking": "Stemming, energie, slaap en medicatie bijhouden",
     "usEncrypted": "Versleuteld op je apparaat, gesynchroniseerd naar Zwitserland",
     "usSignIn": "Anoniem of met Google, Apple of GitHub aanmelden, altijd dezelfde versleuteling",
@@ -228,6 +230,7 @@
     "passwordVault": "Wachtwoordkluis",
     "cardStorage": "Creditcards bewaren",
     "browserImport": "Browserbladwijzers importeren",
+    "contactImport": "vCard-contactimport",
     "moodScale": "Stemming (schaal 1-10)",
     "emotionTags": "24 wetenschappelijk onderbouwde emotietags",
     "sleepTracking": "Slaap bijhouden",
