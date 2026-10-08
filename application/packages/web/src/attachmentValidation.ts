@@ -10,6 +10,7 @@
  */
 
 import { formatBytes } from './formatBytes';
+import i18n from './i18n';
 
 /** Per-file size limits in bytes. */
 const FILE_SIZE_LIMIT_FREE = 5 * 1000 * 1000;   // 5 MB
@@ -30,16 +31,16 @@ export type ValidationResult =
   | { ok: false; error: string };
 
 export function validateAttachment(
-  file: File,
+  file: { size: number },
   isPro: boolean,
   hasStorageSub = false,
 ): ValidationResult {
   const limit = perFileLimit(isPro, hasStorageSub);
   if (file.size > limit) {
-    const limitMB = limit / (1000 * 1000);
+    const vars = { size: formatFileSize(file.size), limit: limit / (1000 * 1000) };
     return {
       ok: false,
-      error: `File is too large (${formatFileSize(file.size)}). Maximum is ${limitMB} MB${isPro ? '' : ' on the free plan'}.`,
+      error: i18n.t(isPro ? 'importExport:upload.errorTooLarge' : 'importExport:upload.errorTooLargeFree', vars),
     };
   }
 

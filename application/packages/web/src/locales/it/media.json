@@ -14,7 +14,8 @@
     "loadFailed": "Impossibile caricare l'immagine",
     "notFound": "Immagine non trovata",
     "saveFailed": "Il salvataggio non è riuscito, quindi il file potrebbe essere vuoto o incompleto.",
-    "viewAria": "Visualizza immagine"
+    "viewAria": "Visualizza immagine",
+    "picturesLeftOut": "Alcune immagini non sono state aggiunte. Copia un'immagine da sola per incollarla."
   },
   "attachment": {
     "fallbackName": "Allegato",

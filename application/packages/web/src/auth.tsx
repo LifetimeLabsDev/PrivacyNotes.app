@@ -38,10 +38,10 @@ import {
 // PIN state is account-scoped: the hash rides in the synced settings
 // blob, and clearPinCache (pin.ts) wipes every local PIN artifact at
 // sign-out and on the owner-mismatch wipe.
-import { clearLocalSettings, hasUnpushedSettings, loadLocalSettings, saveLocalSettings, syncUserSettings } from './userSettings';
+import { clearLocalSettings, clearTabPinWrapCopy, hasUnpushedSettings, loadLocalSettings, saveLocalSettings, syncUserSettings } from './userSettings';
 import { isDemoMode } from './demo';
 import { MfaPrompt } from './MfaPrompt';
-import { ensureLevel2, useMfaPrompt, submitMfaCode, dismissMfaPrompt, mfaSessionChanged, isMfaRefusal, MfaRequiredError, MfaCancelledError, withMfaAwareTimeout } from './mfaStep';
+import { ensureLevel2, useMfaPrompt, submitMfaCode, dismissMfaPrompt, mfaSessionChanged, isMfaRefusal, MfaRequiredError, MfaCancelledError, mfaSessionIdentity, withMfaAwareTimeout } from './mfaStep';
 import { buildDemoAuthState } from './demoAuth';
 import { ConfirmModal } from './ConfirmModal';
 import { seedOnboardingNotes, SEED_MEDICATION } from './welcomeNote';
@@ -76,6 +76,18 @@ import {
   persistStoredPhrase,
   unwrapStoredEnvelope,
 } from './phraseAtRest';
+import { removeMatchingCopies, storedAccessToken } from './credentialCopies';
+import {
+  adoptLiveSignIn,
+  announceSignOut,
+  endLiveSignIn,
+  hasLiveSignIn,
+  isLivePhrase,
+  signInStamp,
+  signedOutSince,
+  watchSignOutsElsewhere,
+  type SignInStamp,
+} from './liveSignIn';
 import { clearPinCache } from './pin';
 import {
   PHRASE_STORAGE_KEY,
@@ -94,13 +106,14 @@ import {
   markRegistered,
   clearRegistrationMarker,
   jwtPayloadPubkey,
+  sessionBelongsElsewhere,
   jwtPayloadAal,
   clearSupabaseAuthKeys,
   readOwnerMirror,
   writeOwnerMirror,
   readAccountFlagsMirror,
 } from './authStorage';
-import { resetAppearance } from './theme';
+import { dropProThemes, resetAppearance } from './theme';
 import { logAuthEvent } from './authDiag';
 import { checkEarlySupporter, useProStatus } from './authProStatus';
 import { useCustody } from './authCustody';
@@ -142,6 +155,7 @@ const hmrGlobal = globalThis as unknown as {
   __pnSupabase?: ReturnType<typeof createSupabaseClient>;
   __pnAuthDiagWired?: boolean;
 };
+const AUTH_STORAGE_KEY = supabaseAuthStorageKey(import.meta.env.VITE_SUPABASE_URL);
 const supabase =
   (import.meta.env.DEV && hmrGlobal.__pnSupabase) ||
   createSupabaseClient(
@@ -149,8 +163,8 @@ const supabase =
     import.meta.env.VITE_SUPABASE_ANON_KEY,
     {
       storage: trustAwareStorage,
-      storageKey: supabaseAuthStorageKey(import.meta.env.VITE_SUPABASE_URL),
-      fetch: accountOAuthFetch(import.meta.env.VITE_SUPABASE_URL, supabaseAuthStorageKey(import.meta.env.VITE_SUPABASE_URL)),
+      storageKey: AUTH_STORAGE_KEY,
+      fetch: accountOAuthFetch(import.meta.env.VITE_SUPABASE_URL, AUTH_STORAGE_KEY),
       detectSessionInUrl: detectAutomaticOAuthSession(),
       // PKCE for every OAuth flow, web and native: the provider returns a
       // one-time code that only the install holding the verifier can
@@ -437,6 +451,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // through link-pubkey + register-device. The second hits a unique
   // constraint violation on the devices table insert → "insert_failed".
   const authInFlight = useRef(false);
+  // The stamp the running authentication took, and the account it signs in
+  // once that is known. The storage listeners read it: a sign-out notice
+  // older than this authentication must not cancel it, and another tab
+  // taking the storage for a different account must.
+  const authenticatingRef = useRef<{ stamp: SignInStamp; pubkey: string | null } | null>(null);
+  // The prior account's wipe an account switch put off at the device limit,
+  // with the owner marker the switch found. The retry from the limit runs it
+  // once a freed slot or a purchase registers this device.
+  const pendingSwitchWipe = useRef<{ pubkey: string; priorOwner: string | null; wipe: () => Promise<void> } | null>(null);
 
   // Bumped whenever the user starts a phrase sign-in themselves (typed,
   // QR, lock-screen unlock). hydrateFromOAuthSession snapshots it on
@@ -465,6 +488,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const vaultOpenRef = useRef(false);
   vaultOpenRef.current =
     auth.status === 'authenticated' || auth.status === 'device_limit_reached';
+  // The account that vault belongs to, for the same reason: the storage
+  // listeners below are registered once.
+  const openPubkeyRef = useRef<string | null>(null);
+  openPubkeyRef.current =
+    auth.status === 'authenticated' || auth.status === 'device_limit_reached' ? auth.pubkey : null;
 
   // Pending backoff for a re-mint refused on quota. One timer at a
   // time; `attempt` drives the delay and resets the moment a re-mint
@@ -505,11 +533,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    * firing mid-backoff cannot escalate to the re-auth prompt.
    * Spec: ops/docs/design-decisions.md (rate-limited re-mint)
    */
-  function scheduleRemintRetry(phrase: string, method: AuthMethod): void {
+  function scheduleRemintRetry(phrase: string, method: AuthMethod, startedAt: SignInStamp): void {
     const REMINT_RETRY_BASE_MS = 60_000;
     const REMINT_RETRY_MAX_MS = 600_000;
     const r = remintRetry.current;
     if (r.timer) return;
+    // The refusal can arrive after the person signed out, and sign-out has
+    // already cancelled any timer: arming one now would sign them back in.
+    // The stamp is from the start of the authentication that was refused.
+    if (signedOutSince(startedAt)) return;
     const delay = Math.min(REMINT_RETRY_BASE_MS * 2 ** r.attempt, REMINT_RETRY_MAX_MS);
     r.attempt++;
     setRemintBlocked(delay + 15_000);
@@ -528,13 +560,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       r.timer = null;
       let ownerNow: string | null = null;
       try { ownerNow = localStorage.getItem(PUBKEY_OWNER_KEY); } catch { /* same fallback */ }
-      if (ownerNow !== ownerAtArm) {
+      if (ownerNow !== ownerAtArm || signedOutSince(startedAt)) {
         logAuthEvent('auth:remint-retry-abandoned');
         r.attempt = 0;
         setRemintBlocked(0);
         return;
       }
-      void authenticateWithPhrase(phrase, method)
+      void authenticateWithPhrase(phrase, method, undefined, undefined, false, undefined, startedAt)
         .then((ran) => {
           // `false` means the concurrency mutex swallowed the call, so
           // nothing was proven - come back round rather than treating
@@ -543,12 +575,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             r.attempt = 0;
             setRemintBlocked(0);
           } else {
-            scheduleRemintRetry(phrase, method);
+            scheduleRemintRetry(phrase, method, startedAt);
           }
         })
         .catch((err) => {
           if (err instanceof RateLimitedError) {
-            scheduleRemintRetry(phrase, method);
+            scheduleRemintRetry(phrase, method, startedAt);
             return;
           }
           console.warn('[auth] re-mint retry failed:', err);
@@ -571,6 +603,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     oauthSession?: { accessToken: string; authUid: string },
     freshVault = false,
     captchaToken?: string,
+    /** The stamp the caller took before its own first await. A caller with
+     *  work of its own ahead of this call passes it, so a sign-out during
+     *  that work still stops this authentication going live. */
+    startedAt?: SignInStamp,
   ) {
     // Returns false when the StrictMode/concurrency mutex swallowed the
     // call, so a caller that goes on to persist something derived from
@@ -579,7 +615,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (authInFlight.current) return false;
     authInFlight.current = true;
     try {
-      await _authenticateWithPhrase(phrase, method, custodial, oauthSession, freshVault, captchaToken);
+      await _authenticateWithPhrase(phrase, method, custodial, oauthSession, freshVault, captchaToken, startedAt);
       // Any successful full authentication proves the session is live
       // again - clear the boot-revalidation flag so the modal never
       // outlives the problem. #118
@@ -587,6 +623,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return true;
     } finally {
       authInFlight.current = false;
+      authenticatingRef.current = null;
     }
   }
 
@@ -611,11 +648,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
      *  misclick case). OAuth callers never need it: the gate exempts
      *  users carrying a real provider email. */
     captchaToken?: string,
+    /** See the wrapper above. */
+    startedAt?: SignInStamp,
   ) {
     // A previous sign-out (or stale-tab bailout) may have suspended
     // sync; a new authentication always re-enables it, so a failed
     // sign-out can never leave the next session unable to sync.
     resumeSync();
+    // Taken before the first await, unless the caller took one earlier. A
+    // revalidation or a sign-in can still be running when the person signs
+    // out, and it must not go live after: the signed-out screen would turn
+    // back into the open vault, and the phrase would be writable again
+    // (liveSignIn.ts).
+    const since = startedAt ?? signInStamp();
+    authenticatingRef.current = { stamp: since, pubkey: null };
+    const goLive = async () => {
+      if (adoptLiveSignIn(phrase, since)) return;
+      logAuthEvent('auth:signin-overtaken');
+      await dropCreatedSession();
+      sessionRef.current = null;
+      // The breadcrumb above carries the reason. This text reaches a sign-in
+      // screen only when another tab signs out mid-sign-in.
+      throw new Error(i18n.t('auth:signIn.failedUnexpectedly'));
+    };
     const seed = phraseToSeed(phrase);
     const { privateKey: signingPrivateKey, publicKey } = await deriveSigningKey(seed);
     const encryptionKey = deriveEncryptionKey(seed);
@@ -626,6 +681,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Spec: ops/docs/device-fingerprint-hash.md (derived client-side from the seed, never sent to the server)
     const fpPepper = deriveFpPepper(seed);
     const pubkey = bytesToHex(publicKey);
+    authenticatingRef.current = { stamp: since, pubkey };
 
     // Pubkey-owner check: if a different user's data is sitting in
     // IndexedDB, wipe it before we touch sync. Catches phrase swap
@@ -793,6 +849,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let mintedThisPass = false;
     let authUid: string | undefined;
     let accessToken: string | undefined;
+    // Every session this pass creates: a mint, or the password grant after
+    // the link. Recorded at creation, never re-read, because a session read
+    // back later can be one another tab signed in meanwhile.
+    let createdSession: string | null = null;
+    let createdToken: string | null = null;
+    // A session this pass created can land after a sign-out swept the auth
+    // keys, and it would stay on disk with this account's claim: it opens
+    // no note, but it can still delete or overwrite the account's rows. It
+    // is revoked by its own token, so a session another tab installs during
+    // that request is never the one that goes, and it is removed here only
+    // while it is still the stored one. One this pass merely read was the
+    // sign-out's to end.
+    const revokeCreatedSession = async () => {
+      if (!createdSession || !createdToken) return;
+      await supabase.auth.admin.signOut(createdToken, 'local').catch(() => {});
+      await removeMatchingCopies(AUTH_STORAGE_KEY, (value) => {
+        try {
+          return mfaSessionIdentity(JSON.parse(value)) === createdSession;
+        } catch {
+          return false;
+        }
+      });
+    };
+    const dropCreatedSession = async () => {
+      // A phrase on disk means a sign-in after the sign-out, perhaps in
+      // another tab, and that sign-in may be using this very session.
+      if (trustAwareStorage.getItem(PHRASE_STORAGE_KEY)) return;
+      await revokeCreatedSession();
+    };
 
     if (oauthSession) {
       // Trust the caller - session was already validated by getUser()
@@ -801,7 +886,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       accessToken = oauthSession.accessToken;
     } else {
       const cached = await supabase.auth.getSession();
-      if (cached.data.session) {
+      if (cached.data.session && sessionBelongsElsewhere(cached.data.session, pubkey)) {
+        // Another account's login, typically a provider login whose
+        // two-factor prompt was dismissed. Linking through it would bind
+        // this vault to that account, so it ends and a session is minted
+        // from the phrase below. The OAuth method gets the same check: its
+        // flag is set only after its own link, so its own session carries
+        // the claim, and without one the boot stops at "session lost".
+        logAuthEvent('auth:foreign-session-dropped');
+        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+      } else if (cached.data.session) {
         // Validate the cached session is still live server-side (user may
         // have been deleted via dashboard purge, etc).
         const { data: userCheck, error: userCheckError } =
@@ -970,6 +1064,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       authUid = minted.authUid;
       accessToken = minted.accessToken;
       mintedThisPass = true;
+      createdSession = mfaSessionIdentity({ access_token: minted.accessToken, user: { id: minted.authUid } });
+      createdToken = minted.accessToken;
     }
 
     const deviceId = getDeviceId(pubkey);
@@ -997,9 +1093,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // before this handshake began must survive a transient link or
       // register failure (the claim gate makes a claimless session
       // harmless, and the next revalidation repairs the link on the
-      // same session). Session audit 2026-08-25.
+      // same session). Session audit 2026-08-25. It goes by its own token,
+      // never as whatever session is stored now, which on a trusted device
+      // can be one another tab signed in meanwhile.
       if (!oauthSession && method !== 'oauth' && mintedThisPass) {
-        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+        await revokeCreatedSession();
         sessionRef.current = null;
       }
       throw err;
@@ -1097,6 +1195,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           authUid = minted.authUid;
           accessToken = minted.accessToken;
           mintedThisPass = true;
+          createdSession = mfaSessionIdentity({ access_token: minted.accessToken, user: { id: minted.authUid } });
+          createdToken = minted.accessToken;
           continue;
         }
         // A rate limit is the one refusal that must NOT be retried: the
@@ -1195,6 +1295,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           accessToken = postLink.session.access_token;
           authUid = postLink.session.user.id;
           sessionEstablished = true;
+          createdSession = mfaSessionIdentity(postLink.session);
+          createdToken = postLink.session.access_token;
         }
       }
       if (!sessionEstablished) {
@@ -1211,7 +1313,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Verify after the final password grant: signing in again creates an
     // AAL1 token. Never route a pending/dismissed challenge through the
     // cleanup in failHandshake. tests/mfaIntegration.test.ts.
-    await ensureLevel2(supabase, { allowLocalUse: vaultOpenRef.current, background: vaultOpenRef.current });
+    try {
+      await ensureLevel2(supabase, { allowLocalUse: vaultOpenRef.current, background: vaultOpenRef.current });
+    } catch (err) {
+      // A sign-out dismisses the prompt, and the session this pass created
+      // before it would otherwise stay behind.
+      if (signedOutSince(since)) await dropCreatedSession();
+      throw err;
+    }
     const verifiedSession = (await supabase.auth.getSession()).data.session;
     if (!verifiedSession || jwtPayloadPubkey(verifiedSession.access_token) !== pubkey) {
       throw new MfaCancelledError();
@@ -1257,6 +1366,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       if (registerResult.status === 'limit_reached') {
+        await goLive();
+        // The prior account's data stays until this device registers, which
+        // from here happens only in doRetryRegistrationFromLimit.
+        pendingSwitchWipe.current = wipePrior ? { pubkey, priorOwner, wipe: wipePriorLocalData } : null;
         setAuth({
           status: 'device_limit_reached',
           method,
@@ -1288,6 +1401,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       markRegistered(pubkey, deviceId);
       isPro = registerResult.isPro;
+      // A fresh server answer, never the cached flags: a refunded account
+      // loses the Pro theme it had picked.
+      if (!isPro) dropProThemes();
       earlySup = isPro ? await checkEarlySupporter(supabase) : false;
     }
 
@@ -1307,12 +1423,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // medication template.
     if (freshVault) {
       try {
-        await seedOnboardingNotes(pubkey);
+        // Before the sign-in goes live, so the settings writes carry its
+        // stamp and a sign-out meanwhile refuses them.
+        await seedOnboardingNotes(pubkey, since);
         const s = loadLocalSettings();
         const withMed = s.medications?.some((m) => m.id === SEED_MEDICATION.id)
           ? s
           : { ...s, medications: [...(s.medications ?? []), SEED_MEDICATION] };
-        saveLocalSettings({ ...withMed, welcomeNoteSeeded: true });
+        saveLocalSettings({ ...withMed, welcomeNoteSeeded: true }, since);
       } catch (err) {
         console.warn('[auth] fresh-vault seed failed (sync gate will retry):', err);
       }
@@ -1328,6 +1446,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const resolvedCustodial =
       custodial ?? readCachedAccountFlags(pubkey)?.isCustodial ?? false;
 
+    await goLive();
     // Refresh the fast-boot cache so the next reload can render
     // immediately with up-to-date flags.
     writeCachedAccountFlags({
@@ -1373,7 +1492,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    *
    * Returns true if the fast boot rendered an authenticated state.
    */
-  async function tryFastBoot(phrase: string, method: AuthMethod): Promise<boolean> {
+  async function tryFastBoot(phrase: string, method: AuthMethod, startedAt?: SignInStamp): Promise<boolean> {
+    // Same rule as _authenticateWithPhrase: no going live after a sign-out.
+    // The boot passes the stamp it took before opening the envelope.
+    const since = startedAt ?? signInStamp();
     try {
       const seed = phraseToSeed(phrase);
       const { privateKey: signingPrivateKey, publicKey } = await deriveSigningKey(seed);
@@ -1428,6 +1550,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return false;
       }
 
+      if (!adoptLiveSignIn(phrase, since)) {
+        logAuthEvent('auth:signin-overtaken');
+        return false;
+      }
       setAuth({
         status: 'authenticated',
         method,
@@ -1576,6 +1702,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { ok: false, error: 'Limit still reached. Try again.' };
       }
 
+      // A sign-out, here or in another tab, or another account taking the
+      // storage ended this sign-in during the requests above: the screen this
+      // would open is gone, and the storage is not this account's.
+      if (!isLivePhrase(auth.phrase)) {
+        return { ok: false, error: 'No pending device-limit state.' };
+      }
+      // The switch into this account met the limit and kept the prior
+      // account's data. The device is registered now, so that data goes
+      // before the vault opens over rows its key cannot read, with sync off.
+      // A switch another tab finished meanwhile left only sync to turn on.
+      const pending = pendingSwitchWipe.current;
+      if (pending?.pubkey === auth.pubkey) {
+        let owner: string | null = null;
+        try { owner = localStorage.getItem(PUBKEY_OWNER_KEY); } catch { /* unreadable: the unknown owner a switch can find */ }
+        if (owner === pending.priorOwner) await pending.wipe();
+        else resumeSync();
+        pendingSwitchWipe.current = null;
+      }
+
       const earlySup2 = retry.isPro ? await checkEarlySupporter(supabase) : false;
       markRegistered(auth.pubkey, auth.deviceId);
       // A custodial OAuth user can hit the device limit like anyone
@@ -1624,6 +1769,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   //
   // Reads sessionStorage first, then localStorage (trust-aware).
   useEffect(() => {
+    // Everything this boot authenticates goes live only if no sign-out
+    // began after this line (liveSignIn.ts).
+    const bootStamp = signInStamp();
     // Demo mode: skip all auth, storage, and OAuth handling. Derive
     // ephemeral keys from a fixed phrase, seed sample content into the
     // throwaway demo DB, and mark the session authenticated. No network,
@@ -1631,7 +1779,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (isDemoMode()) {
       void (async () => {
         try {
-          setAuth(await buildDemoAuthState());
+          const demo = await buildDemoAuthState();
+          // Live like any sign-in, so the demo's app lock switch-off can put
+          // the phrase back in the demo bucket.
+          if (demo.status === 'authenticated') adoptLiveSignIn(demo.phrase, signInStamp());
+          setAuth(demo);
         } catch (err) {
           console.error('Demo init failed:', err);
           setAuth({ status: 'onboarding' });
@@ -1690,20 +1842,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           phrase = opened;
         } else {
           phrase = stored;
+          // This install's own sign-in, read off its disk, so the rewrap
+          // into an envelope may write it.
+          adoptLiveSignIn(phrase, bootStamp);
           logAuthEvent('auth:phrase-persisted', { by: 'boot-rewrap' });
           void persistStoredPhrase(stored);
         }
 
         // Local-first: render the authenticated app from IndexedDB
         // immediately when eligible. See tryFastBoot for the criteria.
-        const fastBooted = await tryFastBoot(phrase, method);
+        const fastBooted = await tryFastBoot(phrase, method, bootStamp);
 
         // Full auth still runs - as the blocking path when fast boot was
         // not possible, or as background revalidation when it was. It
         // refreshes the session, registers the device and updates Pro
         // flags (or transitions to device_limit_reached) when it lands.
         if (fastBooted) {
-          authenticateWithPhrase(phrase, method).catch((err) => {
+          authenticateWithPhrase(phrase, method, undefined, undefined, false, undefined, bootStamp).catch((err) => {
             // A CAPTCHA rejection is a definitive server "no" - the dead
             // session cannot be re-minted without the widget, and sync's
             // own auth detection never fires (with no session at all,
@@ -1713,7 +1868,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // order - the two classes are unrelated on purpose, so
             // that a quota refusal can never reach the re-auth prompt.
             if (err instanceof RateLimitedError) {
-              scheduleRemintRetry(phrase, method);
+              scheduleRemintRetry(phrase, method, bootStamp);
               return;
             }
             if (err instanceof SessionExpiredError) {
@@ -1734,7 +1889,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // user on the loading screen indefinitely.
         const AUTH_TIMEOUT_MS = 15_000;
         withMfaAwareTimeout(
-          authenticateWithPhrase(phrase, method),
+          authenticateWithPhrase(phrase, method, undefined, undefined, false, undefined, bootStamp),
           AUTH_TIMEOUT_MS,
           () => { throw new Error('Auth timed out - network may be unreachable.'); },
         ).catch((err) => {
@@ -1750,7 +1905,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // would hand one account another's notes. Its own breadcrumb
           // says which happened.
           if (err instanceof RateLimitedError) {
-            scheduleRemintRetry(phrase, method);
+            scheduleRemintRetry(phrase, method, bootStamp);
           }
           logAuthEvent('auth:boot-demoted', {
             name: (err as Error | null)?.name,
@@ -1815,6 +1970,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (isDemoMode()) {
       return { ok: false as const, error: 'Sign-in is disabled in the demo.' };
     }
+    // Before the first await. The lock screen's unlock runs this in the
+    // background behind an app that is already open, so a sign-out can land
+    // while the key derivation and the session lookup below are still
+    // running, and the authentication they lead into must not go live.
+    const startedAt = signInStamp();
     const trimmed = phrase.trim().toLowerCase();
     if (!isValidPhrase(trimmed)) {
       return {
@@ -1894,7 +2054,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // still consumes the phraseImport marker separately - that gate is
       // safe because it runs after the pull, when the client knows
       // whether the server actually had data.
-      const ran = await authenticateWithPhrase(trimmed, 'phrase', false, oauthSession, freshVault, captchaToken);
+      const ran = await authenticateWithPhrase(trimmed, 'phrase', false, oauthSession, freshVault, captchaToken, startedAt);
       // A swallowed call (mutex held by a concurrent handshake) must
       // not read as success: the persist below writes shared storage
       // over whatever that handshake is signing in, and the caller
@@ -1966,14 +2126,61 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // A pending re-mint would authenticate into the storage the other
       // tab now owns.
       cancelRemintRetry();
+      // Nor may this tab's account write its phrase over theirs, whether its
+      // vault is open or its sign-in is still running. A marker put back to
+      // this tab's own account takes nothing away.
+      const mine = openPubkeyRef.current ?? authenticatingRef.current?.pubkey ?? null;
+      if (mine !== null && mine !== e.newValue) endLiveSignIn();
       setAuth((prev) =>
-        prev.status === 'authenticated' && prev.pubkey !== e.newValue
+        (prev.status === 'authenticated' || prev.status === 'device_limit_reached') && prev.pubkey !== e.newValue
+          ? { status: 'onboarding' }
+          : prev,
+      );
+    }
+    // Another tab of this browser signed out and wiped the storage this tab
+    // reads. Follow it to the signed-out screen: left open, this tab's next
+    // sync pass reads the emptied device as one with no door and writes the
+    // phrase back. The other tab ran the wipe, so this one only lets go.
+    function onSignOutElsewhere() {
+      // Notices arrive late, and can arrive twice. A sign-in newer than every
+      // notice stays, and so does an authentication that began after the
+      // latest one. Older work in this tab is refused by the notice itself,
+      // so nothing here has to end it.
+      if (hasLiveSignIn()) return;
+      const authenticating = authenticatingRef.current;
+      if (authenticating && !signedOutSince(authenticating.stamp)) return;
+      suspendSync();
+      cancelRemintRetry();
+      dismissMfaPrompt();
+      setRevalidationExpired(false);
+      sessionRef.current = null;
+      // The other tab removed the shared copies. On a device the person did
+      // not trust, each tab keeps its own phrase, session and PIN wrap in
+      // sessionStorage, which only this tab can reach.
+      try {
+        sessionStorage.removeItem(PHRASE_STORAGE_KEY);
+        sessionStorage.removeItem(OAUTH_FLAG_KEY);
+        sessionStorage.removeItem('privacynotes.lastSync');
+        for (let i = sessionStorage.length - 1; i >= 0; i--) {
+          const key = sessionStorage.key(i);
+          if (key?.startsWith('sb-')) sessionStorage.removeItem(key);
+        }
+      } catch {
+        /* storage unavailable: there is nothing to remove */
+      }
+      clearTabPinWrapCopy();
+      setAuth((prev) =>
+        prev.status === 'authenticated' || prev.status === 'device_limit_reached'
           ? { status: 'onboarding' }
           : prev,
       );
     }
     window.addEventListener('storage', onOwnerChange);
-    return () => window.removeEventListener('storage', onOwnerChange);
+    const unwatch = watchSignOutsElsewhere(onSignOutElsewhere);
+    return () => {
+      window.removeEventListener('storage', onOwnerChange);
+      unwatch();
+    };
   }, []);
 
   const {
@@ -1991,7 +2198,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     authInFlight,
     userAuthGen,
     vaultOpenRef,
-    storageKey: supabaseAuthStorageKey(import.meta.env.VITE_SUPABASE_URL),
+    storageKey: AUTH_STORAGE_KEY,
   });
 
   /**
@@ -2007,6 +2214,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     const { accessToken, authUid } = auth;
     const isCustodial = choice === 'custodial';
+    // Before the first await: the Back button signs out from this screen.
+    const startedAt = signInStamp();
 
     try {
       const phrase = generatePhrase();
@@ -2033,7 +2242,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const authenticated = await authenticateWithPhrase(phrase, 'oauth', false, {
         accessToken,
         authUid,
-      }, true);
+      }, true, undefined, startedAt);
       // A swallowed call (mutex held by a concurrent handshake) must not
       // read as success: sessionRef would still carry the OTHER
       // handshake's token, and the store-custodial-phrase call below
@@ -2103,6 +2312,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Before anything else: a pending re-mint would authenticate this
     // phrase again minutes after the user signed out.
     cancelRemintRetry();
+    // Also before the first await. Work that started while signed in can
+    // end after the wipe below: a sync pass, a sign-in's own phrase write,
+    // a revalidation. From here none of it may write the phrase back or
+    // put the vault back on screen (liveSignIn.ts). The stale-tab exit
+    // needs it too, so this tab's old account never writes over the new one.
+    endLiveSignIn();
     // Stale tab: another tab signed a DIFFERENT account into this
     // browser after we authenticated, so the shared Dexie database and
     // localStorage now belong to that account. Everything below would
@@ -2146,6 +2361,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           clearSupabaseAuthKeys();
         }
       }
+      // This tab's own switch into another account met the device limit, so
+      // the marker still names the prior account and the test above sends us
+      // here. The phrase this sign-in stored and the session it minted are
+      // the arriving account's, and the sign-out has to take them, or the next
+      // start signs that account back in. Each copy goes only while it is
+      // still this account's, store by store, so a newer sign-in and the
+      // prior account keep theirs. The session is found by its stored token,
+      // not through getSession, which answers null for an expired session it
+      // cannot refresh while that session stays on disk. The prior account's
+      // data, wraps and tabs are not this status's to touch.
+      if (auth.status === 'device_limit_reached' && pendingSwitchWipe.current?.pubkey === auth.pubkey) {
+        pendingSwitchWipe.current = null;
+        const { phrase, pubkey } = auth;
+        await removeMatchingCopies(PHRASE_STORAGE_KEY, async (value) =>
+          (isWrappedEnvelope(value) ? await unwrapStoredEnvelope(value).catch(() => null) : value) === phrase);
+        const sessions = await removeMatchingCopies(AUTH_STORAGE_KEY, (value) => {
+          const token = storedAccessToken(value);
+          return token !== null && jwtPayloadPubkey(token) === pubkey;
+        });
+        for (const value of sessions) {
+          await supabase.auth.admin.signOut(storedAccessToken(value)!, 'local').catch(() => {});
+        }
+      }
       sessionRef.current = null;
       // This return shows the sign-in screen WITHOUT clearing the phrase, so
       // it is one of the two ways an install ends up holding a phrase it is
@@ -2159,6 +2397,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAuth({ status: 'onboarding' });
       return;
     }
+
+    // This tab owns the shared storage, so it tells the others, before its
+    // first await: the notice refuses their older work, so none of them
+    // writes the phrase back after the wipe below, and each leaves the
+    // vault. The stale-tab exit above must not say it, because the storage
+    // belongs to the account another tab signed in.
+    announceSignOut();
+    // The credentials go now, not after the flush, which can run for ten
+    // seconds: a tab that loads in that span must find no phrase to boot
+    // from. The flush below reads the keys in memory, never these. Leaving
+    // them behind on a shared computer would also let the previous user
+    // unlock with a fingerprint or a PIN after signing out (gap #17).
+    trustAwareStorage.removeItem(PHRASE_STORAGE_KEY);
+    removeBiometricCredential();
+    removePinWrappedPhrase();
+    // Again, now that the credentials are gone: it reaches a tab that read
+    // the phrase between the two lines, and it lands where a full store
+    // refused the first one, because the removals freed the room.
+    announceSignOut();
+    // The flush below can outlive this function when it times out. Its
+    // settings sync takes this stamp, which the notice at the end of the
+    // sign-out makes stale, so a late answer writes nothing back.
+    const flushStamp = signInStamp();
 
     // Best-effort final flush - push any dirty notes to the server
     // before wiping local data. Without this, notes created between the
@@ -2187,7 +2448,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // A failed edit leaves the entries as they were; the wipe still runs.
         });
       }
-      const dirtyCount = await countUnsyncedNotes();
+      // A failed count is not an empty one: flush as if rows were waiting,
+      // and never let a database hiccup stop the sign-out halfway.
+      const dirtyCount = await countUnsyncedNotes().catch(() => 1);
       // A settings change waits for the next pass, up to 30 seconds, and the
       // wipe below removes the cache that holds it.
       const settingsDirty = hasUnpushedSettings();
@@ -2204,7 +2467,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               await timeout(250);
             }
           }
-          if (settingsDirty) await syncUserSettings(supabase, auth.pubkey, auth.encryptionKey);
+          if (settingsDirty) await syncUserSettings(supabase, auth.pubkey, auth.encryptionKey, undefined, flushStamp);
         } catch {
           // Dead session or offline - nothing more this side can do;
           // the wipe below decides what survives.
@@ -2268,7 +2531,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // would default to untrusted (sessionStorage) and lose their
       // trusted-device convenience. See gap #28.
       logAuthEvent('auth:signout-wipe', { keepUnsynced: !!opts?.keepUnsyncedNotes });
-      trustAwareStorage.removeItem(PHRASE_STORAGE_KEY);
       trustAwareStorage.removeItem(OAUTH_FLAG_KEY);
       trustAwareStorage.removeItem('privacynotes.lastSync');
       // Drop the fast-boot cache - a signed-out device must never boot
@@ -2282,12 +2544,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // but leaving it would keep a signed-out account's numbers on
       // disk for no reason. See accountPanelCache.ts.
       clearPanelCache();
-      // Wipe the biometric- and PIN-wrapped phrase blobs too. Both hold
-      // the encrypted recovery phrase - leaving them behind on a shared
-      // computer would let the previous user bio-unlock or PIN-unlock and
-      // recover their phrase after sign-out. See gap #17.
-      removeBiometricCredential();
-      removePinWrappedPhrase();
       clearAccountScopedUiState();
       // The PIN hash/salt cache, lockout counters, and unlock marker are
       // account-scoped: the next account signing in on this browser must
@@ -2304,7 +2560,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Forced sign-outs pass keepUnsyncedNotes so dirty rows the flush
       // could not save survive until that same-user re-sign-in pushes
       // them (or the owner-mismatch wipe claims them).
-      await clearLocalDatabase({ keepUnsyncedNotes: opts?.keepUnsyncedNotes });
+      // A database that refuses the clear must not stop the rest: the tab
+      // would stay on a vault whose sign-in has already ended, and whose
+      // sync never runs again (liveSignIn.ts). What it leaves is sealed
+      // under a key nobody holds any more.
+      await clearLocalDatabase({ keepUnsyncedNotes: opts?.keepUnsyncedNotes }).catch((err: unknown) => {
+        logAuthEvent('auth:signout-wipe-failed', { name: (err as Error | null)?.name });
+      });
       // Also clear the cached user-settings blob. Without this, signing
       // in as a different user in the same browser inherits the previous
       // user's `welcomeNoteSeeded: true` flag from localStorage, and the
@@ -2332,6 +2594,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // has always done the same.
       if (signOutError) logAuthEvent('auth:signout-remote-failed', { name: signOutError.name });
       clearSupabaseAuthKeys();
+      // The end, told and cleaned again. Work that began after the first
+      // notice, such as a tab opened during the flush, could write a
+      // credential meanwhile: this notice makes every stamp taken during the
+      // sign-out stale, and the removals take what was written before it.
+      // Notice first, so a write in between is refused or undone by its own
+      // second check (liveSignIn.ts).
+      announceSignOut();
+      trustAwareStorage.removeItem(PHRASE_STORAGE_KEY);
+      removeBiometricCredential();
+      removePinWrappedPhrase();
+      clearLocalSettings();
       setAuth({ status: 'onboarding' });
     } finally {
       resumeSync();

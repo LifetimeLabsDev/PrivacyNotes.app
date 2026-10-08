@@ -1,21 +1,20 @@
 import { useMemo, useState, useCallback, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { ChartLine, Heartbeat, MoonStars, PencilSimple, Pill, SquaresFour, X } from './icons';
+import { Heartbeat, PencilSimple, SquaresFour, X } from './icons';
 import type { LocalNote } from './db';
 import { computeStats } from './stats';
 import { countWords } from './wordCountUtils';
 import { toLocalIso } from './notesViewUtils';
-import { computeTrackerStats, exportTrackerJSON, generateAIPrompt, generateDoctorReport, insightText, type TrackerStats, type PatternInsight } from './trackerStats';
-import type { MedicationTemplate } from './trackerTypes';
+import { computeTrackerStats } from './trackerStats';
+import type { MedicationTemplate, TrackerSettings } from './trackerTypes';
+import { WellnessTab } from './stats/WellnessTab';
+import { OverviewTab } from './stats/OverviewTab';
+import { moodColor } from './stats/wellnessModel';
 import { useEscapeToClose } from './useEscapeToClose';
-import { MOOD_ANCHORS } from './trackerTypes';
-import { saveBlob } from './saveFile';
-import { detectPlatform } from './devices';
-import { proUnlocked } from './demo';
-import { SectionEyebrow, SETTINGS_EYEBROW, SettingsTabStrip, settingsTabClass } from './settingsUI';
+import { SectionEyebrow, SettingsTabStrip, settingsTabClass } from './settingsUI';
 import { intlLocale } from './languages';
-import { weekdayDate, weekdayLabel } from './intlFormat';
-import { HelpChip } from './HelpChip';
+import { formatDay, weekdayLabel } from './intlFormat';
+import { milestoneLabel, milestoneProgress } from './milestones';
 
 type Props = {
   notes: LocalNote[];
@@ -32,17 +31,25 @@ type Props = {
   onWeekReflectionChange?: (text: string) => void;
   /** Render inline as a settings pane (no overlay, no own header/footer/escape). */
   embedded?: boolean;
-  /** Which tab to open on. Defaults to Writing. */
+  /** Which tab to open on. Defaults to Overview. */
   initialTab?: Tab;
+  trackerSettings: TrackerSettings;
+  /** Opens the journal entry of a day picked on a chart; absent in the modal path. */
+  onOpenDay?: (date: string) => void;
+  /** Items created in the app, the honest count behind the notes milestones. */
+  notesCreated: number;
+  /** When the account was first seen; null on an account older than the stamp. */
+  firstSeenAt: string | null;
 };
 
-type Tab = 'writing' | 'wellness';
+export type Tab = 'overview' | 'writing' | 'wellness';
 
 /**
- * Stats overlay with two tabs: Writing (heatmap + streaks) and
- * Wellness (tracker analytics).
+ * The Statistics pane: Overview (the landing, writing and wellness on one
+ * screen), Writing (heatmap and streaks) and Wellness (tracker analytics).
+ * Spec: ops/docs/plans/wellness-statistics.md (sections 3, 20)
  */
-export function StatsModal({ notes, isNoteLocked, onClose, medications, isPro, onOpenUpgrade, weekReflection, onWeekReflectionChange, embedded = false, initialTab = 'writing' }: Props) {
+export function StatsModal({ notes, isNoteLocked, onClose, medications, isPro, onOpenUpgrade, weekReflection, onWeekReflectionChange, embedded = false, initialTab = 'overview', notesCreated, firstSeenAt, trackerSettings, onOpenDay }: Props) {
   const { t } = useTranslation('stats');
   const { t: tc } = useTranslation('common');
   useEscapeToClose(onClose, !embedded);
@@ -78,6 +85,10 @@ export function StatsModal({ notes, isNoteLocked, onClose, medications, isPro, o
 
         {/* Tabs */}
         <SettingsTabStrip className="shrink-0 px-4 sm:px-6 pt-2">
+          <button type="button" data-setting="stats.overview" aria-pressed={tab === 'overview'} className={settingsTabClass(tab === 'overview')} onClick={() => setTab('overview')}>
+            <SquaresFour aria-hidden="true" />
+            <span>{t('tabs.overview')}</span>
+          </button>
           <button type="button" data-setting="stats.writing" aria-pressed={tab === 'writing'} className={settingsTabClass(tab === 'writing')} onClick={() => setTab('writing')}>
             <PencilSimple aria-hidden="true" />
             <span>{t('tabs.writing')}</span>
@@ -89,18 +100,34 @@ export function StatsModal({ notes, isNoteLocked, onClose, medications, isPro, o
         </SettingsTabStrip>
 
         <div className="flex-1 overflow-y-auto p-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden space-y-6">
-          {tab === 'writing' ? (
-            <WritingTab stats={stats} moodHeatmap={tStats.moodHeatmap} />
-          ) : (
+          {tab === 'overview' && (
+            <OverviewTab
+              notes={notes}
+              stats={stats}
+              isNoteLocked={isNoteLocked}
+              trackerSettings={trackerSettings}
+              medications={medications}
+              isPro={isPro}
+              notesCreated={notesCreated}
+              firstSeenAt={firstSeenAt}
+              onOpenUpgrade={onOpenUpgrade}
+              onOpenTab={setTab}
+            />
+          )}
+          {tab === 'writing' && (
+            <WritingTab stats={stats} moodHeatmap={tStats.moodHeatmap} notesCreated={notesCreated} firstSeenAt={firstSeenAt} />
+          )}
+          {tab === 'wellness' && (
             <WellnessTab
-              stats={tStats}
               notes={notes}
               isNoteLocked={isNoteLocked}
+              trackerSettings={trackerSettings}
               medications={medications}
               isPro={isPro}
               onOpenUpgrade={onOpenUpgrade}
               weekReflection={weekReflection}
               onWeekReflectionChange={onWeekReflectionChange}
+              onOpenDay={onOpenDay}
             />
           )}
         </div>
@@ -124,7 +151,7 @@ export function StatsModal({ notes, isNoteLocked, onClose, medications, isPro, o
 // Writing tab (existing content)
 // ------------------------------------------------------------------
 
-type RangeId = '7d' | '14d' | '30d' | '3mo' | '6mo' | '12mo';
+type RangeId = '7d' | '14d' | '30d' | '3mo' | '6mo' | '12mo' | 'all';
 
 // Short ranges render as a daily bar chart; long ranges as the contribution
 // heatmap (a weekday grid only earns its keep across many week-columns).
@@ -135,7 +162,11 @@ const RANGES: { id: RangeId; days?: number; weeks?: number; form: 'bars' | 'heat
   { id: '3mo', days: 91, form: 'bars' },
   { id: '6mo', weeks: 26, form: 'heatmap' },
   { id: '12mo', weeks: 52, form: 'heatmap' },
+  // `all` spans the account's age, in one grid per year of 52 week-columns.
+  { id: 'all', form: 'heatmap' },
 ];
+
+const WEEKS_PER_ROW = 52;
 
 // Per-device view preference; not synced (a phone and a 27" monitor want
 // different ranges).
@@ -189,12 +220,22 @@ function heatmapDays(heatmap: Record<string, number>, weeks: number): DayCell[] 
 function WritingTab({
   stats,
   moodHeatmap,
+  notesCreated,
+  firstSeenAt,
 }: {
   stats: ReturnType<typeof computeStats>;
   moodHeatmap: Record<string, number>;
+  notesCreated: number;
+  firstSeenAt: string | null;
 }) {
   const { t } = useTranslation('stats');
   const { t: tc } = useTranslation('common');
+  const milestones = useMemo(
+    () => milestoneProgress(stats, notesCreated, firstSeenAt),
+    [stats, notesCreated, firstSeenAt],
+  );
+  const reachedCount = milestones.reduce((n, row) => n + row.reached.length, 0);
+  const fmt = (n: number) => n.toLocaleString(intlLocale());
   const [heatmapMode, setHeatmapMode] = useState<'activity' | 'mood'>('activity');
   const hasMoodData = Object.keys(moodHeatmap).length > 0;
 
@@ -214,14 +255,21 @@ function WritingTab({
     () =>
       range.form === 'bars'
         ? barDays(stats.heatmap, range.days!)
-        : heatmapDays(stats.heatmap, range.weeks!),
-    [stats.heatmap, range],
+        : heatmapDays(stats.heatmap, range.weeks ?? Math.max(WEEKS_PER_ROW, Math.ceil(stats.ageDays / 7) + 1)),
+    [stats.heatmap, stats.ageDays, range],
   );
   const maxCount = Math.max(1, ...days.map((d) => d.count));
+  // One grid per 52 weeks, oldest first; the first grid is the partial one.
+  const heatmapRows = useMemo(() => {
+    const per = WEEKS_PER_ROW * 7;
+    const rows: DayCell[][] = [];
+    for (let end = days.length; end > 0; end -= per) rows.unshift(days.slice(Math.max(0, end - per), end));
+    return rows;
+  }, [days]);
 
   return (
     <>
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] gap-4">
         <Stat label={t('writing.notes')} value={stats.totalNotes} />
         <Stat label={t('writing.words')} value={stats.totalWords.toLocaleString(intlLocale())} />
         <Stat label={t('writing.tags')} value={stats.uniqueTags} />
@@ -280,7 +328,7 @@ function WritingTab({
                   return (
                     <div
                       key={d.date}
-                      title={mood != null ? t('writing.tooltipMood', { date: d.date, mood }) : t('writing.tooltipNoMood', { date: d.date })}
+                      title={mood != null ? t('writing.tooltipMood', { date: formatDay(d.date, 'date'), mood }) : t('writing.tooltipNoMood', { date: formatDay(d.date, 'date') })}
                       className={`flex-1 rounded-[2px] ${mood == null ? 'bg-track' : ''}`}
                       style={{ height: `${h}%`, ...(mood != null ? { backgroundColor: moodColor(mood), opacity: 0.85 } : {}) }}
                     />
@@ -290,7 +338,7 @@ function WritingTab({
                 return (
                   <div
                     key={d.date}
-                    title={t('writing.tooltipEdits', { date: d.date, count: d.count })}
+                    title={t('writing.tooltipEdits', { date: formatDay(d.date, 'date'), count: d.count })}
                     className={`flex-1 rounded-[2px] ${d.count > 0 ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-track'}`}
                     style={{ height: `${h}%` }}
                   />
@@ -300,7 +348,7 @@ function WritingTab({
             {range.days != null && range.days <= 14 && (
               <div className="flex gap-[3px] mt-1">
                 {days.map((d) => (
-                  <div key={d.date} className="flex-1 text-center text-[9px] text-pn-muted/75">
+                  <div key={d.date} className="flex-1 text-center text-[9px] text-pn-muted">
                     {weekdayLabel(new Date(d.date), 'narrow')}
                   </div>
                 ))}
@@ -308,32 +356,75 @@ function WritingTab({
             )}
           </>
         ) : (
-          <div
-            className="grid grid-rows-7 grid-flow-col gap-[2px] w-full"
-            style={{ gridAutoColumns: 'minmax(0, 1fr)' }}
-          >
-            {days.map((d) => {
-              if (heatmapMode === 'mood') {
-                const mood = moodHeatmap[d.date];
-                return (
-                  <div
-                    key={d.date}
-                    title={mood != null ? t('writing.tooltipMood', { date: d.date, mood }) : t('writing.tooltipNoMood', { date: d.date })}
-                    className={`aspect-square rounded-[2px] ${mood == null ? 'bg-track' : ''}`}
-                    style={mood != null ? { backgroundColor: moodColor(mood), opacity: 0.8 } : undefined}
-                  />
-                );
-              }
-              return (
-                <div
-                  key={d.date}
-                  title={t('writing.tooltipEdits', { date: d.date, count: d.count })}
-                  className={`aspect-square rounded-[2px] ${cellColor(d.count)}`}
-                />
-              );
-            })}
+          <div className="space-y-2">
+            {heatmapRows.map((row) => (
+              <div
+                key={row[0]!.date}
+                className="grid grid-rows-7 grid-flow-col gap-[2px] w-full"
+                style={{ gridTemplateColumns: `repeat(${WEEKS_PER_ROW}, minmax(0, 1fr))` }}
+              >
+                {Array.from({ length: WEEKS_PER_ROW * 7 - row.length }, (_, i) => <div key={`pad-${i}`} />)}
+                {row.map((d) => {
+                  if (heatmapMode === 'mood') {
+                    const mood = moodHeatmap[d.date];
+                    return (
+                      <div
+                        key={d.date}
+                        title={mood != null ? t('writing.tooltipMood', { date: formatDay(d.date, 'date'), mood }) : t('writing.tooltipNoMood', { date: formatDay(d.date, 'date') })}
+                        className={`aspect-square rounded-[2px] ${mood == null ? 'bg-track' : ''}`}
+                        style={mood != null ? { backgroundColor: moodColor(mood), opacity: 0.8 } : undefined}
+                      />
+                    );
+                  }
+                  return (
+                    <div
+                      key={d.date}
+                      title={t('writing.tooltipEdits', { date: formatDay(d.date, 'date'), count: d.count })}
+                      className={`aspect-square rounded-[2px] ${cellColor(d.count)}`}
+                    />
+                  );
+                })}
+              </div>
+            ))}
           </div>
         )}
+      </div>
+      <div data-setting="stats.milestones">
+        <SectionEyebrow className="mb-2">{t('milestones.heading')}</SectionEyebrow>
+        <div className="rounded-lg border border-divider bg-track p-4 space-y-3">
+          {milestones.map((row) => {
+            const pct = Math.round(row.progress * 100);
+            return (
+              <div key={row.family}>
+                <div className="flex items-baseline justify-between gap-3 text-xs">
+                  <span className="text-pn-soft truncate">
+                    {row.next === null
+                      ? t('milestones.allReached', { label: milestoneLabel(row.family, row.reached[row.reached.length - 1]!) })
+                      : t('milestones.next', { label: milestoneLabel(row.family, row.next) })}
+                  </span>
+                  {row.next !== null && (
+                    <span className="text-pn-muted tabular-nums whitespace-nowrap">
+                      {t('milestones.ofTarget', { current: fmt(row.current), target: fmt(row.next) })}
+                    </span>
+                  )}
+                </div>
+                <div
+                  className="mt-1.5 h-1.5 rounded-full bg-surface-0 overflow-hidden"
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={pct}
+                >
+                  <div className="h-full rounded-full bg-accent-fill" style={{ width: `${pct}%` }} />
+                </div>
+              </div>
+            );
+          })}
+          <p className="text-[11px] text-pn-muted">
+            {reachedCount > 0 && <>{t('milestones.reached', { count: reachedCount })} </>}
+            {t('milestones.source')}
+          </p>
+        </div>
       </div>
       {stats.longestNote && (
         <div className="text-sm text-pn-muted">
@@ -349,505 +440,6 @@ function WritingTab({
 }
 
 // ------------------------------------------------------------------
-// Wellness tab (new)
-// ------------------------------------------------------------------
-
-type WellnessSubTab = 'overview' | 'sleep_activity' | 'medication' | 'patterns';
-
-function WellnessTab({
-  stats,
-  notes,
-  isNoteLocked,
-  medications,
-  isPro,
-  onOpenUpgrade,
-  weekReflection,
-  onWeekReflectionChange,
-}: {
-  stats: TrackerStats;
-  notes: LocalNote[];
-  isNoteLocked: (n: LocalNote) => boolean;
-  medications: MedicationTemplate[];
-  isPro: boolean;
-  onOpenUpgrade?: () => void;
-  weekReflection?: string;
-  onWeekReflectionChange?: (text: string) => void;
-}) {
-  const { t } = useTranslation('stats');
-  const { t: tt } = useTranslation('trackers');
-  const [sub, setSub] = useState<WellnessSubTab>('overview');
-  const [copied, setCopied] = useState(false);
-  // A failed native save can leave an empty or partial file, so the message
-  // stays until a save succeeds; a dismissed dialog changes nothing.
-  const [saveFailed, setSaveFailed] = useState(false);
-  const [exportRange, setExportRange] = useState<'all' | '30' | '90' | '7'>('all');
-  // Insights, week in review, the doctor report, the AI prompt and the
-  // medication timeline are Pro, and all of them run entirely on local
-  // data - so the public demo unlocks them. The amber PRO badges keep
-  // keying off isPro so they stay marked as Pro features.
-  const unlocked = proUnlocked(isPro);
-
-  const handleExportJSON = useCallback(async () => {
-    const from = exportRange === '7' ? daysAgoStr(6)
-      : exportRange === '30' ? daysAgoStr(29)
-      : exportRange === '90' ? daysAgoStr(89)
-      : undefined;
-    const json = exportTrackerJSON(notes, from, undefined, isNoteLocked);
-    const blob = new Blob([json], { type: 'application/json' });
-    const saved = await saveBlob(blob, `privacy-notes-wellness-${new Date().toISOString().slice(0, 10)}.json`);
-    if (saved.ok) setSaveFailed(false);
-    else if (saved.reason === 'failed') setSaveFailed(true);
-  }, [notes, exportRange, isNoteLocked]);
-
-  const handleCopyAIPrompt = useCallback(() => {
-    if (!unlocked) { onOpenUpgrade?.(); return; }
-    const prompt = generateAIPrompt(stats, medications, t);
-    void navigator.clipboard.writeText(prompt).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  }, [unlocked, stats, medications, onOpenUpgrade]);
-
-  if (stats.trackedDays === 0) {
-    return (
-      <div className="text-center py-12 text-pn-muted">
-        <p className="text-sm">{t('wellness.empty.title')}</p>
-        <p className="text-xs mt-1">{t('wellness.empty.hint')}</p>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      {/* Sub-tab bar */}
-      <SettingsTabStrip className="-mt-1">
-        <button type="button" aria-pressed={sub === 'overview'} className={settingsTabClass(sub === 'overview')} onClick={() => setSub('overview')}>
-          <SquaresFour aria-hidden="true" />
-          <span>{t('wellness.subTabs.all')}</span>
-        </button>
-        <button type="button" aria-pressed={sub === 'sleep_activity'} className={settingsTabClass(sub === 'sleep_activity')} onClick={() => setSub('sleep_activity')}>
-          <MoonStars aria-hidden="true" />
-          <span>{t('wellness.subTabs.sleepActivity')}</span>
-        </button>
-        <button type="button" aria-pressed={sub === 'medication'} className={settingsTabClass(sub === 'medication')} onClick={() => setSub('medication')}>
-          <Pill aria-hidden="true" />
-          <span>{t('wellness.subTabs.medication')}</span>
-        </button>
-        <button type="button" aria-pressed={sub === 'patterns'} className={settingsTabClass(sub === 'patterns')} onClick={() => setSub('patterns')}>
-          <ChartLine aria-hidden="true" />
-          <span>{t('wellness.subTabs.patterns')}</span>
-        </button>
-      </SettingsTabStrip>
-
-      <HelpChip surface="wellness" className="pt-1" />
-
-      {/* ── Overview sub-tab ─────────────────────────────── */}
-      {sub === 'overview' && (
-        <>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <Stat label={t('wellness.overview.daysTracked')} value={stats.trackedDays} />
-            <Stat label={t('wellness.overview.avgMood')} value={stats.avgMood != null ? `${stats.avgMood}/10` : '-'} />
-            <Stat label={t('wellness.overview.avgSleep')} value={stats.avgSleepHours != null ? `${stats.avgSleepHours}h` : '-'} />
-            <Stat label={t('wellness.overview.medAdherence')} value={stats.medAdherence != null ? `${stats.medAdherence}%` : '-'} />
-          </div>
-
-          {/* Mood trend */}
-          {stats.moodTrend.length > 0 && (
-            <div>
-              <SectionEyebrow setting="stats.moodTrend" className="mb-2">{t('wellness.overview.moodTrend')}</SectionEyebrow>
-              <div className="flex items-end gap-[3px] h-24">
-                {stats.moodTrend.slice(-30).map((d) => {
-                  const pct = (d.mood / 10) * 100;
-                  const anchor = MOOD_ANCHORS[d.mood];
-                  return (
-                    <div
-                      key={d.date}
-                      title={anchor ? t('wellness.overview.moodTrendTooltipAnchor', { date: d.date, mood: d.mood, anchor }) : t('wellness.overview.moodTrendTooltip', { date: d.date, mood: d.mood })}
-                      className="flex-1 min-w-[4px] max-w-[16px] rounded-t transition-all"
-                      style={{ height: `${pct}%`, backgroundColor: moodColor(d.mood) }}
-                    />
-                  );
-                })}
-              </div>
-              <div className="flex justify-between text-[10px] text-pn-muted mt-1">
-                <span>{stats.moodTrend.slice(-30)[0]?.date.slice(5)}</span>
-                <span>{stats.moodTrend[stats.moodTrend.length - 1]?.date.slice(5)}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Day-of-week mood */}
-          {stats.dayOfWeekMood && (
-            <div>
-              <SectionEyebrow className="mb-2">{t('wellness.overview.moodByDayOfWeek')}</SectionEyebrow>
-              <div className="flex items-end gap-2 h-20">
-                {stats.dayOfWeekMood.map((d) => {
-                  const pct = d.avg > 0 ? (d.avg / 10) * 100 : 0;
-                  return (
-                    <div key={d.day} className="flex-1 flex flex-col items-center gap-0.5">
-                      <span className="text-[9px] text-pn-muted tabular-nums">{d.avg || ''}</span>
-                      <div
-                        className="w-full rounded-t"
-                        style={{ height: `${pct}%`, backgroundColor: moodColor(d.avg), opacity: d.count > 0 ? 0.8 : 0.2 }}
-                      />
-                      <span className="text-[9px] text-pn-muted">{weekdayLabel(weekdayDate(d.day), 'short')}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Export */}
-          <div className="border-t border-divider pt-4">
-            <SectionEyebrow setting="stats.wellnessExport" className="mb-3">{t('wellness.export.heading')}</SectionEyebrow>
-            <div className="flex flex-wrap items-center gap-2">
-              <select
-                value={exportRange}
-                onChange={(e) => setExportRange(e.target.value as typeof exportRange)}
-                className="px-2 py-1.5 rounded-md text-xs border border-divider bg-surface-0 text-pn"
-              >
-                <option value="all">{t('wellness.export.allTime')}</option>
-                <option value="90">{t('wellness.export.last90Days')}</option>
-                <option value="30">{t('wellness.export.last30Days')}</option>
-                <option value="7">{t('wellness.export.last7Days')}</option>
-              </select>
-              <button type="button" onClick={handleExportJSON} className="px-3 py-1.5 rounded-md text-xs font-medium border border-divider hover:bg-surface-1 transition-colors">
-                {t('wellness.export.downloadJSON')}
-              </button>
-              <button
-                type="button"
-                onClick={async () => {
-                  if (!unlocked) { onOpenUpgrade?.(); return; }
-                  const html = generateDoctorReport(stats, medications, t);
-                  if (detectPlatform() === 'web') {
-                    const w = window.open('', '_blank');
-                    if (w) { w.document.write(html); w.document.close(); }
-                  } else {
-                    // The webview can't open a print window; save the report as
-                    // HTML the user can open and print in a real browser.
-                    const blob = new Blob([html], { type: 'text/html' });
-                    const saved = await saveBlob(blob, `privacy-notes-doctor-report-${new Date().toISOString().slice(0, 10)}.html`);
-                    if (saved.ok) setSaveFailed(false);
-                    else if (saved.reason === 'failed') setSaveFailed(true);
-                  }
-                }}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium border border-divider hover:bg-surface-1 transition-colors"
-              >
-                {t('wellness.export.doctorPDF')}
-                {!isPro && <span className="inline-flex items-center px-1 py-0 rounded text-[8px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">{t('wellness.export.proBadge')}</span>}
-              </button>
-              <button
-                type="button"
-                onClick={handleCopyAIPrompt}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
-              >
-                {copied ? t('wellness.export.copied') : t('wellness.export.copyAIPrompt')}
-                {!isPro && <span className="inline-flex items-center px-1 py-0 rounded text-[8px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">{t('wellness.export.proBadge')}</span>}
-              </button>
-            </div>
-            {saveFailed && (
-              <p className="mt-2 text-xs text-red-500 dark:text-red-400">{t('wellness.export.saveFailed')}</p>
-            )}
-          </div>
-        </>
-      )}
-
-      {/* ── Sleep & Activity sub-tab ─────────────────────── */}
-      {sub === 'sleep_activity' && (
-        <>
-          {stats.sleepDistribution.some((s) => s.count > 0) && (
-            <div>
-              <SectionEyebrow className="mb-2">{t('wellness.sleepActivity.sleepQuality')}</SectionEyebrow>
-              <div className="space-y-1">
-                {stats.sleepDistribution.map((s) => {
-                  const total = stats.sleepDistribution.reduce((a, b) => a + b.count, 0);
-                  const pct = total > 0 ? (s.count / total) * 100 : 0;
-                  return (
-                    <div key={s.quality} className="flex items-center gap-2">
-                      <span className="text-[11px] w-20 text-end text-pn-muted">{tt(`sleep.quality.${s.quality}`)}</span>
-                      <div className="flex-1 h-4 bg-surface-0 rounded overflow-hidden">
-                        <div className="h-full rounded transition-all" style={{ width: `${pct}%`, backgroundColor: '#7F77DD' }} />
-                      </div>
-                      <span className="text-[10px] text-pn-muted w-6 text-end">{s.count}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {stats.activityDistribution.some((a) => a.count > 0) && (
-            <div>
-              <SectionEyebrow className="mb-2">{t('wellness.sleepActivity.activity')}</SectionEyebrow>
-              <div className="space-y-1">
-                {stats.activityDistribution.map((a) => {
-                  const total = stats.activityDistribution.reduce((s, b) => s + b.count, 0);
-                  const pct = total > 0 ? (a.count / total) * 100 : 0;
-                  return (
-                    <div key={a.level} className="flex items-center gap-2">
-                      <span className="text-[11px] w-20 text-end text-pn-muted">{tt(`activity.level.${a.level}`)}</span>
-                      <div className="flex-1 h-4 bg-surface-0 rounded overflow-hidden">
-                        <div className="h-full rounded transition-all" style={{ width: `${pct}%`, backgroundColor: '#1D9E75' }} />
-                      </div>
-                      <span className="text-[10px] text-pn-muted w-6 text-end">{a.count}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Avg sleep hours stat if available */}
-          {stats.avgSleepHours != null && (
-            <div className="rounded-md bg-track border border-divider px-4 py-3 text-center">
-              <div className="text-2xl font-semibold tabular-nums">{stats.avgSleepHours}h</div>
-              <SectionEyebrow>{t('wellness.sleepActivity.avgSleepPerNight')}</SectionEyebrow>
-            </div>
-          )}
-        </>
-      )}
-
-      {/* ── Medication sub-tab ───────────────────────────── */}
-      {sub === 'medication' && (
-        <>
-          {stats.medBreakdown.length > 0 ? (
-            <div>
-              <SectionEyebrow className="mb-2">{t('wellness.medication.adherence')}</SectionEyebrow>
-              <div className="space-y-1.5">
-                {stats.medBreakdown.map((m) => (
-                  <div key={m.id} className="flex items-center gap-2">
-                    <span className="text-xs text-pn-soft flex-1 truncate">{m.name}</span>
-                    <div className="w-24 h-3 bg-surface-0 rounded overflow-hidden">
-                      <div
-                        className="h-full rounded transition-all"
-                        style={{
-                          width: `${m.pct}%`,
-                          backgroundColor: m.pct >= 80 ? '#1D9E75' : m.pct >= 50 ? '#BA7517' : '#D85A30',
-                        }}
-                      />
-                    </div>
-                    <span className="text-[11px] text-pn-muted w-12 text-end">{m.pct}%</span>
-                  </div>
-                ))}
-              </div>
-              {unlocked && medications.length > 0 && <MedTimeline medications={medications} />}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-pn-muted">
-              <p className="text-sm">{t('wellness.medication.empty.title')}</p>
-              <p className="text-xs mt-1">{t('wellness.medication.empty.hint')}</p>
-            </div>
-          )}
-        </>
-      )}
-
-      {/* ── Patterns sub-tab ─────────────────────────────── */}
-      {sub === 'patterns' && (
-        <>
-          {/* Emotion frequency */}
-          {stats.emotionFrequency.length > 0 && (
-            <div>
-              <SectionEyebrow className="mb-2">{t('wellness.patterns.topEmotions')}</SectionEyebrow>
-              <div className="flex flex-wrap gap-1.5">
-                {stats.emotionFrequency.slice(0, 12).map((e) => (
-                  <span key={e.key} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-surface-0 text-pn-soft">
-                    {tt(`emotions.tags.${e.key}`)}
-                    <span className="text-pn-muted">{e.count}</span>
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Pattern insights (Pro) */}
-          {stats.patterns.length > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className={SETTINGS_EYEBROW}>{t('wellness.patterns.insights')}</span>
-                {!isPro && <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">{t('wellness.patterns.proBadge')}</span>}
-              </div>
-              {unlocked ? (
-                <div className="space-y-2">
-                  {stats.patterns.map((p, i) => <PatternCard key={i} pattern={p} />)}
-                </div>
-              ) : (
-                <button type="button" onClick={onOpenUpgrade} className="w-full rounded-lg border border-dashed border-divider p-3 text-xs text-pn-muted hover:text-pn hover:border-pn-muted transition-colors text-center">
-                  {t('wellness.patterns.insightsLocked', { count: stats.patterns.length })}
-                </button>
-              )}
-            </div>
-          )}
-
-          {/* Week in review (Pro) */}
-          {stats.weekInReview && (
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className={SETTINGS_EYEBROW}>{t('wellness.patterns.weekInReview')}</span>
-                {!isPro && <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">{t('wellness.patterns.proBadge')}</span>}
-              </div>
-              {unlocked ? (
-                <WeekCard week={stats.weekInReview} reflection={weekReflection} onReflectionChange={onWeekReflectionChange} />
-              ) : (
-                <button type="button" onClick={onOpenUpgrade} className="w-full rounded-lg border border-dashed border-divider p-4 text-sm text-pn-muted hover:text-pn hover:border-pn-muted transition-colors text-center">
-                  {t('wellness.patterns.weekInReviewLocked')}
-                </button>
-              )}
-            </div>
-          )}
-        </>
-      )}
-    </>
-  );
-}
-
-// ------------------------------------------------------------------
-// Pattern insight card
-// ------------------------------------------------------------------
-
-const PATTERN_ICONS: Record<string, string> = {
-  correlation: '~',
-  day_of_week: '#',
-  medication: '+',
-  streak: '*',
-  trend: '^',
-};
-
-function PatternCard({ pattern }: { pattern: PatternInsight }) {
-  const { t } = useTranslation('stats');
-  return (
-    <div className="flex items-start gap-2 rounded-md bg-track border border-divider px-3 py-2">
-      <span className="text-xs font-mono text-accent mt-0.5">{PATTERN_ICONS[pattern.type] ?? '?'}</span>
-      <span className="text-xs text-pn-soft leading-relaxed">{insightText(pattern, t)}</span>
-    </div>
-  );
-}
-
-// ------------------------------------------------------------------
-// Medication dosage timeline
-// ------------------------------------------------------------------
-
-function MedTimeline({ medications }: { medications: MedicationTemplate[] }) {
-  const { t } = useTranslation('stats');
-  const meds = medications.filter((m) => m.dosageHistory.length > 0 || m.startedAt);
-  if (meds.length === 0) return null;
-
-  return (
-    <div className="mt-3 space-y-3">
-      <SectionEyebrow>{t('wellness.medication.dosageTimeline')}</SectionEyebrow>
-      {meds.map((med) => {
-        // dosageHistory[0] is the dose the medication STARTED on, stamped
-        // when it was created. `med.dosage` is the CURRENT one, so using
-        // it here labelled the start date with a dose that only began
-        // later. Templates predating the history fall back to it.
-        const events: { date: string; label: string }[] = [
-          {
-            date: med.startedAt,
-            label: t('wellness.medication.started', {
-              dosage: med.dosageHistory[0]?.dosage || med.dosage || med.name,
-            }),
-          },
-          ...med.dosageHistory.slice(1).map((h) => ({ date: h.changedAt, label: t('wellness.medication.changedTo', { dosage: h.dosage }) })),
-        ];
-        events.sort((a, b) => a.date.localeCompare(b.date));
-        return (
-          <div key={med.id} className="ps-2 border-s-2 border-divider space-y-1.5">
-            <span className="text-xs font-medium text-pn-soft">{med.name}</span>
-            {events.map((ev, i) => (
-              <div key={i} className="flex items-center gap-2 ms-2">
-                <div className="w-2 h-2 rounded-full bg-accent -ms-[13px]" />
-                <span className="text-[10px] text-pn-muted tabular-nums w-20">{ev.date}</span>
-                <span className="text-[11px] text-pn-muted">{ev.label}</span>
-              </div>
-            ))}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ------------------------------------------------------------------
-// Week-in-review card
-// ------------------------------------------------------------------
-
-function WeekCard({ week, reflection, onReflectionChange }: {
-  week: NonNullable<TrackerStats['weekInReview']>;
-  reflection?: string;
-  onReflectionChange?: (text: string) => void;
-}) {
-  const { t } = useTranslation('stats');
-  const { t: tt } = useTranslation('trackers');
-  return (
-    <div className="rounded-lg border border-divider bg-track p-4 space-y-3">
-      <div className="flex items-center justify-between">
-        <span className="text-xs text-pn-muted">
-          {t('wellness.week.range', { start: week.startDate, end: week.endDate })}
-        </span>
-        <span className="text-xs text-pn-muted">{t('wellness.week.daysLogged', { count: week.daysLogged })}</span>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {week.avgMood != null && (
-          <div>
-            <div className="text-lg font-semibold tabular-nums">{week.avgMood}/10</div>
-            <SectionEyebrow>{t('wellness.week.avgMood')}</SectionEyebrow>
-            {week.moodDelta != null && (
-              <div className={`text-[10px] font-medium ${week.moodDelta > 0 ? 'text-emerald-600' : week.moodDelta < 0 ? 'text-red-500' : 'text-pn-muted'}`}>
-                {t('wellness.week.moodDelta', { delta: `${week.moodDelta > 0 ? '+' : ''}${week.moodDelta}` })}
-              </div>
-            )}
-          </div>
-        )}
-        {week.avgSleepHours != null && (
-          <div>
-            <div className="text-lg font-semibold tabular-nums">{week.avgSleepHours}h</div>
-            <SectionEyebrow>{t('wellness.week.avgSleep')}</SectionEyebrow>
-          </div>
-        )}
-        {week.medAdherence != null && (
-          <div>
-            <div className="text-lg font-semibold tabular-nums">{week.medAdherence}%</div>
-            <SectionEyebrow>{t('wellness.week.medsTaken')}</SectionEyebrow>
-          </div>
-        )}
-        {week.dominantActivity && (
-          <div>
-            <div className="text-lg font-semibold">{tt(`activity.level.${week.dominantActivity.level}`)}</div>
-            <SectionEyebrow>{t('wellness.week.topActivity')}</SectionEyebrow>
-          </div>
-        )}
-      </div>
-      {week.topEmotions.length > 0 && (
-        <div>
-          <SectionEyebrow className="mb-1">{t('wellness.week.topEmotions')}</SectionEyebrow>
-          <div className="flex flex-wrap gap-1">
-            {week.topEmotions.map((e) => (
-              <span key={e.key} className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-track text-pn-muted">
-                {tt(`emotions.tags.${e.key}`)} ({e.count})
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-      {/* Editable weekly reflection. Absent while the week's journal is
-          behind a closed gate: the text is its content, and an empty field
-          typed into would overwrite what the gate hides. */}
-      {onReflectionChange && (
-      <div>
-        <SectionEyebrow className="mb-1">{t('wellness.week.reflection')}</SectionEyebrow>
-        <textarea
-          placeholder={t('wellness.week.reflectionPlaceholder')}
-          className="w-full rounded-md border border-divider bg-surface-0 text-xs text-pn-soft p-2 resize-none h-16 placeholder:text-pn-muted"
-          value={reflection ?? ''}
-          onChange={(e) => onReflectionChange(e.target.value)}
-        />
-      </div>
-      )}
-    </div>
-  );
-}
-
-// ------------------------------------------------------------------
 // Shared helpers
 // ------------------------------------------------------------------
 
@@ -857,21 +449,6 @@ function cellColor(count: number): string {
   if (count < 4) return 'bg-emerald-400 dark:bg-emerald-600';
   if (count < 8) return 'bg-emerald-500';
   return 'bg-emerald-600 dark:bg-emerald-300';
-}
-
-function moodColor(mood: number): string {
-  if (mood <= 2) return '#EF4444';
-  if (mood <= 4) return '#F97316';
-  if (mood <= 6) return '#EAB308';
-  if (mood <= 8) return '#22C55E';
-  return '#1E40AF';
-}
-
-function daysAgoStr(n: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  // Local: this bound is compared against entry dates, which are local.
-  return toLocalIso(d);
 }
 
 function Stat({ label, value, setting }: { label: string; value: number | string; setting?: string }) {

@@ -52,7 +52,7 @@ export function ScalePill({
       readOnly={readOnly}
     >
       <div className="flex flex-col gap-2 items-start">
-        <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+        <span className="text-xs font-medium text-pn-soft">
           {t('scalePill.prompt', { label, min, max })}
         </span>
         <div className="inline-flex flex-col gap-1">
@@ -65,7 +65,7 @@ export function ScalePill({
                 className={`w-7 h-7 rounded-md text-xs font-semibold transition-colors ${
                   value === n
                     ? 'text-white'
-                    : 'bg-surface-0 text-neutral-700 dark:text-neutral-300 hover:opacity-80'
+                    : 'bg-surface-0 text-pn-soft hover:opacity-80'
                 }`}
                 style={value === n ? { backgroundColor: color } : undefined}
               >
@@ -73,7 +73,7 @@ export function ScalePill({
               </button>
             ))}
           </div>
-          <div className="flex justify-between text-[10px] text-neutral-400 dark:text-neutral-500 px-0.5">
+          <div className="flex justify-between text-[10px] text-pn-muted px-0.5">
             <span>{low}</span>
             <span>{high}</span>
           </div>

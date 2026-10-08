@@ -1,11 +1,12 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
 import { HoverLabel } from './HoverLabel';
 import { Switch } from './Switch';
 import { ViewModeContext } from './viewMode';
 import { ViewModeToggle } from './ViewModeToggle';
-import { ArrowDown, ArrowUp, PencilSimpleSlash, Shield } from './icons';
+import { setJournalCalendarShown, useJournalCalendarShown } from './JournalCalendar';
+import { Article, Calendar, Clock, HardDrive, PencilSimpleSlash, Shield, SortAscending, SortDescending, Tag, TextAlignJustify } from './icons';
 import {
   resolvePrefs,
   setPillarPrefs,
@@ -17,10 +18,13 @@ import {
 
 /**
  * Preferences popover for the notes list:
- *   - LAYOUT: Auto / List / Grid, this device only (viewMode.ts)
+ *   - LAYOUT: Auto / List / Grid, this device only (viewMode.ts), and in
+ *     Journals Show calendar (device-local, like the layout)
  *   - SORT BY: Modified / Created / Title + asc/desc arrow
- *   - VIEW: Show preview (+ Longer preview text) / Show date / Show tags
- *   - OTHER: Show read-only / Show protected (with matching icons)
+ *   - VIEW: Show preview (+ Longer preview text) / Show date / Show tags, plus
+ *     Show file size in the lists whose rows print one (`showSizeToggle`)
+ *   - OTHER: Show read-only / Show protected
+ * Every switch carries an accent icon, as the menus across the app do.
  *
  * Two pillar-specific switches deliberately do NOT live here: Files' "Show
  * notes with attachments" and Bookmarks' "Show links from notes". Each pillar
@@ -58,10 +62,19 @@ type Props = {
   className?: string;
   /** Hide the VIEW toggles section (preview, date, tags). */
   hideViewSection?: boolean;
+  /**
+   * Add "Show file size" to the VIEW section. Only the lists that print a size
+   * on every row pass it, so the other pillars do not offer a switch for
+   * something their rows never show.
+   */
+  showSizeToggle?: boolean;
   /** Hide the OTHER toggles section (read-only, protected). */
   hideOtherSection?: boolean;
   /** Label for the title/name sort option. Defaults to "Title". */
   titleLabel?: string;
+  /** Label for the created sort option, which Journals reads as the day each
+   *  entry is for. Defaults to "Date created". */
+  createdLabel?: string;
 };
 
 export function ListPrefsPopover({
@@ -72,12 +85,15 @@ export function ListPrefsPopover({
   className = '',
   hideViewSection = false,
   hideOtherSection = false,
+  showSizeToggle = false,
   titleLabel,
+  createdLabel,
   pillar = 'global',
 }: Props) {
   const { t } = useTranslation('shell');
   // Read and write the SAME copy the pane's list renders from.
   const prefs: ListPrefs = resolvePrefs(store, pillar);
+  const calendarShown = useJournalCalendarShown();
   const resolvedTitleLabel = titleLabel ?? t('listPrefs.title');
 
   const layout = useContext(ViewModeContext);
@@ -100,6 +116,24 @@ export function ListPrefsPopover({
 
   useEscapeToClose(onClose);
 
+  // Every other overlay in the app caps its height; this one hangs off its
+  // trigger, so a viewport unit cannot express the room it has. Measure the
+  // top it was placed at and keep the bottom inside the window. The floor
+  // keeps a trigger near the window bottom from opening a menu too short to
+  // read, which then overflows the way it always did - the lesser of the two.
+  const [maxHeight, setMaxHeight] = useState<number | null>(null);
+  useLayoutEffect(() => {
+    const el = popoverRef.current;
+    if (!el) return;
+    function fit() {
+      const top = el!.getBoundingClientRect().top;
+      setMaxHeight(Math.max(240, window.innerHeight - top - 8));
+    }
+    fit();
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, []);
+
   function update<K extends keyof ListPrefs>(key: K, value: ListPrefs[K]) {
     const nextPrefs: ListPrefs = { ...prefs, [key]: value };
     onChange(setPillarPrefs(store, pillar, nextPrefs));
@@ -118,27 +152,39 @@ export function ListPrefsPopover({
       ref={popoverRef}
       role="dialog"
       aria-label={t('listPrefs.listPreferences')}
-      className={`z-50 w-72 rounded-lg border border-divider bg-surface-2 shadow-lg ${className}`}
+      className={`z-50 w-72 rounded-lg border border-divider bg-surface-2 shadow-lg overflow-y-auto overscroll-contain ${className}`}
+      style={maxHeight === null ? undefined : { maxHeight }}
     >
       {/* ── LAYOUT ───────────────────────────────────────────────── */}
       {layout && (
       <div className="px-4 pt-3 pb-3 border-b border-divider">
-        <div className="text-[10px] font-semibold tracking-wider text-neutral-500 dark:text-neutral-400 uppercase mb-1.5 mt-1">
+        <div className="text-[10px] font-semibold tracking-wider text-pn-muted uppercase mb-1.5 mt-1">
           {t('listPrefs.layout')}
         </div>
         <ViewModeToggle mode={layout.mode} onChange={layout.set} />
         <div className="mt-1.5 text-[11.5px] text-pn-muted">{t('listPrefs.layoutDeviceOnly')}</div>
+        {/* Device-local like the layout, so it sits here and outside the synced prefs. */}
+        {pillar === 'journal' && (
+          <div className="mt-2">
+            <ToggleRow
+              label={t('listPrefs.showCalendar')}
+              icon={<Calendar aria-hidden="true" className="shrink-0" />}
+              checked={calendarShown}
+              onChange={setJournalCalendarShown}
+            />
+          </div>
+        )}
       </div>
       )}
 
       {/* ── SORT BY ──────────────────────────────────────────────── */}
       <div className="px-4 pt-3 pb-2">
-        <div className="text-[10px] font-semibold tracking-wider text-neutral-500 dark:text-neutral-400 uppercase mb-1.5 mt-1">
+        <div className="text-[10px] font-semibold tracking-wider text-pn-muted uppercase mb-1.5 mt-1">
           {t('listPrefs.sortBy')}
         </div>
         <div className="space-y-0.5">
           <SortRow
-            label={t('listPrefs.dateCreated')}
+            label={createdLabel ?? t('listPrefs.dateCreated')}
             active={prefs.sortField === 'created'}
             dir={prefs.sortField === 'created' ? prefs.sortDir : null}
             onSelect={() => setSort('created')}
@@ -171,29 +217,41 @@ export function ListPrefsPopover({
       {/* ── VIEW ─────────────────────────────────────────────────── */}
       {!hideViewSection && (
       <div className="px-4 pt-2 pb-3 border-t border-divider">
-        <div className="text-[10px] font-semibold tracking-wider text-neutral-500 dark:text-neutral-400 uppercase mb-1.5 mt-1">
+        <div className="text-[10px] font-semibold tracking-wider text-pn-muted uppercase mb-1.5 mt-1">
           {t('listPrefs.view')}
         </div>
         <div className="space-y-0.5">
           <ToggleRow
             label={t('listPrefs.showPreview')}
+            icon={<Article aria-hidden="true" className="shrink-0" />}
             checked={prefs.showPreview}
             onChange={(v) => update('showPreview', v)}
           />
           {prefs.showPreview && (
             <ToggleRow
               label={t('listPrefs.longPreview')}
+              icon={<TextAlignJustify aria-hidden="true" className="shrink-0" />}
               checked={prefs.longPreview}
               onChange={(v) => update('longPreview', v)}
             />
           )}
           <ToggleRow
             label={t('listPrefs.showDate')}
+            icon={<Clock aria-hidden="true" className="shrink-0" />}
             checked={prefs.showDate}
             onChange={(v) => update('showDate', v)}
           />
+          {showSizeToggle && (
+            <ToggleRow
+              label={t('listPrefs.showSize')}
+              icon={<HardDrive aria-hidden="true" className="shrink-0" />}
+              checked={prefs.showSize}
+              onChange={(v) => update('showSize', v)}
+            />
+          )}
           <ToggleRow
             label={t('listPrefs.showTags')}
+            icon={<Tag aria-hidden="true" className="shrink-0" />}
             checked={prefs.showTags}
             onChange={(v) => update('showTags', v)}
           />
@@ -204,7 +262,7 @@ export function ListPrefsPopover({
       {/* ── OTHER ────────────────────────────────────────────────── */}
       {!hideOtherSection && (
       <div className="px-4 pt-2 pb-3 border-t border-divider">
-        <div className="text-[10px] font-semibold tracking-wider text-neutral-500 dark:text-neutral-400 uppercase mb-1.5 mt-1">
+        <div className="text-[10px] font-semibold tracking-wider text-pn-muted uppercase mb-1.5 mt-1">
           {t('listPrefs.other')}
         </div>
         <div className="space-y-0.5">
@@ -259,17 +317,18 @@ export function SortRow({
       <button
         type="button"
         onClick={onSelect}
-        className="flex items-center gap-2 flex-1 text-start group"
+        className="flex items-center gap-1.5 flex-1 text-start group"
       >
         <span
-          className={`shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center transition ${
+          // 14 px, the size of the switch rows' icons, so both columns of labels start at one edge.
+          className={`shrink-0 w-3.5 h-3.5 rounded-full border-[1.5px] flex items-center justify-center transition ${
             active
               ? 'border-accent'
-              : 'border-neutral-300 group-hover:border-neutral-400 dark:border-neutral-600 dark:group-hover:border-neutral-500'
+              : 'border-pn-muted/50 group-hover:border-pn-muted'
           }`}
         >
           {active && (
-            <span className="w-2 h-2 rounded-full bg-accent" aria-hidden />
+            <span className="w-1.5 h-1.5 rounded-full bg-accent-fill" aria-hidden />
           )}
         </span>
         <span className="text-[14px] text-pn">
@@ -282,20 +341,21 @@ export function SortRow({
           type="button"
           onClick={onToggleDir}
           aria-label={dir === 'asc' ? t('listPrefs.switchToDescending') : t('listPrefs.switchToAscending')}
-          className="shrink-0 inline-flex items-center gap-1 px-1.5 h-7 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+          // -my-1: the button keeps its 28 px target without making its row taller than a switch row.
+          className="shrink-0 flex items-center gap-1 px-1.5 h-7 -my-1 rounded hover:bg-pn/5 transition"
         >
           <span className="text-[11px] font-medium text-accent uppercase">{dir === 'asc' ? t('listPrefs.asc') : t('listPrefs.desc')}</span>
           {dir === 'asc' ? (
-            <ArrowUp className="text-accent" />
+            <SortAscending className="text-accent" />
           ) : (
-            <ArrowDown className="text-accent" />
+            <SortDescending className="text-accent" />
           )}
         </button>
         </HoverLabel>
       )}
     </div>
     {active && hint && (
-      <div className="ps-6 pb-1 -mt-0.5 text-[11.5px] text-pn-muted">{hint}</div>
+      <div className="ps-5 pb-1 -mt-0.5 text-[11.5px] text-pn-muted">{hint}</div>
     )}
     </>
   );
@@ -315,7 +375,7 @@ function ToggleRow({
   return (
     <Switch
       label={label}
-      icon={icon}
+      icon={icon && <span className="inline-flex text-accent">{icon}</span>}
       checked={checked}
       onChange={onChange}
       className="gap-2 py-1 select-none"

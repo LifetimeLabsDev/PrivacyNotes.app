@@ -7,3 +7,4 @@
  * build, not sniffed from the browser at runtime.
  */
 declare const __PN_BUILD_PLATFORM__: string;
+declare const __PN_LATEST_RELEASE__: { version: string; date: string; title: string };

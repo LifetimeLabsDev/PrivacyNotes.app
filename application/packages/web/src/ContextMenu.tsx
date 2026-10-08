@@ -6,8 +6,10 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { useEscapeToClose } from './useEscapeToClose';
 import { IconUpgrade } from './UpgradeModal';
 import { Check } from './icons';
+import { matchesKey } from './shortcutMatch';
 
 /**
  * App-wide right-click context menu primitive.
@@ -16,7 +18,9 @@ import { Check } from './icons';
  * menu makes the app feel like a website. We take over right-click on
  * app chrome and list rows, but *intentionally* leave it alone on
  * editable text (inputs, textareas, contenteditable) so copy/paste,
- * spellcheck, and dictionary lookups still work.
+ * spellcheck, and dictionary lookups still work. The note body makes two
+ * exceptions of its own in Editor.tsx: a link, and a click inside a
+ * selection the reader made before the click.
  *
  * On touch a long-press is the platform's own gesture (select + copy) and
  * the app's multi-select gesture on list rows, so it does not open this
@@ -46,6 +50,8 @@ export type ContextMenuItem =
       /** A toggle that is currently on. Marked with a check on the trailing
        *  edge, so one label serves both states. */
       checked?: boolean;
+      /** A letter that picks this row while the menu is open. */
+      pick?: string;
     }
   | { type: 'separator' }
   | { type: 'header'; label: string };
@@ -54,6 +60,8 @@ export type ContextMenuState = {
   x: number;
   y: number;
   items: ContextMenuItem[];
+  /** Opened from the keyboard: the first row starts highlighted, so Enter picks it. */
+  keyboard?: boolean;
 } | null;
 
 function isSelectable(it: ContextMenuItem): it is Extract<
@@ -78,14 +86,17 @@ export function isEditableTarget(target: EventTarget | null): boolean {
 /**
  * Right-click suppression rule (Strategy B - partial).
  * Returns true when the browser's native menu should win - editable
- * text (paste, spellcheck), images (Save image as…), and links (Open
- * in new tab, Copy link). Everywhere else, the app menu wins. Spec:
+ * text (paste, spellcheck), a note body even when it is read-only
+ * (Copy), images (Save image as…), and links (Open in new tab, Copy
+ * link). Everywhere else, the app menu wins. Spec:
  * ops/docs/backlog.md #74.
  */
 export function shouldUseBrowserDefault(target: EventTarget | null): boolean {
   if (!target || !(target instanceof HTMLElement)) return false;
   return !!target.closest(
-    'input, textarea, [contenteditable="true"], [contenteditable=""], img, a[href]',
+    // `.ProseMirror` covers a read-only note body, which is
+    // contenteditable="false" and still text a reader wants to copy.
+    'input, textarea, [contenteditable="true"], [contenteditable=""], .ProseMirror, img, a[href]',
   );
 }
 
@@ -120,11 +131,12 @@ export function useContextMenu() {
   const open = (
     e: { clientX: number; clientY: number; preventDefault: () => void; stopPropagation: () => void },
     items: ContextMenuItem[],
+    keyboard = false,
   ) => {
     if (items.length === 0) return;
     e.preventDefault();
     e.stopPropagation();
-    setState({ x: e.clientX, y: e.clientY, items });
+    setState({ x: e.clientX, y: e.clientY, items, keyboard });
   };
   const close = () => setState(null);
   return { state, open, close };
@@ -140,6 +152,10 @@ export function ContextMenu({
   const ref = useRef<HTMLDivElement | null>(null);
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
   const [activeIdx, setActiveIdx] = useState<number>(-1);
+  // On the shared Escape stack, which runs before the app's Escape cascade:
+  // a listener of the menu's own would run after it and close the open note
+  // as well.
+  useEscapeToClose(onClose, !!state);
 
   // For each new menu: reset the highlighted row + measure/flip near
   // viewport edges. Both jobs stay in one layout effect on purpose:
@@ -151,9 +167,12 @@ export function ContextMenu({
       setPos(null);
       return;
     }
-    setActiveIdx(-1);
+    setActiveIdx(state.keyboard ? state.items.findIndex((it) => isSelectable(it) && !it.disabled) : -1);
     const el = ref.current;
     if (!el) return;
+    // Opened from the keyboard, the menu takes the focus, so Enter and the
+    // arrows reach it and not the editor behind it.
+    if (state.keyboard) el.focus({ preventScroll: true });
     const rect = el.getBoundingClientRect();
     const vw = window.innerWidth;
     const vh = window.innerHeight;
@@ -165,8 +184,9 @@ export function ContextMenu({
     setPos({ top, left });
   }, [state]);
 
-  // Dismiss on outside mousedown, Escape, scroll, resize, or another
-  // contextmenu elsewhere. Capture phase so we win over list clicks.
+  // Dismiss on outside mousedown, scroll, resize, or another contextmenu
+  // elsewhere (Escape is the hook above). Capture phase so we win over list
+  // clicks.
   useEffect(() => {
     if (!state) return;
 
@@ -196,17 +216,22 @@ export function ContextMenu({
       onClose();
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
-        return;
-      }
       const items = state.items;
       const selectableIdx: number[] = [];
       items.forEach((it, i) => {
         if (isSelectable(it) && !it.disabled) selectableIdx.push(i);
       });
-      if (selectableIdx.length === 0) return;
+      if (selectableIdx.length === 0 || e.defaultPrevented) return;
+
+      const picked = items.find(
+        (it) => isSelectable(it) && !it.disabled && it.pick && matchesKey(e, [{ key: it.pick }]),
+      );
+      if (picked && isSelectable(picked)) {
+        e.preventDefault();
+        picked.onSelect();
+        onClose();
+        return;
+      }
 
       if (e.key === 'ArrowDown') {
         e.preventDefault();
@@ -275,7 +300,12 @@ export function ContextMenu({
       role="menu"
       tabIndex={-1}
       style={style}
-      onContextMenu={(e) => e.preventDefault()}
+      // React bubbles a portal's events to the owner's ancestors, so without
+      // the stop a right click on the menu opens the app menu behind it.
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       // A floor, not a width: no ceiling, so a long translation widens the menu.
       // Touch opens it from a tap (a bookmark row's "..." button), so the rows
       // grow to a finger's size there, and a menu taller than the screen
@@ -295,7 +325,7 @@ export function ContextMenu({
           return (
             <div
               key={`hdr-${i}`}
-              className="px-3 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-500"
+              className="px-3 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase tracking-wider text-pn-muted"
             >
               {it.label}
             </div>
@@ -312,11 +342,11 @@ export function ContextMenu({
               ? 'bg-red-500 text-white dark:bg-red-600'
               : item.success
                 ? 'bg-emerald-500 text-white dark:bg-emerald-600'
-                : 'bg-accent text-white'
+                : 'bg-accent-fill text-white'
             : item.destructive
-              ? 'text-red-600 dark:text-red-400 cursor-pointer'
+              ? 'text-danger cursor-pointer'
               : item.success
-                ? 'text-emerald-600 dark:text-emerald-400 cursor-pointer'
+                ? 'text-success cursor-pointer'
                 : 'cursor-pointer';
         return (
           <button
@@ -351,13 +381,12 @@ export function ContextMenu({
               {item.icon}
             </span>
             <span className="flex-1 truncate">{item.label}</span>
-            {/* The word turns white on a hovered row for the same reason the
-                check mark does: the band underneath it IS the accent, so an
-                accent word on it is invisible. The rocket keeps the Pro
-                colour from inside, which is a fixed token either way. */}
+            {/* The word and the rocket turn white on a hovered row for the
+                same reason the check mark does: the band underneath it IS the
+                accent, so an accent word or a Pro colour on it is invisible. */}
             {item.pro && (
               <span className={`shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold ${active ? 'text-white' : 'text-accent'}`}>
-                <IconUpgrade size={12} /> Pro
+                <IconUpgrade size={12} onFill={active} /> Pro
               </span>
             )}
             {item.checked && (
@@ -370,7 +399,7 @@ export function ContextMenu({
                 className={`text-[11px] ms-4 tabular-nums ${
                   active
                     ? 'text-white/70'
-                    : 'text-neutral-400 dark:text-neutral-500'
+                    : 'text-pn-muted'
                 }`}
               >
                 {item.shortcut}

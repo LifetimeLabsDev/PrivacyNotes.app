@@ -20,9 +20,9 @@
           "h": "Exportera dina anteckningar från Google Keep",
           "steps": [
             "Gå till [takeout.google.com](https://takeout.google.com) och logga in med Google-kontot som äger dina anteckningar.",
-            "Klicka på ”Avmarkera alla”, bläddra sedan ner i produktlistan och kryssa bara i ”Keep”.",
-            "Klicka på ”Nästa steg” och behåll standardinställningarna: exportera en gång, .zip-fil.",
-            "Klicka på ”Skapa export”. Google förbereder arkivet och mejlar dig en nedladdningslänk; med bara Keep tar det oftast minuter, inte timmar.",
+            "Klicka på ”Deselect all”, bläddra sedan ner i produktlistan och kryssa bara i ”Keep”.",
+            "Klicka på ”Next step” och behåll standardinställningarna: exportera en gång, .zip-fil.",
+            "Klicka på ”Create export”. Google förbereder arkivet och mejlar dig en nedladdningslänk; med bara Keep tar det oftast minuter, inte timmar.",
             "Ladda ner .zip-filen. Du kan lämna den precis som den är."
           ]
         },
@@ -150,9 +150,9 @@
         {
           "h": "Exportera dina anteckningar från Samsung Notes",
           "steps": [
-            "Håll in fingret i Samsung Notes för att markera de anteckningar du vill ha (eller Markera alla).",
-            "Tryck på trepunktsmenyn och välj ”Spara som fil”.",
-            "Välj ”Microsoft Word-fil” (.docx) för formaterade anteckningar, eller ”Textfil” (.txt) för ren text.",
+            "Håll in fingret i Samsung Notes för att markera de anteckningar du vill ha (eller Select all).",
+            "Tryck på trepunktsmenyn och välj ”Save as file”.",
+            "Välj ”Microsoft Word file” (.docx) för formaterade anteckningar, eller ”Text file” (.txt) för ren text.",
             "Samsung sparar en fil per anteckning i enhetens lagring. Samla ihop dem i en enda .zip (markera dem i filhanteraren och komprimera) om du exporterade mer än en handfull."
           ]
         },
@@ -357,7 +357,7 @@
         {
           "h": "Vart dina platser tar vägen",
           "p": [
-            "Journal registrerar var ett inlägg skrevs, och PrivacyNotes har ingen egen karta, så varje plats blir en länk i en Platser-lista i slutet av inlägget.",
+            "Journal registrerar platsen för ett inlägg, och PrivacyNotes har ingen egen karta, så varje plats blir en länk i listan Places i slutet av inlägget.",
             "Platser som Journal registrerade med koordinater öppnar en nål på exakt den punkten i OpenStreetMap. Platser som bara fick ett namn öppnar en sökning på det namnet i stället. Ingenting skickas någonstans förrän du klickar på en."
           ]
         },
@@ -407,7 +407,7 @@
           "h": "Zippa allt i den mappen",
           "steps": [
             "Markera allt i mappen med säkerhetskopian: data, files och vad som än ligger bredvid dem.",
-            "Komprimera det markerade: högerklicka > Komprimera på macOS, eller Skicka till > Komprimerad zip-mapp på Windows.",
+            "Komprimera det markerade: högerklicka > Komprimera på macOS, eller Skicka till > Komprimerad (zippad) mapp på Windows.",
             "Den .zip-filen är din importfil."
           ],
           "p": [
@@ -465,7 +465,7 @@
         {
           "h": "Exportera från Firefox",
           "steps": [
-            "Tryck Ctrl+Skift+O, eller Cmd+Skift+O på en Mac, för att öppna Bibliotek-fönstret.",
+            "Tryck Ctrl+Skift+O, eller Cmd+Skift+O på en Mac, för att öppna Library-fönstret.",
             "Klicka på \"Import and Backup\" i verktygsfältet och välj \"Export Bookmarks to HTML...\".",
             "Spara den. Filen heter bookmarks.html."
           ]
@@ -500,7 +500,7 @@
         {
           "h": "Vad som följer med",
           "p": [
-            "Varje mapp du hade följer med och ligger kvar precis som du lämnade den, inuti en ny mapp som heter Bokmärken. Bokmärkesfältet är undantaget: innehållet flyttas upp en nivå i stället för att bli en mapp, eftersom varje webbläsare kallar fältet något eget på varje språk. Safari märker ingenting alls, så dess Favorites kommer faktiskt in som en mapp.",
+            "Varje mapp du hade följer med och ligger kvar precis som du lämnade den, inuti en ny mapp som heter Bookmarks. Bokmärkesfältet är undantaget: innehållet flyttas upp en nivå i stället för att bli en mapp, eftersom varje webbläsare kallar fältet något eget på varje språk. Safari märker ingenting alls, så dess Favorites kommer faktiskt in som en mapp.",
             "Dagen du sparade varje bokmärke följer med. Safari är den enda webbläsaren som inte skriver några datum alls, så en export från Safari kommer in med dagens datum.",
             "Firefox är också den enda som sparar taggar och ett adressfältsnyckelord tillsammans med ett bokmärke. Har din fil med dem erbjuder förhandsgranskningen en ruta för att behålla dem, och båda kommer in som taggar här.",
             "Tre saker lämnas medvetet kvar. Webbläsarens egna genvägar som Most Visited är inte riktiga länkar, så de räknas och hoppas över. Webbplatsikoner läses inte heller ur filen, eftersom kopian som sparats där blir gammal; PrivacyNotes hämtar en färsk. Och en mapp som inte innehöll några bokmärken skapas inte om.",
@@ -597,7 +597,7 @@
         {
           "h": "Bestäm var bilderna bor innan du zippar",
           "p": [
-            "Typora kan lägga en bild bredvid anteckningen, i en assets-undermapp, eller låta den ligga kvar där du drog den ifrån. Bara bilder inuti mappen du zippar kan följa med. Öppna Inställningar > Bild, ställ in att bilder kopieras till anteckningens egen assets-mapp, och använd \"Format > Bild > Kopiera bildfiler till...\" på äldre anteckningar vars bilder fortfarande pekar någon annanstans."
+            "Typora kan lägga en bild bredvid anteckningen, i en assets-undermapp, eller låta den ligga kvar där du drog den ifrån. Bara bilder inuti mappen du zippar kan följa med. Öppna Preferences > Image, ställ in att bilder kopieras till anteckningens egen assets-mapp, och använd \"Format > Image > Copy image files to...\" på äldre anteckningar vars bilder fortfarande pekar någon annanstans."
           ]
         },
         {
@@ -654,7 +654,7 @@
         {
           "h": "Zippa arbetsytan",
           "steps": [
-            "Högerklicka i Zettlr på arbetsytan högst upp i filträdet och välj \"Visa i Finder\", eller \"Visa i Utforskaren\" på Windows.",
+            "Högerklicka i Zettlr på arbetsytan högst upp i filträdet och välj \"Show in Finder\", eller \"Show in Explorer\" på Windows.",
             "Högerklicka på mappen där och komprimera den.",
             "Släpp .zip-filen i importen."
           ]
@@ -662,7 +662,7 @@
         {
           "h": "Zettelkasten-länkar behåller sin text, inte sitt mål",
           "p": [
-            "Zettlr länkar anteckningar via ID, så en länk läses [[20260823120000]]. Vi behåller note-links precis som de är skrivna, vilket betyder att en ID-länk bara hittar sin anteckning här om någon anteckning faktiskt heter det ID:t. Länkar skrivna med filnamnet fungerar som vanligt, så byt ditt interna länkformat till filnamn innan du exporterar om du förlitar dig på dem.",
+            "Zettlr länkar anteckningar via ID, så en länk läses [[20260823120000]]. Vi behåller anteckningslänkar precis som de är skrivna, vilket betyder att en ID-länk bara hittar sin anteckning här om någon anteckning faktiskt heter det ID:t. Länkar skrivna med filnamnet fungerar som vanligt, så byt ditt interna länkformat till filnamn innan du exporterar om du förlitar dig på dem.",
             "Citatnycklar som [@doe2026] är text för oss. De kommer med oförändrade och slutar vara klickbara."
           ]
         },

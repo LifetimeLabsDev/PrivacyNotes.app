@@ -21,9 +21,12 @@ export type FooterIcon =
   | 'changelog'
   | 'roadmap'
   | 'brand'
+  | 'themes'
   | 'x'
   | 'reddit'
   | 'mastodon'
+  | 'youtube'
+  | 'facebook'
   | 'lock'
   | 'file'
   | 'refund'
@@ -88,25 +91,34 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
     links: [
       { label: 'Help & FAQ', short: 'Help', href: '/help', icon: 'faq' },
       { label: 'Changelog', short: 'Changelog', href: '/changelog', icon: 'changelog' },
+      { label: 'Themes', short: 'Themes', href: '/themes', icon: 'themes' },
       { label: 'Roadmap', short: 'Roadmap', href: '/roadmap', icon: 'roadmap' },
-      { label: 'Brand kit', short: 'Brand', href: '/brand', icon: 'brand' },
       // No `short`: footer-only, never a nav pill. The printable cheat
       // sheet is English-only by design, so the href carries no locale.
       { label: 'Hotkeys', href: '/help/keyboard-shortcuts/cheat-sheet', icon: 'print' },
+      // Bug reports and feature requests go to GitHub and nowhere else, so
+      // the one way to send them sits with help, apart from the channels to
+      // follow. The template picker also lists the private security contact.
+      { label: 'Report an issue', href: 'https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new/choose', icon: 'github', external: true },
     ],
   },
   {
-    heading: 'Feedback',
+    // News and updates only. Nothing here takes a bug report.
+    heading: 'Follow along',
     links: [
       { label: 'X.com', href: 'https://x.com/PrivacyNotesApp', icon: 'x', external: true },
       { label: 'reddit.com', href: 'https://www.reddit.com/r/PrivacyNotes/', icon: 'reddit', external: true },
-      { label: 'GitHub.com', href: 'https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/', icon: 'github', external: true },
       { label: 'Mastodon', href: 'https://mastodon.social/@privacynotes', icon: 'mastodon', external: true, relMe: true },
+      { label: 'YouTube', href: 'https://www.youtube.com/@PrivacyNotesApp', icon: 'youtube', external: true },
+      { label: 'Facebook', href: 'https://www.facebook.com/PrivacyNotesApp/', icon: 'facebook', external: true },
     ],
   },
   {
     heading: 'Legal',
     links: [
+      // The brand kit carries the rules for using the logo, so it sits with
+      // the legal pages and is not a header section.
+      { label: 'Brand kit', href: '/brand', icon: 'brand' },
       { label: 'Privacy Policy', href: 'https://lifetimelabs.dev/privacy/', icon: 'lock', external: true },
       { label: 'Terms of Service', href: 'https://lifetimelabs.dev/terms/', icon: 'file', external: true },
       { label: 'Refund Policy', href: 'https://lifetimelabs.dev/terms/#refunds', icon: 'refund', external: true },

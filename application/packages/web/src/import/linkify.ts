@@ -149,6 +149,11 @@ export function linkifyMarkdown(input: string): string {
     /\[[^\]\n]*\]\([^)\n]*\)/g,
     // Existing autolink <http://...> or <mailto:...>.
     /<(?:https?:\/\/|mailto:)[^>\s]+>/g,
+    // Math: `$$...$$` and `$...$`, with the editor's guards for the inline
+    // form (no space inside either dollar, no digit after the closing one),
+    // so a price stays prose and a formula is never turned into a link.
+    /\$\$[\s\S]*?\$\$/g,
+    /(?<![\\$])\$(?![\s\d$])[^$\n]*?[^\s$\\]\$(?!\d)/g,
     // Raw HTML tag. Markdown allows inline HTML and imported bodies carry it,
     // so without this an `<a href="https://x">` became
     // `<a href="<https://x>">` - a corrupted attribute rather than a link.
@@ -221,9 +226,18 @@ function linkifyEmails(text: string): string {
 }
 
 function linkifyUrls(text: string): string {
-  return text.replace(URL_RE, (match) => {
+  return text.replace(URL_RE, (match: string, offset: number) => {
     let url = match;
     let trailing = '';
+    // Inside an open `==highlight==` on this line, a closing `==` is the
+    // highlight's, not the URL's. Outside one, `=` stays: base64 padding
+    // ends real URLs.
+    // Counted only when the URL ends in `==`, so a long line of URLs stays linear.
+    let inHighlight = false;
+    if (match.endsWith('==')) {
+      const lineStart = text.lastIndexOf('\n', offset - 1) + 1;
+      inHighlight = (text.slice(lineStart, offset).match(/==/g)?.length ?? 0) % 2 === 1;
+    }
 
     // Trim trailing characters that aren't part of the URL. We keep
     // stripping until the last char is a plausible URL character.
@@ -241,6 +255,10 @@ function linkifyUrls(text: string): string {
       } else if (TRAILING_PUNCT_RE.test(last)) {
         trailing = last + trailing;
         url = url.slice(0, -1);
+      } else if (inHighlight && url.endsWith('==')) {
+        trailing = '==' + trailing;
+        url = url.slice(0, -2);
+        inHighlight = false;
       } else {
         break;
       }

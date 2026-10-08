@@ -36,7 +36,7 @@ export function ActivityPill({
       readOnly={readOnly}
     >
       <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+        <span className="text-xs font-medium text-pn-soft">
           {t('activity.prompt')}
         </span>
         <div className="flex gap-1">
@@ -48,7 +48,7 @@ export function ActivityPill({
               className={`flex-1 px-1 py-1.5 rounded-md text-[11px] font-medium text-center transition-colors ${
                 value === level
                   ? 'text-white'
-                  : 'bg-surface-0 text-neutral-600 dark:text-neutral-300'
+                  : 'bg-surface-0 text-pn-soft'
               }`}
               style={
                 value === level

@@ -1,7 +1,7 @@
 import { QRCodeCanvas } from 'qrcode.react';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { activeLocale } from '../i18n';
+import { formatInstant } from '../intlFormat';
 import { useAuth } from '../auth';
 import { isDemoMode } from '../demo';
 import { AppWindow, Check, Copy, DeviceMobile, Download, Key, ShieldCheck, ShieldPlus } from '../icons';
@@ -28,7 +28,7 @@ export function labelTotpUri(uri: URL, account: string): string {
   return `otpauth://totp/${encodeURIComponent(TOTP_ISSUER)}:${encodeURIComponent(account)}?${params.toString()}`;
 }
 // Button tiers: ops/docs/ui-patterns.md section 16, in theme tokens.
-const primary = 'rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed';
+const primary = 'rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed';
 const secondary = 'inline-flex items-center justify-center gap-1.5 rounded-md border border-divider text-pn hover:bg-surface-1 px-4 py-2 text-sm transition disabled:opacity-40 disabled:cursor-not-allowed';
 const field = 'w-full rounded-md bg-surface-1 border border-divider text-pn px-3 py-2.5 text-sm focus:border-accent focus:outline-none';
 
@@ -275,7 +275,7 @@ export function TwoFactorTab() {
   return (
     <div className="space-y-4">
       <SectionEyebrow>{t('twoFactor.title')}</SectionEyebrow>
-      {error && <p role="alert" className="text-sm text-red-600 dark:text-red-400">{t(error)}</p>}
+      {error && <p role="alert" className="text-sm text-danger">{t(error)}</p>}
       {notice && <p role="status" className="text-sm text-accent">{t(notice)}</p>}
       {!status ? (
         <button type="button" className={secondary} onClick={() => void run(async () => { await readState(); })} disabled={busy}>{t(error ? 'twoFactor.retry' : 'twoFactor.loading')}</button>
@@ -289,7 +289,7 @@ export function TwoFactorTab() {
             {STEPS.map((name, index) => {
               const at = STEPS.indexOf(step);
               return <li key={name} className={`flex items-center gap-2 ${index < STEPS.length - 1 ? 'flex-1' : ''}`} aria-current={index === at ? 'step' : undefined}>
-                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium ${index < at ? 'bg-accent/15 text-accent' : index === at ? 'bg-accent text-white' : 'border border-divider text-pn-muted'}`}>
+                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium ${index < at ? 'bg-accent/15 text-accent-strong' : index === at ? 'bg-accent-fill text-white' : 'border border-divider text-pn-muted'}`}>
                   {index < at ? <Check size={12} aria-hidden="true" /> : index + 1}
                 </span>
                 <span className={`text-xs ${index === at ? 'text-pn font-medium' : 'text-pn-soft'}`}>{t(`twoFactor.step.${name}`)}</span>
@@ -341,7 +341,7 @@ export function TwoFactorTab() {
               <p className="text-sm font-medium">{t('twoFactor.codeLabel')}</p>
               <PinInput value={code} onChange={setCode} length={6} reveal compact ariaLabel={t('twoFactor.codeLabel')} disabled={busy} />
               <div className="flex items-start gap-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3">
-                <ShieldCheck size={28} weight="fill" className="shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+                <ShieldCheck size={28} weight="fill" className="shrink-0 text-success" aria-hidden="true" />
                 <p className="text-sm text-pn leading-relaxed">{t('twoFactor.warning')}</p>
               </div>
               <div className="flex gap-2">
@@ -357,7 +357,7 @@ export function TwoFactorTab() {
           <div className="flex items-center gap-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white"><ShieldCheck size={22} weight="fill" aria-hidden="true" /></span>
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">{t('twoFactor.enabled')}</p>
+              <p className="text-sm font-semibold text-success">{t('twoFactor.enabled')}</p>
               <p className="text-xs text-emerald-700/80 dark:text-emerald-400/80">{t('twoFactor.enabledHelp')}</p>
             </div>
           </div>
@@ -365,7 +365,7 @@ export function TwoFactorTab() {
           <div className="divide-y divide-divider rounded-md border border-divider">
             {verified.map((factor) => <div key={factor.id} className="flex items-center justify-between gap-3 p-3">
               <span className="flex items-center gap-2 text-sm text-pn"><DeviceMobile size={16} className="text-accent" aria-hidden="true" />{t('twoFactor.authenticatorRow')}</span>
-              {factor.created_at && <span className="text-xs text-pn-muted">{t('twoFactor.addedOn', { date: new Date(factor.created_at).toLocaleDateString(activeLocale()) })}</span>}
+              {factor.created_at && <span className="text-xs text-pn-muted">{t('twoFactor.addedOn', { date: formatInstant(factor.created_at, 'date') })}</span>}
             </div>)}
             <div className="p-3"><MfaRecoveryHelp /></div>
           </div>
@@ -380,16 +380,16 @@ export function TwoFactorTab() {
       ) : (
         <div className="space-y-4 rounded-lg border border-divider p-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400"><ShieldPlus size={22} aria-hidden="true" /></span>
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-success"><ShieldPlus size={22} aria-hidden="true" /></span>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-pn">{t('twoFactor.offTitle')}</p>
               <p className={SETTINGS_HELP}>{t('twoFactor.offTime')}</p>
             </div>
-            <span className="shrink-0 rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">{t('twoFactor.offBadge')}</span>
+            <span className="shrink-0 rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-warning">{t('twoFactor.offBadge')}</span>
           </div>
           <ul className="space-y-2">
             {([[DeviceMobile, 'benefitCode'], [Key, 'benefitPhrase'], [AppWindow, 'benefitApps']] as const).map(([Icon, key]) =>
-              <li key={key} className="flex items-start gap-2.5 text-sm text-pn-soft"><Icon size={16} className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />{t(`twoFactor.${key}`)}</li>)}
+              <li key={key} className="flex items-start gap-2.5 text-sm text-pn-soft"><Icon size={16} className="mt-0.5 shrink-0 text-success" aria-hidden="true" />{t(`twoFactor.${key}`)}</li>)}
           </ul>
           <button type="button" className={`${primary} w-full`} disabled={busy} onClick={startSetup}>{t(busy ? 'twoFactor.working' : 'twoFactor.start')}</button>
         </div>

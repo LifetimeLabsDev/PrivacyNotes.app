@@ -14,7 +14,8 @@
     "loadFailed": "Failed to load image",
     "notFound": "Image not found",
     "saveFailed": "Saving failed, so the file may be empty or incomplete.",
-    "viewAria": "View image"
+    "viewAria": "View image",
+    "picturesLeftOut": "Some pictures were not added. Copy a picture on its own to paste it."
   },
   "attachment": {
     "fallbackName": "Attachment",

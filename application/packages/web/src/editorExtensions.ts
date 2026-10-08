@@ -1,10 +1,12 @@
 import i18n from './i18n';
 import { type Editor as TipTapEditor } from '@tiptap/react';
-import TaskItem from '@tiptap/extension-task-item';
+import TaskItem, { type TaskItemOptions } from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
 import { Table } from '@tiptap/extension-table';
 import { Paragraph } from '@tiptap/extension-paragraph';
 import { Heading } from '@tiptap/extension-heading';
+import { HardBreak } from '@tiptap/extension-hard-break';
+import { Text } from '@tiptap/extension-text';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 import { createLowlight, common } from 'lowlight';
 import Highlight from '@tiptap/extension-highlight';
@@ -13,15 +15,17 @@ import { TextAlign } from '@tiptap/extension-text-align';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Extension, InputRule, getHTMLFromFragment, type NodeViewRendererProps } from '@tiptap/core';
 import { Fragment, type Node as ProseMirrorNode } from '@tiptap/pm/model';
-import { Plugin, PluginKey, TextSelection, Selection, type Transaction } from '@tiptap/pm/state';
+import { Plugin, PluginKey, TextSelection, NodeSelection, Selection, type Transaction } from '@tiptap/pm/state';
 import { selectionCell } from '@tiptap/pm/tables';
 import { isSoftKeyboardDevice, suppressSoftKeyboard } from './softKeyboard';
 import { mathNodeView } from './editorMath';
 import { getCodeWrap, setCodeWrap, subscribeCodeWrap } from './codeWrap';
+import { codeLanguageLabel, openCodeLanguageMenu } from './codeLanguages';
 import { TIP_PILL, positionClasses } from './HoverLabel';
 import { TABLE_MIN_WIDTH, delimiterRow } from './tableColumnWidths';
 import { tableWidthMarker } from './tableDelimiterRow';
 import { ColumnWidthTableView, columnResizePlugin, registerTableWidthsMarkdown, renderTableHTML, tableWidthOf, tableWidths } from './tableColumnResize';
+import { markPlainEscape } from './plainEscape';
 
 /**
  * Text color support.
@@ -112,11 +116,10 @@ export const TaskListInputRule = Extension.create({
       new InputRule({
         find: /^\[([ xX]?)\]\s$/,
         handler: ({ chain, range, match }) => {
+          // One chain: a separate command after it ran against the document
+          // before the task list existed, so "[x] " made an unticked task.
           const checked = match[1] === 'x' || match[1] === 'X';
-          chain().deleteRange(range).toggleTaskList().run();
-          if (checked) {
-            this.editor.commands.updateAttributes('taskItem', { checked: true });
-          }
+          chain().deleteRange(range).toggleTaskList().updateAttributes('taskItem', { checked }).run();
         },
       }),
     ];
@@ -166,6 +169,139 @@ function slideIn(dom: Node | null, topBefore: number) {
 }
 
 /**
+ * Moves the task item at `pos` so it sits before its sibling at `toIndex`,
+ * counted among the siblings without the item itself; `toIndex` equal to that
+ * count puts it last.
+ */
+function moveTaskWithinList(tr: Transaction, pos: number, toIndex: number): Transaction {
+  const $pos = tr.doc.resolve(pos);
+  const list = $pos.parent;
+  const self = $pos.index();
+  const item = list.child(self);
+  const before = toIndex < self ? toIndex : toIndex + 1;
+  let target = $pos.start();
+  for (let k = 0; k < before && k < list.childCount; k++) target += list.child(k).nodeSize;
+  tr.delete(pos, pos + item.nodeSize);
+  tr.insert(tr.mapping.map(target), item);
+  return tr;
+}
+
+/** The nearest ancestor that scrolls vertically, for the drag's edge scroll. */
+function scrollParentOf(el: HTMLElement): HTMLElement {
+  for (let p = el.parentElement; p; p = p.parentElement) {
+    const { overflowY } = getComputedStyle(p);
+    if ((overflowY === 'auto' || overflowY === 'scroll') && p.scrollHeight > p.clientHeight) return p;
+  }
+  return (document.scrollingElement as HTMLElement | null) ?? document.documentElement;
+}
+
+/** Distance from a scroll edge, in px, inside which a drag scrolls the note. */
+const DRAG_EDGE = 48;
+
+/**
+ * Drags a task by its grip to another place in its own list. Pointer events,
+ * so a mouse, a pen and a finger take the same path. The item moves in one
+ * transaction on release, so undo takes it back, and its sub-tasks travel with
+ * it because they live inside it. A task never leaves its list: the grip of a
+ * sub-task reorders the sub-tasks.
+ */
+function dragTask(event: PointerEvent, item: HTMLElement, getPos: () => number | undefined, editor: TipTapEditor) {
+  const list = item.parentElement;
+  if (!editor.isEditable || event.button !== 0 || !list) return;
+  const siblings = [...list.children].filter((el): el is HTMLElement => el instanceof HTMLElement && el !== item);
+  const home = [...list.children].indexOf(item);
+  if (siblings.length === 0) return;
+  event.preventDefault();
+  // Capture keeps a touch drag from turning into a scroll. The listeners sit on
+  // the window, so the drag also survives a capture the browser refuses.
+  try {
+    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+  } catch {
+    /* the window listeners below still follow the pointer */
+  }
+  const pointerId = event.pointerId;
+
+  const scroller = scrollParentOf(item);
+  const startY = event.clientY;
+  const startScroll = scroller.scrollTop;
+  const marker = document.createElement('div');
+  marker.className = 'pn-task-drop';
+  document.body.append(marker);
+  item.classList.add('pn-task-dragging');
+  document.documentElement.classList.add('pn-task-drag-active');
+  let lastY = startY;
+  let target = home;
+  let frame = 0;
+
+  const place = () => {
+    item.style.transform = `translateY(${lastY - startY + scroller.scrollTop - startScroll}px)`;
+    target = siblings.findIndex((el) => {
+      const r = el.getBoundingClientRect();
+      return r.top + r.height / 2 > lastY;
+    });
+    if (target < 0) target = siblings.length;
+    if (target === home) {
+      marker.style.display = 'none';
+      return;
+    }
+    const listBox = list.getBoundingClientRect();
+    const edge = target < siblings.length
+      ? siblings[target]!.getBoundingClientRect().top
+      : siblings[siblings.length - 1]!.getBoundingClientRect().bottom;
+    marker.style.display = 'block';
+    marker.style.top = `${edge - 1}px`;
+    marker.style.left = `${listBox.left}px`;
+    marker.style.width = `${listBox.width}px`;
+  };
+
+  const tick = () => {
+    const box = scroller === document.scrollingElement
+      ? { top: 0, bottom: window.innerHeight }
+      : scroller.getBoundingClientRect();
+    const step = lastY < box.top + DRAG_EDGE ? -8 : lastY > box.bottom - DRAG_EDGE ? 8 : 0;
+    if (step) {
+      scroller.scrollTop += step;
+      place();
+    }
+    frame = requestAnimationFrame(tick);
+  };
+  frame = requestAnimationFrame(tick);
+
+  const onMove = (e: PointerEvent) => {
+    if (e.pointerId !== pointerId) return;
+    lastY = e.clientY;
+    place();
+  };
+  const finish = (drop: boolean) => {
+    cancelAnimationFrame(frame);
+    window.removeEventListener('pointermove', onMove);
+    window.removeEventListener('pointerup', onUp);
+    window.removeEventListener('pointercancel', onCancel);
+    window.removeEventListener('keydown', onKey, true);
+    marker.remove();
+    item.classList.remove('pn-task-dragging');
+    item.style.transform = '';
+    document.documentElement.classList.remove('pn-task-drag-active');
+    const pos = getPos();
+    if (drop && target !== home && typeof pos === 'number') {
+      editor.view.dispatch(moveTaskWithinList(editor.state.tr, pos, target));
+    }
+  };
+  const onUp = (e: PointerEvent) => { if (e.pointerId === pointerId) finish(true); };
+  const onCancel = (e: PointerEvent) => { if (e.pointerId === pointerId) finish(false); };
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key !== 'Escape') return;
+    e.preventDefault();
+    e.stopPropagation();
+    finish(false);
+  };
+  window.addEventListener('pointermove', onMove);
+  window.addEventListener('pointerup', onUp);
+  window.addEventListener('pointercancel', onCancel);
+  window.addEventListener('keydown', onKey, true);
+}
+
+/**
  * TaskItem whose checkbox doesn't open the on-screen keyboard on mobile.
  *
  * Takes TWO things, and the first alone is not enough - v0.223.5 shipped it
@@ -187,10 +323,100 @@ function slideIn(dom: Node | null, topBefore: number) {
  *
  * Fix: GitHub #153 (keyboard opens on checklist toggle, web on Android)
  */
-export const TaskItemMobileSafe = TaskItem.extend({
+export const TaskItemMobileSafe = TaskItem.extend<TaskItemOptions & {
+  /** Whether a ticked task moves below the open ones. Read at each tick, so
+   *  the setting applies to an editor that is already open. */
+  sinkChecked: () => boolean;
+}>({
+  addOptions() {
+    return {
+      ...(this.parent?.() as TaskItemOptions),
+      sinkChecked: () => true,
+    };
+  },
+
+  addStorage() {
+    return {
+      markdown: {
+        parse: {
+          // tiptap-markdown's own updateDOM, plus one trim. markdown-it leaves
+          // the space after `[ ]` at the front of the task's text. A load
+          // collapses it, but a paste keeps whitespace, so a pasted task
+          // would begin with a space that the next save writes as `&nbsp;`.
+          updateDOM(element: HTMLElement) {
+            element.querySelectorAll('.task-list-item').forEach((item) => {
+              const input = item.querySelector('input');
+              item.setAttribute('data-type', 'taskItem');
+              if (input) {
+                item.setAttribute('data-checked', String(input.checked));
+                input.remove();
+              }
+              const first = document.createTreeWalker(item, NodeFilter.SHOW_TEXT).nextNode();
+              if (first?.textContent) first.textContent = first.textContent.replace(/^[ \t]+/, '');
+            });
+          },
+        },
+      },
+    };
+  },
+
+  // The content sits in the div after the checkbox label only in the editor's
+  // own HTML. Markdown parses a task to `<li><p>…</p>…</li>`, and the library
+  // rule takes the FIRST div anywhere in the item as its content, so a task
+  // holding a callout or a maths block (both drawn as divs) would reload as
+  // that block's inside alone, and the task's own text would be lost.
+  parseHTML() {
+    return [
+      {
+        tag: `li[data-type="${this.name}"]`,
+        priority: 51,
+        contentElement: (element: HTMLElement) => element.querySelector(':scope > label + div') ?? element,
+      },
+    ];
+  },
+
+  addProseMirrorPlugins() {
+    const name = this.name;
+    return [
+      ...(this.parent?.() ?? []),
+      new Plugin({
+        key: new PluginKey('taskTextDrag'),
+        props: {
+          handleDOMEvents: {
+            // A drag of a task's whole text is a drag of the task. The browser
+            // would carry only the words, leave an empty checkbox behind and
+            // drop them into a new unchecked task. Turning the selection into
+            // the item before ProseMirror reads it makes the drag move the
+            // item, with its checked state and its sub-tasks.
+            dragstart: (view) => {
+              const { $from, $to, empty } = view.state.selection;
+              if (empty || $from.parent !== $to.parent || !$from.parent.isTextblock || $from.depth < 2) return false;
+              if ($from.node(-1).type.name !== name || $from.index(-1) !== 0) return false;
+              if ($from.parentOffset !== 0 || $to.parentOffset !== $from.parent.content.size) return false;
+              view.dispatch(view.state.tr.setSelection(NodeSelection.create(view.state.doc, $from.before(-1))));
+              return false;
+            },
+          },
+        },
+      }),
+    ];
+  },
+
   addNodeView() {
     return ({ node, HTMLAttributes, getPos, editor }: NodeViewRendererProps) => {
       const listItem = document.createElement('li');
+      // The drag grip ends the row (see the pn-task-grip rules in index.css).
+      // It is never part of the document.
+      const grip = document.createElement('span');
+      grip.className = 'pn-task-grip';
+      grip.contentEditable = 'false';
+      grip.setAttribute('aria-hidden', 'true');
+      grip.innerHTML =
+        '<svg viewBox="0 0 10 16"><circle cx="2.5" cy="3" r="1.4"/><circle cx="7.5" cy="3" r="1.4"/><circle cx="2.5" cy="8" r="1.4"/><circle cx="7.5" cy="8" r="1.4"/><circle cx="2.5" cy="13" r="1.4"/><circle cx="7.5" cy="13" r="1.4"/></svg>';
+      grip.addEventListener('mousedown', (event) => event.preventDefault());
+      grip.addEventListener('pointerdown', (event) => {
+        if (typeof getPos === 'function') dragTask(event, listItem, getPos, editor as TipTapEditor);
+      });
       const checkboxWrapper = document.createElement('label');
       const checkboxStyler = document.createElement('span');
       const checkbox = document.createElement('input');
@@ -252,7 +478,7 @@ export const TaskItemMobileSafe = TaskItem.extend({
                 ...currentNode?.attrs,
                 checked,
               });
-              movedTo = moveTaskToGroupEdge(tr, position);
+              movedTo = this.options.sinkChecked() ? moveTaskToGroupEdge(tr, position) : null;
               return true;
             })
             .run();
@@ -271,7 +497,7 @@ export const TaskItemMobileSafe = TaskItem.extend({
       listItem.dataset.checked = String(node.attrs.checked);
       checkbox.checked = node.attrs.checked;
       checkboxWrapper.append(checkbox, checkboxStyler);
-      listItem.append(checkboxWrapper, content);
+      listItem.append(checkboxWrapper, content, grip);
       Object.entries(HTMLAttributes).forEach(([key, value]) => {
         listItem.setAttribute(key, value as string);
       });
@@ -279,6 +505,9 @@ export const TaskItemMobileSafe = TaskItem.extend({
       return {
         dom: listItem,
         contentDOM: content,
+        // A drag restyles the item and its grip; that is not an edit.
+        ignoreMutation: (mutation) =>
+          mutation.type === 'attributes' && (mutation.target === listItem || mutation.target === grip),
         update: (updatedNode: typeof node) => {
           if (updatedNode.type !== this.type) {
             return false;
@@ -348,6 +577,17 @@ export function collapseMediaGaps(md: string): string {
 }
 
 /**
+ * Put a rewritten body into the open editor as one step of its history,
+ * through the transforms the editor's own load applies, so Undo brings the
+ * old body back. False when there is no editor or it takes no edits; the
+ * caller then writes the row and remounts the editor itself.
+ */
+export function replaceBodyUndoably(editor: TipTapEditor | null | undefined, md: string): boolean {
+  if (!editor || editor.isDestroyed || !editor.isEditable) return false;
+  return editor.commands.setContent(collapseMediaGaps(fixEmptyTaskItems(md)));
+}
+
+/**
  * When the user copies text whose selection sits entirely inside a single
  * code block, write the raw text to the clipboard instead of letting
  * tiptap-markdown serialize it as markdown. Prevents `[user@host](mailto:...)`
@@ -396,10 +636,12 @@ export const CodeBlockPlainCopy = Extension.create({
  * span: a control inside the scroller travels with the text, and a long
  * line scrolled it out of the block (GitHub #340).
  *
- * The tools show on hover where there is one and always on touch, where the
- * scroller reserves a band above the first line for them so they never
- * cover code. Copy writes the node's raw text; the wrap toggle flips one
- * device-wide setting (codeWrap.ts), so every block follows.
+ * The scroller reserves a band above the first line, so nothing covers
+ * code: the language label sits in it on the left, always visible, and the
+ * tools on the right, on hover where there is one and always on touch. Copy
+ * writes the node's raw text; the wrap toggle flips one device-wide setting
+ * (codeWrap.ts), so every block follows; the label opens the language menu
+ * (codeLanguages.ts).
  *
  * Spec: ops/docs/design-decisions.md (code blocks wrap by default)
  *
@@ -414,19 +656,144 @@ export const CodeBlockPlainCopy = Extension.create({
  */
 export const lowlight = createLowlight(common);
 
+/**
+ * The fence language of a copy box: a code block drawn as a light box in
+ * the note's own font, with the code block's wrap and copy buttons in a
+ * light look and no language label. Stored as ```copy, so another Markdown app shows a plain
+ * code block. Registered as plain text, or lowlight would guess a language
+ * and colour it. Spec: ops/docs/plans/spoiler-and-copy.md
+ */
+export const COPY_BOX_LANGUAGE = 'copy';
+lowlight.registerAlias({ plaintext: [COPY_BOX_LANGUAGE] });
+
 /** Phosphor's ArrowElbowDownLeft, bold: the return glyph editors use for
  *  wrap. A node view is plain DOM, so the icon is markup, not a component. */
 const WRAP_ICON =
   '<svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor" aria-hidden="true">' +
   '<path d="M204,32V176a12,12,0,0,1-12,12H77l27.52,27.51a12,12,0,0,1-17,17l-48-48a12,12,0,0,1,0-17l48-48a12,12,0,1,1,17,17L77,164H180V32a12,12,0,0,1,24,0Z"/></svg>';
 
+/** Phosphor's Copy and Check, bold: the copy button and its done state,
+ *  the same pair the vault's copy actions use. */
+const COPY_ICON =
+  '<svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor" aria-hidden="true">' +
+  '<path d="M216,28H88A12,12,0,0,0,76,40V76H40A12,12,0,0,0,28,88V216a12,12,0,0,0,12,12H168a12,12,0,0,0,12-12V180h36a12,12,0,0,0,12-12V40A12,12,0,0,0,216,28ZM156,204H52V100H156Zm48-48H180V88a12,12,0,0,0-12-12H100V52H204Z"/></svg>';
+const CHECK_ICON =
+  '<svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor" aria-hidden="true">' +
+  '<path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z"/></svg>';
+
+/** Phosphor's CaretDown, bold, for the language label. */
+const CARET_ICON =
+  '<svg viewBox="0 0 256 256" width="10" height="10" fill="currentColor" aria-hidden="true">' +
+  '<path d="M216.49,104.49l-80,80a12,12,0,0,1-17,0l-80-80a12,12,0,0,1,17-17L128,159l71.51-71.52a12,12,0,0,1,17,17Z"/></svg>';
+
 const CODE_TOOL_BTN =
   'inline-flex items-center justify-center h-5 rounded text-xs transition ' +
   '[@media(hover:none)]:h-7';
 
+/**
+ * A block longer than FOLD_MIN_LINES opens folded to its first
+ * FOLD_SHOWN_LINES, with a button under it (GitHub #427). The gap between the
+ * two numbers is deliberate: a fold that hides three lines costs more than it
+ * saves. The fold is a view state and is never saved, because a fence stores
+ * a language and nothing else (the same limit codeWrap.ts records), so every
+ * open starts folded. A cursor or a find match that lands in the hidden part
+ * opens the block, so nothing is typed or found out of sight.
+ * Spec: ops/docs/design-decisions.md (long code blocks fold)
+ */
+const FOLD_MIN_LINES = 30;
+const FOLD_SHOWN_LINES = 20;
+
+/** Each folded node view's "open it" hook, keyed by its pre. */
+const unfolders = new WeakMap<Node, () => void>();
+
 export const CodeBlockWithCopy = CodeBlockLowlight.extend({
+  addKeyboardShortcuts() {
+    return {
+      ...this.parent?.(),
+      // Select all selects the code first and the note on a second press, as
+      // code editors do: one press and Delete must not clear the text around
+      // the block (GitHub #426). An empty block or a selection that already
+      // covers the code falls through to the stock select-all.
+      'Mod-a': ({ editor }) => {
+        const { $from, $to, from, to } = editor.state.selection;
+        if ($from.parent.type !== this.type || !$from.sameParent($to)) return false;
+        const start = $from.start();
+        const end = $from.end();
+        if (start === end || (from === start && to === end)) return false;
+        return editor.commands.setTextSelection({ from: start, to: end });
+      },
+    };
+  },
+
+  addProseMirrorPlugins() {
+    const type = this.type;
+    let lastHit = -1;
+    // Opens a folded block when `bottom()` (a viewport y) falls below its
+    // last clearly readable line, the fade included. A cursor in the visible
+    // lines leaves the fold alone, so a click to copy line 3 does not unroll
+    // 500. Layout is read only for a block that is folded.
+    const revealIfHidden = (block: Node | null | undefined, bottom: () => number) => {
+      if (!(block instanceof HTMLElement) || !block.classList.contains('pn-codeblock-folded')) return;
+      const scroller = block.querySelector('.pn-codeblock-scroll');
+      if (!scroller) return;
+      const fade = 2 * (parseFloat(getComputedStyle(scroller).lineHeight) || 24);
+      if (bottom() > scroller.getBoundingClientRect().bottom - fade) unfolders.get(block)?.();
+    };
+    return [
+      ...(this.parent?.() ?? []),
+      new Plugin({
+        key: new PluginKey('codeBlockUnfold'),
+        view: () => ({
+          update: (view, prev) => {
+            const { selection } = view.state;
+            if (!selection.eq(prev.selection) && selection.$head.parent.type === type) {
+              revealIfHidden(view.nodeDOM(selection.$head.before()), () => view.coordsAtPos(selection.head).bottom);
+            }
+            // The find bar marks its current match with a decoration and
+            // scrolls to it without moving the selection.
+            const hit = view.dom.querySelector('.pn-search-hit-current');
+            const hitPos = hit ? view.posAtDOM(hit, 0) : -1;
+            if (hit && hitPos !== lastHit) {
+              revealIfHidden(hit.closest('.pn-codeblock'), () => hit.getBoundingClientRect().bottom);
+            }
+            lastHit = hitPos;
+          },
+        }),
+      }),
+    ];
+  },
+
+  addStorage() {
+    return {
+      markdown: {
+        // tiptap-markdown's serializer with three changes. The fence is one
+        // backtick longer than any fence line inside the code, so a block
+        // holding markdown keeps its ``` lines. A trailing newline gets a line
+        // of its own, which the parse strips back to one. The language is
+        // written only with the characters an info string can carry. No `parse` key: the
+        // library's parse half is merged underneath and must stay.
+        serialize(state: any, node: ProseMirrorNode) {
+          const text = node.textContent;
+          const runs = text.match(/^ {0,3}`{3,}/gm) ?? [];
+          const longest = Math.max(2, ...runs.map((r) => r.trim().length));
+          const fence = '`'.repeat(longest + 1);
+          // The parse takes any class after `language-`, so a pasted block can
+          // carry a language with a backtick, which no backtick fence's info
+          // string may hold, or a space, which ends it. Neither is written.
+          const language = String(node.attrs['language'] || '').replace(/[`\s]/g, '');
+          state.write(fence + language + '\n');
+          state.text(text, false);
+          if (text.endsWith('\n')) state.out += '\n';
+          state.ensureNewLine();
+          state.write(fence);
+          state.closeBlock(node);
+        },
+      },
+    };
+  },
+
   addNodeView() {
-    return ({ node }: NodeViewRendererProps) => {
+    return ({ node, getPos, editor }: NodeViewRendererProps) => {
       // ProseMirror keeps this view while the text inside changes, so Copy
       // reads the node `update` last handed over, never the one the view
       // was built with.
@@ -456,18 +823,24 @@ export const CodeBlockWithCopy = CodeBlockLowlight.extend({
       // classes. It opens to the left: the pre is an LTR island, and its
       // overflow: hidden would cut a tip above a button 8px from its top.
       const wrapTip = document.createElement('span');
-      wrapTip.className = 'relative group/tip inline-flex';
+      wrapTip.className = 'pn-codeblock-wrap relative group/tip inline-flex';
       const tip = document.createElement('span');
       tip.className = `${TIP_PILL} ${positionClasses.start} flex items-center gap-2 whitespace-nowrap`;
       tip.textContent = wrapLabel;
       wrapTip.append(wrapBtn, tip);
+      // A copy box has the code block's tools in its own light look; the
+      // wrap state is the one device setting both read.
+      let box = false;
       const paintWrap = () => {
         const on = getCodeWrap();
         wrapBtn.setAttribute('aria-pressed', String(on));
         wrapBtn.className = `${CODE_TOOL_BTN} w-6 [@media(hover:none)]:w-8 ${
-          on
-            ? 'bg-accent text-white hover:bg-accent/90'
-            : 'bg-neutral-700/80 text-neutral-300 hover:bg-neutral-700 hover:text-neutral-100'
+          box
+            ? `pn-copybox-btn${on ? ' pn-copybox-on' : ''}`
+            : on
+              ? 'bg-accent-fill text-white hover:bg-accent-fill/90'
+              // theme-ok: the code block toolbar is dark in every theme
+              : 'bg-neutral-700/80 text-neutral-300 hover:bg-neutral-700 hover:text-neutral-100'
         }`;
       };
       paintWrap();
@@ -479,29 +852,145 @@ export const CodeBlockWithCopy = CodeBlockLowlight.extend({
         setCodeWrap(!getCodeWrap());
       });
 
+      // An icon, not a word: a word grows in other languages and the tools
+      // sit on the code's first line. The tip names it; a copy turns the
+      // icon into a check and the tip into "Copied" for a moment.
+      const copyLabel = i18n.t('editor:codeBlock.copy');
       const copyBtn = document.createElement('button');
       copyBtn.type = 'button';
-      // Snapshot at node-view creation; a language switch re-labels on the
-      // next note open.
-      copyBtn.textContent = i18n.t('editor:codeBlock.copy');
-      copyBtn.className =
-        `${CODE_TOOL_BTN} px-2 [@media(hover:none)]:px-2.5 ` +
-        'bg-neutral-700/80 text-neutral-100 hover:bg-neutral-700';
+      copyBtn.innerHTML = COPY_ICON;
+      copyBtn.setAttribute('aria-label', copyLabel);
+      const copyTip = document.createElement('span');
+      copyTip.className = 'pn-codeblock-copy relative group/tip inline-flex';
+      const copyTipText = document.createElement('span');
+      copyTipText.className = `${TIP_PILL} ${positionClasses.start} whitespace-nowrap`;
+      copyTipText.setAttribute('aria-live', 'polite');
+      copyTipText.textContent = copyLabel;
+      copyTip.append(copyBtn, copyTipText);
+      let copyReset = 0;
       copyBtn.addEventListener('mousedown', (e) => e.preventDefault());
       copyBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
+        let done = true;
         try {
           await navigator.clipboard.writeText(current.textContent);
-          copyBtn.textContent = i18n.t('editor:codeBlock.copied');
         } catch {
-          copyBtn.textContent = i18n.t('editor:codeBlock.copyFailed');
+          done = false;
         }
-        window.setTimeout(() => { copyBtn.textContent = i18n.t('editor:codeBlock.copy'); }, 1500);
+        window.clearTimeout(copyReset);
+        copyBtn.innerHTML = done ? CHECK_ICON : COPY_ICON;
+        copyBtn.classList.toggle('pn-copied', done);
+        copyTipText.textContent = i18n.t(done ? 'editor:codeBlock.copied' : 'editor:codeBlock.copyFailed');
+        copyTip.classList.add('pn-tip-shown');
+        copyReset = window.setTimeout(() => {
+          copyBtn.innerHTML = COPY_ICON;
+          copyBtn.classList.remove('pn-copied');
+          copyTipText.textContent = copyLabel;
+          copyTip.classList.remove('pn-tip-shown');
+        }, 1500);
       });
 
-      tools.append(wrapTip, copyBtn);
+      tools.append(wrapTip, copyTip);
       pre.appendChild(tools);
+
+      // The language, always on show in the band above the first line, so a
+      // plain block says why it has no colours and offers the fix in place.
+      const lang = document.createElement('span');
+      lang.className = 'pn-codeblock-lang';
+      lang.contentEditable = 'false';
+      const langBtn = document.createElement('button');
+      langBtn.type = 'button';
+      langBtn.className =
+        `${CODE_TOOL_BTN} gap-1 px-2 [@media(hover:none)]:px-2.5 ` +
+        // theme-ok: the code block toolbar is dark in every theme
+        'text-neutral-400 hover:bg-neutral-700/80 hover:text-neutral-100';
+      const langName = document.createElement('span');
+      langBtn.append(langName);
+      langBtn.insertAdjacentHTML('beforeend', CARET_ICON);
+      lang.appendChild(langBtn);
+      pre.appendChild(lang);
+      let langShown: string | null | undefined;
+      const paintCopyBtn = () => {
+        const copied = copyBtn.classList.contains('pn-copied');
+        copyBtn.className = box
+          ? `${CODE_TOOL_BTN} w-6 [@media(hover:none)]:w-8 pn-copybox-btn`
+          : `${CODE_TOOL_BTN} w-6 [@media(hover:none)]:w-8 ` +
+            // theme-ok: the code block toolbar is dark in every theme
+            'bg-neutral-700/80 text-neutral-100 hover:bg-neutral-700';
+        copyBtn.classList.toggle('pn-copied', copied);
+      };
+      const paintLang = () => {
+        const language = current.attrs['language'] as string | null;
+        if (language === langShown) return;
+        box = language === COPY_BOX_LANGUAGE;
+        pre.classList.toggle('pn-copybox', box);
+        paintCopyBtn();
+        paintWrap();
+        langShown = language;
+        const name = codeLanguageLabel(language) ?? i18n.t('editor:codeBlock.plainText');
+        langName.textContent = name;
+        langBtn.setAttribute('aria-label', i18n.t('editor:codeBlock.language', { name }));
+      };
+      paintLang();
+      langBtn.addEventListener('mousedown', (e) => e.preventDefault());
+      langBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!editor.isEditable) return;
+        openCodeLanguageMenu(langBtn, current.attrs['language'] as string | null, (language) => {
+          const pos = typeof getPos === 'function' ? getPos() : undefined;
+          if (typeof pos !== 'number') return;
+          // setNodeMarkup, not setNodeAttribute: the lowlight plugin only
+          // re-highlights a block a step's from/to range covers, and an
+          // attribute step has none, so the old colours stayed.
+          editor.view.dispatch(editor.state.tr.setNodeMarkup(pos, undefined, { ...current.attrs, language }));
+          editor.view.focus();
+        });
+      });
+
+      const fold = document.createElement('span');
+      fold.className = 'pn-codeblock-fold';
+      fold.contentEditable = 'false';
+      const foldBtn = document.createElement('button');
+      foldBtn.type = 'button';
+      foldBtn.className =
+        `${CODE_TOOL_BTN} px-2.5 [@media(hover:none)]:px-3 ` +
+        // theme-ok: the code block toolbar is dark in every theme
+        'bg-neutral-700/80 text-neutral-100 hover:bg-neutral-700';
+      fold.appendChild(foldBtn);
+      pre.appendChild(fold);
+      pre.style.setProperty('--pn-fold-lines', String(FOLD_SHOWN_LINES));
+
+      let expanded = false;
+      let foldLabel = '';
+      const paintFold = () => {
+        const lines = current.textContent.split('\n').length;
+        const long = lines > FOLD_MIN_LINES;
+        pre.classList.toggle('pn-codeblock-folded', long && !expanded);
+        fold.hidden = !long;
+        const label = !long ? '' : expanded
+          ? i18n.t('editor:codeBlock.showLess')
+          : i18n.t('editor:codeBlock.showAll', { count: lines });
+        if (label !== foldLabel) foldBtn.textContent = foldLabel = label;
+      };
+      paintFold();
+      unfolders.set(pre, () => {
+        if (expanded || !pre.classList.contains('pn-codeblock-folded')) return;
+        expanded = true;
+        paintFold();
+      });
+      foldBtn.addEventListener('mousedown', (e) => e.preventDefault());
+      foldBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        expanded = !expanded;
+        paintFold();
+        // Folding from the foot of a long block pulls the button up past the
+        // top of the screen; bring it back to where the reader is.
+        const r = fold.getBoundingClientRect();
+        if (r.top < 0 || r.bottom > window.innerHeight) fold.scrollIntoView({ block: 'center' });
+      });
 
       return {
         dom: pre,
@@ -509,12 +998,17 @@ export const CodeBlockWithCopy = CodeBlockLowlight.extend({
         update: (next: ProseMirrorNode) => {
           if (next.type !== current.type) return false;
           current = next;
+          paintFold();
+          paintLang();
           return true;
         },
-        // The tools are not document content: their clicks, label changes
-        // and class flips are not edits for ProseMirror to read back.
-        stopEvent: (e: Event) => tools.contains(e.target as Node),
-        ignoreMutation: (m: { target: Node }) => tools.contains(m.target),
+        // The tools, the language label and the fold button are not document
+        // content: their clicks, label changes and class flips are not edits
+        // for ProseMirror to read back, and neither is the fold class on the
+        // pre.
+        stopEvent: (e: Event) => [tools, lang, fold].some((el) => el.contains(e.target as Node)),
+        ignoreMutation: (m: { type: string; target: Node }) =>
+          [tools, lang, fold].some((el) => el.contains(m.target)) || (m.type === 'attributes' && m.target === pre),
         destroy: unsubscribe,
       };
     };
@@ -720,11 +1214,24 @@ export const InlineMathWithMarkdown = InlineMath.extend({
    */
   addInputRules() {
     return [
+      // The guards are inlineMathRule's, so typing makes math exactly where a
+      // reload would: no space inside either dollar, and no digit right after
+      // the closing one. Without them `costs $5 and $6` would turn `5 and `
+      // into a formula as it is typed. The digit check needs the character after
+      // the closing dollar, so content that opens with a digit (a price, or
+      // `$2^n$`) becomes math one keystroke later, when that character is
+      // typed and is not a digit. Anything else becomes math at once.
       new InputRule({
-        find: /(?<!\$)\$([^$\n]+?)\$$/,
+        find: /(?<![$\\])\$(?![\s\d])([^$\n]*?[^\s$\\])\$$/,
         handler: ({ state, range, match }) => {
-          const latex = match[1];
-          state.tr.replaceWith(range.from, range.to, this.type.create({ latex }));
+          state.tr.replaceWith(range.from, range.to, this.type.create({ latex: match[1] }));
+        },
+      }),
+      new InputRule({
+        find: /(?<![$\\])\$(?=\d)([^$\n]*?[^\s$\\])\$([^\d$])$/,
+        handler: ({ state, range, match }) => {
+          const math = this.type.create({ latex: match[1] });
+          state.tr.replaceWith(range.from, range.to, [math, state.schema.text(match[2]!)]);
         },
       }),
     ];
@@ -741,10 +1248,12 @@ export const BlockMathWithMarkdown = BlockMath.extend({
       ...(this.parent?.() ?? {}),
       markdown: {
         serialize(
-          state: { write: (s: string) => void; closeBlock: (n: unknown) => void },
+          state: { text: (s: string, escape: boolean) => void; closeBlock: (n: unknown) => void },
           node: { attrs: { latex?: string } },
         ) {
-          state.write('$$' + (node.attrs.latex ?? '') + '$$');
+          // `text` rather than `write`: a formula of several lines needs the
+          // quote or list prefix on each of them.
+          state.text('$$' + (node.attrs.latex ?? '') + '$$', false);
           state.closeBlock(node);
         },
         parse: {
@@ -906,27 +1415,33 @@ export const HighlightWithMarkdown = Highlight.extend({
  * It is symmetric: toggling off a multi-line code block splits it back into
  * one paragraph per line.
  *
- * Falls back to the default command when there is nothing to merge (single
- * block / partial selection) or when the selection contains a non-textblock
- * node (image, table, blockquote, list), so those cases are unchanged.
+ * Lists, task lists, quotes and code blocks merge too, their markers kept as
+ * text. Falls back to the default command for a caret or a selection inside
+ * one textblock, and when the selection holds a block with no text form
+ * (an image, a table, a callout).
  *
  * Spec: ops/docs/design-decisions.md (code-block multi-line merge, #142)
  */
-export function toggleCodeBlockSmart(editor: TipTapEditor) {
+export function toggleCodeBlockSmart(editor: TipTapEditor, language: string | null = null) {
   const { state } = editor;
   const { schema, selection, doc } = state;
   const { $from, $to } = selection;
   const codeBlockType = schema.nodes['codeBlock']!;
   const paragraphType = schema.nodes['paragraph']!;
-  const headingType = schema.nodes['heading'];
-
-  const isTextBlock = (type: typeof paragraphType) =>
-    type === paragraphType || type === headingType;
 
   // Toggle OFF: selection sits inside a single code block. Split it back into
   // one paragraph per line so the line breaks survive the round trip (the
   // default command would collapse them into a single paragraph).
   if ($from.parent.type === codeBlockType && $from.parent === $to.parent) {
+    // A code block asked to be the other kind (a copy box, or back) changes
+    // its language and keeps its text.
+    const current = ($from.parent.attrs['language'] as string | null) === COPY_BOX_LANGUAGE ? COPY_BOX_LANGUAGE : null;
+    if (current !== language) {
+      const pos = $from.before();
+      editor.view.dispatch(state.tr.setNodeMarkup(pos, undefined, { ...$from.parent.attrs, language }));
+      editor.view.focus();
+      return;
+    }
     const from = $from.before();
     const to = $from.after();
     const lines = $from.parent.textContent.split('\n');
@@ -939,7 +1454,52 @@ export function toggleCodeBlockSmart(editor: TipTapEditor) {
     return;
   }
 
-  // Toggle ON: gather the top-level textblocks the selection touches.
+  // Toggle ON. A caret or a selection inside one textblock keeps the stock
+  // command, which also makes a code block inside a list item.
+  if ($from.sameParent($to)) {
+    editor.chain().focus().toggleCodeBlock(language ? { language } : undefined).run();
+    return;
+  }
+
+  // A selection inside one list takes only the items it touches: the list
+  // splits around the new block, and the part after it keeps its numbers.
+  const top = doc.resolve(selection.from).node(1);
+  const topTo = doc.resolve(selection.to).node(1);
+  if (top && top === topTo && /^(bulletList|orderedList|taskList)$/.test(top.type.name)) {
+    const listPos = doc.resolve(selection.from).before(1);
+    const picked: ProseMirrorNode[] = [];
+    const before: ProseMirrorNode[] = [];
+    const after: ProseMirrorNode[] = [];
+    top.forEach((item, offset) => {
+      const from = listPos + 1 + offset;
+      const to = from + item.nodeSize;
+      if (to <= selection.from) before.push(item);
+      else if (from >= selection.to) after.push(item);
+      else picked.push(item);
+    });
+    const start = Number(top.attrs['start'] ?? 1) || 1;
+    const asList = (items: ProseMirrorNode[], first: number) =>
+      top.type.create(top.type.name === 'orderedList' ? { ...top.attrs, start: first } : top.attrs, items);
+    const lines = codeLinesOf(asList(picked, start + before.length), '');
+    if (lines) {
+      const text = lines.join('\n');
+      const parts: ProseMirrorNode[] = [];
+      if (before.length) parts.push(asList(before, start));
+      const codeAt = listPos + parts.reduce((n, part) => n + part.nodeSize, 0);
+      parts.push(codeBlockType.create(language ? { language } : null, text ? schema.text(text) : undefined));
+      if (after.length) parts.push(asList(after, start + before.length + picked.length));
+      const tr = state.tr.replaceWith(listPos, listPos + top.nodeSize, parts);
+      tr.setSelection(TextSelection.create(tr.doc, codeAt + 1, codeAt + 1 + text.length));
+      editor.view.dispatch(tr.scrollIntoView());
+      editor.view.focus();
+      return;
+    }
+  }
+
+  // A selection across blocks: every top-level block it touches becomes ONE
+  // code block, a line per textblock. A list keeps its markers as text, so a
+  // numbered list stays numbered in the block. A block that has no text form
+  // (a table, an image, a callout) leaves the stock command in charge.
   let mergeFrom = -1;
   let mergeTo = -1;
   const lines: string[] = [];
@@ -948,24 +1508,23 @@ export function toggleCodeBlockSmart(editor: TipTapEditor) {
     if (bail) return;
     const intersects = offset < selection.to && offset + node.nodeSize > selection.from;
     if (!intersects) return;
-    if (isTextBlock(node.type)) {
-      if (mergeFrom === -1) mergeFrom = offset;
-      mergeTo = offset + node.nodeSize;
-      lines.push(node.textContent);
-    } else {
+    const blockLines = codeLinesOf(node, '');
+    if (!blockLines) {
       bail = true;
+      return;
     }
+    if (mergeFrom === -1) mergeFrom = offset;
+    mergeTo = offset + node.nodeSize;
+    lines.push(...blockLines);
   });
 
-  // Nothing to merge (single block, partial selection) or a non-text node is
-  // in range: defer to the stock command so behaviour is unchanged.
-  if (bail || lines.length < 2) {
-    editor.chain().focus().toggleCodeBlock().run();
+  if (bail || mergeFrom === -1) {
+    editor.chain().focus().toggleCodeBlock(language ? { language } : undefined).run();
     return;
   }
 
   const text = lines.join('\n');
-  const codeNode = codeBlockType.create(null, text ? schema.text(text) : undefined);
+  const codeNode = codeBlockType.create(language ? { language } : null, text ? schema.text(text) : undefined);
   const tr = state.tr.replaceRangeWith(mergeFrom, mergeTo, codeNode);
   tr.setSelection(
     TextSelection.create(tr.doc, mergeFrom + 1, mergeFrom + 1 + text.length),
@@ -975,11 +1534,81 @@ export function toggleCodeBlockSmart(editor: TipTapEditor) {
 }
 
 /**
+ * The text lines a block gives inside a code block, each led by `pad`, or
+ * null for a block with no text form. List items carry their marker (`1. `,
+ * `- `, `- [x] `) and their nested blocks are indented under it.
+ */
+function codeLinesOf(node: ProseMirrorNode, pad: string): string[] | null {
+  const name = node.type.name;
+  if (name === 'codeBlock') return node.textContent.split('\n').map((l) => pad + l);
+  if (node.isTextblock) return [pad + node.textContent];
+  if (name === 'blockquote') return childLines(node, pad + '> ');
+  if (name === 'bulletList' || name === 'orderedList' || name === 'taskList') {
+    const out: string[] = [];
+    let n = Number(node.attrs['start'] ?? 1) || 1;
+    let ok = true;
+    node.forEach((item) => {
+      if (!ok) return;
+      const marker =
+        name === 'orderedList' ? `${n++}. `
+        : name === 'taskList' ? `- [${item.attrs['checked'] ? 'x' : ' '}] `
+        : '- ';
+      let first = true;
+      item.forEach((child) => {
+        if (!ok) return;
+        const childPad = first ? pad + marker : pad + ' '.repeat(marker.length);
+        const got = first && child.isTextblock ? [childPad + child.textContent] : codeLinesOf(child, childPad);
+        if (!got) ok = false;
+        else out.push(...got);
+        first = false;
+      });
+    });
+    return ok ? out : null;
+  }
+  return null;
+}
+
+function childLines(node: ProseMirrorNode, pad: string): string[] | null {
+  const out: string[] = [];
+  let ok = true;
+  node.forEach((child) => {
+    const got = ok ? codeLinesOf(child, pad) : null;
+    if (!got) ok = false;
+    else out.push(...got);
+  });
+  return ok ? out : null;
+}
+
+/**
  * Ensures the document always ends with an empty paragraph so the user
  * can click/tap below block nodes (images, code blocks, tables) to
  * continue typing. Without this, a terminal image swallows the full
  * width and there's no insertion point after it.
  */
+/**
+ * Marks an Escape that reached the end of the editor's key handlers unused, so
+ * the app's Escape cascade can close the note (plainEscape.ts). The lowest
+ * priority puts it after every plugin that may use Escape, the note-link menu
+ * among them, and it never consumes the key.
+ */
+export const PlainEscape = Extension.create({
+  name: 'plainEscape',
+  priority: 1,
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        key: new PluginKey('plainEscape'),
+        props: {
+          handleKeyDown(_view, event) {
+            if (event.key === 'Escape' && !event.isComposing) markPlainEscape(event);
+            return false;
+          },
+        },
+      }),
+    ];
+  },
+});
+
 export const TrailingParagraph = Extension.create({
   name: 'trailingParagraph',
   addProseMirrorPlugins() {
@@ -989,6 +1618,12 @@ export const TrailingParagraph = Extension.create({
         appendTransaction(_transactions, _oldState, newState) {
           const { doc, schema } = newState;
           const lastNode = doc.lastChild;
+          // The footnote section is always last, so the line goes in front of it.
+          if (lastNode?.type.name === 'footnotes') {
+            const before = doc.child(doc.childCount - 2);
+            if (before.type.name === 'paragraph') return null;
+            return newState.tr.insert(doc.content.size - lastNode.nodeSize, schema.nodes['paragraph']!.create());
+          }
           if (lastNode && lastNode.type.name !== 'paragraph') {
             return newState.tr.insert(
               doc.content.size,
@@ -1378,29 +2013,46 @@ function breaksOnly(node: ProseMirrorNode): boolean {
  * the break rule trims only plain spaces and tabs. Both load back as
  * non-breaking spaces, which this also matches, so the indent survives every
  * later save.
+ *
+ * A run of spaces inside a line is collapsed to one by the HTML step of the
+ * load (GitHub #402). It is written as one plain space, which keeps a wrap
+ * point, and literal non-breaking spaces for the rest, which HTML keeps.
+ * Inline code is left alone: its text is copied out exactly as written.
  */
 const LEADING_INDENT = /^[ \u00a0]+/;
+const INNER_RUN = /[ \u00a0]{2,}/g;
+
+function keepInnerRuns(child: ProseMirrorNode, text: string): ProseMirrorNode {
+  if (child.marks.some((m) => m.type.spec.code)) return child.type.schema.text(text, child.marks);
+  const kept = text.replace(INNER_RUN, (run) => ' ' + '\u00a0'.repeat(run.length - 1));
+  return child.type.schema.text(kept, child.marks);
+}
 
 function renderIndentedInline(state: any, node: ProseMirrorNode): void {
   let lead = 0;
   let lineStart = true;
   const children: ProseMirrorNode[] = [];
   node.forEach((child, _offset, index) => {
-    if (lineStart && child.isText) {
-      const run = LEADING_INDENT.exec(child.text!)?.[0].length ?? 0;
+    if (child.isText) {
+      const run = lineStart ? LEADING_INDENT.exec(child.text!)?.[0].length ?? 0 : 0;
       if (run > 0) {
-        const rest = child.text!.slice(run);
         if (index === 0) lead = run;
         else children.push(child.type.schema.text('\u00a0'.repeat(run), child.marks));
-        if (rest) children.push(child.type.schema.text(rest, child.marks));
-        lineStart = false;
-        return;
       }
+      const rest = child.text!.slice(run);
+      if (rest) children.push(keepInnerRuns(child, rest));
+      lineStart = false;
+      return;
     }
     lineStart = child.type.name === 'hardBreak';
     children.push(child);
   });
-  if (lead > 0) state.write('&nbsp;'.repeat(lead));
+  // The write runs even when it adds nothing, so the pending block separator
+  // and any quote prefix are out before the first mark opens. tiptap-markdown
+  // records where a bold, italic, strike or highlight run starts before that
+  // flush, and its whitespace trim would otherwise eat the `> ` prefix and
+  // save a callout's first body line outside the callout.
+  state.write('&nbsp;'.repeat(lead));
   state.renderInline(node.copy(Fragment.fromArray(children)));
 }
 
@@ -1408,8 +2060,13 @@ export const ParagraphWithMarkdown = Paragraph.extend({
   addStorage() {
     return {
       markdown: {
-        serialize(state: any, node: any) {
+        serialize(state: any, node: any, parent: any, index: number) {
           if (serializeAlignedBlock(state, node)) return;
+          // The empty line kept in front of the footnote section is the
+          // editor's, not the note's: it writes nothing.
+          // `parent` is a Fragment when a copy serializes a selection.
+          const next = parent && index + 1 < parent.childCount ? parent.child(index + 1) : null;
+          if (node.content.size === 0 && next?.type.name === 'footnotes') return;
           if (node.content.size === 0) {
             state.write('&nbsp;');
           } else if (breaksOnly(node)) {
@@ -1426,7 +2083,109 @@ export const ParagraphWithMarkdown = Paragraph.extend({
           state.closeBlock(node);
         },
         parse: {
-          // Keep default markdown-it paragraph parsing.
+          // A tight list item's paragraph is written without its <p>, so its
+          // text keeps markdown-it's newline when a nested list or other
+          // block follows it. A load collapses that newline; a paste keeps
+          // whitespace and would turn it into a line break at the end of the item.
+          updateDOM(element: HTMLElement) {
+            element.querySelectorAll('li').forEach((item) => {
+              item.childNodes.forEach((child) => {
+                const next = child.nextSibling;
+                if (child.nodeType === Node.TEXT_NODE && next instanceof HTMLElement && NESTED_BLOCK_TAGS.has(next.tagName)) {
+                  child.textContent = child.textContent!.replace(/\n$/, '');
+                }
+              });
+            });
+          },
+        },
+      },
+    };
+  },
+});
+
+const NESTED_BLOCK_TAGS = new Set(['UL', 'OL', 'P', 'PRE', 'BLOCKQUOTE', 'DIV', 'TABLE', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HR']);
+
+/**
+ * Hard break with tiptap-markdown's own spec, plus one write after the break:
+ * it puts the next line's quote prefix out before that line's first mark
+ * opens, for the same reason renderIndentedInline writes before rendering.
+ * Without it, a Shift+Enter line inside a callout that opens with bold would
+ * save outside the callout. A trailing break still writes nothing, and a break in a
+ * table cell stays inline HTML, both as the library does it.
+ */
+const ONE_LINE_PARENTS = new Set(['heading', 'calloutTitle']);
+
+export const HardBreakWithMarkdown = HardBreak.extend({
+  addStorage() {
+    return {
+      markdown: {
+        serialize(state: any, node: any, parent: any, index: number) {
+          for (let i = index + 1; i < parent.childCount; i++) {
+            if (parent.child(i).type !== node.type) {
+              // A table row, a heading and a callout title each live on one
+              // markdown line, so a break inside them stays inline HTML.
+              if (state.inTable || ONE_LINE_PARENTS.has(parent.type.name)) {
+                state.write(getHTMLFromFragment(Fragment.from(node), node.type.schema));
+              } else {
+                state.write('\\\n');
+                state.write('');
+              }
+              return;
+            }
+          }
+        },
+        parse: {
+          // Keep default markdown-it break parsing.
+        },
+      },
+    };
+  },
+});
+
+/**
+ * prosemirror-markdown's `esc`, byte for byte, except where its output read
+ * back as something else:
+ * - An underscore run stays raw only between two letters or digits. The
+ *   library judged each underscore by its neighbours and counted `_` as a word
+ *   character, so `__init__` saved as `\__init_\_` and reloaded as an italic.
+ * - `1) ` opens an ordered list just as `1. ` does, so it is escaped at a line
+ *   start too.
+ * - A literal entity such as `&amp;` keeps its ampersand, which markdown would
+ *   otherwise decode.
+ */
+const ENTITY = /&(?=#\d+;|#x[0-9a-f]+;|[a-z][a-z0-9]*;)/gi;
+const ALNUM = /[A-Za-z0-9]/;
+
+function escapeMarkdownText(str: string, startOfLine: boolean): string {
+  str = str.replace(ENTITY, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  str = str.replace(/[`*\\~[\]]/g, '\\$&');
+  str = str.replace(/_+/g, (run, i: number) =>
+    ALNUM.test(str[i - 1] ?? '') && ALNUM.test(str[i + run.length] ?? '') ? run : run.replace(/_/g, '\\_'),
+  );
+  if (startOfLine) {
+    str = str
+      .replace(/^(\+[ ]|[-*>])/, '\\$&')
+      .replace(/^(\s*)(#{1,6})(\s|$)/, '$1\\$2$3')
+      .replace(/^(\s*\d+)([.)])\s/, '$1\\$2 ');
+  }
+  return str;
+}
+
+export const TextWithMarkdown = Text.extend({
+  addStorage() {
+    return {
+      markdown: {
+        // MarkdownSerializerState.text with the escape above in place of `esc`.
+        serialize(state: any, node: ProseMirrorNode) {
+          const lines = node.text!.split('\n');
+          for (let i = 0; i < lines.length; i++) {
+            state.write();
+            state.out += escapeMarkdownText(lines[i]!, state.atBlockStart);
+            if (i !== lines.length - 1) state.out += '\n';
+          }
+        },
+        parse: {
+          // Handled by markdown-it.
         },
       },
     };
@@ -1524,18 +2283,48 @@ function escapeCellPipes(state: any, from: number): void {
   const written: string = state.out.slice(from);
   if (!written.includes('|')) return;
   state.out = state.out.slice(0, from) + written.replace(/\|/g, '\\|');
+  // tiptap-markdown remembers where each mark opened and closed, as offsets
+  // into `out`, and trims the run after the next node renders. Each inserted
+  // backslash moves the text after it, so the offsets move with it and a
+  // delimiter written in this cell is the escaped one. Left stale, the trim
+  // read a one-letter spoiler as an empty mark and deleted the letter.
+  const shift = (pos: number) =>
+    pos < from ? pos : pos + (written.slice(0, pos - from).match(/\|/g)?.length ?? 0);
+  for (const inline of (state.inlines ?? []) as { start?: number; end?: number; delimiter?: unknown }[]) {
+    if (typeof inline.start === 'number' && inline.start >= from && typeof inline.delimiter === 'string') {
+      inline.delimiter = inline.delimiter.replace(/\|/g, '\\|');
+    }
+    if (typeof inline.start === 'number') inline.start = shift(inline.start);
+    if (typeof inline.end === 'number') inline.end = shift(inline.end);
+  }
 }
 
-/** Mirrors tiptap-markdown's isMarkdownSerializable so the pipe-vs-HTML choice is unchanged. */
+/**
+ * A pipe row holds one line of inline content per cell. A cell of more than
+ * one block, or of one block that is not a paragraph or an image (a list, a
+ * heading, a code block, a quote), cannot be written there: it broke the row
+ * and spilled out under the table on reload. Nor can a paragraph aligned on
+ * its own, since a pipe table aligns whole columns only.
+ */
+const PIPE_CELL_BLOCKS = new Set(['paragraph', 'image']);
+
+function cellIsPipeSafe(cell: any): boolean {
+  const first = cell.firstChild;
+  if (cellHasSpan(cell) || cell.childCount > 1) return false;
+  if (!first) return true;
+  return PIPE_CELL_BLOCKS.has(first.type.name) && !(first.type.name === 'paragraph' && isStoredAlignment(first.attrs.textAlign));
+}
+
+/** tiptap-markdown's isMarkdownSerializable, plus the cell rule above. */
 function tableIsPipeSerializable(node: any): boolean {
   const rows: any[] = [];
   node.forEach((row: any) => rows.push(row));
   const firstRow = rows[0];
   if (!firstRow) return false;
-  if (cellsOf(firstRow).some((cell) => cell.type.name !== 'tableHeader' || cellHasSpan(cell) || cell.childCount > 1)) {
+  if (cellsOf(firstRow).some((cell) => cell.type.name !== 'tableHeader' || !cellIsPipeSafe(cell))) {
     return false;
   }
-  if (rows.slice(1).some((row) => cellsOf(row).some((cell) => cell.type.name === 'tableHeader' || cellHasSpan(cell) || cell.childCount > 1))) {
+  if (rows.slice(1).some((row) => cellsOf(row).some((cell) => cell.type.name === 'tableHeader' || !cellIsPipeSafe(cell)))) {
     return false;
   }
   return true;
@@ -1546,7 +2335,9 @@ function serializeTableToMarkdown(this: any, state: any, node: any, _parent: any
   // pipe table - fall back to HTML, identical to tiptap-markdown's default.
   if (!tableIsPipeSerializable(node)) {
     if (this?.editor?.storage?.markdown?.options?.html ?? true) {
-      state.write(getHTMLFromFragment(Fragment.from(node), node.type.schema));
+      // `text` rather than `write`: a code block in a cell carries newlines,
+      // and each line needs the quote or list prefix the table sits under.
+      state.text(getHTMLFromFragment(Fragment.from(node), node.type.schema), false);
     }
     if (node.isBlock) state.closeBlock(node);
     return;
@@ -1689,7 +2480,7 @@ function findAdjacentCellPos($cell: any, dir: number): number | null {
   return null;
 }
 
-export function goToAdjacentCell(editor: TipTapEditor, dir: number): boolean {
+function goToAdjacentCell(editor: TipTapEditor, dir: number): boolean {
   const { state, dispatch } = editor.view;
   let $cell: any;
   try {
@@ -1705,6 +2496,17 @@ export function goToAdjacentCell(editor: TipTapEditor, dir: number): boolean {
   dispatch(state.tr.setSelection(sel).scrollIntoView());
   editor.view.focus();
   return true;
+}
+
+/**
+ * What Tab (dir 1) and Shift+Tab (dir -1) do inside a table: step to the
+ * adjacent cell, and from the last cell add a row and step into it. Shift+Tab
+ * in the first cell stays put.
+ */
+export function stepTableCell(editor: TipTapEditor, dir: number): void {
+  if (goToAdjacentCell(editor, dir) || dir !== 1 || !editor.can().addRowAfter()) return;
+  editor.chain().addRowAfter().run();
+  goToAdjacentCell(editor, 1);
 }
 
 /**
@@ -1936,7 +2738,10 @@ export function markdownForClipboard(
   content: Fragment,
   serialize: (fragment: Fragment) => string,
   tightParagraphs: boolean,
+  format: 'markdown' | 'plain' = 'markdown',
 ): string {
+  if (format === 'plain') return plainTextForClipboard(content, tightParagraphs);
+
   // A copy keeps every parent of the selection, so a command copied out of a
   // list item arrives as a list and pastes with a `- ` in front of it. A
   // selection inside one line of text copies that text and its inline marks,
@@ -1953,7 +2758,14 @@ export function markdownForClipboard(
   const blocks: { node: ProseMirrorNode; md: string }[] = [];
   let at = 0;
   content.forEach((node) => {
-    const md = serialize(content.cut(at, at + node.nodeSize));
+    let md = serialize(content.cut(at, at + node.nodeSize));
+    // A task list is stored loose, a blank line between tasks, because
+    // tiptap-markdown's tight-list attribute covers bullets and numbers only.
+    // The screen shows no gap, so the copy closes it where every task is one
+    // line. The stored note keeps its form.
+    if (node.type.name === 'taskList' && everyItemIsOneLine(node)) {
+      md = md.replace(/\n\n(?=[ \t]*[-*+] \[[ xX]\] )/g, '\n');
+    }
     // An empty paragraph is a blank line here, never its file spelling.
     blocks.push({ node, md: md === EMPTY_PARAGRAPH_MARKDOWN ? '' : md });
     at += node.nodeSize;
@@ -1971,6 +2783,91 @@ export function markdownForClipboard(
     joined += cur.md;
   }
   return tidyClipboardLines(joined);
+}
+
+function everyItemIsOneLine(list: ProseMirrorNode): boolean {
+  let ok = true;
+  list.forEach((item) => {
+    if (item.childCount !== 1 || !item.firstChild!.isTextblock) ok = false;
+  });
+  return ok;
+}
+
+/**
+ * The plain-text part of a copy with the "Copied text: Plain text" setting:
+ * the words of each block, one block per line, and no formatting character
+ * at all. No heading, quote, bullet or task marker and no emphasis, which a
+ * form field or a work tool prints as it is. A numbered list keeps its
+ * numbers, because they carry the order. Blank lines follow the Markdown
+ * copy: a gap between blocks, none between Compact paragraphs.
+ * Spec: ops/docs/plans/paste-pictures.md (section 3.6)
+ */
+function plainTextForClipboard(content: Fragment, tightParagraphs: boolean): string {
+  const line = singleTextblock(content);
+  if (line) return plainInline(line);
+
+  let out = '';
+  let prev: ProseMirrorNode | null = null;
+  content.forEach((node) => {
+    const text = plainBlock(node, '');
+    if (text === null) return;
+    if (prev) {
+      const tight = tightParagraphs && prev.type.name === 'paragraph' && node.type.name === 'paragraph';
+      out += tight ? '\n' : '\n\n';
+    }
+    out += text;
+    prev = node;
+  });
+  return out.replace(/\n{3,}/g, '\n\n').replace(/\s+$/, '');
+}
+
+/** The words of an inline run: a note-link writes its label, a formula its
+ *  source, a hard break a new line. Text marks have no characters here. */
+function plainInline(block: ProseMirrorNode): string {
+  return block.textBetween(0, block.content.size, '\n', (leaf) => {
+    if (leaf.type.name === 'hardBreak') return '\n';
+    const attrs = leaf.attrs as { label?: string | null; target?: string; latex?: string };
+    return attrs.label || attrs.target || attrs.latex || '';
+  }).replace(/\u00a0/g, ' ');
+}
+
+/** One block as plain lines, or null for a block that has no words (a picture,
+ *  a file, a rule). `indent` nests list items. */
+function plainBlock(node: ProseMirrorNode, indent: string): string | null {
+  const name = node.type.name;
+  if (name === 'codeBlock') return node.textContent;
+  if (name === 'blockMath') return (node.attrs as { latex?: string }).latex ?? '';
+  if (node.isTextblock) return indent + plainInline(node);
+  if (name === 'bulletList' || name === 'taskList' || name === 'orderedList') {
+    const start = Number((node.attrs as { start?: number }).start ?? 1);
+    const items: string[] = [];
+    node.forEach((item, _offset, i) => {
+      const prefix = name === 'orderedList' ? `${start + i}. ` : '';
+      const parts: string[] = [];
+      item.forEach((child, _o, j) => {
+        const text = plainBlock(child, j === 0 ? indent : `${indent}  `);
+        if (text !== null) parts.push(j === 0 ? text.replace(indent, indent + prefix) : text);
+      });
+      items.push(parts.join('\n'));
+    });
+    return items.join('\n');
+  }
+  if (name === 'table') {
+    const rows: string[] = [];
+    node.forEach((row) => {
+      const cells: string[] = [];
+      row.forEach((cell) => cells.push(cell.textContent.replace(/\s+/g, ' ').trim()));
+      rows.push(indent + cells.join('\t'));
+    });
+    return rows.join('\n');
+  }
+  if (node.isLeaf || node.isAtom) return null;
+  const parts: string[] = [];
+  node.forEach((child) => {
+    const text = plainBlock(child, indent);
+    if (text !== null) parts.push(text);
+  });
+  return parts.join('\n');
 }
 
 /** The one textblock a fragment reduces to when every level above it holds a

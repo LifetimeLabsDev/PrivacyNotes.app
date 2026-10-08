@@ -5,11 +5,14 @@
  * user-friendly entries grouped by release.
  */
 
-export type ChangelogItemType = 'new' | 'improved' | 'fixed';
+type ChangelogItemType = 'new' | 'improved' | 'fixed';
 
 type ChangelogItem = {
   type: ChangelogItemType;
   text: string;
+  /** Key of a screenshot on the /changelog page only, or several in order;
+   *  the app never loads them. Spec: ops/docs/plans/changelog-screenshots.md */
+  shot?: string | string[];
 };
 
 export type ChangelogRelease = {
@@ -19,12 +22,222 @@ export type ChangelogRelease = {
   items: ChangelogItem[];
 };
 
-// How many releases the in-app changelog (About modal) shows. The public
-// /changelog page renders the full history; this cap only trims the
-// in-app view so it stays short.
-export const IN_APP_CHANGELOG_LIMIT = 10;
-
 export const PUBLIC_CHANGELOG: ChangelogRelease[] = [
+  {
+    version: '0.597',
+    date: '2026-10-08',
+    title: 'One quick switcher for items, files, settings and commands',
+    items: [
+      { type: 'new', text: 'Cmd+K (Ctrl+K on Windows and Linux) opens the quick switcher in every app, the browser included. Cmd+P works too.' },
+      { type: 'new', text: 'The quick switcher jumps to any item by its title, and lists the items you opened last when it opens.', shot: 'switcher-recent' },
+      { type: 'new', text: 'It finds settings too, and opens Settings at the right row.', shot: 'switcher-settings' },
+      { type: 'new', text: 'Type ">" first to find and run any command by its name. The best commands also show under every search.', shot: 'command-mode' },
+      { type: 'new', text: 'It finds the files in your notes by their names, and opens the note at that file.' },
+      { type: 'new', text: 'With a Markdown folder open, it finds the files of that folder by name too.' },
+      { type: 'new', text: 'The "Jump to" button at the top of the sidebar opens the quick switcher with a click or a tap.' },
+      { type: 'new', text: '"Search everything" searches inside all your notes, and Cmd+Enter runs it from any row.', shot: 'switcher-search' },
+      { type: 'improved', text: '"/" goes to the list search, and a search in All ends with a row that points to the matching Markdown files.' },
+      { type: 'improved', text: 'The quick switcher opens at once, and each kind of item has its own color.' },
+    ],
+  },
+  {
+    version: '0.596',
+    date: '2026-10-08',
+    title: 'Make your own color theme, and pick one for light and dark',
+    items: [
+      { type: 'new', text: 'Build your own color theme from six colors. The app is the live preview, and Fix all repairs any color that is hard to read. Part of Pro.', shot: 'theme-builder' },
+      { type: 'new', text: 'Pick a light theme and a dark theme side by side in the Themes tab of Settings > Appearance, and Auto switches between them.', shot: 'themes-tab' },
+      { type: 'new', text: 'Ten new themes: OLED, Sage, Rose, Mint, Lavender, Apricot, Midnight, Frost, Espresso and Plum. Part of Pro.', shot: ['light-themes', 'dark-themes', 'oled', 'sage'] },
+      { type: 'new', text: 'Copy any theme as a one-line code, and paste a code to add a theme. Community themes live on the Themes page of our website.' },
+      { type: 'new', text: 'Note colors in Settings > Appearance > Themes has three choices: Background, Accent or Off.' },
+      { type: 'improved', text: 'With Accent, rows, tiles and tabs stay plain and their icon takes the color. A color you give one note always tints that note.' },
+      { type: 'improved', text: 'Color themes recolor the whole app, every menu and window included, and every built-in theme passes the palette contrast check.' },
+      { type: 'improved', text: 'Duplicate and Copy code copy a built-in theme exactly, and New theme starts from the theme on your screen.' },
+      { type: 'improved', text: 'Every theme name fits its card on one line.' },
+      { type: 'improved', text: 'Tracker pills, the Pro mark and the rating stars are easier to read, and the logo keeps one blue in every theme.' },
+      { type: 'improved', text: 'A full backup carries your custom themes and the looks of folders, tags and notes.' },
+      { type: 'fixed', text: 'Saving a theme from a free account keeps your draft open after the upgrade window closes.' },
+    ],
+  },
+  {
+    version: '0.595',
+    date: '2026-10-08',
+    title: 'A journal calendar, and dates the way you write them',
+    items: [
+      { type: 'new', text: 'A journal calendar puts a dot on each day with an entry. Click a dotted day to open it, or another day to write an entry for that date.' },
+      { type: 'new', text: 'The calendar is in the Journals list, the New menu and the footer, and "Show calendar" in the list options hides it from the list.', shot: ['calendar-new-menu', 'footer-calendar'] },
+      { type: 'new', text: '"Entry date" in the "..." menu of a journal entry moves it to another day on the same calendar.', shot: 'entry-date' },
+      { type: 'new', text: 'Choose a date format and a 12-hour or 24-hour clock in Settings > Date & Language > Date & time.', shot: 'date-settings' },
+      { type: 'new', text: 'Name your journal entries with your own pattern, for example "dddd, D MMMM YYYY", in Settings > Journals.' },
+      { type: 'new', text: 'Insert the date with Cmd+; and the date and time with Cmd+: (Ctrl on Windows and Linux), or from the "+" menu of the editor.' },
+      { type: 'improved', text: 'Every date follows the region of your device, for example "Tue 6 Oct, 15:37" in the UK and "Tue, Oct 6, 3:37 PM" in the US.' },
+      { type: 'improved', text: '"Last edited" changes only when you edit the title, the text or a tracker. A pin, a tag, a move or the trash leaves it alone.' },
+      { type: 'fixed', text: 'File names, report names and calendar days use your own day, also late in the evening or early in the morning.' },
+    ],
+  },
+  {
+    version: '0.594',
+    date: '2026-10-07',
+    title: 'Statistics, rebuilt, and milestones that show your progress',
+    items: [
+      { type: 'new', text: 'Statistics opens on an Overview: your week, 26 weeks of writing and mood, the hours you write, and your highlights.', shot: 'overview' },
+      { type: 'new', text: 'Wellness charts every tracker, your custom trackers and medications included, in four views: All, Explore, Medication and Patterns.', shot: ['wellness-all', 'trackers', 'patterns'] },
+      { type: 'new', text: 'Explore puts one tracker beside another and shows how one moves with the other, on the same day or the next. Part of Pro.', shot: 'explore' },
+      { type: 'new', text: 'Medication shows adherence and a day-by-day strip for each medication on one shared timeline.', shot: 'medication' },
+      { type: 'new', text: 'Statistics > Writing shows how close you are to your next milestone in notes, writing streak, words and days with PrivacyNotes.', shot: 'milestones' },
+      { type: 'new', text: 'A short celebration appears when you reach a milestone for notes written in the app or days with PrivacyNotes.' },
+      { type: 'improved', text: 'Pick a range from 7 days to all time, and every chart, the doctor report and the AI prompt use it.' },
+      { type: 'improved', text: '"Show & copy AI prompt" shows the prompt in a text box, so you see what goes on your clipboard.' },
+      { type: 'fixed', text: 'The AI prompt and the doctor report name the lowest and the highest level of sleep quality and activity.' },
+    ],
+  },
+  {
+    version: '0.593',
+    date: '2026-10-07',
+    title: 'Drag notes onto folders and tags, and filter with a click',
+    items: [
+      { type: 'new', text: 'Drag a note from the list onto a folder to move it, onto Unfiled to take it out of its folder, or onto a tag to tag it. A selection moves together.' },
+      { type: 'new', text: 'Drag an uploaded file from Files onto a folder or a tag in the sidebar.' },
+      { type: 'new', text: 'Click a folder or tag chip on a row, a tile or in the editor to filter the list by that folder or tag.' },
+      { type: 'new', text: 'The Subfolders button beside the folder chip lists the items of every subfolder too, each with its path.', shot: 'subfolders' },
+      { type: 'new', text: '"Show file size" in the list menu of Files and Markdown hides the size on every row and tile.' },
+      { type: 'improved', text: 'In a section such as Notes, Tasks or Vault, the sidebar lists only the tags that section uses, and the folder counts count that section.', shot: 'section-tags' },
+      { type: 'improved', text: 'The folder tree shows the folder of the open note in bold, or its closed parent folder when the folder is out of sight.', shot: 'open-note-folder' },
+      { type: 'improved', text: 'A dragged item shows a chip with its icon and title, and a closed folder opens when you hold the drag over it.' },
+      { type: 'improved', text: 'Every switch in the list options has its own icon, and a sort change no longer moves the rows.' },
+      { type: 'fixed', text: 'The list menu stays inside the window, and a free account no longer shows an empty folder chip above every note.' },
+    ],
+  },
+  {
+    version: '0.592',
+    date: '2026-10-07',
+    title: 'Footnotes, spoilers and a copy box in your notes',
+    items: [
+      { type: 'new', text: 'Add a footnote with [^1] after a word, or with Footnote in the "+" menu, then click its number to jump to the note and back.', shot: 'footnotes' },
+      { type: 'new', text: 'On a desktop, rest the pointer on a footnote number to read the note in place.' },
+      { type: 'new', text: 'Spoiler text stays blurred until you click it: type ||text|| or pick Spoiler in the "+" menu.', shot: 'spoiler' },
+      { type: 'new', text: 'A copy box holds text you copy often, with a Copy button always on show: type ```copy or pick Copy box in the "+" menu.', shot: 'copy-box' },
+      { type: 'new', text: 'Cmd+click inline code to copy it (Ctrl+click on Windows and Linux). In a read-only note, a click or a tap is enough.' },
+      { type: 'new', text: 'A code block longer than 30 lines folds to its first 20, with "Show all" to open it.', shot: 'code-fold' },
+      { type: 'new', text: 'Every code block names its language above its first line. Click the name to pick another from a searchable list.' },
+      { type: 'improved', text: 'Code blocks and copy boxes have a wrap switch and a Copy button that turns into a check when the copy is done.' },
+      { type: 'improved', text: 'Footnotes come along in HTML export, PDF, print and burn notes, and in a paste from GitHub, pandoc or Wikipedia.' },
+      { type: 'improved', text: 'Obsidian imports keep footnotes, highlights and math.' },
+      { type: 'improved', text: 'A selection across a list turns into one code block, with the list markers kept as text.' },
+      { type: 'fixed', text: 'An export, a print or a burn note shows a typed &, < or > as you typed it.' },
+    ],
+  },
+  {
+    version: '0.590',
+    date: '2026-10-06',
+    title: 'The changelog shows what changed, with screenshots',
+    items: [
+      { type: 'new', text: 'Releases on the changelog page show screenshots of what changed. Step through them with the arrows or a swipe, and open any one full size.' },
+      { type: 'new', text: 'A "With screenshots" filter on the changelog page lists every change that has a picture.' },
+    ],
+  },
+  {
+    version: '0.589',
+    date: '2026-10-06',
+    title: 'Link to a heading, and copy and paste that keep your work',
+    items: [
+      { type: 'new', text: 'A note-link can point to a heading, written [[Note#Heading]]. Type # after a title in the [[ list, or copy a heading link from the outline.', shot: 'heading-link' },
+      { type: 'new', text: '"Link to a heading..." in the right-click menu of a note-link points it at one heading of its note.' },
+      { type: 'new', text: 'Right-click selected text for Cut, Copy, the text formats, Add link and "Sort lines A to Z".', shot: 'sort-lines' },
+      { type: 'new', text: 'Choose how copied text leaves the app in Settings > Appearance > Text and layout: as Markdown, or as plain text.', shot: 'copied-text' },
+      { type: 'new', text: 'Rest the pointer on a link and its address shows in the corner of the editor.', shot: 'link-address' },
+      { type: 'new', text: 'Fold a section of the outline with the arrow beside its heading.', shot: 'outline-fold' },
+      { type: 'new', text: '"Print text only" in the Share menu prints the title and the text, without the date, the folder and the tags.', shot: 'print-text-only' },
+      { type: 'new', text: 'Tab in the last cell of a table adds a row, and [words](address) turns into a link when you close the bracket.' },
+      { type: 'improved', text: 'A paste of text and pictures puts every picture in its place, and a notice tells you when a picture cannot come along.' },
+      { type: 'improved', text: 'A paste from Google Docs or Word keeps its formatting but not its fixed black text, so it reads in dark mode.' },
+      { type: 'improved', text: 'Obsidian imports and Markdown folders keep links to headings.' },
+      { type: 'improved', text: 'A copied task list has no blank lines, and the outline panel no longer pushes a picture at the top of a note down.' },
+      { type: 'fixed', text: 'More than a dozen formats read back exactly after a reload, among them a callout in a task, a list in a table cell and spaces inside a line.' },
+      { type: 'fixed', text: 'Prices such as "$5 and $6" stay text instead of turning into a formula.' },
+      { type: 'fixed', text: 'A picture you paste again reuses the stored picture instead of saving a second copy.' },
+      { type: 'fixed', text: 'Select all inside a code block selects the code first, and a second press selects the whole note.' },
+    ],
+  },
+  {
+    version: '0.570',
+    date: '2026-10-06',
+    title: 'Back and forward, and the keyboard reaches everything',
+    items: [
+      { type: 'new', text: 'Go back and forward through the items you opened with Cmd+[ and Cmd+], Alt+Left and Alt+Right on Windows and Linux, or the side buttons of your mouse.' },
+      { type: 'new', text: 'The desktop apps add Cmd+N for a new note, Cmd+Shift+N for the New menu, Cmd+W, Ctrl+Tab between tabs and Cmd+1 to 9 for the sections.' },
+      { type: 'new', text: 'Move with the keyboard alone: F6 between panes, the arrow keys through the list, the folders and the tags, and Escape one step at a time.' },
+      { type: 'new', text: 'A switch in Settings > About > Hotkeys turns off the single keys J, K, ?, / and >.' },
+      { type: 'improved', text: 'The shortcut help and the printable cheat sheet show the keys of your system and your app.', shot: 'hotkeys' },
+      { type: 'improved', text: 'Many shortcuts changed, so print the cheat sheet again: Settings > About > Hotkeys > Printable cheat sheet.' },
+      { type: 'fixed', text: 'Shortcuts follow the characters your keyboard types: Ctrl+Z on a Bépo keyboard only undoes, and an AltGr character always types.' },
+      { type: 'fixed', text: 'F5 and Ctrl+R no longer reload the Windows app, and Ctrl+P no longer prints the window.' },
+      { type: 'fixed', text: 'App shortcuts wait while a dialog or a menu is open.' },
+    ],
+  },
+  {
+    version: '0.566',
+    date: '2026-10-04',
+    title: 'Share into PrivacyNotes from any app, and zoom into pictures',
+    items: [
+      { type: 'new', text: 'Share into PrivacyNotes from the share sheet on iOS and Android: a link becomes a bookmark, text becomes a note, and pictures and files go to Files. Beta.' },
+      { type: 'new', text: 'Zoom into a picture in the viewer with the zoom buttons, a pinch on a phone or a pinch on a trackpad, then drag to look around.', shot: 'picture-zoom' },
+      { type: 'new', text: 'App size in Settings > Appearance scales the whole desktop app from 80 to 200 percent. Cmd or Ctrl with plus, minus and 0 does the same.' },
+      { type: 'new', text: 'Choose, change or remove a contact\'s photo with the camera badge on the avatar, and an exported vCard carries it.', shot: 'contact-photo' },
+      { type: 'improved', text: 'On Android, a share from another app waits for you: a window lists what arrived and saves it only when you tap Save all.' },
+      { type: 'improved', text: 'On a phone, a swipe from the left edge inside an open item goes back, as in other apps.' },
+      { type: 'improved', text: 'A generated SSH key takes its label as the key comment.' },
+    ],
+  },
+  {
+    version: '0.565',
+    date: '2026-10-04',
+    title: 'Hide the app from screen capture, and safer sync and sign-out',
+    items: [
+      { type: 'new', text: '"Hide from screen capture" in Settings > Security > Lock keeps your notes out of screenshots, screen recordings and screen sharing, where your device allows it.', shot: 'app-lock' },
+      { type: 'improved', text: 'Settings > Storage shows a free account that Pro storage can grow with 1, 2 or 5 GB add-ons.', shot: 'storage-addons' },
+      { type: 'improved', text: 'Send feedback sends bugs and feature requests to GitHub, and lists our YouTube and Facebook channels beside X, Reddit and Mastodon.', shot: 'feedback' },
+      { type: 'improved', text: 'A deleted note leaves the server at once, history included, and the storage bar drops as soon as the delete syncs.' },
+      { type: 'fixed', text: 'A sign-out removes everything that could sign you back in, in every open tab, also while a sync is still busy.' },
+      { type: 'fixed', text: 'A sign-in with your recovery phrase always opens that phrase\'s own account, also after a cancelled Google, Apple or GitHub sign-in.' },
+      { type: 'fixed', text: 'The phone keyboard never autocorrects or learns the words of your recovery phrase.' },
+      { type: 'fixed', text: 'An account switch no longer stalls, and finishes on a device at its device limit once a device slot is free.' },
+      { type: 'fixed', text: 'An archived note stays archived on every device, also when a device with an older app version edits it.' },
+      { type: 'fixed', text: 'Changes to a dose or a tracker made on two devices at once both survive.' },
+      { type: 'fixed', text: 'A picture or a shared file stays safe after a failed upload or a cancelled delete.' },
+      { type: 'fixed', text: 'List settings you turn off stay off on every device, and a permanently deleted note stays deleted after a long time offline.' },
+    ],
+  },
+  {
+    version: '0.560',
+    date: '2026-10-01',
+    title: 'Tasks and checklists you can clear, sort, count and drag',
+    items: [
+      { type: 'improved', text: 'The Tasks section lists the task lists you made there first, and checkboxes from other items under "Tasks in other items".', shot: 'tasks-pane' },
+      { type: 'new', text: '"Delete checked items" in the note\'s "..." menu clears the finished items of every checklist in the note.', shot: 'checklist-menu' },
+      { type: 'new', text: '"Sort items by status" puts the unchecked items of each list first.' },
+      { type: 'new', text: 'The editor footer counts checked items, for example "3 of 6 checked".' },
+      { type: 'new', text: 'Drag a checklist item to a new place by the grip at the end of its row, with a mouse, a pen or a finger.' },
+      { type: 'new', text: '"Move checked items down" in Settings > Appearance > Lists lets checked items stay where they are, in the editor and in Tasks.' },
+      { type: 'new', text: 'A switch in Tasks hides the checkboxes of other items, such as the ingredients of a recipe.' },
+      { type: 'improved', text: 'Tasks shows the whole list at once, and the sidebar count matches what it shows.' },
+      { type: 'improved', text: 'Cmd+Z undoes "Sort items by status", "Uncheck all items" and "Delete checked items".' },
+      { type: 'fixed', text: 'Dragging the whole text of a checklist item moves the item, its checked state and nested items included.' },
+      { type: 'fixed', text: '"Delete checked items" never touches a line inside a code block, and the sort menu in Tasks works again.' },
+    ],
+  },
+  {
+    version: '0.554',
+    date: '2026-09-28',
+    title: 'A friendlier checkout, and a fix for the Linux app',
+    items: [
+      { type: 'improved', text: 'The checkout confirm page is friendlier and shows the start of your Account ID with the path to find it, the full ID one click away.' },
+      { type: 'improved', text: 'Each Linux .deb download comes with a signature you can check with minisign.' },
+      { type: 'fixed', text: 'ID & Sync and About in Settings no longer freeze the Linux app.' },
+      { type: 'fixed', text: 'Escape in an empty search box leaves the box and keeps the open note open.' },
+      { type: 'fixed', text: 'A picture upload cut off at the wrong moment completes, instead of trying again on every start.' },
+    ],
+  },
   {
     version: '0.553',
     date: '2026-09-28',

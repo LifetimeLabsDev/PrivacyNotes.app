@@ -15,11 +15,14 @@
  * Groups are numbered per card, starting past any `itemN.` an `extras` line
  * already uses, so a re-emitted line never collides with a generated one.
  *
- * Written: the name, the organisation, every labelled row, the notes, the
- * tags as CATEGORIES, REV from the note's modified time, the stored UID,
- * and every `extras` line verbatim. Not written: the photo, which lives in
- * the app's blob store where this writer has no bytes in hand, and PRODID
- * from the source, which would claim another app wrote this file.
+ * Written: the name, the organisation, every labelled row, the photo, the
+ * notes, the tags as CATEGORIES, REV from the note's modified time, the
+ * stored UID, and every `extras` line verbatim. Not written: PRODID from
+ * the source, which would claim another app wrote this file.
+ *
+ * The photo lives in the app's blob store, which this module never reads:
+ * the caller hands the bytes over through `vcardPhoto`, so the writer
+ * itself stays a pure function of its input.
  *
  * Lines end in CRLF and fold at 75 octets on character boundaries, so a
  * multi-byte character is never cut.
@@ -27,10 +30,50 @@
  * Spec: ops/docs/plans/contacts-pillar.md (section 8)
  */
 
+import { bytesToBase64 } from '@notes/shared';
 import { BIRTHDAY_LABEL, contactDisplayName, parseContactBody } from './contactBody';
+import { sniffImageFormat } from './imageMetadata';
 
-/** What the writer needs from a contact note. */
-export type VcardSource = { title: string; body: string; tags: string[]; updatedAt: string };
+/** What the writer needs from a contact note. `photo` is absent unless the
+ *  caller resolved the stored picture; see `vcardPhoto`. */
+export type VcardSource = {
+  title: string;
+  body: string;
+  tags: string[];
+  updatedAt: string;
+  photo?: { base64: string; type: string };
+};
+
+/** The vCard TYPE word per container. A reader sniffs the bytes anyway, but
+ *  Apple and Google both write this parameter and some readers trust it. */
+const PHOTO_TYPES: Record<string, string> = {
+  jpeg: 'JPEG',
+  png: 'PNG',
+  gif: 'GIF',
+  webp: 'WEBP',
+  bmp: 'BMP',
+  tiff: 'TIFF',
+  heic: 'HEIC',
+};
+
+/**
+ * The photo of one contact, ready for `VcardSource`. `load` turns the body's
+ * stored reference into bytes: a `pn:img/<uuid>` blob or the static path the
+ * seeded contact carries. Undefined when the contact has no photo, when the
+ * bytes cannot be read, or when they are not a picture this writer can name.
+ */
+export async function vcardPhoto(
+  body: string,
+  load: (ref: string) => Promise<Uint8Array | null>,
+): Promise<VcardSource['photo']> {
+  const ref = parseContactBody(body).photo;
+  if (!ref) return undefined;
+  const bytes = await load(ref);
+  if (!bytes || bytes.length === 0) return undefined;
+  const type = PHOTO_TYPES[sniffImageFormat(bytes)];
+  if (!type) return undefined;
+  return { base64: bytesToBase64(bytes), type };
+}
 
 /** The labels each property carries as TYPE parameters. */
 const TEL_TYPES: Record<string, string> = {
@@ -190,6 +233,9 @@ function buildCard(source: VcardSource): string[] {
   if (c.phonetic.first) lines.push(`X-PHONETIC-FIRST-NAME:${escapeText(c.phonetic.first)}`);
   if (c.phonetic.middle) lines.push(`X-PHONETIC-MIDDLE-NAME:${escapeText(c.phonetic.middle)}`);
   if (c.phonetic.last) lines.push(`X-PHONETIC-LAST-NAME:${escapeText(c.phonetic.last)}`);
+  // Base64 inline, the 3.0 spelling Apple and Google both write. The value
+  // needs no escaping, and the folder below breaks it into 75-octet lines.
+  if (source.photo) lines.push(`PHOTO;ENCODING=b;TYPE=${source.photo.type}:${source.photo.base64}`);
 
   for (const p of c.phones) labelled('TEL', p.label, escapeText(p.value), TEL_TYPES);
   for (const e of c.emails) labelled('EMAIL', e.label, escapeText(e.value), EMAIL_TYPES);

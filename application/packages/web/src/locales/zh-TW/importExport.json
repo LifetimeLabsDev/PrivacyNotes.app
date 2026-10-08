@@ -73,8 +73,8 @@
     "encryptedBackupDesc": "以你的助憶詞金鑰還原加密備份。.pnbackupz 會還原全部內容，包含檔案；.pnbackup 只含文字內容與中繼資料。必須以建立備份時的同一個帳號登入。"
   },
   "restoreGate": {
-    "wait": "還原會等到這部裝置連上網路並完成一次同步，這樣你的備份才能與帳號中已有的筆記比對，而不會重複新增。",
-    "paused": "還原會等待同步完成，這樣你的備份才能與帳號中已有的筆記比對。這部裝置的同步已暫停，請到「設定 > ID & Sync」關閉「暫停同步」。",
+    "wait": "還原會等到這台裝置連上網路並完成一次同步，這樣你的備份才能與帳號中已有的筆記比對，而不會重複新增。",
+    "paused": "還原會等待同步完成，這樣你的備份才能與帳號中已有的筆記比對。這台裝置的同步已暫停，請到「設定 > ID & Sync」關閉「暫停同步」。",
     "belowFloor": "還原會等待同步完成，這樣你的備份才能與帳號中已有的筆記比對。這個版本的應用程式太舊，無法同步，請先更新應用程式。"
   },
   "encryptedBackupLabel": "加密備份",
@@ -156,8 +156,8 @@
     "filesProgress": "正在匯出檔案… {{done}}/{{total}}",
     "building": "正在建立備份…",
     "compressing": "壓縮中…",
-    "missingFailed_other": "這部裝置無法下載{{items}}，所以匯出時略過了。請檢查連線後再匯出一次。",
-    "missingNotFound_other": "{{items}}不在這部裝置上，也不在伺服器上，所以匯出時略過了。"
+    "missingFailed_other": "這台裝置無法下載 {{items}}，所以匯出時略過了。請檢查連線後再匯出一次。",
+    "missingNotFound_other": "{{items}}不在這台裝置上，也不在伺服器上，所以匯出時略過了。"
   },
   "missing": {
     "pictures_other": "{{count}} 張圖片",
@@ -165,6 +165,7 @@
     "both": "{{pictures}}和{{files}}"
   },
   "upload": {
+    "discard": "捨棄",
     "completeTitle": "上傳完成",
     "failedTitle": "上傳失敗",
     "partialTitle": "{{done}} 個成功，{{failed}} 個失敗",
@@ -173,6 +174,9 @@
     "statusFailed": "失敗",
     "errorStorageFull": "儲存空間已滿。清出空間或加購儲存空間後即可上傳這個檔案。",
     "errorStorageFullKept": "超出你的儲存空間，先保留在這部裝置上。空間釋出後就會同步。",
+    "errorTooLarge": "檔案太大({{size}})。上限為 {{limit}} MB。",
+    "errorTooLargeFree": "檔案太大({{size}})。免費方案上限為 {{limit}} MB。",
+    "batchTitle_other": "{{count}} 個檔案",
     "statusUploading": "上傳中…",
     "statusWaiting": "等待中",
     "summaryDone": "{{count}} 個完成",
@@ -193,5 +197,10 @@
   },
   "saveErrors": {
     "shortWrite": "{{expected}} 位元組中只儲存了 {{written}} 位元組，檔案並不完整。請再試一次，並存到裝置本機儲存空間而非雲端資料夾。"
+  },
+  "shareSheet": {
+    "title_other": "有 {{count}} 個項目分享到 PrivacyNotes",
+    "line": "在你選擇之前，不會儲存任何內容。",
+    "saveAll": "全部儲存"
   }
 }

@@ -12,13 +12,12 @@
  * same name as the field the user typed it into.
  */
 import i18n from './i18n';
-import { exemptOpts } from './i18nExempt';
 import type { LocalNote } from './db';
 import { parseLoginBody } from './LoginForm';
 import { parseCardBody, detectCardNetwork } from './CardForm';
 import { parseSshKeyBody } from './SshKeyForm';
 import { formatAddressLines, formatContactDate, parseContactBody } from './contactBody';
-import { activeLocale } from './languages';
+import { dateLocale } from './intlFormat';
 import { isPublicField, loginExtrasOf } from './loginExtras';
 
 export interface VaultField {
@@ -81,8 +80,8 @@ export function vaultContent(note: Pick<LocalNote, 'type' | 'body' | 'trackers'>
     const s = parseSshKeyBody(note.body);
     const fields: VaultField[] = [];
     if (s.label) fields.push({ label: i18n.t('common:sshKeyForm.label'), value: s.label, mono: true });
-    if (s.publicKey) fields.push({ label: i18n.t('common:sshKeyForm.publicKey', exemptOpts('common:sshKeyForm.publicKey')), value: s.publicKey, mono: true });
-    if (s.privateKey) fields.push({ label: i18n.t('common:sshKeyForm.privateKey', exemptOpts('common:sshKeyForm.privateKey')), value: s.privateKey, mono: true, secret: true });
+    if (s.publicKey) fields.push({ label: i18n.t('common:sshKeyForm.publicKey'), value: s.publicKey, mono: true });
+    if (s.privateKey) fields.push({ label: i18n.t('common:sshKeyForm.privateKey'), value: s.privateKey, mono: true, secret: true });
     if (s.passphrase) fields.push({ label: i18n.t('common:sshKeyForm.passphrase'), value: s.passphrase, mono: true, secret: true });
     return { fields, notes: s.notes, notesLabel: i18n.t('common:sshKeyForm.notes') };
   }
@@ -100,7 +99,7 @@ export function vaultContent(note: Pick<LocalNote, 'type' | 'body' | 'trackers'>
     for (const a of c.addresses) fields.push({ label: label(i18n.t('shell:contacts.groupAddress'), a.label), value: formatAddressLines(a).join('\n') });
     for (const u of c.urls) fields.push({ label: label(i18n.t('shell:contacts.groupWebsite'), u.label), value: u.value });
     for (const p of c.profiles) fields.push({ label: label(i18n.t('shell:contacts.groupProfile'), p.label), value: p.value });
-    for (const d of c.dates) fields.push({ label: label(i18n.t('shell:contacts.groupDates'), d.label), value: formatContactDate(d.value, activeLocale()) });
+    for (const d of c.dates) fields.push({ label: label(i18n.t('shell:contacts.groupDates'), d.label), value: formatContactDate(d.value, dateLocale()) });
     for (const r of c.related) fields.push({ label: label(i18n.t('shell:contacts.groupRelated'), r.label), value: r.value });
     if (c.nickname) fields.push({ label: i18n.t('shell:contacts.nickname'), value: c.nickname });
     return { fields, notes: c.notes, notesLabel: i18n.t('shell:contacts.groupNote') };

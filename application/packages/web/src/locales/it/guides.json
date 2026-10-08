@@ -29,7 +29,7 @@
         {
           "h": "Cosa arriva",
           "p": [
-            "Titoli, testo delle note e formattazione arrivano intatti. Le checklist di Keep diventano vere liste di attività di PrivacyNotes, e le etichette di Keep arrivano come tag.",
+            "Titoli, testo delle note e formattazione arrivano intatti. Le checklist di Keep diventano veri elenchi di attività di PrivacyNotes, e le etichette di Keep arrivano come tag.",
             "Trascina l'intero .zip di Takeout nell'importatore. Se l'hai già decompresso, funziona anche un singolo file .json dalla cartella Takeout/Keep."
           ]
         }
@@ -83,7 +83,7 @@
             "La tua struttura di cartelle viene ricostruita come cartelle vere, non appiattita in tag, per quanto in profondità sia annidata. Una nota in Work/Projects finisce in una cartella Work > Projects. Se reimporti lo stesso vault, le cartelle già create vengono riutilizzate invece di essere duplicate.",
             "Nel piano gratuito puoi sfogliare queste cartelle da subito; creare, rinominare e spostare cartelle è una funzione Pro, quindi un'importazione da Obsidian è un buon modo per provarla prima di passare a Pro.",
             "Il frontmatter YAML viene compreso: tag, alias e date di creazione sono rispettati, e i #tag nel testo vengono uniti al campo tag. Durante l'importazione puoi anche spuntare \"Aggiungi anche un tag per cartella\" per aggiungere ogni nome di cartella come tag, comodo se ti piace filtrare per tag.",
-            "I tuoi collegamenti [[...]] continuano a funzionare: PrivacyNotes li mostra come note-link, quindi le connessioni tra le note sopravvivono al trasloco. Le cartelle .obsidian (configurazione) e .trash vengono saltate automaticamente."
+            "I tuoi collegamenti [[...]] continuano a funzionare: PrivacyNotes li mostra come collegamenti fra note, quindi le connessioni tra le note sopravvivono al trasloco. Le cartelle .obsidian (configurazione) e .trash vengono saltate automaticamente."
           ]
         }
       ]
@@ -98,7 +98,7 @@
           "h": "Esporta le note da Standard Notes",
           "steps": [
             "Apri Standard Notes (sul web su app.standardnotes.com, o l'app desktop) e accedi.",
-            "Apri le Preferenze, poi la sezione Backups.",
+            "Apri Preferences, poi la sezione Backups.",
             "Scarica un backup dei dati e scegli il formato decifrato (decrypted) quando richiesto.",
             "Ottieni uno .zip contenente un file chiamato \"Standard Notes Backup and Import File.txt\". Tieni lo zip com'è."
           ]
@@ -106,7 +106,7 @@
         {
           "h": "Note Super, checklist e codici 2FA mantengono la loro forma",
           "p": [
-            "Le note Super mantengono titoli, elenchi, checklist, tabelle, blocchi di codice, colori e sezioni comprimibili. Le checklist finiscono in Attività, i fogli di calcolo diventano tabelle e le voci dell'autenticatore diventano login nella Cassaforte, con la loro chiave 2FA. I tag annidati diventano cartelle, e ogni nota mantiene anche i suoi tag.",
+            "Le note Super mantengono titoli, elenchi, checklist, tabelle, blocchi di codice, colori e sezioni comprimibili. Le checklist finiscono in Attività, i fogli di calcolo diventano tabelle e le voci dell'autenticatore diventano credenziali nella Cassaforte, con la loro chiave 2FA. I tag annidati diventano cartelle, e ogni nota mantiene anche i suoi tag.",
             "I file che hai caricato su Standard Notes restano sul loro server, quindi il backup contiene solo i loro nomi. Ogni nota importata segna dove si trovava un file. Scarica quei file da Standard Notes e aggiungili di nuovo alla nota."
           ]
         },
@@ -150,17 +150,17 @@
         {
           "h": "Esporta le note da Samsung Notes",
           "steps": [
-            "In Samsung Notes, tieni premuto per selezionare le note che vuoi (o Seleziona tutto).",
-            "Tocca il menu a tre puntini e scegli \"Salva come file\".",
-            "Scegli \"File Microsoft Word\" (.docx) per le note formattate, o \"File di testo\" (.txt) per il testo semplice.",
+            "In Samsung Notes, tieni premuto per selezionare le note che vuoi (o Select all).",
+            "Tocca il menu a tre puntini e scegli \"Save as file\".",
+            "Scegli \"Microsoft Word file\" (.docx) per le note formattate, o \"Text file\" (.txt) per il testo semplice.",
             "Samsung salva un file per nota nella memoria del dispositivo. Raccoglili in un unico .zip (selezionali nel gestore file e comprimi) se sono più di due o tre."
           ]
         },
         {
           "h": "Cosa arriva",
           "p": [
-            "Dagli export .docx: grassetto, corsivo, sottolineato, barrato, elenchi puntati e numerati, e caselle di spunta (che diventano vere liste di attività) sopravvivono tutti. Dagli export .txt: il testo, nient'altro.",
-            "Le immagini incorporate in una nota Samsung arrivano a mano: l'importatore segnala ogni nota che ne aveva una, così sai esattamente dove rimetterle. Testo, titoli e date arrivano tutti nello stesso passaggio."
+            "Dagli export .docx: grassetto, corsivo, sottolineato, barrato, elenchi puntati e numerati, e caselle di spunta (che diventano veri elenchi di attività) sopravvivono tutti. Dagli export .txt: il testo, nient'altro.",
+            "Le immagini incorporate in una nota Samsung vanno trasferite manualmente: l'importatore segnala ogni nota che ne aveva una, così sai esattamente dove rimetterle. Testo, titoli e date arrivano tutti nello stesso passaggio."
           ]
         }
       ]
@@ -227,21 +227,21 @@
         {
           "h": "Un taccuino alla volta",
           "p": [
-            "Non esiste un export dell'intero account, e uno stack non si esporta come blocco unico. Selezionare le note a mano ti ferma a 100 per export, quindi il clic destro sul taccuino è insieme la via più rapida e l'unica per superare quel limite. Nemmeno gli stack finiscono nel file, così le tue cartelle arrivano piatte.",
+            "Non esiste un'esportazione dell'intero account, e uno stack non si esporta come blocco unico. Selezionare le note a mano ti ferma a 100 per esportazione, quindi il clic destro sul taccuino è insieme la via più rapida e l'unica per superare quel limite. Nemmeno gli stack finiscono nel file, così le tue cartelle arrivano piatte.",
             "Anche il piano gratuito può esportare, con un'avvertenza: consente un solo dispositivo collegato, e qui serve l'app desktop."
           ]
         },
         {
           "h": "Cosa arriva e cosa no",
           "p": [
-            "Tabelle, blocchi di codice, evidenziazioni, sottolineato, colore del testo e formule sopravvivono tutti. Le checklist diventano liste di attività, un promemoria della nota diventa un'attività in cima alla nota, allegati e immagini vengono ricifrati nel tuo archivio, i ritagli web mantengono l'URL di origine e le note vocali mantengono la trascrizione. I collegamenti interni diventano note-link, abbinati sul titolo della nota collegata, dato che Evernote non esporta alcun identificativo di nota.",
+            "Tabelle, blocchi di codice, evidenziazioni, sottolineato, colore del testo e formule sopravvivono tutti. Le checklist diventano elenchi di attività, un promemoria della nota diventa un'attività in cima alla nota, allegati e immagini vengono ricifrati nel tuo spazio di archiviazione, i ritagli web mantengono l'URL di origine e le note vocali mantengono la trascrizione. I collegamenti interni diventano collegamenti fra note, abbinati sul titolo della nota collegata, dato che Evernote non esporta alcun identificativo di nota.",
             "Le attività non arrivano: l'export lascia un segnaposto \"Content not supported\" dov'era ogni blocco attività, senza titoli, scadenze o stati di completamento da leggere. I blocchi cifrati restano cifrati, quindi decifrali prima in Evernote. Caratteri personalizzati, allineamento del testo e gerarchia annidata dei tag vengono scartati."
           ]
         },
         {
-          "h": "Se l'export si ferma a metà",
+          "h": "Se l'esportazione si ferma a metà",
           "p": [
-            "Evernote tiene le tue note sui propri server e le riscarica mentre scrive l'export, quindi un taccuino grande può fermarsi al 13%, poi al 40%, poi finire. Rilancia lo stesso export: ogni tentativo mette in cache in locale un pezzo in più e arriva più lontano del precedente."
+            "Evernote tiene le tue note sui propri server e le riscarica mentre scrive l'esportazione, quindi un taccuino grande può fermarsi al 13%, poi al 40%, poi finire. Rilancia la stessa esportazione: ogni tentativo mette in cache in locale un pezzo in più e arriva più lontano del precedente."
           ]
         }
       ]
@@ -295,21 +295,21 @@
         {
           "h": "Scegli HTML, non Markdown",
           "p": [
-            "Il menu di export di Notesnook offre Text, Markdown, Markdown + Frontmatter e HTML. Solo HTML tiene tutto.",
+            "Il menu di esportazione di Notesnook offre Text, Markdown, Markdown + Frontmatter e HTML. Solo HTML tiene tutto.",
             "Entrambe le opzioni Markdown appiattiscono le tue note prima di scriverle: sottolineato, dimensioni del carattere e allineamento del testo spariscono prima ancora che il file arrivi da noi. L'opzione Markdown semplice inoltre non scrive né tag né date originali, quindi ogni nota importata arriverebbe senza tag e con la data di oggi. Le accettiamo comunque entrambe, e ti diremo cosa è andato perso, ma HTML è quella da scegliere.",
-            "L'export Text non ha struttura da leggere e non viene accettato."
+            "L'esportazione Text non ha struttura da leggere e non viene accettata."
           ]
         },
         {
           "h": "Cosa arriva",
           "p": [
             "I tuoi taccuini vengono ricostruiti come cartelle vere, non appiattiti in tag, alla stessa profondità in cui erano annidati in Notesnook. Una nota in Work > Projects finisce in una cartella Work > Projects.",
-            "Le note in evidenza e quelle preferite restano marcate. Notesnook tiene Pin e Favorite come due proprietà separate; PrivacyNotes ha un'unica lista In evidenza, quindi una nota che fosse l'una o l'altra finisce lì.",
+            "Le note fissate e quelle preferite restano marcate. Notesnook tiene Pin e Favorite come due proprietà separate; PrivacyNotes ha un unico elenco Fissati, quindi una nota che fosse l'una o l'altra finisce lì.",
             "Evidenziazioni, formule e allineamento del testo arrivano come tali: il testo evidenziato resta evidenziato, le formule vengono di nuovo visualizzate come formule matematiche e i blocchi centrati o allineati a destra mantengono il loro allineamento. Caratteri personalizzati, dimensioni del carattere e colori del testo qui non hanno un equivalente, quindi quello stile viene scartato e il testo viene mantenuto."
           ]
         },
         {
-          "h": "Un file di backup non è un export",
+          "h": "Un file di backup non è un'esportazione",
           "p": [
             "Notesnook può anche salvare un file di backup che finisce in .nnbackupz. Quello è un'altra cosa: mette ogni allegato nel formato cifrato di Notesnook, che solo Notesnook sa aprire. Trascinane uno qui e te lo diremo invece di importarlo a metà. Usa piuttosto \"Export all notes\" in HTML."
           ]
@@ -357,7 +357,7 @@
         {
           "h": "Dove vanno i tuoi luoghi",
           "p": [
-            "Diario registra dove è successa una pagina, e PrivacyNotes non ha una mappa propria, quindi ogni luogo diventa un link in un elenco \"Places\" alla fine della pagina.",
+            "Diario registra il luogo di ogni pagina, e PrivacyNotes non ha una mappa propria, quindi ogni luogo diventa un link in un elenco \"Places\" alla fine della pagina.",
             "I luoghi che Diario ha registrato con le coordinate aprono un segnaposto su quel punto esatto su OpenStreetMap. I luoghi di cui ha solo il nome aprono invece una ricerca per quel nome. Non viene inviato nulla da nessuna parte finché non ne clicchi uno."
           ]
         },
@@ -380,7 +380,7 @@
       "app": "UpNote",
       "title": "Esporta le tue note di UpNote",
       "metaTitle": "Esportare le note di UpNote - PrivacyNotes",
-      "lead": "In UpNote l'esportazione si chiama backup: scrive tutto il tuo account in una cartella su disco, piano gratuito incluso. Zippa quella cartella e si trasferisce tutto: le note con la loro formattazione completa, i taccuini, i tag, le note in evidenza, i collegamenti tra note, le immagini e gli allegati.",
+      "lead": "In UpNote l'esportazione si chiama backup: scrive tutto il tuo account in una cartella su disco, piano gratuito incluso. Zippa quella cartella e si trasferisce tutto: le note con la loro formattazione completa, i taccuini, i tag, le note fissate, i collegamenti fra note, le immagini e gli allegati.",
       "sections": [
         {
           "img": {
@@ -426,17 +426,17 @@
             "Le app per telefono di UpNote non possono scrivere un backup. Apri invece una nota e tocca i tre puntini nell'angolo in alto.",
             "Scegli Export > \"Export to HTML\". Non Markdown: UpNote appiattisce riquadri, colori del testo, allineamento, apici e pedici prima di scrivere il suo Markdown, mentre l'HTML tiene tutto.",
             "Condividi il risultato nella tua app File oppure invialo a te stesso, poi trascinalo qui senza modificarlo.",
-            "Devi spostare più note? Salva gli export nell'app File, selezionali tutti e scegli Comprimi: quell'unico zip si importa in un colpo solo."
+            "Devi spostare più note? Salva le esportazioni nell'app File, selezionale tutte e scegli Comprimi: quell'unico zip si importa in un colpo solo."
           ],
           "p": [
-            "L'export in HTML porta con sé tutta la tua formattazione. Quello che nessun export per singola nota trasporta è la struttura della libreria: taccuini, note in evidenza e date vivono solo nel backup, quindi appena arrivi a un computer la via del backup qui sopra completa il trasloco. Anche gli export in Markdown vengono accettati, con l'appiattimento che si portano dietro."
+            "L'esportazione in HTML porta con sé tutta la tua formattazione. Quello che nessuna esportazione per singola nota trasporta è la struttura della libreria: taccuini, note fissate e date vivono solo nel backup, quindi appena arrivi a un computer la via del backup qui sopra completa il trasloco. Anche le esportazioni in Markdown vengono accettate, con l'appiattimento che si portano dietro."
           ]
         },
         {
           "h": "Cosa arriva",
           "p": [
             "I tuoi taccuini vengono ricostruiti come cartelle vere, annidate in profondità quanto lo erano in UpNote. Una nota che stava in più taccuini finisce nel primo e si porta dietro gli altri come tag.",
-            "Le note in evidenza e quelle in Quick Access arrivano come In evidenza. Le note cestinate finiscono nel cestino, i modelli vengono importati come note con il tag #template, i collegamenti tra le note diventano note-link e ogni nota mantiene le sue date originali.",
+            "Le note fissate e quelle in Quick Access arrivano come fissate. Le note cestinate finiscono nel cestino, i modelli vengono importati come note con il tag #template, i link tra le note diventano collegamenti fra note e ogni nota mantiene le sue date originali.",
             "La formattazione sopravvive: checklist, tabelle, blocchi di codice, formule, sottolineato, apici e pedici, allineamento del testo ed evidenziazioni. Le sezioni a scomparsa diventano riquadri richiudibili e mantengono il loro stato aperto o chiuso. I colori del testo e i colori di evidenziazione vengono entrambi abbinati alla palette dell'editor, così un'evidenziazione gialla resta gialla e una verde resta verde. Ogni nota arriva com'era all'ultimo salvataggio in UpNote."
           ]
         },
@@ -465,7 +465,7 @@
         {
           "h": "Esportare da Firefox",
           "steps": [
-            "Premi Ctrl+Maiusc+O, oppure Cmd+Maiusc+O su un Mac, per aprire la finestra Libreria.",
+            "Premi Ctrl+Maiusc+O, oppure Cmd+Maiusc+O su un Mac, per aprire la finestra Library.",
             "Fai clic su \"Import and Backup\" nella sua barra degli strumenti e scegli \"Export Bookmarks to HTML...\".",
             "Salvalo. Il file si chiama bookmarks.html."
           ]
@@ -494,14 +494,14 @@
             "height": 1356
           },
           "p": [
-            "La stessa finestra offre History, Extensions, Credit Cards e Passwords. Lasciali spenti. PrivacyNotes non legge altro che i segnalibri dall’archivio, ma un export che poi devi cancellare è un’altra copia in chiaro delle tue password nella cartella dei download."
+            "La stessa finestra offre History, Extensions, Credit Cards e Passwords. Lasciali spenti. PrivacyNotes non legge altro che i segnalibri dall’archivio, ma un’esportazione che poi devi cancellare è un’altra copia in chiaro delle tue password nella cartella dei download."
           ]
         },
         {
           "h": "Cosa arriva",
           "p": [
-            "Ogni cartella che avevi arriva com’era, annidata come l’hai lasciata, dentro una nuova cartella chiamata Segnalibri. La barra dei segnalibri è l’eccezione: il suo contenuto sale di un livello invece di diventare una cartella, perché ogni browser chiama quella barra in modo diverso in ogni lingua. Safari non marca nulla, quindi il suo Favorites arriva davvero come cartella.",
-            "Il giorno in cui hai salvato ogni segnalibro arriva con lui. Safari è l'unico browser che non scrive alcuna data, quindi un export di Safari arriva con la data di oggi.",
+            "Ogni cartella che avevi arriva com’era, annidata come l’hai lasciata, dentro una nuova cartella chiamata Bookmarks. La barra dei segnalibri è l’eccezione: il suo contenuto sale di un livello invece di diventare una cartella, perché ogni browser chiama quella barra in modo diverso in ogni lingua. Safari non marca nulla, quindi il suo Favorites arriva davvero come cartella.",
+            "Il giorno in cui hai salvato ogni segnalibro arriva con lui. Safari è l'unico browser che non scrive alcuna data, quindi un'esportazione di Safari arriva con la data di oggi.",
             "Firefox è anche l'unico che salva tag e una parola chiave della barra degli indirizzi insieme al segnalibro. Se il tuo file li contiene, l'anteprima ti offre una casella per tenerli, ed entrambi arrivano qui come tag.",
             "Tre cose restano fuori di proposito. Le scorciatoie interne del browser come Most Visited non sono link veri: vengono contate e saltate. Nemmeno le icone dei siti si leggono dal file, perché la copia salvata lì invecchia; PrivacyNotes ne recupera una fresca. E una cartella che non conteneva segnalibri non viene ricreata.",
             "Importare due volte lo stesso file è sicuro. Un segnalibro il cui indirizzo hai già salvato viene saltato invece che aggiunto di nuovo, e l'anteprima ti dice quanti."
@@ -567,9 +567,9 @@
         {
           "h": "Cosa arriva",
           "p": [
-            "Ogni riga diventa un login con il suo sito, nome utente e password, più la nota che il browser teneva insieme. Firefox è l'unico dei tre che scrive le date, quindi i suoi login mantengono il giorno in cui li hai salvati mentre gli altri arrivano con la data di oggi. Safari è l'unico che esporta una chiave di autenticazione, e solo se tenevi i codici in Safari: quando c'è, il codice continua a funzionare qui.",
-            "I browser salvano una voce per ogni pagina di accesso, quindi un export grande contiene spesso più righe per la stessa azienda. Arrivano tutte, e puoi unirle o cancellarle dopo.",
-            "Il browser tiene le password in un elenco piatto, quindi non c'è nessuna struttura di cartelle da ricostruire. Ogni login arriva invece con un tag, e questo ti riporta l'intero blocco con un clic."
+            "Ogni riga diventa un accesso con il suo sito, nome utente e password, più la nota che il browser aveva salvato con essa. Firefox è l'unico dei tre che scrive le date, quindi i suoi accessi mantengono il giorno in cui li hai salvati mentre gli altri arrivano con la data di oggi. Safari è l'unico che esporta una chiave di autenticazione, e solo se tenevi i codici in Safari: quando c'è, il codice continua a funzionare qui.",
+            "I browser salvano una voce per ogni pagina di accesso, quindi un'esportazione di grandi dimensioni contiene spesso più righe per la stessa azienda. Arrivano tutte, e puoi unirle o eliminarle dopo.",
+            "Il browser tiene le password in un elenco piatto, quindi non c'è nessuna struttura di cartelle da ricostruire. Ogni credenziale arriva invece con un tag, e questo ti riporta l'intero blocco con un clic."
           ]
         },
         {
@@ -591,19 +591,19 @@
           "steps": [
             "Trova la cartella con i tuoi file .md. Typora non ha una libreria propria, quindi sta dove hai scelto di salvare.",
             "Clic destro sulla cartella, poi Comprimi (macOS) oppure Invia a > Cartella compressa (Windows).",
-            "Trascina lo .zip nell'importazione."
+            "Trascina lo .zip nell'importatore."
           ]
         },
         {
-          "h": "Decidi dove vivono le immagini prima di zippare",
+          "h": "Decidi dove tenere le immagini prima di zippare",
           "p": [
-            "Typora può tenere un'immagine accanto alla nota, dentro una sottocartella assets, o lasciarla dove l'hai trascinata. Solo le immagini dentro la cartella che zippi possono arrivare qui. Apri Preferenze > Immagine, impostalo per copiare le immagini nella cartella assets della nota, e usa \"Formato > Immagine > Copia i file immagine in...\" sulle note più vecchie le cui immagini puntano ancora altrove."
+            "Typora può tenere un'immagine accanto alla nota, dentro una sottocartella assets, o lasciarla nella cartella da cui l'hai trascinata. Solo le immagini dentro la cartella che zippi possono arrivare qui. Apri Preferences > Image, impostalo per copiare le immagini nella cartella assets della nota, e usa \"Format > Image > Copy image files to...\" sulle note più vecchie le cui immagini puntano ancora altrove."
           ]
         },
         {
           "h": "Cosa arriva",
           "p": [
-            "Le sottocartelle diventano cartelle vere, a qualsiasi profondità. Titoli, tabelle, liste di attività, blocchi di codice, note a piè di pagina, formule ed evidenziazioni sopravvivono, e gli URL nudi diventano link cliccabili. Il frontmatter YAML viene letto per titolo, date e tag.",
+            "Le sottocartelle diventano cartelle vere, a qualsiasi profondità. Titoli, tabelle, elenchi di attività, blocchi di codice, note a piè di pagina, formule ed evidenziazioni sopravvivono, e gli URL nudi diventano link cliccabili. Il frontmatter YAML viene letto per titolo, date e tag.",
             "I tag arrivano in entrambi i modi: dal frontmatter YAML e dagli #hashtag scritti nel testo. Un hashtag dentro un blocco di codice resta codice, e un numero secco come #4711 resta il riferimento a un ticket."
           ]
         }
@@ -618,10 +618,10 @@
         {
           "h": "Tira fuori la cartella da iCloud, poi zippala",
           "steps": [
-            "In iA Writer, clic destro sulla cartella nella barra laterale Library, poi \"Mostra nel Finder\".",
+            "In iA Writer, clic destro sulla cartella nella barra laterale Library, poi \"Show in Finder\".",
             "Nel Finder, clic destro su quella cartella e scegli \"Scarica ora\", così iCloud recupera ogni file invece di lasciare segnaposto.",
             "Di nuovo clic destro, poi Comprimi.",
-            "Trascina lo .zip nell'importazione."
+            "Trascina lo .zip nell'importatore."
           ]
         },
         {
@@ -639,7 +639,7 @@
         {
           "h": "Cosa arriva",
           "p": [
-            "Le cartelle della Library diventano cartelle vere, a qualsiasi profondità, e le immagini e i file a cui le note rimandano vengono con loro. Titoli, tabelle, liste di attività, blocchi di codice e note a piè di pagina sopravvivono, e gli URL nudi diventano link cliccabili. Il frontmatter viene letto per titolo, date e tag.",
+            "Le cartelle della Library diventano cartelle vere, a qualsiasi profondità, e le immagini e i file a cui le note rimandano vengono con loro. Titoli, tabelle, elenchi di attività, blocchi di codice e note a piè di pagina sopravvivono, e gli URL nudi diventano link cliccabili. Il frontmatter viene letto per titolo, date e tag.",
             "I content block, che mentre scrivi tirano un file dentro un altro, arrivano come il link con cui sono scritti, non come il testo che richiamano."
           ]
         }
@@ -654,22 +654,22 @@
         {
           "h": "Zippa lo spazio di lavoro",
           "steps": [
-            "In Zettlr, clic destro sullo spazio di lavoro in cima all'albero dei file e scegli \"Mostra nel Finder\", o \"Mostra in Esplora file\" su Windows.",
+            "In Zettlr, fai clic con il tasto destro sullo spazio di lavoro in cima all'albero dei file e scegli \"Show in Finder\", o \"Show in Explorer\" su Windows.",
             "Clic destro sulla cartella lì e comprimila.",
-            "Trascina lo .zip nell'importazione."
+            "Trascina lo .zip nell'importatore."
           ]
         },
         {
           "h": "I link Zettelkasten tengono il testo, non la destinazione",
           "p": [
-            "Zettlr collega le note per ID, quindi un link si legge [[20260823120000]]. Noi teniamo i note-link esattamente come sono scritti, il che significa che un link per ID trova la sua nota qui solo se una nota si intitola davvero con quell'ID. I link scritti con il nome del file funzionano normalmente: se ci conti, passa il formato dei link interni al nome del file prima di esportare.",
+            "Zettlr collega le note per ID, quindi un link si legge [[20260823120000]]. Noi teniamo i collegamenti fra note esattamente come sono scritti, il che significa che un link per ID trova la sua nota qui solo se una nota si intitola davvero con quell'ID. I link scritti con il nome del file funzionano normalmente: se ci conti, passa il formato dei link interni al nome del file prima di esportare.",
             "Le chiavi di citazione come [@doe2026] per noi sono testo. Arrivano invariate e smettono di essere cliccabili."
           ]
         },
         {
           "h": "Cosa arriva",
           "p": [
-            "Le sottocartelle dello spazio di lavoro diventano cartelle vere, a qualsiasi profondità, e le immagini e i file a cui le note rimandano vengono con loro. Titoli, tabelle, liste di attività, blocchi di codice, note a piè di pagina, formule ed evidenziazioni sopravvivono tutti. I tag vengono letti dal frontmatter YAML e dagli #hashtag scritti nel testo, quindi uno Zettelkasten costruito sugli hashtag mantiene il suo ordine."
+            "Le sottocartelle dello spazio di lavoro diventano cartelle vere, a qualsiasi profondità, e le immagini e i file a cui le note rimandano vengono con loro. Titoli, tabelle, elenchi di attività, blocchi di codice, note a piè di pagina, formule ed evidenziazioni sopravvivono tutti. I tag vengono letti dal frontmatter YAML e dagli #hashtag scritti nel testo, quindi uno Zettelkasten costruito sugli hashtag mantiene il suo ordine."
           ]
         }
       ]
@@ -683,16 +683,16 @@
         {
           "h": "Scarica la cartella Notes",
           "steps": [
-            "Apri File nel tuo Nextcloud, dal browser.",
+            "Apri Files nel tuo Nextcloud, dal browser.",
             "Trova la cartella Notes. Si chiama Notes, a meno che la tua amministrazione non l'abbia rinominata.",
-            "Apri il menu \"...\" sulla cartella e scegli Scarica. Nextcloud impacchetta l'intera cartella in uno .zip.",
-            "Trascina lo .zip nell'importazione."
+            "Apri il menu \"...\" sulla cartella e scegli Download. Nextcloud impacchetta l'intera cartella in uno .zip.",
+            "Trascina lo .zip nell'importatore."
           ]
         },
         {
           "h": "Cosa arriva",
           "p": [
-            "Le categorie sono salvate come sottocartelle, quindi arrivano come cartelle vere. Le date delle note vengono dai file stessi, non dal momento dell'importazione. Titoli, tabelle, liste di attività, blocchi di codice, note a piè di pagina e formule sopravvivono, e gli URL nudi diventano link cliccabili.",
+            "Le categorie sono salvate come sottocartelle, quindi arrivano come cartelle vere. Le date delle note vengono dai file stessi, non dal momento dell'importazione. Titoli, tabelle, elenchi di attività, blocchi di codice, note a piè di pagina e formule sopravvivono, e gli URL nudi diventano link cliccabili.",
             "Qui importi una copia. Dal tuo Nextcloud non viene cancellato niente e niente torna indietro in sincronizzazione, quindi tieni il server come archivio finché non sei contento di quello che è atterrato qui."
           ]
         },

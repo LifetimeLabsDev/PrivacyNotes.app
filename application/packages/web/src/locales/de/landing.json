@@ -15,7 +15,7 @@
   "hero": {
     "badge": "Auf deinem Gerät verschlüsselt, prüfbar",
     "headline": "Notizen. Aufgaben.<br />Dateien. Tresor.<stroke>Zero-Knowledge.</stroke>",
-    "subhead": "Ein verschlüsselter Ort für alles, was du nie posten würdest. Auf deinem Gerät verschlüsselt; verwahre deinen Schlüssel selbst, und wir könnten es nicht lesen, selbst wenn wir wollten.",
+    "subhead": "Ein verschlüsselter Ort für alles, was du nie posten würdest. Standardmäßig privat, auf jedem deiner Geräte.",
     "tryDemo": "Demo ausprobieren",
     "microcopy": "Für immer kostenlos. Keine Kreditkarte. Anmeldung mit Google, Apple, GitHub oder einfach einer 12-Wort-Phrase.",
     "alreadyHaveVault": "Du hast schon einen Tresor? Anmelden",
@@ -48,7 +48,7 @@
   "pillars": {
     "kicker": "Acht Säulen, sieben unter einem Schlüssel - und eine auf deiner Festplatte",
     "notesName": "Notizen",
-    "notesBlurb": "Live-Editor, Tags, sofortige Suche.",
+    "notesBlurb": "Live-Editor mit Formatierung, Tags, sofortige Suche.",
     "tasksName": "Aufgaben",
     "tasksBlurb": "Jede Checkbox, eine Ansicht.",
     "vaultName": "Tresor",
@@ -119,9 +119,8 @@
     "checksumAria": "SHA-256-Prüfsumme für {{label}}",
     "debFootnote": "Du aktualisierst eine bestehende <highlight>.deb-Installation</highlight>? Deinstalliere sie vorher nicht. Ein Doppelklick auf die Datei landet in Ubuntus App Center in einer Sackgasse, dort steht nur, dass die App installiert ist. Installiere die neue Version im Terminal einfach über die alte. Nimm die Zeile, die zu deinem Rechner passt; dpkg --print-architecture sagt dir, welche das ist:",
     "availability": "Jetzt verfügbar: macOS 13+, Windows 10+, iOS 17.4+, Linux und Android.",
-    "betaNote": "Alle unsere Apps sind in der Beta-Phase und können noch Fehler enthalten, daher ist die Web-Version derzeit die stabilste. Jede App aktualisiert sich automatisch, und wir liefern fast täglich Fixes.",
     "pkgToggle": "Mit einem Paketmanager installieren ({{platforms}})",
-    "pkgBrewDesc": "Die App aktualisiert sich selbst, brew upgrade nicht.",
+    "pkgBrewDesc": "brew upgrade überspringt sie: Die App aktualisiert sich selbst.",
     "pkgWingetDesc": "In Windows 10 und 11 enthalten.",
     "pkgScoopDesc": "Scoop aktualisiert nie von selbst. Führe scoop update privacynotes aus.",
     "pkgFootnote": "Jeder installiert denselben signierten Build.",
@@ -161,7 +160,7 @@
     "proLock": "Schreibgeschützte Notizen",
     "proPin": "Notizen mit PIN schützen",
     "proAnalytics": "Wohlbefindens-Analysen + Export",
-    "proZen": "Zen-Modus und zusätzliche Themes",
+    "proZen": "Zen-Modus und zusätzliche Designs",
     "proStorage": "500 MB Speicher, bis 50 MB pro Datei, <expand>erweiterbar</expand>"
   },
   "storageAddon": {
@@ -286,7 +285,7 @@
     "noRecoveryTerm": "Keine Wiederherstellung",
     "noRecoveryDesc": "Phrase verloren, Notizen verloren",
     "deviceTerm": "Auf dem Gerät erzeugt",
-    "deviceDesc": "Bei Selbstverwahrung berührt deine Phrase nie unsere Server",
+    "deviceDesc": "Bei Selbstverwahrung gelangt deine Phrase nie auf unsere Server",
     "zkTerm": "Zero-Knowledge",
     "zkDesc": "Bei Selbstverwahrung können wir deine Daten nicht lesen oder wiederherstellen",
     "writeTerm": "Schreib sie auf",
@@ -310,48 +309,41 @@
       "rating": "Bewertung"
     },
     "modalTitle": "Über",
-    "intro": "<brand/> ist ein Zero-Knowledge-Arbeitsbereich für deine Notizen, Aufgaben, Dateien und deinen Tresor. Deine 12-Wort-Phrase leitet einen Schlüssel in deinem Browser ab; jedes Byte auf dem Server ist verschlüsselt; bei Selbstverwahrung kann niemand (auch wir nicht) deine Notizen lesen. Daten gespeichert in der <nowrap>Schweiz</nowrap>. Verschlüsselt auf deinem Gerät, und es funktioniert auch offline.",
+    "intro": "<brand/> bündelt deine Notizen, Aufgaben, dein Tagebuch, Passwörter, Dateien, Lesezeichen und Kontakte an einem Ort. Alles wird auf deinem Gerät mit einem Schlüssel aus deinen 12 Wörtern verschlüsselt und bleibt auch auf unseren Servern in der <nowrap>Schweiz</nowrap> verschlüsselt. Es funktioniert offline, und die App ist Open Source.",
     "versionHeading": "Version",
     "windowVersion": "Version {{version}}",
     "windowHelp": "Hilfe-Center",
     "windowWhatsNew": "Changelog",
-    "openOnWeb": "Auf PrivacyNotes.app ansehen",
-    "viewFullChangelog": "Vollständigen Changelog auf PrivacyNotes.app ansehen",
+    "whatsNew": "Neuigkeiten",
+    "seeWhatsNew": "Alle Änderungen mit Screenshots auf PrivacyNotes.app",
     "feedbackHeading": "Feedback",
-    "feedbackPrompt": "Fehler gefunden oder einen Funktionswunsch? Melde dich hier bei uns:",
     "legalHeading": "Rechtliches",
     "privacyPolicy": "Datenschutzerklärung",
     "termsOfService": "Nutzungsbedingungen",
     "refundPolicy": "Rückerstattungsrichtlinie",
     "tagline": "Keine Abos. Nur Software. Kein Service.",
-    "changelogType": {
-      "new": "Neu",
-      "improved": "Verbessert",
-      "fixed": "Behoben"
-    },
-    "changelogComingSoon": "Changelog folgt bald.",
-    "changelogLatest": "Neueste",
-    "hotkeysFootnote": "Die meisten Tastenkürzel werden ignoriert, während du in ein Textfeld tippst, sodass normale Tasten wie J und K weiterhin J und K schreiben."
+    "hotkeysFootnote": "Die meisten Tastenkürzel werden ignoriert, während du in ein Textfeld tippst, sodass normale Tasten wie J und K weiterhin J und K schreiben.",
+    "singleKeysTitle": "Tastenkürzel mit einer Taste",
+    "singleKeysDesc": "Nutze J, K, / und ? ohne Cmd oder Strg gedrückt zu halten."
   },
   "trust": {
     "openSourceHeading": "Open Source",
     "openSourceLink": "Quellcode auf GitHub.com lesen",
     "openSourceBody": "Die App und die Verschlüsselung darin sind veröffentlicht, jeder kann unsere Zero-Knowledge-Aussagen also überprüfen.",
     "dataStorageHeading": "Datenspeicherung",
-    "dataStorageBody": "Verschlüsselte Blobs gespeichert in Zürich, 🇨🇭 Schweiz.",
+    "dataStorageBody": "Verschlüsselte Blobs gespeichert in Zürich, <flag/> Schweiz.",
     "faviconsHeading": "Website-Icons",
     "faviconsBody1": "Website-Icons (Favicons) kommen von DuckDuckGo und Google, von unserem Server in deinem Auftrag geladen. Dein Browser kontaktiert keinen von beiden, sie sehen also unseren Server nach einer Domain fragen und nie dich.",
-    "faviconsBody2": "Icons werden 90 Tage lang auf deinem Gerät zwischengespeichert. Keine Anfrage enthält deine Identität, und du kannst Icons unter Einstellungen > Design abschalten."
+    "faviconsBody2": "Icons werden 90 Tage lang auf deinem Gerät zwischengespeichert. Keine Anfrage enthält deine Identität, und du kannst Icons unter Einstellungen > Design & Layout abschalten."
   },
   "feedback": {
     "title": "Feedback senden",
-    "intro": "Fehler gefunden oder einen Funktionswunsch? Wähle deine bevorzugte Plattform.",
+    "intro": "Fehler und Funktionswünsche gehören auf GitHub, damit wir jeden einzelnen nachverfolgen können.",
     "labelReportBug": "Fehler melden",
-    "descReportBug": "Öffnet GitHub, deine Version ist schon eingetragen",
-    "descX": "Folge uns für Updates und schnelles Feedback",
-    "descGithub": "Alles andere: Ideen, Fragen, Übersetzungen",
-    "descReddit": "Diskussion und Community-Feedback",
-    "descMastodon": "Folge uns für Updates und schnelles Feedback"
+    "descReportBug": "Deine Version ist eingetragen",
+    "descGithub": "Ideen, Fragen, Übersetzungen",
+    "followHeading": "Bleib auf dem Laufenden",
+    "outro": "Sicherheitslücke gefunden? Nutze den <contact>privaten Sicherheitskontakt auf GitHub</contact>, kein öffentliches Issue."
   },
   "rate": {
     "title": "Etwas zurückgeben",

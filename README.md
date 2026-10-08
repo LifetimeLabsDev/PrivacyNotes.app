@@ -85,7 +85,7 @@ The first claim holds under self-custody, which every phrase sign-up uses. Its e
 | Path | What it is |
 | :--- | :--- |
 | [`application/`](application/) | The client applications, as we build them: the web app, the desktop and mobile shells, and the shared crypto package. `cd application && pnpm install && pnpm build`. |
-| [`crypto/crypto.ts`](crypto/crypto.ts) | Key derivation and note encryption, about 560 lines, commented step by step. Not a reference implementation. The production code, copied here so the link is short; the canonical file is `application/packages/shared/src/crypto.ts`. Attachments and images use the same cipher through [`crypto/blob.ts`](crypto/blob.ts), which is another 50 lines. |
+| [`crypto/crypto.ts`](crypto/crypto.ts) | Key derivation and note encryption, about 590 lines, commented step by step. Not a reference implementation. The production code, copied here so the link is short; the canonical file is `application/packages/shared/src/crypto.ts`. Attachments and images use the same cipher through [`crypto/blob.ts`](crypto/blob.ts), which is another 50 lines. |
 | [`SECURITY.md`](SECURITY.md) | What we protect against, what we do not, and what the server can see. Written for users. |
 | [`THREAT_MODEL.md`](THREAT_MODEL.md) | Trust boundaries, cryptographic detail, and known limitations, including the unflattering ones. Written for auditors. **Start here if you are reviewing the project.** |
 

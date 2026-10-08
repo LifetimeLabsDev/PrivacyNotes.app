@@ -803,18 +803,44 @@ export type QuotaUsage = {
   quotaExceededSince: string | null;
 };
 
+/**
+ * The usage read did not answer. Distinct from an account that owns nothing,
+ * which is a successful read of zero, and from a limits read that fell back
+ * to the client-side ceiling, which still carries real usage numbers.
+ */
+export class QuotaUnavailableError extends Error {
+  constructor(detail?: string) {
+    super(detail ? `quota unavailable: ${detail}` : 'quota unavailable');
+    this.name = 'QuotaUnavailableError';
+  }
+}
+
 // Spec: ops/docs/pro-features.md (Free: 50 MB combined, 10k notes; Pro: 500 MB combined, 10k notes)
 const FALLBACK_FREE = { maxNotes: 10000, maxTotalBytes: 50 * 1000 * 1000, maxImageBytes: 50 * 1000 * 1000 };
 const FALLBACK_PRO = { maxNotes: 10000, maxTotalBytes: 500 * 1000 * 1000, maxImageBytes: 500 * 1000 * 1000 };
 
 /**
  * Fetch quota usage + dynamic limits from the server.
- * Returns zeroes/defaults if no row exists yet (new account).
  *
- * Tries `get_my_quota_status` first (includes quota_exceeded_since).
- * Falls back to `get_my_quota_limits` if the migration hasn't been applied.
+ * A row that does not exist yet reads as a real zero: a new account owns
+ * nothing, and `maybeSingle` returns no row rather than an error. A read that
+ * FAILED is a different thing and throws, because the consequences of the two
+ * diverge badly. `reconcileOrphanBlobs` compares this count against the local
+ * note count as its proof that the local mirror is complete, so a refused read
+ * that answered `noteCount: 0` would match the zero of a device whose vault is
+ * also empty and clear the pass to delete every aged blob in the account's
+ * bucket. Callers that only paint a number keep their previous figure; the
+ * one caller that deletes stops.
+ *
+ * `get_my_quota_status` is the current RPC. `get_my_quota_limits` is the
+ * pre-migration one, and it is called ONLY when PostgREST says the modern
+ * name does not exist (PGRST202). Every other error - an MFA refusal, an
+ * unlinked pubkey, an outage - means the second call is refused for the same
+ * reason as the first, and asking twice only doubles the refusals in the
+ * server log without ever repairing the authorization state behind them.
  *
  * @param isPro - client-side Pro flag used as fallback when neither RPC exists.
+ * @throws when the usage read fails. Never to report an empty account.
  */
 export async function fetchQuotaUsage(
   supabase: SupabaseClient,
@@ -841,6 +867,7 @@ export async function fetchQuotaUsage(
 
   if (usageRes.error) {
     console.error('[devices] quota fetch failed', usageRes.error);
+    throw new QuotaUnavailableError(usageRes.error.message);
   }
 
   const usage = usageRes.data as Record<string, number> | null;
@@ -852,10 +879,21 @@ export async function fetchQuotaUsage(
   let limits: { maxNotes: number; maxTotalBytes: number; maxImageBytes: number };
   let quotaExceededSince: string | null = null;
 
-  if (statusRes.error || !statusRes.data) {
-    if (statusRes.error) {
-      console.warn('[devices] get_my_quota_status RPC failed, trying fallback', statusRes.error.message);
-    }
+  // A refusal is not a missing function, so it never earns a second attempt
+  // at the same wall. Only PostgREST's "no such function" opens the legacy
+  // path. Any other error makes the whole answer unknown, and that is why it
+  // throws rather than falling back to the client-side ceiling: this RPC owns
+  // `quota_exceeded_since`, the over-quota banner reads it, and a refusal
+  // that returned a null there told the banner the account was back under
+  // quota. An unlinked pubkey produced exactly that pair - the table SELECT
+  // matches no row and reads as an empty account, while the RPC raises - so
+  // the usage check above cannot catch it.
+  const statusMissing = statusRes.error?.code === 'PGRST202';
+  if (statusRes.error && !statusMissing) {
+    console.warn('[devices] get_my_quota_status refused', statusRes.error.message);
+    throw new QuotaUnavailableError(statusRes.error.message);
+  }
+  if (statusMissing || !statusRes.data) {
     // Fallback to old RPC or hardcoded defaults.
     const fallbackRes = await supabase.rpc('get_my_quota_limits');
     if (fallbackRes.error || !fallbackRes.data) {
@@ -907,15 +945,22 @@ const PENDING_GC_RPC_MAX = 5000;
  * call site so no caller can forget it.
  *
  * Call after empty-trash or any bulk-delete sync completes.
+ *
+ * Returns whether the server actually recounted. A caller that paints a
+ * number may ignore it; a caller that DELETES may not, because the recount is
+ * half of its proof that the local reference set is complete. Demo mode
+ * returns false: it makes no server call, so nothing was recounted.
  */
-export async function recalculateQuota(supabase: SupabaseClient): Promise<void> {
-  if (isDemoMode()) return;
+export async function recalculateQuota(supabase: SupabaseClient): Promise<boolean> {
+  if (isDemoMode()) return false;
   const pending = (await db.blobGC.limit(PENDING_GC_RPC_MAX).toArray()).map((e) => e.uuid);
   const { error } = await readWithRetry(() => supabase.rpc('recalculate_my_quota', { p_pending_gc: pending }));
   if (error) {
     // Best-effort - the RPC may not be deployed yet. Log and move on.
     console.warn('[devices] recalculate_my_quota failed:', error.message);
+    return false;
   }
+  return true;
 }
 
 /**

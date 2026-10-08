@@ -8,7 +8,7 @@
     "ctaOpening": "Abrindo o checkout...",
     "ctaSignUp": "Cadastre-se para liberar",
     "intro": {
-      "storage": "Envios maiores e mais espaço são um recurso Pro. Faça upgrade para arquivos de 50 MB e 500 MB de armazenamento.",
+      "storage": "Mais espaço é um recurso Pro: 500 MB de armazenamento, 50 MB por arquivo e até 5 GB a mais como complemento de armazenamento quando você precisar.",
       "folders": "As pastas são um recurso Pro. Organize suas notas em pastas aninhadas, na profundidade que você precisar, e mantenha cada projeto separado.",
       "looks": "Ícones e cores para pastas e etiquetas são um recurso Pro. Dê a cada uma um visual que você reconhece de relance.",
       "lock": "Bloquear uma nota é um recurso Pro. Faça upgrade para proteger qualquer nota contra edições acidentais.",
@@ -30,7 +30,7 @@
       "history": "Histórico completo de notas, restaure quando quiser",
       "themes": "Temas premium em todos os tons",
       "zen": "Modo zen, escrita sem distrações",
-      "storage": "500 MB de armazenamento + 50 MB de anexos"
+      "storage": "500 MB de armazenamento, até 5,5 GB com complementos de armazenamento"
     },
     "comparisonBeta": "Pague US$ {{earlyPrice}} uma vez. O Obsidian Sync custa US$ 48/ano, todo ano. O Standard Notes cobra US$ 90/ano. Preço de adotante inicial, garantido antes de subir para US$ {{proPrice}}.",
     "comparison": "Pague US$ {{proPrice}} uma vez e tenha para sempre. O Obsidian Sync custa US$ 48/ano e o Standard Notes US$ 90/ano, todo santo ano."
@@ -42,14 +42,14 @@
   },
   "checkout": {
     "title": "Boas-vindas ao clube",
-    "proLine": "<brand/> Pro, {{price}} $ uma única vez. Seu para sempre.",
-    "storageLine": "<brand/> +{{gb}} GB de armazenamento, {{price}} $ por ano.",
-    "benefitDevices": "Aparelhos ilimitados",
+    "proLine": "<brand/> Pro, US$ {{price}} uma única vez. Seu para sempre.",
+    "storageLine": "<brand/> +{{gb}} GB de armazenamento, US$ {{price}} por ano.",
+    "benefitDevices": "Dispositivos ilimitados",
     "benefitDevicesSub": "Celular, tablet, notebook, tudo sincronizado",
     "benefitStorage": "500 MB de armazenamento",
-    "benefitStorageSub": "10x o plano gratuito, expansível",
+    "benefitStorageSub": "10x o plano gratuito. Adicione até 5 GB a mais quando precisar",
     "benefitMore": "Mais recursos",
-    "benefitMoreSub": "Histórico de notas, pastas, modo zen",
+    "benefitMoreSub": "Histórico da nota, pastas, modo zen",
     "benefitRoom": "{{gb}} GB a mais de espaço",
     "benefitRoomSub": "Além dos seus 500 MB do Pro",
     "benefitFileSize": "100 MB por arquivo",

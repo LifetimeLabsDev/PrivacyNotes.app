@@ -10,7 +10,8 @@
     "empty": "Leeg",
     "noContent": "Geen inhoud",
     "notBackedUp": "Geen back-up",
-    "archived": "Gearchiveerd"
+    "archived": "Gearchiveerd",
+    "entryDate": "Dagboekdatum"
   },
   "header": {
     "new": "Nieuw",
@@ -19,7 +20,9 @@
     "trash": "Prullenbak"
   },
   "folderChip": {
-    "clear": "Mapfilter wissen: {{folder}}"
+    "clear": "Mapfilter wissen: {{folder}}",
+    "subfolders": "Submappen",
+    "subfoldersLabel": "Submappen meenemen"
   },
   "tagChip": {
     "clear": "Tagfilter wissen: {{tag}}"
@@ -191,6 +194,8 @@
     "currentHtmlDesc": "Printvriendelijk, markdown weergegeven op een witte pagina.",
     "printTitle": "Afdrukken / opslaan als PDF",
     "printDesc": "Opent het afdrukvenster. Sla op als PDF of stuur naar een printer.",
+    "printTextTitle": "Alleen tekst afdrukken",
+    "printTextDesc": "Houdt de titel. Laat de datum, map en tags weg.",
     "burnTitle": "Delen & vernietigen na lezen",
     "burnDesc": "Publiceer deze notitie als link die één keer te bekijken is. De link vernietigt zichzelf na het lezen. Je notitie blijft veilig in je account."
   },
@@ -208,7 +213,10 @@
     "newNote": "Nieuw",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Statistieken openen",
+    "journalCalendar": "Dagboekkalender",
     "words": "Woorden",
     "zen": "Zen-modus",
     "appearance": "Weergave",
@@ -232,7 +240,7 @@
     "appearanceLabel": "Weergave",
     "helpLabel": "Help",
     "aboutLabel": "Over",
-    "languageLabel": "Taal",
+    "languageLabel": "Datum & taal",
     "languageDesc": "Kies de taal waarin PrivacyNotes wordt getoond."
   },
   "importStore": {
@@ -252,6 +260,12 @@
     "readOnlyBlocked_other": "Alle <highlight>{{count}} items</highlight> zijn alleen-lezen, dus geen enkel item kan naar de prullenbak. Zet alleen-lezen eerst uit in de notitieopties.",
     "readOnlySkipped_one": "<highlight>{{count}} item</highlight> is alleen-lezen en blijft waar het is.",
     "readOnlySkipped_other": "<highlight>{{count}} items</highlight> zijn alleen-lezen en blijven waar ze zijn."
+  },
+  "deleteCheckedTasks": {
+    "title": "Afgevinkte items verwijderen?",
+    "confirm": "Verwijderen",
+    "body_one": "<highlight>{{count}} item</highlight> wordt uit deze notitie verwijderd. Dit kan niet ongedaan worden gemaakt.",
+    "body_other": "<highlight>{{count}} items</highlight> worden uit deze notitie verwijderd, geneste items inbegrepen. Dit kan niet ongedaan worden gemaakt."
   },
   "bulkDelete": {
     "body_one": "<highlight>{{count}} notitie</highlight> definitief verwijderen? Dit kan niet ongedaan worden gemaakt.",

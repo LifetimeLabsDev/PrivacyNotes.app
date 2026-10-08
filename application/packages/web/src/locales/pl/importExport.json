@@ -210,6 +210,7 @@
     "both": "{{pictures}} i {{files}}"
   },
   "upload": {
+    "discard": "Odrzuć",
     "completeTitle": "Przesyłanie zakończone",
     "failedTitle": "Przesyłanie nie powiodło się",
     "partialTitle": "Przesłano: {{done}}, nieudane: {{failed}}",
@@ -218,7 +219,13 @@
     "statusDone": "Gotowe",
     "statusFailed": "Niepowodzenie",
     "errorStorageFull": "Magazyn pełny - zwolnij miejsce lub dokup magazyn, aby przesłać ten plik.",
-    "errorStorageFullKept": "Nie mieści się w magazynie - zostaje na tym urządzeniu. Zsynchronizuje się, gdy zwolni się miejsce.",
+    "errorStorageFullKept": "Nie mieści się w pamięci - zostaje na tym urządzeniu. Zsynchronizuje się, gdy zwolni się miejsce.",
+    "errorTooLarge": "Plik jest za duży ({{size}}). Maksimum to {{limit}} MB.",
+    "errorTooLargeFree": "Plik jest za duży ({{size}}). Maksimum w darmowym planie to {{limit}} MB.",
+    "batchTitle_one": "{{count}} plik",
+    "batchTitle_few": "{{count}} pliki",
+    "batchTitle_many": "{{count}} plików",
+    "batchTitle_other": "{{count}} pliku",
     "statusUploading": "Przesyłanie...",
     "statusWaiting": "Oczekiwanie",
     "summaryDone": "gotowe: {{count}}",
@@ -241,5 +248,13 @@
   },
   "saveErrors": {
     "shortWrite": "Zapisano tylko {{written}} z {{expected}} bajtów, więc plik jest niekompletny. Spróbuj ponownie i zapisz w pamięci urządzenia zamiast w folderze w chmurze."
+  },
+  "shareSheet": {
+    "title_one": "Do PrivacyNotes udostępniono {{count}} element",
+    "title_few": "Do PrivacyNotes udostępniono {{count}} elementy",
+    "title_many": "Do PrivacyNotes udostępniono {{count}} elementów",
+    "title_other": "Do PrivacyNotes udostępniono {{count}} elementu",
+    "line": "Nic nie zostanie zapisane, dopóki nie wybierzesz.",
+    "saveAll": "Zapisz wszystko"
   }
 }

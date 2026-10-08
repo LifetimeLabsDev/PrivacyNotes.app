@@ -16,6 +16,22 @@ import { createNote } from '../notesRepo';
 import type { FileUploadEntry } from '../UploadProgressModal';
 import type { View } from '../views';
 
+/**
+ * A file whose bytes are read only when its turn in the upload comes: the
+ * share inbox hands a batch over this way, so the window lists every file
+ * from the start while only one file is ever held in memory.
+ */
+export interface LaterFile {
+  name: string;
+  size: number;
+  read: () => Promise<File>;
+  /** Removes the file from where it waits (the share inbox), for a file the
+   *  upload keeps; the upload window offers it on that file's row. */
+  discard?: () => Promise<void>;
+}
+
+type UploadSource = File | LaterFile;
+
 export function useFilesUpload({
   auth,
   supabase,
@@ -163,15 +179,20 @@ export function useFilesUpload({
 
   /** Proceed with normal encrypted-attachment upload for selected files.
    *  Called explicitly via ConfirmModal's onCancel ("Store as files"). */
-  async function handleAttachFromFiles(files: File[]) {
+  async function handleAttachFromFiles<T extends UploadSource>(files: T[]): Promise<T[]> {
     setPendingImportableFiles(null);
     const store = attachmentStoreRef.current;
-    if (!store) return;
-    await doAttachmentUpload(files, store);
+    if (!store) return [];
+    return doAttachmentUpload(files, store);
   }
 
-  /** Core attachment upload logic (extracted from handleFilesSelected). */
-  async function doAttachmentUpload(fileArr: File[], store: AttachmentStore) {
+  /** Core attachment upload logic (extracted from handleFilesSelected).
+   *  Answers the files that are handled: stored on this device, or refused
+   *  for good on their size. A file that failed for a reason that can pass
+   *  (no room yet, a failed read, a failed local store) is left out, so the
+   *  share inbox keeps it. */
+  async function doAttachmentUpload<T extends UploadSource>(fileArr: T[], store: AttachmentStore): Promise<T[]> {
+    const handled: T[] = [];
     const multi = fileArr.length > 1;
     // Read once, before the first await: the note is written minutes later
     // on a slow batch, and the file belongs to the list the user started
@@ -189,6 +210,7 @@ export function useFilesUpload({
     // For multi-file uploads we collect all body lines and create one
     // note at the end. For single-file uploads we create immediately.
     const bodyLines: string[] = [];
+    const bodyNames: string[] = [];
     const serverUploads: Promise<void>[] = [];
 
     // Quota preflight (backlog #143): one fresh server read for the whole
@@ -207,13 +229,26 @@ export function useFilesUpload({
     }
 
     for (let i = 0; i < fileArr.length; i++) {
-      const file = fileArr[i]!;
+      const source = fileArr[i]!;
       // Per-file cap from the fresh server read when we have one - quotaRef
       // is null before the first sync, which validated an add-on holder
       // against the plain Pro limit while the pane hint said otherwise.
-      const v = validateAttachment(file, proUnlocked(auth.isPro), (maxTotalBytes ?? quotaRef.current?.maxBytes ?? 0) > 500 * 1000 * 1000);
+      // Checked on the size alone, so a file read later is refused unread.
+      const v = validateAttachment(source, proUnlocked(auth.isPro), (maxTotalBytes ?? quotaRef.current?.maxBytes ?? 0) > 500 * 1000 * 1000);
       if (!v.ok) {
         initial[i] = { ...initial[i]!, status: 'failed', error: v.error };
+        setUploadEntries([...initial]);
+        // Refused for good only on a limit that was read: before the first
+        // quota answer an add-on holder meets the plain limit.
+        if (maxTotalBytes !== null || quotaRef.current !== null) handled.push(source);
+        continue;
+      }
+      const later = !(source instanceof File);
+      let file: File;
+      try {
+        file = later ? await source.read() : source;
+      } catch (err) {
+        initial[i] = { ...initial[i]!, status: 'failed', error: err instanceof Error ? err.message : 'Upload failed' };
         setUploadEntries([...initial]);
         continue;
       }
@@ -246,7 +281,9 @@ export function useFilesUpload({
         const line = `[${meta.name}|${formatFileSize(meta.size)}|${meta.mime}](pn:file/${uuid})`;
 
         if (multi) {
+          handled.push(source);
           bodyLines.push(line);
+          bodyNames.push(meta.name);
           serverUploads.push(uploaded);
           // Keep the row on "uploading" until the SERVER upload settles.
           // Marking done at local-cache time told the user a large batch
@@ -271,10 +308,16 @@ export function useFilesUpload({
               };
               setUploadEntries([...initial]);
             });
+          // A file read later waits for its server upload before the next one
+          // is read, so the batch holds one file's bytes at a time.
+          if (later) await uploaded.catch(() => {});
         } else {
           // Single file - create its own note immediately.
           const note = await createNote(meta.name, line, filters.tags, undefined, 'file', filters.folderId);
-          await refresh();
+          // Saved from here on, whatever the refresh answers, or the next
+          // drain of the share inbox saves the file a second time.
+          handled.push(source);
+          await refresh().catch((err) => console.warn('[upload] list refresh failed:', err));
           void runSync();
           setSelectedId(note.id);
           try {
@@ -300,10 +343,13 @@ export function useFilesUpload({
 
     // Multi-file: create one note containing all successfully uploaded files.
     if (multi && bodyLines.length > 0) {
-      const title = `${bodyLines.length} files`;
+      // One survivor of a batch is a single file and is named like one.
+      const title = bodyLines.length === 1
+        ? bodyNames[0]!
+        : t('importExport:upload.batchTitle', { count: bodyLines.length });
       const body = bodyLines.join('\n');
       const note = await createNote(title, body, filters.tags, undefined, 'file', filters.folderId);
-      await refresh();
+      await refresh().catch((err) => console.warn('[upload] list refresh failed:', err));
       void runSync();
       setSelectedId(note.id);
     }
@@ -314,6 +360,23 @@ export function useFilesUpload({
     // it hands back. Reading the counter before those settle rendered the
     // pre-upload total, so a multi-file drop looked like it consumed nothing.
     void Promise.allSettled(serverUploads).then(refreshStorage);
+
+    // A file from the share inbox that this upload keeps comes back on every
+    // drain until it fits; its row lets the person drop it instead.
+    fileArr.forEach((source, i) => {
+      if (handled.includes(source) || source instanceof File || !source.discard) return;
+      const drop = source.discard;
+      initial[i] = {
+        ...initial[i]!,
+        discard: async () => {
+          await drop();
+          initial[i] = { ...initial[i]!, discard: undefined, discarded: true };
+          setUploadEntries([...initial]);
+        },
+      };
+    });
+    setUploadEntries([...initial]);
+    return handled;
   }
 
   return {

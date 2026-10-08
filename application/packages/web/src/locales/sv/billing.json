@@ -8,7 +8,7 @@
     "ctaOpening": "Öppnar kassan...",
     "ctaSignUp": "Registrera dig för att låsa upp",
     "intro": {
-      "storage": "Större uppladdningar och mer utrymme är en Pro-funktion. Uppgradera för 50 MB-filer och 500 MB lagring.",
+      "storage": "Mer utrymme är en Pro-funktion: 500 MB lagring, 50 MB per fil och upp till 5 GB till som tillägg när du behöver det.",
       "folders": "Mappar är en Pro-funktion. Organisera dina anteckningar i mappar med undermappar, så djupt du vill, och håll varje projekt för sig.",
       "looks": "Ikoner och färger för mappar och taggar är en Pro-funktion. Ge var och en ett eget utseende som du känner igen direkt.",
       "lock": "Att låsa en anteckning är en Pro-funktion. Uppgradera för att skydda vilken anteckning som helst mot oavsiktliga ändringar.",
@@ -30,7 +30,7 @@
       "history": "Full anteckningshistorik, återställ när du vill",
       "themes": "Premiumteman i varje nyans",
       "zen": "Zenläge, skrivande utan distraktioner",
-      "storage": "500 MB lagring + 50 MB bilagor"
+      "storage": "500 MB lagring, upp till 5,5 GB med tillägg"
     },
     "comparisonBeta": "Betala ${{earlyPrice}} en gång. Obsidian Sync kostar $48/år, år efter år. Standard Notes tar $90/år. Pris för tidiga användare, låst innan det höjs till ${{proPrice}}.",
     "comparison": "Betala ${{proPrice}} en gång och äg det för alltid. Obsidian Sync kostar $48/år och Standard Notes $90/år, varenda år."
@@ -47,7 +47,7 @@
     "benefitDevices": "Obegränsat antal enheter",
     "benefitDevicesSub": "Telefon, surfplatta, dator, allt synkat",
     "benefitStorage": "500 MB lagring",
-    "benefitStorageSub": "10x gratisplanen, går att utöka",
+    "benefitStorageSub": "10x gratisplanen. Lägg till upp till 5 GB när du behöver det",
     "benefitMore": "Fler funktioner",
     "benefitMoreSub": "Anteckningshistorik, mappar, zenläge",
     "benefitRoom": "{{gb}} GB mer utrymme",

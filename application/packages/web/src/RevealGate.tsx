@@ -27,12 +27,12 @@ import { Eye } from './icons';
 const TONES = {
   danger: {
     card: 'border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/30',
-    glyph: 'text-red-500 dark:text-red-400',
+    glyph: 'text-danger',
     button: 'bg-red-600 hover:bg-red-700 text-white shadow-red-600/20',
   },
   warning: {
     card: 'border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30',
-    glyph: 'text-amber-500 dark:text-amber-400',
+    glyph: 'text-warning',
     button: 'bg-amber-500 hover:bg-amber-600 text-amber-950 shadow-amber-500/20',
   },
 } as const;
@@ -76,7 +76,7 @@ export function RevealGate({
         </p>
         {/* text-balance: two or three short centered lines, where the
             default greedy wrap leaves a stub on the last one. */}
-        <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2 text-balance">
+        <p className="text-sm text-pn-muted dark:text-pn-soft mt-2 text-balance">
           {body}
         </p>
       </div>
@@ -89,10 +89,11 @@ export function RevealGate({
         <Eye size={compact ? 16 : 18} aria-hidden="true" />
         {actionLabel}
       </button>
-      {/* dark:text-neutral-400, not -600: the tinted card is already dark,
-          and -600 measured 1.6:1 against it. The footnote carries the
-          consequence ("No second chances"), so it has to be readable. */}
-      <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+      {/* dark:text-pn-soft: on the tinted card, muted text falls under 4.5:1
+          in the darker palettes (3.85:1 on amber in Soft). The footnote
+          carries the consequence ("No second chances"), so it has to be
+          readable. */}
+      <p className="text-[11px] text-pn-muted dark:text-pn-soft">
         {footnote}
       </p>
     </div>

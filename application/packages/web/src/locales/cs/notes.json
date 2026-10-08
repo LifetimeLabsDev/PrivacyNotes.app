@@ -10,7 +10,8 @@
     "empty": "Prázdná",
     "noContent": "Bez obsahu",
     "notBackedUp": "Bez zálohy",
-    "archived": "Archivováno"
+    "archived": "Archivováno",
+    "entryDate": "Datum záznamu"
   },
   "header": {
     "new": "Nový",
@@ -19,14 +20,16 @@
     "trash": "Koš"
   },
   "folderChip": {
-    "clear": "Zrušit filtr složky: {{folder}}"
+    "clear": "Zrušit filtr složky: {{folder}}",
+    "subfolders": "Podsložky",
+    "subfoldersLabel": "Zahrnout podsložky"
   },
   "tagChip": {
     "clear": "Zrušit filtr značky: {{tag}}"
   },
   "vaultNew": {
     "ariaLabel": "Nová položka trezoru",
-    "login": "Přihlášení",
+    "login": "Přihlašovací údaje",
     "card": "Kreditní karta",
     "sshKey": "SSH klíč"
   },
@@ -34,14 +37,14 @@
     "note": "Poznámka",
     "task": "Úkol",
     "journal": "Deník",
-    "login": "Přihlášení",
+    "login": "Přihlašovací údaje",
     "file": "Soubor",
     "bookmark": "Záložka",
     "contact": "Kontakt"
   },
   "vaultFilter": {
     "all": "Vše",
-    "logins": "Přihlášení",
+    "logins": "Přihlašovací údaje",
     "cards": "Karty",
     "keys": "Klíče"
   },
@@ -75,7 +78,7 @@
     "archive": "Nic není archivováno.",
     "filtered": "Žádné položky neodpovídají tvým filtrům.",
     "clearFilters": "Zrušit filtry",
-    "filteredAfter": "abys je zobrazil."
+    "filteredAfter": "a zobrazit položky."
   },
   "headerLabel": {
     "allItems": "Vše",
@@ -195,6 +198,8 @@
     "currentHtmlDesc": "Vhodné pro tisk, markdown vykreslený na bílé stránce.",
     "printTitle": "Vytisknout / uložit jako PDF",
     "printDesc": "Otevře dialog tisku. Ulož jako PDF nebo pošli na tiskárnu.",
+    "printTextTitle": "Vytisknout jen text",
+    "printTextDesc": "Ponechá název. Vynechá datum, složku a značky.",
     "burnTitle": "Sdílet a spálit po přečtení",
     "burnDesc": "Zveřejní tuto poznámku jako odkaz na jedno zobrazení. Odkaz se po přečtení sám zničí. Tvoje poznámka zůstane v bezpečí ve tvém účtu."
   },
@@ -212,7 +217,10 @@
     "newNote": "Nové",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Otevřít statistiky",
+    "journalCalendar": "Kalendář deníku",
     "words": "Slov",
     "zen": "Režim Zen",
     "appearance": "Vzhled",
@@ -236,7 +244,7 @@
     "appearanceLabel": "Vzhled",
     "helpLabel": "Nápověda",
     "aboutLabel": "O aplikaci",
-    "languageLabel": "Jazyk",
+    "languageLabel": "Datum a jazyk",
     "languageDesc": "Vyber jazyk, ve kterém se PrivacyNotes zobrazuje."
   },
   "importStore": {
@@ -262,6 +270,14 @@
     "readOnlySkipped_few": "<highlight>{{count}} položky</highlight> jsou jen pro čtení a zůstávají na místě.",
     "readOnlySkipped_many": "<highlight>{{count}} položky</highlight> jsou jen pro čtení a zůstávají na místě.",
     "readOnlySkipped_other": "<highlight>{{count}} položek</highlight> je jen pro čtení a zůstává na místě."
+  },
+  "deleteCheckedTasks": {
+    "title": "Smazat zaškrtnuté položky?",
+    "confirm": "Smazat",
+    "body_one": "Z této poznámky se smaže <highlight>{{count}} položka</highlight>. Tuto akci nelze vzít zpět.",
+    "body_few": "Z této poznámky se smažou <highlight>{{count}} položky</highlight>, včetně vnořených. Tuto akci nelze vzít zpět.",
+    "body_many": "Z této poznámky se smaže <highlight>{{count}} položky</highlight>, včetně vnořených. Tuto akci nelze vzít zpět.",
+    "body_other": "Z této poznámky se smaže <highlight>{{count}} položek</highlight>, včetně vnořených. Tuto akci nelze vzít zpět."
   },
   "bulkDelete": {
     "body_one": "Trvale smazat <highlight>{{count}} poznámku</highlight>? Tuto akci nelze vzít zpět.",

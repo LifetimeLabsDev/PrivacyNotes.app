@@ -262,7 +262,7 @@ export function LoginForm({
             <button
               type="button"
               onClick={() => setShowGenerator(true)}
-              className="inline-flex items-center gap-1 mt-1 text-[11px] text-accent bg-accent/8 hover:bg-accent/15 px-2 py-0.5 rounded-full transition"
+              className="inline-flex items-center gap-1 mt-1 text-[11px] text-accent-strong bg-accent/8 hover:bg-accent/15 px-2 py-0.5 rounded-full transition"
             >
               <Password size={11} />
               {t('loginForm.generatePassword')}
@@ -304,18 +304,18 @@ export function LoginForm({
             />
           </div>
           {data.totp.trim() && !totpParams && (
-            <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-400">{t('loginForm.totpInvalid')}</p>
+            <p className="mt-1 text-[11px] text-warning">{t('loginForm.totpInvalid')}</p>
           )}
           {totpParams && totpUnlocked && totpCode && totpSecondsLeft !== null && (
-            <p className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400 flex items-center gap-1.5">
-              <span dir="ltr" className="font-mono text-neutral-700 dark:text-neutral-300 tabular-nums" /* rtl-ok: generated digits, must not reorder */>
+            <p className="mt-1 text-[11px] text-pn-muted flex items-center gap-1.5">
+              <span dir="ltr" className="font-mono text-pn-soft tabular-nums" /* rtl-ok: generated digits, must not reorder */>
                 {totpCode}
               </span>
               <span className="tabular-nums">· {t('loginForm.totpExpiresIn', { seconds: totpSecondsLeft })}</span>
             </p>
           )}
           {totpParams && !totpUnlocked && (
-            <p className="mt-1 text-[11px] text-neutral-400 dark:text-neutral-500">{t('loginForm.totpProNote')}</p>
+            <p className="mt-1 text-[11px] text-pn-muted">{t('loginForm.totpProNote')}</p>
           )}
         </div>
 
@@ -342,7 +342,7 @@ export function LoginForm({
             />
           </div>
           {urlHint && (
-            <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-400">{urlHint}</p>
+            <p className="mt-1 text-[11px] text-warning">{urlHint}</p>
           )}
           {extras.extraUrls.map((url, i) => (
             <div key={i} className="flex gap-1.5 mt-1.5">
@@ -370,7 +370,7 @@ export function LoginForm({
             <button
               type="button"
               onClick={() => setUrls([...extras.extraUrls, ''])}
-              className="inline-flex items-center gap-1 mt-1 text-[11px] text-accent bg-accent/8 hover:bg-accent/15 px-2 py-0.5 rounded-full transition"
+              className="inline-flex items-center gap-1 mt-1 text-[11px] text-accent-strong bg-accent/8 hover:bg-accent/15 px-2 py-0.5 rounded-full transition"
             >
               <Plus size={11} />
               {t('loginForm.addWebsite')}
@@ -467,14 +467,14 @@ export function LoginForm({
               <button
                 type="button"
                 onClick={() => setFields([...extras.fields, newLoginField('text')])}
-                className="inline-flex items-center gap-1 mt-1.5 text-[11px] text-accent bg-accent/8 hover:bg-accent/15 px-2 py-0.5 rounded-full transition"
+                className="inline-flex items-center gap-1 mt-1.5 text-[11px] text-accent-strong bg-accent/8 hover:bg-accent/15 px-2 py-0.5 rounded-full transition"
               >
                 <Plus size={11} />
                 {t('loginForm.addField')}
               </button>
             )}
             {extras.fields.some((f) => f.type === 'text') && (
-              <p className="mt-1 text-[11px] text-neutral-400 dark:text-neutral-500">{t('loginForm.textFieldSearchable')}</p>
+              <p className="mt-1 text-[11px] text-pn-muted">{t('loginForm.textFieldSearchable')}</p>
             )}
           </div>
         )}
@@ -503,7 +503,7 @@ export function LoginForm({
             disabled={!pinConfigured && !pinProtected}
             className="rounded accent-accent"
           />
-          <span className="text-sm text-neutral-600 dark:text-neutral-400">
+          <span className="text-sm text-pn-muted">
             {t('loginForm.requirePin')}
           </span>
           <button
@@ -518,14 +518,14 @@ export function LoginForm({
 
         {showPinInfo && <PinInfoModal onClose={() => setShowPinInfo(false)} />}
         {!pinConfigured && !pinProtected && (
-          <p className="text-[11px] text-neutral-400 dark:text-neutral-500 -mt-2">
+          <p className="text-[11px] text-pn-muted -mt-2">
             {t('loginForm.setUpPinFirst')}
           </p>
         )}
 
         {/* Save / Cancel */}
         {saveError && (
-          <p className="text-[11px] text-red-600 dark:text-red-400">{saveError}</p>
+          <p className="text-[11px] text-danger">{saveError}</p>
         )}
         {!locked && (
           <div className="flex gap-2 -mt-2">
@@ -533,7 +533,7 @@ export function LoginForm({
               <button
                 type="button"
                 onClick={onCancel}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium border border-divider text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-surface-1 transition"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium border border-divider text-pn-muted hover:bg-pn/5 transition"
               >
                 {t('common:actions.cancel')}
               </button>
@@ -541,7 +541,7 @@ export function LoginForm({
             <button
               type="button"
               onClick={onSave}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-accent text-white hover:bg-accent-hover transition"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-accent-fill text-white hover:bg-accent-fill-hover transition"
             >
               <FloppyDisk />
               {t('common:actions.save')}

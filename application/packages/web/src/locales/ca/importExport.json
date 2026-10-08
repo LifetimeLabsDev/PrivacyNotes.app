@@ -49,7 +49,7 @@
     "standardNotes": "Còpia de seguretat desxifrada .zip o .txt de Standard Notes (File > Export > Decrypted).",
     "obsidian": "Vault d'Obsidian en .zip. Conserva etiquetes, [[note links]], estructura de carpetes, #tags en línia, i imatges i fitxers incrustats.",
     "notesnook": "Exportació de Notesnook com a .zip. Tria HTML en exportar per conservar el format, les llibretes, les etiquetes i els adjunts.",
-    "joplin": "El fitxer .jex de File > Export all > \"JEX - Joplin Export File\". Les llibretes es converteixen en carpetes, i les etiquetes, les tasques pendents, els note-links i els adjunts també hi vénen.",
+    "joplin": "El fitxer .jex de File > Export all > \"JEX - Joplin Export File\". Les llibretes es converteixen en carpetes, i les etiquetes, les tasques pendents, els enllaços entre notes i els adjunts també hi vénen.",
     "upnote": "A UpNote: Settings > Backup > Backup now, i després comprimeix tot el que hi ha a la carpeta de còpia de seguretat. Conserva les llibretes, les etiquetes, les notes fixades, els note-links, el format i els adjunts. Les exportacions per nota des de les apps de mòbil també funcionen - tria «Export to HTML».",
     "markdownFolder": "Fitxers .md o .txt solts o dins d'un .zip. Una carpeta comprimida manté les subcarpetes i s'emporta les imatges i els adjunts.",
     "markdownApp": "Aquestes notes ja són fitxers Markdown dins d'una carpeta. Deixa anar aquesta carpeta en .zip i hi van les subcarpetes, les imatges i les #etiquetes.",
@@ -174,9 +174,9 @@
     "building": "S'està construint la còpia de seguretat...",
     "compressing": "S'està comprimint...",
     "missingFailed_one": "Aquest dispositiu no ha pogut baixar {{items}}, així que la teva exportació no l'inclou. Comprova la connexió i torna a exportar.",
-    "missingFailed_other": "Aquest dispositiu no ha pogut baixar {{items}}, així que la teva exportació no els inclou. Comprova la connexió i torna a exportar.",
+    "missingFailed_other": "Aquest dispositiu no ha pogut baixar {{items}}, així que no s'inclouen en la teva exportació. Comprova la connexió i torna a exportar.",
     "missingNotFound_one": "{{items}} no és ni en aquest dispositiu ni al servidor, així que la teva exportació no l'inclou.",
-    "missingNotFound_other": "{{items}} no són ni en aquest dispositiu ni al servidor, així que la teva exportació no els inclou."
+    "missingNotFound_other": "{{items}} no són ni en aquest dispositiu ni al servidor, així que no s'inclouen en la teva exportació."
   },
   "missing": {
     "pictures_one": "{{count}} imatge",
@@ -186,6 +186,7 @@
     "both": "{{pictures}} i {{files}}"
   },
   "upload": {
+    "discard": "Descarta",
     "completeTitle": "Pujada completada",
     "failedTitle": "La pujada ha fallat",
     "partialTitle": "{{done}} pujats, {{failed}} amb errors",
@@ -195,6 +196,11 @@
     "statusFailed": "Ha fallat",
     "errorStorageFull": "Emmagatzematge ple - allibera espai o afegeix emmagatzematge per pujar aquest fitxer.",
     "errorStorageFullKept": "No cap al teu emmagatzematge - es queda en aquest dispositiu. Se sincronitzarà quan hi hagi espai.",
+    "errorTooLarge": "El fitxer és massa gran ({{size}}). El màxim és {{limit}} MB.",
+    "errorTooLargeFree": "El fitxer és massa gran ({{size}}). El màxim és {{limit}} MB al pla gratuït.",
+    "batchTitle_one": "{{count}} fitxer",
+    "batchTitle_many": "{{count}} fitxers",
+    "batchTitle_other": "{{count}} fitxers",
     "statusUploading": "S'està pujant...",
     "statusWaiting": "En espera",
     "summaryDone": "{{count}} fets",
@@ -216,5 +222,11 @@
   },
   "saveErrors": {
     "shortWrite": "Només s'han desat {{written}} de {{expected}} bytes, així que el fitxer és incomplet. Torna-ho a provar desant a l'emmagatzematge del teu dispositiu en comptes d'una carpeta al núvol."
+  },
+  "shareSheet": {
+    "title_one": "S'ha compartit {{count}} element amb PrivacyNotes",
+    "title_other": "S'han compartit {{count}} elements amb PrivacyNotes",
+    "line": "No es desa res fins que triïs.",
+    "saveAll": "Desa-ho tot"
   }
 }

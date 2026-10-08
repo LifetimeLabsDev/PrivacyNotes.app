@@ -214,7 +214,7 @@ function BiometricMode({
           {onCancel && !removing && (
             <button
               onClick={onCancel}
-              className="md:hidden flex-1 rounded-md border border-neutral-300 dark:border-neutral-800 hover:bg-surface-1 px-4 py-2 text-sm transition"
+              className="md:hidden flex-1 rounded-md border border-divider hover:bg-surface-1 px-4 py-2 text-sm transition"
             >
               {t('common:actions.cancel')}
             </button>
@@ -223,7 +223,7 @@ function BiometricMode({
             onClick={() => void run(done)}
             disabled={busy}
             className={`flex-1 inline-flex items-center justify-center gap-2 rounded-md text-white px-4 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed ${
-              removing ? 'bg-red-500 hover:bg-red-600' : 'bg-accent hover:bg-accent-hover'
+              removing ? 'bg-red-500 hover:bg-red-600' : 'bg-accent-fill hover:bg-accent-fill-hover'
             }`}
           >
             {removing ? <ShieldSlash size={15} /> : <Fingerprint size={15} />}
@@ -237,7 +237,7 @@ function BiometricMode({
         {showPinFallback && (
           <button
             onClick={onUsePin}
-            className="inline-flex items-center justify-center gap-2 rounded-md border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:bg-surface-1 px-4 py-2 text-sm transition"
+            className="inline-flex items-center justify-center gap-2 rounded-md border border-divider text-pn-muted hover:bg-surface-1 px-4 py-2 text-sm transition"
           >
             <Lock size={15} />
             {t('protectedGate.usePinInstead')}
@@ -252,7 +252,7 @@ function BiometricMode({
             {removing ? (
               <button
                 onClick={() => { setErr(null); onCancelRemove?.(); }}
-                className="rounded-md px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-surface-1 transition"
+                className="rounded-md px-4 py-2 text-sm text-pn-muted hover:bg-surface-1 transition"
               >
                 {t('common:actions.cancel')}
               </button>
@@ -263,7 +263,7 @@ function BiometricMode({
                 // the old intent during this render.
                 onClick={() => { onStartRemove?.(); void run(onRemoveProtection!); }}
                 disabled={busy}
-                className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm text-danger hover:bg-red-50 dark:hover:bg-red-950/30 transition disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <ShieldSlash size={15} />
                 {t('protectedGate.disableProtection')}
@@ -273,7 +273,7 @@ function BiometricMode({
         )}
       </div>
       {err && (
-        <p className="text-sm text-red-500 dark:text-red-400">{err}</p>
+        <p className="text-sm text-danger">{err}</p>
       )}
     </div>
   );
@@ -373,10 +373,10 @@ function VerifyMode({
         disabled={disabled}
       />
       {err && (
-        <p className="text-sm text-red-500 dark:text-red-400">{err}</p>
+        <p className="text-sm text-danger">{err}</p>
       )}
       {lockout.locked && (
-        <p className="text-xs text-neutral-500">
+        <p className="text-xs text-pn-muted">
           {t('protectedGate.lockedFor', { seconds: lockout.secondsLeft })}
         </p>
       )}
@@ -385,7 +385,7 @@ function VerifyMode({
           {onCancel && !removing && (
             <button
               onClick={onCancel}
-              className="md:hidden flex-1 rounded-md border border-neutral-300 dark:border-neutral-800 hover:bg-surface-1 px-3 py-2 text-sm transition"
+              className="md:hidden flex-1 rounded-md border border-divider hover:bg-surface-1 px-3 py-2 text-sm transition"
             >
               {t('common:actions.cancel')}
             </button>
@@ -394,7 +394,7 @@ function VerifyMode({
             onClick={() => void submit(value)}
             disabled={value.length !== 4 || disabled}
             className={`flex-1 rounded-md text-white px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed ${
-              removing ? 'bg-red-500 hover:bg-red-600' : 'bg-accent hover:bg-accent-hover'
+              removing ? 'bg-red-500 hover:bg-red-600' : 'bg-accent-fill hover:bg-accent-fill-hover'
             }`}
           >
             {busy
@@ -408,7 +408,7 @@ function VerifyMode({
           <button
             onClick={() => void bio.run(done)}
             disabled={bio.busy}
-            className="inline-flex items-center justify-center gap-2 rounded-md border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:bg-surface-1 px-4 py-2 text-sm transition disabled:opacity-40 disabled:cursor-not-allowed"
+            className="inline-flex items-center justify-center gap-2 rounded-md border border-divider text-pn-muted hover:bg-surface-1 px-4 py-2 text-sm transition disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Fingerprint size={15} />
             {bio.busy ? t('protectedGate.verifying') : t('protectedGate.useBiometricInstead')}
@@ -421,14 +421,14 @@ function VerifyMode({
             {removing ? (
               <button
                 onClick={() => { setErr(null); onCancelRemove?.(); }}
-                className="rounded-md px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-surface-1 transition"
+                className="rounded-md px-4 py-2 text-sm text-pn-muted hover:bg-surface-1 transition"
               >
                 {t('common:actions.cancel')}
               </button>
             ) : (
               <button
                 onClick={() => { setErr(null); onStartRemove(); }}
-                className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition"
+                className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm text-danger hover:bg-red-50 dark:hover:bg-red-950/30 transition"
               >
                 <ShieldSlash size={15} />
                 {t('protectedGate.disableProtection')}
@@ -494,11 +494,11 @@ function BootstrapMode({
         title={t('protectedGate.bootstrapTitle')}
         subtitle={t('protectedGate.bootstrapSubtitle')}
       />
-      <div className="rounded-md border border-amber-400/40 bg-amber-50 dark:border-amber-600/30 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 text-xs leading-relaxed px-3 py-2">
+      <div className="rounded-md border border-amber-400/40 bg-amber-50 dark:border-amber-600/30 dark:bg-amber-950/20 text-warning text-xs leading-relaxed px-3 py-2">
         {t('protectedGate.bootstrapWarning')}
       </div>
       <div className="space-y-2">
-        <div className="text-xs text-neutral-500 uppercase tracking-wide text-center">
+        <div className="text-xs text-pn-muted uppercase tracking-wide text-center">
           {t('protectedGate.newPin')}
         </div>
         <PinInput
@@ -513,7 +513,7 @@ function BootstrapMode({
         />
       </div>
       <div className="space-y-2">
-        <div className="text-xs text-neutral-500 uppercase tracking-wide text-center">
+        <div className="text-xs text-pn-muted uppercase tracking-wide text-center">
           {t('protectedGate.confirmPin')}
         </div>
         <PinInput
@@ -528,7 +528,7 @@ function BootstrapMode({
         />
       </div>
       {err && (
-        <p className="text-sm text-red-500 dark:text-red-400 text-center">
+        <p className="text-sm text-danger text-center">
           {err}
         </p>
       )}
@@ -536,7 +536,7 @@ function BootstrapMode({
         {onCancel && (
           <button
             onClick={onCancel}
-            className="md:hidden flex-1 rounded-md border border-neutral-300 dark:border-neutral-800 hover:bg-surface-1 px-3 py-2 text-sm transition"
+            className="md:hidden flex-1 rounded-md border border-divider hover:bg-surface-1 px-3 py-2 text-sm transition"
           >
             {t('common:actions.cancel')}
           </button>
@@ -544,7 +544,7 @@ function BootstrapMode({
         <button
           onClick={() => void submit(pin, confirm)}
           disabled={busy || pin.length !== 4 || confirm.length !== 4}
-          className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {busy ? t('protectedGate.saving') : t('protectedGate.setPinUnlock')}
         </button>
@@ -565,10 +565,15 @@ export function PinGateModal({
   onUnlock,
   onCancel,
   purpose,
+  userSettings,
+  onSettingsChange,
 }: {
   onUnlock: () => void;
   onCancel: () => void;
   purpose: PinGatePurpose;
+  /** For the PIN this modal asks to be set when none is. */
+  userSettings: UserSettings;
+  onSettingsChange: (next: UserSettings, base: UserSettings) => void;
 }) {
   const { t } = useTranslation('security');
   const pinIsSet = hasPin();
@@ -592,12 +597,13 @@ export function PinGateModal({
         ) : pinIsSet ? (
           <ModalVerifyMode onUnlock={onUnlock} showBiometric={bioEnrolled} purpose={purpose} />
         ) : (
-          /* No PIN set - can't gate; just allow the action. */
-          (() => { onUnlock(); return null; })()
+          /* No PIN and no fingerprint: set a PIN first, as the read gate on
+             the same note asks, and the action runs once it is stored. */
+          <BootstrapMode onUnlock={onUnlock} userSettings={userSettings} onSettingsChange={onSettingsChange} />
         )}
         <button
           onClick={onCancel}
-          className="w-full rounded-md border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:bg-surface-1 px-3 py-2 text-sm font-medium transition"
+          className="w-full rounded-md border border-divider text-pn-muted hover:bg-surface-1 px-3 py-2 text-sm font-medium transition"
         >
           {t('common:actions.cancel')}
         </button>
@@ -680,10 +686,10 @@ function ModalVerifyMode({
         disabled={disabled}
       />
       {err && (
-        <p className="text-sm text-red-500 dark:text-red-400">{err}</p>
+        <p className="text-sm text-danger">{err}</p>
       )}
       {lockout.locked && (
-        <p className="text-xs text-neutral-500">
+        <p className="text-xs text-pn-muted">
           {t('protectedGate.lockedFor', { seconds: lockout.secondsLeft })}
         </p>
       )}
@@ -692,7 +698,7 @@ function ModalVerifyMode({
           onClick={() => void submit(value)}
           disabled={value.length !== 4 || disabled}
           className={`w-full rounded-md text-white px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed ${
-            purpose === 'delete' ? 'bg-red-500 hover:bg-red-600' : 'bg-accent hover:bg-accent-hover'
+            purpose === 'delete' ? 'bg-red-500 hover:bg-red-600' : 'bg-accent-fill hover:bg-accent-fill-hover'
           }`}
         >
           {busy
@@ -703,7 +709,7 @@ function ModalVerifyMode({
           <button
             onClick={() => void bio.run(onUnlock)}
             disabled={bio.busy}
-            className="inline-flex items-center justify-center gap-2 rounded-md border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:bg-surface-1 px-3 py-2 text-sm transition disabled:opacity-40 disabled:cursor-not-allowed"
+            className="inline-flex items-center justify-center gap-2 rounded-md border border-divider text-pn-muted hover:bg-surface-1 px-3 py-2 text-sm transition disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Fingerprint size={15} />
             {bio.busy ? t('protectedGate.verifying') : t('protectedGate.useBiometricInstead')}
@@ -730,7 +736,7 @@ function GateHeader({
   return (
     <>
       <div className="flex justify-center">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent/10 text-accent">
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent/10 text-accent-strong">
           {icon === 'biometric' ? (
             <Fingerprint size={28} weight="duotone" aria-hidden="true" />
           ) : icon === 'removeProtection' ? (
@@ -742,7 +748,7 @@ function GateHeader({
       </div>
       <div className="text-center">
         <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1 leading-relaxed">
+        <p className="text-sm text-pn-muted mt-1 leading-relaxed">
           {subtitle}
         </p>
       </div>

@@ -147,7 +147,7 @@ function RealAccountLoginsPanel({ onOpenCustody, onOpenPhrase, autoFocus }: { on
             className="mt-1 w-full rounded-md border border-divider bg-surface-1 px-3 py-2 text-sm text-pn" />
         </label>
         <p className={SETTINGS_HELP}>{t('connectedAccounts.returnHelp')}</p>
-        {invalidReturn && <p role="alert" className="text-xs text-red-600 dark:text-red-400">{t('connectedAccounts.invalidReturn')}</p>}
+        {invalidReturn && <p role="alert" className="text-xs text-danger">{t('connectedAccounts.invalidReturn')}</p>}
         <button type="submit" disabled={!returnUrl.trim()} className="text-sm text-accent disabled:opacity-40">{t('connectedAccounts.finishConnection')}</button>
       </form>}
       <button type="button" className="text-sm text-accent" onClick={() => controller.current?.abort()}>{t('connectedAccounts.cancelConnection')}</button>

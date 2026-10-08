@@ -120,7 +120,7 @@ export function MoveBanner({ onConflict }: { onConflict: (conflict: NoteConflict
             is allowed to wrap - feedback inside the hidden span made a
             failed move look like a dead button on phones. */}
         <span
-          className={`${showFeedback ? 'inline' : 'hidden sm:inline'} text-neutral-600 dark:text-neutral-400`}
+          className={`${showFeedback ? 'inline' : 'hidden sm:inline'} text-pn-muted`}
         >
           {' '}
           {state === 'conflict'
@@ -134,7 +134,7 @@ export function MoveBanner({ onConflict }: { onConflict: (conflict: NoteConflict
         type="button"
         disabled={state === 'syncing'}
         onClick={() => void handleMove()}
-        className="shrink-0 rounded-lg bg-accent hover:bg-accent-hover text-white text-[13px] font-semibold px-3 py-1.5 transition disabled:opacity-60"
+        className="shrink-0 rounded-lg bg-accent-fill hover:bg-accent-fill-hover text-white text-[13px] font-semibold px-3 py-1.5 transition disabled:opacity-60"
       >
         {state === 'syncing' ? t('moveBanner.syncing') : t('moveBanner.cta')}
       </button>
@@ -142,7 +142,7 @@ export function MoveBanner({ onConflict }: { onConflict: (conflict: NoteConflict
         type="button"
         onClick={handleDismiss}
         aria-label={t('dismiss')}
-        className="shrink-0 rounded-md p-1 text-neutral-500 dark:text-neutral-400 hover:bg-accent/10 transition"
+        className="shrink-0 rounded-md p-1 text-pn-muted hover:bg-accent/10 transition"
       >
         <X />
       </button>

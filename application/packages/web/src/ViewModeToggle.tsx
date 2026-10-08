@@ -24,7 +24,7 @@ export function ViewModeToggle({ mode, onChange }: { mode: ViewMode; onChange: (
           className={`h-full px-2 rounded-md border inline-flex items-center justify-center transition ${
             mode === 'auto'
               ? `${SIDEBAR_ACTIVE} border-accent`
-              : 'border-divider text-neutral-500 hover:text-accent hover:border-accent/50 dark:text-neutral-400 dark:hover:text-accent'
+              : 'border-divider text-pn-muted hover:text-accent hover:border-accent/50 dark:hover:text-accent'
           }`}
         >
           <Sparkle size={15} />
@@ -40,7 +40,7 @@ export function ViewModeToggle({ mode, onChange }: { mode: ViewMode; onChange: (
             className={`flex-auto min-w-0 inline-flex items-center justify-center gap-1 px-1.5 py-1 text-[12px] font-medium transition ${
               mode === m
                 ? SIDEBAR_ACTIVE
-                : 'text-neutral-500 hover:text-accent dark:text-neutral-400 dark:hover:text-accent'
+                : 'text-pn-muted hover:text-accent dark:hover:text-accent'
             }`}
           >
             {m === 'list' ? <List size={13} className="shrink-0" /> : <SquaresFour size={13} className="shrink-0" />}

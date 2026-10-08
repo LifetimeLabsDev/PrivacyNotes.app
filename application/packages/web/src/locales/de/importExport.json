@@ -49,7 +49,7 @@
     "standardNotes": "Entschlüsseltes .zip- oder .txt-Backup aus Standard Notes (Datei > Exportieren > Entschlüsselt).",
     "obsidian": "Obsidian-Vault als .zip. Erhält Tags, [[note links]], Ordnerstruktur, inline #tags sowie eingebettete Bilder und Dateien.",
     "notesnook": "Notesnook-Export als .zip. Wähle beim Exportieren HTML, um Formatierung, Notizbücher, Tags und Anhänge zu behalten.",
-    "joplin": "Die .jex-Datei aus File > Export all > \"JEX - Joplin Export File\". Notizbücher werden zu Ordnern, und Tags, To-dos, note-links und Anhänge kommen mit.",
+    "joplin": "Die .jex-Datei aus File > Export all > \"JEX - Joplin Export File\". Notizbücher werden zu Ordnern, und Tags, To-dos, Notiz-Links und Anhänge kommen mit.",
     "upnote": "In UpNote: Settings > Backup > Backup now, dann alles im Backup-Ordner zippen. Behält Notizbücher, Tags, Pins, note-links, Formatierung und Anhänge. Einzel-Exporte aus den Handy-Apps funktionieren auch - wähle \"Export to HTML\".",
     "markdownFolder": ".md- oder .txt-Dateien einzeln oder als .zip. Ein gezippter Ordner behält seine Unterordner und bringt seine Bilder und Anhänge mit.",
     "markdownApp": "Diese Notizen sind schon Markdown-Dateien in einem Ordner. Zieh den Ordner als .zip hinein, dann kommen seine Unterordner, Bilder und #Tags mit.",
@@ -180,6 +180,7 @@
     "both": "{{pictures}} und {{files}}"
   },
   "upload": {
+    "discard": "Verwerfen",
     "completeTitle": "Upload abgeschlossen",
     "failedTitle": "Upload fehlgeschlagen",
     "partialTitle": "{{done}} hochgeladen, {{failed}} fehlgeschlagen",
@@ -189,6 +190,10 @@
     "statusFailed": "Fehlgeschlagen",
     "errorStorageFull": "Speicher voll - schaffe Platz oder füge Speicher hinzu, um diese Datei hochzuladen.",
     "errorStorageFullKept": "Passt nicht in deinen Speicher - bleibt auf diesem Gerät. Sobald Platz frei wird, wird die Datei synchronisiert.",
+    "errorTooLarge": "Datei zu groß ({{size}}). Maximal {{limit}} MB.",
+    "errorTooLargeFree": "Datei zu groß ({{size}}). Maximal {{limit}} MB im kostenlosen Tarif.",
+    "batchTitle_one": "{{count}} Datei",
+    "batchTitle_other": "{{count}} Dateien",
     "statusUploading": "Wird hochgeladen...",
     "statusWaiting": "Wartet",
     "summaryDone": "{{count}} fertig",
@@ -209,5 +214,11 @@
   },
   "saveErrors": {
     "shortWrite": "Es wurden nur {{written}} von {{expected}} Bytes gespeichert, die Datei ist also unvollständig. Versuche es erneut und speichere in den Speicher deines Geräts statt in einen Cloud-Ordner."
+  },
+  "shareSheet": {
+    "title_one": "{{count}} Element wurde mit PrivacyNotes geteilt",
+    "title_other": "{{count}} Elemente wurden mit PrivacyNotes geteilt",
+    "line": "Nichts wird gespeichert, bis du entscheidest.",
+    "saveAll": "Alle speichern"
   }
 }

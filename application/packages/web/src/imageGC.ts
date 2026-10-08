@@ -8,7 +8,10 @@
  *    that disappeared gets enqueued for deletion, UNLESS a history
  *    snapshot still references it.
  * 2. On note hard-delete: enqueue all blobs referenced in the note's
- *    body. (Versions cascade-delete via FK, so no orphan risk.)
+ *    body. The server drops the note's history in the statement that
+ *    accepts the tombstone (migration 0098), so a blob only that history
+ *    held is left with no reference and the orphan reconcile, which reads
+ *    every surviving snapshot, reclaims it.
  *
  * Deletion is two-phase (#125). A local mirror can be stale - a device
  * that has never pulled a note, or still carries an unconfirmed
@@ -293,6 +296,25 @@ async function dropLocalCopies(uuids: string[]): Promise<void> {
 }
 
 /**
+ * A cancel that found no row lost to the purge, which deletes its rows before
+ * it removes their objects; or another device cancelled first. Either way the
+ * notes still use the blob, so a copy this device holds goes up again: the
+ * retry sweep uploads it, and an object that is still there answers 409 and
+ * settles through the recount without a second charge.
+ */
+async function uploadAgainWhatThePurgeTook(uuids: string[]): Promise<void> {
+  for (const uuid of uuids) {
+    const table = (await db.imageCache.get(uuid)) ? db.imageDedup : (await db.attachmentCache.get(uuid)) ? db.attachmentDedup : null;
+    if (!table) continue;
+    const marked = await table.where('uuid').equals(uuid).modify({ pendingUpload: 1, quotaBlocked: 0 });
+    // A copy this device downloaded has no upload row (only the uploader and
+    // the importers write one), and the retry sweep reads rows. Its key is
+    // not a content hash, so it can never stand in for another row.
+    if (marked === 0) await table.put({ hash: `restore:${uuid}`, uuid, encryptedSize: 0, pendingUpload: 1 });
+  }
+}
+
+/**
  * Phase 2 of deferred blob GC: actually remove Storage objects for
  * queue entries that have cleared the grace period, after re-checking
  * references against the full local mirror. Must only be called right
@@ -326,19 +348,9 @@ export async function sweepBlobGC(
     const uuids = entries.map((e) => e.uuid);
     const referenced = await findRefsAnywhere(uuids);
 
-    // Still-referenced entries: cancel the deletion and re-credit quota.
-    // One batched call for the sweep, regardless of kind - quota is
-    // tracked per account, not per bucket.
+    // Still-referenced entries: the deletion is cancelled below, once the
+    // server has dropped their pending rows.
     const cancelled = entries.filter((e) => referenced.has(e.uuid));
-    if (cancelled.length > 0) {
-      await db.blobGC.bulkDelete(cancelled.map((e) => e.uuid));
-      const totalRefund = cancelled.reduce((sum, e) => sum + e.size, 0);
-      if (totalRefund > 0) {
-        imageStore.adjustQuota(totalRefund).catch(() => {
-          // Already logged inside adjustQuota.
-        });
-      }
-    }
 
     // Not referenced: actually remove the Storage objects, grouped by kind.
     const toRemove = entries.filter((e) => !referenced.has(e.uuid));
@@ -366,11 +378,24 @@ export async function sweepBlobGC(
     // back in use (their rows must stop excluding real usage). The table
     // is per-account, so one store's client covers both kinds.
     // Spec: packages/supabase/migrations/history/0068_pending_blob_gc_server_side.sql
-    const retire = settled.concat(cancelled.map((e) => e.uuid));
-    if (retire.length > 0) {
-      await imageStore.clearPendingGC(retire).catch(() => {
-        // Already logged inside clearPendingGC.
-      });
+    //
+    // A cancelled entry leaves the local queue only once the server took
+    // the cancel. Its pending row is the deletion: purge-pending-blobs
+    // removes the object of every aged row with no reference check, so an
+    // entry dropped before a failed cancel lost an image a live note shows,
+    // with nothing left on this device to try again. The bytes come back
+    // through a server recount, not a refund of each size: another device's
+    // reconcile may have cancelled the same row and recounted already, and
+    // a refund on top of that counts the image twice.
+    if (settled.length > 0) await imageStore.clearPendingGC(settled).catch(() => false);
+    if (cancelled.length > 0) {
+      const ids = cancelled.map((e) => e.uuid);
+      const taken = await imageStore.cancelPendingGC(ids).catch(() => null);
+      if (taken !== null) {
+        await uploadAgainWhatThePurgeTook(ids.filter((id) => !taken.has(id)));
+        await db.blobGC.bulkDelete(ids);
+        await imageStore.recountQuota();
+      }
     }
   } finally {
     sweepInFlight = false;
@@ -387,6 +412,45 @@ let reconcileInFlight = false;
  * reconcile). */
 const RECONCILE_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const RECONCILE_AT_KEY = 'privacynotes.blobReconcileAt';
+
+/** How long an UNSUCCESSFUL pass waits before trying again. A pass that gives
+ *  up at a gate never reaches the success stamp above, so without this every
+ *  eligible sync would re-run its recount and its bucket listing - the whole
+ *  cost of the pass, indefinitely, for an account whose mirror is simply not
+ *  complete yet. The cooldown is short because the work it defers is a slow
+ *  leak, and it changes only how often a refusal is retried: the gates
+ *  themselves are untouched, and nothing deletes on a pass that skipped. */
+const RECONCILE_RETRY_MS = 60 * 60 * 1000;
+const RECONCILE_TRIED_KEY = 'privacynotes.blobReconcileTriedAt';
+
+/** The failed-attempt stamp, read back only for the account that wrote it: a
+ *  different vault's refusal says nothing about this one's. */
+function reconcileRetryBlocked(pubkey: string): boolean {
+  try {
+    const raw = localStorage.getItem(RECONCILE_TRIED_KEY);
+    if (!raw) return false;
+    const held = JSON.parse(raw) as { at?: unknown; pubkey?: unknown };
+    if (held?.pubkey !== pubkey || typeof held.at !== 'number') return false;
+    return Date.now() - held.at < RECONCILE_RETRY_MS;
+  } catch {
+    return false;
+  }
+}
+
+/** A pass that reached its own end. Clears the attempt stamp, because the
+ *  24-hour success interval is the one that governs from here. */
+function markReconcileDone(): void {
+  try {
+    localStorage.setItem(RECONCILE_AT_KEY, String(Date.now()));
+    localStorage.removeItem(RECONCILE_TRIED_KEY);
+  } catch { /* storage full or blocked */ }
+}
+
+function markReconcileTried(pubkey: string): void {
+  try {
+    localStorage.setItem(RECONCILE_TRIED_KEY, JSON.stringify({ at: Date.now(), pubkey }));
+  } catch { /* storage full or blocked: the pass simply retries sooner */ }
+}
 
 /** Upper bound on version rows the reconcile will fetch and decrypt in one
  * pass. Versions are capped at 20 per note, so this covers accounts up to a
@@ -448,15 +512,53 @@ export async function reconcileOrphanBlobs(
 
   const last = Number(localStorage.getItem(RECONCILE_AT_KEY) ?? 0);
   if (Number.isFinite(last) && Date.now() - last < RECONCILE_INTERVAL_MS) return;
+  if (reconcileRetryBlocked(pubkey)) return;
 
   reconcileInFlight = true;
+  // Written before the first gate and cleared by the success stamp below, so
+  // every way out of this pass other than completion counts as an attempt -
+  // a gate that returns, a read that throws, a listing that fails.
+  markReconcileTried(pubkey);
   try {
+    // Pending deletions this device never queued. The device that queued
+    // one may have signed out, which clears its queue, or lost its cancel;
+    // the server purge then removes the object with no reference check. A
+    // reference in this mirror cancels the row. That needs none of the gates
+    // below, which guard deleting: a cancel only keeps an image, a stale
+    // reference keeps an orphan that a later pass reclaims, and a mirror
+    // short of a note cancels less. A failed read or cancel retries at the
+    // next pass.
+    const pending = await imageStore.listPendingGC();
+    if (pending === null) return;
+    const ownQueue = new Set((await db.blobGC.toArray()).map((e) => e.uuid));
+    const foreign = pending.filter((uuid) => !ownQueue.has(uuid));
+    if (foreign.length > 0) {
+      const inUse = await findRefsAnywhere(foreign);
+      if (inUse.size > 0) {
+        const taken = await imageStore.cancelPendingGC([...inUse]);
+        if (taken === null) return;
+        await uploadAgainWhatThePurgeTook([...inUse].filter((id) => !taken.has(id)));
+        // The server's count left these bytes out; count them again.
+        await recalculateQuota(supabase);
+      }
+    }
+
     // Gate 1: nothing of ours is still unpushed.
     if ((await db.notes.where('dirty').anyOf(1, 2).count()) > 0) return;
 
     // Gate 2: the server agrees with us about how many notes exist. recalc
     // first so note_count is a recount, not a drifted delta counter.
-    await recalculateQuota(supabase);
+    //
+    // Both halves have to SUCCEED, not merely return. A recount that never
+    // ran leaves a delta-maintained counter that is allowed to drift, and a
+    // refused usage read answered as zero would match the zero of a device
+    // whose own vault is still empty, and clear this pass to delete every aged
+    // object in the bucket. fetchQuotaUsage throws on a failed read, so an
+    // unknown count cannot impersonate an empty account.
+    if (!await recalculateQuota(supabase)) {
+      console.warn('[imageGC] reconcile skipped - server did not recount');
+      return;
+    }
     const usage = await fetchQuotaUsage(supabase);
     const localLive = await db.notes.where('deleted').equals(0).count();
     if (localLive !== usage.noteCount) {
@@ -482,7 +584,7 @@ export async function reconcileOrphanBlobs(
       if (page.length < LIST_PAGE) break;
     }
     if (objects.length === 0) {
-      localStorage.setItem(RECONCILE_AT_KEY, String(Date.now()));
+      markReconcileDone();
       return;
     }
 
@@ -493,7 +595,7 @@ export async function reconcileOrphanBlobs(
       return Number.isFinite(created) && created < cutoff;
     });
     if (aged.length === 0) {
-      localStorage.setItem(RECONCILE_AT_KEY, String(Date.now()));
+      markReconcileDone();
       return;
     }
     const queued = new Set((await db.blobGC.toArray()).map((e) => e.uuid));
@@ -504,7 +606,7 @@ export async function reconcileOrphanBlobs(
       .map((o) => o.name)
       .filter((n) => !queued.has(n) && !referenced.has(n));
     if (candidates.length === 0) {
-      localStorage.setItem(RECONCILE_AT_KEY, String(Date.now()));
+      markReconcileDone();
       return;
     }
 
@@ -513,7 +615,7 @@ export async function reconcileOrphanBlobs(
     if (!versionRefs) return; // unreadable - never delete on a partial set
     candidates = candidates.filter((uuid) => !versionRefs.has(uuid));
     if (candidates.length === 0) {
-      localStorage.setItem(RECONCILE_AT_KEY, String(Date.now()));
+      markReconcileDone();
       return;
     }
 
@@ -526,7 +628,7 @@ export async function reconcileOrphanBlobs(
       await dropLocalCopies(removed);
       await recalculateQuota(supabase);
     }
-    localStorage.setItem(RECONCILE_AT_KEY, String(Date.now()));
+    markReconcileDone();
   } catch (err) {
     console.warn('[imageGC] reconcile failed:', err);
   } finally {

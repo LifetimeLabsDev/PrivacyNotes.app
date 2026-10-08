@@ -1,6 +1,6 @@
 import type { LocalNote } from './db';
 import { countWords } from './wordCountUtils';
-import { toLocalIso } from './notesViewUtils';
+import { editedAtOf, toLocalIso } from './notesViewUtils';
 import { onLocalDataKeyCleared } from './localKey';
 
 /**
@@ -94,7 +94,7 @@ export function computeStats(notes: LocalNote[]): Stats {
     for (const t of n.tags) tagSet.add(t);
 
     const c = dayKey(n.createdAt);
-    const u = dayKey(n.updatedAt);
+    const u = dayKey(editedAtOf(n));
     heatmap[c] = (heatmap[c] ?? 0) + 1;
     if (u !== c) heatmap[u] = (heatmap[u] ?? 0) + 1;
   }

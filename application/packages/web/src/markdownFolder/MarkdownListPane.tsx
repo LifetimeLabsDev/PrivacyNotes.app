@@ -28,7 +28,7 @@ import { markdownSupport } from './capability';
 import { MarkdownDefaultAppPopover } from './MarkdownDefaultApp';
 import { useMarkdownDefaultApp } from './defaultApp';
 import { forgetFolder, rememberFolder } from './folderMemory';
-import { adaptFile, entryToNote, isSupportedFile, isTextFile } from './adapter';
+import { adaptFile, entryToNote, isSupportedFile, isTextFile, readOpenedFile } from './adapter';
 import {
   FileExistsError,
   hasRealPath,
@@ -55,6 +55,7 @@ export function MarkdownListPane({
   onDir,
   dirFilter,
   tagFilter,
+  initialFilter,
   tagsByPath,
   tagsScanned,
   listPrefs,
@@ -82,6 +83,9 @@ export function MarkdownListPane({
    *  renders in a different part of the shell. */
   dirFilter: string | null;
   tagFilter: string | null;
+  /** The filter the pane opens with: the All search's text, when the list's
+   *  Markdown entry brought the reader here. */
+  initialFilter?: string;
   tagsByPath: Map<string, FileMeta>;
   /** False while the background tag pass is still reading files, which is the
    *  difference between "no files have this tag" and "not read yet". */
@@ -122,7 +126,7 @@ export function MarkdownListPane({
   const support = markdownSupport();
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState(initialFilter ?? '');
   const reveal = useProgressiveReveal();
   const gridMode = viewMode === 'grid';
   /** The same swap `NotesList` makes. Both components take `NoteRowProps`, so
@@ -155,8 +159,7 @@ export function MarkdownListPane({
   const defaultAppButtonRef = useRef<HTMLButtonElement | null>(null);
 
   async function openRef(ref: OpenedFileRef) {
-    const raw = await ref.read();
-    onOpened({ ref, raw, stamp: await ref.stamp(), adapted: adaptFile(ref.name, raw), reloadToken: 0 });
+    onOpened(await readOpenedFile(ref));
   }
 
   async function handleOpenFile() {
@@ -461,6 +464,7 @@ export function MarkdownListPane({
 
   /** Bytes on disk, formatted, once the background pass has read the file. */
   const sizeOf = (entry: DirectoryEntry) => {
+    if (!listPrefs.showSize) return null;
     const bytes = tagsByPath.get(entry.relPath)?.size;
     return bytes != null ? formatBytes(bytes) : null;
   };
@@ -571,7 +575,7 @@ export function MarkdownListPane({
             <button
               type="button"
               onClick={() => void handleNew()}
-              className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-semibold px-3 py-1.5 text-lg tracking-tight transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition cursor-pointer"
             >
               <NEW_GLYPHS.note size={18} />
               {t('markdown.new')}
@@ -599,7 +603,7 @@ export function MarkdownListPane({
                 onClick={() => void handleOpenFolder()}
                 className="inline-flex items-center gap-2 h-8 min-w-0 max-w-full rounded-md border border-divider bg-surface-2 px-2 hover:border-accent transition cursor-pointer"
               >
-                {/* Amber, the same `text-amber-600/80 dark:text-amber-500/80` the
+                {/* Amber, the same `text-amber-700 dark:text-amber-500/80` the
                     rail gives its folder glyphs - the app's "this is on your own
                     disk" colour. Accent blue here made it read as a control. */}
                 <Folder size={16} className="text-amber-600/90 dark:text-amber-500/90 shrink-0" />
@@ -697,8 +701,8 @@ export function MarkdownListPane({
                   aria-expanded={showDefaultApp}
                   className={`inline-flex items-center justify-center w-8 h-8 rounded-md border transition cursor-pointer ${
                     showDefaultApp
-                      ? 'bg-accent/10 border-accent text-accent'
-                      : 'bg-surface-2 border-green-600/50 dark:border-green-500/50 text-green-600 dark:text-green-500 hover:border-green-600 dark:hover:border-green-500 hover:bg-green-600/5'
+                      ? 'bg-accent/10 border-accent text-accent-strong'
+                      : 'bg-surface-2 border-green-600/50 dark:border-green-500/50 text-success hover:border-green-600 dark:hover:border-green-500 hover:bg-green-600/5'
                   }`}
                 >
                   <FileMd size={16} />
@@ -759,7 +763,7 @@ export function MarkdownListPane({
                 aria-expanded={showListPrefs}
                 className={`shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-md border transition ${
                   showListPrefs
-                    ? 'bg-accent/10 border-accent text-accent'
+                    ? 'bg-accent/10 border-accent text-accent-strong'
                     : 'bg-surface-2 border-divider text-pn-muted hover:border-accent hover:text-accent'
                 }`}
               >
@@ -778,6 +782,7 @@ export function MarkdownListPane({
                 onClose={() => setShowListPrefs(false)}
                 anchorRef={listPrefsButtonRef}
                 className="absolute start-0 top-full mt-1 z-20"
+                showSizeToggle
               />
             )}
           </div>
@@ -786,7 +791,7 @@ export function MarkdownListPane({
               until this existed those two actions failed in silence. Both
               clear it before they try again, so it never outlives the attempt
               it describes. */}
-          {error && <p className="mt-1.5 text-[12px] text-red-600 dark:text-red-400">{error}</p>}
+          {error && <p className="mt-1.5 text-[12px] text-danger">{error}</p>}
         </div>
       )}
 
@@ -803,7 +808,7 @@ export function MarkdownListPane({
           stay worth reaching mid-selection. The X is the toolbar's Clear. */}
       {selectionMode && selected.size > 0 && (
         <div className="shrink-0 px-4 py-2 border-b border-divider bg-accent/5 dark:bg-accent/10 flex items-center justify-between gap-2 text-[13px]">
-          <span className="font-medium text-neutral-700 dark:text-neutral-200 tabular-nums">
+          <span className="font-medium text-pn-soft tabular-nums">
             {t('markdown.selectedCount', { selected: selected.size, total: matches.length })}
           </span>
           <div className="flex items-center gap-3 shrink-0">
@@ -827,7 +832,7 @@ export function MarkdownListPane({
               // clearing the selection now would throw it away on cancel. The
               // prune effect drops the rows once the delete actually lands.
               onClick={() => onRequestDeleteMany([...selected])}
-              className="font-semibold text-red-600 dark:text-red-400 hover:underline"
+              className="font-semibold text-danger hover:underline"
             >
               {t('markdown.delete')}
             </button>
@@ -835,7 +840,7 @@ export function MarkdownListPane({
               type="button"
               onClick={exitSelection}
               aria-label={t('markdown.exitSelection')}
-              className="text-neutral-500 hover:text-accent dark:text-neutral-400"
+              className="text-pn-muted hover:text-accent"
             >
               <X size={14} />
             </button>
@@ -850,7 +855,7 @@ export function MarkdownListPane({
       >
         {dir ? (
           matches.length === 0 ? (
-            <p className="p-4 text-[13px] text-neutral-500 dark:text-neutral-400 text-center">
+            <p className="p-4 text-[13px] text-pn-muted text-center">
               {/* A tag filter with the index still running is "not read yet",
                   not "nothing matches" - saying the latter would be wrong for
                   as long as the pass takes on a large vault. */}
@@ -911,7 +916,7 @@ export function MarkdownListPane({
                     // it to make the title, so `notes.md` and `notes.txt` are two
                     // identical rows without this. Same square either way - it is
                     // the same pillar, not a second kind of file.
-                    <span className="shrink-0 w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                    <span className="shrink-0 w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center text-accent-strong">
                       {isTextFile(entry.ref.name) ? <FileTxt size={18} /> : <FileMd size={18} />}
                     </span>
                   }
@@ -962,13 +967,13 @@ function SingleFileCard({
             : <FileMd size={14} className="text-accent shrink-0" />}
           <span className="text-[13px] font-medium truncate">{opened.adapted.title}</span>
         </div>
-        <p className="font-mono text-[11px] text-neutral-500 dark:text-neutral-400 truncate mb-2">
+        <p className="font-mono text-[11px] text-pn-muted truncate mb-2">
           {opened.ref.location}
         </p>
         {opened.adapted.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-2">
             {opened.adapted.tags.map((tag) => (
-              <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded-full border border-divider text-neutral-500 dark:text-neutral-400">
+              <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded-full border border-divider text-pn-muted">
                 #{tag}
               </span>
             ))}

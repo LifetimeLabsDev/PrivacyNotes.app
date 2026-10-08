@@ -145,6 +145,8 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
     void deps.handleNew(undefined, target);
   };
 
+  // The letter that picks each entry above the first separator when the
+  // menu opens from the keyboard (NEW_MENU_PICKS, same order).
   // Order MUST match the sidebar pillar nav (TagsRail.tsx) and the "New" dropdown
   // (NotesList.tsx allNewOptions): Note, Task, Login, File, Journal, Bookmark.
   // Spec: ops/docs/ui-patterns.md section 45 (New-menu order invariant)
@@ -520,3 +522,11 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
 
   return { buildGlobalMenu, buildNoteMenu };
 }
+
+/**
+ * The letter that picks each "New" entry of the global menu when it opens
+ * from the keyboard (Mod+Shift+N in the desktop apps), in the menu's order:
+ * Note, Task, Login, File, Journal, Contact, Bookmark. English letters on
+ * every keyboard, shown on each row.
+ */
+export const NEW_MENU_PICKS = ['n', 't', 'l', 'f', 'j', 'c', 'b'] as const;

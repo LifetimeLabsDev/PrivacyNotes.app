@@ -9,6 +9,8 @@ import {
 import { type Editor as TipTapEditor } from '@tiptap/react';
 import { getActiveMatchRange } from './editorSearch';
 import { isImeComposing } from './imeComposing';
+import { APP_KEYS, matchesKey } from './shortcutMatch';
+import { editorCommands, insertDateText, registerEditorCommand } from './editorCommands';
 import { readOutlinePref, writeOutlinePref } from './editorPrefs';
 import { proUnlocked } from './demo';
 
@@ -170,10 +172,40 @@ export function useEditorPanels({
     else openReplace();
   }, [closeBar, openReplace]);
 
+  // The same three toggles for command mode in the search field. Command
+  // mode offers a command only while it is registered, so a read-only note,
+  // which refuses replace, does not offer it.
+  useEffect(() => {
+    if (preview) return;
+    const off = [
+      registerEditorCommand('find', toggleFind),
+      ...(readOnly ? [] : [registerEditorCommand('findReplace', toggleReplace)]),
+      registerEditorCommand('outline', () =>
+        setOutlineOpen((v) => {
+          if (!v) setBar('none');
+          return !v;
+        }),
+      ),
+    ];
+    return () => off.forEach((f) => f());
+  }, [preview, readOnly, toggleFind, toggleReplace]);
+
+  // The date inserts, while the note can be edited. The Markdown source view
+  // registers its own (MarkdownSourceEditor.tsx), since this editor is not
+  // mounted there.
+  useEffect(() => {
+    if (preview || readOnly || !editor) return;
+    const off = [
+      registerEditorCommand('insertDate', () => insertDateText(editor, 'date')),
+      registerEditorCommand('insertDateTime', () => insertDateText(editor, 'dateTime')),
+    ];
+    return () => off.forEach((f) => f());
+  }, [preview, readOnly, editor]);
+
   // Cmd/Ctrl+F opens find, Option/Alt+Cmd/Ctrl+F opens replace, and
   // Cmd/Ctrl+Shift+O toggles the outline. One document-level capture listener
-  // catches all three, whether the caret is in the editor body or the editor
-  // is merely on screen. We stand down when focus is
+  // catches all three, and the date keys, whether the caret is in the editor
+  // body or the editor is merely on screen. We stand down when focus is
   // in some other input/textarea (e.g. the note-list search) so we don't hijack
   // their shortcuts; our own UI lives inside rootRef so it still counts.
   useEffect(() => {
@@ -213,22 +245,32 @@ export function useEditorPanels({
         return;
       }
 
-      const mod = e.metaKey || e.ctrlKey;
-      if (!mod) return;
-      if (e.altKey) {
-        // Option+Cmd+F opens replace (Alt+Ctrl+F off the Mac). The physical
-        // `code` is tested beside `key` because on macOS, Option rewrites the
-        // key to the character it types (ƒ for F) - the same reason
-        // Editor.tsx tests `code` for its own shifted shortcuts. No other
-        // Option/Alt combination is ours.
-        const isReplace = !e.shiftKey && (e.code === 'KeyF' || e.key === 'f' || e.key === 'F');
-        if (!isReplace || inForeignField) return;
+      // The date keys run the insert registered while the note can be
+      // edited; with none registered, the key is left to the browser.
+      const insert = matchesKey(e, APP_KEYS.insertDate)
+        ? editorCommands.insertDate
+        : matchesKey(e, APP_KEYS.insertDateTime)
+          ? editorCommands.insertDateTime
+          : null;
+      if (insert !== null) {
+        if (inForeignField || !insert) return;
+        e.preventDefault();
+        insert();
+        return;
+      }
+
+      // Option+Cmd+F opens replace (Alt+Ctrl+F off the Mac). On macOS Option
+      // turns F into ƒ, which the matcher reads back as F. Off the Mac,
+      // Ctrl+Alt is also AltGr, and a keyboard that types a character there
+      // ("[" is AltGr+F in Czech) keeps the character.
+      if (matchesKey(e, APP_KEYS.findReplace)) {
+        if (inForeignField) return;
         e.preventDefault();
         toggleReplace();
         return;
       }
-      const isOutline = e.shiftKey && (e.key === 'o' || e.key === 'O');
-      const isFind = !e.shiftKey && (e.key === 'f' || e.key === 'F');
+      const isOutline = matchesKey(e, APP_KEYS.outline);
+      const isFind = matchesKey(e, APP_KEYS.find);
       if (!isOutline && !isFind) return;
       if (inForeignField) return;
       e.preventDefault();

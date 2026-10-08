@@ -144,7 +144,7 @@ function ActionButton({
       disabled={busy}
       className={`inline-flex items-center gap-1.5 text-[13px] font-medium px-3 py-1.5 rounded-md transition disabled:opacity-50 cursor-pointer ${
         emphasis === 'solid'
-          ? 'bg-accent text-white hover:bg-accent-hover'
+          ? 'bg-accent-fill text-white hover:bg-accent-fill-hover'
           : 'border border-divider bg-surface-2 text-pn hover:border-accent'
       }`}
     >
@@ -210,7 +210,7 @@ function DefaultAppBody({
         </div>
       )}
       {failed && (
-        <p className="mt-1.5 text-[12px] text-red-600 dark:text-red-400 leading-snug">
+        <p className="mt-1.5 text-[12px] text-danger leading-snug">
           {t('markdown.assocFailed')}
         </p>
       )}
@@ -249,7 +249,7 @@ export function MarkdownDefaultAppCard() {
     >
       <span className="flex justify-center mb-2">
         {isOurs ? (
-          <CheckCircle size={22} weight="fill" className="text-green-600 dark:text-green-500" />
+          <CheckCircle size={22} weight="fill" className="text-success" />
         ) : (
           <FileMd size={22} className="text-accent" />
         )}

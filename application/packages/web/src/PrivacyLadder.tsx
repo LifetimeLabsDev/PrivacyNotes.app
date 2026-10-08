@@ -77,7 +77,7 @@ export function PrivacyLadder({
                   cannot (there is no readable mark for "fully anonymous").
                   Western digits in every locale, Arabic included, matching
                   intlLocale's ar-u-nu-latn rule. */}
-              <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-[5px] bg-accent/10 text-[11px] font-medium text-accent">
+              <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-[5px] bg-accent/10 text-[11px] font-medium text-accent-strong">
                 {i + 1}
               </span>
               <div>
@@ -106,21 +106,25 @@ export function PrivacyLadder({
             cream. emerald-600 is 3.34:1 there and emerald-500 is 7.28:1 on
             the dark ground, so both ends are lighter than one fixed value
             and both clear 3:1.
-            sm:shrink-0 keeps the sentence whole and lets the link wrap
-            instead: German and Turkish run longer than English here. */}
+            The sentence wraps and the link holds: the link is two words in
+            every locale, while the sentence runs wider than the panel in most
+            of them. Let the link wrap instead and it is the part that spills
+            out of the card, French and Polish first. */}
         {/* Washi only, and this is not a styling split. The sentence names
             Settings as the place to change your mind, which is true on the
             sign-in card and absurd in the settings pane, where the reader is
             already looking at the control it points at. The link is right on
             both surfaces, so only the sentence is gated. */}
         {tone === 'washi' && (
-          <p className={`flex items-center gap-1.5 text-[13px] font-semibold sm:shrink-0 ${c.body}`}>
-            <CheckFat
-              size={14}
-              weight="fill"
-              className="shrink-0 text-emerald-600 dark:text-emerald-500"
-              aria-hidden="true"
-            />
+          <p className={`flex items-start gap-1.5 text-[13px] font-semibold ${c.body}`}>
+            <span className="flex h-5 shrink-0 items-center">
+              <CheckFat
+                size={14}
+                weight="fill"
+                className="text-success"
+                aria-hidden="true"
+              />
+            </span>
             {t('ladder.footer')}
           </p>
         )}
@@ -128,7 +132,7 @@ export function PrivacyLadder({
           href={siteHref(`${helpPath(activeLocale())}/threat-model-levels`)}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-start gap-2 text-[13px] text-accent hover:underline"
+          className="inline-flex items-start gap-2 text-[13px] text-accent hover:underline sm:shrink-0"
         >
           <span className="flex h-5 shrink-0 items-center">
             <BookOpenText size={15} aria-hidden="true" />

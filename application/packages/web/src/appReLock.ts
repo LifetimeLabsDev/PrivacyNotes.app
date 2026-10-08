@@ -80,6 +80,16 @@ export function takeReopenNote(): string | null {
   return id;
 }
 
+/**
+ * Whether a lock curtain has outlived its lock: this tab is signed out and
+ * no wrapped door is left on disk, which is what another tab's sign-out
+ * leaves. A signed-out tab WITH a door is the cold start of an armed app
+ * lock, whose only way back in is the unlock, so its curtain stays.
+ */
+export function lockCurtainIsStale(status: string): boolean {
+  return status === 'onboarding' && !hasBiometricCredential() && !hasPinWrappedPhrase();
+}
+
 /** Should the app take the UI away right now? */
 export function shouldReLock(state: ReLockState): boolean {
   if (!state.appLockEnabled) return false;

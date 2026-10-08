@@ -13,6 +13,7 @@ import { SiteFooter } from './SiteFooter';
 import { helpPath } from './localeRoutes';
 import { HelpChip } from './HelpChip';
 import { activeLocale } from './languages';
+import { DEMO_SCREENSHOTS } from './demoScreenshots';
 import { applyStoredTheme, previewColorTheme, getStoredColorTheme, useTheme } from './theme';
 import { isBetaPricing } from './paddle';
 import { PRO_PRICE, EARLY_PRICE, STORAGE_ADDON_PRICE } from './pricing';
@@ -810,8 +811,12 @@ export function LandingPage({
   // Light/dark is deliberately NOT forced here - the card adapts to the
   // stored mode (see openAuth and Onboarding) so it feels familiar.
   useEffect(() => {
-    previewColorTheme('default');
-    return () => previewColorTheme(getStoredColorTheme());
+    previewColorTheme('light', 'default');
+    previewColorTheme('dark', 'default');
+    return () => {
+      previewColorTheme('light', getStoredColorTheme('light'));
+      previewColorTheme('dark', getStoredColorTheme('dark'));
+    };
   }, []);
 
   // Capture ?ref= (or an allowlisted referring site) into sessionStorage
@@ -1467,8 +1472,11 @@ export function LandingPage({
                 React reuses one <img> across a src change, and the browser
                 keeps painting the old frame until the new file decodes.
 
-                2048 wide for a column that caps at 1024, so the shot stays
-                sharp on a 2x screen.
+                The capture is wider than any column it lands in, so the
+                srcset hands the browser a preview sized for the column
+                instead of the full-resolution press-kit file. Paths and
+                dimensions come from demoScreenshots.ts, which /brand reads
+                too.
 
                 loading=lazy keeps the shot out of the first-paint fetch
                 race on mobile, where it sits below the fold. NOT
@@ -1477,10 +1485,12 @@ export function LandingPage({
                 gotcha in ui-patterns.md). */}
             <img
               key={theme}
-              src={theme === 'dark' ? '/marketing/demo-app-dark.webp' : '/marketing/demo-app-light.webp'}
+              src={DEMO_SCREENSHOTS[theme === 'dark' ? 'dark' : 'light'].src}
+              srcSet={DEMO_SCREENSHOTS[theme === 'dark' ? 'dark' : 'light'].srcSet}
+              sizes="(max-width: 1088px) 100vw, 1024px"
               alt=""
-              width={2048}
-              height={1116}
+              width={DEMO_SCREENSHOTS.light.width}
+              height={DEMO_SCREENSHOTS.light.height}
               loading="lazy"
               className="block w-full"
             />
@@ -1951,9 +1961,6 @@ export function LandingPage({
           )}
           <p className="mt-8 text-sm text-[var(--wl-sub)]">
             {t('downloads.availability')}
-          </p>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-balance text-[var(--wl-ink)]">
-            {t('downloads.betaNote')}
           </p>
         </div>
 

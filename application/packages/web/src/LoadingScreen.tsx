@@ -67,10 +67,10 @@ export function TypewriterLine({ text }: { text: string }) {
   }, [len, text]);
 
   return (
-    <div className="font-mono text-sm text-neutral-500 dark:text-neutral-400 select-none">
+    <div className="font-mono text-sm text-pn-muted select-none">
       <span>{text.slice(0, len)}</span>
       <span
-        className="inline-block w-[0.5ch] ms-[1px] -mb-[2px] align-baseline bg-neutral-500 dark:bg-neutral-400 animate-pulse"
+        className="inline-block w-[0.5ch] ms-[1px] -mb-[2px] align-baseline bg-pn-muted animate-pulse"
         style={{ height: '1em' }}
         aria-hidden="true"
       />
@@ -148,11 +148,11 @@ export function LoadingScreen({ inline = false }: { inline?: boolean } = {}) {
 
   const inner = (
     <div
-      className={`font-mono text-sm text-neutral-500 dark:text-neutral-400 select-none transition-opacity duration-150 ${visible ? 'opacity-100' : 'opacity-0'}`}
+      className={`font-mono text-sm text-pn-muted select-none transition-opacity duration-150 ${visible ? 'opacity-100' : 'opacity-0'}`}
     >
       <span>{text}</span>
       <span
-        className="inline-block w-[0.5ch] ms-[1px] -mb-[2px] align-baseline bg-neutral-500 dark:bg-neutral-400 animate-pulse"
+        className="inline-block w-[0.5ch] ms-[1px] -mb-[2px] align-baseline bg-pn-muted animate-pulse"
         style={{ height: '1em' }}
         aria-hidden="true"
       />

@@ -50,7 +50,7 @@ export function StorageBar({ label, usedBytes, maxBytes, onRefresh }: Props) {
   return (
     <div className="shrink-0 px-4 pt-2 pb-1">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mb-1.5">
-        <span className="flex items-center gap-1 text-xs text-neutral-600 dark:text-neutral-400">
+        <span className="flex items-center gap-1 text-xs text-pn-muted">
           {label}
           <HoverLabel label={t('storageBar.cleanupInfo')} position="below-start" multiline className="flex items-center">
             <span tabIndex={0} aria-label={t('storageBar.cleanupInfo')} className="inline-flex items-center cursor-help">
@@ -59,7 +59,7 @@ export function StorageBar({ label, usedBytes, maxBytes, onRefresh }: Props) {
           </HoverLabel>
         </span>
         <span className="flex items-center gap-2 ml-auto">
-          <span className="text-xs text-neutral-600 dark:text-neutral-400 whitespace-nowrap">
+          <span className="text-xs text-pn-muted whitespace-nowrap">
             {t('storageBar.usage', {
               percent: Math.round(pct),
               used: compactBytes(usedBytes),
@@ -82,10 +82,10 @@ export function StorageBar({ label, usedBytes, maxBytes, onRefresh }: Props) {
           </HoverLabel>
         </span>
       </div>
-      <div className="h-2 rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
+      <div className="h-2 rounded-full bg-pn/10 overflow-hidden">
         <div
           className={`h-full rounded-full transition-all ${
-            pct > 80 ? 'bg-amber-500 dark:bg-amber-400' : 'bg-accent'
+            pct > 80 ? 'bg-amber-500 dark:bg-amber-400' : 'bg-accent-fill'
           }`}
           style={{ width: `${Math.max(pct, 0.5)}%` }}
         />

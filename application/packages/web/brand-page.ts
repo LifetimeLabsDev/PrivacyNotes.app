@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss } from './static-page-theme.ts';
 import { brandMark, CHROME_CSS, OG_IMAGE_TAGS, ogLocaleTag, SITE_FOOTER, siteNav } from './static-page-chrome.ts';
 import { formatBytes } from './src/formatBytes.ts';
+import { DEMO_SCREENSHOTS } from './src/demoScreenshots.ts';
 
 // Pre-renders the static /brand page: brand assets + press kit. Emitted as
 // brand/index.html so Cloudflare serves it directly at /brand, same pattern
@@ -25,11 +26,10 @@ import { formatBytes } from './src/formatBytes.ts';
 // selectable as-is.
 //
 // Wordmark rule (the reason half these files exist): "Privacy" is always
-// blue - Brand Blue #1E40AF on light backgrounds, Fold Blue #4F6BD5 on
-// dark, where #1E40AF is illegible - and "Notes" is always ink, #0A0A0A
-// on light, #FFFFFF on dark. The icon never changes between the light and
-// dark lockups; only the wordmark adapts. Two-tone lives only in the logo,
-// never in running text. Spec: ops/docs/design-decisions.md (brand kit)
+// Fold Blue #4F6BD5, on light and on dark backgrounds, and "Notes" is always
+// ink, #0A0A0A on light, #FFFFFF on dark. The icon never changes between the
+// light and dark lockups; only the ink half adapts. Two-tone lives only in
+// the logo, never in running text. Spec: ops/docs/design-decisions.md (brand kit)
 
 const M = '/marketing';
 const B = `${M}/brand`;
@@ -93,25 +93,21 @@ const WORDMARKS: Card[] = [
 // out of native binaries without a second rule.
 const SHOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'public/marketing');
 
-// The pixel size is declared and the byte size is measured, because they go
-// stale at different rates: a re-encode of the same frame moves the bytes and
-// nothing else. Reading the file also makes a renamed capture fail the build
-// instead of shipping a broken tile beside a number that was true once.
-const SHOT_DIMS = '2048 x 1116';
-
-const SHOTS: Array<{ file: string; title: string; saveAs: string }> = [
-  { file: 'demo-app-light', title: 'App, light', saveAs: 'privacynotes-app-light.webp' },
-  { file: 'demo-app-dark', title: 'App, dark', saveAs: 'privacynotes-app-dark.webp' },
+// Dimensions and responsive paths are generated from the same originals.
+// Reading the download also makes a missing capture fail the build.
+const SHOTS = [
+  { ...DEMO_SCREENSHOTS.light, title: 'App, cream', saveAs: 'privacynotes-app-cream.webp' },
+  { ...DEMO_SCREENSHOTS.dark, title: 'App, dark', saveAs: 'privacynotes-app-dark.webp' },
 ];
 
 // `download` names the saved file, because the source names are the homepage's
 // and a press kit should hand over a branded filename.
 function shotCard(s: (typeof SHOTS)[number]): string {
-  const size = formatBytes(fs.statSync(path.join(SHOT_DIR, `${s.file}.webp`)).size);
+  const size = formatBytes(fs.statSync(path.join(SHOT_DIR, path.basename(s.src))).size);
   return `<div class="card">
-<div class="shot"><img src="${M}/${s.file}.webp" alt="PrivacyNotes ${s.title.toLowerCase()}" width="2048" height="1116" loading="lazy"></div>
-<div class="meta"><div><strong>${s.title}</strong><span class="dims">${size}, WebP ${SHOT_DIMS}</span></div>
-<div class="dl"><a class="pill" href="${M}/${s.file}.webp" download="${s.saveAs}">WebP</a></div></div>
+<div class="shot"><img src="${s.src}" srcset="${s.srcSet}" sizes="(max-width: 600px) calc(100vw - 48px), 490px" alt="PrivacyNotes ${s.title.toLowerCase()}" width="${s.width}" height="${s.height}" loading="lazy"></div>
+<div class="meta"><div><strong>${s.title}</strong><span class="dims">${size}, WebP ${s.width} x ${s.height}</span></div>
+<div class="dl"><a class="pill" href="${s.src}" download="${s.saveAs}">WebP</a></div></div>
 </div>`;
 }
 
@@ -200,8 +196,7 @@ ${rows}
  * description blocks (they are verbatim strings, and coloring half a string
  * implies the color is part of it), the wrong forms being warned against,
  * and the quoted words "Privacy" / "Notes" in the two-tone rule itself -
- * that sentence names Brand Blue and Fold Blue by hex, and the page accent
- * is neither, so painting them there would state one blue and show another.
+ * there they are words being talked about, not the name.
  */
 
 function copyBlock(c: CopyBlock): string {
@@ -227,8 +222,8 @@ const FACTS: Array<[string, string]> = [
 ];
 
 const SWATCHES: Array<{ name: string; hex: string; rgb: string; cmyk: string; role: string; border?: boolean }> = [
-  { name: 'Brand Blue', hex: '#1E40AF', rgb: '30 64 175', cmyk: '83 63 0 31', role: 'icon body, "Privacy" on light' },
-  { name: 'Fold Blue', hex: '#4F6BD5', rgb: '79 107 213', cmyk: '63 50 0 16', role: 'corner fold, "Privacy" on dark' },
+  { name: 'Brand Blue', hex: '#1E40AF', rgb: '30 64 175', cmyk: '83 63 0 31', role: 'icon body' },
+  { name: 'Fold Blue', hex: '#4F6BD5', rgb: '79 107 213', cmyk: '63 50 0 16', role: 'corner fold, "Privacy"' },
   { name: 'Check Green', hex: '#10B981', rgb: '16 185 129', cmyk: '91 0 30 27', role: 'check badge only' },
   { name: 'Ink', hex: '#0A0A0A', rgb: '10 10 10', cmyk: '0 0 0 96', role: '"Notes" on light' },
   { name: 'Paper', hex: '#FFFFFF', rgb: '255 255 255', cmyk: '0 0 0 0', role: '"Notes" on dark, lock, check', border: true },
@@ -362,7 +357,7 @@ ${PAGE_CSS}
 </head>
 <body data-static-page="brand">
 <div class="wrap">
-${siteNav({ active: 'brand' })}
+${siteNav()}
 <div class="pcols">
 ${sectionRail()}
 <div class="col-head">
@@ -385,7 +380,7 @@ ${ICONS.map(card).join('\n')}
 </div>
 
 ${h2('wordmark')}
-<p class="lead"><strong>The two-tone rule:</strong> "Privacy" is always blue, Brand Blue on light and Fold Blue on dark. "Notes" is always ink, near-black on light and white on dark. One word, never inverted, never two-toned in running text.</p>
+<p class="lead"><strong>The two-tone rule:</strong> "Privacy" is always Fold Blue, on light and on dark. "Notes" is always ink, near-black on light and white on dark. One word, never inverted, never two-toned in running text.</p>
 <div class="grid">
 ${WORDMARKS.map(card).join('\n')}
 </div>
@@ -416,7 +411,7 @@ ${SHOTS.map(shotCard).join('\n')}
 </div>
 
 ${h2('descriptions')}
-<p class="lead">Always ${brandMark()}: one word, capital P, capital N, with "Privacy" in the accent color wherever the medium allows it. The domain is written the same way, ${brandMark('.app')}, everywhere except inside an actual URL. Never "Privacy Notes", "Privacynotes", or "PN". The App Store listing name "PrivacyNotes - Zero Knowledge" is a store-name workaround, not the brand.</p>
+<p class="lead">Always ${brandMark()}: one word, capital P, capital N, with "Privacy" in Fold Blue wherever the medium allows it. The domain is written the same way, ${brandMark('.app')}, everywhere except inside an actual URL. Never "Privacy Notes", "Privacynotes", or "PN". The App Store listing name "PrivacyNotes - Zero Knowledge" is a store-name workaround, not the brand.</p>
 ${COPY.map(copyBlock).join('\n')}
 
 ${h2('facts')}

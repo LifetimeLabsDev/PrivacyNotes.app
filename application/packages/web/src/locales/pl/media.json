@@ -14,7 +14,8 @@
     "loadFailed": "Nie udało się wczytać obrazu",
     "notFound": "Nie znaleziono obrazu",
     "saveFailed": "Zapis się nie udał, więc plik może być pusty albo niekompletny.",
-    "viewAria": "Wyświetl obraz"
+    "viewAria": "Wyświetl obraz",
+    "picturesLeftOut": "Niektóre obrazy nie zostały dodane. Skopiuj obraz osobno, żeby go wkleić."
   },
   "attachment": {
     "fallbackName": "Załącznik",

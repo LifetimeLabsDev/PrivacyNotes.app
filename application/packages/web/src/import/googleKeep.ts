@@ -97,6 +97,12 @@ const KEEP_COLORS: Readonly<Record<string, string>> = {
   GRAY: 'gray',
 };
 
+/** The color key of a Keep color name. Own property only: the name comes out
+ *  of the export, and an inherited one (`constructor`) answers with a function. */
+function keepColorKey(name: string): string | undefined {
+  return Object.hasOwn(KEEP_COLORS, name) ? KEEP_COLORS[name]! : undefined;
+}
+
 export const googleKeepImporter: Importer = {
   id: 'google-keep',
   label: 'Google Keep',
@@ -286,7 +292,7 @@ export const googleKeepImporter: Importer = {
         starred: pinned,
         trashed,
         ...(archived ? { archived: true } : {}),
-        ...(raw.color && KEEP_COLORS[raw.color] ? { colorKey: KEEP_COLORS[raw.color] } : {}),
+        ...(raw.color && keepColorKey(raw.color) ? { colorKey: keepColorKey(raw.color) } : {}),
       });
     }
 

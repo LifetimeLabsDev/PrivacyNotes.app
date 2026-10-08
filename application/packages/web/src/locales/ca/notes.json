@@ -10,7 +10,8 @@
     "empty": "Buida",
     "noContent": "Sense contingut",
     "notBackedUp": "Sense còpia de seguretat",
-    "archived": "Arxivat"
+    "archived": "Arxivat",
+    "entryDate": "Data de l'entrada"
   },
   "header": {
     "new": "Nova",
@@ -19,7 +20,9 @@
     "trash": "Paperera"
   },
   "folderChip": {
-    "clear": "Treu el filtre de carpeta: {{folder}}"
+    "clear": "Treu el filtre de carpeta: {{folder}}",
+    "subfolders": "Subcarpetes",
+    "subfoldersLabel": "Inclou les subcarpetes"
   },
   "tagChip": {
     "clear": "Treu el filtre d'etiqueta: {{tag}}"
@@ -56,7 +59,7 @@
     "empty": "Buida",
     "emptyHover": "Suprimeix totes les notes de la paperera",
     "storage": "Emmagatzematge",
-    "autoDelete": "Suprimeix després de 30 dies"
+    "autoDelete": "Supressió automàtica després de 30 dies"
   },
   "search": {
     "sortOptions": "Opcions d'ordenació i visualització",
@@ -193,6 +196,8 @@
     "currentHtmlDesc": "Ideal per imprimir, markdown renderitzat en una pàgina blanca.",
     "printTitle": "Imprimeix / Desa com a PDF",
     "printDesc": "Obre el diàleg d'impressió. Desa com a PDF o envia-ho a una impressora.",
+    "printTextTitle": "Imprimeix només el text",
+    "printTextDesc": "Manté el títol. Deixa fora la data, la carpeta i les etiquetes.",
     "burnTitle": "Comparteix amb Burn After Reading",
     "burnDesc": "Publica aquesta nota com a enllaç de visualització única. L'enllaç s'autodestrueix després de llegir-se. La teva nota es queda segura al teu compte."
   },
@@ -210,7 +215,10 @@
     "newNote": "Nou",
     "newNoteHintMac": "Option + Maj + N",
     "newNoteHintOther": "Alt + Maj + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Obre les estadístiques",
+    "journalCalendar": "Calendari del diari",
     "words": "Paraules",
     "zen": "Mode Zen",
     "appearance": "Aparença",
@@ -234,7 +242,7 @@
     "appearanceLabel": "Aparença",
     "helpLabel": "Ajuda",
     "aboutLabel": "Informació",
-    "languageLabel": "Llengua",
+    "languageLabel": "Data i llengua",
     "languageDesc": "Tria la llengua en què es mostra PrivacyNotes."
   },
   "importStore": {
@@ -257,6 +265,13 @@
     "readOnlySkipped_one": "<highlight>{{count}} element</highlight> és només de lectura i es queda on és.",
     "readOnlySkipped_many": "<highlight>{{count}} elements</highlight> són només de lectura i es queden on són.",
     "readOnlySkipped_other": "<highlight>{{count}} elements</highlight> són només de lectura i es queden on són."
+  },
+  "deleteCheckedTasks": {
+    "title": "Vols suprimir els elements marcats?",
+    "confirm": "Suprimeix",
+    "body_one": "Se suprimirà <highlight>{{count}} element</highlight> d'aquesta nota. Aquesta acció no es pot desfer.",
+    "body_many": "Se suprimiran <highlight>{{count}} elements</highlight> d'aquesta nota, inclosos els imbricats. Aquesta acció no es pot desfer.",
+    "body_other": "Se suprimiran <highlight>{{count}} elements</highlight> d'aquesta nota, inclosos els imbricats. Aquesta acció no es pot desfer."
   },
   "bulkDelete": {
     "body_one": "Vols suprimir permanentment <highlight>{{count}} nota</highlight>? Aquesta acció no es pot desfer.",

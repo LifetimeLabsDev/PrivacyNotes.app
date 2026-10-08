@@ -74,9 +74,13 @@ A callout is a coloured box for something a reader must not miss.
 
 > A quote steps in from the margin and takes a coloured line down its side.
 
+## Footnotes
+
+A footnote keeps a source or an aside out of the way of the text.[^1] Type `[^1]` after a word, or pick **Footnote** in the **Insert** menu. Click the small number to jump to the note.
+
 ## Code
 
-Code keeps its spacing and gets coloured by language.
+Code keeps its spacing and gets coloured by language. The name at the top of a block is its language: click it to pick another.
 
 ```js
 export function seal(note, key) {
@@ -89,6 +93,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+A long block opens folded, so the rest of the note stays close. The button under it shows every line.
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 A short piece of code inside a sentence looks like `this` instead.
@@ -116,6 +161,10 @@ Both have a toolbar button. The chain makes a web link. The brackets make a note
 
 A note-link does not have to read as the note's title. Type the title, a bar, then the words you want on the page: [[How your notes are protected|these words]] open that note.
 
+A note-link can also open a note at one of its headings. Type a `#` after the title and pick the heading: [[How your notes are protected#Who holds your key]] opens that note at its key section. The link icon on a heading in the outline copies such a link for you.
+
 ---
 
 *If you already write markdown, type it and it formats as you go. To see the raw text behind any note, click on **Show markdown** at the bottom right of this note.*
+
+[^1]: This is the note. The arrow next to it takes you back up.

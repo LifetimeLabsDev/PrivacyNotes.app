@@ -1,0 +1,3 @@
+"saved" = "Sparat i PrivacyNotes";
+"failed" = "Det gick inte att spara i PrivacyNotes";
+"tooLarge" = "För stor. Max {{limit}} MB per fil.";

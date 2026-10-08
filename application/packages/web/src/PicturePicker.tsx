@@ -59,7 +59,7 @@ export function PicturePicker({ items, onPick, onClose }: {
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1"
+            className="shrink-0 text-pn-muted hover:text-pn-soft transition p-1 -m-1"
             aria-label={t('common:actions.close')}
           >
             <X size={18} />
@@ -77,9 +77,9 @@ export function PicturePicker({ items, onPick, onClose }: {
         )}
         <div className="flex-1 min-h-0 overflow-y-auto px-5 pb-3">
           {items.length === 0 ? (
-            <p className="py-10 text-sm text-center text-neutral-500 dark:text-neutral-400">{t('picker.empty')}</p>
+            <p className="py-10 text-sm text-center text-pn-muted">{t('picker.empty')}</p>
           ) : shown.length === 0 ? (
-            <p className="py-10 text-sm text-center text-neutral-500 dark:text-neutral-400">{t('picker.noMatch')}</p>
+            <p className="py-10 text-sm text-center text-pn-muted">{t('picker.noMatch')}</p>
           ) : (
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
               {shown.map((it) => (
@@ -103,7 +103,7 @@ export function PicturePicker({ items, onPick, onClose }: {
           )}
         </div>
         {items.length > 0 && (
-          <p className="px-5 py-3 border-t border-divider text-xs text-neutral-500 dark:text-neutral-400">
+          <p className="px-5 py-3 border-t border-divider text-xs text-pn-muted">
             {t('picker.noCopy')}
           </p>
         )}

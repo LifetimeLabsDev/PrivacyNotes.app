@@ -58,11 +58,11 @@ export const SIDEBAR_WIDTH_MIN = 240;
 export const SIDEBAR_WIDTH_MAX = 420;
 export const SIDEBAR_VIEWPORT_CAP = 0.3;
 export const LIST_WIDTH_DEFAULT = 288;
-// The list floor is the SelectionToolbar's intrinsic width, not a taste
-// call: px-4 padding (32) + the exit X (32) + gap-3 (12) + five 36px
-// action buttons with four 6px gaps (204) = 280. Both toolbar clusters
-// are shrink-0, so anything narrower clipped the last action - the
-// delete button - straight off the pane edge.
+// The list floor holds the SelectionToolbar, not a taste call: px-3
+// padding (24) + the exit X (32) + gap-1 (4) + six 32px action buttons
+// with five 4px gaps (212) = 272. Both toolbar clusters are shrink-0, so
+// a narrower pane pushes the last action - the delete button - under the
+// pane's resize strip.
 export const LIST_WIDTH_MIN = 280;
 export const LIST_WIDTH_MAX = 620;
 export const LIST_VIEWPORT_CAP = 0.4;

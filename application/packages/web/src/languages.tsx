@@ -23,19 +23,37 @@ export function currentLanguageChoice(): string {
 export { activeLocale, preferredLocale };
 
 // Spec: ops/docs/archive/rtl-handoff.md (Arabic numerals: Western digits)
-const ARABIC_INTL_LOCALE = 'ar-u-nu-latn';
+const LATIN_DIGITS = '-u-nu-latn';
 
 /**
  * The BCP-47 tag to pass to any Intl/toLocale* API - `activeLocale()` (or an
  * explicit override, for callers that already resolved a locale elsewhere),
- * except Arabic maps to `ar-u-nu-latn` so the UI renders Western 0-9 digits
- * instead of Intl's Arabic-Indic default. This is the one function that
+ * except an Arabic tag gains `-u-nu-latn` so the UI renders Western 0-9 digits
+ * instead of Intl's Arabic-Indic default. That holds for a tag with a region
+ * too ("ar-EG", which the date locale builds). This is the one function that
  * should ever feed one of those APIs; `activeLocale()` itself stays the
  * comparison/routing value (URL slugs, `lang` params, "is this the current
  * language" checks) and must not be given Intl's `-u-nu-latn` suffix.
  */
 export function intlLocale(locale: string = activeLocale()): string {
-  return locale === 'ar' ? ARABIC_INTL_LOCALE : locale;
+  return locale === 'ar' || locale.startsWith('ar-') ? `${locale}${LATIN_DIGITS}` : locale;
+}
+
+/**
+ * Every locale tag the device states, for the one thing the app language
+ * cannot say: the region a person formats dates in. The runtime's own default
+ * leads, because a system webview takes it from the region set in the
+ * operating system; the browser's preferred languages follow. The tags are
+ * raw, so a Linux box can hand over "C" or "en_US". Every list row asks for
+ * them, so a runtime without a languages list must not throw here.
+ */
+export function deviceLocaleTags(): string[] {
+  // date-ok: reads the device region and formats nothing
+  const tags = [new Intl.DateTimeFormat().resolvedOptions().locale];
+  const preferred: readonly string[] | undefined =
+    typeof navigator === 'undefined' ? undefined : navigator.languages;
+  if (preferred) tags.push(...preferred);
+  return tags;
 }
 
 

@@ -271,7 +271,7 @@ export function FolderPicker({
           <DotsThree />
         </button>
       )}
-      <span className="text-[11px] text-neutral-400 dark:text-neutral-600 tabular-nums ms-1 shrink-0">
+      <span className="text-[11px] text-pn-muted tabular-nums ms-1 shrink-0">
         {(open ? counts : totals).get(folder.id) ?? 0}
       </span>
       {checkedId === folder.id ? (
@@ -304,14 +304,14 @@ export function FolderPicker({
           <button
             onClick={onClose}
             aria-label={t('common:actions.close')}
-            className="p-1 -m-1 rounded text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition"
+            className="p-1 -m-1 rounded text-pn-muted hover:text-pn transition"
           >
             <X size={16} />
           </button>
         </div>
         <div className="px-4 pb-2 shrink-0">
           <div className="flex items-center gap-2 rounded-md bg-surface-1 border border-divider px-2.5">
-            <MagnifyingGlass size={14} className="shrink-0 text-neutral-400 dark:text-neutral-500" aria-hidden="true" />
+            <MagnifyingGlass size={14} className="shrink-0 text-pn-muted" aria-hidden="true" />
             <input
               autoFocus
               value={query}
@@ -338,17 +338,17 @@ export function FolderPicker({
                   onClick={() => onPick(folder.id)}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-md text-[14px] text-start transition ${
                     disabled
-                      ? 'text-neutral-400 dark:text-neutral-600 cursor-not-allowed'
+                      ? 'text-pn-muted/75 cursor-not-allowed'
                       : checkedId === folder.id
-                        ? 'bg-accent/15 text-accent dark:bg-accent/20 hover:bg-accent/20 dark:hover:bg-accent/25'
-                        : 'text-neutral-800 dark:text-neutral-200 hover:bg-neutral-200/60 dark:hover:bg-neutral-800/60'
+                        ? 'pn-on-tint bg-accent/15 text-accent-strong dark:bg-accent/20 hover:bg-accent/20 dark:hover:bg-accent/25'
+                        : 'text-pn hover:bg-pn/5'
                   }`}
                 >
-                  <span className={`inline-flex shrink-0 ${disabled ? '' : 'text-amber-600/80 dark:text-amber-500/80'}`}>
+                  <span className={`inline-flex shrink-0 ${disabled ? '' : 'text-amber-700 dark:text-amber-500/80'}`}>
                     <FolderGlyph folderId={folder.id} size={15} />
                   </span>
                   <span className="flex-1 min-w-0 truncate">
-                    {path && <span className="text-neutral-400 dark:text-neutral-500">{path} / </span>}
+                    {path && <span className="text-pn-muted">{path} / </span>}
                     {folder.name}
                   </span>
                   {trailingFor(folder)}
@@ -397,7 +397,7 @@ export function FolderPicker({
                   >
                     <div className="flex items-center gap-2 px-1 py-2">
                       <span className="w-4 shrink-0" aria-hidden="true" />
-                      <span className="inline-flex shrink-0 text-amber-600/80 dark:text-amber-500/80">
+                      <span className="inline-flex shrink-0 text-amber-700 dark:text-amber-500/80">
                         <Folder size={15} />
                       </span>
                       <FolderNameInput
@@ -426,7 +426,7 @@ export function FolderPicker({
             <button
               type="button"
               onClick={() => onPick(null)}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-[14px] text-start transition text-neutral-400 hover:bg-neutral-200/60 hover:text-neutral-600 dark:text-neutral-600 dark:hover:bg-neutral-800/60 dark:hover:text-neutral-400"
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-[14px] text-start transition text-pn-muted hover:bg-pn/5 hover:text-pn-soft"
             >
               <span className="inline-flex shrink-0">
                 <Prohibit size={15} />
@@ -437,7 +437,7 @@ export function FolderPicker({
             </button>
           )}
           {searching && matches.length === 0 && (
-            <div className="px-3 py-2 text-[13px] text-neutral-400 dark:text-neutral-600">
+            <div className="px-3 py-2 text-[13px] text-pn-muted">
               {t('folders.noMatches')}
             </div>
           )}
@@ -446,7 +446,7 @@ export function FolderPicker({
           <div className="shrink-0 border-t border-divider px-2 py-2 flex">
             {creatingUnder === null ? (
               <div className="flex items-center gap-2 px-3 py-1 flex-1">
-                <span className="inline-flex shrink-0 text-amber-600/80 dark:text-amber-500/80">
+                <span className="inline-flex shrink-0 text-amber-700 dark:text-amber-500/80">
                   <Folder size={15} />
                 </span>
                 <FolderNameInput
@@ -472,7 +472,7 @@ export function FolderPicker({
                    Spec: ops/docs/ui-patterns.md (section 76) */
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-md border border-dashed border-divider px-3 py-2 text-[13px] text-pn-muted transition hover:border-accent/50 hover:text-accent"
               >
-                <FolderPlus size={15} className="shrink-0 text-amber-600/80 dark:text-amber-500/80" />
+                <FolderPlus size={15} className="shrink-0 text-amber-700 dark:text-amber-500/80" />
                 {t('folders.new')}
               </button>
             )}

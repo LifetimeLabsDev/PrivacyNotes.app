@@ -20,13 +20,13 @@ export function PhraseOdds() {
   return (
     <section className="@container rounded-xl border border-accent/25 bg-accent/[0.06] p-4 space-y-3.5">
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-white">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-fill text-white">
           <ShieldCheck size={21} />
         </span>
         <div className="min-w-0">
           <h3 className="text-[15px] font-semibold text-pn">{t('phraseOdds.title')}</h3>
           <p className="text-[13px] text-pn-soft">
-            <span className="font-semibold text-emerald-700 dark:text-emerald-400">{t('phraseOdds.answerNo')}</span>{' '}
+            <span className="font-semibold text-success">{t('phraseOdds.answerNo')}</span>{' '}
             {t('phraseOdds.answerRest')}
           </p>
         </div>

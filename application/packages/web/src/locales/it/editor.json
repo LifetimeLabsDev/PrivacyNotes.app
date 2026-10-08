@@ -7,7 +7,7 @@
     "heading": "Titolo",
     "taskList": "Elenco di attività",
     "bulletList": "Elenco puntato",
-    "addLink": "Aggiungi link (Cmd+Shift+K)",
+    "addLink": "Aggiungi link ({{keys}})",
     "noteLink": "Collega a un'altra nota (o digita [[)",
     "numberedList": "Elenco numerato",
     "textColor": "Colore del testo",
@@ -34,7 +34,12 @@
     "blockMath": "Formula in blocco",
     "align": "Allineamento",
     "font": "Carattere",
-    "pictureFromFiles": "Immagine da File"
+    "pictureFromFiles": "Immagine da File",
+    "date": "Data",
+    "dateTime": "Data e ora",
+    "footnote": "Nota a piè di pagina",
+    "spoiler": "Spoiler",
+    "copyBox": "Riquadro da copiare"
   },
   "align": {
     "left": "Allinea a sinistra",
@@ -118,7 +123,7 @@
     "next": "Corrispondenza successiva (Enter)",
     "nextTitle": "Successiva (Enter)",
     "close": "Chiudi ricerca",
-    "closeTitle": "Chiudi (⌘F)",
+    "closeTitle": "Chiudi ({{keys}})",
     "replacePlaceholder": "Sostituisci con",
     "replaceLabel": "Sostituisci con",
     "replace": "Sostituisci",
@@ -128,7 +133,7 @@
     "caseSensitive": "Maiuscole/minuscole",
     "caseSensitiveTitle": "Maiuscole/minuscole",
     "closeReplace": "Chiudi trova e sostituisci",
-    "closeReplaceTitle": "Chiudi (⌥⌘F)",
+    "closeReplaceTitle": "Chiudi ({{keys}})",
     "replacedCount_one": "{{count}} sostituita",
     "replacedCount_other": "{{count}} sostituite"
   },
@@ -138,7 +143,14 @@
     "title": "Struttura",
     "ariaLabel": "Struttura della nota",
     "hide": "Nascondi struttura",
-    "hideTitle": "Nascondi struttura (Esc)"
+    "hideTitle": "Nascondi struttura (Esc)",
+    "copyHeadingLink": "Copia il link al titolo",
+    "copied": "Copiato"
+  },
+  "bodyMenu": {
+    "cut": "Taglia",
+    "sortAsc": "Ordina le righe dalla A alla Z",
+    "sortDesc": "Ordina le righe dalla Z alla A"
   },
   "topRow": {
     "add": "Aggiungi una riga in alto"
@@ -177,6 +189,8 @@
     "words_other": "{{formatted}} parole",
     "characters_one": "{{formatted}} carattere",
     "characters_other": "{{formatted}} caratteri",
+    "tasksChecked_one": "{{done}} di {{formatted}} spuntato",
+    "tasksChecked_other": "{{done}} di {{formatted}} spuntati",
     "tooLargeToSync": ", potrebbe essere troppo grande per la sincronizzazione, dividila in una nuova nota",
     "veryLong": ", molto lunga, la modifica potrebbe essere lenta e a scatti",
     "gettingLong": ", sta diventando lunga, potrebbe rallentare sui dispositivi più lenti",
@@ -184,19 +198,49 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "Nessuna nota corrispondente",
-    "create": "Crea \"{{query}}\""
+    "create": "Crea \"{{query}}\"",
+    "headingsIn": "Titoli in {{title}}",
+    "noHeadingMatches": "Nessun titolo corrispondente"
+  },
+  "copyBox": {
+    "placeholder": "Testo da copiare con un clic"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}+clic per copiare",
+    "copied": "Copiato"
   },
   "codeBlock": {
     "copy": "Copia",
     "copied": "Copiato",
     "copyFailed": "Errore",
-    "wrap": "Manda a capo le righe lunghe"
+    "wrap": "Manda a capo le righe lunghe",
+    "showAll_one": "Mostra {{count}} riga",
+    "showAll_many": "Mostra tutte le {{count}} righe",
+    "showAll_other": "Mostra tutte le {{count}} righe",
+    "showLess": "Mostra meno",
+    "plainText": "Testo semplice",
+    "language": "Linguaggio del codice: {{name}}",
+    "searchLanguages": "Cerca un linguaggio",
+    "placeholder": "Scrivi o incolla il codice. Per i colori, scegli un linguaggio qui sopra."
   },
   "math": {
     "sourceLabel": "Codice LaTeX"
   },
   "noteLink": {
     "open": "Apri nota",
-    "remove": "Rimuovi link"
+    "remove": "Rimuovi link",
+    "linkHeading": "Collega a un titolo...",
+    "headingNotFound": "Titolo non trovato",
+    "headingsLocked": "Sblocca questa nota per vederne i titoli",
+    "noHeadings": "Questa nota non ha titoli"
+  },
+  "footnote": {
+    "placeholder": "Testo della nota",
+    "back": "Torna al testo",
+    "unused": "Non usata nel testo",
+    "remove": "Rimuovi nota",
+    "missing": "Nessun testo per la nota. Fai clic per aggiungerlo.",
+    "ariaRef": "Nota {{n}}",
+    "ariaSection": "Note a piè di pagina"
   }
 }

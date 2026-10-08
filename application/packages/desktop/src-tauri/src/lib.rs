@@ -24,6 +24,16 @@ mod print;
 /// Spec: ops/docs/plans/app-switcher-privacy-screen.md
 mod privacy_screen;
 
+/// Links, text and files other apps shared into this one, waiting for the
+/// unlocked app to take them. Compiled everywhere so its tests run on the
+/// host; only the mobile builds expose its commands.
+/// Spec: ops/docs/plans/share-into-app.md
+mod pasteboard;
+use pasteboard::pasteboard_pictures;
+mod share_inbox;
+#[cfg(mobile)]
+use share_inbox::{share_inbox_list, share_inbox_read, share_inbox_remove, share_limit_set};
+
 /// Files the OS asked us to open before the webview was ready to hear about it.
 ///
 /// A cold start from a double-click delivers the path within milliseconds, long
@@ -147,7 +157,7 @@ fn queue_from_args<I: IntoIterator<Item = String>>(args: I) {
     //
     // Nothing legitimate is lost, because the deep-link plugin refuses that
     // same batch: it takes the argument after the binary only when there is
-    // no second one (tauri-plugin-deep-link-2.4.10/src/lib.rs:203-210), so a
+    // no second one (tauri-plugin-deep-link-2.6.1/src/lib.rs:211-218), so a
     // split payload is already dead as a link before our callback runs. This
     // closes the delivery rather than the shape, which is why a double-click
     // on a note that lives on a file server is still an ordinary open.
@@ -550,18 +560,33 @@ pub fn run() {
         markdown_assoc_status,
         markdown_assoc_claim,
         markdown_assoc_open_os_settings,
-        set_privacy_screen
+        set_privacy_screen,
+        set_capture_block,
+        pasteboard_pictures
     ]);
     #[cfg(mobile)]
     let builder = builder.invoke_handler(tauri::generate_handler![
         biometric_available,
         biometric_authenticate,
         print_html,
-        set_privacy_screen
+        set_privacy_screen,
+        set_capture_block,
+        share_inbox_list,
+        share_inbox_read,
+        share_inbox_remove,
+        share_limit_set,
+        pasteboard_pictures
     ]);
 
     builder
         .setup(|app| {
+            #[cfg(target_os = "windows")]
+            {
+                use tauri::Manager;
+                if let Some(window) = app.get_webview_window("main") {
+                    disable_browser_accelerator_keys(&window);
+                }
+            }
             // Bring the main window to the foreground on launch. After an
             // updater relaunch() the new process can otherwise come up behind
             // other windows, making it look like the restart did nothing.
@@ -621,6 +646,7 @@ pub fn run() {
             #[cfg(target_os = "macos")]
             {
                 use tauri::menu::{Menu, MenuItem, MenuItemKind};
+                use tauri::Manager;
 
                 let menu = Menu::default(app.handle())?;
                 if let Some(MenuItemKind::Submenu(app_submenu)) = menu.items()?.into_iter().next()
@@ -636,11 +662,44 @@ pub fn run() {
                     )?;
                     app_submenu.insert(&about, 0)?;
                 }
-                app.set_menu(menu)?;
-                app.on_menu_event(|app, event| {
-                    if event.id().as_ref() == "about" {
-                        open_about_window(app);
+                // Cmd+W in the main window closes the open item's tab, and the
+                // page handles it, so the menu's Close Window moves to
+                // Shift+Cmd+W. A predefined item keeps its own key, so both
+                // copies (File and Window) are swapped for one of ours. The
+                // About window closes on Cmd+W by itself (AboutWindow.tsx).
+                // Spec: ops/docs/plans/keyboard-shortcuts.md (decision D4)
+                for item in menu.items()? {
+                    let MenuItemKind::Submenu(submenu) = item else { continue };
+                    let items = submenu.items()?;
+                    for (i, entry) in items.iter().enumerate() {
+                        let MenuItemKind::Predefined(p) = entry else { continue };
+                        if p.text()? != "Close Window" {
+                            continue;
+                        }
+                        submenu.remove_at(i)?;
+                        let close = MenuItem::with_id(
+                            app.handle(),
+                            "close-window",
+                            "Close Window",
+                            true,
+                            Some("Shift+CmdOrCtrl+W"),
+                        )?;
+                        submenu.insert(&close, i)?;
                     }
+                }
+                app.set_menu(menu)?;
+                app.on_menu_event(|app, event| match event.id().as_ref() {
+                    "about" => open_about_window(app),
+                    "close-window" => {
+                        if let Some(window) = app
+                            .webview_windows()
+                            .into_values()
+                            .find(|w| w.is_focused().unwrap_or(false))
+                        {
+                            let _ = window.close();
+                        }
+                    }
+                    _ => {}
                 });
             }
 
@@ -719,6 +778,25 @@ fn unpacked_by_scoop() -> bool {
 /// so self-updating would leave a second copy the user's shortcut never points at.
 /// The frontend nudges instead of installing whenever this is false.
 /// Spec: ops/docs/linux-release.md (deb ships beside the AppImage; only the AppImage self-updates)
+/// WebView2 keeps a browser's own keys unless told otherwise: F5 and Ctrl+R
+/// reload the whole app, Ctrl+P prints the page, Alt+Left goes back, Ctrl+F
+/// opens the browser's find. The app owns its keys, so they are turned off.
+/// Editing keys (copy, paste, cut, select all, undo) are not browser keys in
+/// WebView2's sense and keep working.
+/// Spec: ops/docs/plans/keyboard-shortcuts.md (decision D8)
+#[cfg(target_os = "windows")]
+fn disable_browser_accelerator_keys(window: &tauri::WebviewWindow) {
+    let _ = window.with_webview(|webview| unsafe {
+        use webview2_com::Microsoft::Web::WebView2::Win32::ICoreWebView2Settings3;
+        use windows::core::Interface;
+        let Ok(core) = webview.controller().CoreWebView2() else { return };
+        let Ok(settings) = core.Settings() else { return };
+        if let Ok(settings) = settings.cast::<ICoreWebView2Settings3>() {
+            let _ = settings.SetAreBrowserAcceleratorKeysEnabled(false);
+        }
+    });
+}
+
 #[cfg(desktop)]
 #[tauri::command]
 fn can_self_update() -> bool {
@@ -841,6 +919,16 @@ async fn print_html(app: tauri::AppHandle, html: String, job_name: String) -> Re
 #[tauri::command]
 fn set_privacy_screen(enabled: bool) {
     privacy_screen::set(enabled);
+}
+
+/// Keep the window out of screenshots, screen recordings and screen sharing,
+/// or let it back in. A device setting: the frontend stores the switch itself
+/// and pushes it at boot and on every change. Android does the same job from
+/// MainActivity.kt, so the command does nothing there.
+/// Spec: ops/docs/plans/app-switcher-privacy-screen.md (section 14)
+#[tauri::command]
+fn set_capture_block(app: tauri::AppHandle, enabled: bool) {
+    privacy_screen::set_capture_block(&app, enabled);
 }
 
 /// Opens (or focuses) the custom About window. The web bundle renders it:
@@ -1029,7 +1117,7 @@ mod tests {
     ///
     /// The plugin derives `isFile`, `isDirectory` and `isSymlink` from one
     /// `DirEntry::file_type()` call and returns false for all three when it
-    /// cannot stat the entry (tauri-plugin-fs-2.5.2/src/commands.rs:486-501).
+    /// cannot stat the entry (tauri-plugin-fs-2.6.0/src/commands.rs:486-499).
     /// `file_type()` does not traverse a link, so a link reports itself
     /// rather than its target - which is why the frontend asks for a proven
     /// file rather than for "not a symlink". Asserted against a real link on

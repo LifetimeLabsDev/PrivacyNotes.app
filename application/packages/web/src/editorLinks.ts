@@ -21,7 +21,7 @@
  * extension's own `openOnClick` is off so it opens nothing.
  */
 
-import { Extension, getMarkRange } from '@tiptap/core';
+import { Extension, InputRule, getMarkRange } from '@tiptap/core';
 import type { Editor } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import type { EditorState } from '@tiptap/pm/state';
@@ -34,7 +34,7 @@ const IS_NATIVE = detectPlatform() !== 'web';
 /** The same test as `isMacPlatform` in notesViewUtils.ts, kept here so a
  *  click rule does not pull the note-list utilities, and i18n behind them,
  *  into the editor. Asked per click rather than at import. */
-function isMac(): boolean {
+export function isMac(): boolean {
   return typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform);
 }
 
@@ -241,6 +241,40 @@ export const SelfLinkTyping = Extension.create({
             view.dispatch(tr.setMeta('preventAutolink', true));
             return true;
           },
+        },
+      }),
+    ];
+  },
+});
+
+/** The addresses a typed markdown link may carry: a web or mail address, a
+ *  phone number, or a bare host. Anything else, `javascript:` first, stays
+ *  the text it was typed as. */
+const TYPED_LINK_SCHEME = /^(https?:\/\/|mailto:|tel:)/i;
+
+/**
+ * Typing `[words](address)` makes `words` a link to `address` when the
+ * closing parenthesis is typed, the shortcut markdown writers expect. An
+ * image (`![...]`) and an escaped bracket are left alone, and so is a label
+ * holding a bracket, which a note-link uses.
+ */
+export const MarkdownLinkTyping = Extension.create({
+  name: 'markdownLinkTyping',
+
+  addInputRules() {
+    return [
+      new InputRule({
+        find: /(?<![!\\[])\[([^[\]\n]+)\]\(([^()\s]+)\)$/,
+        handler: ({ state, range, match }) => {
+          const [, label, address] = match;
+          const type = state.schema.marks.link;
+          if (!type || !label || !address) return null;
+          const hasScheme = /^[a-z][a-z0-9+.-]*:/i.test(address);
+          if (hasScheme ? !TYPED_LINK_SCHEME.test(address) : !looksLikeUrl(address)) return null;
+          const { tr } = state;
+          tr.insertText(label, range.from, range.to);
+          tr.addMark(range.from, range.from + label.length, type.create({ href: normalizeUrl(address) }));
+          tr.removeStoredMark(type);
         },
       }),
     ];

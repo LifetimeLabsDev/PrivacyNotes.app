@@ -54,12 +54,12 @@ Uitlijnen verplaatst een hele alinea, nooit één woord. Zet de cursor in de ali
 
 De middelste kolom staat gecentreerd en de laatste rechts. Sleep aan de rand van een kolom om hem breder te maken.
 
-## Kaders
+## Aandachtsblokken
 
-Een kader is een gekleurd vak voor iets dat een lezer niet mag missen.
+Een aandachtsblok is een gekleurd vak voor iets dat een lezer niet mag missen.
 
 > [!tip]+ Tip
-> Klik op de titel van een kader om het dicht te klappen.
+> Klik op de titel van een aandachtsblok om het dicht te klappen.
 
 > [!warning]+ Let op
 > Elk soort heeft zijn eigen kleur en icoon.
@@ -71,9 +71,13 @@ Een kader is een gekleurd vak voor iets dat een lezer niet mag missen.
 
 > Een citaat springt in vanaf de kantlijn en krijgt een gekleurde streep aan de zijkant.
 
+## Voetnoten
+
+Een voetnoot houdt een bron of een zijopmerking uit de tekst.[^1] Typ `[^1]` na een woord, of kies **Voetnoot** in het menu **Invoegen**. Klik op het kleine nummer om naar de noot te gaan.
+
 ## Code
 
-Code houdt zijn spaties en wordt gekleurd per taal.
+Code houdt zijn spaties en wordt gekleurd per taal. De naam boven aan een blok is de taal: klik erop om een andere te kiezen.
 
 ```js
 export function seal(note, key) {
@@ -86,6 +90,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+Een lang blok opent ingeklapt, zodat de rest van de notitie dichtbij blijft. De knop eronder toont alle regels.
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 Een kort stukje code midden in een zin ziet er zo uit: `dit`.
@@ -111,6 +156,12 @@ Er zijn twee soorten, en ze zien er met opzet anders uit.
 
 Allebei hebben een knop in de balk. De ketting maakt een weblink. De haakjes maken een notitielink: ze sommen je notities op, en jij kiest welke je bedoelt. `[[` typen doet hetzelfde.
 
+Een notitielink hoeft niet de titel van de notitie weer te geven. Typ de titel, een verticale streep en daarna de woorden die je op de pagina wilt zien: [[Hoe je notities beschermd zijn|deze woorden]] openen die notitie.
+
+Een notitielink kan een notitie ook bij een van haar koppen openen. Typ een `#` na de titel en kies de kop: [[Hoe je notities beschermd zijn#Wie je sleutel heeft]] opent die notitie bij het onderdeel over de sleutel. Het linkpictogram bij een kop in het overzicht kopieert zo'n link voor je.
+
 ---
 
 *Schrijf je al markdown, typ het dan gewoon en het maakt zichzelf op. De ruwe tekst achter een notitie zie je met **Markdown tonen** rechtsonder in deze notitie.*
+
+[^1]: Dit is de noot. De pijl ernaast brengt je terug naar boven.

@@ -10,7 +10,8 @@
     "empty": "Vuota",
     "noContent": "Nessun contenuto",
     "notBackedUp": "Senza backup",
-    "archived": "Archiviato"
+    "archived": "Archiviato",
+    "entryDate": "Data della pagina"
   },
   "header": {
     "new": "Nuova",
@@ -19,7 +20,9 @@
     "trash": "Cestino"
   },
   "folderChip": {
-    "clear": "Rimuovi il filtro cartella: {{folder}}"
+    "clear": "Rimuovi il filtro cartella: {{folder}}",
+    "subfolders": "Sottocartelle",
+    "subfoldersLabel": "Includi le sottocartelle"
   },
   "tagChip": {
     "clear": "Rimuovi il filtro tag: {{tag}}"
@@ -191,6 +194,8 @@
     "currentHtmlDesc": "Adatto alla stampa, markdown renderizzato su pagina bianca.",
     "printTitle": "Stampa / Salva come PDF",
     "printDesc": "Apre la finestra di stampa. Salva come PDF o invia a una stampante.",
+    "printTextTitle": "Stampa solo il testo",
+    "printTextDesc": "Mantiene il titolo. Omette data, cartella e tag.",
     "burnTitle": "Condividi & Burn After Reading",
     "burnDesc": "Pubblica questa nota come link a visualizzazione singola. Il link si autodistrugge dopo la lettura. La tua nota resta al sicuro nel tuo account."
   },
@@ -208,7 +213,10 @@
     "newNote": "Nuovo",
     "newNoteHintMac": "Option + Maiusc + N",
     "newNoteHintOther": "Alt + Maiusc + N",
+    "newNoteHintMacDesktop": "Comando + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Apri statistiche",
+    "journalCalendar": "Calendario del diario",
     "words": "Parole",
     "zen": "Modalità Zen",
     "appearance": "Aspetto",
@@ -232,7 +240,7 @@
     "appearanceLabel": "Aspetto",
     "helpLabel": "Aiuto",
     "aboutLabel": "Info",
-    "languageLabel": "Lingua",
+    "languageLabel": "Data e lingua",
     "languageDesc": "Scegli la lingua in cui viene mostrato PrivacyNotes."
   },
   "importStore": {
@@ -252,6 +260,12 @@
     "readOnlyBlocked_other": "Tutti i <highlight>{{count}} elementi</highlight> sono in sola lettura, quindi nessuno può finire nel cestino. Disattiva prima la sola lettura nelle opzioni nota.",
     "readOnlySkipped_one": "<highlight>{{count}} elemento</highlight> è in sola lettura e resta dov'è.",
     "readOnlySkipped_other": "<highlight>{{count}} elementi</highlight> sono in sola lettura e restano dove sono."
+  },
+  "deleteCheckedTasks": {
+    "title": "Eliminare gli elementi spuntati?",
+    "confirm": "Elimina",
+    "body_one": "<highlight>{{count}} elemento</highlight> verrà eliminato da questa nota. L'operazione è irreversibile.",
+    "body_other": "<highlight>{{count}} elementi</highlight> verranno eliminati da questa nota, elementi annidati inclusi. L'operazione è irreversibile."
   },
   "bulkDelete": {
     "body_one": "Eliminare definitivamente <highlight>{{count}} nota</highlight>? L'operazione è irreversibile.",

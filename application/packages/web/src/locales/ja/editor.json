@@ -7,7 +7,7 @@
     "heading": "見出し",
     "taskList": "タスクリスト",
     "bulletList": "箇条書き",
-    "addLink": "リンクを追加(Cmd+Shift+K)",
+    "addLink": "リンクを追加({{keys}})",
     "noteLink": "別のノートへリンク([[ の入力でも可)",
     "numberedList": "番号付きリスト",
     "textColor": "文字色",
@@ -34,7 +34,12 @@
     "blockMath": "ブロック数式",
     "align": "配置",
     "font": "フォント",
-    "pictureFromFiles": "ファイルから画像"
+    "pictureFromFiles": "ファイルから画像",
+    "date": "日付",
+    "dateTime": "日付と時刻",
+    "footnote": "脚注",
+    "spoiler": "ネタバレ",
+    "copyBox": "コピー用ボックス"
   },
   "align": {
     "left": "左揃え",
@@ -118,7 +123,7 @@
     "next": "次の一致(Enter)",
     "nextTitle": "次へ(Enter)",
     "close": "検索を閉じる",
-    "closeTitle": "閉じる(⌘F)",
+    "closeTitle": "閉じる({{keys}})",
     "replacePlaceholder": "置換後の文字列",
     "replaceLabel": "置換後の文字列",
     "replace": "置換",
@@ -128,7 +133,7 @@
     "caseSensitive": "大文字と小文字を区別",
     "caseSensitiveTitle": "大文字と小文字を区別",
     "closeReplace": "検索と置換を閉じる",
-    "closeReplaceTitle": "閉じる(⌥⌘F)",
+    "closeReplaceTitle": "閉じる({{keys}})",
     "replacedCount_other": "{{count}}件を置換しました"
   },
   "outline": {
@@ -137,7 +142,14 @@
     "title": "アウトライン",
     "ariaLabel": "ノートのアウトライン",
     "hide": "アウトラインを隠す",
-    "hideTitle": "アウトラインを隠す(Esc)"
+    "hideTitle": "アウトラインを隠す(Esc)",
+    "copyHeadingLink": "見出しへのリンクをコピー",
+    "copied": "コピーしました"
+  },
+  "bodyMenu": {
+    "cut": "切り取り",
+    "sortAsc": "行を昇順に並び替え",
+    "sortDesc": "行を降順に並び替え"
   },
   "topRow": {
     "add": "先頭に行を追加"
@@ -174,6 +186,7 @@
   "wordCount": {
     "words_other": "{{formatted}}語",
     "characters_other": "{{formatted}}文字",
+    "tasksChecked_other": "{{formatted}}件中{{done}}件チェック済み",
     "tooLargeToSync": "、同期には大きすぎる可能性があります。新しいノートに分割してください",
     "veryLong": "、非常に長いため、編集が重くなったりカクつくことがあります",
     "gettingLong": "、長くなってきました。遅いデバイスでは重くなることがあります",
@@ -181,19 +194,47 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "一致するノートがありません",
-    "create": "「{{query}}」を作成"
+    "create": "「{{query}}」を作成",
+    "headingsIn": "{{title}} の見出し",
+    "noHeadingMatches": "一致する見出しがありません"
+  },
+  "copyBox": {
+    "placeholder": "ワンクリックでコピーするテキスト"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}+クリックでコピー",
+    "copied": "コピーしました"
   },
   "codeBlock": {
     "copy": "コピー",
     "copied": "コピーしました",
     "copyFailed": "失敗しました",
-    "wrap": "長い行を折り返す"
+    "wrap": "長い行を折り返す",
+    "showAll_other": "{{count}}行すべて表示",
+    "showLess": "折りたたむ",
+    "plainText": "プレーンテキスト",
+    "language": "コードの言語: {{name}}",
+    "searchLanguages": "言語を検索",
+    "placeholder": "コードを入力するか貼り付けます。色を付けるには、上で言語を選びます。"
   },
   "math": {
     "sourceLabel": "LaTeX ソース"
   },
   "noteLink": {
     "open": "ノートを開く",
-    "remove": "リンクを削除"
+    "remove": "リンクを削除",
+    "linkHeading": "見出しにリンク...",
+    "headingNotFound": "見出しが見つかりません",
+    "headingsLocked": "見出しを表示するには、このノートのロックを解除してください",
+    "noHeadings": "このノートには見出しがありません"
+  },
+  "footnote": {
+    "placeholder": "脚注のテキスト",
+    "back": "本文に戻る",
+    "unused": "本文で使われていません",
+    "remove": "脚注を削除",
+    "missing": "脚注のテキストがありません。クリックして追加します。",
+    "ariaRef": "脚注 {{n}}",
+    "ariaSection": "脚注"
   }
 }

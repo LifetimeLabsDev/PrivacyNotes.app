@@ -1,0 +1,3 @@
+"saved" = "已儲存到 PrivacyNotes";
+"failed" = "無法儲存到 PrivacyNotes";
+"tooLarge" = "檔案太大。單檔上限為 {{limit}} MB。";

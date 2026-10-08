@@ -49,4 +49,4 @@ Accesso con Google, Apple o GitHub? Più avanti puoi passare dall'una all'altra 
 | Come segnalare una falla | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 
 > [!info] Una sola serratura copre tutto
-> Note, voci di diario, segnalibri, voci della cassaforte e allegati sono cifrati allo stesso modo. [[Il trasloco]] mostra come portare qui ognuno di essi.
+> Note, pagine di diario, segnalibri, voci della cassaforte e allegati sono cifrati allo stesso modo. [[Il trasloco]] mostra come portare qui ognuno di essi.

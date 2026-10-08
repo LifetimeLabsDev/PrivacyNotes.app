@@ -5,6 +5,7 @@ import { MagnifyingGlass, X } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { isImeComposing } from './imeComposing';
 import { BAR_BTN, MatchNav } from './MatchNav';
+import { keyText } from './shortcutMatch';
 import {
   setSearchQuery,
   setActiveMatch,
@@ -130,7 +131,7 @@ export function FindBar({ editor, focusTick, initialQuery, onClose }: Props) {
 
   return (
     <div className="pointer-events-auto mt-1 me-2 flex items-center gap-0.5 rounded-lg border border-divider bg-surface-1 shadow-lg px-1.5 py-1">
-      <MagnifyingGlass size={15} className="text-neutral-400 dark:text-neutral-500 shrink-0 ms-0.5 me-0.5" />
+      <MagnifyingGlass size={15} className="text-pn-muted shrink-0 ms-0.5 me-0.5" />
       <input
         ref={inputRef}
         type="text"
@@ -141,11 +142,11 @@ export function FindBar({ editor, focusTick, initialQuery, onClose }: Props) {
         aria-label={t('find.label')}
         spellCheck={false}
         autoComplete="off"
-        className="w-36 sm:w-44 bg-transparent text-sm text-neutral-800 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 outline-none px-1"
+        className="w-36 sm:w-44 bg-transparent text-sm text-pn placeholder:text-pn-muted outline-none px-1"
       />
       <MatchNav count={count} noHits={noHits} canStep={info.total > 0} onStep={go} />
       <div className="w-px h-5 bg-divider mx-0.5 shrink-0" aria-hidden="true" />
-      <HoverLabel label={t('find.closeTitle')} position="below-end">
+      <HoverLabel label={t('find.closeTitle', { keys: keyText('find') })} position="below-end">
         <button
           type="button"
           onMouseDown={(e) => e.preventDefault()}

@@ -28,7 +28,7 @@ export function OAuthRetryScreen({ trust }: { trust: boolean }) {
         </div>
         <div className="space-y-2">
           <h1 className="text-lg font-semibold">{t('hydrateError.title')}</h1>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="text-sm text-pn-muted leading-relaxed">
             {t('hydrateError.body')}
           </p>
         </div>
@@ -39,7 +39,7 @@ export function OAuthRetryScreen({ trust }: { trust: boolean }) {
             setBusy(true);
             void retryOAuthHydration(trust).finally(() => setBusy(false));
           }}
-          className="w-full rounded-lg bg-accent text-white hover:bg-accent-hover px-4 py-3 font-medium transition shadow-sm disabled:opacity-60"
+          className="w-full rounded-lg bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-3 font-medium transition shadow-sm disabled:opacity-60"
         >
           {t('signIn.tryAgain')}
         </button>
@@ -47,7 +47,7 @@ export function OAuthRetryScreen({ trust }: { trust: boolean }) {
           type="button"
           disabled={busy}
           onClick={() => void abandonOAuthHydration()}
-          className="w-full text-sm text-neutral-600 dark:text-neutral-400 hover:text-pn transition"
+          className="w-full text-sm text-pn-muted hover:text-pn transition"
         >
           {t('oauthHandoff.backToOptions')}
         </button>

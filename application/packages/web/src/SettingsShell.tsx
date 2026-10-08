@@ -37,6 +37,12 @@ export type SettingsShellProps = {
    */
   initialCategory?: string;
   /**
+   * A row inside `initialCategory` to land on, the way a search result does:
+   * the pane opens on the row's tab and the row flashes. The quick switcher
+   * opens a setting this way.
+   */
+  initialSetting?: { id: string; tab?: string };
+  /**
    * Desktop landing category when not deep-linked. Mobile still opens to
    * the list. Falls back to the first category.
    */

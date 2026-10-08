@@ -54,12 +54,12 @@ Zarovnání hýbe celým odstavcem, nikdy jedním slovem. Dej kurzor do odstavce
 
 Prostřední sloupec je na střed a poslední zarovnaný doprava. Zatáhni za okraj sloupce a rozšíříš ho.
 
-## Rámečky
+## Callouty
 
-Rámeček je barevná krabička na něco, co čtenář nesmí minout.
+Callout je barevná krabička na něco, co čtenář nesmí minout.
 
 > [!tip]+ Tip
-> Klikni na název rámečku a zavře se.
+> Klikni na název calloutu a zavře se.
 
 > [!warning]+ Pozor
 > Každý druh má svou barvu a svou ikonu.
@@ -71,9 +71,13 @@ Rámeček je barevná krabička na něco, co čtenář nesmí minout.
 
 > Citace se odsadí od okraje a dostane barevnou linku po straně.
 
+## Poznámky pod čarou
+
+Poznámka pod čarou drží zdroj nebo poznámku mimo text.[^1] Napiš `[^1]` za slovo, nebo vyber **Poznámka pod čarou** v nabídce **Vložit**. Klikni na malé číslo a přejdeš k poznámce.
+
 ## Kód
 
-Kód si drží mezery a obarví se podle jazyka.
+Kód si drží mezery a obarví se podle jazyka. Název nahoře v bloku je jeho jazyk: klikni na něj a vyber jiný.
 
 ```js
 export function seal(note, key) {
@@ -86,6 +90,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+Dlouhý blok se otevře sbalený, aby zbytek poznámky zůstal blízko. Tlačítko pod ním ukáže všechny řádky.
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 Krátký kousek kódu uvnitř věty vypadá takhle: `tohle`.
@@ -111,6 +156,12 @@ Jsou dva druhy a schválně vypadají jinak.
 
 Oba mají tlačítko na liště. Řetěz udělá webový odkaz. Hranaté závorky udělají odkaz na poznámku: vypíšou tvoje poznámky a ty si vybereš tu, kterou myslíš. Napsat `[[` udělá totéž.
 
+Odkaz na poznámku se nemusí zobrazovat jako název poznámky. Napiš název, svislou čáru a pak slova, která chceš mít na stránce: [[Jak jsou tvoje poznámky chráněné|tahle slova]] otevřou tu poznámku.
+
+Odkaz na poznámku ji umí otevřít i u jednoho z jejích nadpisů. Napiš za název `#` a vyber nadpis: [[Jak jsou tvoje poznámky chráněné#Kdo má tvůj klíč]] otevře tu poznámku u části o klíči. Ikona odkazu u nadpisu v osnově takový odkaz zkopíruje za tebe.
+
 ---
 
 *Jestli markdown už píšeš, prostě ho piš a formátuje se za pochodu. Surový text za kteroukoli poznámkou uvidíš přes **Zobrazit markdown** vpravo dole v téhle poznámce.*
+
+[^1]: Tohle je poznámka. Šipka vedle ní tě vrátí nahoru.

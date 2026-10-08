@@ -1,6 +1,7 @@
 {
   "title": "Statystyki",
   "tabs": {
+    "overview": "Przegląd",
     "writing": "Pisanie",
     "wellness": "Samopoczucie"
   },
@@ -31,12 +32,13 @@
     "30d": "30 dni",
     "3mo": "3 miesiące",
     "6mo": "6 miesięcy",
-    "12mo": "12 miesięcy"
+    "12mo": "12 miesięcy",
+    "all": "Wszystko"
   },
   "wellness": {
     "subTabs": {
       "all": "Wszystko",
-      "sleepActivity": "Sen i aktywność",
+      "explore": "Eksploruj",
       "medication": "Leki",
       "patterns": "Wzorce"
     },
@@ -44,33 +46,17 @@
       "title": "Brak danych o samopoczuciu.",
       "hint": "Otwórz wpis w dzienniku i zapisz swój nastrój, aby zacząć."
     },
-    "overview": {
-      "daysTracked": "Śledzone dni",
-      "avgMood": "Śr. nastrój",
-      "avgSleep": "Śr. sen",
-      "medAdherence": "Przyjmowanie leków",
-      "moodTrend": "Trend nastroju",
-      "moodByDayOfWeek": "Nastrój wg dnia tygodnia",
-      "moodTrendTooltip": "{{date}}: {{mood}}/10",
-      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
-    },
     "export": {
       "heading": "Eksport",
-      "allTime": "Cały okres",
-      "last90Days": "Ostatnie 90 dni",
-      "last30Days": "Ostatnie 30 dni",
-      "last7Days": "Ostatnie 7 dni",
       "downloadJSON": "Pobierz JSON",
       "doctorPDF": "PDF dla lekarza",
-      "copyAIPrompt": "Kopiuj prompt AI",
+      "copyAIPrompt": "Pokaż i kopiuj prompt AI",
       "copied": "Skopiowano!",
       "saveFailed": "Zapis się nie udał, więc plik może być pusty albo niekompletny. Spróbuj ponownie albo wybierz inny folder.",
-      "proBadge": "PRO"
-    },
-    "sleepActivity": {
-      "sleepQuality": "Jakość snu",
-      "activity": "Aktywność",
-      "avgSleepPerNight": "Średni sen na dobę"
+      "proBadge": "PRO",
+      "usesRange": "Korzysta z zakresu powyżej",
+      "promptShown": "Skopiowany prompt. Wklej go do wybranego chatbota.",
+      "hidePrompt": "Ukryj"
     },
     "medication": {
       "adherence": "Regularność",
@@ -83,15 +69,14 @@
       "changedTo": "Zmieniono na {{dosage}}"
     },
     "patterns": {
-      "topEmotions": "Najczęstsze emocje",
+      "heading": "Co wpływa na Twój nastrój",
       "insights": "Spostrzeżenia",
       "proBadge": "PRO",
       "insightsLocked_one": "Wykryto {{count}} spostrzeżenie. Przejdź na Pro, aby je zobaczyć",
       "insightsLocked_few": "Wykryto {{count}} spostrzeżenia. Przejdź na Pro, aby je zobaczyć",
       "insightsLocked_many": "Wykryto {{count}} spostrzeżeń. Przejdź na Pro, aby je zobaczyć",
       "insightsLocked_other": "Wykryto {{count}} spostrzeżenia. Przejdź na Pro, aby je zobaczyć",
-      "weekInReview": "Podsumowanie tygodnia",
-      "weekInReviewLocked": "Przejdź na Pro, aby zobaczyć tygodniowe podsumowanie samopoczucia"
+      "tableLocked": "Przejdź na Pro, aby zobaczyć, które trackery wpływają na Twój nastrój"
     },
     "week": {
       "range": "{{start}} do {{end}}",
@@ -103,22 +88,37 @@
       "topActivity": "Główna aktywność",
       "topEmotions": "Najczęstsze emocje",
       "reflection": "Refleksja",
-      "reflectionPlaceholder": "Jaki był ten tydzień? Zapisz swoje przemyślenia..."
+      "reflectionPlaceholder": "Jaki był ten tydzień? Zapisz swoje przemyślenia...",
+      "heading": "Podsumowanie tygodnia",
+      "proBadge": "PRO",
+      "locked": "Przejdź na Pro, aby zobaczyć tygodniowe podsumowanie samopoczucia"
     },
     "units": {
       "days_one": "{{count}} dzień",
       "days_few": "{{count}} dni",
-      "days_many": "{{count}} dni"
+      "days_many": "{{count}} dni",
+      "days_other": "{{count}} dnia"
     },
     "insights": {
-      "sleep": "W dni po dobrym śnie masz średnio {{good}}, a po złym {{bad}}.",
-      "activity": "W dni aktywne masz średnio {{active}}, a w siedzące {{sedentary}}.",
       "dayOfWeek": "Twój najlepszy dzień to zwykle {{best}} (średnio {{bestAvg}}), a najtrudniejszy {{worst}} (średnio {{worstAvg}}).",
-      "medication": "Od rozpoczęcia leku {{name}} dnia {{date}} twoja średnia nastroju zmieniła się z {{before}} na {{after}}.",
+      "medication": "Średnia dla „{{outcome}}” wynosi {{a}} w dni, gdy przyjmujesz lek „{{name}}”, i {{b}} w dni, gdy go pomijasz.",
       "streak_one": "Zapisujesz nastrój już {{count}} dzień z rzędu. Tak trzymaj!",
       "streak_few": "Zapisujesz nastrój już {{count}} dni z rzędu. Tak trzymaj!",
       "streak_many": "Zapisujesz nastrój już {{count}} dni z rzędu. Tak trzymaj!",
-      "trend": "Twój nastrój z ostatnich dwóch tygodni to średnio {{recent}}, wobec {{overall}} ogółem."
+      "streak_other": "Zapisujesz nastrój już {{count}} dnia z rzędu. Tak trzymaj!",
+      "trend": "Twój nastrój z ostatnich dwóch tygodni to średnio {{recent}}, wobec {{overall}} ogółem.",
+      "yesno": "Średnia dla „{{outcome}}” wynosi {{a}} w dni, gdy zapisujesz „{{name}}”, i {{b}} w dni, gdy tego nie robisz.",
+      "yesnoNextDay": "Średnia dla „{{outcome}}” wynosi {{a}} dzień po zapisaniu „{{name}}”, a {{b}} po dniach bez takiego zapisu.",
+      "halves": "Średnia dla „{{outcome}}” wynosi {{a}}, gdy wartość trackera „{{name}}” przekracza {{threshold}}, i {{b}}, gdy wynosi {{threshold}} lub mniej.",
+      "halvesNextDay": "Średnia dla „{{outcome}}” wynosi {{a}} w dniach następujących po tych, w których wartość trackera „{{name}}” przekracza {{threshold}}, i {{b}} po dniach, w których wynosi {{threshold}} lub mniej.",
+      "median": "Średnia dla „{{outcome}}” wynosi {{a}}, gdy wartość trackera „{{name}}” przekracza Twoją medianę {{threshold}}, i {{b}}, gdy jest jej równa lub niższa.",
+      "medianNextDay": "Średnia dla „{{outcome}}” wynosi {{a}} w dniach następujących po tych, w których wartość trackera „{{name}}” przekracza Twoją medianę {{threshold}}, i {{b}} po dniach, w których jest jej równa lub niższa.",
+      "levels": "Średnia dla „{{outcome}}” wynosi {{a}} w dni oznaczone jako „{{top}}” i {{b}} w dni oznaczone jako „{{bottom}}”.",
+      "levelsNextDay": "Średnia dla „{{outcome}}” wynosi {{a}} w dniach następujących po tych oznaczonych jako „{{top}}” i {{b}} po dniach oznaczonych jako „{{bottom}}”.",
+      "tag": "Średnia dla „{{outcome}}” wynosi {{a}} w dni, gdy odczuwasz emocję „{{tag}}”, i {{b}} w dni, gdy jej nie odczuwasz.",
+      "tagNextDay": "Średnia dla „{{outcome}}” wynosi {{a}} w dniach następujących po tych, w których odczuwasz emocję „{{tag}}”, i {{b}} po dniach, w których jej nie odczuwasz.",
+      "medicationNextDay": "Średnia dla „{{outcome}}” wynosi {{a}} dzień po przyjęciu leku „{{name}}”, a {{b}} po dniach, w których go pomijasz.",
+      "doseChange": "Wokół zmiany dawki {{name}} na {{dosage}} dnia {{date}} Twój nastrój wynosił średnio {{before}} przez {{nBefore}} dni przed i {{after}} przez {{nAfter}} dni po."
     },
     "aiPrompt": {
       "intro": "Śledzę swój nastrój i samopoczucie. Przeanalizuj poniższe dane pod kątem wzorców, trendów i konkretnych wniosków.",
@@ -142,7 +142,15 @@
       "question2": "Czy jakość snu i poziom aktywności wiążą się z nastrojem?",
       "question3": "Czy są niepokojące tendencje, które warto omówić z lekarzem?",
       "question4": "Konkretne sugestie na podstawie tych danych.",
-      "footer": "Wygenerowano w PrivacyNotes (privacynotes.app)"
+      "footer": "Wygenerowano w PrivacyNotes (privacynotes.app)",
+      "period": "Okres: od {{from}} do {{to}}",
+      "daysLogged": "Zapisane dni: {{logged}} z {{days}}",
+      "trackers": "Trackery",
+      "trackerLine": "{{name}}: średnia {{avg}}, min. {{low}}, maks. {{high}}, dni: {{count}}",
+      "trackerYesLine": "{{name}}: tak w {{yes}} z {{count}} dni",
+      "effects": "Nastrój w dni z danym czynnikiem i bez niego",
+      "effectLine": "{{name}} ({{rule}}): {{a}} z tym czynnikiem, {{b}} bez niego, różnica {{delta}}, dni: {{na}} / {{nb}}",
+      "customQuestion": "Czy {{name}} wiąże się z moim nastrojem, tego samego dnia albo dzień później?"
     },
     "report": {
       "documentTitle": "Raport samopoczucia",
@@ -173,8 +181,131 @@
       "unknownDose": "nieznana dawka",
       "topEmotions": "Najczęstsze emocje",
       "patterns": "Wykryte wzorce",
-      "footer": "Wygenerowano w PrivacyNotes - privacynotes.app"
-    }
+      "footer": "Wygenerowano w PrivacyNotes - privacynotes.app",
+      "period": "Okres: od {{from}} do {{to}}, dni: {{days}}",
+      "daysLogged": "Zapisane dni: {{logged}} z {{days}}",
+      "moodHeading": "Nastrój, jeden słupek na dzień",
+      "moodLegend": "Słupki: 1-2 czerwony, 3-4 pomarańczowy, 5-6 żółty, 7-8 zielony, 9-10 niebieski. Linia: średnia z 7 dni. Trójkąt: zmiana dawki. Przerwa to dzień bez wpisu.",
+      "previous": "{{days}} dni wcześniej: {{value}}",
+      "trackers": "Trackery",
+      "columnTracker": "Tracker",
+      "columnAverage": "Średnia",
+      "columnLowHigh": "Min. / maks.",
+      "columnHistory": "Historia",
+      "effects": "Nastrój w dni z danym czynnikiem i bez niego",
+      "columnFactor": "Czynnik",
+      "columnRule": "Reguła",
+      "columnWith": "Z",
+      "columnWithout": "Bez",
+      "columnDifference": "Różnica",
+      "nextDaySuffix": "{{name}}, dzień później",
+      "effectsNote": "Średnie z zapisanych dni. Różnica to obserwacja, nie przyczyna.",
+      "medCalendar": "Kalendarz",
+      "doseChanges": "Zmiany dawki",
+      "columnDoseChanges": "Zmiany dawki",
+      "yesOn": "tak w {{count}}",
+      "total": "{{value}} łącznie"
+    },
+    "tiles": {
+      "daysLogged": "Zapisane dni",
+      "daysLoggedOf": "{{logged}} z {{days}}",
+      "avgMood": "Śr. nastrój",
+      "moodDelta": "{{delta}} wobec poprzednich {{days}} dni",
+      "avgSleep": "Śr. sen",
+      "medsTaken": "Przyjęte leki"
+    },
+    "mood": {
+      "heading": "Nastrój",
+      "legend": "Linia: średnia z 7 dni. Trójkąt: zmiana dawki.",
+      "dose": "{{name}} {{dosage}}"
+    },
+    "trackers": {
+      "heading": "Trackery",
+      "tapHint": "Dotknięcie otwiera Eksploruj",
+      "stopped": "Zatrzymane",
+      "deleted": "Usunięty",
+      "stoppedChip": "Zatrzymane ({{count}})",
+      "unknown": "Nieznany tracker {{id}}",
+      "sleepHours": "Godziny snu",
+      "sleepQuality": "Jakość snu",
+      "avgDays": "średnia, dni: {{count}}",
+      "sumDays": "łącznie, dni: {{count}}",
+      "yesNo": "tak w {{yes}}, nie w {{no}}",
+      "notLogged": "nie zapisano: {{count}}",
+      "latestLowHigh": "ostatnio {{latest}}, min. {{low}}, maks. {{high}}",
+      "topLevel": "{{level}}, dni: {{count}}",
+      "taken": "przyjęty w {{taken}} z {{total}}",
+      "empty": "Nic nie zapisano w tym zakresie",
+      "unanswered": "zapisane dni bez odpowiedzi: {{count}}"
+    },
+    "effects": {
+      "heading": "Co wpływa na Twój nastrój",
+      "headingOutcome": "Co wpływa na Twój {{outcome}}",
+      "allInPatterns": "Wszystkie we Wzorcach",
+      "sameDay": "Ten sam dzień",
+      "nextDay": "Dzień później",
+      "compareWith": "Porównaj z",
+      "withLabel": "Z",
+      "withoutLabel": "Bez",
+      "days": "dni: {{a}} / {{b}}",
+      "shortfall_one": "Potrzeba jeszcze {{count}} dnia po stronie „{{side}}”",
+      "shortfall_few": "Potrzeba jeszcze {{count}} dni po stronie „{{side}}”",
+      "shortfall_many": "Potrzeba jeszcze {{count}} dni po stronie „{{side}}”",
+      "shortfall_other": "Potrzeba jeszcze {{count}} dnia po stronie „{{side}}”",
+      "sideWith": "z",
+      "sideWithout": "bez",
+      "footnote": "Obserwacja z zapisanych dni, nie przyczyna.",
+      "higher": "Wartość „{{outcome}}” jest w te dni wyższa o {{delta}} pkt.",
+      "lower": "Wartość „{{outcome}}” jest w te dni niższa o {{delta}} pkt.",
+      "rule": {
+        "yesno": "dni z danym czynnikiem wobec dni bez niego",
+        "halves": "powyżej {{threshold}} wobec {{threshold}} i poniżej",
+        "median": "powyżej wobec poniżej Twojej mediany {{threshold}}",
+        "levels": "{{top}} wobec {{bottom}}",
+        "tag": "dni z emocją „{{tag}}” wobec dni bez niej",
+        "medication": "przyjęty wobec pominięty"
+      }
+    },
+    "explore": {
+      "calendar": "Kalendarz",
+      "against": "Na tle: {{outcome}}, wspólna oś dat",
+      "cells": {
+        "value": "zapisano",
+        "no": "nie",
+        "missing": "nie zapisano"
+      },
+      "longestRunWithout": "najdłuższa seria dni bez tego czynnika: {{count}}",
+      "longestRunWith": "najdłuższa seria dni z tym czynnikiem: {{count}}",
+      "pickOne": "Wybierz tracker"
+    },
+    "medCalendar": {
+      "heading": "Dzień po dniu",
+      "doseChange": "zmiana dawki",
+      "taken": "przyjęty",
+      "skipped": "pominięty",
+      "missed": "nieprzyjęty",
+      "unmarked": "nieoznaczony",
+      "noEntry": "brak wpisu",
+      "doseLens": "Nastrój wynosił średnio {{before}} przez {{nBefore}} dni przed i {{after}} przez {{nAfter}} dni po.",
+      "doseLensHeading": "Wokół każdej zmiany dawki",
+      "doseLensShort_one": "Potrzeba jeszcze {{count}} zapisanego dnia wokół niej.",
+      "doseLensShort_few": "Potrzeba jeszcze {{count}} zapisanych dni wokół niej.",
+      "doseLensShort_many": "Potrzeba jeszcze {{count}} zapisanych dni wokół niej.",
+      "doseLensShort_other": "Potrzeba jeszcze {{count}} zapisanego dnia wokół niej."
+    },
+    "sourceLine": "Wszystko tutaj pochodzi z trackerów w Twoich wpisach w dzienniku.",
+    "openToday": "Otwórz dzisiejszy wpis"
+  },
+  "milestones": {
+    "heading": "Kamienie milowe",
+    "next": "Następny: {{label}}",
+    "allReached": "{{label}} i wszystkie wcześniejsze",
+    "ofTarget": "{{current}} z {{target}}",
+    "reached_one": "{{count}} osiągnięty do tej pory.",
+    "reached_few": "{{count}} osiągnięte do tej pory.",
+    "reached_many": "{{count}} osiągniętych do tej pory.",
+    "reached_other": "{{count}} osiągniętego do tej pory.",
+    "source": "Napisane notatki i dni z PrivacyNotes liczą to, co dzieje się w aplikacji. Import nie zmienia ani jednego, ani drugiego."
   },
   "milestoneToast": {
     "unlocked": "Osiągnięto kamień milowy"
@@ -194,5 +325,61 @@
     "age730": "2 lata z PrivacyNotes",
     "age1825": "5 lat z PrivacyNotes",
     "ageDefault": "Dni z PrivacyNotes: {{count}}"
+  },
+  "overview": {
+    "week": "Twój tydzień",
+    "streak": "Seria pisania",
+    "streakDays_one": "{{count}} dzień",
+    "streakDays_few": "{{count}} dni",
+    "streakDays_many": "{{count}} dni",
+    "streakDays_other": "{{count}} dnia",
+    "streakNudge": "Dziś jeszcze nic. Jedna linijka wystarczy.",
+    "streakKept": "Dzisiaj zaliczone.",
+    "words": "Napisane słowa",
+    "wordsDelta": "{{delta}} wobec poprzedniego tygodnia",
+    "mood": "Nastrój",
+    "moodDelta": "{{delta}} wobec poprzedniego tygodnia",
+    "daysLogged": "Zapisane dni",
+    "daysLoggedOf": "{{logged}} z {{days}}",
+    "rhythm": "Twój rytm, tygodni: {{weeks}}",
+    "layerBoth": "Oba",
+    "layerWriting": "Pisanie",
+    "layerMood": "Nastrój",
+    "rhythmLegend": "Komórka: ile napisałeś tego dnia. Kropka: jaki był ten dzień.",
+    "hours": "Kiedy piszesz",
+    "hoursSub": "edycje według godziny, dni: {{days}}",
+    "hoursPeak": "Najwięcej piszesz między {{from}} a {{to}}.",
+    "ledgerSince": "Liczone na tym urządzeniu od {{date}}.",
+    "ledgerEmpty": "Liczenie zaczyna się teraz. Wróć za tydzień.",
+    "highlights": "Najważniejsze",
+    "highlightSleep": "Dobry sen, więcej słów. Po {{hours}} godzinach snu lub więcej piszesz około {{a}} słów dziennie. Po krótkiej nocy {{b}}.",
+    "highlightSleepSub": "długie noce: {{long}}, krótkie: {{short}}, dni: {{days}}",
+    "highlightWeekday": "{{day}} to Twój dzień. Nastrój wynosi średnio {{mood}}, a z Twoich {{total}} najdłuższych notatek w ten dzień powstało: {{count}}.",
+    "highlightWeekdaySub": "zapisane dni ({{day}}): {{count}}",
+    "highlightEffect": "Dni z czynnikiem „{{name}}” wypadają {{direction}}. Nastrój: {{a}} z nim, {{b}} bez niego.",
+    "higher": "wyżej",
+    "lower": "niżej",
+    "highlightEffectSub": "dni z czynnikiem „{{name}}”: {{count}} na {{days}}",
+    "highlightTag": "#{{tag}} rośnie. Liczba notatek w tym miesiącu: {{now}}, miesiąc wcześniej: {{before}}.",
+    "highlightTagSub": "używane tagi: {{count}}",
+    "highlightsLocked": "Przejdź na Pro, aby zobaczyć, co łączy Twoje pisanie z Twoimi trackerami",
+    "vault": "Twój sejf",
+    "vaultSub": "ten tydzień w skrócie",
+    "done": "Ukończono: {{count}}",
+    "milestones": "Kamienie milowe",
+    "longestStreak": "Najdłuższa seria (liczba dni): {{count}}",
+    "openWriting": "Otwórz Pisanie",
+    "openWellness": "Otwórz Samopoczucie",
+    "computed": "obliczone na tym urządzeniu",
+    "pillars": {
+      "notes": "Notatki",
+      "journals": "Dzienniki",
+      "tasks": "Zadania",
+      "files": "Pliki",
+      "bookmarks": "Zakładki",
+      "contacts": "Kontakty",
+      "logins": "Loginy"
+    },
+    "ledgerEstimated": "Oszacowane z Twoich notatek, dopóki nie zacznie się liczenie."
   }
 }

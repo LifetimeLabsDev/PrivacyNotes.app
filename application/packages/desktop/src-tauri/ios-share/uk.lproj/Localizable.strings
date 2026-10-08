@@ -1,0 +1,3 @@
+"saved" = "Збережено в PrivacyNotes";
+"failed" = "Не вдалося зберегти в PrivacyNotes";
+"tooLarge" = "Завеликий. Максимум {{limit}} МБ на файл.";

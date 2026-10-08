@@ -25,7 +25,7 @@ Toutes les options gardent tes notes chiffrées sur ton appareil. Elles diffère
 | --- | --- | --- |
 | **Connexion, clé chez nous** | Sur notre serveur, chiffrée | Un nouvel appareil se connecte avec ce seul compte |
 | **Connexion, clé sur ton appareil** | Chez toi, nulle part ailleurs | Connexion Google, Apple ou GitHub, et tu gardes la clé |
-| **Phrase seule, sans connexion** | Chez toi, nulle part ailleurs | Pas d'e-mail, pas de nom, pas de compte |
+| **Phrase seule, sans connexion** | Chez toi, nulle part ailleurs | Pas d'e-mail, pas de nom, pas de connexion |
 
 Avec les deux dernières, nous ne pourrions pas lire une note même si on nous y contraignait. La première échange cela contre du confort : ta phrase est sur notre serveur sous une clé à nous, donc un nouvel appareil n'a besoin que de ton compte. Si notre serveur était un jour compromis, cette clé pourrait être exposée.
 

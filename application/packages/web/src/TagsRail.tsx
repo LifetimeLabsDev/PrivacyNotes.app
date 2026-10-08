@@ -9,17 +9,20 @@ import { SortRow } from './ListPrefsPopover';
 import { useEscapeToClose } from './useEscapeToClose';
 import { SidebarOptionsPopover } from './SidebarOptionsPopover';
 import { allViewRows, hiddenAtZero, sidebarViewRows } from './viewRows';
+import { onRowListKeyDown, onSwitchKeyDown } from './sidebarKeys';
 import { TAG_MAX_LENGTH } from './notesRepo';
 import { isShownInAll, type UserSettings } from './userSettings';
 import { subtreeIds, type FolderDef } from './folders';
 import { FolderTree, type FolderTreeProps } from './FolderTree';
 import { useFolderExpansion } from './folderTreeState';
+import { useRailItemDrop } from './useRailItemDrop';
 import type { FolderSortDir, FolderSortField } from './folders';
 import { IconUpgrade, ProMark } from './UpgradeModal';
-import { Star, Hash, DotsThree, PencilSimple, Palette, Trash, X, CaretDown, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, ArrowsInLineVertical, ArrowsOutLineVertical, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, type Icon, PILLAR_GLYPHS } from './icons';
+import { Star, Hash, DotsThree, PencilSimple, Palette, Trash, X, CaretDown, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, ArrowsInLineVertical, ArrowsOutLineVertical, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, Lightning, type Icon, PILLAR_GLYPHS } from './icons';
+import { keyText } from './shortcutMatch';
 import { isViewShown, type View } from './views';
 import { exemptOpts } from './i18nExempt';
-import { SIDEBAR_ACTIVE, SIDEBAR_ROW_MENU_BUTTON } from './sidebarUI';
+import { SIDEBAR_ACTIVE, SIDEBAR_DROP_INSIDE, SIDEBAR_ROW_MENU_BUTTON } from './sidebarUI';
 import { marketingHomeHref, siteHref } from './siteLinks';
 import { useUpdateAvailable } from './updateAvailable';
 import { UpdateDot } from './UpdateDot';
@@ -29,8 +32,10 @@ import { proUnlocked } from './demo';
 import {
   folderColor,
   folderLookKey,
+  applyNoteColorChoice,
   isLookColor,
   lookOf,
+  noteColorChoice,
   restoreLooks,
   setFolderColor,
   setItemLook,
@@ -38,12 +43,14 @@ import {
   snapshotLooks,
   tagLookKey,
   type Look,
+  type NoteColorStyle,
 } from './itemStyles';
-import { TagGlyph, tintStyle } from './looks/LookGlyph';
+import { sidebarRowTint, TagGlyph } from './looks/LookGlyph';
 import { useKeyboardOpen } from './useKeyboardOpen';
 import type { LookTarget } from './looks/LookPicker';
 import { useSidebarSplit } from './useSidebarSplit';
 import { isImeComposing } from './imeComposing';
+import { latestChangelogHref } from './latestRelease';
 
 // The look picker is its own chunk: it opens from a row menu, so no boot
 // path has to carry it.
@@ -71,8 +78,11 @@ export interface TagsRailProps {
   // Drawer
   setDrawerOpen: (open: boolean) => void;
 
+  /** Opens the quick switcher. */
+  onJump: () => void;
+
   // About modal
-  setShowAbout: (v: false | { tab?: 'about' | 'changelog' | 'hotkeys' | 'rating' }) => void;
+  setShowAbout: (v: false | { tab?: 'about' | 'hotkeys' | 'rating' }) => void;
 
   // Feedback modal
   onFeedback: () => void;
@@ -110,6 +120,7 @@ export interface TagsRailProps {
   folderCounts: Map<string, number>;
   unfiledCount: number;
   selectedFolder: string | null;
+  openNoteFolder: FolderTreeProps['openNoteFolder'];
   onSelectFolder: (id: string | null) => void;
   onCreateFolder: FolderTreeProps['onCreateFolder'];
   onRenameFolder: FolderTreeProps['onRenameFolder'];
@@ -119,6 +130,10 @@ export interface TagsRailProps {
   /** Free account: browsing is open, every folder action upsells. */
   foldersLocked: boolean;
   onFoldersLockedAction: () => void;
+  /** A list item dropped on a folder row (its id) or on Unfiled (null). */
+  onDropOnFolder: (ids: string[], folderId: string | null) => void;
+  /** A list item dropped on a tag row. */
+  onDropOnTag: (ids: string[], tag: string) => void;
 
   // Folder sort (persisted per-device in NotesView, mirrors tag sort)
   folderSortField: FolderSortField;
@@ -159,7 +174,7 @@ export interface TagsRailProps {
   handleDeleteTagAndNotes: (tag: string) => void;
 
   // Global view mode
-  userSettings: Pick<UserSettings, 'hiddenViews' | 'hiddenInAll' | 'archivedInAll' | 'itemStyles' | 'tintNotes'>;
+  userSettings: Pick<UserSettings, 'hiddenViews' | 'hiddenInAll' | 'archivedInAll' | 'itemStyles' | 'tintNotes' | 'noteColorStyle'>;
   mutateSettings: (fn: (prev: UserSettings) => UserSettings) => void;
   /** A free account asked for a folder or tag look: open the upgrade window. */
   onLooksLocked: () => void;
@@ -188,7 +203,7 @@ function viewBtnClass(active: boolean) {
   return `w-full text-start px-2 py-2 rounded text-[15px] font-medium transition flex justify-between items-center ${
     active
       ? SIDEBAR_ACTIVE
-      : 'text-neutral-900 hover:bg-neutral-200/60 dark:text-white dark:hover:bg-neutral-900/60'
+      : 'text-pn hover:bg-pn/5'
   }`;
 }
 
@@ -230,7 +245,7 @@ function FooterAction({
   // exceed even that and render English (i18nExempt.ts). Don't widen these
   // without re-doing that math (ui-patterns.md section 46).
   const className =
-    'group flex items-center justify-center min-w-0 h-7 px-1 rounded-lg text-neutral-500 hover:text-accent hover:bg-neutral-200/60 dark:text-neutral-400 dark:hover:text-accent dark:hover:bg-neutral-900/60 transition ' +
+    'group flex items-center justify-center min-w-0 h-7 px-1 rounded-lg text-pn-muted hover:text-accent hover:bg-pn/5 dark:hover:text-accent transition ' +
     '[@media(hover:none)]:flex-1 [@media(hover:none)]:h-9';
   const inner = (
     <>
@@ -282,6 +297,7 @@ export function TagsRail(props: TagsRailProps) {
     handleSelectTag,
     setDrawerOpen,
     setShowAbout,
+    onJump,
     onFeedback,
     onRate,
     viewsCollapsed,
@@ -291,13 +307,14 @@ export function TagsRail(props: TagsRailProps) {
     tagCounts,
     favoriteTagsList,
     nonFavoriteTagsList,
-    browseMode,
+    browseMode: storedBrowseMode,
     onBrowseChange,
     isPro,
     folders,
     folderCounts,
     unfiledCount,
     selectedFolder,
+    openNoteFolder,
     onSelectFolder,
     onCreateFolder,
     onRenameFolder,
@@ -306,6 +323,8 @@ export function TagsRail(props: TagsRailProps) {
     onRequestDeleteFolder,
     foldersLocked,
     onFoldersLockedAction,
+    onDropOnFolder,
+    onDropOnTag,
     folderSortField,
     setFolderSortField,
     folderSortDir,
@@ -339,6 +358,10 @@ export function TagsRail(props: TagsRailProps) {
     mobileTabIndex,
     markdownRail,
   } = props;
+  // Drops of list items on the rows below, and the list a resting drag asks
+  // for, which it shows for that drag only.
+  const railDrop = useRailItemDrop({ folders, browseMode: storedBrowseMode, onDropOnFolder, onDropOnTag });
+  const browseMode = railDrop.shownMode;
 
   const newTagInputRef = useRef<HTMLInputElement | null>(null);
   // The divider between Content and the tags or folders (useSidebarSplit).
@@ -358,7 +381,7 @@ export function TagsRail(props: TagsRailProps) {
   // `before` is what Cancel puts back: every pick saves at once.
   const [lookEdit, setLookEdit] = useState<{
     target: LookTarget;
-    before: { looks: Record<string, Look>; tintNotes: boolean };
+    before: { looks: Record<string, Look>; tintNotes: boolean; noteColorStyle: NoteColorStyle };
   } | null>(null);
   const lookSaved = useRef(false);
   const lookSubfolderIds = useMemo(() => {
@@ -390,7 +413,11 @@ export function TagsRail(props: TagsRailProps) {
       : [target.lookKey];
     setLookEdit({
       target,
-      before: { looks: snapshotLooks(userSettings.itemStyles, keys), tintNotes: userSettings.tintNotes },
+      before: {
+        looks: snapshotLooks(userSettings.itemStyles, keys),
+        tintNotes: userSettings.tintNotes,
+        noteColorStyle: userSettings.noteColorStyle,
+      },
     });
   }
   function openFolderLook(id: string) {
@@ -453,7 +480,7 @@ export function TagsRail(props: TagsRailProps) {
           </span>
           {t('tagsRail.trash')}
         </span>
-        <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
+        <span className="text-xs text-pn-muted tabular-nums">
           {trashedCount}
         </span>
       </button>
@@ -471,17 +498,24 @@ export function TagsRail(props: TagsRailProps) {
     // it. The two rails sit in the same slot behind one toggle, so a tag row
     // that is taller and heavier than a folder row reads as a different
     // component rather than the same list of filters.
+    const dropHere = railDrop.over?.kind === 'tag' && railDrop.over.key === tag;
     const rowClass = `w-full rounded text-[15px] font-medium transition flex items-center group ${
-      active
+      dropHere
+        ? `${SIDEBAR_DROP_INSIDE} text-pn`
+        : active
         ? SIDEBAR_ACTIVE
-        : 'text-neutral-900 hover:bg-neutral-200/60 dark:text-white dark:hover:bg-neutral-900/60'
+        : 'text-pn hover:bg-pn/5'
     }`;
     return (
       <div key={tag} className="relative">
         <div
           className={rowClass}
+          // A dragged list item dropped here takes the tag (useRailItemDrop).
+          // Not while the name is an input: the field would take the drop
+          // as typed text.
+          data-drop-tag={isRenaming ? undefined : tag}
           // The tag's color on its row, as on a folder row (FolderTreeView).
-          style={tintStyle(tagColorOf(tag))}
+          style={sidebarRowTint(tagColorOf(tag), userSettings)}
           onContextMenu={(e) => {
             // Right-click opens the tag actions menu at the cursor,
             // mirroring the folder tree rows. Suppress the app's
@@ -505,6 +539,7 @@ export function TagsRail(props: TagsRailProps) {
               // view composing, nothing else in the rail would.
               void handleSelectTag(active ? null : tag);
             }}
+            data-row-name={tag}
             className="flex-1 min-w-0 flex items-center gap-2 px-2 py-2 text-start"
           >
             {/* Amber, like a folder glyph, and accent while the row is
@@ -517,7 +552,7 @@ export function TagsRail(props: TagsRailProps) {
                 both (TagGlyph). */}
             <span
               data-tag-glyph
-              className={`inline-flex shrink-0 ${active ? 'text-accent' : isFavorite ? 'text-amber-400' : 'text-amber-600/80 dark:text-amber-500/80'}${glyphOpensLook ? ' pn-look-glyph' : ''}`}
+              className={`inline-flex shrink-0 ${active ? 'text-accent' : isFavorite ? 'text-amber-400' : 'text-amber-700 dark:text-amber-500/80'}${glyphOpensLook ? ' pn-look-glyph' : ''}`}
             >
               <TagGlyph tag={tag} favorite={isFavorite} size={16} />
             </span>
@@ -563,7 +598,7 @@ export function TagsRail(props: TagsRailProps) {
             </button>
           )}
           {!isRenaming && (
-            <span className="text-xs lg:text-[11px] text-neutral-400 dark:text-neutral-600 tabular-nums ms-2 me-2 lg:me-1.5 shrink-0">
+            <span className="text-xs lg:text-[11px] text-pn-muted tabular-nums ms-2 me-2 lg:me-1.5 shrink-0">
               {count}
             </span>
           )}
@@ -589,7 +624,7 @@ export function TagsRail(props: TagsRailProps) {
                   setOpenTagMenu(null);
                   toggleFavoriteTag(tag);
                 }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
+                className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
               >
                 <Star weight={isFavorite ? 'fill' : 'bold'} className={isFavorite ? 'text-amber-400' : 'text-accent'} />
                 {isFavorite ? t('tagsRail.removeFavorite') : t('tagsRail.markAsFavorite')}
@@ -600,7 +635,7 @@ export function TagsRail(props: TagsRailProps) {
                   setRenameBuffer(tag);
                   setRenamingTag(tag);
                 }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
+                className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
               >
                 <PencilSimple className="text-accent" />
                 {t('tagsRail.renameTag')}
@@ -610,7 +645,7 @@ export function TagsRail(props: TagsRailProps) {
                   setOpenTagMenu(null);
                   openLook({ kind: 'tag', lookKey: tagLookKey(tag), name: tag, favorite: isFavorite });
                 }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
+                className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
               >
                 <Palette className="text-accent" />
                 <span className="flex-1">{t('looks.menu')}</span>
@@ -622,7 +657,7 @@ export function TagsRail(props: TagsRailProps) {
                   setNewTagDraft('');
                   setCreatingTag(true);
                 }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 flex items-center gap-2"
+                className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
               >
                 <Plus className="text-accent" />
                 {t('tagsRail.createTag')}
@@ -633,7 +668,7 @@ export function TagsRail(props: TagsRailProps) {
                   setOpenTagMenu(null);
                   void handleDeleteTag(tag);
                 }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center gap-2"
+                className="w-full text-start px-3 py-1.5 text-[13px] text-danger hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center gap-2"
               >
                 <Trash />
                 {t('tagsRail.deleteTag')}
@@ -646,7 +681,7 @@ export function TagsRail(props: TagsRailProps) {
                   setOpenTagMenu(null);
                   void handleDeleteTagAndNotes(tag);
                 }}
-                className="w-full text-start px-3 py-1.5 text-[13px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center gap-2"
+                className="w-full text-start px-3 py-1.5 text-[13px] text-danger hover:bg-red-50 dark:hover:bg-red-950/30 flex items-center gap-2"
               >
                 <Trash />
                 {t('tagsRail.deleteTagAndNotes')}
@@ -681,22 +716,44 @@ export function TagsRail(props: TagsRailProps) {
           </HoverLabel>
         </h1>
         <HoverLabel label={t('tagsRail.changelog')} position="end">
-        <button
-          type="button"
-          onClick={() => setShowAbout({ tab: 'changelog' })}
+        <a
+          href={latestChangelogHref()}
+          target="_blank"
+          rel="noopener noreferrer"
           aria-label={t('tagsRail.changelog')}
-          className="hidden lg:inline-flex text-[9px] font-mono px-1 py-px rounded bg-accent/10 border border-accent/30 text-accent shrink-0 hover:bg-accent/20 transition focus:outline-none focus:ring-2 focus:ring-accent/40"
+          className="hidden lg:inline-flex text-[9px] font-mono px-1 py-px rounded bg-accent/10 border border-accent/30 text-accent-strong shrink-0 hover:bg-accent/20 transition focus:outline-none focus:ring-2 focus:ring-accent/40"
         >
           v{VERSION}
-        </button>
+        </a>
         </HoverLabel>
         <button
           onClick={() => setDrawerOpen(false)}
           aria-label={t('tagsRail.closeMenu')}
-          className="ml-auto lg:hidden inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-900 transition shrink-0"
+          className="ml-auto lg:hidden inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-pn-muted hover:bg-pn/10 transition shrink-0"
         >
           <X />
           <span>{t('common:actions.close')}</span>
+        </button>
+      </div>
+      {/* The quick switcher's button, from lg up. Below lg the list header
+          carries it (ListNav), so the drawer does not repeat it.
+          Spec: ops/docs/plans/keyboard-shortcuts.md (decision D15) */}
+      <div className="hidden lg:block shrink-0 px-3 pt-3">
+        {/* The tint of the "+ New" button, so the app's two main actions
+            read as one family. A lightning bolt, not a magnifier: the list
+            search, find in note and the settings search already draw one,
+            and this button also runs commands. */}
+        <button
+          type="button"
+          onClick={onJump}
+          className="pn-jump w-full h-9 flex items-center gap-2 rounded-md bg-accent/10 ps-2.5 pe-1.5 text-[14px] font-semibold text-accent-strong transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        >
+          <span className="pn-jump-charge" aria-hidden="true" />
+          <Lightning size={16} weight="fill" className="shrink-0" />
+          <span className="flex-1 truncate text-start">{t('common:quickSwitcher.jumpTo')}</span>
+          <kbd dir="ltr" className="shrink-0 rounded border border-accent/30 px-1.5 font-sans text-[11px] font-normal leading-5">
+            {keyText('quickSwitcher')}
+          </kbd>
         </button>
       </div>
       {/* The caption row sits OUTSIDE the scrolling box below, and that is what
@@ -723,7 +780,7 @@ export function TagsRail(props: TagsRailProps) {
             type="button"
             onClick={() => setViewsCollapsed((v) => !v)}
             aria-expanded={!viewsCollapsed}
-            className="flex-1 min-w-0 flex items-center gap-1 text-[13px] font-bold text-neutral-700 dark:text-white hover:text-accent dark:hover:text-accent transition"
+            className="flex-1 min-w-0 flex items-center gap-1 text-[13px] font-bold text-pn-soft hover:text-accent dark:hover:text-accent transition"
           >
             <CaretDown size={10} className={`transition-transform ${viewsCollapsed ? '-rotate-90' : ''}`} aria-hidden="true" />
             <span>{t('tagsRail.views')}</span>
@@ -741,7 +798,7 @@ export function TagsRail(props: TagsRailProps) {
             className={`shrink-0 inline-flex items-center justify-center rounded p-0.5 transition ${
               viewsMenuOpen
                 ? 'text-accent'
-                : 'text-neutral-400 hover:text-accent dark:text-neutral-500 dark:hover:text-accent'
+                : 'text-pn-muted hover:text-accent dark:hover:text-accent'
             }`}
           >
             <Eye size={14} aria-hidden="true" />
@@ -800,7 +857,7 @@ export function TagsRail(props: TagsRailProps) {
               className={`inline-flex items-center justify-center rounded p-0.5 transition ${
                 allMenuOpen
                   ? 'text-accent'
-                  : 'text-neutral-400 group-hover:text-accent hover:text-accent dark:text-neutral-500 dark:group-hover:text-accent dark:hover:text-accent'
+                  : 'text-pn-muted group-hover:text-accent hover:text-accent dark:group-hover:text-accent dark:hover:text-accent'
               }`}
             >
               <FunnelSimple size={14} aria-hidden="true" />
@@ -846,7 +903,7 @@ export function TagsRail(props: TagsRailProps) {
                 {r.label}
               </span>
               {count !== undefined && (
-                <span className="text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">
+                <span className="text-xs text-pn-muted tabular-nums">
                   {count}
                 </span>
               )}
@@ -919,7 +976,7 @@ export function TagsRail(props: TagsRailProps) {
                     onClick={() => setTagSortOpen(true)}
                     aria-label={sortLabel}
                     aria-expanded={false}
-                    className="h-full px-2 rounded-md border inline-flex items-center justify-center transition border-divider text-neutral-500 hover:text-accent hover:border-accent/50 dark:text-neutral-400 dark:hover:text-accent"
+                    className="h-full px-2 rounded-md border inline-flex items-center justify-center transition border-divider text-pn-muted hover:text-accent hover:border-accent/50 dark:hover:text-accent"
                   >
                     <FunnelSimple size={15} aria-hidden="true" />
                   </button>
@@ -932,7 +989,7 @@ export function TagsRail(props: TagsRailProps) {
                   className="absolute start-0 top-full mt-1 z-50 w-52 rounded-lg border border-divider bg-surface-2 shadow-lg"
                 >
                   <div className="px-4 pt-3 pb-2">
-                    <div className="text-[10px] font-semibold tracking-wider text-neutral-500 dark:text-neutral-400 uppercase mb-1.5 mt-1">
+                    <div className="text-[10px] font-semibold tracking-wider text-pn-muted uppercase mb-1.5 mt-1">
                       {t('tagsRail.sortBy')}
                     </div>
                     {browseMode === 'tags' ? (
@@ -998,7 +1055,7 @@ export function TagsRail(props: TagsRailProps) {
                             else folderExpansion.expandAll(folders);
                             setTagSortOpen(false);
                           }}
-                          className="w-full flex items-center gap-2 px-2 py-1.5 rounded text-[13px] text-neutral-700 dark:text-neutral-200 hover:bg-surface-1 transition"
+                          className="w-full flex items-center gap-2 px-2 py-1.5 rounded text-[13px] text-pn-soft hover:bg-surface-1 transition"
                         >
                           {anyFolderOpen ? (
                             <ArrowsInLineVertical className="text-accent" aria-hidden="true" />
@@ -1017,6 +1074,7 @@ export function TagsRail(props: TagsRailProps) {
           <div
             role="group"
             aria-label={t('browseToggle.label')}
+            onKeyDown={onSwitchKeyDown}
             className="flex-1 min-w-0 flex rounded-md border border-divider overflow-hidden"
           >
             <button
@@ -1025,11 +1083,12 @@ export function TagsRail(props: TagsRailProps) {
                 split.unfold();
                 onBrowseChange('tags');
               }}
+              {...railDrop.switchProps('tags')}
               aria-pressed={browseMode === 'tags'}
               className={`flex-auto min-w-0 inline-flex items-center justify-center gap-1 px-1.5 py-1 text-[12px] font-medium transition ${
                 browseMode === 'tags'
                   ? SIDEBAR_ACTIVE
-                  : 'text-neutral-500 hover:text-accent dark:text-neutral-400 dark:hover:text-accent'
+                  : 'text-pn-muted hover:text-accent dark:hover:text-accent'
               }`}
             >
               <Hash size={13} className="shrink-0" />
@@ -1041,11 +1100,12 @@ export function TagsRail(props: TagsRailProps) {
                 split.unfold();
                 onBrowseChange('folders');
               }}
+              {...railDrop.switchProps('folders')}
               aria-pressed={browseMode === 'folders'}
               className={`flex-auto min-w-0 inline-flex items-center justify-center gap-1 px-1.5 py-1 text-[12px] font-medium transition ${
                 browseMode === 'folders'
                   ? SIDEBAR_ACTIVE
-                  : 'text-neutral-500 hover:text-accent dark:text-neutral-400 dark:hover:text-accent'
+                  : 'text-pn-muted hover:text-accent dark:hover:text-accent'
               }`}
             >
               <Folder size={13} className="shrink-0" />
@@ -1056,13 +1116,14 @@ export function TagsRail(props: TagsRailProps) {
         </div>
       </div>
       {!split.folded && (
-      <div ref={browseListRef} className="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-3 min-h-0">
+      <div ref={browseListRef} onKeyDown={onRowListKeyDown} {...railDrop.listProps} className="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-3 min-h-0">
         {browseMode === 'folders' ? (
           <FolderTree
             folders={folders}
             counts={folderCounts}
             unfiledCount={unfiledCount}
             selectedFolder={selectedFolder}
+            openNoteFolder={openNoteFolder}
             onSelectFolder={onSelectFolder}
             onCreateFolder={onCreateFolder}
             onRenameFolder={onRenameFolder}
@@ -1074,13 +1135,14 @@ export function TagsRail(props: TagsRailProps) {
             onLockedAction={onFoldersLockedAction}
             onEditLook={openFolderLook}
             onGlyphClick={glyphOpensLook ? openFolderLook : undefined}
+            itemDrop={{ overId: railDrop.over?.kind === 'folder' ? railDrop.over.key : null }}
             sortField={folderSortField}
             sortDir={folderSortDir}
             mobileTabIndex={mobileTabIndex}
           />
         ) : (<>
         {tagCounts.tags.length === 0 && !creatingTag && (
-          <div className="text-[13px] text-neutral-400 dark:text-neutral-700 px-2 py-1">
+          <div className="text-[13px] text-pn-muted px-2 py-1">
             {t('tagsRail.noTagsYet')}
           </div>
         )}
@@ -1090,8 +1152,28 @@ export function TagsRail(props: TagsRailProps) {
         {nonFavoriteTagsList.map(([tag, count]) =>
           renderTagRow(tag, count, false)
         )}
+        {tagCounts.untagged > 0 && (
+          <button
+            onClick={() => handleSelectTag(selectedTag === '__untagged__' ? null : '__untagged__')}
+            className={`w-full text-start px-2 py-2 rounded text-[15px] font-medium transition flex justify-between items-center ${
+              selectedTag === '__untagged__'
+                ? SIDEBAR_ACTIVE
+                : 'text-pn-muted hover:bg-pn/5 hover:text-pn-soft'
+            }`}
+          >
+            <span className="flex items-center gap-2 min-w-0">
+              <span className="inline-flex shrink-0">
+                <Prohibit size={16} />
+              </span>
+              <span className="truncate">{t('tagsRail.untagged')}</span>
+            </span>
+            <span className="text-xs lg:text-[11px] tabular-nums">
+              {tagCounts.untagged}
+            </span>
+          </button>
+        )}
         {creatingTag ? (
-          <div className="w-full rounded text-[15px] font-medium transition flex items-center text-neutral-900 dark:text-white">
+          <div className="w-full rounded text-[15px] font-medium transition flex items-center text-pn">
             <div className="flex-1 min-w-0 flex items-center gap-2 px-2 py-2">
               <span className="inline-flex shrink-0 text-accent">
                 <Hash size={16} />
@@ -1123,7 +1205,7 @@ export function TagsRail(props: TagsRailProps) {
                 maxLength={TAG_MAX_LENGTH + 5}
                 placeholder={t('tagsRail.tagNamePlaceholder')}
                 enterKeyHint="done"
-                className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-[15px] font-medium text-pn placeholder:text-neutral-400 dark:placeholder:text-neutral-600"
+                className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-[15px] font-medium text-pn placeholder:text-pn-muted"
               />
             </div>
           </div>
@@ -1141,28 +1223,8 @@ export function TagsRail(props: TagsRailProps) {
                Spec: ops/docs/ui-patterns.md (section 76) */
             className="w-full mt-2 rounded-md border border-dashed border-divider hover:border-accent/50 text-[15px] font-medium transition flex items-center justify-center gap-2 px-2 py-2 text-pn-muted hover:text-accent"
           >
-            <Plus size={16} className="shrink-0 text-amber-600/80 dark:text-amber-500/80" />
+            <Plus size={16} className="shrink-0 text-amber-700 dark:text-amber-500/80" />
             <span className="truncate">{t('tagsRail.createTag')}</span>
-          </button>
-        )}
-        {tagCounts.untagged > 0 && (
-          <button
-            onClick={() => handleSelectTag(selectedTag === '__untagged__' ? null : '__untagged__')}
-            className={`w-full text-start px-2 py-2 rounded text-[15px] font-medium transition flex justify-between items-center ${
-              selectedTag === '__untagged__'
-                ? SIDEBAR_ACTIVE
-                : 'text-neutral-400 hover:bg-neutral-200/60 hover:text-neutral-600 dark:text-neutral-600 dark:hover:bg-neutral-900/60 dark:hover:text-neutral-400'
-            }`}
-          >
-            <span className="flex items-center gap-2 min-w-0">
-              <span className="inline-flex shrink-0">
-                <Prohibit size={16} />
-              </span>
-              <span className="truncate">{t('tagsRail.untagged')}</span>
-            </span>
-            <span className="text-xs lg:text-[11px] tabular-nums">
-              {tagCounts.untagged}
-            </span>
           </button>
         )}
         </>)}
@@ -1234,7 +1296,7 @@ export function TagsRail(props: TagsRailProps) {
             target={lookEdit.target}
             styles={userSettings.itemStyles}
             subfolderIds={lookSubfolderIds}
-            tintNotes={userSettings.tintNotes}
+            noteColors={noteColorChoice(userSettings.tintNotes, userSettings.noteColorStyle)}
             onPick={(patch) => {
               lookSaved.current = true;
               mutateSettings((prev) => {
@@ -1266,16 +1328,22 @@ export function TagsRail(props: TagsRailProps) {
                 return itemStyles === prev.itemStyles ? prev : { ...prev, itemStyles };
               });
             }}
-            onTintNotes={(on) => {
+            onNoteColors={(next) => {
               lookSaved.current = true;
-              mutateSettings((prev) => (prev.tintNotes === on ? prev : { ...prev, tintNotes: on }));
+              mutateSettings((prev) => applyNoteColorChoice(prev, next));
             }}
             onCancel={() => {
               const { before } = lookEdit;
               mutateSettings((prev) => {
                 const itemStyles = restoreLooks(prev.itemStyles, before.looks);
-                if (itemStyles === prev.itemStyles && prev.tintNotes === before.tintNotes) return prev;
-                return { ...prev, itemStyles, tintNotes: before.tintNotes };
+                if (
+                  itemStyles === prev.itemStyles &&
+                  prev.tintNotes === before.tintNotes &&
+                  prev.noteColorStyle === before.noteColorStyle
+                ) {
+                  return prev;
+                }
+                return { ...prev, itemStyles, tintNotes: before.tintNotes, noteColorStyle: before.noteColorStyle };
               });
             }}
             onClose={() => {

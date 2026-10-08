@@ -7,7 +7,7 @@
     "heading": "Başlık",
     "taskList": "Görev listesi",
     "bulletList": "Madde listesi",
-    "addLink": "Bağlantı ekle (Cmd+Shift+K)",
+    "addLink": "Bağlantı ekle ({{keys}})",
     "noteLink": "Başka bir nota bağlan (veya [[ yazın)",
     "numberedList": "Numaralı liste",
     "textColor": "Metin rengi",
@@ -34,7 +34,12 @@
     "blockMath": "Blok formül",
     "align": "Hizalama",
     "font": "Yazı tipi",
-    "pictureFromFiles": "Dosyalar'dan görsel"
+    "pictureFromFiles": "Dosyalar'dan görsel",
+    "date": "Tarih",
+    "dateTime": "Tarih ve saat",
+    "footnote": "Dipnot",
+    "spoiler": "Sürprizbozan",
+    "copyBox": "Kopyalama kutusu"
   },
   "align": {
     "left": "Sola hizala",
@@ -111,14 +116,14 @@
     "deleteTable": "Tabloyu sil"
   },
   "find": {
-    "placeholder": "Notta bul",
+    "placeholder": "Notta bulun",
     "label": "Notta bul",
     "previous": "Önceki eşleşme (Shift+Enter)",
     "previousTitle": "Önceki (Shift+Enter)",
     "next": "Sonraki eşleşme (Enter)",
     "nextTitle": "Sonraki (Enter)",
     "close": "Aramayı kapat",
-    "closeTitle": "Kapat (⌘F)",
+    "closeTitle": "Kapat ({{keys}})",
     "replacePlaceholder": "Şununla değiştir",
     "replaceLabel": "Şununla değiştir",
     "replace": "Değiştir",
@@ -128,7 +133,7 @@
     "caseSensitive": "Büyük/küçük harfe duyarlı",
     "caseSensitiveTitle": "Büyük/küçük harfe duyarlı",
     "closeReplace": "Bul ve değiştir çubuğunu kapat",
-    "closeReplaceTitle": "Kapat (⌥⌘F)",
+    "closeReplaceTitle": "Kapat ({{keys}})",
     "replacedCount_one": "{{count}} değiştirildi",
     "replacedCount_other": "{{count}} değiştirildi"
   },
@@ -138,7 +143,14 @@
     "title": "Ana hat",
     "ariaLabel": "Not ana hattı",
     "hide": "Ana hattı gizle",
-    "hideTitle": "Ana hattı gizle (Esc)"
+    "hideTitle": "Ana hattı gizle (Esc)",
+    "copyHeadingLink": "Başlık bağlantısını kopyala",
+    "copied": "Kopyalandı"
+  },
+  "bodyMenu": {
+    "cut": "Kes",
+    "sortAsc": "Satırları A'dan Z'ye sırala",
+    "sortDesc": "Satırları Z'den A'ya sırala"
   },
   "topRow": {
     "add": "En üste bir satır ekle"
@@ -177,6 +189,8 @@
     "words_other": "{{formatted}} kelime",
     "characters_one": "{{formatted}} karakter",
     "characters_other": "{{formatted}} karakter",
+    "tasksChecked_one": "{{formatted}} öğeden {{done}} tanesi işaretli",
+    "tasksChecked_other": "{{formatted}} öğeden {{done}} tanesi işaretli",
     "tooLargeToSync": ", eşitlemek için çok büyük olabilir, yeni bir nota bölün",
     "veryLong": ", çok uzun, düzenlemesi yavaş olabilir ve takılabilir",
     "gettingLong": ", uzuyor, yavaş cihazlarda takılabilir",
@@ -184,19 +198,48 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "Eşleşen not yok",
-    "create": "\"{{query}}\" oluştur"
+    "create": "\"{{query}}\" oluştur",
+    "headingsIn": "{{title}} içindeki başlıklar",
+    "noHeadingMatches": "Eşleşen başlık yok"
+  },
+  "copyBox": {
+    "placeholder": "Tek tıkla kopyalanacak metin"
+  },
+  "inlineCode": {
+    "copyHint": "Kopyalamak için {{key}}+tıklayın",
+    "copied": "Kopyalandı"
   },
   "codeBlock": {
     "copy": "Kopyala",
     "copied": "Kopyalandı",
     "copyFailed": "Başarısız",
-    "wrap": "Uzun satırları kaydır"
+    "wrap": "Uzun satırları kaydır",
+    "showAll_one": "{{count}} satırın tümünü göster",
+    "showAll_other": "{{count}} satırın tümünü göster",
+    "showLess": "Daha az göster",
+    "plainText": "Düz metin",
+    "language": "Kod dili: {{name}}",
+    "searchLanguages": "Dil arayın",
+    "placeholder": "Kodu yazın veya yapıştırın. Renk için yukarıdan bir dil seçin."
   },
   "math": {
     "sourceLabel": "LaTeX kodu"
   },
   "noteLink": {
     "open": "Notu aç",
-    "remove": "Bağlantıyı kaldır"
+    "remove": "Bağlantıyı kaldır",
+    "linkHeading": "Bir başlığa bağla...",
+    "headingNotFound": "Başlık bulunamadı",
+    "headingsLocked": "Başlıklarını görmek için bu notun kilidini açın",
+    "noHeadings": "Bu notta başlık yok"
+  },
+  "footnote": {
+    "placeholder": "Dipnot metni",
+    "back": "Metne dön",
+    "unused": "Metinde kullanılmıyor",
+    "remove": "Dipnotu kaldır",
+    "missing": "Dipnot metni yok. Eklemek için tıklayın.",
+    "ariaRef": "Dipnot {{n}}",
+    "ariaSection": "Dipnotlar"
   }
 }

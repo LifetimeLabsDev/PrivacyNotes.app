@@ -14,7 +14,7 @@
   },
   "moveScreen": {
     "title": "L'app si è trasferita su use.privacynotes.app",
-    "bodySignIn": "Accedi lì con la tua frase di recupero di 12 parole o con \"{{scanQr}}\". Questo dispositivo sincronizza prima, così tutte le tue note ti aspettano lì, e qui non viene cancellato nulla.",
+    "bodySignIn": "Accedi lì con la tua frase di recupero di 12 parole o con “{{scanQr}}”. Questo dispositivo sincronizza prima, così tutte le tue note ti aspettano lì, e qui non viene eliminato nulla.",
     "openNotes": "Apri le tue note qui una volta per risolvere il problema",
     "showPhrase": "Mostra la mia frase di recupero",
     "website": "Sfoglia invece il sito"

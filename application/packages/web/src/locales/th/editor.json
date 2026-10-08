@@ -7,7 +7,7 @@
     "heading": "หัวเรื่อง",
     "taskList": "รายการงาน",
     "bulletList": "รายการแบบสัญลักษณ์",
-    "addLink": "เพิ่มลิงก์ (Cmd+Shift+K)",
+    "addLink": "เพิ่มลิงก์ ({{keys}})",
     "noteLink": "ลิงก์ไปยังโน้ตอื่น (หรือพิมพ์ [[)",
     "numberedList": "รายการแบบตัวเลข",
     "textColor": "สีข้อความ",
@@ -34,7 +34,12 @@
     "blockMath": "สูตรแบบบล็อก",
     "align": "การจัดแนว",
     "font": "แบบอักษร",
-    "pictureFromFiles": "รูปภาพจากไฟล์"
+    "pictureFromFiles": "รูปภาพจากไฟล์",
+    "date": "วันที่",
+    "dateTime": "วันที่และเวลา",
+    "footnote": "เชิงอรรถ",
+    "spoiler": "สปอยล์",
+    "copyBox": "กล่องคัดลอก"
   },
   "align": {
     "left": "จัดชิดซ้าย",
@@ -118,7 +123,7 @@
     "next": "รายการที่ตรงถัดไป (Enter)",
     "nextTitle": "ถัดไป (Enter)",
     "close": "ปิดการค้นหา",
-    "closeTitle": "ปิด (⌘F)",
+    "closeTitle": "ปิด ({{keys}})",
     "replacePlaceholder": "แทนที่ด้วย",
     "replaceLabel": "แทนที่ด้วย",
     "replace": "แทนที่",
@@ -128,7 +133,7 @@
     "caseSensitive": "ตรงตามตัวพิมพ์",
     "caseSensitiveTitle": "ตรงตามตัวพิมพ์",
     "closeReplace": "ปิดการค้นหาและแทนที่",
-    "closeReplaceTitle": "ปิด (⌥⌘F)",
+    "closeReplaceTitle": "ปิด ({{keys}})",
     "replacedCount_other": "แทนที่แล้ว {{count}} รายการ"
   },
   "outline": {
@@ -137,7 +142,14 @@
     "title": "เค้าโครง",
     "ariaLabel": "เค้าโครงของโน้ต",
     "hide": "ซ่อนเค้าโครง",
-    "hideTitle": "ซ่อนเค้าโครง (Esc)"
+    "hideTitle": "ซ่อนเค้าโครง (Esc)",
+    "copyHeadingLink": "คัดลอกลิงก์ไปยังหัวเรื่อง",
+    "copied": "คัดลอกแล้ว"
+  },
+  "bodyMenu": {
+    "cut": "ตัด",
+    "sortAsc": "เรียงบรรทัดจาก ก ถึง ฮ",
+    "sortDesc": "เรียงบรรทัดจาก ฮ ถึง ก"
   },
   "topRow": {
     "add": "เพิ่มบรรทัดที่ด้านบน"
@@ -174,6 +186,7 @@
   "wordCount": {
     "words_other": "{{formatted}} คำ",
     "characters_other": "{{formatted}} ตัวอักษร",
+    "tasksChecked_other": "ทำเครื่องหมายแล้ว {{done}} จาก {{formatted}}",
     "tooLargeToSync": " อาจใหญ่เกินกว่าจะซิงค์ได้ ให้แยกเป็นโน้ตใหม่",
     "veryLong": " ยาวมาก การแก้ไขอาจช้าและกระตุก",
     "gettingLong": " เริ่มยาวแล้ว อาจหน่วงบนอุปกรณ์ที่ช้า",
@@ -181,19 +194,47 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "ไม่พบโน้ตที่ตรงกัน",
-    "create": "สร้าง “{{query}}”"
+    "create": "สร้าง “{{query}}”",
+    "headingsIn": "หัวเรื่องใน {{title}}",
+    "noHeadingMatches": "ไม่พบหัวเรื่องที่ตรงกัน"
+  },
+  "copyBox": {
+    "placeholder": "ข้อความที่คัดลอกได้ในคลิกเดียว"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}+คลิกเพื่อคัดลอก",
+    "copied": "คัดลอกแล้ว"
   },
   "codeBlock": {
     "copy": "คัดลอก",
     "copied": "คัดลอกแล้ว",
     "copyFailed": "ล้มเหลว",
-    "wrap": "ตัดบรรทัดยาว"
+    "wrap": "ตัดบรรทัดยาว",
+    "showAll_other": "แสดงทั้งหมด {{count}} บรรทัด",
+    "showLess": "แสดงน้อยลง",
+    "plainText": "ข้อความธรรมดา",
+    "language": "ภาษาของโค้ด: {{name}}",
+    "searchLanguages": "ค้นหาภาษา",
+    "placeholder": "พิมพ์หรือวางโค้ด เลือกภาษาด้านบนเพื่อให้มีสี"
   },
   "math": {
     "sourceLabel": "ซอร์ส LaTeX"
   },
   "noteLink": {
     "open": "เปิดโน้ต",
-    "remove": "นำลิงก์ออก"
+    "remove": "นำลิงก์ออก",
+    "linkHeading": "ลิงก์ไปยังหัวเรื่อง...",
+    "headingNotFound": "ไม่พบหัวเรื่อง",
+    "headingsLocked": "ปลดล็อกโน้ตนี้เพื่อดูหัวเรื่อง",
+    "noHeadings": "โน้ตนี้ไม่มีหัวเรื่อง"
+  },
+  "footnote": {
+    "placeholder": "ข้อความเชิงอรรถ",
+    "back": "กลับไปที่เนื้อหา",
+    "unused": "ไม่ได้ใช้ในเนื้อหา",
+    "remove": "ลบเชิงอรรถ",
+    "missing": "เชิงอรรถนี้ยังไม่มีข้อความ คลิกเพื่อเพิ่ม",
+    "ariaRef": "เชิงอรรถ {{n}}",
+    "ariaSection": "เชิงอรรถ"
   }
 }

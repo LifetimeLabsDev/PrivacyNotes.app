@@ -54,7 +54,7 @@ export function HeartRatePill({
       readOnly={readOnly}
     >
       <div className="flex flex-col gap-3 items-start">
-        <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+        <span className="text-xs font-medium text-pn-soft">
           {t('heartRate.prompt')}
         </span>
         <div className="inline-flex items-center gap-2">
@@ -67,10 +67,10 @@ export function HeartRatePill({
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') commit(); }}
-            className="w-20 px-2.5 py-1.5 rounded-md text-sm border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200 tabular-nums"
+            className="w-20 px-2.5 py-1.5 rounded-md text-sm border border-pn-muted/50 bg-surface-0 text-pn tabular-nums"
             autoFocus
           />
-          <span className="text-xs text-neutral-400 dark:text-neutral-500">{t('units.bpm')}</span>
+          <span className="text-xs text-pn-muted">{t('units.bpm')}</span>
           <button
             type="button"
             onClick={commit}

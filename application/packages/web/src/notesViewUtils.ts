@@ -12,12 +12,14 @@ export { MARKDOWN_NOTE_TYPES, isKnownNoteType } from './noteTypes';
 import type { ListPrefs } from './listPrefs';
 import { formatBytes } from './formatBytes';
 import i18n from './i18n';
-import { intlLocale } from './languages';
+import { dateLocale, formatInstant, formatPattern, toLocalIso } from './intlFormat';
 import { parseLinkBody, linkDomain } from './linkBody';
 import { contactDisplayName, contactPhotoBytes, contactSecondLine, parseContactBody } from './contactBody';
 import type { PinGatePurpose } from './ProtectedNoteGate';
 import type { NoteConflict } from './sync';
 import { isDelimiterRow, tableWidthFromMarker } from './tableDelimiterRow';
+import { bindingCaps, bindingText, visibleBindings } from './commandKeys';
+import { DESKTOP_APP, KEY_OS } from './shortcutMatch';
 
 /** Regex to match pn:file/ links in note bodies. Not a picture placed from
  *  Files (`![...](pn:file/...)`), which shows a file rather than holding one. */
@@ -95,6 +97,7 @@ function estimateNoteCiphertextBytes(n: LocalNote): number {
   // note is overestimated by the bytes of '"folderId":null'.
   if (n.folderId) payload.folderId = n.folderId;
   payload.archived = n.archived === 1;
+  if (n.editedAt) payload.editedAt = n.editedAt;
   return estimateCiphertextBytes(payload);
 }
 
@@ -210,6 +213,14 @@ function stripInlineMarkdown(line: string): string {
       if (mt.includes('pdf')) return i18n.t('shell:fileTypes.pdfDocument');
       return i18n.t('shell:fileTypes.attachment');
     })
+    // Footnote markers `[^1]` and inline notes `^[text]` -> ""; the
+    // number they show is not in the stored text anyway.
+    .replace(/\[\^[^\]\s]+\](?!:)/g, '')
+    .replace(/\^\[[^\]]*\]/g, '')
+    // ||spoiler|| -> a fixed mask, so a list row or a title never shows the
+    // hidden text, nor its length. Same guard as the parse rule in
+    // editorSpoiler.ts.
+    .replace(/(^|[^|\\])\|\|(?![\s|])[^\n]*?\S\|\|(?!\|)/g, '$1•••')
     // [text](url) -> text
     .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
     // [[note link]] -> note link
@@ -249,7 +260,9 @@ function stripBlockMarkers(line: string): string {
     .replace(/^#{1,6}\s+/, '')
     // Callout marker: `[!warning]-` / `[!info]+ Title` -> drop the marker so
     // previews show the title (or fall through to the body).
-    .replace(/^\[!\w+\][+-]?\s*/, '');
+    .replace(/^\[!\w+\][+-]?\s*/, '')
+    // Footnote definition: `[^1]: text` -> "text".
+    .replace(/^\[\^[^\]\s]+\]:\s*/, '');
 }
 
 // Strip the markdown task checkbox (`[ ]` / `[x]`) when it appears at
@@ -525,6 +538,14 @@ export function conflictShownWhileGated(c: NoteConflict): NoteConflict {
 }
 
 /**
+ * The "last edited" date of a note: the last change to its title, its body or
+ * a tracker value. A row written before the field reads its sync stamp.
+ */
+export function editedAtOf(n: Pick<LocalNote, 'editedAt' | 'updatedAt'>): string {
+  return n.editedAt ?? n.updatedAt;
+}
+
+/**
  * The ordering rule for every notes surface: pinned (starred) notes
  * float to the top regardless of the user's choice, then the chosen
  * sort field and direction.
@@ -536,7 +557,10 @@ export function conflictShownWhileGated(c: NoteConflict): NoteConflict {
 export function compareNotes(
   a: LocalNote,
   b: LocalNote,
-  prefs: ListPrefs
+  prefs: ListPrefs,
+  /** The Journals pillar: the `created` sort orders by the day each entry is
+   *  for, then by the time it was written. */
+  entryDays = false,
 ): number {
   if (a.starred !== b.starred) return b.starred - a.starred;
   let cmp = 0;
@@ -551,9 +575,16 @@ export function compareNotes(
     // The same measure the row displays - see `noteSizeBytes`.
     cmp = noteSizeBytes(a) - noteSizeBytes(b);
   } else if (prefs.sortField === 'created') {
-    cmp = a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0;
+    if (entryDays) {
+      const da = entryDayOf(a);
+      const db = entryDayOf(b);
+      cmp = da < db ? -1 : da > db ? 1 : 0;
+    }
+    if (cmp === 0) cmp = a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0;
   } else {
-    cmp = a.updatedAt < b.updatedAt ? -1 : a.updatedAt > b.updatedAt ? 1 : 0;
+    const ea = editedAtOf(a);
+    const eb = editedAtOf(b);
+    cmp = ea < eb ? -1 : ea > eb ? 1 : 0;
   }
   return cmp * (prefs.sortDir === 'asc' ? 1 : -1);
 }
@@ -700,41 +731,14 @@ export function deriveExcerpt(n: LocalNote, long = false): string {
   return imageExcerpt(n.body);
 }
 
-// "Sat, 11 Apr, 12:31" (current year) or "Sat, 11 Apr 2025, 12:31" (older) -
-// local timezone. The year is dropped for the current year to cut clutter;
-// older items keep it so they stay unambiguous. Callers prepend "Modified ".
-export function formatModified(iso: string): string {
-  if (!iso) return '';
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  const weekday = d.toLocaleDateString(intlLocale(), { weekday: 'short' });
-  const day = d.getDate();
-  const month = d.toLocaleDateString(intlLocale(), { month: 'short' });
-  const yearPart = d.getFullYear() === new Date().getFullYear() ? '' : ` ${d.getFullYear()}`;
-  const hh = String(d.getHours()).padStart(2, '0');
-  const mm = String(d.getMinutes()).padStart(2, '0');
-  return `${weekday}, ${day} ${month}${yearPart}, ${hh}:${mm}`;
-}
-
-// Compact date for grid tiles: "11 Apr" (current year) or "11 Apr 2025"
-// (older). No weekday or time - tiles are space-constrained, especially
-// two-up on phones. Callers prepend "Modified " / "Created ".
-export function formatModifiedShort(iso: string): string {
-  if (!iso) return '';
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  const day = d.getDate();
-  const month = d.toLocaleDateString(intlLocale(), { month: 'short' });
-  const yearPart = d.getFullYear() === new Date().getFullYear() ? '' : ` ${d.getFullYear()}`;
-  return `${day} ${month}${yearPart}`;
-}
-
-// Platform-specific hotkey labels for the new-note shortcut.
+// The new-note key of this device and app, from the command list: ⌘N in the
+// desktop apps, ⌥⇧N in a browser, which keeps Mod+N for a new window.
 export const isMacPlatform =
   typeof navigator !== 'undefined' &&
   /Mac|iPhone|iPad|iPod/.test(navigator.platform);
-export const hotkeyKeys = isMacPlatform ? ['⌥', '⇧', 'N'] : ['Alt', 'Shift', 'N'];
-export const hotkeyLabel = hotkeyKeys.join(isMacPlatform ? '' : '+');
+const newNoteKey = visibleBindings('newNote', KEY_OS, DESKTOP_APP)[0]!;
+export const hotkeyKeys = bindingCaps(newNoteKey, KEY_OS);
+export const hotkeyLabel = bindingText(newNoteKey, KEY_OS);
 // The spelled-out form ("Option + Shift + N") is NOT here: key-cap names are
 // localized (de "Umschalt", fr "Maj"), so it lives in the notes catalog as
 // footer.newNoteHintMac / footer.newNoteHintOther and is picked with
@@ -749,12 +753,9 @@ export const hotkeyLabel = hotkeyKeys.join(isMacPlatform ? '' : '+');
 // only as a fallback for entries created before that field existed.
 // Spec: ops/docs/design-decisions.md (journal entry titles)
 
-/** Local calendar date as `YYYY-MM-DD`. Never UTC: an entry belongs to
- *  the day the writer is living, not to the day in Greenwich. */
-export function toLocalIso(d: Date): string {
-  const pad = (n: number) => (n < 10 ? `0${n}` : String(n));
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
+// The one local-day helper lives with the date formatter; every caller that
+// names a day imports it from here.
+export { toLocalIso };
 
 /** The Monday of the week `now` falls in. Weeks start Monday. */
 function mondayOf(now: Date): Date {
@@ -778,15 +779,48 @@ export function getMondayIso(): string {
  * this for anything else, and never for a title being written.
  */
 function getMondayOfWeekLegacyTitle(): string {
+  // date-ok: the legacy title is matched as the exact en-US string
   return mondayOf(new Date()).toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   });
+}
+
+/** Whether a string is a real local calendar day as `YYYY-MM-DD`: the shape,
+ *  and a day the calendar has (no 31 April, no 29 February in 2027). */
+export function isLocalIsoDay(s: string): boolean {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  return m !== null && toLocalIso(new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 12)) === s;
 }
 
 /** The calendar date an entry belongs to, or null if it predates the field. */
 export function journalDateOf(n: LocalNote): string | null {
   const stored = (n.trackers as Record<string, unknown> | undefined)?.journalDate;
   return typeof stored === 'string' ? stored : null;
+}
+
+/** The live journal entry written for a day, tracker values or not. */
+export function journalOn(notes: LocalNote[], date: string): LocalNote | undefined {
+  return notes.find((n) => n.type === 'journal' && n.deleted === 0 && n.trashed === 0 && journalDateOf(n) === date);
+}
+
+/** The day an entry is for: its `journalDate`, or the local day it was
+ *  written on for an entry from before the field. */
+export function entryDayOf(n: LocalNote): string {
+  return journalDateOf(n) ?? toLocalIso(new Date(n.createdAt));
+}
+
+/** Each day that holds a live journal entry, to the id of its newest one.
+ *  Trashed and archived entries stay off the calendar.
+ *  Spec: ops/docs/plans/journal-calendar.md (the data) */
+export function journalEntriesByDay(notes: readonly LocalNote[]): Map<string, string> {
+  const newest = new Map<string, LocalNote>();
+  for (const n of notes) {
+    if (n.type !== 'journal' || n.deleted !== 0 || n.trashed !== 0 || n.archived === 1) continue;
+    const day = entryDayOf(n);
+    const held = newest.get(day);
+    if (!held || n.createdAt > held.createdAt) newest.set(day, n);
+  }
+  return new Map([...newest].map(([day, n]) => [day, n.id]));
 }
 
 /** Is this the entry the Week in Review card and week reflection attach to? */
@@ -814,38 +848,94 @@ export function isJournalTitleFormat(v: unknown): v is JournalTitleFormat {
   return typeof v === 'string' && (JOURNAL_TITLE_FORMATS as readonly string[]).includes(v);
 }
 
-/** One date in the chosen shape, in the app's language. `locale` comes
- *  from `activeLocale()` - never the browser default, which can disagree
- *  with the language the app is being read in. Routed through
- *  `intlLocale()` before it reaches `toLocaleDateString` so Arabic renders
- *  Western digits instead of Intl's Arabic-Indic default. */
+/** One date in the chosen shape. `locale` is the app language from
+ *  `activeLocale()` - never the browser default, which can disagree with
+ *  the language the app is being read in. `dateLocale()` adds the device's
+ *  region to it, so the order of day and month matches every other date
+ *  the app shows, and Arabic keeps Western digits. */
 function formatJournalDate(d: Date, format: JournalTitleFormat, locale: string): string {
-  const loc = intlLocale(locale);
+  const loc = dateLocale(locale);
+  // date-ok: a title is written in the language it is created in, not the one it is read in
+  const text = (opts: Intl.DateTimeFormatOptions) => d.toLocaleDateString(loc, opts);
   switch (format) {
     case 'iso':
       return toLocalIso(d);
     case 'iso-weekday':
-      return `${toLocalIso(d)} ${d.toLocaleDateString(loc, { weekday: 'short' })}`;
+      return `${toLocalIso(d)} ${text({ weekday: 'short' })}`;
     case 'short':
-      return d.toLocaleDateString(loc, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+      return text({ weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
     case 'numeric':
-      return d.toLocaleDateString(loc);
+      // Digits in the order the date setting names.
+      return formatInstant(d, 'numeric');
     default:
-      return d.toLocaleDateString(loc, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      return text({ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   }
 }
 
-/** The title a new journal entry is born with: the date plus the
- *  user's optional suffix. */
+/** The title a new journal entry is born with: the date plus the user's
+ *  optional suffix, or the custom pattern, which wins while it is valid and
+ *  not empty and takes no suffix. A stored pattern that is not valid falls
+ *  back to the preset, so it never makes an untitled entry. Only the calls
+ *  that make a title pass the pattern; the preset previews do not. */
 export function journalTitle(
   d: Date,
   format: JournalTitleFormat,
   suffix: string,
   locale: string,
+  pattern = '',
 ): string {
+  if (pattern.trim()) {
+    const custom = formatPattern(d, pattern, locale);
+    if ('text' in custom) return custom.text;
+  }
   const date = formatJournalDate(d, format, locale);
   const tail = suffix.trim();
   return tail ? `${date} ${tail}` : date;
+}
+
+/**
+ * Whether a title is still exactly one the app made for that day: the custom
+ * pattern, or any preset with the current suffix or with none. Only such a
+ * title follows the entry when its day changes; a title the person typed stays.
+ * Spec: ops/docs/plans/dates.md (section 3.4)
+ */
+export function isGeneratedJournalTitle(title: string, day: string, suffix: string, locale: string, pattern = ''): boolean {
+  const d = new Date(`${day}T12:00:00`);
+  const custom = pattern.trim() ? formatPattern(d, pattern, locale) : null;
+  if (custom && 'text' in custom && title === custom.text) return true;
+  return JOURNAL_TITLE_FORMATS.some(
+    (f) => title === journalTitle(d, f, suffix, locale) || title === journalTitle(d, f, '', locale),
+  );
+}
+
+/**
+ * The patch that moves a journal entry to another day, or null when the day
+ * is not a real one or is the day the entry already has. It writes
+ * `journalDate`, sets `backfilled` for a day before the one the entry was
+ * written on (and clears it otherwise), and takes the title the app makes for
+ * the new day while the title is still exactly one it made for the old day. A
+ * read-only entry keeps its title: the write refuses a title change there. So
+ * does an entry the PIN guards right now, which the caller says with
+ * `keepTitle`, because the gate is the view's state, not the row's.
+ * Spec: ops/docs/plans/dates.md (section 3.4)
+ */
+export function journalDatePatch(
+  n: Pick<LocalNote, 'type' | 'title' | 'trackers' | 'createdAt' | 'locked'>,
+  day: string,
+  titles: { format: JournalTitleFormat; suffix: string; locale: string; pattern?: string },
+  opts: { keepTitle?: boolean } = {},
+): { trackers: Record<string, unknown>; title?: string } | null {
+  if (n.type !== 'journal' || !isLocalIsoDay(day)) return null;
+  const old = journalDateOf(n as LocalNote) ?? toLocalIso(new Date(n.createdAt));
+  if (old === day) return null;
+  const trackers: Record<string, unknown> = { ...(n.trackers ?? {}), journalDate: day };
+  if (day < toLocalIso(new Date(n.createdAt))) trackers.backfilled = true;
+  else delete trackers.backfilled;
+  if (n.locked === 1 || opts.keepTitle || !isGeneratedJournalTitle(n.title, old, titles.suffix, titles.locale, titles.pattern)) return { trackers };
+  return {
+    trackers,
+    title: journalTitle(new Date(`${day}T12:00:00`), titles.format, titles.suffix, titles.locale, titles.pattern),
+  };
 }
 
 // Empty body templates for vault item types. Shared between note creation

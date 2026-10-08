@@ -7,7 +7,7 @@
     "heading": "عنوان",
     "taskList": "قائمة مهام",
     "bulletList": "قائمة نقطية",
-    "addLink": "إضافة رابط (Cmd+Shift+K)",
+    "addLink": "إضافة رابط ({{keys}})",
     "noteLink": "ربط بملاحظة أخرى (أو اكتب [[)",
     "numberedList": "قائمة مرقّمة",
     "textColor": "لون النص",
@@ -34,7 +34,12 @@
     "blockMath": "معادلة كتلة",
     "align": "محاذاة",
     "font": "الخط",
-    "pictureFromFiles": "صورة من «الملفات»"
+    "pictureFromFiles": "صورة من «الملفات»",
+    "date": "التاريخ",
+    "dateTime": "التاريخ والوقت",
+    "footnote": "حاشية سفلية",
+    "spoiler": "نص مخفي",
+    "copyBox": "مربع نسخ"
   },
   "align": {
     "left": "محاذاة لليسار",
@@ -118,7 +123,7 @@
     "next": "المطابقة التالية (Enter)",
     "nextTitle": "التالي (Enter)",
     "close": "إغلاق البحث",
-    "closeTitle": "إغلاق (⌘F)",
+    "closeTitle": "إغلاق ({{keys}})",
     "replacePlaceholder": "استبدال بـ",
     "replaceLabel": "استبدال بـ",
     "replace": "استبدال",
@@ -128,7 +133,7 @@
     "caseSensitive": "مطابقة حالة الأحرف",
     "caseSensitiveTitle": "مطابقة حالة الأحرف",
     "closeReplace": "إغلاق البحث والاستبدال",
-    "closeReplaceTitle": "إغلاق (⌥⌘F)",
+    "closeReplaceTitle": "إغلاق ({{keys}})",
     "replacedCount_zero": "تم استبدال {{count}}",
     "replacedCount_one": "تم استبدال {{count}}",
     "replacedCount_two": "تم استبدال {{count}}",
@@ -142,7 +147,14 @@
     "title": "المخطط التفصيلي",
     "ariaLabel": "مخطط الملاحظة",
     "hide": "إخفاء المخطط التفصيلي",
-    "hideTitle": "إخفاء المخطط التفصيلي (Esc)"
+    "hideTitle": "إخفاء المخطط التفصيلي (Esc)",
+    "copyHeadingLink": "نسخ رابط العنوان",
+    "copied": "تم النسخ"
+  },
+  "bodyMenu": {
+    "cut": "قص",
+    "sortAsc": "فرز الأسطر من أ إلى ي",
+    "sortDesc": "فرز الأسطر من ي إلى أ"
   },
   "topRow": {
     "add": "إضافة سطر في الأعلى"
@@ -188,7 +200,13 @@
     "characters_two": "{{formatted}} حرفان",
     "characters_few": "{{formatted}} أحرف",
     "characters_many": "{{formatted}} حرفًا",
-    "characters_other": "{{formatted}} حرفًا",
+    "characters_other": "{{formatted}} حرف",
+    "tasksChecked_zero": "{{done}} من {{formatted}} محددة",
+    "tasksChecked_one": "{{done}} من {{formatted}} محددة",
+    "tasksChecked_two": "{{done}} من {{formatted}} محددة",
+    "tasksChecked_few": "{{done}} من {{formatted}} محددة",
+    "tasksChecked_many": "{{done}} من {{formatted}} محددة",
+    "tasksChecked_other": "{{done}} من {{formatted}} محددة",
     "tooLargeToSync": "، قد تكون كبيرة جدًا للمزامنة، قسّمها إلى ملاحظة جديدة",
     "veryLong": "، طويلة جدًا، قد تكون بطيئة في التعديل وتتقطع",
     "gettingLong": "، أصبحت طويلة، قد تتأخر على الأجهزة الأبطأ",
@@ -196,19 +214,52 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "لا توجد ملاحظات مطابقة",
-    "create": "إنشاء «{{query}}»"
+    "create": "إنشاء «{{query}}»",
+    "headingsIn": "العناوين في {{title}}",
+    "noHeadingMatches": "لا توجد عناوين مطابقة"
+  },
+  "copyBox": {
+    "placeholder": "نص يُنسخ بنقرة واحدة"
+  },
+  "inlineCode": {
+    "copyHint": "انقر مع {{key}} للنسخ",
+    "copied": "تم النسخ"
   },
   "codeBlock": {
     "copy": "نسخ",
     "copied": "تم النسخ",
     "copyFailed": "فشل",
-    "wrap": "التفاف الأسطر الطويلة"
+    "wrap": "التفاف الأسطر الطويلة",
+    "showAll_zero": "عرض كل الأسطر ({{count}})",
+    "showAll_one": "عرض السطر ({{count}})",
+    "showAll_two": "عرض السطرين ({{count}})",
+    "showAll_few": "عرض الأسطر الـ{{count}} كلها",
+    "showAll_many": "عرض كل الـ{{count}} سطرًا",
+    "showAll_other": "عرض كل الـ{{count}} سطر",
+    "showLess": "عرض أقل",
+    "plainText": "نص عادي",
+    "language": "لغة الشفرة: {{name}}",
+    "searchLanguages": "ابحث عن لغة",
+    "placeholder": "اكتب الشفرة أو الصقها. للألوان، اختر لغة في الأعلى."
   },
   "math": {
     "sourceLabel": "شيفرة LaTeX"
   },
   "noteLink": {
     "open": "فتح الملاحظة",
-    "remove": "إزالة الرابط"
+    "remove": "إزالة الرابط",
+    "linkHeading": "الربط بعنوان...",
+    "headingNotFound": "لم يُعثر على العنوان",
+    "headingsLocked": "افتح قفل هذه الملاحظة لترى عناوينها",
+    "noHeadings": "لا توجد عناوين في هذه الملاحظة"
+  },
+  "footnote": {
+    "placeholder": "نص الحاشية",
+    "back": "العودة إلى النص",
+    "unused": "غير مستخدمة في النص",
+    "remove": "إزالة الحاشية",
+    "missing": "لا يوجد نص للحاشية. انقر لإضافته.",
+    "ariaRef": "الحاشية {{n}}",
+    "ariaSection": "الحواشي السفلية"
   }
 }

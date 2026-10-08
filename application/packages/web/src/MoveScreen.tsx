@@ -112,11 +112,11 @@ export function MoveScreen({ onOpenNotes }: { onOpenNotes: () => void }) {
     <div className="min-h-dvh bg-surface-0 text-pn flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-5 rounded-xl border border-divider bg-surface-2 p-6 sm:p-8">
         <h1 className="text-xl font-semibold">{t('moveScreen.title')}</h1>
-        <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+        <p className="text-sm leading-relaxed text-pn-muted">
           {t('moveScreen.bodySignIn', { scanQr: t('importPhrase.scanQr', { ns: 'auth' }) })}
         </p>
         {stuck && (
-          <p className="text-sm leading-relaxed text-amber-700 dark:text-amber-400">
+          <p className="text-sm leading-relaxed text-warning">
             {state === 'conflict' ? t('moveBanner.conflict') : t('moveBanner.error')}
           </p>
         )}
@@ -124,7 +124,7 @@ export function MoveScreen({ onOpenNotes }: { onOpenNotes: () => void }) {
           type="button"
           disabled={state === 'syncing'}
           onClick={() => void handleMove()}
-          className="w-full rounded-lg bg-accent hover:bg-accent-hover text-white text-sm font-semibold px-4 py-2.5 transition disabled:opacity-60"
+          className="w-full rounded-lg bg-accent-fill hover:bg-accent-fill-hover text-white text-sm font-semibold px-4 py-2.5 transition disabled:opacity-60"
         >
           {state === 'syncing' ? t('moveBanner.syncing') : t('moveBanner.cta')}
         </button>
@@ -159,7 +159,7 @@ export function MoveScreen({ onOpenNotes }: { onOpenNotes: () => void }) {
         <p className="text-center text-sm">
           <a
             href={marketingHomeHref()}
-            className="text-neutral-500 dark:text-neutral-400 underline underline-offset-2 hover:text-pn transition"
+            className="text-pn-muted underline underline-offset-2 hover:text-pn transition"
           >
             {t('moveScreen.website')}
           </a>

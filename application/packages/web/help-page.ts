@@ -57,6 +57,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FAQ_SRC = path.resolve(__dirname, 'src/faq.ts');
 const GUIDES_SRC = path.resolve(__dirname, 'src/guides.ts');
 const HOTKEYS_SRC = path.resolve(__dirname, 'src/hotkeysData.ts');
+const COMMAND_KEYS_SRC = path.resolve(__dirname, 'src/commandKeys.ts');
 const LOCALES_DIR = path.resolve(__dirname, 'src/locales');
 const ORIGIN = 'https://privacynotes.app';
 
@@ -130,17 +131,28 @@ type GuidesCatalog = {
   page: { importTitle: string; importSteps: string[]; otherGuides: string };
   guides: Record<string, Guide>;
 };
-/** Mirrors HotkeyGroup in src/hotkeysData.ts (evaluated standalone). */
+/** Mirrors HotkeyGroup in src/hotkeysData.ts (evaluated with src/commandKeys.ts). */
+type HotkeyRowData = { commands: string[]; range?: boolean; label: string; i18nKey: string };
 type HotkeyGroupData = {
   title: string;
   i18nKey: string;
-  rows: { keys: string; label: string; i18nKey: string }[];
+  rows: HotkeyRowData[];
 };
+type KeyOs = 'mac' | 'pc';
+type CapRun = string[] | '/' | '–';
+/** The row formatter of src/hotkeysData.ts, the one the app uses. */
+let rowCaps: (row: HotkeyRowData, os: KeyOs, desktop: boolean, firstOnly?: boolean) => CapRun[] = () => [];
+/** True when a help row has a key only in the desktop apps. */
+const rowDesktopOnly = (row: HotkeyRowData) => rowCaps(row, 'mac', false).length === 0 && rowCaps(row, 'pc', false).length === 0;
 
 // Transpile a self-contained TS module (no imports) with Oxc and
 // import it as a data-URL ES module to pull out its exports.
-async function evalModule(file: string): Promise<Record<string, unknown>> {
-  const src = fs.readFileSync(file, 'utf8');
+async function evalModule(file: string, ...before: string[]): Promise<Record<string, unknown>> {
+  // A module that imports a sibling (the help rows import the key list) is
+  // evaluated with that sibling's source in front and its import removed.
+  const src = [...before, file]
+    .map((f) => fs.readFileSync(f, 'utf8').replace(/^import [^;]* from '\.\/[^']+';$/gm, ''))
+    .join('\n');
   const { code } = await transformWithOxc(src, file, { lang: 'ts' });
   return (await import(
     'data:text/javascript;base64,' + Buffer.from(code).toString('base64')
@@ -155,7 +167,8 @@ async function loadStructure(): Promise<{
 }> {
   const faq = await evalModule(FAQ_SRC);
   const guides = await evalModule(GUIDES_SRC);
-  const hotkeys = await evalModule(HOTKEYS_SRC);
+  const hotkeys = await evalModule(HOTKEYS_SRC, COMMAND_KEYS_SRC);
+  rowCaps = hotkeys.rowCaps as typeof rowCaps;
   return {
     order: faq.FAQ_GROUP_ORDER as FaqGroupKey[],
     rows: faq.FAQ_STRUCTURE as FaqStructureRow[],
@@ -825,6 +838,8 @@ function feedbackBlock(prompt: string): string {
 <a class="btn btn-ghost" href="https://www.reddit.com/r/PrivacyNotes/" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M248,104a32,32,0,0,0-52.94-24.19c-16.75-8.9-36.76-14.28-57.66-15.53l5.19-31.17,17.72,2.72a24,24,0,1,0,2.87-15.74l-26-4a8,8,0,0,0-9.11,6.59L121.2,64.16c-21.84.94-42.82,6.38-60.26,15.65a32,32,0,0,0-42.59,47.74A59,59,0,0,0,16,144c0,21.93,12,42.35,33.91,57.49C70.88,216,98.61,224,128,224s57.12-8,78.09-22.51C228,186.35,240,165.93,240,144a59,59,0,0,0-2.35-16.45A32.16,32.16,0,0,0,248,104ZM72,128a16,16,0,1,1,16,16A16,16,0,0,1,72,128Zm91.75,55.07a76.18,76.18,0,0,1-71.5,0,8,8,0,1,1,7.5-14.14,60.18,60.18,0,0,0,56.5,0,8,8,0,1,1,7.5,14.14ZM168,144a16,16,0,1,1,16-16A16,16,0,0,1,168,144Z"/></svg>Reddit</a>
 <a class="btn btn-ghost" href="https://x.com/PrivacyNotesApp" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M215,219.85a8,8,0,0,1-7,4.15H160a8,8,0,0,1-6.75-3.71l-40.49-63.63L53.92,221.38a8,8,0,0,1-11.84-10.76l61.77-68L41.25,44.3A8,8,0,0,1,48,32H96a8,8,0,0,1,6.75,3.71l40.49,63.63,58.84-64.72a8,8,0,0,1,11.84,10.76l-61.77,67.95,62.6,98.38A8,8,0,0,1,215,219.85Z"/></svg>X.com</a>
 <a class="btn btn-ghost" href="https://mastodon.social/@privacynotes" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M184,32H72A40,40,0,0,0,32,72V192a40,40,0,0,0,40,40h88a8,8,0,0,0,0-16H72a24,24,0,0,1-24-24v-8H184a40,40,0,0,0,40-40V72A40,40,0,0,0,184,32Zm0,104a8,8,0,0,1-16,0V104a16,16,0,0,0-32,0v32a8,8,0,0,1-16,0V104a16,16,0,0,0-32,0v32a8,8,0,0,1-16,0V104a32,32,0,0,1,56-21.13A32,32,0,0,1,184,104Z"/></svg>Mastodon</a>
+<a class="btn btn-ghost" href="https://www.youtube.com/@PrivacyNotesApp" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M234.33,69.52a24,24,0,0,0-14.49-16.4C185.56,39.88,131,40,128,40s-57.56-.12-91.84,13.12a24,24,0,0,0-14.49,16.4C19.08,79.5,16,97.74,16,128s3.08,48.5,5.67,58.48a24,24,0,0,0,14.49,16.41C69,215.56,120.4,216,127.34,216h1.32c6.94,0,58.37-.44,91.18-13.11a24,24,0,0,0,14.49-16.41c2.59-10,5.67-28.22,5.67-58.48S236.92,79.5,234.33,69.52Zm-73.74,65-40,28A8,8,0,0,1,108,156V100a8,8,0,0,1,12.59-6.55l40,28a8,8,0,0,1,0,13.1Z"/></svg>YouTube</a>
+<a class="btn btn-ghost" href="https://www.facebook.com/PrivacyNotesApp/" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M232,128a104.16,104.16,0,0,1-91.55,103.26,4,4,0,0,1-4.45-4V152h24a8,8,0,0,0,8-8.53,8.17,8.17,0,0,0-8.25-7.47H136V112a16,16,0,0,1,16-16h16a8,8,0,0,0,8-8.53A8.17,8.17,0,0,0,167.73,80H152a32,32,0,0,0-32,32v24H96a8,8,0,0,0-8,8.53A8.17,8.17,0,0,0,96.27,152H120v75.28a4,4,0,0,1-4.44,4A104.15,104.15,0,0,1,24.07,124.09c2-54,45.74-97.9,99.78-100A104.12,104.12,0,0,1,232,128Z"/></svg>Facebook</a>
 </div>
 </div>`;
 }
@@ -848,6 +863,7 @@ function feedbackBlock(prompt: string): string {
  */
 const CONTENT_BASELINE = '2026-08-26';
 const CONTENT_UPDATED: Record<string, string> = {
+  'note-links': '2026-10-07',
   'guess-phrase': '2026-09-26',
   'need-email': '2026-09-25',
   'phrase-vs-password': '2026-09-25',
@@ -871,8 +887,8 @@ const CONTENT_UPDATED: Record<string, string> = {
   'shutdown': '2026-09-25',
   'attachment-limits': '2026-09-23',
   'languages': '2026-09-23',
-  'keyboard-shortcuts': '2026-09-23',
-  'hotkey-cheat-sheet': '2026-09-23',
+  'keyboard-shortcuts': '2026-10-06',
+  'hotkey-cheat-sheet': '2026-10-06',
   'store-purchases': '2026-09-23',
   'markdown-folder-mobile': '2026-09-14',
   'image-quality': '2026-09-08',
@@ -1380,6 +1396,11 @@ const HK_SHOWCASE_CSS = `
    as .s-keys on the cheat sheet; "1 – ⌥⌘6" used to reorder on /ar). */
 .hk-keys{display:inline-flex;align-items:center;gap:4px;flex:0 0 auto;direction:ltr}
 .hk-or{color:var(--faint);font-size:12px;padding:0 1px}
+.hk-picks{display:flex;flex-wrap:wrap;gap:8px 12px;margin:10px 0 4px}
+.hk-pickset{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:2px}
+.hk-pick{border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--muted);padding:5px 12px;border-radius:99px;cursor:pointer}
+.hk-pick[aria-pressed="true"]{background:var(--chip);color:var(--fg)}
+${keySetCss('.hk-sec', 'hk-row')}
 kbd.cap{display:inline-flex;min-width:26px;height:26px;padding:0 7px;align-items:center;justify-content:center;border:1px solid var(--line);border-bottom-width:2.5px;border-radius:7px;background:var(--chip);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;font-weight:600;color:var(--fg)}
 .hk-note{margin:18px 0 0;font-size:13px;color:var(--faint)}
 .hk-note+.hk-note{margin-top:6px}
@@ -1472,24 +1493,33 @@ ${demos.join('\n')}
 /** '⌘K' -> ['⌘','K']; 'J / K' -> ['J','/','K']; 'Esc' stays whole.
  *  ' – ' splits a range ('⌥⌘1 – ⌥⌘6') into two full cap sequences, so the
  *  second one never lumps into one unreadable cap. */
-function keyCaps(keys: string): string[] {
-  if (keys.includes(' / '))
-    return keys.split(' / ').flatMap((part, i) => (i ? ['/', ...keyCaps(part)] : keyCaps(part)));
-  if (keys.includes(' – '))
-    return keys.split(' – ').flatMap((part, i) => (i ? ['–', ...keyCaps(part)] : keyCaps(part)));
-  const caps: string[] = [];
-  let rest = keys;
-  while (rest.length > 0) {
-    const c = rest[0]!;
-    if ('⌘⌥⇧⌫'.includes(c)) {
-      caps.push(c);
-      rest = rest.slice(1);
-    } else {
-      caps.push(rest);
-      break;
+/**
+ * The keys of one help row in all four key sets: the Mac and Windows and
+ * Linux, each in a browser and in the desktop app. The page shows one set at
+ * a time through the `data-hk-os` and `data-hk-app` attributes of its root
+ * (static-pages.js, initHotkeySets), so it renders complete with no script:
+ * the Mac set in a browser.
+ */
+function keySets(row: HotkeyRowData, capClass: string, orClass: string, keysClass: string): string {
+  const out: string[] = [];
+  for (const os of ['mac', 'pc'] as const) {
+    for (const app of ['web', 'desktop'] as const) {
+      const caps = rowCaps(row, os, app === 'desktop')
+        .map((c) =>
+          typeof c === 'string'
+            ? `<span class="${orClass}">${c}</span>`
+            : c.map((k) => `<kbd class="${capClass}">${esc(k)}</kbd>`).join('')
+        )
+        .join('');
+      if (caps) out.push(`<span class="${keysClass}" data-os="${os}" data-app="${app}">${caps}</span>`);
     }
   }
-  return caps;
+  return out.join('');
+}
+
+/** The CSS that shows one key set: the root carries data-hk-os and data-hk-app. */
+function keySetCss(root: string, rowClass: string): string {
+  return `${root}[data-hk-os="mac"] [data-os="pc"],${root}[data-hk-os="pc"] [data-os="mac"],${root}[data-hk-app="web"] [data-app="desktop"],${root}[data-hk-app="desktop"] [data-app="web"],${root}[data-hk-app="web"] .${rowClass}[data-desktop-only]{display:none}`;
 }
 
 /** hotkeys.* strings from common.json, per-key English fallback. */
@@ -1530,17 +1560,15 @@ function renderHotkeysShowcase(
   locale: HelpLocale,
   hotkeyGroups: HotkeyGroupData[],
   label: string,
-  legend: string
+  p: Record<string, string>
 ): string {
   const s = readHotkeyStrings(locale);
   const groups = hotkeyGroups
     .map((g) => {
       const rows = g.rows
         .map((r) => {
-          const caps = keyCaps(r.keys)
-            .map((c) => (c === '/' || c === '–' ? `<span class="hk-or">${c}</span>` : `<kbd class="cap">${esc(c)}</kbd>`))
-            .join('');
-          return `<div class="hk-row"><span>${esc(s.actions[r.i18nKey] ?? r.label)}</span><span class="hk-keys">${caps}</span></div>`;
+          const only = rowDesktopOnly(r) ? ' data-desktop-only' : '';
+          return `<div class="hk-row"${only}><span>${esc(s.actions[r.i18nKey] ?? r.label)}</span>${keySets(r, 'cap', 'hk-or', 'hk-keys')}</div>`;
         })
         .join('\n');
       return `<div class="hk-g">
@@ -1549,12 +1577,21 @@ ${rows}
 </div>`;
     })
     .join('\n');
-  return `<section class="hk-sec">
+  // Two switches: the OS and the app. A browser keeps some keys for itself,
+  // and the desktop apps have those as well.
+  // Spec: ops/docs/plans/keyboard-shortcuts.md (section 4.2, a key set for each app)
+  const pick = (attr: string, value: string, text: string, on: boolean) =>
+    `<button type="button" class="hk-pick" data-hk-set="${attr}" data-value="${value}" aria-pressed="${on}">${esc(text)}</button>`;
+  return `<section class="hk-sec" data-hk-os="mac" data-hk-app="web">
 <h2 class="eyebrow">// ${esc(label)}</h2>
+<div class="hk-picks" hidden>
+<div class="hk-pickset">${pick('os', 'mac', p.hkMac ?? 'Mac', true)}${pick('os', 'pc', p.hkPc ?? 'Windows and Linux', false)}</div>
+<div class="hk-pickset">${pick('app', 'web', p.hkBrowser ?? 'Browser', true)}${pick('app', 'desktop', p.hkDesktop ?? 'Desktop app', false)}</div>
+</div>
 <div class="hk-groups">
 ${groups}
 </div>
-<p class="hk-note">${esc(legend)}</p>
+<p class="hk-note">${esc(p.hkLayout ?? '')}</p>
 ${s.typingNote ? `<p class="hk-note">${esc(s.typingNote)}</p>` : ''}
 <a class="hk-print" href="${cheatSheetPath()}">${PRINTER_ICON}${esc(s.cheatSheet)}</a>
 </section>`;
@@ -1580,53 +1617,79 @@ function renderCheatSheetHtml(hotkeyGroups: HotkeyGroupData[]): string {
   const hint = 'Prints on one A4 page - or choose PDF in the print dialog to save it as a file.';
   const legend = 'On Windows and Linux, ⌘ is Ctrl and ⌥ is Alt.';
   const legendPc = 'On a Mac, Ctrl is ⌘ and Alt is ⌥.';
+  // The rule the app's key matcher follows (shortcutMatch.ts), said once for
+  // anybody whose keyboard is not a US one.
+  const layoutNote =
+    'Shortcuts follow the characters your keyboard types, not US key positions: press the key that types the character shown (on a non-Latin layout, the key in its US place). A key that types a character with AltGr always types it.';
   // Groups and rows render the English source labels straight from
   // hotkeysData; only the typing note is shared with the app's catalog.
   const typingNote = readHotkeyStrings('en').typingNote;
-  const renderGroup = (g: HotkeyGroupData) => {
-    const rows = g.rows
-      .map((r) => {
-        const caps = keyCaps(r.keys)
-          .map((c) => (c === '/' || c === '–' ? `<span class="s-or">${c}</span>` : `<kbd class="s-cap">${esc(c)}</kbd>`))
-          .join('');
-        // "Toggle this help" is the MODAL's self-reference; on paper there
-        // is no "this help", so the sheet points back at the app instead.
-        const label = r.i18nKey === 'toggleHelp' ? 'Show this list in the app' : r.label;
-        return `<div class="s-row"><span class="s-lbl">${esc(label)}</span><span class="s-dots"></span><span class="s-keys">${caps}</span></div>`;
-      })
-      .join('\n');
-    return `<section class="s-g">
+  // One sheet per key set (Mac or Windows and Linux, browser or desktop
+  // app), each with its own two columns: the sets differ in rows and in key
+  // widths, so one balance cannot fit all four. The page shows one at a time.
+  const renderSet = (os: KeyOs, app: 'web' | 'desktop') => {
+    const desktop = app === 'desktop';
+    const groups = hotkeyGroups
+      .map((g) => ({ g, rows: g.rows.filter((r) => rowCaps(r, os, desktop).length > 0) }))
+      .filter((x) => x.rows.length > 0);
+    const renderGroup = ({ g, rows }: (typeof groups)[number]) => {
+      const html = rows
+        .map((r) => {
+          // "Toggle this help" is the MODAL's self-reference; on paper there
+          // is no "this help", so the sheet points back at the app instead.
+          const label = r.i18nKey === 'toggleHelp' ? 'Show this list in the app' : r.label;
+          const caps = rowCaps(r, os, desktop, true)
+            .map((c) =>
+              typeof c === 'string'
+                ? `<span class="s-or">${c}</span>`
+                : c.map((k) => `<kbd class="s-cap">${esc(k)}</kbd>`).join('')
+            )
+            .join('');
+          return `<div class="s-row"><span class="s-lbl">${esc(label)}</span><span class="s-dots"></span><span class="s-keys">${caps}</span></div>`;
+        })
+        .join('\n');
+      return `<section class="s-g">
 <h2>// ${esc(g.title)}</h2>
-${rows}
+${html}
 </section>`;
-  };
-  // Two explicit columns, balanced by row count (a group header weighs about
-  // one row). CSS `columns` balanced by height alone and Formatting alone
-  // outweighs the other five groups, so the first column came up far
-  // shorter. Brute force over the assignments (2^n, n=6): the smallest
-  // height difference wins, the first data group stays in the first column
-  // (mask step 2 keeps bit 0 set), ties prefer the fuller first column, and
-  // data order is kept inside each column.
-  const weight = (g: HotkeyGroupData) => g.rows.length + 1;
-  let bestMask = 1;
-  let bestDiff = Infinity;
-  let bestLeft = 0;
-  for (let mask = 1; mask < 1 << hotkeyGroups.length; mask += 2) {
-    let l = 0;
-    let r = 0;
-    hotkeyGroups.forEach((g, i) => (mask & (1 << i) ? (l += weight(g)) : (r += weight(g))));
-    const diff = Math.abs(l - r);
-    if (diff < bestDiff || (diff === bestDiff && l > bestLeft)) {
-      bestDiff = diff;
-      bestLeft = l;
-      bestMask = mask;
+    };
+    // Two explicit columns, balanced by row count (a group header weighs
+    // about one row). CSS `columns` balanced by height alone and Formatting
+    // alone outweighs the other groups, so the first column came up far
+    // shorter. Brute force over the assignments (2^n): the smallest height
+    // difference wins, the first group stays in the first column (mask step
+    // 2 keeps bit 0 set), ties prefer the fuller first column, and data
+    // order is kept inside each column.
+    const weight = (x: (typeof groups)[number]) => x.rows.length + 1;
+    let bestMask = 1;
+    let bestDiff = Infinity;
+    let bestLeft = 0;
+    for (let mask = 1; mask < 1 << groups.length; mask += 2) {
+      let l = 0;
+      let r = 0;
+      groups.forEach((x, i) => (mask & (1 << i) ? (l += weight(x)) : (r += weight(x))));
+      const diff = Math.abs(l - r);
+      if (diff < bestDiff || (diff === bestDiff && l > bestLeft)) {
+        bestDiff = diff;
+        bestLeft = l;
+        bestMask = mask;
+      }
     }
-  }
-  const col = (keep: boolean) =>
-    hotkeyGroups
-      .filter((_, i) => Boolean(bestMask & (1 << i)) === keep)
-      .map(renderGroup)
-      .join('\n');
+    const col = (keep: boolean) =>
+      groups
+        .filter((_, i) => Boolean(bestMask & (1 << i)) === keep)
+        .map(renderGroup)
+        .join('\n');
+    return `<div class="s-cols" data-os="${os}" data-app="${app}">
+<div class="s-col">
+${col(true)}
+</div>
+<div class="s-col">
+${col(false)}
+</div>
+</div>`;
+  };
+  const sets = (['mac', 'pc'] as const).flatMap((os) => (['web', 'desktop'] as const).map((app) => renderSet(os, app))).join('\n');
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -1672,11 +1735,14 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,Bli
 /* minmax(0,1fr), never bare 1fr: the dot leaders are one long nowrap glyph
    run, and a bare 1fr track's auto minimum honors that intrinsic width,
    pushing the second column off the sheet. */
-.s-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:10mm;align-items:start;margin-top:26px}
+.s-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:10mm;align-items:start;margin-top:22px}
 .s-col{min-width:0}
-.s-g{margin:0 0 26px}
+/* The row padding and the group gap are what keep the sheet on ONE A4
+   page; the longer column sets the height. Measure with a real print
+   (headless Chrome, --print-to-pdf) after a row is added. */
+.s-g{margin:0 0 20px}
 .s-g h2{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#1E40AF;margin:0 0 6px}
-.s-row{display:flex;align-items:center;gap:9px;padding:6.5px 0;border-top:1px solid #e7e9ec;font-size:12px;color:#3d434a}
+.s-row{display:flex;align-items:center;gap:9px;padding:3px 0;border-top:1px solid #e7e9ec;font-size:12px;color:#3d434a}
 .s-g h2+.s-row{border-top:0}
 .s-lbl{flex:0 1 auto}
 /* Dot leader between label and keys: REAL TEXT (a clipped run of middots),
@@ -1690,6 +1756,12 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,Bli
    (section 67, forced-LTR islands) */
 .s-keys{display:inline-flex;align-items:center;gap:3px;flex:0 0 auto;direction:ltr}
 .s-or{color:#8a9099;font-size:10px;padding:0 1px}
+${keySetCss('.sheet', 's-row')}
+.sheet[data-hk-os="mac"] [data-legend="pc"],.sheet[data-hk-os="pc"] [data-legend="mac"],.sheet[data-hk-app="web"] [data-set-name="desktop"],.sheet[data-hk-app="desktop"] [data-set-name="web"],.sheet[data-hk-os="mac"] [data-set-name="pc"],.sheet[data-hk-os="pc"] [data-set-name="mac"]{display:none}
+.bar-picks{display:flex;gap:8px;flex-wrap:wrap}
+.bar-pickset{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:2px}
+.hk-pick{border:0;background:none;font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);padding:5px 11px;border-radius:99px;cursor:pointer}
+.hk-pick[aria-pressed="true"]{background:var(--line);color:var(--fg)}
 kbd.s-cap{display:inline-flex;min-width:20px;height:20px;padding:0 5px;align-items:center;justify-content:center;border:1px solid #d5d9de;border-bottom-width:2px;border-radius:5px;background:#f5f6f8;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;font-weight:600;color:#15171a}
 .s-foot{margin-top:6px;padding-top:14px;border-top:1px solid #e7e9ec}
 .s-foot p{margin:0 0 6px;font-size:10.5px;color:#5b6168}
@@ -1720,27 +1792,25 @@ kbd.s-cap,.s-g h2,.sheet .pn-mark-a{-webkit-print-color-adjust:exact;print-color
 <body data-static-page="cheatsheet">
 <div class="bar">
 <a class="bar-brand" href="${helpPath('en')}"><img src="/privacy-notes.webp" width="26" height="26" alt="" aria-hidden="true" draggable="false">${brandMark()}</a>
+<div class="bar-picks" hidden>
+<div class="bar-pickset"><button type="button" class="hk-pick" data-hk-set="os" data-value="mac" aria-pressed="true">Mac</button><button type="button" class="hk-pick" data-hk-set="os" data-value="pc" aria-pressed="false">Windows and Linux</button></div>
+<div class="bar-pickset"><button type="button" class="hk-pick" data-hk-set="app" data-value="web" aria-pressed="true">Browser</button><button type="button" class="hk-pick" data-hk-set="app" data-value="desktop" aria-pressed="false">Desktop app</button></div>
+</div>
 <button class="btn-print" id="cs-print" type="button">${PRINTER_ICON}${esc(printLabel)}</button>
 </div>
 <p class="hint">${esc(hint)}</p>
-<main class="sheet">
+<main class="sheet" data-hk-os="mac" data-hk-app="web">
 <header class="s-head">
 <div class="s-brand"><img src="/privacy-notes.webp" width="22" height="22" alt="" aria-hidden="true" draggable="false">${brandMark()}</div>
 <h1>${esc(title)}</h1>
-<span class="s-meta">${brandMark('.app')} · v${VERSION}</span>
+<span class="s-meta"><span data-set-name="mac">Mac</span><span data-set-name="pc">Windows and Linux</span>, <span data-set-name="web">browser</span><span data-set-name="desktop">desktop app</span> · v${VERSION}</span>
 </header>
-<div class="s-cols">
-<div class="s-col">
-${col(true)}
-</div>
-<div class="s-col">
-${col(false)}
-</div>
-</div>
+${sets}
 <footer class="s-foot">
-<p id="cs-legend-mac">${esc(legend)}</p>
-<p id="cs-legend-pc" hidden>${esc(legendPc)}</p>
+<p data-legend="mac">${esc(legend)}</p>
+<p data-legend="pc">${esc(legendPc)}</p>
 ${typingNote ? `<p>${esc(typingNote)}</p>` : ''}
+<p>${esc(layoutNote)}</p>
 </footer>
 </main>
 </body>
@@ -1756,7 +1826,7 @@ function entryShowcase(
 ): string {
   if (id === 'markdown-syntax') return renderMarkdownShowcase(p.mdShowcase ?? 'See it in action', p);
   if (id === 'keyboard-shortcuts')
-    return renderHotkeysShowcase(locale, hotkeyGroups, p.hkShowcase ?? 'The full list', p.hkLegend ?? '');
+    return renderHotkeysShowcase(locale, hotkeyGroups, p.hkShowcase ?? 'The full list', p);
   return '';
 }
 
@@ -2127,7 +2197,7 @@ function renderMarketingSitemap(): string {
     if (locale === 'en') continue;
     urls.push(`${ORIGIN}${slug}`);
   }
-  urls.push(`${ORIGIN}/changelog`, `${ORIGIN}/roadmap`, `${ORIGIN}/brand`);
+  urls.push(`${ORIGIN}/changelog`, `${ORIGIN}/roadmap`, `${ORIGIN}/themes`, `${ORIGIN}/brand`);
   return urlset(urls);
 }
 

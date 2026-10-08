@@ -71,11 +71,16 @@ android {
             )
         }
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
     buildFeatures {
         buildConfig = true
+    }
+}
+
+// The compilerOptions form, which Kotlin 2.2 requires and Kotlin 1.9 accepts:
+// the release job scaffolds gen/android with the current Tauri templates.
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
     }
 }
 

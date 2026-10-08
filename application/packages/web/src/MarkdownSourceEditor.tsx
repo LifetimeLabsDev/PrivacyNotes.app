@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useTheme } from './theme';
+import { registerEditorCommand } from './editorCommands';
+import { formatInstant } from './intlFormat';
+import { APP_KEYS, matchesKey } from './shortcutMatch';
 
 type Props = {
   /** Initial markdown content. Only read on mount - use a `key` prop to force reload. */
@@ -43,6 +46,37 @@ export function MarkdownSourceEditor({ value, onChange, readOnly = false }: Prop
     fit();
   }, []);
 
+  function change(markdown: string) {
+    onChange(markdown);
+    fit();
+  }
+
+  /** The date, or the date and time, at the caret, through the same change as
+   *  typing. insertText keeps the field's own undo, which the tag row's undo
+   *  drives; setRangeText is the way where the browser has no insertText. */
+  function insertDate(style: 'date' | 'dateTime') {
+    const el = ref.current;
+    if (!el) return;
+    const text = formatInstant(new Date(), style);
+    el.focus();
+    if (document.execCommand?.('insertText', false, text)) return;
+    el.setRangeText(text, el.selectionStart, el.selectionEnd, 'end');
+    change(el.value);
+  }
+
+  // The rich editor is not mounted in this view, so the field registers the
+  // date inserts and takes their keys itself.
+  const insertRef = useRef(insertDate);
+  insertRef.current = insertDate;
+  useEffect(() => {
+    if (readOnly) return;
+    const off = [
+      registerEditorCommand('insertDate', () => insertRef.current('date')),
+      registerEditorCommand('insertDateTime', () => insertRef.current('dateTime')),
+    ];
+    return () => off.forEach((f) => f());
+  }, [readOnly]);
+
   // mt-4: the rich editor's formatting bar normally separates the body from
   // the sticky tag row above. There is no bar here, so the textarea owns that
   // gap or the text sits glued to the row.
@@ -58,9 +92,14 @@ export function MarkdownSourceEditor({ value, onChange, readOnly = false }: Prop
       defaultValue={value}
       readOnly={readOnly}
       spellCheck={spellcheck}
-      onChange={(e) => {
-        onChange(e.target.value);
-        fit();
+      onChange={(e) => change(e.target.value)}
+      onKeyDown={(e) => {
+        if (readOnly) return;
+        const key = e.nativeEvent;
+        const style = matchesKey(key, APP_KEYS.insertDate) ? 'date' : matchesKey(key, APP_KEYS.insertDateTime) ? 'dateTime' : null;
+        if (!style) return;
+        e.preventDefault();
+        insertDate(style);
       }}
       // Tracks the Text size setting like the rich editor does, from the
       // same --pn-text-scale knob. Its own 14px base is kept (monospace

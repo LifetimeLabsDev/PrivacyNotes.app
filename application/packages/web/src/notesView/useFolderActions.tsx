@@ -18,6 +18,7 @@ import {
   type FolderDef,
 } from '../folders';
 import { dropFolderLooks } from '../itemStyles';
+import { liveItemIds } from '../itemDrag';
 import { bulkMoveToFolder } from '../notesRepo';
 import type { UserSettings } from '../userSettings';
 import type { View } from '../views';
@@ -260,25 +261,38 @@ export function useFolderActions({
     void runSync();
   }
 
+  /**
+   * A list item dropped on a sidebar folder (an id) or on Unfiled (null).
+   * Only live notes move, and only into a folder that still exists: a sync
+   * can delete one during the drag. The move then takes the Move dialog's
+   * path, so a free account gets the same upgrade window.
+   * Spec: ops/docs/plans/drag-to-folder-and-tag.md (section 6)
+   */
+  function handleDropOnFolder(ids: string[], folderId: string | null) {
+    const live = liveItemIds(ids, activeNotes);
+    if (live.length === 0) return;
+    if (folderId !== null && !userSettings.folders.some((f) => f.id === folderId)) return;
+    void handleMoveNotesToFolder(live, folderId);
+  }
+
   const folderCounts = useMemo(() => computeFolderCounts(listedNotes), [listedNotes]);
 
   /** Folder chip for the editor tag bar (filing method E) - shows where
    *  the note lives, click opens the shared picker. Used by both the
-   *  markdown/task tag row and the vault item tag row. */
+   *  markdown/task tag row and the vault item tag row. A free account
+   *  gets no chip: it cannot file a note, so the chip was an empty slot
+   *  that only opened the upsell. The sidebar keeps its Folders entry. */
   const folderChipFor = (note: LocalNote) => {
+    if (!foldersUnlocked) return null;
     const noteFolder = note.folderId
       ? userSettings.folders.find((f) => f.id === note.folderId)
       : undefined;
     return (
       <button
         type="button"
-        onClick={() => {
-          if (!foldersUnlocked) {
-            openFoldersUpsell();
-            return;
-          }
-          setFolderPicker({ mode: 'note', noteIds: [note.id], currentFolderId: note.folderId ?? null });
-        }}
+        onClick={() =>
+          setFolderPicker({ mode: 'note', noteIds: [note.id], currentFolderId: note.folderId ?? null })
+        }
         aria-label={t('shell:folders.moveTo')}
         /* Square corners and a border, against the round accent pills the
            tags use: the folder is the ONE place a note lives, the tags are
@@ -292,8 +306,8 @@ export function useFolderActions({
            Spec: ops/docs/ui-patterns.md (editor tag row) */
         className={`shrink-0 inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-md border transition ${
           noteFolder
-            ? 'border-accent/40 bg-accent/15 text-accent hover:bg-accent/25'
-            : 'border-dashed border-accent/40 bg-accent/8 text-accent hover:bg-accent/15 hover:border-accent/60'
+            ? 'border-accent/40 bg-accent/15 text-accent-strong hover:bg-accent/25'
+            : 'border-dashed border-accent/40 bg-accent/8 text-accent-strong hover:bg-accent/15 hover:border-accent/60'
         }`}
       >
         {/* The sidebar's folder mark, unchanged: same amber, same default
@@ -303,18 +317,18 @@ export function useFolderActions({
           <FolderGlyph
             folderId={noteFolder.id}
             size={12}
-            className="shrink-0 text-amber-600/80 dark:text-amber-500/80"
+            className="shrink-0 text-amber-700 dark:text-amber-500/80"
           />
         ) : (
-          <Folder size={12} className="shrink-0 text-amber-600/80 dark:text-amber-500/80" />
+          <Folder size={12} className="shrink-0 text-amber-700 dark:text-amber-500/80" />
         )}
         <span className="truncate max-w-[120px]">
           {noteFolder ? noteFolder.name : t('shell:folders.chipUnfiled')}
         </span>
         <CaretDown size={9} className="shrink-0 opacity-70" />
         {/* Same trailing gold rocket the Folders segment carries in the
-            sidebar rail: filing a note is a Pro action, and this chip is
-            the one control that does it from the editor. */}
+            sidebar rail. Only the demo reaches it: the demo unlocks folders
+            as a teaser and still labels them Pro. */}
         {!isPro && <span className="shrink-0 inline-flex"><IconUpgrade size={11} /></span>}
       </button>
     );
@@ -357,6 +371,7 @@ export function useFolderActions({
     handleReorderFolders,
     handleDeleteFolder,
     handleMoveNotesToFolder,
+    handleDropOnFolder,
     folderCounts,
     folderChipFor,
     handleBulkMoveToFolder,

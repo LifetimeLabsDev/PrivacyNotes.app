@@ -59,6 +59,19 @@ function readStored(): SyncPassEntry[] {
 let entries: SyncPassEntry[] = readStored();
 const listeners = new Set<() => void>();
 
+/** Forget this account's passes, in memory and on disk. A sign-out does not
+ *  reload the page, so the copy in memory would show the next account the
+ *  log and write it back with its first pass. */
+export function clearSyncLog(): void {
+  entries = [];
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Storage blocked: the in-memory copy is gone, which is what shows.
+  }
+  for (const cb of listeners) cb();
+}
+
 export function recordSyncPass(entry: SyncPassEntry): void {
   // Coalesce idle polling: a clean pass that moved nothing lands on top
   // of a previous one as a refreshed timestamp with a streak counter,

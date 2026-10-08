@@ -40,6 +40,33 @@ export function hasOpenOverlay(): boolean {
   return escStack.length > 0;
 }
 
+/**
+ * Puts an overlay on the Escape stack and returns the call that takes it
+ * off. The hook below is built on it; an overlay made of plain DOM, outside
+ * React, calls it directly so it stops Escape the same way (codeLanguages.ts).
+ */
+export function pushEscapeHandler(onEscape: () => void): () => void {
+  const id = Symbol('esc');
+  escStack.push({ id, close: onEscape });
+  function handler(e: KeyboardEvent) {
+    if (e.key !== 'Escape') return;
+    // An Escape that cancels a conversion belongs to the input method.
+    if (isImeComposing(e)) return;
+    if (e.defaultPrevented) return;
+    // Only the topmost open handler responds.
+    if (escStack[escStack.length - 1]?.id !== id) return;
+    e.stopPropagation();
+    e.preventDefault();
+    onEscape();
+  }
+  window.addEventListener('keydown', handler, true);
+  return () => {
+    window.removeEventListener('keydown', handler, true);
+    const i = escStack.findIndex((entry) => entry.id === id);
+    if (i !== -1) escStack.splice(i, 1);
+  };
+}
+
 export function useEscapeToClose(onClose: () => void, enabled = true) {
   // Keep the latest callback in a ref so the effect only re-runs (and
   // re-orders the stack) when `enabled` flips, not on every render.
@@ -48,24 +75,6 @@ export function useEscapeToClose(onClose: () => void, enabled = true) {
 
   useEffect(() => {
     if (!enabled) return;
-    const id = Symbol('esc');
-    escStack.push({ id, close: () => cbRef.current() });
-    function handler(e: KeyboardEvent) {
-      if (e.key !== 'Escape') return;
-      // An Escape that cancels a conversion belongs to the input method.
-      if (isImeComposing(e)) return;
-      if (e.defaultPrevented) return;
-      // Only the topmost open handler responds.
-      if (escStack[escStack.length - 1]?.id !== id) return;
-      e.stopPropagation();
-      e.preventDefault();
-      cbRef.current();
-    }
-    window.addEventListener('keydown', handler, true);
-    return () => {
-      window.removeEventListener('keydown', handler, true);
-      const i = escStack.findIndex((entry) => entry.id === id);
-      if (i !== -1) escStack.splice(i, 1);
-    };
+    return pushEscapeHandler(() => cbRef.current());
   }, [enabled]);
 }

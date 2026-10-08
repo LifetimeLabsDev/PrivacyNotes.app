@@ -22,6 +22,6 @@
   "store-purchases": "¿Las compras se trasladan entre la web, Google Play y la App Store?",
   "translation-quality": "¿Cómo se hacen las traducciones de la app?",
   "vault": "¿Qué es la Bóveda?",
-  "vault-totp": "¿La Caja fuerte puede guardar mis claves 2FA (códigos TOTP / MFA)?",
+  "vault-totp": "¿La Bóveda puede guardar mis claves 2FA (códigos TOTP / MFA)?",
   "what-syncs": "¿Qué se sincroniza exactamente entre mis dispositivos y qué se queda en local?"
 }

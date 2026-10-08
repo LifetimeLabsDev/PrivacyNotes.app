@@ -16,12 +16,12 @@
   "lost-2fa": "Perdi meus códigos 2FA. Como volto a entrar?",
   "obtainium": "Como instalo o app Android com o Obtainium?",
   "phrase-vs-password": "Por que uma frase de recuperação em vez de usuário e senha?",
-  "remove-device": "Como removo um aparelho que não uso mais?",
+  "remove-device": "Como removo um dispositivo que não uso mais?",
   "restore-backup": "Como restauro um backup?",
   "storage-usage": "O que conta no meu armazenamento, e como eu libero espaço?",
   "store-purchases": "As compras valem entre a web, a Google Play e a App Store?",
   "translation-quality": "Como as traduções do app são feitas?",
   "vault": "O que é o Cofre?",
   "vault-totp": "O Cofre pode guardar minhas chaves 2FA (códigos TOTP / MFA)?",
-  "what-syncs": "O que exatamente sincroniza entre meus aparelhos, e o que fica local?"
+  "what-syncs": "O que exatamente sincroniza entre meus dispositivos, e o que fica local?"
 }

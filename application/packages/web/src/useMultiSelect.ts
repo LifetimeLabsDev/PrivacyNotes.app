@@ -325,16 +325,17 @@ export function useMultiSelect({
     setBulkDeletePending(null);
     if (!ids || ids.length === 0) return;
     const deleted = await bulkPermanentlyDelete(ids);
-    // GC after the write and only over the rows it tombstoned: a selected
-    // note a pull restored keeps its images and files. One batch call, so a
-    // blob shared by two of them cannot hide behind its batch-mate in the
-    // reference check.
-    if (imageStoreRef.current && deleted.length > 0) {
-      void gcOnNotesDelete(imageStoreRef.current, deleted, attachmentStoreRef.current);
-    }
     if (selectedId && ids.includes(selectedId)) setSelectedId(null);
     clearSelection();
     await refresh();
+    // GC after the write and only over the rows it tombstoned: a selected
+    // note a pull restored keeps its images and files. One batch call, so a
+    // blob shared by two of them cannot hide behind its batch-mate in the
+    // reference check. Awaited before the sync, so the recount after it
+    // already leaves them out.
+    if (imageStoreRef.current && deleted.length > 0) {
+      await gcOnNotesDelete(imageStoreRef.current, deleted, attachmentStoreRef.current);
+    }
     // Storage counters only settle once the tombstones have reached the
     // server, so this chains off the sync rather than racing it - same
     // ordering as handlePermanentlyDelete and confirmEmptyTrash.

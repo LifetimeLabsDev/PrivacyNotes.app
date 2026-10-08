@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { VERSION } from './version';
 import { LogoIcon } from './LogoIcon';
@@ -6,6 +7,7 @@ import { useEscapeToClose } from './useEscapeToClose';
 import { marketingHomeHref, siteHref } from './siteLinks';
 import { activeLocale } from './languages';
 import { helpPath } from './localeRoutes';
+import { matchesKey } from './shortcutMatch';
 
 /**
  * Custom About window content (desktop only). The macOS "About PrivacyNotes"
@@ -28,24 +30,35 @@ async function openExternal(url: string) {
 }
 
 const buttonClass =
-  'w-full rounded-lg border border-neutral-300 py-1.5 text-[13px] text-neutral-700 transition hover:bg-neutral-200 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-800';
+  'w-full rounded-lg border border-divider py-1.5 text-[13px] text-pn-soft transition hover:bg-pn/10';
 
 export default function AboutWindow() {
   const { t } = useTranslation('landing');
   useEscapeToClose(() => void closeWindow());
+  // Cmd+W closes this window. The menu's Close Window is Shift+Cmd+W in this
+  // app, because Cmd+W in the main window closes a tab.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (!matchesKey(e, [{ mod: true, key: 'w' }])) return;
+      e.preventDefault();
+      void closeWindow();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   return (
-    <div className="flex h-dvh select-none flex-col items-center justify-center gap-1 bg-neutral-50 px-6 text-center dark:bg-neutral-900">
-      <div className="mb-2 flex h-[72px] w-[72px] items-center justify-center rounded-[18px] border border-black/10 bg-white shadow-sm dark:border-white/10 dark:bg-neutral-800">
+    <div className="flex h-dvh select-none flex-col items-center justify-center gap-1 bg-surface-1 px-6 text-center">
+      <div className="mb-2 flex h-[72px] w-[72px] items-center justify-center rounded-[18px] border border-pn/10 bg-surface-2 shadow-sm">
         <LogoIcon size={44} />
       </div>
-      <h1 className="text-lg text-neutral-900 dark:text-neutral-100">
+      <h1 className="text-lg text-pn">
         <Brand />
       </h1>
-      <p className="select-text text-xs text-neutral-500 dark:text-neutral-400">
+      <p className="select-text text-xs text-pn-muted">
         {t('about.windowVersion', { version: VERSION })}
       </p>
-      <p className="text-xs text-neutral-400 dark:text-neutral-500">© 2026 Lifetime Labs LLC</p>
+      <p className="text-xs text-pn-muted">© 2026 Lifetime Labs LLC</p>
       {/* Roadmap reuses the tab-strip label rather than carrying a second key
           for the same word; /changelog and /roadmap are English-only pages, so
           only the help hub takes a locale slug. */}

@@ -8,7 +8,7 @@
     "ctaOpening": "결제 창 여는 중...",
     "ctaSignUp": "가입하고 잠금 해제",
     "intro": {
-      "storage": "더 큰 업로드와 더 넓은 공간은 Pro 기능이에요. 업그레이드하면 50 MB 파일과 500 MB 저장 공간이 열려요.",
+      "storage": "더 많은 공간은 Pro 기능이에요. 500 MB 저장 공간, 파일당 50 MB, 필요할 때 추가로 최대 5 GB.",
       "folders": "폴더는 Pro 기능이에요. 노트를 필요한 만큼 깊은 중첩 폴더로 정리하고 프로젝트마다 깔끔하게 나눠 보세요.",
       "looks": "폴더와 태그의 아이콘과 색상은 Pro 기능이에요. 각각 한눈에 알아볼 수 있게 꾸며 보세요.",
       "lock": "노트 잠금은 Pro 기능이에요. 업그레이드하면 어떤 노트든 실수로 고치는 일에서 보호할 수 있어요.",
@@ -30,7 +30,7 @@
       "history": "전체 노트 히스토리, 언제든 복원",
       "themes": "모든 색상의 프리미엄 테마",
       "zen": "Zen 모드, 방해 없는 글쓰기",
-      "storage": "500 MB 저장 공간 + 50 MB 첨부 파일"
+      "storage": "500 MB 저장 공간, 추가 시 최대 5.5 GB"
     },
     "comparisonBeta": "${{earlyPrice}} 한 번이면 끝이에요. Obsidian Sync는 매년 $48, Standard Notes는 매년 $90을 받아요. ${{proPrice}}로 오르기 전에 잠그는 얼리어답터 가격이에요.",
     "comparison": "${{proPrice}}를 한 번만 내면 평생 내 것이에요. Obsidian Sync는 매년 $48, Standard Notes는 매년 $90을 꼬박꼬박 받아요."
@@ -47,9 +47,9 @@
     "benefitDevices": "기기 무제한",
     "benefitDevicesSub": "휴대폰, 태블릿, 노트북 모두 동기화",
     "benefitStorage": "500 MB 저장 공간",
-    "benefitStorageSub": "무료 플랜의 10배, 확장 가능",
+    "benefitStorageSub": "무료 플랜의 10배. 필요할 때 최대 5 GB를 추가할 수 있어요",
     "benefitMore": "더 많은 기능",
-    "benefitMoreSub": "노트 기록, 폴더, 젠 모드",
+    "benefitMoreSub": "노트 히스토리, 폴더, Zen 모드",
     "benefitRoom": "{{gb}} GB 추가 공간",
     "benefitRoomSub": "Pro의 500 MB에 더해져요",
     "benefitFileSize": "파일당 100 MB",
@@ -74,7 +74,7 @@
   "history": {
     "subtitle": "항목당 최대 20개 버전. 가장 오래된 것부터 자동 정리돼요.",
     "empty": "아직 히스토리가 없어요. 다음 수정부터 버전이 쌓이기 시작해요. 나중에 다시 확인하세요.",
-    "loadFailed": "기록을 불러오지 못했어요. 연결을 확인하고 다시 시도해 보세요.",
+    "loadFailed": "히스토리를 불러오지 못했어요. 연결을 확인하고 다시 시도해 보세요.",
     "selectPrompt": "미리 볼 버전을 선택하세요.",
     "emptyBody": "(비어 있음)",
     "restore": "복원",

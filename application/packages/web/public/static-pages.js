@@ -378,45 +378,258 @@
     if (pick && map[pick]) link.setAttribute('href', map[pick]);
   })();
 
+  // On a phone the section links scroll sideways in a strip of their own, so
+  // the current page's link can start out of view. Center it, moving the strip
+  // only; the position difference works in right-to-left pages too.
+  (function () {
+    var strip = document.querySelector('.nav-secs');
+    var on = strip && strip.querySelector('.on');
+    if (!on || strip.scrollWidth <= strip.clientWidth) return;
+    var delta = on.getBoundingClientRect().left - strip.getBoundingClientRect().left;
+    strip.scrollLeft += delta - (strip.clientWidth - on.offsetWidth) / 2;
+  })();
+
   var page = document.body.getAttribute('data-static-page');
   if (page && page.indexOf('help') === 0) { initAsk(); initCopyRows(); }
   if (page === 'help') initFaq();
   if (page === 'help-leaf') initLeafSearch();
-  if (page === 'changelog') initChangelog();
+  if (page === 'changelog') { initChangelog(); initShots(); }
   if (page === 'brand') { initBrand(); initBrandRail(); }
+  if (page === 'themes') initBrand();
   if (page === 'landing') initLanding();
   if (page === 'cheatsheet') initCheatSheet();
   if (page === 'auth-desktop') initAuthDesktop();
 
-  // The printable hotkey cheat sheet (help-page.ts). Two enhancements, and
-  // the page renders complete without either: the Print button, and the
-  // platform swap - the sheet is pre-rendered with Mac symbols (so no-JS
-  // and crawlers get the same sheet the legend describes), and off-Mac each
-  // keycap is rewritten to Ctrl/Alt/Shift words, mirroring renderKey() in
-  // HotkeysModal.tsx. The legend flips with it: the "⌘ is Ctrl" line hides
-  // and the reverse "Ctrl is ⌘" line shows.
+  // The printable hotkey cheat sheet (help-page.ts): the Print button. The
+  // key sets are initHotkeySets below.
+  // ---- changelog screenshots ---------------------------------------------
+  // Every picture is already a link to its file, so without JS a click opens
+  // the image. With JS a thumbnail swaps the hero, and the hero or an item's
+  // photo chip opens a lightbox that steps through the release's shots.
+  function initShots() {
+    var gals = Array.prototype.slice.call(document.querySelectorAll('.cl-gal[data-shots]'));
+    if (!gals.length) return;
+
+    function isDark() {
+      var t = document.documentElement.getAttribute('data-theme');
+      if (t) return t === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    function srcOf(shot) {
+      return isDark() && shot.dark ? shot.dark : shot.src;
+    }
+    function icon(d) {
+      return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
+    }
+
+    var lb = document.createElement('div');
+    lb.className = 'cl-lb';
+    lb.hidden = true;
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.setAttribute('aria-label', 'Screenshot');
+    lb.innerHTML =
+      '<img alt=""><p></p>' +
+      '<button type="button" class="lb-x" aria-label="Close">' + icon('<line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>') + '</button>' +
+      '<button type="button" class="lb-p" aria-label="Previous screenshot">' + icon('<polyline points="15 18 9 12 15 6"/>') + '</button>' +
+      '<button type="button" class="lb-n" aria-label="Next screenshot">' + icon('<polyline points="9 18 15 12 9 6"/>') + '</button>';
+    document.body.appendChild(lb);
+    var lbImg = lb.querySelector('img');
+    var lbCap = lb.querySelector('p');
+    var lbPrev = lb.querySelector('.lb-p');
+    var lbNext = lb.querySelector('.lb-n');
+    var lbClose = lb.querySelector('.lb-x');
+    var cur = { shots: [], i: 0, back: null };
+
+    function show(i) {
+      cur.i = (i + cur.shots.length) % cur.shots.length;
+      var shot = cur.shots[cur.i];
+      lbImg.src = srcOf(shot);
+      lbImg.alt = shot.alt;
+      lbCap.textContent = (cur.shots.length > 1 ? cur.i + 1 + ' / ' + cur.shots.length + ' \u00b7 ' : '') + shot.alt;
+      lbPrev.hidden = lbNext.hidden = cur.shots.length < 2;
+    }
+    function open(shots, i, back) {
+      cur.shots = shots;
+      cur.back = back;
+      show(i);
+      lb.hidden = false;
+      document.documentElement.style.overflow = 'hidden';
+      lbClose.focus();
+    }
+    function close() {
+      lb.hidden = true;
+      lbImg.removeAttribute('src');
+      document.documentElement.style.overflow = '';
+      if (cur.back) cur.back.focus();
+    }
+    lbClose.addEventListener('click', close);
+    lbPrev.addEventListener('click', function () { show(cur.i - 1); });
+    lbNext.addEventListener('click', function () { show(cur.i + 1); });
+    lb.addEventListener('click', function (e) {
+      if (e.target === lb) close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (lb.hidden) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowLeft') show(cur.i - 1);
+      else if (e.key === 'ArrowRight') show(cur.i + 1);
+      else if (e.key === 'Tab') {
+        // Keep focus inside the open dialog.
+        var f = [lbClose, lbPrev, lbNext].filter(function (b) { return !b.hidden; });
+        var at = f.indexOf(document.activeElement);
+        e.preventDefault();
+        f[(at + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus();
+      }
+    });
+
+    gals.forEach(function (gal) {
+      var shots;
+      try {
+        shots = JSON.parse(gal.getAttribute('data-shots'));
+      } catch (err) {
+        return;
+      }
+      var hero = gal.querySelector('.cl-hero');
+      var thumbs = Array.prototype.slice.call(gal.querySelectorAll('.cl-th'));
+      var rel = gal.closest('.release');
+
+      function setHero(i) {
+        var shot = shots[i];
+        hero.setAttribute('data-i', String(i));
+        hero.href = shot.src;
+        // Rebuild both theme copies: the CSS shows the right one.
+        var imgs = hero.querySelectorAll('img');
+        var light = imgs[0];
+        light.src = shot.src;
+        light.alt = shot.alt;
+        light.removeAttribute('width');
+        light.removeAttribute('height');
+        light.className = shot.dark ? 'sl' : '';
+        var dark = imgs[1];
+        if (shot.dark) {
+          if (!dark) {
+            dark = document.createElement('img');
+            dark.className = 'sd';
+            dark.decoding = 'async';
+            hero.appendChild(dark);
+          }
+          dark.src = shot.dark;
+          dark.alt = shot.alt;
+          dark.removeAttribute('width');
+          dark.removeAttribute('height');
+        } else if (dark) {
+          hero.removeChild(dark);
+        }
+        thumbs.forEach(function (t) {
+          t.classList.toggle('on', t.getAttribute('data-i') === String(i));
+        });
+      }
+
+      thumbs.forEach(function (t) {
+        t.addEventListener('click', function (e) {
+          e.preventDefault();
+          setHero(Number(t.getAttribute('data-i')));
+        });
+      });
+
+      // Step through a release's shots on the page itself: arrows beside the
+      // picture, and a sideways swipe on a touch screen.
+      var swiped = false;
+      function step(by) {
+        var n = shots.length;
+        setHero(((Number(hero.getAttribute('data-i')) || 0) + by + n) % n);
+      }
+      var stage = gal.querySelector('.cl-stage');
+      if (stage && shots.length > 1) {
+        [['prev', -1, 'Previous screenshot', '<polyline points="15 18 9 12 15 6"/>'],
+         ['next', 1, 'Next screenshot', '<polyline points="9 18 15 12 9 6"/>']].forEach(function (d) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'cl-step ' + d[0];
+          b.setAttribute('aria-label', d[2]);
+          b.innerHTML = icon(d[3]);
+          b.addEventListener('click', function () { step(d[1]); });
+          stage.appendChild(b);
+        });
+        var x0 = null;
+        var y0 = null;
+        stage.addEventListener('touchstart', function (e) {
+          x0 = e.touches[0].clientX;
+          y0 = e.touches[0].clientY;
+        }, { passive: true });
+        stage.addEventListener('touchend', function (e) {
+          if (x0 === null) return;
+          var dx = e.changedTouches[0].clientX - x0;
+          var dy = e.changedTouches[0].clientY - y0;
+          x0 = null;
+          if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+            swiped = true;
+            step(dx < 0 ? 1 : -1);
+          }
+        });
+      }
+      hero.addEventListener('click', function (e) {
+        e.preventDefault();
+        // A swipe ends in a click on touch screens; it changed the picture, it
+        // did not ask for the lightbox.
+        if (swiped) { swiped = false; return; }
+        open(shots, Number(hero.getAttribute('data-i')) || 0, hero);
+      });
+      if (rel)
+        Array.prototype.slice.call(rel.querySelectorAll('.shotchip')).forEach(function (chip) {
+          chip.addEventListener('click', function (e) {
+            e.preventDefault();
+            open(shots, Number(chip.getAttribute('data-i')) || 0, chip);
+          });
+        });
+    });
+  }
+
   function initCheatSheet() {
     var btn = document.getElementById('cs-print');
     if (btn) btn.addEventListener('click', function () { window.print(); });
-    var mac = /Mac|iPhone|iPad/i.test(navigator.platform || navigator.userAgent);
-    if (mac) return;
-    var map = { '⌘': 'Ctrl', '⌥': 'Alt', '⇧': 'Shift', '⌫': 'Backspace' };
-    var caps = document.querySelectorAll('.s-cap');
-    for (var i = 0; i < caps.length; i++) {
-      var t = caps[i].textContent;
-      if (!/[⌘⌥⇧⌫]/.test(t)) continue;
-      // Each symbol becomes its word plus a joining "+", then the trailing
-      // "+" is trimmed: "⌘" -> "Ctrl". Caps are single symbols since the
-      // range split in help-page.ts keyCaps; the "+" join is kept for any
-      // future multi-symbol cap.
-      t = t.replace(/[⌘⌥⇧⌫]/g, function (m) { return map[m] + '+'; });
-      caps[i].textContent = t.replace(/\+$/, '');
-    }
-    var legendMac = document.getElementById('cs-legend-mac');
-    var legendPc = document.getElementById('cs-legend-pc');
-    if (legendMac) legendMac.hidden = true;
-    if (legendPc) legendPc.hidden = false;
   }
+
+  // The hotkey list on the keyboard-shortcuts leaf and the cheat sheet
+  // render four key sets (Mac or Windows and Linux, browser or desktop app)
+  // and show one through data-hk-os and data-hk-app on their root. The page
+  // is complete without this: it opens on the Mac browser set. Here the OS
+  // follows the reader's platform, "?app=desktop" (the desktop app's link)
+  // opens the desktop set, "?os=pc" or "?os=mac" picks the OS, and the two
+  // switches change either.
+  function initHotkeySets() {
+    var roots = document.querySelectorAll('[data-hk-os]');
+    if (!roots.length) return;
+    var mac = /Mac|iPhone|iPad/i.test(navigator.platform || navigator.userAgent);
+    var os = /[?&]os=(mac|pc)\b/.exec(location.search);
+    var state = {
+      os: os ? os[1] : mac ? 'mac' : 'pc',
+      app: /[?&]app=desktop\b/.test(location.search) ? 'desktop' : 'web'
+    };
+    var buttons = document.querySelectorAll('[data-hk-set]');
+    function apply() {
+      for (var i = 0; i < roots.length; i++) {
+        roots[i].setAttribute('data-hk-os', state.os);
+        roots[i].setAttribute('data-hk-app', state.app);
+      }
+      for (var j = 0; j < buttons.length; j++) {
+        var b = buttons[j];
+        b.setAttribute('aria-pressed', String(state[b.getAttribute('data-hk-set')] === b.getAttribute('data-value')));
+      }
+    }
+    for (var k = 0; k < buttons.length; k++) {
+      buttons[k].addEventListener('click', function (e) {
+        var b = e.currentTarget;
+        state[b.getAttribute('data-hk-set')] = b.getAttribute('data-value');
+        apply();
+      });
+    }
+    var picks = document.querySelectorAll('.hk-picks, .bar-picks');
+    for (var m = 0; m < picks.length; m++) picks[m].hidden = false;
+    apply();
+  }
+  initHotkeySets();
 
   // SEO landing pages (landing-pages.ts): the sticky bottom CTA and the
   // typing-editor hero. Both are extras on top of a complete page: the
@@ -908,6 +1121,14 @@
       });
     }
 
+    // "With screenshots" is a type row too, but it selects on the shot
+    // marker rather than on the New / Improved / Fixed label.
+    function itemShown(li) {
+      if (state.t === 'all') return true;
+      if (state.t === 'shots') return li.hasAttribute('data-shot');
+      return li.getAttribute('data-t') === state.t;
+    }
+
     // --- the one filter -----------------------------------------------------
     function apply(opts) {
       var raw = state.q.trim();
@@ -923,7 +1144,7 @@
       // Item rows come and go with the type filter; the query decides which
       // releases survive at all.
       items.forEach(function (li) {
-        li.hidden = state.t !== 'all' && li.getAttribute('data-t') !== state.t;
+        li.hidden = !itemShown(li);
       });
 
       releases.forEach(function (rel) {
@@ -970,7 +1191,7 @@
         var n = releases.filter(function (rel) {
           if (rel.getAttribute('data-m') !== key) return false;
           if (match && !match(rel.getAttribute('data-s') || '')) return false;
-          return state.t === 'all' || rel.querySelector('li.item[data-t="' + state.t + '"]') != null;
+          return state.t === 'all' || rel.querySelector(state.t === 'shots' ? 'li.item[data-shot]' : 'li.item[data-t="' + state.t + '"]') != null;
         }).length;
         r.classList.toggle('dim', n === 0);
         var ct = r.querySelector('.rct');
@@ -1137,7 +1358,7 @@
       state.q = q0;
       input.value = q0;
     }
-    if (t0 && ['new', 'improved', 'fixed'].indexOf(t0) >= 0) state.t = t0;
+    if (t0 && ['new', 'improved', 'fixed', 'shots'].indexOf(t0) >= 0) state.t = t0;
     if (m0 && /^\d{4}-\d{2}$/.test(m0)) state.m = m0;
     apply({ resetPage: true });
 

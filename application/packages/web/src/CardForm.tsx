@@ -240,11 +240,11 @@ export function CardForm({
             const tooShort = digits.length > 0 && digits.length < 13;
             return (
               <>
-                <div className="mt-1 text-xs text-neutral-400">
+                <div className="mt-1 text-xs text-pn-muted">
                   {network || t('cardForm.unknownNetwork')}
                 </div>
                 {tooShort && (
-                  <div className="mt-0.5 text-[11px] text-amber-600 dark:text-amber-400">
+                  <div className="mt-0.5 text-[11px] text-warning">
                     {t('cardForm.numberTooShort', { count: digits.length, expected: maxDigitsForNetwork(digits) })}
                   </div>
                 )}
@@ -317,7 +317,7 @@ export function CardForm({
         </div>
 
         {isExpired && (
-          <p className="text-[11px] text-amber-600 dark:text-amber-400 -mt-2">{t('cardForm.expiredHint')}</p>
+          <p className="text-[11px] text-warning -mt-2">{t('cardForm.expiredHint')}</p>
         )}
 
         {/* Billing Zip */}
@@ -358,7 +358,7 @@ export function CardForm({
             disabled={!pinConfigured && !pinProtected}
             className="rounded accent-accent"
           />
-          <span className="text-sm text-neutral-600 dark:text-neutral-400">
+          <span className="text-sm text-pn-muted">
             {t('cardForm.requirePin')}
           </span>
           <button
@@ -373,14 +373,14 @@ export function CardForm({
 
         {showPinInfo && <PinInfoModal onClose={() => setShowPinInfo(false)} />}
         {!pinConfigured && !pinProtected && (
-          <p className="text-[11px] text-neutral-400 dark:text-neutral-500 -mt-2">
+          <p className="text-[11px] text-pn-muted -mt-2">
             {t('cardForm.setUpPinFirst')}
           </p>
         )}
 
         {/* Save / Cancel */}
         {saveError && (
-          <p className="text-[11px] text-red-600 dark:text-red-400">{saveError}</p>
+          <p className="text-[11px] text-danger">{saveError}</p>
         )}
         {!locked && (
           <div className="flex gap-2 -mt-2">
@@ -388,7 +388,7 @@ export function CardForm({
               <button
                 type="button"
                 onClick={onCancel}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium border border-divider text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-surface-1 transition"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium border border-divider text-pn-muted hover:bg-pn/5 transition"
               >
                 {t('actions.cancel')}
               </button>
@@ -396,7 +396,7 @@ export function CardForm({
             <button
               type="button"
               onClick={onSave}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-accent text-white hover:bg-accent-hover transition"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-accent-fill text-white hover:bg-accent-fill-hover transition"
             >
               <FloppyDisk />
               {t('actions.save')}

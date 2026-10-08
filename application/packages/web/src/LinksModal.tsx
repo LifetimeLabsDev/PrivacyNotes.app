@@ -12,6 +12,8 @@ type Props = {
   titleIcon?: ReactNode;
   intro: string;
   links: readonly ModalLink[];
+  /** Optional extra block between the links and the closing line. */
+  children?: ReactNode;
   /** Optional closing line under the links. */
   outro?: ReactNode;
   /** Forwarded to LinksList - see there. */
@@ -25,7 +27,7 @@ type Props = {
 // with title + close, an intro line, then one row per link with icon, label,
 // description and an external-arrow affordance. Extracted from FeedbackModal
 // when the Rate modal reused the same layout.
-export function LinksModal({ title, titleIcon, intro, links, outro, onLinkClick, onClose, grid = false }: Props) {
+export function LinksModal({ title, titleIcon, intro, links, children, outro, onLinkClick, onClose, grid = false }: Props) {
   const { t } = useTranslation('common');
   useEscapeToClose(onClose);
 
@@ -39,14 +41,14 @@ export function LinksModal({ title, titleIcon, intro, links, outro, onLinkClick,
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-200 dark:border-neutral-900">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-divider">
           <h2 className="text-base font-semibold inline-flex items-center gap-2">
             {titleIcon}
             {title}
           </h2>
           <button
             onClick={onClose}
-            className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1"
+            className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
             aria-label={t('actions.close')}
           >
             <X size={18} />
@@ -55,10 +57,11 @@ export function LinksModal({ title, titleIcon, intro, links, outro, onLinkClick,
 
         {/* Body */}
         <div className="px-5 py-4">
-          <p className="text-sm text-neutral-500 mb-3">{intro}</p>
+          <p className="text-sm text-pn-muted mb-3">{intro}</p>
           <LinksList links={links} onLinkClick={onLinkClick} grid={grid} />
+          {children}
           {outro && (
-            <p className="mt-3 pt-3 border-t border-divider text-xs leading-relaxed text-neutral-500">
+            <p className="mt-3 pt-3 border-t border-divider text-xs leading-relaxed text-pn-muted">
               {outro}
             </p>
           )}

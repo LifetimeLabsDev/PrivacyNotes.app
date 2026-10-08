@@ -22,6 +22,7 @@ import {
   BookmarkSimple,
   CheckFat,
   FileMd,
+  FileText,
   Files as PhFiles,
   NotePencil,
   PenNib,
@@ -163,6 +164,7 @@ export const EXPORT_GLYPHS = {
   markdown: FileMd,
   html: FileHtml,
   print: Printer,
+  printText: FileText,
   /** Not accent, and deliberately: the flame is the one entry here that
    *  publishes something outside the account. */
   burn: Fire,
@@ -173,6 +175,9 @@ export function iconNote() {
 }
 export function iconBookmark() {
   return <NEW_GLYPHS.bookmark size={14} />;
+}
+export function iconFile() {
+  return <NEW_GLYPHS.file size={14} />;
 }
 export function iconNewTask() {
   return <NEW_GLYPHS.task size={14} />;
@@ -219,7 +224,7 @@ export function iconCheckbox() {
 }
 export function iconRestore() {
   return (
-    <span className="text-emerald-600 dark:text-emerald-400">
+    <span className="text-success">
       <ArrowCounterClockwise size={14} />
     </span>
   );

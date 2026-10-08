@@ -45,9 +45,9 @@ export function ListEntryCard({
 }) {
   const Tag = as;
   const glyphClass =
-    tone === 'amber' ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400' : 'bg-accent/10 text-accent';
+    tone === 'amber' ? 'bg-amber-500/10 text-warning' : 'bg-accent/10 text-accent-strong';
   const dismissClass =
-    'inline-flex shrink-0 items-center justify-center rounded-md text-neutral-400 transition hover:bg-neutral-200/60 hover:text-neutral-700 dark:text-neutral-500 dark:hover:bg-neutral-800/60 dark:hover:text-neutral-200';
+    'inline-flex shrink-0 items-center justify-center rounded-md text-pn-muted transition hover:bg-pn/5 hover:text-pn';
 
   if (variant === 'tile') {
     return (
@@ -77,7 +77,7 @@ export function ListEntryCard({
   }
 
   return (
-    <Tag className="flex items-center gap-2 border-b border-divider/50 px-4 py-3 transition hover:bg-neutral-200/50 dark:hover:bg-neutral-900/50">
+    <Tag className="flex items-center gap-2 border-b border-divider/50 px-4 py-3 transition hover:bg-pn/5">
       <button type="button" onClick={onClick} className="flex min-w-0 flex-1 items-center gap-3 text-start">
         <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md ${glyphClass}`}>
           <Icon size={16} />

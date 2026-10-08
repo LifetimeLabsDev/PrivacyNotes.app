@@ -71,9 +71,13 @@ title: markdown으로 여기서 할 수 있는 모든 것
 
 > 인용은 여백에서 한 칸 들어오고 옆에 색 선이 붙어요.
 
+## 각주
+
+각주는 출처나 덧붙이는 말을 본문 밖에 두어요.[^1] 단어 뒤에 `[^1]`을 입력하거나 **삽입** 메뉴에서 **각주**를 고르세요. 작은 번호를 클릭하면 각주로 이동해요.
+
 ## 코드
 
-코드는 띄어쓰기를 그대로 두고 언어에 따라 색이 붙어요.
+코드는 띄어쓰기를 그대로 두고 언어에 따라 색이 붙어요. 블록 위쪽의 이름이 그 블록의 언어예요. 누르면 다른 언어를 고를 수 있어요.
 
 ```js
 export function seal(note, key) {
@@ -86,6 +90,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+긴 블록은 접힌 채로 열려서 노트의 나머지 부분이 가까이 있어요. 아래 버튼을 누르면 모든 줄이 보여요.
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 문장 안의 짧은 코드는 이렇게 보여요: `이것`.
@@ -111,6 +156,12 @@ $$i\hbar\frac{\partial}{\partial t}\Psi = \hat{H}\Psi$$
 
 둘 다 도구 모음에 버튼이 있어요. 사슬이 웹 링크를 만들어요. 대괄호는 노트 링크를 만들어요. 노트 목록을 보여 주고, 거기서 원하는 노트를 고르면 돼요. `[[`를 입력해도 똑같아요.
 
+노트 링크가 꼭 노트 제목 그대로 보일 필요는 없어요. 제목, 세로줄(|), 그리고 페이지에 보일 글자를 차례로 입력하세요: [[노트가 어떻게 보호되나요|이 글자]]를 누르면 그 노트가 열려요.
+
+노트 링크는 노트를 특정 제목 위치에서 열 수도 있어요. 노트 제목 뒤에 `#`을 입력하고 원하는 제목을 고르세요: [[노트가 어떻게 보호되나요#열쇠를 누가 가지나요]]는 그 노트를 열쇠 섹션에서 열어요. 개요에서 제목 옆의 링크 아이콘을 누르면 그런 링크가 복사돼요.
+
 ---
 
 *이미 markdown을 쓰고 있다면 그대로 치세요. 치는 대로 서식이 붙어요. 어떤 노트든 원래 글자를 보려면 이 노트 오른쪽 아래의 **markdown 보기**를 누르세요.*
+
+[^1]: 이것이 각주예요. 옆의 화살표를 누르면 위로 돌아가요.

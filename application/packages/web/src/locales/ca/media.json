@@ -14,7 +14,8 @@
     "loadFailed": "No s'ha pogut carregar la imatge",
     "notFound": "No s'ha trobat la imatge",
     "saveFailed": "No s'ha pogut desar, així que el fitxer pot estar buit o incomplet.",
-    "viewAria": "Mostra la imatge"
+    "viewAria": "Mostra la imatge",
+    "picturesLeftOut": "Algunes imatges no s'han afegit. Copia una imatge sola per enganxar-la."
   },
   "attachment": {
     "fallbackName": "Adjunt",

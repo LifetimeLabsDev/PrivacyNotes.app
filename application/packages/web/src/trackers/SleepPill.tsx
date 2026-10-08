@@ -40,7 +40,7 @@ export function SleepPill({
       readOnly={readOnly}
     >
       <div className="flex flex-col gap-3">
-        <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+        <span className="text-xs font-medium text-pn-soft">
           {t('sleep.prompt')}
         </span>
         <div className="flex gap-1">
@@ -55,7 +55,7 @@ export function SleepPill({
               className={`flex-1 px-1.5 py-1.5 rounded-md text-[11px] font-medium text-center transition-colors ${
                 value?.quality === q
                   ? 'text-white'
-                  : 'bg-surface-0 text-neutral-600 dark:text-neutral-300'
+                  : 'bg-surface-0 text-pn-soft'
               }`}
               style={
                 value?.quality === q
@@ -74,7 +74,7 @@ export function SleepPill({
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-[11px] text-neutral-500 dark:text-neutral-400 shrink-0">{t('sleep.hoursLabel')}</label>
+          <label className="text-[11px] text-pn-muted shrink-0">{t('sleep.hoursLabel')}</label>
           <input
             type="range"
             min={0}
@@ -89,7 +89,7 @@ export function SleepPill({
             className="flex-1 h-1.5 cursor-pointer"
             style={{ accentColor: BUILTIN_TRACKER_COLORS.sleep }}
           />
-          <span className="text-xs font-medium text-neutral-700 dark:text-neutral-200 w-7 text-end tabular-nums">
+          <span className="text-xs font-medium text-pn-soft w-7 text-end tabular-nums">
             {value?.hours ?? 7.5}
           </span>
         </div>

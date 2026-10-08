@@ -27,6 +27,10 @@ export interface FileUploadEntry {
    *  'storage-full-kept' = server rejected mid-race, blob + note stay
    *  on this device until space frees (backlog #143). */
   errorCode?: 'storage-full' | 'storage-full-kept';
+  /** Set on a shared file the upload kept: drops it from the share inbox. */
+  discard?: () => Promise<void>;
+  /** The kept file was dropped; its name is struck through. */
+  discarded?: boolean;
 }
 
 interface Props {
@@ -83,8 +87,8 @@ export function UploadProgressModal({ entries, isPro, hasStorageSub, onOpenUpgra
             aria-label={t('common:actions.close')}
             className={`shrink-0 -m-1 p-1 transition ${
               allDone
-                ? 'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300'
-                : 'text-neutral-300 dark:text-neutral-700 cursor-not-allowed'
+                ? 'text-pn-muted hover:text-pn-soft'
+                : 'text-pn-muted/50 cursor-not-allowed'
             }`}
           >
             <X size={18} />
@@ -97,20 +101,31 @@ export function UploadProgressModal({ entries, isPro, hasStorageSub, onOpenUpgra
             <div key={`${entry.name}-${i}`}>
               <div className="flex items-center justify-between gap-2 mb-1">
                 <span className={`text-[13px] truncate flex-1 ${
-                  entry.status === 'failed'
-                    ? 'text-red-600 dark:text-red-400'
-                    : 'text-neutral-800 dark:text-neutral-200'
+                  entry.discarded
+                    ? 'text-pn-muted line-through'
+                    : entry.status === 'failed'
+                      ? 'text-danger'
+                      : 'text-pn'
                 }`}>
                   {entry.name}
                 </span>
+                {entry.discard && (
+                  <button
+                    type="button"
+                    onClick={() => { void entry.discard?.().catch((err) => console.warn('[upload] discard failed:', err)); }}
+                    className="shrink-0 text-[12px] px-2 py-0.5 rounded-md border border-divider text-pn-soft hover:bg-pn/10"
+                  >
+                    {t('upload.discard')}
+                  </button>
+                )}
                 <span className={`text-[12px] shrink-0 ${
                   entry.status === 'done'
-                    ? 'text-emerald-600 dark:text-emerald-400'
+                    ? 'text-success'
                     : entry.status === 'failed'
-                      ? 'text-red-500 dark:text-red-400'
+                      ? 'text-danger'
                       : entry.status === 'uploading'
                         ? 'text-accent'
-                        : 'text-neutral-400 dark:text-neutral-600'
+                        : 'text-pn-muted'
                 }`}>
                   {entry.status === 'done' && t('upload.statusDone')}
                   {entry.status === 'failed' && t('upload.statusFailed')}
@@ -119,19 +134,19 @@ export function UploadProgressModal({ entries, isPro, hasStorageSub, onOpenUpgra
                 </span>
               </div>
               {/* Progress bar */}
-              <div className="h-1 rounded-full bg-neutral-100 dark:bg-neutral-800 overflow-hidden">
+              <div className="h-1 rounded-full bg-track overflow-hidden">
                 <div className={`h-full rounded-full transition-all duration-300 ${
                   entry.status === 'done'
                     ? 'w-full bg-emerald-500 dark:bg-emerald-400'
                     : entry.status === 'failed'
                       ? 'w-full bg-red-400 dark:bg-red-500'
                       : entry.status === 'uploading'
-                        ? 'w-2/3 bg-accent animate-pulse'
+                        ? 'w-2/3 bg-accent-fill animate-pulse'
                         : 'w-0'
                 }`} />
               </div>
               {entry.status === 'failed' && (entry.errorCode || entry.error) && (
-                <p className="text-[11px] text-red-500 dark:text-red-400 mt-0.5 leading-tight">
+                <p className="text-[11px] text-danger mt-0.5 leading-tight">
                   {/* Structured codes first; the raw-text quota sniff stays as
                       a backstop because server accounting strings ("image
                       storage N bytes > limit M bytes") must never reach the
@@ -152,7 +167,7 @@ export function UploadProgressModal({ entries, isPro, hasStorageSub, onOpenUpgra
         {/* Footer - summary + close */}
         <div className="px-5 py-3 border-t border-divider">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[12px] text-neutral-500 dark:text-neutral-400">
+            <span className="text-[12px] text-pn-muted">
               {counts.done > 0 && t('upload.summaryDone', { count: counts.done })}
               {counts.done > 0 && (active > 0 || counts.failed > 0) && ', '}
               {active > 0 && t('upload.summaryUploading', { count: active })}
@@ -165,8 +180,8 @@ export function UploadProgressModal({ entries, isPro, hasStorageSub, onOpenUpgra
               disabled={!allDone}
               className={`text-[13px] font-medium px-4 py-1.5 rounded-md transition ${
                 allDone
-                  ? 'bg-accent text-white hover:bg-accent-hover'
-                  : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-600 cursor-not-allowed'
+                  ? 'bg-accent-fill text-white hover:bg-accent-fill-hover'
+                  : 'bg-track text-pn-muted/75 cursor-not-allowed'
               }`}
             >
               {t('common:actions.done')}
@@ -181,7 +196,7 @@ export function UploadProgressModal({ entries, isPro, hasStorageSub, onOpenUpgra
           {!proUnlocked(isPro) ? (
             <div className="mt-2 flex items-center gap-2 rounded-md bg-accent/10 px-2.5 py-1.5">
               <span className="shrink-0"><IconUpgrade size={13} /></span>
-              <span className="flex-1 text-[11.5px] text-neutral-600 dark:text-neutral-300 leading-tight">
+              <span className="flex-1 text-[11.5px] text-pn-soft leading-tight">
                 {t('upload.proPitch')}
               </span>
               <button type="button" onClick={onOpenUpgrade} className="shrink-0 text-[11.5px] font-medium text-accent hover:underline">
@@ -191,7 +206,7 @@ export function UploadProgressModal({ entries, isPro, hasStorageSub, onOpenUpgra
           ) : !hasStorageSub && isStorageConfigured() ? (
             <div className="mt-2 flex items-center gap-2 rounded-md bg-accent/10 px-2.5 py-1.5">
               <span className="shrink-0"><IconUpgrade size={13} /></span>
-              <span className="flex-1 text-[11.5px] text-neutral-600 dark:text-neutral-300 leading-tight">
+              <span className="flex-1 text-[11.5px] text-pn-soft leading-tight">
                 {t('upload.storagePitch')}
               </span>
               <button type="button" onClick={onManageStorage} className="shrink-0 text-[11.5px] font-medium text-accent hover:underline">
@@ -199,7 +214,7 @@ export function UploadProgressModal({ entries, isPro, hasStorageSub, onOpenUpgra
               </button>
             </div>
           ) : (
-            <p className="text-[11px] text-neutral-400 dark:text-neutral-600 mt-2 leading-relaxed">
+            <p className="text-[11px] text-pn-muted mt-2 leading-relaxed">
               {t('upload.typesHint', { limit: hasStorageSub ? '100' : '50' })}
             </p>
           )}

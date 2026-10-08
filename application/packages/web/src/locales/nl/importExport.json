@@ -92,8 +92,8 @@
     "genericParse": "Er ging iets mis.",
     "decryptionFailed": "Ontsleutelen mislukt. Verkeerde herstelzin of beschadigd bestand.",
     "blobImportFailed": "Je notities zijn geïmporteerd, maar hun afbeeldingen en bestanden niet: {{detail}} Er is niets veranderd in het bestand dat je hebt gekozen, dus je kunt de geïmporteerde notities verwijderen en de import opnieuw uitvoeren.",
-    "blobsNotInBackup_one": "Je notities zijn teruggezet, maar {{items}} uit de lijst in de back-up ontbreekt erin.",
-    "blobsNotInBackup_other": "Je notities zijn teruggezet, maar {{items}} uit de lijst in de back-up ontbreken erin."
+    "blobsNotInBackup_one": "Je notities zijn hersteld. {{items}} staat vermeld in de back-up, maar ontbreekt erin.",
+    "blobsNotInBackup_other": "Je notities zijn hersteld, maar {{items}} die in de back-up staan vermeld, ontbreken erin."
   },
   "preview": {
     "sourceLabel": "Bron",
@@ -180,6 +180,7 @@
     "both": "{{pictures}} en {{files}}"
   },
   "upload": {
+    "discard": "Weggooien",
     "completeTitle": "Uploaden voltooid",
     "failedTitle": "Uploaden mislukt",
     "partialTitle": "{{done}} geüpload, {{failed}} mislukt",
@@ -188,7 +189,11 @@
     "statusDone": "Klaar",
     "statusFailed": "Mislukt",
     "errorStorageFull": "Opslag vol - maak ruimte vrij of voeg opslag toe om dit bestand te uploaden.",
-    "errorStorageFullKept": "Past niet in je opslag - blijft op dit apparaat. Zodra er ruimte vrijkomt wordt het bestand gesynchroniseerd.",
+    "errorStorageFullKept": "Past niet in je opslag - blijft op dit apparaat. Zodra er ruimte vrijkomt, wordt het bestand gesynchroniseerd.",
+    "errorTooLarge": "Bestand is te groot ({{size}}). Maximaal {{limit}} MB.",
+    "errorTooLargeFree": "Bestand is te groot ({{size}}). Maximaal {{limit}} MB met het gratis plan.",
+    "batchTitle_one": "{{count}} bestand",
+    "batchTitle_other": "{{count}} bestanden",
     "statusUploading": "Uploaden...",
     "statusWaiting": "Wachten",
     "summaryDone": "{{count}} klaar",
@@ -209,5 +214,11 @@
   },
   "saveErrors": {
     "shortWrite": "Er zijn maar {{written}} van de {{expected}} bytes opgeslagen, dus het bestand is onvolledig. Probeer het opnieuw en sla op in de opslag van je apparaat in plaats van in een cloudmap."
+  },
+  "shareSheet": {
+    "title_one": "{{count}} item is gedeeld met PrivacyNotes",
+    "title_other": "{{count}} items zijn gedeeld met PrivacyNotes",
+    "line": "Er wordt niets bewaard tot je kiest.",
+    "saveAll": "Alles bewaren"
   }
 }

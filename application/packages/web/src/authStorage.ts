@@ -6,6 +6,7 @@ import {
 } from './biometric';
 import { hasPin } from './pin';
 import { credentialKey } from './demo';
+import { clearSyncLog } from './syncLog';
 
 // Demo-bucketed (see credentialKey in demo.ts): a demo session must
 // never read or write a real account's credential keys on the same
@@ -193,6 +194,8 @@ export function clearAccountScopedUiState(): void {
     localStorage.removeItem('privacynotes.movedFromApex'); // migrate.ts / MoveBanner.tsx
     // When this account last verified its sync, and how many rows matched.
     localStorage.removeItem('privacynotes.verifyStamp'); // verifyStamp.ts
+    // When this account's last sync passes ran, and what each one moved.
+    clearSyncLog();
     // Which items this account had open as tabs: ids only, but this account's.
     localStorage.removeItem('privacynotes.openTabs'); // notesView/useOpenTabs.ts
     // Which offers this account dismissed: the site announcement, and the
@@ -468,4 +471,23 @@ export function jwtPayloadPubkey(token: string): string | null {
   } catch {
     return null;
   }
+}
+
+/**
+ * True when a stored session is another account's, so a phrase sign-in
+ * must not reuse it: a pubkey claim that names a different vault, or a
+ * provider login that names none. A provider login stays in storage
+ * after its two-factor prompt is dismissed, and a link from it would
+ * bind the typed vault to that provider account. A claimless phrase
+ * session is this phrase's own unfinished link and stays usable.
+ * tests/foreignSession.test.ts.
+ */
+export function sessionBelongsElsewhere(
+  session: { access_token: string; user?: { app_metadata?: { provider?: unknown } } },
+  pubkey: string,
+): boolean {
+  const claim = jwtPayloadPubkey(session.access_token);
+  if (claim) return claim !== pubkey;
+  const provider = session.user?.app_metadata?.provider;
+  return provider === 'google' || provider === 'apple' || provider === 'github';
 }

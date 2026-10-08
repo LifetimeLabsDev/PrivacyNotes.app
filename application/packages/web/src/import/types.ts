@@ -39,6 +39,9 @@ export interface ImportedNote {
   createdAt: string;
   /** ISO 8601. */
   updatedAt: string;
+  /** ISO 8601: the "last edited" date, when the file carries one apart from
+   *  `updatedAt`. Our own .pnbackup does; a restore keeps it. */
+  editedAt?: string;
   /** Optional - only set if the source format has a trash/archive flag. */
   trashed?: boolean;
   /** Optional - only set if the source format has a star/pin flag. */
@@ -129,6 +132,11 @@ export interface ParsedImport {
    * under that id before it matches any name (`reconcileImportedFolders`).
    */
   originalFolderIds?: Map<string, string>;
+  /**
+   * Our own full backup only: the looks of folders, tags and notes and the
+   * custom themes, as the manifest holds them. Validated at apply time.
+   */
+  settings?: { itemStyles?: unknown; customThemes?: unknown };
 }
 
 /** Importer identifiers - add new ones here as adapters land. */

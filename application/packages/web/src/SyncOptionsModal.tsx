@@ -19,18 +19,19 @@ import {
 } from './devices';
 import { groupDeviceSlots, shortDeviceId, type DeviceSlot } from './deviceSlots';
 import { readPanelCache, writePanelCache } from './accountPanelCache';
-import { ArrowsClockwise, Check, CreditCard, Database, Devices, Key, PencilSimple, SignIn, SignOut, Star, User, X } from './icons';
+import { ArrowsClockwise, Check, CreditCard, Database, Devices, Key, PencilSimple, SignIn, SignOut, User, X } from './icons';
 import { InlineRenameField } from './InlineRenameField';
 import { DEVICE_LABEL_MAX, deviceLabelOf, type DeviceLabels } from './deviceLabels';
 import { HoverLabel } from './HoverLabel';
 import { DangerZone } from './DangerZone';
 import { QuotaRing } from './QuotaRing';
 import { IconUpgrade } from './UpgradeModal';
+import { RatingStar } from './RatingStar';
 import { isStorageConfigured, getStoragePackages, isBetaPricing } from './paddle';
 import { startStorageCheckout, startStorageUpgrade, openNativeSubscriptionManagement, storageProductId, isNativeStoreBuild, restoreNativePurchases, type RestoreOutcome } from './billing';
-import { STORAGE_ADDON_PRICE, PRO_PRICE, EARLY_PRICE } from './pricing';
+import { STORAGE_ADDON_PRICE, STORAGE_PACKAGES, PRO_PRICE, EARLY_PRICE } from './pricing';
 import { useStorePrices, type StorePrice } from './storePrices';
-import { formatRelative } from './intlFormat';
+import { formatInstant, formatRelative } from './intlFormat';
 import { AccentBar, HeadlineRule, SectionEyebrow, SettingsCallout, SETTINGS_HELP, SettingsTabStrip, settingsTabClass } from './settingsUI';
 import { SyncPanel } from './SyncPanel';
 import { HelpChip } from './HelpChip';
@@ -177,6 +178,14 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
 
   useEffect(() => {
     if (!authed) return;
+    // Only two of the four panels draw any of this. The effect depends on
+    // `tab`, so without this gate every entry to the Sync and Me panels would
+    // pay for a device list, a quota read, a subscription read, a server
+    // recount and a second quota read. The recount is narrower still: it
+    // exists to heal a drifted image_bytes behind the storage bar.
+    const needsAccountData = tab === 'plan' || tab === 'storage';
+    const needsRecount = tab === 'storage';
+    if (!needsAccountData) return;
     let stale = false;
     void (async () => {
       // Paint first, heal second. Awaiting recalculateQuota BEFORE the reads
@@ -185,25 +194,31 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
       // connection pool (2026-08-26). So the reads go out immediately and
       // the panel paints off them; the recalc runs after, and one more quota
       // read swaps the healed figure in under the already-painted UI.
+      //
+      // A read that fails leaves the figure already on screen alone. The
+      // alternative is a panel that blanks its own numbers whenever the
+      // server refuses, and a stale figure beside a sync status that says
+      // what is wrong beats no figure at all.
       const [ds, q, subs] = await Promise.all([
-        listDevices(supabase),
-        fetchQuotaUsage(supabase, isPro ?? false),
-        fetchMyStorageSubs(supabase),
+        listDevices(supabase).catch(() => null),
+        fetchQuotaUsage(supabase, isPro ?? false).catch(() => null),
+        fetchMyStorageSubs(supabase).catch(() => null),
       ]);
       if (stale) return;
-      setDevices(ds);
-      setQuota(q);
-      setStorageSubs(subs);
-      writePanelCache(authed.pubkey, { devices: ds, quota: q, storageSubs: subs });
+      if (ds) setDevices(ds);
+      if (q) setQuota(q);
+      if (subs) setStorageSubs(subs);
+      if (ds && q && subs) writePanelCache(authed.pubkey, { devices: ds, quota: q, storageSubs: subs });
+      if (!needsRecount) return;
       // Recompute blob bytes from Storage ground truth so a drifted
       // image_bytes self-heals when the storage settings open. Best-effort;
       // the refetch swaps the healed figure in under the already-painted UI.
       await recalculateQuota(supabase);
       if (stale) return;
-      const healed = await fetchQuotaUsage(supabase, isPro ?? false);
-      if (stale) return;
+      const healed = await fetchQuotaUsage(supabase, isPro ?? false).catch(() => null);
+      if (stale || !healed) return;
       setQuota(healed);
-      writePanelCache(authed.pubkey, { devices: ds, quota: healed, storageSubs: subs });
+      if (ds && subs) writePanelCache(authed.pubkey, { devices: ds, quota: healed, storageSubs: subs });
     })();
     // `tab` is a dependency on purpose: the settings shell keeps this
     // component mounted while the user moves between panels, so a
@@ -268,11 +283,11 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
     if (outcome === 'restored') {
       await refreshProStatus({ silent: true, attempts: 1 });
       const [q, subs] = await Promise.all([
-        fetchQuotaUsage(supabase, true),
-        fetchMyStorageSubs(supabase),
+        fetchQuotaUsage(supabase, true).catch(() => null),
+        fetchMyStorageSubs(supabase).catch(() => null),
       ]);
-      setQuota(q);
-      setStorageSubs(subs);
+      if (q) setQuota(q);
+      if (subs) setStorageSubs(subs);
     }
     setRestoreOutcome(outcome);
     setRestoreBusy(false);
@@ -321,7 +336,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
         );
         if (succeeded) {
           void fetchMyStorageSubs(supabase).then(setStorageSubs);
-          void fetchQuotaUsage(supabase, true).then(setQuota);
+          void fetchQuotaUsage(supabase, true).then(setQuota, () => { /* keep the figure on screen */ });
         }
       } catch (err) {
         console.error('Storage action error:', err);
@@ -355,7 +370,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
       // The Paddle webhook updates the row; refetch shortly after.
       setTimeout(() => {
         void fetchMyStorageSubs(supabase).then(setStorageSubs);
-        void fetchQuotaUsage(supabase, true).then(setQuota);
+        void fetchQuotaUsage(supabase, true).then(setQuota, () => { /* keep the figure on screen */ });
       }, 1500);
     } catch (err) {
       console.error('Storage action error:', err);
@@ -535,14 +550,14 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                         <strong className="text-sm text-pn">Pro</strong>
                         <span className="text-pn-soft">{t('plan.proUnlimited')}</span>
                       </div>
-                      <p className="mt-1 text-amber-700 dark:text-amber-400">
+                      <p className="mt-1 text-warning">
                         {isEarlySupporter ? t('plan.earlySupporterThanks') : t('plan.proThanks')}
                       </p>
                     </div>
                   </div>
                   {onOpenRating && (
                     <div className="mt-3 flex items-center gap-3 border-t border-divider pt-3 text-xs">
-                      <Star size={16} weight="fill" className="shrink-0 text-amber-400" aria-hidden="true" />
+                      <RatingStar size={16} />
                       <span className="flex-1 text-pn-soft">{t('plan.ratePro')}</span>
                       <button type="button" onClick={onOpenRating} className={RATE_BUTTON}>
                         {t('plan.rateCta')}
@@ -569,14 +584,14 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                   {devices && (
                     <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-divider" aria-hidden="true">
                       <div
-                        className={`h-full rounded-full ${slots.length >= freeLimit ? 'bg-amber-500' : 'bg-accent'}`}
+                        className={`h-full rounded-full ${slots.length >= freeLimit ? 'bg-amber-500' : 'bg-accent-fill'}`}
                         style={{ width: `${Math.min(slots.length / freeLimit, 1) * 100}%` }}
                       />
                     </div>
                   )}
                   {onOpenRating && (
                     <div className="mt-3 flex items-center gap-3 rounded-md bg-surface-2 p-3">
-                      <Star size={18} weight="fill" className="shrink-0 text-amber-400" aria-hidden="true" />
+                      <RatingStar size={18} />
                       <div className="min-w-0 flex-1">
                         <div className="text-sm font-medium text-pn">{t('plan.rateFreeTitle')}</div>
                         <div className="text-pn-soft">{t('plan.rateFreeBody')}</div>
@@ -609,10 +624,10 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                   <p
                     className={`mt-2 text-xs leading-relaxed ${
                       restoreOutcome === 'restored'
-                        ? 'text-green-600 dark:text-green-400'
+                        ? 'text-success'
                         : restoreOutcome === 'none'
                           ? 'text-pn-muted'
-                          : 'text-red-600 dark:text-red-400'
+                          : 'text-danger'
                     }`}
                   >
                     {t(`plan.restore.${restoreOutcome}`)}
@@ -742,7 +757,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                   authed.pubkey,
                                   v.pkg.gb,
                                   () => {
-                                    void fetchQuotaUsage(supabase, true).then(setQuota);
+                                    void fetchQuotaUsage(supabase, true).then(setQuota, () => { /* keep the figure on screen */ });
                                   },
                                   // Native IAP failure: surface it inline, a silent
                                   // no-op reads as a dead button (Play internal test).
@@ -761,7 +776,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                     {activeStorageSub?.status === 'past_due' ? t('storage.pastDue') : t('storage.active')}
                                   </span>
                                 ) : v.isBest ? (
-                                  <span className={`absolute -top-2 ${badgePos(compact)} text-[11px] px-2 py-px rounded bg-track text-green-600 dark:text-green-400 whitespace-nowrap`}>
+                                  <span className={`absolute -top-2 ${badgePos(compact)} text-[11px] px-2 py-px rounded bg-track text-success whitespace-nowrap`}>
                                     {/* Card cells are ~160px in a narrow pane; the localized
                                         best-value copy runs 3x that (fr), so cards get a
                                         numeric badge and rows keep the full string. */}
@@ -776,8 +791,8 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                 v.owned && activeStorageSub && (activeStorageSub.scheduled_cancel_at || activeStorageSub.current_period_ends_at) ? (
                                   <div className="mt-1.5 px-1 text-[11px] text-pn-muted">
                                     {activeStorageSub.scheduled_cancel_at
-                                      ? t('storage.cancelsOn', { date: formatPlanDate(activeStorageSub.scheduled_cancel_at) })
-                                      : t('storage.renewsOn', { date: formatPlanDate(activeStorageSub.current_period_ends_at as string) })}
+                                      ? t('storage.cancelsOn', { date: formatInstant(activeStorageSub.scheduled_cancel_at, 'date') })
+                                      : t('storage.renewsOn', { date: formatInstant(activeStorageSub.current_period_ends_at as string, 'date') })}
                                   </div>
                                 ) : null;
                               const ctaLabel = (v: PkgView) =>
@@ -808,7 +823,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                                 +{t('storage.gbSize', { gb: v.pkg.gb })}
                                               </span>
                                               {!v.fromStore && v.saving > 0.005 && (
-                                                <span className="text-[11px] text-green-600 dark:text-green-400 truncate">
+                                                <span className="text-[11px] text-success truncate">
                                                   {t('storage.savePerYear', { amount: v.saving.toFixed(2) })}
                                                 </span>
                                               )}
@@ -829,11 +844,11 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                             )}
                                             <div className="mt-3 flex flex-1 flex-col gap-1.5 border-t border-divider pt-2.5">
                                               <span className="flex items-start gap-1.5 text-xs leading-snug text-pn-soft">
-                                                <Check size={12} className="mt-0.5 shrink-0 text-green-600 dark:text-green-400" />
+                                                <Check size={12} className="mt-0.5 shrink-0 text-success" />
                                                 {t('storage.totalStorageFeat', { total: 0.5 + v.pkg.gb })}
                                               </span>
                                               <span className="flex items-start gap-1.5 text-xs leading-snug text-pn-soft">
-                                                <Check size={12} className="mt-0.5 shrink-0 text-green-600 dark:text-green-400" />
+                                                <Check size={12} className="mt-0.5 shrink-0 text-success" />
                                                 {t('storage.maxFileFeat', { mb: 100 })}
                                               </span>
                                             </div>
@@ -893,7 +908,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                                 className="bg-pn-muted"
                                                 style={{ width: `${Math.min(100, (nowGb / (0.5 + v.pkg.gb)) * 100)}%` }}
                                               />
-                                              <span className="ms-px flex-1 bg-accent" />
+                                              <span className="ms-px flex-1 bg-accent-fill" />
                                             </span>
                                             <span className="flex items-center justify-between gap-2 text-[11px]">
                                               <span className="text-pn-muted">
@@ -912,7 +927,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                                   </span>
                                                   {t('storage.pricePerGb', { price: v.perGb.toFixed(2) })}
                                                 </span>
-                                                <span className="text-green-600 dark:text-green-400 whitespace-nowrap">
+                                                <span className="text-success whitespace-nowrap">
                                                   {t('storage.savePerYear', { amount: v.saving.toFixed(2) })}
                                                 </span>
                                               </span>
@@ -972,11 +987,11 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                         return t('storage.upgradeChargeApple', { price: renewPrice });
                                       }
                                       return activeStorageSub?.current_period_ends_at
-                                        ? t('storage.upgradeChargeUntil', { amount, date: formatPlanDate(activeStorageSub.current_period_ends_at), price: renewPrice })
+                                        ? t('storage.upgradeChargeUntil', { amount, date: formatInstant(activeStorageSub.current_period_ends_at, 'date'), price: renewPrice })
                                         : t('storage.upgradeCharge', { amount, price: renewPrice });
                                     })()}
                                     {upgradePreviewFailed && (
-                                      <div role="alert" className="mt-2 text-xs text-red-600 dark:text-red-400">
+                                      <div role="alert" className="mt-2 text-xs text-danger">
                                         {t('storage.upgradeAmountFailed')}{' '}
                                         <button
                                           type="button"
@@ -1026,7 +1041,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                             )}
                             {activeStorageSub && !activeStorageSub.scheduled_cancel_at && (
                               cancelDone ? (
-                                <div className="mt-3 text-xs text-green-600 dark:text-green-400">
+                                <div className="mt-3 text-xs text-success">
                                   {t('storage.cancelScheduled')}
                                 </div>
                               ) : confirmingCancel ? (
@@ -1061,7 +1076,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                                   type="button"
                                   disabled={storageActionBusy}
                                   onClick={() => setConfirmingCancel(true)}
-                                  className="mt-3 text-xs text-red-600 dark:text-red-400 hover:underline disabled:opacity-50"
+                                  className="mt-3 text-xs text-danger hover:underline disabled:opacity-50"
                                 >
                                   {t('storage.cancelStorage')}
                                 </button>
@@ -1118,41 +1133,61 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                           </>
                         )}
                       </p>
-                      <div className="rounded-xl border border-divider bg-surface-2 p-6 text-center">
-                        <div className="mx-auto mb-3 w-11 h-11 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
-                          <IconUpgrade size={22} />
+                      <div className="rounded-xl border border-divider bg-surface-2 p-5">
+                        <div className="text-base font-medium text-pn mb-3 flex items-center gap-2">
+                          <IconUpgrade size={18} />
+                          {t('storage.needMore')}
                         </div>
-                        <div className="text-base font-medium text-pn">{t('storage.needMore')}</div>
-                        <p className="text-sm text-pn-soft leading-relaxed text-balance max-w-md mx-auto mt-1 mb-4">
-                          {t('storage.proSpacePitch')}
-                        </p>
-                        {isBetaPricing() ? (
-                          <div className="mb-4">
-                            <div className="flex items-baseline justify-center gap-2.5">
-                              <span className="text-3xl font-bold tracking-tight text-amber-900 dark:text-amber-100">${EARLY_PRICE}</span>
-                              <span className="text-lg font-semibold line-through text-amber-400 dark:text-amber-600">${PRO_PRICE}</span>
-                            </div>
-                            <div className="mt-2 flex justify-center">
-                              <span className="text-[11px] font-semibold text-amber-900 dark:text-amber-100 bg-amber-200 dark:bg-amber-800/70 rounded-full px-2.5 py-0.5">
-                                {t('storage.earlyAdopterSave', { amount: PRO_PRICE - EARLY_PRICE })}
-                              </span>
-                            </div>
+                        {/* Two steps: Pro first, then the add-ons it unlocks. A free
+                            user never sees the add-on cards, so this is the one
+                            place the ceiling and the add-on price are stated
+                            before the purchase. The price is the store's own
+                            string on a native build, pricing.ts otherwise. */}
+                        <div className="flex gap-3">
+                          <div className="flex flex-col items-center">
+                            <div className="w-6 h-6 rounded-full bg-amber-600 text-white text-xs font-semibold flex items-center justify-center shrink-0">1</div>
+                            <div className="flex-1 w-px bg-divider my-1" />
                           </div>
-                        ) : (
-                          <div className="flex items-baseline justify-center gap-2 mb-4">
-                            <span className="text-3xl font-bold tracking-tight text-amber-900 dark:text-amber-100">${PRO_PRICE}</span>
-                            <span className="text-sm font-medium text-amber-700/70 dark:text-amber-300/70">{t('storage.oneTime')}</span>
+                          <div className="flex-1 min-w-0 pb-4">
+                            <div className="text-sm font-medium text-pn">{t('plan.upgradeToPro')}</div>
+                            <p className="text-sm text-pn-soft leading-relaxed mt-0.5">{t('storage.stepProBody')}</p>
+                            {isBetaPricing() ? (
+                              <div className="mt-2 flex flex-wrap items-center gap-2.5">
+                                <span className="text-2xl font-bold tracking-tight text-amber-900 dark:text-amber-100">${EARLY_PRICE}</span>
+                                <span className="text-lg font-semibold line-through text-warning">${PRO_PRICE}</span>
+                                <span className="text-[11px] font-semibold text-amber-900 dark:text-amber-100 bg-amber-200 dark:bg-amber-800/70 rounded-full px-2.5 py-0.5">
+                                  {t('storage.earlyAdopterSave', { amount: PRO_PRICE - EARLY_PRICE })}
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="mt-2 flex items-baseline gap-2">
+                                <span className="text-2xl font-bold tracking-tight text-amber-900 dark:text-amber-100">${PRO_PRICE}</span>
+                                <span className="text-sm font-medium text-amber-700/70 dark:text-amber-300/70">{t('storage.oneTime')}</span>
+                              </div>
+                            )}
+                            <button
+                              type="button"
+                              onClick={onOpenUpgrade}
+                              disabled={!onOpenUpgrade}
+                              className="mt-2 inline-flex items-center justify-center gap-2 rounded-md bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold px-5 py-2 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                              <IconUpgrade size={16} onFill />
+                              {t('plan.upgradeToPro')}
+                            </button>
                           </div>
-                        )}
-                        <button
-                          type="button"
-                          onClick={onOpenUpgrade}
-                          disabled={!onOpenUpgrade}
-                          className="inline-flex items-center justify-center gap-2 rounded-md bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold px-5 py-2.5 transition disabled:opacity-60 disabled:cursor-not-allowed"
-                        >
-                          <IconUpgrade size={16} />
-                          {t('plan.upgradeToPro')}
-                        </button>
+                        </div>
+                        <div className="flex gap-3">
+                          <div className="w-6 h-6 rounded-full border border-divider text-pn-soft text-xs font-semibold flex items-center justify-center shrink-0">2</div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium text-pn-soft">{t('storage.stepAddonTitle')}</div>
+                            <p className="text-sm text-pn-soft leading-relaxed mt-0.5">
+                              {t('storage.stepAddonBody', {
+                                price: storePrices?.[storageProductId(1)]?.formatted ?? `$${STORAGE_ADDON_PRICE.toFixed(2)}`,
+                                total: 0.5 + STORAGE_PACKAGES.reduce((m, p) => Math.max(m, p.gb), 0),
+                              })}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </>
                   )}
@@ -1254,7 +1289,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                           <span dir="auto">{deviceLabelOf(deviceLabels, d.device_id) ?? d.device_name}</span>
                           <span className="font-mono text-[11px] font-normal ms-2">{shortDeviceId(d.device_id)}</span>
                         </div>
-                        <div className="text-[11px] text-pn-muted/75">
+                        <div className="text-[11px] text-pn-muted">
                           {t('devices.removedAt', { time: formatRelative(d.revoked_at!) })}
                         </div>
                       </div>
@@ -1277,9 +1312,9 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                 data-setting="plan.upgrade"
                 onClick={onOpenUpgrade}
                 disabled={!onOpenUpgrade}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-accent hover:bg-accent-hover text-white text-sm font-semibold px-3 py-2.5 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-accent-fill hover:bg-accent-fill-hover text-white text-sm font-semibold px-3 py-2.5 transition disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <IconUpgrade size={16} />
+                <IconUpgrade size={16} onFill />
                 {t('plan.upgradeToPro')}
               </button>
             )}
@@ -1516,9 +1551,4 @@ function RevokeConfirm({
       </div>
     </div>
   );
-}
-function formatPlanDate(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }

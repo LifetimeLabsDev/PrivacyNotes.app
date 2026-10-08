@@ -7,5 +7,9 @@
 		<string>applinks:use.privacynotes.app</string>
 		<string>webcredentials:use.privacynotes.app</string>
 	</array>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.app.privacynotes</string>
+	</array>
 </dict>
 </plist>

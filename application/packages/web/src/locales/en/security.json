@@ -149,6 +149,8 @@
     "confirmPinForLock": "Enter your PIN to turn this on. It locks a copy of your recovery phrase so only your PIN can open the app.",
     "relockAfter": "Re-lock after",
     "relockHint": "Applies to the app lock screen only.",
+    "blockCapture": "Hide from screen capture",
+    "blockCaptureHint": "Keeps your notes out of screenshots, recordings and screen sharing where your device allows it. Applies to this device only.",
     "perDeviceNote": "Biometric unlock opens the same notes as your PIN. It stays on this device and never syncs.",
     "disableConfirmTitle": "Disable Biometric",
     "disableConfirmLabel": "Disable",

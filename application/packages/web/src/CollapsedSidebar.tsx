@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { LogoIcon } from './LogoIcon';
 import { HoverLabel } from './HoverLabel';
 import { IconUpgrade } from './UpgradeModal';
-import { Plus, PushPin, File, CheckSquare, Shield, Folder, Book, Hash, Trash, Question, CaretRight, Devices, FileMd, BookmarkSimple, NotePencil, CheckFat, Notebook, Bookmarks, Key } from './icons';
+import { Lightning, Plus, PushPin, File, CheckSquare, Shield, Folder, Book, Hash, Trash, Question, CaretRight, Devices, FileMd, BookmarkSimple, NotePencil, CheckFat, Notebook, Bookmarks, Key } from './icons';
 import { isViewShown, type View } from './views';
 import { hiddenAtZero, viewRows } from './viewRows';
 import { exemptOpts } from './i18nExempt';
@@ -13,6 +13,7 @@ import { UpdateDot } from './UpdateDot';
 import { marketingHomeHref, siteHref } from './siteLinks';
 import { helpPath } from './localeRoutes';
 import { activeLocale } from './languages';
+import { keyText } from './shortcutMatch';
 
 interface CollapsedSidebarProps {
   view: View;
@@ -21,6 +22,8 @@ interface CollapsedSidebarProps {
   handleSelectView: (next: View) => void;
   handleSelectTag: (tag: string | null) => void;
   onNew: () => void;
+  /** Opens the quick switcher. */
+  onJump: () => void;
   onExpand: () => void;
   onExpandToTags: () => void;
   /** Expand the sidebar in Folders mode - or open the upsell when free. */
@@ -91,14 +94,14 @@ const iconBtn = (active: boolean) =>
   `w-9 h-9 flex items-center justify-center rounded-lg transition shrink-0 ${
     active
       ? SIDEBAR_ACTIVE
-      : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-accent dark:text-neutral-500 dark:hover:bg-neutral-900/60 dark:hover:text-accent'
+      : 'text-pn-muted hover:bg-pn/5 hover:text-accent dark:hover:text-accent'
   }`;
 
 const dimIconBtn = (active: boolean) =>
   `w-9 h-9 flex items-center justify-center rounded-lg transition shrink-0 ${
     active
       ? SIDEBAR_ACTIVE
-      : 'text-neutral-400 hover:bg-neutral-200/60 hover:text-neutral-600 dark:text-neutral-600 dark:hover:bg-neutral-900/60 dark:hover:text-neutral-400'
+      : 'text-pn-muted hover:bg-pn/5 hover:text-pn-soft'
   }`;
 
 
@@ -109,6 +112,7 @@ export function CollapsedSidebar({
   handleSelectView,
   handleSelectTag,
   onNew,
+  onJump,
   onExpand,
   onExpandToTags,
   onExpandToFolders,
@@ -141,13 +145,27 @@ export function CollapsedSidebar({
         </HoverLabel>
       </div>
 
+      {/* The quick switcher, as the wide rail's "Jump to" row.
+          Spec: ops/docs/plans/keyboard-shortcuts.md (decision D15) */}
+      <HoverLabel label={`${t('common:quickSwitcher.jumpTo')} ${keyText('quickSwitcher')}`}>
+        <button
+          type="button"
+          onClick={onJump}
+          aria-label={t('common:quickSwitcher.jumpTo')}
+          className="pn-jump w-9 h-9 flex items-center justify-center rounded-lg bg-accent/10 text-accent-strong transition"
+        >
+          <span className="pn-jump-charge" aria-hidden="true" />
+          <Lightning size={18} weight="fill" />
+        </button>
+      </HoverLabel>
+
       {/* New note */}
       <HoverLabel label={t('collapsedSidebar.newNote')}>
         <button
           type="button"
           onClick={onNew}
           aria-label={t('collapsedSidebar.newNote')}
-          className="w-9 h-9 flex items-center justify-center rounded-lg text-pn hover:bg-neutral-200/60 hover:text-accent dark:hover:bg-neutral-900/60 dark:hover:text-accent transition"
+          className="w-9 h-9 flex items-center justify-center rounded-lg text-pn hover:bg-pn/5 hover:text-accent dark:hover:text-accent transition"
         >
           <Plus size={18} />
         </button>
@@ -230,7 +248,7 @@ export function CollapsedSidebar({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${updateTipLabel} (v${updateVersion})`}
-            className="relative w-9 h-9 flex items-center justify-center rounded-lg text-neutral-500 hover:bg-neutral-200/60 hover:text-accent dark:text-neutral-400 dark:hover:bg-neutral-900/60 dark:hover:text-accent transition"
+            className="relative w-9 h-9 flex items-center justify-center rounded-lg text-pn-muted hover:bg-pn/5 hover:text-accent dark:hover:text-accent transition"
           >
             <Devices size={16} />
             {/* surface-0, not surface-1: this rail sits on the darker column. */}
@@ -244,7 +262,7 @@ export function CollapsedSidebar({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={t('tagsRail.help')}
-            className="w-9 h-9 flex items-center justify-center rounded-lg text-neutral-500 hover:bg-neutral-200/60 hover:text-accent dark:text-neutral-400 dark:hover:bg-neutral-900/60 dark:hover:text-accent transition"
+            className="w-9 h-9 flex items-center justify-center rounded-lg text-pn-muted hover:bg-pn/5 hover:text-accent dark:hover:text-accent transition"
           >
             <Question size={16} />
           </a>
@@ -258,7 +276,7 @@ export function CollapsedSidebar({
           type="button"
           onClick={onExpand}
           aria-label={t('collapsedSidebar.expandSidebar')}
-          className="w-9 h-9 flex items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-200/60 hover:text-accent dark:text-neutral-600 dark:hover:bg-neutral-900/60 dark:hover:text-accent transition"
+          className="w-9 h-9 flex items-center justify-center rounded-lg text-pn-muted hover:bg-pn/5 hover:text-accent dark:hover:text-accent transition"
         >
           <CaretRight size={16} />
         </button>

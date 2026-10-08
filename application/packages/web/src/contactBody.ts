@@ -495,6 +495,7 @@ export function formatContactDate(value: string, locale: string): string {
     const opts: Intl.DateTimeFormatOptions = d.year === null
       ? { day: 'numeric', month: 'long', timeZone: 'UTC' }
       : { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' };
+    // date-ok: the caller passes dateLocale(), and a date with no year needs its own options
     return new Intl.DateTimeFormat(locale, opts).format(date);
   } catch {
     return value;

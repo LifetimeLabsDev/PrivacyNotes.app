@@ -15,7 +15,7 @@ title: Willkommen bei PrivacyNotes
 
 Klick ans Ende dieser Zeile und tipp ein Wort. Die Notiz speichert sich selbst. Es gibt keinen Speichern-Knopf.
 
-Die Leiste oben ändert, wie Text aussieht: **fett**, *kursiv*, Überschriften, Checklisten, <span style="color: #f08c00">Farben</span>, <span style="font-size: 1.25em; font-family: ui-serif, Georgia, Cambria, serif">Schriften</span>, Links.
+Die Leiste oben ändert, wie Text aussieht: **fett**, *kursiv*, Überschriften, Aufgabenlisten, <span style="color: #f08c00">Farben</span>, <span style="font-size: 1.25em; font-family: ui-serif, Georgia, Cambria, serif">Schriften</span>, Links.
 
 ## Drei Notizen, die sich lohnen
 

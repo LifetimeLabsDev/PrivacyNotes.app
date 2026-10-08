@@ -19,7 +19,7 @@ import { ContactForm, withTrailingBlank } from './ContactForm';
 import { ContactChip } from './NoteRow';
 import { useCopyToClipboard } from './clipboard';
 import { openExternal } from './openExternal';
-import { activeLocale } from './languages';
+import { dateLocale } from './intlFormat';
 import { HoverLabel } from './HoverLabel';
 import { ArrowSquareOut, At, Cake, Calendar, CaretDown, ChatCircle, EnvelopeSimple, Globe, MapPin, Phone, User, Users } from './icons';
 import { DETAIL_COLUMN, DETAIL_TILE_PX, DetailAction, DetailCopyAction, DetailGroup, DetailHero, DetailLink, DetailNotes, DetailRow } from './detailPane';
@@ -211,7 +211,7 @@ function ContactView({ note, contact, locked, onEdit }: {
   const { t } = useTranslation('shell');
   const { copy, copied } = useCopyToClipboard();
   const [extrasOpen, setExtrasOpen] = useState(false);
-  const locale = activeLocale();
+  const locale = dateLocale();
   const name = contactDisplayName(note.title, contact) || t('contacts.unnamed');
   const subtitle = [contact.jobTitle.trim(), contact.org.trim()].filter(Boolean).join(', ');
   const labelText = (label: string) => (label ? t(`contacts.labels.${label}`, { defaultValue: label }) : '');
@@ -258,7 +258,7 @@ function ContactView({ note, contact, locked, onEdit }: {
           <ContactChip name={name} initials={contactInitialsFor(note.title, contact)} photo={contact.photo} size={DETAIL_TILE_PX} />
         )}
         title={name}
-        subtitle={subtitle ? <div className="text-sm text-neutral-500 dark:text-neutral-400 truncate" dir="auto">{subtitle}</div> : undefined}
+        subtitle={subtitle ? <div className="text-sm text-pn-muted truncate" dir="auto">{subtitle}</div> : undefined}
         onEdit={locked ? undefined : onEdit}
         editLabel={t('common:actions.edit')}
       />
@@ -360,21 +360,21 @@ function ContactView({ note, contact, locked, onEdit }: {
             type="button"
             onClick={() => setExtrasOpen((v) => !v)}
             aria-expanded={extrasOpen}
-            className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-neutral-600 dark:text-neutral-300"
+            className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-pn-soft"
           >
             <CaretDown size={12} className={`shrink-0 transition-transform ${extrasOpen ? '' : '-rotate-90'}`} aria-hidden="true" />
             {t('contacts.alsoInFile')}
-            <span className="ms-auto text-xs text-neutral-400">{t('contacts.extrasCount', { count: contact.extras.length })}</span>
+            <span className="ms-auto text-xs text-pn-muted">{t('contacts.extrasCount', { count: contact.extras.length })}</span>
           </button>
           {extrasOpen && (
             <div className="px-3 pb-3 flex flex-col gap-1">
               {contact.extras.map((x, i) => (
                 <div key={i} className="flex gap-3 text-xs">
-                  <span className="shrink-0 w-36 truncate font-mono text-neutral-500 dark:text-neutral-400" dir="ltr">{x.name}</span>
-                  <span className="min-w-0 break-all text-neutral-700 dark:text-neutral-300" dir="auto">{x.value}</span>
+                  <span className="shrink-0 w-36 truncate font-mono text-pn-muted" dir="ltr">{x.name}</span>
+                  <span className="min-w-0 break-all text-pn-soft" dir="auto">{x.value}</span>
                 </div>
               ))}
-              <p className="mt-1 text-[11px] text-neutral-400 dark:text-neutral-500">{t('contacts.extrasNote')}</p>
+              <p className="mt-1 text-[11px] text-pn-muted">{t('contacts.extrasNote')}</p>
             </div>
           )}
         </div>

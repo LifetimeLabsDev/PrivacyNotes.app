@@ -14,7 +14,8 @@
     "loadFailed": "Bild konnte nicht geladen werden",
     "notFound": "Bild nicht gefunden",
     "saveFailed": "Das Speichern ist fehlgeschlagen, die Datei kann also leer oder unvollständig sein.",
-    "viewAria": "Bild ansehen"
+    "viewAria": "Bild ansehen",
+    "picturesLeftOut": "Einige Bilder wurden nicht eingefügt. Kopiere ein Bild einzeln, um es einzufügen."
   },
   "attachment": {
     "fallbackName": "Anhang",

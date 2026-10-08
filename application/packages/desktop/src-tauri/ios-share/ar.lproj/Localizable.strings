@@ -1,0 +1,3 @@
+"saved" = "تم الحفظ في PrivacyNotes";
+"failed" = "تعذّر الحفظ في PrivacyNotes";
+"tooLarge" = "الملف كبير جدًا. الحد الأقصى {{limit}} ميغابايت لكل ملف.";

@@ -7,7 +7,7 @@
     "heading": "Titre",
     "taskList": "Liste de tâches",
     "bulletList": "Liste à puces",
-    "addLink": "Ajouter un lien (Cmd+Shift+K)",
+    "addLink": "Ajouter un lien ({{keys}})",
     "noteLink": "Lier à une autre note (ou tape [[)",
     "numberedList": "Liste numérotée",
     "textColor": "Couleur du texte",
@@ -34,7 +34,12 @@
     "blockMath": "Formule en bloc",
     "align": "Alignement",
     "font": "Police",
-    "pictureFromFiles": "Image depuis Fichiers"
+    "pictureFromFiles": "Image depuis Fichiers",
+    "date": "Date",
+    "dateTime": "Date et heure",
+    "footnote": "Note de bas de page",
+    "spoiler": "Spoiler",
+    "copyBox": "Bloc à copier"
   },
   "align": {
     "left": "Aligner à gauche",
@@ -118,7 +123,7 @@
     "next": "Correspondance suivante (Entrée)",
     "nextTitle": "Suivant (Entrée)",
     "close": "Fermer la recherche",
-    "closeTitle": "Fermer (⌘F)",
+    "closeTitle": "Fermer ({{keys}})",
     "replacePlaceholder": "Remplacer par",
     "replaceLabel": "Remplacer par",
     "replace": "Remplacer",
@@ -128,7 +133,7 @@
     "caseSensitive": "Respecter la casse",
     "caseSensitiveTitle": "Respecter la casse",
     "closeReplace": "Fermer rechercher et remplacer",
-    "closeReplaceTitle": "Fermer (⌥⌘F)",
+    "closeReplaceTitle": "Fermer ({{keys}})",
     "replacedCount_one": "{{count}} remplacée",
     "replacedCount_other": "{{count}} remplacées"
   },
@@ -138,7 +143,14 @@
     "title": "Plan",
     "ariaLabel": "Plan de la note",
     "hide": "Masquer le plan",
-    "hideTitle": "Masquer le plan (Échap)"
+    "hideTitle": "Masquer le plan (Échap)",
+    "copyHeadingLink": "Copier le lien vers le titre",
+    "copied": "Copié"
+  },
+  "bodyMenu": {
+    "cut": "Couper",
+    "sortAsc": "Trier les lignes de A à Z",
+    "sortDesc": "Trier les lignes de Z à A"
   },
   "topRow": {
     "add": "Ajouter une ligne en haut"
@@ -177,6 +189,8 @@
     "words_other": "{{formatted}} mots",
     "characters_one": "{{formatted}} caractère",
     "characters_other": "{{formatted}} caractères",
+    "tasksChecked_one": "{{done}} sur {{formatted}} coché",
+    "tasksChecked_other": "{{done}} sur {{formatted}} cochés",
     "tooLargeToSync": ", peut-être trop volumineux pour se synchroniser, scinde-la en une nouvelle note",
     "veryLong": ", très long, l'édition peut être lente et saccadée",
     "gettingLong": ", devient long, peut ralentir sur les appareils plus lents",
@@ -184,19 +198,49 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "Aucune note correspondante",
-    "create": "Créer « {{query}} »"
+    "create": "Créer « {{query}} »",
+    "headingsIn": "Titres dans {{title}}",
+    "noHeadingMatches": "Aucun titre correspondant"
+  },
+  "copyBox": {
+    "placeholder": "Texte à copier en un clic"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}+clic pour copier",
+    "copied": "Copié"
   },
   "codeBlock": {
     "copy": "Copier",
     "copied": "Copié",
     "copyFailed": "Échec",
-    "wrap": "Retour automatique à la ligne"
+    "wrap": "Retour automatique à la ligne",
+    "showAll_one": "Afficher {{count}} ligne",
+    "showAll_many": "Afficher les {{count}} lignes",
+    "showAll_other": "Afficher les {{count}} lignes",
+    "showLess": "Afficher moins",
+    "plainText": "Texte brut",
+    "language": "Langage du code : {{name}}",
+    "searchLanguages": "Rechercher un langage",
+    "placeholder": "Tape ou colle du code. Pour les couleurs, choisis un langage au-dessus."
   },
   "math": {
     "sourceLabel": "Source LaTeX"
   },
   "noteLink": {
     "open": "Ouvrir la note",
-    "remove": "Retirer le lien"
+    "remove": "Retirer le lien",
+    "linkHeading": "Lier à un titre...",
+    "headingNotFound": "Titre introuvable",
+    "headingsLocked": "Déverrouille cette note pour voir ses titres",
+    "noHeadings": "Cette note n'a aucun titre"
+  },
+  "footnote": {
+    "placeholder": "Texte de la note",
+    "back": "Retour au texte",
+    "unused": "Non utilisée dans le texte",
+    "remove": "Supprimer la note",
+    "missing": "Pas de texte de note. Clique pour l’ajouter.",
+    "ariaRef": "Note {{n}}",
+    "ariaSection": "Notes de bas de page"
   }
 }

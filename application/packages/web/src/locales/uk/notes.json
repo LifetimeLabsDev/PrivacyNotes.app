@@ -10,7 +10,8 @@
     "empty": "Порожньо",
     "noContent": "Немає вмісту",
     "notBackedUp": "Резервної копії немає",
-    "archived": "В архіві"
+    "archived": "В архіві",
+    "entryDate": "Дата запису"
   },
   "header": {
     "new": "Створити",
@@ -19,7 +20,9 @@
     "trash": "Кошик"
   },
   "folderChip": {
-    "clear": "Очистити фільтр папки: {{folder}}"
+    "clear": "Очистити фільтр папки: {{folder}}",
+    "subfolders": "Підпапки",
+    "subfoldersLabel": "Включити підпапки"
   },
   "tagChip": {
     "clear": "Очистити фільтр тегу: {{tag}}"
@@ -74,7 +77,7 @@
     "notes": "Нотаток ще немає.",
     "archive": "Архів порожній.",
     "filtered": "Жоден елемент не відповідає фільтрам.",
-    "clearFilters": "Очистіть фільтри",
+    "clearFilters": "Очистити фільтри",
     "filteredAfter": "щоб їх показати."
   },
   "headerLabel": {
@@ -195,6 +198,8 @@
     "currentHtmlDesc": "Для друку: Markdown, відображений на білій сторінці.",
     "printTitle": "Друк / Зберегти як PDF",
     "printDesc": "Відкриває діалог друку. Збережіть як PDF або надішліть на принтер.",
+    "printTextTitle": "Друк лише тексту",
+    "printTextDesc": "Залишає заголовок. Прибирає дату, папку й теги.",
     "burnTitle": "Поділитися й спалити після прочитання",
     "burnDesc": "Опублікуйте цю нотатку як посилання для одноразового перегляду. Посилання самознищується після прочитання. Ваша нотатка залишається в безпеці у вашому обліковому записі."
   },
@@ -212,7 +217,10 @@
     "newNote": "Створити",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Відкрити статистику",
+    "journalCalendar": "Календар щоденника",
     "words": "Слів",
     "zen": "Дзен",
     "appearance": "Вигляд",
@@ -236,7 +244,7 @@
     "appearanceLabel": "Вигляд",
     "helpLabel": "Довідка",
     "aboutLabel": "Про застосунок",
-    "languageLabel": "Мова",
+    "languageLabel": "Дата й мова",
     "languageDesc": "Виберіть мову інтерфейсу PrivacyNotes."
   },
   "importStore": {
@@ -248,13 +256,13 @@
   },
   "bulkTrash": {
     "title": "Перемістити в кошик",
-    "body_one": "Перемістити <highlight>{{count}} елемент</highlight> у кошик? Пізніше його можна буде відновити.",
+    "body_one": "Перемістити <highlight>{{count}} елемент</highlight> у кошик? Пізніше можна буде відновити.",
     "body_few": "Перемістити <highlight>{{count}} елементи</highlight> у кошик? Пізніше їх можна буде відновити.",
     "body_many": "Перемістити <highlight>{{count}} елементів</highlight> у кошик? Пізніше їх можна буде відновити.",
     "body_other": "Перемістити <highlight>{{count}} елемента</highlight> у кошик? Пізніше їх можна буде відновити.",
     "readOnlyTitle": "Лише для читання",
     "readOnlyAcknowledge": "Зрозуміло",
-    "readOnlyBlocked_one": "<highlight>{{count}} елемент</highlight> доступний лише для читання, тому його не можна перемістити в кошик. Спершу вимкніть режим «лише для читання» в меню параметрів нотатки.",
+    "readOnlyBlocked_one": "<highlight>{{count}} елемент</highlight> доступний лише для читання, тому перемістити в кошик не можна. Спершу вимкніть режим «Лише для читання» в меню параметрів нотатки.",
     "readOnlyBlocked_few": "Усі <highlight>{{count}} елементи</highlight> доступні лише для читання, тому жоден із них не можна перемістити в кошик. Спершу вимкніть режим «лише для читання» в меню параметрів нотатки.",
     "readOnlyBlocked_many": "Усі <highlight>{{count}} елементів</highlight> доступні лише для читання, тому жоден із них не можна перемістити в кошик. Спершу вимкніть режим «лише для читання» в меню параметрів нотатки.",
     "readOnlyBlocked_other": "Усі <highlight>{{count}} елемента</highlight> доступні лише для читання, тому жоден із них не можна перемістити в кошик. Спершу вимкніть режим «лише для читання» в меню параметрів нотатки.",
@@ -262,6 +270,14 @@
     "readOnlySkipped_few": "<highlight>{{count}} елементи</highlight> доступні лише для читання й залишаться на місці.",
     "readOnlySkipped_many": "<highlight>{{count}} елементів</highlight> доступні лише для читання й залишаться на місці.",
     "readOnlySkipped_other": "<highlight>{{count}} елемента</highlight> доступні лише для читання й залишаться на місці."
+  },
+  "deleteCheckedTasks": {
+    "title": "Видалити позначені пункти?",
+    "confirm": "Видалити",
+    "body_one": "З цієї нотатки буде видалено <highlight>{{count}} пункт</highlight>, разом із вкладеними. Цю дію не можна скасувати.",
+    "body_few": "З цієї нотатки буде видалено <highlight>{{count}} пункти</highlight>, разом із вкладеними. Цю дію не можна скасувати.",
+    "body_many": "З цієї нотатки буде видалено <highlight>{{count}} пунктів</highlight>, разом із вкладеними. Цю дію не можна скасувати.",
+    "body_other": "З цієї нотатки буде видалено <highlight>{{count}} пункту</highlight>, разом із вкладеними. Цю дію не можна скасувати."
   },
   "bulkDelete": {
     "body_one": "Остаточно видалити <highlight>{{count}} нотатку</highlight>? Цю дію не можна скасувати.",
@@ -284,7 +300,7 @@
     "deleteBody_few": "Прибрати тег <highlight>«{{tag}}»</highlight> з <highlight>{{count}} нотаток</highlight>? Самі нотатки не буде видалено.",
     "deleteBody_many": "Прибрати тег <highlight>«{{tag}}»</highlight> з <highlight>{{count}} нотаток</highlight>? Самі нотатки не буде видалено.",
     "deleteBody_other": "Прибрати тег <highlight>«{{tag}}»</highlight> з <highlight>{{count}} нотатки</highlight>? Самі нотатки не буде видалено.",
-    "deleteWithNotesBody_one": "Видалити тег <highlight>«{{tag}}»</highlight> і перемістити <highlight>{{count}} нотатку</highlight> в кошик? Звідти її можна буде відновити.",
+    "deleteWithNotesBody_one": "Видалити тег <highlight>«{{tag}}»</highlight> і перемістити <highlight>{{count}} нотатку</highlight> в кошик? Відновити можна буде з кошика.",
     "deleteWithNotesBody_few": "Видалити тег <highlight>«{{tag}}»</highlight> і перемістити <highlight>{{count}} нотатки</highlight> в кошик? Звідти їх можна буде відновити.",
     "deleteWithNotesBody_many": "Видалити тег <highlight>«{{tag}}»</highlight> і перемістити <highlight>{{count}} нотаток</highlight> в кошик? Звідти їх можна буде відновити.",
     "deleteWithNotesBody_other": "Видалити тег <highlight>«{{tag}}»</highlight> і перемістити <highlight>{{count}} нотатки</highlight> в кошик? Звідти їх можна буде відновити."

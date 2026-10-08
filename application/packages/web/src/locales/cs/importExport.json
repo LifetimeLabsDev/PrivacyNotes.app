@@ -55,7 +55,7 @@
     "standardNotes": "Dešifrovaná záloha .zip nebo .txt ze Standard Notes (File > Export > Decrypted).",
     "obsidian": "Vault Obsidianu jako .zip. Zachová štítky, [[note links]], strukturu složek, inline #tagy i vložené obrázky a soubory.",
     "notesnook": "Export z Notesnooku jako .zip. Při exportu zvol HTML, aby se zachovalo formátování, zápisníky, značky a přílohy.",
-    "joplin": "Soubor .jex z File > Export all > „JEX - Joplin Export File“. Zápisníky se stanou složkami a značky, úkoly, note-linky i přílohy přejdou s nimi.",
+    "joplin": "Soubor .jex z File > Export all > „JEX - Joplin Export File“. Zápisníky se stanou složkami a značky, úkoly, odkazy na poznámky i přílohy přejdou s nimi.",
     "upnote": "V UpNote: Settings > Backup > Backup now, pak zabal do zipu všechno ve složce se zálohou. Zachová zápisníky, značky, připnutí, note-linky, formátování a přílohy. Fungují i exporty jednotlivých poznámek z mobilních aplikací - zvol „Export to HTML“.",
     "markdownFolder": "Soubory .md nebo .txt jednotlivě, nebo jako .zip. Zabalená složka si udrží podsložky a vezme s sebou obrázky i přílohy.",
     "markdownApp": "Tyhle poznámky už jsou soubory Markdown ve složce. Přetáhni tu složku jako .zip a přijdou s ní podsložky, obrázky i #štítky.",
@@ -110,7 +110,7 @@
     "untagged": "Bez značek",
     "items": "Položky",
     "previewLabel": "Náhled",
-    "andMore": "… a {{count}} dalších",
+    "andMore": "… a další ({{count}})",
     "headsUpLabel": "Pozor:",
     "duplicateWarning": "import je přidá jako nové poznámky. Když ho spustíš dvakrát, budeš mít duplikáty. Automatické slučování duplikátů zatím nemáme.",
     "duplicateSkipNote": "záložky, které už máš uložené, se přeskočí, takže druhý průchod nic nezduplikuje.",
@@ -210,6 +210,7 @@
     "both": "{{pictures}} a {{files}}"
   },
   "upload": {
+    "discard": "Zahodit",
     "completeTitle": "Nahrávání dokončeno",
     "failedTitle": "Nahrávání selhalo",
     "partialTitle": "{{done}} nahráno, {{failed}} selhalo",
@@ -219,6 +220,12 @@
     "statusFailed": "Selhalo",
     "errorStorageFull": "Úložiště je plné - uvolni místo nebo přidej úložiště, aby bylo možné soubor nahrát.",
     "errorStorageFullKept": "Nevejde se do úložiště - zůstává na tomto zařízení. Jakmile se uvolní místo, soubor se synchronizuje.",
+    "errorTooLarge": "Soubor je příliš velký ({{size}}). Maximum je {{limit}} MB.",
+    "errorTooLargeFree": "Soubor je příliš velký ({{size}}). Maximum je {{limit}} MB v bezplatném tarifu.",
+    "batchTitle_one": "{{count}} soubor",
+    "batchTitle_few": "{{count}} soubory",
+    "batchTitle_many": "{{count}} souboru",
+    "batchTitle_other": "{{count}} souborů",
     "statusUploading": "Nahrává se...",
     "statusWaiting": "Čeká",
     "summaryDone": "{{count}} hotovo",
@@ -241,5 +248,13 @@
   },
   "saveErrors": {
     "shortWrite": "Uložilo se jen {{written}} z {{expected}} bajtů, takže je soubor neúplný. Zkus to znovu a ulož do úložiště zařízení místo do složky v cloudu."
+  },
+  "shareSheet": {
+    "title_one": "Do PrivacyNotes byla sdílena {{count}} položka",
+    "title_few": "Do PrivacyNotes byly sdíleny {{count}} položky",
+    "title_many": "Do PrivacyNotes bylo sdíleno {{count}} položky",
+    "title_other": "Do PrivacyNotes bylo sdíleno {{count}} položek",
+    "line": "Nic se neuloží, dokud nevybereš.",
+    "saveAll": "Uložit vše"
   }
 }

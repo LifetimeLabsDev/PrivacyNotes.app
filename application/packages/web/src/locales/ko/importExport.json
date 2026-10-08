@@ -34,7 +34,7 @@
     "photosLabel": "사진 가져오기",
     "photosDesc_other": "사진 {{count}}장, 앱이 줄인 뒤 약 {{size}}. 남은 공간 {{free}}의 {{pct}}%예요.",
     "photosDescNoQuota_other": "사진 {{count}}장, 앱이 줄인 뒤 약 {{size}}.",
-    "photosTooBig_other": "사진 {{count}}장({{size}})을 넣을 공간이 부족해서 사진은 빠져요. 나머지는 모두 가져와요. {{shortfall}}을 비우거나 저장 공간을 추가한 뒤 다시 가져오면 사진도 들어와요."
+    "photosTooBig_other": "사진 {{count}}장({{size}})을 넣을 공간이 부족해서 사진은 빠져요. 나머지는 모두 가져와요. {{shortfall}} 이상을 비우거나 저장 공간을 추가한 뒤 다시 가져오면 사진도 들어와요."
   },
   "sourceDesc": {
     "googleKeep": "Google Takeout .zip(Keep 폴더) 또는 단일 .json 노트. 체크리스트는 기본 할 일 목록으로 가져와요.",
@@ -46,7 +46,7 @@
     "standardNotes": "Standard Notes의 복호화된 .zip 또는 .txt 백업(File > Export > Decrypted).",
     "obsidian": "Obsidian 볼트를 .zip으로. 태그, [[note links]], 폴더 구조, 본문 속 #태그, 삽입한 이미지와 파일을 유지해요.",
     "notesnook": "Notesnook 내보내기를 .zip으로. 내보낼 때 HTML을 선택하면 서식, 노트북, 태그, 첨부 파일이 유지돼요.",
-    "joplin": "File > Export all > \"JEX - Joplin Export File\"로 내보낸 .jex 파일. 노트북은 폴더가 되고, 태그, 할 일, note-link, 첨부 파일도 함께 와요.",
+    "joplin": "File > Export all > \"JEX - Joplin Export File\"로 내보낸 .jex 파일. 노트북은 폴더가 되고, 태그, 할 일, 노트 링크, 첨부 파일도 함께 와요.",
     "upnote": "UpNote에서 Settings > Backup > Backup now를 실행한 다음, 백업 폴더 안의 모든 것을 zip으로 압축하세요. 노트북, 태그, 고정, note-link, 서식, 첨부 파일이 유지돼요. 휴대폰 앱의 노트별 내보내기도 받아요. \"Export to HTML\"을 선택하세요.",
     "markdownFolder": ".md 또는 .txt 파일을 하나씩, 또는 .zip으로. 압축한 폴더는 하위 폴더를 그대로 두고 이미지와 첨부 파일도 함께 가져와요.",
     "markdownApp": "이 노트들은 이미 폴더 안의 Markdown 파일이에요. 그 폴더를 .zip으로 놓으면 하위 폴더와 이미지, #태그가 같이 들어와요.",
@@ -165,6 +165,7 @@
     "both": "{{pictures}}과(와) {{files}}"
   },
   "upload": {
+    "discard": "버리기",
     "completeTitle": "업로드 완료",
     "failedTitle": "업로드 실패",
     "partialTitle": "{{done}}개 업로드, {{failed}}개 실패",
@@ -173,6 +174,9 @@
     "statusFailed": "실패",
     "errorStorageFull": "저장 공간이 가득 찼어요. 공간을 비우거나 스토리지를 추가하면 이 파일을 업로드할 수 있어요.",
     "errorStorageFullKept": "저장 공간에 들어가지 않아 이 기기에만 보관돼요. 공간이 생기면 동기화돼요.",
+    "errorTooLarge": "파일이 너무 커요({{size}}). 최대 {{limit}} MB까지 가능해요.",
+    "errorTooLargeFree": "파일이 너무 커요({{size}}). 무료 플랜은 최대 {{limit}} MB까지 가능해요.",
+    "batchTitle_other": "파일 {{count}}개",
     "statusUploading": "업로드 중...",
     "statusWaiting": "대기 중",
     "summaryDone": "{{count}}개 완료",
@@ -193,5 +197,10 @@
   },
   "saveErrors": {
     "shortWrite": "{{expected}}바이트 중 {{written}}바이트만 저장돼서 파일이 불완전해요. 클라우드 폴더 대신 기기 저장소에 저장해서 다시 시도해 보세요."
+  },
+  "shareSheet": {
+    "title_other": "항목 {{count}}개가 PrivacyNotes로 공유되었어요",
+    "line": "선택하기 전에는 아무것도 저장되지 않아요.",
+    "saveAll": "모두 저장"
   }
 }

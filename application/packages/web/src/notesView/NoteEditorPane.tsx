@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { UpgradeTrigger } from '../UpgradeModal';
 import type { Dispatch, ReactNode, RefObject, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +27,8 @@ import { hasStructuredBody, isKnownNoteType, isWeekJournal, shareSurface, toLoca
 import type { View } from '../views';
 import { WordCount } from '../WordCount';
 import { TrackerPills } from '../TrackerPills';
+import { APP_KEYS, matchesKey } from '../shortcutMatch';
+import { registerEditorCommand } from '../editorCommands';
 import type { JournalTrackerData } from '../trackerTypes';
 import { ShareMenu } from './ShareMenu';
 import { NoteQuickActions, HeaderDivider, type QuickActionsTier } from './NoteQuickActions';
@@ -48,7 +50,7 @@ type Authed = Extract<AuthState, { status: 'authenticated' }>;
 const HEADER_BTN_BASE =
   'shrink-0 flex items-center justify-center h-8 rounded-md transition disabled:opacity-30 disabled:cursor-not-allowed';
 const HEADER_BTN_REST =
-  'text-neutral-600 dark:text-neutral-300 enabled:active:scale-95 enabled:[@media(hover:hover)]:hover:text-accent enabled:[@media(hover:hover)]:hover:bg-neutral-200 enabled:[@media(hover:hover)]:dark:hover:bg-neutral-800';
+  'text-pn-soft enabled:active:scale-95 enabled:[@media(hover:hover)]:hover:text-accent enabled:[@media(hover:hover)]:hover:bg-pn/10';
 const HEADER_BTN = `${HEADER_BTN_BASE} w-8 ${HEADER_BTN_REST}`;
 /**
  * The same button, 24px wide instead of 32. For a PAIR that reads as one
@@ -68,8 +70,8 @@ const HEADER_ICON = 18;
  */
 const ZEN_BTN_BOX =
   'shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md border transition';
-const ZEN_BTN_REST = `${ZEN_BTN_BOX} border-divider bg-surface-2 text-neutral-600 dark:text-neutral-300 hover:text-accent hover:border-accent/50`;
-const ZEN_BTN_ON = `${ZEN_BTN_BOX} border-accent/50 bg-accent/10 text-accent`;
+const ZEN_BTN_REST = `${ZEN_BTN_BOX} border-divider bg-surface-2 text-pn-soft hover:text-accent hover:border-accent/50`;
+const ZEN_BTN_ON = `${ZEN_BTN_BOX} border-accent/50 bg-accent/10 text-accent-strong`;
 
 /**
  * Cycles the editor's reading column: default, wide, full. The cap itself
@@ -206,6 +208,7 @@ export interface NoteEditorPaneProps {
   handleTitleBlur: (id: string) => void;
   handleBodyChange: (id: string, body: string) => Promise<void>;
   handleTagsChange: (id: string, tags: string[]) => Promise<void>;
+  handleSelectTag: (tag: string | null) => Promise<void>;
   handleTrackersChange: (id: string, trackers: JournalTrackerData) => Promise<void>;
   handleVaultSave: (id: string, body: string, trackers?: Record<string, unknown>) => Promise<boolean>;
 
@@ -213,6 +216,10 @@ export interface NoteEditorPaneProps {
   handleHistory: (action: 'undo' | 'redo') => void;
   handleToggleStar: (id: string, starred: boolean) => Promise<void>;
   handleToggleArchive: (id: string, archived: boolean) => Promise<void>;
+  /** Move a journal entry to another day (`YYYY-MM-DD`). */
+  setJournalDate: (id: string, day: string) => Promise<void>;
+  /** The days that hold a journal entry, for the Entry date calendar. */
+  journalDays: ReadonlyMap<string, string>;
   /** Trash the open note through the shared confirm modal. */
   requestTrash: (ids: string[]) => void;
   handleRestore: (id: string) => Promise<void>;
@@ -220,6 +227,10 @@ export interface NoteEditorPaneProps {
   /** True when the note has more than one task and at least one is checked. */
   canUncheckAllTasks: (n: LocalNote) => boolean;
   handleUncheckAllTasks: (n: LocalNote) => Promise<void>;
+  canDeleteCheckedTasks: (n: LocalNote) => boolean;
+  handleDeleteCheckedTasks: (n: LocalNote) => void;
+  canSortTasksByStatus: (n: LocalNote) => boolean;
+  handleSortTasksByStatus: (n: LocalNote) => Promise<void>;
   handleSetLocked: (id: string, locked: boolean) => Promise<void>;
   handleSetPinProtected: (id: string, pinProtected: boolean) => Promise<void>;
   handleBurnShare: (n: LocalNote) => Promise<void>;
@@ -228,7 +239,7 @@ export interface NoteEditorPaneProps {
   setShowShareMenu: Dispatch<SetStateAction<boolean>>;
   exportSingleMarkdown: (n: LocalNote) => Promise<void> | void;
   exportSingleHtml: (n: LocalNote) => Promise<void> | void;
-  printNote: (n: LocalNote) => Promise<void> | void;
+  printNote: (n: LocalNote, titleOnly?: boolean) => Promise<void> | void;
 
   showNoteOptions: boolean;
   setShowNoteOptions: Dispatch<SetStateAction<boolean>>;
@@ -322,17 +333,24 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     handleTitleBlur,
     handleBodyChange,
     handleTagsChange,
+    handleSelectTag,
     handleTrackersChange,
     handleVaultSave,
     handleCloseEditor,
     handleHistory,
     handleToggleStar,
     handleToggleArchive,
+    setJournalDate,
+    journalDays,
     requestTrash,
     handleRestore,
     handleDuplicate,
     canUncheckAllTasks,
     handleUncheckAllTasks,
+    canDeleteCheckedTasks,
+    handleDeleteCheckedTasks,
+    canSortTasksByStatus,
+    handleSortTasksByStatus,
     handleSetLocked,
     handleSetPinProtected,
     handleBurnShare,
@@ -400,6 +418,23 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
    * the trash. Two entry points, one condition.
    */
   const canSwitchEditorMode = markdownBody && view !== 'trash' && selected.locked !== 1;
+  // Mod+Shift+M flips the open note between the two views, wherever the focus
+  // is, on the notes that offer the switch (GitHub #260).
+  const markdownKeyRef = useRef<(() => void) | null>(null);
+  markdownKeyRef.current = canSwitchEditorMode ? toggleEditorMode : null;
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (!markdownKeyRef.current || !matchesKey(e, APP_KEYS.markdownView)) return;
+      e.preventDefault();
+      markdownKeyRef.current();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+  useEffect(
+    () => (canSwitchEditorMode ? registerEditorCommand('markdownView', () => markdownKeyRef.current?.()) : undefined),
+    [canSwitchEditorMode],
+  );
   /** Where Share sits for this note: nowhere while it is gated (shareSurface). */
   const share = shareSurface(isNoteLocked(selected), zenMode || headerCompact);
   /**
@@ -625,7 +660,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           // breakpoint). Matching metrics is the only fix that holds
           // across the responsive title sizes; font-normal + muted
           // color keep it visually quiet.
-          className="pn-note-title flex-1 min-w-0 bg-transparent text-base sm:text-xl lg:text-2xl font-semibold tracking-tight focus:outline-none placeholder:text-neutral-400 dark:placeholder:text-neutral-700 placeholder:font-normal disabled:opacity-60 resize-none overflow-hidden leading-tight whitespace-nowrap [&::-webkit-scrollbar]:hidden"
+          className="pn-note-title flex-1 min-w-0 bg-transparent text-base sm:text-xl lg:text-2xl font-semibold tracking-tight focus:outline-none placeholder:text-pn-muted placeholder:font-normal disabled:opacity-60 resize-none overflow-hidden leading-tight whitespace-nowrap [&::-webkit-scrollbar]:hidden"
         />
         {/* Shortcuts into the "..." menu, which keeps every one of these
             rows at every width. They appear only on a header row wide
@@ -660,7 +695,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               <button
                 onClick={() => void handleRestore(selected.id)}
                 aria-label={t('editor.restore')}
-                className="ms-2 inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 hover:bg-emerald-500/10 transition shrink-0"
+                className="ms-2 inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 text-sm font-medium text-success hover:text-emerald-500 hover:bg-emerald-500/10 transition shrink-0"
               >
               <ArrowCounterClockwise size={18} />
               <span className="hidden sm:inline">{t('editor.restore')}</span>
@@ -670,7 +705,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               <button
                 onClick={() => setDeleteConfirm({ id: selected.id, title: selected.title || '' })}
                 aria-label={t('editor.deleteForever')}
-                className="ms-1 inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-500 hover:bg-red-500/10 transition shrink-0"
+                className="ms-1 inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 text-sm font-medium text-danger hover:text-red-500 hover:bg-red-500/10 transition shrink-0"
               >
                 <Trash size={18} />
                 <span className="hidden sm:inline">{t('editor.deleteForever')}</span>
@@ -762,7 +797,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               className={
                 zenMode
                   ? (showNoteOptions ? ZEN_BTN_ON : ZEN_BTN_REST)
-                  : `${HEADER_BTN_BASE} w-8 ${showNoteOptions ? 'text-accent bg-accent/15' : HEADER_BTN_REST}`
+                  : `${HEADER_BTN_BASE} w-8 ${showNoteOptions ? 'text-accent-strong bg-accent/15' : HEADER_BTN_REST}`
               }
           >
             <DotsThreeOutlineVertical size={HEADER_ICON} aria-hidden="true" />
@@ -789,6 +824,9 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               {...(share === 'menu' ? { onShare: () => setShowShareMenu(true) } : {})}
               onTrash={() => requestTrash([selected.id])}
               onConvertType={() => void convertNoteType()}
+              {...(selected.type === 'journal' && view !== 'trash'
+                ? { onSetJournalDate: (day: string) => void setJournalDate(selected.id, day), journalDays }
+                : {})}
               {...(noteColor
                 ? {
                     color: noteColor,
@@ -808,6 +846,12 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               {...(canSwitchEditorMode && canUncheckAllTasks(selected)
                 ? { onUncheckAllTasks: () => void handleUncheckAllTasks(selected) }
                 : {})}
+              {...(canSwitchEditorMode && canDeleteCheckedTasks(selected)
+                ? { onDeleteCheckedTasks: () => handleDeleteCheckedTasks(selected) }
+                : {})}
+              {...(canSwitchEditorMode && canSortTasksByStatus(selected)
+                ? { onSortTasksByStatus: () => void handleSortTasksByStatus(selected) }
+                : {})}
             />
           )}
         </div>
@@ -824,7 +868,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               type="button"
               onClick={() => setZenMode(false)}
               aria-label={t('zen.exitHover')}
-              className="ms-1 shrink-0 inline-flex items-center justify-center gap-1.5 h-8 w-8 sm:w-auto sm:px-3 rounded-md border border-divider bg-surface-2 text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:text-accent hover:border-accent/50 transition"
+              className="ms-1 shrink-0 inline-flex items-center justify-center gap-1.5 h-8 w-8 sm:w-auto sm:px-3 rounded-md border border-divider bg-surface-2 text-sm font-medium text-pn-soft hover:text-accent hover:border-accent/50 transition"
             >
               <X size={16} />
               <span className="hidden sm:inline">{t('zen.exit')}</span>
@@ -878,7 +922,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
            the menus still pin, protect, move and trash the item like any
            other. */
         <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-          <p className="max-w-sm text-[15px] text-neutral-500 dark:text-neutral-400">
+          <p className="max-w-sm text-[15px] text-pn-muted">
             {t('editor.unknownType')}
           </p>
         </div>
@@ -896,6 +940,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               tags={selected.tags}
               allTags={tagCounts.tags}
               onChange={(tags) => handleTagsChange(selected.id, tags)}
+              onSelectTag={(tag) => void handleSelectTag(tag)}
               onTabOut={() => {}}
               leading={folderChipFor(selected)}
             />
@@ -903,7 +948,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           {selected.locked === 1 && view !== 'trash' && (
             /* The same read-only hint the markdown editor shows - vault
                items and bookmarks were silently uneditable without it. */
-            <div className="px-6 pt-3 flex items-center gap-2 text-[13px] text-amber-600 dark:text-amber-500">
+            <div className="px-6 pt-3 flex items-center gap-2 text-[13px] text-warning">
               <PencilSimpleSlash size={13} className="shrink-0" aria-hidden="true" />
               <span className="truncate">{t('editor.readOnlyToggle')}</span>
               <span className="inline-flex items-center gap-1 shrink-0">
@@ -964,6 +1009,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               tags={selected.tags}
               allTags={tagCounts.tags}
               onChange={(tags) => handleTagsChange(selected.id, tags)}
+              onSelectTag={(tag) => void handleSelectTag(tag)}
               onTabOut={() => editorRef.current?.focus()}
               leading={folderChipFor(selected)}
               trailing={
@@ -1061,7 +1107,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                         onClick={toggleToolbar}
                         aria-label={toolbarVisible ? t('editor.hideToolbar') : t('editor.showToolbar')}
                         aria-pressed={toolbarVisible}
-                        className={`${HEADER_BTN_BASE} w-8 ${toolbarVisible ? 'text-accent bg-accent/15' : HEADER_BTN_REST}`}
+                        className={`${HEADER_BTN_BASE} w-8 ${toolbarVisible ? 'text-accent-strong bg-accent/15' : HEADER_BTN_REST}`}
                       >
                         {/* 20, not the row's 18: the markdown mark's ink is
                             roughly 2:1.25 inside a square viewBox, so at the
@@ -1101,7 +1147,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             <WeekInReview notes={notes} medications={userSettings.medications} isNoteLocked={isNoteLocked} />
           )}
           {selected.locked === 1 && view !== 'trash' && (
-            <div className="mx-4 sm:mx-6 mt-1 mb-3 flex items-center gap-2 text-[13px] text-amber-600 dark:text-amber-500">
+            <div className="mx-4 sm:mx-6 mt-1 mb-3 flex items-center gap-2 text-[13px] text-warning">
               <PencilSimpleSlash size={13} className="shrink-0" aria-hidden="true" />
               <span className="truncate">
                 {t('editor.readOnlyToggle')}
@@ -1148,6 +1194,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                   : undefined}
                 fileNote={selected.type === 'file'}
                 bodyControls={bodyControls}
+                sinkCheckedTasks={userSettings.sinkCheckedTasks}
               />
             )}
             {/* 2-col footer: word/char counts left, editor-mode link right.
@@ -1209,7 +1256,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                   <button
                     type="button"
                     onClick={toggleEditorMode}
-                    className="shrink-0 select-none inline-flex items-center gap-1.5 text-xs text-neutral-400 dark:text-neutral-600 hover:text-neutral-600 dark:hover:text-neutral-400 transition group/mode"
+                    className="shrink-0 select-none inline-flex items-center gap-1.5 text-xs text-pn-muted hover:text-pn-soft transition group/mode"
                   >
                     {/* The same two glyphs the note options menu shows for this
                         toggle, and the same state decides which: one control in

@@ -33,8 +33,21 @@
 //! which costs nothing. The one place it shows is an iPad in Split View, where
 //! the unfocused pane resigns active and goes black while the other pane is
 //! used. That is the accepted cost of the hook that works.
+//!
+//! The capture block on iOS has no API either. It uses the one thing iOS keeps
+//! out of every screenshot and recording, the content of a password field: the
+//! app's window layer is moved inside the drawing layer of a secure text field,
+//! so a capture shows the field's black background instead (the shield below).
+//! That is undocumented and an iOS update can end it without a sign, which the
+//! setting's own line allows for. Where the shield cannot be put in place, the
+//! cover above stays up while the screen is recorded or mirrored instead. On
+//! macOS and Windows the capture block is a window property, set by
+//! `set_capture_block` below. Spec: ops/docs/plans/app-switcher-privacy-screen.md (section 14)
 
 use std::sync::atomic::{AtomicBool, Ordering};
+
+#[cfg(target_os = "ios")]
+use std::sync::atomic::AtomicPtr;
 
 #[cfg(target_os = "ios")]
 use block2::RcBlock;
@@ -43,15 +56,30 @@ use objc2::msg_send;
 #[cfg(target_os = "ios")]
 use objc2::rc::Retained;
 #[cfg(target_os = "ios")]
-use objc2::runtime::{AnyClass, AnyObject};
+use objc2::runtime::{AnyClass, AnyObject, Bool};
 #[cfg(target_os = "ios")]
 use objc2_foundation::{NSRect, NSString};
 
-/// Whether the app lock is on. Pushed by the frontend, which is the only side
-/// that knows. False until it pushes, which is safe: enabling the app lock
-/// strips the stored phrase, so a cold start with it on shows the lock screen
-/// and a picture taken in that window holds no notes.
+/// Whether the app lock or the capture block is on. Pushed by the frontend,
+/// which is the only side that knows. False until it pushes, which is safe:
+/// enabling the app lock strips the stored phrase, so a cold start with it on
+/// shows the lock screen and a picture taken in that window holds no notes.
 static ARMED: AtomicBool = AtomicBool::new(false);
+
+#[cfg(target_os = "ios")]
+/// Whether the user turned on the capture block on this device.
+static CAPTURE_BLOCK: AtomicBool = AtomicBool::new(false);
+
+#[cfg(target_os = "ios")]
+/// Between `willResignActive` and `didBecomeActive`. The cover has two reasons
+/// to be up, so the notifications record the state and `refresh` decides.
+static INACTIVE: AtomicBool = AtomicBool::new(false);
+
+#[cfg(target_os = "ios")]
+/// The secure text field whose drawing layer holds the window's layer while the
+/// capture block is on, retained here and null while it is off. Touched on the
+/// main thread only.
+static SHIELD: AtomicPtr<AnyObject> = AtomicPtr::new(std::ptr::null_mut());
 
 #[cfg(target_os = "ios")]
 /// Identifies the cover among the window's subviews, so adding and removing it
@@ -71,17 +99,198 @@ pub fn set(enabled: bool) {
     ARMED.store(enabled, Ordering::Relaxed);
 }
 
+/// The frontend's push for the capture block. Off is the half that matters as
+/// much as on: a cover or a flag that stays after the switch is off is a
+/// window the user can no longer capture for no reason they can see.
 #[cfg(target_os = "ios")]
-/// Watch the two transitions. Called once from the app's setup, on the main
-/// thread. The observers live for the life of the process on purpose: there is
-/// no later moment at which not covering the app would be correct.
+pub fn set_capture_block<R: tauri::Runtime>(app: &tauri::AppHandle<R>, enabled: bool) {
+    CAPTURE_BLOCK.store(enabled, Ordering::Relaxed);
+    // A recording that is already running must be covered now, not at the
+    // next notification. UIKit work belongs on the main thread.
+    let _ = app.run_on_main_thread(refresh);
+}
+
+/// macOS sets the window's sharing type to none and Windows excludes it from
+/// capture, so a screenshot, a recording or a shared screen shows what is
+/// behind the window. Linux has no such property and the switch is not
+/// offered there, so this call is a no-op on it.
+#[cfg(desktop)]
+pub fn set_capture_block<R: tauri::Runtime>(app: &tauri::AppHandle<R>, enabled: bool) {
+    use tauri::Manager;
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.set_content_protected(enabled);
+    }
+}
+
+/// Android raises FLAG_SECURE from MainActivity.kt, through its own bridge.
+#[cfg(target_os = "android")]
+pub fn set_capture_block<R: tauri::Runtime>(_app: &tauri::AppHandle<R>, _enabled: bool) {}
+
+#[cfg(target_os = "ios")]
+/// Watch the two transitions and the screen capture state. Called once from
+/// the app's setup, on the main thread. The observers live for the life of the
+/// process on purpose: there is no later moment at which not covering the app
+/// would be correct.
 pub fn observe() {
     let Some(centre) = notification_centre() else {
         return;
     };
 
-    add_observer(&centre, "UIApplicationWillResignActiveNotification", cover);
-    add_observer(&centre, "UIApplicationDidBecomeActiveNotification", uncover);
+    add_observer(&centre, "UIApplicationWillResignActiveNotification", resign);
+    add_observer(&centre, "UIApplicationDidBecomeActiveNotification", activate);
+    add_observer(&centre, "UIScreenCapturedDidChangeNotification", refresh);
+    // The shield's frame follows the window through a rotation. Counted, so
+    // asking for the notifications cannot stop them for anybody else.
+    if let Some(class) = AnyClass::get(c"UIDevice") {
+        unsafe {
+            let device: *mut AnyObject = msg_send![class, currentDevice];
+            if !device.is_null() {
+                let _: () = msg_send![device, beginGeneratingDeviceOrientationNotifications];
+            }
+        }
+    }
+    add_observer(&centre, "UIDeviceOrientationDidChangeNotification", refresh);
+}
+
+#[cfg(target_os = "ios")]
+fn resign() {
+    INACTIVE.store(true, Ordering::Relaxed);
+    refresh();
+}
+
+#[cfg(target_os = "ios")]
+fn activate() {
+    INACTIVE.store(false, Ordering::Relaxed);
+    refresh();
+}
+
+#[cfg(target_os = "ios")]
+/// Put the cover up or take it down, from the state and nothing else. Runs
+/// whatever the armed state is on the way back: a user who turns the app lock
+/// off while the app is away must not come back to an opaque rectangle.
+fn refresh() {
+    let blocked = CAPTURE_BLOCK.load(Ordering::Relaxed);
+    let shielded = if blocked {
+        shield_on()
+    } else {
+        shield_off();
+        false
+    };
+    let away = INACTIVE.load(Ordering::Relaxed) && ARMED.load(Ordering::Relaxed);
+    // The fallback only: with the shield in place a recording already shows
+    // black, and the cover would black out the user's own screen for nothing.
+    let recorded = blocked && !shielded && screen_captured();
+    if away || recorded {
+        cover();
+    } else {
+        uncover();
+    }
+}
+
+#[cfg(target_os = "ios")]
+/// Put the window's layer inside a secure text field, or refit it when it is
+/// already there. Returns whether the shield is in place.
+///
+/// Ported from the react-native-screenguard package, which Notesnook ships,
+/// with two changes. A window with no superlayer is refused rather than given
+/// the field as a subview, because moving a window's layer into a layer the
+/// window itself holds makes a cycle. And the field takes the window's place in
+/// the layer order, so taking the shield away puts the window back where it was.
+fn shield_on() -> bool {
+    let Some(window) = host_window() else {
+        return false;
+    };
+    unsafe {
+        let bounds: NSRect = msg_send![&*window, bounds];
+        let existing = SHIELD.load(Ordering::Relaxed);
+        if !existing.is_null() {
+            let _: () = msg_send![existing, setFrame: bounds];
+            return true;
+        }
+        let Some(class) = AnyClass::get(c"UITextField") else {
+            return false;
+        };
+        let layer: *mut AnyObject = msg_send![&*window, layer];
+        let home: *mut AnyObject = msg_send![layer, superlayer];
+        if home.is_null() {
+            return false;
+        }
+        let field: Retained<AnyObject> = msg_send![class, new];
+        let _: () = msg_send![&*field, setFrame: bounds];
+        let _: () = msg_send![&*field, setUserInteractionEnabled: Bool::NO];
+        let _: () = msg_send![&*field, setSecureTextEntry: Bool::YES];
+        if let Some(black) = black() {
+            let _: () = msg_send![&*field, setBackgroundColor: &*black];
+        }
+        let field_layer: *mut AnyObject = msg_send![&*field, layer];
+        let _: () = msg_send![home, insertSublayer: field_layer, above: layer];
+        // The first sublayer is the field's text canvas, the layer iOS leaves
+        // out of captures while the field is secure. No canvas means this iOS
+        // draws the field some other way, and the cover takes over.
+        let sublayers: *mut AnyObject = msg_send![field_layer, sublayers];
+        let canvas: *mut AnyObject = if sublayers.is_null() {
+            std::ptr::null_mut()
+        } else {
+            msg_send![sublayers, firstObject]
+        };
+        if canvas.is_null() {
+            let _: () = msg_send![field_layer, removeFromSuperlayer];
+            return false;
+        }
+        let _: () = msg_send![canvas, addSublayer: layer];
+        SHIELD.store(Retained::into_raw(field), Ordering::Relaxed);
+    }
+    true
+}
+
+#[cfg(target_os = "ios")]
+/// Take the shield away and put the window's layer back in the field's place.
+fn shield_off() {
+    let field = SHIELD.swap(std::ptr::null_mut(), Ordering::Relaxed);
+    if field.is_null() {
+        return;
+    }
+    unsafe {
+        let Some(field) = Retained::from_raw(field) else {
+            return;
+        };
+        let _: () = msg_send![&*field, setSecureTextEntry: Bool::NO];
+        let field_layer: *mut AnyObject = msg_send![&*field, layer];
+        let home: *mut AnyObject = msg_send![field_layer, superlayer];
+        if let Some(window) = host_window() {
+            let layer: *mut AnyObject = msg_send![&*window, layer];
+            let parent: *mut AnyObject = msg_send![layer, superlayer];
+            let parent_home: *mut AnyObject = if parent.is_null() {
+                std::ptr::null_mut()
+            } else {
+                msg_send![parent, superlayer]
+            };
+            if parent_home == field_layer && !home.is_null() {
+                let _: () = msg_send![layer, removeFromSuperlayer];
+                let _: () = msg_send![home, insertSublayer: layer, below: field_layer];
+            }
+        }
+        let _: () = msg_send![field_layer, removeFromSuperlayer];
+    }
+}
+
+#[cfg(target_os = "ios")]
+/// True while the screen is recorded, mirrored or sent over AirPlay.
+/// `isCaptured` is marked for a future deprecation in favour of the scene trait
+/// `sceneCaptureState`. It still answers on every iOS this app supports, and it
+/// pairs with a plain notification, where the trait needs a trait observer.
+fn screen_captured() -> bool {
+    let Some(class) = AnyClass::get(c"UIScreen") else {
+        return false;
+    };
+    unsafe {
+        let screen: *mut AnyObject = msg_send![class, mainScreen];
+        if screen.is_null() {
+            return false;
+        }
+        let captured: Bool = msg_send![screen, isCaptured];
+        captured.as_bool()
+    }
 }
 
 #[cfg(target_os = "ios")]
@@ -117,9 +326,6 @@ fn add_observer(centre: &Retained<AnyObject>, name: &str, action: fn()) {
 
 #[cfg(target_os = "ios")]
 fn cover() {
-    if !ARMED.load(Ordering::Relaxed) {
-        return;
-    }
     let Some(window) = host_window() else {
         return;
     };
@@ -150,8 +356,6 @@ fn cover() {
 }
 
 #[cfg(target_os = "ios")]
-/// Runs whatever the armed state is. A user who turns the app lock off while
-/// the app is away must not come back to an opaque rectangle.
 fn uncover() {
     let Some(window) = host_window() else {
         return;

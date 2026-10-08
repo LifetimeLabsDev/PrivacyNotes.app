@@ -2,6 +2,7 @@ import { Fragment, useEffect, useMemo, useRef, useState, type KeyboardEvent as R
 import { useTranslation } from 'react-i18next';
 import { ensureSettingsSearchLoaded } from './i18n';
 import { isImeComposing } from './imeComposing';
+import { APP_KEYS, keyText, matchesKey } from './shortcutMatch';
 import { useEscapeToClose } from './useEscapeToClose';
 import { useIsMobile } from './useIsMobile';
 import { ArrowLeft, ArrowSquareOut, CaretRight, X } from './icons';
@@ -48,7 +49,7 @@ function openLink(href: string) {
  * panes. Callers pass a `categories` array whose `render()` returns the
  * embedded pane, keeping all prop wiring at the call site.
  */
-export function SettingsWindow({ categories, initialCategory, defaultCategory, footer, onClose }: Props) {
+export function SettingsWindow({ categories, initialCategory, initialSetting, defaultCategory, footer, onClose }: Props) {
   const { t } = useTranslation('settings');
   const isMobile = useIsMobile();
   // Desktop landing: deep-link wins, else the configured default, else the
@@ -63,7 +64,7 @@ export function SettingsWindow({ categories, initialCategory, defaultCategory, f
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState<SearchModule | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [landing, setLanding] = useState<Landing | null>(null);
+  const [landing, setLanding] = useState<Landing | null>(initialSetting ? { ...initialSetting, flash: true } : null);
   // Bumped on every landing, so the pane remounts on the result's tab.
   const [paneKey, setPaneKey] = useState(0);
   const fieldRef = useRef<HTMLInputElement | null>(null);
@@ -115,18 +116,23 @@ export function SettingsWindow({ categories, initialCategory, defaultCategory, f
     setPaneKey((k) => k + 1);
   }
 
-  // Scroll to the opened row once its pane has mounted.
+  // Scroll to the opened row once its pane has mounted. A row opened from
+  // outside (the quick switcher) waits for the search module first.
   useEffect(() => {
-    if (!landing?.flash || !search || !paneRef.current) return;
+    if (!landing?.flash || !paneRef.current) return;
+    if (!search) {
+      loadSearch();
+      return;
+    }
     return search.jumpToSetting(paneRef.current, landing.id);
   }, [landing, paneKey, search]);
 
-  // Cmd/Ctrl+K reaches this field while the window is open, not the list
-  // search behind it. Capture phase, so the app's own shortcut never sees it.
+  // The quick switcher's key reaches this field while the window is open:
+  // the field finds settings, as the switcher does. Capture phase, so the
+  // app's own shortcut never sees it.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (isImeComposing(e)) return;
-      if ((e.metaKey || e.ctrlKey) && !e.altKey && !e.shiftKey && e.code === 'KeyK') {
+      if (matchesKey(e, APP_KEYS.quickSwitcher, true)) {
         e.preventDefault();
         e.stopPropagation();
         if (isMobile && activeId) {
@@ -221,7 +227,7 @@ export function SettingsWindow({ categories, initialCategory, defaultCategory, f
         autoComplete="off"
         spellCheck={false}
         enterKeyHint="search"
-        className="w-full h-8 rounded-md bg-surface-1 border border-divider ps-8 pe-8 text-sm text-pn placeholder:text-pn-muted focus:outline-none focus:border-accent [&::-webkit-search-cancel-button]:appearance-none"
+        className="pn-search-well w-full h-8 rounded-md bg-surface-1 border border-divider ps-8 pe-8 text-sm text-pn placeholder:text-pn-muted focus:outline-none focus:border-accent [&::-webkit-search-cancel-button]:appearance-none"
       />
       {query ? (
         <button
@@ -240,7 +246,7 @@ export function SettingsWindow({ categories, initialCategory, defaultCategory, f
             aria-hidden="true"
             className="absolute end-2 top-1/2 -translate-y-1/2 rounded border border-divider px-1 font-sans text-[11px] leading-4 text-pn-muted pointer-events-none"
           >
-            ⌘K
+            {keyText('quickSwitcher')}
           </kbd>
         )
       )}
@@ -276,6 +282,9 @@ export function SettingsWindow({ categories, initialCategory, defaultCategory, f
         // Settings is prose, not app chrome: the global right-click menu
         // only gets in the way of selecting text here. Spec: issue #208.
         data-no-app-menu
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('shell.title')}
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/20 p-4 sm:p-6"
         onPointerDown={(e) => {
           if (mountReady && e.target === e.currentTarget) onClose();
@@ -397,7 +406,7 @@ export function SettingsWindow({ categories, initialCategory, defaultCategory, f
               const dim = searching && hits !== null && count === 0;
               const showHeader = c.group && c.group !== categories[i - 1]?.group;
               const badge = searching && count > 0 && (
-                <span className="shrink-0 rounded-full bg-accent/10 px-1.5 text-[11px] leading-4 text-accent">{count}</span>
+                <span className="shrink-0 rounded-full bg-accent/10 px-1.5 text-[11px] leading-4 text-accent-strong">{count}</span>
               );
               return (
                 <Fragment key={c.id}>
@@ -427,7 +436,7 @@ export function SettingsWindow({ categories, initialCategory, defaultCategory, f
                       aria-current={on}
                       className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-start transition ${
                         on
-                          ? 'bg-accent/10 text-accent font-medium'
+                          ? 'bg-accent/10 text-accent-strong font-medium'
                           : 'text-pn-soft hover:bg-surface-1'
                       } ${dim ? 'opacity-45' : ''}`}
                     >

@@ -15,7 +15,7 @@ title: PrivacyNotes'a hoş geldiniz
 
 Bu satırın sonuna tıklayın ve bir kelime yazın. Not kendini kaydeder. Kaydet düğmesi yok.
 
-Yukarıdaki çubuk metnin görünüşünü değiştirir: **kalın**, *italik*, başlıklar, yapılacak listeleri, <span style="color: #f08c00">renkler</span>, <span style="font-size: 1.25em; font-family: ui-serif, Georgia, Cambria, serif">yazı tipleri</span>, bağlantılar.
+Yukarıdaki çubuk metnin görünüşünü değiştirir: **kalın**, *italik*, başlıklar, görev listeleri, <span style="color: #f08c00">renkler</span>, <span style="font-size: 1.25em; font-family: ui-serif, Georgia, Cambria, serif">yazı tipleri</span>, bağlantılar.
 
 ## Açmaya değer üç not
 

@@ -76,7 +76,7 @@
     "count_two": "{{count}} شعوران",
     "count_few": "{{count}} مشاعر",
     "count_many": "{{count}} شعورًا",
-    "count_other": "{{count}} شعورًا",
+    "count_other": "{{count}} شعور",
     "valence": {
       "positive": "إيجابي",
       "neutral": "محايد",
@@ -144,7 +144,7 @@
     "takenCount_two": "{{count}} دواءان مأخوذان",
     "takenCount_few": "{{count}} أدوية مأخوذة",
     "takenCount_many": "{{count}} دواءً مأخوذًا",
-    "takenCount_other": "{{count}} دواءً مأخوذًا",
+    "takenCount_other": "{{count}} دواء مأخوذ",
     "namePlaceholder": "اسم الدواء",
     "dosagePlaceholder": "الجرعة (مثال: 50 ملغ)",
     "addMedication": "+ إضافة دواء",

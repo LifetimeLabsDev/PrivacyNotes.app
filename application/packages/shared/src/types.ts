@@ -79,4 +79,11 @@ export interface DecryptedNote {
    * compatibility - older ciphertexts won't have this field.
    */
   folderId?: string | null;
+  /**
+   * When the title, the body or a tracker value last changed: the "last
+   * edited" date people read. `updatedAt` stays the sync clock, which a pin,
+   * a move or the trash also moves. Optional, and written only when known,
+   * so older ciphertexts decrypt without it.
+   */
+  editedAt?: string;
 }

@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowsOutSimple, ChartBar, Gear, SignOut, Sun } from '../icons';
+import { JournalCalendarButton, type JournalCalendarHandlers } from '../JournalCalendar';
 import type { LocalNote } from '../db';
 import { detectPlatform } from '../devices';
 import { isDemoMode } from '../demo';
@@ -9,6 +10,7 @@ import { HoverLabel } from '../HoverLabel';
 import { SyncStatus } from '../SyncStatus';
 import { IconUpgrade } from '../UpgradeModal';
 import { hotkeyKeys, hotkeyLabel, isMacPlatform } from '../notesViewUtils';
+import { DESKTOP_APP } from '../shortcutMatch';
 import { intlLocale } from '../languages';
 
 // Desktop wrapper only (not web, not iOS/Android): the mini footer's lifted
@@ -17,6 +19,9 @@ import { intlLocale } from '../languages';
 const IS_DESKTOP_APP = detectPlatform() === 'desktop';
 
 type FooterStats = { notes: number; words: number; label: string };
+
+/** What the footer's journal calendar opens and creates. */
+export type FooterCalendar = JournalCalendarHandlers;
 
 export function FullFooter({
   zenMode,
@@ -27,6 +32,7 @@ export function FullFooter({
   selected,
   openSyncVerify,
   footerStats,
+  calendar,
   auth,
   setShowSettings,
   setShowStats,
@@ -43,6 +49,7 @@ export function FullFooter({
   selected: LocalNote | null;
   openSyncVerify: () => void;
   footerStats: FooterStats;
+  calendar: FooterCalendar;
   auth: { isPro: boolean };
   setShowSettings: Dispatch<SetStateAction<boolean>>;
   setShowStats: Dispatch<SetStateAction<boolean>>;
@@ -112,16 +119,19 @@ export function FullFooter({
                 {hotkeyLabel}
               </kbd>
               <span className="text-[13px] font-normal text-pn-muted hidden min-[1400px]:inline">
-                ({t(isMacPlatform ? 'footer.newNoteHintMac' : 'footer.newNoteHintOther')})
+                ({DESKTOP_APP
+                  ? t(isMacPlatform ? 'footer.newNoteHintMacDesktop' : 'footer.newNoteHintOtherDesktop')
+                  : t(isMacPlatform ? 'footer.newNoteHintMac' : 'footer.newNoteHintOther')})
               </span>
               </button>
             </HoverLabel>
           </div>
+          <div className="hidden lg:flex items-center gap-1.5">
           <HoverLabel label={t('footer.openStats')} position="above">
             <button
               onClick={() => setShowStats(true)}
               aria-label={t('footer.openStats')}
-              className="hidden lg:inline-flex items-center gap-2 text-[13px] text-pn-muted hover:text-accent transition whitespace-nowrap"
+              className="inline-flex items-center gap-2 text-[13px] text-pn-muted hover:text-accent transition whitespace-nowrap"
             >
               <ChartBar size={13} />
               <span>
@@ -137,6 +147,8 @@ export function FullFooter({
               </span>
             </button>
           </HoverLabel>
+          <JournalCalendarButton {...calendar} />
+          </div>
           <div className="flex items-center gap-1">
             {/* Borderless text-style controls (the boxes read as a toolbar
                 and fight the compact row); the rounded hover bg carries the
@@ -155,8 +167,8 @@ export function FullFooter({
                 aria-pressed={zenMode}
                 className={`rounded-md inline-flex items-center gap-1.5 px-2 py-1 font-medium transition ${
                   zenMode
-                    ? 'text-accent bg-accent/10 hover:bg-accent/20'
-                    : 'text-pn hover:bg-neutral-100 dark:hover:bg-neutral-900'
+                    ? 'text-accent-strong bg-accent/10 hover:bg-accent/20'
+                    : 'text-pn hover:bg-pn/5'
                 }`}
               >
                 <ArrowsOutSimple size={14} className={zenMode ? '' : 'text-accent'} />
@@ -174,7 +186,7 @@ export function FullFooter({
                 onClick={() => setShowAppearance((open) => !open)}
                 data-appearance-trigger
                 aria-label={t('footer.appearance')}
-                className="rounded-md inline-flex items-center gap-1.5 px-2 py-1 font-medium text-pn hover:bg-neutral-100 dark:hover:bg-neutral-900 transition"
+                className="rounded-md inline-flex items-center gap-1.5 px-2 py-1 font-medium text-pn hover:bg-pn/5 transition"
               >
                 <Sun size={14} className="text-accent" />
                 <span className="hidden xl:inline">{t('footer.appearance')}</span>
@@ -205,6 +217,7 @@ export function MiniFooter({
   selected,
   openSyncVerify,
   footerStats,
+  calendar,
   auth,
   setShowSettings,
   setShowStats,
@@ -217,6 +230,7 @@ export function MiniFooter({
   selected: LocalNote | null;
   openSyncVerify: () => void;
   footerStats: FooterStats;
+  calendar: FooterCalendar;
   auth: { isPro: boolean };
   setShowSettings: Dispatch<SetStateAction<boolean>>;
   setShowStats: Dispatch<SetStateAction<boolean>>;
@@ -225,7 +239,7 @@ export function MiniFooter({
 }) {
   const { t } = useTranslation('notes');
   return (
-      <footer className={`[@media(min-width:768px)_and_(min-height:501px)]:hidden shrink-0 flex items-center justify-between gap-3 px-4 py-1.5 ${IS_DESKTOP_APP ? 'pb-1.5' : 'pb-[max(0.375rem,env(safe-area-inset-bottom))]'} md:pb-1.5 border-t border-divider text-[13px] text-neutral-500 dark:text-neutral-500 [@media(max-height:320px)]:hidden`}>
+      <footer className={`[@media(min-width:768px)_and_(min-height:501px)]:hidden shrink-0 flex items-center justify-between gap-3 px-4 py-1.5 ${IS_DESKTOP_APP ? 'pb-1.5' : 'pb-[max(0.375rem,env(safe-area-inset-bottom))]'} md:pb-1.5 border-t border-divider text-[13px] text-pn-muted [@media(max-height:320px)]:hidden`}>
         {/* Below md the row is exactly three items, so the flanking two get
             equal-width flex boxes and the sync status lands on the true centre
             of the bar. justify-between alone centred it only by accident - it
@@ -238,7 +252,7 @@ export function MiniFooter({
           <button
             onClick={() => setShowSettings(true)}
             aria-label={t('footer.settings', exemptOpts('notes:footer.settings'))}
-            className="inline-flex items-center gap-1.5 text-[13px] text-neutral-600 dark:text-neutral-400 hover:text-accent transition shrink-0"
+            className="inline-flex items-center gap-1.5 text-[13px] text-pn-muted hover:text-accent transition shrink-0"
           >
             <Gear className="text-accent" />
             <span>{t('footer.settings', exemptOpts('notes:footer.settings'))}</span>
@@ -250,10 +264,11 @@ export function MiniFooter({
         {/* Stats readout - md+ only. Below md the phone row is too tight;
             at md-lg the same three phone controls span a tablet-width row,
             so fill the middle like the desktop footer does. */}
+        <span className="hidden md:flex items-center gap-1.5">
         <button
           onClick={() => setShowStats(true)}
           aria-label={t('footer.openStats')}
-          className="hidden md:inline-flex items-center gap-2 text-[13px] text-pn-muted hover:text-accent transition whitespace-nowrap"
+          className="inline-flex items-center gap-2 text-[13px] text-pn-muted hover:text-accent transition whitespace-nowrap"
         >
           <ChartBar size={13} />
           <span>
@@ -267,6 +282,8 @@ export function MiniFooter({
             {t('footer.words')}
           </span>
         </button>
+        <JournalCalendarButton {...calendar} />
+        </span>
         <div className="flex flex-1 md:flex-none md:shrink-0 items-center justify-end gap-3">
           {/* One slot, two controls (GitHub #216). The mini footer has room
               for exactly one trailing button, so it shows the one that acts
@@ -287,7 +304,7 @@ export function MiniFooter({
               aria-label={zenMode ? t('zen.exitHover') : t('zen.enterHover')}
               aria-pressed={zenMode}
               className={`inline-flex items-center gap-1 text-[13px] transition shrink-0 ${
-                zenMode ? 'text-accent' : 'text-neutral-600 dark:text-neutral-400 hover:text-accent'
+                zenMode ? 'text-accent' : 'text-pn-muted hover:text-accent'
               }`}
             >
               <ArrowsOutSimple size={13} />
@@ -303,7 +320,7 @@ export function MiniFooter({
               onClick={() => setShowAppearance((open) => !open)}
               data-appearance-trigger
               aria-label={t('footer.appearance')}
-              className="inline-flex items-center gap-1 text-[13px] text-neutral-600 dark:text-neutral-400 hover:text-accent transition shrink-0"
+              className="inline-flex items-center gap-1 text-[13px] text-pn-muted hover:text-accent transition shrink-0"
             >
               <Sun size={13} className="text-accent" />
               <span>{t('footer.appearance')}</span>

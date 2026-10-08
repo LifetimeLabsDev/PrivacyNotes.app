@@ -9,22 +9,19 @@
     "newTaskNote": "New task note",
     "newTaskNoteWithHotkey": "New task note ({{hotkey}})",
     "new": "New",
-    "viewHybrid": "Hybrid",
-    "viewAggregated": "Aggregated",
-    "viewList": "List",
     "hideCompleted": "Hide completed tasks",
     "showCompleted": "Show completed tasks",
     "searchPlaceholder": "Search tasks…",
     "sortOptions": "Sort options",
     "quickAddPlaceholder": "Add a quick task",
     "noMatches": "No matches.",
+    "tasksFromOtherItems": "Tasks in other items",
+    "noTaskListsYet": "No task lists yet. Tasks in other items are hidden.",
     "noTasksYet": "No tasks yet. Use the input above or type `- [ ] …` in any note.",
     "noOpenTasks": "No open tasks. Nice.",
-    "noNotesWithTasks": "No notes with tasks yet.",
-    "recentNotesWithTasks": "Recent notes with tasks",
-    "tasksByNote": "Tasks by note",
-    "showLess": "Show less",
-    "loadMore": "Load more ({{count}})",
+    "noItemsWithTasks": "No items with tasks yet.",
+    "itemsWithTasks": "Items with tasks",
+    "allTasks": "All tasks",
     "openNote": "Open \"{{title}}\"",
     "markIncomplete": "Mark incomplete",
     "markComplete": "Mark complete",
@@ -53,7 +50,7 @@
     "sortOptions": "Sort options",
     "searchPlaceholder": "Search files…",
     "sortName": "Name",
-    "showNotesWithAttachments": "Show files inside notes",
+    "showNotesWithAttachments": "Show files in other items",
     "noMatches": "No matches.",
     "pinProtected": "PIN-protected",
     "readOnly": "Read-only",
@@ -70,8 +67,8 @@
     "menuImages": "Images",
     "menuAudio": "Audio",
     "menuDocuments": "Documents",
-    "menuHideNoteAttachments": "Hide files inside notes",
-    "menuShowNoteAttachments": "Show files inside notes",
+    "menuHideNoteAttachments": "Hide files in other items",
+    "menuShowNoteAttachments": "Show files in other items",
     "menuUnpin": "Unpin",
     "menuPin": "Pin",
     "menuRename": "Rename",
@@ -258,7 +255,9 @@
     "moveToFolder": "Move to folder",
     "noteHistory": "History",
     "findReplace": "Find and replace",
-    "uncheckAllTasks": "Uncheck all tasks",
+    "uncheckAllTasks": "Uncheck all items",
+    "deleteCheckedTasks": "Delete checked items",
+    "sortTasksByStatus": "Sort items by status",
     "comingSoon": "Coming soon",
     "noteOptions": "Note options",
     "lastModified": "Last modified: {{date}}",
@@ -266,7 +265,8 @@
     "size": "Storage used: {{size}}",
     "sizeHint": "Total encrypted size of this item.",
     "tagCount_one": "{{count}} tag",
-    "tagCount_other": "{{count}} tags"
+    "tagCount_other": "{{count}} tags",
+    "entryDate": "Entry date"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "Exit selection (Esc)",
@@ -297,7 +297,9 @@
     "showPreview": "Show preview",
     "longPreview": "Longer preview text",
     "showDate": "Show date",
+    "showSize": "Show file size",
     "showTags": "Show folder & tags",
+    "showCalendar": "Show calendar",
     "other": "Other",
     "showReadOnly": "Show read-only",
     "showProtected": "Show protected",
@@ -307,13 +309,21 @@
     "switchToAscending": "Switch to ascending",
     "asc": "ASC",
     "desc": "DESC",
-    "showNoteLinks": "Show links from notes"
+    "showNoteLinks": "Show links in other items",
+    "showNoteTasks": "Show tasks in other items"
   },
   "backfillPopover": {
-    "ariaLabel": "New journal for a recent day",
-    "heading": "NEW JOURNAL FOR",
-    "today": "Today",
-    "yesterday": "Yesterday"
+    "calendarLabel": "Journal calendar",
+    "today": "Today"
+  },
+  "monthGrid": {
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week",
+    "showMonth": "{{month}}, show the whole month",
+    "showWeek": "{{month}}, show one week",
+    "dayWithEntry": "{{date}}, has an entry"
   },
   "contextMenu": {
     "newNote": "New Note",
@@ -459,7 +469,9 @@
     "importedManyToast": "Saved {{count}} files to your encrypted notes. The originals are untouched.",
     "alreadySavedToast": "“{{title}}” is already in your notes.",
     "importedManySkippedToast": "Saved {{saved}} files, skipped {{skipped}} already in your notes.",
-    "footerFiles": "Files"
+    "footerFiles": "Files",
+    "bridge_one": "{{count}} match in Markdown",
+    "bridge_other": "{{count}} matches in Markdown"
   },
   "importPrompt": {
     "dismiss": "Hide this suggestion",
@@ -487,7 +499,7 @@
     "emptyAdd": "Add a bookmark",
     "emptyImport": "Import from a browser",
     "noMatches": "No matches.",
-    "fromNotesHeading": "Links from notes",
+    "fromNotesHeading": "Links in other items",
     "openSourceNote": "Open the note",
     "saveAsBookmark": "Save as bookmark",
     "importSkipped_one": "{{count}} skipped as already saved.",
@@ -548,6 +560,9 @@
     "sendEmail": "Send email",
     "open": "Open",
     "showPhoto": "Show photo",
+    "addPhoto": "Add photo",
+    "changePhoto": "Change photo",
+    "removePhoto": "Remove photo",
     "addField": "Add field",
     "done": "Done",
     "fillOne": "Add a name, a number or an email.",
@@ -619,5 +634,10 @@
   "tabStrip": {
     "label": "Open tabs",
     "close": "Close {{title}}"
+  },
+  "shareInbox": {
+    "saved": "Saved to PrivacyNotes",
+    "failed": "Could not save to PrivacyNotes",
+    "tooLarge": "Too large. Maximum is {{limit}} MB per file."
   }
 }

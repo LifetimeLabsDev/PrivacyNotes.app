@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ContextMenu, type ContextMenuItem, type ContextMenuState } from './ContextMenu';
 import { hasPin } from './pin';
@@ -13,7 +13,9 @@ import {
   type ContactLabelled,
 } from './contactBody';
 import { ContactChip } from './NoteRow';
-import { CaretDown, Info, Minus, NotePencil, Plus, User } from './icons';
+import { storePicture } from './EncryptedImage';
+import { contactPhotoOptions } from './imageProcessing';
+import { Camera, CaretDown, iconTrash, Info, Minus, NotePencil, Plus, Spinner, User } from './icons';
 import { FIELD_CLASS, FieldLabel, GroupHeading } from './formFields';
 import { isImeComposing } from './imeComposing';
 
@@ -99,7 +101,10 @@ type ContactFormProps = {
   noteId: string;
   title: string;
   draft: Contact;
-  onDraftChange: (next: Contact) => void;
+  /** The React setter, so a picture that finishes storing after a
+   *  keystroke patches the current draft rather than the one it started
+   *  from. */
+  onDraftChange: Dispatch<SetStateAction<Contact>>;
   locked: boolean;
   pinProtected: boolean;
   onPinProtectedChange: (value: boolean) => void;
@@ -134,12 +139,52 @@ export function ContactForm({
   const [customLabel, setCustomLabel] = useState<string | null>(null);
   const [extrasOpen, setExtrasOpen] = useState(false);
   const addFieldRef = useRef<HTMLButtonElement | null>(null);
+  const photoInputRef = useRef<HTMLInputElement | null>(null);
+  const photoButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [photoBusy, setPhotoBusy] = useState(false);
 
   const labelText = (label: string) =>
     label ? t(`contacts.labels.${label}`, { defaultValue: label }) : t('contacts.labelNone');
 
   function update(patch: Partial<Contact>) {
-    onDraftChange({ ...draft, ...patch });
+    onDraftChange((prev) => ({ ...prev, ...patch }));
+  }
+
+  /**
+   * Store a chosen picture as this contact's photo. The size goes in beside
+   * the reference, because the row size and the size sort read it rather
+   * than the blob. The picture the photo replaces is left to the blob
+   * collector, which keeps a blob only while a note body still names it.
+   */
+  async function choosePhoto(file: File | undefined) {
+    if (photoInputRef.current) photoInputRef.current.value = '';
+    if (!file) return;
+    setPhotoBusy(true);
+    try {
+      const stored = await storePicture(file, contactPhotoOptions());
+      if (stored) update({ photo: `pn:img/${stored.uuid}`, photoBytes: stored.bytes });
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
+
+  /** The chip: a picker while the contact has no photo, a two-entry menu once
+   *  it has one. */
+  function openPhotoMenu() {
+    if (!draft.photo) {
+      photoInputRef.current?.click();
+      return;
+    }
+    const rect = photoButtonRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setMenu({
+      x: rect.left,
+      y: rect.bottom + 4,
+      items: [
+        { label: t('contacts.changePhoto'), icon: <Camera size={14} />, onSelect: () => photoInputRef.current?.click() },
+        { label: t('contacts.removePhoto'), icon: iconTrash(), destructive: true, onSelect: () => update({ photo: '', photoBytes: 0 }) },
+      ],
+    });
   }
 
   function setRows(kind: RowKind, rows: ContactLabelled[]) {
@@ -259,10 +304,10 @@ export function ContactForm({
         type="button"
         disabled={locked}
         onClick={(e) => openLabelMenu(e, kind, index)}
-        className="w-28 shrink-0 inline-flex items-center justify-between gap-1 rounded-md border border-divider bg-surface-2 px-2 py-2 text-xs text-neutral-700 dark:text-neutral-300 hover:border-accent transition disabled:opacity-60"
+        className="w-28 shrink-0 inline-flex items-center justify-between gap-1 rounded-md border border-divider bg-surface-2 px-2 py-2 text-xs text-pn-soft hover:border-accent transition disabled:opacity-60"
       >
         <span className="truncate">{labelText(label)}</span>
-        <CaretDown size={11} className="shrink-0 text-neutral-400" aria-hidden="true" />
+        <CaretDown size={11} className="shrink-0 text-pn-muted" aria-hidden="true" />
       </button>
     );
   }
@@ -313,7 +358,28 @@ export function ContactForm({
       <div className="flex flex-col gap-5">
         {/* Hero: the chip the row draws, beside the two name fields. */}
         <div className="flex items-center gap-4">
-          <ContactChip name={title} initials={contactInitialsFor(title, draft)} photo={draft.photo} size={56} />
+          {/* The chip is the picture control: a camera badge over the avatar,
+              which is where a person looks for one. ui-patterns.md section 120. */}
+          <button
+            ref={photoButtonRef}
+            type="button"
+            onClick={openPhotoMenu}
+            disabled={locked || photoBusy}
+            aria-label={draft.photo ? t('contacts.changePhoto') : t('contacts.addPhoto')}
+            className="relative shrink-0 rounded-full group focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-60"
+          >
+            <ContactChip name={title} initials={contactInitialsFor(title, draft)} photo={draft.photo} size={56} />
+            <span className="absolute -bottom-0.5 -end-0.5 w-5 h-5 rounded-full bg-surface-1 border border-divider inline-flex items-center justify-center text-pn-soft group-hover:border-accent group-hover:text-accent transition">
+              {photoBusy ? <Spinner size={11} className="animate-spin" /> : <Camera size={11} />}
+            </span>
+          </button>
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => void choosePhoto(e.target.files?.[0])}
+          />
           <div className="flex-1 flex flex-col gap-1.5 min-w-0">
             <input
               value={draft.first}
@@ -441,21 +507,21 @@ export function ContactForm({
               type="button"
               onClick={() => setExtrasOpen((v) => !v)}
               aria-expanded={extrasOpen}
-              className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-neutral-600 dark:text-neutral-300"
+              className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-pn-soft"
             >
               <CaretDown size={12} className={`shrink-0 transition-transform ${extrasOpen ? '' : '-rotate-90'}`} aria-hidden="true" />
               {t('contacts.alsoInFile')}
-              <span className="ms-auto text-xs text-neutral-400">{t('contacts.extrasCount', { count: draft.extras.length })}</span>
+              <span className="ms-auto text-xs text-pn-muted">{t('contacts.extrasCount', { count: draft.extras.length })}</span>
             </button>
             {extrasOpen && (
               <div className="px-3 pb-3 flex flex-col gap-1">
                 {draft.extras.map((x, i) => (
                   <div key={i} className="flex gap-3 text-xs">
-                    <span className="shrink-0 w-36 truncate font-mono text-neutral-500 dark:text-neutral-400" dir="ltr">{x.name}</span>
-                    <span className="min-w-0 break-all text-neutral-700 dark:text-neutral-300" dir="auto">{x.value}</span>
+                    <span className="shrink-0 w-36 truncate font-mono text-pn-muted" dir="ltr">{x.name}</span>
+                    <span className="min-w-0 break-all text-pn-soft" dir="auto">{x.value}</span>
                   </div>
                 ))}
-                <p className="mt-1 text-[11px] text-neutral-400 dark:text-neutral-500">{t('contacts.extrasNote')}</p>
+                <p className="mt-1 text-[11px] text-pn-muted">{t('contacts.extrasNote')}</p>
               </div>
             )}
           </div>
@@ -470,7 +536,7 @@ export function ContactForm({
             disabled={!pinConfigured && !pinProtected}
             className="rounded accent-accent"
           />
-          <span className="text-sm text-neutral-600 dark:text-neutral-400">{t('auth:loginForm.requirePin')}</span>
+          <span className="text-sm text-pn-muted">{t('auth:loginForm.requirePin')}</span>
           <button
             type="button"
             onClick={(e) => { e.preventDefault(); setShowPinInfo(true); }}
@@ -482,16 +548,16 @@ export function ContactForm({
         </label>
         {showPinInfo && <PinInfoModal onClose={() => setShowPinInfo(false)} />}
         {!pinConfigured && !pinProtected && (
-          <p className="text-[11px] text-neutral-400 dark:text-neutral-500 -mt-3">{t('auth:loginForm.setUpPinFirst')}</p>
+          <p className="text-[11px] text-pn-muted -mt-3">{t('auth:loginForm.setUpPinFirst')}</p>
         )}
 
-        {saveError && <p className="text-[11px] text-red-600 dark:text-red-400">{saveError}</p>}
+        {saveError && <p className="text-[11px] text-danger">{saveError}</p>}
         <div className="flex items-center justify-end gap-2">
           {!isNew && (
             <button
               type="button"
               onClick={onCancel}
-              className="rounded-md border border-divider bg-surface-1 px-3.5 py-2 text-[13px] text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-surface-0 transition"
+              className="rounded-md border border-divider bg-surface-1 px-3.5 py-2 text-[13px] text-pn-soft hover:bg-pn/10 transition"
             >
               {t('common:actions.cancel')}
             </button>
@@ -500,7 +566,7 @@ export function ContactForm({
             type="button"
             onClick={onSave}
             disabled={locked}
-            className="rounded-md bg-accent px-3.5 py-2 text-[13px] font-medium text-white hover:bg-accent/90 transition disabled:opacity-60"
+            className="rounded-md bg-accent-fill px-3.5 py-2 text-[13px] font-medium text-white hover:bg-accent-fill/90 transition disabled:opacity-60"
           >
             {t('contacts.done')}
           </button>

@@ -115,7 +115,7 @@ export function NumberInputPill({
       readOnly={readOnly}
     >
       <div className="flex flex-col gap-3 items-start">
-        <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+        <span className="text-xs font-medium text-pn-soft">
           {label}
         </span>
         <div className="inline-flex items-center gap-2">
@@ -129,11 +129,11 @@ export function NumberInputPill({
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') commit(); }}
-            className="w-24 px-2.5 py-1.5 rounded-md text-sm border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200 tabular-nums"
+            className="w-24 px-2.5 py-1.5 rounded-md text-sm border border-pn-muted/50 bg-surface-0 text-pn tabular-nums"
             autoFocus
           />
           {unitOptions ? (
-            <div className="inline-flex rounded-md overflow-hidden border border-neutral-300 dark:border-neutral-600">
+            <div className="inline-flex rounded-md overflow-hidden border border-pn-muted/50">
               {unitOptions.map((option) => {
                 const on = option.key === activeUnit;
                 return (
@@ -145,7 +145,7 @@ export function NumberInputPill({
                     className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${
                       on
                         ? 'text-white'
-                        : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
+                        : 'text-pn-muted hover:text-pn'
                     }`}
                     style={on ? { backgroundColor: color } : undefined}
                   >
@@ -155,7 +155,7 @@ export function NumberInputPill({
               })}
             </div>
           ) : (
-            <span className="text-xs text-neutral-400 dark:text-neutral-500">{unit}</span>
+            <span className="text-xs text-pn-muted">{unit}</span>
           )}
           <button
             type="button"

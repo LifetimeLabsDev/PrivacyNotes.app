@@ -62,7 +62,7 @@ export function FolderNameInput({
         maxLength={FOLDER_NAME_MAX_LENGTH + 5}
         placeholder={t('folders.namePlaceholder')}
         enterKeyHint="done"
-        className={`min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-pn placeholder:text-neutral-400 dark:placeholder:text-neutral-600 ${
+        className={`min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-pn placeholder:text-pn-muted ${
           rail ? 'text-[15px] lg:text-[13px] font-medium' : 'text-[14px]'
         }`}
       />
@@ -88,7 +88,7 @@ export function FolderNameInput({
           onCancel();
         }}
         aria-label={t('common:actions.cancel')}
-        className={`${button} text-neutral-500 dark:text-neutral-400 hover:text-accent hover:border-accent`}
+        className={`${button} text-pn-muted hover:text-accent hover:border-accent`}
       >
         <X size={14} />
       </button>

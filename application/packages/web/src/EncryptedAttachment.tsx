@@ -238,7 +238,7 @@ function FilePreview({ uuid, pdf, name, onOpen }: {
           />
         </span>
       ) : (
-        <span className="block px-4 py-16 text-sm text-center text-neutral-400 dark:text-neutral-500">
+        <span className="block px-4 py-16 text-sm text-center text-pn-muted">
           {missing ? t('image.notFound') : t('image.loading')}
         </span>
       )}
@@ -267,7 +267,7 @@ function ActionButton({ onClick, label, disabled, tip = 'above', children }: {
       onClick={(e) => { e.stopPropagation(); onClick(e); }}
       disabled={disabled}
       aria-label={label}
-      className={`shrink-0 w-[30px] h-[30px] rounded-md flex items-center justify-center transition cursor-pointer select-none text-neutral-400 dark:text-neutral-500 hover:text-accent hover:bg-neutral-100 dark:hover:bg-neutral-800 ${BUTTON_CONTENT} ${
+      className={`shrink-0 w-[30px] h-[30px] rounded-md flex items-center justify-center transition cursor-pointer select-none text-pn-muted hover:text-accent hover:bg-pn/5 ${BUTTON_CONTENT} ${
         disabled ? 'opacity-50 pointer-events-none' : ''
       }`}
     >
@@ -293,7 +293,7 @@ function LabelledAction({ onClick, disabled, children }: {
       onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
       onClick={(e) => { e.stopPropagation(); onClick(); }}
       disabled={disabled}
-      className={`shrink-0 inline-flex items-center gap-1.5 h-[30px] px-2.5 me-1 rounded-lg bg-accent/10 dark:bg-accent/20 text-accent text-xs font-medium transition cursor-pointer select-none hover:bg-accent/15 dark:hover:bg-accent/30 ${BUTTON_CONTENT} ${
+      className={`shrink-0 inline-flex items-center gap-1.5 h-[30px] px-2.5 me-1 rounded-lg bg-accent/10 dark:bg-accent/20 text-accent-strong text-xs font-medium transition cursor-pointer select-none hover:bg-accent/15 dark:hover:bg-accent/30 ${BUTTON_CONTENT} ${
         disabled ? 'opacity-50 pointer-events-none' : ''
       }`}
     >
@@ -748,7 +748,7 @@ function EncryptedAttachmentView({
       size={showPreview ? 18 : 20}
     />
   );
-  const tileFace = 'w-full h-full rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-500 dark:text-neutral-400';
+  const tileFace = 'w-full h-full rounded-lg bg-track flex items-center justify-center text-pn-muted';
 
   const row = (
       <div
@@ -812,48 +812,48 @@ function EncryptedAttachmentView({
                 maxLength={FILE_NAME_MAX_LENGTH}
                 placeholder={t('attachment.renamePlaceholder')}
                 aria-label={t('attachment.renamePlaceholder')}
-                className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-sm font-medium text-neutral-800 dark:text-neutral-200"
+                className="min-w-0 flex-1 bg-transparent border-b border-accent/50 focus:border-accent outline-none text-sm font-medium text-pn"
               />
               {nameExt && (
-                <span className="shrink-0 text-sm text-neutral-400 dark:text-neutral-500">
+                <span className="shrink-0 text-sm text-pn-muted">
                   .{nameExt}
                 </span>
               )}
             </div>
           ) : (
-            <div className="text-sm font-medium text-neutral-800 dark:text-neutral-200 truncate" dir="auto">
+            <div className="text-sm font-medium text-pn truncate" dir="auto">
               {filename || t('attachment.fallbackName')}
             </div>
           )}
-          <div className="text-xs text-neutral-400 dark:text-neutral-500 truncate">
+          <div className="text-xs text-pn-muted truncate">
             {formatUnsupported && (
-              <span className="text-amber-600 dark:text-amber-400">{t('attachment.cantPlay')}</span>
+              <span className="text-warning">{t('attachment.cantPlay')}</span>
             )}
             {!formatUnsupported && metaStr}
             {localOnly && (
-              <span className="text-amber-600 dark:text-amber-400 ms-1">
+              <span className="text-warning ms-1">
                 {t('attachment.localOnly')}
               </span>
             )}
             {missingRemote && (
-              <span className="text-amber-600 dark:text-amber-400 ms-1">
+              <span className="text-warning ms-1">
                 {t('attachment.notUploaded')}
               </span>
             )}
             {downloading && <span className="text-accent ms-1">{t('attachment.downloadingStatus')}</span>}
-            {error && <span className="text-red-500 ms-1">{error}</span>}
+            {error && <span className="text-danger ms-1">{error}</span>}
           </div>
           {/* The WHY, always visible - a tooltip is unreachable on touch,
               and this sits outside the truncating meta line so it can wrap. */}
           {localOnly && (
-            <div className="text-[11px] text-amber-600 dark:text-amber-400 mt-0.5 leading-tight">
+            <div className="text-[11px] text-warning mt-0.5 leading-tight">
               {t('attachment.localOnlyTip')}
             </div>
           )}
           {/* Other-device counterpart of localOnlyTip: same always-visible
               amber line, same reasons (no hover on touch, truncation). */}
           {missingRemote && (
-            <div className="text-[11px] text-amber-600 dark:text-amber-400 mt-0.5 leading-tight">
+            <div className="text-[11px] text-warning mt-0.5 leading-tight">
               {t('attachment.notUploadedTip')}
             </div>
           )}
@@ -865,7 +865,7 @@ function EncryptedAttachmentView({
               every recording in the note on open. */}
           {playable && (
             <div className="flex items-center gap-2 mt-1.5">
-              <span className="shrink-0 text-[11px] text-neutral-400 dark:text-neutral-500 tabular-nums">
+              <span className="shrink-0 text-[11px] text-pn-muted tabular-nums">
                 {formatDuration(position)}
               </span>
               <input
@@ -892,7 +892,7 @@ function EncryptedAttachmentView({
                 className="flex-1 h-1.5 cursor-pointer disabled:cursor-default disabled:opacity-50"
                 style={{ accentColor: 'rgb(var(--pn-accent))' }}
               />
-              <span className="shrink-0 text-[11px] text-neutral-400 dark:text-neutral-500 tabular-nums">
+              <span className="shrink-0 text-[11px] text-pn-muted tabular-nums">
                 {duration > 0 ? formatDuration(duration) : '--:--'}
               </span>
             </div>
@@ -924,7 +924,7 @@ function EncryptedAttachmentView({
                 setConfirmingDelete(false);
                 deleteNode();
               }}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-xs font-medium transition hover:bg-red-100 dark:hover:bg-red-950/50 cursor-pointer select-none ${BUTTON_CONTENT}`}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-950/30 text-danger text-xs font-medium transition hover:bg-red-100 dark:hover:bg-red-950/50 cursor-pointer select-none ${BUTTON_CONTENT}`}
             >
               <Trash size={13} />
               {t('attachment.deleteConfirm')}
@@ -1035,6 +1035,14 @@ export async function loadAttachmentUrl(uuid: string): Promise<string | null> {
 /** The cached URL, without reading anything. Lets a node view paint on its first frame. */
 export function cachedAttachmentUrl(uuid: string): string | null {
   return attachmentUrlCache.get(uuid) ?? null;
+}
+
+/** The attachment an object URL of this tab shows, or null. A paste of the
+ *  browser's "Copy image" names that URL, and this turns it back into the
+ *  stored file instead of a second copy. Spec: ops/docs/plans/picture-copy-reuse.md */
+export function attachmentIdForUrl(url: string): string | null {
+  for (const [uuid, cached] of attachmentUrlCache) if (cached === url) return uuid;
+  return null;
 }
 
 /** A PDF's first page as a picture, with the document's page count. */

@@ -41,6 +41,7 @@ import {
 } from './biometric';
 import { settingsLocalKey } from './settingsLocalKey';
 import { logAuthEvent } from './authDiag';
+import { isLivePhrase, signInStamp, signedOutSince } from './liveSignIn';
 
 // Version-prefixed so a future format change can coexist with old
 // envelopes during a migration. A BIP-39 phrase is lowercase words and
@@ -143,6 +144,11 @@ export function appLockArmed(): boolean {
   }
 }
 
+function refuseStaleWrite(): false {
+  logAuthEvent('auth:phrase-persist-refused');
+  return false;
+}
+
 /**
  * Persist the session phrase into trust-aware storage as a wrapped
  * envelope. Replaces every former plaintext write site, including the
@@ -158,6 +164,11 @@ export function appLockArmed(): boolean {
  * behavior: a degraded browser keeps the account usable and never
  * strands the user (auth session audit, section 0).
  *
+ * A phrase that is not the live sign-in's is refused, before the wrap
+ * and again before the write, and so is a write that a sign-out overtook,
+ * even when the same phrase has signed in again meanwhile (liveSignIn.ts
+ * says why).
+ *
  * Answers whether the phrase is at rest afterwards, read back the way
  * the next start reads it. trustAwareStorage swallows a refused write
  * (quota, storage switched off), so a caller about to remove this
@@ -166,6 +177,9 @@ export function appLockArmed(): boolean {
  * Pinned by tests/phraseAtRest.test.ts.
  */
 export async function persistStoredPhrase(phrase: string): Promise<boolean> {
+  const stamp = signInStamp();
+  if (!isLivePhrase(phrase)) return refuseStaleWrite();
+  let value: string;
   try {
     await getOrCreateWrapKey();
     // Re-read through the committed transaction: encrypt with the key
@@ -178,17 +192,25 @@ export async function persistStoredPhrase(phrase: string): Promise<boolean> {
     // brick the stored session where plaintext would have worked.
     const back = await aesGcmDecrypt(key, ciphertext, iv);
     if (back !== phrase) throw new Error('wrap round trip mismatch');
-    trustAwareStorage.setItem(
-      PHRASE_STORAGE_KEY,
-      `${ENVELOPE_PREFIX}${toB64(iv)}:${toB64(ciphertext)}`,
-    );
+    value = `${ENVELOPE_PREFIX}${toB64(iv)}:${toB64(ciphertext)}`;
   } catch (err) {
     // Fallback IS the old behavior. Breadcrumbed so a device that
     // cannot wrap is visible in the auth log, never silent.
     logAuthEvent('auth:phrase-wrap-fallback', {
       message: (err as Error | null)?.message,
     });
-    trustAwareStorage.setItem(PHRASE_STORAGE_KEY, phrase);
+    value = phrase;
+  }
+  // The wrap awaited IndexedDB and WebCrypto, and a sign-out can have
+  // begun meanwhile.
+  if (signedOutSince(stamp) || !isLivePhrase(phrase)) return refuseStaleWrite();
+  trustAwareStorage.setItem(PHRASE_STORAGE_KEY, value);
+  // Asked again once written. Another tab runs alongside this one, and its
+  // notice and removal can fall between the check above and the write: then
+  // this write undoes itself, unless a newer one already replaced it.
+  if (signedOutSince(stamp) || !isLivePhrase(phrase)) {
+    if (trustAwareStorage.getItem(PHRASE_STORAGE_KEY) === value) trustAwareStorage.removeItem(PHRASE_STORAGE_KEY);
+    return refuseStaleWrite();
   }
   if ((await readResumablePhrase()) === phrase) return true;
   logAuthEvent('auth:phrase-persist-unconfirmed');
@@ -246,8 +268,9 @@ export async function unwrapStoredEnvelope(value: string): Promise<string | null
  * An install can sit on the sign-in screen with a phrase still on disk: a
  * boot that cannot finish its handshake demotes there on purpose, because an
  * unreachable server or a storage hiccup is not a verdict, and re-entering the
- * phrase repairs everything. A deliberate sign-out is NOT one of those cases
- * and removes the phrase before that screen appears.
+ * phrase repairs everything. A deliberate sign-out is NOT one of those cases:
+ * it removes the phrase before that screen appears, and persistStoredPhrase
+ * refuses every later write from the session it ended.
  *
  * In that state the app asks for something it is already holding. This reader
  * is what lets the sign-in screen offer to carry on instead. It answers null

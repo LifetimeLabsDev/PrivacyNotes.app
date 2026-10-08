@@ -81,13 +81,13 @@ export function SignOutConfirmModal({
           </h2>
           <button
             onClick={dismiss}
-            className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1"
+            className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
             aria-label={t('close')}
           >
             <X size={18} />
           </button>
         </div>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+        <p className="text-sm text-pn-muted leading-relaxed">
           <Trans
             i18nKey="notesChrome:signOutConfirm.body"
             components={{ only: <strong />, action: <strong /> }}
@@ -120,7 +120,7 @@ export function SignOutConfirmModal({
             </div>
           </div>
         )}
-        <label className="flex items-center gap-2 text-[13px] text-neutral-500 dark:text-neutral-500 cursor-pointer select-none">
+        <label className="flex items-center gap-2 text-[13px] text-pn-muted cursor-pointer select-none">
           <input
             type="checkbox"
             checked={dontRemind}
@@ -136,20 +136,20 @@ export function SignOutConfirmModal({
             <div className="flex gap-2">
               <button
                 onClick={onShowPhrase}
-                className="flex-1 rounded-md border border-neutral-300 dark:border-neutral-800 hover:bg-surface-1 px-4 py-2 text-sm transition"
+                className="flex-1 rounded-md border border-divider hover:bg-surface-1 px-4 py-2 text-sm transition"
               >
                 {t('signOutConfirm.showPhrase')}
               </button>
               <button
                 onClick={onStay}
-                className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2 text-sm font-medium transition"
+                className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2 text-sm font-medium transition"
               >
                 {t('signOutConfirm.stay')}
               </button>
             </div>
             <button
               onClick={onConfirmSignOut}
-              className="w-full rounded-md border border-red-300 dark:border-red-900 text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 px-4 py-2 text-sm transition"
+              className="w-full rounded-md border border-red-300 dark:border-red-900 text-danger hover:bg-red-50 dark:hover:bg-red-950/30 px-4 py-2 text-sm transition"
             >
               {loseLabel}
             </button>
@@ -158,13 +158,13 @@ export function SignOutConfirmModal({
           <div className="flex gap-2 pt-2">
             <button
               onClick={onShowPhrase}
-              className="flex-1 rounded-md border border-neutral-300 dark:border-neutral-800 hover:bg-surface-1 px-4 py-2 text-sm transition"
+              className="flex-1 rounded-md border border-divider hover:bg-surface-1 px-4 py-2 text-sm transition"
             >
               {t('signOutConfirm.showPhrase')}
             </button>
             <button
               onClick={onConfirmSignOut}
-              className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2 text-sm font-medium transition"
+              className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2 text-sm font-medium transition"
             >
               {t('signOutConfirm.confirm')}
             </button>

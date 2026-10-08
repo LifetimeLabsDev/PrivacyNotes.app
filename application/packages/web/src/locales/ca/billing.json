@@ -8,10 +8,10 @@
     "ctaOpening": "S'està obrint la pàgina de pagament...",
     "ctaSignUp": "Registra't per desbloquejar-ho",
     "intro": {
-      "storage": "Els fitxers més grans i més espai són una funció Pro. Millora per pujar fitxers de 50 MB i tenir 500 MB d'emmagatzematge.",
+      "storage": "Més espai és una funció Pro: 500 MB d’emmagatzematge, 50 MB per fitxer i fins a 5 GB d’emmagatzematge addicional quan els necessitis.",
       "folders": "Les carpetes són una funció Pro. Organitza les notes en carpetes imbricades, tan profundes com necessitis, i mantén cada projecte separat.",
       "looks": "Les icones i els colors de carpetes i etiquetes són una funció Pro. Dona a cadascuna un aspecte que reconeguis d'un cop d'ull.",
-      "lock": "Blocar una nota és una funció Pro. Millora per protegir qualsevol nota d'edicions accidentals.",
+      "lock": "Bloquejar una nota és una funció Pro. Millora per protegir qualsevol nota d'edicions accidentals.",
       "protect": "Protegir una nota amb PIN és una funció Pro. Millora per amagar les notes sensibles darrere del teu PIN.",
       "history": "L'historial de notes és una funció Pro. Millora per conservar una cronologia de cada desada.",
       "devices": "Has arribat al límit de 2 dispositius. Millora per tenir dispositius il·limitats.",
@@ -26,14 +26,14 @@
     "features": {
       "devices": "Sincronitza dispositius il·limitats, a totes les plataformes",
       "folders": "Carpetes imbricades, organitza per projecte",
-      "lock": "Bloca i protegeix amb PIN qualsevol nota",
+      "lock": "Bloqueja i protegeix amb PIN qualsevol nota",
       "history": "Historial complet de notes, restaura quan vulguis",
       "themes": "Temes prèmium en tots els tons",
       "zen": "Mode Zen, escriptura sense distraccions",
-      "storage": "500 MB d'emmagatzematge + adjunts de 50 MB"
+      "storage": "500 MB d’emmagatzematge, fins a 5,5 GB amb emmagatzematge addicional"
     },
-    "comparisonBeta": "Paga ${{earlyPrice}} una sola vegada. Obsidian Sync costa $48/any, cada any. Standard Notes cobra $90/any. Preu per a pioners, fixat abans que pugi a ${{proPrice}}.",
-    "comparison": "Paga ${{proPrice}} una sola vegada i és teu per sempre. Obsidian Sync costa $48/any i Standard Notes $90/any, any rere any."
+    "comparisonBeta": "Paga {{earlyPrice}} $ una sola vegada. Obsidian Sync costa 48 $/any, cada any. Standard Notes cobra 90 $/any. Preu per a pioners, fixat abans que pugi a {{proPrice}} $.",
+    "comparison": "Paga {{proPrice}} $ una sola vegada i és teu per sempre. Obsidian Sync costa 48 $/any i Standard Notes 90 $/any, any rere any."
   },
   "purchaseError": {
     "store": "No s'ha pogut completar el pagament a la botiga i no se t'ha cobrat res. Torna-ho a provar d'aquí a un moment.",
@@ -47,7 +47,7 @@
     "benefitDevices": "Dispositius il·limitats",
     "benefitDevicesSub": "Mòbil, tauleta, portàtil, tot sincronitzat",
     "benefitStorage": "500 MB d’emmagatzematge",
-    "benefitStorageSub": "10 vegades el pla gratuït, ampliable",
+    "benefitStorageSub": "10 vegades el pla gratuït. Afegeix fins a 5 GB més quan els necessitis",
     "benefitMore": "Més funcions",
     "benefitMoreSub": "Historial de notes, carpetes, mode zen",
     "benefitRoom": "{{gb}} GB més d’espai",

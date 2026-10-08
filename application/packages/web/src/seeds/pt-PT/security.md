@@ -23,9 +23,9 @@ Todas as opções mantêm as tuas notas cifradas no teu dispositivo. Diferem em 
 
 | Opção | Onde vive a tua frase | O que te dá |
 | --- | --- | --- |
-| **Sessão iniciada, chave connosco** | No nosso servidor, cifrada | Um dispositivo novo entra só com essa conta |
-| **Sessão iniciada, chave no teu dispositivo** | Contigo, em mais lado nenhum | Entra com Google, Apple ou GitHub e continua a ter a chave |
-| **Só a frase, sem início de sessão** | Contigo, em mais lado nenhum | Sem email, sem nome, sem conta nenhuma |
+| **Login, chave connosco** | No nosso servidor, cifrada | Um dispositivo novo entra só com essa conta |
+| **Login, chave no teu dispositivo** | Contigo, em mais lado nenhum | Entra com Google, Apple ou GitHub e continua a ter a chave |
+| **Só a frase, sem login** | Contigo, em mais lado nenhum | Sem email, sem nome, sem conta nenhuma |
 
 Nas duas de baixo não conseguiríamos ler uma nota nem que nos obrigassem. A primeira troca isso por comodidade: a tua frase fica no nosso servidor sob uma chave nossa, por isso um dispositivo novo não precisa de mais nada além da tua conta. Se o nosso servidor fosse alguma vez comprometido, essa chave podia ficar exposta.
 

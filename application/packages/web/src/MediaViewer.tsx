@@ -5,12 +5,13 @@
  * Nothing on the stage takes its size from the item except the item itself.
  * The bar is pinned to the top of the window and the arrows to its sides, so
  * they hold still under the pointer while each picture or PDF takes the room
- * it needs. A picture is never scaled up, and no control sits on it: the
- * arrows have gutters of their own, and on a phone they move into the bar.
+ * it needs. A picture opens at its fitted size and is scaled up only by the
+ * zoom buttons, and no control sits on it: the arrows have gutters of their
+ * own, and on a phone they move into the bar.
  *
  * Spec: ops/docs/ui-patterns.md (section 98, the picture viewer)
  */
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { CaretLeft, CaretRight, Download, MagnifyingGlassMinus, MagnifyingGlassPlus, X } from './icons';
@@ -22,9 +23,15 @@ import { FILE_REF_PREFIX, isPdfRef, type MediaRef } from './mediaRefs';
 
 const PdfPages = lazy(() => import('./PdfPages').then((m) => ({ default: m.PdfPages })));
 
-/** PDF zoom steps, as multiples of the page at its fitted width. Pinch is off
- *  app-wide (`user-scalable=no`), so these are how a phone reads small print. */
-const PDF_ZOOM_STEPS = [1, 1.5, 2, 3];
+/** Zoom steps for the buttons, as multiples of the picture or PDF page at its
+ *  fitted size. Pinch is off app-wide (`user-scalable=no`), so a picture runs
+ *  its own pinch, between the same ends. */
+const ZOOM_STEPS = [1, 1.5, 2, 3];
+const MAX_ZOOM = ZOOM_STEPS[ZOOM_STEPS.length - 1]!;
+
+function clampZoom(z: number): number {
+  return Math.min(MAX_ZOOM, Math.max(1, z));
+}
 
 /** The widest a PDF page draws before any zoom, in CSS pixels: a page of text
  *  still reads in one glance, and the zoom steps go wider. */
@@ -32,6 +39,9 @@ const PDF_FIT_MAX = 872;
 
 /** How far a finger travels sideways, in CSS pixels, before it is a swipe. */
 const SWIPE_PX = 50;
+
+/** How much of a fling's speed is left after one 60 Hz frame. */
+const FLING_DECAY = 0.95;
 
 /** How far a press may travel and still count as a tap on the backdrop. */
 const TAP_SLOP_PX = 10;
@@ -53,7 +63,7 @@ export function MediaViewer({ items, index: startIndex, onClose }: {
 }) {
   const { t } = useTranslation('media');
   const [index, setIndex] = useState(startIndex);
-  const [zoomStep, setZoomStep] = useState(0);
+  const [zoom, setZoom] = useState(1);
   const [saving, setSaving] = useState(false);
   // The item whose save failed. A failed native save can leave an empty or
   // partial file, so the message stays until a save succeeds; a dismissed
@@ -73,7 +83,7 @@ export function MediaViewer({ items, index: startIndex, onClose }: {
 
   const go = useCallback((delta: number) => {
     setIndex((i) => Math.min(count - 1, Math.max(0, i + delta)));
-    setZoomStep(0);
+    setZoom(1);
   }, [count]);
 
   // The arrow keys move through the list. In a right-to-left layout the list
@@ -126,7 +136,7 @@ export function MediaViewer({ items, index: startIndex, onClose }: {
 
   // A swipe is a finger's gesture; a mouse drag over a picture is not one.
   const onPointerDown = (e: React.PointerEvent) => {
-    swipe.current = e.pointerType === 'mouse' || count < 2
+    swipe.current = e.pointerType === 'mouse' || count < 2 || zoom > 1
       ? null
       : { x: e.clientX, y: e.clientY, id: e.pointerId };
   };
@@ -178,24 +188,22 @@ export function MediaViewer({ items, index: startIndex, onClose }: {
       <div className="shrink-0 pt-[env(safe-area-inset-top)]">
         <div className="h-14 flex items-center gap-1 px-2 sm:px-4">
           <h2 className="flex-1 min-w-0 px-2 text-sm font-medium truncate" dir="auto">{title}</h2>
-          {pdf && (
-            <div className="shrink-0 flex items-center">
-              <StageButton
-                label={t('viewer.zoomOut')}
-                disabled={zoomStep === 0}
-                onClick={() => setZoomStep((z) => Math.max(0, z - 1))}
-              >
-                <MagnifyingGlassMinus size={18} />
-              </StageButton>
-              <StageButton
-                label={t('viewer.zoomIn')}
-                disabled={zoomStep === PDF_ZOOM_STEPS.length - 1}
-                onClick={() => setZoomStep((z) => Math.min(PDF_ZOOM_STEPS.length - 1, z + 1))}
-              >
-                <MagnifyingGlassPlus size={18} />
-              </StageButton>
-            </div>
-          )}
+          <div className="shrink-0 flex items-center">
+            <StageButton
+              label={t('viewer.zoomOut')}
+              disabled={zoom <= 1}
+              onClick={() => setZoom((z) => [...ZOOM_STEPS].reverse().find((s) => s < z - 0.01) ?? 1)}
+            >
+              <MagnifyingGlassMinus size={18} />
+            </StageButton>
+            <StageButton
+              label={t('viewer.zoomIn')}
+              disabled={zoom >= MAX_ZOOM}
+              onClick={() => setZoom((z) => ZOOM_STEPS.find((s) => s > z + 0.01) ?? MAX_ZOOM)}
+            >
+              <MagnifyingGlassPlus size={18} />
+            </StageButton>
+          </div>
           {count > 1 && (
             <div className="shrink-0 flex items-center">
               <span className="sm:hidden">{previous('below', false)}</span>
@@ -228,7 +236,7 @@ export function MediaViewer({ items, index: startIndex, onClose }: {
               <PdfPages
                 key={item.src}
                 load={loadPdf}
-                zoom={PDF_ZOOM_STEPS[zoomStep]!}
+                zoom={zoom}
                 fitMax={PDF_FIT_MAX}
                 label={title}
               />
@@ -238,7 +246,8 @@ export function MediaViewer({ items, index: startIndex, onClose }: {
               key={item.src}
               src={item.src}
               alt={title}
-              swipeable={count > 1}
+              zoom={zoom}
+              onZoom={setZoom}
               onPointerDown={onPointerDown}
               onPointerUp={onPointerUp}
               onPointerCancel={() => { swipe.current = null; }}
@@ -290,13 +299,16 @@ function Notice({ text }: { text: string }) {
 
 /**
  * The picture at its stored size, shrunk to fit the stage and never scaled
- * up. The area around it is backdrop, so a tap beside a small picture closes
- * the viewer the way a tap on the stage does.
+ * up on its own. A zoom above 1 sizes it at that multiple of the fitted size
+ * and lets it scroll. Two fingers pinch it, and a trackpad pinch does the
+ * same. The area around it is backdrop, so a tap beside a small picture
+ * closes the viewer the way a tap on the stage does.
  */
-function Picture({ src, alt, swipeable, onPointerDown, onPointerUp, onPointerCancel }: {
+function Picture({ src, alt, zoom, onZoom, onPointerDown, onPointerUp, onPointerCancel }: {
   src: string;
   alt: string;
-  swipeable: boolean;
+  zoom: number;
+  onZoom: React.Dispatch<React.SetStateAction<number>>;
   onPointerDown: (e: React.PointerEvent) => void;
   onPointerUp: (e: React.PointerEvent) => void;
   onPointerCancel: () => void;
@@ -304,6 +316,43 @@ function Picture({ src, alt, swipeable, onPointerDown, onPointerUp, onPointerCan
   const { t } = useTranslation('media');
   const [url, setUrl] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [box, setBox] = useState({ w: 0, h: 0 });
+  const [natural, setNatural] = useState({ w: 0, h: 0 });
+  // The point of the picture that holds still when the zoom changes, as a
+  // fraction of the picture, and where it sits in the view. The buttons keep
+  // the middle of the view; a pinch keeps the point between the fingers.
+  const anchor = useRef({ fx: 0.5, fy: 0.5, px: 0, py: 0 });
+  const fingers = useRef(new Map<number, { x: number; y: number }>());
+  const pinch = useRef<{ dist: number; zoom: number; fx: number; fy: number } | null>(null);
+  // The finger's speed in CSS pixels per millisecond, carried on after it
+  // lifts so a flicked picture slides to a stop the way a scroll does.
+  const velocity = useRef({ x: 0, y: 0, t: 0 });
+  const fling = useRef(0);
+  useEffect(() => () => cancelAnimationFrame(fling.current), []);
+  const zoomNow = useRef(zoom);
+  useEffect(() => { zoomNow.current = zoom; }, [zoom]);
+
+  /** Anchors the picture at a point given in client pixels. */
+  const anchorAt = (clientX: number, clientY: number) => {
+    const el = boxRef.current;
+    const img = imgRef.current;
+    if (!el || !img || !img.offsetWidth) return;
+    const rect = el.getBoundingClientRect();
+    const px = clientX - rect.left;
+    const py = clientY - rect.top;
+    anchor.current = {
+      fx: (el.scrollLeft + px - img.offsetLeft) / img.offsetWidth,
+      fy: (el.scrollTop + py - img.offsetTop) / img.offsetHeight,
+      px,
+      py,
+    };
+  };
+  const anchorCenter = () => {
+    const rect = boxRef.current?.getBoundingClientRect();
+    if (rect) anchorAt(rect.left + rect.width / 2, rect.top + rect.height / 2);
+  };
 
   useEffect(() => {
     let alive = true;
@@ -315,17 +364,170 @@ function Picture({ src, alt, swipeable, onPointerDown, onPointerUp, onPointerCan
     return () => { alive = false; };
   }, [src]);
 
+  // The outer size, so the scrollbars a zoom brings never change the fit. It
+  // matters only once the picture has a size of its own.
+  const loaded = natural.w > 0;
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el || !loaded) return;
+    const measure = () => setBox({ w: el.offsetWidth, h: el.offsetHeight });
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [loaded]);
+
+  // A trackpad pinch arrives as a wheel event with ctrlKey in Chrome and
+  // Firefox, and as gesture events in Safari. Both must be stopped here, or
+  // the page zooms. On a touch screen Safari sends gesture events beside the
+  // pointer events, so they count only while no finger is down.
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el || !loaded) return;
+    let gestureStart = 1;
+    const onWheel = (e: WheelEvent) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      anchorAt(e.clientX, e.clientY);
+      onZoom((z) => clampZoom(z * Math.exp(-e.deltaY / 100)));
+    };
+    type GestureEvent = UIEvent & { scale: number; clientX: number; clientY: number };
+    const onGestureStart = (e: Event) => {
+      e.preventDefault();
+      gestureStart = zoomNow.current;
+    };
+    const onGestureChange = (e: Event) => {
+      e.preventDefault();
+      const g = e as GestureEvent;
+      if (fingers.current.size > 0) return;
+      anchorAt(g.clientX, g.clientY);
+      onZoom(clampZoom(gestureStart * g.scale));
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('gesturestart', onGestureStart);
+    el.addEventListener('gesturechange', onGestureChange);
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+      el.removeEventListener('gesturestart', onGestureStart);
+      el.removeEventListener('gesturechange', onGestureChange);
+    };
+  }, [loaded, onZoom]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const fit = Math.min(1, box.w / natural.w, box.h / natural.h);
+  const size = zoom > 1 && loaded
+    ? { width: Math.floor(natural.w * fit * zoom), height: Math.floor(natural.h * fit * zoom) }
+    : null;
+
+  useLayoutEffect(() => {
+    const el = boxRef.current;
+    const img = imgRef.current;
+    if (!el || !img) return;
+    const a = anchor.current;
+    el.scrollLeft = img.offsetLeft + a.fx * img.offsetWidth - a.px;
+    el.scrollTop = img.offsetTop + a.fy * img.offsetHeight - a.py;
+    // A clamped position fires no scroll event, so the anchor is read back here.
+    anchorCenter();
+  }, [size?.width]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Two fingers on the picture are a pinch: they never swipe, and the zoom
+  // follows the distance between them from where it stood when they landed.
+  // One finger on a zoomed picture pans it. The browser pan is not used: once
+  // it starts, a second finger never reaches the pinch.
+  const spread = () => {
+    const [a, b] = [...fingers.current.values()];
+    return { dist: Math.hypot(a!.x - b!.x, a!.y - b!.y), x: (a!.x + b!.x) / 2, y: (a!.y + b!.y) / 2 };
+  };
+  const startFling = () => {
+    let { x: vx, y: vy } = velocity.current;
+    let last = performance.now();
+    const step = (now: number) => {
+      const el = boxRef.current;
+      if (!el) return;
+      const dt = now - last;
+      last = now;
+      el.scrollLeft -= vx * dt;
+      el.scrollTop -= vy * dt;
+      const decay = FLING_DECAY ** (dt / 16);
+      vx *= decay;
+      vy *= decay;
+      if (Math.hypot(vx, vy) > 0.02) fling.current = requestAnimationFrame(step);
+    };
+    fling.current = requestAnimationFrame(step);
+  };
+  const onFingerDown = (e: React.PointerEvent) => {
+    cancelAnimationFrame(fling.current);
+    if (e.pointerType === 'mouse') return onPointerDown(e);
+    fingers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    velocity.current = { x: 0, y: 0, t: e.timeStamp };
+    if (fingers.current.size !== 2) return onPointerDown(e);
+    onPointerCancel();
+    const { dist, x, y } = spread();
+    anchorAt(x, y);
+    pinch.current = { dist, zoom, fx: anchor.current.fx, fy: anchor.current.fy };
+  };
+  const onFingerMove = (e: React.PointerEvent) => {
+    const last = fingers.current.get(e.pointerId);
+    if (!last) return;
+    fingers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (fingers.current.size === 1 && size) {
+      const dx = e.clientX - last.x;
+      const dy = e.clientY - last.y;
+      boxRef.current!.scrollLeft -= dx;
+      boxRef.current!.scrollTop -= dy;
+      const v = velocity.current;
+      const dt = e.timeStamp - v.t;
+      if (dt > 0) {
+        // Smoothed, so one uneven sample does not set the speed.
+        velocity.current = { x: 0.6 * dx / dt + 0.4 * v.x, y: 0.6 * dy / dt + 0.4 * v.y, t: e.timeStamp };
+      }
+      return;
+    }
+    const start = pinch.current;
+    if (!start || fingers.current.size !== 2) return;
+    const { dist, x, y } = spread();
+    const rect = boxRef.current!.getBoundingClientRect();
+    anchor.current = { fx: start.fx, fy: start.fy, px: x - rect.left, py: y - rect.top };
+    onZoom(clampZoom(start.zoom * dist / start.dist));
+  };
+  const onFingerUp = (e: React.PointerEvent, cancelled: boolean) => {
+    fingers.current.delete(e.pointerId);
+    if (pinch.current) {
+      if (fingers.current.size < 2) pinch.current = null;
+      return;
+    }
+    // A finger that stopped before it lifted leaves the picture where it is.
+    if (!cancelled && size && fingers.current.size === 0 && e.timeStamp - velocity.current.t < 50) startFling();
+    if (cancelled) onPointerCancel();
+    else onPointerUp(e);
+  };
+
   return (
     <div
+      ref={boxRef}
       data-backdrop=""
-      onPointerDown={onPointerDown}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerCancel}
-      // touch-none hands every finger movement here to the swipe handler.
-      className={`h-full flex items-center justify-center select-none ${swipeable ? 'touch-none' : ''}`}
+      onPointerDown={onFingerDown}
+      onPointerMove={onFingerMove}
+      onPointerUp={(e) => onFingerUp(e, false)}
+      onPointerCancel={(e) => onFingerUp(e, true)}
+      onScroll={anchorCenter}
+      // touch-none hands every finger movement here, for the swipe, the pinch
+      // and the pan. A zoomed picture centers by m-auto, which still lets
+      // every edge of a larger picture scroll into view.
+      className={`relative h-full flex select-none touch-none ${size ? 'overflow-auto' : 'items-center justify-center'}`}
     >
       {url ? (
-        <img src={url} alt={alt} className="block max-w-full max-h-full" draggable={false} />
+        <img
+          ref={imgRef}
+          src={url}
+          alt={alt}
+          onLoad={(e) => {
+            setNatural({ w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight });
+            anchorCenter();
+          }}
+          style={size ?? undefined}
+          className={`block m-auto ${size ? 'max-w-none shrink-0' : 'max-w-full max-h-full'}`}
+          draggable={false}
+        />
       ) : (
         <Notice text={failed ? t('image.notFound') : t('image.loading')} />
       )}

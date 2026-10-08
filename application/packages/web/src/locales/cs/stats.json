@@ -1,6 +1,7 @@
 {
   "title": "Statistiky",
   "tabs": {
+    "overview": "Přehled",
     "writing": "Psaní",
     "wellness": "Pohoda"
   },
@@ -31,12 +32,13 @@
     "30d": "30 dní",
     "3mo": "3 měsíce",
     "6mo": "6 měsíců",
-    "12mo": "12 měsíců"
+    "12mo": "12 měsíců",
+    "all": "Vše"
   },
   "wellness": {
     "subTabs": {
       "all": "Vše",
-      "sleepActivity": "Spánek a aktivita",
+      "explore": "Prozkoumat",
       "medication": "Léky",
       "patterns": "Vzorce"
     },
@@ -44,33 +46,17 @@
       "title": "Zatím žádná data o pohodě.",
       "hint": "Začni tím, že si otevřeš záznam v deníku a zapíšeš náladu."
     },
-    "overview": {
-      "daysTracked": "Zaznamenané dny",
-      "avgMood": "Prům. nálada",
-      "avgSleep": "Prům. spánek",
-      "medAdherence": "Dodržování léků",
-      "moodTrend": "Trend nálady",
-      "moodByDayOfWeek": "Nálada podle dne v týdnu",
-      "moodTrendTooltip": "{{date}}: {{mood}}/10",
-      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
-    },
     "export": {
       "heading": "Export",
-      "allTime": "Celá historie",
-      "last90Days": "Posledních 90 dní",
-      "last30Days": "Posledních 30 dní",
-      "last7Days": "Posledních 7 dní",
       "downloadJSON": "Stáhnout JSON",
       "doctorPDF": "PDF pro lékaře",
-      "copyAIPrompt": "Kopírovat prompt pro AI",
+      "copyAIPrompt": "Zobrazit a kopírovat prompt pro AI",
       "copied": "Zkopírováno!",
       "saveFailed": "Uložení se nezdařilo, takže soubor může být prázdný nebo neúplný. Zkus to znovu nebo vyber jinou složku.",
-      "proBadge": "PRO"
-    },
-    "sleepActivity": {
-      "sleepQuality": "Kvalita spánku",
-      "activity": "Aktivita",
-      "avgSleepPerNight": "Průměrný spánek za noc"
+      "proBadge": "PRO",
+      "usesRange": "Používá rozsah výše",
+      "promptShown": "Prompt, který sis zkopíroval. Vlož ho do chatbota podle své volby.",
+      "hidePrompt": "Skrýt"
     },
     "medication": {
       "adherence": "Dodržování",
@@ -83,15 +69,14 @@
       "changedTo": "Změna na {{dosage}}"
     },
     "patterns": {
-      "topEmotions": "Nejčastější emoce",
+      "heading": "Co hýbe tvou náladou",
       "insights": "Postřehy",
       "proBadge": "PRO",
       "insightsLocked_one": "Nalezen {{count}} postřeh. Přejdi na Pro a zobraz si ho",
       "insightsLocked_few": "Nalezeny {{count}} postřehy. Přejdi na Pro a zobraz si je",
       "insightsLocked_many": "Nalezeno {{count}} postřehu. Přejdi na Pro a zobraz si je",
       "insightsLocked_other": "Nalezeno {{count}} postřehů. Přejdi na Pro a zobraz si je",
-      "weekInReview": "Týdenní přehled",
-      "weekInReviewLocked": "Přejdi na Pro a uvidíš týdenní souhrn své pohody"
+      "tableLocked": "Přejdi na Pro a uvidíš, které sledované hodnoty hýbou tvou náladou"
     },
     "week": {
       "range": "{{start}} až {{end}}",
@@ -103,7 +88,10 @@
       "topActivity": "Nejčastější aktivita",
       "topEmotions": "Nejčastější emoce",
       "reflection": "Ohlédnutí",
-      "reflectionPlaceholder": "Jaký byl tenhle týden celkově? Chceš si k tomu něco poznamenat..."
+      "reflectionPlaceholder": "Jaký byl tenhle týden celkově? Chceš si k tomu něco poznamenat...",
+      "heading": "Týdenní přehled",
+      "proBadge": "PRO",
+      "locked": "Přejdi na Pro a uvidíš týdenní souhrn své pohody"
     },
     "units": {
       "days_one": "{{count}} den",
@@ -111,14 +99,24 @@
       "days_other": "{{count}} dní"
     },
     "insights": {
-      "sleep": "Ve dnech po dobrém spánku máš průměr {{good}}, po špatném {{bad}}.",
-      "activity": "V aktivních dnech máš průměr {{active}}, v sedavých {{sedentary}}.",
       "dayOfWeek": "Tvůj nejlepší den bývá {{best}} (průměr {{bestAvg}}) a nejtěžší {{worst}} (průměr {{worstAvg}}).",
-      "medication": "Od začátku léku {{name}} dne {{date}} se tvá průměrná nálada změnila z {{before}} na {{after}}.",
+      "medication": "Tvá {{outcome}} je v průměru {{a}} ve dnech, kdy bereš {{name}}, a {{b}} ve dnech, kdy ho vynecháš.",
       "streak_one": "Zapisuješ si náladu už {{count}} den v řadě. Jen tak dál!",
       "streak_few": "Zapisuješ si náladu už {{count}} dny v řadě. Jen tak dál!",
       "streak_other": "Zapisuješ si náladu už {{count}} dní v řadě. Jen tak dál!",
-      "trend": "Tvá nálada za poslední dva týdny je v průměru {{recent}} oproti {{overall}} celkově."
+      "trend": "Tvá nálada za poslední dva týdny je v průměru {{recent}} oproti {{overall}} celkově.",
+      "yesno": "Tvá {{outcome}} je v průměru {{a}} ve dnech, kdy zapíšeš {{name}}, a {{b}} ve dnech, kdy ne.",
+      "yesnoNextDay": "Tvá {{outcome}} je v průměru {{a}} den po tom, co zapíšeš {{name}}, a {{b}} po dnech, kdy ne.",
+      "halves": "Tvá {{outcome}} je v průměru {{a}}, když je {{name}} nad {{threshold}}, a {{b}}, když je {{threshold}} nebo níž.",
+      "halvesNextDay": "Tvá {{outcome}} je v průměru {{a}} den po tom, co je {{name}} nad {{threshold}}, a {{b}} po dnech, kdy je {{threshold}} nebo níž.",
+      "median": "Tvá {{outcome}} je v průměru {{a}}, když je {{name}} nad tvým mediánem {{threshold}}, a {{b}}, když je na něm nebo pod ním.",
+      "medianNextDay": "Tvá {{outcome}} je v průměru {{a}} den po tom, co je {{name}} nad tvým mediánem {{threshold}}, a {{b}} po dnech, kdy je na něm nebo pod ním.",
+      "levels": "Tvá {{outcome}} je v průměru {{a}} ve dnech s úrovní {{top}} a {{b}} ve dnech s úrovní {{bottom}}.",
+      "levelsNextDay": "Tvá {{outcome}} je v průměru {{a}} den po dnech s úrovní {{top}} a {{b}} po dnech s úrovní {{bottom}}.",
+      "tag": "Tvá {{outcome}} je v průměru {{a}} ve dnech, kdy cítíš {{tag}}, a {{b}} ve dnech, kdy ne.",
+      "tagNextDay": "Tvá {{outcome}} je v průměru {{a}} den po tom, co cítíš {{tag}}, a {{b}} po dnech, kdy ne.",
+      "medicationNextDay": "Tvá {{outcome}} je v průměru {{a}} den po tom, co bereš {{name}}, a {{b}} po dnech, kdy ho vynecháš.",
+      "doseChange": "Kolem změny dávky {{name}} na {{dosage}} dne {{date}} byla tvá nálada v průměru {{before}} během {{nBefore}} dní před a {{after}} během {{nAfter}} dní po."
     },
     "aiPrompt": {
       "intro": "Sleduji si náladu a své celkové rozpoložení. Projdi data níže a najdi vzorce, trendy a konkrétní doporučení.",
@@ -137,12 +135,20 @@
       "adherenceLine": "{{name}}: užito {{taken}} z {{total}} sledovaných dní ({{pct}}%)",
       "dosageTimeline": "Časová osa dávkování",
       "patterns": "Zjištěné vzorce",
-      "questions": "Co bych chtěl vědět",
+      "questions": "Co chci vědět",
       "question1": "Jsou v mé náladě v čase nějaké vzorce?",
       "question2": "Souvisí kvalita spánku a úroveň aktivity s náladou?",
       "question3": "Jsou tu znepokojivé trendy, které bych měl probrat s lékařem?",
       "question4": "Konkrétní návrhy na základě těchto dat.",
-      "footer": "Vytvořeno v PrivacyNotes (privacynotes.app)"
+      "footer": "Vytvořeno v PrivacyNotes (privacynotes.app)",
+      "period": "Období: {{from}} až {{to}}",
+      "daysLogged": "Zapsané dny: {{logged}} z {{days}}",
+      "trackers": "Sledované hodnoty",
+      "trackerLine": "{{name}}: průměr {{avg}}, min. {{low}}, max. {{high}}, {{count}} dní",
+      "trackerYesLine": "{{name}}: ano v {{yes}} z {{count}} dní",
+      "effects": "Nálada ve dnech s a bez",
+      "effectLine": "{{name}} ({{rule}}): {{a}} s, {{b}} bez, rozdíl {{delta}}, {{na}} / {{nb}} dní",
+      "customQuestion": "Souvisí {{name}} s mou náladou, tentýž den nebo den poté?"
     },
     "report": {
       "documentTitle": "Zpráva o rozpoložení",
@@ -173,8 +179,131 @@
       "unknownDose": "neznámá dávka",
       "topEmotions": "Nejčastější emoce",
       "patterns": "Zjištěné vzorce",
-      "footer": "Vytvořeno v PrivacyNotes - privacynotes.app"
-    }
+      "footer": "Vytvořeno v PrivacyNotes - privacynotes.app",
+      "period": "Období: {{from}} až {{to}}, {{days}} dní",
+      "daysLogged": "Zapsané dny: {{logged}} z {{days}}",
+      "moodHeading": "Nálada, jeden sloupec na den",
+      "moodLegend": "Sloupce: 1-2 červená, 3-4 oranžová, 5-6 žlutá, 7-8 zelená, 9-10 modrá. Čára: 7denní průměr. Trojúhelník: změna dávky. Mezera je den bez záznamu.",
+      "previous": "{{days}} dní předtím: {{value}}",
+      "trackers": "Sledované hodnoty",
+      "columnTracker": "Sledovaná hodnota",
+      "columnAverage": "Průměr",
+      "columnLowHigh": "Min. / max.",
+      "columnHistory": "Historie",
+      "effects": "Nálada ve dnech s a bez",
+      "columnFactor": "Faktor",
+      "columnRule": "Pravidlo",
+      "columnWith": "S",
+      "columnWithout": "Bez",
+      "columnDifference": "Rozdíl",
+      "nextDaySuffix": "{{name}}, den poté",
+      "effectsNote": "Průměry ze zapsaných dní. Rozdíl je pozorování, ne příčina.",
+      "medCalendar": "Kalendář",
+      "doseChanges": "Změny dávky",
+      "columnDoseChanges": "Změny dávky",
+      "yesOn": "ano v {{count}}",
+      "total": "{{value}} celkem"
+    },
+    "tiles": {
+      "daysLogged": "Zapsané dny",
+      "daysLoggedOf": "{{logged}} z {{days}}",
+      "avgMood": "Prům. nálada",
+      "moodDelta": "{{delta}} proti {{days}} dnům předtím",
+      "avgSleep": "Prům. spánek",
+      "medsTaken": "Užité léky"
+    },
+    "mood": {
+      "heading": "Nálada",
+      "legend": "Čára: 7denní průměr. Trojúhelník: změna dávky.",
+      "dose": "{{name}} {{dosage}}"
+    },
+    "trackers": {
+      "heading": "Sledované hodnoty",
+      "tapHint": "Klepnutí otevře Prozkoumat",
+      "stopped": "Zastavené",
+      "deleted": "Smazáno",
+      "stoppedChip": "Zastavené ({{count}})",
+      "unknown": "Neznámá hodnota {{id}}",
+      "sleepHours": "Hodiny spánku",
+      "sleepQuality": "Kvalita spánku",
+      "avgDays": "průměr, {{count}} dní",
+      "sumDays": "celkem, {{count}} dní",
+      "yesNo": "ano v {{yes}}, ne v {{no}}",
+      "notLogged": "{{count}} nezapsáno",
+      "latestLowHigh": "poslední {{latest}}, min. {{low}}, max. {{high}}",
+      "topLevel": "{{level}} v {{count}} dnech",
+      "taken": "užito v {{taken}} z {{total}}",
+      "empty": "V tomto rozsahu nic zapsáno",
+      "unanswered": "{{count}} zapsaných dní bez odpovědi"
+    },
+    "effects": {
+      "heading": "Co hýbe tvou náladou",
+      "headingOutcome": "Co hýbe tvou hodnotou {{outcome}}",
+      "allInPatterns": "Všechny ve Vzorcích",
+      "sameDay": "Tentýž den",
+      "nextDay": "Den poté",
+      "compareWith": "Porovnat s",
+      "withLabel": "S",
+      "withoutLabel": "Bez",
+      "days": "{{a}} / {{b}} dní",
+      "shortfall_one": "Chybí ještě {{count}} den na straně „{{side}}“",
+      "shortfall_few": "Chybí ještě {{count}} dny na straně „{{side}}“",
+      "shortfall_many": "Chybí ještě {{count}} dne na straně „{{side}}“",
+      "shortfall_other": "Chybí ještě {{count}} dní na straně „{{side}}“",
+      "sideWith": "s",
+      "sideWithout": "bez",
+      "footnote": "Pozorování ze zapsaných dní, ne příčina.",
+      "higher": "{{outcome}} je v tyto dny o {{delta}} bodů výš.",
+      "lower": "{{outcome}} je v tyto dny o {{delta}} bodů níž.",
+      "rule": {
+        "yesno": "dny s proti dnům bez",
+        "halves": "nad {{threshold}} proti {{threshold}} a níž",
+        "median": "nad proti pod tvým mediánem {{threshold}}",
+        "levels": "{{top}} proti {{bottom}}",
+        "tag": "dny s {{tag}} proti dnům bez",
+        "medication": "užito proti vynecháno"
+      }
+    },
+    "explore": {
+      "calendar": "Kalendář",
+      "against": "Proti: {{outcome}}, společná osa dat",
+      "cells": {
+        "value": "zapsáno",
+        "no": "ne",
+        "missing": "nezapsáno"
+      },
+      "longestRunWithout": "nejdelší série bez: {{count}} dní",
+      "longestRunWith": "nejdelší série s: {{count}} dní",
+      "pickOne": "Vyber sledovanou hodnotu"
+    },
+    "medCalendar": {
+      "heading": "Den po dni",
+      "doseChange": "změna dávky",
+      "taken": "užito",
+      "skipped": "vynecháno",
+      "missed": "neužito",
+      "unmarked": "neoznačeno",
+      "noEntry": "bez záznamu",
+      "doseLens": "Nálada byla v průměru {{before}} během {{nBefore}} dní před a {{after}} během {{nAfter}} dní po.",
+      "doseLensHeading": "Kolem každé změny dávky",
+      "doseLensShort_one": "Chybí ještě {{count}} zapsaný den kolem ní.",
+      "doseLensShort_few": "Chybí ještě {{count}} zapsané dny kolem ní.",
+      "doseLensShort_many": "Chybí ještě {{count}} zapsaného dne kolem ní.",
+      "doseLensShort_other": "Chybí ještě {{count}} zapsaných dní kolem ní."
+    },
+    "sourceLine": "Všechno tady pochází ze sledovaných hodnot v tvých záznamech v deníku.",
+    "openToday": "Otevřít dnešní záznam"
+  },
+  "milestones": {
+    "heading": "Milníky",
+    "next": "Další: {{label}}",
+    "allReached": "{{label}} a všechny předchozí",
+    "ofTarget": "{{current}} z {{target}}",
+    "reached_one": "{{count}} zatím dosažen.",
+    "reached_few": "{{count}} zatím dosaženy.",
+    "reached_many": "{{count}} zatím dosaženo.",
+    "reached_other": "{{count}} zatím dosaženo.",
+    "source": "Napsané poznámky a dny s PrivacyNotes počítají jen to, co se děje v aplikaci. Import nezmění ani jedno."
   },
   "milestoneToast": {
     "unlocked": "Milník odemčen"
@@ -194,5 +323,61 @@
     "age730": "2 roky s PrivacyNotes",
     "age1825": "5 let s PrivacyNotes",
     "ageDefault": "{{count}}. den s PrivacyNotes"
+  },
+  "overview": {
+    "week": "Tvůj týden",
+    "streak": "Série psaní",
+    "streakDays_one": "{{count}} den",
+    "streakDays_few": "{{count}} dny",
+    "streakDays_many": "{{count}} dne",
+    "streakDays_other": "{{count}} dní",
+    "streakNudge": "Dnes zatím nic. Jeden řádek stačí.",
+    "streakKept": "Dnešek je splněný.",
+    "words": "Napsaná slova",
+    "wordsDelta": "{{delta}} proti minulému týdnu",
+    "mood": "Nálada",
+    "moodDelta": "{{delta}} proti minulému týdnu",
+    "daysLogged": "Zapsané dny",
+    "daysLoggedOf": "{{logged}} z {{days}}",
+    "rhythm": "Tvůj rytmus, {{weeks}} týdnů",
+    "layerBoth": "Obojí",
+    "layerWriting": "Psaní",
+    "layerMood": "Nálada",
+    "rhythmLegend": "Políčko: kolik jsi ten den napsal. Tečka: jaký ten den byl.",
+    "hours": "Kdy píšeš",
+    "hoursSub": "úpravy podle hodiny, {{days}} dní",
+    "hoursPeak": "Nejvíc píšeš mezi {{from}} a {{to}}.",
+    "ledgerSince": "Počítáno na tomto zařízení od {{date}}.",
+    "ledgerEmpty": "Počítání začíná teď. Vrať se za týden.",
+    "highlights": "Zajímavosti",
+    "highlightSleep": "Dobrý spánek, víc slov. Po {{hours}} a více hodinách spánku napíšeš zhruba {{a}} slov denně. Po krátké noci {{b}}.",
+    "highlightSleepSub": "{{long}} dlouhých nocí, {{short}} krátkých, {{days}} dní",
+    "highlightWeekday": "{{day}} je tvůj den. Nálada je v průměru {{mood}} a {{count}} z tvých {{total}} nejdelších poznámek vzniklo v tento den.",
+    "highlightWeekdaySub": "zapsáno {{count}}x ({{day}})",
+    "highlightEffect": "Dny s {{name}} vycházejí {{direction}}. Nálada {{a}} s, {{b}} bez.",
+    "higher": "výš",
+    "lower": "níž",
+    "highlightEffectSub": "{{count}} dní s {{name}} z {{days}} dní",
+    "highlightTag": "#{{tag}} roste. {{now}} poznámek tento měsíc, {{before}} měsíc předtím.",
+    "highlightTagSub": "{{count}} používaných značek",
+    "highlightsLocked": "Přejdi na Pro a uvidíš, co má tvé psaní společného s tvými sledovanými hodnotami",
+    "vault": "Tvůj trezor",
+    "vaultSub": "tento týden drobným písmem",
+    "done": "{{count}} hotovo",
+    "milestones": "Milníky",
+    "longestStreak": "Nejdelší série: {{count}} dní",
+    "openWriting": "Otevřít Psaní",
+    "openWellness": "Otevřít Pohodu",
+    "computed": "spočítáno na tomto zařízení",
+    "pillars": {
+      "notes": "Poznámky",
+      "journals": "Deníky",
+      "tasks": "Úkoly",
+      "files": "Soubory",
+      "bookmarks": "Záložky",
+      "contacts": "Kontakty",
+      "logins": "Přihlašovací údaje"
+    },
+    "ledgerEstimated": "Odhad z tvých poznámek, dokud nezačne počítání."
   }
 }

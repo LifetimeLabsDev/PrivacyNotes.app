@@ -4,7 +4,7 @@ import type { LocalNote } from '../db';
 import type { ContextMenuItem } from '../ContextMenu';
 import { ArrowsInLineHorizontal, PushPin, X, XSquare } from '../icons';
 import { LooksContext } from '../looks/LookGlyph';
-import { resolveNoteColor, type LookColor } from '../itemStyles';
+import { resolveNoteLook, type NoteLook } from '../itemStyles';
 import { noteFaviconDomain, typeGlyph } from '../NoteRow';
 import { Favicon } from '../VaultItem';
 
@@ -81,12 +81,12 @@ export default function TabStrip({
   const activeAt = tabs.findIndex((n) => n.id === activeId);
   // The row's own color rule (`useNoteColor` resolves the same way), read here
   // rather than per tab because a divider depends on both of its neighbours.
-  const { styles, tintNotes, filter } = useContext(LooksContext);
-  const colors = tabs.map((n) => resolveNoteColor(n.id, n.tags, n.folderId, styles, tintNotes, filter));
+  const { styles, tintNotes, noteColorStyle, filter } = useContext(LooksContext);
+  const looks = tabs.map((n) => resolveNoteLook(n.id, n.tags, n.folderId, styles, tintNotes, noteColorStyle, filter));
   // A hairline only between two plain resting tabs: the active tab and a
-  // colored tab each have their own edges, and a line against those reads as
-  // a stray mark.
-  const plain = (i: number) => i !== activeAt && !colors[i];
+  // tinted tab each have their own edges, and a line against those reads as
+  // a stray mark. An accent tab has no tint, so it keeps its line.
+  const plain = (i: number) => i !== activeAt && looks[i]?.style !== 'background';
 
   return (
     <div
@@ -111,7 +111,7 @@ export default function TabStrip({
           note={n}
           title={titleOf(n)}
           gated={isGated(n)}
-          color={colors[i] ?? null}
+          look={looks[i] ?? null}
           active={i === activeAt}
           pinned={pinnedIds.has(n.id)}
           divider={i < tabs.length - 1 && plain(i) && plain(i + 1)}
@@ -146,13 +146,13 @@ export default function TabStrip({
  * the same helpers the list row uses, so a tab and its row always match.
  */
 function Tab({
-  note: n, title, gated, color, active, pinned, divider, dragging, dropSide, closeLabel,
+  note: n, title, gated, look, active, pinned, divider, dragging, dropSide, closeLabel,
   onActivate, onClose, onContextMenu, onDragStart, onDragEnd, onDragOverSide,
 }: {
   note: LocalNote;
   title: string;
   gated: boolean;
-  color: LookColor | null;
+  look: NoteLook | null;
   active: boolean;
   /** Narrower, a pin where the X would be, and deaf to the middle button. */
   pinned: boolean;
@@ -171,7 +171,10 @@ function Tab({
 }) {
   const { Icon, color: glyphColor } = typeGlyph(n.type);
   const domain = gated ? '' : noteFaviconDomain(n);
-  const tint = color ? `var(--pn-label-${color}-tint)` : null;
+  const color = look?.color ?? null;
+  // Only a background look tints the tab; an accent keeps it plain and
+  // colors the icon alone.
+  const tint = look?.style === 'background' ? `var(--pn-label-${look.color}-tint)` : null;
   const ink = color ? `var(--pn-label-${color}-ink)` : 'var(--color-accent)';
 
   return (
@@ -215,12 +218,20 @@ function Tab({
       }}
       className={`group relative flex items-center gap-2 h-9 ${pinned ? 'min-w-[96px] max-w-[160px] flex-[0_1_160px]' : 'min-w-[110px] max-w-[220px] flex-[0_1_220px]'} ps-3 pe-1.5 rounded-t-[9px] text-[13px] cursor-pointer select-none transition-colors ${
         active
-          ? 'bg-surface-2 border border-b-0 border-divider text-neutral-900 dark:text-neutral-100 -mb-px h-[calc(2.25rem+1px)] z-10'
-          : 'border border-transparent border-b-0 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 hover:text-neutral-800 dark:hover:text-neutral-200'
+          ? 'bg-surface-2 border border-b-0 border-divider text-pn -mb-px h-[calc(2.25rem+1px)] z-10'
+          : 'border border-transparent border-b-0 text-pn-muted hover:bg-pn/5 hover:text-pn'
       } ${dragging ? 'opacity-50' : ''}`}
     >
       {domain ? (
-        <span className="shrink-0 flex" aria-hidden="true"><Favicon domain={domain} size={14} /></span>
+        <span
+          className="shrink-0 flex rounded-[4px]"
+          aria-hidden="true"
+          // A site icon cannot take the ink, so an accent lays the tint
+          // behind it instead.
+          style={look?.style === 'accent' ? { padding: 2, margin: -2, background: `var(--pn-label-${look.color}-tint)` } : undefined}
+        >
+          <Favicon domain={domain} size={14} />
+        </span>
       ) : (
         <Icon
           size={14}
@@ -237,7 +248,7 @@ function Tab({
         type="button"
         aria-label={closeLabel}
         onClick={(e) => { e.stopPropagation(); onClose(); }}
-        className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-md hover:bg-neutral-900/10 dark:hover:bg-white/10 ${
+        className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-md hover:bg-pn/10 ${
           active ? '' : 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100'
         }`}
       >
@@ -247,7 +258,7 @@ function Tab({
       {dropSide && (
         <span
           aria-hidden="true"
-          className={`absolute top-0.5 bottom-0.5 w-[3px] rounded-full bg-accent z-20 pointer-events-none ${
+          className={`absolute top-0.5 bottom-0.5 w-[3px] rounded-full bg-accent-fill z-20 pointer-events-none ${
             dropSide === 'before' ? '-start-px' : '-end-px'
           }`}
         />

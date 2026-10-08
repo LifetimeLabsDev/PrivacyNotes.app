@@ -38,7 +38,7 @@ export function DetailHero({ tile, title, subtitle, onEdit, editLabel }: {
       <div className="flex items-center gap-4 min-w-0">
         {tile}
         <div className="min-w-0">
-          <div className="text-lg font-semibold truncate text-neutral-900 dark:text-white" dir="auto">{title}</div>
+          <div className="text-lg font-semibold truncate text-pn" dir="auto">{title}</div>
           {subtitle}
         </div>
       </div>
@@ -46,7 +46,7 @@ export function DetailHero({ tile, title, subtitle, onEdit, editLabel }: {
         <button
           type="button"
           onClick={onEdit}
-          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-surface-1 border border-divider text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-surface-0 transition"
+          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-surface-1 border border-divider text-pn-soft hover:bg-pn/10 transition"
         >
           <PencilSimple size={13} /> {editLabel}
         </button>
@@ -62,6 +62,7 @@ export function DetailHero({ tile, title, subtitle, onEdit, editLabel }: {
 export function DetailTile({ children, light = false }: { children: ReactNode; light?: boolean }) {
   return (
     <span
+      // theme-ok: a light tile keeps dark favicons readable in every theme
       className={`shrink-0 rounded-md flex items-center justify-center overflow-hidden ${light ? 'bg-[#f0efec]' : 'bg-surface-1 border border-divider text-accent'}`}
       style={{ width: DETAIL_TILE_PX, height: DETAIL_TILE_PX }}
     >
@@ -77,7 +78,7 @@ export function DetailGroup({ heading, children }: { heading: string; children: 
     <div className="mt-5">
       <div className="flex items-center gap-2.5 mb-1">
         <AccentBar />
-        <h3 className="text-sm font-semibold text-neutral-900 dark:text-white truncate" dir="auto">{heading}</h3>
+        <h3 className="text-sm font-semibold text-pn truncate" dir="auto">{heading}</h3>
         <HeadlineRule />
       </div>
       {children}
@@ -94,12 +95,12 @@ export function DetailRow({ icon, label, children, actions, multiline = false }:
   multiline?: boolean;
 }) {
   return (
-    <div className={`flex ${multiline ? 'items-start' : 'items-center'} gap-3 py-2 border-b border-neutral-100 dark:border-neutral-800 last:border-b-0`}>
-      <span className="shrink-0 w-24 flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400 pt-0.5" dir="auto">
+    <div className={`flex ${multiline ? 'items-start' : 'items-center'} gap-3 py-2 border-b border-divider last:border-b-0`}>
+      <span className="shrink-0 w-24 flex items-center gap-1.5 text-xs text-pn-muted pt-0.5" dir="auto">
         {icon && <span className="shrink-0 text-accent" aria-hidden="true">{icon}</span>}
         <span className="truncate">{label}</span>
       </span>
-      <div className="min-w-0 flex-1 text-sm text-neutral-800 dark:text-neutral-200 break-words" dir="auto">{children}</div>
+      <div className="min-w-0 flex-1 text-sm text-pn break-words" dir="auto">{children}</div>
       {actions && <span className="shrink-0 inline-flex items-center rounded-md border border-divider bg-surface-1">{actions}</span>}
     </div>
   );
@@ -164,7 +165,7 @@ export function DetailLink({ href, children }: { href: string; children: string 
 export function DetailNotes({ heading, children }: { heading: string; children: string }) {
   return (
     <DetailGroup heading={heading}>
-      <div className="py-2 text-sm text-neutral-800 dark:text-neutral-200 whitespace-pre-wrap break-words" dir="auto">{children}</div>
+      <div className="py-2 text-sm text-pn whitespace-pre-wrap break-words" dir="auto">{children}</div>
     </DetailGroup>
   );
 }

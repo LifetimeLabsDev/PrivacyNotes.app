@@ -317,14 +317,14 @@ export function PdfCover({ uuid, name }: { uuid: string; name: string }) {
   // Spans, because the file card renders this inside a button.
   if (failed) {
     return (
-      <span className="block px-4 py-8 text-sm text-center text-neutral-500 dark:text-neutral-400">
+      <span className="block px-4 py-8 text-sm text-center text-pn-muted">
         {failed === 'password' ? t('viewer.pdfPassword') : t('viewer.pdfFailed')}
       </span>
     );
   }
   if (!cover) {
     return (
-      <span ref={placeholderRef} className="block px-4 py-16 text-sm text-center text-neutral-400 dark:text-neutral-500">
+      <span ref={placeholderRef} className="block px-4 py-16 text-sm text-center text-pn-muted">
         {t('viewer.pdfLoading')}
       </span>
     );

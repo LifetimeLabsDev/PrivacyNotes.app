@@ -3,7 +3,7 @@ id: 3d0c
 title: Allt markdown kan här
 ---
 
-Allt nedanför gjordes med fältet högst upp i den här anteckningen. Inga inställningar, inga tillägg. Markera text så jobbar fältet på den. Klicka på en tom rad så börjar det något nytt.
+Allt nedanför gjordes med verktygsfältet högst upp i den här anteckningen. Inga inställningar, inga tillägg. Markera text så jobbar verktygsfältet på den. Klicka på en tom rad så börjar det något nytt.
 
 ## Ord
 
@@ -54,12 +54,12 @@ Justering flyttar ett helt stycke, aldrig ett enda ord. Sätt markören i stycke
 
 Mittenkolumnen är centrerad och den sista högerställd. Dra i en kolumnkant för att göra den bredare.
 
-## Rutor
+## Informationsrutor
 
-En ruta är en färgad låda för något en läsare inte får missa.
+En informationsruta är en färgad ruta för något en läsare inte får missa.
 
 > [!tip]+ Tips
-> Klicka på rubriken i en ruta för att fälla ihop den.
+> Klicka på rubriken i en informationsruta för att fälla ihop den.
 
 > [!warning]+ Varning
 > Varje sort har sin egen färg och sin egen ikon.
@@ -71,9 +71,13 @@ En ruta är en färgad låda för något en läsare inte får missa.
 
 > Ett citat kliver in från marginalen och får en färgad linje längs sidan.
 
+## Fotnoter
+
+En fotnot håller en källa eller en kommentar utanför texten.[^1] Skriv `[^1]` efter ett ord, eller välj **Fotnot** i menyn **Infoga**. Klicka på den lilla siffran för att hoppa till noten.
+
 ## Kod
 
-Kod behåller sina mellanrum och färgas efter språk.
+Kod behåller sina mellanrum och färgas efter språk. Namnet högst upp i ett block är dess språk: klicka på det för att välja ett annat.
 
 ```js
 export function seal(note, key) {
@@ -86,6 +90,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+Ett långt block öppnas hopfällt, så att resten av anteckningen finns nära. Knappen under det visar alla rader.
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 En kort kodsnutt mitt i en mening ser ut så här i stället: `den här`.
@@ -109,8 +154,14 @@ Det finns två sorter, och de ser olika ut med flit.
 - En webblänk öppnar en sida: [privacynotes.app](https://privacynotes.app/sv)
 - En anteckningslänk öppnar en annan av dina anteckningar: [[Hur dina anteckningar skyddas]]
 
-Båda har en knapp i fältet. Kedjan gör en webblänk. Hakparenteserna gör en anteckningslänk: de listar dina anteckningar, och du väljer den du menar. Att skriva `[[` gör samma sak.
+Båda har en knapp i verktygsfältet. Kedjan gör en webblänk. Hakparenteserna gör en anteckningslänk: de listar dina anteckningar, och du väljer den du menar. Att skriva `[[` gör samma sak.
+
+En anteckningslänk behöver inte visas med anteckningens titel. Skriv titeln, ett lodrätt streck och sedan orden du vill ska synas på sidan: [[Hur dina anteckningar skyddas|de här orden]] öppnar den anteckningen.
+
+En anteckningslänk kan också öppna en anteckning vid en av dess rubriker. Skriv ett `#` efter titeln och välj rubriken: [[Hur dina anteckningar skyddas#Vem som har din nyckel]] öppnar anteckningen vid avsnittet om nyckeln. Länkikonen vid en rubrik i översikten kopierar en sådan länk åt dig.
 
 ---
 
-*Skriver du redan markdown, skriv det bara så formateras det medan du går. Rå text bakom vilken anteckning som helst ser du med **Visa markdown** längst ned till höger i den här anteckningen.*
+*Skriver du redan markdown, skriv det bara så formateras det medan du skriver. Rå text bakom vilken anteckning som helst ser du med **Visa markdown** längst ned till höger i den här anteckningen.*
+
+[^1]: Det här är noten. Pilen bredvid tar dig tillbaka upp.

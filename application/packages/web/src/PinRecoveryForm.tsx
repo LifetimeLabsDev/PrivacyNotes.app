@@ -68,6 +68,11 @@ export function PinRecoveryForm({
           setError(null);
         }}
         placeholder={t('lockScreen.phrasePlaceholder')}
+        // A phone keyboard must neither rewrite a phrase word nor learn it.
+        spellCheck={false}
+        autoCapitalize="none"
+        autoCorrect="off"
+        autoComplete="off"
         rows={3}
         dir="ltr" // rtl-ok: BIP-39 phrase words, always LTR
         autoFocus
@@ -77,7 +82,7 @@ export function PinRecoveryForm({
         {t('pinRecovery.consequence')}
       </p>
       {error && (
-        <p className="text-sm text-red-500 dark:text-red-400">{error}</p>
+        <p className="text-sm text-danger">{error}</p>
       )}
       <div className="flex gap-2">
         <button
@@ -91,7 +96,7 @@ export function PinRecoveryForm({
           type="button"
           onClick={() => void submit()}
           disabled={!input.trim()}
-          className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {t('pinRecovery.clearPin')}
         </button>

@@ -64,8 +64,8 @@ function generate(g: PwGen): string {
     : generatePassword(passwordOptions(g));
 }
 
-const PILL_ON = 'border-accent bg-accent/10 text-accent font-medium';
-const PILL_OFF = 'border-divider text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-surface-1';
+const PILL_ON = 'border-accent bg-accent/10 text-accent-strong font-medium';
+const PILL_OFF = 'border-divider text-pn-muted hover:bg-pn/5';
 
 /** A segment of a pill row: one press selects it. */
 function Pill({ active, onClick, children, label }: { active: boolean; onClick: () => void; children: ReactNode; label?: string }) {
@@ -96,8 +96,8 @@ function Preset({ active, onClick, children }: { active: boolean; onClick: () =>
   );
 }
 
-const ICON_BTN = 'rounded p-1 text-neutral-400 hover:text-accent disabled:opacity-30 disabled:hover:text-neutral-400 transition';
-const LABEL = 'text-xs text-neutral-500 dark:text-neutral-400';
+const ICON_BTN = 'rounded p-1 text-pn-muted hover:text-accent disabled:opacity-30 disabled:hover:text-pn-muted transition';
+const LABEL = 'text-xs text-pn-muted';
 
 /**
  * A slider with a typed twin. The field keeps its own text while it is
@@ -185,10 +185,10 @@ const TIER_FILL: Record<Strength, string> = {
   veryStrong: 'bg-emerald-600 dark:bg-emerald-500',
 };
 const TIER_TEXT: Record<Strength, string> = {
-  weak: 'text-red-600 dark:text-red-400',
-  fair: 'text-amber-600 dark:text-amber-400',
-  strong: 'text-emerald-600 dark:text-emerald-400',
-  veryStrong: 'text-emerald-600 dark:text-emerald-400',
+  weak: 'text-danger',
+  fair: 'text-warning',
+  strong: 'text-success',
+  veryStrong: 'text-success',
 };
 
 function StrengthMeter({ bits }: { bits: number }) {
@@ -204,7 +204,7 @@ function StrengthMeter({ bits }: { bits: number }) {
     <div className="mt-2 flex items-center gap-2.5">
       <div className="flex-1 flex gap-1" aria-hidden="true">
         {[1, 2, 3, 4].map((n) => (
-          <span key={n} className={`flex-1 h-1 rounded-full ${n <= TIER_SEGMENTS[tier] ? TIER_FILL[tier] : 'bg-neutral-200 dark:bg-neutral-700'}`} />
+          <span key={n} className={`flex-1 h-1 rounded-full ${n <= TIER_SEGMENTS[tier] ? TIER_FILL[tier] : 'bg-pn/10'}`} />
         ))}
       </div>
       <span className={`text-[11px] tabular-nums whitespace-nowrap ${TIER_TEXT[tier]}`}>
@@ -215,8 +215,8 @@ function StrengthMeter({ bits }: { bits: number }) {
 }
 
 // Spec: ops/docs/ui-patterns.md (button standards)
-const SECONDARY_BTN = 'flex-1 inline-flex items-center justify-center gap-1.5 rounded-md border border-neutral-300 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-900 px-4 py-2 text-sm transition';
-const PRIMARY_BTN = 'w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2 text-sm font-medium transition';
+const SECONDARY_BTN = 'flex-1 inline-flex items-center justify-center gap-1.5 rounded-md border border-divider hover:bg-pn/5 px-4 py-2 text-sm transition';
+const PRIMARY_BTN = 'w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2 text-sm font-medium transition';
 
 function PasswordGenerator({ isPro, onOpenUpgrade, onGenerate }: {
   isPro: boolean | null;
@@ -281,7 +281,7 @@ function PasswordGenerator({ isPro, onOpenUpgrade, onGenerate }: {
               type="button"
               onClick={regenerate}
               aria-label={t('loginForm.regenerate')}
-              className="shrink-0 -me-1 -mt-0.5 inline-flex items-center justify-center w-8 h-8 rounded-md border border-divider bg-surface-2 text-neutral-500 dark:text-neutral-400 hover:text-accent hover:border-accent transition"
+              className="shrink-0 -me-1 -mt-0.5 inline-flex items-center justify-center w-8 h-8 rounded-md border border-divider bg-surface-2 text-pn-muted hover:text-accent hover:border-accent transition"
             >
               <ArrowsClockwise size={16} />
             </button>
@@ -333,7 +333,7 @@ function PasswordGenerator({ isPro, onOpenUpgrade, onGenerate }: {
               ))}
             </div>
           </div>
-          <p className="text-[11px] text-neutral-400 dark:text-neutral-500 !mt-1.5">{t('loginForm.passphraseHint')}</p>
+          <p className="text-[11px] text-pn-muted !mt-1.5">{t('loginForm.passphraseHint')}</p>
         </>
       ) : (
         <>
@@ -364,7 +364,7 @@ function PasswordGenerator({ isPro, onOpenUpgrade, onGenerate }: {
                 <span className="font-mono">A-Z</span>
               </Pill>
             </div>
-            <p className="mt-1 text-[11px] text-neutral-400 dark:text-neutral-500">{t('loginForm.lettersHint')}</p>
+            <p className="mt-1 text-[11px] text-pn-muted">{t('loginForm.lettersHint')}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -389,7 +389,7 @@ function PasswordGenerator({ isPro, onOpenUpgrade, onGenerate }: {
               />
             </div>
           </div>
-          <p className="text-[11px] text-neutral-400 dark:text-neutral-500 !mt-1.5">{t('loginForm.ambiguousHint')}</p>
+          <p className="text-[11px] text-pn-muted !mt-1.5">{t('loginForm.ambiguousHint')}</p>
         </>
       )}
 
@@ -430,7 +430,7 @@ export function PasswordGeneratorModal({ isPro, onOpenUpgrade, onGenerate, onClo
       >
         <div className="flex items-center justify-between px-4 pt-4 pb-0">
           <h2 className="text-base font-semibold text-pn">{t('loginForm.generateTitle')}</h2>
-          <button onClick={onClose} className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1" aria-label={t('common:actions.close')}>
+          <button onClick={onClose} className="text-pn-muted hover:text-pn-soft transition p-1 -m-1" aria-label={t('common:actions.close')}>
             <X size={18} />
           </button>
         </div>

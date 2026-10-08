@@ -37,6 +37,9 @@ import {
   Highlighter as HighlighterIcon,
   TextSuperscript as SuperscriptIcon,
   TextSubscript as SubscriptIcon,
+  EyeSlash as EyeSlashIcon,
+  Copy as CopyIcon,
+  Asterisk as FootnoteIcon,
   MathOperations as MathIcon,
   TextAlignLeft as TextAlignLeftIcon,
   TextAlignCenter as TextAlignCenterIcon,
@@ -45,9 +48,12 @@ import {
   Trash as TrashIcon,
   Megaphone as MegaphoneIcon,
   RocketLaunch as RocketIcon,
+  Calendar as CalendarIcon,
+  Clock as ClockIcon,
 } from './icons';
 import { useEditorState, type Editor as TipTapEditor } from '@tiptap/react';
 import { triggerAttachmentUpload } from './EncryptedAttachment';
+import { insertFootnote } from './footnotes';
 import { openPicturePicker } from './mediaRefs';
 import { HoverLabel } from './HoverLabel';
 import { ColorSwatch } from './ColorSwatch';
@@ -58,8 +64,10 @@ import { CALLOUT_TYPES } from './calloutTypes';
 import { proUnlocked } from './demo';
 import { usePopoverPosition } from './usePopoverPosition';
 import { readColorPref, writeColorPref } from './editorPrefs';
-import { toggleCodeBlockSmart, ALIGNMENT_VALUES } from './editorExtensions';
+import { toggleCodeBlockSmart, ALIGNMENT_VALUES, COPY_BOX_LANGUAGE } from './editorExtensions';
 import { useEscapeToClose } from './useEscapeToClose';
+import { keyText } from './shortcutMatch';
+import { insertDateText } from './editorCommands';
 
 /**
  * Compare two CSS colors as the swatch grid needs to: the value we wrote
@@ -154,8 +162,8 @@ function smartToggleHeading(editor: TipTapEditor, level: 1 | 2 | 3 | 4 | 5 | 6) 
 const TB_BTN_BASE =
   'flex items-center justify-center w-8 h-8 rounded-md active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed outline-none shrink-0';
 const TB_BTN_REST =
-  'text-neutral-600 dark:text-neutral-300 [@media(hover:hover)]:hover:bg-neutral-200 [@media(hover:hover)]:dark:hover:bg-neutral-800';
-const TB_BTN_ACTIVE = 'bg-accent/15 text-accent [@media(hover:hover)]:hover:bg-accent/25';
+  'text-pn-soft [@media(hover:hover)]:hover:bg-pn/10';
+const TB_BTN_ACTIVE = 'bg-accent/15 text-accent-strong [@media(hover:hover)]:hover:bg-accent/25';
 // The two halves of a colour button. The wide half keeps the standard 32px
 // box and glyph, so the row still reads as one instrument; the caret takes
 // the extra width. Only the outer corners round, so the pair reads as a
@@ -299,6 +307,7 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
       link: e.isActive('link'),
       superscript: e.isActive('superscript'),
       subscript: e.isActive('subscript'),
+      spoiler: e.isActive('spoiler'),
       blockquote: e.isActive('blockquote'),
       bulletList: e.isActive('bulletList'),
       orderedList: e.isActive('orderedList'),
@@ -778,8 +787,8 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
               editor.chain().focus().setParagraph().run();
               setHeadingOpen(false);
             }}
-            className={`w-full text-start px-3 py-1.5 text-sm [@media(hover:hover)]:hover:bg-neutral-100 [@media(hover:hover)]:dark:hover:bg-neutral-800 active:bg-neutral-100 dark:active:bg-neutral-800 transition ${
-              activeHeading === 0 ? 'text-accent' : 'text-neutral-700 dark:text-neutral-200'
+            className={`w-full text-start px-3 py-1.5 text-sm [@media(hover:hover)]:hover:bg-pn/5 active:bg-pn/5 transition ${
+              activeHeading === 0 ? 'text-accent' : 'text-pn-soft'
             }`}
           >
             {t('heading.normalText')}
@@ -793,8 +802,8 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                 smartToggleHeading(editor, level);
                 setHeadingOpen(false);
               }}
-              className={`w-full text-start px-3 py-1.5 text-sm [@media(hover:hover)]:hover:bg-neutral-100 [@media(hover:hover)]:dark:hover:bg-neutral-800 active:bg-neutral-100 dark:active:bg-neutral-800 transition ${
-                activeHeading === level ? 'text-accent' : 'text-neutral-700 dark:text-neutral-200'
+              className={`w-full text-start px-3 py-1.5 text-sm [@media(hover:hover)]:hover:bg-pn/5 active:bg-pn/5 transition ${
+                activeHeading === level ? 'text-accent' : 'text-pn-soft'
               }`}
             >
               {t('heading.level', { level })}
@@ -811,7 +820,7 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
     </ToolbarBtn>
   );
   const link = (
-    <ToolbarBtn key="link" onClick={onOpenLinkPopover} active={isActive('link')} label={t('toolbar.addLink')} tabIndex={mobileTabIndex} btnRef={linkBtnRef}>
+    <ToolbarBtn key="link" onClick={onOpenLinkPopover} active={isActive('link')} label={t('toolbar.addLink', { keys: keyText('insertLink') })} tabIndex={mobileTabIndex} btnRef={linkBtnRef}>
       <LinkIcon size={TB_ICON} />
     </ToolbarBtn>
   );
@@ -958,7 +967,7 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                       editor.chain().focus().insertCallout(c.type).run();
                     }
                   }}
-                  className="relative flex flex-col items-center gap-1 rounded-md px-1 py-2 text-neutral-700 dark:text-neutral-200 [@media(hover:hover)]:hover:bg-neutral-100 [@media(hover:hover)]:dark:hover:bg-neutral-800 transition"
+                  className="relative flex flex-col items-center gap-1 rounded-md px-1 py-2 text-pn-soft [@media(hover:hover)]:hover:bg-pn/5 transition"
                 >
                   <CalloutIcon size={18} weight="bold" color={c.color} />
                   <span className="text-[11px] leading-none">{t(`callout.types.${c.type}`)}</span>
@@ -981,9 +990,9 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                   setCalloutOpen(false);
                   editor.chain().focus().removeCallout().run();
                 }}
-                className="flex w-full items-center justify-center gap-2 rounded-md px-2 py-2 text-[13px] text-neutral-700 dark:text-neutral-200 [@media(hover:hover)]:hover:bg-neutral-100 [@media(hover:hover)]:dark:hover:bg-neutral-800 transition"
+                className="flex w-full items-center justify-center gap-2 rounded-md px-2 py-2 text-[13px] text-pn-soft [@media(hover:hover)]:hover:bg-pn/5 transition"
               >
-                <TrashIcon size={16} className="text-red-500 dark:text-red-400" />
+                <TrashIcon size={16} className="text-danger" />
                 <span>{t('callout.remove')}</span>
               </button>
             </div>
@@ -1034,8 +1043,8 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                   else editor.chain().focus().setFontFamily(f.value).run();
                   setFontOpen(false);
                 }}
-                className={`w-full flex items-center justify-between text-start px-3 py-1.5 text-sm [@media(hover:hover)]:hover:bg-neutral-100 [@media(hover:hover)]:dark:hover:bg-neutral-800 active:bg-neutral-100 dark:active:bg-neutral-800 transition ${
-                  selected ? 'text-accent' : 'text-neutral-700 dark:text-neutral-200'
+                className={`w-full flex items-center justify-between text-start px-3 py-1.5 text-sm [@media(hover:hover)]:hover:bg-pn/5 active:bg-pn/5 transition ${
+                  selected ? 'text-accent' : 'text-pn-soft'
                 }`}
                 style={{ fontFamily: f.value }}
               >
@@ -1057,8 +1066,8 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                   else editor.chain().focus().setFontSize(s.value).run();
                   setFontOpen(false);
                 }}
-                className={`w-full flex items-center justify-between text-start px-3 py-1.5 [@media(hover:hover)]:hover:bg-neutral-100 [@media(hover:hover)]:dark:hover:bg-neutral-800 active:bg-neutral-100 dark:active:bg-neutral-800 transition ${
-                  selected ? 'text-accent' : 'text-neutral-700 dark:text-neutral-200'
+                className={`w-full flex items-center justify-between text-start px-3 py-1.5 [@media(hover:hover)]:hover:bg-pn/5 active:bg-pn/5 transition ${
+                  selected ? 'text-accent' : 'text-pn-soft'
                 }`}
                 style={{ fontSize: `calc(0.875rem * ${parseFloat(s.value)})` }}
               >
@@ -1078,7 +1087,7 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                   editor.chain().focus().unsetFontFamily().unsetFontSize().run();
                   setFontOpen(false);
                 }}
-                className="w-full text-start px-3 py-1.5 text-sm text-neutral-700 dark:text-neutral-200 [@media(hover:hover)]:hover:bg-neutral-100 [@media(hover:hover)]:dark:hover:bg-neutral-800 active:bg-neutral-100 dark:active:bg-neutral-800 transition"
+                className="w-full text-start px-3 py-1.5 text-sm text-pn-soft [@media(hover:hover)]:hover:bg-pn/5 active:bg-pn/5 transition"
               >
                 {t('font.reset')}
               </button>
@@ -1427,6 +1436,26 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                       });
                     },
                   }]),
+                  // The date settings of this device, as plain text. The hint
+                  // is the key, which is faster than the menu.
+                  {
+                    key: 'date',
+                    group: 'insert',
+                    Icon: CalendarIcon,
+                    label: t('toolbar.date'),
+                    hint: keyText('insertDate'),
+                    active: false,
+                    run: () => insertDateText(editor, 'date'),
+                  },
+                  {
+                    key: 'dateTime',
+                    group: 'insert',
+                    Icon: ClockIcon,
+                    label: t('toolbar.dateTime'),
+                    hint: keyText('insertDateTime'),
+                    active: false,
+                    run: () => insertDateText(editor, 'dateTime'),
+                  },
                   {
                     key: 'quote',
                     group: 'blocks',
@@ -1442,8 +1471,17 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                     Icon: SquareCodeIcon,
                     label: t('toolbar.codeBlock'),
                     hint: '```',
-                    active: isActive('codeBlock'),
+                    active: isActive('codeBlock') && !isActive('codeBlock', { language: COPY_BOX_LANGUAGE }),
                     run: () => toggleCodeBlockSmart(editor),
+                  },
+                  {
+                    key: 'copybox',
+                    group: 'blocks',
+                    Icon: CopyIcon,
+                    label: t('toolbar.copyBox'),
+                    hint: '```copy',
+                    active: isActive('codeBlock', { language: COPY_BOX_LANGUAGE }),
+                    run: () => toggleCodeBlockSmart(editor, COPY_BOX_LANGUAGE),
                   },
                   {
                     key: 'inlinecode',
@@ -1466,7 +1504,9 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                       const latex = empty
                         ? 'x^2'
                         : editor.state.doc.textBetween(from, to, ' ');
-                      editor.chain().focus().insertInlineMath({ latex }).run();
+                      // The selected text becomes the formula. The insert
+                      // command does not replace a selection, so it is deleted first.
+                      editor.chain().focus().deleteSelection().insertInlineMath({ latex }).run();
                     },
                   },
                   {
@@ -1485,7 +1525,9 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                       const latex = empty
                         ? 'x^2'
                         : editor.state.doc.textBetween(from, to, ' ');
-                      editor.chain().focus().insertBlockMath({ latex }).run();
+                      // The selected text becomes the formula. The insert
+                      // command does not replace a selection, so it is deleted first.
+                      editor.chain().focus().deleteSelection().insertBlockMath({ latex }).run();
                     },
                   },
                   {
@@ -1506,6 +1548,24 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                     active: isActive('subscript'),
                     run: () => editor.chain().focus().toggleSubscript().run(),
                   },
+                  {
+                    key: 'spoiler',
+                    group: 'notation',
+                    Icon: EyeSlashIcon,
+                    label: t('toolbar.spoiler'),
+                    hint: '||x||',
+                    active: isActive('spoiler'),
+                    run: () => editor.chain().focus().toggleSpoiler().run(),
+                  },
+                  {
+                    key: 'footnote',
+                    group: 'notation',
+                    Icon: FootnoteIcon,
+                    label: t('toolbar.footnote'),
+                    hint: '[^1]',
+                    active: false,
+                    run: () => insertFootnote(editor),
+                  },
                 ].map((item, i, all) => (
                   <Fragment key={item.key}>
                     {/* A header opens each run of entries sharing a group. The
@@ -1513,7 +1573,7 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                         previous entry is enough and no second array can fall
                         out of step with this one. */}
                     {(i === 0 || all[i - 1]?.group !== item.group) && (
-                      <div className="px-3 pt-2 pb-0.5 text-[11px] uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
+                      <div className="px-3 pt-2 pb-0.5 text-[11px] uppercase tracking-wide text-pn-muted">
                         {t(`insertGroup.${item.group}`)}
                       </div>
                     )}
@@ -1524,14 +1584,14 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
                         item.run();
                         setInsertOpen(false);
                       }}
-                      className={`w-full flex items-center gap-2.5 text-start px-3 py-1.5 text-sm [@media(hover:hover)]:hover:bg-neutral-100 [@media(hover:hover)]:dark:hover:bg-neutral-800 active:bg-neutral-100 dark:active:bg-neutral-800 transition ${
-                        item.active ? 'text-accent' : 'text-neutral-700 dark:text-neutral-200'
+                      className={`w-full flex items-center gap-2.5 text-start px-3 py-1.5 text-sm [@media(hover:hover)]:hover:bg-pn/5 active:bg-pn/5 transition ${
+                        item.active ? 'text-accent' : 'text-pn-soft'
                       }`}
                     >
                       <item.Icon size={TB_ICON} />
                       <span className="flex-1">{item.label}</span>
                       {item.hint && (
-                        <span className="text-[11px] font-mono text-neutral-400 dark:text-neutral-500">{item.hint}</span>
+                        <span className="text-[11px] font-mono text-pn-muted">{item.hint}</span>
                       )}
                     </button>
                   </Fragment>
@@ -1556,7 +1616,7 @@ export function Toolbar({ editor, mobileTabIndex, onOpenLinkPopover, linkBtnRef,
               filled container in the editor's three control rows, reading as a
               different kind of control rather than the last group in a row.
               Spec: ops/docs/ui-patterns.md (section 80) */}
-          <span aria-hidden="true" className="shrink-0 mx-0.5 h-4 w-px bg-neutral-300 dark:bg-neutral-700" />
+          <span aria-hidden="true" className="shrink-0 mx-0.5 h-4 w-px bg-pn-muted/35" />
           <div className="flex items-center gap-0.5">
             <ToolbarBtn onClick={() => fileInputRef.current?.click()} label={t('toolbar.image')} tabIndex={mobileTabIndex}>
               <ImageIcon size={TB_ICON} />

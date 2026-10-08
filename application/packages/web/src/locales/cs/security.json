@@ -149,6 +149,8 @@
     "confirmPinForLock": "Zadej svůj PIN a zapneš to. Uzamkne kopii tvé obnovovací fráze, takže aplikaci otevře jen tvůj PIN.",
     "relockAfter": "Znovu zamknout po",
     "relockHint": "Platí jen pro uzamykací obrazovku aplikace.",
+    "blockCapture": "Skrývat při snímání obrazovky",
+    "blockCaptureHint": "Pokud to zařízení umožňuje, tvoje poznámky se neobjeví na snímcích obrazovky, nahrávkách ani při sdílení obrazovky. Platí jen pro toto zařízení.",
     "perDeviceNote": "Biometrické odemknutí otevírá stejné poznámky jako PIN. Zůstává na tomto zařízení a nikdy se nesynchronizuje.",
     "disableConfirmTitle": "Vypnout biometriku",
     "disableConfirmLabel": "Vypnout",

@@ -1,14 +1,18 @@
 package app.privacynotes
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.print.PrintAttributes
 import android.print.PrintManager
+import android.provider.OpenableColumns
 import android.webkit.JavascriptInterface
+import android.webkit.MimeTypeMap
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.view.View
@@ -19,7 +23,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
+import java.util.concurrent.Executors
 import kotlin.math.max
+import org.json.JSONObject
 
 class MainActivity : TauriActivity() {
   // Bar strip colors pushed by the web layer through the __pnBars bridge
@@ -38,8 +49,16 @@ class MainActivity : TauriActivity() {
   // __pnPrivacy bridge below. Decides whether the recents card shows the
   // notes. Spec: ops/docs/plans/app-switcher-privacy-screen.md
   private var privacyScreenArmed = false
+  // Whether the user turned on the capture block, pushed through the same
+  // bridge. While true, FLAG_SECURE stays up even with the app in focus, so a
+  // screenshot or a screen recording of the app comes out black.
+  private var captureBlocked = false
   // The black view laid over the content while the window has no focus.
   private var privacyCover: View? = null
+  // The app's web view, told when a share has landed in the inbox. See takeShare().
+  private var mainWebView: WebView? = null
+  // Copies shared files off the main thread, one share after another.
+  private val shareCopier = Executors.newSingleThreadExecutor()
   // Back press routing (#174). TauriActivity sets wry's
   // handleBackNavigation to false, so with no callback of our own a
   // back press finishes the activity - the app appears to quit from
@@ -69,6 +88,7 @@ class MainActivity : TauriActivity() {
     webView.addJavascriptInterface(PrintBridge(), "__pnPrint")
     webView.addJavascriptInterface(InstallerBridge(), "__pnInstaller")
     webView.addJavascriptInterface(PrivacyBridge(), "__pnPrivacy")
+    mainWebView = webView
 
     onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
       override fun handleOnBackPressed() {
@@ -107,12 +127,147 @@ class MainActivity : TauriActivity() {
       window.isNavigationBarContrastEnforced = false
     }
     applyDecorBackground()
+    // A restored activity carries the intent it was started with; that share
+    // was taken the first time.
+    if (savedInstanceState == null) takeShare(intent)
     ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { view, insets ->
       val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
       val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
       view.setPadding(bars.left, bars.top, bars.right, max(bars.bottom, ime.bottom))
       WindowInsetsCompat.CONSUMED
     }
+  }
+
+  override fun onNewIntent(intent: Intent) {
+    super.onNewIntent(intent)
+    takeShare(intent)
+  }
+
+  /**
+   * The share sheet (#357): writes what another app shared into the share
+   * inbox, the same layout the iOS share extension writes, and the app takes
+   * it from there after sign-in and the app lock (src/share_inbox.rs reads it,
+   * packages/web/src/useShareInbox.ts drains it).
+   *
+   * Any app can send here, so nothing it names is trusted: only a content://
+   * stream is read, never a file:// path and never one of our own provider's
+   * URIs, which could point the copy at this app's private files. Each file
+   * is copied with a byte cap under a .tmp- name, and the items of one share
+   * are renamed into place together once every copy is done: the app is in
+   * front while this runs, and a drain must see the whole share or none of it.
+   * Spec: ops/docs/plans/share-into-app.md
+   */
+  private fun takeShare(intent: Intent?) {
+    val action = intent?.action
+    if (action != Intent.ACTION_SEND && action != Intent.ACTION_SEND_MULTIPLE) return
+    val text = intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString()?.trim()?.take(SHARE_MAX_TEXT)
+    val subject = intent.getStringExtra(Intent.EXTRA_SUBJECT)?.trim()?.take(SHARE_MAX_SHORT)
+    val streams = sharedStreams(intent, action == Intent.ACTION_SEND_MULTIPLE).take(SHARE_MAX_FILES)
+    shareCopier.execute {
+      val inbox = File(dataDir, "ShareInbox").apply { mkdirs() }
+      // Any installed app can send this intent, explicitly and with no
+      // chooser, while the app is locked or signed out. Items wait for the
+      // drain, which saves each one, so only the room the cap leaves is taken.
+      val waiting = inbox.listFiles { f -> f.isDirectory && !f.name.startsWith(".tmp-") }?.size ?: 0
+      val room = (SHARE_MAX_WAITING - waiting).coerceAtLeast(0)
+      if (room == 0) return@execute
+      val ready = mutableListOf<Pair<File, String>>()
+      for (uri in streams.take(room)) copySharedFile(uri, inbox)?.let { ready.add(it) }
+      if (!text.isNullOrEmpty() && ready.size < room) {
+        val item = if (Regex("^https?://\\S+$", RegexOption.IGNORE_CASE).matches(text)) {
+          JSONObject().put("kind", "url").put("url", text).put("title", subject ?: "")
+        } else {
+          JSONObject().put("kind", "text").put("text", text)
+        }
+        stageShareItem(inbox, item)?.let { ready.add(it) }
+      }
+      for ((tmp, id) in ready) {
+        if (!tmp.renameTo(File(inbox, id))) tmp.deleteRecursively()
+      }
+      // An app already showing drains on this; a cold start drains on mount.
+      runOnUiThread {
+        mainWebView?.evaluateJavascript("window.dispatchEvent(new Event('pn-share-inbox'))", null)
+      }
+    }
+  }
+
+  @Suppress("DEPRECATION")
+  private fun sharedStreams(intent: Intent, multiple: Boolean): List<Uri> =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      if (multiple) intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM, Uri::class.java).orEmpty()
+      else listOfNotNull(intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java))
+    } else {
+      if (multiple) intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM).orEmpty()
+      else listOfNotNull(intent.getParcelableExtra(Intent.EXTRA_STREAM))
+    }
+
+  /** Copies one stream into a staged .tmp- folder, or returns null. */
+  private fun copySharedFile(uri: Uri, inbox: File): Pair<File, String>? {
+    if (uri.scheme != "content" || uri.authority == "$packageName.fileprovider") return null
+    val id = UUID.randomUUID().toString()
+    val tmp = File(inbox, ".tmp-$id")
+    var staged = false
+    try {
+      var name: String? = null
+      contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { c ->
+        if (c.moveToFirst()) name = c.getString(0)
+      }
+      val mime = contentResolver.getType(uri) ?: ""
+      // A name with no directory part; the time of the share when the sender
+      // gives none, which reads the same in every language.
+      var fileName = name?.substringAfterLast('/')?.trim()?.take(SHARE_MAX_SHORT)
+      if (fileName.isNullOrEmpty() || fileName == "." || fileName == "..") {
+        val ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mime)
+        val stamp = SimpleDateFormat("yyyy-MM-dd HH.mm.ss", Locale.US).format(Date())
+        fileName = if (ext != null) "$stamp.$ext" else stamp
+      }
+      tmp.mkdirs()
+      val payload = File(tmp, "payload")
+      var total = 0L
+      val input = contentResolver.openInputStream(uri) ?: return null
+      input.use { src ->
+        payload.outputStream().use { out ->
+          val buf = ByteArray(64 * 1024)
+          while (true) {
+            val n = src.read(buf)
+            if (n < 0) break
+            total += n
+            if (total > SHARE_MAX_FILE_BYTES) return null
+            out.write(buf, 0, n)
+          }
+        }
+      }
+      if (total == 0L) return null
+      writeItemJson(tmp, JSONObject().put("kind", "file").put("name", fileName).put("mime", mime))
+      staged = true
+      return tmp to id
+    } catch (e: Exception) {
+      // An unreadable stream or a full disk: the share is dropped, as on iOS.
+      // The class name only: the message can carry the sender's URI.
+      android.util.Log.w("PrivacyNotes", "share copy failed: ${e.javaClass.simpleName}")
+      return null
+    } finally {
+      if (!staged && tmp.exists()) tmp.deleteRecursively()
+    }
+  }
+
+  /** Stages a link or text item in a .tmp- folder, or returns null. */
+  private fun stageShareItem(inbox: File, item: JSONObject): Pair<File, String>? {
+    val id = UUID.randomUUID().toString()
+    val tmp = File(inbox, ".tmp-$id")
+    return try {
+      tmp.mkdirs()
+      writeItemJson(tmp, item)
+      tmp to id
+    } catch (_: Exception) {
+      tmp.deleteRecursively()
+      null
+    }
+  }
+
+  private fun writeItemJson(tmp: File, item: JSONObject) {
+    item.put("v", 1).put("created", System.currentTimeMillis())
+    File(tmp, "item.json").writeText(item.toString())
   }
 
   override fun onConfigurationChanged(newConfig: Configuration) {
@@ -194,9 +349,11 @@ class MainActivity : TauriActivity() {
    * like it.
    *
    * FLAG_SECURE also blocks screenshots and screen recording, which would be
-   * the wrong trade if it were always on. It is not: onPause raises it and
-   * onResume clears it, and taking a screenshot does not pause an activity, so
-   * a user photographing their own notes is unaffected.
+   * the wrong trade if it were always on for everybody. Focus returning clears
+   * it, and taking a screenshot does not take focus, so a user photographing
+   * their own notes is unaffected. The exception is the capture block: a user
+   * who turned it on asked for exactly that trade, so focus returning leaves
+   * the flag up.
    *
    * Tracked in git; restore after any `tauri android init`.
    * Spec: ops/docs/android-setup.md (re-apply checklist)
@@ -206,8 +363,10 @@ class MainActivity : TauriActivity() {
     if (hasFocus) {
       // Cleared whatever the armed state is: a user who turns the app lock off
       // while the app is away must not come back to a covered window that
-      // still refuses screenshots.
-      window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+      // still refuses screenshots. Only the capture block keeps the flag.
+      if (!captureBlocked) {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+      }
       hidePrivacyCover()
     } else if (privacyScreenArmed) {
       window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -262,7 +421,24 @@ class MainActivity : TauriActivity() {
     fun set(enabled: Boolean) {
       runOnUiThread {
         privacyScreenArmed = enabled
-        if (!enabled) {
+        if (!enabled && !captureBlocked) {
+          window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+      }
+    }
+
+    /**
+     * The capture block. On raises FLAG_SECURE at once and keeps it up; off
+     * clears it unless the window is away with the cover armed, where focus
+     * returning clears it instead.
+     */
+    @JavascriptInterface
+    fun block(enabled: Boolean) {
+      runOnUiThread {
+        captureBlocked = enabled
+        if (enabled) {
+          window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        } else if (hasWindowFocus() || !privacyScreenArmed) {
           window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
       }
@@ -365,5 +541,16 @@ class MainActivity : TauriActivity() {
         applyDecorBackground()
       }
     }
+  }
+
+  private companion object {
+    // The same caps as the iOS extension and src/share_inbox.rs: the largest
+    // per-file limit the app grants, and the app's own text cap.
+    const val SHARE_MAX_FILE_BYTES = 100L * 1000 * 1000
+    const val SHARE_MAX_TEXT = 500_000
+    const val SHARE_MAX_SHORT = 1_000
+    const val SHARE_MAX_FILES = 10
+    // Shares waiting in the inbox before a new one is refused.
+    const val SHARE_MAX_WAITING = 50
   }
 }

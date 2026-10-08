@@ -15,24 +15,24 @@ Dat is onze echte database in Zürich, geen tekening ervan. Je notitie komt in d
 1. Je herstelzin van 12 woorden wordt een sleutel. Dat gebeurt op je apparaat.
 2. De notitie wordt met die sleutel versleuteld, op je apparaat. Zo wordt hij op je eigen schijf bewaard, en zo reist hij naar ons.
 3. Wij krijgen de versleutelde notitie en bewaren hem. De afbeelding hierboven laat zien hoe dat eruitziet.
-4. Elk apparaat met dezelfde zin maakt dezelfde sleutel en opent de notitie.
+4. Elk apparaat met dezelfde herstelzin maakt dezelfde sleutel en opent de notitie.
 
 ## Wie je sleutel heeft
 
-Elke optie houdt je notities versleuteld op je apparaat. Ze verschillen in waar je zin ligt.
+Elke optie houdt je notities versleuteld op je apparaat. Ze verschillen in waar je herstelzin ligt.
 
-| Optie | Waar je zin ligt | Wat je ermee wint |
+| Optie | Waar je herstelzin ligt | Wat je ermee wint |
 | --- | --- | --- |
 | **Login, sleutel bij ons** | Op onze server, versleuteld | Een nieuw apparaat komt binnen met alleen dat account |
-| **Login, sleutel op je apparaat** | Bij jou, nergens anders | Inloggen met Google, Apple of GitHub en toch de sleutel houden |
+| **Login, sleutel op je apparaat** | Bij jou, nergens anders | Aanmelden met Google, Apple of GitHub en toch de sleutel houden |
 | **Alleen herstelzin, geen login** | Bij jou, nergens anders | Geen e-mail, geen naam, helemaal geen account |
 
-Bij de onderste twee zouden wij een notitie niet kunnen lezen, ook niet als we ertoe gedwongen werden. De eerste ruilt dat in voor gemak: je zin staat op onze server onder een sleutel van ons, dus een nieuw apparaat heeft niets meer nodig dan je account. Als onze server ooit gekraakt wordt, kan die sleutel bloot komen te liggen.
+Bij de onderste twee zouden wij een notitie niet kunnen lezen, ook niet als we ertoe gedwongen werden. De eerste ruilt dat in voor gemak: je herstelzin staat op onze server onder een sleutel van ons, dus een nieuw apparaat heeft niets meer nodig dan je account. Als onze server ooit gekraakt wordt, kan die sleutel bloot komen te liggen.
 
-Aangemeld met Google, Apple of GitHub? Dan kun je later wisselen tussen de eerste twee, bij **Instellingen > Account > Sleutelbeheer**. Met een account met alleen een herstelzin blijft de zin altijd bij jou.
+Aangemeld met Google, Apple of GitHub? Dan kun je later wisselen tussen de eerste twee, bij **Instellingen > Account > Sleutelbeheer**. Met een account met alleen een herstelzin blijft de herstelzin altijd bij jou.
 
-> [!warning] Houd zelf een kopie van de zin
-> Je zin opent je notities. Raak je hem kwijt, dan kan niemand hem terughalen, wij ook niet. <span style="color: #e03131">Schrijf hem vandaag op papier.</span>
+> [!warning] Houd zelf een kopie van je herstelzin
+> Je herstelzin opent je notities. Raak je hem kwijt, dan kan niemand hem terughalen, wij ook niet. <span style="color: #e03131">Schrijf hem vandaag op papier.</span>
 
 ## Controleer het zelf
 
@@ -49,4 +49,4 @@ Aangemeld met Google, Apple of GitHub? Dan kun je later wisselen tussen de eerst
 | Hoe je een lek meldt | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 
 > [!info] Eén slot dekt alles
-> Notities, dagboekstukken, bladwijzers, kluisitems en bijlagen worden op dezelfde manier versleuteld. [[De verhuizing]] laat zien hoe je ze stuk voor stuk hierheen haalt.
+> Notities, dagboeknotities, bladwijzers, kluisitems en bijlagen worden op dezelfde manier versleuteld. [[De verhuizing]] laat zien hoe je ze stuk voor stuk hierheen haalt.

@@ -50,13 +50,13 @@ export function ColorSwatch({
         onClick={onClick}
         className={`w-6 h-6 rounded-full transition [@media(hover:hover)]:hover:scale-110 ${
           none
-            ? 'flex items-center justify-center text-neutral-500 dark:text-neutral-400 border border-divider'
+            ? 'flex items-center justify-center text-pn-muted border border-divider'
             : 'block'
         } ${
           selected
             ? 'ring-2 ring-offset-1 ring-accent ring-offset-surface-1'
             : inherited
-              ? 'outline-2 outline-dashed outline-offset-2 outline-neutral-400 dark:outline-neutral-500'
+              ? 'outline-2 outline-dashed outline-offset-2 outline-pn-muted'
               : none
                 ? ''
                 : 'border border-divider'

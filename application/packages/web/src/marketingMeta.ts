@@ -62,84 +62,84 @@ const HREFLANG_ALIASES: Record<string, string[]> = {
 
 export const META: Record<string, { title: string; description: string }> = {
   en: {
-    title: 'PrivacyNotes: Your Encrypted Vault for Notes, Tasks & Journals',
-    description: 'Note down your thoughts, tasks, and journal - encrypted, always. End-to-end encrypted with zero tracking, hosted in Switzerland.',
+    title: 'PrivacyNotes: Encrypted Notes, Tasks & Journal',
+    description: 'A private workspace for notes, tasks and your journal. Encrypted on your device. Start free, import your notes, and pay once for Pro.',
   },
   de: {
-    title: 'PrivacyNotes: Dein verschlüsselter Tresor für Notizen, Aufgaben und Tagebuch',
-    description: 'Halte deine Gedanken, Aufgaben und dein Tagebuch fest - immer verschlüsselt. Ende-zu-Ende-verschlüsselt, ohne Tracking, gehostet in der Schweiz.',
+    title: 'PrivacyNotes: Verschlüsselte Notizen, Aufgaben und Tagebuch',
+    description: 'Ein privater Arbeitsbereich für Notizen, Aufgaben und dein Tagebuch. Verschlüsselt auf deinem Gerät. Starte kostenlos, importiere deine Notizen und zahle einmal für Pro.',
   },
   fr: {
-    title: 'PrivacyNotes : votre coffre chiffré pour notes, tâches et journal',
-    description: 'Notez vos pensées, tâches et votre journal - toujours chiffrés. Chiffrement de bout en bout, sans suivi, hébergé en Suisse.',
+    title: 'PrivacyNotes : notes, tâches et journal chiffrés',
+    description: 'Un espace privé pour tes notes, tes tâches et ton journal. Chiffré sur ton appareil. Commence gratuitement, importe tes notes et paie une seule fois pour Pro.',
   },
   it: {
-    title: 'PrivacyNotes: il tuo caveau cifrato per note, attività e diario',
-    description: 'Annota pensieri, attività e diario - sempre cifrati. Crittografia end-to-end, senza tracciamento, ospitato in Svizzera.',
+    title: 'PrivacyNotes: note, attività e diario cifrati',
+    description: 'Uno spazio privato per note, attività e il tuo diario. Cifrato sul tuo dispositivo. Inizia gratis, importa le tue note e paga una volta sola per Pro.',
   },
   es: {
-    title: 'PrivacyNotes: tu bóveda cifrada para notas, tareas y diario',
-    description: 'Anota tus pensamientos, tareas y diario - siempre cifrados. Cifrado de extremo a extremo, sin rastreo, alojado en Suiza.',
+    title: 'PrivacyNotes: notas, tareas y diario cifrados',
+    description: 'Un espacio privado para notas, tareas y tu diario. Cifrado en tu dispositivo. Empieza gratis, importa tus notas y paga una sola vez por Pro.',
   },
   nl: {
-    title: 'PrivacyNotes: jouw versleutelde kluis voor notities, taken en dagboek',
-    description: 'Noteer je gedachten, taken en dagboek - altijd versleuteld. End-to-end versleuteld, zonder tracking, gehost in Zwitserland.',
+    title: 'PrivacyNotes: versleutelde notities, taken en dagboek',
+    description: 'Een privéwerkplek voor notities, taken en je dagboek. Versleuteld op je apparaat. Begin gratis, importeer je notities en betaal één keer voor Pro.',
   },
   pl: {
-    title: 'PrivacyNotes: Twój zaszyfrowany sejf na notatki, zadania i dziennik',
-    description: 'Zapisuj myśli, zadania i dziennik - zawsze zaszyfrowane. Szyfrowanie end-to-end, bez śledzenia, hostowane w Szwajcarii.',
+    title: 'PrivacyNotes: zaszyfrowane notatki, zadania i dziennik',
+    description: 'Prywatna przestrzeń na notatki, zadania i twój dziennik. Szyfrowana na twoim urządzeniu. Zacznij za darmo, zaimportuj notatki i zapłać raz za Pro.',
   },
   'pt-PT': {
-    title: 'PrivacyNotes: o teu cofre encriptado para notas, tarefas e diário',
-    description: 'Anota os teus pensamentos, tarefas e diário - sempre encriptados. Encriptação ponta a ponta, sem rastreio, alojado na Suíça.',
+    title: 'PrivacyNotes: notas, tarefas e diário encriptados',
+    description: 'Um espaço privado para notas, tarefas e o teu diário. Encriptado no teu dispositivo. Começa grátis, importa as tuas notas e paga uma vez pelo Pro.',
   },
   'pt-BR': {
-    title: 'PrivacyNotes: seu cofre criptografado para notas, tarefas e diário',
-    description: 'Anote seus pensamentos, tarefas e diário - sempre criptografados. Criptografia de ponta a ponta, sem rastreamento, hospedado na Suíça.',
+    title: 'PrivacyNotes: notas, tarefas e diário criptografados',
+    description: 'Um espaço privado para notas, tarefas e seu diário. Criptografado no seu dispositivo. Comece grátis, importe suas notas e pague uma vez pelo Pro.',
   },
   ja: {
-    title: 'PrivacyNotes: ノート、タスク、ジャーナルのための暗号化された保管庫',
-    description: '思考、タスク、ジャーナルを記録。常に暗号化されます。エンドツーエンド暗号化、トラッキングなし、スイスでホスティング。',
+    title: 'PrivacyNotes: 暗号化されたノート、タスク、ジャーナル',
+    description: 'ノート、タスク、ジャーナルのためのプライベートなワークスペース。デバイス上で暗号化されます。無料で始めて、ノートをインポートし、Proは一度の支払いで手に入ります。',
   },
   ko: {
-    title: 'PrivacyNotes: 노트, 할 일, 저널을 위한 암호화된 보관함',
-    description: '생각, 할 일, 저널을 기록하세요. 항상 암호화됩니다. 종단간 암호화, 추적 없음, 스위스에서 호스팅.',
+    title: 'PrivacyNotes: 암호화된 노트, 할 일, 저널',
+    description: '노트, 할 일, 저널을 위한 비공개 작업 공간이에요. 기기에서 암호화돼요. 무료로 시작하고, 노트를 가져오고, Pro는 한 번만 결제하세요.',
   },
   'zh-TW': {
-    title: 'PrivacyNotes: 筆記、任務、日誌的加密保險庫',
-    description: '記錄你的想法、任務與日誌，全程加密。端對端加密，零追蹤，主機位於瑞士。',
+    title: 'PrivacyNotes: 加密的筆記、任務與日誌',
+    description: '專屬於你的筆記、任務與日誌空間，在你的裝置上加密。免費開始，匯入你的筆記，Pro 只需付款一次。',
   },
   ca: {
-    title: 'PrivacyNotes: la teva caixa forta xifrada per a notes, tasques i diari',
-    description: "Anota els teus pensaments, tasques i diari, sempre xifrats. Xifratge d'extrem a extrem, sense seguiment, allotjat a Suïssa.",
+    title: 'PrivacyNotes: notes, tasques i diari xifrats',
+    description: 'Un espai privat per a notes, tasques i el teu diari. Xifrat al teu dispositiu. Comença gratis, importa les teves notes i paga una sola vegada per Pro.',
   },
   cs: {
-    title: 'PrivacyNotes: tvůj šifrovaný trezor na poznámky, úkoly a deník',
-    description: 'Zapisuj si myšlenky, úkoly a deník - vždy zašifrované. End-to-end šifrování, žádné sledování, hostováno ve Švýcarsku.',
+    title: 'PrivacyNotes: šifrované poznámky, úkoly a deník',
+    description: 'Soukromý prostor pro poznámky, úkoly a tvůj deník. Šifrovaný na tvém zařízení. Začni zdarma, importuj své poznámky a za Pro zaplať jen jednou.',
   },
   tr: {
-    title: 'PrivacyNotes: notlar, görevler ve günlükler için şifreli kasanız',
-    description: 'Düşüncelerinizi, görevlerinizi ve günlüğünüzü yazın - her zaman şifreli. Uçtan uca şifreleme, sıfır takip, İsviçre\'de barındırılıyor.',
+    title: 'PrivacyNotes: Şifreli notlar, görevler ve günlük',
+    description: 'Notlarınız, görevleriniz ve günlüğünüz için özel bir çalışma alanı. Cihazınızda şifrelenir. Ücretsiz başlayın, notlarınızı içe aktarın ve Pro için bir kez ödeyin.',
   },
   sv: {
-    title: 'PrivacyNotes: ditt krypterade valv för anteckningar, uppgifter och dagbok',
-    description: 'Skriv ner dina tankar, uppgifter och din dagbok - alltid krypterat. Totalsträckskryptering utan spårning, med servrar i Schweiz.',
+    title: 'PrivacyNotes: krypterade anteckningar, uppgifter och dagbok',
+    description: 'En privat arbetsyta för anteckningar, uppgifter och din dagbok. Krypterad på din enhet. Börja gratis, importera dina anteckningar och betala en gång för Pro.',
   },
   ar: {
-    title: 'PrivacyNotes: خزنتك المشفّرة للملاحظات والمهام واليوميات',
-    description: 'دوّن أفكارك ومهامك ويومياتك - مشفّرة دائمًا. تشفير من طرف إلى طرف دون تتبع، مع استضافة في سويسرا.',
+    title: 'PrivacyNotes: ملاحظات ومهام ويوميات مشفّرة',
+    description: 'مساحة عمل خاصة لملاحظاتك ومهامك ويومياتك. مشفّرة على جهازك. ابدأ مجانًا، واستورد ملاحظاتك، وادفع مرة واحدة مقابل Pro.',
   },
   uk: {
-    title: 'PrivacyNotes: ваш зашифрований сейф для нотаток, завдань і щоденника',
-    description: 'Записуйте думки, завдання й щоденник, завжди зашифровані. Наскрізне шифрування без стеження, із серверами у Швейцарії.',
+    title: 'PrivacyNotes: зашифровані нотатки, завдання й щоденник',
+    description: 'Приватний робочий простір для нотаток, завдань і вашого щоденника. Зашифровано на вашому пристрої. Почніть безкоштовно, імпортуйте свої нотатки й заплатіть за Pro лише раз.',
   },
   ru: {
-    title: 'PrivacyNotes: ваш зашифрованный сейф для заметок, задач и дневника',
-    description: 'Записывайте мысли, задачи и дневник, всегда в зашифрованном виде. Сквозное шифрование без слежки, с серверами в Швейцарии.',
+    title: 'PrivacyNotes: зашифрованные заметки, задачи и дневник',
+    description: 'Личное рабочее пространство для заметок, задач и вашего дневника. Шифруется на вашем устройстве. Начните бесплатно, импортируйте свои заметки и заплатите за Pro один раз.',
   },
   th: {
-    title: 'PrivacyNotes: ตู้นิรภัยเข้ารหัสสำหรับโน้ต งาน และบันทึกประจำวันของคุณ',
-    description: 'จดความคิด งาน และบันทึกประจำวันของคุณ เข้ารหัสอยู่เสมอ เข้ารหัสแบบต้นทางถึงปลายทาง ไม่มีการติดตาม และโฮสต์ในสวิตเซอร์แลนด์',
+    title: 'PrivacyNotes: โน้ต งาน และบันทึกประจำวันที่เข้ารหัส',
+    description: 'พื้นที่ทำงานส่วนตัวสำหรับโน้ต งาน และบันทึกประจำวันของคุณ เข้ารหัสบนอุปกรณ์ของคุณ เริ่มใช้ฟรี นำเข้าโน้ตของคุณ และจ่ายครั้งเดียวสำหรับ Pro',
   },
 };
 

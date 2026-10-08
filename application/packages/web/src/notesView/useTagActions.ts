@@ -136,10 +136,11 @@ export function useTagActions({
           }
           return { ...prev, favoriteTags, itemStyles };
         });
-        // If the currently selected tag filter was the old slug, point
-        // it at the new one so the user keeps seeing the same notes.
-        if (selectedTag === oldTag) setSelectedTag(normalized);
         await refresh();
+        // If the currently selected tag filter was the old slug, point
+        // it at the new one so the user keeps seeing the same notes. After
+        // the refresh: the sidebar clears a filter on a tag no item carries.
+        if (selectedTag === oldTag) setSelectedTag(normalized);
         void runSync();
       };
 

@@ -88,7 +88,7 @@ export default {
       },
       {
         title: 'The whole stack is open source',
-        body: 'Clients and server, with self-hosting for people who want to run their own sync. Our clients, encryption layer, schema and threat model are published, and this row is still theirs.',
+        body: 'Clients and server, with self-hosting for people who want to run their own sync. Our clients, encryption layer and threat model are published, and this row is still theirs.',
       },
       {
         title: 'More note types',

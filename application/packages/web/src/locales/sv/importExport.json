@@ -167,8 +167,8 @@
     "filesProgress": "Exporterar filer... {{done}} av {{total}}",
     "building": "Bygger säkerhetskopian...",
     "compressing": "Komprimerar...",
-    "missingFailed_one": "Den här enheten kunde inte hämta {{items}}, så din export lämnar den utanför. Kontrollera anslutningen och exportera igen.",
-    "missingFailed_other": "Den här enheten kunde inte hämta {{items}}, så din export lämnar dem utanför. Kontrollera anslutningen och exportera igen.",
+    "missingFailed_one": "Den här enheten kunde inte ladda ner {{items}}, så din export lämnar den utanför. Kontrollera anslutningen och exportera igen.",
+    "missingFailed_other": "Den här enheten kunde inte ladda ner {{items}}, så din export lämnar dem utanför. Kontrollera anslutningen och exportera igen.",
     "missingNotFound_one": "{{items}} finns varken på den här enheten eller på servern, så din export lämnar den utanför.",
     "missingNotFound_other": "{{items}} finns varken på den här enheten eller på servern, så din export lämnar dem utanför."
   },
@@ -180,6 +180,7 @@
     "both": "{{pictures}} och {{files}}"
   },
   "upload": {
+    "discard": "Släng",
     "completeTitle": "Uppladdningen är klar",
     "failedTitle": "Uppladdningen misslyckades",
     "partialTitle": "{{done}} uppladdade, {{failed}} misslyckades",
@@ -189,6 +190,10 @@
     "statusFailed": "Misslyckades",
     "errorStorageFull": "Lagringen är full - frigör utrymme eller lägg till lagring för att ladda upp den här filen.",
     "errorStorageFullKept": "Får inte plats i din lagring - behålls på den här enheten. Den synkas när utrymme frigörs.",
+    "errorTooLarge": "Filen är för stor ({{size}}). Max {{limit}} MB.",
+    "errorTooLargeFree": "Filen är för stor ({{size}}). Max {{limit}} MB med gratisplanen.",
+    "batchTitle_one": "{{count}} fil",
+    "batchTitle_other": "{{count}} filer",
     "statusUploading": "Laddar upp...",
     "statusWaiting": "Väntar",
     "summaryDone": "{{count}} laddades upp",
@@ -209,5 +214,11 @@
   },
   "saveErrors": {
     "shortWrite": "Bara {{written}} av {{expected}} byte sparades, så filen är ofullständig. Försök igen och spara till enhetens egen lagring i stället för till en molnmapp."
+  },
+  "shareSheet": {
+    "title_one": "{{count}} objekt delades till PrivacyNotes",
+    "title_other": "{{count}} objekt delades till PrivacyNotes",
+    "line": "Inget sparas förrän du väljer.",
+    "saveAll": "Spara alla"
   }
 }

@@ -33,6 +33,7 @@ import {
   type WeightUnit,
   WEIGHT_UNITS,
   activeCustomTrackers,
+  customTrackerColor,
   weightRange,
   weightToCanonical,
   weightToDisplay,
@@ -201,7 +202,7 @@ export function TrackerPills({
       for (const t of activeCustom) {
         const entry = data.customTrackers?.find((e) => e.trackerId === t.id);
         if (entry?.value != null) {
-          pills.push({ key: `c-${t.id}`, color: t.color ?? '#888', icon: null, label: `${entry.value}`, toggle: `custom-${t.id}` });
+          pills.push({ key: `c-${t.id}`, color: customTrackerColor(t) ?? '#888', icon: null, label: `${entry.value}`, toggle: `custom-${t.id}` });
         }
       }
     }
@@ -463,7 +464,7 @@ export function TrackerPills({
         <button
           type="button"
           onClick={() => customUnlocked ? toggle('__config__') : onOpenUpgrade?.()}
-          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium border border-dashed border-neutral-300 dark:border-neutral-600 text-neutral-400 dark:text-neutral-500 hover:border-neutral-400 dark:hover:border-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors shrink-0"
+          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium border border-dashed border-pn-muted/50 text-pn-muted hover:border-pn-muted hover:text-pn-soft transition-colors shrink-0"
         >
           <Plus size={10} />
           {t('labels.custom')}

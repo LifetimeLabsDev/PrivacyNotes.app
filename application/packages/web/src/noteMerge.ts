@@ -13,6 +13,7 @@
 import type { EncryptedPayload, NoteType } from '@notes/shared';
 import type { LocalNote } from './db';
 import { mergeTrackers, trackersEqual } from './trackerTypes';
+import { sameContent } from './editStamp';
 
 /** A note's encrypted payload with every field present, flags as booleans. */
 export interface NoteFields {
@@ -62,6 +63,18 @@ export interface SyncBase {
   f: Record<FieldName, string>;
   /** One fingerprint per tag, for the set merge. */
   t: string[];
+  /** The day a journal entry is for, `journalDate` and `backfilled` as one
+   *  pair, so a tracker merge can tell which side moved the entry. Absent on
+   *  a base written before the field: the merge then takes the later stamp. */
+  d?: string;
+  /** The tracker values without that pair, so a side that only moved the day
+   *  gives the day and nothing else. Absent on an older base: per key. */
+  r?: string;
+  /** One fingerprint per tracker key, the day pair aside, so a merge where
+   *  both sides changed the trackers still takes each key from the side that
+   *  changed it. Absent on an older base: a key both sides hold goes to the
+   *  local side, as mergeTrackers decides. */
+  k?: Record<string, string>;
 }
 
 /**
@@ -108,10 +121,39 @@ function comparable(fields: NoteFields, name: FieldName): unknown {
   return name === 'trackers' ? (fields.trackers ?? {}) : fields[name];
 }
 
+/** The pair that says which day a journal entry is for. */
+function dayPair(trackers: Record<string, unknown> | undefined): string {
+  return fingerprint([trackers?.journalDate ?? null, trackers?.backfilled ?? null]);
+}
+
+/** Every tracker value but that pair. */
+function dayless(trackers: Record<string, unknown> | undefined): string {
+  const { journalDate: _day, backfilled: _back, ...rest } = trackers ?? {};
+  return fingerprint(rest);
+}
+
 export function buildSyncBase(fields: NoteFields, nonce: string): SyncBase {
   const f = {} as Record<FieldName, string>;
   for (const name of NOTE_FIELDS) f[name] = fingerprint(comparable(fields, name));
-  return { v: 1, n: nonce, f, t: fields.tags.map(fingerprint) };
+  return {
+    v: 1,
+    n: nonce,
+    f,
+    t: fields.tags.map(fingerprint),
+    d: dayPair(fields.trackers),
+    r: dayless(fields.trackers),
+    k: perKey(fields.trackers),
+  };
+}
+
+/** A fingerprint of each tracker value, the day pair aside. */
+function perKey(trackers: Record<string, unknown> | undefined): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [key, value] of Object.entries(trackers ?? {})) {
+    if (key === 'journalDate' || key === 'backfilled' || value === undefined) continue;
+    out[key] = fingerprint(value);
+  }
+  return out;
 }
 
 /**
@@ -134,6 +176,11 @@ export function trustedBase(raw: unknown, syncedNonce: string | undefined): Sync
   const b = raw as Partial<SyncBase>;
   if (b.v !== 1 || b.n !== syncedNonce || !b.f || typeof b.f !== 'object') return undefined;
   if (!Array.isArray(b.t) || !b.t.every((x) => typeof x === 'string')) return undefined;
+  if (b.d !== undefined && typeof b.d !== 'string') return undefined;
+  if (b.r !== undefined && typeof b.r !== 'string') return undefined;
+  if (b.k !== undefined && (b.k === null || typeof b.k !== 'object' || Array.isArray(b.k) || !Object.values(b.k).every((x) => typeof x === 'string'))) {
+    return undefined;
+  }
   const f = b.f as Record<string, unknown>;
   if (!NOTE_FIELDS.every((name) => typeof f[name] === 'string' || (name === 'archived' && f[name] === undefined))) {
     return undefined;
@@ -164,7 +211,9 @@ export function fieldsOfLocal(
  * A decrypted server payload, with the defaults older ciphertexts need.
  *
  * A payload without `archived` came from a client that predates Archive and
- * rebuilt the note without the field; every current writer states it. That
+ * rebuilt the note without the field, or from a current device that took the
+ * row from one and never learned the flag (sync.ts archiveUnknownOf); every
+ * writer that knows the flag states it. That
  * writer said nothing about Archive, so the reader keeps what it already
  * knows (`archivedIfAbsent`: the local row's flag) instead of reading an
  * unarchive into the omission.
@@ -264,10 +313,48 @@ export function laterStamp(a: string, b: string): string {
   return ta >= tb ? a : b;
 }
 
-/** One side of a merge: its payload and the stamp its row carries. */
+/** One side of a merge: its payload and the stamps its row carries. */
 export interface MergeSide {
   fields: NoteFields;
   updatedAt: string;
+  /** The side's "last edited" stamp, when its row or payload carries one. */
+  editedAt?: string;
+}
+
+/**
+ * The "last edited" stamp of a merged note, by the content rule of
+ * editStamp.ts. A side's stamp is explicit when its row or payload carries
+ * `editedAt`, and inferred (its `updatedAt`) when not. An inferred stamp can
+ * be a metadata write, so an explicit one wins.
+ * Content equal to both sides keeps the later explicit stamp, or this
+ * device's own when neither side has one; content equal to one side takes
+ * that side's stamp; content that mixes both takes the later of the two.
+ */
+export function mergedEditedAt(local: MergeSide, server: MergeSide, merged: NoteFields): string {
+  const own = (side: MergeSide) => side.editedAt ?? side.updatedAt;
+  const fromLocal = sameContent(merged, local.fields);
+  const fromServer = sameContent(merged, server.fields);
+  if (fromLocal && fromServer) {
+    if (local.editedAt && server.editedAt) return laterStamp(local.editedAt, server.editedAt);
+    return server.editedAt ?? own(local);
+  }
+  if (fromLocal) return own(local);
+  if (fromServer) return own(server);
+  return laterStamp(own(local), own(server));
+}
+
+/**
+ * Whether a merged "last edited" stamp differs from the one the server's
+ * payload carries, so equal fields still need a write for every device to
+ * show one date. A payload without the stamp is left as it is: its readers
+ * infer one from the row.
+ */
+export function editStampMoves(editedAt: string, serverEditedAt: string | undefined): boolean {
+  if (serverEditedAt === undefined) return false;
+  const a = Date.parse(editedAt);
+  const b = Date.parse(serverEditedAt);
+  // The same instant written two ways is the same date.
+  return Number.isNaN(a) || Number.isNaN(b) ? editedAt !== serverEditedAt : a !== b;
 }
 
 /**
@@ -284,6 +371,15 @@ export interface MergeSide {
  * stamp. Trackers still go through mergeTrackers, the rule written for
  * exactly the case where no base says which side moved. An equal stamp
  * favours the server, which every other device already holds.
+ *
+ * The day a journal entry is for (`journalDate` with `backfilled`) is no
+ * tracker value to keep per key: when both sides changed the trackers, the
+ * side that moved the day against the base gives it, and when both moved it,
+ * or the base predates its fingerprint, the later stamp does. Otherwise a mood
+ * logged on the old day would undo the move made on another device. The other
+ * values come whole from the one side that changed them, so a side that only
+ * moved the day cannot put its older values back; when both changed them, or
+ * the base predates that fingerprint, they merge per key (mergeTrackers).
  */
 export function mergeNoteFields(
   base: SyncBase | undefined,
@@ -310,6 +406,57 @@ export function mergeNoteFields(
     return { value: localLater ? lv : sv, bothChanged: true };
   }
 
+  /** The tracker values from the side that changed them, per key when both did. */
+  function mergeValues(): Record<string, unknown> | undefined {
+    const lt = local.fields.trackers;
+    const st = server.fields.trackers;
+    if (base?.r !== undefined) {
+      const lc = dayless(lt) !== base.r;
+      const sc = dayless(st) !== base.r;
+      if (lc && !sc) return lt && { ...lt };
+      if (sc && !lc) return st && { ...st };
+    }
+    const merged = mergeTrackers(lt, st);
+    if (!base?.k || !merged) return merged;
+    // Both sides changed something. A key only one of them changed is that
+    // side's, a removal included; a key both changed keeps mergeTrackers'
+    // answer. A side with no trackers at all is taken whole by mergeTrackers
+    // and gives no key here.
+    const keys = new Set([...Object.keys(lt ?? {}), ...Object.keys(st ?? {})]);
+    for (const key of keys) {
+      if (key === 'journalDate' || key === 'backfilled') continue;
+      const lf = lt?.[key] === undefined ? undefined : fingerprint(lt[key]);
+      const sf = st?.[key] === undefined ? undefined : fingerprint(st[key]);
+      if (lf === sf) continue;
+      const was = Object.hasOwn(base.k, key) ? base.k[key] : undefined;
+      const from = lf !== was && sf === was ? lt : sf !== was && lf === was ? st : null;
+      if (!from) continue;
+      if (from[key] === undefined) delete merged[key];
+      else merged[key] = from[key];
+    }
+    return merged;
+  }
+
+  /** The day of the side that moved it, over the merged values. A side with
+   *  no day says nothing about it, so the day the app stamps at birth
+   *  survives a write that dropped it, every value included. */
+  function mergeDay(merged: Record<string, unknown> | undefined): Record<string, unknown> | undefined {
+    const lt = local.fields.trackers;
+    const st = server.fields.trackers;
+    if (dayPair(lt) === dayPair(st)) return merged;
+    const lHas = lt?.journalDate !== undefined;
+    const sHas = st?.journalDate !== undefined;
+    const lc = base?.d === undefined || dayPair(lt) !== base.d;
+    const sc = base?.d === undefined || dayPair(st) !== base.d;
+    const from = lHas !== sHas ? (lHas ? lt : st) : lc && !sc ? lt : sc && !lc ? st : localLater ? lt : st;
+    const out: Record<string, unknown> = { ...merged };
+    for (const key of ['journalDate', 'backfilled'] as const) {
+      if (from?.[key] === undefined) delete out[key];
+      else out[key] = from[key];
+    }
+    return merged === undefined && Object.keys(out).length === 0 ? undefined : out;
+  }
+
   const eq = <T>(a: T, b: T) => a === b;
   const body = pick('body', eq);
   const tags = pick('tags', sameList);
@@ -325,9 +472,7 @@ export function mergeNoteFields(
       type: pick('type', eq).value,
       folderId: pick('folderId', eq).value,
       archived: pick('archived', eq).value,
-      trackers: trackers.bothChanged
-        ? mergeTrackers(local.fields.trackers, server.fields.trackers)
-        : trackers.value,
+      trackers: trackers.bothChanged ? mergeDay(mergeValues()) : trackers.value,
     },
     body: body.bothChanged ? null : body.value,
   };

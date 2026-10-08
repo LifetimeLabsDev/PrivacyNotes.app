@@ -7,7 +7,7 @@ title: Bem-vindo ao PrivacyNotes
 
 <h1 style="text-align: center;"><span style="color: rgb(25, 113, 194);">Este é o teu </span><span style="color: rgb(25, 113, 194);">espaço</span><span style="color: rgb(25, 113, 194);"> privado</span></h1>
 
-<p style="text-align: center"><em>Cada nota é cifrada neste dispositivo. És tu que escolhes quem guarda a chave.</em></p>
+<p style="text-align: center"><em>Cada nota é encriptada neste dispositivo. És tu que escolhes quem guarda a chave.</em></p>
 
 ---
 

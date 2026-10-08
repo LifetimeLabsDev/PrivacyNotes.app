@@ -71,9 +71,13 @@ Um aviso é uma caixa colorida para algo que ninguém deve perder de vista.
 
 > Uma citação recua da margem e ganha uma linha colorida ao lado.
 
+## Notas de rodapé
+
+Uma nota de rodapé tira do texto uma fonte ou um aparte.[^1] Escreve `[^1]` depois de uma palavra, ou escolhe **Nota de rodapé** no menu **Inserir**. Clica no número pequeno para ires à nota.
+
 ## Código
 
-O código mantém o espaçamento e é colorido conforme a linguagem.
+O código mantém o espaçamento e é colorido conforme a linguagem. O nome no topo de um bloco é a sua linguagem: clica nele para escolher outra.
 
 ```js
 export function seal(note, key) {
@@ -86,6 +90,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+Um bloco longo abre recolhido, para que o resto da nota fique perto. O botão por baixo mostra todas as linhas.
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 Um bocado curto de código dentro de uma frase aparece assim: `isto`.
@@ -107,10 +152,14 @@ Arrasta uma imagem para uma nota, ou cola-a. Clica nela uma vez para mudar o tam
 Há dois tipos, e são diferentes de propósito.
 
 - Uma ligação web abre um site: [privacynotes.app](https://privacynotes.app/pt)
-- Uma ligação de nota abre outra nota tua: [[Como as tuas notas estão protegidas]]
+- Uma ligação entre notas abre outra nota tua: [[Como as tuas notas estão protegidas]]
 
-Os dois têm botão na barra. A corrente faz uma ligação web. Os parênteses retos fazem uma ligação de nota: listam as tuas notas e escolhes a que queres. Escrever `[[` faz o mesmo.
+Os dois têm botão na barra. A corrente faz uma ligação web. Os parênteses retos fazem uma ligação entre notas: listam as tuas notas e escolhes a que queres. Escrever `[[` faz o mesmo.
+
+Uma ligação entre notas também pode abrir uma nota num dos seus títulos. Escreve um `#` depois do título da nota e escolhe o título da secção: [[Como as tuas notas estão protegidas#Quem tem a tua chave]] abre essa nota na secção sobre a chave. O ícone de ligação num título da estrutura copia essa ligação por ti.
 
 ---
 
 *Se já escreves markdown, escreve-o e ele formata-se à medida. Para veres o texto em bruto por trás de qualquer nota, clica em **Ver markdown** em baixo à direita nesta nota.*
+
+[^1]: Esta é a nota. A seta ao lado leva-te de volta para cima.

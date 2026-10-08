@@ -17,7 +17,7 @@ import {
 } from './icons';
 import { type SupabaseClient } from '@notes/shared';
 import { isDemoMode } from './demo';
-import { formatRelative } from './intlFormat';
+import { formatInstant, formatRelative } from './intlFormat';
 import { verifySync, resetSyncCursor, type SyncReport } from './syncVerify';
 import { recordCleanVerify } from './verifyStamp';
 import { buildDeviceName } from './devices';
@@ -37,6 +37,7 @@ import { useVerifyStamp } from './verifyStamp';
 import { SETTINGS_EYEBROW } from './settingsUI';
 import { Switch } from './Switch';
 import { VERSION } from './version';
+import { SwissFlag } from './SwissFlag';
 
 /**
  * The redesigned sync readout: one status word with its age, the recent
@@ -173,8 +174,8 @@ export function SyncPanel({
     : pending.count > 0 ? 'uploading'
     : 'synced';
 
-  const amber = 'text-amber-600 dark:text-amber-400';
-  const green = 'text-emerald-600 dark:text-emerald-400';
+  const amber = 'text-warning';
+  const green = 'text-success';
   const heads: Record<typeof state, { icon: React.ReactNode; word: string; cls: string }> = {
     demo: { icon: <CloudSlash size={17} />, word: t('syncStatus.notSaved'), cls: amber },
     floor: { icon: <Warning size={17} />, word: t('syncStatus.updateRequired'), cls: amber },
@@ -235,7 +236,9 @@ export function SyncPanel({
 
         {/* One line, one slot: while a pass runs it narrates, otherwise it
             carries the last clean verify. Same element and size either way,
-            so the hero never changes height when Sync now is clicked. */}
+            and an empty slot holds the line's height in the synced state,
+            so the hero never changes height when a background pass or
+            either button starts one. */}
         {state === 'syncing' ? (
           <p className="mt-1.5 text-sm text-pn-soft">
             {t('syncPanel.passRunning')}
@@ -250,13 +253,15 @@ export function SyncPanel({
           // Soft text, green seal only: the state word above owns the
           // color, this line is a fact with a small anchor, not a second
           // green claim.
-          <p className="mt-1.5 text-sm text-pn-soft inline-flex items-center gap-1.5">
+          <p className="mt-1.5 text-sm text-pn-soft flex items-center gap-1.5">
             {t('syncPanel.verified', {
               ago: formatRelative(new Date(stamp.at).toISOString()),
               count: stamp.items,
             })}
-            <SealCheck size={15} weight="fill" className="text-emerald-500 dark:text-emerald-400" />
+            <SealCheck size={15} weight="fill" className="text-success" />
           </p>
+        ) : state === 'synced' && !demo ? (
+          <p className="mt-1.5 h-5" aria-hidden="true" />
         ) : null}
         {subline && <p className="mt-1.5 text-sm text-pn-soft">{subline}</p>}
         {showWaiting && (
@@ -281,7 +286,7 @@ export function SyncPanel({
             {failedNotes.map(({ id, title, failure }) => (
               <li key={id} className="flex items-center gap-2 text-sm">
                 <span className="min-w-0 flex-1 truncate" dir="auto">{title}</span>
-                <span className="shrink-0 text-xs text-amber-700 dark:text-amber-400">
+                <span className="shrink-0 text-xs text-warning">
                   {failure.reason === 'too_large'
                     ? t('syncPanel.reasonTooLarge')
                     : t('syncPanel.reasonFailed', { message: failure.message })}
@@ -319,22 +324,20 @@ export function SyncPanel({
             type="button"
             onClick={() => void runVerify()}
             disabled={verifyBusy || !online || syncing}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-divider hover:bg-surface-1 px-3 py-2.5 text-sm font-medium transition disabled:opacity-50"
+            className={`relative inline-flex items-center justify-center gap-2 rounded-lg border border-divider hover:bg-surface-1 px-3 py-2.5 text-sm font-medium transition ${
+              verifyBusy ? '' : 'disabled:opacity-50'
+            }`}
           >
-            {/* Keyed spans: the busy swap must REPLACE these nodes, not
-                mutate them - the iOS/Android webviews fold the spinner
-                swap into one paint otherwise (see the old block). */}
-            {verifyBusy ? (
-              <span key="busy" className="inline-flex items-center gap-2">
-                <CloudCheck size={15} className="animate-spin" />
-                {t('sync.verifyRunning')}
-              </span>
-            ) : (
-              <span key="idle" className="inline-flex items-center gap-2">
-                <CloudCheck size={15} className="text-accent" />
-                {t('sync.verifyAction')}
-              </span>
+            {/* While the compare runs, a short accent dash travels the
+                border. The SVG sits on the border's centre line, so the
+                rect's radius is the button's 8px less half the 1px border. */}
+            {verifyBusy && (
+              <svg className="pointer-events-none absolute inset-[-0.5px] h-[calc(100%+1px)] w-[calc(100%+1px)] overflow-visible" aria-hidden="true">
+                <rect className="pn-border-trace" width="100%" height="100%" rx="7.5" pathLength="100" />
+              </svg>
             )}
+            <CloudCheck size={15} className="text-accent" />
+            {verifyBusy ? t('sync.verifyRunning') : t('sync.verifyAction')}
           </button>
         )}
       </div>
@@ -348,7 +351,7 @@ export function SyncPanel({
         <div className="text-sm leading-relaxed">
           {report.verdict === 'in_sync' && (
             pending.count > 0 && pending.blocked >= pending.count ? (
-              <p className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+              <p className="inline-flex items-center gap-1.5 text-warning">
                 <Warning size={14} />
                 {t('sync.verifyInSyncBlockedBlobs', { count: pending.blocked })}
               </p>
@@ -367,14 +370,14 @@ export function SyncPanel({
               measured is probably just data in flight. */}
           {report.verdict === 'busy' && <p className="text-pn-soft">{t('sync.verifyBusy')}</p>}
           {report.verdict === 'failed' && (
-            <p className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+            <p className="inline-flex items-center gap-1.5 text-warning">
               <WifiSlash size={14} />
               {t('sync.verifyFailed')}
             </p>
           )}
           {report.verdict === 'diverged' && (
             <div className="space-y-2">
-              <p className="text-amber-600 dark:text-amber-400">{t('sync.verifyDiverged')}</p>
+              <p className="text-warning">{t('sync.verifyDiverged')}</p>
               <ul className="text-pn-soft space-y-0.5">
                 {report.missingLocally.length > 0 && (
                   <li>{t('sync.verifyMissing', { count: report.missingLocally.length })}</li>
@@ -393,7 +396,7 @@ export function SyncPanel({
                 <button
                   type="button"
                   onClick={repair}
-                  className="rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-1.5 text-sm font-medium transition"
+                  className="rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-1.5 text-sm font-medium transition"
                 >
                   {t('sync.verifyRepairAction')}
                 </button>
@@ -452,7 +455,7 @@ export function SyncPanel({
             <Lock size={12} className="text-pn-muted shrink-0" aria-hidden="true" />
             <span className="rounded-md border border-divider bg-track px-2 py-1 whitespace-nowrap">{t('syncPanel.nodeEncrypted')}</span>
             <CloudArrowUp size={13} className="text-pn-muted shrink-0" aria-hidden="true" />
-            <span className="rounded-md border border-emerald-600/40 bg-track px-2 py-1 whitespace-nowrap">{t('syncPanel.nodeRegion')} {'\u{1F1E8}\u{1F1ED}'}</span>
+            <span className="rounded-md border border-emerald-600/40 bg-track px-2 py-1 whitespace-nowrap">{t('syncPanel.nodeRegion')} <SwissFlag /></span>
           </div>
           {/* No local-at-rest line here: the seal's residuals need
               caveats a settings card has no room for. This card only
@@ -629,7 +632,7 @@ function CopyButton({
       type="button"
       onClick={onClick}
       className={`inline-flex items-center justify-center gap-1.5 rounded border px-2.5 py-1.5 text-xs whitespace-nowrap transition ${
-        copied ? 'border-accent bg-accent/10 text-accent' : 'border-divider hover:bg-surface-1'
+        copied ? 'border-accent bg-accent/10 text-accent-strong' : 'border-divider hover:bg-surface-1'
       }`}
     >
       {copied ? <Check size={12} weight="bold" /> : <Copy size={12} />}
@@ -664,9 +667,9 @@ function ActivityList({ log }: { log: SyncPassEntry[] }) {
             {rows.map((e, i) => (
               <tr key={`${e.at}-${i}`} className="border-t border-divider">
                 <td className="px-3.5 py-1.5 tabular-nums text-pn-muted">
-                  {new Date(e.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {formatInstant(new Date(e.at), 'time')}
                 </td>
-                <td className={`px-2 py-1.5 ${!e.ok ? 'text-red-500 dark:text-red-400' : e.failed || e.halted ? 'text-amber-600 dark:text-amber-400' : ''}`}>
+                <td className={`px-2 py-1.5 ${!e.ok ? 'text-danger' : e.failed || e.halted ? 'text-warning' : ''}`}>
                   {!e.ok
                     ? t('syncPanel.passFailed')
                     : e.up === 0 && e.down === 0 && !e.failed && !e.halted

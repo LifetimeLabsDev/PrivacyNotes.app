@@ -10,7 +10,8 @@
     "empty": "Boş",
     "noContent": "İçerik yok",
     "notBackedUp": "Yedeklenmedi",
-    "archived": "Arşivlendi"
+    "archived": "Arşivlendi",
+    "entryDate": "Kayıt tarihi"
   },
   "header": {
     "new": "Yeni",
@@ -19,7 +20,9 @@
     "trash": "Çöp kutusu"
   },
   "folderChip": {
-    "clear": "Klasör filtresini temizle: {{folder}}"
+    "clear": "Klasör filtresini temizle: {{folder}}",
+    "subfolders": "Alt klasörler",
+    "subfoldersLabel": "Alt klasörleri dahil et"
   },
   "tagChip": {
     "clear": "Etiket filtresini temizle: {{tag}}"
@@ -60,8 +63,8 @@
   },
   "search": {
     "sortOptions": "Sıralama ve görünüm seçenekleri",
-    "placeholderVault": "Kasada ara…",
-    "placeholderNotes": "Notlarda ara…"
+    "placeholderVault": "Kasada arayın…",
+    "placeholderNotes": "Notlarda arayın…"
   },
   "selection": {
     "countOf": "{{total}} öğeden {{selected}} tanesi seçildi",
@@ -191,6 +194,8 @@
     "currentHtmlDesc": "Yazdırmaya uygun, beyaz sayfada işlenmiş markdown.",
     "printTitle": "Yazdır / PDF olarak kaydet",
     "printDesc": "Yazdırma penceresini açar. PDF olarak kaydedin veya yazıcıya gönderin.",
+    "printTextTitle": "Yalnızca metni yazdır",
+    "printTextDesc": "Başlığı korur. Tarihi, klasörü ve etiketleri çıkarır.",
     "burnTitle": "Paylaş ve okunduktan sonra yak",
     "burnDesc": "Bu notu tek seferlik görüntüleme bağlantısı olarak yayınlayın. Bağlantı okunduktan sonra kendini imha eder. Notunuz hesabınızda güvende kalır."
   },
@@ -208,7 +213,10 @@
     "newNote": "Yeni",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "İstatistikleri aç",
+    "journalCalendar": "Günlük takvimi",
     "words": "Kelime",
     "zen": "Zen modu",
     "appearance": "Görünüm",
@@ -232,7 +240,7 @@
     "appearanceLabel": "Görünüm",
     "helpLabel": "Yardım",
     "aboutLabel": "Hakkında",
-    "languageLabel": "Dil",
+    "languageLabel": "Tarih ve dil",
     "languageDesc": "PrivacyNotes'un gösterileceği dili seçin."
   },
   "importStore": {
@@ -252,6 +260,12 @@
     "readOnlyBlocked_other": "<highlight>{{count}} öğe</highlight> salt okunur olduğu için çöp kutusuna taşınamaz. Önce not seçeneklerinden salt okunur ayarını kapatın.",
     "readOnlySkipped_one": "<highlight>{{count}} öğe</highlight> salt okunur olduğu için olduğu yerde kalır.",
     "readOnlySkipped_other": "<highlight>{{count}} öğe</highlight> salt okunur olduğu için olduğu yerde kalır."
+  },
+  "deleteCheckedTasks": {
+    "title": "İşaretli öğeler silinsin mi?",
+    "confirm": "Sil",
+    "body_one": "<highlight>{{count}} öğe</highlight> bu nottan silinecek. Bu işlem geri alınamaz.",
+    "body_other": "<highlight>{{count}} öğe</highlight> bu nottan silinecek, iç içe öğeler dahil. Bu işlem geri alınamaz."
   },
   "bulkDelete": {
     "body_one": "<highlight>{{count}} not</highlight> kalıcı olarak silinsin mi? Bu işlem geri alınamaz.",

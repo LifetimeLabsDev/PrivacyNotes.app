@@ -189,7 +189,9 @@ async function settle(raw: string): Promise<'applied' | 'dropped' | { keep: stri
       logAuthEvent('seal:stash-superseded');
       return 'dropped';
     }
-    if (await updateNote(stash.noteId, { body })) return 'applied';
+    // Typed before the crash, so the edit's time is the stash's, not the
+    // time this boot replays it.
+    if (await updateNote(stash.noteId, { body }, undefined, { editedAt: stash.at })) return 'applied';
     // Refused: the note is read-only, a flag that can arrive by sync
     // mid-edit. The typed text is kept, fingerprinted against the body
     // this refusal saw the first time and byte for byte after that.

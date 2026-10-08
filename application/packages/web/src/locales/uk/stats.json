@@ -1,6 +1,7 @@
 {
   "title": "Статистика",
   "tabs": {
+    "overview": "Огляд",
     "writing": "Письмо",
     "wellness": "Самопочуття"
   },
@@ -31,12 +32,13 @@
     "30d": "30 днів",
     "3mo": "3 місяці",
     "6mo": "6 місяців",
-    "12mo": "12 місяців"
+    "12mo": "12 місяців",
+    "all": "Увесь час"
   },
   "wellness": {
     "subTabs": {
       "all": "Усе",
-      "sleepActivity": "Сон і активність",
+      "explore": "Дослідити",
       "medication": "Ліки",
       "patterns": "Закономірності"
     },
@@ -44,33 +46,17 @@
       "title": "Даних про самопочуття ще немає.",
       "hint": "Відкрийте запис у щоденнику й запишіть настрій, щоб почати."
     },
-    "overview": {
-      "daysTracked": "Днів відстежено",
-      "avgMood": "Сер. настрій",
-      "avgSleep": "Сер. сон",
-      "medAdherence": "Прийом ліків",
-      "moodTrend": "Динаміка настрою",
-      "moodByDayOfWeek": "Настрій за днями тижня",
-      "moodTrendTooltip": "{{date}}: {{mood}}/10",
-      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
-    },
     "export": {
       "heading": "Експорт",
-      "allTime": "За весь час",
-      "last90Days": "Останні 90 днів",
-      "last30Days": "Останні 30 днів",
-      "last7Days": "Останні 7 днів",
       "downloadJSON": "Завантажити JSON",
       "doctorPDF": "PDF для лікаря",
-      "copyAIPrompt": "Копіювати запит для ШІ",
+      "copyAIPrompt": "Показати й скопіювати запит для ШІ",
       "copied": "Скопійовано!",
       "saveFailed": "Не вдалося зберегти, тому файл може бути порожнім або неповним. Спробуйте ще раз або виберіть іншу теку.",
-      "proBadge": "PRO"
-    },
-    "sleepActivity": {
-      "sleepQuality": "Якість сну",
-      "activity": "Активність",
-      "avgSleepPerNight": "Середній сон за ніч"
+      "proBadge": "PRO",
+      "usesRange": "Використовує діапазон вище",
+      "promptShown": "Запит, який ви скопіювали. Вставте його в чат-бот на ваш вибір.",
+      "hidePrompt": "Сховати"
     },
     "medication": {
       "adherence": "Дотримання",
@@ -83,15 +69,14 @@
       "changedTo": "Змінено на {{dosage}}"
     },
     "patterns": {
-      "topEmotions": "Найчастіші емоції",
+      "heading": "Що впливає на ваш настрій",
       "insights": "Висновки",
       "proBadge": "PRO",
       "insightsLocked_one": "Виявлено висновків: {{count}}. Перейдіть на Pro, щоб переглянути",
       "insightsLocked_few": "Виявлено висновків: {{count}}. Перейдіть на Pro, щоб переглянути",
       "insightsLocked_many": "Виявлено висновків: {{count}}. Перейдіть на Pro, щоб переглянути",
       "insightsLocked_other": "Виявлено висновків: {{count}}. Перейдіть на Pro, щоб переглянути",
-      "weekInReview": "Підсумки тижня",
-      "weekInReviewLocked": "Перейдіть на Pro, щоб бачити щотижневий підсумок самопочуття"
+      "tableLocked": "Перейдіть на Pro, щоб бачити, які трекери впливають на ваш настрій"
     },
     "week": {
       "range": "з {{start}} по {{end}}",
@@ -103,7 +88,10 @@
       "topActivity": "Основна активність",
       "topEmotions": "Найчастіші емоції",
       "reflection": "Роздуми",
-      "reflectionPlaceholder": "Яким був цей тиждень загалом? Запишіть свої думки..."
+      "reflectionPlaceholder": "Яким був цей тиждень загалом? Запишіть свої думки...",
+      "heading": "Підсумки тижня",
+      "proBadge": "PRO",
+      "locked": "Перейдіть на Pro, щоб бачити щотижневий підсумок самопочуття"
     },
     "units": {
       "days_one": "{{count}} день",
@@ -112,15 +100,25 @@
       "days_other": "{{count}} дня"
     },
     "insights": {
-      "sleep": "У дні, коли ви добре спите, ваш середній настрій {{good}}, а коли погано, {{bad}}.",
-      "activity": "В активні дні ваш середній настрій {{active}}, а в малорухливі {{sedentary}}.",
       "dayOfWeek": "Ваш найкращий день зазвичай {{best}} (у середньому {{bestAvg}}), а найважчий {{worst}} (у середньому {{worstAvg}}).",
-      "medication": "Відколи ви почали приймати {{name}} ({{date}}), ваш середній настрій змінився з {{before}} на {{after}}.",
+      "medication": "Середній показник «{{outcome}}»: {{a}} у дні, коли ви приймаєте {{name}}, і {{b}} у дні, коли пропускаєте.",
       "streak_one": "Ви записуєте настрій {{count}} день поспіль. Так тримати!",
       "streak_few": "Ви записуєте настрій {{count}} дні поспіль. Так тримати!",
       "streak_many": "Ви записуєте настрій {{count}} днів поспіль. Так тримати!",
       "streak_other": "Ви записуєте настрій {{count}} дня поспіль. Так тримати!",
-      "trend": "Ваш середній настрій за останні два тижні {{recent}}, а загалом {{overall}}."
+      "trend": "Ваш середній настрій за останні два тижні {{recent}}, а загалом {{overall}}.",
+      "yesno": "Середній показник «{{outcome}}»: {{a}} у дні, коли ви записуєте {{name}}, і {{b}} у дні, коли ні.",
+      "yesnoNextDay": "Середній показник «{{outcome}}» наступного дня: {{a}} після днів, коли ви записуєте {{name}}, і {{b}} після днів, коли ні.",
+      "halves": "Середній показник «{{outcome}}»: {{a}}, коли {{name}} вище {{threshold}}, і {{b}}, коли {{threshold}} або нижче.",
+      "halvesNextDay": "Середній показник «{{outcome}}» наступного дня: {{a}}, якщо {{name}} вище {{threshold}}, і {{b}}, якщо {{threshold}} або нижче.",
+      "median": "Середній показник «{{outcome}}»: {{a}}, коли {{name}} вище вашої медіани {{threshold}}, і {{b}}, коли на рівні медіани або нижче.",
+      "medianNextDay": "Середній показник «{{outcome}}» наступного дня: {{a}}, якщо {{name}} вище вашої медіани {{threshold}}, і {{b}}, якщо на рівні медіани або нижче.",
+      "levels": "Середній показник «{{outcome}}»: {{a}} у дні «{{top}}» і {{b}} у дні «{{bottom}}».",
+      "levelsNextDay": "Середній показник «{{outcome}}» наступного дня: {{a}} після днів «{{top}}» і {{b}} після днів «{{bottom}}».",
+      "tag": "Середній показник «{{outcome}}»: {{a}} у дні, коли ви відчуваєте «{{tag}}», і {{b}} у дні, коли ні.",
+      "tagNextDay": "Середній показник «{{outcome}}» наступного дня: {{a}} після днів, коли ви відчуваєте «{{tag}}», і {{b}} після днів, коли ні.",
+      "medicationNextDay": "Середній показник «{{outcome}}» наступного дня: {{a}} після днів, коли ви приймаєте {{name}}, і {{b}} після днів, коли пропускаєте.",
+      "doseChange": "Навколо зміни {{name}} на {{dosage}} ({{date}}) середній настрій становив {{before}} за {{nBefore}} днів до і {{after}} за {{nAfter}} днів після."
     },
     "aiPrompt": {
       "intro": "Я відстежую свій настрій і самопочуття. Проаналізуйте, будь ласка, дані нижче й знайдіть закономірності, тенденції та практичні висновки.",
@@ -144,7 +142,15 @@
       "question2": "Чи пов’язані якість сну й рівень активності з настроєм?",
       "question3": "Чи є тривожні тенденції, які варто обговорити з лікарем?",
       "question4": "Практичні поради на основі цих даних.",
-      "footer": "Створено в PrivacyNotes (privacynotes.app)"
+      "footer": "Створено в PrivacyNotes (privacynotes.app)",
+      "period": "Період: з {{from}} по {{to}}",
+      "daysLogged": "Записано днів: {{logged}} з {{days}}",
+      "trackers": "Трекери",
+      "trackerLine": "{{name}}: у середньому {{avg}}, мін. {{low}}, макс. {{high}}, днів: {{count}}",
+      "trackerYesLine": "{{name}}: «так» у {{yes}} з {{count}} днів",
+      "effects": "Настрій у дні з і без",
+      "effectLine": "{{name}} ({{rule}}): {{a}} з, {{b}} без, різниця {{delta}}, днів: {{na}} / {{nb}}",
+      "customQuestion": "Чи впливає {{name}} на мій настрій того ж дня або наступного?"
     },
     "report": {
       "documentTitle": "Звіт про самопочуття",
@@ -175,8 +181,131 @@
       "unknownDose": "невідома доза",
       "topEmotions": "Найчастіші емоції",
       "patterns": "Виявлені закономірності",
-      "footer": "Створено в PrivacyNotes - privacynotes.app"
-    }
+      "footer": "Створено в PrivacyNotes - privacynotes.app",
+      "period": "Період: з {{from}} по {{to}}, днів: {{days}}",
+      "daysLogged": "Записано днів: {{logged}} з {{days}}",
+      "moodHeading": "Настрій, один стовпчик на день",
+      "moodLegend": "Стовпчики: 1-2 червоний, 3-4 помаранчевий, 5-6 жовтий, 7-8 зелений, 9-10 синій. Лінія: середнє за 7 днів. Трикутник: зміна дози. Пропуск означає день без запису.",
+      "previous": "за {{days}} днів до: {{value}}",
+      "trackers": "Трекери",
+      "columnTracker": "Трекер",
+      "columnAverage": "Середнє",
+      "columnLowHigh": "Мін. / макс.",
+      "columnHistory": "Історія",
+      "effects": "Настрій у дні з і без",
+      "columnFactor": "Чинник",
+      "columnRule": "Правило",
+      "columnWith": "З",
+      "columnWithout": "Без",
+      "columnDifference": "Різниця",
+      "nextDaySuffix": "{{name}}, наступний день",
+      "effectsNote": "Середні значення за записані дні. Різниця є спостереженням, а не причиною.",
+      "medCalendar": "Календар",
+      "doseChanges": "Зміни дози",
+      "columnDoseChanges": "Зміни дози",
+      "yesOn": "«так» у {{count}}",
+      "total": "{{value}} загалом"
+    },
+    "tiles": {
+      "daysLogged": "Записано днів",
+      "daysLoggedOf": "{{logged}} з {{days}}",
+      "avgMood": "Сер. настрій",
+      "moodDelta": "{{delta}} порівняно з {{days}} днями до",
+      "avgSleep": "Сер. сон",
+      "medsTaken": "Прийнято ліків"
+    },
+    "mood": {
+      "heading": "Настрій",
+      "legend": "Лінія: середнє за 7 днів. Трикутник: зміна дози.",
+      "dose": "{{name}} {{dosage}}"
+    },
+    "trackers": {
+      "heading": "Трекери",
+      "tapHint": "Дотик відкриває «Дослідити»",
+      "stopped": "Зупинені",
+      "deleted": "Видалені",
+      "stoppedChip": "Зупинені ({{count}})",
+      "unknown": "Невідомий трекер {{id}}",
+      "sleepHours": "Години сну",
+      "sleepQuality": "Якість сну",
+      "avgDays": "сер., днів: {{count}}",
+      "sumDays": "разом, днів: {{count}}",
+      "yesNo": "«так»: {{yes}}, «ні»: {{no}}",
+      "notLogged": "не записано: {{count}}",
+      "latestLowHigh": "останнє {{latest}}, мін. {{low}}, макс. {{high}}",
+      "topLevel": "«{{level}}» у {{count}} дн.",
+      "taken": "прийнято в {{taken}} з {{total}}",
+      "empty": "У цьому діапазоні нічого не записано",
+      "unanswered": "записаних днів без відповіді: {{count}}"
+    },
+    "effects": {
+      "heading": "Що впливає на ваш настрій",
+      "headingOutcome": "Що впливає на показник «{{outcome}}»",
+      "allInPatterns": "Усі в «Закономірностях»",
+      "sameDay": "Той самий день",
+      "nextDay": "Наступний день",
+      "compareWith": "Порівняти з",
+      "withLabel": "З",
+      "withoutLabel": "Без",
+      "days": "{{a}} / {{b}} дн.",
+      "shortfall_one": "Потрібен ще {{count}} день у групі «{{side}}»",
+      "shortfall_few": "Потрібно ще {{count}} дні у групі «{{side}}»",
+      "shortfall_many": "Потрібно ще {{count}} днів у групі «{{side}}»",
+      "shortfall_other": "Потрібно ще {{count}} дня у групі «{{side}}»",
+      "sideWith": "з",
+      "sideWithout": "без",
+      "footnote": "Спостереження серед записаних днів, а не причина.",
+      "higher": "У ці дні «{{outcome}}» у середньому на {{delta}} б. вище.",
+      "lower": "У ці дні «{{outcome}}» у середньому на {{delta}} б. нижче.",
+      "rule": {
+        "yesno": "дні з проти днів без",
+        "halves": "вище {{threshold}} проти {{threshold}} і нижче",
+        "median": "вище проти нижче вашої медіани {{threshold}}",
+        "levels": "{{top}} проти {{bottom}}",
+        "tag": "дні з «{{tag}}» проти днів без",
+        "medication": "прийнято проти пропущено"
+      }
+    },
+    "explore": {
+      "calendar": "Календар",
+      "against": "Разом із «{{outcome}}», одна вісь дат",
+      "cells": {
+        "value": "записано",
+        "no": "ні",
+        "missing": "не записано"
+      },
+      "longestRunWithout": "найдовша серія без: {{count}} дн.",
+      "longestRunWith": "найдовша серія з: {{count}} дн.",
+      "pickOne": "Виберіть трекер"
+    },
+    "medCalendar": {
+      "heading": "День за днем",
+      "doseChange": "зміна дози",
+      "taken": "прийнято",
+      "skipped": "пропущено",
+      "missed": "не прийнято",
+      "unmarked": "не позначено",
+      "noEntry": "без запису",
+      "doseLens": "Середній настрій становив {{before}} за {{nBefore}} днів до і {{after}} за {{nAfter}} днів після.",
+      "doseLensHeading": "Навколо кожної зміни дози",
+      "doseLensShort_one": "Потрібен ще {{count}} записаний день навколо неї.",
+      "doseLensShort_few": "Потрібно ще {{count}} записані дні навколо неї.",
+      "doseLensShort_many": "Потрібно ще {{count}} записаних днів навколо неї.",
+      "doseLensShort_other": "Потрібно ще {{count}} записаного дня навколо неї."
+    },
+    "sourceLine": "Усе тут походить із трекерів у ваших записах щоденника.",
+    "openToday": "Відкрити сьогоднішній запис"
+  },
+  "milestones": {
+    "heading": "Віхи",
+    "next": "Далі: {{label}}",
+    "allReached": "{{label}} і всі попередні",
+    "ofTarget": "{{current}} з {{target}}",
+    "reached_one": "Досягнуто поки що: {{count}}.",
+    "reached_few": "Досягнуто поки що: {{count}}.",
+    "reached_many": "Досягнуто поки що: {{count}}.",
+    "reached_other": "Досягнуто поки що: {{count}}.",
+    "source": "Написані нотатки та дні з PrivacyNotes рахують лише те, що відбувається в застосунку. Імпорт не змінює ні того, ні іншого."
   },
   "milestoneToast": {
     "unlocked": "Досягнення відкрито"
@@ -196,5 +325,61 @@
     "age730": "2 роки з PrivacyNotes",
     "age1825": "5 років із PrivacyNotes",
     "ageDefault": "Уже {{count}} дн. разом"
+  },
+  "overview": {
+    "week": "Ваш тиждень",
+    "streak": "Серія письма",
+    "streakDays_one": "{{count}} день",
+    "streakDays_few": "{{count}} дні",
+    "streakDays_many": "{{count}} днів",
+    "streakDays_other": "{{count}} дня",
+    "streakNudge": "Сьогодні ще нічого. Один рядок збереже серію.",
+    "streakKept": "Сьогодні зараховано.",
+    "words": "Написано слів",
+    "wordsDelta": "{{delta}} порівняно з минулим тижнем",
+    "mood": "Настрій",
+    "moodDelta": "{{delta}} порівняно з минулим тижнем",
+    "daysLogged": "Записано днів",
+    "daysLoggedOf": "{{logged}} з {{days}}",
+    "rhythm": "Ваш ритм, {{weeks}} тиж.",
+    "layerBoth": "Обидва",
+    "layerWriting": "Письмо",
+    "layerMood": "Настрій",
+    "rhythmLegend": "Клітинка: скільки ви написали того дня. Крапка: яким був день.",
+    "hours": "Коли ви пишете",
+    "hoursSub": "редагування за годинами, {{days}} дн.",
+    "hoursPeak": "Найбільше ви пишете між {{from}} і {{to}}.",
+    "ledgerSince": "Рахується на цьому пристрої з {{date}}.",
+    "ledgerEmpty": "Підрахунок починається зараз. Поверніться за тиждень.",
+    "highlights": "Головне",
+    "highlightSleep": "Добрий сон, більше слів. Після {{hours}} годин сну або більше ви пишете близько {{a}} слів на день. Після короткої ночі {{b}}.",
+    "highlightSleepSub": "довгих ночей: {{long}}, коротких: {{short}}, днів: {{days}}",
+    "highlightWeekday": "{{day}}: ваш день. Середній настрій {{mood}}, і {{count}} з {{total}} ваших найдовших нотаток написано саме цього дня.",
+    "highlightWeekdaySub": "записаних днів «{{day}}»: {{count}}",
+    "highlightEffect": "У дні з {{name}} настрій {{direction}}. {{a}} з, {{b}} без.",
+    "higher": "вищий",
+    "lower": "нижчий",
+    "highlightEffectSub": "днів з {{name}}: {{count}} із {{days}}",
+    "highlightTag": "#{{tag}} зростає. Цього місяця нотаток: {{now}}, минулого: {{before}}.",
+    "highlightTagSub": "тегів у вжитку: {{count}}",
+    "highlightsLocked": "Перейдіть на Pro, щоб бачити, що спільного між вашим письмом і трекерами",
+    "vault": "Ваш сейф",
+    "vaultSub": "цей тиждень дрібним шрифтом",
+    "done": "виконано: {{count}}",
+    "milestones": "Віхи",
+    "longestStreak": "Найдовша серія: {{count}} дн.",
+    "openWriting": "Відкрити «Письмо»",
+    "openWellness": "Відкрити «Самопочуття»",
+    "computed": "обчислено на цьому пристрої",
+    "pillars": {
+      "notes": "Нотатки",
+      "journals": "Щоденники",
+      "tasks": "Завдання",
+      "files": "Файли",
+      "bookmarks": "Закладки",
+      "contacts": "Контакти",
+      "logins": "Логіни"
+    },
+    "ledgerEstimated": "Оцінено за вашими нотатками, доки не почнеться підрахунок."
   }
 }

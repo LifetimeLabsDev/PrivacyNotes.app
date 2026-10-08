@@ -89,8 +89,16 @@ fn claim_associated_domains() {
             "com.apple.developer.associated-domains".into(),
             plist::Value::Array(domains),
         );
+        // The share extension writes into this group's folder and the app
+        // reads it (src/share_inbox.rs). Written here for the same reason as
+        // the domains: xcodegen blanks the file.
+        // Spec: ops/docs/plans/share-into-app.md
+        entitlements.insert(
+            "com.apple.security.application-groups".into(),
+            plist::Value::Array(vec![plist::Value::String("group.app.privacynotes".into())]),
+        );
     })
-    .expect("failed to write the associated domains into the iOS entitlements");
+    .expect("failed to write the iOS entitlements");
 }
 
 #[cfg(not(target_os = "macos"))]

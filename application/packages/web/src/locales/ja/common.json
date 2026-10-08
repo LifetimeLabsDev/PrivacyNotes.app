@@ -37,7 +37,7 @@
   "storageBar": {
     "usage": "{{percent}}% 使用中 ({{used}} / {{max}})",
     "refresh": "ストレージを更新",
-    "cleanupInfo": "削除した項目は数日以内にすべてのデバイスから消去されます。"
+    "cleanupInfo": "削除した項目はすぐにカウントされなくなります。暗号化されたファイル自体は数日以内にサーバーから削除されます。"
   },
   "updateToast": {
     "available": "アップデートがあります",
@@ -65,23 +65,29 @@
     },
     "actions": {
       "focusSearch": "検索にフォーカス",
+      "commandMode": "コマンド（または検索で > を入力）",
+      "quickSwitcher": "項目または設定に移動",
       "moveInList": "リスト内を下 / 上に移動",
-      "notePrev": "リスト内の前のノート",
-      "noteNext": "リスト内の次のノート",
-      "clearSearch": "検索をクリア / ノートを閉じる / 選択を解除",
+      "listStep": "リスト内で前へ / 次へ",
+      "history": "履歴を戻る / 進む",
+      "goToSection": "サイドバーのセクション1〜9",
+      "movePanes": "次 / 前のペイン",
+      "clearSearch": "検索 / フィルターをクリア / ノートを閉じる",
       "newNote": "新規ノート",
+      "newMenu": "新規項目、続けてその文字キー",
       "moveToTrash": "ノートをゴミ箱に移動",
       "findInNote": "ノート内を検索（もう一度押すと閉じます）",
       "findReplace": "検索と置換",
       "toggleOutline": "アウトラインの表示を切り替え",
+      "markdownView": "Markdown表示のオン / オフ",
+      "invisibles": "編集記号の表示のオン / オフ",
+      "insertDate": "日付 / 日付と時刻を挿入",
       "bold": "太字",
       "italic": "斜体",
       "insertLink": "リンクを挿入(編集中)",
-      "undo": "元に戻す",
-      "redo": "やり直す(編集中)",
+      "undoRedo": "元に戻す / やり直す",
       "taskList": "タスクリスト",
-      "indentList": "インデントを増やす（リストやタスクリスト）",
-      "outdentList": "インデントを減らす（リストやタスクリスト）",
+      "indentOutdent": "リストのインデントを増やす / 減らす",
       "underline": "下線",
       "strikethrough": "取り消し線",
       "highlight": "ハイライト",
@@ -99,13 +105,66 @@
       "openSettings": "設定を開く",
       "toggleSidebar": "サイドバーの表示を切り替え",
       "toggleTheme": "ライト / ダークモードを切り替え",
+      "appZoom": "アプリを拡大 / 縮小",
+      "appZoomReset": "アプリを元のサイズに戻す",
       "zenMode": "Zen/集中モード(Pro)",
       "toggleHelp": "このヘルプの表示を切り替え",
       "selectSeveral": "複数の項目を選択",
       "selectRange": "範囲を選択（選択中）",
-      "openInTab": "タブで開く（中クリックでも開けます）",
-      "closeTab": "タブを閉じる"
+      "openInTab": "タブで開く（または中クリック）",
+      "closeTab": "タブを閉じる",
+      "nextTab": "次 / 前のタブ"
     }
+  },
+  "palette": {
+    "label": "コマンド",
+    "open": "コマンド (>)",
+    "empty": "一致するコマンドはありません",
+    "groups": {
+      "commands": "コマンド",
+      "new": "新規",
+      "goTo": "移動"
+    },
+    "commands": {
+      "quickSwitcher": "項目または設定に移動",
+      "historyBack": "戻る",
+      "historyForward": "進む",
+      "toggleSidebar": "サイドバーを表示 / 非表示",
+      "toggleTheme": "ライトとダークを切り替え",
+      "openSettings": "設定を開く",
+      "zen": "Zenモード",
+      "markdownView": "Markdown表示のオン / オフ",
+      "invisibles": "編集記号の表示のオン / オフ",
+      "find": "ノート内を検索",
+      "findReplace": "検索と置換",
+      "outline": "アウトラインを表示 / 非表示",
+      "insertDate": "日付を挿入",
+      "insertDateTime": "日付と時刻を挿入",
+      "clearFilters": "フィルターを解除",
+      "moveToTrash": "ノートをゴミ箱に移動",
+      "closeTab": "タブまたはノートを閉じる",
+      "nextTab": "次のタブ",
+      "previousTab": "前のタブ",
+      "zoomIn": "アプリを拡大",
+      "zoomOut": "アプリを縮小",
+      "zoomReset": "アプリを元のサイズに戻す",
+      "help": "キーボードショートカット"
+    }
+  },
+  "quickSwitcher": {
+    "label": "項目または設定に移動",
+    "jumpTo": "移動",
+    "placeholder": "タイトルまたは設定を入力、> でコマンド",
+    "recent": "最近",
+    "empty": "その名前の項目や設定はありません",
+    "searchAll": "すべてから「{{query}}」を検索",
+    "searchIn": "{{section}}で「{{query}}」を検索",
+    "searchList": "リストで「{{query}}」を検索",
+    "searchDetail": "本文の語句を探します",
+    "move": "移動",
+    "open": "開く",
+    "openInTab": "タブで開く",
+    "close": "閉じる"
   },
   "cardForm": {
     "cardholderName": "カード名義人",
@@ -137,9 +196,9 @@
   "sshKeyForm": {
     "label": "ラベル",
     "labelPlaceholder": "例: GitHubデプロイキー",
-    "publicKey": "公開鍵",
+    "publicKey": "Public Key",
     "copyPublicKey": "公開鍵をコピー",
-    "privateKey": "秘密鍵",
+    "privateKey": "Private Key",
     "copyPrivateKey": "秘密鍵をコピー",
     "passphrase": "パスフレーズ",
     "passphrasePlaceholder": "鍵のパスフレーズ(あれば)",
@@ -155,7 +214,7 @@
   "tagInput": {
     "placeholder": "タグを追加… カンマ、#、Enterで区切り",
     "create": "「#{{tag}}」を作成",
-    "removeTag": "{{tag}}を削除"
+    "removeTag": "{{tag}}を外す"
   },
   "loading": {
     "lines": [
@@ -165,7 +224,7 @@
       "スイス銀行の風格を、ノートに。",
       "シャワー中のひらめきを保護しています。",
       "あなたの秘密は、今日も再起動を生き延びました。",
-      "何もかも、暗号化してからデバイスを出ます。",
+      "ノートはデバイス上でも送信中でも暗号化されています。",
       "保管庫をそっと開けています…",
       "温かい思考をコールドストレージへ。",
       "このノートには、プライバシーの自覚があります。",

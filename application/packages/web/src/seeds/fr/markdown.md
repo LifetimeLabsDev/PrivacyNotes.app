@@ -71,9 +71,13 @@ Un encadré est une boîte colorée pour ce qu'il ne faut surtout pas rater.
 
 > Une citation se décale de la marge et prend un trait coloré sur le côté.
 
+## Notes de bas de page
+
+Une note de bas de page garde une source ou une remarque hors du texte.[^1] Tape `[^1]` après un mot, ou choisis **Note de bas de page** dans le menu **Insérer**. Clique sur le petit numéro pour aller à la note.
+
 ## Code
 
-Le code garde ses espaces et se colore selon le langage.
+Le code garde ses espaces et se colore selon le langage. Le nom en haut d’un bloc est son langage : clique dessus pour en choisir un autre.
 
 ```js
 export function seal(note, key) {
@@ -86,6 +90,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+Un long bloc s’ouvre replié, pour que la suite de la note reste proche. Le bouton en dessous affiche toutes les lignes.
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 Un bout de code court au milieu d'une phrase ressemble plutôt à `ceci`.
@@ -111,6 +156,10 @@ Il y en a deux sortes, et elles ne se ressemblent pas, exprès.
 
 Les deux ont un bouton dans la barre. La chaîne fait un lien web. Les crochets font un lien de note : ils listent tes notes et tu choisis celle que tu veux. Taper `[[` fait la même chose.
 
+Un lien de note peut aussi ouvrir une note à l'un de ses titres. Tape un `#` après le titre et choisis le titre de section : [[Comment tes notes sont protégées#Qui détient ta clé]] ouvre cette note à sa section sur la clé. L'icône de lien sur un titre dans le plan copie un tel lien pour toi.
+
 ---
 
 *Si tu écris déjà en markdown, tape-le et la mise en forme suit. Pour voir le texte brut derrière n'importe quelle note, clique sur **Afficher le markdown** en bas à droite de cette note.*
+
+[^1]: Voici la note. La flèche à côté te ramène en haut.

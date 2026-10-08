@@ -2,11 +2,12 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { activeLocale } from './languages';
 import type { NoteRowProps } from './NoteRow';
-import { RowIcon, TagChips, CardGlyph, noteFaviconDomain, noteLinkDragProps } from './NoteRow';
-import { deriveDisplayTitle, deriveExcerpt, emptyExcerptLabel, formatModifiedShort, rowSizeLabel } from './notesViewUtils';
+import { RowIcon, TagChips, CardGlyph, noteFaviconDomain, itemDragProps } from './NoteRow';
+import { deriveDisplayTitle, deriveExcerpt, editedAtOf, emptyExcerptLabel, entryDayOf, rowSizeLabel } from './notesViewUtils';
+import { formatDay, formatInstant, useDateFormatKey } from './intlFormat';
 import { Archive, Check, PushPin, Shield, PencilSimpleSlash, Warning } from './icons';
 import { usePushFailure } from './pushFailures';
-import { tintStyle, useNoteColor } from './looks/LookGlyph';
+import { noteLookStyle, useNoteLook } from './looks/LookGlyph';
 
 /**
  * Grid-mode tile: the parts NoteRow shows (type icon, title, preview, date,
@@ -36,20 +37,21 @@ export default React.memo(function NoteCard({
   isContextTarget = false,
   showTypeIcons = false,
   sortAwareDate = false,
+  entryDays = false,
   trashTint = false,
   showArchived = false,
   sizeLabel,
   iconOverride,
   glyphOverride,
   trailing,
-  linkDrag = false,
-  linkDragSelection,
+  itemDrag = false,
+  dragSelection,
 }: NoteRowProps) {
   const { t } = useTranslation('notes');
   const pushFailure = usePushFailure(n.id);
   // The same color as the row, and never in the trash.
-  const noteColor = useNoteColor(n.id, n.tags, n.folderId);
-  const color = trashTint ? null : noteColor;
+  const noteLook = useNoteLook(n.id, n.tags, n.folderId);
+  const look = trashTint ? null : noteLook;
   const isVault = n.type === 'login' || n.type === 'card' || n.type === 'ssh-key';
   const isFile = n.type === 'file';
   const isJournal = n.type === 'journal';
@@ -67,13 +69,23 @@ export default React.memo(function NoteCard({
    *  (the boxed chip drops the favicon there too, for the amber icon), and
    *  never behind the PIN, where the address is the content the gate keeps. */
   const faviconDomain = useMemo(() => (trashTint || locked ? '' : noteFaviconDomain(n)), [n, trashTint, locked]);
-  const dateLabel = sortAwareDate && listPrefs.sortField === 'created' ? t('noteRow.created') : t('noteRow.modified');
+  // In Journals the created sort is by the day each entry is for, and the
+  // date line names that day.
+  const entryDay = entryDays && sortAwareDate && listPrefs.sortField === 'created' && n.type === 'journal';
+  const dateLabel = entryDay
+    ? t('noteRow.entryDate')
+    : sortAwareDate && listPrefs.sortField === 'created' ? t('noteRow.created') : t('noteRow.modified');
+  // A new date setting or language formats the date again without a remount.
+  const dateFormatKey = useDateFormatKey();
   const dateValue = useMemo(
     () =>
-      formatModifiedShort(
-        sortAwareDate && listPrefs.sortField === 'created' ? n.createdAt : n.updatedAt,
-      ),
-    [n, sortAwareDate, listPrefs.sortField],
+      entryDay
+        ? formatDay(entryDayOf(n), 'tile')
+        : formatInstant(
+            sortAwareDate && listPrefs.sortField === 'created' ? n.createdAt : editedAtOf(n),
+            'tile',
+          ),
+    [n, sortAwareDate, listPrefs.sortField, dateFormatKey, entryDay],
   );
 
   return (
@@ -81,28 +93,30 @@ export default React.memo(function NoteCard({
       // Read by the list pane's one middle-click and Alt-click handler,
       // which opens the item as a tab. Spec: ops/docs/plans/note-tabs.md
       data-item-id={n.id}
+      aria-current={isOpen || undefined}
       onClick={onClick}
       onContextMenu={onContextMenu}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       onTouchMove={onTouchMove}
       onTouchCancel={onTouchCancel}
-      {...noteLinkDragProps({ note: n, isNoteLocked: locked, linkDrag, selectionMode, isMultiSelected, trashTint, linkDragSelection })}
+      {...itemDragProps({ note: n, isNoteLocked: locked, itemDrag, selectionMode, isMultiSelected, trashTint, dragSelection })}
       // Same touch-only rule as NoteRow - long-press selects the card, it
       // must not start a text selection too. Spec: issue #208.
       className={`pn-card pn-lazy-card relative flex flex-col gap-1.5 rounded-xl border p-3 cursor-pointer transition [@media(hover:none)]:select-none ${
         selectionMode ? 'pn-card--select ' : ''
       }${
         isMultiSelected
-          ? 'bg-accent/15 border-accent dark:bg-accent/20'
+          ? 'pn-on-tint bg-accent/15 border-accent dark:bg-accent/20'
           : isOpen
-          ? 'bg-accent/10 border-accent dark:bg-accent/15'
+          ? 'pn-on-tint bg-accent/10 border-accent dark:bg-accent/15'
           : isContextTarget
-          ? 'bg-neutral-200/70 border-divider dark:bg-neutral-800/70'
-          : 'bg-surface-2 border-divider hover:border-accent/60 hover:bg-neutral-200/40 dark:hover:bg-neutral-900/40'
+          ? 'pn-on-tint bg-pn/10 border-divider'
+          : 'bg-surface-2 border-divider hover:border-accent/60 hover:bg-pn/5'
       }`}
-      style={tintStyle(color)}
-      data-color={color ?? undefined}
+      style={noteLookStyle(look)}
+      data-color={look?.color}
+      data-color-style={look?.style}
     >
       {/* Bookmark ribbon - see the .pn-ribbon rules in index.css. It owns the
           tile's top END corner, which is why the checkbox below sits at the
@@ -119,7 +133,7 @@ export default React.memo(function NoteCard({
           aria-checked={isMultiSelected}
           className={`absolute start-2 top-2 z-10 w-5 h-5 rounded border flex items-center justify-center transition shrink-0 ${
             isMultiSelected
-              ? 'bg-accent border-accent text-white'
+              ? 'bg-accent-fill border-accent-fill text-white'
               : 'bg-surface-2 border-divider hover:border-accent'
           }`}
         >
@@ -138,7 +152,7 @@ export default React.memo(function NoteCard({
               row drew the MD one. */}
           {iconOverride ?? <RowIcon note={n} isVault={isVault} isFile={isFile} isJournal={isJournal} hasTasks={hasTasks} trashTint={trashTint} locked={locked} />}
         </span>
-        <div className="pn-card-title min-w-0 flex-1 text-sm font-semibold truncate flex items-center gap-1.5 text-neutral-900 dark:text-white">
+        <div className="pn-card-title min-w-0 flex-1 text-sm font-semibold truncate flex items-center gap-1.5 text-pn">
           {/* The mini layout's counterpart to `iconOverride`: below 640px the
               container query hides the icon box above and shows this instead,
               so an override that stopped at the box would leave a Markdown
@@ -151,7 +165,7 @@ export default React.memo(function NoteCard({
       {/* Preview - up to 2 lines (.pn-card-preview),
           more with the "Longer preview text" pref (.pn-preview-long) */}
       {listPrefs.showPreview && !locked && (
-        <div data-slot="preview" className={`pn-card-preview${listPrefs.longPreview ? ' pn-preview-long' : ''} text-[13px] text-neutral-500 dark:text-neutral-400 leading-snug`} dir="auto">
+        <div data-slot="preview" className={`pn-card-preview${listPrefs.longPreview ? ' pn-preview-long' : ''} text-[13px] text-pn-muted leading-snug`} dir="auto">
           {excerpt || emptyExcerptLabel(n)}
         </div>
       )}
@@ -168,13 +182,13 @@ export default React.memo(function NoteCard({
       {(listPrefs.showDate || hasStatusIcons || sizeText) && (
         <div className="pn-card-meta flex items-center gap-1.5">
           {listPrefs.showDate && (
-            <span data-slot="date" className="pn-card-date min-w-0 text-[12px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap overflow-hidden text-ellipsis">
+            <span data-slot="date" className="pn-card-date min-w-0 text-[12px] text-pn-muted whitespace-nowrap overflow-hidden text-ellipsis">
               {dateLabel} {dateValue}
             </span>
           )}
           <span data-slot="flags" className="pn-card-status shrink-0 flex items-center gap-1.5 text-accent">
             {pushFailure && (
-              <Warning size={12} className="text-amber-500 dark:text-amber-400" aria-label={t('noteRow.notBackedUp')} />
+              <Warning size={12} className="text-warning" aria-label={t('noteRow.notBackedUp')} />
             )}
             {showTypeIcons && n.starred === 1 && (
               <PushPin size={12} />
@@ -191,7 +205,7 @@ export default React.memo(function NoteCard({
           </span>
           {/* Anchored to the date, as in the row - section 66. */}
           {sizeText && (
-            <span data-slot="size" className="shrink-0 text-[11px] text-neutral-400 dark:text-neutral-500 font-medium tabular-nums">
+            <span data-slot="size" className="shrink-0 text-[11px] text-pn-muted font-medium tabular-nums">
               {sizeText}
             </span>
           )}

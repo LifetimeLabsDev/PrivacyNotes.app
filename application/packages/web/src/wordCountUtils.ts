@@ -34,6 +34,9 @@ export function stripMarkdown(md: string): string {
     .replace(/^---+$/gm, '')                // horizontal rules
     .replace(/```[\s\S]*?```/g, (m) =>      // code blocks → keep inner text
       m.replace(/^```.*\n?/m, '').replace(/\n?```$/m, ''))
+    .replace(/^ {0,3}\[\^[^\s\]]+\]:[ \t]?/gm, '') // footnote definitions → keep their text
+    .replace(/\[\^[^\s\]]+\]/g, '')           // footnote markers
+    .replace(/\^\[([^\]]*)\]/g, '$1')          // inline footnotes → keep their text
     .replace(/!\[.*?\]\(.*?\)/g, '')        // images
     .replace(/\[([^\]]*)\]\(.*?\)/g, '$1')  // links → keep text
     .replace(/\|/g, ' ')                    // table pipes → spaces

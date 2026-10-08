@@ -126,18 +126,18 @@ export function LockScreen({ onUnlock, signInState = 'idle', onRetrySignIn, onWr
       <LockShell>
         <div className="space-y-4 text-center">
           {signInState === 'busy' ? (
-            <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            <p className="text-sm text-pn-muted">
               {t('lockScreen.signingIn')}
             </p>
           ) : (
             <>
-              <p className="text-sm text-red-500 dark:text-red-400">
+              <p className="text-sm text-danger">
                 {t('lockScreen.signInFailed')}
               </p>
               <button
                 type="button"
                 onClick={onRetrySignIn}
-                className="w-full rounded-lg bg-accent hover:bg-accent-hover text-white text-sm font-semibold px-4 py-2.5 transition"
+                className="w-full rounded-lg bg-accent-fill hover:bg-accent-fill-hover text-white text-sm font-semibold px-4 py-2.5 transition"
               >
                 {t('lockScreen.retrySignIn')}
               </button>
@@ -185,13 +185,13 @@ export function LockScreen({ onUnlock, signInState = 'idle', onRetrySignIn, onWr
         </div>
 
         <div>
-          <h1 className="text-lg font-semibold text-neutral-900 dark:text-white">
+          <h1 className="text-lg font-semibold text-pn">
             <Trans
               i18nKey="security:lockScreen.unlockApp"
               components={{ brand: <Brand /> }}
             />
           </h1>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+          <p className="text-sm text-pn-muted mt-1">
             {biometricAvailable
               ? t('lockScreen.subtitleWithBio')
               : t('lockScreen.subtitleNoBio')}
@@ -199,15 +199,18 @@ export function LockScreen({ onUnlock, signInState = 'idle', onRetrySignIn, onWr
         </div>
 
         {biometricError && (
-          <p className="text-sm text-red-500 dark:text-red-400">{biometricError}</p>
+          <p className="text-sm text-danger">{biometricError}</p>
         )}
 
         <div className="space-y-3">
           {biometricAvailable && (
+            // The first way in takes the focus, so Enter starts it without a
+            // mouse (GitHub #395 thread).
             <button
+              autoFocus
               onClick={() => void handleBiometric(false)}
               disabled={biometricBusy}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2.5 text-sm font-medium transition disabled:opacity-50"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2.5 text-sm font-medium transition disabled:opacity-50"
             >
               {/* Fingerprint icon */}
               <Fingerprint size={18} />
@@ -217,11 +220,12 @@ export function LockScreen({ onUnlock, signInState = 'idle', onRetrySignIn, onWr
 
           {pinAvailable && (
             <button
+              autoFocus={!biometricAvailable}
               onClick={() => setView('pin')}
               className={`w-full rounded-md px-4 py-2.5 text-sm font-medium transition ${
                 biometricAvailable
-                  ? 'border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
-                  : 'bg-accent text-white hover:bg-accent-hover'
+                  ? 'border border-divider text-pn-soft hover:bg-pn/5'
+                  : 'bg-accent-fill text-white hover:bg-accent-fill-hover'
               }`}
             >
               {t('lockScreen.unlockWithPin')}
@@ -230,7 +234,7 @@ export function LockScreen({ onUnlock, signInState = 'idle', onRetrySignIn, onWr
 
           <button
             onClick={() => setView('phrase')}
-            className="w-full text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white py-2 transition"
+            className="w-full text-sm text-pn-muted hover:text-pn py-2 transition"
           >
             {t('lockScreen.signInWithPhrase')}
           </button>
@@ -323,15 +327,15 @@ function PinUnlock({
     <div className="space-y-5">
       <button
         onClick={onBack}
-        className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition flex items-center gap-1"
+        className="text-sm text-pn-muted hover:text-pn transition flex items-center gap-1"
       >
         <ArrowLeft />
         {t('common:actions.back')}
       </button>
 
       <div className="text-center space-y-2">
-        <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">{t('lockScreen.enterPin')}</h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        <h2 className="text-lg font-semibold text-pn">{t('lockScreen.enterPin')}</h2>
+        <p className="text-sm text-pn-muted">
           {t('lockScreen.enterPinSubtitle')}
         </p>
       </div>
@@ -349,20 +353,20 @@ function PinUnlock({
       />
 
       {error && (
-        <p className="text-sm text-red-500 dark:text-red-400 text-center">{error}</p>
+        <p className="text-sm text-danger text-center">{error}</p>
       )}
 
       <div className="flex gap-2">
         <button
           onClick={onBack}
-          className="flex-1 rounded-md border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+          className="flex-1 rounded-md border border-divider px-3 py-2 text-sm hover:bg-pn/5 transition"
         >
           {t('common:actions.cancel')}
         </button>
         <button
           onClick={() => void submit(value)}
           disabled={value.length !== 4 || busy || lockout.locked}
-          className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {busy ? t('lockScreen.checking') : t('lockScreen.unlock')}
         </button>
@@ -412,17 +416,17 @@ function PhraseUnlock({
     <div className="space-y-5">
       <button
         onClick={onBack}
-        className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition flex items-center gap-1"
+        className="text-sm text-pn-muted hover:text-pn transition flex items-center gap-1"
       >
         <ArrowLeft />
         {t('common:actions.back')}
       </button>
 
       <div className="text-center space-y-2">
-        <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">
+        <h2 className="text-lg font-semibold text-pn">
           {recover ? t('pinRecovery.title') : t('lockScreen.recoveryPhrase')}
         </h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        <p className="text-sm text-pn-muted">
           {recover ? t('pinRecovery.lockIntro') : t('lockScreen.recoveryPhraseSubtitle')}
         </p>
       </div>
@@ -434,27 +438,32 @@ function PhraseUnlock({
           setError(null);
         }}
         placeholder={t('lockScreen.phrasePlaceholder')}
+        // A phone keyboard must neither rewrite a phrase word nor learn it.
+        spellCheck={false}
+        autoCapitalize="none"
+        autoCorrect="off"
+        autoComplete="off"
         rows={3}
         dir="ltr" // rtl-ok: BIP-39 phrase words, always LTR
-        className="w-full rounded-md bg-surface-1 border border-divider text-pn focus:border-accent p-3 text-sm font-mono focus:outline-none placeholder:text-neutral-400 dark:placeholder:text-neutral-600"
+        className="w-full rounded-md bg-surface-1 border border-divider text-pn focus:border-accent p-3 text-sm font-mono focus:outline-none placeholder:text-pn-muted"
         autoFocus
       />
 
       {error && (
-        <p className="text-sm text-red-500 dark:text-red-400">{error}</p>
+        <p className="text-sm text-danger">{error}</p>
       )}
 
       <div className="flex gap-2">
         <button
           onClick={onBack}
-          className="flex-1 rounded-md border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+          className="flex-1 rounded-md border border-divider px-3 py-2 text-sm hover:bg-pn/5 transition"
         >
           {t('common:actions.cancel')}
         </button>
         <button
           onClick={() => void handleSubmit()}
           disabled={!input.trim()}
-          className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {recover ? t('pinRecovery.lockAction') : t('lockScreen.unlock')}
         </button>

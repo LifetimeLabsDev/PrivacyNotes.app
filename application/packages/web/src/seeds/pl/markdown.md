@@ -71,9 +71,13 @@ Ramka to kolorowe pudełko na coś, czego czytelnik nie może przegapić.
 
 > Cytat odsuwa się od marginesu i dostaje kolorową kreskę z boku.
 
+## Przypisy
+
+Przypis trzyma źródło albo dygresję z dala od tekstu.[^1] Wpisz `[^1]` po słowie albo wybierz **Przypis** w menu **Wstaw**. Kliknij małą liczbę, aby przejść do przypisu.
+
 ## Kod
 
-Kod zachowuje odstępy i dostaje kolory zależnie od języka.
+Kod zachowuje odstępy i dostaje kolory zależnie od języka. Nazwa na górze bloku to jego język: kliknij ją, żeby wybrać inny.
 
 ```js
 export function seal(note, key) {
@@ -86,6 +90,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+Długi blok otwiera się zwinięty, żeby reszta notatki była blisko. Przycisk pod nim pokazuje wszystkie wiersze.
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 Krótki kawałek kodu w środku zdania wygląda tak: `to`.
@@ -111,6 +156,10 @@ Są dwa rodzaje i celowo wyglądają inaczej.
 
 Oba mają przycisk na pasku. Łańcuch robi link internetowy. Nawiasy kwadratowe robią link do notatki: wypisują twoje notatki, a ty wybierasz tę, o którą ci chodzi. Wpisanie `[[` działa tak samo.
 
+Link do notatki może też otworzyć notatkę przy jednym z jej nagłówków. Wpisz `#` po tytule i wybierz nagłówek: [[Jak chronione są twoje notatki#Kto ma twój klucz]] otwiera tę notatkę przy sekcji o kluczu. Ikona linku przy nagłówku w konspekcie skopiuje taki link za ciebie.
+
 ---
 
 *Jeśli już piszesz w markdownie, po prostu pisz, a formatuje się w locie. Surowy tekst za dowolną notatką zobaczysz przez **Pokaż markdown** na dole po prawej w tej notatce.*
+
+[^1]: To jest przypis. Strzałka obok zabiera cię z powrotem na górę.

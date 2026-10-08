@@ -176,7 +176,7 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
                   the user can never be billed. Badge stays: the price genuinely
                   does rise later. */}
               {!storePro && (
-                <span className="text-lg font-semibold line-through text-amber-400 dark:text-amber-600">${PRO_PRICE}</span>
+                <span className="text-lg font-semibold line-through text-warning">${PRO_PRICE}</span>
               )}
               <span className="text-[11px] font-semibold text-amber-900 dark:text-amber-100 bg-amber-200 dark:bg-amber-800 rounded-md px-2 py-0.5">{t('upgrade.earlyAdopterBadge')}</span>
             </div>
@@ -194,7 +194,7 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
 
         <div className="p-6 space-y-5">
           {trigger && (
-            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            <p className="text-sm text-pn-muted leading-relaxed">
               {t(introKey(trigger))}
             </p>
           )}
@@ -209,17 +209,17 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
             type="button"
             disabled={(!configured && !demo) || loading}
             onClick={handleUpgrade}
-            className="w-full rounded-md bg-amber-600 text-white hover:bg-amber-700 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold transition"
+            className="w-full rounded-md bg-amber-700 text-white hover:bg-amber-800 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold transition"
           >
-            <IconUpgrade size={16} />
+            <IconUpgrade size={16} onFill />
             {demo ? t('upgrade.ctaSignUp') : loading ? t('upgrade.ctaOpening') : t('upgrade.ctaUnlock')}
           </button>
 
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
             {FEATURES.map((f) => (
               <li key={f.labelKey} className="flex items-start gap-3 text-sm">
-                <span className="shrink-0 mt-0.5 text-amber-600 dark:text-amber-400">{f.icon}</span>
-                <span className="text-neutral-800 dark:text-neutral-200">{t(f.labelKey)}</span>
+                <span className="shrink-0 mt-0.5 text-warning">{f.icon}</span>
+                <span className="text-pn">{t(f.labelKey)}</span>
               </li>
             ))}
           </ul>
@@ -232,7 +232,7 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
               two different prices for the same product in one modal. Native
               gets its own comparison copy when localization lands. */}
           {!storePro && (
-            <p className="text-[11px] text-neutral-500 dark:text-neutral-500 leading-relaxed border-t border-divider pt-3">
+            <p className="text-[11px] text-pn-muted leading-relaxed border-t border-divider pt-3">
               {beta
                 ? t('upgrade.comparisonBeta', { earlyPrice: EARLY_PRICE, proPrice: PRO_PRICE })
                 : t('upgrade.comparison', { proPrice: PRO_PRICE })}
@@ -252,7 +252,7 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
               are, and a reviewer looking for the links on the screen with
               the price finds them. Same labels as the About modal rather
               than a second pair of strings. */}
-          <p className="text-[11px] text-neutral-500 dark:text-neutral-500 leading-relaxed">
+          <p className="text-[11px] text-pn-muted leading-relaxed">
             <a
               href="https://lifetimelabs.dev/terms/"
               target="_blank"
@@ -283,7 +283,7 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
  * works at 16px in a button or 28px in a header.
  * ──────────────────────────────────────────────────────────────── */
 
-export function IconUpgrade({ size = 18 }: { size?: number }) {
+export function IconUpgrade({ size = 18, onFill = false }: { size?: number; onFill?: boolean }) {
   // The rocket is the Pro mark and must read as "upgrade" whatever text
   // it sits next to, so its colour comes from the theme's own `--pn-pro`
   // token and NEVER from the surrounding text: `text-pro` is a fixed
@@ -291,10 +291,14 @@ export function IconUpgrade({ size = 18 }: { size?: number }) {
   // gold on every DARK one - the token is keyed to mode, because gold is
   // a light colour and measured 1.63:1 on plain white.
   //
+  // The one exception is `onFill`: on a solid button or a hovered menu band
+  // no Pro colour carries against the fill, so the rocket is white like the
+  // button's own text.
+  //
   // FILLED, not outline. A hairline of a light colour has almost no ink
   // in it at 11px; the solid body is what makes the mark legible.
   // Spec: ops/docs/design-decisions.md (Pro mark colour)
-  return <RocketLaunch size={size} weight="fill" className="text-pro" aria-hidden="true" />;
+  return <RocketLaunch size={size} weight="fill" className={onFill ? 'text-white' : 'text-pro'} aria-hidden="true" />;
 }
 
 /** The rocket and the word, at the end of a menu row that opens a Pro

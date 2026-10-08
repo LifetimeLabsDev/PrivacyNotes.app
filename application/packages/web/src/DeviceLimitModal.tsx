@@ -92,7 +92,7 @@ export function DeviceLimitModal() {
           <h2 className="text-lg font-semibold mb-1">
             {t('deviceLimit.title')}
           </h2>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="text-sm text-pn-muted leading-relaxed">
             {t('deviceLimit.body', { limit: auth.limit, count: activeDevices.length })}
           </p>
         </div>
@@ -100,7 +100,7 @@ export function DeviceLimitModal() {
         {/* Active devices */}
         {activeDevices.length > 0 && (
           <div className="space-y-2">
-            <div className="text-[11px] uppercase tracking-wide text-neutral-500 dark:text-neutral-600">
+            <div className="text-[11px] uppercase tracking-wide text-pn-muted">
               {t('deviceLimit.activeDevices')}
             </div>
             {activeDevices.map((d) => (
@@ -119,19 +119,19 @@ export function DeviceLimitModal() {
         {/* Recently removed devices - informational, do not occupy a slot. */}
         {cooldownDevices.length > 0 && (
           <div className="space-y-2">
-            <div className="text-[11px] uppercase tracking-wide text-neutral-500 dark:text-neutral-600">
+            <div className="text-[11px] uppercase tracking-wide text-pn-muted">
               {t('deviceLimit.recentlyRemoved')}
             </div>
             {cooldownDevices.map((d) => (
               <div
                 key={d.device_id}
-                className="flex items-center justify-between gap-3 rounded-md border border-neutral-200/60 dark:border-neutral-800/60 px-3 py-2 opacity-60"
+                className="flex items-center justify-between gap-3 rounded-md border border-divider px-3 py-2 opacity-60"
               >
                 <div className="min-w-0">
-                  <div className="text-sm font-medium truncate text-neutral-500 dark:text-neutral-500">
+                  <div className="text-sm font-medium truncate text-pn-muted">
                     {d.device_name}
                   </div>
-                  <div className="text-[11px] text-neutral-400 dark:text-neutral-600">
+                  <div className="text-[11px] text-pn-muted">
                     {t('deviceLimit.removedAt', { when: formatRelative(d.revoked_at!) })}
                   </div>
                 </div>
@@ -157,12 +157,12 @@ export function DeviceLimitModal() {
         {configured ? (
           <div className="rounded-md border border-accent/40 bg-accent/5 dark:bg-accent/10 p-4 space-y-2">
             <div className="text-sm font-medium">{t('deviceLimit.upgradeHeading')}</div>
-            <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            <p className="text-xs text-pn-muted leading-relaxed">
               {t('deviceLimit.upgradeBody')}
             </p>
             <button
               type="button"
-              className="w-full rounded-md bg-accent hover:bg-accent-hover text-white text-sm font-medium px-3 py-2 transition disabled:opacity-50"
+              className="w-full rounded-md bg-accent-fill hover:bg-accent-fill-hover text-white text-sm font-medium px-3 py-2 transition disabled:opacity-50"
               // Also locked while a paid checkout awaits its webhook: the
               // one-time Pro product has no server-side dedupe, so a live
               // button here invites a second charge.
@@ -197,16 +197,16 @@ export function DeviceLimitModal() {
           // Paddle isn't configured (e.g. self-host, dev environment).
           // Without this fallback the modal is a dead end: revoke or
           // sign out, no third option. See gap #24.
-          <div className="rounded-md border border-divider bg-neutral-50 dark:bg-neutral-900/40 p-4 space-y-2">
+          <div className="rounded-md border border-divider bg-surface-1 p-4 space-y-2">
             <div className="text-sm font-medium">{t('deviceLimit.needMoreHeading')}</div>
-            <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            <p className="text-xs text-pn-muted leading-relaxed">
               {t('deviceLimit.needMoreBody')}
             </p>
             <a
               href="https://lifetimelabs.dev/contact/"
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full text-center rounded-md border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm font-medium px-3 py-2 transition"
+              className="block w-full text-center rounded-md border border-divider hover:bg-pn/5 text-sm font-medium px-3 py-2 transition"
             >
               {t('deviceLimit.contactSupport')}
             </a>
@@ -247,7 +247,7 @@ export function DeviceLimitModal() {
         <button
           type="button"
           onClick={() => void signOut({ keepUnsyncedNotes: true })}
-          className="w-full rounded-md border border-neutral-300 hover:bg-neutral-100 dark:border-neutral-800 dark:hover:bg-neutral-900 text-sm px-3 py-2 transition"
+          className="w-full rounded-md border border-divider hover:bg-pn/5 text-sm px-3 py-2 transition"
           disabled={busy !== null}
         >
           {t('deviceLimit.signOut')}
@@ -276,14 +276,14 @@ function DeviceRowView({
       <div className="min-w-0">
         <div className="text-sm font-medium truncate">
           {device.device_name}
-          <span className="ms-2 font-mono text-[11px] font-normal text-neutral-500">{shortDeviceId(device.device_id)}</span>
+          <span className="ms-2 font-mono text-[11px] font-normal text-pn-muted">{shortDeviceId(device.device_id)}</span>
           {isCurrent && (
             <span className="ms-2 text-[10px] uppercase tracking-wide text-accent">
               {t('deviceLimit.thisDevice')}
             </span>
           )}
         </div>
-        <div className="text-[11px] text-neutral-500 dark:text-neutral-500">
+        <div className="text-[11px] text-pn-muted">
           {t('deviceLimit.lastActive', { platform: device.platform, when: formatRelative(device.last_seen_at) })}
         </div>
       </div>

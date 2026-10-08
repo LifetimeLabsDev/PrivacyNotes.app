@@ -1,6 +1,7 @@
 {
   "title": "Estadístiques",
   "tabs": {
+    "overview": "Resum",
     "writing": "Escriptura",
     "wellness": "Benestar"
   },
@@ -29,12 +30,13 @@
     "30d": "30 dies",
     "3mo": "3 mesos",
     "6mo": "6 mesos",
-    "12mo": "12 mesos"
+    "12mo": "12 mesos",
+    "all": "Tot"
   },
   "wellness": {
     "subTabs": {
       "all": "Tot",
-      "sleepActivity": "Son i activitat",
+      "explore": "Explora",
       "medication": "Medicació",
       "patterns": "Patrons"
     },
@@ -42,33 +44,17 @@
       "title": "Encara no hi ha dades de benestar.",
       "hint": "Obre una entrada de diari i registra el teu ànim per començar."
     },
-    "overview": {
-      "daysTracked": "Dies registrats",
-      "avgMood": "Ànim mitjà",
-      "avgSleep": "Son mitjà",
-      "medAdherence": "Adherència a la medicació",
-      "moodTrend": "Tendència de l'ànim",
-      "moodByDayOfWeek": "Ànim per dia de la setmana",
-      "moodTrendTooltip": "{{date}}: {{mood}}/10",
-      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
-    },
     "export": {
       "heading": "Exporta",
-      "allTime": "Des de sempre",
-      "last90Days": "Últims 90 dies",
-      "last30Days": "Últims 30 dies",
-      "last7Days": "Últims 7 dies",
       "downloadJSON": "Baixa el JSON",
       "doctorPDF": "PDF per al metge",
-      "copyAIPrompt": "Copia la indicació per a la IA",
+      "copyAIPrompt": "Mostra i copia la indicació per a la IA",
       "copied": "Copiat!",
       "saveFailed": "No s'ha pogut desar, així que el fitxer pot estar buit o incomplet. Torna-ho a provar o tria una altra carpeta.",
-      "proBadge": "PRO"
-    },
-    "sleepActivity": {
-      "sleepQuality": "Qualitat del son",
-      "activity": "Activitat",
-      "avgSleepPerNight": "Mitjana de son per nit"
+      "proBadge": "PRO",
+      "usesRange": "Fa servir l'interval de dalt",
+      "promptShown": "La indicació que has copiat. Enganxa-la al chatbot que vulguis.",
+      "hidePrompt": "Amaga"
     },
     "medication": {
       "adherence": "Adherència",
@@ -81,14 +67,13 @@
       "changedTo": "Canvi a {{dosage}}"
     },
     "patterns": {
-      "topEmotions": "Emocions principals",
+      "heading": "Què mou el teu ànim",
       "insights": "Observacions",
       "proBadge": "PRO",
       "insightsLocked_one": "S'ha detectat {{count}} observació. Millora a Pro per veure-la",
       "insightsLocked_many": "S'han detectat {{count}} observacions. Millora a Pro per veure-les",
       "insightsLocked_other": "S'han detectat {{count}} observacions. Millora a Pro per veure-les",
-      "weekInReview": "Resum de la setmana",
-      "weekInReviewLocked": "Millora a Pro per veure el teu resum setmanal de benestar"
+      "tableLocked": "Millora a Pro per veure quins seguiments mouen el teu ànim"
     },
     "week": {
       "range": "De {{start}} a {{end}}",
@@ -100,20 +85,33 @@
       "topActivity": "Activitat principal",
       "topEmotions": "Emocions principals",
       "reflection": "Reflexió",
-      "reflectionPlaceholder": "Com ha anat la setmana en general? Cap pensament per apuntar..."
+      "reflectionPlaceholder": "Com ha anat la setmana en general? Cap pensament per apuntar...",
+      "heading": "Resum de la setmana",
+      "proBadge": "PRO",
+      "locked": "Millora a Pro per veure el teu resum setmanal de benestar"
     },
     "units": {
       "days_one": "{{count}} dia",
       "days_other": "{{count}} dies"
     },
     "insights": {
-      "sleep": "Els dies que dorms bé fas una mitjana de {{good}}, i els dies que dorms malament, {{bad}}.",
-      "activity": "Els dies actius fas una mitjana de {{active}}, i els sedentaris, {{sedentary}}.",
       "dayOfWeek": "El teu millor dia sol ser {{best}} (mitjana {{bestAvg}}) i el més dur {{worst}} (mitjana {{worstAvg}}).",
-      "medication": "Des que vas començar {{name}} el {{date}}, el teu ànim mitjà ha passat de {{before}} a {{after}}.",
+      "medication": "{{outcome}}: {{a}} de mitjana els dies que prens {{name}}, i {{b}} els dies que te'l saltes.",
       "streak_one": "Fa {{count}} dia seguit que registres el teu ànim. Continua així!",
       "streak_other": "Fa {{count}} dies seguits que registres el teu ànim. Continua així!",
-      "trend": "El teu ànim de les últimes dues setmanes fa una mitjana de {{recent}}, davant de {{overall}} en total."
+      "trend": "El teu ànim de les últimes dues setmanes fa una mitjana de {{recent}}, davant de {{overall}} en total.",
+      "yesno": "{{outcome}}: {{a}} de mitjana els dies que registres {{name}}, i {{b}} els dies que no.",
+      "yesnoNextDay": "{{outcome}}: {{a}} de mitjana l'endemà de registrar {{name}}, i {{b}} després dels dies que no.",
+      "halves": "{{outcome}}: {{a}} de mitjana quan {{name}} supera {{threshold}}, i {{b}} quan és {{threshold}} o menys.",
+      "halvesNextDay": "{{outcome}}: {{a}} de mitjana l'endemà que {{name}} superi {{threshold}}, i {{b}} després dels dies a {{threshold}} o menys.",
+      "median": "{{outcome}}: {{a}} de mitjana quan {{name}} supera la teva mediana de {{threshold}}, i {{b}} quan és a la mediana o per sota.",
+      "medianNextDay": "{{outcome}}: {{a}} de mitjana l'endemà que {{name}} superi la teva mediana de {{threshold}}, i {{b}} després dels dies a la mediana o per sota.",
+      "levels": "{{outcome}}: {{a}} de mitjana els dies «{{top}}», i {{b}} els dies «{{bottom}}».",
+      "levelsNextDay": "{{outcome}}: {{a}} de mitjana l'endemà dels dies «{{top}}», i {{b}} després dels dies «{{bottom}}».",
+      "tag": "{{outcome}}: {{a}} de mitjana els dies que et sents {{tag}}, i {{b}} els dies que no.",
+      "tagNextDay": "{{outcome}}: {{a}} de mitjana l'endemà de sentir-te {{tag}}, i {{b}} després dels dies que no.",
+      "medicationNextDay": "{{outcome}}: {{a}} de mitjana l'endemà de prendre {{name}}, i {{b}} després dels dies que te'l saltes.",
+      "doseChange": "Al voltant del canvi de {{name}} a {{dosage}} el {{date}}, el teu ànim va fer una mitjana de {{before}} els {{nBefore}} dies abans i de {{after}} els {{nAfter}} dies després."
     },
     "aiPrompt": {
       "intro": "Estic registrant el meu ànim i el meu benestar. Analitza les dades de sota per trobar-hi patrons, tendències i idees accionables.",
@@ -137,7 +135,15 @@
       "question2": "La qualitat del son i el nivell d'activitat tenen relació amb l'ànim?",
       "question3": "Hi ha tendències preocupants que hauria de comentar amb un professional sanitari?",
       "question4": "Suggeriments concrets a partir d’aquestes dades.",
-      "footer": "Generat amb PrivacyNotes (privacynotes.app)"
+      "footer": "Generat amb PrivacyNotes (privacynotes.app)",
+      "period": "Període: del {{from}} al {{to}}",
+      "daysLogged": "Dies registrats: {{logged}} de {{days}}",
+      "trackers": "Seguiments",
+      "trackerLine": "{{name}}: mitjana {{avg}}, mínim {{low}}, màxim {{high}}, {{count}} dies",
+      "trackerYesLine": "{{name}}: sí en {{yes}} de {{count}} dies",
+      "effects": "Ànim els dies amb i sense",
+      "effectLine": "{{name}} ({{rule}}): {{a}} amb, {{b}} sense, diferència {{delta}}, {{na}} / {{nb}} dies",
+      "customQuestion": "Té {{name}} relació amb el meu ànim, el mateix dia o l'endemà?"
     },
     "report": {
       "documentTitle": "Informe de benestar",
@@ -168,8 +174,126 @@
       "unknownDose": "dosi desconeguda",
       "topEmotions": "Emocions més freqüents",
       "patterns": "Patrons detectats",
-      "footer": "Generat amb PrivacyNotes - privacynotes.app"
-    }
+      "footer": "Generat amb PrivacyNotes - privacynotes.app",
+      "period": "Període: del {{from}} al {{to}}, {{days}} dies",
+      "daysLogged": "Dies registrats: {{logged}} de {{days}}",
+      "moodHeading": "Ànim, una barra per dia",
+      "moodLegend": "Barres: 1-2 vermell, 3-4 taronja, 5-6 groc, 7-8 verd, 9-10 blau. Línia: mitjana de 7 dies. Triangle: un canvi de dosi. Un buit és un dia sense entrada.",
+      "previous": "els {{days}} dies anteriors: {{value}}",
+      "trackers": "Seguiments",
+      "columnTracker": "Seguiment",
+      "columnAverage": "Mitjana",
+      "columnLowHigh": "Mín. / màx.",
+      "columnHistory": "Historial",
+      "effects": "Ànim els dies amb i sense",
+      "columnFactor": "Factor",
+      "columnRule": "Regla",
+      "columnWith": "Amb",
+      "columnWithout": "Sense",
+      "columnDifference": "Diferència",
+      "nextDaySuffix": "{{name}}, l'endemà",
+      "effectsNote": "Mitjanes dels dies registrats. Una diferència és una observació, no una causa.",
+      "medCalendar": "Calendari",
+      "doseChanges": "Canvis de dosi",
+      "columnDoseChanges": "Canvis de dosi",
+      "yesOn": "sí en {{count}}",
+      "total": "{{value}} en total"
+    },
+    "tiles": {
+      "daysLogged": "Dies registrats",
+      "daysLoggedOf": "{{logged}} de {{days}}",
+      "avgMood": "Ànim mitjà",
+      "moodDelta": "{{delta}} respecte dels {{days}} dies anteriors",
+      "avgSleep": "Son mitjà",
+      "medsTaken": "Medicació presa"
+    },
+    "mood": {
+      "heading": "Ànim",
+      "legend": "Línia: mitjana de 7 dies. Triangle: un canvi de dosi.",
+      "dose": "{{name}} {{dosage}}"
+    },
+    "trackers": {
+      "heading": "Seguiments",
+      "tapHint": "Un toc obre Explora",
+      "stopped": "Aturat",
+      "deleted": "Suprimit",
+      "stoppedChip": "Aturats ({{count}})",
+      "unknown": "Seguiment desconegut {{id}}",
+      "sleepHours": "Hores de son",
+      "sleepQuality": "Qualitat del son",
+      "avgDays": "mitjana, {{count}} dies",
+      "sumDays": "total, {{count}} dies",
+      "yesNo": "sí en {{yes}}, no en {{no}}",
+      "notLogged": "{{count}} sense registrar",
+      "latestLowHigh": "últim {{latest}}, mínim {{low}}, màxim {{high}}",
+      "topLevel": "{{level}} en {{count}} dies",
+      "taken": "pres {{taken}} de {{total}}",
+      "empty": "Res registrat en aquest interval",
+      "unanswered": "{{count}} dies registrats sense resposta"
+    },
+    "effects": {
+      "heading": "Què mou el teu ànim",
+      "headingOutcome": "Què mou {{outcome}}",
+      "allInPatterns": "Tots a Patrons",
+      "sameDay": "Mateix dia",
+      "nextDay": "L'endemà",
+      "compareWith": "Compara amb",
+      "withLabel": "Amb",
+      "withoutLabel": "Sense",
+      "days": "{{a}} / {{b}} dies",
+      "shortfall_one": "Falta {{count}} dia més a la banda «{{side}}»",
+      "shortfall_other": "Falten {{count}} dies més a la banda «{{side}}»",
+      "sideWith": "amb",
+      "sideWithout": "sense",
+      "footnote": "Una observació entre els dies registrats, no una causa.",
+      "higher": "{{outcome}} va {{delta}} punts més amunt aquests dies.",
+      "lower": "{{outcome}} va {{delta}} punts més avall aquests dies.",
+      "rule": {
+        "yesno": "dies amb vs sense",
+        "halves": "més de {{threshold}} vs {{threshold}} o menys",
+        "median": "per sobre vs per sota de la teva mediana {{threshold}}",
+        "levels": "{{top}} vs {{bottom}}",
+        "tag": "dies amb {{tag}} vs sense",
+        "medication": "pres vs saltat"
+      }
+    },
+    "explore": {
+      "calendar": "Calendari",
+      "against": "Davant de {{outcome}}, un sol eix de dates",
+      "cells": {
+        "value": "registrat",
+        "no": "no",
+        "missing": "sense registrar"
+      },
+      "longestRunWithout": "ratxa més llarga sense: {{count}} dies",
+      "longestRunWith": "ratxa més llarga amb: {{count}} dies",
+      "pickOne": "Tria un seguiment"
+    },
+    "medCalendar": {
+      "heading": "Dia a dia",
+      "doseChange": "canvi de dosi",
+      "taken": "pres",
+      "skipped": "omès",
+      "missed": "saltat",
+      "unmarked": "sense marcar",
+      "noEntry": "sense entrada",
+      "doseLens": "L'ànim va fer una mitjana de {{before}} els {{nBefore}} dies abans i de {{after}} els {{nAfter}} dies després.",
+      "doseLensHeading": "Al voltant de cada canvi de dosi",
+      "doseLensShort_one": "Falta {{count}} dia registrat més al voltant.",
+      "doseLensShort_other": "Falten {{count}} dies registrats més al voltant."
+    },
+    "sourceLine": "Tot això surt dels seguiments de les teves entrades de diari.",
+    "openToday": "Obre l'entrada d'avui"
+  },
+  "milestones": {
+    "heading": "Fites",
+    "next": "Següent: {{label}}",
+    "allReached": "{{label}}, i totes les anteriors",
+    "ofTarget": "{{current}} de {{target}}",
+    "reached_one": "{{count}} assolida fins ara.",
+    "reached_many": "{{count}} assolides fins ara.",
+    "reached_other": "{{count}} assolides fins ara.",
+    "source": "Les notes escrites i els dies amb PrivacyNotes compten el que passa a l’app. Una importació no en canvia cap."
   },
   "milestoneToast": {
     "unlocked": "Fita desbloquejada"
@@ -187,5 +311,59 @@
     "age730": "2 anys amb PrivacyNotes",
     "age1825": "5 anys amb PrivacyNotes",
     "ageDefault": "{{count}} dies amb nosaltres"
+  },
+  "overview": {
+    "week": "La teva setmana",
+    "streak": "Ratxa d'escriptura",
+    "streakDays_one": "{{count}} dia",
+    "streakDays_other": "{{count}} dies",
+    "streakNudge": "Encara res avui. Amb una línia la mantens.",
+    "streakKept": "Avui ja compta.",
+    "words": "Paraules escrites",
+    "wordsDelta": "{{delta}} respecte de la setmana anterior",
+    "mood": "Ànim",
+    "moodDelta": "{{delta}} respecte de la setmana anterior",
+    "daysLogged": "Dies registrats",
+    "daysLoggedOf": "{{logged}} de {{days}}",
+    "rhythm": "El teu ritme, {{weeks}} setmanes",
+    "layerBoth": "Tots dos",
+    "layerWriting": "Escriptura",
+    "layerMood": "Ànim",
+    "rhythmLegend": "Cel·la: quant vas escriure aquell dia. Punt: com va anar el dia.",
+    "hours": "Quan escrius",
+    "hoursSub": "edicions per hora, {{days}} dies",
+    "hoursPeak": "La major part de la teva escriptura passa entre les {{from}} i les {{to}}.",
+    "ledgerSince": "Comptat en aquest dispositiu des del {{date}}.",
+    "ledgerEmpty": "El recompte comença ara. Torna d'aquí a una setmana.",
+    "highlights": "Destacats",
+    "highlightSleep": "Bon son, més paraules. Després de {{hours}} hores o més escrius unes {{a}} paraules al dia. Després d'una nit curta, {{b}}.",
+    "highlightSleepSub": "{{long}} nits llargues, {{short}} curtes, {{days}} dies",
+    "highlightWeekday": "{{day}} és el teu dia. L'ànim fa una mitjana de {{mood}}, i {{count}} de les teves {{total}} notes més llargues es van escriure en {{day}}.",
+    "highlightWeekdaySub": "{{day}}: {{count}} dies registrats",
+    "highlightEffect": "Els dies amb {{name}} van més {{direction}}. Ànim {{a}} amb, {{b}} sense.",
+    "higher": "amunt",
+    "lower": "avall",
+    "highlightEffectSub": "{{count}} dies amb {{name}} en {{days}} dies",
+    "highlightTag": "#{{tag}} va creixent. {{now}} notes aquest mes, {{before}} el mes anterior.",
+    "highlightTagSub": "{{count}} etiquetes en ús",
+    "highlightsLocked": "Millora a Pro per veure què tenen en comú la teva escriptura i els teus seguiments",
+    "vault": "La teva caixa forta",
+    "vaultSub": "aquesta setmana, en lletra petita",
+    "done": "{{count}} fetes",
+    "milestones": "Fites",
+    "longestStreak": "Ratxa més llarga: {{count}} dies",
+    "openWriting": "Obre Escriptura",
+    "openWellness": "Obre Benestar",
+    "computed": "calculat en aquest dispositiu",
+    "pillars": {
+      "notes": "Notes",
+      "journals": "Diaris",
+      "tasks": "Tasques",
+      "files": "Fitxers",
+      "bookmarks": "Marcadors",
+      "contacts": "Contactes",
+      "logins": "Accessos"
+    },
+    "ledgerEstimated": "Estimat a partir de les teves notes fins que comenci el recompte."
   }
 }

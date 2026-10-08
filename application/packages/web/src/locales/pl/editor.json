@@ -7,7 +7,7 @@
     "heading": "Nagłówek",
     "taskList": "Lista zadań",
     "bulletList": "Lista punktowana",
-    "addLink": "Dodaj link (Cmd+Shift+K)",
+    "addLink": "Dodaj link ({{keys}})",
     "noteLink": "Link do innej notatki (lub wpisz [[)",
     "numberedList": "Lista numerowana",
     "textColor": "Kolor tekstu",
@@ -15,7 +15,7 @@
     "pickColor": "Wybierz kolor tekstu",
     "table": "Tabela",
     "quote": "Cytat",
-    "callout": "Wyróżnienie",
+    "callout": "Ramka",
     "inlineCode": "Kod w tekście",
     "strikethrough": "Przekreślenie",
     "codeBlock": "Blok kodu",
@@ -34,7 +34,12 @@
     "blockMath": "Wzór blokowy",
     "align": "Wyrównanie",
     "font": "Czcionka",
-    "pictureFromFiles": "Obraz z Plików"
+    "pictureFromFiles": "Obraz z Plików",
+    "date": "Data",
+    "dateTime": "Data i godzina",
+    "footnote": "Przypis",
+    "spoiler": "Spoiler",
+    "copyBox": "Pole do kopiowania"
   },
   "align": {
     "left": "Wyrównaj do lewej",
@@ -60,10 +65,10 @@
     "level": "Nagłówek {{level}}"
   },
   "callout": {
-    "pickerLabel": "Wstaw wyróżnienie",
-    "remove": "Usuń wyróżnienie",
-    "collapse": "Zwiń wyróżnienie",
-    "expand": "Rozwiń wyróżnienie",
+    "pickerLabel": "Wstaw ramkę",
+    "remove": "Usuń ramkę",
+    "collapse": "Zwiń ramkę",
+    "expand": "Rozwiń ramkę",
     "types": {
       "info": "Informacja",
       "success": "Sukces",
@@ -118,7 +123,7 @@
     "next": "Następne dopasowanie (Enter)",
     "nextTitle": "Następne (Enter)",
     "close": "Zamknij wyszukiwanie",
-    "closeTitle": "Zamknij (⌘F)",
+    "closeTitle": "Zamknij ({{keys}})",
     "replacePlaceholder": "Zamień na",
     "replaceLabel": "Zamień na",
     "replace": "Zamień",
@@ -128,7 +133,7 @@
     "caseSensitive": "Uwzględniaj wielkość liter",
     "caseSensitiveTitle": "Uwzględniaj wielkość liter",
     "closeReplace": "Zamknij znajdź i zamień",
-    "closeReplaceTitle": "Zamknij (⌥⌘F)",
+    "closeReplaceTitle": "Zamknij ({{keys}})",
     "replacedCount_one": "Zamieniono {{count}}",
     "replacedCount_few": "Zamieniono {{count}}",
     "replacedCount_many": "Zamieniono {{count}}",
@@ -140,7 +145,14 @@
     "title": "Konspekt",
     "ariaLabel": "Konspekt notatki",
     "hide": "Ukryj konspekt",
-    "hideTitle": "Ukryj konspekt (Esc)"
+    "hideTitle": "Ukryj konspekt (Esc)",
+    "copyHeadingLink": "Kopiuj link do nagłówka",
+    "copied": "Skopiowano"
+  },
+  "bodyMenu": {
+    "cut": "Wytnij",
+    "sortAsc": "Sortuj wiersze od A do Z",
+    "sortDesc": "Sortuj wiersze od Z do A"
   },
   "topRow": {
     "add": "Dodaj wiersz na górze"
@@ -183,6 +195,10 @@
     "characters_few": "{{formatted}} znaki",
     "characters_many": "{{formatted}} znaków",
     "characters_other": "{{formatted}} znaku",
+    "tasksChecked_one": "Zaznaczono {{done}} z {{formatted}}",
+    "tasksChecked_few": "Zaznaczono {{done}} z {{formatted}}",
+    "tasksChecked_many": "Zaznaczono {{done}} z {{formatted}}",
+    "tasksChecked_other": "Zaznaczono {{done}} z {{formatted}}",
     "tooLargeToSync": ", może być za duża do synchronizacji, podziel ją na mniejsze notatki",
     "veryLong": ", bardzo długa, edycja może być wolna i przycinać",
     "gettingLong": ", robi się długa, na wolniejszych urządzeniach może zwalniać",
@@ -190,19 +206,50 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "Brak pasujących notatek",
-    "create": "Utwórz „{{query}}”"
+    "create": "Utwórz „{{query}}”",
+    "headingsIn": "Nagłówki w: {{title}}",
+    "noHeadingMatches": "Brak pasujących nagłówków"
+  },
+  "copyBox": {
+    "placeholder": "Tekst do skopiowania jednym kliknięciem"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}+klik, aby skopiować",
+    "copied": "Skopiowano"
   },
   "codeBlock": {
     "copy": "Kopiuj",
     "copied": "Skopiowano",
     "copyFailed": "Błąd",
-    "wrap": "Zawijaj długie wiersze"
+    "wrap": "Zawijaj długie wiersze",
+    "showAll_one": "Pokaż {{count}} wiersz",
+    "showAll_few": "Pokaż wszystkie {{count}} wiersze",
+    "showAll_many": "Pokaż wszystkie {{count}} wierszy",
+    "showAll_other": "Pokaż wszystkie {{count}} wiersza",
+    "showLess": "Pokaż mniej",
+    "plainText": "Zwykły tekst",
+    "language": "Język kodu: {{name}}",
+    "searchLanguages": "Szukaj języków",
+    "placeholder": "Wpisz lub wklej kod. Aby dodać kolory, wybierz język powyżej."
   },
   "math": {
     "sourceLabel": "Kod LaTeX"
   },
   "noteLink": {
     "open": "Otwórz notatkę",
-    "remove": "Usuń link"
+    "remove": "Usuń link",
+    "linkHeading": "Połącz z nagłówkiem...",
+    "headingNotFound": "Nie znaleziono nagłówka",
+    "headingsLocked": "Odblokuj tę notatkę, aby zobaczyć jej nagłówki",
+    "noHeadings": "Ta notatka nie ma nagłówków"
+  },
+  "footnote": {
+    "placeholder": "Treść przypisu",
+    "back": "Wróć do tekstu",
+    "unused": "Nieużyty w tekście",
+    "remove": "Usuń przypis",
+    "missing": "Przypis nie ma treści. Kliknij, aby ją dodać.",
+    "ariaRef": "Przypis {{n}}",
+    "ariaSection": "Przypisy"
   }
 }

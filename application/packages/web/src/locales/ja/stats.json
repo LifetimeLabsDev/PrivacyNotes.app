@@ -1,6 +1,7 @@
 {
   "title": "統計",
   "tabs": {
+    "overview": "概要",
     "writing": "執筆",
     "wellness": "ウェルネス"
   },
@@ -25,12 +26,13 @@
     "30d": "30日",
     "3mo": "3か月",
     "6mo": "6か月",
-    "12mo": "12か月"
+    "12mo": "12か月",
+    "all": "すべて"
   },
   "wellness": {
     "subTabs": {
       "all": "すべて",
-      "sleepActivity": "睡眠と活動",
+      "explore": "探索",
       "medication": "服薬",
       "patterns": "パターン"
     },
@@ -38,33 +40,17 @@
       "title": "ウェルネスデータはまだありません。",
       "hint": "ジャーナルを開いて気分を記録すると始まります。"
     },
-    "overview": {
-      "daysTracked": "記録日数",
-      "avgMood": "平均気分",
-      "avgSleep": "平均睡眠",
-      "medAdherence": "服薬率",
-      "moodTrend": "気分の推移",
-      "moodByDayOfWeek": "曜日別の気分",
-      "moodTrendTooltip": "{{date}}: {{mood}}/10",
-      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10({{anchor}})"
-    },
     "export": {
       "heading": "書き出し",
-      "allTime": "全期間",
-      "last90Days": "過去90日",
-      "last30Days": "過去30日",
-      "last7Days": "過去7日",
       "downloadJSON": "JSONをダウンロード",
       "doctorPDF": "医師向けPDF",
-      "copyAIPrompt": "AIプロンプトをコピー",
+      "copyAIPrompt": "AIプロンプトを表示してコピー",
       "copied": "コピーしました!",
       "saveFailed": "保存に失敗したため、ファイルが空か不完全な可能性があります。もう一度試すか、別のフォルダを選んでください。",
-      "proBadge": "PRO"
-    },
-    "sleepActivity": {
-      "sleepQuality": "睡眠の質",
-      "activity": "活動",
-      "avgSleepPerNight": "一晩あたりの平均睡眠"
+      "proBadge": "PRO",
+      "usesRange": "上の期間を使います",
+      "promptShown": "コピーしたプロンプトです。お好きなチャットボットに貼り付けてください。",
+      "hidePrompt": "隠す"
     },
     "medication": {
       "adherence": "服薬率",
@@ -77,12 +63,11 @@
       "changedTo": "{{dosage}}に変更"
     },
     "patterns": {
-      "topEmotions": "多かった感情",
+      "heading": "気分を動かすもの",
       "insights": "インサイト",
       "proBadge": "PRO",
       "insightsLocked_other": "{{count}}件のインサイトを検出しました。表示するにはProにアップグレード",
-      "weekInReview": "週間レビュー",
-      "weekInReviewLocked": "週間ウェルネスサマリーを見るにはProにアップグレード"
+      "tableLocked": "どのトラッカーが気分を動かすかを見るにはProにアップグレード"
     },
     "week": {
       "range": "{{start}}〜{{end}}",
@@ -94,18 +79,31 @@
       "topActivity": "主な活動",
       "topEmotions": "多かった感情",
       "reflection": "ふりかえり",
-      "reflectionPlaceholder": "今週は全体としてどうでしたか?思ったことがあれば書き留めましょう..."
+      "reflectionPlaceholder": "今週は全体としてどうでしたか?思ったことがあれば書き留めましょう...",
+      "heading": "週間レビュー",
+      "proBadge": "PRO",
+      "locked": "週間ウェルネスサマリーを見るにはProにアップグレード"
     },
     "units": {
       "days_other": "{{count}}日"
     },
     "insights": {
-      "sleep": "よく眠れた日の平均は{{good}}、眠れなかった日の平均は{{bad}}です。",
-      "activity": "活動的な日の平均は{{active}}、座りがちな日の平均は{{sedentary}}です。",
       "dayOfWeek": "調子がいいのは{{best}}が多く（平均{{bestAvg}}）、つらいのは{{worst}}です（平均{{worstAvg}}）。",
-      "medication": "{{date}}に{{name}}を始めてから、平均気分は{{before}}から{{after}}に変わりました。",
+      "medication": "{{outcome}}の平均は、{{name}}を服用した日は{{a}}、服用しなかった日は{{b}}です。",
       "streak_other": "{{count}}日連続で気分を記録しています。この調子です。",
-      "trend": "直近2週間の気分は平均{{recent}}で、全体の平均は{{overall}}です。"
+      "trend": "直近2週間の気分は平均{{recent}}で、全体の平均は{{overall}}です。",
+      "yesno": "{{outcome}}の平均は、{{name}}を記録した日は{{a}}、記録しなかった日は{{b}}です。",
+      "yesnoNextDay": "{{outcome}}の平均は、{{name}}を記録した翌日は{{a}}、記録しなかった翌日は{{b}}です。",
+      "halves": "{{outcome}}の平均は、{{name}}が{{threshold}}より上の日は{{a}}、{{threshold}}以下の日は{{b}}です。",
+      "halvesNextDay": "{{outcome}}の平均は、{{name}}が{{threshold}}より上だった翌日は{{a}}、{{threshold}}以下だった翌日は{{b}}です。",
+      "median": "{{outcome}}の平均は、{{name}}が中央値{{threshold}}より上の日は{{a}}、中央値以下の日は{{b}}です。",
+      "medianNextDay": "{{outcome}}の平均は、{{name}}が中央値{{threshold}}より上だった翌日は{{a}}、中央値以下だった翌日は{{b}}です。",
+      "levels": "{{outcome}}の平均は、{{top}}の日は{{a}}、{{bottom}}の日は{{b}}です。",
+      "levelsNextDay": "{{outcome}}の平均は、{{top}}の翌日は{{a}}、{{bottom}}の翌日は{{b}}です。",
+      "tag": "{{outcome}}の平均は、{{tag}}と感じた日は{{a}}、感じなかった日は{{b}}です。",
+      "tagNextDay": "{{outcome}}の平均は、{{tag}}と感じた翌日は{{a}}、感じなかった翌日は{{b}}です。",
+      "medicationNextDay": "{{outcome}}の平均は、{{name}}を服用した翌日は{{a}}、服用しなかった翌日は{{b}}です。",
+      "doseChange": "{{date}}に{{name}}が{{dosage}}に変わった前後で、気分の平均は変更前{{nBefore}}日間が{{before}}、変更後{{nAfter}}日間が{{after}}でした。"
     },
     "aiPrompt": {
       "intro": "気分と体調を記録しています。以下のデータからパターンや傾向、実行できる気づきを分析してください。",
@@ -129,7 +127,15 @@
       "question2": "睡眠の質や活動レベルは気分と関係していますか。",
       "question3": "医療者に相談したほうがよい傾向はありますか。",
       "question4": "このデータから実行できる提案をください。",
-      "footer": "PrivacyNotes で作成（privacynotes.app）"
+      "footer": "PrivacyNotes で作成（privacynotes.app）",
+      "period": "期間: {{from}}から{{to}}",
+      "daysLogged": "記録日数: {{days}}日中{{logged}}日",
+      "trackers": "トラッカー",
+      "trackerLine": "{{name}}: 平均{{avg}}、最低{{low}}、最高{{high}}、{{count}}日",
+      "trackerYesLine": "{{name}}: {{count}}日中{{yes}}日が「はい」",
+      "effects": "ある日とない日の気分",
+      "effectLine": "{{name}}({{rule}}): あり{{a}}、なし{{b}}、差{{delta}}、{{na}} / {{nb}}日",
+      "customQuestion": "{{name}}は当日または翌日の気分と関係していますか。"
     },
     "report": {
       "documentTitle": "体調レポート",
@@ -160,8 +166,122 @@
       "unknownDose": "用量不明",
       "topEmotions": "よく記録された感情",
       "patterns": "検出されたパターン",
-      "footer": "PrivacyNotes で作成 - privacynotes.app"
-    }
+      "footer": "PrivacyNotes で作成 - privacynotes.app",
+      "period": "期間: {{from}}から{{to}}、{{days}}日間",
+      "daysLogged": "記録日数: {{days}}日中{{logged}}日",
+      "moodHeading": "気分(1日1本の棒)",
+      "moodLegend": "棒: 1-2 赤、3-4 オレンジ、5-6 黄、7-8 緑、9-10 青。線: 7日間の平均。三角: 用量の変更。空白は記録のない日です。",
+      "previous": "その前の{{days}}日間: {{value}}",
+      "trackers": "トラッカー",
+      "columnTracker": "トラッカー",
+      "columnAverage": "平均",
+      "columnLowHigh": "最低 / 最高",
+      "columnHistory": "履歴",
+      "effects": "ある日とない日の気分",
+      "columnFactor": "要因",
+      "columnRule": "基準",
+      "columnWith": "あり",
+      "columnWithout": "なし",
+      "columnDifference": "差",
+      "nextDaySuffix": "{{name}}、翌日",
+      "effectsNote": "記録した日の平均です。差は観察された事実であり、原因ではありません。",
+      "medCalendar": "カレンダー",
+      "doseChanges": "用量の変更",
+      "columnDoseChanges": "用量の変更",
+      "yesOn": "{{count}}日が「はい」",
+      "total": "合計{{value}}"
+    },
+    "tiles": {
+      "daysLogged": "記録日数",
+      "daysLoggedOf": "{{days}}日中{{logged}}日",
+      "avgMood": "平均気分",
+      "moodDelta": "その前の{{days}}日間比{{delta}}",
+      "avgSleep": "平均睡眠",
+      "medsTaken": "服薬回数"
+    },
+    "mood": {
+      "heading": "気分",
+      "legend": "線: 7日間の平均。三角: 用量の変更。",
+      "dose": "{{name}} {{dosage}}"
+    },
+    "trackers": {
+      "heading": "トラッカー",
+      "tapHint": "タップすると「探索」が開きます",
+      "stopped": "停止中",
+      "deleted": "削除済み",
+      "stoppedChip": "停止中({{count}})",
+      "unknown": "不明なトラッカー {{id}}",
+      "sleepHours": "睡眠時間",
+      "sleepQuality": "睡眠の質",
+      "avgDays": "平均、{{count}}日",
+      "sumDays": "合計、{{count}}日",
+      "yesNo": "はい{{yes}}日、いいえ{{no}}日",
+      "notLogged": "未記録{{count}}日",
+      "latestLowHigh": "最新{{latest}}、最低{{low}}、最高{{high}}",
+      "topLevel": "{{level}}が{{count}}日",
+      "taken": "{{total}}日中{{taken}}日服用",
+      "empty": "この期間に記録はありません",
+      "unanswered": "回答のない記録日が{{count}}日"
+    },
+    "effects": {
+      "heading": "気分を動かすもの",
+      "headingOutcome": "{{outcome}}を動かすもの",
+      "allInPatterns": "すべては「パターン」で",
+      "sameDay": "当日",
+      "nextDay": "翌日",
+      "compareWith": "比較対象",
+      "withLabel": "あり",
+      "withoutLabel": "なし",
+      "days": "{{a}} / {{b}}日",
+      "shortfall_other": "「{{side}}」側の日があと{{count}}日必要です",
+      "sideWith": "あり",
+      "sideWithout": "なし",
+      "footnote": "記録した日の中で観察された事実であり、原因ではありません。",
+      "higher": "これらの日は{{outcome}}が{{delta}}ポイント高くなっています。",
+      "lower": "これらの日は{{outcome}}が{{delta}}ポイント低くなっています。",
+      "rule": {
+        "yesno": "ある日とない日",
+        "halves": "{{threshold}}より上と{{threshold}}以下",
+        "median": "中央値{{threshold}}より上と以下",
+        "levels": "{{top}}と{{bottom}}",
+        "tag": "{{tag}}のある日とない日",
+        "medication": "服用と未服用"
+      }
+    },
+    "explore": {
+      "calendar": "カレンダー",
+      "against": "{{outcome}}との比較、日付軸は共通",
+      "cells": {
+        "value": "記録あり",
+        "no": "いいえ",
+        "missing": "未記録"
+      },
+      "longestRunWithout": "なしの最長連続: {{count}}日",
+      "longestRunWith": "ありの最長連続: {{count}}日",
+      "pickOne": "トラッカーを選択"
+    },
+    "medCalendar": {
+      "heading": "日ごと",
+      "doseChange": "用量変更",
+      "taken": "服用",
+      "skipped": "スキップ",
+      "missed": "未服用",
+      "unmarked": "未記入",
+      "noEntry": "記録なし",
+      "doseLens": "気分の平均は、変更前{{nBefore}}日間が{{before}}、変更後{{nAfter}}日間が{{after}}でした。",
+      "doseLensHeading": "各用量変更の前後",
+      "doseLensShort_other": "前後の記録日があと{{count}}日必要です。"
+    },
+    "sourceLine": "ここにあるものはすべて、ジャーナルの記録のトラッカーから来ています。",
+    "openToday": "今日の記録を開く"
+  },
+  "milestones": {
+    "heading": "マイルストーン",
+    "next": "次: {{label}}",
+    "allReached": "{{label}}、それ以前もすべて",
+    "ofTarget": "{{current}} / {{target}}",
+    "reached_other": "これまでに{{count}}件達成。",
+    "source": "書いたノートとPrivacyNotesを使った日数は、アプリ内での出来事だけを数えます。読み込みはどちらにも影響しません。"
   },
   "milestoneToast": {
     "unlocked": "マイルストーン達成"
@@ -175,5 +295,58 @@
     "age730": "PrivacyNotesと2年",
     "age1825": "PrivacyNotesと5年",
     "ageDefault": "利用開始から{{count}}日"
+  },
+  "overview": {
+    "week": "今週",
+    "streak": "執筆の連続日数",
+    "streakDays_other": "{{count}}日",
+    "streakNudge": "今日はまだ何もありません。一行で続きます。",
+    "streakKept": "今日は記録済みです。",
+    "words": "書いた語数",
+    "wordsDelta": "前週比{{delta}}",
+    "mood": "気分",
+    "moodDelta": "前週比{{delta}}",
+    "daysLogged": "記録日数",
+    "daysLoggedOf": "{{days}}日中{{logged}}日",
+    "rhythm": "あなたのリズム、{{weeks}}週間",
+    "layerBoth": "両方",
+    "layerWriting": "執筆",
+    "layerMood": "気分",
+    "rhythmLegend": "マス: その日に書いた量。点: その日の気分。",
+    "hours": "書く時間帯",
+    "hoursSub": "時間帯別の編集、{{days}}日",
+    "hoursPeak": "執筆の大半は{{from}}から{{to}}の間に行われています。",
+    "ledgerSince": "{{date}}以降、このデバイスで集計。",
+    "ledgerEmpty": "集計はここから始まります。1週間後にまた見てください。",
+    "highlights": "ハイライト",
+    "highlightSleep": "よく眠ると、よく書けます。{{hours}}時間以上眠った翌日は1日およそ{{a}}語、短い夜の翌日は{{b}}語です。",
+    "highlightSleepSub": "長い夜{{long}}回、短い夜{{short}}回、{{days}}日",
+    "highlightWeekday": "{{day}}はあなたの日です。気分の平均は{{mood}}で、最長のノート{{total}}件のうち{{count}}件が{{day}}に書かれています。",
+    "highlightWeekdaySub": "{{day}}を{{count}}回記録",
+    "highlightEffect": "{{name}}の日は{{direction}}です。気分はあり{{a}}、なし{{b}}。",
+    "higher": "高め",
+    "lower": "低め",
+    "highlightEffectSub": "{{days}}日中、{{name}}のある日が{{count}}日",
+    "highlightTag": "#{{tag}}が増えています。今月{{now}}件、先月{{before}}件。",
+    "highlightTagSub": "使用中のタグ{{count}}件",
+    "highlightsLocked": "執筆とトラッカーの共通点を見るにはProにアップグレード",
+    "vault": "あなたの保管庫",
+    "vaultSub": "今週のこまごました数字",
+    "done": "{{count}}件完了",
+    "milestones": "マイルストーン",
+    "longestStreak": "最長の連続日数: {{count}}日",
+    "openWriting": "「執筆」を開く",
+    "openWellness": "「ウェルネス」を開く",
+    "computed": "このデバイスで計算",
+    "pillars": {
+      "notes": "ノート",
+      "journals": "ジャーナル",
+      "tasks": "タスク",
+      "files": "ファイル",
+      "bookmarks": "ブックマーク",
+      "contacts": "連絡先",
+      "logins": "ログイン"
+    },
+    "ledgerEstimated": "集計が始まるまではノートからの推定値です。"
   }
 }

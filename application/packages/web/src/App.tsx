@@ -19,7 +19,7 @@ import {
 import { shouldPromptForPin, markPinUnlocked } from './pin';
 import { clearPin, phraseMatches } from './pinRecovery';
 import { phraseOwnsThisDevice } from './authStorage';
-import { startReLockWatch } from './appReLock';
+import { lockCurtainIsStale, startReLockWatch } from './appReLock';
 import { applyPrivacyScreen } from './privacyScreen';
 import { loadLocalSettings, saveLocalSettings } from './userSettings';
 import { hasStoredSession, isTrustedDevice } from './trustStorage';
@@ -296,10 +296,25 @@ export default function App() {
     return startReLockWatch(() => setLocked(true));
   }, [locked, auth.status]);
 
+  // A sign-out in another tab signs this one out and removes the wrapped
+  // doors. The curtain then has nothing behind it to guard, and its doors no
+  // longer open, so it drops to the signed-out screen. That tab announces
+  // before it removes the doors, so this asks on the status change and
+  // again on the wrap change below.
+  const authStatusRef = useRef(auth.status);
+  authStatusRef.current = auth.status;
+  useEffect(() => {
+    if (locked && lockCurtainIsStale(auth.status)) setLocked(false);
+  }, [locked, auth.status]);
+
   // Listen for cross-tab changes to wrapped blobs (e.g. biometric
   // disabled in another tab).
   useEffect(() => {
     return onWrappedBlobChange(() => {
+      if (lockCurtainIsStale(authStatusRef.current)) {
+        setLocked(false);
+        return;
+      }
       // A sign-out in another tab removes these same wrapped blobs AND
       // clears the settings blob, so both unlock branches below would
       // otherwise fire on a signal that has nothing to do with this user

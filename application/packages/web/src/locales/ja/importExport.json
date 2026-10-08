@@ -51,7 +51,7 @@
     "markdownFolder": ".mdまたは.txtファイルを個別に、あるいは.zipでまとめて。zipにしたフォルダはサブフォルダを保ち、画像や添付ファイルも一緒に運びます。",
     "markdownApp": "これらのノートは、すでにフォルダの中のMarkdownファイルです。そのフォルダを.zipにしてドロップすれば、サブフォルダも画像も#タグも一緒に入ってきます。",
     "browserBookmarks": "ブラウザの \"Export bookmarks\" で書き出したブックマークファイル (.html)、または Safari が書き出す .zip です。Chrome、Firefox、Safari、Edge、Opera、Brave、Vivaldi はどれも同じファイルを含みます。フォルダーと日付も一緒に入ります。",
-    "vcard": "連絡帳が書き出す .vcf ファイルです。iPhone と Mac は iCloud または連絡先から、Android、Google コンタクトも同様です。写真も含めてすべてのカードが取り込まれ、同じファイルを 2 回インポートしてもすでにいる人はスキップされます。",
+    "vcard": "連絡帳が書き出す .vcf ファイルです。iPhone と Mac は iCloud または連絡先から、Android、Google コンタクトも同様です。写真も含めてすべてのカードが取り込まれ、同じファイルを 2 回読み込んでもすでにいる人はスキップされます。",
     "bitwarden": "Bitwarden の暗号化されていない .json エクスポート（Tools > Export vault > .json）。ログイン、カード、SSH 鍵、セキュアメモ、TOTP コードがすべて一緒に読み込まれます。",
     "browserPasswords": "Chrome、Edge、Brave、Opera、Vivaldi、Firefox、Safari のパスワードファイル (.csv)、または Safari が書き出す .zip です。1 行がログイン 1 件になります。終わったらファイルは削除してください。パスワードがそのまま書かれています。"
   },
@@ -165,6 +165,7 @@
     "both": "{{pictures}}と{{files}}"
   },
   "upload": {
+    "discard": "破棄",
     "completeTitle": "アップロードが完了しました",
     "failedTitle": "アップロードに失敗しました",
     "partialTitle": "{{done}}件成功、{{failed}}件失敗",
@@ -172,7 +173,10 @@
     "statusDone": "完了",
     "statusFailed": "失敗",
     "errorStorageFull": "ストレージが満杯です。空き容量を確保するか、ストレージを追加するとアップロードできます。",
-    "errorStorageFullKept": "ストレージに収まらないため、この端末に保存されています。空き容量ができると同期されます。",
+    "errorStorageFullKept": "ストレージに収まらないため、このデバイスに保存されています。空き容量ができると同期されます。",
+    "errorTooLarge": "ファイルが大きすぎます({{size}})。上限は{{limit}} MBです。",
+    "errorTooLargeFree": "ファイルが大きすぎます({{size}})。無料プランの上限は{{limit}} MBです。",
+    "batchTitle_other": "{{count}}件のファイル",
     "statusUploading": "アップロード中...",
     "statusWaiting": "待機中",
     "summaryDone": "{{count}}件完了",
@@ -189,9 +193,14 @@
     "notThisAccount": "このバックアップは解除できませんでした。.pnbackup は作成したアカウントでしか開けないため、多くは別アカウントのバックアップです。アカウント間でノートを移すには、完全バックアップ（.zip）を書き出してください。アカウントが正しい場合は、ファイルが破損しているか、保存が途中で終わっています。"
   },
   "exportErrors": {
-    "generic": "書き出したファイルを保存できませんでした。もう一度試すか、別のフォルダーを選んでください。"
+    "generic": "書き出したファイルを保存できませんでした。もう一度試すか、別のフォルダを選んでください。"
   },
   "saveErrors": {
     "shortWrite": "{{expected}} バイト中 {{written}} バイトしか保存されず、ファイルが不完全です。クラウドのフォルダーではなく端末のストレージに保存して、もう一度お試しください。"
+  },
+  "shareSheet": {
+    "title_other": "{{count}}件の項目がPrivacyNotesに共有されました",
+    "line": "選択するまで何も保存されません。",
+    "saveAll": "すべて保存"
   }
 }

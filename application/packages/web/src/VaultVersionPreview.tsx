@@ -21,12 +21,12 @@ export function VaultVersionPreview({ version, type }: { version: NoteVersion; t
   return (
     <div>
       {rows.length === 0 ? (
-        <div className="text-neutral-400 italic">{t('history.emptyBody')}</div>
+        <div className="text-pn-muted italic">{t('history.emptyBody')}</div>
       ) : (
         rows.map((row, i) => <VaultVersionRow key={i} row={row} id={`row-${i}`} />)
       )}
       {type === 'login' && version.login === undefined && (
-        <p className="mt-3 text-[12px] text-neutral-500">{t('history.loginExtrasNotRecorded')}</p>
+        <p className="mt-3 text-[12px] text-pn-muted">{t('history.loginExtrasNotRecorded')}</p>
       )}
     </div>
   );

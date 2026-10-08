@@ -45,6 +45,9 @@ type Props = {
    * covering them.
    */
   leading?: ReactNode;
+  /** A click on a tag's name filters the list by that tag, as the sidebar
+   *  does. The remove button beside it keeps its own job. Spec: issue #333. */
+  onSelectTag?: (tag: string) => void;
 };
 
 export type TagInputHandle = {
@@ -54,7 +57,7 @@ export type TagInputHandle = {
 const MAX_SUGGESTIONS = 5;
 
 export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
-  { tags, onChange, allTags, onTabOut, trailing, leading },
+  { tags, onChange, allTags, onTabOut, trailing, leading, onSelectTag },
   ref
 ) {
   const { t } = useTranslation('common');
@@ -343,13 +346,13 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
               onClick={() => selectTag(tag)}
               className={`w-full flex items-center gap-2 px-3 text-sm cursor-pointer transition-colors ${
                 i === highlightIndex
-                  ? 'bg-neutral-100 dark:bg-neutral-900'
-                  : 'hover:bg-neutral-50 dark:hover:bg-neutral-900/50'
+                  ? 'bg-track'
+                  : 'hover:bg-pn/5'
               } ${isMobile ? 'min-h-[44px] py-2.5' : 'py-2'}`}
             >
-              <span className="text-neutral-400 dark:text-neutral-600 text-xs">#</span>
+              <span className="text-pn-muted text-xs">#</span>
               <span className="text-pn truncate">{boldPrefix(tag)}</span>
-              <span className="ml-auto text-xs text-neutral-400 dark:text-neutral-600 tabular-nums shrink-0">
+              <span className="ml-auto text-xs text-pn-muted tabular-nums shrink-0">
                 {count}
               </span>
             </button>
@@ -362,10 +365,10 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
               <button
                 type="button"
                 onClick={() => commit()}
-                className={`w-full flex items-center gap-2 px-3 text-sm cursor-pointer transition-colors text-neutral-500 dark:text-neutral-400 ${
+                className={`w-full flex items-center gap-2 px-3 text-sm cursor-pointer transition-colors text-pn-muted ${
                   highlightIndex === suggestions.length
-                    ? 'bg-neutral-100 dark:bg-neutral-900'
-                    : 'hover:bg-neutral-50 dark:hover:bg-neutral-900/50'
+                    ? 'bg-track'
+                    : 'hover:bg-pn/5'
                 } ${isMobile ? 'min-h-[44px] py-2.5' : 'py-2'}`}
               >
                 <span className="text-xs">+</span>
@@ -409,16 +412,19 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
                folder chip in the leading slot are the same split as list vs
                container: many labels vs one location.
                Spec: ops/docs/ui-patterns.md (editor tag row) */
-            className="group inline-flex shrink-0 items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-accent/10 text-accent hover:bg-accent/20 transition whitespace-nowrap"
+            className="group inline-flex shrink-0 items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-accent/10 text-accent-strong hover:bg-accent/20 transition whitespace-nowrap"
             dir="auto"
           >
-            <span className="inline-flex items-center">
+            <span
+              onClick={onSelectTag ? () => onSelectTag(tag) : undefined}
+              className={`inline-flex items-center${onSelectTag ? ' cursor-pointer' : ''}`}
+            >
               <TagMark tag={tag} size={11} />
               {tag}
             </span>
             <button
               onClick={() => remove(tag)}
-              className="text-accent/60 hover:text-red-500 dark:hover:text-red-400 transition text-[11px] leading-none"
+              className="text-accent/60 hover:text-danger transition text-[11px] leading-none"
               aria-label={t('tagInput.removeTag', { tag })}
               tabIndex={-1}
             >
@@ -441,7 +447,7 @@ export const TagInput = forwardRef<TagInputHandle, Props>(function TagInput(
           enterKeyHint="done"
           autoComplete="off"
           spellCheck={spellcheck ? undefined : false}
-          className="flex-1 min-w-[80px] shrink-0 bg-transparent text-xs focus:outline-none placeholder:text-neutral-400 dark:placeholder:text-neutral-600 py-0.5"
+          className="flex-1 min-w-[80px] shrink-0 bg-transparent text-xs focus:outline-none placeholder:text-pn-muted py-0.5"
         />
       </div>
       {trailing}

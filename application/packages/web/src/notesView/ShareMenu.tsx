@@ -31,7 +31,7 @@ export function ShareMenu({
   selected: LocalNote;
   exportSingleMarkdown: (n: LocalNote) => Promise<void> | void;
   exportSingleHtml: (n: LocalNote) => Promise<void> | void;
-  printNote: (n: LocalNote) => Promise<void> | void;
+  printNote: (n: LocalNote, titleOnly?: boolean) => Promise<void> | void;
   handleBurnShare: (n: LocalNote) => Promise<void> | void;
 }) {
   const { t } = useTranslation('notes');
@@ -81,8 +81,8 @@ export function ShareMenu({
             aria-expanded={open}
             className={`shrink-0 flex items-center justify-center w-8 h-8 rounded-md transition ${
               open
-                ? 'text-accent bg-accent/15'
-                : 'text-neutral-600 dark:text-neutral-300 active:scale-95 [@media(hover:hover)]:hover:text-accent [@media(hover:hover)]:hover:bg-neutral-200 [@media(hover:hover)]:dark:hover:bg-neutral-800'
+                ? 'text-accent-strong bg-accent/15'
+                : 'text-pn-soft active:scale-95 [@media(hover:hover)]:hover:text-accent [@media(hover:hover)]:hover:bg-pn/10'
             }`}
           >
           {/* 18px in a 32px box, the size every button in the editor header
@@ -121,7 +121,7 @@ export function ShareMenu({
                   <span className="block font-medium text-pn">
                     {t('share.currentMdTitle')}
                   </span>
-                  <span className="block text-[12px] text-neutral-500">
+                  <span className="block text-[12px] text-pn-muted">
                     {t('share.currentMdDesc')}
                   </span>
                 </span>
@@ -138,7 +138,7 @@ export function ShareMenu({
                   <span className="block font-medium text-pn">
                     {t('share.currentHtmlTitle')}
                   </span>
-                  <span className="block text-[12px] text-neutral-500">
+                  <span className="block text-[12px] text-pn-muted">
                     {t('share.currentHtmlDesc')}
                   </span>
                 </span>
@@ -155,8 +155,25 @@ export function ShareMenu({
                   <span className="block font-medium text-pn">
                     {t('share.printTitle')}
                   </span>
-                  <span className="block text-[12px] text-neutral-500">
+                  <span className="block text-[12px] text-pn-muted">
                     {t('share.printDesc')}
+                  </span>
+                </span>
+              </button>
+              <button
+                onClick={() => {
+                  onClose();
+                  void printNote(selected, true);
+                }}
+                className="w-full text-start px-3 py-2.5 flex items-start gap-2.5 hover:bg-surface-1 transition"
+              >
+                <span className="shrink-0 mt-0.5 text-accent"><EXPORT_GLYPHS.printText size={18} aria-hidden="true" /></span>
+                <span className="min-w-0">
+                  <span className="block font-medium text-pn">
+                    {t('share.printTextTitle')}
+                  </span>
+                  <span className="block text-[12px] text-pn-muted">
+                    {t('share.printTextDesc')}
                   </span>
                 </span>
               </button>
@@ -167,12 +184,12 @@ export function ShareMenu({
                 }}
                 className="w-full text-start px-3 py-2.5 flex items-start gap-2.5 hover:bg-surface-1 transition"
               >
-                <span className="shrink-0 mt-0.5 text-orange-600 dark:text-orange-400"><EXPORT_GLYPHS.burn size={18} aria-hidden="true" /></span>
+                <span className="shrink-0 mt-0.5 text-orange-800 dark:text-orange-400"><EXPORT_GLYPHS.burn size={18} aria-hidden="true" /></span>
                 <span className="min-w-0">
-                  <span className="block font-medium text-orange-600 dark:text-orange-400">
+                  <span className="block font-medium text-orange-800 dark:text-orange-400">
                     {t('share.burnTitle')}
                   </span>
-                  <span className="block text-[12px] text-neutral-500">
+                  <span className="block text-[12px] text-pn-muted">
                     {t('share.burnDesc')}
                   </span>
                 </span>

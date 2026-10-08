@@ -100,12 +100,12 @@ export const VS_ROWS: Record<string, VsRow> = {
   'verifiable-crypto': {
     label: 'Published, verifiable encryption',
     group: 'privacy',
-    us: { v: 'yes', note: 'Published: crypto, schema, threat model' },
+    us: { v: 'yes', note: 'Published: clients, crypto, threat model' },
   },
   'open-source': {
     label: 'Fully open-source clients and server',
     group: 'privacy',
-    us: { v: 'partial', note: 'Clients, encryption, schema and threat model published' },
+    us: { v: 'partial', note: 'Clients, encryption and threat model published' },
   },
   notes: {
     label: 'Notes with tags and instant search',

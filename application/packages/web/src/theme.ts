@@ -38,6 +38,7 @@
  * paints what it is handed.
  */
 import { useCallback, useSyncExternalStore } from 'react';
+import { applyAppZoom, DEFAULT_APP_ZOOM } from './appZoom';
 import { paintCodeWrap, setCodeWrap } from './codeWrap';
 
 // ------------------------------------------------------------------
@@ -189,8 +190,24 @@ function paintTheme(theme: Theme): void {
   hasAppliedOnce = true;
 }
 
+/**
+ * A mode painted for a moment without being stored. Settings uses it when a
+ * pick of the other mode must not change the stored mode: under Auto, and
+ * for a free account's preview of a Pro theme. The pick shows at once and
+ * the stored mode stays. A real mode choice, or peekThemeMode(null) when
+ * Settings closes, ends it.
+ */
+let peekTheme: Theme | null = null;
+export function peekThemeMode(next: Theme | null): void {
+  if (next === peekTheme) return;
+  peekTheme = next;
+  paintTheme(next ?? getStoredTheme());
+  emitThemeChange();
+}
+
 /** Persist a mode and paint what it resolves to. */
 function applyThemeMode(mode: ThemeMode): Theme {
+  peekTheme = null;
   localStorage.setItem(STORAGE_KEY, mode);
   const resolved = mode === 'auto' ? getSystemTheme() : mode;
   paintTheme(resolved);
@@ -212,18 +229,16 @@ export function applyStoredTheme(): Theme {
  * Registered once from initTheme() and never torn down - it has to
  * outlive every view.
  *
- * The color theme is deliberately left alone here. Each palette's CSS
- * block is scoped to one mode (`:root:not(.dark).theme-warm-cream`,
- * `:root.dark.theme-soft-dark`), so a palette belonging to the other
- * mode simply stops applying and the default one shows through. Wiping
- * it on every sunset would quietly destroy a Pro user's choice twice a
- * day; leaving it means Cream comes back at sunrise.
+ * The color theme needs nothing here. <html> carries the light slot and
+ * the dark slot at once, and each palette's CSS block is scoped to its own
+ * mode (`:root:not(.dark).theme-warm-cream`, `:root.dark.theme-oled`), so
+ * the flip alone moves the screen from one to the other.
  */
 function watchSystemTheme(): void {
   if (typeof window === 'undefined' || !window.matchMedia) return;
   const mql = window.matchMedia('(prefers-color-scheme: light)');
   mql.addEventListener('change', () => {
-    if (getStoredThemeMode() !== 'auto') return;
+    if (getStoredThemeMode() !== 'auto' || peekTheme) return;
     paintTheme(getSystemTheme());
     emitThemeChange();
   });
@@ -436,6 +451,42 @@ function applySpellcheck(on: boolean): void {
 }
 
 // ------------------------------------------------------------------
+// Copied text axis
+// ------------------------------------------------------------------
+
+const COPY_FORMAT_KEY = 'privacynotes.copyFormat';
+
+/** What the plain-text part of a copy from a note holds. */
+export type CopyFormat = 'markdown' | 'plain';
+
+/**
+ * Default Markdown, today's copy. Plain text drops every formatting
+ * character, for a reader who pastes tasks into forms and work tools that
+ * print `- [ ]` as it is. Device-local, like spell check: what a paste
+ * target understands belongs to the device's apps, not the account.
+ * Spec: ops/docs/plans/paste-pictures.md (section 3.6)
+ */
+function getStoredCopyFormat(): CopyFormat {
+  try {
+    return localStorage.getItem(COPY_FORMAT_KEY) === 'plain' ? 'plain' : 'markdown';
+  } catch {
+    return 'markdown';
+  }
+}
+
+let activeCopyFormat: CopyFormat = getStoredCopyFormat();
+
+function applyCopyFormat(format: CopyFormat): void {
+  activeCopyFormat = format;
+  localStorage.setItem(COPY_FORMAT_KEY, format);
+}
+
+/** For the copy serializer, which runs outside React. */
+export function readCopyFormat(): CopyFormat {
+  return activeCopyFormat;
+}
+
+// ------------------------------------------------------------------
 // Website icons axis
 // ------------------------------------------------------------------
 
@@ -510,7 +561,17 @@ function applyInvisibles(on: boolean): void {
 // Color theme axis
 // ------------------------------------------------------------------
 
-const COLOR_THEME_KEY = 'privacynotes.colorTheme';
+/**
+ * Two slots: the palette for light mode and the palette for dark mode, so
+ * Auto switches between the user's own pair. The key before the pair held
+ * one palette for whichever mode it belonged to; it is read to seed the slot
+ * of that mode and never written.
+ */
+const LEGACY_COLOR_THEME_KEY = 'privacynotes.colorTheme';
+const COLOR_THEME_KEYS: Record<Theme, string> = {
+  light: 'privacynotes.colorTheme.light',
+  dark: 'privacynotes.colorTheme.dark',
+};
 
 /**
  * Available color themes. Grouped by mode (light/dark).
@@ -526,8 +587,10 @@ const COLOR_THEMES = [
   'default',
   'warm-cream',
   'slate',
+  'sage',
   'soft-dark',
   'navy-depths',
+  'oled',
 ] as const;
 export type ColorTheme = (typeof COLOR_THEMES)[number];
 
@@ -536,13 +599,15 @@ export const THEME_DISPLAY_NAME: Record<ColorTheme, string> = {
   'default': 'Default',
   'warm-cream': 'Cream',
   'slate': 'Slate',
+  'sage': 'Sage',
   'soft-dark': 'Soft',
   'navy-depths': 'Navy',
+  'oled': 'OLED',
 };
 
 /** Themes available for a given mode (for the picker grid). */
-export const LIGHT_THEMES: ColorTheme[] = ['default', 'warm-cream', 'slate'];
-export const DARK_THEMES: ColorTheme[] = ['default', 'soft-dark', 'navy-depths'];
+export const LIGHT_THEMES: ColorTheme[] = ['default', 'warm-cream', 'slate', 'sage'];
+export const DARK_THEMES: ColorTheme[] = ['default', 'soft-dark', 'navy-depths', 'oled'];
 
 /** Themes available on the free tier (everything else requires Pro). */
 export const FREE_THEMES: ReadonlySet<ColorTheme> = new Set(['default']);
@@ -552,72 +617,279 @@ export function isColorTheme(v: unknown): v is ColorTheme {
   return typeof v === 'string' && (COLOR_THEMES as readonly string[]).includes(v);
 }
 
-/** Read stored color theme. */
-export function getStoredColorTheme(): ColorTheme {
-  const stored = localStorage.getItem(COLOR_THEME_KEY);
-  if (isColorTheme(stored)) return stored;
-  // Legacy migration: cool-white renamed to slate in v0.132.10.
-  if (stored === 'cool-white') return 'slate';
+/** The mode a named palette belongs to. `default` belongs to both. */
+function modeOf(ct: ColorTheme): Theme | null {
+  if (ct === 'default') return null;
+  return (LIGHT_THEMES as readonly string[]).includes(ct) ? 'light' : 'dark';
+}
+
+// ------------------------------------------------------------------
+// Custom themes in a slot
+// ------------------------------------------------------------------
+
+/**
+ * A slot holds a built-in palette, or a custom theme by its id. The list of
+ * custom themes is in the settings blob (customThemes.ts); the device keeps a
+ * snapshot of the colors of the one in each slot, so the first paint needs
+ * neither the blob nor the theme parser. Both slots paint through two fixed
+ * classes, `theme-custom-light` and `theme-custom-dark`, and one generated
+ * <style>, so no theme id ever reaches CSS and the stylesheet does not grow
+ * with the list. Spec: ops/docs/color-themes.md (section 6)
+ */
+export type CustomChoice = `custom:${string}`;
+export type ThemeChoice = ColorTheme | CustomChoice;
+
+export interface CustomSnapshot {
+  id: string;
+  /** The canonical theme code, so a synced edit can be told from no change. */
+  code: string;
+  mode: Theme;
+  /** `#RRGGBB` per token, without the `--pn-` prefix. */
+  colors: Record<string, string>;
+}
+
+export const customChoice = (id: string): CustomChoice => `custom:${id}`;
+export function customIdOf(choice: string): string | null {
+  return choice.startsWith('custom:') ? choice.slice('custom:'.length) : null;
+}
+/** Whether a free account may keep this choice. */
+export function isFreeTheme(choice: ThemeChoice): boolean {
+  return FREE_THEMES.has(choice as ColorTheme);
+}
+
+const CUSTOM_KEYS: Record<Theme, string> = {
+  light: 'privacynotes.customTheme.light',
+  dark: 'privacynotes.customTheme.dark',
+};
+// The tokens a custom theme sets; TOKEN_KEYS in themeCode.ts, and
+// tests/themeCode.test.ts keeps the two lists equal.
+const CUSTOM_TOKENS = [
+  'surface-0', 'surface-1', 'surface-2', 'track', 'divider',
+  'text', 'text-soft', 'text-muted',
+  'accent', 'accent-hover', 'accent-fill', 'accent-fill-hover',
+  'danger', 'warning', 'success',
+] as const;
+
+/** A snapshot from storage, or null unless every part of it is what one holds. */
+function validSnapshot(raw: unknown, mode: Theme): CustomSnapshot | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const r = raw as Partial<CustomSnapshot>;
+  if (typeof r.id !== 'string' || !/^[a-z0-9]{12}$/.test(r.id)) return null;
+  if (typeof r.code !== 'string' || r.code.length > 512 || r.mode !== mode) return null;
+  const colors = r.colors;
+  if (!colors || typeof colors !== 'object') return null;
+  const out: Record<string, string> = {};
+  for (const key of CUSTOM_TOKENS) {
+    const v = (colors as Record<string, unknown>)[key];
+    if (typeof v !== 'string' || !/^#[0-9A-F]{6}$/.test(v)) return null;
+    out[key] = v;
+  }
+  return { id: r.id, code: r.code, mode, colors: out };
+}
+
+function readSnapshot(mode: Theme): CustomSnapshot | null {
+  try {
+    return validSnapshot(JSON.parse(localStorage.getItem(CUSTOM_KEYS[mode]) ?? 'null'), mode);
+  } catch {
+    return null;
+  }
+}
+
+const storedSnapshots: Record<Theme, CustomSnapshot | null> = {
+  light: readSnapshot('light'),
+  dark: readSnapshot('dark'),
+};
+/** A theme shown without being saved: the builder and a pasted code. */
+const previewSnapshots: Record<Theme, CustomSnapshot | null> = { light: null, dark: null };
+
+/** Read one slot. A slot never written takes the legacy value when that
+ *  value belongs to its mode. A custom choice stands only while the device
+ *  holds its snapshot. */
+export function getStoredColorTheme(mode: Theme): ThemeChoice {
+  const stored = localStorage.getItem(COLOR_THEME_KEYS[mode]);
+  if (stored && customIdOf(stored) !== null) {
+    const snap = storedSnapshots[mode];
+    return snap && stored === customChoice(snap.id) ? (stored as CustomChoice) : 'default';
+  }
+  if (isColorTheme(stored) && (stored === 'default' || modeOf(stored) === mode)) return stored;
+  let legacy = localStorage.getItem(LEGACY_COLOR_THEME_KEY);
+  if (legacy === 'cool-white') legacy = 'slate'; // the stored name of 'slate' in older installs
+  if (isColorTheme(legacy) && modeOf(legacy) === mode) return legacy;
   return 'default';
 }
 
-/** Currently applied color theme (may differ from localStorage during preview). */
-let activeColorTheme: ColorTheme = getStoredColorTheme();
+/** The palette shown in each slot (may differ from storage during a preview). */
+const activeColorThemes: Record<Theme, ThemeChoice> = {
+  light: getStoredColorTheme('light'),
+  dark: getStoredColorTheme('dark'),
+};
 
-/** Apply color theme class visually without persisting to localStorage.
- *  Used for live previews that may be reverted. */
-export function previewColorTheme(ct: ColorTheme): void {
-  activeColorTheme = ct;
+/** The snapshot a slot paints, if it shows a custom theme. */
+function slotSnapshot(mode: Theme): CustomSnapshot | null {
+  const id = customIdOf(activeColorThemes[mode]);
+  if (!id) return null;
+  const snap = previewSnapshots[mode] ?? storedSnapshots[mode];
+  return snap && snap.id === id ? snap : null;
+}
+
+/** What a slot paints now, a preview included: the choice, and its snapshot
+ *  when the choice is a custom theme. */
+export function paintedSlot(mode: Theme): { choice: ThemeChoice; snapshot: CustomSnapshot | null } {
+  return { choice: activeColorThemes[mode], snapshot: slotSnapshot(mode) };
+}
+
+const channels = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(' ');
+
+/** The one generated stylesheet: a mode-scoped rule per slot that shows a
+ *  custom theme, built from validated hex and allowlisted token names. It is
+ *  unlayered, so it outranks the palette blocks in index.css. */
+function paintCustomRules(): void {
+  const rules: string[] = [];
+  for (const mode of ['light', 'dark'] as const) {
+    const snap = slotSnapshot(mode);
+    if (!snap) continue;
+    const selector = mode === 'dark' ? ':root.dark.theme-custom-dark' : ':root:not(.dark).theme-custom-light';
+    rules.push(`${selector}{${CUSTOM_TOKENS.map((k) => `--pn-${k}:${channels(snap.colors[k]!)}`).join(';')}}`);
+  }
+  let el = document.getElementById('pn-custom-themes');
+  if (rules.length === 0) {
+    el?.remove();
+    return;
+  }
+  if (!el) {
+    el = document.createElement('style');
+    el.id = 'pn-custom-themes';
+    document.head.append(el);
+  }
+  el.textContent = rules.join('\n');
+}
+
+/** Put both slots on <html>. Each palette's CSS block is scoped to its own
+ *  mode, so only the slot of the painted mode applies, and a mode flip needs
+ *  no repaint here. `instant` skips the crossfade, for the builder, which
+ *  repaints on every keystroke. */
+function paintColorThemes(instant = false): void {
   const root = document.documentElement;
-  const wantsCrossfade = hasAppliedOnce && typeof window !== 'undefined';
+  const wantsCrossfade = !instant && hasAppliedOnce && typeof window !== 'undefined';
   if (wantsCrossfade) root.classList.add('theme-animating');
-
-  const toRemove = [...root.classList].filter(
-    (c) => c.startsWith('theme-') && c !== 'theme-animating'
-  );
+  // Snapshot first: removing while iterating a live classList skips entries.
+  const toRemove = [...root.classList].filter((c) => c.startsWith('theme-') && c !== 'theme-animating');
   toRemove.forEach((c) => root.classList.remove(c));
-  if (ct !== 'default') root.classList.add(`theme-${ct}`);
+  for (const mode of ['light', 'dark'] as const) {
+    const ct = activeColorThemes[mode];
+    if (customIdOf(ct) !== null) {
+      if (slotSnapshot(mode)) root.classList.add(`theme-custom-${mode}`);
+    } else if (ct !== 'default') {
+      root.classList.add(`theme-${ct}`);
+    }
+  }
+  paintCustomRules();
   paintNativeBars();
-
   if (wantsCrossfade) {
     window.setTimeout(() => root.classList.remove('theme-animating'), 320);
   }
 }
 
-/** Apply color theme class to <html> and persist. */
-function applyColorTheme(ct: ColorTheme): void {
-  activeColorTheme = ct;
-  const root = document.documentElement;
-  const wantsCrossfade = hasAppliedOnce && typeof window !== 'undefined';
-  if (wantsCrossfade) {
-    root.classList.add('theme-animating');
+/** Show a palette in one slot without saving it: a free user's preview, or
+ *  a page that shows the defaults while it is on screen. */
+export function previewColorTheme(mode: Theme, ct: ThemeChoice): void {
+  activeColorThemes[mode] = ct;
+  if (customIdOf(ct) === null) previewSnapshots[mode] = null;
+  paintColorThemes();
+}
+
+/** Save a palette in one slot and paint it. A built-in palette drops the
+ *  slot's custom snapshot, so a theme deleted later leaves nothing behind. */
+function applyColorTheme(mode: Theme, ct: ThemeChoice): void {
+  activeColorThemes[mode] = ct;
+  previewSnapshots[mode] = null;
+  localStorage.setItem(COLOR_THEME_KEYS[mode], ct);
+  if (customIdOf(ct) === null && storedSnapshots[mode]) {
+    storedSnapshots[mode] = null;
+    localStorage.removeItem(CUSTOM_KEYS[mode]);
   }
+  paintColorThemes();
+}
 
-  // Remove any existing theme-* class (snapshot to array first -
-  // mutating classList during forEach skips entries in some engines).
-  const toRemove = [...root.classList].filter(
-    (c) => c.startsWith('theme-') && c !== 'theme-animating'
-  );
-  toRemove.forEach((c) => root.classList.remove(c));
+/** Save a custom theme in the slot of its mode and paint it. */
+function applyCustomTheme(snap: CustomSnapshot): void {
+  storedSnapshots[snap.mode] = snap;
+  localStorage.setItem(CUSTOM_KEYS[snap.mode], JSON.stringify(snap));
+  applyColorTheme(snap.mode, customChoice(snap.id));
+}
 
-  // 'default' needs no class - CSS vars are defined on bare :root
-  if (ct !== 'default') {
-    root.classList.add(`theme-${ct}`);
+/**
+ * Show a custom theme in a slot without saving it, for the builder and a
+ * pasted code. Null ends the preview and shows the saved slot again.
+ */
+export function previewCustomTheme(mode: Theme, snap: CustomSnapshot | null): void {
+  previewSnapshots[mode] = snap ? validSnapshot(snap, mode) : null;
+  const preview = previewSnapshots[mode];
+  activeColorThemes[mode] = preview ? customChoice(preview.id) : getStoredColorTheme(mode);
+  paintColorThemes(true);
+  emitThemeChange();
+}
+
+/**
+ * Put Default in every slot that holds a Pro theme, for an account the
+ * server reports as free: Pro ends only by a refund or a chargeback. The
+ * saved custom themes stay in the list, so a repurchase brings them back.
+ * Spec: ops/docs/pro-features.md (Color themes)
+ */
+export function dropProThemes(): void {
+  let changed = false;
+  for (const mode of ['light', 'dark'] as const) {
+    if (isFreeTheme(getStoredColorTheme(mode))) continue;
+    applyColorTheme(mode, 'default');
+    changed = true;
   }
+  if (changed) emitThemeChange();
+}
 
-  localStorage.setItem(COLOR_THEME_KEY, ct);
-  paintNativeBars();
-
-  if (wantsCrossfade) {
-    window.setTimeout(() => {
-      root.classList.remove('theme-animating');
-    }, 320);
+/**
+ * Keep the slots in step with the theme list after it loads or syncs: a
+ * theme edited on another device repaints with its new colors, and a theme
+ * that is gone (deleted, or never in this account) leaves its slot for
+ * Default. `snapshotFor` returns the current snapshot of a listed theme of
+ * that mode, or null. Call it only once the list is the account's own.
+ * `persist` is false in the demo, which shares this storage with a real
+ * install on the same origin.
+ */
+export function reconcileCustomSlots(
+  snapshotFor: (id: string, mode: Theme) => CustomSnapshot | null,
+  persist: boolean,
+): void {
+  let changed = false;
+  for (const mode of ['light', 'dark'] as const) {
+    const id = customIdOf(getStoredColorTheme(mode));
+    if (!id) continue;
+    const next = snapshotFor(id, mode);
+    const prev = storedSnapshots[mode];
+    // The colors as well as the code: a snapshot written by an older build
+    // of this code repaints with the colors this build resolves.
+    if (next && (next.code !== prev?.code || JSON.stringify(next.colors) !== JSON.stringify(prev?.colors))) {
+      storedSnapshots[mode] = next;
+      if (persist) localStorage.setItem(CUSTOM_KEYS[mode], JSON.stringify(next));
+      changed = true;
+    } else if (!next) {
+      storedSnapshots[mode] = null;
+      if (persist) {
+        localStorage.setItem(COLOR_THEME_KEYS[mode], 'default');
+        localStorage.removeItem(CUSTOM_KEYS[mode]);
+      }
+      if (!previewSnapshots[mode]) activeColorThemes[mode] = 'default';
+      changed = true;
+    }
+  }
+  if (changed) {
+    paintColorThemes();
+    emitThemeChange();
   }
 }
 
 /** Bootstrap color theme - called from initTheme(). */
 function initColorTheme(): void {
-  applyColorTheme(getStoredColorTheme());
+  paintColorThemes();
 }
 
 // ------------------------------------------------------------------
@@ -645,25 +917,42 @@ function initColorTheme(): void {
  */
 export function resetAppearance(): void {
   try {
+    applyThemeDefaults();
     applyStyleDefaults();
     applySpellcheck(true);
+    applyCopyFormat('markdown');
     setCodeWrap(true);
   } catch { /* ignore */ }
   emitThemeChange();
 }
 
-/** The device axes that Settings > Appearance > Style shows. */
-function applyStyleDefaults(): void {
+/** The device axes that Settings > Appearance > Themes shows. */
+function applyThemeDefaults(): void {
   applyThemeMode('auto');
-  applyColorTheme('default');
+  applyColorTheme('light', 'default');
+  applyColorTheme('dark', 'default');
+}
+
+/** The Themes tab's "Reset to defaults". */
+export function resetThemeAxes(): void {
+  try { applyThemeDefaults(); } catch { /* ignore */ }
+  emitThemeChange();
+}
+
+/** The device axes that Settings > Appearance > Text and layout shows. */
+function applyStyleDefaults(): void {
   applyTextSize('md');
   applyContentWidth('default');
   applyFavicons(true);
   applyInvisibles(false);
+  // The window scale is on the same tab, so a reset that left it alone
+  // would leave the one axis a reader cannot miss. It emits on its own
+  // store, which this function's callers do not reach.
+  applyAppZoom(DEFAULT_APP_ZOOM);
 }
 
-/** The Style tab's "Reset to defaults", for the axes this device owns. The
- *  synced ones on that tab go back through the settings blob. */
+/** The Text and layout tab's "Reset to defaults", for the axes this device
+ *  owns. The synced ones on that tab go back through the settings blob. */
 export function resetStyleAxes(): void {
   try { applyStyleDefaults(); } catch { /* ignore */ }
   emitThemeChange();
@@ -688,14 +977,16 @@ function emitThemeChange() {
 }
 
 /** Snapshot functions for useSyncExternalStore. */
-function getThemeSnapshot(): Theme { return getStoredTheme(); }
+function getThemeSnapshot(): Theme { return peekTheme ?? getStoredTheme(); }
 function getThemeModeSnapshot(): ThemeMode { return getStoredThemeMode(); }
-function getColorThemeSnapshot(): ColorTheme { return activeColorTheme; }
+function getLightColorThemeSnapshot(): ThemeChoice { return activeColorThemes.light; }
+function getDarkColorThemeSnapshot(): ThemeChoice { return activeColorThemes.dark; }
 function getTextSizeSnapshot(): TextSize { return activeTextSize; }
 function getContentWidthSnapshot(): ContentWidth { return activeContentWidth; }
 function getSpellcheckSnapshot(): boolean { return activeSpellcheck; }
 function getInvisiblesSnapshot(): boolean { return activeInvisibles; }
 function getFaviconsSnapshot(): boolean { return activeFavicons; }
+function getCopyFormatSnapshot(): CopyFormat { return activeCopyFormat; }
 
 /**
  * React hook that exposes both axes and controls for each.
@@ -707,12 +998,16 @@ function getFaviconsSnapshot(): boolean { return activeFavicons; }
 export function useTheme() {
   const theme = useSyncExternalStore(subscribeTheme, getThemeSnapshot);
   const themeMode = useSyncExternalStore(subscribeTheme, getThemeModeSnapshot);
-  const colorTheme = useSyncExternalStore(subscribeTheme, getColorThemeSnapshot);
+  const lightTheme = useSyncExternalStore(subscribeTheme, getLightColorThemeSnapshot);
+  const darkTheme = useSyncExternalStore(subscribeTheme, getDarkColorThemeSnapshot);
+  /** The palette on screen now: the slot of the painted mode. */
+  const colorTheme = theme === 'dark' ? darkTheme : lightTheme;
   const textSize = useSyncExternalStore(subscribeTheme, getTextSizeSnapshot);
   const contentWidth = useSyncExternalStore(subscribeTheme, getContentWidthSnapshot);
   const spellcheck = useSyncExternalStore(subscribeTheme, getSpellcheckSnapshot);
   const invisibles = useSyncExternalStore(subscribeTheme, getInvisiblesSnapshot);
   const favicons = useSyncExternalStore(subscribeTheme, getFaviconsSnapshot);
+  const copyFormat = useSyncExternalStore(subscribeTheme, getCopyFormatSnapshot);
 
   /** Pin an explicit light/dark choice, replacing 'auto' if it was set. */
   const setTheme = useCallback((next: Theme) => {
@@ -725,8 +1020,14 @@ export function useTheme() {
     emitThemeChange();
   }, []);
 
-  const setColorTheme = useCallback((next: ColorTheme) => {
-    applyColorTheme(next);
+  const setColorTheme = useCallback((mode: Theme, next: ThemeChoice) => {
+    applyColorTheme(mode, next);
+    emitThemeChange();
+  }, []);
+
+  /** Save a custom theme in the slot of its mode. */
+  const setCustomTheme = useCallback((snap: CustomSnapshot) => {
+    applyCustomTheme(snap);
     emitThemeChange();
   }, []);
 
@@ -764,9 +1065,14 @@ export function useTheme() {
     emitThemeChange();
   }, []);
 
-  /** Apply a color theme visually without persisting. Reverts on reload. */
-  const previewColor = useCallback((next: ColorTheme) => {
-    previewColorTheme(next);
+  const setCopyFormat = useCallback((next: CopyFormat) => {
+    applyCopyFormat(next);
+    emitThemeChange();
+  }, []);
+
+  /** Show a palette in one slot without persisting. Reverts on reload. */
+  const previewColor = useCallback((mode: Theme, next: ThemeChoice) => {
+    previewColorTheme(mode, next);
     emitThemeChange();
   }, []);
 
@@ -778,5 +1084,5 @@ export function useTheme() {
     emitThemeChange();
   }, []);
 
-  return { theme, themeMode, toggle, setTheme, setThemeMode, colorTheme, setColorTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, cycleContentWidth, spellcheck, setSpellcheck, invisibles, setInvisibles, favicons, setFavicons };
+  return { theme, themeMode, toggle, setTheme, setThemeMode, colorTheme, lightTheme, darkTheme, setColorTheme, setCustomTheme, previewColor, textSize, setTextSize, contentWidth, setContentWidth, cycleContentWidth, spellcheck, setSpellcheck, invisibles, setInvisibles, favicons, setFavicons, copyFormat, setCopyFormat };
 }

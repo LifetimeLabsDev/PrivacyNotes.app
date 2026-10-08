@@ -5,6 +5,7 @@ import { MagnifyingGlass, ArrowsLeftRight, TextAa, X } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { isImeComposing } from './imeComposing';
 import { BAR_BTN, MatchNav } from './MatchNav';
+import { keyText } from './shortcutMatch';
 import {
   setSearchQuery,
   setActiveMatch,
@@ -25,13 +26,13 @@ type Props = {
 
 /** Text buttons (Replace, All): the icon button's style at a label's width. */
 const TEXT_BTN =
-  'flex items-center justify-center h-7 px-2 rounded text-xs font-medium text-neutral-700 dark:text-neutral-200 ' +
-  '[@media(hover:hover)]:hover:bg-neutral-200 [@media(hover:hover)]:dark:hover:bg-neutral-800 ' +
+  'flex items-center justify-center h-7 px-2 rounded text-xs font-medium text-pn-soft ' +
+  '[@media(hover:hover)]:hover:bg-pn/10 ' +
   'disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition shrink-0 outline-none';
 
 const INPUT =
-  'flex-1 min-w-0 bg-transparent text-sm text-neutral-800 dark:text-neutral-100 ' +
-  'placeholder:text-neutral-400 dark:placeholder:text-neutral-500 outline-none px-1';
+  'flex-1 min-w-0 bg-transparent text-sm text-pn ' +
+  'placeholder:text-pn-muted outline-none px-1';
 
 /**
  * Floating find-and-replace bar, the Pro twin of FindBar. Same shell, same
@@ -153,7 +154,7 @@ export function ReplaceBar({ editor, focusTick, onClose }: Props) {
           ? '0/0'
           : '';
   const canReplace = info.total > 0 && !info.activeIsNode;
-  const iconCls = 'text-neutral-400 dark:text-neutral-500 shrink-0 ms-0.5 me-0.5';
+  const iconCls = 'text-pn-muted shrink-0 ms-0.5 me-0.5';
 
   return (
     <div className="pointer-events-auto mt-1 ms-2 me-2 flex flex-1 min-w-0 sm:flex-none sm:w-[22rem] flex-col gap-1 rounded-lg border border-divider bg-surface-1 shadow-lg px-1.5 py-1">
@@ -178,14 +179,14 @@ export function ReplaceBar({ editor, focusTick, onClose }: Props) {
             onClick={() => setCaseSensitive((v) => !v)}
             aria-pressed={caseSensitive}
             aria-label={t('find.caseSensitive')}
-            className={`${BAR_BTN}${caseSensitive ? ' bg-neutral-200 dark:bg-neutral-800 text-accent' : ''}`}
+            className={`${BAR_BTN}${caseSensitive ? ' bg-pn/10 text-accent' : ''}`}
           >
             <TextAa size={15} />
           </button>
         </HoverLabel>
         <MatchNav count={count} noHits={noHits} canStep={info.total > 0} onStep={go} />
         <div className="w-px h-5 bg-divider mx-0.5 shrink-0" aria-hidden="true" />
-        <HoverLabel label={t('find.closeReplaceTitle')} position="below-end">
+        <HoverLabel label={t('find.closeReplaceTitle', { keys: keyText('findReplace') })} position="below-end">
           <button
             type="button"
             onMouseDown={(e) => e.preventDefault()}

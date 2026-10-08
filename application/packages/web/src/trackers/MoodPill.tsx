@@ -33,7 +33,7 @@ export function MoodPill({
       readOnly={readOnly}
     >
       <div className="flex flex-col gap-2 items-start">
-        <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+        <span className="text-xs font-medium text-pn-soft">
           {t('mood.prompt')}
         </span>
         <div className="inline-flex flex-col gap-1">
@@ -45,15 +45,15 @@ export function MoodPill({
                 onClick={() => { onChange(n); onToggle(); }}
                 className={`w-7 h-7 rounded-md text-xs font-semibold transition-colors ${
                   value === n
-                    ? 'bg-accent text-white'
-                    : 'bg-surface-0 text-neutral-700 dark:text-neutral-300 hover:bg-accent/20'
+                    ? 'bg-accent-fill text-white'
+                    : 'bg-surface-0 text-pn-soft hover:bg-accent/20'
                 }`}
               >
                 {n}
               </button>
             ))}
           </div>
-          <div className="flex justify-between text-[10px] text-neutral-400 dark:text-neutral-500 px-0.5">
+          <div className="flex justify-between text-[10px] text-pn-muted px-0.5">
             <span>{t('mood.low')}</span>
             <span>{t('mood.high')}</span>
           </div>

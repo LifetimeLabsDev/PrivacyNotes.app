@@ -6,14 +6,17 @@
 
 import type { TFunction } from 'i18next';
 import type { LocalNote } from './db';
-import { activeLocale, intlLocale } from './languages';
-import { weekdayDate, weekdayLabel } from './intlFormat';
+import { activeLocale } from './languages';
+import { formatDay, formatInstant, weekdayDate, weekdayLabel } from './intlFormat';
 import { RTL_LOCALES } from './localeRoutes';
 import { journalDateOf, toLocalIso } from './notesViewUtils';
+import { moodStreak } from './trackerCompare';
 import {
+  BOOKKEEPING_KEYS,
   mergeTrackers,
   type JournalTrackerData,
   type MedicationTemplate,
+  type CustomTrackerTemplate,
   EMOTION_TAGS,
   SLEEP_LABELS,
   SLEEP_QUALITIES,
@@ -22,13 +25,6 @@ import {
   ACTIVITY_LEVELS,
   type ActivityLevel,
 } from './trackerTypes';
-
-// The AI prompt and the doctor report are written in English end to end, so
-// they resolve their own English names. Everything the UI renders travels as
-// a key and is translated where it is shown.
-function emotionLabel(key: string): string {
-  return EMOTION_TAGS.find((t) => t.key === key)?.label ?? key;
-}
 
 /** Average of an array of numbers (returns 0 for empty arrays). */
 function avg(nums: number[]): number {
@@ -45,7 +41,7 @@ function round1(n: number): number {
 // ------------------------------------------------------------------
 
 export type PatternInsight = {
-  type: 'correlation' | 'day_of_week' | 'medication' | 'streak' | 'trend';
+  type: 'day_of_week' | 'streak' | 'trend';
   /** Key under `wellness.insights` in the stats catalog. */
   key: string;
   params: Record<string, string | number>;
@@ -97,12 +93,23 @@ type WeekInReview = {
 // Helpers
 // ------------------------------------------------------------------
 
-/** The LOCAL calendar day a stamp falls on. Only entries predating the
- *  `journalDate` field reach this, and slicing the ISO string gave their
- *  UTC day - which could collide with, or sit a day away from, the local
- *  dates every other entry is filed under. */
+/** The LOCAL calendar day a stamp falls on: for an entry predating the
+ *  `journalDate` field, and for the instant a medication was deleted.
+ *  Slicing the ISO string gives the UTC day, which can collide with, or sit
+ *  a day away from, the local dates every entry is filed under. */
 function dayKey(iso: string): string {
   return toLocalIso(new Date(iso));
+}
+
+/** The journal entries whose day (the entry date, or the creation day for an
+ *  entry that predates it) falls in `range`, inclusive. Statistics built from
+ *  these follow the range row of the Wellness tab. */
+export function journalsInRange(notes: LocalNote[], range: { from: string; to: string }): LocalNote[] {
+  return notes.filter((n) => {
+    if (n.type !== 'journal') return false;
+    const day = journalDateOf(n) ?? dayKey(n.createdAt);
+    return day >= range.from && day <= range.to;
+  });
 }
 
 /** Local calendar date `n` days back. Local, not UTC, so it compares
@@ -116,15 +123,10 @@ function daysAgo(n: number): string {
   return toLocalIso(d);
 }
 
-type JournalEntry = {
+export type JournalEntry = {
   date: string;
   data: JournalTrackerData;
 };
-
-/** Bookkeeping keys the app stamps on every journal entry at birth.
- *  They say when the entry is for, not anything the user tracked, so a
- *  `trackers` object holding only these is an untracked day. */
-const BOOKKEEPING_KEYS = new Set(['journalDate', 'backfilled']);
 
 /** True when the user actually logged something (a pill, a reflection),
  *  as opposed to the birth stamp every journal entry carries. */
@@ -155,8 +157,18 @@ function hasTrackerData(data: JournalTrackerData): boolean {
  * sleep and doses are its content, and every reader below (the charts, the
  * insights, the doctor report, the AI prompt, Week in review, the JSON
  * export) comes through here.
+ *
+ * An entry for a day after today waits until that day comes: a plan written
+ * ahead is not a tracked day, and counting it would move every average and
+ * streak. The JSON export alone keeps every day (`withFuture`).
+ * Spec: ops/docs/plans/dates.md (section 3.4)
  */
-function extractEntries(notes: LocalNote[], isGated: (n: LocalNote) => boolean): JournalEntry[] {
+export function extractEntries(
+  notes: LocalNote[],
+  isGated: (n: LocalNote) => boolean,
+  withFuture = false,
+): JournalEntry[] {
+  const today = toLocalIso(new Date());
   const byDate = new Map<string, JournalEntry>();
   const sourceOrder = [...notes].sort((a, b) =>
     a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0,
@@ -172,6 +184,7 @@ function extractEntries(notes: LocalNote[], isGated: (n: LocalNote) => boolean):
     // created since the date stamp shipped counted as a tracked day.
     if (!data || !hasTrackerData(data)) continue;
     const date = journalDateOf(n) ?? dayKey(n.createdAt);
+    if (!withFuture && date > today) continue;
     const existing = byDate.get(date);
     byDate.set(date, {
       date,
@@ -317,7 +330,7 @@ export function computeTrackerStats(
     const window = medWindows.get(med.id);
     if (!window) continue; // never logged - unknown, not missed
     const from = med.startedAt > window.first ? med.startedAt : window.first;
-    const until = med.deletedAt ? med.deletedAt.slice(0, 10) : null;
+    const until = med.deletedAt ? dayKey(med.deletedAt) : null;
     let taken = 0;
     let total = 0;
     for (const e of entries) {
@@ -389,7 +402,7 @@ export function computeTrackerStats(
       const window = medWindows.get(med.id);
       if (!window) continue;
       const from = med.startedAt > window.first ? med.startedAt : window.first;
-      const until = med.deletedAt ? med.deletedAt.slice(0, 10) : null;
+      const until = med.deletedAt ? dayKey(med.deletedAt) : null;
       for (const e of thisWeek) {
         if (e.date < from) continue;
         if (until && e.date > until) continue;
@@ -448,7 +461,7 @@ export function computeTrackerStats(
     : null;
 
   // ── Pattern detection ─────────────────────────────────────────
-  const patterns = computePatterns(entries, moodCount, moodSum, medications);
+  const patterns = computePatterns(entries, moodCount, moodSum);
 
   return {
     trackedDays: entries.length,
@@ -471,66 +484,21 @@ export function computeTrackerStats(
 // Pattern detection
 // ------------------------------------------------------------------
 
-const SLEEP_QUALITY_NUM: Record<string, number> = {
-  terrible: 1, poor: 2, okay: 3, good: 4, great: 5,
-};
-const ACTIVITY_NUM: Record<string, number> = {
-  sedentary: 1, light: 2, moderate: 3, active: 4, intense: 5,
-};
-
+/**
+ * The sentences that are not a comparison of one tracker against another:
+ * the weekday, the mood streak, the trend. The comparisons, the sleep and
+ * activity ones included, come from trackerCompare and are built where they
+ * are shown.
+ * Spec: ops/docs/plans/wellness-statistics.md (section 7)
+ */
 function computePatterns(
   entries: JournalEntry[],
   moodCount: number,
   moodSum: number,
-  medications: MedicationTemplate[],
 ): PatternInsight[] {
   const patterns: PatternInsight[] = [];
   if (moodCount < 5) return patterns;
   const avgMood = moodSum / moodCount;
-
-  // ── Sleep-mood correlation ────────────────────────────────────
-  const goodSleepMoods: number[] = [];
-  const badSleepMoods: number[] = [];
-  for (const e of entries) {
-    if (e.data.mood == null || !e.data.sleep) continue;
-    const sq = SLEEP_QUALITY_NUM[e.data.sleep.quality] ?? 3;
-    if (sq >= 4) goodSleepMoods.push(e.data.mood);
-    else if (sq <= 2) badSleepMoods.push(e.data.mood);
-  }
-  if (goodSleepMoods.length >= 3 && badSleepMoods.length >= 3) {
-    const goodAvg = avg(goodSleepMoods);
-    const badAvg = avg(badSleepMoods);
-    const delta = round1(goodAvg - badAvg);
-    if (Math.abs(delta) >= 0.5) {
-      patterns.push({
-        type: 'correlation',
-        key: 'sleep',
-        params: { good: round1(goodAvg), bad: round1(badAvg) },
-      });
-    }
-  }
-
-  // ── Activity-mood correlation ─────────────────────────────────
-  const activeMoods: number[] = [];
-  const sedentaryMoods: number[] = [];
-  for (const e of entries) {
-    if (e.data.mood == null || !e.data.activity) continue;
-    const al = ACTIVITY_NUM[e.data.activity] ?? 3;
-    if (al >= 3) activeMoods.push(e.data.mood);
-    else sedentaryMoods.push(e.data.mood);
-  }
-  if (activeMoods.length >= 3 && sedentaryMoods.length >= 3) {
-    const activeAvg = avg(activeMoods);
-    const sedAvg = avg(sedentaryMoods);
-    const delta = round1(activeAvg - sedAvg);
-    if (Math.abs(delta) >= 0.5) {
-      patterns.push({
-        type: 'correlation',
-        key: 'activity',
-        params: { active: round1(activeAvg), sedentary: round1(sedAvg) },
-      });
-    }
-  }
 
   // ── Day-of-week pattern ─────────────────────────────────────────
   const dowSums2: number[] = [0, 0, 0, 0, 0, 0, 0];
@@ -558,44 +526,11 @@ function computePatterns(
     });
   }
 
-  // ── Medication impact ─────────────────────────────────────────
-  for (const med of medications) {
-    const startDate = med.startedAt;
-    const beforeMoods: number[] = [];
-    const afterMoods: number[] = [];
-    for (const e of entries) {
-      if (e.data.mood == null) continue;
-      if (e.date < startDate) beforeMoods.push(e.data.mood);
-      else afterMoods.push(e.data.mood);
-    }
-    if (beforeMoods.length >= 5 && afterMoods.length >= 5) {
-      const beforeAvg = avg(beforeMoods);
-      const afterAvg = avg(afterMoods);
-      const delta = round1(afterAvg - beforeAvg);
-      if (Math.abs(delta) >= 0.5) {
-        patterns.push({
-          type: 'medication',
-          key: 'medication',
-          params: { name: med.name, date: startDate, before: round1(beforeAvg), after: round1(afterAvg) },
-        });
-      }
-    }
-  }
-
-  // ── Streak acknowledgment ───────���─────────────────────────────
-  let streak = 0;
-  const today = daysAgo(0);
-  for (let i = 0; i <= 365; i++) {
-    const d = daysAgo(i);
-    if (entries.some((e) => e.date === d)) streak++;
-    else break;
-  }
+  // ── Streak acknowledgment ─────────────────────────────────────
+  // Counts mood days only: that is what the sentence says.
+  const streak = moodStreak(entries, daysAgo(0));
   if (streak >= 7) {
-    patterns.push({
-      type: 'streak',
-      key: 'streak',
-      params: { count: streak },
-    });
+    patterns.push({ type: 'streak', key: 'streak', params: { count: streak } });
   }
 
   // ── Mood trend (last 14 days vs overall) ──────────────────────
@@ -623,9 +558,10 @@ function computePatterns(
  * The sentence for one detected pattern, in the language on screen.
  *
  * The insight travels as a key and plain numbers, so the same pattern reads
- * correctly in a card, in the AI prompt and in the doctor report. The
- * day-of-week case is the one that needs more than interpolation: it carries
- * two weekday indexes, and only the caller's locale can name them.
+ * correctly in a card, in the AI prompt and in the doctor report. Two cases
+ * need more than interpolation: the day-of-week one carries two weekday
+ * indexes and the medication one a stored day, and only the caller's locale
+ * can write either.
  */
 export function insightText(p: PatternInsight, t: TFunction): string {
   const params = p.type === 'day_of_week'
@@ -639,253 +575,62 @@ export function insightText(p: PatternInsight, t: TFunction): string {
 }
 
 // ------------------------------------------------------------------
-// AI prompt generator
-// ------------------------------------------------------------------
-
-export function generateAIPrompt(
-  stats: TrackerStats,
-  medications: MedicationTemplate[],
-  t: TFunction,
-): string {
-  const p = (key: string, vars: Record<string, unknown> = {}) =>
-    t(`wellness.aiPrompt.${key}`, vars) as string;
-  const days = (count: number) => t('wellness.units.days', { count }) as string;
-
-  const lines: string[] = [
-    p('intro'),
-    '',
-    `## ${p('overview')}`,
-    `- ${p('daysTracked', { days: stats.trackedDays })}`,
-  ];
-  if (stats.avgMood != null) lines.push(`- ${p('avgMood', { mood: stats.avgMood })}`);
-  if (stats.avgSleepHours != null) lines.push(`- ${p('avgSleep', { hours: stats.avgSleepHours })}`);
-  if (stats.medAdherence != null) lines.push(`- ${p('adherence', { pct: stats.medAdherence })}`);
-  if (stats.emotionFrequency.length > 0) {
-    const list = stats.emotionFrequency
-      .slice(0, 8)
-      .map((e) => `${emotionName(e.key, t)} (${e.count}x)`)
-      .join(', ');
-    lines.push(`- ${p('topEmotions', { list })}`);
-  }
-
-  // Mood trend as readable table
-  if (stats.moodTrend.length > 0) {
-    lines.push('', `## ${p('moodTrend')}`, `| ${p('columnDate')} | ${p('columnMood')} |`, '|------|------|');
-    for (const d of stats.moodTrend.slice(-30)) {
-      lines.push(`| ${d.date} | ${d.mood}/10 |`);
-    }
-  }
-
-  // Sleep distribution
-  if (stats.sleepDistribution.some((s) => s.count > 0)) {
-    lines.push('', `## ${p('sleepDistribution')}`);
-    for (const s of stats.sleepDistribution) {
-      if (s.count > 0) lines.push(`- ${sleepName(s.quality, t)}: ${days(s.count)}`);
-    }
-  }
-
-  // Activity distribution
-  if (stats.activityDistribution.some((a) => a.count > 0)) {
-    lines.push('', `## ${p('activityDistribution')}`);
-    for (const a of stats.activityDistribution) {
-      if (a.count > 0) lines.push(`- ${activityName(a.level, t)}: ${days(a.count)}`);
-    }
-  }
-
-  // Medications
-  if (stats.medBreakdown.length > 0) {
-    lines.push('', `## ${p('adherenceHeading')}`);
-    for (const m of stats.medBreakdown) {
-      lines.push(`- ${p('adherenceLine', { name: m.name, taken: m.taken, total: m.total, pct: m.pct })}`);
-    }
-    const medsWithHistory = medications.filter((m) => m.dosageHistory.length > 0 || m.startedAt);
-    if (medsWithHistory.length > 0) {
-      lines.push('', `### ${p('dosageTimeline')}`);
-      for (const m of medsWithHistory) {
-        lines.push(`- ${m.name}: ${startedLine(m, t)}`);
-        for (const h of m.dosageHistory.slice(1)) {
-          lines.push(`  - ${changedLine(h.dosage, h.changedAt, t)}`);
-        }
-      }
-    }
-  }
-
-  // Detected patterns
-  if (stats.patterns.length > 0) {
-    lines.push('', `## ${p('patterns')}`);
-    for (const pattern of stats.patterns) {
-      lines.push(`- ${insightText(pattern, t)}`);
-    }
-  }
-
-  lines.push('', `## ${p('questions')}`);
-  lines.push(`1. ${p('question1')}`);
-  lines.push(`2. ${p('question2')}`);
-  lines.push(`3. ${p('question3')}`);
-  lines.push(`4. ${p('question4')}`);
-  lines.push('', '---', p('footer'));
-
-  return lines.join('\n');
-}
-
-// ------------------------------------------------------------------
-// Doctor PDF (printable HTML opened in new tab)
-// ------------------------------------------------------------------
-
-/** The dose a medication STARTED on. `dosage` is the CURRENT one, so
- *  printing it beside `startedAt` states a fact that never happened once
- *  the dose has changed. Templates created before dosageHistory was
- *  written fall back to it - the old value is genuinely unrecoverable. */
-function startingDosage(m: MedicationTemplate, t: TFunction): string {
-  return m.dosageHistory[0]?.dosage || m.dosage || (t('wellness.report.unknownDose') as string);
-}
-
-function startedLine(m: MedicationTemplate, t: TFunction): string {
-  return t('wellness.report.started', { dosage: startingDosage(m, t), date: m.startedAt }) as string;
-}
-
-function changedLine(dosage: string, date: string, t: TFunction): string {
-  return t('wellness.report.changedTo', { dosage, date }) as string;
-}
-
-function emotionName(key: string, t: TFunction): string {
-  return t(`trackers:emotions.tags.${key}`, { defaultValue: key }) as string;
-}
-
-function sleepName(quality: SleepQuality, t: TFunction): string {
-  return t(`trackers:sleep.quality.${quality}`) as string;
-}
-
-function activityName(level: ActivityLevel, t: TFunction): string {
-  return t(`trackers:activity.level.${level}`) as string;
-}
-
-/** Escape text destined for the printable report. Medication names and
- *  dosages are user-authored, and the report is written into a window
- *  opened with about:blank - which inherits the app's origin, so an
- *  unescaped name executed script next to the decrypted vault. */
-function esc(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-export function generateDoctorReport(
-  stats: TrackerStats,
-  medications: MedicationTemplate[],
-  t: TFunction,
-): string {
-  const r = (key: string, vars: Record<string, unknown> = {}) =>
-    t(`wellness.report.${key}`, vars) as string;
-
-  const moodSvgBars = stats.moodTrend.slice(-90).map((d, i) => {
-    const h = (d.mood / 10) * 100;
-    const color = d.mood <= 2 ? '#EF4444' : d.mood <= 4 ? '#F97316' : d.mood <= 6 ? '#EAB308' : d.mood <= 8 ? '#22C55E' : '#1E40AF';
-    return `<rect x="${i * 8}" y="${100 - h}" width="6" height="${h}" fill="${color}" rx="1"/>`;
-  }).join('');
-
-  const sleepRows = stats.sleepDistribution
-    .filter((s) => s.count > 0)
-    .map((s) => `<tr><td>${esc(sleepName(s.quality, t))}</td><td>${s.count}</td></tr>`)
-    .join('');
-
-  const activityRows = stats.activityDistribution
-    .filter((a) => a.count > 0)
-    .map((a) => `<tr><td>${esc(activityName(a.level, t))}</td><td>${a.count}</td></tr>`)
-    .join('');
-
-  const medRows = stats.medBreakdown
-    .map((m) => `<tr><td>${esc(m.name)}</td><td>${m.taken}/${m.total}</td><td>${m.pct}%</td></tr>`)
-    .join('');
-
-  const medTimeline = medications
-    .filter((m) => m.dosageHistory.length > 0 || m.startedAt)
-    .map((m) => {
-      const events = [
-        `<li>${esc(startedLine(m, t))}</li>`,
-        ...m.dosageHistory
-          .slice(1)
-          .map((h) => `<li>${esc(changedLine(h.dosage, h.changedAt, t))}</li>`),
-      ].join('');
-      return `<h4>${esc(m.name)}</h4><ul>${events}</ul>`;
-    }).join('');
-
-  const emotionList = stats.emotionFrequency.slice(0, 10)
-    .map((e) => `${esc(emotionName(e.key, t))} (${e.count}x)`).join(', ');
-
-  const locale = activeLocale();
-  const today = new Date().toLocaleDateString(intlLocale(locale), { year: 'numeric', month: 'long', day: 'numeric' });
-  const earliest = stats.moodTrend[0]?.date ?? '-';
-  const latest = stats.moodTrend[stats.moodTrend.length - 1]?.date ?? '-';
-  // The report prints outside the app, so it carries its own language and
-  // direction rather than inheriting either.
-  const dir = (RTL_LOCALES as readonly string[]).includes(locale) ? 'rtl' : 'ltr';
-
-  return `<!DOCTYPE html>
-<html lang="${locale}" dir="${dir}"><head><meta charset="utf-8"><title>${esc(r('documentTitle'))}</title>
-<style>
-body{font-family:-apple-system,sans-serif;max-width:700px;margin:40px auto;padding:0 20px;font-size:13px;color:#222}
-h1{font-size:20px;margin-bottom:4px}h2{font-size:15px;margin-top:24px;border-bottom:1px solid #ddd;padding-bottom:4px}
-h3{font-size:13px;margin-top:16px}h4{font-size:12px;margin:8px 0 4px}
-table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid #ddd;padding:4px 8px;text-align:start;font-size:12px}
-.meta{color:#666;font-size:11px}svg{display:block;margin:8px 0}
-ul{margin:4px 0;padding-inline-start:20px}li{font-size:12px;margin:2px 0}
-.footer{margin-top:32px;border-top:1px solid #ddd;padding-top:8px;font-size:10px;color:#999}
-@media print{body{margin:0;padding:20px}}
-</style></head><body>
-<h1>${esc(r('heading'))}</h1>
-<p class="meta">${esc(r('meta', { date: today, from: earliest, to: latest, days: stats.trackedDays }))}</p>
-
-<h2>${esc(r('overview'))}</h2>
-<table><tr><th>${esc(r('columnMetric'))}</th><th>${esc(r('columnValue'))}</th></tr>
-<tr><td>${esc(r('avgMood'))}</td><td>${stats.avgMood ?? '-'}/10</td></tr>
-<tr><td>${esc(r('avgSleep'))}</td><td>${stats.avgSleepHours ?? '-'}h</td></tr>
-<tr><td>${esc(r('adherence'))}</td><td>${stats.medAdherence ?? '-'}%</td></tr>
-<tr><td>${esc(r('daysTracked'))}</td><td>${stats.trackedDays}</td></tr>
-</table>
-
-<h2>${esc(r('moodTrend'))}</h2>
-<svg width="${stats.moodTrend.slice(-90).length * 8}" height="100" viewBox="0 0 ${stats.moodTrend.slice(-90).length * 8} 100">${moodSvgBars}</svg>
-<p class="meta">${esc(r('legend'))}</p>
-
-${sleepRows ? `<h2>${esc(r('sleepDistribution'))}</h2><table><tr><th>${esc(r('columnQuality'))}</th><th>${esc(r('columnDays'))}</th></tr>${sleepRows}</table>` : ''}
-
-${activityRows ? `<h2>${esc(r('activityDistribution'))}</h2><table><tr><th>${esc(r('columnLevel'))}</th><th>${esc(r('columnDays'))}</th></tr>${activityRows}</table>` : ''}
-
-${medRows ? `<h2>${esc(r('adherenceHeading'))}</h2><p class="meta">${esc(r('adherenceNote'))}</p><table><tr><th>${esc(r('columnMedication'))}</th><th>${esc(r('columnTaken'))}</th><th>${esc(r('columnRate'))}</th></tr>${medRows}</table>` : ''}
-
-${medTimeline ? `<h2>${esc(r('dosageTimeline'))}</h2>${medTimeline}` : ''}
-
-${emotionList ? `<h2>${esc(r('topEmotions'))}</h2><p>${emotionList}</p>` : ''}
-
-${stats.patterns.length > 0 ? `<h2>${esc(r('patterns'))}</h2><ul>${stats.patterns.map((pattern) => `<li>${esc(insightText(pattern, t))}</li>`).join('')}</ul>` : ''}
-
-<p class="footer">${esc(r('footer'))}</p>
-<script>window.print();</script>
-</body></html>`;
-}
-
-// ------------------------------------------------------------------
 // JSON export
 // ------------------------------------------------------------------
 
+/** What turns the ids inside the entries into names, tombstones included. */
+export type WellnessDefinitions = {
+  customTrackers: readonly CustomTrackerTemplate[];
+  medications: readonly MedicationTemplate[];
+};
+
+/**
+ * The free data export: a versioned envelope with the range, the
+ * definitions every id points at, and the raw entries with their ids, so a
+ * later import can read them back and a person can read them now. Every
+ * day is kept, a day planned ahead included.
+ * Spec: ops/docs/plans/wellness-statistics.md (section 12)
+ */
 export function exportTrackerJSON(
   notes: LocalNote[],
   dateFrom: string | undefined,
   dateTo: string | undefined,
   isGated: (n: LocalNote) => boolean,
+  definitions: WellnessDefinitions = { customTrackers: [], medications: [] },
+  generated: string = toLocalIso(new Date()),
 ): string {
-  const entries = extractEntries(notes, isGated);
-  const filtered = entries.filter((e) => {
+  const entries = extractEntries(notes, isGated, true).filter((e) => {
     if (dateFrom && e.date < dateFrom) return false;
     if (dateTo && e.date > dateTo) return false;
     return true;
   });
   return JSON.stringify(
-    filtered.map((e) => ({ date: e.date, ...e.data })),
+    {
+      version: 2,
+      generated,
+      range: {
+        from: dateFrom ?? entries[0]?.date ?? null,
+        to: dateTo ?? entries[entries.length - 1]?.date ?? null,
+      },
+      definitions: {
+        customTrackers: definitions.customTrackers.map((t) => ({
+          id: t.id,
+          name: t.name,
+          type: t.type,
+          stoppedAt: t.stoppedAt ?? null,
+          deletedAt: t.deletedAt ?? null,
+        })),
+        medications: definitions.medications.map((m) => ({
+          id: m.id,
+          name: m.name,
+          dosage: m.dosage,
+          startedAt: m.startedAt,
+          dosageHistory: m.dosageHistory,
+          deletedAt: m.deletedAt ?? null,
+        })),
+      },
+      entries: entries.map((e) => ({ date: e.date, ...e.data })),
+    },
     null,
     2,
   );

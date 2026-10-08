@@ -35,7 +35,7 @@ export type SettingEntry = {
   brand?: true;
   options?: readonly string[];
   keywords?: true;
-  shownOn?: 'storeBuild' | 'keyboard' | 'paneLayout' | 'realAccount';
+  shownOn?: 'storeBuild' | 'keyboard' | 'paneLayout' | 'realAccount' | 'desktopApp' | 'captureBlock';
   /** An entry for a whole section: it opens the pane and flashes nothing. */
   isSection?: true;
 };
@@ -71,10 +71,12 @@ export const TAB_LABEL: Record<string, string> = {
   'plan/connectedAccounts': 'security:accountTabs.accounts',
   'plan/keyCustody': 'security:accountTabs.keyCustody',
   'plan/overview': 'security:accountTabs.overview',
-  'appearance/style': 'settings:appearance.tabStyle',
+  'appearance/themes': 'settings:appearance.tabThemes',
+  'appearance/style': 'settings:appearance.tabLayout',
   'appearance/lists': 'settings:appearance.tabLists',
+  'language/dateTime': 'settings:language.tabDateTime',
+  'language/language': 'settings:language.tabLanguage',
   'about/about': 'landing:about.tabs.about',
-  'about/changelog': 'landing:about.tabs.changelog',
   'about/hotkeys': 'landing:about.tabs.hotkeys',
   'about/rating': 'landing:about.tabs.rating',
 };
@@ -108,8 +110,13 @@ const ROW_ENTRIES: SettingEntry[] = [
   // Statistics
   { id: 'stats.writing', section: 'stats', tab: 'writing', label: 'stats:tabs.writing', keywords: true },
   { id: 'stats.streak', section: 'stats', tab: 'writing', label: 'stats:writing.currentStreak', options: ['stats:writing.longestStreak'], keywords: true },
+  { id: 'stats.milestones', section: 'stats', tab: 'writing', label: 'stats:milestones.heading', keywords: true },
   { id: 'stats.wellness', section: 'stats', tab: 'wellness', label: 'stats:tabs.wellness', keywords: true },
-  { id: 'stats.moodTrend', section: 'stats', tab: 'wellness', label: 'stats:wellness.overview.moodTrend' },
+  { id: 'stats.overview', section: 'stats', tab: 'overview', label: 'stats:tabs.overview', keywords: true },
+  { id: 'stats.explore', section: 'stats', tab: 'wellness', label: 'stats:wellness.subTabs.explore', keywords: true },
+  { id: 'stats.medication', section: 'stats', tab: 'wellness', label: 'stats:wellness.subTabs.medication', keywords: true },
+  { id: 'stats.patterns', section: 'stats', tab: 'wellness', label: 'stats:wellness.subTabs.patterns', keywords: true },
+  { id: 'stats.moodTrend', section: 'stats', tab: 'wellness', label: 'stats:wellness.mood.heading' },
   { id: 'stats.wellnessExport', section: 'stats', tab: 'wellness', label: 'stats:wellness.export.heading', keywords: true },
 
   // Journals
@@ -179,6 +186,7 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'security.enableBiometric', section: 'security', tab: 'biometric', label: 'security:biometricTab.enable' },
   { id: 'security.appLock', section: 'security', tab: 'biometric', label: 'security:biometricTab.lockOnOpen', keywords: true },
   { id: 'security.relockAfter', section: 'security', tab: 'biometric', label: 'security:biometricTab.relockAfter', keywords: true },
+  { id: 'security.blockCapture', section: 'security', tab: 'biometric', label: 'security:biometricTab.blockCapture', keywords: true, shownOn: 'captureBlock' },
   { id: 'security.phrase', section: 'security', tab: 'phrase', label: 'security:modal.tabPhrase', keywords: true },
   { id: 'security.twoFactor', section: 'security', tab: 'twoFactor', label: 'security:modal.tabTwoFactor', options: ['security:twoFactor.title', 'security:twoFactor.backupKey', 'security:twoFactor.start'], shownOn: 'realAccount' },
   { id: 'security.qrCode', section: 'security', tab: 'phrase', label: 'security:phraseView.showQr', options: ['security:phraseView.saveQr'] },
@@ -194,26 +202,33 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'me.activity', section: 'me', label: 'settings:syncPanel.activity', keywords: true },
 
   // Appearance
-  { id: 'appearance.style', section: 'appearance', tab: 'style', label: 'settings:appearance.tabStyle' },
+  { id: 'appearance.themes', section: 'appearance', tab: 'themes', label: 'settings:appearance.tabThemes' },
+  { id: 'appearance.style', section: 'appearance', tab: 'style', label: 'settings:appearance.tabLayout' },
   { id: 'appearance.openInTabs', section: 'appearance', tab: 'style', label: 'settings:appearance.openInTabsTitle', keywords: true, shownOn: 'paneLayout' },
-  { id: 'appearance.mode', section: 'appearance', tab: 'style', label: 'settings:appearance.modeTitle', options: ['settings:appearance.modeAuto', 'settings:appearance.light', 'settings:appearance.dark'], keywords: true },
-  { id: 'appearance.theme', section: 'appearance', tab: 'style', label: 'settings:appearance.lightThemes', options: ['settings:appearance.darkThemes'], keywords: true },
+  { id: 'appearance.mode', section: 'appearance', tab: 'themes', label: 'settings:appearance.modeTitle', options: ['settings:appearance.modeAuto', 'settings:appearance.light', 'settings:appearance.dark'], keywords: true },
+  { id: 'appearance.tintNotes', section: 'appearance', tab: 'themes', label: 'settings:appearance.noteColorsTitle', options: ['settings:appearance.noteColorsBackground', 'settings:appearance.noteColorsAccent', 'settings:appearance.noteColorsOff'], keywords: true },
+  { id: 'appearance.theme', section: 'appearance', tab: 'themes', label: 'settings:appearance.lightThemes', options: ['settings:appearance.darkThemes'], keywords: true },
+  { id: 'appearance.customThemes', section: 'appearance', tab: 'themes', label: 'settings:appearance.custom.newTheme', options: ['settings:appearance.custom.pasteCode', 'settings:appearance.custom.community'], keywords: true },
+  { id: 'appearance.appZoom', section: 'appearance', tab: 'style', label: 'settings:appearance.appZoomTitle', keywords: true, shownOn: 'desktopApp' },
   { id: 'appearance.textSize', section: 'appearance', tab: 'style', label: 'settings:appearance.textSizeTitle', options: ['settings:appearance.textSizeSmallest', 'settings:appearance.textSizeSmall', 'settings:appearance.textSizeDefault', 'settings:appearance.textSizeLarge', 'settings:appearance.textSizeLargest'], keywords: true },
   { id: 'appearance.lineSpacing', section: 'appearance', tab: 'style', label: 'settings:appearance.lineSpacingTitle', options: ['settings:appearance.lineSpacingTight', 'settings:appearance.lineSpacingCompact', 'settings:appearance.lineSpacingNormal'], keywords: true },
   { id: 'appearance.contentWidth', section: 'appearance', tab: 'style', label: 'settings:appearance.contentWidthTitle', options: ['settings:appearance.contentWidthWide', 'settings:appearance.contentWidthFull'], keywords: true },
   { id: 'appearance.editor', section: 'appearance', tab: 'style', label: 'settings:appearance.editorTitle', options: ['settings:appearance.editorFormatted', 'settings:appearance.editorMarkdown'], keywords: true },
+  { id: 'appearance.copyFormat', section: 'appearance', tab: 'style', label: 'settings:appearance.copyFormatTitle', options: ['settings:appearance.copyFormatMarkdown', 'settings:appearance.copyFormatPlain'], keywords: true },
   { id: 'appearance.invisibles', section: 'appearance', tab: 'style', label: 'settings:appearance.invisiblesTitle', keywords: true },
   { id: 'appearance.favicons', section: 'appearance', tab: 'style', label: 'settings:appearance.faviconsTitle', keywords: true },
-  { id: 'appearance.tintNotes', section: 'appearance', tab: 'style', label: 'settings:appearance.tintNotesTitle', keywords: true },
   { id: 'appearance.lists', section: 'appearance', tab: 'lists', label: 'settings:appearance.tabLists' },
   { id: 'appearance.startView', section: 'appearance', tab: 'lists', label: 'settings:appearance.startViewTitle', keywords: true },
   { id: 'appearance.view', section: 'appearance', tab: 'lists', label: 'settings:appearance.viewTitle', options: ['settings:appearance.viewList', 'settings:appearance.viewGrid'], keywords: true },
+  { id: 'appearance.sinkChecked', section: 'appearance', tab: 'lists', label: 'settings:appearance.sinkCheckedTitle', keywords: true },
   { id: 'appearance.sidebar', section: 'appearance', tab: 'lists', label: 'settings:appearance.sidebarTitle', options: ['settings:appearance.colInSidebar', 'settings:appearance.colInAll'], keywords: true },
 
   // Language
-  { id: 'language.spellCheck', section: 'language', label: 'settings:appearance.spellCheckTitle', keywords: true },
-  { id: 'language.language', section: 'language', label: 'settings:appearance.language', keywords: true },
-  { id: 'language.reportMistake', section: 'language', label: 'settings:language.reportMistake' },
+  { id: 'language.spellCheck', section: 'language', tab: 'language', label: 'settings:appearance.spellCheckTitle', keywords: true },
+  { id: 'language.language', section: 'language', tab: 'language', label: 'settings:appearance.language', keywords: true },
+  { id: 'language.dateFormat', section: 'language', tab: 'dateTime', label: 'settings:language.dateFormat', options: ['settings:language.dayFirst', 'settings:language.monthFirst', 'settings:language.yearFirst'], keywords: true },
+  { id: 'language.clock', section: 'language', tab: 'dateTime', label: 'settings:language.clock', options: ['settings:language.hour24', 'settings:language.hour12'], keywords: true },
+  { id: 'language.reportMistake', section: 'language', tab: 'language', label: 'settings:language.reportMistake' },
 
   // About
   { id: 'about.about', section: 'about', tab: 'about', label: 'landing:about.tabs.about' },
@@ -222,9 +237,10 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'about.openSource', section: 'about', tab: 'about', label: 'landing:trust.openSourceHeading', keywords: true },
   { id: 'about.feedback', section: 'about', tab: 'about', label: 'landing:about.feedbackHeading', keywords: true },
   { id: 'about.dataStorage', section: 'about', tab: 'about', label: 'landing:trust.dataStorageHeading', keywords: true },
+  { id: 'about.singleKeys', section: 'about', tab: 'hotkeys', label: 'landing:about.singleKeysTitle', keywords: true, shownOn: 'keyboard' },
   { id: 'about.favicons', section: 'about', tab: 'about', label: 'landing:trust.faviconsHeading' },
   { id: 'about.legal', section: 'about', tab: 'about', label: 'landing:about.legalHeading', options: ['landing:about.privacyPolicy', 'landing:about.termsOfService'] },
-  { id: 'about.changelog', section: 'about', tab: 'changelog', label: 'landing:about.tabs.changelog', keywords: true },
+  { id: 'about.changelog', section: 'about', tab: 'about', label: 'landing:about.tabs.changelog', keywords: true },
   { id: 'about.hotkeys', section: 'about', tab: 'hotkeys', label: 'landing:about.tabs.hotkeys', keywords: true, shownOn: 'keyboard' },
   { id: 'about.rating', section: 'about', tab: 'rating', label: 'landing:about.tabs.rating', keywords: true },
 ];

@@ -4,6 +4,7 @@ import App from './App';
 import { AuthProvider } from './auth';
 import { LoadingScreen } from './LoadingScreen';
 import { initTheme } from './theme';
+import { initAppZoom } from './appZoom';
 import { clearFreshDemoCredentials, isDemoMode } from './demo';
 import { isAppHost } from './hosts';
 import { dropApexPhraseFragment } from './qrSignIn';
@@ -18,6 +19,11 @@ import { VERSION } from './version';
 import './index.css';
 
 initTheme();
+
+// The window's own scale, which the desktop app sets on its webview and
+// every other platform ignores. After initTheme() because it is the same
+// kind of device-local appearance choice, and it does not paint.
+initAppZoom();
 
 // Android back button entry point (#174) - must exist before the first
 // back press, even during onboarding (where an unhandled press

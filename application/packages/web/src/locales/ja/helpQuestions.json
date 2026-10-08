@@ -22,6 +22,6 @@
   "store-purchases": "購入は、ウェブ、Google Play、App Storeの間で引き継がれますか?",
   "translation-quality": "アプリの翻訳はどのように作られていますか?",
   "vault": "保管庫とは何ですか?",
-  "vault-totp": "Vaultに2FAの認証キー（TOTP / MFAコード）を保存できますか？",
+  "vault-totp": "保管庫に2FAの認証キー（TOTP / MFAコード）を保存できますか？",
   "what-syncs": "デバイス間で同期されるのは何で、ローカルに残るのは何ですか?"
 }

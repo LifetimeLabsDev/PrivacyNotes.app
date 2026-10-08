@@ -14,7 +14,7 @@
   },
   "moveScreen": {
     "title": "O app se mudou para use.privacynotes.app",
-    "bodySignIn": "Entre lá com a sua frase de recuperação de 12 palavras ou com \"{{scanQr}}\". Este aparelho sincroniza primeiro, então todas as suas notas estarão esperando por você lá, e nada é apagado aqui.",
+    "bodySignIn": "Entre lá com a sua frase de recuperação de 12 palavras ou com \"{{scanQr}}\". Este dispositivo sincroniza primeiro, então todas as suas notas estarão esperando por você lá, e nada é apagado aqui.",
     "openNotes": "Abra suas notas aqui uma vez para resolver isso",
     "showPhrase": "Mostrar minha frase de recuperação",
     "website": "Ver o site em vez disso"

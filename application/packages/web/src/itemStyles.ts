@@ -382,3 +382,66 @@ export function resolveNoteColor(
   if (own) return own;
   return tintNotes ? resolveItemColor(tags, folderId, styles, filter) : null;
 }
+
+/** How strongly a note shows its color: a light background on its row, tile,
+ *  tab and open pane, or the ink on its icon and nothing else. */
+export type NoteColorStyle = 'background' | 'accent';
+
+export function isNoteColorStyle(v: unknown): v is NoteColorStyle {
+  return v === 'background' || v === 'accent';
+}
+
+/** The three buttons of the "Note colors" control, over the two stored
+ *  fields: Off is `tintNotes` false and leaves the style alone, so a return
+ *  brings back the last strength. */
+export type NoteColorChoice = NoteColorStyle | 'off';
+export const NOTE_COLOR_CHOICES: readonly NoteColorChoice[] = ['background', 'accent', 'off'];
+/** The `settings` namespace key of each button, for both places it shows. */
+export const NOTE_COLOR_LABEL: Record<NoteColorChoice, string> = {
+  background: 'appearance.noteColorsBackground',
+  accent: 'appearance.noteColorsAccent',
+  off: 'appearance.noteColorsOff',
+};
+
+export function noteColorChoice(tintNotes: boolean, style: NoteColorStyle): NoteColorChoice {
+  return tintNotes ? style : 'off';
+}
+
+export function applyNoteColorChoice<T extends { tintNotes: boolean; noteColorStyle: NoteColorStyle }>(
+  prev: T,
+  choice: NoteColorChoice,
+): T {
+  const tintNotes = choice !== 'off';
+  const noteColorStyle = choice === 'off' ? prev.noteColorStyle : choice;
+  return prev.tintNotes === tintNotes && prev.noteColorStyle === noteColorStyle
+    ? prev
+    : { ...prev, tintNotes, noteColorStyle };
+}
+
+export interface NoteLook {
+  color: LookColor;
+  style: NoteColorStyle;
+}
+
+/**
+ * `resolveNoteColor`, with the strength to draw it at. A tag or folder color
+ * takes the chosen style. A note's own color is always a background, at every
+ * choice: it is one deliberate pick for one note, made so that note stands
+ * out, while Accent and Off exist to quiet the colors a folder or tag spreads
+ * over many notes at once.
+ * Spec: ops/docs/plans/note-color-style.md (decision N2)
+ */
+export function resolveNoteLook(
+  noteId: string,
+  tags: readonly string[],
+  folderId: string | null | undefined,
+  styles: ItemStyles,
+  tintNotes: boolean,
+  style: NoteColorStyle,
+  filter?: ColorFilter,
+): NoteLook | null {
+  const own = noteOwnColor(styles, noteId);
+  if (own && own !== NOTE_NO_COLOR) return { color: own, style: 'background' };
+  const color = resolveNoteColor(noteId, tags, folderId, styles, tintNotes, filter);
+  return color ? { color, style } : null;
+}

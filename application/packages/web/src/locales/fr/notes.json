@@ -10,7 +10,8 @@
     "empty": "Vide",
     "noContent": "Aucun contenu",
     "notBackedUp": "Non sauvegardé",
-    "archived": "Archivé"
+    "archived": "Archivé",
+    "entryDate": "Date de l'entrée"
   },
   "header": {
     "new": "Nouveau",
@@ -19,7 +20,9 @@
     "trash": "Corbeille"
   },
   "folderChip": {
-    "clear": "Effacer le filtre de dossier : {{folder}}"
+    "clear": "Effacer le filtre de dossier : {{folder}}",
+    "subfolders": "Sous-dossiers",
+    "subfoldersLabel": "Inclure les sous-dossiers"
   },
   "tagChip": {
     "clear": "Effacer le filtre d'étiquette : {{tag}}"
@@ -191,6 +194,8 @@
     "currentHtmlDesc": "Compatible impression, markdown rendu sur une page blanche.",
     "printTitle": "Imprimer / Enregistrer en PDF",
     "printDesc": "Ouvre la boîte de dialogue d'impression. Enregistre en PDF ou envoie à une imprimante.",
+    "printTextTitle": "Imprimer le texte seul",
+    "printTextDesc": "Garde le titre. Retire la date, le dossier et les étiquettes.",
     "burnTitle": "Partager en burn note",
     "burnDesc": "Publie cette note sous forme de lien à usage unique. Le lien s'autodétruit après lecture. Ta note reste en sécurité dans ton compte."
   },
@@ -208,7 +213,10 @@
     "newNote": "Nouveau",
     "newNoteHintMac": "Option + Maj + N",
     "newNoteHintOther": "Alt + Maj + N",
+    "newNoteHintMacDesktop": "Commande + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Ouvrir les statistiques",
+    "journalCalendar": "Calendrier du journal",
     "words": "Mots",
     "zen": "Mode Zen",
     "appearance": "Apparence",
@@ -232,7 +240,7 @@
     "appearanceLabel": "Apparence",
     "helpLabel": "Aide",
     "aboutLabel": "À propos",
-    "languageLabel": "Langue",
+    "languageLabel": "Date et langue",
     "languageDesc": "Choisis la langue d'affichage de PrivacyNotes."
   },
   "importStore": {
@@ -252,6 +260,12 @@
     "readOnlyBlocked_other": "Les <highlight>{{count}} éléments</highlight> sont tous en lecture seule, aucun ne peut donc aller à la corbeille. Désactive d'abord la lecture seule dans les options de la note.",
     "readOnlySkipped_one": "<highlight>{{count}} élément</highlight> est en lecture seule et reste où il est.",
     "readOnlySkipped_other": "<highlight>{{count}} éléments</highlight> sont en lecture seule et restent où ils sont."
+  },
+  "deleteCheckedTasks": {
+    "title": "Supprimer les éléments cochés ?",
+    "confirm": "Supprimer",
+    "body_one": "<highlight>{{count}} élément</highlight> sera supprimé de cette note. Cette action est irréversible.",
+    "body_other": "<highlight>{{count}} éléments</highlight> seront supprimés de cette note, éléments imbriqués compris. Cette action est irréversible."
   },
   "bulkDelete": {
     "body_one": "Supprimer définitivement <highlight>{{count}} note</highlight> ? Cette action est irréversible.",

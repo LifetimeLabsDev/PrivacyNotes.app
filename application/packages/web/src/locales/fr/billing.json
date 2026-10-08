@@ -8,7 +8,7 @@
     "ctaOpening": "Ouverture du paiement...",
     "ctaSignUp": "Inscris-toi pour débloquer",
     "intro": {
-      "storage": "Des envois plus volumineux et plus d'espace sont une fonctionnalité Pro. Passe à Pro pour des fichiers de 50 Mo et 500 Mo de stockage.",
+      "storage": "Plus d’espace est une fonction Pro : 500 Mo de stockage, 50 Mo par fichier, et jusqu’à 5 Go de plus avec un module de stockage quand tu en as besoin.",
       "folders": "Les dossiers sont une fonctionnalité Pro. Organise tes notes dans des dossiers imbriqués, aussi profonds que tu veux, et garde chaque projet séparé.",
       "looks": "Les icônes et les couleurs des dossiers et des étiquettes sont une fonctionnalité Pro. Donne à chacun un style reconnaissable au premier coup d'œil.",
       "lock": "Verrouiller une note est une fonctionnalité Pro. Passe à Pro pour protéger toute note des modifications accidentelles.",
@@ -30,7 +30,7 @@
       "history": "Historique complet des notes, restaure à tout moment",
       "themes": "Thèmes premium dans toutes les nuances",
       "zen": "Mode Zen, écriture sans distraction",
-      "storage": "500 Mo de stockage + 50 Mo de pièces jointes"
+      "storage": "500 Mo de stockage, jusqu’à 5,5 Go avec les modules de stockage"
     },
     "comparisonBeta": "Paie {{earlyPrice}} $ une fois. Obsidian Sync coûte 48 $/an, chaque année. Standard Notes facture 90 $/an. Prix adoptant précoce, bloqué avant qu'il ne passe à {{proPrice}} $.",
     "comparison": "Paie {{proPrice}} $ une fois et c'est à toi pour toujours. Obsidian Sync coûte 48 $/an et Standard Notes 90 $/an, chaque année."
@@ -47,9 +47,9 @@
     "benefitDevices": "Appareils illimités",
     "benefitDevicesSub": "Téléphone, tablette, ordinateur, tout synchronisé",
     "benefitStorage": "500 Mo de stockage",
-    "benefitStorageSub": "10 fois l’offre gratuite, extensible",
+    "benefitStorageSub": "10 fois l’espace du forfait gratuit. Ajoute jusqu’à 5 Go de plus quand tu en as besoin",
     "benefitMore": "Plus de fonctions",
-    "benefitMoreSub": "Historique des notes, dossiers, mode zen",
+    "benefitMoreSub": "Historique de la note, dossiers, mode zen",
     "benefitRoom": "{{gb}} Go d’espace en plus",
     "benefitRoomSub": "En plus de tes 500 Mo de Pro",
     "benefitFileSize": "100 Mo par fichier",

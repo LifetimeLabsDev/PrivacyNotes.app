@@ -72,7 +72,7 @@ export function TagPicker({
           <button
             onClick={onClose}
             aria-label={t('common:actions.close')}
-            className="p-1 -m-1 rounded text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition"
+            className="p-1 -m-1 rounded text-pn-muted hover:text-pn transition"
           >
             <X size={16} />
           </button>
@@ -80,7 +80,7 @@ export function TagPicker({
 
         <div className="px-4 pb-2 shrink-0">
           <div className="flex items-center gap-2 rounded-md bg-surface-1 border border-divider px-2.5">
-            <MagnifyingGlass size={14} className="shrink-0 text-neutral-400 dark:text-neutral-500" aria-hidden="true" />
+            <MagnifyingGlass size={14} className="shrink-0 text-pn-muted" aria-hidden="true" />
             <input
               autoFocus
               value={filter}
@@ -101,16 +101,16 @@ export function TagPicker({
               onClick={() => onSelect(tag)}
               className="w-full flex items-center gap-2 px-2.5 py-2 rounded-md text-[14px] cursor-pointer hover:bg-surface-1 transition min-h-[36px]"
             >
-              <span className="text-neutral-400 dark:text-neutral-600 text-xs shrink-0 inline-flex">
+              <span className="text-pn-muted text-xs shrink-0 inline-flex">
                 <TagMark tag={tag} size={13} />
               </span>
               <span className="truncate text-start">{tag}</span>
-              <span className="ms-auto shrink-0 text-xs text-neutral-400 dark:text-neutral-600 tabular-nums">{count}</span>
+              <span className="ms-auto shrink-0 text-xs text-pn-muted tabular-nums">{count}</span>
             </button>
           ))}
 
           {filtered.length === 0 && !showCreate && (
-            <div className="px-2.5 py-2 text-[14px] text-neutral-400 dark:text-neutral-600">
+            <div className="px-2.5 py-2 text-[14px] text-pn-muted">
               {t('selectionToolbar.noTagsFound')}
             </div>
           )}
@@ -119,7 +119,7 @@ export function TagPicker({
             <button
               type="button"
               onClick={() => onSelect(normalizedFilter)}
-              className="w-full flex items-center gap-2 px-2.5 py-2 rounded-md text-[14px] cursor-pointer hover:bg-surface-1 transition text-neutral-500 dark:text-neutral-400 min-h-[36px]"
+              className="w-full flex items-center gap-2 px-2.5 py-2 rounded-md text-[14px] cursor-pointer hover:bg-surface-1 transition text-pn-muted min-h-[36px]"
             >
               <span className="text-xs shrink-0">+</span>
               <span className="truncate text-start">{t('selectionToolbar.createTag', { tag: normalizedFilter })}</span>

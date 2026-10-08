@@ -1,6 +1,6 @@
 [package]
 name = "privacynotes"
-version = "0.553.1"
+version = "0.598.0"
 description = "PrivacyNotes - private notes, encrypted on your device"
 authors = ["Lifetime Labs LLC <hi@lifetimelabs.dev>"]
 homepage = "https://privacynotes.app"
@@ -29,13 +29,13 @@ plist = "1"
 serde_json = "1"
 
 [dependencies]
-# Pinned to the 2.11 minor: Tauri's build rejects a Rust-crate vs @tauri-apps/api
+# Pinned to the 2.12 minor: Tauri's build rejects a Rust-crate vs @tauri-apps/api
 # major.minor mismatch. Bump this together with @tauri-apps/api in package.json.
 # protocol-asset backs the `assetProtocol` block in tauri.conf.json, which is
 # how the Markdown pillar will render an image a note references by relative
 # path. Enabling the config without this feature is a build error, by design.
 # Spec: ops/docs/plans/markdown-folder.md (section 8, media)
-tauri = { version = "~2.11", features = ["protocol-asset"] }
+tauri = { version = "~2.12", features = ["protocol-asset"] }
 tauri-plugin-deep-link = "2"
 tauri-plugin-opener = "2"
 tauri-plugin-dialog = "2"
@@ -76,12 +76,15 @@ objc2-foundation = { version = "0.3", features = [
   "NSString",
   "NSGeometry",
   "objc2-core-foundation",
+  # src/share_inbox.rs: the app group folder the iOS share extension writes.
+  "NSFileManager",
+  "NSURL",
 ] }
 
 # windows-future carries IAsyncOperation, which the UserConsentVerifier interop
 # returns; the `windows` crate re-exports nothing for it.
 [target.'cfg(target_os = "windows")'.dependencies]
-windows = { version = "0.61", features = [
+windows = { version = "0.62", features = [
   "Security_Credentials_UI",
   "Win32_Foundation",
   "Win32_System_Com",
@@ -93,7 +96,12 @@ windows = { version = "0.61", features = [
   "Win32_UI_Shell",
   "Win32_UI_WindowsAndMessaging",
 ] }
-windows-future = "0.2"
+windows-future = "0.3"
+# src/lib.rs disable_browser_accelerator_keys: the WebView2 settings interface
+# that turns off the webview's own browser keys (F5, Ctrl+R, Ctrl+P). The same
+# version Tauri's runtime already builds against.
+# Spec: ops/docs/plans/keyboard-shortcuts.md (decision D8)
+webview2-com = "0.39"
 
 # The third biometric backend. Android has no OS-level API this crate can call
 # directly: BiometricPrompt is Kotlin, and it needs an Activity to attach to, so
@@ -132,14 +140,6 @@ tauri-plugin-auth-session = { path = "plugins/auth-session" }
 # section once a release carries the fix. Only the iOS targets compile it.
 [patch.crates-io]
 swift-rs = { path = "patches/swift-rs" }
-# tao is the window layer under Tauri. With the scene manifest the iOS 27 SDK
-# requires, 0.35.3 frees the scene configuration before UIKit retains it, and
-# every release build dies at launch; debug builds only survive by the timing
-# of the autorelease pool. patches/tao is 0.35.3 plus the one-line fix of
-# upstream pull request 1245, which Tauri 2.11 cannot reach because it pins
-# tao 0.35. Drop the directory and this line once `cargo tree -i tao` shows a
-# version that carries it.
-tao = { path = "patches/tao" }
 
 [features]
 default = []

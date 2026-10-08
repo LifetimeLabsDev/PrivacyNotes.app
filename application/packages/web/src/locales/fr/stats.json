@@ -1,6 +1,7 @@
 {
   "title": "Statistiques",
   "tabs": {
+    "overview": "Vue d'ensemble",
     "writing": "Écriture",
     "wellness": "Bien-être"
   },
@@ -28,12 +29,13 @@
     "30d": "30 jours",
     "3mo": "3 mois",
     "6mo": "6 mois",
-    "12mo": "12 mois"
+    "12mo": "12 mois",
+    "all": "Tout"
   },
   "wellness": {
     "subTabs": {
       "all": "Tout",
-      "sleepActivity": "Sommeil et activité",
+      "explore": "Explorer",
       "medication": "Médication",
       "patterns": "Tendances"
     },
@@ -41,33 +43,17 @@
       "title": "Pas encore de données de bien-être.",
       "hint": "Ouvre une entrée de journal et note ton humeur pour commencer."
     },
-    "overview": {
-      "daysTracked": "Jours suivis",
-      "avgMood": "Humeur moy.",
-      "avgSleep": "Sommeil moy.",
-      "medAdherence": "Observance médic.",
-      "moodTrend": "Tendance d'humeur",
-      "moodByDayOfWeek": "Humeur par jour de la semaine",
-      "moodTrendTooltip": "{{date}} : {{mood}}/10",
-      "moodTrendTooltipAnchor": "{{date}} : {{mood}}/10 ({{anchor}})"
-    },
     "export": {
       "heading": "Exporter",
-      "allTime": "Tout l'historique",
-      "last90Days": "90 derniers jours",
-      "last30Days": "30 derniers jours",
-      "last7Days": "7 derniers jours",
       "downloadJSON": "Télécharger le JSON",
       "doctorPDF": "PDF médecin",
-      "copyAIPrompt": "Copier le prompt IA",
+      "copyAIPrompt": "Afficher et copier le prompt IA",
       "copied": "Copié !",
       "saveFailed": "L'enregistrement a échoué, donc le fichier peut être vide ou incomplet. Réessaie, ou choisis un autre dossier.",
-      "proBadge": "PRO"
-    },
-    "sleepActivity": {
-      "sleepQuality": "Qualité du sommeil",
-      "activity": "Activité",
-      "avgSleepPerNight": "Sommeil moyen par nuit"
+      "proBadge": "PRO",
+      "usesRange": "Utilise la plage ci-dessus",
+      "promptShown": "Le prompt que tu as copié. Colle-le dans le chatbot de ton choix.",
+      "hidePrompt": "Masquer"
     },
     "medication": {
       "adherence": "Observance",
@@ -80,13 +66,12 @@
       "changedTo": "Modifié en {{dosage}}"
     },
     "patterns": {
-      "topEmotions": "Principales émotions",
+      "heading": "Ce qui influence ton humeur",
       "insights": "Analyses",
       "proBadge": "PRO",
       "insightsLocked_one": "{{count}} analyse détectée. Passe à Pro pour la voir",
       "insightsLocked_other": "{{count}} analyses détectées. Passe à Pro pour les voir",
-      "weekInReview": "Bilan de la semaine",
-      "weekInReviewLocked": "Passe à Pro pour voir ton résumé hebdomadaire de bien-être"
+      "tableLocked": "Passe à Pro pour voir quels suivis influencent ton humeur"
     },
     "week": {
       "range": "{{start}} au {{end}}",
@@ -98,20 +83,33 @@
       "topActivity": "Activité principale",
       "topEmotions": "Principales émotions",
       "reflection": "Réflexion",
-      "reflectionPlaceholder": "Comment cette semaine s'est-elle passée dans l'ensemble ? Des pensées à noter..."
+      "reflectionPlaceholder": "Comment cette semaine s'est-elle passée dans l'ensemble ? Des pensées à noter...",
+      "heading": "Bilan de la semaine",
+      "proBadge": "PRO",
+      "locked": "Passe à Pro pour voir ton résumé hebdomadaire de bien-être"
     },
     "units": {
       "days_one": "{{count}} jour",
       "days_other": "{{count}} jours"
     },
     "insights": {
-      "sleep": "Tu es en moyenne à {{good}} les jours où tu dors bien, et à {{bad}} les jours où tu dors mal.",
-      "activity": "Tu es en moyenne à {{active}} les jours actifs, et à {{sedentary}} les jours sédentaires.",
       "dayOfWeek": "Ton meilleur jour est plutôt {{best}} (moyenne {{bestAvg}}), et le plus dur {{worst}} (moyenne {{worstAvg}}).",
-      "medication": "Depuis le début de {{name}} le {{date}}, ton humeur moyenne est passée de {{before}} à {{after}}.",
+      "medication": "{{outcome}} : {{a}} en moyenne les jours où tu prends {{name}}, {{b}} les jours où tu l'oublies.",
       "streak_one": "Tu as noté ton humeur {{count}} jour d'affilée. Continue !",
       "streak_other": "Tu as noté ton humeur {{count}} jours d'affilée. Continue !",
-      "trend": "Ton humeur des deux dernières semaines est en moyenne à {{recent}}, contre {{overall}} au total."
+      "trend": "Ton humeur des deux dernières semaines est en moyenne à {{recent}}, contre {{overall}} au total.",
+      "yesno": "{{outcome}} : {{a}} en moyenne les jours où tu notes {{name}}, {{b}} les jours sans.",
+      "yesnoNextDay": "{{outcome}} : {{a}} en moyenne le lendemain des jours où tu notes {{name}}, {{b}} après les jours sans.",
+      "halves": "{{outcome}} : {{a}} en moyenne quand {{name}} dépasse {{threshold}}, {{b}} quand c'est {{threshold}} ou moins.",
+      "halvesNextDay": "{{outcome}} : {{a}} en moyenne le lendemain des jours où {{name}} dépasse {{threshold}}, {{b}} après ceux à {{threshold}} ou moins.",
+      "median": "{{outcome}} : {{a}} en moyenne quand {{name}} dépasse ta médiane de {{threshold}}, {{b}} quand c'est égal ou moins.",
+      "medianNextDay": "{{outcome}} : {{a}} en moyenne le lendemain des jours où {{name}} dépasse ta médiane de {{threshold}}, {{b}} après ceux à la médiane ou moins.",
+      "levels": "{{outcome}} : {{a}} en moyenne les jours « {{top}} », {{b}} les jours « {{bottom}} ».",
+      "levelsNextDay": "{{outcome}} : {{a}} en moyenne le lendemain des jours « {{top}} », {{b}} après les jours « {{bottom}} ».",
+      "tag": "{{outcome}} : {{a}} en moyenne les jours où tu te sens {{tag}}, {{b}} les autres jours.",
+      "tagNextDay": "{{outcome}} : {{a}} en moyenne le lendemain des jours où tu te sens {{tag}}, {{b}} après les autres jours.",
+      "medicationNextDay": "{{outcome}} : {{a}} en moyenne le lendemain des jours où tu prends {{name}}, {{b}} après les jours où tu l'oublies.",
+      "doseChange": "Autour du passage de {{name}} à {{dosage}} le {{date}}, ton humeur était en moyenne à {{before}} sur les {{nBefore}} jours avant et à {{after}} sur les {{nAfter}} jours après."
     },
     "aiPrompt": {
       "intro": "Je note mon humeur et mon bien-être. Analyse les données ci-dessous pour en dégager des schémas, des tendances et des pistes concrètes.",
@@ -135,7 +133,15 @@
       "question2": "La qualité du sommeil et le niveau d'activité sont-ils liés à mon humeur ?",
       "question3": "Des tendances préoccupantes à évoquer avec un professionnel de santé ?",
       "question4": "Des suggestions concrètes à partir de ces données.",
-      "footer": "Généré par PrivacyNotes (privacynotes.app)"
+      "footer": "Généré par PrivacyNotes (privacynotes.app)",
+      "period": "Période : du {{from}} au {{to}}",
+      "daysLogged": "Jours notés : {{logged}} sur {{days}}",
+      "trackers": "Suivis",
+      "trackerLine": "{{name}} : moyenne {{avg}}, min {{low}}, max {{high}}, {{count}} jours",
+      "trackerYesLine": "{{name}} : oui {{yes}} jours sur {{count}}",
+      "effects": "Humeur les jours avec et sans",
+      "effectLine": "{{name}} ({{rule}}) : {{a}} avec, {{b}} sans, écart {{delta}}, {{na}} / {{nb}} jours",
+      "customQuestion": "Est-ce que {{name}} a un lien avec mon humeur, le jour même ou le lendemain ?"
     },
     "report": {
       "documentTitle": "Rapport de bien-être",
@@ -166,8 +172,126 @@
       "unknownDose": "dose inconnue",
       "topEmotions": "Émotions les plus fréquentes",
       "patterns": "Schémas détectés",
-      "footer": "Généré par PrivacyNotes - privacynotes.app"
-    }
+      "footer": "Généré par PrivacyNotes - privacynotes.app",
+      "period": "Période : du {{from}} au {{to}}, {{days}} jours",
+      "daysLogged": "Jours notés : {{logged}} sur {{days}}",
+      "moodHeading": "Humeur, une barre par jour",
+      "moodLegend": "Barres : 1-2 rouge, 3-4 orange, 5-6 jaune, 7-8 vert, 9-10 bleu. Ligne : moyenne sur 7 jours. Triangle : un changement de dose. Un vide est un jour sans entrée.",
+      "previous": "les {{days}} jours précédents : {{value}}",
+      "trackers": "Suivis",
+      "columnTracker": "Suivi",
+      "columnAverage": "Moyenne",
+      "columnLowHigh": "Min / max",
+      "columnHistory": "Historique",
+      "effects": "Humeur les jours avec et sans",
+      "columnFactor": "Facteur",
+      "columnRule": "Règle",
+      "columnWith": "Avec",
+      "columnWithout": "Sans",
+      "columnDifference": "Écart",
+      "nextDaySuffix": "{{name}}, lendemain",
+      "effectsNote": "Moyennes des jours notés. Un écart est une observation, pas une cause.",
+      "medCalendar": "Calendrier",
+      "doseChanges": "Changements de dose",
+      "columnDoseChanges": "Changements de dose",
+      "yesOn": "oui {{count}} jours",
+      "total": "{{value}} au total"
+    },
+    "tiles": {
+      "daysLogged": "Jours notés",
+      "daysLoggedOf": "{{logged}} sur {{days}}",
+      "avgMood": "Humeur moy.",
+      "moodDelta": "{{delta}} vs les {{days}} jours précédents",
+      "avgSleep": "Sommeil moy.",
+      "medsTaken": "Médocs pris"
+    },
+    "mood": {
+      "heading": "Humeur",
+      "legend": "Ligne : moyenne sur 7 jours. Triangle : un changement de dose.",
+      "dose": "{{name}} {{dosage}}"
+    },
+    "trackers": {
+      "heading": "Suivis",
+      "tapHint": "Un appui ouvre Explorer",
+      "stopped": "Arrêté",
+      "deleted": "Supprimé",
+      "stoppedChip": "Arrêtés ({{count}})",
+      "unknown": "Suivi inconnu {{id}}",
+      "sleepHours": "Heures de sommeil",
+      "sleepQuality": "Qualité du sommeil",
+      "avgDays": "moy., {{count}} jours",
+      "sumDays": "total, {{count}} jours",
+      "yesNo": "oui {{yes}}, non {{no}}",
+      "notLogged": "{{count}} non notés",
+      "latestLowHigh": "dernier {{latest}}, min {{low}}, max {{high}}",
+      "topLevel": "{{level}} sur {{count}} jours",
+      "taken": "pris {{taken}} jours sur {{total}}",
+      "empty": "Rien de noté sur cette plage",
+      "unanswered": "{{count}} jours notés sans réponse"
+    },
+    "effects": {
+      "heading": "Ce qui influence ton humeur",
+      "headingOutcome": "{{outcome}} : ce qui l'influence",
+      "allInPatterns": "Tous dans Tendances",
+      "sameDay": "Même jour",
+      "nextDay": "Lendemain",
+      "compareWith": "Comparer avec",
+      "withLabel": "Avec",
+      "withoutLabel": "Sans",
+      "days": "{{a}} / {{b}} jours",
+      "shortfall_one": "Il manque {{count}} jour côté « {{side}} »",
+      "shortfall_other": "Il manque {{count}} jours côté « {{side}} »",
+      "sideWith": "avec",
+      "sideWithout": "sans",
+      "footnote": "Une observation parmi les jours notés, pas une cause.",
+      "higher": "{{outcome}} : {{delta}} points de plus ces jours-là.",
+      "lower": "{{outcome}} : {{delta}} points de moins ces jours-là.",
+      "rule": {
+        "yesno": "jours avec vs sans",
+        "halves": "plus de {{threshold}} vs {{threshold}} et moins",
+        "median": "au-dessus vs en dessous de ta médiane {{threshold}}",
+        "levels": "{{top}} vs {{bottom}}",
+        "tag": "jours avec {{tag}} vs sans",
+        "medication": "pris vs oublié"
+      }
+    },
+    "explore": {
+      "calendar": "Calendrier",
+      "against": "Comparé à {{outcome}}, un seul axe de dates",
+      "cells": {
+        "value": "noté",
+        "no": "non",
+        "missing": "non noté"
+      },
+      "longestRunWithout": "plus longue série sans : {{count}} jours",
+      "longestRunWith": "plus longue série avec : {{count}} jours",
+      "pickOne": "Choisis un suivi"
+    },
+    "medCalendar": {
+      "heading": "Jour par jour",
+      "doseChange": "changement de dose",
+      "taken": "pris",
+      "skipped": "ignoré",
+      "missed": "oublié",
+      "unmarked": "non marqué",
+      "noEntry": "aucune entrée",
+      "doseLens": "Humeur en moyenne à {{before}} sur les {{nBefore}} jours avant et à {{after}} sur les {{nAfter}} jours après.",
+      "doseLensHeading": "Autour de chaque changement de dose",
+      "doseLensShort_one": "Il manque {{count}} jour noté autour.",
+      "doseLensShort_other": "Il manque {{count}} jours notés autour."
+    },
+    "sourceLine": "Tout ici vient des suivis de tes entrées de journal.",
+    "openToday": "Ouvrir l'entrée du jour"
+  },
+  "milestones": {
+    "heading": "Jalons",
+    "next": "Prochain : {{label}}",
+    "allReached": "{{label}}, et tous les précédents",
+    "ofTarget": "{{current}} sur {{target}}",
+    "reached_one": "{{count}} atteint jusqu’ici.",
+    "reached_many": "{{count}} atteints jusqu’ici.",
+    "reached_other": "{{count}} atteints jusqu’ici.",
+    "source": "Les notes écrites et les jours avec PrivacyNotes comptent ce qui se passe dans l’app. Un import ne change ni l’un ni l’autre."
   },
   "milestoneToast": {
     "unlocked": "Jalon débloqué"
@@ -183,5 +307,59 @@
     "age730": "2 ans avec PrivacyNotes",
     "age1825": "5 ans avec PrivacyNotes",
     "ageDefault": "{{count}} jours au compteur"
+  },
+  "overview": {
+    "week": "Ta semaine",
+    "streak": "Série d'écriture",
+    "streakDays_one": "{{count}} jour",
+    "streakDays_other": "{{count}} jours",
+    "streakNudge": "Rien encore aujourd'hui. Une ligne suffit pour la garder.",
+    "streakKept": "Aujourd'hui est compté.",
+    "words": "Mots écrits",
+    "wordsDelta": "{{delta}} vs la semaine précédente",
+    "mood": "Humeur",
+    "moodDelta": "{{delta}} vs la semaine précédente",
+    "daysLogged": "Jours notés",
+    "daysLoggedOf": "{{logged}} sur {{days}}",
+    "rhythm": "Ton rythme, {{weeks}} semaines",
+    "layerBoth": "Les deux",
+    "layerWriting": "Écriture",
+    "layerMood": "Humeur",
+    "rhythmLegend": "Case : combien tu as écrit ce jour-là. Point : comment la journée s'est passée.",
+    "hours": "Quand tu écris",
+    "hoursSub": "modifications par heure, {{days}} jours",
+    "hoursPeak": "Tu écris surtout entre {{from}} et {{to}}.",
+    "ledgerSince": "Compté sur cet appareil depuis le {{date}}.",
+    "ledgerEmpty": "Le comptage commence maintenant. Reviens dans une semaine.",
+    "highlights": "Points marquants",
+    "highlightSleep": "Bien dormir, plus de mots. Après {{hours}} heures ou plus, tu écris environ {{a}} mots par jour. Après une nuit courte, {{b}}.",
+    "highlightSleepSub": "{{long}} longues nuits, {{short}} courtes, {{days}} jours",
+    "highlightWeekday": "{{day}} est ton jour. Humeur en moyenne à {{mood}}, et {{count}} de tes {{total}} notes les plus longues ont été écrites un {{day}}.",
+    "highlightWeekdaySub": "{{count}} {{day}}s notés",
+    "highlightEffect": "Les jours avec {{name}} tirent vers le {{direction}}. Humeur {{a}} avec, {{b}} sans.",
+    "higher": "haut",
+    "lower": "bas",
+    "highlightEffectSub": "{{count}} jours avec {{name}} sur {{days}} jours",
+    "highlightTag": "#{{tag}} prend de l'ampleur. {{now}} notes ce mois-ci, {{before}} le mois dernier.",
+    "highlightTagSub": "{{count}} étiquettes utilisées",
+    "highlightsLocked": "Passe à Pro pour voir ce que ton écriture et tes suivis ont en commun",
+    "vault": "Ton coffre",
+    "vaultSub": "cette semaine, en petits caractères",
+    "done": "{{count}} terminées",
+    "milestones": "Jalons",
+    "longestStreak": "Plus longue série : {{count}} jours",
+    "openWriting": "Ouvrir Écriture",
+    "openWellness": "Ouvrir Bien-être",
+    "computed": "calculé sur cet appareil",
+    "pillars": {
+      "notes": "Notes",
+      "journals": "Journaux",
+      "tasks": "Tâches",
+      "files": "Fichiers",
+      "bookmarks": "Signets",
+      "contacts": "Contacts",
+      "logins": "Identifiants"
+    },
+    "ledgerEstimated": "Estimé à partir de tes notes jusqu'au début du comptage."
   }
 }

@@ -165,6 +165,7 @@
     "both": "{{pictures}}และ{{files}}"
   },
   "upload": {
+    "discard": "ทิ้ง",
     "completeTitle": "อัปโหลดเสร็จแล้ว",
     "failedTitle": "อัปโหลดไม่สำเร็จ",
     "partialTitle": "อัปโหลดแล้ว {{done}} ล้มเหลว {{failed}}",
@@ -173,6 +174,9 @@
     "statusFailed": "ล้มเหลว",
     "errorStorageFull": "พื้นที่จัดเก็บเต็ม เพิ่มพื้นที่ว่างหรือซื้อพื้นที่เพิ่มเพื่ออัปโหลดไฟล์นี้",
     "errorStorageFullKept": "พื้นที่จัดเก็บไม่พอ จึงเก็บไว้ในอุปกรณ์นี้ จะซิงค์เมื่อมีพื้นที่ว่าง",
+    "errorTooLarge": "ไฟล์ใหญ่เกินไป ({{size}}) สูงสุด {{limit}} MB",
+    "errorTooLargeFree": "ไฟล์ใหญ่เกินไป ({{size}}) แพ็กเกจฟรีรองรับสูงสุด {{limit}} MB",
+    "batchTitle_other": "{{count}} ไฟล์",
     "statusUploading": "กำลังอัปโหลด...",
     "statusWaiting": "กำลังรอ",
     "summaryDone": "เสร็จ {{count}}",
@@ -193,5 +197,10 @@
   },
   "saveErrors": {
     "shortWrite": "บันทึกได้เพียง {{written}} จาก {{expected}} ไบต์ ไฟล์จึงไม่สมบูรณ์ ลองอีกครั้งและบันทึกลงพื้นที่จัดเก็บของอุปกรณ์แทนโฟลเดอร์คลาวด์"
+  },
+  "shareSheet": {
+    "title_other": "มีการแชร์ {{count}} รายการมายัง PrivacyNotes",
+    "line": "จะไม่มีการบันทึกใดๆ จนกว่าคุณจะเลือก",
+    "saveAll": "บันทึกทั้งหมด"
   }
 }

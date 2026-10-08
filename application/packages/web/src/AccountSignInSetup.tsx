@@ -61,7 +61,7 @@ export function AccountSignInSetup({ onReady, purpose = 'twoFactor' }: { onReady
     </SettingsCallout>}
     {account.loading && <p role="status" className={SETTINGS_HELP}>{t('connectedAccounts.loading')}</p>}
     {closed && <p className={SETTINGS_HELP}>{t(forAccounts ? 'connectedAccounts.closed' : 'connectedAccounts.unavailable')}</p>}
-    {((account.error && account.error !== 'account_setup_unavailable') || failed) && <p role="alert" className="text-xs text-red-600 dark:text-red-400">{t(failed ? accountErrorKey(account.error) : 'custody.connectionsUnavailable')}</p>}
+    {((account.error && account.error !== 'account_setup_unavailable') || failed) && <p role="alert" className="text-xs text-danger">{t(failed ? accountErrorKey(account.error) : 'custody.connectionsUnavailable')}</p>}
     {!account.loading && (!account.status || account.error) && <button type="button" disabled={busy}
       className="text-sm text-accent" onClick={() => void account.refresh().catch(() => {})}>{t('connectedAccounts.retry')}</button>}
     {allowed && <>
@@ -71,7 +71,7 @@ export function AccountSignInSetup({ onReady, purpose = 'twoFactor' }: { onReady
         <span>{t('connectedAccounts.updateAcknowledgment')}</span>
       </label>}
       <button type="button" disabled={busy || account.loading || (!repairing && !acknowledged)} onClick={() => void activate()}
-        className="rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed">
+        className="rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed">
         {t(busy ? 'connectedAccounts.working' : repairing ? 'connectedAccounts.repairAction' : reclaiming ? 'connectedAccounts.reclaimAction' : forAccounts ? 'connectedAccounts.setupAction' : 'connectedAccounts.updateAction')}
       </button>
     </>}

@@ -21,43 +21,74 @@ import {
   folderLookKey,
   isLookColor,
   lookOf,
-  resolveNoteColor,
+  resolveNoteLook,
   tagLookKey,
   type ColorFilter,
   type ItemStyles,
   type LookColor,
+  type NoteColorStyle,
+  type NoteLook,
 } from '../itemStyles';
 import { useLookIcons } from './lookIconsLoader';
 
 export interface LooksValue {
   styles: ItemStyles;
-  /** The "Color note backgrounds" switch: rows, tiles and the open note. */
+  /** Whether notes take their tag or folder color: rows, tiles, tabs and the
+   *  open note. */
   tintNotes: boolean;
+  /** How strongly a note shows its color (resolveNoteLook). */
+  noteColorStyle: NoteColorStyle;
   /** The list's tag and folder filter, whose colors win (resolveItemColor). */
   filter?: ColorFilter;
 }
 
-export const LooksContext = createContext<LooksValue>({ styles: {}, tintNotes: false });
+export const LooksContext = createContext<LooksValue>({ styles: {}, tintNotes: false, noteColorStyle: 'accent' });
 
 /** For a list whose items are outside the looks: Markdown files carry tags
  *  of their own, which must not take a vault tag's look. */
-export const NO_LOOKS: LooksValue = { styles: {}, tintNotes: false };
+export const NO_LOOKS: LooksValue = { styles: {}, tintNotes: false, noteColorStyle: 'accent' };
 
-/** A note's color, or null when none applies (resolveNoteColor). */
-export function useNoteColor(noteId: string, tags: readonly string[], folderId: string | null): LookColor | null {
-  const { styles, tintNotes, filter } = useContext(LooksContext);
+/** A note's color and its strength, or null when none applies
+ *  (resolveNoteLook). */
+export function useNoteLook(noteId: string, tags: readonly string[], folderId: string | null): NoteLook | null {
+  const { styles, tintNotes, noteColorStyle, filter } = useContext(LooksContext);
   return useMemo(
-    () => resolveNoteColor(noteId, tags, folderId, styles, tintNotes, filter),
-    [noteId, tags, folderId, styles, tintNotes, filter],
+    () => resolveNoteLook(noteId, tags, folderId, styles, tintNotes, noteColorStyle, filter),
+    [noteId, tags, folderId, styles, tintNotes, noteColorStyle, filter],
   );
 }
 
 /** A color as a light background, drawn as an image so the background color
  *  of a state underneath (open, selected, hover) still shows through. */
-export function tintStyle(color: LookColor | null): CSSProperties | undefined {
+function tintStyle(color: LookColor | null): CSSProperties | undefined {
   return color
     ? { backgroundImage: `linear-gradient(var(--pn-label-${color}-tint), var(--pn-label-${color}-tint))` }
     : undefined;
+}
+
+/** A folder or tag row in the sidebar wears its tint only with the
+ *  Background choice; with Accent or Off, its icon carries the color alone.
+ *  Spec: ops/docs/plans/note-color-style.md (decision N4) */
+export function sidebarRowTint(
+  color: LookColor | null,
+  { tintNotes, noteColorStyle }: Pick<LooksValue, 'tintNotes' | 'noteColorStyle'>,
+): CSSProperties | undefined {
+  return tintNotes && noteColorStyle === 'background' ? tintStyle(color) : undefined;
+}
+
+/**
+ * A note row's or tile's color at its strength. A background is the tint
+ * (tintStyle). An accent sets two variables that index.css hands to the
+ * item's icon only (`[data-color-style='accent']`), so the row stays plain.
+ * Spec: ops/docs/plans/note-color-style.md (section 3.1)
+ */
+export function noteLookStyle(look: NoteLook | null): CSSProperties | undefined {
+  if (!look) return undefined;
+  if (look.style === 'background') return tintStyle(look.color);
+  return {
+    '--pn-accent-ink': `var(--pn-label-${look.color}-ink)`,
+    '--pn-accent-tint': `var(--pn-label-${look.color}-tint)`,
+  } as CSSProperties;
 }
 
 /** The open note's color, as a variable the note body reads (index.css,

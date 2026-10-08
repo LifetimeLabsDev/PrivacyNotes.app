@@ -3,6 +3,13 @@ import { PhraseView } from './PhraseView';
 import { PhraseOdds } from './PhraseOdds';
 import { PhrasePinGate, type PinGateRecovery } from './PhrasePinGate';
 import { HelpChip } from '../HelpChip';
+import { RedditLogo } from '../icons';
+
+// The thread's own title, shown untranslated: the thread is written in English.
+const PHRASE_MEGATHREAD = {
+  href: 'https://www.reddit.com/r/PrivacyNotes/comments/1wsy3ky/megathread_your_12word_phrase_explained_privacy/',
+  title: 'Megathread: Your 12-word phrase explained, privacy, security and recovery',
+};
 
 /** Phrase reveal and backup stay separate from account custody changes. */
 export function PhraseTab({
@@ -26,7 +33,16 @@ export function PhraseTab({
         {t('connectedAccounts.openCustody')}
       </button>}
       <PhraseOdds />
-      <HelpChip surface="phrase" />
+      <div className="flex flex-col items-start gap-1.5">
+        <a href={PHRASE_MEGATHREAD.href} target="_blank" rel="noopener noreferrer"
+          className="inline-flex items-start gap-2 max-w-full text-[13px] text-accent hover:underline">
+          <span className="flex h-5 shrink-0 items-center">
+            <RedditLogo size={15} weight="fill" aria-hidden="true" />
+          </span>
+          <span>{PHRASE_MEGATHREAD.title}</span>
+        </a>
+        <HelpChip surface="phrase" />
+      </div>
     </div>
   </PhrasePinGate>;
 }

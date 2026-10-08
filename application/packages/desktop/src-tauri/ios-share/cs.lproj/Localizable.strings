@@ -1,0 +1,3 @@
+"saved" = "Uloženo do PrivacyNotes";
+"failed" = "Do PrivacyNotes se nepodařilo uložit";
+"tooLarge" = "Příliš velké. Maximum je {{limit}} MB na soubor.";

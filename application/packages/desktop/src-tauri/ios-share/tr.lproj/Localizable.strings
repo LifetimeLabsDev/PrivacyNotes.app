@@ -1,0 +1,3 @@
+"saved" = "PrivacyNotes'a kaydedildi";
+"failed" = "PrivacyNotes'a kaydedilemedi";
+"tooLarge" = "Çok büyük. Dosya başına en fazla {{limit}} MB.";

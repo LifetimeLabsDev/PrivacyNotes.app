@@ -7,7 +7,7 @@
     "heading": "Encapçalament",
     "taskList": "Llista de tasques",
     "bulletList": "Llista de pics",
-    "addLink": "Afegeix un enllaç (Cmd+Shift+K)",
+    "addLink": "Afegeix un enllaç ({{keys}})",
     "noteLink": "Enllaça a una altra nota (o escriu [[)",
     "numberedList": "Llista numerada",
     "textColor": "Color del text",
@@ -34,7 +34,12 @@
     "blockMath": "Fórmula en bloc",
     "align": "Alineació",
     "font": "Lletra",
-    "pictureFromFiles": "Imatge de Fitxers"
+    "pictureFromFiles": "Imatge de Fitxers",
+    "date": "Data",
+    "dateTime": "Data i hora",
+    "footnote": "Nota a peu de pàgina",
+    "spoiler": "Espòiler",
+    "copyBox": "Quadre per copiar"
   },
   "align": {
     "left": "Alinea a l’esquerra",
@@ -118,7 +123,7 @@
     "next": "Coincidència següent (Retorn)",
     "nextTitle": "Següent (Retorn)",
     "close": "Tanca la cerca",
-    "closeTitle": "Tanca (⌘F)",
+    "closeTitle": "Tanca ({{keys}})",
     "replacePlaceholder": "Substitueix per",
     "replaceLabel": "Substitueix per",
     "replace": "Substitueix",
@@ -128,7 +133,7 @@
     "caseSensitive": "Distingeix majúscules i minúscules",
     "caseSensitiveTitle": "Distingeix majúscules i minúscules",
     "closeReplace": "Tanca cerca i substitueix",
-    "closeReplaceTitle": "Tanca (⌥⌘F)",
+    "closeReplaceTitle": "Tanca ({{keys}})",
     "replacedCount_one": "{{count}} substituïda",
     "replacedCount_many": "{{count}} substituïdes",
     "replacedCount_other": "{{count}} substituïdes"
@@ -139,7 +144,14 @@
     "title": "Esquema",
     "ariaLabel": "Esquema de la nota",
     "hide": "Amaga l'esquema",
-    "hideTitle": "Amaga l'esquema (Esc)"
+    "hideTitle": "Amaga l'esquema (Esc)",
+    "copyHeadingLink": "Copia l'enllaç a l'encapçalament",
+    "copied": "Copiat"
+  },
+  "bodyMenu": {
+    "cut": "Retalla",
+    "sortAsc": "Ordena les línies de la A a la Z",
+    "sortDesc": "Ordena les línies de la Z a la A"
   },
   "topRow": {
     "add": "Afegeix una línia a dalt"
@@ -180,6 +192,9 @@
     "characters_one": "{{formatted}} caràcter",
     "characters_many": "{{formatted}} caràcters",
     "characters_other": "{{formatted}} caràcters",
+    "tasksChecked_one": "{{done}} de {{formatted}} marcat",
+    "tasksChecked_many": "{{done}} de {{formatted}} marcats",
+    "tasksChecked_other": "{{done}} de {{formatted}} marcats",
     "tooLargeToSync": ", potser és massa gran per sincronitzar-se, divideix-la en una nota nova",
     "veryLong": ", molt llarga, pot anar lenta en editar-la i encallar-se",
     "gettingLong": ", es va fent llarga, pot anar lenta en dispositius més lents",
@@ -187,19 +202,49 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "Cap nota coincident",
-    "create": "Crea \"{{query}}\""
+    "create": "Crea \"{{query}}\"",
+    "headingsIn": "Encapçalaments de {{title}}",
+    "noHeadingMatches": "Cap encapçalament coincident"
+  },
+  "copyBox": {
+    "placeholder": "Text per copiar amb un clic"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}+clic per copiar",
+    "copied": "Copiat"
   },
   "codeBlock": {
     "copy": "Copia",
     "copied": "Copiat",
     "copyFailed": "Ha fallat",
-    "wrap": "Ajusta les línies llargues"
+    "wrap": "Ajusta les línies llargues",
+    "showAll_one": "Mostra {{count}} línia",
+    "showAll_many": "Mostra les {{count}} línies",
+    "showAll_other": "Mostra les {{count}} línies",
+    "showLess": "Mostra’n menys",
+    "plainText": "Text pla",
+    "language": "Llenguatge del codi: {{name}}",
+    "searchLanguages": "Cerca llenguatges",
+    "placeholder": "Escriu o enganxa codi. Per tenir colors, tria un llenguatge a dalt."
   },
   "math": {
     "sourceLabel": "Codi LaTeX"
   },
   "noteLink": {
     "open": "Obre la nota",
-    "remove": "Elimina l'enllaç"
+    "remove": "Elimina l'enllaç",
+    "linkHeading": "Enllaça amb un encapçalament...",
+    "headingNotFound": "No s'ha trobat l'encapçalament",
+    "headingsLocked": "Desbloqueja aquesta nota per veure'n els encapçalaments",
+    "noHeadings": "Aquesta nota no té encapçalaments"
+  },
+  "footnote": {
+    "placeholder": "Text de la nota",
+    "back": "Torna al text",
+    "unused": "No s’usa al text",
+    "remove": "Elimina la nota",
+    "missing": "La nota no té text. Fes clic per afegir-lo.",
+    "ariaRef": "Nota {{n}}",
+    "ariaSection": "Notes a peu de pàgina"
   }
 }

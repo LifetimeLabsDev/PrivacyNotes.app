@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
 import { setPillarPrefs, type ListPrefs, type ListPrefsStore } from './listPrefs';
 import type { View } from './views';
-import NoteRow, { SiteChip, CardGlyph, noteLinkText } from './NoteRow';
+import NoteRow, { SiteChip, CardGlyph, itemDragSelection } from './NoteRow';
 import NoteCard from './NoteCard';
 import { ListNav } from './notesView/ListNav';
 import { ListSearchInput } from './ListSearchInput';
@@ -329,7 +329,7 @@ export function BookmarksList({
     );
 
   /** The whole selection as note-links, in list order, for a drag. */
-  const selectionLinkText = () => noteLinkText(bookmarks.filter((n) => selectedIds.has(n.id)), isNoteLocked);
+  const dragSelection = () => itemDragSelection(bookmarks.filter((n) => selectedIds.has(n.id)), isNoteLocked);
 
   return (
     <div className="flex flex-col h-full min-h-0">
@@ -365,7 +365,7 @@ export function BookmarksList({
           type="button"
           onClick={() => quickInputRef.current?.focus()}
           tabIndex={mobileTabIndex}
-          className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-semibold px-3 py-1.5 text-lg tracking-tight transition"
+          className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition"
         >
           <NEW_GLYPHS.bookmark size={18} />
           {t('bookmarks.new')}
@@ -393,8 +393,8 @@ export function BookmarksList({
               aria-expanded={sortOpen}
               className={`shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-md border transition ${
                 sortOpen
-                  ? 'bg-accent/10 border-accent text-accent'
-                  : 'bg-surface-2 border-divider text-neutral-600 hover:border-accent hover:text-accent dark:text-neutral-300'
+                  ? 'bg-accent/10 border-accent text-accent-strong'
+                  : 'bg-surface-2 border-divider text-pn-soft hover:border-accent hover:text-accent'
               }`}
             >
               <FunnelSimple size={18} />
@@ -427,7 +427,7 @@ export function BookmarksList({
           checked={listPrefs.showNoteLinks}
           onChange={(on) => onListPrefsChange(setPillarPrefs(listPrefsStore, 'bookmarks', { ...listPrefs, showNoteLinks: on }))}
           className="gap-2 select-none"
-          labelClassName="text-xs text-neutral-600 dark:text-neutral-400"
+          labelClassName="text-xs text-pn-muted"
         />
       </div>
 
@@ -439,7 +439,7 @@ export function BookmarksList({
             forward. min-h holds the bar's height when the button comes and
             goes, so nothing below it jumps. */}
         <div className={`flex items-center gap-2 min-h-10 rounded-md bg-surface-2 border ps-3 py-1 ${draft.trim() ? 'pe-1' : 'pe-3'} focus-within:border-accent ${urlError || dupWarn ? (dupWarn ? 'border-amber-500' : 'border-red-500') : 'border-divider'}`}>
-          <Plus size={16} className="text-neutral-400 shrink-0" />
+          <Plus size={16} className="text-pn-muted shrink-0" />
           <input
             ref={quickInputRef}
             tabIndex={mobileTabIndex}
@@ -454,7 +454,7 @@ export function BookmarksList({
             placeholder={t('bookmarks.quickAddPlaceholder')}
             enterKeyHint="next"
             dir="ltr"
-            className="flex-1 min-w-0 bg-transparent text-[15px] focus:outline-none placeholder:text-neutral-400 dark:placeholder:text-neutral-600"
+            className="flex-1 min-w-0 bg-transparent text-[15px] focus:outline-none placeholder:text-pn-muted"
           />
           {draft.trim() && (
             <button
@@ -464,17 +464,17 @@ export function BookmarksList({
               // keyboard only to raise it again.
               onMouseDown={(e) => e.preventDefault()}
               onClick={submitQuickAdd}
-              className="shrink-0 inline-flex items-center h-7 rounded bg-accent px-2.5 text-[13px] font-medium text-white whitespace-nowrap transition hover:bg-accent/90"
+              className="shrink-0 inline-flex items-center h-7 rounded bg-accent-fill px-2.5 text-[13px] font-medium text-white whitespace-nowrap transition hover:bg-accent-fill/90"
             >
               {t('common:actions.add')}
             </button>
           )}
         </div>
         {urlError && (
-          <div className="text-[12px] font-medium text-red-600 dark:text-red-400 mt-1 px-1">{t('bookmarks.urlInvalid')}</div>
+          <div className="text-[12px] font-medium text-danger mt-1 px-1">{t('bookmarks.urlInvalid')}</div>
         )}
         {dupWarn && (
-          <div className="text-[12px] font-medium text-amber-600 dark:text-amber-400 mt-1 px-1">{t('bookmarks.duplicateHint')}</div>
+          <div className="text-[12px] font-medium text-warning mt-1 px-1">{t('bookmarks.duplicateHint')}</div>
         )}
       </div>
 
@@ -493,22 +493,22 @@ export function BookmarksList({
       <ul className={`flex-1 overflow-y-auto list-none m-0 p-0 ${viewMode === 'grid' ? 'grid content-start gap-3 p-4 pn-notes-grid' : ''}`}>
         {empty && !filteredAway ? (
           <li className={`flex flex-col items-center justify-center text-center px-8 py-14 ${viewMode === 'grid' ? 'col-span-full' : ''}`}>
-            <BookmarkSimple size={34} className="text-neutral-400 dark:text-neutral-600" weight="duotone" aria-hidden="true" />
+            <BookmarkSimple size={34} className="text-pn-muted" weight="duotone" aria-hidden="true" />
             {/* States the fact before it pitches, the way every other pillar
                 does ("No notes yet.", "Vault is empty."). The heading under
                 it is the invitation, not the status. */}
-            <p className="text-[13px] text-neutral-500 dark:text-neutral-600 mt-3">{t('bookmarks.emptyNone')}</p>
+            <p className="text-[13px] text-pn-muted mt-3">{t('bookmarks.emptyNone')}</p>
             <h3 className="text-[15px] font-semibold mt-1 mb-4">{t('bookmarks.emptyTitle')}</h3>
             {/* The pane is a resizable COLUMN, so the two buttons run out of
                 room long before the viewport does: they wrap onto their own
                 lines instead of squeezing, and each label stays on one line
                 so the wrap actually triggers. */}
             <div className="flex flex-wrap items-center justify-center gap-2">
-              <button type="button" onClick={() => quickInputRef.current?.focus()} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md bg-accent px-3.5 py-2 text-[13px] font-medium text-white transition hover:bg-accent/90">
+              <button type="button" onClick={() => quickInputRef.current?.focus()} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md bg-accent-fill px-3.5 py-2 text-[13px] font-medium text-white transition hover:bg-accent-fill/90">
                 <NEW_GLYPHS.bookmark size={15} />
                 {t('bookmarks.emptyAdd')}
               </button>
-              <button type="button" onClick={onOpenImport} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-divider bg-surface-1 px-3.5 py-2 text-[13px] transition hover:bg-neutral-200 dark:hover:bg-surface-0">
+              <button type="button" onClick={onOpenImport} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-divider bg-surface-1 px-3.5 py-2 text-[13px] transition hover:bg-pn/10">
                 <Download size={15} />
                 {t('bookmarks.emptyImport')}
               </button>
@@ -531,7 +531,7 @@ export function BookmarksList({
               </li>
             )}
             {!filteredAway && bookmarks.length === 0 && filteredDerived.length === 0 && (
-              <li className={`p-6 text-[13px] text-neutral-500 dark:text-neutral-600 text-center ${viewMode === 'grid' ? 'col-span-full' : ''}`}>{t('bookmarks.noMatches')}</li>
+              <li className={`p-6 text-[13px] text-pn-muted text-center ${viewMode === 'grid' ? 'col-span-full' : ''}`}>{t('bookmarks.noMatches')}</li>
             )}
             {bookmarks.map((n) => (
               viewMode === 'grid' ? (
@@ -549,8 +549,8 @@ export function BookmarksList({
                 onTouchMove={onLongPressEnd}
                 onTouchCancel={onLongPressEnd}
                 selectionMode={selectionMode}
-                linkDrag
-                linkDragSelection={selectionLinkText}
+                itemDrag
+                dragSelection={dragSelection}
                 isMultiSelected={selectedIds.has(n.id)}
                 onToggleSelect={(e) => {
                   if (e.shiftKey) onRangeSelect(n.id);
@@ -575,8 +575,8 @@ export function BookmarksList({
                 onTouchMove={onLongPressEnd}
                 onTouchCancel={onLongPressEnd}
                 selectionMode={selectionMode}
-                linkDrag
-                linkDragSelection={selectionLinkText}
+                itemDrag
+                dragSelection={dragSelection}
                 isMultiSelected={selectedIds.has(n.id)}
                 onToggleSelect={(e) => {
                   if (e.shiftKey) onRangeSelect(n.id);
@@ -613,7 +613,7 @@ export function BookmarksList({
               />
             )}
             {filteredDerived.length > 0 && (
-              <li className={`px-4 pt-4 pb-1 text-[10px] font-semibold tracking-wider uppercase text-neutral-500 dark:text-neutral-400 ${viewMode === 'grid' ? 'col-span-full' : ''}`}>
+              <li className={`px-4 pt-4 pb-1 text-[10px] font-semibold tracking-wider uppercase text-pn-muted ${viewMode === 'grid' ? 'col-span-full' : ''}`}>
                 {t('bookmarks.fromNotesHeading')}
               </li>
             )}
@@ -634,12 +634,12 @@ export function BookmarksList({
                   <span className="pn-card-icbox contents">
                     <SiteChip domain={linkDomain(d.url)} fallback="globe" />
                   </span>
-                  <div className="pn-card-title min-w-0 flex-1 text-sm font-semibold truncate flex items-center gap-1.5 text-neutral-900 dark:text-white">
+                  <div className="pn-card-title min-w-0 flex-1 text-sm font-semibold truncate flex items-center gap-1.5 text-pn">
                     <CardGlyph type="link" domain={linkDomain(d.url)} />
                     <span className="pn-card-titletext truncate" dir="auto">{d.name || linkDomain(d.url)}</span>
                   </div>
                 </div>
-                <span className="pn-card-preview block text-[13px] text-neutral-500 dark:text-neutral-400 leading-snug truncate" dir="ltr">{d.url}</span>
+                <span className="pn-card-preview block text-[13px] text-pn-muted leading-snug truncate" dir="ltr">{d.url}</span>
                 <span className="pn-card-actions mt-auto flex items-center gap-1 pt-1">
                   <HoverLabel label={t('bookmarks.openSourceNote')} position="above-start">
                   <button
@@ -651,7 +651,7 @@ export function BookmarksList({
                     {d.noteType === 'journal' ? (
                       <Book size={14} className="text-purple-600 dark:text-purple-400" />
                     ) : d.noteType === 'task' ? (
-                      <CheckSquare size={14} className="text-emerald-600 dark:text-emerald-400" />
+                      <CheckSquare size={14} className="text-success" />
                     ) : (
                       <File size={14} className="text-accent" />
                     )}
@@ -677,11 +677,11 @@ export function BookmarksList({
                 </span>
               </li>
               ) : (
-              <li key={d.url + d.noteId} className="pn-row pn-lazy-row relative flex items-center gap-2.5 px-4 py-3 border-b border-divider/50 hover:bg-neutral-200/50 dark:hover:bg-neutral-900/50 cursor-pointer" onClick={() => onOpen(d.url)}>
+              <li key={d.url + d.noteId} className="pn-row pn-lazy-row relative flex items-center gap-2.5 px-4 py-3 border-b border-divider/50 hover:bg-pn/5 cursor-pointer" onClick={() => onOpen(d.url)}>
                 <SiteChip domain={linkDomain(d.url)} tall fallback="globe" />
                 <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-semibold truncate text-neutral-900 dark:text-white" dir="auto">{d.name || linkDomain(d.url)}</span>
-                  <span className="block text-[13px] text-neutral-500 dark:text-neutral-400 truncate mt-0.5" dir="ltr">{d.url}</span>
+                  <span className="block text-sm font-semibold truncate text-pn" dir="auto">{d.name || linkDomain(d.url)}</span>
+                  <span className="block text-[13px] text-pn-muted truncate mt-0.5" dir="ltr">{d.url}</span>
                 </span>
                 <span className="pn-row-actions shrink-0 flex items-center gap-1">
                 <HoverLabel label={t('bookmarks.openSourceNote')} position="start">
@@ -694,7 +694,7 @@ export function BookmarksList({
                     {d.noteType === 'journal' ? (
                       <Book size={14} className="text-purple-600 dark:text-purple-400" />
                     ) : d.noteType === 'task' ? (
-                      <CheckSquare size={14} className="text-emerald-600 dark:text-emerald-400" />
+                      <CheckSquare size={14} className="text-success" />
                     ) : (
                       <File size={14} className="text-accent" />
                     )}

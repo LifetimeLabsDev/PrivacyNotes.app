@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
-import type { ListPrefs, ListPrefsStore } from './listPrefs';
+import { setPillarPrefs, type ListPrefs, type ListPrefsStore } from './listPrefs';
 import type { UserSettings } from './userSettings';
 import { selectTaskNotes, type TaskItem } from './tasks';
-import NoteRow, { noteLinkText } from './NoteRow';
+import NoteRow, { itemDragSelection } from './NoteRow';
 import NoteCard from './NoteCard';
 import { compareNotes, stripToPlainText } from './notesViewUtils';
 import type { ContextMenuItem } from './ContextMenu';
@@ -21,6 +21,7 @@ import { ListNav } from './notesView/ListNav';
 import { ImportPromptEntry, importPromptFor, type ImportOffer } from './ImportPrompt';
 import { textMatcher } from './textMatch';
 import { isImeComposing } from './imeComposing';
+import { Switch } from './Switch';
 
 export interface TasksListProps {
   allTasks: TaskItem[];
@@ -46,7 +47,6 @@ export interface TasksListProps {
   onListPrefsChange: (next: ListPrefsStore) => void;
   /** Global layout: narrow rows ('list') or full-width tiles ('grid'). */
   viewMode: 'list' | 'grid';
-  tasksView: UserSettings['tasksView'];
   showDoneTasks: boolean;
   search: string;
   setSearch: (v: string) => void;
@@ -56,7 +56,6 @@ export interface TasksListProps {
   mobileTabIndex: number | undefined;
   hotkeyLabel: string;
   isNoteLocked: (n: LocalNote) => boolean;
-  onTasksViewChange: (v: UserSettings['tasksView']) => void;
   onSetShowDoneTasks: (updater: boolean | ((v: boolean) => boolean)) => void;
   onSetTaskDraft: (v: string) => void;
   onToggleTask: (task: TaskItem, checked: boolean) => void;
@@ -91,8 +90,6 @@ export interface TasksListProps {
   allTags?: [string, number][];
 }
 
-const HYBRID_COLLAPSED_COUNT = 3;
-
 export default function TasksList({
   allTasks,
   activeNotes,
@@ -109,7 +106,6 @@ export default function TasksList({
   listPrefsStore,
   onListPrefsChange,
   viewMode,
-  tasksView,
   showDoneTasks,
   search,
   setSearch,
@@ -119,7 +115,6 @@ export default function TasksList({
   mobileTabIndex,
   hotkeyLabel,
   isNoteLocked,
-  onTasksViewChange,
   onSetShowDoneTasks,
   onSetTaskDraft,
   onToggleTask,
@@ -151,7 +146,6 @@ export default function TasksList({
   allTags,
 }: TasksListProps) {
   const { t: tr } = useTranslation('shell');
-  const [tasksHybridExpanded, setTasksHybridExpanded] = useState(false);
   const [showListPrefs, setShowListPrefs] = useState(false);
   const listPrefsButtonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -182,11 +176,12 @@ export default function TasksList({
     const match = q ? textMatcher(q) : null;
     const groups = new Map<
       string,
-      { noteId: string; noteTitle: string; updatedAt: string; tasks: TaskItem[] }
+      { noteId: string; noteTitle: string; editedAt: string; tasks: TaskItem[] }
     >();
     const openTasks = allTasks.filter((t) => {
       const n = notesById.get(t.noteId);
-      return n !== undefined && !isNoteLocked(n);
+      if (n === undefined || isNoteLocked(n)) return false;
+      return listPrefs.showNoteTasks || n.type === 'task';
     });
     const doneFiltered = showDoneTasks
       ? openTasks
@@ -198,12 +193,12 @@ export default function TasksList({
       const g = groups.get(t.noteId);
       if (g) {
         g.tasks.push(t);
-        if (t.updatedAt > g.updatedAt) g.updatedAt = t.updatedAt;
+        if (t.editedAt > g.editedAt) g.editedAt = t.editedAt;
       } else {
         groups.set(t.noteId, {
           noteId: t.noteId,
           noteTitle: t.noteTitle,
-          updatedAt: t.updatedAt,
+          editedAt: t.editedAt,
           tasks: [t],
         });
       }
@@ -212,7 +207,7 @@ export default function TasksList({
       const na = notesById.get(a.noteId);
       const nb = notesById.get(b.noteId);
       if (na && nb) return compareNotes(na, nb, listPrefs);
-      return a.updatedAt < b.updatedAt ? 1 : -1;
+      return a.editedAt < b.editedAt ? 1 : -1;
     });
   }, [allTasks, showDoneTasks, search, notesById, listPrefs, isNoteLocked]);
 
@@ -222,6 +217,15 @@ export default function TasksList({
     () => selectTaskNotes(activeNotes, allTasks, search, listPrefs, isNoteLocked),
     [activeNotes, allTasks, search, listPrefs, isNoteLocked]
   );
+
+  /* The pillar's two kinds of content. A note typed 'task' is a list made in
+     here, with the New button or the quick-add bar; everything else is an
+     ordinary note that happens to carry a checkbox. The aggregate draws them
+     as two bands so a recipe never sits among the to-dos, and the switch above
+     drops the second band entirely. The header appears only when both kinds
+     are present, because a label that separates needs two things to separate. */
+  const ownGroups = taskGroups.filter((g) => notesById.get(g.noteId)?.type === 'task');
+  const fromGroups = taskGroups.filter((g) => notesById.get(g.noteId)?.type !== 'task');
 
   /**
    * Takes the place of every "nothing here" message below when the pane is
@@ -240,7 +244,7 @@ export default function TasksList({
     ) : null;
 
   /** The whole selection as note-links, in list order, for a drag. */
-  const selectionLinkText = () => noteLinkText(taskContainingNotes.filter((n) => selectedIds.has(n.id)), isNoteLocked);
+  const dragSelection = () => itemDragSelection(taskContainingNotes.filter((n) => selectedIds.has(n.id)), isNoteLocked);
 
   const ItemComp = viewMode === 'grid' ? NoteCard : NoteRow;
 
@@ -311,8 +315,8 @@ export default function TasksList({
       onTouchMove={onLongPressEnd}
       onTouchCancel={onLongPressEnd}
       selectionMode={selectionMode}
-      linkDrag
-      linkDragSelection={selectionLinkText}
+      itemDrag
+      dragSelection={dragSelection}
       isMultiSelected={selectedIds.has(n.id)}
       onToggleSelect={(e) => {
         if (e.shiftKey) onRangeSelect(n.id);
@@ -323,23 +327,12 @@ export default function TasksList({
     />
   );
 
-  const aggregatedTasksSection = (
-    <>
-      {taskGroups.length === 0 && (filteredEmpty ?? (
-        <div className="p-6 text-[13px] text-neutral-500 dark:text-neutral-600 text-center">
-          {search.trim()
-            ? tr('tasksList.noMatches')
-            : showDoneTasks
-              ? tr('tasksList.noTasksYet')
-              : tr('tasksList.noOpenTasks')}
-        </div>
-      ))}
-      {taskGroups.map((g) => {
+  const renderTaskGroup = (g: { noteId: string; noteTitle: string; editedAt: string; tasks: TaskItem[] }) => {
         const groupActive = selectedId === g.noteId;
         return (
         <div
           key={g.noteId}
-          className={`border-b border-neutral-200/50 dark:border-divider/50 ${
+          className={`border-b border-divider/50 ${
             groupActive ? 'bg-accent/10 border-s-2 border-s-accent dark:bg-accent/15' : ''
           }`}
         >
@@ -352,13 +345,13 @@ export default function TasksList({
                 lineIdx: g.tasks[0]?.lineIdx ?? 0,
                 text: '',
                 checked: false,
-                updatedAt: g.updatedAt,
+                editedAt: g.editedAt,
               })
             }
             className={`w-full flex items-center gap-1.5 text-start px-4 pt-3 pb-1 text-[11px] uppercase tracking-wide font-semibold transition ${
               groupActive
                 ? 'text-accent dark:text-accent'
-                : 'text-neutral-500 dark:text-neutral-500 hover:text-accent dark:hover:text-accent'
+                : 'text-pn-muted hover:text-accent dark:hover:text-accent'
             }`}
             aria-label={tr('tasksList.openNote', { title: g.noteTitle })}
           >
@@ -379,8 +372,8 @@ export default function TasksList({
                   aria-label={t.checked ? tr('tasksList.markIncomplete') : tr('tasksList.markComplete')}
                   className={`mt-0.5 shrink-0 w-[18px] h-[18px] rounded border flex items-center justify-center transition ${
                     t.checked
-                      ? 'bg-accent border-accent text-white'
-                      : 'border-neutral-400 dark:border-neutral-600 hover:border-accent'
+                      ? 'bg-accent-fill border-accent-fill text-white'
+                      : 'border-pn-muted/50 hover:border-accent'
                   }`}
                 >
                   {t.checked && (
@@ -397,15 +390,34 @@ export default function TasksList({
           </ul>
         </div>
         );
-      })}
-    </>
+  };
+
+  /* The label between the two bands. Drawn by the list and the aggregate, so
+     the hybrid shape inherits it through the aggregate it already renders. */
+  const bandHeader = (
+    <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wide font-semibold text-pn-muted border-t border-divider">
+      {tr('tasksList.tasksFromOtherItems')}
+    </div>
   );
 
-  const hybridTopNotes = tasksHybridExpanded
-    ? taskContainingNotes
-    : taskContainingNotes.slice(0, HYBRID_COLLAPSED_COUNT);
-  const hybridCanExpand =
-    taskContainingNotes.length > HYBRID_COLLAPSED_COUNT;
+  const aggregatedTasksSection = (
+    <>
+      {taskGroups.length === 0 && (filteredEmpty ?? (
+        <div className="p-6 text-[13px] text-pn-muted text-center">
+          {search.trim()
+            ? tr('tasksList.noMatches')
+            : !listPrefs.showNoteTasks
+              ? tr('tasksList.noTaskListsYet')
+              : showDoneTasks
+                ? tr('tasksList.noTasksYet')
+                : tr('tasksList.noOpenTasks')}
+        </div>
+      ))}
+      {ownGroups.map(renderTaskGroup)}
+      {ownGroups.length > 0 && fromGroups.length > 0 && bandHeader}
+      {fromGroups.map(renderTaskGroup)}
+    </>
+  );
 
   return (
     <>
@@ -428,7 +440,7 @@ export default function TasksList({
           allTags={allTags}
         />
       ) : (
-      <div className="shrink-0 h-14 px-4 border-b border-neutral-200 dark:border-divider flex items-center justify-between gap-3">
+      <div className="shrink-0 h-14 px-4 border-b border-divider flex items-center justify-between gap-3">
         <ListNav
           hiddenViews={hiddenViews}
           view="tasks"
@@ -441,7 +453,7 @@ export default function TasksList({
         <button
           onClick={() => void onNew()}
           aria-label={tr('tasksList.newTaskNote')}
-          className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-semibold px-3 py-1.5 text-lg tracking-tight transition"
+          className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition"
         >
           <NEW_GLYPHS.task size={18} />
           {tr('tasksList.new', newButtonOpts())}
@@ -458,34 +470,8 @@ export default function TasksList({
         onClearTag={onClearTag}
       />
 
-      {/* Row 2 -- layout pills. Hidden in grid mode - the tabs don't change the tile grid. */}
-      {viewMode !== 'grid' && (
-      <div className="shrink-0 px-3 pt-2 pb-1 flex gap-1.5 border-b border-neutral-200 dark:border-divider">
-        {(['hybrid', 'aggregated', 'list'] as const).map((v) => {
-          const active = tasksView === v;
-          const label =
-            v === 'hybrid' ? tr('tasksList.viewHybrid') : v === 'aggregated' ? tr('tasksList.viewAggregated') : tr('tasksList.viewList');
-          return (
-            <button
-              key={v}
-              type="button"
-              onClick={() => onTasksViewChange(v)}
-              aria-pressed={active}
-              className={`text-xs px-2.5 py-1 rounded-full transition font-medium ${
-                active
-                  ? 'bg-accent text-white'
-                  : 'bg-surface-1 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-surface-2'
-              }`}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
-      )}
-
       {/* Row 3 -- show/hide done + sort/view prefs + search */}
-      <div className="shrink-0 p-3 border-b border-neutral-200 dark:border-divider relative">
+      <div className="shrink-0 p-3 border-b border-divider relative">
         <div className="flex items-stretch gap-2">
           <HoverLabel label={showDoneTasks ? tr('tasksList.hideCompleted') : tr('tasksList.showCompleted')} position="above">
           <button
@@ -495,8 +481,8 @@ export default function TasksList({
             aria-pressed={showDoneTasks}
             className={`shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-md border transition ${
               showDoneTasks
-                ? 'bg-accent/10 border-accent text-accent'
-                : 'bg-surface-2 border-divider text-neutral-600 hover:border-accent hover:text-accent dark:text-neutral-300'
+                ? 'bg-accent/10 border-accent text-accent-strong'
+                : 'bg-surface-2 border-divider text-pn-soft hover:border-accent hover:text-accent'
             }`}
           >
             {showDoneTasks ? <EyeSlash size={18} /> : <Eye size={18} />}
@@ -511,8 +497,8 @@ export default function TasksList({
             aria-expanded={showListPrefs}
             className={`shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-md border transition ${
               showListPrefs
-                ? 'bg-accent/10 border-accent text-accent'
-                : 'bg-surface-2 border-divider text-neutral-600 hover:border-accent hover:text-accent dark:text-neutral-300'
+                ? 'bg-accent/10 border-accent text-accent-strong'
+                : 'bg-surface-2 border-divider text-pn-soft hover:border-accent hover:text-accent'
             }`}
           >
             <FunnelSimple size={18} />
@@ -532,14 +518,26 @@ export default function TasksList({
             onClose={() => setShowListPrefs(false)}
             anchorRef={listPrefsButtonRef}
             className="absolute start-3 top-full mt-1"
+            pillar="tasks"
           />
         )}
       </div>
 
+      {/* Tasks-from-notes toggle - the Bookmarks pillar's inline row */}
+      <div className="shrink-0 px-4 py-2 border-b border-divider">
+        <Switch
+          label={tr('listPrefs.showNoteTasks')}
+          checked={listPrefs.showNoteTasks}
+          onChange={(on) => onListPrefsChange(setPillarPrefs(listPrefsStore, 'tasks', { ...listPrefs, showNoteTasks: on }))}
+          className="gap-2 select-none"
+          labelClassName="text-xs text-pn-muted"
+        />
+      </div>
+
       {/* Row 4 -- Quick-add */}
-      <div className="shrink-0 p-3 border-b border-neutral-200 dark:border-divider">
+      <div className="shrink-0 p-3 border-b border-divider">
         <div className="flex items-center gap-2 rounded-md bg-surface-2 border border-divider px-3 py-2 focus-within:border-accent">
-          <Plus size={16} className="text-neutral-400 shrink-0" />
+          <Plus size={16} className="text-pn-muted shrink-0" />
           <input
             ref={taskInputRef}
             tabIndex={mobileTabIndex}
@@ -555,18 +553,22 @@ export default function TasksList({
             }}
             placeholder={tr('tasksList.quickAddPlaceholder')}
             enterKeyHint="done"
-            className="flex-1 bg-transparent text-[15px] focus:outline-none placeholder:text-neutral-400 dark:placeholder:text-neutral-600"
+            className="flex-1 bg-transparent text-[15px] focus:outline-none placeholder:text-pn-muted"
           />
         </div>
       </div>
 
-      {/* Content -- switches on tasksView */}
+      {/* Content -- the tile grid, or the pane's one list shape */}
       <div className="flex-1 overflow-y-auto" onMouseDown={suppressShiftTextSelection}>
         {viewMode === 'grid' ? (
           <>
             {taskContainingNotes.length === 0 && (filteredEmpty ?? (
-              <div className="p-6 text-[13px] text-neutral-500 dark:text-neutral-600 text-center">
-                {search.trim() ? tr('tasksList.noMatches') : tr('tasksList.noNotesWithTasks')}
+              <div className="p-6 text-[13px] text-pn-muted text-center">
+                {search.trim()
+                  ? tr('tasksList.noMatches')
+                  : !listPrefs.showNoteTasks
+                    ? tr('tasksList.noTaskListsYet')
+                    : tr('tasksList.noItemsWithTasks')}
               </div>
             ))}
             {(taskContainingNotes.length > 0 || importEntry || searchEntry || filterEntry) && (
@@ -580,51 +582,24 @@ export default function TasksList({
           </>
         ) : (
           <>
-        {tasksView === 'list' && (
-          <>
-            {taskContainingNotes.length === 0 ? (filteredEmpty ?? (
-              <div className="p-6 text-[13px] text-neutral-500 dark:text-neutral-600 text-center">
-                {search.trim()
-                  ? tr('tasksList.noMatches')
-                  : tr('tasksList.noNotesWithTasks')}
-              </div>
-            )) : (
-              <ul>{taskContainingNotes.map(renderTaskNoteRow)}</ul>
-            )}
-          </>
-        )}
-
-        {tasksView === 'hybrid' && (
-          <>
             {taskContainingNotes.length > 0 && (
-              <div className="border-b border-neutral-200 dark:border-divider">
-                <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wide font-semibold text-neutral-500 dark:text-neutral-500">
-                  {tr('tasksList.recentNotesWithTasks')}
+              <div className="border-b border-divider">
+                <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wide font-semibold text-pn-muted">
+                  {tr('tasksList.itemsWithTasks')}
                 </div>
-                <ul>{hybridTopNotes.map(renderTaskNoteRow)}</ul>
-                {hybridCanExpand && (
-                  <button
-                    type="button"
-                    onClick={() => setTasksHybridExpanded((v) => !v)}
-                    className="w-full text-center px-4 py-2 text-[13px] font-medium text-accent hover:bg-accent/5 transition border-t border-neutral-200/50 dark:border-divider/50"
-                  >
-                    {tasksHybridExpanded
-                      ? tr('tasksList.showLess')
-                      : tr('tasksList.loadMore', { count: taskContainingNotes.length - HYBRID_COLLAPSED_COUNT })}
-                  </button>
-                )}
+                <ul>{taskContainingNotes.map(renderTaskNoteRow)}</ul>
               </div>
             )}
-            <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wide font-semibold text-neutral-500 dark:text-neutral-500">
-              {tr('tasksList.tasksByNote')}
-            </div>
+            {/* The heading names the groups under it, so it stays away when
+                there are none and the pane's own empty line stands alone. */}
+            {taskGroups.length > 0 && (
+              <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wide font-semibold text-pn-muted">
+                {tr('tasksList.allTasks')}
+              </div>
+            )}
             {aggregatedTasksSection}
-          </>
-        )}
 
-        {tasksView === 'aggregated' && aggregatedTasksSection}
-
-        {/* One entry for all three list shapes, at the end of whatever the
+        {/* One entry for both list shapes, at the end of whatever the
             pane just drew. The grid puts its own tile inside the grid. */}
         {(searchEntry || filterEntry || importEntry) && <ul>{searchEntry}{filterEntry}{importEntry}</ul>}
           </>
@@ -671,8 +646,8 @@ function ClampedTaskText({ text, checked, onClick }: {
         onClick={onClick}
         className={`w-full text-start text-[15px] leading-snug ${
           checked
-            ? 'text-neutral-400 dark:text-neutral-600 line-through'
-            : 'text-neutral-800 dark:text-neutral-200'
+            ? 'text-pn-muted line-through'
+            : 'text-pn'
         }`}
         aria-label={tr('tasksList.openSourceNote')}
       >
@@ -681,7 +656,7 @@ function ClampedTaskText({ text, checked, onClick }: {
           className={expanded ? '' : 'line-clamp-2'}
           dir="auto"
         >
-          {text ? stripToPlainText(text) : <span className="text-neutral-400 italic">{tr('tasksList.empty')}</span>}
+          {text ? stripToPlainText(text) : <span className="text-pn-muted italic">{tr('tasksList.empty')}</span>}
         </span>
       </button>
       {clamped && !expanded && (

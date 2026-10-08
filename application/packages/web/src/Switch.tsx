@@ -45,7 +45,7 @@ export function Switch({
   const labelId = `${uid}-label`;
   const descriptionId = `${uid}-description`;
   return (
-    <label data-setting={setting} className={`flex items-center justify-between ${disabled ? 'cursor-default' : 'cursor-pointer'} ${className}`}>
+    <label data-setting={setting} className={`flex items-center justify-between gap-4 ${disabled ? 'cursor-default' : 'cursor-pointer'} ${className}`}>
       <span className="min-w-0 flex-1 flex flex-col">
         <span id={labelId} className={labelClassName}>
           {icon && <span aria-hidden="true" className="flex shrink-0">{icon}</span>}
@@ -74,7 +74,7 @@ export function Switch({
         />
         <span
           aria-hidden="true"
-          className="block w-9 h-5 rounded-full transition-colors bg-pn-muted/35 peer-checked:bg-accent peer-disabled:bg-pn-muted/20 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent"
+          className="block w-9 h-5 rounded-full transition-colors bg-pn-muted/35 peer-checked:bg-accent-fill peer-disabled:bg-pn-muted/20 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent"
         />
         <span
           aria-hidden="true"

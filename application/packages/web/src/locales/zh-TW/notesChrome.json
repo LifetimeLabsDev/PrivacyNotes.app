@@ -14,7 +14,7 @@
   },
   "moveScreen": {
     "title": "應用程式已搬家到 use.privacynotes.app",
-    "bodySignIn": "請在那裡用你的 12 個字復原助憶詞或「{{scanQr}}」登入。這部裝置會先同步，所以你所有的筆記都在那裡等你，這裡的東西也不會被刪除。",
+    "bodySignIn": "請在那裡用你的 12 個字復原助憶詞或「{{scanQr}}」登入。這台裝置會先同步，所以你所有的筆記都在那裡等你，這裡的東西也不會被刪除。",
     "openNotes": "要解決問題，請先在這裡打開一次你的筆記",
     "showPhrase": "顯示我的復原助憶詞",
     "website": "改為瀏覽網站"
@@ -49,7 +49,7 @@
     "body": "助憶詞是回到帳號的<only>唯一</only>途徑。沒有電子郵件重設，也沒有客服專線；我們刻意設計成不知道你是誰。如果你還沒抄下來，點<action>還沒，顯示助憶詞</action>，我們現在就打開給你看。",
     "unsyncedWarn_other": "這部裝置上有 {{count}} 則筆記尚未同步。若登出時無法上傳，這些筆記將永久遺失。",
     "unsyncedKept_other": "這部裝置上有 {{count}} 則筆記尚未同步。筆記會保留在這部裝置上，重新登入後就會同步。",
-    "unsyncedFilesWarn_other": "這部裝置上有 {{count}} 個檔案尚未同步。登出會將其永久刪除。",
+    "unsyncedFilesWarn_other": "這台裝置上有 {{count}} 個檔案尚未同步。登出會將其永久刪除。",
     "dontRemind": "不要再提醒我",
     "showPhrase": "還沒，顯示助憶詞",
     "confirm": "是，登出",

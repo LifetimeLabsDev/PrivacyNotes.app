@@ -86,6 +86,7 @@ export function OverflowTip({
             left: pos?.left ?? point.x,
             visibility: pos ? 'visible' : 'hidden',
           }}
+          // theme-ok: a tooltip is a dark pill in every theme
           className="fixed z-[60] pointer-events-none px-2.5 py-1.5 rounded-md bg-neutral-900 dark:bg-neutral-800 border border-neutral-700 text-[12px] text-neutral-100 max-w-[280px] whitespace-normal break-words leading-snug"
         >
           {text}

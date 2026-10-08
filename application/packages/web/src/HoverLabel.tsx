@@ -52,15 +52,30 @@ export const positionClasses = {
 type Position = keyof typeof positionClasses;
 
 /**
- * The pill every tip wears. Exported for the one tip built outside React,
- * the code block's wrap toggle (a node view is plain DOM), so the two cannot
- * drift apart. A tip only ever shows on hover, so on touch it is
- * display:none rather than merely transparent: a transparent tip still has
- * a box, and a box hanging past the screen edge widened the phone shell,
- * after which typing in a field scrolled the whole app sideways.
+ * The look every tip pill wears: its box, its colour, its type size. Split
+ * out from `TIP_PILL` for the tip whose visibility is decided in code rather
+ * than by `:hover` - the link address in the editor's corner, which has no
+ * one element to hang a hover group on - so the two pills cannot drift apart
+ * in appearance while differing in how they appear. Placement is the
+ * caller's, because a corner pill and a tip beside a button share nothing
+ * there.
+ *
+ * A tip only ever shows on hover, so on touch it is display:none rather
+ * than merely transparent: a transparent tip still has a box, and a box
+ * hanging past the screen edge widened the phone shell, after which typing
+ * in a field scrolled the whole app sideways.
+ */
+export const TIP_PILL_LOOK =
+  // theme-ok: a tooltip is a dark pill in every theme
+  'pn-tip pointer-events-none px-2.5 py-1.5 rounded-md bg-neutral-900 dark:bg-neutral-800 border border-neutral-700 dark:border-neutral-700 text-[12px] text-neutral-100 z-50 [@media(hover:none)]:hidden';
+
+/**
+ * The hover tip: the pill above, placed absolutely against its `group/tip`
+ * wrapper and revealed by hovering it. Exported for the one tip built
+ * outside React, the code block's wrap toggle (a node view is plain DOM).
  */
 export const TIP_PILL =
-  'pn-tip pointer-events-none absolute px-2.5 py-1.5 rounded-md bg-neutral-900 dark:bg-neutral-800 border border-neutral-700 dark:border-neutral-700 text-[12px] text-neutral-100 opacity-0 [@media(hover:hover)]:group-hover/tip:opacity-100 transition-opacity duration-75 z-50 [@media(hover:none)]:hidden';
+  `${TIP_PILL_LOOK} absolute opacity-0 [@media(hover:hover)]:group-hover/tip:opacity-100 transition-opacity duration-75`;
 
 /** CSS-only instant hover label. Replaces native title="" attributes. */
 export function HoverLabel({
@@ -112,7 +127,7 @@ export function HoverLabel({
         className={`${TIP_PILL}${hiddenAtXl ? ' xl:hidden' : ''}${hiddenAtSm ? ' sm:hidden' : ''} ${positionClasses[position]} ${multiline ? 'block w-[260px] whitespace-normal leading-snug text-center' : 'flex items-center gap-2 whitespace-nowrap'}`}
       >
         <span>{label}</span>
-        {count != null && <span className="text-neutral-400 tabular-nums">{count}</span>}
+        {count != null && <span /* theme-ok: on the dark tooltip pill */ className="text-neutral-400 tabular-nums">{count}</span>}
       </Wrapper>}
     </Wrapper>
   );

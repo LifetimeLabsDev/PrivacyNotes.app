@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { LinksModal } from './LinksModal';
 import { useRateLinks, RateOutro } from './rateLinks';
-import { Star } from './icons';
+import { RatingStar } from './RatingStar';
 
 type Props = {
   onClose: () => void;
@@ -20,7 +20,7 @@ export function RateModal({ onClose, onRated }: Props) {
   return (
     <LinksModal
       title={t('rate.title')}
-      titleIcon={<Star size={17} weight="fill" className="shrink-0 text-amber-400" aria-hidden="true" />}
+      titleIcon={<RatingStar size={17} />}
       intro={t('rate.intro')}
       links={links}
       outro={<RateOutro />}

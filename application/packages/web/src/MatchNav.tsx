@@ -7,8 +7,8 @@ import { HoverLabel } from './HoverLabel';
  * One string, so the two bars cannot drift apart by a shade.
  */
 export const BAR_BTN =
-  'flex items-center justify-center w-7 h-7 rounded text-neutral-600 dark:text-neutral-300 ' +
-  '[@media(hover:hover)]:hover:bg-neutral-200 [@media(hover:hover)]:dark:hover:bg-neutral-800 ' +
+  'flex items-center justify-center w-7 h-7 rounded text-pn-soft ' +
+  '[@media(hover:hover)]:hover:bg-pn/10 ' +
   'disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition shrink-0 outline-none';
 
 type Props = {
@@ -31,7 +31,7 @@ export function MatchNav({ count, noHits, canStep, onStep }: Props) {
     <>
       <span
         className={`min-w-[3.5ch] text-center text-xs tabular-nums shrink-0 ${
-          noHits ? 'text-red-500' : 'text-neutral-400 dark:text-neutral-500'
+          noHits ? 'text-danger' : 'text-pn-muted'
         }`}
       >
         {count}

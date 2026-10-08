@@ -33,7 +33,7 @@ The optional 4-digit PIN is a UI gate, not a cryptographic boundary: it stops so
 
 ## Sync
 
-Pull-then-push per device. A push lands only on the version of the note the device last synced, so a device that has not caught up merges field by field instead of overwriting: a change made on one device only is kept, text edited on two devices while apart opens a resolution dialog on the device that syncs second, with both versions kept until you choose, and when both devices changed the same detail (a pin, a folder, a title), the detail from the device that edited the note last is kept, without a dialog. A note that already carried an unsynced change before the device began recording its synced version merges by edit stamps instead, and any difference in its text opens the dialog. A permanent delete on one device removes the note everywhere, including an edit another device made while apart. Notes you move to the Trash stay restorable there, and 30 days later they are deleted permanently, unless you switch the Trash's auto-delete off. A permanent delete writes a tombstone and cannot be undone: the server keeps the note's ciphertext and version history until a nightly job removes tombstones older than 30 days, and nothing can restore the note from there.
+Pull-then-push per device. A push lands only on the version of the note the device last synced, so a device that has not caught up merges field by field instead of overwriting: a change made on one device only is kept, text edited on two devices while apart opens a resolution dialog on the device that syncs second, with both versions kept until you choose, and when both devices changed the same detail (a pin, a folder, a title), the detail from the device that edited the note last is kept, without a dialog. A note that already carried an unsynced change before the device began recording its synced version merges by edit stamps instead, and any difference in its text opens the dialog. A permanent delete on one device removes the note everywhere, including an edit another device made while apart. Notes you move to the Trash stay restorable there, and 30 days later they are deleted permanently, unless you switch the Trash's auto-delete off. A permanent delete cannot be undone: the server removes the note's ciphertext and version history at once and keeps only a marker: the note's id, the account's public key, and the times the note was created, last edited, first received by the server and deleted, so a device that was offline learns of the delete when it comes back.
 
 ## What we measure
 
@@ -102,7 +102,7 @@ Settings > Account > Accounts manages which providers can sign in. Connecting an
 
 - **Your device and browser.** If the operating system is compromised or the browser is malicious, none of the above helps. The universal limit of in-app encryption.
 - **The cryptographic libraries.** `@noble/ciphers`, `@noble/hashes`, `@noble/ed25519`, `@scure/bip39`. Audited and widely deployed.
-- **The frontend bundle, on the web.** A compromised deployment could ship JavaScript that exfiltrates the phrase - the standard supply-chain risk of any web app; Subresource Integrity and reproducible web builds have not shipped yet. The signed native builds (macOS notarized, Windows Authenticode, Linux signed AppImage, Android certificate-pinned APK) narrow that boundary. A native build does not change on its own: it changes when an update is installed, and the app's updater checks each one against a signing key compiled into the copy you already have, so an unsigned build cannot take the place of a signed one. The web has no equivalent, because every visit fetches the code again. If your threat model includes us being coerced, prefer the native apps. The Linux .deb is the exception: it ships unsigned, so on Linux the AppImage is the artifact you can verify.
+- **The frontend bundle, on the web.** A compromised deployment could ship JavaScript that exfiltrates the phrase - the standard supply-chain risk of any web app; Subresource Integrity and reproducible web builds have not shipped yet. The signed native builds (macOS notarized, Windows Authenticode, Linux signed AppImage, Android certificate-pinned APK) narrow that boundary. A native build does not change on its own: it changes when an update is installed, and the app's updater checks each one against a signing key compiled into the copy you already have, so an unsigned build cannot take the place of a signed one. The web has no equivalent, because every visit fetches the code again. If your threat model includes us being coerced, prefer the native apps. The Linux .deb has no updater: each version comes with a detached minisign signature made with the same key, which apt does not check, so check it yourself before you install.
 
 ## What we don't protect against
 
@@ -120,9 +120,11 @@ Settings > Account > Accounts manages which providers can sign in. Connecting an
 
 ## Audit status
 
-No third-party audit has been performed yet. The first significant spend out of revenue is one, with Cure53 as the target firm; scoping contact is made. This page will link the report when it exists.
+Independent security researchers review the published source and report what they find. We fix confirmed issues or state them as known limitations in THREAT_MODEL.md, publish a GitHub security advisory for each one that put users at risk, and credit the researchers under Acknowledgments below. We also run our own security reviews of the code before releases.
 
-In the meantime, the app and its cryptographic code live in this repository, so anyone who wants to inspect or critique the design can do so without trusting our word for it.
+A full, commissioned audit of the stack is planned, with Cure53 as the firm we want to work with. This page will link the report when it exists.
+
+The app and its cryptographic code live in this repository, so anyone who wants to inspect or critique the design can do so without trusting our word for it.
 
 ## Reporting a vulnerability
 

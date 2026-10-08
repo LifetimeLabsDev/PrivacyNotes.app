@@ -1,6 +1,7 @@
 {
   "title": "통계",
   "tabs": {
+    "overview": "개요",
     "writing": "글쓰기",
     "wellness": "웰니스"
   },
@@ -25,12 +26,13 @@
     "30d": "30일",
     "3mo": "3개월",
     "6mo": "6개월",
-    "12mo": "12개월"
+    "12mo": "12개월",
+    "all": "전체"
   },
   "wellness": {
     "subTabs": {
       "all": "전체",
-      "sleepActivity": "수면 & 활동",
+      "explore": "탐색",
       "medication": "복약",
       "patterns": "패턴"
     },
@@ -38,33 +40,17 @@
       "title": "아직 웰니스 데이터가 없어요.",
       "hint": "저널 항목을 열고 기분을 기록하면 시작돼요."
     },
-    "overview": {
-      "daysTracked": "기록한 날",
-      "avgMood": "평균 기분",
-      "avgSleep": "평균 수면",
-      "medAdherence": "복약 순응도",
-      "moodTrend": "기분 추세",
-      "moodByDayOfWeek": "요일별 기분",
-      "moodTrendTooltip": "{{date}}: {{mood}}/10",
-      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
-    },
     "export": {
       "heading": "내보내기",
-      "allTime": "전체 기간",
-      "last90Days": "최근 90일",
-      "last30Days": "최근 30일",
-      "last7Days": "최근 7일",
       "downloadJSON": "JSON 다운로드",
       "doctorPDF": "의사용 PDF",
-      "copyAIPrompt": "AI 프롬프트 복사",
+      "copyAIPrompt": "AI 프롬프트 보기 및 복사",
       "copied": "복사됨!",
       "saveFailed": "저장에 실패해서 파일이 비어 있거나 불완전할 수 있어요. 다시 시도하거나 다른 폴더를 골라 보세요.",
-      "proBadge": "PRO"
-    },
-    "sleepActivity": {
-      "sleepQuality": "수면 질",
-      "activity": "활동",
-      "avgSleepPerNight": "하룻밤 평균 수면"
+      "proBadge": "PRO",
+      "usesRange": "위에서 고른 기간을 써요",
+      "promptShown": "복사한 프롬프트예요. 원하는 챗봇에 붙여 넣으세요.",
+      "hidePrompt": "숨기기"
     },
     "medication": {
       "adherence": "순응도",
@@ -77,12 +63,11 @@
       "changedTo": "변경: {{dosage}}"
     },
     "patterns": {
-      "topEmotions": "주요 감정",
+      "heading": "기분을 움직이는 것",
       "insights": "인사이트",
       "proBadge": "PRO",
       "insightsLocked_other": "인사이트 {{count}}개 감지됨. 보려면 Pro로 업그레이드하세요",
-      "weekInReview": "주간 리뷰",
-      "weekInReviewLocked": "주간 웰니스 요약을 보려면 Pro로 업그레이드하세요"
+      "tableLocked": "어떤 트래커가 기분을 움직이는지 보려면 Pro로 업그레이드하세요"
     },
     "week": {
       "range": "{{start}} ~ {{end}}",
@@ -94,18 +79,31 @@
       "topActivity": "주요 활동",
       "topEmotions": "주요 감정",
       "reflection": "돌아보기",
-      "reflectionPlaceholder": "이번 주는 전반적으로 어땠나요? 남기고 싶은 생각이 있다면..."
+      "reflectionPlaceholder": "이번 주는 전반적으로 어땠나요? 남기고 싶은 생각이 있다면...",
+      "heading": "주간 리뷰",
+      "proBadge": "PRO",
+      "locked": "주간 웰니스 요약을 보려면 Pro로 업그레이드하세요"
     },
     "units": {
       "days_other": "{{count}}일"
     },
     "insights": {
-      "sleep": "잘 잔 날은 평균 {{good}}, 못 잔 날은 평균 {{bad}}이에요.",
-      "activity": "활동적인 날은 평균 {{active}}, 앉아 지낸 날은 평균 {{sedentary}}이에요.",
       "dayOfWeek": "가장 좋은 날은 보통 {{best}}이고(평균 {{bestAvg}}), 가장 힘든 날은 {{worst}}이에요(평균 {{worstAvg}}).",
-      "medication": "{{date}}에 {{name}} 복용을 시작한 뒤 평균 기분이 {{before}}에서 {{after}}로 바뀌었어요.",
+      "medication": "{{outcome}}은(는) {{name}}을(를) 복용한 날 평균 {{a}}, 거른 날 평균 {{b}}예요.",
       "streak_other": "{{count}}일 연속으로 기분을 기록했어요. 계속 이어가세요!",
-      "trend": "최근 2주 기분은 평균 {{recent}}, 전체 평균은 {{overall}}이에요."
+      "trend": "최근 2주 기분은 평균 {{recent}}점, 전체 평균은 {{overall}}점이에요.",
+      "yesno": "{{outcome}}은(는) {{name}}을(를) 기록한 날 평균 {{a}}, 기록하지 않은 날 평균 {{b}}예요.",
+      "yesnoNextDay": "{{outcome}}은(는) {{name}}을(를) 기록한 다음 날 평균 {{a}}, 기록하지 않은 다음 날 평균 {{b}}예요.",
+      "halves": "{{outcome}}은(는) {{name}}이(가) {{threshold}} 초과인 날 평균 {{a}}, {{threshold}} 이하인 날 평균 {{b}}예요.",
+      "halvesNextDay": "{{outcome}}은(는) {{name}}이(가) {{threshold}} 초과였던 다음 날 평균 {{a}}, {{threshold}} 이하였던 다음 날 평균 {{b}}예요.",
+      "median": "{{outcome}}은(는) {{name}}이(가) 중앙값 {{threshold}} 초과인 날 평균 {{a}}, 중앙값 이하인 날 평균 {{b}}예요.",
+      "medianNextDay": "{{outcome}}은(는) {{name}}이(가) 중앙값 {{threshold}} 초과였던 다음 날 평균 {{a}}, 중앙값 이하였던 다음 날 평균 {{b}}예요.",
+      "levels": "{{outcome}}은(는) {{top}}인 날 평균 {{a}}, {{bottom}}인 날 평균 {{b}}예요.",
+      "levelsNextDay": "{{outcome}}은(는) {{top}}이었던 다음 날 평균 {{a}}, {{bottom}}이었던 다음 날 평균 {{b}}예요.",
+      "tag": "{{outcome}}은(는) {{tag}}을(를) 느낀 날 평균 {{a}}, 느끼지 않은 날 평균 {{b}}예요.",
+      "tagNextDay": "{{outcome}}은(는) {{tag}}을(를) 느낀 다음 날 평균 {{a}}, 느끼지 않은 다음 날 평균 {{b}}예요.",
+      "medicationNextDay": "{{outcome}}은(는) {{name}}을(를) 복용한 다음 날 평균 {{a}}, 거른 다음 날 평균 {{b}}예요.",
+      "doseChange": "{{date}}에 {{name}}이(가) {{dosage}}로 바뀐 전후로, 기분은 바뀌기 전 {{nBefore}}일 동안 평균 {{before}}, 바뀐 뒤 {{nAfter}}일 동안 평균 {{after}}였어요."
     },
     "aiPrompt": {
       "intro": "기분과 컨디션을 기록하고 있습니다. 아래 데이터에서 패턴과 추세, 실행할 수 있는 통찰을 분석해 주세요.",
@@ -129,7 +127,15 @@
       "question2": "수면 질과 활동 수준이 기분과 관련이 있나요?",
       "question3": "의료진과 상의해야 할 우려되는 추세가 있나요?",
       "question4": "이 데이터를 바탕으로 실행할 수 있는 제안을 알려주세요.",
-      "footer": "PrivacyNotes로 생성(privacynotes.app)"
+      "footer": "PrivacyNotes로 생성(privacynotes.app)",
+      "period": "기간: {{from}} ~ {{to}}",
+      "daysLogged": "기록한 날: {{days}}일 중 {{logged}}일",
+      "trackers": "트래커",
+      "trackerLine": "{{name}}: 평균 {{avg}}, 최저 {{low}}, 최고 {{high}}, {{count}}일",
+      "trackerYesLine": "{{name}}: {{count}}일 중 {{yes}}일 '네'",
+      "effects": "있는 날과 없는 날의 기분",
+      "effectLine": "{{name}}({{rule}}): 있는 날 {{a}}, 없는 날 {{b}}, 차이 {{delta}}, {{na}} / {{nb}}일",
+      "customQuestion": "{{name}}은(는) 같은 날이나 다음 날의 제 기분과 관련이 있나요?"
     },
     "report": {
       "documentTitle": "건강 리포트",
@@ -155,13 +161,127 @@
       "columnTaken": "복용/일수",
       "columnRate": "비율",
       "dosageTimeline": "용량 타임라인",
-      "started": "{{date}}에 {{dosage}}로 시작",
-      "changedTo": "{{date}}에 {{dosage}}로 변경",
+      "started": "{{date}}에 {{dosage}}(으)로 시작",
+      "changedTo": "{{date}}에 {{dosage}}(으)로 변경",
       "unknownDose": "용량 미상",
       "topEmotions": "가장 자주 기록한 감정",
       "patterns": "발견된 패턴",
-      "footer": "PrivacyNotes로 생성 - privacynotes.app"
-    }
+      "footer": "PrivacyNotes로 생성 - privacynotes.app",
+      "period": "기간: {{from}} ~ {{to}}, {{days}}일",
+      "daysLogged": "기록한 날: {{days}}일 중 {{logged}}일",
+      "moodHeading": "기분, 하루에 막대 하나",
+      "moodLegend": "막대: 1-2 빨강, 3-4 주황, 5-6 노랑, 7-8 초록, 9-10 파랑. 선: 7일 평균. 삼각형: 용량 변경. 빈칸은 기록이 없는 날이에요.",
+      "previous": "그 이전 {{days}}일: {{value}}",
+      "trackers": "트래커",
+      "columnTracker": "트래커",
+      "columnAverage": "평균",
+      "columnLowHigh": "최저 / 최고",
+      "columnHistory": "이력",
+      "effects": "있는 날과 없는 날의 기분",
+      "columnFactor": "요인",
+      "columnRule": "기준",
+      "columnWith": "있음",
+      "columnWithout": "없음",
+      "columnDifference": "차이",
+      "nextDaySuffix": "{{name}}, 다음 날",
+      "effectsNote": "기록한 날의 평균이에요. 차이는 관찰된 결과이지 원인이 아니에요.",
+      "medCalendar": "달력",
+      "doseChanges": "용량 변경",
+      "columnDoseChanges": "용량 변경",
+      "yesOn": "{{count}}일 '네'",
+      "total": "총 {{value}}"
+    },
+    "tiles": {
+      "daysLogged": "기록한 날",
+      "daysLoggedOf": "{{days}}일 중 {{logged}}일",
+      "avgMood": "평균 기분",
+      "moodDelta": "이전 {{days}}일 대비 {{delta}}",
+      "avgSleep": "평균 수면",
+      "medsTaken": "복용한 약"
+    },
+    "mood": {
+      "heading": "기분",
+      "legend": "선: 7일 평균. 삼각형: 용량 변경.",
+      "dose": "{{name}} {{dosage}}"
+    },
+    "trackers": {
+      "heading": "트래커",
+      "tapHint": "탭하면 탐색이 열려요",
+      "stopped": "중지됨",
+      "deleted": "삭제됨",
+      "stoppedChip": "중지됨 ({{count}})",
+      "unknown": "알 수 없는 트래커 {{id}}",
+      "sleepHours": "수면 시간",
+      "sleepQuality": "수면 질",
+      "avgDays": "평균, {{count}}일",
+      "sumDays": "합계, {{count}}일",
+      "yesNo": "네 {{yes}}일, 아니요 {{no}}일",
+      "notLogged": "{{count}}일 기록 없음",
+      "latestLowHigh": "최근 {{latest}}, 최저 {{low}}, 최고 {{high}}",
+      "topLevel": "{{level}} {{count}}일",
+      "taken": "{{total}}일 중 {{taken}}일 복용",
+      "empty": "이 기간에 기록한 게 없어요",
+      "unanswered": "응답 없이 기록한 날 {{count}}일"
+    },
+    "effects": {
+      "heading": "기분을 움직이는 것",
+      "headingOutcome": "{{outcome}}을(를) 움직이는 것",
+      "allInPatterns": "전체는 패턴에서",
+      "sameDay": "같은 날",
+      "nextDay": "다음 날",
+      "compareWith": "비교 대상",
+      "withLabel": "있음",
+      "withoutLabel": "없음",
+      "days": "{{a}} / {{b}}일",
+      "shortfall_other": "'{{side}}' 쪽 날이 {{count}}일 더 필요해요",
+      "sideWith": "있음",
+      "sideWithout": "없음",
+      "footnote": "기록한 날 사이에서 관찰된 결과이지, 원인은 아니에요.",
+      "higher": "이런 날에는 {{outcome}}이(가) {{delta}}점 더 높아요.",
+      "lower": "이런 날에는 {{outcome}}이(가) {{delta}}점 더 낮아요.",
+      "rule": {
+        "yesno": "있는 날과 없는 날",
+        "halves": "{{threshold}} 초과와 {{threshold}} 이하",
+        "median": "중앙값 {{threshold}} 초과와 이하",
+        "levels": "{{top}}와(과) {{bottom}}",
+        "tag": "{{tag}}이(가) 있는 날과 없는 날",
+        "medication": "복용과 거름"
+      }
+    },
+    "explore": {
+      "calendar": "달력",
+      "against": "{{outcome}}와(과) 비교, 날짜 축은 하나",
+      "cells": {
+        "value": "기록함",
+        "no": "아니요",
+        "missing": "기록 없음"
+      },
+      "longestRunWithout": "없는 날 최장 연속: {{count}}일",
+      "longestRunWith": "있는 날 최장 연속: {{count}}일",
+      "pickOne": "트래커를 고르세요"
+    },
+    "medCalendar": {
+      "heading": "하루하루",
+      "doseChange": "용량 변경",
+      "taken": "복용",
+      "skipped": "건너뜀",
+      "missed": "거름",
+      "unmarked": "표시 없음",
+      "noEntry": "기록 없음",
+      "doseLens": "기분은 바뀌기 전 {{nBefore}}일 동안 평균 {{before}}, 바뀐 뒤 {{nAfter}}일 동안 평균 {{after}}였어요.",
+      "doseLensHeading": "각 용량 변경 전후",
+      "doseLensShort_other": "전후로 기록한 날이 {{count}}일 더 필요해요."
+    },
+    "sourceLine": "여기 있는 모든 것은 저널 항목의 트래커에서 와요.",
+    "openToday": "오늘 항목 열기"
+  },
+  "milestones": {
+    "heading": "마일스톤",
+    "next": "다음: {{label}}",
+    "allReached": "{{label}}, 그리고 그 이전 모두",
+    "ofTarget": "{{current}} / {{target}}",
+    "reached_other": "지금까지 {{count}}개 달성했어요.",
+    "source": "작성한 노트와 PrivacyNotes를 쓴 날은 앱 안에서 일어난 일만 세요. 가져오기는 둘 다 바꾸지 않아요."
   },
   "milestoneToast": {
     "unlocked": "마일스톤 달성"
@@ -175,5 +295,58 @@
     "age730": "PrivacyNotes와 2년",
     "age1825": "PrivacyNotes와 5년",
     "ageDefault": "{{count}}일째"
+  },
+  "overview": {
+    "week": "이번 주",
+    "streak": "글쓰기 스트릭",
+    "streakDays_other": "{{count}}일",
+    "streakNudge": "오늘은 아직 없어요. 한 줄이면 이어져요.",
+    "streakKept": "오늘도 채웠어요.",
+    "words": "쓴 단어",
+    "wordsDelta": "지난주 대비 {{delta}}",
+    "mood": "기분",
+    "moodDelta": "지난주 대비 {{delta}}",
+    "daysLogged": "기록한 날",
+    "daysLoggedOf": "{{days}}일 중 {{logged}}일",
+    "rhythm": "나의 리듬, {{weeks}}주",
+    "layerBoth": "둘 다",
+    "layerWriting": "글쓰기",
+    "layerMood": "기분",
+    "rhythmLegend": "칸: 그날 쓴 양. 점: 그날의 기분.",
+    "hours": "글 쓰는 시간대",
+    "hoursSub": "시간대별 수정, {{days}}일",
+    "hoursPeak": "글쓰기는 대부분 {{from}}에서 {{to}} 사이에 이루어져요.",
+    "ledgerSince": "{{date}}부터 이 기기에서 집계했어요.",
+    "ledgerEmpty": "지금부터 집계를 시작해요. 일주일 뒤에 다시 와 보세요.",
+    "highlights": "하이라이트",
+    "highlightSleep": "잘 자면 더 많이 써요. {{hours}}시간 이상 잔 다음 날에는 하루 약 {{a}} 단어, 짧게 잔 다음 날에는 {{b}} 단어를 써요.",
+    "highlightSleepSub": "긴 밤 {{long}}번, 짧은 밤 {{short}}번, {{days}}일",
+    "highlightWeekday": "{{day}}은(는) 나의 날이에요. 기분은 평균 {{mood}}이고, 가장 긴 노트 {{total}}개 중 {{count}}개가 {{day}}에 쓰였어요.",
+    "highlightWeekdaySub": "{{day}} {{count}}번 기록",
+    "highlightEffect": "{{name}}이(가) 있는 날은 {{direction}}. 기분은 있는 날 {{a}}, 없는 날 {{b}}.",
+    "higher": "더 높아요",
+    "lower": "더 낮아요",
+    "highlightEffectSub": "{{days}}일 중 {{name}}이(가) 있는 날 {{count}}일",
+    "highlightTag": "#{{tag}}이(가) 늘고 있어요. 이번 달 노트 {{now}}개, 지난달 {{before}}개.",
+    "highlightTagSub": "사용 중인 태그 {{count}}개",
+    "highlightsLocked": "글쓰기와 트래커의 공통점을 보려면 Pro로 업그레이드하세요",
+    "vault": "나의 보관함",
+    "vaultSub": "이번 주, 작은 숫자들",
+    "done": "{{count}}개 완료",
+    "milestones": "마일스톤",
+    "longestStreak": "최장 스트릭: {{count}}일",
+    "openWriting": "글쓰기 열기",
+    "openWellness": "웰니스 열기",
+    "computed": "이 기기에서 계산함",
+    "pillars": {
+      "notes": "노트",
+      "journals": "저널",
+      "tasks": "할 일",
+      "files": "파일",
+      "bookmarks": "북마크",
+      "contacts": "연락처",
+      "logins": "로그인"
+    },
+    "ledgerEstimated": "집계가 시작되기 전까지는 노트로 추정한 값이에요."
   }
 }

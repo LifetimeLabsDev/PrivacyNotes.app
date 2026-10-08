@@ -12,11 +12,12 @@ import type { BackupPayload } from '@notes/shared';
 import i18n from './i18n';
 import { trackerRows, trackerHeading } from './trackerExport';
 import { loadLocalSettings } from './userSettings';
-import { intlLocale } from './languages';
+import { formatInstant } from './intlFormat';
 import { saveBlob } from './saveFile';
 import { detectPlatform } from './devices';
 import type { LocalNote } from './db';
 import { noteToMarkdown } from './noteMarkdown';
+import { editedAtOf, toLocalIso } from './notesViewUtils';
 import type { ImageStore } from './imageStore';
 import type { AttachmentStore } from './attachmentStore';
 import { unescapeMarkdownText } from './fileNames';
@@ -30,9 +31,11 @@ import { vaultContent, vaultToMarkdown } from './vaultFields';
 import type { VaultContent } from './vaultFields';
 import { ancestorIds, folderNamePath, type FolderDef } from './folders';
 import type { ItemStyles } from './itemStyles';
+import type { CustomThemes } from './customThemes';
 import { linkExportMarkdown } from './linkBody';
 import { slugify, zipEntryStems } from './exportNames';
 import { lineHeightCss, paragraphGapCss, readLineSpacing } from './theme';
+import { isSameOriginPath } from './sameOriginPath';
 
 /** Export helpers. All exports are generated client-side as Blob downloads. */
 
@@ -353,6 +356,10 @@ export interface BackupManifest {
    *  to list, so a whole backup's manifest has no such key; a restore of a
    *  backup that has one reports each entry. */
   missing?: Pick<MissingBlob, 'id' | 'kind'>[];
+  /** The looks of folders, tags and notes and the custom themes, the two
+   *  settings maps the notes alone cannot carry. Written only when there is
+   *  something to carry; the restore validates both. */
+  settings?: { itemStyles?: unknown; customThemes?: unknown };
 }
 
 /**
@@ -407,6 +414,7 @@ async function downloadBlob(blob: Blob, filename: string): Promise<void> {
  * data URIs so the .md file is self-contained. Returns the pictures it could
  * not read, which stay references in the file.
  */
+
 export async function exportSingleMarkdown(
   note: LocalNote,
   imageStore?: ImageStore | null,
@@ -455,6 +463,7 @@ async function buildFullBackupZip(
   attachmentStore?: AttachmentStore | null,
   onProgress?: (msg: string) => void,
   folders: FolderDef[] = [],
+  settings: { itemStyles?: ItemStyles; customThemes?: CustomThemes } = {},
 ): Promise<{ blob: Blob; missing: MissingBlob[] }> {
   const { default: JSZip } = await import('jszip');
   const zip = new JSZip();
@@ -570,6 +579,11 @@ async function buildFullBackupZip(
     attachments: manifestAttachments,
     ...(missing.length > 0 ? { missing: missing.map(({ id, kind }) => ({ id, kind })) } : {}),
   };
+  const carried = {
+    ...(Object.keys(settings.itemStyles ?? {}).length > 0 ? { itemStyles: settings.itemStyles } : {}),
+    ...(Object.keys(settings.customThemes ?? {}).length > 0 ? { customThemes: settings.customThemes } : {}),
+  };
+  if (Object.keys(carried).length > 0) manifest.settings = carried;
   zip.file('manifest.json', JSON.stringify(manifest, null, 2));
 
   // ── 6. Generate and download ────────────────────────────────────────
@@ -587,9 +601,10 @@ export async function exportAllMarkdownZip(
   attachmentStore?: AttachmentStore | null,
   onProgress?: (msg: string) => void,
   folders: FolderDef[] = [],
+  settings: { itemStyles?: ItemStyles; customThemes?: CustomThemes } = {},
 ): Promise<MissingBlob[]> {
-  const { blob, missing } = await buildFullBackupZip(notes, imageStore, attachmentStore, onProgress, folders);
-  const stamp = new Date().toISOString().slice(0, 10);
+  const { blob, missing } = await buildFullBackupZip(notes, imageStore, attachmentStore, onProgress, folders, settings);
+  const stamp = toLocalIso(new Date());
   await downloadBlob(blob, `privacynotes-backup-${stamp}.zip`);
   return missing;
 }
@@ -608,10 +623,11 @@ export async function exportEncryptedFullBackup(
   encryptionKey: Uint8Array,
   onProgress?: (msg: string) => void,
   folders: FolderDef[] = [],
+  settings: { itemStyles?: ItemStyles; customThemes?: CustomThemes } = {},
 ): Promise<MissingBlob[]> {
-  const { blob, missing } = await buildFullBackupZip(notes, imageStore, attachmentStore, onProgress, folders);
+  const { blob, missing } = await buildFullBackupZip(notes, imageStore, attachmentStore, onProgress, folders, settings);
   const sealed = encodeZipBackup(new Uint8Array(await blob.arrayBuffer()), encryptionKey);
-  const stamp = new Date().toISOString().slice(0, 10);
+  const stamp = toLocalIso(new Date());
   await downloadBlob(
     new Blob([sealed as BlobPart], { type: 'application/octet-stream' }),
     `privacynotes-backup-${stamp}.pnbackupz`,
@@ -630,17 +646,18 @@ export async function exportAllJson(
   notes: LocalNote[],
   folders: FolderDef[] = [],
   itemStyles: ItemStyles = {},
+  customThemes: CustomThemes = {},
 ): Promise<void> {
   // Same payload builder as the encrypted .pnbackup, folders included since
   // 2026-08-26. It used to pass none, which meant every note carried a
   // `folderId` pointing at a folder the file did not contain: a restore had
   // the membership and no tree to hang it on. The field is additive, so an
   // older reader ignores it.
-  const payload = buildBackupPayload(notes, folders, undefined, itemStyles);
+  const payload = buildBackupPayload(notes, folders, undefined, itemStyles, customThemes);
   const blob = new Blob([JSON.stringify(payload, null, 2)], {
     type: 'application/json',
   });
-  const stamp = new Date().toISOString().slice(0, 10);
+  const stamp = toLocalIso(new Date());
   await downloadBlob(blob, `privacynotes-backup-${stamp}.json`);
 }
 
@@ -662,7 +679,7 @@ export async function exportBookmarksHtml(
   // path, where the chunk budget is measured.
   const { buildBookmarksHtml } = await import('./bookmarksNetscape');
   const html = buildBookmarksHtml(bookmarks, folders);
-  const stamp = new Date().toISOString().slice(0, 10);
+  const stamp = toLocalIso(new Date());
   await downloadBlob(
     new Blob([html], { type: 'text/html;charset=utf-8' }),
     `privacynotes-bookmarks-${stamp}.html`
@@ -680,11 +697,33 @@ export async function exportContactsVcf(notes: LocalNote[]): Promise<void> {
   const contacts = notes.filter(
     (n) => n.type === 'contact' && n.deleted !== 1 && n.trashed !== 1
   );
-  const { buildVcardFile } = await import('./contactsVcard');
-  const text = buildVcardFile(
-    contacts.map((n) => ({ title: n.title, body: n.body, tags: n.tags, updatedAt: n.updatedAt })),
+  const { buildVcardFile, vcardPhoto } = await import('./contactsVcard');
+  const { loadStoredImageBytes } = await import('./EncryptedImage');
+  // A stored picture is a blob the store decrypts; the seeded contact's is a
+  // static asset every install ships. A photo that cannot be read is left
+  // out, because a contact without its picture beats a failed export.
+  const loadPhoto = async (ref: string): Promise<Uint8Array | null> => {
+    if (ref.startsWith('pn:img/')) return loadStoredImageBytes(ref.slice('pn:img/'.length));
+    if (!isSameOriginPath(ref)) return null;
+    try {
+      const res = await fetch(ref);
+      if (!res.ok) return null;
+      return new Uint8Array(await res.arrayBuffer());
+    } catch {
+      return null;
+    }
+  };
+  const sources = await Promise.all(
+    contacts.map(async (n) => ({
+      title: n.title,
+      body: n.body,
+      tags: n.tags,
+      updatedAt: editedAtOf(n),
+      photo: await vcardPhoto(n.body, loadPhoto),
+    })),
   );
-  const stamp = new Date().toISOString().slice(0, 10);
+  const text = buildVcardFile(sources);
+  const stamp = toLocalIso(new Date());
   await downloadBlob(
     new Blob([text], { type: 'text/vcard;charset=utf-8' }),
     `privacynotes-contacts-${stamp}.vcf`
@@ -698,21 +737,6 @@ export async function exportContactsVcf(notes: LocalNote[]): Promise<void> {
 // download. Nothing about this file ever hits a PrivacyNotes server.
 // The markdown → HTML converter lives in markdownRender.ts and is
 // shared with the Burn-After-Reading viewer.
-
-function formatDate(iso: string): string {
-  try {
-    const d = new Date(iso);
-    return d.toLocaleString(intlLocale(), {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  } catch {
-    return iso;
-  }
-}
 
 /**
  * Build a standalone printable HTML document for one note.
@@ -752,8 +776,11 @@ function renderVaultHtml(vault: VaultContent): string {
  * The `.content` prefix on those rules is load-bearing. `.content table`
  * earlier in the sheet is more specific than a bare `.vault-fields`, so
  * without it that rule keeps winning `border-collapse` and no frame appears.
+ *
+ * `titleOnly` keeps the title and drops the date, folder and tags, for a page
+ * meant for somebody else. Tracker rows stay: they are what the entry recorded.
  */
-export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []): string {
+export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = [], titleOnly = false): string {
   const title = note.title.trim() || 'Untitled';
   const vault = vaultContent(note);
   const linkMd = linkExportMarkdown(note);
@@ -779,7 +806,8 @@ export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []
   // missing half of what the entry recorded. HTML and print are terminal
   // formats (nothing reads them back), so this is the readable rendering;
   // the machine-readable copy rides in the markdown front-matter instead.
-  const rows = trackerRows(note.trackers, loadLocalSettings().trackerSettings.weightUnit);
+  const trackerSettings = loadLocalSettings().trackerSettings;
+  const rows = trackerRows(note.trackers, trackerSettings.weightUnit, trackerSettings.customTrackers);
   const trackersHtml =
     rows.length > 0
       ? `<section class="trackers">
@@ -949,6 +977,20 @@ export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
   }
+  /* A spoiler stays blurred until it is clicked or tabbed to. Print shows
+     it: paper cannot be clicked. */
+  .content .pn-spoiler {
+    padding: 0 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: rgb(0 0 0 / 0.1);
+    background-image: repeating-linear-gradient(135deg, rgb(0 0 0 / 0.07) 0 3px, transparent 3px 7px);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .content .pn-spoiler-text { filter: blur(4px); opacity: 0.6; }
+  .content .pn-spoiler:focus { outline: none; background: rgb(0 0 0 / 0.05); }
+  .content .pn-spoiler:focus .pn-spoiler-text { filter: none; opacity: 1; }
   .content code {
     font-family: var(--pn-mono);
     background: #f3f3f3;
@@ -1070,6 +1112,8 @@ export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []
   details.pn-callout:not([open]) > summary .pn-arrow-in { display: none }
   details.pn-callout:not([open]) > summary .pn-arrow-out { display: inline !important }
   @media print {
+    .content .pn-spoiler { background: none; }
+    .content .pn-spoiler-text { filter: none; opacity: 1; }
     @page {
       size: A4;
       margin: 0;
@@ -1189,10 +1233,10 @@ export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []
 <body>
   <div class="page">
     <header class="note-head">
-      <h1 class="note-title">${escapeHtml(title)}</h1>
-      <div class="meta">${escapeHtml(formatDate(note.updatedAt))}</div>
+      <h1 class="note-title">${escapeHtml(title)}</h1>${titleOnly ? '' : `
+      <div class="meta">${escapeHtml(formatInstant(editedAtOf(note), 'dateTime'))}</div>
       ${folderHtml}
-      ${tagsHtml}
+      ${tagsHtml}`}
     </header>
     ${trackersHtml}
     <article class="content">
@@ -1267,7 +1311,7 @@ export async function exportAllHtmlZip(
   }
   onProgress?.(i18n.t('importExport:exportProgress.compressing'));
   const blob = await zip.generateAsync({ type: 'blob' });
-  const stamp = new Date().toISOString().slice(0, 10);
+  const stamp = toLocalIso(new Date());
   await downloadBlob(blob, `privacynotes-backup-${stamp}-html.zip`);
   return [...missing.values()];
 }
@@ -1324,12 +1368,13 @@ export async function printNote(
   imageStore?: ImageStore | null,
   folders: FolderDef[] = [],
   attachmentStore?: AttachmentStore | null,
+  titleOnly = false,
 ): Promise<void> {
   const resolved = await resolveBodyImages(note.body, imageStore, attachmentStore);
   let body = await inlineSameOriginImages(resolved.body);
   // KaTeX and lowlight are fetched on demand, only for a body that needs them.
   await prepareRender(body);
-  let html = buildNoteHtmlDocument({ ...note, body }, folderNamePath(folders, note.folderId));
+  let html = buildNoteHtmlDocument({ ...note, body }, folderNamePath(folders, note.folderId), titleOnly);
   // Inline favicons so they appear in the printed/PDF output.
   html = await inlineRenderedFavicons(html);
 
@@ -1424,10 +1469,12 @@ export async function exportEncryptedBackup(
   folders: FolderDef[] = [],
   /** Folder and tag looks (userSettings.itemStyles). */
   itemStyles: ItemStyles = {},
+  /** The custom color themes (userSettings.customThemes). */
+  customThemes: CustomThemes = {},
 ): Promise<void> {
-  const out = encodeBackup(buildBackupPayload(notes, folders, undefined, itemStyles), encryptionKey);
+  const out = encodeBackup(buildBackupPayload(notes, folders, undefined, itemStyles, customThemes), encryptionKey);
 
-  const stamp = new Date().toISOString().slice(0, 10);
+  const stamp = toLocalIso(new Date());
   await downloadBlob(
     new Blob([out as BlobPart], { type: 'application/octet-stream' }),
     `privacynotes-backup-${stamp}.pnbackup`
@@ -1600,7 +1647,7 @@ export async function exportVaultBitwarden(notes: LocalNote[], folders: FolderDe
       notes: '',
       favorite: note.starred === 1,
       creationDate: note.createdAt,
-      revisionDate: note.updatedAt,
+      revisionDate: editedAtOf(note),
     };
     const fields: BwExportField[] = [];
     const addField = (name: string, value: string, type: 0 | 1 = 0) => {
@@ -1667,6 +1714,6 @@ export async function exportVaultBitwarden(notes: LocalNote[], folders: FolderDe
   const blob = new Blob([JSON.stringify(payload, null, 2)], {
     type: 'application/json',
   });
-  const stamp = new Date().toISOString().slice(0, 10);
+  const stamp = toLocalIso(new Date());
   await downloadBlob(blob, `privacynotes-vault-${stamp}.json`);
 }

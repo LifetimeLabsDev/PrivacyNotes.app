@@ -19,6 +19,7 @@ import { useEscapeToClose } from './useEscapeToClose';
 import { proUnlocked } from './demo';
 import { HoverLabel } from './HoverLabel';
 import { isImeComposing } from './imeComposing';
+import { toLocalIso } from './notesViewUtils';
 import {
   type BuiltinTrackerId,
   type TrackerSettings,
@@ -29,6 +30,7 @@ import {
   CUSTOM_TRACKER_TYPE_LABELS,
   TRACKER_COLORS,
   activeCustomTrackers,
+  customTrackerColor,
 } from './trackerTypes';
 
 // ------------------------------------------------------------------
@@ -203,7 +205,7 @@ export function TrackerConfig({ settings, onChange, isPro, onOpenUpgrade, forceO
       <button
         type="button"
         onClick={() => setOwnOpen(true)}
-        className="inline-flex items-center justify-center w-7 h-7 shrink-0 self-center rounded-full text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-surface-0 transition-colors"
+        className="inline-flex items-center justify-center w-7 h-7 shrink-0 self-center rounded-full text-pn-muted hover:text-pn-soft hover:bg-pn/5 transition-colors"
         aria-label={t('config.configureTrackers')}
       >
         <Gear />
@@ -237,7 +239,7 @@ export function TrackerConfig({ settings, onChange, isPro, onOpenUpgrade, forceO
               <AddCustomView
                 onAdd={addCustom}
                 onBack={() => setView('config')}
-                usedColors={visibleCustom.map((t) => t.color)}
+                usedColors={visibleCustom.map(customTrackerColor)}
               />
             )}
           </div>
@@ -285,13 +287,13 @@ function ConfigView({
     <>
       {/* Header - pinned */}
       <div className="flex items-center justify-between mb-3 shrink-0">
-        <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+        <h3 className="text-sm font-semibold text-pn-soft">
           {t('config.title')}
         </h3>
         <button
           type="button"
           onClick={onCancel}
-          className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1"
+          className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
           aria-label={t('common:actions.close')}
         >
           <X size={18} />
@@ -304,7 +306,7 @@ function ConfigView({
       <div className="flex flex-col gap-3">
         {CATEGORIES.map((cat) => (
           <div key={cat.titleKey}>
-            <h4 className="text-[10px] uppercase tracking-wide font-semibold text-neutral-400 dark:text-neutral-500 mb-1.5">
+            <h4 className="text-[10px] uppercase tracking-wide font-semibold text-pn-muted mb-1.5">
               {t(cat.titleKey)}
             </h4>
             <div className="grid grid-cols-2 gap-x-3 gap-y-0.5">
@@ -332,7 +334,7 @@ function ConfigView({
                         <Check size={10} className="text-white" />
                       )}
                     </span>
-                    <span className={`text-[12px] ${active ? 'font-medium text-neutral-700 dark:text-neutral-200' : 'text-neutral-500 dark:text-neutral-400'}`}>
+                    <span className={`text-[12px] ${active ? 'font-medium text-pn-soft' : 'text-pn-muted'}`}>
                       {t(`labels.${meta.id}`)}
                     </span>
                   </label>
@@ -349,7 +351,7 @@ function ConfigView({
         <>
           {visibleCustom.length > 0 && (
             <>
-              <h4 className="text-[10px] uppercase tracking-wide font-semibold text-neutral-400 dark:text-neutral-500 mb-1.5">
+              <h4 className="text-[10px] uppercase tracking-wide font-semibold text-pn-muted mb-1.5">
                 {t('config.customHeading')}
               </h4>
               <div className="flex flex-col gap-1 mb-2">
@@ -357,9 +359,9 @@ function ConfigView({
                   <div key={ct.id} className="flex items-center gap-2">
                     <span
                       className="w-2.5 h-2.5 rounded-full shrink-0"
-                      style={{ backgroundColor: ct.color }}
+                      style={{ backgroundColor: customTrackerColor(ct) }}
                     />
-                    <span className={`flex-1 min-w-0 text-[12px] truncate ${ct.stoppedAt ? 'text-neutral-400 line-through' : 'text-neutral-700 dark:text-neutral-200'}`}>
+                    <span className={`flex-1 min-w-0 text-[12px] truncate ${ct.stoppedAt ? 'text-pn-muted line-through' : 'text-pn-soft'}`}>
                       {ct.name}
                     </span>
                     {ct.stoppedAt ? (
@@ -374,7 +376,7 @@ function ConfigView({
                         <button
                           type="button"
                           onClick={() => onDeleteCustom(ct.id)}
-                          className="text-[11px] text-red-500 hover:underline py-0.5"
+                          className="text-[11px] text-danger hover:underline py-0.5"
                         >
                           {t('common:actions.delete')}
                         </button>
@@ -383,7 +385,7 @@ function ConfigView({
                       <button
                         type="button"
                         onClick={() => onStopCustom(ct.id)}
-                        className="text-[11px] text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 py-0.5 shrink-0"
+                        className="text-[11px] text-pn-muted hover:text-pn-soft py-0.5 shrink-0"
                       >
                         {t('config.stop')}
                       </button>
@@ -397,24 +399,24 @@ function ConfigView({
             <button
               type="button"
               onClick={onAddCustom}
-              className="w-full flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-0 border border-divider hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors text-start"
+              className="w-full flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-0 border border-divider hover:bg-pn/5 transition-colors text-start"
             >
               <span className="w-7 h-7 rounded-md bg-accent/10 flex items-center justify-center shrink-0">
                 <Plus size={15} className="text-accent" />
               </span>
               <span className="flex flex-col">
-                <span className="text-[12px] font-medium text-neutral-700 dark:text-neutral-200">
+                <span className="text-[12px] font-medium text-pn-soft">
                   {visibleCustom.length > 0
                     ? t('config.addCustomTrackerCount', { count: visibleCustom.length, max: 10 })
                     : t('config.addCustomTracker')}
                 </span>
-                <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
+                <span className="text-[10px] text-pn-muted">
                   {t('config.addCustomTrackerHint')}
                 </span>
               </span>
             </button>
           ) : (
-            <p className="text-[11px] text-neutral-400">
+            <p className="text-[11px] text-pn-muted">
               {t('config.maxReached', { max: 10 })}
             </p>
           )}
@@ -425,7 +427,7 @@ function ConfigView({
           onClick={onOpenUpgrade}
           className="flex items-center gap-2 py-1.5 w-full text-start group"
         >
-          <span className="text-[12px] text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
+          <span className="text-[12px] text-pn-muted group-hover:text-pn transition-colors">
             {t('config.customTrackers')}
           </span>
           <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">
@@ -440,14 +442,14 @@ function ConfigView({
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 rounded-md border border-neutral-300 dark:border-neutral-800 hover:bg-surface-1 px-4 py-2 text-sm transition"
+          className="flex-1 rounded-md border border-divider hover:bg-surface-1 px-4 py-2 text-sm transition"
         >
           {t('common:actions.cancel')}
         </button>
         <button
           type="button"
           onClick={onSave}
-          className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2 text-sm font-medium transition"
+          className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2 text-sm font-medium transition"
         >
           {t('common:actions.save')}
         </button>
@@ -483,7 +485,7 @@ function AddCustomView({
       name: name.trim(),
       type,
       color,
-      createdAt: new Date().toISOString().slice(0, 10),
+      createdAt: toLocalIso(new Date()),
     });
   };
 
@@ -493,12 +495,12 @@ function AddCustomView({
         <button
           type="button"
           onClick={onBack}
-          className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1"
+          className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
           aria-label={t('common:actions.back')}
         >
           <CaretLeft size={18} />
         </button>
-        <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+        <h3 className="text-sm font-semibold text-pn-soft">
           {t('config.newCustomTracker')}
         </h3>
       </div>
@@ -509,17 +511,17 @@ function AddCustomView({
           placeholder={t('config.trackerNamePlaceholder')}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2 rounded-md text-[13px] border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200"
+          className="w-full px-3 py-2 rounded-md text-[13px] border border-pn-muted/50 bg-surface-0 text-pn"
           autoFocus
           maxLength={24}
           onKeyDown={(e) => { if (e.key === 'Enter' && !isImeComposing(e)) handleSubmit(); }}
         />
-        <div className={`text-[11px] text-end -mt-1 ${name.length >= 24 ? 'text-red-500 dark:text-red-400' : 'text-neutral-400 dark:text-neutral-500'}`}>
+        <div className={`text-[11px] text-end -mt-1 ${name.length >= 24 ? 'text-danger' : 'text-pn-muted'}`}>
           {t('config.nameCount', { count: name.length, max: 24 })}
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <span className="text-[11px] text-neutral-500 dark:text-neutral-400">{t('config.typeLabel')}</span>
+          <span className="text-[11px] text-pn-muted">{t('config.typeLabel')}</span>
           <div className="grid grid-cols-2 gap-1.5">
             {(Object.keys(CUSTOM_TRACKER_TYPE_LABELS) as CustomTrackerType[]).map(
               (k) => (
@@ -529,8 +531,8 @@ function AddCustomView({
                   onClick={() => setType(k)}
                   className={`px-2 py-2 rounded-md text-[12px] font-medium text-center transition-colors ${
                     type === k
-                      ? 'bg-accent text-white'
-                      : 'bg-surface-0 text-neutral-600 dark:text-neutral-300 hover:bg-accent/20'
+                      ? 'bg-accent-fill text-white'
+                      : 'bg-surface-0 text-pn-soft hover:bg-accent/20'
                   }`}
                 >
                   {t(`custom.typeLabels.${k}`)}
@@ -541,13 +543,13 @@ function AddCustomView({
         </div>
 
         <div className="flex gap-2 items-center">
-          <span className="text-[11px] text-neutral-500 dark:text-neutral-400">{t('config.colorLabel')}</span>
+          <span className="text-[11px] text-pn-muted">{t('config.colorLabel')}</span>
           {TRACKER_COLORS.map((c) => (
             <button
               key={c}
               type="button"
               onClick={() => setColor(c)}
-              className={`w-6 h-6 rounded-full transition-transform ${color === c ? 'ring-2 ring-offset-1 ring-neutral-400 dark:ring-neutral-500 scale-110' : 'hover:scale-110'}`}
+              className={`w-6 h-6 rounded-full transition-transform ${color === c ? 'ring-2 ring-offset-1 ring-pn-muted scale-110' : 'hover:scale-110'}`}
               style={{ backgroundColor: c }}
             />
           ))}
@@ -558,14 +560,14 @@ function AddCustomView({
             type="button"
             onClick={handleSubmit}
             disabled={!name.trim()}
-            className="flex-1 px-3 py-2 rounded-md text-[12px] font-medium bg-accent text-white hover:bg-accent-hover disabled:opacity-40"
+            className="flex-1 px-3 py-2 rounded-md text-[12px] font-medium bg-accent-fill text-white hover:bg-accent-fill-hover disabled:opacity-40"
           >
             {t('common:actions.create')}
           </button>
           <button
             type="button"
             onClick={onBack}
-            className="px-3 py-2 rounded-md text-[12px] font-medium text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+            className="px-3 py-2 rounded-md text-[12px] font-medium text-pn-muted hover:bg-pn/5"
           >
             {t('common:actions.cancel')}
           </button>

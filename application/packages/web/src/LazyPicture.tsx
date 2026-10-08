@@ -23,7 +23,7 @@ export function LazyPicture({ src }: { src: string }) {
   }, [near, src]);
 
   return (
-    <span ref={ref} className="absolute inset-0 block bg-neutral-200 dark:bg-neutral-800">
+    <span ref={ref} className="absolute inset-0 block bg-pn/10">
       {url && (
         <img src={url} alt="" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
       )}
@@ -49,7 +49,7 @@ export function LazyPdfCover({ uuid }: { uuid: string }) {
   }, [near, url, uuid]);
 
   return (
-    <span ref={ref} className="absolute inset-0 block bg-neutral-200 dark:bg-neutral-800">
+    <span ref={ref} className="absolute inset-0 block bg-pn/10">
       {url && (
         <img src={url} alt="" className="absolute inset-0 w-full h-full object-cover object-top bg-white" draggable={false} />
       )}

@@ -174,7 +174,7 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
   // Shared form content - used in both mobile and desktop layouts.
   const form = (
     <>
-      <label className="block text-[11px] font-medium text-neutral-500 dark:text-neutral-400 mb-1">
+      <label className="block text-[11px] font-medium text-pn-muted mb-1">
         {t('link.urlLabel')}
       </label>
       <input
@@ -197,10 +197,10 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
         } bg-surface-2 px-3 py-2 text-sm text-pn focus:outline-none focus:ring-1 focus:ring-accent`}
       />
       {urlError && (
-        <p className="text-[11px] text-red-500 dark:text-red-400 mt-1">{urlError}</p>
+        <p className="text-[11px] text-danger mt-1">{urlError}</p>
       )}
 
-      <label className="block text-[11px] font-medium text-neutral-500 dark:text-neutral-400 mb-1 mt-3">
+      <label className="block text-[11px] font-medium text-pn-muted mb-1 mt-3">
         {t('link.textLabel')}
       </label>
       <input
@@ -220,7 +220,7 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
         }`}
       />
       {hasSelection && !isEditing && (
-        <p className="text-[10px] text-neutral-400 dark:text-neutral-500 mt-1">
+        <p className="text-[10px] text-pn-muted mt-1">
           {t('link.selectedTextHint')}
         </p>
       )}
@@ -231,7 +231,7 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
             type="button"
             onMouseDown={(e) => e.preventDefault()}
             onClick={remove}
-            className="rounded-md px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition"
+            className="rounded-md px-3 py-2 text-sm font-medium text-danger hover:bg-red-100 dark:hover:bg-red-900/30 transition"
           >
             {t('common:actions.remove')}
           </button>
@@ -241,7 +241,7 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
           type="button"
           onMouseDown={(e) => e.preventDefault()}
           onClick={onClose}
-          className="rounded-md px-3 py-2 text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+          className="rounded-md px-3 py-2 text-sm font-medium text-pn-muted hover:bg-pn/5 transition"
         >
           {t('common:actions.cancel')}
         </button>
@@ -250,7 +250,7 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
           onMouseDown={(e) => e.preventDefault()}
           onClick={apply}
           disabled={!url.trim()}
-          className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover transition disabled:opacity-40 disabled:cursor-not-allowed"
+          className="rounded-md bg-accent-fill px-4 py-2 text-sm font-medium text-white hover:bg-accent-fill-hover transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {isEditing ? t('link.update') : t('link.apply')}
         </button>
@@ -275,7 +275,7 @@ export function LinkSheet({ editor, isMobile, anchorRef, onClose }: Props) {
           aria-label={isEditing ? t('link.editTitle') : t('link.addTitle')}
         >
           {/* Handle */}
-          <div className="w-8 h-1 bg-neutral-300 dark:bg-neutral-700 rounded-full mx-auto mb-4" />
+          <div className="w-8 h-1 bg-pn-muted/35 rounded-full mx-auto mb-4" />
           <h3 className="text-base font-semibold text-pn mb-3">
             {isEditing ? t('link.editTitle') : t('link.addTitle')}
           </h3>

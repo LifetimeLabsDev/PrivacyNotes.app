@@ -8,7 +8,7 @@
     "ctaOpening": "正在開啟結帳…",
     "ctaSignUp": "註冊以解鎖",
     "intro": {
-      "storage": "更大的上傳與更多空間是 Pro 功能。升級即可上傳 50 MB 檔案並獲得 500 MB 儲存空間。",
+      "storage": "更多空間是 Pro 功能：500 MB 儲存空間、每個檔案 50 MB，需要時還能加購最多 5 GB。",
       "folders": "資料夾是 Pro 功能。將筆記整理進巢狀資料夾，要多深就多深，讓每個專案各自分開。",
       "looks": "資料夾與標籤的圖示和顏色是 Pro 功能。為每一個設定一眼就認得出的外觀。",
       "lock": "鎖定筆記是 Pro 功能。升級即可保護任何筆記不被誤改。",
@@ -20,7 +20,7 @@
       "callout": "完整的標註樣式是 Pro 功能。",
       "totp": "2FA 驗證碼是 Pro 功能。在任何登入資訊中儲存驗證金鑰，就能在密碼旁看到不斷更新的驗證碼。金鑰本身在所有方案都會儲存並同步。",
       "replace": "尋找與取代是 Pro 功能。升級後可逐一取代，或一次取代筆記中的全部符合項目。",
-      "passphrase": "密語是 Pro 功能。產生一組隨機單字組成的密語，好輸入也容易念出來。",
+      "passphrase": "密碼短語是 Pro 功能。產生一組由隨機單字組成的密碼短語，好輸入也容易念出來。",
       "default": "一次升級，解鎖以下全部功能。單次付款。"
     },
     "features": {
@@ -30,7 +30,7 @@
       "history": "完整筆記歷史，隨時還原",
       "themes": "各種色調的進階佈景主題",
       "zen": "Zen 模式，無干擾寫作",
-      "storage": "500 MB 儲存空間 + 50 MB 附件"
+      "storage": "500 MB 儲存空間，加購後最多 5.5 GB"
     },
     "comparisonBeta": "一次付 ${{earlyPrice}}。Obsidian Sync 每年收 $48，年年都要；Standard Notes 每年收 $90。早鳥價，在漲到 ${{proPrice}} 前先鎖定。",
     "comparison": "一次付 ${{proPrice}}，永久擁有。Obsidian Sync 每年 $48、Standard Notes 每年 $90，而且年年都要付。"
@@ -47,9 +47,9 @@
     "benefitDevices": "裝置數量無上限",
     "benefitDevicesSub": "手機、平板、筆電，全部同步",
     "benefitStorage": "500 MB 儲存空間",
-    "benefitStorageSub": "免費方案的 10 倍，還能擴充",
+    "benefitStorageSub": "免費方案的 10 倍。需要時可加購最多 5 GB",
     "benefitMore": "更多功能",
-    "benefitMoreSub": "筆記歷史、資料夾、禪模式",
+    "benefitMoreSub": "筆記歷史、資料夾、Zen 模式",
     "benefitRoom": "多 {{gb}} GB 空間",
     "benefitRoomSub": "加在你 Pro 的 500 MB 之上",
     "benefitFileSize": "每個檔案 100 MB",

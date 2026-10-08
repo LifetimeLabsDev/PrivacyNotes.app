@@ -22,7 +22,7 @@ export function DemoAccountTeaser({ kind }: { kind: 'accounts' | 'keyCustody' | 
     </>}
     {kind === 'twoFactor' && <p className={`${SETTINGS_HELP} leading-relaxed`}>{t('twoFactor.description')}</p>}
     <SettingsCallout>{t(`demoTeaser.${kind}`)}</SettingsCallout>
-    <a href={withSource(DEMO_APP_URL)} className="inline-block rounded-md bg-accent px-3 py-2 text-sm text-white hover:bg-accent-hover">
+    <a href={withSource(DEMO_APP_URL)} className="inline-block rounded-md bg-accent-fill px-3 py-2 text-sm text-white hover:bg-accent-fill-hover">
       {t('demoTeaser.createAccount')}
     </a>
     {kind === 'accounts' && <BetaReportLink />}

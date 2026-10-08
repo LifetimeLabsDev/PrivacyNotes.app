@@ -22,9 +22,8 @@ import {
   describeMissing,
   type MissingBlob,
 } from '../export';
-import { applyRestoredFolders, validateFolders } from '../folders';
 import { RESTORE_WAIT_LINE, restoreGateNow } from '../pullState';
-import { deletedFolderIds, itemStylesEqual, mergeItemStyles, validateItemStyles } from '../itemStyles';
+import { remapFolderLooks, settingsAfterRestore } from '../backupRestore';
 import type { ImageStore } from '../imageStore';
 import type { AttachmentStore } from '../attachmentStore';
 import type { UserSettings } from '../userSettings';
@@ -92,7 +91,7 @@ export function useExports({
     await runExport('md-zip', async () => {
       const missing = await baseExportAllMarkdownZip(ns, imageStoreRef.current, attachmentStoreRef.current, (msg) => {
         setExportProgress({ status: msg, done: false });
-      }, userSettings.folders);
+      }, userSettings.folders, { itemStyles: userSettings.itemStyles, customThemes: userSettings.customThemes });
       setExportProgress({ status: describeMissing(missing), done: true });
     });
   };
@@ -101,7 +100,7 @@ export function useExports({
     await runExport('encrypted-zip', async () => {
       const missing = await baseExportEncryptedFullBackup(ns, imageStoreRef.current, attachmentStoreRef.current, auth.encryptionKey, (msg) => {
         setExportProgress({ status: msg, done: false });
-      }, userSettings.folders);
+      }, userSettings.folders, { itemStyles: userSettings.itemStyles, customThemes: userSettings.customThemes });
       setExportProgress({ status: describeMissing(missing), done: true });
     });
   };
@@ -131,18 +130,18 @@ export function useExports({
     });
   };
   const exportAllJson = (ns: LocalNote[]) =>
-    runExport('json', () => baseExportAllJson(ns, userSettings.folders, userSettings.itemStyles));
+    runExport('json', () => baseExportAllJson(ns, userSettings.folders, userSettings.itemStyles, userSettings.customThemes));
   const exportEncryptedBackup = (ns: LocalNote[]) =>
     runExport('encrypted', () =>
-      baseExportEncryptedBackup(ns, auth.encryptionKey, userSettings.folders, userSettings.itemStyles));
+      baseExportEncryptedBackup(ns, auth.encryptionKey, userSettings.folders, userSettings.itemStyles, userSettings.customThemes));
   const exportVault = (ns: LocalNote[]) =>
     runExport('vault', () => exportVaultBitwarden(ns, userSettings.folders));
   const exportBookmarks = (ns: LocalNote[]) =>
     runExport('bookmarks', () => exportBookmarksHtml(ns, userSettings.folders));
   const exportContacts = (ns: LocalNote[]) =>
     runExport('contacts', () => exportContactsVcf(ns));
-  const printNote = async (n: LocalNote) => {
-    await basePrintNote(n, imageStoreRef.current, userSettings.folders, attachmentStoreRef.current);
+  const printNote = async (n: LocalNote, titleOnly = false) => {
+    await basePrintNote(n, imageStoreRef.current, userSettings.folders, attachmentStoreRef.current, titleOnly);
     recordAdminEvent(supabase, 'export', 'pdf');
   };
   const importEncryptedBackup = async (file: File): Promise<{ imported: number; updated: number; unchanged: number }> => {
@@ -153,37 +152,10 @@ export function useExports({
     const buf = new Uint8Array(await file.arrayBuffer());
     const backup = decryptBackup(buf, auth.encryptionKey);
     recordAdminEvent(supabase, 'import', 'encrypted');
-    // v3 backups carry the folder definitions - merge them by id so the
-    // restored notes' folderId pointers resolve to a real tree.
-    const restoredFolders = validateFolders(backup.folders);
-    const restoredLooks = validateItemStyles(backup.itemStyles);
-    // Through the same helper as the folders-only restore: additive by id,
-    // and a folder this account deleted stays deleted, because its tombstone
-    // is final. The looks merge after the folders, per value like every sync
-    // point: a newer pick in the vault wins over the backup's, a second
-    // restore changes nothing, and a deleted folder does not get its look
-    // back.
-    if (restoredFolders.length > 0 || Object.keys(restoredLooks).length > 0) {
-      mutateSettings((prev) => {
-        const result = applyRestoredFolders(
-          { folders: prev.folders, deleted: prev.foldersDeleted },
-          restoredFolders,
-        );
-        const itemStyles = mergeItemStyles(
-          prev.itemStyles,
-          restoredLooks,
-          deletedFolderIds(result.tree.deleted),
-        );
-        const looksChanged = !itemStylesEqual(itemStyles, prev.itemStyles);
-        if (result.added === 0 && !looksChanged) return prev;
-        return {
-          ...prev,
-          folders: result.tree.folders,
-          foldersDeleted: result.tree.deleted,
-          ...(looksChanged ? { itemStyles } : {}),
-        };
-      });
-    }
+    // v3 backups carry the folder definitions, their looks and the custom
+    // themes; merged before the notes so the restored notes' folderId
+    // pointers resolve to a real tree (backupRestore.ts).
+    mutateSettings((prev) => settingsAfterRestore(prev, backup));
     const { applyImport } = await import('../import/apply');
     const parsed = {
       notes: backup.notes.map((n) => ({
@@ -196,6 +168,7 @@ export function useExports({
         tags: n.tags,
         createdAt: n.createdAt,
         updatedAt: n.updatedAt,
+        ...(typeof n.editedAt === 'string' ? { editedAt: n.editedAt } : {}),
         starred: n.starred === 1,
         trashed: n.trashed === 1,
         type: n.type,
@@ -219,7 +192,21 @@ export function useExports({
     };
   };
 
+  /** The looks and custom themes a full backup zip carries, merged as the
+   *  .pnbackup restore merges them, with each folder look moved to the id its
+   *  folder came back under. */
+  const mergeRestoredSettings = (
+    settings: { itemStyles?: unknown; customThemes?: unknown },
+    savedToFinal: ReadonlyMap<string, string>,
+  ) =>
+    mutateSettings((prev) =>
+      settingsAfterRestore(prev, {
+        itemStyles: remapFolderLooks(settings.itemStyles, savedToFinal),
+        customThemes: settings.customThemes,
+      }),
+    );
   return {
+    mergeRestoredSettings,
     exportSingleMarkdown,
     exportSingleHtml,
     exportAllMarkdownZip,

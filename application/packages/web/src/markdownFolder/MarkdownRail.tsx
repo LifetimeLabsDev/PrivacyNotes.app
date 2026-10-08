@@ -120,7 +120,7 @@ export function MarkdownRail({
   const selectedClass = (active: boolean) =>
     active
       ? SIDEBAR_ACTIVE
-      : 'text-neutral-900 hover:bg-neutral-200/60 dark:text-white dark:hover:bg-neutral-900/60';
+      : 'text-pn hover:bg-pn/5';
   const folderRowClass = (active: boolean) =>
     `w-full rounded text-[15px] lg:text-[13px] font-medium transition flex items-center group ${selectedClass(active)}`;
   const tagRowClass = (active: boolean) =>
@@ -128,8 +128,8 @@ export function MarkdownRail({
   const folderInnerClass = 'flex-1 min-w-0 flex items-center gap-2 lg:gap-1.5 px-2 py-2 lg:py-1 text-start';
   const tagInnerClass = 'flex-1 min-w-0 flex items-center gap-2 px-2 py-2 text-start';
   const folderCountClass =
-    'shrink-0 text-xs lg:text-[11px] text-neutral-400 dark:text-neutral-600 tabular-nums ms-1 me-2 lg:me-1.5';
-  const tagCountClass = 'shrink-0 text-xs text-neutral-400 dark:text-neutral-600 tabular-nums ms-2 me-2';
+    'shrink-0 text-xs lg:text-[11px] text-pn-muted tabular-nums ms-1 me-2 lg:me-1.5';
+  const tagCountClass = 'shrink-0 text-xs text-pn-muted tabular-nums ms-2 me-2';
 
   return (
     <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-3">
@@ -138,7 +138,7 @@ export function MarkdownRail({
       </p>
       <button type="button" onClick={() => onSelectDir(null)} className={folderRowClass(selectedDir === null)}>
         <span className={folderInnerClass}>
-          <span className={`inline-flex shrink-0 ${selectedDir === null ? 'text-accent' : 'text-amber-600/80 dark:text-amber-500/80'}`}>
+          <span className={`inline-flex shrink-0 ${selectedDir === null ? 'text-accent' : 'text-amber-700 dark:text-amber-500/80'}`}>
             <Folder size={16} className="lg:w-3.5 lg:h-3.5" />
           </span>
           <span className="truncate">{t('markdown.allFiles')}</span>
@@ -163,7 +163,7 @@ export function MarkdownRail({
               className={folderInnerClass}
               style={{ paddingInlineStart: `${8 + Math.min(node.depth - 1, MAX_INDENT_LEVEL) * 14}px` }}
             >
-              <span className={`inline-flex shrink-0 ${selectedDir === node.path ? 'text-accent' : 'text-amber-600/80 dark:text-amber-500/80'}`}>
+              <span className={`inline-flex shrink-0 ${selectedDir === node.path ? 'text-accent' : 'text-amber-700 dark:text-amber-500/80'}`}>
                 <Folder size={16} className="lg:w-3.5 lg:h-3.5" />
               </span>
               <span className="truncate">{node.name}</span>

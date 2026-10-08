@@ -1,7 +1,7 @@
 {
   "name": "PrivacyNotes",
   "short_name": "PrivacyNotes",
-  "description": "Zero-knowledge end-to-end encrypted notes. No email, no account, just 12 words.",
+  "description": "Private notes, encrypted on your device. No email required, just 12 words.",
   "icons": [
     {
       "src": "/icon-192.png",

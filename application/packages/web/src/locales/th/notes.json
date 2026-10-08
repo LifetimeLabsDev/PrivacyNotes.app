@@ -10,7 +10,8 @@
     "empty": "ว่างเปล่า",
     "noContent": "ไม่มีเนื้อหา",
     "notBackedUp": "ยังไม่ได้สำรอง",
-    "archived": "เก็บถาวรแล้ว"
+    "archived": "เก็บถาวรแล้ว",
+    "entryDate": "วันที่ของรายการ"
   },
   "header": {
     "new": "สร้าง",
@@ -19,7 +20,9 @@
     "trash": "ถังขยะ"
   },
   "folderChip": {
-    "clear": "ล้างตัวกรองโฟลเดอร์: {{folder}}"
+    "clear": "ล้างตัวกรองโฟลเดอร์: {{folder}}",
+    "subfolders": "โฟลเดอร์ย่อย",
+    "subfoldersLabel": "รวมโฟลเดอร์ย่อย"
   },
   "tagChip": {
     "clear": "ล้างตัวกรองแท็ก: {{tag}}"
@@ -189,6 +192,8 @@
     "currentHtmlDesc": "เหมาะสำหรับพิมพ์ แสดง Markdown บนหน้ากระดาษสีขาว",
     "printTitle": "พิมพ์ / บันทึกเป็น PDF",
     "printDesc": "เปิดหน้าต่างพิมพ์ บันทึกเป็น PDF หรือส่งไปยังเครื่องพิมพ์",
+    "printTextTitle": "พิมพ์เฉพาะข้อความ",
+    "printTextDesc": "คงชื่อเรื่องไว้ ไม่รวมวันที่ โฟลเดอร์ และแท็ก",
     "burnTitle": "แชร์และเผาหลังอ่าน",
     "burnDesc": "เผยแพร่โน้ตนี้เป็นลิงก์ที่ดูได้ครั้งเดียว ลิงก์จะทำลายตัวเองหลังอ่าน โน้ตของคุณยังปลอดภัยในบัญชี"
   },
@@ -206,7 +211,10 @@
     "newNote": "สร้าง",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "เปิดสถิติ",
+    "journalCalendar": "ปฏิทินบันทึกประจำวัน",
     "words": "คำ",
     "zen": "เซน",
     "appearance": "รูปลักษณ์",
@@ -230,7 +238,7 @@
     "appearanceLabel": "รูปลักษณ์",
     "helpLabel": "ความช่วยเหลือ",
     "aboutLabel": "เกี่ยวกับ",
-    "languageLabel": "ภาษา",
+    "languageLabel": "วันที่และภาษา",
     "languageDesc": "เลือกภาษาที่ใช้แสดง PrivacyNotes"
   },
   "importStore": {
@@ -247,6 +255,11 @@
     "readOnlyAcknowledge": "เข้าใจแล้ว",
     "readOnlyBlocked_other": "<highlight>{{count}} รายการ</highlight> เป็นแบบอ่านอย่างเดียว จึงย้ายไปที่ถังขยะไม่ได้ ปิดโหมดอ่านอย่างเดียวในเมนูตัวเลือกโน้ตก่อน",
     "readOnlySkipped_other": "<highlight>{{count}} รายการ</highlight> เป็นแบบอ่านอย่างเดียวและจะอยู่ที่เดิม"
+  },
+  "deleteCheckedTasks": {
+    "title": "ลบรายการที่ทำเครื่องหมายแล้วหรือไม่?",
+    "confirm": "ลบ",
+    "body_other": "จะลบ <highlight>{{count}} รายการ</highlight> ออกจากโน้ตนี้ รวมถึงรายการย่อย การดำเนินการนี้ย้อนกลับไม่ได้"
   },
   "bulkDelete": {
     "body_other": "ลบ <highlight>โน้ต {{count}} รายการ</highlight> อย่างถาวรหรือไม่? การดำเนินการนี้ย้อนกลับไม่ได้"

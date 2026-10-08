@@ -17,7 +17,7 @@
 import { useEffect, useRef } from 'react';
 import { detectPlatform } from '../devices';
 import { openPath } from './fileAccess';
-import { adaptFile } from './adapter';
+import { readOpenedFile } from './adapter';
 import type { OpenedMarkdownFile } from './types';
 
 export function usePendingFileOpens(
@@ -57,10 +57,9 @@ export function usePendingFileOpens(
       // `openPath` only declines off desktop, which the guard above has already
       // ruled out, so a null here is a path that did not become a file.
       if (!ref) { onErrorRef.current(); return; }
-      const raw = await ref.read();
-      const stamp = await ref.stamp();
+      const opened = await readOpenedFile(ref);
       if (cancelled) return;
-      onOpenRef.current({ ref, raw, stamp, adapted: adaptFile(ref.name, raw), reloadToken: 0 });
+      onOpenRef.current(opened);
     }
 
     function drain(): Promise<void> {

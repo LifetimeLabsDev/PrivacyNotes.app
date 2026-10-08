@@ -15,7 +15,7 @@ title: Welkom bij PrivacyNotes
 
 Klik aan het eind van deze regel en typ een woord. De notitie slaat zichzelf op. Er is geen opslaanknop.
 
-De balk hierboven verandert hoe tekst eruitziet: **vet**, *cursief*, koppen, aanvinklijstjes, <span style="color: #f08c00">kleuren</span>, <span style="font-size: 1.25em; font-family: ui-serif, Georgia, Cambria, serif">lettertypes</span>, links.
+De balk hierboven verandert hoe tekst eruitziet: **vet**, *cursief*, koppen, takenlijsten, <span style="color: #f08c00">kleuren</span>, <span style="font-size: 1.25em; font-family: ui-serif, Georgia, Cambria, serif">lettertypes</span>, links.
 
 ## Drie notities die het openen waard zijn
 
@@ -29,7 +29,7 @@ De balk hierboven verandert hoe tekst eruitziet: **vet**, *cursief*, koppen, aan
 
 - [ ] Zoek je **<mark style="background-color: rgba(51, 154, 240, 0.35)">herstelzin van 12 woorden</mark>** op onder **Instellingen > Beveiliging > Herstelzin**, schrijf hem op papier en leg hem ergens veilig
 
-Die zin is wat je notities opent. Waar hij ligt, bepaal jij, en je kunt die keuze altijd veranderen. [[Hoe je notities beschermd zijn]] legt de drie opties uit.
+Die herstelzin is wat je notities opent. Waar hij ligt, bepaal jij, en je kunt die keuze altijd veranderen. [[Hoe je notities beschermd zijn]] legt de drie opties uit.
 
 > [!tip] Niets hier is voorgoed
 > Elke notitie in deze kluis is een voorbeeld, ook deze. Pas hem aan, verplaats hem of gooi hem weg.

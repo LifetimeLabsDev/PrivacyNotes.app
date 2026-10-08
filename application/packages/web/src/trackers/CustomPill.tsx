@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CustomTrackerTemplate } from '../trackerTypes';
+import { customTrackerColor, type CustomTrackerTemplate } from '../trackerTypes';
 import { PillShell, useCommitOnCollapse } from './PillShell';
 
 // Spec: ops/docs/design-decisions.md (number tracker bounds - prevents scientific-notation display)
@@ -35,6 +35,7 @@ export function CustomPill({
 }) {
   const { t } = useTranslation('trackers');
   const [draft, setDraft] = useState('');
+  const color = customTrackerColor(template);
 
   // Closing the picker saves the typed number - see the hook. Only the
   // 'number' shape has a free-text field; the scales and yes/no commit
@@ -56,7 +57,7 @@ export function CustomPill({
   return (
     <PillShell
       label={template.name}
-      color={template.color}
+      color={color}
       filled={value != null}
       expanded={expanded}
       onToggle={() => {
@@ -67,7 +68,7 @@ export function CustomPill({
       readOnly={readOnly}
     >
       <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+        <span className="text-xs font-medium text-pn-soft">
           {template.name}
         </span>
         {template.type === 'scale10' && (
@@ -80,9 +81,9 @@ export function CustomPill({
                 className={`w-6 h-6 rounded text-[10px] font-semibold transition-colors ${
                   value === n
                     ? 'text-white'
-                    : 'bg-surface-0 text-neutral-600 dark:text-neutral-300 hover:opacity-80'
+                    : 'bg-surface-0 text-pn-soft hover:opacity-80'
                 }`}
-                style={value === n ? { backgroundColor: template.color } : undefined}
+                style={value === n ? { backgroundColor: color } : undefined}
               >
                 {n}
               </button>
@@ -99,9 +100,9 @@ export function CustomPill({
                 className={`w-8 h-8 rounded-md text-xs font-semibold transition-colors ${
                   value === n
                     ? 'text-white'
-                    : 'bg-surface-0 text-neutral-600 dark:text-neutral-300 hover:opacity-80'
+                    : 'bg-surface-0 text-pn-soft hover:opacity-80'
                 }`}
-                style={value === n ? { backgroundColor: template.color } : undefined}
+                style={value === n ? { backgroundColor: color } : undefined}
               >
                 {n}
               </button>
@@ -118,9 +119,9 @@ export function CustomPill({
               value={typeof value === 'number' ? value : 50}
               onChange={(e) => onChange(parseInt(e.target.value, 10))}
               className="flex-1 h-1.5 cursor-pointer"
-              style={{ accentColor: template.color }}
+              style={{ accentColor: color }}
             />
-            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200 w-8 text-end tabular-nums">
+            <span className="text-sm font-medium text-pn-soft w-8 text-end tabular-nums">
               {typeof value === 'number' ? value : 50}
             </span>
           </div>
@@ -140,7 +141,7 @@ export function CustomPill({
                   if (n != null) { onChange(n); onToggle(); }
                 }
               }}
-              className="w-24 px-2.5 py-1.5 rounded-md text-sm border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200 tabular-nums"
+              className="w-24 px-2.5 py-1.5 rounded-md text-sm border border-pn-muted/50 bg-surface-0 text-pn tabular-nums"
               autoFocus
             />
             <button
@@ -150,7 +151,7 @@ export function CustomPill({
                 if (n != null) { onChange(n); onToggle(); }
               }}
               className="px-3 py-1.5 rounded-md text-xs font-medium text-white transition-colors"
-              style={{ backgroundColor: template.color }}
+              style={{ backgroundColor: color }}
             >
               {t('common:actions.save')}
             </button>
@@ -166,9 +167,9 @@ export function CustomPill({
                 className={`flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                   value === v
                     ? 'text-white'
-                    : 'bg-surface-0 text-neutral-600 dark:text-neutral-300 hover:opacity-80'
+                    : 'bg-surface-0 text-pn-soft hover:opacity-80'
                 }`}
-                style={value === v ? { backgroundColor: template.color } : undefined}
+                style={value === v ? { backgroundColor: color } : undefined}
               >
                 {v ? t('custom.yes') : t('custom.no')}
               </button>

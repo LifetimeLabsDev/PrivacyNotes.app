@@ -81,8 +81,8 @@ export function MfaPrompt({ request, onSubmit, onDismiss }: {
               <PinInput ref={input} value={code} onChange={setCode} onComplete={submit} length={6} reveal compact
                 ariaLabel={t('mfaPrompt.codeLabel')} disabled={request.busy} />
             </div>
-            {request.error && <p id={errorId} role="alert" className="text-sm text-center text-red-600 dark:text-red-400">{t(request.error)}</p>}
-            <button type="submit" disabled={request.busy || code.length !== 6} className="w-full rounded-md bg-accent hover:bg-accent-hover text-white text-sm font-medium px-4 py-2 transition disabled:opacity-40 disabled:cursor-not-allowed">
+            {request.error && <p id={errorId} role="alert" className="text-sm text-center text-danger">{t(request.error)}</p>}
+            <button type="submit" disabled={request.busy || code.length !== 6} className="w-full rounded-md bg-accent-fill hover:bg-accent-fill-hover text-white text-sm font-medium px-4 py-2 transition disabled:opacity-40 disabled:cursor-not-allowed">
               {t(request.busy ? 'mfaPrompt.verifying' : 'mfaPrompt.verify')}
             </button>
           </form>

@@ -5,8 +5,10 @@ import path from 'node:path';
 import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { changelogPagePlugin } from './changelog-page.ts';
+import { PUBLIC_CHANGELOG } from './src/publicChangelog.ts';
 import { helpPagePlugin } from './help-page.ts';
 import { roadmapPagePlugin } from './roadmap-page.ts';
+import { themesPagePlugin } from './themes-page.ts';
 import { searchCoreScriptPlugin } from './search-core-script.ts';
 import { brandPagePlugin } from './brand-page.ts';
 import { marketingShellPlugin } from './marketing-shell.ts';
@@ -365,7 +367,9 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // auth.tsx, sync.ts and their helpers out of a shared boot chunk into the
   // entry (PinInput went the other way). Found by diffing the entry's source
   // map against a build of the previous commit. Raised to 112.
-  '(entry)': 112,
+  // 112.04 kB gz on 2026-10-04, 0.04 over. WHAT GREW: auth.tsx (+0.11), the
+  // device-limit retry finishing an account switch. Raised to 113.
+  '(entry)': 113,
   // NEW CHUNK, not new bytes: the whole shared package in one piece, 62.91 kB
   // gz. It has to stay one chunk - splitting it is what put a white page in
   // production. See the advancedChunks comment in `build` for the mechanism.
@@ -450,7 +454,50 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // the boot path (import chunk, dynamic export import).
   // 162 -> 164 (2026-09-08): the detail-pane kit and the vault view modes
   // rebuilt on it, +1.83 kB gz, measured against the v0.506.1 baseline.
-  NotesView: 164,
+  // 164 -> 166 (2026-10-02): the contact photo picker on the chip, +1.19 kB
+  // gz against the v0.555.1 baseline.
+  // 166 -> 168 (2026-10-02): the task list controls, the list walker in
+  // tasks.ts and the menu, confirm and counter wiring, +2.44 kB gz against the
+  // v0.558.0 baseline.
+  // 168 -> 169 (2026-10-06): the keyboard commands of phases 2 to 4 (history
+  // back and forward, the list and sidebar keys, F6, the desktop keys), +2.32
+  // kB gz against the v0.569.2 baseline.
+  // 169 -> 170 (2026-10-06): command mode (the palette entries and their
+  // runner), +0.79 kB gz against the v0.570.1 baseline.
+  // 170 -> 171 (2026-10-06): custom and community themes, +1.26 kB gz
+  // against the v0.571.0 baseline: the Themes tab's action row and card menus
+  // and the builder hook; the cards, the paste field and the builder are lazy
+  // chunks.
+  // 171 -> 172 (2026-10-06): the quick switcher's wiring (its state, the
+  // section of each item, the lazy mount), +0.24 kB gz; the switcher itself
+  // is a lazy chunk.
+  // 172 -> 174 (2026-10-07): the date work of steps 4 to 7 in
+  // ops/docs/plans/dates.md, +2.31 kB gz: the Date & time tab of the Date &
+  // Language pane and the effect that applies it, the Entry date row of the
+  // note menu, the date field of the New menu, the entry date write, and the
+  // pattern row of the Journals pane (settingsCategories imports both panes).
+  // 174 -> 175 (2026-10-07): the note color control of v0.577.0 and the
+  // Subfolders switch of v0.578.0 (its scope, the path labels for the row
+  // chips and the switch context), +0.52 kB gz over the old line.
+  // 175 -> 176 (2026-10-07): the theme concept fixes, +0.18 kB gz against the
+  // v0.583.0 baseline: the builder draft kept through Save with Pro, the
+  // pinned-mode read of a card click, and the built-in card menus (their codes
+  // load after the sheet mounts).
+  // 176 -> 177 (2026-10-07): a list item dropped on a sidebar folder or tag
+  // (GitHub #418), +1.27 kB gz against the v0.585.0 baseline: the rail's drop
+  // hook with its spring timers (useRailItemDrop) and the drag data (itemDrag).
+  // 177 -> 178 (2026-10-08): the release-review fix wave, +0.26 kB gz against
+  // the v0.592.6 baseline: the blob stores settle an object already stored
+  // before they wait for quota headroom, and the merge writes a moved edit date.
+  // 178 -> 179 (2026-10-08): the theme builder redesign, +0.04 kB gz over the
+  // line: the Pro mark moved onto the theme card swatch (ProCorner).
+  // 179 -> 180 (2026-10-08): +0.11 kB gz against the v0.594.0 baseline: the
+  // milestone toast's dismiss button and steady timer, and the sidebar's
+  // markdown file rows.
+  // 180 -> 182 (2026-10-08): the journal calendar, +1.03 kB gz: the day map,
+  // the footer calendar props, the calendar card that heads the Journals list
+  // with its Show calendar switch, and the list options' switch icons.
+  NotesView: 182,
   // The eager English catalogs. 60.43 kB gz once the Contacts pillar's strings
   // (the form, the label vocabulary, the import row) and the Images pane
   // landed (2026-09-08), +1.81 against the v0.506.0 baseline, over the 60 kB
@@ -1001,7 +1048,145 @@ const DEFAULT_CHUNK_BUDGET_KB = 60;
 // 1016 -> 1017 (2026-09-28): +0.9 kB gz, the checkout confirm copy in the
 // English catalog and the Sparkle icon, shared with the lazy checkout page,
 // splitting out of the boot chunk that already held it.
-const BOOT_PATH_BUDGET_KB = 1017;
+// 1017 -> 1018 (2026-10-02): +0.67 kB gz, the blob upload recovery that
+// settles an object a lost response left committed, and the quota failure
+// contract that makes a refused read unknown rather than zero.
+// 1018 -> 1019 (2026-10-02): +0.88 kB gz, the window-scale ladder and its
+// store, reached by the boot theme module for the account-switch wipe and by
+// the shortcut handler for the keys. The webview call behind it is a dynamic
+// import and the row that drives it is a lazy chunk, so this is the ladder
+// and the subscription only.
+// 1019 -> 1021 (2026-10-02): +1.54 kB gz, the contact photo picker: the
+// shared picture pipeline reached from a form instead of the editor, the
+// chip's own picker and its two menu entries.
+// 1021 -> 1024 (2026-10-02): +2.65 kB gz since v0.558.0, the task list
+// controls: the shared list walker in tasks.ts behind delete, sort and the
+// Tasks pane's move, the drag grip in the task node view, the confirm and the
+// footer counter.
+// 1024 -> 1025 (2026-10-03): +1.03 kB gz, the live sign-in fence: liveSignIn.ts
+// and the stamp it hands the sign-in paths, the sync pass, the settings sync
+// and the PIN wraps, the second check after each credential write, and the
+// listener that follows another tab's sign-out, so nothing from a session a
+// sign-out ended writes the phrase back.
+// 1025 -> 1027 (2026-10-04): +1.20 kB gz, the editor's markdown repairs (the
+// text escape, the hard break, the code fence and the table cell rule, so a
+// note reads back as it was saved), the paste filter for another app's
+// colours and fonts, the typed markdown link and Tab adding a table row.
+// 1027 -> 1028 (2026-10-06): +0.46 kB gz in the editor chunk, the outline's
+// fold arrows and select all inside a code block, on top of the app
+// switcher privacy screen (+0.69 kB gz).
+// 1028 -> 1030 (2026-10-06): +2.48 kB gz in the editor chunk, the code block
+// fold and its language button and picker; the theme tokens beside it add
+// +0.09 kB gz.
+// 1030 -> 1031 (2026-10-06): +0.86 kB gz, the Themes tab and the light and
+// dark theme pair (theme +0.24, NotesView +0.60 with the Appearance pane and
+// the status and tint classes, i18n +0.10).
+// 1031 -> 1032 (2026-10-06): +0.16 kB gz, the color fixes of the theme audit
+// (darker tracker colors and the map for a custom tracker's older color, the
+// rating star edge, the rocket on a fill, one wordmark blue), on top of the
+// key matcher (shortcutMatch +0.91) that landed 0.14 kB under the old budget.
+// 1032 -> 1035 (2026-10-06): +2.76 kB gz, the keyboard commands of phases 2
+// to 4 (NotesView +2.32, the command list +0.89); the help rows sit outside
+// the boot path in hotkeysData.ts.
+// 1035 -> 1036 (2026-10-06): +0.43 kB gz, one date formatter for every
+// screen (intlFormat +0.51, now on the boot path because the list rows use
+// it; languages +0.11; notesViewUtils -0.11 without its hand-built dates).
+// 1036 -> 1038 (2026-10-06): +1.90 kB gz, command mode: the commands and their
+// runner in NotesView (+0.79) and the ">" mode of the list search field
+// (+0.74, the list itself is a lazy chunk); i18n +0.21.
+// 1038 -> 1044 (2026-10-06): +6.14 kB gz, custom and community themes. About
+// 4 kB is code the first paint and the sync need: the custom slot paint in
+// theme.ts (+0.89), the strings (+0.73), the theme list merge (customThemes
+// and registers), the action row and the builder hook (NotesView +1.26). The
+// rest is chunk splitting: the lazy theme chunks share ConfirmModal, the Pro
+// mark and a few icons with the boot path, so those moved into chunks of
+// their own. The cards, the paste field, the builder and the theme code
+// module are all lazy.
+// 1044 -> 1045 (2026-10-06): +0.35 kB over, the quick switcher's wiring in
+// NotesView (+0.24, the switcher itself is a lazy chunk) on top of the search
+// field's command button (+0.57, v0.572.3) and the callout copy fix in Editor
+// (+0.19, v0.572.2), both of which landed just under the old budget.
+// 1045 -> 1046 (2026-10-06): +0.34 kB over, the "last edited" date: the one
+// content comparison (editStamp.ts, in the loginExtras chunk beside
+// trackerTypes, +0.61), the stamp rules in notesRepo (+0.23) and NotesView
+// (+0.20), the payload reader and the merge in shared (+0.12); notesViewUtils
+// -0.40.
+// 1046 -> 1052 (2026-10-07): +5.47 kB gz, the date work of steps 4 to 7 in
+// ops/docs/plans/dates.md. The date settings (+1.56): their resolution in
+// intlFormat (+0.89), the Date and time rows of the Language pane, which
+// settingsCategories imports statically, and the effect that applies them
+// (NotesView +0.47), and their strings (i18n +0.11). The journal dates
+// (+1.26): the date field of the New menu, the Entry date row of the note
+// menu, the entry-day helpers (notesViewUtils +0.26) and the day merge. The
+// title pattern and the date inserts (+2.50): the pattern engine (intlFormat
+// +0.36), the pattern row (NotesView +0.92), the keys and the insert (Editor
+// +0.36), their strings (i18n +0.19), and the Calendar icon, which leaves the
+// vault fields chunk for one of its own on the boot path because the Entry
+// date row uses it (+0.81, vaultFields -0.51). The two tabs of the Date &
+// Language pane (+0.15, NotesView +0.13).
+// 1052 -> 1054 (2026-10-07): +1.99 kB gz, TipTap 3.31.3 -> 3.31.4 in the
+// weekly dependency batch. The core chunk (EncryptedAttachment, which carries
+// @tiptap/core and the table and link extensions) grew 3.61 and Editor fell
+// 1.70; the release is fixes only (splitBlock, task item split, table cell
+// escaping, list parse speed).
+// 1054 -> 1055 (2026-10-07): +0.54 kB gz over the old line. The note color
+// control of v0.577.0 (itemStyles +0.20) and the Subfolders switch of
+// v0.578.0: its scope helpers (folders +0.16), the path labels and the switch
+// in NotesView, and the toggle chip in ListFilterChips.
+// 1055 -> 1058 (2026-10-07): +2.48 kB gz, the selection menu of the note
+// body and Sort lines (Editor +2.39, its glyphs in icons +0.22).
+// 1058 -> 1061 (2026-10-07): +2.95 kB gz, note-links to a heading (GitHub
+// #432): the target split and heading reader (noteLinks +2.48), the scroll
+// and the [[ heading list (Editor +2.17), the Outline copy icon (clipboard
+// +0.99), the jump wiring in NotesView (+0.35).
+// 1061 -> 1062 (2026-10-07): +0.82 kB gz, the light milestones: milestones.ts joins
+// the boot path for the celebration check in NotesView, with its strings. As a
+// dynamic import it cost more (+1.60), because rolldown reshuffles the shared
+// chunks around the extra chunk, so the static import stays.
+// 1062 -> 1063 (2026-10-07): +1.27 kB gz, a list item dropped on a sidebar
+// folder or tag (GitHub #418): useRailItemDrop and itemDrag, both in the rail.
+// 1063 -> 1065 (2026-10-07): +1.55 kB gz, the wellness statistics rework: the new
+// strings (i18n +1.60), the day ledger hooks in notesRepo (+0.71) and the shuffle
+// of the shared chunks around the new stats modules.
+// 1065 -> 1066 (2026-10-07): +0.41 kB gz in NotesView against the v0.587.0
+// baseline: the section-scoped sidebar of v0.588.0 and a file dragged from the
+// Files pillar onto a folder or tag (GitHub #418, fileDragIds in FilesList).
+// 1066 -> 1069 (2026-10-07): +2.45 kB gz, pictures in a paste keep their place
+// (GitHub #403 and #317): the pending-picture swap, the Safari reader call and
+// the notice in EncryptedImage (+1.63), the Copied text setting in Editor and
+// theme (+0.57).
+// 1069 -> 1078 (2026-10-07): +8.5 kB gz, Markdown footnotes (GitHub #393):
+// the three nodes, their parse, numbers, jumps and paste rules (footnotes.ts)
+// and markdown-it-footnote in Editor (+7.36 against the v0.588.1 baseline,
+// which also carries v0.589 to v0.591), the export reader (markdownRender
+// +1.09). The schema needs the nodes at editor creation, so none of it can load
+// later.
+// 1078 -> 1079 (2026-10-07): the release review fix wave, about +0.3 kB gz: the
+// entity decode of the export reader (markdownRender), the plain-Escape mark
+// (editorExtensions, plainEscape), the per-store credential removal (auth).
+// 1079 -> 1080 (2026-10-08): the second sitting of that fix wave, +0.68 kB gz
+// against the v0.592.11 baseline: the settings write fence and the repair push
+// (userSettings, liveSignIn, notesCreated), the lock curtain (appReLock), and
+// one code fence rule for tasks and headings (markdownFence).
+// 1082 -> 1084 (2026-10-08): the quick switcher's commands and buttons, +1.68
+// kB gz against the v0.593.0 baseline: the command icons (PALETTE_ICONS), the
+// Jump to buttons of the sidebar, the rail and the list header (NotesView,
+// TagsRail, CollapsedSidebar, ListNav). Moving the icon map into the lazy
+// switcher chunk was measured and grew the boot path instead (+2 to +5 kB):
+// most icons are already on it through their own buttons, and sharing them
+// with a lazy chunk splits each one out.
+// 1084 -> 1086 (2026-10-08): +1.62 kB gz over the line against the v0.594.2
+// baseline, nearly all of it the Editor chunk (+1.78): the spoiler mark and
+// its reveal plugin, the copy box, click to copy on inline code, and the list
+// merge of the code-block toggle (GitHub #434).
+// 1086 -> 1088 (2026-10-08): the journal calendar (GitHub #435), about +1.6 kB
+// gz: MonthGrid, which replaces both browser date fields of the journal, and
+// the calendar module that the Journals list, the New button and the footer
+// share, plus the list options' switch icons.
+// 1088 -> 1089 (2026-10-08): the code block's copy and check icons, the
+// copy box's wrap toggle and the spoiler's hide-after-mark state, Editor
+// +0.45 kB gz.
+const BOOT_PATH_BUDGET_KB = 1089;
 
 // The budget above is stated in ONE environment's units: build-smoke's, which
 // is ubuntu with the synthetic values from tools/ci-vite-env.mjs. Every other
@@ -1354,6 +1539,9 @@ export default defineConfig({
   // Spec: ops/docs/gotchas.md (an iPad reports a Mac user agent)
   define: {
     __PN_BUILD_PLATFORM__: JSON.stringify(process.env.TAURI_ENV_PLATFORM ?? ''),
+    // The About tab shows only the newest release and links to /changelog
+    // for the rest, so the app bundle carries one entry, not the history.
+    __PN_LATEST_RELEASE__: JSON.stringify((({ version, date, title }) => ({ version, date, title }))(PUBLIC_CHANGELOG[0])),
   },
   plugins: [
     react(),
@@ -1369,7 +1557,7 @@ export default defineConfig({
     preloadOnboarding(),
     ...(isAppBuild
       ? []
-      : [changelogPagePlugin(), helpPagePlugin(), roadmapPagePlugin(), brandPagePlugin(), marketingShellPlugin(), landingPagesPlugin(), authDesktopPagePlugin(), authConnectPagePlugin(), searchCoreScriptPlugin()]),
+      : [changelogPagePlugin(), helpPagePlugin(), roadmapPagePlugin(), themesPagePlugin(), brandPagePlugin(), marketingShellPlugin(), landingPagesPlugin(), authDesktopPagePlugin(), authConnectPagePlugin(), searchCoreScriptPlugin()]),
     chunkBudgets(),
     chunkCycles(),
   ],

@@ -151,7 +151,7 @@ mod windows_hello {
     pub fn available(_app: &tauri::AppHandle) -> bool {
         init_apartment();
         UserConsentVerifier::CheckAvailabilityAsync()
-            .and_then(|op| op.get())
+            .and_then(|op| op.join())
             .map(|availability| availability == UserConsentVerifierAvailability::Available)
             .unwrap_or(false)
     }
@@ -182,7 +182,7 @@ mod windows_hello {
             unsafe { interop.RequestVerificationForWindowAsync(hwnd, &HSTRING::from(reason)) }
                 .map_err(|e| e.to_string())?;
 
-        let result = operation.get().map_err(|e| e.to_string())?;
+        let result = operation.join().map_err(|e| e.to_string())?;
         Ok(result == UserConsentVerificationResult::Verified)
     }
 

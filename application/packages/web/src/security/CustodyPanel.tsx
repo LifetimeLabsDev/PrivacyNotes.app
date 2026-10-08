@@ -291,7 +291,7 @@ export function CustodyPanel({ phrase, onReleaseCheckChange, onOpenConnectedAcco
               active ? 'border-accent' : 'border-pn-muted'
             }`}
           >
-            {active && <span className="w-1.5 h-1.5 rounded-full bg-accent" />}
+            {active && <span className="w-1.5 h-1.5 rounded-full bg-accent-fill" />}
           </span>
           <span className="text-sm font-medium text-pn min-w-0">
             {mode === 'custodial'
@@ -393,7 +393,7 @@ export function CustodyPanel({ phrase, onReleaseCheckChange, onOpenConnectedAcco
 
           {changing && pick === 'self-custody' && (
             <>
-              <div className="rounded-md border border-amber-400/40 bg-amber-50 dark:border-amber-600/30 dark:bg-amber-950/20 px-3 py-2.5 text-[13px] leading-relaxed text-amber-700 dark:text-amber-400 flex items-start gap-2.5">
+              <div className="rounded-md border border-amber-400/40 bg-amber-50 dark:border-amber-600/30 dark:bg-amber-950/20 px-3 py-2.5 text-[13px] leading-relaxed text-warning flex items-start gap-2.5">
                 <Warning size={16} aria-hidden="true" className="shrink-0 mt-0.5" />
                 <span>{t('custody.releaseWarning')}</span>
               </div>
@@ -427,6 +427,7 @@ export function CustodyPanel({ phrase, onReleaseCheckChange, onOpenConnectedAcco
                       disabled={busy}
                       autoComplete="off"
                       autoCapitalize="none"
+                      autoCorrect="off"
                       spellCheck={false}
                       className="w-full rounded-md border border-divider bg-track text-sm font-mono px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-accent"
                     />
@@ -461,7 +462,7 @@ export function CustodyPanel({ phrase, onReleaseCheckChange, onOpenConnectedAcco
               type="button"
               onClick={() => void handleConfirm()}
               disabled={!canConfirm || busy}
-              className="inline-flex items-center justify-center gap-1.5 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center gap-1.5 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {/* Neutral label until a different option is actually
                   picked. Naming the destructive direction while the

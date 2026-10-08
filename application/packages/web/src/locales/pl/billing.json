@@ -8,7 +8,7 @@
     "ctaOpening": "Otwieranie płatności...",
     "ctaSignUp": "Zarejestruj się, aby odblokować",
     "intro": {
-      "storage": "Większe pliki i więcej miejsca to funkcja Pro. Przejdź na Pro, aby mieć pliki do 50 MB i 500 MB pamięci.",
+      "storage": "Więcej miejsca to funkcja Pro: 500 MB pamięci, 50 MB na plik i do 5 GB więcej jako dodatek, gdy będzie potrzebne.",
       "folders": "Foldery to funkcja Pro. Uporządkuj notatki w zagnieżdżonych folderach, tak głęboko, jak potrzebujesz, i trzymaj każdy projekt osobno.",
       "looks": "Ikony i kolory folderów i tagów to funkcja Pro. Nadaj każdemu wygląd, który rozpoznasz na pierwszy rzut oka.",
       "lock": "Blokowanie notatki to funkcja Pro. Przejdź na Pro, aby chronić dowolną notatkę przed przypadkową edycją.",
@@ -17,11 +17,11 @@
       "devices": "Osiągnięto limit 2 urządzeń. Przejdź na Pro, aby mieć nieograniczoną liczbę urządzeń.",
       "zen": "Tryb Zen to funkcja Pro. Przejdź na Pro, aby pisać bez rozpraszaczy.",
       "theme": "Motywy premium to funkcja Pro. Przejdź na Pro, aby odblokować każdy odcień.",
-      "callout": "Pełny zestaw wyróżnień to funkcja Pro.",
+      "callout": "Pełny zestaw ramek to funkcja Pro.",
       "totp": "Kody 2FA to funkcja Pro. Zapisz klucz uwierzytelniający przy dowolnym loginie, a zmieniający się kod zobaczysz obok hasła. Sam klucz jest zapisywany i synchronizowany w każdym planie.",
       "replace": "Znajdź i zamień to funkcja Pro. Przejdź na Pro, aby zamienić jedno wystąpienie albo wszystkie wystąpienia w notatce za jednym razem.",
       "passphrase": "Frazy hasłowe to funkcja Pro. Wygeneruj frazę z losowych słów, którą łatwo wpisać i powiedzieć.",
-      "default": "Jedno ulepszenie odblokowuje wszystko poniżej. Płatność jednorazowa."
+      "default": "Jedno przejście na Pro odblokowuje wszystko poniżej. Płatność jednorazowa."
     },
     "features": {
       "devices": "Synchronizacja nieograniczonej liczby urządzeń, każda platforma",
@@ -30,7 +30,7 @@
       "history": "Pełna historia notatki, przywracanie w każdej chwili",
       "themes": "Motywy premium w każdym odcieniu",
       "zen": "Tryb Zen, pisanie bez rozpraszaczy",
-      "storage": "500 MB pamięci + załączniki do 50 MB"
+      "storage": "500 MB pamięci, do 5,5 GB z dodatkami"
     },
     "comparisonBeta": "Zapłać {{earlyPrice}} $ raz. Obsidian Sync kosztuje 48 $/rok, co roku. Standard Notes liczy sobie 90 $/rok. Cena dla wczesnych użytkowników, zablokowana, zanim wzrośnie do {{proPrice}} $.",
     "comparison": "Zapłać {{proPrice}} $ raz i miej to na zawsze. Obsidian Sync kosztuje 48 $/rok, a Standard Notes 90 $/rok, każdego roku."
@@ -47,9 +47,9 @@
     "benefitDevices": "Nieograniczona liczba urządzeń",
     "benefitDevicesSub": "Telefon, tablet, laptop, wszystko zsynchronizowane",
     "benefitStorage": "500 MB pamięci",
-    "benefitStorageSub": "10x więcej niż w darmowym planie, z możliwością rozszerzenia",
+    "benefitStorageSub": "10x więcej niż w darmowym planie. Dokup do 5 GB więcej, gdy będzie potrzebne",
     "benefitMore": "Więcej funkcji",
-    "benefitMoreSub": "Historia notatek, foldery, tryb zen",
+    "benefitMoreSub": "Historia notatki, foldery, tryb zen",
     "benefitRoom": "{{gb}} GB więcej miejsca",
     "benefitRoomSub": "Oprócz twoich 500 MB z Pro",
     "benefitFileSize": "100 MB na plik",

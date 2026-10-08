@@ -15,7 +15,7 @@
   "hero": {
     "badge": "Encrypted on your device, auditable",
     "headline": "Notes. Tasks.<br />Files. Vault.<stroke>Zero knowledge.</stroke>",
-    "subhead": "One encrypted place for everything you’d never post. Encrypted on your device; hold your own key and we couldn’t read it if we tried.",
+    "subhead": "One encrypted place for everything you’d never post. Private by default, on every device you own.",
     "tryDemo": "Try the demo",
     "microcopy": "Free forever. No credit card. Sign in with Google, Apple, GitHub, or just a 12-word phrase.",
     "alreadyHaveVault": "Already have a vault? Log in",
@@ -119,7 +119,6 @@
     "checksumAria": "SHA-256 checksum for {{label}}",
     "debFootnote": "Updating an existing <highlight>.deb install</highlight>? Do not uninstall it first. Double-clicking the file dead-ends in Ubuntu's App Center, which only reports that the app is installed, so install the new one over the old one from a terminal. Use the line that matches your machine; dpkg --print-architecture prints which one you need:",
     "availability": "Available now: macOS 13+, Windows 10+, iOS 17.4+, Linux and Android.",
-    "betaNote": "All our apps are in beta and may still have bugs, so the web version is the most stable for now. Every app auto-updates and we ship fixes almost daily.",
     "pkgToggle": "Install with a package manager ({{platforms}})",
     "pkgBrewDesc": "brew upgrade skips it: the app updates itself.",
     "pkgWingetDesc": "Built into Windows 10 and 11.",
@@ -310,48 +309,41 @@
       "rating": "Rating"
     },
     "modalTitle": "About",
-    "intro": "<brand/> is a zero-knowledge workspace for your notes, tasks, files and vault. Your 12-word phrase derives a key in your browser; every byte on the server is encrypted; under self-custody, nobody (including us) can read your notes. Data stored in <nowrap>Switzerland</nowrap>. Encrypted on your device, and it works offline, too.",
+    "intro": "<brand/> keeps your notes, tasks, journal, passwords, files, bookmarks and contacts in one place. Everything is encrypted on your device with a key made from your 12 words, and it stays encrypted on our servers in <nowrap>Switzerland</nowrap>. It works offline, and the app is open source.",
     "versionHeading": "Version",
     "windowVersion": "Version {{version}}",
     "windowHelp": "Help Center",
     "windowWhatsNew": "Changelog",
-    "openOnWeb": "View on PrivacyNotes.app",
-    "viewFullChangelog": "View full changelog on PrivacyNotes.app",
+    "whatsNew": "What's new",
+    "seeWhatsNew": "See all changes on PrivacyNotes.app with screenshots",
     "feedbackHeading": "Feedback",
-    "feedbackPrompt": "Found a bug or have a feature request? Reach out to us here:",
     "legalHeading": "Legal",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "refundPolicy": "Refund Policy",
     "tagline": "No subscriptions. Just Software. Not a service.",
-    "changelogType": {
-      "new": "New",
-      "improved": "Improved",
-      "fixed": "Fixed"
-    },
-    "changelogComingSoon": "Changelog coming soon.",
-    "changelogLatest": "Latest",
-    "hotkeysFootnote": "Most shortcuts are ignored while you're typing in a text field, so regular keys like J and K still type J and K."
+    "hotkeysFootnote": "Most shortcuts are ignored while you're typing in a text field, so regular keys like J and K still type J and K.",
+    "singleKeysTitle": "Single-key shortcuts",
+    "singleKeysDesc": "Use J, K, / and ? without holding Cmd or Ctrl."
   },
   "trust": {
     "openSourceHeading": "Open Source",
     "openSourceLink": "Read the source at GitHub.com",
     "openSourceBody": "The app and the encryption inside it are published, so anyone can check our zero-knowledge claims.",
     "dataStorageHeading": "Data Storage",
-    "dataStorageBody": "Encrypted blobs stored in Zurich, 🇨🇭 Switzerland.",
+    "dataStorageBody": "Encrypted blobs stored in Zurich, <flag/> Switzerland.",
     "faviconsHeading": "Website icons",
     "faviconsBody1": "Website icons (favicons) come from DuckDuckGo and Google, fetched by our server on your behalf. Your browser never contacts either one, so they see our server asking for a domain and never see you.",
     "faviconsBody2": "Icons are cached on your device for 90 days. No request includes your identity, and you can turn icons off in Settings > Appearance."
   },
   "feedback": {
     "title": "Send feedback",
-    "intro": "Found a bug or have a feature request? Pick your preferred platform.",
+    "intro": "Bugs and feature requests go to GitHub, so we can track every one.",
     "labelReportBug": "Report a bug",
-    "descReportBug": "Opens GitHub with your version already filled in",
-    "descX": "Follow for updates and quick feedback",
-    "descGithub": "Everything else: ideas, questions, translations",
-    "descReddit": "Discussion and community feedback",
-    "descMastodon": "Follow for updates and quick feedback"
+    "descReportBug": "Your version filled in",
+    "descGithub": "Ideas, questions, translations",
+    "followHeading": "Follow along",
+    "outro": "Found a security issue? Use the <contact>private security contact on GitHub</contact>, not a public issue."
   },
   "rate": {
     "title": "Give something back",

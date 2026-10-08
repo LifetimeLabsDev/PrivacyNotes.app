@@ -71,9 +71,13 @@ title: Усе, що тут уміє markdown
 
 > Цитата відступає від поля й отримує кольорову лінію збоку.
 
+## Виноски
+
+Виноска виносить джерело чи примітку за межі тексту.[^1] Введіть `[^1]` після слова або виберіть **Виноска** в меню **Вставити**. Натисніть маленьке число, щоб перейти до виноски.
+
 ## Код
 
-Код зберігає свої відступи й розфарбовується відповідно до мови.
+Код зберігає свої відступи й розфарбовується відповідно до мови. Назва вгорі блоку показує його мову: натисніть її, щоб вибрати іншу.
 
 ```js
 export function seal(note, key) {
@@ -86,6 +90,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+Довгий блок відкривається згорнутим, щоб решта нотатки була поруч. Кнопка під ним показує всі рядки.
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 Короткий шматок коду всередині речення виглядає `ось так`.
@@ -113,6 +158,10 @@ $$i\hbar\frac{\partial}{\partial t}\Psi = \hat{H}\Psi$$
 
 Посилання на нотатку не мусить виглядати як назва нотатки. Введіть назву, риску, а потім слова, які хочете бачити на сторінці: [[Як захищено ваші нотатки|ці слова]] відкривають ту нотатку.
 
+Посилання на нотатку може також відкрити її на одному із заголовків. Введіть `#` після назви й виберіть заголовок: [[Як захищено ваші нотатки#Хто тримає ваш ключ]] відкриває ту нотатку на розділі про ключ. Значок посилання біля заголовка у структурі скопіює таке посилання за вас.
+
 ---
 
 *Якщо ви вже пишете в markdown, просто вводьте його, і форматування з’являтиметься одразу. Щоб побачити сирий текст будь-якої нотатки, натисніть **Показати Markdown** справа внизу цієї нотатки.*
+
+[^1]: Це виноска. Стрілка поруч повертає вас нагору.

@@ -75,7 +75,7 @@ export function SidebarOptionsPopover({
         visibility: pos ? 'visible' : 'hidden',
       }}
     >
-      <div className="px-3 pb-1.5 text-[10px] font-semibold tracking-wider uppercase text-neutral-500 dark:text-neutral-400">
+      <div className="px-3 pb-1.5 text-[10px] font-semibold tracking-wider uppercase text-pn-muted">
         {title}
       </div>
       {options.map((o) => (
@@ -85,7 +85,7 @@ export function SidebarOptionsPopover({
           role="checkbox"
           aria-checked={o.checked}
           onClick={() => onToggle(o.key)}
-          className="w-full flex items-center gap-2.5 px-3 py-1.5 text-[14px] text-pn hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+          className="w-full flex items-center gap-2.5 px-3 py-1.5 text-[14px] text-pn hover:bg-pn/5 transition"
         >
           <o.icon size={16} className="shrink-0 text-accent" aria-hidden="true" />
           <span className="flex-1 min-w-0 text-start truncate">{o.label}</span>
@@ -107,7 +107,7 @@ export function ViewCheckBox({ checked }: { checked: boolean }) {
     <span
       aria-hidden="true"
       className={`shrink-0 w-4 h-4 rounded border inline-flex items-center justify-center transition ${
-        checked ? 'bg-accent border-accent text-white' : 'border-neutral-300 dark:border-neutral-600'
+        checked ? 'bg-accent-fill border-accent-fill text-white' : 'border-pn-muted/50'
       }`}
     >
       {checked && <Check size={11} weight="bold" />}

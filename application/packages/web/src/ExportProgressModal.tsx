@@ -58,7 +58,7 @@ export function ExportProgressModal({ status, done, error, onClose }: Props) {
               type="button"
               onClick={onClose}
               aria-label={t('common:actions.close')}
-              className="p-1 -m-1 rounded text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition"
+              className="p-1 -m-1 rounded text-pn-muted hover:text-pn transition"
             >
               <X size={16} />
             </button>
@@ -68,7 +68,7 @@ export function ExportProgressModal({ status, done, error, onClose }: Props) {
         {/* Body */}
         <div className="px-6 py-5">
           {error ? (
-            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            <p className="text-sm text-danger">{error}</p>
           ) : (
             <>
               {/* While it runs, the progress line. A clean finish has no
@@ -76,18 +76,18 @@ export function ExportProgressModal({ status, done, error, onClose }: Props) {
                   an incomplete one keeps the sentence that says what the file
                   lacks. */}
               {(!done || incomplete) && (
-                <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
+                <p className="text-sm text-pn-muted mb-3">
                   {status || t('exportProgress.preparing')}
                 </p>
               )}
               {/* Progress bar */}
-              <div className="h-1.5 rounded-full bg-neutral-100 dark:bg-neutral-800 overflow-hidden">
+              <div className="h-1.5 rounded-full bg-track overflow-hidden">
                 <div className={`h-full rounded-full transition-all duration-300 ${
                   incomplete
                     ? 'w-full bg-amber-500 dark:bg-amber-400'
                     : done
                       ? 'w-full bg-emerald-500 dark:bg-emerald-400'
-                      : 'w-2/3 bg-accent animate-pulse'
+                      : 'w-2/3 bg-accent-fill animate-pulse'
                 }`} />
               </div>
             </>
@@ -102,8 +102,8 @@ export function ExportProgressModal({ status, done, error, onClose }: Props) {
             disabled={!done && !error}
             className={`text-[13px] font-medium px-4 py-1.5 rounded-md transition ${
               done || error
-                ? 'bg-accent text-white hover:bg-accent-hover'
-                : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-600 cursor-not-allowed'
+                ? 'bg-accent-fill text-white hover:bg-accent-fill-hover'
+                : 'bg-track text-pn-muted/75 cursor-not-allowed'
             }`}
           >
             {done || error ? t('common:actions.done') : t('exportProgress.exporting')}

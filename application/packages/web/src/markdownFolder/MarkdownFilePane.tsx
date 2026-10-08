@@ -13,7 +13,7 @@ import { MarkdownSourceEditor } from '../MarkdownSourceEditor';
 import { WordCount } from '../WordCount';
 import { Editor, type EditorHandle } from '../Editor';
 import { setWikiLinkNavigator } from '../NoteLink';
-import { setWikiLinkNoteTitles } from '../NoteLinkSuggestion';
+import { setWikiLinkNoteContext, setWikiLinkNoteTitles } from '../NoteLinkSuggestion';
 import { setLocalLinkOpener } from '../editorLinks';
 import { ArrowLeft, FileMd, FileTxt, Lock, Trash, X } from '../icons';
 import { HoverLabel } from '../HoverLabel';
@@ -156,14 +156,38 @@ export function MarkdownFilePane({
     return dir?.entries.some((e) => e.relPath === loc) ? loc : null;
   }
 
+  /** A heading to scroll to once the linked file is on screen. */
+  const pendingHeadingRef = useRef<{ relPath: string; heading: string } | null>(null);
+
+  function scrollToHeading(heading: string) {
+    editorRef.current?.scrollToHeading(heading, () => onNotice(t('editor:noteLink.headingNotFound')));
+  }
+
   function followNoteLink(target: string) {
-    if (currentRelPath() === null) {
+    // `[[bar#Part]]` opens bar at the heading Part; `[[#Part]]` is the
+    // heading in the file on screen, which needs no folder.
+    const hash = target.indexOf('#');
+    const heading = hash >= 0 ? target.slice(hash + 1).trim() : '';
+    if (hash >= 0 && !target.slice(0, hash).trim() && heading) {
+      scrollToHeading(heading);
+      return;
+    }
+    const from = currentRelPath();
+    if (from === null) {
       onNotice(t('markdown.linkNeedsFolder'));
       return;
     }
     const hit = resolveNoteLinkPath(relPaths, target);
-    if (hit) void openLinked(hit);
-    else onNotice(t('markdown.linkNotFound', { target: target.split('#')[0]!.trim() }));
+    if (!hit) {
+      onNotice(t('markdown.linkNotFound', { target: target.split('#')[0]!.trim() }));
+      return;
+    }
+    if (hit === from) {
+      if (heading) scrollToHeading(heading);
+      return;
+    }
+    pendingHeadingRef.current = heading ? { relPath: hit, heading } : null;
+    void openLinked(hit);
   }
 
   function followRelativeLink(href: string): boolean {
@@ -186,6 +210,13 @@ export function MarkdownFilePane({
     setWikiLinkNavigator(ed, followNoteLink);
     setWikiLinkNoteTitles(ed, linkTitles);
     setLocalLinkOpener(ed, followRelativeLink);
+    const rel = currentRelPath();
+    setWikiLinkNoteContext(ed, rel === null ? null : { id: rel, title: noteLinkPathFor(rel) });
+    const pending = pendingHeadingRef.current;
+    if (ed && pending && pending.relPath === rel) {
+      pendingHeadingRef.current = null;
+      scrollToHeading(pending.heading);
+    }
   });
 
   // A different file is a different save state, and a different default mode.
@@ -467,7 +498,7 @@ export function MarkdownFilePane({
                 type="button"
                 onClick={onClose}
                 aria-label={t('notes:editor.backToGrid')}
-                className="rounded p-1.5 -ms-1 text-neutral-600 hover:bg-neutral-200 hover:text-accent dark:text-neutral-400 dark:hover:bg-neutral-900 transition shrink-0"
+                className="rounded p-1.5 -ms-1 text-pn-muted hover:bg-pn/10 hover:text-accent transition shrink-0"
               >
                 <X size={18} />
               </button>
@@ -477,7 +508,7 @@ export function MarkdownFilePane({
               type="button"
               onClick={onClose}
               aria-label={t('notes:editor.backToList')}
-              className="md:hidden rounded p-1.5 -ms-1 text-neutral-600 hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-900 transition shrink-0"
+              className="md:hidden rounded p-1.5 -ms-1 text-pn-muted hover:bg-pn/10 transition shrink-0"
             >
               <ArrowLeft size={18} />
             </button>
@@ -591,7 +622,7 @@ export function MarkdownFilePane({
           <button
             type="button"
             onClick={() => setMode(mode === 'source' ? 'rich' : 'source')}
-            className="shrink-0 select-none text-xs text-neutral-400 dark:text-neutral-600 hover:text-neutral-600 dark:hover:text-neutral-400 hover:underline transition"
+            className="shrink-0 select-none text-xs text-pn-muted hover:text-pn-soft hover:underline transition"
           >
             {/* The notes namespace, because this is the encrypted editor's own
                 link and its wording must not fork from it. */}

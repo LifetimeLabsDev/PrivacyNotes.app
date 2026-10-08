@@ -21,6 +21,7 @@ import {
 } from '../pin';
 import { clearPin } from '../pinRecovery';
 import { isTrustedDevice } from '../trustStorage';
+import { signInStamp, signedOutSince } from '../liveSignIn';
 import { ForgotPinLink, PinRecoveryForm } from '../PinRecoveryForm';
 import { PinInput, type PinInputHandle } from '../PinInput';
 import { SectionEyebrow, SETTINGS_HELP, SettingsCallout } from '../settingsUI';
@@ -94,6 +95,7 @@ export function PinTab({
     if (candidate.length !== 4 || oldPinBusy || lockout.locked) return;
     setOldPinBusy(true);
     setOldPinError(null);
+    const startedAt = signInStamp();
     const { valid: ok } = await verifyPin(candidate);
     if (ok) {
       clearPinFailures();
@@ -103,7 +105,7 @@ export function PinTab({
       // untrusted can be told the lock is on by another device, and must
       // still not write a durable copy of the phrase here.
       if (userSettings.appLockEnabled && isTrustedDevice() && !hasPinWrappedPhrase()) {
-        const blob = await wrapPhraseWithPin(phrase, candidate);
+        const blob = await wrapPhraseWithPin(phrase, candidate, startedAt);
         removeStoredPhrase();
         onSettingsChange({ ...userSettings, ...blob }, userSettings);
       }
@@ -139,6 +141,7 @@ export function PinTab({
       return;
     }
     setBusy(true);
+    const startedAt = signInStamp();
     try {
       const updated = await storePin(pinVal, userSettings);
       // The wrap follows the hash (pinChangeNeedsWrap). A trusted device
@@ -149,13 +152,16 @@ export function PinTab({
       // this device keeps no copy of it. Pinned by tests/pinChange.test.ts.
       if (pinChangeNeedsWrap(updated)) {
         if (isTrustedDevice()) {
-          const blob = await wrapPhraseWithPin(phrase, pinVal);
+          const blob = await wrapPhraseWithPin(phrase, pinVal, startedAt);
           if (updated.appLockEnabled) removeStoredPhrase();
           Object.assign(updated, blob);
         } else {
           Object.assign(updated, await buildPinWrap(phrase, pinVal));
         }
       }
+      // A sign-out during the PIN hash or the wrap cleared the settings this
+      // would write back, the new PIN and, on an untrusted device, its wrap.
+      if (signedOutSince(startedAt)) return;
       onSettingsChange(updated, userSettings);
       // Mark unlocked so the user isn't immediately re-prompted for
       // the PIN they just created.
@@ -239,14 +245,14 @@ export function PinTab({
             />
           </div>
           {oldPinError && (
-            <p className="text-sm text-red-500 dark:text-red-400 text-center">
+            <p className="text-sm text-danger text-center">
               {oldPinError}
             </p>
           )}
           <button
             onClick={() => void verifyOldPin(oldPin)}
             disabled={oldPin.length !== 4 || oldPinBusy}
-            className="w-full rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {oldPinBusy ? t('pinTab.checking') : t('pinTab.verify')}
           </button>
@@ -303,7 +309,7 @@ export function PinTab({
           </div>
 
           {error && (
-            <p className="text-sm text-red-500 dark:text-red-400 text-center">
+            <p className="text-sm text-danger text-center">
               {error}
             </p>
           )}
@@ -315,7 +321,7 @@ export function PinTab({
             <button
               onClick={() => void submit(pin, confirm)}
               disabled={busy || pin.length !== 4 || confirm.length !== 4}
-              className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {busy ? t('common:state.saving') : pinExists ? t('pinTab.updatePin') : t('pinTab.setPin')}
             </button>
@@ -324,7 +330,7 @@ export function PinTab({
                 data-setting="security.removePin"
                 onClick={() => setShowRemoveConfirm(true)}
                 disabled={busy}
-                className="rounded-md border border-divider text-pn-muted hover:bg-surface-1 hover:text-red-500 dark:hover:text-red-400 px-4 py-2 text-sm transition"
+                className="rounded-md border border-divider text-pn-muted hover:bg-surface-1 hover:text-danger px-4 py-2 text-sm transition"
               >
                 {t('pinTab.removePin')}
               </button>
@@ -452,7 +458,7 @@ function RemovePinDialog({
           disabled={busy || lockout.locked}
         />
         {error && (
-          <p className="text-sm text-red-500 dark:text-red-400 text-center">
+          <p className="text-sm text-danger text-center">
             {error}
           </p>
         )}

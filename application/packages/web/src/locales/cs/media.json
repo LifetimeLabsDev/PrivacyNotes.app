@@ -14,7 +14,8 @@
     "loadFailed": "Obrázek se nepodařilo načíst",
     "notFound": "Obrázek nenalezen",
     "saveFailed": "Uložení se nezdařilo, takže soubor může být prázdný nebo neúplný.",
-    "viewAria": "Zobrazit obrázek"
+    "viewAria": "Zobrazit obrázek",
+    "picturesLeftOut": "Některé obrázky se nepřidaly. Obrázek zkopíruj samostatně a pak ho vlož."
   },
   "attachment": {
     "fallbackName": "Příloha",

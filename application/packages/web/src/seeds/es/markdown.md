@@ -13,7 +13,7 @@ El texto puede ser <span style="color: #e03131">rojo</span>, <span style="color:
 
 Puede ir ==resaltado en amarillo== o <mark style="background-color: rgba(64, 192, 87, 0.35)">en verde</mark>.
 
-El botón **Aa** cambia el tamaño y la fuente. El texto puede ser <span style="font-size: 0.85em">pequeño</span>, normal o <span style="font-size: 1.6em">grande</span>. Puede ser <span style="font-family: ui-sans-serif, system-ui, sans-serif">liso</span>, <span style="font-family: ui-serif, Georgia, Cambria, serif">con serifa</span> o <span style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace">monoespaciado</span>.
+El botón **Aa** cambia el tamaño y la fuente. El texto puede ser <span style="font-size: 0.85em">pequeño</span>, normal o <span style="font-size: 1.6em">grande</span>. Puede ser <span style="font-family: ui-sans-serif, system-ui, sans-serif">sin serifa</span>, <span style="font-family: ui-serif, Georgia, Cambria, serif">con serifa</span> o <span style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace">monoespaciado</span>.
 
 ## Dónde se colocan las palabras
 
@@ -71,9 +71,13 @@ Un aviso es una caja de color para algo que nadie debe pasar por alto.
 
 > Una cita se separa del margen y lleva una línea de color a un lado.
 
+## Notas al pie
+
+Una nota al pie saca del texto una fuente o un comentario.[^1] Escribe `[^1]` después de una palabra, o elige **Nota al pie** en el menú **Insertar**. Haz clic en el número pequeño para ir a la nota.
+
 ## Código
 
-El código conserva sus espacios y se colorea según el lenguaje.
+El código conserva sus espacios y se colorea según el lenguaje. El nombre en la parte superior de un bloque es su lenguaje: haz clic en él para elegir otro.
 
 ```js
 export function seal(note, key) {
@@ -86,6 +90,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+Un bloque largo se abre plegado, para que el resto de la nota quede cerca. El botón de debajo muestra todas las líneas.
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 Un trozo corto de código dentro de una frase se ve así: `esto`.
@@ -111,6 +156,12 @@ Hay dos tipos, y se ven distintos a propósito.
 
 Los dos tienen botón en la barra. La cadena hace un enlace web. Los corchetes hacen un enlace de nota: listan tus notas y eliges la que quieres. Escribir `[[` hace lo mismo.
 
+Un enlace entre notas no tiene por qué mostrar el título de la nota. Escribe el título, una barra y luego las palabras que quieres ver en la página: [[Cómo se protegen tus notas|estas palabras]] abren esa nota.
+
+Un enlace entre notas también puede abrir una nota en uno de sus encabezados. Escribe un `#` después del título y elige el encabezado: [[Cómo se protegen tus notas#Quién tiene tu clave]] abre esa nota en su sección sobre la clave. El icono de enlace de un encabezado en el esquema copia ese enlace por ti.
+
 ---
 
 *Si ya escribes markdown, escríbelo y se formatea sobre la marcha. Para ver el texto en bruto de cualquier nota, pulsa **Ver markdown** abajo a la derecha de esta nota.*
+
+[^1]: Esta es la nota. La flecha de al lado te devuelve arriba.

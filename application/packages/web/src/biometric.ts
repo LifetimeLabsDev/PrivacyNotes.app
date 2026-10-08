@@ -28,6 +28,7 @@ import {
 import { detectPlatform } from './devices';
 import { credentialKey } from './demo';
 import { isTrustedDevice } from './trustStorage';
+import { hasLiveSignIn, signInStamp, signedOutSince, type SignInStamp } from './liveSignIn';
 
 // ── Constants ──────────────────────────────────────────────────
 // All demo-bucketed (see credentialKey in demo.ts): the demo's usable
@@ -157,8 +158,10 @@ export type BiometricEnrollResult =
   | { ok: true }
   | { ok: false; reason: 'user_cancelled' | 'error'; message: string };
 
-/** Wrap the phrase with a fresh random AES-GCM-256 key and persist the blob. */
-async function storeWrappedPhrase(phrase: string, credentialId: string): Promise<void> {
+/** Wrap the phrase with a fresh random AES-GCM-256 key and persist the blob.
+ *  `since` is the stamp taken when the enrollment began: a sign-out after it
+ *  removed every wrap, and this one must not come back (liveSignIn.ts). */
+async function storeWrappedPhrase(phrase: string, credentialId: string, since: SignInStamp): Promise<void> {
   const wrapKey = await crypto.subtle.generateKey(
     { name: 'AES-GCM', length: AES_KEY_BITS },
     true, // extractable so we can export to localStorage
@@ -169,10 +172,18 @@ async function storeWrappedPhrase(phrase: string, credentialId: string): Promise
   // Export raw key bytes for localStorage.
   const rawKey = new Uint8Array(await crypto.subtle.exportKey('raw', wrapKey));
 
+  if (signedOutSince(since)) throw new Error('Signed out during enrollment.');
+  const wrapped = bytesToBase64(ciphertext);
   localStorage.setItem(BIO_CREDENTIAL_ID, credentialId);
   localStorage.setItem(BIO_WRAP_KEY, bytesToBase64(rawKey));
   localStorage.setItem(BIO_IV, bytesToBase64(iv));
-  localStorage.setItem(BIO_WRAPPED, bytesToBase64(ciphertext));
+  localStorage.setItem(BIO_WRAPPED, wrapped);
+  // Asked again once written: another tab's sign-out can fall between the
+  // check and the writes, and then this wrap undoes itself.
+  if (signedOutSince(since)) {
+    if (localStorage.getItem(BIO_WRAPPED) === wrapped) removeBiometricCredential();
+    throw new Error('Signed out during enrollment.');
+  }
 }
 
 /**
@@ -190,6 +201,7 @@ export async function enrollBiometric(
   reason: string,
   cancelLabel: string,
 ): Promise<BiometricEnrollResult> {
+  const since = signInStamp();
   try {
     // The native gate has nothing to register: passing the OS prompt IS the
     // enrollment. The sentinel id records which gate an unlock should use.
@@ -197,7 +209,7 @@ export async function enrollBiometric(
       if (!(await nativeAuthenticate(reason, cancelLabel))) {
         return { ok: false, reason: 'user_cancelled', message: 'Biometric verification was cancelled.' };
       }
-      await storeWrappedPhrase(phrase, NATIVE_CREDENTIAL_ID);
+      await storeWrappedPhrase(phrase, NATIVE_CREDENTIAL_ID, since);
       return { ok: true };
     }
 
@@ -236,7 +248,7 @@ export async function enrollBiometric(
     }
 
     const credentialId = new Uint8Array(credential.rawId);
-    await storeWrappedPhrase(phrase, bytesToBase64url(credentialId));
+    await storeWrappedPhrase(phrase, bytesToBase64url(credentialId), since);
 
     return { ok: true };
   } catch (err) {
@@ -416,12 +428,23 @@ export async function buildPinWrap(phrase: string, pin: string): Promise<PinWrap
 export async function wrapPhraseWithPin(
   phrase: string,
   pin: string,
+  /** The stamp the caller took before its own first await: every caller
+   *  derives a PIN key first, about a second, and a sign-out inside that
+   *  second removed the wrap this would put back (liveSignIn.ts). */
+  startedAt?: SignInStamp,
 ): Promise<PinWrapBlob> {
+  const since = startedAt ?? signInStamp();
   const blob = await buildPinWrap(phrase, pin);
+  if (signedOutSince(since)) throw new Error('Signed out while the PIN wrap was built.');
   localStorage.setItem(PIN_PBKDF2_SALT, blob.pinWrapSalt);
   localStorage.setItem(PIN_IV, blob.pinWrapIV);
   localStorage.setItem(PIN_WRAPPED, blob.pinWrapCiphertext);
   localStorage.setItem(PIN_ITERATIONS_KEY, String(blob.pinWrapIterations));
+  // Asked again once written, as storeWrappedPhrase does.
+  if (signedOutSince(since)) {
+    if (localStorage.getItem(PIN_WRAPPED) === blob.pinWrapCiphertext) removePinWrappedPhrase();
+    throw new Error('Signed out while the PIN wrap was built.');
+  }
   return blob;
 }
 
@@ -461,6 +484,9 @@ export function hasSamePinWrap(blob: Pick<PinWrapBlob, 'pinWrapSalt' | 'pinWrapC
  */
 export function hydrateLocalPinWrap(blob: PinWrapBlob): void {
   if (!isTrustedDevice()) return;
+  // A sync pass that outlived a sign-out must not put the wrap back, or the
+  // four-digit PIN opens the signed-out device (liveSignIn.ts).
+  if (!hasLiveSignIn()) return;
   try {
     localStorage.setItem(PIN_PBKDF2_SALT, blob.pinWrapSalt);
     localStorage.setItem(PIN_IV, blob.pinWrapIV);
@@ -469,6 +495,8 @@ export function hydrateLocalPinWrap(blob: PinWrapBlob): void {
   } catch {
     /* storage unavailable */
   }
+  // Asked again once written, as storeWrappedPhrase does.
+  if (!hasLiveSignIn() && localStorage.getItem(PIN_WRAPPED) === blob.pinWrapCiphertext) removePinWrappedPhrase();
 }
 
 /**
@@ -482,6 +510,9 @@ export async function unwrapPhraseWithPin(
   pin: string,
   onUpgraded?: (blob: PinWrapBlob) => void,
 ): Promise<string | null> {
+  // The legacy upgrade below starts after this function's own key
+  // derivation, and it must not outlive a sign-out that began during it.
+  const startedAt = signInStamp();
   const saltB64 = localStorage.getItem(PIN_PBKDF2_SALT);
   const ivB64 = localStorage.getItem(PIN_IV);
   const wrappedB64 = localStorage.getItem(PIN_WRAPPED);
@@ -500,7 +531,7 @@ export async function unwrapPhraseWithPin(
 
     // Auto-upgrade: re-wrap with current iterations if using legacy count.
     if (storedIterations < PIN_PBKDF2_ITERATIONS) {
-      wrapPhraseWithPin(phrase, pin).then((b) => onUpgraded?.(b)).catch(() => { /* best-effort upgrade */ });
+      wrapPhraseWithPin(phrase, pin, startedAt).then((b) => onUpgraded?.(b)).catch(() => { /* best-effort upgrade */ });
     }
 
     return phrase;
@@ -511,7 +542,7 @@ export async function unwrapPhraseWithPin(
       try {
         const legacyKey = await deriveKeyFromPin(pin, salt, LEGACY_PIN_PBKDF2_ITERATIONS);
         const phrase = await aesGcmDecrypt(legacyKey, ciphertext, iv);
-        wrapPhraseWithPin(phrase, pin).then((b) => onUpgraded?.(b)).catch(() => { /* best-effort upgrade */ });
+        wrapPhraseWithPin(phrase, pin, startedAt).then((b) => onUpgraded?.(b)).catch(() => { /* best-effort upgrade */ });
         return phrase;
       } catch {
         return null;

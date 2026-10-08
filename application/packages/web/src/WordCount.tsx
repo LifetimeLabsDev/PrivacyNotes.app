@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import i18n from './i18n';
 import { stripMarkdown, countWords, countChars } from './wordCountUtils';
 import { intlLocale } from './languages';
+import { countTasks } from './tasks';
 
 /** The server rejects any note whose encrypted payload exceeds 1 MB
  *  (schema: notes_ciphertext_max_1mb), and the editor drags well before
@@ -46,7 +47,19 @@ export function WordCount({ body }: { body: string }) {
     };
   }, [body]);
 
+  // The task count skips the debounce: a tick should move the number at once,
+  // and counting lines is cheap next to stripping the markdown.
+  const tasks = useMemo(() => countTasks(body), [body]);
+
   if (!display) return null;
+
+  const taskPart = tasks.total > 0
+    ? ' · ' + i18n.t('editor:wordCount.tasksChecked', {
+        count: tasks.total,
+        done: tasks.done.toLocaleString(intlLocale()),
+        formatted: tasks.total.toLocaleString(intlLocale()),
+      })
+    : '';
 
   // Spacing is owned by the footer row in NotesView (2-col: counts on the
   // left, editor-mode link on the right).
@@ -54,10 +67,10 @@ export function WordCount({ body }: { body: string }) {
   return (
     <div className="select-none space-y-0.5">
       {display.label && (
-        <div className={`text-xs ${display.colorClass}`}>{display.label}</div>
+        <div className={`text-xs ${display.colorClass}`}>{display.label + taskPart + display.warning}</div>
       )}
       {display.tableWarning && (
-        <div className="text-xs text-amber-500 dark:text-amber-400">
+        <div className="text-xs text-warning">
           {display.tableWarning}
         </div>
       )}
@@ -100,7 +113,7 @@ function compute(body: string) {
     // No prose to count, but a giant (mostly empty) table still warrants the
     // editor-perf heads-up. Otherwise render nothing.
     return tableWarning
-      ? { label: null as string | null, colorClass: '', tableWarning }
+      ? { label: null as string | null, warning: '', colorClass: '', tableWarning }
       : null;
   }
   const words = countWords(body);
@@ -114,21 +127,23 @@ function compute(body: string) {
   const bodyBytes = new TextEncoder().encode(body).length;
   const estStoredBytes = Math.ceil(((bodyBytes + 28) * 4) / 3);
 
-  let colorClass = 'text-neutral-400 dark:text-neutral-600';
-  let label =
+  let colorClass = 'text-pn-muted';
+  const label =
     i18n.t('editor:wordCount.words', { count: words, formatted: words.toLocaleString(intlLocale()) }) +
     ' · ' +
     i18n.t('editor:wordCount.characters', { count: chars, formatted: chars.toLocaleString(intlLocale()) });
 
+  // The size heads-up ends the line, after the task count the component adds.
+  let warning = '';
   if (estStoredBytes >= SYNC_LIMIT_BYTES * SYNC_FRACTION) {
-    colorClass = 'text-amber-500 dark:text-amber-400';
-    label += i18n.t('editor:wordCount.tooLargeToSync');
+    colorClass = 'text-warning';
+    warning = i18n.t('editor:wordCount.tooLargeToSync');
   } else if (estStoredBytes >= SYNC_LIMIT_BYTES * SLOW_FRACTION) {
-    colorClass = 'text-amber-500 dark:text-amber-400';
-    label += i18n.t('editor:wordCount.veryLong');
+    colorClass = 'text-warning';
+    warning = i18n.t('editor:wordCount.veryLong');
   } else if (estStoredBytes >= SYNC_LIMIT_BYTES * INFO_FRACTION) {
-    label += i18n.t('editor:wordCount.gettingLong');
+    warning = i18n.t('editor:wordCount.gettingLong');
   }
 
-  return { label: label as string | null, colorClass, tableWarning };
+  return { label: label as string | null, warning, colorClass, tableWarning };
 }

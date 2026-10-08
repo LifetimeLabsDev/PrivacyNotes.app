@@ -82,8 +82,8 @@
           "p": [
             "A tua estrutura de pastas é reconstruída como pastas a sério, não achatada em etiquetas, por mais fundo que esteja aninhada. Uma nota em Work/Projects vai parar a uma pasta Work > Projects. Se voltares a importar o mesmo vault, as pastas já criadas são reutilizadas em vez de duplicadas.",
             "No plano gratuito podes navegar por estas pastas de imediato; criar, mudar o nome e mover pastas é uma funcionalidade Pro, por isso uma importação do Obsidian é uma boa forma de a experimentares antes de passares para Pro.",
-            "O frontmatter YAML é entendido: tags, aliases e datas de criação são respeitados, e as #tags inline no corpo são juntadas ao campo de tags. Durante a importação podes também assinalar \"Etiquetar também as notas por pasta\" para adicionares o nome de cada pasta como etiqueta, prático se gostares de filtrar por etiqueta.",
-            "Os teus links [[...]] continuam a funcionar: o PrivacyNotes apresenta-os como note-links, por isso as ligações entre notas sobrevivem à mudança. A pasta de configuração .obsidian e a .trash são ignoradas automaticamente."
+            "O frontmatter YAML é entendido: tags, aliases e datas de criação são respeitados, e as #tags inline no corpo são juntadas ao campo de etiquetas. Durante a importação podes também assinalar \"Etiquetar também as notas por pasta\" para adicionares o nome de cada pasta como etiqueta, prático se gostares de filtrar por etiqueta.",
+            "Os teus links [[...]] continuam a funcionar: o PrivacyNotes apresenta-os como ligações entre notas, por isso as relações entre as notas sobrevivem à mudança. A pasta de configuração .obsidian e a .trash são ignoradas automaticamente."
           ]
         }
       ]
@@ -106,14 +106,14 @@
         {
           "h": "As notas Super, as listas de verificação e os códigos 2FA mantêm a forma",
           "p": [
-            "As notas Super mantêm os títulos, as listas, as listas de verificação, as tabelas, os blocos de código, as cores e as secções recolhíveis. As listas de verificação vão para Tarefas, as folhas de cálculo passam a tabelas e as entradas do autenticador passam a inícios de sessão no Cofre, com a respetiva chave 2FA. As etiquetas aninhadas passam a pastas, e cada nota mantém também as suas etiquetas.",
-            "Os ficheiros que carregaste no Standard Notes ficam no servidor deles, por isso o backup só guarda os nomes. Cada nota importada marca onde estava um ficheiro. Descarrega esses ficheiros do Standard Notes e volta a adicioná-los à nota."
+            "As notas Super mantêm os títulos, as listas, as listas de verificação, as tabelas, os blocos de código, as cores e as secções recolhíveis. As listas de verificação vão para Tarefas, as folhas de cálculo passam a tabelas e as entradas do autenticador passam a logins no Cofre, com a respetiva chave 2FA. As etiquetas aninhadas passam a pastas, e cada nota mantém também as suas etiquetas.",
+            "Os ficheiros que carregaste no Standard Notes ficam no servidor deles, por isso o backup só guarda os nomes. Cada nota importada marca onde estava um ficheiro. Transfere esses ficheiros do Standard Notes e volta a adicioná-los à nota."
           ]
         },
         {
           "h": "Os backups encriptados não são suportados",
           "p": [
-            "Um backup encriptado do Standard Notes é texto cifrado que só a tua palavra-passe do Standard Notes consegue abrir, por isso o importador não o consegue ler. Se exportaste a variante encriptada, exporta de novo e escolhe desencriptado. Como o ficheiro contém as tuas notas em texto simples, apaga-o quando a importação terminar.",
+            "Um backup encriptado do Standard Notes é texto encriptado que só a tua palavra-passe do Standard Notes consegue abrir, por isso o importador não o consegue ler. Se exportaste a variante encriptada, exporta de novo e escolhe desencriptado. Como o ficheiro contém as tuas notas em texto simples, apaga-o quando a importação terminar.",
             "Arrasta o .zip inteiro para o importador, ou só o ficheiro .txt se já o descomprimiste."
           ]
         }
@@ -150,9 +150,9 @@
         {
           "h": "Exporta as tuas notas do Samsung Notes",
           "steps": [
-            "No Samsung Notes, mantém premido para selecionares as notas que quiseres (ou Selecionar tudo).",
-            "Toca no menu de três pontos e escolhe \"Guardar como ficheiro\".",
-            "Escolhe \"Ficheiro do Microsoft Word\" (.docx) para notas formatadas, ou \"Ficheiro de texto\" (.txt) para texto simples.",
+            "No Samsung Notes, mantém premido para selecionares as notas que quiseres (ou Select all).",
+            "Toca no menu de três pontos e escolhe \"Save as file\".",
+            "Escolhe \"Microsoft Word file\" (.docx) para notas formatadas, ou \"Text file\" (.txt) para texto simples.",
             "A Samsung guarda um ficheiro por nota no armazenamento do dispositivo. Junta-os num único .zip (seleciona-os no gestor de ficheiros e comprime) se exportaste mais do que alguns."
           ]
         },
@@ -234,7 +234,7 @@
         {
           "h": "O que vem junto, e o que fica para trás",
           "p": [
-            "Tabelas, blocos de código, realces, sublinhado, cor do texto e fórmulas sobrevivem todos. As listas de verificação passam a listas de tarefas, os lembretes de nota passam a uma tarefa no topo da nota, os anexos e as imagens são novamente encriptados dentro do teu armazenamento, os recortes da web mantêm o URL de origem, e as notas de voz mantêm a transcrição. As ligações internas passam a note-links, correspondidas pelo título da nota ligada, já que o Evernote não exporta identificadores de notas.",
+            "Tabelas, blocos de código, realces, sublinhado, cor do texto e fórmulas sobrevivem todos. As listas de verificação passam a listas de tarefas, os lembretes de nota passam a uma tarefa no topo da nota, os anexos e as imagens são novamente encriptados dentro do teu armazenamento, os recortes da web mantêm o URL de origem, e as notas de voz mantêm a transcrição. As ligações internas passam a ligações entre notas, associadas pelo título da nota ligada, já que o Evernote não exporta identificadores de notas.",
             "As tarefas não vêm junto: a exportação deixa um marcador \"Content not supported\" no lugar de cada bloco de tarefas, sem títulos, sem datas-limite e sem estados de conclusão para ler. Os blocos encriptados continuam encriptados, por isso desencripta-os primeiro no Evernote. Os tipos de letra personalizados, o alinhamento do texto e a hierarquia de etiquetas aninhadas são descartados."
           ]
         },
@@ -273,7 +273,7 @@
       "app": "Notesnook",
       "title": "Exporta as tuas notas do Notesnook",
       "metaTitle": "Exportar notas do Notesnook - PrivacyNotes",
-      "lead": "O Notesnook consegue despejar a tua conta inteira como uma pasta de ficheiros. Escolhe a exportação em HTML e nada fica para trás: formatação, cadernos, etiquetas, anexos e os links entre as tuas notas sobrevivem todos à mudança.",
+      "lead": "O Notesnook consegue despejar a tua conta inteira como uma pasta de ficheiros. Escolhe a exportação em HTML e nada fica para trás: formatação, cadernos, etiquetas, anexos e as ligações entre as tuas notas sobrevivem todos à mudança.",
       "sections": [
         {
           "img": {
@@ -364,14 +364,14 @@
         {
           "h": "Estado de Espírito",
           "p": [
-            "Se registaste um Estado de Espírito, o PrivacyNotes preenche os marcadores de humor e emoção dessa entrada sempre que o vocabulário da Apple corresponde a um dos nossos. Tudo o que não consegue corresponder, e as áreas de vida que etiquetaste, ficam guardados como uma linha de texto para que nada se perca."
+            "Se registaste um State of Mind, o PrivacyNotes preenche os registos de humor e emoção dessa entrada sempre que o vocabulário da Apple corresponde a um dos nossos. Tudo o que não consegue corresponder, e as áreas de vida que etiquetaste, ficam guardados como uma linha de texto para que nada se perca."
           ]
         },
         {
           "h": "O que não vem junto",
           "p": [
             "Os cartões de sugestão do Diário para treinos, contactos e conteúdo multimédia que reproduziste mantêm o texto mas não a imagem. Os memorandos de voz chegam como gravações, mas não com a transcrição da Apple: o exportador retira-lhe todos os espaços, por isso o que escreve é uma sequência ininterrupta de caracteres. Fica de fora em vez de ser importado ilegível.",
-            "Os memorandos de voz de uma exportação a partir do Mac são ficheiros CAF, que nenhum navegador consegue reproduzir. Importam-se e descarregam-se bem, mas não os vais ouvir na app. Uma exportação a partir do iPhone grava as mesmas gravações em M4A, que reproduz diretamente, por isso usa o telemóvel se puderes escolher."
+            "Os memorandos de voz de uma exportação a partir do Mac são ficheiros CAF, que nenhum navegador consegue reproduzir. São importados e transferidos sem problemas, mas não os vais ouvir na app. Uma exportação a partir do iPhone guarda as mesmas gravações em M4A, que pode ser reproduzido diretamente na app, por isso usa o telemóvel se puderes escolher."
           ]
         }
       ]
@@ -380,7 +380,7 @@
       "app": "UpNote",
       "title": "Exporta as tuas notas do UpNote",
       "metaTitle": "Exportar notas do UpNote - PrivacyNotes",
-      "lead": "No UpNote, a exportação chama-se backup: escreve a tua conta inteira numa pasta no disco, plano gratuito incluído. Comprime essa pasta e muda-se tudo: notas com a formatação completa, cadernos, etiquetas, notas fixadas, note-links, imagens e anexos.",
+      "lead": "No UpNote, a exportação chama-se backup: escreve a tua conta inteira numa pasta no disco, plano gratuito incluído. Comprime essa pasta e muda-se tudo: notas com a formatação completa, cadernos, etiquetas, notas fixadas, ligações entre notas, imagens e anexos.",
       "sections": [
         {
           "img": {
@@ -436,8 +436,8 @@
           "h": "O que vem junto",
           "p": [
             "Os teus cadernos são reconstruídos como pastas a sério, aninhadas tão fundo quanto estavam no UpNote. Uma nota que vivia em vários cadernos vai parar ao primeiro e leva os outros como etiquetas.",
-            "As notas fixadas e as de Quick Access chegam à lista Fixados. As notas no lixo vão parar ao lixo, os modelos importam-se como notas com a etiqueta #template, os links entre notas passam a note-links, e cada nota mantém as suas datas originais.",
-            "A formatação sobrevive: listas de verificação, tabelas, blocos de código, matemática, sublinhado, subscrito e sobrescrito, alinhamento do texto e realces. As secções recolhíveis passam a avisos dobráveis e mantêm o seu estado aberto ou fechado. As cores de texto e as cores de realce são ambas correspondidas à paleta do próprio editor, por isso um realce amarelo continua amarelo e um verde continua verde. Cada nota chega tal como o UpNote a gravou pela última vez."
+            "As notas fixadas e as de Quick Access chegam à lista Fixados. As notas no lixo vão parar ao lixo, os modelos importam-se como notas com a etiqueta #template, os links entre notas passam a ligações entre notas, e cada nota mantém as suas datas originais.",
+            "A formatação sobrevive: listas de verificação, tabelas, blocos de código, matemática, sublinhado, subscrito e sobrescrito, alinhamento do texto e realces. As secções recolhíveis passam a avisos dobráveis e mantêm o seu estado aberto ou fechado. As cores de texto e as cores de realce são ambas associadas às cores da paleta do próprio editor, por isso um realce amarelo continua amarelo e um verde continua verde. Cada nota chega tal como o UpNote a guardou pela última vez."
           ]
         },
         {
@@ -500,7 +500,7 @@
         {
           "h": "O que vem junto",
           "p": [
-            "Cada pasta que tinhas vem junto, aninhada tal como a deixaste, dentro de uma nova pasta chamada Marcadores. A barra de marcadores é a exceção: o conteúdo dela sobe um nível em vez de virar pasta, porque cada navegador chama a essa barra um nome diferente em cada língua. O Safari não marca nada, por isso o Favorites dele chega mesmo como pasta.",
+            "Cada pasta que tinhas vem junto, aninhada tal como a deixaste, dentro de uma nova pasta chamada Bookmarks. A barra de marcadores é a exceção: o conteúdo dela sobe um nível em vez de passar a pasta, porque cada navegador chama a essa barra um nome diferente em cada língua. O Safari não marca nada, por isso o Favorites dele chega mesmo como pasta.",
             "O dia em que guardaste cada marcador vem com ele. O Safari é o único navegador que não escreve datas nenhumas, por isso uma exportação do Safari chega com a data de hoje.",
             "O Firefox é também o único que guarda etiquetas e uma palavra-chave da barra de endereço com um marcador. Se o teu ficheiro as trouxer, a pré-visualização oferece uma caixa para as manter, e ambas chegam aqui como etiquetas.",
             "Três coisas ficam de fora de propósito. Os atalhos internos do navegador, como Most Visited, não são links a sério: são contados e ignorados. Os ícones dos sites também não são lidos do ficheiro, porque a cópia guardada lá dentro envelhece; o PrivacyNotes vai buscar uma nova. E uma pasta que não tinha marcadores nenhuns não é recriada.",
@@ -519,7 +519,7 @@
       "app": "Palavras-passe do navegador",
       "title": "Exporta as palavras-passe do teu navegador",
       "metaTitle": "Exportar as palavras-passe guardadas no navegador - PrivacyNotes",
-      "lead": "O Chrome, o Edge, o Firefox e o Safari exportam todos as palavras-passe guardadas como um ficheiro .csv simples, e o PrivacyNotes lê todos, uma credencial por linha. O Safari embrulha o .csv dele num .zip, que podes largar sem o abrir.",
+      "lead": "O Chrome, o Edge, o Firefox e o Safari exportam todos as palavras-passe guardadas como um ficheiro .csv simples, e o PrivacyNotes lê todos, um login por linha. O Safari embrulha o .csv dele num .zip, que podes largar sem o abrir.",
       "sections": [
         {
           "h": "Exportar do Chrome, Edge, Brave, Opera ou Vivaldi",
@@ -561,21 +561,21 @@
             "height": 1358
           },
           "p": [
-            "A mesma janela também exporta os teus marcadores, o histórico e os cartões guardados. Cada interruptor que deixes ligado escreve mais um ficheiro não cifrado no mesmo arquivo, por isso desliga-os. Uma exceção: se também queres os marcadores aqui, liga os dois e larga esse único .zip nos dois importadores, porque cada um lê dele apenas o seu próprio ficheiro."
+            "A mesma janela também exporta os teus marcadores, o histórico e os cartões guardados. Cada interruptor que deixes ligado escreve mais um ficheiro não encriptado no mesmo arquivo, por isso desliga-os. Uma exceção: se também queres os marcadores aqui, liga os dois e larga esse único .zip nos dois importadores, porque cada um lê dele apenas o seu próprio ficheiro."
           ]
         },
         {
           "h": "O que vem junto",
           "p": [
-            "Cada linha torna-se uma credencial com o site, o nome de utilizador e a palavra-passe, mais a nota que o navegador guardava com ela. O Firefox é o único dos três que escreve datas, por isso as suas credenciais mantêm o dia em que as guardaste e as outras chegam com a data de hoje. O Safari é o único que exporta uma chave de autenticação, e só se guardavas os códigos no Safari: quando isso acontece, o código continua a funcionar aqui.",
+            "Cada linha torna-se um login com o site, o nome de utilizador e a palavra-passe, mais a nota que o navegador guardava com ele. O Firefox é o único dos três que escreve datas, por isso os seus logins mantêm o dia em que os guardaste e os outros chegam com a data de hoje. O Safari é o único que exporta uma chave de autenticação, e só se guardavas os códigos no Safari: quando isso acontece, o código continua a funcionar aqui.",
             "Os navegadores guardam uma entrada por cada página de início de sessão, por isso uma exportação grande traz muitas vezes várias linhas da mesma empresa. Vêm todas, e depois podes juntá-las ou apagá-las.",
-            "Um navegador guarda as palavras-passe numa lista plana, por isso não há estrutura de pastas para reconstruir. Em vez disso, cada credencial chega com uma etiqueta, o que te traz o lote inteiro num clique."
+            "Um navegador guarda as palavras-passe numa lista plana, por isso não há estrutura de pastas para reconstruir. Em vez disso, cada login chega com uma etiqueta, o que te traz o lote inteiro num clique."
           ]
         },
         {
           "h": "Apaga o ficheiro exportado quando acabares: são as tuas palavras-passe em texto simples",
           "p": [
-            "No .csv exportado não há nada cifrado, venha ele dentro de um .zip ou não. Quem o abrir lê todas as palavras-passe que guardaste, por isso mantém-no na tua própria máquina, importa-o, confirma que chegou tudo e depois apaga o ficheiro e esvazia a reciclagem. Dentro do PrivacyNotes tudo volta a estar cifrado, no teu dispositivo e a caminho do servidor."
+            "No .csv exportado não há nada encriptado, venha ele dentro de um .zip ou não. Quem o abrir lê todas as palavras-passe que guardaste, por isso mantém-no na tua própria máquina, importa-o, confirma que chegou tudo e depois apaga o ficheiro e esvazia a reciclagem. Dentro do PrivacyNotes tudo volta a estar encriptado, no teu dispositivo e a caminho do servidor."
           ]
         }
       ]
@@ -591,13 +591,13 @@
           "steps": [
             "Encontra a pasta com os teus ficheiros .md. O Typora não tem biblioteca própria, por isso está onde tu escolheste guardá-los.",
             "Clica na pasta com o botão direito e escolhe Comprimir (macOS) ou Enviar para > Pasta comprimida (Windows).",
-            "Larga o .zip na importação."
+            "Larga o .zip no importador."
           ]
         },
         {
           "h": "Antes de comprimir, decide onde vivem as imagens",
           "p": [
-            "O Typora pode guardar uma imagem ao lado da nota, dentro de uma subpasta assets, ou deixá-la onde a arrastaste. Só chegam cá as imagens que estejam dentro da pasta que comprimes. Abre Preferências > Imagem, põe a copiar as imagens para a pasta assets da própria nota, e usa \"Formatar > Imagem > Copiar ficheiros de imagem para...\" nas notas antigas cujas imagens ainda apontem para outro sítio."
+            "O Typora pode guardar uma imagem ao lado da nota, dentro de uma subpasta assets, ou deixá-la no local de onde a arrastaste. Só chegam cá as imagens que estejam dentro da pasta que comprimes. Abre Preferences > Image, põe a copiar as imagens para a pasta assets da própria nota, e usa \"Format > Image > Copy image files to...\" nas notas antigas cujas imagens ainda apontem para outro sítio."
           ]
         },
         {
@@ -633,7 +633,7 @@
         {
           "h": "A armadilha dos marcadores",
           "p": [
-            "Com \"Otimizar armazenamento do Mac\" ligado, o iCloud troca os ficheiros que há muito não abres por marcadores minúsculos. Comprimes a pasta nesse estado e ficas com um arquivo de cascas vazias: a importação corre, diz que correu bem, e não traz quase nada. Faz primeiro \"Transferir agora\" e depois confirma que o .zip pesa mais ou menos o que pesa aquilo que escreveste."
+            "Com \"Otimizar armazenamento do Mac\" ligado, o iCloud troca os ficheiros que há muito não abres por ficheiros de substituição minúsculos. Comprimes a pasta nesse estado e ficas com um arquivo de cascas vazias: a importação corre, diz que correu bem, e não traz quase nada. Faz primeiro \"Transferir agora\" e depois confirma que o .zip pesa mais ou menos o que pesa aquilo que escreveste, antes de o importares."
           ]
         },
         {
@@ -649,12 +649,12 @@
       "app": "Zettlr",
       "title": "Exporta as tuas notas do Zettlr",
       "metaTitle": "Exportar notas do Zettlr - PrivacyNotes",
-      "lead": "O Zettlr trabalha directamente sobre uma pasta de ficheiros .md, por isso a área de trabalho que já tens é a exportação. Comprime-a e larga-a aqui.",
+      "lead": "O Zettlr trabalha diretamente sobre uma pasta de ficheiros .md, por isso a área de trabalho que já tens é a exportação. Comprime-a e larga-a aqui.",
       "sections": [
         {
           "h": "Comprime a área de trabalho",
           "steps": [
-            "No Zettlr, clica com o botão direito na área de trabalho no topo da árvore de ficheiros e escolhe \"Mostrar no Finder\", ou \"Mostrar no Explorador\" no Windows.",
+            "No Zettlr, clica com o botão direito na área de trabalho no topo da árvore de ficheiros e escolhe \"Show in Finder\", ou \"Show in Explorer\" no Windows.",
             "Clica com o botão direito nessa pasta e comprime-a.",
             "Larga o .zip na importação."
           ]
@@ -662,7 +662,7 @@
         {
           "h": "As ligações Zettelkasten guardam o texto, não o destino",
           "p": [
-            "O Zettlr liga as notas por identificador, por isso uma ligação lê-se [[20260823120000]]. Nós mantemos os note-links exactamente como estão escritos, o que quer dizer que uma ligação por identificador só encontra cá a sua nota se houver mesmo uma nota intitulada com esse identificador. As ligações escritas com o nome do ficheiro funcionam normalmente: se contas com elas, muda o formato das ligações internas para o nome do ficheiro antes de exportares.",
+            "O Zettlr liga as notas por identificador, por isso uma ligação lê-se [[20260823120000]]. Nós mantemos as ligações entre notas exatamente como estão escritas, o que quer dizer que uma ligação por identificador só encontra cá a sua nota se houver mesmo uma nota intitulada com esse identificador. As ligações escritas com o nome do ficheiro funcionam normalmente: se contas com elas, muda o formato das ligações internas para o nome do ficheiro antes de exportares.",
             "As chaves de citação como [@doe2026] são texto para nós. Vêm sem alterações e deixam de ser clicáveis."
           ]
         },
@@ -683,7 +683,7 @@
         {
           "h": "Transfere a pasta Notes",
           "steps": [
-            "Abre o Ficheiros no teu Nextcloud, no navegador.",
+            "Abre a app Files no teu Nextcloud, no navegador.",
             "Encontra a pasta Notes. Chama-se Notes, a não ser que a administração lhe tenha mudado o nome.",
             "Abre o menu \"...\" da pasta e escolhe Transferir. O Nextcloud embrulha a pasta inteira num .zip.",
             "Larga o .zip na importação."

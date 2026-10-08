@@ -8,6 +8,7 @@ import { noteLinkTarget } from '../noteLinks';
 import { isBlobReferenced, mimeFromExt } from './blobImport';
 import { htmlNoteToMarkdown } from './notesnook';
 import type { ImportBlob, ImportedNote, ParsedImport } from './types';
+import { toLocalIso } from '../notesViewUtils';
 
 /**
  * Joplin importer.
@@ -337,7 +338,7 @@ export async function parseJoplin(file: File, onProgress?: (msg: string) => void
     let type: 'task' | undefined;
     if (p.is_todo === '1') {
       const done = Number(p.todo_completed) > 0;
-      const due = Number(p.todo_due) > 0 ? ` (due ${new Date(Number(p.todo_due)).toISOString().slice(0, 10)})` : '';
+      const due = Number(p.todo_due) > 0 ? ` (due ${toLocalIso(new Date(Number(p.todo_due)))})` : '';
       const line = `- [${done ? 'x' : ' '}] ${raw.title.trim().replace(/\s*\n\s*/g, ' ')}${due}`;
       body = body.trim() ? `${line}\n\n${body}` : line;
       type = 'task';

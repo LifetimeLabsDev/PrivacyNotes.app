@@ -7,13 +7,14 @@ import { SelectionToolbar } from './SelectionToolbar';
 import { SelectionCountStrip } from './SelectionCountStrip';
 import { suppressShiftTextSelection } from './useMultiSelect';
 import { ListPrefsPopover } from './ListPrefsPopover';
-import NoteRow, { noteLinkText } from './NoteRow';
+import NoteRow, { itemDragSelection } from './NoteRow';
 import NoteCard from './NoteCard';
 import { StorageBar } from './StorageBar';
 import { HoverLabel } from './HoverLabel';
-import { BackfillPopover } from './BackfillPopover';
+import { JournalCalendarCard, JournalCalendarPopover, useJournalCalendarShown } from './JournalCalendar';
 import { Key, CreditCard, Lock, NotePencil, CaretDown, Trash, SquaresFour, Book, Shield, ShieldPlus, PushPin, FileText, FunnelSimple, Note, CheckSquare, Upload, BookmarkSimple, Plus, Notebook, PILLAR_GLYPHS, NEW_GLYPHS } from './icons';
 import { ActiveFilterEntry, ActiveSearchEntry, FilteredEmpty, ListFilterChips } from './ListFilterChips';
+import { ListEntryCard } from './ListEntryCard';
 import { BookmarkRowActions } from './BookmarkRowActions';
 import { ListSearchInput } from './ListSearchInput';
 import { Switch } from './Switch';
@@ -22,6 +23,7 @@ import type { View } from './views';
 import { ListNav } from './notesView/ListNav';
 import { useProgressiveReveal } from './useProgressiveReveal';
 import { ImportPromptEntry, importPromptFor, type ImportOffer, type ImportPromptKind } from './ImportPrompt';
+import { useListKeys } from './listKeys';
 
 type VaultFilter = 'all' | 'login' | 'card' | 'ssh-key';
 
@@ -48,6 +50,12 @@ export interface NotesListProps {
   hiddenViews?: import('./views').View[] | undefined;
   /** The synced import-offer dismissal; see ImportPrompt.tsx. */
   importOffer: ImportOffer;
+  /**
+   * In All, the open Markdown folder's files whose path matches the search.
+   * Those files live on disk, outside All, so the list offers them as one
+   * entry that opens the Markdown section with the same filter.
+   */
+  markdownBridge?: { count: number; onOpen: () => void };
   onOpenDrawer: () => void;
   search: string;
   setSearch: (v: string) => void;
@@ -107,6 +115,9 @@ export interface NotesListProps {
    *  standing import entry at the end of the list. */
   onOpenImport: (tab: 'import' | 'vault') => void;
   onBackfillDate: (isoDate: string) => void;
+  /** Local ISO day to the id of that day's newest journal entry. */
+  journalEntries: ReadonlyMap<string, string>;
+  onOpenJournalEntry: (id: string) => void;
   onEmptyTrash: () => void;
   trashedNotesLength: number;
   onRefreshStorage: () => Promise<void> | void;
@@ -165,7 +176,7 @@ function NewDropdown({ options, ariaLabel, icon }: { options: NewMenuOption[]; a
         aria-label={ariaLabel}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-semibold px-3 py-1.5 text-lg tracking-tight transition cursor-pointer"
+        className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition cursor-pointer"
       >
         {icon ?? <NEW_GLYPHS.note size={18} />}
         {t('header.new', newButtonOpts())}
@@ -193,7 +204,7 @@ function NewDropdown({ options, ariaLabel, icon }: { options: NewMenuOption[]; a
               type="button"
               role="menuitem"
               onClick={() => { onSelect(); setOpen(false); }}
-              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-start whitespace-nowrap text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-surface-1 transition cursor-pointer"
+              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-start whitespace-nowrap text-pn-soft hover:bg-pn/5 transition cursor-pointer"
             >
               {/* Accent, like every other menu that lists things to go to or
                   make: the rail rows, the sidebar option menus and the view
@@ -232,6 +243,7 @@ export function NotesList({
   onSelectView,
   hiddenViews,
   importOffer,
+  markdownBridge,
   onOpenDrawer,
   search,
   setSearch,
@@ -273,6 +285,8 @@ export function NotesList({
   onNewContact,
   onOpenImport,
   onBackfillDate,
+  journalEntries,
+  onOpenJournalEntry,
   onEmptyTrash,
   trashedNotesLength,
   onRefreshStorage,
@@ -347,6 +361,7 @@ export function NotesList({
    * first forces the layout that resolves the container queries, so the
    * assignment lands against the final grid rather than the fallback. */
   const listRef = useRef<HTMLUListElement | null>(null);
+  useListKeys(searchInputRef, listRef, () => !selectionMode);
   const scrollTopRef = useRef(0);
   const paneWasHiddenRef = useRef(false);
 
@@ -442,16 +457,18 @@ export function NotesList({
     }
   });
 
-  /** The whole selection as note-links, in list order, for a drag. One
-   *  function for every render, like the row handlers, so rows stay memoized. */
+  /** What a drag of the selection carries: the selected items this list
+   *  shows, in list order. One function for every render, like the row
+   *  handlers, so rows stay memoized. */
   const selection = useRef({ displayNotes, selectedIds, isNoteLocked });
   selection.current = { displayNotes, selectedIds, isNoteLocked };
-  const selectionLinkText = useRef(() => {
+  const dragSelection = useRef(() => {
     const { displayNotes: all, selectedIds: ids, isNoteLocked: gated } = selection.current;
-    return noteLinkText(all.filter((n) => ids.has(n.id)), gated);
+    return itemDragSelection(all.filter((n) => ids.has(n.id)), gated);
   }).current;
 
   const ItemComponent = viewMode === 'grid' ? NoteCard : NoteRow;
+  const calendarShown = useJournalCalendarShown();
 
   // Vault view "New" menu - structured secret types.
   const vaultNewOptions: NewMenuOption[] = [
@@ -520,7 +537,7 @@ export function NotesList({
           title={view === 'trash' ? t('header.trash') : listHeaderLabel}
           icon={
             view === 'trash' ? (
-              <PILLAR_GLYPHS.trash size={26} className="text-red-500 dark:text-red-400 shrink-0" aria-label={t('header.trash')} />
+              <PILLAR_GLYPHS.trash size={26} className="text-danger shrink-0" aria-label={t('header.trash')} />
             ) : view === 'home' ? (
               <PILLAR_GLYPHS.all size={26} className="text-accent shrink-0" aria-hidden="true" />
             ) : view === 'journal' ? (
@@ -541,7 +558,7 @@ export function NotesList({
           <button
             onClick={onEmptyTrash}
             aria-label={t('trash.emptyHover')}
-            className="shrink-0 inline-flex items-center rounded-md bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-semibold px-3 py-1.5 text-lg tracking-tight transition"
+            className="shrink-0 inline-flex items-center rounded-md bg-red-500/10 hover:bg-red-500/20 text-danger font-semibold px-3 py-1.5 text-lg tracking-tight transition"
           >
             {t('trash.empty')}
           </button>
@@ -567,9 +584,9 @@ export function NotesList({
                   type="button"
                   onClick={() => setShowBackfill((v) => !v)}
                   aria-label={t('journal.newEntry')}
-                  aria-haspopup="menu"
+                  aria-haspopup="dialog"
                   aria-expanded={showBackfill}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-semibold px-3 py-1.5 text-lg tracking-tight transition cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition cursor-pointer"
                 >
                   <NEW_GLYPHS.note size={18} />
                   {t('header.new', newButtonOpts())}
@@ -577,7 +594,9 @@ export function NotesList({
                 </button>
                 </HoverLabel>
                 {showBackfill && (
-                  <BackfillPopover
+                  <JournalCalendarPopover
+                    entries={journalEntries}
+                    onOpen={onOpenJournalEntry}
                     onToday={() => onNew()}
                     onPick={onBackfillDate}
                     onClose={() => setShowBackfill(false)}
@@ -590,7 +609,7 @@ export function NotesList({
               <button
                 onClick={() => onNew()}
                 aria-label={t('header.newNote')}
-                className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-semibold px-3 py-1.5 text-lg tracking-tight transition"
+                className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition"
               >
                 <NEW_GLYPHS.note size={18} />
                 {t('header.new', newButtonOpts())}
@@ -628,7 +647,7 @@ export function NotesList({
           checked={autoDeleteTrashDays > 0}
           onChange={(on) => onAutoDeleteTrashDaysChange(on ? 30 : 0)}
           className="shrink-0 px-4 py-2 gap-2 select-none"
-          labelClassName="text-xs text-neutral-600 dark:text-neutral-400"
+          labelClassName="text-xs text-pn-muted"
         />
       )}
       {/* Vault sub-filter pills - narrow by item type.
@@ -654,8 +673,8 @@ export function NotesList({
               onClick={() => onVaultFilterChange(key as VaultFilter)}
               className={`shrink-0 whitespace-nowrap text-xs px-2.5 py-1 rounded-full transition font-medium ${
                 vaultFilter === key
-                  ? 'bg-accent text-white'
-                  : 'bg-surface-1 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-surface-2'
+                  ? 'bg-accent-fill text-white'
+                  : 'bg-surface-1 text-pn-muted hover:bg-pn/10'
               }`}
             >
               {label}
@@ -678,7 +697,7 @@ export function NotesList({
             aria-expanded={showListPrefs}
             className={`shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-md border transition ${
               showListPrefs
-                ? 'bg-accent/10 border-accent text-accent'
+                ? 'bg-accent/10 border-accent text-accent-strong'
                 : 'bg-surface-2 border-divider text-pn-muted hover:border-accent hover:text-accent'
             }`}
           >
@@ -704,11 +723,10 @@ export function NotesList({
             className="absolute start-3 top-full mt-1"
             /* Journal and Vault own their view. Everything else this list
                draws - Notes, All, Pinned, Trash, a folder or tag filter
-               inside any of them - shares Global. Spelled out rather than
-               `viewToPillar(view)`, which maps 'all' to the 'notes' slot:
-               giving Notes a copy of its own would island the very pane the
-               shared lists inherit from. */
+               inside any of them - shares Global: giving Notes a copy of its
+               own would island the very pane the shared lists inherit from. */
             pillar={view === 'journal' ? 'journal' : view === 'vault' ? 'vault' : 'global'}
+            {...(view === 'journal' ? { createdLabel: t('noteRow.entryDate') } : {})}
           />
         )}
       </div>
@@ -735,6 +753,9 @@ export function NotesList({
         onMouseDown={suppressShiftTextSelection}
         className={`flex-1 overflow-y-auto ${viewMode === 'grid' ? 'grid content-start gap-3 p-4 pn-notes-grid' : ''}`}
       >
+        {view === 'journal' && calendarShown && !search.trim() && !selectionMode && (
+          <JournalCalendarCard grid={viewMode === 'grid'} entries={journalEntries} onOpen={onOpenJournalEntry} onPick={onBackfillDate} onToday={() => onNew()} />
+        )}
         {displayNotes.length === 0 && (
           <li className={viewMode === 'grid' ? 'col-span-full' : ''}>
             {/* A filtered list that came back empty says so, and says nothing
@@ -749,7 +770,7 @@ export function NotesList({
                 onClearTag={onClearTag}
               />
             ) : (
-              <p className="p-4 text-[13px] text-neutral-500 dark:text-neutral-600 text-center">
+              <p className="p-4 text-[13px] text-pn-muted text-center">
                 {search.trim() ? t('empty.noMatches') : view === 'vault' ? t('empty.vault') : view === 'archive' ? t('empty.archive') : t('empty.notes')}
               </p>
             )}
@@ -768,11 +789,12 @@ export function NotesList({
             onTouchMove={endLongPress}
             onTouchCancel={endLongPress}
             selectionMode={selectionMode}
-            linkDrag
-            linkDragSelection={selectionLinkText}
+            itemDrag
+            dragSelection={dragSelection}
             isMultiSelected={selectedIds.has(n.id)}
             showTypeIcons
             sortAwareDate
+            entryDays={view === 'journal'}
             trashTint={view === 'trash'}
             showArchived={view !== 'archive'}
             /* A bookmark is a bookmark in every pillar: the same hover pair
@@ -796,6 +818,14 @@ export function NotesList({
             search={search}
             onClearSearch={() => setSearch('')}
             variant={viewMode === 'grid' ? 'tile' : 'row'}
+          />
+        )}
+        {markdownBridge && markdownBridge.count > 0 && search.trim() && !selectionMode && (
+          <ListEntryCard
+            variant={viewMode === 'grid' ? 'tile' : 'row'}
+            icon={PILLAR_GLYPHS.markdown}
+            label={t('shell:markdown.bridge', { count: markdownBridge.count })}
+            onClick={markdownBridge.onOpen}
           />
         )}
         {showFilterEntry && (

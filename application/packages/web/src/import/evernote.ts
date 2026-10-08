@@ -6,6 +6,7 @@ import { linkifyMarkdown } from './linkify';
 import { noteLinkTarget } from '../noteLinks';
 import { importBlobs } from './blobImport';
 import type { ImportedNote, ParsedImport } from './types';
+import { toLocalIso } from '../notesViewUtils';
 
 /**
  * Evernote importer (.enex).
@@ -100,7 +101,7 @@ function parseEnexDate(raw: string | null | undefined): string | null {
 
 /** Local-date label for a reminder line, e.g. "2026-08-05". */
 function dueLabel(iso: string): string {
-  return iso.slice(0, 10);
+  return toLocalIso(new Date(iso));
 }
 
 /** Blob placeholder token. Fixed width so no key is a prefix of another. */

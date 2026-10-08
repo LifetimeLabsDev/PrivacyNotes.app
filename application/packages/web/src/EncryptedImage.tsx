@@ -20,13 +20,13 @@ import { estimateBlobBytes } from './notesViewUtils';
 import { useTranslation } from 'react-i18next';
 import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
-import { Plugin, PluginKey } from '@tiptap/pm/state';
+import { Plugin, PluginKey, type Transaction } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
-import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
+import type { Node as ProseMirrorNode, Slice } from '@tiptap/pm/model';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
 import { ArrowsOutSimple, Download, Trash } from './icons';
-import { currentImageOptions, processImage } from './imageProcessing';
-import { cachedAttachmentUrl, loadAttachmentData, loadAttachmentUrl } from './EncryptedAttachment';
+import { currentImageOptions, processImage, type ImageOptions } from './imageProcessing';
+import { attachmentIdForUrl, cachedAttachmentUrl, loadAttachmentData, loadAttachmentUrl } from './EncryptedAttachment';
 import { FILE_REF_PREFIX, openMediaViewerInDoc, type MediaRef } from './mediaRefs';
 import { validateAttachment } from './attachmentValidation';
 import { suppressSoftKeyboard } from './softKeyboard';
@@ -451,7 +451,15 @@ const EncryptedImageView = memo(function EncryptedImageView({
     const close = (e: Event) => {
       // `globalThis` qualified because `Node` in this file is TipTap's.
       const target = e.target instanceof globalThis.Node ? e.target : null;
-      if (!target || !wrapperRef.current?.contains(target)) setTapped(false);
+      if (!target || !wrapperRef.current?.contains(target)) {
+        setTapped(false);
+        // An Escape that closes the bar is the bar's, as a menu's is: it must
+        // not also close the note through the app's Escape cascade.
+        if (e instanceof KeyboardEvent && e.key === 'Escape') {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
     };
     document.addEventListener('pointerdown', close, true);
     document.addEventListener('keydown', close, true);
@@ -494,12 +502,12 @@ const EncryptedImageView = memo(function EncryptedImageView({
         style={{ maxWidth: `${widthPercent}%`, ...alignStyle }}
       >
         {loading && (
-          <div className="flex items-center justify-center bg-neutral-100 dark:bg-neutral-900 rounded-md p-8 text-neutral-400 dark:text-neutral-600 text-sm">
+          <div className="flex items-center justify-center bg-track rounded-md p-8 text-pn-muted text-sm">
             {t('image.loading')}
           </div>
         )}
         {error && (
-          <div className="flex items-center justify-center bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 rounded-md p-4 text-red-600 dark:text-red-400 text-sm">
+          <div className="flex items-center justify-center bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 rounded-md p-4 text-danger text-sm">
             {error}
           </div>
         )}
@@ -529,7 +537,7 @@ const EncryptedImageView = memo(function EncryptedImageView({
           />
         )}
         {(selected || tapped) && saveFailed && (
-          <p className="mt-1 text-xs text-red-600 dark:text-red-400">{t('image.saveFailed')}</p>
+          <p className="mt-1 text-xs text-danger">{t('image.saveFailed')}</p>
         )}
       </div>
     </NodeViewWrapper>
@@ -572,6 +580,21 @@ export async function saveStoredImage(uuid: string, alt: string): Promise<SaveRe
 }
 
 /**
+ * The decrypted bytes of a stored picture, for a writer that embeds them
+ * rather than draws them (the vCard export). Null when the store is not
+ * ready or the blob is not there.
+ */
+export async function loadStoredImageBytes(uuid: string): Promise<Uint8Array | null> {
+  const store = getImageStore();
+  if (!store) return null;
+  try {
+    return await store.getImage(uuid);
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Load an encrypted image by uuid to a cached object URL, for read-only
  * thumbnails outside the editor (e.g. the Files grid). Reuses the same
  * decrypt + blob-URL cache as the editor node view. Returns null if the
@@ -609,6 +632,8 @@ export type ImageUploadContext = {
   getQuota?: () => { usedBytes: number; maxBytes: number } | null;
   /** Called with a user-visible error message when upload fails. */
   onError?: (msg: string) => void;
+  /** Called with a user-visible notice that is not an error. */
+  onNotice?: (msg: string) => void;
 };
 
 let _uploadContext: ImageUploadContext | null = null;
@@ -646,14 +671,25 @@ function findPlaceholderPos(view: EditorView, id: string): number | null {
   return found.length > 0 ? found[0]!.from : null;
 }
 
-async function handleImageUpload(
+/**
+ * The picture pipeline with no document around it: the switches, the two
+ * quota gates, the per-file cap, the encryption and the store, with the
+ * stored blob's identity handed back instead of placed anywhere. Every
+ * door shares it, so a contact photo obeys the same rules a pasted
+ * picture does and reports its errors through the same toast.
+ *
+ * `onAccepted` runs once the gates pass and before the decode, which is
+ * where the editor draws its placeholder. The caller cleans that up
+ * whatever this returns.
+ */
+export async function storePicture(
   file: File,
-  view: EditorView,
-  pos: number,
-): Promise<void> {
+  opts: ImageOptions,
+  onAccepted?: () => void,
+): Promise<{ uuid: string; name: string; bytes: number } | null> {
   if (!_uploadContext) {
     console.error('[image] No upload context - auth not ready?');
-    return;
+    return null;
   }
 
   const reportError = (msg: string) => {
@@ -662,35 +698,30 @@ async function handleImageUpload(
   };
 
   // Pre-flight quota check.
-  if (_uploadContext.getQuota) {
-    const q = _uploadContext.getQuota();
-    if (q && q.usedBytes >= q.maxBytes) {
-      _uploadContext.onQuotaExceeded?.();
-      return;
-    }
+  const q0 = _uploadContext.getQuota?.();
+  if (q0 && q0.usedBytes >= q0.maxBytes) {
+    _uploadContext.onQuotaExceeded?.();
+    return null;
   }
 
   // The per-file tier cap applies only to a picture stored as it arrived:
   // a space-saved image is a few hundred kilobytes whatever came in, and
   // the module's own ceiling guards that path.
-  const opts = currentImageOptions();
   if (opts.fitBox === null) {
     const maxBytes = _uploadContext.getQuota?.()?.maxBytes ?? 0;
     const v = validateAttachment(file, _uploadContext.isPro, maxBytes > 500 * 1000 * 1000);
     if (!v.ok) {
       reportError(v.error);
-      return;
+      return null;
     }
   }
 
-  // Show placeholder immediately so the user knows something is happening.
-  const placeholderId = addPlaceholder(view, pos, file.name);
+  onAccepted?.();
 
   const result = await processImage(file, opts);
   if (!result.ok) {
-    removePlaceholder(view, placeholderId);
     reportError(result.error);
-    return;
+    return null;
   }
 
   // Quota gate with the INCOMING file counted, using the exact bytes about
@@ -698,33 +729,46 @@ async function handleImageUpload(
   // so a large paste into a nearly-full account is refused here instead
   // of by the server after a wasted upload. The early gate above only
   // catches accounts already at 100%.
-  if (_uploadContext.getQuota) {
-    const q = _uploadContext.getQuota();
-    if (q && q.usedBytes + estimateBlobBytes(result.image.data.length) > q.maxBytes) {
-      removePlaceholder(view, placeholderId);
-      _uploadContext.onQuotaExceeded?.();
-      return;
-    }
+  const q1 = _uploadContext.getQuota?.();
+  if (q1 && q1.usedBytes + estimateBlobBytes(result.image.data.length) > q1.maxBytes) {
+    _uploadContext.onQuotaExceeded?.();
+    return null;
   }
 
-  let uuid: string;
   try {
-    uuid = await _uploadContext.imageStore.uploadImage(result.image.data);
+    const uuid = await _uploadContext.imageStore.uploadImage(result.image.data);
+    return { uuid, name: result.image.name, bytes: result.image.data.length };
   } catch (err) {
-    removePlaceholder(view, placeholderId);
     const msg = err instanceof Error ? err.message : String(err);
     if (msg.includes('Quota exceeded')) {
       _uploadContext.onQuotaExceeded?.();
     } else {
       reportError(i18n.t('media:image.uploadFailed', { message: msg }));
     }
-    return;
+    return null;
   }
+}
 
-  // Replace placeholder with the real image node.
-  const placeholderPos = findPlaceholderPos(view, placeholderId);
-  removePlaceholder(view, placeholderId);
-  placeImage(view, `${IMAGE_URI_PREFIX}${uuid}`, result.image.name, placeholderPos ?? view.state.selection.to);
+async function handleImageUpload(
+  file: File,
+  view: EditorView,
+  pos: number,
+): Promise<void> {
+  // A Markdown folder note keeps its pictures as files beside it, never in
+  // the encrypted store. The guard sits on the upload itself, so every door
+  // into it is covered. Spec: ops/docs/plans/paste-pictures.md (section 3.3)
+  if (plaintextViews.has(view)) return;
+  // The placeholder tells the user something is happening while the
+  // picture is decoded and encrypted, so it is drawn from inside the
+  // pipeline and taken down again however the pipeline ends.
+  let placeholderId = '';
+  const stored = await storePicture(file, currentImageOptions(), () => {
+    placeholderId = addPlaceholder(view, pos, file.name);
+  });
+  const placeholderPos = placeholderId ? findPlaceholderPos(view, placeholderId) : null;
+  if (placeholderId) removePlaceholder(view, placeholderId);
+  if (!stored) return;
+  placeImage(view, `${IMAGE_URI_PREFIX}${stored.uuid}`, stored.name, placeholderPos ?? view.state.selection.to);
 }
 
 /**
@@ -820,41 +864,57 @@ function looksLikeImage(file: File): boolean {
 }
 
 // ------------------------------------------------------------------
-// Helpers for recovering images from pasted HTML
+// Pictures inside pasted HTML
 // ------------------------------------------------------------------
+//
+// A paste or a drop of HTML runs `sanitizePastedHtml` first. A picture whose
+// bytes are already on the device (`data:`, `blob:`) or, in the Apple apps,
+// in the web archive Safari put on the pasteboard, becomes a pending picture:
+// the tag points at `pn:pending/<id>` and its real source waits here. As soon
+// as the slice is in the document, `appendTransaction` swaps each pending node
+// for an upload placeholder at the same place, so no save ever sees one, and
+// the plugin view fills each placeholder. Every other foreign picture is
+// removed and counted, and the reader gets one notice per paste.
+//
+// `https:` pictures are never fetched: the page policy (`connect-src`) keeps
+// the page on our own hosts, and that wall is the point.
+// Spec: ops/docs/plans/paste-pictures.md (section 3)
 
-/** Extract src attributes from <img> tags in an HTML string. */
-function extractImgSrcsFromHtml(html: string): string[] {
-  const srcs: string[] = [];
-  const re = /<img[^>]+src=["']([^"']+)["'][^>]*\/?>/gi;
-  let match: RegExpExecArray | null;
-  while ((match = re.exec(html)) !== null) {
-    const src = match[1];
-    // Only collect non-pn: sources - our own encrypted images are fine.
-    if (src && !isBlobRef(src)) {
-      srcs.push(src);
-    }
-  }
-  return srcs;
-}
+const PENDING_PREFIX = 'pn:pending/';
+
+/** Pictures above this count in one paste are left out. */
+const MAX_PICTURES_PER_PASTE = 30;
+
+/** The Apple apps can read Safari's web archive from the pasteboard. */
+const READS_WEB_ARCHIVE = __PN_BUILD_PLATFORM__ === 'darwin' || __PN_BUILD_PLATFORM__ === 'ios';
+
+/** What one paste brought in: pictures still on their way, and pictures left out. */
+type PasteReport = { open: number; leftOut: number; settled: boolean };
+
+type PendingSource = {
+  src: string;
+  alt: string;
+  /** Every address in the tag's `srcset`: Safari's archive holds the one it loaded. */
+  srcset: string[];
+  viaArchive: boolean;
+  report: PasteReport;
+};
+
+const pendingSources = new Map<string, PendingSource>();
+/** The report of the last HTML the editor sanitized, until a handler settles it. */
+let lastReport: PasteReport | null = null;
 
 /**
- * Try to fetch an image URL and convert it to a File object.
- * Works for data: URLs and same-origin/CORS-allowed https: URLs.
- * Returns null for cross-origin blob: URLs or any fetch failure.
+ * The stored picture an object URL of this tab shows, as a `pn:img/` or
+ * `pn:file/` ref, or null. The browser's "Copy image" names that URL in the
+ * clipboard HTML, and this turns it back into the picture we already hold
+ * instead of a second copy. Spec: ops/docs/plans/picture-copy-reuse.md
  */
-async function fetchImageFromUrl(url: string): Promise<File | null> {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    const blob = await res.blob();
-    if (!blob.type.startsWith('image/')) return null;
-    const ext = blob.type.split('/')[1] ?? 'png';
-    return new File([blob], `pasted-image.${ext}`, { type: blob.type });
-  } catch {
-    // Expected for cross-origin blob: URLs - fail silently.
-    return null;
-  }
+export function refForObjectUrl(url: string): string | null {
+  if (!url.startsWith('blob:')) return null;
+  for (const [uuid, cached] of blobUrlCache) if (cached === url) return `${IMAGE_URI_PREFIX}${uuid}`;
+  const file = attachmentIdForUrl(url);
+  return file ? `${FILE_REF_PREFIX}${file}` : null;
 }
 
 /**
@@ -869,64 +929,332 @@ function isEmptyAfterStrip(el: Element): boolean {
   return el.textContent.trim() === '' && el.querySelector(CONTENT_TAGS) === null;
 }
 
+/** Remove a picture and every wrapper it leaves empty (#204). */
+function removeWithEmptyWrappers(img: Element, body: HTMLElement): void {
+  let parent = img.parentElement;
+  img.remove();
+  while (parent && parent !== body && isEmptyAfterStrip(parent)) {
+    const next: HTMLElement | null = parent.parentElement;
+    parent.remove();
+    parent = next;
+  }
+}
+
+/** Wrappers a picture may be lifted out of. A table cell, a list item or a
+ *  quote is structure: lifting through one would move the picture out of it. */
+const DISPOSABLE_WRAPPERS = new Set(['P', 'A', 'SPAN', 'DIV', 'FIGURE', 'PICTURE', 'CENTER', 'FONT', 'B', 'I', 'U', 'EM', 'STRONG']);
+
+/** Lift a picture out of wrappers that hold nothing else, so taking it out of
+ *  the document later leaves no empty paragraph behind (#204). */
+function hoistOutOfEmptyWrappers(img: Element, body: HTMLElement): void {
+  let parent = img.parentElement;
+  while (parent && parent !== body && DISPOSABLE_WRAPPERS.has(parent.tagName) && parent.textContent.trim() === '' && parent.querySelectorAll(CONTENT_TAGS).length === 1) {
+    parent.replaceWith(img);
+    parent = img.parentElement;
+  }
+}
+
+/** A 1 by 1 tag is a tracking pixel, not a picture anybody saw. */
+function isTrackingPixel(img: Element): boolean {
+  return img.getAttribute('width') === '1' || img.getAttribute('height') === '1'
+    || img.getAttribute('width') === '0' || img.getAttribute('height') === '0';
+}
+
+function srcsetUrls(img: Element, base: string): string[] {
+  const set = img.getAttribute('srcset');
+  if (!set) return [];
+  return set.split(',').flatMap((part) => {
+    const url = part.trim().split(/\s+/)[0];
+    if (!url) return [];
+    try { return [new URL(url, base).href]; } catch { return []; }
+  });
+}
+
+type SanitizeOptions = {
+  /** This editor may store pictures in the encrypted store. False in a
+   *  Markdown folder note, where every foreign picture is removed. */
+  store?: boolean;
+  /** Keep the report of this call for the paste handlers. */
+  report?: boolean;
+  /** Take `https:` pictures from Safari's web archive. Defaults to the build. */
+  archive?: boolean;
+  /** Our own object URL to its ref. Tests pass a fake. */
+  lookup?: (url: string) => string | null;
+};
+
 /**
- * Strip <img> tags with non-pn: sources from pasted HTML, along with any
- * wrapper they leave behind empty. This is the safety net that prevents
- * broken image placeholders when the paste handler can't recover the actual
- * image data (e.g. blob: URLs from WhatsApp or other cross-origin apps).
+ * Sort the `<img>` tags of pasted HTML. Ours stay. With `store` on, our own
+ * object URL becomes its stored ref (#317), and a picture whose bytes the app
+ * can reach without the network becomes a pending picture. Everything else is
+ * removed, along with any wrapper it leaves behind empty.
  *
  * Removing the tag alone is not enough, and that is GitHub #204: an image
  * that was the only thing in its block leaves `<p></p>` behind, ProseMirror
  * reads that as an empty paragraph, and ParagraphWithMarkdown then writes it
- * to the note as `&nbsp;` (the encoding that lets deliberate blank lines
- * survive the markdown round-trip - see #101). The reporter saw one extra
- * blank line per stripped image and had to delete them by hand. It looked
- * source-dependent and unreproducible because it needs an image ALONE in its
- * block: an inline image beside text leaves the text behind, and a tracking
- * pixel outside any block leaves nothing to empty.
+ * to the note as `&nbsp;`. Web content wraps images in links
+ * (`<p><a><img></a></p>`), so the walk goes up through every ancestor the
+ * removal empties. Elements carrying `<br>` are left alone, so a blank line
+ * the user actually copied is never eaten.
  *
- * The walk up the ancestors matters as much as the removal: web content wraps
- * images in links (`<p><a><img></a></p>`), so stripping only the image leaves
- * an empty `<a>` inside the paragraph, which still parses as an empty
- * paragraph. Elements carrying `<br>` are deliberately left alone, so a blank
- * line the user actually copied is never eaten.
+ * Pastes with no image to sort return the original string untouched, which
+ * keeps every other paste byte-identical.
  *
- * Pastes with no strippable image return the original string untouched, which
- * keeps every other paste byte-identical to before.
- *
- * Spec: GitHub #67 (images pasted from WhatsApp show broken previews),
- * GitHub #204 (extra blank line per pasted image)
+ * Spec: GitHub #67, #204, #239; ops/docs/plans/paste-pictures.md (section 3.2)
  */
-export function sanitizePastedHtml(html: string): string {
+export function sanitizePastedHtml(html: string, opts: SanitizeOptions = {}): string {
+  if (opts.report) {
+    // A source still here was never claimed by a placeholder: its paste went
+    // another way (an attachment, a refused fit). Drop it, `data:` text and
+    // all, so nothing stale can be matched later.
+    pendingSources.clear();
+    lastReport = null;
+  }
   if (!/<img/i.test(html)) return html;
+  const lookup = opts.lookup ?? refForObjectUrl;
+  const archive = opts.archive ?? READS_WEB_ARCHIVE;
   const doc = new DOMParser().parseFromString(html, 'text/html');
-  const strays = Array.from(doc.querySelectorAll('img')).filter((img) => {
+  const report: PasteReport = { open: 0, leftOut: 0, settled: false };
+  let changed = false;
+
+  for (const img of Array.from(doc.querySelectorAll('img'))) {
     // Either carrier counts as ours: markdown-it hands us the ref in `src`,
     // while the clipboard carries it in the data attribute renderHTML wrote
-    // (its `src` is the placeholder GIF). Reading only `src` made a copied
-    // image a stray and dropped it on paste. Fix: GitHub #239
+    // (its `src` is the placeholder GIF). Fix: GitHub #239
     const ref = img.getAttribute(IMAGE_REF_ATTR) ?? img.getAttribute('src') ?? '';
-    if (isBlobRef(ref)) return false;
-    // A root-relative path is ours too: that is how the starter notes ship
-    // their pictures. It is same-origin and already on the page, so there is
-    // nothing to recover and nothing to strip - and dropping it meant a seed
-    // image could not be moved around its own note either. A copy from a web
-    // page never looks like this: browsers absolutize every src on the way to
-    // the clipboard.
-    return !(ref.startsWith('/') && !ref.startsWith('//'));
-  });
-  if (strays.length === 0) return html;
+    if (isBlobRef(ref)) continue;
+    // A root-relative path is ours too: the starter notes ship their pictures
+    // that way. A copy from a web page never looks like this, because
+    // browsers absolutize every src on the way to the clipboard.
+    if (ref.startsWith('/') && !ref.startsWith('//')) continue;
 
-  for (const img of strays) {
-    let parent = img.parentElement;
-    img.remove();
-    while (parent && parent !== doc.body && isEmptyAfterStrip(parent)) {
-      const next: HTMLElement | null = parent.parentElement;
-      parent.remove();
-      parent = next;
+    if (opts.store) {
+      const own = lookup(ref);
+      if (own) {
+        img.setAttribute(IMAGE_REF_ATTR, own);
+        changed = true;
+        continue;
+      }
+      const local = ref.startsWith('data:') || ref.startsWith('blob:');
+      const viaArchive = !local && archive && /^https?:\/\//i.test(ref);
+      if ((local || viaArchive) && !isTrackingPixel(img) && report.open < MAX_PICTURES_PER_PASTE) {
+        // Unguessable, so a `pn:pending/` written into a body by hand claims nothing.
+        const id = crypto.randomUUID();
+        pendingSources.set(id, {
+          src: ref,
+          alt: img.getAttribute('alt') ?? '',
+          srcset: viaArchive ? srcsetUrls(img, ref) : [],
+          viaArchive,
+          report,
+        });
+        report.open += 1;
+        img.setAttribute('src', `${PENDING_PREFIX}${id}`);
+        img.removeAttribute('srcset');
+        hoistOutOfEmptyWrappers(img, doc.body);
+        changed = true;
+        continue;
+      }
+    }
+
+    if (!isTrackingPixel(img)) report.leftOut += 1;
+    removeWithEmptyWrappers(img, doc.body);
+    changed = true;
+  }
+
+  if (opts.report && (report.open > 0 || report.leftOut > 0)) lastReport = report;
+  return changed ? doc.body.innerHTML : html;
+}
+
+/** Tell the reader once, when every picture of a paste has settled. */
+function settleReport(report: PasteReport): void {
+  if (report.settled || report.open > 0) return;
+  report.settled = true;
+  if (report.leftOut > 0) _uploadContext?.onNotice?.(i18n.t('media:image.picturesLeftOut'));
+}
+
+/** The paste went another way (picture files): its HTML pictures are moot. */
+function dropLastReport(): void {
+  const report = lastReport;
+  lastReport = null;
+  if (!report) return;
+  report.settled = true;
+  for (const [id, source] of pendingSources) if (source.report === report) pendingSources.delete(id);
+}
+
+/** The HTML path pastes: settle the report now if nothing is still coming. */
+function releaseLastReport(): void {
+  const report = lastReport;
+  lastReport = null;
+  if (report) settleReport(report);
+}
+
+/**
+ * Whether the HTML of a clipboard that also holds picture files should paste
+ * instead of the files: it names a picture we already hold (#317), or it
+ * carries text, which a picture of the selection would lose.
+ */
+function htmlBeatsFiles(html: string): boolean {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  if (Array.from(doc.querySelectorAll('img')).some((img) => refForObjectUrl(img.getAttribute('src') ?? ''))) return true;
+  return doc.body.textContent.trim() !== '';
+}
+
+function imageFilesOf(items: DataTransferItemList | undefined): File[] {
+  const files: File[] = [];
+  for (const item of Array.from(items ?? [])) {
+    if (item.type.startsWith('image/')) {
+      const file = item.getAsFile();
+      if (file) files.push(file);
     }
   }
-  return doc.body.innerHTML;
+  return files;
+}
+
+/** One picture of Safari's web archive, as the native command returns it. */
+type ArchivePicture = { url: string; mime: string; data: string };
+
+async function readPasteboardPictures(): Promise<ArchivePicture[]> {
+  try {
+    const { invoke } = await import('@tauri-apps/api/core');
+    return await invoke<ArchivePicture[]>('pasteboard_pictures');
+  } catch {
+    return [];
+  }
+}
+
+function fileName(src: string, mime: string): string {
+  const ext = mime.split('/')[1]?.replace('jpeg', 'jpg').replace('svg+xml', 'svg') ?? 'png';
+  try {
+    const last = new URL(src).pathname.split('/').pop() ?? '';
+    if (/\.[a-z0-9]{2,5}$/i.test(last)) return decodeURIComponent(last);
+  } catch { /* not a URL with a path */ }
+  return `pasted-image.${ext}`;
+}
+
+/** The bytes of a `data:` or `blob:` picture, or null. */
+async function fetchLocalPicture(src: string): Promise<File | null> {
+  try {
+    const res = await fetch(src);
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    if (!blob.type.startsWith('image/')) return null;
+    return new File([blob], fileName(src, blob.type), { type: blob.type });
+  } catch {
+    return null;
+  }
+}
+
+function archiveFile(picture: ArchivePicture): File | null {
+  if (!picture.mime.startsWith('image/')) return null;
+  try {
+    const raw = atob(picture.data);
+    const bytes = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    return new File([bytes], fileName(picture.url, picture.mime), { type: picture.mime });
+  } catch {
+    return null;
+  }
+}
+
+/** False for a picture under 2 by 2 pixels: a page that loads its pictures
+ *  late puts a 1 by 1 GIF in `src`. Only a small file is decoded here, so a
+ *  large one reaches the upload checks before any decoder. A format the
+ *  browser cannot draw passes. */
+async function bigEnough(file: File): Promise<boolean> {
+  if (file.size > 4096) return true;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const ok = bitmap.width >= 2 && bitmap.height >= 2;
+    bitmap.close();
+    return ok;
+  } catch {
+    return true;
+  }
+}
+
+/** Editors that must never store a picture: Markdown folder notes. */
+const plaintextViews = new WeakSet<EditorView>();
+
+type PendingItem = { id: string; source: PendingSource };
+
+/** Fill the placeholders of one batch, in document order. */
+async function resolvePending(view: EditorView, items: PendingItem[]): Promise<void> {
+  const archiveItems = items.filter((item) => item.source.viaArchive);
+  const archive = archiveItems.length > 0 ? await readPasteboardPictures() : [];
+
+  for (const { id, source } of items) {
+    let file: File | null = null;
+    if (source.viaArchive) {
+      const want = [source.src, ...source.srcset];
+      // Only a matching address counts. The archive is the last Safari copy,
+      // and a drop carries its own pasteboard, so an order match could place
+      // a picture from another copy. WebKit stores one resource per address,
+      // so a picture shown twice matches the same entry twice; the upload's
+      // content hash then keeps one stored copy.
+      const match = archive.find((p) => want.includes(p.url));
+      if (match) file = archiveFile(match);
+    } else {
+      file = await fetchLocalPicture(source.src);
+    }
+
+    let counted = true;
+    if (file && !(await bigEnough(file))) {
+      file = null;
+      counted = false;
+    }
+
+    let stored: { uuid: string; name: string } | null = null;
+    if (file && !view.isDestroyed && !plaintextViews.has(view)) {
+      stored = await storePicture(file, currentImageOptions());
+      // storePicture already told the reader why it refused.
+      counted = false;
+    }
+    if (!view.isDestroyed) {
+      const pos = findPlaceholderPos(view, id);
+      removePlaceholder(view, id);
+      if (stored && pos !== null) {
+        placeAtPlaceholder(view, `${IMAGE_URI_PREFIX}${stored.uuid}`, source.alt || stored.name, pos);
+      }
+    }
+    if (!stored && counted) source.report.leftOut += 1;
+    source.report.open -= 1;
+    settleReport(source.report);
+  }
+}
+
+/**
+ * Put a pasted picture exactly where its pending node was. That position sits
+ * between two blocks, inside a table cell or a list item as often as at the
+ * top level, so the caret rules of `placeImage` (after the current block)
+ * would move it. A position that later edits pushed into text falls back to
+ * those rules.
+ */
+function placeAtPlaceholder(view: EditorView, src: string, alt: string, pos: number): void {
+  const { schema, doc } = view.state;
+  const imageNode = schema.nodes['image'];
+  if (!imageNode) return;
+  const at = Math.min(pos, doc.content.size);
+  const $pos = doc.resolve(at);
+  if ($pos.parent.inlineContent) {
+    placeImage(view, src, alt, at);
+    return;
+  }
+  view.dispatch(view.state.tr.insert(at, imageNode.create({ src, alt })));
+}
+
+/** True when a transaction inserts content that holds a pending picture. */
+function insertsPending(tr: Transaction): boolean {
+  if (!tr.docChanged) return false;
+  return tr.steps.some((step) => {
+    const slice = (step as { slice?: Slice }).slice;
+    if (!slice) return false;
+    let hit = false;
+    slice.content.descendants((node) => {
+      if (hit) return false;
+      if (node.type.name === 'image' && String(node.attrs['src'] ?? '').startsWith(PENDING_PREFIX)) hit = true;
+      return !hit;
+    });
+    return hit;
+  });
 }
 
 // ------------------------------------------------------------------
@@ -934,6 +1262,11 @@ export function sanitizePastedHtml(html: string): string {
 // ------------------------------------------------------------------
 
 const imageUploadPluginKey = new PluginKey('imageUpload');
+
+type PlaceholderMeta =
+  | { type: 'add'; id: string; pos: number; fileName: string }
+  | { type: 'addPending'; items: { id: string; pos: number; fileName: string; source: PendingSource }[] }
+  | { type: 'remove'; id: string };
 
 function createPlaceholderWidget(fileName: string): HTMLElement {
   const el = document.createElement('div');
@@ -962,7 +1295,7 @@ function createPlaceholderWidget(fileName: string): HTMLElement {
   return el;
 }
 
-function createImageUploadPlugin() {
+function createImageUploadPlugin(plaintextOnly: boolean) {
   return new Plugin({
     key: imageUploadPluginKey,
 
@@ -973,10 +1306,7 @@ function createImageUploadPlugin() {
       apply(tr, decoSet) {
         // Map existing decorations through document changes.
         decoSet = decoSet.map(tr.mapping, tr.doc);
-        const meta = tr.getMeta(imageUploadPluginKey) as
-          | { type: 'add'; id: string; pos: number; fileName: string }
-          | { type: 'remove'; id: string }
-          | undefined;
+        const meta = tr.getMeta(imageUploadPluginKey) as PlaceholderMeta | undefined;
         if (!meta) return decoSet;
         if (meta.type === 'add') {
           const widget = Decoration.widget(meta.pos, createPlaceholderWidget(meta.fileName), {
@@ -984,6 +1314,14 @@ function createImageUploadPlugin() {
             side: 1,
           });
           return decoSet.add(tr.doc, [widget]);
+        }
+        if (meta.type === 'addPending') {
+          return decoSet.add(tr.doc, meta.items.map((item) =>
+            Decoration.widget(item.pos, createPlaceholderWidget(item.fileName), {
+              id: item.id,
+              side: 1,
+              pending: item.source,
+            })));
         }
         if (meta.type === 'remove') {
           const toRemove = decoSet.find(undefined, undefined, (spec) => spec.id === meta.id);
@@ -993,17 +1331,78 @@ function createImageUploadPlugin() {
       },
     },
 
+    // Swap every pending picture a paste or a drop inserted for an upload
+    // placeholder at the same place, in the same dispatch, so the view never
+    // draws one and no save ever sees one. It keys on the inserted content,
+    // not on a paste meta, because a drop runs the same sanitizer.
+    appendTransaction(transactions, _oldState, state) {
+      if (!transactions.some(insertsPending)) return null;
+      const found: { pos: number; node: ProseMirrorNode }[] = [];
+      state.doc.descendants((node, pos) => {
+        if (node.type.name === 'image' && String(node.attrs['src'] ?? '').startsWith(PENDING_PREFIX)) {
+          found.push({ pos, node });
+        }
+      });
+      if (found.length === 0) return null;
+      const tr = state.tr;
+      const marks: { after: number; pos: number; id: string; source: PendingSource | undefined }[] = [];
+      for (let i = found.length - 1; i >= 0; i--) {
+        const { pos, node } = found[i]!;
+        tr.delete(pos, pos + node.nodeSize);
+        const id = String(node.attrs['src']).slice(PENDING_PREFIX.length);
+        const source = pendingSources.get(id);
+        pendingSources.delete(id);
+        marks.push({ after: tr.steps.length, pos, id, source });
+      }
+      const items: { id: string; pos: number; fileName: string; source: PendingSource }[] = [];
+      for (const mark of marks.reverse()) {
+        if (!mark.source) continue;
+        items.push({
+          id: `upload-${++_placeholderId}`,
+          pos: tr.mapping.slice(mark.after).map(mark.pos),
+          fileName: mark.source.alt || fileName(mark.source.src, 'image/png'),
+          source: mark.source,
+        });
+      }
+      if (items.length > 0) tr.setMeta(imageUploadPluginKey, { type: 'addPending', items } satisfies PlaceholderMeta);
+      return tr;
+    },
+
+    view(editorView) {
+      if (plaintextOnly) plaintextViews.add(editorView);
+      const started = new Set<string>();
+      return {
+        update(view) {
+          const decos = imageUploadPluginKey.getState(view.state) as DecorationSet | undefined;
+          const fresh = decos?.find(undefined, undefined, (spec) => !!spec.pending && !started.has(spec.id)) ?? [];
+          if (fresh.length === 0) return;
+          const items = fresh
+            .sort((a, b) => a.from - b.from)
+            .map((deco) => ({ id: deco.spec.id as string, source: deco.spec.pending as PendingSource }));
+          for (const item of items) started.add(item.id);
+          void resolvePending(view, items).finally(() => {
+            for (const item of items) started.delete(item.id);
+          });
+        },
+      };
+    },
+
     props: {
       decorations(state) {
         return imageUploadPluginKey.getState(state) as DecorationSet;
       },
 
       handleDrop(view, event) {
-        if (!event.dataTransfer?.files?.length) return false;
+        if (!event.dataTransfer?.files?.length) {
+          releaseLastReport();
+          return false;
+        }
         const files = Array.from(event.dataTransfer.files).filter((f) =>
           looksLikeImage(f),
         );
         if (files.length === 0) return false;
+        if (plaintextViews.has(view)) return false;
+        dropLastReport();
 
         event.preventDefault();
         const pos = view.posAtCoords({
@@ -1018,50 +1417,26 @@ function createImageUploadPlugin() {
         return true;
       },
 
+      // ProseMirror has already run the sanitizer when this is called, so its
+      // report of the HTML pictures is in `lastReport`. Picture files win only
+      // when the HTML holds nothing but the picture: Chrome's "Copy image"
+      // writes an `<img>` beside the PNG, while an app that adds a picture of
+      // the whole selection also writes its text, which a picture would lose.
       handlePaste(view, event) {
-        const items = event.clipboardData?.items;
-        if (!items) return false;
-
-        const imageFiles: File[] = [];
-        for (const item of Array.from(items)) {
-          if (item.type.startsWith('image/')) {
-            const file = item.getAsFile();
-            if (file) imageFiles.push(file);
-          }
-        }
-
-        if (imageFiles.length > 0) {
+        const data = event.clipboardData;
+        if (!data) return false;
+        const html = data.getData('text/html');
+        const files = imageFilesOf(data.items);
+        if (files.length > 0 && !(html && htmlBeatsFiles(html)) && !plaintextViews.has(view)) {
+          dropLastReport();
           event.preventDefault();
           const pos = view.state.selection.from;
-          for (const file of imageFiles) {
+          for (const file of files) {
             void handleImageUpload(file, view, pos);
           }
           return true;
         }
-
-        // No image/* clipboard items - check if the HTML contains <img>
-        // tags (e.g. paste from WhatsApp, Telegram, or other chat apps
-        // that put blob:/data: URLs in clipboard HTML). Try to fetch
-        // each image and upload it through our pipeline.
-        const html = event.clipboardData?.getData('text/html');
-        if (html) {
-          const imgSrcs = extractImgSrcsFromHtml(html);
-          if (imgSrcs.length > 0) {
-            const pos = view.state.selection.from;
-            // Fire-and-forget: try to recover images from HTML URLs.
-            // blob: URLs from other origins will fail silently - the
-            // transformPastedHTML safety net strips those <img> tags
-            // so they never become broken nodes.
-            for (const src of imgSrcs) {
-              void fetchImageFromUrl(src).then((file) => {
-                if (file) void handleImageUpload(file, view, pos);
-              });
-            }
-            // Don't prevent default - let the sanitized HTML (text
-            // without images) paste normally via transformPastedHTML.
-          }
-        }
-
+        releaseLastReport();
         return false;
       },
     },
@@ -1072,7 +1447,7 @@ function createImageUploadPlugin() {
 // TipTap Extension
 // ------------------------------------------------------------------
 
-export const EncryptedImage = Node.create({
+export const EncryptedImage = Node.create<{ plaintextOnly: boolean }>({
   name: 'image',
   group: 'block',
   atom: true,
@@ -1142,8 +1517,14 @@ export const EncryptedImage = Node.create({
     return ReactNodeViewRenderer(EncryptedImageView as never);
   },
 
+  addOptions() {
+    // True in a Markdown folder note: no picture from a paste, a drop or the
+    // toolbar may go to the encrypted store there.
+    return { plaintextOnly: false };
+  },
+
   addProseMirrorPlugins() {
-    return [createImageUploadPlugin()];
+    return [createImageUploadPlugin(this.options.plaintextOnly)];
   },
 
   addStorage() {
@@ -1159,6 +1540,10 @@ export const EncryptedImage = Node.create({
             attrs: { src: string; alt: string; title: string; width: number; textAlign?: string };
           },
         ) {
+          // A pending picture is a paste on its way to the store, never part
+          // of the note. The swap in appendTransaction removes it first; this
+          // is the second wall.
+          if ((node.attrs.src || '').startsWith(PENDING_PREFIX)) return;
           const alt = state.esc(node.attrs.alt || '');
           const src = state.esc(node.attrs.src || '');
           const title = node.attrs.title

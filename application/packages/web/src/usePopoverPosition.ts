@@ -13,10 +13,11 @@ interface PopoverPositionOptions {
   margin?: number;
   /**
    * Horizontal alignment to the trigger: 'start' aligns their left edges
-   * (default), 'end' aligns their right edges. Either way the popover then
+   * (default), 'end' aligns their right edges, 'center' centers the popover
+   * over the trigger. Either way the popover then
    * shifts inward so it never spills off a viewport edge.
    */
-  align?: 'start' | 'end';
+  align?: 'start' | 'end' | 'center';
 }
 
 /**
@@ -50,7 +51,7 @@ export function usePopoverPosition<A extends HTMLElement, P extends HTMLElement>
     const vh = window.innerHeight;
 
     // Horizontal: align to the trigger's chosen edge, then slide inward to fit.
-    let left = align === 'end' ? a.right - p.width : a.left;
+    let left = align === 'end' ? a.right - p.width : align === 'center' ? a.left + (a.width - p.width) / 2 : a.left;
     if (left + p.width > vw - margin) left = vw - p.width - margin;
     left = Math.max(margin, left);
 

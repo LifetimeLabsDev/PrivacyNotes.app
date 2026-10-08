@@ -54,12 +54,12 @@ title: Markdown 在這裡能做的一切
 
 中間那欄置中，最後一欄靠右。拖曳欄位邊界就能把它拉寬。
 
-## 提示框
+## 標註
 
-提示框是一個彩色方塊，用來放讀者不能錯過的東西。
+標註是一個彩色方塊，用來放讀者不能錯過的東西。
 
 > [!tip]+ 小提示
-> 點一下提示框的標題就能把它收起來。
+> 點一下標註的標題就能把它收起來。
 
 > [!warning]+ 注意
 > 每一種都有自己的顏色和圖示。
@@ -71,9 +71,13 @@ title: Markdown 在這裡能做的一切
 
 > 引用會從邊界往內縮，旁邊帶一條彩色的線。
 
+## 註腳
+
+註腳能把出處或補充說明放在正文之外。[^1] 在字後面輸入 `[^1]`，或在 **插入** 選單中選擇 **註腳**。按一下小數字就會跳到註腳。
+
 ## 程式碼
 
-程式碼會保留原本的空白，並依語言上色。
+程式碼會保留原本的空白，並依語言上色。區塊上方的名稱就是它的語言：點一下即可改選其他語言。
 
 ```js
 export function seal(note, key) {
@@ -86,6 +90,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+長的區塊打開時會先收合，讓筆記的其餘內容就在附近。下方的按鈕會顯示所有行。
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 句子中間的一小段程式碼，看起來會是這樣：`像這個`。
@@ -111,6 +156,12 @@ $$i\hbar\frac{\partial}{\partial t}\Psi = \hat{H}\Psi$$
 
 兩種在工具列都有按鈕。鎖鏈圖示做的是網頁連結。方括號做的是筆記連結：會列出你的筆記，你挑要指向哪一則。打 `[[` 也一樣。
 
+筆記連結不一定要顯示成筆記的標題。輸入標題、一條直線，再輸入你想顯示在頁面上的文字：[[你的筆記如何受到保護|這幾個字]] 就會打開那則筆記。
+
+筆記連結也能在筆記的某個標題處打開它。在筆記標題後輸入 `#`，再挑選標題：[[你的筆記如何受到保護#誰握有你的鑰匙]] 會在鑰匙那一節打開這則筆記。大綱裡標題旁的連結圖示，可以幫你複製這種連結。
+
 ---
 
 *如果你本來就寫 Markdown，直接打就好，邊打邊套用格式。想看任何一則筆記背後的原始文字，點這則筆記右下角的 **顯示 Markdown**。*
+
+[^1]: 這就是註腳。旁邊的箭頭會帶你回到上方。

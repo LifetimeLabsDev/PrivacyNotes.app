@@ -4,7 +4,6 @@ import { Check, Copy, Eye, EyeSlash, FloppyDisk, Info, Key, Lock, NotePencil, Sh
 import { hasPin } from './pin';
 import { PinInfoModal } from './PinInfoModal';
 import { HoverLabel } from './HoverLabel';
-import { exemptOpts } from './i18nExempt';
 import { useCopyToClipboard } from './clipboard';
 import { PasswordField } from './PasswordText';
 import { FIELD_BUTTON, FIELD_CLASS, FieldLabel } from './formFields';
@@ -55,7 +54,9 @@ function extractKeyComment(pubKey: string): string {
  * OpenSSH format for copy-paste convenience.
  * ──────────────────────────────────────────────────────────────── */
 
-async function generateEd25519Pair(): Promise<{ privateKey: string; publicKey: string } | null> {
+/** The key comment runs to the end of the line, so the label is folded onto one line. An
+ *  empty label writes no comment, which is still a valid public key. */
+export async function generateEd25519Pair(label: string): Promise<{ privateKey: string; publicKey: string } | null> {
   try {
     const kp = await crypto.subtle.generateKey(
       'Ed25519' as unknown as AlgorithmIdentifier, true, ['sign', 'verify']
@@ -63,7 +64,7 @@ async function generateEd25519Pair(): Promise<{ privateKey: string; publicKey: s
     const privRaw = await crypto.subtle.exportKey('pkcs8', kp.privateKey);
     const pubRaw = await crypto.subtle.exportKey('raw', kp.publicKey);
 
-    // OpenSSH public key format: ssh-ed25519 <base64(len+type + len+pubkey)> generated
+    // OpenSSH public key format: ssh-ed25519 <base64(len+type + len+pubkey)> [comment]
     const pubBytes = new Uint8Array(pubRaw);
     const typeStr = 'ssh-ed25519';
     const typeBytes = new TextEncoder().encode(typeStr);
@@ -76,7 +77,8 @@ async function generateEd25519Pair(): Promise<{ privateKey: string; publicKey: s
     view.setUint32(offset, pubBytes.length); offset += 4;
     new Uint8Array(buf, offset, pubBytes.length).set(pubBytes);
     const pubB64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
-    const publicKey = `ssh-ed25519 ${pubB64} generated`;
+    const comment = label.trim().replace(/\s+/g, ' ');
+    const publicKey = comment ? `ssh-ed25519 ${pubB64} ${comment}` : `ssh-ed25519 ${pubB64}`;
 
     // PEM private key (PKCS#8)
     const privB64 = btoa(String.fromCharCode(...new Uint8Array(privRaw)));
@@ -177,7 +179,7 @@ export function SshKeyForm({
   const handleGenerate = useCallback(async () => {
     setGenerating(true);
     setGenError('');
-    const result = await generateEd25519Pair();
+    const result = await generateEd25519Pair(data.label);
     if (result) {
       updateBody({ privateKey: result.privateKey, publicKey: result.publicKey });
       if (!title.trim()) {
@@ -188,7 +190,7 @@ export function SshKeyForm({
       setGenError('Ed25519 not supported in this browser. Paste your keys manually.');
     }
     setGenerating(false);
-  }, [noteId, title, onTitleChange, updateBody]);
+  }, [noteId, title, data.label, onTitleChange, updateBody]);
 
   const fieldClass = FIELD_CLASS;
 
@@ -217,18 +219,18 @@ export function SshKeyForm({
             type="button"
             onClick={() => void handleGenerate()}
             disabled={generating}
-            className="text-xs px-3 py-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-medium transition disabled:opacity-50"
+            className="text-xs px-3 py-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-medium transition disabled:opacity-50"
           >
             {generating ? 'Generating...' : 'Generate Ed25519 Key Pair'}
           </button>
         )}
         {genError && (
-          <div className="text-xs text-amber-600 dark:text-amber-400">{genError}</div>
+          <div className="text-xs text-warning">{genError}</div>
         )}
 
         {/* Public Key */}
         <div>
-          <FieldLabel icon={<Key size={13} />}>{t('sshKeyForm.publicKey', exemptOpts('common:sshKeyForm.publicKey'))}</FieldLabel>
+          <FieldLabel icon={<Key size={13} />}>{t('sshKeyForm.publicKey')}</FieldLabel>
           <div className="flex gap-1.5 items-start">
             <textarea
               value={data.publicKey}
@@ -249,7 +251,7 @@ export function SshKeyForm({
 
         {/* Private Key */}
         <div>
-          <FieldLabel icon={<Lock size={13} />}>{t('sshKeyForm.privateKey', exemptOpts('common:sshKeyForm.privateKey'))}</FieldLabel>
+          <FieldLabel icon={<Lock size={13} />}>{t('sshKeyForm.privateKey')}</FieldLabel>
           <div className="flex gap-1.5 items-start">
             <div className="flex-1 min-w-0">
               {showPrivate ? (
@@ -262,7 +264,7 @@ export function SshKeyForm({
                 />
               ) : (
                 <div
-                  className={`${fieldClass} font-mono text-xs cursor-pointer min-h-[4rem] flex items-center justify-center text-neutral-400`}
+                  className={`${fieldClass} font-mono text-xs cursor-pointer min-h-[4rem] flex items-center justify-center text-pn-muted`}
                   onClick={() => setShowPrivate(true)}
                 >
                   {data.privateKey ? 'Click to reveal private key' : 'No private key stored'}
@@ -343,7 +345,7 @@ export function SshKeyForm({
             disabled={!pinConfigured && !pinProtected}
             className="rounded accent-accent"
           />
-          <span className="text-sm text-neutral-600 dark:text-neutral-400">
+          <span className="text-sm text-pn-muted">
             {t('sshKeyForm.requirePin')}
           </span>
           <button
@@ -358,14 +360,14 @@ export function SshKeyForm({
 
         {showPinInfo && <PinInfoModal onClose={() => setShowPinInfo(false)} />}
         {!pinConfigured && !pinProtected && (
-          <p className="text-[11px] text-neutral-400 dark:text-neutral-500 -mt-2">
+          <p className="text-[11px] text-pn-muted -mt-2">
             {t('sshKeyForm.setUpPinFirst')}
           </p>
         )}
 
         {/* Save / Cancel */}
         {saveError && (
-          <p className="text-[11px] text-red-600 dark:text-red-400">{saveError}</p>
+          <p className="text-[11px] text-danger">{saveError}</p>
         )}
         {!locked && (
           <div className="flex gap-2 -mt-2">
@@ -373,7 +375,7 @@ export function SshKeyForm({
               <button
                 type="button"
                 onClick={onCancel}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium border border-divider text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-surface-1 transition"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium border border-divider text-pn-muted hover:bg-pn/5 transition"
               >
                 {t('actions.cancel')}
               </button>
@@ -381,7 +383,7 @@ export function SshKeyForm({
             <button
               type="button"
               onClick={onSave}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-accent text-white hover:bg-accent-hover transition"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-accent-fill text-white hover:bg-accent-fill-hover transition"
             >
               <FloppyDisk />
               {t('actions.save')}

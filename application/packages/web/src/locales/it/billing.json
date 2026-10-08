@@ -8,7 +8,7 @@
     "ctaOpening": "Apertura del pagamento...",
     "ctaSignUp": "Registrati per sbloccare",
     "intro": {
-      "storage": "Caricamenti più grandi e più spazio sono una funzione Pro. Passa a Pro per file da 50 MB e 500 MB di spazio.",
+      "storage": "Più spazio è una funzione Pro: 500 MB di spazio, 50 MB per file e fino a 5 GB di spazio aggiuntivo quando ti serve.",
       "folders": "Le cartelle sono una funzione Pro. Organizza le tue note in cartelle nidificate, profonde quanto ti serve, e tieni ogni progetto separato.",
       "looks": "Le icone e i colori di cartelle e tag sono una funzione Pro. Dai a ciascuno un aspetto riconoscibile a colpo d'occhio.",
       "lock": "Bloccare una nota è una funzione Pro. Passa a Pro per proteggere qualsiasi nota dalle modifiche accidentali.",
@@ -30,7 +30,7 @@
       "history": "Cronologia completa delle note, ripristina in qualsiasi momento",
       "themes": "Temi premium in ogni sfumatura",
       "zen": "Modalità Zen, scrittura senza distrazioni",
-      "storage": "500 MB di spazio + 50 MB di allegati"
+      "storage": "500 MB di spazio, fino a 5,5 GB con lo spazio aggiuntivo"
     },
     "comparisonBeta": "Paga ${{earlyPrice}} una volta. Obsidian Sync costa $48/anno, ogni anno. Standard Notes costa $90/anno. Prezzo early adopter, bloccato prima che salga a ${{proPrice}}.",
     "comparison": "Paga ${{proPrice}} una volta e tienilo per sempre. Obsidian Sync costa $48/anno e Standard Notes $90/anno, ogni singolo anno."
@@ -47,7 +47,7 @@
     "benefitDevices": "Dispositivi illimitati",
     "benefitDevicesSub": "Telefono, tablet, portatile, tutto sincronizzato",
     "benefitStorage": "500 MB di spazio",
-    "benefitStorageSub": "10 volte il piano gratuito, espandibile",
+    "benefitStorageSub": "10 volte il piano gratuito. Aggiungi fino a 5 GB in più quando ti servono",
     "benefitMore": "Più funzioni",
     "benefitMoreSub": "Cronologia note, cartelle, modalità zen",
     "benefitRoom": "{{gb}} GB di spazio in più",

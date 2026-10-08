@@ -32,8 +32,8 @@
   },
   "contactImport": {
     "photosLabel": "Fotoğrafları içe aktar",
-    "photosDesc_one": "{{count}} fotoğraf, uygulama küçülttükten sonra yaklaşık {{size}}. Bu, boş olan {{free}} alanın %{{pct}}'i.",
-    "photosDesc_other": "{{count}} fotoğraf, uygulama küçülttükten sonra yaklaşık {{size}}. Bu, boş olan {{free}} alanın %{{pct}}'i.",
+    "photosDesc_one": "{{count}} fotoğraf, uygulama küçülttükten sonra yaklaşık {{size}}. Bu, boş olan {{free}} alanın %{{pct}} kadarı.",
+    "photosDesc_other": "{{count}} fotoğraf, uygulama küçülttükten sonra yaklaşık {{size}}. Bu, boş olan {{free}} alanın %{{pct}} kadarı.",
     "photosDescNoQuota_one": "{{count}} fotoğraf, uygulama küçülttükten sonra yaklaşık {{size}}.",
     "photosDescNoQuota_other": "{{count}} fotoğraf, uygulama küçülttükten sonra yaklaşık {{size}}.",
     "photosTooBig_one": "Fotoğraf için yeterli alan yok ({{size}}), bu yüzden dışarıda bırakılır. Diğer her şey aktarılır. {{shortfall}} boşaltın veya depolama ekleyin, sonra getirmek için yeniden içe aktarın.",
@@ -49,7 +49,7 @@
     "standardNotes": "Standard Notes'tan alınmış şifresi çözülmüş .zip veya .txt yedeği (Dosya > Dışa Aktar > Şifresi Çözülmüş).",
     "obsidian": "Obsidian kasası .zip olarak. Etiketleri, [[note link]] bağlantılarını, klasör yapısını, metin içi #etiketleri ve gömülü görsel ile dosyaları korur.",
     "notesnook": "Notesnook dışa aktarımı .zip olarak. Biçimlendirmeyi, not defterlerini, etiketleri ve ekleri korumak için dışa aktarırken HTML seçin.",
-    "joplin": "File > Export all > \"JEX - Joplin Export File\" ile alınan .jex dosyası. Not defterleri klasöre dönüşür; etiketler, yapılacaklar, note-link'ler ve ekler de gelir.",
+    "joplin": "File > Export all > \"JEX - Joplin Export File\" ile alınan .jex dosyası. Not defterleri klasöre dönüşür; etiketler, yapılacaklar, not bağlantıları ve ekler de gelir.",
     "upnote": "UpNote'ta: Settings > Backup > Backup now, ardından yedek klasöründeki her şeyi zipleyin. Not defterlerini, etiketleri, sabitlemeleri, note-link'leri, biçimlendirmeyi ve ekleri korur. Telefon uygulamalarından tekil not dışa aktarmaları da çalışır - \"Export to HTML\" seçin.",
     "markdownFolder": "Tek tek ya da bir .zip içinde .md veya .txt dosyaları. Ziplenmiş bir klasör alt klasörlerini korur, görsellerini ve eklerini de birlikte getirir.",
     "markdownApp": "Bu notlar zaten bir klasördeki Markdown dosyaları. Klasörü .zip olarak bırakın; alt klasörleri, görselleri ve #etiketleri de birlikte gelsin.",
@@ -173,13 +173,14 @@
     "missingNotFound_other": "{{items}} ne bu cihazda ne de sunucuda var, bu yüzden dışa aktarmanızda yok."
   },
   "missing": {
-    "pictures_one": "{{count}} resim",
-    "pictures_other": "{{count}} resim",
+    "pictures_one": "{{count}} görsel",
+    "pictures_other": "{{count}} görsel",
     "files_one": "{{count}} dosya",
     "files_other": "{{count}} dosya",
     "both": "{{pictures}} ve {{files}}"
   },
   "upload": {
+    "discard": "At",
     "completeTitle": "Yükleme tamamlandı",
     "failedTitle": "Yükleme başarısız oldu",
     "partialTitle": "{{done}} yüklendi, {{failed}} başarısız",
@@ -189,6 +190,10 @@
     "statusFailed": "Başarısız",
     "errorStorageFull": "Depolama dolu - bu dosyayı yüklemek için yer açın veya depolama ekleyin.",
     "errorStorageFullKept": "Depolamanıza sığmıyor - bu cihazda tutuldu. Yer açılınca eşitlenecek.",
+    "errorTooLarge": "Dosya çok büyük ({{size}}). En fazla {{limit}} MB.",
+    "errorTooLargeFree": "Dosya çok büyük ({{size}}). Ücretsiz planda en fazla {{limit}} MB.",
+    "batchTitle_one": "{{count}} dosya",
+    "batchTitle_other": "{{count}} dosya",
     "statusUploading": "Yükleniyor...",
     "statusWaiting": "Bekliyor",
     "summaryDone": "{{count}} tamam",
@@ -209,5 +214,11 @@
   },
   "saveErrors": {
     "shortWrite": "{{expected}} baytın yalnızca {{written}} baytı kaydedildi, yani dosya eksik. Tekrar deneyin ve bir bulut klasörü yerine cihazınızın kendi depolamasına kaydedin."
+  },
+  "shareSheet": {
+    "title_one": "PrivacyNotes ile {{count}} öğe paylaşıldı",
+    "title_other": "PrivacyNotes ile {{count}} öğe paylaşıldı",
+    "line": "Siz seçene kadar hiçbir şey kaydedilmez.",
+    "saveAll": "Tümünü kaydet"
   }
 }

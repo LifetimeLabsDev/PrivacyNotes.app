@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss } from './static-page-theme.ts';
 import { SEARCH_CORE_SCRIPT_TAG } from './search-core-script.ts';
 import { foldText } from './src/textFold.ts';
+import { loadShots, type Shot } from './changelog-shots.ts';
 import { brandMark, BUG_ICON, CHROME_CSS, LINK_ICON, OG_IMAGE_TAGS, ogLocaleTag, RSS_ICON, SITE_FOOTER, siteNav, TEXT_ICON } from './static-page-chrome.ts';
 
 // Pre-renders a static /changelog page from the single source of
@@ -21,8 +22,8 @@ import { brandMark, BUG_ICON, CHROME_CSS, LINK_ICON, OG_IMAGE_TAGS, ogLocaleTag,
 //
 // EVERY release is in the DOM, always. The 25-at-a-time reveal is done by
 // hiding, never by truncating at build time, so a reader without JS and a
-// crawler both get the complete history - and so a #v0.180 permalink can be
-// expanded to instead of 404ing into a collapsed list.
+// crawler both get the complete history. The release ids stay on the page,
+// but nothing we publish links to one: every link points at /changelog.
 //
 // The page ships zero inline scripts: the deployed CSP allows
 // 'unsafe-inline' for style-src but NOT script-src, so inline <script>
@@ -39,9 +40,9 @@ import { brandMark, BUG_ICON, CHROME_CSS, LINK_ICON, OG_IMAGE_TAGS, ogLocaleTag,
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CHANGELOG_SRC = path.resolve(__dirname, 'src/publicChangelog.ts');
-/** The release block's styles, shared with the in-app Changelog tab. Read
- *  per render so the dev server picks up an edit without a restart. */
-const RELEASE_CSS = path.resolve(__dirname, 'src/changelogRelease.css');
+/** The release block's styles. Read per render so the dev server picks up an
+ *  edit without a restart. */
+const RELEASE_CSS = path.resolve(__dirname, 'changelog-release.css');
 
 const ORIGIN = 'https://privacynotes.app';
 const FEED_PATH = '/changelog/feed.xml';
@@ -52,7 +53,7 @@ const MD_PATH = '/changelog.md';
 // Spec: ops/docs/ui-patterns.md section 58 (changelog rail + reveal)
 const PAGE_SIZE = 25;
 
-type ChangelogItem = { type: 'new' | 'improved' | 'fixed'; text: string };
+type ChangelogItem = { type: 'new' | 'improved' | 'fixed'; text: string; shot?: string | string[] };
 type ChangelogRelease = {
   version: string;
   date: string;
@@ -153,6 +154,52 @@ const CHEVRON_ICON =
 const STACK_ICON =
   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 12 12 17 21 12"/><polyline points="3 17 12 22 21 17"/><polygon points="12 2 3 7 12 12 21 7 12 2"/></svg>';
 
+const PHOTO_ICON =
+  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-8 8"/></svg>';
+
+/** Shots per release version; see changelog-shots.ts. */
+type ShotMap = Map<string, Shot[]>;
+
+/** Both theme copies of one picture. The dark copy, when there is one, is
+ *  swapped in by CSS so it follows the page's theme toggle as well as the
+ *  system setting. Both are lazy, because a hidden lazy image is never
+ *  fetched: an eager one would download the copy the reader cannot see. */
+function shotImgs(s: Shot, alt: string): string {
+  const attrs = ' loading="lazy" decoding="async"';
+  const light = `<img class="${s.dark ? 'sl' : ''}" src="${s.src}" width="${css(s.w)}" height="${css(s.h)}" alt="${esc(alt)}"${attrs}>`;
+  if (!s.dark) return light;
+  return `${light}<img class="sd" src="${s.dark.src}" width="${css(s.dark.w)}" height="${css(s.dark.h)}" alt="${esc(alt)}"${attrs}>`;
+}
+
+/** Shots are captured at 2x, so a picture's CSS size is half its pixels.
+ *  Drawn at that size it stays sharp; stretched to the column, a narrow
+ *  crop would be enlarged and go soft. */
+function css(px: number): number {
+  return Math.round(px / 2);
+}
+
+/** Hero (the first shot) and a thumbnail per shot when there is more than
+ *  one. No caption on the page: the item text it would repeat sits right
+ *  below, and the lightbox shows it. Every picture is a plain link to its
+ *  file, so the gallery works without JS; static-pages.js adds the swap and
+ *  the lightbox. */
+function renderGallery(shots: Shot[]): string {
+  const [first] = shots;
+  const thumbs =
+    shots.length > 1
+      ? `<div class="cl-thumbs">${shots
+          .map(
+            (s, i) =>
+              `<a class="cl-th${i === 0 ? ' on' : ''}" href="${s.src}" data-i="${i}" aria-label="${esc(`Screenshot ${i + 1}: ${s.alt}`)}">${shotImgs(s, '')}</a>`
+          )
+          .join('')}</div>`
+      : '';
+  const data = shots.map((s) => ({ src: s.src, dark: s.dark?.src ?? null, alt: s.alt }));
+  return `<div class="cl-gal" data-shots="${esc(JSON.stringify(data))}">
+<div class="cl-stage"><a class="cl-hero" href="${first.src}" data-i="0">${shotImgs(first, first.alt)}</a></div>${thumbs}
+</div>`;
+}
+
 const TYPE_ICON: Record<ChangelogItem['type'], string> = {
   new: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>',
   improved:
@@ -160,16 +207,22 @@ const TYPE_ICON: Record<ChangelogItem['type'], string> = {
   fixed: BUG_ICON.replace('width="15" height="15"', 'width="16" height="16"'),
 };
 
-function renderReleases(releases: ChangelogRelease[]): string {
+function renderReleases(releases: ChangelogRelease[], shotMap: ShotMap): string {
   let prevMonth: string | null = null;
   return releases
     .map((r, index) => {
+      const shots = shotMap.get(r.version) ?? [];
       const items = r.items
-        .map(
-          (it) =>
-            `<li class="item" data-t="${it.type}"><span class="tag tag-${it.type}">${LABEL[it.type]}</span><span class="txt">${esc(it.text)}</span></li>`
-        )
+        .map((it, i) => {
+          const n = shots.findIndex((s) => s.item === i);
+          const chip =
+            n < 0
+              ? ''
+              : ` <a class="shotchip" href="${shots[n].src}" data-i="${n}">${PHOTO_ICON}<span>Screenshot</span></a>`;
+          return `<li class="item" data-t="${it.type}"${n < 0 ? '' : ' data-shot'}><span class="tag tag-${it.type}">${LABEL[it.type]}</span><span class="txt">${esc(it.text)}${chip}</span></li>`;
+        })
         .join('');
+      const gallery = shots.length ? renderGallery(shots) : '';
       const key = monthKey(r.date);
       const month = fmtMonth(r.date);
       const monthHead =
@@ -180,7 +233,7 @@ function renderReleases(releases: ChangelogRelease[]): string {
       const latest = index === 0 ? '<span class="latest">Latest</span>' : '';
       return `${monthHead}<article class="release" id="v${esc(r.version)}" data-m="${key}" data-s="${esc(haystack(r))}">
 <div class="meta"><span class="vpill">v${esc(r.version)}</span><div class="date">${fmtDate(r.date)}</div>${latest}</div>
-<div class="body"><div class="rhead"><h3>${esc(r.title)}</h3><button type="button" class="perma" data-v="v${esc(r.version)}" aria-label="Copy link to v${esc(r.version)}" title="Copy link" hidden>${LINK_ICON}</button></div><ul class="items">${items}</ul></div>
+<div class="body"><div class="rhead"><h3>${esc(r.title)}</h3><button type="button" class="perma" data-v="v${esc(r.version)}" aria-label="Copy link to v${esc(r.version)}" title="Copy link" hidden>${LINK_ICON}</button></div>${gallery}<ul class="items">${items}</ul></div>
 </article>`;
     })
     .join('\n');
@@ -213,15 +266,21 @@ function monthIndex(releases: ChangelogRelease[]): Array<{ year: string; months:
   return years;
 }
 
-function renderRail(releases: ChangelogRelease[]): string {
+function renderRail(releases: ChangelogRelease[], shotMap: ShotMap): string {
   const counts = typeCounts(releases);
   const totalItems = TYPES.reduce((n, t) => n + counts[t], 0);
+  let shotItems = 0;
+  // Items, not pictures: one item can carry several shots, and the filter shows items.
+  for (const shots of shotMap.values()) shotItems += new Set(shots.map((x) => x.item)).size;
   const typeRows = [
     `<a class="ritem ct on" href="#" data-t="all">${STACK_ICON}<span class="rlbl">Everything</span><span class="rct">${totalItems}</span></a>`,
     ...TYPES.map(
       (t) =>
         `<a class="ritem ct" href="#" data-t="${t}">${TYPE_ICON[t]}<span class="rlbl">${LABEL[t]}</span><span class="rct">${counts[t]}</span></a>`
     ),
+    ...(shotItems
+      ? [`<a class="ritem ct" href="#" data-t="shots">${PHOTO_ICON.replace(/"14"/g, '"16"')}<span class="rlbl">With screenshots</span><span class="rct">${shotItems}</span></a>`]
+      : []),
   ].join('\n');
 
   // The type rows only mean anything with JS behind them, so they ship
@@ -283,6 +342,41 @@ const PAGE_CSS = `.cl-month{margin:30px 0 4px;scroll-margin-top:16px}
 .cl-origin{margin:34px 0 0;padding:22px 24px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
 .cl-origin .eyebrow{margin:0 0 10px}
 .cl-origin p{margin:0;font-size:15px;line-height:1.62;color:var(--muted)}
+/* Screenshots. The gallery sits between the title and the items; .sd is the
+   dark copy, swapped in by the same two selectors themeVarsCss uses. */
+.cl-gal{margin:0 0 18px}
+.cl-gal img{display:block;max-width:100%;height:auto;max-height:560px;object-fit:contain;border-radius:8px}
+.cl-gal .sd{display:none}
+:root[data-theme=dark] .cl-gal .sl{display:none}
+:root[data-theme=dark] .cl-gal .sd{display:block}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .cl-gal .sl{display:none}:root:not([data-theme=light]) .cl-gal .sd{display:block}}
+.cl-hero{display:flex;justify-content:center;align-items:center;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--rail);cursor:zoom-in}
+.cl-hero img{box-shadow:0 1px 2px rgba(0,0,0,.06),0 6px 20px rgba(0,0,0,.08)}
+.cl-thumbs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-top:12px}
+.cl-stage{position:relative}
+.cl-step{position:absolute;top:50%;margin-top:-20px;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg);cursor:pointer;opacity:.9;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.cl-step:hover{opacity:1;color:var(--accent);border-color:var(--accent)}
+.cl-step[hidden]{display:none}
+.cl-step.prev{left:10px}
+.cl-step.next{right:10px}
+@media(max-width:600px){.cl-thumbs{gap:4px}.cl-step{width:34px;height:34px;margin-top:-17px}}
+.cl-th{display:block;border:1px solid var(--line);border-radius:8px;overflow:hidden;opacity:.72;transition:opacity .12s ease}
+.cl-th img{width:100%;max-height:none;border-radius:0;aspect-ratio:16/10;object-fit:cover;object-position:top left}
+.cl-th:hover,.cl-th.on{opacity:1}
+.cl-th.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.shotchip{display:inline-flex;align-items:center;gap:4px;margin-left:8px;padding:1px 8px 1px 6px;border:1px solid var(--line);border-radius:999px;font-size:12px;line-height:18px;font-weight:500;color:var(--muted);text-decoration:none;white-space:nowrap;vertical-align:1px;cursor:zoom-in}
+.shotchip svg{width:13px;height:13px}
+.shotchip:hover{color:var(--accent);border-color:var(--accent)}
+.cl-lb{position:fixed;inset:0;z-index:100;background:rgba(8,10,14,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px}
+.cl-lb[hidden]{display:none}
+.cl-lb img{max-width:min(100%,1600px);max-height:calc(100dvh - 110px);width:auto;height:auto;border-radius:10px;background:var(--bg)}
+.cl-lb p{margin:0;max-width:760px;text-align:center;color:#e7e9ec;font-size:14px;line-height:1.5}
+.cl-lb button{position:absolute;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;border-radius:10px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+.cl-lb button:hover{background:rgba(255,255,255,.2)}
+.cl-lb .lb-x{top:16px;right:16px}
+.cl-lb .lb-p{left:16px;top:50%;margin-top:-22px}
+.cl-lb .lb-n{right:16px;top:50%;margin-top:-22px}
+.cl-lb button[hidden]{display:none}
 @media(max-width:860px){
 .rail-extra{margin-top:14px;padding-top:0;border-top:0}
 }
@@ -290,7 +384,7 @@ const PAGE_CSS = `.cl-month{margin:30px 0 4px;scroll-margin-top:16px}
 .cl-origin{padding:20px}
 }`;
 
-export function renderHtml(releases: ChangelogRelease[]): string {
+export function renderHtml(releases: ChangelogRelease[], shotMap: ShotMap = new Map()): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -327,7 +421,7 @@ ${PAGE_CSS}
 <div class="wrap">
 ${siteNav({ active: 'changelog' })}
 <div class="pcols">
-${renderRail(releases)}
+${renderRail(releases, shotMap)}
 <div class="col-head">
 <h1>Changelog</h1>
 <p class="sub">Every release of ${brandMark()}, newest first.</p>
@@ -340,7 +434,7 @@ ${SEARCH_ICON}
 <p class="count" id="cl-count"></p>
 </div>
 <div class="col-body pn-cl" id="cl-list">
-${renderReleases(releases)}
+${renderReleases(releases, shotMap)}
 <div class="noresults" id="cl-empty" hidden>
 <p id="cl-empty-lead"></p>
 <button type="button" class="btn btn-ghost" id="cl-empty-clear">${CLEAR_ICON}Clear filters</button>
@@ -384,17 +478,24 @@ ${SITE_FOOTER}
  * since the release a reader means is the one they have not read yet. The
  * whole file is the index.
  *
- * Every release names its own anchor on the page in a `Source:` line, the
- * same literal the help twins use and the copied prompt points at: models
- * echo the label verbatim, so it has to read as an ordinary citation.
+ * Every release carries a `Source:` line, the same literal the help twins
+ * use and the copied prompt points at: models echo the label verbatim, so it
+ * has to read as an ordinary citation. It names the page, never a
+ * per-release anchor.
  */
-export function renderMd(releases: ChangelogRelease[]): string {
+export function renderMd(releases: ChangelogRelease[], shotMap: ShotMap = new Map()): string {
   const newest = releases[0];
   const oldest = releases[releases.length - 1];
   const body = releases
     .map((r) => {
-      const items = r.items.map((i) => `- ${LABEL[i.type]}: ${i.text}`).join('\n');
-      return `## v${r.version} - ${r.title}\nSource: ${ORIGIN}/changelog#v${r.version}\nReleased ${r.date}.\n\n${items}`;
+      const shots = shotMap.get(r.version) ?? [];
+      const items = r.items
+        .map((i, n) => {
+          const s = shots.find((x) => x.item === n);
+          return `- ${LABEL[i.type]}: ${i.text}${s ? `\n  Screenshot: ${ORIGIN}${s.src}` : ''}`;
+        })
+        .join('\n');
+      return `## v${r.version} - ${r.title}\nSource: ${ORIGIN}/changelog\nReleased ${r.date}.\n\n${items}`;
     })
     .join('\n\n');
   return `# PrivacyNotes changelog
@@ -436,11 +537,15 @@ function rfc822(iso: string): string {
  * release title plus its change list as escaped HTML, which is what every
  * reader expects to be handed.
  */
-export function renderFeed(releases: ChangelogRelease[]): string {
+export function renderFeed(releases: ChangelogRelease[], shotMap: ShotMap = new Map()): string {
   const items = releases
     .map((r) => {
-      const url = `${ORIGIN}/changelog#v${r.version}`;
-      const body = `<h3>${esc(r.title)}</h3><ul>${r.items
+      // The page, never a per-release anchor; the guid below keeps each item
+      // distinct for feed readers.
+      const url = `${ORIGIN}/changelog`;
+      const hero = shotMap.get(r.version)?.[0];
+      const img = hero ? `<p><img src="${ORIGIN}${hero.src}" width="${css(hero.w)}" height="${css(hero.h)}" alt="${esc(hero.alt)}"></p>` : '';
+      const body = `<h3>${esc(r.title)}</h3>${img}<ul>${r.items
         .map((i) => `<li><strong>${LABEL[i.type]}</strong> ${esc(i.text)}</li>`)
         .join('')}</ul>`;
       return `<item>
@@ -471,20 +576,22 @@ export function changelogPagePlugin(): Plugin {
     name: 'emit-changelog-page',
     async generateBundle() {
       const releases = await loadReleases();
+      const { byVersion, orphans } = loadShots(releases);
+      for (const o of orphans) this.warn(`changelog shot ${o} is named by no item and is left off the page`);
       this.emitFile({
         type: 'asset',
         fileName: 'changelog/index.html',
-        source: renderHtml(releases),
+        source: renderHtml(releases, byVersion),
       });
       this.emitFile({
         type: 'asset',
         fileName: 'changelog/feed.xml',
-        source: renderFeed(releases),
+        source: renderFeed(releases, byVersion),
       });
       this.emitFile({
         type: 'asset',
         fileName: 'changelog.md',
-        source: renderMd(releases),
+        source: renderMd(releases, byVersion),
       });
     },
     configureServer(server) {
@@ -497,8 +604,9 @@ export function changelogPagePlugin(): Plugin {
       // every reader a broken feed.
       server.middlewares.use('/changelog.md', async (_req, res, next) => {
         try {
+          const releases = await loadReleases();
           res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-          res.end(renderMd(await loadReleases()));
+          res.end(renderMd(releases, loadShots(releases).byVersion));
         } catch (err) {
           next(err);
         }
@@ -506,14 +614,15 @@ export function changelogPagePlugin(): Plugin {
       server.middlewares.use('/changelog', async (req, res, next) => {
         try {
           const releases = await loadReleases();
+          const shots = loadShots(releases).byVersion;
           const url = (req.url ?? '/').split('?')[0];
           if (url === '/feed.xml') {
             res.setHeader('Content-Type', 'application/rss+xml; charset=utf-8');
-            res.end(renderFeed(releases));
+            res.end(renderFeed(releases, shots));
             return;
           }
           res.setHeader('Content-Type', 'text/html; charset=utf-8');
-          res.end(renderHtml(releases));
+          res.end(renderHtml(releases, shots));
         } catch (err) {
           next(err);
         }

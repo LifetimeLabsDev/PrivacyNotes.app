@@ -1,4 +1,4 @@
-> Status: living reference. Last verified: v0.551.1 (2026-09-28).
+> Status: living reference. Last verified: v0.592.4 (2026-10-07).
 
 # Sync protocol
 
@@ -24,13 +24,32 @@ nonce per row, keyed by client-generated UUID, scoped by
 | `nonce`       | text        | base64                                             |
 | `created_at`  | timestamptz | Client-set on first push                           |
 | `updated_at`  | timestamptz | Client-set on every write                          |
-| `deleted_at`  | timestamptz | Tombstone. NULL = live. Set on permanent delete    |
+| `deleted_at`  | timestamptz | Tombstone. NULL = live. Set on permanent delete; the row is then an empty marker, kept for good (0098) |
 
 Plaintext `title`, `body`, `tags`, `trashed`, `starred`, `locked`,
-`pinProtected`, `type`, `trackers`, `folderId` and `archived` all ride
-inside the encrypted payload. The server never sees them.
+`pinProtected`, `type`, `trackers`, `folderId`, `archived` and `editedAt`
+all ride inside the encrypted payload. The server never sees them.
 
-`archived` is always written, `false` included. A client before v0.551.0
+`editedAt` is the "last edited" date the lists show: the time of the last
+change to the title, the body or a tracker value (`editStamp.ts`). It is
+written only when the row has one, so a payload without it is what it was.
+`updated_at` stays the sync clock, which every metadata write moves too.
+A client before v0.574.0 rebuilds the payload without the field. A pull that
+meets such a payload keeps the date this device holds when the content
+(title, body, tracker values without `journalDate` and `backfilled`) is the
+same, and otherwise reads the row's `updated_at`, the time of that write; it
+never marks the row dirty for this, because a restate would push every
+pulled note again on a cursor heal. A device that never held the note shows
+the time of the old write until the next edit anywhere.
+`tests/sync/scenarios-edited-at.test.ts` runs the v0.550.1 writer against
+it.
+
+`archived` is written whenever the writer knows it, `false` included. A
+device that took a row from a payload without the flag and held no row of
+its own marks it `archivedUnknown` and leaves the flag out of its writes
+(the push, the push merge and a "Use mine" answer) until the flag is set on
+it or a payload states it, so its first edit cannot unarchive the note for
+every device that holds it. A client before v0.551.0
 rebuilds the payload from a fixed field list, so everything it writes
 lacks the field, and v0.551.0 itself wrote it only when true. A reader
 therefore takes an absent `archived` as "this writer did not know" and
@@ -41,6 +60,8 @@ so the same pass restates it on the server and a device without the row
 reads it too. Two residuals: an unarchive made on a v0.551.0 client is
 not seen by later clients, and a device that missed a newer explicit
 `false` and then pulls an older client's edit restores its own `true`.
+A device that took such a row before v0.592.24 holds no mark and still
+states `false` on its next write.
 `tests/sync/scenarios-archive-compat.test.ts` runs a v0.550.1 writer
 (`tests/sync/legacy-0550/`) against current clients.
 
@@ -275,6 +296,29 @@ Each sync pass runs in this order:
    needs a base), trackers still take `mergeTrackers`, the rule written
    for exactly that case, and a differing body opens the modal.
 
+   **The day a journal entry is for** (`journalDate` with `backfilled`)
+   is no tracker value to keep per key. The base carries two more
+   fingerprints: `d`, of that pair, and `r`, of every other tracker value;
+   a base without them is still trusted. When both sides changed the
+   trackers, the side that changed the values against `r` gives them
+   whole (both changing them, or a base without `r`: per key), and the
+   side that moved the pair against `d` gives the day (both moving it, or
+   a base without `d`: the later stamp). A side with no `journalDate` at
+   all says nothing about the day, so the stamp written at birth survives
+   a write that dropped it. Otherwise a mood logged on the old day by one
+   device would undo the move made on another, and the side that only
+   moved the day would bring back a value the other side changed.
+
+   **The "last edited" stamp of a merge** (`mergedEditedAt`) follows the
+   content the merge keeps, never a field of its own. A side's stamp is
+   explicit when its row or payload carries `editedAt`, and inferred (its
+   `updated_at`) when not; an inferred stamp can be a metadata write, so
+   an explicit one wins. Content equal to both sides keeps the later
+   explicit stamp, or this device's own with none; equal to one side, that
+   side's stamp; mixing both, the later of the two. The push merge, the
+   adoption without a write and each dialog answer all write it, and a
+   queued conflict carries the server side's as `serverEditedAt`.
+
    When no body is in question the result is written without asking.
    If it equals the server's version (everything this device changed is
    already there, or yielded to the other side under the rule above), the
@@ -348,7 +392,7 @@ heartbeat back.
 
 ---
 
-## 3. Tombstone lifecycle (migration 0034)
+## 3. Tombstone lifecycle (migrations 0034, 0098)
 
 Before v0.117.0, "permanently delete" used `.delete()` to physically
 remove the row. Other devices had no way to learn about the deletion
@@ -384,10 +428,46 @@ Current behavior:
    null`, pushes the id to `tombstoneIds`. Caller calls
    `db.notes.bulkDelete(tombstoneIds)`. The note disappears from the
    second device's UI on that sync's render pass.
-4. **30-day server purge.** `pg_cron` job `purge_deleted_notes` runs
-   nightly at 04:23 UTC (see `ops/docs/cronjobs.md`) and hard-deletes
-   rows where `deleted_at < now() - interval '30 days'`. 30 days is
-   long enough for any reasonable offline-and-back-online window.
+4. **The server empties the row, and keeps it for good (migration
+   0098).** The `notes_strip_tombstone` trigger runs in the statement
+   that accepts the tombstone: it sets `ciphertext` and `nonce` to `''`
+   and deletes the note's `note_versions` rows. What remains is the id,
+   the owner's pubkey and the timestamps. The row is never purged; only
+   deleting the account removes it. The `prune_note_versions` insert
+   trigger refuses a snapshot for a tombstoned note, under a lock on the
+   parent row, so a snapshot in flight cannot put history back; it reads
+   ownership from the session's pubkey claim, never from the row. A row
+   cannot be inserted as a tombstone at all
+   (`notes_refuse_tombstone_insert`). `tests/tombstoneMarker.test.ts`
+   runs the migration against PostgreSQL.
+
+   The 30-day purge this replaced (`purge_deleted_notes`, unscheduled by
+   0098) let a note come back: once the row was gone, a device that was
+   offline longer than the window pushed its copy, the push found no
+   row, took the first-insert path, and the note returned on every
+   device. A device that kept a clean copy kept it visible, and any later
+   edit did the same. With the marker kept, such a device pulls it before
+   it pushes, as in step 3. `tests/sync/scenarios-purged-resurrection.test.ts`
+   pins both cases, and the `hard-purge` mutation-gate flag brings the old
+   job back.
+
+   Nothing decrypts a tombstoned row's content. The pull reads
+   `deleted_at` before it decrypts (step 3), and the push conflict read
+   selects `deleted_at` and drops the local row when it is set, which
+   covers a tombstone that lands between a pass's pull and its push.
+
+   Blobs: the client queues the blobs the deleted body names
+   (`gcOnNotesDelete`) and waits, at most 5 seconds, for the server's
+   pending rows before the sync and recount run, so the bar drops at once.
+   A blob only the deleted note's history named is left with no reference
+   once the history is gone, and the orphan reconcile, which reads every
+   surviving snapshot, reclaims it at its next daily pass. The client does
+   not queue blobs from history itself, because every way of doing so can
+   remove an image another note's history still shows.
+
+   Accepted cost: markers accumulate, one row of about 100 bytes per
+   deleted note, and a new device pulls every marker of the account once
+   (each is a no-op delete).
 
 ### Resurrection guard
 
@@ -512,8 +592,9 @@ Two distinct flows:
 - **Permanent delete** (`permanentlyDelete`, `bulkPermanentlyDelete`,
   `emptyTrash`): sets the client-side `deleted = 1, dirty = 1`. Sync
   push converts that into a server-side `deleted_at` UPDATE (a
-  tombstone). Not reversible. After 30 days the row is hard-deleted
-  by `pg_cron`.
+  tombstone). Not reversible. The server empties the row and drops the
+  note's history in the same statement, and keeps the empty row as a
+  marker for good (§3 step 4).
 
 The two flags are unrelated. A note can be trashed for weeks and
 never permanently deleted; permanently deleting from the trash bin
@@ -548,26 +629,34 @@ this leaks data across users on shared browsers in three ways:
 ### Pubkey-owner check
 
 `localStorage.privacynotes.currentPubkey` records which pubkey
-"owns" the local IndexedDB. At the top of `_authenticateWithPhrase`
-(covers both phrase sign-in and OAuth-derived sign-in via
-`hydrateFromOAuthSession`), the new pubkey is compared to the stored
-owner. On mismatch:
+"owns" the local IndexedDB, mirrored in `db.kv` so that a
+localStorage eviction does not read as a switch. `_authenticateWithPhrase`
+(phrase sign-in, and OAuth via `hydrateFromOAuthSession`) compares the
+arriving pubkey to it before its first network call. On a mismatch it
+suspends sync and clears the registration marker at once, and on the
+phrase path drops the cached session (`signOut({scope: 'local'})`),
+which still carries the prior account's `app_metadata.pubkey` claim.
 
-1. `clearLocalDatabase()` - wipes `notes`, `imageCache`, `imageDedup`,
-   `attachmentCache`, `attachmentDedup` (rows only, schema preserved
-   so Dexie stays usable).
-2. `clearLocalSettings()` - clears the cached `user_settings` blob.
-3. `localStorage.removeItem('privacynotes.lastSync')` and the
-   sessionStorage variant - forces the next pull to scan from the
-   epoch.
-4. `supabase.auth.signOut({scope: 'local'})` - drops the cached anon
-   session that still carries the prior user's
-   `app_metadata.pubkey` claim until `link-pubkey` overwrites it.
+The prior account's data stays until the arriving account is proved:
+session minted, pubkey linked, device registered, live token carrying
+the claim. Only then does `wipePriorLocalData` run: `clearLocalDatabase()`
+(rows only, schema preserved so Dexie stays usable), the settings cache,
+the account flags, the PIN cache and both phrase wraps, the
+account-scoped UI state, the appearance and `lastSync`; then the owner
+marker and its mirror move to the new pubkey and sync resumes. A
+handshake that fails before that leaves the prior account's data, marker
+and wraps as they were, and sync off until the next authentication.
 
-After the wipe, `currentPubkey` is set to the new pubkey and
-authentication proceeds normally. Same-user re-sign-in compares
-equal and skips the wipe - the cache survives, image fetches stay
-fast.
+At the device limit the device registers only later, in
+`doRetryRegistrationFromLimit`, once a revoke frees a slot or a purchase
+lifts the cap. The switch hands that retry its wipe and the marker it
+found, and the retry runs the wipe before the vault opens, as long as
+the sign-in is still live and the marker still names the prior account.
+When another tab finished the switch meanwhile, the retry only turns
+sync back on. Pinned by `tests/authHandlers.test.ts`.
+
+Same-user re-sign-in compares equal and skips the wipe - the cache
+survives, image fetches stay fast.
 
 ### sign-out behavior
 
@@ -717,6 +806,6 @@ Out of scope for this doc.
   `packages/web/src/notesRepo.ts::clearLocalDatabase`.
 - Schema: `packages/supabase/migrations/history/0034_note_tombstones.sql`,
   plus `0001_init.sql` for the base `notes` table.
-- Cron job: `ops/docs/cronjobs.md` → `purge_deleted_notes`.
+- Cron job: none. `purge_deleted_notes` was unscheduled by 0098.
 - Threat model context: `ops/docs/THREAT_MODEL.md`.
 - Audit history: gap #1 closed by v0.117.0 (the old gaps.md was removed; details in changelog).

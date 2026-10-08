@@ -56,7 +56,7 @@ export function EditorSlotPill({
         // read straight through it.
         active
           ? 'border-accent/60 bg-surface-1 text-accent'
-          : 'border-divider bg-surface-1 text-neutral-600 dark:text-neutral-300 [@media(hover:hover)]:hover:bg-neutral-200 [@media(hover:hover)]:dark:hover:bg-neutral-800'
+          : 'border-divider bg-surface-1 text-pn-soft [@media(hover:hover)]:hover:bg-pn/10'
       }`}
     >
       {/* Label hidden by default; slides out on hover so it never sits over

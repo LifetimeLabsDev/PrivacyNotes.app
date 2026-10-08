@@ -99,7 +99,7 @@ export function BurnShareModal({
   }
 
   const selectClass =
-    'w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-surface-1 text-sm px-2.5 py-2 disabled:opacity-60';
+    'w-full rounded-md border border-divider bg-surface-1 text-sm px-2.5 py-2 disabled:opacity-60';
 
   return (
     <div
@@ -121,16 +121,16 @@ export function BurnShareModal({
           </div>
           <button
             onClick={onClose}
-            className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1"
+            className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
             aria-label={t('close')}
           >
             <X size={18} />
           </button>
         </div>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+        <p className="text-sm text-pn-muted leading-relaxed">
           <Trans
             i18nKey="notesChrome:burnShareModal.body"
-            components={{ lead: <strong className="text-neutral-800 dark:text-neutral-200" /> }}
+            components={{ lead: <strong className="text-pn" /> }}
           />
         </p>
         <HelpChip surface="burn" />
@@ -157,7 +157,7 @@ export function BurnShareModal({
                 </option>
               ))}
             </select>
-            <span className="block mt-1 text-xs text-neutral-500">{t('burnShareModal.readTimeHint')}</span>
+            <span className="block mt-1 text-xs text-pn-muted">{t('burnShareModal.readTimeHint')}</span>
           </label>
           <label className="block text-[13px]">
             <span className="block mb-1">{t('burnShareModal.lifetime')}</span>
@@ -175,7 +175,7 @@ export function BurnShareModal({
                 </option>
               ))}
             </select>
-            <span className="block mt-1 text-xs text-neutral-500">{t('burnShareModal.lifetimeHint')}</span>
+            <span className="block mt-1 text-xs text-pn-muted">{t('burnShareModal.lifetimeHint')}</span>
           </label>
         </div>
         {url && (
@@ -183,15 +183,15 @@ export function BurnShareModal({
             type="text"
             readOnly
             value={url}
-            className="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 text-sm px-3 py-2.5 font-mono truncate focus:outline-none"
+            className="w-full rounded-md border border-divider bg-surface-1 text-pn-soft text-sm px-3 py-2.5 font-mono truncate focus:outline-none"
             onFocus={(e) => e.target.select()}
           />
         )}
-        {error && <p className="text-[13px] text-red-600 dark:text-red-400">{error}</p>}
+        {error && <p className="text-[13px] text-danger">{error}</p>}
         <div className="flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 rounded-md border border-neutral-300 dark:border-neutral-800 hover:bg-surface-1 px-4 py-2 text-sm transition"
+            className="flex-1 rounded-md border border-divider hover:bg-surface-1 px-4 py-2 text-sm transition"
           >
             {t('common:actions.close')}
           </button>
@@ -201,7 +201,7 @@ export function BurnShareModal({
             className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition flex items-center justify-center gap-1.5 disabled:opacity-60 ${
               copied
                 ? 'bg-green-500 text-white'
-                : 'bg-accent text-white hover:bg-accent-hover'
+                : 'bg-accent-fill text-white hover:bg-accent-fill-hover'
             }`}
           >
             <Copy size={16} />

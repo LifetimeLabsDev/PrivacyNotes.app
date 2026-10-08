@@ -8,7 +8,7 @@
     "ctaOpening": "Abriendo el pago...",
     "ctaSignUp": "Regístrate para desbloquear",
     "intro": {
-      "storage": "Subidas más grandes y más espacio son una función Pro. Mejora tu plan para archivos de 50 MB y 500 MB de almacenamiento.",
+      "storage": "Más espacio es una función Pro: 500 MB de almacenamiento, 50 MB por archivo y hasta 5 GB más como complemento de almacenamiento cuando los necesites.",
       "folders": "Las carpetas son una función Pro. Organiza tus notas en carpetas anidadas, tan profundas como necesites, y mantén cada proyecto separado.",
       "looks": "Los iconos y los colores de carpetas y etiquetas son una función Pro. Dale a cada una un aspecto que reconozcas de un vistazo.",
       "lock": "Bloquear una nota es una función Pro. Mejora tu plan para proteger cualquier nota de ediciones accidentales.",
@@ -30,7 +30,7 @@
       "history": "Historial completo de notas, restaura cuando quieras",
       "themes": "Temas premium en todos los tonos",
       "zen": "Modo Zen, escritura sin distracciones",
-      "storage": "500 MB de almacenamiento + 50 MB de adjuntos"
+      "storage": "500 MB de almacenamiento, hasta 5,5 GB con complementos"
     },
     "comparisonBeta": "Paga {{earlyPrice}} $ una vez. Obsidian Sync cuesta 48 $/año, cada año. Standard Notes cobra 90 $/año. Precio early adopter, fijado antes de que suba a {{proPrice}} $.",
     "comparison": "Paga {{proPrice}} $ una vez y es tuyo para siempre. Obsidian Sync cuesta 48 $/año y Standard Notes 90 $/año, todos los años."
@@ -47,7 +47,7 @@
     "benefitDevices": "Dispositivos ilimitados",
     "benefitDevicesSub": "Móvil, tableta, portátil, todo sincronizado",
     "benefitStorage": "500 MB de almacenamiento",
-    "benefitStorageSub": "10 veces el plan gratuito, ampliable",
+    "benefitStorageSub": "10 veces el plan gratuito. Añade hasta 5 GB más cuando los necesites",
     "benefitMore": "Más funciones",
     "benefitMoreSub": "Historial de notas, carpetas, modo zen",
     "benefitRoom": "{{gb}} GB más de espacio",

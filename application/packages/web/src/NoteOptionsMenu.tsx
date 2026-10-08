@@ -6,11 +6,11 @@ import { useEscapeToClose } from './useEscapeToClose';
 import { proUnlocked } from './demo';
 import { noteActionGuards, type NoteActionGuardDeps } from './noteActionGuards';
 import { usePopoverPosition } from './usePopoverPosition';
-import { intlLocale } from './languages';
+import { formatInstant } from './intlFormat';
 import { prepareBurnPayload } from './burnShare';
 import { ColorSwatch } from './ColorSwatch';
 import { LOOK_COLORS, NOTE_NO_COLOR, type LookColor, type NoteOwnColor } from './itemStyles';
-import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Trash, Repeat, Copy, Folder, Fire, ArrowCounterClockwise, FileMd, TextAa, Swap, ListChecks, Palette, Info, CaretLeft, CaretRight, iconArchive } from './icons';
+import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Trash, Repeat, Copy, Folder, Fire, ArrowCounterClockwise, FileMd, TextAa, Swap, ListChecks, Broom, SortAscending, Palette, Info, CaretLeft, CaretRight, Calendar, iconArchive } from './icons';
 
 /**
  * Per-note options dropdown, anchored to the "..." button in the
@@ -68,6 +68,10 @@ type Props = NoteActionGuardDeps & {
   onBurn?: () => void;
   /** Convert between note and journal types. */
   onConvertType?: () => void;
+  /** Move a journal entry to another day. Journal entries only. */
+  onSetJournalDate?: (day: string) => void;
+  /** The days that hold a journal entry, dotted in the Entry date calendar. */
+  journalDays?: { has(day: string): boolean };
   /**
    * Body editor this note is currently showing. Absent wherever there is
    * no markdown editor to switch: bookmarks, vault items, a PIN-locked
@@ -89,6 +93,12 @@ type Props = NoteActionGuardDeps & {
    * more than one task and at least one of them checked.
    */
   onUncheckAllTasks?: () => void;
+  /** Delete every checked task, after a confirm. Present only on an editable
+   *  note with at least one checked task. */
+  onDeleteCheckedTasks?: () => void;
+  /** Put each task list in the order open first, checked after. Present only
+   *  on an editable note where some list is out of that order. */
+  onSortTasksByStatus?: () => void;
   /** The color row. Absent where a note has no color (vault items). */
   color?: NoteColorInfo;
   /** Pick a color, NOTE_NO_COLOR for none, or null to take the tag's or
@@ -101,7 +111,7 @@ type Props = NoteActionGuardDeps & {
   onDeleteForever?: () => void;
 };
 
-type View = 'main' | 'color' | 'details';
+type View = 'main' | 'color' | 'details' | 'entryDate';
 
 export function NoteOptionsMenu({
   note,
@@ -121,11 +131,15 @@ export function NoteOptionsMenu({
   onBurn,
   onSetPin,
   onConvertType,
+  onSetJournalDate,
+  journalDays,
   onMoveToFolder,
   editorMode,
   onToggleEditorMode,
   onFindReplace,
   onUncheckAllTasks,
+  onDeleteCheckedTasks,
+  onSortTasksByStatus,
   color,
   onSetColor,
   isTrash,
@@ -195,6 +209,9 @@ export function NoteOptionsMenu({
   const showModeRow = !isTrash && !!onToggleEditorMode && !!editorMode;
   const showReplaceRow = !isTrash && !!onFindReplace;
   const showUncheckRow = !isTrash && !!onUncheckAllTasks;
+  const showDeleteCheckedRow = !isTrash && !!onDeleteCheckedTasks;
+  const showSortTasksRow = !isTrash && !!onSortTasksByStatus;
+  const showTaskRows = showUncheckRow || showDeleteCheckedRow || showSortTasksRow;
   const showConvertRow = !!onConvertType && (note.type === 'note' || note.type === 'journal');
 
   const bytes = computeNoteTotalSize(note);
@@ -213,7 +230,7 @@ export function NoteOptionsMenu({
       tabIndex={-1}
       aria-label={t('noteOptionsMenu.noteOptions')}
       onKeyDown={onKeyDown}
-      className="fixed z-50 w-80 max-w-[calc(100vw-16px)] max-h-[calc(100vh-16px)] overflow-y-auto rounded-xl border border-divider bg-surface-2 shadow-lg outline-none divide-y divide-divider"
+      className="fixed z-50 w-80 max-w-[calc(100vw-16px)] max-h-[calc(100dvh-16px)] overflow-y-auto overscroll-contain rounded-xl border border-divider bg-surface-2 shadow-lg outline-none divide-y divide-divider"
       style={{
         top: pos?.top ?? 0,
         left: pos?.left ?? 0,
@@ -250,17 +267,32 @@ export function NoteOptionsMenu({
           <BackRow title={t('noteOptionsMenu.color')} onBack={() => setView('main')} />
           <NoteColorPanel color={color} onSetColor={onSetColor} />
         </>
+      ) : view === 'entryDate' && onSetJournalDate ? (
+        <>
+          <BackRow title={t('noteOptionsMenu.entryDate')} onBack={() => setView('main')} />
+          <div className="flex justify-center px-2 pt-3 pb-2">
+            <MonthGrid
+              key={note.id}
+              marked={journalDays ?? new Set<string>()}
+              selected={entryDayOf(note)}
+              onPick={(day) => {
+                if (day !== entryDayOf(note)) onSetJournalDate(day);
+                setView('main');
+              }}
+            />
+          </div>
+        </>
       ) : view === 'details' ? (
         <>
           <BackRow title={t('noteOptionsMenu.details')} onBack={() => setView('main')} />
-          <div className="px-4 py-3 text-[13px] text-neutral-600 dark:text-neutral-400 space-y-1 leading-relaxed">
-            <div>{t('noteOptionsMenu.lastModified', { date: new Date(note.updatedAt).toLocaleString(intlLocale()) })}</div>
-            <div>{t('noteOptionsMenu.created', { date: new Date(note.createdAt).toLocaleString(intlLocale()) })}</div>
+          <div className="px-4 py-3 text-[13px] text-pn-muted space-y-1 leading-relaxed">
+            <div>{t('noteOptionsMenu.lastModified', { date: formatInstant(editedAtOf(note), 'dateTime') })}</div>
+            <div>{t('noteOptionsMenu.created', { date: formatInstant(note.createdAt, 'dateTime') })}</div>
             <div>
               {t('noteOptionsMenu.size', { size: formatBytes(bytes) })}
               {note.tags.length > 0 && <> · {t('noteOptionsMenu.tagCount', { count: note.tags.length })}</>}
             </div>
-            <div className="text-[12px] text-neutral-400 dark:text-neutral-500">{t('noteOptionsMenu.sizeHint')}</div>
+            <div className="text-[12px] text-pn-muted">{t('noteOptionsMenu.sizeHint')}</div>
           </div>
         </>
       ) : (
@@ -323,7 +355,7 @@ export function NoteOptionsMenu({
             </Group>
           )}
 
-          {(showModeRow || showReplaceRow || showUncheckRow) && (
+          {(showModeRow || showReplaceRow || showTaskRows) && (
             <Group>
               {showModeRow && (
                 <ActionItem
@@ -348,10 +380,33 @@ export function NoteOptionsMenu({
                   onClick={() => { onUncheckAllTasks?.(); onClose(); }}
                 />
               )}
+              {showDeleteCheckedRow && (
+                <ActionItem
+                  label={t('noteOptionsMenu.deleteCheckedTasks')}
+                  icon={<Broom size={16} aria-hidden="true" />}
+                  onClick={() => { onDeleteCheckedTasks?.(); onClose(); }}
+                />
+              )}
+              {showSortTasksRow && (
+                <ActionItem
+                  label={t('noteOptionsMenu.sortTasksByStatus')}
+                  icon={<SortAscending size={16} aria-hidden="true" />}
+                  onClick={() => { onSortTasksByStatus?.(); onClose(); }}
+                />
+              )}
             </Group>
           )}
 
           <Group>
+            {onSetJournalDate && !isTrash && note.type === 'journal' && (
+              <ActionItem
+                label={t('noteOptionsMenu.entryDate')}
+                icon={<Calendar size={16} aria-hidden="true" />}
+                value={formatInstant(dayAtNoon(entryDayOf(note)), 'date')}
+                chevron
+                onClick={() => setView('entryDate')}
+              />
+            )}
             {onMoveToFolder && (
               <ActionItem
                 label={t('noteOptionsMenu.moveToFolder')}
@@ -442,18 +497,18 @@ type Tone = 'accent' | 'burn' | 'danger' | 'success' | 'muted';
 
 const TONE_TEXT: Record<Tone, string> = {
   accent: 'text-accent',
-  burn: 'text-orange-600 dark:text-orange-400',
-  danger: 'text-red-500 dark:text-red-400',
-  success: 'text-emerald-600 dark:text-emerald-400',
-  muted: 'text-neutral-500 dark:text-neutral-400',
+  burn: 'text-orange-800 dark:text-orange-400',
+  danger: 'text-danger',
+  success: 'text-success',
+  muted: 'text-pn-muted',
 };
 
 const ROW_TEXT: Record<Tone, string> = {
   accent: 'text-pn hover:bg-surface-1 focus-visible:bg-surface-1',
   burn: 'text-pn hover:bg-surface-1 focus-visible:bg-surface-1',
-  muted: 'text-neutral-500 dark:text-neutral-400 hover:bg-surface-1 focus-visible:bg-surface-1',
-  danger: 'text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 focus-visible:bg-red-50 dark:focus-visible:bg-red-950/30',
-  success: 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 focus-visible:bg-emerald-50 dark:focus-visible:bg-emerald-950/30',
+  muted: 'text-pn-muted hover:bg-surface-1 focus-visible:bg-surface-1',
+  danger: 'text-danger hover:bg-red-50 dark:hover:bg-red-950/30 focus-visible:bg-red-50 dark:focus-visible:bg-red-950/30',
+  success: 'text-success hover:bg-emerald-50 dark:hover:bg-emerald-950/30 focus-visible:bg-emerald-50 dark:focus-visible:bg-emerald-950/30',
 };
 
 /** Compact with a mouse, a full 44px finger target on a touch screen. */
@@ -467,7 +522,7 @@ function Group({ children }: { children: React.ReactNode }) {
 /** The quiet Pro marker: grey, no icon, never louder than the label. */
 function ProBadge() {
   return (
-    <span className="shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-medium leading-none bg-neutral-200/70 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+    <span className="shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-medium leading-none bg-pn/10 text-pn-soft">
       Pro
     </span>
   );
@@ -533,7 +588,7 @@ function NoteColorPanel({
         ))}
       </div>
       {own === null && inherited && (
-        <p className="mt-2 text-[12px] text-neutral-500 dark:text-neutral-400 truncate" dir="auto">
+        <p className="mt-2 text-[12px] text-pn-muted truncate" dir="auto">
           {inherited.kind === 'folder'
             ? t('noteOptionsMenu.colorFromFolder', { name: inherited.name })
             : t('noteOptionsMenu.colorFromTag', { name: inherited.name })}
@@ -618,7 +673,7 @@ function ToggleItem({
       <span
         aria-hidden
         className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition ${
-          checked ? 'bg-accent' : 'bg-neutral-300 dark:bg-neutral-700'
+          checked ? 'bg-accent-fill' : 'bg-pn-muted/35'
         }`}
       >
         <span
@@ -663,14 +718,15 @@ function ActionItem({
       <span className="flex-1 min-w-0 truncate">{label}</span>
       {pro && <ProBadge />}
       {value !== undefined && (
-        <span className="shrink min-w-0 max-w-[45%] text-[13px] text-neutral-500 dark:text-neutral-400">
+        <span className="shrink min-w-0 max-w-[45%] text-[13px] text-pn-muted">
           {value}
         </span>
       )}
-      {chevron && <CaretRight size={14} aria-hidden="true" className="shrink-0 text-neutral-400 dark:text-neutral-500" />}
+      {chevron && <CaretRight size={14} aria-hidden="true" className="shrink-0 text-pn-muted" />}
     </button>
   );
 }
 
 import { formatBytes } from './formatBytes';
-import { computeNoteTotalSize } from './notesViewUtils';
+import { computeNoteTotalSize, editedAtOf, entryDayOf } from './notesViewUtils';
+import { MonthGrid, dayAtNoon } from './MonthGrid';

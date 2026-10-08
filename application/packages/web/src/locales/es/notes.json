@@ -10,7 +10,8 @@
     "empty": "Vacía",
     "noContent": "Sin contenido",
     "notBackedUp": "Sin copia de seguridad",
-    "archived": "Archivado"
+    "archived": "Archivado",
+    "entryDate": "Fecha de la entrada"
   },
   "header": {
     "new": "Nueva",
@@ -19,7 +20,9 @@
     "trash": "Papelera"
   },
   "folderChip": {
-    "clear": "Quitar el filtro de carpeta: {{folder}}"
+    "clear": "Quitar el filtro de carpeta: {{folder}}",
+    "subfolders": "Subcarpetas",
+    "subfoldersLabel": "Incluir las subcarpetas"
   },
   "tagChip": {
     "clear": "Quitar el filtro de etiqueta: {{tag}}"
@@ -191,6 +194,8 @@
     "currentHtmlDesc": "Apto para impresión, markdown renderizado en una página blanca.",
     "printTitle": "Imprimir / Guardar como PDF",
     "printDesc": "Abre el cuadro de impresión. Guarda como PDF o envía a una impresora.",
+    "printTextTitle": "Imprimir solo el texto",
+    "printTextDesc": "Mantiene el título. Omite la fecha, la carpeta y las etiquetas.",
     "burnTitle": "Compartir y destruir tras leer",
     "burnDesc": "Publica esta nota como un enlace de un solo uso. El enlace se autodestruye tras leerse. Tu nota sigue a salvo en tu cuenta."
   },
@@ -208,7 +213,10 @@
     "newNote": "Nuevo",
     "newNoteHintMac": "Option + Mayús + N",
     "newNoteHintOther": "Alt + Mayús + N",
+    "newNoteHintMacDesktop": "Comando + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Abrir estadísticas",
+    "journalCalendar": "Calendario del diario",
     "words": "Palabras",
     "zen": "Modo Zen",
     "appearance": "Apariencia",
@@ -232,7 +240,7 @@
     "appearanceLabel": "Apariencia",
     "helpLabel": "Ayuda",
     "aboutLabel": "Acerca de",
-    "languageLabel": "Idioma",
+    "languageLabel": "Fecha e idioma",
     "languageDesc": "Elige el idioma en el que se muestra PrivacyNotes."
   },
   "importStore": {
@@ -252,6 +260,12 @@
     "readOnlyBlocked_other": "Los <highlight>{{count}} elementos</highlight> son de solo lectura, así que ninguno puede ir a la papelera. Desactiva solo lectura en las opciones de la nota primero.",
     "readOnlySkipped_one": "<highlight>{{count}} elemento</highlight> es de solo lectura y se queda donde está.",
     "readOnlySkipped_other": "<highlight>{{count}} elementos</highlight> son de solo lectura y se quedan donde están."
+  },
+  "deleteCheckedTasks": {
+    "title": "¿Eliminar los elementos marcados?",
+    "confirm": "Eliminar",
+    "body_one": "Se eliminará <highlight>{{count}} elemento</highlight> de esta nota. Esto no se puede deshacer.",
+    "body_other": "Se eliminarán <highlight>{{count}} elementos</highlight> de esta nota, incluidos los anidados. Esto no se puede deshacer."
   },
   "bulkDelete": {
     "body_one": "¿Eliminar de forma permanente <highlight>{{count}} nota</highlight>? Esto no se puede deshacer.",

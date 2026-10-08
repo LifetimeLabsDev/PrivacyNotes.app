@@ -14,7 +14,7 @@ To nasza prawdziwa baza danych w Zurychu, nie rysunek. Twoja notatka trafia do k
 
 1. Twoja fraza z 12 słów staje się kluczem. Dzieje się to na twoim urządzeniu.
 2. Notatka jest szyfrowana tym kluczem, na twoim urządzeniu. Tak zapisuje się na twoim własnym dysku i tak podróżuje do nas.
-3. Dostajemy zaszyfrowaną notatkę i przechowujemy ją. Obrazek wyżej pokazuje, jak to wygląda.
+3. Dostajemy zaszyfrowaną notatkę i przechowujemy ją. Obraz wyżej pokazuje, jak to wygląda.
 4. Dowolne urządzenie z tą samą frazą tworzy ten sam klucz i otwiera notatkę.
 
 ## Kto ma twój klucz
@@ -23,9 +23,9 @@ W każdej opcji twoje notatki są szyfrowane na twoim urządzeniu. Różnią si�
 
 | Opcja | Gdzie leży twoja fraza | Co ci to daje |
 | --- | --- | --- |
-| **Logowanie, klucz u nas** | Na naszym serwerze, zaszyfrowany | Nowe urządzenie loguje się samym kontem |
+| **Logowanie, klucz u nas** | Na naszym serwerze, zaszyfrowana | Nowe urządzenie loguje się samym kontem |
 | **Logowanie, klucz na Twoim urządzeniu** | U ciebie, nigdzie indziej | Zaloguj się przez Google, Apple albo GitHub i nadal trzymaj klucz |
-| **Sama fraza, bez logowania** | U ciebie, nigdzie indziej | Bez e-maila, bez nazwiska, bez konta |
+| **Sama fraza, bez logowania** | U ciebie, nigdzie indziej | Bez e-maila, bez nazwiska, bez logowania |
 
 Przy dwóch ostatnich nie odczytalibyśmy notatki, nawet gdyby nas zmuszono. Pierwsza wymienia to na wygodę: twoja fraza leży na naszym serwerze pod naszym kluczem, więc nowemu urządzeniu wystarczy twoje konto. Gdyby nasz serwer kiedyś padł ofiarą włamania, ten klucz mógłby wyciec.
 
@@ -49,4 +49,4 @@ Logujesz się przez Google, Apple albo GitHub? Między dwiema pierwszymi opcjami
 | Jak zgłosić lukę | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 
 > [!info] Jeden zamek obejmuje wszystko
-> Notatki, wpisy dziennika, zakładki, wpisy sejfu i załączniki są szyfrowane tak samo. [[Przeprowadzka]] pokazuje, jak przenieść każde z nich.
+> Notatki, wpisy w dzienniku, zakładki, wpisy sejfu i załączniki są szyfrowane tak samo. [[Przeprowadzka]] pokazuje, jak przenieść każde z nich.

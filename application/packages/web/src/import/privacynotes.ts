@@ -337,9 +337,13 @@ export async function parsePrivacyNotesBackup(
     }
   }
 
+  // The looks and custom themes travel opaque here; the restore validates
+  // them and moves each folder look to the id its folder comes back under.
+  const carried = manifest.settings && typeof manifest.settings === 'object' ? manifest.settings : undefined;
   return {
     folders: rebuiltFolders,
     originalFolderIds: originalIds,
+    ...(carried ? { settings: { itemStyles: carried.itemStyles, customThemes: carried.customThemes } } : {}),
     notes,
     warnings,
     transforms: [],

@@ -51,7 +51,11 @@
     "mdDemoQuote": "Quote and note-link",
     "mdDemoDivider": "Divider",
     "hkShowcase": "The full list",
-    "hkLegend": "On Windows and Linux, ⌘ is Ctrl and ⌥ is Alt."
+    "hkMac": "Mac",
+    "hkPc": "Windows and Linux",
+    "hkBrowser": "Browser",
+    "hkDesktop": "Desktop app",
+    "hkLayout": "Shortcuts follow the characters your keyboard types, not US key positions: press the key that types the character shown (on a non-Latin layout, the key in its US place). A key that types a character with AltGr always types it."
   },
   "groups": {
     "gettingStarted": "Getting started",
@@ -94,7 +98,7 @@
     "what-can-you-see": {
       "q": "What can PrivacyNotes see about my notes?",
       "a": [
-        "Notes, titles, tags, and attachments are encrypted on your device before they reach the server. Under self-custody, which every phrase sign-up starts with, no decryption key exists on our side. Signing up with Google, Apple, or GitHub asks where your key lives and starts on \"Keep it simple & convenient\", which stores your phrase on our server, encrypted under a key of ours. In that mode, our server can decrypt the phrase and therefore your notes. Settings > Account > Key custody shows your current mode and lets you switch.",
+        "Notes, titles, tags, and attachments are always encrypted, on your device and on the way to the server. Under self-custody, which every phrase sign-up starts with, no decryption key exists on our side. Signing up with Google, Apple, or GitHub asks where your key lives and starts on \"Keep it simple & convenient\", which stores your phrase on our server, encrypted under a key of ours. In that mode, our server can decrypt the phrase and therefore your notes. Settings > Account > Key custody shows your current mode and lets you switch.",
         "What we can see is the information needed to run the service: how much encrypted storage you use, how many devices you have linked, and sync timestamps. If you use only your phrase and have not connected a Google, Apple, or GitHub account, we do not know your email address."
       ]
     },
@@ -396,7 +400,7 @@
     "languages": {
       "q": "Which languages does the app speak?",
       "a": [
-        "English, German, French, Italian, Spanish, Dutch, Polish, Czech, Catalan, Turkish, Swedish, Ukrainian, Russian, Japanese, Korean, Traditional Chinese, Thai, Arabic, and Portuguese in both European and Brazilian variants. The app follows your system language by default, or you can pin one explicitly under Settings > Language on each device.",
+        "English, German, French, Italian, Spanish, Dutch, Polish, Czech, Catalan, Turkish, Swedish, Ukrainian, Russian, Japanese, Korean, Traditional Chinese, Thai, Arabic, and Portuguese in both European and Brazilian variants. The app follows your system language by default, or you can pin one explicitly under Settings > Date & Language > Language on each device.",
         "Translations are free for everyone, not a Pro perk. More languages are planned; if yours is missing, tell us on [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) or [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -425,7 +429,7 @@
       "q": "How does the journal work, and what can I track?",
       "a": [
         "Journals is a dedicated view for dated entries: one tap creates today's entry, and the calendar button next to it backfills a recent day you missed. An entry is a normal note plus optional trackers: mood on a 1-10 scale with 24 emotion tags, sleep, activity, medications, energy, focus, and more. \"Configure trackers\" inside any entry toggles the built-ins, and Pro adds up to 10 custom trackers (scales, numbers, yes/no).",
-        "Statistics (in Settings, or the stats icon in the footer) turns entries into trends under the Wellness tab: mood over time, sleep and activity charts, medication adherence. Exports are generated on your device: \"Download JSON\" is free, and Pro adds a \"Doctor PDF\" to bring to appointments, a copy-ready AI prompt for the chatbot of your choice, pattern insights, and a week in review. Tracker data lives inside the encrypted entry, so the server can read none of it."
+        "Statistics (in Settings, or the stats icon in the footer) opens on an Overview of your week, writing and wellness together. The Wellness tab charts every tracker you log, custom trackers included, over a range you pick; Explore takes one tracker and shows how your mood runs on the days with it and without it, the same day or the day after; Patterns ranks every tracker that way; Medication shows adherence as a calendar. Exports are generated on your device: \"Download JSON\" is free, and Pro adds a \"Doctor PDF\" to bring to appointments, a copy-ready AI prompt for the chatbot of your choice, the comparisons, and a week in review. Tracker data lives inside the encrypted entry, so the server can read none of it."
       ]
     },
     "bookmarks": {
@@ -454,7 +458,8 @@
       "q": "What keyboard shortcuts are there?",
       "a": [
         "Press ? anywhere in the app for the built-in cheat sheet, also available under Settings > About. Shortcuts cover navigation, note actions, formatting, and views - and on Windows and Linux, every Cmd reads as Ctrl and Option as Alt.",
-        "The essentials: Cmd+K focuses search, J and K walk the list, Alt+Shift+N starts a new note, Cmd+Backspace trashes the selected one, Cmd+, opens Settings. While writing: Cmd+B bold, Cmd+I italic, Cmd+Shift+K inserts a link, Cmd+Shift+9 starts a task list, Cmd+F finds in the note, Cmd+Shift+O toggles the outline. Cmd+\\ hides the sidebar, Cmd+Shift+L switches the theme, Cmd+Shift+F enters zen mode (Pro), and Esc backs out of almost anything."
+        "The essentials: Cmd+K jumps to any item or setting by its name, and its last row searches the text of the open section; / focuses the search, J and K walk the list, Cmd+[ and Cmd+] go back and forward through the items you opened, Alt+Shift+N starts a new note, Cmd+Backspace trashes the selected one, Cmd+, opens Settings. While writing: Cmd+B bold, Cmd+I italic, Cmd+Shift+K inserts a link, Cmd+Shift+9 starts a task list, Cmd+F finds in the note, Cmd+Shift+O toggles the outline, Cmd+Shift+M switches to the Markdown view. Cmd+\\ or Cmd+Shift+D hides the sidebar, Cmd+Shift+L switches the theme, Cmd+Shift+F enters zen mode (Pro), and Esc backs out of almost anything, filters included. Type > in the search or in Cmd+K (or press > outside a text field) to find any command by its name and run it.",
+        "The desktop apps add the keys a browser keeps for itself: Cmd+N for a new note, Cmd+Shift+N for a new item of any type, Cmd+W to close a tab, Ctrl+Tab to move between tabs, Cmd+1 to Cmd+9 for the sections of the sidebar, and Cmd+Shift+P for the list of commands."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -640,7 +645,7 @@
     "note-links": {
       "q": "How do I link one note to another?",
       "a": [
-        "Type [[ anywhere in a note and start typing a title. Pick a note from the list and it becomes a note-link you can click. If nothing matches, choose \"Create\" and the new note is made and linked in one step. The toolbar button \"Link to another note\" does the same thing.",
+        "Type [[ anywhere in a note and start typing a title. Pick a note from the list and it becomes a note-link you can click. If nothing matches, choose \"Create\" and the new note is made and linked in one step. The toolbar button \"Link to another note\" does the same thing. To open a note at one of its sections, type # after the title and pick the heading. The link icon on a heading in the outline panel copies such a link for you.",
         "Note-links live inside the note, so they export with it and travel with an import: an Obsidian vault keeps its links, and Evernote note links are converted on the way in. To find what points at a note, search its title: every note linking to it carries those words."
       ]
     },

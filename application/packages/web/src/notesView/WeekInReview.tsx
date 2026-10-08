@@ -24,27 +24,27 @@ export function WeekInReview({
     <div className="mx-4 sm:mx-6 mt-2 mb-1 rounded-lg border border-accent/30 bg-accent/5 p-3 space-y-2">
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-semibold text-accent uppercase tracking-wide">{t('weekReview.title')}</span>
-        <span className="text-[10px] text-neutral-400">{t('weekReview.daysLogged', { count: w.daysLogged })}</span>
+        <span className="text-[10px] text-pn-muted">{t('weekReview.daysLogged', { count: w.daysLogged })}</span>
       </div>
       <div className="flex flex-wrap gap-3 text-xs">
         {w.avgMood != null && (
-          <span className="text-neutral-700 dark:text-neutral-300">
+          <span className="text-pn-soft">
             {t('weekReview.mood')} <strong>{w.avgMood}</strong>/10
             {w.moodDelta != null && (
-              <span className={w.moodDelta > 0 ? ' text-emerald-600' : w.moodDelta < 0 ? ' text-red-500' : ''}>
+              <span className={w.moodDelta > 0 ? ' text-success' : w.moodDelta < 0 ? ' text-danger' : ''}>
                 {' '}({w.moodDelta > 0 ? '+' : ''}{w.moodDelta})
               </span>
             )}
           </span>
         )}
-        {w.avgSleepHours != null && <span className="text-neutral-700 dark:text-neutral-300">{t('weekReview.sleep')} <strong>{w.avgSleepHours}h</strong></span>}
-        {w.medAdherence != null && <span className="text-neutral-700 dark:text-neutral-300">{t('weekReview.meds')} <strong>{w.medAdherence}%</strong></span>}
-        {w.dominantActivity && <span className="text-neutral-700 dark:text-neutral-300">{t('weekReview.activity')} <strong>{tt(`activity.level.${w.dominantActivity.level}`)}</strong></span>}
+        {w.avgSleepHours != null && <span className="text-pn-soft">{t('weekReview.sleep')} <strong>{w.avgSleepHours}h</strong></span>}
+        {w.medAdherence != null && <span className="text-pn-soft">{t('weekReview.meds')} <strong>{w.medAdherence}%</strong></span>}
+        {w.dominantActivity && <span className="text-pn-soft">{t('weekReview.activity')} <strong>{tt(`activity.level.${w.dominantActivity.level}`)}</strong></span>}
       </div>
       {w.topEmotions.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {w.topEmotions.slice(0, 3).map((em) => (
-            <span key={em.key} className="px-1.5 py-0.5 rounded text-[10px] bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
+            <span key={em.key} className="px-1.5 py-0.5 rounded text-[10px] bg-pn/10 text-pn-soft">
               {tt(`emotions.tags.${em.key}`)}
             </span>
           ))}

@@ -78,7 +78,8 @@ function Favicon({ domain, size = 20 }: { domain: string; size?: number }) {
   return (
     <span
       ref={containerRef}
-      className="inline-flex items-center justify-center rounded bg-[#f0efec] text-neutral-400 overflow-hidden"
+      // theme-ok: a light tile keeps dark favicons readable in every theme
+      className="inline-flex items-center justify-center rounded bg-[#f0efec] text-neutral-500 overflow-hidden"
       style={{ width: size, height: size }}
     >
       {src ? (
@@ -109,6 +110,7 @@ function TypeBadge({ type }: { type: 'login' | 'card' | 'ssh-key' }) {
     card: { label: t('vaultItem.badgeCard'), bg: 'bg-amber-50 dark:bg-amber-950/50', text: 'text-amber-700 dark:text-amber-300', icon: (
       <CreditCard size={10} />
     )},
+    // theme-ok: each kind badge keeps its own fixed color
     'ssh-key': { label: t('vaultItem.badgeSshKey', exemptOpts('shell:vaultItem.badgeSshKey')), bg: 'bg-neutral-900 dark:bg-neutral-800', text: 'text-white', icon: (
       <Key size={10} />
     )},
@@ -138,7 +140,7 @@ function TotpRing({ secondsLeft, period, danger, static: isStatic = false }: {
   const offset = isStatic ? 0 : circumference * (1 - secondsLeft / period);
   return (
     <svg width={20} height={20} viewBox="0 0 20 20" className="shrink-0" aria-hidden="true">
-      <circle cx={10} cy={10} r={r} fill="none" strokeWidth={2} stroke="currentColor" className="text-neutral-200 dark:text-neutral-700" />
+      <circle cx={10} cy={10} r={r} fill="none" strokeWidth={2} stroke="currentColor" className="text-pn-muted/50" />
       <circle
         cx={10}
         cy={10}
@@ -147,7 +149,7 @@ function TotpRing({ secondsLeft, period, danger, static: isStatic = false }: {
         strokeWidth={2}
         strokeLinecap="round"
         stroke="currentColor"
-        className={isStatic ? 'text-neutral-300 dark:text-neutral-600' : danger ? 'text-red-500' : 'text-accent'}
+        className={isStatic ? 'text-pn-muted/50' : danger ? 'text-red-500' : 'text-accent'}
         strokeDasharray={circumference}
         strokeDashoffset={offset}
         transform="rotate(-90 10 10)"
@@ -190,7 +192,7 @@ function TotpField({ raw, isPro, onOpenUpgrade, copy, copied }: {
   if (!params) {
     return (
       <DetailRow label={t('vaultItem.fieldTotp')} icon={<Shield size={13} />}>
-        <span className="text-neutral-400 dark:text-neutral-500 italic">{t('vaultItem.totpInvalid')}</span>
+        <span className="text-pn-muted italic">{t('vaultItem.totpInvalid')}</span>
       </DetailRow>
     );
   }
@@ -204,10 +206,10 @@ function TotpField({ raw, isPro, onOpenUpgrade, copy, copied }: {
 
   if (!unlocked) {
     return (
-      <div className="border-b border-neutral-100 dark:border-neutral-800 last:border-b-0">
+      <div className="border-b border-divider last:border-b-0">
         <DetailRow label={label} icon={<Shield size={13} />}>
           <span className="inline-flex items-center gap-2">
-            <span dir="ltr" className="font-mono tracking-wider text-neutral-400 dark:text-neutral-600" /* rtl-ok: masked code placeholder, symbols only, must not reorder */>
+            <span dir="ltr" className="font-mono tracking-wider text-pn-muted" /* rtl-ok: masked code placeholder, symbols only, must not reorder */>
               {'••• •••'}
             </span>
             <TotpRing secondsLeft={params.period} period={params.period} danger={false} static />
@@ -216,11 +218,11 @@ function TotpField({ raw, isPro, onOpenUpgrade, copy, copied }: {
         <button
           type="button"
           onClick={() => onOpenUpgrade('totp')}
-          className="mb-2 w-full py-1.5 rounded-md text-xs font-medium bg-accent/8 text-accent hover:bg-accent/15 transition"
+          className="mb-2 w-full py-1.5 rounded-md text-xs font-medium bg-accent/8 text-accent-strong hover:bg-accent/15 transition"
         >
           {t('vaultItem.totpUnlockCta')}
         </button>
-        <p className="mb-2 text-[11px] text-neutral-400 dark:text-neutral-500">{t('vaultItem.totpProNote')}</p>
+        <p className="mb-2 text-[11px] text-pn-muted">{t('vaultItem.totpProNote')}</p>
       </div>
     );
   }
@@ -424,7 +426,7 @@ function LoginViewMode({ note, onEdit, copy, copied, isPro, onOpenUpgrade }: {
             if (data.url) lines.push(data.url.trim());
             copy(lines.join('\n'), 'all');
           }}
-          className="mt-3 w-full py-2 rounded-lg text-xs font-medium text-neutral-500 dark:text-neutral-400 border border-divider hover:bg-neutral-100 dark:hover:bg-surface-0 transition flex items-center justify-center gap-1.5"
+          className="mt-3 w-full py-2 rounded-lg text-xs font-medium text-pn-muted border border-divider hover:bg-pn/5 transition flex items-center justify-center gap-1.5"
         >
           {copied === 'all' ? <Check className="text-green-500" /> : <Copy />}
           {copied === 'all' ? t('vaultItem.copied') : t('vaultItem.copyAll')}
@@ -490,7 +492,7 @@ function CardViewMode({ note, onEdit, copy, copied }: {
               <span dir="ltr" className="font-mono tracking-wider break-all" /* rtl-ok: digits, never reordered */>
                 {showNumber ? formatted : masked}
               </span>
-              {network && <span className="text-[10px] text-neutral-400 shrink-0">{network}</span>}
+              {network && <span className="text-[10px] text-pn-muted shrink-0">{network}</span>}
             </span>
           </DetailRow>
         )}
@@ -569,7 +571,7 @@ function SshKeyViewMode({ note, onEdit, copy, copied }: {
 
         {data.publicKey && (
           <DetailRow label={t('vaultItem.fieldPublic')} icon={<Key size={13} />} actions={<DetailCopyAction value={data.publicKey} id="publicKey" copied={copied} onCopy={copy} label={copyTip('publicKey')} />}>
-            <span dir="ltr" className="font-mono text-xs text-neutral-600 dark:text-neutral-400 break-all" /* rtl-ok: a key, never reordered */>{pubShort}</span>
+            <span dir="ltr" className="font-mono text-xs text-pn-muted break-all" /* rtl-ok: a key, never reordered */>{pubShort}</span>
           </DetailRow>
         )}
 

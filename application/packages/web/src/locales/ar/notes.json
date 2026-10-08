@@ -10,7 +10,8 @@
     "empty": "فارغة",
     "noContent": "بلا محتوى",
     "notBackedUp": "غير منسوخة احتياطيًا",
-    "archived": "مؤرشف"
+    "archived": "مؤرشف",
+    "entryDate": "تاريخ التدوينة"
   },
   "header": {
     "new": "جديد",
@@ -19,7 +20,9 @@
     "trash": "المهملات"
   },
   "folderChip": {
-    "clear": "مسح عامل تصفية المجلد: {{folder}}"
+    "clear": "مسح عامل تصفية المجلد: {{folder}}",
+    "subfolders": "المجلدات الفرعية",
+    "subfoldersLabel": "تضمين المجلدات الفرعية"
   },
   "tagChip": {
     "clear": "مسح عامل تصفية الوسم: {{tag}}"
@@ -199,6 +202,8 @@
     "currentHtmlDesc": "مناسب للطباعة، يعرض Markdown على صفحة بيضاء.",
     "printTitle": "طباعة / حفظ كملف PDF",
     "printDesc": "يفتح مربع حوار الطباعة. احفظ كملف PDF أو أرسل إلى طابعة.",
+    "printTextTitle": "طباعة النص فقط",
+    "printTextDesc": "يحتفظ بالعنوان، ويحذف التاريخ والمجلد والوسوم.",
     "burnTitle": "مشاركة وحرق بعد القراءة",
     "burnDesc": "انشر هذه الملاحظة كرابط عرض لمرة واحدة. يُتلف الرابط نفسه بعد قراءته. تبقى ملاحظتك آمنة في حسابك."
   },
@@ -216,7 +221,10 @@
     "newNote": "جديد",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "فتح الإحصاءات",
+    "journalCalendar": "تقويم اليوميات",
     "words": "الكلمات",
     "zen": "وضع Zen",
     "appearance": "المظهر",
@@ -240,7 +248,7 @@
     "appearanceLabel": "المظهر",
     "helpLabel": "المساعدة",
     "aboutLabel": "حول",
-    "languageLabel": "اللغة",
+    "languageLabel": "التاريخ واللغة",
     "languageDesc": "اختر اللغة التي يُعرض بها PrivacyNotes."
   },
   "importStore": {
@@ -257,7 +265,7 @@
     "body_zero": "هل تريد نقل <highlight>{{count}} عناصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا.",
     "body_two": "هل تريد نقل <highlight>{{count}} عنصرين</highlight> إلى المهملات؟ يمكنك استعادتهما لاحقًا.",
     "body_few": "هل تريد نقل <highlight>{{count}} عناصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا.",
-    "body_many": "هل تريد نقل <highlight>{{count}} عنصر</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا.",
+    "body_many": "هل تريد نقل <highlight>{{count}} عنصرًا</highlight> إلى المهملات؟ يمكنك استعادتها لاحقًا.",
     "readOnlyTitle": "للقراءة فقط",
     "readOnlyAcknowledge": "فهمت",
     "readOnlyBlocked_zero": "<highlight>{{count}} عناصر</highlight> للقراءة فقط، لذلك لا يمكن نقل أي منها إلى المهملات. أوقف خيار «للقراءة فقط» من خيارات الملاحظة أولاً.",
@@ -272,6 +280,16 @@
     "readOnlySkipped_few": "<highlight>{{count}} عناصر</highlight> للقراءة فقط وتبقى في مكانها.",
     "readOnlySkipped_many": "<highlight>{{count}} عنصرًا</highlight> للقراءة فقط وتبقى في مكانها.",
     "readOnlySkipped_other": "<highlight>{{count}} عنصر</highlight> للقراءة فقط وتبقى في مكانها."
+  },
+  "deleteCheckedTasks": {
+    "title": "هل تريد حذف العناصر المحددة؟",
+    "confirm": "حذف",
+    "body_zero": "سيتم حذف <highlight>{{count}} عناصر</highlight> من هذه الملاحظة. لا يمكن التراجع عن هذا الإجراء.",
+    "body_one": "سيتم حذف <highlight>{{count}} عنصر</highlight> من هذه الملاحظة. لا يمكن التراجع عن هذا الإجراء.",
+    "body_two": "سيتم حذف <highlight>{{count}} عنصرين</highlight> من هذه الملاحظة، بما فيها العناصر المتداخلة. لا يمكن التراجع عن هذا الإجراء.",
+    "body_few": "سيتم حذف <highlight>{{count}} عناصر</highlight> من هذه الملاحظة، بما فيها العناصر المتداخلة. لا يمكن التراجع عن هذا الإجراء.",
+    "body_many": "سيتم حذف <highlight>{{count}} عنصر</highlight> من هذه الملاحظة، بما فيها العناصر المتداخلة. لا يمكن التراجع عن هذا الإجراء.",
+    "body_other": "سيتم حذف <highlight>{{count}} عنصر</highlight> من هذه الملاحظة، بما فيها العناصر المتداخلة. لا يمكن التراجع عن هذا الإجراء."
   },
   "bulkDelete": {
     "body_one": "هل تريد حذف <highlight>{{count}} ملاحظة</highlight> نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",

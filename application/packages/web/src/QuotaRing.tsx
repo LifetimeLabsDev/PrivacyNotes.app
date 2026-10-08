@@ -40,7 +40,7 @@ export function QuotaRing({
               r={radius}
               fill="none"
               strokeWidth="9"
-              className="stroke-neutral-300 dark:stroke-neutral-700"
+              className="stroke-pn-muted/35"
             />
             <circle
               cx="50"
@@ -56,15 +56,15 @@ export function QuotaRing({
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-[15px] font-medium leading-none text-neutral-900 dark:text-white">
+            <span className="text-[15px] font-medium leading-none text-pn">
               {pctLabel}
             </span>
           </div>
         </div>
         <div className="min-w-0">
-          <div className="text-lg font-medium text-neutral-900 dark:text-white">
+          <div className="text-lg font-medium text-pn">
             {formatBytes(usedBytes)}{' '}
-            <span className="font-normal text-neutral-500 dark:text-neutral-400">
+            <span className="font-normal text-pn-muted">
               <Trans
                 i18nKey="settings:quota.ofMax"
                 values={{ max: maxLabel }}
@@ -72,7 +72,7 @@ export function QuotaRing({
               />
             </span>
           </div>
-          <div className="mt-0.5 text-[13px] text-neutral-600 dark:text-neutral-400">{label}</div>
+          <div className="mt-0.5 text-[13px] text-pn-muted">{label}</div>
         </div>
       </div>
     );
@@ -88,7 +88,7 @@ export function QuotaRing({
             r={radius}
             fill="none"
             strokeWidth="8"
-            className="stroke-neutral-300 dark:stroke-neutral-700"
+            className="stroke-pn-muted/35"
           />
           <circle
             cx="50"
@@ -104,7 +104,7 @@ export function QuotaRing({
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-medium leading-none text-neutral-900 dark:text-white">
+          <span className="text-3xl font-medium leading-none text-pn">
             {pctLabel}
           </span>
           <span className={`mt-1 ${SETTINGS_EYEBROW}`}>
@@ -112,9 +112,9 @@ export function QuotaRing({
           </span>
         </div>
       </div>
-      <div className="mt-3 text-[15px] font-medium text-neutral-900 dark:text-white">
+      <div className="mt-3 text-[15px] font-medium text-pn">
         {formatBytes(usedBytes)}{' '}
-        <span className="font-normal text-neutral-500 dark:text-neutral-400">
+        <span className="font-normal text-pn-muted">
           <Trans
             i18nKey="settings:quota.ofMax"
             values={{ max: maxLabel }}
@@ -122,7 +122,7 @@ export function QuotaRing({
           />
         </span>
       </div>
-      <div className="mt-0.5 text-[13px] text-neutral-600 dark:text-neutral-400">{label}</div>
+      <div className="mt-0.5 text-[13px] text-pn-muted">{label}</div>
     </div>
   );
 }

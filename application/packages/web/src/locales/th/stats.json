@@ -1,6 +1,7 @@
 {
   "title": "สถิติ",
   "tabs": {
+    "overview": "ภาพรวม",
     "writing": "การเขียน",
     "wellness": "สุขภาวะ"
   },
@@ -25,12 +26,13 @@
     "30d": "30 วัน",
     "3mo": "3 เดือน",
     "6mo": "6 เดือน",
-    "12mo": "12 เดือน"
+    "12mo": "12 เดือน",
+    "all": "ทั้งหมด"
   },
   "wellness": {
     "subTabs": {
       "all": "ทั้งหมด",
-      "sleepActivity": "การนอนและกิจกรรม",
+      "explore": "สำรวจ",
       "medication": "ยา",
       "patterns": "รูปแบบ"
     },
@@ -38,33 +40,17 @@
       "title": "ยังไม่มีข้อมูลสุขภาวะ",
       "hint": "เปิดบันทึกประจำวันแล้วบันทึกอารมณ์เพื่อเริ่มต้น"
     },
-    "overview": {
-      "daysTracked": "จำนวนวันที่ติดตาม",
-      "avgMood": "อารมณ์เฉลี่ย",
-      "avgSleep": "การนอนเฉลี่ย",
-      "medAdherence": "การใช้ยา",
-      "moodTrend": "แนวโน้มอารมณ์",
-      "moodByDayOfWeek": "อารมณ์ตามวันในสัปดาห์",
-      "moodTrendTooltip": "{{date}}: {{mood}}/10",
-      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
-    },
     "export": {
       "heading": "ส่งออก",
-      "allTime": "ทั้งหมด",
-      "last90Days": "90 วันล่าสุด",
-      "last30Days": "30 วันล่าสุด",
-      "last7Days": "7 วันล่าสุด",
       "downloadJSON": "ดาวน์โหลด JSON",
       "doctorPDF": "PDF สำหรับแพทย์",
-      "copyAIPrompt": "คัดลอกพรอมต์ AI",
+      "copyAIPrompt": "แสดงและคัดลอกพรอมต์ AI",
       "copied": "คัดลอกแล้ว!",
       "saveFailed": "บันทึกไม่สำเร็จ ไฟล์จึงอาจว่างเปล่าหรือไม่สมบูรณ์ ลองอีกครั้ง หรือเลือกโฟลเดอร์อื่น",
-      "proBadge": "PRO"
-    },
-    "sleepActivity": {
-      "sleepQuality": "คุณภาพการนอน",
-      "activity": "กิจกรรม",
-      "avgSleepPerNight": "การนอนเฉลี่ยต่อคืน"
+      "proBadge": "PRO",
+      "usesRange": "ใช้ช่วงเวลาด้านบน",
+      "promptShown": "พรอมต์ที่คัดลอกไว้ วางลงในแชตบอตที่คุณเลือกได้เลย",
+      "hidePrompt": "ซ่อน"
     },
     "medication": {
       "adherence": "การใช้ยาตามกำหนด",
@@ -77,12 +63,11 @@
       "changedTo": "เปลี่ยนเป็น {{dosage}}"
     },
     "patterns": {
-      "topEmotions": "ความรู้สึกที่พบบ่อย",
+      "heading": "อะไรส่งผลต่ออารมณ์ของคุณ",
       "insights": "ข้อสังเกต",
       "proBadge": "PRO",
       "insightsLocked_other": "พบข้อสังเกต {{count}} รายการ อัปเกรดเป็น Pro เพื่อดู",
-      "weekInReview": "สรุปประจำสัปดาห์",
-      "weekInReviewLocked": "อัปเกรดเป็น Pro เพื่อดูสรุปสุขภาวะรายสัปดาห์"
+      "tableLocked": "อัปเกรดเป็น Pro เพื่อดูว่าตัวติดตามใดส่งผลต่ออารมณ์ของคุณ"
     },
     "week": {
       "range": "{{start}} ถึง {{end}}",
@@ -94,18 +79,31 @@
       "topActivity": "กิจกรรมหลัก",
       "topEmotions": "ความรู้สึกที่พบบ่อย",
       "reflection": "ทบทวน",
-      "reflectionPlaceholder": "สัปดาห์นี้โดยรวมเป็นอย่างไร มีความคิดอะไรอยากจดไว้..."
+      "reflectionPlaceholder": "สัปดาห์นี้โดยรวมเป็นอย่างไร มีความคิดอะไรอยากจดไว้...",
+      "heading": "สรุปประจำสัปดาห์",
+      "proBadge": "PRO",
+      "locked": "อัปเกรดเป็น Pro เพื่อดูสรุปสุขภาวะรายสัปดาห์"
     },
     "units": {
       "days_other": "{{count}} วัน"
     },
     "insights": {
-      "sleep": "ในวันที่นอนหลับดี อารมณ์เฉลี่ยอยู่ที่ {{good}} และในวันที่นอนไม่ดีอยู่ที่ {{bad}}",
-      "activity": "ในวันที่ทำกิจกรรมมาก อารมณ์เฉลี่ยอยู่ที่ {{active}} และในวันที่นั่งเป็นส่วนใหญ่อยู่ที่ {{sedentary}}",
       "dayOfWeek": "วันที่ดีที่สุดมักเป็น{{best}} (เฉลี่ย {{bestAvg}}) และวันที่หนักที่สุดคือ{{worst}} (เฉลี่ย {{worstAvg}})",
-      "medication": "ตั้งแต่เริ่มใช้ {{name}} เมื่อ {{date}} อารมณ์เฉลี่ยเปลี่ยนจาก {{before}} เป็น {{after}}",
+      "medication": "{{outcome}}ของคุณเฉลี่ย {{a}} ในวันที่ใช้ {{name}} และ {{b}} ในวันที่ไม่ได้ใช้",
       "streak_other": "บันทึกอารมณ์ติดต่อกัน {{count}} วันแล้ว ทำต่อไปนะ!",
-      "trend": "อารมณ์เฉลี่ยในสองสัปดาห์ที่ผ่านมาอยู่ที่ {{recent}} เทียบกับค่าเฉลี่ยรวม {{overall}}"
+      "trend": "อารมณ์เฉลี่ยในสองสัปดาห์ที่ผ่านมาอยู่ที่ {{recent}} เทียบกับค่าเฉลี่ยรวม {{overall}}",
+      "yesno": "{{outcome}}ของคุณเฉลี่ย {{a}} ในวันที่บันทึก {{name}} และ {{b}} ในวันที่ไม่ได้บันทึก",
+      "yesnoNextDay": "{{outcome}}ของคุณเฉลี่ย {{a}} ในวันถัดจากวันที่บันทึก {{name}} และ {{b}} ถัดจากวันที่ไม่ได้บันทึก",
+      "halves": "{{outcome}}ของคุณเฉลี่ย {{a}} เมื่อ {{name}} สูงกว่า {{threshold}} และ {{b}} เมื่ออยู่ที่ {{threshold}} หรือต่ำกว่า",
+      "halvesNextDay": "{{outcome}}ของคุณเฉลี่ย {{a}} ในวันถัดจากวันที่ {{name}} สูงกว่า {{threshold}} และ {{b}} ถัดจากวันที่อยู่ที่ {{threshold}} หรือต่ำกว่า",
+      "median": "{{outcome}}ของคุณเฉลี่ย {{a}} เมื่อ {{name}} สูงกว่าค่ามัธยฐานของคุณที่ {{threshold}} และ {{b}} เมื่อเท่ากับหรือต่ำกว่า",
+      "medianNextDay": "{{outcome}}ของคุณเฉลี่ย {{a}} ในวันถัดจากวันที่ {{name}} สูงกว่าค่ามัธยฐานของคุณที่ {{threshold}} และ {{b}} ถัดจากวันที่เท่ากับหรือต่ำกว่า",
+      "levels": "{{outcome}}ของคุณเฉลี่ย {{a}} ในวันที่ {{top}} และ {{b}} ในวันที่ {{bottom}}",
+      "levelsNextDay": "{{outcome}}ของคุณเฉลี่ย {{a}} ในวันถัดจากวันที่ {{top}} และ {{b}} ถัดจากวันที่ {{bottom}}",
+      "tag": "{{outcome}}ของคุณเฉลี่ย {{a}} ในวันที่รู้สึก{{tag}} และ {{b}} ในวันที่ไม่ได้รู้สึกเช่นนั้น",
+      "tagNextDay": "{{outcome}}ของคุณเฉลี่ย {{a}} ในวันถัดจากวันที่รู้สึก{{tag}} และ {{b}} ถัดจากวันที่ไม่ได้รู้สึกเช่นนั้น",
+      "medicationNextDay": "{{outcome}}ของคุณเฉลี่ย {{a}} ในวันถัดจากวันที่ใช้ {{name}} และ {{b}} ถัดจากวันที่ไม่ได้ใช้",
+      "doseChange": "ช่วงที่เปลี่ยน {{name}} เป็น {{dosage}} เมื่อ {{date}} อารมณ์ของคุณเฉลี่ย {{before}} ใน {{nBefore}} วันก่อนหน้า และ {{after}} ใน {{nAfter}} วันหลังจากนั้น"
     },
     "aiPrompt": {
       "intro": "ฉันบันทึกอารมณ์และสุขภาวะมาระยะหนึ่ง ช่วยวิเคราะห์ข้อมูลด้านล่างเพื่อหารูปแบบ แนวโน้ม และข้อแนะนำที่นำไปใช้ได้",
@@ -129,7 +127,15 @@
       "question2": "คุณภาพการนอนและระดับกิจกรรมสัมพันธ์กับอารมณ์หรือไม่",
       "question3": "มีแนวโน้มที่น่ากังวลซึ่งควรปรึกษาแพทย์หรือไม่",
       "question4": "คำแนะนำที่นำไปใช้ได้จากข้อมูลนี้",
-      "footer": "สร้างโดย PrivacyNotes (privacynotes.app)"
+      "footer": "สร้างโดย PrivacyNotes (privacynotes.app)",
+      "period": "ช่วงเวลา: {{from}} ถึง {{to}}",
+      "daysLogged": "วันที่บันทึก: {{logged}} จาก {{days}}",
+      "trackers": "ตัวติดตาม",
+      "trackerLine": "{{name}}: เฉลี่ย {{avg}}, ต่ำสุด {{low}}, สูงสุด {{high}}, {{count}} วัน",
+      "trackerYesLine": "{{name}}: ใช่ {{yes}} จาก {{count}} วัน",
+      "effects": "อารมณ์ในวันที่มีและไม่มี",
+      "effectLine": "{{name}} ({{rule}}): มี {{a}}, ไม่มี {{b}}, ต่างกัน {{delta}}, {{na}} / {{nb}} วัน",
+      "customQuestion": "{{name}} สัมพันธ์กับอารมณ์ของฉันหรือไม่ ทั้งในวันเดียวกันหรือวันถัดไป?"
     },
     "report": {
       "documentTitle": "รายงานสุขภาวะ",
@@ -160,8 +166,122 @@
       "unknownDose": "ไม่ทราบขนาดยา",
       "topEmotions": "ความรู้สึกที่พบบ่อยที่สุด",
       "patterns": "รูปแบบที่ตรวจพบ",
-      "footer": "สร้างโดย PrivacyNotes - privacynotes.app"
-    }
+      "footer": "สร้างโดย PrivacyNotes - privacynotes.app",
+      "period": "ช่วงเวลา: {{from}} ถึง {{to}}, {{days}} วัน",
+      "daysLogged": "วันที่บันทึก: {{logged}} จาก {{days}}",
+      "moodHeading": "อารมณ์ หนึ่งแท่งต่อหนึ่งวัน",
+      "moodLegend": "แท่ง: 1-2 แดง, 3-4 ส้ม, 5-6 เหลือง, 7-8 เขียว, 9-10 น้ำเงิน เส้น: ค่าเฉลี่ย 7 วัน สามเหลี่ยม: การเปลี่ยนขนาดยา ช่องว่างคือวันที่ไม่มีรายการ",
+      "previous": "{{days}} วันก่อนหน้า: {{value}}",
+      "trackers": "ตัวติดตาม",
+      "columnTracker": "ตัวติดตาม",
+      "columnAverage": "เฉลี่ย",
+      "columnLowHigh": "ต่ำสุด / สูงสุด",
+      "columnHistory": "ประวัติ",
+      "effects": "อารมณ์ในวันที่มีและไม่มี",
+      "columnFactor": "ปัจจัย",
+      "columnRule": "เกณฑ์",
+      "columnWith": "มี",
+      "columnWithout": "ไม่มี",
+      "columnDifference": "ต่างกัน",
+      "nextDaySuffix": "{{name}}, วันถัดไป",
+      "effectsNote": "ค่าเฉลี่ยของวันที่บันทึก ความต่างเป็นเพียงข้อสังเกต ไม่ใช่สาเหตุ",
+      "medCalendar": "ปฏิทิน",
+      "doseChanges": "การเปลี่ยนขนาดยา",
+      "columnDoseChanges": "การเปลี่ยนขนาดยา",
+      "yesOn": "ใช่ {{count}} วัน",
+      "total": "รวม {{value}}"
+    },
+    "tiles": {
+      "daysLogged": "วันที่บันทึก",
+      "daysLoggedOf": "{{logged}} จาก {{days}}",
+      "avgMood": "อารมณ์เฉลี่ย",
+      "moodDelta": "{{delta}} เทียบกับ {{days}} วันก่อนหน้า",
+      "avgSleep": "การนอนเฉลี่ย",
+      "medsTaken": "ใช้ยาแล้ว"
+    },
+    "mood": {
+      "heading": "อารมณ์",
+      "legend": "เส้น: ค่าเฉลี่ย 7 วัน สามเหลี่ยม: การเปลี่ยนขนาดยา",
+      "dose": "{{name}} {{dosage}}"
+    },
+    "trackers": {
+      "heading": "ตัวติดตาม",
+      "tapHint": "แตะเพื่อเปิดสำรวจ",
+      "stopped": "หยุดแล้ว",
+      "deleted": "ลบแล้ว",
+      "stoppedChip": "หยุดแล้ว ({{count}})",
+      "unknown": "ตัวติดตามที่ไม่รู้จัก {{id}}",
+      "sleepHours": "ชั่วโมงการนอน",
+      "sleepQuality": "คุณภาพการนอน",
+      "avgDays": "เฉลี่ย, {{count}} วัน",
+      "sumDays": "รวม, {{count}} วัน",
+      "yesNo": "ใช่ {{yes}}, ไม่ใช่ {{no}}",
+      "notLogged": "ไม่ได้บันทึก {{count}}",
+      "latestLowHigh": "ล่าสุด {{latest}}, ต่ำสุด {{low}}, สูงสุด {{high}}",
+      "topLevel": "{{level}} {{count}} วัน",
+      "taken": "ใช้ยา {{taken}} จาก {{total}}",
+      "empty": "ไม่มีข้อมูลในช่วงเวลานี้",
+      "unanswered": "{{count}} วันที่บันทึกแต่ไม่ได้ตอบ"
+    },
+    "effects": {
+      "heading": "อะไรส่งผลต่ออารมณ์ของคุณ",
+      "headingOutcome": "อะไรส่งผลต่อ{{outcome}}ของคุณ",
+      "allInPatterns": "ดูทั้งหมดในรูปแบบ",
+      "sameDay": "วันเดียวกัน",
+      "nextDay": "วันถัดไป",
+      "compareWith": "เทียบกับ",
+      "withLabel": "มี",
+      "withoutLabel": "ไม่มี",
+      "days": "{{a}} / {{b}} วัน",
+      "shortfall_other": "ต้องการอีก {{count}} วันในฝั่ง{{side}}",
+      "sideWith": "มี",
+      "sideWithout": "ไม่มี",
+      "footnote": "ข้อสังเกตจากวันที่บันทึก ไม่ใช่สาเหตุ",
+      "higher": "{{outcome}}สูงกว่า {{delta}} คะแนนในวันเหล่านี้",
+      "lower": "{{outcome}}ต่ำกว่า {{delta}} คะแนนในวันเหล่านี้",
+      "rule": {
+        "yesno": "วันที่มีเทียบกับไม่มี",
+        "halves": "สูงกว่า {{threshold}} เทียบกับ {{threshold}} หรือต่ำกว่า",
+        "median": "สูงกว่าเทียบกับต่ำกว่าค่ามัธยฐานของคุณที่ {{threshold}}",
+        "levels": "{{top}} เทียบกับ {{bottom}}",
+        "tag": "วันที่รู้สึก{{tag}}เทียบกับไม่รู้สึก",
+        "medication": "ใช้ยาเทียบกับไม่ได้ใช้"
+      }
+    },
+    "explore": {
+      "calendar": "ปฏิทิน",
+      "against": "เทียบกับ{{outcome}} บนแกนวันที่เดียวกัน",
+      "cells": {
+        "value": "บันทึกแล้ว",
+        "no": "ไม่ใช่",
+        "missing": "ไม่ได้บันทึก"
+      },
+      "longestRunWithout": "ช่วงไม่มีต่อเนื่องนานสุด: {{count}} วัน",
+      "longestRunWith": "ช่วงมีต่อเนื่องนานสุด: {{count}} วัน",
+      "pickOne": "เลือกตัวติดตาม"
+    },
+    "medCalendar": {
+      "heading": "วันต่อวัน",
+      "doseChange": "เปลี่ยนขนาดยา",
+      "taken": "ใช้แล้ว",
+      "skipped": "ข้าม",
+      "missed": "ไม่ได้ใช้",
+      "unmarked": "ไม่ได้ทำเครื่องหมาย",
+      "noEntry": "ไม่มีรายการ",
+      "doseLens": "อารมณ์เฉลี่ย {{before}} ใน {{nBefore}} วันก่อนหน้า และ {{after}} ใน {{nAfter}} วันหลังจากนั้น",
+      "doseLensHeading": "ช่วงรอบการเปลี่ยนขนาดยาแต่ละครั้ง",
+      "doseLensShort_other": "ต้องการวันที่บันทึกรอบ ๆ อีก {{count}} วัน"
+    },
+    "sourceLine": "ข้อมูลทั้งหมดที่นี่มาจากตัวติดตามในบันทึกประจำวันของคุณ",
+    "openToday": "เปิดรายการของวันนี้"
+  },
+  "milestones": {
+    "heading": "หลักชัย",
+    "next": "ถัดไป: {{label}}",
+    "allReached": "{{label}} และทั้งหมดก่อนหน้านั้น",
+    "ofTarget": "{{current}} จาก {{target}}",
+    "reached_other": "บรรลุแล้ว {{count}} รายการ",
+    "source": "โน้ตที่เขียนและจำนวนวันที่ใช้ PrivacyNotes นับเฉพาะสิ่งที่เกิดขึ้นในแอป การนำเข้าไม่เปลี่ยนทั้งสองอย่าง"
   },
   "milestoneToast": {
     "unlocked": "ปลดล็อกหลักชัยแล้ว"
@@ -175,5 +295,58 @@
     "age730": "2 ปีกับ PrivacyNotes",
     "age1825": "5 ปีกับ PrivacyNotes",
     "ageDefault": "ใช้งานมาแล้ว {{count}} วัน"
+  },
+  "overview": {
+    "week": "สัปดาห์ของคุณ",
+    "streak": "เขียนต่อเนื่อง",
+    "streakDays_other": "{{count}} วัน",
+    "streakNudge": "วันนี้ยังไม่ได้เขียน แค่บรรทัดเดียวก็รักษาไว้ได้",
+    "streakKept": "วันนี้นับแล้ว",
+    "words": "คำที่เขียน",
+    "wordsDelta": "{{delta}} เทียบกับสัปดาห์ก่อน",
+    "mood": "อารมณ์",
+    "moodDelta": "{{delta}} เทียบกับสัปดาห์ก่อน",
+    "daysLogged": "วันที่บันทึก",
+    "daysLoggedOf": "{{logged}} จาก {{days}}",
+    "rhythm": "จังหวะของคุณ, {{weeks}} สัปดาห์",
+    "layerBoth": "ทั้งสอง",
+    "layerWriting": "การเขียน",
+    "layerMood": "อารมณ์",
+    "rhythmLegend": "ช่อง: เขียนมากแค่ไหนในวันนั้น จุด: วันนั้นรู้สึกอย่างไร",
+    "hours": "ช่วงเวลาที่คุณเขียน",
+    "hoursSub": "การแก้ไขตามชั่วโมง, {{days}} วัน",
+    "hoursPeak": "คุณเขียนมากที่สุดในช่วง {{from}} ถึง {{to}}",
+    "ledgerSince": "นับบนอุปกรณ์นี้ตั้งแต่ {{date}}",
+    "ledgerEmpty": "เริ่มนับตั้งแต่ตอนนี้ กลับมาดูอีกครั้งในหนึ่งสัปดาห์",
+    "highlights": "ไฮไลต์",
+    "highlightSleep": "นอนดี เขียนได้มากกว่า หลังจากนอน {{hours}} ชั่วโมงขึ้นไป คุณเขียนราว {{a}} คำต่อวัน หลังจากคืนที่นอนน้อย {{b}} คำ",
+    "highlightSleepSub": "คืนที่นอนยาว {{long}} คืน, นอนน้อย {{short}} คืน, {{days}} วัน",
+    "highlightWeekday": "{{day}}คือวันของคุณ อารมณ์เฉลี่ย {{mood}} และ {{count}} จาก {{total}} โน้ตที่ยาวที่สุดของคุณเขียนใน{{day}}",
+    "highlightWeekdaySub": "บันทึก{{day}}ไว้ {{count}} วัน",
+    "highlightEffect": "วันที่มี {{name}} อารมณ์{{direction}} อารมณ์ {{a}} เมื่อมี, {{b}} เมื่อไม่มี",
+    "higher": "สูงกว่า",
+    "lower": "ต่ำกว่า",
+    "highlightEffectSub": "{{count}} วันที่มี {{name}} จาก {{days}} วัน",
+    "highlightTag": "#{{tag}} กำลังเติบโต {{now}} โน้ตในเดือนนี้ {{before}} โน้ตในเดือนก่อน",
+    "highlightTagSub": "ใช้แท็กอยู่ {{count}} แท็ก",
+    "highlightsLocked": "อัปเกรดเป็น Pro เพื่อดูว่าการเขียนและตัวติดตามของคุณมีอะไรเกี่ยวข้องกัน",
+    "vault": "ตู้นิรภัยของคุณ",
+    "vaultSub": "สัปดาห์นี้แบบย่อ",
+    "done": "เสร็จแล้ว {{count}}",
+    "milestones": "หลักชัย",
+    "longestStreak": "ต่อเนื่องนานสุด: {{count}} วัน",
+    "openWriting": "เปิดการเขียน",
+    "openWellness": "เปิดสุขภาวะ",
+    "computed": "คำนวณบนอุปกรณ์นี้",
+    "pillars": {
+      "notes": "โน้ต",
+      "journals": "บันทึกประจำวัน",
+      "tasks": "งาน",
+      "files": "ไฟล์",
+      "bookmarks": "บุ๊กมาร์ก",
+      "contacts": "รายชื่อติดต่อ",
+      "logins": "ล็อกอิน"
+    },
+    "ledgerEstimated": "ประมาณจากโน้ตของคุณจนกว่าจะเริ่มนับ"
   }
 }

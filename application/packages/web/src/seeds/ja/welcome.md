@@ -7,7 +7,7 @@ title: PrivacyNotesへようこそ
 
 <h1 style="text-align: center;"><span style="color: rgb(25, 113, 194);">ここはあなただけの</span><span style="color: rgb(25, 113, 194);">プライベートな</span><span style="color: rgb(25, 113, 194);">場所です</span></h1>
 
-<p style="text-align: center"><em>ノートはこの端末で暗号化されます。鍵を誰が持つかは、あなたが選びます。</em></p>
+<p style="text-align: center"><em>ノートはこのデバイスで暗号化されます。鍵を誰が持つかは、あなたが選びます。</em></p>
 
 ---
 
@@ -15,7 +15,7 @@ title: PrivacyNotesへようこそ
 
 この行の末尾をクリックして、何か一語打ってみてください。ノートはひとりでに保存されます。保存ボタンはありません。
 
-上のツールバーで文字の見た目が変わります。**太字**、*斜体*、見出し、チェックリスト、<span style="color: #f08c00">色</span>、<span style="font-size: 1.25em; font-family: ui-serif, Georgia, Cambria, serif">フォント</span>、リンク。
+上のツールバーで文字の見た目が変わります。**太字**、*斜体*、見出し、タスクリスト、<span style="color: #f08c00">色</span>、<span style="font-size: 1.25em; font-family: ui-serif, Georgia, Cambria, serif">フォント</span>、リンク。
 
 ## 開く価値のある3つのノート
 

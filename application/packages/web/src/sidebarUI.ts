@@ -18,7 +18,16 @@
  * Spec: ops/docs/ui-patterns.md section 37 (sidebar selection)
  */
 export const SIDEBAR_ACTIVE =
-  'bg-accent/15 hover:bg-accent/20 dark:bg-accent/20 dark:hover:bg-accent/25 text-pn';
+  'pn-on-tint bg-accent/15 hover:bg-accent/20 dark:bg-accent/20 dark:hover:bg-accent/25 text-pn';
+
+/**
+ * A row a drag would land INSIDE: a folder that takes a dragged folder or a
+ * dragged note, a tag that takes a note. A wash and a ring, no border and no
+ * padding, so the row keeps its size and the rows under the pointer do not
+ * move while the drag measures them.
+ * Spec: ops/docs/plans/drag-to-folder-and-tag.md (section 5.3)
+ */
+export const SIDEBAR_DROP_INSIDE = 'bg-accent/10 ring-1 ring-accent dark:bg-accent/15';
 
 /**
  * The "..." that opens a folder or tag row's menu, in the sidebar and in the
@@ -33,4 +42,4 @@ export const SIDEBAR_ACTIVE =
  * Spec: ops/docs/ui-patterns.md section 53 (sidebar rows)
  */
 export const SIDEBAR_ROW_MENU_BUTTON =
-  'shrink-0 inline-flex items-center justify-center w-6 h-6 rounded text-neutral-500 hover:text-accent hover:bg-neutral-300/60 dark:hover:bg-neutral-800/60 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity [@media(hover:none)]:opacity-100 [@media(hover:none)]:self-stretch [@media(hover:none)]:h-auto [@media(hover:none)]:relative [@media(hover:none)]:after:absolute [@media(hover:none)]:after:inset-y-0 [@media(hover:none)]:after:-inset-x-2.5';
+  'shrink-0 inline-flex items-center justify-center w-6 h-6 rounded text-pn-muted hover:text-accent hover:bg-pn/10 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity [@media(hover:none)]:opacity-100 [@media(hover:none)]:self-stretch [@media(hover:none)]:h-auto [@media(hover:none)]:relative [@media(hover:none)]:after:absolute [@media(hover:none)]:after:inset-y-0 [@media(hover:none)]:after:-inset-x-2.5';

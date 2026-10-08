@@ -71,9 +71,13 @@ Un riquadro è una scatola colorata per qualcosa che nessuno deve perdersi.
 
 > Una citazione rientra dal margine e prende una riga colorata sul lato.
 
+## Note a piè di pagina
+
+Una nota a piè di pagina tiene una fonte o un inciso fuori dal testo.[^1] Scrivi `[^1]` dopo una parola, o scegli **Nota a piè di pagina** nel menu **Inserisci**. Fai clic sul numerino per andare alla nota.
+
 ## Codice
 
-Il codice mantiene la spaziatura e viene colorato per linguaggio.
+Il codice mantiene la spaziatura e viene colorato per linguaggio. Il nome in alto in un blocco è il suo linguaggio: cliccalo per sceglierne un altro.
 
 ```js
 export function seal(note, key) {
@@ -86,6 +90,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+Un blocco lungo si apre chiuso, così il resto della nota resta vicino. Il pulsante sotto mostra tutte le righe.
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 Un pezzo breve di codice dentro una frase si vede così: `questo`.
@@ -107,10 +152,16 @@ Trascina un'immagine in una nota, oppure incollala. Cliccala una volta per cambi
 Ce ne sono due tipi, e sono diversi di proposito.
 
 - Un link web apre un sito: [privacynotes.app](https://privacynotes.app/it)
-- Un link di nota apre un'altra delle tue note: [[Come sono protette le tue note]]
+- Un collegamento fra note apre un'altra delle tue note: [[Come sono protette le tue note]]
 
 Entrambi hanno un pulsante nella barra. La catena fa un link web. Le parentesi quadre fanno un link a una nota: elencano le tue note e scegli quella che vuoi. Digitare `[[` fa la stessa cosa.
+
+Un collegamento fra note non deve per forza mostrare il titolo della nota. Scrivi il titolo, una barra verticale, poi le parole che vuoi vedere nella pagina: [[Come sono protette le tue note|queste parole]] aprono quella nota.
+
+Un collegamento fra note può anche aprire una nota a uno dei suoi titoli. Scrivi un `#` dopo il titolo e scegli il titolo della sezione: [[Come sono protette le tue note#Chi ha la tua chiave]] apre quella nota alla sezione sulla chiave. L'icona del link su un titolo nella struttura copia un collegamento così per te.
 
 ---
 
 *Se scrivi già in markdown, scrivilo e si formatta man mano. Per vedere il testo grezzo dietro una nota, clicca **Mostra markdown** in basso a destra in questa nota.*
+
+[^1]: Questa è la nota. La freccia accanto ti riporta su.

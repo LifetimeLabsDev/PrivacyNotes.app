@@ -31,9 +31,12 @@ import {
   isLookColor,
   LOOK_COLORS,
   lookOf,
+  NOTE_COLOR_CHOICES,
+  NOTE_COLOR_LABEL,
   type ItemStyles,
   type LookAttr,
   type LookColor,
+  type NoteColorChoice,
 } from '../itemStyles';
 import { inkStyle, PathGlyph } from './LookGlyph';
 import { useLookIcons } from './lookIconsLoader';
@@ -72,10 +75,10 @@ export function LookPicker({
   target,
   styles,
   subfolderIds = [],
-  tintNotes,
+  noteColors,
   onPick,
   onSubfoldersFollow,
-  onTintNotes,
+  onNoteColors,
   onCancel,
   onClose,
 }: {
@@ -83,12 +86,14 @@ export function LookPicker({
   styles: ItemStyles;
   /** Every folder below a folder target; empty for a tag. */
   subfolderIds?: readonly string[];
-  tintNotes: boolean;
+  /** The "Note colors" control of Appearance, shown here because this is
+   *  where a color is chosen. */
+  noteColors: NoteColorChoice;
   onPick: (patch: Partial<Record<LookAttr, string | null>>) => void;
   /** The subfolder switch: on copies the folder's color to every folder
    *  below it, off clears those copies. */
   onSubfoldersFollow?: (on: boolean) => void;
-  onTintNotes: (on: boolean) => void;
+  onNoteColors: (next: NoteColorChoice) => void;
   /** Undo every pick of this visit. The picker closes itself after it. */
   onCancel: () => void;
   onClose: () => void;
@@ -267,14 +272,14 @@ export function LookPicker({
           <PathGlyph
             paths={previewPaths}
             size={20}
-            className={ownColor ? undefined : 'text-amber-600/80 dark:text-amber-500/80'}
+            className={ownColor ? undefined : 'text-amber-700 dark:text-amber-500/80'}
             style={inkStyle(ownColor)}
           />
         ) : (
           <DefaultGlyph
             size={20}
             weight={target.kind === 'tag' && target.favorite ? 'fill' : undefined}
-            className={ownColor ? undefined : 'text-amber-600/80 dark:text-amber-500/80'}
+            className={ownColor ? undefined : 'text-amber-700 dark:text-amber-500/80'}
             style={inkStyle(ownColor)}
             aria-hidden="true"
           />
@@ -298,7 +303,7 @@ export function LookPicker({
         type="button"
         onClick={onClose}
         aria-label={tCommon('actions.close')}
-        className="shrink-0 -me-1 w-8 h-8 [@media(hover:none)]:w-11 [@media(hover:none)]:h-11 inline-flex items-center justify-center rounded-md text-pn-muted hover:text-pn hover:bg-neutral-200/70 dark:hover:bg-neutral-800 transition"
+        className="shrink-0 -me-1 w-8 h-8 [@media(hover:none)]:w-11 [@media(hover:none)]:h-11 inline-flex items-center justify-center rounded-md text-pn-muted hover:text-pn hover:bg-pn/5 transition"
       >
         <X size={16} />
       </button>
@@ -313,14 +318,14 @@ export function LookPicker({
           onCancel();
           onClose();
         }}
-        className="h-9 [@media(hover:none)]:h-11 rounded-md border border-divider text-pn text-[14px] font-medium hover:bg-neutral-200/60 dark:hover:bg-neutral-800/60 transition"
+        className="h-9 [@media(hover:none)]:h-11 rounded-md border border-divider text-pn text-[14px] font-medium hover:bg-pn/5 transition"
       >
         {tCommon('actions.cancel')}
       </button>
       <button
         type="button"
         onClick={onClose}
-        className="h-9 [@media(hover:none)]:h-11 rounded-md bg-accent text-white text-[14px] font-medium hover:opacity-90 transition"
+        className="h-9 [@media(hover:none)]:h-11 rounded-md bg-accent-fill text-white text-[14px] font-medium hover:opacity-90 transition"
       >
         {tCommon('actions.done')}
       </button>
@@ -383,13 +388,25 @@ export function LookPicker({
         )}
         {/* One setting for all notes, shown here because this is where a
             color is chosen. */}
-        <Switch
-          className="py-2.5"
-          label={tSettings('appearance.tintNotesTitle')}
-          description={tSettings('appearance.tintNotesDesc')}
-          checked={tintNotes}
-          onChange={onTintNotes}
-        />
+        <div className="py-2.5">
+          <p className="text-sm font-medium">{tSettings('appearance.noteColorsTitle')}</p>
+          <p className={`${SETTINGS_HELP} mt-0.5`}>{tSettings('appearance.noteColorsDesc')}</p>
+          <div className="mt-2 flex gap-1 rounded-md p-1 bg-track" role="group" aria-label={tSettings('appearance.noteColorsTitle')}>
+            {NOTE_COLOR_CHOICES.map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => onNoteColors(c)}
+                aria-pressed={noteColors === c}
+                className={`flex-1 inline-flex items-center justify-center py-1.5 rounded text-xs transition ${
+                  noteColors === c ? 'bg-surface-2 shadow-sm text-pn font-semibold' : 'text-pn-soft hover:text-pn font-medium'
+                }`}
+              >
+                {tSettings(NOTE_COLOR_LABEL[c])}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );
@@ -411,8 +428,8 @@ export function LookPicker({
         onBlur={() => setHoverIcon(null)}
         className={`h-9 [@media(hover:none)]:h-11 rounded-md flex items-center justify-center transition ${
           pressed
-            ? 'bg-accent/15 text-accent ring-1 ring-inset ring-accent'
-            : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200/60 dark:hover:bg-neutral-800/60'
+            ? 'bg-accent/15 text-accent-strong ring-1 ring-inset ring-accent'
+            : 'text-pn-soft hover:bg-pn/5'
         }`}
       >
         <PathGlyph paths={catalog.LOOK_ICONS[id] ?? []} size={20} />
@@ -485,7 +502,7 @@ export function LookPicker({
           style={keyboard ? { top: keyboard.top, height: keyboard.height } : undefined}
         >
           {!keyboard && (
-            <div className="w-8 h-1 bg-neutral-300 dark:bg-neutral-700 rounded-full mx-auto mt-3 mb-3 shrink-0" />
+            <div className="w-8 h-1 bg-pn-muted/35 rounded-full mx-auto mt-3 mb-3 shrink-0" />
           )}
           <div className={`px-4 shrink-0 ${keyboard ? 'pt-3' : ''}`}>{top}</div>
           <div className="px-4 pt-1 pb-2 overflow-y-auto min-h-0 flex-1 overscroll-contain">{body}</div>

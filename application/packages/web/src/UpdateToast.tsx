@@ -60,7 +60,7 @@ export function UpdateToast({
           }`}
         >
           <ArrowUp
-            className={`w-4 h-4 ${required ? 'text-amber-600 dark:text-amber-400' : 'text-accent'}`}
+            className={`w-4 h-4 ${required ? 'text-warning' : 'text-accent'}`}
             aria-hidden="true"
           />
         </div>
@@ -90,7 +90,7 @@ export function UpdateToast({
         <button
           type="button"
           onClick={onAction}
-          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent-hover transition"
+          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent-fill text-white text-sm font-medium hover:bg-accent-fill-hover transition"
         >
           <ArrowClockwise className="w-3.5 h-3.5" aria-hidden="true" />
           {actionLabel}

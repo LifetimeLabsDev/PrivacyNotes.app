@@ -185,7 +185,7 @@ export function ConnectedAccounts({
       )}
 
       {(error || failed) && <div role="alert" className="space-y-2">
-        <p className="text-xs text-red-600 dark:text-red-400">{error || t('connectedAccounts.actionFailed')}</p>
+        <p className="text-xs text-danger">{error || t('connectedAccounts.actionFailed')}</p>
         <button type="button" className={BUTTON} disabled={busy || working}
           onClick={() => { setFailed(false); onRetry(); }}>{t('connectedAccounts.retry')}</button>
       </div>}
@@ -203,7 +203,7 @@ export function ConnectedAccounts({
               <p className={SETTINGS_HELP}>{t('connectedAccounts.noMerge')}</p>
               {mfaEnabled && <p className={SETTINGS_HELP}>{t('connectedAccounts.freshMfa')}</p>}
               <div className="flex flex-wrap gap-2">
-                <button type="submit" disabled={blocked} className="rounded-md bg-accent px-3 py-2 text-sm text-white hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed">
+                <button type="submit" disabled={blocked} className="rounded-md bg-accent-fill px-3 py-2 text-sm text-white hover:bg-accent-fill-hover disabled:opacity-40 disabled:cursor-not-allowed">
                   {working ? t('connectedAccounts.working') : t('connectedAccounts.continueProvider', { provider: providerName(confirmation.provider) })}
                 </button>
                 <button type="button" disabled={busy || working} onClick={reset} className={BUTTON}>{t('connectedAccounts.cancel')}</button>
@@ -238,7 +238,7 @@ export function ConnectedAccounts({
               )}
               <div className="flex flex-wrap gap-2">
                 {!lastCustodialAccount && <button type="submit" disabled={blocked || !account || !savedPhraseMatches}
-                  className="rounded-md border border-red-500/40 px-3 py-2 text-sm text-red-600 dark:text-red-400 disabled:opacity-40">
+                  className="rounded-md border border-red-500/40 px-3 py-2 text-sm text-danger disabled:opacity-40">
                   {working ? t('connectedAccounts.working') : t('connectedAccounts.confirmRemoval')}
                 </button>}
                 <button type="button" disabled={busy || working} onClick={reset} className={BUTTON}>{t('connectedAccounts.cancel')}</button>

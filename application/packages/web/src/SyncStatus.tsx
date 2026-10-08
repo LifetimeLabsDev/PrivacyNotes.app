@@ -73,8 +73,8 @@ export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: S
           aria-live="polite"
           aria-label={t('syncStatus.demoAria')}
         >
-          <CloudSlash size={size} className="text-amber-500 dark:text-amber-400" />
-          <span className="text-amber-600 dark:text-amber-400">{t('syncStatus.notSaved', exemptOpts('settings:syncStatus.notSaved'))}</span>
+          <CloudSlash size={size} className="text-warning" />
+          <span className="text-warning">{t('syncStatus.notSaved', exemptOpts('settings:syncStatus.notSaved'))}</span>
         </span>
       </HoverLabel>
     );
@@ -93,8 +93,8 @@ export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: S
     ? {
         body: (
           <>
-            <Warning size={size} className="text-amber-500 dark:text-amber-400" />
-            <span className="text-amber-600 dark:text-amber-400">{t('syncStatus.updateRequired')}</span>
+            <Warning size={size} className="text-warning" />
+            <span className="text-warning">{t('syncStatus.updateRequired')}</span>
           </>
         ),
         tip: t('syncStatus.updateRequiredTooltip'),
@@ -109,8 +109,8 @@ export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: S
         // the permanent carrier of the paused state.
         body: (
           <>
-            <Pause size={size} weight="bold" className="text-amber-500 dark:text-amber-400" />
-            <span className="text-amber-600 dark:text-amber-400">{t('syncStatus.paused')}</span>
+            <Pause size={size} weight="bold" className="text-warning" />
+            <span className="text-warning">{t('syncStatus.paused')}</span>
           </>
         ),
         tip: t('syncStatus.pausedTooltip'),
@@ -121,8 +121,8 @@ export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: S
     ? {
         body: (
           <>
-            <CloudSlash size={size} className="text-amber-500 dark:text-amber-400" />
-            <span className="text-amber-600 dark:text-amber-400">{t('syncStatus.offline', exemptOpts('settings:syncStatus.offline'))}</span>
+            <CloudSlash size={size} className="text-warning" />
+            <span className="text-warning">{t('syncStatus.offline', exemptOpts('settings:syncStatus.offline'))}</span>
           </>
         ),
         tip: t('syncStatus.offlineTooltip'),
@@ -153,8 +153,8 @@ export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: S
             // one click away.
             body: (
               <>
-                <Warning size={size} className="text-amber-500 dark:text-amber-400" />
-                <span className="text-amber-600 dark:text-amber-400">{t('syncStatus.notSynced', exemptOpts('settings:syncStatus.notSynced'))}</span>
+                <Warning size={size} className="text-warning" />
+                <span className="text-warning">{t('syncStatus.notSynced', exemptOpts('settings:syncStatus.notSynced'))}</span>
               </>
             ),
             tip: halt
@@ -171,8 +171,8 @@ export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: S
             // error: say what is waited for, not that something is wrong.
             body: (
               <>
-                <CloudArrowUp size={size} className="text-amber-500 dark:text-amber-400" />
-                <span className="text-amber-600 dark:text-amber-400">{t('syncStatus.wifiHold')}</span>
+                <CloudArrowUp size={size} className="text-warning" />
+                <span className="text-warning">{t('syncStatus.wifiHold')}</span>
               </>
             ),
             tip: t('syncStatus.wifiHoldTooltip'),
@@ -186,7 +186,7 @@ export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: S
             // (backlog #143). Amber warning instead.
             body: (
               <>
-                <Warning size={size} className="text-amber-500 dark:text-amber-400" />
+                <Warning size={size} className="text-warning" />
                 <span>{t('syncStatus.storageFull', exemptOpts('settings:syncStatus.storageFull'))}</span>
               </>
             ),
@@ -209,7 +209,7 @@ export function SyncStatus({ size = 13, onOpen, tipPosition = 'above-start' }: S
         : {
             body: (
               <>
-                <Check size={size} className="text-emerald-500 dark:text-emerald-400" />
+                <Check size={size} className="text-success" />
                 <span>{t('syncStatus.synced', exemptOpts('settings:syncStatus.synced'))}</span>
               </>
             ),

@@ -29,6 +29,7 @@ import { DOMSerializer, Fragment, Slice, type Node as ProseMirrorNode, type Reso
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { paragraphGapCss, readLineSpacing } from './theme';
 import { END_BREAK_ATTR, LINES_ATTR, LINE_BREAK_ATTR, joinParagraphLines } from './paragraphLines';
+import { keepPaletteStyles } from './pasteStyles';
 
 /** Elements that only group their children, so a paragraph inside one still
  *  sits in the main flow of the text. */
@@ -498,6 +499,8 @@ export const ClipboardSpacing = Extension.create({
           transformPastedHTML(html, view) {
             textPath = null;
             fromEditor = html.includes('data-pm-slice');
+            // Another app's colours, fonts and sizes go unless they are ours.
+            if (!fromEditor) html = keepPaletteStyles(html);
             const breaks = html.replace(/\u2029/g, '<br><br>').replace(/\u2028/g, '<br>');
             const text = pastedText;
             pastedText = undefined;

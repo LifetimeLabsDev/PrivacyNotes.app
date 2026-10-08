@@ -14,7 +14,8 @@
     "loadFailed": "圖片載入失敗",
     "notFound": "找不到圖片",
     "saveFailed": "儲存失敗，所以檔案可能是空的或不完整。",
-    "viewAria": "檢視圖片"
+    "viewAria": "檢視圖片",
+    "picturesLeftOut": "部分圖片未加入。請單獨複製圖片後再貼上。"
   },
   "attachment": {
     "fallbackName": "附件",

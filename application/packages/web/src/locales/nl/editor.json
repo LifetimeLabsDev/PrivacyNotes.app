@@ -7,7 +7,7 @@
     "heading": "Kop",
     "taskList": "Takenlijst",
     "bulletList": "Opsomming",
-    "addLink": "Link toevoegen (Cmd+Shift+K)",
+    "addLink": "Link toevoegen ({{keys}})",
     "noteLink": "Naar een andere notitie linken (of typ [[)",
     "numberedList": "Genummerde lijst",
     "textColor": "Tekstkleur",
@@ -34,7 +34,12 @@
     "blockMath": "Formuleblok",
     "align": "Uitlijning",
     "font": "Lettertype",
-    "pictureFromFiles": "Afbeelding uit Bestanden"
+    "pictureFromFiles": "Afbeelding uit Bestanden",
+    "date": "Datum",
+    "dateTime": "Datum en tijd",
+    "footnote": "Voetnoot",
+    "spoiler": "Spoiler",
+    "copyBox": "Kopieervak"
   },
   "align": {
     "left": "Links uitlijnen",
@@ -118,7 +123,7 @@
     "next": "Volgende overeenkomst (Enter)",
     "nextTitle": "Volgende (Enter)",
     "close": "Zoeken sluiten",
-    "closeTitle": "Sluiten (⌘F)",
+    "closeTitle": "Sluiten ({{keys}})",
     "replacePlaceholder": "Vervangen door",
     "replaceLabel": "Vervangen door",
     "replace": "Vervangen",
@@ -128,7 +133,7 @@
     "caseSensitive": "Hoofdlettergevoelig",
     "caseSensitiveTitle": "Hoofdlettergevoelig",
     "closeReplace": "Zoeken en vervangen sluiten",
-    "closeReplaceTitle": "Sluiten (⌥⌘F)",
+    "closeReplaceTitle": "Sluiten ({{keys}})",
     "replacedCount_one": "{{count}} vervangen",
     "replacedCount_other": "{{count}} vervangen"
   },
@@ -138,7 +143,14 @@
     "title": "Overzicht",
     "ariaLabel": "Notitie-overzicht",
     "hide": "Overzicht verbergen",
-    "hideTitle": "Overzicht verbergen (Esc)"
+    "hideTitle": "Overzicht verbergen (Esc)",
+    "copyHeadingLink": "Link naar kop kopiëren",
+    "copied": "Gekopieerd"
+  },
+  "bodyMenu": {
+    "cut": "Knippen",
+    "sortAsc": "Regels sorteren van A tot Z",
+    "sortDesc": "Regels sorteren van Z tot A"
   },
   "topRow": {
     "add": "Regel bovenaan toevoegen"
@@ -177,6 +189,8 @@
     "words_other": "{{formatted}} woorden",
     "characters_one": "{{formatted}} teken",
     "characters_other": "{{formatted}} tekens",
+    "tasksChecked_one": "{{done}} van {{formatted}} afgevinkt",
+    "tasksChecked_other": "{{done}} van {{formatted}} afgevinkt",
     "tooLargeToSync": ", mogelijk te groot om te synchroniseren, splits op in een nieuwe notitie",
     "veryLong": ", erg lang, bewerken kan traag worden en haperen",
     "gettingLong": ", wordt lang, kan haperen op tragere apparaten",
@@ -184,19 +198,48 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "Geen overeenkomende notities",
-    "create": "\"{{query}}\" aanmaken"
+    "create": "\"{{query}}\" aanmaken",
+    "headingsIn": "Koppen in {{title}}",
+    "noHeadingMatches": "Geen overeenkomende koppen"
+  },
+  "copyBox": {
+    "placeholder": "Tekst om met één klik te kopiëren"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}-klik om te kopiëren",
+    "copied": "Gekopieerd"
   },
   "codeBlock": {
     "copy": "Kopiëren",
     "copied": "Gekopieerd",
     "copyFailed": "Mislukt",
-    "wrap": "Lange regels afbreken"
+    "wrap": "Lange regels afbreken",
+    "showAll_one": "{{count}} regel tonen",
+    "showAll_other": "Alle {{count}} regels tonen",
+    "showLess": "Minder tonen",
+    "plainText": "Platte tekst",
+    "language": "Programmeertaal: {{name}}",
+    "searchLanguages": "Talen zoeken",
+    "placeholder": "Typ of plak code. Kies hierboven een taal voor kleuren."
   },
   "math": {
     "sourceLabel": "LaTeX-broncode"
   },
   "noteLink": {
     "open": "Notitie openen",
-    "remove": "Link verwijderen"
+    "remove": "Link verwijderen",
+    "linkHeading": "Naar een kop linken...",
+    "headingNotFound": "Kop niet gevonden",
+    "headingsLocked": "Ontgrendel deze notitie om de koppen te zien",
+    "noHeadings": "Deze notitie heeft geen koppen"
+  },
+  "footnote": {
+    "placeholder": "Tekst van de voetnoot",
+    "back": "Terug naar de tekst",
+    "unused": "Niet gebruikt in de tekst",
+    "remove": "Voetnoot verwijderen",
+    "missing": "Geen voetnoottekst. Klik om die toe te voegen.",
+    "ariaRef": "Voetnoot {{n}}",
+    "ariaSection": "Voetnoten"
   }
 }

@@ -1,0 +1,276 @@
+{
+  "0.560": {
+    "checklist-menu": {
+      "w": 1444,
+      "h": 1800,
+      "bytes": 87372,
+      "sha256": "9c9839863c17783158e50d9324e0e8114d1f4beb7b7c8e48f84eaea2137f8408"
+    },
+    "tasks-pane": {
+      "w": 1104,
+      "h": 1800,
+      "bytes": 76296,
+      "sha256": "893f16f90aff7b9444100183947e0063585dd0fe3f418533683b1465f47b5776"
+    }
+  },
+  "0.565": {
+    "app-lock": {
+      "w": 1802,
+      "h": 1318,
+      "bytes": 76858,
+      "sha256": "af5fe3ceadaf2b755077a5429e531f1688e35ae83cb83eecabf28796f4f69a9f"
+    },
+    "feedback": {
+      "w": 1352,
+      "h": 658,
+      "bytes": 36144,
+      "sha256": "911ad4111a49a3da22abe9d989d4624aaa263574e0dff928f8e22b1496137e65"
+    },
+    "storage-addons": {
+      "w": 1792,
+      "h": 1312,
+      "bytes": 83768,
+      "sha256": "02a75418f536567503efeb45a1a98c4318eaef379e155375341f73ca5a170c55"
+    }
+  },
+  "0.566": {
+    "contact-photo": {
+      "w": 1444,
+      "h": 1600,
+      "bytes": 47464,
+      "sha256": "700fd1350f60e34b0da4447724f153f5a93ac3c2a159f3cbadef34cab9a70b4e"
+    },
+    "picture-zoom": {
+      "w": 2000,
+      "h": 1250,
+      "bytes": 1224298,
+      "sha256": "8f5d6d7bac9dec88db41abbc41df0accd573b8bd180d3f65a5ecb4041d4c1aba"
+    }
+  },
+  "0.570": {
+    "hotkeys": {
+      "w": 1792,
+      "h": 1312,
+      "bytes": 63950,
+      "sha256": "fe353a84b38be89c660e41f8b4275b865a219d40d0b70e07c273344455b52abe"
+    }
+  },
+  "0.589": {
+    "copied-text": {
+      "w": 1792,
+      "h": 1312,
+      "bytes": 73880,
+      "sha256": "ec80c4a1e91c17f87936a73090dd6aa0681a0c6bc08dff290859a4f5a814e41a"
+    },
+    "heading-link": {
+      "w": 1488,
+      "h": 1022,
+      "bytes": 28928,
+      "sha256": "421e326fc9555f9371f2c3b4a391617d657f9bffdd7817d9c95703029dbf9dc4"
+    },
+    "link-address": {
+      "w": 1444,
+      "h": 1600,
+      "bytes": 224124,
+      "sha256": "3df933631f4a861e5a32ee4584c7ecafbe88976ada0ccebc10478a18019eda28"
+    },
+    "outline-fold": {
+      "w": 1444,
+      "h": 1600,
+      "bytes": 89496,
+      "sha256": "7b1ca664720663cdfadf18bea219df8b604ad527cff6fe051e6d3abf7f5d1c0d"
+    },
+    "print-text-only": {
+      "w": 1444,
+      "h": 1600,
+      "bytes": 547778,
+      "sha256": "97d121ab638109bd90849e317ded671b705f252fadc0790a430e382181085498"
+    },
+    "sort-lines": {
+      "w": 1488,
+      "h": 1264,
+      "bytes": 50496,
+      "sha256": "d2b37d23ba6cdd75942749a2ab31961dbf8fe11b78296380b0892f66cdba9542"
+    }
+  },
+  "0.592": {
+    "code-fold": {
+      "w": 1488,
+      "h": 1340,
+      "bytes": 62430,
+      "sha256": "c18a7fd07ef01d7f9b727bab20a42ef38cc51a3b5e79a5612ace9d76e7ca90ad"
+    },
+    "copy-box": {
+      "w": 1444,
+      "h": 928,
+      "bytes": 37916,
+      "sha256": "4615ce83cabd08ad4296bb804d0fda17945d5dd27857d6806f8470eba9198b3b"
+    },
+    "footnotes": {
+      "w": 1488,
+      "h": 494,
+      "bytes": 32420,
+      "sha256": "c14e46444031bcd1f90b943f6f2973d7d6e39114b22886c591dc7f308cf1a40b"
+    },
+    "spoiler": {
+      "w": 1444,
+      "h": 732,
+      "bytes": 30194,
+      "sha256": "1ded0229576b04550c5556c5a21f6ebbba288257b42a38959a04f21b17eed30c"
+    }
+  },
+  "0.593": {
+    "open-note-folder": {
+      "w": 1104,
+      "h": 1800,
+      "bytes": 79336,
+      "sha256": "bbebf88d8e046da1551c4be612f99f947c29312e379cc42c63bceec6f437820c"
+    },
+    "section-tags": {
+      "w": 1104,
+      "h": 1800,
+      "bytes": 77738,
+      "sha256": "2d405e34e216e129e228b5a44aa66a503cdfb830b7ab682c50186a1ed4141a8a"
+    },
+    "subfolders": {
+      "w": 1104,
+      "h": 1800,
+      "bytes": 86248,
+      "sha256": "2f74c174c7f79e0cae5789e798c3eb19485c5acf5eb827adeb9370d3f2a3bd92"
+    }
+  },
+  "0.594": {
+    "explore": {
+      "w": 1322,
+      "h": 2178,
+      "bytes": 67090,
+      "sha256": "4faf057b0791b56e1ce858d7ed7448fe60086cfa134beafd30693536e0a3549b"
+    },
+    "medication": {
+      "w": 1310,
+      "h": 1542,
+      "bytes": 58836,
+      "sha256": "092952663169a90afcfc078e29a91d7946c31c6f447e388473b369c9f449376f"
+    },
+    "milestones": {
+      "w": 1318,
+      "h": 1492,
+      "bytes": 43900,
+      "sha256": "8e0215576b8bb55b9da09092b36051091e0583f807d7f6e4f427cbe8504e00c0"
+    },
+    "overview": {
+      "w": 1324,
+      "h": 2190,
+      "bytes": 90106,
+      "sha256": "0a49a0a7b7629d50d9d3299dc6be2da20bf7f4f6eb11a114f5c826d0550b9546"
+    },
+    "patterns": {
+      "w": 1314,
+      "h": 2172,
+      "bytes": 65404,
+      "sha256": "45e15b7d60317925daf8b083f811b9f4e5117b953f1f86889838aa3d161d0851"
+    },
+    "trackers": {
+      "w": 1312,
+      "h": 2098,
+      "bytes": 99782,
+      "sha256": "20a42c3e66281d6c5d9939dd0993def37d671c18e7d79a81a943ac1aa3c491ab"
+    },
+    "wellness-all": {
+      "w": 1314,
+      "h": 2194,
+      "bytes": 89726,
+      "sha256": "4ce3aed3f75a5ec35e3f805695a4c99edd4b5df3b763efd190bc12ff28cb76e1"
+    }
+  },
+  "0.595": {
+    "calendar-new-menu": {
+      "w": 1128,
+      "h": 1046,
+      "bytes": 48364,
+      "sha256": "aef435a73c90899afd0a6cfba0f71645fd8fe34fd28ba30b4396897e80dd4b6d"
+    },
+    "date-settings": {
+      "w": 1792,
+      "h": 1312,
+      "bytes": 52596,
+      "sha256": "b1ba33d92d3a3cbf9f6c4177d34163fd7ebf7be30c46dddc9569ea639b5e521a"
+    },
+    "entry-date": {
+      "w": 1444,
+      "h": 1800,
+      "bytes": 982016,
+      "sha256": "65a863f289c1b8340c6b2f0f1ca324a4047ab1413668d2e16630c9f58339eb1a"
+    },
+    "footer-calendar": {
+      "w": 806,
+      "h": 714,
+      "bytes": 33932,
+      "sha256": "bb705c5de35417c60861e582d5f36fe26a07a221d241c9c4788568f2b95a4181"
+    }
+  },
+  "0.596": {
+    "dark-themes": {
+      "w": 2000,
+      "h": 1192,
+      "bytes": 712850,
+      "sha256": "e7748c35ff02800ca4a1aadc5878d548b06e01fb96e3be57391446ddb435ad38"
+    },
+    "light-themes": {
+      "w": 2000,
+      "h": 1192,
+      "bytes": 733408,
+      "sha256": "1b94d830be1eaf6a5519480e43e017ef8ff23d8a735da1fb066c7af2aca1ca44"
+    },
+    "oled": {
+      "w": 2000,
+      "h": 1250,
+      "bytes": 550654,
+      "sha256": "4e761aa396cde293fc17cc4e2f37ab9f775da11ce926f1f4d4c0a5467529ff71"
+    },
+    "sage": {
+      "w": 2000,
+      "h": 1250,
+      "bytes": 576776,
+      "sha256": "192e92547e91f0b71e33975ba08084f6da7591f27d4cd5568ccb5988f35a78bf"
+    },
+    "theme-builder": {
+      "w": 660,
+      "h": 798,
+      "bytes": 27300,
+      "sha256": "b54c935b6f7c0763eaf7c087eb2dfba8069a5f026ed76368ce8da146b377e1f5"
+    },
+    "themes-tab": {
+      "w": 1792,
+      "h": 1312,
+      "bytes": 68300,
+      "sha256": "ad85bf63349060db52857d60a9b072ab45252cb846a4a02f23f64f5aefce6e24"
+    }
+  },
+  "0.597": {
+    "command-mode": {
+      "w": 1138,
+      "h": 1460,
+      "bytes": 36474,
+      "sha256": "613451f9ee2159846d8ac13321809d17eca805306c5eec1ad0ab07f508dd6d82"
+    },
+    "switcher-recent": {
+      "w": 2000,
+      "h": 1383,
+      "bytes": 264194,
+      "sha256": "bb9db5fb9e123d4b13a30e0e368bf18cf29d6d32d9ab3817ae18182481a1c836"
+    },
+    "switcher-search": {
+      "w": 1168,
+      "h": 1482,
+      "bytes": 60482,
+      "sha256": "783fb181d91fc4ce5f88324a6868b60807a36d3bd5b3430e0f41082189bebf67"
+    },
+    "switcher-settings": {
+      "w": 1166,
+      "h": 930,
+      "bytes": 35942,
+      "sha256": "a9f374276b08f5b53f6b2ce42880ae63ffc299e2b949040b21854f274424d2d5"
+    }
+  }
+}

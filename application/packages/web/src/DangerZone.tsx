@@ -11,6 +11,7 @@ import { settingsLocalKey } from './settingsLocalKey';
 import { HelpChip } from './HelpChip';
 import { ensureLevel2, MfaCancelledError, mfaSessionIdentity } from './mfaStep';
 import { jwtPayloadPubkey } from './authStorage';
+import { announceSignOut, endLiveSignIn } from './liveSignIn';
 
 // ------------------------------------------------------------------
 // Danger zone - account & data deletion
@@ -199,6 +200,11 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
       // is gone), and optionally runs on its own ("wipe this device").
       if (effectiveDeleteLocal) {
         if (authRef.current?.pubkey !== authed.pubkey) throw new MfaCancelledError();
+        // A sync pass already in flight must not write the phrase back
+        // between this wipe and the reload, here or in another tab of this
+        // browser (liveSignIn.ts).
+        endLiveSignIn();
+        announceSignOut();
         // Zero key material.
         authed.encryptionKey.fill(0);
         authed.signingPrivateKey.fill(0);
@@ -217,6 +223,9 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
         await deleteEntireLocalDatabase();
         // Wipe all localStorage/sessionStorage privacynotes.* + sb-* keys.
         clearAllStorageKeys();
+        // The sweep took the sign-out notice too, and a stamp taken before
+        // any notice existed would read as current again without one.
+        announceSignOut();
       }
 
       onDeleteStarted();
@@ -247,7 +256,7 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="w-full rounded-md bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-medium px-3 py-2.5 transition"
+          className="w-full rounded-md bg-red-500/10 hover:bg-red-500/20 text-danger text-xs font-medium px-3 py-2.5 transition"
         >
           {t('danger.deleteCta')}
         </button>
@@ -268,7 +277,7 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
       <HelpChip surface="deleteAccount" />
 
       {blockedByStorageSub && (
-        <div className="rounded-md border border-amber-400/40 bg-amber-50 dark:border-amber-600/30 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 text-xs leading-relaxed px-3 py-2">
+        <div className="rounded-md border border-amber-400/40 bg-amber-50 dark:border-amber-600/30 dark:bg-amber-950/20 text-warning text-xs leading-relaxed px-3 py-2">
           {t('danger.blockedByStorage')}
         </div>
       )}
@@ -281,7 +290,7 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
           disabled={busy || deleteServer}
           className="mt-0.5 accent-red-600"
         />
-        <span className={`${deleteServer && !deleteLocal ? 'text-pn-muted/75' : 'text-pn-soft'}`}>
+        <span className={`${deleteServer && !deleteLocal ? 'text-pn-muted' : 'text-pn-soft'}`}>
           {t('danger.localLabel')}
           <span className="block text-xs text-pn-soft">
             {t('danger.localDesc')}
@@ -309,7 +318,7 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
       )}
 
       {localOnly && atStakeLine && (
-        <div className="rounded-md border border-amber-400/40 bg-amber-50 dark:border-amber-600/30 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 text-xs leading-relaxed px-3 py-2">
+        <div className="rounded-md border border-amber-400/40 bg-amber-50 dark:border-amber-600/30 dark:bg-amber-950/20 text-warning text-xs leading-relaxed px-3 py-2">
           {atStakeLine}
         </div>
       )}
@@ -318,7 +327,7 @@ export function DangerZone({ onDeleteStarted }: { onDeleteStarted: () => void })
         <label className="block text-xs text-pn-soft mb-1">
           <Trans
             i18nKey="settings:danger.confirmPrompt"
-            components={{ kbd: <span className="font-mono font-semibold text-red-600 dark:text-red-400" /> }}
+            components={{ kbd: <span className="font-mono font-semibold text-danger" /> }}
           />
         </label>
         <input

@@ -10,7 +10,8 @@
     "empty": "空白",
     "noContent": "沒有內容",
     "notBackedUp": "未備份",
-    "archived": "已封存"
+    "archived": "已封存",
+    "entryDate": "日誌日期"
   },
   "header": {
     "new": "新增",
@@ -19,7 +20,9 @@
     "trash": "垃圾桶"
   },
   "folderChip": {
-    "clear": "清除資料夾篩選：{{folder}}"
+    "clear": "清除資料夾篩選：{{folder}}",
+    "subfolders": "子資料夾",
+    "subfoldersLabel": "包含子資料夾"
   },
   "tagChip": {
     "clear": "清除標籤篩選：{{tag}}"
@@ -189,6 +192,8 @@
     "currentHtmlDesc": "適合列印，Markdown 排版呈現於白底頁面。",
     "printTitle": "列印／另存為 PDF",
     "printDesc": "開啟列印對話框，可另存為 PDF 或送印。",
+    "printTextTitle": "僅列印內文",
+    "printTextDesc": "保留標題，省略日期、資料夾與標籤。",
     "burnTitle": "分享與 Burn After Reading",
     "burnDesc": "將這篇筆記發佈為一次性檢視連結，連結在被閱讀後自動銷毀。你的筆記仍安全保留在帳號中。"
   },
@@ -206,7 +211,10 @@
     "newNote": "新增",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "開啟統計",
+    "journalCalendar": "日誌行事曆",
     "words": "字數",
     "zen": "Zen 模式",
     "appearance": "外觀",
@@ -230,7 +238,7 @@
     "appearanceLabel": "外觀",
     "helpLabel": "說明",
     "aboutLabel": "關於",
-    "languageLabel": "語言",
+    "languageLabel": "日期與語言",
     "languageDesc": "選擇 PrivacyNotes 的顯示語言。"
   },
   "importStore": {
@@ -247,6 +255,11 @@
     "readOnlyAcknowledge": "知道了",
     "readOnlyBlocked_other": "<highlight>{{count}} 個項目</highlight>是唯讀的，無法移至垃圾桶。請先到筆記選項關閉唯讀。",
     "readOnlySkipped_other": "<highlight>{{count}} 個項目</highlight>是唯讀的，會留在原處。"
+  },
+  "deleteCheckedTasks": {
+    "title": "要刪除已勾選的項目嗎？",
+    "confirm": "刪除",
+    "body_other": "將從這篇筆記刪除 <highlight>{{count}} 個項目</highlight>，包含巢狀項目。此動作無法復原。"
   },
   "bulkDelete": {
     "body_other": "要永久刪除 <highlight>{{count}} 篇筆記</highlight>嗎？此動作無法復原。"

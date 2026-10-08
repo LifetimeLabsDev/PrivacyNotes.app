@@ -157,7 +157,7 @@ export function PhraseView({
     <div className="space-y-3">
       {showCallout && (
         <div className="rounded-md border border-divider bg-track p-3 text-sm leading-relaxed text-pn flex items-start gap-2.5">
-          <Warning size={18} aria-hidden="true" className="shrink-0 mt-0.5 text-amber-500 dark:text-amber-400" />
+          <Warning size={18} aria-hidden="true" className="shrink-0 mt-0.5 text-warning" />
           <span>
             <Trans i18nKey="security:phraseView.calloutWords" components={{ strong: <strong /> }} />
           </span>
@@ -282,7 +282,7 @@ export function PhraseView({
               data-setting="security.copyPhrase"
               className={`inline-flex items-center justify-center gap-1.5 rounded-md border px-2 py-2 text-sm transition ${
                 copied
-                  ? 'bg-accent/10 text-accent border-accent'
+                  ? 'bg-accent/10 text-accent-strong border-accent'
                   : 'border-divider hover:bg-surface-1'
               }`}
             >
@@ -301,7 +301,7 @@ export function PhraseView({
           </div>
 
           {failedFiles.size > 0 && (
-            <p className="text-sm text-red-500 dark:text-red-400">{t('auth:createPhrase.saveFailed')}</p>
+            <p className="text-sm text-danger">{t('auth:createPhrase.saveFailed')}</p>
           )}
 
           {!hideDismiss && (

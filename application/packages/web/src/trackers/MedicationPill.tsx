@@ -20,9 +20,9 @@ const MED_NAME_MAX = 50;
 const MED_DOSAGE_MAX = 30;
 
 /** Today as a LOCAL ISO date, matching how journal entries are filed.
- *  `new Date().toISOString().slice(0, 10)` is the UTC day, which is
- *  tomorrow for anyone east of Greenwich late in the evening - so a
- *  medication could be recorded as starting on a day not yet lived. */
+ *  The date part of `toISOString()` is the UTC day, which is tomorrow for
+ *  anyone east of Greenwich late in the evening - so a medication could be
+ *  recorded as starting on a day not yet lived. */
 function todayLocalIso(): string {
   return toLocalIso(new Date());
 }
@@ -181,11 +181,11 @@ export function MedicationPill({
       readOnly={readOnly}
     >
       <div className="flex flex-col gap-2 min-w-[220px] max-w-[280px] overflow-hidden">
-        <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+        <span className="text-xs font-medium text-pn-soft">
           {t('medication.heading')}
         </span>
         {visibleTemplates.length === 0 && !addingNew && (
-          <p className="text-[11px] text-neutral-400 dark:text-neutral-500">
+          <p className="text-[11px] text-pn-muted">
             {t('medication.empty')}
           </p>
         )}
@@ -202,7 +202,7 @@ export function MedicationPill({
                   value={editName}
                   maxLength={MED_NAME_MAX}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full px-2 py-1 rounded-md text-xs border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200"
+                  className="w-full px-2 py-1 rounded-md text-xs border border-pn-muted/50 bg-surface-0 text-pn"
                   autoFocus
                   placeholder={t('medication.namePlaceholder')}
                   onKeyDown={(e) => { if (isImeComposing(e)) return; if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') setEditingId(null); }}
@@ -212,7 +212,7 @@ export function MedicationPill({
                   value={editDosage}
                   maxLength={MED_DOSAGE_MAX}
                   onChange={(e) => setEditDosage(e.target.value)}
-                  className="w-full px-2 py-1 rounded-md text-xs border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200"
+                  className="w-full px-2 py-1 rounded-md text-xs border border-pn-muted/50 bg-surface-0 text-pn"
                   placeholder={t('medication.dosagePlaceholder')}
                   onKeyDown={(e) => { if (isImeComposing(e)) return; if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') setEditingId(null); }}
                 />
@@ -220,14 +220,14 @@ export function MedicationPill({
                   <button
                     type="button"
                     onClick={saveEdit}
-                    className="flex-1 px-2 py-1 rounded-md text-[11px] font-medium bg-accent text-white hover:bg-accent-hover"
+                    className="flex-1 px-2 py-1 rounded-md text-[11px] font-medium bg-accent-fill text-white hover:bg-accent-fill-hover"
                   >
                     {t('common:actions.save')}
                   </button>
                   <button
                     type="button"
                     onClick={() => setEditingId(null)}
-                    className="px-2 py-1 rounded-md text-[11px] font-medium text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                    className="px-2 py-1 rounded-md text-[11px] font-medium text-pn-muted hover:bg-pn/5"
                   >
                     {t('common:actions.cancel')}
                   </button>
@@ -240,7 +240,7 @@ export function MedicationPill({
           if (confirmDeleteId === med.id) {
             return (
               <div key={med.id} className="flex items-center justify-between gap-2 py-0.5">
-                <span className="text-[11px] text-neutral-600 dark:text-neutral-300">
+                <span className="text-[11px] text-pn-soft">
                   <Trans
                     i18nKey="trackers:medication.confirmRemove"
                     values={{ name: med.name }}
@@ -258,7 +258,7 @@ export function MedicationPill({
                   <button
                     type="button"
                     onClick={() => setConfirmDeleteId(null)}
-                    className="px-2 py-0.5 rounded text-[10px] font-medium text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                    className="px-2 py-0.5 rounded text-[10px] font-medium text-pn-muted hover:bg-pn/5"
                   >
                     {t('medication.no')}
                   </button>
@@ -273,7 +273,7 @@ export function MedicationPill({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1 min-w-0">
                   {readOnly ? (
-                    <span className="text-xs font-medium text-neutral-700 dark:text-neutral-200 truncate min-w-0">
+                    <span className="text-xs font-medium text-pn-soft truncate min-w-0">
                       {med.name}
                     </span>
                   ) : (
@@ -281,7 +281,7 @@ export function MedicationPill({
                     <button
                       type="button"
                       onClick={() => startEdit(med)}
-                      className="text-xs font-medium text-neutral-700 dark:text-neutral-200 truncate min-w-0 hover:text-accent dark:hover:text-accent transition-colors text-start"
+                      className="text-xs font-medium text-pn-soft truncate min-w-0 hover:text-accent dark:hover:text-accent transition-colors text-start"
                       aria-label={t('medication.editMedication')}
                     >
                       {med.name}
@@ -293,7 +293,7 @@ export function MedicationPill({
                     <button
                       type="button"
                       onClick={() => setConfirmDeleteId(med.id)}
-                      className="shrink-0 p-0.5 text-neutral-300 hover:text-red-400 dark:text-neutral-600 dark:hover:text-red-400 transition-colors"
+                      className="shrink-0 p-0.5 text-pn-muted hover:text-red-400 dark:hover:text-red-400 transition-colors"
                       aria-label={t('medication.removeMedication')}
                     >
                       <X size={10} />
@@ -302,7 +302,7 @@ export function MedicationPill({
                   )}
                 </div>
                 {med.dosage && (
-                  <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
+                  <span className="text-[10px] text-pn-muted">
                     {med.dosage}
                   </span>
                 )}
@@ -332,7 +332,7 @@ export function MedicationPill({
               value={newName}
               maxLength={MED_NAME_MAX}
               onChange={(e) => setNewName(e.target.value)}
-              className="w-full px-2 py-1 rounded-md text-xs border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200"
+              className="w-full px-2 py-1 rounded-md text-xs border border-pn-muted/50 bg-surface-0 text-pn"
               autoFocus
               onKeyDown={(e) => { if (e.key === 'Enter' && !isImeComposing(e)) handleAddMed(); }}
             />
@@ -342,21 +342,21 @@ export function MedicationPill({
               value={newDosage}
               maxLength={MED_DOSAGE_MAX}
               onChange={(e) => setNewDosage(e.target.value)}
-              className="w-full px-2 py-1 rounded-md text-xs border border-neutral-300 dark:border-neutral-600 bg-surface-0 text-neutral-800 dark:text-neutral-200"
+              className="w-full px-2 py-1 rounded-md text-xs border border-pn-muted/50 bg-surface-0 text-pn"
               onKeyDown={(e) => { if (e.key === 'Enter' && !isImeComposing(e)) handleAddMed(); }}
             />
             <div className="flex gap-1">
               <button
                 type="button"
                 onClick={handleAddMed}
-                className="flex-1 px-2 py-1 rounded-md text-[11px] font-medium bg-accent text-white hover:bg-accent-hover"
+                className="flex-1 px-2 py-1 rounded-md text-[11px] font-medium bg-accent-fill text-white hover:bg-accent-fill-hover"
               >
                 {t('common:actions.add')}
               </button>
               <button
                 type="button"
                 onClick={() => { setAddingNew(false); setNewName(''); setNewDosage(''); }}
-                className="px-2 py-1 rounded-md text-[11px] font-medium text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                className="px-2 py-1 rounded-md text-[11px] font-medium text-pn-muted hover:bg-pn/5"
               >
                 {t('common:actions.cancel')}
               </button>
@@ -391,7 +391,7 @@ function MedButton({
     ? color === 'emerald'
       ? 'bg-emerald-500 text-white'
       : 'bg-amber-500 text-white'
-    : 'bg-surface-0 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700';
+    : 'bg-surface-0 text-pn-muted hover:bg-pn/10';
   return (
     <button
       type="button"

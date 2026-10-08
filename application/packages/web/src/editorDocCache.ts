@@ -18,6 +18,12 @@ import { db } from './db';
  * lives in the same demo-bucketed Dexie database as everything else.
  */
 
+/** The parse that made a cached doc. A row from another parse is a miss:
+ *  raise this whenever a parse rule changes the document a body gives, or
+ *  a big note opens with the old reading of its own text (and the next save
+ *  writes that reading back). Spec: ops/docs/plans/footnotes.md (section 5.4) */
+const EDITOR_PARSE_VERSION = 3;
+
 /** Only notes at least this big are cached - below it the parse is well
  *  under the #150 freeze bar and the cache would just burn disk. */
 export const DOC_CACHE_MIN_BYTES = 100_000;
@@ -32,7 +38,7 @@ export async function readDocCache(noteId: string, body: string): Promise<JSONCo
   if (body.length < DOC_CACHE_MIN_BYTES) return undefined;
   try {
     const row = await db.editorDocCache.get(noteId);
-    return row && row.body === body ? (row.json as JSONContent) : undefined;
+    return row && row.body === body && row.parser === EDITOR_PARSE_VERSION ? (row.json as JSONContent) : undefined;
   } catch {
     return undefined;
   }
@@ -41,7 +47,7 @@ export async function readDocCache(noteId: string, body: string): Promise<JSONCo
 export async function writeDocCache(noteId: string, body: string, json: JSONContent): Promise<void> {
   if (body.length < DOC_CACHE_MIN_BYTES) return;
   try {
-    await db.editorDocCache.put({ noteId, body, json, cachedAt: Date.now() });
+    await db.editorDocCache.put({ noteId, body, json, parser: EDITOR_PARSE_VERSION, cachedAt: Date.now() });
     if ((await db.editorDocCache.count()) > DOC_CACHE_MAX_ROWS) {
       const oldest = await db.editorDocCache.orderBy('cachedAt').first();
       if (oldest && oldest.noteId !== noteId) await db.editorDocCache.delete(oldest.noteId);

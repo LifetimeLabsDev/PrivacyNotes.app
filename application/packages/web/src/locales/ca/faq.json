@@ -48,10 +48,14 @@
     "mdDemoCode": "Bloc de codi",
     "mdDemoScripts": "Superíndex, subíndex, subratllat",
     "mdDemoMath": "Matemàtiques (KaTeX)",
-    "mdDemoQuote": "Citació i note-link",
+    "mdDemoQuote": "Citació i enllaç entre notes",
     "mdDemoDivider": "Separador",
     "hkShowcase": "La llista completa",
-    "hkLegend": "A Windows i Linux, ⌘ és Ctrl i ⌥ és Alt."
+    "hkMac": "Mac",
+    "hkPc": "Windows i Linux",
+    "hkBrowser": "Navegador",
+    "hkDesktop": "App d'escriptori",
+    "hkLayout": "Les dreceres segueixen els caràcters que escriu el teu teclat, no la posició de les tecles en un teclat nord-americà: prem la tecla que escriu el caràcter que es mostra (en una distribució no llatina, la tecla que ocupa el seu lloc al teclat nord-americà). Una tecla que escriu un caràcter amb AltGr sempre l'escriu."
   },
   "groups": {
     "gettingStarted": "Primers passos",
@@ -73,7 +77,7 @@
     "need-email": {
       "q": "Necessito una adreça electrònica per registrar-me?",
       "a": [
-        "No. Un compte nou és una frase de recuperació de 12 paraules acabada de generar, i res més. Sense correu electrònic, sense nom d'usuari, sense número de telèfon, sense pas de verificació. Si inicies la sessió amb la frase, no et podríem enviar cap correu ni que volguéssim, perquè mai no arribem a saber qui ets.",
+        "No. Una caixa forta nova és una frase de recuperació de 12 paraules acabada de generar, i res més. Sense correu electrònic, sense nom d'usuari, sense número de telèfon, sense pas de verificació. Si inicies la sessió amb la frase, no et podríem enviar cap correu ni que volguéssim, perquè mai no arribem a saber qui ets.",
         "Prefereixes un procés familiar? També pots iniciar la sessió amb Google, Apple o GitHub. Aquesta via ens revela necessàriament l'adreça electrònica vinculada a aquell inici de sessió, però les teves notes es mantenen xifrades al teu dispositiu igualment, i sota el capó també tens una frase."
       ]
     },
@@ -88,13 +92,13 @@
       "q": "L'editor funciona bé amb Markdown?",
       "a": [
         "Sí. Escriu Markdown i es formata en directe: encapçalaments amb #, **negreta**, llistes, caselles de tasca amb - [ ], citacions i requadres destacats. Les notes també s'exporten com a Markdown net, així que el que escrius es manté portable.",
-        "També pots connectar notes entre elles: escriu [[ i un autocompletat t'ofereix les notes que ja tens. Un note-link obre la nota de destinació amb un sol clic, i el tauler d'esquema i la cerca dins de la nota mantenen navegables els documents llargs."
+        "També pots connectar notes entre elles: escriu [[ i un autocompletat t'ofereix les notes que ja tens. Un enllaç entre notes obre la nota de destinació amb un sol clic, i el tauler d'esquema i la cerca dins de la nota mantenen navegables els documents llargs."
       ]
     },
     "what-can-you-see": {
       "q": "Què pot veure PrivacyNotes de les meves notes?",
       "a": [
-        "Les notes, els títols, les etiquetes i els adjunts es xifren al dispositiu abans d'arribar al servidor. Amb autocustòdia, que és el punt de partida de tots els comptes creats amb una frase, no tenim cap clau de desxifratge. Si et registres amb Google, Apple o GitHub, l'app et pregunta on vols guardar la clau i comença amb «Mantén-ho simple i còmode», que desa la frase al nostre servidor, xifrada amb una clau nostra. En aquest mode, el nostre servidor pot desxifrar la frase i, per tant, les teves notes. Configuració > Compte > Custòdia de la clau mostra el mode actual i et permet canviar-lo.",
+        "Les notes, els títols, les etiquetes i els adjunts estan sempre xifrats, al teu dispositiu i de camí al servidor. Amb autocustòdia, que és el punt de partida de tots els comptes creats amb una frase, no tenim cap clau de desxifratge. Si et registres amb Google, Apple o GitHub, l'app et pregunta on vols guardar la clau i comença amb «Mantén-ho simple i còmode», que desa la frase al nostre servidor, xifrada amb una clau nostra. En aquest mode, el nostre servidor pot desxifrar la frase i, per tant, les teves notes. Configuració > Compte > Custòdia de la clau mostra el mode actual i et permet canviar-lo.",
         "Podem veure la informació necessària per fer funcionar el servei: quant d'emmagatzematge xifrat utilitzes, quants dispositius tens vinculats i les marques de temps de sincronització. Si només utilitzes la frase i no has connectat cap compte de Google, Apple o GitHub, no sabem la teva adreça de correu electrònic."
       ]
     },
@@ -129,7 +133,7 @@
       "q": "Algú pot endevinar les meves 12 paraules o acabar tenint les mateixes?",
       "a": [
         "No. Ningú no pot endevinar les teves 12 paraules, i ningú més no acaba tenint les mateixes: cap ordinador que existeixi, o que puguem preveure, s'hi acosta. Només pot iniciar la sessió qui aconsegueixi les teves paraules reals, així que guarda-les bé.",
-        "El teu dispositiu tria la frase a l'atzar, i el nombre de frases possibles té 39 xifres. Endevinar la teva al primer intent és menys probable que guanyar quatre vegades seguides el primer premi d'una loteria d'1 entre 300 milions. Un ordinador que provés mil milions de milions de frases cada segon encara necessitaria uns 10 bilions d'anys per provar-les totes, molt més temps del que fa que existeix l'univers. Fins i tot si cadascuna de les 8.000 milions de persones de la Terra tingués una frase, la probabilitat que dues coincidissin seria menor que guanyar aquest premi dues vegades seguides.",
+        "El teu dispositiu tria la frase a l'atzar, i el nombre de frases possibles té 39 xifres. Endevinar la teva al primer intent és menys probable que guanyar quatre vegades seguides el primer premi d'una loteria d'1 entre 300 milions. Un ordinador que provés un trilió de frases cada segon encara necessitaria uns 10 bilions d'anys per provar-les totes, molt més temps del que fa que existeix l'univers. Fins i tot si cadascuna de les 8.000 milions de persones de la Terra tingués una frase, la probabilitat que dues coincidissin seria menor que guanyar aquest premi dues vegades seguides.",
         "La força ve d'aquest atzar, no de l'aspecte de les paraules. No t'inventis una frase ni hi afegeixis símbols: fes servir les 12 paraules exactament com te les dona l'aplicació. Les majúscules no importen. L'última paraula serveix de comprovació, així que l'aplicació rebutja una frase mal escrita o inventada."
       ]
     },
@@ -185,7 +189,7 @@
       ]
     },
     "report-vulnerability": {
-      "q": "He trobat una vulnerabilitat de seguretat. Com la informo?",
+      "q": "He trobat una vulnerabilitat de seguretat. Com la puc comunicar?",
       "a": [
         "Escriu a privacynotes@lifetimelabs.dev. La mateixa adreça està publicada al nostre [security.txt](https://privacynotes.app/.well-known/security.txt) signat amb PGP, així que pots confirmar que és autèntica abans d'escriure, i al costat hi ha la nostra [clau pública](https://privacynotes.app/.well-known/pgp-key.txt) per si prefereixes xifrar l'informe.",
         "Responem, i quan una correcció demana coordinació acordem amb tu els terminis de divulgació abans que res es faci públic. Els informes arriben directament a qui va escriure el codi, i qui vulgui crèdit el rep. Prova contra la demostració a try.privacynotes.app o un compte d'usar i llençar, mai contra les notes d'una altra persona."
@@ -196,7 +200,7 @@
       "a": [
         "Si encara tens la sessió iniciada en algun dispositiu: sí, la pots recuperar tu mateix. Obre Configuració > Seguretat > Frase i desa-la ara mateix al teu gestor de contrasenyes.",
         "Si no tens cap dispositiu amb la sessió iniciada ni la frase, depèn de qui tingui la clau. Si en registrar-te amb Google, Apple o GitHub ens vas deixar guardar-la, inicia la sessió amb aquell compte i tornes a ser a dins. Amb l'autocustòdia, ningú no pot: la teva frase no arriba mai als nostres servidors, així que no hi ha res a restablir ni cap tiquet de suport que hi pugui fer res. Qualsevol servei que et pugui restaurar les dades xifrades després d'una pèrdua total és que et guarda les claus.",
-        "La solució costa deu segons: desa la frase en un gestor de contrasenyes el mateix dia que creïs el compte. Si ja s'ha perdut i pagues un complement d'emmagatzematge, Paddle et factura directament i el pot cancel·lar sense la teva frase: mira [canviar o cancel·lar un complement](/ca/help/manage-storage-addon/)."
+        "La solució costa deu segons: desa la frase en un gestor de contrasenyes el mateix dia que creïs el compte. Si ja s'ha perdut i pagues emmagatzematge addicional, Paddle et factura directament i el pot cancel·lar sense la teva frase: mira [canviar o cancel·lar l'emmagatzematge addicional](/ca/help/manage-storage-addon/)."
       ]
     },
     "lost-2fa": {
@@ -283,7 +287,7 @@
       "q": "Quins fitxers puc adjuntar, i com de grossos poden ser?",
       "a": [
         "Qualsevol tipus de fitxer: imatges, PDF, àudio, arxius comprimits, el que hi deixis anar. Cada fitxer està sempre xifrat, al teu dispositiu i de camí al servidor, exactament igual que el text de les notes, i la vista Fitxers aplega tots els adjunts en un sol lloc.",
-        "El límit per fitxer és de 5 MB al pla gratuït i de 50 MB amb Pro. Els fitxers compten dins de l'emmagatzematge total de sincronització (50 MB al pla gratuït, 500 MB amb Pro, ampliable fins a 5,5 GB amb complements d'emmagatzematge), i la barra d'emmagatzematge de Configuració > Emmagatzematge et mostra sempre on ets."
+        "El límit per fitxer és de 5 MB al pla gratuït i de 50 MB amb Pro. Els fitxers compten dins de l'emmagatzematge total de sincronització (50 MB al pla gratuït, 500 MB amb Pro, ampliable fins a 5,5 GB amb emmagatzematge addicional), i la barra d'emmagatzematge de Configuració > Emmagatzematge et mostra sempre on ets."
       ]
     },
     "vault": {
@@ -319,7 +323,7 @@
       "q": "Com pot un pagament únic finançar un servei de sincronització per sempre?",
       "a": [
         "Perquè el servei és deliberadament barat de mantenir. L'aplicació és local primer i les notes són petits blobs xifrats, així que el servidor no fa gaire més que desar-los i passar-los entre els teus dispositius. Cap analítica del que escrius, cap píxel ni rastrejador de tercers, cap funció d'IA cremant capacitat de càlcul, cap departament de suport.",
-        "L'únic cost que sí que creix amb el temps és l'emmagatzematge, i per això té el preu que té: l'emmagatzematge més enllà dels 500 MB inclosos és un petit complement anual. Els costos únics es paguen un cop; els costos recurrents es repeteixen. El model només s'ha de sostenir a si mateix, i ho fa."
+        "L'únic cost que sí que creix amb el temps és l'emmagatzematge, i per això té el preu que té: l'emmagatzematge addicional, més enllà dels 500 MB inclosos, té un petit cost anual. Els costos únics es paguen un cop; els costos recurrents es repeteixen. El model només s'ha de sostenir a si mateix, i ho fa."
       ]
     },
     "pro-cross-platform": {
@@ -330,9 +334,9 @@
       ]
     },
     "storage-addons": {
-      "q": "Com funcionen els complements d'emmagatzematge?",
+      "q": "Com funciona l'emmagatzematge addicional?",
       "a": [
-        "Pro inclou 500 MB d'emmagatzematge de sincronització xifrat. Si en necessites més, els paquets addicionals s'hi apilen al damunt: 1 GB per 4,80 $ l'any, 2 GB per 8,40 $, o 5 GB per 18 $, fins a un total de 5,5 GB. Els complements són l'única compra recurrent del producte, perquè l'emmagatzematge és l'únic que ens costa diners cada mes que el fas servir.",
+        "Pro inclou 500 MB d'emmagatzematge de sincronització xifrat. Si en necessites més, els paquets addicionals s'hi apilen al damunt: 1 GB per 4,80 $ l'any, 2 GB per 8,40 $, o 5 GB per 18 $, fins a un total de 5,5 GB. L'emmagatzematge addicional és l'única compra recurrent del producte, perquè l'emmagatzematge és l'únic que ens costa diners cada mes que el fas servir.",
         "Tot es gestiona des de Configuració > Emmagatzematge: canvia a un paquet més gran (només pagues la diferència prorratejada) o cancel·la quan vulguis i conserva l'espai fins que acabi el període que has pagat. Pro, en tot cas, és teu per sempre."
       ]
     },
@@ -347,7 +351,7 @@
       "q": "Què sabeu de mi quan pago?",
       "a": [
         "Menys del que et pensaries. El pagament passa per [Paddle](https://www.paddle.com), el nostre venedor oficial (merchant of record): el teu nom, el número de la targeta i l'adreça de facturació van a Paddle per al pagament i els impostos, i no toquen mai els nostres servidors.",
-        "Paddle guarda les teves dades de facturació; el que arriba a la nostra base de dades és la teva clau pública, l'import i l'identificador de la comanda, i en el cas d'un complement d'emmagatzematge, la seva mida i les dates de renovació. El nostre compte de Paddle pot veure les dues bandes, però no busquem qui ets. Per mantenir el teu nom fora de la compra, paga amb un [àlies de correu i una targeta emmascarada](/ca/help/buy-pro-anonymously/)."
+        "Paddle guarda les teves dades de facturació; el que arriba a la nostra base de dades és la teva clau pública, l'import i l'identificador de la comanda, i en el cas de l'emmagatzematge addicional, la seva mida i les dates de renovació. El nostre compte de Paddle pot veure les dues bandes, però no busquem qui ets. Per mantenir el teu nom fora de la compra, paga amb un [àlies de correu i una targeta emmascarada](/ca/help/buy-pro-anonymously/)."
       ]
     },
     "buy-pro-anonymously": {
@@ -370,8 +374,8 @@
       "q": "He demanat una funció o he informat d'un bug. Quant triga a arribar?",
       "a": [
         "Sovint pocs dies. Les peticions petites i els informes de bugs solen entrar a la versió següent, i publiquem una versió gairebé cada setmana en lloc de dues o tres vegades l'any. El [changelog](/changelog) n'és la prova: cada entrada té data, està escrita en llenguatge clar i diu què ha canviat. Llegeix-ne un mes i sabràs exactament què pots esperar de nosaltres abans de confiar res a l'aplicació.",
-        "Aquest ritme surt de com està repartida la feina. El nucli de xifratge, el protocol de sincronització i l'inici de sessió els van escriure persones, fora de la feina, molt abans que l'app tingués nom, i el nucli criptogràfic encara es manté així; res d'automatitzat s'hi acosta. Quan aquesta base va ser sòlida, la primavera del 2026, vam començar a fer servir eines d'IA per programar sota un protocol fix: primer per a les [traduccions](/ca/help/translation-quality/), després els articles d'ajuda, després funcions d'interfície i correccions de bugs no crítics, on són bones acotant casos rars que altrament durien setmanes, i escrivint els scripts de prova que obliguen diversos desenvolupadors a un mateix estàndard. Per això val la pena construir la petició d'una sola persona en comptes d'esperar darrere del capdamunt de la llista.",
-        "Tot el que toca el xifratge, la sincronització o l'inici de sessió es queda en mans de gent experimentada que llegeix cada línia abans de publicar-la, i aquest codi és [públic](https://github.com/LifetimeLabsDev/PrivacyNotes.app) perquè el puguis llegir en comptes de creure'ns. Més sobre l'equip i com treballem a la nostra [pàgina sobre nosaltres](https://lifetimelabs.dev/about).",
+        "Aquest ritme surt de com està repartida la feina. El nucli de xifratge, el protocol de sincronització i l'inici de sessió els van escriure persones, fora de la feina, molt abans que l'app tingués nom, i el nucli criptogràfic encara es manté així; res d'automatitzat s'hi acosta. Quan aquesta base va ser sòlida, la primavera del 2026, vam començar a fer servir eines d'IA per programar sota un protocol fix: primer per a les [traduccions](/ca/help/translation-quality/), després els articles d'ajuda, després funcions d'interfície i correccions de bugs no crítics, on són bones acotant casos rars que altrament durien setmanes, i escrivint els scripts de prova que obliguen diversos desenvolupadors a un mateix estàndard. Per això val la pena desenvolupar el que demana una sola persona en comptes de fer-ho esperar darrere de les peticions que encapçalen la llista.",
+        "Tot el que toca el xifratge, la sincronització o l'inici de sessió es queda en mans de desenvolupadors experimentats que escriuen cada línia, i aquest codi és [públic](https://github.com/LifetimeLabsDev/PrivacyNotes.app) perquè el puguis llegir en comptes de creure'ns. Més sobre l'equip i com treballem a la nostra [pàgina sobre nosaltres](https://lifetimelabs.dev/about).",
         "L'aplicació en si no té funcions d'IA i no envia mai les teves notes enlloc ([detalls](/ca/help/no-ai/)). Aquesta promesa va a part, i no canvia."
       ]
     },
@@ -385,7 +389,7 @@
     "obtainium": {
       "q": "Com instal·lo l'app d'Android amb Obtainium?",
       "a": [
-        "Obtainium és una app d'Android gratuïta i de codi obert que instal·la altres apps directament des de les seves pàgines de versions. Des d'ara és la manera que recomanem per instal·lar PrivacyNotes a Android, perquè és l'única via que es manté al dia sola. Ja la tens? Toca la insígnia i afegeix PrivacyNotes per tu.",
+        "Obtainium és una app d'Android gratuïta i de codi obert que instal·la altres apps directament des de les seves pàgines de versions. Des d'ara és la manera que recomanem per instal·lar PrivacyNotes a Android, perquè és l'única via que es manté al dia sola. Ja la tens? Toca la insígnia i Obtainium afegirà PrivacyNotes per tu.",
         "[![Aconsegueix-lo a Obtainium](/marketing/badge-obtainium.webp)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22app.privacynotes%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2FLifetimeLabsDev%2FPrivacyNotes.app%22%2C%22author%22%3A%22LifetimeLabsDev%22%2C%22name%22%3A%22PrivacyNotes%22%7D)",
         "Encara no la tens? Instal·la primer [Obtainium](https://obtainium.imranr.dev/), afegeix-hi una app i enganxa això:",
         "`https://github.com/LifetimeLabsDev/PrivacyNotes.app`",
@@ -396,7 +400,7 @@
     "languages": {
       "q": "Quins idiomes parla l'aplicació?",
       "a": [
-        "Anglès, alemany, francès, italià, espanyol, neerlandès, polonès, txec, català, turc, suec, ucraïnès, rus, japonès, coreà, xinès tradicional, tailandès, àrab i portuguès, en les variants europea i brasilera. L'aplicació segueix per defecte l'idioma del sistema, o pots fixar-ne un explícitament a Configuració > Llengua a cada dispositiu.",
+        "Anglès, alemany, francès, italià, espanyol, neerlandès, polonès, txec, català, turc, suec, ucraïnès, rus, japonès, coreà, xinès tradicional, tailandès, àrab i portuguès, en les variants europea i brasilera. L'aplicació segueix per defecte l'idioma del sistema, o pots fixar-ne un explícitament a Configuració > Data i llengua > Llengua a cada dispositiu.",
         "Les traduccions són gratuïtes per a tothom, no pas un avantatge de Pro. Hi ha més idiomes previstos; si el teu hi falta, digue'ns-ho a [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) o a [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -410,7 +414,7 @@
     "markdown-syntax": {
       "q": "Quina sintaxi de Markdown entén l'editor?",
       "a": [
-        "Els formats habituals de Markdown cobren forma mentre escrius: encapçalaments, èmfasi, ratllat i ressaltat, llistes amb pics i numerades, llistes de tasques (Tab i Maj+Tab imbriquen qualsevol llista, checklists incloses), citacions, separadors, codi en línia i blocs de codi amb ressaltat de sintaxi, matemàtiques en línia i en bloc (KaTeX) i note-links entre notes amb autocompletat.",
+        "Els formats habituals de Markdown cobren forma mentre escrius: encapçalaments, èmfasi, ratllat i ressaltat, llistes amb pics i numerades, llistes de tasques (Tab i Maj+Tab imbriquen qualsevol llista, llistes de control incloses), citacions, separadors, codi en línia i blocs de codi amb ressaltat de sintaxi, matemàtiques en línia i en bloc (KaTeX) i enllaços entre notes amb autocompletat.",
         "La barra d'eines de format i el seu menú Insereix hi afegeixen la resta: taules, requadres destacats que es poden plegar, subratllat, superíndex i subíndex, alineació del text, colors de text i de ressaltat, tipus de lletra, enllaços, imatges i fitxers adjunts. Tot es manté en Markdown d'anada i tornada: «Mostra el markdown» sota qualsevol nota en mostra el codi font, i les exportacions són fitxers .md nets, així que res del que escrius no queda lligat a cap format propietari."
       ]
     },
@@ -425,14 +429,14 @@
       "q": "Com funciona el diari i què hi puc registrar?",
       "a": [
         "Diaris és una vista dedicada a les entrades amb data: amb un toc crees l'entrada d'avui, i el botó de calendari del costat et permet crear l'entrada d'un dia recent que t'hagis saltat. Una entrada és una nota normal més seguiments opcionals: estat d'ànim en una escala de l'1 al 10 amb 24 etiquetes d'emocions, son, activitat, medicaments, energia, concentració i més. «Configura els seguiments» dins de qualsevol entrada activa o desactiva els integrats, i Pro n'hi afegeix fins a 10 de personalitzats (escales, nombres, sí/no).",
-        "Estadístiques (a Configuració, o la icona d'estadístiques del peu de pàgina) converteix les entrades en tendències sota la pestanya Benestar: l'estat d'ànim al llarg del temps, gràfics de son i d'activitat, l'adherència a la medicació. Les exportacions es generen al teu dispositiu: «Baixa el JSON» és gratuïta, i Pro hi afegeix un «PDF per al metge» per portar a les visites, una indicació per a la IA a punt de copiar per al xatbot que triïs, informació sobre patrons i un resum de la setmana. Les dades dels seguiments són dins de l'entrada xifrada, així que el servidor no en pot llegir res."
+        "Estadístiques (a Configuració, o la icona d'estadístiques del peu) s'obre en un Resum de la teva setmana, escriptura i benestar junts. La pestanya Benestar dibuixa cada seguiment que registres, els personalitzats inclosos, en l'interval que triïs; Explora agafa un seguiment i mostra com va el teu ànim els dies amb aquest seguiment i els dies sense, el mateix dia o l'endemà; Patrons classifica així tots els seguiments; Medicació mostra l'adherència com un calendari. Les exportacions es generen al teu dispositiu: «Baixa el JSON» és gratuït, i Pro hi afegeix un «PDF per al metge» per portar a les visites, una indicació per a la IA a punt per copiar al chatbot que vulguis, les comparacions i un resum de la setmana. Les dades dels seguiments viuen dins de l'entrada xifrada, així que el servidor no en pot llegir res."
       ]
     },
     "bookmarks": {
       "q": "Puc desar les adreces d’interès del navegador a PrivacyNotes?",
       "a": [
-        "Sí. Les adreces d’interès són un pilar propi a la barra lateral, al costat de les notes, les tasques i els diaris, i són gratuïtes en qualsevol pla. Enganxa un enllaç a la barra d’afegit ràpid per desar-ne una. Per portar les teves, exporta un fitxer d’adreces (.html) del navegador i deixa’l anar a Configuració > Import & Export > Importa > \"Marcadors del navegador\". El Chrome, el Firefox, el Safari, l’Edge, l’Opera, el Brave i el Vivaldi contenen el mateix fitxer, i les carpetes i les dates hi vénen incloses. El Safari l’embolcalla en un .zip, que pots deixar anar sense obrir-lo.",
-        "Les teves adreces no surten mai del teu dispositiu: no carreguem la pàgina que hi ha darrere d’un enllaç, i per això una adreça que afegeixes a mà porta el domini com a nom fins que n’escrius un. Les icones dels llocs són l’única excepció, i les pots desactivar. L’exportació escriu el mateix fitxer estàndard, així que les teves adreces marxen amb la mateixa facilitat ([guia d’importació](/ca/help/import/browser-bookmarks/))."
+        "Sí. Els marcadors són un pilar propi a la barra lateral, al costat de les notes, les tasques i els diaris, i són gratuïts en qualsevol pla. Enganxa un enllaç a la barra d’afegit ràpid per desar-ne un. Per portar els teus, exporta un fitxer de marcadors (.html) del navegador i deixa’l anar a Configuració > Import & Export > Importa > \"Marcadors del navegador\". El Chrome, el Firefox, el Safari, l’Edge, l’Opera, el Brave i el Vivaldi contenen el mateix fitxer, i les carpetes i les dates hi vénen incloses. El Safari l’embolcalla en un .zip, que pots deixar anar sense obrir-lo.",
+        "Les teves adreces no surten mai del teu dispositiu: no carreguem la pàgina que hi ha darrere d’un enllaç, i per això un marcador que afegeixes a mà porta el domini com a nom fins que n’escrius un. Les icones dels llocs són l’única excepció, i les pots desactivar. L’exportació escriu el mateix fitxer .html estàndard, així que els teus marcadors marxen amb la mateixa facilitat amb què van arribar ([guia d’importació](/ca/help/import/browser-bookmarks/))."
       ]
     },
     "contacts": {
@@ -446,7 +450,7 @@
       "q": "Què val la pena desar a Marcadors, Contactes i la Caixa forta?",
       "a": [
         "Les parts de la teva vida que no pinten res en un perfil de navegador ni a la llibreta d’adreces d’un telèfon. Els marcadors, els contactes i la caixa forta es posen al costat dels que el navegador i el telèfon ja sincronitzen amb Google, Apple o Mozilla, i guarden allò que prefereixes deixar fora. Tots tres són gratuïts en qualsevol pla.",
-        "- Enllaços sobre salut, diners, dret o una cerca de feina, en un ordinador que comparteixes amb algú\n- La documentació d’un tema, junta en comptes d’enterrada entre milers de marcadors del navegador\n- El metge, l’advocada, la propietària i el reclutador, fora d’una llibreta que se sincronitza amb l’iCloud o Google\n- Un contacte amb el context al voltant: les teves notes, les dates, el fitxer que et va enviar\n- Frases de recuperació, claus de llicència, codis de caixa forta i números de passaport, secrets que no són credencials\n- Les poques credencials que no vols mai dins d’una extensió del navegador",
+        "- Enllaços sobre salut, diners, dret o una cerca de feina, en un ordinador que comparteixes amb algú\n- La documentació d’un tema, junta en comptes d’enterrada entre milers de marcadors del navegador\n- El metge, l’advocada, la propietària i el reclutador, fora d’una llibreta d’adreces que se sincronitza amb l’iCloud o Google\n- Un contacte amb el context al voltant: les teves notes, les dates, el fitxer que et va enviar\n- Frases de recuperació, claus de llicència, codis de caixa forta i números de passaport, secrets que no són credencials d’inici de sessió\n- Les poques credencials que no vols mai dins d’una extensió del navegador",
         "Cadascun és una fila de la barra lateral. Si en falta una, obre les opcions de la barra lateral sobre les etiquetes i activa **Mostra a la barra lateral**. Els teus els portes des d’un fitxer i els en treus igual ([marcadors](/ca/help/bookmarks/), [contactes](/ca/help/contacts/), [la caixa forta](/ca/help/vault/))."
       ]
     },
@@ -454,7 +458,8 @@
       "q": "Quines dreceres de teclat hi ha?",
       "a": [
         "Prem ? a qualsevol lloc de l'aplicació per obrir la guia ràpida integrada, també disponible a Configuració > Informació. Les dreceres cobreixen la navegació, les accions de nota, el format i les vistes - i a Windows i Linux, cada Cmd es llegeix com a Ctrl i Option com a Alt.",
-        "L'essencial: Cmd+K enfoca la cerca, J i K recorren la llista, Alt+Shift+N crea una nota nova, Cmd+Backspace envia a la paperera la seleccionada, Cmd+, obre la Configuració. Mentre escrius: Cmd+B negreta, Cmd+I cursiva, Cmd+Shift+K insereix un enllaç, Cmd+Shift+9 comença una llista de tasques, Cmd+F cerca dins de la nota, Cmd+Shift+O mostra o amaga l'esquema. Cmd+\\ amaga la barra lateral, Cmd+Shift+L canvia el tema, Cmd+Shift+F entra en mode zen (Pro), i Esc surt de gairebé qualsevol cosa."
+        "L'essencial: Cmd+K salta a qualsevol element o ajust pel seu nom, i la seva última fila cerca al text de la secció oberta; / enfoca la cerca, J i K recorren la llista, Cmd+[ i Cmd+] van enrere i endavant pels elements que has obert, Alt+Shift+N crea una nota nova, Cmd+Backspace envia a la paperera la seleccionada, Cmd+, obre la Configuració. Mentre escrius: Cmd+B negreta, Cmd+I cursiva, Cmd+Shift+K insereix un enllaç, Cmd+Shift+9 comença una llista de tasques, Cmd+F cerca dins de la nota, Cmd+Shift+O mostra o amaga l'esquema, Cmd+Shift+M canvia a la vista Markdown. Cmd+\\ o Cmd+Shift+D amaga la barra lateral, Cmd+Shift+L canvia el tema, Cmd+Shift+F entra en mode zen (Pro), i Esc surt de gairebé qualsevol cosa, filtres inclosos. Escriu > a la cerca o a Cmd+K (o prem > fora d'un camp de text) per trobar qualsevol ordre pel seu nom i executar-la.",
+        "Les apps d'escriptori afegeixen les tecles que un navegador es reserva: Cmd+N per a una nota nova, Cmd+Shift+N per a un element nou de qualsevol tipus, Cmd+W per tancar una pestanya, Ctrl+Tab per moure't entre pestanyes, de Cmd+1 a Cmd+9 per a les seccions de la barra lateral i Cmd+Shift+P per a la llista d'ordres."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -490,8 +495,8 @@
       "q": "S'ha filtrat la meva frase de recuperació. Què faig?",
       "a": [
         "Dona la caixa forta per cremada. Una frase no es pot canviar ni rotar, perquè la frase és la clau amb què està xifrat tot - així que la solució és passar a una caixa forta nova. Primer, al compte antic, exporta-ho tot: Configuració > Import & Export > Exporta > «Còpia de seguretat de PrivacyNotes (.zip)».",
-        "Tanca la sessió, crea una caixa forta nova (12 paraules noves) i torna a importar l'exportació a Configuració > Import & Export > Restaura > «Còpia de seguretat completa (.zip)». Després suprimeix el compte antic des de qualsevol dispositiu que encara hi tingui la sessió iniciada: Configuració > Compte > «Suprimeix el compte i les dades...». Això n'elimina les dades sincronitzades i deixa fora qualsevol que tingui la frase antiga. Si vas iniciar la sessió amb Google, Apple o GitHub, suprimeix primer el compte antic i després torna a iniciar la sessió amb Google, Apple o GitHub per començar la caixa forta nova.",
-        "Dues coses a resoldre abans: cancel·la un complement d'emmagatzematge actiu, perquè la supressió ho exigeix, i tingues present que Pro es queda al compte on es va comprar en comptes de passar a la caixa forta nova. Després desa la frase nova en un gestor de contrasenyes i enlloc més: tota la prevenció és aquesta."
+        "Tanca la sessió, crea una caixa forta nova (12 paraules noves) i torna a importar l'exportació a Configuració > Import & Export > Restaura > «Còpia de seguretat completa (.zip)». Després suprimeix el compte antic des de qualsevol dispositiu que encara hi tingui la sessió iniciada: Configuració > Compte > «Suprimeix el compte i les dades...». Això n'elimina les dades sincronitzades i deixa fora qualsevol que tingui la frase antiga. Si vas iniciar la sessió amb Google, Apple o GitHub, suprimeix primer el compte antic i després torna a iniciar la sessió amb el mateix compte de Google, Apple o GitHub per començar la caixa forta nova.",
+        "Dues coses a resoldre abans: cancel·la l'emmagatzematge addicional que tinguis actiu, perquè la supressió ho exigeix, i tingues present que Pro es queda al compte on es va comprar en comptes de passar a la caixa forta nova. Després desa la frase nova en un gestor de contrasenyes i enlloc més: tota la prevenció és aquesta."
       ]
     },
     "lost-device": {
@@ -519,7 +524,7 @@
       "q": "Quina és la millor manera de fer una còpia de seguretat de les meves notes?",
       "a": [
         "Exporta la «Còpia de seguretat completa xifrada (.pnbackupz)» a Configuració > Import & Export > Exporta. Xifra tot - notes, diaris, elements de la caixa forta, tasques, imatges, àudio i fitxers - amb la clau de la teva frase, així que la pots deixar al núvol o en una memòria USB, i es restaura amb la teva frase a qualsevol dispositiu.",
-        "S'obre amb la frase que la va crear, així que guarda al costat una «Còpia de seguretat de PrivacyNotes (.zip)» per si algun dia [passes a una frase nova](/ca/help/phrase-compromised/): el mateix contingut, es restaura a qualsevol caixa forta i llegible al disc, així que desa-la en un lloc de confiança. La «Còpia de seguretat xifrada (.pnbackup)» cobreix el text i les metadades en comptes de les imatges i els fitxers, i la «Còpia de seguretat de text (.json)» i l'arxiu HTML són formats de portabilitat més que no pas de restauració.",
+        "S'obre amb la frase que la va crear, així que guarda al costat una «Còpia de seguretat de PrivacyNotes (.zip)» per si algun dia [passes a una frase nova](/ca/help/phrase-compromised/): té el mateix contingut, es restaura a qualsevol caixa forta i és llegible al disc, així que desa-la en un lloc de confiança. La «Còpia de seguretat xifrada (.pnbackup)» cobreix el text i les metadades en comptes de les imatges i els fitxers, i la «Còpia de seguretat de text (.json)» i l'arxiu HTML són formats de portabilitat més que no pas de restauració.",
         "Per què conservar còpies de seguretat locals, si tot se sincronitza? Perquè la sincronització no és una còpia de seguretat: propaga fidelment les supressions, incloent-hi les d'un servidor compromès que els teus dispositius després reprodueixen. Una còpia al teu propi disc és l'única que cap incident del servidor no pot tocar. Exporta abans de les importacions grosses, abans de marxar, i amb una regularitat que puguis mantenir."
       ]
     },
@@ -547,14 +552,14 @@
     "upload-failed": {
       "q": "Per què ha fallat la pujada del meu fitxer?",
       "a": [
-        "L'error et diu quin sostre has tocat. Per fitxer: 5 MB al pla gratuït, 50 MB amb Pro, 100 MB amb qualsevol complement d'emmagatzematge. En total: tot el que sincronitzes ha de cabre en l'emmagatzematge del teu compte (50 MB al pla gratuït, 500 MB amb Pro, més amb complements), així que una quota plena fa fallar una pujada encara que el fitxer sigui petit. S'accepta qualsevol tipus de fitxer.",
+        "L'error et diu quin sostre has tocat. Per fitxer: 5 MB al pla gratuït, 50 MB amb Pro, 100 MB amb qualsevol emmagatzematge addicional. En total: tot el que sincronitzes ha de cabre en l'emmagatzematge del teu compte (50 MB al pla gratuït, 500 MB amb Pro, més amb emmagatzematge addicional), així que una quota plena fa fallar una pujada encara que el fitxer sigui petit. S'accepta qualsevol tipus de fitxer.",
         "Comprova la barra d'emmagatzematge a la vista Fitxers o a Configuració > Emmagatzematge, i després tria la solució més barata: [allibera espai](/ca/help/storage-usage/), millora el pla o redueix el fitxer (les fotos del telèfon sovint són originals de diversos MB; un JPEG comprimit ocupa una fracció de la mida). Una pujada que falla per manca de connexió no es perd, es conserva: el fitxer es queda en aquest dispositiu i es puja sol quan tornes a ser en línia, i fins llavors Configuració > ID & Sync el compta com a pendent."
       ]
     },
     "trash-auto-delete": {
       "q": "Per què han desaparegut notes de la meva paperera?",
       "a": [
-        "La paperera no és cap arxiu: per defecte, tot el que hi ha es suprimeix permanentment al cap de 30 dies. L'interruptor és a la mateixa vista Paperera, amb l'etiqueta «Suprimeix després de 30 dies» - desactiva'l allà si vols conservar la paperera per sempre, i la configuració se sincronitza a tots els teus dispositius. La neteja s'executa al teu dispositiu quan s'obre l'aplicació, perquè el servidor no pot veure quines notes xifrades són a la paperera.",
+        "La paperera no és cap arxiu: per defecte, tot el que hi ha es suprimeix permanentment al cap de 30 dies. L'interruptor és a la mateixa vista Paperera, amb l'etiqueta «Supressió automàtica després de 30 dies» - desactiva'l allà si vols conservar la paperera per sempre, i la configuració se sincronitza a tots els teus dispositius. La neteja s'executa al teu dispositiu quan s'obre l'aplicació, perquè el servidor no pot veure quines notes xifrades són a la paperera.",
         "Suprimit permanentment vol dir que ha desaparegut: cap dispositiu ni ningú de la nostra banda no el pot recuperar, només una còpia de seguretat que hagis fet abans. Si fas servir la paperera com un munt de coses per a un potser algun dia, desactiva la supressió automàtica o restaura les notes abans del dia 30. Fins llavors, les notes a la paperera encara compten dins del [teu emmagatzematge](/ca/help/storage-usage/) - «Buida», a la mateixa vista, allibera aquell espai a l'instant."
       ]
     },
@@ -562,7 +567,7 @@
       "q": "Com marxo del tot de PrivacyNotes?",
       "a": [
         "Primer exporta, després suprimeix - totes dues coses les fas tu mateix. Configuració > Import & Export > Exporta cobreix totes les vies de sortida: «Còpia de seguretat de PrivacyNotes (.zip)» per a una còpia completa, Markdown i HTML portables per a la teva pròxima aplicació de notes, i «Exportació de la caixa forta (.json)» en format compatible amb Bitwarden per al teu pròxim gestor de contrasenyes. Les exportacions es generen al teu dispositiu.",
-        "Després, Configuració > Compte > «Suprimeix el compte i les dades...»: escriu DELETE, i les teves notes sincronitzades, els fitxers, els dispositius, la configuració i el compte mateix s'eliminen permanentment sense cap finestra de retenció ([detalls](/ca/help/delete-account/)). Un complement d'emmagatzematge actiu s'ha de cancel·lar primer a Configuració > Emmagatzematge. Un compte només amb frase no deixa res per netejar, perquè mai no vam saber qui eres. Sense patrons foscos i sense correus de reconquesta - les teves dades són teves, també a la sortida."
+        "Després, Configuració > Compte > «Suprimeix el compte i les dades...»: escriu DELETE, i les teves notes sincronitzades, els fitxers, els dispositius, la configuració i el compte mateix s'eliminen permanentment sense cap finestra de retenció ([detalls](/ca/help/delete-account/)). L'emmagatzematge addicional actiu s'ha de cancel·lar primer a Configuració > Emmagatzematge. Un compte només amb frase no deixa res per netejar, perquè mai no vam saber qui eres. Sense patrons foscos i sense correus de reconquesta - les teves dades són teves, també a la sortida."
       ]
     },
     "data-rights": {
@@ -588,11 +593,11 @@
       ]
     },
     "manage-storage-addon": {
-      "q": "Com canvio o cancel·lo el meu complement d'emmagatzematge?",
+      "q": "Com canvio o cancel·lo el meu emmagatzematge addicional?",
       "a": [
         "Configuració > Emmagatzematge és el tauler de control. Canviar a un paquet més gran s'aplica immediatament. Al web, la confirmació mostra l'import prorratejat exacte que es cobra avui abans no ho confirmis, i la data de renovació no es mou; a la Play Store i a l'App Store, és el full de pagament de la botiga el que mostra l'import, i Apple et retorna la part no usada de l'any en curs i en comença un de nou. «Cancel·la l'emmagatzematge» et manté l'espai addicional fins al final del període que ja has pagat. Per passar a un paquet més petit, cancel·la l'actual i compra el petit quan s'acabi el període.",
         "Si les teves dades encara caben en el límit restant després del venciment, s'ha acabat; si no, no s'esborra res i comença el [cicle de 90 dies per excés de quota](/ca/help/over-quota/). Una renovació fallida mostra un avís amb un enllaç «Actualitza la targeta» per arreglar el pagament a Paddle.",
-        "Cancel·lar des de fora de l'aplicació també funciona, i és la resposta quan no pots iniciar la sessió. Paddle és el nostre comerciant registrat i et factura directament: fes servir l'enllaç «Gestiona la subscripció» del correu del rebut, o el xat d'assistència a [paddle.net](https://paddle.net). Amb una versió de botiga la idea és la mateixa, així que cancel·la allà, a la configuració de subscripcions de la botiga."
+        "Cancel·lar des de fora de l'aplicació també funciona, i és la resposta quan no pots iniciar la sessió. Paddle és el nostre venedor oficial (merchant of record) i et factura directament: fes servir l'enllaç «Gestiona la subscripció» del correu del rebut, o el xat d'assistència a [paddle.net](https://paddle.net). Amb una versió de botiga la idea és la mateixa, així que cancel·la allà, a la configuració de subscripcions de la botiga."
       ]
     },
     "store-purchases": {
@@ -626,21 +631,21 @@
     "folders": {
       "q": "Com funcionen les carpetes i em cal Pro per fer-les servir?",
       "a": [
-        "Les carpetes s'aniuen tan avall com vulguis i viuen a la barra lateral. Navegar-hi és gratuït en qualsevol pla. Crear-ne una, canviar-li el nom o moure-hi una nota (\"Carpeta nova\" i \"Mou a una carpeta\") és on comença Pro, perquè un compte gratuït sempre pugui llegir una estructura importada o construïda mentre tenia Pro. Una fila \"Sense carpeta\" llista cada nota que no és enlloc.",
+        "Les carpetes s'aniuen tan avall com vulguis i viuen a la barra lateral. Navegar-hi és gratuït en qualsevol pla. Crear-ne una, canviar-li el nom o moure-hi una nota (\"Carpeta nova\" i \"Mou a una carpeta\") és on comença Pro, perquè un compte gratuït sempre pugui llegir una estructura importada o construïda mentre tenia Pro. Una fila \"Sense carpeta\" llista cada nota que no és en cap carpeta.",
         "Una nota viu en una sola carpeta alhora, com un fitxer. Fes servir les [etiquetes](/ca/help/tags/) quan una cosa pertany a dos llocs a la vegada. La carpeta va dins la nota xifrada, així que el servidor veu la teva estructura tan poc com veu el teu text."
       ]
     },
     "tags": {
       "q": "Com funcionen les etiquetes?",
       "a": [
-        "Cada nota oberta té una fila d'etiquetes sota el títol. Escriu una paraula i prem Retorn, coma o #, i l'etiqueta es converteix en una fitxa. La barra lateral llista cada etiqueta que fas servir, i un clic filtra la llista a aquelles notes. Pots canviar el nom d'una etiqueta a tot arreu de cop, marcar-la com a preferida perquè quedi fixada a dalt, o esborrar-la, amb les notes que la porten o sense.",
+        "Cada nota oberta té una fila d'etiquetes sota el títol. Escriu una paraula i prem Retorn, coma o #, i l'etiqueta es converteix en una fitxa. La barra lateral llista cada etiqueta que fas servir, i un clic filtra la llista a aquelles notes. Pots canviar el nom d'una etiqueta a tot arreu de cop, afegir-la als preferits perquè quedi fixada a dalt, o suprimir-la, amb les notes que la porten o sense.",
         "Les etiquetes i les carpetes resolen problemes diferents: una nota viu en una carpeta però porta tantes etiquetes com vulguis, que és just el que necessites quan una cosa és alhora \"feina\" i \"factura\". Les importacions etiqueten per origen, així que tot el que arriba d'una altra app aterra amb la seva pròpia etiqueta i és fàcil de trobar, o de netejar més endavant."
       ]
     },
     "note-links": {
       "q": "Com enllaço una nota amb una altra?",
       "a": [
-        "Escriu [[ en qualsevol punt d'una nota i comença a teclejar un títol. Tria una nota de la llista i es converteix en un enllaç entre notes on pots fer clic. Si no hi encaixa res, tria \"Crea\" i la nota nova es crea i s'enllaça en un sol pas. El botó \"Enllaça amb una altra nota\" de la barra d'eines fa el mateix.",
+        "Escriu [[ en qualsevol punt d'una nota i comença a teclejar un títol. Tria una nota de la llista i es converteix en un enllaç entre notes on pots fer clic. Si no hi encaixa res, tria \"Crea\" i la nota nova es crea i s'enllaça en un sol pas. El botó \"Enllaça a una altra nota\" de la barra d'eines fa el mateix. Per obrir una nota en una de les seves seccions, escriu # després del títol i tria l'encapçalament. La icona d'enllaç d'un encapçalament a l'esquema copia aquest enllaç per tu.",
         "Els enllaços entre notes viuen dins la nota, així que s'exporten amb ella i sobreviuen a una importació: un magatzem d'Obsidian manté els seus enllaços i els enllaços de notes d'Evernote es converteixen en entrar. Per trobar què apunta a una nota, cerca'n el títol: cada nota que hi enllaça conté aquestes paraules."
       ]
     },
@@ -654,14 +659,14 @@
     "share-with-someone": {
       "q": "Puc compartir una nota amb algú o treballar-hi conjuntament?",
       "a": [
-        "Envia una [nota autodestructiva](/ca/help/burn-notes/): converteix qualsevol nota en un enllaç xifrat d'un sol ús, destruït en el moment que es llegeix, i això cobreix una contrasenya, una adreça o un esborrany. Per a una cosa que l'altra persona es quedi, exporta la nota com a Markdown, HTML o PDF i envia-li el fitxer.",
+        "Envia una [burn note](/ca/help/burn-notes/): converteix qualsevol nota en un enllaç xifrat d'un sol ús, destruït en el moment que es llegeix, i això cobreix una contrasenya, una adreça o un esborrany. Per a una cosa que l'altra persona es quedi, exporta la nota com a Markdown, HTML o PDF i envia-li el fitxer.",
         "Una nota que dues persones editen en directe seria un altre producte: caldria que el servidor passés claus entre persones, i mantenir el servidor lluny de les teves claus és aquí tot el disseny. Un compte és una persona amb una frase, i això és el que fa que «no podem llegir les teves notes» sigui un fet i no pas una política."
       ]
     },
     "add-second-device": {
       "q": "Com inicio la sessió en un segon dispositiu?",
       "a": [
-        "Al dispositiu que ja fas servir, obre Configuració > Seguretat > Frase. Hi trobaràs les teves 12 paraules i un codi QR d'inici de sessió. Al dispositiu nou tria \"Accés amb frase\" i escaneja aquest QR amb la càmera, puja'n una foto, o teclegia les paraules. Les teves notes hi arriben en segons.",
+        "Al dispositiu que ja fas servir, obre Configuració > Seguretat > Frase. Hi trobaràs les teves 12 paraules i un codi QR d'inici de sessió. Al dispositiu nou tria \"Accés amb frase\" i escaneja aquest QR amb la càmera, puja'n una foto, o tecleja les paraules. Les teves notes hi arriben en segons.",
         "Un compte gratuït cobreix 2 dispositius i Pro tants com vulguis, i dos navegadors al mateix ordinador compten com un sol dispositiu. Tracta el QR exactament com la frase que porta: no l'ensenyis a ningú i no deixis mai que acabi en una fototeca que se sincronitza al núvol d'algú altre."
       ]
     },
@@ -704,7 +709,7 @@
     "note-history": {
       "q": "Puc recuperar una versió anterior d'una nota?",
       "a": [
-        "Sí, amb Pro. Obre el menú \"...\" de la nota i tria \"Historial de la nota\" per recórrer i restaurar fins a 20 versions anteriors. Restaurar no perd res: el text actual es desa abans com a versió, així que pots anar endavant i enrere. Les versions estan xifrades com la nota mateixa, així que nosaltres tampoc no les podem llegir.",
+        "Sí, amb Pro. Obre el menú \"...\" de la nota i tria \"Historial\" per recórrer i restaurar fins a 20 versions anteriors. En restaurar no perds res: el text actual es desa abans com a versió, així que pots anar endavant i enrere. Les versions estan xifrades com la nota mateixa, així que nosaltres tampoc no les podem llegir.",
         "Es pren una instantània com a molt un cop per minut, així que dues edicions separades per segons comparteixen versió. L'historial és l'única funció Pro que passa pel servidor, i per això la demo en guarda una còpia local pròpia. Tots els plans tenen a més la [paperera](/ca/help/trash-auto-delete/), que guarda una nota esborrada 30 dies."
       ]
     },
@@ -726,7 +731,7 @@
       "q": "La meva família pot compartir un compte o una compra de Pro?",
       "a": [
         "La resposta són dos comptes, i obrir-ne un segon no costa res: cadascun rep 2 dispositius i 50 MB gratis. Un compte és una frase de 12 paraules, i qui té aquesta frase ho té tot a dins: cada nota, cada entrada de la caixa forta, a cada dispositiu. Són els comptes separats els que donen a cada persona les seves pròpies notes privades. Pro es compra per compte.",
-        "Per passar una cosa concreta, envia una [nota autodestructiva](/ca/help/burn-notes/) en comptes de la teva frase. Un compte de casa compartit funciona bé si és realment el que vols: guarda la frase en una entrada compartida del gestor de contrasenyes, i dona per fet que qui l'hagi tinguda alguna vegada ho ha vist tot."
+        "Per passar una cosa concreta, envia una [burn note](/ca/help/burn-notes/) en comptes de la teva frase. Un compte de casa compartit funciona bé si és realment el que vols: guarda la frase en una entrada compartida del gestor de contrasenyes, i dona per fet que qui l'hagi tinguda alguna vegada ho ha vist tot."
       ]
     },
     "pro-after-leak": {

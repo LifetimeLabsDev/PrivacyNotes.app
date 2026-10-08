@@ -10,7 +10,8 @@
     "empty": "Leer",
     "noContent": "Kein Inhalt",
     "notBackedUp": "Nicht gesichert",
-    "archived": "Archiviert"
+    "archived": "Archiviert",
+    "entryDate": "Eintragsdatum"
   },
   "header": {
     "new": "Neu",
@@ -19,7 +20,9 @@
     "trash": "Papierkorb"
   },
   "folderChip": {
-    "clear": "Ordnerfilter aufheben: {{folder}}"
+    "clear": "Ordnerfilter aufheben: {{folder}}",
+    "subfolders": "Unterordner",
+    "subfoldersLabel": "Unterordner einbeziehen"
   },
   "tagChip": {
     "clear": "Tagfilter aufheben: {{tag}}"
@@ -191,6 +194,8 @@
     "currentHtmlDesc": "Druckfreundlich, Markdown auf weißer Seite gerendert.",
     "printTitle": "Drucken / Als PDF speichern",
     "printDesc": "Öffnet den Druckdialog. Als PDF speichern oder an einen Drucker senden.",
+    "printTextTitle": "Nur Text drucken",
+    "printTextDesc": "Behält den Titel. Lässt Datum, Ordner und Tags weg.",
     "burnTitle": "Teilen & nach dem Lesen vernichten",
     "burnDesc": "Veröffentliche diese Notiz als Link zum einmaligen Ansehen. Der Link zerstört sich nach dem Lesen selbst. Deine Notiz bleibt sicher in deinem Konto."
   },
@@ -208,7 +213,10 @@
     "newNote": "Neu",
     "newNoteHintMac": "Option + Umschalt + N",
     "newNoteHintOther": "Alt + Umschalt + N",
+    "newNoteHintMacDesktop": "Befehlstaste + N",
+    "newNoteHintOtherDesktop": "Strg + N",
     "openStats": "Statistiken öffnen",
+    "journalCalendar": "Tagebuchkalender",
     "words": "Wörter",
     "zen": "Zen-Modus",
     "appearance": "Design",
@@ -229,10 +237,10 @@
     "imagesLabel": "Bilder",
     "securityLabel": "Sicherheit",
     "accountLabel": "ID & Sync",
-    "appearanceLabel": "Design",
+    "appearanceLabel": "Design & Layout",
     "helpLabel": "Hilfe",
     "aboutLabel": "Über",
-    "languageLabel": "Sprache",
+    "languageLabel": "Datum & Sprache",
     "languageDesc": "Wähle die Sprache, in der PrivacyNotes angezeigt wird."
   },
   "importStore": {
@@ -252,6 +260,12 @@
     "readOnlyBlocked_other": "Alle <highlight>{{count}} Einträge</highlight> sind schreibgeschützt, also kann keiner in den Papierkorb. Schalte den Schreibschutz zuerst in den Notizoptionen aus.",
     "readOnlySkipped_one": "<highlight>{{count}} Eintrag</highlight> ist schreibgeschützt und bleibt, wo er ist.",
     "readOnlySkipped_other": "<highlight>{{count}} Einträge</highlight> sind schreibgeschützt und bleiben, wo sie sind."
+  },
+  "deleteCheckedTasks": {
+    "title": "Abgehakte Einträge löschen?",
+    "confirm": "Löschen",
+    "body_one": "<highlight>{{count}} Eintrag</highlight> wird aus dieser Notiz gelöscht. Das kann nicht rückgängig gemacht werden.",
+    "body_other": "<highlight>{{count}} Einträge</highlight> werden aus dieser Notiz gelöscht, verschachtelte Einträge eingeschlossen. Das kann nicht rückgängig gemacht werden."
   },
   "bulkDelete": {
     "body_one": "<highlight>{{count}} Notiz</highlight> endgültig löschen? Das kann nicht rückgängig gemacht werden.",

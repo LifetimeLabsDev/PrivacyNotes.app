@@ -32,7 +32,7 @@ export function SleepScorePill({
       readOnly={readOnly}
     >
       <div className="flex flex-col gap-3">
-        <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+        <span className="text-xs font-medium text-pn-soft">
           {t('sleepScore.prompt')}
         </span>
         <div className="flex items-center gap-3">
@@ -46,7 +46,7 @@ export function SleepScorePill({
             className="flex-1 h-1.5 cursor-pointer"
             style={{ accentColor: BUILTIN_TRACKER_COLORS.sleepScore }}
           />
-          <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200 w-8 text-end tabular-nums">
+          <span className="text-sm font-medium text-pn-soft w-8 text-end tabular-nums">
             {value ?? 75}
           </span>
         </div>

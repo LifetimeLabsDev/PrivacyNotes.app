@@ -32,4 +32,4 @@ La barra in alto cambia l'aspetto del testo: **grassetto**, *corsivo*, titoli, l
 Quella frase è ciò che apre le tue note. Dove vive lo decidi tu, e puoi cambiare idea quando vuoi. [[Come sono protette le tue note]] spiega le tre opzioni.
 
 > [!tip] Qui niente è per sempre
-> Ogni nota in questa cassaforte è un esempio, questa compresa. Modificala, spostala o cancellala.
+> Ogni nota in questa cassaforte è un esempio, questa compresa. Modificala, spostala o eliminala.

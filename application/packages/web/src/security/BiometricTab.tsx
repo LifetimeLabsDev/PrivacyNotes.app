@@ -12,6 +12,7 @@ import {
   wrapPhraseWithPin,
 } from '../biometric';
 import { hasPin, markPinUnlocked, verifyPin } from '../pin';
+import { signInStamp } from '../liveSignIn';
 import { PinInput, type PinInputHandle } from '../PinInput';
 import { SectionEyebrow, SETTINGS_HELP, SettingsCallout } from '../settingsUI';
 import { Switch } from '../Switch';
@@ -20,7 +21,7 @@ import { isDemoMode } from '../demo';
 import { persistStoredPhrase } from '../phraseAtRest';
 import type { UserSettings } from '../userSettings';
 import { detectPlatform } from '../devices';
-import { shouldArmPrivacyScreen } from '../privacyScreen';
+import { captureBlockSupported, setCaptureBlock, shouldArmPrivacyScreen, useCaptureBlock } from '../privacyScreen';
 import { TIMEOUT_OPTIONS } from './timeoutOptions';
 import { HelpChip } from '../HelpChip';
 
@@ -31,6 +32,8 @@ import { HelpChip } from '../HelpChip';
  */
 /** True only where a backgrounded app leaves a picture behind. */
 const COVERS_ON_SWITCH = shouldArmPrivacyScreen(true, detectPlatform());
+/** True only where the operating system lets an app stay out of a capture. */
+const CAPTURE_BLOCK_SUPPORTED = captureBlockSupported();
 
 export function BiometricTab({
   phrase,
@@ -56,6 +59,7 @@ export function BiometricTab({
   onSetUpPin: () => void;
 }) {
   const { t } = useTranslation('security');
+  const captureBlocked = useCaptureBlock();
   const [deviceSupported, setDeviceSupported] = useState<boolean | null>(null);
   const [enrolled, setEnrolled] = useState(() => hasBiometricCredential());
   const [busy, setBusy] = useState(false);
@@ -140,6 +144,7 @@ export function BiometricTab({
     if (candidate.length !== 4 || pinConfirmBusy || !trusted) return;
     setPinConfirmBusy(true);
     setPinConfirmError(null);
+    const startedAt = signInStamp();
     const { valid } = await verifyPin(candidate);
     if (!valid) {
       setPinConfirmError(t('pinTab.incorrectPin'));
@@ -148,7 +153,7 @@ export function BiometricTab({
       setPinConfirmBusy(false);
       return;
     }
-    const blob = await wrapPhraseWithPin(phrase, candidate);
+    const blob = await wrapPhraseWithPin(phrase, candidate, startedAt);
     removeStoredPhrase();
     // The user proved the PIN seconds ago - no immediate re-prompt.
     markPinUnlocked();
@@ -222,7 +227,7 @@ export function BiometricTab({
       )}
 
       {error && (
-        <p className="text-sm text-red-500 dark:text-red-400">{error}</p>
+        <p className="text-sm text-danger">{error}</p>
       )}
       {successFlash && (
         <p className="text-sm text-accent text-center">{t('biometricTab.enabledFlash')}</p>
@@ -233,14 +238,14 @@ export function BiometricTab({
           <div className="space-y-4">
             <div className="flex items-center justify-between rounded-md border border-emerald-200 dark:border-emerald-800/50 bg-emerald-50 dark:bg-emerald-900/20 p-3">
               <div className="flex items-center gap-2">
-                <Check size={16} className="text-emerald-600 dark:text-emerald-400" />
+                <Check size={16} className="text-success" />
                 <span className="text-sm font-medium text-emerald-800 dark:text-emerald-200">{t('biometricTab.enrolledOnDevice')}</span>
               </div>
             </div>
 
             <button
               onClick={() => setShowDisableConfirm(true)}
-              className="w-full rounded-md border border-divider text-pn-muted hover:text-red-500 dark:hover:text-red-400 hover:border-red-300 dark:hover:border-red-800 px-3 py-2 text-sm transition"
+              className="w-full rounded-md border border-divider text-pn-muted hover:text-danger hover:border-red-300 dark:hover:border-red-800 px-3 py-2 text-sm transition"
             >
               {t('biometricTab.disable')}
             </button>
@@ -251,7 +256,7 @@ export function BiometricTab({
               data-setting="security.enableBiometric"
               onClick={() => void handleEnroll()}
               disabled={busy}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2.5 text-sm font-medium transition disabled:opacity-50"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2.5 text-sm font-medium transition disabled:opacity-50"
             >
               <Fingerprint size={16} />
               {busy ? t('biometricTab.settingUp') : t('biometricTab.enable')}
@@ -336,7 +341,7 @@ export function BiometricTab({
             />
           </div>
           {pinConfirmError && (
-            <p className="text-sm text-red-500 dark:text-red-400 text-center">
+            <p className="text-sm text-danger text-center">
               {pinConfirmError}
             </p>
           )}
@@ -345,7 +350,7 @@ export function BiometricTab({
               type="button"
               onClick={() => void confirmPinForAppLock(pinConfirmValue)}
               disabled={pinConfirmValue.length !== 4 || pinConfirmBusy}
-              className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {pinConfirmBusy ? t('pinTab.checking') : t('pinTab.verify')}
             </button>
@@ -385,6 +390,23 @@ export function BiometricTab({
               {t('biometricTab.relockHint')}
             </p>
           </label>
+        </div>
+      )}
+
+      {/* Independent of the app lock and of trust: it stores no secret, and it
+          is offered only where the platform can honour it. One text for every
+          platform, so it promises no more than the weakest of them, iOS, which
+          covers recordings but cannot refuse a screenshot.
+          Spec: ops/docs/plans/app-switcher-privacy-screen.md (section 14) */}
+      {CAPTURE_BLOCK_SUPPORTED && (
+        <div className="pt-4 border-t border-divider">
+          <Switch
+            setting="security.blockCapture"
+            label={t('biometricTab.blockCapture')}
+            description={t('biometricTab.blockCaptureHint')}
+            checked={captureBlocked}
+            onChange={setCaptureBlock}
+          />
         </div>
       )}
 

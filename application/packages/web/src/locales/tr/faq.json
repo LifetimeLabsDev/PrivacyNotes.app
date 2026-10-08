@@ -3,11 +3,11 @@
     "title": "Yardım ve SSS",
     "sub": "Yanıtlar ve adım adım rehberler: güvenlik, eşitleme, fiyatlandırma ve başka uygulamalardan geçiş.",
     "metaTitle": "Yardım ve SSS - PrivacyNotes",
-    "metaDescription": "PrivacyNotes yardım merkezi: şifreleme, kurtarma ifadesi, eşitleme, fiyatlandırma ve başka bir uygulamadan ayrılmak için adım adım dışa aktarma rehberleri.",
+    "metaDescription": "PrivacyNotes yardım merkezi: şifreleme ve güvenlik yanıtları, kurtarma ifadeleri, eşitleme, fiyatlandırma ve başka bir uygulamadan ayrılmak için adım adım dışa aktarma rehberleri.",
     "guides": "İçe aktarma rehberleri",
     "guidesLead": "Başka bir uygulamadan mı geçiyorsunuz? Adım adım dışa ve içe aktarma talimatları.",
     "searchLabel": "SSS içinde ara",
-    "searchPlaceholder": "Ara: kayıp ifade, dışa aktarma, cihazlar...",
+    "searchPlaceholder": "Arayın: kayıp ifade, dışa aktarma, cihazlar...",
     "topics": "Konular",
     "countAll": "{{groups}} konuda {{total}} yanıt",
     "countMatch": "{{total}} yanıttan {{shown}} tanesi eşleşiyor",
@@ -48,10 +48,14 @@
     "mdDemoCode": "Kod bloğu",
     "mdDemoScripts": "Üst simge, alt simge, altı çizili",
     "mdDemoMath": "Matematik (KaTeX)",
-    "mdDemoQuote": "Alıntı ve note-link",
+    "mdDemoQuote": "Alıntı ve not bağlantısı",
     "mdDemoDivider": "Ayırıcı",
     "hkShowcase": "Tam liste",
-    "hkLegend": "Windows ve Linux'ta ⌘ yerine Ctrl, ⌥ yerine Alt kullanılır."
+    "hkMac": "Mac",
+    "hkPc": "Windows ve Linux",
+    "hkBrowser": "Tarayıcı",
+    "hkDesktop": "Masaüstü uygulaması",
+    "hkLayout": "Kısayollar ABD tuş konumlarını değil, klavyenizin yazdığı karakterleri izler: gösterilen karakteri yazan tuşa basın (Latin olmayan bir düzende, ABD düzenindeki yerinde duran tuşa). AltGr ile bir karakter yazan tuş her zaman o karakteri yazar."
   },
   "groups": {
     "gettingStarted": "Başlarken",
@@ -88,13 +92,13 @@
       "q": "Düzenleyici Markdown dostu mu?",
       "a": [
         "Evet. Markdown yazın, anında biçimlenir: # başlıklar, **kalın**, listeler, - [ ] görev kutuları, alıntılar ve bilgi kutuları. Notlar temiz Markdown olarak da dışa aktarılır, yani yazdıklarınız taşınabilir kalır.",
-        "Notları birbirine de bağlayabilirsiniz: [[ yazın, otomatik tamamlama mevcut notlarınızı önerir. Bir note-link hedefini tek tıkla açar; ana hat paneli ve notta bul da uzun belgeleri gezilebilir tutar."
+        "Notları birbirine de bağlayabilirsiniz: [[ yazın, otomatik tamamlama mevcut notlarınızı önerir. Bir not bağlantısı hedefini tek tıkla açar; ana hat paneli ve notta bul da uzun belgeleri gezilebilir tutar."
       ]
     },
     "what-can-you-see": {
       "q": "PrivacyNotes notlarım hakkında ne görebilir?",
       "a": [
-        "Notlar, başlıklar, etiketler ve ekler sunucuya ulaşmadan önce cihazınızda şifrelenir. İfadeyle açılan her hesabın başlangıç modu olan kendi saklama modunda, bizde şifre çözme anahtarı bulunmaz. Google, Apple veya GitHub ile kayıt olurken anahtarınızın nerede saklanacağını sorarız; başlangıçta \"Basit ve pratik olsun\" seçilidir. Bu seçenek ifadenizi bize ait bir anahtarla şifreleyerek sunucumuzda saklar. Bu modda sunucumuz ifadenizin, dolayısıyla notlarınızın şifresini çözebilir. Ayarlar > Hesap > Anahtar saklama mevcut modunuzu gösterir ve değiştirmenizi sağlar.",
+        "Notlar, başlıklar, etiketler ve ekler her zaman şifrelidir: cihazınızda da, sunucuya giderken de. İfadeyle açılan her hesabın başlangıç modu olan kendi saklama modunda, bizde şifre çözme anahtarı bulunmaz. Google, Apple veya GitHub ile kayıt olurken anahtarınızın nerede saklanacağını sorarız; başlangıçta \"Basit ve pratik olsun\" seçilidir. Bu seçenek ifadenizi bize ait bir anahtarla şifreleyerek sunucumuzda saklar. Bu modda sunucumuz ifadenizin, dolayısıyla notlarınızın şifresini çözebilir. Ayarlar > Hesap > Anahtar saklama mevcut modunuzu gösterir ve değiştirmenizi sağlar.",
         "Görebildiğimiz bilgiler hizmeti çalıştırmak için gerekenlerdir: ne kadar şifreli depolama kullandığınız, kaç cihaz bağladığınız ve eşitleme zamanları. Yalnızca ifadenizi kullanıyor ve bir Google, Apple veya GitHub hesabı bağlamadıysanız e-posta adresinizi bilmeyiz."
       ]
     },
@@ -109,7 +113,7 @@
     "threat-model-levels": {
       "q": "Kolaylık ile gizlilik arasındaki dengeyi kendim seçebilir miyim?",
       "a": [
-        "Evet, bilerek öyle. Herkesin savunduğu tehditler aynı değil, bu yüzden hesap modeli tek bir dogma değil, bir merdiven. Her basamakta notlarınız cihazınızda şifrelenir; değişen şey, anahtarı kimin tuttuğu ve sizin hakkınızda ne bildiğimiz.",
+        "Evet, bilerek öyle. Herkesin kendini korumaya çalıştığı tehditler aynı değil, bu yüzden hesap modeli tek bir dogma değil, bir merdiven. Her basamakta notlarınız cihazınızda şifrelenir; değişen şey, anahtarı kimin tuttuğu ve sizin hakkınızda ne bildiğimiz.",
         "Pratik uç: Google, Apple veya GitHub ile giriş yapın ve sorulduğunda başlangıçta seçili olan \"Basit ve pratik olsun\" seçeneğini koruyun. Kurtarma ifadenizi sunucumuzda şifreli saklarız. Böylece yeni bir cihaz, sağlayıcıyla giriş yaptıktan ve 2FA açıksa doğrulama uygulamasının kodu girildikten sonra notlarınızı açabilir. Bunun karşılığında o hesabın e-postasını biliriz ve sunucumuz ifadenizin şifresini çözebilir. Sağlayıcı hesabınızı kaybetme ihtimaline karşı ifadenizi kaydedin; iki faktörlü girişi açarsanız 2FA yedek anahtarınızı da saklayın.",
         "Orta yol: Google, Apple veya GitHub ile giriş yapın ama “Azami güvenlik ve gizlilik”i seçin. İfadeniz sunucularımıza hiç uğramaz ve şifreleme tam anlamıyla sıfır bilgi ilkesine dayanır; yeni cihazlar ifadeyi ya da zaten giriş yapmış bir cihazdan QR taramasını ister. O girişin e-postasını yine zorunlu olarak biliriz, ama zorlansak bile tek bir notu okuyamayız.",
         "Gizli uç: girişleri tamamen atlayın ve yalnızca 12 kelimelik ifadeyi kullanın. E-posta yok, isim yok, kimlik yok; [anonim bir Pro satın alımıyla](/tr/help/buy-pro-anonymously/) birleştiğinde ödeme bile hiçbir yerde isim bırakmaz. Karşılığında anahtarın sorumluluğu tümüyle sizde: giriş yapmış bir cihaz kalmadan ifadeyi kaybederseniz kimse yardım edemez.",
@@ -196,7 +200,7 @@
       "a": [
         "Hâlâ herhangi bir cihazda giriş yapmış durumdaysanız: evet, kendiniz kurtarabilirsiniz. Ayarlar > Güvenlik > İfade bölümünü açın ve hemen şimdi parola yöneticinize kaydedin.",
         "Giriş yapmış bir cihazınız ve ifadeniz yoksa, bu anahtarı kimin tuttuğuna bağlıdır. Google, Apple veya GitHub ile kaydolurken anahtarı bizim saklamamıza izin verdiyseniz, o girişle oturum açın ve içeridesiniz. Kendi saklamada ise kimse yapamaz: ifadeniz sunucularımıza hiç ulaşmaz, yani sıfırlanacak bir şey ve yardımcı olabilecek bir destek talebi yok. Tam bir kayıptan sonra şifreli verinizi geri getirebilen her hizmet, anahtarlarınızı elinde tutuyordur.",
-        "Çözümü on saniye sürüyor: hesabınızı oluşturduğunuz gün ifadeyi bir parola yöneticisinde saklayın. İfade çoktan gittiyse ve bir depolama paketi ödüyorsanız, faturayı doğrudan Paddle keser ve paketi ifadeniz olmadan iptal edebilir: bkz. [paketi değiştirme veya iptal etme](/tr/help/manage-storage-addon/)."
+        "Çözüm on saniye sürer: hesabınızı oluşturduğunuz gün ifadeyi bir parola yöneticisinde saklayın. İfade çoktan gittiyse ve bir depolama eklentisi için ödeme yapıyorsanız, faturayı doğrudan Paddle keser ve eklentiyi ifadeniz olmadan iptal edebilir: bkz. [eklentiyi değiştirme veya iptal etme](/tr/help/manage-storage-addon/)."
       ]
     },
     "lost-2fa": {
@@ -238,7 +242,7 @@
     "offline": {
       "q": "PrivacyNotes çevrimdışı çalışır mı?",
       "a": [
-        "Evet. Uygulama yerel öncelikli: notlarınız cihazınızdaki bir veritabanında durur, yani okuma, yazma ve arama bağlantı olmadan çalışır. Değişiklikler siz tekrar çevrimiçi olduğunuzda otomatik eşitlenir; çevrimdışıyken eklediğiniz bir resim ya da dosya da bu cihazda bekler ve o zaman yüklenir."
+        "Evet. Uygulama yerel öncelikli: notlarınız cihazınızdaki bir veritabanında durur, yani okuma, yazma ve arama bağlantı olmadan çalışır. Değişiklikler siz tekrar çevrimiçi olduğunuzda otomatik eşitlenir; çevrimdışıyken eklediğiniz bir görsel ya da dosya da bu cihazda bekler ve o zaman yüklenir."
       ]
     },
     "sync-conflicts": {
@@ -269,27 +273,27 @@
         "Kurulum başına tek bir klasörde, hesabınızın uygulama verisi alanında. Bu klasörün yeri platforma göre değişir:",
         "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, AppImage için `app.privacynotes.appimage`; AppImage kendi web motorunu taşıdığı için kendi profilini de ayrı tutar\n- **Android, iOS**: uygulamanın özel deposu, başka hiçbir uygulama açamaz\n- **Tarayıcı**: `use.privacynotes.app` altındaki tarayıcı profiliniz",
         "Orada duran şey şifreli veridir. Her not, başlığı, metni ve etiketleri içinde taşıyan mühürlü tek bir bloktur ve kilidi açtığınızda kurtarma ifadenizden türetilen bir anahtarla açılır; bu yüzden kopyalanan bir klasörde okunabilir hiçbir şey olmaz. Açıkta yalnızca yerel dizinin ihtiyaç duyduğu şeyler kalır: kimlikler, zaman damgaları, öğenin türü ve sabitlenmiş ya da silinmiş gibi işaretler.",
-        "Notlarınızı başka bir cihaza taşımak ya da kendinize bir kopya saklamak için **Ayarlar > Import & Export > Dışa aktar** altından “Şifreli tam yedek (.pnbackupz)” dosyasını seçin. Her şeyi içerir, ifade anahtarınızla şifrelenir ve ifadenizle her cihazda geri yüklenir. [Yedekler hakkında daha fazlası](/tr/help/backup-strategy/)"
+        "Notlarınızı başka bir cihaza taşımak ya da kendinize bir kopya saklamak için **Ayarlar > Import & Export > Dışa aktar** altından “Şifreli tam yedek (.pnbackupz)” seçeneğini seçin. Her şeyi içerir, ifade anahtarınızla şifrelenir ve ifadenizle her cihazda geri yüklenir. [Yedekler hakkında daha fazlası](/tr/help/backup-strategy/)."
       ]
     },
     "export": {
-      "q": "Notlarımı dışa aktarabilir miyim, yoksa kilitli miyim?",
+      "q": "Notlarımı dışa aktarabilir miyim, yoksa bu uygulamaya bağımlı mı kalırım?",
       "a": [
         "Her şeyi istediğiniz zaman dışa aktarabilirsiniz ve hepsi cihazınızda üretilir: ekleriyle birlikte zip içinde Markdown dosyaları, düz JSON ya da kendi kendine yeten HTML - not başına veya tüm hesap için. Zip, “PrivacyNotes yedeği (.zip)” biçimidir ve şifreli yedekler gibi geri yüklenebilir; JSON ve HTML okumak ve bir sonraki uygulamanız içindir. Kasa öğelerinin kendi yolu var: “Kasa dışa aktarımı (.json)” Bitwarden biçiminde yazar ve kullanıcı adlarınızı, parolalarınızı, adreslerinizi, kart bilgilerinizi ve 2FA anahtarlarınızı Bitwarden, 1Password veya KeePass tarafına taşır.",
-        "Hepsi Ayarlar > Import & Export > Dışa aktar altında. İçe aktarma da aynı şekilde çalışır: Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden ve daha fazlası. Tam liste [başka bir uygulamadan taşınma](/tr/help/import-from-other-apps/) sayfasında. Sizi kilitlemek iş modelimizin parçası değil."
+        "Hepsi Ayarlar > Import & Export > Dışa aktar altında. İçe aktarma da aynı şekilde çalışır: Obsidian, Evernote, Apple Notes, Standard Notes, Bitwarden ve daha fazlası. Tam liste [başka bir uygulamadan taşınma](/tr/help/import-from-other-apps/) sayfasında. Sizi uygulamaya bağımlı kılmak iş modelimizin parçası değil."
       ]
     },
     "attachment-limits": {
       "q": "Hangi dosyaları ekleyebilirim ve ne kadar büyük olabilirler?",
       "a": [
         "Her dosya türü: görseller, PDF'ler, ses, arşivler, aklınıza ne gelirse. Her dosya, tıpkı not metni gibi, cihazınızda da sunucuya giderken de her zaman şifrelidir; Dosyalar görünümü ise tüm ekleri tek yerde toplar.",
-        "Dosya başına sınır ücretsiz planda 5 MB, Pro'da 50 MB'tır. Dosyalar toplam eşitleme depolamanızdan düşer (ücretsizde 50 MB, Pro'da 500 MB, depolama paketleriyle 5,5 GB'a kadar genişletilebilir) ve Ayarlar > Depolama'daki çubuk nerede olduğunuzu her zaman gösterir."
+        "Dosya başına sınır ücretsiz planda 5 MB, Pro'da 50 MB'tır. Dosyalar toplam eşitleme depolamanızdan düşer (ücretsizde 50 MB, Pro'da 500 MB, depolama eklentileriyle 5,5 GB'a kadar genişletilebilir) ve Ayarlar > Depolama'daki çubuk nerede olduğunuzu her zaman gösterir."
       ]
     },
     "vault": {
       "q": "Kasa nedir?",
       "a": [
-        "Kasa, yapılandırılmış sırlar için ayrılmış bir bölümdür: kullanıcı adı ve parolalı girişler, kredi ve banka kartları ve SSH anahtarları. Girdiler serbest metin yerine düzgün alanlar alır, girişler site simgesini gösterir ve her şey verilerinizin geri kalanı gibi cihazınızda şifrelenir.",
+        "Kasa, yapılandırılmış sırlar için ayrılmış bir bölümdür: kullanıcı adı ve parolalı giriş bilgileri, kredi ve banka kartları ve SSH anahtarları. Girdiler serbest metin yerine düzgün alanlar alır, giriş bilgileri site simgesini gösterir ve her şey verilerinizin geri kalanı gibi cihazınızda şifrelenir.",
         "Yoksa notlara dağılıp giden birkaç kimlik bilgisine derli toplu, korumalı bir yuva verir. En hassas girdileriniz için ikinci bir kapı olarak uygulama kilidi ve PIN korumasıyla birlikte kullanın. Bir Bitwarden içe aktarımı doğrudan buraya iner."
       ]
     },
@@ -297,14 +301,14 @@
       "q": "Tek bir not ne kadar uzun olabilir ve boyut uyarıları ne anlama geliyor?",
       "a": [
         "İstediğiniz kadar yazın - normal notlarda boyut hiç gündeme gelmez. Tek bir not çok büyüdükçe altında küçük bir ipucu belirir ve üç adımda yükselir: 50.000 kelime civarında notun uzadığını ve yavaş cihazlarda takılabileceğini söyler; 75.000 kelime civarında sarıya döner, yani düzenlemede tutukluk başlayabilir; 100.000 kelime civarında ise eşitleme sınırına yaklaştığınız için notu bölmenizi önerir. Bunlar yol göstericidir, kesin sınırlar değil ve hiçbiri devam etmenizi engellemez.",
-        "Asıl tavan o eşitleme sınırıdır. Tek bir not şifrelendikten sonra yaklaşık 1 MB metin taşıyabilir - kabaca 120.000 kelime tipik İngilizce, Latin dışı bir yazı sistemiyle ya da yoğun biçimlendirmeyle daha az. Bunu aşan bir not çalışmaya devam eder ve yazdığınız cihazda güvenle durur, ama o tek not diğer cihazlarınıza eşitlenmez (“eşitlenemedi” uyarısını görürsünüz). Notlarınızın geri kalanı etkilenmez: aşırı büyük tek bir not başka hiçbir şeyi engellemez.",
+        "Tek gerçek tavan o eşitleme sınırıdır. Tek bir not şifrelendikten sonra yaklaşık 1 MB metin taşıyabilir - tipik bir İngilizce metinde kabaca 120.000 kelime; Latin dışı bir yazı sistemiyle ya da yoğun biçimlendirmeyle daha az. Bunu aşan bir not çalışmaya devam eder ve yazdığınız cihazda güvenle durur, ama o tek not diğer cihazlarınıza eşitlenmez (“eşitlenemedi” uyarısını görürsünüz). Notlarınızın geri kalanı etkilenmez: aşırı büyük tek bir not başka hiçbir şeyi engellemez.",
         "Çözümü kolay: çok uzun bir notu birkaç küçük nota bölün. İçerik aynıdır, sorunsuz eşitlenir ve düzenleyici hızlı kalır. Her notun altındaki canlı kelime sayacı, yazarken boyutu izlemenizi sağlar."
       ]
     },
     "shutdown": {
       "q": "PrivacyNotes kapanırsa notlarıma ne olur?",
       "a": [
-        "Onlar sizde kalır. Uygulama yerel öncelikli olduğu için notlarınız, görevleriniz, günlük kayıtlarınız ve kasa öğeleriniz cihazınızda durur ve bunları Markdown, JSON veya HTML'e dışa aktarmak çevrimdışı çalışır. Bir resim ya da dosya, onu bir cihazda eklediğiniz ya da açtığınız anda orada kalır; bu cihazın hiç açmadığı biri ise siz açtığınızda indirilir. Bu yüzden tam bir yedek alın: bu cihazda eksik olan her resmi ve dosyayı indirir ve indirilemeyen olursa bunu söyler.",
+        "Onlar sizde kalır. Uygulama yerel öncelikli olduğu için notlarınız, görevleriniz, günlük kayıtlarınız ve kasa öğeleriniz cihazınızda durur ve bunları Markdown, JSON veya HTML'e dışa aktarmak çevrimdışı çalışır. Bir görsel ya da dosya, onu bir cihazda eklediğiniz ya da açtığınız anda orada kalır; bu cihazın hiç açmadığı biri ise siz açtığınızda indirilir. Bu yüzden tam bir yedek alın: bu cihazda eksik olan her görseli ve dosyayı indirir ve indirilemeyen olursa bunu söyler.",
         "Şifreleme kodu da [açık kaynak](https://github.com/LifetimeLabsDev/PrivacyNotes.app), yani sunucularımızın bir gecede yok olduğu bir dünyada bile format bağımsız olarak okunabilir kalır."
       ]
     },
@@ -318,8 +322,8 @@
     "one-time-pricing": {
       "q": "Tek seferlik bir ödeme bir eşitleme hizmetini nasıl sonsuza dek finanse edebilir?",
       "a": [
-        "Çünkü hizmeti işletmek bilerek ucuz. Uygulama yerel öncelikli ve notlar küçük şifreli veri yığınları, yani sunucu bunları saklamak ve cihazlarınız arasında iletmekten fazlasını neredeyse hiç yapmıyor. Yazdıklarınız üzerinde analitik yok, piksel ya da üçüncü taraf izleyici yok, işlemci yakan yapay zekâ özellikleri yok, destek departmanı yok.",
-        "Zamanla büyüyen tek maliyet depolama ve fiyatı da ona göre: 500 MB'lık dâhil alanın ötesi küçük, yıllık bir ek pakettir. Tek seferlik maliyetler bir kez fiyatlanır, tekrar eden maliyetler tekrar eder. Modelin tek yapması gereken kendini finanse etmek ve ediyor."
+        "Çünkü hizmetin işletme maliyeti bilinçli olarak düşük tutuluyor. Uygulama yerel öncelikli ve notlar küçük şifreli veri yığınları, yani sunucu bunları saklamak ve cihazlarınız arasında iletmekten fazlasını neredeyse hiç yapmıyor. Yazdıklarınız üzerinde analitik yok, piksel ya da üçüncü taraf izleyici yok, işlemci yakan yapay zekâ özellikleri yok, destek departmanı yok.",
+        "Zamanla büyüyen tek maliyet depolama ve fiyatı da ona göre: dâhil olan 500 MB'ın üzerindeki alan, küçük bir yıllık ücret karşılığında depolama eklentisi olarak sunulur. Tek seferlik maliyetler bir kez fiyatlanır, tekrar eden maliyetler tekrar eder. Modelin tek yapması gereken kendini finanse etmek ve ediyor."
       ]
     },
     "pro-cross-platform": {
@@ -330,9 +334,9 @@
       ]
     },
     "storage-addons": {
-      "q": "Depolama paketleri nasıl çalışıyor?",
+      "q": "Depolama eklentileri nasıl çalışıyor?",
       "a": [
-        "Pro 500 MB şifreli eşitleme depolaması içerir. Daha fazlası gerekirse ek paketler üstüne biner: yılda 4,80 $ karşılığında 1 GB, 8,40 $ karşılığında 2 GB veya 18 $ karşılığında 5 GB, toplamda 5,5 GB'a kadar. Ek paketler üründeki tek tekrar eden satın alımdır, çünkü kullandığınız her ay bize para maliyeti olan tek şey depolamadır.",
+        "Pro 500 MB şifreli eşitleme depolaması içerir. Daha fazlası gerekirse depolama eklentileri bunun üzerine eklenir: yılda 4,80 $ karşılığında 1 GB, 8,40 $ karşılığında 2 GB veya 18 $ karşılığında 5 GB, toplamda 5,5 GB'a kadar. Depolama eklentileri üründeki tek tekrar eden satın alımdır, çünkü kullandığınız her ay bize para maliyeti olan tek şey depolamadır.",
         "Her şey Ayarlar > Depolama altında yönetilir: daha büyük bir pakete geçin (yalnızca oranlanmış farkı ödersiniz) ya da istediğiniz zaman iptal edip ödediğiniz dönem bitene kadar alanı koruyun. Pro her hâlükârda sonsuza dek sizindir."
       ]
     },
@@ -347,14 +351,14 @@
       "q": "Ödeme yaptığımda hakkımda ne öğreniyorsunuz?",
       "a": [
         "Sandığınızdan azını. Ödeme, kayıtlı satıcı [Paddle](https://www.paddle.com) üzerinden yürür: adınız, kart numaranız ve fatura adresiniz ödeme ve vergi amacıyla Paddle'a gider, sunucularımıza hiç uğramaz.",
-        "Fatura bilgileriniz Paddle'da durur; veritabanımıza ulaşan şey genel anahtarınız, tutar ve sipariş kimliğidir, bir depolama paketi için de boyutu ve yenileme tarihleri. Paddle hesabımız iki tarafı da görebilir, ama kim olduğunuza bakmayız. Adınızın satın almayla ilişkilendirilmemesi için [bir e-posta takma adı ve maskeli bir kartla](/tr/help/buy-pro-anonymously/) ödeyin."
+        "Fatura bilgileriniz Paddle'da durur; veritabanımıza ulaşan şey genel anahtarınız, tutar ve sipariş kimliğidir, bir depolama eklentisi için de boyutu ve yenileme tarihleri. Paddle hesabımız iki tarafı da görebilir, ama kim olduğunuza bakmayız. Adınızın satın almayla ilişkilendirilmemesi için [bir e-posta takma adı ve maskeli bir kartla](/tr/help/buy-pro-anonymously/) ödeyin."
       ]
     },
     "buy-pro-anonymously": {
       "q": "Pro'yu kim olduğumu belli etmeden satın alabilir miyim?",
       "a": [
         "Evet, iki standart araçla. Makbuz için bir e-posta takma adı kullanın: [Apple Hide My Email](https://support.apple.com/105078), [DuckDuckGo Email Protection](https://duckduckgo.com/email), [SimpleLogin](https://simplelogin.io), [Firefox Relay](https://relay.firefox.com) ve [addy.io](https://addy.io) gerçek gelen kutunuzu açığa çıkarmadan yönlendirir. Ödeme için maskeli bir kart kullanın: ABD'de [privacy.com](https://privacy.com) yazdığınız her isimle çalışan sanal kartlar üretir, başka ülkelerdeki birçok banka ve hizmet de (örneğin [Revolut](https://www.revolut.com)) aynı işi gören tek kullanımlık sanal kartlar sunar.",
-        "Ödeme sırasında Paddle, vergiyi hesaplamak için bir e-posta, bir ödeme yöntemi ve bir ülke (bazı bölgelerde ayrıca bir posta kodu) ister. Takma ad makbuzu alır, maskeli kart ona verdiğiniz ismi taşır ve vergi konumu sizi bir bölgeye kadar daraltır, fazlasına değil. Yine de takma adı canlı tutun: makbuz e-postası hem satın alma kanıtınız hem de iade kanalınızdır.",
+        "Ödeme sırasında Paddle, vergiyi hesaplamak için bir e-posta, bir ödeme yöntemi ve bir ülke (bazı bölgelerde ayrıca bir posta kodu) ister. Takma ad makbuzu alır, maskeli kart ona verdiğiniz ismi taşır ve vergi için alınan konum bilgisi yalnızca bulunduğunuz bölgeyi ortaya koyar. Yine de takma adı canlı tutun: makbuz e-postası hem satın alma kanıtınız hem de iade kanalınızdır.",
         "İfadeyle açılmış bir hesapla birleştiğinde hiçbir taraf resmin tamamını görmez: bankanız bir kart yüklemesi görür, Paddle bir takma ad ve maskeli bir kart görür, biz ise Pro olan bir genel anahtarı, Paddle hesabımızda o takma adın yanında görürüz."
       ]
     },
@@ -370,8 +374,8 @@
       "q": "Bir özellik istedim ya da bir hata bildirdim. Ne kadar sürede geliyor?",
       "a": [
         "Çoğu zaman birkaç gün. Küçük istekler ve hata bildirimleri genellikle bir sonraki sürüme giriyor ve sürümler yılda birkaç kez değil, neredeyse her hafta çıkıyor. [Changelog](/changelog) bunun kaydıdır: her madde tarihlidir, sade bir dille yazılmıştır ve neyin değiştiğini söyler. Bir aylık kısmını okuyun, uygulamaya bir şey emanet etmeden önce bizden ne bekleyeceğinizi tam olarak bilirsiniz.",
-        "Bu hız, işin nasıl bölündüğünden geliyor. Şifreleme çekirdeği, eşitleme protokolü ve giriş akışı, uygulamanın daha adı yokken, insanlar tarafından günlük işlerinin yanında yazıldı ve kripto çekirdeği bugün de öyle bakılıyor; otomatik hiçbir şey yanına yaklaşmıyor. O temel 2026 baharında sağlamlaşınca, sabit bir protokol altında yapay zekâ kodlama araçlarını kullanmaya başladık: önce [çeviriler](/tr/help/translation-quality/) için, sonra yardım makaleleri, sonra arayüz özellikleri ve kritik olmayan hata düzeltmeleri için; bu araçlar, aksi halde haftalar alacak nadir uç durumları köşeye sıkıştırmakta ve birden fazla geliştiriciyi tek bir standartta tutan test betiklerini yazmakta iyi. Tek bir kişinin isteğinin, listenin en üstünün arkasında beklemek yerine yapmaya değer olması bu yüzden.",
-        "Şifrelemeye, eşitlemeye veya girişe dokunan her şey, yayımlanmadan önce her satırı okuyan deneyimli insanlarda kalıyor ve bu kod [herkese açık](https://github.com/LifetimeLabsDev/PrivacyNotes.app); bize inanmak yerine kendiniz okuyabilirsiniz. Ekip ve nasıl çalıştığımız hakkında daha fazlası [hakkımızda sayfasında](https://lifetimelabs.dev/about).",
+        "Bu hız, işin nasıl bölündüğünden geliyor. Şifreleme çekirdeği, eşitleme protokolü ve giriş akışı, uygulamanın daha adı yokken, insanlar tarafından günlük işlerinin yanında yazıldı ve kripto çekirdeğinin bakımı bugün de aynı şekilde yapılıyor; otomatik hiçbir şey yanına yaklaşmıyor. O temel 2026 baharında sağlamlaşınca, sabit bir protokol altında yapay zekâ kodlama araçlarını kullanmaya başladık: önce [çeviriler](/tr/help/translation-quality/) için, sonra yardım makaleleri, sonra arayüz özellikleri ve kritik olmayan hata düzeltmeleri için; bu araçlar, aksi halde haftalar alacak nadir uç durumları saptamakta ve birden fazla geliştiriciyi tek bir standartta tutan test betiklerini yazmakta iyi. Bu yüzden, tek bir kişinin isteğini bile listenin üst sıralarındaki isteklerin arkasında bekletmek yerine hayata geçirmeye değer buluyoruz.",
+        "Şifrelemeye, eşitlemeye veya girişe dokunan her şey, her satırı yazan deneyimli geliştiricilerin sorumluluğunda kalıyor ve bu kod [herkese açık](https://github.com/LifetimeLabsDev/PrivacyNotes.app); bize inanmak yerine kendiniz okuyabilirsiniz. Ekip ve nasıl çalıştığımız hakkında daha fazlası [hakkımızda sayfasında](https://lifetimelabs.dev/about).",
         "Uygulamanın kendisinde yapay zekâ özelliği yoktur ve notlarınızı hiçbir yere göndermez ([ayrıntılar](/tr/help/no-ai/)). Bu söz ayrı durur ve değişmez."
       ]
     },
@@ -396,7 +400,7 @@
     "languages": {
       "q": "Uygulama hangi dilleri konuşuyor?",
       "a": [
-        "İngilizce, Almanca, Fransızca, İtalyanca, İspanyolca, Felemenkçe, Lehçe, Çekçe, Katalanca, Türkçe, İsveççe, Ukraynaca, Rusça, Japonca, Korece, Geleneksel Çince, Tayca, Arapça ve hem Avrupa hem Brezilya varyantıyla Portekizce. Uygulama varsayılan olarak sistem dilinizi izler ya da her cihazda Ayarlar > Dil altında bir dili sabitleyebilirsiniz.",
+        "İngilizce, Almanca, Fransızca, İtalyanca, İspanyolca, Felemenkçe, Lehçe, Çekçe, Katalanca, Türkçe, İsveççe, Ukraynaca, Rusça, Japonca, Korece, Geleneksel Çince, Tayca, Arapça ve hem Avrupa hem Brezilya varyantıyla Portekizce. Uygulama varsayılan olarak sistem dilinizi izler ya da her cihazda Ayarlar > Tarih ve dil > Dil altında bir dili sabitleyebilirsiniz.",
         "Çeviriler bir Pro ayrıcalığı değil, herkes için ücretsiz. Daha fazla dil planlanıyor; sizinki eksikse [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) veya [Reddit](https://www.reddit.com/r/PrivacyNotes/) üzerinden bize söyleyin."
       ]
     },
@@ -410,7 +414,7 @@
     "markdown-syntax": {
       "q": "Düzenleyici hangi Markdown sözdizimini anlıyor?",
       "a": [
-        "Standart Markdown siz yazarken canlı biçimlenir: başlıklar, vurgu, üstü çizili ve vurgulu metin, madde işaretli ve numaralı listeler, görev listeleri (Tab ve Shift+Tab her listeyi iç içe yerleştirir, kontrol listeleri dahil), alıntılar, ayırıcılar, satır içi kod ve sözdizimi renklendirmeli kod blokları, satır içi ve blok matematik (KaTeX) ve notlar arasında otomatik tamamlamalı note-link'ler.",
+        "Standart Markdown siz yazarken canlı biçimlenir: başlıklar, vurgu, üstü çizili ve vurgulu metin, madde işaretli ve numaralı listeler, görev listeleri (Tab ve Shift+Tab her listeyi iç içe yerleştirir, kontrol listeleri dahil), alıntılar, ayırıcılar, satır içi kod ve sözdizimi renklendirmeli kod blokları, satır içi ve blok matematik (KaTeX) ve notlar arasında otomatik tamamlamalı not bağlantıları.",
         "Gerisini biçimlendirme araç çubuğu ve onun Ekle menüsü ekler: tablolar, katlanabilen bilgi kutuları, altı çizili metin, üst simge ve alt simge, metin hizalama, metin ve vurgu renkleri, yazı tipleri, bağlantılar, görseller ve dosya ekleri. Her şey Markdown olarak gidip gelir: herhangi bir notun altındaki “Markdown'ı göster” ham kaynağı açar ve dışa aktarımlar temiz .md dosyalarıdır, yani yazdığınız hiçbir şey tescilli bir formata hapsolmaz."
       ]
     },
@@ -418,14 +422,14 @@
       "q": "Görevler nasıl çalışıyor?",
       "a": [
         "Herhangi bir notta - [ ] olarak yazdığınız her satır bir göreve dönüşür ve kenar çubuğundaki Görevler görünümü hepsini tek yerde toplar. Orada bir görevi işaretlemek, bulunduğu notu günceller; bir görevi açmak ise o nota atlar. Bakımını yapacağınız ayrı bir görev veritabanı yok: görevler sadece notlarınızdaki satırlardır, geri kalan her şey gibi şifreli.",
-        "Görevler'in üstündeki hızlı ekleme kutusu, Hızlı Görevler adlı bir notun sonuna ekler (ilk kullanımda sizin için oluşturulur), böylece aklınıza gelen bir işi yakalamak bir dosyalama kararı değil, tek tuş meselesi olur. Aynı görünüm üç düzen (Karma, Toplu, Liste), tamamlanan görevleri gösterip gizleyen bir düğme ve görev araması sunar; Tümü görünümündeki Yeni düğmesi de doğrudan bir görev notu başlatabilir."
+        "Görevler'in üstündeki hızlı ekleme kutusu, Quick Tasks adlı bir notun sonuna ekler (ilk kullanımda sizin için oluşturulur), böylece aklınıza gelen bir işi yakalamak bir dosyalama kararı değil, tek tuş meselesi olur. Aynı görünüm üç düzen (Karma, Toplu, Liste), tamamlanan görevleri gösterip gizleyen bir düğme ve görev araması sunar; Tümü görünümündeki Yeni düğmesi de doğrudan bir görev notu başlatabilir."
       ]
     },
     "journal": {
       "q": "Günlük nasıl çalışıyor ve neleri takip edebilirim?",
       "a": [
         "Günlükler, tarihli kayıtlar için ayrılmış bir görünümdür: tek dokunuş bugünün kaydını oluşturur, yanındaki takvim düğmesi ise kaçırdığınız yakın bir günü sonradan doldurur. Bir kayıt, normal bir not artı isteğe bağlı takiplerdir: 24 duygu etiketiyle 1-10 arası ruh hali, uyku, aktivite, ilaçlar, enerji, odak ve daha fazlası. Herhangi bir kaydın içindeki “Takipleri yapılandır” yerleşik olanları açıp kapatır; Pro ise 10'a kadar özel takip ekler (ölçekler, sayılar, evet/hayır).",
-        "İstatistikler (Ayarlar'da ya da alt çubuktaki istatistik simgesiyle) kayıtları Sağlık sekmesi altında eğilimlere dönüştürür: zaman içinde ruh hali, uyku ve aktivite grafikleri, ilaç uyumu. Dışa aktarımlar cihazınızda üretilir: “JSON indir” ücretsizdir, Pro ise randevuya götürebileceğiniz bir “Doktor PDF'i”, seçtiğiniz sohbet botu için kopyalamaya hazır bir yapay zekâ istemi, örüntü içgörüleri ve haftanın özetini ekler. Takip verisi şifreli kaydın içinde durur, yani sunucu hiçbirini okuyamaz."
+        "İstatistikler (Ayarlar'da ya da alt çubuktaki istatistik simgesiyle) haftanızın Genel bakışıyla açılır: yazma ve sağlık bir arada. Sağlık sekmesi kaydettiğiniz her takibi, özel takipler dahil, seçtiğiniz aralıkta grafiğe döker; Keşfet tek bir takibi alıp ruh halinizin onun olduğu ve olmadığı günlerde, aynı gün ya da ertesi gün nasıl seyrettiğini gösterir; Örüntüler her takibi bu şekilde sıralar; İlaç, uyumu takvim olarak gösterir. Dışa aktarımlar cihazınızda üretilir: “JSON indir” ücretsizdir, Pro ise randevuya götürebileceğiniz bir “Doktor PDF'i”, seçtiğiniz sohbet botu için kopyalamaya hazır bir yapay zekâ istemi, karşılaştırmaları ve haftanın özetini ekler. Takip verisi şifreli kaydın içinde durur, yani sunucu hiçbirini okuyamaz."
       ]
     },
     "bookmarks": {
@@ -454,14 +458,15 @@
       "q": "Hangi klavye kısayolları var?",
       "a": [
         "Uygulamanın herhangi bir yerinde ? tuşuna basın, yerleşik kısayol kartı açılır; Ayarlar > Hakkında altında da bulunur. Kısayollar gezinmeyi, not işlemlerini, biçimlendirmeyi ve görünümleri kapsar - Windows ve Linux'ta her Cmd Ctrl, her Option Alt olarak okunur.",
-        "Temel olanlar: Cmd+K aramaya odaklanır, J ve K listede gezinir, Alt+Shift+N yeni not başlatır, Cmd+Backspace seçili notu çöpe atar, Cmd+, Ayarlar'ı açar. Yazarken: Cmd+B kalın, Cmd+I italik, Cmd+Shift+K bağlantı ekler, Cmd+Shift+9 görev listesi başlatır, Cmd+F notta arar, Cmd+Shift+O ana hattı açıp kapatır. Cmd+\\ kenar çubuğunu gizler, Cmd+Shift+L temayı değiştirir, Cmd+Shift+F zen moduna girer (Pro) ve Esc neredeyse her şeyden geri çıkmanızı sağlar."
+        "Temel olanlar: Cmd+K adıyla herhangi bir öğeye veya ayara gider ve son satırı açık bölümün metninde arama yapar; / aramaya odaklanır, J ve K listede gezinir, Cmd+[ ve Cmd+] açtığınız öğeler arasında geri ve ileri gider, Alt+Shift+N yeni not başlatır, Cmd+Backspace seçili notu çöpe atar, Cmd+, Ayarlar'ı açar. Yazarken: Cmd+B kalın, Cmd+I italik, Cmd+Shift+K bağlantı ekler, Cmd+Shift+9 görev listesi başlatır, Cmd+F notta arar, Cmd+Shift+O ana hattı açıp kapatır, Cmd+Shift+M Markdown görünümüne geçer. Cmd+\\ veya Cmd+Shift+D kenar çubuğunu gizler, Cmd+Shift+L temayı değiştirir, Cmd+Shift+F zen moduna girer (Pro) ve Esc, filtreler dahil neredeyse her şeyden geri çıkmanızı sağlar. Herhangi bir komutu adıyla bulup çalıştırmak için aramaya veya Cmd+K'ya > yazın (veya bir metin alanının dışında > tuşuna basın).",
+        "Masaüstü uygulamaları, tarayıcının kendine ayırdığı tuşları da ekler: yeni not için Cmd+N, her türden yeni öğe için Cmd+Shift+N, sekmeyi kapatmak için Cmd+W, sekmeler arasında geçmek için Ctrl+Tab, kenar çubuğunun bölümleri için Cmd+1 ile Cmd+9 arası ve komut listesi için Cmd+Shift+P."
       ]
     },
     "hotkey-cheat-sheet": {
       "q": "Kısayolların yazdırılabilir bir kartı var mı?",
       "a": [
         "Evet. [Yazdırılabilir kısayol kartı](/help/keyboard-shortcuts/cheat-sheet) tüm kısayolları tek bir A4 sayfasında, iki sütun halinde toplar - ekranınızın yanına asmaya hazır. Uygulamanın gösterdiği listeden üretilir, bu yüzden hiçbir sürümün gerisinde kalamaz.",
-        "Kartı açın ve Yazdır düğmesine basın (veya Cmd+P / Ctrl+P). Kâğıt yerine dosya isterseniz yazdırma penceresinde hedef olarak PDF'yi seçin. Kart ayrıca uygulamadaki kısayol listesinin (Ayarlar > Hakkında > Kısayollar) üstünden ve altından, bir de bu sitenin alt bilgisinden bağlantılıdır."
+        "Kartı açın ve Print düğmesine basın (veya Cmd+P / Ctrl+P). Kâğıt yerine dosya isterseniz yazdırma penceresinde hedef olarak PDF'yi seçin. Kartın bağlantısı ayrıca uygulamadaki kısayol listesinin (Ayarlar > Hakkında > Kısayollar) üstünde ve altında, bir de bu sitenin alt bilgisinde bulunur."
       ]
     },
     "ask-an-ai": {
@@ -489,15 +494,15 @@
     "phrase-compromised": {
       "q": "Kurtarma ifadem sızdı. Ne yapmalıyım?",
       "a": [
-        "Kasayı yanmış sayın. Bir ifade değiştirilemez ya da döndürülemez, çünkü ifade her şeyin altında şifrelendiği anahtardır - dolayısıyla çözüm yeni bir kasaya taşınmaktır. Önce eski hesapta her şeyi dışa aktarın: Ayarlar > Import & Export > Dışa aktar > “PrivacyNotes yedeği (.zip)”.",
-        "Çıkış yapın, yeni bir kasa oluşturun (yeni 12 kelime) ve dışa aktarımı Ayarlar > Import & Export > Geri yükle > “Tam yedek (.zip)” ile geri getirin. Ardından hâlâ giriş yapılmış herhangi bir cihazdan eski hesabı silin: Ayarlar > Hesap > “Hesabı ve verileri sil...”. Bu, eşitlenen verisini kaldırır ve eski ifadeyi elinde tutan herkesin kapısını kapatır. Google, Apple veya GitHub ile giriş yaptıysanız önce eski hesabı silin, sonra yeni kasayı başlatmak için Google, Apple veya GitHub ile tekrar giriş yapın.",
-        "Önce iki iş: etkin bir depolama paketini iptal edin, çünkü silme bunu gerektirir; ayrıca Pro'nun yeni kasaya geçmek yerine satın alındığı hesapta kaldığını hesaba katın. Ardından yeni ifadeyi bir parola yöneticisinde tutun, başka hiçbir yerde: bütün önlem bundan ibaret."
+        "Kasayı ele geçirilmiş kabul edin. Bir ifade değiştirilemez ya da döndürülemez, çünkü ifade her şeyin şifrelenmesinde kullanılan anahtardır - dolayısıyla çözüm yeni bir kasaya taşınmaktır. Önce eski hesapta her şeyi dışa aktarın: Ayarlar > Import & Export > Dışa aktar > “PrivacyNotes yedeği (.zip)”.",
+        "Çıkış yapın, yeni bir kasa oluşturun (yeni 12 kelime) ve dışa aktarımı Ayarlar > Import & Export > Geri yükle > “Tam yedek (.zip)” ile geri getirin. Ardından hâlâ giriş yapılmış herhangi bir cihazdan eski hesabı silin: Ayarlar > Hesap > “Hesabı ve verileri sil...”. Bu, eşitlenen verisini kaldırır ve eski ifadeyi elinde tutan herkesin kapısını kapatır. Google, Apple veya GitHub ile giriş yaptıysanız önce eski hesabı silin, sonra yeni kasayı başlatmak için aynı Google, Apple veya GitHub hesabıyla tekrar giriş yapın.",
+        "Önce iki iş: etkin bir depolama eklentisini iptal edin, çünkü silme bunu gerektirir; ayrıca Pro'nun yeni kasaya geçmek yerine satın alındığı hesapta kaldığını hesaba katın. Ardından yeni ifadeyi bir parola yöneticisinde tutun, başka hiçbir yerde: bütün önlem bundan ibaret."
       ]
     },
     "lost-device": {
       "q": "Bir cihazımı kaybettim. Notlarımı nasıl korurum?",
       "a": [
-        "Giriş yapmış herhangi bir cihazdan Ayarlar > Hesap > “Kayıtlı cihazlar”ı açın ve kayıp olanı kaldırın. O cihaz bir sonraki kez çevrimiçi olduğunda oturumu kapatılır ve yerel verisi silinir; sonraki kullanımından yaklaşık bir dakika içinde. Gittiğini teyit edebilmeniz için 72 saat boyunca “Son kaldırılanlar” altında listelenir.",
+        "Giriş yapmış herhangi bir cihazdan Ayarlar > Hesap > “Kayıtlı cihazlar”ı açın ve kayıp olanı kaldırın. O cihaz bir sonraki kez çevrimiçi olduğunda, sonraki kullanımından itibaren yaklaşık bir dakika içinde oturumu kapatılır ve yerel verisi silinir. Gittiğini teyit edebilmeniz için 72 saat boyunca “Son kaldırılanlar” altında listelenir.",
         "Taşınabilir her şeyde uygulama kilidini (PIN veya biyometri) açın ve işletim sisteminizin ekran kilidini açık bırakın. Bir cihaz, bir sonraki bağlanışında silinir; o ana kadar kaybolan telefon ile notlarınız arasında duran şey bu yerel kapılardır. Asıl anahtar ifadedir: 12 kelimenizi elinde tutan herkes yeniden giriş yapabilir. İfadenin kendisinin sızdığından şüpheleniyorsanız bunun yerine [ifade sızıntısı el kitabını](/tr/help/phrase-compromised/) izleyin."
       ]
     },
@@ -520,7 +525,7 @@
       "a": [
         "Ayarlar > Import & Export > Dışa aktar altından “Şifreli tam yedek (.pnbackupz)” dosyasını dışa aktarın. Her şeyi - notlar, günlükler, kasa ögeleri, görevler, görseller, ses ve dosyalar - ifade anahtarınızla şifreler, yani bulutta ya da bir USB bellekte tutabilirsiniz ve ifadenizle her cihazda geri yüklenir.",
         "Onu oluşturan ifadeyle açılır, o yüzden bir gün [yeni bir ifadeye geçerseniz](/tr/help/phrase-compromised/) diye yanında bir “PrivacyNotes yedeği (.zip)” tutun: aynı içerik, her kasaya geri yüklenir ve diskte okunabilir, o yüzden güvendiğiniz bir yerde saklayın. “Şifreli yedek (.pnbackup)” görsel ve dosya yerine metni ve üst verileri kapsar; “Metin yedeği (.json)” ve HTML arşivi ise geri yükleme değil taşınabilirlik formatlarıdır.",
-        "Her şey eşitleniyorken neden yerel yedek tutasınız? Çünkü eşitleme bir yedek değildir: silmeleri sadakatle yayar; ele geçirilmiş bir sunucunun düşürdüğü veriyi cihazlarınız da aynalar. Kendi diskinizdeki bir kopya, hiçbir sunucu olayının dokunamayacağı tek kopyadır. Büyük içe aktarımlardan önce, ayrılmadan önce ve sürdürebileceğiniz bir ritimde dışa aktarın."
+        "Her şey eşitleniyorken neden yerel yedek tutasınız? Çünkü eşitleme bir yedek değildir: silmeleri sadakatle yayar; ele geçirilmiş bir sunucu verileri sildiğinde cihazlarınız da bu silmeleri uygular. Kendi diskinizdeki bir kopya, hiçbir sunucu olayının dokunamayacağı tek kopyadır. Büyük içe aktarımlardan önce, ayrılmadan önce ve sürdürebileceğiniz bir ritimde dışa aktarın."
       ]
     },
     "restore-backup": {
@@ -540,14 +545,14 @@
     "storage-usage": {
       "q": "Depolamamdan ne düşer ve nasıl yer açarım?",
       "a": [
-        "Eşitlediğiniz her şey, şifreli boyutuyla: not metni, görseller, ses kayıtları ve dosya ekleri. Ayarlar > Depolama altındaki çubuk toplamı gösterir; her notun kendi payı ise not seçeneklerinde “Kullanılan alan” olarak listelenir. Çöpe atılan notlar, çöp kutusu boşaltılana kadar saymaya devam eder.",
+        "Eşitlediğiniz her şey, şifreli boyutuyla: not metni, görseller, ses kayıtları ve dosya ekleri. Ayarlar > Depolama altındaki çubuk toplamı gösterir; her notun kendi payı ise not seçeneklerinde “Kullanılan alan” olarak listelenir. Çöpe atılan notlar, çöp kutusu boşaltılana kadar hesaba katılmaya devam eder.",
         "Hızlıca yer açmak için Dosyalar'ı açın, Boyuta göre sıralayın ve en büyükleri silin - neredeyse her hesapta ekler metni kat kat aşar. Sonra çöp kutusunu boşaltın: Çöp kutusu görünümü “Boşalt” işleminin ne kadar yer açacağını gösterir. Metin tek başına bir kotayı neredeyse hiç doldurmaz; ücretsiz 50 MB bile on binlerce düz notu alır."
       ]
     },
     "upload-failed": {
       "q": "Dosya yüklemem neden başarısız oldu?",
       "a": [
-        "Hata, hangi tavana çarptığınızı söyler. Dosya başına: Ücretsizde 5 MB, Pro'da 50 MB, herhangi bir depolama paketiyle 100 MB. Toplamda: eşitlediğiniz her şey hesabınızın depolamasına sığmalıdır (Ücretsizde 50 MB, Pro'da 500 MB, paketlerle daha fazlası), yani dolu bir kota, dosya küçük olsa bile yüklemeyi başarısız kılar. Her dosya türü kabul edilir.",
+        "Hata, hangi tavana çarptığınızı söyler. Dosya başına: Ücretsizde 5 MB, Pro'da 50 MB, herhangi bir depolama eklentisiyle 100 MB. Toplamda: eşitlediğiniz her şey hesabınızın depolamasına sığmalıdır (Ücretsizde 50 MB, Pro'da 500 MB, eklentilerle daha fazlası), yani dolu bir kota, dosya küçük olsa bile yüklemeyi başarısız kılar. Her dosya türü kabul edilir.",
         "Dosyalar görünümündeki ya da Ayarlar > Depolama altındaki depolama çubuğunu kontrol edin, sonra en ucuz çözümü seçin: [yer açın](/tr/help/storage-usage/), yükseltin ya da dosyayı küçültün (telefon fotoğrafları çoğu zaman birkaç MB'lık orijinallerdir; sıkıştırılmış bir JPEG bunun küçük bir kesridir). Bağlantı olmadığı için başarısız olan bir yükleme kaybolmaz, bekletilir: dosya bu cihazda kalır ve tekrar çevrimiçi olduğunuzda kendiliğinden yüklenir; o zamana kadar Ayarlar > ID & Sync onu bekleyen olarak sayar."
       ]
     },
@@ -562,7 +567,7 @@
       "q": "PrivacyNotes'tan tamamen nasıl ayrılırım?",
       "a": [
         "Önce dışa aktarın, sonra silin - ikisi de kendi elinizde. Ayarlar > Import & Export > Dışa aktar her çıkış yolunu kapsar: tam bir kopya için “PrivacyNotes yedeği (.zip)”, bir sonraki not uygulamanız için taşınabilir Markdown ve HTML ve bir sonraki parola yöneticiniz için Bitwarden uyumlu “Kasa dışa aktarımı (.json)”. Dışa aktarımlar cihazınızda üretilir.",
-        "Sonra Ayarlar > Hesap > “Hesabı ve verileri sil...”: DELETE yazın; eşitlenen notlarınız, dosyalarınız, cihazlarınız, ayarlarınız ve hesabın kendisi saklama süresi olmadan kalıcı olarak kaldırılır ([ayrıntılar](/tr/help/delete-account/)). Etkin bir depolama paketinin önce Ayarlar > Depolama altından iptal edilmesi gerekir. Yalnızca ifadeyle açılmış bir hesap geride temizlenecek bir şey bırakmaz, çünkü kim olduğunuzu hiç bilmedik. Karanlık arayüz oyunları yok, geri kazanma e-postası yok - verileriniz sizindir, çıkarken de."
+        "Sonra Ayarlar > Hesap > “Hesabı ve verileri sil...”: DELETE yazın; eşitlenen notlarınız, dosyalarınız, cihazlarınız, ayarlarınız ve hesabın kendisi saklama süresi olmadan kalıcı olarak kaldırılır ([ayrıntılar](/tr/help/delete-account/)). Etkin bir depolama eklentisinin önce Ayarlar > Depolama altından iptal edilmesi gerekir. Yalnızca ifadeyle açılmış bir hesap geride temizlenecek bir şey bırakmaz, çünkü kim olduğunuzu hiç bilmedik. Karanlık arayüz oyunları yok, geri kazanma e-postası yok - verileriniz sizindir, çıkarken de."
       ]
     },
     "data-rights": {
@@ -575,7 +580,7 @@
     "referral-links": {
       "q": "Hangi siteden geldiğimi kaydediyor musunuz?",
       "a": [
-        "Evet, ve konu reklam. Başka sitelerde yerleşim satın alıyor, içerik üreticilerine ödeme yapıyoruz; bu yüzden hangilerinin gerçekten insan getirdiğini bilmemiz gerekiyor. Boşa giden reklam parasını zaten ürün karşılıyor, o yüzden bunu soruyu yanıtlayan en küçük biçimde ölçüyoruz.",
+        "Evet, ve konu reklam. Başka sitelerde reklam alanı satın alıyor, içerik üreticilerine ödeme yapıyoruz; bu yüzden hangilerinin gerçekten insan getirdiğini bilmemiz gerekiyor. Boşa giden reklam parasını zaten ürün karşılıyor, o yüzden bunu soruyu yanıtlayan en küçük biçimde ölçüyoruz.",
         "Pazarlama sitesi bağlantılarımıza yapılan tıklamaları yalnızca toplam olarak, bağlantıya ve ülkeye göre, hiçbir tanımlayıcı olmadan sayar: çerez yok, ziyaretçi kaydı yok, üçüncü taraf betiği yok. Hesap oluşturursanız, yayımlanmış bir listeden iki kısa kelime saklanır: varsa hangi bağlantıdan geldiğiniz ve uygulamayı nasıl kurduğunuz, örneğin “android-play”.",
         "Her iki kelime de hesap oluşturulurken bir kez yazılır, hiçbir zaman güncellenmez ve hesabınızla birlikte silinir. Gelişinizle ilgili başka hiçbir şey saklanmaz. Kaydolmadan önce sekmeyi kapatırsanız ya da tarayıcınız bağlantıyı kırparsa, hiçbir kelime saklanmaz. Uygulamalarda yazdıklarınız üzerinde analitik, piksel ya da üçüncü taraf izleyici yoktur: ağ sekmesini açıp bakın."
       ]
@@ -583,12 +588,12 @@
     "pro-not-active": {
       "q": "Pro için ödeme yaptım ama etkin değil. Şimdi ne olacak?",
       "a": [
-        "Bir dakika verin, sonra uygulamayı yeniden yükleyin. Ödemeden sonra uygulama yaklaşık 20 saniye boyunca yoklama yapar ve kilidi kendiliğinden açar; yeniden yükleme de açılışta Pro durumunu tekrar kontrol eder. Ödeme geçtiyse ama etkinleştirme gecikiyorsa “Ödeme alındı ama Pro'nun etkinleşmesi her zamankinden uzun sürüyor” diyen bir şerit çıkar - bu durum neredeyse her seferinde kendiliğinden düzelir. Mağaza sürümlerinde, doğrulanamayan bir satın alım uygulamayı yeniden başlattığınızda tekrar denenir ve hiç etkinleşmeyen bir satın alım 3 gün içinde mağaza tarafından otomatik olarak iade edilir.",
+        "Bir dakika verin, sonra uygulamayı yenileyin. Ödemeden sonra uygulama yaklaşık 20 saniye boyunca yoklama yapar ve kilidi kendiliğinden açar; yenileme de açılışta Pro durumunu tekrar kontrol eder. Ödeme geçtiyse ama etkinleştirme gecikiyorsa “Ödeme alındı ama Pro'nun etkinleşmesi her zamankinden uzun sürüyor” diyen bir şerit çıkar - bu durum neredeyse her seferinde kendiliğinden düzelir. Mağaza sürümlerinde, doğrulanamayan bir satın alım uygulamayı yeniden başlattığınızda tekrar denenir ve hiç etkinleşmeyen bir satın alım 3 gün içinde mağaza tarafından otomatik olarak iade edilir.",
         "Hâlâ kilitli mi? Neredeyse her zaman bir hesap uyuşmazlığıdır: Pro, satın alma sırasında giriş yapılmış hesaba bağlanır, yani farklı bir ifade - ya da ifade kasanız yerine bir Google, Apple veya GitHub girişi - farklı bir hesaptır. Satın alan cihazda Ayarlar > ID & Sync altındaki Hesap kimliğini karşılaştırın. Gerçekten takıldıysa [bildirin](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) ve o Hesap kimliğini ekleyin: satın alımı tanımlar ve notlarınız hakkında hiçbir şey açığa çıkarmaz."
       ]
     },
     "manage-storage-addon": {
-      "q": "Depolama paketimi nasıl değiştirir veya iptal ederim?",
+      "q": "Depolama eklentimi nasıl değiştirir veya iptal ederim?",
       "a": [
         "Kontrol paneli Ayarlar > Depolama. Daha büyük bir pakete yükseltmek hemen geçerli olur. Web'de onay ekranı, siz kesinleştirmeden önce bugün tahsil edilecek oranlanmış tutarı birebir gösterir ve yenileme tarihi kaymaz; Play Store ve App Store'da tutarı mağazanın kendi ödeme ekranı gösterir ve Apple, içinde bulunduğunuz yılın kullanılmayan kısmını iade edip yeni bir yıl başlatır. “Depolamayı iptal et”, zaten ödediğiniz dönemin sonuna kadar ek alanınızı korur. Daha küçük bir pakete geçmek için mevcut paketi iptal edin ve dönem bitince küçüğünü alın.",
         "Süre dolduğunda veriniz kalan sınıra sığıyorsa mesele orada biter; sığmıyorsa hiçbir şey silinmez ve [90 günlük kota aşımı döngüsü](/tr/help/over-quota/) başlar. Başarısız bir yenileme, ödemeyi Paddle'da düzeltmeniz için “Kartı güncelle” bağlantılı bir şerit gösterir.",
@@ -633,28 +638,28 @@
     "tags": {
       "q": "Etiketler nasıl çalışır?",
       "a": [
-        "Açık her notun başlığın altında bir etiket satırı vardır. Bir kelime yazıp Enter'a, virgüle ya da # tuşuna basın; etiket bir rozete dönüşür. Kenar çubuğu kullandığınız her etiketi listeler ve birine tıklamak listeyi o notlara indirir. Bir etiketi her yerde tek seferde yeniden adlandırabilir, üstte sabit kalsın diye favorileyebilir ya da altındaki notlarla birlikte veya onlarsız silebilirsiniz.",
+        "Açık her notun başlığının altında bir etiket satırı vardır. Bir kelime yazıp Enter'a, virgüle ya da # tuşuna basın; etiket bir rozete dönüşür. Kenar çubuğu kullandığınız her etiketi listeler ve birine tıklamak listeyi o notlara indirir. Bir etiketi her yerde tek seferde yeniden adlandırabilir, üstte sabit kalsın diye favorilere ekleyebilir ya da altındaki notlarla birlikte veya onlarsız silebilirsiniz.",
         "Etiketler ve klasörler farklı sorunları çözer: bir not tek klasörde durur ama istediğiniz kadar etiket taşır ve bir şey hem \"iş\" hem \"fatura\" olduğunda ihtiyacınız olan tam da budur. İçe aktarmalar kaynağa göre etiketler, yani başka bir uygulamadan gelen her şey kendi etiketiyle iner; bulması da, sonra temizlemesi de kolaydır."
       ]
     },
     "note-links": {
       "q": "Bir notu başka bir nota nasıl bağlarım?",
       "a": [
-        "Notun herhangi bir yerine [[ yazın ve bir başlık yazmaya başlayın. Listeden bir not seçin, tıklanabilir bir not bağlantısına dönüşsün. Hiçbiri uymuyorsa \"Oluştur\"u seçin; yeni not tek adımda hem oluşturulur hem bağlanır. Araç çubuğundaki \"Başka bir nota bağla\" düğmesi de aynı işi yapar.",
+        "Notun herhangi bir yerine [[ yazın ve bir başlık yazmaya başlayın. Listeden bir not seçin, tıklanabilir bir not bağlantısına dönüşsün. Hiçbiri uymuyorsa \"Oluştur\"u seçin; yeni not tek adımda hem oluşturulur hem bağlanır. Araç çubuğundaki \"Başka bir nota bağlan\" düğmesi de aynı işi yapar. Bir notu bölümlerinden birinde açmak için başlıktan sonra # yazın ve istediğiniz başlığı seçin. Ana hattaki bir başlığın yanındaki bağlantı simgesi böyle bir bağlantıyı sizin için kopyalar.",
         "Not bağlantıları notun içinde durur, yani onunla birlikte dışa aktarılır ve bir içe aktarmadan sağ çıkar: bir Obsidian kasası bağlantılarını korur ve Evernote not bağlantıları girişte dönüştürülür. Bir nota neyin işaret ettiğini bulmak için başlığını aratın: ona bağlanan her not o kelimeleri içerir."
       ]
     },
     "appearance": {
       "q": "Uygulamanın görünümünü değiştirebilir miyim?",
       "a": [
-        "Evet, Ayarlar > Görünüm altında. Mod, sisteminizi izleyen Otomatik ile Açık ve Koyu arasında geçiş yapar. Metin boyutunun dört kademesi vardır ve yalnızca yazma yüzeyinizi ölçekler, çevresindeki arayüz yerinde kalır. Görünüm biçimi öğeleri Liste ya da Izgara olarak dizer. Düzenleyici, notların Biçimlendirilmiş mi yoksa düz Markdown olarak mı açılacağına karar verir.",
-        "Renk temaları Pro'nun ardındaki tek parçadır: varsayılan tema ücretsizdir, Pro geri kalanını açar, açıkta da koyuda da. Metniniz dışındaki her şeyi gizleyen zen modu da Pro'dadır (Cmd+Shift+F). Mod ve metin boyutu, ayarladığınız cihazda kalır. Geri kalan her şey hesabınızla birlikte diğer cihazlarınıza gider."
+        "Evet, Ayarlar > Görünüm altında. Mod, sisteminizi izleyen Auto ile Açık ve Koyu arasında geçiş yapar. Metin boyutunun dört kademesi vardır ve yalnızca yazma yüzeyinizi ölçekler, çevresindeki arayüz yerinde kalır. “Öğeleri şu şekilde göster” ayarı öğeleri Liste ya da Izgara olarak dizer. Düzenleyici, notların Biçimlendirilmiş mi yoksa düz Markdown olarak mı açılacağına karar verir.",
+        "Renk temaları Pro gerektiren tek kısımdır: varsayılan tema ücretsizdir, Pro ise hem açık hem koyu modda diğer temaları açar. Metniniz dışındaki her şeyi gizleyen zen modu da Pro'dadır (Cmd+Shift+F). Mod ve metin boyutu, ayarladığınız cihazda kalır. Geri kalan her şey hesabınızla birlikte diğer cihazlarınıza gider."
       ]
     },
     "share-with-someone": {
       "q": "Bir notu biriyle paylaşabilir ya da birlikte üzerinde çalışabilir miyim?",
       "a": [
-        "Bir [yanan not](/tr/help/burn-notes/) gönderin: herhangi bir notu okunduğu anda yok edilen tek kullanımlık şifreli bir bağlantıya çevirir; bir parola, bir adres ya da bir taslak için bu yeter. Karşı tarafın saklayacağı bir şey içinse notu Markdown, HTML ya da PDF olarak dışa aktarıp dosyayı gönderin.",
+        "Bir [Burn note](/tr/help/burn-notes/) gönderin: herhangi bir notu okunduğu anda yok edilen tek kullanımlık şifreli bir bağlantıya çevirir; bir parola, bir adres ya da bir taslak için bu yeter. Karşı tarafın saklayacağı bir şey içinse notu Markdown, HTML ya da PDF olarak dışa aktarıp dosyayı gönderin.",
         "İki kişinin canlı olarak düzenlediği bir not başka bir ürün olurdu: sunucunun insanlar arasında anahtar taşımasını gerektirirdi ve sunucuyu anahtarlarınızdan uzak tutmak burada tasarımın tamamıdır. Bir hesap, bir ifadesi olan bir kişidir; “notlarınızı okuyamayız” cümlesini bir ilke değil bir olgu yapan da budur."
       ]
     },
@@ -668,7 +673,7 @@
     "pause-sync": {
       "q": "Oturumu kapatmadan bir cihazın eşitlemesini durdurabilir miyim?",
       "a": [
-        "Evet. Ayarlar > ID & Sync bölümünü açıp \"Eşitlemeyi duraklat\"a basın. O cihaz sunucuya hiçbir şey göndermeyi bırakır: notlar, ayarlar ve dosyalar dahil. Tam eskisi gibi yazmaya devam edersiniz, her şey yerelde birikir ve devam ettirdiğiniz anda hepsi yukarı gider.",
+        "Evet. Ayarlar > ID & Sync bölümünü açıp \"Eşitlemeyi duraklat\"a basın. O cihaz sunucuya veri göndermeyi bırakır: notlar, ayarlar ve dosyalar dahil. Tam eskisi gibi yazmaya devam edersiniz, her şey yerelde birikir ve devam ettirdiğiniz anda hepsi sunucuya gönderilir.",
         "Duraklatma yalnızca o cihaza aittir. Diğer cihazlarınıza yolculuk etmez ve kendi kendine asla kalkmaz; çünkü \"bu cihaz kimseyle konuşmuyor\" diyen bir anahtarı sizden başka hiçbir şey geri açmamalıdır. Bir şey bilerek çalışmaya devam eder: kaldırılan bir cihazın kaldırıldığını öğrendiği küçük sinyal. [Kayıp bir cihazın](/tr/help/lost-device/) yine de kendini silmesi böyle olur."
       ]
     },
@@ -676,7 +681,7 @@
       "q": "Uygulamanın mobil veriyle dosya yüklemesini engelleyebilir miyim?",
       "a": [
         "Android'de evet. Ayarlar > ID & Sync bölümünü açıp \"Dosyalar yalnızca Wi-Fi ile\" seçeneğini açın. Notlarınız her bağlantıda eşitlenmeye devam eder, çünkü metin çok küçüktür. Yalnızca görseller ve ekler bekler ve bir sonraki denemeyi beklemek yerine Wi-Fi döndüğü anda yüklenirler.",
-        "Anahtar Android'de yaşar, çünkü uygulama görünümü Wi-Fi ile hücresel ağı güvenilir biçimde ayırt eden tek platform Android'dir ve tahmin yürüten bir anahtar, hiç anahtar olmamasından kötüdür. Başka bir yerde ölçülü bir bağlantıda [\"Eşitlemeyi duraklat\"](/tr/help/pause-sync/) aynı işi daha kaba biçimde yapar ve her yerde çalışır."
+        "Bu seçenek Android'de bulunur, çünkü uygulama görünümü Wi-Fi ile hücresel ağı güvenilir biçimde ayırt eden tek platform Android'dir ve bağlantı türünü tahmin eden bir seçenek, hiç seçenek olmamasından kötüdür. Diğer platformlarda tarifeli bir bağlantıda [\"Eşitlemeyi duraklat\"](/tr/help/pause-sync/) aynı işi daha kaba biçimde yapar ve her yerde çalışır."
       ]
     },
     "clear-browser-data": {
@@ -704,14 +709,14 @@
     "note-history": {
       "q": "Bir notun eski bir sürümünü geri alabilir miyim?",
       "a": [
-        "Evet, Pro ile. Notun \"...\" menüsünü açıp \"Not geçmişi\"ni seçin; önceki 20 sürüme kadar gezinip geri yükleyebilirsiniz. Geri yükleme hiçbir şey kaybetmez: güncel metin önce bir sürüm olarak kaydedilir, yani ileri geri gidebilirsiniz. Sürümler notun kendisi gibi şifrelidir, yani onları biz de okuyamayız.",
+        "Evet, Pro ile. Notun \"...\" menüsünü açıp \"Geçmiş\"i seçin; önceki 20 sürüme kadar gezinip geri yükleyebilirsiniz. Geri yükleme hiçbir şey kaybetmez: güncel metin önce bir sürüm olarak kaydedilir, yani ileri geri gidebilirsiniz. Sürümler notun kendisi gibi şifrelidir, yani onları biz de okuyamayız.",
         "Anlık görüntü en fazla dakikada bir alınır, yani saniyeler arayla yapılan iki düzenleme tek sürümü paylaşır. Not geçmişi, sunucu üzerinden işleyen tek Pro özelliğidir; demo bu yüzden bunun yerine kendi yerel kopyasını tutar. Ayrıca her planda, silinen bir notu 30 gün tutan [çöp kutusu](/tr/help/trash-auto-delete/) vardır."
       ]
     },
     "vault-totp": {
       "q": "Kasa 2FA kimlik doğrulayıcı anahtarlarımı saklayabilir mi (TOTP / MFA kodları)?",
       "a": [
-        "Evet. Kasadaki bir oturum kaydında, ister base32 bir gizli anahtarı ister bütün bir otpauth:// bağlantısını kabul eden bir \"2FA kodu\" alanı vardır ve bir Bitwarden içe aktarımı mevcut anahtarları da getirir. Anahtar her planda şifrelenir, kaydedilir ve eşitlenir, ücretsiz plan dahil. Pro onu geri sayımıyla birlikte dönen canlı koda çevirir, böylece yanında ikinci bir uygulama açık tutmanız gerekmez.",
+        "Evet. Kasadaki bir giriş bilgisinde, ister base32 bir gizli anahtarı ister bütün bir otpauth:// bağlantısını kabul eden bir \"2FA kodu\" alanı vardır ve bir Bitwarden içe aktarımı mevcut anahtarları da getirir. Anahtar her planda şifrelenir, kaydedilir ve eşitlenir, ücretsiz plan dahil. Pro onu geri sayımıyla birlikte dönen canlı koda çevirir, böylece yanında ikinci bir uygulama açık tutmanız gerekmez.",
         "Bir parola ile onun tek kullanımlık kodunun aynı kasada olması, kilidi açık tek bir cihazın iki faktörü birden taşıması demektir; kod saklayan her parola yöneticisinin yaptığı takas budur. Çoğu hesap için kolaylık kazanır, özellikle önünde uygulama kilidi ya da bir PIN varken. E-postanız ya da bankanız için iki faktörü ayrı tutmayı yeğliyorsanız o kodları başka yere koyun, gerisini [Kasa](/tr/help/vault/) taşısın."
       ]
     },
@@ -726,7 +731,7 @@
       "q": "Ailem tek bir hesabı ya da tek bir Pro satın alımını paylaşabilir mi?",
       "a": [
         "Yanıt iki hesaptır ve ikincisini açmak hiçbir şeye mal olmaz: her biri 2 cihaz ve 50 MB'ı ücretsiz alır. Bir hesap, 12 kelimelik bir ifadedir ve o ifadeye sahip olan içindeki her şeye sahiptir: her not, her kasa kaydı, her cihazda. Herkese kendi özel notlarını veren şey ayrı hesaplardır. Pro hesap başına satın alınır.",
-        "Tek bir şeyi devretmek için ifadeniz yerine bir [yanan not](/tr/help/burn-notes/) gönderin. Paylaşılan bir ev hesabı gerçekten istediğiniz şeyse iyi işler: ifadeyi parola yöneticisinde paylaşılan bir kayıtta tutun ve onu bir kez bile eline almış herkesin içindeki her şeyi görmüş olduğunu varsayın."
+        "Tek bir şeyi devretmek için ifadeniz yerine bir [Burn note](/tr/help/burn-notes/) gönderin. Paylaşılan bir ev hesabı gerçekten istediğiniz şeyse iyi işler: ifadeyi parola yöneticisinde paylaşılan bir kayıtta tutun ve onu bir kez bile eline almış herkesin içindeki her şeyi görmüş olduğunu varsayın."
       ]
     },
     "pro-after-leak": {
@@ -755,7 +760,7 @@
       "q": "Dosyaları sildim ama depolamam azalmadı. Neden?",
       "a": [
         "Yeriniz zaten boşaldı. Silme işlemi eşitlendiği anda o baytlar kotanıza sayılmayı bırakır, bu cihazda olduğu gibi sunucuda da. Çubuk hâlâ eski rakamı gösteriyorsa yanındaki yenileme simgesine basın: sunucudan yeniden sayar ve silinmek üzere sıraya girmiş olan her şeyi dışarıda bırakır. Çevrimdışı kalmış bir cihaz, yetişene kadar kendi son sayımını gösterir.",
-        "Uygulamanın söz ettiği \"birkaç gün\" kotanızı değil, şifreli dosyanın kendisini ilgilendirir ve o bekleme bilinçlidir. Bir dosyayı depolamadan silmek geri alınamaz, onu geri çıkaracağınız bir çöp kutusu yoktur. Eşitlemeyi bitirmemiş bir cihaz notlarınızın eksik bir görüntüsüne sahiptir, yani başka bir notun hâlâ gösterdiği bir görseli silebilir. Bu yüzden bir dosya en az 24 saat bekler ve onu yalnızca eşitlemesini temiz biçimde tamamlamış bir cihaz kaldırır. Bu sabır size hiçbir şeye mal olmaz, çünkü yer sildiğiniz gün hesabınıza geçildi."
+        "Uygulamanın söz ettiği \"birkaç gün\" kotanızı değil, şifreli dosyanın kendisini ilgilendirir ve o bekleme bilinçlidir. Bir dosyayı depolamadan silmek geri alınamaz, onu geri çıkaracağınız bir çöp kutusu yoktur. Eşitlemeyi bitirmemiş bir cihaz notlarınızın eksik bir görüntüsüne sahiptir, yani başka bir notun hâlâ gösterdiği bir görseli silebilir. Bu yüzden bir dosya en az 24 saat bekler ve onu yalnızca eşitlemesini temiz biçimde tamamlamış bir cihaz kaldırır. Bu sabır size hiçbir şeye mal olmaz, çünkü söz konusu alan silme işlemini yaptığınız gün depolama kullanımınızdan düşüldü."
       ]
     }
   }

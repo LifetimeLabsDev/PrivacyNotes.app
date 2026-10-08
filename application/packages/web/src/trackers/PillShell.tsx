@@ -71,7 +71,7 @@ export function PillShell({
           className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
             filled
               ? 'text-white'
-              : 'border border-neutral-300 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-500'
+              : 'border border-divider text-pn-muted hover:border-pn-muted'
           } ${readOnly ? 'opacity-60 cursor-default' : 'cursor-pointer'}`}
           style={filled ? { backgroundColor: color } : undefined}
         >

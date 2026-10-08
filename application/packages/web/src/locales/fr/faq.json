@@ -3,7 +3,7 @@
     "title": "Aide et FAQ",
     "sub": "Réponses et guides pas à pas : sécurité, sync, prix et migration depuis d'autres applis.",
     "metaTitle": "Aide et FAQ - PrivacyNotes",
-    "metaDescription": "Le centre d'aide PrivacyNotes : chiffrement, phrase de récupération, sync, prix, et guides d'export pas à pas pour quitter une autre appli.",
+    "metaDescription": "Le centre d'aide PrivacyNotes : chiffrement et sécurité, phrase de récupération, synchronisation, prix et guides d'export pas à pas pour quitter une autre appli.",
     "guides": "Guides d'import",
     "guidesLead": "Tu changes d'appli ? Exporter puis importer, étape par étape.",
     "searchLabel": "Rechercher dans la FAQ",
@@ -35,7 +35,7 @@
     "changelogLabel": "Changelog",
     "languageLabel": "Langue",
     "homeLabel": "Accueil",
-    "appLabel": "Appli",
+    "appLabel": "App",
     "related": "Questions liées",
     "browseAll": "Voir toutes les questions",
     "mdShowcase": "Voir en action",
@@ -43,21 +43,25 @@
     "mdDemoInline": "Mise en forme en ligne",
     "mdDemoTasks": "Liste de tâches",
     "mdDemoLists": "Listes imbriquées",
-    "mdDemoCallouts": "Callouts",
+    "mdDemoCallouts": "Encadrés",
     "mdDemoTable": "Tableau",
     "mdDemoCode": "Bloc de code",
     "mdDemoScripts": "Exposant, indice, souligné",
     "mdDemoMath": "Maths (KaTeX)",
-    "mdDemoQuote": "Citation et note-link",
+    "mdDemoQuote": "Citation et lien de note",
     "mdDemoDivider": "Séparateur",
     "hkShowcase": "La liste complète",
-    "hkLegend": "Sur Windows et Linux, ⌘ correspond à Ctrl et ⌥ à Alt."
+    "hkMac": "Mac",
+    "hkPc": "Windows et Linux",
+    "hkBrowser": "Navigateur",
+    "hkDesktop": "App de bureau",
+    "hkLayout": "Les raccourcis suivent les caractères que tape ton clavier, pas la position des touches sur un clavier américain : appuie sur la touche qui tape le caractère affiché (sur une disposition non latine, la touche à sa place sur le clavier américain). Une touche qui tape un caractère avec AltGr le tape toujours."
   },
   "groups": {
     "gettingStarted": "Premiers pas",
     "securityPrivacy": "Sécurité et confidentialité",
     "accountRecovery": "Compte et récupération",
-    "syncDevices": "Sync et appareils",
+    "syncDevices": "Synchro et appareils",
     "yourData": "Tes données",
     "pricingPro": "Prix et Pro",
     "appsPlatforms": "Applis et plateformes"
@@ -73,7 +77,7 @@
     "need-email": {
       "q": "Ai-je besoin d'une adresse e-mail pour m'inscrire ?",
       "a": [
-        "Non. Un nouveau compte, c'est une phrase de récupération de 12 mots fraîchement générée, rien d'autre. Pas d'e-mail, pas de nom d'utilisateur, pas de numéro de téléphone, pas d'étape de vérification. Si tu te connectes avec la phrase, on ne pourrait même pas t'écrire si on le voulait : on ne sait jamais qui tu es.",
+        "Non. Un nouveau coffre, c'est une phrase de récupération de 12 mots fraîchement générée, rien d'autre. Pas d'e-mail, pas de nom d'utilisateur, pas de numéro de téléphone, pas d'étape de vérification. Si tu te connectes avec la phrase, on ne pourrait même pas t'écrire si on le voulait : on ne sait jamais qui tu es.",
         "Tu préfères un parcours familier ? La connexion avec Google, Apple ou GitHub fonctionne aussi. Cette voie nous révèle forcément l'e-mail lié à cette connexion, mais tes notes restent chiffrées sur ton appareil dans tous les cas, et tu obtiens quand même une phrase sous le capot."
       ]
     },
@@ -87,14 +91,14 @@
     "markdown-support": {
       "q": "L'éditeur comprend-il le Markdown ?",
       "a": [
-        "Oui. Tape du Markdown et il se met en forme en direct : # titres, **gras**, listes, - [ ] cases à cocher, citations et callouts. Les notes s'exportent aussi en Markdown propre, ce que tu écris reste donc portable.",
-        "Tu peux aussi relier tes notes entre elles : tape [[ et une autocomplétion propose tes notes existantes. Un note-link ouvre sa cible en un clic, et le panneau de plan plus la recherche dans la note gardent les longs documents faciles à parcourir."
+        "Oui. Tape du Markdown et il se met en forme en direct : # titres, **gras**, listes, - [ ] cases à cocher, citations et encadrés. Les notes s'exportent aussi en Markdown propre, ce que tu écris reste donc portable.",
+        "Tu peux aussi relier tes notes entre elles : tape [[ et une autocomplétion propose tes notes existantes. Un lien de note ouvre sa cible en un clic, et le panneau du plan et la recherche dans la note facilitent la navigation dans les longs documents."
       ]
     },
     "what-can-you-see": {
       "q": "Que peut voir PrivacyNotes de mes notes ?",
       "a": [
-        "Les notes, titres, étiquettes et pièces jointes sont chiffrés sur ton appareil avant d’atteindre le serveur. En gestion autonome, le mode initial de toute inscription par phrase, nous ne détenons aucune clé de déchiffrement. L’inscription avec Google, Apple ou GitHub te demande où conserver ta clé et présélectionne \"Reste simple et pratique\". Cette option stocke ta phrase sur notre serveur, chiffrée avec une clé que nous détenons. Dans ce mode, notre serveur peut déchiffrer la phrase et donc tes notes. Paramètres > Compte > Gestion des clés affiche ton mode actuel et te permet de le changer.",
+        "Les notes, titres, étiquettes et pièces jointes sont toujours chiffrés, sur ton appareil et en route vers le serveur. En autoconservation, le mode initial de toute inscription par phrase, nous ne détenons aucune clé de déchiffrement. L’inscription avec Google, Apple ou GitHub te demande où conserver ta clé et présélectionne \"Reste simple et pratique\". Cette option stocke ta phrase sur notre serveur, chiffrée avec une clé que nous détenons. Dans ce mode, notre serveur peut déchiffrer la phrase et donc tes notes. Paramètres > Compte > Gestion des clés affiche ton mode actuel et te permet de le changer.",
         "Nous voyons les informations nécessaires au fonctionnement du service : l’espace de stockage chiffré utilisé, le nombre d’appareils associés et les dates et heures de synchronisation. Si tu utilises uniquement ta phrase et n’as associé aucun compte Google, Apple ou GitHub, nous ne connaissons pas ton adresse e-mail."
       ]
     },
@@ -112,7 +116,7 @@
         "Oui, et c'est voulu. Tout le monde ne se défend pas contre les mêmes menaces, le modèle de compte est donc une échelle plutôt qu'un dogme unique. À chaque barreau, tes notes restent chiffrées sur ton appareil ; ce qui change, c'est qui détient la clé et ce que nous savons de toi.",
         "Le choix pratique : connecte-toi avec Google, Apple ou GitHub et laisse \"Reste simple et pratique\" sélectionné, puisque c’est l’option par défaut de cet écran. Nous conservons ta phrase de récupération, chiffrée sur notre serveur. Un nouvel appareil peut donc ouvrir tes notes après la connexion au fournisseur et la saisie d’un code d’authentification si la 2FA est activée. En échange, nous connaissons l’adresse e-mail liée à cette connexion, et notre serveur peut déchiffrer ta phrase. Sauvegarde ta phrase au cas où tu perdrais l’accès au compte du fournisseur, ainsi que ta clé de secours 2FA si tu actives la connexion à deux facteurs.",
         "Le milieu : connecte-toi avec Google, Apple ou GitHub mais choisis \"Sécurité et confidentialité maximales\". Ta phrase ne touche jamais nos serveurs et le chiffrement est entièrement zero-knowledge ; un nouvel appareil demande la phrase ou un scan QR depuis un appareil déjà connecté. Nous connaissons forcément encore l'e-mail derrière cette connexion, mais nous ne pourrions pas lire une seule note, même sous contrainte.",
-        "Le bout privé : ignore les connexions et n'utilise que la phrase de 12 mots. Pas d'e-mail, pas de nom, pas d'identité - et associé à un [achat Pro anonyme](/fr/help/buy-pro-anonymously/), même payer ne laisse ton nom nulle part. En échange, la garde de la clé t'appartient entièrement : perds la phrase sans plus aucun appareil connecté, et personne ne peut aider.",
+        "Le choix le plus privé : ignore complètement les options de connexion et n'utilise que la phrase de 12 mots. Pas d'e-mail, pas de nom, pas d'identité - et avec un [achat Pro anonyme](/fr/help/buy-pro-anonymously/), même le paiement ne laisse ton nom nulle part. En échange, la garde de la clé t'appartient entièrement : si tu perds la phrase sans avoir d'appareil encore connecté, personne ne peut t'aider.",
         "Paramètres > Compte > Gestion des clés présente les deux modes et leurs compromis, et te permet de changer de mode. Quitter la gestion des clés sur le serveur supprime notre copie après confirmation de trois mots de ta phrase sauvegardée. Revenir à ce mode envoie à nouveau la phrase au serveur et nécessite un choix explicite. Les deux changements sont signés avec la clé de ton compte et demandent un code d’authentification récent si la 2FA est activée. Un compte créé avec une phrase peut associer un fournisseur dans Compte > Comptes, puis choisir séparément la gestion des clés sur le serveur. Associer le fournisseur n’envoie pas la phrase au serveur. Tous les modes peuvent aussi utiliser le verrouillage de l’application par PIN, le déverrouillage biométrique et la protection de notes individuelles."
       ]
     },
@@ -144,7 +148,7 @@
       "q": "Comment activer l’authentification à deux facteurs (2FA) ?",
       "a": [
         "Active la connexion à deux facteurs facultative dans Paramètres > Sécurité > 2FA. Mets d’abord PrivacyNotes à jour sur tes autres appareils. Scanne le QR code avec une application d’authentification ou saisis la clé de configuration manuellement. Sauvegarde la clé de secours 2FA en dehors de PrivacyNotes, confirme ta copie sauvegardée, puis saisis un code actuel pour terminer.",
-        "Après la configuration, une nouvelle session serveur nécessite ta phrase ou un compte associé, puis un code d’authentification. En gestion autonome, tu as toujours besoin de ta phrase pour déchiffrer tes notes. Gère les comptes de fournisseurs dans Paramètres > Compte > Comptes. Associer un compte ne change pas la gestion des clés.",
+        "Après la configuration, une nouvelle session serveur nécessite ta phrase ou un compte associé, puis un code d’authentification. En autoconservation, tu as toujours besoin de ta phrase pour déchiffrer tes notes. Gère les comptes de fournisseurs dans Paramètres > Compte > Comptes. Associer un compte ne change pas la gestion des clés.",
         "Si tu perds ton application d’authentification, ajoute la clé de secours 2FA sauvegardée à une autre application d’authentification. Si tu perds les deux, nous ne pouvons pas rétablir l’accès au serveur. Les notes déjà déverrouillées sur un appareil restent lisibles et exportables. La connexion à deux facteurs n’ajoute pas de chiffrement et ne protège pas un appareil déjà déverrouillé."
       ]
     },
@@ -181,7 +185,7 @@
       "q": "PrivacyNotes est-il open source ?",
       "a": [
         "Oui. Les applications web, bureau et mobile sont publiées sur [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app), avec le code de chiffrement qui rend tes notes illisibles et le modèle de menace qui détaille ce que chaque pièce protège. C'est le code exact à partir duquel nous compilons nos versions.",
-        "C'est ce qui transforme une promesse en quelque chose de vérifiable. Lis le chiffrement en une seule séance, ouvre l'onglet réseau de ton navigateur et regarde tes propres notes partir sous forme de texte illisible, ou compile l'application toi-même et compare-la à ce que nous livrons. Tu n'as à nous croire sur aucun point."
+        "C'est ce qui transforme une promesse en quelque chose de vérifiable. Lis le code de chiffrement en une seule séance, ouvre l'onglet réseau de ton navigateur et regarde tes propres notes partir sous forme de texte illisible, ou compile l'application toi-même et compare-la à ce que nous livrons. Tu n'as à nous croire sur aucun point."
       ]
     },
     "report-vulnerability": {
@@ -224,14 +228,14 @@
     "delete-account": {
       "q": "Comment supprimer mon compte ?",
       "a": [
-        "Dans l'appli : Paramètres > Compte, puis \"Supprimer le compte et les données\". Cela retire définitivement du serveur tes notes synchronisées, fichiers, appareils, réglages et le compte lui-même. Il n'y a ni délai de rétention ni sauvegarde que nous pourrions restaurer ensuite - exporte donc d'abord ce que tu veux garder (Paramètres > Import & Export).",
+        "Dans l'appli : Paramètres > Compte, puis \"Supprimer le compte et les données...\". Cela retire définitivement du serveur tes notes synchronisées, fichiers, appareils, paramètres et le compte lui-même. Il n'y a ni délai de rétention ni sauvegarde que nous pourrions restaurer ensuite - exporte donc d'abord ce que tu veux garder (Paramètres > Import & Export).",
         "Deux détails : un abonnement de stockage actif doit être résilié avant la suppression (un abonnement déjà programmé pour s'arrêter ne bloque pas), et comme un compte à phrase n'a jamais contenu d'e-mail ni de nom, il n'y a aucun profil ni liste marketing à nettoyer. Effacer les données locales d'un appareil est une action séparée qui ne touche pas ton compte."
       ]
     },
     "what-syncs": {
       "q": "Qu'est-ce qui se synchronise exactement entre mes appareils, et qu'est-ce qui reste local ?",
       "a": [
-        "Tout ce que tu attends, et le tout chiffré sur ton appareil : notes, tâches, entrées de journal, ton coffre et les fichiers qu'il contient. Tes réglages te suivent aussi - étiquettes favorites, préférences de tri et d'affichage, thème de couleur, ton PIN (sous forme de hash salé, jamais le PIN lui-même), verrouillage de l'appli, configuration des suivis et des médicaments, et vidage automatique de la corbeille. Configure une fois, chaque appareil suit.",
+        "Tout ce que tu attends, et le tout chiffré sur ton appareil : notes, tâches, entrées de journal, ton coffre et les fichiers qu'il contient. Tes paramètres te suivent aussi - étiquettes favorites, préférences de tri et d'affichage, thème de couleur, ton PIN (sous forme de hash salé, jamais le PIN lui-même), verrouillage de l'appli, configuration des suivis et des médicaments, et vidage automatique de la corbeille. Configure une fois, chaque appareil suit.",
         "Quelques éléments restent volontairement locaux : mode clair ou sombre (chaque appareil suit son propre réglage système), déverrouillage biométrique (lié au matériel de chaque appareil) et ton état de déverrouillage (fermer l'appli reverrouille toujours). Le serveur ne stocke jamais que des blobs chiffrés et ne peut rien en lire."
       ]
     },
@@ -249,16 +253,16 @@
       ]
     },
     "remove-device": {
-      "q": "Comment retirer un appareil que je n'utilise plus ?",
+      "q": "Comment supprimer un appareil que je n'utilise plus ?",
       "a": [
-        "Paramètres > Compte liste chaque appareil enregistré. Retire celui que tu mets au rebut : la place se libère immédiatement (utile dans l'offre gratuite à 2 appareils), et l'appareil retiré est déconnecté à sa prochaine tentative de sync. Il reste visible 72 heures sous \"Récemment supprimés\", pour que tu confirmes qu'il a bien disparu.",
+        "Paramètres > Compte liste chaque appareil enregistré. Supprime celui que tu mets au rebut : la place se libère immédiatement (utile dans le forfait gratuit à 2 appareils), et l'appareil supprimé est déconnecté à sa prochaine tentative de synchronisation. Il reste visible 72 heures sous \"Récemment supprimés\", pour que tu confirmes qu'il a bien disparu.",
         "Le retrait libère la place et déconnecte cet appareil ; c'est la phrase qui commande l'accès. Quiconque détient tes 12 mots peut se reconnecter. Si un appareil a été perdu ou volé, protège donc la phrase d'abord et garde le verrouillage de l'appli (PIN ou biométrie) actif. C'est lui qui empêche un appareil retrouvé d'être une porte ouverte."
       ]
     },
     "data-location": {
       "q": "Où mes données sont-elles stockées ?",
       "a": [
-        "D'abord sur ton appareil, et c'est cette copie que tu utilises : l'appli est local-first, donc tes notes s'ouvrent et se modifient hors ligne. La copie de sync vit sur des serveurs à Zurich, en Suisse. Ce qui s'y trouve : ta clé publique, des blobs chiffrés de tes notes, fichiers et réglages, plus les horodatages et les tailles dont une sync a besoin. Aucun titre, aucun texte, aucun tag.",
+        "D'abord sur ton appareil, et c'est cette copie que tu utilises : l'appli est local-first, donc tes notes s'ouvrent et se modifient hors ligne. La copie synchronisée vit sur des serveurs à Zurich, en Suisse. Ce qui s'y trouve : ta clé publique, des blobs chiffrés de tes notes, fichiers et paramètres, plus les horodatages et les tailles dont une synchronisation a besoin. Aucun titre, aucun texte, aucune étiquette.",
         "Le pays compte moins que le chiffrement. Tout est toujours chiffré, sur ton appareil et en route vers le serveur, donc cette copie serait illisible où qu'elle se trouve : la Suisse est un bonus, pas la promesse. [Ce qui se synchronise](/fr/help/what-syncs/) le détaille point par point.",
         "La copie sur ton appareil est chiffrée elle aussi. Les notes sont scellées sur le disque avec une clé dérivée de ta phrase de récupération au déverrouillage, donc une copie du stockage de l'appli sur ton appareil, ou une sauvegarde volée de celui-ci, contient des données chiffrées, pas tes notes."
       ]
@@ -268,7 +272,7 @@
       "a": [
         "Dans un dossier par installation, dans l'espace de données applicatives de ton compte. Son emplacement dépend de la plateforme :",
         "- **macOS** : `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows** : `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux** : `~/.local/share/app.privacynotes`, ou `app.privacynotes.appimage` pour l'AppImage, qui embarque son propre moteur web et garde donc son propre profil\n- **Android, iOS** : le stockage privé de l'app, qu'aucune autre app ne peut ouvrir\n- **Navigateur** : ton profil de navigateur, sous `use.privacynotes.app`",
-        "Ce qui s'y trouve, ce sont des données chiffrées. Chaque note est un bloc scellé qui contient le titre, le texte et les tags, ouvert par une clé dérivée de ta phrase de récupération au déverrouillage, donc un dossier copié ne contient rien de lisible. Seul ce dont l'index local a besoin reste en clair : identifiants, horodatages, le type d'élément et marqueurs comme épinglé ou supprimé.",
+        "Ce qui s'y trouve, ce sont des données chiffrées. Chaque note est un bloc scellé qui contient le titre, le texte et les étiquettes, ouvert par une clé dérivée de ta phrase de récupération au déverrouillage, donc un dossier copié ne contient rien de lisible. Seul ce dont l'index local a besoin reste en clair : identifiants, horodatages, le type d'élément et marqueurs comme épinglé ou supprimé.",
         "Pour transférer tes notes sur un autre appareil, ou en garder une copie, utilise **Paramètres > Import & Export > Exporter** et choisis \"Sauvegarde complète chiffrée (.pnbackupz)\". Elle contient tout, elle est chiffrée avec la clé de ta phrase et se restaure avec ta phrase sur n'importe quel appareil. [En savoir plus sur les sauvegardes](/fr/help/backup-strategy/)."
       ]
     },
@@ -283,7 +287,7 @@
       "q": "Quels fichiers puis-je joindre, et quelle taille peuvent-ils faire ?",
       "a": [
         "N'importe quel type de fichier : images, PDF, audio, archives, tout ce que tu déposes. Chaque fichier est toujours chiffré, sur ton appareil et en route vers le serveur, exactement comme le texte des notes, et la vue Fichiers rassemble toutes les pièces jointes au même endroit.",
-        "La limite par fichier est de 5 Mo dans l'offre gratuite et de 50 Mo avec Pro. Les fichiers comptent dans ton stockage de sync total (50 Mo gratuit, 500 Mo avec Pro, extensible à 5,5 Go avec les modules de stockage), et la barre de stockage dans Paramètres > Stockage montre toujours où tu en es."
+        "La limite par fichier est de 5 Mo avec le forfait gratuit et de 50 Mo avec Pro. Les fichiers comptent dans ton espace de stockage total pour la synchronisation (50 Mo avec le forfait gratuit, 500 Mo avec Pro, extensible à 5,5 Go avec les modules de stockage), et la barre de stockage dans Paramètres > Stockage montre toujours où tu en es."
       ]
     },
     "vault": {
@@ -296,8 +300,8 @@
     "note-size-limit": {
       "q": "Quelle longueur peut faire une note, et que signifient les avertissements de taille ?",
       "a": [
-        "Écris autant que tu veux - pour des notes normales, la taille ne se pose jamais. Quand une note grossit vraiment beaucoup, une petite indication apparaît dessous et monte en trois paliers : vers 50 000 mots, elle signale que la note devient longue et pourrait ramer sur des appareils lents ; vers 75 000 mots, elle passe à l'orange, la frappe peut commencer à accrocher ; et vers 100 000 mots, elle suggère de scinder la note car tu approches de la limite de sync. Ce sont des repères, pas des limites bloquantes - rien ne t'empêche de continuer.",
-        "Cette limite de sync est le seul vrai plafond. Une note peut contenir environ 1 Mo de texte une fois chiffrée - très grossièrement 120 000 mots d'anglais courant, moins avec une écriture non latine ou beaucoup de mise en forme. Une note au-delà continue de fonctionner et reste en sécurité sur l'appareil où tu l'as écrite, mais cette note-là ne se synchronisera plus vers tes autres appareils (tu verras un avis \"échec de la sync\"). Le reste de tes notes n'est pas affecté : une note trop grosse ne bloque jamais rien d'autre.",
+        "Écris autant que tu veux - pour des notes normales, la question de la taille ne se pose jamais. Quand une note grossit vraiment beaucoup, une petite indication apparaît dessous et monte en trois paliers : vers 50 000 mots, elle signale que la note devient longue et pourrait ramer sur des appareils lents ; vers 75 000 mots, elle passe à l'orange, la frappe peut commencer à accrocher ; et vers 100 000 mots, elle suggère de scinder la note car tu approches de la limite de synchronisation. Ce sont des repères, pas des limites bloquantes - rien ne t'empêche de continuer.",
+        "Cette limite de synchronisation est le seul vrai plafond. Une note peut contenir environ 1 Mo de texte une fois chiffrée - très grossièrement 120 000 mots d'anglais courant, moins avec une écriture non latine ou beaucoup de mise en forme. Une note au-delà continue de fonctionner et reste en sécurité sur l'appareil où tu l'as écrite, mais cette note-là ne se synchronisera plus vers tes autres appareils (tu verras un avis indiquant que la note n'a pas pu se synchroniser). Le reste de tes notes n'est pas affecté : une note trop grosse ne bloque jamais rien d'autre.",
         "La solution est simple : découpe une très longue note en quelques plus petites. Le contenu est identique, la sync passe sans souci, et l'éditeur reste rapide. Un compteur de mots en direct sous chaque note te laisse surveiller la taille en écrivant."
       ]
     },
@@ -311,14 +315,14 @@
     "free-vs-pro": {
       "q": "Qu'est-ce qui est gratuit et qu'est-ce qui est Pro ?",
       "a": [
-        "Le gratuit est le produit complet, pas un amuse-bouche : notes, tâches, journal et coffre, tous chiffrés sur ton appareil, usage hors ligne, import et export - sur jusqu'à 2 appareils avec 50 Mo de stockage de sync.",
-        "Pro est un achat unique qui ajoute des appareils illimités, 500 Mo de stockage de sync (extensible), l'historique de versions des notes, des pièces jointes plus grandes, le verrouillage de notes et la protection PIN, le suivi bien-être avancé, le mode zen et tous les thèmes de couleur."
+        "Le forfait gratuit est le produit complet, pas un amuse-bouche : notes, tâches, journal et coffre, tous chiffrés sur ton appareil, usage hors ligne, import et export - sur 2 appareils au maximum avec 50 Mo de stockage de synchronisation.",
+        "Pro est un achat unique qui ajoute un nombre illimité d'appareils, 500 Mo de stockage de synchronisation (extensible), l'historique de la note, des pièces jointes plus grandes, le verrouillage de notes et la protection PIN, le suivi bien-être avancé, le mode zen et tous les thèmes de couleur."
       ]
     },
     "one-time-pricing": {
-      "q": "Comment un paiement unique peut-il financer un service de sync pour toujours ?",
+      "q": "Comment un paiement unique peut-il financer un service de synchronisation pour toujours ?",
       "a": [
-        "Parce que le service est volontairement peu coûteux à faire tourner. L'appli est local-first et les notes sont de petits blobs chiffrés : le serveur ne fait guère plus que les stocker et les relayer entre tes appareils. Aucune analyse de ce que tu écris, pas de pixels ni de traceurs tiers, pas de fonctions d'IA qui brûlent du calcul, pas de service client.",
+        "Parce que le service est volontairement peu coûteux à faire tourner. L'appli est local-first et les notes sont de petits blobs chiffrés : le serveur ne fait guère plus que les stocker et les relayer entre tes appareils. Aucune analyse de ce que tu écris, pas de pixels ni de traceurs tiers, pas de fonctions d'IA qui consomment de la puissance de calcul, pas de service client.",
         "Le seul coût qui grandit avec le temps est le stockage, et il est tarifé en conséquence : le stockage au-delà des 500 Mo inclus est un petit module annuel. Les coûts uniques se paient une fois, les coûts récurrents se paient en récurrent. Le modèle doit seulement s'autofinancer, et c'est le cas."
       ]
     },
@@ -332,21 +336,21 @@
     "storage-addons": {
       "q": "Comment fonctionnent les modules de stockage ?",
       "a": [
-        "Pro inclut 500 Mo de stockage de sync chiffré. S'il t'en faut plus, des modules s'empilent par-dessus : 1 Go pour 4,80 $ par an, 2 Go pour 8,40 $, ou 5 Go pour 18 $, jusqu'à 5,5 Go au total. Les modules sont le seul achat récurrent du produit, car le stockage est la seule chose qui nous coûte de l'argent chaque mois où tu l'utilises.",
-        "Tout se gère dans Paramètres > Stockage : passe à un forfait plus grand (tu ne paies que la différence au prorata) ou résilie quand tu veux et garde l'espace jusqu'à la fin de la période payée. Pro, lui, reste à toi pour toujours dans tous les cas."
+        "Pro inclut 500 Mo de stockage chiffré pour la synchronisation. S'il t'en faut plus, des modules s'empilent par-dessus : 1 Go pour 4,80 $ par an, 2 Go pour 8,40 $, ou 5 Go pour 18 $, jusqu'à 5,5 Go au total. Les modules sont le seul achat récurrent du produit, car le stockage est la seule chose qui nous coûte de l'argent chaque mois où tu l'utilises.",
+        "Tout se gère dans Paramètres > Stockage : passe à un module plus grand (tu ne paies que la différence au prorata) ou résilie quand tu veux et garde l'espace jusqu'à la fin de la période payée. Pro, lui, reste à toi pour toujours dans tous les cas."
       ]
     },
     "refunds": {
       "q": "Quelle est la politique de remboursement ?",
       "a": [
         "30 jours, sans poser de questions. Si Pro n'est pas fait pour toi, demande un remboursement complet dans les 30 jours suivant l'achat et il repart sur le moyen de paiement d'origine. Les clients de l'UE conservent en plus leur droit de rétractation légal de 14 jours.",
-        "Les paiements sont traités par Paddle, notre merchant of record, les remboursements sont donc gérés directement par Paddle : réponds à l'e-mail de reçu de ton achat ou visite [paddle.net](https://paddle.net). La politique complète se trouve dans les [conditions d'utilisation](https://lifetimelabs.dev/terms/#refunds)."
+        "Les paiements sont traités par Paddle, notre revendeur officiel, les remboursements sont donc gérés directement par Paddle : réponds à l'e-mail de reçu de ton achat ou visite [paddle.net](https://paddle.net). La politique complète se trouve dans les [conditions d'utilisation](https://lifetimelabs.dev/terms/#refunds)."
       ]
     },
     "paddle-privacy": {
       "q": "Qu'apprenez-vous sur moi quand je paie ?",
       "a": [
-        "Moins que tu ne l'imagines. Le paiement passe par [Paddle](https://www.paddle.com), le merchant of record : ton nom, ton numéro de carte et ton adresse de facturation vont chez Paddle pour le paiement et les taxes, et ne touchent jamais nos serveurs.",
+        "Moins que tu ne l'imagines. Le paiement passe par [Paddle](https://www.paddle.com), le revendeur officiel : ton nom, ton numéro de carte et ton adresse de facturation vont chez Paddle pour le paiement et les taxes, et ne touchent jamais nos serveurs.",
         "Paddle détient tes informations de facturation ; ce qui arrive dans notre base de données, c'est ta clé publique, le montant et l'identifiant de commande, et pour un module de stockage, sa taille et ses dates de renouvellement. Notre compte Paddle peut voir les deux côtés, et nous n'allons pas chercher qui tu es. Pour garder ton nom hors de l'achat, paie avec un [alias e-mail et une carte masquée](/fr/help/buy-pro-anonymously/)."
       ]
     },
@@ -363,15 +367,15 @@
       "a": [
         "Web, macOS, Windows, Linux, iOS et Android. Chaque appli est bâtie sur le même cœur, chiffre tes notes sur ton appareil de la même façon et se synchronise via le même compte. La [section téléchargements](https://privacynotes.app/fr#downloads) a toujours les derniers builds.",
         "Les applis natives ont besoin de macOS 13 ou plus récent, Windows 10 ou plus récent, iOS 17.4 ou plus récent, Android 7.0 ou plus récent, ou une distribution Linux avec webkit2gtk 4.1 (Ubuntu 22.04+, Debian 12+ ou équivalent). En dessous, l'appli ne s'installe ni ne démarre : passe par l'appli web.",
-        "L'appli web est un citoyen de première classe, pas une roue de secours : elle garde tes notes sur ton appareil et fonctionne hors ligne - n'importe quel navigateur moderne est donc toujours une porte d'entrée."
+        "L'appli web est une application à part entière, pas une roue de secours : elle garde tes notes sur ton appareil et fonctionne hors ligne - n'importe quel navigateur moderne est donc toujours une porte d'entrée."
       ]
     },
     "feature-requests": {
       "q": "J'ai demandé une fonctionnalité ou signalé un bug. Dans combien de temps est-ce disponible ?",
       "a": [
         "Souvent quelques jours. Les petites demandes et les rapports de bug arrivent en général dans la version suivante, et nous publions une version presque chaque semaine plutôt que deux ou trois fois par an. Le [changelog](/changelog) en est la preuve : chaque entrée est datée, écrite en langage clair, et dit ce qui a changé. Lis-en un mois et tu sauras exactement à quoi t'attendre de notre part avant de confier quoi que ce soit à l'application.",
-        "Ce rythme vient de la façon dont le travail est réparti. Le cœur de chiffrement, le protocole de synchronisation et la connexion ont été écrits par des humains, à côté de leur emploi, bien avant que l'appli ait un nom, et le cœur cryptographique est toujours entretenu ainsi : rien d'automatisé ne s'en approche. Une fois cette base solide, au printemps 2026, nous avons commencé à utiliser des outils d'IA pour coder, selon un protocole fixe : d'abord pour les [traductions](/fr/help/translation-quality/), puis les articles d'aide, puis les fonctions d'interface et les corrections de bugs non critiques, où ils sont doués pour cerner des cas rares qui prendraient sinon des semaines, et pour écrire les scripts de test qui tiennent plusieurs développeurs à un même standard. C'est pour ça que la demande d'une seule personne vaut la peine d'être construite au lieu d'attendre derrière le haut de la liste.",
-        "Tout ce qui touche au chiffrement, à la synchronisation ou à la connexion reste entre les mains de gens expérimentés qui relisent chaque ligne avant publication, et ce code est [public](https://github.com/LifetimeLabsDev/PrivacyNotes.app) pour que tu puisses le lire au lieu de nous croire sur parole. Plus d'infos sur l'équipe et notre façon de travailler sur notre [page À propos](https://lifetimelabs.dev/about).",
+        "Ce rythme vient de la façon dont le travail est réparti. Le cœur de chiffrement, le protocole de synchronisation et la connexion ont été écrits par des humains, à côté de leur emploi, bien avant que l'appli ait un nom, et le cœur cryptographique est toujours entretenu ainsi : rien d'automatisé ne s'en approche. Une fois cette base solide, au printemps 2026, nous avons commencé à utiliser des outils d'IA pour coder, selon un protocole fixe : d'abord pour les [traductions](/fr/help/translation-quality/), puis les articles d'aide, puis les fonctions d'interface et les corrections de bugs non critiques, où ils sont doués pour cerner des cas rares qui prendraient sinon des semaines, et pour écrire les scripts de test qui imposent les mêmes exigences à plusieurs développeurs. C'est pour ça qu'une demande faite par une seule personne mérite d'être satisfaite au lieu d'attendre derrière celles en tête de liste.",
+        "Tout ce qui touche au chiffrement, à la synchronisation ou à la connexion reste entre les mains de développeurs expérimentés qui écrivent chaque ligne, et ce code est [public](https://github.com/LifetimeLabsDev/PrivacyNotes.app) pour que tu puisses le lire au lieu de nous croire sur parole. Plus d'infos sur l'équipe et notre façon de travailler sur notre [page À propos](https://lifetimelabs.dev/about).",
         "L'application elle-même n'a aucune fonctionnalité d'IA et n'envoie jamais tes notes nulle part ([détails](/fr/help/no-ai/)). Cette promesse est distincte, et elle ne change pas."
       ]
     },
@@ -379,13 +383,13 @@
       "q": "L'appli Android se met-elle à jour toute seule ?",
       "a": [
         "Installe-la avec [Obtainium](/fr/help/obtainium/) et oui : il lit nos versions et propose chaque nouvelle version dès sa sortie, et c'est justement pour cela que nous recommandons cette voie sur Android. Une APK prise directement sur notre site se met à jour sur ton accord, car Android ne met à jour automatiquement que les applis venues d'un store.",
-        "L'APK du site te prévient à la place. L'appli vérifie s'il existe une version plus récente et affiche l'avis \"Mise à jour disponible\" avec un bouton \"Télécharger\". Appuie sur Télécharger, puis ouvre le fichier téléchargé pour l'installer par-dessus l'ancienne version, tes notes et tes réglages restent intacts. La vérification demande seulement s'il existe une version plus récente, elle ne touche jamais à tes notes, qui restent chiffrées tout du long."
+        "L'APK du site te prévient à la place. L'appli vérifie s'il existe une version plus récente et affiche l'avis \"Mise à jour disponible\" avec un bouton \"Télécharger\". Appuie sur Télécharger, puis ouvre le fichier téléchargé pour l'installer par-dessus l'ancienne version, tes notes et tes paramètres restent intacts. La vérification demande seulement s'il existe une version plus récente, elle ne touche jamais à tes notes, qui restent chiffrées tout du long."
       ]
     },
     "obtainium": {
       "q": "Comment installer l'appli Android avec Obtainium ?",
       "a": [
-        "Obtainium est une appli Android libre et gratuite qui installe d'autres applis directement depuis leurs pages de versions. C'est désormais la façon dont nous recommandons d'installer PrivacyNotes sur Android, car c'est la seule voie qui se tient à jour toute seule. Tu l'as déjà ? Touche le badge, il ajoute PrivacyNotes pour toi.",
+        "Obtainium est une appli Android open source et gratuite qui installe d'autres applis directement depuis leurs pages de versions. C'est désormais la façon dont nous recommandons d'installer PrivacyNotes sur Android, car c'est la seule voie qui se tient à jour toute seule. Tu l'as déjà ? Touche le badge, il ajoute PrivacyNotes pour toi.",
         "[![Obtenir sur Obtainium](/marketing/badge-obtainium.webp)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22app.privacynotes%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2FLifetimeLabsDev%2FPrivacyNotes.app%22%2C%22author%22%3A%22LifetimeLabsDev%22%2C%22name%22%3A%22PrivacyNotes%22%7D)",
         "Pas encore installé ? Installe d'abord [Obtainium](https://obtainium.imranr.dev/), ajoute une appli, puis colle ceci :",
         "`https://github.com/LifetimeLabsDev/PrivacyNotes.app`",
@@ -396,65 +400,66 @@
     "languages": {
       "q": "Quelles langues parle l'appli ?",
       "a": [
-        "Anglais, allemand, français, italien, espagnol, néerlandais, polonais, tchèque, catalan, turc, suédois, ukrainien, russe, japonais, coréen, chinois traditionnel, thaï, arabe et portugais, en variantes européenne et brésilienne. L'appli suit ta langue système par défaut, ou tu en fixes une explicitement dans Paramètres > Langue sur chaque appareil.",
+        "Anglais, allemand, français, italien, espagnol, néerlandais, polonais, tchèque, catalan, turc, suédois, ukrainien, russe, japonais, coréen, chinois traditionnel, thaï, arabe et portugais, en variantes européenne et brésilienne. L'appli suit ta langue système par défaut, ou tu en fixes une explicitement dans Paramètres > Date et langue > Langue sur chaque appareil.",
         "Les traductions sont gratuites pour tout le monde, pas un avantage Pro. D'autres langues sont prévues ; si la tienne manque, dis-le-nous sur [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) ou [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
     "translation-quality": {
       "q": "Comment les traductions de l'app sont-elles faites ?",
       "a": [
-        "Nous écrivons d'abord l'anglais. Un agent d'IA traduit ensuite chaque langue à partir d'un glossaire commun, dans le registre fixé pour cette langue, et un second agent relit chaque lot pour l'exactitude, la terminologie et le registre avant sa publication. Des locuteurs natifs relisent un échantillon, en commençant par les langues les plus récentes et les textes de sécurité, de connexion et de facturation, et deux vérifications automatiques font échouer le build tant qu'une traduction manque ou n'est plus à jour. Les traductions sont incluses dans toutes les formules, jamais un extra Pro.",
+        "Nous écrivons d'abord l'anglais. Un agent d'IA traduit ensuite chaque langue à partir d'un glossaire commun, dans le registre fixé pour cette langue, et un second agent relit chaque lot pour l'exactitude, la terminologie et le registre avant sa publication. Des locuteurs natifs relisent un échantillon, en commençant par les langues les plus récentes et les textes de sécurité, de connexion et de facturation, et deux vérifications automatiques font échouer le build tant qu'une traduction manque ou n'est plus à jour. Les traductions sont gratuites dans tous les forfaits, jamais un extra Pro.",
         "Tu peux améliorer n'importe laquelle. Si une phrase sonne mal dans ta langue, [signale la traduction](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new?template=translation.yml) : ta langue, l'écran où elle apparaît, et ce qui devrait être écrit à la place. Les corrections arrivent dans la version suivante."
       ]
     },
     "markdown-syntax": {
       "q": "Quelle syntaxe Markdown l'éditeur comprend-il ?",
       "a": [
-        "Les formats Markdown standards se mettent en forme à mesure que tu tapes : titres, emphase, barré et surlignage, listes à puces et listes numérotées, listes de tâches (Tab et Maj+Tab imbriquent toute liste, checklists comprises), citations, séparateurs, code en ligne et blocs de code avec coloration syntaxique, formules mathématiques en ligne et en bloc (KaTeX), et note-links entre notes avec autocomplétion.",
-        "La barre de mise en forme et son menu Insérer ajoutent le reste : tableaux, callouts qui peuvent se replier, souligné, exposant et indice, alignement du texte, couleurs de texte et de surlignage, polices, liens, images et pièces jointes. Tout fait l'aller-retour en Markdown : \"Afficher le markdown\" sous n'importe quelle note révèle la source brute, et les exports sont des fichiers .md propres, donc rien de ce que tu écris n'est enfermé dans un format propriétaire."
+        "Le Markdown standard se met en forme à mesure que tu tapes : titres, emphase, barré et surlignage, listes à puces et listes numérotées, listes de tâches (Tab et Maj+Tab imbriquent toute liste, checklists comprises), citations, séparateurs, code en ligne et blocs de code avec coloration syntaxique, formules mathématiques en ligne et en bloc (KaTeX), et liens de note entre notes avec autocomplétion.",
+        "La barre de mise en forme et son menu Insérer ajoutent le reste : tableaux, encadrés qui peuvent se replier, souligné, exposant et indice, alignement du texte, couleurs de texte et de surlignage, polices, liens, images et pièces jointes. Tout fait l'aller-retour en Markdown : \"Afficher le markdown\" sous n'importe quelle note révèle la source brute, et les exports sont des fichiers .md propres, donc rien de ce que tu écris n'est enfermé dans un format propriétaire."
       ]
     },
     "tasks": {
       "q": "Comment fonctionnent les tâches ?",
       "a": [
-        "Toute ligne que tu écris sous la forme - [ ] dans n'importe quelle note devient une tâche, et la vue Tâches dans la barre latérale les rassemble toutes au même endroit. Y cocher une tâche met à jour la note où elle vit, et ouvrir une tâche saute vers cette note. Il n'y a pas de base de tâches distincte à maintenir : les tâches ne sont que des lignes dans tes notes, chiffrées comme tout le reste.",
+        "Toute ligne que tu écris sous la forme - [ ] dans n'importe quelle note devient une tâche, et la vue Tâches dans la barre latérale les rassemble toutes au même endroit. Y cocher une tâche met à jour la note où elle vit, et ouvrir une tâche t'amène à cette note. Il n'y a pas de base de tâches distincte à maintenir : les tâches ne sont que des lignes dans tes notes, chiffrées comme tout le reste.",
         "Le champ d'ajout rapide en haut de Tâches ajoute à une note appelée Quick Tasks (créée pour toi à la première utilisation), donc noter une tâche isolée prend une frappe, pas une décision de classement. La même vue propose trois dispositions (Hybride, Agrégé, Liste), un basculement des tâches terminées, et la recherche de tâches, et le bouton New sur la vue Tout peut démarrer une note de tâches directement."
       ]
     },
     "journal": {
       "q": "Comment fonctionne le journal, et que puis-je suivre ?",
       "a": [
-        "Journaux est une vue dédiée aux entrées datées : une touche crée l'entrée du jour, et le bouton calendrier à côté rattrape un jour récent que tu as manqué. Une entrée est une note normale plus des suivis optionnels : humeur sur une échelle de 1 à 10 avec 24 étiquettes d'émotions, sommeil, activité, médicaments, énergie, concentration, et plus encore. \"Configurer les suivis\" dans n'importe quelle entrée active ou désactive ceux intégrés, et Pro ajoute jusqu'à 10 suivis personnalisés (échelles, nombres, oui/non).",
-        "Statistiques (dans Paramètres, ou l'icône stats dans le pied de page) transforme les entrées en tendances sous l'onglet Bien-être : humeur au fil du temps, graphiques de sommeil et d'activité, observance des médicaments. Les exports sont générés sur ton appareil : \"Télécharger le JSON\" est gratuit, et Pro ajoute un \"PDF médecin\" à apporter en consultation, un prompt IA prêt à copier pour le chatbot de ton choix, des analyses de tendances, et un bilan de la semaine. Les données des suivis vivent dans l'entrée chiffrée, le serveur ne peut donc en lire aucune."
+        "Journaux est une vue dédiée aux entrées datées : un appui crée l'entrée du jour, et le bouton calendrier à côté rattrape un jour récent que tu as manqué. Une entrée est une note normale plus des suivis optionnels : humeur sur une échelle de 1 à 10 avec 24 étiquettes d'émotions, sommeil, activité, médicaments, énergie, concentration, et plus encore. \"Configurer les suivis\" dans n'importe quelle entrée active ou désactive les suivis intégrés, et Pro ajoute jusqu'à 10 suivis personnalisés (échelles, nombres, oui/non).",
+        "Statistiques (dans les paramètres, ou l'icône stats du pied de page) s'ouvre sur une vue d'ensemble de ta semaine, écriture et bien-être réunis. L'onglet Bien-être trace chaque suivi que tu notes, suivis personnalisés compris, sur la plage de ton choix ; Explorer prend un suivi et montre comment se porte ton humeur les jours avec et les jours sans, le jour même ou le lendemain ; Tendances classe tous les suivis de cette façon ; Médication montre l'observance sous forme de calendrier. Les exports sont générés sur ton appareil : \"Télécharger le JSON\" est gratuit, et Pro ajoute un \"PDF médecin\" à apporter en consultation, un prompt IA prêt à copier pour le chatbot de ton choix, les comparaisons et un bilan de la semaine. Les données des suivis vivent dans l'entrée chiffrée, donc le serveur n'en lit rien."
       ]
     },
     "bookmarks": {
       "q": "Puis-je enregistrer les favoris de mon navigateur dans PrivacyNotes ?",
       "a": [
-        "Oui. Les favoris forment un pilier à part dans la barre latérale, à côté des notes, des tâches et du journal, et ils sont gratuits dans toutes les formules. Colle un lien dans la barre d’ajout rapide pour en enregistrer un. Pour transférer les tiens, exporte un fichier de favoris (.html) depuis ton navigateur, puis dépose-le dans Paramètres > Import & Export > Importer > \"Signets du navigateur\". Chrome, Firefox, Safari, Edge, Opera, Brave et Vivaldi contiennent le même fichier, et tes dossiers et tes dates suivent. Safari l’enveloppe dans un .zip, que tu peux déposer sans l’ouvrir.",
-        "Tes adresses ne quittent jamais ton appareil : nous ne chargeons pas la page derrière un lien, et c’est pourquoi un favori que tu ajoutes toi-même porte son domaine comme nom jusqu’à ce que tu en saisisses un. Les icônes de site sont la seule exception, et tu peux les désactiver. L’export écrit le même fichier standard, tes favoris repartent donc aussi facilement ([guide d’import](/fr/help/import/browser-bookmarks/))."
+        "Oui. Les signets forment un pilier à part dans la barre latérale, à côté des notes, des tâches et des journaux, et ils sont gratuits dans tous les forfaits. Colle un lien dans la barre d’ajout rapide pour en enregistrer un. Pour transférer les tiens, exporte un fichier de favoris (.html) depuis ton navigateur, puis dépose-le dans Paramètres > Import & Export > Importer > \"Signets du navigateur\". Chrome, Firefox, Safari, Edge, Opera, Brave et Vivaldi contiennent le même fichier, et tes dossiers et tes dates suivent. Safari l’enveloppe dans un .zip, que tu peux déposer sans l’ouvrir.",
+        "Tes adresses ne quittent jamais ton appareil : nous ne chargeons pas la page derrière un lien, et c’est pourquoi un signet que tu ajoutes toi-même porte son domaine comme nom jusqu’à ce que tu en saisisses un. Les icônes de site sont la seule exception, et tu peux les désactiver. L’export écrit le même fichier .html standard, tes signets repartent donc aussi facilement qu’ils sont arrivés ([guide d’import](/fr/help/import/browser-bookmarks/))."
       ]
     },
     "contacts": {
       "q": "Puis-je garder un carnet d’adresses dans PrivacyNotes ?",
       "a": [
-        "Oui. Les contacts forment un pilier à part dans la barre latérale, à côté des notes, des tâches et du journal, et ils sont gratuits dans toutes les formules. Une fiche réunit les noms, les numéros, les e-mails, les adresses, les sites, les dates, une société et une note. Touche un numéro pour l’appeler, une adresse e-mail pour écrire, ou n’importe quelle ligne pour la copier. Tout ce que ton téléphone a écrit d’autre dans le fichier reste sous **Aussi dans ce fichier** et repart tel quel à l’export.",
+        "Oui. Les contacts forment un pilier à part dans la barre latérale, à côté des notes, des tâches et des journaux, et ils sont gratuits dans tous les forfaits. Une fiche réunit les noms, les numéros, les e-mails, les adresses, les sites, les dates, une société et une note. Touche un numéro pour l’appeler, une adresse e-mail pour écrire, ou n’importe quelle ligne pour la copier. Tout ce que ton téléphone a écrit d’autre dans le fichier reste sous **Aussi dans ce fichier** et repart tel quel à l’export.",
         "Pour transférer les tiens, exporte une vCard (.vcf) depuis ton téléphone, ton Mac ou Google Contacts, puis dépose-la dans Paramètres > Import & Export > Importer > \"Contacts (vCard)\". Redépose le même fichier plus tard et les personnes déjà présentes sont reconnues au lieu d’être dupliquées. L’export réécrit une vCard standard, donc ton carnet ressort aussi facilement qu’il est entré ([en savoir plus sur l’import](/fr/help/import-from-other-apps/))."
       ]
     },
     "what-to-keep": {
       "q": "Que garder dans Signets, Contacts et le Coffre ?",
       "a": [
-        "Les parts de ta vie qui n’ont rien à faire dans un profil de navigateur ou dans le carnet d’adresses d’un téléphone. Les signets, les contacts et le Coffre se placent à côté de ceux que ton navigateur et ton téléphone synchronisent déjà vers Google, Apple ou Mozilla, et ils gardent ce que tu préfères tenir à l’écart. Les trois sont gratuits dans toutes les formules.",
+        "Les aspects de ta vie qui n’ont rien à faire dans un profil de navigateur ou dans le carnet d’adresses d’un téléphone. Les signets, les contacts et le Coffre se placent à côté de ceux que ton navigateur et ton téléphone synchronisent déjà vers Google, Apple ou Mozilla, et ils gardent ce que tu préfères tenir à l’écart. Les trois sont gratuits dans tous les forfaits.",
         "- Les liens sur la santé, l’argent, le droit ou une recherche d’emploi, sur un ordinateur que tu partages\n- La documentation d’un sujet, réunie au lieu d’être noyée parmi des milliers de favoris\n- Le médecin, l’avocate, le propriétaire et le recruteur, hors d’un carnet d’adresses synchronisé vers iCloud ou Google\n- Un contact avec ce qui va avec : tes notes, les dates, le fichier qu’il t’a envoyé\n- Phrases de récupération, clés de licence, codes de coffre-fort et numéros de passeport, des secrets qui ne sont pas des identifiants\n- Les quelques identifiants que tu ne veux jamais dans une extension de navigateur",
-        "Chacun est une ligne de la barre latérale. S’il en manque une, ouvre les options de la barre latérale au-dessus de tes tags et active **Afficher dans la barre latérale**. Tu importes tes éléments existants depuis un fichier et tu les ressors de la même façon ([signets](/fr/help/bookmarks/), [contacts](/fr/help/contacts/), [le Coffre](/fr/help/vault/))."
+        "Chacun est une ligne de la barre latérale. S’il en manque une, ouvre les options de la barre latérale au-dessus de tes étiquettes et active **Afficher dans la barre latérale**. Tu importes tes éléments existants depuis un fichier et tu les ressors de la même façon ([signets](/fr/help/bookmarks/), [contacts](/fr/help/contacts/), [le Coffre](/fr/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {
       "q": "Quels raccourcis clavier existe-t-il ?",
       "a": [
         "Appuie sur ? n'importe où dans l'appli pour l'aide-mémoire intégré, aussi disponible sous Paramètres > À propos. Les raccourcis couvrent la navigation, les actions sur les notes, la mise en forme et les vues - et sur Windows et Linux, chaque Cmd se lit comme Ctrl et Option comme Alt.",
-        "L'essentiel : Cmd+K place le focus sur la recherche, J et K parcourent la liste, Alt+Shift+N démarre une nouvelle note, Cmd+Backspace met la note sélectionnée à la corbeille, Cmd+, ouvre Paramètres. Pendant l'écriture : Cmd+B gras, Cmd+I italique, Cmd+Shift+K insère un lien, Cmd+Shift+9 démarre une liste de tâches, Cmd+F cherche dans la note, Cmd+Shift+O bascule le plan. Cmd+\\ masque la barre latérale, Cmd+Shift+L change le thème, Cmd+Shift+F entre en mode zen (Pro), et Esc annule presque tout."
+        "L'essentiel : Cmd+K ouvre n'importe quel élément ou paramètre par son nom, et sa dernière ligne cherche dans le texte de la section ouverte ; / place le focus sur la recherche, J et K parcourent la liste, Cmd+[ et Cmd+] reculent et avancent parmi les éléments que tu as ouverts, Alt+Shift+N démarre une nouvelle note, Cmd+Backspace met la note sélectionnée à la corbeille, Cmd+, ouvre Paramètres. Pendant l'écriture : Cmd+B gras, Cmd+I italique, Cmd+Shift+K insère un lien, Cmd+Shift+9 démarre une liste de tâches, Cmd+F cherche dans la note, Cmd+Shift+O bascule le plan, Cmd+Shift+M passe à la vue Markdown. Cmd+\\ ou Cmd+Shift+D masque la barre latérale, Cmd+Shift+L change le thème, Cmd+Shift+F entre en mode zen (Pro), et Esc annule presque tout, filtres compris. Tape > dans la recherche ou dans Cmd+K (ou appuie sur > hors d'un champ de texte) pour trouver n'importe quelle commande par son nom et la lancer.",
+        "Les apps de bureau ajoutent les touches qu'un navigateur garde pour lui : Cmd+N pour une nouvelle note, Cmd+Shift+N pour un nouvel élément de n'importe quel type, Cmd+W pour fermer un onglet, Ctrl+Tab pour passer d'un onglet à l'autre, Cmd+1 à Cmd+9 pour les sections de la barre latérale, et Cmd+Shift+P pour la liste des commandes."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -490,29 +495,29 @@
       "q": "Ma phrase de récupération a fuité. Que dois-je faire ?",
       "a": [
         "Considère le coffre comme perdu. Une phrase ne peut être ni changée ni renouvelée, car la phrase est la clé sous laquelle tout est chiffré - la solution est donc de passer à un nouveau coffre. D'abord, dans l'ancien compte, exporte tout : Paramètres > Import & Export > Exporter > \"Sauvegarde PrivacyNotes (.zip)\".",
-        "Déconnecte-toi, crée un nouveau coffre (12 nouveaux mots), et réimporte l'export via Paramètres > Import & Export > Restaurer > \"Sauvegarde complète (.zip)\". Ensuite, supprime l'ancien compte depuis n'importe quel appareil encore connecté dessus : Paramètres > Compte > \"Supprimer le compte et les données...\". Cela retire ses données synchronisées et ferme la porte à quiconque détient l'ancienne phrase. Si tu t'es connecté avec Google, Apple ou GitHub, supprime d'abord l'ancien compte, puis reconnecte-toi avec Google, Apple ou GitHub pour démarrer le nouveau coffre.",
+        "Déconnecte-toi, crée un nouveau coffre (12 nouveaux mots), et réimporte l'export via Paramètres > Import & Export > Restaurer > \"Sauvegarde complète (.zip)\". Ensuite, supprime l'ancien compte depuis n'importe quel appareil encore connecté dessus : Paramètres > Compte > \"Supprimer le compte et les données...\". Cela retire ses données synchronisées et ferme la porte à quiconque détient l'ancienne phrase. Si tu t'es connecté avec Google, Apple ou GitHub, supprime d'abord l'ancien compte, puis reconnecte-toi avec le même compte Google, Apple ou GitHub pour démarrer le nouveau coffre.",
         "Deux choses à régler d'abord : résilie un module de stockage actif, car la suppression l'exige, et note que Pro reste attaché au compte sur lequel il a été acheté plutôt que de suivre vers le nouveau coffre. Garde ensuite la nouvelle phrase dans un gestionnaire de mots de passe et nulle part ailleurs : c'est toute la prévention nécessaire."
       ]
     },
     "lost-device": {
       "q": "J'ai perdu un appareil. Comment protéger mes notes ?",
       "a": [
-        "Depuis n'importe quel appareil connecté, ouvre Paramètres > Compte > \"Appareils enregistrés\" et retire celui que tu as perdu. À sa prochaine connexion, cet appareil est déconnecté et ses données locales sont effacées, environ une minute après son utilisation suivante. Il reste listé sous \"Récemment supprimés\" pendant 72 heures pour que tu confirmes qu'il a bien disparu.",
+        "Depuis n'importe quel appareil connecté, ouvre Paramètres > Compte > \"Appareils enregistrés\" et supprime celui que tu as perdu. À sa prochaine connexion, cet appareil est déconnecté et ses données locales sont effacées, environ une minute après son utilisation suivante. Il reste listé sous \"Récemment supprimés\" pendant 72 heures pour que tu confirmes qu'il a bien disparu.",
         "Active le verrouillage de l'appli (PIN ou biométrie) sur tout ce qui est portable, et garde le verrouillage d'écran de ton système. Un appareil s'efface dès sa prochaine reconnexion, ce sont donc ces verrous locaux qui se dressent entre un téléphone perdu et tes notes en attendant. La vraie clé est la phrase : quiconque détient tes 12 mots peut se reconnecter. Si tu soupçonnes que la phrase elle-même a fuité, suis plutôt le [guide en cas de fuite de la phrase](/fr/help/phrase-compromised/)."
       ]
     },
     "device-limit": {
       "q": "Que signifie \"Limite d'appareils atteinte\" ?",
       "a": [
-        "Les comptes gratuits se synchronisent sur 2 appareils au maximum, et cette boîte de dialogue apparaît quand un troisième tente de s'enregistrer. Retire un appareil que tu n'utilises plus directement dans la boîte de dialogue, ou sur un appareil existant sous Paramètres > Compte ([comment fonctionne le retrait](/fr/help/remove-device/)). La place se libère immédiatement, et l'appareil retiré reste visible sous \"Récemment supprimés\" pendant 72 heures. Pro lève entièrement la limite.",
-        "Plusieurs navigateurs sur un même ordinateur comptent pour un seul appareil : ils sont regroupés à l'aide de hashs préservant la confidentialité, calculés à partir de signaux machine grossiers sur ton appareil avec un secret propre au compte. Une mise à jour majeure du navigateur, ou un navigateur renforcé comme Brave ou Tor qui randomise ces signaux, peut placer la même machine dans une nouvelle place. Retire l'entrée obsolète et continue. Tu n'es jamais bloqué dehors."
+        "Les comptes gratuits se synchronisent sur 2 appareils au maximum, et cette boîte de dialogue apparaît quand un troisième tente de s'enregistrer. Supprime un appareil que tu n'utilises plus directement dans la boîte de dialogue, ou sur un appareil existant sous Paramètres > Compte ([comment fonctionne la suppression](/fr/help/remove-device/)). La place se libère immédiatement, et l'appareil supprimé reste visible sous \"Récemment supprimés\" pendant 72 heures. Pro lève entièrement la limite.",
+        "Plusieurs navigateurs sur un même ordinateur comptent pour un seul appareil : ils sont regroupés à l'aide de hashs préservant la confidentialité, calculés à partir de signaux machine grossiers sur ton appareil avec un secret propre au compte. Une mise à jour majeure du navigateur, ou un navigateur renforcé comme Brave ou Tor qui randomise ces signaux, peut placer la même machine dans une nouvelle place. Supprime l'entrée obsolète et continue. Tu n'es jamais bloqué dehors."
       ]
     },
     "over-quota": {
       "q": "Que se passe-t-il quand je dépasse ma limite de stockage ?",
       "a": [
-        "Rien n'est jamais supprimé. Quand les nouveaux changements ne rentrent plus, la sync le dit : \"Stockage plein. Certaines notes n'ont pas pu se synchroniser.\" Les données existantes continuent de se synchroniser, la nouvelle croissance non. Si tu restes au-dessus de la limite, un compte à rebours de 90 jours démarre, affiché sous forme de bannière ambre. Lire, réduire des éléments, supprimer et exporter continuent tous de fonctionner pendant toute la durée.",
-        "Après 90 jours au-dessus de la limite, la sync se met en pause : la bannière passe au rouge (\"Synchro en pause. Tu as dépassé ta limite de stockage depuis plus de 90 jours.\"). L'appli fonctionne toujours pleinement sur chaque appareil ; les changements restent simplement en local jusqu'à ce que tu repasses en dessous. La récupération est instantanée et autonome : [libère de l'espace](/fr/help/storage-usage/) - vider la corbeille compte - ou ajoute du stockage sous Paramètres > Stockage, et la sync reprend d'elle-même. C'est l'exact opposé, volontaire, des services qui suppriment automatiquement les données hors quota."
+        "Rien n'est jamais supprimé. Quand les nouveaux changements ne rentrent plus, la synchronisation le dit : \"Stockage plein. Certaines notes n'ont pas pu se synchroniser.\" Les données existantes continuent de se synchroniser, mais pas les ajouts qui augmentent l'espace utilisé. Si tu restes au-dessus de la limite, un compte à rebours de 90 jours démarre, affiché sous forme de bannière ambre. Lire, réduire des éléments, supprimer et exporter continuent tous de fonctionner pendant toute la durée.",
+        "Après 90 jours au-dessus de la limite, la synchronisation se met en pause : la bannière passe au rouge (\"Synchro en pause. Tu as dépassé ta limite de stockage depuis plus de 90 jours.\"). L'appli fonctionne toujours pleinement sur chaque appareil ; les changements restent simplement en local jusqu'à ce que tu repasses en dessous. La récupération est instantanée et autonome : [libère de l'espace](/fr/help/storage-usage/) - vider la corbeille compte - ou ajoute du stockage sous Paramètres > Stockage, et la synchronisation reprend d'elle-même. C'est l'exact opposé, volontaire, des services qui suppriment automatiquement les données hors quota."
       ]
     },
     "backup-strategy": {
@@ -526,22 +531,22 @@
     "restore-backup": {
       "q": "Comment restaurer une sauvegarde ?",
       "a": [
-        "Ouvre Paramètres > Import & Export > Restaurer et choisis le format que tu as. \"Sauvegarde complète (.zip)\" reprend tout l’export : notes, journal, coffre-fort, tâches, images, audio et fichiers. \"Sauvegarde chiffrée (.pnbackup, .pnbackupz)\" reprend les deux exports chiffrés. Ton fichier est lu et déchiffré sur ton appareil, et la restauration est gratuite dans toutes les formules.",
-        "Une restauration associe les notes par identifiant. Une note que tu as déjà n’est mise à jour que si la copie de la sauvegarde est plus récente, une note dans ta corbeille en ressort, une note qui te manque est ajoutée une seule fois, et restaurer à nouveau le même fichier ne change rien, sauf si tu as modifié une note restaurée entre-temps, auquel cas l’ancienne copie revient à côté de ta modification. Un fichier sans nos identifiants, venant d’une autre appli ou d’une sauvegarde faite par une ancienne version de celle-ci, ajoute ses notes comme nouvelles à chaque fois. Les deux formats chiffrés ne s’ouvrent que dans le compte qui les a créés, parce qu’ils sont chiffrés avec la clé de sa phrase ; une .zip se restaure dans n’importe quel coffre ([quelle sauvegarde faire](/fr/help/backup-strategy/))."
+        "Ouvre Paramètres > Import & Export > Restaurer et choisis le format que tu as. \"Sauvegarde complète (.zip)\" reprend tout l’export : notes, journaux, éléments du coffre, tâches, images, audio et fichiers. \"Sauvegarde chiffrée (.pnbackup, .pnbackupz)\" reprend les deux exports chiffrés. Ton fichier est lu et déchiffré sur ton appareil, et la restauration est gratuite dans tous les forfaits.",
+        "Une restauration associe les notes par identifiant. Une note que tu as déjà n’est mise à jour que si la copie de la sauvegarde est plus récente, une note dans ta corbeille en ressort, une note qui te manque est ajoutée une seule fois, et restaurer à nouveau le même fichier ne change rien, sauf si tu as modifié une note restaurée entre-temps, auquel cas l’ancienne copie revient à côté de ta modification. Un fichier sans nos identifiants, venant d’une autre appli ou d’une sauvegarde faite par une ancienne version de celle-ci, ajoute ses notes comme nouvelles à chaque fois. Les deux formats chiffrés ne s’ouvrent que dans le compte qui les a créés, parce qu’ils sont chiffrés avec la clé de sa phrase ; un .zip se restaure dans n’importe quel coffre ([quelle sauvegarde faire](/fr/help/backup-strategy/))."
       ]
     },
     "image-quality": {
       "q": "PrivacyNotes modifie-t-il ou compresse-t-il mes images ?",
       "a": [
-        "Oui. Les deux réglages sont activés par défaut parce que nous aimons nos utilisateurs : nous voulons que tu économises de l'espace de stockage et que tu gardes ta vie privée. Économiseur d'espace réduit une grande image à 2048 pixels et l'enregistre en JPEG à 85 % de qualité, ce qui garde tout le détail qu'un écran peut afficher. Supprimer les données de localisation retire les métadonnées EXIF qu'un appareil photo écrit dans une photo, position GPS comprise, avant l'enregistrement de l'image. Les deux s'appliquent à chaque image de l'app : collée dans une note, ajoutée comme fichier ou importée.",
-        "Désactive l'un ou l'autre dans **Paramètres > Images**, où les photos de contact ont un troisième interrupteur qui les garde à 512 pixels. Les réglages ne concernent que les nouvelles images ; les fichiers qui ne sont pas des images sont stockés exactement tels quels. Les images HEIC et TIFF sont converties en JPEG, parce que seul Safari peut les afficher. Une sauvegarde que tu restaures est réécrite octet par octet."
+        "Oui. Les deux paramètres sont activés par défaut parce que nous aimons nos utilisateurs : nous voulons que tu économises de l'espace de stockage et que tu préserves ta vie privée. Économiseur d'espace réduit une grande image à 2048 pixels et l'enregistre en JPEG à 85 % de qualité, ce qui garde tout le détail qu'un écran peut afficher. Supprimer les données de localisation retire les métadonnées EXIF qu'un appareil photo écrit dans une photo, position GPS comprise, avant l'enregistrement de l'image. Les deux s'appliquent à chaque image de l'app : collée dans une note, ajoutée comme fichier ou importée.",
+        "Désactive l'un ou l'autre dans **Paramètres > Images**, où les photos de contact ont un troisième interrupteur qui les garde à 512 pixels. Les paramètres ne concernent que les nouvelles images ; les fichiers qui ne sont pas des images sont stockés exactement tels quels. Les images HEIC et TIFF sont converties en JPEG, parce que seul Safari peut les afficher. Une sauvegarde que tu restaures est réécrite octet par octet."
       ]
     },
     "storage-usage": {
       "q": "Qu'est-ce qui compte dans mon stockage, et comment libérer de l'espace ?",
       "a": [
         "Tout ce que tu synchronises, à sa taille chiffrée : le texte des notes, les images, les enregistrements audio et les pièces jointes. La barre sous Paramètres > Stockage montre le total ; l'empreinte propre de chaque note figure dans ses options de note sous \"Stockage utilisé\". Les notes à la corbeille comptent encore tant que la corbeille n'est pas vidée.",
-        "Pour libérer de l'espace vite, ouvre Fichiers, trie par Taille, et supprime les plus gros éléments - les pièces jointes écrasent le texte dans presque tous les comptes. Ensuite, vide la corbeille : la vue Corbeille montre combien d'espace \"Vider\" va libérer. Le texte seul ne remplit presque jamais un quota ; même les 50 Mo gratuits contiennent des dizaines de milliers de notes simples."
+        "Pour libérer de l'espace vite, ouvre Fichiers, trie par Taille, et supprime les plus gros éléments - les pièces jointes prennent bien plus de place que le texte dans presque tous les comptes. Ensuite, vide la corbeille : la vue Corbeille montre combien d'espace \"Vider\" va libérer. Le texte seul ne remplit presque jamais un quota ; même les 50 Mo gratuits contiennent des dizaines de milliers de notes simples."
       ]
     },
     "upload-failed": {
@@ -554,7 +559,7 @@
     "trash-auto-delete": {
       "q": "Pourquoi des notes ont-elles disparu de ma corbeille ?",
       "a": [
-        "La corbeille n'est pas une archive : par défaut, tout ce qui s'y trouve est définitivement supprimé après 30 jours. L'interrupteur est dans la vue Corbeille elle-même, intitulé \"Supprimer après 30 jours\" - désactive-le là si tu veux garder la corbeille pour toujours, et le réglage se synchronise sur tous tes appareils. Le nettoyage s'exécute sur ton appareil à l'ouverture de l'appli, car le serveur ne peut pas voir quelles notes chiffrées sont à la corbeille.",
+        "La corbeille n'est pas une archive : par défaut, tout ce qui s'y trouve est définitivement supprimé après 30 jours. L'interrupteur est dans la vue Corbeille elle-même, intitulé \"Supprimer après 30 jours\" - désactive-le là si tu veux garder la corbeille pour toujours, et le paramètre se synchronise sur tous tes appareils. Le nettoyage s'exécute sur ton appareil à l'ouverture de l'appli, car le serveur ne peut pas voir quelles notes chiffrées sont à la corbeille.",
         "Définitivement supprimé veut dire disparu : aucun appareil ni personne de notre côté ne peut le faire revenir, seule une sauvegarde faite auparavant le peut. Si tu utilises la corbeille comme une pile de \"peut-être un jour\", désactive la suppression automatique ou restaure les notes avant le 30e jour. En attendant, les notes à la corbeille comptent encore dans [ton stockage](/fr/help/storage-usage/) - \"Vider\" dans la même vue libère cet espace immédiatement."
       ]
     },
@@ -562,14 +567,14 @@
       "q": "Comment quitter complètement PrivacyNotes ?",
       "a": [
         "Exporte d'abord, supprime ensuite - les deux en autonomie. Paramètres > Import & Export > Exporter couvre toutes les voies de sortie : \"Sauvegarde PrivacyNotes (.zip)\" pour une copie complète, du Markdown et du HTML portables pour ta prochaine appli de notes, et l'\"Export du coffre (.json)\" au format compatible Bitwarden pour ton prochain gestionnaire de mots de passe. Les exports sont générés sur ton appareil.",
-        "Ensuite Paramètres > Compte > \"Supprimer le compte et les données...\" : tape DELETE, et tes notes synchronisées, fichiers, appareils, réglages et le compte lui-même sont définitivement supprimés sans aucun délai de rétention ([détails](/fr/help/delete-account/)). Un module de stockage actif doit d'abord être résilié sous Paramètres > Stockage. Un compte à phrase seule ne laisse rien à nettoyer, car nous n'avons jamais su qui tu étais. Pas de dark patterns et pas d'e-mails de reconquête - tes données sont à toi, y compris au moment de partir."
+        "Ensuite Paramètres > Compte > \"Supprimer le compte et les données...\" : tape DELETE, et tes notes synchronisées, fichiers, appareils, paramètres et le compte lui-même sont définitivement supprimés sans aucun délai de rétention ([détails](/fr/help/delete-account/)). Un module de stockage actif doit d'abord être résilié sous Paramètres > Stockage. Un compte à phrase seule ne laisse rien à nettoyer, car nous n'avons jamais su qui tu étais. Pas de dark patterns et pas d'e-mails de reconquête - tes données sont à toi, y compris au moment de partir."
       ]
     },
     "data-rights": {
       "q": "Comment PrivacyNotes gère-t-il le RGPD et mes droits sur mes données ?",
       "a": [
-        "Surtout en détenant le moins possible. Inscris-toi avec une phrase et il n'y a ni nom, ni e-mail, ni identité au dossier à réclamer : tes données sont du texte chiffré sous une clé publique aléatoire, hébergé à Zurich, en Suisse. Connecte-toi avec Google, Apple ou GitHub et il existe exactement un identifiant - l'e-mail derrière cette connexion, lié à cette clé. Les détails de facturation de Pro résident chez [Paddle](https://www.paddle.com), le merchant of record, pas chez nous.",
-        "Chaque droit est autonome et immédiat, aucun formulaire de demande nécessaire : l'accès et la portabilité, c'est Paramètres > Import & Export (export complet dans des formats ouverts), l'effacement, c'est Paramètres > Compte > \"Supprimer le compte et les données...\" sans aucun délai de rétention, et la rectification, c'est modifier tes notes. La version formelle, y compris comment nous joindre pour tout ce que l'appli ne peut pas faire elle-même, se trouve dans la [politique de confidentialité](https://lifetimelabs.dev/privacy/)."
+        "Surtout en détenant le moins possible. Inscris-toi avec une phrase et il n'y a ni nom, ni e-mail, ni identité au dossier à réclamer : tes données sont du texte chiffré sous une clé publique aléatoire, hébergé à Zurich, en Suisse. Connecte-toi avec Google, Apple ou GitHub et il existe exactement un identifiant - l'e-mail derrière cette connexion, lié à cette clé. Les détails de facturation de Pro résident chez [Paddle](https://www.paddle.com), le revendeur officiel, pas chez nous.",
+        "Tu peux exercer chaque droit toi-même et immédiatement, sans formulaire de demande : l'accès et la portabilité, c'est Paramètres > Import & Export (export complet dans des formats ouverts), l'effacement, c'est Paramètres > Compte > \"Supprimer le compte et les données...\" sans aucun délai de rétention, et la rectification, c'est modifier tes notes. La version formelle, y compris comment nous joindre pour tout ce que l'appli ne peut pas faire elle-même, se trouve dans la [politique de confidentialité](https://lifetimelabs.dev/privacy/)."
       ]
     },
     "referral-links": {
@@ -584,7 +589,7 @@
       "q": "J'ai payé Pro mais il n'est pas actif. Et maintenant ?",
       "a": [
         "Laisse-lui une minute, puis recharge l'appli. Après le paiement, l'appli interroge le serveur pendant environ 20 secondes et se débloque d'elle-même, et un rechargement revérifie le statut Pro au lancement. Si le paiement est arrivé mais que l'activation traîne, une bannière indique \"Paiement reçu, mais l'activation de Pro prend plus de temps que d'habitude\" - cet état se résout de lui-même dans presque tous les cas. Dans les builds de boutique, un achat qui échoue à se valider réessaie au redémarrage de l'appli, et un achat qui ne s'active jamais est remboursé automatiquement par la boutique sous 3 jours.",
-        "Toujours verrouillé ? C'est presque toujours une incompatibilité de compte : Pro se rattache au compte connecté au moment de l'achat, donc une phrase différente - ou une connexion Google, Apple ou GitHub au lieu de ton coffre à phrase - est un compte différent. Compare l'Account ID sous Paramètres > ID & Sync sur l'appareil qui l'a acheté. Si c'est vraiment bloqué, [signale-le](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) et inclus cet Account ID : il identifie l'achat et ne révèle rien de tes notes."
+        "Toujours verrouillé ? C'est presque toujours parce que tu utilises un autre compte : Pro se rattache au compte connecté au moment de l'achat, donc une phrase différente - ou une connexion Google, Apple ou GitHub au lieu de ton coffre à phrase - est un compte différent. Compare l'ID de compte sous Paramètres > ID & Sync sur l'appareil qui l'a acheté. Si c'est vraiment bloqué, [signale-le](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) et inclus cet ID de compte : il identifie l'achat et ne révèle rien de tes notes."
       ]
     },
     "manage-storage-addon": {
@@ -598,7 +603,7 @@
     "store-purchases": {
       "q": "Les achats sont-ils transférés entre le web, Google Play et l'App Store ?",
       "a": [
-        "Oui. Pro et le stockage se rattachent à ton compte, pas à une plateforme ou une boutique. Achète sur le web et chaque appli où tu te connectes est Pro, y compris les builds de boutique ; achète dans un build de boutique et les applis web et desktop se débloquent de la même façon. Se connecter est la restauration, car le droit suit le compte. Un build de boutique porte aussi un bouton **Restaurer les achats** dans Paramètres > Compte, qui demande à Apple ou Google ce que tu possèdes et le débloque à nouveau après une réinstallation.",
+        "Oui. Pro et le stockage se rattachent à ton compte, pas à une plateforme ou une boutique. Achète sur le web et chaque appli où tu te connectes est Pro, y compris les versions distribuées via une boutique ; achète dans une de ces versions et les applis web et de bureau se débloquent de la même façon. La connexion restaure tes achats, car les droits sont liés au compte. Une version distribuée via une boutique a aussi un bouton **Restaurer les achats** dans Paramètres > Compte, qui demande à Apple ou Google ce que tu possèdes et le débloque à nouveau après une réinstallation.",
         "La seule différence, c'est qui te facture. Les achats web passent par Paddle et se gèrent dans l'appli sous Paramètres > Stockage. Les achats faits dans un build de boutique (l'App Store aujourd'hui, Google Play une fois cette appli livrée) sont facturés par cette boutique : le stockage récurrent se résilie dans les réglages d'abonnement de la boutique, et les remboursements suivent le processus de la boutique. Dans les deux cas, c'est le même compte et le même Pro partout - y compris les plateformes qui n'existent pas encore."
       ]
     },
@@ -612,8 +617,8 @@
     "markdown-folder": {
       "q": "Puis-je modifier un dossier de fichiers Markdown depuis mon propre disque ?",
       "a": [
-        "Oui. Ouvre le pilier Markdown dans la barre latérale, choisis un dossier de fichiers .md et .txt, et modifie-les dans le même éditeur que tes notes. Les sous-dossiers apparaissent tout seuls, les modifications sont enregistrées directement dans le fichier, et rien n'est converti : le même dossier continue de fonctionner dans Obsidian, dans un dépôt git ou dans tes propres scripts. **Enregistrer dans mes notes** copie un fichier, ou toute une sélection, dans tes notes chiffrées en un clic et laisse l'original là où il est. Tout cela est gratuit dans chaque formule.",
-        "Ces fichiers restent sur ton disque exactement comme tu les as laissés : nous ne les envoyons jamais, ils ne se synchronisent jamais vers tes autres appareils, et rien n'est converti au passage. Cela fonctionne dans l'app de bureau sur n'importe quel ordinateur, et dans Chrome, Edge ou Opera côté navigateur, car ouvrir un dossier directement depuis le disque est une capacité de bureau."
+        "Oui. Ouvre le pilier Markdown dans la barre latérale, choisis un dossier de fichiers .md et .txt, et modifie-les dans le même éditeur que tes notes. Les sous-dossiers apparaissent tout seuls, les modifications sont enregistrées directement dans le fichier, et rien n'est converti : le même dossier continue de fonctionner dans Obsidian, dans un dépôt git ou dans tes propres scripts. **Enregistrer dans mes notes** copie un fichier, ou toute une sélection, dans tes notes chiffrées en un clic et laisse l'original là où il est. Tout cela est gratuit dans chaque forfait.",
+        "Ces fichiers restent sur ton disque exactement comme tu les as laissés : nous ne les envoyons jamais, ils ne se synchronisent jamais vers tes autres appareils, et rien n'est converti au passage. Cela fonctionne dans l'app de bureau sur n'importe quel ordinateur, et dans Chrome, Edge ou Opera côté navigateur, car ouvrir un dossier directement depuis le disque est une fonction réservée aux ordinateurs."
       ]
     },
     "markdown-folder-mobile": {
@@ -626,21 +631,21 @@
     "folders": {
       "q": "Comment fonctionnent les dossiers, et faut-il Pro pour les utiliser ?",
       "a": [
-        "Les dossiers s'imbriquent aussi profondément que tu veux et vivent dans la barre latérale. Les parcourir est gratuit dans chaque formule. En créer un, le renommer ou y déplacer une note (\"Nouveau dossier\" et \"Déplacer vers un dossier\") est là où Pro commence, pour qu'un compte gratuit puisse toujours lire une structure importée ou construite pendant un abonnement Pro. Une ligne \"Sans dossier\" liste chaque note qui n'est rangée nulle part.",
-        "Une note vit dans un seul dossier à la fois, comme un fichier. Passe aux [tags](/fr/help/tags/) quand une chose appartient à deux endroits. Le dossier est stocké dans la note chiffrée : le serveur ne voit pas plus ta structure que ton texte."
+        "Les dossiers s'imbriquent aussi profondément que tu veux et vivent dans la barre latérale. Les parcourir est gratuit dans chaque forfait. En créer un, le renommer ou y déplacer une note (\"Nouveau dossier\" et \"Déplacer vers un dossier\") nécessite Pro ; un compte gratuit peut donc toujours lire une structure importée ou construite quand il disposait de Pro. Une ligne \"Sans dossier\" liste chaque note qui n'est rangée nulle part.",
+        "Une note vit dans un seul dossier à la fois, comme un fichier. Passe aux [étiquettes](/fr/help/tags/) quand une chose appartient à deux endroits. Le dossier est stocké dans la note chiffrée : le serveur ne voit pas plus ta structure que ton texte."
       ]
     },
     "tags": {
-      "q": "Comment fonctionnent les tags ?",
+      "q": "Comment fonctionnent les étiquettes ?",
       "a": [
-        "Chaque note ouverte a une ligne de tags sous le titre. Tape un mot puis Entrée, une virgule ou #, et le tag devient une puce. La barre latérale liste chaque tag que tu utilises, et un clic filtre la liste sur ces notes. Tu peux renommer un tag partout d'un coup, le mettre en favori pour qu'il reste épinglé en haut, ou le supprimer, avec ou sans les notes qui le portent.",
-        "Les tags et les dossiers règlent des problèmes différents : une note vit dans un dossier mais porte autant de tags que tu veux, ce qui est exactement ce qu'il faut quand une chose est à la fois \"travail\" et \"facture\". Les imports taguent par source : tout ce qui arrive d'une autre app se pose avec son propre tag, facile à retrouver ou à nettoyer plus tard."
+        "Chaque note ouverte a une ligne d'étiquettes sous le titre. Tape un mot puis Entrée, une virgule ou #, et l'étiquette devient une puce. La barre latérale liste chaque étiquette que tu utilises, et un clic filtre la liste sur ces notes. Tu peux renommer une étiquette partout d'un coup, la mettre en favori pour qu'elle reste épinglée en haut, ou la supprimer, avec ou sans les notes qui la portent.",
+        "Les étiquettes et les dossiers règlent des problèmes différents : une note vit dans un dossier mais porte autant d'étiquettes que tu veux, ce qui est exactement ce qu'il faut quand une chose est à la fois \"travail\" et \"facture\". Les imports étiquettent par source : tout ce qui arrive d'une autre app se pose avec sa propre étiquette, facile à retrouver ou à nettoyer plus tard."
       ]
     },
     "note-links": {
       "q": "Comment lier une note à une autre ?",
       "a": [
-        "Tape [[ n'importe où dans une note et commence à écrire un titre. Choisis une note dans la liste et elle devient un lien de note cliquable. Si rien ne correspond, choisis \"Créer\" : la nouvelle note est créée et liée en une étape. Le bouton \"Lier à une autre note\" de la barre d'outils fait la même chose.",
+        "Tape [[ n'importe où dans une note et commence à écrire un titre. Choisis une note dans la liste et elle devient un lien de note cliquable. Si rien ne correspond, choisis \"Créer\" : la nouvelle note est créée et liée en une étape. Le bouton \"Lier à une autre note\" de la barre d'outils fait la même chose. Pour ouvrir une note à l'une de ses sections, tape # après le titre et choisis le titre de section. L'icône de lien sur un titre dans le plan copie un tel lien pour toi.",
         "Les liens de note vivent dans la note : ils s'exportent avec elle et survivent à un import. Un coffre Obsidian garde ses liens, et les liens de notes Evernote sont convertis à l'arrivée. Pour trouver ce qui pointe vers une note, cherche son titre : chaque note qui y renvoie contient ces mots."
       ]
     },
@@ -648,14 +653,14 @@
       "q": "Puis-je changer l'apparence de l'app ?",
       "a": [
         "Oui, dans Paramètres > Apparence. Mode bascule entre Clair, Sombre et Auto, qui suit ton système. Taille du texte a quatre crans et n'agrandit que ta surface d'écriture : l'interface autour ne bouge pas. Affichage dispose les éléments en Liste ou en Grille. Éditeur décide si les notes s'ouvrent en Mise en forme ou en Markdown brut.",
-        "Les thèmes de couleur sont la seule partie derrière Pro : le thème par défaut est gratuit, Pro débloque les autres, en clair comme en sombre. Le mode zen, qui masque tout sauf ton texte, est aussi Pro (Cmd+Shift+F). Le mode et la taille du texte restent sur l'appareil où tu les règles. Tout le reste suit ton compte vers tes autres appareils."
+        "Les thèmes de couleur sont la seule partie réservée à Pro : le thème par défaut est gratuit, Pro débloque les autres, en clair comme en sombre. Le mode zen, qui masque tout sauf ton texte, est aussi Pro (Cmd+Shift+F). Le mode et la taille du texte restent sur l'appareil où tu les règles. Tout le reste suit ton compte vers tes autres appareils."
       ]
     },
     "share-with-someone": {
       "q": "Puis-je partager une note avec quelqu'un, ou y travailler à deux ?",
       "a": [
-        "Envoie une [note éphémère](/fr/help/burn-notes/) : elle transforme n'importe quelle note en un lien chiffré à usage unique, détruit au moment où il est lu, ce qui couvre un mot de passe, une adresse ou un brouillon. Pour quelque chose que l'autre personne garde, exporte la note en Markdown, HTML ou PDF et envoie le fichier.",
-        "Une note que deux personnes modifient en direct serait un autre produit : il faudrait que le serveur fasse passer des clés entre des gens, et garder le serveur loin de tes clés est ici toute la conception. Un compte, c'est une personne avec une phrase, et c'est ce qui fait de \"nous ne pouvons pas lire tes notes\" un fait plutôt qu'une politique."
+        "Envoie une [burn note](/fr/help/burn-notes/) : elle transforme n'importe quelle note en un lien chiffré à usage unique, détruit au moment où il est lu, ce qui couvre un mot de passe, une adresse ou un brouillon. Pour quelque chose que l'autre personne garde, exporte la note en Markdown, HTML ou PDF et envoie le fichier.",
+        "Une note que deux personnes modifient en direct serait un autre produit : il faudrait que le serveur fasse passer des clés entre des gens, et toute la conception de l'app repose sur le fait de garder le serveur à l'écart de tes clés. Un compte, c'est une personne avec une phrase, et c'est ce qui fait de \"nous ne pouvons pas lire tes notes\" un fait plutôt qu'une politique."
       ]
     },
     "add-second-device": {
@@ -668,15 +673,15 @@
     "pause-sync": {
       "q": "Puis-je empêcher un appareil de se synchroniser sans me déconnecter ?",
       "a": [
-        "Oui. Ouvre Paramètres > ID & Sync et appuie sur \"Mettre en pause\". Cet appareil cesse d'envoyer quoi que ce soit au serveur : notes, réglages et fichiers compris. Tu écris exactement comme avant, tout s'accumule en local, et dès que tu reprends, tout part.",
-        "La pause n'appartient qu'à cet appareil. Elle ne voyage pas vers tes autres appareils et ne se lève jamais toute seule, parce qu'un interrupteur qui dit \"cet appareil ne parle à personne\" ne doit être remis en marche par rien d'autre que toi. Une chose continue exprès : le petit battement qui permet à un appareil retiré d'apprendre qu'il l'a été. C'est ainsi qu'un [appareil perdu](/fr/help/lost-device/) s'efface quand même."
+        "Oui. Ouvre Paramètres > ID & Sync et appuie sur \"Mettre en pause\". Cet appareil cesse d'envoyer quoi que ce soit au serveur : notes, paramètres et fichiers compris. Tu écris exactement comme avant, tout s'accumule en local, et dès que tu reprends, tout part.",
+        "La pause n'appartient qu'à cet appareil. Elle ne voyage pas vers tes autres appareils et ne se lève jamais toute seule, parce qu'un interrupteur qui dit \"cet appareil ne parle à personne\" ne doit être remis en marche par rien d'autre que toi. Une chose continue exprès : le petit signal périodique qui permet à un appareil retiré d'apprendre qu'il l'a été. C'est ainsi qu'un [appareil perdu](/fr/help/lost-device/) s'efface quand même."
       ]
     },
     "wifi-only": {
       "q": "Puis-je empêcher l'app d'envoyer des fichiers en données mobiles ?",
       "a": [
         "Sur Android, oui. Ouvre Paramètres > ID & Sync et active \"Fichiers en wifi uniquement\". Tes notes continuent de se synchroniser sur n'importe quelle connexion, parce que le texte est minuscule. Seules les images et les pièces jointes attendent, et elles partent dès que le wifi revient plutôt que d'attendre la prochaine tentative.",
-        "C'est sous Android que vit l'interrupteur, parce qu'Android est la seule plateforme dont la vue applicative signale le wifi contre le mobile de façon fiable, et un interrupteur qui devine vaut moins que pas d'interrupteur. Sur une connexion facturée ailleurs, [\"Mettre en pause\"](/fr/help/pause-sync/) fait le même travail avec un outil plus brutal et marche partout."
+        "L'interrupteur est disponible sur Android, parce que c'est la seule plateforme où l'app distingue de façon fiable le wifi d'une connexion mobile, et un interrupteur qui devine vaut moins que pas d'interrupteur. Sur les autres plateformes, si ta connexion est facturée à l'usage, [\"Mettre en pause\"](/fr/help/pause-sync/) fait le même travail avec un outil plus brutal et marche partout."
       ]
     },
     "clear-browser-data": {
@@ -704,15 +709,15 @@
     "note-history": {
       "q": "Puis-je récupérer une version plus ancienne d'une note ?",
       "a": [
-        "Oui, avec Pro. Ouvre le menu \"...\" de la note et choisis \"Historique de la note\" pour parcourir et restaurer jusqu'à 20 versions précédentes. Restaurer ne perd rien : le texte actuel est d'abord enregistré comme version, tu peux donc faire des allers-retours. Les versions sont chiffrées comme la note elle-même : nous ne pouvons pas les lire non plus.",
-        "Un instantané est pris au plus une fois par minute : deux modifications à quelques secondes d'écart partagent une version. L'historique est la seule fonction Pro qui passe par le serveur, et c'est pourquoi la démo garde plutôt sa propre copie locale. Chaque formule a aussi la [corbeille](/fr/help/trash-auto-delete/), qui garde une note supprimée 30 jours."
+        "Oui, avec Pro. Ouvre le menu \"...\" de la note et choisis \"Historique\" pour parcourir et restaurer jusqu'à 20 versions précédentes. Restaurer ne perd rien : le texte actuel est d'abord enregistré comme version, tu peux donc faire des allers-retours. Les versions sont chiffrées comme la note elle-même : nous ne pouvons pas les lire non plus.",
+        "Un instantané est pris au plus une fois par minute : deux modifications à quelques secondes d'écart partagent une version. L'historique est la seule fonction Pro qui passe par le serveur, et c'est pourquoi la démo garde plutôt sa propre copie locale. Chaque forfait a aussi la [corbeille](/fr/help/trash-auto-delete/), qui garde une note supprimée 30 jours."
       ]
     },
     "vault-totp": {
       "q": "Le coffre peut-il stocker mes clés d'authentification 2FA (codes TOTP / MFA) ?",
       "a": [
-        "Oui. Un identifiant du coffre a un champ \"Code 2FA\" qui accepte soit un secret base32, soit un lien otpauth:// entier, et un import Bitwarden reprend les clés existantes. La clé est chiffrée, enregistrée et synchronisée dans chaque formule, gratuite comprise. Pro en fait le code qui tourne avec son compte à rebours : plus besoin d'une seconde app ouverte à côté.",
-        "Un mot de passe et son code à usage unique dans le même coffre, cela veut dire qu'un appareil déverrouillé détient les deux facteurs : c'est le compromis que fait tout gestionnaire de mots de passe avec codes intégrés. Pour la plupart des comptes le confort l'emporte, surtout avec le verrou de l'app ou un PIN devant. Si tu préfères séparer les deux facteurs pour ta messagerie ou ta banque, mets ces codes ailleurs et laisse le [coffre](/fr/help/vault/) porter le reste."
+        "Oui. Un identifiant du coffre a un champ \"Code 2FA\" qui accepte soit un secret base32, soit un lien otpauth:// entier, et un import Bitwarden reprend les clés existantes. La clé est chiffrée, enregistrée et synchronisée dans chaque forfait, gratuit compris. Pro en fait le code qui tourne avec son compte à rebours : plus besoin d'une seconde app ouverte à côté.",
+        "Un mot de passe et son code à usage unique dans le même coffre, cela veut dire qu'un appareil déverrouillé détient les deux facteurs : c'est le compromis que fait tout gestionnaire de mots de passe avec codes intégrés. Pour la plupart des comptes le confort l'emporte, surtout avec le verrouillage de l'app ou une protection par PIN. Si tu préfères séparer les deux facteurs pour ta messagerie ou ta banque, mets ces codes ailleurs et laisse le [coffre](/fr/help/vault/) porter le reste."
       ]
     },
     "verify-download": {
@@ -726,7 +731,7 @@
       "q": "Ma famille peut-elle partager un compte ou un achat Pro ?",
       "a": [
         "Deux comptes sont la réponse, et en ouvrir un second ne coûte rien : chacun reçoit 2 appareils et 50 Mo gratuits. Un compte, c'est une phrase de 12 mots, et qui détient cette phrase détient tout ce qu'il y a dedans : chaque note, chaque entrée du coffre, sur chaque appareil. Ce sont les comptes séparés qui donnent à chaque personne ses propres notes privées. Pro s'achète par compte.",
-        "Pour transmettre une seule chose précise, envoie une [note éphémère](/fr/help/burn-notes/) plutôt que ta phrase. Un compte de foyer partagé fonctionne bien si c'est vraiment ce que tu veux : garde la phrase dans une entrée partagée de gestionnaire de mots de passe, et considère que toute personne l'ayant détenue un jour a vu tout ce qu'il y a dedans."
+        "Pour transmettre une seule chose précise, envoie une [burn note](/fr/help/burn-notes/) plutôt que ta phrase. Un compte de foyer partagé fonctionne bien si c'est vraiment ce que tu veux : garde la phrase dans une entrée partagée de gestionnaire de mots de passe, et considère que toute personne l'ayant détenue un jour a vu tout ce qu'il y a dedans."
       ]
     },
     "pro-after-leak": {
@@ -737,10 +742,10 @@
       ]
     },
     "business-use": {
-      "q": "Puis-je utiliser PrivacyNotes au travail, et existe-t-il une formule équipe ?",
+      "q": "Puis-je utiliser PrivacyNotes au travail, et existe-t-il un forfait équipe ?",
       "a": [
         "Tu peux l'utiliser au travail, et beaucoup de gens le font. C'est par conception un outil pour une seule personne : ton propre compte, ta propre phrase, ton propre achat Pro, et chaque personne d'une équipe garde sa propre clé. Il n'y a ni espace partagé, ni console d'administration, ni facturation centralisée.",
-        "Pèse-le avant d'en faire un standard. Le chiffrement zéro connaissance signifie que les notes appartiennent à la personne qui les a écrites, exactement ce que veulent une journaliste, un avocat ou une personne qui conseille, et c'est pourquoi une organisation ayant besoin de séquestre de clés ou de journaux d'audit les confie à un système bâti pour ça. Pour une personne seule dans son métier, c'est la position la plus forte qui soit : personne ne peut être contraint de livrer ce que personne ne peut lire."
+        "Pèse-le avant d'en faire un standard. Le chiffrement zero-knowledge signifie que les notes appartiennent à la personne qui les a écrites, exactement ce que veulent une journaliste, un avocat ou une personne qui conseille, et c'est pourquoi une organisation ayant besoin de séquestre de clés ou de journaux d'audit les confie à un système bâti pour ça. Pour une personne seule dans son métier, c'est la position la plus forte qui soit : personne ne peut être contraint de livrer ce que personne ne peut lire."
       ]
     },
     "signup-options": {
@@ -754,7 +759,7 @@
     "storage-after-delete": {
       "q": "J'ai supprimé des fichiers mais mon stockage n'a pas baissé. Pourquoi ?",
       "a": [
-        "Ta place est déjà libre. Dès que la suppression est synchronisée, ces octets cessent de compter dans ton quota, sur le serveur comme sur cet appareil. Si la barre affiche encore l'ancien chiffre, appuie sur l'icône d'actualisation à côté : elle recompte depuis le serveur et laisse de côté tout ce qui est déjà en file d'attente de suppression. Un appareil resté hors ligne garde son propre dernier comptage jusqu'à ce qu'il rattrape son retard.",
+        "Ton espace de stockage est déjà libéré. Dès que la suppression est synchronisée, ces octets cessent de compter dans ton quota, sur le serveur comme sur cet appareil. Si la barre affiche encore l'ancien chiffre, appuie sur l'icône d'actualisation à côté : elle recompte depuis le serveur et laisse de côté tout ce qui est déjà en file d'attente de suppression. Un appareil resté hors ligne garde son propre dernier comptage jusqu'à ce qu'il rattrape son retard.",
         "Les \"quelques jours\" dont parle l'app concernent le fichier chiffré lui-même, pas ton quota, et cette attente est délibérée. Supprimer un fichier du stockage est définitif, sans corbeille pour aller le repêcher. Un appareil qui n'a pas fini de se synchroniser n'a qu'une vue incomplète de tes notes : il pourrait supprimer une image qu'une autre note affiche encore. Un fichier attend donc au moins 24 heures, et seul un appareil dont la synchronisation s'est terminée proprement le retire. Cette patience ne te coûte rien, puisque la place a été créditée le jour de la suppression."
       ]
     }

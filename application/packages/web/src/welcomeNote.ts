@@ -41,6 +41,7 @@ import { isDemoMode } from './demo';
 import i18n from './i18n';
 import { toLocalIso } from './notesViewUtils';
 import { loadLocalSettings, saveLocalSettings } from './userSettings';
+import type { SignInStamp } from './liveSignIn';
 import { SEED_FOLDER_IDS, type FolderDef } from './folders';
 import { folderLookKey, seedIcons, tagLookKey } from './itemStyles';
 import { buildLinkBody } from './linkBody';
@@ -93,7 +94,7 @@ export const SEED_MEDICATION: MedicationTemplate = {
   name: 'Multivitamin',
   dosage: '1 tablet',
   timing: 'morning',
-  startedAt: new Date().toISOString().slice(0, 10),
+  startedAt: toLocalIso(new Date()),
   dosageHistory: [],
 };
 
@@ -130,6 +131,7 @@ async function seedNote(
     tags,
     createdAt: now,
     updatedAt: now,
+    editedAt: now,
     dirty: 1,
     deleted: 0,
     trashed: 0,
@@ -303,6 +305,7 @@ function contactSeeds(): { sentinel: string; title: string; tags: string[]; body
         { label: 'Reddit', value: 'https://www.reddit.com/r/PrivacyNotes/' },
         { label: 'Mastodon', value: 'https://mastodon.social/@privacynotes' },
         { label: 'YouTube', value: 'https://www.youtube.com/@PrivacyNotesApp' },
+        { label: 'Facebook', value: 'https://www.facebook.com/PrivacyNotesApp/' },
       ],
       dates: [
         { label: 'birthday', value: '--09-09' },
@@ -400,12 +403,16 @@ async function seedCardNote(
  * The seed list is resolved first, because the files decide the note titles
  * and folders as well as the bodies.
  */
-export async function seedOnboardingNotes(pubkey: string): Promise<void> {
+export async function seedOnboardingNotes(
+  pubkey: string,
+  /** The stamp of a sign-in that is not live yet, for its settings write. */
+  since?: SignInStamp,
+): Promise<void> {
   const docs = (await loadSeeds()).filter((d) => !d.demoOnly || isDemoMode());
   const base = Date.now();
 
   // The folder tree has to exist before its notes are filed into it.
-  await seedFolderTree();
+  await seedFolderTree(since);
 
   const vaultBase = base - (docs.length + 1) * 1000;
   await Promise.all([
@@ -547,7 +554,7 @@ const DEMO_EXTRA_TRACKERS: BuiltinTrackerId[] = [
  * and once per fresh demo tab session. Call it a second time inside one
  * session and a folder the user deleted comes back.
  */
-async function seedFolderTree(): Promise<void> {
+async function seedFolderTree(since?: SignInStamp): Promise<void> {
   const settings = loadLocalSettings();
   const have = new Set(settings.folders.map((f) => f.id));
   // A starter folder the user deleted stays deleted. Seeding runs once per
@@ -580,5 +587,5 @@ async function seedFolderTree(): Promise<void> {
       ...settings.trackerSettings,
       activeBuiltins: [...active, ...missingPills],
     },
-  });
+  }, since);
 }

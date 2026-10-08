@@ -83,7 +83,7 @@
             "Tu estructura de carpetas se reconstruye como carpetas reales, no se aplana en etiquetas, por muy profundo que sea el anidado. Una nota en Work/Projects acaba en una carpeta Work > Projects. Si vuelves a importar la misma bóveda, se reutilizan las carpetas ya creadas en lugar de duplicarlas.",
             "En el plan gratuito puedes explorar estas carpetas de inmediato; crear, renombrar y mover carpetas es una función Pro, así que una importación de Obsidian es una buena forma de probarla antes de mejorar tu plan.",
             "El frontmatter YAML se entiende: etiquetas, alias y fechas de creación se respetan, y los #tags del cuerpo se fusionan en el campo de etiquetas. Al importar también puedes marcar \"Etiquetar también las notas por carpeta\" para añadir cada nombre de carpeta como etiqueta, útil si te gusta filtrar por etiquetas.",
-            "Tus enlaces [[...]] siguen funcionando: PrivacyNotes los muestra como note-links, así que las conexiones entre notas sobreviven a la mudanza. La carpeta de configuración .obsidian y .trash se omiten automáticamente."
+            "Tus enlaces [[...]] siguen funcionando: PrivacyNotes los muestra como enlaces entre notas, así que las conexiones entre notas sobreviven a la mudanza. La carpeta de configuración .obsidian y .trash se omiten automáticamente."
           ]
         }
       ]
@@ -98,7 +98,7 @@
           "h": "Exporta tus notas desde Standard Notes",
           "steps": [
             "Abre Standard Notes (en la web en app.standardnotes.com, o la app de escritorio) e inicia sesión.",
-            "Abre las Preferencias y luego la sección Backups.",
+            "Abre Preferences y luego la sección Backups.",
             "Descarga una copia de datos y elige el formato descifrado (decrypted) cuando te lo pregunte.",
             "Obtienes un .zip con un archivo llamado \"Standard Notes Backup and Import File.txt\". Deja el zip como está."
           ]
@@ -151,7 +151,7 @@
           "h": "Exporta tus notas desde Samsung Notes",
           "steps": [
             "En Samsung Notes, mantén pulsado para seleccionar las notas que quieras (o Seleccionar todo).",
-            "Toca el menú de tres puntos y elige \"Guardar como archivo\".",
+            "Toca el menú de tres puntos y elige \"Save as file\".",
             "Elige \"Archivo de Microsoft Word\" (.docx) para notas con formato, o \"Archivo de texto\" (.txt) para texto plano.",
             "Samsung guarda un archivo por nota en el almacenamiento del dispositivo. Reúnelos en un solo .zip (selecciónalos en tu gestor de archivos y comprime) si son más de unos pocos."
           ]
@@ -183,7 +183,7 @@
         {
           "h": "Dónde aterriza cada cosa",
           "p": [
-            "Los inicios de sesión se vuelven entradas de acceso de la Bóveda (con el icono de su sitio), las tarjetas entradas de tarjeta, las claves SSH entradas de clave SSH, y las notas seguras más las identidades llegan como notas legibles. Las carpetas de Bitwarden se vuelven etiquetas, y los favoritos llegan con estrella. Las claves de autenticación (TOTP) también vienen contigo, así que tus códigos 2FA siguen funcionando.",
+            "Los inicios de sesión se vuelven entradas de inicio de sesión de la Bóveda (con el icono de su sitio), las tarjetas entradas de tarjeta, las claves SSH entradas de clave SSH, y las notas seguras más las identidades llegan como notas legibles. Las carpetas de Bitwarden se vuelven etiquetas, y los favoritos llegan con estrella. Las claves de autenticación (TOTP) también vienen contigo, así que tus códigos 2FA siguen funcionando.",
             "El archivo exportado contiene tus contraseñas en claro, así que impórtalo, verifica que llegó todo y luego borra el archivo a conciencia. Dentro de PrivacyNotes todo vuelve a estar cifrado, en tu dispositivo y de camino al servidor."
           ]
         }
@@ -234,7 +234,7 @@
         {
           "h": "Qué llega y qué no",
           "p": [
-            "Tablas, bloques de código, resaltados, subrayado, color de texto y fórmulas sobreviven todos. Las listas de verificación se convierten en listas de tareas, un recordatorio de nota se convierte en una tarea al principio de la nota, los adjuntos y las imágenes se vuelven a cifrar en tu almacenamiento, los recortes web conservan su URL de origen y las notas de voz conservan su transcripción. Los enlaces internos se convierten en note-links, emparejados por el título de la nota enlazada, ya que Evernote no exporta ningún identificador de nota.",
+            "Tablas, bloques de código, resaltados, subrayado, color de texto y fórmulas sobreviven todos. Las listas de verificación se convierten en listas de tareas, un recordatorio de nota se convierte en una tarea al principio de la nota, los adjuntos y las imágenes se vuelven a cifrar en tu almacenamiento, los recortes web conservan su URL de origen y las notas de voz conservan su transcripción. Los enlaces internos se convierten en enlaces entre notas, emparejados por el título de la nota enlazada, ya que Evernote no exporta ningún identificador de nota.",
             "Las tareas no llegan: la exportación deja un marcador \"Content not supported\" donde estaba cada bloque de tareas, sin títulos, sin fechas de vencimiento ni estados de finalización que leer. Los bloques cifrados siguen cifrados, así que descífralos antes en Evernote. Las fuentes personalizadas, la alineación del texto y la jerarquía anidada de etiquetas se descartan."
           ]
         },
@@ -351,7 +351,7 @@
         {
           "h": "Fotos, vídeos y tu almacenamiento",
           "p": [
-            "Un diario lleno de fotos es mucho más grande que un diario lleno de texto, y cuenta contra tu almacenamiento igual que cualquier otra cosa. La vista previa de la importación lo suma todo antes de que confirmes, y se niega a empezar si no cabe."
+            "Un diario lleno de fotos es mucho más grande que un diario lleno de texto, y ocupa espacio de almacenamiento igual que cualquier otra cosa. La vista previa de la importación lo suma todo antes de que confirmes, y se niega a empezar si no cabe."
           ]
         },
         {
@@ -364,7 +364,7 @@
         {
           "h": "Estado de ánimo",
           "p": [
-            "Si registraste un Estado de ánimo, PrivacyNotes rellena los trackers de humor y emoción de esa entrada allí donde el vocabulario de Apple coincide con uno de los nuestros. Todo lo que no puede emparejar, y las áreas de vida que etiquetaste, se guardan como una línea de texto para que no se pierda nada."
+            "Si registraste un estado de ánimo en State of Mind, PrivacyNotes rellena los registros de estado de ánimo y emociones de esa entrada allí donde el vocabulario de Apple coincide con uno de los nuestros. Todo lo que no puede emparejar, y las áreas de vida que etiquetaste, se guardan como una línea de texto para que no se pierda nada."
           ]
         },
         {
@@ -425,7 +425,7 @@
           "steps": [
             "Las apps de móvil de UpNote no pueden escribir un backup. En su lugar, abre una nota y toca los tres puntos de la esquina superior.",
             "Elige Export > \"Export to HTML\". Markdown no: UpNote aplana los avisos (callouts), los colores de texto, la alineación y los subíndices y superíndices antes de escribir su Markdown, mientras que el HTML lo conserva todo.",
-            "Comparte el resultado a tu app Archivos o envíatelo a ti mismo, y luego suéltalo aquí sin modificar.",
+            "Comparte el resultado con tu app Archivos o envíatelo a ti mismo, y luego suéltalo aquí sin modificar.",
             "¿Te llevas varias notas? Guarda las exportaciones en tu app Archivos, selecciónalas todas y elige Comprimir: ese único zip se importa de una sola vez."
           ],
           "p": [
@@ -436,8 +436,8 @@
           "h": "Qué llega",
           "p": [
             "Tus cuadernos se reconstruyen como carpetas reales, anidadas tan hondo como estuvieran en UpNote. Una nota que vivía en varios cuadernos acaba en el primero y lleva los demás como etiquetas.",
-            "Las notas fijadas y las de Quick Access llegan como Fijadas. Las notas de la papelera acaban en la papelera, las plantillas se importan como notas con la etiqueta #template, los enlaces entre notas se convierten en note-links y cada nota conserva sus fechas originales.",
-            "El formato sobrevive: listas de tareas, tablas, bloques de código, fórmulas, subrayado, subíndices y superíndices, alineación del texto y resaltado. Las secciones plegables se convierten en avisos (callouts) plegables y conservan su estado abierto o cerrado. Los colores de texto y los colores de resaltado se emparejan ambos con la paleta del editor, así que un resaltado amarillo sigue siendo amarillo y uno verde sigue siendo verde. Cada nota llega tal y como UpNote la guardó por última vez."
+            "Las notas fijadas y las de Quick Access llegan como Fijadas. Las notas de la papelera acaban en la papelera, las plantillas se importan como notas con la etiqueta #template, los enlaces internos de UpNote se convierten en enlaces entre notas y cada nota conserva sus fechas originales.",
+            "El formato sobrevive: listas de tareas, tablas, bloques de código, fórmulas, subrayado, subíndices y superíndices, alineación del texto y resaltado. Las secciones plegables se convierten en avisos plegables y conservan su estado abierto o cerrado. Los colores de texto y los colores de resaltado se emparejan ambos con la paleta del editor, así que un resaltado amarillo sigue siendo amarillo y uno verde sigue siendo verde. Cada nota llega tal y como UpNote la guardó por última vez."
           ]
         },
         {
@@ -465,7 +465,7 @@
         {
           "h": "Exportar desde Firefox",
           "steps": [
-            "Pulsa Ctrl+Mayús+O, o Cmd+Mayús+O en un Mac, para abrir la ventana Biblioteca.",
+            "Pulsa Ctrl+Mayús+O, o Cmd+Mayús+O en un Mac, para abrir la ventana Library.",
             "Haz clic en \"Import and Backup\" en su barra de herramientas y elige \"Export Bookmarks to HTML...\".",
             "Guárdalo. El archivo se llama bookmarks.html."
           ]
@@ -500,7 +500,7 @@
         {
           "h": "Qué llega",
           "p": [
-            "Cada carpeta que tenías llega igual, anidada tal y como la dejaste, dentro de una carpeta nueva llamada Marcadores. La barra de marcadores es la excepción: su contenido sube un nivel en vez de convertirse en carpeta, porque cada navegador llama a esa barra de otra forma en cada idioma. Safari no marca nada, así que su Favorites sí llega como carpeta.",
+            "Cada carpeta que tenías llega igual, anidada tal y como la dejaste, dentro de una carpeta nueva llamada Bookmarks. La barra de marcadores es la excepción: su contenido sube un nivel en vez de convertirse en carpeta, porque cada navegador llama a esa barra de otra forma en cada idioma. Safari no marca nada, así que su Favorites sí llega como carpeta.",
             "El día en que guardaste cada marcador llega con él. Safari es el único navegador que no escribe fechas, así que una exportación de Safari llega con la fecha de hoy.",
             "Firefox es además el único que guarda etiquetas y una palabra clave de la barra de direcciones junto al marcador. Si tu archivo las trae, la vista previa te ofrece una casilla para conservarlas, y las dos llegan aquí como etiquetas.",
             "Tres cosas se quedan fuera a propósito. Los atajos internos del navegador como Most Visited no son enlaces de verdad: se cuentan y se saltan. Los iconos de los sitios tampoco se leen del archivo, porque la copia guardada ahí envejece; PrivacyNotes trae uno nuevo. Y una carpeta que no tenía ningún marcador no se vuelve a crear.",
@@ -568,7 +568,7 @@
           "h": "Qué llega",
           "p": [
             "Cada fila se convierte en un inicio de sesión con su sitio, su usuario y su contraseña, más la nota que el navegador guardaba con ella. Firefox es el único de los tres que escribe fechas, así que sus inicios de sesión conservan el día en que los guardaste y los demás llegan con la fecha de hoy. Safari es el único que exporta una clave de autenticación, y solo si guardabas tus códigos en Safari: cuando lo hace, el código sigue funcionando aquí.",
-            "Los navegadores guardan una entrada por cada página de acceso, así que una exportación grande suele traer varias filas de la misma empresa. Llegan todas y luego puedes unirlas o borrarlas.",
+            "Los navegadores guardan una entrada por cada página de acceso, así que una exportación grande suele traer varias filas de la misma empresa. Llegan todas y luego puedes unirlas o eliminarlas.",
             "Un navegador guarda las contraseñas en una lista plana, así que no hay estructura de carpetas que reconstruir. Cada inicio de sesión llega etiquetado en su lugar, de forma que recuperas todo el lote con un clic."
           ]
         },
@@ -591,13 +591,13 @@
           "steps": [
             "Busca la carpeta con tus archivos .md. Typora no tiene biblioteca propia, así que está donde tú elegiste guardarlos.",
             "Clic derecho en la carpeta y elige Comprimir (macOS) o Enviar a > Carpeta comprimida (Windows).",
-            "Suelta el .zip en la importación."
+            "Suelta el .zip en el importador."
           ]
         },
         {
           "h": "Decide dónde viven tus imágenes antes de comprimir",
           "p": [
-            "Typora puede guardar una imagen junto a la nota, dentro de una subcarpeta assets, o dejarla donde la arrastraste. Solo pueden llegar las imágenes que estén dentro de la carpeta que comprimes. Abre Preferencias > Imagen, ponlo a copiar las imágenes en la carpeta assets de la nota, y usa \"Formato > Imagen > Copiar los archivos de imagen a...\" en las notas antiguas cuyas imágenes sigan apuntando a otro sitio."
+            "Typora puede guardar una imagen junto a la nota, dentro de una subcarpeta assets, o dejarla en el lugar desde el que la arrastraste. Solo pueden llegar las imágenes que estén dentro de la carpeta que comprimes. Abre Preferences > Image, ponlo a copiar las imágenes en la carpeta assets de la nota, y usa \"Format > Image > Copy image files to...\" en las notas antiguas cuyas imágenes sigan apuntando a otro sitio."
           ]
         },
         {
@@ -621,7 +621,7 @@
             "En iA Writer, haz clic derecho en la carpeta de la barra lateral Library y elige \"Mostrar en el Finder\".",
             "En el Finder, clic derecho en esa carpeta y elige \"Descargar ahora\", para que iCloud traiga cada archivo en vez de dejar marcadores de posición.",
             "Clic derecho otra vez y elige Comprimir.",
-            "Suelta el .zip en la importación."
+            "Suelta el .zip en el importador."
           ]
         },
         {
@@ -654,15 +654,15 @@
         {
           "h": "Comprime el espacio de trabajo",
           "steps": [
-            "En Zettlr, haz clic derecho en el espacio de trabajo, arriba del árbol de archivos, y elige \"Mostrar en el Finder\", o \"Mostrar en el Explorador\" en Windows.",
+            "En Zettlr, haz clic derecho en el espacio de trabajo, arriba del árbol de archivos, y elige \"Show in Finder\", o \"Show in Explorer\" en Windows.",
             "Clic derecho en esa carpeta y comprímela.",
-            "Suelta el .zip en la importación."
+            "Suelta el .zip en el importador."
           ]
         },
         {
           "h": "Los enlaces Zettelkasten conservan su texto, no su destino",
           "p": [
-            "Zettlr enlaza las notas por identificador, así que un enlace se lee [[20260823120000]]. Nosotros conservamos los note-links exactamente como están escritos, lo que significa que un enlace por identificador solo encuentra su nota aquí si alguna nota se titula de verdad con ese identificador. Los enlaces escritos con el nombre del archivo funcionan con normalidad: si dependes de ellos, cambia tu formato de enlace interno al nombre de archivo antes de exportar.",
+            "Zettlr enlaza las notas por identificador, así que un enlace se lee [[20260823120000]]. Nosotros conservamos los enlaces entre notas exactamente como están escritos, lo que significa que un enlace por identificador solo encuentra su nota aquí si alguna nota se titula de verdad con ese identificador. Los enlaces escritos con el nombre del archivo funcionan con normalidad: si dependes de ellos, cambia tu formato de enlace interno al nombre de archivo antes de exportar.",
             "Las claves de cita como [@doe2026] para nosotros son texto. Llegan sin cambios y dejan de ser clicables."
           ]
         },
@@ -686,7 +686,7 @@
             "Abre Archivos en tu Nextcloud, desde el navegador.",
             "Busca la carpeta Notes. Se llama Notes salvo que tu administración la haya renombrado.",
             "Abre el menú \"...\" de la carpeta y elige Descargar. Nextcloud empaqueta la carpeta entera en un .zip.",
-            "Suelta el .zip en la importación."
+            "Suelta el .zip en el importador."
           ]
         },
         {

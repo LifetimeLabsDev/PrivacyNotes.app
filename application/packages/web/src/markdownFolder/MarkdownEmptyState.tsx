@@ -10,7 +10,6 @@
 import { useTranslation } from 'react-i18next';
 import { Download, SlidersHorizontal, Copy, Check } from '../icons';
 import { useCopyToClipboard } from '../clipboard';
-import { exemptOpts } from '../i18nExempt';
 import { marketingHomeHref } from '../siteLinks';
 import { MarkdownPitch } from './MarkdownExplainer';
 import { BRAVE_FLAG_NAME, BRAVE_FLAG_URL, type markdownSupport } from './capability';
@@ -51,14 +50,14 @@ export function MarkdownEmptyState({
           dir="ltr"
           className="w-full max-w-sm mx-auto my-auto flex flex-col items-center text-center gap-3"
         >
-          <SlidersHorizontal size={26} weight="duotone" className="text-neutral-400" />
-          {/* Every string in this card renders English in every locale, via
-              `exemptOpts`. It walks the reader through a Chromium flags page,
-              and Chromium ships those pages in English everywhere - a card
-              translated around an untranslated screen helps nobody. `flag` is a
-              constant for the same reason. See `i18nExempt.ts`. */}
+          <SlidersHorizontal size={26} weight="duotone" className="text-pn-muted" />
+          {/* Every string in this card reads English in every catalog, held by
+              the verbatim list of tools/lint-locales.mjs. It walks the reader
+              through a Chromium flags page, and Chromium ships those pages in
+              English everywhere - a card translated around an untranslated
+              screen helps nobody. `flag` is a constant for the same reason. */}
           <p className="text-[15px] font-semibold">
-            {t('markdown.braveTitle', { flag: BRAVE_FLAG_NAME, ...exemptOpts('shell:markdown.braveTitle') })}
+            {t('markdown.braveTitle', { flag: BRAVE_FLAG_NAME })}
           </p>
           {/* Text with a copy button, not a link: Chromium blocks page-initiated
               navigation to `brave://`, so an anchor would read as clickable and
@@ -76,24 +75,24 @@ export function MarkdownEmptyState({
             >
               {copied === 'brave-flag' ? <Check size={13} /> : <Copy size={13} />}
               {copied === 'brave-flag'
-                ? t('markdown.braveCopied', exemptOpts('shell:markdown.braveCopied'))
-                : t('markdown.braveCopy', exemptOpts('shell:markdown.braveCopy'))}
+                ? t('markdown.braveCopied')
+                : t('markdown.braveCopy')}
             </button>
           </div>
           {/* Body size, matching the sibling empty state: this line carries the
               whole instruction now, and it is the last thing that should be
               squinted at. The app link stays secondary on colour and underline
               rather than on being smaller. */}
-          <p className="text-[13px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
-            {t('markdown.braveSteps', { flag: BRAVE_FLAG_NAME, ...exemptOpts('shell:markdown.braveSteps') })}
+          <p className="text-[13px] text-pn-muted leading-relaxed">
+            {t('markdown.braveSteps', { flag: BRAVE_FLAG_NAME })}
           </p>
           <a
             href={`${marketingHomeHref()}#downloads`}
             target="_blank"
             rel="noreferrer"
-            className="text-[13px] text-neutral-500 dark:text-neutral-400 underline underline-offset-2 hover:text-pn transition mt-1"
+            className="text-[13px] text-pn-muted underline underline-offset-2 hover:text-pn transition mt-1"
           >
-            {t('markdown.braveAppAlternative', exemptOpts('shell:markdown.braveAppAlternative'))}
+            {t('markdown.braveAppAlternative')}
           </a>
         </div>
       </div>
@@ -103,12 +102,12 @@ export function MarkdownEmptyState({
   if (support === 'needs-desktop-app') {
     return (
       <div className="h-full flex flex-col items-center justify-center text-center px-6 py-10 gap-3">
-        <Download size={26} weight="duotone" className="text-neutral-400" />
+        <Download size={26} weight="duotone" className="text-pn-muted" />
         <p className="text-[15px] font-semibold">{t('markdown.needsAppTitle')}</p>
         {/* Two sentences, one per line: as a single string it stretched the
             full width of the pane on a desktop window and read as a wall. The
             break sits on the sentence boundary, so it survives translation. */}
-        <p className="text-[13px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
+        <p className="text-[13px] text-pn-muted leading-relaxed">
           {t('markdown.needsAppBody')}
           <br />
           {t('markdown.needsAppWhere')}
@@ -122,7 +121,7 @@ export function MarkdownEmptyState({
           href={`${marketingHomeHref()}#downloads`}
           target="_blank"
           rel="noreferrer"
-          className="text-[13px] font-medium px-3 py-1.5 rounded-md bg-accent text-white hover:bg-accent-hover transition mt-1"
+          className="text-[13px] font-medium px-3 py-1.5 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover transition mt-1"
         >
           {t('markdown.getDesktopApp')}
         </a>
@@ -144,13 +143,13 @@ export function MarkdownEmptyState({
         <MarkdownPitch />
         {reopenName && (
           <div className="rounded-lg border border-divider bg-surface-1 p-3 mt-4">
-            <p className="text-[12.5px] text-neutral-600 dark:text-neutral-300 mb-2">
+            <p className="text-[12.5px] text-pn-soft mb-2">
               {t('markdown.reopenPrompt', { name: reopenName })}
             </p>
             <button
               type="button"
               onClick={onReopen}
-              className="text-[13px] font-medium px-3 py-1.5 rounded-md bg-accent text-white hover:bg-accent-hover transition"
+              className="text-[13px] font-medium px-3 py-1.5 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover transition"
             >
               {t('markdown.reopenFolder', { name: reopenName })}
             </button>
@@ -163,7 +162,7 @@ export function MarkdownEmptyState({
           <button
             type="button"
             onClick={onOpenFolder}
-            className="text-[13px] font-medium px-3 py-2 rounded-md bg-accent text-white hover:bg-accent-hover transition"
+            className="text-[13px] font-medium px-3 py-2 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover transition"
           >
             {busy ? t('markdown.scanning') : t('markdown.openFolder')}
           </button>
@@ -175,7 +174,7 @@ export function MarkdownEmptyState({
             {t('markdown.openFile')}
           </button>
         </div>
-        {error && <p className="text-[12px] text-red-600 dark:text-red-400 mt-2 text-center">{error}</p>}
+        {error && <p className="text-[12px] text-danger mt-2 text-center">{error}</p>}
       </div>
     </div>
   );

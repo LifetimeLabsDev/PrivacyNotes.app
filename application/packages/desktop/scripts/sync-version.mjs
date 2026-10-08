@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 // Sync the native build version from the single source of truth (web/src/version.ts)
-// into tauri.conf.json, Cargo.toml and the Android version stamp, and the language
-// list (SUPPORTED_LOCALES in web/src/i18n.ts) into both Info.plist files. Runs
+// into tauri.conf.json, Cargo.toml, the Android version stamp and the iOS share
+// extension's Info.plist, and the language list (SUPPORTED_LOCALES in
+// web/src/i18n.ts) into both Info.plist files. Runs
 // automatically before every Tauri dev/build (wired into
 // beforeDevCommand/beforeBuildCommand in tauri.conf.json).
 // Spec: ops/docs/commit-workflow.md (version single source)
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
@@ -70,6 +71,20 @@ if (existsSync(androidPropsPath)) {
   }
 }
 
+// The iOS share extension: App Store Connect refuses an upload whose extension
+// version differs from the app's, and Tauri stamps only the app's own plist.
+// Spec: ops/docs/plans/share-into-app.md
+const sharePlistPath = resolve(root, 'packages/desktop/src-tauri/ios-share/Info.plist');
+const sharePlist = readFileSync(sharePlistPath, 'utf8');
+const sharePlistNext = sharePlist.replace(
+  /(<key>(?:CFBundleShortVersionString|CFBundleVersion)<\/key>\s*<string>)[^<]*(<\/string>)/g,
+  `$1${version}$2`,
+);
+if (sharePlistNext !== sharePlist) {
+  writeFileSync(sharePlistPath, sharePlistNext);
+  updated.push('ios-share/Info.plist');
+}
+
 // CFBundleLocalizations: the languages the macOS and iOS bundles declare. iOS hands
 // the webview only those of the phone's languages the bundle declares, so a missing
 // entry opens the app in English on a phone set to that language. The shared
@@ -108,6 +123,26 @@ for (const [plistRel, required] of [
     writeFileSync(plistPath, plistNext);
     updated.push(`${plistRel} (CFBundleLocalizations)`);
   }
+}
+
+// The share extension's three messages, from the web catalogs, so the locale checks
+// that guard every other string guard these too. A locale whose catalog lacks
+// them gets no folder, and iOS falls back to English. Apple knows Traditional
+// Chinese by its script tag, as above.
+// Spec: ops/docs/plans/share-into-app.md
+for (const lang of readdirSync(resolve(root, 'packages/web/src/locales'))) {
+  const catalogPath = resolve(root, 'packages/web/src/locales', lang, 'shell.json');
+  if (!existsSync(catalogPath)) continue;
+  const texts = JSON.parse(readFileSync(catalogPath, 'utf8')).shareInbox;
+  if (!texts?.saved || !texts?.failed || !texts?.tooLarge) continue;
+  const quote = (s) => JSON.stringify(s);
+  const strings = ['saved', 'failed', 'tooLarge'].map((k) => `"${k}" = ${quote(texts[k])};\n`).join('');
+  const dir = resolve(root, 'packages/desktop/src-tauri/ios-share', `${lang === 'zh-TW' ? 'zh-Hant' : lang}.lproj`);
+  const stringsPath = resolve(dir, 'Localizable.strings');
+  if (existsSync(stringsPath) && readFileSync(stringsPath, 'utf8') === strings) continue;
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(stringsPath, strings);
+  updated.push(`ios-share/${lang} strings`);
 }
 
 console.log(

@@ -1,11 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { activeLocale } from './languages';
 import type { LocalNote } from './db';
 import type { ListPrefs } from './listPrefs';
-import { deriveDisplayTitle, deriveExcerpt, emptyExcerptLabel, rowSizeLabel, formatModified, fileCount, noteLinkName } from './notesViewUtils';
+import { deriveDisplayTitle, deriveExcerpt, editedAtOf, emptyExcerptLabel, entryDayOf, rowSizeLabel, fileCount, noteLinkName } from './notesViewUtils';
+import { formatDay, formatInstant, useDateFormatKey } from './intlFormat';
 import { noteLinkTarget } from './noteLinks';
+import { setItemDragImage, writeItemDrag, type ItemDragPayload } from './itemDrag';
 import { Favicon } from './VaultItem';
 import { parseLoginBody, domainFromUrl } from './LoginForm';
 import { parseLinkBody, linkDomain } from './linkBody';
@@ -13,9 +15,11 @@ import { contactHue, contactInitials, contactInitialsFor, parseContactBody } fro
 import { loadEncryptedImageUrl } from './EncryptedImage';
 import { Archive, Check, PushPin, Shield, PencilSimpleSlash, Book, CheckSquare, File, Image, MusicNotes, Key, CreditCard, Lock, Globe, BookmarkSimple, Warning, User, type Icon } from './icons';
 import { useFolderName } from './folderNames';
+import { ChipFilterContext } from './chipFilter';
 import { sortTags } from './notesRepo';
 import { usePushFailure } from './pushFailures';
-import { FolderGlyph, TagMark, tintStyle, useNoteColor } from './looks/LookGlyph';
+import { FolderGlyph, TagMark, noteLookStyle, useNoteLook } from './looks/LookGlyph';
+import { isSameOriginPath } from './sameOriginPath';
 
 
 export interface NoteRowProps {
@@ -44,6 +48,8 @@ export interface NoteRowProps {
   showTypeIcons?: boolean;
   /** Use sortField-aware date label. Default false (always "Modified"). */
   sortAwareDate?: boolean;
+  /** The Journals pillar: the created sort shows the day an entry is for. */
+  entryDays?: boolean;
   /** Tint the row icon amber (used in trash view). */
   trashTint?: boolean;
   /** Label an archived item "Archived": set wherever one can appear outside
@@ -87,14 +93,14 @@ export interface NoteRowProps {
    */
   glyphOverride?: Icon;
   /**
-   * Lets the item be dragged into an editor as a `[[note-link]]`. Opt-in,
-   * because the Markdown folder list reuses these components for files,
-   * which are not notes a link can reach.
+   * Lets the item be dragged: into an editor as a `[[note-link]]`, and onto
+   * a sidebar folder or tag by its id. Opt-in, because the Markdown folder
+   * list reuses these components for files, which are not notes.
    */
-  linkDrag?: boolean;
-  /** In selection mode, the link text of the whole selection, which a
-   *  selected item drags. Read only at dragstart. */
-  linkDragSelection?: () => string;
+  itemDrag?: boolean;
+  /** In selection mode, what a selected item drags: the selected items the
+   *  list shows. Read only at dragstart. */
+  dragSelection?: () => ItemDragPayload;
 }
 
 /** React.memo prevents re-render when only the *active* note's body
@@ -117,21 +123,22 @@ export default React.memo(function NoteRow({
   isContextTarget = false,
   showTypeIcons = false,
   sortAwareDate = false,
+  entryDays = false,
   trashTint = false,
   showArchived = false,
   sizeLabel,
   iconOverride,
   trailing,
-  linkDrag = false,
-  linkDragSelection,
+  itemDrag = false,
+  dragSelection,
 }: NoteRowProps) {
   const { t } = useTranslation('notes');
   // Subscribed per row: the set changes once per pass at most, and only
   // when a note's verdict changes, so this costs nothing while idle.
   const pushFailure = usePushFailure(n.id);
   // The tag or folder color; never in the trash, which keeps its own look.
-  const noteColor = useNoteColor(n.id, n.tags, n.folderId);
-  const color = trashTint ? null : noteColor;
+  const noteLook = useNoteLook(n.id, n.tags, n.folderId);
+  const look = trashTint ? null : noteLook;
   const isVault = n.type === 'login' || n.type === 'card' || n.type === 'ssh-key';
   const isLink = n.type === 'link';
   const isFile = n.type === 'file';
@@ -155,13 +162,23 @@ export default React.memo(function NoteRow({
    *  a size appears. `noteSizeBytes` memoizes per note, so this is a map lookup
    *  after the first call. */
   const sizeText = rowSizeLabel(n, listPrefs.sortField, sizeLabel) || undefined;
-  const dateLabel = sortAwareDate && listPrefs.sortField === 'created' ? t('noteRow.created') : t('noteRow.modified');
+  // In Journals the created sort is by the day each entry is for, and the
+  // date line names that day.
+  const entryDay = entryDays && sortAwareDate && listPrefs.sortField === 'created' && n.type === 'journal';
+  const dateLabel = entryDay
+    ? t('noteRow.entryDate')
+    : sortAwareDate && listPrefs.sortField === 'created' ? t('noteRow.created') : t('noteRow.modified');
+  // A new date setting or language formats the date again without a remount.
+  const dateFormatKey = useDateFormatKey();
   const dateValue = useMemo(
     () =>
-      formatModified(
-        sortAwareDate && listPrefs.sortField === 'created' ? n.createdAt : n.updatedAt,
-      ),
-    [n, sortAwareDate, listPrefs.sortField],
+      entryDay
+        ? formatDay(entryDayOf(n), 'tile')
+        : formatInstant(
+            sortAwareDate && listPrefs.sortField === 'created' ? n.createdAt : editedAtOf(n),
+            'row',
+          ),
+    [n, sortAwareDate, listPrefs.sortField, dateFormatKey, entryDay],
   );
 
   return (
@@ -169,27 +186,29 @@ export default React.memo(function NoteRow({
       // Read by the list pane's one middle-click and Alt-click handler,
       // which opens the item as a tab. Spec: ops/docs/plans/note-tabs.md
       data-item-id={n.id}
+      aria-current={isOpen || undefined}
       onClick={onClick}
       onContextMenu={onContextMenu}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       onTouchMove={onTouchMove}
       onTouchCancel={onTouchCancel}
-      {...noteLinkDragProps({ note: n, isNoteLocked: locked, linkDrag, selectionMode, isMultiSelected, trashTint, linkDragSelection })}
+      {...itemDragProps({ note: n, isNoteLocked: locked, itemDrag, selectionMode, isMultiSelected, trashTint, dragSelection })}
       // Touch only: long-press is the multi-select gesture, so the row must
       // not also hand the WebView something to select. Desktop keeps normal
       // text selection. Spec: issue #208.
       className={`pn-row pn-lazy-row relative px-4 py-3 cursor-pointer border-b border-divider/50 transition [@media(hover:none)]:select-none ${
         isMultiSelected
-          ? 'bg-accent/15 hover:bg-accent/20 border-s-2 border-s-accent dark:bg-accent/20 dark:hover:bg-accent/25'
+          ? 'pn-on-tint bg-accent/15 hover:bg-accent/20 border-s-2 border-s-accent dark:bg-accent/20 dark:hover:bg-accent/25'
           : isOpen
-          ? 'bg-accent/10 hover:bg-accent/15 border-s-2 border-s-accent dark:bg-accent/15 dark:hover:bg-accent/20'
+          ? 'pn-on-tint bg-accent/10 hover:bg-accent/15 border-s-2 border-s-accent dark:bg-accent/15 dark:hover:bg-accent/20'
           : isContextTarget
-          ? 'bg-neutral-200/70 hover:bg-neutral-200/80 dark:bg-neutral-800/70 dark:hover:bg-neutral-800/80'
-          : 'hover:bg-neutral-200/50 dark:hover:bg-neutral-900/50'
+          ? 'pn-on-tint bg-pn/10 hover:bg-pn/10'
+          : 'hover:bg-pn/5'
       } ${selectionMode ? 'ps-10' : ''}`}
-      style={tintStyle(color)}
-      data-color={color ?? undefined}
+      style={noteLookStyle(look)}
+      data-color={look?.color}
+      data-color-style={look?.style}
     >
       {/* Bookmark ribbon - the saved-link marker, see the .pn-ribbon rules in
           index.css. Vault logins stay unmarked. */}
@@ -205,7 +224,7 @@ export default React.memo(function NoteRow({
           aria-checked={isMultiSelected}
           className={`absolute start-3 top-3.5 w-5 h-5 rounded border flex items-center justify-center transition shrink-0 ${
             isMultiSelected
-              ? 'bg-accent border-accent text-white'
+              ? 'bg-accent-fill border-accent-fill text-white'
               : 'bg-surface-2 border-divider hover:border-accent'
           }`}
         >
@@ -228,10 +247,10 @@ export default React.memo(function NoteRow({
             {iconOverride ?? <RowIcon note={n} isVault={isVault} isFile={isFile} isJournal={isJournal} hasTasks={hasTasks} trashTint={trashTint} locked={locked} tall />}
           </span>
           <div className="min-w-0 flex-1">
-            <div data-slot="title" className="text-sm font-semibold truncate text-neutral-900 dark:text-white" dir="auto">
+            <div data-slot="title" className="text-sm font-semibold truncate text-pn" dir="auto">
               {displayTitle}
             </div>
-            <div data-slot="preview" className="text-[13px] text-neutral-500 dark:text-neutral-400 truncate mt-0.5" dir={isLink ? 'ltr' : 'auto'}>
+            <div data-slot="preview" className="text-[13px] text-pn-muted truncate mt-0.5" dir={isLink ? 'ltr' : 'auto'}>
               {excerpt || emptyExcerptLabel(n)}
             </div>
           </div>
@@ -243,7 +262,7 @@ export default React.memo(function NoteRow({
         <span data-slot="icon" className="contents">
           {iconOverride ?? <RowIcon note={n} isVault={isVault} isFile={isFile} isJournal={isJournal} hasTasks={hasTasks} trashTint={trashTint} locked={locked} />}
         </span>
-        <div data-slot="title" className="min-w-0 flex-1 text-sm font-semibold truncate text-neutral-900 dark:text-white" dir="auto">
+        <div data-slot="title" className="min-w-0 flex-1 text-sm font-semibold truncate text-pn" dir="auto">
           {displayTitle}
         </div>
         {trailing && <span className="pn-row-actions shrink-0 flex items-center gap-1">{trailing}</span>}
@@ -251,7 +270,7 @@ export default React.memo(function NoteRow({
       {/* Preview - full width, one line, or several with the "Longer preview
           text" pref (.pn-preview-long) */}
       {listPrefs.showPreview && !locked && (
-        <div data-slot="preview" className={`text-[13px] text-neutral-500 dark:text-neutral-400 mt-1 ${listPrefs.longPreview ? 'pn-preview-long' : 'truncate'}`} dir="auto">
+        <div data-slot="preview" className={`text-[13px] text-pn-muted mt-1 ${listPrefs.longPreview ? 'pn-preview-long' : 'truncate'}`} dir="auto">
           {excerpt || emptyExcerptLabel(n)}
         </div>
       )}
@@ -266,13 +285,13 @@ export default React.memo(function NoteRow({
       {(listPrefs.showDate || hasStatusIcons || sizeText) && (
         <div className="mt-0.5 flex items-center gap-1.5">
           {listPrefs.showDate && (
-            <span data-slot="date" className="min-w-0 text-[12px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap overflow-hidden text-ellipsis">
+            <span data-slot="date" className="min-w-0 text-[12px] text-pn-muted whitespace-nowrap overflow-hidden text-ellipsis">
               {dateLabel} {dateValue}
             </span>
           )}
           <span data-slot="flags" className="shrink-0 flex items-center gap-1.5 text-accent">
             {pushFailure && (
-              <Warning size={12} className="text-amber-500 dark:text-amber-400" aria-label={t('noteRow.notBackedUp')} />
+              <Warning size={12} className="text-warning" aria-label={t('noteRow.notBackedUp')} />
             )}
             {showTypeIcons && n.starred === 1 && (
               <PushPin size={12} />
@@ -296,7 +315,7 @@ export default React.memo(function NoteRow({
               for the original reason - there it competed with the filename for
               the space that matters most. */}
           {sizeText && (
-            <span data-slot="size" className="shrink-0 text-[11px] text-neutral-400 dark:text-neutral-500 font-medium tabular-nums">
+            <span data-slot="size" className="shrink-0 text-[11px] text-pn-muted font-medium tabular-nums">
               {sizeText}
             </span>
           )}
@@ -343,7 +362,7 @@ export function noteFaviconDomain(note: LocalNote): string {
  * target comes from `noteLinkName`, so an untitled note, and a bookmark's
  * domain behind a closed gate, are skipped rather than linked by a body line.
  */
-export function noteLinkText(notes: readonly LocalNote[], isLocked: (n: LocalNote) => boolean): string {
+function noteLinkText(notes: readonly LocalNote[], isLocked: (n: LocalNote) => boolean): string {
   return notes
     .map((n) => noteLinkTarget(noteLinkName(n, isLocked(n))))
     .filter(Boolean)
@@ -351,38 +370,41 @@ export function noteLinkText(notes: readonly LocalNote[], isLocked: (n: LocalNot
     .join('\n');
 }
 
+/** What a drag of these items carries, in the order given: every id, and the
+ *  note-links of the ones that have a link name. */
+export function itemDragSelection(picked: readonly LocalNote[], isLocked: (n: LocalNote) => boolean): ItemDragPayload {
+  return { ids: picked.map((n) => n.id), linkText: noteLinkText(picked, isLocked) };
+}
+
 /**
- * The drag props for a row or tile that can be dropped as note-links, or none.
- * Outside selection mode the item drags its own link; in selection mode a
- * selected item drags the links of the whole selection, and an unselected one
- * does not drag. The payload is `text/plain` only: the editor's paste rule
- * turns each `[[target]]` into a link, and `text/html` would skip that path.
- * A trashed item is not linkable.
+ * The drag props for a row or tile, or none. Outside selection mode the item
+ * drags itself; in selection mode a selected item drags the selection, and
+ * an unselected one does not drag. An untitled item drags with no link text,
+ * so it files onto a folder or tag and drops nothing into an editor. A
+ * trashed item does not drag.
  */
-export function noteLinkDragProps(
-  p: Pick<NoteRowProps, 'note' | 'isNoteLocked' | 'linkDrag' | 'selectionMode' | 'isMultiSelected' | 'trashTint' | 'linkDragSelection'>,
+export function itemDragProps(
+  p: Pick<NoteRowProps, 'note' | 'isNoteLocked' | 'itemDrag' | 'selectionMode' | 'isMultiSelected' | 'trashTint' | 'dragSelection'>,
 ) {
-  if (!p.linkDrag || p.trashTint) return {};
-  let text: () => string;
+  if (!p.itemDrag || p.trashTint) return {};
+  let payload: () => ItemDragPayload;
   if (p.selectionMode) {
-    if (!p.isMultiSelected || !p.linkDragSelection) return {};
-    text = p.linkDragSelection;
+    if (!p.isMultiSelected || !p.dragSelection) return {};
+    payload = p.dragSelection;
   } else {
-    const own = noteLinkText([p.note], () => p.isNoteLocked);
-    if (!own) return {};
-    text = () => own;
+    const own = itemDragSelection([p.note], () => p.isNoteLocked);
+    payload = () => own;
   }
   return {
     draggable: true,
     onDragStart: (e: React.DragEvent) => {
-      const value = text();
-      if (!value) {
+      const { ids, linkText } = payload();
+      if (ids.length === 0) {
         e.preventDefault();
         return;
       }
-      e.dataTransfer.clearData();
-      e.dataTransfer.setData('text/plain', value);
-      e.dataTransfer.effectAllowed = 'copy';
+      writeItemDrag(e.dataTransfer, ids, linkText);
+      setItemDragImage(e.dataTransfer, e.currentTarget, ids.length);
     },
   };
 }
@@ -425,13 +447,13 @@ export function RowIcon({ note, isVault, isFile, isJournal, hasTasks, trashTint,
   let text: string;
   if (trashTint) {
     bg = 'bg-amber-100/80 dark:bg-amber-900/30';
-    text = 'text-amber-600 dark:text-amber-400';
+    text = 'text-warning';
   } else if (isJournal) {
     bg = 'bg-purple-100/80 dark:bg-purple-900/30';
     text = 'text-purple-600 dark:text-purple-400';
   } else if (hasTasks) {
     bg = 'bg-emerald-100/80 dark:bg-emerald-900/30';
-    text = 'text-emerald-600 dark:text-emerald-400';
+    text = 'text-success';
   } else {
     bg = 'bg-accent/10 dark:bg-accent/15';
     text = 'text-accent';
@@ -459,7 +481,7 @@ export function FileTileIcon({ mime, className = '' }: { mime: string; className
   const m = (mime || '').toLowerCase();
   const Icon = m.startsWith('image/') ? Image : m.startsWith('audio/') ? MusicNotes : File;
   return (
-    <span className={`shrink-0 w-7 h-7 rounded-md bg-amber-100/80 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 mt-px ${className}`}>
+    <span className={`shrink-0 w-7 h-7 rounded-md bg-amber-100/80 dark:bg-amber-900/30 flex items-center justify-center text-warning mt-px ${className}`}>
       <Icon size={ROW_ICON_PX} />
     </span>
   );
@@ -486,13 +508,13 @@ export function SiteChip({ domain, tall, trashTint, fallback }: {
   const icon = tall ? 28 : 22;
   if (domain && !trashTint) {
     return (
-      <span className={`shrink-0 ${box} bg-[#f0efec] border border-black/[0.06] dark:border-white/[0.08] flex items-center justify-center mt-px overflow-hidden`}>
+      <span /* theme-ok: a light tile keeps dark favicons readable in every theme */ className={`shrink-0 ${box} bg-[#f0efec] border border-black/[0.06] dark:border-white/[0.08] flex items-center justify-center mt-px overflow-hidden`}>
         <Favicon domain={domain} size={icon} />
       </span>
     );
   }
   const bg = trashTint ? 'bg-amber-100/80 dark:bg-amber-900/30' : fallback === 'lock' ? 'bg-blue-100/80 dark:bg-blue-900/30' : 'bg-sky-100/80 dark:bg-sky-900/30';
-  const text = trashTint ? 'text-amber-600 dark:text-amber-400' : fallback === 'lock' ? 'text-blue-600 dark:text-blue-400' : 'text-sky-600 dark:text-sky-400';
+  const text = trashTint ? 'text-warning' : fallback === 'lock' ? 'text-blue-600 dark:text-blue-400' : 'text-sky-600 dark:text-sky-400';
   const FallbackIcon = fallback === 'lock' ? Lock : fallback === 'bookmark' ? BookmarkSimple : Globe;
   return (
     <span className={`shrink-0 ${box} ${bg} flex items-center justify-center ${text} mt-px`}>
@@ -537,7 +559,7 @@ export function ContactChip({ name, initials: given, photo, size, trashTint = fa
   // A path rather than a uuid is the seeded contact's picture: a static
   // asset every install already ships, so it needs no blob, no quota and
   // no sync, and it draws on a second device that never ran the seeding.
-  const staticSrc = photo.startsWith('/') ? photo : '';
+  const staticSrc = isSameOriginPath(photo) ? photo : '';
   const uuid = photo.startsWith('pn:img/') ? photo.slice('pn:img/'.length) : '';
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => {
@@ -578,7 +600,7 @@ function VaultRowIcon({ note, trashTint, locked, tall = false }: { note: LocalNo
   }
   if (note.type === 'card') {
     const bg = trashTint ? 'bg-amber-100/80 dark:bg-amber-900/30' : 'bg-amber-100/80 dark:bg-amber-900/30';
-    const text = trashTint ? 'text-amber-600 dark:text-amber-400' : 'text-amber-600 dark:text-amber-400';
+    const text = trashTint ? 'text-warning' : 'text-warning';
     return (
       <span className={`shrink-0 w-7 h-7 rounded-md ${bg} flex items-center justify-center ${text} mt-px`}>
         <CreditCard size={ROW_ICON_PX} />
@@ -586,9 +608,9 @@ function VaultRowIcon({ note, trashTint, locked, tall = false }: { note: LocalNo
     );
   }
   // ssh-key - terminal look (black box, white icon) so it reads distinct from
-  // the journal purple it used to share.
+  // the journal purple. theme-ok: the black box is the same in every theme.
   const bg = trashTint ? 'bg-amber-100/80 dark:bg-amber-900/30' : 'bg-neutral-900 dark:bg-black border border-white/10';
-  const text = trashTint ? 'text-amber-600 dark:text-amber-400' : 'text-white';
+  const text = trashTint ? 'text-warning' : 'text-white';
   return (
     <span className={`shrink-0 w-7 h-7 rounded-md ${bg} flex items-center justify-center ${text} mt-px`}>
       <Key size={ROW_ICON_PX} />
@@ -618,16 +640,36 @@ function VaultRowIcon({ note, trashTint, locked, tall = false }: { note: LocalNo
  * which also decides WHICH four survive the slice below: an insertion-ordered
  * list showed a different four per note for no reason a reader could see.
  * Spec: issue #259.
+ *
+ * A click on a chip filters the list by it (`chipFilter.ts`). The element
+ * stays a span whether or not the filter is on: a long press turns
+ * selection mode on mid-touch, and swapping the element then would drop
+ * the click that follows it. A modifier click is a selection gesture, so it
+ * passes through to the row.
  */
 export function TagChips({ tags, folderId }: { tags: string[]; folderId?: string | null }) {
   const visible = useMemo(() => sortTags(tags), [tags]);
   const folderName = useFolderName(folderId);
+  const filter = useContext(ChipFilterContext);
   if (visible.length === 0 && !folderName) return null;
+  const onPick = (run: (f: NonNullable<typeof filter>) => void) =>
+    filter
+      ? (e: React.MouseEvent) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+          e.stopPropagation();
+          run(filter);
+        }
+      : undefined;
+  const pickable = filter ? ' cursor-pointer hover:bg-accent/20 transition' : '';
   return (
     <div data-slot="tags" className="mt-1.5 flex flex-wrap gap-1">
       {folderName && folderId && (
-        <span data-slot="folder" className="inline-flex items-center gap-1 max-w-[12rem] text-[11px] px-1.5 py-0.5 rounded bg-accent/10 text-accent">
-          <FolderGlyph folderId={folderId} size={11} className="shrink-0 text-amber-600/80 dark:text-amber-500/80" />
+        <span
+          data-slot="folder"
+          onClick={onPick((f) => f.folder(folderId))}
+          className={`inline-flex items-center gap-1 max-w-[12rem] text-[11px] px-1.5 py-0.5 rounded bg-accent/10 text-accent-strong${pickable}`}
+        >
+          <FolderGlyph folderId={folderId} size={11} className="shrink-0 text-amber-700 dark:text-amber-500/80" />
           <span className="truncate" dir="auto">{folderName}</span>
         </span>
       )}
@@ -635,7 +677,8 @@ export function TagChips({ tags, folderId }: { tags: string[]; folderId?: string
         <span
           key={t}
           dir="auto"
-          className="inline-flex items-center text-[11px] px-1.5 py-0.5 rounded bg-accent/10 text-accent"
+          onClick={onPick((f) => f.tag(t))}
+          className={`inline-flex items-center text-[11px] px-1.5 py-0.5 rounded bg-accent/10 text-accent-strong${pickable}`}
         >
           <TagMark tag={t} size={11} />
           {t}
@@ -689,20 +732,20 @@ export function typeGlyph(type: LocalNote['type']): { Icon: Icon; color: string 
   let Icon = File;
   let color = 'text-accent';
   if (type === 'file') {
-    color = 'text-amber-600 dark:text-amber-400';
+    color = 'text-warning';
   } else if (type === 'journal') {
     Icon = Book;
     color = 'text-purple-600 dark:text-purple-400';
   } else if (type === 'task') {
     Icon = CheckSquare;
-    color = 'text-emerald-600 dark:text-emerald-400';
+    color = 'text-success';
   } else if (type === 'card') {
     Icon = CreditCard;
-    color = 'text-amber-600 dark:text-amber-400';
+    color = 'text-warning';
   } else if (type === 'ssh-key') {
     // Mono icon (no box in the mini layout) - dark in light mode, white in dark.
     Icon = Key;
-    color = 'text-neutral-900 dark:text-white';
+    color = 'text-pn';
   } else if (type === 'login') {
     // Lock (not Key) so logins stay distinct from ssh keys in the mini grid,
     // where the favicon box is hidden and this glyph shows instead.

@@ -25,8 +25,8 @@
 
 import { Node, mergeAttributes, InputRule } from '@tiptap/core';
 import { ReactNodeViewRenderer, NodeViewWrapper, NodeViewContent } from '@tiptap/react';
-import { Fragment, type Node as ProseMirrorNode } from '@tiptap/pm/model';
-import { TextSelection, type EditorState } from '@tiptap/pm/state';
+import { Fragment, Slice, type Node as ProseMirrorNode } from '@tiptap/pm/model';
+import { Plugin, PluginKey, TextSelection, type EditorState } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
 import { GapCursor } from '@tiptap/pm/gapcursor';
 import { useTranslation } from 'react-i18next';
@@ -456,6 +456,10 @@ export const Callout = Node.create({
     };
   },
 
+  addProseMirrorPlugins() {
+    return [new Plugin({ key: new PluginKey('calloutCopy'), props: { transformCopied: unwrapUntitledCallout } })];
+  },
+
   addInputRules() {
     // Typing `[!type] ` (optionally `+`/`-`) at the start of a paragraph turns
     // it into a callout of that type.
@@ -521,7 +525,7 @@ export const Callout = Node.create({
           node: {
             attrs: { type: string; folded: boolean };
             firstChild: { type: { name: string }; content: { size: number } } | null;
-            forEach: (f: (child: unknown, offset: number, index: number) => void) => void;
+            forEach: (f: (child: { type: { name: string } }, offset: number, index: number) => void) => void;
           },
         ) {
           const type = node.attrs.type || 'info';
@@ -535,7 +539,8 @@ export const Callout = Node.create({
             }
             state.ensureNewLine();
             node.forEach((child, _offset, index) => {
-              if (index === 0) return; // title handled above
+              // A copy of body lines holds a callout with no title in it.
+              if (index === 0 && child.type.name === 'calloutTitle') return;
               state.render(child, node, index);
             });
           });
@@ -549,3 +554,27 @@ export const Callout = Node.create({
     };
   },
 });
+
+/**
+ * A copy keeps every parent of the selection, so lines copied from a callout's
+ * body arrive inside a callout. When the title is not in the copy, the reader
+ * selected text and not the box: the copy is the body blocks alone, in both
+ * clipboard flavours, and a paste never makes a callout with an empty title.
+ * Only the open start of a copy can cut a title off, so only that edge is
+ * walked.
+ */
+function unwrapUntitledCallout(slice: Slice): Slice {
+  const walk = (content: Fragment, depth: number, onEnd: boolean): { content: Fragment; onEnd: boolean } | null => {
+    const first = content.firstChild;
+    if (!first || depth >= slice.openStart) return null;
+    const alsoEnd = onEnd && content.childCount === 1 && depth < slice.openEnd;
+    if (first.type.name === 'callout' && first.firstChild?.type.name !== 'calloutTitle') {
+      return { content: first.content.append(content.cut(first.nodeSize)), onEnd: alsoEnd };
+    }
+    const inner = walk(first.content, depth + 1, alsoEnd);
+    return inner && { content: content.replaceChild(0, first.copy(inner.content)), onEnd: inner.onEnd };
+  };
+  const out = walk(slice.content, 0, true);
+  if (!out) return slice;
+  return new Slice(out.content, slice.openStart - 1, out.onEnd ? slice.openEnd - 1 : slice.openEnd);
+}

@@ -58,7 +58,7 @@ export function BookmarkRowActions({
         // is aiming at the menu, not at the row.
         onTouchStart={(e) => e.stopPropagation()}
         aria-label={t('bookmarks.rowMenu')}
-        className="w-7 h-7 rounded-md border border-divider bg-surface-1 text-neutral-500 dark:text-neutral-400 inline-flex items-center justify-center transition active:scale-95"
+        className="w-7 h-7 rounded-md border border-divider bg-surface-1 text-pn-muted inline-flex items-center justify-center transition active:scale-95"
       >
         <DotsThreeOutlineVertical size={14} />
       </button>
@@ -103,7 +103,7 @@ export function BookmarkRowActions({
           type="button"
           onClick={(e) => { e.stopPropagation(); onEdit(note); }}
           aria-label={t('common:actions.edit')}
-          className="w-7 h-7 rounded-md border border-divider bg-surface-1 text-neutral-500 dark:text-neutral-400 inline-flex items-center justify-center transition hover:text-accent hover:border-accent"
+          className="w-7 h-7 rounded-md border border-divider bg-surface-1 text-pn-muted inline-flex items-center justify-center transition hover:text-accent hover:border-accent"
         >
           <PencilSimple size={14} />
         </button>
@@ -118,7 +118,7 @@ export function BookmarkRowActions({
              tinted `dark:hover:bg-red-950/30` let the title read straight
              through the button (reported 2026-08-25).
              Spec: ops/docs/ui-patterns.md (section 74) */
-          className="w-7 h-7 rounded-md border border-divider bg-surface-1 text-red-600 dark:text-red-400 inline-flex items-center justify-center transition hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-950"
+          className="w-7 h-7 rounded-md border border-divider bg-surface-1 text-danger inline-flex items-center justify-center transition hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-950"
         >
           <Trash size={14} />
         </button>

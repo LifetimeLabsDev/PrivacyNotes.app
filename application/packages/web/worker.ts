@@ -153,7 +153,9 @@ const cspFor = (paddle: boolean): string =>
     "default-src 'none'",
     `script-src 'self' https://challenges.cloudflare.com${paddle ? ' https://cdn.paddle.com https://sandbox-cdn.paddle.com https://public.profitwell.com' : ''}`,
     `style-src 'self' 'unsafe-inline'${paddle ? ' https://cdn.paddle.com https://sandbox-cdn.paddle.com' : ''}`,
-    `connect-src 'self' https://sync.privacynotes.app https://releases.privacynotes.app https://challenges.cloudflare.com${paddle ? ' https://*.paddle.com https://*.profitwell.com' : ''}`,
+    // data: and blob: read bytes already on the device (a picture inside a
+    // paste) and can send nothing out. Spec: ops/docs/plans/paste-pictures.md (section 2)
+    `connect-src 'self' data: blob: https://sync.privacynotes.app https://releases.privacynotes.app https://challenges.cloudflare.com${paddle ? ' https://*.paddle.com https://*.profitwell.com' : ''}`,
     `img-src 'self' data: blob: https://sync.privacynotes.app${paddle ? ' https://*.paddle.com' : ''}`,
     `frame-src https://challenges.cloudflare.com${paddle ? ' https://*.paddle.com' : ''}`,
     "font-src 'self' data:",
@@ -391,6 +393,7 @@ export default {
         p === '/changelog.md' ||
         p.startsWith('/docs/') ||
         p === '/roadmap' ||
+        p === '/themes' ||
         p === '/brand' ||
         LANDING_SLUGS.has(p) ||
         p.startsWith('/vs/') ||

@@ -7,7 +7,7 @@
     "heading": "Заголовок",
     "taskList": "Список задач",
     "bulletList": "Маркированный список",
-    "addLink": "Добавить ссылку (Cmd+Shift+K)",
+    "addLink": "Добавить ссылку ({{keys}})",
     "noteLink": "Ссылка на другую заметку (или введите [[)",
     "numberedList": "Нумерованный список",
     "textColor": "Цвет текста",
@@ -34,7 +34,12 @@
     "blockMath": "Формула отдельным блоком",
     "align": "Выравнивание",
     "font": "Шрифт",
-    "pictureFromFiles": "Изображение из Файлов"
+    "pictureFromFiles": "Изображение из Файлов",
+    "date": "Дата",
+    "dateTime": "Дата и время",
+    "footnote": "Сноска",
+    "spoiler": "Спойлер",
+    "copyBox": "Блок для копирования"
   },
   "align": {
     "left": "По левому краю",
@@ -118,7 +123,7 @@
     "next": "Следующее совпадение (Enter)",
     "nextTitle": "Следующее (Enter)",
     "close": "Закрыть поиск",
-    "closeTitle": "Закрыть (⌘F)",
+    "closeTitle": "Закрыть ({{keys}})",
     "replacePlaceholder": "Заменить на",
     "replaceLabel": "Заменить на",
     "replace": "Заменить",
@@ -128,7 +133,7 @@
     "caseSensitive": "Учитывать регистр",
     "caseSensitiveTitle": "Учитывать регистр",
     "closeReplace": "Закрыть поиск и замену",
-    "closeReplaceTitle": "Закрыть (⌥⌘F)",
+    "closeReplaceTitle": "Закрыть ({{keys}})",
     "replacedCount_one": "Заменено: {{count}}",
     "replacedCount_few": "Заменено: {{count}}",
     "replacedCount_many": "Заменено: {{count}}",
@@ -140,7 +145,14 @@
     "title": "Структура",
     "ariaLabel": "Структура заметки",
     "hide": "Скрыть структуру",
-    "hideTitle": "Скрыть структуру (Esc)"
+    "hideTitle": "Скрыть структуру (Esc)",
+    "copyHeadingLink": "Копировать ссылку на заголовок",
+    "copied": "Скопировано"
+  },
+  "bodyMenu": {
+    "cut": "Вырезать",
+    "sortAsc": "Сортировать строки от А до Я",
+    "sortDesc": "Сортировать строки от Я до А"
   },
   "topRow": {
     "add": "Добавить строку сверху"
@@ -183,6 +195,10 @@
     "characters_few": "{{formatted}} символа",
     "characters_many": "{{formatted}} символов",
     "characters_other": "{{formatted}} символа",
+    "tasksChecked_one": "Отмечено {{done}} из {{formatted}}",
+    "tasksChecked_few": "Отмечено {{done}} из {{formatted}}",
+    "tasksChecked_many": "Отмечено {{done}} из {{formatted}}",
+    "tasksChecked_other": "Отмечено {{done}} из {{formatted}}",
     "tooLargeToSync": ", может оказаться слишком большой для синхронизации, разделите её на новую заметку",
     "veryLong": ", очень длинная, редактирование может тормозить",
     "gettingLong": ", становится длинной, на медленных устройствах может тормозить",
@@ -190,19 +206,50 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "Нет подходящих заметок",
-    "create": "Создать «{{query}}»"
+    "create": "Создать «{{query}}»",
+    "headingsIn": "Заголовки в «{{title}}»",
+    "noHeadingMatches": "Нет подходящих заголовков"
+  },
+  "copyBox": {
+    "placeholder": "Текст для копирования одним щелчком"
+  },
+  "inlineCode": {
+    "copyHint": "Копировать: {{key}}+щелчок",
+    "copied": "Скопировано"
   },
   "codeBlock": {
     "copy": "Копировать",
     "copied": "Скопировано",
     "copyFailed": "Ошибка",
-    "wrap": "Переносить длинные строки"
+    "wrap": "Переносить длинные строки",
+    "showAll_one": "Показать все {{count}} строку",
+    "showAll_few": "Показать все {{count}} строки",
+    "showAll_many": "Показать все {{count}} строк",
+    "showAll_other": "Показать все {{count}} строки",
+    "showLess": "Показать меньше",
+    "plainText": "Обычный текст",
+    "language": "Язык кода: {{name}}",
+    "searchLanguages": "Найдите язык",
+    "placeholder": "Введите или вставьте код. Чтобы добавить цвета, выберите язык вверху."
   },
   "math": {
     "sourceLabel": "Код LaTeX"
   },
   "noteLink": {
     "open": "Открыть заметку",
-    "remove": "Убрать ссылку"
+    "remove": "Убрать ссылку",
+    "linkHeading": "Связать с заголовком...",
+    "headingNotFound": "Заголовок не найден",
+    "headingsLocked": "Разблокируйте эту заметку, чтобы увидеть её заголовки",
+    "noHeadings": "В этой заметке нет заголовков"
+  },
+  "footnote": {
+    "placeholder": "Текст сноски",
+    "back": "Вернуться к тексту",
+    "unused": "Не используется в тексте",
+    "remove": "Удалить сноску",
+    "missing": "У сноски нет текста. Нажмите, чтобы добавить его.",
+    "ariaRef": "Сноска {{n}}",
+    "ariaSection": "Сноски"
   }
 }

@@ -15,7 +15,7 @@ title: Välkommen till PrivacyNotes
 
 Klicka i slutet av den här raden och skriv ett ord. Anteckningen sparar sig själv. Det finns ingen sparaknapp.
 
-Fältet ovanför ändrar hur texten ser ut: **fet**, *kursiv*, rubriker, checklistor, <span style="color: #f08c00">färger</span>, <span style="font-size: 1.25em; font-family: ui-serif, Georgia, Cambria, serif">typsnitt</span>, länkar.
+Verktygsfältet ovanför ändrar hur texten ser ut: **fet**, *kursiv*, rubriker, checklistor, <span style="color: #f08c00">färger</span>, <span style="font-size: 1.25em; font-family: ui-serif, Georgia, Cambria, serif">typsnitt</span>, länkar.
 
 ## Tre anteckningar värda att öppna
 

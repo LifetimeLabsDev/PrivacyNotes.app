@@ -5,8 +5,11 @@
  *   - 'normal': bulk Favorite / Archive / Tag / Export / Delete (move to trash)
  *   - 'trash':  bulk Restore / Delete Forever
  *
- * Layout matches the header it replaces: h-14, same horizontal padding
- * and bottom border, so there's no vertical jump when it swaps in.
+ * Layout matches the header it replaces: h-14 and the same bottom border,
+ * so there's no vertical jump when it swaps in. The row is sized to fit
+ * LIST_WIDTH_MIN (280 px): 12 px padding, a 32 px exit button, and six
+ * 32 px actions 4 px apart need 272 px. Wider buttons or gaps push
+ * Delete under the pane's resize strip.
  */
 
 import { useState } from 'react';
@@ -64,18 +67,18 @@ export function SelectionToolbar({
   const [tagOpen, setTagOpen] = useState(false);
 
   return (
-    <div className="shrink-0 h-14 px-4 border-b border-divider flex items-center justify-between gap-3 bg-accent/5 dark:bg-accent/10">
+    <div className="shrink-0 h-14 px-3 border-b border-divider flex items-center justify-between gap-1 bg-accent/5 dark:bg-accent/10">
       <HoverLabel label={t('selectionToolbar.exitSelectionTooltip')} position="below">
       <button
         onClick={onClear}
         aria-label={t('selectionToolbar.exitSelection')}
-        className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-600 hover:bg-neutral-200/70 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-white transition"
+        className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-md text-pn-soft hover:bg-pn/5 hover:text-pn transition"
       >
         <X size={18} />
       </button>
       </HoverLabel>
 
-      <div className="shrink-0 flex items-center gap-1.5">
+      <div className="shrink-0 flex items-center gap-1">
         {mode === 'normal' ? (
           <>
             <ToolbarButton
@@ -175,13 +178,13 @@ const ToolbarButton = forwardRef<
   }
 >(function ToolbarButton({ label, onClick, icon, tone = 'default', pro = false }, ref) {
   const base =
-    'relative shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-md transition';
+    'relative shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-md transition';
   const toneClass =
     tone === 'danger'
-      ? 'bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400'
+      ? 'bg-red-500/10 hover:bg-red-500/20 text-danger'
       : tone === 'success'
-        ? 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
-        : 'bg-accent/10 hover:bg-accent/20 text-accent';
+        ? 'bg-emerald-500/10 hover:bg-emerald-500/20 text-success'
+        : 'bg-accent/10 hover:bg-accent/20 text-accent-strong';
   return (
     <HoverLabel label={label} position="below">
     <button

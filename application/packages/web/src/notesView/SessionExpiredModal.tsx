@@ -29,13 +29,13 @@ export function SessionExpiredModal({ onSignOut }: { onSignOut: () => void }) {
           <WarningCircle size={20} className="text-amber-500 shrink-0" />
           <h2 className="text-lg font-semibold">{t('sessionExpired.title')}</h2>
         </div>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+        <p className="text-sm text-pn-muted leading-relaxed">
           {t('sessionExpired.body')}
         </p>
         <button
           type="button"
           onClick={onSignOut}
-          className="w-full rounded-md bg-accent hover:bg-accent-hover text-white text-sm font-medium px-3 py-2.5 transition"
+          className="w-full rounded-md bg-accent-fill hover:bg-accent-fill-hover text-white text-sm font-medium px-3 py-2.5 transition"
         >
           {t('sessionExpired.signInAgain')}
         </button>

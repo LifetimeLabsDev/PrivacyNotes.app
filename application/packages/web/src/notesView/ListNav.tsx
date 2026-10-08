@@ -1,9 +1,10 @@
-import { useState, useRef } from 'react';
+import { useContext, useState, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ViewMenu } from '../ViewMenu';
 import { switcherViewRows } from '../viewRows';
-import { List, CaretDown } from '../icons';
+import { List, CaretDown, Lightning } from '../icons';
+import { CommandPaletteContext } from '../commandPalette';
 
 import { isViewShown, type View } from '../views';
 
@@ -54,13 +55,14 @@ export function ListNav({
   const { t } = useTranslation('shell');
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const palette = useContext(CommandPaletteContext);
 
   return (
-    <div className="flex items-center gap-2 min-w-0 text-neutral-900 dark:text-white">
+    <div className="flex flex-1 items-center gap-2 min-w-0 text-pn">
       <button
         onClick={onOpenDrawer}
         aria-label={t('mobileHeader.openMenu')}
-        className="lg:hidden rounded p-1.5 -ms-1 text-neutral-600 hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-900 transition shrink-0"
+        className="lg:hidden rounded p-1.5 -ms-1 text-pn-muted hover:bg-pn/10 transition shrink-0"
       >
         <List size={20} />
       </button>
@@ -75,11 +77,11 @@ export function ListNav({
         onClick={() => setOpen(o => !o)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex items-center gap-2 min-w-0 cursor-pointer rounded-lg px-1.5 py-1 -mx-1.5 transition-colors [@media(hover:hover)]:hover:bg-neutral-200/70 [@media(hover:hover)]:dark:hover:bg-neutral-800/70"
+        className="flex items-center gap-2 min-w-0 cursor-pointer rounded-lg px-1.5 py-1 -mx-1.5 transition-colors [@media(hover:hover)]:hover:bg-pn/5"
       >
         {icon}
         <h2 className="text-lg font-semibold tracking-tight truncate">{title}</h2>
-        <CaretDown className={`shrink-0 text-neutral-500 dark:text-neutral-400 transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
+        <CaretDown className={`shrink-0 text-pn-muted transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
         <ViewMenu
@@ -89,6 +91,20 @@ export function ListNav({
           anchorRef={buttonRef}
           onClose={() => setOpen(false)}
         />
+      )}
+      {/* The quick switcher below lg, where the sidebar and its "Jump to" row
+          sit behind the drawer. At the cluster's end, so it lands beside the
+          pane's own button on the right.
+          Spec: ops/docs/plans/keyboard-shortcuts.md (decision D15) */}
+      {palette && (
+        <button
+          type="button"
+          onClick={palette.openSwitcher}
+          aria-label={t('common:quickSwitcher.jumpTo')}
+          className="lg:hidden ms-auto rounded-md p-2 bg-accent/10 hover:bg-accent/20 text-accent-strong transition shrink-0"
+        >
+          <Lightning size={18} weight="fill" />
+        </button>
       )}
     </div>
   );

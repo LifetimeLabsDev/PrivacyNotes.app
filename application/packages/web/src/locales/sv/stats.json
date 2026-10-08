@@ -1,6 +1,7 @@
 {
   "title": "Statistik",
   "tabs": {
+    "overview": "Översikt",
     "writing": "Skrivande",
     "wellness": "Välmående"
   },
@@ -27,12 +28,13 @@
     "30d": "30 dagar",
     "3mo": "3 månader",
     "6mo": "6 månader",
-    "12mo": "12 månader"
+    "12mo": "12 månader",
+    "all": "Allt"
   },
   "wellness": {
     "subTabs": {
       "all": "Alla",
-      "sleepActivity": "Sömn och aktivitet",
+      "explore": "Utforska",
       "medication": "Medicin",
       "patterns": "Mönster"
     },
@@ -40,33 +42,17 @@
       "title": "Ingen välmåendedata än.",
       "hint": "Öppna ett dagboksinlägg och logga ditt humör för att komma igång."
     },
-    "overview": {
-      "daysTracked": "Loggade dagar",
-      "avgMood": "Snitthumör",
-      "avgSleep": "Snittsömn",
-      "medAdherence": "Medicinföljsamhet",
-      "moodTrend": "Humörtrend",
-      "moodByDayOfWeek": "Humör per veckodag",
-      "moodTrendTooltip": "{{date}}: {{mood}}/10",
-      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
-    },
     "export": {
       "heading": "Exportera",
-      "allTime": "All tid",
-      "last90Days": "Senaste 90 dagarna",
-      "last30Days": "Senaste 30 dagarna",
-      "last7Days": "Senaste 7 dagarna",
       "downloadJSON": "Ladda ner JSON",
       "doctorPDF": "Läkar-PDF",
-      "copyAIPrompt": "Kopiera AI-prompt",
+      "copyAIPrompt": "Visa & kopiera AI-prompt",
       "copied": "Kopierat!",
       "saveFailed": "Det gick inte att spara, så filen kan vara tom eller ofullständig. Försök igen, eller välj en annan mapp.",
-      "proBadge": "PRO"
-    },
-    "sleepActivity": {
-      "sleepQuality": "Sömnkvalitet",
-      "activity": "Aktivitet",
-      "avgSleepPerNight": "Genomsnittlig sömn per natt"
+      "proBadge": "PRO",
+      "usesRange": "Använder perioden ovan",
+      "promptShown": "Prompten du kopierade. Klistra in den i chatboten du föredrar.",
+      "hidePrompt": "Dölj"
     },
     "medication": {
       "adherence": "Följsamhet",
@@ -79,13 +65,12 @@
       "changedTo": "Ändrad till {{dosage}}"
     },
     "patterns": {
-      "topEmotions": "Vanligaste känslorna",
+      "heading": "Vad som påverkar ditt humör",
       "insights": "Insikter",
       "proBadge": "PRO",
       "insightsLocked_one": "{{count}} insikt hittad. Uppgradera till Pro för att se den",
       "insightsLocked_other": "{{count}} insikter hittade. Uppgradera till Pro för att se dem",
-      "weekInReview": "Veckan i återblick",
-      "weekInReviewLocked": "Uppgradera till Pro för att se veckans sammanfattning av ditt mående"
+      "tableLocked": "Uppgradera till Pro för att se vilka mätvärden som påverkar ditt humör"
     },
     "week": {
       "range": "{{start}} till {{end}}",
@@ -97,20 +82,33 @@
       "topActivity": "Vanligaste aktiviteten",
       "topEmotions": "Vanligaste känslorna",
       "reflection": "Reflektion",
-      "reflectionPlaceholder": "Hur kändes veckan i stort? Tankar att fånga upp..."
+      "reflectionPlaceholder": "Hur kändes veckan i stort? Tankar att fånga upp...",
+      "heading": "Veckan i återblick",
+      "proBadge": "PRO",
+      "locked": "Uppgradera till Pro för att se veckans sammanfattning av ditt mående"
     },
     "units": {
       "days_one": "{{count}} dag",
       "days_other": "{{count}} dagar"
     },
     "insights": {
-      "sleep": "Dagar du sover gott ligger du i snitt på {{good}}, dagar du sover dåligt på {{bad}}.",
-      "activity": "Aktiva dagar ligger du i snitt på {{active}}, stillasittande dagar på {{sedentary}}.",
       "dayOfWeek": "Din bästa dag brukar vara {{best}} (snitt {{bestAvg}}) och den tyngsta {{worst}} (snitt {{worstAvg}}).",
-      "medication": "Sedan du började med {{name}} den {{date}} har ditt snitthumör gått från {{before}} till {{after}}.",
+      "medication": "Ditt {{outcome}} ligger i snitt på {{a}} de dagar du tar {{name}}, och på {{b}} de dagar du missar den.",
       "streak_one": "Du har loggat ditt humör {{count}} dag i rad. Fortsätt så!",
       "streak_other": "Du har loggat ditt humör {{count}} dagar i rad. Fortsätt så!",
-      "trend": "Ditt humör de senaste två veckorna ligger i snitt på {{recent}}, mot {{overall}} totalt."
+      "trend": "Ditt humör de senaste två veckorna ligger i snitt på {{recent}}, mot {{overall}} totalt.",
+      "yesno": "Ditt {{outcome}} ligger i snitt på {{a}} de dagar du loggar {{name}}, och på {{b}} de dagar du inte gör det.",
+      "yesnoNextDay": "Ditt {{outcome}} ligger i snitt på {{a}} dagen efter att du loggat {{name}}, och på {{b}} efter de dagar du inte gör det.",
+      "halves": "Ditt {{outcome}} ligger i snitt på {{a}} när {{name}} är över {{threshold}}, och på {{b}} när det är {{threshold}} eller lägre.",
+      "halvesNextDay": "Ditt {{outcome}} ligger i snitt på {{a}} dagen efter att {{name}} varit över {{threshold}}, och på {{b}} efter dagar med {{threshold}} eller lägre.",
+      "median": "Ditt {{outcome}} ligger i snitt på {{a}} när {{name}} är över din median på {{threshold}}, och på {{b}} när det är på eller under.",
+      "medianNextDay": "Ditt {{outcome}} ligger i snitt på {{a}} dagen efter att {{name}} varit över din median på {{threshold}}, och på {{b}} efter dagar på eller under.",
+      "levels": "Ditt {{outcome}} ligger i snitt på {{a}} dagar med {{top}}, och på {{b}} dagar med {{bottom}}.",
+      "levelsNextDay": "Ditt {{outcome}} ligger i snitt på {{a}} dagen efter dagar med {{top}}, och på {{b}} efter dagar med {{bottom}}.",
+      "tag": "Ditt {{outcome}} ligger i snitt på {{a}} de dagar du känner dig {{tag}}, och på {{b}} de dagar du inte gör det.",
+      "tagNextDay": "Ditt {{outcome}} ligger i snitt på {{a}} dagen efter att du känt dig {{tag}}, och på {{b}} efter de dagar du inte gör det.",
+      "medicationNextDay": "Ditt {{outcome}} ligger i snitt på {{a}} dagen efter att du tagit {{name}}, och på {{b}} efter de dagar du missar den.",
+      "doseChange": "Kring ändringen av {{name}} till {{dosage}} den {{date}} låg ditt humör i snitt på {{before}} under de {{nBefore}} dagarna före och på {{after}} under de {{nAfter}} dagarna efter."
     },
     "aiPrompt": {
       "intro": "Jag loggar mitt humör och mitt mående. Analysera datan nedan efter mönster, trender och konkreta insikter.",
@@ -134,7 +132,15 @@
       "question2": "Hänger sömnkvalitet och aktivitetsnivå ihop med humöret?",
       "question3": "Finns det oroande trender jag bör ta upp med vården?",
       "question4": "Konkreta förslag utifrån datan.",
-      "footer": "Skapad med PrivacyNotes (privacynotes.app)"
+      "footer": "Skapad med PrivacyNotes (privacynotes.app)",
+      "period": "Period: {{from}} till {{to}}",
+      "daysLogged": "Loggade dagar: {{logged}} av {{days}}",
+      "trackers": "Mätvärden",
+      "trackerLine": "{{name}}: snitt {{avg}}, lägst {{low}}, högst {{high}}, {{count}} dagar",
+      "trackerYesLine": "{{name}}: ja {{yes}} av {{count}} dagar",
+      "effects": "Humör dagar med och utan",
+      "effectLine": "{{name}} ({{rule}}): {{a}} med, {{b}} utan, skillnad {{delta}}, {{na}} / {{nb}} dagar",
+      "customQuestion": "Hänger {{name}} ihop med mitt humör, samma dag eller dagen efter?"
     },
     "report": {
       "documentTitle": "Rapport om mående",
@@ -165,8 +171,125 @@
       "unknownDose": "okänd dos",
       "topEmotions": "Vanligaste känslorna",
       "patterns": "Upptäckta mönster",
-      "footer": "Skapad med PrivacyNotes - privacynotes.app"
-    }
+      "footer": "Skapad med PrivacyNotes - privacynotes.app",
+      "period": "Period: {{from}} till {{to}}, {{days}} dagar",
+      "daysLogged": "Loggade dagar: {{logged}} av {{days}}",
+      "moodHeading": "Humör, en stapel per dag",
+      "moodLegend": "Staplar: 1-2 röd, 3-4 orange, 5-6 gul, 7-8 grön, 9-10 blå. Linje: 7-dagarssnitt. Triangel: en dosändring. Ett glapp är en dag utan inlägg.",
+      "previous": "de {{days}} dagarna före: {{value}}",
+      "trackers": "Mätvärden",
+      "columnTracker": "Mätvärde",
+      "columnAverage": "Snitt",
+      "columnLowHigh": "Lägst / högst",
+      "columnHistory": "Historik",
+      "effects": "Humör dagar med och utan",
+      "columnFactor": "Faktor",
+      "columnRule": "Regel",
+      "columnWith": "Med",
+      "columnWithout": "Utan",
+      "columnDifference": "Skillnad",
+      "nextDaySuffix": "{{name}}, dagen efter",
+      "effectsNote": "Snitt av loggade dagar. En skillnad är en observation, inte en orsak.",
+      "medCalendar": "Kalender",
+      "doseChanges": "Dosändringar",
+      "columnDoseChanges": "Dosändringar",
+      "yesOn": "ja {{count}}",
+      "total": "{{value}} totalt"
+    },
+    "tiles": {
+      "daysLogged": "Loggade dagar",
+      "daysLoggedOf": "{{logged}} av {{days}}",
+      "avgMood": "Snitthumör",
+      "moodDelta": "{{delta}} mot de {{days}} dagarna före",
+      "avgSleep": "Snittsömn",
+      "medsTaken": "Tagna mediciner"
+    },
+    "mood": {
+      "heading": "Humör",
+      "legend": "Linje: 7-dagarssnitt. Triangel: en dosändring.",
+      "dose": "{{name}} {{dosage}}"
+    },
+    "trackers": {
+      "heading": "Mätvärden",
+      "tapHint": "Ett tryck öppnar Utforska",
+      "stopped": "Stoppade",
+      "deleted": "Borttagen",
+      "stoppedChip": "Stoppade ({{count}})",
+      "unknown": "Okänt mätvärde {{id}}",
+      "sleepHours": "Sömntimmar",
+      "sleepQuality": "Sömnkvalitet",
+      "avgDays": "snitt, {{count}} dagar",
+      "sumDays": "totalt, {{count}} dagar",
+      "yesNo": "ja {{yes}}, nej {{no}}",
+      "notLogged": "{{count}} inte loggade",
+      "latestLowHigh": "senast {{latest}}, lägst {{low}}, högst {{high}}",
+      "topLevel": "{{level}} {{count}} dagar",
+      "taken": "tagen {{taken}} av {{total}}",
+      "empty": "Inget loggat under den här perioden",
+      "unanswered": "{{count}} loggade dagar utan svar"
+    },
+    "effects": {
+      "heading": "Vad som påverkar ditt humör",
+      "headingOutcome": "Vad som påverkar ditt {{outcome}}",
+      "allInPatterns": "Alla under Mönster",
+      "sameDay": "Samma dag",
+      "nextDay": "Dagen efter",
+      "compareWith": "Jämför med",
+      "withLabel": "Med",
+      "withoutLabel": "Utan",
+      "days": "{{a}} / {{b}} dagar",
+      "shortfall_one": "{{count}} dag till på sidan ”{{side}}” behövs",
+      "shortfall_other": "{{count}} dagar till på sidan ”{{side}}” behövs",
+      "sideWith": "med",
+      "sideWithout": "utan",
+      "footnote": "En observation bland loggade dagar, inte en orsak.",
+      "higher": "{{outcome}} ligger {{delta}} poäng högre de här dagarna.",
+      "lower": "{{outcome}} ligger {{delta}} poäng lägre de här dagarna.",
+      "rule": {
+        "yesno": "dagar med mot utan",
+        "halves": "över {{threshold}} mot {{threshold}} och lägre",
+        "median": "över mot under din median {{threshold}}",
+        "levels": "{{top}} mot {{bottom}}",
+        "tag": "dagar med {{tag}} mot utan",
+        "medication": "tagen mot missad"
+      }
+    },
+    "explore": {
+      "calendar": "Kalender",
+      "against": "Mot {{outcome}}, en gemensam datumaxel",
+      "cells": {
+        "value": "loggad",
+        "no": "nej",
+        "missing": "inte loggad"
+      },
+      "longestRunWithout": "längsta följd utan: {{count}} dagar",
+      "longestRunWith": "längsta följd med: {{count}} dagar",
+      "pickOne": "Välj ett mätvärde"
+    },
+    "medCalendar": {
+      "heading": "Dag för dag",
+      "doseChange": "dosändring",
+      "taken": "tagen",
+      "skipped": "överhoppad",
+      "missed": "missad",
+      "unmarked": "omarkerad",
+      "noEntry": "inget inlägg",
+      "doseLens": "Humöret låg i snitt på {{before}} under de {{nBefore}} dagarna före och på {{after}} under de {{nAfter}} dagarna efter.",
+      "doseLensHeading": "Kring varje dosändring",
+      "doseLensShort_one": "{{count}} loggad dag till runt den behövs.",
+      "doseLensShort_other": "{{count}} loggade dagar till runt den behövs."
+    },
+    "sourceLine": "Allt här kommer från mätvärdena i dina dagboksinlägg.",
+    "openToday": "Öppna dagens inlägg"
+  },
+  "milestones": {
+    "heading": "Milstolpar",
+    "next": "Nästa: {{label}}",
+    "allReached": "{{label}}, och alla före den",
+    "ofTarget": "{{current}} av {{target}}",
+    "reached_one": "{{count}} nådd hittills.",
+    "reached_other": "{{count}} nådda hittills.",
+    "source": "Skrivna anteckningar och dagar med PrivacyNotes räknar det som händer i appen. En import ändrar inget av dem."
   },
   "milestoneToast": {
     "unlocked": "Milstolpe upplåst"
@@ -182,5 +305,59 @@
     "age730": "2 år med PrivacyNotes",
     "age1825": "5 år med PrivacyNotes",
     "ageDefault": "{{count}} dagar tillsammans"
+  },
+  "overview": {
+    "week": "Din vecka",
+    "streak": "Skrivsvit",
+    "streakDays_one": "{{count}} dag",
+    "streakDays_other": "{{count}} dagar",
+    "streakNudge": "Inget än idag. En rad räcker för att hålla den.",
+    "streakKept": "Idag är med.",
+    "words": "Skrivna ord",
+    "wordsDelta": "{{delta}} mot veckan före",
+    "mood": "Humör",
+    "moodDelta": "{{delta}} mot veckan före",
+    "daysLogged": "Loggade dagar",
+    "daysLoggedOf": "{{logged}} av {{days}}",
+    "rhythm": "Din rytm, {{weeks}} veckor",
+    "layerBoth": "Båda",
+    "layerWriting": "Skrivande",
+    "layerMood": "Humör",
+    "rhythmLegend": "Ruta: hur mycket du skrev den dagen. Prick: hur dagen kändes.",
+    "hours": "När du skriver",
+    "hoursSub": "ändringar per timme, {{days}} dagar",
+    "hoursPeak": "Det mesta av ditt skrivande sker mellan {{from}} och {{to}}.",
+    "ledgerSince": "Räknat på den här enheten sedan {{date}}.",
+    "ledgerEmpty": "Räkningen börjar nu. Kom tillbaka om en vecka.",
+    "highlights": "Höjdpunkter",
+    "highlightSleep": "Bra sömn, fler ord. Efter {{hours}} timmar eller mer skriver du ungefär {{a}} ord om dagen. Efter en kort natt {{b}}.",
+    "highlightSleepSub": "{{long}} långa nätter, {{short}} korta, {{days}} dagar",
+    "highlightWeekday": "{{day}} är din dag. Humöret ligger i snitt på {{mood}}, och {{count}} av dina {{total}} längsta anteckningar skrevs på en {{day}}.",
+    "highlightWeekdaySub": "{{count}} loggade {{day}}ar",
+    "highlightEffect": "Dagar med {{name}} ligger {{direction}}. Humör {{a}} med, {{b}} utan.",
+    "higher": "högre",
+    "lower": "lägre",
+    "highlightEffectSub": "{{count}} dagar med {{name}} av {{days}} dagar",
+    "highlightTag": "#{{tag}} växer. {{now}} anteckningar den här månaden, {{before}} månaden före.",
+    "highlightTagSub": "{{count}} taggar i bruk",
+    "highlightsLocked": "Uppgradera till Pro för att se vad ditt skrivande och dina mätvärden har gemensamt",
+    "vault": "Ditt valv",
+    "vaultSub": "veckan i det finstilta",
+    "done": "{{count}} klara",
+    "milestones": "Milstolpar",
+    "longestStreak": "Längsta svit: {{count}} dagar",
+    "openWriting": "Öppna Skrivande",
+    "openWellness": "Öppna Välmående",
+    "computed": "beräknat på den här enheten",
+    "pillars": {
+      "notes": "Anteckningar",
+      "journals": "Dagböcker",
+      "tasks": "Uppgifter",
+      "files": "Filer",
+      "bookmarks": "Bokmärken",
+      "contacts": "Kontakter",
+      "logins": "Inloggningar"
+    },
+    "ledgerEstimated": "Uppskattat från dina anteckningar tills räkningen börjar."
   }
 }

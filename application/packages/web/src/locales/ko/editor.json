@@ -7,7 +7,7 @@
     "heading": "제목",
     "taskList": "할 일 목록",
     "bulletList": "글머리 기호 목록",
-    "addLink": "링크 추가 (Cmd+Shift+K)",
+    "addLink": "링크 추가 ({{keys}})",
     "noteLink": "다른 노트로 연결 ([[ 입력도 가능)",
     "numberedList": "번호 목록",
     "textColor": "글자 색",
@@ -34,7 +34,12 @@
     "blockMath": "블록 수식",
     "align": "정렬",
     "font": "글꼴",
-    "pictureFromFiles": "파일에서 이미지"
+    "pictureFromFiles": "파일에서 이미지",
+    "date": "날짜",
+    "dateTime": "날짜와 시간",
+    "footnote": "각주",
+    "spoiler": "스포일러",
+    "copyBox": "복사 상자"
   },
   "align": {
     "left": "왼쪽 정렬",
@@ -118,7 +123,7 @@
     "next": "다음 결과 (Enter)",
     "nextTitle": "다음 (Enter)",
     "close": "찾기 닫기",
-    "closeTitle": "닫기 (⌘F)",
+    "closeTitle": "닫기 ({{keys}})",
     "replacePlaceholder": "바꿀 내용",
     "replaceLabel": "바꿀 내용",
     "replace": "바꾸기",
@@ -128,7 +133,7 @@
     "caseSensitive": "대소문자 구분",
     "caseSensitiveTitle": "대소문자 구분",
     "closeReplace": "찾기 및 바꾸기 닫기",
-    "closeReplaceTitle": "닫기 (⌥⌘F)",
+    "closeReplaceTitle": "닫기 ({{keys}})",
     "replacedCount_other": "{{count}}개 바꿈"
   },
   "outline": {
@@ -137,7 +142,14 @@
     "title": "개요",
     "ariaLabel": "노트 개요",
     "hide": "개요 숨기기",
-    "hideTitle": "개요 숨기기 (Esc)"
+    "hideTitle": "개요 숨기기 (Esc)",
+    "copyHeadingLink": "제목 링크 복사",
+    "copied": "복사됨"
+  },
+  "bodyMenu": {
+    "cut": "잘라내기",
+    "sortAsc": "줄을 오름차순으로 정렬",
+    "sortDesc": "줄을 내림차순으로 정렬"
   },
   "topRow": {
     "add": "맨 위에 줄 추가"
@@ -174,6 +186,7 @@
   "wordCount": {
     "words_other": "{{formatted}} 단어",
     "characters_other": "{{formatted}}자",
+    "tasksChecked_other": "{{formatted}}개 중 {{done}}개 체크됨",
     "tooLargeToSync": ", 동기화하기에 너무 클 수 있어요. 새 노트로 나누세요",
     "veryLong": ", 매우 길어요. 편집이 느려지거나 끊길 수 있어요",
     "gettingLong": ", 길어지고 있어요. 느린 기기에서는 버벅일 수 있어요",
@@ -181,19 +194,47 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "일치하는 노트 없음",
-    "create": "\"{{query}}\" 만들기"
+    "create": "\"{{query}}\" 만들기",
+    "headingsIn": "{{title}}의 제목",
+    "noHeadingMatches": "일치하는 제목 없음"
+  },
+  "copyBox": {
+    "placeholder": "클릭 한 번으로 복사할 텍스트"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}+클릭으로 복사",
+    "copied": "복사됨"
   },
   "codeBlock": {
     "copy": "복사",
     "copied": "복사됨",
     "copyFailed": "실패",
-    "wrap": "긴 줄 줄바꿈"
+    "wrap": "긴 줄 줄바꿈",
+    "showAll_other": "{{count}}줄 모두 보기",
+    "showLess": "접기",
+    "plainText": "일반 텍스트",
+    "language": "코드 언어: {{name}}",
+    "searchLanguages": "언어 검색",
+    "placeholder": "코드를 입력하거나 붙여 넣어요. 색을 넣으려면 위에서 언어를 골라요."
   },
   "math": {
     "sourceLabel": "LaTeX 소스"
   },
   "noteLink": {
     "open": "노트 열기",
-    "remove": "링크 제거"
+    "remove": "링크 제거",
+    "linkHeading": "제목에 연결...",
+    "headingNotFound": "제목을 찾을 수 없어요",
+    "headingsLocked": "제목을 보려면 이 노트의 잠금을 해제하세요",
+    "noHeadings": "이 노트에는 제목이 없어요"
+  },
+  "footnote": {
+    "placeholder": "각주 내용",
+    "back": "본문으로 돌아가기",
+    "unused": "본문에서 사용되지 않음",
+    "remove": "각주 삭제",
+    "missing": "각주 내용이 없어요. 클릭해서 추가하세요.",
+    "ariaRef": "각주 {{n}}",
+    "ariaSection": "각주"
   }
 }

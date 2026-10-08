@@ -12,11 +12,13 @@ import { fetchQuotaUsage } from './devices';
 import { hasSettingsPulled, syncUserSettings, updateLocalSettings, type UserSettings } from './userSettings';
 import { syncPinCache } from './pin';
 import { syncPinWrap } from './pinRecovery';
+import { hasLiveSignIn, signInStamp, signedOutSince } from './liveSignIn';
 import { seedOnboardingNotes, SEED_MEDICATION } from './welcomeNote';
 import { isDemoMode } from './demo';
 import { reconcileOrphanBlobs, sweepBlobGC } from './imageGC';
 import { pullOpensTrashPurge } from './trashPurge';
 import { markPulledClean, wipeGenerationNow } from './pullState';
+import { publishShareLimit } from './useShareInbox';
 import { perfSpan } from './perf';
 import { setSyncingFlag } from './syncingStore';
 import { recordSyncPass } from './syncLog';
@@ -36,7 +38,9 @@ type Authed = Extract<AuthState, { status: 'authenticated' }>;
  * new note, carrying the protection and the read-only flag of either side.
  * The flags are written in the same transaction as the row, so no sync pass
  * can push the copy unprotected, and its list row never shows the body a
- * protected note keeps behind the PIN. Tested in tests/lockGateWrites.test.ts.
+ * protected note keeps behind the PIN. The copy holds the local version's
+ * text, so it keeps that version's "last edited" date. Tested in
+ * tests/lockGateWrites.test.ts and tests/editStamp.test.ts.
  */
 export async function forkConflictCopy(
   conflict: NoteConflict,
@@ -47,9 +51,10 @@ export async function forkConflictCopy(
   const flags = {
     pinProtected: local.pinProtected === 1 || conflict.serverPinProtected ? 1 : 0,
     locked: local.locked === 1 || conflict.serverLocked ? 1 : 0,
+    editedAt: local.editedAt ?? local.updatedAt,
   } as const;
   return db.transaction('rw', db.notes, async () => {
-    const copy = await createNote(title, body, conflict.localNote.tags, conflict.localNote.starred === 1, conflict.localNote.type ?? 'note');
+    const copy = await createNote(title, body, conflict.localNote.tags, conflict.localNote.starred === 1, conflict.localNote.type ?? 'note', null, { counted: false });
     await db.notes.update(copy.id, flags);
     return { ...copy, ...flags };
   });
@@ -157,6 +162,12 @@ export function useSyncOrchestrator({
   const runSync = useCallback(async () => {
     if (isDemoMode()) return;
     if (!navigator.onLine) return;
+    // A pass belongs to the live sign-in. One that would start after a
+    // sign-out began, while this view stays mounted for the sign-out's
+    // flush, does not start, and `signedInAt` lets one already running stop
+    // before it writes a PIN or the phrase back (liveSignIn.ts).
+    if (!hasLiveSignIn()) return;
+    const signedInAt = signInStamp();
     // Flush any in-flight body edits into React state so the sync
     // picks up the latest content and dirty flags are correct.
     flushEditingBodyRef.current();
@@ -246,7 +257,16 @@ export function useSyncOrchestrator({
       // second so a favorites toggle doesn't block a note upload.
       const settingsGen = settingsGenRef.current;
       const settingsPass = { readServer: false };
-      let merged = await syncUserSettings(supabase, auth.pubkey, auth.encryptionKey, settingsPass);
+      // A sign-out during the notes pull ends the pass here, before the
+      // settings sync could write the cache back; one during the settings
+      // sync is caught by the stamp it is handed.
+      if (signedOutSince(signedInAt)) return;
+      let merged = await syncUserSettings(supabase, auth.pubkey, auth.encryptionKey, settingsPass, signedInAt);
+      // A sign-out that began during this pass, here or in another tab, has
+      // wiped the PIN cache, the PIN wrap and the phrase. Everything below
+      // would read the emptied device as one with no door and write those
+      // credentials back, so a pass that outlives its session stops here.
+      if (signedOutSince(signedInAt)) return;
       syncPinCache(merged);
 
       // Carries the account's PIN wrap onto this device, and off it again
@@ -289,7 +309,7 @@ export function useSyncOrchestrator({
         const existingCount = await db.notes.where('deleted').equals(0).count();
         if (existingCount > 0 || hadSyncedBefore) {
           effective = updateLocalSettings((prev) => ({ ...prev, welcomeNoteSeeded: true }));
-          void syncUserSettings(supabase, auth.pubkey, auth.encryptionKey).catch(
+          void syncUserSettings(supabase, auth.pubkey, auth.encryptionKey, undefined, signedInAt).catch(
             (err) => console.error('[welcome] push seeded flag (existing notes) failed:', err)
           );
         } else if (fromPhraseImport && auth.method === 'phrase') {
@@ -301,7 +321,7 @@ export function useSyncOrchestrator({
           // here made a fresh vault look like surviving data. Skip the
           // seed and tell the user explicitly that this vault is new.
           effective = updateLocalSettings((prev) => ({ ...prev, welcomeNoteSeeded: true }));
-          void syncUserSettings(supabase, auth.pubkey, auth.encryptionKey).catch(
+          void syncUserSettings(supabase, auth.pubkey, auth.encryptionKey, undefined, signedInAt).catch(
             (err) => console.error('[welcome] push seeded flag (fresh vault) failed:', err)
           );
           setFreshVaultNotice(true);
@@ -334,7 +354,7 @@ export function useSyncOrchestrator({
             // before it would drop those folders.
             effective = updateLocalSettings((prev) => ({ ...prev, welcomeNoteSeeded: true }));
             // Push the flag now that the notes are safely on the server.
-            void syncUserSettings(supabase, auth.pubkey, auth.encryptionKey).catch(
+            void syncUserSettings(supabase, auth.pubkey, auth.encryptionKey, undefined, signedInAt).catch(
               (err) => console.error('[welcome] push seeded flag failed:', err)
             );
           } catch (err) {
@@ -452,31 +472,48 @@ export function useSyncOrchestrator({
       }
       // Refresh the quota snapshot so image pre-flight checks have
       // up-to-date numbers. Non-blocking - don't hold up the sync.
-      fetchQuotaUsage(supabase, auth.isPro)
-        .then((q) => {
-          quotaRef.current = { usedBytes: q.totalBytes + q.imageBytes, maxBytes: q.maxTotalBytes };
-          if (q.quotaExceededSince) {
-            setQuotaExceeded(true);
-            setQuotaExceededSince(q.quotaExceededSince);
-          } else {
-            // Storage back under quota - clear the banner. Fixes #69.
-            setQuotaExceeded(false);
-            setQuotaExceededSince(null);
-          }
-        })
-        .catch(() => { /* best-effort */ });
-      // Check for past_due storage subs alongside quota. See gap #38.
-      supabase.rpc('get_storage_sub_status')
-        .then(({ data }) => {
-          if (data && Array.isArray(data) && data.length > 0 && data[0].has_past_due) {
-            setStoragePastDue(true);
-          } else if (data && !Array.isArray(data) && (data as { has_past_due?: boolean })?.has_past_due) {
-            setStoragePastDue(true);
-          } else {
-            setStoragePastDue(false);
-            setStoragePastDueDismissed(false);
-          }
-        }, () => { /* best-effort */ });
+      //
+      // Gated on a pass that actually ran and pulled, the same gate the blob
+      // work above uses. Without it, a pass the mutex skipped and a pass whose
+      // pull failed would each fire another pair of account reads, so the
+      // reads a sync does least usefully would be the ones it repeats most: a
+      // device whose claim gate is refused would re-ask on every 30-second
+      // tick, and the server would answer every one with a refusal.
+      if (syncResult.ran && syncResult.pullOk) {
+        fetchQuotaUsage(supabase, auth.isPro)
+          .then((q) => {
+            quotaRef.current = { usedBytes: q.totalBytes + q.imageBytes, maxBytes: q.maxTotalBytes };
+            publishShareLimit(auth.isPro ?? false, q.maxTotalBytes);
+            if (q.quotaExceededSince) {
+              setQuotaExceeded(true);
+              setQuotaExceededSince(q.quotaExceededSince);
+            } else {
+              // Storage back under quota - clear the banner. Fixes #69.
+              setQuotaExceeded(false);
+              setQuotaExceededSince(null);
+            }
+          })
+          // A failed read leaves the banner as it stands: a refusal read as
+          // zero usage and a null exceeded timestamp would look exactly like
+          // an account that got back under its cap, and clear it.
+          .catch(() => { /* unknown is not under quota */ });
+        // Check for past_due storage subs alongside quota. See gap #38.
+        supabase.rpc('get_storage_sub_status')
+          .then(({ data, error }) => {
+            // A refused call carries an `error` and a null `data`; read
+            // without the error, the null would fall through to the else below
+            // and tell the user their payment problem is resolved.
+            if (error) return;
+            if (data && Array.isArray(data) && data.length > 0 && data[0].has_past_due) {
+              setStoragePastDue(true);
+            } else if (data && !Array.isArray(data) && (data as { has_past_due?: boolean })?.has_past_due) {
+              setStoragePastDue(true);
+            } else {
+              setStoragePastDue(false);
+              setStoragePastDueDismissed(false);
+            }
+          }, () => { /* best-effort */ });
+      }
     } catch (err) {
       // A pass that threw still gets a log entry - the activity list is
       // where "why is nothing syncing" gets answered.

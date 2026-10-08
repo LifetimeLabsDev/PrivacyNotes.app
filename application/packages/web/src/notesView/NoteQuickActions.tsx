@@ -127,7 +127,7 @@ export function NoteQuickActions({
  * already names itself, and a rule announced between them is noise.
  */
 export function HeaderDivider() {
-  return <span aria-hidden="true" className="shrink-0 mx-1 h-4 w-px bg-neutral-300 dark:bg-neutral-700" />;
+  return <span aria-hidden="true" className="shrink-0 mx-1 h-4 w-px bg-pn-muted/35" />;
 }
 
 /** One 32px square. Every button in the editor header wears this box. */
@@ -157,8 +157,8 @@ function QuickButton({
         aria-pressed={active}
         className={`relative shrink-0 flex items-center justify-center w-8 h-8 rounded-md transition disabled:opacity-40 disabled:cursor-not-allowed ${
           active
-            ? 'text-accent bg-accent/15'
-            : 'text-neutral-600 dark:text-neutral-300 [@media(hover:hover)]:hover:text-accent [@media(hover:hover)]:hover:bg-neutral-200 [@media(hover:hover)]:dark:hover:bg-neutral-800 active:scale-95'
+            ? 'text-accent-strong bg-accent/15'
+            : 'text-pn-soft [@media(hover:hover)]:hover:text-accent [@media(hover:hover)]:hover:bg-pn/10 active:scale-95'
         }`}
       >
         {children}

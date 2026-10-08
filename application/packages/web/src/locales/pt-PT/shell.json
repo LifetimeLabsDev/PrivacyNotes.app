@@ -9,22 +9,19 @@
     "newTaskNote": "Nova nota de tarefas",
     "newTaskNoteWithHotkey": "Nova nota de tarefas ({{hotkey}})",
     "new": "Nova",
-    "viewHybrid": "Híbrida",
-    "viewAggregated": "Agregada",
-    "viewList": "Lista",
     "hideCompleted": "Ocultar as tarefas concluídas",
     "showCompleted": "Mostrar as tarefas concluídas",
     "searchPlaceholder": "Procurar tarefas…",
     "sortOptions": "Opções de ordenação",
     "quickAddPlaceholder": "Adicionar uma tarefa rápida",
     "noMatches": "Sem resultados.",
+    "itemsWithTasks": "Itens com tarefas",
+    "allTasks": "Todas as tarefas",
+    "tasksFromOtherItems": "Tarefas noutros itens",
+    "noItemsWithTasks": "Ainda não há itens com tarefas.",
+    "noTaskListsYet": "Ainda não há listas de tarefas. As tarefas noutros itens estão ocultas.",
     "noTasksYet": "Ainda não há tarefas. Usa o campo acima ou escreve `- [ ] …` em qualquer nota.",
     "noOpenTasks": "Nenhuma tarefa em aberto. Boa.",
-    "noNotesWithTasks": "Ainda não há notas com tarefas.",
-    "recentNotesWithTasks": "Notas recentes com tarefas",
-    "tasksByNote": "Tarefas por nota",
-    "showLess": "Mostrar menos",
-    "loadMore": "Carregar mais ({{count}})",
     "openNote": "Abrir \"{{title}}\"",
     "markIncomplete": "Marcar como não concluída",
     "markComplete": "Marcar como concluída",
@@ -53,7 +50,7 @@
     "sortOptions": "Opções de ordenação",
     "searchPlaceholder": "Procurar ficheiros…",
     "sortName": "Nome",
-    "showNotesWithAttachments": "Mostrar ficheiros dentro das notas",
+    "showNotesWithAttachments": "Mostrar ficheiros noutros itens",
     "noMatches": "Sem resultados.",
     "pinProtected": "Protegido por PIN",
     "readOnly": "Apenas leitura",
@@ -70,8 +67,8 @@
     "menuImages": "Imagens",
     "menuAudio": "Áudio",
     "menuDocuments": "Documentos",
-    "menuHideNoteAttachments": "Ocultar ficheiros dentro das notas",
-    "menuShowNoteAttachments": "Mostrar ficheiros dentro das notas",
+    "menuHideNoteAttachments": "Ocultar ficheiros noutros itens",
+    "menuShowNoteAttachments": "Mostrar ficheiros noutros itens",
     "menuUnpin": "Desafixar",
     "menuPin": "Fixar",
     "menuRename": "Renomear",
@@ -258,7 +255,9 @@
     "moveToFolder": "Mover para a pasta",
     "noteHistory": "Histórico",
     "findReplace": "Procurar e substituir",
-    "uncheckAllTasks": "Desmarcar todas as tarefas",
+    "uncheckAllTasks": "Desmarcar todos os itens",
+    "deleteCheckedTasks": "Eliminar itens marcados",
+    "sortTasksByStatus": "Ordenar itens por estado",
     "comingSoon": "Em breve",
     "noteOptions": "Opções da nota",
     "lastModified": "Última modificação: {{date}}",
@@ -266,7 +265,8 @@
     "size": "Armazenamento usado: {{size}}",
     "sizeHint": "Tamanho encriptado total deste item.",
     "tagCount_one": "{{count}} etiqueta",
-    "tagCount_other": "{{count}} etiquetas"
+    "tagCount_other": "{{count}} etiquetas",
+    "entryDate": "Data da entrada"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "Sair da seleção (Esc)",
@@ -297,7 +297,9 @@
     "showPreview": "Mostrar pré-visualização",
     "longPreview": "Texto de pré-visualização mais longo",
     "showDate": "Mostrar data",
+    "showSize": "Mostrar tamanho do ficheiro",
     "showTags": "Mostrar pasta e etiquetas",
+    "showCalendar": "Mostrar calendário",
     "other": "Outros",
     "showReadOnly": "Mostrar apenas leitura",
     "showProtected": "Mostrar protegidos",
@@ -307,13 +309,21 @@
     "switchToAscending": "Mudar para crescente",
     "asc": "CRESC",
     "desc": "DECR",
-    "showNoteLinks": "Mostrar links das notas"
+    "showNoteLinks": "Mostrar links noutros itens",
+    "showNoteTasks": "Mostrar tarefas noutros itens"
   },
   "backfillPopover": {
-    "ariaLabel": "Novo diário para um dia recente",
-    "heading": "NOVO DIÁRIO PARA",
-    "today": "Hoje",
-    "yesterday": "Ontem"
+    "calendarLabel": "Calendário do diário",
+    "today": "Hoje"
+  },
+  "monthGrid": {
+    "previousMonth": "Mês anterior",
+    "nextMonth": "Mês seguinte",
+    "dayWithEntry": "{{date}}, com entrada",
+    "previousWeek": "Semana anterior",
+    "nextWeek": "Semana seguinte",
+    "showMonth": "{{month}}, mostrar o mês inteiro",
+    "showWeek": "{{month}}, mostrar uma semana"
   },
   "contextMenu": {
     "newNote": "Nova Nota",
@@ -373,11 +383,11 @@
     "needsAppBody": "Isto precisa de uma API que o Safari e o Firefox não têm.",
     "needsAppWhere": "A app para computador faz isto em todas as plataformas, e o Chrome, o Edge e o Opera fazem-no aqui.",
     "getDesktopApp": "Transferir a app para computador",
-    "braveTitle": "Ativa primeiro \"{{flag}}\"",
-    "braveCopy": "Copiar",
-    "braveCopied": "Copiado",
-    "braveSteps": "Cola isso na barra de endereço do Brave, define \"{{flag}}\" como Enabled e reinicia o Brave.",
-    "braveAppAlternative": "Ou usa antes a app para computador",
+    "braveTitle": "Enable \"{{flag}}\" first",
+    "braveCopy": "Copy",
+    "braveCopied": "Copied",
+    "braveSteps": "Paste that into Brave's address bar, set \"{{flag}}\" to Enabled, then relaunch Brave.",
+    "braveAppAlternative": "Or use the desktop app instead",
     "openFailed": "Não foi possível abrir esse ficheiro.",
     "linkNotFound": "Não há nenhum ficheiro “{{target}}” nesta pasta.",
     "linkNeedsFolder": "Abre a pasta para seguir as ligações.",
@@ -459,7 +469,9 @@
     "importedManyToast": "{{count}} ficheiros guardados nas tuas notas encriptadas. Os originais ficam intactos.",
     "alreadySavedToast": "“{{title}}” já está nas tuas notas.",
     "importedManySkippedToast": "{{saved}} ficheiros guardados, {{skipped}} ignorados por já estarem nas tuas notas.",
-    "footerFiles": "Ficheiros"
+    "footerFiles": "Ficheiros",
+    "bridge_one": "{{count}} resultado no Markdown",
+    "bridge_other": "{{count}} resultados no Markdown"
   },
   "importPrompt": {
     "dismiss": "Ocultar esta sugestão",
@@ -487,7 +499,7 @@
     "emptyAdd": "Adicionar um marcador",
     "emptyImport": "Importar de um navegador",
     "noMatches": "Sem resultados.",
-    "fromNotesHeading": "Links das notas",
+    "fromNotesHeading": "Links noutros itens",
     "openSourceNote": "Abrir a nota",
     "saveAsBookmark": "Guardar como marcador",
     "importSkipped_one": "{{count}} ignorado, já guardado.",
@@ -548,6 +560,9 @@
     "sendEmail": "Enviar e-mail",
     "open": "Abrir",
     "showPhoto": "Mostrar foto",
+    "addPhoto": "Adicionar foto",
+    "changePhoto": "Alterar foto",
+    "removePhoto": "Remover foto",
     "addField": "Adicionar campo",
     "done": "Concluído",
     "fillOne": "Adiciona um nome, um número ou um e-mail.",
@@ -619,5 +634,10 @@
   "tabStrip": {
     "label": "Separadores abertos",
     "close": "Fechar {{title}}"
+  },
+  "shareInbox": {
+    "saved": "Guardado no PrivacyNotes",
+    "failed": "Não foi possível guardar no PrivacyNotes",
+    "tooLarge": "Demasiado grande. O máximo é {{limit}} MB por ficheiro."
   }
 }

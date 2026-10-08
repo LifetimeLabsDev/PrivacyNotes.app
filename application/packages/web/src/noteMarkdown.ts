@@ -48,7 +48,10 @@ export function noteToMarkdown(
   const fm: string[] = ['---'];
   fm.push(`title: "${oneLineTitle(note.title).replace(/"/g, '\\"')}"`);
   fm.push(`created: ${note.createdAt}`);
-  fm.push(`updated: ${note.updatedAt}`);
+  // The last edit, the date other apps read as "modified" (editedAtOf). A
+  // restore compares it with the local sync stamp, so it overwrites less,
+  // never more.
+  fm.push(`updated: ${note.editedAt ?? note.updatedAt}`);
   if (note.tags.length) fm.push(`tags: [${note.tags.join(', ')}]`);
   // The PORTABLE folder membership: names, not the UUID. `folderId` below is
   // the right key for restoring into the same account and a meaningless

@@ -4,6 +4,8 @@ import { perfSpan } from './perf';
 import { clearFaviconCache } from './faviconQueue';
 import { resetPulledClean } from './pullState';
 import { hasMedia, stripMediaReferencesTo } from './imageProcessing';
+import { changesContent } from './editStamp';
+import { recordLedgerWrite, type LedgerWrite } from './dayLedger';
 
 /**
  * Pure Dexie CRUD. No network, and no crypto of its own: wire
@@ -124,6 +126,9 @@ export function extractInlineTags(
     // and neither is one. Found on a real docs folder, where anchors alone
     // invented a dozen tags nobody had written.
     .replace(/\]\([^)]*\)/g, ']()')
+    // Note-link targets. `[[#Setup]]` and `[[Note#Setup]]` point at a
+    // heading; the `#` there is an anchor, not a tag.
+    .replace(/\[\[[^\]\n]*\]\]/g, '[[]]')
     .replace(/^\s{0,3}#{1,6}\s.*$/gm, '');
   // Last, so a code span holding `%%` is already gone and cannot pair up with
   // a later one across ordinary text.
@@ -160,9 +165,11 @@ export function nextStamp(current: string | undefined): string {
 }
 
 /**
- * Read-modify-write for single-note edits: bumps `updatedAt` monotonically
- * off the row's current stamp and flags it dirty, inside one transaction so
- * a concurrent writer can't interleave between the read and the write.
+ * Read-modify-write for single-note flag changes: bumps `updatedAt`
+ * monotonically off the row's current stamp and flags it dirty, inside one
+ * transaction so a concurrent writer can't interleave between the read and
+ * the write. A flag is not an edit, so the "last edited" date is written as
+ * it stands, which also fixes it on a row from before that field.
  * No-op when the note doesn't exist.
  */
 async function touchNote(
@@ -175,6 +182,7 @@ async function touchNote(
     await db.notes.update(id, {
       ...patch,
       updatedAt: nextStamp(current.updatedAt),
+      editedAt: current.editedAt ?? current.updatedAt,
       dirty: 1,
     });
   });
@@ -213,6 +221,10 @@ export async function createNote(
   starred = false,
   type: import('@notes/shared').NoteType = 'note',
   folderId: string | null = null,
+  /** False for content brought in from elsewhere (a conflict copy, a
+   *  Markdown-folder copy, a share from another app): it is not writing done
+   *  here, so neither the day ledger nor the created-item counter moves. */
+  { counted = true }: { counted?: boolean } = {},
 ): Promise<LocalNote> {
   // First real write is the contextual moment to ask for persistent
   // storage (no-op after the first call / in demo). See db.ts.
@@ -225,6 +237,7 @@ export async function createNote(
     tags: tags ?? [],
     createdAt: now,
     updatedAt: now,
+    editedAt: now,
     dirty: 1,
     deleted: 0,
     trashed: 0,
@@ -235,9 +248,12 @@ export async function createNote(
     folderId,
   };
   await db.notes.put(note);
-  // Count the create for milestones. Only this path counts - the
-  // importer writes rows directly, so an import never advances it.
-  bumpNotesCreated();
+  // Count the create for milestones and the ledger. The importer writes rows
+  // directly, and the callers that bring content in pass `counted: false`.
+  if (counted) {
+    bumpNotesCreated();
+    recordLedgerWrite({ kind: 'create', body });
+  }
   return note;
 }
 
@@ -248,31 +264,95 @@ export async function createNote(
  * switch is turned off, so that refusal belongs to this write rather than to
  * the routes into it; a read-only note still takes its tags, folder, type and
  * journal trackers. Tested in tests/lockGateWrites.test.ts.
+ *
+ * The "last edited" date moves to the new stamp when the patch changes the
+ * content (noteMerge.ts changesContent) and no explicit stamp is passed. An
+ * explicit stamp is the app's own bookkeeping, as is `edit: false`, which
+ * still moves `updatedAt`; `editedAt` names the time of a content change made
+ * earlier. Tested in tests/editStamp.test.ts.
  */
 export async function updateNote(
   id: string,
-  patch: Partial<Pick<LocalNote, 'title' | 'body' | 'tags' | 'type' | 'trackers' | 'folderId'>>,
+  patch: NotePatch,
   /** Pass an explicit timestamp to avoid bumping updatedAt (e.g. derived-title commit). */
-  updatedAt?: string
+  updatedAt?: string,
+  opts?: UpdateOpts,
 ): Promise<boolean> {
   void requestPersistence();
-  return db.transaction('rw', db.notes, async () => {
+  const ledger: LedgerSlot = {};
+  const written = await db.transaction('rw', db.notes, async () => {
     const current = await db.notes.get(id);
     if (!current) return false;
-    const changesText =
-      (patch.title !== undefined && patch.title !== current.title) ||
-      (patch.body !== undefined && patch.body !== current.body) ||
-      // A login's custom fields and extra websites are content, not metadata.
-      (patch.trackers !== undefined && current.type === 'login' &&
-        JSON.stringify(patch.trackers?.login) !== JSON.stringify(current.trackers?.login));
-    if (current.locked === 1 && changesText) return false;
-    await db.notes.update(id, {
-      ...patch,
-      updatedAt: updatedAt ?? nextStamp(current.updatedAt),
-      dirty: 1,
-    });
-    return true;
+    return writePatch(current, patch, updatedAt, opts, ledger);
   });
+  // After the transaction, so a count can never hold up or undo the write.
+  if (ledger.write) recordLedgerWrite(ledger.write);
+  return written;
+}
+
+type NotePatch = Partial<Pick<LocalNote, 'title' | 'body' | 'tags' | 'type' | 'trackers' | 'folderId'>>;
+
+type UpdateOpts = {
+  edit?: false;
+  editedAt?: string;
+  /** Told the stamps the write stored, inside its transaction. */
+  onWrite?: (stored: { updatedAt: string; editedAt: string }) => void;
+};
+
+/**
+ * updateNote with the patch built from the row as it stands inside the write's
+ * own transaction, for a change that rewrites a field from its current value
+ * (moving a journal entry rewrites its whole tracker object). A write landing
+ * between a separate read and this one would otherwise be overwritten.
+ * `build` returns null to write nothing. Returns the patch written, or null
+ * when nothing was, a refusal by the read-only rule included.
+ */
+export async function updateNoteFrom(
+  id: string,
+  build: (current: LocalNote) => NotePatch | null,
+  opts?: UpdateOpts,
+): Promise<NotePatch | null> {
+  void requestPersistence();
+  const ledger: LedgerSlot = {};
+  const written = await db.transaction('rw', db.notes, async () => {
+    const current = await db.notes.get(id);
+    if (!current) return null;
+    const patch = build(current);
+    if (!patch) return null;
+    return (await writePatch(current, patch, undefined, opts, ledger)) ? patch : null;
+  });
+  if (ledger.write) recordLedgerWrite(ledger.write);
+  return written;
+}
+
+/** Where writePatch leaves the day-ledger count for its caller to record. */
+type LedgerSlot = { write?: LedgerWrite };
+
+/** The write behind updateNote and updateNoteFrom, inside their transaction. */
+async function writePatch(current: LocalNote, patch: NotePatch, updatedAt: string | undefined, opts: UpdateOpts | undefined, ledger: LedgerSlot): Promise<boolean> {
+  const changesText =
+    (patch.title !== undefined && patch.title !== current.title) ||
+    (patch.body !== undefined && patch.body !== current.body) ||
+    // A login's custom fields and extra websites are content, not metadata.
+    (patch.trackers !== undefined && current.type === 'login' &&
+      JSON.stringify(patch.trackers?.login) !== JSON.stringify(current.trackers?.login));
+  if (current.locked === 1 && changesText) return false;
+  const stamp = updatedAt ?? nextStamp(current.updatedAt);
+  const edited = updatedAt === undefined && opts?.edit !== false && changesContent(current, patch);
+  const editedAt = edited ? (opts?.editedAt ?? stamp) : (current.editedAt ?? current.updatedAt);
+  await db.notes.update(current.id, { ...patch, updatedAt: stamp, editedAt, dirty: 1 });
+  opts?.onWrite?.({ updatedAt: stamp, editedAt });
+  // The day ledger counts writing: a changed title, body or tag set, by the
+  // person. A tracker, folder or type change alone is not writing (a pill tap
+  // is not), and neither is the app's bookkeeping (an explicit stamp or
+  // `edit: false`). Spec: ops/docs/plans/wellness-statistics.md (section 20)
+  const writing =
+    updatedAt === undefined && opts?.edit !== false &&
+    ((patch.title !== undefined && patch.title !== current.title) ||
+      (patch.body !== undefined && patch.body !== current.body) ||
+      (patch.tags !== undefined && JSON.stringify(patch.tags) !== JSON.stringify(current.tags)));
+  if (writing) ledger.write = { kind: 'edit', prevBody: current.body, nextBody: patch.body ?? current.body };
+  return true;
 }
 
 /**
@@ -353,6 +433,8 @@ export async function duplicateNote(id: string): Promise<LocalNote | null> {
     tags: [...src.tags],
     createdAt: now,
     updatedAt: now,
+    // A new note: its last edit is its creation.
+    editedAt: now,
     dirty: 1,
     deleted: 0,
     trashed: 0,
@@ -380,13 +462,16 @@ export async function setStarred(id: string, starred: boolean): Promise<void> {
 
 /** Move a note into the archive, or back out. The pin is kept either way. */
 export async function setArchived(id: string, archived: boolean): Promise<void> {
-  await touchNote(id, { archived: archived ? 1 : 0 });
+  // A flag set here is known from now on (sync.ts archiveUnknownOf).
+  await touchNote(id, { archived: archived ? 1 : 0, archivedUnknown: undefined });
 }
 
 /**
  * Pro: move several notes into a folder in one transaction. Used by
- * folder deletion (reparent contents) and the bulk toolbar
- * (fast-follow). Returns the number of notes modified.
+ * folder deletion (reparent contents), the Move dialog and a drop on a
+ * sidebar folder. A note already in the folder is skipped, as `bulkAddTag`
+ * skips a note that has the tag, so a move to where a note is writes and
+ * syncs nothing. Returns the number of notes modified.
  */
 export async function bulkMoveToFolder(ids: string[], folderId: string | null): Promise<number> {
   if (ids.length === 0) return 0;
@@ -395,7 +480,8 @@ export async function bulkMoveToFolder(ids: string[], folderId: string | null): 
     for (const id of ids) {
       const note = await db.notes.get(id);
       if (!note) continue;
-      await db.notes.update(id, { folderId, updatedAt: nextStamp(note.updatedAt), dirty: 1 });
+      if ((note.folderId ?? null) === folderId) continue;
+      await db.notes.update(id, { folderId, updatedAt: nextStamp(note.updatedAt), editedAt: note.editedAt ?? note.updatedAt, dirty: 1 });
       count++;
     }
   });
@@ -439,7 +525,7 @@ export async function bulkTrash(ids: string[]): Promise<number> {
       // because only they can say how many items were skipped, but the
       // check belongs to the write rather than to one route into it.
       if (note.locked === 1) continue;
-      await db.notes.update(id, { trashed: 1, updatedAt: nextStamp(note.updatedAt), dirty: 1 });
+      await db.notes.update(id, { trashed: 1, updatedAt: nextStamp(note.updatedAt), editedAt: note.editedAt ?? note.updatedAt, dirty: 1 });
       count++;
     }
   });
@@ -453,7 +539,7 @@ export async function bulkRestore(ids: string[]): Promise<number> {
     for (const id of ids) {
       const note = await db.notes.get(id);
       if (!note) continue;
-      await db.notes.update(id, { trashed: 0, updatedAt: nextStamp(note.updatedAt), dirty: 1 });
+      await db.notes.update(id, { trashed: 0, updatedAt: nextStamp(note.updatedAt), editedAt: note.editedAt ?? note.updatedAt, dirty: 1 });
       count++;
     }
   });
@@ -490,7 +576,7 @@ export async function bulkSetLocked(ids: string[], locked: boolean): Promise<num
     for (const id of ids) {
       const note = await db.notes.get(id);
       if (!note) continue;
-      await db.notes.update(id, { locked: value, updatedAt: nextStamp(note.updatedAt), dirty: 1 });
+      await db.notes.update(id, { locked: value, updatedAt: nextStamp(note.updatedAt), editedAt: note.editedAt ?? note.updatedAt, dirty: 1 });
       count++;
     }
   });
@@ -510,7 +596,7 @@ export async function bulkSetPinProtected(ids: string[], pinProtected: boolean):
     for (const id of ids) {
       const note = await db.notes.get(id);
       if (!note) continue;
-      await db.notes.update(id, { pinProtected: value, updatedAt: nextStamp(note.updatedAt), dirty: 1 });
+      await db.notes.update(id, { pinProtected: value, updatedAt: nextStamp(note.updatedAt), editedAt: note.editedAt ?? note.updatedAt, dirty: 1 });
       count++;
     }
   });
@@ -549,8 +635,8 @@ async function bulkSetFlag(ids: string[], field: 'starred' | 'archived', on: boo
     for (const id of ids) {
       const note = await db.notes.get(id);
       if (!note) continue;
-      const patch: Partial<LocalNote> = field === 'starred' ? { starred: value } : { archived: value };
-      await db.notes.update(id, { ...patch, updatedAt: nextStamp(note.updatedAt), dirty: 1 });
+      const patch: Partial<LocalNote> = field === 'starred' ? { starred: value } : { archived: value, archivedUnknown: undefined };
+      await db.notes.update(id, { ...patch, updatedAt: nextStamp(note.updatedAt), editedAt: note.editedAt ?? note.updatedAt, dirty: 1 });
       count++;
     }
   });
@@ -564,6 +650,7 @@ async function bulkSetFlag(ids: string[], field: 'starred' | 'archived', on: boo
  * note-links at a renamed note can touch many notes at once, and a separate
  * `updateNote` per note is a separate transaction per note. Same shape and
  * same reasoning as the bulk helpers above. Returns the number written.
+ * Nobody edited these notes, so their "last edited" date stays.
  */
 export async function bulkSetBody(
   updates: Array<{ id: string; body: string }>,
@@ -578,6 +665,7 @@ export async function bulkSetBody(
       await db.notes.update(id, {
         body,
         updatedAt: nextStamp(note.updatedAt),
+        editedAt: note.editedAt ?? note.updatedAt,
         dirty: 1,
       });
       count++;
@@ -602,6 +690,7 @@ export async function bulkAddTag(ids: string[], tag: string): Promise<number> {
       await db.notes.update(id, {
         tags: [...note.tags, tag],
         updatedAt: nextStamp(note.updatedAt),
+        editedAt: note.editedAt ?? note.updatedAt,
         dirty: 1,
       });
       count++;
@@ -647,6 +736,7 @@ export async function renameTagEverywhere(
       await db.notes.update(note.id, {
         tags: nextTags,
         updatedAt: nextStamp(note.updatedAt),
+        editedAt: note.editedAt ?? note.updatedAt,
         dirty: 1,
       });
       modifiedCount++;
@@ -672,6 +762,7 @@ export async function trashNotesWithTag(tag: string): Promise<number> {
       await db.notes.update(note.id, {
         trashed: 1,
         updatedAt: nextStamp(note.updatedAt),
+        editedAt: note.editedAt ?? note.updatedAt,
         dirty: 1,
       });
       trashedCount++;
@@ -695,6 +786,7 @@ export async function deleteTagEverywhere(tag: string): Promise<number> {
       await db.notes.update(note.id, {
         tags: nextTags,
         updatedAt: nextStamp(note.updatedAt),
+        editedAt: note.editedAt ?? note.updatedAt,
         dirty: 1,
       });
       modifiedCount++;
@@ -783,6 +875,9 @@ export async function clearLocalDatabase(opts?: { keepUnsyncedNotes?: boolean })
   await db.attachmentDedup.clear();
   await db.blobGC.clear();
   await db.editorDocCache.clear();
+  // The day ledger is this account's writing history on this device. A forced
+  // sign-out keeps it with the unsynced notes, for the same returning owner.
+  await db.dayLedger.clear();
   // The favicon cache is a separate IndexedDB, so it is not covered by any
   // db.*.clear() above. It holds a per-domain record derived from the user's
   // links, so it must go on sign-out too. See clearFaviconCache.
@@ -812,11 +907,12 @@ export async function dropReferencesToBlobsOnlyHere(): Promise<number> {
       if (body === n.body) continue;
       const updatedAt = nextStamp(n.updatedAt);
       // A read-only note is edited too: the content it points at is gone
-      // whatever the switch says.
+      // whatever the switch says. The person did not make that edit, so the
+      // "last edited" date stays.
       if (n.type === 'file' && !hasMedia(body)) {
         await db.notes.update(n.id, { deleted: 1, updatedAt, dirty: 1 });
       } else {
-        await db.notes.update(n.id, { body, updatedAt, dirty: 1 });
+        await db.notes.update(n.id, { body, updatedAt, editedAt: n.editedAt ?? n.updatedAt, dirty: 1 });
       }
       written++;
     }

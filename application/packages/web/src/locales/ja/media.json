@@ -14,7 +14,8 @@
     "loadFailed": "画像を読み込めませんでした",
     "notFound": "画像が見つかりません",
     "saveFailed": "保存に失敗したため、ファイルが空か不完全な可能性があります。",
-    "viewAria": "画像を表示"
+    "viewAria": "画像を表示",
+    "picturesLeftOut": "一部の画像は追加されませんでした。画像は単独でコピーして貼り付けてください。"
   },
   "attachment": {
     "fallbackName": "添付ファイル",

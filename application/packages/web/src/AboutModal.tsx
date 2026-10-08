@@ -2,20 +2,25 @@ import { useState, type ReactNode } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { VERSION } from './version';
 import { useEscapeToClose } from './useEscapeToClose';
-import { ArrowSquareOut, CaretRight, ClockCounterClockwise, GithubLogo, Info, Keyboard, Link, MastodonLogo, Printer, RedditLogo, Star, X, XLogo } from './icons';
+import { ArrowSquareOut, Bug, GithubLogo, Info, Keyboard, Link, Printer, Star, X } from './icons';
+import { bugReportUrl } from './bugReportUrl';
+import { FOLLOW_LINKS, GITHUB_NEW_ISSUE } from './followLinks';
 import { HelpChip } from './HelpChip';
 import { LinksList } from './LinksList';
 import { RateOutro, useRateLinks } from './rateLinks';
-import { siteHref } from './siteLinks';
-import { PUBLIC_CHANGELOG, IN_APP_CHANGELOG_LIMIT, type ChangelogItemType } from './publicChangelog';
-import { HOTKEY_GROUPS, renderKey } from './HotkeysModal';
+import { marketingHomeHref, siteHref } from './siteLinks';
+import { DESKTOP_MORE_NOTE, HOTKEY_GROUPS, rowCaps, rowText } from './hotkeysData';
+import { DESKTOP_APP, KEY_OS } from './shortcutMatch';
+import { setSingleKeys, useSingleKeys } from './singleKeys';
+import { Switch } from './Switch';
 import { SETTINGS_EYEBROW, SETTINGS_HELP, SettingsTabStrip, settingsTabClass } from './settingsUI';
 import { isTouchOnly } from './touchOnly';
 import { Brand } from './Brand';
-import { activeLocale } from './i18n';
-import './changelogRelease.css';
+import { SwissFlag } from './SwissFlag';
+import { formatDay } from './intlFormat';
+import { LATEST_RELEASE, latestChangelogHref } from './latestRelease';
 
-type Tab = 'about' | 'changelog' | 'hotkeys' | 'rating';
+type Tab = 'about' | 'hotkeys' | 'rating';
 
 type Props = {
   onClose: () => void;
@@ -26,7 +31,6 @@ type Props = {
 
 const ALL_TABS: { id: Tab; setting: string; labelKey: string; icon: ReactNode }[] = [
   { id: 'about', setting: 'about.about', labelKey: 'about.tabs.about', icon: <Info size={14} aria-hidden="true" /> },
-  { id: 'changelog', setting: 'about.changelog', labelKey: 'about.tabs.changelog', icon: <ClockCounterClockwise size={14} aria-hidden="true" /> },
   { id: 'hotkeys', setting: 'about.hotkeys', labelKey: 'about.tabs.hotkeys', icon: <Keyboard size={14} aria-hidden="true" /> },
   { id: 'rating', setting: 'about.rating', labelKey: 'about.tabs.rating', icon: <Star size={14} weight="fill" aria-hidden="true" /> },
 ];
@@ -39,38 +43,15 @@ function LinkIcon() {
   return <Link />;
 }
 
-function ChevronRightIcon() {
-  return <CaretRight size={12} />;
-}
-
 function ExternalLinkIcon() {
   return <ArrowSquareOut size={12} />;
-}
-
-/** "View this on the public site" link, shown atop (and below) web-backed tabs.
- *  Defaults to the shared "View on privacynotes.app" label, right-aligned. */
-function OpenOnWebLink({ path, label, align = 'right' }: { path: string; label?: string; align?: 'left' | 'right' }) {
-  const { t } = useTranslation('landing');
-  return (
-    <div className={align === 'left' ? 'flex justify-start' : 'flex justify-end'}>
-      <a
-        href={siteHref(path)}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 text-xs text-accent border border-accent/30 rounded-md px-2.5 py-1 hover:bg-accent/10 transition"
-      >
-        {label ?? t('about.openOnWeb')}
-        <ExternalLinkIcon />
-      </a>
-    </div>
-  );
 }
 
 /* ------------------------------------------------------------------ */
 /*  Tab content                                                       */
 /* ------------------------------------------------------------------ */
 
-function AboutTab({ onNavigateToChangelog }: { onNavigateToChangelog: () => void }) {
+function AboutTab() {
   const { t } = useTranslation('landing');
   return (
     <div className="space-y-6">
@@ -86,18 +67,35 @@ function AboutTab({ onNavigateToChangelog }: { onNavigateToChangelog: () => void
         </p>
       </section>
 
+      {/* The newest release only. The /changelog page carries the full
+          history with its screenshots, so the app links there instead of
+          keeping a shorter copy of it. */}
+      <a
+        href={latestChangelogHref()}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-setting="about.changelog"
+        className="group block rounded-lg border border-divider p-4 hover:border-accent/40 transition"
+      >
+        <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+          <span className={SETTINGS_EYEBROW}>{t('about.whatsNew')}</span>
+          <span className="font-mono text-[11px] text-pn-muted">
+            v{LATEST_RELEASE.version} - {formatDay(LATEST_RELEASE.date, 'date')}
+          </span>
+        </div>
+        <p className="mt-2 text-sm font-medium text-pn">{LATEST_RELEASE.title}</p>
+        <span className="mt-2 inline-flex items-center gap-1.5 text-xs text-accent group-hover:underline">
+          {t('about.seeWhatsNew')}
+          <ExternalLinkIcon />
+        </span>
+      </a>
+
       <section className="grid grid-cols-2 gap-6">
         <div>
           <h3 data-setting="about.version" className={`${SETTINGS_EYEBROW} mb-2`}>
             {t('about.versionHeading')}
           </h3>
-          <button
-            onClick={onNavigateToChangelog}
-            className="font-mono text-pn-soft hover:text-accent dark:hover:text-accent transition inline-flex items-center gap-1.5"
-          >
-            v{VERSION}
-            <ChevronRightIcon />
-          </button>
+          <p className="font-mono text-pn-soft">v{VERSION}</p>
         </div>
         <div>
           {/* Reuses the retired tab's label rather than carrying a second key
@@ -136,50 +134,34 @@ function AboutTab({ onNavigateToChangelog }: { onNavigateToChangelog: () => void
         </p>
       </section>
 
+      {/* Same split as the feedback window: bugs and requests go to GitHub,
+          and the channels below are for following along only. */}
       <section className="border-t border-divider pt-5">
-        <h3 data-setting="about.feedback" className={`${SETTINGS_EYEBROW} mb-3`}>
+        <h3 data-setting="about.feedback" className={`${SETTINGS_EYEBROW} mb-2`}>
           {t('about.feedbackHeading')}
         </h3>
-        <p className="text-xs text-pn-soft mb-3">
-          {t('about.feedbackPrompt')}
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <a
-            href="https://x.com/PrivacyNotesApp"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-accent hover:underline inline-flex items-center gap-1"
-          >
-            <XLogo size={12} weight="fill" className="shrink-0" />
-            X.com
+        <p className="text-xs text-pn-soft mb-3">{t('feedback.intro')}</p>
+        <div className="flex flex-wrap gap-x-4 gap-y-2">
+          <a href={bugReportUrl()} target="_blank" rel="noopener noreferrer"
+            className="text-xs text-accent hover:underline inline-flex items-center gap-1">
+            <Bug size={12} weight="fill" className="shrink-0" />
+            {t('feedback.labelReportBug')}
           </a>
-          <a
-            href="https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-accent hover:underline inline-flex items-center gap-1"
-          >
+          <a href={GITHUB_NEW_ISSUE} target="_blank" rel="noopener noreferrer"
+            className="text-xs text-accent hover:underline inline-flex items-center gap-1">
             <GithubLogo size={12} weight="fill" className="shrink-0" />
             GitHub
           </a>
-          <a
-            href="https://www.reddit.com/r/PrivacyNotes/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-accent hover:underline inline-flex items-center gap-1"
-          >
-            <RedditLogo size={12} weight="fill" className="shrink-0" />
-            Reddit
-          </a>
-          <a
-            href="https://mastodon.social/@privacynotes"
-            target="_blank"
-            rel="noopener noreferrer me"
-            className="text-xs text-accent hover:underline inline-flex items-center gap-1"
-          >
-            <MastodonLogo size={12} weight="fill" className="shrink-0" />
-            Mastodon
-          </a>
+        </div>
+        <h4 className="mt-4 mb-2 text-xs font-medium text-pn-muted">{t('feedback.followHeading')}</h4>
+        <div className="flex flex-wrap gap-x-4 gap-y-2">
+          {FOLLOW_LINKS.map((l) => (
+            <a key={l.href} href={l.href} target="_blank" rel={l.rel}
+              className="text-xs text-accent hover:underline inline-flex items-center gap-1">
+              <l.Icon size={12} weight="fill" className="shrink-0" />
+              {l.label}
+            </a>
+          ))}
         </div>
       </section>
 
@@ -188,7 +170,7 @@ function AboutTab({ onNavigateToChangelog }: { onNavigateToChangelog: () => void
           {t('trust.dataStorageHeading')}
         </h3>
         <p className="text-xs text-pn-soft leading-relaxed">
-          {t('trust.dataStorageBody')}
+          <Trans i18nKey="landing:trust.dataStorageBody" components={{ flag: <SwissFlag /> }} />
         </p>
         <HelpChip surface="about" className="mt-2" />
       </section>
@@ -244,72 +226,15 @@ function AboutTab({ onNavigateToChangelog }: { onNavigateToChangelog: () => void
   );
 }
 
-const TYPE_LABEL_KEY: Record<ChangelogItemType, string> = {
-  new: 'about.changelogType.new',
-  improved: 'about.changelogType.improved',
-  fixed: 'about.changelogType.fixed',
-};
-
-function ChangelogTab() {
-  const { t } = useTranslation('landing');
-  // Noon UTC keeps the calendar day the same in every time zone.
-  const fmtDate = (iso: string) =>
-    new Date(`${iso}T12:00:00Z`).toLocaleDateString(activeLocale(), { month: 'short', day: 'numeric', year: 'numeric' });
-  const releases = PUBLIC_CHANGELOG.slice(0, IN_APP_CHANGELOG_LIMIT);
-
-  if (releases.length === 0) {
-    return (
-      <div className="space-y-4">
-        <p className="text-xs text-pn-muted/75 italic">
-          {t('about.changelogComingSoon')}
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      <OpenOnWebLink path="/changelog" label={t('about.viewFullChangelog')} />
-      {/* The markup and classes match the static /changelog page, and
-          changelogRelease.css styles both. */}
-      <div className="pn-cl pn-cl-app">
-        {releases.map((release, index) => (
-          <article key={release.version} className="release">
-            <div className="meta">
-              <span className="vpill">v{release.version}</span>
-              <div className="date">{fmtDate(release.date)}</div>
-              {index === 0 && <span className="latest">{t('about.changelogLatest')}</span>}
-            </div>
-            <div className="body">
-              <div className="rhead">
-                <h3>{release.title}</h3>
-              </div>
-              <ul className="items">
-                {release.items.map((item, i) => (
-                  <li key={i} className="item">
-                    <span className={`tag tag-${item.type}`}>{t(TYPE_LABEL_KEY[item.type])}</span>
-                    <span className="txt">{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </article>
-        ))}
-      </div>
-      <OpenOnWebLink path="/changelog" label={t('about.viewFullChangelog')} align="left" />
-    </div>
-  );
-}
-
 /** The review platforms, sharing one list with the Rate modal. */
 function RatingTab() {
   const { t } = useTranslation('landing');
   const links = useRateLinks();
   return (
     <div>
-      <p className="text-sm text-neutral-500 mb-3">{t('rate.intro')}</p>
+      <p className="text-sm text-pn-muted mb-3">{t('rate.intro')}</p>
       <LinksList links={links} grid />
-      <p className="mt-3 pt-3 border-t border-divider text-xs leading-relaxed text-neutral-500">
+      <p className="mt-3 pt-3 border-t border-divider text-xs leading-relaxed text-pn-muted">
         <RateOutro />
       </p>
     </div>
@@ -318,14 +243,14 @@ function RatingTab() {
 
 /** "Printable cheat sheet" chip: the static A4 sheet, rendered from the
  *  same hotkeysData.ts this tab reads, so the two can never drift. Shown
- *  above and below the list (OpenOnWebLink's placement pattern). The sheet
+ *  above and below the list. The sheet
  *  is English-only by design, so the link carries no locale. */
 function CheatSheetLink({ align = 'right' }: { align?: 'left' | 'right' }) {
   const { t } = useTranslation('landing');
   return (
     <div className={align === 'left' ? 'flex justify-start' : 'flex justify-end'}>
       <a
-        href={siteHref('/help/keyboard-shortcuts/cheat-sheet')}
+        href={siteHref(`/help/keyboard-shortcuts/cheat-sheet${DESKTOP_APP ? '?app=desktop' : ''}`)}
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex items-center gap-1.5 text-xs text-accent border border-accent/30 rounded-md px-2.5 py-1 hover:bg-accent/10 transition"
@@ -337,37 +262,64 @@ function CheatSheetLink({ align = 'right' }: { align?: 'left' | 'right' }) {
   );
 }
 
+/** The keys of this OS and this app: a browser shows no desktop-only row. */
 function HotkeysTab() {
   const { t } = useTranslation('landing');
+  const singleKeys = useSingleKeys();
   return (
     <div className="space-y-6">
       <CheatSheetLink />
-      {HOTKEY_GROUPS.map((g) => (
-        <section key={g.title}>
-          <h3 className={`${SETTINGS_EYEBROW} mb-2`}>
-            {g.title}
-          </h3>
-          <div className="divide-y divide-divider">
-            {g.rows.map((r, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between py-1.5 gap-4"
-              >
-                <span className="text-pn-soft">
-                  {r.label}
-                </span>
-                <kbd className="font-mono text-xs px-2 py-1 rounded border border-divider bg-track whitespace-nowrap">
-                  {renderKey(r.keys)}
-                </kbd>
-              </div>
-            ))}
-          </div>
-        </section>
-      ))}
+      <Switch
+        setting="about.singleKeys"
+        label={t('about.singleKeysTitle')}
+        description={t('about.singleKeysDesc')}
+        checked={singleKeys}
+        onChange={setSingleKeys}
+      />
+      {HOTKEY_GROUPS.map((g) => {
+        const rows = g.rows.filter((r) => rowCaps(r, KEY_OS, DESKTOP_APP).length > 0);
+        if (rows.length === 0) return null;
+        return (
+          <section key={g.title}>
+            <h3 className={`${SETTINGS_EYEBROW} mb-2`}>
+              {g.title}
+            </h3>
+            <div className="divide-y divide-divider">
+              {rows.map((r, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between py-1.5 gap-4"
+                >
+                  <span className="text-pn-soft">
+                    {r.label}
+                  </span>
+                  <kbd className="font-mono text-xs px-2 py-1 rounded border border-divider bg-track whitespace-nowrap">
+                    {rowText(r, KEY_OS, DESKTOP_APP)}
+                  </kbd>
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      })}
 
       <p className="text-xs text-pn-soft">
         {t('about.hotkeysFootnote')}
       </p>
+
+      {/* English, like the rows above (the list keeps one layout). */}
+      {!DESKTOP_APP && (
+        <p className="text-xs text-pn-soft">
+          <a
+            href={`${marketingHomeHref()}#downloads`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent hover:underline"
+          >
+            {DESKTOP_MORE_NOTE}
+          </a>
+        </p>
+      )}
 
       <CheatSheetLink align="left" />
     </div>
@@ -432,8 +384,7 @@ export function AboutModal({ onClose, initialTab, embedded = false }: Props) {
 
         {/* Tab content */}
         <div className="flex-1 overflow-y-auto p-6 text-sm">
-          {tab === 'about' && <AboutTab onNavigateToChangelog={() => setTab('changelog')} />}
-          {tab === 'changelog' && <ChangelogTab />}
+          {tab === 'about' && <AboutTab />}
           {tab === 'hotkeys' && <HotkeysTab />}
           {tab === 'rating' && <RatingTab />}
         </div>

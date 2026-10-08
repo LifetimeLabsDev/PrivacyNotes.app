@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
 import type { ListPrefs, ListPrefsStore } from './listPrefs';
 import type { View } from './views';
-import NoteRow, { noteLinkText } from './NoteRow';
+import NoteRow, { itemDragSelection } from './NoteRow';
 import NoteCard from './NoteCard';
 import { ListNav } from './notesView/ListNav';
 import { ListSearchInput } from './ListSearchInput';
@@ -130,7 +130,7 @@ export function ContactsList({
 
   const q = search.trim().toLowerCase();
   /** The whole selection as note-links, in list order, for a drag. */
-  const selectionLinkText = () => noteLinkText(contacts.filter((n) => selectedIds.has(n.id)), isNoteLocked);
+  const dragSelection = () => itemDragSelection(contacts.filter((n) => selectedIds.has(n.id)), isNoteLocked);
 
   const empty = contacts.length === 0 && !q;
   const filteredAway =
@@ -182,7 +182,7 @@ export function ContactsList({
           type="button"
           onClick={onRequestNew}
           tabIndex={mobileTabIndex}
-          className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-semibold px-3 py-1.5 text-lg tracking-tight transition"
+          className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition"
         >
           <NEW_GLYPHS.contact size={18} />
           {t('contacts.new')}
@@ -210,8 +210,8 @@ export function ContactsList({
               aria-expanded={sortOpen}
               className={`shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-md border transition ${
                 sortOpen
-                  ? 'bg-accent/10 border-accent text-accent'
-                  : 'bg-surface-2 border-divider text-neutral-600 hover:border-accent hover:text-accent dark:text-neutral-300'
+                  ? 'bg-accent/10 border-accent text-accent-strong'
+                  : 'bg-surface-2 border-divider text-pn-soft hover:border-accent hover:text-accent'
               }`}
             >
               <FunnelSimple size={18} />
@@ -250,15 +250,15 @@ export function ContactsList({
       <ul className={`flex-1 overflow-y-auto list-none m-0 p-0 ${viewMode === 'grid' ? 'grid content-start gap-3 p-4 pn-notes-grid' : ''}`}>
         {empty && !filteredAway ? (
           <li className={`flex flex-col items-center justify-center text-center px-8 py-14 ${viewMode === 'grid' ? 'col-span-full' : ''}`}>
-            <PILLAR_GLYPHS.contacts size={34} className="text-neutral-400 dark:text-neutral-600" weight="duotone" aria-hidden="true" />
-            <p className="text-[13px] text-neutral-500 dark:text-neutral-600 mt-3">{t('contacts.emptyNone')}</p>
+            <PILLAR_GLYPHS.contacts size={34} className="text-pn-muted" weight="duotone" aria-hidden="true" />
+            <p className="text-[13px] text-pn-muted mt-3">{t('contacts.emptyNone')}</p>
             <h3 className="text-[15px] font-semibold mt-1 mb-4">{t('contacts.emptyTitle')}</h3>
             <div className="flex flex-wrap items-center justify-center gap-2">
-              <button type="button" onClick={onRequestNew} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md bg-accent px-3.5 py-2 text-[13px] font-medium text-white transition hover:bg-accent/90">
+              <button type="button" onClick={onRequestNew} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md bg-accent-fill px-3.5 py-2 text-[13px] font-medium text-white transition hover:bg-accent-fill/90">
                 <NEW_GLYPHS.contact size={15} />
                 {t('contacts.emptyAdd')}
               </button>
-              <button type="button" onClick={onOpenImport} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-divider bg-surface-1 px-3.5 py-2 text-[13px] transition hover:bg-neutral-200 dark:hover:bg-surface-0">
+              <button type="button" onClick={onOpenImport} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-divider bg-surface-1 px-3.5 py-2 text-[13px] transition hover:bg-pn/10">
                 <Download size={15} />
                 {t('contacts.emptyImport')}
               </button>
@@ -277,7 +277,7 @@ export function ContactsList({
               </li>
             )}
             {!filteredAway && contacts.length === 0 && (
-              <li className={`p-6 text-[13px] text-neutral-500 dark:text-neutral-600 text-center ${viewMode === 'grid' ? 'col-span-full' : ''}`}>{t('contacts.noMatches')}</li>
+              <li className={`p-6 text-[13px] text-pn-muted text-center ${viewMode === 'grid' ? 'col-span-full' : ''}`}>{t('contacts.noMatches')}</li>
             )}
             {contacts.map((n) => (
               viewMode === 'grid' ? (
@@ -295,8 +295,8 @@ export function ContactsList({
                 onTouchMove={onLongPressEnd}
                 onTouchCancel={onLongPressEnd}
                 selectionMode={selectionMode}
-                linkDrag
-                linkDragSelection={selectionLinkText}
+                itemDrag
+                dragSelection={dragSelection}
                 isMultiSelected={selectedIds.has(n.id)}
                 onToggleSelect={(e) => {
                   if (e.shiftKey) onRangeSelect(n.id);
@@ -320,8 +320,8 @@ export function ContactsList({
                 onTouchMove={onLongPressEnd}
                 onTouchCancel={onLongPressEnd}
                 selectionMode={selectionMode}
-                linkDrag
-                linkDragSelection={selectionLinkText}
+                itemDrag
+                dragSelection={dragSelection}
                 isMultiSelected={selectedIds.has(n.id)}
                 onToggleSelect={(e) => {
                   if (e.shiftKey) onRangeSelect(n.id);

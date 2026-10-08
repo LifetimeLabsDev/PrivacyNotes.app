@@ -8,7 +8,7 @@
     "ctaOpening": "チェックアウトを開いています...",
     "ctaSignUp": "サインアップしてアンロック",
     "intro": {
-      "storage": "大きなファイルのアップロードと追加容量はPro機能です。アップグレードすると、50 MBのファイルと500 MBのストレージが使えます。",
+      "storage": "追加の容量はProの機能です。500 MBのストレージ、1ファイル50 MB、必要なときに追加で最大5 GB。",
       "folders": "フォルダはPro機能です。ノートを必要なだけ深くネストしたフォルダに整理して、プロジェクトごとに分けられます。",
       "looks": "フォルダやタグのアイコンと色はPro機能です。それぞれに、ひと目でわかる見た目を設定できます。",
       "lock": "ノートのロックはPro機能です。アップグレードすると、どのノートも誤編集から保護できます。",
@@ -30,7 +30,7 @@
       "history": "完全なノート履歴、いつでも復元",
       "themes": "全配色のプレミアムテーマ",
       "zen": "Zenモード、集中して書ける環境",
-      "storage": "500 MBストレージ + 50 MBの添付ファイル"
+      "storage": "500 MBストレージ、追加で最大5.5 GB"
     },
     "comparisonBeta": "${{earlyPrice}}を一度支払うだけ。Obsidian Syncは$48/年、Standard Notesは$90/年が毎年かかります。${{proPrice}}に値上がりする前に固定できる、アーリーアダプター価格です。",
     "comparison": "${{proPrice}}を一度支払えば、ずっとあなたのものです。Obsidian Syncは$48/年、Standard Notesは$90/年が毎年かかります。"
@@ -47,9 +47,9 @@
     "benefitDevices": "デバイス数は無制限",
     "benefitDevicesSub": "スマホ、タブレット、ノートPCをすべて同期",
     "benefitStorage": "500 MB のストレージ",
-    "benefitStorageSub": "無料プランの10倍、追加もできます",
+    "benefitStorageSub": "無料プランの10倍。必要なときに最大5 GBを追加できます",
     "benefitMore": "さらに多くの機能",
-    "benefitMoreSub": "ノートの履歴、フォルダ、禅モード",
+    "benefitMoreSub": "ノート履歴、フォルダ、Zenモード",
     "benefitRoom": "{{gb}} GB の追加容量",
     "benefitRoomSub": "Pro の 500 MB に上乗せされます",
     "benefitFileSize": "1ファイル 100 MB まで",

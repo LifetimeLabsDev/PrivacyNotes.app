@@ -15,7 +15,7 @@ title: 歡迎使用 PrivacyNotes
 
 點一下這一行的結尾，隨便打一個字。筆記會自己存檔，沒有儲存按鈕。
 
-上面那排工具會改變文字的樣子：**粗體**、*斜體*、標題、待辦清單、<span style="color: #f08c00">顏色</span>、<span style="font-size: 1.25em; font-family: ui-serif, Georgia, Cambria, serif">字體</span>、連結。
+上面那排工具會改變文字的樣子：**粗體**、*斜體*、標題、任務清單、<span style="color: #f08c00">顏色</span>、<span style="font-size: 1.25em; font-family: ui-serif, Georgia, Cambria, serif">字體</span>、連結。
 
 ## 三則值得打開的筆記
 

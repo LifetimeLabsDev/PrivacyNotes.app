@@ -84,14 +84,14 @@ Be clear about what all of this does not buy, because the honest limits have not
 
 ## Tier 2: ten minutes, reading code
 
-About 560 lines decide everything. They are in [`crypto/crypto.ts`](crypto/crypto.ts), and these functions are the whole story:
+About 590 lines decide everything. They are in [`crypto/crypto.ts`](crypto/crypto.ts), and these functions are the whole story:
 
 | Function | What to check |
 | :--- | :--- |
 | `phraseToSeed` | Your 12 words become a 64-byte BIP-39 seed. Standard, offline, no network. |
 | `deriveEncryptionKey` | HKDF-SHA256 over that seed with the info string `privacynotes-encryption-v1` produces the 32-byte content key. Same phrase, same key, on every device, with nothing to fetch. |
 | `deriveLocalDataKey` | The same HKDF construction under `privacynotes-local-at-rest-v1` produces the key that seals rows in your own browser storage. Disjoint from the sync key by its info string, so a local ciphertext can never pass as a server row or the reverse. |
-| `encryptNote` | XChaCha20-Poly1305. A fresh random 24-byte nonce per write. Title, body, tags, flags, tracker data and folder id all go inside one JSON blob before encryption, so none of them leak as separate fields. |
+| `encryptNote` | XChaCha20-Poly1305. A fresh random 24-byte nonce per write. Title, body, tags, flags, tracker data, folder id and the "last edited" date the lists show all go inside one JSON blob before encryption, so none of them leak as separate fields. |
 | `decryptNote` | The inverse. Wrong key or tampered ciphertext throws on the Poly1305 authentication check rather than returning garbage. |
 
 Identity works the same way: `deriveSigningKey` derives an Ed25519 keypair from the same seed under a different info string, and the public half is your user id. Signatures authenticate sensitive operations like registering or revoking a device.
@@ -120,7 +120,7 @@ pnpm build          # the web app
 pnpm desktop:build  # the desktop app, for the machine you are on
 ```
 
-No secrets, no signing keys, no cooperation from us. Run what you built, point your network tab at it, and tier 1 applies to your own binary. Separately, every release we ship is published with hashes, and the macOS, Windows, AppImage and Android builds are signed, so you can confirm a downloaded file is the file we built. The Linux deb ships with hashes only.
+No secrets, no signing keys, no cooperation from us. Run what you built, point your network tab at it, and tier 1 applies to your own binary. Separately, every release we ship is published with hashes, and the macOS, Windows, AppImage, deb and Android builds are signed, so you can confirm a downloaded file is the file we built. The deb's signature is the `.minisig` file published next to it; check it with minisign against the updater public key in `tauri.conf.json` (`plugins.updater.pubkey`, a base64-encoded minisign public key).
 
 **What each check proves, weakest to strongest.** The source is published: you can read what we say we ship. A hash matches: the file you hold is the file we uploaded. A signature verifies: that file came from our key, not a stranger's. A tag names a version: the commit it marks carries that version's source, because the source is pushed to the public repo before a release is built; releases before 2026-09-15 were tagged before their source landed, and their release notes name the commit that carries it. A reproducible build: the file you hold was built from that source, byte for byte. Only the last one ties a binary to the code, and it is not shipped yet.
 

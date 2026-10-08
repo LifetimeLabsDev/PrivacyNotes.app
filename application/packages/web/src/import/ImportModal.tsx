@@ -19,6 +19,7 @@ import { ArrowCounterClockwise, BookOpenText, BracketsCurly, Check, CircleNotch,
 import { fetchQuotaUsage, recalculateQuota } from '../devices';
 import { estimateNoteStoredBytes, estimateBlobBytes } from '../notesViewUtils';
 import { proUnlocked } from '../demo';
+import { savedToFinalIds } from '../backupRestore';
 import { RESTORE_WAIT_LINE, restoreGateNow, useRestoreGate, type RestoreGate } from '../pullState';
 import { formatBytes } from '../formatBytes';
 import { perFileLimit } from '../attachmentValidation';
@@ -182,6 +183,7 @@ export function ImportModal({
   decryptFullBackup,
   onBlobsRestored,
   onImportFolders,
+  onImportSettings,
   onImportTagColors,
   embedded = false,
 }: {
@@ -218,6 +220,12 @@ export function ImportModal({
   /** Give imported tags their colors (Google Keep's note colors): tag ->
    *  color key. The parent colors only a tag that has no color yet. */
   onImportTagColors?: (colors: Map<string, string>) => void;
+  /** Our own full backup: merge the looks and custom themes it carries,
+   *  with each folder look moved from its saved folder id to the final one. */
+  onImportSettings?: (
+    settings: { itemStyles?: unknown; customThemes?: unknown },
+    savedToFinal: ReadonlyMap<string, string>,
+  ) => void;
 }) {
   const { t } = useTranslation('importExport');
   const { auth, supabase } = useAuth();
@@ -410,6 +418,13 @@ export function ImportModal({
       notesForApply = importer.id === 'privacynotes'
         ? remapped
         : withFolderPathTags(remapped, folderTags);
+      if (parsed.settings) {
+        // A folder look moves with its folder: saved id, to rebuilt id, to
+        // the id the merge kept.
+        onImportSettings?.(parsed.settings, savedToFinalIds(parsed.originalFolderIds, idMap || undefined));
+      }
+    } else if (parsed.settings) {
+      onImportSettings?.(parsed.settings, new Map());
     }
     notesForApply = withBrowserTags(notesForApply, browserTags);
     // A note color from the source (Google Keep) becomes a tag named after
@@ -802,7 +817,7 @@ export function ImportModal({
               <button
                 onClick={handleConfirm}
                 disabled={quotaCheck?.exceeds === true}
-                className="text-sm rounded bg-accent text-white px-4 py-1.5 hover:bg-accent-hover transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-sm rounded bg-accent-fill text-white px-4 py-1.5 hover:bg-accent-fill-hover transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {t('counts.importButton', { counts: formatTypeCountsShort(phase.parsed.notes) })}
               </button>
@@ -1019,7 +1034,7 @@ function ImporterRow({ imp, onPick }: { imp: Importer; onPick: (imp: Importer) =
           target="_blank"
           rel="noopener noreferrer"
           aria-label={t('importPick.guideAria', { app: sourceLabel(imp, t) })}
-          className="shrink-0 w-16 flex items-center justify-center border-s border-divider rounded-e-lg bg-accent/5 text-accent hover:bg-accent/10 transition"
+          className="shrink-0 w-16 flex items-center justify-center border-s border-divider rounded-e-lg bg-accent/5 text-accent-strong hover:bg-accent/10 transition"
         >
           {/* The tip still opens toward the row (`start`), which is what keeps
               it clear of the modal's scroller edge. */}

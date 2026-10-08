@@ -14,7 +14,8 @@
     "loadFailed": "No se pudo cargar la imagen",
     "notFound": "Imagen no encontrada",
     "saveFailed": "No se pudo guardar, así que el archivo puede estar vacío o incompleto.",
-    "viewAria": "Ver imagen"
+    "viewAria": "Ver imagen",
+    "picturesLeftOut": "Algunas imágenes no se añadieron. Copia una imagen sola para pegarla."
   },
   "attachment": {
     "fallbackName": "Adjunto",

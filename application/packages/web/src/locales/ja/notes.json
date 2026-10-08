@@ -10,7 +10,8 @@
     "empty": "空",
     "noContent": "内容なし",
     "notBackedUp": "未バックアップ",
-    "archived": "アーカイブ済み"
+    "archived": "アーカイブ済み",
+    "entryDate": "ジャーナルの日付"
   },
   "header": {
     "new": "新規",
@@ -19,7 +20,9 @@
     "trash": "ゴミ箱"
   },
   "folderChip": {
-    "clear": "フォルダの絞り込みを解除: {{folder}}"
+    "clear": "フォルダの絞り込みを解除: {{folder}}",
+    "subfolders": "サブフォルダ",
+    "subfoldersLabel": "サブフォルダを含める"
   },
   "tagChip": {
     "clear": "タグの絞り込みを解除: {{tag}}"
@@ -189,6 +192,8 @@
     "currentHtmlDesc": "印刷向き。白いページにMarkdownをレンダリング。",
     "printTitle": "印刷 / PDFとして保存",
     "printDesc": "印刷ダイアログを開きます。PDFとして保存するか、プリンタに送信できます。",
+    "printTextTitle": "本文のみ印刷",
+    "printTextDesc": "タイトルは残し、日付・フォルダ・タグを省きます。",
     "burnTitle": "Burn After Readingで共有",
     "burnDesc": "このノートを、1回だけ閲覧できるリンクとして公開します。リンクは読まれると自己破壊します。元のノートはアカウントに安全に残ります。"
   },
@@ -206,7 +211,10 @@
     "newNote": "新規",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "統計を開く",
+    "journalCalendar": "ジャーナルカレンダー",
     "words": "単語",
     "zen": "Zenモード",
     "appearance": "外観",
@@ -230,7 +238,7 @@
     "appearanceLabel": "外観",
     "helpLabel": "ヘルプ",
     "aboutLabel": "概要",
-    "languageLabel": "言語",
+    "languageLabel": "日付と言語",
     "languageDesc": "PrivacyNotesの表示言語を選択。"
   },
   "importStore": {
@@ -247,6 +255,11 @@
     "readOnlyAcknowledge": "わかりました",
     "readOnlyBlocked_other": "<highlight>{{count}}件のアイテム</highlight>は読み取り専用のため、ゴミ箱に移動できません。先にノートオプションで読み取り専用を解除してください。",
     "readOnlySkipped_other": "<highlight>{{count}}件のアイテム</highlight>は読み取り専用のため、そのまま残ります。"
+  },
+  "deleteCheckedTasks": {
+    "title": "チェック済みの項目を削除しますか?",
+    "confirm": "削除",
+    "body_other": "<highlight>{{count}}件の項目</highlight>をこのノートから削除します。入れ子の項目も含まれます。この操作は取り消せません。"
   },
   "bulkDelete": {
     "body_other": "<highlight>{{count}}件のノート</highlight>を完全に削除しますか?この操作は取り消せません。"

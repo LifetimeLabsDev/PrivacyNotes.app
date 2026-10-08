@@ -431,7 +431,7 @@ export function base64urlToBytes(b64url: string): Uint8Array {
  */
 export type EncryptedPayload = Pick<
   DecryptedNote,
-  'title' | 'body' | 'tags' | 'trashed' | 'starred' | 'locked' | 'pinProtected' | 'type' | 'trackers' | 'folderId' | 'archived'
+  'title' | 'body' | 'tags' | 'trashed' | 'starred' | 'locked' | 'pinProtected' | 'type' | 'trackers' | 'folderId' | 'archived' | 'editedAt'
 >;
 
 export function encryptNote(
@@ -452,9 +452,12 @@ export function encryptNote(
       type: note.type,
       ...(note.trackers ? { trackers: note.trackers } : {}),
       ...(note.folderId ? { folderId: note.folderId } : {}),
-      // Always present, so a reader can tell "not archived" from a payload
-      // written by a client that predates Archive and drops the field.
-      archived: note.archived === true,
+      // Stated whenever the writer knows it, so a reader can tell "not
+      // archived" from a payload written by a client that predates Archive
+      // and drops the field. A writer that does not know leaves it out.
+      ...(note.archived === undefined ? {} : { archived: note.archived === true }),
+      // Only when known, so a payload without it stays what it was.
+      ...(note.editedAt ? { editedAt: note.editedAt } : {}),
     })
   );
   const ciphertext = cipher.encrypt(plaintext);
@@ -493,7 +496,23 @@ export function decryptNote(
     // client that rebuilt the payload without it. Callers decide what an
     // unknown value means for them (noteMerge.ts fieldsOfPayload).
     archived: typeof parsed.archived === 'boolean' ? parsed.archived : undefined,
+    // Absent from every payload an older client wrote. The reader decides
+    // what stands in for it (sync.ts processBatch); this never guesses.
+    editedAt: isoInstant(parsed.editedAt),
   };
+}
+
+const ISO_INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,9})?)?(Z|[+-]\d{2}:\d{2})$/;
+
+/** An ISO 8601 instant, written back in the one form the app writes, so the
+ *  lists can compare two of them as strings; anything else reads as absent,
+ *  a year the written form cannot hold in four digits included. */
+function isoInstant(value: unknown): string | undefined {
+  if (typeof value !== 'string' || !ISO_INSTANT.test(value)) return undefined;
+  const at = Date.parse(value);
+  if (!Number.isFinite(at)) return undefined;
+  const iso = new Date(at).toISOString();
+  return ISO_INSTANT.test(iso) ? iso : undefined;
 }
 
 // ------------------------------------------------------------------

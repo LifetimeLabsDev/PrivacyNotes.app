@@ -14,7 +14,8 @@
     "loadFailed": "Görsel yüklenemedi",
     "notFound": "Görsel bulunamadı",
     "saveFailed": "Kaydetme başarısız oldu, bu yüzden dosya boş ya da eksik olabilir.",
-    "viewAria": "Görseli görüntüle"
+    "viewAria": "Görseli görüntüle",
+    "picturesLeftOut": "Bazı görseller eklenmedi. Yapıştırmak için bir görseli tek başına kopyalayın."
   },
   "attachment": {
     "fallbackName": "Ek",

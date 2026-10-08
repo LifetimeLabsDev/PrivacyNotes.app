@@ -65,6 +65,8 @@ function jsonLd(locale: string): string {
       'https://x.com/PrivacyNotesApp',
       'https://mastodon.social/@privacynotes',
       'https://www.reddit.com/r/PrivacyNotes/',
+      'https://www.youtube.com/@PrivacyNotesApp',
+      'https://www.facebook.com/PrivacyNotesApp/',
       'https://github.com/LifetimeLabsDev/PrivacyNotes.app',
     ],
   };

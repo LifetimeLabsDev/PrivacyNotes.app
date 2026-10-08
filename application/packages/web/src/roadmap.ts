@@ -169,7 +169,7 @@ export const PUBLIC_ROADMAP: RoadmapItem[] = [
     title: 'Encryption published',
     status: 'shipped',
     description:
-      'The encryption layer, the database schema and the threat model went public first, so the claims could be checked before the apps that use them followed.',
+      'The encryption layer and the threat model went public first, so the claims could be checked before the apps that use them followed.',
     icon: 'unlock',
   },
   {

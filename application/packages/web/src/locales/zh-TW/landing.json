@@ -3,7 +3,7 @@
     "betaBadge": "beta",
     "downloads": "下載",
     "pricing": "價格",
-    "roadmap": "開發路線圖",
+    "roadmap": "Roadmap",
     "createVault": "建立你的保險庫",
     "openApp": "開啟 App",
     "menuLabel": "選單",
@@ -15,7 +15,7 @@
   "hero": {
     "badge": "在你的裝置上加密，可稽核",
     "headline": "筆記。任務。<br />檔案。保險庫。<stroke>零知識。</stroke>",
-    "subhead": "一個加密空間，收好所有你絕不會公開的東西。在你的裝置上加密；金鑰自己保管，我們想讀也讀不到。",
+    "subhead": "一個加密空間，收好所有你絕不會公開的東西。預設就是私密的，在你擁有的每一台裝置上。",
     "tryDemo": "試用示範版",
     "microcopy": "永久免費。不需信用卡。可用 Google、Apple、GitHub 登入，或只用 12 個單字的助憶詞。",
     "alreadyHaveVault": "已經有保險庫了？登入",
@@ -48,7 +48,7 @@
   "pillars": {
     "kicker": "八大支柱，七個共用一把金鑰，還有一個在你的硬碟上",
     "notesName": "筆記",
-    "notesBlurb": "豐富的即時編輯器、標籤、即時搜尋。",
+    "notesBlurb": "功能豐富的即時編輯器、標籤、即時搜尋。",
     "tasksName": "任務",
     "tasksBlurb": "每個核取方塊，一個總覽。",
     "vaultName": "保險庫",
@@ -119,7 +119,6 @@
     "checksumAria": "{{label}} 的 SHA-256 校驗碼",
     "debFootnote": "要更新已經安裝的 <highlight>.deb</highlight> 嗎？不必先解除安裝。雙擊檔案只會停在 Ubuntu 的 App Center，那裡只會顯示應用程式已安裝，所以請從終端機把新版直接裝在舊版上。請選擇符合你電腦的那一行，不確定的話可以用 dpkg --print-architecture 查看：",
     "availability": "現已推出：macOS 13 以上、Windows 10 以上、iOS 17.4 以上、Linux 與 Android。",
-    "betaNote": "我們所有的應用程式都還在 beta，可能仍有 bug，目前以網頁版最穩定。每個應用程式都會自動更新，而且我們幾乎每天推出修正。",
     "pkgToggle": "使用套件管理器安裝 ({{platforms}})",
     "pkgBrewDesc": "應用程式會自我更新，brew upgrade 不會。",
     "pkgWingetDesc": "Windows 10 與 11 內建。",
@@ -166,7 +165,7 @@
   },
   "storageAddon": {
     "heading": "需要更多空間？",
-    "body": "Pro 內含 500 MB。若不夠用，可加購額外儲存空間，每年 ${{price}} 起。這是 <brand/> 唯一的循環費用；Pro 升級本身一次買斷，永久有效。"
+    "body": "Pro 內含 500 MB。若不夠用，可加購額外儲存空間，每年 ${{price}} 起。這是 <brand/> 唯一需要定期支付的費用；Pro 升級本身一次買斷，永久有效。"
   },
   "underHood": {
     "heading": "深入底層",
@@ -305,53 +304,46 @@
     "tabs": {
       "about": "關於",
       "changelog": "Changelog",
-      "roadmap": "開發路線圖",
+      "roadmap": "Roadmap",
       "hotkeys": "快速鍵",
       "rating": "評分"
     },
     "modalTitle": "關於",
-    "intro": "<brand/> 是零知識工作空間，用來放你的筆記、任務、檔案與保險庫。你的 12 個助憶詞在瀏覽器中衍生金鑰；伺服器上的每個位元組都經過加密；在自我保管下，沒有人（包括我們）能讀你的筆記。資料儲存於<nowrap>瑞士</nowrap>。在你的裝置上加密，也能離線使用。",
+    "intro": "<brand/> 把你的筆記、任務、日誌、密碼、檔案、書籤和聯絡人放在同一個地方。所有內容都在你的裝置上，以你的 12 個助憶詞產生的金鑰加密，在我們位於<nowrap>瑞士</nowrap>的伺服器上也保持加密。可離線使用，而且 App 是開放原始碼。",
     "versionHeading": "版本",
     "windowVersion": "版本 {{version}}",
     "windowHelp": "說明中心",
     "windowWhatsNew": "Changelog",
-    "openOnWeb": "到 PrivacyNotes.app 檢視",
-    "viewFullChangelog": "在 PrivacyNotes.app 檢視完整 Changelog",
+    "whatsNew": "最新功能",
+    "seeWhatsNew": "在 PrivacyNotes.app 查看含截圖的所有變更",
     "feedbackHeading": "意見回饋",
-    "feedbackPrompt": "發現 bug 或有功能建議？由這裡告訴我們：",
     "legalHeading": "法律資訊",
     "privacyPolicy": "隱私權政策",
     "termsOfService": "服務條款",
     "refundPolicy": "退款政策",
     "tagline": "沒有訂閱。就是軟體，不是服務。",
-    "changelogType": {
-      "new": "新增",
-      "improved": "改進",
-      "fixed": "修正"
-    },
-    "changelogComingSoon": "Changelog 即將推出。",
-    "changelogLatest": "最新",
-    "hotkeysFootnote": "在文字欄位輸入時多數快速鍵會被忽略，因此 J、K 等一般按鍵仍會照常輸入。"
+    "hotkeysFootnote": "在文字欄位輸入時多數快速鍵會被忽略，因此 J、K 等一般按鍵仍會照常輸入。",
+    "singleKeysTitle": "單鍵快速鍵",
+    "singleKeysDesc": "不必按住 Cmd 或 Ctrl 即可使用 J、K、/ 和 ?。"
   },
   "trust": {
     "openSourceHeading": "開放原始碼",
     "openSourceLink": "在 GitHub.com 上閱讀原始碼",
     "openSourceBody": "應用程式與其中的加密都已公開，任何人都能檢驗我們的零知識宣稱。",
     "dataStorageHeading": "資料儲存",
-    "dataStorageBody": "加密資料塊儲存於 🇨🇭 瑞士蘇黎世。",
+    "dataStorageBody": "加密資料塊儲存於 <flag/> 瑞士蘇黎世。",
     "faviconsHeading": "網站圖示",
     "faviconsBody1": "網站圖示（favicon）來自 DuckDuckGo 和 Google，由我們的伺服器代你抓取。你的瀏覽器從不直接連到任何一方，所以他們看到的是我們的伺服器在詢問網域，永遠看不到你。",
     "faviconsBody2": "圖示會在你的裝置上快取 90 天。任何請求都不含你的身分，你也可以在設定 > 外觀關閉圖示。"
   },
   "feedback": {
     "title": "傳送意見回饋",
-    "intro": "發現 bug 或有功能建議？選一個你偏好的平台。",
+    "intro": "bug 和功能建議請一律送到 GitHub，這樣我們才能逐一追蹤。",
     "labelReportBug": "回報 bug",
-    "descReportBug": "開啟 GitHub 並自動帶入你的版本資訊",
-    "descX": "追蹤更新與快速回饋",
-    "descGithub": "其他一切：想法、問題、翻譯",
-    "descReddit": "討論與社群回饋",
-    "descMastodon": "追蹤更新與快速回饋"
+    "descReportBug": "自動帶入你的版本",
+    "descGithub": "想法、問題、翻譯",
+    "followHeading": "追蹤我們",
+    "outro": "發現安全性問題？請使用 <contact>GitHub 上的私密安全聯絡管道</contact>，不要開公開 issue。"
   },
   "rate": {
     "title": "回饋我們",

@@ -7,7 +7,7 @@
     "heading": "Nadpis",
     "taskList": "Seznam úkolů",
     "bulletList": "Odrážky",
-    "addLink": "Přidat odkaz (Cmd+Shift+K)",
+    "addLink": "Přidat odkaz ({{keys}})",
     "noteLink": "Odkaz na jinou poznámku (nebo napiš [[)",
     "numberedList": "Číslovaný seznam",
     "textColor": "Barva textu",
@@ -34,7 +34,12 @@
     "blockMath": "Blokový vzorec",
     "align": "Zarovnání",
     "font": "Písmo",
-    "pictureFromFiles": "Obrázek ze Souborů"
+    "pictureFromFiles": "Obrázek ze Souborů",
+    "date": "Datum",
+    "dateTime": "Datum a čas",
+    "footnote": "Poznámka pod čarou",
+    "spoiler": "Spoiler",
+    "copyBox": "Pole ke kopírování"
   },
   "align": {
     "left": "Zarovnat vlevo",
@@ -118,7 +123,7 @@
     "next": "Další výskyt (Enter)",
     "nextTitle": "Další (Enter)",
     "close": "Zavřít hledání",
-    "closeTitle": "Zavřít (⌘F)",
+    "closeTitle": "Zavřít ({{keys}})",
     "replacePlaceholder": "Nahradit za",
     "replaceLabel": "Nahradit za",
     "replace": "Nahradit",
@@ -128,7 +133,7 @@
     "caseSensitive": "Rozlišovat velikost písmen",
     "caseSensitiveTitle": "Rozlišovat velikost písmen",
     "closeReplace": "Zavřít najít a nahradit",
-    "closeReplaceTitle": "Zavřít (⌥⌘F)",
+    "closeReplaceTitle": "Zavřít ({{keys}})",
     "replacedCount_one": "{{count}} nahrazen",
     "replacedCount_few": "{{count}} nahrazeny",
     "replacedCount_many": "{{count}} nahrazeno",
@@ -140,7 +145,14 @@
     "title": "Osnova",
     "ariaLabel": "Osnova poznámky",
     "hide": "Skrýt osnovu",
-    "hideTitle": "Skrýt osnovu (Esc)"
+    "hideTitle": "Skrýt osnovu (Esc)",
+    "copyHeadingLink": "Kopírovat odkaz na nadpis",
+    "copied": "Zkopírováno"
+  },
+  "bodyMenu": {
+    "cut": "Vyjmout",
+    "sortAsc": "Seřadit řádky od A do Z",
+    "sortDesc": "Seřadit řádky od Z do A"
   },
   "topRow": {
     "add": "Přidat řádek na začátek"
@@ -183,6 +195,10 @@
     "characters_few": "{{formatted}} znaky",
     "characters_many": "{{formatted}} znaku",
     "characters_other": "{{formatted}} znaků",
+    "tasksChecked_one": "Zaškrtnuto {{done}} z {{formatted}}",
+    "tasksChecked_few": "Zaškrtnuto {{done}} z {{formatted}}",
+    "tasksChecked_many": "Zaškrtnuto {{done}} z {{formatted}}",
+    "tasksChecked_other": "Zaškrtnuto {{done}} z {{formatted}}",
     "tooLargeToSync": ", možná je příliš velká pro synchronizaci, rozděl ji do nové poznámky",
     "veryLong": ", velmi dlouhá, úpravy mohou být pomalé a trhané",
     "gettingLong": ", začíná být dlouhá, na pomalejších zařízeních se může zadrhávat",
@@ -190,19 +206,50 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "Žádné odpovídající poznámky",
-    "create": "Vytvořit „{{query}}“"
+    "create": "Vytvořit „{{query}}“",
+    "headingsIn": "Nadpisy: {{title}}",
+    "noHeadingMatches": "Žádné odpovídající nadpisy"
+  },
+  "copyBox": {
+    "placeholder": "Text ke zkopírování jedním kliknutím"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}+klik zkopíruje",
+    "copied": "Zkopírováno"
   },
   "codeBlock": {
     "copy": "Kopírovat",
     "copied": "Zkopírováno",
     "copyFailed": "Nepovedlo se",
-    "wrap": "Zalamovat dlouhé řádky"
+    "wrap": "Zalamovat dlouhé řádky",
+    "showAll_one": "Zobrazit {{count}} řádek",
+    "showAll_few": "Zobrazit všechny {{count}} řádky",
+    "showAll_many": "Zobrazit všech {{count}} řádku",
+    "showAll_other": "Zobrazit všech {{count}} řádků",
+    "showLess": "Zobrazit méně",
+    "plainText": "Prostý text",
+    "language": "Jazyk kódu: {{name}}",
+    "searchLanguages": "Hledat jazyky",
+    "placeholder": "Napiš nebo vlož kód. Pro barvy vyber nahoře jazyk."
   },
   "math": {
     "sourceLabel": "Kód LaTeX"
   },
   "noteLink": {
     "open": "Otevřít poznámku",
-    "remove": "Odstranit odkaz"
+    "remove": "Odstranit odkaz",
+    "linkHeading": "Odkázat na nadpis...",
+    "headingNotFound": "Nadpis nenalezen",
+    "headingsLocked": "Nadpisy uvidíš po odemčení poznámky",
+    "noHeadings": "Tato poznámka nemá nadpisy"
+  },
+  "footnote": {
+    "placeholder": "Text poznámky",
+    "back": "Zpět do textu",
+    "unused": "Nepoužitá v textu",
+    "remove": "Odstranit poznámku",
+    "missing": "Poznámka nemá text. Klikni a přidej ho.",
+    "ariaRef": "Poznámka {{n}}",
+    "ariaSection": "Poznámky pod čarou"
   }
 }

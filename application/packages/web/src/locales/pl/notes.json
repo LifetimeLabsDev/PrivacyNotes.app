@@ -10,7 +10,8 @@
     "empty": "Pusta",
     "noContent": "Brak treści",
     "notBackedUp": "Bez kopii zapasowej",
-    "archived": "Zarchiwizowane"
+    "archived": "Zarchiwizowane",
+    "entryDate": "Data wpisu"
   },
   "header": {
     "new": "Nowa",
@@ -19,7 +20,9 @@
     "trash": "Kosz"
   },
   "folderChip": {
-    "clear": "Usuń filtr folderu: {{folder}}"
+    "clear": "Usuń filtr folderu: {{folder}}",
+    "subfolders": "Podfoldery",
+    "subfoldersLabel": "Uwzględnij podfoldery"
   },
   "tagChip": {
     "clear": "Usuń filtr tagu: {{tag}}"
@@ -195,6 +198,8 @@
     "currentHtmlDesc": "Przyjazna dla druku, markdown wyrenderowany na białej stronie.",
     "printTitle": "Drukuj / zapisz jako PDF",
     "printDesc": "Otwiera okno drukowania. Zapisz jako PDF lub wyślij na drukarkę.",
+    "printTextTitle": "Drukuj tylko tekst",
+    "printTextDesc": "Zachowuje tytuł. Pomija datę, folder i tagi.",
     "burnTitle": "Udostępnij i spal po przeczytaniu",
     "burnDesc": "Opublikuj tę notatkę jako link do jednorazowego wglądu. Link niszczy się po przeczytaniu. Twoja notatka zostaje bezpiecznie na koncie."
   },
@@ -212,7 +217,10 @@
     "newNote": "Nowy",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Otwórz statystyki",
+    "journalCalendar": "Kalendarz dziennika",
     "words": "Słowa",
     "zen": "Tryb Zen",
     "appearance": "Wygląd",
@@ -236,7 +244,7 @@
     "appearanceLabel": "Wygląd",
     "helpLabel": "Pomoc",
     "aboutLabel": "O aplikacji",
-    "languageLabel": "Język",
+    "languageLabel": "Data i język",
     "languageDesc": "Wybierz język, w którym wyświetla się PrivacyNotes."
   },
   "importStore": {
@@ -262,6 +270,14 @@
     "readOnlyBlocked_many": "<highlight>{{count}} elementów</highlight> jest tylko do odczytu, więc żaden nie trafi do kosza. Najpierw wyłącz tryb tylko do odczytu w opcjach notatki.",
     "readOnlySkipped_few": "<highlight>{{count}} elementy</highlight> są tylko do odczytu i zostają na miejscu.",
     "readOnlySkipped_many": "<highlight>{{count}} elementów</highlight> jest tylko do odczytu i zostaje na miejscu."
+  },
+  "deleteCheckedTasks": {
+    "title": "Usunąć zaznaczone elementy?",
+    "confirm": "Usuń",
+    "body_one": "<highlight>{{count}} element</highlight> zostanie usunięty z tej notatki. Tej operacji nie można cofnąć.",
+    "body_few": "<highlight>{{count}} elementy</highlight> zostaną usunięte z tej notatki, razem z zagnieżdżonymi. Tej operacji nie można cofnąć.",
+    "body_many": "<highlight>{{count}} elementów</highlight> zostanie usuniętych z tej notatki, razem z zagnieżdżonymi. Tej operacji nie można cofnąć.",
+    "body_other": "<highlight>{{count}} elementu</highlight> zostanie usunięte z tej notatki, razem z zagnieżdżonymi. Tej operacji nie można cofnąć."
   },
   "bulkDelete": {
     "body_one": "Trwale usunąć <highlight>{{count}} notatkę</highlight>? Tej operacji nie można cofnąć.",

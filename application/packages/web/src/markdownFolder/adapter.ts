@@ -28,6 +28,8 @@
  */
 import { extractInlineTags, normalizeTag, parseYamlTags } from '../notesRepo';
 import type { LocalNote } from '../db';
+import type { OpenedFileRef } from './fileAccess';
+import type { OpenedMarkdownFile } from './types';
 
 /** Extensions we open in the rich editor. All are plain markdown. */
 const MARKDOWN_EXTENSIONS = ['md', 'markdown', 'mdown', 'mkd'];
@@ -238,4 +240,14 @@ export function entryToNote(
     type: 'note',
     folderId: null,
   };
+}
+
+/**
+ * Read a file from disk into the shape the file pane opens. The list pane's
+ * rows, the operating system's "Open with" and the quick switcher all open a
+ * file this one way.
+ */
+export async function readOpenedFile(ref: OpenedFileRef): Promise<OpenedMarkdownFile> {
+  const raw = await ref.read();
+  return { ref, raw, stamp: await ref.stamp(), adapted: adaptFile(ref.name, raw), reloadToken: 0 };
 }

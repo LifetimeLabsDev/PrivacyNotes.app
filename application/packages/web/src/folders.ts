@@ -223,6 +223,49 @@ export function subtreeIds(folders: FolderDef[], id: string): Set<string> {
   return ids;
 }
 
+/**
+ * The folder half of the list filter: which `folderId` values belong in the
+ * list of the open folder. Off, a folder holds its direct members only; on,
+ * it holds its whole branch. Unfiled has no branch, so the switch never
+ * reaches it. The branch is built once here, not once per note.
+ * Spec: ops/docs/plans/folder-subfolders.md (section 4)
+ */
+export function folderScope(
+  folders: FolderDef[],
+  selected: string,
+  includeSubfolders: boolean,
+): (folderId: string | null | undefined) => boolean {
+  if (selected === UNFILED_ID) return (folderId) => !folderId;
+  if (!includeSubfolders) return (folderId) => folderId === selected;
+  const branch = subtreeIds(folders, selected);
+  return (folderId) => !!folderId && branch.has(folderId);
+}
+
+/**
+ * The chip label of every folder below `rootId`: its path under the open
+ * folder, so two subfolders that share a name read apart in a combined list.
+ * More than two levels down, the leading levels give way to an ellipsis,
+ * because the chip truncates and its leaf is the part that matters.
+ * Spec: ops/docs/plans/folder-subfolders.md (D4)
+ */
+export function branchPathLabels(folders: FolderDef[], rootId: string): Map<string, string> {
+  const byId = new Map(folders.map((f) => [f.id, f]));
+  const labels = new Map<string, string>();
+  for (const id of subtreeIds(folders, rootId)) {
+    if (id === rootId) continue;
+    const names: string[] = [];
+    const seen = new Set<string>();
+    let current = byId.get(id);
+    while (current && current.id !== rootId && !seen.has(current.id)) {
+      seen.add(current.id);
+      names.unshift(current.name);
+      current = current.parentId ? byId.get(current.parentId) : undefined;
+    }
+    labels.set(id, names.length > 2 ? ['…', ...names.slice(-2)].join(' / ') : names.join(' / '));
+  }
+  return labels;
+}
+
 /** Can a new subfolder be created under `parentId`? (null = root, always ok) */
 export function canCreateChild(folders: FolderDef[], parentId: string | null): boolean {
   if (parentId === null) return true;

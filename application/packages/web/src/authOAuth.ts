@@ -28,6 +28,7 @@ import {
   PUBKEY_OWNER_KEY,
 } from './authStorage';
 import { logAuthEvent } from './authDiag';
+import { signInStamp, type SignInStamp } from './liveSignIn';
 import { ensureLevel2, MfaCancelledError, mfaSessionIdentity } from './mfaStep';
 import { consumeOAuthPending, markOAuthPending } from './oauthPending';
 import { exchangeAccountOAuth, type AccountOAuthProvider } from './accountOAuth';
@@ -122,6 +123,7 @@ export function useOAuthFlows({
     oauthSession?: { accessToken: string; authUid: string },
     freshVault?: boolean,
     captchaToken?: string,
+    startedAt?: SignInStamp,
   ) => Promise<boolean>;
   /**
    * Asks the person whether the account already on this device may be
@@ -325,6 +327,9 @@ export function useOAuthFlows({
     const genAtStart = expectedGeneration ?? userAuthGen.current;
     const superseded = () =>
       authInFlight.current || userAuthGen.current !== genAtStart;
+    // Before the first await: the custodial sign-in below goes live only if
+    // no sign-out began during the lookups ahead of it (liveSignIn.ts).
+    const startedAt = signInStamp();
 
     setTrustedDevice(trust);
 
@@ -434,7 +439,7 @@ export function useOAuthFlows({
           const ran = await authenticateWithPhrase(custodialPhrase, 'oauth', true, {
             accessToken,
             authUid,
-          });
+          }, false, undefined, startedAt);
           // A swallowed call (mutex held by a concurrent handshake)
           // must not persist anything: the phrase write below lands in
           // shared storage and would stomp the account the OTHER

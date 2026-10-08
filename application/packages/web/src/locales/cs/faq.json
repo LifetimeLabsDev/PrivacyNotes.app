@@ -48,10 +48,14 @@
     "mdDemoCode": "Blok kódu",
     "mdDemoScripts": "Horní index, dolní index, podtržení",
     "mdDemoMath": "Matematika (KaTeX)",
-    "mdDemoQuote": "Citace a note-link",
+    "mdDemoQuote": "Citace a odkaz na poznámku",
     "mdDemoDivider": "Oddělovač",
     "hkShowcase": "Kompletní seznam",
-    "hkLegend": "Na Windows a Linuxu je ⌘ klávesa Ctrl a ⌥ klávesa Alt."
+    "hkMac": "Mac",
+    "hkPc": "Windows a Linux",
+    "hkBrowser": "Prohlížeč",
+    "hkDesktop": "Aplikace pro počítač",
+    "hkLayout": "Zkratky se řídí znaky, které tvoje klávesnice píše, ne polohou kláves na americké klávesnici: stiskni klávesu, která píše zobrazený znak (na nelatinkovém rozložení klávesu na jejím americkém místě). Klávesa, která píše znak s AltGr, ho píše vždycky."
   },
   "groups": {
     "gettingStarted": "Začínáme",
@@ -88,13 +92,13 @@
       "q": "Umí editor Markdown?",
       "a": [
         "Ano. Piš Markdown a formátuje se naživo: # nadpisy, **tučné**, seznamy, - [ ] zaškrtávací úkoly, citace a callouty. Poznámky se navíc exportují jako čistý Markdown, takže to, co napíšeš, zůstává přenositelné.",
-        "Poznámky můžeš taky propojovat mezi sebou: napiš [[ a našeptávač ti nabídne existující poznámky. Note-link otevře cílovou poznámku jedním kliknutím a panel Osnova s hledáním v poznámce udrží přehledné i dlouhé dokumenty."
+        "Poznámky můžeš taky propojovat mezi sebou: napiš [[ a našeptávač ti nabídne existující poznámky. Odkaz na poznámku otevře cílovou poznámku jedním kliknutím a panel Osnova s hledáním v poznámce udrží přehledné i dlouhé dokumenty."
       ]
     },
     "what-can-you-see": {
       "q": "Co o mých poznámkách PrivacyNotes vidí?",
       "a": [
-        "Poznámky, názvy, štítky a přílohy se šifrují na tvém zařízení, než dorazí na server. Při vlastní správě, se kterou začíná každý účet vytvořený pomocí fráze, na naší straně není žádný dešifrovací klíč. Při registraci přes Google, Apple nebo GitHub se aplikace zeptá, kde má být klíč uložený, a začne možností „Ať je to jednoduché a pohodlné“. Ta uloží frázi na náš server zašifrovanou naším klíčem. V tomto režimu může náš server dešifrovat frázi, a tedy i tvoje poznámky. Nastavení > Účet > Správa klíče ukazuje aktuální režim a umožňuje ho změnit.",
+        "Poznámky, názvy, značky a přílohy jsou vždy zašifrované, na tvém zařízení i na cestě na server. Při vlastní správě, se kterou začíná každý účet vytvořený pomocí fráze, na naší straně není žádný dešifrovací klíč. Při registraci přes Google, Apple nebo GitHub se aplikace zeptá, kde má být klíč uložený, a začne možností „Ať je to jednoduché a pohodlné“. Ta uloží frázi na náš server zašifrovanou naším klíčem. V tomto režimu může náš server dešifrovat frázi, a tedy i tvoje poznámky. Nastavení > Účet > Správa klíče ukazuje aktuální režim a umožňuje ho změnit.",
         "Vidíme údaje potřebné k provozu služby: kolik zašifrovaného úložiště využíváš, kolik zařízení máš propojených a časové údaje synchronizace. Pokud používáš jen frázi a nemáš propojený účet Google, Apple ani GitHub, neznáme tvou e-mailovou adresu."
       ]
     },
@@ -102,7 +106,7 @@
       "q": "Proč obnovovací fráze místo uživatelského jména a hesla?",
       "a": [
         "Zpočátku to může působit obráceně, ale jedna obnovovací fráze je silnější konstrukce. U jména a hesla není jméno tajné (objeví se v každém uniklém seznamu), takže celá bezpečnost leží na heslu, a hesla vymyšlená lidmi mají v průměru možná 30 až 40 bitů entropie. Tvoje fráze z 12 slov má garantovaných 128 bitů, vygenerovalo je tvoje zařízení, nevymýšlel je člověk a nikde jinde je nepoužíváš.",
-        "A my nemáme žádné heslo, které bychom mohli ztratit. Přihlášení heslem znamená, že server ukládá aspoň hash hesla, a ten může uniknout, dá se prolomit nebo vyphishovat. Při vlastní správě tvoje fráze nikdy neopustí tvoje zařízení: šifrovací klíče z ní vznikají lokálně a server vždycky vidí jen šifrovaná data. Není co ukrást a není tu žádné obnovení hesla, které by šlo zneužít.",
+        "A my nemáme žádné heslo, které bychom mohli ztratit. Přihlášení heslem znamená, že server ukládá aspoň hash hesla, a ten může uniknout, dá se prolomit nebo vyphishovat. Při vlastní správě tvoje fráze nikdy neopustí tvoje zařízení: šifrovací klíče z ní vznikají lokálně a server vždycky vidí jen šifrovaná data. Není tu žádný hash hesla, který by šlo ukrást, a není tu žádné obnovení hesla, které by šlo zneužít.",
         "Pokud ti psaní 12 slov přijde nepraktické: frázi si můžeš jedním klepnutím uložit do správce hesel (Nastavení > Zabezpečení > Fráze) a přihlašování pak vypadá jako každé jiné. Máš radši známý postup? Funguje i přihlášení přes Google, Apple nebo GitHub: fráze na tebe pod povrchem čeká taky a ty si vybereš, jestli zůstane na tvém zařízení, nebo ji uložíme my."
       ]
     },
@@ -151,7 +155,7 @@
     "bip39-wordlist": {
       "q": "Používáte stejný seznam slov jako bitcoinové peněženky (BIP-39)?",
       "a": [
-        "Ano, standardní anglický seznam slov BIP-39: 2048 slov, přesně ten samý, který používají bitcoinové peněženky. Fráze generujeme knihovnou [@scure/bip39](https://github.com/paulmillr/scure-bip39), auditovanou a s otevřeným kódem. Žádný vlastní seznam slov a žádná kryptografie z domácí kuchyně.",
+        "Ano, standardní anglický seznam slov BIP-39: 2048 slov, přesně ten samý, který používají bitcoinové peněženky. Fráze generujeme auditovanou open source knihovnou [@scure/bip39](https://github.com/paulmillr/scure-bip39). Žádný vlastní seznam slov a žádná kryptografie z domácí kuchyně.",
         "Seznam je navržený na zapisování rukou: první čtyři písmena každého slova jsou jedinečná, takže rozmazané nebo zkrácené slovo je pořád jednoznačné, a podobně vypadající slova byla záměrně vynechána.",
         "Protože jde o standardní seznam, můžeš si frázi zkontrolovat proti jakékoli veřejné referenci BIP-39, a náš šifrovací kód je [open source](https://github.com/LifetimeLabsDev/PrivacyNotes.app), takže si implementaci můžeš prověřit na vlastní oči."
       ]
@@ -173,14 +177,14 @@
     "burn-notes": {
       "q": "Co jsou sebezničující poznámky (burn notes)?",
       "a": [
-        "Burn note je sebezničující způsob, jak sdílet poznámku s někým, kdo PrivacyNotes nepoužívá. Aplikace obsah zašifruje jednorázovým klíčem a dá ti odkaz. Klíč cestuje ve fragmentu odkazu, který prohlížeče nikdy neposílají na server, takže náš server ukládá šifrovaná data, která nepřečte.",
+        "Sebezničující poznámka je způsob, jak sdílet poznámku s někým, kdo PrivacyNotes nepoužívá. Aplikace obsah zašifruje jednorázovým klíčem a dá ti odkaz. Klíč cestuje ve fragmentu odkazu, který prohlížeče nikdy neposílají na server, takže náš server ukládá šifrovaná data, která nepřečte.",
         "Při prvním otevření odkazu server šifrovaná data vydá a ve stejném kroku je smaže: jedno přečtení a je to. Neotevřené odkazy samy vyprší po době, kterou zvolí odesílatel, od 1 hodiny do 7 dnů. Tak či tak nic nezůstává."
       ]
     },
     "open-source": {
       "q": "Je PrivacyNotes open source?",
       "a": [
-        "Ano. Webová, počítačová i mobilní aplikace jsou zveřejněné na [GitHubu](https://github.com/LifetimeLabsDev/PrivacyNotes.app) spolu se šifrovacím kódem, který tvoje poznámky mění v nečitelný text a s modelem hrozeb popisujícím, co která část chrání. Je to přesně ten kód, ze kterého sestavujeme vydání.",
+        "Ano. Webová, počítačová i mobilní aplikace jsou zveřejněné na [GitHubu](https://github.com/LifetimeLabsDev/PrivacyNotes.app) spolu se šifrovacím kódem, který tvoje poznámky mění v nečitelný text, a s modelem hrozeb popisujícím, co která část chrání. Je to přesně ten kód, ze kterého sestavujeme vydání.",
         "Právě tohle mění slib v něco, co si můžeš ověřit. Šifrování se dá přečíst na jedno posezení, v záložce sítě v prohlížeči uvidíš vlastní poznámky odcházet jako nečitelný text, a aplikaci si můžeš sestavit sám a porovnat ji s tou, kterou vydáváme. Nemusíš nám věřit ani slovo."
       ]
     },
@@ -244,8 +248,8 @@
     "sync-conflicts": {
       "q": "Co se stane, když upravím stejnou poznámku na dvou zařízeních současně?",
       "a": [
-        "Když se tvoje zařízení znovu synchronizují, sloučí poznámku po jednotlivých údajích, takže změna provedená jen na jednom z nich zůstane zachovaná. Pokud obě upravila text, když byla od sebe (třeba jedno bylo offline), zařízení, které se synchronizuje jako druhé, zobrazí dialog o konfliktu: nechat verzi z tohoto zařízení, nechat tu druhou, nebo nechat obě jako samostatné poznámky. Obě verze zůstanou zachované, dokud si nevybereš.",
-        "Když obě zařízení, zatímco byla od sebe, změnila stejný údaj, třeba připnutí, složku nebo název, zůstane bez dialogu údaj ze zařízení, které poznámku upravilo jako poslední. Poznámka smazaná navždy na jednom zařízení se smaže všude, a to i s úpravou, kterou v ní jiné zařízení provedlo, zatímco byla zařízení od sebe."
+        "Když se tvoje zařízení znovu synchronizují, sloučí poznámku po jednotlivých údajích, takže změna provedená jen na jednom z nich zůstane zachovaná. Pokud obě bez vzájemné synchronizace upravila text (třeba jedno bylo offline), zařízení, které se synchronizuje jako druhé, zobrazí dialog o konfliktu: nechat verzi z tohoto zařízení, nechat tu druhou, nebo nechat obě jako samostatné poznámky. Obě verze zůstanou zachované, dokud si nevybereš.",
+        "Když obě zařízení bez vzájemné synchronizace změnila stejný údaj, třeba připnutí, složku nebo název, zůstane bez dialogu údaj ze zařízení, které poznámku upravilo jako poslední. Poznámka smazaná navždy na jednom zařízení se smaže všude, a to i s úpravou, kterou v ní jiné zařízení provedlo bez vzájemné synchronizace."
       ]
     },
     "remove-device": {
@@ -258,7 +262,7 @@
     "data-location": {
       "q": "Kde jsou moje data uložená?",
       "a": [
-        "Nejdřív na tvém zařízení a právě s touhle kopií pracuješ: aplikace je local-first, takže poznámky otevřeš a upravíš i offline. Synchronizovaná kopie leží na serverech v Curychu ve Švýcarsku. Je tam tvůj veřejný klíč, zašifrované bloby poznámek, souborů a nastavení a k tomu časová razítka a velikosti, které synchronizace potřebuje. Žádné názvy, žádný text, žádné štítky.",
+        "Nejdřív na tvém zařízení a právě s touhle kopií pracuješ: aplikace je local-first, takže poznámky otevřeš a upravíš i offline. Synchronizovaná kopie leží na serverech v Curychu ve Švýcarsku. Je tam tvůj veřejný klíč, zašifrované bloby poznámek, souborů a nastavení a k tomu časová razítka a velikosti, které synchronizace potřebuje. Žádné názvy, žádný text, žádné značky.",
         "Země znamená míň než šifrování. Všechno je vždy zašifrované, na tvém zařízení i cestou na server, takže ta kopie by byla nečitelná, ať by ležela kdekoli: Švýcarsko je bonus, ne ten slib. [Co se synchronizuje](/cs/help/what-syncs/) to vyjmenovává bod po bodu.",
         "Kopie na tvém zařízení je zašifrovaná také. Poznámky jsou na disku zapečetěné klíčem odvozeným z tvé obnovovací fráze při odemčení, takže kopie úložiště aplikace na tvém zařízení nebo ukradená záloha tohoto úložiště nese šifrovaná data, ne tvoje poznámky."
       ]
@@ -268,7 +272,7 @@
       "a": [
         "V jedné složce na instalaci, v datové oblasti aplikací tvého účtu. Kde ta složka je, záleží na platformě:",
         "- **macOS**: `~/Library/WebKit/app.privacynotes/WebsiteData/`\n- **Windows**: `%LOCALAPPDATA%\\app.privacynotes`\n- **Linux**: `~/.local/share/app.privacynotes`, u AppImage `app.privacynotes.appimage`, protože si nese vlastní webový engine, a drží si tak vlastní profil\n- **Android, iOS**: soukromé úložiště aplikace, které žádná jiná aplikace neotevře\n- **Prohlížeč**: profil tvého prohlížeče, pod `use.privacynotes.app`",
-        "To, co tam leží, jsou šifrovaná data. Každá poznámka je jeden zapečetěný blok s názvem, textem a štítky uvnitř, který otevře klíč odvozený z tvé obnovovací fráze při odemčení, takže zkopírovaná složka nenese nic čitelného. Čitelné zůstane jen to, co potřebuje místní index: identifikátory, časy, druh položky a příznaky jako připnutá nebo smazaná.",
+        "To, co tam leží, jsou šifrovaná data. Každá poznámka je jeden zapečetěný blok s názvem, textem a značkami uvnitř, který otevře klíč odvozený z tvé obnovovací fráze při odemčení, takže zkopírovaná složka nenese nic čitelného. Čitelné zůstane jen to, co potřebuje místní index: identifikátory, časy, druh položky a příznaky jako připnutá nebo smazaná.",
         "Když chceš poznámky přenést na jiné zařízení nebo si nechat vlastní kopii, použij **Nastavení > Import & Export > Export** a vyber „Šifrovaná úplná záloha (.pnbackupz)“. Obsahuje všechno, je zašifrovaná klíčem z tvojí fráze a obnovíš ji svou frází na jakémkoli zařízení. [Víc o zálohách](/cs/help/backup-strategy/)."
       ]
     },
@@ -304,7 +308,7 @@
     "shutdown": {
       "q": "Co se stane s mými poznámkami, když PrivacyNotes skončí?",
       "a": [
-        "Zůstanou ti. Tvoje poznámky, úkoly, deníkové zápisy a položky trezoru žijí na tvém zařízení, protože aplikace je local-first, a jejich export do Markdownu, JSON nebo HTML funguje offline. Obrázek nebo soubor na zařízení zůstane, jakmile ho tam přidáš nebo otevřeš, a ten, který toto zařízení nikdy neotevřelo, se stáhne, až ho otevřeš, takže si dělej úplnou zálohu: stáhne každý obrázek a soubor, který tomuto zařízení chybí, a řekne ti, když některý stáhnout nejde.",
+        "Zůstanou ti. Tvoje poznámky, úkoly, záznamy v deníku a položky trezoru žijí na tvém zařízení, protože aplikace je local-first, a jejich export do Markdownu, JSON nebo HTML funguje offline. Obrázek nebo soubor na zařízení zůstane, jakmile ho tam přidáš nebo otevřeš, a ten, který toto zařízení nikdy neotevřelo, se stáhne, až ho otevřeš, takže si dělej úplnou zálohu: stáhne každý obrázek a soubor, který tomuto zařízení chybí, a řekne ti, když některý stáhnout nejde.",
         "Šifrovací kód je také [open source](https://github.com/LifetimeLabsDev/PrivacyNotes.app), takže formát zůstane nezávisle čitelný i ve světě, kde by naše servery přes noc zmizely."
       ]
     },
@@ -312,7 +316,7 @@
       "q": "Co je zdarma a co je Pro?",
       "a": [
         "Zdarma je celý produkt, ne ukázka: poznámky, úkoly, deník a trezor, vše šifrované na tvém zařízení, práce offline, import i export - na maximálně 2 zařízeních a s 50 MB synchronizačního úložiště.",
-        "Pro je jednorázový nákup, který přidává neomezená zařízení, 500 MB synchronizačního úložiště (rozšiřitelné), historii verzí poznámek, větší přílohy, uzamykání poznámek a ochranu PINem, pokročilé sledování wellness, režim Zen a všechna barevná témata."
+        "Pro je jednorázový nákup, který přidává neomezený počet zařízení, 500 MB synchronizačního úložiště (rozšiřitelné), historii verzí poznámek, větší přílohy, uzamykání poznámek a ochranu PINem, pokročilé sledování pohody, režim Zen a všechna barevná témata."
       ]
     },
     "one-time-pricing": {
@@ -347,7 +351,7 @@
       "q": "Co se o mně dozvíte, když zaplatím?",
       "a": [
         "Méně, než by se dalo čekat. Platba jde přes [Paddle](https://www.paddle.com), oficiálního prodejce (merchant of record): tvoje jméno, číslo karty a fakturační adresa jdou do Paddlu kvůli platbě a daním a našich serverů se nikdy nedotknou.",
-        "Tvoje fakturační údaje drží Paddle; do naší databáze dorazí tvůj veřejný klíč, částka a ID objednávky, u doplňku úložiště i jeho velikost a data obnovení. Náš účet u Paddlu vidí obě strany a my si tě v něm nevyhledáváme. Aby tvoje jméno u nákupu nefigurovalo, zaplať s [e-mailovým aliasem a maskovanou kartou](/cs/help/buy-pro-anonymously/)."
+        "Tvoje fakturační údaje drží Paddle; do naší databáze dorazí tvůj veřejný klíč, částka a ID objednávky, u rozšíření úložiště i jeho velikost a data obnovení. Náš účet u Paddlu vidí obě strany a my si tě v něm nevyhledáváme. Aby tvoje jméno u nákupu nefigurovalo, zaplať s [e-mailovým aliasem a maskovanou kartou](/cs/help/buy-pro-anonymously/)."
       ]
     },
     "buy-pro-anonymously": {
@@ -367,11 +371,11 @@
       ]
     },
     "feature-requests": {
-      "q": "Jak dlouho trvá, než se přání nebo nahlášená chyba objeví v aplikaci?",
+      "q": "Za jak dlouho se v aplikaci objeví požadovaná funkce nebo oprava nahlášené chyby?",
       "a": [
-        "Často pár dní. Malá přání a hlášení chyb se obvykle dostanou do příští verze a nové verze vycházejí skoro každý týden, ne dvakrát do roka. [Changelog](/changelog) je toho záznamem: každá položka má datum, je napsaná srozumitelně a říká, co se změnilo. Přečti si měsíc zpátky a budeš přesně vědět, co od nás čekat, ještě než aplikaci něco svěříš.",
-        "To tempo vychází z toho, jak je práce rozdělená. Šifrovací jádro, synchronizační protokol a přihlašování napsali lidé vedle svých zaměstnání, dávno předtím, než aplikace měla jméno, a kryptografické jádro se tak udržuje dodnes; nic automatizovaného se k němu nepřiblíží. Když tenhle základ na jaře 2026 stál, začali jsme podle pevného protokolu používat nástroje AI pro psaní kódu: nejdřív na [překlady](/cs/help/translation-quality/), pak na články nápovědy, pak na funkce rozhraní a opravy nekritických chyb, kde jsou dobré v dohledávání vzácných okrajových případů, které by jinak zabraly týdny, a v psaní testovacích skriptů, které drží víc vývojářů u jednoho standardu. Proto se vyplatí postavit i přání jediného člověka, místo aby čekalo za špičkou seznamu.",
-        "Všechno, co se dotýká šifrování, synchronizace nebo přihlašování, zůstává u zkušených lidí, kteří každý řádek přečtou, než vyjde, a ten kód je [veřejný](https://github.com/LifetimeLabsDev/PrivacyNotes.app), aby sis ho mohl přečíst místo toho, abys nám věřil. Víc o týmu a o tom, jak pracujeme, najdeš na naší [stránce o nás](https://lifetimelabs.dev/about).",
+        "Často pár dní. Malá přání a hlášení chyb se obvykle dostanou do příští verze a nové verze vycházejí skoro každý týden, ne jen párkrát do roka. [Changelog](/changelog) je toho záznamem: každá položka má datum, je napsaná srozumitelně a říká, co se změnilo. Přečti si měsíc zpátky a budeš přesně vědět, co od nás čekat, ještě než aplikaci něco svěříš.",
+        "To tempo vychází z toho, jak je práce rozdělená. Šifrovací jádro, synchronizační protokol a přihlašování napsali lidé vedle svých zaměstnání, dávno předtím, než aplikace měla jméno, a kryptografické jádro se tak udržuje dodnes; nic automatizovaného se k němu nepřiblíží. Když tenhle základ na jaře 2026 stál, začali jsme podle pevného protokolu používat nástroje AI pro psaní kódu: nejdřív na [překlady](/cs/help/translation-quality/), pak na články nápovědy, pak na funkce rozhraní a opravy nekritických chyb, kde jsou dobré v dohledávání vzácných okrajových případů, které by jinak zabraly týdny, a v psaní testovacích skriptů, které drží víc vývojářů u jednoho standardu. Proto se vyplatí splnit i přání jediného člověka, místo aby čekalo za tím, co je na vrcholu seznamu.",
+        "Všechno, co se dotýká šifrování, synchronizace nebo přihlašování, zůstává u zkušených vývojářů, kteří píšou každý řádek, a ten kód je [veřejný](https://github.com/LifetimeLabsDev/PrivacyNotes.app), aby sis ho mohl přečíst místo toho, abys nám věřil. Víc o týmu a o tom, jak pracujeme, najdeš na naší [stránce o nás](https://lifetimelabs.dev/about).",
         "Samotná aplikace žádné funkce AI nemá a tvoje poznámky nikam neposílá ([podrobnosti](/cs/help/no-ai/)). Ten slib stojí samostatně a nemění se."
       ]
     },
@@ -379,7 +383,7 @@
       "q": "Bude se aplikace pro Android aktualizovat sama?",
       "a": [
         "Nainstaluj ji přes [Obtainium](/cs/help/obtainium/) a pak ano: čte naše vydání a nabídne každou novou verzi, jakmile vyjde, a právě proto tuhle cestu na Androidu doporučujeme. Soubor APK stažený přímo z našeho webu se aktualizuje na tvůj pokyn, protože Android automaticky aktualizuje jen aplikace z obchodu.",
-        "Místo toho ti to řekne samotný soubor APK z webu. Aplikace zkontroluje, jestli existuje novější verze, a ukáže hlášku \"Dostupná aktualizace\" s tlačítkem \"Stáhnout\". Klepni na Stáhnout a pak otevři stažený soubor, aby se nainstaloval přes starou verzi, poznámky i nastavení zůstanou nedotčené. Kontrola se ptá jen na to, jestli novější verze existuje, tvých poznámek se nikdy nedotkne a ty zůstávají celou dobu zašifrované."
+        "Místo toho ti to řekne samotný soubor APK z webu. Aplikace zkontroluje, jestli existuje novější verze, a ukáže hlášku „Dostupná aktualizace“ s tlačítkem „Stáhnout“. Klepni na Stáhnout a pak otevři stažený soubor, aby se nainstaloval přes starou verzi; poznámky i nastavení zůstanou nedotčené. Kontrola se ptá jen na to, jestli novější verze existuje, tvých poznámek se nikdy nedotkne a ty zůstávají celou dobu zašifrované."
       ]
     },
     "obtainium": {
@@ -396,21 +400,21 @@
     "languages": {
       "q": "Jakými jazyky aplikace mluví?",
       "a": [
-        "Angličtina, němčina, francouzština, italština, španělština, nizozemština, polština, čeština, katalánština, turečtina, švédština, ukrajinština, ruština, japonština, korejština, tradiční čínština, thajština, arabština a portugalština v evropské i brazilské variantě. Aplikace se ve výchozím nastavení řídí jazykem systému, nebo si na každém zařízení můžeš jeden pevně nastavit v Nastavení > Jazyk.",
+        "Angličtina, němčina, francouzština, italština, španělština, nizozemština, polština, čeština, katalánština, turečtina, švédština, ukrajinština, ruština, japonština, korejština, tradiční čínština, thajština, arabština a portugalština v evropské i brazilské variantě. Aplikace se ve výchozím nastavení řídí jazykem systému, nebo si na každém zařízení můžeš jeden pevně nastavit v Nastavení > Datum a jazyk > Jazyk.",
         "Překlady jsou zdarma pro všechny, ne bonus k Pro. Další jazyky jsou v plánu; pokud ten tvůj chybí, napiš nám na [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) nebo [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
     "translation-quality": {
       "q": "Jak vznikají překlady aplikace?",
       "a": [
-        "Nejdřív píšeme angličtinu. Každý jazyk pak přeloží agent AI podle společného glosáře, v registru stanoveném pro daný jazyk, a druhý agent před vydáním zkontroluje každou dávku z hlediska přesnosti, terminologie a registru. Rodilí mluvčí procházejí vzorek, nejdřív nejnovější jazyky a texty o zabezpečení, přihlášení a platbách, a dvě automatické kontroly zastaví sestavení, dokud nějaký překlad chybí nebo je zastaralý. Překlady jsou v každém tarifu, nikdy jako příplatek k Pro.",
+        "Nejdřív píšeme angličtinu. Každý jazyk pak přeloží agent AI podle společného glosáře, v registru stanoveném pro daný jazyk, a druhý agent před vydáním zkontroluje každou dávku z hlediska přesnosti, terminologie a registru. Rodilí mluvčí procházejí vzorek, nejdřív nejnovější jazyky a texty o zabezpečení, přihlášení a platbách, a dvě automatické kontroly zastaví sestavení, dokud nějaký překlad chybí nebo je zastaralý. Překlady jsou zdarma v každém tarifu, nejsou výhodou vyhrazenou pro Pro.",
         "Kterýkoli z nich můžeš vylepšit. Jestli ti nějaká věta v tvém jazyce zní křivě, [nahlas překlad](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues/new?template=translation.yml): svůj jazyk, obrazovku, kde je, a co tam má být místo toho. Opravy vyjdou v další verzi."
       ]
     },
     "markdown-syntax": {
       "q": "Jakou syntaxi Markdownu editor podporuje?",
       "a": [
-        "Standardní Markdown se formátuje naživo, jak píšeš: nadpisy, zdůraznění, přeškrtnutí a zvýraznění, odrážkové a číslované seznamy, seznamy úkolů (Tab a Shift+Tab vnoří každý seznam, checklisty nevyjímaje), citace, oddělovače, vložený kód a bloky kódu se zvýrazněním syntaxe, matematika v řádku i v bloku (KaTeX) a note-linky mezi poznámkami s našeptávačem.",
+        "Standardní Markdown se formátuje naživo, jak píšeš: nadpisy, zdůraznění, přeškrtnutí a zvýraznění, odrážkové a číslované seznamy, seznamy úkolů (Tab a Shift+Tab vnoří každý seznam, včetně seznamů úkolů), citace, oddělovače, vložený kód a bloky kódu se zvýrazněním syntaxe, matematika v řádku i v bloku (KaTeX) a odkazy na poznámky s našeptávačem.",
         "Panel formátování a jeho nabídka Vložit doplní zbytek: tabulky, callouty, které jdou sbalit, podtržení, horní a dolní index, zarovnání textu, barvy textu a zvýraznění, písma, odkazy, obrázky a přílohy. Všechno se dá vrátit do Markdownu: odkaz „Zobrazit markdown“ pod každou poznámkou odhalí zdrojový text a exporty jsou čisté soubory .md, takže nic z toho, co napíšeš, není uzamčené v proprietárním formátu."
       ]
     },
@@ -418,28 +422,28 @@
       "q": "Jak fungují úkoly?",
       "a": [
         "Každý řádek, který v jakékoli poznámce napíšeš jako - [ ], se stane úkolem a zobrazení Úkoly v postranním panelu je posbírá na jedno místo. Když tam úkol odškrtneš, změna se propíše do poznámky, ve které leží, a otevřením úkolu skočíš do té poznámky. Není tu žádná samostatná databáze úkolů, kterou by bylo potřeba udržovat: úkoly jsou prostě řádky ve tvých poznámkách, zašifrované jako všechno ostatní.",
-        "Pole pro rychlé přidání nahoře v Úkolech připisuje do poznámky Rychlé úkoly (vytvoří se sama při prvním použití), takže zachytit nápad na úkol stojí jedno stisknutí klávesy, ne rozhodování, kam ho zařadit. Stejné zobrazení nabízí tři rozvržení (Hybridní, Souhrnné, Seznam), přepínač hotových úkolů a hledání v úkolech, a tlačítko Nová v zobrazení Vše umí založit poznámku s úkoly přímo."
+        "Pole pro rychlé přidání nahoře v Úkolech připisuje do poznámky Quick Tasks (vytvoří se sama při prvním použití), takže zachytit nápad na úkol stojí jedno stisknutí klávesy, ne rozhodování, kam ho zařadit. Stejné zobrazení nabízí tři rozvržení (Hybridní, Souhrnné, Seznam), přepínač hotových úkolů a hledání v úkolech, a tlačítko Nový v zobrazení Vše umí založit poznámku s úkoly přímo."
       ]
     },
     "journal": {
       "q": "Jak funguje deník a co si v něm můžu sledovat?",
       "a": [
         "Deníky jsou samostatné zobrazení pro datované záznamy: jedno klepnutí vytvoří dnešní záznam a tlačítko kalendáře vedle doplní nedávný den, který ti chybí. Záznam je normální poznámka plus volitelné sledované hodnoty: nálada na stupnici 1-10 s 24 značkami emocí, spánek, aktivita, léky, energie, soustředění a další. Odkaz „Nastavit sledování“ uvnitř každého záznamu zapíná a vypíná ty vestavěné a Pro přidává až 10 vlastních (stupnice, čísla, ano/ne).",
-        "Statistiky (v Nastavení nebo přes ikonu statistik v zápatí) mění záznamy na trendy na kartě Pohoda: nálada v čase, grafy spánku a aktivity, dodržování léků. Exporty vznikají na tvém zařízení: „Stáhnout JSON“ je zdarma a Pro přidává „PDF pro lékaře“ na cestu k doktorovi, prompt pro AI připravený ke zkopírování do chatbota podle tvé volby, postřehy o vzorcích a týdenní přehled. Data ze sledování leží uvnitř zašifrovaného záznamu, takže server z nich nepřečte nic."
+        "Statistiky (v Nastavení nebo přes ikonu statistik v zápatí) se otevírají na Přehledu tvého týdne, psaní a pohoda dohromady. Karta Pohoda vykreslí každou sledovanou hodnotu, kterou si zapisuješ, i ty vlastní, v rozsahu, který si vybereš; Prozkoumat vezme jednu hodnotu a ukáže, jaká je tvá nálada ve dnech s ní a bez ní, tentýž den nebo den poté; Vzorce takhle seřadí všechny hodnoty; Léky ukážou dodržování jako kalendář. Exporty vznikají na tvém zařízení: „Stáhnout JSON“ je zdarma a Pro přidává „PDF pro lékaře“ na cestu k doktorovi, prompt pro AI připravený ke zkopírování do chatbota podle tvé volby, porovnání a týdenní přehled. Data ze sledování leží uvnitř zašifrovaného záznamu, takže server z nich nepřečte nic."
       ]
     },
     "bookmarks": {
       "q": "Můžu si do PrivacyNotes uložit záložky z prohlížeče?",
       "a": [
-        "Ano. Záložky jsou samostatný pilíř v postranním panelu, vedle poznámek, úkolů a deníků, a jsou zdarma v každém tarifu. Vlož odkaz do pruhu rychlého přidání a máš ho uložený. Ty stávající si přeneseš takhle: v prohlížeči vyexportuj soubor se záložkami (.html) a přetáhni ho do Nastavení > Import & Export > Import > \"Záložky prohlížeče\". Chrome, Firefox, Safari, Edge, Opera, Brave i Vivaldi obsahují stejný soubor a složky i data přijdou s ním. Safari ho zabalí do .zip, který můžeš přetáhnout, aniž bys ho rozbaloval.",
-        "Tvoje adresy zařízení nikdy neopustí: stránku za odkazem nestahujeme, a proto záložka, kterou přidáš ručně, nese jako název svou doménu, dokud jí nějaký nenapíšeš. Ikony webů jsou jediná výjimka a můžeš je vypnout. Export zapisuje stejný standardní soubor, takže záložky odejdou stejně snadno, jako přišly ([návod na import](/cs/help/import/browser-bookmarks/))."
+        "Ano. Záložky jsou samostatný pilíř v postranním panelu, vedle poznámek, úkolů a deníků, a jsou zdarma v každém tarifu. Vlož odkaz do pruhu rychlého přidání a máš ho uložený. Ty stávající si přeneseš takhle: v prohlížeči vyexportuj soubor se záložkami (.html) a přetáhni ho do Nastavení > Import & Export > Import > „Záložky prohlížeče“. Chrome, Firefox, Safari, Edge, Opera, Brave i Vivaldi obsahují stejný soubor a složky i data přijdou s ním. Safari ho zabalí do .zip, který můžeš přetáhnout, aniž bys ho rozbaloval.",
+        "Tvoje adresy zařízení nikdy neopustí: stránku za odkazem nestahujeme, a proto záložka, kterou přidáš ručně, nese jako název svou doménu, dokud jí nějaký nenapíšeš. Ikony webů jsou jediná výjimka a můžeš je vypnout. Export zapisuje stejný standardní soubor .html, takže záložky odejdou stejně snadno, jako přišly ([návod na import](/cs/help/import/browser-bookmarks/))."
       ]
     },
     "contacts": {
       "q": "Můžu si v PrivacyNotes vést adresář?",
       "a": [
         "Ano. Kontakty jsou samostatný pilíř v postranním panelu, vedle poznámek, úkolů a deníků, a jsou zdarma v každém tarifu. Jeden kontakt pobere jména, čísla, e-maily, adresy, weby, data, firmu i poznámku. Klepnutím na číslo zavoláš, klepnutím na e-mail napíšeš a klepnutím na kterýkoli řádek ho zkopíruješ. Všechno ostatní, co telefon do souboru zapsal, zůstane pod **Také v tomto souboru** a při exportu se zapíše zpátky.",
-        "Ty stávající si přeneseš takhle: v telefonu, na Macu nebo v Google Contacts vyexportuj vizitku vCard (.vcf) a přetáhni ji do Nastavení > Import & Export > Import > \"Kontakty (vCard)\". Když stejný soubor přetáhneš i později, lidé, které už máš, se spárují místo toho, aby se zdvojili. Export zapíše běžnou vizitku vCard, takže adresář odejde stejně snadno, jako přišel ([víc o importu](/cs/help/import-from-other-apps/))."
+        "Ty stávající si přeneseš takhle: v telefonu, na Macu nebo v Google Contacts vyexportuj vizitku vCard (.vcf) a přetáhni ji do Nastavení > Import & Export > Import > „Kontakty (vCard)“. Když stejný soubor přetáhneš i později, lidé, které už máš, se spárují místo toho, aby se zdvojili. Export zapíše běžnou vizitku vCard, takže adresář odejde stejně snadno, jako přišel ([víc o importu](/cs/help/import-from-other-apps/))."
       ]
     },
     "what-to-keep": {
@@ -447,21 +451,22 @@
       "a": [
         "Ty části života, které nepatří do profilu prohlížeče ani do adresáře v telefonu. Záložky, kontakty a trezor stojí vedle těch, které prohlížeč a telefon dávno synchronizují do Googlu, Applu nebo Mozilly, a drží to, co odtamtud radši vynecháš. Všechny tři jsou zdarma v každém tarifu.",
         "- Odkazy o zdraví, penězích, právu nebo hledání práce, na počítači, který s někým sdílíš\n- Rešerše k jednomu tématu, pohromadě místo zapadlá mezi tisíci záložkami prohlížeče\n- Lékařka, právník, majitel bytu a personalista, mimo adresář, který se synchronizuje s iCloudem nebo Googlem\n- Kontakt i s tím, co k němu patří: tvoje poznámky, data, soubor, který ti poslal\n- Obnovovací fráze, licenční klíče, kódy k trezoru a čísla pasů, tedy tajemství, která nejsou přihlašovací údaje\n- Těch pár přihlašovacích údajů, které nikdy nechceš mít v rozšíření prohlížeče",
-        "Každý z nich je řádek v postranním panelu. Když některý chybí, otevři možnosti postranního panelu nad štítky a zapni **Zobrazit na postranním panelu**. Ty stávající vtáhneš ze souboru a stejně tak je zase dostaneš ven ([záložky](/cs/help/bookmarks/), [kontakty](/cs/help/contacts/), [trezor](/cs/help/vault/))."
+        "Každý z nich je řádek v postranním panelu. Když některý chybí, otevři možnosti postranního panelu nad značkami a zapni **Zobrazit na postranním panelu**. Ty stávající vtáhneš ze souboru a stejně tak je zase dostaneš ven ([záložky](/cs/help/bookmarks/), [kontakty](/cs/help/contacts/), [trezor](/cs/help/vault/))."
       ]
     },
     "keyboard-shortcuts": {
       "q": "Jaké jsou klávesové zkratky?",
       "a": [
         "Stiskni ? kdekoli v aplikaci a zobrazí se vestavěný přehled, který najdeš i v Nastavení > O aplikaci. Zkratky pokrývají navigaci, akce s poznámkami, formátování a zobrazení - a na Windows a Linuxu se každé Cmd čte jako Ctrl a Option jako Alt.",
-        "To nejdůležitější: Cmd+K aktivuje hledání, J a K posouvají po seznamu, Alt+Shift+N začne novou poznámku, Cmd+Backspace hodí vybranou do koše, Cmd+, otevře Nastavení. Při psaní: Cmd+B tučné, Cmd+I kurzíva, Cmd+Shift+K vloží odkaz, Cmd+Shift+9 začne seznam úkolů, Cmd+F hledá v poznámce, Cmd+Shift+O přepíná osnovu. Cmd+\\ skryje postranní panel, Cmd+Shift+L přepne téma, Cmd+Shift+F zapne režim Zen (Pro) a Esc vycouvá skoro z čehokoli."
+        "To nejdůležitější: Cmd+K přejde na libovolnou položku nebo nastavení podle názvu a jeho poslední řádek prohledá text otevřené sekce; / aktivuje hledání, J a K posouvají po seznamu, Cmd+[ a Cmd+] přecházejí zpět a vpřed po otevřených položkách, Alt+Shift+N začne novou poznámku, Cmd+Backspace hodí vybranou do koše, Cmd+, otevře Nastavení. Při psaní: Cmd+B tučné, Cmd+I kurzíva, Cmd+Shift+K vloží odkaz, Cmd+Shift+9 začne seznam úkolů, Cmd+F hledá v poznámce, Cmd+Shift+O přepíná osnovu, Cmd+Shift+M přepne na zobrazení Markdown. Cmd+\\ nebo Cmd+Shift+D skryje postranní panel, Cmd+Shift+L přepne téma, Cmd+Shift+F zapne režim Zen (Pro) a Esc vycouvá skoro z čehokoli, včetně filtrů. Napiš > do hledání nebo do Cmd+K (nebo stiskni > mimo textové pole) a najdeš jakýkoli příkaz podle názvu a spustíš ho.",
+        "Aplikace pro počítač přidávají klávesy, které si prohlížeč nechává pro sebe: Cmd+N pro novou poznámku, Cmd+Shift+N pro novou položku libovolného typu, Cmd+W pro zavření karty, Ctrl+Tab pro přepínání mezi kartami, Cmd+1 až Cmd+9 pro sekce postranního panelu a Cmd+Shift+P pro seznam příkazů."
       ]
     },
     "hotkey-cheat-sheet": {
       "q": "Existuje tisknutelný přehled zkratek?",
       "a": [
         "Ano. [Přehled k vytištění](/help/keyboard-shortcuts/cheat-sheet) shrnuje všechny zkratky na jedné stránce A4 ve dvou sloupcích - připravený k pověšení vedle obrazovky. Vzniká ze stejného seznamu, který zobrazuje aplikace, takže nikdy nemůže zaostat za vydáním.",
-        "Otevři ho a stiskni tlačítko Tisk (nebo Cmd+P / Ctrl+P). Pokud chceš soubor místo papíru, zvol v tiskovém okně jako cíl PDF. Přehled je odkazovaný také nad a pod seznamem zkratek v aplikaci (Nastavení > O aplikaci > Zkratky) a v patičce tohoto webu."
+        "Otevři ho a stiskni tlačítko Print (nebo Cmd+P / Ctrl+P). Pokud chceš soubor místo papíru, zvol v tiskovém okně jako cíl PDF. Přehled je odkazovaný také nad a pod seznamem zkratek v aplikaci (Nastavení > O aplikaci > Zkratky) a v patičce tohoto webu."
       ]
     },
     "ask-an-ai": {
@@ -483,14 +488,14 @@
       "q": "Biometrické odemknutí přestalo fungovat. Co s tím?",
       "a": [
         "O přístup nikdy nepřijdeš. Uzamykací obrazovka vždycky nabízí náhradní cestu: „Odemknout PINem“ nebo „Přihlásit se obnovovací frází“. Biometrika je lokální branka, ne šifrovací klíč, takže tvoje poznámky jsou tak i tak nedotčené.",
-        "Pak sprav samotnou branku. Registrace je pro každé zařízení zvlášť, takže nový telefon, čerstvý profil prohlížeče nebo reinstalace potřebují novou registraci: Nastavení > Zabezpečení > „Zámek“, vypnout a pak znovu „Zapnout biometrické odemknutí“. Vyžaduje to taky „Věřit tomuto zařízení“ (nedůvěryhodná sezení se zavřením karty vymažou) a hardware s platformním autentikátorem (Touch ID, Face ID, Windows Hello). Pokud místo systémového dialogu vyskočí správce hesel jako Bitwarden nebo 1Password, zavři ho a zkus to znovu, nebo mu pro tuhle stránku vypni zachytávání passkeys - aplikace si žádá vestavěný autentikátor, ale někteří správci ho stejně odchytí."
+        "Pak sprav samotnou branku. Registrace je pro každé zařízení zvlášť, takže nový telefon, čerstvý profil prohlížeče nebo reinstalace potřebují novou registraci: Nastavení > Zabezpečení > „Zámek“, vypnout a pak znovu „Zapnout biometrické odemknutí“. Vyžaduje to taky „Věřit tomuto zařízení“ (nedůvěryhodné relace se zavřením karty vymažou) a hardware s platformním autentikátorem (Touch ID, Face ID, Windows Hello). Pokud místo systémového dialogu vyskočí správce hesel jako Bitwarden nebo 1Password, zavři ho a zkus to znovu, nebo mu pro tuhle stránku vypni zachytávání passkeys - aplikace si žádá vestavěný autentikátor, ale někteří správci ho stejně odchytí."
       ]
     },
     "phrase-compromised": {
       "q": "Unikla mi obnovovací fráze. Co mám dělat?",
       "a": [
         "Ber ten trezor jako spálený. Frázi nejde změnit ani vyměnit, protože právě fráze je klíč, kterým je všechno zašifrované - řešením je tedy přesun do nového trezoru. Nejdřív si ve starém účtu vyexportuj všechno: Nastavení > Import & Export > Export > „Záloha PrivacyNotes (.zip)“.",
-        "Odhlas se, vytvoř nový trezor (nových 12 slov) a export nahraj zpátky přes Nastavení > Import & Export > Obnovit > „Kompletní záloha (.zip)“. Pak smaž starý účet z jakéhokoli zařízení, které je do něj ještě přihlášené: Nastavení > Účet > „Smazat účet a data...“. Tím zmizí jeho synchronizovaná data a zavřou se dveře komukoli, kdo drží starou frázi. Pokud se přihlašuješ přes Google, Apple nebo GitHub, smaž nejdřív starý účet a pak se znovu přihlas přes Google, Apple nebo GitHub, aby vznikl nový trezor.",
+        "Odhlas se, vytvoř nový trezor (nových 12 slov) a export nahraj zpátky přes Nastavení > Import & Export > Obnovit > „Kompletní záloha (.zip)“. Pak smaž starý účet z jakéhokoli zařízení, které je do něj ještě přihlášené: Nastavení > Účet > „Smazat účet a data...“. Tím zmizí jeho synchronizovaná data a zavřou se dveře komukoli, kdo drží starou frázi. Pokud se přihlašuješ přes Google, Apple nebo GitHub, smaž nejdřív starý účet a pak se znovu přihlas stejným účtem Google, Apple nebo GitHub, aby vznikl nový trezor.",
         "Dvě věci vyřeš nejdřív: zruš aktivní rozšíření úložiště, protože smazání to vyžaduje, a počítej s tím, že Pro zůstane na účtu, kde bylo koupené, místo aby přešlo do nového trezoru. Novou frázi pak měj ve správci hesel a nikde jinde: v tom je celá prevence."
       ]
     },
@@ -512,7 +517,7 @@
       "q": "Co se stane, když překročím limit úložiště?",
       "a": [
         "Nic se nikdy nesmaže. Když se nové změny přestanou vejít, synchronizace to řekne: „Úložiště je plné. Některé poznámky se nepodařilo synchronizovat.“ Existující data se synchronizují dál, nový přírůstek ne. Pokud nad limitem zůstaneš, začne 90denní odpočet zobrazený jako oranžový pruh. Čtení, zmenšování věcí, mazání i exporty fungují celou dobu.",
-        "Po 90 dnech nad limitem se synchronizace pozastaví: pruh zčervená („Synchronizace je pozastavená. Limit úložiště překračuješ už 90+ dní.“). Aplikace na každém zařízení dál plně funguje, změny prostě zůstanou lokální, dokud se nedostaneš pod limit. Náprava je okamžitá a svépomocná: [uvolni místo](/cs/help/storage-usage/) - vysypání koše se počítá - nebo si přidej úložiště v Nastavení > Úložiště a synchronizace se sama rozjede. Je to záměrný opak služeb, které data nad limitem automaticky mažou."
+        "Po 90 dnech nad limitem se synchronizace pozastaví: pruh zčervená („Synchronizace je pozastavena. Limit úložiště překračuješ už víc než 90 dní.“). Aplikace na každém zařízení dál plně funguje, změny prostě zůstanou lokální, dokud se nedostaneš pod limit. Náprava je okamžitá a svépomocná: [uvolni místo](/cs/help/storage-usage/) - vysypání koše se počítá - nebo si přidej úložiště v Nastavení > Úložiště a synchronizace se sama rozjede. Je to záměrný opak služeb, které data nad limitem automaticky mažou."
       ]
     },
     "backup-strategy": {
@@ -526,7 +531,7 @@
     "restore-backup": {
       "q": "Jak obnovím zálohu?",
       "a": [
-        "Otevři Nastavení > Import & Export > Obnovit a vyber formát, který máš. \"Kompletní záloha (.zip)\" vezme celý export: poznámky, deníky, položky trezoru, úkoly, obrázky, zvuk a soubory. \"Šifrovaná záloha (.pnbackup, .pnbackupz)\" vezme oba šifrované exporty. Soubor se čte a dešifruje na tvém zařízení a obnovení je zdarma v každém tarifu.",
+        "Otevři Nastavení > Import & Export > Obnovit a vyber formát, který máš. „Kompletní záloha (.zip)“ vezme celý export: poznámky, deníky, položky trezoru, úkoly, obrázky, zvuk a soubory. „Šifrovaná záloha (.pnbackup, .pnbackupz)“ vezme oba šifrované exporty. Soubor se čte a dešifruje na tvém zařízení a obnovení je zdarma v každém tarifu.",
         "Obnova páruje poznámky podle identifikátoru. Poznámka, kterou už máš, se aktualizuje jen tehdy, když je verze v záloze novější, poznámka v koši se z něj vrátí, poznámka, kterou nemáš, se přidá jednou, a opakovaná obnova stejného souboru nic nezmění, pokud mezitím obnovenou poznámku neupravíš: pak se starší verze vrátí vedle tvé úpravy. Soubor bez našich identifikátorů, z jiné aplikace nebo ze zálohy vytvořené starší verzí této aplikace, přidá své poznámky pokaždé jako nové. Oba šifrované formáty otevřeš jen v účtu, který je vytvořil, protože jsou zašifrované jeho klíčem z fráze; .zip padne do libovolného trezoru ([jakou zálohu dělat](/cs/help/backup-strategy/))."
       ]
     },
@@ -540,14 +545,14 @@
     "storage-usage": {
       "q": "Co se počítá do úložiště a jak uvolním místo?",
       "a": [
-        "Všechno, co synchronizuješ, v zašifrované velikosti: text poznámek, obrázky, zvukové nahrávky a přílohy. Ukazatel v Nastavení > Úložiště zobrazuje součet; vlastní zábor každé poznámky najdeš v jejích možnostech jako „Využité úložiště“. Poznámky v koši se počítají, dokud koš nevysypeš.",
+        "Všechno, co synchronizuješ, v zašifrované velikosti: text poznámek, obrázky, zvukové nahrávky a přílohy. Ukazatel v Nastavení > Úložiště zobrazuje součet; velikost každé poznámky najdeš v jejích možnostech jako „Využité místo“. Poznámky v koši se počítají, dokud koš nevysypeš.",
         "Nejrychleji uvolníš místo tak, že otevřeš Soubory, seřadíš je podle velikosti a smažeš ty největší - přílohy převálcují text téměř v každém účtu. Potom vysyp koš: zobrazení Koš ukazuje, kolik místa „Vysypat“ uvolní. Samotný text kvótu skoro nikdy nezaplní; i bezplatných 50 MB unese desítky tisíc obyčejných poznámek."
       ]
     },
     "upload-failed": {
       "q": "Proč se nahrání souboru nepodařilo?",
       "a": [
-        "Chyba ti řekne, na který strop jsi narazil. Na soubor: 5 MB ve Free, 50 MB v Pro, 100 MB s jakýmkoli rozšířením úložiště. Celkem: všechno, co synchronizuješ, se musí vejít do úložiště tvého účtu (50 MB Free, 500 MB Pro, více s rozšířeními), takže plná kvóta shodí nahrání i u malého souboru. Přijímáme jakýkoli typ souboru.",
+        "Chyba ti řekne, na který strop jsi narazil. Na soubor: 5 MB v bezplatném tarifu, 50 MB v Pro, 100 MB s jakýmkoli rozšířením úložiště. Celkem: všechno, co synchronizuješ, se musí vejít do úložiště tvého účtu (50 MB v bezplatném tarifu, 500 MB v Pro, více s rozšířeními), takže plná kvóta shodí nahrání i u malého souboru. Přijímáme jakýkoli typ souboru.",
         "Zkontroluj ukazatel úložiště v zobrazení Soubory nebo v Nastavení > Úložiště a pak vyber nejlevnější řešení: [uvolni místo](/cs/help/storage-usage/), přejdi na vyšší tarif, nebo soubor zmenši (fotky z telefonu mají v originále často několik MB; komprimovaný JPEG je zlomek velikosti). Nahrávání, které selže kvůli chybějícímu připojení, se neztratí: soubor zůstane na tomto zařízení a nahraje se sám, jakmile budeš zpátky online, a do té doby ho Nastavení > ID & Sync počítá jako čekající."
       ]
     },
@@ -583,7 +588,7 @@
     "pro-not-active": {
       "q": "Pro mám zaplacené, ale není aktivní. Co teď?",
       "a": [
-        "Dej tomu minutu a pak aplikaci obnov. Po platbě se aplikace asi 20 sekund dotazuje serveru a odemkne se sama, a obnovení stránky navíc zkontroluje stav Pro znovu při spuštění. Pokud platba dorazila, ale aktivace se vleče, ukáže se pruh s hláškou „Platba přijata, ale aktivace Pro trvá déle než obvykle“ - tenhle stav se skoro vždycky vyřeší sám. Ve verzích z obchodů se nákup, který se nepodaří ověřit, zkusí znovu po restartu aplikace, a nákup, který se nikdy neaktivuje, obchod automaticky vrátí do 3 dnů.",
+        "Dej tomu minutu a pak aplikaci obnov. Po platbě se aplikace asi 20 sekund dotazuje serveru a odemkne se sama, a obnovení stránky navíc zkontroluje stav Pro znovu při spuštění. Pokud platba dorazila, ale aktivace se vleče, ukáže se pruh s hláškou „Platba byla přijata, ale aktivace Pro trvá déle než obvykle“ - tenhle stav se skoro vždycky vyřeší sám. Ve verzích z obchodů se nákup, který se nepodaří ověřit, zkusí znovu po restartu aplikace, a peníze za nákup, který se nikdy neaktivuje, obchod automaticky vrátí do 3 dnů.",
         "Pořád zamčeno? Skoro vždycky jde o záměnu účtů: Pro se váže na účet, který byl přihlášený při nákupu, takže jiná fráze - nebo přihlášení přes Google, Apple nebo GitHub místo tvého trezoru na frázi - je jiný účet. Porovnej ID účtu v Nastavení > ID & Sync na zařízení, kde nákup proběhl. Pokud to opravdu drhne, [nahlas to](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) a přilož to ID účtu: identifikuje nákup a o tvých poznámkách neprozradí nic."
       ]
     },
@@ -599,14 +604,14 @@
       "q": "Přenášejí se nákupy mezi webem, Google Play a App Storem?",
       "a": [
         "Ano. Pro a úložiště se váží na tvůj účet, ne na platformu nebo obchod. Kup na webu a každá aplikace, do které se přihlásíš, má Pro, včetně verzí z obchodů; kup ve verzi z obchodu a web i aplikace pro počítač se odemknou stejně. Obnovením je samo přihlášení, protože nárok jde za účtem. Verze z obchodu má navíc tlačítko **Obnovit nákupy** v Nastavení > Účet, které se zeptá Applu nebo Googlu, co vlastníš, a po přeinstalaci to zase odemkne.",
-        "Jediný rozdíl je v tom, kdo ti účtuje. Nákupy na webu jdou přes Paddle a spravují se v aplikaci v Nastavení > Úložiště. Nákupy uvnitř verze z obchodu (App Store dnes, Google Play až ta aplikace vyjde) účtuje ten obchod: opakované úložiště se ruší v nastavení předplatných daného obchodu a vrácení peněz se řídí jeho procesem. Tak či tak je to stejný účet a stejné Pro všude - včetně platforem, které ještě neexistují."
+        "Jediný rozdíl je v tom, kdo ti účtuje. Nákupy na webu jdou přes Paddle a spravují se v aplikaci v Nastavení > Úložiště. Nákupy uvnitř verze z obchodu (App Store dnes, Google Play až ta aplikace vyjde) účtuje ten obchod: předplatné rozšíření úložiště se ruší v nastavení předplatných daného obchodu a vrácení peněz se řídí jeho procesem. Tak či tak je to stejný účet a stejné Pro všude - včetně platforem, které ještě neexistují."
       ]
     },
     "play-vs-apk": {
       "q": "Obtainium, přímé APK, nebo Google Play: co si na Android stáhnout?",
       "a": [
         "Vezmi si [Obtainium](/cs/help/obtainium/), pokud chceš, aby se aplikace udržovala aktuální sama, a přímý soubor APK, pokud kvůli tomu radši nechceš mít druhou aplikaci. Google Play zatím není spuštěný, takže dnes se vybírá mezi těmito dvěma. Obě cesty ti dají stejný soubor podepsaný stejným klíčem, takže můžeš kdykoli přejít oběma směry: Obtainium převezme APK, které sis nainstaloval ručně, a APK z webu se nainstaluje přes to od Obtainia.",
-        "Rozmyslet si to jinak můžeš i později, bez potíží. Před každým přechodem, který vyžaduje nejdřív odinstalovat, si ověř, že aplikace ukazuje \"Synced\", a měj po ruce svých 12 slov nebo přihlašovací QR kód z jiného zařízení, protože odinstalace smaže lokální kopii."
+        "Rozmyslet si to jinak můžeš i později, bez potíží. Před každým přechodem, který vyžaduje nejdřív odinstalovat, si ověř, že aplikace ukazuje „Synced“, a měj po ruce svých 12 slov nebo přihlašovací QR kód z jiného zařízení, protože odinstalace smaže lokální kopii."
       ]
     },
     "markdown-folder": {
@@ -626,21 +631,21 @@
     "folders": {
       "q": "Jak fungují složky a potřebuju na ně Pro?",
       "a": [
-        "Složky se dají zanořovat, jak hluboko chceš, a žijí v postranním panelu. Procházení je zdarma v každém tarifu. Založit složku, přejmenovat ji nebo do ní přesunout poznámku (\"Nová složka\" a \"Přesunout do složky\") je místo, kde začíná Pro, aby bezplatný účet vždycky přečetl strukturu, kterou naimportoval nebo postavil v době Pro. Řádek \"Bez složky\" vypíše každou poznámku, která neleží v žádné.",
-        "Poznámka leží v jedné složce, stejně jako soubor. Sáhni po [štítcích](/cs/help/tags/), když něco patří na dvě místa zároveň. Složka je uvnitř šifrované poznámky, takže server vidí tvou strukturu stejně málo jako tvůj text."
+        "Složky se dají zanořovat, jak hluboko chceš, a žijí v postranním panelu. Procházení je zdarma v každém tarifu. Založit složku, přejmenovat ji nebo do ní přesunout poznámku („Nová složka“ a „Přesunout do složky“) je místo, kde začíná Pro, aby bezplatný účet vždycky přečetl strukturu, kterou naimportoval nebo postavil v době Pro. Řádek „Bez složky“ vypíše každou poznámku, která neleží v žádné.",
+        "Poznámka leží v jedné složce, stejně jako soubor. Sáhni po [značkách](/cs/help/tags/), když něco patří na dvě místa zároveň. Složka je uvnitř šifrované poznámky, takže server vidí tvou strukturu stejně málo jako tvůj text."
       ]
     },
     "tags": {
-      "q": "Jak fungují štítky?",
+      "q": "Jak fungují značky?",
       "a": [
-        "Každá otevřená poznámka má pod nadpisem řádek se štítky. Napiš slovo a stiskni Enter, čárku nebo #, a štítek se změní v odznáček. Postranní panel vypisuje každý štítek, který používáš, a kliknutí filtruje seznam na tyhle poznámky. Štítek můžeš přejmenovat všude naráz, dát ho mezi oblíbené, aby zůstal připnutý nahoře, nebo ho smazat, s poznámkami pod ním i bez nich.",
-        "Štítky a složky řeší jiné problémy: poznámka leží v jedné složce, ale nese tolik štítků, kolik chceš, a přesně to potřebuješ, když je něco zároveň \"práce\" i \"faktura\". Importy štítkují podle zdroje, takže všechno z jiné aplikace přistane s vlastním štítkem a snadno se to najde nebo později uklidí."
+        "Každá otevřená poznámka má pod nadpisem řádek se značkami. Napiš slovo a stiskni Enter, čárku nebo #, a značka se změní v odznáček. Postranní panel vypisuje každou značku, kterou používáš, a kliknutí filtruje seznam na tyhle poznámky. Značku můžeš přejmenovat všude naráz, přidat ji do oblíbených, aby zůstala připnutá nahoře, nebo ji smazat, s poznámkami pod ní i bez nich.",
+        "Značky a složky řeší jiné problémy: poznámka leží v jedné složce, ale nese tolik značek, kolik chceš, a přesně to potřebuješ, když je něco zároveň „práce“ i „faktura“. Importy přidávají značky podle zdroje, takže všechno z jiné aplikace přistane s vlastní značkou a snadno se to najde nebo později uklidí."
       ]
     },
     "note-links": {
       "q": "Jak propojím jednu poznámku s druhou?",
       "a": [
-        "Napiš [[ kdekoli v poznámce a začni psát název. Vyber poznámku ze seznamu a vznikne odkaz na poznámku, na který se dá kliknout. Když nic nesedí, zvol \"Vytvořit\" a nová poznámka se v jednom kroku založí i propojí. Tlačítko \"Odkázat na jinou poznámku\" na liště dělá totéž.",
+        "Napiš [[ kdekoli v poznámce a začni psát název. Vyber poznámku ze seznamu a vznikne odkaz na poznámku, na který se dá kliknout. Když nic nesedí, zvol „Vytvořit“ a nová poznámka se v jednom kroku založí i propojí. Tlačítko „Odkaz na jinou poznámku“ na liště dělá totéž. Chceš-li poznámku otevřít u jedné z jejích částí, napiš za název # a vyber nadpis. Ikona odkazu u nadpisu v osnově takový odkaz zkopíruje za tebe.",
         "Odkazy na poznámky žijí uvnitř poznámky, takže se exportují spolu s ní a přežijí import: trezor Obsidianu si své odkazy nechá a odkazy poznámek z Evernote se cestou převedou. Když chceš najít, co na poznámku míří, vyhledej její název: každá poznámka, která na ni odkazuje, ta slova obsahuje."
       ]
     },
@@ -654,65 +659,65 @@
     "share-with-someone": {
       "q": "Můžu poznámku někomu poslat nebo na ní pracovat společně?",
       "a": [
-        "Pošli [vyhořelou poznámku](/cs/help/burn-notes/): změní jakoukoli poznámku v jednorázový šifrovaný odkaz, který se zničí ve chvíli, kdy si ho někdo přečte, a to pokryje heslo, adresu nebo koncept. Pro něco, co si druhá strana nechá, exportuj poznámku jako Markdown, HTML nebo PDF a pošli soubor.",
+        "Pošli [sebezničující poznámku](/cs/help/burn-notes/): změní jakoukoli poznámku v jednorázový šifrovaný odkaz, který se zničí ve chvíli, kdy si ho někdo přečte, a to pokryje heslo, adresu nebo koncept. Pro něco, co si druhá strana nechá, exportuj poznámku jako Markdown, HTML nebo PDF a pošli soubor.",
         "Poznámka, kterou dva lidé upravují živě, by byl jiný produkt: server by musel podávat klíče mezi lidmi, a držet server dál od tvých klíčů je tady celý ten návrh. Jeden účet je jeden člověk s jednou frází, a právě proto je „tvoje poznámky přečíst nemůžeme“ fakt, ne pravidlo."
       ]
     },
     "add-second-device": {
       "q": "Jak se přihlásím na druhém zařízení?",
       "a": [
-        "Na zařízení, které už používáš, otevři Nastavení > Zabezpečení > Fráze. Najdeš tam svých 12 slov a přihlašovací QR kód. Na novém zařízení zvol \"Přihlášení frází\" a naskenuj ten QR kód fotoaparátem, nahraj jeho fotku, nebo slova napiš. Tvoje poznámky dorazí během pár sekund.",
+        "Na zařízení, které už používáš, otevři Nastavení > Zabezpečení > Fráze. Najdeš tam svých 12 slov a přihlašovací QR kód. Na novém zařízení zvol „Přihlášení frází“ a naskenuj ten QR kód fotoaparátem, nahraj jeho fotku, nebo slova napiš. Tvoje poznámky dorazí během pár sekund.",
         "Bezplatný účet pokryje 2 zařízení, Pro tolik, kolik chceš, a dva prohlížeče na jednom počítači se počítají jako jedno zařízení. Zacházej s QR kódem přesně jako s frází, kterou nese: nikomu ho neukazuj a nikdy ho nenech spadnout do fotogalerie, která se synchronizuje do cizího cloudu."
       ]
     },
     "pause-sync": {
-      "q": "Můžu zastavit synchronizaci zařízení, aniž bych se odhlásil?",
+      "q": "Můžu zastavit synchronizaci zařízení bez odhlášení?",
       "a": [
-        "Ano. Otevři Nastavení > ID & Sync a stiskni \"Pozastavit synchronizaci\". To zařízení přestane posílat na server cokoli: poznámky, nastavení i soubory. Píšeš přesně jako předtím, všechno se hromadí lokálně, a jakmile pokračuješ, jde to nahoru.",
-        "Pauza patří jen tomu zařízení. Necestuje na ostatní a nikdy se sama nezruší, protože přepínač, který říká \"tohle zařízení s nikým nemluví\", nesmí vrátit zpátky nic než ty. Jedna věc běží dál záměrně: malý signál, díky kterému se odebrané zařízení dozví, že bylo odebráno. Takhle se [ztracené zařízení](/cs/help/lost-device/) stejně smaže."
+        "Ano. Otevři Nastavení > ID & Sync a stiskni „Pozastavit synchronizaci“. To zařízení přestane posílat na server cokoli: poznámky, nastavení i soubory. Píšeš přesně jako předtím, všechno se hromadí lokálně, a jakmile pokračuješ, jde to nahoru.",
+        "Pauza patří jen tomu zařízení. Necestuje na ostatní a nikdy se sama nezruší, protože přepínač, který říká „tohle zařízení s nikým nemluví“, nesmí vrátit zpátky nic než ty. Jedna věc běží dál záměrně: malý signál, díky kterému se odebrané zařízení dozví, že bylo odebráno. Takhle se [ztracené zařízení](/cs/help/lost-device/) stejně smaže."
       ]
     },
     "wifi-only": {
       "q": "Můžu aplikaci zabránit v odesílání souborů přes mobilní data?",
       "a": [
-        "Na Androidu ano. Otevři Nastavení > ID & Sync a zapni \"Soubory jen přes wi-fi\". Poznámky se dál synchronizují na jakémkoli připojení, protože text je maličký. Čekají jen obrázky a přílohy, a jdou nahoru ve chvíli, kdy se wi-fi vrátí, místo aby čekaly na další pokus.",
-        "Přepínač bydlí na Androidu, protože Android je jediná platforma, jejíž zobrazení aplikace spolehlivě hlásí wi-fi proti mobilní síti, a přepínač, který hádá, je horší než žádný. Na placeném připojení jinde odvede [\"Pozastavit synchronizaci\"](/cs/help/pause-sync/) stejnou práci hrubší rukou a funguje všude."
+        "Na Androidu ano. Otevři Nastavení > ID & Sync a zapni „Soubory jen přes wi-fi“. Poznámky se dál synchronizují na jakémkoli připojení, protože text je maličký. Čekají jen obrázky a přílohy, a jdou nahoru ve chvíli, kdy se wi-fi vrátí, místo aby čekaly na další pokus.",
+        "Přepínač je na Androidu, protože Android je jediná platforma, na které aplikace spolehlivě rozliší wi-fi a mobilní připojení, a přepínač, který hádá, je horší než žádný. Na připojení účtovaném podle objemu dat jinde odvede [„Pozastavit synchronizaci“](/cs/help/pause-sync/) stejnou práci hrubší rukou a funguje všude."
       ]
     },
     "clear-browser-data": {
       "q": "Co se stane, když smažu data prohlížeče nebo cookies?",
       "a": [
         "Webová aplikace drží tvoje poznámky v úložišti samotného prohlížeče, takže smazání dat webu PrivacyNotes smaže místní kopii a odhlásí tě. Všechno, co už se zesynchronizovalo, je v bezpečí: přihlas se svou frází z 12 slov a vrátí se to. Co se ještě nezesynchronizovalo, je pryč, protože jsme o tom nikdy neměli kopii.",
-        "Udělej tedy dvě věci. Zkontroluj, že patička říká \"Synced\", než cokoli smažeš, a nech si frázi ve správci hesel, protože vyprázdněný prohlížeč si o ni slušně neřekne. Desktopové a mobilní aplikace se to netýká vůbec: mají vlastní úložiště, kterého se úklid prohlížeče nikdy nedotkne."
+        "Udělej tedy dvě věci. Zkontroluj, že patička říká „Synced“, než cokoli smažeš, a nech si frázi ve správci hesel, protože vyprázdněný prohlížeč si o ni slušně neřekne. Desktopové a mobilní aplikace se to netýká vůbec: mají vlastní úložiště, kterého se úklid prohlížeče nikdy nedotkne."
       ]
     },
     "android-backup": {
       "q": "Jsou moje poznámky v záloze telefonu s Androidem?",
       "a": [
         "Ne. Aplikace pro Android drží svoje data mimo cloudovou zálohu telefonu, takže nic z nich nedojde na Google Disk. Důvodem je klíč, ne poznámky: tam, kde máš zvolené **Věřit tomuto zařízení**, zůstává tvých 12 slov na tom zařízení kvůli trvalému přihlášení, a cloudová záloha není místo pro klíč, který tvoje poznámky dešifruje.",
-        "Nový telefon proto začíná prázdný: nainstaluj aplikaci, přihlas se svými 12 slovy a přijde všechno, co se zsynchronizovalo. Obnova na tuto první synchronizaci počká, takže záloha, kterou si přineseš, se spáruje s tím, co účet obsahuje, místo aby se přidala dvakrát. Co se nikdy nezsynchronizovalo, žije jen ve starém telefonu, takže nejdřív zkontroluj, že patička říká \"Synced\", nebo si s sebou vezmi „Záloha PrivacyNotes (.zip)“ z Nastavení > Import & Export > Export ([jakou zálohu dělat](/cs/help/backup-strategy/)).",
+        "Nový telefon proto začíná prázdný: nainstaluj aplikaci, přihlas se svými 12 slovy a přijde všechno, co se synchronizovalo. Obnova na tuto první synchronizaci počká, takže záloha, kterou si přineseš, se spáruje s tím, co účet obsahuje, místo aby se přidala dvakrát. Co se nikdy nesynchronizovalo, žije jen ve starém telefonu, takže nejdřív zkontroluj, že patička říká „Synced“, nebo si s sebou vezmi „Záloha PrivacyNotes (.zip)“ z Nastavení > Import & Export > Export ([jakou zálohu dělat](/cs/help/backup-strategy/)).",
         "Přímý přenos z telefonu na telefon při prvním nastavení je něco jiného: některé telefony při něm data aplikací přesunou a Android nedává aplikaci žádný spolehlivý způsob, jak to odmítnout. Ta kopie tvoje dvě zařízení nikdy neopustí, takže starý telefon potom smaž."
       ]
     },
     "print": {
       "q": "Můžu poznámku vytisknout nebo uložit jako PDF?",
       "a": [
-        "Ano. Klikni na poznámku pravým tlačítkem, nebo otevři její nabídku sdílení, a zvol \"Tisk / Uložit jako PDF\". Otevře se systémový dialog tisku, takže ji pošleš na tiskárnu nebo odtud uložíš PDF. Stránka se vysází čistě na bílou a s tvým formátováním, ať v aplikaci používáš jakékoli téma.",
-        "Vzniká na tvém zařízení jako každý jiný [export](/cs/help/export/), takže se kvůli ní nic neodesílá. Pro víc poznámek naráz je označ a exportuj jako HTML: dostaneš jednu tisknutelnou stránku na poznámku. \"PDF pro lékaře\" ve Statistikách je samostatná zpráva o pohodě, postavená přesně na tohle, a vyžaduje Pro."
+        "Ano. Klikni na poznámku pravým tlačítkem, nebo otevři její nabídku sdílení, a zvol „Tisk / Uložit jako PDF“. Otevře se systémový dialog tisku, takže ji pošleš na tiskárnu nebo odtud uložíš PDF. Stránka se vysází čistě na bílém pozadí a s tvým formátováním, ať v aplikaci používáš jakékoli téma.",
+        "Vzniká na tvém zařízení jako každý jiný [export](/cs/help/export/), takže se kvůli ní nic neodesílá. Pro víc poznámek naráz je označ a exportuj jako HTML: dostaneš jednu tisknutelnou stránku na poznámku. „PDF pro lékaře“ ve Statistikách je samostatná zpráva o pohodě, postavená přesně na tohle, a vyžaduje Pro."
       ]
     },
     "note-history": {
       "q": "Můžu dostat zpátky starší verzi poznámky?",
       "a": [
-        "Ano, s Pro. Otevři nabídku \"...\" u poznámky a zvol \"Historie poznámky\", abys prošel a obnovil až 20 předchozích verzí. Obnovením se nic neztrácí: aktuální text se nejdřív uloží jako verze, takže můžeš chodit tam a zpět. Verze jsou šifrované jako samotná poznámka, takže je nepřečteme ani my.",
+        "Ano, s Pro. Otevři nabídku „...“ u poznámky a zvol „Historie“, abys prošel a obnovil až 20 předchozích verzí. Obnovením se nic neztrácí: aktuální text se nejdřív uloží jako verze, takže můžeš chodit tam a zpět. Verze jsou šifrované jako samotná poznámka, takže je nepřečteme ani my.",
         "Snímek vzniká nejvýš jednou za minutu, takže dvě úpravy pár sekund po sobě sdílejí jednu verzi. Historie je jediná Pro funkce, která jde přes server, a proto si ukázková verze drží vlastní lokální kopii. Každý tarif má navíc [koš](/cs/help/trash-auto-delete/), který smazanou poznámku drží 30 dní."
       ]
     },
     "vault-totp": {
       "q": "Uloží Trezor moje 2FA klíče (kódy TOTP / MFA)?",
       "a": [
-        "Ano. Přihlášení v Trezoru má pole \"Kód 2FA\", které bere buď tajemství v base32, nebo celý odkaz otpauth://, a import z Bitwardenu přenese existující klíče. Klíč se šifruje, ukládá a synchronizuje v každém tarifu, i v bezplatném. Pro z něj udělá živý rotující kód s odpočtem, takže vedle nepotřebuješ druhou aplikaci.",
-        "Heslo a jeho jednorázový kód ve stejném trezoru znamenají, že jedno odemčené zařízení drží oba faktory, tedy stejný obchod, jaký dělá každý správce hesel s vestavěnými kódy. U většiny účtů vyhraje pohodlí, obzvlášť se zámkem aplikace nebo PINem před ním. Jestli chceš mít oba faktory raději zvlášť pro e-mail nebo banku, dej ty kódy jinam a [Trezor](/cs/help/vault/) nech nést zbytek."
+        "Ano. Přihlašovací údaje v Trezoru mají pole „Kód 2FA“, které bere buď tajemství v base32, nebo celý odkaz otpauth://, a import z Bitwardenu přenese existující klíče. Klíč se šifruje, ukládá a synchronizuje v každém tarifu, i v bezplatném. Pro z něj udělá živý rotující kód s odpočtem, takže vedle nepotřebuješ druhou aplikaci.",
+        "Heslo a jeho jednorázový kód ve stejném trezoru znamenají, že jedno odemčené zařízení drží oba faktory, což je stejný kompromis, na jaký přistupuje každý správce hesel s vestavěnými kódy. U většiny účtů vyhraje pohodlí, obzvlášť se zámkem aplikace nebo PINem před ním. Jestli chceš mít oba faktory raději zvlášť pro e-mail nebo banku, dej ty kódy jinam a [Trezor](/cs/help/vault/) nech nést zbytek."
       ]
     },
     "verify-download": {
@@ -726,7 +731,7 @@
       "q": "Může moje rodina sdílet jeden účet nebo jeden nákup Pro?",
       "a": [
         "Odpovědí jsou dva účty a založit druhý nic nestojí: každý dostane 2 zařízení a 50 MB zdarma. Účet je jedna fráze z 12 slov, a kdo tu frázi má, má všechno uvnitř: každou poznámku, každou položku trezoru, na každém zařízení. Právě oddělené účty dávají každému vlastní soukromé poznámky. Pro se kupuje na účet.",
-        "Když chceš předat jednu konkrétní věc, pošli [vyhořelou poznámku](/cs/help/burn-notes/) místo své fráze. Sdílený domácí účet funguje dobře, jestli je to opravdu to, co chceš: nech frázi ve sdílené položce správce hesel a počítej s tím, že kdokoli ji kdy držel, viděl všechno uvnitř."
+        "Když chceš předat jednu konkrétní věc, pošli [sebezničující poznámku](/cs/help/burn-notes/) místo své fráze. Sdílený domácí účet funguje dobře, jestli je to opravdu to, co chceš: nech frázi ve sdílené položce správce hesel a počítej s tím, že kdokoli ji kdy držel, viděl všechno uvnitř."
       ]
     },
     "pro-after-leak": {
@@ -746,7 +751,7 @@
     "signup-options": {
       "q": "Kterou možnost registrace si mám vybrat?",
       "a": [
-        "Tu, která odpovídá tvé úrovni ohrožení. Jsou tři. Za prvé: přihlášení přes Google, Apple nebo GitHub, s klíčem uloženým na našem serveru. Za druhé: stejné přihlášení, ale klíč zůstane jen na tvém zařízení. Za třetí: \"Vygenerovat frázi\", bez e-mailu, bez jména a úplně bez přihlášení. Ve všech třech se tvoje poznámky šifrují na tvém zařízení a liší se tím, kdo drží klíč a kolik se o tobě dozvíme.",
+        "Tu, která odpovídá tvé úrovni ohrožení. Jsou tři. Za prvé: přihlášení přes Google, Apple nebo GitHub, s klíčem uloženým na našem serveru. Za druhé: stejné přihlášení, ale klíč zůstane jen na tvém zařízení. Za třetí: „Vygenerovat frázi“, bez e-mailu, bez jména a úplně bez přihlášení. Ve všech třech se tvoje poznámky šifrují na tvém zařízení a liší se tím, kdo drží klíč a kolik se o tobě dozvíme.",
         "Při přihlášení přes Google, Apple nebo GitHub se aplikace zeptá, kde má být klíč uložený, a začne možností „Ať je to jednoduché a pohodlné“. Ta uloží frázi zašifrovanou na náš server, takže nové zařízení může otevřít poznámky po přihlášení přes poskytovatele a zadání kódu z autentizátoru, pokud je 2FA zapnuté. Ulož si frázi pro případ ztráty účtu poskytovatele a při zapnutí dvoufaktorového přihlášení si uchovej záložní klíč 2FA. „Maximální bezpečnost a soukromí“ nechává frázi na tvém zařízení: nepřečetli bychom poznámku pod žádným tlakem a nové zařízení potřebuje tvých 12 slov nebo naskenování QR kódu ze zařízení, které už je přihlášené.",
         "Při používání pouze fráze účet nespojuje s člověkem žádný e-mail ani jméno. Frázi ale máš jen ty, takže pokud ji ztratíš a nezůstane žádné odemčené zařízení, nikdo ti ji nemůže obnovit. Nastavení > Účet > Správa klíče ukazuje aktuální režim a umožňuje ho změnit. Účet s frází musí před zvolením správy na serveru nejdřív propojit poskytovatele v Nastavení > Účet > Účty; samotné propojení správu nemění. Každý režim může přidat PIN nebo biometrický zámek a volitelné dvoufaktorové přihlášení. Úplné srovnání najdeš v [přehledu úrovní ohrožení](/cs/help/threat-model-levels/)."
       ]
@@ -754,8 +759,8 @@
     "storage-after-delete": {
       "q": "Smazal jsem soubory, ale úložiště nekleslo. Proč?",
       "a": [
-        "Tvoje místo je už volné. Ve chvíli, kdy se smazání zesynchronizuje, ty bajty přestanou počítat proti tvé kvótě, na serveru stejně jako na tomhle zařízení. Jestli pruh pořád ukazuje staré číslo, stiskni vedle něj ikonu obnovení: přepočítá to ze serveru a vynechá všechno, co už čeká ve frontě na smazání. Zařízení, které bylo offline, si drží svůj poslední součet, dokud nedožene zbytek.",
-        "Těch \"pár dní\", o kterých mluví aplikace, se týká samotného šifrovaného souboru, ne tvé kvóty, a to čekání je záměr. Smazat soubor z úložiště je nevratné, není koš, ze kterého by se dal vylovit. Zařízení, které nedokončilo synchronizaci, má o tvých poznámkách neúplný obraz, takže by mohlo smazat obrázek, který jiná poznámka pořád ukazuje. Soubor proto čeká nejméně 24 hodin a odstraní ho jen zařízení, které dokončilo čistou synchronizaci. Tahle trpělivost tě nestojí nic, protože místo ti bylo připsáno v den, kdy jsi mazal."
+        "Tvoje místo je už volné. Ve chvíli, kdy se smazání zesynchronizuje, se ty bajty přestanou započítávat do tvé kvóty, na serveru stejně jako na tomhle zařízení. Jestli pruh pořád ukazuje staré číslo, stiskni vedle něj ikonu obnovení: přepočítá to ze serveru a vynechá všechno, co už čeká ve frontě na smazání. Zařízení, které bylo offline, si drží svůj poslední součet, dokud nedožene zbytek.",
+        "Těch „pár dní“, o kterých mluví aplikace, se týká samotného šifrovaného souboru, ne tvé kvóty, a to čekání je záměr. Smazat soubor z úložiště je nevratné, není koš, ze kterého by se dal vylovit. Zařízení, které nedokončilo synchronizaci, má o tvých poznámkách neúplný obraz, takže by mohlo smazat obrázek, který jiná poznámka pořád ukazuje. Soubor proto čeká nejméně 24 hodin a odstraní ho jen zařízení, které dokončilo čistou synchronizaci. Tahle trpělivost tě nestojí nic, protože místo ti bylo připsáno v den, kdy jsi mazal."
       ]
     }
   }

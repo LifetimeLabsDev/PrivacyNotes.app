@@ -39,12 +39,12 @@ export function LinksList({
       onClick={onLinkClick}
       className={`flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-1 transition group${grid ? ' border border-divider' : ''}`}
     >
-      <span className="text-neutral-400 group-hover:text-accent transition">{l.icon}</span>
+      <span className="text-pn-muted group-hover:text-accent transition">{l.icon}</span>
       <span className="min-w-0">
         <span className="block text-sm font-medium text-accent">{l.label}</span>
-        <span className="block text-xs text-neutral-500">{l.desc}</span>
+        <span className="block text-xs text-pn-muted">{l.desc}</span>
       </span>
-      <ArrowUpRight className="ms-auto shrink-0 text-neutral-300 dark:text-neutral-700 group-hover:text-accent transition" />
+      <ArrowUpRight className="ms-auto shrink-0 text-pn-muted group-hover:text-accent transition" />
     </a>
   ));
 

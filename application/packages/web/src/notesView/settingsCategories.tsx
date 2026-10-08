@@ -3,6 +3,7 @@ import type { TFunction } from 'i18next';
 import type { AuthState } from '../auth';
 import type { AttachmentStore } from '../attachmentStore';
 import type { LocalNote } from '../db';
+import { journalOn } from '../notesViewUtils';
 import type { FolderDef } from '../folders';
 import type { ImageStore } from '../imageStore';
 import { AppearanceSheet } from '../AppearanceSheet';
@@ -10,24 +11,27 @@ import { ImagesSheet } from '../ImagesSheet';
 import { JournalsSheet } from '../JournalsSheet';
 import { LanguageSheet } from '../LanguageSheet';
 import { exemptOpts } from '../i18nExempt';
-import { Book, ChartBar, CreditCard, Database, Image as ImageIcon, Info, Question, Repeat, Shield, Sun, Translate, User } from '../icons';
+import { Book, ChartBar, CreditCard, Database, Image as ImageIcon, Info, Question, Repeat, Shield, Sun, Translate, User, type Icon } from '../icons';
 import { activeLocale } from '../languages';
 import { helpPath } from '../localeRoutes';
 import { updateNote } from '../notesRepo';
 import { weekReflectionFor } from '../notesViewUtils';
 import type { View } from '../views';
 import type { SettingsCategory } from '../SettingsShell';
+import type { SectionId } from '../settingsSearch/registry';
 import { siteHref } from '../siteLinks';
 import { withCredentialChanges, type UserSettings } from '../userSettings';
+import { applyNoteColorChoice, noteColorChoice } from '../itemStyles';
 import type { ViewMode } from '../viewMode';
 import { setDeviceLabel } from '../deviceLabels';
+import type { ThemeBuilderTarget } from './useThemeBuilder';
 
 /**
  * Code-split a modal component while keeping its call sites identical.
  * The returned component lazy-loads the chunk on first render; the null
  * Suspense fallback means the modal simply appears a frame later (instant
  * on warm cache, ~one round-trip cold). This keeps the heavy, rarely-open
- * modals (stats, settings, security, about, import, history) out of the
+ * modals (stats, settings, security, about, feedback, import, history) out of the
  * boot-path bundle.
  */
 function lazyModal<P extends object>(
@@ -49,6 +53,7 @@ function lazyModal<P extends object>(
 
 export const StatsModal = lazyModal(() => import('../StatsModal').then((m) => m.StatsModal));
 export const AboutModal = lazyModal(() => import('../AboutModal').then((m) => m.AboutModal));
+export const FeedbackModal = lazyModal(() => import('../FeedbackModal').then((m) => m.FeedbackModal));
 export const SecurityModal = lazyModal(() => import('../SecurityModal').then((m) => m.SecurityModal));
 export const SyncOptionsModal = lazyModal(() => import('../SyncOptionsModal').then((m) => m.SyncOptionsModal));
 export const NoteHistoryModal = lazyModal(() => import('../NoteHistoryModal').then((m) => m.NoteHistoryModal));
@@ -57,6 +62,27 @@ export const MediaViewer = lazyModal(() => import('../MediaViewer').then((m) => 
 export const PicturePicker = lazyModal(() => import('../PicturePicker').then((m) => m.PicturePicker));
 
 type Authed = Extract<AuthState, { status: 'authenticated' }>;
+
+/** Each section's rail icon. The quick switcher draws it beside a setting. */
+export const SETTINGS_SECTION_ICONS: Record<SectionId, Icon> = {
+  stats: ChartBar,
+  journals: Book,
+  import: Repeat,
+  plan: CreditCard,
+  storage: Database,
+  images: ImageIcon,
+  security: Shield,
+  me: User,
+  appearance: Sun,
+  language: Translate,
+  about: Info,
+  help: Question,
+};
+
+function railIcon(id: SectionId) {
+  const RailIcon = SETTINGS_SECTION_ICONS[id];
+  return <RailIcon size={18} aria-hidden="true" />;
+}
 
 /**
  * Build the SettingsShell categories array. Called inline where the array
@@ -82,6 +108,7 @@ export function buildSettingsCategories({
   setImportToast,
   handleSignOutClick,
   mergeImportedFolders,
+  mergeRestoredSettings,
   applyImportedTagColors,
   exportAllMarkdownZip,
   exportAllHtmlZip,
@@ -98,6 +125,7 @@ export function buildSettingsCategories({
   refresh,
   runSync,
   saveWeekReflection,
+  openThemeBuilder,
 }: {
   t: TFunction;
   notes: LocalNote[];
@@ -122,7 +150,7 @@ export function buildSettingsCategories({
   /** ID & Sync's "Open" for a note the last pass could not push. */
   onOpenNote: (id: string) => void;
   setShowSettings: Dispatch<SetStateAction<boolean>>;
-  setShowUpgrade: (next: { trigger: 'theme' | null }) => void;
+  setShowUpgrade: (next: { trigger: 'theme' | 'storage' | null }) => void;
   setImportToast: Dispatch<SetStateAction<string | null>>;
   handleSignOutClick: () => void;
   mergeImportedFolders: (
@@ -130,6 +158,10 @@ export function buildSettingsCategories({
     originalIds?: ReadonlyMap<string, string>,
   ) => Map<string, string>;
   applyImportedTagColors: (colors: Map<string, string>) => void;
+  mergeRestoredSettings: (
+    settings: { itemStyles?: unknown; customThemes?: unknown },
+    savedToFinal: ReadonlyMap<string, string>,
+  ) => void;
   exportAllMarkdownZip: (ns: LocalNote[]) => Promise<void>;
   exportAllHtmlZip: (ns: LocalNote[]) => Promise<void>;
   exportAllJson: (ns: LocalNote[]) => Promise<void>;
@@ -146,23 +178,34 @@ export function buildSettingsCategories({
   runSync: () => Promise<void>;
   /** Writes the weekly reflection, creating the Monday entry if needed. */
   saveWeekReflection: (text: string) => Promise<void>;
+  /** Closes Settings and opens the theme builder. */
+  openThemeBuilder: (target: ThemeBuilderTarget) => void;
 }): SettingsCategory[] {
   return [
             {
               id: 'stats',
               label: t('settings.statsLabel'),
               group: t('settings.groupYourNotes'),
-              icon: <ChartBar size={18} aria-hidden="true" />,
+              icon: railIcon('stats'),
               render: ({ initialTab }) => (
                 <StatsModal
                   embedded
-                  initialTab={initialTab === 'wellness' ? 'wellness' : 'writing'}
+                  initialTab={initialTab === 'wellness' || initialTab === 'writing' ? initialTab : 'overview'}
                   notes={notes}
                   isNoteLocked={isNoteLocked}
                   // Deleted medications included on purpose: their log
                   // entries already count toward adherence, and without the
                   // template nothing can resolve the id back into a name.
                   medications={userSettings.medications}
+                  notesCreated={userSettings.notesCreated}
+                  firstSeenAt={userSettings.firstSeenAt}
+                  trackerSettings={userSettings.trackerSettings}
+                  onOpenDay={(date) => {
+                    const entry = journalOn(notes, date);
+                    if (!entry) return;
+                    setShowSettings(false);
+                    onOpenNote(entry.id);
+                  }}
                   isPro={auth.isPro}
                   onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: null }); }}
                   onClose={() => setShowSettings(false)}
@@ -177,13 +220,15 @@ export function buildSettingsCategories({
               id: 'journals',
               label: t('settings.journalsLabel'),
               group: t('settings.groupYourNotes'),
-              icon: <Book size={18} aria-hidden="true" />,
+              icon: railIcon('journals'),
               render: () => (
                 <JournalsSheet
                   format={userSettings.journalTitleFormat}
                   onFormatChange={(f) => mutateSettings((prev) => ({ ...prev, journalTitleFormat: f }))}
                   suffix={userSettings.journalTitleSuffix}
                   onSuffixChange={(s) => mutateSettings((prev) => ({ ...prev, journalTitleSuffix: s }))}
+                  pattern={userSettings.journalTitlePattern}
+                  onPatternChange={(p) => mutateSettings((prev) => ({ ...prev, journalTitlePattern: p }))}
                 />
               ),
             },
@@ -191,7 +236,7 @@ export function buildSettingsCategories({
               id: 'import',
               label: t('settings.importLabel', exemptOpts('notes:settings.importLabel')),
               group: t('settings.groupYourNotes'),
-              icon: <Repeat size={18} aria-hidden="true" />,
+              icon: railIcon('import'),
               render: ({ initialTab }) => (
                 <ImportModal
                   embedded
@@ -199,6 +244,7 @@ export function buildSettingsCategories({
                   initialTab={initialTab === 'export' || initialTab === 'restore' || initialTab === 'vault' ? initialTab : 'import'}
                   notes={notes}
                   onImportFolders={mergeImportedFolders}
+                  onImportSettings={mergeRestoredSettings}
                   onImportTagColors={applyImportedTagColors}
                   onExportAllMdZip={(ns) => void exportAllMarkdownZip(ns)}
                   onExportAllHtmlZip={(ns) => void exportAllHtmlZip(ns)}
@@ -243,7 +289,7 @@ export function buildSettingsCategories({
               id: 'plan',
               label: t('settings.planLabel'),
               group: t('settings.groupAccount'),
-              icon: <CreditCard size={18} aria-hidden="true" />,
+              icon: railIcon('plan'),
               render: ({ navigate, initialTab }) => (
                 <SyncOptionsModal
                   embedded
@@ -272,7 +318,7 @@ export function buildSettingsCategories({
               id: 'storage',
               label: t('settings.storageLabel'),
               group: t('settings.groupAccount'),
-              icon: <Database size={18} aria-hidden="true" />,
+              icon: railIcon('storage'),
               render: ({ navigate }) => (
                 <SyncOptionsModal
                   embedded
@@ -281,7 +327,7 @@ export function buildSettingsCategories({
                   onOpenNote={onOpenNote}
                   onOpenImageSettings={() => navigate('images')}
                   onClose={() => setShowSettings(false)}
-                  onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: null }); }}
+                  onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: 'storage' }); }}
                   onSignOut={handleSignOutClick}
                 />
               ),
@@ -293,7 +339,7 @@ export function buildSettingsCategories({
               id: 'images',
               label: t('settings.imagesLabel'),
               group: t('settings.groupAccount'),
-              icon: <ImageIcon size={18} aria-hidden="true" />,
+              icon: railIcon('images'),
               render: () => (
                 <ImagesSheet
                   spaceSaver={userSettings.imageSpaceSaver}
@@ -307,7 +353,7 @@ export function buildSettingsCategories({
               id: 'security',
               label: t('settings.securityLabel'),
               group: t('settings.groupAccount'),
-              icon: <Shield size={18} aria-hidden="true" />,
+              icon: railIcon('security'),
               render: ({ initialTab, navigate }) => (
                 <SecurityModal
                   embedded
@@ -335,7 +381,7 @@ export function buildSettingsCategories({
               id: 'me',
               label: t('settings.accountLabel', exemptOpts('notes:settings.accountLabel')),
               group: t('settings.groupAccount'),
-              icon: <User size={18} aria-hidden="true" />,
+              icon: railIcon('me'),
               render: () => (
                 <SyncOptionsModal
                   embedded
@@ -353,11 +399,11 @@ export function buildSettingsCategories({
               id: 'appearance',
               label: t('settings.appearanceLabel'),
               group: t('settings.groupBrand'),
-              icon: <Sun size={18} aria-hidden="true" />,
+              icon: railIcon('appearance'),
               render: ({ initialTab }) => (
                 <AppearanceSheet
                   embedded
-                  initialTab={initialTab === 'lists' ? 'lists' : 'style'}
+                  initialTab={initialTab === 'lists' || initialTab === 'style' ? initialTab : 'themes'}
                   isPro={auth.isPro ?? false}
                   viewMode={viewMode}
                   onViewModeChange={onViewModeChange}
@@ -371,33 +417,48 @@ export function buildSettingsCategories({
                   onToggleHidden={onToggleHiddenView}
                   startView={userSettings.startView}
                   onStartViewChange={(next) => mutateSettings((prev) => ({ ...prev, startView: next }))}
-                  tintNotes={userSettings.tintNotes}
-                  onTintNotesChange={(on) => mutateSettings((prev) => ({ ...prev, tintNotes: on }))}
+                  noteColors={noteColorChoice(userSettings.tintNotes, userSettings.noteColorStyle)}
+                  onNoteColorsChange={(next) => mutateSettings((prev) => applyNoteColorChoice(prev, next))}
+                  sinkCheckedTasks={userSettings.sinkCheckedTasks}
+                  onSinkCheckedTasksChange={(on) => mutateSettings((prev) => ({ ...prev, sinkCheckedTasks: on }))}
                   onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: 'theme' }); }}
                   onClose={() => setShowSettings(false)}
+                  customThemes={userSettings.customThemes}
+                  onCustomThemesChange={(update) => mutateSettings((prev) => ({ ...prev, customThemes: update(prev.customThemes) }))}
+                  onOpenThemeBuilder={openThemeBuilder}
                 />
               ),
             },
             {
               id: 'language',
               label: t('settings.languageLabel'),
-              // No shell description: the pane leads with the spell-check
-              // section, so its subtitle sits inside LanguageSheet, directly
-              // above the language grid it actually describes.
+              // No shell description: the pane opens on its tabs, and the
+              // language grid's subtitle sits inside LanguageSheet, directly
+              // above the grid it describes.
               group: t('settings.groupBrand'),
-              icon: <Translate size={18} aria-hidden="true" />,
-              render: () => <LanguageSheet embedded onClose={() => setShowSettings(false)} />,
+              icon: railIcon('language'),
+              render: ({ initialTab }) => (
+                <LanguageSheet
+                  embedded
+                  initialTab={initialTab === 'language' ? 'language' : 'dateTime'}
+                  onClose={() => setShowSettings(false)}
+                  dateOrder={userSettings.dateOrder}
+                  onDateOrderChange={(order) => mutateSettings((prev) => ({ ...prev, dateOrder: order }))}
+                  clock={userSettings.clock}
+                  onClockChange={(clock) => mutateSettings((prev) => ({ ...prev, clock }))}
+                />
+              ),
             },
             {
               id: 'about',
               label: t('settings.aboutLabel'),
               group: t('settings.groupBrand'),
-              icon: <Info size={18} aria-hidden="true" />,
+              icon: railIcon('about'),
               render: ({ initialTab }) => (
                 <AboutModal
                   embedded
                   onClose={() => setShowSettings(false)}
-                  initialTab={initialTab === 'changelog' || initialTab === 'hotkeys' || initialTab === 'rating' ? initialTab : 'about'}
+                  initialTab={initialTab === 'hotkeys' || initialTab === 'rating' ? initialTab : 'about'}
                 />
               ),
             },
@@ -408,7 +469,7 @@ export function buildSettingsCategories({
               id: 'help',
               label: t('settings.helpLabel'),
               group: t('settings.groupBrand'),
-              icon: <Question size={18} aria-hidden="true" />,
+              icon: railIcon('help'),
               href: siteHref(helpPath(activeLocale())),
             },
           ] satisfies SettingsCategory[];

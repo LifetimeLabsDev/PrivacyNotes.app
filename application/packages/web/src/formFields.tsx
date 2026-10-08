@@ -18,7 +18,7 @@ export const FIELD_CLASS =
 
 /** A button that sits beside a field, outside it, so nothing covers the value. */
 export const FIELD_BUTTON =
-  'shrink-0 rounded-md p-2 text-accent/70 hover:text-accent hover:bg-neutral-100 dark:hover:bg-surface-0 transition';
+  'shrink-0 rounded-md p-2 text-accent/70 hover:text-accent hover:bg-pn/5 transition';
 
 /**
  * The headline over a section, the same one the panes draw: an accent bar,
@@ -29,7 +29,7 @@ export function GroupHeading({ children }: { children: ReactNode }) {
   return (
     <div className="flex items-center gap-2.5 mb-2">
       <AccentBar />
-      <h3 className="text-sm font-semibold text-neutral-900 dark:text-white truncate" dir="auto">{children}</h3>
+      <h3 className="text-sm font-semibold text-pn truncate" dir="auto">{children}</h3>
       <HeadlineRule />
     </div>
   );
@@ -45,7 +45,7 @@ export function FieldLabel({ icon, children, htmlFor }: { icon?: ReactNode; chil
   return (
     <label
       htmlFor={htmlFor}
-      className="flex items-center gap-1.5 text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1"
+      className="flex items-center gap-1.5 text-xs font-medium text-pn-muted mb-1"
       dir="auto"
     >
       {icon && <span className="shrink-0 text-accent" aria-hidden="true">{icon}</span>}

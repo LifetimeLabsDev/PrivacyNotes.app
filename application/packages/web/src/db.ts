@@ -4,6 +4,7 @@ import type { AttachmentMeta } from './attachmentStore';
 import type { SyncBase } from './noteMerge';
 import { isDemoMode, DEMO_DB_NAME } from './demo';
 import { localSealMiddleware } from './localSeal';
+import type { LedgerRow } from './dayLedger';
 
 /**
  * Local shape of a note - decrypted, ready for the UI to use.
@@ -47,6 +48,22 @@ export interface LocalNote {
   folderId: string | null;
   /** Not indexed, so the field needed no schema version. */
   archived?: number;
+  /**
+   * 1 when this device took the row from a payload with no `archived` (a
+   * writer before Archive) and held no row of its own to keep the flag
+   * from. Its writes then leave the flag out instead of stating "not
+   * archived", so a device that holds the flag restates it. Cleared once the
+   * flag is set here or a payload states it. Not indexed.
+   */
+  archivedUnknown?: 1;
+  /**
+   * When the title, the body or a tracker value last changed (ISO instant):
+   * the date the lists call "Modified". `updatedAt` stays the sync clock.
+   * Plain at rest like `updatedAt`, and not indexed, so it needed no schema
+   * version. Absent on rows written before the field: read it through
+   * `editedAtOf()` in notesViewUtils.
+   */
+  editedAt?: string;
   /**
    * Nonce (base64) of the server generation this row is known to match -
    * recorded on push success and on pull apply. Lets the pull tell its own
@@ -96,6 +113,9 @@ interface ImageDedup {
    *  sweep skips it without touching the wire and the status surfaces
    *  say "doesn't fit" instead of "uploading" (backlog #143). */
   quotaBlocked?: number;
+  /** When an instance claimed the removal of its own just-uploaded object;
+   *  a settle does not clear the row while it stands (blobUploadRecovery.ts). */
+  removingAt?: number;
 }
 
 /**
@@ -123,6 +143,8 @@ interface AttachmentDedup {
   pendingUpload?: number;
   /** 1 = pending upload known not to fit the storage quota - see ImageDedup. */
   quotaBlocked?: number;
+  /** A removal claim - see ImageDedup. */
+  removingAt?: number;
 }
 
 /**
@@ -153,6 +175,8 @@ interface EditorDocCacheEntry {
   body: string;
   /** The ProseMirror doc as TipTap JSON. */
   json: unknown;
+  /** EDITOR_PARSE_VERSION of the parse that made `json`; absent on older rows. */
+  parser?: number;
   /** Epoch ms, for pruning the oldest rows. */
   cachedAt: number;
 }
@@ -206,6 +230,7 @@ class NotesDb extends Dexie {
   blobGC!: EntityTable<BlobGCEntry, 'uuid'>;
   editorDocCache!: EntityTable<EditorDocCacheEntry, 'noteId'>;
   kv!: EntityTable<KvEntry, 'key'>;
+  dayLedger!: EntityTable<LedgerRow, 'date'>;
 
   constructor(raw = false) {
     // Demo mode uses a separate, throwaway database so demo data never
@@ -424,6 +449,22 @@ class NotesDb extends Dexie {
       editorDocCache: 'noteId, cachedAt',
       demoVersions: 'id, noteId, createdAt',
       kv: 'key',
+    });
+
+    // v14 - the day ledger (dayLedger.ts): counts per local day, never note
+    // text, so it is not sealed. New table, nothing to back-fill.
+    // Spec: ops/docs/plans/wellness-statistics.md (section 20)
+    this.version(14).stores({
+      notes: 'id, updatedAt, dirty, deleted, trashed, starred, type, folderId',
+      imageCache: 'id, cachedAt',
+      imageDedup: 'hash, uuid',
+      attachmentCache: 'id, cachedAt',
+      attachmentDedup: 'hash, uuid',
+      blobGC: 'uuid, enqueuedAt',
+      editorDocCache: 'noteId, cachedAt',
+      demoVersions: 'id, noteId, createdAt',
+      kv: 'key',
+      dayLedger: 'date',
     });
 
     // The at-rest seal layer. Read surfaces open sealed rows wherever

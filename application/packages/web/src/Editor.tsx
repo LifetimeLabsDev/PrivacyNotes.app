@@ -15,6 +15,8 @@ import { perfSpan } from './perf';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from '@tiptap/extension-link';
+import { LinkAddressPill } from './LinkAddressPill';
+import { findHeadingPos } from './noteHeadings';
 import TableRow from '@tiptap/extension-table-row';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
@@ -26,8 +28,8 @@ import 'katex/dist/katex.min.css';
 import { Color } from '@tiptap/extension-color';
 import { FontSize } from '@tiptap/extension-text-style/font-size';
 import { FontFamily } from '@tiptap/extension-text-style/font-family';
-import { TextSelection } from '@tiptap/pm/state';
-import type { Fragment } from '@tiptap/pm/model';
+import { TextSelection, type EditorState } from '@tiptap/pm/state';
+import { Fragment } from '@tiptap/pm/model';
 import { Markdown, type MarkdownStorage } from 'tiptap-markdown';
 
 // TipTap 3 types editor.storage as an empty augmentable interface instead of a
@@ -48,12 +50,22 @@ import { WikiLink } from './NoteLink';
 import { AudioRecordingBanner, type AudioRecordingState } from './AudioRecorder';
 import { LinkSheet } from './LinkSheet';
 import { Callout, CalloutTitle } from './Callout';
+import { Footnotes, carriedSection } from './footnotes';
 import { useIsMobile } from './useIsMobile';
 import { ContextMenu, useContextMenu, isTouchContextMenu, type ContextMenuItem } from './ContextMenu';
-import { iconCopy, iconEditPencil, iconExternal, iconTrash } from './icons';
-import { LinkModifierOpen, SelfLinkTyping, linkHrefAt, linkSelectionIfUrl, openLinkHref } from './editorLinks';
+import {
+  iconCopy, iconEditPencil, iconExternal, iconTrash,
+  Code, Highlighter, Link as LinkGlyph, Scissors, SortAscending, SortDescending, TextB, TextItalic, TextStrikethrough,
+} from './icons';
+import { Spoiler } from './editorSpoiler';
+import { InlineCodeCopy, inlineCodeHint } from './editorCodeCopy';
+import { LinkModifierOpen, MarkdownLinkTyping, SelfLinkTyping, linkHrefAt, linkSelectionIfUrl, openLinkHref } from './editorLinks';
 import { createLongPressGuard } from './softKeyboard';
-import { useTheme, readLineSpacing } from './theme';
+import { planLineSort } from './sortLines';
+import { activeLocale } from './i18n';
+import { readColorPref } from './editorPrefs';
+import { DEFAULT_HIGHLIGHT, HIGHLIGHT_COLORS } from './editorColors';
+import { useTheme, readLineSpacing, readCopyFormat } from './theme';
 import { SearchHighlight, setSearchQuery, getSearchInfo, clearSearch } from './editorSearch';
 import { FindBar } from './FindBar';
 import { ReplaceBar } from './ReplaceBar';
@@ -61,6 +73,7 @@ import { OutlinePanel } from './OutlinePanel';
 import { TableControls } from './TableControls';
 import { Toolbar } from './EditorToolbar';
 import { useEditorPanels, EDITOR_TOP_GAP_PX } from './useEditorPanels';
+import { APP_KEYS, matchesKey } from './shortcutMatch';
 import { useDebouncedMarkdownSave } from './useDebouncedMarkdownSave';
 import {
   TextStyleMarkdown,
@@ -75,18 +88,23 @@ import {
   InlineMathWithMarkdown,
   BlockMathWithMarkdown,
   HighlightWithMarkdown,
+  COPY_BOX_LANGUAGE,
   TrailingParagraph,
+  PlainEscape,
   MediaGapCleaner,
   TextAlignOurLeft,
   ParagraphWithMarkdown,
   HeadingWithMarkdown,
+  HardBreakWithMarkdown,
+  TextWithMarkdown,
   TableWithMarkdown,
-  goToAdjacentCell,
+  stepTableCell,
   indentListItem,
   indentText,
   NbspParagraphCleaner,
   MixedListSplitter,
   markdownForClipboard,
+  replaceBodyUndoably,
 } from './editorExtensions';
 
 type Props = {
@@ -142,6 +160,9 @@ type Props = {
    * a note of several files keeps its chips.
    */
   fileNote?: boolean;
+  /** Whether a ticked task moves below the open ones (the synced
+   *  `sinkCheckedTasks` setting). Defaults to on. */
+  sinkCheckedTasks?: boolean;
 };
 
 /**
@@ -171,6 +192,9 @@ export type EditorHandle = {
   /** Jump to the attachment chip holding `uuid` and open its rename field.
    *  The Files pillar's Rename row, once the note is open. */
   startRenameFile: (uuid: string) => void;
+  /** Scroll the heading a note-link names to the top and flash it, with the
+   *  caret at its start. `onMissing` runs when the note holds no such heading. */
+  scrollToHeading: (heading: string, onMissing?: () => void) => void;
   /** Open the find bar on the first of `candidates` the text holds, hits
    *  marked: the list search following into the open note (GitHub #288). A
    *  no-op in the history preview, which has no bar, and when the text as
@@ -181,6 +205,9 @@ export type EditorHandle = {
   clearSearchHighlight: () => void;
   /** Raw TipTap editor instance - used by NotesView to wire wiki-link navigation. */
   getEditor: () => TipTapEditor | null;
+  /** Put a rewritten body in as one undoable step (replaceBodyUndoably).
+   *  False when this editor cannot take it, the history preview included. */
+  replaceBody: (md: string) => boolean;
   /** Serialize and save any pending debounced edit NOW, synchronously.
    *  The editor-mode toggle calls this before it swaps editors: the
    *  unmount flush runs after the replacement has already rendered, so
@@ -190,7 +217,7 @@ export type EditorHandle = {
 };
 
 const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }>(function EditorInner(
-  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, bodyControls, onRenameFile, fileNote = false, preview = false },
+  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, bodyControls, onRenameFile, fileNote = false, preview = false, sinkCheckedTasks = true },
   ref
 ) {
   const { t } = useTranslation('editor');
@@ -210,6 +237,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
    */
   const onRenameFileRef = useRef(onRenameFile);
   onRenameFileRef.current = onRenameFile;
+  const sinkCheckedRef = useRef(sinkCheckedTasks);
+  sinkCheckedRef.current = sinkCheckedTasks;
 
   const isMobile = useIsMobile();
   const { spellcheck, invisibles, favicons } = useTheme();
@@ -247,6 +276,60 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
   const linkMenu = useContextMenu();
 
   /**
+   * The editor state as it stood before the pointer went down. On macOS a
+   * right click on a word selects that word before `contextmenu` fires, so
+   * only this tells a selection the reader made from a click on a
+   * misspelled word, which keeps the browser menu and its suggestions.
+   */
+  const preClickRef = useRef<EditorState | null>(null);
+  const notePreClickState = () => {
+    preClickRef.current = editorRef.current?.state ?? null;
+  };
+
+  /**
+   * The menu for a right click inside a selection: the clipboard, the marks
+   * of the toolbar, a link, and Sort when the selection is two or more lines
+   * of one kind. Cut and Copy go through the browser so the editor's own
+   * copy path writes the clipboard. Highlight applies the colour the
+   * toolbar remembers, or removes a highlight that is already there.
+   */
+  const selectionMenuItems = (ed: TipTapEditor): ContextMenuItem[] => {
+    const remembered = readColorPref('highlight');
+    const highlight = HIGHLIGHT_COLORS.find((c) => c.name.toLowerCase() === remembered) ?? DEFAULT_HIGHLIGHT;
+    const toggleHighlight = () => {
+      const chain = ed.chain().focus();
+      if (ed.isActive('highlight')) chain.unsetHighlight().run();
+      else (highlight.value ? chain.setHighlight({ color: highlight.value }) : chain.setHighlight()).run();
+    };
+    const items: ContextMenuItem[] = [
+      { label: t('bodyMenu.cut'), icon: <Scissors size={14} />, onSelect: () => { ed.commands.focus(); document.execCommand('cut'); } },
+      { label: t('common:actions.copy'), icon: iconCopy(), onSelect: () => { ed.commands.focus(); document.execCommand('copy'); } },
+      { type: 'separator' },
+      { label: t('toolbar.bold'), icon: <TextB size={14} />, checked: ed.isActive('bold'), onSelect: () => ed.chain().focus().toggleBold().run() },
+      { label: t('toolbar.italic'), icon: <TextItalic size={14} />, checked: ed.isActive('italic'), onSelect: () => ed.chain().focus().toggleItalic().run() },
+      { label: t('toolbar.strikethrough'), icon: <TextStrikethrough size={14} />, checked: ed.isActive('strike'), onSelect: () => ed.chain().focus().toggleStrike().run() },
+      { label: t('toolbar.highlight'), icon: <Highlighter size={14} />, checked: ed.isActive('highlight'), onSelect: toggleHighlight },
+      { label: t('toolbar.inlineCode'), icon: <Code size={14} />, checked: ed.isActive('code'), onSelect: () => ed.chain().focus().toggleCode().run() },
+      { label: t('link.popoverLabel'), icon: <LinkGlyph size={14} />, onSelect: askForLink },
+    ];
+    const sort = planLineSort(ed.state, activeLocale(), sinkCheckedRef.current);
+    if (sort) {
+      const doc = ed.state.doc;
+      items.push({ type: 'separator' }, {
+        label: t(sort.direction === 'asc' ? 'bodyMenu.sortAsc' : 'bodyMenu.sortDesc'),
+        icon: sort.direction === 'asc' ? <SortAscending size={14} /> : <SortDescending size={14} />,
+        onSelect: () => {
+          // The plan holds positions in the document it was made for.
+          if (ed.state.doc !== doc) return;
+          ed.view.dispatch(sort.apply(ed.state.tr));
+          ed.commands.focus();
+        },
+      });
+    }
+    return items;
+  };
+
+  /**
    * Right-click on a URL link: Open, Copy, Edit, Remove.
    *
    * This is the one route to a link that does not go through the caret, and
@@ -261,13 +344,24 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
    * phone the caret route works - the tap opens a sheet, dismissing it
    * leaves the cursor in the link, and the toolbar then offers Remove.
    */
-  const openLinkMenu = (e: React.MouseEvent) => {
+  const openBodyMenu = (e: React.MouseEvent) => {
     const ed = editorRef.current;
-    if (!ed || readOnly || isTouchContextMenu(e)) return;
+    // Shift + right click always leaves the browser's own menu.
+    if (!ed || readOnly || isTouchContextMenu(e) || e.shiftKey) return;
     const at = ed.view.posAtCoords({ left: e.clientX, top: e.clientY });
     if (!at) return;
     const href = linkHrefAt(ed.state, at.pos);
-    if (!href) return;
+    if (!href) {
+      // Only a click inside a selection that existed before it gets the app
+      // menu. A caret, an empty line and a word keep the browser menu, with
+      // its spelling, Look Up and Paste. Spec: ops/issues/0414.md
+      const before = preClickRef.current;
+      const sel = before?.selection;
+      if (!before || !sel || sel.empty || before.doc !== ed.state.doc || at.pos < sel.from || at.pos > sel.to) return;
+      if (!ed.state.selection.eq(sel)) ed.view.dispatch(ed.state.tr.setSelection(sel));
+      linkMenu.open(e, selectionMenuItems(ed));
+      return;
+    }
     // A right click does not move the caret in every browser, and Edit and
     // Remove both act on the mark the caret is in.
     ed.chain().focus().setTextSelection(at.pos).run();
@@ -311,6 +405,9 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         // Disable StarterKit's codeBlock - we register CodeBlockWithCopy
         // below to get a hover-revealed Copy button.
         codeBlock: false,
+        // Inline code copies on a modifier click (editorCodeCopy); the hint
+        // says so on hover.
+        code: { HTMLAttributes: { title: inlineCodeHint() } },
         // TipTap 3's StarterKit absorbed extensions we already ship our own
         // way. Disable the overlaps so nothing registers twice:
         // - link: our Link.extend below carries the favicon renderHTML and
@@ -331,6 +428,12 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         // HeadingWithMarkdown carries the alignment-aware markdown spec, same
         // reasoning as paragraph above.
         heading: false,
+        // HardBreakWithMarkdown writes the next line's quote prefix early.
+        hardBreak: false,
+        // TextWithMarkdown escapes text so it reads back as itself.
+        text: false,
+        // Footnotes brings a document with room for its section after the body.
+        document: false,
         // Drop indicator for dragged text and files. The library default is a
         // 1px BLACK bar, which is the same "where is it going to land" problem
         // the gap cursor had in dark and sepia - invisible against the surface
@@ -341,6 +444,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       }),
       ParagraphWithMarkdown,
       HeadingWithMarkdown,
+      HardBreakWithMarkdown,
+      TextWithMarkdown,
       Underline,
       // TextStyleMarkdown must come before Color: Color sets the `color`
       // attribute on the textStyle mark, so that mark has to exist first.
@@ -351,7 +456,12 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       FontSize,
       FontFamily,
       Placeholder.configure({
-        placeholder: t('placeholder'),
+        placeholder: ({ node }) =>
+          node.type.name !== 'codeBlock'
+            ? t('placeholder')
+            : node.attrs['language'] === COPY_BOX_LANGUAGE
+              ? t('copyBox.placeholder')
+              : t('codeBlock.placeholder'),
       }),
       Link.extend({
         // TipTap defaults inclusive to the value of autolink (true), which
@@ -384,6 +494,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       }),
       LinkModifierOpen,
       SelfLinkTyping,
+      MarkdownLinkTyping,
       TaskListWithMarkdown.configure({
         HTMLAttributes: {
           class: 'task-list',
@@ -394,6 +505,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         HTMLAttributes: {
           class: 'task-item',
         },
+        sinkChecked: () => sinkCheckedRef.current,
       }),
       TaskListInputRule,
       TableWithMarkdown.configure({
@@ -416,7 +528,9 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       // is held where it can be held without breaking the document model: the
       // Markdown pane's own paste and drop capture handlers.
       // Spec: ops/docs/plans/markdown-folder.md (section 5, isolation)
-      EncryptedImage,
+      // The paste guard on the upload itself rides on the same flag:
+      // ops/docs/plans/paste-pictures.md (section 3.3)
+      EncryptedImage.configure({ plaintextOnly: !!hideEncryptedMedia }),
       EncryptedAttachment.configure({
         onRename: (name: string) => {
           // A note whose name lives in its title as well holds exactly one
@@ -435,7 +549,9 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       WikiLink,
       CalloutTitle,
       Callout,
+      Footnotes,
       TrailingParagraph,
+      PlainEscape,
       MediaGapCleaner,
       NbspParagraphCleaner,
       MixedListSplitter,
@@ -450,6 +566,9 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       // plain highlight still stores as ==text== (Obsidian syntax) and a
       // colored one as inline <mark style>, per HighlightWithMarkdown.
       HighlightWithMarkdown.configure({ multicolor: true }),
+      // ||spoiler|| mark, blurred until the caret or a click shows it.
+      Spoiler,
+      InlineCodeCopy,
       // <sup>/<sub> marks (Mod+. / Mod+,). Same inline-HTML round-trip.
       Superscript,
       // Subscript keeps its toolbar button but loses its default Mod-,
@@ -508,7 +627,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     editorProps: {
       attributes: {
         class:
-          'prose prose-neutral dark:prose-invert max-w-none focus:outline-none min-h-[40vh] sm:min-h-[60vh] text-[length:var(--pn-editor-body)] prose-p:text-[length:var(--pn-editor-body)] prose-li:text-[length:var(--pn-editor-body)] prose-blockquote:text-[length:var(--pn-editor-body)]',
+          'prose prose-pn max-w-none focus:outline-none min-h-[40vh] sm:min-h-[60vh] text-[length:var(--pn-editor-body)] prose-p:text-[length:var(--pn-editor-body)] prose-li:text-[length:var(--pn-editor-body)] prose-blockquote:text-[length:var(--pn-editor-body)]',
         // On mobile, remove the editor from the tab order so iOS Safari
         // doesn't show the prev/next form-assistant toolbar above the
         // keyboard. Users still tap to focus - only the automatic chain
@@ -538,19 +657,20 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           | undefined;
         const ser = md?.serializer;
         if (!ser) return '';
+        // A copied footnote marker brings its definition along.
+        const footnotes = editorRef.current ? carriedSection(slice.content, editorRef.current.schema) : null;
         return markdownForClipboard(
-          slice.content,
+          footnotes ? slice.content.append(Fragment.from(footnotes)) : slice.content,
           (fragment) => ser.serialize(fragment),
           readLineSpacing() !== 'normal',
+          readCopyFormat(),
         );
       },
-      // Strip <img> tags with external/blob sources from pasted HTML so
-      // they don't create broken image nodes. The paste plugin in
-      // EncryptedImage.tsx tries to recover the actual image data first;
-      // this is the safety net for URLs we can't fetch (cross-origin
-      // blob: URLs from WhatsApp, Telegram, etc.).
-      // Spec: GitHub #67 (images pasted from WhatsApp show broken previews)
-      transformPastedHTML: sanitizePastedHtml,
+      // Sort the pictures of pasted HTML: ours stay, the ones whose bytes the
+      // device holds become pending pictures, the rest go, so no broken image
+      // node is ever made. A Markdown folder note stores none of them.
+      // Spec: GitHub #67, ops/docs/plans/paste-pictures.md (section 3.2)
+      transformPastedHTML: (html) => sanitizePastedHtml(html, { store: !hideEncryptedMedia, report: true }),
       // Long-press-to-paste shouldn't drag the keyboard up with it: the user
       // is reaching for the Cut/Copy/Paste bubble, not for the keys, and an
       // accidental long press shouldn't cost them the screen either. The
@@ -612,8 +732,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       // (numbered) and Mod+Shift+8 (bulleted); 9 extends the sequence for
       // the third list type we ship. Matches Bear / Notion conventions.
       handleKeyDown: (_view, event) => {
-        const mod = event.metaKey || event.ctrlKey;
-        if (mod && event.shiftKey && (event.code === 'Digit9' || event.key === '9')) {
+        if (matchesKey(event, APP_KEYS.taskList)) {
           event.preventDefault();
           editor?.chain().focus().toggleTaskList().run();
           return true;
@@ -624,7 +743,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         // shifted variant. Plain ⌘K must NOT be handled here - returning
         // false lets it bubble to the window search listener. Works with
         // or without a selection; LinkSheet handles all three states.
-        if (mod && event.shiftKey && !event.altKey && (event.code === 'KeyK' || event.key === 'k' || event.key === 'K')) {
+        if (matchesKey(event, APP_KEYS.insertLink)) {
           event.preventDefault();
           askForLink();
           return true;
@@ -640,10 +759,10 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           event.preventDefault();
           if (!editor) return true;
           // Inside a table, Tab/Shift+Tab moves between cells. Use our own
-          // cell-stepper (goToAdjacentCell) instead of prosemirror-tables'
+          // cell-stepper (stepTableCell) instead of prosemirror-tables'
           // goToNextCell, which gets stuck on image-only cells. See #145.
           if (editor.isActive('table')) {
-            goToAdjacentCell(editor, event.shiftKey ? -1 : 1);
+            stepTableCell(editor, event.shiftKey ? -1 : 1);
             return true;
           }
           // Indent / outdent the item, checkbox lists included - this
@@ -758,13 +877,17 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
   }, []);
 
   /**
-   * Centre the attachment chip or image whose `pn:file/` or `pn:img/` ref
-   * holds `uuid` and flash it. Shared by the jump from the Files pillar and
-   * by the rename that pillar asks for. Best effort by nature: it runs on
-   * animation frames, which a hidden or throttled tab never delivers, so no
-   * caller may depend on it having finished.
+   * Bring the node at the position `find` returns into view and flash it.
+   * Shared by the jump to a file from the Files pillar, the rename that
+   * pillar asks for, and a note-link to a heading. Best effort by nature: it
+   * runs on animation frames, which a hidden or throttled tab never
+   * delivers, so no caller may depend on it having finished.
    */
-  const revealFileNode = useCallback((uuid: string) => {
+  const revealNode = useCallback((
+    find: () => number,
+    block: ScrollLogicalPosition,
+    onMissing?: () => void,
+  ) => {
     if (!editor) return;
     // Defer a frame before resolving the position: NodeView portals may
     // not be in the DOM yet, and the post-parse normalization plugins
@@ -772,18 +895,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     // after mount, so a position captured now goes stale.
     requestAnimationFrame(() => {
       if (editor.isDestroyed) return;
-      let found = -1;
-      editor.state.doc.descendants((node, pos) => {
-        if (found >= 0) return false;
-        if (node.type.name !== 'attachment' && node.type.name !== 'image') return true;
-        const src = node.attrs['src'] as string | null;
-        if (src && src.includes(uuid)) {
-          found = pos;
-          return false;
-        }
-        return true;
-      });
-      if (found < 0) return;
+      const found = find();
+      if (found < 0) { onMissing?.(); return; }
       const dom = editor.view.nodeDOM(found);
       if (!(dom instanceof HTMLElement)) return;
       // Keep the target centered until layout settles: on a freshly
@@ -800,7 +913,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         if (Math.abs(top - lastTop) < 1) stableFrames++;
         else stableFrames = 0;
         lastTop = top;
-        dom.scrollIntoView({ block: 'center', inline: 'nearest' });
+        dom.scrollIntoView({ block, inline: 'nearest' });
         if (stableFrames >= 5 || performance.now() - start > 1200) {
           // Remove + reflow so a repeat jump to the same file re-flashes.
           dom.classList.remove('pn-file-flash');
@@ -815,6 +928,26 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     });
   }, [editor]);
 
+  /** Centre the attachment chip or image whose `pn:file/` or `pn:img/` ref
+   *  holds `uuid` and flash it. */
+  const revealFileNode = useCallback((uuid: string) => {
+    if (!editor) return;
+    revealNode(() => {
+      let found = -1;
+      editor.state.doc.descendants((node, pos) => {
+        if (found >= 0) return false;
+        if (node.type.name !== 'attachment' && node.type.name !== 'image') return true;
+        const src = node.attrs['src'] as string | null;
+        if (src && src.includes(uuid)) {
+          found = pos;
+          return false;
+        }
+        return true;
+      });
+      return found;
+    }, 'center');
+  }, [editor, revealNode]);
+
   useImperativeHandle(
     ref,
     () => ({
@@ -827,6 +960,16 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       toggleReplace,
       scrollToFile: (uuid: string) => {
         revealFileNode(uuid);
+      },
+      scrollToHeading: (heading: string, onMissing?: () => void) => {
+        if (!editor) return;
+        revealNode(() => {
+          const pos = findHeadingPos(editor.state.doc, heading);
+          // The caret goes to the heading's start, so typing continues there
+          // and not wherever the note was last left.
+          if (pos >= 0) editor.commands.setTextSelection(pos + 1);
+          return pos;
+        }, 'start', onMissing);
       },
       startRenameFile: (uuid: string) => {
         // The name is written by the chip inside the live editor, never by
@@ -858,6 +1001,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       },
       clearSearchHighlight: closeSeededFind,
       getEditor: () => editor,
+      replaceBody: (md: string) => !preview && replaceBodyUndoably(editor, md),
       flushPendingSave: () => {
         if (editor) flushNow(editor);
       },
@@ -872,7 +1016,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       // (or its read-only spacer) below, so the body's own top padding
       // doesn't stack on top of it.
       className={`relative flex flex-col min-h-0${preview ? '' : ' pn-editor-topgapped'}`}
-      onContextMenu={openLinkMenu}
+      onMouseDownCapture={notePreClickState}
+      onContextMenu={openBodyMenu}
     >
       {/* Toolbar must be a direct child of the Editor root - wrapping it
           in a short-height div kills sticky (the toolbar can only stick
@@ -976,10 +1121,13 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           onClick={addLineAtTop}
           aria-label={t('topRow.add')}
           style={{ height: EDITOR_TOP_GAP_PX }}
-          className="shrink-0 w-full cursor-text rounded-md transition-colors [@media(hover:hover)]:hover:bg-neutral-500/[0.06]"
+          className="shrink-0 w-full cursor-text rounded-md transition-colors [@media(hover:hover)]:hover:bg-pn/5"
         />
       )}
       <EditorContent editor={editor} />
+      {/* After the content, so the sticky pill pins to the bottom of the
+          scrolling pane rather than to the top of it. */}
+      <LinkAddressPill rootRef={rootRef} />
       {/* Always mounted, hidden by itself until the caret is in a table: a
           gate read here would only be as fresh as the last render of this
           component, which a transaction does not cause. */}
@@ -1020,10 +1168,10 @@ export const Editor = forwardRef<EditorHandle, Props>(function Editor(props, ref
     // frame on a cache hit, for the parse duration on a miss.
     return (
       <div className="animate-pulse space-y-4 py-6" aria-hidden="true">
-        <div className="h-4 w-3/4 rounded bg-neutral-200 dark:bg-neutral-800" />
-        <div className="h-4 w-full rounded bg-neutral-200 dark:bg-neutral-800" />
-        <div className="h-4 w-5/6 rounded bg-neutral-200 dark:bg-neutral-800" />
-        <div className="h-4 w-2/3 rounded bg-neutral-200 dark:bg-neutral-800" />
+        <div className="h-4 w-3/4 rounded bg-pn/10" />
+        <div className="h-4 w-full rounded bg-pn/10" />
+        <div className="h-4 w-5/6 rounded bg-pn/10" />
+        <div className="h-4 w-2/3 rounded bg-pn/10" />
       </div>
     );
   }

@@ -1,0 +1,8 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "description": "Lets the app scale its own window, which the Appearance pane and the keyboard both step along one ladder. Desktop only, because the mobile webviews do not support it and a browser already has its own zoom. Scoped to the main window: the About panel's height is measured by hand against its content, so scaling it would clip the panel rather than enlarge it.",
+  "identifier": "zoom",
+  "permissions": ["core:webview:allow-set-webview-zoom"],
+  "platforms": ["macOS", "windows", "linux"],
+  "windows": ["main"]
+}

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
 import { ArrowsClockwise, CaretRight, X } from './icons';
-import { intlLocale } from './languages';
+import { formatInstant } from './intlFormat';
 import { firstBodyLine } from './notesViewUtils';
 import type { NoteConflict } from './sync';
 
@@ -25,11 +25,8 @@ export function ConflictModal({ conflict, onResolve, onClose }: Props) {
   const serverPreview = preview(conflict.serverTitle, conflict.serverBody);
   const localPreview = preview(conflict.localNote.title, conflict.localNote.body);
 
-  const localDate = new Date(conflict.localNote.updatedAt);
-  const serverDate = new Date(conflict.serverUpdatedAt);
-  const fmt = (d: Date) => d.toLocaleString(intlLocale(), {
-    month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
-  });
+  const localDate = formatInstant(conflict.localNote.updatedAt, 'dateTime');
+  const serverDate = formatInstant(conflict.serverUpdatedAt, 'dateTime');
 
   return (
     <div
@@ -50,7 +47,7 @@ export function ConflictModal({ conflict, onResolve, onClose }: Props) {
           </div>
           <button
             onClick={onClose}
-            className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1"
+            className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
             aria-label={t('common:actions.close')}
           >
             <X size={18} />
@@ -58,10 +55,10 @@ export function ConflictModal({ conflict, onResolve, onClose }: Props) {
         </div>
 
         {/* Explanation */}
-        <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+        <p className="text-sm text-pn-muted leading-relaxed">
           <Trans
             i18nKey="settings:conflict.explanation"
-            values={{ date: fmt(serverDate) }}
+            values={{ date: serverDate }}
             components={{ em: <span className="font-medium text-pn" /> }}
           />
         </p>
@@ -70,7 +67,7 @@ export function ConflictModal({ conflict, onResolve, onClose }: Props) {
         <div className="rounded-md border border-indigo-300 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40 p-3 space-y-1">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">{t('conflict.willBeKept')}</span>
-            <span className="text-xs text-neutral-400">{fmt(serverDate)}</span>
+            <span className="text-xs text-pn-muted">{serverDate}</span>
           </div>
           <p className="text-pn truncate text-sm">{serverPreview}</p>
         </div>
@@ -78,10 +75,10 @@ export function ConflictModal({ conflict, onResolve, onClose }: Props) {
         {/* Expandable local version */}
         <button
           onClick={() => setShowLocal(!showLocal)}
-          className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300 transition flex items-center gap-1"
+          className="text-sm text-pn-muted hover:text-pn transition flex items-center gap-1"
         >
           <CaretRight className={`transition-transform ${showLocal ? 'rotate-90' : ''}`} />
-          {t('conflict.showLocal', { date: fmt(localDate) })}
+          {t('conflict.showLocal', { date: localDate })}
         </button>
         {showLocal && (
           <div className="rounded-md border border-divider p-3 space-y-1">
@@ -94,20 +91,20 @@ export function ConflictModal({ conflict, onResolve, onClose }: Props) {
           <div className="flex gap-2">
             <button
               onClick={() => { onResolve('server'); onClose(); }}
-              className="flex-[2] rounded-md bg-accent text-white hover:bg-accent-hover px-4 py-2 text-sm font-medium transition"
+              className="flex-[2] rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-4 py-2 text-sm font-medium transition"
             >
               {t('conflict.useNewer')}
             </button>
             <button
               onClick={() => { onResolve('local'); onClose(); }}
-              className="flex-1 rounded-md border border-neutral-300 hover:bg-neutral-100 dark:border-neutral-800 dark:hover:bg-neutral-900 px-4 py-2 text-sm transition"
+              className="flex-1 rounded-md border border-divider hover:bg-pn/5 px-4 py-2 text-sm transition"
             >
               {t('conflict.useMine')}
             </button>
           </div>
           <button
             onClick={() => { onResolve('both'); onClose(); }}
-            className="w-full text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300 transition py-1"
+            className="w-full text-sm text-pn-muted hover:text-pn transition py-1"
           >
             {t('conflict.keepBoth')}
           </button>

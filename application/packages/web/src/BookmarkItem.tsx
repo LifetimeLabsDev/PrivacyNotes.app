@@ -100,7 +100,7 @@ export function BookmarkItem({
           rather than the form-label 12px it used to wear. Two steps under
           `pn-note-title` above it - H3 to the title's H1 - because at H2 a
           one-field pane read as two titles competing (reported 2026-08-25). */}
-      <label className="block text-base lg:text-lg font-semibold tracking-tight text-neutral-800 dark:text-neutral-100 mb-3">
+      <label className="block text-base lg:text-lg font-semibold tracking-tight text-pn mb-3">
         {t('bookmarks.urlLabel')}
       </label>
       {/* One row while the pane holds it. Under 30rem the field would be
@@ -141,7 +141,7 @@ export function BookmarkItem({
         <button
           type="button"
           onClick={() => copy(savedUrl, 'url')}
-          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 rounded-md border border-divider bg-surface-1 px-3 text-[13px] text-neutral-600 dark:text-neutral-300 transition hover:text-accent hover:border-accent @max-[30rem]:flex-1"
+          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 rounded-md border border-divider bg-surface-1 px-3 text-[13px] text-pn-soft transition hover:text-accent hover:border-accent @max-[30rem]:flex-1"
         >
           {/* The label never changes - a wider "copied" caption resized
               the button and squeezed the URL field mid-click. The green
@@ -152,19 +152,19 @@ export function BookmarkItem({
         <button
           type="button"
           onClick={() => openExternal(savedUrl)}
-          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 rounded-md bg-accent/10 px-3 text-[13px] font-semibold text-accent transition hover:bg-accent/20 @max-[30rem]:flex-1"
+          className="shrink-0 inline-flex items-center justify-center gap-1.5 h-9 rounded-md bg-accent/10 px-3 text-[13px] font-semibold text-accent-strong transition hover:bg-accent/20 @max-[30rem]:flex-1"
         >
           <ArrowSquareOut size={15} />
           {t('bookmarks.openAction')}
         </button>
       </div>
       {invalid && (
-        <div className="mt-1.5 text-[12px] font-medium text-red-600 dark:text-red-400">{t('bookmarks.urlInvalid')}</div>
+        <div className="mt-1.5 text-[12px] font-medium text-danger">{t('bookmarks.urlInvalid')}</div>
       )}
       {/* Amber, not red: the quick-add bar's colour for the same refusal, so
           "already saved" reads as the same event on both sides of a click. */}
       {duplicate && (
-        <div className="mt-1.5 text-[12px] font-medium text-amber-600 dark:text-amber-400">{t('bookmarks.urlDuplicate')}</div>
+        <div className="mt-1.5 text-[12px] font-medium text-warning">{t('bookmarks.urlDuplicate')}</div>
       )}
 
       {/* Where the icon beside the field comes from, folded away until asked
@@ -206,7 +206,7 @@ export function BookmarkItem({
               disabled={!pinConfigured && !pinProtected}
               className="rounded accent-accent"
             />
-            <span className="text-sm text-neutral-600 dark:text-neutral-400">
+            <span className="text-sm text-pn-muted">
               {t('auth:loginForm.requirePin')}
             </span>
             <button
@@ -220,7 +220,7 @@ export function BookmarkItem({
           </label>
           {showPinInfo && <PinInfoModal onClose={() => setShowPinInfo(false)} />}
           {!pinConfigured && !pinProtected && (
-            <p className="mt-1 text-[11px] text-neutral-400 dark:text-neutral-500">
+            <p className="mt-1 text-[11px] text-pn-muted">
               {t('auth:loginForm.setUpPinFirst')}
             </p>
           )}

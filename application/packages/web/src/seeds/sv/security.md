@@ -27,7 +27,7 @@ Alla alternativ håller dina anteckningar krypterade på din enhet. De skiljer s
 | **Inloggning, nyckeln på din enhet** | Hos dig, ingen annanstans | Logga in med Google, Apple eller GitHub och behåll ändå nyckeln |
 | **Bara fras, ingen inloggning** | Hos dig, ingen annanstans | Ingen e-post, inget namn, inget konto alls |
 
-Med de två nedersta kunde vi inte läsa en anteckning ens om vi tvingades. Det första byter bort det mot bekvämlighet: din fras ligger på vår server under en nyckel som är vår, så en ny enhet behöver inget mer än ditt konto. Om vår server någonsin bröts in i kunde den nyckeln bli blottad.
+Med de två nedersta kunde vi inte läsa en anteckning ens om vi tvingades. Det första byter bort det mot bekvämlighet: din fras ligger på vår server under en nyckel som är vår, så en ny enhet behöver inget mer än ditt konto. Om någon någonsin bröt sig in på vår server kunde den nyckeln bli blottad.
 
 Inloggad med Google, Apple eller GitHub? Du kan byta mellan de två första senare, under **Inställningar > Konto > Nyckelförvaring**. Med ett fraskonto stannar frasen alltid hos dig.
 

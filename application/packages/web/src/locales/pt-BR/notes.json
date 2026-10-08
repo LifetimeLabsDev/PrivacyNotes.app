@@ -10,7 +10,8 @@
     "empty": "Vazia",
     "noContent": "Sem conteúdo",
     "notBackedUp": "Sem backup",
-    "archived": "Arquivado"
+    "archived": "Arquivado",
+    "entryDate": "Data da entrada"
   },
   "header": {
     "new": "Nova",
@@ -19,7 +20,9 @@
     "trash": "Lixeira"
   },
   "folderChip": {
-    "clear": "Remover o filtro de pasta: {{folder}}"
+    "clear": "Remover o filtro de pasta: {{folder}}",
+    "subfolders": "Subpastas",
+    "subfoldersLabel": "Incluir subpastas"
   },
   "tagChip": {
     "clear": "Remover o filtro de etiqueta: {{tag}}"
@@ -191,6 +194,8 @@
     "currentHtmlDesc": "Amigável para impressão, markdown renderizado em página branca.",
     "printTitle": "Imprimir / Salvar como PDF",
     "printDesc": "Abre a caixa de diálogo de impressão. Salve como PDF ou envie para uma impressora.",
+    "printTextTitle": "Imprimir só o texto",
+    "printTextDesc": "Mantém o título. Deixa de fora a data, a pasta e as etiquetas.",
     "burnTitle": "Compartilhar e Queimar Após Ler",
     "burnDesc": "Publique esta nota como um link de visualização única. O link se autodestrói após a leitura. Sua nota fica segura na sua conta."
   },
@@ -208,7 +213,10 @@
     "newNote": "Novo",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Abrir estatísticas",
+    "journalCalendar": "Calendário do diário",
     "words": "Palavras",
     "zen": "Modo Zen",
     "appearance": "Aparência",
@@ -232,7 +240,7 @@
     "appearanceLabel": "Aparência",
     "helpLabel": "Ajuda",
     "aboutLabel": "Sobre",
-    "languageLabel": "Idioma",
+    "languageLabel": "Data e Idioma",
     "languageDesc": "Escolha o idioma em que o PrivacyNotes é exibido."
   },
   "importStore": {
@@ -252,6 +260,12 @@
     "readOnlyBlocked_other": "Os <highlight>{{count}} itens</highlight> são somente leitura, então nenhum vai para a lixeira. Desative somente leitura nas opções da nota primeiro.",
     "readOnlySkipped_one": "<highlight>{{count}} item</highlight> é somente leitura e fica onde está.",
     "readOnlySkipped_other": "<highlight>{{count}} itens</highlight> são somente leitura e ficam onde estão."
+  },
+  "deleteCheckedTasks": {
+    "title": "Excluir os itens marcados?",
+    "confirm": "Excluir",
+    "body_one": "<highlight>{{count}} item</highlight> será excluído desta nota. Isso não pode ser desfeito.",
+    "body_other": "<highlight>{{count}} itens</highlight> serão excluídos desta nota, incluindo os itens aninhados. Isso não pode ser desfeito."
   },
   "bulkDelete": {
     "body_one": "Excluir permanentemente <highlight>{{count}} nota</highlight>? Isso não pode ser desfeito.",

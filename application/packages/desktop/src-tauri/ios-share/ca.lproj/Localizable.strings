@@ -1,0 +1,3 @@
+"saved" = "Desat a PrivacyNotes";
+"failed" = "No s'ha pogut desar a PrivacyNotes";
+"tooLarge" = "Massa gran. El màxim és {{limit}} MB per fitxer.";

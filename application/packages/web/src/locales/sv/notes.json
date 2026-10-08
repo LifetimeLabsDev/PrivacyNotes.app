@@ -10,7 +10,8 @@
     "empty": "Tom",
     "noContent": "Inget innehåll",
     "notBackedUp": "Inte säkerhetskopierad",
-    "archived": "Arkiverad"
+    "archived": "Arkiverad",
+    "entryDate": "Inläggsdatum"
   },
   "header": {
     "new": "Ny",
@@ -19,7 +20,9 @@
     "trash": "Papperskorgen"
   },
   "folderChip": {
-    "clear": "Rensa mappfilter: {{folder}}"
+    "clear": "Rensa mappfilter: {{folder}}",
+    "subfolders": "Undermappar",
+    "subfoldersLabel": "Ta med undermappar"
   },
   "tagChip": {
     "clear": "Rensa taggfilter: {{tag}}"
@@ -191,6 +194,8 @@
     "currentHtmlDesc": "Utskriftsvänlig, markdown renderad på en vit sida.",
     "printTitle": "Skriv ut / Spara som PDF",
     "printDesc": "Öppnar utskriftsdialogen. Spara som PDF eller skicka till en skrivare.",
+    "printTextTitle": "Skriv ut bara text",
+    "printTextDesc": "Behåller titeln. Utelämnar datum, mapp och taggar.",
     "burnTitle": "Dela och bränn efter läsning",
     "burnDesc": "Publicera den här anteckningen som en länk som bara går att öppna en gång. Länken förstör sig själv efter läsning. Din anteckning ligger kvar tryggt på ditt konto."
   },
@@ -208,7 +213,10 @@
     "newNote": "Ny",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Kommando + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Öppna statistik",
+    "journalCalendar": "Dagbokskalender",
     "words": "Ord",
     "zen": "Zenläge",
     "appearance": "Utseende",
@@ -232,7 +240,7 @@
     "appearanceLabel": "Utseende",
     "helpLabel": "Hjälp",
     "aboutLabel": "Om",
-    "languageLabel": "Språk",
+    "languageLabel": "Datum och språk",
     "languageDesc": "Välj språket som PrivacyNotes visas på."
   },
   "importStore": {
@@ -252,6 +260,12 @@
     "readOnlyBlocked_other": "Alla <highlight>{{count}} objekt</highlight> är skrivskyddade, så inget av dem kan flyttas till papperskorgen. Stäng av skrivskyddet i anteckningsalternativen först.",
     "readOnlySkipped_one": "<highlight>{{count}} objekt</highlight> är skrivskyddat och stannar där det är.",
     "readOnlySkipped_other": "<highlight>{{count}} objekt</highlight> är skrivskyddade och stannar där de är."
+  },
+  "deleteCheckedTasks": {
+    "title": "Radera markerade punkter?",
+    "confirm": "Radera",
+    "body_one": "<highlight>{{count}} punkt</highlight> raderas från anteckningen. Det går inte att ångra.",
+    "body_other": "<highlight>{{count}} punkter</highlight> raderas från anteckningen, inklusive underpunkter. Det går inte att ångra."
   },
   "bulkDelete": {
     "body_one": "Radera <highlight>{{count}} anteckning</highlight> permanent? Det går inte att ångra.",

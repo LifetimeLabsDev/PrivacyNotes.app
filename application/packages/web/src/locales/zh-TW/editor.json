@@ -7,7 +7,7 @@
     "heading": "標題",
     "taskList": "任務清單",
     "bulletList": "項目符號清單",
-    "addLink": "插入連結（Cmd+Shift+K）",
+    "addLink": "插入連結（{{keys}}）",
     "noteLink": "連結到另一篇筆記（或輸入 [[）",
     "numberedList": "編號清單",
     "textColor": "文字顏色",
@@ -34,7 +34,12 @@
     "blockMath": "區塊公式",
     "align": "對齊",
     "font": "字型",
-    "pictureFromFiles": "檔案中的圖片"
+    "pictureFromFiles": "檔案中的圖片",
+    "date": "日期",
+    "dateTime": "日期與時間",
+    "footnote": "註腳",
+    "spoiler": "防雷文字",
+    "copyBox": "複製框"
   },
   "align": {
     "left": "靠左對齊",
@@ -118,7 +123,7 @@
     "next": "下一個符合項目（Enter）",
     "nextTitle": "下一個（Enter）",
     "close": "關閉尋找",
-    "closeTitle": "關閉（⌘F）",
+    "closeTitle": "關閉（{{keys}}）",
     "replacePlaceholder": "取代為",
     "replaceLabel": "取代為",
     "replace": "取代",
@@ -128,7 +133,7 @@
     "caseSensitive": "區分大小寫",
     "caseSensitiveTitle": "區分大小寫",
     "closeReplace": "關閉尋找與取代",
-    "closeReplaceTitle": "關閉（⌥⌘F）",
+    "closeReplaceTitle": "關閉（{{keys}}）",
     "replacedCount_other": "已取代 {{count}} 項"
   },
   "outline": {
@@ -137,7 +142,14 @@
     "title": "大綱",
     "ariaLabel": "筆記大綱",
     "hide": "隱藏大綱",
-    "hideTitle": "隱藏大綱（Esc）"
+    "hideTitle": "隱藏大綱（Esc）",
+    "copyHeadingLink": "複製標題連結",
+    "copied": "已複製"
+  },
+  "bodyMenu": {
+    "cut": "剪下",
+    "sortAsc": "將各行從 A 到 Z 排序",
+    "sortDesc": "將各行從 Z 到 A 排序"
   },
   "topRow": {
     "add": "在最上方加入一行"
@@ -174,6 +186,7 @@
   "wordCount": {
     "words_other": "{{formatted}} 字",
     "characters_other": "{{formatted}} 個字元",
+    "tasksChecked_other": "{{formatted}} 項中已勾選 {{done}} 項",
     "tooLargeToSync": "，可能過大而無法同步，請拆成新筆記",
     "veryLong": "，篇幅很長，編輯可能變慢或卡頓",
     "gettingLong": "，篇幅漸長，較慢的裝置可能出現延遲",
@@ -181,19 +194,47 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "沒有相符的筆記",
-    "create": "建立「{{query}}」"
+    "create": "建立「{{query}}」",
+    "headingsIn": "{{title}} 的標題",
+    "noHeadingMatches": "沒有相符的標題"
+  },
+  "copyBox": {
+    "placeholder": "一鍵複製的文字"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}+點擊即可複製",
+    "copied": "已複製"
   },
   "codeBlock": {
     "copy": "複製",
     "copied": "已複製",
     "copyFailed": "失敗",
-    "wrap": "長行自動換行"
+    "wrap": "長行自動換行",
+    "showAll_other": "顯示全部 {{count}} 行",
+    "showLess": "收合",
+    "plainText": "純文字",
+    "language": "程式碼語言：{{name}}",
+    "searchLanguages": "搜尋語言",
+    "placeholder": "輸入或貼上程式碼。若要上色，請在上方選擇語言。"
   },
   "math": {
     "sourceLabel": "LaTeX 原始碼"
   },
   "noteLink": {
     "open": "開啟筆記",
-    "remove": "移除連結"
+    "remove": "移除連結",
+    "linkHeading": "連結到標題...",
+    "headingNotFound": "找不到標題",
+    "headingsLocked": "解鎖這則筆記才能看到它的標題",
+    "noHeadings": "這則筆記沒有標題"
+  },
+  "footnote": {
+    "placeholder": "註腳內容",
+    "back": "回到正文",
+    "unused": "正文中未使用",
+    "remove": "移除註腳",
+    "missing": "這個註腳沒有內容。按一下即可新增。",
+    "ariaRef": "註腳 {{n}}",
+    "ariaSection": "註腳"
   }
 }

@@ -502,7 +502,7 @@ function ChooseMode({ onPick }: { onPick: (m: Mode) => void }) {
             </div>
           )}
           {oauthError && (
-            <p className="text-sm text-red-500 dark:text-red-400">{oauthError}</p>
+            <p className="text-sm text-danger">{oauthError}</p>
           )}
         </div>
 
@@ -709,7 +709,7 @@ function KeyCustodyChoice({ onBack }: { onBack: () => void }) {
             choice === 'custodial' ? 'border-accent' : 'border-[var(--wl-muted)]/60'
           }`}>
             {choice === 'custodial' && (
-              <div className="w-2.5 h-2.5 rounded-full bg-accent" />
+              <div className="w-2.5 h-2.5 rounded-full bg-accent-fill" />
             )}
           </div>
           <div className="flex-1 min-w-0">
@@ -718,7 +718,7 @@ function KeyCustodyChoice({ onBack }: { onBack: () => void }) {
                 {t('custody.simpleTitle')}
               </div>
               {choice === 'custodial' && (
-                <span className="text-[11px] font-medium bg-accent/10 text-accent px-2.5 py-0.5 rounded-md shrink-0">
+                <span className="text-[11px] font-medium bg-accent/10 text-accent-strong px-2.5 py-0.5 rounded-md shrink-0">
                   {t('custody.recommended')}
                 </span>
               )}
@@ -745,7 +745,7 @@ function KeyCustodyChoice({ onBack }: { onBack: () => void }) {
             choice === 'self-custody' ? 'border-accent' : 'border-[var(--wl-muted)]/60'
           }`}>
             {choice === 'self-custody' && (
-              <div className="w-2.5 h-2.5 rounded-full bg-accent" />
+              <div className="w-2.5 h-2.5 rounded-full bg-accent-fill" />
             )}
           </div>
           <div>
@@ -760,7 +760,7 @@ function KeyCustodyChoice({ onBack }: { onBack: () => void }) {
       </button>
 
       {error && (
-        <p className="text-sm text-red-500 dark:text-red-400">{error}</p>
+        <p className="text-sm text-danger">{error}</p>
       )}
 
       <button
@@ -887,7 +887,7 @@ function CreatePhrase({
   return (
     <div className="space-y-4">
       <div className="rounded-md border border-[var(--wl-line)] bg-[var(--wl-bg)] p-3 text-sm leading-relaxed text-[var(--wl-ink)] flex items-start gap-2.5">
-        <Warning size={18} aria-hidden="true" className="shrink-0 mt-0.5 text-amber-500 dark:text-amber-400" />
+        <Warning size={18} aria-hidden="true" className="shrink-0 mt-0.5 text-warning" />
         <span>
           <Trans i18nKey="auth:createPhrase.warning" components={{ strong: <strong /> }} />
         </span>
@@ -915,7 +915,7 @@ function CreatePhrase({
           onClick={copyPhrase}
           className={`inline-flex items-center justify-center gap-1.5 rounded-md border px-3 py-2 text-sm transition ${
             copied
-              ? 'border-accent bg-accent/10 text-accent'
+              ? 'border-accent bg-accent/10 text-accent-strong'
               : 'border-[var(--wl-line)] hover:bg-[var(--wl-tint)]'
           }`}
         >
@@ -948,7 +948,7 @@ function CreatePhrase({
       </div>
 
       {failedFiles.size > 0 && (
-        <p className="text-sm text-red-500 dark:text-red-400">{t('createPhrase.saveFailed')}</p>
+        <p className="text-sm text-danger">{t('createPhrase.saveFailed')}</p>
       )}
 
       {/* Hidden QR canvas: stays mounted so Download QR can always read
@@ -1073,6 +1073,11 @@ function ImportPhrase({
         placeholder={t('importPhrase.placeholder')}
         rows={3}
         dir="ltr" // rtl-ok: BIP-39 phrase words, always LTR
+        // A phone keyboard must neither rewrite a phrase word nor learn it.
+        spellCheck={false}
+        autoCapitalize="none"
+        autoCorrect="off"
+        autoComplete="off"
         className="w-full rounded-md bg-[var(--wl-bg)] border border-[var(--wl-line)] text-[var(--wl-ink)] focus:border-accent p-3 text-sm font-mono focus:outline-none placeholder:text-[var(--wl-muted)]"
         autoFocus
       />
@@ -1111,7 +1116,7 @@ function ImportPhrase({
           if (file) void handleUploadFile(file);
         }}
       />
-      {error && <p className="text-sm text-red-500 dark:text-red-400">{error}</p>}
+      {error && <p className="text-sm text-danger">{error}</p>}
       <TrustDeviceCheckbox
         trustDevice={trustDevice}
         onTrustDeviceChange={onTrustDeviceChange}

@@ -135,7 +135,7 @@ function InlinePinGate({
         disabled={disabled}
       />
       {err && (
-        <p className="text-sm text-red-500 dark:text-red-400 text-center">
+        <p className="text-sm text-danger text-center">
           {err}
         </p>
       )}
@@ -154,7 +154,7 @@ function InlinePinGate({
         <button
           onClick={() => void submit(value)}
           disabled={value.length !== 4 || disabled}
-          className="flex-1 rounded-md bg-accent text-white hover:bg-accent-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex-1 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover px-3 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {busy ? t('phraseGate.checking') : t('phraseGate.unlock')}
         </button>

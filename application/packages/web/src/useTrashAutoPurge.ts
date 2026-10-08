@@ -51,10 +51,11 @@ export function useTrashAutoPurge({
     void (async () => {
       const purged = await purgeExpiredTrash(days, demo);
       if (purged.length === 0) return;
-      if (imageStoreRef.current) {
-        void gcOnNotesDelete(imageStoreRef.current, purged, attachmentStoreRef.current);
-      }
       await refresh();
+      // Awaited before the sync, so the recount after it leaves them out.
+      if (imageStoreRef.current) {
+        await gcOnNotesDelete(imageStoreRef.current, purged, attachmentStoreRef.current);
+      }
       // Sync deletes to server, then refresh quota so the storage bar updates.
       runSync().then(refreshStorage);
     })();

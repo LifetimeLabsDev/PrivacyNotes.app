@@ -149,6 +149,8 @@
     "confirmPinForLock": "Wpisz swój PIN, aby to włączyć. Zamyka on kopię Twojej frazy odzyskiwania, więc tylko Twój PIN może otworzyć aplikację.",
     "relockAfter": "Zablokuj ponownie po",
     "relockHint": "Dotyczy tylko ekranu blokady aplikacji.",
+    "blockCapture": "Ukrywaj przed przechwytywaniem ekranu",
+    "blockCaptureHint": "Nie pokazuje twoich notatek na zrzutach ekranu, nagraniach i przy udostępnianiu ekranu, jeśli urządzenie na to pozwala. Dotyczy tylko tego urządzenia.",
     "perDeviceNote": "Odblokowanie biometryczne otwiera te same notatki co PIN. Zostaje na tym urządzeniu i nigdy się nie synchronizuje.",
     "disableConfirmTitle": "Wyłącz biometrię",
     "disableConfirmLabel": "Wyłącz",

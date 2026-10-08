@@ -53,21 +53,6 @@ const allBut = (...tooWide: string[]): readonly string[] => [
 // Export) are English in all Latin because their slots are too tight to measure
 // reliably. Spec: ops/docs/i18n-spec.md section 10b.
 const RENDER_TRANSLATED: Record<string, readonly string[]> = {
-  // The Brave "enable the flag" card, whole. Listed here so the review
-  // dashboard marks every cell dead; the runtime forcing is done by
-  // ENGLISH_EVERYWHERE below, which unlike `[]` also covers Arabic.
-  'shell:markdown.braveTitle': [],
-  'shell:markdown.braveSteps': [],
-  'shell:markdown.braveCopy': [],
-  'shell:markdown.braveCopied': [],
-  'shell:markdown.braveAppAlternative': [],
-
-  // The two SSH key-material labels, whole. Listed here so the review dashboard
-  // marks every cell dead; the runtime forcing is done by ENGLISH_EVERYWHERE
-  // below, which unlike `[]` also covers Arabic.
-  'common:sshKeyForm.publicKey': [],
-  'common:sshKeyForm.privateKey': [],
-
   // Product terms and dev-facing jargon: English in every locale, CJK included.
   'notes:vaultNew.sshKey': [], // "SSH Key" in the vault New menu
   'shell:vaultItem.badgeSshKey': [], // "SSH Key" vault row badge
@@ -143,47 +128,10 @@ function fits(allow: readonly string[]): boolean {
 }
 
 /**
- * English in EVERY locale, Arabic included - the one thing `[]` cannot express.
- *
- * `[]` means "no locale renders the translation", but `fits()` waves Arabic
- * through ahead of the allow list, so an `[]` key still shows its Arabic form.
- * That is deliberate for the product-jargon keys above (Arabic has real
- * translations for them and its terms are compact), and wrong for a string that
- * is English for a reason unrelated to width.
- *
- * The Brave card is that case: it walks the reader through a browser flags page
- * whose own labels Chromium ships in English in every language, so a translated
- * card would describe a screen that does not exist in that language. We hold the
- * whole card in English rather than mix languages inside it (decided
- * 2026-08-14); the flag name itself is separately pinned as a constant.
- *
- * "Public Key" and "Private Key" are the second case. They name the two halves
- * of an SSH keypair, and every tool the reader holds them next to says exactly
- * that: ssh-keygen, the GitHub and GitLab settings screens, ~/.ssh, the header
- * inside the file. A translated label makes the person carrying the key match
- * a word they will not meet again anywhere. The surrounding fields (Label,
- * Passphrase, Notes) are ordinary words and stay translated.
- *
- * Keys here MUST also appear in RENDER_TRANSLATED with `[]`, which is what the
- * review dashboard parses to grey their cells out.
- */
-const ENGLISH_EVERYWHERE = new Set([
-  'common:sshKeyForm.publicKey',
-  'common:sshKeyForm.privateKey',
-  'shell:markdown.braveTitle',
-  'shell:markdown.braveSteps',
-  'shell:markdown.braveCopy',
-  'shell:markdown.braveCopied',
-  'shell:markdown.braveAppAlternative',
-]);
-
-/**
  * Options for t() on an overflow-prone key: FORCE_EN when the active locale
  * would overflow this slot, otherwise undefined (render the real translation).
  */
 export function exemptOpts(qualifiedKey: string): typeof FORCE_EN | undefined {
-  // Ahead of everything, including the Arabic pass-through inside `fits()`.
-  if (ENGLISH_EVERYWHERE.has(qualifiedKey)) return FORCE_EN;
   const allow = RENDER_TRANSLATED[qualifiedKey];
   // A key not in the map is not exempt at all: render its real translation.
   // (Only keys listed above are ever forced to English.)

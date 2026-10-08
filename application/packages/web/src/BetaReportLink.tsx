@@ -4,7 +4,7 @@ import { bugReportUrl } from './bugReportUrl';
 
 /** The flask mark of a feature in beta, in the same green chip on the tab and beside the report line. */
 export function BetaFlask() {
-  return <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+  return <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-emerald-500/15 text-success">
     <Flask size={14} aria-hidden="true" />
   </span>;
 }

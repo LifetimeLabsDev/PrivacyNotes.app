@@ -144,6 +144,7 @@ export async function applyImport(
       ? localById.get(n.id) ?? localByContent.get(contentKey(n))?.shift()
       : undefined;
     const stamp = stampFromPast(n.updatedAt);
+    const edited = stampFromPast(n.editedAt ?? n.updatedAt);
     // The note's own id is reused ONLY when a live local row carries it. Two
     // states make reuse a silent, permanent failure: a tombstone, because the
     // server drops every write to a deleted note without an error, so a
@@ -172,6 +173,8 @@ export async function applyImport(
             trashed: 0,
             folderId: n.folderId ?? null,
             updatedAt: nextStamp(mine.updatedAt),
+            // Out of the trash with its own text, so its last edit stands.
+            editedAt: mine.editedAt ?? mine.updatedAt,
             dirty: 1,
           }];
         }
@@ -202,6 +205,11 @@ export async function applyImport(
       // retention window to rescue anything. createdAt is untouched, so
       // the note's origin date survives.
       updatedAt: trashed ? now : (stamp ?? now),
+      // The file's own date of the note's last edit, the creation time when
+      // it gives none. A trashed note keeps it while `updatedAt` above takes
+      // the time it entered this trash. Written in the app's one ISO form,
+      // so the lists compare it as a string.
+      editedAt: edited ? new Date(edited).toISOString() : (n.createdAt || now),
       dirty: 1,
       deleted: 0,
       trashed,
@@ -211,6 +219,10 @@ export async function applyImport(
       type: n.type || 'note',
       folderId: n.folderId ?? null,
       ...(n.archived ? { archived: 1 } : {}),
+      // A row whose archive flag this device never learned keeps not knowing
+      // it: the backup wrote "not archived" for it only because the export
+      // has no third state (sync.ts archiveUnknownOf).
+      ...(!n.archived && mine?.archivedUnknown === 1 ? { archivedUnknown: 1 as const } : {}),
       ...(n.trackers && Object.keys(n.trackers).length > 0 ? { trackers: n.trackers } : {}),
       // A copy that replaces the local row keeps that row's record of the
       // server version it last synced, and the base beside it: its push

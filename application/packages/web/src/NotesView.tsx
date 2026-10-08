@@ -1,12 +1,14 @@
-import { useEffect, useLayoutEffect, useRef, useState, useCallback, useMemo, useDeferredValue, type CSSProperties } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, useCallback, useMemo, useDeferredValue, type CSSProperties } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { CaretRight, Folder, Fire } from './icons';
+import { CaretRight, Folder, Fire, PILLAR_GLYPHS } from './icons';
 import { useAuth, type AuthState } from './auth';
 import type { SupabaseClient } from '@notes/shared';
 import {
   getNote,
+  listNotes,
   createNote,
   updateNote,
+  updateNoteFrom,
   trashNote,
   restoreNote,
   permanentlyDelete,
@@ -27,31 +29,38 @@ import { openExternal } from './openExternal';
 import { NeverBackedUpNotice, countOnlyOnThisDevice, listNeverBackedUp, maySkipSignOutConfirm } from './neverBackedUp';
 import { ReadOnlySkipNotice } from './readOnlyNotice';
 import { TagPicker } from './TagPicker';
-import { resolveNoteLinkMatches } from './noteLinks';
-import { parseLinkBody, buildLinkBody, buildLinkKeyMap } from './linkBody';
-import { canDeleteFolder, subtreeIds, UNFILED_ID } from './folders';
+import { noteLinkKey, parseNoteLinkTarget, resolveNoteLinkMatches } from './noteLinks';
+import { noteHeadingsFor } from './noteHeadings';
+import { parseLinkBody, buildLinkBody, buildLinkKeyMap, duplicateBookmarkId } from './linkBody';
+import { branchPathLabels, canDeleteFolder, folderCounts as computeFolderCounts, folderScope, subtreeIds, UNFILED_ID } from './folders';
+import { countTags, sectionNotes } from './sidebarScope';
+import { liveItemIds } from './itemDrag';
 import { FolderNamesContext } from './folderNames';
+import { ChipFilterContext } from './chipFilter';
+import { SubfoldersSwitchContext } from './ListFilterChips';
 import { LooksContext, noteTintVars } from './looks/LookGlyph';
 import {
+  applyNoteColorChoice,
   importTagColors,
+  noteColorChoice,
   noteLookKey,
   noteOwnColor,
   resolveItemColorSource,
-  resolveNoteColor,
+  resolveNoteLook,
   setItemLook,
   type NoteOwnColor,
 } from './itemStyles';
 import { setDeviceLabel } from './deviceLabels';
 import { db, reopenDb, type LocalNote } from './db';
 import { ConflictModal } from './ConflictModal';
-import { fetchQuotaUsage, heartbeat, recalculateQuota, type QuotaUsage } from './devices';
+import { detectPlatform, fetchQuotaUsage, heartbeat, recalculateQuota, type QuotaUsage } from './devices';
 import { type EditorHandle } from './Editor';
 import { readToolbarPref, writeToolbarPref } from './editorPrefs';
 import { DemoBanner } from './DemoBanner';
 import { AnnouncementBanner } from './AnnouncementBanner';
 import { MoveBanner, MovedBookmarkHint } from './MoveBanner';
 import { setWikiLinkNavigator } from './NoteLink';
-import { setWikiLinkNoteTitles } from './NoteLinkSuggestion';
+import { setWikiLinkNoteContext, setWikiLinkNoteTitles } from './NoteLinkSuggestion';
 import { type TagInputHandle } from './TagInput';
 
 import { LogoIcon } from './LogoIcon';
@@ -77,17 +86,18 @@ import { loginExtrasOf, withLoginExtras } from './loginExtras';
 import { HoverLabel } from './HoverLabel';
 import { useNoteEditing } from './useNoteEditing';
 import { useSyncOrchestrator } from './useSyncOrchestrator';
-import { useTheme, applyLineSpacing, FREE_THEMES } from './theme';
+import { useTheme, applyLineSpacing, isFreeTheme } from './theme';
+import { setDatePrefs } from './intlFormat';
 import { searchNotes, searchBodyTerms, searchSeedCandidates, isPhraseQuery, gatedSearchCopy, notesHolding } from './search';
 import { textMatcher } from './textMatch';
 import { useSearchIndexSync } from './searchIndexSync';
-import type { NewMilestone } from './milestones';
+import { nextCelebration, type NewMilestone } from './milestones';
 import { pendingRatingMilestones } from './ratingPrompt';
 import { DonationModal } from './DonationModal';
 import { MilestoneToast } from './MilestoneToast';
-import { FeedbackModal } from './FeedbackModal';
 import { RateModal } from './RateModal';
 import { AppearanceSheet } from './AppearanceSheet';
+import { useThemeBuilder } from './notesView/useThemeBuilder';
 import { UploadProgressModal } from './UploadProgressModal';
 import { ExportProgressModal } from './ExportProgressModal';
 import { useKeyboardShortcuts } from './useKeyboardShortcuts';
@@ -127,6 +137,12 @@ import {
   appendQuickTask,
   canUncheckAllTasks,
   uncheckAllTasksInNote,
+  canDeleteCheckedTasks,
+  countTasks,
+  deleteCheckedTasksInBody,
+  deleteCheckedTasksInNote,
+  canSortTasksByStatus,
+  sortTasksByStatusInNote,
   type TaskItem,
 } from './tasks';
 import { useIsMobile } from './useIsMobile';
@@ -154,8 +170,23 @@ const DOCK_GRID_RESERVE = SIDEBAR_WIDTH_MIN + STRIPS_W + EDITOR_DOCK_MIN;
 import { setAndroidBackHandler } from './androidBack';
 import { TagsRail } from './TagsRail';
 import type { FolderSortDir, FolderSortField } from './folders';
-import { VIEW_NOTE_TYPES, type View } from './views';
-import { resolveStartView } from './viewRows';
+import { VIEW_NOTE_TYPES, isViewShown, type View } from './views';
+import { hiddenAtZero, resolveStartView, sidebarViewRows } from './viewRows';
+import { useItemHistory } from './itemHistory';
+
+// A sibling of the editor that mounts only while open, never above it, so its
+// Suspense boundary cannot disconnect the editor (see the Markdown imports).
+// The chunk loads a moment after sign-in and is then rendered directly: a lazy
+// component suspends on its first render even with its chunk in, and React
+// holds the reveal that follows for its 300 ms throttle.
+const loadQuickSwitcher = () => import('./QuickSwitcher');
+const QuickSwitcherLazy = lazy(loadQuickSwitcher);
+let QuickSwitcherLoaded: typeof import('./QuickSwitcher').default | null = null;
+import { NEW_MENU_PICKS } from './notesView/contextMenus';
+import { COMMAND_PREFIX, CommandPaletteContext, type CommandPaletteContextValue, type PaletteEntry } from './commandPalette';
+import { PALETTE_COMMANDS, PALETTE_ICONS, type PaletteCommand } from './useKeyboardShortcuts';
+import { keyText } from './shortcutMatch';
+import type { TFunction } from 'i18next';
 import { CollapsedSidebar } from './CollapsedSidebar';
 import { FilesList, extractFileItems, fileItemMediaRef, isPictureFileItem, type FileType } from './FilesList';
 import { MediaOverlays } from './notesView/MediaOverlays';
@@ -176,7 +207,6 @@ import {
   noteLinkName,
   deriveExcerpt,
   noteSaysPhrase,
-  formatModified,
   isWeekJournal,
   getMondayIso,
   journalTitle,
@@ -188,6 +218,9 @@ import {
   opensBookmarkOnClick,
   weekReflectionFor,
   conflictShownWhileGated,
+  editedAtOf,
+  journalDatePatch,
+  journalEntriesByDay,
 } from './notesViewUtils';
 import type { NoteConflict } from './sync';
 import type { JournalTrackerData } from './trackerTypes';
@@ -200,10 +233,12 @@ import {
   buildSettingsCategories,
   StatsModal,
   AboutModal,
+  FeedbackModal,
   SecurityModal,
   SyncOptionsModal,
   NoteHistoryModal,
   ImportModal,
+  SETTINGS_SECTION_ICONS,
 } from './notesView/settingsCategories';
 import { ProActivationPendingBanner } from './notesView/ProActivationPendingBanner';
 import { SnapshotForbiddenBanner } from './notesView/SnapshotForbiddenBanner';
@@ -233,12 +268,15 @@ import { NotesList } from './NotesList';
 import { MarkdownListPane } from './markdownFolder/MarkdownListPane';
 import { MarkdownFilePane } from './markdownFolder/MarkdownFilePane';
 import type { OpenedMarkdownFile, OpenedMarkdownDir } from './markdownFolder/types';
+import { readOpenedFile } from './markdownFolder/adapter';
 import { MarkdownRail } from './markdownFolder/MarkdownRail';
 import { MarkdownExplainer, MarkdownPitch } from './markdownFolder/MarkdownExplainer';
 import { MarkdownDefaultAppCard } from './markdownFolder/MarkdownDefaultApp';
 import { markdownDefaultAppSupported } from './markdownFolder/defaultApp';
 import { useTagIndex } from './markdownFolder/useTagIndex';
 import { usePendingFileOpens } from './markdownFolder/usePendingFileOpens';
+import { useShareInbox, type SharedItem } from './useShareInbox';
+import { ShareApprovalModal } from './ShareApprovalModal';
 import { useFolderRestore } from './markdownFolder/useFolderRestore';
 import { useFolderRefresh } from './markdownFolder/useFolderRefresh';
 import TasksList from './TasksList';
@@ -278,6 +316,8 @@ type Authed = Extract<AuthState, { status: 'authenticated' }>;
  * Spec: ops/docs/plans/rating-prompt-handoff.md
  */
 const RATING_ASK_DELAY_MS = 4000;
+// After the rating ask has had its turn, so the toast and the modal never open together.
+const CELEBRATION_DELAY_MS = RATING_ASK_DELAY_MS + 2000;
 
 /**
  * Editor header widths, measured on the header row itself rather than the
@@ -372,6 +412,8 @@ function AuthenticatedView({
   // back through appReLock rather than through any state React kept. Null on
   // every other mount, including a cold start. Spec: ops/docs/biometric-unlock.md (section 3.3)
   const [selectedId, setSelectedId] = useState<string | null>(() => takeReopenNote());
+  // The share sheet's open question, answered by ShareApprovalModal.
+  const [shareAsk, setShareAsk] = useState<{ items: SharedItem[]; resolve: (choice: 'save' | 'discard' | 'later') => void } | null>(null);
   /** The note a `[[note-link]]` click just jumped to, held until the list
    *  catches up. `navigateToNoteByTitle` drops the filters that hide its
    *  target, but the list does not always widen in the same render: the
@@ -407,7 +449,7 @@ function AuthenticatedView({
   const [search, setSearch] = useState('');
   const deferredSearch = useDeferredValue(search);
   const [showStats, setShowStats] = useState(false);
-  const [showAbout, setShowAbout] = useState<false | { tab?: 'about' | 'changelog' | 'hotkeys' | 'rating' }>(false);
+  const [showAbout, setShowAbout] = useState<false | { tab?: 'about' | 'hotkeys' | 'rating' }>(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [showRate, setShowRate] = useState(false);
   const [showSyncOptions, setShowSyncOptions] = useState(false);
@@ -494,6 +536,8 @@ function AuthenticatedView({
   // Deep-link target for SettingsShell (e.g. the storage banner opens it
   // straight to the Storage pane). Undefined = land on the default category.
   const [settingsCategory, setSettingsCategory] = useState<string | undefined>(undefined);
+  // A row inside that pane to land on (the quick switcher opens a setting).
+  const [settingsRow, setSettingsRow] = useState<{ id: string; tab?: string } | undefined>(undefined);
   // Clear the deep-link target whenever Settings closes, so a later open
   // from the gear / shortcut lands on the default category. Closing can
   // happen from many embedded panes, so reset here rather than per-site.
@@ -504,6 +548,7 @@ function AuthenticatedView({
   useEffect(() => {
     if (!showSettings) {
       setSettingsCategory(undefined);
+      setSettingsRow(undefined);
       setSettingsAutoVerify(false);
     }
   }, [showSettings]);
@@ -562,6 +607,12 @@ function AuthenticatedView({
    *  are rendered from two different places in this shell. */
   const [markdownDirFilter, setMarkdownDirFilter] = useState<string | null>(null);
   const [markdownTagFilter, setMarkdownTagFilter] = useState<string | null>(null);
+  /** The filter the Markdown pane opens with, set by the All list's Markdown
+   *  entry and read once when the pane mounts. */
+  const [markdownFilterSeed, setMarkdownFilterSeed] = useState('');
+  useEffect(() => {
+    if (view !== 'markdown') setMarkdownFilterSeed('');
+  }, [view]);
   /** The Markdown reference card, opened by the `?` on the folder row. Was also
    *  a first-run gate in front of the picker until 2026-08-14; that mode went
    *  when the empty state started carrying the same pitch.
@@ -630,6 +681,8 @@ function AuthenticatedView({
       parsed.tags,
       false,
       parsed.type ?? 'note',
+      null,
+      { counted: false },
     );
     // Trackers have no `createNote` parameter, and a journal file that lost
     // them would look identical and silently be a different note.
@@ -670,6 +723,8 @@ function AuthenticatedView({
           parsed.tags,
           false,
           parsed.type ?? 'note',
+          null,
+          { counted: false },
         );
         if (parsed.trackers) await updateNote(created.id, { trackers: parsed.trackers });
         setNotes((prev) => [created, ...prev]);
@@ -833,10 +888,6 @@ function AuthenticatedView({
     mutateSettings((prev) => ({ ...prev, listPrefs: nextStore }));
   }
 
-  function handleTasksViewChange(nextView: UserSettings['tasksView']) {
-    mutateSettings((prev) => ({ ...prev, tasksView: nextView }));
-  }
-
   // Mirror showDoneTasks onto synced settings. Local alias keeps all
   // the existing render sites untouched while the source of truth
   // lives on `userSettings.tasksShowDone`.
@@ -996,15 +1047,6 @@ function AuthenticatedView({
       window.removeEventListener('privacynotes:pro-activation-pending', onPending);
     };
   }, []);
-  // The update toasts (rendered at App level) ask us to open the changelog
-  // tab via this event, since the About modal state lives here in NotesView.
-  useEffect(() => {
-    const onOpenChangelog = () => setShowAbout({ tab: 'changelog' });
-    window.addEventListener('privacynotes:open-changelog', onOpenChangelog);
-    return () => {
-      window.removeEventListener('privacynotes:open-changelog', onOpenChangelog);
-    };
-  }, []);
   // If Pro flips to true after the banner showed (e.g. webhook lands
   // late), clear the banner automatically.
   useEffect(() => {
@@ -1108,7 +1150,7 @@ function AuthenticatedView({
   const [creatingTag, setCreatingTag] = useState(false);
   const [newTagDraft, setNewTagDraft] = useState('');
 
-  const { toggle: toggleTheme, colorTheme, setColorTheme, spellcheck, invisibles, setInvisibles } = useTheme();
+  const { toggle: toggleTheme, lightTheme, darkTheme, setColorTheme, spellcheck, invisibles, setInvisibles } = useTheme();
   const ctxMenu = useContextMenu();
   // List rows (notes, tasks, files) answer right-click with the row menu.
   // On touch the same event is a long-press, which is how multi-select
@@ -1126,6 +1168,9 @@ function AuthenticatedView({
   /** The items the tag picker is open for, or null. It carries the ids
    *  because the same window serves one row and a whole selection. */
   const [tagPickerFor, setTagPickerFor] = useState<string[] | null>(null);
+  // "Delete checked items" waiting on its confirm: the note, and how many
+  // task lines the delete removes.
+  const [deleteCheckedPending, setDeleteCheckedPending] = useState<{ note: LocalNote; count: number } | null>(null);
   const saveTimer = useRef<number | null>(null);
   const lastSyncAt = useRef<number>(0);
   // Stable ref for flushEditingBody - breaks the circular dependency
@@ -1144,6 +1189,22 @@ function AuthenticatedView({
   // gate: the field is opened by the chip inside the live editor, so it
   // cannot run until that editor is mounted and settled.
   const [pendingFileScroll, setPendingFileScroll] = useState<{ noteId: string; uuid: string; rename?: boolean } | null>(null);
+  // Jump-to-heading, the same wait for a note-link to `[[Note#Heading]]`:
+  // the note opens, then its heading scrolls to the top and flashes. A
+  // closed lock keeps the target until the note is unlocked here.
+  const [pendingHeading, setPendingHeading] = useState<{ noteId: string; heading: string } | null>(null);
+  useEffect(() => {
+    if (!pendingHeading) return;
+    if (selectedId !== pendingHeading.noteId) {
+      setPendingHeading(null);
+      return;
+    }
+    const handle = editorRef.current;
+    if (!handle) return;
+    handle.scrollToHeading(pendingHeading.heading, () => flashToast(t('editor:noteLink.headingNotFound')));
+    setPendingHeading(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingHeading, selectedId, pinUnlockVersion]);
   useEffect(() => {
     if (!pendingFileScroll) return;
     // User moved on to a different note - drop the stale target.
@@ -1380,6 +1441,10 @@ function AuthenticatedView({
   const freshVaultSessionRef = useRef(false);
   if (freshVaultNotice) freshVaultSessionRef.current = true;
 
+  // Whether the first sync of this session has run, failed or not. Shared items
+  // wait for it: after a fresh sign-in the device holds nothing until then, and
+  // the bookmark duplicate check would find nothing to match against.
+  const [firstSyncDone, setFirstSyncDone] = useState(false);
   useEffect(() => {
     (async () => {
       try {
@@ -1395,6 +1460,7 @@ function AuthenticatedView({
       await runSync().catch((err) =>
         console.error('[load] initial sync failed:', err)
       );
+      setFirstSyncDone(true);
     })();
   }, [refresh, runSync]);
 
@@ -1469,6 +1535,10 @@ function AuthenticatedView({
       getQuota: () => quotaRef.current,
       onError: (msg) => {
         setImportToast(t('toast.imageError', { error: msg }));
+        window.setTimeout(() => setImportToast(null), 6000);
+      },
+      onNotice: (msg) => {
+        setImportToast(msg);
         window.setTimeout(() => setImportToast(null), 6000);
       },
     });
@@ -1572,6 +1642,20 @@ function AuthenticatedView({
     []
   );
 
+  // The theme builder floats over the app; it replaces Settings and the
+  // Appearance popover while it is open.
+  const closeThemeHosts = useCallback(() => {
+    setShowSettings(false);
+    setShowAppearance(false);
+  }, []);
+  const { openThemeBuilder, resumeThemeBuilder, themeBuilder } = useThemeBuilder({
+    customThemes: userSettings.customThemes,
+    mutateSettings,
+    canSave: proUnlocked(auth.isPro),
+    onOpen: closeThemeHosts,
+    onOpenUpgrade: () => setShowUpgrade({ trigger: 'theme' }),
+  });
+
   // One "x" on any pillar's import offer hides it everywhere, on every device.
   const dismissImportPrompt = useCallback(
     () =>
@@ -1638,6 +1722,7 @@ function AuthenticatedView({
     exportEncryptedBackup,
     exportEncryptedFullBackup,
     decryptFullBackup,
+    mergeRestoredSettings,
     exportVault,
     exportBookmarks,
     exportContacts,
@@ -1768,7 +1853,13 @@ function AuthenticatedView({
         // they can never disagree (backlog #131).
         quotaRef.current = { usedBytes: q.totalBytes + q.imageBytes, maxBytes: q.maxTotalBytes };
         setViewQuota(q);
-      });
+      })
+      // A refused read leaves both holders at their last known figure, which
+      // is what every caller here wants: they call this to repaint a bar
+      // after a delete, and none of them can act on a failure. Swallowed in
+      // one place because several call sites are bare and a rejection from
+      // any of them is an unhandled one.
+      .catch((err) => { console.warn('[storage] quota refresh failed:', err); });
   }, [supabase, auth.isPro]);
 
   // Every live item, archived ones included: what must still FIND an item
@@ -1891,6 +1982,31 @@ function AuthenticatedView({
     return () => window.clearTimeout(timer);
   }, [auth.status, auth.isPro, userSettings.firstSeenAt, mutateSettings]);
 
+  /**
+   * The milestone toast, for the two families whose numbers an import
+   * cannot move: items created in the app and days with the app. Checked
+   * after the rating ask has had its turn, and again whenever the note
+   * count changes, which is when a note was just created. The keys it
+   * spends are recorded on the account, so the second device stays quiet.
+   * The rating keys are not its business.
+   * Spec: ops/docs/plans/wellness-statistics.md (section 21)
+   */
+  useEffect(() => {
+    if (auth.status !== 'authenticated' || isDemoMode()) return;
+    const timer = window.setTimeout(() => {
+      if (showRate) return;
+      const fresh = loadLocalSettings();
+      const { milestone, spend } = nextCelebration(fresh.notesCreated, fresh.firstSeenAt, fresh.milestonesSeen);
+      if (spend.length === 0) return;
+      mutateSettings((prev) => ({
+        ...prev,
+        milestonesSeen: [...new Set([...prev.milestonesSeen, ...spend])],
+      }));
+      if (milestone) setToast(milestone);
+    }, CELEBRATION_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [auth.status, notes.length, showRate, mutateSettings]);
+
   const starredCount = useMemo(
     () => listedNotes.filter((n) => n.starred === 1).length,
     [listedNotes]
@@ -1908,10 +2024,25 @@ function AuthenticatedView({
   // Re-runs whenever any note body changes, which is fine - parsing a
   // few thousand lines of markdown is instant.
   const allTasks = useMemo(() => extractAllTasks(listedNotes), [listedNotes]);
-  const openTaskCount = useMemo(
-    () => allTasks.reduce((n, t) => n + (t.checked ? 0 : 1), 0),
-    [allTasks]
-  );
+  // The sidebar's Tasks number counts the open lines the pillar would draw,
+  // so the badge and the pane never disagree: a line behind the PIN gate is
+  // not drawn, and a line inside an ordinary item is not drawn while the
+  // pillar's "show tasks in other items" switch is off. The switch lives on
+  // the Tasks copy of the list prefs, which is read here whatever view is open.
+  const openTaskCount = useMemo(() => {
+    const showOther = resolvePrefs(userSettings.listPrefs, 'tasks').showNoteTasks;
+    const byId = new Map(listedNotes.map((n) => [n.id, n]));
+    return allTasks.reduce((n, t) => {
+      if (t.checked) return n;
+      const parent = byId.get(t.noteId);
+      if (!parent || isNoteLocked(parent)) return n;
+      if (!showOther && parent.type !== 'task') return n;
+      return n + 1;
+    }, 0);
+    // gatedIdsKey: the lock predicate is a fresh function each render, and this
+    // is the value that changes when its answer does.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allTasks, listedNotes, userSettings.listPrefs, gatedIdsKey]);
   // Quick-add buffer: controlled input at the top of the Tasks view.
   // Enter appends a new `- [ ] …` line to the Reminders note (auto-created
   // on first use). Empty input is a no-op.
@@ -2105,49 +2236,33 @@ function AuthenticatedView({
     refreshStorage();
   }, [view, refreshStorage]);
 
-  const tagCounts = useMemo(() => {
-    const counts = new Map<string, number>();
-    // Track the most recent updatedAt for any note that carries a
-    // given tag so we can sort by "Modified". Uses numeric ms
-    // timestamps because local notes use "...Z" format while
-    // server-synced notes may use "...+00:00" - string comparison
-    // across those formats gives wrong results.
-    const lastModified = new Map<string, number>();
-    let untagged = 0;
-    for (const n of allViewNotes) {
-      if (n.tags.length === 0) untagged++;
-      for (const t of n.tags) {
-        counts.set(t, (counts.get(t) ?? 0) + 1);
-        const modTs = Date.parse(n.updatedAt) || 0;
-        const prevMod = lastModified.get(t) ?? 0;
-        if (modTs > prevMod) lastModified.set(t, modTs);
-      }
-    }
-    const entries = [...counts.entries()];
-    entries.sort((a, b) => {
-      let cmp = 0;
-      if (tagSortField === 'name') {
-        cmp = a[0].localeCompare(b[0]);
-      } else if (tagSortField === 'modified') {
-        const av = lastModified.get(a[0]) ?? 0;
-        const bv = lastModified.get(b[0]) ?? 0;
-        cmp = av - bv;
-        if (cmp === 0) cmp = a[0].localeCompare(b[0]);
-      } else {
-        // entries - sort by note count, tie-break on name.
-        cmp = a[1] - b[1];
-        if (cmp === 0) cmp = a[0].localeCompare(b[0]);
-      }
-      return tagSortDir === 'asc' ? cmp : -cmp;
-    });
-    return { tags: entries, untagged };
-  }, [allViewNotes, tagSortField, tagSortDir]);
+  // Every tag in the account. Tag pickers read this one, so a note tag can
+  // still go on a login; the sidebar reads railTagCounts below.
+  const tagCounts = useMemo(
+    () => countTags(allViewNotes, tagSortField, tagSortDir),
+    [allViewNotes, tagSortField, tagSortDir],
+  );
+
+  // The open section's own items, which the sidebar's tag list and folder
+  // counts speak for. null in All, Pinned, Archive and Trash: those keep the
+  // global rail. Spec: ops/issues/0335.md (decisions)
+  const railNotes = useMemo(() => sectionNotes(
+    view,
+    listedNotes,
+    new Set(allTasks.map((t) => t.noteId)),
+    new Set(rawFileItems.map((f) => f.noteId)),
+    listPrefs.showNoteTasks,
+  ), [view, listedNotes, allTasks, rawFileItems, listPrefs.showNoteTasks]);
+  const railTagCounts = useMemo(
+    () => (railNotes ? countTags(railNotes, tagSortField, tagSortDir) : tagCounts),
+    [railNotes, tagSortField, tagSortDir, tagCounts],
+  );
 
   // Unfiled count - the folder sibling of tagCounts.untagged. Drives the
   // muted "Unfiled" row under the folder tree (GitHub #235).
   const unfiledCount = useMemo(
-    () => allViewNotes.filter((n) => !n.folderId).length,
-    [allViewNotes]
+    () => (railNotes ?? allViewNotes).filter((n) => !n.folderId).length,
+    [railNotes, allViewNotes]
   );
 
   // Split the sorted tag list into Favorites + Regular, based on the
@@ -2157,15 +2272,15 @@ function AuthenticatedView({
   // from the Favorites list but kept in userSettings so that if the
   // tag gets recreated later the favorite flag comes back automatically.
   const favoriteTagsList = useMemo(() => {
-    const tagCountMap = new Map(tagCounts.tags);
+    const tagCountMap = new Map(railTagCounts.tags);
     return userSettings.favoriteTags
       .filter((t) => tagCountMap.has(t))
       .map((t) => [t, tagCountMap.get(t) ?? 0] as [string, number]);
-  }, [tagCounts.tags, userSettings.favoriteTags]);
+  }, [railTagCounts.tags, userSettings.favoriteTags]);
   const nonFavoriteTagsList = useMemo(() => {
     const favSet = new Set(userSettings.favoriteTags);
-    return tagCounts.tags.filter(([t]) => !favSet.has(t));
-  }, [tagCounts.tags, userSettings.favoriteTags]);
+    return railTagCounts.tags.filter(([t]) => !favSet.has(t));
+  }, [railTagCounts.tags, userSettings.favoriteTags]);
 
   // If the user is filtering by "Untagged" and that bucket drops to 0
   // (either because they tagged the last one, or restored the last one
@@ -2173,10 +2288,23 @@ function AuthenticatedView({
   // back to "All notes" instead of leaving them staring at an empty
   // list that's filtered by a view that no longer exists in the UI.
   useEffect(() => {
-    if (selectedTag === '__untagged__' && tagCounts.untagged === 0) {
+    if (selectedTag === '__untagged__' && railTagCounts.untagged === 0) {
       setSelectedTag(null);
     }
-  }, [selectedTag, tagCounts.untagged]);
+  }, [selectedTag, railTagCounts.untagged]);
+
+  // The same bounce for a real tag the open section does not use: the rail
+  // no longer lists it, so a live filter on it would be one nobody can see
+  // or click off. Folders need no twin: the tree always shows every folder.
+  // A state view (All, Pinned, Archive, Trash) keeps the global rail of live
+  // items, and a tag chip in Archive or Trash can set a tag only those items
+  // carry; there the filter goes only once no item at all carries the tag.
+  useEffect(() => {
+    if (!selectedTag || selectedTag === '__untagged__') return;
+    if (railTagCounts.tags.some(([t]) => t === selectedTag)) return;
+    if (railNotes === null && notes.some((n) => n.deleted === 0 && n.tags.includes(selectedTag))) return;
+    setSelectedTag(null);
+  }, [selectedTag, railTagCounts.tags, railNotes, notes]);
 
   // Same bounce for folders: if the active folder disappears (deleted
   // on another device, arriving via settings sync), fall back to All
@@ -2208,18 +2336,23 @@ function AuthenticatedView({
    *
    * Shared by the notes list and by the id set that scopes the Tasks and
    * Files feeds, so the two can never disagree about what a filter means.
-   * Folders match direct members only - no recursive rollup.
+   * A folder holds its direct members, or its whole branch while the
+   * Subfolders switch is on.
    */
+  const inFolder = useMemo(
+    () => (selectedFolder
+      ? folderScope(userSettings.folders, selectedFolder, userSettings.includeSubfolders)
+      : null),
+    [selectedFolder, userSettings.folders, userSettings.includeSubfolders],
+  );
   const inScope = useCallback((n: LocalNote) => {
     if (selectedTag === '__untagged__') {
       if (n.tags.length > 0) return false;
     } else if (selectedTag && !n.tags.includes(selectedTag)) {
       return false;
     }
-    if (selectedFolder === UNFILED_ID) return !n.folderId;
-    if (selectedFolder) return n.folderId === selectedFolder;
-    return true;
-  }, [selectedTag, selectedFolder]);
+    return inFolder ? inFolder(n.folderId) : true;
+  }, [selectedTag, inFolder]);
 
   const displayNotes = useMemo(() => {
     // Tasks view is not a notes list - the middle column renders its
@@ -2298,7 +2431,7 @@ function AuthenticatedView({
       const holding = notesHolding(deferredSearch);
       ordered.push(...list
         .filter((n) => holding.has(n.id) && !ranked.has(n.id))
-        .sort((a, b) => compareNotes(a, b, listPrefs)));
+        .sort((a, b) => compareNotes(a, b, listPrefs, view === 'journal')));
       // Several terms are the exact phrase: the list is the hits that say
       // them as typed, in relevance order, and nothing else - the same rule
       // the Tasks, Files and Bookmarks matchers apply to their text. The
@@ -2317,7 +2450,7 @@ function AuthenticatedView({
     // because the upstream lists are memoised; mutating would cause
     // stale equality checks elsewhere.
     const sorted = list.slice();
-    sorted.sort((a, b) => compareNotes(a, b, listPrefs));
+    sorted.sort((a, b) => compareNotes(a, b, listPrefs, view === 'journal'));
     return sorted;
   // searchIndexVersion: searchNotes reads a module-level index that
   // updates AFTER the render a state change triggers - the version bump
@@ -2326,7 +2459,7 @@ function AuthenticatedView({
 
   // Tag + folder + view compose: when either filter is active, the Tasks and
   // Files pillars (which render from their own data feeds, not displayNotes)
-  // get scoped copies. Sidebar counts intentionally stay global.
+  // get scoped copies. The sidebar counts follow the section (railNotes).
   const scopeNoteIds = useMemo(
     () => (selectedTag || selectedFolder
       ? new Set(listedNotes.filter(inScope).map((n) => n.id))
@@ -2341,6 +2474,27 @@ function AuthenticatedView({
     () => (scopeNoteIds ? listedNotes.filter((n) => scopeNoteIds.has(n.id)) : listedNotes),
     [listedNotes, scopeNoteIds]
   );
+  // All lists the encrypted items only; a search there also counts the open
+  // Markdown folder's files whose path matches, as the Markdown pane's own
+  // filter does, and offers them as one entry (NotesList).
+  const markdownBridgeCount = useMemo(() => {
+    const q = deferredSearch.trim();
+    if (view !== 'home' || !q || !markdownDir) return 0;
+    const match = textMatcher(q);
+    return markdownDir.entries.filter((e) => match(e.relPath)).length;
+  }, [view, deferredSearch, markdownDir]);
+  const markdownBridge = markdownBridgeCount
+    ? {
+        count: markdownBridgeCount,
+        onOpen: () => {
+          setMarkdownFilterSeed(search.trim());
+          setMarkdownDirFilter(null);
+          setMarkdownTagFilter(null);
+          void handleSelectView('markdown');
+        },
+      }
+    : undefined;
+
   const scopedFileItems = useMemo(
     () => (scopeNoteIds ? fileItems.filter((f) => scopeNoteIds.has(f.noteId)) : fileItems),
     [fileItems, scopeNoteIds]
@@ -2635,6 +2789,8 @@ function AuthenticatedView({
   // Derived from `displayNotes` so the chip matches the current view.
   // Tasks/files views return an empty displayNotes - fall back to all
   // active notes so the chip isn't blank.
+  const journalEntries = useMemo(() => journalEntriesByDay(notes), [notes]);
+
   const footerStats = useMemo(() => {
     // The Markdown pillar counts FILES ON DISK, not notes. Its displayNotes is
     // empty by design (nothing encrypted belongs to it), so falling through
@@ -2836,24 +2992,35 @@ function AuthenticatedView({
   // extension when the user clicks a [[link]].
   const navigateToNoteByTitle = useCallback(
     async (target: string) => {
-      const matches = resolveNoteLinkMatches(activeNotes, target, noteLinkName);
+      // `[[Note#Heading]]` opens the note at that heading; `[[#Heading]]`
+      // names the heading in the note that holds the link.
+      const keys = new Set(activeNotes.map((n) => noteLinkKey(noteLinkName(n, isNoteLocked(n)))));
+      const { note, heading } = parseNoteLinkTarget(target, (name) => keys.has(noteLinkKey(name)));
+      const here = note === '' ? activeNotes.find((n) => n.id === selectedId) : undefined;
+      const matches = here ? [here] : resolveNoteLinkMatches(activeNotes, note, noteLinkName);
       if (matches.length === 1) {
-        revealNote(matches[0]!);
+        const match = matches[0]!;
+        if (match.id !== selectedId) revealNote(match);
+        if (heading !== null) setPendingHeading({ noteId: match.id, heading });
         return;
       }
+      // The prompts name the NOTE, so a link to a missing note offers to
+      // create "Recipes" and never "Recipes#Bread".
+      if (note === '') return;
+      const named = note;
       if (matches.length > 1) {
         // Two live notes carry this title, so the link names both and the
         // reader is told rather than sent to whichever the list happened to
         // put first. That order was newest-first, and an import arrives with
         // whatever timestamp its file declares.
-        setWikiLinkAmbiguous(target);
+        setWikiLinkAmbiguous(named);
         return;
       }
       // No match - ask before creating so a dangling link doesn't make junk.
-      setWikiLinkCreatePending(target);
+      setWikiLinkCreatePending(named);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeNotes, revealNote]
+    [activeNotes, revealNote, selectedId]
   );
 
   /** ID & Sync's "Open" for a note the last pass could not push: leave
@@ -2916,6 +3083,14 @@ function AuthenticatedView({
     if (!tiptap) return;
     setWikiLinkNavigator(tiptap, navigateToNoteByTitle);
     setWikiLinkNoteTitles(tiptap, noteTitles);
+    // The open note, as a link names it, and the headings a link into any
+    // other note can point at. A note behind a closed lock answers
+    // 'locked': its headings are its content.
+    const open = selected ? noteTitles.find((e) => e.id === selected.id) ?? null : null;
+    setWikiLinkNoteContext(tiptap, open, (id) => {
+      const n = activeNotes.find((x) => x.id === id);
+      return n ? noteHeadingsFor(n, isNoteLocked(n)) : [];
+    });
   });
 
   /** The folder a new item files into: the one the user is looking at. The
@@ -3031,6 +3206,7 @@ function AuthenticatedView({
             userSettings.journalTitleFormat,
             userSettings.journalTitleSuffix,
             locale,
+            userSettings.journalTitlePattern,
           )
         : '';
     const effectiveVaultType = isVault ? (vaultType ?? 'login') : null;
@@ -3119,6 +3295,54 @@ function AuthenticatedView({
     inheritFilters: () => ({ tags: inheritedTags(), folderId: inheritedFolderId() }),
   });
 
+  // What other apps shared into the phone app through the share sheet (#357).
+  // Unfiled on purpose: the user picked no folder or tag in the share sheet.
+  useShareInbox({
+    addBookmark: async (url, title) => {
+      // Read fresh, not from the last render: one drain can carry the same link
+      // twice, and the list on screen has not caught up with the first. A
+      // bookmark behind its PIN gate is not matched: opening it would tell the
+      // sender's link that a gated bookmark holds the address.
+      const existing = duplicateBookmarkId(buildLinkKeyMap((await listNotes()).filter((n) => !isNoteLocked(n))), url);
+      if (existing) return existing;
+      const created = await createNote(title, buildLinkBody(url), [], false, 'link', null, { counted: false });
+      await refresh();
+      void runSync();
+      return created.id;
+    },
+    addNote: async (text) => {
+      const created = await createNote('', text, [], false, 'note', null, { counted: false });
+      await refresh();
+      void runSync();
+      return created.id;
+    },
+    // The upload answers which files the inbox may let go; a store that is
+    // gone (the shell is closing) keeps them all.
+    addFiles: async (files) => {
+      if (!attachmentStoreRef.current) throw new Error('no attachment store');
+      return handleAttachFromFiles(files);
+    },
+    ready: firstSyncDone,
+    // Android only: any installed app can send a share there with no step by
+    // the person, so the drain waits for this question (ShareApprovalModal).
+    approve: detectPlatform() === 'android'
+      ? (items) => new Promise((resolve) => setShareAsk({ items, resolve }))
+      : undefined,
+    reveal: (id) => {
+      void (async () => {
+        const note = await getNote(id);
+        if (!note) return;
+        // revealNote opens a bookmark's address in the browser, which is the
+        // page the user just shared from; show the saved bookmark instead.
+        if (note.type !== 'link') return revealNote(note);
+        setSelectedFolder(null);
+        setSelectedTag(null);
+        setView('bookmarks');
+        await selectBookmarkForEdit(id);
+      })();
+    },
+  });
+
   /**
    * Create a new journal entry for a recent date. Always creates - no
    * dedup, because two entries for one day is a choice the user is
@@ -3156,6 +3380,7 @@ function AuthenticatedView({
         userSettings.journalTitleFormat,
         userSettings.journalTitleSuffix,
         activeLocale(),
+        userSettings.journalTitlePattern,
       ),
       '',
       undefined,
@@ -3175,6 +3400,7 @@ function AuthenticatedView({
       userSettings.journalTitleFormat,
       userSettings.journalTitleSuffix,
       activeLocale(),
+      userSettings.journalTitlePattern,
     );
     const note = await createNote(title, '', undefined, undefined, 'journal');
     const todayLocal = toLocalIso(new Date());
@@ -3193,6 +3419,38 @@ function AuthenticatedView({
     tabNewItem(note.id);
     setSelectedId(note.id);
     setDrawerOpen(false);
+  }
+
+  /** Open a journal entry from the calendar, in the Journals pillar wherever
+   *  the calendar was opened from. */
+  function openJournalEntry(id: string) {
+    if (view !== 'journal') setView('journal');
+    void handleSelectNote(id);
+  }
+
+  /** Create an entry for a day from the footer calendar. It lands in Journals,
+   *  and it inherits no folder or tag, as a backfilled entry never does. */
+  function createJournalEntryFor(day: string) {
+    if (view !== 'journal') setView('journal');
+    void handleBackfillDate(day);
+  }
+
+  /** Move a journal entry to another day (journalDatePatch). The app's own
+   *  bookkeeping, so the "last edited" date stays (`edit: false`). An entry
+   *  behind its PIN gate keeps its title, judged on the row the write reads. */
+  async function setJournalDate(id: string, day: string) {
+    const titles = {
+      format: userSettings.journalTitleFormat,
+      suffix: userSettings.journalTitleSuffix,
+      locale: activeLocale(),
+      pattern: userSettings.journalTitlePattern,
+    };
+    // Built from the row inside the write: a pull between a separate read and
+    // the write would otherwise lose what it brought.
+    const written = await updateNoteFrom(id, (current) => journalDatePatch(current, day, titles, { keepTitle: isNoteLocked(current) }), { edit: false });
+    if (!written) return;
+    patchLocal(id, written, new Date().toISOString(), { edit: false });
+    scheduleSync();
   }
 
   async function handleSelectNote(id: string) {
@@ -3377,13 +3635,14 @@ function AuthenticatedView({
   async function handlePermanentlyDelete(id: string) {
     const nextId = selectedId === id ? pickNextSelection(id) : selectedId;
     const deleted = await permanentlyDelete(id);
-    // GC after the write and only for a row it tombstoned: a note a pull
-    // restored while the dialog was open keeps its images and files.
-    if (deleted && imageStoreRef.current) {
-      void gcOnNoteDelete(imageStoreRef.current, deleted.body, id, attachmentStoreRef.current);
-    }
     if (selectedId === id) setSelectedId(nextId);
     await refresh();
+    // GC after the write and only for a row it tombstoned: a note a pull
+    // restored while the dialog was open keeps its images and files. Awaited
+    // before the sync, so the recount after it already leaves them out.
+    if (deleted && imageStoreRef.current) {
+      await gcOnNoteDelete(imageStoreRef.current, deleted.body, id, attachmentStoreRef.current);
+    }
     // Sync deletes to server, recalculate stale counters, then refresh quota.
     runSync().then(refreshStorage);
   }
@@ -3470,6 +3729,7 @@ function AuthenticatedView({
     handleReorderFolders,
     handleDeleteFolder,
     handleMoveNotesToFolder,
+    handleDropOnFolder,
     folderCounts,
     folderChipFor,
     handleBulkMoveToFolder,
@@ -3494,6 +3754,12 @@ function AuthenticatedView({
     view,
     setView,
   });
+  // The folder tree stays whole; its counts follow the open section. The
+  // folder picker keeps the global folderCounts.
+  const railFolderCounts = useMemo(
+    () => (railNotes ? computeFolderCounts(railNotes) : folderCounts),
+    [railNotes, folderCounts],
+  );
 
   // ── Android back button (#174) ─────────────────────────────────────
   // MainActivity.kt routes hardware/gesture back presses here via
@@ -3549,9 +3815,9 @@ function AuthenticatedView({
     return () => setAndroidBackHandler(null);
   }, []);
 
-  // ── Swipe-right opens the mobile drawer (#173) ─────────────────────
+  // ── Swipe-right: back from an open item, else the drawer (#173, #408) ─
   // Two eligible start zones: (1) the left edge, unconditional - the
-  // only zone with a note open fullscreen, and inert on gesture-nav
+  // only zone with an item open fullscreen, and inert on gesture-nav
   // Android / iOS Safari where the OS owns the edge; (2) anywhere
   // inside the notes list pane (data-drawer-swipe) - the zone every
   // user gets without changing system settings. Zone 2 skips touches
@@ -3561,8 +3827,15 @@ function AuthenticatedView({
   useEdgeSwipe(
     () => {
       // Fire-time guards for layers that don't re-render this component:
-      // never pull the drawer over an open overlay or context menu.
+      // never act under an open overlay or context menu.
       if (hasOpenOverlay() || ctxMenu.state) return;
+      // A fullscreen item goes back to the list, the platform's edge-swipe
+      // meaning and the same step Android Back takes. Same md gate as the
+      // back handler, for the same auto-select reason.
+      if (selectedId && window.matchMedia('(max-width: 767px)').matches) {
+        void handleCloseEditor();
+        return;
+      }
       setDrawerOpen(true);
     },
     isMobile && !zenMode && !drawerOpen && !mobileKeyboard,
@@ -3600,15 +3873,16 @@ function AuthenticatedView({
 
   async function confirmEmptyTrash() {
     const emptied = await emptyTrash();
+    setSelectedId(null);
+    await refresh();
     // GC the blobs of the rows emptyTrash actually tombstoned, never the
     // rendered list, which can still show a note a pull has restored. One
     // batch call, so a blob shared by two of them cannot hide behind its
-    // batch-mate in the reference check.
+    // batch-mate in the reference check. Awaited before the sync, so the
+    // recount after it already leaves them out.
     if (imageStoreRef.current && emptied.length > 0) {
-      void gcOnNotesDelete(imageStoreRef.current, emptied, attachmentStoreRef.current);
+      await gcOnNotesDelete(imageStoreRef.current, emptied, attachmentStoreRef.current);
     }
-    setSelectedId(null);
-    await refresh();
     // Sync deletes to server, recalculate stale counters, then refresh quota.
     runSync().then(refreshStorage);
   }
@@ -3618,7 +3892,7 @@ function AuthenticatedView({
    * write refuses a read-only note and one the PIN guards (toggleTaskInNote).
    */
   async function handleToggleTask(task: TaskItem, checked: boolean) {
-    const nextBody = await toggleTaskInNote(task, checked, isNoteLocked);
+    const nextBody = await toggleTaskInNote(task, checked, isNoteLocked, userSettings.sinkCheckedTasks);
     if (nextBody == null) {
       // Nothing written: the line shifted out from under us (parallel
       // edit), or the note takes no edits. Rebuild and bail.
@@ -3642,12 +3916,38 @@ function AuthenticatedView({
    * save delay is kept, then remounts the editor the way a single toggle does.
    */
   async function handleUncheckAllTasks(n: LocalNote) {
-    const nextBody = await uncheckAllTasksInNote(n.id, withFreshestBody(n).body, isNoteLocked);
+    await applyTaskRewrite(n, uncheckAllTasksInNote);
+  }
+
+  /**
+   * The whole-note task actions of the "..." menu share one write: start from
+   * the editor's body so typing still in the save delay is kept. The open
+   * note then takes the new body as one step of its editor's history, so Undo
+   * brings the old one back; any other note, or an editor that cannot take
+   * it, is remounted the way a single toggle does.
+   */
+  async function applyTaskRewrite(
+    n: LocalNote,
+    rewrite: (id: string, body: string, isGated: (n: LocalNote) => boolean) => Promise<string | null>,
+  ) {
+    const nextBody = await rewrite(n.id, withFreshestBody(n).body, isNoteLocked);
     if (nextBody == null) return;
     patchLocal(n.id, { body: nextBody }, new Date().toISOString());
+    if (n.id === selectedId && editorRef.current?.replaceBody(nextBody)) {
+      scheduleSync();
+      return;
+    }
     editingBodyRef.current.delete(n.id);
     setEditorRevision((r) => r + 1);
     scheduleSync();
+  }
+
+  /** Ask before deleting the checked tasks, naming how many tasks go,
+   *  sub-tasks of a checked task included. */
+  function handleDeleteCheckedTasks(n: LocalNote) {
+    const body = withFreshestBody(n).body;
+    const count = countTasks(body).total - countTasks(deleteCheckedTasksInBody(body)).total;
+    if (count > 0) setDeleteCheckedPending({ note: n, count });
   }
 
   /**
@@ -3783,8 +4083,35 @@ function AuthenticatedView({
     setBurnTarget({ title: n.title, ...payload });
   }
 
+  // Back and forward through the opened items (GitHub #331). A step lands
+  // the way a note-link does, through revealNote, so a filter that hides the
+  // item cannot bounce it back. A trashed item and a bookmark (which opens
+  // its address rather than a pane) are skipped.
+  const { step: historyStep, recent: recentItems } = useItemHistory(selectedId, (id) => {
+    const n = notes.find((x) => x.id === id);
+    if (!n || n.trashed === 1 || opensBookmarkOnClick(n, isNoteLocked(n))) return false;
+    revealNote(n);
+    return true;
+  });
+
+  // The quick switcher (Mod+K, and the Jump to buttons): every item by title,
+  // the opened ones first, then the commands and the settings.
+  // The query it opens with: '' for a jump, ">" for command mode; null while closed.
+  const [quickSwitcherQuery, setQuickSwitcherQuery] = useState<string | null>(null);
+  useEffect(() => {
+    // A failed load leaves the lazy path, which retries on the first open.
+    const id = setTimeout(() => {
+      loadQuickSwitcher().then((m) => (QuickSwitcherLoaded = m.default), () => {});
+    }, 2000);
+    return () => clearTimeout(id);
+  }, []);
+  const QuickSwitcher = QuickSwitcherLoaded ?? QuickSwitcherLazy;
+
   // ── Keyboard shortcuts (extracted to useKeyboardShortcuts.ts) ──
-  useKeyboardShortcuts({
+  const palette = useKeyboardShortcuts({
+    openCommands: () => setQuickSwitcherQuery(COMMAND_PREFIX),
+    openQuickSwitcher: () => setQuickSwitcherQuery(''),
+    tabCount: tabsShown ? openTabs.tabs.length : 0,
     zenMode,
     setZenMode,
     zenUnlocked,
@@ -3796,12 +4123,46 @@ function AuthenticatedView({
       if (view === 'contacts') { handleNewContact(); return; }
       void handleNew();
     },
+    // The New menu at the top of the list, where a letter picks the type
+    // (GitHub #378). The same items as the right-click menu, up to its
+    // first separator.
+    openNewMenu: () => {
+      const all = buildGlobalMenu();
+      const end = all.findIndex((it) => 'type' in it && it.type === 'separator');
+      const items = all.slice(0, end < 0 ? all.length : end).map((it, i) => {
+        const pick = NEW_MENU_PICKS[i];
+        return pick && !('type' in it && it.type !== 'item') ? { ...it, pick, shortcut: pick.toUpperCase() } : it;
+      });
+      const list = document.querySelector('[data-pane="list"]')?.getBoundingClientRect();
+      const x = list && list.width > 0 ? list.left + 16 : window.innerWidth / 2 - 100;
+      const y = list && list.width > 0 ? list.top + 56 : window.innerHeight / 3;
+      ctxMenu.open({ clientX: x, clientY: y, preventDefault() {}, stopPropagation() {} }, items, true);
+    },
     closeActiveTab: () => {
-      if (tabsShown && selectedId && openTabs.tabIds.has(selectedId)) closeTab(selectedId);
+      if (!tabsShown || !selectedId || !openTabs.tabIds.has(selectedId)) return false;
+      closeTab(selectedId);
+      return true;
+    },
+    stepTab: (direction) => {
+      const tabs = openTabs.tabs;
+      if (!tabsShown || tabs.length === 0) return;
+      const at = tabs.findIndex((n) => n.id === selectedId);
+      const next = at < 0 ? tabs[direction === 1 ? 0 : tabs.length - 1] : tabs[(at + direction + tabs.length) % tabs.length];
+      if (next) showTab(next.id);
     },
     searchInputRef,
     setSidebarCollapsed,
+    // The sections in the order the sidebar shows them: All, then each row
+    // it draws.
+    goToSection: (n) => {
+      const rows = sidebarViewRows(t)
+        .map((r) => r.key)
+        .filter((v) => isViewShown(v, userSettings.hiddenViews, view) && !hiddenAtZero(v, viewCounts[v], view));
+      const target = (['home', ...rows] as View[])[n - 1];
+      if (target) void handleSelectView(target);
+    },
     toggleTheme,
+    toggleInvisibles: () => setInvisibles(!invisibles),
     setShowSettings,
     selectedId,
     view,
@@ -3809,15 +4170,65 @@ function AuthenticatedView({
     closeEditor: () => void handleCloseEditor(),
     search,
     setSearch,
+    hasFilters: selectedTag !== null || selectedFolder !== null,
+    clearFilters: () => {
+      setSelectedFolder(null);
+      setSelectedTag(null);
+    },
     showAbout,
     setShowAbout,
     displayNotesRef,
     handleSelectNote,
     navigateList,
+    historyStep,
     selectionMode,
     clearSelection,
     selectAllVisible,
   });
+
+  // The view rows take a translator bound to the shell catalog (viewRows.ts).
+  const tShell = ((key: string) => t(`shell:${key}`)) as unknown as TFunction;
+
+  // The commands the quick switcher lists (commandPalette.ts): the commands
+  // with their keys, a New entry per item type, and the sidebar sections.
+  const paletteEntriesRef = useRef<() => PaletteEntry[]>(() => []);
+  paletteEntriesRef.current = () => {
+    const commandKey = (id: PaletteCommand) =>
+      id === 'clearFilters' ? '' : keyText(id === 'help' ? 'help' : id);
+    const commands: PaletteEntry[] = PALETTE_COMMANDS.filter((id) => palette.available(id)).map((id) => ({
+      id: `cmd:${id}`,
+      group: 'commands',
+      label: t(`common:palette.commands.${id}`),
+      keys: commandKey(id) || undefined,
+      icon: PALETTE_ICONS[id],
+      run: () => palette.run(id),
+    }));
+    const menu = buildGlobalMenu();
+    const end = menu.findIndex((it) => 'type' in it && it.type === 'separator');
+    const created: PaletteEntry[] = menu.slice(0, end < 0 ? menu.length : end).flatMap((it, i) =>
+      'onSelect' in it ? [{ id: `new:${i}`, group: 'new' as const, label: it.label, glyph: it.icon, run: it.onSelect }] : [],
+    );
+    const rows = sidebarViewRows(tShell).filter(
+      (r) => isViewShown(r.key, userSettings.hiddenViews, view) && !hiddenAtZero(r.key, viewCounts[r.key], view),
+    );
+    const sections: PaletteEntry[] = [{ key: 'home' as View, label: t('shell:tagsRail.allItems'), icon: PILLAR_GLYPHS.all }, ...rows].map((r) => ({
+      id: `go:${r.key}`,
+      group: 'goTo',
+      label: r.label,
+      icon: r.icon,
+      run: () => void handleSelectView(r.key),
+    }));
+    return [...commands, ...created, ...sections];
+  };
+  const paletteContext = useMemo<CommandPaletteContextValue>(
+    () => ({
+      searchInputRef,
+      openCommands: () => setQuickSwitcherQuery(COMMAND_PREFIX),
+      openSwitcher: () => setQuickSwitcherQuery(''),
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   // --- Right-click context menu builders ------------------------------
   // Kept together so the menu concept stays inspectable in one place.
@@ -3835,6 +4246,12 @@ function AuthenticatedView({
     });
   }
   const applyBulkTag = (tag: string) => applyTagTo(Array.from(selectedIds), tag);
+  /** A list item dropped on a sidebar tag row: the tag picker's add and
+   *  message, for the live items among the ids the drag carried. */
+  function dropOnTag(ids: string[], tag: string) {
+    const live = liveItemIds(ids, activeNotes);
+    if (live.length > 0) applyTagTo(live, tag);
+  }
 
   /**
    * Run a single note's export, print, burn link or address copy at once
@@ -3868,7 +4285,7 @@ function AuthenticatedView({
   const gatedExports = {
     exportSingleMarkdown: (n: LocalNote) => behindGate(n, () => exportSingleMarkdown(withFreshestBody(n))),
     exportSingleHtml: (n: LocalNote) => behindGate(n, () => exportSingleHtml(withFreshestBody(n))),
-    printNote: (n: LocalNote) => behindGate(n, () => printNote(withFreshestBody(n))),
+    printNote: (n: LocalNote, ...opts: [titleOnly?: boolean]) => behindGate(n, () => printNote(withFreshestBody(n), ...opts)),
     handleBurnShare: (n: LocalNote) => behindGate(n, () => handleBurnShare(withFreshestBody(n))),
   };
   /**
@@ -4079,6 +4496,13 @@ function AuthenticatedView({
     applyLineSpacing(userSettings.lineSpacing);
   }, [userSettings.lineSpacing]);
 
+  // The synced date settings, for every date the app writes. A change made
+  // here and one that arrives with the settings blob take the same path, and
+  // the dates on screen follow without a remount (useDateFormatKey).
+  useEffect(() => {
+    setDatePrefs(userSettings.dateOrder, userSettings.clock);
+  }, [userSettings.dateOrder, userSettings.clock]);
+
   // The global editor-mode setting swaps the open note's editors exactly
   // like the per-note "Show markdown" link, so it needs the same pre-swap
   // flush - the replacement editor mounts from selected.body, which body
@@ -4106,12 +4530,19 @@ function AuthenticatedView({
       prevSelectedId.current = selectedId;
     }
   }, [selectedId, flushEditingBody]);
+  // A remount means the body was rewritten outside the editor (a tick in the
+  // Tasks view, a task action in the "..." menu), so the last typed body is
+  // stale and the footer falls back to the note's own.
+  useEffect(() => {
+    setWcBody('');
+  }, [editorRevision]);
 
   // Tags rail - extracted to TagsRail.tsx. The variable is still used in
   // the JSX below (desktop sidebar + mobile drawer).
 
   const tagsRail = (
     <TagsRail
+      onJump={() => setQuickSwitcherQuery('')}
       markdownRail={view === 'markdown' && markdownDir ? (
         <MarkdownRail
           entries={markdownDir.entries}
@@ -4134,16 +4565,17 @@ function AuthenticatedView({
       setViewsCollapsed={setViewsCollapsed}
       viewCounts={viewCounts}
       trashedCount={trashedNotes.length}
-      tagCounts={tagCounts}
+      tagCounts={railTagCounts}
       favoriteTagsList={favoriteTagsList}
       nonFavoriteTagsList={nonFavoriteTagsList}
       browseMode={effectiveBrowseMode}
       onBrowseChange={handleBrowseChange}
       isPro={auth.isPro ?? false}
       folders={userSettings.folders}
-      folderCounts={folderCounts}
+      folderCounts={railFolderCounts}
       unfiledCount={unfiledCount}
       selectedFolder={selectedFolder}
+      openNoteFolder={selected ? selected.folderId : undefined}
       onSelectFolder={(id) => void handleSelectFolder(id)}
       onCreateFolder={(name, parentId) => void handleCreateFolder(name, parentId)}
       onRenameFolder={handleRenameFolder}
@@ -4163,6 +4595,8 @@ function AuthenticatedView({
       }}
       foldersLocked={!foldersUnlocked}
       onFoldersLockedAction={openFoldersUpsell}
+      onDropOnFolder={handleDropOnFolder}
+      onDropOnTag={dropOnTag}
       folderSortField={folderSortField}
       setFolderSortField={setFolderSortField}
       folderSortDir={folderSortDir}
@@ -4205,9 +4639,36 @@ function AuthenticatedView({
   // Folder id -> name for the chip each row and tile draws beside its tags.
   // Memoized on the folder array so a keystroke in the search box does not
   // hand every visible chip a new context value.
-  const folderNames = useMemo(
-    () => new Map(userSettings.folders.map((f) => [f.id, f.name])),
-    [userSettings.folders],
+  // While the open folder lists its whole branch, a subfolder's chip names
+  // its path below that folder instead, so two subfolders that share a name
+  // read apart. Safe only because TagChips, inside the list panes, is the one
+  // reader of this map. Spec: ops/docs/plans/folder-subfolders.md (D4)
+  const folderNames = useMemo(() => {
+    const names = new Map(userSettings.folders.map((f) => [f.id, f.name]));
+    if (selectedFolder && selectedFolder !== UNFILED_ID && userSettings.includeSubfolders) {
+      for (const [id, path] of branchPathLabels(userSettings.folders, selectedFolder)) names.set(id, path);
+    }
+    return names;
+  }, [userSettings.folders, selectedFolder, userSettings.includeSubfolders]);
+  // A click on a row's folder or tag chip filters like the sidebar does.
+  // Stable through a ref so the memoized rows keep their props; null in
+  // selection mode, where a chip click selects the row. Spec: issue #333.
+  const chipFilterRef = useRef({ tag: handleSelectTag, folder: handleSelectFolder });
+  chipFilterRef.current = { tag: handleSelectTag, folder: handleSelectFolder };
+  const chipFilter = useMemo(() => ({
+    tag: (tag: string) => void chipFilterRef.current.tag(tag),
+    folder: (id: string) => void chipFilterRef.current.folder(id),
+  }), []);
+  // The Subfolders switch beside the folder chip, offered only while the open
+  // folder has a subfolder to include. Spec: ops/docs/plans/folder-subfolders.md (D3)
+  const subfoldersSwitch = useMemo(
+    () => (selectedFolder && userSettings.folders.some((f) => f.parentId === selectedFolder)
+      ? {
+          on: userSettings.includeSubfolders,
+          onToggle: () => mutateSettings((prev) => ({ ...prev, includeSubfolders: !prev.includeSubfolders })),
+        }
+      : null),
+    [selectedFolder, userSettings.folders, userSettings.includeSubfolders, mutateSettings],
   );
   // Every folder and tag glyph reads its look from here, deep inside
   // components that never see the settings.
@@ -4222,8 +4683,13 @@ function AuthenticatedView({
     [selectedTag, selectedFolder, userSettings.folders],
   );
   const looks = useMemo(
-    () => ({ styles: userSettings.itemStyles, tintNotes: userSettings.tintNotes, filter: colorFilter }),
-    [userSettings.itemStyles, userSettings.tintNotes, colorFilter],
+    () => ({
+      styles: userSettings.itemStyles,
+      tintNotes: userSettings.tintNotes,
+      noteColorStyle: userSettings.noteColorStyle,
+      filter: colorFilter,
+    }),
+    [userSettings.itemStyles, userSettings.tintNotes, userSettings.noteColorStyle, colorFilter],
   );
   // The open note's background takes its color when the switch is on: its
   // first colored tag, else its folder. A layer over the pane's own surface,
@@ -4241,9 +4707,18 @@ function AuthenticatedView({
     },
     [auth.isPro, mutateSettings],
   );
-  const noteTint = selected
-    ? resolveNoteColor(selected.id, selected.tags, selected.folderId, userSettings.itemStyles, userSettings.tintNotes, colorFilter)
+  const noteLook = selected
+    ? resolveNoteLook(
+        selected.id,
+        selected.tags,
+        selected.folderId,
+        userSettings.itemStyles,
+        userSettings.tintNotes,
+        userSettings.noteColorStyle,
+        colorFilter,
+      )
     : null;
+  const noteTint = noteLook?.style === 'background' ? noteLook.color : null;
   // What the note menu's color row shows: the note's own pick, and the color
   // it would take without one, with where that color comes from.
   const noteColorInfo = useMemo(() => {
@@ -4309,7 +4784,6 @@ function AuthenticatedView({
       listPrefsStore={userSettings.listPrefs}
       onListPrefsChange={handleListPrefsChange}
       viewMode={effectiveViewMode}
-      tasksView={userSettings.tasksView}
       showDoneTasks={showDoneTasks}
       search={search}
       setSearch={setSearch}
@@ -4319,7 +4793,6 @@ function AuthenticatedView({
       mobileTabIndex={mobileTabIndex}
       hotkeyLabel={hotkeyLabel}
       isNoteLocked={isNoteLocked}
-      onTasksViewChange={handleTasksViewChange}
       onSetShowDoneTasks={setShowDoneTasks}
       onSetTaskDraft={setTaskDraft}
       onToggleTask={handleToggleTask}
@@ -4432,6 +4905,7 @@ function AuthenticatedView({
       onDir={(next) => { setMarkdownDir(next); setMarkdownDirFilter(null); setMarkdownTagFilter(null); }}
       dirFilter={markdownDirFilter}
       tagFilter={markdownTagFilter}
+      initialFilter={markdownFilterSeed}
       tagsByPath={markdownTags.byPath}
       tagsScanned={markdownTags.done}
       listPrefs={listPrefs}
@@ -4691,6 +5165,7 @@ function AuthenticatedView({
       onSelectView={handleSelectView}
       hiddenViews={userSettings.hiddenViews}
       importOffer={importOffer}
+      markdownBridge={markdownBridge}
       onOpenDrawer={() => setDrawerOpen(true)}
       view={view}
       displayNotes={displayNotes}
@@ -4748,6 +5223,8 @@ function AuthenticatedView({
         filesUploadRef.current?.click();
       }}
       onBackfillDate={(d) => void handleBackfillDate(d)}
+      journalEntries={journalEntries}
+      onOpenJournalEntry={openJournalEntry}
       onEmptyTrash={handleEmptyTrash}
       trashedNotesLength={trashedNotes.length}
       hotkeyLabel={hotkeyLabel}
@@ -4762,6 +5239,7 @@ function AuthenticatedView({
   );
 
   return (
+    <CommandPaletteContext.Provider value={paletteContext}>
     <LooksContext.Provider value={looks}>
     <ViewModeContext.Provider value={viewModeCtx}>
     <div
@@ -4850,7 +5328,7 @@ function AuthenticatedView({
           <button
             type="button"
             onClick={() => void handleDbReload()}
-            className="bg-accent text-white text-[15px] font-medium px-5 py-2 rounded-full shadow-lg"
+            className="bg-accent-fill text-white text-[15px] font-medium px-5 py-2 rounded-full shadow-lg"
           >
             {t('loadError.reload')}
           </button>
@@ -4923,7 +5401,7 @@ function AuthenticatedView({
           // Width formulas live in the --pn-sidebar-render vars on the root
           // div; the dock variant tightens the cap in docked-grid so the
           // grid keeps its floor. Spec: ops/docs/design-decisions.md (pane resize clamps)
-          <aside className={`hidden lg:flex w-[var(--pn-sidebar-render)] ${gridMode && selected ? 'min-[1400px]:w-[var(--pn-sidebar-render-dock)] ' : ''}flex-col shrink-0 bg-surface-0`}>
+          <aside data-pane="sidebar" className={`hidden lg:flex w-[var(--pn-sidebar-render)] ${gridMode && selected ? 'min-[1400px]:w-[var(--pn-sidebar-render-dock)] ' : ''}flex-col shrink-0 bg-surface-0`}>
             {tagsRail}
           </aside>
         )}
@@ -4952,6 +5430,7 @@ function AuthenticatedView({
               handleSelectView={handleSelectView}
               handleSelectTag={handleSelectTag}
               onNew={() => void handleNew()}
+              onJump={() => setQuickSwitcherQuery('')}
               onExpand={() => setSidebarCollapsed(false)}
               onExpandToTags={() => {
                 setSidebarCollapsed(false);
@@ -4993,6 +5472,7 @@ function AuthenticatedView({
             // Swipe-right anywhere in this pane opens the mobile drawer
             // (the useEdgeSwipe eligibility guard keys off this attribute).
             data-drawer-swipe
+            data-pane="list"
             // Middle-click and Alt-click on any row or tile open it as a tab.
             // Cmd-click stays the multi-select gesture it already is.
             // Spec: ops/docs/plans/note-tabs.md (section 2)
@@ -5031,7 +5511,11 @@ function AuthenticatedView({
             {/* Every list pane in one provider: the folder chip on a row or a
                 tile is drawn by TagChips, far below any of these panes. */}
             <FolderNamesContext.Provider value={folderNames}>
-              {view === 'tasks' ? tasksList : view === 'files' ? filesList : view === 'markdown' ? markdownPane : view === 'bookmarks' ? bookmarksList : view === 'contacts' ? contactsList : notesList}
+              <ChipFilterContext.Provider value={selectionMode ? null : chipFilter}>
+                <SubfoldersSwitchContext.Provider value={subfoldersSwitch}>
+                  {view === 'tasks' ? tasksList : view === 'files' ? filesList : view === 'markdown' ? markdownPane : view === 'bookmarks' ? bookmarksList : view === 'contacts' ? contactsList : notesList}
+                </SubfoldersSwitchContext.Provider>
+              </ChipFilterContext.Provider>
             </FolderNamesContext.Provider>
           </aside>
         )}
@@ -5105,6 +5589,7 @@ function AuthenticatedView({
             In docked grid the width comes from --pn-editor-render-dock;
             with the grid collapsed it stays flex-1 (full width). */}
         <main
+          data-pane="editor"
           className={
             // The entry state is the only thing on screen, at every width and
             // in both modes, so it takes the pane whole: no `hidden` below md
@@ -5118,6 +5603,16 @@ function AuthenticatedView({
           }
           style={noteTintVars(noteTint)}
         >
+          {/* An accent color shows on the active tab's top line; with no tab
+              strip on screen, the same line runs along the top of the pane.
+              Spec: ops/docs/plans/note-color-style.md (decision N6) */}
+          {noteLook?.style === 'accent' && !(tabsShown && !zenMode && openTabs.tabs.length > 0) && (
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 z-20 h-0.5"
+              style={{ background: `var(--pn-label-${noteLook.color}-ink)` }}
+            />
+          )}
           {tabsShown && !zenMode && openTabs.tabs.length > 0 && (
             <TabStrip
               tabs={openTabs.tabs}
@@ -5176,7 +5671,7 @@ function AuthenticatedView({
               // Spec: ops/docs/plans/markdown-folder.md (section 11)
               <div className="flex-1 overflow-y-auto flex flex-col px-6 py-10">
                 <div className="w-full max-w-md mx-auto my-auto">
-                  <p className="text-[15px] text-neutral-500 dark:text-neutral-600 text-center mb-5">
+                  <p className="text-[15px] text-pn-muted text-center mb-5">
                     {t('emptyEditor.selectMarkdown')}
                   </p>
                   {markdownDefaultAppSupported() ? <MarkdownDefaultAppCard /> : <MarkdownPitch />}
@@ -5192,16 +5687,16 @@ function AuthenticatedView({
             <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
               {view === 'files' ? (
                 <>
-                  <div className="w-16 h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4">
-                    <Folder size={28} className="text-neutral-400 dark:text-neutral-600" />
+                  <div className="w-16 h-16 rounded-full bg-track flex items-center justify-center mb-4">
+                    <Folder size={28} className="text-pn-muted" />
                   </div>
-                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">{t('emptyEditor.selectFile')}</p>
-                  <p className="text-xs text-neutral-400 dark:text-neutral-600 max-w-[240px]">
+                  <p className="text-sm font-medium text-pn-soft mb-1">{t('emptyEditor.selectFile')}</p>
+                  <p className="text-xs text-pn-muted max-w-[240px]">
                     {t('emptyEditor.uploadFiles')}
                   </p>
                 </>
               ) : (
-                <span className="text-[15px] text-neutral-500 dark:text-neutral-600">
+                <span className="text-[15px] text-pn-muted">
                   {t('emptyEditor.selectNote')}
                 </span>
               )}
@@ -5263,17 +5758,24 @@ function AuthenticatedView({
               handleTitleBlur={handleTitleBlurCommit}
               handleBodyChange={handleBodyChange}
               handleTagsChange={handleTagsChange}
+              handleSelectTag={handleSelectTag}
               handleTrackersChange={handleTrackersChange}
               handleVaultSave={handleVaultSave}
               handleCloseEditor={handleCloseEditor}
               handleHistory={handleHistory}
               handleToggleStar={handleToggleStar}
               handleToggleArchive={handleToggleArchive}
+              setJournalDate={setJournalDate}
+              journalDays={journalEntries}
               requestTrash={requestTrash}
               handleRestore={handleRestore}
               handleDuplicate={handleDuplicate}
               canUncheckAllTasks={(n) => canUncheckAllTasks(editingBodyRef.current.get(n.id) ?? n.body)}
               handleUncheckAllTasks={handleUncheckAllTasks}
+              canDeleteCheckedTasks={(n) => canDeleteCheckedTasks(editingBodyRef.current.get(n.id) ?? n.body)}
+              handleDeleteCheckedTasks={handleDeleteCheckedTasks}
+              canSortTasksByStatus={(n) => canSortTasksByStatus(editingBodyRef.current.get(n.id) ?? n.body)}
+              handleSortTasksByStatus={(n) => applyTaskRewrite(n, sortTasksByStatusInNote)}
               handleSetLocked={handleSetLocked}
               handleSetPinProtected={handleSetPinProtected}
               handleBurnShare={gatedExports.handleBurnShare}
@@ -5324,6 +5826,12 @@ function AuthenticatedView({
           selected={selected}
           openSyncVerify={openSyncVerify}
           footerStats={footerStats}
+          calendar={{
+            entries: journalEntries,
+            onOpen: openJournalEntry,
+            onPick: createJournalEntryFor,
+            onToday: () => createJournalEntryFor(toLocalIso(new Date())),
+          }}
           auth={auth}
           setShowSettings={setShowSettings}
           setShowStats={setShowStats}
@@ -5356,6 +5864,12 @@ function AuthenticatedView({
           selected={selected}
           openSyncVerify={openSyncVerify}
           footerStats={footerStats}
+          calendar={{
+            entries: journalEntries,
+            onOpen: openJournalEntry,
+            onPick: createJournalEntryFor,
+            onToday: () => createJournalEntryFor(toLocalIso(new Date())),
+          }}
           auth={auth}
           setShowSettings={setShowSettings}
           setShowStats={setShowStats}
@@ -5380,12 +5894,13 @@ function AuthenticatedView({
         <SettingsShell
           onClose={() => setShowSettings(false)}
           initialCategory={settingsCategory}
+          initialSetting={settingsRow}
           defaultCategory="stats"
           footer={
             <button
               type="button"
               onClick={() => { setShowSettings(false); handleSignOutClick(); }}
-              className="w-full rounded-md border border-neutral-300 dark:border-neutral-800 hover:bg-surface-1 px-4 py-2 text-sm transition text-neutral-600 dark:text-neutral-400 inline-flex items-center justify-center gap-1.5"
+              className="w-full rounded-md border border-divider hover:bg-surface-1 px-4 py-2 text-sm transition text-pn-muted inline-flex items-center justify-center gap-1.5"
             >
               {iconSignOut()}
               {t('footer.signOut')}
@@ -5409,6 +5924,7 @@ function AuthenticatedView({
             setImportToast,
             handleSignOutClick,
             mergeImportedFolders,
+            mergeRestoredSettings,
             applyImportedTagColors,
             ...gatedExportAll,
             exportEncryptedBackup,
@@ -5420,6 +5936,7 @@ function AuthenticatedView({
             refresh,
             runSync,
             saveWeekReflection,
+            openThemeBuilder,
           })}
         />
       )}
@@ -5434,6 +5951,9 @@ function AuthenticatedView({
           // already count toward adherence, and without the template
           // nothing can resolve the id back into a name.
           medications={userSettings.medications}
+          notesCreated={userSettings.notesCreated}
+          firstSeenAt={userSettings.firstSeenAt}
+          trackerSettings={userSettings.trackerSettings}
           isPro={auth.isPro}
           onOpenUpgrade={() => { setShowStats(false); setShowUpgrade({ trigger: null }); }}
           onClose={() => setShowStats(false)}
@@ -5469,6 +5989,16 @@ function AuthenticatedView({
           onOpenUpgrade={() => { setUploadEntries(null); setShowUpgrade({ trigger: 'fileSize' }); }}
           onManageStorage={() => { setUploadEntries(null); setSettingsCategory('storage'); setShowSettings(true); }}
           onClose={() => setUploadEntries(null)}
+        />
+      )}
+      {/* After the upload window, so the question is on top of it. */}
+      {shareAsk && (
+        <ShareApprovalModal
+          items={shareAsk.items}
+          onChoice={(choice) => {
+            shareAsk.resolve(choice);
+            setShareAsk(null);
+          }}
         />
       )}
       {pendingImportableFiles && (() => {
@@ -5537,8 +6067,10 @@ function AuthenticatedView({
           onToggleHidden={handleToggleHiddenView}
           startView={userSettings.startView}
           onStartViewChange={(next) => mutateSettings((prev) => ({ ...prev, startView: next }))}
-          tintNotes={userSettings.tintNotes}
-          onTintNotesChange={(on) => mutateSettings((prev) => ({ ...prev, tintNotes: on }))}
+          noteColors={noteColorChoice(userSettings.tintNotes, userSettings.noteColorStyle)}
+          onNoteColorsChange={(next) => mutateSettings((prev) => applyNoteColorChoice(prev, next))}
+          sinkCheckedTasks={userSettings.sinkCheckedTasks}
+          onSinkCheckedTasksChange={(on) => mutateSettings((prev) => ({ ...prev, sinkCheckedTasks: on }))}
           onOpenUpgrade={() => {
             setShowAppearance(false);
             setShowUpgrade({ trigger: 'theme' });
@@ -5549,8 +6081,10 @@ function AuthenticatedView({
             setSettingsCategory('appearance');
             setShowSettings(true);
           }}
+          customThemes={userSettings.customThemes}
         />
       )}
+      {themeBuilder}
       {showSecurity && (
         <SecurityModal
           phrase={auth.phrase}
@@ -5582,11 +6116,14 @@ function AuthenticatedView({
             // If we were teasing zen mode behind the modal, revert it
             // (unless they just upgraded and are now pro).
             if (showUpgrade.trigger === 'zen' && !auth.isPro) setZenMode(false);
-            // If a pro theme was being previewed, revert to default.
-            if (showUpgrade.trigger === 'theme' && !proUnlocked(auth.isPro) && !FREE_THEMES.has(colorTheme)) {
-              setColorTheme('default');
+            // If a pro theme was being previewed, revert that slot to default.
+            if (showUpgrade.trigger === 'theme' && !proUnlocked(auth.isPro)) {
+              if (!isFreeTheme(lightTheme)) setColorTheme('light', 'default');
+              if (!isFreeTheme(darkTheme)) setColorTheme('dark', 'default');
             }
             setShowUpgrade(null);
+            // A theme builder draft that waited for the upgrade opens again.
+            if (showUpgrade.trigger === 'theme') resumeThemeBuilder();
           }}
         />
       )}
@@ -5651,6 +6188,10 @@ function AuthenticatedView({
             void run();
           }}
           onCancel={() => setPendingProtectedAction(null)}
+          userSettings={userSettings}
+          onSettingsChange={(next, base) => {
+            mutateSettings((prev) => withCredentialChanges(prev, base, next));
+          }}
         />
       )}
       {showEmptyTrashModal && (
@@ -5750,6 +6291,7 @@ function AuthenticatedView({
           title={t('bulkTrash.title')}
           confirmLabel={t('bulkTrash.title')}
           variant="warning"
+          enterConfirms
           onConfirm={() => void executeBulkTrash()}
           onClose={dismissBulkTrash}
         >
@@ -5760,6 +6302,26 @@ function AuthenticatedView({
             components={{ highlight: <span className="font-medium text-pn" /> }}
           />
           <ReadOnlySkipNotice count={bulkTrashPending.skipped} />
+        </ConfirmModal>
+      )}
+      {deleteCheckedPending && (
+        <ConfirmModal
+          title={t('deleteCheckedTasks.title')}
+          confirmLabel={t('deleteCheckedTasks.confirm')}
+          variant="danger"
+          onConfirm={() => {
+            const { note } = deleteCheckedPending;
+            setDeleteCheckedPending(null);
+            void applyTaskRewrite(note, deleteCheckedTasksInNote);
+          }}
+          onClose={() => setDeleteCheckedPending(null)}
+        >
+          <Trans
+            i18nKey="notes:deleteCheckedTasks.body"
+            count={deleteCheckedPending.count}
+            values={{ count: deleteCheckedPending.count }}
+            components={{ highlight: <span className="font-medium text-pn" /> }}
+          />
         </ConfirmModal>
       )}
       {bulkDeletePending && (
@@ -5918,6 +6480,7 @@ function AuthenticatedView({
           initialTab={importExportModal.tab}
           notes={notes}
           onImportFolders={mergeImportedFolders}
+          onImportSettings={mergeRestoredSettings}
           onImportTagColors={applyImportedTagColors}
           onExportAllMdZip={(ns) => void gatedExportAll.exportAllMarkdownZip(ns)}
           onExportAllHtmlZip={(ns) => void gatedExportAll.exportAllHtmlZip(ns)}
@@ -5955,7 +6518,7 @@ function AuthenticatedView({
         />
       )}
       {importToast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-accent text-white text-[15px] font-medium px-4 py-2 rounded-full shadow-lg">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-accent-fill text-white text-[15px] font-medium px-4 py-2 rounded-full shadow-lg">
           {importToast}
         </div>
       )}
@@ -6031,8 +6594,88 @@ function AuthenticatedView({
           onConfirmSignOut={() => void confirmSignOut()}
         />
       )}
+      {quickSwitcherQuery !== null && (
+        <Suspense fallback={null}>
+          <QuickSwitcher
+            initialQuery={quickSwitcherQuery}
+            notes={notes}
+            recentIds={recentItems()}
+            titleOf={(n) => deriveDisplayTitle(n, isNoteLocked(n))}
+            sectionOf={(n) => {
+              const view = (Object.keys(VIEW_NOTE_TYPES) as View[]).find((v) => VIEW_NOTE_TYPES[v]?.includes(n.type));
+              return view ? sidebarViewRows(tShell).find((r) => r.key === view) : undefined;
+            }}
+            canOpenInTab={tabsShown}
+            onOpen={(n, inTab) => (inTab ? openInTab([n.id]) : revealNote(n))}
+            sectionIcons={SETTINGS_SECTION_ICONS}
+            onOpenSetting={(entry) => {
+              setSettingsCategory(entry.section);
+              setSettingsRow(entry.isSection ? undefined : { id: entry.id, ...(entry.tab ? { tab: entry.tab } : {}) });
+              setShowSettings(true);
+            }}
+            listSearch={
+              // Always: "Search everything" opens All, which has the field. The
+              // open section's own row needs the shared field (the Markdown
+              // pane filters with a field of its own).
+              {
+                    scoped:
+                      !!searchInputRef.current && (view !== 'home' || selectedTag !== null || selectedFolder !== null),
+                    section: sidebarViewRows(tShell).find((r) => r.key === view)?.label,
+                    // The trash has no sidebar row; All with a filter draws All's icon.
+                    sectionIcon:
+                      sidebarViewRows(tShell).find((r) => r.key === view)?.icon ??
+                      (view === 'trash' ? PILLAR_GLYPHS.trash : PILLAR_GLYPHS.all),
+                    run: (q, everything) => {
+                      // Everything is All with no tag or folder filter. The
+                      // view changes in place, so the open item stays open.
+                      if (everything) {
+                        setView('home');
+                        setSelectedTag(null);
+                        setSelectedFolder(null);
+                      }
+                      setSearch(q);
+                      requestAnimationFrame(() => searchInputRef.current?.focus());
+                    },
+              }
+            }
+            commands={() => paletteEntriesRef.current()}
+            files={(() => {
+              const gated = gatedNoteIds();
+              return fileItems.filter((f) => !gated.has(f.noteId));
+            })()}
+            filesSection={sidebarViewRows(tShell).find((r) => r.key === 'files')}
+            markdown={
+              markdownDir
+                ? {
+                    entries: markdownDir.entries,
+                    section: sidebarViewRows(tShell).find((r) => r.key === 'markdown'),
+                  }
+                : undefined
+            }
+            onOpenMarkdown={(e) => {
+              // Read first, then set the file and the view together, as a
+              // file opened from the OS does: a pane that mounts with no file
+              // opens the folder's first one by itself.
+              readOpenedFile(e.ref)
+                .then((file) => {
+                  setMarkdownFile(file);
+                  void handleSelectView('markdown');
+                })
+                .catch(() => flashToast(t('shell:markdown.openFailed')));
+            }}
+            onOpenFile={(f) => {
+              const parent = notes.find((n) => n.id === f.noteId);
+              if (!parent) return;
+              revealNote(parent);
+              setPendingFileScroll({ noteId: f.noteId, uuid: f.uuid });
+            }}
+            onClose={() => setQuickSwitcherQuery(null)}
+          />
+        </Suspense>
+      )}
     </div>
     </ViewModeContext.Provider>
     </LooksContext.Provider>
+    </CommandPaletteContext.Provider>
   );
 }

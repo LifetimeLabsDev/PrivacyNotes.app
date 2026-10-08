@@ -167,10 +167,10 @@
     "filesProgress": "Exportando archivos... {{done}} de {{total}}",
     "building": "Creando copia de seguridad...",
     "compressing": "Comprimiendo...",
-    "missingFailed_one": "Este dispositivo no pudo descargar {{items}}, así que tu exportación no lo incluye. Comprueba tu conexión y exporta de nuevo.",
-    "missingFailed_other": "Este dispositivo no pudo descargar {{items}}, así que tu exportación no los incluye. Comprueba tu conexión y exporta de nuevo.",
-    "missingNotFound_one": "{{items}} no está ni en este dispositivo ni en el servidor, así que tu exportación no lo incluye.",
-    "missingNotFound_other": "{{items}} no están ni en este dispositivo ni en el servidor, así que tu exportación no los incluye."
+    "missingFailed_one": "Este dispositivo no pudo descargar {{items}}, así que no se incluye en tu exportación. Comprueba tu conexión y exporta de nuevo.",
+    "missingFailed_other": "Este dispositivo no pudo descargar {{items}}, así que no se incluyen en tu exportación. Comprueba tu conexión y exporta de nuevo.",
+    "missingNotFound_one": "{{items}} no está ni en este dispositivo ni en el servidor, así que no se incluye en tu exportación.",
+    "missingNotFound_other": "{{items}} no están ni en este dispositivo ni en el servidor, así que no se incluyen en tu exportación."
   },
   "missing": {
     "pictures_one": "{{count}} imagen",
@@ -180,6 +180,7 @@
     "both": "{{pictures}} y {{files}}"
   },
   "upload": {
+    "discard": "Descartar",
     "completeTitle": "Subida completada",
     "failedTitle": "La subida falló",
     "partialTitle": "{{done}} subidos, {{failed}} fallidos",
@@ -189,6 +190,11 @@
     "statusFailed": "Fallido",
     "errorStorageFull": "Almacenamiento lleno - libera espacio o añade almacenamiento para subir este archivo.",
     "errorStorageFullKept": "No cabe en tu almacenamiento - se queda en este dispositivo. Se sincronizará cuando haya espacio.",
+    "errorTooLarge": "El archivo es demasiado grande ({{size}}). El máximo es {{limit}} MB.",
+    "errorTooLargeFree": "El archivo es demasiado grande ({{size}}). El máximo es {{limit}} MB en el plan gratuito.",
+    "batchTitle_one": "{{count}} archivo",
+    "batchTitle_many": "{{count}} archivos",
+    "batchTitle_other": "{{count}} archivos",
     "statusUploading": "Subiendo...",
     "statusWaiting": "Esperando",
     "summaryDone": "{{count}} hechos",
@@ -209,5 +215,11 @@
   },
   "saveErrors": {
     "shortWrite": "Solo se han guardado {{written}} de {{expected}} bytes, así que el archivo está incompleto. Inténtalo otra vez y guarda en el almacenamiento de tu dispositivo en lugar de en una carpeta en la nube."
+  },
+  "shareSheet": {
+    "title_one": "Se compartió {{count}} elemento con PrivacyNotes",
+    "title_other": "Se compartieron {{count}} elementos con PrivacyNotes",
+    "line": "No se guarda nada hasta que elijas.",
+    "saveAll": "Guardar todo"
   }
 }

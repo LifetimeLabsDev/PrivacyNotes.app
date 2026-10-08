@@ -3,7 +3,7 @@ id: 5ec1
 title: Cómo se protegen tus notas
 ---
 
-> [!info]- Cada nota se cifra en tu dispositivo, antes de guardarse en ningún sitio.
+> [!info]- Cada nota está cifrada en tu dispositivo.
 > &nbsp;
 
 ![La tabla de notas de nuestra base de datos real. Cada nota es un bloque largo de texto ilegible.](/onboarding/database.webp)
@@ -25,7 +25,7 @@ Todas las opciones mantienen tus notas cifradas en tu dispositivo. Se diferencia
 | --- | --- | --- |
 | **Inicio de sesión, clave con nosotros** | En nuestro servidor, cifrada | Un dispositivo nuevo entra solo con esa cuenta |
 | **Inicio de sesión, clave en tu dispositivo** | Contigo, en ningún otro sitio | Entra con Google, Apple o GitHub y conserva la clave |
-| **Solo frase, sin inicio de sesión** | Contigo, en ningún otro sitio | Sin correo, sin nombre, sin cuenta |
+| **Solo frase, sin inicio de sesión** | Contigo, en ningún otro sitio | Sin correo, sin nombre, sin inicio de sesión |
 
 Con las dos últimas no podríamos leer una nota ni aunque nos obligaran. La primera cambia eso por comodidad: tu frase está en nuestro servidor bajo una clave nuestra, así que un dispositivo nuevo no necesita nada más que tu cuenta. Si alguna vez atacaran nuestro servidor, esa clave podría quedar expuesta.
 

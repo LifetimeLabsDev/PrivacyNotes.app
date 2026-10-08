@@ -10,7 +10,8 @@
     "empty": "Пусто",
     "noContent": "Нет содержимого",
     "notBackedUp": "Нет резервной копии",
-    "archived": "В архиве"
+    "archived": "В архиве",
+    "entryDate": "Дата записи"
   },
   "header": {
     "new": "Создать",
@@ -19,7 +20,9 @@
     "trash": "Корзина"
   },
   "folderChip": {
-    "clear": "Очистить фильтр папки: {{folder}}"
+    "clear": "Очистить фильтр папки: {{folder}}",
+    "subfolders": "Подпапки",
+    "subfoldersLabel": "Включить подпапки"
   },
   "tagChip": {
     "clear": "Очистить фильтр тега: {{tag}}"
@@ -74,7 +77,7 @@
     "notes": "Заметок пока нет.",
     "archive": "Архив пуст.",
     "filtered": "Ни один элемент не соответствует фильтрам.",
-    "clearFilters": "Очистите фильтры",
+    "clearFilters": "Очистить фильтры",
     "filteredAfter": "чтобы их показать."
   },
   "headerLabel": {
@@ -195,6 +198,8 @@
     "currentHtmlDesc": "Для печати: Markdown, отображённый на белой странице.",
     "printTitle": "Печать / Сохранить как PDF",
     "printDesc": "Открывает диалог печати. Сохраните как PDF или отправьте на принтер.",
+    "printTextTitle": "Печать только текста",
+    "printTextDesc": "Оставляет заголовок. Убирает дату, папку и теги.",
     "burnTitle": "Поделиться и сжечь после прочтения",
     "burnDesc": "Опубликуйте эту заметку как ссылку для одноразового просмотра. Ссылка самоуничтожается после прочтения. Ваша заметка остаётся в безопасности в вашем аккаунте."
   },
@@ -212,7 +217,10 @@
     "newNote": "Создать",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Открыть статистику",
+    "journalCalendar": "Календарь дневника",
     "words": "Слов",
     "zen": "Дзен",
     "appearance": "Внешний вид",
@@ -236,7 +244,7 @@
     "appearanceLabel": "Внешний вид",
     "helpLabel": "Справка",
     "aboutLabel": "О приложении",
-    "languageLabel": "Язык",
+    "languageLabel": "Дата и язык",
     "languageDesc": "Выберите язык интерфейса PrivacyNotes."
   },
   "importStore": {
@@ -248,13 +256,13 @@
   },
   "bulkTrash": {
     "title": "Переместить в корзину",
-    "body_one": "Переместить <highlight>{{count}} элемент</highlight> в корзину? Позже его можно будет восстановить.",
+    "body_one": "Переместить <highlight>{{count}} элемент</highlight> в корзину? Позже можно будет восстановить.",
     "body_few": "Переместить <highlight>{{count}} элемента</highlight> в корзину? Позже их можно будет восстановить.",
     "body_many": "Переместить <highlight>{{count}} элементов</highlight> в корзину? Позже их можно будет восстановить.",
     "body_other": "Переместить <highlight>{{count}} элемента</highlight> в корзину? Позже их можно будет восстановить.",
     "readOnlyTitle": "Только для чтения",
     "readOnlyAcknowledge": "Понятно",
-    "readOnlyBlocked_one": "<highlight>{{count}} элемент</highlight> доступен только для чтения, поэтому его нельзя переместить в корзину. Сначала отключите режим «только для чтения» в меню параметров заметки.",
+    "readOnlyBlocked_one": "<highlight>{{count}} элемент</highlight> доступен только для чтения, поэтому переместить в корзину не получится. Сначала отключите режим «Только для чтения» в меню параметров заметки.",
     "readOnlyBlocked_few": "Все <highlight>{{count}} элемента</highlight> доступны только для чтения, поэтому ни один из них нельзя переместить в корзину. Сначала отключите режим «только для чтения» в меню параметров заметки.",
     "readOnlyBlocked_many": "Все <highlight>{{count}} элементов</highlight> доступны только для чтения, поэтому ни один из них нельзя переместить в корзину. Сначала отключите режим «только для чтения» в меню параметров заметки.",
     "readOnlyBlocked_other": "Все <highlight>{{count}} элемента</highlight> доступны только для чтения, поэтому ни один из них нельзя переместить в корзину. Сначала отключите режим «только для чтения» в меню параметров заметки.",
@@ -262,6 +270,14 @@
     "readOnlySkipped_few": "<highlight>{{count}} элемента</highlight> доступны только для чтения и останутся на месте.",
     "readOnlySkipped_many": "<highlight>{{count}} элементов</highlight> доступны только для чтения и останутся на месте.",
     "readOnlySkipped_other": "<highlight>{{count}} элемента</highlight> доступны только для чтения и останутся на месте."
+  },
+  "deleteCheckedTasks": {
+    "title": "Удалить отмеченные пункты?",
+    "confirm": "Удалить",
+    "body_one": "Из этой заметки будет удалён <highlight>{{count}} пункт</highlight>, включая вложенные. Это действие нельзя отменить.",
+    "body_few": "Из этой заметки будут удалены <highlight>{{count}} пункта</highlight>, включая вложенные. Это действие нельзя отменить.",
+    "body_many": "Из этой заметки будут удалены <highlight>{{count}} пунктов</highlight>, включая вложенные. Это действие нельзя отменить.",
+    "body_other": "Из этой заметки будет удалено <highlight>{{count}} пункта</highlight>, включая вложенные. Это действие нельзя отменить."
   },
   "bulkDelete": {
     "body_one": "Удалить <highlight>{{count}} заметку</highlight> навсегда? Это действие нельзя отменить.",
@@ -284,7 +300,7 @@
     "deleteBody_few": "Убрать тег <highlight>«{{tag}}»</highlight> с <highlight>{{count}} заметок</highlight>? Сами заметки не будут удалены.",
     "deleteBody_many": "Убрать тег <highlight>«{{tag}}»</highlight> с <highlight>{{count}} заметок</highlight>? Сами заметки не будут удалены.",
     "deleteBody_other": "Убрать тег <highlight>«{{tag}}»</highlight> с <highlight>{{count}} заметки</highlight>? Сами заметки не будут удалены.",
-    "deleteWithNotesBody_one": "Удалить тег <highlight>«{{tag}}»</highlight> и переместить <highlight>{{count}} заметку</highlight> в корзину? Оттуда её можно будет восстановить.",
+    "deleteWithNotesBody_one": "Удалить тег <highlight>«{{tag}}»</highlight> и переместить <highlight>{{count}} заметку</highlight> в корзину? Восстановить можно будет из корзины.",
     "deleteWithNotesBody_few": "Удалить тег <highlight>«{{tag}}»</highlight> и переместить <highlight>{{count}} заметки</highlight> в корзину? Оттуда их можно будет восстановить.",
     "deleteWithNotesBody_many": "Удалить тег <highlight>«{{tag}}»</highlight> и переместить <highlight>{{count}} заметок</highlight> в корзину? Оттуда их можно будет восстановить.",
     "deleteWithNotesBody_other": "Удалить тег <highlight>«{{tag}}»</highlight> и переместить <highlight>{{count}} заметки</highlight> в корзину? Оттуда их можно будет восстановить."

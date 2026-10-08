@@ -2,6 +2,7 @@ import i18n from './i18n';
 import {
   EMOTION_TAGS,
   type ActivityLevel,
+  type CustomTrackerTemplate,
   type JournalTrackerData,
   type SleepQuality,
   type WeightUnit,
@@ -35,8 +36,9 @@ export interface TrackerRow {
   value: string;
 }
 
-/** `journalDate` is the entry's day, shown in the header already. */
-const SKIP_KEYS = new Set(['journalDate', 'customTrackers']);
+/** Bookkeeping the person did not log, and values printed by their own rule
+ *  below. The week reflection is private prose, not a tracker value. */
+const SKIP_KEYS = new Set(['journalDate', 'backfilled', 'weekReflection', 'customTrackers']);
 
 interface SleepValue {
   quality: SleepQuality;
@@ -58,6 +60,7 @@ function isSleep(v: unknown): v is SleepValue {
 export function trackerRows(
   trackers: Record<string, unknown> | undefined,
   weightUnit: WeightUnit = 'kg',
+  customTemplates: readonly CustomTrackerTemplate[] = [],
 ): TrackerRow[] {
   if (!trackers) return [];
   const d = trackers as JournalTrackerData & Record<string, unknown>;
@@ -102,6 +105,21 @@ export function trackerRows(
   add('caffeine', d.caffeine != null ? `${d.caffeine}/5` : null);
   add('screenTime', d.screenTime != null ? `${d.screenTime}${t('units.hoursSuffix')}` : null);
   add('medication', d.medications?.length ? `${d.medications.length}` : null);
+
+  // Custom values print under the template's name, tombstoned templates
+  // included: a value logged before a tracker was deleted is still the data.
+  for (const entry of d.customTrackers ?? []) {
+    const tpl = customTemplates.find((c) => c.id === entry.trackerId);
+    const v = entry.value;
+    if (v == null || v === '') continue;
+    const label = tpl?.name ?? entry.trackerId.slice(0, 8);
+    let value: string;
+    if (typeof v === 'boolean') value = v ? t('custom.yes') : t('custom.no');
+    else if (tpl?.type === 'scale10') value = `${v}/10`;
+    else if (tpl?.type === 'scale5') value = `${v}/5`;
+    else value = String(v);
+    rows.push({ label, value });
+  }
 
   // Anything a future tracker adds still reaches the page: an unknown key
   // is printed under its own name rather than dropped, so a new value is

@@ -71,8 +71,8 @@ export function QuotaExceededBanner({
             type="button"
             onClick={onDismiss}
             className={syncFrozen
-              ? 'text-red-600 dark:text-red-500 hover:text-red-900 dark:hover:text-red-200'
-              : 'text-amber-600 dark:text-amber-500 hover:text-amber-900 dark:hover:text-amber-200'}
+              ? 'text-danger hover:text-red-900 dark:hover:text-red-200'
+              : 'text-warning hover:text-amber-900 dark:hover:text-amber-200'}
             aria-label={t('dismiss')}
           >
             ×

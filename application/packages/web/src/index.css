@@ -20,6 +20,12 @@
 @theme {
   --color-accent: rgb(var(--pn-accent));
   --color-accent-hover: rgb(var(--pn-accent-hover));
+  --color-accent-strong: rgb(var(--pn-accent-hover));
+  --color-accent-fill: rgb(var(--pn-accent-fill));
+  --color-danger: rgb(var(--pn-danger));
+  --color-warning: rgb(var(--pn-warning));
+  --color-success: rgb(var(--pn-success));
+  --color-accent-fill-hover: rgb(var(--pn-accent-fill-hover));
 
   /* The Pro mark (the rocket). Keyed to MODE: burnt amber on every light
      theme, gold on every dark one - see the :root and :root.dark blocks. */
@@ -42,12 +48,8 @@
 }
 
 /*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
+  A border with no color utility takes the theme's divider. Tailwind v4 would
+  otherwise draw it in currentcolor, the text color.
 */
 @layer base {
   *,
@@ -55,7 +57,7 @@
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
+    border-color: rgb(var(--pn-divider));
   }
 }
 
@@ -177,6 +179,21 @@
     background-image: linear-gradient(var(--pn-note-tint, transparent), var(--pn-note-tint, transparent));
   }
 
+  /* An accent note color sits on the item's icon and nowhere else: the boxed
+     icon takes the tint and the ink, and an icon drawn from a picture (a
+     favicon, a contact photo) keeps its own tile and takes a ring in the ink.
+     noteLookStyle sets the two variables. Spec: ops/docs/plans/note-color-style.md (section 3.1) */
+  [data-color-style='accent'] [data-slot='icon'] > :not(:has(img)) {
+    background-color: var(--pn-accent-tint);
+    color: var(--pn-accent-ink);
+  }
+  [data-color-style='accent'] [data-slot='icon'] > :has(img) {
+    box-shadow: 0 0 0 1.5px var(--pn-accent-ink);
+  }
+  [data-color-style='accent'] .pn-card-glyph {
+    color: var(--pn-accent-ink);
+  }
+
   .pn-editor-topgapped .ProseMirror {
     padding-top: 4px;
   }
@@ -186,12 +203,9 @@
     & p.is-editor-empty:first-child::before {
       content: attr(data-placeholder);
       float: inline-start;
-      color: var(--color-neutral-400);
+      color: rgb(var(--pn-text-muted));
       pointer-events: none;
       height: 0;
-    }
-    :root.dark & p.is-editor-empty:first-child::before {
-      color: var(--color-neutral-600);
     }
     position: relative;
     min-height: 60vh;
@@ -269,12 +283,6 @@
       margin-inline-end: 5px;
     }
   
-    /* Brighter body text in dark mode - the default neutral-100 is fine
-       for headings but body copy reads a bit dim on pure black panels.
-       Using neutral-200 (still off-white, never blinding). */
-    :root.dark & {
-      color: var(--color-neutral-200);
-    }
     /* Outline jump-to: land headings just below the sticky toolbar, not under
        it. The vars are the same ones the find/outline slot pins to. Callouts
        get a larger offset on their node-view wrapper (see the callout block)
@@ -300,7 +308,14 @@
         width 0.15s ease,
         height 0.15s ease;
     }
-  
+    /* A note that opens with a picture drops the spacer, and the panel
+       overlays the picture as it overlays anything it scrolls over. The
+       picture's flex box may not overlap a float, so the spacer pushed it
+       down or squeezed it. */
+    &:has(> .node-image:first-child)::before {
+      display: none;
+    }
+
     /* ---------------------------------------------------------------
      * Table styling - clean, minimal, Apple Notes inspired.
      * TipTap emits <table class="pn-table"> with <tr>, <td>, <th>.
@@ -395,10 +410,7 @@
     }
     & table.pn-table th {
       font-weight: 600;
-      background: var(--color-neutral-100);
-    }
-    :root.dark & table.pn-table th {
-      background: var(--color-neutral-800);
+      background: rgb(var(--pn-text) / 0.05);
     }
     /* Selected cell highlight */
     & table.pn-table td.selectedCell {
@@ -575,22 +587,6 @@
 
 @layer editor {
   .dark {
-    &.dark .ProseMirror p.is-editor-empty:first-child::before {
-      color: var(--color-neutral-600);
-    }
-  
-    /* Brighter body text in dark mode - the default neutral-100 is fine
-       for headings but body copy reads a bit dim on pure black panels.
-       Using neutral-200 (still off-white, never blinding). */
-    &.dark .ProseMirror {
-      color: var(--color-neutral-200);
-    }
-    &.dark .prose ul[data-type='taskList'] li[data-checked='true'] > div {
-      color: var(--color-neutral-500);
-    }
-    &.dark .ProseMirror table.pn-table th {
-      background: var(--color-neutral-800);
-    }
     &.dark .ProseMirror table.pn-table td.selectedCell {
       background: rgb(var(--pn-accent) / 0.15);
     }
@@ -797,14 +793,11 @@
       content: none;
     }
     & :where(code):not(:where(pre code)):not(:where([class~='not-prose'] *)) {
-      background: rgb(0 0 0 / 0.06);
+      background: rgb(var(--pn-text) / 0.07);
       padding: 0.1em 0.35em;
       border-radius: 3px;
       font-size: 0.92em;
       font-weight: 400;
-    }
-    :root.dark & :where(code):not(:where(pre code)):not(:where([class~='not-prose'] *)) {
-      background: rgb(255 255 255 / 0.09);
     }
     /* Code block (CodeBlockWithCopy in editorExtensions.ts). The pre keeps
        typography's box - margins, colours, radius - and the span inside it
@@ -816,6 +809,15 @@
     & .pn-codeblock {
       position: relative;
       padding: 0;
+      /* 90% of a paragraph, from the same Text size knob. Typography's
+         0.875em reads off the editor root (--pn-editor-base, 18px), which
+         put code at 15.75px against a 15px body: larger than the text
+         around it, and a monospace face looks larger still. */
+      font-size: calc(var(--pn-editor-body) * 0.9);
+      /* The band above the first line that holds the language label and
+         the tools, so neither ever sits on code. Taller on touch, where the
+         buttons are. */
+      --pn-code-band: 2.25rem;
     }
     & .pn-codeblock-scroll {
       display: block;
@@ -823,39 +825,135 @@
       white-space: pre;
       /* Typography's pre padding in its own units, so both sides of the
          move measure the same at every text size. */
-      padding: 0.8571429em 1.1428571em;
+      padding: var(--pn-code-band) 1.1428571em 0.8571429em;
     }
     /* Wrap is a device setting (codeWrap.ts), painted on <html>. */
     :root.pn-wrap-code & .pn-codeblock-scroll {
       white-space: pre-wrap;
       overflow-wrap: break-word;
     }
-    & .pn-codeblock-tools {
+    & .pn-codeblock-tools,
+    & .pn-codeblock-lang {
       position: absolute;
       top: 0.5rem;
-      inset-inline-end: 0.5rem;
       display: flex;
       gap: 0.25rem;
-      opacity: 0;
-      transition: opacity 0.12s ease;
       /* App chrome, not code: without these the buttons and the wrap tip
          inherit the pre's monospace and the editor's tall line height. */
       font-family: var(--font-sans);
       line-height: 1.5;
     }
+    /* The pre is an LTR island, so physical sides are the right ones. The
+       label's text lines up with the code under it. */
+    & .pn-codeblock-lang {
+      left: calc(1.1428571em - 0.5rem); /* rtl-ok: the pre is an LTR island */
+    }
+    & .pn-codeblock-tools {
+      inset-inline-end: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.12s ease;
+    }
     & .pn-codeblock:hover .pn-codeblock-tools,
     & .pn-codeblock-tools:focus-within {
       opacity: 1;
     }
-    /* No hover on touch: the tools stay visible, and the scroller keeps a
-       band above the first line for them, so they never sit on code. */
+    /* No hover on touch: the tools stay visible. */
     @media (hover: none) {
+      & .pn-codeblock {
+        --pn-code-band: 2.75rem;
+      }
       & .pn-codeblock-tools {
         opacity: 1;
       }
+    }
+    /* Copy box: a code block with the `copy` language (COPY_BOX_LANGUAGE).
+       A light box in the note's own font and colours, with the code block's
+       wrap and copy buttons, always shown, in its corner. It follows the
+       same wrap setting as every code block. */
+    & .pn-copybox {
+      --pn-code-band: 0.6rem;
+      background: rgb(var(--pn-text) / 0.04);
+      color: rgb(var(--pn-text));
+      border: 1px solid rgb(var(--pn-text) / 0.14);
+      border-radius: 10px;
+      font-family: inherit;
+      /* The size and leading of a paragraph, not of the prose pre. */
+      font-size: var(--pn-editor-body);
+      line-height: var(--pn-line-height);
+
       & .pn-codeblock-scroll {
-        padding-top: 2.75rem;
+        padding: 0.6rem 4.5rem 0.6rem 0.9rem;
+        line-height: inherit;
       }
+      & code {
+        font-family: inherit;
+        color: inherit;
+      }
+      & .pn-codeblock-lang {
+        display: none;
+      }
+      & .pn-codeblock-tools {
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 1;
+      }
+      &.pn-codeblock-folded .pn-codeblock-tools {
+        top: 0.5rem;
+        transform: none;
+      }
+      /* Quiet, in the note's colours: the box itself already says "copy". */
+      & .pn-copybox-btn {
+        background: rgb(var(--pn-surface-2));
+        color: rgb(var(--pn-text) / 0.8);
+        border: 1px solid rgb(var(--pn-text) / 0.16);
+        font-weight: 500;
+
+        &:hover {
+          background: rgb(var(--pn-text) / 0.07);
+          color: rgb(var(--pn-text));
+        }
+      }
+      & .pn-copybox-on {
+        color: rgb(var(--pn-accent));
+        border-color: rgb(var(--pn-accent) / 0.5);
+      }
+      &.is-empty::after {
+        top: 0.6rem;
+        left: 0.9rem; /* rtl-ok: the pre is an LTR island */
+        color: rgb(var(--pn-text) / 0.4);
+      }
+    }
+    /* An empty block with the cursor in it says how to get colours. The
+       class and the text come from TipTap's Placeholder, on the pre. */
+    & .pn-codeblock.is-empty::after {
+      content: attr(data-placeholder);
+      position: absolute;
+      top: var(--pn-code-band);
+      left: 1.1428571em; /* rtl-ok: the pre is an LTR island */
+      right: 1.1428571em; /* rtl-ok: the pre is an LTR island */
+      color: #8b949e; /* theme-ok: the code panel is dark in every theme */
+      font-family: var(--font-sans);
+      pointer-events: none;
+    }
+    /* A long block opens folded (FOLD_MIN_LINES in editorExtensions.ts):
+       the scroller stops after --pn-fold-lines lines plus its top padding
+       and fades out, and the button row under it opens the rest. The fade
+       is a mask, so it needs no colour that matches the panel. */
+    & .pn-codeblock-folded .pn-codeblock-scroll {
+      max-height: calc(var(--pn-fold-lines) * 1lh + var(--pn-code-band));
+      overflow-y: hidden;
+      -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 3lh), transparent);
+      mask-image: linear-gradient(to bottom, #000 calc(100% - 3lh), transparent);
+    }
+    & .pn-codeblock-fold {
+      display: flex;
+      justify-content: center;
+      padding-bottom: 0.75rem;
+      font-family: var(--font-sans);
+      line-height: 1.5;
+    }
+    & .pn-codeblock-fold[hidden] {
+      display: none;
     }
     /* Syntax highlighting token colors (CodeBlockLowlight emits hljs
        classes). One hand-picked palette instead of a highlight.js theme
@@ -884,7 +982,8 @@
       color: #ffa657;
     }
     & pre .hljs-title,
-    & pre .hljs-section {
+    & pre .hljs-section,
+    & pre .hljs-name {
       color: #79c0ff;
     }
     & pre .hljs-title.class_,
@@ -1025,6 +1124,50 @@
       gap: 0.5rem;
       margin-top: 0.15em;
       margin-bottom: 0.15em;
+      /* Anchor for the dragged item's lift above its neighbours. */
+      position: relative;
+    }
+    /* The drag grip (dragTask in editorExtensions.ts), last in the row. The
+       gutter before the checkbox is not an option: the editor scrolls wide
+       content sideways, so it clips anything outside its own box. It shows on
+       the hovered task only, never on every ancestor of it, and faintly at all
+       times on a device with no hover. */
+    & ul[data-type='taskList'] li > .pn-task-grip {
+      flex-shrink: 0;
+      height: calc(var(--pn-line-height) * 1em);
+      width: 1.1em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      color: rgb(var(--pn-text-muted));
+      opacity: 0;
+      transition: opacity 0.12s ease;
+    }
+    & ul[data-type='taskList'] li > .pn-task-grip svg {
+      width: 0.6em;
+      height: 0.95em;
+      fill: currentColor;
+    }
+    & ul[data-type='taskList'] li:hover:not(:has(li:hover)) > .pn-task-grip,
+    & ul[data-type='taskList'] li.pn-task-dragging > .pn-task-grip {
+      opacity: 1;
+    }
+    @media (hover: none) {
+      & ul[data-type='taskList'] li > .pn-task-grip {
+        opacity: 0.45;
+      }
+    }
+    &[contenteditable='false'] ul[data-type='taskList'] li > .pn-task-grip {
+      display: none;
+    }
+    & ul[data-type='taskList'] li.pn-task-dragging {
+      z-index: 10;
+      background: var(--color-surface-1, transparent);
+      border-radius: 0.33em;
+      box-shadow: 0 2px 10px rgb(0 0 0 / 0.12);
     }
     & ul[data-type='taskList'] li > label {
       flex-shrink: 0;
@@ -1053,14 +1196,11 @@
       height: 1.45em;
       margin: 0;
       border-radius: 0.33em;
-      border: 1.5px solid var(--color-neutral-400);
+      border: 1.5px solid rgb(var(--pn-text-muted));
       background: transparent;
       transition:
         background-color 0.18s ease,
         border-color 0.18s ease;
-    }
-    :root.dark & ul[data-type='taskList'] li > label > input[type='checkbox'] {
-      border-color: var(--color-neutral-600);
     }
     & ul[data-type='taskList'] li > label > input[type='checkbox']:hover {
       border-color: rgb(var(--pn-accent));
@@ -1074,8 +1214,8 @@
       cursor: default;
     }
     & ul[data-type='taskList'] li > label > input[type='checkbox']:checked {
-      background: rgb(var(--pn-accent));
-      border-color: rgb(var(--pn-accent));
+      background: rgb(var(--pn-accent-fill));
+      border-color: rgb(var(--pn-accent-fill));
     }
     /* The draw-in check. Sits exactly over the input; clicks fall through. */
     & ul[data-type='taskList'] li > label > .pn-check {
@@ -1151,7 +1291,7 @@
       margin-bottom: 0;
     }
     & ul[data-type='taskList'] li[data-checked='true'] > div {
-      color: var(--color-neutral-400);
+      color: rgb(var(--pn-text-muted));
       text-decoration-line: line-through;
       text-decoration-color: currentColor;
     }
@@ -1172,9 +1312,6 @@
     }
     & ul[data-type='taskList'] li[data-checked='true'] > div span {
       color: inherit !important;
-    }
-    :root.dark & ul[data-type='taskList'] li[data-checked='true'] > div {
-      color: var(--color-neutral-500);
     }
   
     /* Text-color spans must win over Tailwind prose's explicit color on
@@ -1262,6 +1399,99 @@
   }
 }
 
+/* Spoiler text (editorSpoiler.ts): blurred until the caret touches it, a
+   click in a read-only note shows it, or the find bar's current match sits
+   inside it. Rendered notes (burn shares) show it on focus. Print shows it.
+   Spec: ops/docs/plans/spoiler-and-copy.md */
+@layer editor {
+  /* Hidden: a sharp box with a fine hatch, and the text blurred inside it.
+     Shown: the box fades to a faint tint, so the reader still sees which
+     words are the spoiler while editing them. */
+  .pn-spoiler {
+    padding: 0 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: rgb(var(--pn-text) / 0.1);
+    background-image: repeating-linear-gradient(
+      135deg,
+      rgb(var(--pn-text) / 0.07) 0 3px,
+      transparent 3px 7px
+    );
+    transition: background-color 120ms ease;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+
+    &:hover {
+      background-color: rgb(var(--pn-text) / 0.15);
+    }
+
+    & .pn-spoiler-text {
+      filter: blur(4px);
+      opacity: 0.6;
+      transition: filter 120ms ease, opacity 120ms ease;
+    }
+
+    &:has(.pn-spoiler-on),
+    &:has(.pn-search-hit-current),
+    &:focus {
+      outline: none;
+      background-color: rgb(var(--pn-text) / 0.05);
+      background-image: none;
+
+      & .pn-spoiler-text {
+        filter: none;
+        opacity: 1;
+      }
+    }
+
+    @media print {
+      background: none;
+
+      & .pn-spoiler-text {
+        filter: none;
+        opacity: 1;
+      }
+    }
+  }
+
+  /* The code block's copy icon after a copy (editorExtensions.ts): a green
+     check that pops once, and its tip held open to say "Copied". */
+  .pn-copied {
+    color: rgb(74 222 128) !important; /* theme-ok: the green of a done check, on the dark code toolbar */
+    animation: pn-copied-pop 260ms ease-out;
+  }
+  .pn-copybox .pn-copied {
+    color: rgb(22 163 74) !important; /* theme-ok: the same green, darker for the light box */
+  }
+  .pn-tip-shown > .pn-tip {
+    opacity: 1;
+  }
+  @keyframes pn-copied-pop {
+    0% { transform: scale(0.6); }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pn-copied {
+      animation: none;
+    }
+  }
+
+  /* "Copied" after a copy of inline code (editorCodeCopy.ts), above the
+     pointer. */
+  .pn-copy-bubble {
+    position: fixed;
+    z-index: 60;
+    transform: translate(-50%, calc(-100% - 8px));
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    pointer-events: none;
+    background: rgb(var(--pn-text));
+    color: rgb(var(--pn-surface-2));
+  }
+}
+
 @layer editor {
   .pn-search-hit-current {
     .ProseMirror & {
@@ -1337,6 +1567,129 @@
         var(--pn-tagrow-h, 0px) + var(--pn-editor-toolbar-h, 0px) + 48px
       );
     }
+  }
+}
+
+@layer editor {
+  /* ---------------------------------------------------------------
+   * Footnotes (footnotes.ts). The shown numbers come from decoration
+   * attributes, never from the stored label.
+   * Spec: ops/docs/plans/footnotes.md (section 6)
+   * --------------------------------------------------------------- */
+  .ProseMirror sup.pn-fn-ref {
+    cursor: pointer;
+    color: rgb(var(--pn-accent));
+    font-size: 0.75em;
+    font-weight: 600;
+    line-height: 0;
+    padding: 0 0.15em;
+    border-radius: 3px;
+    user-select: none;
+  }
+  .ProseMirror sup.pn-fn-ref::after {
+    content: attr(data-fn-number);
+  }
+  .ProseMirror sup.pn-fn-ref[data-fn-missing] {
+    color: rgb(var(--pn-text-muted));
+    text-decoration: underline dashed;
+  }
+  .ProseMirror sup.pn-fn-ref[data-fn-missing]::after {
+    content: '?';
+  }
+  .ProseMirror sup.pn-fn-ref.ProseMirror-selectednode,
+  .ProseMirror sup.pn-fn-ref:focus-visible {
+    outline: 2px solid rgb(var(--pn-accent));
+    outline-offset: 1px;
+  }
+  @media (pointer: coarse) {
+    /* A 24px tap target without moving the line: padding on an inline box
+       does not change the line height. */
+    .ProseMirror sup.pn-fn-ref {
+      padding: 0.6em 0.8em;
+      margin: -0.6em -0.6em;
+    }
+  }
+  .ProseMirror section.pn-footnotes {
+    margin-top: 2em;
+    padding-top: 0.75em;
+    border-top: 1px solid rgb(var(--pn-divider));
+  }
+  /* Two columns: the number, then the definition's blocks. The prose styles
+     size a paragraph to the editor body, so the number takes the same size,
+     and baseline alignment puts it on the first line of the text. */
+  .ProseMirror .pn-footnote {
+    display: grid;
+    grid-template-columns: 1.5em minmax(0, 1fr);
+    column-gap: 0.5em;
+    align-items: baseline;
+    margin: 0.3em 0;
+  }
+  .ProseMirror .pn-footnote > * {
+    grid-column: 2;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+  }
+  .ProseMirror .pn-footnote::before {
+    content: attr(data-fn-number) '.';
+    grid-column: 1;
+    grid-row: 1;
+    text-align: end;
+    font-size: var(--pn-editor-body);
+    color: rgb(var(--pn-text-muted));
+    font-variant-numeric: tabular-nums;
+  }
+  .ProseMirror .pn-footnote[data-fn-unused] {
+    color: rgb(var(--pn-text-muted));
+  }
+  .ProseMirror .pn-footnote[data-fn-unused]::before {
+    content: '\2013';
+  }
+  .ProseMirror .pn-footnote[data-fn-unused]::after {
+    content: attr(data-fn-unused-label);
+    grid-column: 2;
+    display: block;
+    font-size: 0.8em;
+    font-style: italic;
+  }
+  .ProseMirror p.pn-fn-empty::before {
+    content: attr(data-placeholder);
+    float: inline-start;
+    height: 0;
+    color: rgb(var(--pn-text-muted));
+    pointer-events: none;
+  }
+  .ProseMirror .pn-fn-back,
+  .ProseMirror .pn-fn-remove {
+    margin-inline-start: 0.35em;
+    padding: 0 0.25em;
+    border: 0;
+    background: none;
+    font: inherit;
+    line-height: 1;
+    color: rgb(var(--pn-accent));
+    cursor: pointer;
+  }
+  .ProseMirror .pn-fn-remove {
+    color: rgb(var(--pn-text-muted));
+  }
+  .pn-fn-card {
+    position: fixed;
+    z-index: 70;
+    max-width: min(22rem, calc(100vw - 16px));
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgb(var(--pn-divider));
+    border-radius: 8px;
+    background: rgb(var(--pn-surface-1));
+    color: rgb(var(--pn-text));
+    box-shadow: 0 6px 20px rgb(0 0 0 / 0.15);
+    font-size: 13px;
+    line-height: 1.45;
+    white-space: pre-line;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    pointer-events: none;
   }
 }
 
@@ -1492,12 +1845,10 @@
     gap: 2px;
     padding: 4px;
     border-radius: 0 0 8px 8px;
-    background: var(--color-neutral-800);
+    background: rgb(var(--pn-track));
+    border: 1px solid rgb(var(--pn-divider));
     user-select: none;
     animation: pn-toolbar-in 0.1s ease-out;
-    :root:not(.dark) & {
-      background: var(--color-neutral-100);
-    }
   }
 }
 
@@ -1511,18 +1862,11 @@
     border-radius: 6px;
     border: none;
     background: transparent;
-    color: var(--color-neutral-400);
+    color: rgb(var(--pn-text-muted));
     cursor: pointer;
     &:hover {
-      background: rgb(255 255 255 / 0.08);
-      color: var(--color-neutral-200);
-    }
-    :root:not(.dark) & {
-      color: var(--color-neutral-500);
-    }
-    :root:not(.dark) &:hover {
-      background: var(--color-neutral-200);
-      color: var(--color-neutral-700);
+      background: rgb(var(--pn-text) / 0.08);
+      color: rgb(var(--pn-text));
     }
   }
 }
@@ -1532,7 +1876,7 @@
     color: var(--color-red-400);
     &:hover {
       color: var(--color-red-300);
-      background: rgb(255 255 255 / 0.08);
+      background: rgb(var(--pn-text) / 0.08);
     }
     :root:not(.dark) & {
       color: var(--color-red-500);
@@ -1548,11 +1892,8 @@
   .pn-table-toolbar-divider {
     width: 1px;
     height: 16px;
-    background: rgb(255 255 255 / 0.12);
+    background: rgb(var(--pn-divider));
     margin: 0 2px;
-    :root:not(.dark) & {
-      background: var(--color-neutral-200);
-    }
   }
 }
 
@@ -1693,7 +2034,8 @@
     gap: 2px;
     padding: 4px;
     border-radius: 0 0 8px 8px;
-    background: var(--color-neutral-800);
+    background: rgb(var(--pn-track));
+    border: 1px solid rgb(var(--pn-divider));
     user-select: none;
     z-index: 10;
     animation: pn-toolbar-in 0.1s ease-out;
@@ -1716,21 +2058,15 @@
     bottom: 0;
     inset-inline-start: 0;
     border-start-end-radius: 8px;
-    :root:not(.dark) & {
-      background: var(--color-neutral-100);
-    }
   }
 }
 
 @layer editor {
   .pn-image-toolbar-label {
     font-size: 12px;
-    color: var(--color-neutral-500);
+    color: rgb(var(--pn-text-muted));
     margin-inline-end: 2px;
     line-height: 1;
-    :root:not(.dark) & {
-      color: var(--color-neutral-400);
-    }
   }
 }
 
@@ -1747,26 +2083,20 @@
     border-radius: 6px;
     font-size: 12px;
     font-weight: 500;
-    color: var(--color-neutral-400);
+    color: rgb(var(--pn-text-muted));
     border: none;
     background: transparent;
     cursor: pointer;
     line-height: 1;
     &:hover {
-      background: rgb(255 255 255 / 0.08);
-    }
-    :root:not(.dark) & {
-      color: var(--color-neutral-500);
-    }
-    :root:not(.dark) &:hover {
-      background: var(--color-neutral-100);
+      background: rgb(var(--pn-text) / 0.08);
     }
     &.active {
-      background: rgb(var(--pn-accent) / 1);
+      background: rgb(var(--pn-accent-fill));
       color: white;
     }
     :root:not(.dark) &.active {
-      background: rgb(var(--pn-accent) / 1);
+      background: rgb(var(--pn-accent-fill));
       color: white;
     }
   }
@@ -1775,11 +2105,11 @@
 @layer editor {
   .active {
     &.pn-image-toolbar-size {
-      background: rgb(var(--pn-accent) / 1);
+      background: rgb(var(--pn-accent-fill));
       color: white;
     }
     :root:not(.dark) &.pn-image-toolbar-size {
-      background: rgb(var(--pn-accent) / 1);
+      background: rgb(var(--pn-accent-fill));
       color: white;
     }
   }
@@ -1789,11 +2119,8 @@
   .pn-image-toolbar-divider {
     width: 1px;
     height: 16px;
-    background: rgb(255 255 255 / 0.12);
+    background: rgb(var(--pn-divider));
     margin: 0 2px;
-    :root:not(.dark) & {
-      background: var(--color-neutral-200);
-    }
   }
 }
 
@@ -1807,18 +2134,11 @@
     border-radius: 6px;
     border: none;
     background: transparent;
-    color: var(--color-neutral-400);
+    color: rgb(var(--pn-text-muted));
     cursor: pointer;
     &:hover {
-      background: rgb(255 255 255 / 0.08);
-      color: var(--color-neutral-200);
-    }
-    :root:not(.dark) & {
-      color: var(--color-neutral-500);
-    }
-    :root:not(.dark) &:hover {
-      background: var(--color-neutral-100);
-      color: var(--color-neutral-700);
+      background: rgb(var(--pn-text) / 0.08);
+      color: rgb(var(--pn-text));
     }
   }
 }
@@ -1872,6 +2192,16 @@
     --brand-ink: rgb(var(--pn-text));
     --pn-accent: 30 64 175; /* #1E40AF - Spec: ops/docs/design-decisions.md (brand accent) */
     --pn-accent-hover: 30 58 138; /* #1E3A8A - Spec: ops/docs/design-decisions.md (brand accent hover) */
+    /* A filled control with white content. Light palettes fill with the
+       accent itself; dark palettes set a deeper blue, because a light accent
+       that reads well as text is too light under white. */
+    --pn-accent-fill: var(--pn-accent);
+    --pn-accent-fill-hover: var(--pn-accent-hover);
+    /* Status text. One step darker than the usual 600 shades, because those
+       fall under 4.5:1 on the Cream and Slate sidebars. */
+    --pn-danger: 193 0 7; /* #C10007 - red-700 */
+    --pn-warning: 151 60 0; /* #973C00 - amber-800 */
+    --pn-success: 0 96 69; /* #006045 - emerald-800 */
     --pn-surface-0: 245 245 245; /* #F5F5F5 - sidebar */
     --pn-surface-1: 250 250 249; /* #FAFAF9 - list */
     --pn-surface-2: 255 255 255; /* #FFFFFF - editor */
@@ -1879,7 +2209,7 @@
     --pn-track: 245 245 245; /* #F5F5F5 - recessed well - Spec: ops/docs/color-themes.md (track token) */
     --pn-text-soft: 64 64 64; /* #404040 - secondary text */
     --pn-text: 10 10 10; /* #0A0A0A */
-    --pn-text-muted: 115 115 115; /* #737373 */
+    --pn-text-muted: 106 106 106; /* #6A6A6A */
     /* The Pro rocket, LIGHT default. Burnt amber, and every light theme
        inherits it: gold is a light colour, so it needs a dark ground.
        Measured on white gold is 1.63:1 and on slate 1.24:1, which is
@@ -1892,8 +2222,8 @@
        Spec: ops/docs/design-decisions.md (Pro mark colour) */
     --pn-pro: 180 83 9; /* #B45309 - burnt amber */
     /* Folder and tag colors, keyed to MODE like the Pro mark: every light theme
-       shares these. `ink` draws a glyph on any surface (3:1 or better, cream
-       sidebar the worst at 3.98); `tint` is an open note's background, light
+       shares these. `ink` draws a glyph on any surface (3:1 or better, gray
+       on the cream sidebar the worst at 4.43); `tint` is an open note's background, light
        enough that body and secondary text keep 4.5:1 and dates 3:1 on every
        theme. tests/labelContrast.test.ts holds both floors.
        Spec: ops/docs/plans/folder-tag-icons.md (section 4.2) */
@@ -1946,8 +2276,13 @@
     --pn-label-blue-tint: rgb(51 154 240 / 0.10);
     --pn-label-purple-tint: rgb(151 117 250 / 0.10);
     --pn-label-pink-tint: rgb(240 101 149 / 0.10);
-    --pn-accent: 74 144 217; /* #4A90D9 */
-    --pn-accent-hover: 58 123 192; /* #3A7BC0 */
+    --pn-accent: 74 144 217; /* #4A90D9 - the dark half of the brand accent pair, Spec: ops/docs/design-decisions.md (brand spelling) */
+    --pn-accent-hover: 116 170 226; /* #74AAE2 - lighter, so link hover and text-accent-strong keep 4.5:1, on a tint too */
+    --pn-accent-fill: 61 120 180; /* #3D78B4 */
+    --pn-accent-fill-hover: 52 103 155; /* #34679B */
+    --pn-danger: 255 100 103; /* #FF6467 - red-400 */
+    --pn-warning: 255 185 0; /* #FFB900 - amber-400 */
+    --pn-success: 0 212 146; /* #00D492 - emerald-400 */
     --pn-surface-0: 23 21 20; /* #171514 - sidebar */
     --pn-surface-1: 29 27 25; /* #1D1B19 - list */
     --pn-surface-2: 35 33 30; /* #23211E - editor */
@@ -1960,16 +2295,16 @@
 
   /* === Light: warm-cream (parchment) ================================ */
   :root:not(.dark).theme-warm-cream {
-    --pn-accent: 29 78 216; /* #1D4ED8 */
-    --pn-accent-hover: 30 64 175; /* #1E40AF */
-    --pn-surface-0: 216 205 180; /* #D8CDB4 - sidebar */
+    --pn-accent: 24 64 177; /* #1840B1 */
+    --pn-accent-hover: 30 58 138; /* #1E3A8A */
+    --pn-surface-0: 225 216 196; /* #E1D8C4 - sidebar */
     --pn-surface-1: 228 220 202; /* #E4DCCA - list */
     --pn-surface-2: 240 235 222; /* #F0EBDE - editor */
     --pn-divider: 203 193 168; /* #CBC1A8 */
     --pn-track: 228 220 202; /* #E4DCCA - recessed well */
     --pn-text-soft: 87 75 56; /* #574B38 - secondary text */
     --pn-text: 45 36 22; /* #2D2416 */
-    --pn-text-muted: 120 108 85; /* #786C55 */
+    --pn-text-muted: 100 89 68; /* #645944 */
   }
 
   /* === Light: slate (blue-gray + indigo) ============================== */
@@ -1983,13 +2318,15 @@
     --pn-track: 226 230 237; /* #E2E6ED - recessed well */
     --pn-text-soft: 61 67 86; /* #3D4356 - secondary text */
     --pn-text: 18 21 36; /* #121524 */
-    --pn-text-muted: 107 112 132; /* #6B7084 */
+    --pn-text-muted: 89 94 113; /* #595E71 */
   }
 
   /* === Dark: soft-dark =============================================== */
   :root.dark.theme-soft-dark {
-    --pn-accent: 74 144 217; /* #4A90D9 */
-    --pn-accent-hover: 58 123 192; /* #3A7BC0 */
+    --pn-accent: 137 183 230; /* #89B7E6 */
+    --pn-accent-hover: 158 196 235; /* #9EC4EB */
+    --pn-accent-fill: 61 120 180; /* #3D78B4 */
+    --pn-accent-fill-hover: 52 103 155; /* #34679B */
     --pn-surface-0: 28 31 38; /* #1C1F26 */
     --pn-surface-1: 34 38 46; /* #22262E */
     --pn-surface-2: 40 45 54; /* #282D36 */
@@ -1997,13 +2334,15 @@
     --pn-track: 24 27 33; /* #181B21 - recessed well */
     --pn-text-soft: 166 174 189; /* #A6AEBD - secondary text */
     --pn-text: 205 211 222; /* #CDD3DE */
-    --pn-text-muted: 123 132 150; /* #7B8496 */
+    --pn-text-muted: 146 154 170; /* #929AAA */
   }
 
   /* === Dark: navy-depths ============================================= */
   :root.dark.theme-navy-depths {
-    --pn-accent: 75 123 245; /* #4B7BF5 */
-    --pn-accent-hover: 59 105 219; /* #3B69DB */
+    --pn-accent: 131 164 248; /* #83A4F8 */
+    --pn-accent-hover: 153 180 249; /* #99B4F9 */
+    --pn-accent-fill: 68 111 221; /* #446FDD */
+    --pn-accent-fill-hover: 58 95 190; /* #3A5FBE */
     --pn-surface-0: 13 19 33; /* #0D1321 */
     --pn-surface-1: 18 26 46; /* #121A2E */
     --pn-surface-2: 22 31 53; /* #161F35 */
@@ -2012,6 +2351,101 @@
     --pn-text-soft: 174 183 201; /* #AEB7C9 - secondary text */
     --pn-text: 212 218 231; /* #D4DAE7 */
     --pn-text-muted: 136 146 168; /* #8892A8 */
+  }
+
+  /* === Light: sage (green tint + forest accent) ===================== */
+  :root:not(.dark).theme-sage {
+    --pn-accent: 43 106 77; /* #2B6A4D - forest green */
+    --pn-accent-hover: 31 83 59; /* #1F533B */
+    --pn-surface-0: 225 231 222; /* #E1E7DE - sidebar */
+    --pn-surface-1: 235 240 232; /* #EBF0E8 - list */
+    --pn-surface-2: 246 248 243; /* #F6F8F3 - editor */
+    --pn-divider: 204 214 199; /* #CCD6C7 */
+    --pn-track: 228 234 224; /* #E4EAE0 - recessed well */
+    --pn-text-soft: 56 70 59; /* #38463B - secondary text */
+    --pn-text: 23 32 26; /* #17201A */
+    --pn-text-muted: 85 102 90; /* #55665A */
+  }
+
+  /* === Dark: OLED (true black) ======================================== */
+  /* Every surface is black, so a pixel that shows no content is off on an
+     OLED screen; the panes are told apart by their dividers. The search
+     field and other wells keep a near-black of their own, because a well
+     computed from black would be black too. The accent is the brand blue,
+     inherited with its fill from :root.dark. */
+  :root.dark.theme-oled {
+    --pn-surface-0: 0 0 0; /* #000000 - sidebar */
+    --pn-surface-1: 0 0 0; /* #000000 - list */
+    --pn-surface-2: 0 0 0; /* #000000 - editor */
+    --pn-divider: 38 38 38; /* #262626 */
+    --pn-track: 22 22 22; /* #161616 - recessed well */
+    --pn-text-soft: 189 189 189; /* #BDBDBD - secondary text */
+    --pn-text: 232 232 232; /* #E8E8E8 */
+    --pn-text-muted: 143 143 143; /* #8F8F8F */
+  }
+  /* The search fields paint a surface color, black here, so they take the
+     well instead. */
+  :root.dark.theme-oled .pn-search-well {
+    background-color: rgb(var(--pn-track));
+  }
+
+  /* Muted text on a tinted background (a selected row, the active sidebar
+     item) reads at the soft level: the tint lifts the background toward the
+     muted color and takes it under 4.5:1. The element that paints the tint
+     carries pn-on-tint. Spec: ops/docs/color-themes.md (section 3) */
+  .pn-on-tint .text-pn-muted {
+    color: rgb(var(--pn-text-soft));
+  }
+  /* A count on the strongest tint (the active sidebar item) still falls just
+     short at the soft level; a short number takes the full text color. */
+  .pn-on-tint .text-pn-muted.tabular-nums {
+    color: rgb(var(--pn-text));
+  }
+
+  /* The gold rating star (RatingStar.tsx). The gold measures
+     1.7:1 on white, so a light palette keeps the fill and draws an amber-700
+     edge, 5:1 on white. A dark palette shows the plain fill.
+     Spec: ops/docs/color-themes.md (section 3) */
+  :root:not(.dark) .pn-rating-star {
+    overflow: visible;
+  }
+  :root:not(.dark) .pn-rating-star path {
+    stroke: #bb4d00;
+    stroke-width: 1px;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* Note text in every theme. The typography plugin colors prose from its
+     own --tw-prose-* variables, which are fixed greys; prose-pn points them
+     at the palette tokens. Body text is the soft level in light mode and the
+     full text level in dark mode, where the soft level reads dim on a long
+     page. The code panel is dark in every theme, so its two values stay
+     fixed (theme-ok). Spec: ops/docs/color-themes.md (section 3) */
+  .prose.prose-pn {
+    --tw-prose-body: rgb(var(--pn-text-soft));
+    --tw-prose-headings: rgb(var(--pn-text));
+    --tw-prose-lead: rgb(var(--pn-text-soft));
+    --tw-prose-links: rgb(var(--pn-accent));
+    --tw-prose-bold: rgb(var(--pn-text));
+    --tw-prose-counters: rgb(var(--pn-text-muted));
+    --tw-prose-bullets: rgb(var(--pn-text-muted));
+    --tw-prose-hr: rgb(var(--pn-divider));
+    --tw-prose-quotes: rgb(var(--pn-text));
+    --tw-prose-quote-borders: rgb(var(--pn-divider));
+    --tw-prose-captions: rgb(var(--pn-text-muted));
+    --tw-prose-kbd: rgb(var(--pn-text));
+    --tw-prose-kbd-shadows: rgb(var(--pn-text) / 10%);
+    --tw-prose-code: rgb(var(--pn-text));
+    --tw-prose-pre-code: #e5e5e5; /* theme-ok: the code panel */
+    --tw-prose-pre-bg: #262626; /* theme-ok: the code panel */
+    --tw-prose-th-borders: rgb(var(--pn-divider));
+    --tw-prose-td-borders: rgb(var(--pn-divider));
+  }
+  :root.dark .prose.prose-pn {
+    --tw-prose-body: rgb(var(--pn-text));
+    --tw-prose-pre-code: #d4d4d4; /* theme-ok: the code panel */
+    --tw-prose-pre-bg: rgb(0 0 0 / 50%); /* theme-ok: the code panel */
   }
 
   /* Scrollbar theming - native scrollbars inherit the active color theme.
@@ -2053,6 +2487,74 @@
   }
   .pn-toast-in {
     animation: pn-toast-in 280ms ease-out both;
+  }
+
+  /* Busy trace on a button border ("Compare with server"). The rect
+   carries pathLength="100", so the dash and the offset are percentages
+   of the perimeter whatever the button's size. Reduced motion holds the
+   whole border in the accent color instead. */
+  @keyframes pn-border-trace {
+    to {
+      stroke-dashoffset: -100;
+    }
+  }
+  .pn-border-trace {
+    fill: none;
+    stroke: rgb(var(--pn-accent));
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-dasharray: 18 82;
+    animation: pn-border-trace 1.8s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pn-border-trace {
+      animation: none;
+      stroke-dasharray: none;
+    }
+  }
+
+  /* The quick switcher's "Jump to" buttons (TagsRail, CollapsedSidebar):
+     on hover an amber charge sweeps across the button from its start edge
+     and the bolt turns amber. The amber is the Pro token, tuned for a small
+     glyph on every theme's sidebar. The label keeps its accent: amber text
+     on the charged tint measured 3.2:1 on the light sidebar, under the
+     4.5:1 that 14px text needs, while the 16px bolt needs 3:1. The
+     sweep is a child span under the content, so the button keeps its own
+     tint underneath. Pointer devices only; reduced motion shows the charge
+     without the sweep. */
+  .pn-jump {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .pn-jump-charge {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(var(--pn-pro) / 0.16);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+  }
+  [dir='rtl'] .pn-jump-charge {
+    transform-origin: right;
+  }
+  .pn-jump svg {
+    transition: color 0.2s;
+  }
+  @media (hover: hover) {
+    .pn-jump:hover svg {
+      color: rgb(var(--pn-pro));
+    }
+    .pn-jump:hover .pn-jump-charge {
+      transform: scaleX(1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pn-jump-charge {
+      transition: none;
+    }
   }
 
   /* Base background - uses the sidebar surface tier (darkest panel).
@@ -2138,6 +2640,14 @@
   .ProseMirror li,
   .ProseMirror blockquote {
     font-size: 16px !important;
+  }
+  /* The body above is pinned and ignores Text size here, so code is pinned
+     beside it at 90% of 16px, and a copy box matches the body. */
+  .ProseMirror pre.pn-codeblock {
+    font-size: 14.4px;
+  }
+  .ProseMirror pre.pn-copybox {
+    font-size: 16px;
   }
 }
 
@@ -2314,12 +2824,20 @@
 .pn-row-dragging * { cursor: row-resize !important; }
 .pn-row-dragging { user-select: none; }
 .pn-row-dragging .pn-tip { display: none !important; }
+
+/* A list row or tile drags with a mouse or a pen only (onto a folder, a tag
+   or a note). On a touch screen a long press selects rows, and a webview that
+   lifted a draggable row on that press would take the gesture from it. */
+@media (hover: none) {
+  li[data-item-id][draggable='true'],
+  [data-file-drag][draggable='true'] { -webkit-user-drag: none; }
+}
 .pn-drag-badge {
   position: fixed;
   z-index: 50;
   display: none;
   pointer-events: none;
-  background: var(--color-accent);
+  background: var(--color-accent-fill);
   color: #fff;
   border-radius: 6px;
   font-size: 11px;
@@ -2829,7 +3347,7 @@
 }
 .tiptap-invisible-character::before {
   caret-color: inherit;
-  color: #aaa;
+  color: rgb(var(--pn-text-muted));
   display: inline-block;
   font-style: normal;
   font-weight: 400;

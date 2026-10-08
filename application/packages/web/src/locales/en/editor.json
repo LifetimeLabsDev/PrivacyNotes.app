@@ -7,7 +7,7 @@
     "heading": "Heading",
     "taskList": "Task list",
     "bulletList": "Bullet list",
-    "addLink": "Add link (Cmd+Shift+K)",
+    "addLink": "Add link ({{keys}})",
     "noteLink": "Link to another note (or type [[)",
     "numberedList": "Numbered list",
     "textColor": "Text color",
@@ -34,7 +34,12 @@
     "blockMath": "Block formula",
     "align": "Alignment",
     "font": "Font",
-    "pictureFromFiles": "Picture from Files"
+    "pictureFromFiles": "Picture from Files",
+    "date": "Date",
+    "dateTime": "Date and time",
+    "footnote": "Footnote",
+    "spoiler": "Spoiler",
+    "copyBox": "Copy box"
   },
   "align": {
     "left": "Align left",
@@ -118,7 +123,7 @@
     "next": "Next match (Enter)",
     "nextTitle": "Next (Enter)",
     "close": "Close find",
-    "closeTitle": "Close (⌘F)",
+    "closeTitle": "Close ({{keys}})",
     "replacePlaceholder": "Replace with",
     "replaceLabel": "Replace with",
     "replace": "Replace",
@@ -128,7 +133,7 @@
     "caseSensitive": "Match case",
     "caseSensitiveTitle": "Match case",
     "closeReplace": "Close find and replace",
-    "closeReplaceTitle": "Close (⌥⌘F)",
+    "closeReplaceTitle": "Close ({{keys}})",
     "replacedCount_one": "{{count}} replaced",
     "replacedCount_other": "{{count}} replaced"
   },
@@ -138,7 +143,14 @@
     "title": "Outline",
     "ariaLabel": "Note outline",
     "hide": "Hide outline",
-    "hideTitle": "Hide outline (Esc)"
+    "hideTitle": "Hide outline (Esc)",
+    "copyHeadingLink": "Copy link to heading",
+    "copied": "Copied"
+  },
+  "bodyMenu": {
+    "cut": "Cut",
+    "sortAsc": "Sort lines A to Z",
+    "sortDesc": "Sort lines Z to A"
   },
   "topRow": {
     "add": "Add a line at the top"
@@ -177,6 +189,8 @@
     "words_other": "{{formatted}} words",
     "characters_one": "{{formatted}} character",
     "characters_other": "{{formatted}} characters",
+    "tasksChecked_one": "{{done}} of {{formatted}} checked",
+    "tasksChecked_other": "{{done}} of {{formatted}} checked",
     "tooLargeToSync": ", may be too large to sync, split into a new note",
     "veryLong": ", very long, may be slow to edit and stutter",
     "gettingLong": ", getting long, may lag on slower devices",
@@ -184,19 +198,48 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "No matching notes",
-    "create": "Create \"{{query}}\""
+    "create": "Create \"{{query}}\"",
+    "headingsIn": "Headings in {{title}}",
+    "noHeadingMatches": "No matching headings"
+  },
+  "copyBox": {
+    "placeholder": "Text to copy with one click"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}-click to copy",
+    "copied": "Copied"
   },
   "codeBlock": {
     "copy": "Copy",
     "copied": "Copied",
     "copyFailed": "Failed",
-    "wrap": "Wrap long lines"
+    "wrap": "Wrap long lines",
+    "showAll_one": "Show all {{count}} line",
+    "showAll_other": "Show all {{count}} lines",
+    "showLess": "Show less",
+    "plainText": "Plain text",
+    "language": "Code language: {{name}}",
+    "searchLanguages": "Search languages",
+    "placeholder": "Type or paste code. For colors, pick a language above."
   },
   "math": {
     "sourceLabel": "LaTeX source"
   },
   "noteLink": {
     "open": "Open note",
-    "remove": "Remove link"
+    "remove": "Remove link",
+    "linkHeading": "Link to a heading...",
+    "headingNotFound": "Heading not found",
+    "headingsLocked": "Unlock this note to see its headings",
+    "noHeadings": "This note has no headings"
+  },
+  "footnote": {
+    "placeholder": "Footnote text",
+    "back": "Back to the text",
+    "unused": "Not used in the text",
+    "remove": "Remove footnote",
+    "missing": "No footnote text. Click to add it.",
+    "ariaRef": "Footnote {{n}}",
+    "ariaSection": "Footnotes"
   }
 }

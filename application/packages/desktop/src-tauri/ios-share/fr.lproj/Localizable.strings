@@ -1,0 +1,3 @@
+"saved" = "Enregistré dans PrivacyNotes";
+"failed" = "Impossible d'enregistrer dans PrivacyNotes";
+"tooLarge" = "Trop volumineux. Maximum {{limit}} Mo par fichier.";

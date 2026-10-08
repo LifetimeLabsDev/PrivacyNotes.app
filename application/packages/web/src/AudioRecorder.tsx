@@ -21,6 +21,7 @@ import { Microphone as MicIcon, CircleNotch } from './icons';
 import type { EditorView } from '@tiptap/pm/view';
 import { triggerAttachmentUpload } from './EncryptedAttachment';
 import { formatDuration } from './formatDuration';
+import { toLocalIso } from './notesViewUtils';
 
 export type AudioRecordingState = 'idle' | 'recording' | 'uploading';
 
@@ -28,6 +29,13 @@ export type AudioRecordingState = 'idle' | 'recording' | 'uploading';
 const MAX_RECORDING_SECONDS = 15 * 60; // 15 minutes
 /** Seconds remaining when the UI shifts to warning colors. */
 const WARNING_THRESHOLD = 60;
+
+/** The recording's name stamp in the person's local time, as
+ *  `2026-10-06T19-43-15`: a name to read, so never the UTC clock. */
+export function recordingStamp(d: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${toLocalIso(d)}T${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}`;
+}
 
 type Props = {
   editorView: EditorView | null;
@@ -96,11 +104,7 @@ export function AudioRecorder({ editorView, tabIndex, onStateChange, stopRef }: 
           updateState('uploading', finalDuration);
 
           const ext = actualMime.includes('mp4') ? 'm4a' : 'ogg';
-          const timestamp = new Date()
-            .toISOString()
-            .replace(/[:.]/g, '-')
-            .slice(0, 19);
-          const filename = `recording-${timestamp}.${ext}`;
+          const filename = `recording-${recordingStamp(new Date())}.${ext}`;
           const file = new File([blob], filename, { type: actualMime });
           triggerAttachmentUpload(file, editorView).finally(() => {
             updateState('idle', 0);
@@ -179,7 +183,7 @@ export function AudioRecorder({ editorView, tabIndex, onStateChange, stopRef }: 
         onMouseDown={(e) => e.preventDefault()}
         onClick={stopRecording}
         aria-label={t('audio.stopRecording')}
-        className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition"
+        className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-danger hover:bg-red-50 dark:hover:bg-red-950/30 transition"
       >
         {/* Pulsing red dot */}
         <span className="relative flex h-2.5 w-2.5">
@@ -202,7 +206,7 @@ export function AudioRecorder({ editorView, tabIndex, onStateChange, stopRef }: 
       onMouseDown={(e) => e.preventDefault()}
       onClick={startRecording}
       aria-label={t('audio.recordAudio')}
-      className="flex items-center justify-center w-9 h-9 rounded-lg text-neutral-600 dark:text-neutral-300 [@media(hover:hover)]:hover:bg-neutral-200 [@media(hover:hover)]:dark:hover:bg-neutral-800 active:scale-95 transition outline-none shrink-0"
+      className="flex items-center justify-center w-9 h-9 rounded-lg text-pn-soft [@media(hover:hover)]:hover:bg-pn/10 active:scale-95 transition outline-none shrink-0"
     >
       <MicIcon size={19} />
     </button>
@@ -229,7 +233,7 @@ export function AudioRecordingBanner({
 
   if (state === 'uploading') {
     return (
-      <div className="flex items-center gap-2 px-3 py-2 bg-accent/10 dark:bg-accent/15 border-b border-accent/20 text-sm text-accent">
+      <div className="flex items-center gap-2 px-3 py-2 bg-accent/10 dark:bg-accent/15 border-b border-accent/20 text-sm text-accent-strong">
         <CircleNotch className="animate-spin h-4 w-4 shrink-0" />
         <span className="font-medium">{t('audio.savingRecording')}</span>
         <span className="text-xs opacity-70">{formatDuration(duration)}</span>
@@ -258,14 +262,14 @@ export function AudioRecordingBanner({
           <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${warn ? 'bg-amber-500' : 'bg-red-500'}`} />
           <span className={`relative inline-flex rounded-full h-3 w-3 ${warn ? 'bg-amber-600' : 'bg-red-600'}`} />
         </span>
-        <span className={`font-medium ${warn ? 'text-amber-700 dark:text-amber-400' : 'text-red-700 dark:text-red-400'}`}>
+        <span className={`font-medium ${warn ? 'text-warning' : 'text-danger'}`}>
           {t('audio.recording')}
         </span>
-        <span className={`tabular-nums font-medium ${warn ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
+        <span className={`tabular-nums font-medium ${warn ? 'text-warning' : 'text-danger'}`}>
           {formatDuration(duration)} / {formatDuration(MAX_RECORDING_SECONDS)}
         </span>
         {warn && (
-          <span className="text-xs text-amber-600 dark:text-amber-400">
+          <span className="text-xs text-warning">
             {t('audio.secondsLeft', { count: remaining })}
           </span>
         )}

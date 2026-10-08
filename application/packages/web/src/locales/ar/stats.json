@@ -1,6 +1,7 @@
 {
   "title": "الإحصاءات",
   "tabs": {
+    "overview": "نظرة عامة",
     "writing": "الكتابة",
     "wellness": "العافية"
   },
@@ -26,7 +27,7 @@
     "tooltipEdits_two": "{{date}}: {{count}} تعديلان",
     "tooltipEdits_few": "{{date}}: {{count}} تعديلات",
     "tooltipEdits_many": "{{date}}: {{count}} تعديلًا",
-    "tooltipEdits_other": "{{date}}: {{count}} تعديلًا",
+    "tooltipEdits_other": "{{date}}: {{count}} تعديل",
     "longestNote": "أطول ملاحظة: <name>{{title}}</name> ({{count}} كلمة)"
   },
   "range": {
@@ -35,12 +36,13 @@
     "30d": "30 يومًا",
     "3mo": "3 أشهر",
     "6mo": "6 أشهر",
-    "12mo": "12 شهرًا"
+    "12mo": "12 شهرًا",
+    "all": "الكل"
   },
   "wellness": {
     "subTabs": {
       "all": "الكل",
-      "sleepActivity": "النوم والنشاط",
+      "explore": "استكشاف",
       "medication": "الأدوية",
       "patterns": "الأنماط"
     },
@@ -48,33 +50,17 @@
       "title": "لا توجد بيانات عافية بعد.",
       "hint": "افتح مدخل يوميات وسجّل مزاجك للبدء."
     },
-    "overview": {
-      "daysTracked": "الأيام المتتبَّعة",
-      "avgMood": "متوسط المزاج",
-      "avgSleep": "متوسط النوم",
-      "medAdherence": "الالتزام بالدواء",
-      "moodTrend": "اتجاه المزاج",
-      "moodByDayOfWeek": "المزاج حسب يوم الأسبوع",
-      "moodTrendTooltip": "{{date}}: {{mood}}/10",
-      "moodTrendTooltipAnchor": "{{date}}: {{mood}}/10 ({{anchor}})"
-    },
     "export": {
       "heading": "تصدير",
-      "allTime": "كل الوقت",
-      "last90Days": "آخر 90 يومًا",
-      "last30Days": "آخر 30 يومًا",
-      "last7Days": "آخر 7 أيام",
       "downloadJSON": "تنزيل JSON",
       "doctorPDF": "تقرير PDF للطبيب",
-      "copyAIPrompt": "نسخ موجّه الذكاء الاصطناعي",
+      "copyAIPrompt": "عرض موجّه الذكاء الاصطناعي ونسخه",
       "copied": "تم النسخ!",
       "saveFailed": "فشل الحفظ، لذا قد يكون الملف فارغًا أو ناقصًا. حاول مرة أخرى أو اختر مجلدًا آخر.",
-      "proBadge": "PRO"
-    },
-    "sleepActivity": {
-      "sleepQuality": "جودة النوم",
-      "activity": "النشاط",
-      "avgSleepPerNight": "متوسط النوم لكل ليلة"
+      "proBadge": "PRO",
+      "usesRange": "يستخدم النطاق أعلاه",
+      "promptShown": "الموجّه الذي نسخته. الصقه في روبوت الدردشة الذي تختاره.",
+      "hidePrompt": "إخفاء"
     },
     "medication": {
       "adherence": "الالتزام",
@@ -87,7 +73,7 @@
       "changedTo": "تغيّر إلى {{dosage}}"
     },
     "patterns": {
-      "topEmotions": "أبرز المشاعر",
+      "heading": "ما الذي يحرّك مزاجك",
       "insights": "الرؤى",
       "proBadge": "PRO",
       "insightsLocked_zero": "تم اكتشاف {{count}} رؤى. الترقية إلى Pro للعرض",
@@ -96,8 +82,7 @@
       "insightsLocked_few": "تم اكتشاف {{count}} رؤى. الترقية إلى Pro للعرض",
       "insightsLocked_many": "تم اكتشاف {{count}} رؤية. الترقية إلى Pro للعرض",
       "insightsLocked_other": "تم اكتشاف {{count}} رؤية. الترقية إلى Pro للعرض",
-      "weekInReview": "مراجعة الأسبوع",
-      "weekInReviewLocked": "الترقية إلى Pro لعرض ملخص عافيتك الأسبوعي"
+      "tableLocked": "الترقية إلى Pro لمعرفة أي المتتبعات تحرّك مزاجك"
     },
     "week": {
       "range": "{{start}} إلى {{end}}",
@@ -109,7 +94,10 @@
       "topActivity": "أبرز نشاط",
       "topEmotions": "أبرز المشاعر",
       "reflection": "التأمل",
-      "reflectionPlaceholder": "كيف كان هذا الأسبوع بشكل عام؟ أي أفكار تود تدوينها..."
+      "reflectionPlaceholder": "كيف كان هذا الأسبوع بشكل عام؟ أي أفكار تود تدوينها...",
+      "heading": "ملخص الأسبوع",
+      "proBadge": "PRO",
+      "locked": "الترقية إلى Pro لعرض ملخص عافيتك الأسبوعي"
     },
     "units": {
       "days_zero": "{{count}} أيام",
@@ -120,17 +108,27 @@
       "days_other": "{{count}} يوم"
     },
     "insights": {
-      "sleep": "في الأيام التي تنام فيها جيدًا يبلغ متوسطك {{good}}، وفي الأيام التي تنام فيها بشكل سيئ {{bad}}.",
-      "activity": "في الأيام النشيطة يبلغ متوسطك {{active}}، وفي الأيام الخاملة {{sedentary}}.",
       "dayOfWeek": "أفضل أيامك عادةً {{best}} (بمتوسط {{bestAvg}})، وأصعبها {{worst}} (بمتوسط {{worstAvg}}).",
-      "medication": "منذ بدء {{name}} في {{date}}، تغيّر متوسط مزاجك من {{before}} إلى {{after}}.",
+      "medication": "متوسط {{outcome}} لديك {{a}} في الأيام التي تتناول فيها {{name}}، و{{b}} في الأيام التي تفوّته فيها.",
       "streak_zero": "سجّلت مزاجك {{count}} أيام متتالية. واصل!",
       "streak_one": "سجّلت مزاجك {{count}} يوم متتالٍ. واصل!",
       "streak_two": "سجّلت مزاجك {{count}} يومان متتاليان. واصل!",
       "streak_few": "سجّلت مزاجك {{count}} أيام متتالية. واصل!",
       "streak_many": "سجّلت مزاجك {{count}} يومًا متتاليًا. واصل!",
       "streak_other": "سجّلت مزاجك {{count}} يوم متتالٍ. واصل!",
-      "trend": "متوسط مزاجك في الأسبوعين الأخيرين {{recent}}، مقابل {{overall}} إجمالًا."
+      "trend": "متوسط مزاجك في الأسبوعين الأخيرين {{recent}}، مقابل {{overall}} إجمالًا.",
+      "yesno": "متوسط {{outcome}} لديك {{a}} في الأيام التي تسجّل فيها {{name}}، و{{b}} في الأيام التي لا تسجّله فيها.",
+      "yesnoNextDay": "متوسط {{outcome}} لديك {{a}} في اليوم التالي لتسجيل {{name}}، و{{b}} بعد الأيام التي لا تسجّله فيها.",
+      "halves": "متوسط {{outcome}} لديك {{a}} عندما يكون {{name}} أعلى من {{threshold}}، و{{b}} عندما يكون {{threshold}} أو أقل.",
+      "halvesNextDay": "متوسط {{outcome}} لديك {{a}} في اليوم التالي لكون {{name}} أعلى من {{threshold}}، و{{b}} بعد أن يكون {{threshold}} أو أقل.",
+      "median": "متوسط {{outcome}} لديك {{a}} عندما يكون {{name}} أعلى من وسيطك {{threshold}}، و{{b}} عندما يكون عنده أو أقل.",
+      "medianNextDay": "متوسط {{outcome}} لديك {{a}} في اليوم التالي لكون {{name}} أعلى من وسيطك {{threshold}}، و{{b}} بعد أن يكون عنده أو أقل.",
+      "levels": "متوسط {{outcome}} لديك {{a}} في أيام {{top}}، و{{b}} في أيام {{bottom}}.",
+      "levelsNextDay": "متوسط {{outcome}} لديك {{a}} في اليوم التالي لأيام {{top}}، و{{b}} بعد أيام {{bottom}}.",
+      "tag": "متوسط {{outcome}} لديك {{a}} في الأيام التي تشعر فيها بأنك {{tag}}، و{{b}} في الأيام التي لا تشعر فيها بذلك.",
+      "tagNextDay": "متوسط {{outcome}} لديك {{a}} في اليوم التالي لشعورك بأنك {{tag}}، و{{b}} بعد الأيام التي لا تشعر فيها بذلك.",
+      "medicationNextDay": "متوسط {{outcome}} لديك {{a}} في اليوم التالي لتناول {{name}}، و{{b}} بعد الأيام التي تفوّته فيها.",
+      "doseChange": "حول تغيير {{name}} إلى {{dosage}} في {{date}}، بلغ متوسط مزاجك {{before}} في الأيام الـ{{nBefore}} السابقة و{{after}} في الأيام الـ{{nAfter}} التالية."
     },
     "aiPrompt": {
       "intro": "أسجّل مزاجي وحالتي الصحية. حلّل البيانات أدناه بحثًا عن الأنماط والاتجاهات ورؤى قابلة للتطبيق.",
@@ -154,7 +152,15 @@
       "question2": "هل ترتبط جودة النوم ومستوى النشاط بالمزاج؟",
       "question3": "هل توجد اتجاهات مقلقة ينبغي مناقشتها مع مختص رعاية صحية؟",
       "question4": "اقتراحات قابلة للتطبيق بناءً على هذه البيانات.",
-      "footer": "أُنشئ بواسطة PrivacyNotes (privacynotes.app)"
+      "footer": "أُنشئ بواسطة PrivacyNotes (privacynotes.app)",
+      "period": "الفترة: من {{from}} إلى {{to}}",
+      "daysLogged": "الأيام المسجّلة: {{logged}} من {{days}}",
+      "trackers": "المتتبعات",
+      "trackerLine": "{{name}}: المتوسط {{avg}}، الأدنى {{low}}، الأعلى {{high}}، عدد الأيام: {{count}}",
+      "trackerYesLine": "{{name}}: نعم، عدد الأيام: {{yes}} من {{count}}",
+      "effects": "المزاج في أيام وجود العامل وغيابه",
+      "effectLine": "{{name}} ({{rule}}): {{a}} عند وجود العامل، {{b}} عند غيابه، الفرق {{delta}}، عدد الأيام: {{na}} / {{nb}}",
+      "customQuestion": "هل يرتبط {{name}} بمزاجي، في اليوم نفسه أو في اليوم التالي؟"
     },
     "report": {
       "documentTitle": "تقرير الحالة الصحية",
@@ -185,8 +191,137 @@
       "unknownDose": "جرعة غير معروفة",
       "topEmotions": "أكثر المشاعر تكرارًا",
       "patterns": "الأنماط المكتشفة",
-      "footer": "أُنشئ بواسطة PrivacyNotes - privacynotes.app"
-    }
+      "footer": "أُنشئ بواسطة PrivacyNotes - privacynotes.app",
+      "period": "الفترة: من {{from}} إلى {{to}}، عدد الأيام: {{days}}",
+      "daysLogged": "الأيام المسجّلة: {{logged}} من {{days}}",
+      "moodHeading": "المزاج، عمود لكل يوم",
+      "moodLegend": "الأعمدة: 1-2 أحمر، 3-4 برتقالي، 5-6 أصفر، 7-8 أخضر، 9-10 أزرق. الخط: متوسط 7 أيام. المثلث: تغيير جرعة. الفراغ يوم بلا تدوينة يومية.",
+      "previous": "الأيام الـ{{days}} السابقة: {{value}}",
+      "trackers": "المتتبعات",
+      "columnTracker": "المتتبع",
+      "columnAverage": "المتوسط",
+      "columnLowHigh": "الأدنى / الأعلى",
+      "columnHistory": "السجل",
+      "effects": "المزاج في أيام وجود العامل وغيابه",
+      "columnFactor": "العامل",
+      "columnRule": "القاعدة",
+      "columnWith": "مع",
+      "columnWithout": "بدون",
+      "columnDifference": "الفرق",
+      "nextDaySuffix": "{{name}}، اليوم التالي",
+      "effectsNote": "متوسطات الأيام المسجّلة. الفرق ملاحظة لا سبب.",
+      "medCalendar": "التقويم",
+      "doseChanges": "تغييرات الجرعة",
+      "columnDoseChanges": "تغييرات الجرعة",
+      "yesOn": "نعم في {{count}}",
+      "total": "{{value}} إجمالًا"
+    },
+    "tiles": {
+      "daysLogged": "الأيام المسجّلة",
+      "daysLoggedOf": "{{logged}} من {{days}}",
+      "avgMood": "متوسط المزاج",
+      "moodDelta": "{{delta}} مقارنة بالأيام الـ{{days}} السابقة",
+      "avgSleep": "متوسط النوم",
+      "medsTaken": "الأدوية المأخوذة"
+    },
+    "mood": {
+      "heading": "المزاج",
+      "legend": "الخط: متوسط 7 أيام. المثلث: تغيير جرعة.",
+      "dose": "{{name}} {{dosage}}"
+    },
+    "trackers": {
+      "heading": "المتتبعات",
+      "tapHint": "النقر يفتح الاستكشاف",
+      "stopped": "متوقف",
+      "deleted": "محذوف",
+      "stoppedChip": "متوقفة ({{count}})",
+      "unknown": "متتبع غير معروف {{id}}",
+      "sleepHours": "ساعات النوم",
+      "sleepQuality": "جودة النوم",
+      "avgDays": "المتوسط، عدد الأيام: {{count}}",
+      "sumDays": "الإجمالي، عدد الأيام: {{count}}",
+      "yesNo": "نعم في {{yes}}، لا في {{no}}",
+      "notLogged": "{{count}} غير مسجّل",
+      "latestLowHigh": "الأحدث {{latest}}، الأدنى {{low}}، الأعلى {{high}}",
+      "topLevel": "{{level}}، عدد الأيام: {{count}}",
+      "taken": "مأخوذ في {{taken}} من {{total}}",
+      "empty": "لا شيء مسجّل في هذا النطاق",
+      "unanswered": "عدد الأيام المسجّلة بلا إجابة: {{count}}"
+    },
+    "effects": {
+      "heading": "ما الذي يحرّك مزاجك",
+      "headingOutcome": "ما الذي يحرّك {{outcome}} لديك",
+      "allInPatterns": "كلها في الأنماط",
+      "sameDay": "اليوم نفسه",
+      "nextDay": "اليوم التالي",
+      "compareWith": "مقارنة مع",
+      "withLabel": "مع",
+      "withoutLabel": "بدون",
+      "days": "عدد الأيام: {{a}} / {{b}}",
+      "shortfall_zero": "مطلوب {{count}} أيام إضافية في جانب «{{side}}»",
+      "shortfall_one": "مطلوب {{count}} يوم إضافي في جانب «{{side}}»",
+      "shortfall_two": "مطلوب {{count}} يومان إضافيان في جانب «{{side}}»",
+      "shortfall_few": "مطلوب {{count}} أيام إضافية في جانب «{{side}}»",
+      "shortfall_many": "مطلوب {{count}} يومًا إضافيًا في جانب «{{side}}»",
+      "shortfall_other": "مطلوب {{count}} يوم إضافي في جانب «{{side}}»",
+      "sideWith": "مع",
+      "sideWithout": "بدون",
+      "footnote": "ملاحظة بين الأيام المسجّلة، لا سبب.",
+      "higher": "{{outcome}} أعلى بمقدار {{delta}} نقطة في هذه الأيام.",
+      "lower": "{{outcome}} أدنى بمقدار {{delta}} نقطة في هذه الأيام.",
+      "rule": {
+        "yesno": "أيام وجود العامل مقابل غيابه",
+        "halves": "أعلى من {{threshold}} مقابل {{threshold}} فأقل",
+        "median": "أعلى مقابل أدنى من وسيطك {{threshold}}",
+        "levels": "{{top}} مقابل {{bottom}}",
+        "tag": "الأيام مع {{tag}} مقابل بدونه",
+        "medication": "مأخوذ مقابل فائت"
+      }
+    },
+    "explore": {
+      "calendar": "التقويم",
+      "against": "مقابل {{outcome}}، محور تاريخ واحد",
+      "cells": {
+        "value": "مسجّل",
+        "no": "لا",
+        "missing": "غير مسجّل"
+      },
+      "longestRunWithout": "أطول فترة بإجابة «لا» (بالأيام): {{count}}",
+      "longestRunWith": "أطول فترة بإجابة «نعم» (بالأيام): {{count}}",
+      "pickOne": "اختر متتبعًا"
+    },
+    "medCalendar": {
+      "heading": "يومًا بيوم",
+      "doseChange": "تغيير جرعة",
+      "taken": "مأخوذ",
+      "skipped": "متخطّى",
+      "missed": "فائت",
+      "unmarked": "غير معلَّم",
+      "noEntry": "لا تدوينة يومية",
+      "doseLens": "بلغ متوسط المزاج {{before}} في الأيام الـ{{nBefore}} السابقة و{{after}} في الأيام الـ{{nAfter}} التالية.",
+      "doseLensHeading": "حول كل تغيير جرعة",
+      "doseLensShort_zero": "مطلوب {{count}} أيام مسجّلة إضافية حوله.",
+      "doseLensShort_one": "مطلوب {{count}} يوم مسجّل إضافي حوله.",
+      "doseLensShort_two": "مطلوب {{count}} يومان مسجّلان إضافيان حوله.",
+      "doseLensShort_few": "مطلوب {{count}} أيام مسجّلة إضافية حوله.",
+      "doseLensShort_many": "مطلوب {{count}} يومًا مسجّلًا إضافيًا حوله.",
+      "doseLensShort_other": "مطلوب {{count}} يوم مسجّل إضافي حوله."
+    },
+    "sourceLine": "كل ما هنا يأتي من المتتبعات في تدويناتك اليومية.",
+    "openToday": "فتح يومية اليوم"
+  },
+  "milestones": {
+    "heading": "المعالم",
+    "next": "التالي: {{label}}",
+    "allReached": "{{label}}، وكل ما قبله",
+    "ofTarget": "{{current}} من {{target}}",
+    "reached_zero": "المعالم المحققة حتى الآن: {{count}}.",
+    "reached_one": "المعالم المحققة حتى الآن: {{count}}.",
+    "reached_two": "المعالم المحققة حتى الآن: {{count}}.",
+    "reached_few": "المعالم المحققة حتى الآن: {{count}}.",
+    "reached_many": "المعالم المحققة حتى الآن: {{count}}.",
+    "reached_other": "المعالم المحققة حتى الآن: {{count}}.",
+    "source": "الملاحظات المكتوبة والأيام مع PrivacyNotes تحسب ما يحدث داخل التطبيق فقط. لا يغير الاستيراد أيًا منهما."
   },
   "milestoneToast": {
     "unlocked": "تم تحقيق إنجاز"
@@ -210,5 +345,63 @@
     "age730": "سنتان مع PrivacyNotes",
     "age1825": "5 سنوات مع PrivacyNotes",
     "ageDefault": "منذ {{count}} يوم"
+  },
+  "overview": {
+    "week": "أسبوعك",
+    "streak": "سلسلة الكتابة",
+    "streakDays_zero": "{{count}} أيام",
+    "streakDays_one": "{{count}} يوم",
+    "streakDays_two": "{{count}} يومان",
+    "streakDays_few": "{{count}} أيام",
+    "streakDays_many": "{{count}} يومًا",
+    "streakDays_other": "{{count}} يوم",
+    "streakNudge": "لم تكتب شيئًا اليوم بعد. سطر واحد يحفظها.",
+    "streakKept": "اليوم محسوب.",
+    "words": "الكلمات المكتوبة",
+    "wordsDelta": "{{delta}} مقارنة بالأسبوع السابق",
+    "mood": "المزاج",
+    "moodDelta": "{{delta}} مقارنة بالأسبوع السابق",
+    "daysLogged": "الأيام المسجّلة",
+    "daysLoggedOf": "{{logged}} من {{days}}",
+    "rhythm": "إيقاعك، {{weeks}} أسبوعًا",
+    "layerBoth": "كلاهما",
+    "layerWriting": "الكتابة",
+    "layerMood": "المزاج",
+    "rhythmLegend": "الخلية: كم كتبت في ذلك اليوم. النقطة: كيف كان شعورك في ذلك اليوم.",
+    "hours": "متى تكتب",
+    "hoursSub": "التعديلات بحسب الساعة، {{days}} يوم",
+    "hoursPeak": "معظم كتابتك تحدث بين {{from}} و{{to}}.",
+    "ledgerSince": "يُحسب على هذا الجهاز منذ {{date}}.",
+    "ledgerEmpty": "يبدأ العدّ الآن. عُد بعد أسبوع.",
+    "highlights": "أبرز النقاط",
+    "highlightSleep": "نوم جيد، كلمات أكثر. بعد {{hours}} ساعات أو أكثر تكتب نحو {{a}} كلمة في اليوم. وبعد ليلة قصيرة، {{b}}.",
+    "highlightSleepSub": "الليالي الطويلة: {{long}}، القصيرة: {{short}}، عدد الأيام: {{days}}",
+    "highlightWeekday": "{{day}} هو يومك. متوسط المزاج {{mood}}، و{{count}} من أطول {{total}} ملاحظات لديك كُتبت يوم {{day}}.",
+    "highlightWeekdaySub": "{{count}} من أيام {{day}} مسجّلة",
+    "highlightEffect": "أيام {{name}} {{direction}}. المزاج {{a}} معه، و{{b}} بدونه.",
+    "higher": "أعلى",
+    "lower": "أدنى",
+    "highlightEffectSub": "عدد الأيام مع {{name}}: {{count}} من أصل {{days}}",
+    "highlightTag": "#{{tag}} في نمو. عدد الملاحظات هذا الشهر {{now}}، وفي الشهر السابق {{before}}.",
+    "highlightTagSub": "الوسوم المستخدمة: {{count}}",
+    "highlightsLocked": "الترقية إلى Pro لمعرفة ما يجمع بين كتابتك ومتتبعاتك",
+    "vault": "خزنتك",
+    "vaultSub": "هذا الأسبوع بخط صغير",
+    "done": "{{count}} منجزة",
+    "milestones": "المعالم",
+    "longestStreak": "أطول سلسلة (بالأيام): {{count}}",
+    "openWriting": "فتح الكتابة",
+    "openWellness": "فتح العافية",
+    "computed": "محسوب على هذا الجهاز",
+    "pillars": {
+      "notes": "الملاحظات",
+      "journals": "اليوميات",
+      "tasks": "المهام",
+      "files": "الملفات",
+      "bookmarks": "الإشارات المرجعية",
+      "contacts": "جهات الاتصال",
+      "logins": "بيانات تسجيل الدخول"
+    },
+    "ledgerEstimated": "مقدَّر من ملاحظاتك إلى أن يبدأ العدّ."
   }
 }

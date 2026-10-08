@@ -4,8 +4,9 @@ import { OverflowTip } from './OverflowTip';
 import { folderIndentPx, INDENT_PX, MAX_INDENT_LEVEL, useFolderExpansion } from './folderTreeState';
 import { ancestorIds, canMoveFolder, childrenOf, subtreeIds, type FolderDef } from './folders';
 import { CaretDown, DotsSixVertical } from './icons';
-import { FolderGlyph, LooksContext, tintStyle } from './looks/LookGlyph';
+import { FolderGlyph, LooksContext, sidebarRowTint } from './looks/LookGlyph';
 import { folderColor } from './itemStyles';
+import { SIDEBAR_DROP_INSIDE } from './sidebarUI';
 
 /**
  * The folder tree itself - carets, guide lines, indent, the tinted expanded
@@ -78,6 +79,12 @@ export interface FolderTreeViewProps {
   renderAfter?: (folder: FolderDef, level: number) => ReactNode;
   /** Omit to leave the tree read-only. */
   reorder?: FolderReorder;
+  /**
+   * Lets a dragged list item file into a folder. The rail's list runs the
+   * drop (`useRailItemDrop`) and names the row the pointer is over. The Move
+   * dialog passes nothing, so its rows never advertise a drop.
+   */
+  itemDrop?: { overId: string | null };
   ariaLabel: string;
   mobileTabIndex?: number;
 }
@@ -118,6 +125,7 @@ export function FolderTreeView({
   renderTrailing,
   renderAfter,
   reorder,
+  itemDrop,
   ariaLabel,
   mobileTabIndex,
 }: FolderTreeViewProps) {
@@ -373,6 +381,7 @@ export function FolderTreeView({
     const refusedHere = drag?.active && drag.refused.has(folder.id) && drag.id !== folder.id;
     const target = drag?.active && drag.target?.overId === folder.id ? drag.target : null;
     const editing = isEditing?.(folder) ?? false;
+    const takesItems = !!itemDrop && !editing;
 
     const row = (
       <div key={folder.id} role="none">
@@ -381,6 +390,8 @@ export function FolderTreeView({
           aria-level={level + 1}
           aria-selected={active}
           {...(hasKids ? { 'aria-expanded': expanded } : {})}
+          data-drop-folder={takesItems ? folder.id : undefined}
+          data-drop-closed={takesItems && hasKids && !expanded ? '' : undefined}
           ref={(el) => {
             if (el) rowEls.current.set(folder.id, el);
             else rowEls.current.delete(folder.id);
@@ -405,12 +416,12 @@ export function FolderTreeView({
             active,
             disabled: disabled || !!refusedHere,
             dragging: !!dragging,
-            inside: target?.place === 'inside',
+            inside: target?.place === 'inside' || (takesItems && itemDrop?.overId === folder.id),
           })}
           // A colored folder tints its row the way a note row takes its
           // note's color, drawn as an image so the active and hover colors
-          // still show through.
-          style={tintStyle(folderColor(folder.id, looks.styles))}
+          // still show through, and only while note colors are backgrounds.
+          style={sidebarRowTint(folderColor(folder.id, looks.styles), looks)}
         >
           {target?.place === 'before' && <DropLine edge="top" level={target.level} />}
           {target?.place === 'after' && <DropLine edge="bottom" level={target.level} />}
@@ -420,7 +431,7 @@ export function FolderTreeView({
               aria-label={t('folders.reorder', { folder: folder.name })}
               onPointerDown={(e) => beginDrag(e, folder, true)}
               style={{ touchAction: 'none' }}
-              className="pn-ftree-grip shrink-0 inline-flex items-center justify-center w-4 h-6 -ms-0.5 cursor-grab active:cursor-grabbing text-neutral-400 dark:text-neutral-600 hover:text-accent transition"
+              className="pn-ftree-grip shrink-0 inline-flex items-center justify-center w-4 h-6 -ms-0.5 cursor-grab active:cursor-grabbing text-pn-muted hover:text-accent transition"
             >
               <DotsSixVertical size={12} aria-hidden="true" />
             </span>
@@ -437,7 +448,7 @@ export function FolderTreeView({
               aria-label={expanded ? t('folders.collapse') : t('folders.expand')}
               className={`shrink-0 inline-flex items-center justify-center ${
                 rail ? 'w-5 h-8 ms-0.5' : 'w-4 h-7'
-              } text-neutral-400 dark:text-neutral-600 hover:text-accent transition`}
+              } text-pn-muted hover:text-accent transition`}
             >
               <CaretDown
                 size={10}
@@ -454,7 +465,7 @@ export function FolderTreeView({
                 rail ? 'gap-2 py-2 pe-1' : 'gap-2 py-2 pe-1'
               }`}
             >
-              <span className="inline-flex shrink-0 text-amber-600/80 dark:text-amber-500/80">
+              <span className="inline-flex shrink-0 text-amber-700 dark:text-amber-500/80">
                 <FolderGlyph folderId={folder.id} size={rail ? 16 : 15} />
               </span>
               {renderName?.(folder)}
@@ -477,6 +488,7 @@ export function FolderTreeView({
                   }
                   onSelect(folder);
                 }}
+                data-row-name={folder.name}
                 className={`flex-1 min-w-0 flex items-center text-start ${
                   rail ? 'gap-2 py-2 pe-1' : 'gap-2 py-2 pe-1'
                 } ${disabled ? 'cursor-not-allowed' : ''}`}
@@ -484,7 +496,7 @@ export function FolderTreeView({
                 <span
                   data-folder-glyph
                   className={`inline-flex shrink-0 ${
-                    disabled ? '' : active ? 'text-accent' : 'text-amber-600/80 dark:text-amber-500/80'
+                    disabled ? '' : active ? 'text-accent' : 'text-amber-700 dark:text-amber-500/80'
                   }${onGlyphClick ? ' pn-look-glyph' : ''}`}
                 >
                   <FolderGlyph folderId={folder.id} size={rail ? 16 : 15} />
@@ -567,15 +579,15 @@ function rowClass({
   }`;
   // "Drop inside" outlines the whole row, because the thing being said is
   // "into this folder", not "between two rows". The line says the other one.
-  if (inside) return `${base} bg-accent/10 ring-1 ring-accent dark:bg-accent/15`;
+  if (inside) return `${base} ${SIDEBAR_DROP_INSIDE}`;
   if (dragging) return `${base} opacity-40`;
-  if (disabled) return `${base} text-neutral-400 dark:text-neutral-600 cursor-not-allowed`;
+  if (disabled) return `${base} text-pn-muted/75 cursor-not-allowed`;
   if (active) {
     return rail
-      ? `${base} bg-accent/15 text-accent dark:bg-accent/20`
-      : `${base} bg-accent/15 text-accent dark:bg-accent/20 hover:bg-accent/20 dark:hover:bg-accent/25`;
+      ? `${base} pn-on-tint bg-accent/15 text-accent-strong dark:bg-accent/20`
+      : `${base} pn-on-tint bg-accent/15 text-accent-strong dark:bg-accent/20 hover:bg-accent/20 dark:hover:bg-accent/25`;
   }
-  return `${base} text-neutral-900 hover:bg-neutral-200/60 dark:text-white dark:hover:bg-neutral-900/60`;
+  return `${base} text-pn hover:bg-pn/5`;
 }
 
 /**
@@ -589,7 +601,7 @@ function DropLine({ edge, level }: { edge: 'top' | 'bottom'; level: number }) {
   return (
     <span
       aria-hidden="true"
-      className={`pointer-events-none absolute z-10 h-0.5 rounded-full bg-accent ${
+      className={`pointer-events-none absolute z-10 h-0.5 rounded-full bg-accent-fill ${
         edge === 'top' ? 'top-0 -mt-px' : 'bottom-0 -mb-px'
       }`}
       style={{ insetInlineStart: folderIndentPx(level) + 8, insetInlineEnd: 4 }}

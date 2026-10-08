@@ -49,7 +49,7 @@
     "standardNotes": "Sauvegarde .zip ou .txt déchiffrée depuis Standard Notes (Fichier > Exporter > Déchiffré).",
     "obsidian": "Coffre Obsidian en .zip. Conserve les tags, les [[note links]], la structure de dossiers, les #tags en ligne, ainsi que les images et fichiers intégrés.",
     "notesnook": "Export Notesnook en .zip. Choisis HTML à l'export pour garder la mise en forme, les carnets, les étiquettes et les pièces jointes.",
-    "joplin": "Le fichier .jex de File > Export all > \"JEX - Joplin Export File\". Les carnets deviennent des dossiers, et les étiquettes, les tâches à faire, les liens entre notes et les pièces jointes suivent.",
+    "joplin": "Le fichier .jex de File > Export all > \"JEX - Joplin Export File\". Les carnets deviennent des dossiers, et les étiquettes, les tâches à faire, les liens de note et les pièces jointes suivent.",
     "upnote": "Dans UpNote : Settings > Backup > Backup now, puis zippe tout le contenu du dossier de sauvegarde. Conserve les carnets, les étiquettes, les épingles, les liens entre notes, la mise en forme et les pièces jointes. Les exports note par note depuis les apps mobiles fonctionnent aussi - choisis \"Export to HTML\".",
     "markdownFolder": "Fichiers .md ou .txt à l'unité ou en .zip. Un dossier zippé garde ses sous-dossiers et amène ses images et ses pièces jointes.",
     "markdownApp": "Ces notes sont déjà des fichiers Markdown dans un dossier. Dépose ce dossier en .zip et ses sous-dossiers, ses images et ses #tags viennent avec.",
@@ -92,8 +92,8 @@
     "genericParse": "Une erreur s'est produite.",
     "decryptionFailed": "Le déchiffrement a échoué. Mauvaise phrase ou fichier corrompu.",
     "blobImportFailed": "Tes notes ont été importées, mais pas leurs images ni leurs fichiers : {{detail}} Rien n'a été modifié dans le fichier que tu as choisi, tu peux donc supprimer les notes importées et relancer l'import.",
-    "blobsNotInBackup_one": "Tes notes ont été restaurées, mais {{items}} listé dans la sauvegarde en est absent.",
-    "blobsNotInBackup_other": "Tes notes ont été restaurées, mais {{items}} listés dans la sauvegarde en sont absents."
+    "blobsNotInBackup_one": "Tes notes ont été restaurées, mais {{items}} manque dans la sauvegarde, qui en indique pourtant la présence.",
+    "blobsNotInBackup_other": "Tes notes ont été restaurées, mais {{items}} manquent dans la sauvegarde, qui en indique pourtant la présence."
   },
   "preview": {
     "sourceLabel": "Source",
@@ -180,6 +180,7 @@
     "both": "{{pictures}} et {{files}}"
   },
   "upload": {
+    "discard": "Retirer",
     "completeTitle": "Envoi terminé",
     "failedTitle": "L'envoi a échoué",
     "partialTitle": "{{done}} envoyés, {{failed}} échoués",
@@ -189,6 +190,11 @@
     "statusFailed": "Échoué",
     "errorStorageFull": "Stockage plein - libère de l'espace ou ajoute du stockage pour envoyer ce fichier.",
     "errorStorageFullKept": "Ne tient pas dans ton stockage - conservé sur cet appareil. Le fichier se synchronisera dès qu'il y aura de la place.",
+    "errorTooLarge": "Fichier trop volumineux ({{size}}). Maximum {{limit}} Mo.",
+    "errorTooLargeFree": "Fichier trop volumineux ({{size}}). Maximum {{limit}} Mo avec le forfait gratuit.",
+    "batchTitle_one": "{{count}} fichier",
+    "batchTitle_many": "{{count}} fichiers",
+    "batchTitle_other": "{{count}} fichiers",
     "statusUploading": "Envoi...",
     "statusWaiting": "En attente",
     "summaryDone": "{{count}} terminés",
@@ -209,5 +215,11 @@
   },
   "saveErrors": {
     "shortWrite": "Seuls {{written}} octets sur {{expected}} ont été enregistrés, le fichier est donc incomplet. Réessaie en enregistrant dans le stockage de ton appareil plutôt que dans un dossier cloud."
+  },
+  "shareSheet": {
+    "title_one": "{{count}} élément a été partagé avec PrivacyNotes",
+    "title_other": "{{count}} éléments ont été partagés avec PrivacyNotes",
+    "line": "Rien n'est enregistré tant que tu n'as pas choisi.",
+    "saveAll": "Tout enregistrer"
   }
 }

@@ -19,6 +19,9 @@ import { unescapeMarkdownText } from './fileNames';
 import { getFavicons } from './theme';
 import { widthsFromTableLines } from './tableColumnWidths';
 import { tableWidthFromMarker } from './tableDelimiterRow';
+import { noteLinkDisplayText } from './noteLinks';
+import { orderFootnotes, replaceMarkers, scanFootnotes } from './footnoteScan';
+import { isSameOriginPath } from './sameOriginPath';
 
 // ─── Obsidian callout types ────────────────────────────────────────────
 //
@@ -354,6 +357,12 @@ function extractInlineMath(raw: string, keep: (html: string) => string): string 
   return out;
 }
 
+// The references the editor writes for a typed `&`, `<` or `>`, plus the two
+// quotes. Only these: each names a character that can never spell a URL
+// scheme, a markdown mark or one of the renderer's control-byte sentinels.
+const SAVED_REF = /&amp;(amp|lt|gt|quot|apos);/g;
+const SAVED_CHAR: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" };
+
 function renderInline(raw: string): string {
   // The editor serializes empty paragraphs as the literal entity &nbsp;
   // (see EmptyParagraphSerializer). escapeHtml() below would turn it into
@@ -391,6 +400,17 @@ function renderInline(raw: string): string {
     const idx = codeSpans.length;
     codeSpans.push(code);
     return `\x01C${idx}\x01`;
+  });
+
+  // The editor saves a typed `&`, `<` or `>` as an entity reference, which a
+  // markdown reader decodes outside code. Escaped once above, a reference
+  // reads `&amp;lt;` here. Its character joins the backslash escapes: held
+  // behind a sentinel, it is literal text to every pass below and comes back
+  // escaped at the end, so it can never become markup or syntax.
+  t = t.replace(SAVED_REF, (_m: string, ref: string) => {
+    const idx = bsEscapes.length;
+    bsEscapes.push(SAVED_CHAR[ref]!);
+    return `\x01E${idx}\x01`;
   });
 
   // Emitted <a>/<img> tags contain `_blank` and other characters that
@@ -447,7 +467,7 @@ function renderInline(raw: string): string {
   // Note-links [[target]] or [[target|label]] - render as plain text
   // since note-to-note links can't work outside the app.
   t = t.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, (_m: string, _target: string, label: string) => `<em>${label}</em>`);
-  t = t.replace(/\[\[([^\]]+)\]\]/g, (_m: string, target: string) => `<em>${target}</em>`);
+  t = t.replace(/\[\[([^\]]+)\]\]/g, (_m: string, target: string) => `<em>${noteLinkDisplayText(target)}</em>`);
 
   // Links [text](url). URL itself is already HTML-escaped by the
   // initial pass, which is fine for href attribute safety.
@@ -582,6 +602,17 @@ function renderInline(raw: string): string {
   // the emphasis passes so the doubled `=` can never be chewed up.
   t = t.replace(/==([^=]+)==/g, (_m: string, inner: string) =>
     stash('<mark>') + inner + stash('</mark>'),
+  );
+
+  // ||spoiler|| (editorSpoiler.ts, same guard). Focusable, so a click or a
+  // tab shows it with no script: the CSS reveals a focused spoiler.
+  t = t.replace(
+    /(^|[^|\\])\|\|(?![\s|])([^\n]*?\S)\|\|(?!\|)/g,
+    (_m: string, pre: string, inner: string) =>
+      pre +
+      stash('<span class="pn-spoiler" tabindex="0"><span class="pn-spoiler-text">') +
+      inner +
+      stash('</span></span>'),
   );
 
   // Strong+em (three asterisks), strong, em, strike. Underscores follow
@@ -983,10 +1014,73 @@ function parseListBlock(lines: string[], startI: number, baseIndent: number): [s
  * correctly in both the standalone export .html (no Tailwind) and
  * inside the Burn viewer (Tailwind prose) without style coordination.
  */
+let footnoteRenders = 0;
+
 export function renderMarkdown(md: string): string {
   // Strip control characters used as internal sentinels to prevent
   // crafted input from colliding with the stash/restore mechanism.
   const text = md.replace(/\r\n?/g, '\n').replace(/[\x01\x02]/g, '');
+  if (!/\[\^|\^\[/.test(text)) return renderBlocks(text);
+  return renderWithFootnotes(text);
+}
+
+/**
+ * Footnotes, the way the editor reads them (footnotes.ts): markers numbered
+ * in the order they appear, the definitions in a numbered list at the end,
+ * links both ways. Each marker becomes a sentinel before the blocks render,
+ * because renderInline escapes everything it does not know. The ids carry a
+ * per-render prefix, so two notes in one HTML export never share `#fn-1`.
+ * Spec: ops/docs/plans/footnotes.md (section 8)
+ */
+function renderWithFootnotes(text: string): string {
+  const scan = scanFootnotes(text);
+  const { used, unused } = orderFootnotes(scan);
+  if (!used.length && !unused.length) return renderBlocks(text);
+  const prefix = `fn${++footnoteRenders}`;
+  const numbers = new Map(used.map((d, i) => [d.label, i + 1]));
+  const counts = new Map<string, number>();
+  const slots: string[] = [];
+  const mark = (md: string) =>
+    replaceMarkers(md, (label) => {
+      const n = numbers.get(label);
+      if (n === undefined) return `\\[^${label}\\]`;
+      const k = (counts.get(label) ?? 0) + 1;
+      counts.set(label, k);
+      slots.push(`<sup class="footnote-ref"><a href="#${prefix}-${n}" id="${prefix}-ref-${n}-${k}">${n}</a></sup>`);
+      return `\x01N${slots.length - 1}\x01`;
+    });
+  const restore = (html: string) => html.replace(/\x01N(\d+)\x01/g, (_m: string, i: string) => slots[Number(i)] ?? '');
+  const bodyHtml = renderBlocks(mark(scan.body));
+  const items = [...used, ...unused].map((d, i) => {
+    const n = i + 1;
+    let html = renderBlocks(mark(d.body));
+    if (numbers.has(d.label)) {
+      const back = ` <a href="#${prefix}-ref-${n}-1" class="footnote-backref" role="doc-backlink">\u21a9\uFE0E</a>`;
+      html = /<\/p>\s*$/.test(html) ? html.replace(/<\/p>\s*$/, `${back}</p>`) : html + back;
+    }
+    return `<li id="${prefix}-${n}">${html}</li>`;
+  });
+  return restore(`${bodyHtml}\n<section class="footnotes" role="doc-endnotes"><hr>\n<ol>\n${items.join('\n')}\n</ol>\n</section>`);
+}
+
+/** A table row split on each `|` that no backslash escapes. A backslash
+ *  escapes the character after it, so `\\|` is a literal backslash and then
+ *  a real cell border. */
+function splitUnescapedPipes(row: string): string[] {
+  const cells: string[] = [];
+  let start = 0;
+  for (let i = 0; i < row.length; i++) {
+    if (row[i] === '\\') { i++; continue; }
+    if (row[i] === '|') {
+      cells.push(row.slice(start, i));
+      start = i + 1;
+    }
+  }
+  cells.push(row.slice(start));
+  return cells;
+}
+
+function renderBlocks(text: string): string {
 
   // Pull fenced code blocks out of the flow first so nothing inside
   // them gets treated as markdown. A language tag goes through lowlight
@@ -1237,9 +1331,14 @@ export function renderMarkdown(md: string): string {
         rows.push(lines[i] ?? '');
         i++;
       }
-      // Parse cells: split on `|`, trim, drop empty first/last.
+      // Parse cells: split on an unescaped `|`, trim, drop empty first/last.
+      // An escaped `\|` is a pipe inside the cell, and it is unescaped before
+      // the inline passes run, as markdown-it does - so `||spoiler||` written
+      // into a cell as `\|\|spoiler\|\|` renders as a spoiler here too.
       const parseCells = (row: string): string[] =>
-        row.split('|').map((c) => c.trim()).filter((_, idx, arr) => idx > 0 && idx < arr.length - 1);
+        splitUnescapedPipes(row)
+          .map((c) => c.trim().replace(/\\\|/g, '|'))
+          .filter((_, idx, arr) => idx > 0 && idx < arr.length - 1);
 
       // Row 2 is the separator (|---|---|) - detect it.
       const hasSep = rows.length >= 2 && isTableSep(rows[1]!);
@@ -1343,10 +1442,13 @@ export function renderMarkdown(md: string): string {
 // We skip `pn:img/<uuid>` (those have their own resolver pipeline) and
 // anything that isn't same-origin (leave the URL; user chose it).
 
-function isSameOriginPath(src: string): boolean {
+function isSameOriginSrc(src: string): boolean {
   if (src.startsWith('data:')) return false;
+  // A blob: URL carries its creator's origin, so it would read as ours. It
+  // never comes from a stored note body; leave it alone.
+  if (src.startsWith('blob:')) return false;
   if (src.startsWith('pn:img/')) return false;
-  if (src.startsWith('/') && !src.startsWith('//')) return true;
+  if (src.startsWith('/')) return isSameOriginPath(src);
   try {
     const u = new URL(src, window.location.origin);
     return u.origin === window.location.origin;
@@ -1384,7 +1486,7 @@ export async function inlineSameOriginImages(
   while ((m = re.exec(body)) !== null) {
     const src = m[2];
     if (!src || seen.has(src)) continue;
-    if (!isSameOriginPath(src)) continue;
+    if (!isSameOriginSrc(src)) continue;
     seen.add(src);
     targets.push(src);
   }

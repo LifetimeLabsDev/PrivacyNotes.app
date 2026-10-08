@@ -89,6 +89,30 @@ else
   echo "Externals already carries buildPhase: none, skipping."
 fi
 
+# The share extension target, and the app's dependency on it, which is what
+# embeds the extension in the app. Tauri's template knows neither, so a fresh
+# init drops both; the sources stay in src-tauri/ios-share, outside gen/.
+# Spec: ops/docs/plans/share-into-app.md
+if ! grep -q "privacynotes_Share:" "$GEN/project.yml"; then
+  python3 - "$GEN/project.yml" "$HERE/src-tauri/ios-share/target.yml" <<'PYEOF'
+import sys
+p, frag = sys.argv[1], sys.argv[2]
+s = open(p).read()
+anchor = "    dependencies:\n      - framework: libapp.a\n"
+# The fragment is appended, so `targets:` must be the last top-level key.
+top = [l for l in s.splitlines() if l and not l[0].isspace()]
+if anchor not in s or not top or top[-1] != "targets:":
+    sys.exit("apply-ios-appearance-icons: project.yml dependencies anchor not found; "
+             "Tauri changed its template, re-derive the share target by hand")
+s = s.replace(anchor, "    dependencies:\n      - target: privacynotes_Share\n      - framework: libapp.a\n", 1)
+open(p, "w").write(s.rstrip("\n") + "\n" + open(frag).read())
+PYEOF
+  SPEC_CHANGED=1
+  echo "Added the share extension target."
+else
+  echo "Share extension target already in project.yml, skipping."
+fi
+
 # project.yml is only read by xcodegen, and Tauri already ran it during init -
 # so an edit above is invisible until xcodegen runs again. Do it here rather
 # than making the caller remember a second init.

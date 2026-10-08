@@ -180,6 +180,7 @@
     "both": "{{pictures}} and {{files}}"
   },
   "upload": {
+    "discard": "Discard",
     "completeTitle": "Upload complete",
     "failedTitle": "Upload failed",
     "partialTitle": "{{done}} uploaded, {{failed}} failed",
@@ -189,6 +190,10 @@
     "statusFailed": "Failed",
     "errorStorageFull": "Storage full - free up space or add storage to upload this file.",
     "errorStorageFullKept": "Doesn't fit in your storage - kept on this device. It will sync once space frees.",
+    "errorTooLarge": "File is too large ({{size}}). Maximum is {{limit}} MB.",
+    "errorTooLargeFree": "File is too large ({{size}}). Maximum is {{limit}} MB on the free plan.",
+    "batchTitle_one": "{{count}} file",
+    "batchTitle_other": "{{count}} files",
     "statusUploading": "Uploading...",
     "statusWaiting": "Waiting",
     "summaryDone": "{{count}} done",
@@ -209,5 +214,11 @@
   },
   "saveErrors": {
     "shortWrite": "Only {{written}} of {{expected}} bytes were saved, so the file is incomplete. Try again and save to your device's own storage rather than a cloud folder."
+  },
+  "shareSheet": {
+    "title_one": "{{count}} item was shared into PrivacyNotes",
+    "title_other": "{{count}} items were shared into PrivacyNotes",
+    "line": "Nothing is saved until you choose.",
+    "saveAll": "Save all"
   }
 }

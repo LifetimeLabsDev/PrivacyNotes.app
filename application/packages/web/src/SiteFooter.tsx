@@ -1,4 +1,4 @@
-import { ArrowCounterClockwise, DownloadSimple, FileText, GithubLogo, ListBullets, Lock, MastodonLogo, Palette, Printer, Question, RedditLogo, Scales, ShieldCheck, XLogo } from './icons';
+import { ArrowCounterClockwise, DownloadSimple, FacebookLogo, FileText, GithubLogo, ListBullets, Lock, MastodonLogo, Palette, Printer, Question, RedditLogo, Scales, Shapes, ShieldCheck, XLogo, YoutubeLogo } from './icons';
 import { LogoIcon } from './LogoIcon';
 import { Brand } from './Brand';
 import { LanguageMenu } from './LanguageMenu';
@@ -33,6 +33,10 @@ function iconFor(icon: FooterIcon) {
       return <RedditLogo size={18} weight="fill" className="shrink-0" />;
     case 'mastodon':
       return <MastodonLogo size={18} weight="fill" className="shrink-0" />;
+    case 'youtube':
+      return <YoutubeLogo size={18} weight="fill" className="shrink-0" />;
+    case 'facebook':
+      return <FacebookLogo size={18} weight="fill" className="shrink-0" />;
     case 'faq':
       return <Question size={18} className="shrink-0" />;
     case 'changelog':
@@ -54,6 +58,8 @@ function iconFor(icon: FooterIcon) {
     case 'scales':
       return <Scales size={18} className="shrink-0" />;
     case 'brand':
+      return <Shapes size={18} className="shrink-0" />;
+    case 'themes':
       return <Palette size={18} className="shrink-0" />;
     case 'print':
       return <Printer size={18} className="shrink-0" />;

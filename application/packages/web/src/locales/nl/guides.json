@@ -20,9 +20,9 @@
           "h": "Je notities exporteren uit Google Keep",
           "steps": [
             "Ga naar [takeout.google.com](https://takeout.google.com) en meld je aan met het Google-account waar je notities onder vallen.",
-            "Klik op \"Alles deselecteren\", scrol dan door de productlijst en vink alleen \"Keep\" aan.",
-            "Klik op \"Volgende stap\" en houd de standaardinstellingen aan: één keer exporteren, .zip-bestand.",
-            "Klik op \"Export maken\". Google zet het archief klaar en mailt je een downloadlink; met alleen Keep duurt dat meestal minuten, geen uren.",
+            "Klik op \"Deselect all\" (alles deselecteren), scrol dan door de productlijst en vink alleen \"Keep\" aan.",
+            "Klik op \"Next step\" en houd de standaardinstellingen aan: één keer exporteren, .zip-bestand.",
+            "Klik op \"Create export\". Google zet het archief klaar en mailt je een downloadlink; met alleen Keep duurt dat meestal minuten, geen uren.",
             "Download de .zip. Je kunt het bestand precies laten zoals het is."
           ]
         },
@@ -150,9 +150,9 @@
         {
           "h": "Je notities exporteren uit Samsung Notes",
           "steps": [
-            "Houd in Samsung Notes je vinger op een notitie om de notities te selecteren die je wilt (of kies Alles selecteren).",
-            "Tik op het menu met de drie puntjes en kies \"Opslaan als bestand\".",
-            "Kies \"Microsoft Word-bestand\" (.docx) voor opgemaakte notities, of \"Tekstbestand\" (.txt) voor platte tekst.",
+            "Houd in Samsung Notes je vinger op een notitie om de notities te selecteren die je wilt (of kies Select all).",
+            "Tik op het menu met de drie puntjes en kies \"Save as file\".",
+            "Kies \"Microsoft Word file\" (.docx) voor opgemaakte notities, of \"Text file\" (.txt) voor platte tekst.",
             "Samsung slaat één bestand per notitie op in de opslag van je apparaat. Verzamel ze in één .zip (selecteer ze in je bestandsbeheer en comprimeer ze) als je er meer dan een handjevol hebt geëxporteerd."
           ]
         },
@@ -160,7 +160,7 @@
           "h": "Wat er meekomt",
           "p": [
             "Uit .docx-exports: vet, cursief, onderstreept, doorgehaald, opsommingen en genummerde lijsten, en selectievakjes (die echte takenlijsten worden) blijven allemaal behouden. Uit .txt-exports: de tekst, verder niets.",
-            "Afbeeldingen in een Samsung-notitie komen met de hand mee: de importer markeert elke notitie die er een had, zodat je precies weet waar je de plaatjes terugzet. Tekst, titels en datums arriveren in dezelfde ronde."
+            "Afbeeldingen in een Samsung-notitie komen met de hand mee: de importer markeert elke notitie die er een had, zodat je precies weet waar je de afbeeldingen terugzet. Tekst, titels en datums arriveren in dezelfde ronde."
           ]
         }
       ]
@@ -305,7 +305,7 @@
           "p": [
             "Je notitieboeken worden opnieuw opgebouwd als echte mappen, niet platgeslagen tot tags, precies zo diep als ze in Notesnook genest waren. Een notitie in Werk > Projecten belandt in een map Werk > Projecten.",
             "Vastgezette notities en favorieten blijven gemarkeerd. Notesnook houdt Pin en Favorite als twee aparte eigenschappen bij; PrivacyNotes heeft één lijst Vastgezet, dus een notitie die een van beide was, belandt daar.",
-            "Markeringen, formules en tekstuitlijning komen als zichzelf mee: gemarkeerde tekst blijft gemarkeerd, formules worden weer als wiskunde weergegeven, en gecentreerde of rechts uitgelijnde blokken behouden hun uitlijning. Eigen lettertypen, lettergroottes en tekstkleuren hebben hier geen equivalent, dus die opmaak vervalt en de tekst blijft behouden."
+            "Markeringen, formules en tekstuitlijning blijven behouden: gemarkeerde tekst blijft gemarkeerd, formules worden weer als wiskunde weergegeven, en gecentreerde of rechts uitgelijnde blokken behouden hun uitlijning. Eigen lettertypen, lettergroottes en tekstkleuren hebben hier geen equivalent, dus die opmaak vervalt en de tekst blijft behouden."
           ]
         },
         {
@@ -370,7 +370,7 @@
         {
           "h": "Wat er niet meekomt",
           "p": [
-            "De suggestiekaarten van Dagboek voor work-outs, contacten en afgespeelde media behouden hun tekst, maar niet hun beeldmateriaal. Spraakmemo's komen mee als opnames, maar niet met Apples transcriptie ervan: de exporteur haalt daar elke spatie uit, dus wat hij schrijft is één aaneengesloten reeks tekens. Die laten we achterwege in plaats van haar onleesbaar te importeren.",
+            "De suggestiekaarten van Dagboek voor work-outs, contacten en afgespeelde media behouden hun tekst, maar niet hun beeldmateriaal. Spraakmemo's komen mee als opnames, maar niet met Apples transcriptie ervan: de exportfunctie haalt daar elke spatie uit, dus het resultaat is één aaneengesloten reeks tekens. Die laten we achterwege in plaats van haar onleesbaar te importeren.",
             "Spraakmemo's uit een Mac-export zijn CAF-bestanden, die geen enkele browser kan afspelen. Ze worden probleemloos geïmporteerd en gedownload, maar je hoort ze niet in de app. Een iPhone-export schrijft dezelfde opnames weg als M4A, dat wel inline afspeelt, dus gebruik als je kunt kiezen de telefoon."
           ]
         }
@@ -437,7 +437,7 @@
           "p": [
             "Je notitieboeken worden opnieuw opgebouwd als echte mappen, zo diep genest als ze in UpNote stonden. Een notitie die in meerdere notitieboeken stond, belandt in het eerste en draagt de andere als tags mee.",
             "Vastgezette notities en notities in Quick Access komen binnen als Vastgezet. Notities in de prullenbak belanden in de prullenbak, sjablonen worden geïmporteerd als notities met de tag #template, links tussen notities worden notitielinks, en elke notitie behoudt haar oorspronkelijke datums.",
-            "Opmaak overleeft: checklists, tabellen, codeblokken, formules, onderstreping, sub- en superscript, tekstuitlijning en markeringen. Inklapbare secties worden invouwbare callouts en behouden hun open of gesloten stand. Tekstkleuren en markeerkleuren worden allebei gematcht op het eigen palet van de editor, dus een gele markering blijft geel en een groene blijft groen. Elke notitie komt binnen zoals UpNote hem het laatst bewaarde."
+            "Opmaak overleeft: checklists, tabellen, codeblokken, formules, onderstreping, sub- en superscript, tekstuitlijning en markeringen. Inklapbare secties worden invouwbare aandachtsblokken en behouden hun open of gesloten stand. Tekstkleuren en markeerkleuren worden allebei gematcht op het eigen palet van de editor, dus een gele markering blijft geel en een groene blijft groen. Elke notitie komt binnen zoals UpNote hem het laatst bewaarde."
           ]
         },
         {
@@ -481,7 +481,7 @@
           "steps": [
             "Kies File > \"Export Browsing Data to File...\" in de menubalk.",
             "Zet alles uit behalve Bookmarks en klik dan op Export.",
-            "Safari bewaart een .zip. Zet die .zip hier neer zoals hij is, of het Bookmarks.html erin. Allebei werkt.",
+            "Safari bewaart een .zip. Zet die .zip hier neer zoals hij is, of het Bookmarks.html erin. Beide opties werken.",
             "Oudere Safari-versies tonen in plaats daarvan File > Export > \"Bookmarks...\" en bewaren een gewoon .html-bestand."
           ]
         },
@@ -500,7 +500,7 @@
         {
           "h": "Wat er meekomt",
           "p": [
-            "Elke map die je had komt mee, precies zo genest als je hem achterliet, in één nieuwe map die Bladwijzers heet. De bladwijzerbalk is de uitzondering: de inhoud schuift een niveau omhoog in plaats van een map te worden, omdat elke browser die balk in elke taal anders noemt. Safari markeert helemaal niets, dus zijn Favorites komt wel als map binnen.",
+            "Elke map die je had komt mee, precies zo genest als je hem achterliet, in één nieuwe map die Bookmarks heet. De bladwijzerbalk is de uitzondering: de inhoud schuift een niveau omhoog in plaats van een map te worden, omdat elke browser die balk in elke taal anders noemt. Safari markeert helemaal niets, dus zijn Favorites komt wel als map binnen.",
             "De dag waarop je een bladwijzer bewaarde komt mee. Safari is de enige browser die helemaal geen datums schrijft, dus een export uit Safari krijgt de datum van vandaag.",
             "Firefox is ook de enige die tags en een adresbalk-trefwoord bij een bladwijzer bewaart. Staan ze in je bestand, dan biedt het voorbeeld een vinkje om ze te houden, en allebei komen ze hier als tag binnen.",
             "Drie dingen blijven met opzet achter. Browsersnelkoppelingen als Most Visited zijn geen echte links, die worden geteld en overgeslagen. Website-iconen leest PrivacyNotes ook niet uit het bestand, want de kopie die daarin zit veroudert; er wordt een verse opgehaald. En een map waar geen bladwijzer in zat wordt niet opnieuw aangemaakt.",
@@ -561,7 +561,7 @@
             "height": 1358
           },
           "p": [
-            "Hetzelfde venster exporteert ook je bladwijzers, je geschiedenis en je bewaarde kaarten. Elke schakelaar die je aan laat staan schrijft nog een onversleuteld bestand in hetzelfde archief, zet ze dus uit. Eén uitzondering: wil je je bladwijzers hier ook, zet ze allebei aan en zet die ene .zip in beide importeurs neer, want elk leest er alleen zijn eigen bestand uit."
+            "Hetzelfde venster exporteert ook je bladwijzers, je geschiedenis en je bewaarde kaarten. Elke schakelaar die je aan laat staan schrijft nog een onversleuteld bestand in hetzelfde archief, zet ze dus uit. Eén uitzondering: wil je je bladwijzers hier ook, zet ze allebei aan en zet die ene .zip in beide importers neer, want elk leest er alleen zijn eigen bestand uit."
           ]
         },
         {
@@ -591,13 +591,13 @@
           "steps": [
             "Zoek de map met je .md-bestanden. Typora heeft geen eigen bibliotheek, dus hij staat waar jij hem hebt opgeslagen.",
             "Rechtsklik op de map en kies Comprimeer (macOS) of Kopiëren naar > Gecomprimeerde map (Windows).",
-            "Sleep de .zip in de import."
+            "Sleep de .zip in de importer."
           ]
         },
         {
           "h": "Bepaal waar je afbeeldingen staan voordat je zipt",
           "p": [
-            "Typora kan een afbeelding naast de notitie zetten, in een assets-submap, of hem laten staan waar je hem vandaan sleepte. Alleen afbeeldingen binnen de map die je zipt kunnen mee. Open Voorkeuren > Afbeelding, zet het op kopiëren naar de eigen assets-map van de notitie, en gebruik \"Opmaak > Afbeelding > Afbeeldingsbestanden kopiëren naar...\" bij oudere notities waarvan de plaatjes nog ergens anders staan."
+            "Typora kan een afbeelding naast de notitie zetten, in een assets-submap, of hem laten staan waar je hem vandaan sleepte. Alleen afbeeldingen binnen de map die je zipt kunnen mee. Open Preferences > Image, zet het op kopiëren naar de eigen assets-map van de notitie, en gebruik \"Format > Image > Copy image files to...\" bij oudere notities waarvan de afbeeldingen nog ergens anders staan."
           ]
         },
         {
@@ -621,7 +621,7 @@
             "Rechtsklik in iA Writer op de map in de Library-zijbalk en kies \"Toon in Finder\".",
             "Rechtsklik in de Finder op diezelfde map en kies \"Download nu\", zodat iCloud elk bestand echt ophaalt in plaats van plaatshouders te laten staan.",
             "Rechtsklik nog een keer en kies Comprimeer.",
-            "Sleep de .zip in de import."
+            "Sleep de .zip in de importer."
           ]
         },
         {
@@ -654,15 +654,15 @@
         {
           "h": "Zip de werkruimte",
           "steps": [
-            "Rechtsklik in Zettlr op de werkruimte bovenaan de bestandsboom en kies \"Toon in Finder\", of \"Toon in Verkenner\" op Windows.",
+            "Rechtsklik in Zettlr op de werkruimte bovenaan de bestandsboom en kies \"Show in Finder\", of \"Show in Explorer\" op Windows.",
             "Rechtsklik daar op de map en comprimeer hem.",
-            "Sleep de .zip in de import."
+            "Sleep de .zip in de importer."
           ]
         },
         {
           "h": "Zettelkasten-links houden hun tekst, niet hun doel",
           "p": [
-            "Zettlr linkt notities op ID, dus een link leest als [[20260823120000]]. Wij laten note-links precies staan zoals ze geschreven zijn, en dus vindt een ID-link hier alleen zijn notitie als een notitie echt die ID als titel draagt. Links met de bestandsnaam werken gewoon: zet je interne linkformaat op de bestandsnaam voordat je exporteert, als je erop leunt.",
+            "Zettlr linkt notities op ID, dus een link leest als [[20260823120000]]. Wij laten notitielinks precies staan zoals ze geschreven zijn, en dus vindt een ID-link hier alleen zijn notitie als een notitie echt die ID als titel draagt. Links met de bestandsnaam werken gewoon: zet je interne linkformaat op de bestandsnaam voordat je exporteert, als je op die links vertrouwt.",
             "Citatiesleutels als [@doe2026] zijn tekst voor ons. Ze komen ongewijzigd mee en zijn daarna niet meer klikbaar."
           ]
         },
@@ -686,7 +686,7 @@
             "Open Bestanden in je Nextcloud, in een browser.",
             "Zoek de map Notes. Hij heet Notes, tenzij je beheerder hem hernoemd heeft.",
             "Open het \"...\"-menu bij de map en kies Downloaden. Nextcloud pakt de hele map in een .zip.",
-            "Sleep de .zip in de import."
+            "Sleep de .zip in de importer."
           ]
         },
         {

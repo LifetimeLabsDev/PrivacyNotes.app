@@ -7,7 +7,7 @@
     "heading": "Заголовок",
     "taskList": "Список завдань",
     "bulletList": "Маркований список",
-    "addLink": "Додати посилання (Cmd+Shift+K)",
+    "addLink": "Додати посилання ({{keys}})",
     "noteLink": "Посилання на іншу нотатку (або введіть [[)",
     "numberedList": "Нумерований список",
     "textColor": "Колір тексту",
@@ -34,7 +34,12 @@
     "blockMath": "Формула окремим блоком",
     "align": "Вирівнювання",
     "font": "Шрифт",
-    "pictureFromFiles": "Зображення з Файлів"
+    "pictureFromFiles": "Зображення з Файлів",
+    "date": "Дата",
+    "dateTime": "Дата й час",
+    "footnote": "Виноска",
+    "spoiler": "Спойлер",
+    "copyBox": "Блок для копіювання"
   },
   "align": {
     "left": "По лівому краю",
@@ -118,7 +123,7 @@
     "next": "Наступний збіг (Enter)",
     "nextTitle": "Наступний (Enter)",
     "close": "Закрити пошук",
-    "closeTitle": "Закрити (⌘F)",
+    "closeTitle": "Закрити ({{keys}})",
     "replacePlaceholder": "Замінити на",
     "replaceLabel": "Замінити на",
     "replace": "Замінити",
@@ -128,7 +133,7 @@
     "caseSensitive": "Враховувати регістр",
     "caseSensitiveTitle": "Враховувати регістр",
     "closeReplace": "Закрити пошук і заміну",
-    "closeReplaceTitle": "Закрити (⌥⌘F)",
+    "closeReplaceTitle": "Закрити ({{keys}})",
     "replacedCount_one": "Замінено: {{count}}",
     "replacedCount_few": "Замінено: {{count}}",
     "replacedCount_many": "Замінено: {{count}}",
@@ -140,7 +145,14 @@
     "title": "Структура",
     "ariaLabel": "Структура нотатки",
     "hide": "Сховати структуру",
-    "hideTitle": "Сховати структуру (Esc)"
+    "hideTitle": "Сховати структуру (Esc)",
+    "copyHeadingLink": "Копіювати посилання на заголовок",
+    "copied": "Скопійовано"
+  },
+  "bodyMenu": {
+    "cut": "Вирізати",
+    "sortAsc": "Сортувати рядки від А до Я",
+    "sortDesc": "Сортувати рядки від Я до А"
   },
   "topRow": {
     "add": "Додати рядок угорі"
@@ -183,6 +195,10 @@
     "characters_few": "{{formatted}} символи",
     "characters_many": "{{formatted}} символів",
     "characters_other": "{{formatted}} символу",
+    "tasksChecked_one": "Позначено {{done}} з {{formatted}}",
+    "tasksChecked_few": "Позначено {{done}} з {{formatted}}",
+    "tasksChecked_many": "Позначено {{done}} з {{formatted}}",
+    "tasksChecked_other": "Позначено {{done}} з {{formatted}}",
     "tooLargeToSync": ", може бути завеликою для синхронізації, розділіть її на нову нотатку",
     "veryLong": ", дуже довга, редагування може гальмувати",
     "gettingLong": ", стає довгою, на повільних пристроях може гальмувати",
@@ -190,19 +206,50 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "Немає відповідних нотаток",
-    "create": "Створити «{{query}}»"
+    "create": "Створити «{{query}}»",
+    "headingsIn": "Заголовки в «{{title}}»",
+    "noHeadingMatches": "Немає відповідних заголовків"
+  },
+  "copyBox": {
+    "placeholder": "Текст для копіювання одним клацанням"
+  },
+  "inlineCode": {
+    "copyHint": "Копіювати: {{key}}+клацання",
+    "copied": "Скопійовано"
   },
   "codeBlock": {
     "copy": "Копіювати",
     "copied": "Скопійовано",
     "copyFailed": "Помилка",
-    "wrap": "Переносити довгі рядки"
+    "wrap": "Переносити довгі рядки",
+    "showAll_one": "Показати всі {{count}} рядок",
+    "showAll_few": "Показати всі {{count}} рядки",
+    "showAll_many": "Показати всі {{count}} рядків",
+    "showAll_other": "Показати всі {{count}} рядка",
+    "showLess": "Показати менше",
+    "plainText": "Звичайний текст",
+    "language": "Мова коду: {{name}}",
+    "searchLanguages": "Знайдіть мову",
+    "placeholder": "Введіть або вставте код. Щоб додати кольори, виберіть мову вгорі."
   },
   "math": {
     "sourceLabel": "Код LaTeX"
   },
   "noteLink": {
     "open": "Відкрити нотатку",
-    "remove": "Прибрати посилання"
+    "remove": "Прибрати посилання",
+    "linkHeading": "Пов’язати із заголовком...",
+    "headingNotFound": "Заголовок не знайдено",
+    "headingsLocked": "Розблокуйте цю нотатку, щоб побачити її заголовки",
+    "noHeadings": "У цій нотатці немає заголовків"
+  },
+  "footnote": {
+    "placeholder": "Текст виноски",
+    "back": "Повернутися до тексту",
+    "unused": "Не використовується в тексті",
+    "remove": "Видалити виноску",
+    "missing": "Виноска не має тексту. Натисніть, щоб додати його.",
+    "ariaRef": "Виноска {{n}}",
+    "ariaSection": "Виноски"
   }
 }

@@ -25,7 +25,7 @@ Todas as opções mantêm suas notas criptografadas no seu dispositivo. Elas dif
 | --- | --- | --- |
 | **Login, chave conosco** | No nosso servidor, criptografada | Um dispositivo novo entra só com essa conta |
 | **Login, chave no seu dispositivo** | Com você, em nenhum outro lugar | Entre com Google, Apple ou GitHub e continue com a chave |
-| **Só a frase, sem login** | Com você, em nenhum outro lugar | Sem e-mail, sem nome, sem conta nenhuma |
+| **Só a frase, sem login** | Com você, em nenhum outro lugar | Sem e-mail, sem nome, sem login nenhum |
 
 Nas duas de baixo não conseguiríamos ler uma nota nem se fôssemos obrigados. A primeira troca isso por comodidade: sua frase fica no nosso servidor sob uma chave nossa, então um dispositivo novo não precisa de nada além da sua conta. Se o nosso servidor fosse invadido algum dia, essa chave poderia ficar exposta.
 
@@ -49,4 +49,4 @@ Entrou com Google, Apple ou GitHub? Você pode alternar entre as duas primeiras 
 | Como relatar uma falha | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 
 > [!info] Uma fechadura cobre tudo
-> Notas, entradas de diário, favoritos, itens do cofre e anexos são criptografados do mesmo jeito. [[A mudança]] mostra como trazer cada um deles.
+> Notas, entradas de diário, marcadores, itens do cofre e anexos são criptografados do mesmo jeito. [[A mudança]] mostra como trazer cada um deles.

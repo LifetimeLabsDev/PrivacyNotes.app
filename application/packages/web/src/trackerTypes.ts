@@ -157,16 +157,35 @@ export const CUSTOM_TRACKER_TYPE_LABELS: Record<CustomTrackerType, string> = {
   yesno: 'Yes / No',
 };
 
+// A filled pill sets white text on these, so each carries at least 4.6:1
+// under white. The built-in colors below follow the same floor.
 export const TRACKER_COLORS = [
-  '#7F77DD', // purple
-  '#1D9E75', // teal
-  '#D85A30', // coral
-  '#D4537E', // pink
-  '#BA7517', // amber
-  '#378ADD', // blue
+  '#716AC5', // purple
+  '#188562', // teal
+  '#C2512B', // coral
+  '#C14C73', // pink
+  '#A46714', // amber
+  '#2F77BE', // blue
 ] as const;
 
 export type TrackerColor = (typeof TRACKER_COLORS)[number];
+
+// The lighter values the palette had before it met that floor. A custom
+// tracker stores its color, so one saved with them paints the darker value
+// of the same hue.
+const LEGACY_TRACKER_COLORS: Record<string, TrackerColor> = {
+  '#7F77DD': '#716AC5',
+  '#1D9E75': '#188562',
+  '#D85A30': '#C2512B',
+  '#D4537E': '#C14C73',
+  '#BA7517': '#A46714',
+  '#378ADD': '#2F77BE',
+};
+
+/** The color a custom tracker paints with. */
+export function customTrackerColor(t: Pick<CustomTrackerTemplate, 'color'>): TrackerColor {
+  return LEGACY_TRACKER_COLORS[t.color] ?? t.color;
+}
 
 /** Custom tracker template - lives in UserSettings. */
 export interface CustomTrackerTemplate {
@@ -226,20 +245,20 @@ export type BuiltinTrackerId =
 export const BUILTIN_TRACKER_COLORS: Record<BuiltinTrackerId, string> = {
   mood: '#1E40AF',
   emotions: '#1E40AF', // grouped with mood visually
-  sleep: '#7F77DD',
+  sleep: '#716AC5',
   sleepScore: '#534AB7', // deeper purple, complements sleep
-  heartRate: '#D4537E', // pink - medical/vitals feel
-  medication: '#D85A30',
-  activity: '#1D9E75',
-  energy: '#BA7517',
-  focus: '#378ADD',
+  heartRate: '#C14C73', // pink - medical/vitals feel
+  medication: '#C2512B',
+  activity: '#188562',
+  energy: '#A46714',
+  focus: '#2F77BE',
   weight: '#6B7280', // neutral gray - body metrics
-  steps: '#059669', // green - movement
-  water: '#0EA5E9', // sky blue - hydration
-  screenTime: '#8B5CF6', // violet - digital
+  steps: '#04865D', // green - movement
+  water: '#0B7CAF', // sky blue - hydration
+  screenTime: '#8457EA', // violet - digital
   caffeine: '#92400E', // brown - coffee
   pain: '#DC2626', // red - alert/pain
-  social: '#EC4899', // pink - social/people
+  social: '#CB3E84', // pink - social/people
 };
 
 // ------------------------------------------------------------------
@@ -352,6 +371,12 @@ export interface JournalTrackerData {
   /** Weekly reflection text (stored on the Monday entry). */
   weekReflection?: string;
 }
+
+/** Bookkeeping keys the app stamps on every journal entry at birth. They say
+ *  when the entry is for, not anything the person tracked or typed: a
+ *  `trackers` object holding only these is an untracked day, and a change to
+ *  them is not an edit of the note. */
+export const BOOKKEEPING_KEYS: ReadonlySet<string> = new Set(['journalDate', 'backfilled']);
 
 // ------------------------------------------------------------------
 // Merging two devices' tracker payloads

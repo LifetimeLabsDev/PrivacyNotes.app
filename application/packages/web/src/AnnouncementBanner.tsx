@@ -63,7 +63,7 @@ export function AnnouncementBanner({ surface, dismissedIds, onDismiss }: Props) 
       type="button"
       onClick={() => onDismiss(active.id)}
       aria-label={t('announcement.dismiss')}
-      className="shrink-0 rounded-md p-1 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900 transition"
+      className="shrink-0 rounded-md p-1 text-success hover:bg-emerald-100 dark:hover:bg-emerald-900 transition"
     >
       <X />
     </button>
@@ -73,7 +73,7 @@ export function AnnouncementBanner({ surface, dismissedIds, onDismiss }: Props) 
     return (
       <div className="border-b border-emerald-300/80 dark:border-emerald-800/70 bg-emerald-50 dark:bg-emerald-950/90">
         <div className="mx-auto max-w-5xl px-5 sm:px-8 py-2.5 flex items-center gap-3">
-          <GithubLogo size={16} weight="fill" className="shrink-0 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
+          <GithubLogo size={16} weight="fill" className="shrink-0 text-success" aria-hidden="true" />
           <p className="min-w-0 flex-1 md:truncate text-[14px] leading-snug text-emerald-950 dark:text-emerald-100">{text}</p>
           {cta}
           {dismiss}
@@ -84,7 +84,7 @@ export function AnnouncementBanner({ surface, dismissedIds, onDismiss }: Props) 
 
   return (
     <div className="shrink-0 flex items-center gap-2 sm:gap-3 border-b border-emerald-300/80 dark:border-emerald-800/70 bg-emerald-50 dark:bg-emerald-950/90 px-3 sm:px-4 py-2">
-      <GithubLogo size={16} weight="fill" className="shrink-0 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
+      <GithubLogo size={16} weight="fill" className="shrink-0 text-success" aria-hidden="true" />
       <p className="min-w-0 flex-1 md:truncate text-[13px] leading-snug text-emerald-950 dark:text-emerald-100">{text}</p>
       {cta}
       {dismiss}

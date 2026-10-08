@@ -49,4 +49,4 @@ Přihlašuješ se přes Google, Apple nebo GitHub? Mezi prvními dvěma možnost
 | Jak nahlásit díru | [SECURITY.md](https://github.com/LifetimeLabsDev/PrivacyNotes.app/blob/main/SECURITY.md) |
 
 > [!info] Jeden zámek pokrývá všechno
-> Poznámky, deníkové zápisy, záložky, položky trezoru i přílohy se šifrují stejně. [[Stěhování]] ukazuje, jak sem každou z těch věcí dostat.
+> Poznámky, záznamy v deníku, záložky, položky trezoru i přílohy se šifrují stejně. [[Stěhování]] ukazuje, jak sem každou z těch věcí dostat.

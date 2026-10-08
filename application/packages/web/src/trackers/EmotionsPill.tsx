@@ -48,17 +48,17 @@ export function EmotionsPill({
       readOnly={readOnly}
     >
       <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+        <span className="text-xs font-medium text-pn-soft">
           {t('emotions.prompt')}
         </span>
         {(['positive', 'neutral', 'negative'] as const).map((valence) => (
           <div key={valence}>
             <span className={`block text-[11px] font-medium mb-1 ${
               valence === 'positive'
-                ? 'text-emerald-600 dark:text-emerald-400'
+                ? 'text-success'
                 : valence === 'neutral'
-                  ? 'text-amber-600 dark:text-amber-400'
-                  : 'text-red-600 dark:text-red-400'
+                  ? 'text-warning'
+                  : 'text-danger'
             }`}>
               {t(`emotions.valence.${valence}`)}
             </span>
@@ -104,7 +104,7 @@ function TagChip({
       className={`px-2 py-0.5 rounded-full text-[11px] font-medium transition-all ${
         selected
           ? `${colorClass} ring-2 ring-current/30`
-          : 'bg-surface-0 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'
+          : 'bg-surface-0 text-pn-muted hover:bg-pn/10'
       }`}
     >
       {label}

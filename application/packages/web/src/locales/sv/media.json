@@ -14,7 +14,8 @@
     "loadFailed": "Kunde inte ladda bilden",
     "notFound": "Bilden hittades inte",
     "saveFailed": "Det gick inte att spara, så filen kan vara tom eller ofullständig.",
-    "viewAria": "Visa bild"
+    "viewAria": "Visa bild",
+    "picturesLeftOut": "Vissa bilder lades inte till. Kopiera en bild för sig för att klistra in den."
   },
   "attachment": {
     "fallbackName": "Bilaga",

@@ -9,22 +9,19 @@
     "newTaskNote": "新增任務筆記",
     "newTaskNoteWithHotkey": "新增任務筆記（{{hotkey}}）",
     "new": "新增",
-    "viewHybrid": "混合",
-    "viewAggregated": "彙整",
-    "viewList": "清單",
     "hideCompleted": "隱藏已完成任務",
     "showCompleted": "顯示已完成任務",
     "searchPlaceholder": "搜尋任務…",
     "sortOptions": "排序選項",
     "quickAddPlaceholder": "快速新增任務",
     "noMatches": "沒有符合的結果。",
+    "itemsWithTasks": "有任務的項目",
+    "allTasks": "所有任務",
+    "tasksFromOtherItems": "其他項目中的任務",
+    "noItemsWithTasks": "還沒有含任務的項目。",
+    "noTaskListsYet": "還沒有任務清單。其他項目中的任務已隱藏。",
     "noTasksYet": "還沒有任務。使用上方輸入框，或在任何筆記中輸入 `- [ ] …`。",
     "noOpenTasks": "沒有未完成的任務。漂亮。",
-    "noNotesWithTasks": "還沒有包含任務的筆記。",
-    "recentNotesWithTasks": "最近含任務的筆記",
-    "tasksByNote": "依筆記分組的任務",
-    "showLess": "顯示較少",
-    "loadMore": "載入更多（{{count}}）",
     "openNote": "開啟「{{title}}」",
     "markIncomplete": "標記為未完成",
     "markComplete": "標記為完成",
@@ -53,7 +50,7 @@
     "sortOptions": "排序選項",
     "searchPlaceholder": "搜尋檔案…",
     "sortName": "名稱",
-    "showNotesWithAttachments": "顯示筆記中的檔案",
+    "showNotesWithAttachments": "顯示其他項目中的檔案",
     "noMatches": "沒有符合的結果。",
     "pinProtected": "PIN 碼保護",
     "readOnly": "唯讀",
@@ -70,8 +67,8 @@
     "menuImages": "圖片",
     "menuAudio": "音訊",
     "menuDocuments": "文書",
-    "menuHideNoteAttachments": "隱藏筆記中的檔案",
-    "menuShowNoteAttachments": "顯示筆記中的檔案",
+    "menuHideNoteAttachments": "隱藏其他項目中的檔案",
+    "menuShowNoteAttachments": "顯示其他項目中的檔案",
     "menuUnpin": "取消釘選",
     "menuPin": "釘選",
     "menuRename": "重新命名",
@@ -129,7 +126,7 @@
   "noteRow": {
     "noUsername": "無使用者名稱",
     "noCardholder": "無持卡人",
-    "noLabel": "無標籤",
+    "noLabel": "無名稱",
     "files_other": "{{count}} 個檔案"
   },
   "tagsRail": {
@@ -257,14 +254,17 @@
     "moveToFolder": "移至資料夾",
     "noteHistory": "歷史記錄",
     "findReplace": "尋找與取代",
-    "uncheckAllTasks": "取消勾選所有任務",
+    "uncheckAllTasks": "取消勾選所有項目",
+    "deleteCheckedTasks": "刪除已勾選的項目",
+    "sortTasksByStatus": "依狀態排序項目",
     "comingSoon": "即將推出",
     "noteOptions": "筆記選項",
     "lastModified": "最後修改：{{date}}",
     "created": "建立：{{date}}",
     "size": "使用空間：{{size}}",
     "sizeHint": "這個項目加密後的總大小。",
-    "tagCount_other": "{{count}} 個標籤"
+    "tagCount_other": "{{count}} 個標籤",
+    "entryDate": "日誌日期"
   },
   "selectionToolbar": {
     "exitSelectionTooltip": "離開選取（Esc）",
@@ -285,7 +285,7 @@
   "listPrefs": {
     "listPreferences": "清單偏好設定",
     "layout": "版面配置",
-    "layoutDeviceOnly": "僅套用於這部裝置",
+    "layoutDeviceOnly": "僅套用於這台裝置",
     "sortBy": "排序方式",
     "dateCreated": "建立日期",
     "dateModified": "修改日期",
@@ -295,7 +295,9 @@
     "showPreview": "顯示預覽",
     "longPreview": "較長的預覽文字",
     "showDate": "顯示日期",
+    "showSize": "顯示檔案大小",
     "showTags": "顯示資料夾與標籤",
+    "showCalendar": "顯示行事曆",
     "other": "其他",
     "showReadOnly": "顯示唯讀",
     "showProtected": "顯示受保護",
@@ -305,13 +307,21 @@
     "switchToAscending": "改為遞增",
     "asc": "遞增",
     "desc": "遞減",
-    "showNoteLinks": "顯示筆記中的連結"
+    "showNoteLinks": "顯示其他項目中的連結",
+    "showNoteTasks": "顯示其他項目中的任務"
   },
   "backfillPopover": {
-    "ariaLabel": "為最近的日子補寫日誌",
-    "heading": "補寫日誌：",
-    "today": "今天",
-    "yesterday": "昨天"
+    "calendarLabel": "日誌行事曆",
+    "today": "今天"
+  },
+  "monthGrid": {
+    "previousMonth": "上個月",
+    "nextMonth": "下個月",
+    "dayWithEntry": "{{date}}，有日誌",
+    "previousWeek": "上一週",
+    "nextWeek": "下一週",
+    "showMonth": "{{month}}，顯示整個月",
+    "showWeek": "{{month}}，顯示一週"
   },
   "contextMenu": {
     "newNote": "新增筆記",
@@ -370,11 +380,11 @@
     "needsAppBody": "這需要一個 Safari 和 Firefox 沒有的 API。",
     "needsAppWhere": "桌面應用程式在每個平台都做得到，而 Chrome、Edge 和 Opera 在這裡就能做到。",
     "getDesktopApp": "取得桌面應用程式",
-    "braveTitle": "請先啟用「{{flag}}」",
-    "braveCopy": "複製",
-    "braveCopied": "已複製",
-    "braveSteps": "把它貼進 Brave 的網址列，將「{{flag}}」設為 Enabled，然後重新啟動 Brave。",
-    "braveAppAlternative": "或者改用桌面應用程式",
+    "braveTitle": "Enable \"{{flag}}\" first",
+    "braveCopy": "Copy",
+    "braveCopied": "Copied",
+    "braveSteps": "Paste that into Brave's address bar, set \"{{flag}}\" to Enabled, then relaunch Brave.",
+    "braveAppAlternative": "Or use the desktop app instead",
     "openFailed": "無法開啟那個檔案。",
     "linkNotFound": "這個資料夾裡沒有「{{target}}」檔案。",
     "linkNeedsFolder": "開啟資料夾後才能開啟連結。",
@@ -454,7 +464,8 @@
     "importedManyToast": "已把 {{count}} 個檔案存進你加密的筆記。原始檔案完全沒動。",
     "alreadySavedToast": "「{{title}}」已經在你的筆記裡了。",
     "importedManySkippedToast": "已存 {{saved}} 個檔案，略過 {{skipped}} 個已經在筆記裡的。",
-    "footerFiles": "檔案"
+    "footerFiles": "檔案",
+    "bridge_other": "Markdown 中有 {{count}} 個結果"
   },
   "importPrompt": {
     "dismiss": "隱藏此建議",
@@ -482,7 +493,7 @@
     "emptyAdd": "新增書籤",
     "emptyImport": "從瀏覽器匯入",
     "noMatches": "沒有符合的項目。",
-    "fromNotesHeading": "筆記中的連結",
+    "fromNotesHeading": "其他項目中的連結",
     "openSourceNote": "開啟筆記",
     "saveAsBookmark": "儲存為書籤",
     "importSkipped_other": "{{count}} 個已略過，先前已儲存。",
@@ -542,6 +553,9 @@
     "sendEmail": "寄電子郵件",
     "open": "開啟",
     "showPhoto": "顯示照片",
+    "addPhoto": "新增照片",
+    "changePhoto": "更換照片",
+    "removePhoto": "移除照片",
     "addField": "新增欄位",
     "done": "完成",
     "fillOne": "請加上姓名、號碼或電子郵件。",
@@ -611,5 +625,10 @@
   "tabStrip": {
     "label": "已開啟的分頁",
     "close": "關閉「{{title}}」"
+  },
+  "shareInbox": {
+    "saved": "已儲存到 PrivacyNotes",
+    "failed": "無法儲存到 PrivacyNotes",
+    "tooLarge": "檔案太大。單檔上限為 {{limit}} MB。"
   }
 }

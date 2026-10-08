@@ -25,7 +25,7 @@ import { Info } from './icons';
 export const SETTINGS_EYEBROW =
   'text-[11px] font-semibold uppercase tracking-wide text-accent';
 const SETTINGS_EYEBROW_DANGER =
-  'text-[11px] font-semibold uppercase tracking-wide text-red-600 dark:text-red-400';
+  'text-[11px] font-semibold uppercase tracking-wide text-danger';
 export const SETTINGS_HELP = 'text-xs text-pn-soft';
 
 const SETTINGS_TAB_STRIP = 'pn-tab-strip grid grid-flow-col auto-cols-fr border-b border-divider';
@@ -109,7 +109,7 @@ export function SectionEyebrow({
  * bar, title, rule.
  */
 export function AccentBar() {
-  return <span className="w-[3px] h-4 rounded-full bg-accent shrink-0" aria-hidden="true" />;
+  return <span className="w-[3px] h-4 rounded-full bg-accent-fill shrink-0" aria-hidden="true" />;
 }
 
 /**

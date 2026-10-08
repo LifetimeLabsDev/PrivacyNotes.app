@@ -2,7 +2,7 @@
   "dismiss": "Sluiten",
   "close": "Sluiten",
   "moveBanner": {
-    "bodySignIn": "Log daar in met je herstelzin of via \"{{scanQr}}\".",
+    "bodySignIn": "Meld je daar aan met je herstelzin of via \"{{scanQr}}\".",
     "cta": "Nu verhuizen",
     "syncing": "Je notities worden gesynchroniseerd…",
     "error": "Kon nu niet alles synchroniseren. Controleer je verbinding en probeer het opnieuw.",
@@ -14,7 +14,7 @@
   },
   "moveScreen": {
     "title": "De app is verhuisd naar use.privacynotes.app",
-    "bodySignIn": "Log daar in met je herstelzin van 12 woorden of via \"{{scanQr}}\". Dit apparaat synchroniseert eerst, dus al je notities staan daar klaar, en hier wordt niets verwijderd.",
+    "bodySignIn": "Meld je daar aan met je herstelzin van 12 woorden of via \"{{scanQr}}\". Dit apparaat synchroniseert eerst, dus al je notities staan daar klaar, en hier wordt niets verwijderd.",
     "openNotes": "Open je notities hier één keer om dit op te lossen",
     "showPhrase": "Mijn herstelzin tonen",
     "website": "Bekijk in plaats daarvan de website"

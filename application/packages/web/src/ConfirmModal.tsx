@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
-import { type ReactNode } from 'react';
+import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { isImeComposing } from './imeComposing';
 import { Info, Trash, Warning, X } from './icons';
 
 type ConfirmVariant = 'danger' | 'warning' | 'info';
@@ -23,6 +24,14 @@ type Props = {
    *  Useful when the cancel button represents an explicit action
    *  (e.g. "Store as files") that differs from simply dismissing. */
   onCancel?: () => void;
+  /**
+   * Enter confirms, wherever the focus is, except on the cancel button. For
+   * a step that can be undone (Move to trash keeps the items for 30 days),
+   * never for a permanent delete. Only a fresh press counts: a held key, or
+   * the key that opened the window, does nothing.
+   * Spec: ops/docs/plans/keyboard-shortcuts.md (decision D10)
+   */
+  enterConfirms?: boolean;
 };
 
 /* ── Icon per variant ──────────────────────────────────── */
@@ -57,7 +66,7 @@ function VariantIcon({ variant }: { variant: ConfirmVariant }) {
 const confirmBtnClass: Record<ConfirmVariant, string> = {
   danger: 'bg-red-600 text-white hover:bg-red-700',
   warning: 'bg-amber-500 text-amber-950 hover:bg-amber-600',
-  info: 'bg-accent text-white hover:bg-accent-hover',
+  info: 'bg-accent-fill text-white hover:bg-accent-fill-hover',
 };
 
 /* ── Component ─────────────────────────────────────────── */
@@ -71,9 +80,27 @@ export function ConfirmModal({
   onConfirm,
   onClose,
   onCancel,
+  enterConfirms = false,
 }: Props) {
   const { t } = useTranslation('common');
   useEscapeToClose(onClose);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const titleId = useId();
+  const confirm = useRef(() => {});
+  confirm.current = () => { onConfirm(); onClose(); };
+  useEffect(() => {
+    if (!enterConfirms) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== 'Enter' || e.defaultPrevented || isImeComposing(e)) return;
+      if (document.activeElement === cancelRef.current) return;
+      // Captured, so the Enter never reaches the editor behind the window.
+      e.preventDefault();
+      e.stopPropagation();
+      if (!e.repeat) confirm.current();
+    }
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [enterConfirms]);
   // undefined -> default "Cancel" label; null -> hide the cancel button.
   const resolvedCancelLabel =
     cancelLabel === null ? null : cancelLabel ?? t('actions.cancel');
@@ -83,6 +110,9 @@ export function ConfirmModal({
       onClick={onClose}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
         className="bg-surface-2 border border-divider text-pn rounded-lg max-w-sm w-full p-6 space-y-4"
         onClick={(e) => e.stopPropagation()}
       >
@@ -90,11 +120,11 @@ export function ConfirmModal({
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <VariantIcon variant={variant} />
-            <h2 className="text-lg font-semibold">{title}</h2>
+            <h2 id={titleId} className="text-lg font-semibold">{title}</h2>
           </div>
           <button
             onClick={onClose}
-            className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1"
+            className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
             aria-label={t('actions.close')}
           >
             <X size={18} />
@@ -102,7 +132,7 @@ export function ConfirmModal({
         </div>
 
         {/* Body */}
-        <div className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+        <div className="text-sm text-pn-muted leading-relaxed">
           {children}
         </div>
 
@@ -110,8 +140,9 @@ export function ConfirmModal({
         <div className="flex gap-2 pt-2">
           {resolvedCancelLabel !== null && (
             <button
+              ref={cancelRef}
               onClick={onCancel ?? onClose}
-              className="flex-1 rounded-md border border-neutral-300 hover:bg-neutral-100 dark:border-neutral-800 dark:hover:bg-neutral-900 px-4 py-2 text-sm transition"
+              className="flex-1 rounded-md border border-divider hover:bg-pn/5 px-4 py-2 text-sm transition"
             >
               {resolvedCancelLabel}
             </button>

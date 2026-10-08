@@ -10,7 +10,8 @@
     "empty": "Empty",
     "noContent": "No content",
     "notBackedUp": "Not backed up",
-    "archived": "Archived"
+    "archived": "Archived",
+    "entryDate": "Entry date"
   },
   "header": {
     "new": "New",
@@ -19,7 +20,9 @@
     "trash": "Trash"
   },
   "folderChip": {
-    "clear": "Clear folder filter: {{folder}}"
+    "clear": "Clear folder filter: {{folder}}",
+    "subfolders": "Subfolders",
+    "subfoldersLabel": "Include subfolders"
   },
   "tagChip": {
     "clear": "Clear tag filter: {{tag}}"
@@ -191,6 +194,8 @@
     "currentHtmlDesc": "Printer-friendly, markdown rendered on a white page.",
     "printTitle": "Print / Save as PDF",
     "printDesc": "Opens the print dialog. Save as PDF or send to a printer.",
+    "printTextTitle": "Print text only",
+    "printTextDesc": "Keeps the title. Leaves out the date, folder and tags.",
     "burnTitle": "Share & Burn After Reading",
     "burnDesc": "Publish this note as a one-time view link. The link self-destructs after reading. Your note stays safe in your account."
   },
@@ -208,7 +213,10 @@
     "newNote": "New",
     "newNoteHintMac": "Option + Shift + N",
     "newNoteHintOther": "Alt + Shift + N",
+    "newNoteHintMacDesktop": "Command + N",
+    "newNoteHintOtherDesktop": "Ctrl + N",
     "openStats": "Open stats",
+    "journalCalendar": "Journal calendar",
     "words": "Words",
     "zen": "Zen",
     "appearance": "Appearance",
@@ -232,7 +240,7 @@
     "appearanceLabel": "Appearance",
     "helpLabel": "Help",
     "aboutLabel": "About",
-    "languageLabel": "Language",
+    "languageLabel": "Date & Language",
     "languageDesc": "Choose the language PrivacyNotes is shown in."
   },
   "importStore": {
@@ -252,6 +260,12 @@
     "readOnlyBlocked_other": "All <highlight>{{count}} items</highlight> are read-only, so none of them can be moved to trash. Turn read-only off in the note options menu first.",
     "readOnlySkipped_one": "<highlight>{{count}} item</highlight> is read-only and stays where it is.",
     "readOnlySkipped_other": "<highlight>{{count}} items</highlight> are read-only and stay where they are."
+  },
+  "deleteCheckedTasks": {
+    "title": "Delete checked items?",
+    "confirm": "Delete",
+    "body_one": "<highlight>{{count}} item</highlight> will be deleted from this note. This cannot be undone.",
+    "body_other": "<highlight>{{count}} items</highlight> will be deleted from this note, nested items included. This cannot be undone."
   },
   "bulkDelete": {
     "body_one": "Permanently delete <highlight>{{count}} note</highlight>? This cannot be undone.",

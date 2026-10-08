@@ -43,15 +43,19 @@
     "mdDemoInline": "Inline-Formatierung",
     "mdDemoTasks": "Aufgabenliste",
     "mdDemoLists": "Verschachtelte Listen",
-    "mdDemoCallouts": "Callouts",
+    "mdDemoCallouts": "Hinweisboxen",
     "mdDemoTable": "Tabelle",
     "mdDemoCode": "Codeblock",
     "mdDemoScripts": "Hochgestellt, tiefgestellt, unterstrichen",
     "mdDemoMath": "Mathe (KaTeX)",
-    "mdDemoQuote": "Zitat und note-link",
+    "mdDemoQuote": "Zitat und Notiz-Link",
     "mdDemoDivider": "Trennlinie",
     "hkShowcase": "Die vollständige Liste",
-    "hkLegend": "Unter Windows und Linux ist ⌘ Ctrl und ⌥ Alt."
+    "hkMac": "Mac",
+    "hkPc": "Windows und Linux",
+    "hkBrowser": "Im Browser",
+    "hkDesktop": "Desktop-App",
+    "hkLayout": "Tastenkürzel folgen den Zeichen, die deine Tastatur schreibt, nicht den Tastenpositionen einer US-Tastatur: Drücke die Taste, die das angezeigte Zeichen schreibt (bei einem nicht lateinischen Layout die Taste an ihrer US-Position). Eine Taste, die mit AltGr ein Zeichen schreibt, schreibt es immer."
   },
   "groups": {
     "gettingStarted": "Erste Schritte",
@@ -73,7 +77,7 @@
     "need-email": {
       "q": "Brauche ich eine E-Mail-Adresse für die Registrierung?",
       "a": [
-        "Nein. Ein neues Konto ist eine frisch generierte 12-Wort-Phrase, sonst nichts. Keine E-Mail, kein Benutzername, keine Telefonnummer, kein Bestätigungsschritt. Wenn du dich mit der Phrase anmeldest, könnten wir dir nicht einmal eine E-Mail schreiben, selbst wenn wir wollten - wir erfahren nie, wer du bist.",
+        "Nein. Ein neuer Tresor ist eine frisch generierte 12-Wort-Phrase, sonst nichts. Keine E-Mail, kein Benutzername, keine Telefonnummer, kein Bestätigungsschritt. Wenn du dich mit der Phrase anmeldest, könnten wir dir nicht einmal eine E-Mail schreiben, selbst wenn wir wollten - wir erfahren nie, wer du bist.",
         "Du bevorzugst den vertrauten Weg? Anmelden mit Google, Apple oder GitHub geht auch. Dabei erfahren wir zwangsläufig die E-Mail-Adresse hinter diesem Login, aber deine Notizen bleiben so oder so auf deinem Gerät verschlüsselt, und unter der Haube bekommst du trotzdem eine Phrase."
       ]
     },
@@ -81,20 +85,20 @@
       "q": "Wie bringe ich meine Notizen aus einer anderen App hierher?",
       "a": [
         "Öffne Einstellungen > Import & Export und wähle deine Quelle. Die Liste deckt die Apps ab, aus denen Leute kommen: Apple Notes, Obsidian, Evernote, Standard Notes, Notesnook, UpNote, Google Keep, Simplenote, Samsung Notes und Apple Journal. Bitwarden und die gespeicherten Passwörter deines Browsers landen im Tresor, deine Browser-Lesezeichen kommen als Lesezeichen an, und ein generischer Markdown-Importer nimmt jeden Ordner mit .md-Dateien.",
-        "Importe laufen komplett auf deinem Gerät: Deine Export-Dateien werden lokal gelesen, verschlüsselt und gespeichert, nichts wird zur Verarbeitung hochgeladen. Jede importierte Notiz bekommt einen Tag mit ihrer Quelle, damit du den Stapel danach durchsehen kannst, und Google-Keep-Checklisten werden sogar zu nativen Aufgabenlisten."
+        "Importe laufen komplett auf deinem Gerät: Deine Export-Dateien werden lokal gelesen, verschlüsselt und gespeichert, nichts wird zur Verarbeitung hochgeladen. Jede importierte Notiz bekommt ein Tag mit ihrer Quelle, damit du den Stapel danach durchsehen kannst, und Google-Keep-Checklisten werden sogar zu nativen Aufgabenlisten."
       ]
     },
     "markdown-support": {
       "q": "Versteht der Editor Markdown?",
       "a": [
-        "Ja. Tippe Markdown und es wird live formatiert: # Überschriften, **fett**, Listen, - [ ] Aufgaben-Checkboxen, Zitate und Callouts. Notizen lassen sich auch als sauberes Markdown exportieren, dein Text bleibt also portabel.",
-        "Du kannst Notizen außerdem miteinander verbinden: Tippe [[ und eine Autovervollständigung schlägt deine vorhandenen Notizen vor. Ein note-link öffnet sein Ziel mit einem Klick, und Gliederungs-Panel plus Suche-in-Notiz halten auch lange Dokumente übersichtlich."
+        "Ja. Tippe Markdown und es wird live formatiert: # Überschriften, **fett**, Listen, - [ ] Aufgaben-Checkboxen, Zitate und Hinweisboxen. Notizen lassen sich auch als sauberes Markdown exportieren, dein Text bleibt also portabel.",
+        "Du kannst Notizen außerdem miteinander verbinden: Tippe [[ und eine Autovervollständigung schlägt deine vorhandenen Notizen vor. Ein Notiz-Link öffnet sein Ziel mit einem Klick, und die Gliederung plus die Suche in der Notiz halten auch lange Dokumente übersichtlich."
       ]
     },
     "what-can-you-see": {
       "q": "Was kann PrivacyNotes über meine Notizen sehen?",
       "a": [
-        "Notizen, Titel, Tags und Anhänge werden auf deinem Gerät verschlüsselt, bevor sie den Server erreichen. Bei eigener Schlüsselverwaltung, mit der jedes per Phrase erstellte Konto beginnt, haben wir keinen Entschlüsselungsschlüssel. Bei der Anmeldung mit Google, Apple oder GitHub wirst du gefragt, wo dein Schlüssel liegen soll. Vorausgewählt ist \"Einfach und bequem\": Dabei speichern wir deine Phrase auf unserem Server, verschlüsselt mit einem unserer Schlüssel. In diesem Modus kann unser Server die Phrase und damit auch deine Notizen entschlüsseln. Unter Einstellungen > Konto > Schlüsselverwaltung siehst du deinen aktuellen Modus und kannst ihn ändern.",
+        "Notizen, Titel, Tags und Anhänge sind immer verschlüsselt, auf deinem Gerät und auf dem Weg zum Server. Bei Selbstverwahrung, mit der jedes per Phrase erstellte Konto beginnt, haben wir keinen Entschlüsselungsschlüssel. Bei der Anmeldung mit Google, Apple oder GitHub wirst du gefragt, wo dein Schlüssel liegen soll. Vorausgewählt ist \"Einfach und bequem\": Dabei speichern wir deine Phrase auf unserem Server, verschlüsselt mit einem unserer Schlüssel. In diesem Modus kann unser Server die Phrase und damit auch deine Notizen entschlüsseln. Unter Einstellungen > Konto > Schlüsselverwaltung siehst du deinen aktuellen Modus und kannst ihn ändern.",
         "Wir sehen die Informationen, die wir zum Betrieb des Dienstes brauchen: wie viel verschlüsselten Speicher du nutzt, wie viele Geräte du verknüpft hast und die Zeitpunkte der Synchronisierung. Wenn du nur deine Phrase nutzt und kein Google-, Apple- oder GitHub-Konto verbunden hast, kennen wir deine E-Mail-Adresse nicht."
       ]
     },
@@ -111,7 +115,7 @@
       "a": [
         "Ja, ganz bewusst. Nicht alle verteidigen sich gegen dieselben Bedrohungen, deshalb ist das Kontomodell eine Leiter statt eines einzigen Dogmas. Auf jeder Sprosse bleiben deine Notizen auf deinem Gerät verschlüsselt; was sich ändert, ist, wer den Schlüssel hält und was wir über dich wissen.",
         "Das bequeme Ende: Melde dich mit Google, Apple oder GitHub an und lass auf Nachfrage \"Einfach und bequem\" ausgewählt, das ist dort die Voreinstellung. Wir speichern deine Wiederherstellungsphrase verschlüsselt auf unserem Server. Ein neues Gerät kann deine Notizen nach der Anmeldung beim Anbieter öffnen; bei aktivierter 2FA brauchst du zusätzlich einen Authenticator-Code. Im Gegenzug kennen wir die E-Mail-Adresse hinter dieser Anmeldung, und unser Server kann deine Phrase entschlüsseln. Sichere deine Phrase für den Fall, dass du den Zugang zum Anbieterkonto verlierst. Bewahre auch deinen 2FA-Sicherungsschlüssel auf, wenn du die Zwei-Faktor-Anmeldung aktivierst.",
-        "Die Mitte: Melde dich mit Google, Apple oder GitHub an, wähle aber \"Maximale Sicherheit und Privatsphäre\". Deine Phrase berührt unsere Server nie und die Verschlüsselung ist vollständig zero-knowledge; neue Geräte brauchen die Phrase oder einen QR-Scan von einem bereits angemeldeten Gerät. Die E-Mail hinter diesem Login kennen wir zwangsläufig weiterhin, aber wir könnten keine einzige Notiz lesen, selbst unter Zwang.",
+        "Die Mitte: Melde dich mit Google, Apple oder GitHub an, wähle aber \"Maximale Sicherheit und Privatsphäre\". Deine Phrase berührt unsere Server nie und die Verschlüsselung ist vollständig Zero-Knowledge; neue Geräte brauchen die Phrase oder einen QR-Scan von einem bereits angemeldeten Gerät. Die E-Mail hinter diesem Login kennen wir zwangsläufig weiterhin, aber wir könnten keine einzige Notiz lesen, selbst unter Zwang.",
         "Das private Ende: Verzichte ganz auf die Logins und nutze nur die 12-Wort-Phrase. Keine E-Mail, kein Name, keine Identität - und kombiniert mit einem [anonymen Pro-Kauf](/de/help/buy-pro-anonymously/) hinterlässt selbst das Bezahlen nirgendwo einen Namen. Im Gegenzug liegt die Schlüsselverwahrung komplett bei dir: Verlierst du die Phrase ohne ein angemeldetes Gerät, kann niemand helfen.",
         "Unter Einstellungen > Konto > Schlüsselverwaltung siehst du beide Modi mit ihren Vor- und Nachteilen und kannst wechseln. Wenn du die Speicherung auf dem Server beendest, löschen wir unsere Kopie, nachdem du drei Wörter aus deiner gesicherten Phrase bestätigt hast. Der Wechsel zurück lädt die Phrase erneut hoch und erfordert deine ausdrückliche Entscheidung. Beide Richtungen werden mit deinem Kontoschlüssel signiert und brauchen bei aktivierter 2FA einen aktuellen Authenticator-Code. Mit einem Phrasen-Konto kannst du unter Konto > Konten einen Anbieter verbinden und die Speicherung auf dem Server danach separat wählen. Das Verbinden allein lädt die Phrase nicht hoch. Jeder Modus kann außerdem die PIN-App-Sperre, biometrisches Entsperren und den Schutz einzelner Notizen nutzen."
       ]
@@ -144,7 +148,7 @@
       "q": "Wie aktiviere ich die Zwei-Faktor-Authentifizierung (2FA)?",
       "a": [
         "Aktiviere die optionale Zwei-Faktor-Anmeldung unter Einstellungen > Sicherheit > 2FA. Aktualisiere PrivacyNotes zuerst auf deinen anderen Geräten. Scanne den QR-Code mit einer Authenticator-App oder gib den Einrichtungsschlüssel manuell ein. Bewahre den 2FA-Sicherungsschlüssel außerhalb von PrivacyNotes auf, bestätige deine gespeicherte Kopie und gib zum Abschluss einen aktuellen Code ein.",
-        "Nach der Einrichtung braucht eine neue Serversitzung deine Phrase oder ein verbundenes Konto, gefolgt von einem Authenticator-Code. Bei eigener Schlüsselverwaltung brauchst du weiterhin deine Phrase, um Notizen zu entschlüsseln. Verwalte Anbieterkonten unter Einstellungen > Konto > Konten. Das Verbinden eines Kontos ändert die Schlüsselverwaltung nicht.",
+        "Nach der Einrichtung braucht eine neue Serversitzung deine Phrase oder ein verbundenes Konto, gefolgt von einem Authenticator-Code. Bei Selbstverwahrung brauchst du weiterhin deine Phrase, um Notizen zu entschlüsseln. Verwalte Anbieterkonten unter Einstellungen > Konto > Konten. Das Verbinden eines Kontos ändert die Schlüsselverwaltung nicht.",
         "Wenn du den Authenticator verlierst, füge den gespeicherten 2FA-Sicherungsschlüssel einer anderen Authenticator-App hinzu. Wenn du beides verlierst, können wir den Serverzugriff nicht wiederherstellen. Bereits entsperrte Notizen auf einem Gerät bleiben lesbar und exportierbar. Die Zwei-Faktor-Anmeldung fügt keine Verschlüsselung hinzu und schützt kein bereits entsperrtes Gerät."
       ]
     },
@@ -164,7 +168,7 @@
       ]
     },
     "no-ai": {
-      "q": "Nutzt PrivacyNotes KI auf meinen Notizen?",
+      "q": "Verarbeitet PrivacyNotes meine Notizen mit KI?",
       "a": [
         "Nein. Es gibt keine KI-Funktionen in der App, keine KI-Verarbeitung im Hintergrund und kein Modelltraining mit deinen Inhalten. Deine Notizen sind immer verschlüsselt, auf deinem Gerät und auf dem Weg zum Server - auf unseren Servern gibt es also nichts Lesbares, das man irgendwo einspeisen könnte.",
         "Sollten wir je ein Feature in diese Richtung bauen, müsste es vollständig auf deinem Gerät laufen und strikt opt-in sein. Klartext-Notizen an ein Cloud-Modell zu schicken würde das Zero-Knowledge-Versprechen brechen und kommt deshalb nicht infrage."
@@ -180,7 +184,7 @@
     "open-source": {
       "q": "Ist PrivacyNotes Open Source?",
       "a": [
-        "Ja. Die Web-, Desktop- und Mobil-Apps sind auf [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app) veröffentlicht, zusammen mit dem Verschlüsselungscode, der deine Notizen unlesbar macht und dem Threat Model, das festhält, was welcher Teil schützt. Es ist derselbe Code, aus dem wir unsere Releases bauen.",
+        "Ja. Die Web-, Desktop- und Mobil-Apps sind auf [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app) veröffentlicht, zusammen mit dem Verschlüsselungscode, der deine Notizen unlesbar macht, und dem Threat Model, das festhält, was welcher Teil schützt. Es ist derselbe Code, aus dem wir unsere Releases bauen.",
         "Genau das macht aus einem Versprechen etwas Überprüfbares. Lies die Verschlüsselung in einer Sitzung durch, öffne den Netzwerk-Tab deines Browsers und sieh zu, wie deine Notizen als unlesbarer Text hinausgehen, oder bau die App selbst und vergleich sie mit dem, was wir ausliefern. Du musst uns kein Wort davon glauben."
       ]
     },
@@ -217,7 +221,7 @@
     "forgot-pin": {
       "q": "Ich habe meine PIN vergessen. Wie komme ich wieder rein?",
       "a": [
-        "Es geht nichts verloren, und du kannst die PIN mit deiner Wiederherstellungsphrase selbst löschen. Die PIN ist eine Sperre auf dem Bildschirm, kein Schlüssel: deine Notizen sind mit Schlüsseln aus der Phrase verschlüsselt, also öffnet die Phrase sie. Wäre die Verschlüsselung an vier Ziffern gebunden, würde eine vergessene PIN Daten vernichten. Hier passiert das nie.",
+        "Es geht nichts verloren, und du kannst die PIN mit deiner Wiederherstellungsphrase selbst löschen. Die PIN ist eine Sperre auf dem Bildschirm, kein Schlüssel: Deine Notizen sind mit Schlüsseln aus der Phrase verschlüsselt, also öffnet die Phrase sie. Wäre die Verschlüsselung an vier Ziffern gebunden, würde eine vergessene PIN Daten vernichten. Hier passiert das nie.",
         "Überall dort, wo die App nach der PIN fragt, wählst du **PIN vergessen?** und gibst deine 12 Wörter ein. Das gibt es auf dem Sperrbildschirm, auf einer geschützten Notiz und unter **Einstellungen > Sicherheit > PIN**. Die PIN wird auf allen Geräten gelöscht, und du kannst sofort eine neue festlegen. Die biometrische Entsperrung bleibt davon unberührt."
       ]
     },
@@ -258,7 +262,7 @@
     "data-location": {
       "q": "Wo werden meine Daten gespeichert?",
       "a": [
-        "Zuerst auf deinem Gerät, und das ist die Kopie, mit der du arbeitest: Die App ist local-first, deine Notizen öffnen und bearbeiten sich also auch offline. Die Sync-Kopie liegt auf Servern in Zürich, Schweiz. Dort liegen dein öffentlicher Schlüssel, verschlüsselte Blobs deiner Notizen, Dateien und Einstellungen sowie die Zeitstempel und Größen, die ein Sync braucht. Keine Titel, kein Text, keine Tags.",
+        "Zuerst auf deinem Gerät, und das ist die Kopie, mit der du arbeitest: Die App ist local-first, deine Notizen lassen sich also auch offline öffnen und bearbeiten. Die Sync-Kopie liegt auf Servern in Zürich, Schweiz. Dort liegen dein öffentlicher Schlüssel, verschlüsselte Blobs deiner Notizen, Dateien und Einstellungen sowie die Zeitstempel und Größen, die ein Sync braucht. Keine Titel, kein Text, keine Tags.",
         "Das Land zählt weniger als die Verschlüsselung. Alles ist immer verschlüsselt, auf deinem Gerät und auf dem Weg zum Server, diese Kopie wäre also unlesbar, egal wo sie läge: Die Schweiz ist ein Bonus, nicht das Versprechen. [Was synchronisiert wird](/de/help/what-syncs/) listet es Punkt für Punkt auf.",
         "Die Kopie auf deinem Gerät ist ebenfalls verschlüsselt. Notizen liegen versiegelt auf der Festplatte, unter einem Schlüssel, der beim Entsperren aus deiner Wiederherstellungsphrase abgeleitet wird, also enthält eine Kopie des App-Speichers auf deinem Gerät oder ein gestohlenes Backup davon verschlüsselte Daten und nicht deine Notizen."
       ]
@@ -297,7 +301,7 @@
       "q": "Wie lang darf eine einzelne Notiz sein, und was bedeuten die Größen-Hinweise?",
       "a": [
         "Tippe, so viel du willst - bei normalen Notizen spielt Größe nie eine Rolle. Wächst eine einzelne Notiz sehr stark, erscheint darunter ein kleiner Hinweis, der in drei Stufen eskaliert: Bei rund 50.000 Wörtern merkt er an, dass die Notiz lang wird und auf langsameren Geräten haken könnte; bei rund 75.000 Wörtern wird er orange, das Tippen kann anfangen zu stocken; und bei rund 100.000 Wörtern schlägt er vor, die Notiz zu teilen, weil du dich dem Sync-Limit näherst. Das sind Hinweise, keine harten Stopps - nichts hindert dich am Weiterschreiben.",
-        "Dieses Sync-Limit ist die einzige echte Decke. Eine einzelne Notiz fasst verschlüsselt etwa 1 MB Text - sehr grob 120.000 Wörter typisches Englisch, weniger bei nicht-lateinischer Schrift oder viel Formatierung. Eine Notiz darüber funktioniert weiter und bleibt auf dem Gerät sicher, auf dem du sie geschrieben hast, aber diese eine Notiz wird nicht mehr auf deine anderen Geräte synchronisiert (du siehst einen \"Sync fehlgeschlagen\"-Hinweis). Der Rest deiner Notizen ist nicht betroffen: Eine übergroße Notiz blockiert nie etwas anderes.",
+        "Dieses Sync-Limit ist die einzige echte Obergrenze. Eine einzelne Notiz fasst verschlüsselt etwa 1 MB Text - sehr grob 120.000 Wörter in typischem Englisch, weniger bei nicht-lateinischer Schrift oder viel Formatierung. Eine Notiz darüber funktioniert weiter und bleibt auf dem Gerät sicher, auf dem du sie geschrieben hast, aber diese eine Notiz wird nicht mehr auf deine anderen Geräte synchronisiert (du siehst einen Hinweis, dass die Notiz nicht synchronisiert werden konnte). Der Rest deiner Notizen ist nicht betroffen: Eine übergroße Notiz blockiert nie etwas anderes.",
         "Die Lösung ist einfach: Teile eine sehr lange Notiz in ein paar kleinere. Der Inhalt ist identisch, er synchronisiert problemlos, und der Editor bleibt schnell. Eine Live-Wortzählung unter jeder Notiz lässt dich die Größe im Blick behalten."
       ]
     },
@@ -312,7 +316,7 @@
       "q": "Was ist kostenlos und was ist Pro?",
       "a": [
         "Kostenlos ist das volle Produkt, kein Appetithappen: Notizen, Aufgaben, Tagebuch und Tresor, alles auf deinem Gerät verschlüsselt, Offline-Nutzung, Import und Export - auf bis zu 2 Geräten mit 50 MB Sync-Speicher.",
-        "Pro ist ein Einmalkauf und ergänzt unbegrenzte Geräte, 500 MB Sync-Speicher (erweiterbar), Notiz-Versionshistorie, größere Dateianhänge, Notiz-Sperre und PIN-Schutz, erweitertes Wohlbefindens-Tracking, Zen-Modus und alle Farbschemata."
+        "Pro ist ein Einmalkauf und ergänzt unbegrenzte Geräte, 500 MB Sync-Speicher (erweiterbar), Notizverlauf, größere Dateianhänge, Notiz-Sperre und PIN-Schutz, erweitertes Wohlbefindens-Tracking, Zen-Modus und alle Farbschemata."
       ]
     },
     "one-time-pricing": {
@@ -370,8 +374,8 @@
       "q": "Ich habe eine Funktion vorgeschlagen oder einen Fehler gemeldet. Wann ist das fertig?",
       "a": [
         "Oft nur wenige Tage. Kleine Wünsche und Fehlermeldungen landen meist im nächsten Release, und Releases erscheinen fast jede Woche statt ein paar Mal im Jahr. Das [Changelog](/changelog) ist der Beleg: jeder Eintrag ist datiert, in klarer Sprache geschrieben und sagt, was sich geändert hat. Lies einen Monat davon, und du weißt genau, was du von uns erwarten kannst, bevor du der App irgendetwas anvertraust.",
-        "Dieses Tempo kommt daher, wie die Arbeit aufgeteilt ist. Der Verschlüsselungskern, das Sync-Protokoll und die Anmeldung wurden von Menschen geschrieben, neben dem Brotjob, lange bevor die App einen Namen hatte, und der Kryptokern wird bis heute so gepflegt; nichts Automatisiertes kommt in seine Nähe. Als dieses Fundament im Frühjahr 2026 stand, haben wir angefangen, KI-Werkzeuge nach einem festen Protokoll einzusetzen: zuerst für [Übersetzungen](/de/help/translation-quality/), dann für Hilfeartikel, dann für Oberflächenfunktionen und unkritische Fehlerbehebungen, wo sie gut darin sind, seltene Randfälle einzukreisen, die sonst Wochen kosten würden, und Testskripte zu schreiben, die mehrere Entwickler auf einen Standard verpflichten. Deshalb lohnt sich der Wunsch einer einzelnen Person, statt hinter den obersten Punkten der Liste zu warten.",
-        "Alles, was Verschlüsselung, Sync oder Anmeldung berührt, bleibt bei erfahrenen Leuten, die jede Zeile lesen, bevor sie ausgeliefert wird, und dieser Code ist [öffentlich](https://github.com/LifetimeLabsDev/PrivacyNotes.app), damit du ihn lesen kannst, statt uns zu glauben. Mehr über das Team und unsere Arbeitsweise steht auf unserer [Über-uns-Seite](https://lifetimelabs.dev/about).",
+        "Dieses Tempo kommt daher, wie die Arbeit aufgeteilt ist. Der Verschlüsselungskern, das Sync-Protokoll und die Anmeldung wurden von Menschen geschrieben, neben dem Brotjob, lange bevor die App einen Namen hatte, und der Kryptokern wird bis heute so gepflegt; nichts Automatisiertes kommt in seine Nähe. Als dieses Fundament im Frühjahr 2026 stand, haben wir angefangen, KI-Werkzeuge nach einem festen Protokoll einzusetzen: zuerst für [Übersetzungen](/de/help/translation-quality/), dann für Hilfeartikel, dann für Oberflächenfunktionen und unkritische Fehlerbehebungen, wo sie gut darin sind, seltene Randfälle einzukreisen, die sonst Wochen kosten würden, und Testskripte zu schreiben, die mehrere Entwickler auf einen Standard verpflichten. Deshalb lohnt es sich, den Wunsch einer einzelnen Person umzusetzen, statt ihn hinter den obersten Punkten der Liste warten zu lassen.",
+        "Alles, was Verschlüsselung, Sync oder Anmeldung berührt, bleibt bei erfahrenen Entwicklern, die jede Zeile schreiben, und dieser Code ist [öffentlich](https://github.com/LifetimeLabsDev/PrivacyNotes.app), damit du ihn lesen kannst, statt uns zu glauben. Mehr über das Team und unsere Arbeitsweise steht auf unserer [Über-uns-Seite](https://lifetimelabs.dev/about).",
         "Die App selbst hat keine KI-Funktionen und schickt deine Notizen nirgendwohin ([Details](/de/help/no-ai/)). Dieses Versprechen steht für sich, und daran ändert sich nichts."
       ]
     },
@@ -390,13 +394,13 @@
         "Noch nicht installiert? Installiere zuerst [Obtainium](https://obtainium.imranr.dev/), füge dann eine App hinzu und trage das hier ein:",
         "`https://github.com/LifetimeLabsDev/PrivacyNotes.app`",
         "Obtainium liest unsere Releases, wählt die APK aus und installiert jede neue Version, sobald sie erscheint. Ein Google-Konto ist zu keinem Zeitpunkt beteiligt.",
-        "Obtainium ist nicht unsere App, und Android fragt weiterhin bei jeder Installation nach, ein Update kommt also als Benachrichtigung und ein Tippen, nicht lautlos. Die APK ist derselbe Build wie auf unserer Download-Seite, mit demselben Schlüssel signiert, so Obtainium eine App übernimmt, die du bereits per Sideload installiert hast: nichts zu deinstallieren, nichts neu anzumelden. Ohne Obtainium kann die App dir nur [in der App melden](/de/help/android-updates/), dass eine Version bereitsteht."
+        "Obtainium ist nicht unsere App, und Android fragt weiterhin bei jeder Installation nach, ein Update kommt also als Benachrichtigung und ein Tippen, nicht lautlos. Die APK ist derselbe Build wie auf unserer Download-Seite, mit demselben Schlüssel signiert, daher übernimmt Obtainium eine App, die du bereits per Sideload installiert hast: nichts zu deinstallieren, nichts neu anzumelden. Ohne Obtainium kann die App dir nur [in der App melden](/de/help/android-updates/), dass eine Version bereitsteht."
       ]
     },
     "languages": {
       "q": "Welche Sprachen spricht die App?",
       "a": [
-        "Englisch, Deutsch, Französisch, Italienisch, Spanisch, Niederländisch, Polnisch, Tschechisch, Katalanisch, Türkisch, Schwedisch, Ukrainisch, Russisch, Japanisch, Koreanisch, Traditionelles Chinesisch, Thailändisch, Arabisch und Portugiesisch in europäischer und brasilianischer Variante. Die App folgt standardmäßig deiner Systemsprache, oder du legst unter Einstellungen > Sprache auf jedem Gerät eine fest.",
+        "Englisch, Deutsch, Französisch, Italienisch, Spanisch, Niederländisch, Polnisch, Tschechisch, Katalanisch, Türkisch, Schwedisch, Ukrainisch, Russisch, Japanisch, Koreanisch, Traditionelles Chinesisch, Thailändisch, Arabisch und Portugiesisch in europäischer und brasilianischer Variante. Die App folgt standardmäßig deiner Systemsprache, oder du legst unter Einstellungen > Datum & Sprache > Sprache auf jedem Gerät eine fest.",
         "Übersetzungen sind für alle kostenlos, kein Pro-Vorteil. Weitere Sprachen sind geplant; fehlt deine, sag uns auf [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) oder [Reddit](https://www.reddit.com/r/PrivacyNotes/) Bescheid."
       ]
     },
@@ -410,8 +414,8 @@
     "markdown-syntax": {
       "q": "Welche Markdown-Syntax versteht der Editor?",
       "a": [
-        "Standard-Markdown formatiert sich live beim Tippen: Überschriften, Betonung, Durchstreichen und Hervorheben, Aufzählungen und nummerierte Listen, Aufgabenlisten (Tab und Umschalt+Tab verschachteln jede Liste, auch Checklisten), Zitate, Trennlinien, Inline-Code und Codeblöcke mit Syntaxhervorhebung, Mathe inline und als Block (KaTeX) und note-links zwischen Notizen mit Autovervollständigung.",
-        "Die Formatierungsleiste und ihr Menü \"Einfügen\" ergänzen den Rest: Tabellen, Callouts, die sich zuklappen lassen, Unterstreichen, Hoch- und Tiefstellen, Textausrichtung, Text- und Hervorhebungsfarben, Schriftarten, Links, Bilder und Dateianhänge. Alles bleibt vollständig Markdown: \"Markdown anzeigen\" unter jeder Notiz zeigt den Rohtext, und Exporte sind saubere .md-Dateien - nichts, was du schreibst, ist in ein proprietäres Format eingesperrt."
+        "Standard-Markdown formatiert sich live beim Tippen: Überschriften, Betonung, Durchstreichen und Hervorheben, Aufzählungen und nummerierte Listen, Aufgabenlisten (Tab und Umschalt+Tab verschachteln jede Liste, auch Aufgabenlisten), Zitate, Trennlinien, Inline-Code und Codeblöcke mit Syntaxhervorhebung, Mathe inline und als Block (KaTeX) und Notiz-Links zwischen Notizen mit Autovervollständigung.",
+        "Die Formatierungsleiste und ihr Menü \"Einfügen\" ergänzen den Rest: Tabellen, Hinweisboxen, die sich zuklappen lassen, Unterstreichen, Hoch- und Tiefstellen, Textausrichtung, Text- und Hervorhebungsfarben, Schriftarten, Links, Bilder und Dateianhänge. Alles bleibt vollständig Markdown: \"Markdown anzeigen\" unter jeder Notiz zeigt den Rohtext, und Exporte sind saubere .md-Dateien - nichts, was du schreibst, ist in ein proprietäres Format eingesperrt."
       ]
     },
     "tasks": {
@@ -425,14 +429,14 @@
       "q": "Wie funktioniert das Tagebuch, und was kann ich verfolgen?",
       "a": [
         "Tagebücher ist eine eigene Ansicht für datierte Einträge: Ein Tipp erstellt den heutigen Eintrag, und die Kalender-Schaltfläche daneben trägt einen verpassten Tag nach. Ein Eintrag ist eine normale Notiz plus optionale Tracker: Stimmung auf einer Skala von 1 bis 10 mit 24 Emotions-Tags, Schlaf, Aktivität, Medikamente, Energie, Fokus und mehr. \"Tracker konfigurieren\" in einem Eintrag schaltet die eingebauten an und aus, und Pro ergänzt bis zu 10 eigene Tracker (Skalen, Zahlen, Ja/Nein).",
-        "Statistiken (in den Einstellungen oder über das Statistik-Symbol in der Fußzeile) macht aus Einträgen Trends unter dem Tab \"Wohlbefinden\": Stimmung über die Zeit, Schlaf- und Aktivitätsdiagramme, Medikamententreue. Exporte werden auf deinem Gerät erzeugt: \"JSON herunterladen\" ist kostenlos, und Pro ergänzt ein \"Arzt-PDF\" für den Arztbesuch, einen kopierfertigen KI-Prompt für den Chatbot deiner Wahl, Muster-Einblicke und einen Wochenrückblick. Tracker-Daten liegen im verschlüsselten Eintrag, der Server kann also nichts davon lesen."
+        "Statistiken (in den Einstellungen oder über das Statistik-Symbol in der Fußzeile) öffnet sich mit einem Überblick über deine Woche, Schreiben und Wohlbefinden zusammen. Der Tab \"Wohlbefinden\" zeichnet jeden Tracker, den du erfasst, eigene Tracker eingeschlossen, über einen Zeitraum deiner Wahl; \"Erkunden\" nimmt einen Tracker und zeigt, wie deine Stimmung an Tagen mit und ohne ihn verläuft, am selben Tag oder am Tag danach; \"Muster\" ordnet jeden Tracker auf diese Weise ein; \"Medikation\" zeigt die Einnahmetreue als Kalender. Exporte werden auf deinem Gerät erzeugt: \"JSON herunterladen\" ist kostenlos, und Pro ergänzt ein \"Arzt-PDF\" für den Arztbesuch, einen kopierfertigen KI-Prompt für den Chatbot deiner Wahl, die Vergleiche und einen Wochenrückblick. Tracker-Daten liegen im verschlüsselten Eintrag, der Server kann also nichts davon lesen."
       ]
     },
     "bookmarks": {
       "q": "Kann ich meine Browser-Lesezeichen in PrivacyNotes speichern?",
       "a": [
         "Ja. Lesezeichen sind eine eigene Säule in der Seitenleiste, neben Notizen, Aufgaben und Tagebüchern, und sie sind in jedem Tarif kostenlos. Füge einen Link über die Schnelleingabe hinzu. Deine vorhandenen bringst du mit: Exportiere eine Lesezeichen-Datei (.html) aus deinem Browser und lege sie unter Einstellungen > Import & Export > Import > \"Browser-Lesezeichen\" ab. Chrome, Firefox, Safari, Edge, Opera, Brave und Vivaldi enthalten dieselbe Datei, und Ordner und Daten kommen mit. Safari packt sie in eine .zip, die du ungeöffnet ablegen kannst.",
-        "Deine Adressen verlassen dein Gerät nie: Wir rufen die Seite hinter einem Link nicht ab, deshalb trägt ein selbst angelegtes Lesezeichen die Domain als Namen, bis du einen eingibst. Website-Symbole sind die einzige Ausnahme, und du kannst sie abschalten. Der Export schreibt dieselbe Standarddatei, deine Lesezeichen gehen also genauso leicht wieder ([Import-Anleitung](/de/help/import/browser-bookmarks/))."
+        "Deine Adressen verlassen dein Gerät nie: Wir rufen die Seite hinter einem Link nicht ab, deshalb trägt ein selbst angelegtes Lesezeichen die Domain als Namen, bis du einen eingibst. Website-Symbole sind die einzige Ausnahme, und du kannst sie abschalten. Der Export schreibt dieselbe Standarddatei im .html-Format, deine Lesezeichen gehen also genauso leicht wieder ([Import-Anleitung](/de/help/import/browser-bookmarks/))."
       ]
     },
     "contacts": {
@@ -454,7 +458,8 @@
       "q": "Welche Tastenkürzel gibt es?",
       "a": [
         "Drücke ? irgendwo in der App für die eingebaute Kurzübersicht, ebenfalls verfügbar unter Einstellungen > Über. Tastenkürzel decken Navigation, Notiz-Aktionen, Formatierung und Ansichten ab - und unter Windows und Linux liest sich jedes Cmd als Ctrl und Option als Alt.",
-        "Die wichtigsten: Cmd+K fokussiert die Suche, J und K bewegen sich durch die Liste, Alt+Shift+N startet eine neue Notiz, Cmd+Backspace wirft die ausgewählte in den Papierkorb, Cmd+, öffnet die Einstellungen. Beim Schreiben: Cmd+B fett, Cmd+I kursiv, Cmd+Shift+K fügt einen Link ein, Cmd+Shift+9 startet eine Aufgabenliste, Cmd+F sucht in der Notiz, Cmd+Shift+O blendet die Gliederung ein und aus. Cmd+\\ blendet die Seitenleiste aus, Cmd+Shift+L wechselt das Farbschema, Cmd+Shift+F öffnet den Zen-Modus (Pro), und Esc bricht fast alles ab."
+        "Die wichtigsten: Cmd+K springt per Name zu jedem Eintrag und jeder Einstellung, und seine letzte Zeile durchsucht den Text des offenen Bereichs; / fokussiert die Suche, J und K bewegen sich durch die Liste, Cmd+[ und Cmd+] springen zurück und vorwärts durch die Einträge, die du geöffnet hast, Alt+Shift+N startet eine neue Notiz, Cmd+Backspace wirft die ausgewählte in den Papierkorb, Cmd+, öffnet die Einstellungen. Beim Schreiben: Cmd+B fett, Cmd+I kursiv, Cmd+Shift+K fügt einen Link ein, Cmd+Shift+9 startet eine Aufgabenliste, Cmd+F sucht in der Notiz, Cmd+Shift+O blendet die Gliederung ein und aus, Cmd+Shift+M wechselt zur Markdown-Ansicht. Cmd+\\ oder Cmd+Shift+D blendet die Seitenleiste aus, Cmd+Shift+L wechselt das Farbschema, Cmd+Shift+F öffnet den Zen-Modus (Pro), und Esc bricht fast alles ab, Filter eingeschlossen. Tippe > in die Suche oder in Cmd+K (oder drücke > außerhalb eines Textfelds), um jeden Befehl über seinen Namen zu finden und auszuführen.",
+        "Die Desktop-Apps ergänzen die Tasten, die ein Browser für sich behält: Cmd+N für eine neue Notiz, Cmd+Shift+N für einen neuen Eintrag beliebigen Typs, Cmd+W zum Schließen eines Tabs, Ctrl+Tab zum Wechseln zwischen Tabs, Cmd+1 bis Cmd+9 für die Abschnitte der Seitenleiste und Cmd+Shift+P für die Liste der Befehle."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -490,7 +495,7 @@
       "q": "Meine Wiederherstellungsphrase ist geleakt. Was mache ich?",
       "a": [
         "Behandle den Tresor als verbrannt. Eine Phrase lässt sich nicht ändern oder rotieren, denn die Phrase ist der Schlüssel, unter dem alles verschlüsselt ist - die Lösung ist also der Umzug in einen frischen Tresor. Exportiere zuerst im alten Konto alles: Einstellungen > Import & Export > Export > \"PrivacyNotes-Backup (.zip)\".",
-        "Melde dich ab, erstelle einen neuen Tresor (neue 12 Wörter) und spiele den Export über Einstellungen > Import & Export > Wiederherstellung > \"Vollständiges Backup (.zip)\" wieder ein. Lösche dann das alte Konto von jedem Gerät, das noch darin angemeldet ist: Einstellungen > Konto > \"Konto und Daten löschen...\". Das entfernt seine synchronisierten Daten und sperrt jeden aus, der die alte Phrase besitzt. Hast du dich mit Google, Apple oder GitHub angemeldet, lösche zuerst das alte Konto und melde dich dann erneut mit Google, Apple oder GitHub an, um den frischen Tresor zu starten.",
+        "Melde dich ab, erstelle einen neuen Tresor (neue 12 Wörter) und spiele den Export über Einstellungen > Import & Export > Wiederherstellung > \"Vollständiges Backup (.zip)\" wieder ein. Lösche dann das alte Konto von einem beliebigen Gerät aus, auf dem du noch bei diesem Konto angemeldet bist: Einstellungen > Konto > \"Konto und Daten löschen...\". Das entfernt seine synchronisierten Daten und sperrt jeden aus, der die alte Phrase besitzt. Hast du dich mit Google, Apple oder GitHub angemeldet, lösche zuerst das alte Konto und melde dich dann erneut mit demselben Login an, um den frischen Tresor zu starten.",
         "Zwei Dinge vorab: Kündige ein aktives Speicher-Add-on, denn die Löschung setzt das voraus, und beachte, dass Pro bei dem Konto bleibt, auf dem es gekauft wurde, statt in den neuen Tresor zu wandern. Bewahre die neue Phrase danach in einem Passwort-Manager auf und sonst nirgends - mehr Vorsorge braucht es nicht."
       ]
     },
@@ -511,8 +516,8 @@
     "over-quota": {
       "q": "Was passiert, wenn ich mein Speicherlimit überschreite?",
       "a": [
-        "Nichts wird je gelöscht. Wenn neue Änderungen nicht mehr hineinpassen, sagt der Sync das: \"Speicher voll. Einige Notizen konnten nicht synchronisiert werden.\" Vorhandene Daten synchronisieren weiter, neuer Zuwachs nicht. Bleibst du über dem Limit, startet ein 90-Tage-Countdown, angezeigt als bernsteinfarbenes Banner. Lesen, Dinge kleiner bearbeiten, Löschen und Exportieren funktionieren die ganze Zeit weiter.",
-        "Nach 90 Tagen über dem Limit pausiert der Sync: Das Banner wird rot (\"Sync pausiert. Du liegst seit über 90 Tagen über deinem Speicherlimit.\"). Die App funktioniert auf jedem Gerät weiter voll; Änderungen bleiben einfach lokal, bis du wieder darunter bist. Die Erholung ist sofort und in Eigenregie: [Schaffe Platz](/de/help/storage-usage/) - das Leeren des Papierkorbs zählt mit - oder füge Speicher unter Einstellungen > Speicher hinzu, und der Sync läuft von selbst weiter. Das ist das bewusste Gegenteil von Diensten, die Daten über dem Limit automatisch löschen."
+        "Nichts wird je gelöscht. Wenn neue Änderungen nicht mehr hineinpassen, sagt der Sync das: \"Speicher voll. Einige Notizen konnten nicht synchronisiert werden.\" Vorhandene Daten synchronisieren weiter, neuer Zuwachs nicht. Bleibst du über dem Limit, startet ein 90-Tage-Countdown, angezeigt als bernsteinfarbenes Banner. Du kannst die ganze Zeit lesen, Inhalte beim Bearbeiten verkleinern, löschen und exportieren.",
+        "Nach 90 Tagen über dem Limit pausiert der Sync: Das Banner wird rot (\"Sync pausiert. Du liegst seit über 90 Tagen über deinem Speicherlimit.\"). Die App funktioniert auf jedem Gerät weiter voll; Änderungen bleiben einfach lokal, bis du wieder darunter bist. Du kannst das sofort selbst beheben: [Schaffe Platz](/de/help/storage-usage/) - das Leeren des Papierkorbs zählt mit - oder füge Speicher unter Einstellungen > Speicher hinzu, und der Sync läuft von selbst weiter. Das ist das bewusste Gegenteil von Diensten, die Daten über dem Limit automatisch löschen."
       ]
     },
     "backup-strategy": {
@@ -534,7 +539,7 @@
       "q": "Verändert oder komprimiert PrivacyNotes meine Bilder?",
       "a": [
         "Ja. Beide Einstellungen sind standardmäßig an, weil wir unsere Nutzer lieben: Du sollst Speicherplatz sparen und deine Privatsphäre behalten. Platzsparer verkleinert ein großes Bild auf 2048 Pixel und speichert es als JPEG mit 85 % Qualität, was alle Details behält, die ein Bildschirm zeigen kann. Standortdaten entfernen streicht die EXIF-Metadaten, die eine Kamera in ein Foto schreibt, samt GPS-Position, bevor das Bild gespeichert wird. Beides gilt für jedes Bild in der App: in eine Notiz eingefügt, als Datei hinzugefügt oder importiert.",
-        "Schalte beides unter **Einstellungen > Bilder** aus; dort gibt es für Kontaktfotos einen dritten Schalter, der sie bei 512 Pixeln hält. Die Einstellungen gelten nur für neue Bilder; Dateien, die keine Bilder sind, werden genau so gespeichert, wie sie sind. HEIC- und TIFF-Bilder werden in JPEG umgewandelt, weil nur Safari sie anzeigen kann. Ein Backup, das du wiederherstellst, wird Byte für Byte zurückgeschrieben."
+        "Du kannst beide Optionen unter **Einstellungen > Bilder** einzeln ausschalten; dort gibt es für Kontaktfotos einen dritten Schalter, der sie bei 512 Pixeln hält. Die Einstellungen gelten nur für neue Bilder; Dateien, die keine Bilder sind, werden genau so gespeichert, wie sie sind. HEIC- und TIFF-Bilder werden in JPEG umgewandelt, weil nur Safari sie anzeigen kann. Ein Backup, das du wiederherstellst, wird Byte für Byte zurückgeschrieben."
       ]
     },
     "storage-usage": {
@@ -547,7 +552,7 @@
     "upload-failed": {
       "q": "Warum ist mein Datei-Upload fehlgeschlagen?",
       "a": [
-        "Der Fehler nennt dir, welche Obergrenze du erreicht hast. Pro Datei: 5 MB kostenlos, 50 MB mit Pro, 100 MB mit einem Speicher-Add-on. Insgesamt: Alles, was du synchronisierst, muss in den Speicher deines Kontos passen (50 MB kostenlos, 500 MB mit Pro, mehr mit Add-ons), ein volles Speicherlimit lässt also einen Upload scheitern, selbst wenn die Datei klein ist. Jeder Dateityp wird akzeptiert.",
+        "Der Fehler nennt dir, welche Obergrenze du erreicht hast. Pro Datei: 5 MB kostenlos, 50 MB mit Pro, 100 MB mit einem Speicher-Add-on. Insgesamt: Alles, was du synchronisierst, muss in den Speicher deines Kontos passen (50 MB kostenlos, 500 MB mit Pro, mehr mit Add-ons), ein voller Speicher lässt also einen Upload scheitern, selbst wenn die Datei klein ist. Jeder Dateityp wird akzeptiert.",
         "Prüfe die Speicherleiste in der Dateien-Ansicht oder unter Einstellungen > Speicher und wähle dann die günstigste Lösung: [Schaffe Platz](/de/help/storage-usage/), führe ein Upgrade durch oder verkleinere die Datei (Handyfotos sind oft mehrere MB große Originale; ein komprimiertes JPEG ist ein Bruchteil davon). Ein Upload, der mangels Verbindung scheitert, bleibt erhalten, statt verloren zu gehen: Die Datei bleibt auf diesem Gerät und wird von selbst hochgeladen, sobald du wieder online bist, und Einstellungen > ID & Sync zählt sie bis dahin als wartend."
       ]
     },
@@ -583,8 +588,8 @@
     "pro-not-active": {
       "q": "Ich habe Pro bezahlt, aber es ist nicht aktiv. Was jetzt?",
       "a": [
-        "Gib ihm eine Minute, dann lade die App neu. Nach dem Checkout fragt die App etwa 20 Sekunden lang nach und schaltet sich von selbst frei, und ein Neuladen prüft den Pro-Status beim Start erneut. Ist die Zahlung angekommen, aber die Aktivierung hängt hinterher, sagt ein Banner \"Zahlung erhalten, aber die Pro-Aktivierung dauert länger als üblich\" - dieser Zustand löst sich in fast allen Fällen von selbst. In Store-Builds wird ein Kauf, der die Validierung nicht besteht, beim Neustart der App erneut versucht, und ein Kauf, der nie aktiviert wird, wird vom Store automatisch innerhalb von 3 Tagen erstattet.",
-        "Immer noch gesperrt? Fast immer ist es eine Konto-Verwechslung: Pro hängt an dem Konto, das beim Kauf angemeldet war, eine andere Phrase - oder ein Google-, Apple- oder GitHub-Login statt deines Phrasen-Tresors - ist also ein anderes Konto. Vergleiche die Konto-ID unter Einstellungen > ID & Sync auf dem Gerät, das gekauft hat. Falls es wirklich feststeckt, [melde es](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) und gib diese Konto-ID an: Sie identifiziert den Kauf und verrät nichts über deine Notizen."
+        "Warte eine Minute, dann lade die App neu. Nach dem Checkout fragt die App etwa 20 Sekunden lang nach und schaltet sich von selbst frei, und ein Neuladen prüft den Pro-Status beim Start erneut. Ist die Zahlung angekommen, aber die Aktivierung hängt hinterher, sagt ein Banner \"Zahlung erhalten, aber die Pro-Aktivierung dauert länger als üblich\" - dieser Zustand löst sich in fast allen Fällen von selbst. In Store-Builds wird ein Kauf, der die Validierung nicht besteht, beim Neustart der App erneut versucht, und ein Kauf, der nie aktiviert wird, wird vom Store automatisch innerhalb von 3 Tagen erstattet.",
+        "Immer noch gesperrt? Fast immer ist es eine Konto-Verwechslung: Pro hängt an dem Konto, das beim Kauf angemeldet war, eine andere Phrase - oder ein Google-, Apple- oder GitHub-Login statt deines Phrasen-Tresors - ist also ein anderes Konto. Vergleiche die Konto-ID unter Einstellungen > ID & Sync auf dem Gerät, auf dem du Pro gekauft hast. Falls es wirklich feststeckt, [melde es](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) und gib diese Konto-ID an: Sie identifiziert den Kauf und verrät nichts über deine Notizen."
       ]
     },
     "manage-storage-addon": {
@@ -599,7 +604,7 @@
       "q": "Werden Käufe zwischen Web, Google Play und dem App Store übernommen?",
       "a": [
         "Ja. Pro und Speicher hängen an deinem Konto, nicht an einer Plattform oder einem Store. Kaufe im Web, und jede App, in der du dich anmeldest, ist Pro, auch Store-Builds; kaufe innerhalb eines Store-Builds, und die Web- und Desktop-Apps schalten sich genauso frei. Das Anmelden ist die Wiederherstellung, denn die Berechtigung folgt dem Konto. Ein Store-Build hat außerdem eine Schaltfläche **Käufe wiederherstellen** unter Einstellungen > Konto, die bei Apple oder Google nachfragt, was dir gehört, und es nach einer Neuinstallation wieder freischaltet.",
-        "Der eine Unterschied ist, wer dir abrechnet. Web-Käufe laufen über Paddle und werden in der App unter Einstellungen > Speicher verwaltet. Käufe innerhalb eines Store-Builds (der App Store heute, Google Play sobald diese App erscheint) werden von diesem Store abgerechnet: Wiederkehrender Speicher wird in den Abo-Einstellungen des Stores gekündigt, und Rückerstattungen folgen dem Prozess des Stores. So oder so ist es überall dasselbe Konto und dasselbe Pro - auch auf Plattformen, die es noch nicht gibt."
+        "Der eine Unterschied ist, wer dir die Rechnung stellt. Web-Käufe laufen über Paddle und werden in der App unter Einstellungen > Speicher verwaltet. Käufe innerhalb eines Store-Builds (der App Store heute, Google Play sobald diese App erscheint) werden von diesem Store abgerechnet: Das Speicher-Abo wird in den Abo-Einstellungen des Stores gekündigt, und Rückerstattungen folgen dem Prozess des Stores. So oder so ist es überall dasselbe Konto und dasselbe Pro - auch auf Plattformen, die es noch nicht gibt."
       ]
     },
     "play-vs-apk": {
@@ -619,7 +624,7 @@
     "markdown-folder-mobile": {
       "q": "Kann ich einen Markdown-Ordner auf dem Handy öffnen?",
       "a": [
-        "Heute nicht. [Der Markdown-Ordner](/de/help/markdown-folder/) läuft in der Desktop-App unter macOS, Windows und Linux und in Chrome, Edge oder Opera auf einem Computer, weil ein Desktop der App einen echten Ordner gibt, den sie direkt lesen und beschreiben kann. Android und iOS geben einer App gar keinen Ordner: Jede Datei erreicht eine App über die Dokumentenschicht des Systems, immer nur eine Freigabe auf einmal. Einen ganzen Baum zu lesen und wieder hineinzuschreiben ist deshalb auf jeder Plattform eigene Arbeit, und die ist noch nicht gebaut.",
+        "Heute nicht. [Der Markdown-Ordner](/de/help/markdown-folder/) läuft in der Desktop-App unter macOS, Windows und Linux und in Chrome, Edge oder Opera auf einem Computer, weil ein Desktop der App einen echten Ordner gibt, den sie direkt lesen und beschreiben kann. Android und iOS geben einer App gar keinen Ordner: Jede Datei erreicht eine App über die Dokumentenschicht des Systems, immer nur eine Freigabe auf einmal. Einen ganzen Verzeichnisbaum zu lesen und wieder hineinzuschreiben muss deshalb für jede Plattform eigens umgesetzt werden. Das ist noch nicht geschehen.",
         "Auf dem Handy holst du dieselben Dateien als Kopien herein: Einstellungen > Import & Export > Import > \"Markdown-Dateien\" nimmt .md und .txt einzeln oder als .zip, und ein gezippter Ordner behält seine Unterordner, Bilder und Anhänge. Sie kommen als verschlüsselte Notizen an, die sich mit deinen anderen Geräten synchronisieren, und Export schreibt sauberes .md wieder heraus. Die Originale bleiben genau dort auf deiner Festplatte, wo sie sind."
       ]
     },
@@ -640,21 +645,21 @@
     "note-links": {
       "q": "Wie verlinke ich eine Notiz mit einer anderen?",
       "a": [
-        "Tipp [[ irgendwo in einer Notiz und beginn, einen Titel zu schreiben. Wähl eine Notiz aus der Liste, und daraus wird ein anklickbarer Notiz-Link. Passt nichts, wähl \"Erstellen\", dann wird die neue Notiz in einem Schritt angelegt und verlinkt. Der Werkzeugleisten-Knopf \"Mit anderer Notiz verknüpfen\" macht dasselbe.",
+        "Tipp [[ irgendwo in einer Notiz und beginn, einen Titel zu schreiben. Wähl eine Notiz aus der Liste, und daraus wird ein anklickbarer Notiz-Link. Passt nichts, wähl \"Erstellen\", dann wird die neue Notiz in einem Schritt angelegt und verlinkt. Der Werkzeugleisten-Knopf \"Auf eine andere Notiz verlinken\" macht dasselbe. Um eine Notiz an einem ihrer Abschnitte zu öffnen, tipp # nach dem Titel und wähl die Überschrift. Das Link-Symbol an einer Überschrift in der Gliederung kopiert so einen Link für dich.",
         "Notiz-Links stecken in der Notiz, sie werden also mitexportiert und überstehen einen Import: Ein Obsidian-Vault behält seine Links, und Evernote-Notizlinks werden beim Import umgewandelt. Um zu finden, was auf eine Notiz zeigt, suche nach ihrem Titel: Jede Notiz, die auf sie verlinkt, enthält diese Wörter."
       ]
     },
     "appearance": {
       "q": "Kann ich ändern, wie die App aussieht?",
       "a": [
-        "Ja, unter Einstellungen > Design. Modus schaltet zwischen Hell, Dunkel und Auto, das deinem System folgt. Textgröße hat vier Stufen und skaliert nur deine Schreibfläche, die Oberfläche drumherum bleibt, wie sie ist. Ansicht ordnet die Einträge als Liste oder Raster. Editor entscheidet, ob Notizen Formatiert oder als reines Markdown öffnen.",
+        "Ja, unter Einstellungen > Design & Layout. Modus schaltet zwischen Hell, Dunkel und Auto, das deinem System folgt. Textgröße hat vier Stufen und skaliert nur deine Schreibfläche, die Oberfläche drumherum bleibt, wie sie ist. Ansicht ordnet die Einträge als Liste oder Raster. Editor entscheidet, ob Notizen Formatiert oder als reines Markdown öffnen.",
         "Farbthemen sind der eine Teil hinter Pro: Das Standardthema ist kostenlos, Pro schaltet den Rest frei, hell wie dunkel. Der Zen-Modus, der alles außer deinem Text ausblendet, ist ebenfalls Pro (Cmd+Shift+F). Modus und Textgröße bleiben auf dem Gerät, auf dem du sie einstellst. Alles andere folgt deinem Konto auf deine anderen Geräte."
       ]
     },
     "share-with-someone": {
       "q": "Kann ich eine Notiz mit jemandem teilen oder gemeinsam daran arbeiten?",
       "a": [
-        "Schick eine [Burn-Notiz](/de/help/burn-notes/): Sie macht aus jeder Notiz einen einmaligen, verschlüsselten Link, der in dem Moment zerstört wird, in dem er gelesen wird. Das deckt ein Passwort, eine Adresse oder einen Entwurf ab. Für etwas, das die andere Person behalten soll, exportier die Notiz als Markdown, HTML oder PDF und schick die Datei.",
+        "Schick eine [Burn Note](/de/help/burn-notes/): Sie macht aus jeder Notiz einen einmaligen, verschlüsselten Link, der in dem Moment zerstört wird, in dem er gelesen wird. Das deckt ein Passwort, eine Adresse oder einen Entwurf ab. Für etwas, das die andere Person behalten soll, exportier die Notiz als Markdown, HTML oder PDF und schick die Datei.",
         "Eine Notiz, die zwei Leute live bearbeiten, wäre ein anderes Produkt: Der Server müsste Schlüssel zwischen Menschen weiterreichen, und den Server aus deinen Schlüsseln herauszuhalten ist hier der ganze Entwurf. Ein Konto ist eine Person mit einer Phrase, und genau das macht \"wir können deine Notizen nicht lesen\" zu einer Tatsache statt zu einer Richtlinie."
       ]
     },
@@ -697,14 +702,14 @@
     "print": {
       "q": "Kann ich eine Notiz drucken oder als PDF speichern?",
       "a": [
-        "Ja. Klick mit rechts auf eine Notiz oder öffne ihr Teilen-Menü und wähl \"Drucken / Als PDF speichern\". Es öffnet sich dein System-Druckdialog, du kannst also an einen Drucker schicken oder von dort ein PDF speichern. Die Seite wird sauber auf Weiß gesetzt, mit deiner Formatierung, egal welches Thema du in der App nutzt.",
-        "Es entsteht auf deinem Gerät wie jeder andere [Export](/de/help/export/), zum Erzeugen wird also nichts hochgeladen. Für mehrere Notizen auf einmal: markier sie und exportier als HTML, dann bekommst du eine druckbare Seite pro Notiz. Das \"Arzt-PDF\" unter Statistik ist ein eigener, dafür gebauter Wellness-Bericht und braucht Pro."
+        "Ja. Klick mit rechts auf eine Notiz oder öffne ihr Teilen-Menü und wähl \"Drucken / Als PDF speichern\". Es öffnet sich dein System-Druckdialog, du kannst die Notiz also an einen Drucker schicken oder von dort ein PDF speichern. Die Seite wird sauber auf Weiß gesetzt, mit deiner Formatierung, egal welches Design du in der App nutzt.",
+        "Es entsteht auf deinem Gerät wie jeder andere [Export](/de/help/export/), zum Erzeugen wird also nichts hochgeladen. Für mehrere Notizen auf einmal: markier sie und exportier als HTML, dann bekommst du eine druckbare Seite pro Notiz. Das \"Arzt-PDF\" unter Statistiken ist ein eigener, dafür gebauter Bericht zum Wohlbefinden und braucht Pro."
       ]
     },
     "note-history": {
       "q": "Kann ich eine ältere Version einer Notiz zurückholen?",
       "a": [
-        "Ja, mit Pro. Öffne das \"...\"-Menü der Notiz und wähl \"Notizverlauf\", um bis zu 20 frühere Versionen durchzusehen und wiederherzustellen. Beim Wiederherstellen geht nichts verloren: Der aktuelle Text wird vorher als Version gesichert, du kannst also hin und her springen. Versionen sind verschlüsselt wie die Notiz selbst, wir können sie also auch nicht lesen.",
+        "Ja, mit Pro. Öffne das \"...\"-Menü der Notiz und wähl \"Verlauf\", um bis zu 20 frühere Versionen durchzusehen und wiederherzustellen. Beim Wiederherstellen geht nichts verloren: Der aktuelle Text wird vorher als Version gesichert, du kannst also hin und her springen. Versionen sind verschlüsselt wie die Notiz selbst, wir können sie also auch nicht lesen.",
         "Ein Schnappschuss entsteht höchstens einmal pro Minute, zwei Bearbeitungen im Sekundenabstand teilen sich also eine Version. Der Notizverlauf ist die eine Pro-Funktion, die über den Server läuft, deshalb behält die Demo stattdessen ihre eigene lokale Kopie. Jeder Tarif hat außerdem den [Papierkorb](/de/help/trash-auto-delete/), der eine gelöschte Notiz 30 Tage hält."
       ]
     },
@@ -723,10 +728,10 @@
       ]
     },
     "family-sharing": {
-      "q": "Können meine Familie oder ich ein Konto oder einen Pro-Kauf teilen?",
+      "q": "Kann meine Familie ein Konto oder einen Pro-Kauf gemeinsam nutzen?",
       "a": [
         "Zwei Konten sind die Antwort, und ein zweites zu starten kostet nichts: Jedes bekommt 2 Geräte und 50 MB gratis. Ein Konto ist eine 12-Wort-Phrase, und wer diese Phrase hat, hat alles darin: jede Notiz, jeden Tresoreintrag, auf jedem Gerät. Getrennte Konten sind das, was jeder Person eigene private Notizen gibt. Pro wird pro Konto gekauft.",
-        "Um genau eine Sache zu übergeben, schick eine [Burn-Notiz](/de/help/burn-notes/) statt deiner Phrase. Ein gemeinsames Haushaltskonto funktioniert gut, wenn du wirklich das willst: Leg die Phrase in einen geteilten Passwortmanager-Eintrag, und behandle jeden, der sie je hatte, als hätte er alles darin gesehen."
+        "Um genau eine Sache zu übergeben, schick eine [Burn Note](/de/help/burn-notes/) statt deiner Phrase. Ein gemeinsames Haushaltskonto funktioniert gut, wenn du wirklich das willst: Leg die Phrase in einen geteilten Passwortmanager-Eintrag, und behandle jeden, der sie je hatte, als hätte er alles darin gesehen."
       ]
     },
     "pro-after-leak": {

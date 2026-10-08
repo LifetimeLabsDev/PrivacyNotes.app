@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { NoteType, SupabaseClient } from '@notes/shared';
 import { useEscapeToClose } from './useEscapeToClose';
 import { X } from './icons';
-import { intlLocale } from './languages';
+import { formatInstant } from './intlFormat';
 import { listNoteVersions, type NoteVersion } from './noteVersions';
 import { Editor } from './Editor';
 
@@ -100,14 +100,14 @@ export function NoteHistoryModal({
         <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-divider shrink-0">
           <div>
             <h2 className="text-lg font-semibold">{t('shell:noteOptionsMenu.noteHistory')}</h2>
-            <p className="text-[12px] text-neutral-500 mt-0.5">
+            <p className="text-[12px] text-pn-muted mt-0.5">
               {t('history.subtitle')}
             </p>
           </div>
           <button
             onClick={onClose}
             aria-label={t('common:actions.close')}
-            className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition p-1 -m-1"
+            className="text-pn-muted hover:text-pn-soft transition p-1 -m-1"
           >
             <X size={18} />
           </button>
@@ -125,16 +125,16 @@ export function NoteHistoryModal({
               growing or shrinking with the script a locale is written in. */}
           <div className="max-h-52 sm:max-h-none sm:w-56 shrink-0 border-b sm:border-b-0 sm:border-e border-divider overflow-y-auto">
             {versions === null && !err && !loadFailed && (
-              <div className="p-4 text-[13px] text-neutral-500">{t('common:state.loading')}</div>
+              <div className="p-4 text-[13px] text-pn-muted">{t('common:state.loading')}</div>
             )}
             {loadFailed && (
-              <div className="p-4 text-[13px] text-red-500">{t('history.loadFailed')}</div>
+              <div className="p-4 text-[13px] text-danger">{t('history.loadFailed')}</div>
             )}
             {err && (
-              <div className="p-4 text-[13px] text-red-500">{err}</div>
+              <div className="p-4 text-[13px] text-danger">{err}</div>
             )}
             {versions && versions.length === 0 && (
-              <div className="p-4 text-[13px] text-neutral-500 leading-relaxed">
+              <div className="p-4 text-[13px] text-pn-muted leading-relaxed">
                 {t('history.empty')}
               </div>
             )}
@@ -151,12 +151,12 @@ export function NoteHistoryModal({
                     }`}
                   >
                     <div className="text-[13px] font-medium tabular-nums">
-                      {formatTime(v.createdAt)}
+                      {formatInstant(v.createdAt, 'dateTime')}
                     </div>
-                    <div className="text-[11px] text-neutral-500 mt-0.5 truncate">
+                    <div className="text-[11px] text-pn-muted mt-0.5 truncate">
                       {v.title.trim() || t('common:state.untitled')}
                     </div>
-                    <div className="text-[11px] text-neutral-400 dark:text-neutral-600 tabular-nums mt-0.5">
+                    <div className="text-[11px] text-pn-muted tabular-nums mt-0.5">
                       {formatBytes(v.bodyBytes)}
                     </div>
                   </button>
@@ -176,8 +176,8 @@ export function NoteHistoryModal({
             {selected ? (
               <>
                 <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-divider shrink-0">
-                  <div className="text-sm text-neutral-500">
-                    {formatTime(selected.createdAt)}
+                  <div className="text-sm text-pn-muted">
+                    {formatInstant(selected.createdAt, 'dateTime')}
                   </div>
                   <h3 className="text-base sm:text-lg font-semibold truncate mt-0.5">
                     {selected.title.trim() || t('common:state.untitled')}
@@ -188,7 +188,7 @@ export function NoteHistoryModal({
                         <span
                           key={t}
                           dir="auto"
-                          className="text-[11px] px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
+                          className="text-[11px] px-1.5 py-0.5 rounded bg-pn/10 text-pn-soft"
                         >
                           #{t}
                         </span>
@@ -218,27 +218,27 @@ export function NoteHistoryModal({
                       preview
                     />
                   ) : (
-                    <div className="text-neutral-400 italic">{t('history.emptyBody')}</div>
+                    <div className="text-pn-muted italic">{t('history.emptyBody')}</div>
                   )}
                 </div>
                 <div className="px-4 sm:px-6 py-3 border-t border-divider flex items-center justify-end gap-2 shrink-0">
                   <button
                     onClick={onClose}
-                    className="rounded-md border border-neutral-300 hover:bg-neutral-100 dark:border-neutral-800 dark:hover:bg-neutral-900 px-3 py-2 text-sm transition"
+                    className="rounded-md border border-divider hover:bg-pn/5 px-3 py-2 text-sm transition"
                   >
                     {t('common:actions.cancel')}
                   </button>
                   <button
                     onClick={() => void handleRestore()}
                     disabled={busy}
-                    className="rounded-md bg-accent text-white hover:bg-accent-hover disabled:opacity-50 px-3 py-2 text-sm font-medium transition whitespace-nowrap"
+                    className="rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover disabled:opacity-50 px-3 py-2 text-sm font-medium transition whitespace-nowrap"
                   >
                     {busy ? t('history.restoring') : t('history.restore')}
                   </button>
                 </div>
               </>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-[13px] text-neutral-500">
+              <div className="flex-1 flex items-center justify-center text-[13px] text-pn-muted">
                 {t('history.selectPrompt')}
               </div>
             )}
@@ -247,21 +247,6 @@ export function NoteHistoryModal({
       </div>
     </div>
   );
-}
-
-function formatTime(iso: string): string {
-  try {
-    const d = new Date(iso);
-    return d.toLocaleString(intlLocale(), {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  } catch {
-    return iso;
-  }
 }
 
 import { formatBytes } from './formatBytes';

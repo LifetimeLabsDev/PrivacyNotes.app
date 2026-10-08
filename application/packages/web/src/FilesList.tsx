@@ -15,7 +15,8 @@ import type { ListPrefs, ListPrefsStore } from './listPrefs';
 import { resolvePrefs, setPillarPrefs } from './listPrefs';
 import { formatBytes } from './formatBytes';
 import { StorageBar } from './StorageBar';
-import { mimeToLabel, formatModifiedShort } from './notesViewUtils';
+import { editedAtOf, mimeToLabel } from './notesViewUtils';
+import { formatInstant, useDateFormatKey } from './intlFormat';
 import { CardGlyph, FileTileIcon, TagChips } from './NoteRow';
 import { iconPin, iconTrash, iconEditPencil, Check, CloudSlash, Folder, Upload, FunnelSimple, PushPin, Shield, PencilSimpleSlash, Files, PILLAR_GLYPHS } from './icons';
 import { HoverLabel } from './HoverLabel';
@@ -37,6 +38,7 @@ import { isPdf, isPictureMime, openMediaViewer, type MediaRef } from './mediaRef
 import { useQuotaBlockedUuids } from './usePendingUploads';
 import { unescapeMarkdownText } from './fileNames';
 import { textMatcher } from './textMatch';
+import { setItemDragImage, writeItemDrag } from './itemDrag';
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -59,8 +61,8 @@ export interface FileItem {
   noteId: string;
   /** Parent note title */
   noteTitle: string;
-  /** Parent note updatedAt */
-  updatedAt: string;
+  /** The parent note's "last edited" date */
+  editedAt: string;
   /** Parent note createdAt */
   createdAt: string;
   /** true when the parent note is a dedicated file container (body is
@@ -129,7 +131,7 @@ export function extractFileItems(notes: LocalNote[]): FileItem[] {
         sizeLabel: '',
         noteId: note.id,
         noteTitle,
-        updatedAt: note.updatedAt,
+        editedAt: editedAtOf(note),
         createdAt: note.createdAt,
         standalone: false, // images are always embedded via the editor
         starred: note.starred === 1,
@@ -156,7 +158,7 @@ export function extractFileItems(notes: LocalNote[]): FileItem[] {
         sizeLabel: sizeStr.trim(),
         noteId: note.id,
         noteTitle,
-        updatedAt: note.updatedAt,
+        editedAt: editedAtOf(note),
         createdAt: note.createdAt,
         standalone: isStandaloneFile,
         starred: note.starred === 1,
@@ -167,8 +169,8 @@ export function extractFileItems(notes: LocalNote[]): FileItem[] {
       });
     }
   }
-  // Sort by parent note updatedAt descending
-  items.sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : a.updatedAt < b.updatedAt ? 1 : 0));
+  // Sort by the parent note's last edit, newest first
+  items.sort((a, b) => (a.editedAt > b.editedAt ? -1 : a.editedAt < b.editedAt ? 1 : 0));
   return items;
 }
 
@@ -209,6 +211,23 @@ function isViewableFileItem(item: FileItem): boolean {
 }
 
 /** The reference a note stores for this file. */
+/**
+ * The note ids a drag of `item` carries, or none when it does not drag. Only
+ * a standalone file drags; in selection mode only a selected one, and it
+ * carries every selected standalone file in `shown`.
+ */
+export function fileDragIds(
+  item: FileItem,
+  shown: readonly FileItem[],
+  isSelected: (f: FileItem) => boolean,
+  selecting: boolean,
+): string[] {
+  if (!item.standalone) return [];
+  if (!selecting) return [item.noteId];
+  if (!isSelected(item)) return [];
+  return [...new Set(shown.filter((f) => f.standalone && isSelected(f)).map((f) => f.noteId))];
+}
+
 export function fileItemMediaRef(item: FileItem): MediaRef {
   return item.kind === 'image'
     ? { src: `pn:img/${item.uuid}`, name: item.name, mime: '' }
@@ -333,12 +352,12 @@ function ProUpsell({ onUpgrade, className = '' }: { onUpgrade: () => void; class
     <div className={`w-full ${className}`}>
       {rows.map((r) => (
         <div key={r.label} className="flex items-center justify-between gap-2 text-[11px] py-0.5">
-          <span className="text-neutral-500 dark:text-neutral-400">{r.label}</span>
+          <span className="text-pn-muted">{r.label}</span>
           <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-            <span className="text-neutral-400 dark:text-neutral-500">
+            <span className="text-pn-muted">
               {r.free} MB <span className="text-[9px] uppercase tracking-wide">{t('filesList.free')}</span>
             </span>
-            <span className="text-neutral-400 dark:text-neutral-500" aria-hidden="true">{'→'}</span>
+            <span className="text-pn-muted" aria-hidden="true">{'→'}</span>
             <span className="text-accent font-medium">
               {r.pro} MB <span className="text-[9px] uppercase tracking-wide">Pro</span>
             </span>
@@ -348,7 +367,7 @@ function ProUpsell({ onUpgrade, className = '' }: { onUpgrade: () => void; class
       <button
         type="button"
         onClick={onUpgrade}
-        className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-medium text-xs px-3 py-2 transition"
+        className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-medium text-xs px-3 py-2 transition"
       >
         <IconUpgrade size={12} /> {t('filesList.upgradeToPro')}
       </button>
@@ -381,25 +400,25 @@ function StorageUpsell({
   return (
     <div className={`w-full ${className}`}>
       <div className="flex items-center justify-between gap-2 text-[11px] py-0.5">
-        <span className="text-neutral-500 dark:text-neutral-400">{t('filesList.perFile')}</span>
+        <span className="text-pn-muted">{t('filesList.perFile')}</span>
         <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-          <span className="text-neutral-400 dark:text-neutral-500">{perFileFrom}</span>
-          <span className="text-neutral-400 dark:text-neutral-500" aria-hidden="true">{'→'}</span>
+          <span className="text-pn-muted">{perFileFrom}</span>
+          <span className="text-pn-muted" aria-hidden="true">{'→'}</span>
           <span className="text-accent font-medium">{perFileTo}</span>
         </span>
       </div>
       <div className="flex items-center justify-between gap-2 text-[11px] py-0.5">
-        <span className="text-neutral-500 dark:text-neutral-400">{t('filesList.storage')}</span>
+        <span className="text-pn-muted">{t('filesList.storage')}</span>
         <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-          <span className="text-neutral-400 dark:text-neutral-500">{fromLabel}</span>
-          <span className="text-neutral-400 dark:text-neutral-500" aria-hidden="true">{'→'}</span>
+          <span className="text-pn-muted">{fromLabel}</span>
+          <span className="text-pn-muted" aria-hidden="true">{'→'}</span>
           <span className="text-accent font-medium">{t('filesList.upToMax', { max: targetLabel })}</span>
         </span>
       </div>
       <button
         type="button"
         onClick={onManage}
-        className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-medium text-xs px-3 py-2 transition"
+        className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-medium text-xs px-3 py-2 transition"
       >
         <IconUpgrade size={12} /> {t('filesList.addStorage')}
       </button>
@@ -465,6 +484,8 @@ export function FilesList({
   gatedNoteIds,
 }: FilesListProps) {
   const { t } = useTranslation(['shell', 'notes', 'media']);
+  // The rows format their dates inline: a new date setting renders them again.
+  useDateFormatKey();
   const showNote = listPrefs.showAttachedNotes;
   /** Blobs kept local because they do not fit the storage quota - the
    *  rows wear the same amber chip as the attachment card (#151). */
@@ -476,7 +497,7 @@ export function FilesList({
   };
   const [sortOpen, setSortOpen] = useState(false);
 
-  // Read sort from shared prefs. Map 'modified' → updatedAt, 'title' → name.
+  // Read sort from shared prefs. Map 'modified' → editedAt, 'title' → name.
   const sortField = listPrefs.sortField;
   const sortDir = listPrefs.sortDir;
   /** Composite key for a file row: "noteId:uuid". Content-hash dedup
@@ -727,11 +748,33 @@ export function FilesList({
       if (sortField === 'title') return dir * a.name.localeCompare(b.name);
       if (sortField === 'size') return dir * (a.size - b.size);
       if (sortField === 'created') return dir * (a.createdAt > b.createdAt ? 1 : a.createdAt < b.createdAt ? -1 : 0);
-      // modified - by parent note updatedAt
-      return dir * (a.updatedAt > b.updatedAt ? 1 : a.updatedAt < b.updatedAt ? -1 : 0);
+      // modified - by the parent note's last edit
+      return dir * (a.editedAt > b.editedAt ? 1 : a.editedAt < b.editedAt ? -1 : 0);
     });
     return items;
   }, [visibleItems, filter, search, sortField, sortDir]);
+
+  /**
+   * A standalone file drags its note onto a sidebar folder or tag: the file
+   * IS that note. A picture or attachment inside a note does not drag, since
+   * the drop would move or tag the whole host note. In selection mode a
+   * selected standalone file drags every selected standalone file the list
+   * shows. Ids only, so a drop into an editor makes nothing.
+   * Spec: ops/docs/plans/drag-to-folder-and-tag.md (section 13)
+   */
+  const fileDragProps = (item: FileItem) => {
+    const ids = () => fileDragIds(item, filtered, (f) => selectedFileIds.has(fileKey(f)), selectedFileIds.size > 0);
+    if (ids().length === 0) return {};
+    return {
+      draggable: true,
+      'data-file-drag': '',
+      onDragStart: (e: React.DragEvent<HTMLElement>) => {
+        const carried = ids();
+        writeItemDrag(e.dataTransfer, carried, '');
+        setItemDragImage(e.dataTransfer, e.currentTarget, carried.length);
+      },
+    };
+  };
 
   /* The two standing "here is why you see less" entries, shared with the
      other scoped pillars (ListFilterChips.tsx owns both). "Clear search"
@@ -807,7 +850,7 @@ export function FilesList({
           type="button"
           onClick={() => onUploadFiles()}
           tabIndex={mobileTabIndex}
-          className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent font-semibold px-3 py-1.5 text-lg tracking-tight transition"
+          className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-accent/10 hover:bg-accent/20 text-accent-strong font-semibold px-3 py-1.5 text-lg tracking-tight transition"
         >
           <Upload size={18} />
           {t('filesList.upload')}
@@ -826,7 +869,7 @@ export function FilesList({
       {/* ── Selection count strip ──────────────────────────────── */}
       {selectedFileIds.size > 0 && (
         <div className="shrink-0 px-4 py-2 border-b border-divider bg-accent/5 dark:bg-accent/10 flex items-center justify-between gap-2 text-[13px]">
-          <span className="font-medium text-neutral-700 dark:text-neutral-200 tabular-nums">
+          <span className="font-medium text-pn-soft tabular-nums">
             {t('filesList.selectedOf', { selected: selectedFileIds.size, total: filtered.length })}
           </span>
           {filtered.length > 0 && (
@@ -857,7 +900,7 @@ export function FilesList({
         ) : !hasStorageSub && isStorageConfigured() ? (
           <StorageUpsell onManage={onManageStorage} currentMaxBytes={quotaMaxBytes} />
         ) : (
-          <p className="text-[11px] text-neutral-600 dark:text-neutral-300 leading-relaxed">
+          <p className="text-[11px] text-pn-soft leading-relaxed">
             {t('filesList.supportedTypesHint', { max: hasStorageSub ? '100' : '50' })}
           </p>
         )}
@@ -878,8 +921,8 @@ export function FilesList({
             tabIndex={mobileTabIndex}
             className={`text-xs px-2.5 py-1 rounded-full transition font-medium ${
               filter === key
-                ? 'bg-accent text-white'
-                : 'bg-surface-1 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-surface-2'
+                ? 'bg-accent-fill text-white'
+                : 'bg-surface-1 text-pn-muted hover:bg-pn/10'
             }`}
           >
             {label}
@@ -900,8 +943,8 @@ export function FilesList({
             aria-expanded={sortOpen}
             className={`shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-md border transition ${
               sortOpen
-                ? 'bg-accent/10 border-accent text-accent'
-                : 'bg-surface-2 border-divider text-neutral-600 hover:border-accent hover:text-accent dark:text-neutral-300'
+                ? 'bg-accent/10 border-accent text-accent-strong'
+                : 'bg-surface-2 border-divider text-pn-soft hover:border-accent hover:text-accent'
             }`}
           >
             <FunnelSimple size={18} />
@@ -924,6 +967,7 @@ export function FilesList({
             className="absolute start-3 top-full mt-1"
             titleLabel={t('filesList.sortName')}
             pillar="files"
+            showSizeToggle
           />
         )}
       </div>
@@ -935,7 +979,7 @@ export function FilesList({
           checked={showNote}
           onChange={setShowNote}
           className="gap-2 select-none"
-          labelClassName="text-xs text-neutral-600 dark:text-neutral-400"
+          labelClassName="text-xs text-pn-muted"
         />
       </div>
 
@@ -953,10 +997,10 @@ export function FilesList({
           />
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-6 py-12">
-            <div className="w-16 h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4">
-              <Folder size={28} className="text-neutral-400 dark:text-neutral-600" />
+            <div className="w-16 h-16 rounded-full bg-track flex items-center justify-center mb-4">
+              <Folder size={28} className="text-pn-muted" />
             </div>
-            <p className="text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">
+            <p className="text-sm font-medium text-pn-soft mb-1">
               {search.trim()
                 ? t('filesList.noMatches')
                 : filter === 'all'
@@ -965,7 +1009,7 @@ export function FilesList({
             </p>
             {!search.trim() && (
               <>
-                <p className="text-xs text-neutral-400 dark:text-neutral-600 max-w-[220px] mb-4">
+                <p className="text-xs text-pn-muted max-w-[220px] mb-4">
                   {/* States the real cap, so it follows proUnlocked (the demo
                       uploads at the Pro limit). The free-vs-Pro table above
                       is the upsell and stays keyed off isPro. */}
@@ -974,7 +1018,7 @@ export function FilesList({
                 <button
                   type="button"
                   onClick={() => onUploadFiles()}
-                  className="text-xs font-medium text-white bg-accent hover:bg-accent-hover px-4 py-1.5 rounded-md transition"
+                  className="text-xs font-medium text-white bg-accent-fill hover:bg-accent-fill-hover px-4 py-1.5 rounded-md transition"
                 >
                   {t('filesList.uploadFiles')}
                 </button>
@@ -1033,7 +1077,7 @@ export function FilesList({
               // can pin to the tile bottom (margin-top:auto), the list puts tags
               // last to match NoteRow.
               const previewEl = listPrefs.showPreview && !gatedNow.has(item.noteId) && (
-                <div className="text-[13px] text-neutral-500 dark:text-neutral-400 truncate mt-0.5">
+                <div className="text-[13px] text-pn-muted truncate mt-0.5">
                   {/* Type word only for a standalone file. Size belongs on the
                       meta line for both row kinds: appending it here would put
                       a standalone row's size and a note-attached row's size in
@@ -1052,17 +1096,19 @@ export function FilesList({
               // the pane doesn't strand them (same rule as NoteRow).
               // Every list row, standalone or note-attached: one list must not
               // show its sizes in two places, and the preview line carries
-              // none. Grid stays out: its tiles carry their own badge beside
-              // the content column, where it costs no title width.
-              const showRowSize = viewMode !== 'grid' && item.size > 0;
+              // none. Grid stays out of the meta line: its tiles carry their
+              // own badge beside the content column, where it costs no title
+              // width. One switch governs every one of them, so turning the
+              // size off in a grid is not a toggle that does nothing.
+              const showRowSize = listPrefs.showSize && viewMode !== 'grid' && item.size > 0;
               // Same amber chip as the attachment card's meta line (#151):
               // the blob is kept local because it does not fit the quota.
               const localOnly = quotaBlockedUuids.has(item.uuid);
               const metaEl = (listPrefs.showDate || showRowSize || localOnly || (item.starred && selectedFileIds.size === 0) || item.pinProtected || item.locked) && (
                 <div className="pn-card-meta flex items-center gap-1.5 mt-0.5">
                   {listPrefs.showDate && (
-                    <span className="pn-card-date min-w-0 text-[12px] text-neutral-400 dark:text-neutral-600 whitespace-nowrap overflow-hidden text-ellipsis">
-                      {t('noteRow.modified', { ns: 'notes' })} {formatModifiedShort(item.updatedAt)}
+                    <span className="pn-card-date min-w-0 text-[12px] text-pn-muted whitespace-nowrap overflow-hidden text-ellipsis">
+                      {t('noteRow.modified', { ns: 'notes' })} {formatInstant(item.editedAt, 'tile')}
                     </span>
                   )}
                   <span className="pn-card-status shrink-0 flex items-center gap-1.5 text-accent">
@@ -1078,7 +1124,7 @@ export function FilesList({
                     {/* Icon-only, like the status icons beside it - the WHY
                         lives on the attachment card's amber line (#151). */}
                     {localOnly && (
-                      <CloudSlash size={12} className="text-amber-600 dark:text-amber-400" aria-label={t('attachment.localOnly', { ns: 'media' })} />
+                      <CloudSlash size={12} className="text-warning" aria-label={t('attachment.localOnly', { ns: 'media' })} />
                     )}
                   </span>
                   {/* Anchored to the date, like the status icons beside it and
@@ -1088,7 +1134,7 @@ export function FilesList({
                       because section 66 of ui-patterns.md is exactly about a
                       value stranded there when the pane widens. */}
                   {showRowSize && (
-                    <span className="shrink-0 text-[11px] text-neutral-400 dark:text-neutral-500 font-medium tabular-nums">
+                    <span className="shrink-0 text-[11px] text-pn-muted font-medium tabular-nums">
                       {formatBytes(item.size)}
                     </span>
                   )}
@@ -1107,8 +1153,8 @@ export function FilesList({
                     viewMode === 'grid' ? 'mt-0.5' : ''
                   } ${
                     isSelected
-                      ? 'bg-accent border-accent text-white'
-                      : 'border-neutral-300 dark:border-neutral-600'
+                      ? 'bg-accent-fill border-accent-fill text-white'
+                      : 'border-pn-muted/50'
                   }`}
                 >
                   {isSelected && (
@@ -1144,6 +1190,7 @@ export function FilesList({
                   onTouchEnd={cancelFileLongPress}
                   onTouchMove={cancelFileLongPress}
                   onTouchCancel={cancelFileLongPress}
+                  {...fileDragProps(item)}
                   tabIndex={mobileTabIndex}
                   className={
                     isImageBg
@@ -1165,8 +1212,8 @@ export function FilesList({
                               : isOpen
                                 ? 'bg-accent/10 border-accent dark:bg-accent/15'
                                 : contextTargetId === fk
-                                  ? 'bg-neutral-200/70 border-divider dark:bg-neutral-800/70'
-                                  : 'bg-surface-2 border-divider hover:border-accent/60 dark:hover:bg-neutral-900/40'
+                                  ? 'bg-pn/10 border-divider'
+                                  : 'bg-surface-2 border-divider hover:border-accent/60 dark:hover:bg-pn/5'
                           }`
                         : `pn-lazy-row w-full text-start px-4 py-3 transition group border-b border-divider/50 ${
                             isSelected
@@ -1174,8 +1221,8 @@ export function FilesList({
                               : isOpen
                                 ? 'bg-accent/10 hover:bg-accent/15 border-s-2 border-s-accent dark:bg-accent/15 dark:hover:bg-accent/20'
                                 : contextTargetId === fk
-                                  ? 'bg-neutral-200/70 hover:bg-neutral-200/80 dark:bg-neutral-800/70 dark:hover:bg-neutral-800/80'
-                                  : 'hover:bg-neutral-200/50 dark:hover:bg-neutral-900/50'
+                                  ? 'bg-pn/10 hover:bg-pn/10'
+                                  : 'hover:bg-pn/5'
                           }`
                   }
                 >
@@ -1191,11 +1238,11 @@ export function FilesList({
                           {item.pinProtected && <Shield size={11} className="shrink-0" aria-label={t('filesList.pinProtected')} />}
                           {item.locked && <PencilSimpleSlash size={11} className="shrink-0" aria-label={t('filesList.readOnly')} />}
                           {localOnly && <CloudSlash size={11} className="shrink-0 text-amber-400" aria-label={t('attachment.localOnly', { ns: 'media' })} />}
-                          <span className="truncate" dir="auto">{item.name}</span>
+                          <span data-slot="title" className="truncate" dir="auto">{item.name}</span>
                         </div>
                         <div className="flex items-center justify-between gap-2 mt-0.5">
                           <span className="text-[11px] text-white/85 truncate">{item.standalone ? getFileTypeLabel(item) : item.noteTitle}</span>
-                          {item.size > 0 && <span className="text-[11px] text-white/85 shrink-0">{formatBytes(item.size)}</span>}
+                          {listPrefs.showSize && item.size > 0 && <span className="text-[11px] text-white/85 shrink-0">{formatBytes(item.size)}</span>}
                         </div>
                       </div>
                       {selectedFileIds.size > 0 && (
@@ -1208,7 +1255,7 @@ export function FilesList({
                             else toggleFileSelected(item);
                           }}
                           className={`absolute start-2 top-2 z-10 w-5 h-5 rounded border-2 flex items-center justify-center cursor-pointer transition ${
-                            isSelected ? 'bg-accent border-accent text-white' : 'border-white/80 bg-black/30'
+                            isSelected ? 'bg-accent-fill border-accent-fill text-white' : 'border-white/80 bg-black/30'
                           }`}
                         >
                           {isSelected && <Check size={12} />}
@@ -1223,8 +1270,8 @@ export function FilesList({
                      truncated far earlier here than in the notes list. */
                   <>
                     <div className="flex items-center gap-2.5">
-                      {selectedFileIds.size > 0 ? selectBox : <FileTileIcon mime={item.mime} />}
-                      <div className="min-w-0 flex-1 text-sm font-semibold truncate text-neutral-900 dark:text-white" dir="auto">
+                      {selectedFileIds.size > 0 ? selectBox : <span data-slot="icon" className="contents"><FileTileIcon mime={item.mime} /></span>}
+                      <div data-slot="title" className="min-w-0 flex-1 text-sm font-semibold truncate text-pn" dir="auto">
                         {item.name}
                       </div>
                     </div>
@@ -1235,14 +1282,14 @@ export function FilesList({
                   ) : (
                   <>
                   {selectedFileIds.size > 0 ? selectBox : (
-                    <FileTileIcon mime={item.mime} className="pn-card-icbox" />
+                    <span data-slot="icon" className="contents"><FileTileIcon mime={item.mime} className="pn-card-icbox" /></span>
                   )}
                   {/* flex-col + self-stretch lets the meta row's margin-top:auto
                       (grid only, see index.css) pin the date to the tile bottom. */}
                   <div className="min-w-0 flex-1 flex flex-col self-stretch">
-                    <div className="pn-card-title text-sm font-semibold truncate flex items-center gap-1.5 text-neutral-900 dark:text-white">
+                    <div className="pn-card-title text-sm font-semibold truncate flex items-center gap-1.5 text-pn">
                       <CardGlyph type="file" />
-                      <span className="pn-card-titletext truncate" dir="auto">{item.name}</span>
+                      <span data-slot="title" className="pn-card-titletext truncate" dir="auto">{item.name}</span>
                     </div>
                     {previewEl}
                     {/* Tags sit above the meta row so the date can pin to the
@@ -1250,8 +1297,12 @@ export function FilesList({
                     {tagsEl}
                     {metaEl}
                   </div>
-                  {item.size > 0 && !item.standalone && (
-                    <span className="pn-file-size shrink-0 text-[11px] text-neutral-400 dark:text-neutral-500 font-medium mt-0.5">{formatBytes(item.size)}</span>
+                  {/* Every tile with a size, the way every row has one. A
+                      standalone file used to be the exception, so the one
+                      pillar whose rows exist to show a size hid it on the
+                      tiles that ARE the files. */}
+                  {listPrefs.showSize && item.size > 0 && (
+                    <span className="pn-file-size shrink-0 text-[11px] text-pn-muted font-medium mt-0.5">{formatBytes(item.size)}</span>
                   )}
                   </>
                   )}

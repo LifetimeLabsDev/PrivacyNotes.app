@@ -42,6 +42,14 @@ export type ListPrefs = {
    */
   showDate: boolean;
   /**
+   * Whether a row carries the file size that its pillar prints on every row -
+   * the Files list and the Markdown folder list. Default true. The size a row
+   * shows BECAUSE the list is sorted by size is not this switch's: that one
+   * answers the sort, so hiding it would hide the column being sorted on.
+   * Named "Show file size" in the interface.
+   */
+  showSize: boolean;
+  /**
    * Whether a row shows its folder chip and its tag chips. Default true:
    * both are the browse axis a free account has, so a new user who tags or
    * files a note sees the chip on the row without finding the pref first.
@@ -73,6 +81,13 @@ export type ListPrefs = {
    * Spec: ops/docs/plans/bookmarks-pillar.md (section 8)
    */
   showNoteLinks: boolean;
+  /**
+   * Tasks pillar only: list the notes that merely carry a checkbox line
+   * alongside the task lists made in the pillar itself. Off leaves only the
+   * notes typed 'task', so a recipe or a packing list stays out of the way.
+   * Spec: ops/docs/plans/issue-batches.md (batch 17)
+   */
+  showNoteTasks: boolean;
 };
 
 /**
@@ -105,11 +120,13 @@ const DEFAULT_PREFS: ListPrefs = {
   showPreview: true,
   longPreview: false,
   showDate: true,
+  showSize: true,
   showTags: true,
   showLocked: true,
   showProtected: true,
   showAttachedNotes: true,
   showNoteLinks: false,
+  showNoteTasks: true,
 };
 
 export const DEFAULT_STORE: ListPrefsStore = {
@@ -136,7 +153,8 @@ export const DEFAULT_STORE: ListPrefsStore = {
  *   - files: the row always carries its size, which is the number that
  *     matters, and the preview line only names the type again.
  *   - journal: the title IS the date (`journalTitle`), so a date line under
- *     it says the same thing twice.
+ *     it says the same thing twice; and the entries line up by the day each
+ *     one is for, which the `created` sort reads in this pillar.
  *   - vault: a login's second line is its username, so the preview stays ON
  *     here - the exact opposite of bookmarks, through the same switch. Only
  *     the date goes.
@@ -152,7 +170,7 @@ const PILLAR_DEFAULTS: Partial<Record<Pillar, Partial<ListPrefs>>> = {
   // Spec: ops/docs/plans/contacts-pillar.md (section 10, PILLAR_DEFAULTS)
   contacts: { showDate: false },
   files: { showPreview: false, showDate: false },
-  journal: { showDate: false },
+  journal: { showDate: false, sortField: 'created' },
   vault: { showDate: false },
 };
 
@@ -161,9 +179,22 @@ const PILLAR_DEFAULTS: Partial<Record<Pillar, Partial<ListPrefs>>> = {
  * or an older client schema) into a well-formed store.
  * ──────────────────────────────────────────────────────────────── */
 
+/** The keys of `obj` this build does not know, with plain values, so a key a
+ *  newer client added survives this client's next save instead of reverting
+ *  to its default everywhere (the carry of DAT-B-1). */
+function unknownScalars(obj: object, known: object): Record<string, string | number | boolean> {
+  const out: Record<string, string | number | boolean> = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (k === '__proto__' || k === 'constructor' || k === 'prototype' || k in known) continue;
+    if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') out[k] = v;
+  }
+  return out;
+}
+
 function hydratePrefs(raw: unknown): ListPrefs {
   const base: ListPrefs = { ...DEFAULT_PREFS };
   if (!raw || typeof raw !== 'object') return base;
+  Object.assign(base, unknownScalars(raw, DEFAULT_PREFS));
   const obj = raw as Partial<ListPrefs>;
   if (
     obj.sortField === 'modified' ||
@@ -179,11 +210,13 @@ function hydratePrefs(raw: unknown): ListPrefs {
   if (typeof obj.showPreview === 'boolean') base.showPreview = obj.showPreview;
   if (typeof obj.longPreview === 'boolean') base.longPreview = obj.longPreview;
   if (typeof obj.showDate === 'boolean') base.showDate = obj.showDate;
+  if (typeof obj.showSize === 'boolean') base.showSize = obj.showSize;
   if (typeof obj.showTags === 'boolean') base.showTags = obj.showTags;
   if (typeof obj.showLocked === 'boolean') base.showLocked = obj.showLocked;
   if (typeof obj.showProtected === 'boolean') base.showProtected = obj.showProtected;
   if (typeof obj.showAttachedNotes === 'boolean') base.showAttachedNotes = obj.showAttachedNotes;
   if (typeof obj.showNoteLinks === 'boolean') base.showNoteLinks = obj.showNoteLinks;
+  if (typeof obj.showNoteTasks === 'boolean') base.showNoteTasks = obj.showNoteTasks;
   return base;
 }
 
@@ -250,7 +283,15 @@ export function setPillarPrefs(
 /**
  * Map the app's internal `view` state to a pillar. Views that don't
  * correspond to a pillar ('trash', 'starred', 'archive', 'markdown') map to 'global' so
- * they always inherit and never own an override.
+ * they always inherit and never own an override. The notes list is one of
+ * them: it shares Global with those views, which is also what its own sort
+ * menu edits.
+ *
+ * This answer and the `pillar` a pane hands its `ListPrefsPopover` are the
+ * same question, and a pane that answers it twice can read one copy while its
+ * menu writes another. In the Tasks pillar that reads as a dead sort control:
+ * the menu writes Global, the list renders from the Tasks copy, and the two
+ * agree only until something writes a Tasks copy.
  *
  * Takes `View` rather than a local restatement of it. A local union would be
  * one more copy of the same strings and the only one that would NOT fail the
@@ -259,7 +300,7 @@ export function setPillarPrefs(
  * surface as a call-site type error far from the cause.
  */
 export function viewToPillar(view: View): Pillar {
-  if (view === 'all') return 'notes';
+  if (view === 'all') return 'global';
   if (view === 'journal') return 'journal';
   if (view === 'tasks') return 'tasks';
   if (view === 'vault') return 'vault';

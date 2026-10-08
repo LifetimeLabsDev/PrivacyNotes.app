@@ -71,9 +71,13 @@ title: ทุกอย่างที่ markdown ทำได้ที่นี
 
 > คำพูดอ้างอิงจะเยื้องออกจากขอบ และมีเส้นสีอยู่ด้านข้าง
 
+## เชิงอรรถ
+
+เชิงอรรถช่วยแยกแหล่งที่มาหรือหมายเหตุออกจากเนื้อหา[^1] พิมพ์ `[^1]` หลังคำ หรือเลือก **เชิงอรรถ** ในเมนู **แทรก** คลิกตัวเลขเล็กๆ เพื่อไปที่เชิงอรรถ
+
 ## โค้ด
 
-โค้ดจะคงการเว้นวรรคไว้ และมีสีตามภาษา
+โค้ดจะคงการเว้นวรรคไว้ และมีสีตามภาษา ชื่อที่ด้านบนของบล็อกคือภาษาของบล็อกนั้น คลิกเพื่อเลือกภาษาอื่น
 
 ```js
 export function seal(note, key) {
@@ -86,6 +90,47 @@ export function seal(note, key) {
 def rolling_mean(values, window):
     return [sum(values[i:i + window]) / window
             for i in range(len(values) - window + 1)]
+```
+
+บล็อกยาวจะเปิดแบบพับไว้ เพื่อให้ส่วนที่เหลือของโน้ตอยู่ใกล้ ๆ ปุ่มด้านล่างจะแสดงทุกบรรทัด
+
+```js
+const WORDS_PER_MINUTE = 200;
+
+export function readingStats(markdown) {
+  const text = markdown
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*_~`>|-]/g, ' ');
+
+  const words = text.split(/\s+/).filter(Boolean);
+  const headings = markdown.match(/^#{1,6} /gm) ?? [];
+  const tasks = markdown.match(/^\s*- \[[ x]\] /gm) ?? [];
+  const done = tasks.filter((task) => task.includes('[x]'));
+
+  return {
+    words: words.length,
+    minutes: Math.max(1, Math.round(words.length / WORDS_PER_MINUTE)),
+    headings: headings.length,
+    tasks: tasks.length,
+    done: done.length,
+  };
+}
+
+export function summary(stats) {
+  const parts = [`${stats.words} words`, `${stats.minutes} min read`];
+  if (stats.headings > 0) {
+    parts.push(`${stats.headings} sections`);
+  }
+  if (stats.tasks > 0) {
+    parts.push(`${stats.done} of ${stats.tasks} tasks done`);
+  }
+  return parts.join(' · ');
+}
+
+export function isLongRead(stats) {
+  return stats.minutes >= 10;
+}
 ```
 
 โค้ดสั้น ๆ ในประโยคจะดูเป็นแบบ `นี้` แทน
@@ -113,6 +158,10 @@ $$i\hbar\frac{\partial}{\partial t}\Psi = \hat{H}\Psi$$
 
 ลิงก์ระหว่างโน้ตไม่จำเป็นต้องแสดงเป็นชื่อโน้ต พิมพ์ชื่อ ตามด้วยขีดตั้ง แล้วตามด้วยคำที่ต้องการให้แสดงบนหน้า: [[โน้ตของคุณได้รับการปกป้องอย่างไร|คำเหล่านี้]] จะเปิดโน้ตนั้น
 
+ลิงก์ระหว่างโน้ตยังเปิดโน้ตที่หัวเรื่องใดหัวเรื่องหนึ่งได้ด้วย พิมพ์ `#` ต่อท้ายชื่อแล้วเลือกหัวเรื่อง: [[โน้ตของคุณได้รับการปกป้องอย่างไร#ใครถือกุญแจของคุณ]] จะเปิดโน้ตนั้นที่ส่วนเรื่องกุญแจ ไอคอนลิงก์ที่หัวเรื่องในเค้าโครงจะคัดลอกลิงก์แบบนี้ให้คุณ
+
 ---
 
 *หากคุณเขียน markdown อยู่แล้ว พิมพ์ไปได้เลย แล้วรูปแบบจะแสดงทันที หากต้องการดูข้อความดิบของโน้ตใดก็ได้ ให้คลิก **แสดง Markdown** ที่มุมขวาล่างของโน้ตนี้*
+
+[^1]: นี่คือเชิงอรรถ ลูกศรข้างๆ จะพากลับขึ้นไปด้านบน

@@ -23,7 +23,7 @@ export function StoragePastDueBanner({
         <button
           type="button"
           onClick={onDismiss}
-          className="text-amber-600 dark:text-amber-500 hover:text-amber-900 dark:hover:text-amber-200"
+          className="text-warning hover:text-amber-900 dark:hover:text-amber-200"
           aria-label={t('banner.dismiss')}
         >
           ×

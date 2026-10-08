@@ -38,7 +38,7 @@
   "storageBar": {
     "usage": "{{percent}} % belegt ({{used}} / {{max}})",
     "refresh": "Speicher aktualisieren",
-    "cleanupInfo": "Gelöschte Elemente sind innerhalb weniger Tage von allen deinen Geräten entfernt."
+    "cleanupInfo": "Gelöschte Elemente zählen sofort nicht mehr mit. Die verschlüsselten Dateien selbst verschwinden innerhalb weniger Tage vom Server."
   },
   "updateToast": {
     "available": "Update verfügbar",
@@ -66,23 +66,29 @@
     },
     "actions": {
       "focusSearch": "Suche fokussieren",
+      "commandMode": "Befehle (oder > in die Suche tippen)",
+      "quickSwitcher": "Zu einem Eintrag oder einer Einstellung springen",
       "moveInList": "In der Liste nach unten / oben",
-      "notePrev": "Vorherige Notiz in der Liste",
-      "noteNext": "Nächste Notiz in der Liste",
-      "clearSearch": "Suche leeren / Notiz schließen / Auswahl beenden",
+      "listStep": "Vorheriger / nächster Eintrag in der Liste",
+      "history": "Zurück / vorwärts im Verlauf",
+      "goToSection": "Seitenleisten-Abschnitt 1 bis 9",
+      "movePanes": "Nächste / vorherige Spalte",
+      "clearSearch": "Suche / Filter leeren / Notiz schließen",
       "newNote": "Neue Notiz",
+      "newMenu": "Neuer Eintrag, dann sein Buchstabe",
       "moveToTrash": "Notiz in den Papierkorb",
       "findInNote": "In Notiz suchen (erneut drücken zum Schließen)",
       "findReplace": "Suchen und ersetzen",
       "toggleOutline": "Gliederung ein-/ausblenden",
+      "markdownView": "Markdown-Ansicht ein / aus",
+      "invisibles": "Unsichtbare Zeichen ein / aus",
+      "insertDate": "Datum / Datum und Uhrzeit einfügen",
       "bold": "Fett",
       "italic": "Kursiv",
       "insertLink": "Link einfügen (beim Bearbeiten)",
-      "undo": "Rückgängig",
-      "redo": "Wiederholen (beim Bearbeiten)",
+      "undoRedo": "Rückgängig / Wiederholen",
       "taskList": "Aufgabenliste",
-      "indentList": "Einzug vergrößern (Liste oder Aufgabenliste)",
-      "outdentList": "Einzug verkleinern (Liste oder Aufgabenliste)",
+      "indentOutdent": "Liste ein- / ausrücken",
       "underline": "Unterstrichen",
       "strikethrough": "Durchgestrichen",
       "highlight": "Hervorheben",
@@ -100,13 +106,66 @@
       "openSettings": "Einstellungen öffnen",
       "toggleSidebar": "Seitenleiste ein-/ausblenden",
       "toggleTheme": "Hell / Dunkel umschalten",
+      "appZoom": "App größer / kleiner",
+      "appZoomReset": "App zurück auf Normalgröße",
       "zenMode": "Zen-/Fokusmodus (Pro)",
       "toggleHelp": "Diese Hilfe ein-/ausblenden",
       "selectSeveral": "Mehrere Einträge auswählen",
       "selectRange": "Bereich auswählen (während der Auswahl)",
-      "openInTab": "In einem Tab öffnen (Mittelklick geht auch)",
-      "closeTab": "Tab schließen"
+      "openInTab": "In einem Tab öffnen (oder Mittelklick)",
+      "closeTab": "Tab schließen",
+      "nextTab": "Nächster / vorheriger Tab"
     }
+  },
+  "palette": {
+    "label": "Befehle",
+    "open": "Befehle (>)",
+    "empty": "Kein passender Befehl",
+    "groups": {
+      "commands": "Befehle",
+      "new": "Neu",
+      "goTo": "Gehe zu"
+    },
+    "commands": {
+      "quickSwitcher": "Zu einem Eintrag oder einer Einstellung springen",
+      "historyBack": "Zurück",
+      "historyForward": "Vorwärts",
+      "toggleSidebar": "Seitenleiste ein-/ausblenden",
+      "toggleTheme": "Hell / Dunkel umschalten",
+      "openSettings": "Einstellungen öffnen",
+      "zen": "Zen-Modus",
+      "markdownView": "Markdown-Ansicht ein / aus",
+      "invisibles": "Unsichtbare Zeichen ein / aus",
+      "find": "In Notiz suchen",
+      "findReplace": "Suchen und ersetzen",
+      "outline": "Gliederung ein-/ausblenden",
+      "insertDate": "Datum einfügen",
+      "insertDateTime": "Datum und Uhrzeit einfügen",
+      "clearFilters": "Filter aufheben",
+      "moveToTrash": "Notiz in den Papierkorb",
+      "closeTab": "Tab oder Notiz schließen",
+      "nextTab": "Nächster Tab",
+      "previousTab": "Vorheriger Tab",
+      "zoomIn": "App vergrößern",
+      "zoomOut": "App verkleinern",
+      "zoomReset": "App zurück auf Normalgröße",
+      "help": "Tastenkürzel"
+    }
+  },
+  "quickSwitcher": {
+    "label": "Zu einem Eintrag oder einer Einstellung springen",
+    "jumpTo": "Gehe zu",
+    "placeholder": "Titel oder Einstellung eingeben, oder > für Befehle",
+    "recent": "Zuletzt",
+    "empty": "Kein Eintrag und keine Einstellung mit diesem Namen",
+    "searchAll": "Alles durchsuchen: „{{query}}“",
+    "searchIn": "In {{section}} suchen: „{{query}}“",
+    "searchList": "Die Liste durchsuchen: „{{query}}“",
+    "searchDetail": "Findet Wörter im Text",
+    "move": "bewegen",
+    "open": "öffnen",
+    "openInTab": "im Tab öffnen",
+    "close": "schließen"
   },
   "cardForm": {
     "cardholderName": "Karteninhaber",
@@ -138,10 +197,10 @@
   },
   "sshKeyForm": {
     "label": "Bezeichnung",
-    "labelPlaceholder": "z. B. GitHub Deploy-Key",
-    "publicKey": "Öffentlicher Schlüssel",
+    "labelPlaceholder": "z. B. GitHub-Deploy-Key",
+    "publicKey": "Public Key",
     "copyPublicKey": "Öffentlichen Schlüssel kopieren",
-    "privateKey": "Privater Schlüssel",
+    "privateKey": "Private Key",
     "copyPrivateKey": "Privaten Schlüssel kopieren",
     "passphrase": "Passphrase",
     "passphrasePlaceholder": "Passphrase des Schlüssels (falls vorhanden)",
@@ -221,7 +280,7 @@
     "some_one": "{{count}} dieser Notizen wurde nie gesichert. Dies ist ihre einzige Kopie.",
     "some_other": "{{count}} dieser Notizen wurden nie gesichert. Dies sind die einzigen Kopien.",
     "changesOne": "Die letzten Änderungen sind nicht gesichert und würden verloren gehen.",
-    "changesSome_one": "{{count}} dieser Notizen hat ungesicherte Änderungen, die verloren gehen würden.",
-    "changesSome_other": "{{count}} dieser Notizen haben ungesicherte Änderungen, die verloren gehen würden."
+    "changesSome_one": "{{count}} dieser Notizen hat Änderungen, die nicht gesichert sind und verloren gehen würden.",
+    "changesSome_other": "{{count}} dieser Notizen haben Änderungen, die nicht gesichert sind und verloren gehen würden."
   }
 }

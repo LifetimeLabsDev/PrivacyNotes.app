@@ -8,6 +8,7 @@ import { isDemoMode, proUnlocked } from './demo';
 import { gcOnBodyChange } from './imageGC';
 import { noteLinkKey, retargetNoteLinks } from './noteLinks';
 import { hasStructuredBody, noteLinkName } from './notesViewUtils';
+import { changesContent } from './editStamp';
 import type { ImageStore } from './imageStore';
 import type { AttachmentStore } from './attachmentStore';
 
@@ -42,7 +43,7 @@ interface UseNoteEditingReturn {
    *  in one write. Resolves false when the write was refused. */
   handleVaultSave: (id: string, body: string, trackers?: Record<string, unknown>) => Promise<boolean>;
   scheduleSync: () => void;
-  patchLocal: (id: string, patch: Partial<LocalNote>, nextUpdatedAt: string) => void;
+  patchLocal: (id: string, patch: Partial<LocalNote>, nextUpdatedAt: string, opts?: { edit?: false }) => void;
   contentHash: (n: LocalNote) => Promise<string>;
   lastVersionHashRef: React.MutableRefObject<Map<string, string>>;
   lastVersionAtRef: React.MutableRefObject<Map<string, number>>;
@@ -80,6 +81,9 @@ export function useNoteEditing({
   const editingBodyRef = useRef<Map<string, string>>(new Map());
   /** Previous body before editing started, used for image GC diff. */
   const editingBodyOldRef = useRef<Map<string, string>>(new Map());
+  /** The "last edited" date each buffered body's write stored, so the flush
+   *  shows it rather than the one from before the edit. */
+  const editingEditedAtRef = useRef<Map<string, string>>(new Map());
 
   function scheduleSync() {
     if (saveTimer.current) window.clearTimeout(saveTimer.current);
@@ -91,11 +95,22 @@ export function useNoteEditing({
     }, delay);
   }
 
-  function patchLocal(id: string, patch: Partial<LocalNote>, nextUpdatedAt: string) {
+  /** The in-memory twin of a write, by the same "last edited" rule as
+   *  updateNote: a content change under a new stamp moves the date; a write
+   *  that keeps the stamp, or says `edit: false`, keeps it. */
+  function patchLocal(id: string, patch: Partial<LocalNote>, nextUpdatedAt: string, opts?: { edit?: false }) {
     setNotes((prev) =>
-      prev.map((n) =>
-        n.id === id ? { ...n, ...patch, updatedAt: nextUpdatedAt, dirty: 1 } : n
-      )
+      prev.map((n) => {
+        if (n.id !== id) return n;
+        const edited = opts?.edit !== false && nextUpdatedAt !== n.updatedAt && changesContent(n, patch);
+        return {
+          ...n,
+          ...patch,
+          updatedAt: nextUpdatedAt,
+          editedAt: edited ? nextUpdatedAt : (n.editedAt ?? n.updatedAt),
+          dirty: 1,
+        };
+      })
     );
   }
 
@@ -216,6 +231,12 @@ export function useNoteEditing({
     // substring test - so the collect pass is the affordable half.
     const updates: Array<{ id: string; body: string }> = [];
     let count = 0;
+    // The other live notes by name, so `[[C# tips]]` is not read as a link
+    // to "C" at the heading "tips" when "C# tips" is a note of its own.
+    const others = new Set(
+      notes.filter((n) => n.id !== id && n.trashed === 0).map((n) => noteLinkKey(noteLinkName(n))),
+    );
+    const hasOtherNote = (name: string) => others.has(noteLinkKey(name));
     for (const n of notes) {
       // Skipped on purpose, each for its own reason:
       //   the renamed note itself - the editor holds its live document and
@@ -229,7 +250,7 @@ export function useNoteEditing({
       // inside one would corrupt a stored field. Same exemption, and the same
       // reasoning, that `import/linkify.ts` carries.
       if (hasStructuredBody(n.type)) continue;
-      const next = retargetNoteLinks(n.body, from, to);
+      const next = retargetNoteLinks(n.body, from, to, hasOtherNote);
       if (next === null) continue;
       updates.push({ id: n.id, body: next.body });
       count += next.count;
@@ -241,7 +262,10 @@ export function useNoteEditing({
     setNotes((prev) =>
       prev.map((n) => {
         const body = byId.get(n.id);
-        return body === undefined ? n : { ...n, body, updatedAt: now, dirty: 1 };
+        // Nobody edited these notes, so their "last edited" date stays.
+        return body === undefined
+          ? n
+          : { ...n, body, updatedAt: now, editedAt: n.editedAt ?? n.updatedAt, dirty: 1 };
       }),
     );
     await bulkSetBody(updates);
@@ -259,15 +283,19 @@ export function useNoteEditing({
     const map = editingBodyRef.current;
     if (map.size === 0) return;
     const entries = Array.from(map.entries());
+    const editedAts = new Map(editingEditedAtRef.current);
     map.clear();
     editingBodyOldRef.current.clear();
+    editingEditedAtRef.current.clear();
     setNotes((prev) =>
       prev.map((n) => {
         const entry = entries.find(([id]) => id === n.id);
         if (!entry) return n;
         const [, body] = entry;
-        if (n.body === body) return n;
-        return { ...n, body, dirty: 1 };
+        const editedAt = editedAts.get(n.id);
+        // Typed and then undone: the body is back, but the writes were edits.
+        if (n.body === body) return editedAt && editedAt !== n.editedAt ? { ...n, editedAt } : n;
+        return { ...n, body, ...(editedAt ? { editedAt } : {}), dirty: 1 };
       }),
     );
   // Refs are stable; setNotes is a React dispatch - stable by contract.
@@ -305,7 +333,14 @@ export function useNoteEditing({
     // Dexie write + sync scheduling still happen immediately. No explicit
     // timestamp: updateNote's monotonic nextStamp keeps same-millisecond
     // generations strictly ordered (#156).
-    await updateNote(id, { body });
+    await updateNote(id, { body }, undefined, {
+      onWrite: (stored) => {
+        if (editingBodyRef.current.has(id)) editingEditedAtRef.current.set(id, stored.editedAt);
+        // The body was already flushed (an editor mode switch flushes while
+        // the write is in flight), so the date goes straight to the list.
+        else setNotes((prev) => prev.map((n) => (n.id === id && n.editedAt !== stored.editedAt ? { ...n, editedAt: stored.editedAt } : n)));
+      },
+    });
     // A STRUCTURED body is not a live editor document. A bookmark's `{url}`,
     // a login, a card and an SSH key are each committed once, by a form, and
     // every surface that draws them renders from the notes array: the row's

@@ -14,7 +14,8 @@
     "loadFailed": "Afbeelding kon niet worden geladen",
     "notFound": "Afbeelding niet gevonden",
     "saveFailed": "Opslaan is mislukt, dus het bestand kan leeg of onvolledig zijn.",
-    "viewAria": "Afbeelding bekijken"
+    "viewAria": "Afbeelding bekijken",
+    "picturesLeftOut": "Sommige afbeeldingen zijn niet toegevoegd. Kopieer een afbeelding los om hem te plakken."
   },
   "attachment": {
     "fallbackName": "Bijlage",

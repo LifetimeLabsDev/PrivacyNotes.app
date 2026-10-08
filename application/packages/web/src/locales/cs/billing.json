@@ -8,7 +8,7 @@
     "ctaOpening": "Otevírání platby...",
     "ctaSignUp": "Zaregistrovat se a odemknout",
     "intro": {
-      "storage": "Větší soubory a víc místa jsou funkce Pro. Přejdi na Pro a získáš soubory do 50 MB a 500 MB úložiště.",
+      "storage": "Víc místa je funkce Pro: 500 MB úložiště, 50 MB na soubor a až 5 GB navíc jako rozšíření úložiště, když je budeš potřebovat.",
       "folders": "Složky jsou funkce Pro. Uspořádej si poznámky do vnořených složek, jak hluboko potřebuješ, a drž každý projekt zvlášť.",
       "looks": "Ikony a barvy složek a značek jsou funkce Pro. Dej každé z nich vzhled, který poznáš na první pohled.",
       "lock": "Zamknutí poznámky je funkce Pro. Přejdi na Pro a ochraň jakoukoli poznámku před nechtěnými úpravami.",
@@ -30,7 +30,7 @@
       "history": "Plná historie poznámek, obnovení kdykoli",
       "themes": "Prémiová témata v každém odstínu",
       "zen": "Režim Zen, psaní bez rozptylování",
-      "storage": "500 MB úložiště + přílohy do 50 MB"
+      "storage": "500 MB úložiště, s rozšířením úložiště až 5,5 GB"
     },
     "comparisonBeta": "Zaplať jednou {{earlyPrice}} $. Obsidian Sync stojí 48 $/rok, každý rok. Standard Notes si účtuje 90 $/rok. Zaváděcí cena, zamčená ještě předtím, než vzroste na {{proPrice}} $.",
     "comparison": "Zaplať jednou {{proPrice}} $ a máš to navždy. Obsidian Sync stojí 48 $/rok a Standard Notes 90 $/rok, rok co rok."
@@ -47,9 +47,9 @@
     "benefitDevices": "Neomezeně zařízení",
     "benefitDevicesSub": "Telefon, tablet, notebook, vše synchronizované",
     "benefitStorage": "500 MB úložiště",
-    "benefitStorageSub": "10x víc než bezplatný plán, rozšiřitelné",
+    "benefitStorageSub": "10x víc než bezplatný tarif. Přikup si až 5 GB navíc, když je budeš potřebovat",
     "benefitMore": "Další funkce",
-    "benefitMoreSub": "Historie poznámek, složky, zen režim",
+    "benefitMoreSub": "Historie poznámky, složky, režim Zen",
     "benefitRoom": "O {{gb}} GB víc místa",
     "benefitRoomSub": "Navíc k tvým 500 MB z Pro",
     "benefitFileSize": "100 MB na soubor",

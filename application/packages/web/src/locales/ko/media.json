@@ -14,7 +14,8 @@
     "loadFailed": "이미지를 불러오지 못했어요",
     "notFound": "이미지를 찾을 수 없어요",
     "saveFailed": "저장에 실패해서 파일이 비어 있거나 불완전할 수 있어요.",
-    "viewAria": "이미지 보기"
+    "viewAria": "이미지 보기",
+    "picturesLeftOut": "일부 이미지는 추가되지 않았어요. 이미지는 따로 복사해서 붙여 넣으세요."
   },
   "attachment": {
     "fallbackName": "첨부 파일",

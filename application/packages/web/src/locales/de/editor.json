@@ -7,7 +7,7 @@
     "heading": "Überschrift",
     "taskList": "Aufgabenliste",
     "bulletList": "Aufzählungsliste",
-    "addLink": "Link hinzufügen (Cmd+Shift+K)",
+    "addLink": "Link hinzufügen ({{keys}})",
     "noteLink": "Auf eine andere Notiz verlinken (oder [[ tippen)",
     "numberedList": "Nummerierte Liste",
     "textColor": "Textfarbe",
@@ -34,7 +34,12 @@
     "blockMath": "Formelblock",
     "align": "Ausrichtung",
     "font": "Schrift",
-    "pictureFromFiles": "Bild aus Dateien"
+    "pictureFromFiles": "Bild aus Dateien",
+    "date": "Datum",
+    "dateTime": "Datum und Uhrzeit",
+    "footnote": "Fußnote",
+    "spoiler": "Spoiler",
+    "copyBox": "Kopierfeld"
   },
   "align": {
     "left": "Linksbündig",
@@ -118,7 +123,7 @@
     "next": "Nächster Treffer (Enter)",
     "nextTitle": "Weiter (Enter)",
     "close": "Suche schließen",
-    "closeTitle": "Schließen (⌘F)",
+    "closeTitle": "Schließen ({{keys}})",
     "replacePlaceholder": "Ersetzen durch",
     "replaceLabel": "Ersetzen durch",
     "replace": "Ersetzen",
@@ -128,7 +133,7 @@
     "caseSensitive": "Groß-/Kleinschreibung beachten",
     "caseSensitiveTitle": "Groß-/Kleinschreibung beachten",
     "closeReplace": "Suchen und Ersetzen schließen",
-    "closeReplaceTitle": "Schließen (⌥⌘F)",
+    "closeReplaceTitle": "Schließen ({{keys}})",
     "replacedCount_one": "{{count}} ersetzt",
     "replacedCount_other": "{{count}} ersetzt"
   },
@@ -138,7 +143,14 @@
     "title": "Gliederung",
     "ariaLabel": "Notizgliederung",
     "hide": "Gliederung ausblenden",
-    "hideTitle": "Gliederung ausblenden (Esc)"
+    "hideTitle": "Gliederung ausblenden (Esc)",
+    "copyHeadingLink": "Link zur Überschrift kopieren",
+    "copied": "Kopiert"
+  },
+  "bodyMenu": {
+    "cut": "Ausschneiden",
+    "sortAsc": "Zeilen von A bis Z sortieren",
+    "sortDesc": "Zeilen von Z bis A sortieren"
   },
   "topRow": {
     "add": "Zeile am Anfang einfügen"
@@ -177,6 +189,8 @@
     "words_other": "{{formatted}} Wörter",
     "characters_one": "{{formatted}} Zeichen",
     "characters_other": "{{formatted}} Zeichen",
+    "tasksChecked_one": "{{done}} von {{formatted}} abgehakt",
+    "tasksChecked_other": "{{done}} von {{formatted}} abgehakt",
     "tooLargeToSync": ", möglicherweise zu groß zum Synchronisieren, lagere einen Teil in eine neue Notiz aus",
     "veryLong": ", sehr lang, könnte beim Bearbeiten langsam sein und ruckeln",
     "gettingLong": ", wird lang, könnte auf langsameren Geräten hängen",
@@ -184,19 +198,48 @@
   },
   "noteLinkSuggestion": {
     "noMatches": "Keine passenden Notizen",
-    "create": "„{{query}}“ erstellen"
+    "create": "„{{query}}“ erstellen",
+    "headingsIn": "Überschriften in {{title}}",
+    "noHeadingMatches": "Keine passenden Überschriften"
+  },
+  "copyBox": {
+    "placeholder": "Text, den du mit einem Klick kopierst"
+  },
+  "inlineCode": {
+    "copyHint": "{{key}}-Klick zum Kopieren",
+    "copied": "Kopiert"
   },
   "codeBlock": {
     "copy": "Kopieren",
     "copied": "Kopiert",
     "copyFailed": "Fehlgeschlagen",
-    "wrap": "Lange Zeilen umbrechen"
+    "wrap": "Lange Zeilen umbrechen",
+    "showAll_one": "{{count}} Zeile anzeigen",
+    "showAll_other": "Alle {{count}} Zeilen anzeigen",
+    "showLess": "Weniger anzeigen",
+    "plainText": "Nur Text",
+    "language": "Sprache des Codes: {{name}}",
+    "searchLanguages": "Sprachen suchen",
+    "placeholder": "Tippe oder füge Code ein. Für Farben wählst du oben eine Sprache."
   },
   "math": {
     "sourceLabel": "LaTeX-Quelltext"
   },
   "noteLink": {
     "open": "Notiz öffnen",
-    "remove": "Link entfernen"
+    "remove": "Link entfernen",
+    "linkHeading": "Auf eine Überschrift verlinken...",
+    "headingNotFound": "Überschrift nicht gefunden",
+    "headingsLocked": "Entsperr diese Notiz, um ihre Überschriften zu sehen",
+    "noHeadings": "Diese Notiz hat keine Überschriften"
+  },
+  "footnote": {
+    "placeholder": "Fußnotentext",
+    "back": "Zurück zum Text",
+    "unused": "Nicht im Text verwendet",
+    "remove": "Fußnote entfernen",
+    "missing": "Kein Fußnotentext. Klicke, um ihn hinzuzufügen.",
+    "ariaRef": "Fußnote {{n}}",
+    "ariaSection": "Fußnoten"
   }
 }

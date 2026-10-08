@@ -2,7 +2,10 @@ import { Fragment, useEffect, useRef, type ReactNode } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import i18n, { activeLocale } from '../i18n';
 import { isNativeStoreBuild } from '../devices';
+import { appZoomSupported } from '../appZoom';
+import { captureBlockSupported } from '../privacyScreen';
 import { isDemoMode } from '../demo';
+import { exemptOpts } from '../i18nExempt';
 import { ArrowSquareOut } from '../icons';
 import { helpPath } from '../localeRoutes';
 import { SETTINGS_EYEBROW } from '../settingsUI';
@@ -27,6 +30,8 @@ function isShown(entry: SettingEntry): boolean {
   if (entry.shownOn === 'keyboard') return !isTouchOnly();
   if (entry.shownOn === 'paneLayout') return tabsFit();
   if (entry.shownOn === 'realAccount') return !isDemoMode();
+  if (entry.shownOn === 'desktopApp') return appZoomSupported();
+  if (entry.shownOn === 'captureBlock') return captureBlockSupported();
   return true;
 }
 
@@ -46,13 +51,22 @@ export function runSettingsSearch(query: string, railLabels: ReadonlyMap<string,
   return searchSettings(query, lng, resolve, isShown);
 }
 
+/**
+ * Each section's name as the rail draws it, for a search outside the
+ * settings window (the quick switcher). The rail forces a few names to
+ * English in some languages, through the same helper.
+ */
+export function railLabels(): Map<string, string> {
+  return new Map(Object.entries(SECTION_LABEL).map(([section, key]) => [section, i18n.t(key, exemptOpts(key))]));
+}
+
 /** The id the results list gives each option, for `aria-activedescendant`. */
 export function resultOptionId(index: number): string {
   return `settings-search-result-${index}`;
 }
 
 /** The inner tab a row lives on, when the row is not that tab itself. */
-function tabOf(hit: SettingHit): string | null {
+export function tabOf(hit: SettingHit): string | null {
   const key = hit.entry.tab ? TAB_LABEL[`${hit.entry.section}/${hit.entry.tab}`] : undefined;
   if (!key || key === hit.entry.label) return null;
   return i18n.t(key);
