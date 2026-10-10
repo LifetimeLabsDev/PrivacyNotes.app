@@ -13,9 +13,10 @@ import { Backspace, Folder, Folders, FunnelSimple, Hash, Prohibit, X } from './i
  * folder name and tag, and one click clears that one filter. An empty list can
  * therefore never silently be a forgotten selection.
  *
- * Amber on purpose, and the same amber for both: the chips answer "why am I
- * not seeing everything?", so they must not read as the accent-coloured
- * furniture the rest of the pane is built from.
+ * The theme's warning colour on purpose (amber in the built-in palettes), the
+ * same for both: the chips answer "why am I not seeing everything?", so they
+ * must not read as the accent-coloured furniture the rest of the pane is
+ * built from. A theme code's `warning=` sets it.
  *
  * The folder, the tag and the open view compose into one combined filter, so
  * two chips can stand side by side. They wrap rather than truncate the band.
@@ -44,7 +45,7 @@ export const SubfoldersSwitchContext = createContext<{ on: boolean; onToggle: ()
 const UNTAGGED = '__untagged__';
 
 const CHIP_CLASS =
-  'max-w-full inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-warning ps-2.5 pe-2 py-1 text-[12px] font-medium transition';
+  'max-w-full inline-flex items-center gap-1.5 rounded-full bg-warning/10 hover:bg-warning/20 text-warning ps-2.5 pe-2 py-1 text-[12px] font-medium transition';
 
 export function ListFilterChips({
   folderName,
@@ -151,7 +152,7 @@ export function FilteredEmpty({
   if (folderName === null && tag === null) return null;
   return (
     <div className="flex flex-col items-center justify-center text-center px-6 py-12">
-      <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center mb-3">
+      <div className="w-12 h-12 rounded-full bg-warning/10 flex items-center justify-center mb-3">
         <FunnelSimple size={22} className="text-warning" aria-hidden="true" />
       </div>
       {/* One sentence with the button inside it: "No items match your

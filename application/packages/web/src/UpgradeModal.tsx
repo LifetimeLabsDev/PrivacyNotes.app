@@ -4,17 +4,22 @@ import { useEscapeToClose } from './useEscapeToClose';
 import {
   ArrowsOutSimple,
   ClockCounterClockwise,
+  Columns,
   Database,
+  FileArrowUp,
   Folder,
+  Key,
   Lock,
+  MagnifyingGlass,
   Monitor,
   Palette,
+  Password,
   RocketLaunch,
   X,
 } from './icons';
 import { isPaddleConfigured, isBetaPricing } from './paddle';
 import { startProCheckout, PRO_PRODUCT_ID } from './billing';
-import { PRO_PRICE, EARLY_PRICE } from './pricing';
+import { PRO_PRICE, EARLY_PRICE, COMPARE_YEARS, COMPETITOR_YEARLY } from './pricing';
 import { useStorePrices } from './storePrices';
 import { isDemoMode, DEMO_APP_URL } from './demo';
 import { withSource } from './campaignSource';
@@ -39,11 +44,12 @@ type Props = {
 /** Which Pro feature opened the modal; picks the intro line. */
 export type UpgradeTrigger =
   | 'lock' | 'protect' | 'history' | 'devices' | 'zen' | 'theme' | 'storage'
-  | 'callout' | 'fileSize' | 'folders' | 'looks' | 'totp' | 'replace' | 'passphrase' | null;
+  | 'fileSize' | 'folders' | 'looks' | 'spaces' | 'formatBar' | 'totp' | 'replace' | 'passphrase' | null;
 
 const FEATURES: Array<{ icon: React.JSX.Element; labelKey: string }> = [
   { icon: <IconDevices />, labelKey: 'upgrade.features.devices' },
   { icon: <IconFolders />, labelKey: 'upgrade.features.folders' },
+  { icon: <Columns size={18} aria-hidden="true" />, labelKey: 'upgrade.features.spaces' },
   { icon: <IconLock />, labelKey: 'upgrade.features.lock' },
   { icon: <IconHistory />, labelKey: 'upgrade.features.history' },
   { icon: <IconPalette />, labelKey: 'upgrade.features.themes' },
@@ -71,8 +77,10 @@ function introKey(trigger: Props['trigger']): string {
       return 'upgrade.intro.folders';
     case 'looks':
       return 'upgrade.intro.looks';
-    case 'callout':
-      return 'upgrade.intro.callout';
+    case 'spaces':
+      return 'upgrade.intro.spaces';
+    case 'formatBar':
+      return 'upgrade.intro.formatBar';
     case 'totp':
       return 'upgrade.intro.totp';
     case 'replace':
@@ -85,6 +93,43 @@ function introKey(trigger: Props['trigger']): string {
       return 'importExport:upload.proPitch';
     default:
       return 'upgrade.intro.default';
+  }
+}
+
+/** The glyph in the tile beside the intro line: the feature the person
+ *  tapped, drawn the way the app draws it elsewhere, so the modal answers
+ *  "what did I just open?" before it names a price. */
+function triggerIcon(trigger: Props['trigger']): React.JSX.Element {
+  const size = 22;
+  switch (trigger) {
+    case 'lock':
+    case 'protect':
+      return <Lock size={size} aria-hidden="true" />;
+    case 'history':
+      return <ClockCounterClockwise size={size} aria-hidden="true" />;
+    case 'devices':
+      return <Monitor size={size} aria-hidden="true" />;
+    case 'zen':
+      return <ArrowsOutSimple size={size} aria-hidden="true" />;
+    case 'theme':
+    case 'looks':
+      return <Palette size={size} aria-hidden="true" />;
+    case 'storage':
+      return <Database size={size} aria-hidden="true" />;
+    case 'fileSize':
+      return <FileArrowUp size={size} aria-hidden="true" />;
+    case 'folders':
+      return <Folder size={size} aria-hidden="true" />;
+    case 'spaces':
+      return <Columns size={size} aria-hidden="true" />;
+    case 'totp':
+      return <Key size={size} aria-hidden="true" />;
+    case 'replace':
+      return <MagnifyingGlass size={size} aria-hidden="true" />;
+    case 'passphrase':
+      return <Password size={size} aria-hidden="true" />;
+    default:
+      return <IconUpgrade size={size} />;
   }
 }
 
@@ -104,6 +149,13 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
   const storePro = storePrices?.[PRO_PRODUCT_ID]?.formatted ?? null;
 
   const demo = isDemoMode();
+
+  const ourPrice = beta ? EARLY_PRICE : PRO_PRICE;
+  const compareRows = [
+    { name: 'PrivacyNotes', total: ourPrice, us: true },
+    ...COMPETITOR_YEARLY.map((c) => ({ name: c.name, total: c.perYear * COMPARE_YEARS, us: false })),
+  ];
+  const compareMax = Math.max(...compareRows.map((r) => r.total));
 
   async function handleUpgrade() {
     // Demo has no account to attach a purchase to - send the user to
@@ -187,16 +239,42 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
             </div>
           )}
 
-          <p className="text-[13px] text-amber-700 dark:text-amber-300 mt-2">
-            {t('upgrade.subscriptionPitch')}
-          </p>
+          {/* Web and desktop only, like the comparison sentence it replaced:
+              the fees are USD figures and a store build shows a localized
+              price with nothing to chart against it. */}
+          {!storePro && (
+            <div className="mt-4 space-y-1.5">
+              {compareRows.map((row) => (
+                <div key={row.name} className="grid grid-cols-[6.5rem_1fr_3.5rem] items-center gap-2 text-[12px]">
+                  <span className="truncate text-amber-700 dark:text-amber-300">{row.name}</span>
+                  <div className="h-2.5 rounded-sm bg-amber-900/10 dark:bg-amber-100/10">
+                    <div
+                      className={row.us ? 'h-full rounded-sm bg-pro' : 'h-full rounded-sm bg-amber-800/30 dark:bg-amber-200/20'}
+                      style={{ width: `${Math.max(4, Math.round((row.total / compareMax) * 100))}%` }}
+                    />
+                  </div>
+                  <span className="text-end font-semibold text-amber-900 dark:text-amber-100">${row.total}</span>
+                </div>
+              ))}
+              <p className="text-[12px] text-amber-700 dark:text-amber-300 pt-1">
+                {t('upgrade.compareCaption', { years: COMPARE_YEARS })}
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="p-6 space-y-5">
           {trigger && (
-            <p className="text-sm text-pn-muted leading-relaxed">
-              {t(introKey(trigger))}
-            </p>
+            <div className="flex items-start gap-3">
+              <span className="shrink-0 w-11 h-11 rounded-md bg-amber-50 dark:bg-amber-950/50 text-pro flex items-center justify-center">
+                {triggerIcon(trigger)}
+              </span>
+              <p className="text-sm font-semibold text-pn leading-relaxed">
+                {/* The Spaces pitch reuses the Settings description, so the
+                    sentence is written and translated once. */}
+                {t(introKey(trigger), { desc: t('settings:appearance.spacesDesc') })}
+              </p>
+            </div>
           )}
 
           {purchaseError && (
@@ -205,15 +283,22 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
             </div>
           )}
 
-          <button
-            type="button"
-            disabled={(!configured && !demo) || loading}
-            onClick={handleUpgrade}
-            className="w-full rounded-md bg-amber-700 text-white hover:bg-amber-800 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold transition"
-          >
-            <IconUpgrade size={16} onFill />
-            {demo ? t('upgrade.ctaSignUp') : loading ? t('upgrade.ctaOpening') : t('upgrade.ctaUnlock')}
-          </button>
+          <div className="space-y-2">
+            <button
+              type="button"
+              disabled={(!configured && !demo) || loading}
+              onClick={handleUpgrade}
+              className="w-full rounded-md bg-amber-700 text-white hover:bg-amber-800 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold transition"
+            >
+              <IconUpgrade size={16} onFill />
+              {demo
+                ? t('upgrade.ctaSignUp')
+                : loading
+                  ? t('upgrade.ctaOpening')
+                  : t('upgrade.ctaUnlockPrice', { price: storePro ?? `$${ourPrice}` })}
+            </button>
+            <p className="text-[11px] text-pn-muted text-center">{t('upgrade.subscriptionPitch')}</p>
+          </div>
 
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
             {FEATURES.map((f) => (
@@ -223,21 +308,6 @@ export function UpgradeModal({ onClose, pubkey, onCheckoutComplete, trigger = nu
               </li>
             ))}
           </ul>
-
-          {/* Web/desktop only. Both variants state OUR price in USD ("Pay $48
-              once", "before it rises to $89"), which is the Paddle figure and
-              not what a store charges, and the template hardcodes the dollar
-              sign outside the interpolation so it cannot carry a storefront
-              currency either. Showing it next to a real store price would put
-              two different prices for the same product in one modal. Native
-              gets its own comparison copy when localization lands. */}
-          {!storePro && (
-            <p className="text-[11px] text-pn-muted leading-relaxed border-t border-divider pt-3">
-              {beta
-                ? t('upgrade.comparisonBeta', { earlyPrice: EARLY_PRICE, proPrice: PRO_PRICE })
-                : t('upgrade.comparison', { proPrice: PRO_PRICE })}
-            </p>
-          )}
 
           {/* After the pitch, not before it: two outbound links above a
               payment CTA move a deciding reader off the decision. */}

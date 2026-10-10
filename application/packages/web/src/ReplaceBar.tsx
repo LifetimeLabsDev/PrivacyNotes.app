@@ -4,7 +4,7 @@ import type { Editor as TipTapEditor } from '@tiptap/react';
 import { MagnifyingGlass, ArrowsLeftRight, TextAa, X } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { isImeComposing } from './imeComposing';
-import { BAR_BTN, MatchNav } from './MatchNav';
+import { BAR_BTN, BAR_INPUT, MatchNav, TEXT_BTN } from './MatchNav';
 import { keyText } from './shortcutMatch';
 import {
   setSearchQuery,
@@ -23,16 +23,6 @@ type Props = {
   focusTick: number;
   onClose: () => void;
 };
-
-/** Text buttons (Replace, All): the icon button's style at a label's width. */
-const TEXT_BTN =
-  'flex items-center justify-center h-7 px-2 rounded text-xs font-medium text-pn-soft ' +
-  '[@media(hover:hover)]:hover:bg-pn/10 ' +
-  'disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition shrink-0 outline-none';
-
-const INPUT =
-  'flex-1 min-w-0 bg-transparent text-sm text-pn ' +
-  'placeholder:text-pn-muted outline-none px-1';
 
 /**
  * Floating find-and-replace bar, the Pro twin of FindBar. Same shell, same
@@ -55,6 +45,7 @@ const INPUT =
 export function ReplaceBar({ editor, focusTick, onClose }: Props) {
   const { t } = useTranslation('editor');
   const searchRef = useRef<HTMLInputElement>(null);
+  const replaceRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
   const [replacement, setReplacement] = useState('');
   const [caseSensitive, setCaseSensitive] = useState(false);
@@ -129,7 +120,15 @@ export function ReplaceBar({ editor, focusTick, onClose }: Props) {
     if (n > 0) setReplaced(n);
   }, [editor, replacement, refresh]);
 
+  // Tab goes from the search to the replacement and Shift+Tab back, the
+  // way a find-and-replace bar reads; the buttons between the two fields
+  // have the Enter keys and the shortcut instead.
   const onSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Tab' && !e.shiftKey && replaceRef.current) {
+      e.preventDefault();
+      replaceRef.current.focus();
+      return;
+    }
     if (e.key === 'Enter' && !isImeComposing(e)) {
       e.preventDefault();
       go(e.shiftKey ? -1 : 1);
@@ -137,6 +136,11 @@ export function ReplaceBar({ editor, focusTick, onClose }: Props) {
   };
 
   const onReplaceKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Tab' && e.shiftKey) {
+      e.preventDefault();
+      searchRef.current?.focus();
+      return;
+    }
     if (e.key === 'Enter' && !isImeComposing(e)) {
       e.preventDefault();
       replaceOne();
@@ -170,7 +174,7 @@ export function ReplaceBar({ editor, focusTick, onClose }: Props) {
           aria-label={t('find.label')}
           spellCheck={false}
           autoComplete="off"
-          className={INPUT}
+          className={BAR_INPUT}
         />
         <HoverLabel label={t('find.caseSensitiveTitle')} position="below">
           <button
@@ -203,13 +207,14 @@ export function ReplaceBar({ editor, focusTick, onClose }: Props) {
         <input
           type="text"
           value={replacement}
+          ref={replaceRef}
           onChange={(e) => setReplacement(e.target.value)}
           onKeyDown={onReplaceKeyDown}
           placeholder={t('find.replacePlaceholder')}
           aria-label={t('find.replaceLabel')}
           spellCheck={false}
           autoComplete="off"
-          className={INPUT}
+          className={BAR_INPUT}
         />
         <HoverLabel label={t('find.replaceTitle')} position="below">
           <button

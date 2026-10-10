@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useContext,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -13,14 +14,14 @@ import { APP_KEYS, matchesKey } from './shortcutMatch';
 import { editorCommands, insertDateText, registerEditorCommand } from './editorCommands';
 import { readOutlinePref, writeOutlinePref } from './editorPrefs';
 import { proUnlocked } from './demo';
+import { FormatBarContext } from './formatBarContext';
 
 /**
- * Height of the always-present click row above the note body (rendered by
- * Editor.tsx). It is the collapsed outline pill's parking space - 32px of
- * button plus its 4px top margin - so the pill sits in a row of its own
- * instead of on the note's first block.
+ * The note body's top padding (`.ProseMirror` in index.css). The corner
+ * pills and the outline panel start at the top of that padding, so the
+ * float that keeps text beside them only covers what hangs below it.
  */
-export const EDITOR_TOP_GAP_PX = 36;
+const EDITOR_TOP_PAD_PX = 16;
 
 /** Which bar holds the editor's top-right slot. */
 type EditorBar = 'none' | 'find' | 'replace';
@@ -65,6 +66,23 @@ export function useEditorPanels({
   // square for the collapsed icon, the panel's width + measured height when
   // open (so text wraps beside it and reclaims full width below).
   const [outlineReserve, setOutlineReserve] = useState({ width: 0, height: 0 });
+  // The row of corner pills (find, the collapsed outline), measured so the
+  // note's first lines wrap beside it instead of under it.
+  const [pillsEl, setPillsEl] = useState<HTMLDivElement | null>(null);
+  const [pillsReserve, setPillsReserve] = useState({ width: 0, height: 0 });
+  useLayoutEffect(() => {
+    if (!pillsEl) { setPillsReserve({ width: 0, height: 0 }); return; }
+    // 8px of air between the text and the pills.
+    const report = () => {
+      const width = pillsEl.offsetWidth > 0 ? pillsEl.offsetWidth + 8 : 0;
+      const height = pillsEl.offsetHeight;
+      setPillsReserve((r) => (r.width === width && r.height === height ? r : { width, height }));
+    };
+    report();
+    const ro = new ResizeObserver(report);
+    ro.observe(pillsEl);
+    return () => ro.disconnect();
+  }, [pillsEl]);
 
   /** Mirror of `bar` for the capture-phase Esc guard, which is registered
    *  once and must not re-subscribe on every open/close. */
@@ -308,27 +326,32 @@ export function useEditorPanels({
   // below - no full-height gutter. On mobile it overlays the column (no
   // reflow) rather than crushing it.
   //
-  // The collapsed pill reserves nothing (OutlinePanel reports a zero
-  // footprint): it parks in the click row above the body, which is always
-  // there. The panel's top aligns with that row, so the float only has to
-  // cover what hangs BELOW it - hence subtracting the row's height.
+  // With the panel closed, the pills reserve their own footprint the same
+  // way, so the first line wraps beside them. Both start at the top of the
+  // body's padding, so the float only has to cover what hangs BELOW it.
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return;
     const hasOutline = outlineReserve.width > 0;
     const overlay = outlineOpen && isMobile;
-    const fw = hasOutline && !overlay ? outlineReserve.width : 0;
-    const fh = hasOutline && !overlay
-      ? Math.max(0, outlineReserve.height - EDITOR_TOP_GAP_PX)
-      : 0;
-    root.style.setProperty('--pn-outline-fw', `${fw}px`);
+    // The open panel's width does not count the find pill beside it.
+    const reserve = !hasOutline
+      ? pillsReserve
+      : overlay
+        ? { width: 0, height: 0 }
+        : { width: Math.max(outlineReserve.width, pillsReserve.width), height: outlineReserve.height };
+    const fh = Math.max(0, reserve.height - EDITOR_TOP_PAD_PX);
+    root.style.setProperty('--pn-outline-fw', `${fh > 0 ? reserve.width : 0}px`);
     root.style.setProperty('--pn-outline-fh', `${fh}px`);
-  }, [outlineReserve, outlineOpen, isMobile]);
+  }, [outlineReserve, pillsReserve, outlineOpen, isMobile]);
 
   // Pin the find and replace bars just below the formatting toolbar. The toolbar height
   // varies (one row, or two when the overflow row is expanded), so measure it
   // live and expose it as a CSS var the bar's sticky `top` reads. Falls back
-  // to 0 when the toolbar is hidden so the bar pins under the tag row instead.
+  // to 0 when the toolbar is hidden so the bar pins under the tag row instead,
+  // and when it sits at the bottom, outside this root. Moving the bar to the
+  // top or the bottom re-measures, so the pills never cover it.
+  const barPosition = useContext(FormatBarContext).position;
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -343,7 +366,7 @@ export function useEditorPanels({
     const ro = new ResizeObserver(apply);
     ro.observe(toolbarEl);
     return () => ro.disconnect();
-  }, [editor, toolbarVisible, readOnly]);
+  }, [editor, toolbarVisible, readOnly, barPosition]);
 
   return {
     bar,
@@ -352,6 +375,7 @@ export function useEditorPanels({
     outlineOpen,
     setOutlineOpen,
     setOutlineReserve,
+    setPillsEl,
     findSeed,
     openFindWith,
     closeSeededFind,

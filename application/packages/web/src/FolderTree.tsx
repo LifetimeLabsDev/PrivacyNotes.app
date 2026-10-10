@@ -27,6 +27,7 @@ import {
   PencilSimple,
   Prohibit,
   Trash,
+  type Icon,
 } from './icons';
 
 /**
@@ -50,6 +51,9 @@ export interface FolderTreeProps {
   folders: FolderDef[];
   /** Direct-member note counts per folder id. */
   counts: Map<string, number>;
+  /** Mute a folder whose whole branch counts zero: the counts speak for one
+   *  section, and the folder holds nothing of it. */
+  dimEmpty?: boolean;
   /** Notes with no folder - drives the muted Unfiled row (hides at zero). */
   unfiledCount: number;
   selectedFolder: string | null;
@@ -87,6 +91,10 @@ export interface FolderTreeProps {
   /** A dragged list item files into a folder, or out of one on Unfiled.
    *  The rail's list runs the drop and names the row the pointer is over. */
   itemDrop?: FolderTreeViewProps['itemDrop'];
+  /** The root folder menu's "Move to Work" or "Move to Personal" item, and
+   *  the empty tree's text, while spaces are on. Spec: ops/docs/plans/spaces.md */
+  spaceMove?: { label: string; icon: Icon; run: (id: string) => void };
+  emptyText?: string;
   /** Sibling sort (persisted per-device in NotesView, like tag sort). */
   sortField: FolderSortField;
   sortDir: FolderSortDir;
@@ -96,6 +104,7 @@ export interface FolderTreeProps {
 export function FolderTree({
   folders,
   counts,
+  dimEmpty = false,
   unfiledCount,
   selectedFolder,
   openNoteFolder,
@@ -111,6 +120,8 @@ export function FolderTree({
   onGlyphClick,
   looksProMark = false,
   itemDrop,
+  spaceMove,
+  emptyText,
   sortField,
   sortDir,
   mobileTabIndex,
@@ -210,7 +221,7 @@ export function FolderTree({
     <>
       {folders.length === 0 && creatingUnder === undefined && (
         <div className="text-[13px] text-pn-muted px-2 py-1">
-          {t('folders.noFoldersYet')}
+          {emptyText ?? t('folders.noFoldersYet')}
         </div>
       )}
 
@@ -221,6 +232,7 @@ export function FolderTree({
         sortSiblings={sortSiblings}
         mobileTabIndex={mobileTabIndex}
         isActive={(f) => selectedFolder === f.id}
+        isDimmed={dimEmpty ? (f) => !totals.get(f.id) : undefined}
         onSelect={(f) => {
           if (renamingId === f.id) return;
           // Second click on the active folder clears the filter - with
@@ -274,7 +286,7 @@ export function FolderTree({
               >
                 <DotsThree />
               </button>
-              <span className="text-xs lg:text-[11px] text-pn-muted tabular-nums ms-1 me-2 lg:me-1.5 shrink-0">
+              <span className="text-xs text-pn-muted tabular-nums ms-1 me-2 shrink-0">
                 {(isExpanded(f) ? counts : totals).get(f.id) ?? 0}
               </span>
             </>
@@ -286,11 +298,11 @@ export function FolderTree({
               className="border-s border-divider"
               style={{ marginInlineStart: level + 1 < MAX_INDENT_LEVEL ? INDENT_PX : 0 }}
             >
-              <div className="w-full rounded text-[15px] lg:text-[13px] font-medium flex items-center text-pn">
-                <span className="shrink-0 w-5 lg:w-4 ms-0.5" aria-hidden="true" />
-                <div className="flex-1 min-w-0 flex items-center gap-2 lg:gap-1.5 py-2 lg:py-1 pe-2">
-                  <span className="inline-flex shrink-0 text-amber-700 dark:text-amber-500/80">
-                    <Folder size={16} className="lg:w-3.5 lg:h-3.5" />
+              <div className="w-full rounded text-[15px] font-medium flex items-center text-pn">
+                <span className="shrink-0 w-5 ms-0.5" aria-hidden="true" />
+                <div className="flex-1 min-w-0 flex items-center gap-2 py-2 pe-2">
+                  <span className="inline-flex shrink-0 text-label">
+                    <Folder size={16} />
                   </span>
                   <FolderNameInput
                     value={createDraft}
@@ -308,11 +320,44 @@ export function FolderTree({
       />
 
       {/* New root folder - inline input, same pattern as tag creation. */}
+      {/* Unfiled - notes with no folder, the folder sibling of the tag
+          rail's Untagged row (GitHub #235). Same muted styling, folder-view
+          font sizes. Above New folder, as Untagged sits above New tag.
+          Hides at zero (NotesView bounces the filter). Selecting
+          it is browsing, not a folder action, so it skips the Pro lock. */}
+      {unfiledCount > 0 && (
+        <button
+          type="button"
+          tabIndex={mobileTabIndex}
+          onClick={() => onSelectFolder(selectedFolder === UNFILED_ID ? null : UNFILED_ID)}
+          data-drop-folder={itemDrop ? UNFILED_ID : undefined}
+          className={`w-full text-start px-2 py-2 rounded text-[15px] font-medium transition flex justify-between items-center ${
+            itemDrop?.overId === UNFILED_ID
+              ? `${SIDEBAR_DROP_INSIDE} text-pn`
+              : selectedFolder === UNFILED_ID
+              ? SIDEBAR_ACTIVE
+              : 'text-pn-muted hover:bg-pn/5 hover:text-pn-soft'
+          }`}
+        >
+          <span className="flex items-center gap-2 min-w-0">
+            <span className="inline-flex shrink-0">
+              <Prohibit size={16} />
+            </span>
+            <span className={`truncate${openNoteFolder === null ? ' font-bold' : ''}`}>
+              {t('folders.unfiled')}
+            </span>
+          </span>
+          <span className="text-xs tabular-nums">
+            {unfiledCount}
+          </span>
+        </button>
+      )}
+
       {creatingUnder === null ? (
-        <div className="w-full rounded text-[15px] lg:text-[13px] font-medium flex items-center text-pn">
-          <div className="flex-1 min-w-0 flex items-center gap-2 lg:gap-1.5 px-2 py-2 lg:py-1">
+        <div className="w-full rounded text-[15px] font-medium flex items-center text-pn">
+          <div className="flex-1 min-w-0 flex items-center gap-2 px-2 py-2">
             <span className="inline-flex shrink-0 text-accent">
-              <Folder size={16} className="lg:w-3.5 lg:h-3.5" />
+              <Folder size={16} />
             </span>
             <FolderNameInput
               value={createDraft}
@@ -342,42 +387,10 @@ export function FolderTree({
              the folder picker's own "New folder" button, so the two say the
              same thing in the two places they appear.
              Spec: ops/docs/ui-patterns.md (section 76) */
-          className="w-full mt-2 rounded-md border border-dashed border-divider hover:border-accent/50 text-[15px] lg:text-[13px] font-medium transition flex items-center justify-center gap-2 lg:gap-1.5 px-2 py-2 lg:py-1.5 text-pn-muted hover:text-accent"
+          className="w-full mt-2 rounded-md border border-dashed border-divider hover:border-accent/50 text-[15px] font-medium transition flex items-center justify-start gap-2 ps-[7px] pe-2 py-2 text-pn-muted hover:text-accent"
         >
-          <FolderPlus size={16} className="shrink-0 lg:w-3.5 lg:h-3.5 text-amber-700 dark:text-amber-500/80" />
+          <FolderPlus size={16} className="shrink-0 text-label" />
           <span className="truncate">{t('folders.new')}</span>
-        </button>
-      )}
-
-      {/* Unfiled - notes with no folder, the folder sibling of the tag
-          rail's Untagged row (GitHub #235). Same muted styling, folder-view
-          font sizes. Hides at zero (NotesView bounces the filter). Selecting
-          it is browsing, not a folder action, so it skips the Pro lock. */}
-      {unfiledCount > 0 && (
-        <button
-          type="button"
-          tabIndex={mobileTabIndex}
-          onClick={() => onSelectFolder(selectedFolder === UNFILED_ID ? null : UNFILED_ID)}
-          data-drop-folder={itemDrop ? UNFILED_ID : undefined}
-          className={`w-full text-start px-2 py-2 lg:py-1.5 rounded text-[15px] lg:text-[13px] font-medium transition flex justify-between items-center ${
-            itemDrop?.overId === UNFILED_ID
-              ? `${SIDEBAR_DROP_INSIDE} text-pn`
-              : selectedFolder === UNFILED_ID
-              ? SIDEBAR_ACTIVE
-              : 'text-pn-muted hover:bg-pn/5 hover:text-pn-soft'
-          }`}
-        >
-          <span className="flex items-center gap-2 lg:gap-1.5 min-w-0">
-            <span className="inline-flex shrink-0">
-              <Prohibit size={16} className="lg:w-3.5 lg:h-3.5" />
-            </span>
-            <span className={`truncate${openNoteFolder === null ? ' font-bold' : ''}`}>
-              {t('folders.unfiled')}
-            </span>
-          </span>
-          <span className="text-xs lg:text-[11px] tabular-nums">
-            {unfiledCount}
-          </span>
         </button>
       )}
 
@@ -424,6 +437,18 @@ export function FolderTree({
                   <ArrowElbowDownRight className="text-accent" />
                   {t('folders.move')}
                 </button>
+                {spaceMove && menuFolder.parentId === null && (
+                  <button
+                    onClick={() => {
+                      setMenu(null);
+                      spaceMove.run(menuFolder.id);
+                    }}
+                    className="w-full text-start px-3 py-1.5 text-[13px] text-pn-soft hover:bg-surface-1 flex items-center gap-2"
+                  >
+                    <spaceMove.icon className="text-accent" />
+                    {spaceMove.label}
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setMenu(null);

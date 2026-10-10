@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { VERSION } from './version';
 import { useEscapeToClose } from './useEscapeToClose';
-import { ArrowSquareOut, Bug, GithubLogo, Info, Keyboard, Link, Printer, Star, X } from './icons';
+import { ArrowSquareOut, Bug, ChatCircle, Code, Database, GithubLogo, Globe, Info, Keyboard, Link, MapTrifold, Printer, Scales, Sparkle, Star, Tag, X } from './icons';
 import { bugReportUrl } from './bugReportUrl';
 import { FOLLOW_LINKS, GITHUB_NEW_ISSUE } from './followLinks';
 import { HelpChip } from './HelpChip';
@@ -13,7 +13,7 @@ import { DESKTOP_MORE_NOTE, HOTKEY_GROUPS, rowCaps, rowText } from './hotkeysDat
 import { DESKTOP_APP, KEY_OS } from './shortcutMatch';
 import { setSingleKeys, useSingleKeys } from './singleKeys';
 import { Switch } from './Switch';
-import { SETTINGS_EYEBROW, SETTINGS_HELP, SettingsTabStrip, settingsTabClass } from './settingsUI';
+import { EYEBROW_ICON_ROW, EyebrowGlyph, SETTINGS_EYEBROW, SETTINGS_HELP, SettingsTabStrip, settingsTabClass } from './settingsUI';
 import { isTouchOnly } from './touchOnly';
 import { Brand } from './Brand';
 import { SwissFlag } from './SwissFlag';
@@ -78,7 +78,7 @@ function AboutTab() {
         className="group block rounded-lg border border-divider p-4 hover:border-accent/40 transition"
       >
         <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-          <span className={SETTINGS_EYEBROW}>{t('about.whatsNew')}</span>
+          <span className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW}`}><EyebrowGlyph icon={Sparkle} />{t('about.whatsNew')}</span>
           <span className="font-mono text-[11px] text-pn-muted">
             v{LATEST_RELEASE.version} - {formatDay(LATEST_RELEASE.date, 'date')}
           </span>
@@ -92,7 +92,8 @@ function AboutTab() {
 
       <section className="grid grid-cols-2 gap-6">
         <div>
-          <h3 data-setting="about.version" className={`${SETTINGS_EYEBROW} mb-2`}>
+          <h3 data-setting="about.version" className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW} mb-2`}>
+            <EyebrowGlyph icon={Tag} />
             {t('about.versionHeading')}
           </h3>
           <p className="font-mono text-pn-soft">v{VERSION}</p>
@@ -101,7 +102,8 @@ function AboutTab() {
           {/* Reuses the retired tab's label rather than carrying a second key
               for the same word, exactly as the desktop About window does.
               /roadmap is an English-only page, so the href takes no slug. */}
-          <h3 data-setting="about.roadmap" className={`${SETTINGS_EYEBROW} mb-2`}>
+          <h3 data-setting="about.roadmap" className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW} mb-2`}>
+            <EyebrowGlyph icon={MapTrifold} />
             {t('about.tabs.roadmap')}
           </h3>
           <a
@@ -117,7 +119,8 @@ function AboutTab() {
       </section>
 
       <section className="border-t border-divider pt-5">
-        <h3 data-setting="about.openSource" className={`${SETTINGS_EYEBROW} mb-2`}>
+        <h3 data-setting="about.openSource" className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW} mb-2`}>
+            <EyebrowGlyph icon={Code} />
           {t('trust.openSourceHeading')}
         </h3>
         <a
@@ -137,7 +140,8 @@ function AboutTab() {
       {/* Same split as the feedback window: bugs and requests go to GitHub,
           and the channels below are for following along only. */}
       <section className="border-t border-divider pt-5">
-        <h3 data-setting="about.feedback" className={`${SETTINGS_EYEBROW} mb-2`}>
+        <h3 data-setting="about.feedback" className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW} mb-2`}>
+            <EyebrowGlyph icon={ChatCircle} />
           {t('about.feedbackHeading')}
         </h3>
         <p className="text-xs text-pn-soft mb-3">{t('feedback.intro')}</p>
@@ -166,7 +170,8 @@ function AboutTab() {
       </section>
 
       <section className="border-t border-divider pt-5">
-        <h3 data-setting="about.dataStorage" className={`${SETTINGS_EYEBROW} mb-2`}>
+        <h3 data-setting="about.dataStorage" className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW} mb-2`}>
+            <EyebrowGlyph icon={Database} />
           {t('trust.dataStorageHeading')}
         </h3>
         <p className="text-xs text-pn-soft leading-relaxed">
@@ -176,7 +181,8 @@ function AboutTab() {
       </section>
 
       <section className="border-t border-divider pt-5">
-        <h3 data-setting="about.favicons" className={`${SETTINGS_EYEBROW} mb-2`}>
+        <h3 data-setting="about.favicons" className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW} mb-2`}>
+            <EyebrowGlyph icon={Globe} />
           {t('trust.faviconsHeading')}
         </h3>
         {/* One paragraph, not two: the split read as two separate claims when
@@ -187,7 +193,8 @@ function AboutTab() {
       </section>
 
       <section className="border-t border-divider pt-5">
-        <h3 data-setting="about.legal" className={`${SETTINGS_EYEBROW} mb-3`}>
+        <h3 data-setting="about.legal" className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW} mb-3`}>
+            <EyebrowGlyph icon={Scales} />
           {t('about.legalHeading')}
         </h3>
         <div className="flex gap-3">

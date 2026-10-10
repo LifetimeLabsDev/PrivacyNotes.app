@@ -14,6 +14,7 @@
 
 import type { Dispatch, MutableRefObject, ReactNode, SetStateAction } from 'react';
 import i18n from '../i18n';
+import { isShortcutId, shortcutNoun } from '../noteShortcut';
 import type { ContextMenuItem } from '../ContextMenu';
 import type { LocalNote } from '../db';
 import {
@@ -22,7 +23,7 @@ import {
   iconNewJournal, iconNewLogin, iconNewTask,
   iconArchive, iconNote, iconPin, iconReadOnly, iconRestore, iconSettings, iconTag,
   iconShield, iconSidebar,
-  iconSignOut, iconTrash, iconUpload, iconZen, NEW_GLYPHS, EXPORT_GLYPHS,
+  iconSignOut, iconTrash, iconUpload, iconZen, LinkSimple, NEW_GLYPHS, EXPORT_GLYPHS,
 } from '../icons';
 import { bulkActionGuards, noteActionGuards } from '../noteActionGuards';
 import type { ImageStore } from '../imageStore';
@@ -64,6 +65,7 @@ export type ContextMenuDeps = {
   // Bookmark row actions (type 'link')
   onOpenBookmark: (n: LocalNote) => void;
   onCopyBookmarkUrl: (n: LocalNote) => void;
+  onCopyShortcut: (n: LocalNote) => void;
   onEditBookmark: (n: LocalNote) => void;
   setShowSettings: Dispatch<SetStateAction<boolean>>;
   handleSignOutClick: () => void;
@@ -117,6 +119,8 @@ export type ContextMenuDeps = {
   requestTrash: (ids: string[]) => void;
   /** Pro: open the folder picker for this note. */
   onMoveToFolder: (id: string) => void;
+  /** "Move to Work" or "Move to Personal", while spaces are on. */
+  spaceMove?: { label: string; icon: ReactNode; run: (ids: string[]) => void };
   handleBurnShare: (n: LocalNote) => Promise<void> | void;
   exportSingleMarkdown: (n: LocalNote) => Promise<void> | void;
   exportSingleHtml: (n: LocalNote) => Promise<void> | void;
@@ -439,8 +443,22 @@ export function createContextMenuBuilders(deps: ContextMenuDeps): {
         },
         many: () => deps.onBulkMoveToFolder(),
       },
+      {
+        label: () => deps.spaceMove?.label ?? '',
+        icon: () => deps.spaceMove?.icon,
+        when: () => !!deps.spaceMove,
+        one: (n) => deps.spaceMove?.run([n.id]),
+        many: (ids) => deps.spaceMove?.run(ids),
+      },
     ],
     [
+      {
+        label: (s) => i18n.t(s.kind === 'one' && shortcutNoun(s.note.type) === 'item' ? 'shell:shortcut.copyItem' : 'shell:shortcut.copyNote'),
+        icon: () => <LinkSimple size={14} aria-hidden="true" />,
+        when: (s) => s.kind === 'one' && isShortcutId(s.note.id),
+        one: (n) => deps.onCopyShortcut(n),
+        many: oneItemOnly('a shortcut opens one item'),
+      },
       {
         label: () => i18n.t('shell:contextMenu.exportAsMarkdown'),
         icon: () => <EXPORT_GLYPHS.markdown size={14} aria-hidden="true" />,

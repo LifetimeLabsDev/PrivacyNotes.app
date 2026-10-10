@@ -11,6 +11,12 @@ export type SettingsCategory = {
    */
   group?: string;
   /**
+   * The pane draws its own headline, below a row that comes first: the
+   * Toolbar pane puts the free bar position above the Pro heading. The
+   * desktop window then draws no headline of its own.
+   */
+  ownHeading?: boolean;
+  /**
    * Turns the row into an external link instead of a pane: it opens in a new
    * tab (the system browser on desktop, via App.tsx's opener interceptor),
    * never becomes the active selection, and never lands as the desktop
@@ -39,9 +45,10 @@ export type SettingsShellProps = {
   /**
    * A row inside `initialCategory` to land on, the way a search result does:
    * the pane opens on the row's tab and the row flashes. The quick switcher
-   * opens a setting this way.
+   * opens a setting this way. `flash: false` opens the tab without the
+   * flash, for a door that lands on a whole tab rather than one row.
    */
-  initialSetting?: { id: string; tab?: string };
+  initialSetting?: { id: string; tab?: string; flash?: boolean };
   /**
    * Desktop landing category when not deep-linked. Mobile still opens to
    * the list. Falls back to the first category.
@@ -49,6 +56,13 @@ export type SettingsShellProps = {
   defaultCategory?: string;
   /** Pinned footer action area (e.g. Sign out). */
   footer?: ReactNode;
+  /**
+   * Desktop only: open on `initialCategory` alone, without the category rail
+   * and the search field, for a door that leads to one pane and needs its
+   * width (the editor's format bar gear, the Design popover). An "All
+   * settings" button in the header brings the rail back.
+   */
+  solo?: boolean;
   onClose: () => void;
 };
 

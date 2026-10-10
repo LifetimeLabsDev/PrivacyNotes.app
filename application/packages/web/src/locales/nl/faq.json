@@ -49,13 +49,7 @@
     "mdDemoScripts": "Superscript, subscript, onderstrepen",
     "mdDemoMath": "Wiskunde (KaTeX)",
     "mdDemoQuote": "Citaat en notitielink",
-    "mdDemoDivider": "Scheidingslijn",
-    "hkShowcase": "De volledige lijst",
-    "hkMac": "Mac",
-    "hkPc": "Windows en Linux",
-    "hkBrowser": "Browser",
-    "hkDesktop": "Desktop-app",
-    "hkLayout": "Sneltoetsen volgen de tekens die je toetsenbord typt, niet de plek van de toetsen op een Amerikaans toetsenbord: druk op de toets die het getoonde teken typt (bij een niet-Latijnse indeling de toets op de Amerikaanse plek). Een toets die met AltGr een teken typt, typt dat teken altijd."
+    "mdDemoDivider": "Scheidingslijn"
   },
   "groups": {
     "gettingStarted": "Aan de slag",
@@ -100,6 +94,14 @@
       "a": [
         "Notities, titels, tags en bijlagen zijn altijd versleuteld, op je apparaat en onderweg naar de server. Bij eigen beheer, waarmee elk nieuw herstelzinaccount begint, hebben wij geen ontsleutelsleutel. Bij registratie met Google, Apple of GitHub kies je waar je sleutel wordt bewaard. De standaardkeuze is \"Houd het simpel & gemakkelijk\": je herstelzin staat dan op onze server, versleuteld met een sleutel van ons. In die modus kan onze server je herstelzin en daarmee je notities ontsleutelen. Instellingen > Account > Sleutelbeheer toont je huidige modus en laat je wisselen.",
         "Wij zien de informatie die nodig is om de dienst te draaien: hoeveel versleutelde opslag je gebruikt, hoeveel apparaten je hebt gekoppeld en tijdstempels van de synchronisatie. Gebruik je alleen je herstelzin en heb je geen Google-, Apple- of GitHub-account gekoppeld, dan kennen we je e-mailadres niet."
+      ]
+    },
+    "app-privacy-label": {
+      "q": "Waarom staat er op het privacylabel in de App Store dat mijn gegevens aan mij gekoppeld zijn?",
+      "a": [
+        "Omdat Apple één label vraagt dat alles dekt wat onze server kan bereiken, ook als het versleuteld aankomt en ook als maar een deel van de accounts het verstuurt. Aan jou gekoppeld betekent: aan een account verbonden, en het account achter een registratie met een herstelzin is een sleutel, geen naam. Niets wordt gebruikt om je te volgen, en de app bevat geen analyse, geen advertenties en geen crashrapporten. Elke regel op het label betekent één ding:",
+        "- **Gebruikersinhoud**: je notities en bestanden, versleuteld op je apparaat. Bij eigen beheer kunnen wij ze niet lezen.\n- **ID’s**: een publieke sleutel die is afgeleid van je herstelzin, en een apparaathash die je apparaat zelf berekent en die alleen de apparaatlimiet van de gratis versie handhaaft.\n- **Contactgegevens**: een e-mailadres, alleen als je inlogt met Google, Apple of GitHub.\n- **Aankopen**: of je account Pro heeft. Apple handelt de betaling af, en wij zien je kaart nooit.",
+        "Wil je die lijst voor je eigen account zo kort mogelijk houden, registreer je dan met een herstelzin in plaats van met een Google-, Apple- of GitHub-login, en houd eigen beheer aan. Instellingen > Account > Sleutelbeheer toont je huidige modus. [Wat PrivacyNotes kan zien](/nl/help/what-can-you-see/) legt de rest uit."
       ]
     },
     "phrase-vs-password": {
@@ -400,7 +402,7 @@
     "languages": {
       "q": "Welke talen spreekt de app?",
       "a": [
-        "Engels, Duits, Frans, Italiaans, Spaans, Nederlands, Pools, Tsjechisch, Catalaans, Turks, Zweeds, Oekraïens, Russisch, Japans, Koreaans, traditioneel Chinees, Thai, Arabisch en Portugees, in zowel de Europese als de Braziliaanse variant. De app volgt standaard je systeemtaal, of je zet er op elk apparaat expliciet een vast bij Instellingen > Datum & taal > Taal.",
+        "Engels, Duits, Frans, Italiaans, Spaans, Nederlands, Pools, Tsjechisch, Catalaans, Turks, Zweeds, Oekraïens, Russisch, Japans, Koreaans, traditioneel Chinees, Thai, Arabisch en Portugees, in zowel de Europese als de Braziliaanse variant. De app volgt standaard je systeemtaal, of je zet er op elk apparaat expliciet een vast bij Instellingen > Taal.",
         "Vertalingen zijn gratis voor iedereen, geen Pro-extraatje. Er staan meer talen op de planning; ontbreekt die van jou, laat het ons weten op [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) of [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -458,8 +460,7 @@
       "q": "Welke sneltoetsen zijn er?",
       "a": [
         "Druk ergens in de app op ? voor het ingebouwde spiekbriefje, ook te vinden onder Instellingen > Over. De sneltoetsen bestrijken navigatie, notitieacties, opmaak en weergaven - en op Windows en Linux lees je elke Cmd als Ctrl en Option als Alt.",
-        "De basis: Cmd+K springt op naam naar elk item of elke instelling, en de laatste regel doorzoekt de tekst van de open sectie; / activeert het zoeken, met J en K loop je door de lijst, met Cmd+[ en Cmd+] ga je terug en vooruit door de items die je hebt geopend, Alt+Shift+N begint een nieuwe notitie, Cmd+Backspace gooit de geselecteerde in de prullenbak, Cmd+, opent Instellingen. Tijdens het schrijven: Cmd+B vet, Cmd+I cursief, Cmd+Shift+K voegt een link in, Cmd+Shift+9 begint een takenlijst, Cmd+F zoekt in de notitie, Cmd+Shift+O toont of verbergt het overzicht, Cmd+Shift+M schakelt naar de Markdown-weergave. Cmd+\\ of Cmd+Shift+D verbergt de zijbalk, Cmd+Shift+L wisselt het thema, Cmd+Shift+F opent de zen-modus (Pro), en Esc brengt je uit bijna alles terug, ook uit filters. Typ > in het zoekveld of in Cmd+K (of druk op > buiten een tekstveld) om elke opdracht op naam te vinden en uit te voeren.",
-        "De desktop-apps voegen de toetsen toe die een browser voor zichzelf houdt: Cmd+N voor een nieuwe notitie, Cmd+Shift+N voor een nieuw item van elk type, Cmd+W om een tabblad te sluiten, Ctrl+Tab om tussen tabbladen te wisselen, Cmd+1 tot Cmd+9 voor de secties van de zijbalk, en Cmd+Shift+P voor de lijst met opdrachten."
+        "Het [afdrukbare spiekbriefje](/help/keyboard-shortcuts/cheat-sheet) zet elke sneltoets op één A4-pagina, voor een Mac of voor Windows en Linux, en voor de browser of de desktop-apps. Het wordt gemaakt uit dezelfde lijst die de app toont, dus het klopt altijd met de versie die je gebruikt."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -638,8 +639,15 @@
     "tags": {
       "q": "Hoe werken tags?",
       "a": [
-        "Elke geopende notitie heeft onder de titel een tagregel. Typ een woord en druk op Enter, een komma of #, en de tag wordt een chip. De zijbalk toont elke tag die je gebruikt, en één klik filtert de lijst op die notities. Je kunt een tag overal tegelijk hernoemen, hem als favoriet bovenaan vastzetten, of hem verwijderen, met of zonder de notities eronder.",
+        "Elke geopende notitie heeft onder de titel een tagregel. Typ een woord en druk op Enter, een komma of #, en de tag wordt een chip. De zijbalk toont de tags die de open sectie gebruikt, en één klik filtert de lijst op die items. Je kunt een tag overal tegelijk hernoemen, hem als favoriet bovenaan vastzetten, of hem verwijderen, met of zonder de notities eronder.",
         "Tags en mappen lossen verschillende problemen op: een notitie zit in één map maar draagt zoveel tags als je wilt, en dat is precies wat je nodig hebt als iets zowel \"werk\" als \"factuur\" is. Imports taggen op bron, dus alles wat uit een andere app komt landt met een eigen tag en is makkelijk terug te vinden of later op te ruimen."
+      ]
+    },
+    "organize": {
+      "q": "Hoe werken secties, mappen, tags en ruimtes samen?",
+      "a": [
+        "Alles wat je bewaart staat in één bibliotheek. De secties in de zijbalk, zoals Notities, Kluis en Dagboeken, zijn weergaven van die bibliotheek per type. Een map is een plek, dus één map kan een notitie en de bijbehorende login samen bevatten, en de mappenboom is in elke sectie hetzelfde. De getallen tellen wat de open sectie bevat, en een map zonder iets daarvan wordt gedimd weergegeven. Een tag is een label, en de zijbalk toont alleen de tags die de open sectie gebruikt.",
+        "Ruimtes splitsen de bibliotheek in Persoonlijk en Werk en tonen er één tegelijk. Een map op het hoogste niveau hoort bij één ruimte, met alles erin, en **Naar Werk verplaatsen** in het menu ervan zet hem over. Een item zonder map hoort bij Persoonlijk, dus alles wat je in Werk maakt komt in een map van Werk. Tags zijn gratis, mappen en ruimtes vragen Pro."
       ]
     },
     "note-links": {
@@ -652,8 +660,8 @@
     "appearance": {
       "q": "Kan ik veranderen hoe de app eruitziet?",
       "a": [
-        "Ja, bij Instellingen > Weergave. Modus schakelt tussen Licht, Donker en Auto, dat je systeem volgt. Tekstgrootte heeft vier stappen en schaalt alleen je schrijfvlak: de interface eromheen blijft staan. Met Items tonen als kies je tussen Lijst en Raster. Editor bepaalt of notities Opgemaakt of als kale Markdown openen.",
-        "Kleurthema's zijn het enige deel achter Pro: het standaardthema is gratis en Pro ontgrendelt de rest, licht en donker. Zen-modus, die alles behalve je tekst verbergt, is ook Pro (Cmd+Shift+F). Modus en tekstgrootte blijven op het apparaat waarop je ze instelt. Al het andere volgt je account naar je andere apparaten."
+        "Ja. Instellingen > Weergave bepaalt hoe het eruitziet: **Modus** schakelt tussen Licht, Donker en Auto, dat je systeem volgt, en je kiest één kleurthema voor de lichte modus en één voor de donkere. Instellingen > Editor bepaalt hoe je schrijft: **Tekstgrootte** heeft vijf stappen en schaalt alleen je schrijfvlak, zodat de interface eromheen blijft staan, en **Editor** bepaalt of notities Opgemaakt of als kale Markdown openen. Instellingen > Lijsten toont items als Lijst of Raster. In de desktop-apps schaalt **Appgrootte** bij Instellingen > Weergave het hele venster. De knop **Weergave** in de voettekst bevat de instellingen die je het vaakst wijzigt, met drie favoriete thema's per modus.",
+        "Voor kleurthema's heb je Pro nodig: het standaardthema is gratis en Pro ontgrendelt de rest, licht en donker, plus [eigen thema's](/nl/help/custom-themes/). De zen-modus, die alles behalve je tekst verbergt (Cmd+Shift+F), is ook Pro. De [opmaakbalk](/nl/help/format-bar/) bovenaan of onderaan zetten is gratis, en de knoppen ervan indelen is Pro. Modus, de kleurthema's die je kiest en je drie favorieten, tekstgrootte, Lijst of Raster en appgrootte blijven op het apparaat waarop je ze instelt. De editormodus, regelafstand, notitiekleuren en je lijstinstellingen volgen je account naar je andere apparaten."
       ]
     },
     "share-with-someone": {
@@ -761,6 +769,139 @@
       "a": [
         "Je ruimte is al vrij. Zodra de verwijdering synchroniseert, tellen die bytes niet meer mee voor je quotum, op de server net zo goed als op dit apparaat. Toont de balk nog het oude getal, druk dan op het vernieuwpictogram ernaast: dat telt opnieuw vanaf de server en laat alles weg wat al in de wachtrij voor verwijdering staat. Een apparaat dat offline was, houdt zijn eigen laatste telling tot het bijgewerkt is.",
         "De \"paar dagen\" waar de app het over heeft gaan over het versleutelde bestand zelf, niet over je quotum, en dat wachten is bewust. Een bestand uit de opslag verwijderen is definitief, er is geen prullenbak om het uit terug te vissen. Een apparaat dat nog niet klaar is met synchroniseren heeft een onvolledig beeld van je notities en zou een afbeelding kunnen verwijderen die een andere notitie nog toont. Daarom wacht een bestand minstens 24 uur, en haalt alleen een apparaat met een schoon afgeronde synchronisatie het weg. Dat geduld kost je niets, want de ruimte werd bijgeschreven op de dag dat je verwijderde."
+      ]
+    },
+    "spoiler-text": {
+      "q": "Hoe verberg ik spoilertekst in een notitie?",
+      "a": [
+        "Selecteer de tekst en kies **Spoiler** in het +-menu van de opmaakbalk, of zet hem tussen twee paar verticale strepen: `||spoiler||`. De tekst wordt meteen wazig. Tijdens het bewerken verschijnt hij zodra je cursor hem raakt, en wordt hij weer wazig als de cursor verder gaat. In een alleen-lezen notitie toont een klik hem.",
+        "De notitielijst en de voorbeelden tonen `•••` op zijn plek, zodat zelfs de lengte niets verraadt. Zoeken vindt de woorden in een spoiler nog steeds, een HTML-export houdt ze wazig tot de lezer klikt, en een afdruk toont ze. Een Markdown-export behoudt de strepen, die andere Markdown-apps als gewone tekens rond de tekst tonen. Spoilers zijn gratis."
+      ]
+    },
+    "copy-box": {
+      "q": "Hoe maak ik tekst die je met één klik kopieert?",
+      "a": [
+        "Voeg een kopieervak toe: kies **Kopieervak** in het +-menu van de opmaakbalk en typ of plak de tekst erin, zoals een opdracht, een adres of een code. De knop in de hoek zet de hele tekst op je klembord en toont even **Gekopieerd**. Een codeblok en een kopieervak zijn in elkaar om te zetten, dus je kunt ook een bestaand blok omzetten.",
+        "Inline code kun je ook kopiëren. In een alleen-lezen notitie kopieer je die met een klik of een tik. Tijdens het bewerken kopieer je hem met Cmd-klik op een Mac of Ctrl-klik op Windows en Linux, zodat een gewone klik nog steeds de cursor plaatst. Een kopieervak wordt opgeslagen als codeblok met de taal `copy`, dat andere Markdown-apps als gewoon codeblok tonen. Allebei zijn gratis."
+      ]
+    },
+    "footnotes": {
+      "q": "Hoe voeg ik voetnoten toe aan een notitie?",
+      "a": [
+        "Kies **Voetnoot** in het +-menu van de opmaakbalk. De app zet het volgende nummer bij je cursor, maakt onder de tekst een lege voetnoot aan en zet je cursor erin. Je kunt ook `[^1]` direct na een woord typen, en een regel met `[^1]: ` beginnen om de voetnoot zelf te schrijven. Een label kan behalve een nummer ook een woord zijn.",
+        "Klik op een nummer om naar de voetnoot te springen, en de terugpijl of Escape brengt je terug naar de tekst. Op een computer toont een klein kaartje de voetnoot als je de aanwijzer op een nummer laat rusten. De nummers volgen de volgorde in de tekst, en de notitie bewaart standaard Markdown-voetnoten, zodat andere Markdown-apps ze kunnen lezen. Een HTML-export, een pdf en een burn-notitie behouden ze als gelinkte voetnoten. Voetnoten zijn gratis."
+      ]
+    },
+    "statistics": {
+      "q": "Wat laten de statistieken zien over mijn schrijven en welzijn?",
+      "a": [
+        "Open Instellingen > Statistieken, of klik op het aantal notities en woorden in de voettekst. **Overzicht** vat je week samen: je schrijfreeks, geschreven woorden, stemming en gelogde dagen, plus een raster van de laatste 26 weken en de uren waarop je meestal schrijft. **Schrijven** telt je notities, woorden en tags, toont je huidige en langste reeks en zet je mijlpalen op een rij. **Welzijn** zet elke tracker uit je dagboek in een grafiek over een periode die je kiest, eigen trackers inbegrepen.",
+        "Alles wordt op je apparaat berekend, en er wordt niets van naar ons gestuurd. Woorden en schrijfuren tellen wat je op dat apparaat schrijft, dus elk apparaat toont zijn eigen cijfers. De grafieken, de reeksen, de medicatiekalender en **JSON downloaden** zijn gratis. Pro voegt toe: Week in beeld, wat je stemming beïnvloedt, de tabel Patronen, de vergelijkingen voor dezelfde dag en de dag erna, een **PDF voor je arts** en een AI-prompt die klaar is om te kopiëren."
+      ]
+    },
+    "drag-to-folder": {
+      "q": "Kan ik een notitie naar een map of tag slepen?",
+      "a": [
+        "Ja. Sleep een notitie uit de lijst naar een map in de zijbalk om hem daarheen te verplaatsen, of naar **Zonder map** om hem uit zijn map te halen. Laat hem los op een tag om die tag toe te voegen, en de notitie houdt de tags die hij al had. Taken, bladwijzers, contacten, Kluis-items en geüploade bestanden in Bestanden sleep je op dezelfde manier. Houd een gesleept item even boven een gesloten map en die gaat open, zodat je bij een submap komt.",
+        "Om er meerdere tegelijk te verplaatsen, selecteer je ze met Cmd-klik op een Mac of Ctrl-klik op Windows en Linux, voeg je met Shift-klik een reeks toe en sleep je daarna een willekeurig geselecteerd item. Voor slepen heb je een muis, trackpad of pen nodig en een venster dat breed genoeg is om de zijbalk te tonen. Gebruik op een telefoon in plaats daarvan **Naar map verplaatsen** in het \"...\"-menu. Tags zijn gratis, en voor [mappen](/nl/help/folders/) heb je Pro nodig."
+      ]
+    },
+    "custom-themes": {
+      "q": "Kan ik mijn eigen kleurthema maken?",
+      "a": [
+        "Ja, met Pro. Open Instellingen > Weergave en kies **Nieuw thema**. Kies zes kleuren (Achtergrond, Zijbalk, Rand, Tekst, Gedempte tekst en Accentkleur) en de app stelt de rest voor, terwijl de app achter het paneel je thema meteen laat zien. Een contrastcontrole markeert tekst die slecht leesbaar is en biedt **Alles corrigeren** aan. Opslaan kan zodra elke controle slaagt.",
+        "Het menu op elke themakaart heeft **Code kopiëren**, dat het thema kopieert als een korte tekstcode die je naar iedereen kunt sturen, en met **Themacode plakken** voeg je een code toe die je hebt gekregen. Je kiest één thema voor de lichte modus en één voor de donkere, met **Favoriet** in het menu van een themakaart zet je tot drie thema's per modus in de knop **Weergave** in de voettekst, en de thema's die je maakt synchroniseren naar al je apparaten. Meer vind je op [de themapagina](https://privacynotes.app/themes), waar je ook je eigen thema kunt insturen. Het thema Default is gratis, en voor elk ander thema heb je Pro nodig."
+      ]
+    },
+    "format-bar": {
+      "q": "Kan ik kiezen welke knoppen in de opmaakbalk staan?",
+      "a": [
+        "Ja. Klik op het tandwiel aan het eind van de opmaakbalk, of open Instellingen > Opmaakbalk. Elke knop heeft drie plekken: **Op de balk**, **In het +-menu** of **Verborgen**. Sleep een knop om hem te verplaatsen, of klik erop voor de opties. Een verborgen knop werkt nog steeds via zijn sneltoets en zijn Markdown, dus verbergen neemt niets weg.",
+        "De balk bovenaan of onderaan zetten is gratis op elk account. De knoppen indelen hoort bij Pro: op een gratis account werkt Instellingen > Opmaakbalk als voorbeeld dat je kunt uitproberen, en je indeling wordt opgeslagen zodra je Pro hebt. Je indeling volgt je account naar elk apparaat, en **Standaardwaarden herstellen** zet de standaardbalk terug. Op een touchscreen is de balk één rij die zijwaarts scrolt, op elk account, zodat geen enkele knop achter een tweede rij verstopt zit."
+      ]
+    },
+    "window-zoom": {
+      "q": "Kan ik de hele desktop-app groter of kleiner maken?",
+      "a": [
+        "Ja, in de desktop-apps voor Mac, Windows en Linux. Druk op een Mac op Cmd en de plustoets, of op Windows en Linux op Ctrl en de plustoets, om het hele venster groter te maken. De mintoets maakt het kleiner, en 0 zet het terug naar normaal. Dezelfde instelling heet **Appgrootte** bij Instellingen > Weergave, met stappen van 80% tot 200%.",
+        "Appgrootte schaalt alles tegelijk: de zijbalk, de lijst, de menu's en je tekst. Wil je alleen je eigen tekst groter of kleiner maken, gebruik dan **Tekstgrootte** bij Instellingen > Editor. Appgrootte geldt voor het apparaat waarop je het instelt. In een browser doet de zoomfunctie van de browser hetzelfde."
+      ]
+    },
+    "zen-mode": {
+      "q": "Wat is de zen-modus?",
+      "a": [
+        "De zen-modus verbergt alles behalve de notitie waaraan je schrijft: de zijbalk, de lijst en de voettekst, en ook de opmaakbalk start verborgen. Open tabbladen blijven bovenaan staan. Druk op Cmd+Shift+F op een Mac of Ctrl+Shift+F op Windows en Linux, klik op **Zen-modus** in de voettekst, of klik met rechts op een lege plek en kies **Zen-modus**.",
+        "Druk op Escape of nogmaals op dezelfde toetsen, of klik bovenaan de notitie op **Zen verlaten** om terug te gaan. **Opmaakbalk tonen** haalt de opmaakbalk terug terwijl je in de zen-modus blijft. De zen-modus hoort bij Pro, en in de [demo](https://try.privacynotes.app) probeer je hem uit zonder account."
+      ]
+    },
+    "date-format": {
+      "q": "Kan ik de datumnotatie aanpassen?",
+      "a": [
+        "Ja, bij Instellingen > Datum. **Datumnotatie** biedt Automatisch, Dag eerst, Maand eerst en Jaar eerst (ISO), en **Tijdnotatie** biedt Automatisch, 24 uur en 12 uur. Automatisch volgt de taal van de app en de regio van elk apparaat, en je keuze geldt op al je apparaten.",
+        "Dagboeknotities krijgen hun titel van de datum, en **Dagboektitels** op dezelfde plek biedt kant-en-klare notaties in jouw datumnotatie, of **Eigen patroon** om er zelf een te bouwen uit tokens zoals `YYYY`, `MMMM` en `ddd`, waarbij woorden tussen vierkante haken blijven zoals je ze typt. Een nieuw patroon geldt alleen voor nieuwe notities. Om de datum van vandaag in een notitie te zetten, druk je op Cmd+; op een Mac of Ctrl+; op Windows en Linux, en met Shift erbij komt ook de tijd erin. Dit is allemaal gratis."
+      ]
+    },
+    "checklists": {
+      "q": "Kan ik een takenlijst leegmaken, sorteren of herschikken?",
+      "a": [
+        "Ja. Het \"...\"-menu van de notitie heeft **Alle items uitvinken** om een lijst opnieuw te gebruiken, **Afgevinkte items verwijderen** om de afgeronde weg te halen, en **Items sorteren op status** om afgevinkte items onder de rest te zetten. Elke optie verschijnt alleen als die iets zou veranderen. Verwijderen vraagt eerst om bevestiging, en sorteren en alles uitvinken maak je ongedaan met Cmd+Z of Ctrl+Z. Onderaan de notitie staat je voortgang, zoals \"3 van 6 afgevinkt\".",
+        "Om zelf de volgorde te bepalen, sleep je de greep aan het eind van een item. Ingesprongen items gaan mee, en Escape annuleert het slepen. De greep verschijnt op een computer als je eroverheen beweegt, en blijft op een touchscreen licht zichtbaar. Een afgevinkt item schuift standaard onder de niet-afgevinkte items in zijn lijst; zet dat uit met **Afgevinkte items omlaag verplaatsen** bij Instellingen > Lijsten. Dit is allemaal gratis."
+      ]
+    },
+    "quick-switcher": {
+      "q": "Wat is de functie ‘Ga naar’, en wat kan die vinden?",
+      "a": [
+        "Met de functie ‘Ga naar’ spring je via de titel naar alles. Druk op Cmd+K op een Mac of Ctrl+K op Windows en Linux (Cmd+P of Ctrl+P werkt ook), of klik op **Ga naar** in de zijbalk of de kop van de lijst. Typ een deel van een titel om notities, taken, dagboeknotities, Kluis-items, bladwijzers, contacten, bijgevoegde bestanden en instellingen te vinden. Enter opent het item, en Option+Enter of Alt+Enter opent het in een tabblad.",
+        "Typ eerst > om in plaats daarvan een opdracht uit te voeren, zoals een nieuwe notitie maken of naar een sectie gaan. Om woorden in je tekst te vinden in plaats van in titels, kies je de rij **Alles doorzoeken**, of druk je vanaf elke rij op Cmd+Enter of Ctrl+Enter. Het zoeken gebeurt op je apparaat, dus niets van wat je typt wordt naar ons gestuurd. De functie ‘Ga naar’ is gratis."
+      ]
+    },
+    "find-in-note": {
+      "q": "Hoe zoek ik een woord in één notitie?",
+      "a": [
+        "Druk in een open notitie op Cmd+F op een Mac of Ctrl+F op Windows en Linux, of klik in een lange notitie op het vergrootglas in de hoek bovenaan. Typ het woord en druk op Enter voor de volgende treffer en op Shift+Enter voor de vorige, terwijl de balk de treffers telt. Druk nogmaals op dezelfde toetsen, of klik op het kruisje, om hem te sluiten. Zoeken werkt ook in alleen-lezen notities.",
+        "Met Pro kun je ook vervangen: druk op Option+Cmd+F op een Mac of Ctrl+H op Windows en Linux, of kies **Zoeken en vervangen** in het \"...\"-menu van de notitie. Vervang één treffer of met **Alles** alle treffers tegelijk, met **Hoofdlettergevoelig** als je dat nodig hebt. Beide balken werken ook in **Markdown tonen**, waar ze de ruwe tekst bereiken, zoals de taal van een codeblok. Om in al je notities te zoeken, gebruik je het zoekveld van de lijst, dat je met de toets / activeert. [Elke zoekopdracht draait op je apparaat](/nl/help/search-local/)."
+      ]
+    },
+    "screen-capture": {
+      "q": "Kan ik mijn notities verbergen voor screenshots en scherm delen?",
+      "a": [
+        "Ja, in de apps voor Android, iPhone en iPad, Mac en Windows. Open Instellingen > Beveiliging > Slot en zet **Verbergen bij schermopnames** aan. Screenshots, schermopnames en scherm delen tonen dan een leeg venster in plaats van je notities, voor zover het apparaat dat toestaat. Op een telefoon verbergt het je notities ook in de appkiezer.",
+        "De schakelaar staat standaard uit, geldt alleen voor het apparaat waarop je hem aanzet, en is gratis. Browsers en Linux geven een app geen manier om een opname te blokkeren, dus daar verschijnt de schakelaar niet. Hij werkt op zichzelf en heeft geen app-vergrendeling of PIN nodig."
+      ]
+    },
+    "connected-logins": {
+      "q": "Kan ik meer dan één aanmeldmethode aan mijn account koppelen?",
+      "a": [
+        "Ja. Open Instellingen > Account > Accounts en koppel Google, Apple of GitHub om een aanmeldmethode toe te voegen die dezelfde kluis opent. Je kunt er meerdere koppelen, zelfs twee accounts van één aanbieder, en je herstelzin blijft ernaast werken. Een account koppelen of ontkoppelen laat je notities en je versleuteling ongemoeid.",
+        "Een aanmeldmethode die al bij een andere kluis hoort, kun je niet koppelen, want kluizen worden nooit samengevoegd. **Ontkoppelen** vraagt eerst om je 12 woorden. Als wij je herstelzin voor je bewaren, blijft het laatste gekoppelde account staan tot je een ander koppelt of je herstelzin bewaart en overstapt op eigen beheer. Met eigen beheer vraagt een nieuw apparaat nog steeds om je 12 woorden. Gekoppelde accounts zijn in bèta."
+      ]
+    },
+    "session-expired": {
+      "q": "Waarom zegt de app \"Sessie verlopen\"?",
+      "a": [
+        "Het betekent dat onze server de aanmelding van dit apparaat niet meer accepteert, dus de synchronisatie stopt. Een zwakke verbinding of een serverstoring veroorzaakt dit nooit: de app controleert het een tweede keer bij de server voordat hij de melding toont. Je notities zijn veilig op dit apparaat.",
+        "Klik op **Opnieuw aanmelden**. De app vraagt eerst of je je herstelzin hebt bewaard, want om weer binnen te komen heb je die nodig, of de aanmeldmethode waarmee je je hebt geregistreerd. Notities die nog niet zijn gesynchroniseerd, blijven op het apparaat en synchroniseren zodra je bent aangemeld. Hetzelfde venster waarschuwt je als er bestanden nog niet klaar zijn met uploaden, want die worden bij het afmelden verwijderd."
+      ]
+    },
+    "archive": {
+      "q": "Wat doet Archiveren, en wat is het verschil met de prullenbak?",
+      "a": [
+        "Archiveren haalt een item uit je lijsten zonder het te verwijderen. Kies **Archiveren** in het \"...\"-menu of het rechtsklikmenu van het item, of in de selectiebalk voor meerdere items tegelijk. Gearchiveerde items verdwijnen uit Alles, hun sectie, Vastgezet en de tellers van mappen en tags, en wachten in de weergave **Archief** onderaan de zijbalk, die verschijnt zodra er iets is gearchiveerd. Wil je ze in Alles en in de tellingen houden, vink dan Archief aan in de kolom **Alles** van Instellingen > Lijsten. **Uit archief halen** op dezelfde plekken haalt een item terug.",
+        "De prullenbak is voor dingen die weg moeten: hij [verwijdert ze na 30 dagen definitief](/nl/help/trash-auto-delete/), tenzij je dat uitzet. Het archief verwijdert nooit iets, en gearchiveerde items blijven binnen bereik, want zoeken in Alles, de functie ‘Ga naar’ en notitielinks vinden ze nog steeds. Ze synchroniseren en blijven versleuteld zoals al het andere, en ze tellen nog steeds mee voor je opslag. Archiveren werkt voor elk type item en is gratis."
+      ]
+    },
+    "share-into-app": {
+      "q": "Kan ik tekst of een link vanuit een andere app naar PrivacyNotes delen?",
+      "a": [
+        "Ja, op iPhone, iPad en Android, als bèta. Tik in een willekeurige app op de deelknop en kies PrivacyNotes. Een weblink wordt een bladwijzer met de paginatitel, tekst wordt een nieuwe notitie, en afbeeldingen en bestanden gaan naar Bestanden. Een link die je al hebt bewaard, wordt getoond in plaats van twee keer opgeslagen. Gedeelde items komen binnen zonder map of tag, zodat je ze sorteert wanneer het jou uitkomt.",
+        "Op Android vraagt de app het eerst: hij toont wat er binnenkwam en bewaart het pas als je **Alles bewaren** kiest, of gooit het weg met **Weggooien**. Op iPhone en iPad bevestigt een kaartje **Opgeslagen in PrivacyNotes**. Voor elk bestand geldt je [uploadlimiet](/nl/help/attachment-limits/), en een gedeeld item wacht tot je bent aangemeld en de app is ontgrendeld."
+      ]
+    },
+    "desktop-updates": {
+      "q": "Hoe update ik de desktop-app?",
+      "a": [
+        "Dat hoeft niet. De apps voor Mac en Windows en de Linux-AppImage zoeken naar een update als ze starten en als je ernaar terugkeert, hoogstens elke 12 uur, en downloaden die op de achtergrond. Een melding zegt dan **Update beschikbaar**, met **Herstarten** om af te ronden en **Changelog** om te zien wat er nieuw is.",
+        "Het Linux-pakket .deb update je met een nieuwe download: de melding biedt **Downloaden**, dat de [downloadsectie](https://privacynotes.app/nl#downloads) opent, en je installeert het nieuwe pakket over het oude heen. Een .deb die te oud is om veilig te synchroniseren, pauzeert de synchronisatie tot je dat doet. Heb je op Windows met Scoop geïnstalleerd, voer dan `scoop update privacynotes` uit; de melding heeft daarvoor **Opdracht kopiëren**. Op een Mac heeft Homebrew geen upgrade-opdracht nodig, want de app werkt zichzelf bij."
       ]
     }
   }

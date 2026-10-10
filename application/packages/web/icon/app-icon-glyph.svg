@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="1024" height="1024">
+<!-- The padlock and check of the brand avatar (public/marketing/brand/privacynotes-avatar.svg),
+     in the avatar's own frame, without its blue and its fold: make-app-icons.py draws those. -->
+<g transform="translate(-4.9419 -27.7035) scale(1.56975)">
+<path fill="#FFFFFF" fill-rule="evenodd" d="m22 44h26c1.1 0 2 0.9 2 2v16c0 1.1-0.9 2-2 2h-26c-1.1 0-2-0.9-2-2v-16c0-1.1 0.9-2 2-2z"/>
+<path fill="#FFFFFF" d="m26 44v-8q0-8 9-8 9 0 9 8v8h-5v-8q0-3-4-3-4 0-4 3v8z"/>
+<path fill="#10B981" fill-rule="evenodd" d="m48 71c-6.08 0-11-4.92-11-11 0-6.08 4.92-11 11-11 6.08 0 11 4.92 11 11 0 6.08-4.92 11-11 11z"/>
+<path fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="m42 61l4 3 8-8"/>
+</g>
+</svg>

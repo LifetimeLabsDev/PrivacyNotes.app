@@ -191,7 +191,7 @@
   "mood": {
     "kicker": "Acompanhamento de humor e bem-estar",
     "heading": "Acompanhe o que você realmente sente.",
-    "intro": "Humor, emoções, sono, medicação e nível de atividade, tudo com alguns toques. Tudo está sempre criptografado, no seu aparelho e durante a sincronização.",
+    "intro": "Humor, emoções, sono, medicação e nível de atividade, tudo com alguns toques. Tudo está sempre criptografado, no seu dispositivo e durante a sincronização.",
     "cardEmotionsTitle": "Humor (1-10) + 24 etiquetas de emoção",
     "cardEmotionsBody": "24 etiquetas de emoção com base científica. Dê nome ao que você sente, perceba padrões ao longo do tempo e exporte dados que seu terapeuta ou médico pode usar.",
     "cardSleepTitle": "Qualidade do sono + nível de atividade",
@@ -251,7 +251,7 @@
     "para2": "Até apps que não mostram anúncios ainda guardam suas notas em texto puro nos servidores deles, legíveis por funcionários, vulneráveis em vazamentos e disponíveis para qualquer um com uma intimação. Seus dados viram a moeda de troca deles.",
     "differenceLabel": "A diferença",
     "differenceBody": "O <brand/> criptografa suas notas no seu dispositivo, e na autocustódia a chave nunca sai dele, então nem nós nem nossos servidores conseguimos ler uma palavra. Não há anúncios, pixels, rastreadores de terceiros nem análise do que você escreve, e nunca vai haver. Nosso site conta os cliques nos seus links de download e de parceiros por país, sem nenhum identificador. O que você escreve continua sendo seu.",
-    "keyboardNote": "<b>Um aviso sobre teclados de aparelho.</b> Teclados de terceiros (como Gboard, SwiftKey ou Samsung Keyboard) podem enviar o que você digita para os servidores deles. Isso acontece no nível do sistema operacional, fora do controle de qualquer app. Considere desativar os recursos de nuvem nas configurações do seu teclado ou usar um teclado totalmente offline."
+    "keyboardNote": "<b>Um aviso sobre teclados do dispositivo.</b> Teclados de terceiros (como Gboard, SwiftKey ou Samsung Keyboard) podem enviar o que você digita para os servidores deles. Isso acontece no nível do sistema operacional, fora do controle de qualquer app. Considere desativar os recursos de nuvem nas configurações do seu teclado ou usar um teclado totalmente offline."
   },
   "readIt": {
     "kicker": "Open source",
@@ -284,7 +284,7 @@
     "body": "Sem frase, sem notas. Não conseguimos recuperá-las, e mais ninguém consegue. Esse é o preço da autocustódia: só você tem a chave, então escrever para a nossa equipe não traz suas notas de volta.",
     "noRecoveryTerm": "Sem recuperação",
     "noRecoveryDesc": "Perdeu a frase, perdeu as notas",
-    "deviceTerm": "Gerada no aparelho",
+    "deviceTerm": "Gerada no dispositivo",
     "deviceDesc": "Na autocustódia, sua frase nunca toca nossos servidores",
     "zkTerm": "Zero conhecimento",
     "zkDesc": "Na autocustódia, não conseguimos ler nem restaurar seus dados",
@@ -309,7 +309,7 @@
       "rating": "Avaliação"
     },
     "modalTitle": "Sobre",
-    "intro": "O <brand/> reúne suas notas, tarefas, diário, senhas, arquivos, marcadores e contatos em um só lugar. Tudo é criptografado no seu aparelho com uma chave criada a partir das suas 12 palavras, e continua criptografado nos nossos servidores na <nowrap>Suíça</nowrap>. Funciona offline, e o app é de código aberto.",
+    "intro": "O <brand/> reúne suas notas, tarefas, diário, senhas, arquivos, marcadores e contatos em um só lugar. Tudo é criptografado no seu dispositivo com uma chave criada a partir das suas 12 palavras, e continua criptografado nos nossos servidores na <nowrap>Suíça</nowrap>. Funciona offline, e o app é open source.",
     "versionHeading": "Versão",
     "windowVersion": "Versão {{version}}",
     "windowHelp": "Central de ajuda",
@@ -327,14 +327,14 @@
     "singleKeysDesc": "Use J, K, / e ? sem segurar Cmd ou Ctrl."
   },
   "trust": {
-    "openSourceHeading": "Código Aberto",
+    "openSourceHeading": "Open source",
     "openSourceLink": "Leia o código no GitHub.com",
     "openSourceBody": "O aplicativo e a criptografia dentro dele estão publicados, então qualquer pessoa pode conferir nossas afirmações de zero conhecimento.",
     "dataStorageHeading": "Armazenamento de Dados",
     "dataStorageBody": "Blobs criptografados guardados em Zurique, <flag/> Suíça.",
     "faviconsHeading": "Ícones dos sites",
     "faviconsBody1": "Os ícones dos sites (favicons) vêm do DuckDuckGo e do Google, buscados pelo nosso servidor em seu nome. Seu navegador nunca contata nenhum dos dois, então eles veem nosso servidor pedindo um domínio e nunca veem você.",
-    "faviconsBody2": "Os ícones ficam em cache no seu aparelho por 90 dias. Nenhuma requisição inclui sua identidade, e você pode desativar os ícones em Configurações > Aparência."
+    "faviconsBody2": "Os ícones ficam em cache no seu dispositivo por 90 dias. Nenhuma requisição inclui sua identidade, e você pode desativar os ícones em Configurações > Listas."
   },
   "feedback": {
     "title": "Enviar feedback",

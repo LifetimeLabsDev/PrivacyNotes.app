@@ -16,6 +16,7 @@ import {
   duplicateNote,
 } from './notesRepo';
 import { gcOnNotesDelete } from './imageGC';
+import { routeItemClick } from './itemList';
 import type { PinGatePurpose } from './ProtectedNoteGate';
 
 interface UseMultiSelectArgs {
@@ -24,6 +25,8 @@ interface UseMultiSelectArgs {
   setSelectedId: (id: string | null) => void;
   view: View;
   selectedTag: string | null;
+  /** The open space (Personal or Work); a switch ends the selection. */
+  activeSpace: string;
   imageStoreRef: React.RefObject<ImageStore | null>;
   attachmentStoreRef: React.RefObject<AttachmentStore | null>;
   refresh: () => Promise<LocalNote[]>;
@@ -107,6 +110,7 @@ export function useMultiSelect({
   setSelectedId,
   view,
   selectedTag,
+  activeSpace,
   imageStoreRef,
   attachmentStoreRef,
   refresh,
@@ -205,20 +209,12 @@ export function useMultiSelect({
    *  is a navigation (open the note) or a selection gesture based on
    *  modifiers + current selectionMode. */
   const handleRowClick = useCallback(
-    (e: React.MouseEvent, id: string) => {
-      const mod = e.metaKey || e.ctrlKey;
-      if (e.shiftKey && selectionMode) {
-        e.preventDefault();
-        rangeSelect(id);
-        return;
-      }
-      if (mod || selectionMode) {
-        e.preventDefault();
-        toggleSelected(id);
-        return;
-      }
-      void handleSelectNoteRef.current(id);
-    },
+    (e: React.MouseEvent, id: string) =>
+      routeItemClick(e, selectionMode, {
+        range: () => rangeSelect(id),
+        toggle: () => toggleSelected(id),
+        open: () => void handleSelectNoteRef.current(id),
+      }),
     [selectionMode, rangeSelect, toggleSelected]
   );
 
@@ -445,14 +441,14 @@ export function useMultiSelect({
     void runSync();
   }
 
-  // When the active view changes (trash↔all↔starred↔tag) drop the
-  // selection - acting on notes you can no longer see would be
+  // When the active view changes (trash↔all↔starred↔tag, or the space)
+  // drop the selection - acting on notes you can no longer see would be
   // confusing. Runs imperatively (not state-derived) so the reset only
   // fires on actual filter changes, not every render.
   useEffect(() => {
     if (selectionMode) clearSelection();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, selectedTag]);
+  }, [view, selectedTag, activeSpace]);
 
   // Drop selected IDs whose note left the current list - trashed from a
   // normal view, restored out of the trash, permanently deleted, or

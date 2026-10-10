@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CaretDown, Check, FloppyDisk, Scales, Warning } from '../icons';
+import { CaretDown, Check, FloppyDisk, Scales, Warning, SignIn, Vault } from '../icons';
 import { PrivacyLadder } from '../PrivacyLadder';
 import { useAuth } from '../auth';
 import { SETTINGS_HELP, SectionEyebrow } from '../settingsUI';
@@ -341,7 +341,7 @@ export function CustodyPanel({ phrase, onReleaseCheckChange, onOpenConnectedAcco
     // forces the common desktop case to stack in order to tidy a
     // cosmetic wrap in some languages.
     <div className="@container space-y-2.5">
-      <SectionEyebrow setting="security.custody">{t('custody.eyebrow')}</SectionEyebrow>
+      <SectionEyebrow setting="security.custody" icon={Vault}>{t('custody.eyebrow')}</SectionEyebrow>
 
       {sessionState.kind === 'loading' && <p className={SETTINGS_HELP} role="status">{t('custody.checkingSession')}</p>}
       {sessionState.kind === 'error' && (
@@ -368,7 +368,7 @@ export function CustodyPanel({ phrase, onReleaseCheckChange, onOpenConnectedAcco
       <p className={SETTINGS_HELP}>{t('custody.connectingIsSeparate')}</p>
       <p className={SETTINGS_HELP}>{t('custody.mfaStillApplies')}</p>
       {onOpenConnectedAccounts && (
-        <button type="button" className="text-sm text-accent" disabled={busy} onClick={onOpenConnectedAccounts}>{t('custody.connectedAccounts')}</button>
+        <button type="button" className="inline-flex items-center gap-2 text-sm text-accent hover:underline" disabled={busy} onClick={onOpenConnectedAccounts}><SignIn size={16} className="shrink-0" aria-hidden="true" />{t('custody.connectedAccounts')}</button>
       )}
 
       {done && (

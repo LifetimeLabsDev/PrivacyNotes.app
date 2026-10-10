@@ -7,15 +7,18 @@
   "resultCount_other": "{{count}} resultados",
   "keywords": {
     "section_stats": "estatísticas, números, sequência, mapa de calor, contagem de palavras",
-    "section_journals": "diário, título, formato de data",
     "section_import": "importar, exportar, backup, cópia de segurança, migrar, mudar, baixar",
     "section_plan": "plano, assinatura, pro, cobrança, pagamento, aparelhos, dispositivos, sair",
     "section_storage": "armazenamento, espaço, cota, disco, gigabytes, cheio",
     "section_images": "imagens, fotos, figuras, compressão, qualidade",
     "section_security": "segurança, senha, bloqueio, privacidade",
     "section_me": "sincronização, sync, conta, identidade, id",
-    "section_appearance": "aparência, visual, tela, design, cores, tema",
+    "section_design": "aparência, visual, tela, design, cores, tema",
+    "section_editor": "escrita, editor, texto, fonte, tamanho, espaçamento, largura, markdown",
+    "section_formatBar": "barra de formatação, barra de ferramentas, toolbar, botões, organizar, menu mais",
+    "section_lists": "lista, barra lateral, grade, visualizações, página inicial, abas, espaços",
     "section_language": "idioma, língua, tradução",
+    "section_date": "data, hora, relógio, formato, dia, mês, ano, diário, título da entrada",
     "section_about": "sobre, versão, informações, créditos",
     "section_help": "ajuda, faq, suporte, perguntas, guia, tutorial",
     "stats_writing": "palavras, quantidade de notas, atividade, mapa de calor",
@@ -28,6 +31,7 @@
     "stats_wellness": "saúde, humor, sono, remédios, medicação, rastreadores",
     "stats_wellnessExport": "médico, relatório, csv, pdf",
     "journals_suffix": "título, nome do diário, título da entrada",
+    "journals_titles": "diário, título da entrada, nova entrada, formato do título",
     "import_export": "baixar, salvar, backup, arquivo",
     "export_zipBackup": "backup, zip, markdown, baixar tudo",
     "import_vault": "senhas, logins, gerenciador de senhas",
@@ -67,6 +71,7 @@
     "appearance_startView": "página inicial, início, visualização padrão, abrir em",
     "appearance_view": "grade, lista, cartões, layout",
     "appearance_sinkChecked": "tarefas, checklist, caixa de seleção, concluído, ordem, final",
+    "appearance_spaces": "trabalho, pessoal, espaço de trabalho, espaços de trabalho, separar, trocar, alternar, perfil, contexto",
     "appearance_sidebar": "barra lateral, ocultar visualizações, menu, lista todos",
     "language_spellCheck": "ortografia, corretor ortográfico, sublinhado vermelho, erros de digitação, dicionário",
     "language_language": "idioma, língua, tradução",
@@ -80,6 +85,7 @@
     "about_changelog": "notas de versão, novidades, atualizações, mudanças",
     "about_hotkeys": "atalhos de teclado, atalhos, teclas",
     "about_rating": "avaliação, avaliar, estrelas, app store",
-    "appearance_openInTabs": "abas, barra de abas, navegador, abrir"
+    "appearance_openInTabs": "abas, barra de abas, navegador, abrir",
+    "appearance_formatBar": "barra de ferramentas, barra de formatação, botões, personalizar, organizar, lista com marcadores, tachado, engrenagem"
   }
 }

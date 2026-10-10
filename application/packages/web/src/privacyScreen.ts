@@ -51,8 +51,9 @@ export function shouldArmPrivacyScreen(appLockEnabled: boolean, platform: Platfo
  * capture. `build` is Tauri's own platform name, baked in at build time.
  *
  * Android has FLAG_SECURE. Windows and macOS have a window property that
- * capture tools honour. iOS cannot block a screenshot, but it reports a
- * recording, so the cover goes up while one runs. Linux and the browser have
+ * capture tools honour. iOS has no documented block: the window sits inside
+ * a secure text field's layer, which a capture draws black, and a recording
+ * still raises the cover if that layer fails. Linux and the browser have
  * nothing, and the switch is hidden there rather than shown as a promise.
  */
 export function captureBlockSupported(build: string = __PN_BUILD_PLATFORM__): boolean {

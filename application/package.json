@@ -26,8 +26,8 @@
   "devDependencies": {
     "@electric-sql/pglite": "0.5.8",
     "fake-indexeddb": "^6.2.5",
-    "jsdom": "^30.1.0",
-    "knip": "6.39.0",
+    "jsdom": "^30.1.2",
+    "knip": "6.40.0",
     "playwright-core": "^1.63.0",
     "vitest": "^4.1.11"
   }

@@ -138,7 +138,7 @@ export function MarkdownRail({
       </p>
       <button type="button" onClick={() => onSelectDir(null)} className={folderRowClass(selectedDir === null)}>
         <span className={folderInnerClass}>
-          <span className={`inline-flex shrink-0 ${selectedDir === null ? 'text-accent' : 'text-amber-700 dark:text-amber-500/80'}`}>
+          <span className={`inline-flex shrink-0 ${selectedDir === null ? 'text-accent' : 'text-label'}`}>
             <Folder size={16} className="lg:w-3.5 lg:h-3.5" />
           </span>
           <span className="truncate">{t('markdown.allFiles')}</span>
@@ -163,7 +163,7 @@ export function MarkdownRail({
               className={folderInnerClass}
               style={{ paddingInlineStart: `${8 + Math.min(node.depth - 1, MAX_INDENT_LEVEL) * 14}px` }}
             >
-              <span className={`inline-flex shrink-0 ${selectedDir === node.path ? 'text-accent' : 'text-amber-700 dark:text-amber-500/80'}`}>
+              <span className={`inline-flex shrink-0 ${selectedDir === node.path ? 'text-accent' : 'text-label'}`}>
                 <Folder size={16} className="lg:w-3.5 lg:h-3.5" />
               </span>
               <span className="truncate">{node.name}</span>

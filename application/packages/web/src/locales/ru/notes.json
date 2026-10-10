@@ -80,6 +80,13 @@
     "clearFilters": "Очистить фильтры",
     "filteredAfter": "чтобы их показать."
   },
+  "listGroups": {
+    "previous7Days": "Последние 7 дней",
+    "previous30Days": "Последние 30 дней",
+    "other": "Другое",
+    "collapseAll": "Свернуть все группы",
+    "expandAll": "Развернуть все группы"
+  },
   "headerLabel": {
     "allItems": "Все",
     "untagged": "Без тегов",
@@ -149,7 +156,7 @@
     "exitHover": "Выйти из режима дзен (Esc)",
     "enterHover": "Включить режим дзен",
     "proHover": "Режим дзен (Pro)",
-    "enterAriaShortcut": "Включить режим дзен (⌘⇧F)"
+    "enterAriaShortcut": "Включить режим дзен ({{keys}})"
   },
   "editor": {
     "backToList": "Назад к списку заметок",
@@ -231,10 +238,10 @@
   },
   "settings": {
     "groupYourNotes": "Ваши заметки",
+    "groupPreferences": "Параметры",
     "groupAccount": "Аккаунт и данные",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "Статистика",
-    "journalsLabel": "Дневники",
     "importLabel": "Импорт и экспорт",
     "planLabel": "Аккаунт",
     "storageLabel": "Хранилище",
@@ -242,9 +249,13 @@
     "securityLabel": "Безопасность",
     "accountLabel": "ID и синхронизация",
     "appearanceLabel": "Внешний вид",
+    "editorLabel": "Редактор",
+    "formatBarLabel": "Панель инструментов",
+    "listsLabel": "Списки",
     "helpLabel": "Справка",
     "aboutLabel": "О приложении",
-    "languageLabel": "Дата и язык",
+    "languageLabel": "Язык",
+    "dateLabel": "Дата",
     "languageDesc": "Выберите язык интерфейса PrivacyNotes."
   },
   "importStore": {

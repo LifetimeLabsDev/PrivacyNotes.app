@@ -2,15 +2,16 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next';
 import { paintedSlot, peekThemeMode, previewCustomTheme, useTheme, type Theme } from './theme';
 import { BUILTIN_THEME_CODES } from './builtinThemeCodes';
-import { newCustomThemeId } from './customThemes';
+import { CUSTOM_THEME_MAX, newCustomThemeId } from './customThemes';
 import { snapshotOf } from './customThemeUI';
 import type { ThemeBuilderTarget } from './notesView/useThemeBuilder';
 import * as tc from './themeCode';
+import { SettingsCallout } from './settingsUI';
 import type { CheckId, CustomTheme, MoreKey, SeedKey, ThemeCheck } from './themeCode';
 import { useEscapeToClose } from './useEscapeToClose';
 import { IconUpgrade } from './UpgradeModal';
 import { HoverLabel } from './HoverLabel';
-import { ArrowCounterClockwise, CaretDown, CaretRight, Check, Copy, Eye, Warning, X } from './icons';
+import { ArrowCounterClockwise, CaretDown, CaretRight, Check, Copy, Eye, FloppyDisk, MagicWand, Warning, X } from './icons';
 
 /**
  * The theme builder: a small panel that floats over the app while the app
@@ -31,8 +32,10 @@ const PINNED = [
   '--color-track', '--color-pn-soft', '--color-pn', '--color-pn-muted',
 ];
 
-const SEEDS: SeedKey[] = ['background', 'sidebar', 'border', 'text', 'muted', 'accent'];
-const MORE: MoreKey[] = ['list', 'well', 'soft', 'hover', 'fill', 'fillhover', 'danger', 'warning', 'success'];
+// The tile order. The accent leads, because every suggestion and Fill the
+// rest start from it; a code still writes the seeds in SEED_KEYS order.
+const SEEDS: SeedKey[] = ['accent', 'background', 'sidebar', 'border', 'text', 'muted'];
+const MORE: MoreKey[] = ['list', 'paper', 'well', 'soft', 'hover', 'fill', 'fillhover', 'danger', 'warning', 'success', 'label'];
 
 /** The exact code of the theme on screen in a mode, as a starting point. */
 function paintedCode(mode: Theme): string {
@@ -49,6 +52,7 @@ function readHex(input: string): string | null {
 export function ThemeBuilder({
   target,
   canSave,
+  hasRoom,
   onSave,
   onClose,
   onOpenUpgrade,
@@ -56,6 +60,8 @@ export function ThemeBuilder({
   target: ThemeBuilderTarget;
   /** Pro, or the demo. */
   canSave: boolean;
+  /** Whether a save under this id fits the limit of your own themes. */
+  hasRoom: (id: string) => boolean;
   onSave: (id: string, code: string) => void;
   onClose: () => void;
   /** Save with Pro: hands over the draft's code, so it opens again after the upgrade. */
@@ -70,9 +76,19 @@ export function ThemeBuilder({
   });
   const [draft, setDraft] = useState<CustomTheme | null>(null);
   const [nameText, setNameText] = useState('');
+  const [authorText, setAuthorText] = useState('');
+  // The credit the opened code carried. A change of any color drops it from
+  // the draft (withValue), and the field empties with it once: the colors are
+  // the editor's now, and they may credit themselves.
+  const inherited = useRef<string | undefined>(undefined);
   const [moreOpen, setMoreOpen] = useState(false);
   const [allChecks, setAllChecks] = useState(false);
   const [copied, setCopied] = useState(false);
+  // Save keeps the builder open: the button shows a check for a moment, and
+  // Cancel reads Close while nothing is unsaved.
+  const [justSaved, setJustSaved] = useState(0);
+  const [full, setFull] = useState(false);
+  const [savedCode, setSavedCode] = useState<string | null>(null);
   const shownMode = useRef<Theme | null>(null);
 
   // The draft starts from the theme being edited, copied or pasted, or as an
@@ -81,16 +97,33 @@ export function ThemeBuilder({
   useEffect(() => {
     if (draft) return;
     let start = target.code ? tc.parseThemeCode(target.code) : null;
-    if (!start) start = { ...tc.parseThemeCode(paintedCode(paintedMode))!, name: t('appearance.custom.namePlaceholder') };
+    // A new theme starts with an empty name field: the placeholder shows the
+    // name it gets when the person types none.
+    const fresh = !start;
+    // A new theme copies the colors on screen, never their credit.
+    if (!start) start = { ...tc.withoutAuthor(tc.parseThemeCode(paintedCode(paintedMode))!), name: t('appearance.custom.namePlaceholder') };
     if (target.name) start = { ...start, name: target.name };
     setDraft(start);
-    setNameText(start.name);
+    setNameText(fresh && !target.name ? '' : start.name);
+    inherited.current = start.author;
+    setAuthorText(start.author ?? '');
     // The target is fixed for the builder's life (NotesView keys it).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draft]);
 
-  const name = tc.cleanThemeName(nameText);
-  const theme = draft && name ? { ...draft, name } : draft;
+  useEffect(() => {
+    if (!draft || draft.author !== undefined || inherited.current === undefined) return;
+    if (authorText === inherited.current) setAuthorText('');
+    inherited.current = undefined;
+    // Only a dropped credit matters here, not every keystroke in the field.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draft]);
+
+  const name = tc.cleanThemeName(nameText.trim() ? nameText : t('appearance.custom.namePlaceholder'));
+  const authorRaw = authorText.trim().replace(/^@/, '');
+  const authorOk = authorRaw === '' || tc.AUTHOR.test(authorRaw);
+  const author = authorOk && authorRaw ? authorRaw : undefined;
+  const theme = draft && name ? { ...tc.withoutAuthor(draft), name, ...(author ? { author } : {}) } : draft;
   const resolved = useMemo(() => (theme ? tc.resolveTheme(theme) : null), [theme]);
   const checks = useMemo(() => (theme ? tc.checkTheme(theme) : []), [theme]);
   const failing = checks.filter((c) => !c.pass);
@@ -125,30 +158,38 @@ export function ThemeBuilder({
   const set = (key: SeedKey | MoreKey, hex: string) => setDraft((d) => (d ? tc.withValue(d, key, hex) : d));
   const reset = (key: MoreKey) =>
     setDraft((d) => {
-      if (!d) return d;
+      if (!d || d.overrides[key] === undefined) return d;
       const overrides = { ...d.overrides };
       delete overrides[key];
-      return { ...d, overrides };
+      return { ...tc.withoutAuthor(d), overrides };
     });
   const fix = (key: SeedKey | MoreKey) => setDraft((d) => (d ? tc.fixTheme(d, key) : d));
   const value = (key: SeedKey | MoreKey) =>
     (SEEDS as string[]).includes(key)
       ? draft.seeds[key as SeedKey]
       : draft.overrides[key as MoreKey] ?? resolved.suggested[key as MoreKey];
-  const ready = name !== null && failing.length === 0;
+  const ready = name !== null && authorOk && failing.length === 0;
 
   function save() {
     if (!ready || !snapshot) return;
+    if (!hasRoom(idRef.current)) {
+      setFull(true);
+      return;
+    }
     // A pinned mode moves to the theme's mode, as a click on a theme card
     // does; under Auto the theme shows whenever the system is in its mode.
     if (themeMode !== 'auto' && themeMode !== snapshot.mode) setThemeMode(snapshot.mode);
     setCustomTheme(snapshot);
     shownMode.current = null;
     onSave(idRef.current, snapshot.code);
+    setSavedCode(snapshot.code);
+    const at = Date.now();
+    setJustSaved(at);
+    window.setTimeout(() => setJustSaved((v) => (v === at ? 0 : v)), 1400);
   }
 
   function copy() {
-    if (name === null) return;
+    if (name === null || !authorOk) return;
     void navigator.clipboard?.writeText(code).then(() => {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1500);
@@ -277,7 +318,24 @@ export function ThemeBuilder({
           <Eye size={12} aria-hidden="true" className="shrink-0" /> {t('appearance.custom.previewHint')}
         </p>
 
-        <div className="mt-3 grid grid-cols-3 gap-2">{SEEDS.map(tile)}</div>
+        {/* For a person with no palette in mind: keep the accent, and let the
+            app pick the other five for a light or a dark theme. */}
+        <div className="mt-3 flex items-center gap-2 rounded-md bg-pn/5 px-2 py-1.5 text-[11px] text-pn-soft">
+          <MagicWand size={14} aria-hidden="true" className="shrink-0 text-accent" />
+          <span className="min-w-0 flex-1">{t('appearance.custom.suggestTitle')}</span>
+          {(['light', 'dark'] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setDraft((d) => (d ? tc.suggestFromAccent(d, m) : d))}
+              className="shrink-0 rounded border border-divider px-2 py-0.5 font-medium text-pn hover:border-accent hover:text-accent"
+            >
+              {m === 'light' ? t('appearance.custom.suggestLight') : t('appearance.custom.suggestDark')}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-2 grid grid-cols-3 gap-2">{SEEDS.map(tile)}</div>
 
         <button
           type="button"
@@ -295,6 +353,29 @@ export function ThemeBuilder({
             <div className="mt-1">{MORE.map((k) => row(k, t(`appearance.custom.moreKey.${k}`), draft.overrides[k] !== undefined))}</div>
           </>
         )}
+
+        {/* The theme decides the logo: the accent, as every palette but
+            Default, or the original colors, saved in its code as
+            logo=original. Spec: ops/docs/color-themes.md (section 6) */}
+        <div className="mt-3 border-t border-divider pt-2">
+          <div className="flex items-center gap-2">
+            <span className="min-w-0 flex-1 text-xs font-medium text-pn-soft">{t('appearance.custom.logoTitle')}</span>
+            <div role="group" aria-label={t('appearance.custom.logoTitle')} className="flex flex-wrap gap-0.5 rounded-md p-0.5 bg-track">
+              {([undefined, 'original'] as const).map((v) => (
+                <button
+                  key={v ?? 'tint'}
+                  type="button"
+                  aria-pressed={draft.logo === v}
+                  onClick={() => setDraft((d) => (d ? tc.withLogo(d, v) : d))}
+                  className={`px-2 py-0.5 rounded text-[11px] transition ${draft.logo === v ? 'bg-surface-2 shadow-sm text-pn font-semibold' : 'text-pn-soft hover:text-pn font-medium'}`}
+                >
+                  {t(v === 'original' ? 'appearance.custom.logoOriginal' : 'appearance.custom.logoTint')}
+                </button>
+              ))}
+            </div>
+          </div>
+          <p className="mt-1 text-[11px] text-pn-muted">{t('appearance.custom.logoHelp')}</p>
+        </div>
 
         <div className="mt-3 border-t border-divider pt-2">
           <div className="flex items-center gap-2 text-xs">
@@ -322,7 +403,7 @@ export function ThemeBuilder({
           </div>
           {allChecks && (
             <>
-              <p className="mt-1 text-[11px] text-pn-muted">{t('appearance.custom.contrastHelp')}</p>
+              <SettingsCallout className="mt-1.5 mb-1">{t('appearance.custom.contrastHelp')}</SettingsCallout>
               <ul className="mt-1 space-y-1">
                 {checks.map((c) => (
                   <li key={c.id} className="text-xs">
@@ -351,40 +432,75 @@ export function ThemeBuilder({
       </div>
 
       {/* The footer stays in view while the tiles and the Details list scroll
-          on a phone sheet, so Save and Cancel never leave the screen. */}
+          on a phone sheet, so Save and Cancel never leave the screen. One grid
+          keeps the two fields the same width, and Save is an icon, so the row
+          keeps its shape in every language. */}
       <div className="sticky bottom-0 mt-3 border-t border-divider bg-surface-2 px-3 py-2.5">
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={onClose} className="shrink-0 rounded-md px-2 py-1.5 text-xs font-medium text-pn-muted hover:text-pn">
-            {t('common:actions.cancel')}
+        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-2">
+          <button type="button" onClick={onClose} className="rounded-md px-2 py-1.5 text-start text-xs font-medium text-pn-muted hover:text-pn">
+            {code === savedCode ? t('common:actions.close') : t('common:actions.cancel')}
           </button>
           <input
             value={nameText}
             onChange={(e) => setNameText(e.target.value)}
-            maxLength={64}
+            maxLength={tc.THEME_NAME_INPUT_MAX}
             dir="auto"
             aria-label={t('appearance.custom.name')}
             placeholder={t('appearance.custom.namePlaceholder')}
-            className="min-w-0 flex-1 rounded-md border border-divider bg-track px-2 py-1.5 text-sm text-pn"
+            className="min-w-0 rounded-md border border-divider bg-track px-2 py-1.5 text-sm text-pn"
           />
           {canSave ? (
-            <button
-              type="button"
-              onClick={save}
-              disabled={!ready}
-              className="shrink-0 rounded-md bg-accent-fill px-3 py-1.5 text-xs font-semibold text-white hover:bg-accent-fill-hover disabled:opacity-50"
-            >
-              {t('common:actions.save')}
-            </button>
+            <HoverLabel label={t('common:actions.save')} position="above-end">
+              <button
+                type="button"
+                onClick={save}
+                disabled={!ready}
+                aria-label={t('common:actions.save')}
+                className="flex h-8 w-9 items-center justify-center rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover disabled:opacity-50"
+              >
+                {justSaved ? (
+                  <Check key={justSaved} size={16} weight="bold" aria-hidden="true" className="pn-pop" />
+                ) : (
+                  <FloppyDisk size={16} aria-hidden="true" />
+                )}
+              </button>
+            </HoverLabel>
           ) : (
-            <button
-              type="button"
-              onClick={() => onOpenUpgrade(code)}
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent-fill px-3 py-1.5 text-xs font-semibold text-white hover:bg-accent-fill-hover"
-            >
-              <IconUpgrade size={12} onFill /> {t('appearance.custom.saveWithPro')}
-            </button>
+            <HoverLabel label={t('appearance.custom.saveWithPro')} position="above-end">
+              <button
+                type="button"
+                onClick={() => onOpenUpgrade(code)}
+                aria-label={t('appearance.custom.saveWithPro')}
+                className="flex h-8 w-9 items-center justify-center gap-0.5 rounded-md bg-accent-fill text-white hover:bg-accent-fill-hover"
+              >
+                <IconUpgrade size={12} onFill />
+                <FloppyDisk size={14} aria-hidden="true" />
+              </button>
+            </HoverLabel>
           )}
+          {/* Optional credit, written into the code as `by=`, so a code shared
+              with friends names its maker and tells us how to credit it on
+              /themes. A GitHub username, because that page links to it. */}
+          <label htmlFor="pn-theme-credit" className="px-2 text-xs font-medium text-pn-muted">
+            {t('appearance.custom.credit')}
+          </label>
+          <div className="flex min-w-0 items-center rounded-md border border-divider bg-track ps-2 text-sm text-pn" dir="ltr">
+            <span className="text-pn-muted" aria-hidden="true">@</span>
+            <input
+              id="pn-theme-credit"
+              value={authorText}
+              onChange={(e) => setAuthorText(e.target.value)}
+              maxLength={40}
+              autoComplete="off"
+              spellCheck={false}
+              placeholder={t('appearance.custom.creditPlaceholder')}
+              aria-invalid={!authorOk}
+              className="min-w-0 flex-1 bg-transparent px-1 py-1.5 outline-none"
+            />
+          </div>
         </div>
+        {!authorOk && <p className="mt-1 text-[11px] text-danger">{t('appearance.custom.creditInvalid')}</p>}
+        {full && <p className="mt-1 text-[11px] text-danger" role="alert">{t('appearance.custom.themeLimit', { max: CUSTOM_THEME_MAX })}</p>}
         {name === null && <p className="mt-1 text-[11px] text-danger">{t('appearance.custom.nameInvalid')}</p>}
         {name !== null && canSave && !ready && <p className="mt-1 text-[11px] text-pn-muted">{t('appearance.custom.saveHint')}</p>}
       </div>

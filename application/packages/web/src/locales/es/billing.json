@@ -4,20 +4,21 @@
     "earlyAdopterBadge": "Early Adopter",
     "oneTime": "pago único",
     "subscriptionPitch": "Sin suscripción. Sin cuota anual. Un pago, desbloqueado de por vida.",
-    "ctaUnlock": "Desbloquear todo",
+    "ctaUnlockPrice": "Desbloquea todo por {{price}}",
     "ctaOpening": "Abriendo el pago...",
     "ctaSignUp": "Regístrate para desbloquear",
     "intro": {
       "storage": "Más espacio es una función Pro: 500 MB de almacenamiento, 50 MB por archivo y hasta 5 GB más como complemento de almacenamiento cuando los necesites.",
       "folders": "Las carpetas son una función Pro. Organiza tus notas en carpetas anidadas, tan profundas como necesites, y mantén cada proyecto separado.",
       "looks": "Los iconos y los colores de carpetas y etiquetas son una función Pro. Dale a cada una un aspecto que reconozcas de un vistazo.",
+      "spaces": "Los espacios son una función Pro. {{desc}}",
+      "formatBar": "Organizar la barra de formato es una función Pro. Pon en la barra los botones que usas, oculta el resto y ordena el menú + a tu manera.",
       "lock": "Bloquear una nota es una función Pro. Mejora tu plan para proteger cualquier nota de ediciones accidentales.",
       "protect": "Proteger una nota con PIN es una función Pro. Mejora tu plan para resguardar notas sensibles tras tu PIN.",
       "history": "El historial de notas es una función Pro. Mejora tu plan para mantener una cronología de cada guardado.",
       "devices": "Has alcanzado el límite de 2 dispositivos. Mejora tu plan para dispositivos ilimitados.",
       "zen": "El modo Zen es una función Pro. Mejora tu plan para escribir sin distracciones.",
       "theme": "Los temas premium son una función Pro. Mejora tu plan para desbloquear todos los tonos.",
-      "callout": "El conjunto completo de avisos es una función Pro.",
       "totp": "Los códigos 2FA son una función Pro. Guarda una clave de autenticación en cualquier inicio de sesión y tendrás el código rotativo junto a la contraseña. La clave se guarda y se sincroniza en todos los planes.",
       "replace": "Buscar y reemplazar es una función Pro. Mejora tu plan para reemplazar una coincidencia o todas las de una nota de una vez.",
       "passphrase": "Las frases de contraseña son una función Pro. Genera una frase de palabras al azar, fácil de escribir y de decir.",
@@ -26,14 +27,14 @@
     "features": {
       "devices": "Sincroniza dispositivos ilimitados, en todas las plataformas",
       "folders": "Carpetas anidadas, organización por proyecto",
+      "spaces": "Espacios: Personal y Trabajo, uno a la vez",
       "lock": "Bloquea y protege con PIN cualquier nota",
       "history": "Historial completo de notas, restaura cuando quieras",
       "themes": "Temas premium en todos los tonos",
       "zen": "Modo Zen, escritura sin distracciones",
       "storage": "500 MB de almacenamiento, hasta 5,5 GB con complementos"
     },
-    "comparisonBeta": "Paga {{earlyPrice}} $ una vez. Obsidian Sync cuesta 48 $/año, cada año. Standard Notes cobra 90 $/año. Precio early adopter, fijado antes de que suba a {{proPrice}} $.",
-    "comparison": "Paga {{proPrice}} $ una vez y es tuyo para siempre. Obsidian Sync cuesta 48 $/año y Standard Notes 90 $/año, todos los años."
+    "compareCaption": "{{years}} años. Un solo pago frente a cuotas anuales."
   },
   "purchaseError": {
     "store": "No se pudo completar la compra en la tienda y no se te ha cobrado nada. Inténtalo de nuevo en un momento.",

@@ -39,8 +39,8 @@
     "openSource": "開放原始碼"
   },
   "announcement": {
-    "ossText": "現已開源：完整的用戶端程式碼。Web、桌面與行動版。",
-    "ossTextNarrow": "現已開源：完整的用戶端程式碼。",
+    "ossText": "現已開放原始碼：完整的用戶端程式碼。Web、桌面與行動版。",
+    "ossTextNarrow": "現已開放原始碼：完整的用戶端程式碼。",
     "ossCta": "到 GitHub 給我們一顆星",
     "ossCtaNarrow": "GitHub",
     "dismiss": "關閉公告"
@@ -154,7 +154,7 @@
     "proOnceDesc": "<b>付一次</b>，永久擁有。",
     "proCompareBeta": "一次付 ${{earlyPrice}}。Obsidian Sync 每年收 $48，年年都要；Standard Notes 每年收 $90。早鳥價，在漲到 ${{proPrice}} 前先鎖定。",
     "proCompare": "一次付 ${{proPrice}}，永久擁有。Obsidian Sync 每年 $48、Standard Notes 每年 $90，而且年年都要付。",
-    "proEverythingFree": "包含 Free 的全部功能，再加上：",
+    "proEverythingFree": "包含免費方案的全部功能，再加上：",
     "proSync": "無上限裝置同步",
     "proHistory": "筆記歷史，最近 20 個版本",
     "proLock": "唯讀筆記",
@@ -334,7 +334,7 @@
     "dataStorageBody": "加密資料塊儲存於 <flag/> 瑞士蘇黎世。",
     "faviconsHeading": "網站圖示",
     "faviconsBody1": "網站圖示（favicon）來自 DuckDuckGo 和 Google，由我們的伺服器代你抓取。你的瀏覽器從不直接連到任何一方，所以他們看到的是我們的伺服器在詢問網域，永遠看不到你。",
-    "faviconsBody2": "圖示會在你的裝置上快取 90 天。任何請求都不含你的身分，你也可以在設定 > 外觀關閉圖示。"
+    "faviconsBody2": "圖示會在你的裝置上快取 90 天。任何請求都不含你的身分，你也可以在設定 > 清單關閉圖示。"
   },
   "feedback": {
     "title": "傳送意見回饋",

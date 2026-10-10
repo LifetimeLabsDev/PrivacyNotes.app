@@ -58,9 +58,9 @@
     "signOutLoseFiles_other": "サインアウトして{{count}}件のファイルを失う",
     "signOutLoseBoth_other": "サインアウトして{{count}}件のノートと{{files}}を失う",
     "fileCount_other": "{{count}}件のファイル",
-    "neverBackedUp_other": "この端末にのみあります:",
+    "neverBackedUp_other": "このデバイスにのみあります:",
     "moreNotes": "ほか{{count}}件",
-    "appLockHint": "共有端末ですか？設定 > セキュリティでアプリロックをオンにしてください。"
+    "appLockHint": "共有デバイスですか？設定 > セキュリティでアプリロックをオンにしてください。"
   },
   "burnShareModal": {
     "title": "Burn After Readingで共有",

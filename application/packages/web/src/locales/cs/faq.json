@@ -49,13 +49,7 @@
     "mdDemoScripts": "Horní index, dolní index, podtržení",
     "mdDemoMath": "Matematika (KaTeX)",
     "mdDemoQuote": "Citace a odkaz na poznámku",
-    "mdDemoDivider": "Oddělovač",
-    "hkShowcase": "Kompletní seznam",
-    "hkMac": "Mac",
-    "hkPc": "Windows a Linux",
-    "hkBrowser": "Prohlížeč",
-    "hkDesktop": "Aplikace pro počítač",
-    "hkLayout": "Zkratky se řídí znaky, které tvoje klávesnice píše, ne polohou kláves na americké klávesnici: stiskni klávesu, která píše zobrazený znak (na nelatinkovém rozložení klávesu na jejím americkém místě). Klávesa, která píše znak s AltGr, ho píše vždycky."
+    "mdDemoDivider": "Oddělovač"
   },
   "groups": {
     "gettingStarted": "Začínáme",
@@ -100,6 +94,14 @@
       "a": [
         "Poznámky, názvy, značky a přílohy jsou vždy zašifrované, na tvém zařízení i na cestě na server. Při vlastní správě, se kterou začíná každý účet vytvořený pomocí fráze, na naší straně není žádný dešifrovací klíč. Při registraci přes Google, Apple nebo GitHub se aplikace zeptá, kde má být klíč uložený, a začne možností „Ať je to jednoduché a pohodlné“. Ta uloží frázi na náš server zašifrovanou naším klíčem. V tomto režimu může náš server dešifrovat frázi, a tedy i tvoje poznámky. Nastavení > Účet > Správa klíče ukazuje aktuální režim a umožňuje ho změnit.",
         "Vidíme údaje potřebné k provozu služby: kolik zašifrovaného úložiště využíváš, kolik zařízení máš propojených a časové údaje synchronizace. Pokud používáš jen frázi a nemáš propojený účet Google, Apple ani GitHub, neznáme tvou e-mailovou adresu."
+      ]
+    },
+    "app-privacy-label": {
+      "q": "Proč štítek soukromí v App Storu říká, že jsou moje data propojená se mnou?",
+      "a": [
+        "Protože Apple chce jeden štítek, který pokryje vše, co se může dostat na náš server, i když to dorazí zašifrované a i když to posílají jen některé účty. Propojená s tebou znamená přiřazená k účtu, a účet za registrací pomocí fráze je klíč, ne jméno. Nic se nepoužívá ke sledování a aplikace neobsahuje analytiku, reklamy ani hlášení o pádech. Každý řádek štítku znamená jednu věc:",
+        "- **Uživatelský obsah**: tvoje poznámky a soubory, zašifrované na tvém zařízení. Při vlastní správě je nemůžeme číst.\n- **Identifikátory**: veřejný klíč odvozený z tvé obnovovací fráze a hash zařízení vypočtený na tvém zařízení, který slouží jen k vynucení limitu zařízení v bezplatné verzi.\n- **Kontaktní údaje**: e-mailová adresa, jen pokud se přihlásíš přes Google, Apple nebo GitHub.\n- **Nákupy**: jestli má tvůj účet Pro. Platbu vyřizuje Apple a tvou kartu nikdy nevidíme.",
+        "Aby byl tento seznam pro tvůj účet co nejkratší, zaregistruj se pomocí obnovovací fráze místo přihlášení přes Google, Apple nebo GitHub a ponech si vlastní správu. Nastavení > Účet > Správa klíče ukazuje aktuální režim. [Co PrivacyNotes vidí](/cs/help/what-can-you-see/) vysvětluje zbytek."
       ]
     },
     "phrase-vs-password": {
@@ -400,7 +402,7 @@
     "languages": {
       "q": "Jakými jazyky aplikace mluví?",
       "a": [
-        "Angličtina, němčina, francouzština, italština, španělština, nizozemština, polština, čeština, katalánština, turečtina, švédština, ukrajinština, ruština, japonština, korejština, tradiční čínština, thajština, arabština a portugalština v evropské i brazilské variantě. Aplikace se ve výchozím nastavení řídí jazykem systému, nebo si na každém zařízení můžeš jeden pevně nastavit v Nastavení > Datum a jazyk > Jazyk.",
+        "Angličtina, němčina, francouzština, italština, španělština, nizozemština, polština, čeština, katalánština, turečtina, švédština, ukrajinština, ruština, japonština, korejština, tradiční čínština, thajština, arabština a portugalština v evropské i brazilské variantě. Aplikace se ve výchozím nastavení řídí jazykem systému, nebo si na každém zařízení můžeš jeden pevně nastavit v Nastavení > Jazyk.",
         "Překlady jsou zdarma pro všechny, ne bonus k Pro. Další jazyky jsou v plánu; pokud ten tvůj chybí, napiš nám na [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) nebo [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -458,8 +460,7 @@
       "q": "Jaké jsou klávesové zkratky?",
       "a": [
         "Stiskni ? kdekoli v aplikaci a zobrazí se vestavěný přehled, který najdeš i v Nastavení > O aplikaci. Zkratky pokrývají navigaci, akce s poznámkami, formátování a zobrazení - a na Windows a Linuxu se každé Cmd čte jako Ctrl a Option jako Alt.",
-        "To nejdůležitější: Cmd+K přejde na libovolnou položku nebo nastavení podle názvu a jeho poslední řádek prohledá text otevřené sekce; / aktivuje hledání, J a K posouvají po seznamu, Cmd+[ a Cmd+] přecházejí zpět a vpřed po otevřených položkách, Alt+Shift+N začne novou poznámku, Cmd+Backspace hodí vybranou do koše, Cmd+, otevře Nastavení. Při psaní: Cmd+B tučné, Cmd+I kurzíva, Cmd+Shift+K vloží odkaz, Cmd+Shift+9 začne seznam úkolů, Cmd+F hledá v poznámce, Cmd+Shift+O přepíná osnovu, Cmd+Shift+M přepne na zobrazení Markdown. Cmd+\\ nebo Cmd+Shift+D skryje postranní panel, Cmd+Shift+L přepne téma, Cmd+Shift+F zapne režim Zen (Pro) a Esc vycouvá skoro z čehokoli, včetně filtrů. Napiš > do hledání nebo do Cmd+K (nebo stiskni > mimo textové pole) a najdeš jakýkoli příkaz podle názvu a spustíš ho.",
-        "Aplikace pro počítač přidávají klávesy, které si prohlížeč nechává pro sebe: Cmd+N pro novou poznámku, Cmd+Shift+N pro novou položku libovolného typu, Cmd+W pro zavření karty, Ctrl+Tab pro přepínání mezi kartami, Cmd+1 až Cmd+9 pro sekce postranního panelu a Cmd+Shift+P pro seznam příkazů."
+        "[Přehled k tisku](/help/keyboard-shortcuts/cheat-sheet) uvádí všechny zkratky na jediné stránce A4, pro Mac nebo pro Windows a Linux a pro prohlížeč nebo aplikace pro počítač. Vzniká ze stejného seznamu, jaký ukazuje aplikace, takže vždy odpovídá verzi, kterou používáš."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -638,8 +639,15 @@
     "tags": {
       "q": "Jak fungují značky?",
       "a": [
-        "Každá otevřená poznámka má pod nadpisem řádek se značkami. Napiš slovo a stiskni Enter, čárku nebo #, a značka se změní v odznáček. Postranní panel vypisuje každou značku, kterou používáš, a kliknutí filtruje seznam na tyhle poznámky. Značku můžeš přejmenovat všude naráz, přidat ji do oblíbených, aby zůstala připnutá nahoře, nebo ji smazat, s poznámkami pod ní i bez nich.",
+        "Každá otevřená poznámka má pod nadpisem řádek se značkami. Napiš slovo a stiskni Enter, čárku nebo #, a značka se změní v odznáček. Postranní panel vypisuje značky, které používá otevřená sekce, a kliknutí filtruje seznam na tyhle položky. Značku můžeš přejmenovat všude naráz, přidat ji do oblíbených, aby zůstala připnutá nahoře, nebo ji smazat, s poznámkami pod ní i bez nich.",
         "Značky a složky řeší jiné problémy: poznámka leží v jedné složce, ale nese tolik značek, kolik chceš, a přesně to potřebuješ, když je něco zároveň „práce“ i „faktura“. Importy přidávají značky podle zdroje, takže všechno z jiné aplikace přistane s vlastní značkou a snadno se to najde nebo později uklidí."
+      ]
+    },
+    "organize": {
+      "q": "Jak spolu fungují sekce, složky, značky a prostory?",
+      "a": [
+        "Všechno, co si ukládáš, je v jedné knihovně. Sekce v postranním panelu, třeba Poznámky, Trezor a Deníky, jsou pohledy na tuhle knihovnu podle typu. Složka je místo, takže jedna složka může držet poznámku i přihlašovací údaje, které k ní patří, a strom složek je v každé sekci stejný. Čísla u složek počítají jen to, co obsahuje otevřená sekce, a složka bez takových položek se zobrazí ztlumeně. Značka je štítek a postranní panel ukazuje jen značky, které otevřená sekce používá.",
+        "Prostory dělí knihovnu na Osobní a Práce a ukazují vždy jeden. Složka nejvyšší úrovně patří i s celým obsahem do jednoho prostoru a **Přesunout do prostoru Práce** v její nabídce ji přesune do druhého. Položka bez složky patří do prostoru Osobní, takže všechno, co vytvoříš v prostoru Práce, se uloží do jeho složky. Značky jsou zdarma, složky a prostory vyžadují Pro."
       ]
     },
     "note-links": {
@@ -652,8 +660,8 @@
     "appearance": {
       "q": "Můžu změnit, jak aplikace vypadá?",
       "a": [
-        "Ano, v Nastavení > Vzhled. Režim přepíná mezi Světlý, Tmavý a Auto, které jde podle systému. Velikost textu má čtyři stupně a zvětšuje jen tvou psací plochu, rozhraní kolem zůstává. Zobrazení skládá položky jako Seznam nebo Mřížku. Editor rozhoduje, jestli se poznámky otvírají Formátovaně, nebo jako čistý Markdown.",
-        "Barevná témata jsou jediná část za Pro: výchozí téma je zdarma a Pro odemkne zbytek, ve světlé i tmavé. Zen režim, který skryje všechno kromě tvého textu, je také v Pro (Cmd+Shift+F). Režim a velikost textu zůstávají na zařízení, kde je nastavíš. Všechno ostatní jde za tvým účtem na další zařízení."
+        "Ano. Nastavení > Vzhled určuje, jak aplikace vypadá: **Režim** přepíná mezi Světlý, Tmavý a Auto, které se řídí systémem, a vybereš si jedno barevné téma pro světlý režim a jedno pro tmavý. Nastavení > Editor určuje, jak píšeš: **Velikost textu** má pět stupňů a zvětšuje jen tvou psací plochu, takže rozhraní kolem zůstává, jak je, a **Editor** rozhoduje, jestli se poznámky otvírají Formátovaně, nebo jako čistý Markdown. Nastavení > Seznamy skládá položky jako Seznam nebo Mřížku. V aplikacích pro počítač mění **Velikost aplikace** v Nastavení > Vzhled měřítko celého okna. Tlačítko **Vzhled** v zápatí obsahuje nastavení, která měníš nejčastěji, a k tomu tři oblíbená témata pro každý režim.",
+        "Barevná témata potřebují Pro: výchozí téma je zdarma a Pro odemkne zbytek, ve světlém i tmavém režimu, a k tomu [vlastní témata](/cs/help/custom-themes/). Režim Zen, který skryje všechno kromě tvého textu (Cmd+Shift+F), je také v Pro. Přesunout [panel nástrojů](/cs/help/format-bar/) nahoru nebo dolů můžeš zdarma, uspořádání jeho tlačítek je v Pro. Režim, barevné motivy, které si vybereš, a tvoje tři oblíbené, velikost textu, Seznam nebo Mřížka a velikost aplikace zůstávají na zařízení, kde je nastavíš. Režim editoru, řádkování, barvy poznámek a nastavení seznamů jdou s tvým účtem na další zařízení."
       ]
     },
     "share-with-someone": {
@@ -761,6 +769,139 @@
       "a": [
         "Tvoje místo je už volné. Ve chvíli, kdy se smazání zesynchronizuje, se ty bajty přestanou započítávat do tvé kvóty, na serveru stejně jako na tomhle zařízení. Jestli pruh pořád ukazuje staré číslo, stiskni vedle něj ikonu obnovení: přepočítá to ze serveru a vynechá všechno, co už čeká ve frontě na smazání. Zařízení, které bylo offline, si drží svůj poslední součet, dokud nedožene zbytek.",
         "Těch „pár dní“, o kterých mluví aplikace, se týká samotného šifrovaného souboru, ne tvé kvóty, a to čekání je záměr. Smazat soubor z úložiště je nevratné, není koš, ze kterého by se dal vylovit. Zařízení, které nedokončilo synchronizaci, má o tvých poznámkách neúplný obraz, takže by mohlo smazat obrázek, který jiná poznámka pořád ukazuje. Soubor proto čeká nejméně 24 hodin a odstraní ho jen zařízení, které dokončilo čistou synchronizaci. Tahle trpělivost tě nestojí nic, protože místo ti bylo připsáno v den, kdy jsi mazal."
+      ]
+    },
+    "spoiler-text": {
+      "q": "Jak v poznámce skrýt spoiler?",
+      "a": [
+        "Označ text a v nabídce + na panelu nástrojů zvol **Spoiler**, nebo ho napiš mezi dva páry svislých čar: `||spoiler||`. Text se hned rozmaže. Při úpravách se ukáže, jakmile se ho dotkne kurzor, a znovu se rozmaže, když kurzor odejde. V poznámce jen pro čtení ho ukáže kliknutí.",
+        "Seznam poznámek a náhledy místo něj ukazují `•••`, takže neprozradí ani délku. Hledání slova uvnitř spoileru dál najde, export do HTML je nechá rozmazaná, dokud čtenář neklikne, a při tisku jsou vidět. Export do Markdownu zachová svislé čáry, které jiné aplikace pro Markdown zobrazí jako obyčejné znaky kolem textu. Spoilery jsou zdarma."
+      ]
+    },
+    "copy-box": {
+      "q": "Jak udělat text, který se zkopíruje jedním kliknutím?",
+      "a": [
+        "Přidej pole ke kopírování: v nabídce + na panelu nástrojů zvol **Pole ke kopírování** a pak do něj napiš nebo vlož text, třeba příkaz, adresu nebo kód. Tlačítko v jeho rohu zkopíruje celý text do schránky a na chvíli ukáže **Zkopírováno**. Blok kódu a pole ke kopírování se dají převést jedno na druhé, takže můžeš přepnout i existující blok.",
+        "Kopírovat jde i kód v řádku. V poznámce jen pro čtení ho zkopíruje kliknutí nebo klepnutí. Při úpravách ho zkopíruje Cmd-klik na Macu nebo Ctrl-klik na Windows a Linuxu, takže obyčejné kliknutí dál umisťuje kurzor. Pole ke kopírování se ukládá jako blok kódu s jazykem `copy`, který jiné aplikace pro Markdown zobrazí jako běžný blok kódu. Obojí je zdarma."
+      ]
+    },
+    "footnotes": {
+      "q": "Jak přidat do poznámky poznámky pod čarou?",
+      "a": [
+        "V nabídce + na panelu nástrojů zvol **Poznámka pod čarou**. Aplikace vloží na místo kurzoru další číslo, pod textem vytvoří prázdnou poznámku pod čarou a přesune do ní kurzor. Můžeš také napsat `[^1]` hned za slovo a samotnou poznámku pod čarou napsat na řádek začínající `[^1]: `. Označením může být i slovo, nejen číslo.",
+        "Kliknutím na číslo skočíš na jeho poznámku pod čarou a šipka zpět nebo Esc tě vrátí do textu. Na počítači stačí podržet ukazatel nad číslem a poznámka se ukáže v malé kartě. Čísla jdou podle pořadí v textu a poznámka ukládá standardní poznámky pod čarou v Markdownu, takže je přečtou i jiné aplikace pro Markdown. Export do HTML, PDF i sebezničující poznámka je zachovají jako propojené poznámky pod čarou. Poznámky pod čarou jsou zdarma."
+      ]
+    },
+    "statistics": {
+      "q": "Co ukazují statistiky o mém psaní a pohodě?",
+      "a": [
+        "Otevři Nastavení > Statistiky, nebo klikni na počet poznámek a slov v zápatí. **Přehled** shrne tvůj týden: sérii psaní, napsaná slova, náladu a zapsané dny, k tomu mřížku posledních 26 týdnů a hodiny, kdy obvykle píšeš. **Psaní** počítá tvoje poznámky, slova a značky, ukazuje aktuální a nejdelší sérii a vypisuje tvoje milníky. **Pohoda** vykreslí do grafů všechny sledované hodnoty z tvého deníku za období, které si vybereš, včetně vlastních.",
+        "Všechno se počítá na tvém zařízení a nic z toho se k nám neposílá. Slova a hodiny psaní počítají, co napíšeš na daném zařízení, takže každé zařízení ukazuje vlastní čísla. Grafy, série, kalendář léků a **Stáhnout JSON** jsou zdarma. Pro přidává týdenní přehled, co hýbe tvou náladou, tabulku Vzorce, srovnání ve stejný a následující den, **PDF pro lékaře** a prompt pro AI připravený ke zkopírování."
+      ]
+    },
+    "drag-to-folder": {
+      "q": "Můžu přetáhnout poznámku do složky nebo na značku?",
+      "a": [
+        "Ano. Přetáhni poznámku ze seznamu na složku v postranním panelu a přesuneš ji tam, nebo na **Bez složky** a vyjmeš ji ze složky. Pusť ji na značku a přidáš jí tu značku, přičemž poznámka si nechá značky, které už měla. Úkoly, záložky, kontakty, položky Trezoru a nahrané soubory v Souborech se přetahují stejně. Když přetahovanou položku chvíli podržíš nad zavřenou složkou, otevře se, takže se dostaneš i do podsložky.",
+        "Chceš-li jich přesunout víc najednou, vyber je Cmd-klikem na Macu nebo Ctrl-klikem na Windows a Linuxu, Shift-klikem přidej rozsah a pak přetáhni kteroukoli vybranou položku. Přetahování potřebuje myš, trackpad nebo pero a okno dost široké na to, aby ukázalo postranní panel. Na telefonu místo toho použij **Přesunout do složky** v nabídce „...“. Značky jsou zdarma a [složky](/cs/help/folders/) potřebují Pro."
+      ]
+    },
+    "custom-themes": {
+      "q": "Můžu si vytvořit vlastní barevné téma?",
+      "a": [
+        "Ano, s Pro. Otevři Nastavení > Vzhled a zvol **Nové téma**. Vyber šest barev (Pozadí, Postranní panel, Ohraničení, Text, Tlumený text a Akcent) a aplikace dopočítá zbytek, zatímco aplikace za panelem průběžně ukazuje tvoje téma. Kontrola kontrastu upozorní na každý špatně čitelný text a nabídne **Opravit vše**. Uložit jde, jakmile projdou všechny kontroly.",
+        "Nabídka na každé kartě tématu má **Kopírovat kód**, které zkopíruje téma jako krátký textový kód, jenž můžeš komukoli poslat, a **Vložit kód tématu** přidá kód, který ti někdo poslal. Vybereš jedno téma pro světlý režim a jedno pro tmavý, **Oblíbené** v nabídce karty dá až tři témata pro každý režim do tlačítka **Vzhled** v zápatí a témata, která vytvoříš, se synchronizují na všechna tvoje zařízení. Další najdeš na [stránce s tématy](https://privacynotes.app/themes), kde můžeš přidat i to svoje. Výchozí téma je zdarma a všechna ostatní témata potřebují Pro."
+      ]
+    },
+    "format-bar": {
+      "q": "Můžu si vybrat, která tlačítka budou na panelu nástrojů?",
+      "a": [
+        "Ano. Klikni na ozubené kolečko na konci panelu nástrojů, nebo otevři Nastavení > Panel nástrojů. Každé tlačítko má tři místa: **Na liště**, **V nabídce +** nebo **Skryté**. Tlačítko přesuneš přetažením, nebo na něj klikni a uvidíš jeho možnosti. Skryté tlačítko dál funguje přes klávesovou zkratku a Markdown, takže jeho skrytím o nic nepřijdeš.",
+        "Přesunout lištu nahoru nebo dolů můžeš zdarma na každém účtu. Uspořádání jejích tlačítek je součástí Pro: na bezplatném účtu funguje Nastavení > Panel nástrojů jako náhled na vyzkoušení a tvoje uspořádání se uloží, jakmile budeš mít Pro. Tvoje uspořádání jde s tvým účtem na všechna zařízení a **Obnovit výchozí** vrátí standardní lištu. Na dotykové obrazovce je lišta u každého účtu jediný řádek, který se posouvá do strany, takže žádné tlačítko nezůstane schované ve druhém řádku."
+      ]
+    },
+    "window-zoom": {
+      "q": "Můžu zvětšit nebo zmenšit celou aplikaci pro počítač?",
+      "a": [
+        "Ano, v aplikacích pro počítač na Macu, Windows a Linuxu. Stiskni Cmd a klávesu plus na Macu, nebo Ctrl a klávesu plus na Windows a Linuxu, a celé okno se zvětší. Klávesa minus ho zmenší a 0 ho vrátí na normální velikost. Stejné nastavení najdeš jako **Velikost aplikace** v Nastavení > Vzhled, s kroky od 80% do 200%.",
+        "Velikost aplikace mění měřítko všeho najednou: postranního panelu, seznamu, nabídek i tvého textu. Když chceš změnit jen svůj text, použij **Velikost textu** v Nastavení > Editor. Velikost aplikace platí pro zařízení, na kterém ji nastavíš. V prohlížeči stejnou práci udělá jeho vlastní přiblížení."
+      ]
+    },
+    "zen-mode": {
+      "q": "Co je režim Zen?",
+      "a": [
+        "Režim Zen skryje všechno kromě poznámky, kterou píšeš: postranní panel, seznam a zápatí, a panel nástrojů je zpočátku skrytý také. Otevřené karty zůstanou nahoře. Stiskni Cmd+Shift+F na Macu nebo Ctrl+Shift+F na Windows a Linuxu, klikni na **Režim Zen** v zápatí, nebo klikni pravým tlačítkem na prázdné místo a zvol **Režim Zen**.",
+        "Zpátky se dostaneš klávesou Esc, stejnou zkratkou nebo tlačítkem **Ukončit Zen** nahoře v poznámce. **Zobrazit panel formátování** vrátí panel nástrojů a ty přitom zůstaneš v režimu Zen. Režim Zen je součástí Pro a v [ukázce](https://try.privacynotes.app) si ho můžeš vyzkoušet bez účtu."
+      ]
+    },
+    "date-format": {
+      "q": "Můžu změnit, jak se zobrazuje datum?",
+      "a": [
+        "Ano, v Nastavení > Datum. **Formát data** nabízí Automaticky, Nejdřív den, Nejdřív měsíc a Nejdřív rok (ISO) a **Formát času** nabízí Automaticky, 24hodinový a 12hodinový. Automaticky se řídí jazykem aplikace a regionem každého zařízení a tvoje volba platí na všech tvých zařízeních.",
+        "Záznamy v deníku dostávají název podle data a **Názvy záznamů v deníku** na stejném místě nabízejí hotové formáty ve tvém formátu data, nebo **Vlastní vzor**, ve kterém si sestavíš vlastní z tokenů jako `YYYY`, `MMMM` a `ddd`, přičemž slova v hranatých závorkách zůstanou tak, jak je napíšeš. Nový vzor platí jen pro nové záznamy. Dnešní datum vložíš do kterékoli poznámky zkratkou Cmd+; na Macu nebo Ctrl+; na Windows a Linuxu, a když přidáš Shift, vloží se i čas. Všechno je to zdarma."
+      ]
+    },
+    "checklists": {
+      "q": "Jde seznam úkolů vyčistit, seřadit nebo přeskládat?",
+      "a": [
+        "Ano. Nabídka „...“ u poznámky má **Odškrtnout všechny položky**, když chceš seznam použít znovu, **Smazat zaškrtnuté položky**, když chceš odklidit hotové, a **Seřadit položky podle stavu**, které přesune zaškrtnuté položky pod ostatní. Každá z nich se ukáže, jen když by něco změnila. Mazání se nejdřív zeptá a řazení i odškrtnutí všech jde vrátit zpět přes Cmd+Z nebo Ctrl+Z. Dole v poznámce se počítá tvůj postup, třeba „Zaškrtnuto 3 z 6“.",
+        "Ručně položky přeskládáš tak, že přetáhneš úchyt na konci položky. Vnořené položky se přesunou s ní a Esc přetahování zruší. Na počítači se úchyt ukáže, když na položku najedeš ukazatelem, a na dotykové obrazovce zůstává slabě vidět. Zaškrtnutá položka se ve výchozím nastavení přesune pod nezaškrtnuté ve svém seznamu; vypnout to můžeš volbou **Přesouvat zaškrtnuté položky dolů** v Nastavení > Seznamy. Všechno je to zdarma."
+      ]
+    },
+    "quick-switcher": {
+      "q": "Co je funkce „Přejít na“ a co umí najít?",
+      "a": [
+        "Funkce „Přejít na“ skočí na cokoli podle názvu. Stiskni Cmd+K na Macu nebo Ctrl+K na Windows a Linuxu (funguje i Cmd+P nebo Ctrl+P), nebo klikni na **Přejít na** v postranním panelu nebo v záhlaví seznamu. Napiš část názvu a najdeš poznámky, úkoly, záznamy v deníku, položky Trezoru, záložky, kontakty, přiložené soubory i nastavení. Enter položku otevře a Option+Enter nebo Alt+Enter ji otevře na kartě.",
+        "Když nejdřív napíšeš >, spustíš místo toho příkaz, třeba vytvoření nové poznámky nebo přechod do sekce. Pokud chceš hledat slova v textu, a ne v názvech, vyber řádek **Hledat všude**, nebo z libovolného řádku stiskni Cmd+Enter či Ctrl+Enter. Hledání probíhá na tvém zařízení, takže nic z toho, co napíšeš, se k nám neposílá. Funkce „Přejít na“ je zdarma."
+      ]
+    },
+    "find-in-note": {
+      "q": "Jak najít slovo v jedné poznámce?",
+      "a": [
+        "V otevřené poznámce stiskni Cmd+F na Macu nebo Ctrl+F na Windows a Linuxu, nebo u dlouhé poznámky klikni na lupu v horním rohu. Napiš slovo a pak stiskni Enter pro další výskyt a Shift+Enter pro předchozí, zatímco lišta výskyty počítá. Zavřeš ji stejnou zkratkou nebo kliknutím na X. Hledání funguje i v poznámkách jen pro čtení.",
+        "S Pro můžeš také nahrazovat: stiskni Option+Cmd+F na Macu nebo Ctrl+H na Windows a Linuxu, nebo zvol **Najít a nahradit** v nabídce „...“ u poznámky. Nahraď jeden výskyt nebo **Vše** najednou, a když je potřeba, zapni **Rozlišovat velikost písmen**. Obě lišty fungují i po volbě **Zobrazit markdown**, kde pracují se surovým textem, třeba s jazykem bloku kódu. Pokud chceš hledat ve všech poznámkách, použij hledání v seznamu, které aktivuje klávesa /. [Každé hledání probíhá na tvém zařízení](/cs/help/search-local/)."
+      ]
+    },
+    "screen-capture": {
+      "q": "Můžu skrýt poznámky před snímky obrazovky a sdílením obrazovky?",
+      "a": [
+        "Ano, v aplikacích pro Android, iPhone a iPad, Mac a Windows. Otevři Nastavení > Zabezpečení > Zámek a zapni **Skrývat při snímání obrazovky**. Snímky obrazovky, nahrávání obrazovky a sdílení obrazovky pak místo tvých poznámek ukážou prázdné okno, nakolik to zařízení dovolí. Na telefonu to také skryje poznámky v přepínači aplikací.",
+        "Přepínač je ve výchozím stavu vypnutý, platí jen pro zařízení, na kterém ho zapneš, a je zdarma. Prohlížeče a Linux aplikaci nedávají žádný způsob, jak snímání zablokovat, takže se tam přepínač neobjeví. Funguje samostatně a nepotřebuje zámek aplikace ani PIN."
+      ]
+    },
+    "connected-logins": {
+      "q": "Můžu k účtu propojit víc způsobů přihlášení?",
+      "a": [
+        "Ano. Otevři Nastavení > Účet > Účty a propoj Google, Apple nebo GitHub, čímž přidáš způsob přihlášení, který otevře stejný trezor. Propojit jich můžeš víc, dokonce dva účty od jednoho poskytovatele, a tvoje obnovovací fráze vedle nich funguje dál. Propojení ani odpojení účtu nezmění tvoje poznámky ani šifrování.",
+        "Způsob přihlášení, který už patří k jinému trezoru, propojit nejde, protože trezory se nikdy neslučují. **Odpojit** si nejdřív vyžádá tvých 12 slov. Pokud tvou frázi uchováváme my, poslední propojený účet zůstane, dokud nepropojíš jiný nebo si frázi neuložíš a nepřejdeš na vlastní správu. Při vlastní správě se nové zařízení na tvých 12 slov ptá dál. Propojené účty jsou v betaverzi."
+      ]
+    },
+    "session-expired": {
+      "q": "Proč aplikace hlásí „Relace vypršela“?",
+      "a": [
+        "Znamená to, že náš server už nepřijímá přihlášení tohoto zařízení, takže se synchronizace zastaví. Slabé připojení ani výpadek serveru to nikdy nezpůsobí: aplikace se serveru zeptá ještě jednou, než zprávu ukáže. Tvoje poznámky jsou na tomto zařízení v bezpečí.",
+        "Klikni na **Přihlásit se znovu**. Aplikace se nejdřív zeptá, jestli máš uloženou obnovovací frázi, protože k návratu potřebuješ ji, nebo způsob přihlášení použitý při registraci. Poznámky, které se ještě nesynchronizovaly, zůstanou na zařízení a synchronizují se, jakmile se přihlásíš. Stejné okno tě upozorní, pokud některé soubory ještě nedokončily nahrávání, protože ty se při odhlášení odstraní."
+      ]
+    },
+    "archive": {
+      "q": "Co dělá Archiv a jak se liší od koše?",
+      "a": [
+        "Archivace vyjme položku z tvých seznamů, aniž by ji smazala. Zvol **Archivovat** v nabídce „...“ u položky nebo v nabídce po kliknutí pravým tlačítkem, případně na liště výběru pro víc položek najednou. Archivované položky zmizí z Vše, ze své sekce, z Připnutých a z počtů u složek a značek a čekají v zobrazení **Archiv** dole v postranním panelu, které se objeví, jakmile je něco archivované. Pokud je chceš nechat ve Vše a v počtech, zaškrtni Archiv ve sloupci **Vše** v Nastavení > Seznamy. **Zrušit archivaci** na stejných místech položku vrátí.",
+        "Koš je na věci, kterých se chceš zbavit: [po 30 dnech je trvale smaže](/cs/help/trash-auto-delete/), pokud to nevypneš. Archiv nikdy nic nemaže a archivované položky zůstávají na dosah, protože je dál najde hledání ve Vše, funkce „Přejít na“ i odkazy na poznámky. Synchronizují se a zůstávají šifrované jako všechno ostatní a dál se počítají do tvého úložiště. Archiv funguje u všech typů položek a je zdarma."
+      ]
+    },
+    "share-into-app": {
+      "q": "Můžu do PrivacyNotes sdílet text nebo odkaz z jiné aplikace?",
+      "a": [
+        "Ano, na iPhonu, iPadu a Androidu, zatím v betaverzi. Klepni v libovolné aplikaci na tlačítko sdílení a vyber PrivacyNotes. Webový odkaz se stane záložkou s názvem stránky, text novou poznámkou a obrázky a soubory putují do Souborů. Odkaz, který už máš uložený, se ukáže, místo aby se uložil podruhé. Sdílené položky přijdou bez složky i bez značky, takže je roztřídíš, až se ti to hodí.",
+        "Na Androidu se aplikace nejdřív zeptá: vypíše, co přišlo, a uloží to, až když zvolíš **Uložit vše**, nebo to zahodí přes **Zahodit**. Na iPhonu a iPadu uložení potvrdí karta **Uloženo do PrivacyNotes**. Každý soubor se řídí tvým [limitem pro nahrávání](/cs/help/attachment-limits/) a sdílení počká, dokud se nepřihlásíš a neodemkneš aplikaci."
+      ]
+    },
+    "desktop-updates": {
+      "q": "Jak aktualizovat aplikaci pro počítač?",
+      "a": [
+        "Nemusíš nic dělat. Aplikace pro Mac a Windows a AppImage pro Linux hledají aktualizaci při spuštění a při návratu do nich, nejvýš jednou za 12 hodin, a stáhnou ji na pozadí. Pak se objeví upozornění **Dostupná aktualizace** s tlačítkem **Restartovat** na dokončení a **Changelog**, kde uvidíš, co je nového.",
+        "Balíček .deb pro Linux se aktualizuje novým stažením: jeho upozornění nabízí **Stáhnout**, které otevře [sekci se staženími](https://privacynotes.app/cs#downloads), a nový balíček nainstaluješ přes starý. Balíček .deb, který je na bezpečnou synchronizaci příliš starý, synchronizaci pozastaví, dokud to neuděláš. Při instalaci přes Scoop na Windows spusť `scoop update privacynotes` a upozornění na to má tlačítko **Kopírovat příkaz**. Na Macu Homebrew žádný příkaz k aktualizaci nepotřebuje, protože aplikace se aktualizuje sama."
       ]
     }
   }

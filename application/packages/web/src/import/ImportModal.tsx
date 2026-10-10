@@ -731,40 +731,18 @@ export function ImportModal({
               )}
             </>
           ) : (
+            // The window stays open after an export: a daily routine writes
+            // more than one backup, and the progress window sits above it.
             <ExportPanel
               notes={notes}
-              onExportAllMdZip={(ns) => {
-                onExportAllMdZip(ns);
-                onClose();
-              }}
-              onExportAllHtmlZip={(ns) => {
-                onExportAllHtmlZip(ns);
-                onClose();
-              }}
-              onExportAllJson={(ns) => {
-                onExportAllJson(ns);
-                onClose();
-              }}
-              onExportEncrypted={(ns) => {
-                onExportEncrypted(ns);
-                onClose();
-              }}
-              onExportEncryptedZip={(ns) => {
-                onExportEncryptedZip(ns);
-                onClose();
-              }}
-              onExportBookmarks={(ns) => {
-                onExportBookmarks(ns);
-                onClose();
-              }}
-              onExportContacts={(ns) => {
-                onExportContacts(ns);
-                onClose();
-              }}
-              onExportVault={(ns) => {
-                onExportVault(ns);
-                onClose();
-              }}
+              onExportAllMdZip={onExportAllMdZip}
+              onExportAllHtmlZip={onExportAllHtmlZip}
+              onExportAllJson={onExportAllJson}
+              onExportEncrypted={onExportEncrypted}
+              onExportEncryptedZip={onExportEncryptedZip}
+              onExportBookmarks={onExportBookmarks}
+              onExportContacts={onExportContacts}
+              onExportVault={onExportVault}
             />
           )}
         </div>
@@ -779,7 +757,7 @@ export function ImportModal({
                 onClick={onClose}
                 className="text-sm rounded border border-divider px-3 py-1.5 hover:bg-surface-1 transition"
               >
-                {t('common:actions.cancel')}
+                {t('common:actions.close')}
               </button>
             </>
           ) : tab === 'restore' && phase.kind === 'pick' ? (

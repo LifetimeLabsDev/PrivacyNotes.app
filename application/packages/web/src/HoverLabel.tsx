@@ -81,6 +81,7 @@ export const TIP_PILL =
 export function HoverLabel({
   label,
   count,
+  pro = false,
   position = 'end',
   multiline = false,
   disabled = false,
@@ -92,6 +93,9 @@ export function HoverLabel({
 }: {
   label: string;
   count?: number;
+  /** Adds a gold "· Pro" after the label, for a control that opens the
+   *  upgrade window. */
+  pro?: boolean;
   position?: Position;
   /** Wrap long labels (max ~280px) instead of forcing a single nowrap line. */
   multiline?: boolean;
@@ -128,6 +132,9 @@ export function HoverLabel({
       >
         <span>{label}</span>
         {count != null && <span /* theme-ok: on the dark tooltip pill */ className="text-neutral-400 tabular-nums">{count}</span>}
+        {/* Gold in every theme: the pill is dark in every theme, and the
+            theme's own Pro colour is bronze on a light one. */}
+        {pro && <span /* theme-ok: on the dark tooltip pill */ className="-ms-1 font-semibold text-amber-300">· Pro</span>}
       </Wrapper>}
     </Wrapper>
   );

@@ -9,7 +9,7 @@ import { isImeComposing } from './imeComposing';
 import { textMatcher, type TextMatch } from './textMatch';
 import { formatRelative } from './intlFormat';
 import { activeLocale, ensureSettingsSearchLoaded } from './i18n';
-import { ArrowSquareOut, Compass, MagnifyingGlass, Plus, Terminal, X, type Icon, type IconProps } from './icons';
+import { ArrowSquareOut, PencilSimple, Compass, MagnifyingGlass, Plus, Terminal, X, type Icon, type IconProps } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { helpPath } from './localeRoutes';
 import { openExternal } from './openExternal';
@@ -115,6 +115,8 @@ export default function QuickSwitcher({
   sectionOf,
   canOpenInTab,
   onOpen,
+  linkOf,
+  onEditLink,
   sectionIcons,
   onOpenSetting,
   listSearch,
@@ -137,6 +139,15 @@ export default function QuickSwitcher({
   sectionOf: (n: LocalNote) => { label: string; icon: Icon } | undefined;
   canOpenInTab: boolean;
   onOpen: (n: LocalNote, inTab: boolean) => void;
+  /**
+   * A bookmark's link, or null for every other item and for a bookmark
+   * behind a gate. A bookmark row then has two actions: Enter opens the
+   * link and Shift+Enter edits it; the arrow keys and the mouse move
+   * between the two.
+   */
+  linkOf?: (n: LocalNote) => string | null;
+  /** Opens a bookmark for editing, as its row menu's Edit does. */
+  onEditLink?: (n: LocalNote) => void;
   /** Each settings section's rail icon. */
   sectionIcons: Record<SectionId, Icon>;
   /** Opens Settings at the setting's row. */
@@ -174,6 +185,9 @@ export default function QuickSwitcher({
   useEscapeToClose(onClose);
   const [query, setQuery] = useState(initialQuery);
   const [active, setActive] = useState(0);
+  // On a bookmark row: 0 is Open link, 1 is Edit. Kept with the row it was
+  // set on, so a new row starts on the link.
+  const [actionAt, setActionAt] = useState<{ row: number; which: 0 | 1 }>({ row: -1, which: 0 });
   // The settings search also reads the keyword lists, which load here.
   const [settingsReady, setSettingsReady] = useState(false);
   useEffect(() => {
@@ -278,11 +292,26 @@ export default function QuickSwitcher({
     document.getElementById(optionId(next))?.scrollIntoView({ block: 'nearest' });
   };
 
-  const open = (i: number, inTab: boolean) => {
+  /** The link of a row that is a bookmark with one. */
+  const linkAt = (i: number): string | null => {
+    const row = rows[i];
+    return row?.kind === 'item' ? (linkOf?.(row.n) ?? null) : null;
+  };
+  const selectedLink = linkAt(at);
+  const action: 0 | 1 = actionAt.row === at ? actionAt.which : 0;
+  const setAction = (which: 0 | 1) => setActionAt({ row: at, which });
+
+  /** Open a row. A bookmark row opens its link unless `edit` asks for the
+   *  bookmark itself, as a tab does. */
+  const open = (i: number, inTab: boolean, edit = false) => {
     const row = rows[i];
     if (!row) return;
+    const link = linkAt(i);
     onClose();
-    if (row.kind === 'item') onOpen(row.n, inTab && canOpenInTab);
+    if (link && row.kind === 'item' && !inTab) {
+      if (edit && onEditLink) onEditLink(row.n);
+      else openExternal(link);
+    } else if (row.kind === 'item') onOpen(row.n, inTab && canOpenInTab);
     else if (row.kind === 'file') onOpenFile(row.f);
     else if (row.kind === 'markdown') onOpenMarkdown(row.e);
     else if (row.kind === 'command') row.entry.run();
@@ -301,7 +330,7 @@ export default function QuickSwitcher({
     RowIcon: ComponentType<IconProps> | ReactNode | undefined,
     title: ReactNode,
     detail: ReactNode,
-    opts: { keys?: string; accent?: boolean; tone?: string; strong?: boolean } = {},
+    opts: { keys?: string; accent?: boolean; tone?: string; strong?: boolean; link?: boolean } = {},
   ) => {
     const selected = i === at;
     // The "Search everything" row wears an accent title: it is the one row
@@ -327,7 +356,33 @@ export default function QuickSwitcher({
           <div className={`truncate text-[14px] leading-5 ${accent ? 'font-medium text-accent' : 'text-pn'} ${strong ? 'font-semibold' : ''}`}>{title}</div>
           {detail && <div className="truncate text-[12px] leading-4 text-pn-muted">{detail}</div>}
         </div>
-        {(keys || selected) && (
+        {opts.link ? (
+          // A bookmark: Edit and Open link, the one Enter runs marked. On a
+          // touch screen, where no row is selected, every bookmark row shows
+          // them and a tap on the row opens the link.
+          <span className={`shrink-0 items-center gap-1 ${selected ? 'flex' : 'hidden [@media(hover:none)]:flex'}`}>
+            {([1, 0] as const).map((which) => (
+              <button
+                key={which}
+                type="button"
+                tabIndex={-1}
+                onMouseDown={(e) => e.preventDefault()}
+                onMouseEnter={() => selected && setAction(which)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  open(i, false, which === 1);
+                }}
+                className={`inline-flex items-center gap-1.5 rounded-md border px-1.5 py-0.5 text-[12px] transition ${
+                  selected && action === which ? 'border-accent text-accent-strong bg-accent/10' : 'border-pn-muted/50 text-pn-soft hover:text-pn hover:border-pn-muted'
+                }`}
+              >
+                {which === 1 ? <PencilSimple size={12} aria-hidden="true" /> : <ArrowSquareOut size={12} aria-hidden="true" />}
+                {which === 1 ? t('actions.edit') : t('quickSwitcher.openLink')}
+                <kbd aria-hidden="true" className={`${KEYCAP} [@media(hover:none)]:hidden`}>{which === 1 ? '⇧↵' : '↵'}</kbd>
+              </button>
+            ))}
+          </span>
+        ) : (keys || selected) && (
           <kbd aria-hidden="true" className={`${KEYCAP} [@media(hover:none)]:hidden`}>{selected ? '↵' : keys}</kbd>
         )}
       </div>
@@ -347,7 +402,7 @@ export default function QuickSwitcher({
           {view?.label ? ' · ' : ''}
           {formatRelative(editedAtOf(row.n))}
         </>,
-        { tone: toneOf(row.n.type), strong: true },
+        { tone: toneOf(row.n.type), strong: true, link: !!linkOf?.(row.n) },
       );
     }
     if (row.kind === 'file') {
@@ -456,6 +511,7 @@ export default function QuickSwitcher({
             onChange={(e) => {
               setQuery(e.target.value);
               setActive(0);
+              setActionAt({ row: -1, which: 0 });
             }}
             onKeyDown={(e) => {
               if (isImeComposing(e)) return;
@@ -468,10 +524,23 @@ export default function QuickSwitcher({
               } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
                 e.preventDefault();
                 move(e.key === 'ArrowDown' ? 1 : -1);
+              } else if (selectedLink && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !e.shiftKey) {
+                // On a bookmark row the arrows move between Edit and Open
+                // link; the caret still moves while it is inside the query.
+                const input = e.currentTarget;
+                const atEnd = input.selectionStart === input.value.length && input.selectionEnd === input.value.length;
+                const toEdit = (e.key === 'ArrowLeft') !== (document.dir === 'rtl');
+                if (toEdit && action === 0 && atEnd) {
+                  e.preventDefault();
+                  setAction(1);
+                } else if (!toEdit && action === 1) {
+                  e.preventDefault();
+                  setAction(0);
+                }
               } else if (e.key === 'Enter') {
                 e.preventDefault();
                 if (searchRow && (KEY_OS === 'mac' ? e.metaKey : e.ctrlKey)) open(searchIndex, false);
-                else open(at, e.altKey);
+                else open(at, e.altKey, e.shiftKey || action === 1);
               }
             }}
             placeholder={t('quickSwitcher.placeholder')}
@@ -480,7 +549,7 @@ export default function QuickSwitcher({
             aria-expanded
             aria-controls="pn-quick-switcher-list"
             aria-activedescendant={count ? optionId(at) : undefined}
-            className="flex-1 min-w-0 h-12 bg-transparent text-[15px] text-pn placeholder:text-pn-muted outline-none"
+            className="flex-1 min-w-0 h-12 bg-transparent text-[17px] font-medium text-pn placeholder:text-[15px] placeholder:font-normal placeholder:text-pn-muted outline-none"
           />
           {/* Always shown: it clears the query, and with no query it closes
               the switcher, so a pointer never needs Escape. */}
@@ -529,6 +598,9 @@ export default function QuickSwitcher({
         <div className="flex flex-wrap gap-x-4 gap-y-1 px-3.5 py-2 border-t border-divider text-[12px] text-pn-muted [@media(hover:none)]:hidden">
           <span className="inline-flex items-center gap-1"><kbd className={KEYCAP}>↑</kbd><kbd className={KEYCAP}>↓</kbd> {t('quickSwitcher.move')}</span>
           <span className="inline-flex items-center gap-1"><kbd className={KEYCAP}>↵</kbd> {t('quickSwitcher.open')}</span>
+          {selectedLink && (
+            <span className="inline-flex items-center gap-1"><kbd className={KEYCAP}>⇧↵</kbd> {t('quickSwitcher.edit')}</span>
+          )}
           {canOpenInTab && !commandMode && (
             <span className="inline-flex items-center gap-1"><kbd className={KEYCAP}>{KEY_OS === 'mac' ? '⌥↵' : 'Alt+↵'}</kbd> {t('quickSwitcher.openInTab')}</span>
           )}

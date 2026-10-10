@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "desktop",
-  "description": "Desktop-only grants for the Markdown folder pillar, which picks a file or folder and then scans, reads, writes and renames plaintext notes inside it. Separate from default.json because the pillar reports itself unavailable on iOS and Android, so those builds were carrying grants with no feature behind them. What stayed in default.json is what `saveBlob` needs on every platform: a Save As dialog, a write, and the stat that proves the bytes landed, which Android's create-document flow makes load-bearing rather than decorative. Every grant here is scoped to $HOME, which the picker widens at runtime to whatever the user actually chose and a double-clicked file widens through take_pending_opens. The deny list is the part $HOME/** cannot express: credential directories that no notes folder is, refused whatever the allow says, because a deny always wins. `plugins.fs.requireLiteralLeadingDot` is true, so $HOME/** no longer reaches a dot-path at all: a hidden directory is covered only by a pattern that spells the dot out. The folder picker is unaffected because it widens the runtime scope with the chosen path itself, whose own pattern carries the dot when the folder is a hidden one.",
+  "description": "Desktop-only grants for the Markdown folder pillar, which picks a file or folder and then scans, reads, writes and renames plaintext notes inside it. Separate from default.json because the pillar reports itself unavailable on iOS and Android, so those builds were carrying grants with no feature behind them. What stayed in default.json is what `saveBlob` needs on every platform: a Save As dialog, a write, and the stat that proves the bytes landed, which Android's create-document flow makes load-bearing rather than decorative. Every grant here is scoped to $HOME, which the picker widens at runtime to whatever the user actually chose and a double-clicked file widens through take_pending_opens. The deny list is the part $HOME/** cannot express: credential directories that no notes folder is, refused whatever the allow says, because a deny always wins. The four window grants size and place the file window, a Markdown file opened from the file manager while the app was closed (markdownFolder/fileWindow.ts). `plugins.fs.requireLiteralLeadingDot` is true, so $HOME/** no longer reaches a dot-path at all: a hidden directory is covered only by a pattern that spells the dot out. The folder picker is unaffected because it widens the runtime scope with the chosen path itself, whose own pattern carries the dot when the folder is a hidden one.",
   "platforms": [
     "macOS",
     "windows",
@@ -12,6 +12,10 @@
     "about"
   ],
   "permissions": [
+    "core:window:allow-set-size",
+    "core:window:allow-set-position",
+    "core:window:allow-maximize",
+    "core:window:allow-unmaximize",
     "dialog:allow-open",
     {
       "identifier": "fs:allow-read-dir",

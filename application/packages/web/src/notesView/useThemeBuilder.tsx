@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { customIdOf, getStoredColorTheme, reconcileCustomSlots } from '../theme';
-import { saveCustomTheme, type CustomThemes } from '../customThemes';
+import { canSaveCustomTheme, saveCustomTheme, type CustomThemes } from '../customThemes';
 import { hasSettingsPulled, type UserSettings } from '../userSettings';
 import { isDemoMode } from '../demo';
 
@@ -81,9 +81,10 @@ export function useThemeBuilder({
         key={target.id ?? target.code ?? 'new'}
         target={target}
         canSave={canSave}
+        hasRoom={(id) => canSaveCustomTheme(customThemes, id)}
         onSave={(id, code) => {
+          // The builder stays open after a save; Close or Cancel ends it.
           mutateSettings((prev) => ({ ...prev, customThemes: saveCustomTheme(prev.customThemes, id, code) }));
-          setTarget(null);
         }}
         onClose={() => setTarget(null)}
         onOpenUpgrade={(code) => {

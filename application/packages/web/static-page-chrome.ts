@@ -346,6 +346,19 @@ export const BRAND_CSS = `.pn-mark{font-weight:700;color:var(--fg)}
  * inside loses its border, so the App button is the only filled control
  * on the page. Spec: ops/docs/ui-patterns.md section 50.
  */
+/** The full-screen screenshot viewer of /changelog and /themes, opened by
+ *  the lightbox in static-pages.js. */
+export const LIGHTBOX_CSS = `.cl-lb{position:fixed;inset:0;z-index:100;background:rgba(8,10,14,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px}
+.cl-lb[hidden]{display:none}
+.cl-lb img{max-width:min(100%,1600px);max-height:calc(100dvh - 110px);width:auto;height:auto;border-radius:10px;background:var(--bg)}
+.cl-lb p{margin:0;max-width:760px;text-align:center;color:#e7e9ec;font-size:14px;line-height:1.5}
+.cl-lb button{position:absolute;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;border-radius:10px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+.cl-lb button:hover{background:rgba(255,255,255,.2)}
+.cl-lb .lb-x{top:16px;right:16px}
+.cl-lb .lb-p{left:16px;top:50%;margin-top:-22px}
+.cl-lb .lb-n{right:16px;top:50%;margin-top:-22px}
+.cl-lb button[hidden]{display:none}`;
+
 export const CHROME_CSS = `${BRAND_CSS}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}

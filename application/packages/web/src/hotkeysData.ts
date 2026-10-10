@@ -1,7 +1,7 @@
 /**
  * The help rows: which commands each row of the keyboard help shows, in
  * which group, with what English label. One list feeds the in-app Hotkeys
- * tab, the localized help page and the printable cheat sheet, and the keys
+ * tab and the printable cheat sheet, and the keys
  * come from commandKeys.ts, so a key and its row cannot drift apart.
  *
  * help-page.ts evaluates this file together with commandKeys.ts (the import
@@ -9,8 +9,7 @@
  *
  * `label` and `title` hold the English text. The in-app Hotkeys tab and the
  * cheat sheet show them as they are, in English on purpose, so both keep one
- * layout; only the localized help page shows a row through `i18nKey`, the
- * suffix under `hotkeys.*` in the common catalog.
+ * layout. `i18nKey` is a stable name for a row or a group.
  *
  * Spec: ops/docs/plans/keyboard-shortcuts.md (sections 4.5 and 4.6)
  */

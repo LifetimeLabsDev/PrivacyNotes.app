@@ -45,7 +45,7 @@ import type { ImportedNote, ParsedImport } from './types';
  *                                       onto the editor's own palette
  *   <span data-upnote-formula>       -> $latex$ ($$latex$$ when alone in
  *                                       its block)
- *   .shine-collapsible-section       -> > [!note]+ callout (- when the
+ *   .shine-collapsible-section       -> > [!fold]+ callout (- when the
  *                                       section was collapsed)
  *   <li data-checked>                -> - [ ] / - [x]
  *   text-align on simple blocks      -> <p style="text-align: ...;"> HTML
@@ -769,7 +769,7 @@ function renderTable(el: Element, ctx: ConvCtx): string {
   return `\n${lines.join('\n')}\n\n`;
 }
 
-/** A collapsible section becomes a callout, keeping its fold state. */
+/** A collapsible section becomes a Fold callout, keeping its fold state. */
 function renderCollapsible(el: Element, ctx: ConvCtx): string {
   ctx.flags.callouts++;
   const collapsed = /(?:^|\s)shine-section-collapsed(?:\s|$)/.test(el.getAttribute('class') ?? '');
@@ -779,7 +779,7 @@ function renderCollapsible(el: Element, ctx: ConvCtx): string {
   const title = titleEl ? inlineOnly(normalizeText(titleEl.textContent ?? '')) : '';
   const body = contentEl ? renderBlocks(contentEl, ctx).trim() : '';
 
-  const head = `> [!note]${collapsed ? '-' : '+'}${title ? ` ${title}` : ''}`;
+  const head = `> [!fold]${collapsed ? '-' : '+'}${title ? ` ${title}` : ''}`;
   if (!body) return `\n${head}\n\n`;
   const quoted = body
     .split('\n')

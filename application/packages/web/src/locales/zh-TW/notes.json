@@ -80,6 +80,13 @@
     "clearFilters": "清除篩選",
     "filteredAfter": "即可顯示。"
   },
+  "listGroups": {
+    "previous7Days": "過去 7 天",
+    "previous30Days": "過去 30 天",
+    "other": "其他",
+    "collapseAll": "收合所有群組",
+    "expandAll": "展開所有群組"
+  },
   "headerLabel": {
     "allItems": "全部",
     "untagged": "無標籤",
@@ -143,7 +150,7 @@
     "exitHover": "離開 Zen 模式（Esc）",
     "enterHover": "進入 Zen 模式",
     "proHover": "Zen 模式（Pro）",
-    "enterAriaShortcut": "進入 Zen 模式（⌘⇧F）"
+    "enterAriaShortcut": "進入 Zen 模式（{{keys}}）"
   },
   "editor": {
     "backToList": "回到筆記清單",
@@ -225,10 +232,10 @@
   },
   "settings": {
     "groupYourNotes": "你的筆記",
+    "groupPreferences": "偏好設定",
     "groupAccount": "帳號與資料",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "統計",
-    "journalsLabel": "日誌",
     "importLabel": "匯入與匯出",
     "planLabel": "帳號",
     "storageLabel": "儲存空間",
@@ -236,9 +243,13 @@
     "securityLabel": "安全性",
     "accountLabel": "ID 與同步",
     "appearanceLabel": "外觀",
+    "editorLabel": "編輯器",
+    "formatBarLabel": "工具列",
+    "listsLabel": "清單",
     "helpLabel": "說明",
     "aboutLabel": "關於",
-    "languageLabel": "日期與語言",
+    "languageLabel": "語言",
+    "dateLabel": "日期",
     "languageDesc": "選擇 PrivacyNotes 的顯示語言。"
   },
   "importStore": {
@@ -287,6 +298,6 @@
   },
   "ambiguousLink": {
     "title": "有兩則筆記用同一個標題",
-    "body": "不只一則筆記的標題是 <highlight>「{{title}}」</highlight>，所以這個連結說不出它指的是哪一則。把其中一則改名，連結就會指向另一則。"
+    "body": "不只一則筆記的標題是 <highlight>「{{title}}」</highlight>，所以這個連結說不出它指的是哪一則。把其中一則重新命名，連結就會指向另一則。"
   }
 }

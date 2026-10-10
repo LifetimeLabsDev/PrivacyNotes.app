@@ -59,13 +59,16 @@ La columna del mig està centrada i l'última alineada a la dreta. Arrossega la 
 Un requadre és una caixa de color per a una cosa que ningú no ha de perdre's.
 
 > [!tip]+ Consell
-> Fes clic al títol d'un requadre per plegar-lo.
+> Fes clic a la icona per plegar-lo.
 
 > [!warning]+ Atenció
 > Cada mena té el seu color i la seva icona.
 
 > [!danger]+ Perill
-> N'hi ha nou. El menú **Insereix** les llista.
+> N'hi ha molts. El menú **Insereix** els llista.
+
+> [!fold]- Un plegable
+> Sense requadre ni color: només text que no fa nosa fins que l'obres.
 
 ## Cites
 

@@ -80,6 +80,13 @@
     "clearFilters": "ล้างตัวกรอง",
     "filteredAfter": "เพื่อแสดงรายการ"
   },
+  "listGroups": {
+    "previous7Days": "7 วันที่ผ่านมา",
+    "previous30Days": "30 วันที่ผ่านมา",
+    "other": "อื่นๆ",
+    "collapseAll": "ยุบทุกกลุ่ม",
+    "expandAll": "ขยายทุกกลุ่ม"
+  },
   "headerLabel": {
     "allItems": "ทั้งหมด",
     "untagged": "ไม่มีแท็ก",
@@ -143,7 +150,7 @@
     "exitHover": "ออกจากโหมดเซน (Esc)",
     "enterHover": "เข้าสู่โหมดเซน",
     "proHover": "โหมดเซน (Pro)",
-    "enterAriaShortcut": "เข้าสู่โหมดเซน (⌘⇧F)"
+    "enterAriaShortcut": "เข้าสู่โหมดเซน ({{keys}})"
   },
   "editor": {
     "backToList": "กลับไปที่รายการโน้ต",
@@ -225,10 +232,10 @@
   },
   "settings": {
     "groupYourNotes": "โน้ตของคุณ",
+    "groupPreferences": "ค่ากำหนด",
     "groupAccount": "บัญชีและข้อมูล",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "สถิติ",
-    "journalsLabel": "บันทึกประจำวัน",
     "importLabel": "นำเข้าและส่งออก",
     "planLabel": "บัญชี",
     "storageLabel": "พื้นที่จัดเก็บ",
@@ -236,9 +243,13 @@
     "securityLabel": "ความปลอดภัย",
     "accountLabel": "ID และการซิงค์",
     "appearanceLabel": "รูปลักษณ์",
+    "editorLabel": "ตัวแก้ไข",
+    "formatBarLabel": "แถบเครื่องมือ",
+    "listsLabel": "รายการ",
     "helpLabel": "ความช่วยเหลือ",
     "aboutLabel": "เกี่ยวกับ",
-    "languageLabel": "วันที่และภาษา",
+    "languageLabel": "ภาษา",
+    "dateLabel": "วันที่",
     "languageDesc": "เลือกภาษาที่ใช้แสดง PrivacyNotes"
   },
   "importStore": {

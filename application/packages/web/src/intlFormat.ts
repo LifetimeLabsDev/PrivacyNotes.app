@@ -76,6 +76,25 @@ export function formatRelative(iso: string): string {
   return relativeFormatter('always').format(-Math.floor(h / 24), 'day');
 }
 
+/** "Today" (0) or "Yesterday" (-1) in the app language, from Intl, as a
+ *  list group header names a day. Lower case in most languages. */
+export function relativeDayName(offset: 0 | -1): string {
+  return relativeFormatter('auto').format(offset, 'day');
+}
+
+/** The name of a month standing alone ("October", "říjen"), as a list group
+ *  header names one. Lower case in some languages. */
+export function monthName(year: number, monthIndex: number): string {
+  const loc = intlLocale();
+  const key = `${loc}:monthName`;
+  let fmt = dateFormatters.get(key);
+  if (!fmt) {
+    fmt = new Intl.DateTimeFormat(loc, { month: 'long' });
+    dateFormatters.set(key, fmt);
+  }
+  return fmt.format(new Date(year, monthIndex, 1));
+}
+
 /** Local calendar date as `YYYY-MM-DD`. Never UTC: an entry belongs to
  *  the day the writer is living, not to the day in Greenwich. */
 export function toLocalIso(d: Date): string {
@@ -85,7 +104,7 @@ export function toLocalIso(d: Date): string {
 
 // ── The date settings ─────────────────────────────────────────────
 //
-// "Date format" and "Clock" in Settings > Date & Language, synced. Automatic is the
+// "Date format" and "Clock" in Settings > Date, synced. Automatic is the
 // app language plus the device region (`dateLocale`), resolved on each device.
 
 export const DATE_ORDERS = ['auto', 'dmy', 'mdy', 'ymd'] as const;
@@ -329,6 +348,13 @@ export function formatInstantWith(prefs: DatePrefs, value: string | Date, style:
   const opts: Intl.DateTimeFormatOptions = { ...DATE_STYLES[style], ...(withYear ? { year: 'numeric' } : {}) };
   const fmt = dateFormatter(r, opts, `${style}:${withYear}`);
   return style === 'numeric' && r.reorder ? reordered(fmt, d, r.reorder) : fmt.format(d);
+}
+
+/** The tag a date in words is written in under the synced date settings, so
+ *  a journal title spelled out follows Day first or Month first like every
+ *  other date. */
+export function writtenDateLocale(): string {
+  return resolve(datePrefs).tag;
 }
 
 /** A moment (a stored ISO stamp or a Date) in the reader's own time zone.

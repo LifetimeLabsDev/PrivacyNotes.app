@@ -71,7 +71,7 @@
     "menuShowNoteAttachments": "Mostrar ficheiros noutros itens",
     "menuUnpin": "Desafixar",
     "menuPin": "Fixar",
-    "menuRename": "Renomear",
+    "menuRename": "Mudar o nome",
     "menuMoveToTrash": "Mover para o Lixo"
   },
   "vaultItem": {
@@ -176,7 +176,7 @@
     "sortLastActive": "Última Atividade",
     "noTagsYet": "Ainda não há etiquetas.",
     "tagNamePlaceholder": "Nome da etiqueta",
-    "createTag": "Criar Etiqueta",
+    "createTag": "Nova etiqueta",
     "untagged": "Sem etiqueta",
     "trashTooltip": "Itens eliminados",
     "trash": "Lixo",
@@ -240,8 +240,10 @@
     "readOnly": "Apenas leitura",
     "readOnlyDescription": "Sem edições até desativares.",
     "protect": "Proteger",
-    "convertToJournal": "Converter em entrada de diário",
-    "convertToNote": "Converter em nota",
+    "convertTo": "Converter em",
+    "typeNote": "Nota",
+    "typeJournal": "Diário",
+    "typeTask": "Tarefa",
     "unpin": "Desafixar",
     "pin": "Fixar",
     "archive": "Arquivar",
@@ -280,6 +282,7 @@
     "delete": "Eliminar",
     "restore": "Restaurar",
     "deleteForever": "Eliminar para sempre",
+    "more": "Mais ações",
     "addTagPlaceholder": "Adicionar uma etiqueta...",
     "noTagsFound": "Nenhuma etiqueta encontrada",
     "createTag": "Criar #{{tag}}"
@@ -310,16 +313,25 @@
     "asc": "CRESC",
     "desc": "DECR",
     "showNoteLinks": "Mostrar links noutros itens",
-    "showNoteTasks": "Mostrar tarefas noutros itens"
+    "showNoteTasks": "Mostrar tarefas noutros itens",
+    "showGroups": "Mostrar grupos",
+    "groupsByDate": "Agrupado por data",
+    "groupsByLetter": "Agrupado pela primeira letra",
+    "groupsNoneForSize": "Indisponível ao ordenar por tamanho",
+    "compactRows": "Linhas compactas",
+    "compactRowsHint": "Sem ícone, menos espaçamento"
   },
   "backfillPopover": {
     "calendarLabel": "Calendário do diário",
-    "today": "Hoje"
+    "today": "Hoje",
+    "chooseEntry": "Entradas de {{date}}"
   },
   "monthGrid": {
     "previousMonth": "Mês anterior",
     "nextMonth": "Mês seguinte",
     "dayWithEntry": "{{date}}, com entrada",
+    "dayWithEntryIn": "{{date}}, com entrada em {{space}}",
+    "dayWithEntryBoth": "{{date}}, com entradas em Pessoal e Trabalho",
     "previousWeek": "Semana anterior",
     "nextWeek": "Semana seguinte",
     "showMonth": "{{month}}, mostrar o mês inteiro",
@@ -371,7 +383,7 @@
   },
   "demoBanner": {
     "title": "Experimenta sem qualquer risco",
-    "description": "Aqui não se guarda nada. Cria o teu próprio caderno cifrado, grátis.",
+    "description": "Aqui não se guarda nada. Cria o teu próprio caderno encriptado, grátis.",
     "cta": "Criar conta",
     "dismiss": "Dispensar"
   },
@@ -639,5 +651,41 @@
     "saved": "Guardado no PrivacyNotes",
     "failed": "Não foi possível guardar no PrivacyNotes",
     "tooLarge": "Demasiado grande. O máximo é {{limit}} MB por ficheiro."
+  },
+  "shortcut": {
+    "copyNote": "Copiar atalho para a nota",
+    "copyItem": "Copiar atalho para o item",
+    "descNote": "Abre esta nota a partir de outras apps. Só tu a podes abrir.",
+    "descItem": "Abre este item a partir de outras apps. Só tu o podes abrir.",
+    "copiedNote": "Atalho copiado. Cola-o em qualquer app para voltares a esta nota.",
+    "copiedItem": "Atalho copiado. Cola-o em qualquer app para voltares a este item.",
+    "copyNoteLink": "Copiar ligação entre notas",
+    "descNoteLink": "Para uma ligação dentro das tuas notas.",
+    "copiedNoteLink": "Ligação entre notas copiada. Cola-a noutra nota.",
+    "notFound": "Este item não está aqui. Pode estar no lixo ou noutra conta.",
+    "offerText": "Tens a app para computador?",
+    "offerOpen": "Abrir na app",
+    "offerDismiss": "Fechar",
+    "cardTitle": "Abrir a tua nota",
+    "cardBody": "Este atalho abre uma nota no PrivacyNotes.",
+    "cardOpen": "Abrir na app para computador",
+    "cardSignIn": "Iniciar sessão aqui",
+    "cardAfter": "Depois de iniciares sessão, a nota abre."
+  },
+  "spaces": {
+    "label": "Espaço",
+    "personal": "Pessoal",
+    "work": "Trabalho",
+    "moveToWork": "Mover para Trabalho",
+    "moveToPersonal": "Mover para Pessoal",
+    "movedToWork": "{{folder}} passou para Trabalho",
+    "movedToPersonal": "{{folder}} passou para Pessoal",
+    "itemMovedToWork": "Passou para Trabalho",
+    "itemMovedToPersonal": "Passou para Pessoal",
+    "switchedToWork": "Mudou para Trabalho",
+    "switchedToPersonal": "Mudou para Pessoal",
+    "switchToWork": "Mudar para Trabalho",
+    "switchToPersonal": "Mudar para Pessoal",
+    "workEmpty": "Trabalho está vazio. Em Pessoal, abre o menu de um item ou de uma pasta e escolhe Mover para Trabalho."
   }
 }

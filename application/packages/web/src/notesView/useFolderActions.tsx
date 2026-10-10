@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CaretDown, Folder } from '../icons';
@@ -18,6 +18,7 @@ import {
   type FolderDef,
 } from '../folders';
 import { dropFolderLooks } from '../itemStyles';
+import { carrySpaces, setRootSpace, type Space } from '../spaces';
 import { liveItemIds } from '../itemDrag';
 import { bulkMoveToFolder } from '../notesRepo';
 import type { UserSettings } from '../userSettings';
@@ -43,9 +44,12 @@ export function useFolderActions({
   setSelectedFolder,
   view,
   setView,
+  activeSpace,
 }: {
   userSettings: UserSettings;
   mutateSettings: (updater: (prev: UserSettings) => UserSettings) => void;
+  /** The space a new root folder lands in ('personal' while spaces are off). */
+  activeSpace: Space;
   notes: LocalNote[];
   activeNotes: LocalNote[];
   /** What the folder counts show: the items the All list holds. */
@@ -68,13 +72,30 @@ export function useFolderActions({
   view: View;
   setView: Dispatch<SetStateAction<View>>;
 }) {
+  // Every folder edit goes through here, so a folder that becomes a root
+  // keeps its space and a new root lands in the active one.
+  // Spec: ops/docs/plans/spaces.md (section 3)
+  const spaceRef = useRef(activeSpace);
+  spaceRef.current = activeSpace;
+  const mutateFolders = useCallback(
+    (updater: (prev: UserSettings) => UserSettings) => mutateSettings((prev) => {
+      const next = updater(prev);
+      if (next === prev || next.folders === prev.folders) return next;
+      const itemStyles = carrySpaces(prev.folders, next.folders, next.itemStyles, spaceRef.current, prev.itemStyles);
+      return itemStyles === next.itemStyles ? next : { ...next, itemStyles };
+    }),
+    [mutateSettings],
+  );
+
   const { t } = useTranslation('notes');
 
   /** Folder picker modal - filing note(s) or re-parenting a folder. */
   const [folderPicker, setFolderPicker] = useState<
     // currentFolderId is undefined for a mixed multi-select: the picker then
     // marks nothing as current, rather than falsely claiming "Unfiled".
-    | { mode: 'note'; noteIds: string[]; currentFolderId: string | null | undefined }
+    // `space`: "Move to Work" or "Move to Personal", which shows only that
+    // space's folders.
+    | { mode: 'note'; noteIds: string[]; currentFolderId: string | null | undefined; space?: Space }
     | { mode: 'folder'; folderId: string }
     | null
   >(null);
@@ -97,14 +118,14 @@ export function useFolderActions({
       // mutateSettings runs the updater before it returns, so the map is
       // filled by the time the caller reads it.
       let idMap = new Map<string, string>();
-      mutateSettings((prev) => {
+      mutateFolders((prev) => {
         const merged = reconcileImportedFolders(prev.folders, incoming, originalIds);
         idMap = merged.idMap;
         return { ...prev, folders: validateFolders(merged.folders) };
       });
       return idMap;
     },
-    [mutateSettings]
+    [mutateFolders]
   );
 
   // ── Folders (Pro) ───────────────────────────────────────────────
@@ -158,7 +179,7 @@ export function useFolderActions({
     // taken from React can be older than the cache on a device whose first
     // sync has just landed.
     let created: FolderDef | null = null;
-    mutateSettings((prev) => {
+    mutateFolders((prev) => {
       const result = createFolder(prev.folders, name, parentId);
       if (!result) return prev;
       created = result.created;
@@ -183,7 +204,17 @@ export function useFolderActions({
       openFoldersUpsell();
       return;
     }
-    mutateSettings((prev) => ({ ...prev, folders: renameFolder(prev.folders, id, name) }));
+    mutateFolders((prev) => ({ ...prev, folders: renameFolder(prev.folders, id, name) }));
+    scheduleFolderSync();
+  }
+
+  /** Put a root folder, its subfolders and their items in a space. */
+  function handleMoveFolderToSpace(id: string, space: Space) {
+    if (!foldersUnlocked) {
+      openFoldersUpsell();
+      return;
+    }
+    mutateSettings((prev) => ({ ...prev, itemStyles: setRootSpace(prev.itemStyles, id, space) }));
     scheduleFolderSync();
   }
 
@@ -192,7 +223,7 @@ export function useFolderActions({
       openFoldersUpsell();
       return;
     }
-    mutateSettings((prev) => ({ ...prev, folders: moveFolder(prev.folders, id, newParentId) }));
+    mutateFolders((prev) => ({ ...prev, folders: moveFolder(prev.folders, id, newParentId) }));
     scheduleFolderSync();
   }
 
@@ -213,7 +244,7 @@ export function useFolderActions({
       openFoldersUpsell();
       return;
     }
-    mutateSettings((prev) => ({
+    mutateFolders((prev) => ({
       ...prev,
       folders: applyFolderPlacement(prev.folders, id, parentId, orderedIds),
     }));
@@ -232,7 +263,7 @@ export function useFolderActions({
     // runs the updater before it returns, so reparentTo is set by the line
     // after it.
     let reparentTo: string | null = null;
-    mutateSettings((prev) => {
+    mutateFolders((prev) => {
       const next = deleteFolder({ folders: prev.folders, deleted: prev.foldersDeleted }, id);
       reparentTo = next.reparentTo;
       return {
@@ -317,10 +348,10 @@ export function useFolderActions({
           <FolderGlyph
             folderId={noteFolder.id}
             size={12}
-            className="shrink-0 text-amber-700 dark:text-amber-500/80"
+            className="shrink-0 text-label"
           />
         ) : (
-          <Folder size={12} className="shrink-0 text-amber-700 dark:text-amber-500/80" />
+          <Folder size={12} className="shrink-0 text-label" />
         )}
         <span className="truncate max-w-[120px]">
           {noteFolder ? noteFolder.name : t('shell:folders.chipUnfiled')}
@@ -368,6 +399,7 @@ export function useFolderActions({
     handleCreateFolder,
     handleRenameFolder,
     handleMoveFolder,
+    handleMoveFolderToSpace,
     handleReorderFolders,
     handleDeleteFolder,
     handleMoveNotesToFolder,

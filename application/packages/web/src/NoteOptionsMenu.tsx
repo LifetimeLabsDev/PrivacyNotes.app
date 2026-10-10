@@ -10,7 +10,8 @@ import { formatInstant } from './intlFormat';
 import { prepareBurnPayload } from './burnShare';
 import { ColorSwatch } from './ColorSwatch';
 import { LOOK_COLORS, NOTE_NO_COLOR, type LookColor, type NoteOwnColor } from './itemStyles';
-import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Trash, Repeat, Copy, Folder, Fire, ArrowCounterClockwise, FileMd, TextAa, Swap, ListChecks, Broom, SortAscending, Palette, Info, CaretLeft, CaretRight, Calendar, iconArchive } from './icons';
+import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Trash, Repeat, Copy, Folder, Fire, ArrowCounterClockwise, FileMd, TextAa, Swap, ListChecks, Broom, SortAscending, Palette, Info, CaretLeft, CaretRight, Calendar, Check, PILLAR_GLYPHS, iconArchive } from './icons';
+import { CONVERT_TARGETS, isConvertSource, type ConvertTarget } from './noteTypes';
 
 /**
  * Per-note options dropdown, anchored to the "..." button in the
@@ -25,14 +26,14 @@ import { PencilSimpleSlash, Shield, ClockCounterClockwise, PushPin, Export, Tras
  * explanations live with each feature, not here, so the menu fits a
  * short phone screen.
  *
- * Color and Details open a second view inside the same popover, with a
+ * Color, Entry date, Convert to and Details open a second view inside the same popover, with a
  * Back row, rather than a second floating layer. Escape and the Android
  * back button step back from that view before they close the menu.
  *
  * The markdown switch has a second home under the word count, a small
  * grey link that is easy to miss, which is why it is repeated here. Both
  * surfaces flip the same per-note, session-only override; neither writes
- * the synced default in Settings > Appearance.
+ * the synced default in Settings > Editor.
  *
  * In the trash view the menu carries Restore and Delete forever and
  * nothing else - the same two actions, the same two colours and the
@@ -50,7 +51,12 @@ export interface NoteColorInfo {
   inherited: { color: LookColor; kind: 'tag' | 'folder'; name: string } | null;
 }
 
+/** "Move to Work" or "Move to Personal": the name, its glyph, and the move. */
+export type SpaceMove = { label: string; icon: React.ReactNode; run: (ids: string[]) => void };
+
 type Props = NoteActionGuardDeps & {
+  /** The space move, while spaces are on. Spec: ops/docs/plans/spaces.md */
+  spaceMove?: SpaceMove;
   /** Anchor so clicks on the "..." button don't count as outside. */
   anchorRef: React.RefObject<HTMLElement | null>;
 
@@ -66,12 +72,14 @@ type Props = NoteActionGuardDeps & {
   onShare?: () => void;
   /** Share and Burn After Reading. */
   onBurn?: () => void;
-  /** Convert between note and journal types. */
-  onConvertType?: () => void;
+  /** Give the item another note-like type. */
+  onConvertType?: (target: ConvertTarget) => void;
+  /** The view the menu opens on. */
+  initialView?: NoteOptionsView;
   /** Move a journal entry to another day. Journal entries only. */
   onSetJournalDate?: (day: string) => void;
   /** The days that hold a journal entry, dotted in the Entry date calendar. */
-  journalDays?: { has(day: string): boolean };
+  journalDays?: JournalDays;
   /**
    * Body editor this note is currently showing. Absent wherever there is
    * no markdown editor to switch: bookmarks, vault items, a PIN-locked
@@ -111,7 +119,28 @@ type Props = NoteActionGuardDeps & {
   onDeleteForever?: () => void;
 };
 
-type View = 'main' | 'color' | 'details' | 'entryDate';
+/** The name each convertible type goes by in the Convert to view. */
+const TYPE_LABEL = {
+  note: 'noteOptionsMenu.typeNote',
+  journal: 'noteOptionsMenu.typeJournal',
+  task: 'noteOptionsMenu.typeTask',
+} as const;
+
+/**
+ * The Convert to view holds three short rows, so it takes the width of its
+ * longest label instead of the 320px the main view needs. The menu stays
+ * anchored by its end edge, so it narrows toward the "..." button.
+ */
+const CONVERT_WIDTH = 'w-max min-w-48';
+
+/** A target wears the glyph of the pillar it moves the item to. */
+const CONVERT_GLYPHS = {
+  note: PILLAR_GLYPHS.notes,
+  journal: PILLAR_GLYPHS.journals,
+  task: PILLAR_GLYPHS.tasks,
+} as const;
+
+export type NoteOptionsView = 'main' | 'color' | 'details' | 'entryDate' | 'convert';
 
 export function NoteOptionsMenu({
   note,
@@ -131,9 +160,11 @@ export function NoteOptionsMenu({
   onBurn,
   onSetPin,
   onConvertType,
+  initialView = 'main',
   onSetJournalDate,
   journalDays,
   onMoveToFolder,
+  spaceMove,
   editorMode,
   onToggleEditorMode,
   onFindReplace,
@@ -148,7 +179,7 @@ export function NoteOptionsMenu({
 }: Props) {
   const { t } = useTranslation('shell');
   const { t: tEditor } = useTranslation('editor');
-  const [view, setView] = useState<View>('main');
+  const [view, setView] = useState<NoteOptionsView>(initialView);
   // A sub-view steps back first, so Escape never throws away the menu
   // the user drilled in from.
   useEscapeToClose(() => (view === 'main' ? onClose() : setView('main')));
@@ -212,7 +243,7 @@ export function NoteOptionsMenu({
   const showDeleteCheckedRow = !isTrash && !!onDeleteCheckedTasks;
   const showSortTasksRow = !isTrash && !!onSortTasksByStatus;
   const showTaskRows = showUncheckRow || showDeleteCheckedRow || showSortTasksRow;
-  const showConvertRow = !!onConvertType && (note.type === 'note' || note.type === 'journal');
+  const showConvertRow = !!onConvertType && isConvertSource(note.type);
 
   const bytes = computeNoteTotalSize(note);
   // A media-only note has nothing left to send once images and files are
@@ -230,7 +261,7 @@ export function NoteOptionsMenu({
       tabIndex={-1}
       aria-label={t('noteOptionsMenu.noteOptions')}
       onKeyDown={onKeyDown}
-      className="fixed z-50 w-80 max-w-[calc(100vw-16px)] max-h-[calc(100dvh-16px)] overflow-y-auto overscroll-contain rounded-xl border border-divider bg-surface-2 shadow-lg outline-none divide-y divide-divider"
+      className={`fixed z-50 ${view === 'convert' ? CONVERT_WIDTH : 'w-80'} max-w-[calc(100vw-16px)] max-h-[calc(100dvh-16px)] overflow-y-auto overscroll-contain rounded-xl border border-divider bg-surface-2 shadow-lg outline-none divide-y divide-divider`}
       style={{
         top: pos?.top ?? 0,
         left: pos?.left ?? 0,
@@ -281,6 +312,26 @@ export function NoteOptionsMenu({
               }}
             />
           </div>
+        </>
+      ) : view === 'convert' && showConvertRow ? (
+        <>
+          <BackRow title={t('noteOptionsMenu.convertTo')} onBack={() => setView('main')} />
+          <Group>
+            {CONVERT_TARGETS.map((target) => {
+              const Glyph = CONVERT_GLYPHS[target];
+              const current = note.type === target;
+              return (
+                <ActionItem
+                  key={target}
+                  label={t(TYPE_LABEL[target])}
+                  icon={<Glyph size={16} aria-hidden="true" />}
+                  disabled={current}
+                  value={current ? <Check size={14} aria-hidden="true" /> : undefined}
+                  onClick={() => { onConvertType?.(target); onClose(); }}
+                />
+              );
+            })}
+          </Group>
         </>
       ) : view === 'details' ? (
         <>
@@ -415,6 +466,13 @@ export function NoteOptionsMenu({
                 onClick={act.moveToFolder}
               />
             )}
+            {spaceMove && (
+              <ActionItem
+                label={spaceMove.label}
+                icon={spaceMove.icon}
+                onClick={() => { onClose(); spaceMove.run([note.id]); }}
+              />
+            )}
             <ActionItem
               label={t('noteOptionsMenu.noteHistory')}
               icon={<ClockCounterClockwise size={16} aria-hidden="true" />}
@@ -425,9 +483,10 @@ export function NoteOptionsMenu({
             />
             {showConvertRow && (
               <ActionItem
-                label={note.type === 'note' ? t('noteOptionsMenu.convertToJournal') : t('noteOptionsMenu.convertToNote')}
+                label={t('noteOptionsMenu.convertTo')}
                 icon={<Repeat size={16} aria-hidden="true" />}
-                onClick={() => { onConvertType?.(); onClose(); }}
+                chevron
+                onClick={() => setView('convert')}
               />
             )}
           </Group>
@@ -730,3 +789,4 @@ function ActionItem({
 import { formatBytes } from './formatBytes';
 import { computeNoteTotalSize, editedAtOf, entryDayOf } from './notesViewUtils';
 import { MonthGrid, dayAtNoon } from './MonthGrid';
+import type { JournalDays } from './notesViewUtils';

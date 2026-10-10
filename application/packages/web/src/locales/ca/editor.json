@@ -39,7 +39,9 @@
     "dateTime": "Data i hora",
     "footnote": "Nota a peu de pàgina",
     "spoiler": "Espòiler",
-    "copyBox": "Quadre per copiar"
+    "copyBox": "Quadre per copiar",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Personalitza la barra de format"
   },
   "align": {
     "left": "Alinea a l’esquerra",
@@ -81,7 +83,16 @@
       "bug": "Error",
       "note": "Nota",
       "abstract": "Resum",
-      "failure": "Fallada"
+      "failure": "Fallada",
+      "fold": "Plegable",
+      "idea": "Idea",
+      "important": "Important",
+      "caution": "Precaució",
+      "todo": "Tasca",
+      "goal": "Objectiu",
+      "decision": "Decisió",
+      "definition": "Definició",
+      "seealso": "Vegeu també"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "Format",
     "insert": "Insereix",
     "blocks": "Blocs",
     "notation": "Notació"
@@ -146,6 +158,8 @@
     "hide": "Amaga l'esquema",
     "hideTitle": "Amaga l'esquema (Esc)",
     "copyHeadingLink": "Copia l'enllaç a l'encapçalament",
+    "copyNoteLink": "Copia l'enllaç entre notes",
+    "copyHeadingShortcut": "Copia la drecera a l'encapçalament",
     "copied": "Copiat"
   },
   "bodyMenu": {
@@ -246,5 +260,47 @@
     "missing": "La nota no té text. Fes clic per afegir-lo.",
     "ariaRef": "Nota {{n}}",
     "ariaSection": "Notes a peu de pàgina"
+  },
+  "formatBar": {
+    "tryIt": "Prova-ho: organitza la barra aquí i mira com et va.",
+    "previewOnly": "Només és una vista prèvia. La teva disposició es desa en el moment que tinguis Pro.",
+    "discard": "Descarta",
+    "keepLayout": "Conserva aquesta disposició",
+    "hintDrag": "Arrossega per moure, fes clic per a les opcions.",
+    "hintTap": "Toca un botó per veure’n les opcions.",
+    "onBar": "A la barra",
+    "inMenu": "Al menú +",
+    "menuEmpty": "El menú és buit, per això el botó + no es mostra.",
+    "hidden": "Amagats",
+    "hiddenNote": "Continuen funcionant amb la drecera i en Markdown.",
+    "hiddenDrop": "Deixa anar un botó aquí per amagar-lo.",
+    "hiddenEmpty": "No hi ha res amagat.",
+    "alwaysVisible": "Sempre visibles",
+    "pinned": "Obre un tauler, així que es queda a la barra o amagat",
+    "optionsFor": "Opcions de {{item}}",
+    "moveUp": "Mou amunt",
+    "moveDown": "Mou avall",
+    "moveLeft": "Mou a l'esquerra",
+    "moveRight": "Mou a la dreta",
+    "home": {
+      "bar": "A la barra",
+      "menu": "Al menú +",
+      "hidden": "Amagat"
+    },
+    "opensPanel": "obre un tauler",
+    "showsRecording": "mostra l'enregistrament",
+    "refuse": {
+      "menuNotAllowed": "{{item}} pot ser a la barra o amagat, no al menú +.",
+      "lastOnBar": "Deixa almenys un botó a la barra."
+    },
+    "items": {
+      "link": "Enllaç",
+      "notelink": "Enllaç entre notes",
+      "audio": "Enregistrament"
+    },
+    "positionTitle": "Posició de la barra",
+    "positionNote": "Tria on va la barra de format a l’editor.",
+    "positionTop": "A dalt",
+    "positionBottom": "A baix"
   }
 }

@@ -334,7 +334,7 @@
     "dataStorageBody": "Encrypted blobs stored in Zurich, <flag/> Switzerland.",
     "faviconsHeading": "Website icons",
     "faviconsBody1": "Website icons (favicons) come from DuckDuckGo and Google, fetched by our server on your behalf. Your browser never contacts either one, so they see our server asking for a domain and never see you.",
-    "faviconsBody2": "Icons are cached on your device for 90 days. No request includes your identity, and you can turn icons off in Settings > Appearance."
+    "faviconsBody2": "Icons are cached on your device for 90 days. No request includes your identity, and you can turn icons off in Settings > Lists."
   },
   "feedback": {
     "title": "Send feedback",

@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from './db';
 import type { ListPrefs, ListPrefsStore } from './listPrefs';
@@ -21,9 +21,11 @@ import { Switch } from './Switch';
 import { exemptOpts, newButtonOpts } from './i18nExempt';
 import type { View } from './views';
 import { ListNav } from './notesView/ListNav';
-import { useProgressiveReveal } from './useProgressiveReveal';
+import { ItemList, useContextTarget, useItemList } from './itemList';
 import { ImportPromptEntry, importPromptFor, type ImportOffer, type ImportPromptKind } from './ImportPrompt';
 import { useListKeys } from './listKeys';
+import { useListGroups, type ListEntry } from './ListGroupHeader';
+import type { JournalDays } from './notesViewUtils';
 
 type VaultFilter = 'all' | 'login' | 'card' | 'ssh-key';
 
@@ -116,7 +118,7 @@ export interface NotesListProps {
   onOpenImport: (tab: 'import' | 'vault') => void;
   onBackfillDate: (isoDate: string) => void;
   /** Local ISO day to the id of that day's newest journal entry. */
-  journalEntries: ReadonlyMap<string, string>;
+  journalEntries: JournalDays;
   onOpenJournalEntry: (id: string) => void;
   onEmptyTrash: () => void;
   trashedNotesLength: number;
@@ -304,15 +306,7 @@ export function NotesList({
   const [showBackfill, setShowBackfill] = useState(false);
   const backfillButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  /** ID of the note row that was right-clicked - highlighted while the
-   *  context menu is open so the user can confirm they hit the right row. */
-  const [contextTargetId, setContextTargetId] = useState<string | null>(null);
-  useEffect(() => {
-    if (!contextTargetId) return;
-    const clear = () => setContextTargetId(null);
-    window.addEventListener('click', clear, true);
-    return () => window.removeEventListener('click', clear, true);
-  }, [contextTargetId]);
+  const [contextTargetId, setContextTargetId] = useContextTarget();
 
   // One set of handlers per note id, the same functions on every render.
   // The rows are memoized, and a fresh closure per row per render made every
@@ -345,35 +339,31 @@ export function NotesList({
     return h;
   };
 
-  /* ── Scroll position across a hide/show of the list pane (#186) ──────
-   * On mobile, opening a note puts the list pane at `display: none`. That
-   * destroys the `.pn-list-panel` query container, so EVERY `@container
-   * pn-list` rule stops matching at once: the grid drops from two columns
-   * to its one-column `auto-fill` fallback AND the cards lose their compact
-   * layout. The pane's content is then far taller than what the user was
-   * looking at, and the offset the browser restores on the way back is
-   * measured against that wrong layout - the list came back scrolled to
-   * somewhere in the middle. List mode never showed it because NoteRow
-   * uses no container queries, so its height is identical either way.
-   *
-   * Remember the offset ourselves while the pane is on screen and re-apply
-   * it on the render where the pane gets its box back. Reading clientHeight
-   * first forces the layout that resolves the container queries, so the
-   * assignment lands against the final grid rather than the fallback. */
-  const listRef = useRef<HTMLUListElement | null>(null);
-  useListKeys(searchInputRef, listRef, () => !selectionMode);
-  const scrollTopRef = useRef(0);
-  const paneWasHiddenRef = useRef(false);
 
-  // A different list is a different scroll position - don't carry one
-  // scope's offset into another. Declared before the restore effect below
-  // so it wins when a view switch and the pane reappearing land together.
-  //
-  // The revealed slice resets on the same key, and for the same reason. It is
-  // deliberately NOT reset when `displayNotes` changes identity: that array is
-  // rebuilt on every edit, and resetting there would yank a user scrolled deep
-  // into a long list back to the first slice just because they typed.
-  const reveal = useProgressiveReveal();
+  /* Group headers (#448): one switch, and the sort decides the groups.
+   * Spec: ops/docs/plans/list-groups.md */
+  const grouping = useListGroups({
+    notes: displayNotes,
+    listPrefs,
+    search,
+    scope: view,
+    entryDays: view === 'journal',
+    selectionMode,
+    selectedId,
+    isNoteLocked,
+    onContextMenu,
+  });
+  const entries = grouping.entries;
+  /** What the progressive reveal counts: headers and shown items together. */
+  const revealTotal = entries ? entries.length : displayNotes.length;
+  // The items arrive in slices of 200, and a different list - a new view,
+  // filter or search - starts at its top. Not reset when `displayNotes`
+  // changes identity: that array is rebuilt on every edit, and a reset there
+  // would yank a person scrolled deep into a long list back to the first
+  // slice because they typed. (#186 and the reveal live in itemList.tsx.)
+  const list = useItemList([view, selectedTag, activeFolderName, search, vaultFilter], revealTotal);
+  const reveal = list.reveal;
+  useListKeys(searchInputRef, list.ref, () => !selectionMode);
 
   /* The standing import entry, shared with every other pillar that has an
      importer (ImportPrompt.tsx owns the rules). Pinned and Trash are left
@@ -420,13 +410,7 @@ export function NotesList({
     !selectionMode &&
     /* The filter entry rides along in that empty case, so both possible
        causes are named - clearing the search alone can still show nothing. */
-    (showSearchEntry || (displayNotes.length > 0 && reveal.visible >= displayNotes.length));
-  useLayoutEffect(() => {
-    scrollTopRef.current = 0;
-    reveal.reset();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, selectedTag, activeFolderName, search, vaultFilter]);
-
+    (showSearchEntry || (displayNotes.length > 0 && reveal.visible >= revealTotal));
   // Grow the slice to cover an already-selected note, so returning to a view
   // with note #900 open still shows its row rather than only the first 200.
   //
@@ -441,21 +425,12 @@ export function NotesList({
   // scroll position back on an ordinary edit.
   useEffect(() => {
     if (!selectedId) return;
-    reveal.ensure(displayNotes.findIndex((n) => n.id === selectedId));
-  }, [displayNotes, selectedId, reveal]);
-
-  useLayoutEffect(() => {
-    const ul = listRef.current;
-    if (!ul) return;
-    if (ul.clientHeight === 0) {
-      paneWasHiddenRef.current = true;
-      return;
-    }
-    if (paneWasHiddenRef.current) {
-      paneWasHiddenRef.current = false;
-      ul.scrollTop = scrollTopRef.current;
-    }
-  });
+    reveal.ensure(
+      entries
+        ? entries.findIndex((e) => e.kind === 'note' && e.note.id === selectedId)
+        : displayNotes.findIndex((n) => n.id === selectedId),
+    );
+  }, [displayNotes, entries, selectedId, reveal]);
 
   /** What a drag of the selection carries: the selected items this list
    *  shows, in list order. One function for every render, like the row
@@ -726,6 +701,7 @@ export function NotesList({
                inside any of them - shares Global: giving Notes a copy of its
                own would island the very pane the shared lists inherit from. */
             pillar={view === 'journal' ? 'journal' : view === 'vault' ? 'vault' : 'global'}
+            showGroupsToggle
             {...(view === 'journal' ? { createdLabel: t('noteRow.entryDate') } : {})}
           />
         )}
@@ -741,18 +717,7 @@ export function NotesList({
           onDeselectAll={onDeselectAll}
         />
       )}
-      <ul
-        ref={listRef}
-        // Skipped on the frame the pane reappears: that scroll event carries
-        // the browser's own restore, which is the value we're correcting.
-        onScroll={(e) => {
-          const el = e.currentTarget;
-          if (!paneWasHiddenRef.current) scrollTopRef.current = el.scrollTop;
-          reveal.onScroll(el, displayNotes.length);
-        }}
-        onMouseDown={suppressShiftTextSelection}
-        className={`flex-1 overflow-y-auto ${viewMode === 'grid' ? 'grid content-start gap-3 p-4 pn-notes-grid' : ''}`}
-      >
+      <ItemList list={list} grid={viewMode === 'grid'} onMouseDown={suppressShiftTextSelection}>
         {view === 'journal' && calendarShown && !search.trim() && !selectionMode && (
           <JournalCalendarCard grid={viewMode === 'grid'} entries={journalEntries} onOpen={onOpenJournalEntry} onPick={onBackfillDate} onToday={() => onNew()} />
         )}
@@ -776,7 +741,10 @@ export function NotesList({
             )}
           </li>
         )}
-        {displayNotes.slice(0, reveal.visible).map((n) => (
+        {(entries ?? displayNotes.map((note): ListEntry => ({ kind: 'note', note }))).slice(0, reveal.visible).map((entry) => {
+          if (entry.kind === 'header') return grouping.header(entry, viewMode === 'grid');
+          const n = entry.note;
+          return (
           <ItemComponent
             key={n.id}
             {...handlersFor(n.id)}
@@ -812,7 +780,8 @@ export function NotesList({
               />
             ) : undefined}
           />
-        ))}
+          );
+        })}
         {showSearchEntry && (
           <ActiveSearchEntry
             search={search}
@@ -845,7 +814,7 @@ export function NotesList({
             onDismiss={importPrompt.dismiss}
           />
         )}
-      </ul>
+      </ItemList>
     </>
   );
 }

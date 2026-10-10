@@ -59,13 +59,16 @@ Die mittlere Spalte ist zentriert, die letzte rechtsbündig. Zieh an einer Spalt
 Eine Hinweisbox ist ein farbiger Kasten für etwas, das niemand übersehen darf.
 
 > [!tip]+ Tipp
-> Klick auf den Titel einer Hinweisbox, um sie zuzuklappen.
+> Klick auf das Symbol, um sie zuzuklappen.
 
 > [!warning]+ Warnung
 > Jede Art hat ihre eigene Farbe und ihr eigenes Symbol.
 
 > [!danger]+ Achtung
-> Es gibt neun Arten. Das Menü **Einfügen** listet sie auf.
+> Es gibt viele Arten. Das Menü **Einfügen** listet sie auf.
+
+> [!fold]- Aufklappbar
+> Kein Kasten, keine Farbe: nur Text, der nicht stört, bis du ihn aufklappst.
 
 ## Zitate
 

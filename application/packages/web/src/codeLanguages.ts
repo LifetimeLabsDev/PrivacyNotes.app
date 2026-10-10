@@ -11,6 +11,7 @@
  */
 import i18n from './i18n';
 import { isImeComposing } from './imeComposing';
+import { isSoftKeyboardDevice } from './softKeyboard';
 import { textMatcher } from './textMatch';
 import { pushEscapeHandler } from './useEscapeToClose';
 
@@ -215,16 +216,31 @@ export function openCodeLanguageMenu(
     anchor.focus();
   });
 
+  // On a touch screen the keyboard comes up with the search field: it
+  // shrinks the window and scrolls the page to the field. Neither is the
+  // reader leaving the menu, so the menu follows the label instead of
+  // closing. Only a change of width (a rotation, a resized window) closes it.
+  const touch = isSoftKeyboardDevice();
+  const keyboardUp = () => touch && document.activeElement === input;
   const onOutside = (e: Event) => {
     if (!menu.contains(e.target as Node) && !anchor.contains(e.target as Node)) close();
   };
-  const onScroll = (e: Event) => { if (!menu.contains(e.target as Node)) close(); };
+  const onScroll = (e: Event) => {
+    if (menu.contains(e.target as Node)) return;
+    if (keyboardUp()) place();
+    else close();
+  };
+  const width = window.innerWidth;
+  const onResize = () => {
+    if (window.innerWidth !== width) close();
+    else place();
+  };
   function close() {
     menu.remove();
     popEscape();
     document.removeEventListener('pointerdown', onOutside, true);
     window.removeEventListener('scroll', onScroll, true);
-    window.removeEventListener('resize', close);
+    window.removeEventListener('resize', onResize);
     if (closeOpen === close) closeOpen = null;
   }
   closeOpen = close;
@@ -234,15 +250,20 @@ export function openCodeLanguageMenu(
 
   // Under the label, flipped above it when the screen ends first, and kept
   // inside the window at both sides.
-  const r = anchor.getBoundingClientRect();
-  const h = menu.offsetHeight;
-  const w = menu.offsetWidth;
-  const below = r.bottom + 4 + h <= window.innerHeight;
-  menu.style.top = `${below ? r.bottom + 4 : Math.max(8, r.top - 4 - h)}px`;
-  menu.style.left = `${Math.min(Math.max(8, r.left), window.innerWidth - w - 8)}px`;
+  function place() {
+    const r = anchor.getBoundingClientRect();
+    const h = menu.offsetHeight;
+    const w = menu.offsetWidth;
+    const below = r.bottom + 4 + h <= window.innerHeight;
+    menu.style.top = `${below ? r.bottom + 4 : Math.max(8, r.top - 4 - h)}px`;
+    menu.style.left = `${Math.min(Math.max(8, r.left), window.innerWidth - w - 8)}px`;
+  }
+  place();
 
   document.addEventListener('pointerdown', onOutside, true);
   window.addEventListener('scroll', onScroll, true);
-  window.addEventListener('resize', close);
-  input.focus();
+  window.addEventListener('resize', onResize);
+  // A touch screen opens the list without the keyboard, which would cover
+  // half of it; a tap on the field brings the keyboard up.
+  if (!touch) input.focus();
 }

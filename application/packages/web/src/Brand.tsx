@@ -10,10 +10,12 @@
  * Spec: ops/docs/design-decisions.md (PrivacyNotes brand spelling)
  */
 
-// Fold Blue, the blue of the logo files, on every ground, in every theme and
-// mode. The wordmark does not follow the theme accent: links and buttons do.
+// Fold Blue, the blue of the logo files, on every ground. The one exception is
+// the sidebar brand button in a palette other than Default, which tints it
+// with the accent until hovered (`pn-brand-blue` and `.pn-logo-host` in
+// index.css).
 // theme-ok: the wordmark is one fixed blue in every palette
-const BRAND_BLUE = 'text-[#4F6BD5]';
+const BRAND_BLUE = 'text-[#4F6BD5] pn-brand-blue';
 
 // Both halves are named per tone, never inherited. The ink half inheriting was
 // the bug: on a muted paragraph the blue stayed full strength and the ink went

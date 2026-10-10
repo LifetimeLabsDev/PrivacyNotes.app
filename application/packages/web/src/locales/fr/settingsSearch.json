@@ -7,15 +7,18 @@
   "resultCount_other": "{{count}} résultats",
   "keywords": {
     "section_stats": "statistiques, stats, chiffres, série, carte de chaleur, heatmap, nombre de mots",
-    "section_journals": "journal, journal intime, titre, format de date",
     "section_import": "importer, exporter, import, export, sauvegarde, migrer, déménager, télécharger",
     "section_plan": "offre, forfait, abonnement, pro, facturation, appareils, se déconnecter, déconnexion",
     "section_storage": "stockage, espace, quota, disque, gigaoctets, Go, plein",
     "section_images": "images, photos, compression, qualité",
     "section_security": "sécurité, mot de passe, verrouillage, verrou, confidentialité, vie privée",
     "section_me": "sync, synchronisation, compte, identité, identifiant, ID",
-    "section_appearance": "apparence, affichage, design, couleurs, thème",
+    "section_design": "look, affichage, apparence, design, couleurs, thème",
+    "section_editor": "écriture, éditeur, texte, police, taille, espacement, interligne, largeur, markdown",
+    "section_formatBar": "barre de mise en forme, barre d'outils, toolbar, boutons, organiser, menu plus",
+    "section_lists": "liste, barre latérale, grille, vues, page d'accueil, onglets, espaces",
     "section_language": "langue, traduction, paramètres régionaux",
+    "section_date": "date, heure, horloge, format, jour, mois, année, journal, agenda, titre d'entrée",
     "section_about": "à propos, version, informations, crédits",
     "section_help": "aide, FAQ, support, assistance, questions, guide",
     "stats_writing": "mots, nombre de notes, activité, carte de chaleur, heatmap",
@@ -28,6 +31,7 @@
     "stats_wellness": "santé, humeur, sommeil, médicaments, suivis",
     "stats_wellnessExport": "médecin, docteur, rapport, CSV, PDF",
     "journals_suffix": "titre, nom du journal, titre de l’entrée",
+    "journals_titles": "journal, agenda, titre d'entrée, nouvelle entrée, format du titre",
     "import_export": "télécharger, enregistrer, sauvegarde, archive",
     "export_zipBackup": "sauvegarde, ZIP, Markdown, tout télécharger",
     "import_vault": "mots de passe, identifiants, gestionnaire de mots de passe",
@@ -67,6 +71,7 @@
     "appearance_startView": "page de démarrage, accueil, vue par défaut, ouvrir sur",
     "appearance_view": "grille, liste, cartes, mise en page, disposition",
     "appearance_sinkChecked": "tâches, liste de contrôle, case à cocher, terminé, ordre, bas",
+    "appearance_spaces": "travail, perso, personnel, espace de travail, espaces de travail, séparer, basculer, profil, contexte",
     "appearance_sidebar": "barre latérale, masquer les vues, menu, liste Tout",
     "language_spellCheck": "orthographe, correcteur orthographique, soulignement rouge, fautes de frappe, dictionnaire",
     "language_language": "langue, traduction, paramètres régionaux",
@@ -80,6 +85,7 @@
     "about_changelog": "notes de version, nouveautés, quoi de neuf, mises à jour",
     "about_hotkeys": "raccourcis clavier, raccourcis, touches, hotkeys",
     "about_rating": "avis, noter, évaluer, étoiles, App Store",
-    "appearance_openInTabs": "onglets, barre d'onglets, navigateur, ouvrir"
+    "appearance_openInTabs": "onglets, barre d'onglets, navigateur, ouvrir",
+    "appearance_formatBar": "barre d'outils, barre de mise en forme, boutons, personnaliser, organiser, liste à puces, barré, engrenage"
   }
 }

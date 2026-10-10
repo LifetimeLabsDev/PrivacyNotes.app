@@ -7,9 +7,13 @@
  *   > This can't be undone.
  *
  * The marker after the type sets the fold state on serialize: `+` expanded,
- * `-` folded, none = expanded. Every callout is foldable in the editor via a
- * chevron; we always write `+`/`-`. This is Obsidian-native, so notes import
- * and export 1:1 (see ops/docs/callouts.md).
+ * `-` folded, none = expanded. Every callout is foldable in the editor: its
+ * type icon is the fold control. We always write `+`/`-`. This is
+ * Obsidian-native, so notes import and export 1:1 (see ops/docs/callouts.md).
+ *
+ * The keyword is kept as the file wrote it (`keyword`), so `[!NOTE]`, an
+ * alias such as `[!caution]` or a type this build does not know saves back
+ * unchanged; `type` only drives the look.
  *
  * Structure: a `callout` node holds a `calloutTitle` (inline) followed by the
  * body (`block+`). The title is real editor content, so bold/links/note-links
@@ -30,7 +34,7 @@ import { Plugin, PluginKey, TextSelection, type EditorState } from '@tiptap/pm/s
 import type { EditorView } from '@tiptap/pm/view';
 import { GapCursor } from '@tiptap/pm/gapcursor';
 import { useTranslation } from 'react-i18next';
-import { ArrowsOutSimple, ArrowsInSimple } from './icons';
+import { CaretDown, CaretRight } from './icons';
 import { CALLOUT_BY_TYPE, canonicalCalloutType, type CalloutType } from './calloutTypes';
 
 declare module '@tiptap/core' {
@@ -103,7 +107,7 @@ function CalloutView({
   updateAttributes,
 }: {
   node: {
-    attrs: { type: CalloutType; folded: boolean };
+    attrs: { type: CalloutType; folded: boolean; keyword: string | null };
     childCount: number;
     firstChild: { type: { name: string }; content: { size: number } } | null;
   };
@@ -114,6 +118,12 @@ function CalloutView({
   const folded = node.attrs.folded;
   const def = CALLOUT_BY_TYPE[type] ?? CALLOUT_BY_TYPE.info;
   const Icon = def.icon;
+  const isFold = type === 'fold';
+  // Fold has no accent: its title and caret take the text color.
+  const accent = isFold
+    ? { ['--cs' as string]: 'rgb(var(--pn-text))', ['--cc' as string]: 'var(--pn-text)' }
+    : { ['--cc' as string]: def.rgb, ['--cs' as string]: def.color };
+  const caret = folded ? <CaretRight size={15} weight="bold" /> : <CaretDown size={15} weight="bold" />;
 
   // Show the type name as a placeholder while the title is empty (Obsidian
   // shows the type as the default title). The title is the first child.
@@ -127,20 +137,25 @@ function CalloutView({
       className={`pn-callout pn-callout-${type}${folded ? ' pn-callout-folded' : ''}`}
       data-callout=""
       data-type={type}
-      style={{ ['--cc' as string]: def.rgb, ['--cs' as string]: def.color } as React.CSSProperties}
+      style={accent as React.CSSProperties}
     >
-      <span className="pn-callout-icon" contentEditable={false}>
-        <Icon size={18} weight="bold" />
-      </span>
       <button
         type="button"
-        className="pn-callout-fold"
+        className="pn-callout-toggle"
         contentEditable={false}
         onMouseDown={(e) => e.preventDefault()}
         onClick={() => updateAttributes({ folded: !folded })}
         aria-label={folded ? t('callout.expand') : t('callout.collapse')}
+        aria-expanded={!folded}
       >
-        {folded ? <ArrowsOutSimple size={15} weight="bold" /> : <ArrowsInSimple size={15} weight="bold" />}
+        {isFold ? (
+          caret
+        ) : (
+          <>
+            <span className="pn-callout-type-icon"><Icon size={18} weight="bold" /></span>
+            <span className="pn-callout-caret">{folded ? <CaretRight size={18} weight="bold" /> : <CaretDown size={18} weight="bold" />}</span>
+          </>
+        )}
       </button>
       {titleEmpty && (
         <span className="pn-callout-placeholder" contentEditable={false} aria-hidden="true">
@@ -179,6 +194,11 @@ interface MdBlockState {
   };
 }
 
+/** A keyword read back from HTML: the same shape the block rule accepts. */
+function validKeyword(raw: string | null): string | null {
+  return raw && /^[\w-]+$/.test(raw) ? raw : null;
+}
+
 function calloutBlockRule(state: MdBlockState, startLine: number, endLine: number, silent: boolean): boolean {
   // Not while inside indented code.
   if (state.sCount[startLine]! - state.blkIndent >= 4) return false;
@@ -188,7 +208,7 @@ function calloutBlockRule(state: MdBlockState, startLine: number, endLine: numbe
   if (state.src.charCodeAt(start) !== 0x3e /* > */) return false;
 
   const firstLine = state.src.slice(start, max);
-  const m = firstLine.match(/^>\s?\[!(\w+)\]([+-]?)\s?(.*)$/);
+  const m = firstLine.match(/^>\s?\[!([\w-]+)\]([+-]?)\s?(.*)$/);
   if (!m) return false;
   if (silent) return true;
 
@@ -213,6 +233,8 @@ function calloutBlockRule(state: MdBlockState, startLine: number, endLine: numbe
   open.attrs = [
     ['data-callout', ''],
     ['data-type', type],
+    // Only a keyword that differs from the type name is worth keeping.
+    ...(m[1] === type ? [] : [['data-keyword', m[1]!] as [string, string]]),
     ['data-folded', String(folded)],
     ['class', 'pn-callout'],
   ];
@@ -248,7 +270,10 @@ function registerCalloutMarkdown(md: MdInstance) {
   md.renderer.rules.callout_open = (tokens, idx) => {
     const type = tokens[idx]!.attrGet('data-type') || 'info';
     const folded = tokens[idx]!.attrGet('data-folded') || 'false';
-    return `<div data-callout data-type="${type}" data-folded="${folded}" class="pn-callout">`;
+    // The keyword matched [\w-]+ in the block rule, so it is safe in an attribute.
+    const keyword = tokens[idx]!.attrGet('data-keyword');
+    const kw = keyword ? ` data-keyword="${keyword}"` : '';
+    return `<div data-callout data-type="${type}"${kw} data-folded="${folded}" class="pn-callout">`;
   };
   md.renderer.rules.callout_close = () => '</div>';
   md.renderer.rules.callout_title_open = () => '<div data-callout-title>';
@@ -308,6 +333,14 @@ export const Callout = Node.create({
         default: false,
         parseHTML: (el) => el.getAttribute('data-folded') === 'true',
         renderHTML: (attrs) => ({ 'data-folded': attrs.folded ? 'true' : 'false' }),
+      },
+      keyword: {
+        default: null,
+        parseHTML: (el) => {
+          const keyword = validKeyword(el.getAttribute('data-keyword'));
+          return keyword === canonicalCalloutType(el.getAttribute('data-type') || 'info') ? null : keyword;
+        },
+        renderHTML: (attrs) => (attrs.keyword ? { 'data-keyword': attrs.keyword } : {}),
       },
     };
   },
@@ -410,10 +443,11 @@ export const Callout = Node.create({
           }
           return true;
         },
+      // A type picked by hand always wins over the keyword the file had.
       setCalloutType:
         (type: CalloutType) =>
         ({ commands }) =>
-          commands.updateAttributes(this.name, { type }),
+          commands.updateAttributes(this.name, { type, keyword: null }),
       // Unwrap the callout the selection is in: the title becomes a normal
       // paragraph and the body blocks are lifted out, so removing the box
       // never loses the text. This is the single "get rid of it" path shared
@@ -465,14 +499,16 @@ export const Callout = Node.create({
     // it into a callout of that type.
     return [
       new InputRule({
-        find: /^\[!(\w+)\]([+-]?)\s$/,
+        find: /^\[!([\w-]+)\]([+-]?)\s$/,
         handler: ({ state, range, match, chain }) => {
-          const type = canonicalCalloutType(match[1] || 'info');
+          const typed = match[1] || 'info';
+          const type = canonicalCalloutType(typed);
+          const keyword = typed === type ? null : typed;
           const folded = match[2] === '-';
           chain()
             .deleteRange(range)
             .insertCallout(type)
-            .command(({ commands }) => (folded ? commands.updateAttributes(this.name, { folded: true }) : true))
+            .command(({ commands }) => commands.updateAttributes(this.name, { keyword, folded }))
             .run();
         },
       }),
@@ -523,15 +559,17 @@ export const Callout = Node.create({
             render: (n: unknown, parent: unknown, i: number) => void;
           },
           node: {
-            attrs: { type: string; folded: boolean };
+            attrs: { type: CalloutType; folded: boolean; keyword: string | null };
             firstChild: { type: { name: string }; content: { size: number } } | null;
             forEach: (f: (child: { type: { name: string } }, offset: number, index: number) => void) => void;
           },
         ) {
           const type = node.attrs.type || 'info';
+          const { keyword } = node.attrs;
+          const word = keyword && canonicalCalloutType(keyword) === type ? keyword : type;
           const marker = node.attrs.folded ? '-' : '+';
           state.wrapBlock('> ', null, node, () => {
-            state.write(`[!${type}]${marker}`);
+            state.write(`[!${word}]${marker}`);
             const title = node.firstChild;
             if (title && title.type.name === 'calloutTitle' && title.content.size > 0) {
               state.write(' ');

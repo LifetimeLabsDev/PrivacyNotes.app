@@ -274,7 +274,7 @@ export function TwoFactorTab() {
   const removable = verified.find((factor) => factor.factor_type === 'totp');
   return (
     <div className="space-y-4">
-      <SectionEyebrow>{t('twoFactor.title')}</SectionEyebrow>
+      <SectionEyebrow icon={ShieldCheck}>{t('twoFactor.title')}</SectionEyebrow>
       {error && <p role="alert" className="text-sm text-danger">{t(error)}</p>}
       {notice && <p role="status" className="text-sm text-accent">{t(notice)}</p>}
       {!status ? (

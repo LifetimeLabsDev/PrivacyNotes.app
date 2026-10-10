@@ -214,7 +214,7 @@
     "generic": "Não foi possível salvar a exportação. Tente de novo ou escolha outra pasta."
   },
   "saveErrors": {
-    "shortWrite": "Só foram salvos {{written}} de {{expected}} bytes, então o arquivo está incompleto. Tente de novo e salve no armazenamento do seu aparelho em vez de uma pasta na nuvem."
+    "shortWrite": "Só foram salvos {{written}} de {{expected}} bytes, então o arquivo está incompleto. Tente de novo e salve no armazenamento do seu dispositivo em vez de uma pasta na nuvem."
   },
   "shareSheet": {
     "title_one": "{{count}} item foi compartilhado com o PrivacyNotes",

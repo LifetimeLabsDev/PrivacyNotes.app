@@ -53,7 +53,7 @@
     "browserBookmarks": "瀏覽器「Export bookmarks」產生的書籤檔（.html），或 Safari 寫出的 .zip。Chrome、Firefox、Safari、Edge、Opera、Brave 和 Vivaldi 裝的都是同一種檔案，資料夾和日期都會一起帶過來。",
     "vcard": "通訊錄匯出的 .vcf 檔：iPhone 和 Mac 透過 iCloud 或聯絡人，Android，Google 聯絡人。每張名片都會匯入，照片也一起，同一個檔案匯入第二次會略過你已經有的人。",
     "bitwarden": "Bitwarden 未加密的 .json 匯出檔（Tools > Export vault > .json）。登入資料、卡片、SSH 金鑰、安全筆記與 TOTP 驗證碼都會一起帶進來。",
-    "browserPasswords": "來自 Chrome、Edge、Brave、Opera、Vivaldi、Firefox 或 Safari 的密碼檔（.csv），或 Safari 寫出的 .zip。每一列都會變成一組登入資料。用完請把檔案刪掉 - 裡面是你的明文密碼。"
+    "browserPasswords": "來自 Chrome、Edge、Brave、Opera、Vivaldi、Firefox 或 Safari 的密碼檔（.csv），或 Safari 寫出的 .zip。每一列都會變成一組登入資料。用完請把檔案刪除 - 裡面是你的明文密碼。"
   },
   "sourceLabel": {
     "privacynotes": "PrivacyNotes 完整備份",

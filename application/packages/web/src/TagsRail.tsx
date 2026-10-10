@@ -18,7 +18,9 @@ import { useFolderExpansion } from './folderTreeState';
 import { useRailItemDrop } from './useRailItemDrop';
 import type { FolderSortDir, FolderSortField } from './folders';
 import { IconUpgrade, ProMark } from './UpgradeModal';
-import { Star, Hash, DotsThree, PencilSimple, Palette, Trash, X, CaretDown, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, ArrowsInLineVertical, ArrowsOutLineVertical, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, Lightning, type Icon, PILLAR_GLYPHS } from './icons';
+import { Star, Hash, DotsThree, PencilSimple, Palette, Trash, X, CaretDown, PushPin, File, NotePencil, CheckFat, Shield, Key, Folder, Book, Notebook, FunnelSimple, ArrowsInLineVertical, ArrowsOutLineVertical, Eye, Download, Plus, Prohibit, Chat, Devices, Question, FileMd, Bookmarks, Lightning, Briefcase, User, type Icon, PILLAR_GLYPHS } from './icons';
+import { SpaceSwitch } from './SpaceSwitch';
+import type { Space } from './spaces';
 import { keyText } from './shortcutMatch';
 import { isViewShown, type View } from './views';
 import { exemptOpts } from './i18nExempt';
@@ -81,6 +83,11 @@ export interface TagsRailProps {
   /** Opens the quick switcher. */
   onJump: () => void;
 
+  /** The Personal and Work switch, and the root folder move while spaces
+   *  are on. A free account gets the switch alone, as the upgrade door.
+   *  Spec: ops/docs/plans/spaces.md */
+  spaces?: { active: Space; onChange: (space: Space) => void; onMoveFolder?: (id: string, space: Space) => void; locked?: boolean };
+
   // About modal
   setShowAbout: (v: false | { tab?: 'about' | 'hotkeys' | 'rating' }) => void;
 
@@ -118,6 +125,9 @@ export interface TagsRailProps {
   // Folder tree (rendered when browseMode === 'folders')
   folders: FolderDef[];
   folderCounts: Map<string, number>;
+  /** True when `folderCounts` speaks for one section: a folder with nothing
+   *  in it there is drawn muted. */
+  folderCountsScoped: boolean;
   unfiledCount: number;
   selectedFolder: string | null;
   openNoteFolder: FolderTreeProps['openNoteFolder'];
@@ -223,6 +233,7 @@ function FooterAction({
   badge,
   onClick,
   href,
+  tip = 'above',
 }: {
   icon: Icon;
   label: string;
@@ -236,6 +247,9 @@ function FooterAction({
   badge?: boolean;
   onClick?: () => void;
   href?: string;
+  /** Where the narrow sidebar's tip opens; null when the caller wraps the
+   *  action in a HoverLabel of its own. */
+  tip?: 'above-start' | 'above' | 'above-end' | null;
 }) {
   // px-1 on the collapsed buttons and a 12px pill label are load-bearing: the
   // rail is w-60 (216px content), and four collapsed siblings + the expanded
@@ -259,13 +273,13 @@ function FooterAction({
           Suppressed while badged: the caller's tip then carries both the
           button's name and the news, so the word isn't on screen twice. */}
       {!badge && (
-        <span className="grid grid-cols-[0fr] transition-[grid-template-columns] duration-200 group-hover:grid-cols-[1fr] [@media(hover:none)]:hidden">
+        <span className="pn-sb-wide grid grid-cols-[0fr] transition-[grid-template-columns] duration-200 group-hover:grid-cols-[1fr] [@media(hover:none)]:hidden">
           <span className="overflow-hidden whitespace-nowrap text-[12px] font-medium opacity-0 transition-[opacity,padding] duration-200 group-hover:opacity-100 group-hover:ps-1">{label}</span>
         </span>
       )}
     </>
   );
-  return href ? (
+  const action = href ? (
     <a href={href} target="_blank" rel="noopener noreferrer" aria-label={ariaLabel ?? label} className={className}>
       {inner}
     </a>
@@ -273,6 +287,16 @@ function FooterAction({
     <button type="button" onClick={onClick} aria-label={ariaLabel ?? label} className={className}>
       {inner}
     </button>
+  );
+  // A sidebar narrower than 230px has no room for the pill (pn-sb-wide hides
+  // it), so a tip above the icon names the action there instead; index.css
+  // shows `pn-sb-tip` tips only at that width.
+  return tip ? (
+    <HoverLabel label={label} position={tip} className="pn-sb-tip flex [@media(hover:none)]:flex-1">
+      {action}
+    </HoverLabel>
+  ) : (
+    action
   );
 }
 
@@ -298,6 +322,7 @@ export function TagsRail(props: TagsRailProps) {
     setDrawerOpen,
     setShowAbout,
     onJump,
+    spaces,
     onFeedback,
     onRate,
     viewsCollapsed,
@@ -312,6 +337,7 @@ export function TagsRail(props: TagsRailProps) {
     isPro,
     folders,
     folderCounts,
+    folderCountsScoped,
     unfiledCount,
     selectedFolder,
     openNoteFolder,
@@ -436,6 +462,11 @@ export function TagsRail(props: TagsRailProps) {
   const [viewsMenuOpen, setViewsMenuOpen] = useState(false);
   const [allMenuOpen, setAllMenuOpen] = useState(false);
   const viewsMenuBtnRef = useRef<HTMLButtonElement>(null);
+  // The list scrolls and its caption does not: a classic scrollbar (Firefox,
+  // Windows) takes its width from the rows only, and the eye above stops
+  // lining up with the funnel on the All row. The caption pads by that width.
+  const viewsListRef = useRef<HTMLDivElement>(null);
+  const viewsGutter = useScrollbarWidth(viewsListRef, !viewsCollapsed);
   const allMenuBtnRef = useRef<HTMLButtonElement>(null);
   const tagSortContainerRef = useRef<HTMLDivElement | null>(null);
   // One menu is open at a time, so a single ref/position serves whichever tag
@@ -552,7 +583,7 @@ export function TagsRail(props: TagsRailProps) {
                 both (TagGlyph). */}
             <span
               data-tag-glyph
-              className={`inline-flex shrink-0 ${active ? 'text-accent' : isFavorite ? 'text-amber-400' : 'text-amber-700 dark:text-amber-500/80'}${glyphOpensLook ? ' pn-look-glyph' : ''}`}
+              className={`inline-flex shrink-0 ${active ? 'text-accent' : isFavorite ? 'text-amber-400' : 'text-label'}${glyphOpensLook ? ' pn-look-glyph' : ''}`}
             >
               <TagGlyph tag={tag} favorite={isFavorite} size={16} />
             </span>
@@ -598,7 +629,7 @@ export function TagsRail(props: TagsRailProps) {
             </button>
           )}
           {!isRenaming && (
-            <span className="text-xs lg:text-[11px] text-pn-muted tabular-nums ms-2 me-2 lg:me-1.5 shrink-0">
+            <span className="text-xs text-pn-muted tabular-nums ms-2 me-2 shrink-0">
               {count}
             </span>
           )}
@@ -708,9 +739,9 @@ export function TagsRail(props: TagsRailProps) {
             type="button"
             onClick={() => handleSelectView('home')}
             aria-label={t('tagsRail.showAllItems')}
-            className="hover:opacity-80 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded flex items-center gap-1.5"
+            className="pn-logo-host hover:opacity-80 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded flex items-center gap-1.5"
           >
-            <LogoIcon size={24} className="text-accent" />
+            <LogoIcon size={24} tint />
             <Brand />
           </button>
           </HoverLabel>
@@ -721,7 +752,7 @@ export function TagsRail(props: TagsRailProps) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={t('tagsRail.changelog')}
-          className="hidden lg:inline-flex text-[9px] font-mono px-1 py-px rounded bg-accent/10 border border-accent/30 text-accent-strong shrink-0 hover:bg-accent/20 transition focus:outline-none focus:ring-2 focus:ring-accent/40"
+          className="pn-sb-wide hidden lg:inline-flex text-[9px] font-mono px-1 py-px rounded bg-accent/10 border border-accent/30 text-accent-strong shrink-0 hover:bg-accent/20 transition focus:outline-none focus:ring-2 focus:ring-accent/40"
         >
           v{VERSION}
         </a>
@@ -735,10 +766,18 @@ export function TagsRail(props: TagsRailProps) {
           <span>{t('common:actions.close')}</span>
         </button>
       </div>
+      {/* Below lg the drawer has no Jump to row, so the switch takes that
+          slot, full width and with its words: a touch screen shows no
+          tooltip to name the icons. */}
+      {spaces && (
+        <div className="lg:hidden shrink-0 px-3 pt-3">
+          <SpaceSwitch active={spaces.active} onChange={spaces.onChange} locked={spaces.locked} labeled />
+        </div>
+      )}
       {/* The quick switcher's button, from lg up. Below lg the list header
           carries it (ListNav), so the drawer does not repeat it.
           Spec: ops/docs/plans/keyboard-shortcuts.md (decision D15) */}
-      <div className="hidden lg:block shrink-0 px-3 pt-3">
+      <div className="hidden lg:flex items-center gap-1.5 shrink-0 px-3 pt-3">
         {/* The tint of the "+ New" button, so the app's two main actions
             read as one family. A lightning bolt, not a magnifier: the list
             search, find in note and the settings search already draw one,
@@ -746,15 +785,16 @@ export function TagsRail(props: TagsRailProps) {
         <button
           type="button"
           onClick={onJump}
-          className="pn-jump w-full h-9 flex items-center gap-2 rounded-md bg-accent/10 ps-2.5 pe-1.5 text-[14px] font-semibold text-accent-strong transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+          className="pn-jump flex-1 min-w-0 h-8 flex items-center gap-2 rounded-md bg-accent/10 ps-2.5 pe-1.5 text-[14px] font-semibold text-accent-strong transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         >
           <span className="pn-jump-charge" aria-hidden="true" />
           <Lightning size={16} weight="fill" className="shrink-0" />
           <span className="flex-1 truncate text-start">{t('common:quickSwitcher.jumpTo')}</span>
-          <kbd dir="ltr" className="shrink-0 rounded border border-accent/30 px-1.5 font-sans text-[11px] font-normal leading-5">
+          <kbd dir="ltr" className="pn-sb-wide shrink-0 rounded border border-accent/30 px-1.5 font-sans text-[11px] font-normal leading-5">
             {keyText('quickSwitcher')}
           </kbd>
         </button>
+        {spaces && <SpaceSwitch active={spaces.active} onChange={spaces.onChange} locked={spaces.locked} />}
       </div>
       {/* The caption row sits OUTSIDE the scrolling box below, and that is what
           lets it carry a tip at all. The row list is `overflow-y-auto`, and CSS
@@ -769,7 +809,7 @@ export function TagsRail(props: TagsRailProps) {
         className={`min-h-0 flex flex-col py-3 ${keyboardUp ? 'hidden' : ''} ${markdownRail ? 'shrink border-b border-divider' : split.folded ? 'flex-1' : 'shrink'}`}
         style={splitActive && !split.folded && split.height !== null ? { flex: `0 1 ${split.height}px` } : undefined}
       >
-        <div className="shrink-0 px-3">
+        <div className="shrink-0 px-3" style={viewsGutter ? { paddingInlineEnd: `calc(0.75rem + ${viewsGutter}px)` } : undefined}>
         {/* Caption and gear are SIBLINGS. The caption is a button (it folds the
             list) and a button cannot contain another one. The gear sits outside
             the fold below, so the one control that brings a hidden row back
@@ -818,7 +858,7 @@ export function TagsRail(props: TagsRailProps) {
         </HoverLabel>
         </div>
         {!viewsCollapsed && (
-        <div className="min-h-0 overflow-y-auto px-3">
+        <div ref={viewsListRef} className="min-h-0 overflow-y-auto px-3">
         {/* Source of truth for creatable-pillar ORDER. The two "New" menus
             (NotesList.tsx allNewOptions + contextMenus.tsx buildGlobalMenu) MUST
             list types in this same order. Reorder all three together, never one.
@@ -1075,7 +1115,9 @@ export function TagsRail(props: TagsRailProps) {
             role="group"
             aria-label={t('browseToggle.label')}
             onKeyDown={onSwitchKeyDown}
-            className="flex-1 min-w-0 flex rounded-md border border-divider overflow-hidden"
+            // No overflow-hidden: it would clip the Folders tip. Each end
+            // button rounds its own corner to the border's inner radius.
+            className="flex-1 min-w-0 flex rounded-md border border-divider"
           >
             <button
               type="button"
@@ -1085,42 +1127,49 @@ export function TagsRail(props: TagsRailProps) {
               }}
               {...railDrop.switchProps('tags')}
               aria-pressed={browseMode === 'tags'}
-              className={`flex-auto min-w-0 inline-flex items-center justify-center gap-1 px-1.5 py-1 text-[12px] font-medium transition ${
+              className={`flex-auto min-w-0 inline-flex rounded-s-[5px] items-center justify-center gap-1 px-1.5 py-1 text-[12px] font-medium transition ${
                 browseMode === 'tags'
                   ? SIDEBAR_ACTIVE
                   : 'text-pn-muted hover:text-accent dark:hover:text-accent'
               }`}
             >
-              <Hash size={13} className="shrink-0" />
+              <Hash size={13} className="pn-sb-wide shrink-0" />
               <span className="truncate">{t('browseToggle.tags', exemptOpts('shell:browseToggle.tags'))}</span>
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                split.unfold();
-                onBrowseChange('folders');
-              }}
-              {...railDrop.switchProps('folders')}
-              aria-pressed={browseMode === 'folders'}
-              className={`flex-auto min-w-0 inline-flex items-center justify-center gap-1 px-1.5 py-1 text-[12px] font-medium transition ${
-                browseMode === 'folders'
-                  ? SIDEBAR_ACTIVE
-                  : 'text-pn-muted hover:text-accent dark:hover:text-accent'
-              }`}
-            >
-              <Folder size={13} className="shrink-0" />
-              <span className="truncate">{t('browseToggle.folders', exemptOpts('shell:browseToggle.folders'))}</span>
-              {!isPro && <span className="shrink-0 inline-flex"><IconUpgrade size={11} /></span>}
-            </button>
+            {/* The tip names the Pro gate only; a Pro account needs no tip on
+                a tab that carries its own word. */}
+            <HoverLabel label={t('browseToggle.folders', exemptOpts('shell:browseToggle.folders'))} pro disabled={isPro} position="below" className="flex-auto min-w-0 flex">
+              <button
+                type="button"
+                onClick={() => {
+                  split.unfold();
+                  onBrowseChange('folders');
+                }}
+                {...railDrop.switchProps('folders')}
+                aria-pressed={browseMode === 'folders'}
+                className={`flex-auto min-w-0 inline-flex rounded-e-[5px] items-center justify-center gap-1 px-1.5 py-1 text-[12px] font-medium transition ${
+                  browseMode === 'folders'
+                    ? SIDEBAR_ACTIVE
+                    : 'text-pn-muted hover:text-accent dark:hover:text-accent'
+                }`}
+              >
+                <Folder size={13} className="pn-sb-wide shrink-0" />
+                <span className="truncate">{t('browseToggle.folders', exemptOpts('shell:browseToggle.folders'))}</span>
+                {!isPro && <span className="pn-sb-wide shrink-0 inline-flex"><IconUpgrade size={11} /></span>}
+              </button>
+            </HoverLabel>
           </div>
         </div>
       </div>
       {!split.folded && (
-      <div ref={browseListRef} onKeyDown={onRowListKeyDown} {...railDrop.listProps} className="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-3 min-h-0">
+      // pb-1, not more: the bottom padding counts as content, so a deeper one
+      // shows the scrollbar while Trash still has room under it.
+      <div ref={browseListRef} onKeyDown={onRowListKeyDown} {...railDrop.listProps} className="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-1 min-h-0">
         {browseMode === 'folders' ? (
           <FolderTree
             folders={folders}
             counts={folderCounts}
+            dimEmpty={folderCountsScoped}
             unfiledCount={unfiledCount}
             selectedFolder={selectedFolder}
             openNoteFolder={openNoteFolder}
@@ -1136,6 +1185,12 @@ export function TagsRail(props: TagsRailProps) {
             onEditLook={openFolderLook}
             onGlyphClick={glyphOpensLook ? openFolderLook : undefined}
             itemDrop={{ overId: railDrop.over?.kind === 'folder' ? railDrop.over.key : null }}
+            spaceMove={spaces?.onMoveFolder && {
+              label: spaces.active === 'work' ? t('spaces.moveToPersonal') : t('spaces.moveToWork'),
+              icon: spaces.active === 'work' ? User : Briefcase,
+              run: (id) => spaces.onMoveFolder?.(id, spaces.active === 'work' ? 'personal' : 'work'),
+            }}
+            emptyText={spaces?.active === 'work' ? t('spaces.workEmpty') : undefined}
             sortField={folderSortField}
             sortDir={folderSortDir}
             mobileTabIndex={mobileTabIndex}
@@ -1167,7 +1222,7 @@ export function TagsRail(props: TagsRailProps) {
               </span>
               <span className="truncate">{t('tagsRail.untagged')}</span>
             </span>
-            <span className="text-xs lg:text-[11px] tabular-nums">
+            <span className="text-xs tabular-nums">
               {tagCounts.untagged}
             </span>
           </button>
@@ -1221,9 +1276,9 @@ export function TagsRail(props: TagsRailProps) {
                plain row reads as one more tag. The two rails share one slot
                behind one toggle, so they share this button too.
                Spec: ops/docs/ui-patterns.md (section 76) */
-            className="w-full mt-2 rounded-md border border-dashed border-divider hover:border-accent/50 text-[15px] font-medium transition flex items-center justify-center gap-2 px-2 py-2 text-pn-muted hover:text-accent"
+            className="w-full mt-2 rounded-md border border-dashed border-divider hover:border-accent/50 text-[15px] font-medium transition flex items-center justify-start gap-2 ps-[7px] pe-2 py-2 text-pn-muted hover:text-accent"
           >
-            <Plus size={16} className="shrink-0 text-amber-700 dark:text-amber-500/80" />
+            <Plus size={16} className="shrink-0 text-label" />
             <span className="truncate">{t('tagsRail.createTag')}</span>
           </button>
         )}
@@ -1248,6 +1303,7 @@ export function TagsRail(props: TagsRailProps) {
           icon={Question}
           label={t('tagsRail.help')}
           href={siteHref(helpPath(activeLocale()))}
+          tip="above-start"
         />
         {/* Downloads carries the update dot: it is the one control in the rail
             that leads to a newer build. The dot outlives the update toast,
@@ -1261,10 +1317,11 @@ export function TagsRail(props: TagsRailProps) {
             the button sits near the sidebar's left edge, where a centered or
             right-aligned tip would run off it. */}
         <HoverLabel
-          label={updateTipLabel}
+          label={updateVersion ? updateTipLabel : downloadsLabel}
           position="above-start"
-          disabled={!updateVersion}
-          className="flex [@media(hover:none)]:flex-1"
+          // With no update the tip only names the action, and only in a
+          // narrow sidebar, where the pill has no room (pn-sb-tip).
+          className={`${updateVersion ? '' : 'pn-sb-tip '}flex [@media(hover:none)]:flex-1`}
         >
           <FooterAction
             icon={Devices}
@@ -1272,6 +1329,7 @@ export function TagsRail(props: TagsRailProps) {
             ariaLabel={updateVersion ? `${updateTipLabel} (v${updateVersion})` : undefined}
             badge={!!updateVersion}
             href={`${marketingHomeHref()}#downloads`}
+            tip={null}
           />
         </HoverLabel>
         <span aria-hidden="true" className="w-px h-4 self-center bg-divider shrink-0" />
@@ -1288,7 +1346,7 @@ export function TagsRail(props: TagsRailProps) {
           label={t('tagsRail.feedback', exemptOpts('shell:tagsRail.feedback'))}
           onClick={onFeedback}
         />
-        <FooterAction icon={Star} label={t('tagsRail.rate')} onClick={onRate} />
+        <FooterAction icon={Star} label={t('tagsRail.rate')} onClick={onRate} tip="above-end" />
       </div>
       {lookEdit && (
         <Suspense fallback={null}>
@@ -1358,4 +1416,27 @@ export function TagsRail(props: TagsRailProps) {
       )}
     </div>
   );
+}
+
+/**
+ * The width a classic scrollbar takes from the element's content, or 0 for an
+ * overlay scrollbar (macOS Chrome and Safari) and while nothing overflows.
+ * The ResizeObserver fires when the scrollbar appears or goes, because the
+ * content box changes width with it.
+ */
+function useScrollbarWidth(ref: React.RefObject<HTMLElement | null>, active: boolean): number {
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!active || !el) {
+      setWidth(0);
+      return;
+    }
+    const measure = () => setWidth(el.offsetWidth - el.clientWidth);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ref, active]);
+  return width;
 }

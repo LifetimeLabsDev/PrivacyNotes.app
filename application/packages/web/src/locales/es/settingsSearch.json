@@ -7,15 +7,18 @@
   "resultCount_other": "{{count}} resultados",
   "keywords": {
     "section_stats": "estadísticas, números, racha, mapa de calor, heatmap, recuento de palabras",
-    "section_journals": "diario, título, formato de fecha",
     "section_import": "importar, exportar, importación, exportación, copia de seguridad, backup, migrar, mudarse, descargar",
     "section_plan": "plan, suscripción, pro, facturación, dispositivos, cerrar sesión, salir",
     "section_storage": "almacenamiento, espacio, cuota, disco, gigabytes, lleno",
     "section_images": "imágenes, fotos, compresión, calidad",
     "section_security": "seguridad, contraseña, bloqueo, bloquear, privacidad",
     "section_me": "sincronización, sync, cuenta, identidad, ID",
-    "section_appearance": "aspecto, apariencia, pantalla, diseño, colores, tema",
+    "section_design": "aspecto, apariencia, pantalla, diseño, colores, tema",
+    "section_editor": "escritura, editor, texto, fuente, letra, tamaño, espaciado, interlineado, anchura, markdown",
+    "section_formatBar": "barra de formato, barra de herramientas, toolbar, botones, organizar, menú más",
+    "section_lists": "lista, barra lateral, cuadrícula, vistas, página de inicio, pestañas, espacios",
     "section_language": "idioma, lengua, traducción, configuración regional",
+    "section_date": "fecha, hora, reloj, formato, día, mes, año, diario, entrada, título de entrada",
     "section_about": "acerca de, versión, información, créditos",
     "section_help": "ayuda, preguntas frecuentes, FAQ, soporte, preguntas, guía",
     "stats_writing": "palabras, número de notas, actividad, mapa de calor",
@@ -28,6 +31,7 @@
     "stats_wellness": "salud, estado de ánimo, sueño, medicación, seguimiento",
     "stats_wellnessExport": "médico, informe, CSV, PDF",
     "journals_suffix": "título, nombre del diario, título de la entrada",
+    "journals_titles": "diario, título de entrada, entrada nueva, formato del título",
     "import_export": "descargar, guardar, copia de seguridad, backup, archivo",
     "export_zipBackup": "copia de seguridad, backup, ZIP, Markdown, descargar todo",
     "import_vault": "contraseñas, credenciales, inicios de sesión, gestor de contraseñas",
@@ -67,6 +71,7 @@
     "appearance_startView": "página de inicio, inicio, vista predeterminada, abrir en",
     "appearance_view": "cuadrícula, lista, tarjetas, diseño, layout",
     "appearance_sinkChecked": "tareas, lista de verificación, casilla, hecho, completado, orden, abajo",
+    "appearance_spaces": "trabajo, personal, espacio de trabajo, espacios de trabajo, separar, cambiar, perfil, contexto",
     "appearance_sidebar": "barra lateral, ocultar vistas, menú, lista Todo",
     "language_spellCheck": "ortografía, corrector ortográfico, subrayado rojo, erratas, diccionario",
     "language_language": "idioma, lengua, traducción, configuración regional",
@@ -80,6 +85,7 @@
     "about_changelog": "notas de la versión, novedades, qué hay de nuevo, actualizaciones",
     "about_hotkeys": "atajos de teclado, atajos, teclas, hotkeys, accesos directos",
     "about_rating": "reseña, valorar, puntuar, estrellas, App Store",
-    "appearance_openInTabs": "pestañas, barra de pestañas, navegador, abrir"
+    "appearance_openInTabs": "pestañas, barra de pestañas, navegador, abrir",
+    "appearance_formatBar": "barra de herramientas, barra de formato, botones, personalizar, ordenar, lista con viñetas, tachado, engranaje"
   }
 }

@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import type { Space } from '../spaces';
+import type { SpaceMove } from '../NoteOptionsMenu';
+import { useContext, useEffect, useRef, useState } from 'react';
 import type { UpgradeTrigger } from '../UpgradeModal';
 import type { Dispatch, ReactNode, RefObject, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,10 +9,12 @@ import type { AuthState } from '../auth';
 import type { LocalNote } from '../db';
 import { updateNote } from '../notesRepo';
 import { Editor, type EditorHandle } from '../Editor';
+import { FormatBarContext } from '../formatBarContext';
 import { MarkdownSourceEditor } from '../MarkdownSourceEditor';
 import { TagInput, type TagInputHandle } from '../TagInput';
 import { withCredentialChanges, type UserSettings } from '../userSettings';
-import { NoteOptionsMenu, type NoteColorInfo } from '../NoteOptionsMenu';
+import { NoteOptionsMenu, type NoteColorInfo, type NoteOptionsView } from '../NoteOptionsMenu';
+import { convertPatch, type ConvertTarget } from '../noteTypes';
 import type { NoteOwnColor } from '../itemStyles';
 import { ProtectedNoteGate } from '../ProtectedNoteGate';
 import { parseLinkBody, linkDomain } from '../linkBody';
@@ -28,13 +32,14 @@ import type { View } from '../views';
 import { WordCount } from '../WordCount';
 import { TrackerPills } from '../TrackerPills';
 import { APP_KEYS, matchesKey } from '../shortcutMatch';
-import { registerEditorCommand } from '../editorCommands';
+import { editorCommands, registerEditorCommand } from '../editorCommands';
 import type { JournalTrackerData } from '../trackerTypes';
 import { ShareMenu } from './ShareMenu';
 import { NoteQuickActions, HeaderDivider, type QuickActionsTier } from './NoteQuickActions';
 import type { NoteActionGuardDeps } from '../noteActionGuards';
 import { WeekInReview } from './WeekInReview';
 import { isImeComposing } from '../imeComposing';
+import type { JournalDays } from '../notesViewUtils';
 
 type Authed = Extract<AuthState, { status: 'authenticated' }>;
 
@@ -83,7 +88,7 @@ const ZEN_BTN_ON = `${ZEN_BTN_BOX} border-accent/50 bg-accent/10 text-accent-str
  * The reading-width cycle, and zen is its only home in the editor: zen
  * strips the page down and takes the settings sheet away with it, so the one
  * taste that changes how the stripped page reads has to stay reachable.
- * Everywhere else Settings > Appearance carries the same axis, at every
+ * Everywhere else Settings > Editor carries the same axis, at every
  * width, which the tag-row copy never did - it needed a pane past 56rem to
  * appear at all. It wears zen's bordered box, like its two neighbours.
  */
@@ -200,6 +205,8 @@ export interface NoteEditorPaneProps {
   isNoteLocked: (n: LocalNote) => boolean;
   folderChipFor: (note: LocalNote) => ReactNode;
   refresh: () => Promise<LocalNote[]>;
+  /** Open a note in the pillar that lists it, clearing a filter that hides it. */
+  onRevealNote: (note: LocalNote) => void;
 
   handleTitleChange: (id: string, title: string) => Promise<void>;
   /** Focus/blur on the title field bracket a rename, so note-links into
@@ -219,7 +226,7 @@ export interface NoteEditorPaneProps {
   /** Move a journal entry to another day (`YYYY-MM-DD`). */
   setJournalDate: (id: string, day: string) => Promise<void>;
   /** The days that hold a journal entry, for the Entry date calendar. */
-  journalDays: ReadonlyMap<string, string>;
+  journalDays: JournalDays;
   /** Trash the open note through the shared confirm modal. */
   requestTrash: (ids: string[]) => void;
   handleRestore: (id: string) => Promise<void>;
@@ -234,6 +241,8 @@ export interface NoteEditorPaneProps {
   handleSetLocked: (id: string, locked: boolean) => Promise<void>;
   handleSetPinProtected: (id: string, pinProtected: boolean) => Promise<void>;
   handleBurnShare: (n: LocalNote) => Promise<void>;
+  onCopyShortcut: (n: LocalNote) => void;
+  onCopyNoteLink: ((n: LocalNote) => void) | null;
 
   showShareMenu: boolean;
   setShowShareMenu: Dispatch<SetStateAction<boolean>>;
@@ -260,14 +269,18 @@ export interface NoteEditorPaneProps {
   setShowSecurity: Dispatch<SetStateAction<null | { tab: 'pin' | 'phrase' | 'biometric'; reason?: 'protect' }>>;
   onPinUnlocked: () => void;
   setFolderPicker: Dispatch<SetStateAction<
-    | { mode: 'note'; noteIds: string[]; currentFolderId: string | null | undefined }
+    | { mode: 'note'; noteIds: string[]; currentFolderId: string | null | undefined; space?: Space }
     | { mode: 'folder'; folderId: string }
     | null
   >>;
+  /** "Move to Work" or "Move to Personal" in the "..." menu, while spaces are on. */
+  spaceMove?: SpaceMove;
 }
 
 export function NoteEditorPane(props: NoteEditorPaneProps) {
   const { t } = useTranslation('notes');
+  const { position: barPosition } = useContext(FormatBarContext);
+  const [barSlot, setBarSlot] = useState<HTMLDivElement | null>(null);
   /** The name the contact form's draft spells, while it is still being typed.
    *  The title field shows it in grey below, so a new contact wears its name at
    *  the top before it has a title to wear. Nothing writes it: the form buffers
@@ -328,6 +341,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     isNoteLocked,
     folderChipFor,
     refresh,
+    onRevealNote,
     handleTitleChange,
     handleTitleFocus,
     handleTitleBlur,
@@ -354,6 +368,8 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     handleSetLocked,
     handleSetPinProtected,
     handleBurnShare,
+    onCopyShortcut,
+    onCopyNoteLink,
     showShareMenu,
     setShowShareMenu,
     exportSingleMarkdown,
@@ -371,6 +387,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
     setShowSecurity,
     onPinUnlocked,
     setFolderPicker,
+    spaceMove,
   } = props;
   // True while a menu has asked to take this note's protection off. The gate
   // does the asking, so an open note gets the same two checks as a locked one.
@@ -437,24 +454,23 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
   );
   /** Where Share sits for this note: nowhere while it is gated (shareSurface). */
   const share = shareSurface(isNoteLocked(selected), zenMode || headerCompact);
+  // The view the "..." menu opens on: the header's convert button opens it
+  // straight on the type list, the "..." button on the main view.
+  const [optionsStartView, setOptionsStartView] = useState<NoteOptionsView>('main');
   /**
-   * Flip this note between the note and journal types.
+   * Give this item another of the note-like types, then follow it to the
+   * pillar that lists it. Only `type` changes, and no field is removed: a
+   * journal entry that becomes a task keeps its date and tracker values, so
+   * converting it back restores the entry unchanged.
    *
-   * A journal entry without `trackers.journalDate` falls back to the UTC
-   * day of createdAt, so every tracker value logged on a converted note is
-   * filed under the day the NOTE was made, months ago for an old one.
-   * Stamp the day it becomes a journal, the way the create and backfill
-   * paths do.
+   * Spec: ops/docs/plans/convert-type.md
    */
-  const convertNoteType = async () => {
-    const newType = selected.type === 'journal' ? 'note' as const : 'journal' as const;
-    const existing = (selected.trackers as Record<string, unknown> | undefined) ?? {};
-    const patch =
-      newType === 'journal' && typeof existing.journalDate !== 'string'
-        ? { type: newType, trackers: { ...existing, journalDate: toLocalIso(new Date()) } }
-        : { type: newType };
-    await updateNote(selected.id, patch);
-    await refresh();
+  const convertNoteType = async (target: ConvertTarget) => {
+    if (target === selected.type) return;
+    const trackers = selected.trackers as Record<string, unknown> | undefined;
+    await updateNote(selected.id, convertPatch(trackers, target, toLocalIso(new Date())));
+    const fresh = (await refresh()).find((n) => n.id === selected.id);
+    if (fresh) onRevealNote(fresh);
   };
   /**
    * The wiring behind the four gated per-note actions, shared by the "..."
@@ -516,6 +532,16 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
       <MagnifyingGlass size={17} />
     </EditorSlotPill>
   ) : null;
+
+  // With the bar at the bottom, the pane keeps a row for it under the
+  // scrolling column (see Editor's toolbarSlot).
+  const sourceSearch = {
+    isPro: auth.isPro ?? false,
+    onOpenUpgrade: (trigger: 'replace') => setShowUpgrade({ trigger }),
+  };
+
+  const barBelow = barPosition === 'bottom' && (zenMode ? zenToolbar : toolbarVisible)
+    && view !== 'trash' && selected.locked !== 1 && selectedEditorMode !== 'markdown';
 
   return (
     <>
@@ -674,7 +700,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             tier={quickActionsTier}
             guards={noteGuards}
             onDuplicate={() => void handleDuplicate(selected.id)}
-            onConvertType={() => void convertNoteType()}
+            onConvertType={() => { setOptionsStartView('convert'); setShowNoteOptions(true); }}
           />
         )}
         {/* Burn, pin and trash are not here. All three are rare, all three
@@ -725,6 +751,8 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
             exportSingleHtml={exportSingleHtml}
             printNote={printNote}
             handleBurnShare={handleBurnShare}
+            onCopyShortcut={onCopyShortcut}
+            onCopyNoteLink={onCopyNoteLink}
           />
           </>
         )}
@@ -790,7 +818,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           <HoverLabel label={t('editor.noteOptions')} position="below-end">
             <button
               ref={noteOptionsButtonRef}
-              onClick={() => setShowNoteOptions((v) => !v)}
+              onClick={() => { setOptionsStartView('main'); setShowNoteOptions((v) => !v); }}
               aria-label={t('editor.noteOptions')}
               aria-expanded={showNoteOptions}
               // In zen it takes the bordered box its neighbours wear.
@@ -806,6 +834,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           {showNoteOptions && (
             <NoteOptionsMenu
               {...noteGuards}
+              spaceMove={spaceMove}
               isTrash={view === 'trash'}
               onRestore={() => void handleRestore(selected.id)}
               onDeleteForever={() => setDeleteConfirm({ id: selected.id, title: selected.title || '' })}
@@ -823,7 +852,8 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               // the cell earns its place.
               {...(share === 'menu' ? { onShare: () => setShowShareMenu(true) } : {})}
               onTrash={() => requestTrash([selected.id])}
-              onConvertType={() => void convertNoteType()}
+              initialView={optionsStartView}
+              onConvertType={(target) => void convertNoteType(target)}
               {...(selected.type === 'journal' && view !== 'trash'
                 ? { onSetJournalDate: (day: string) => void setJournalDate(selected.id, day), journalDays }
                 : {})}
@@ -836,11 +866,14 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
               {...(canSwitchEditorMode
                 ? { editorMode: selectedEditorMode, onToggleEditorMode: toggleEditorMode }
                 : {})}
-              // Replace drives the rich editor's search plugin, so the row
-              // exists only while that editor is the one on screen. The Pro
-              // gate is inside toggleReplace, shared with the shortcut.
-              {...(canSwitchEditorMode && selectedEditorMode !== 'markdown'
-                ? { onFindReplace: () => editorRef.current?.toggleReplace() }
+              // Each view has its own replace bar, and the Pro gate sits
+              // inside each toggle, shared with the shortcut.
+              {...(canSwitchEditorMode
+                ? {
+                    onFindReplace: selectedEditorMode === 'markdown'
+                      ? () => editorCommands.findReplace?.()
+                      : () => editorRef.current?.toggleReplace(),
+                  }
                 : {})}
               // Same notes as the editor-mode row: an editable markdown body.
               {...(canSwitchEditorMode && canUncheckAllTasks(selected)
@@ -991,6 +1024,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
         </div>
         </div>
       ) : (
+        <>
         <div ref={setNoteScroller} className={`flex-1 overflow-y-auto overflow-x-hidden pt-0 ${footerVisible ? 'pb-2' : 'pb-[max(0.5rem,env(safe-area-inset-bottom))]'}`}>
           {/* Tags + tracker pills + week-in-review scroll with the
               editor so they don't permanently eat vertical space
@@ -1119,7 +1153,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                     )}
                     {/* The reading width is not here. It only ever appeared
                         past a 56rem pane, it is a taste somebody sets once,
-                        and Settings > Appearance carries the same axis at
+                        and Settings > Editor carries the same axis at
                         every width. Zen keeps its own copy, because zen has
                         no settings sheet to reach. */}
                   </div>
@@ -1160,16 +1194,18 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           )}
           <div className="px-4 sm:px-6 flex flex-1 flex-col min-w-0">
             {selectedEditorMode === 'markdown' ? (
-              /* No corner here, and nothing to put in one. Find drives the
-                 rich editor, which is unmounted in this view, and the outline
-                 has no headings to read off a plain textarea. The way back to
-                 formatted text is the tag row's button, the first row of the
-                 "..." menu, and the link under the word count. */
+              /* No corner pills here. Find and replace come from the keys
+                 and the "..." menu and open in the view's own bar; the
+                 outline has no headings to read off a plain textarea. The
+                 way back to formatted text is the tag row's button, the
+                 first row of the "..." menu, and the link under the word
+                 count. */
               <MarkdownSourceEditor
                 key={`${selected.id}-${editorRevision}`}
                 value={selected.body}
                 onChange={(body) => { handleBodyChange(selected.id, body); setWcBody(body); }}
                 readOnly={view === 'trash' || selected.locked === 1}
+                search={sourceSearch}
               />
             ) : (
               <Editor
@@ -1194,6 +1230,7 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
                   : undefined}
                 fileNote={selected.type === 'file'}
                 bodyControls={bodyControls}
+                toolbarSlot={barSlot}
                 sinkCheckedTasks={userSettings.sinkCheckedTasks}
               />
             )}
@@ -1279,6 +1316,15 @@ export function NoteEditorPane(props: NoteEditorPaneProps) {
           </div>
           </div>
         </div>
+        {/* The format bar's row when it sits at the bottom: outside the
+            scrolling column, so the note scrolls and bounces under it and
+            the bar never moves. */}
+        {barBelow && (
+          <div className={`shrink-0 border-t border-divider bg-surface-2 ${footerVisible ? '' : 'pb-[env(safe-area-inset-bottom)]'}`}>
+            <div ref={setBarSlot} className="pn-content-col" />
+          </div>
+        )}
+        </>
       )}
     </>
   );

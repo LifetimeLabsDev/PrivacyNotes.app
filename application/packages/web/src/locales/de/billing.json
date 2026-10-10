@@ -4,20 +4,21 @@
     "earlyAdopterBadge": "Early Adopter",
     "oneTime": "einmalig",
     "subscriptionPitch": "Kein Abo. Keine Jahresgebühr. Eine Zahlung, für immer freigeschaltet.",
-    "ctaUnlock": "Alles freischalten",
+    "ctaUnlockPrice": "Alles freischalten für {{price}}",
     "ctaOpening": "Checkout wird geöffnet...",
     "ctaSignUp": "Registrieren zum Freischalten",
     "intro": {
       "storage": "Mehr Speicher ist eine Pro-Funktion: 500 MB Speicher, 50 MB pro Datei und bei Bedarf bis zu 5 GB mehr als Add-on.",
       "folders": "Ordner sind eine Pro-Funktion. Organisiere deine Notizen in verschachtelten Ordnern, so tief du willst, und halte jedes Projekt getrennt.",
       "looks": "Symbole und Farben für Ordner und Tags sind eine Pro-Funktion. Gib jedem ein eigenes Aussehen, das du auf einen Blick erkennst.",
+      "spaces": "Bereiche sind eine Pro-Funktion. {{desc}}",
+      "formatBar": "Die Formatleiste anzupassen ist eine Pro-Funktion. Leg die Schaltflächen, die du nutzt, in die Leiste, blende den Rest aus und ordne das +-Menü nach deinem Geschmack.",
       "lock": "Eine Notiz zu sperren ist eine Pro-Funktion. Mit einem Upgrade schützt du jede Notiz vor versehentlichen Änderungen.",
       "protect": "Eine Notiz mit PIN zu schützen ist eine Pro-Funktion. Mit einem Upgrade kannst du sensible Notizen mit deiner PIN schützen.",
       "history": "Der Notizverlauf ist eine Pro-Funktion. Mit einem Upgrade wird jede Speicherung im Verlauf festgehalten.",
       "devices": "Du hast das Limit von 2 Geräten erreicht. Mit einem Upgrade kannst du auf unbegrenzt vielen Geräten synchronisieren.",
       "zen": "Der Zen-Modus ist eine Pro-Funktion. Mit einem Upgrade schreibst du ohne Ablenkung.",
       "theme": "Premium-Designs sind eine Pro-Funktion. Mit einem Upgrade schaltest du jeden Farbton frei.",
-      "callout": "Der vollständige Satz an Hinweisboxen ist eine Pro-Funktion.",
       "totp": "2FA-Codes sind eine Pro-Funktion. Speichere einen Authenticator-Schlüssel bei jedem Login und du bekommst den wechselnden Code direkt neben dem Passwort. Der Schlüssel selbst wird in jedem Tarif gespeichert und synchronisiert.",
       "replace": "Suchen und Ersetzen ist eine Pro-Funktion. Mit einem Upgrade ersetzt du einen Treffer oder alle Treffer einer Notiz auf einmal.",
       "passphrase": "Passphrasen sind eine Pro-Funktion. Erzeuge eine Phrase aus zufälligen Wörtern, die sich leicht tippen und aussprechen lässt.",
@@ -26,14 +27,14 @@
     "features": {
       "devices": "Unbegrenzt viele Geräte synchronisieren, jede Plattform",
       "folders": "Verschachtelte Ordner, Organisation nach Projekt",
+      "spaces": "Bereiche: Privat und Arbeit, jeweils einer",
       "lock": "Jede Notiz sperren und mit PIN schützen",
       "history": "Vollständiger Notizverlauf, jederzeit wiederherstellbar",
       "themes": "Premium-Designs in jedem Farbton",
       "zen": "Zen-Modus, ablenkungsfreies Schreiben",
       "storage": "500 MB Speicher, mit Add-ons bis zu 5,5 GB"
     },
-    "comparisonBeta": "Zahle einmalig {{earlyPrice}} $. Obsidian Sync kostet 48 $/Jahr, jedes Jahr. Standard Notes verlangt 90 $/Jahr. Early-Adopter-Preis, festgeschrieben, bevor er auf {{proPrice}} $ steigt.",
-    "comparison": "Zahle einmalig {{proPrice}} $ und besitze es für immer. Obsidian Sync kostet 48 $/Jahr und Standard Notes 90 $/Jahr, jedes einzelne Jahr."
+    "compareCaption": "{{years}} Jahre. Eine Zahlung gegen jährliche Gebühren."
   },
   "purchaseError": {
     "store": "Der Kauf im Store konnte nicht abgeschlossen werden und dir wurde nichts berechnet. Bitte versuche es gleich noch einmal.",

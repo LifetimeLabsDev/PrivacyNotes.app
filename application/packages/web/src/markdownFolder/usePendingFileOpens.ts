@@ -21,7 +21,9 @@ import { readOpenedFile } from './adapter';
 import type { OpenedMarkdownFile } from './types';
 
 export function usePendingFileOpens(
-  onOpen: (file: OpenedMarkdownFile) => void,
+  /** `launched` is true when the file is what started the app: the queue was
+   *  already waiting the first time the shell drained it. */
+  onOpen: (file: OpenedMarkdownFile, launched: boolean) => void,
   /** A queued file we could not open. The user double-clicked and the window
    *  came forward, so saying nothing looks like the app simply ignored them. */
   onError: () => void,
@@ -44,13 +46,16 @@ export function usePendingFileOpens(
      *  is already looking at. */
     let queue: Promise<void> = Promise.resolve();
 
-    async function openNext() {
+    async function openNext(launched: boolean) {
       const { invoke } = await import('@tauri-apps/api/core');
       const paths = await invoke<string[]>('take_pending_opens');
       // Only the last one: opening five editors at once from a multi-select is
       // not what anyone means by double-clicking a file, and the list pane can
       // only show one open file anyway.
       const path = paths[paths.length - 1];
+      // A start with no file puts the workspace window back, in case the last
+      // session quit inside a file window (fileWindow.ts).
+      if (!path && launched) void import('./fileWindow').then((m) => m.settleWindowAtStart());
       if (!path || cancelled) return;
       const ref = await openPath(path);
       if (cancelled) return;
@@ -59,14 +64,14 @@ export function usePendingFileOpens(
       if (!ref) { onErrorRef.current(); return; }
       const opened = await readOpenedFile(ref);
       if (cancelled) return;
-      onOpenRef.current(opened);
+      onOpenRef.current(opened, launched);
     }
 
-    function drain(): Promise<void> {
+    function drain(launched = false): Promise<void> {
       queue = queue.then(async () => {
         if (cancelled) return;
         try {
-          await openNext();
+          await openNext(launched);
         } catch {
           // An unreadable file, a path that moved between the double click and
           // this drain, a permission the OS withheld. All of them end with the
@@ -86,7 +91,7 @@ export function usePendingFileOpens(
       // than leave a listener behind for the rest of the session.
       if (cancelled) { stop(); return; }
       unlisten = stop;
-      await drain();
+      await drain(true);
     })();
 
     return () => { cancelled = true; unlisten?.(); };

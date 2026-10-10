@@ -47,23 +47,23 @@
 import { useEffect, useRef, type RefObject } from 'react';
 import { hasOpenOverlay, closeTopOverlay } from './useEscapeToClose';
 
-// Clamps. Sidebar min equals the current w-60: the TagsRail footer-pill
-// width math is tuned to exactly 240px (ui-patterns section 46), so the
-// sidebar only grows. The vw caps guarantee the editor keeps a usable
-// column at every window size; they are duplicated in the pane className
-// strings in NotesView (min(var(...), 420px, 30vw) / min(var(...), 620px, 40vw)).
+// Clamps. The sidebar narrows to 200: below 230 the `pn-sb-wide` extras (the
+// version badge, the Jump to shortcut, the tab icons) leave through a
+// container query in index.css, so every label keeps its words. The vw caps
+// guarantee the editor keeps a usable column at every window size; they are
+// duplicated in the pane className strings in NotesView
+// (min(var(...), 420px, 30vw) / min(var(...), 620px, 40vw)).
 // Spec: ops/docs/design-decisions.md (pane resize clamps)
 export const SIDEBAR_WIDTH_DEFAULT = 240;
-export const SIDEBAR_WIDTH_MIN = 240;
+export const SIDEBAR_WIDTH_MIN = 200;
 export const SIDEBAR_WIDTH_MAX = 420;
 export const SIDEBAR_VIEWPORT_CAP = 0.3;
 export const LIST_WIDTH_DEFAULT = 288;
-// The list floor holds the SelectionToolbar, not a taste call: px-3
-// padding (24) + the exit X (32) + gap-1 (4) + six 32px action buttons
-// with five 4px gaps (212) = 272. Both toolbar clusters are shrink-0, so
-// a narrower pane pushes the last action - the delete button - under the
-// pane's resize strip.
-export const LIST_WIDTH_MIN = 280;
+// The list floor is the narrowest row that still reads: a title of a few
+// words, one line of preview, the date. The SelectionToolbar no longer sets
+// it: its actions fold into a "more" menu as the pane narrows, and at 200 the
+// row holds the exit X, the menu, Move and Delete.
+export const LIST_WIDTH_MIN = 200;
 export const LIST_WIDTH_MAX = 620;
 export const LIST_VIEWPORT_CAP = 0.4;
 // Docked grid mode (>=1400px with a note open) inverts the flex roles:
@@ -75,7 +75,7 @@ export const LIST_VIEWPORT_CAP = 0.4;
 // mode already ships ~456px editors at the md breakpoint - the old 830
 // floor made the divider barely draggable. GRID_DOCK_MIN is 320 so two
 // tiles sit side by side (the pn-list container query flips to 2 columns
-// at 320); 240 + 24 + 320 + 480 = 1064 < 1400, so the full floor holds at
+// at 320); 200 + 24 + 320 + 480 = 1024 < 1400, so the full floor holds at
 // every docked window (the min() formula in --pn-grid-min stays as a
 // guard for future constant changes). The system is closed: the sidebar's
 // docked cap subtracts the editor MINIMUM and the full grid floor, while

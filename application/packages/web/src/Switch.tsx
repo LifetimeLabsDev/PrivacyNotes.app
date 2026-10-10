@@ -25,6 +25,7 @@ export function Switch({
   description,
   icon,
   setting,
+  hint,
 }: {
   label: string;
   checked: boolean;
@@ -40,17 +41,33 @@ export function Switch({
   icon?: ReactNode;
   /** The settings search id of this row. */
   setting?: string;
+  /** A control beside the label, such as a help button, kept out of the name. */
+  hint?: ReactNode;
 }) {
   const uid = useId();
   const labelId = `${uid}-label`;
   const descriptionId = `${uid}-description`;
+  // The label names its checkbox explicitly: without `htmlFor` it would
+  // control the first labelable element inside it, which is a `hint` button
+  // when there is one, and a click on the row would press that instead.
+  const inputId = id ?? `${uid}-input`;
   return (
-    <label data-setting={setting} className={`flex items-center justify-between gap-4 ${disabled ? 'cursor-default' : 'cursor-pointer'} ${className}`}>
+    <label htmlFor={inputId} data-setting={setting} className={`flex items-center justify-between gap-4 ${disabled ? 'cursor-default' : 'cursor-pointer'} ${className}`}>
       <span className="min-w-0 flex-1 flex flex-col">
-        <span id={labelId} className={labelClassName}>
-          {icon && <span aria-hidden="true" className="flex shrink-0">{icon}</span>}
-          {label}
-        </span>
+        {hint ? (
+          <span className="flex items-center gap-1.5">
+            <span id={labelId} className={labelClassName}>
+              {icon && <span aria-hidden="true" className="flex shrink-0">{icon}</span>}
+              {label}
+            </span>
+            {hint}
+          </span>
+        ) : (
+          <span id={labelId} className={labelClassName}>
+            {icon && <span aria-hidden="true" className="flex shrink-0">{icon}</span>}
+            {label}
+          </span>
+        )}
         {description && (
           <span id={descriptionId} className={`${SETTINGS_HELP} mt-0.5`}>
             {description}
@@ -62,7 +79,7 @@ export function Switch({
             browser maps into the tree, so no aria-checked sits beside it
             to disagree. */}
         <input
-          id={id}
+          id={inputId}
           type="checkbox"
           role="switch"
           checked={checked}

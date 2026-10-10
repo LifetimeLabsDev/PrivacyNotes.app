@@ -55,6 +55,44 @@ export function useViewMode(synced: ViewMode): [ViewMode, (next: ViewMode) => vo
 }
 
 /**
+ * Compact rows, stored on this device only, beside the layout and for the same
+ * reason: a phone may want one line per item where a desktop does not. One
+ * setting for every list pane; it changes the layout of an item, never what
+ * it shows. The demo has its own key, as above.
+ * Spec: ops/docs/plans/list-grid-parity.md (compact rows)
+ */
+function compactKey(): string {
+  return isDemoMode() ? 'privacynotes.demo.compactRows' : 'privacynotes.compactRows';
+}
+
+function readCompact(): boolean {
+  try {
+    return localStorage.getItem(compactKey()) === '1';
+  } catch {
+    return false;
+  }
+}
+
+let compact = readCompact();
+
+export function setDeviceCompactRows(next: boolean): void {
+  if (compact === next) return;
+  compact = next;
+  try {
+    if (next) localStorage.setItem(compactKey(), '1');
+    else localStorage.removeItem(compactKey());
+  } catch {
+    // Storage blocked - the pick still holds for this session.
+  }
+  for (const cb of listeners) cb();
+}
+
+/** This device's compact rows setting. */
+export function useCompactRows(): boolean {
+  return useSyncExternalStore(subscribe, () => compact, () => false);
+}
+
+/**
  * The device choice and its setter, provided once by NotesView so the list
  * preferences menu of every pane can show the Layout switch without each list
  * threading it through. Null outside NotesView, where the menu hides it.

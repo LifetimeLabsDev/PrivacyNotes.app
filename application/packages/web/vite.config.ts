@@ -369,7 +369,9 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // map against a build of the previous commit. Raised to 112.
   // 112.04 kB gz on 2026-10-04, 0.04 over. WHAT GREW: auth.tsx (+0.11), the
   // device-limit retry finishing an account switch. Raised to 113.
-  '(entry)': 113,
+  // 113 -> 114 (2026-10-10): the shortcut parser (noteShortcut.ts), which
+  // must read the address before the app mounts, +1.1 kB gz.
+  '(entry)': 114,
   // NEW CHUNK, not new bytes: the whole shared package in one piece, 62.91 kB
   // gz. It has to stay one chunk - splitting it is what put a white page in
   // production. See the advancedChunks comment in `build` for the mechanism.
@@ -497,7 +499,26 @@ const CHUNK_BUDGET_KB: Record<string, number> = {
   // 180 -> 182 (2026-10-08): the journal calendar, +1.03 kB gz: the day map,
   // the footer calendar props, the calendar card that heads the Journals list
   // with its Show calendar switch, and the list options' switch icons.
-  NotesView: 182,
+  // 182 -> 183 (2026-10-09): the app shell's keyboard height and the
+  // bottom bar's row in the note pane.
+  // 183 -> 186 (2026-10-09): the list group headers (#448), about +2.5 kB gz:
+  // the group builder, the header row and its fold state, and the
+  // NotesList wiring.
+  // 186 -> 196 (2026-10-09): Spaces (#352) and the Settings regroup, about
+  // +7 kB gz: the space filter and moves, the switch, the split Design,
+  // Editor, Toolbar, Lists and Date panes, and the favorite themes.
+  // 196 -> 198 (2026-10-09): the Markdown folder editor at full strength,
+  // about +1 kB gz: inserts at the caret, the toolbar's picture and file
+  // buttons, the header find button and the find pill, the rich-save tidy,
+  // and the pane fold for a file opened from the file manager.
+  // 198 -> 199 (2026-10-10): the shared list item and list shell (LG3, LG2)
+  // and the row style, +0.58 kB gz since the v0.614.0 baseline.
+  // 199 -> 200 (2026-10-10): the favorite themes, the Note colors example
+  // and the quick switcher's bookmark actions, about +0.85 kB gz.
+  // 200 -> 201 (2026-10-10): opening a shortcut and its copy rows, +0.9 kB gz.
+  // 201 -> 202 (2026-10-10): the free Spaces switch and the toolbar draft's
+  // upgrade handoff, about +0.3 kB gz.
+  NotesView: 202,
   // The eager English catalogs. 60.43 kB gz once the Contacts pillar's strings
   // (the form, the label vocabulary, the import row) and the Images pane
   // landed (2026-09-08), +1.81 against the v0.506.0 baseline, over the 60 kB
@@ -1186,7 +1207,49 @@ const DEFAULT_CHUNK_BUDGET_KB = 60;
 // 1088 -> 1089 (2026-10-08): the code block's copy and check icons, the
 // copy box's wrap toggle and the spoiler's hide-after-mark state, Editor
 // +0.45 kB gz.
-const BOOT_PATH_BUDGET_KB = 1089;
+// 1089 -> 1094 (2026-10-08): the format bar a person arranges (GitHub #422),
+// +5.4 kB gz against the committed tree: the item registry and the resolver
+// with its settings register (formatBar, userSettings), the toolbar built from
+// the arrangement with the touch strip and the gear (Editor), the wiring in
+// NotesView, and the icon map the toolbar shares with the lazy sheet, which
+// splits those icons out of the Editor chunk. Importing the sheet statically
+// was measured and is 0.5 kB worse.
+// 1094 -> 1096 (2026-10-08): the contact print layout, +1.27 kB gz measured
+// against the committed tree: export.ts is on the boot path, and it gained
+// the grouped contact renderer, the photo inliner and their stylesheet rules.
+// 1096 -> 1098 (2026-10-09): the bottom format bar moved out of the note
+// column into its own row (the toolbar portal in Editor, the slot in both
+// panes) and the iOS keyboard fit in useKeyboardOpen (GitHub #449), about
+// +1 kB gz; the rest was uncommitted work in the tree when it was measured.
+// 1098 -> 1099 (2026-10-09): the theme work, +0.57 kB gz: NotesView +0.43
+// (the solo and bare Settings doors, the theme limit) and i18n +0.11 (the new
+// Appearance strings). The community list stays off the boot path: the
+// gallery limit lives in communityShown.ts for that reason.
+// 1099 -> 1102 (2026-10-09): the list group headers (#448), all of it in
+// NotesView, which is on the boot path.
+// 1102 -> 1115 (2026-10-09): Spaces (#352) and the Settings regroup, about
+// +10 kB gz: NotesView +7.4, the favorite themes +2, the new pane icons.
+// 1115 -> 1117 (2026-10-09): the per-space tag and calendar paths, the
+// two-space day map and the quick switcher row (v0.608.0), find and replace
+// in the Markdown view (v0.609.0), and the theme logo choice: NotesView
+// +2.97, notesViewUtils +0.15, i18n +0.11 since the v0.607.0 baseline.
+// 1117 -> 1118 (2026-10-10): the selection toolbar's fold and its "More
+// actions" menu (v0.614.0), +0.8 kB gz in NotesView with the shared list item
+// that was uncommitted in the tree when it was measured.
+// 1118 -> 1119 (2026-10-10): the shared list item and shell (LG3, LG2),
+// compact rows and the list menu placed beside the list, +0.84 kB gz in
+// NotesView since the v0.614.0 baseline.
+// 1119 -> 1120 (2026-10-10): the favorite themes, the Note colors example
+// and the quick switcher's bookmark actions, about +0.9 kB gz in NotesView,
+// quickThemes and the English strings since the v0.616.0 baseline.
+// 1120 -> 1123 (2026-10-10): nine more callout types with their icons, the
+// Fold type, the keyword rule and the start-side fold control, about
+// +2.3 kB gz net in the callout and editor chunks since the v0.617.0 baseline.
+// 1123 -> 1126 (2026-10-10): shortcuts to an item, about +2.4 kB gz in the
+// entry, NotesView and the editor; the offer bar and card load on demand.
+// 1126 -> 1128 (2026-10-10): the upgrade window's price bars, the feature
+// tile and its glyphs, about +1.1 kB gz in UpgradeModal.
+const BOOT_PATH_BUDGET_KB = 1128;
 
 // The budget above is stated in ONE environment's units: build-smoke's, which
 // is ubuntu with the synthetic values from tools/ci-vite-env.mjs. Every other

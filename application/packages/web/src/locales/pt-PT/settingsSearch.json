@@ -7,15 +7,18 @@
   "resultCount_other": "{{count}} resultados",
   "keywords": {
     "section_stats": "estatísticas, números, sequência, mapa de atividade, contagem de palavras",
-    "section_journals": "diário, título, formato da data",
     "section_import": "importar, exportar, cópia de segurança, backup, migrar, mudar, transferir",
     "section_plan": "plano, subscrição, pro, faturação, pagamento, dispositivos, terminar sessão",
     "section_storage": "armazenamento, espaço, quota, disco, gigabytes, cheio",
     "section_images": "imagens, fotografias, fotos, compressão, qualidade",
     "section_security": "segurança, palavra-passe, bloqueio, privacidade",
     "section_me": "sincronização, sync, conta, identidade, id",
-    "section_appearance": "aspeto, ecrã, visualização, design, cores, tema",
+    "section_design": "aspeto, visual, ecrã, design, cores, tema",
+    "section_editor": "escrita, editor, texto, letra, tipo de letra, tamanho, espaçamento, largura, markdown",
+    "section_formatBar": "barra de formatação, barra de ferramentas, toolbar, botões, organizar, menu mais",
+    "section_lists": "lista, barra lateral, grelha, vistas, página inicial, separadores, espaços",
     "section_language": "idioma, língua, tradução",
+    "section_date": "data, hora, relógio, formato, dia, mês, ano, diário, título da entrada",
     "section_about": "acerca, sobre, versão, informação, créditos",
     "section_help": "ajuda, faq, suporte, perguntas, guia",
     "stats_writing": "palavras, número de notas, atividade, mapa de atividade",
@@ -28,6 +31,7 @@
     "stats_wellness": "saúde, humor, sono, medicação, registos",
     "stats_wellnessExport": "médico, relatório, csv, pdf",
     "journals_suffix": "título, nome do diário, título da entrada",
+    "journals_titles": "diário, título da entrada, nova entrada, formato do título",
     "import_export": "transferir, guardar, cópia de segurança, arquivo",
     "export_zipBackup": "cópia de segurança, zip, markdown, transferir tudo",
     "import_vault": "palavras-passe, logins, gestor de palavras-passe",
@@ -67,6 +71,7 @@
     "appearance_startView": "página inicial, início, vista predefinida, abrir em",
     "appearance_view": "grelha, lista, cartões, disposição",
     "appearance_sinkChecked": "tarefas, lista de verificação, caixa de verificação, concluído, ordem, fundo",
+    "appearance_spaces": "trabalho, pessoal, espaço de trabalho, espaços de trabalho, separar, mudar, alternar, perfil, contexto",
     "appearance_sidebar": "barra lateral, ocultar vistas, menu, lista todos",
     "language_spellCheck": "ortografia, verificação ortográfica, sublinhado vermelho, gralhas, dicionário",
     "language_language": "idioma, língua, tradução",
@@ -80,6 +85,7 @@
     "about_changelog": "notas de versão, novidades, atualizações, alterações",
     "about_hotkeys": "atalhos de teclado, atalhos, teclas",
     "about_rating": "avaliação, avaliar, estrelas, app store",
-    "appearance_openInTabs": "separadores, barra de separadores, navegador, abrir, abas"
+    "appearance_openInTabs": "separadores, barra de separadores, navegador, abrir, abas",
+    "appearance_formatBar": "barra de ferramentas, barra de formatação, botões, personalizar, organizar, lista com marcas, rasurado, engrenagem"
   }
 }

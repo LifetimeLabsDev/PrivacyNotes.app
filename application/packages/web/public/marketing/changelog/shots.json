@@ -272,5 +272,159 @@
       "bytes": 35942,
       "sha256": "a9f374276b08f5b53f6b2ce42880ae63ffc299e2b949040b21854f274424d2d5"
     }
+  },
+  "0.600": {
+    "whats-new": {
+      "w": 2000,
+      "h": 1407,
+      "bytes": 149714,
+      "sha256": "a210c9faa810d53e98d539bf1e8ccc4c6b894fbe652c9b047dff05e6183cc0b1"
+    }
+  },
+  "0.602": {
+    "ssh-download": {
+      "w": 1008,
+      "h": 660,
+      "bytes": 29906,
+      "sha256": "5493c2aab9a5a3fc8c59b83533c2c7939a99dfc8d87d6e8714bb9b42e2b98e48"
+    }
+  },
+  "0.606": {
+    "add-line-top": {
+      "w": 1444,
+      "h": 1044,
+      "bytes": 667432,
+      "sha256": "c0a4cc0c78862e73f4d84cf647b4df2ea4312a4a3e88bbff3ff0591b1d17e2d9"
+    },
+    "dim-folders": {
+      "w": 1104,
+      "h": 1800,
+      "bytes": 55676,
+      "sha256": "a3a16eee751239adf076c5f3eb1d10e5dd4528e3602587d00226e9e39cbcb29e"
+    }
+  },
+  "0.608": {
+    "design-menu": {
+      "w": 648,
+      "h": 1070,
+      "bytes": 32264,
+      "sha256": "f7b9a415d04a6d9908727b13f765a05ee062a74c758a951854739dd2ea578b7c"
+    },
+    "settings-groups": {
+      "w": 2000,
+      "h": 1407,
+      "bytes": 133842,
+      "sha256": "73e7a1f6f9607c2c288ce6f49e43dbab910c7684028eff550e8a6c7c217d9675"
+    }
+  },
+  "0.609": {
+    "convert-to": {
+      "w": 1444,
+      "h": 1120,
+      "bytes": 65854,
+      "sha256": "bc8e996c2bb7438b1cd7f497abecef5291055382dce76a957d73d299df43b946"
+    }
+  },
+  "0.610": {
+    "compact-rows": {
+      "w": 2000,
+      "h": 1407,
+      "bytes": 465318,
+      "sha256": "11097fc766a350296d26373f6e5d1e52860dd058d0454f089e20b59d67e95c65"
+    }
+  },
+  "0.611": {
+    "list-groups": {
+      "w": 1104,
+      "h": 1800,
+      "bytes": 75938,
+      "sha256": "b4548674e5b0c5595f058827e2aeae7b6c74c65fd957110f319a7a1e97b5b0ca"
+    }
+  },
+  "0.612": {
+    "markdown-replace": {
+      "w": 1444,
+      "h": 1800,
+      "bytes": 77480,
+      "sha256": "bcfbd15a792f6251c1f2b84049dbb643a410cdec7770290ee4a1e564a9ed26da"
+    }
+  },
+  "0.614": {
+    "callout-types": {
+      "w": 2000,
+      "h": 1081,
+      "bytes": 58874,
+      "sha256": "8b8510df3d40b5ac106e858ca3eda8044e51e9dc8573d2ab558f79198ebc0958"
+    },
+    "fold": {
+      "w": 1488,
+      "h": 946,
+      "bytes": 26738,
+      "sha256": "d534d262b1d3a48101ccd790059335ed0134c4b035053c18c28bfc110b048260"
+    }
+  },
+  "0.615": {
+    "community-themes": {
+      "w": 2000,
+      "h": 1407,
+      "bytes": 139402,
+      "sha256": "9cf7a108004e54ba9a8f62e7d1164a809bef39e9c3df2261664d867632b92500"
+    }
+  },
+  "0.616": {
+    "favorite-themes": {
+      "w": 2000,
+      "h": 1407,
+      "bytes": 135950,
+      "sha256": "403b75170c04062172db2f3ae79ecf31b00d7534d7f679855fbfd21c4e468da1"
+    },
+    "folder-tag-colors": {
+      "w": 2000,
+      "h": 1407,
+      "bytes": 124268,
+      "sha256": "75fb2955108ff377bd1de499ad9ab5e39bb01870d1f20143dbea372ba0510c17"
+    }
+  },
+  "0.617": {
+    "bar-bottom": {
+      "w": 1444,
+      "h": 960,
+      "bytes": 31722,
+      "sha256": "7111b041a7dd762b808d78388ebc06be209965edf06145825f527290253328ec"
+    },
+    "toolbar-board": {
+      "w": 2000,
+      "h": 1407,
+      "bytes": 125510,
+      "sha256": "cb12700df395718067ae231aacf1fc939639ed7f7e1fea6bcdbc442b47cdf439"
+    }
+  },
+  "0.619": {
+    "heading-shortcut": {
+      "w": 1444,
+      "h": 1106,
+      "bytes": 81318,
+      "sha256": "86ef91a0d2981fd3ba376a99e7ee0f5bffc7461d05b209e4a95ac48d187e0ae7"
+    },
+    "share-shortcut": {
+      "w": 1444,
+      "h": 1240,
+      "bytes": 95636,
+      "sha256": "ca1b8acd35b8089b502cfb6c09b60aeb0b32607164df0705d59ce64bac2db1f6"
+    }
+  },
+  "0.620": {
+    "move-to-work": {
+      "w": 1104,
+      "h": 1800,
+      "bytes": 85550,
+      "sha256": "11afcdd4935e0e671ab13237a89e78e396b1cbf79eb82299492d7fb398876eb3"
+    },
+    "spaces": {
+      "w": 1104,
+      "h": 1800,
+      "bytes": 58074,
+      "sha256": "2cf9f42a1ccb25b955c09378d0b4bbdadd2b3606dd4ef02098712b224a9a27c9"
+    }
   }
 }

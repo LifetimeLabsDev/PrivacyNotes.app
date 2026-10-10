@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from '../db';
 import type { ContextMenuItem } from '../ContextMenu';
@@ -171,6 +171,11 @@ function Tab({
 }) {
   const { Icon, color: glyphColor } = typeGlyph(n.type);
   const domain = gated ? '' : noteFaviconDomain(n);
+  // While a site has no icon to show, the tab draws its type glyph, as a
+  // list row draws its themed placeholder; the Favicon stays mounted
+  // (hidden) so it can still load and report back.
+  const [noIcon, setNoIcon] = useState(false);
+  const onMissing = useCallback((m: boolean) => setNoIcon(m), []);
   const color = look?.color ?? null;
   // Only a background look tints the tab; an accent keeps it plain and
   // colors the icon alone.
@@ -222,17 +227,18 @@ function Tab({
           : 'border border-transparent border-b-0 text-pn-muted hover:bg-pn/5 hover:text-pn'
       } ${dragging ? 'opacity-50' : ''}`}
     >
-      {domain ? (
+      {domain && (
         <span
-          className="shrink-0 flex rounded-[4px]"
+          className={noIcon ? 'hidden' : 'shrink-0 flex rounded-[4px]'}
           aria-hidden="true"
           // A site icon cannot take the ink, so an accent lays the tint
           // behind it instead.
           style={look?.style === 'accent' ? { padding: 2, margin: -2, background: `var(--pn-label-${look.color}-tint)` } : undefined}
         >
-          <Favicon domain={domain} size={14} />
+          <Favicon domain={domain} size={14} onMissing={onMissing} />
         </span>
-      ) : (
+      )}
+      {(!domain || noIcon) && (
         <Icon
           size={14}
           aria-hidden="true"

@@ -239,7 +239,8 @@ function hashDomain(domain: string): number {
 const FAQ_TO_HELP = /^\/((?:de|fr|it|es|nl|pl|pt|br|ja|ko|tw|ca|cs|tr|sv|ar|en)\/)?faq(\/.*)?$/;
 
 // Every path the client-side app answers for. main.tsx branches on exactly
-// /burn and /checkout; App.tsx renders marketing at the apex and at
+// /burn and /checkout, and reads /note as a shortcut to one item before it
+// rewrites the address to /; App.tsx renders marketing at the apex and at
 // each locale slug from src/localeRoutes.ts. Nothing else is a real route,
 // so anything not on this list and not backed by a pre-rendered asset is a
 // genuine 404.
@@ -256,7 +257,7 @@ const FAQ_TO_HELP = /^\/((?:de|fr|it|es|nl|pl|pt|br|ja|ko|tw|ca|cs|tr|sv|ar|en)\
 // Split by host: the dedicated app host answers only the app routes;
 // the locale slugs are marketing pages and live on the apex (the app
 // host 301s them there before this fallback runs).
-const APP_ROUTES = new Set(['/', '/burn', '/checkout']);
+const APP_ROUTES = new Set(['/', '/burn', '/checkout', '/note']);
 const LOCALE_SLUGS = new Set([
   '/en',
   '/de',

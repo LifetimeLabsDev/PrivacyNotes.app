@@ -2,7 +2,8 @@ import { useEffect, useRef, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import type { LocalNote } from '../db';
-import { Export, EXPORT_GLYPHS } from '../icons';
+import { BracketsSquare, Export, EXPORT_GLYPHS, LinkSimple } from '../icons';
+import { isShortcutId, shortcutNoun } from '../noteShortcut';
 import { HoverLabel } from '../HoverLabel';
 import { usePopoverPosition } from '../usePopoverPosition';
 
@@ -17,6 +18,8 @@ export function ShareMenu({
   exportSingleHtml,
   printNote,
   handleBurnShare,
+  onCopyShortcut,
+  onCopyNoteLink,
 }: {
   open: boolean;
   onClose: () => void;
@@ -33,6 +36,11 @@ export function ShareMenu({
   exportSingleHtml: (n: LocalNote) => Promise<void> | void;
   printNote: (n: LocalNote, titleOnly?: boolean) => Promise<void> | void;
   handleBurnShare: (n: LocalNote) => Promise<void> | void;
+  /** Copy the shortcut that opens this item from other apps. */
+  onCopyShortcut: (n: LocalNote) => void;
+  /** Copy the note-link to this item, for a link inside the notes; null
+   *  when it has no name a note-link can carry. */
+  onCopyNoteLink: ((n: LocalNote) => void) | null;
 }) {
   const { t } = useTranslation('notes');
   const anchorRef = useRef<HTMLDivElement | null>(null);
@@ -109,6 +117,43 @@ export function ShareMenu({
                   > Import & Export wears for these file types. Burn keeps its
                   orange, because colour in this header means burn or
                   destructive and never decoration. */}
+              {/* The shortcut first: it is the one row here that shares
+                  nothing, so its line says who can open it.
+                  Spec: ops/docs/plans/note-shortcuts.md (4) */}
+              {isShortcutId(selected.id) && (
+                <button
+                  onClick={() => {
+                    onClose();
+                    onCopyShortcut(selected);
+                  }}
+                  className="w-full text-start px-3 py-2.5 flex items-start gap-2.5 hover:bg-surface-1 transition"
+                >
+                  <span className="shrink-0 mt-0.5 text-accent"><LinkSimple size={18} aria-hidden="true" /></span>
+                  <span className="min-w-0">
+                    <span className="block font-medium text-pn">
+                      {t(shortcutNoun(selected.type) === 'item' ? 'shell:shortcut.copyItem' : 'shell:shortcut.copyNote')}
+                    </span>
+                    <span className="block text-[12px] text-pn-muted">
+                      {t(shortcutNoun(selected.type) === 'item' ? 'shell:shortcut.descItem' : 'shell:shortcut.descNote')}
+                    </span>
+                  </span>
+                </button>
+              )}
+              {onCopyNoteLink && (
+                <button
+                  onClick={() => {
+                    onClose();
+                    onCopyNoteLink(selected);
+                  }}
+                  className="w-full text-start px-3 py-2.5 flex items-start gap-2.5 hover:bg-surface-1 transition"
+                >
+                  <span className="shrink-0 mt-0.5 text-accent"><BracketsSquare size={18} aria-hidden="true" /></span>
+                  <span className="min-w-0">
+                    <span className="block font-medium text-pn">{t('shell:shortcut.copyNoteLink')}</span>
+                    <span className="block text-[12px] text-pn-muted">{t('shell:shortcut.descNoteLink')}</span>
+                  </span>
+                </button>
+              )}
               <button
                 onClick={() => {
                   onClose();

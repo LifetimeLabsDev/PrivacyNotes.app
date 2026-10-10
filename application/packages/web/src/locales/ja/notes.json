@@ -80,6 +80,13 @@
     "clearFilters": "フィルターを解除",
     "filteredAfter": "すると表示されます。"
   },
+  "listGroups": {
+    "previous7Days": "過去7日間",
+    "previous30Days": "過去30日間",
+    "other": "その他",
+    "collapseAll": "すべてのグループを折りたたむ",
+    "expandAll": "すべてのグループを展開"
+  },
   "headerLabel": {
     "allItems": "すべて",
     "untagged": "タグなし",
@@ -143,7 +150,7 @@
     "exitHover": "Zenモードを終了(Esc)",
     "enterHover": "Zenモードを開始",
     "proHover": "Zenモード(Pro)",
-    "enterAriaShortcut": "Zenモードを開始(⌘⇧F)"
+    "enterAriaShortcut": "Zenモードを開始({{keys}})"
   },
   "editor": {
     "backToList": "ノートリストに戻る",
@@ -217,7 +224,7 @@
     "journalCalendar": "ジャーナルカレンダー",
     "words": "単語",
     "zen": "Zenモード",
-    "appearance": "外観",
+    "appearance": "デザイン",
     "signOut": "サインアウト",
     "signingOut": "サインアウト中…",
     "switchToLight": "ライトモードに切り替え",
@@ -225,20 +232,24 @@
   },
   "settings": {
     "groupYourNotes": "あなたのノート",
+    "groupPreferences": "環境設定",
     "groupAccount": "アカウントとデータ",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "統計",
-    "journalsLabel": "ジャーナル",
     "importLabel": "読み込みと書き出し",
     "planLabel": "アカウント",
     "storageLabel": "ストレージ",
     "imagesLabel": "画像",
     "securityLabel": "セキュリティ",
     "accountLabel": "IDと同期",
-    "appearanceLabel": "外観",
+    "appearanceLabel": "デザイン",
+    "editorLabel": "エディタ",
+    "formatBarLabel": "ツールバー",
+    "listsLabel": "リスト",
     "helpLabel": "ヘルプ",
     "aboutLabel": "概要",
-    "languageLabel": "日付と言語",
+    "languageLabel": "言語",
+    "dateLabel": "日付",
     "languageDesc": "PrivacyNotesの表示言語を選択。"
   },
   "importStore": {

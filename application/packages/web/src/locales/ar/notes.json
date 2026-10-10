@@ -80,6 +80,13 @@
     "clearFilters": "مسح عوامل التصفية",
     "filteredAfter": "لعرضها."
   },
+  "listGroups": {
+    "previous7Days": "آخر 7 أيام",
+    "previous30Days": "آخر 30 يومًا",
+    "other": "أخرى",
+    "collapseAll": "طي كل المجموعات",
+    "expandAll": "توسيع كل المجموعات"
+  },
   "headerLabel": {
     "allItems": "الكل",
     "untagged": "بلا وسم",
@@ -153,7 +160,7 @@
     "exitHover": "الخروج من وضع Zen (Esc)",
     "enterHover": "الدخول في وضع Zen",
     "proHover": "وضع Zen (Pro)",
-    "enterAriaShortcut": "الدخول في وضع Zen (⌘⇧F)"
+    "enterAriaShortcut": "الدخول في وضع Zen ({{keys}})"
   },
   "editor": {
     "backToList": "العودة إلى قائمة الملاحظات",
@@ -235,10 +242,10 @@
   },
   "settings": {
     "groupYourNotes": "ملاحظاتك",
+    "groupPreferences": "التفضيلات",
     "groupAccount": "الحساب والبيانات",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "الإحصاءات",
-    "journalsLabel": "اليوميات",
     "importLabel": "الاستيراد والتصدير",
     "planLabel": "الحساب",
     "storageLabel": "مساحة التخزين",
@@ -246,9 +253,13 @@
     "securityLabel": "الأمان",
     "accountLabel": "الهوية والمزامنة",
     "appearanceLabel": "المظهر",
+    "editorLabel": "المحرر",
+    "formatBarLabel": "شريط الأدوات",
+    "listsLabel": "القوائم",
     "helpLabel": "المساعدة",
     "aboutLabel": "حول",
-    "languageLabel": "التاريخ واللغة",
+    "languageLabel": "اللغة",
+    "dateLabel": "التاريخ",
     "languageDesc": "اختر اللغة التي يُعرض بها PrivacyNotes."
   },
   "importStore": {

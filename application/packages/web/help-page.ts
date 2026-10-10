@@ -142,8 +142,6 @@ type KeyOs = 'mac' | 'pc';
 type CapRun = string[] | '/' | '–';
 /** The row formatter of src/hotkeysData.ts, the one the app uses. */
 let rowCaps: (row: HotkeyRowData, os: KeyOs, desktop: boolean, firstOnly?: boolean) => CapRun[] = () => [];
-/** True when a help row has a key only in the desktop apps. */
-const rowDesktopOnly = (row: HotkeyRowData) => rowCaps(row, 'mac', false).length === 0 && rowCaps(row, 'pc', false).length === 0;
 
 // Transpile a self-contained TS module (no imports) with Oxc and
 // import it as a data-URL ES module to pull out its exports.
@@ -542,21 +540,17 @@ function guideRailItems(locale: HelpLocale, guideOrder: string[], guides: Guides
 function renderSections(
   sections: Section[],
   locale: HelpLocale,
-  cat: FaqCatalog,
-  hotkeyGroups: HotkeyGroupData[]
+  cat: FaqCatalog
 ): string {
   const permaLabel = cat.page.copyLink;
   return sections
     .map((s) => {
       const entries = s.entries
         .map((e) => {
-          // Same special-casing as the leaves: the showcase entries render
-          // their demo section inside the answer, and the shortcuts entry
-          // drops its combo paragraph in favor of the grid. The haystack
-          // keeps the FULL text so combo searches still match.
-          const bodyA = e.id === 'keyboard-shortcuts' ? e.a.slice(0, 1) : e.a;
-          const paragraphs = bodyA.map((par) => renderParagraph(par, cat.page)).join('');
-          const extra = entryShowcase(e.id, locale, cat.page, hotkeyGroups);
+          // Same as the leaves: the showcase entry renders its demo section
+          // inside the answer.
+          const paragraphs = e.a.map((par) => renderParagraph(par, cat.page)).join('');
+          const extra = entryShowcase(e.id, cat.page);
           const hay = normalize(`${e.q} ${e.a.join(' ')}`);
           const leaf = leafPath(locale, e.id);
           return `<details class="entry" id="${esc(e.id)}" data-s="${esc(hay)}" data-leaf="${leaf}">
@@ -863,6 +857,28 @@ function feedbackBlock(prompt: string): string {
  */
 const CONTENT_BASELINE = '2026-08-26';
 const CONTENT_UPDATED: Record<string, string> = {
+  'app-privacy-label': '2026-10-09',
+  'keyboard-shortcuts': '2026-10-08',
+  'appearance': '2026-10-09',
+  'spoiler-text': '2026-10-08',
+  'copy-box': '2026-10-08',
+  'footnotes': '2026-10-08',
+  'statistics': '2026-10-08',
+  'drag-to-folder': '2026-10-08',
+  'custom-themes': '2026-10-08',
+  'format-bar': '2026-10-08',
+  'window-zoom': '2026-10-08',
+  'zen-mode': '2026-10-08',
+  'date-format': '2026-10-08',
+  'checklists': '2026-10-08',
+  'quick-switcher': '2026-10-08',
+  'find-in-note': '2026-10-08',
+  'screen-capture': '2026-10-08',
+  'connected-logins': '2026-10-08',
+  'session-expired': '2026-10-08',
+  'archive': '2026-10-09',
+  'share-into-app': '2026-10-08',
+  'desktop-updates': '2026-10-08',
   'note-links': '2026-10-07',
   'guess-phrase': '2026-09-26',
   'need-email': '2026-09-25',
@@ -887,7 +903,6 @@ const CONTENT_UPDATED: Record<string, string> = {
   'shutdown': '2026-09-25',
   'attachment-limits': '2026-09-23',
   'languages': '2026-09-23',
-  'keyboard-shortcuts': '2026-10-06',
   'hotkey-cheat-sheet': '2026-10-06',
   'store-purchases': '2026-09-23',
   'markdown-folder-mobile': '2026-09-14',
@@ -1385,31 +1400,6 @@ const MD_SHOWCASE_CSS = `
 .d-nl{color:var(--accent);font-weight:600;border-bottom:1px dashed var(--accent);cursor:pointer}
 @media(max-width:700px){.md-demo{grid-template-columns:minmax(0,1fr)}.md-out{border-left:0;border-top:1px solid var(--line)}}`;
 
-const HK_SHOWCASE_CSS = `
-.hk-sec{margin-top:26px}
-.hk-sec>.eyebrow{margin:0 0 2px}
-.hk-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 36px}
-.hk-g .eyebrow{margin:18px 0 2px}
-.hk-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:9px 0;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
-.hk-g .eyebrow+.hk-row{border-top:0}
-/* direction:ltr - key sequences are forced-LTR islands under RTL (same fix
-   as .s-keys on the cheat sheet; "1 – ⌥⌘6" used to reorder on /ar). */
-.hk-keys{display:inline-flex;align-items:center;gap:4px;flex:0 0 auto;direction:ltr}
-.hk-or{color:var(--faint);font-size:12px;padding:0 1px}
-.hk-picks{display:flex;flex-wrap:wrap;gap:8px 12px;margin:10px 0 4px}
-.hk-pickset{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:2px}
-.hk-pick{border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--muted);padding:5px 12px;border-radius:99px;cursor:pointer}
-.hk-pick[aria-pressed="true"]{background:var(--chip);color:var(--fg)}
-${keySetCss('.hk-sec', 'hk-row')}
-kbd.cap{display:inline-flex;min-width:26px;height:26px;padding:0 7px;align-items:center;justify-content:center;border:1px solid var(--line);border-bottom-width:2.5px;border-radius:7px;background:var(--chip);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;font-weight:600;color:var(--fg)}
-.hk-note{margin:18px 0 0;font-size:13px;color:var(--faint)}
-.hk-note+.hk-note{margin-top:6px}
-.hk-print{display:flex;width:fit-content;align-items:center;gap:8px;margin:18px 0 0;padding:7px 14px;border:1px solid var(--line);border-radius:99px;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none}
-.hk-print:hover{border-color:var(--accent);text-decoration:none}
-.hk-print svg{flex:0 0 auto}
-@media(max-width:700px){.hk-groups{grid-template-columns:minmax(0,1fr)}.hk-g .eyebrow{margin-top:14px}}`;
-
-// Phosphor "printer" (bold), inlined like the sidebar's topic icons.
 const PRINTER_ICON =
   '<svg width="15" height="15" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M214.67,68H204V40a12,12,0,0,0-12-12H64A12,12,0,0,0,52,40V68H41.33C25.16,68,12,80.56,12,96v80a12,12,0,0,0,12,12H52v28a12,12,0,0,0,12,12H192a12,12,0,0,0,12-12V188h28a12,12,0,0,0,12-12V96C244,80.56,230.84,68,214.67,68ZM76,52H180V68H76ZM180,204H76V172H180Zm40-40H204v-4a12,12,0,0,0-12-12H64a12,12,0,0,0-12,12v4H36V96c0-2.17,2.44-4,5.33-4H214.67c2.89,0,5.33,1.83,5.33,4Zm-16-44a16,16,0,1,1-16-16A16,16,0,0,1,204,120Z"/></svg>';
 
@@ -1490,111 +1480,21 @@ ${demos.join('\n')}
 </section>`;
 }
 
-/** '⌘K' -> ['⌘','K']; 'J / K' -> ['J','/','K']; 'Esc' stays whole.
- *  ' – ' splits a range ('⌥⌘1 – ⌥⌘6') into two full cap sequences, so the
- *  second one never lumps into one unreadable cap. */
-/**
- * The keys of one help row in all four key sets: the Mac and Windows and
- * Linux, each in a browser and in the desktop app. The page shows one set at
- * a time through the `data-hk-os` and `data-hk-app` attributes of its root
- * (static-pages.js, initHotkeySets), so it renders complete with no script:
- * the Mac set in a browser.
- */
-function keySets(row: HotkeyRowData, capClass: string, orClass: string, keysClass: string): string {
-  const out: string[] = [];
-  for (const os of ['mac', 'pc'] as const) {
-    for (const app of ['web', 'desktop'] as const) {
-      const caps = rowCaps(row, os, app === 'desktop')
-        .map((c) =>
-          typeof c === 'string'
-            ? `<span class="${orClass}">${c}</span>`
-            : c.map((k) => `<kbd class="${capClass}">${esc(k)}</kbd>`).join('')
-        )
-        .join('');
-      if (caps) out.push(`<span class="${keysClass}" data-os="${os}" data-app="${app}">${caps}</span>`);
-    }
-  }
-  return out.join('');
-}
-
 /** The CSS that shows one key set: the root carries data-hk-os and data-hk-app. */
 function keySetCss(root: string, rowClass: string): string {
   return `${root}[data-hk-os="mac"] [data-os="pc"],${root}[data-hk-os="pc"] [data-os="mac"],${root}[data-hk-app="web"] [data-app="desktop"],${root}[data-hk-app="desktop"] [data-app="web"],${root}[data-hk-app="web"] .${rowClass}[data-desktop-only]{display:none}`;
 }
 
-/** hotkeys.* strings from common.json, per-key English fallback. */
-function readHotkeyStrings(locale: HelpLocale): {
-  groups: Record<string, string>;
-  actions: Record<string, string>;
-  typingNote: string;
-  cheatSheet: string;
-} {
-  type HotkeyStrings = {
-    groups?: Record<string, string>;
-    actions?: Record<string, string>;
-    typingNote?: string;
-    cheatSheet?: string;
-  };
-  const read = (l: string): HotkeyStrings => {
-    try {
-      return (
-        (JSON.parse(fs.readFileSync(path.join(LOCALES_DIR, l, 'common.json'), 'utf8')) as {
-          hotkeys?: HotkeyStrings;
-        }).hotkeys ?? {}
-      );
-    } catch {
-      return {};
-    }
-  };
-  const en = read('en');
-  const loc = locale === 'en' ? en : read(locale);
-  return {
-    groups: { ...(en.groups ?? {}), ...(loc.groups ?? {}) },
-    actions: { ...(en.actions ?? {}), ...(loc.actions ?? {}) },
-    typingNote: loc.typingNote ?? en.typingNote ?? '',
-    cheatSheet: loc.cheatSheet ?? en.cheatSheet ?? 'Printable cheat sheet',
-  };
-}
-
-function renderHotkeysShowcase(
-  locale: HelpLocale,
-  hotkeyGroups: HotkeyGroupData[],
-  label: string,
-  p: Record<string, string>
-): string {
-  const s = readHotkeyStrings(locale);
-  const groups = hotkeyGroups
-    .map((g) => {
-      const rows = g.rows
-        .map((r) => {
-          const only = rowDesktopOnly(r) ? ' data-desktop-only' : '';
-          return `<div class="hk-row"${only}><span>${esc(s.actions[r.i18nKey] ?? r.label)}</span>${keySets(r, 'cap', 'hk-or', 'hk-keys')}</div>`;
-        })
-        .join('\n');
-      return `<div class="hk-g">
-<p class="eyebrow">// ${esc(s.groups[g.i18nKey] ?? g.title)}</p>
-${rows}
-</div>`;
-    })
-    .join('\n');
-  // Two switches: the OS and the app. A browser keeps some keys for itself,
-  // and the desktop apps have those as well.
-  // Spec: ops/docs/plans/keyboard-shortcuts.md (section 4.2, a key set for each app)
-  const pick = (attr: string, value: string, text: string, on: boolean) =>
-    `<button type="button" class="hk-pick" data-hk-set="${attr}" data-value="${value}" aria-pressed="${on}">${esc(text)}</button>`;
-  return `<section class="hk-sec" data-hk-os="mac" data-hk-app="web">
-<h2 class="eyebrow">// ${esc(label)}</h2>
-<div class="hk-picks" hidden>
-<div class="hk-pickset">${pick('os', 'mac', p.hkMac ?? 'Mac', true)}${pick('os', 'pc', p.hkPc ?? 'Windows and Linux', false)}</div>
-<div class="hk-pickset">${pick('app', 'web', p.hkBrowser ?? 'Browser', true)}${pick('app', 'desktop', p.hkDesktop ?? 'Desktop app', false)}</div>
-</div>
-<div class="hk-groups">
-${groups}
-</div>
-<p class="hk-note">${esc(p.hkLayout ?? '')}</p>
-${s.typingNote ? `<p class="hk-note">${esc(s.typingNote)}</p>` : ''}
-<a class="hk-print" href="${cheatSheetPath()}">${PRINTER_ICON}${esc(s.cheatSheet)}</a>
-</section>`;
+/** The English typing note from common.json, the one hotkeys string the sheet shares with the app. */
+function readTypingNote(): string {
+  try {
+    const cat = JSON.parse(fs.readFileSync(path.join(LOCALES_DIR, 'en', 'common.json'), 'utf8')) as {
+      hotkeys?: { typingNote?: string };
+    };
+    return cat.hotkeys?.typingNote ?? '';
+  } catch {
+    return '';
+  }
 }
 
 /**
@@ -1604,8 +1504,8 @@ ${s.typingNote ? `<p class="hk-note">${esc(s.typingNote)}</p>` : ''}
  * print it is the sheet alone, one A4 page, two columns. The sheet itself
  * is always paper-white in both themes, so what you see is what prints.
  * Sourced from src/hotkeysData.ts like the modal and the FAQ leaf, so the
- * three can never drift. Links come here from the About modal's Hotkeys
- * tab, the site footer, and the keyboard-shortcuts leaf's showcase.
+ * two can never drift. Links come here from the About modal's Hotkeys
+ * tab, the site footer, and the keyboard-shortcuts answer.
  */
 function renderCheatSheetHtml(hotkeyGroups: HotkeyGroupData[]): string {
   // English-only page: its chrome strings live here, not in the catalogs
@@ -1623,7 +1523,7 @@ function renderCheatSheetHtml(hotkeyGroups: HotkeyGroupData[]): string {
     'Shortcuts follow the characters your keyboard types, not US key positions: press the key that types the character shown (on a non-Latin layout, the key in its US place). A key that types a character with AltGr always types it.';
   // Groups and rows render the English source labels straight from
   // hotkeysData; only the typing note is shared with the app's catalog.
-  const typingNote = readHotkeyStrings('en').typingNote;
+  const typingNote = readTypingNote();
   // One sheet per key set (Mac or Windows and Linux, browser or desktop
   // app), each with its own two columns: the sets differ in rows and in key
   // widths, so one balance cannot fit all four. The page shows one at a time.
@@ -1817,16 +1717,9 @@ ${typingNote ? `<p>${esc(typingNote)}</p>` : ''}
 </html>`;
 }
 
-/** The rendered demo section for the two showcase entries; '' otherwise. */
-function entryShowcase(
-  id: string,
-  locale: HelpLocale,
-  p: Record<string, string>,
-  hotkeyGroups: HotkeyGroupData[]
-): string {
+/** The rendered demo section for the showcase entry; '' otherwise. */
+function entryShowcase(id: string, p: Record<string, string>): string {
   if (id === 'markdown-syntax') return renderMarkdownShowcase(p.mdShowcase ?? 'See it in action', p);
-  if (id === 'keyboard-shortcuts')
-    return renderHotkeysShowcase(locale, hotkeyGroups, p.hkShowcase ?? 'The full list', p);
   return '';
 }
 
@@ -1885,8 +1778,7 @@ export function renderHubHtml(
   cat: FaqCatalog,
   guideOrder: string[],
   guides: GuidesCatalog | null,
-  suggest: string,
-  hotkeyGroups: HotkeyGroupData[] = []
+  suggest: string
 ): string {
   const sections = buildSections(order, rows, cat);
   const total = sections.reduce((n, s) => n + s.entries.length, 0);
@@ -1902,7 +1794,6 @@ ${THEME_TOGGLE_CSS}
 ${CHROME_CSS}
 ${HELP_SHARED_CSS}
 ${MD_SHOWCASE_CSS}
-${HK_SHOWCASE_CSS}
 .gstrip{margin:8px 0 26px;padding:16px 18px;border:1px solid var(--line);border-radius:14px}
 .gstrip .eyebrow{margin:0 0 4px}
 .glead{margin:0 0 12px;font-size:14px;color:var(--muted)}
@@ -1934,7 +1825,7 @@ ${searchBox(p, 'hub', locale, total)}
 ${askMiniBar(p)}
 </div>
 <div class="col-body" id="faq-list">
-${renderSections(sections, locale, cat, hotkeyGroups)}
+${renderSections(sections, locale, cat)}
 <div class="noresults" id="faq-empty" hidden>
 <p id="faq-empty-lead"></p>
 <button type="button" class="btn btn-ghost" id="faq-empty-clear">${CLEAR_ICON}${esc(p.clearSearch)}</button>
@@ -1956,8 +1847,7 @@ export function renderLeafHtml(
   guideOrder: string[],
   guides: GuidesCatalog | null,
   id: string,
-  suggest: string,
-  hotkeyGroups: HotkeyGroupData[] = []
+  suggest: string
 ): string {
   const p = cat.page;
   const row = rows.find((r) => r.id === id)!;
@@ -1967,15 +1857,9 @@ export function renderLeafHtml(
   const related = rows
     .filter((r) => r.group === row.group && r.id !== id && cat.entries[r.id]?.q)
     .slice(0, 5);
-  // The shortcuts leaf swaps its combo-enumeration paragraph for the keycap
-  // grid below (the full text still feeds the hub, the in-app FAQ tab, the
-  // search haystack, and this page's JSON-LD). Every other leaf renders all
-  // of its paragraphs.
-  const bodyParas = id === 'keyboard-shortcuts' ? entry.a.slice(0, 1) : entry.a;
-  const showcase = entryShowcase(id, locale, p, hotkeyGroups);
-  const showcaseCss =
-    id === 'markdown-syntax' ? MD_SHOWCASE_CSS : id === 'keyboard-shortcuts' ? HK_SHOWCASE_CSS : '';
-  const paragraphs = bodyParas.map((par) => renderParagraph(par, p)).join('\n');
+  const showcase = entryShowcase(id, p);
+  const showcaseCss = id === 'markdown-syntax' ? MD_SHOWCASE_CSS : '';
+  const paragraphs = entry.a.map((par) => renderParagraph(par, p)).join('\n');
   const relatedHtml = related.length
     ? `<div class="related">
 <h2 class="eyebrow">// ${esc(p.related)}</h2>
@@ -2491,13 +2375,13 @@ async function renderAll(): Promise<Rendered[]> {
     const base = prefix ? `${prefix.slice(1)}/help` : 'help';
     out.push({
       fileName: `${base}/index.html`,
-      source: renderHubHtml(locale, order, rows, cat, guideOrder, guidesCat, suggest, hotkeyGroups),
+      source: renderHubHtml(locale, order, rows, cat, guideOrder, guidesCat, suggest),
     });
     for (const r of rows) {
       if (!cat.entries[r.id]?.q) continue;
       out.push({
         fileName: `${base}/${r.id}/index.html`,
-        source: renderLeafHtml(locale, order, rows, cat, guideOrder, guidesCat, r.id, suggest, hotkeyGroups),
+        source: renderLeafHtml(locale, order, rows, cat, guideOrder, guidesCat, r.id, suggest),
       });
     }
     // The printable cheat sheet: ENGLISH ONLY (see cheatSheetPath), so it
@@ -2648,7 +2532,7 @@ export function helpPagePlugin(): Plugin {
               res.setHeader('Content-Type', 'text/plain; charset=utf-8');
               res.end(body);
             } else if (!seg) {
-              html(renderHubHtml(locale, order, rows, cat, guideOrder, guidesCat, suggest, hotkeyGroups));
+              html(renderHubHtml(locale, order, rows, cat, guideOrder, guidesCat, suggest));
             } else if (locale === 'en' && seg === 'keyboard-shortcuts/cheat-sheet') {
               html(renderCheatSheetHtml(hotkeyGroups));
             } else if (seg.startsWith('import/')) {
@@ -2659,7 +2543,7 @@ export function helpPagePlugin(): Plugin {
                 next();
               }
             } else if (rows.some((r) => r.id === seg) && cat.entries[seg]?.q) {
-              html(renderLeafHtml(locale, order, rows, cat, guideOrder, guidesCat, seg, suggest, hotkeyGroups));
+              html(renderLeafHtml(locale, order, rows, cat, guideOrder, guidesCat, seg, suggest));
             } else {
               next();
             }

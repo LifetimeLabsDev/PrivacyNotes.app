@@ -7,15 +7,18 @@
   "resultCount_other": "{{count}} Ergebnisse",
   "keywords": {
     "section_stats": "Statistik, Statistiken, Zahlen, Serie, Heatmap, Wortanzahl, Wörter zählen",
-    "section_journals": "Tagebuch, Journal, Titel, Datumsformat",
     "section_import": "Import, Export, importieren, exportieren, Backup, Sicherung, umziehen, übernehmen, herunterladen",
     "section_plan": "Tarif, Abo, Abonnement, Pro, Abrechnung, Geräte, abmelden, ausloggen",
     "section_storage": "Speicher, Speicherplatz, Kontingent, Platz, Gigabyte, voll",
     "section_images": "Bilder, Fotos, Komprimierung, Qualität",
     "section_security": "Sicherheit, Passwort, Sperre, sperren, Datenschutz, Privatsphäre",
     "section_me": "Sync, Synchronisierung, Konto, Account, Identität, ID",
-    "section_appearance": "Aussehen, Darstellung, Anzeige, Design, Farben, Theme",
+    "section_design": "Aussehen, Anzeige, Design, Farben, Farbdesign, Theme",
+    "section_editor": "Schreiben, Editor, Text, Schrift, Größe, Abstand, Breite, Markdown",
+    "section_formatBar": "Formatleiste, Symbolleiste, Toolbar, Schaltflächen, Knöpfe, anordnen, Plus-Menü",
+    "section_lists": "Liste, Seitenleiste, Raster, Ansichten, Startseite, Tabs, Bereiche",
     "section_language": "Sprache, Übersetzung, Gebietsschema",
+    "section_date": "Datum, Zeit, Uhrzeit, Uhr, Format, Tag, Monat, Jahr, Tagebuch, Journal, Eintragstitel",
     "section_about": "Über, Info, Version, Informationen, Credits, Impressum",
     "section_help": "Hilfe, FAQ, Support, Fragen, Anleitung",
     "stats_writing": "Wörter, Anzahl Notizen, Aktivität, Heatmap",
@@ -28,6 +31,7 @@
     "stats_wellness": "Gesundheit, Stimmung, Schlaf, Medikamente, Tracker",
     "stats_wellnessExport": "Arzt, Ärztin, Bericht, CSV, PDF",
     "journals_suffix": "Titel, Tagebuchname, Eintragstitel",
+    "journals_titles": "Tagebuch, Journal, Eintragstitel, neuer Eintrag, Titelformat",
     "import_export": "herunterladen, speichern, Backup, Sicherung, Archiv",
     "export_zipBackup": "Backup, Sicherung, ZIP, Markdown, alles herunterladen",
     "import_vault": "Passwörter, Logins, Zugangsdaten, Passwortmanager",
@@ -67,6 +71,7 @@
     "appearance_startView": "Startseite, Start, Standardansicht, öffnen mit",
     "appearance_view": "Raster, Liste, Karten, Layout, Ansicht",
     "appearance_sinkChecked": "Aufgaben, Checkliste, Kontrollkästchen, erledigt, Reihenfolge, unten",
+    "appearance_spaces": "Arbeit, privat, persönlich, Arbeitsbereich, Arbeitsbereiche, trennen, wechseln, Profil, Kontext, Workspace",
     "appearance_sidebar": "Seitenleiste, Ansichten ausblenden, Menü, Alles-Liste",
     "language_spellCheck": "Rechtschreibung, Rechtschreibprüfung, rote Unterstreichung, Tippfehler, Wörterbuch",
     "language_language": "Sprache, Übersetzung, Gebietsschema",
@@ -80,6 +85,7 @@
     "about_changelog": "Versionshinweise, Neuigkeiten, was ist neu, Updates",
     "about_hotkeys": "Tastenkürzel, Tastaturkürzel, Shortcuts, Tasten, Hotkeys",
     "about_rating": "Bewertung, bewerten, Sterne, App Store",
-    "appearance_openInTabs": "Tabs, Tab-Leiste, Registerkarten, Browser, öffnen"
+    "appearance_openInTabs": "Tabs, Tab-Leiste, Registerkarten, Browser, öffnen",
+    "appearance_formatBar": "Symbolleiste, Formatleiste, Schaltflächen, anpassen, anordnen, Aufzählung, Durchgestrichen, Zahnrad"
   }
 }

@@ -80,6 +80,13 @@
     "clearFilters": "Rensa filter",
     "filteredAfter": "för att visa dem."
   },
+  "listGroups": {
+    "previous7Days": "Senaste 7 dagarna",
+    "previous30Days": "Senaste 30 dagarna",
+    "other": "Övrigt",
+    "collapseAll": "Fäll ihop alla grupper",
+    "expandAll": "Fäll ut alla grupper"
+  },
   "headerLabel": {
     "allItems": "Alla",
     "untagged": "Otaggade",
@@ -145,7 +152,7 @@
     "exitHover": "Avsluta zenläge (Esc)",
     "enterHover": "Starta zenläge",
     "proHover": "Zenläge (Pro)",
-    "enterAriaShortcut": "Starta zenläge (⌘⇧F)"
+    "enterAriaShortcut": "Starta zenläge ({{keys}})"
   },
   "editor": {
     "backToList": "Tillbaka till anteckningslistan",
@@ -227,10 +234,10 @@
   },
   "settings": {
     "groupYourNotes": "Dina anteckningar",
+    "groupPreferences": "Preferenser",
     "groupAccount": "Konto och data",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "Statistik",
-    "journalsLabel": "Dagböcker",
     "importLabel": "Import och export",
     "planLabel": "Konto",
     "storageLabel": "Lagring",
@@ -238,9 +245,13 @@
     "securityLabel": "Säkerhet",
     "accountLabel": "ID och synk",
     "appearanceLabel": "Utseende",
+    "editorLabel": "Redigerare",
+    "formatBarLabel": "Formatfält",
+    "listsLabel": "Listor",
     "helpLabel": "Hjälp",
     "aboutLabel": "Om",
-    "languageLabel": "Datum och språk",
+    "languageLabel": "Språk",
+    "dateLabel": "Datum",
     "languageDesc": "Välj språket som PrivacyNotes visas på."
   },
   "importStore": {

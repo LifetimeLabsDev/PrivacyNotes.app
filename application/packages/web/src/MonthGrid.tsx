@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { CaretDown, CaretLeft, CaretRight } from './icons';
 import { formatInstant, toLocalIso, weekdayDate, weekdayLabel } from './intlFormat';
 import { intlLocale } from './languages';
+import type { Space } from './spaces';
 
 /**
  * One month of days. It draws and reports a click, nothing else: the hosts
@@ -67,8 +68,10 @@ function sameMonth(a: string, b: string): boolean {
 }
 
 type Props = {
-  /** The days that get a dot. */
-  marked: { has(day: string): boolean };
+  /** The days that get a dot. With `entriesOf`, a dot per space: Personal
+   *  round in the accent, Work square in the warning color, so the shape
+   *  tells them apart without color. Spec: ops/docs/plans/spaces.md (section 9) */
+  marked: { has(day: string): boolean; entriesOf?(day: string): readonly { space: Space | null }[] };
   /** The day drawn with a ring. */
   selected?: string;
   /** A day in the month to show first. Today when absent. */
@@ -179,6 +182,10 @@ export function MonthGrid({ marked, selected, initialMonth, onPick, weeks = 6, o
           const isToday = day === today;
           const hasEntry = marked.has(day);
           const label = formatInstant(dayAtNoon(day), 'date');
+          const kinds = hasEntry && marked.entriesOf ? marked.entriesOf(day).map((e) => e.space) : [];
+          const work = kinds.includes('work');
+          const personal = !work || kinds.some((k) => k !== 'work');
+          const spaceName = work ? t('spaces.work') : kinds[0] === 'personal' ? t('spaces.personal') : null;
           const isSelected = day === selected;
           // Selected: a filled circle. Today: a ring. A dotted day keeps its
           // dot in both, white on the fill, so no state hides another.
@@ -193,7 +200,12 @@ export function MonthGrid({ marked, selected, initialMonth, onPick, weeks = 6, o
               type="button"
               data-day={day}
               tabIndex={day === focus ? 0 : -1}
-              aria-label={hasEntry ? t('monthGrid.dayWithEntry', { date: label }) : label}
+              aria-label={
+                !hasEntry ? label
+                  : kinds.length > 1 ? t('monthGrid.dayWithEntryBoth', { date: label })
+                  : spaceName ? t('monthGrid.dayWithEntryIn', { date: label, space: spaceName })
+                  : t('monthGrid.dayWithEntry', { date: label })
+              }
               aria-current={isToday ? 'date' : undefined}
               aria-pressed={selected !== undefined ? isSelected : undefined}
               onClick={() => onPick(day)}
@@ -204,10 +216,10 @@ export function MonthGrid({ marked, selected, initialMonth, onPick, weeks = 6, o
               >
                 {dayAtNoon(day).getDate()}
                 {hasEntry && (
-                  <span
-                    aria-hidden="true"
-                    className={`absolute bottom-[3px] inset-x-0 mx-auto w-[5px] h-[5px] rounded-full ${isSelected ? 'bg-white' : 'bg-accent'}`}
-                  />
+                  <span aria-hidden="true" className="absolute bottom-[3px] inset-x-0 flex justify-center gap-[2px]">
+                    {personal && <span className={`w-[5px] h-[5px] rounded-full ${isSelected ? 'bg-white' : 'bg-accent'}`} />}
+                    {work && <span className={`w-[5px] h-[5px] rounded-[1px] ${isSelected ? 'bg-white' : 'bg-warning'}`} />}
+                  </span>
                 )}
               </span>
             </button>

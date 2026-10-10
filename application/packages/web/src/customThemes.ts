@@ -48,9 +48,20 @@ export function newCustomThemeId(): string {
   return [...bytes].map((b) => alphabet[b % alphabet.length]).join('');
 }
 
-/** Save a theme's code under its id. */
+/** The most themes of your own a person keeps, so the list stays tidy and
+ *  the settings blob stays small. Deleted themes do not count. */
+export const CUSTOM_THEME_MAX = 50;
+
+/** Whether a save under this id fits: an edit always does, a new theme only
+ *  while there is room. */
+export function canSaveCustomTheme(themes: CustomThemes, id: string): boolean {
+  if (typeof themes[id]?.v === 'string') return true;
+  return liveCustomThemes(themes).length < CUSTOM_THEME_MAX;
+}
+
+/** Save a theme's code under its id. A new theme past the limit is not kept. */
 export function saveCustomTheme(themes: CustomThemes, id: string, code: string): CustomThemes {
-  if (!isCustomThemeId(id) || code.length > CODE_MAX) return themes;
+  if (!isCustomThemeId(id) || code.length > CODE_MAX || !canSaveCustomTheme(themes, id)) return themes;
   const prev = themes[id];
   if (prev?.v === code) return themes;
   return { ...themes, [id]: { v: code, at: stampAfter(prev?.at) } };

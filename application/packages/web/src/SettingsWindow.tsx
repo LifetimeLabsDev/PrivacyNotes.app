@@ -49,8 +49,9 @@ function openLink(href: string) {
  * panes. Callers pass a `categories` array whose `render()` returns the
  * embedded pane, keeping all prop wiring at the call site.
  */
-export function SettingsWindow({ categories, initialCategory, initialSetting, defaultCategory, footer, onClose }: Props) {
+export function SettingsWindow({ categories, initialCategory, initialSetting, defaultCategory, footer, onClose, solo = false }: Props) {
   const { t } = useTranslation('settings');
+  const [alone, setAlone] = useState(solo);
   const isMobile = useIsMobile();
   // Desktop landing: deep-link wins, else the configured default, else the
   // first real pane (link rows have no pane to land on).
@@ -64,7 +65,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState<SearchModule | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [landing, setLanding] = useState<Landing | null>(initialSetting ? { ...initialSetting, flash: true } : null);
+  const [landing, setLanding] = useState<Landing | null>(initialSetting ? { ...initialSetting, flash: initialSetting.flash ?? true } : null);
   // Bumped on every landing, so the pane remounts on the result's tab.
   const [paneKey, setPaneKey] = useState(0);
   const fieldRef = useRef<HTMLInputElement | null>(null);
@@ -323,6 +324,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
               <ArrowLeft size={20} />
             </button>
             <h2 className="min-w-0 text-base font-semibold leading-tight">{active.label}</h2>
+            <div className="ms-auto flex">{closeButton}</div>
           </div>
           {paneBody}
         </div>,
@@ -382,21 +384,45 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
   }
 
   // ---- Desktop: two-pane -------------------------------------------------
-  // h-656: the category rail holds 12 rows + 3 group headers, which need
-  // 522px of rail; 640 left 514 once Images landed and hid the Help row
-  // behind an 8px scroll. 656 clears it with 8px of slack and still sits
-  // under the 85vh cap on a 13" laptop. Adding a 13th category means
-  // re-measuring (rail scrollHeight against clientHeight). The search field
-  // lives in the header for the same reason: the rail has no row to spare.
+  // The category rail holds 15 rows of 32px and 4 group headers, which need
+  // the whole rail of the 720px window (from an 800px screen) with nothing
+  // to spare. On a shorter screen the window is 656px and the rail scrolls.
+  // Adding a category means re-measuring the rail's list (scrollHeight
+  // against clientHeight). The search field lives in the header for the same
+  // reason: the rail has no row to spare. A large screen gets more room for
+  // the wide panes (the format bar board, the theme galleries): 1024px wide
+  // from a 1280px window, and 780px tall from a 920px screen, still under
+  // the 85vh cap.
   return backdrop(
-    <div className="bg-surface-2 border border-divider rounded-lg w-full max-w-4xl h-[656px] max-h-[85vh] flex flex-col text-pn">
+    <div className={`bg-surface-2 border border-divider rounded-lg w-full max-h-[85vh] flex flex-col text-pn ${
+      // Alone, the window fits its one pane: as tall as the pane and narrower,
+      // except the format bar board, which needs the width.
+      alone && activeId !== 'formatBar'
+        ? 'max-w-2xl'
+        : alone
+          ? 'max-w-4xl xl:max-w-5xl'
+          : 'max-w-4xl xl:max-w-5xl h-[656px] [@media(min-height:800px)]:h-[720px] [@media(min-height:920px)]:h-[780px]'
+    }`}>
       <div className="flex items-center gap-4 px-5 py-3 border-b border-divider">
-        <h2 className="text-lg font-semibold whitespace-nowrap">{t('shell.title')}</h2>
-        <div className="flex flex-1 max-w-xs">{field}</div>
+        {alone ? (
+          <button
+            type="button"
+            onClick={() => setAlone(false)}
+            className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 -mx-2 text-sm font-medium text-pn-soft hover:text-pn hover:bg-surface-1 transition"
+          >
+            <ArrowLeft size={14} aria-hidden="true" />
+            {t('shell.allSettings')}
+          </button>
+        ) : (
+          <>
+            <h2 className="text-lg font-semibold whitespace-nowrap">{t('shell.title')}</h2>
+            <div className="flex flex-1 max-w-xs">{field}</div>
+          </>
+        )}
         <div className="ms-auto flex">{closeButton}</div>
       </div>
       <div className="flex flex-1 min-h-0">
-        <nav className="w-56 shrink-0 border-e border-divider flex flex-col p-2">
+        <nav className={`${alone ? 'hidden' : 'flex'} w-56 shrink-0 border-e border-divider flex-col p-2`}>
           <div className="flex-1 min-h-0 overflow-y-auto">
             {categories.map((c, i) => {
               const on = !searching && c.id === activeId;
@@ -411,7 +437,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
               return (
                 <Fragment key={c.id}>
                   {showHeader && (
-                    <div className={`px-3 pt-3 pb-1 first:pt-1 ${SETTINGS_EYEBROW}`}>
+                    <div className={`px-3 pt-2 pb-0.5 first:pt-1 ${SETTINGS_EYEBROW}`}>
                       {c.group}
                     </div>
                   )}
@@ -420,7 +446,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
                       href={c.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-start transition text-pn-soft hover:bg-surface-1 ${dim ? 'opacity-45' : ''}`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-1.5 rounded-md text-sm text-start transition text-pn-soft hover:bg-surface-1 ${dim ? 'opacity-45' : ''}`}
                     >
                       <span className="shrink-0 text-accent">{c.icon}</span>
                       <span className="flex-1 inline-flex items-center gap-1.5">
@@ -434,7 +460,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
                       type="button"
                       onClick={() => openCategory(c.id)}
                       aria-current={on}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-start transition ${
+                      className={`w-full flex items-center gap-2.5 px-3 py-1.5 rounded-md text-sm text-start transition ${
                         on
                           ? 'bg-accent/10 text-accent-strong font-medium'
                           : 'text-pn-soft hover:bg-surface-1'
@@ -461,7 +487,7 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
             results
           ) : (
             <>
-              {active && (
+              {active && (!active.ownHeading || (landing && query)) && (
                 <div className="px-6 pt-4 pb-1 shrink-0">
                   {landing && query && (
                     <button
@@ -473,11 +499,13 @@ export function SettingsWindow({ categories, initialCategory, initialSetting, de
                       {t('settingsSearch:backToResults')}
                     </button>
                   )}
-                  <div className="flex items-center gap-2.5">
-                    <AccentBar />
-                    <h3 className="text-base font-semibold">{active.label}</h3>
-                    <HeadlineRule />
-                  </div>
+                  {!active.ownHeading && (
+                    <div className="flex items-center gap-2.5">
+                      <AccentBar />
+                      <h3 className="text-base font-semibold">{active.label}</h3>
+                      <HeadlineRule />
+                    </div>
+                  )}
                 </div>
               )}
               {paneBody}

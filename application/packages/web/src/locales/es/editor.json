@@ -39,7 +39,9 @@
     "dateTime": "Fecha y hora",
     "footnote": "Nota al pie",
     "spoiler": "Spoiler",
-    "copyBox": "Cuadro para copiar"
+    "copyBox": "Cuadro para copiar",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Personalizar la barra de formato"
   },
   "align": {
     "left": "Alinear a la izquierda",
@@ -78,10 +80,19 @@
       "question": "Pregunta",
       "quote": "Cita",
       "example": "Ejemplo",
-      "bug": "Bug",
+      "bug": "Error",
       "note": "Nota",
       "abstract": "Resumen",
-      "failure": "Fallo"
+      "failure": "Fallo",
+      "fold": "Desplegable",
+      "idea": "Idea",
+      "important": "Importante",
+      "caution": "Precaución",
+      "todo": "Tarea",
+      "goal": "Objetivo",
+      "decision": "Decisión",
+      "definition": "Definición",
+      "seealso": "Ver también"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "Formato",
     "insert": "Insertar",
     "blocks": "Bloques",
     "notation": "Notación"
@@ -145,6 +157,8 @@
     "hide": "Ocultar esquema",
     "hideTitle": "Ocultar esquema (Esc)",
     "copyHeadingLink": "Copiar enlace al encabezado",
+    "copyNoteLink": "Copiar enlace entre notas",
+    "copyHeadingShortcut": "Copiar acceso directo al encabezado",
     "copied": "Copiado"
   },
   "bodyMenu": {
@@ -242,5 +256,47 @@
     "missing": "La nota no tiene texto. Haz clic para añadirlo.",
     "ariaRef": "Nota {{n}}",
     "ariaSection": "Notas al pie"
+  },
+  "formatBar": {
+    "tryIt": "Pruébalo: organiza la barra aquí y comprueba qué te parece.",
+    "previewOnly": "Solo es una vista previa. Tu disposición se guarda en cuanto tengas Pro.",
+    "discard": "Descartar",
+    "keepLayout": "Conservar esta disposición",
+    "hintDrag": "Arrastra para mover, haz clic para ver las opciones.",
+    "hintTap": "Toca un botón para ver sus opciones.",
+    "onBar": "En la barra",
+    "inMenu": "En el menú +",
+    "menuEmpty": "El menú está vacío, así que el botón + no se muestra.",
+    "hidden": "Ocultos",
+    "hiddenNote": "Siguen funcionando con su atajo y en Markdown.",
+    "hiddenDrop": "Suelta un botón aquí para ocultarlo.",
+    "hiddenEmpty": "No hay nada oculto.",
+    "alwaysVisible": "Siempre visibles",
+    "pinned": "Abre un panel, así que queda en la barra u oculto",
+    "optionsFor": "Opciones de {{item}}",
+    "moveUp": "Subir",
+    "moveDown": "Bajar",
+    "moveLeft": "Mover a la izquierda",
+    "moveRight": "Mover a la derecha",
+    "home": {
+      "bar": "En la barra",
+      "menu": "En el menú +",
+      "hidden": "Oculto"
+    },
+    "opensPanel": "abre un panel",
+    "showsRecording": "muestra la grabación",
+    "refuse": {
+      "menuNotAllowed": "{{item}} puede estar en la barra u oculto, no en el menú +.",
+      "lastOnBar": "Deja al menos un botón en la barra."
+    },
+    "items": {
+      "link": "Enlace",
+      "notelink": "Enlace entre notas",
+      "audio": "Grabación"
+    },
+    "positionTitle": "Posición de la barra",
+    "positionNote": "Elige dónde va la barra de formato en el editor.",
+    "positionTop": "Arriba",
+    "positionBottom": "Abajo"
   }
 }

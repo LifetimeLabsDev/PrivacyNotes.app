@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, Copy, Eye, EyeSlash, FloppyDisk, Info, Key, Lock, NotePencil, Shield, Tag } from './icons';
+import { Check, Copy, Download, Eye, EyeSlash, FloppyDisk, Info, Key, Lock, NotePencil, Shield, Tag } from './icons';
 import { hasPin } from './pin';
 import { PinInfoModal } from './PinInfoModal';
 import { HoverLabel } from './HoverLabel';
@@ -50,8 +50,8 @@ function extractKeyComment(pubKey: string): string {
  * Ed25519 key pair generation via Web Crypto (or fallback message)
  *
  * Web Crypto doesn't support Ed25519 in all browsers. We attempt
- * it and show a message if it fails. The generated keys are in
- * OpenSSH format for copy-paste convenience.
+ * it and show a message if it fails. Both keys are written in the
+ * OpenSSH formats, the only ones every `ssh` build reads.
  * ──────────────────────────────────────────────────────────────── */
 
 /** The key comment runs to the end of the line, so the label is folded onto one line. An
@@ -80,10 +80,11 @@ export async function generateEd25519Pair(label: string): Promise<{ privateKey: 
     const comment = label.trim().replace(/\s+/g, ' ');
     const publicKey = comment ? `ssh-ed25519 ${pubB64} ${comment}` : `ssh-ed25519 ${pubB64}`;
 
-    // PEM private key (PKCS#8)
-    const privB64 = btoa(String.fromCharCode(...new Uint8Array(privRaw)));
-    const lines = privB64.match(/.{1,64}/g) ?? [];
-    const privateKey = `-----BEGIN PRIVATE KEY-----\n${lines.join('\n')}\n-----END PRIVATE KEY-----`;
+    // Loaded on use: vaultFields pulls this file onto the boot path.
+    const { ed25519SeedFromPkcs8, openSshEd25519PrivateKey } = await import('./sshKeyFile');
+    const seed = ed25519SeedFromPkcs8(new Uint8Array(privRaw));
+    if (!seed) return null;
+    const privateKey = openSshEd25519PrivateKey(seed, pubBytes, comment).trimEnd();
 
     return { privateKey, publicKey };
   } catch {
@@ -103,6 +104,16 @@ function CopyBtn({ onClick, active, title }: { onClick: () => void; active: bool
         ) : (
           <Copy size={16} />
         )}
+      </button>
+    </HoverLabel>
+  );
+}
+
+function DownloadBtn({ onClick, title }: { onClick: () => void; title: string }) {
+  return (
+    <HoverLabel label={title} position="start">
+      <button type="button" onClick={onClick} aria-label={title} className={FIELD_BUTTON}>
+        <Download size={16} />
       </button>
     </HoverLabel>
   );
@@ -152,6 +163,7 @@ export function SshKeyForm({
   const [showPassphrase, setShowPassphrase] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError] = useState('');
+  const [downloadError, setDownloadError] = useState(false);
 
   const updateBody = useCallback(
     (patch: Partial<SshKeyData>) => {
@@ -191,6 +203,13 @@ export function SshKeyForm({
     }
     setGenerating(false);
   }, [noteId, title, data.label, onTitleChange, updateBody]);
+
+  const downloadKey = useCallback(async (which: 'private' | 'public') => {
+    setDownloadError(false);
+    const { downloadSshKey } = await import('./sshKeyFile');
+    const saved = await downloadSshKey(which, data);
+    if (!saved.ok && saved.reason === 'failed') setDownloadError(true);
+  }, [data.privateKey, data.publicKey]);
 
   const fieldClass = FIELD_CLASS;
 
@@ -246,6 +265,9 @@ export function SshKeyForm({
               active={copied === 'publicKey'}
               title={t('sshKeyForm.copyPublicKey')}
             />
+            {data.publicKey.trim() && (
+              <DownloadBtn onClick={() => void downloadKey('public')} title={t('sshKeyForm.downloadPublicKey')} />
+            )}
           </div>
         </div>
 
@@ -288,7 +310,16 @@ export function SshKeyForm({
               active={copied === 'privateKey'}
               title={t('sshKeyForm.copyPrivateKey')}
             />
+            {data.privateKey.trim() && (
+              <DownloadBtn onClick={() => void downloadKey('private')} title={t('sshKeyForm.downloadPrivateKey')} />
+            )}
           </div>
+          {data.privateKey.trim() && (
+            <p className="text-[11px] text-pn-muted mt-1.5">{t('sshKeyForm.downloadHint')}</p>
+          )}
+          {downloadError && (
+            <p className="text-[11px] text-danger mt-1.5">{t('sshKeyForm.downloadFailed')}</p>
+          )}
         </div>
 
         {/* Passphrase */}

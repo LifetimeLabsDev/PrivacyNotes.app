@@ -39,7 +39,9 @@
     "dateTime": "Data i godzina",
     "footnote": "Przypis",
     "spoiler": "Spoiler",
-    "copyBox": "Pole do kopiowania"
+    "copyBox": "Pole do kopiowania",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Dostosuj pasek formatowania"
   },
   "align": {
     "left": "Wyrównaj do lewej",
@@ -81,7 +83,16 @@
       "bug": "Błąd",
       "note": "Notatka",
       "abstract": "Streszczenie",
-      "failure": "Niepowodzenie"
+      "failure": "Niepowodzenie",
+      "fold": "Zwijane",
+      "idea": "Pomysł",
+      "important": "Ważne",
+      "caution": "Uwaga",
+      "todo": "Do zrobienia",
+      "goal": "Cel",
+      "decision": "Decyzja",
+      "definition": "Definicja",
+      "seealso": "Zobacz też"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "Formatowanie",
     "insert": "Wstaw",
     "blocks": "Bloki",
     "notation": "Notacja"
@@ -147,6 +159,8 @@
     "hide": "Ukryj konspekt",
     "hideTitle": "Ukryj konspekt (Esc)",
     "copyHeadingLink": "Kopiuj link do nagłówka",
+    "copyNoteLink": "Kopiuj link do notatki",
+    "copyHeadingShortcut": "Kopiuj skrót do nagłówka",
     "copied": "Skopiowano"
   },
   "bodyMenu": {
@@ -251,5 +265,47 @@
     "missing": "Przypis nie ma treści. Kliknij, aby ją dodać.",
     "ariaRef": "Przypis {{n}}",
     "ariaSection": "Przypisy"
+  },
+  "formatBar": {
+    "tryIt": "Wypróbuj: ułóż tu pasek i zobacz, jak ci pasuje.",
+    "previewOnly": "Tylko podgląd. Twój układ zapisze się, gdy tylko będziesz mieć Pro.",
+    "discard": "Odrzuć",
+    "keepLayout": "Zachowaj ten układ",
+    "hintDrag": "Przeciągnij, aby przenieść, kliknij, aby zobaczyć opcje.",
+    "hintTap": "Stuknij przycisk, aby zobaczyć jego opcje.",
+    "onBar": "Na pasku",
+    "inMenu": "W menu +",
+    "menuEmpty": "Menu jest puste, więc przycisk + nie jest pokazywany.",
+    "hidden": "Ukryte",
+    "hiddenNote": "Nadal działają przez skrót i Markdown.",
+    "hiddenDrop": "Upuść tu przycisk, aby go ukryć.",
+    "hiddenEmpty": "Nic nie jest ukryte.",
+    "alwaysVisible": "Zawsze widoczne",
+    "pinned": "Otwiera panel, więc zostaje na pasku albo jest ukryty",
+    "optionsFor": "Opcje: {{item}}",
+    "moveUp": "Przenieś w górę",
+    "moveDown": "Przenieś w dół",
+    "moveLeft": "Przenieś w lewo",
+    "moveRight": "Przenieś w prawo",
+    "home": {
+      "bar": "Na pasku",
+      "menu": "W menu +",
+      "hidden": "Ukryty"
+    },
+    "opensPanel": "otwiera panel",
+    "showsRecording": "pokazuje nagranie",
+    "refuse": {
+      "menuNotAllowed": "{{item}} może być na pasku albo ukryty, nie w menu +.",
+      "lastOnBar": "Zostaw na pasku przynajmniej jeden przycisk."
+    },
+    "items": {
+      "link": "Link",
+      "notelink": "Link do notatki",
+      "audio": "Nagranie"
+    },
+    "positionTitle": "Położenie paska",
+    "positionNote": "Wybierz, gdzie w edytorze ma być pasek formatowania.",
+    "positionTop": "Góra",
+    "positionBottom": "Dół"
   }
 }

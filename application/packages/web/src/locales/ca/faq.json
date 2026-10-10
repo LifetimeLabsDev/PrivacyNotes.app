@@ -49,13 +49,7 @@
     "mdDemoScripts": "Superíndex, subíndex, subratllat",
     "mdDemoMath": "Matemàtiques (KaTeX)",
     "mdDemoQuote": "Citació i enllaç entre notes",
-    "mdDemoDivider": "Separador",
-    "hkShowcase": "La llista completa",
-    "hkMac": "Mac",
-    "hkPc": "Windows i Linux",
-    "hkBrowser": "Navegador",
-    "hkDesktop": "App d'escriptori",
-    "hkLayout": "Les dreceres segueixen els caràcters que escriu el teu teclat, no la posició de les tecles en un teclat nord-americà: prem la tecla que escriu el caràcter que es mostra (en una distribució no llatina, la tecla que ocupa el seu lloc al teclat nord-americà). Una tecla que escriu un caràcter amb AltGr sempre l'escriu."
+    "mdDemoDivider": "Separador"
   },
   "groups": {
     "gettingStarted": "Primers passos",
@@ -100,6 +94,14 @@
       "a": [
         "Les notes, els títols, les etiquetes i els adjunts estan sempre xifrats, al teu dispositiu i de camí al servidor. Amb autocustòdia, que és el punt de partida de tots els comptes creats amb una frase, no tenim cap clau de desxifratge. Si et registres amb Google, Apple o GitHub, l'app et pregunta on vols guardar la clau i comença amb «Mantén-ho simple i còmode», que desa la frase al nostre servidor, xifrada amb una clau nostra. En aquest mode, el nostre servidor pot desxifrar la frase i, per tant, les teves notes. Configuració > Compte > Custòdia de la clau mostra el mode actual i et permet canviar-lo.",
         "Podem veure la informació necessària per fer funcionar el servei: quant d'emmagatzematge xifrat utilitzes, quants dispositius tens vinculats i les marques de temps de sincronització. Si només utilitzes la frase i no has connectat cap compte de Google, Apple o GitHub, no sabem la teva adreça de correu electrònic."
+      ]
+    },
+    "app-privacy-label": {
+      "q": "Per què l’etiqueta de privacitat de l’App Store diu que les meves dades estan vinculades a mi?",
+      "a": [
+        "Perquè Apple demana una sola etiqueta que cobreixi tot el que pot arribar al nostre servidor, encara que hi arribi xifrat i encara que només ho enviïn alguns comptes. Vinculades a tu vol dir associades a un compte, i el compte darrere d’un registre amb frase és una clau, no un nom. Res no s’utilitza per fer seguiment, i l’app no inclou analítiques, anuncis ni informes d’errors. Cada línia de l’etiqueta vol dir una sola cosa:",
+        "- **Contingut de l’usuari**: les teves notes i fitxers, xifrats al teu dispositiu. Amb autocustòdia no els podem llegir.\n- **Identificadors**: una clau pública derivada de la teva frase de recuperació i un hash del dispositiu calculat al teu dispositiu, que només aplica el límit de dispositius del pla gratuït.\n- **Informació de contacte**: una adreça de correu, només si inicies la sessió amb Google, Apple o GitHub.\n- **Compres**: si el teu compte té Pro. Apple gestiona el pagament i mai no veiem la teva targeta.",
+        "Perquè aquesta llista sigui tan curta com sigui possible al teu compte, registra’t amb una frase de recuperació en lloc d’un inici de sessió de Google, Apple o GitHub, i mantén l’autocustòdia. Configuració > Compte > Custòdia de la clau mostra el mode actual. [Què pot veure PrivacyNotes](/ca/help/what-can-you-see/) explica la resta."
       ]
     },
     "phrase-vs-password": {
@@ -400,7 +402,7 @@
     "languages": {
       "q": "Quins idiomes parla l'aplicació?",
       "a": [
-        "Anglès, alemany, francès, italià, espanyol, neerlandès, polonès, txec, català, turc, suec, ucraïnès, rus, japonès, coreà, xinès tradicional, tailandès, àrab i portuguès, en les variants europea i brasilera. L'aplicació segueix per defecte l'idioma del sistema, o pots fixar-ne un explícitament a Configuració > Data i llengua > Llengua a cada dispositiu.",
+        "Anglès, alemany, francès, italià, espanyol, neerlandès, polonès, txec, català, turc, suec, ucraïnès, rus, japonès, coreà, xinès tradicional, tailandès, àrab i portuguès, en les variants europea i brasilera. L'aplicació segueix per defecte l'idioma del sistema, o pots fixar-ne un explícitament a Configuració > Llengua a cada dispositiu.",
         "Les traduccions són gratuïtes per a tothom, no pas un avantatge de Pro. Hi ha més idiomes previstos; si el teu hi falta, digue'ns-ho a [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) o a [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -458,8 +460,7 @@
       "q": "Quines dreceres de teclat hi ha?",
       "a": [
         "Prem ? a qualsevol lloc de l'aplicació per obrir la guia ràpida integrada, també disponible a Configuració > Informació. Les dreceres cobreixen la navegació, les accions de nota, el format i les vistes - i a Windows i Linux, cada Cmd es llegeix com a Ctrl i Option com a Alt.",
-        "L'essencial: Cmd+K salta a qualsevol element o ajust pel seu nom, i la seva última fila cerca al text de la secció oberta; / enfoca la cerca, J i K recorren la llista, Cmd+[ i Cmd+] van enrere i endavant pels elements que has obert, Alt+Shift+N crea una nota nova, Cmd+Backspace envia a la paperera la seleccionada, Cmd+, obre la Configuració. Mentre escrius: Cmd+B negreta, Cmd+I cursiva, Cmd+Shift+K insereix un enllaç, Cmd+Shift+9 comença una llista de tasques, Cmd+F cerca dins de la nota, Cmd+Shift+O mostra o amaga l'esquema, Cmd+Shift+M canvia a la vista Markdown. Cmd+\\ o Cmd+Shift+D amaga la barra lateral, Cmd+Shift+L canvia el tema, Cmd+Shift+F entra en mode zen (Pro), i Esc surt de gairebé qualsevol cosa, filtres inclosos. Escriu > a la cerca o a Cmd+K (o prem > fora d'un camp de text) per trobar qualsevol ordre pel seu nom i executar-la.",
-        "Les apps d'escriptori afegeixen les tecles que un navegador es reserva: Cmd+N per a una nota nova, Cmd+Shift+N per a un element nou de qualsevol tipus, Cmd+W per tancar una pestanya, Ctrl+Tab per moure't entre pestanyes, de Cmd+1 a Cmd+9 per a les seccions de la barra lateral i Cmd+Shift+P per a la llista d'ordres."
+        "La [guia ràpida imprimible](/help/keyboard-shortcuts/cheat-sheet) recull totes les dreceres en una sola pàgina A4, per a Mac o per a Windows i Linux, i per al navegador o les apps d'escriptori. Es genera a partir de la mateixa llista que mostra l'app, així que sempre coincideix amb la versió que fas servir."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -638,8 +639,15 @@
     "tags": {
       "q": "Com funcionen les etiquetes?",
       "a": [
-        "Cada nota oberta té una fila d'etiquetes sota el títol. Escriu una paraula i prem Retorn, coma o #, i l'etiqueta es converteix en una fitxa. La barra lateral llista cada etiqueta que fas servir, i un clic filtra la llista a aquelles notes. Pots canviar el nom d'una etiqueta a tot arreu de cop, afegir-la als preferits perquè quedi fixada a dalt, o suprimir-la, amb les notes que la porten o sense.",
+        "Cada nota oberta té una fila d'etiquetes sota el títol. Escriu una paraula i prem Retorn, coma o #, i l'etiqueta es converteix en una fitxa. La barra lateral llista les etiquetes que fa servir la secció oberta, i un clic filtra la llista a aquells elements. Pots canviar el nom d'una etiqueta a tot arreu de cop, afegir-la als preferits perquè quedi fixada a dalt, o suprimir-la, amb les notes que la porten o sense.",
         "Les etiquetes i les carpetes resolen problemes diferents: una nota viu en una carpeta però porta tantes etiquetes com vulguis, que és just el que necessites quan una cosa és alhora \"feina\" i \"factura\". Les importacions etiqueten per origen, així que tot el que arriba d'una altra app aterra amb la seva pròpia etiqueta i és fàcil de trobar, o de netejar més endavant."
+      ]
+    },
+    "organize": {
+      "q": "Com funcionen junts les seccions, carpetes, etiquetes i espais?",
+      "a": [
+        "Tot el que guardes viu en una sola biblioteca. Les seccions de la barra lateral, com Notes, Caixa forta i Diaris, són vistes d'aquesta biblioteca per tipus. Una carpeta és un lloc, així que una mateixa carpeta pot guardar una nota i l'inici de sessió que hi va, i l'arbre de carpetes és el mateix a cada secció. Els seus números compten el que conté la secció oberta, i una carpeta sense res d'aquesta secció es mostra atenuada. Una etiqueta és un rètol, i la barra lateral només llista les etiquetes que fa servir la secció oberta.",
+        "Els espais divideixen la biblioteca en Personal i Feina i en mostren un cada cop. Una carpeta de primer nivell pertany a un espai, amb tot el que conté, i **Mou a Feina** al seu menú la passa a l'altre. Un element sense carpeta pertany a Personal, així que tot el que crees a Feina va a una carpeta de Feina. Les etiquetes són gratuïtes, i les carpetes i els espais requereixen Pro."
       ]
     },
     "note-links": {
@@ -652,8 +660,8 @@
     "appearance": {
       "q": "Puc canviar l'aspecte de l'app?",
       "a": [
-        "Sí, a Configuració > Aparença. Mode canvia entre Clar, Fosc i Auto, que segueix el teu sistema. Mida del text té quatre passos i només escala la teva superfície d'escriptura: la interfície del voltant es queda igual. Visualització col·loca els elements com a Llista o Graella. Editor decideix si les notes s'obren Amb format o com a Markdown pur.",
-        "Els temes de color són l'única part darrere de Pro: el tema per defecte és gratuït i Pro desbloqueja la resta, tant clars com foscos. El mode zen, que amaga tot menys el teu text, també és Pro (Cmd+Shift+F). El mode i la mida del text es queden al dispositiu on els ajustes. Tota la resta segueix el teu compte cap als altres dispositius."
+        "Sí. Configuració > Aparença recull l'aspecte: **Mode** canvia entre Clar, Fosc i Auto, que segueix el teu sistema, i tries un tema de color per al mode clar i un per al fosc. Configuració > Editor recull com escrius: **Mida del text** té cinc passos i només escala la teva superfície d'escriptura, així que la interfície del voltant es queda igual, i **Editor** decideix si les notes s'obren Amb format o com a Markdown pur. Configuració > Llistes col·loca els elements com a Llista o Graella. A les apps d'escriptori, **Mida de l'app** a Configuració > Aparença escala tota la finestra. El botó **Aparença** del peu de pàgina recull els ajustos que més canvies, amb tres temes preferits per a cada mode.",
+        "Els temes de color necessiten Pro: el tema per defecte és gratuït i Pro desbloqueja la resta, tant clars com foscos, a més dels [teus propis temes](/ca/help/custom-themes/). El mode zen, que amaga tot menys el teu text (Cmd+Maj+F), també és Pro. Moure la [barra de format](/ca/help/format-bar/) a dalt o a baix és gratuït, i organitzar-ne els botons és Pro. El mode, els temes de color que tries i els teus tres preferits, la mida del text, Llista o Graella i la mida de l'app es queden al dispositiu on els ajustes. El mode de l'editor, l'interlineat, els colors de les notes i la configuració de les llistes segueixen el teu compte cap als altres dispositius."
       ]
     },
     "share-with-someone": {
@@ -761,6 +769,139 @@
       "a": [
         "El teu espai ja és lliure. En el moment que l'esborrat se sincronitza, aquests bytes deixen de comptar per a la teva quota, al servidor igual que en aquest dispositiu. Si la barra encara mostra la xifra antiga, prem la icona d'actualitzar del costat: torna a comptar des del servidor i deixa fora tot el que ja és a la cua d'esborrat. Un dispositiu que ha estat fora de línia manté el seu darrer recompte fins que es posa al dia.",
         "Els \"pocs dies\" de què parla l'app són sobre el fitxer xifrat mateix, no sobre la teva quota, i aquesta espera és deliberada. Esborrar un fitxer de l'emmagatzematge és definitiu, no hi ha paperera d'on repescar-lo. Un dispositiu que no ha acabat de sincronitzar té una imatge incompleta de les teves notes, així que podria esborrar una imatge que una altra nota encara mostra. Per això un fitxer espera com a mínim 24 hores, i només el retira un dispositiu que ha completat una sincronització neta. Aquesta paciència no et costa res, perquè l'espai se't va abonar el dia que vas esborrar."
+      ]
+    },
+    "spoiler-text": {
+      "q": "Com amago un espòiler en una nota?",
+      "a": [
+        "Selecciona el text i tria **Espòiler** al menú + de la barra de format, o escriu-lo entre dos parells de barres: `||spoiler||`. El text es difumina de seguida. Mentre edites, es mostra tan bon punt el cursor el toca i es torna a difuminar quan el cursor se'n va. En una nota només de lectura, un clic el mostra.",
+        "La llista de notes i les previsualitzacions mostren `•••` al seu lloc, de manera que ni tan sols la llargada el delata. La cerca continua trobant les paraules d'un espòiler, una exportació HTML les manté difuminades fins que el lector hi fa clic, i una impressió les mostra. Una exportació Markdown conserva les barres, que les altres apps de Markdown mostren com a simples caràcters al voltant del text. Els espòilers són gratuïts."
+      ]
+    },
+    "copy-box": {
+      "q": "Com faig un text que es copiï amb un clic?",
+      "a": [
+        "Afegeix un quadre per copiar: tria **Quadre per copiar** al menú + de la barra de format i després escriu o enganxa el text a dins, per exemple una ordre, una adreça o un codi. El botó de la cantonada posa tot el text al porta-retalls i mostra **Copiat** un moment. Un bloc de codi i un quadre per copiar es converteixen l'un en l'altre, així que també pots canviar un bloc que ja tinguis.",
+        "El codi en línia també es copia. En una nota només de lectura, un clic o un toc sobre el codi en línia el copia. Mentre edites, Cmd+clic en un Mac o Ctrl+clic a Windows i Linux el copia, de manera que un clic normal continua col·locant el cursor. Un quadre per copiar es desa com un bloc de codi amb el llenguatge `copy`, que les altres apps de Markdown mostren com un bloc de codi normal. Tots dos són gratuïts."
+      ]
+    },
+    "footnotes": {
+      "q": "Com afegeixo notes a peu de pàgina a una nota?",
+      "a": [
+        "Tria **Nota a peu de pàgina** al menú + de la barra de format. L'app afegeix el número següent on tens el cursor, crea una nota a peu de pàgina buida sota el text i hi posa el cursor. També pots escriure `[^1]` just després d'una paraula i començar una línia amb `[^1]: ` per escriure la nota mateixa. Una etiqueta pot ser una paraula, a més d'un número.",
+        "Fes clic en un número per anar a la seva nota, i la fletxa enrere o Esc et tornen al text. En un ordinador, si deixes el punter sobre un número, la nota es mostra en una petita targeta. Els números segueixen l'ordre del text, i la nota desa notes a peu de pàgina de Markdown estàndard, així que les altres apps de Markdown les poden llegir. Una exportació HTML, un PDF i una burn note les conserven com a notes a peu de pàgina enllaçades. Les notes a peu de pàgina són gratuïtes."
+      ]
+    },
+    "statistics": {
+      "q": "Què mostren les estadístiques sobre la meva escriptura i el meu benestar?",
+      "a": [
+        "Obre Configuració > Estadístiques, o fes clic al recompte de notes i paraules del peu de pàgina. **Resum** resumeix la teva setmana: la ratxa d'escriptura, les paraules escrites, l'estat d'ànim i els dies registrats, a més d'una graella de les últimes 26 setmanes i les hores en què acostumes a escriure. **Escriptura** compta les teves notes, paraules i etiquetes, mostra la ratxa actual i la més llarga, i llista les teves fites. **Benestar** mostra en gràfics cada seguiment del teu diari en el període que triïs, inclosos els seguiments personalitzats.",
+        "Tot es calcula al teu dispositiu, i no se'ns envia res de tot això. Les paraules i les hores d'escriptura compten el que escrius en aquell dispositiu, així que cada dispositiu mostra les seves pròpies xifres. Els gràfics, les ratxes, el calendari de medicació i **Baixa el JSON** són gratuïts. Pro hi afegeix el resum de la setmana, què mou el teu ànim, la taula de Patrons, les comparacions del mateix dia i de l'endemà, un **PDF per al metge** i una indicació per a la IA a punt per copiar."
+      ]
+    },
+    "drag-to-folder": {
+      "q": "Puc arrossegar una nota a una carpeta o a una etiqueta?",
+      "a": [
+        "Sí. Arrossega una nota de la llista a una carpeta de la barra lateral per moure-la-hi, o a **Sense carpeta** per treure-la de la seva carpeta. Deixa-la anar sobre una etiqueta per afegir-li aquella etiqueta, i la nota conserva les que ja tenia. Les tasques, els marcadors, els contactes, els elements de la Caixa forta i els fitxers pujats a Fitxers s'arrosseguen igual. Deixa un moment un element arrossegat sobre una carpeta tancada i s'obrirà, perquè puguis arribar a una subcarpeta.",
+        "Per moure'n diversos alhora, selecciona'ls amb Cmd+clic en un Mac o Ctrl+clic a Windows i Linux, afegeix un interval amb Maj+clic i arrossega qualsevol element seleccionat. Per arrossegar cal un ratolí, un trackpad o un llapis i una finestra prou ampla per mostrar la barra lateral. En un mòbil, fes servir **Mou a una carpeta** al menú \"...\". Les etiquetes són gratuïtes, i les [carpetes](/ca/help/folders/) necessiten Pro."
+      ]
+    },
+    "custom-themes": {
+      "q": "Puc crear el meu propi tema de colors?",
+      "a": [
+        "Sí, amb Pro. Obre Configuració > Aparença i tria **Tema nou**. Tria sis colors (Fons, Barra lateral, Vora, Text, Text atenuat i Accent) i l'app suggereix la resta, mentre l'app de darrere del panell mostra el teu tema a mesura que avances. Una comprovació de contrast assenyala qualsevol text difícil de llegir i ofereix **Corregeix-ho tot**. Desa s'activa quan passen totes les comprovacions.",
+        "El menú de cada targeta de tema té **Copia el codi**, que copia el tema com un codi de text curt que pots enviar a qualsevol persona, i **Enganxa un codi de tema** n'afegeix un que hagis rebut. Tries un tema per al mode clar i un per al fosc, **Preferit** al menú d'una targeta posa fins a tres temes de cada mode al botó **Aparença** del peu de pàgina, i els temes que crees se sincronitzen a tots els teus dispositius. En trobaràs més a [la pàgina de temes](https://privacynotes.app/themes), on també pots enviar el teu. El tema Default és gratuït, i tots els altres temes necessiten Pro."
+      ]
+    },
+    "format-bar": {
+      "q": "Puc triar quins botons apareixen a la barra de format?",
+      "a": [
+        "Sí. Fes clic a l'engranatge del final de la barra de format, o obre Configuració > Barra de format. Cada botó té tres llocs possibles: **A la barra**, **Al menú +** o **Amagats**. Arrossega un botó per moure'l, o fes-hi clic per veure'n les opcions. Un botó amagat continua funcionant amb la seva drecera de teclat i el seu Markdown, així que amagar-ne un no et treu res.",
+        "Moure la barra a dalt o a baix és gratuït en tots els comptes. Organitzar-ne els botons forma part de Pro: en un compte gratuït, Configuració > Barra de format funciona com una vista prèvia que pots provar, i la disposició es desa quan tens Pro. La teva disposició segueix el teu compte a tots els dispositius, i **Restableix els valors per defecte** torna la barra estàndard. En una pantalla tàctil, la barra és una sola fila que es desplaça cap al costat, en tots els comptes, així que cap botó no queda amagat en una segona fila."
+      ]
+    },
+    "window-zoom": {
+      "q": "Puc fer més gran o més petita tota l'app d'escriptori?",
+      "a": [
+        "Sí, a les apps d'escriptori per a Mac, Windows i Linux. Prem Cmd i la tecla més en un Mac, o Ctrl i la tecla més a Windows i Linux, per fer més gran tota la finestra. La tecla menys la fa més petita, i 0 la torna a la mida normal. El mateix control és **Mida de l'app** a Configuració > Aparença, amb passos del 80% al 200%.",
+        "La mida de l'app escala tot alhora: la barra lateral, la llista, els menús i el teu text. Per canviar només la teva escriptura, fes servir **Mida del text** a Configuració > Editor. La mida de l'app s'aplica al dispositiu on l'ajustes. En un navegador, el zoom del mateix navegador fa la mateixa feina."
+      ]
+    },
+    "zen-mode": {
+      "q": "Què és el mode Zen?",
+      "a": [
+        "El mode Zen amaga tot excepte la nota que escrius: la barra lateral, la llista i el peu de pàgina, i la barra de format també comença amagada. Les pestanyes obertes es queden a dalt. Prem Cmd+Maj+F en un Mac o Ctrl+Maj+F a Windows i Linux, fes clic a **Mode Zen** al peu de pàgina, o fes clic dret en una zona buida i tria **Mode Zen**.",
+        "Prem Esc, les mateixes tecles una altra vegada, o **Surt del Zen** a la part de dalt de la nota per tornar. **Mostra la barra de format** recupera la barra de format sense sortir del mode Zen. El mode Zen forma part de Pro, i la [demo](https://try.privacynotes.app) et deixa provar-lo sense compte."
+      ]
+    },
+    "date-format": {
+      "q": "Puc canviar com es mostren les dates?",
+      "a": [
+        "Sí, a Configuració > Data. **Format de data** ofereix Automàtic, Primer el dia, Primer el mes i Primer l'any (ISO), i **Format d'hora** ofereix Automàtic, 24 hores i 12 hores. Automàtic segueix la llengua de l'app i la regió de cada dispositiu, i la teva tria s'aplica a tots els teus dispositius.",
+        "Les entrades de diari prenen el títol de la data, i **Títols del diari**, al mateix lloc, ofereix formats ja fets en el teu format de data, o **Patró personalitzat** per crear el teu amb tokens com `YYYY`, `MMMM` i `ddd`, i les paraules entre claudàtors es queden tal com les escrius. Un patró nou només s'aplica a les entrades noves. Per posar la data d'avui en qualsevol nota, prem Cmd+; en un Mac o Ctrl+; a Windows i Linux, i afegeix Maj per incloure-hi també l'hora. Tot és gratuït."
+      ]
+    },
+    "checklists": {
+      "q": "Puc buidar, ordenar o reordenar una llista de tasques?",
+      "a": [
+        "Sí. El menú \"...\" de la nota té **Desmarca tots els elements** per reutilitzar una llista, **Suprimeix els elements marcats** per treure els que ja estan fets i **Ordena els elements per estat** per moure els elements marcats a sota de la resta. Cada opció només apareix quan canviaria alguna cosa. Suprimir demana confirmació abans, i Ordenar i Desmarcar es poden desfer amb Cmd+Z o Ctrl+Z. La part de baix de la nota compta el teu progrés, per exemple «3 de 6 marcats».",
+        "Per reordenar a mà, arrossega la nansa del final d'un element. Els elements niats es mouen amb ell, i Esc cancel·la l'arrossegament. La nansa apareix quan hi passes el punter en un ordinador i es queda lleugerament visible en una pantalla tàctil. Per defecte, un element marcat baixa a sota dels no marcats de la seva llista; desactiva-ho amb **Mou avall els elements marcats** a Configuració > Llistes. Tot és gratuït."
+      ]
+    },
+    "quick-switcher": {
+      "q": "Què és la funció «Vés a» i què pot trobar?",
+      "a": [
+        "La funció «Vés a» salta a qualsevol cosa pel títol. Prem Cmd+K en un Mac o Ctrl+K a Windows i Linux (també funciona Cmd+P o Ctrl+P), o fes clic a **Vés a** a la barra lateral o a la capçalera de la llista. Escriu part d'un títol per trobar notes, tasques, entrades de diari, elements de la Caixa forta, marcadors, contactes, fitxers adjunts i opcions de configuració. Retorn obre l'element, i Option+Retorn o Alt+Retorn l'obre en una pestanya.",
+        "Escriu > primer per executar una ordre, com crear una nota nova o anar a una secció. Per trobar paraules dins del teu text en lloc dels títols, tria la fila **Cerca a tot arreu**, o prem Cmd+Retorn o Ctrl+Retorn des de qualsevol fila. La cerca passa al teu dispositiu, així que no se'ns envia res del que escrius. La funció «Vés a» és gratuïta."
+      ]
+    },
+    "find-in-note": {
+      "q": "Com cerco una paraula dins d'una sola nota?",
+      "a": [
+        "Prem Cmd+F en un Mac o Ctrl+F a Windows i Linux en una nota oberta, o fes clic a la lupa de la cantonada superior d'una nota llarga. Escriu la paraula i prem Retorn per a la coincidència següent i Maj+Retorn per a l'anterior, mentre la barra compta les coincidències. Prem les mateixes tecles una altra vegada, o fes clic a la X, per tancar-la. La cerca també funciona a les notes només de lectura.",
+        "Amb Pro també pots substituir: prem Option+Cmd+F en un Mac o Ctrl+H a Windows i Linux, o tria **Cerca i substitueix** al menú \"...\" de la nota. Substitueix una coincidència o **Totes** alhora, amb **Distingeix majúscules i minúscules** quan ho necessitis. Les dues barres també funcionen a **Mostra el markdown**, on arriben al text en brut, com el llenguatge d'un bloc de codi. Per cercar a totes les teves notes, fes servir la cerca de la llista, que s'activa amb la tecla /. [Totes les cerques es fan al teu dispositiu](/ca/help/search-local/)."
+      ]
+    },
+    "screen-capture": {
+      "q": "Puc amagar les notes de les captures de pantalla i de la pantalla compartida?",
+      "a": [
+        "Sí, a les apps per a Android, iPhone i iPad, Mac i Windows. Obre Configuració > Seguretat > Bloqueig i activa **Amaga a les captures de pantalla**. Les captures de pantalla, les gravacions de pantalla i la pantalla compartida mostren aleshores una finestra buida en lloc de les teves notes, fins on el dispositiu ho permet. En un mòbil també amaga les notes al commutador d'apps.",
+        "L'interruptor està desactivat per defecte, només s'aplica al dispositiu on l'actives i és gratuït. Els navegadors i Linux no donen a cap app cap manera de bloquejar una captura, així que allà l'interruptor no apareix. Funciona tot sol i no necessita ni el bloqueig de l'app ni cap PIN."
+      ]
+    },
+    "connected-logins": {
+      "q": "Puc connectar més d'un mètode d'inici de sessió al meu compte?",
+      "a": [
+        "Sí. Obre Configuració > Compte > Comptes i connecta Google, Apple o GitHub per afegir un mètode d'inici de sessió que obre la mateixa caixa forta. En pots connectar diversos, fins i tot dos comptes del mateix proveïdor, i la teva frase de recuperació continua funcionant al costat. Connectar o desconnectar un compte no canvia ni les teves notes ni el teu xifratge.",
+        "Un mètode d'inici de sessió que ja pertany a una altra caixa forta no es pot connectar, perquè les caixes fortes no es fusionen mai. **Desconnecta** et demana primer les teves 12 paraules. Si et guardem la frase nosaltres, l'últim compte connectat es queda fins que en connectis un altre o desis la frase i passis a l'autocustòdia. Amb autocustòdia, un dispositiu nou continua demanant-te les 12 paraules. Els comptes connectats són en beta."
+      ]
+    },
+    "session-expired": {
+      "q": "Per què l'app diu «La sessió ha caducat»?",
+      "a": [
+        "Vol dir que el nostre servidor ja no accepta l'inici de sessió d'aquest dispositiu, així que la sincronització s'atura. Una connexió feble o una caiguda del servidor no en són mai la causa: l'app ho comprova amb el servidor una segona vegada abans de mostrar el missatge. Les teves notes són segures en aquest dispositiu.",
+        "Fes clic a **Torna a iniciar la sessió**. L'app et pregunta primer si has desat la frase de recuperació, perquè per tornar a entrar necessites aquesta frase o el mètode d'inici de sessió amb què et vas registrar. Les notes que encara no s'han sincronitzat es queden al dispositiu i se sincronitzen quan hagis iniciat la sessió. La mateixa finestra t'avisa si hi ha fitxers que no s'han acabat de pujar, perquè aquests s'eliminen en tancar la sessió."
+      ]
+    },
+    "archive": {
+      "q": "Què fa Arxiva i en què es diferencia de la paperera?",
+      "a": [
+        "Arxivar treu un element de les teves llistes sense suprimir-lo. Tria **Arxiva** al menú \"...\" de l'element o al seu menú de clic dret, o a la barra de selecció per a diversos elements alhora. Els elements arxivats surten de Tot, de la seva secció, de Fixats i dels recomptes de carpetes i etiquetes, i esperen a la vista **Arxiu** a la part de baix de la barra lateral, que apareix quan arxives alguna cosa. Per mantenir-los a Tot i als recomptes, marca Arxiu a la columna **Tot** de Configuració > Llistes. **Desarxiva**, als mateixos llocs, recupera un element.",
+        "La paperera és per a les coses de les quals et vols desfer: [les suprimeix per sempre al cap de 30 dies](/ca/help/trash-auto-delete/), tret que ho desactivis. Arxivar no suprimeix mai res, i els elements arxivats continuen a mà, perquè una cerca a Tot, la funció «Vés a» i els enllaços entre notes encara els troben. Se sincronitzen i continuen xifrats com tota la resta, i encara compten dins del teu emmagatzematge. Arxivar funciona amb tots els tipus d'elements i és gratuït."
+      ]
+    },
+    "share-into-app": {
+      "q": "Puc compartir text o un enllaç a PrivacyNotes des d'una altra app?",
+      "a": [
+        "Sí, a l'iPhone, l'iPad i Android, en beta. Toca el botó de compartir de qualsevol app i tria PrivacyNotes. Un enllaç web es converteix en un marcador amb el títol de la pàgina, el text es converteix en una nota nova, i les imatges i els fitxers van a Fitxers. Un enllaç que ja havies desat es mostra en lloc de desar-se dues vegades. Els elements compartits arriben sense carpeta ni etiqueta, així que els ordenes quan et vagi bé.",
+        "A Android, l'app pregunta primer: llista el que ha arribat i només ho desa quan tries **Desa-ho tot**, o ho descarta amb **Descarta**. A l'iPhone i l'iPad, una targeta confirma **Desat a PrivacyNotes**. Cada fitxer segueix el teu [límit de pujada](/ca/help/attachment-limits/), i el que es comparteix espera fins que hagis iniciat la sessió i l'app estigui desbloquejada."
+      ]
+    },
+    "desktop-updates": {
+      "q": "Com actualitzo l'app d'escriptori?",
+      "a": [
+        "No cal que facis res. Les apps per a Mac i Windows i l'AppImage de Linux busquen una actualització quan s'inicien i quan hi tornes, com a molt cada 12 hores, i la baixen en segon pla. Després un avís mostra **Actualització disponible**, amb **Reinicia** per acabar i **Changelog** per veure les novetats.",
+        "El paquet .deb de Linux s'actualitza amb una baixada nova: el seu avís ofereix **Baixa**, que obre la [secció de baixades](https://privacynotes.app/ca#downloads), i instal·les el paquet nou damunt de l'antic. Un .deb massa antic per sincronitzar amb seguretat posa en pausa la sincronització fins que ho facis. Si vas instal·lar l'app amb Scoop a Windows, executa `scoop update privacynotes`, i l'avís té **Copia l'ordre** per a això. En un Mac, Homebrew no necessita cap ordre d'actualització, perquè l'app s'actualitza sola."
       ]
     }
   }

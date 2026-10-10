@@ -7,15 +7,18 @@
   "resultCount_other": "{{count}} resultaten",
   "keywords": {
     "section_stats": "statistieken, stats, cijfers, reeks, heatmap, aantal woorden",
-    "section_journals": "dagboek, journal, titel, datumnotatie",
     "section_import": "importeren, exporteren, back-up, migreren, overzetten, downloaden",
     "section_plan": "abonnement, pro, betaling, facturering, apparaten, afmelden, uitloggen",
     "section_storage": "opslag, ruimte, quotum, schijf, gigabytes, vol",
     "section_images": "afbeeldingen, foto’s, plaatjes, compressie, kwaliteit",
     "section_security": "beveiliging, wachtwoord, vergrendelen, privacy",
     "section_me": "sync, synchronisatie, account, identiteit, id",
-    "section_appearance": "uiterlijk, weergave, design, kleuren, thema",
+    "section_design": "uiterlijk, weergave, design, vormgeving, kleuren, thema",
+    "section_editor": "schrijven, editor, tekst, lettertype, grootte, regelafstand, breedte, markdown",
+    "section_formatBar": "opmaakbalk, werkbalk, toolbar, knoppen, indelen, plusmenu",
+    "section_lists": "lijst, zijbalk, raster, weergaven, startpagina, tabbladen, ruimtes",
     "section_language": "taal, vertaling, locale",
+    "section_date": "datum, tijd, klok, notatie, dag, maand, jaar, dagboek, journal, titel",
     "section_about": "over, versie, informatie, credits",
     "section_help": "help, faq, ondersteuning, support, vragen, handleiding",
     "stats_writing": "woorden, aantal notities, activiteit, heatmap",
@@ -28,6 +31,7 @@
     "stats_wellness": "gezondheid, stemming, slaap, medicatie, trackers",
     "stats_wellnessExport": "dokter, huisarts, rapport, csv, pdf",
     "journals_suffix": "titel, naam dagboek, titel van notitie",
+    "journals_titles": "dagboek, journal, titel, nieuwe notitie, titelnotatie",
     "import_export": "downloaden, opslaan, back-up, archief",
     "export_zipBackup": "back-up, zip, markdown, alles downloaden",
     "import_vault": "wachtwoorden, logins, wachtwoordmanager",
@@ -67,6 +71,7 @@
     "appearance_startView": "startpagina, home, standaardweergave, openen met",
     "appearance_view": "raster, lijst, kaarten, indeling",
     "appearance_sinkChecked": "taken, checklist, selectievakje, klaar, voltooid, volgorde, onderaan",
+    "appearance_spaces": "werk, persoonlijk, privé, werkruimte, werkruimtes, scheiden, wisselen, profiel, context",
     "appearance_sidebar": "zijbalk, weergaven verbergen, menu, lijst alles",
     "language_spellCheck": "spelling, spellingcontrole, rode onderstreping, typfouten, woordenboek",
     "language_language": "taal, vertaling, locale",
@@ -80,6 +85,7 @@
     "about_changelog": "release notes, wat is er nieuw, updates, wijzigingen",
     "about_hotkeys": "sneltoetsen, toetsencombinaties, toetsen, shortcuts",
     "about_rating": "recensie, beoordelen, sterren, app store",
-    "appearance_openInTabs": "tabbladen, tabs, tabbalk, browser, openen"
+    "appearance_openInTabs": "tabbladen, tabs, tabbalk, browser, openen",
+    "appearance_formatBar": "werkbalk, opmaakbalk, knoppen, aanpassen, indelen, opsommingslijst, doorhalen, tandwiel"
   }
 }

@@ -80,6 +80,13 @@
     "clearFilters": "Neteja els filtres",
     "filteredAfter": "per mostrar-los."
   },
+  "listGroups": {
+    "previous7Days": "Últims 7 dies",
+    "previous30Days": "Últims 30 dies",
+    "other": "Altres",
+    "collapseAll": "Replega tots els grups",
+    "expandAll": "Desplega tots els grups"
+  },
   "headerLabel": {
     "allItems": "Tot",
     "untagged": "Sense etiquetes",
@@ -147,7 +154,7 @@
     "exitHover": "Surt del mode Zen (Esc)",
     "enterHover": "Entra al mode Zen",
     "proHover": "Mode Zen (Pro)",
-    "enterAriaShortcut": "Entra al mode Zen (⌘⇧F)"
+    "enterAriaShortcut": "Entra al mode Zen ({{keys}})"
   },
   "editor": {
     "backToList": "Torna a la llista de notes",
@@ -229,10 +236,10 @@
   },
   "settings": {
     "groupYourNotes": "Les teves notes",
+    "groupPreferences": "Preferències",
     "groupAccount": "Compte i dades",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "Estadístiques",
-    "journalsLabel": "Diaris",
     "importLabel": "Importa i exporta",
     "planLabel": "Compte",
     "storageLabel": "Emmagatzematge",
@@ -240,9 +247,13 @@
     "securityLabel": "Seguretat",
     "accountLabel": "ID i sincronització",
     "appearanceLabel": "Aparença",
+    "editorLabel": "Editor",
+    "formatBarLabel": "Barra de format",
+    "listsLabel": "Llistes",
     "helpLabel": "Ajuda",
     "aboutLabel": "Informació",
-    "languageLabel": "Data i llengua",
+    "languageLabel": "Llengua",
+    "dateLabel": "Data",
     "languageDesc": "Tria la llengua en què es mostra PrivacyNotes."
   },
   "importStore": {

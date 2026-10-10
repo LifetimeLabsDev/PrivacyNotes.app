@@ -59,13 +59,16 @@ Wyrównanie przesuwa cały akapit, nigdy pojedyncze słowo. Postaw kursor w akap
 Ramka to kolorowe pudełko na coś, czego czytelnik nie może przegapić.
 
 > [!tip]+ Wskazówka
-> Kliknij tytuł ramki, żeby ją zwinąć.
+> Kliknij jej ikonę, żeby ją zwinąć.
 
 > [!warning]+ Uwaga
 > Każdy rodzaj ma swój kolor i swoją ikonę.
 
 > [!danger]+ Niebezpieczeństwo
-> Jest ich dziewięć. Menu **Wstaw** je wymienia.
+> Jest ich wiele. Menu **Wstaw** je wymienia.
+
+> [!fold]- Zwijane
+> Bez ramki i bez koloru: tylko tekst, który nie przeszkadza, dopóki go nie otworzysz.
 
 ## Cytaty
 

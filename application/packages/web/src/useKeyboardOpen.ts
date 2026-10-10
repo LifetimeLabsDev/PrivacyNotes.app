@@ -15,11 +15,43 @@
  * `interactive-widget=resizes-content` in index.html resizes the layout
  * viewport itself: on Android every unit, `svh` included, follows the keyboard
  * down. Spec: ops/docs/ui-patterns.md (stable viewport height)
+ *
+ * While the keyboard is open it also publishes `--pn-app-h`, the height
+ * left above the keyboard, which the app shell takes as its height. Android
+ * resizes the layout itself (`interactive-widget=resizes-content`), so there
+ * it changes nothing. iOS lays the keyboard over the layout and then moves
+ * the whole page up to show the caret, which carried the header and the
+ * format bar off the screen (GitHub #449). With the shell cut to the visible
+ * area the page has nothing to move: it is put back at the top, and the
+ * caret is kept in view by scrolling the note instead.
+ * Spec: ops/docs/plans/format-bar.md (section 7)
  */
 
 import { useEffect, useRef, useState } from 'react';
+import { setSoftKeyboardUp } from './softKeyboard';
 
 const THRESHOLD = 150;
+
+/** Scroll the caret's own column, never the page, so the caret clears the keyboard. */
+function keepCaretVisible() {
+  const el = document.activeElement as HTMLElement | null;
+  if (!el?.isContentEditable) {
+    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) el.scrollIntoView({ block: 'nearest' });
+    return;
+  }
+  const sel = window.getSelection();
+  if (!sel?.rangeCount) return;
+  const rect = sel.getRangeAt(0).getBoundingClientRect();
+  if (!rect.height) return;
+  // The first ancestor that really scrolls up and down. An element that only
+  // scrolls sideways (overflow-x: auto) computes overflow-y as auto too.
+  let col = el.parentElement;
+  while (col && !(col.scrollHeight > col.clientHeight && /(auto|scroll)/.test(getComputedStyle(col).overflowY))) col = col.parentElement;
+  if (!col) return;
+  const box = col.getBoundingClientRect();
+  const margin = 24;
+  if (rect.bottom > box.bottom - margin) col.scrollTop += rect.bottom - box.bottom + margin;
+}
 
 export function useKeyboardOpen(): boolean {
   const [open, setOpen] = useState(false);
@@ -49,6 +81,7 @@ export function useKeyboardOpen(): boolean {
         lastWidth.current = vv.width;
         maxHeight.current = vv.height;
         publish();
+        setSoftKeyboardUp(false);
         setOpen(false);
         return;
       }
@@ -58,12 +91,35 @@ export function useKeyboardOpen(): boolean {
         maxHeight.current = h;
         publish();
       }
-      setOpen(maxHeight.current - h > THRESHOLD);
+      const up = maxHeight.current - h > THRESHOLD;
+      setSoftKeyboardUp(up);
+      setOpen(up);
     };
 
-    vv.addEventListener('resize', check);
-    check();
-    return () => vv.removeEventListener('resize', check);
+    const fit = (moved: boolean) => {
+      const root = document.documentElement;
+      // Only a keyboard counts: the same baseline as `check`, so a desktop
+      // zoom or a scrollbar never cuts the shell.
+      if (maxHeight.current - vv.height <= THRESHOLD) {
+        root.style.removeProperty('--pn-app-h');
+        return;
+      }
+      const h = `${Math.round(vv.height)}px`;
+      const grew = root.style.getPropertyValue('--pn-app-h') !== h;
+      root.style.setProperty('--pn-app-h', h);
+      if (window.scrollY !== 0) window.scrollTo(0, 0);
+      if (grew || moved) requestAnimationFrame(keepCaretVisible);
+    };
+    const onResize = () => { check(); fit(false); };
+    const onScroll = () => fit(true);
+
+    vv.addEventListener('resize', onResize);
+    vv.addEventListener('scroll', onScroll);
+    onResize();
+    return () => {
+      vv.removeEventListener('resize', onResize);
+      vv.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   return open;

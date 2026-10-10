@@ -32,6 +32,7 @@ import {
   PencilSimple,
   Prohibit,
   X,
+  type Icon,
 } from './icons';
 
 /**
@@ -99,6 +100,11 @@ export interface FolderPickerProps {
   onCreateFolder?: (name: string, parentId: string | null) => string | null;
   /** Rename a folder in place, from the row menu. */
   onRenameFolder?: (id: string, name: string) => void;
+  /** Note mode while spaces are on: the tree in one section per space, each
+   *  under its name; Unfiled sits in the section flagged for it. Spec: ops/docs/plans/spaces.md */
+  sections?: { key: string; label: string; icon: Icon; folders: FolderDef[]; unfiled?: boolean }[];
+  /** The dialog's title; "Move to folder" when absent. */
+  title?: string;
   onClose: () => void;
 }
 
@@ -114,6 +120,8 @@ export function FolderPicker({
   onReorderFolders,
   onCreateFolder,
   onRenameFolder,
+  sections,
+  title,
   onClose,
 }: FolderPickerProps) {
   const { t } = useTranslation('shell');
@@ -157,16 +165,19 @@ export function FolderPicker({
   const checkedId =
     mode === 'note' ? currentFolderId : folders.find((f) => f.id === movingFolderId)?.parentId ?? null;
 
-  /** Search: flat matches, ancestor path shown as a muted prefix. */
+  /** Search: flat matches, ancestor path shown as a muted prefix. With
+   *  sections, only the folders the sections offer can match, so a search in
+   *  "Move to Work" never offers a Personal folder. */
   const searching = query.trim().length > 0;
   const matches = useMemo(() => {
     const q = query.trim();
     if (!q) return [];
     const match = textMatcher(q);
+    const offered = sections ? new Set(sections.flatMap((sec) => sec.folders.map((f) => f.id))) : null;
     return flattenFolderRows(folders, { isExpanded: () => true, respectCollapse: false, sortSiblings })
       .map((row) => row.folder)
-      .filter((folder) => match(folder.name));
-  }, [folders, query, sortSiblings]);
+      .filter((folder) => (!offered || offered.has(folder.id)) && match(folder.name));
+  }, [folders, sections, query, sortSiblings]);
 
   function pathLabel(folder: FolderDef): string {
     const parts: string[] = [];
@@ -282,6 +293,79 @@ export function FolderPicker({
     </>
   );
 
+  const renderTree = (list: FolderDef[]) => (
+    <FolderTreeView
+      folders={list}
+      density="dialog"
+      sortSiblings={sortSiblings}
+      ariaLabel={t('folders.moveTo')}
+      isActive={(f) => checkedId === f.id}
+      isDisabled={isDisabled}
+      onSelect={(f) => onPick(f.id)}
+      // The dialog reorders and re-files folders too. It was read-only
+      // at first, on the reasoning that here a press is a pick - but
+      // the drag starts on its own handle, and a tree you can only
+      // rearrange from one of the two places that draw it is the same
+      // split this whole component was written to end.
+      reorder={{ onReorder: onReorderFolders }}
+      onContextMenu={(e, f) => {
+        if (isDisabled(f)) return;
+        rowMenu.open(e, buildRowMenu(f));
+      }}
+      isEditing={(f) => renamingId === f.id}
+      renderName={(f) =>
+        renamingId === f.id ? (
+          <FolderNameInput
+            value={renameDraft}
+            onChange={setRenameDraft}
+            onCommit={() => commitRename(f.id)}
+            onCancel={() => setRenamingId(null)}
+            scale="dialog"
+          />
+        ) : (
+          <span className="truncate">{f.name}</span>
+        )
+      }
+      renderTrailing={(f) => (renamingId === f.id ? null : trailingFor(f, true, isExpanded(f)))}
+      renderAfter={(f, level) =>
+        creatingUnder === f.id ? (
+          <div
+            className="border-s border-divider"
+            style={{ marginInlineStart: level + 1 < MAX_INDENT_LEVEL ? INDENT_PX : 0 }}
+          >
+            <div className="flex items-center gap-2 px-1 py-2">
+              <span className="w-4 shrink-0" aria-hidden="true" />
+              <span className="inline-flex shrink-0 text-label">
+                <Folder size={15} />
+              </span>
+              <FolderNameInput
+          value={createDraft}
+          onChange={setCreateDraft}
+          onCommit={commitCreate}
+          onCancel={cancelCreate}
+          scale="dialog"
+        />
+            </div>
+          </div>
+        ) : null
+      }
+    />
+  );
+  const unfiledRow = !searching && clearWouldChange && (
+    <button
+      type="button"
+      onClick={() => onPick(null)}
+      className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-[14px] text-start transition text-pn-muted hover:bg-pn/5 hover:text-pn-soft"
+    >
+      <span className="inline-flex shrink-0">
+        <Prohibit size={15} />
+      </span>
+      <span className="flex-1 min-w-0 truncate">
+        {mode === 'folder' ? t('folders.rootLevel') : t('folders.unfiled')}
+      </span>
+    </button>
+  );
+
   return (
     <div
       className="fixed inset-0 bg-black/40 dark:bg-black/40 flex items-center justify-center p-4 sm:p-6 z-50"
@@ -300,7 +384,7 @@ export function FolderPicker({
           {/* One title for both modes. "Move folder" said the same thing in
               a second dialog that was quietly missing half this one's
               features, and a folder moves INTO a folder like anything else. */}
-          <h2 className="text-[15px] font-semibold m-0">{t('folders.moveTo')}</h2>
+          <h2 className="text-[15px] font-semibold m-0">{title ?? t('folders.moveTo')}</h2>
           <button
             onClick={onClose}
             aria-label={t('common:actions.close')}
@@ -344,7 +428,7 @@ export function FolderPicker({
                         : 'text-pn hover:bg-pn/5'
                   }`}
                 >
-                  <span className={`inline-flex shrink-0 ${disabled ? '' : 'text-amber-700 dark:text-amber-500/80'}`}>
+                  <span className={`inline-flex shrink-0 ${disabled ? '' : 'text-label'}`}>
                     <FolderGlyph folderId={folder.id} size={15} />
                   </span>
                   <span className="flex-1 min-w-0 truncate">
@@ -356,62 +440,20 @@ export function FolderPicker({
               );
             })
           ) : (
-            <FolderTreeView
-              folders={folders}
-              density="dialog"
-              sortSiblings={sortSiblings}
-              ariaLabel={t('folders.moveTo')}
-              isActive={(f) => checkedId === f.id}
-              isDisabled={isDisabled}
-              onSelect={(f) => onPick(f.id)}
-              // The dialog reorders and re-files folders too. It was read-only
-              // at first, on the reasoning that here a press is a pick - but
-              // the drag starts on its own handle, and a tree you can only
-              // rearrange from one of the two places that draw it is the same
-              // split this whole component was written to end.
-              reorder={{ onReorder: onReorderFolders }}
-              onContextMenu={(e, f) => {
-                if (isDisabled(f)) return;
-                rowMenu.open(e, buildRowMenu(f));
-              }}
-              isEditing={(f) => renamingId === f.id}
-              renderName={(f) =>
-                renamingId === f.id ? (
-                  <FolderNameInput
-                    value={renameDraft}
-                    onChange={setRenameDraft}
-                    onCommit={() => commitRename(f.id)}
-                    onCancel={() => setRenamingId(null)}
-                    scale="dialog"
-                  />
-                ) : (
-                  <span className="truncate">{f.name}</span>
-                )
-              }
-              renderTrailing={(f) => (renamingId === f.id ? null : trailingFor(f, true, isExpanded(f)))}
-              renderAfter={(f, level) =>
-                creatingUnder === f.id ? (
-                  <div
-                    className="border-s border-divider"
-                    style={{ marginInlineStart: level + 1 < MAX_INDENT_LEVEL ? INDENT_PX : 0 }}
-                  >
-                    <div className="flex items-center gap-2 px-1 py-2">
-                      <span className="w-4 shrink-0" aria-hidden="true" />
-                      <span className="inline-flex shrink-0 text-amber-700 dark:text-amber-500/80">
-                        <Folder size={15} />
-                      </span>
-                      <FolderNameInput
-                  value={createDraft}
-                  onChange={setCreateDraft}
-                  onCommit={commitCreate}
-                  onCancel={cancelCreate}
-                  scale="dialog"
-                />
-                    </div>
+            sections ? (
+              sections.map((sec, i) => (
+                <div key={sec.key} className={i > 0 ? 'mt-2 pt-2 border-t border-divider' : undefined}>
+                  <div className="flex items-center gap-1.5 px-3 pt-1 pb-1 text-[12px] font-semibold text-pn-muted">
+                    <sec.icon size={13} aria-hidden="true" />
+                    {sec.label}
                   </div>
-                ) : null
-              }
-            />
+                  {renderTree(sec.folders)}
+                  {sec.unfiled && unfiledRow}
+                </div>
+              ))
+            ) : (
+              renderTree(folders)
+            )
           )}
           {/* Unfiled (note mode) / root level (folder mode) - see
               clearWouldChange above. No check mark: it is never the
@@ -422,20 +464,7 @@ export function FolderPicker({
               on top while it was thought of as the dialog's primary action;
               it is the LAST resort, and it now reads that way in both
               places. Muted for the same reason the rail's is. */}
-          {!searching && clearWouldChange && (
-            <button
-              type="button"
-              onClick={() => onPick(null)}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-[14px] text-start transition text-pn-muted hover:bg-pn/5 hover:text-pn-soft"
-            >
-              <span className="inline-flex shrink-0">
-                <Prohibit size={15} />
-              </span>
-              <span className="flex-1 min-w-0 truncate">
-                {mode === 'folder' ? t('folders.rootLevel') : t('folders.unfiled')}
-              </span>
-            </button>
-          )}
+          {!sections && unfiledRow}
           {searching && matches.length === 0 && (
             <div className="px-3 py-2 text-[13px] text-pn-muted">
               {t('folders.noMatches')}
@@ -446,7 +475,7 @@ export function FolderPicker({
           <div className="shrink-0 border-t border-divider px-2 py-2 flex">
             {creatingUnder === null ? (
               <div className="flex items-center gap-2 px-3 py-1 flex-1">
-                <span className="inline-flex shrink-0 text-amber-700 dark:text-amber-500/80">
+                <span className="inline-flex shrink-0 text-label">
                   <Folder size={15} />
                 </span>
                 <FolderNameInput
@@ -472,7 +501,7 @@ export function FolderPicker({
                    Spec: ops/docs/ui-patterns.md (section 76) */
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-md border border-dashed border-divider px-3 py-2 text-[13px] text-pn-muted transition hover:border-accent/50 hover:text-accent"
               >
-                <FolderPlus size={15} className="shrink-0 text-amber-700 dark:text-amber-500/80" />
+                <FolderPlus size={15} className="shrink-0 text-label" />
                 {t('folders.new')}
               </button>
             )}

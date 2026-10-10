@@ -12,7 +12,7 @@ import type { BackupPayload } from '@notes/shared';
 import i18n from './i18n';
 import { trackerRows, trackerHeading } from './trackerExport';
 import { loadLocalSettings } from './userSettings';
-import { formatInstant } from './intlFormat';
+import { dateLocale, formatInstant } from './intlFormat';
 import { saveBlob } from './saveFile';
 import { detectPlatform } from './devices';
 import type { LocalNote } from './db';
@@ -36,6 +36,7 @@ import { linkExportMarkdown } from './linkBody';
 import { slugify, zipEntryStems } from './exportNames';
 import { lineHeightCss, paragraphGapCss, readLineSpacing } from './theme';
 import { isSameOriginPath } from './sameOriginPath';
+import { contactDisplayName, contactFullName, contactInitialsFor, formatAddressLines, formatContactDate, parseContactBody, telHref, type Contact } from './contactBody';
 
 /** Export helpers. All exports are generated client-side as Blob downloads. */
 
@@ -764,6 +765,82 @@ function renderVaultHtml(vault: VaultContent): string {
 }
 
 /**
+ * A contact as the app's detail pane draws it: one titled group per kind of
+ * value (Phone, Email, Address...), each row its label and its value, in the
+ * pane's order. The flat vault table put a 20-row contact into one block that
+ * a print engine could only move whole, so the first page came out empty.
+ * Numbers, emails and web addresses stay links, so the exported page dials
+ * and mails like the app does.
+ */
+function renderContactHtml(title: string, c: Contact): string {
+  const t = (key: string, opts?: Record<string, unknown>) => i18n.t(`shell:contacts.${key}`, opts);
+  const labelText = (raw: string) => (raw ? t(`labels.${raw}`, { defaultValue: raw }) : '');
+  const row = (label: string, valueHtml: string) =>
+    `<div class="contact-row"><dt>${escapeHtml(label)}</dt><dd dir="auto">${valueHtml}</dd></div>`;
+  const link = (href: string, text: string) => `<a href="${escapeHtml(href)}">${escapeHtml(text)}</a>`;
+  const web = (v: string) => (/^https?:\/\//i.test(v.trim()) ? link(v.trim(), v) : escapeHtml(v));
+  const group = (heading: string, rows: string[]) =>
+    rows.length === 0
+      ? ''
+      : `<section class="contact-group"><h2 class="contact-group-title">${escapeHtml(heading)}</h2><dl class="contact-rows">${rows.join('')}</dl></section>`;
+
+  const locale = dateLocale();
+  const nameRows: string[] = [];
+  if (c.nickname.trim()) nameRows.push(row(t('nickname'), escapeHtml(c.nickname)));
+  const phonetic = [c.phonetic.first, c.phonetic.middle, c.phonetic.last].map((s) => s.trim()).filter(Boolean).join(' ');
+  if (phonetic) nameRows.push(row(t('itemPhonetic'), escapeHtml(phonetic)));
+  const full = contactFullName(c);
+  if (full && full !== contactDisplayName(title, c)) nameRows.push(row(t('groupName'), escapeHtml(full)));
+  if (c.department.trim()) nameRows.push(row(t('department'), escapeHtml(c.department)));
+
+  let html = [
+    group(t('groupPhone'), c.phones.map((p) => row(labelText(p.label), link(telHref(p.value), p.value)))),
+    group(t('groupEmail'), c.emails.map((e) => row(labelText(e.label), link(`mailto:${e.value}`, e.value)))),
+    group(t('groupAddress'), c.addresses.map((a) => row(labelText(a.label), escapeHtml(formatAddressLines(a).join('\n'))))),
+    group(t('groupWebsite'), c.urls.map((u) => row(labelText(u.label), web(u.value)))),
+    group(t('groupProfile'), c.profiles.map((p) => row(labelText(p.label), web(p.value)))),
+    group(t('groupDates'), c.dates.map((d) => row(labelText(d.label), escapeHtml(formatContactDate(d.value, locale))))),
+    group(t('groupRelated'), c.related.map((r) => row(labelText(r.label), escapeHtml(r.value)))),
+    group(t('groupName'), nameRows),
+  ].join('');
+  if (c.notes.trim()) {
+    html += `<section class="contact-group"><h2 class="contact-group-title">${escapeHtml(t('groupNote'))}</h2><p class="contact-notes" dir="auto">${escapeHtml(c.notes)}</p></section>`;
+  }
+  return html;
+}
+
+/**
+ * Put a contact's photo into its body as a data URI, so the page carries it.
+ * A stored photo already is one by now, because `resolveBodyImages` rewrites
+ * every `pn:img/` ref; the seeded contact's is a file the app serves. A photo
+ * that cannot be read is left alone and the initials stand in for it.
+ */
+async function inlineContactPhoto(note: LocalNote, body: string): Promise<string> {
+  if (note.type !== 'contact') return body;
+  const photo = parseContactBody(body).photo;
+  if (!photo || !isSameOriginPath(photo)) return body;
+  try {
+    const res = await fetch(photo);
+    if (!res.ok) return body;
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    const raw = JSON.parse(body) as Record<string, unknown>;
+    raw.photo = `data:${sniffImageMime(bytes)};base64,${uint8ToBase64(bytes)}`;
+    return JSON.stringify(raw);
+  } catch {
+    return body;
+  }
+}
+
+/** The contact's round tile for the page header: the photo, else the initials. */
+function contactTileHtml(title: string, c: Contact): string {
+  if (/^data:image\//.test(c.photo)) {
+    return `<img class="contact-tile" src="${escapeHtml(c.photo)}" alt="" />`;
+  }
+  const initials = contactInitialsFor(title, c);
+  return initials ? `<div class="contact-tile contact-initials" aria-hidden="true">${escapeHtml(initials)}</div>` : '';
+}
+
+/**
  * Two notes on the vault-table CSS in the stylesheet below, both learned the
  * hard way.
  *
@@ -784,11 +861,18 @@ export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []
   const title = note.title.trim() || 'Untitled';
   const vault = vaultContent(note);
   const linkMd = linkExportMarkdown(note);
+  const contact = note.type === 'contact' ? parseContactBody(note.body) : null;
   const rendered = linkMd
     ? renderMarkdown(linkMd)
-    : vault
-      ? renderVaultHtml(vault)
-      : renderMarkdown(note.body || '');
+    : contact
+      ? renderContactHtml(note.title, contact)
+      : vault
+        ? renderVaultHtml(vault)
+        : renderMarkdown(note.body || '');
+  // A contact's header is the pane's hero: the tile beside the name, the job
+  // and the company under it.
+  const contactTile = contact ? contactTileHtml(note.title, contact) : '';
+  const contactRole = contact ? [contact.jobTitle.trim(), contact.org.trim()].filter(Boolean).join(', ') : '';
   const bodyHtml = renderNoteBody(rendered, readLineSpacing());
   const tagsHtml =
     note.tags.length > 0
@@ -1107,10 +1191,86 @@ export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []
     margin: 0;
     white-space: pre-wrap;
   }
+  /* A value keeps its own line breaks: a private key, a multi-line note. */
+  .content .vault-fields td {
+    white-space: pre-wrap;
+  }
+  /* The contact hero: the round tile beside the name, like the app pane. */
+  header.note-head.has-tile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .note-head-text {
+    min-width: 0;
+  }
+  .contact-tile {
+    flex: none;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .contact-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ece9e4;
+    color: #57534e;
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+  .contact-role {
+    margin: -2px 0 6px;
+    font-size: 1.05rem;
+    color: #444;
+  }
+  .contact-group {
+    margin: 0 0 1.1rem;
+  }
+  /* The .content prefix outranks the body heading rules above. */
+  .content .contact-group-title {
+    margin: 0 0 0.25rem;
+    line-height: 1.4;
+    font-family: var(--pn-sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6b6660;
+  }
+  .contact-rows {
+    margin: 0;
+  }
+  .contact-row {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0.3rem 0;
+    border-top: 1px solid #eeece7;
+  }
+  .contact-row dt {
+    color: #6b6660;
+    overflow-wrap: anywhere;
+  }
+  .contact-row dd {
+    margin: 0;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+  .contact-notes {
+    margin: 0;
+    padding-top: 0.3rem;
+    border-top: 1px solid #eeece7;
+    white-space: pre-wrap;
+  }
   summary.pn-callout-summary::-webkit-details-marker { display: none }
   summary.pn-callout-summary { list-style: none }
-  details.pn-callout:not([open]) > summary .pn-arrow-in { display: none }
-  details.pn-callout:not([open]) > summary .pn-arrow-out { display: inline !important }
+  details.pn-callout:not([open]) > summary .pn-caret-down { display: none }
+  details.pn-callout:not([open]) > summary .pn-caret-right { display: inline !important }
+  details.pn-callout:dir(rtl) > summary .pn-caret-right { transform: scaleX(-1) }
   @media print {
     .content .pn-spoiler { background: none; }
     .content .pn-spoiler-text { filter: none; opacity: 1; }
@@ -1158,6 +1318,19 @@ export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []
     .content pre, .content blockquote, .content img,
     .content ul, .content ol, .content table {
       break-inside: avoid;
+    }
+    /* A field table can be longer than a page. Kept whole, it moved to the
+       next page and left the first one empty under the title, so it breaks
+       between rows instead and only a row stays whole. A key row can itself
+       be longer than a page, so it is the one row that may break. */
+    .content .vault-fields {
+      break-inside: auto;
+    }
+    .content .vault-fields tr:not(:has(td.mono)), .contact-row {
+      break-inside: avoid;
+    }
+    .vault-notes strong, .content .contact-group-title {
+      break-after: avoid;
     }
     details.pn-callout { break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     /* Print engines drop background colors unless asked not to, which is why
@@ -1232,12 +1405,13 @@ export function buildNoteHtmlDocument(note: LocalNote, folderPath: string[] = []
 </head>
 <body>
   <div class="page">
-    <header class="note-head">
-      <h1 class="note-title">${escapeHtml(title)}</h1>${titleOnly ? '' : `
+    <header class="note-head${contactTile ? ' has-tile' : ''}">${contactTile}<div class="note-head-text">
+      <h1 class="note-title">${escapeHtml(title)}</h1>${contactRole ? `
+      <div class="contact-role" dir="auto">${escapeHtml(contactRole)}</div>` : ''}${titleOnly ? '' : `
       <div class="meta">${escapeHtml(formatInstant(editedAtOf(note), 'dateTime'))}</div>
       ${folderHtml}
       ${tagsHtml}`}
-    </header>
+    </div></header>
     ${trackersHtml}
     <article class="content">
 ${bodyHtml}
@@ -1263,7 +1437,7 @@ export async function exportSingleHtml(
   // Fetch and inline any remaining same-origin image paths
   // (e.g. /onboarding/japan.jpg) so the .html is self-contained
   // when opened from disk.
-  let body = await inlineSameOriginImages(resolved.body);
+  let body = await inlineContactPhoto(note, await inlineSameOriginImages(resolved.body));
   // KaTeX and lowlight are fetched on demand, only for a body that needs them.
   await prepareRender(body);
   let html = buildNoteHtmlDocument({ ...note, body }, folderNamePath(folders, note.folderId));
@@ -1303,7 +1477,7 @@ export async function exportAllHtmlZip(
 
     const resolved = await resolveBodyImages(note.body, imageStore, attachmentStore);
     for (const gap of resolved.missing) if (!missing.has(gap.id)) missing.set(gap.id, gap);
-    let body = await inlineSameOriginImages(resolved.body);
+    let body = await inlineContactPhoto(note, await inlineSameOriginImages(resolved.body));
     await prepareRender(body);
     let noteHtml = buildNoteHtmlDocument({ ...note, body }, folderNamePath(folders, note.folderId));
     noteHtml = await inlineRenderedFavicons(noteHtml);
@@ -1371,7 +1545,7 @@ export async function printNote(
   titleOnly = false,
 ): Promise<void> {
   const resolved = await resolveBodyImages(note.body, imageStore, attachmentStore);
-  let body = await inlineSameOriginImages(resolved.body);
+  let body = await inlineContactPhoto(note, await inlineSameOriginImages(resolved.body));
   // KaTeX and lowlight are fetched on demand, only for a body that needs them.
   await prepareRender(body);
   let html = buildNoteHtmlDocument({ ...note, body }, folderNamePath(folders, note.folderId), titleOnly);

@@ -3,7 +3,7 @@ import { PhraseView } from './PhraseView';
 import { PhraseOdds } from './PhraseOdds';
 import { PhrasePinGate, type PinGateRecovery } from './PhrasePinGate';
 import { HelpChip } from '../HelpChip';
-import { RedditLogo } from '../icons';
+import { RedditLogo, Vault } from '../icons';
 
 // The thread's own title, shown untranslated: the thread is written in English.
 const PHRASE_MEGATHREAD = {
@@ -29,7 +29,8 @@ export function PhraseTab({
     pinCredential={pinCredential} onCancel={onCancel} recovery={recovery}>
     <div className="space-y-4">
       <PhraseView phrase={phrase} onCancel={onCancel} hideDismiss gated hasPin={hasPin} />
-      {onOpenCustody && <button type="button" className="text-sm text-accent hover:underline" onClick={onOpenCustody}>
+      {onOpenCustody && <button type="button" className="inline-flex items-center gap-2 text-sm text-accent hover:underline" onClick={onOpenCustody}>
+        <Vault size={16} className="shrink-0" aria-hidden="true" />
         {t('connectedAccounts.openCustody')}
       </button>}
       <PhraseOdds />

@@ -5,6 +5,7 @@ import type { LocalNote } from '../db';
 import { HoverLabel } from '../HoverLabel';
 import { noteActionGuards, type NoteActionGuardDeps } from '../noteActionGuards';
 import { proUnlocked } from '../demo';
+import { isConvertSource } from '../noteTypes';
 
 /**
  * The per-note actions the editor header shows as bare icons once the
@@ -39,6 +40,7 @@ type Props = {
   tier: QuickActionsTier;
   guards: NoteActionGuardDeps;
   onDuplicate: () => void;
+  /** Open the "..." menu on its Convert to view. */
   onConvertType?: () => void;
 };
 
@@ -54,7 +56,7 @@ export function NoteQuickActions({
   if (tier === 0) return null;
 
   const act = noteActionGuards(guards);
-  const canConvert = !!onConvertType && (note.type === 'note' || note.type === 'journal');
+  const canConvert = !!onConvertType && isConvertSource(note.type);
 
   return (
     <>
@@ -104,9 +106,7 @@ export function NoteQuickActions({
             </QuickButton>
             {canConvert && (
               <QuickButton
-                label={note.type === 'note'
-                  ? t('shell:noteOptionsMenu.convertToJournal')
-                  : t('shell:noteOptionsMenu.convertToNote')}
+                label={t('shell:noteOptionsMenu.convertTo')}
                 onClick={onConvertType}
               >
                 <Repeat size={18} aria-hidden="true" />

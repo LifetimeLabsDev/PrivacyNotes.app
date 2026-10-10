@@ -12,6 +12,7 @@ import { stripFrontMatterPadding, unescapeQuotes } from '../noteMarkdown';
 import { ATTACHMENT_EXT, isBlobReferenced, mimeFromExt } from './blobImport';
 import { buildFolderTree, commonRootPrefix, parseFolderPath } from './folderImport';
 import { linkifyMarkdown } from './linkify';
+import { detailsToFold } from './detailsFold';
 import type { ImportedNote, ParsedImport } from './types';
 
 /**
@@ -183,7 +184,7 @@ function parseOneMd(
     // Notes importers run the same pass. Newline-only, not `.trim()`: trimming
     // eats the leading spaces of a note that opens with an indented code
     // block, demoting it to a paragraph (#148). See stripFrontMatterPadding.
-    body: linkifyMarkdown(stripFrontMatterPadding(body)),
+    body: linkifyMarkdown(detailsToFold(stripFrontMatterPadding(body))),
     tags,
     createdAt,
     updatedAt,

@@ -13,7 +13,7 @@ Wszystkie zaczynają się w tym samym miejscu: **Ustawienia > Import & Export**.
 
 | Masz | Trafia jako | Zachowuje |
 | --- | --- | --- |
-| Notatki z innej aplikacji | Notatki | Tagi, foldery, linki między notatkami, załączniki |
+| Notatki z innej aplikacji | Notatki | Tagi, foldery, linki do notatek, załączniki |
 | Eksport z Apple Journal | Wpisy dziennika | Zdjęcia, filmy, notatki głosowe, miejsca |
 | Zakładki przeglądarki | Zakładki | Tytuły i ikony stron |
 | Eksport haseł | Wpisy sejfu | Loginy, karty, klucze, kody 2FA |
@@ -34,7 +34,7 @@ Nasze poradniki importu są tutaj: [privacynotes.app/pl/help](https://privacynot
 - [ ] Spakuj folder `AppleJournalEntries` do zipa i upuść go tutaj
 - [ ] Otwórz widok **Dziennik** i napisz o dzisiaj
 
-Wpis dziennika mieści więcej niż tekst. Nad polem pisania siedzą pomiary: nastrój, sen, energia, kroki i inne. Wypełnij te, które cię interesują, resztę zignoruj. Po dwóch tygodniach aplikacja zaczyna pokazywać wzorce.
+Wpis w dzienniku mieści więcej niż tekst. Nad polem pisania siedzą trackery: nastrój, sen, energia, kroki i inne. Wypełnij te, które cię interesują, resztę zignoruj. Po dwóch tygodniach aplikacja zaczyna pokazywać wzorce.
 
 [[Sobota: góra Fudżi]] to gotowy wpis, ze wszystkimi pomiarami.
 

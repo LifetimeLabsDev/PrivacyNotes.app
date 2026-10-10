@@ -9,7 +9,7 @@ import { faviconUrl, domainFromUrlString } from './favicon';
 import { prefetchFavicon } from './faviconQueue';
 import { HoverLabel } from './HoverLabel';
 import { exemptOpts } from './i18nExempt';
-import { Copy, Check, Eye, EyeSlash, ArrowSquareOut, X, Key, CreditCard, Lock, Globe, User, Calendar, MapPin, Tag, Shield, RocketLaunch } from './icons';
+import { Copy, Check, Download, Eye, EyeSlash, ArrowSquareOut, X, Key, CreditCard, Lock, Globe, User, Calendar, MapPin, Tag, Shield, RocketLaunch } from './icons';
 import { openExternal } from './openExternal';
 import { DETAIL_COLUMN, DetailAction, DetailCopyAction, DetailHero, DetailLink, DetailNotes, DetailRow, DetailTile } from './detailPane';
 import { useCopyToClipboard } from './clipboard';
@@ -34,7 +34,7 @@ const IconSave = () => <Check />;
  *
  * Spec: ops/docs/backlog.md (#69 - client concurrency cap + IDB cache)
  * ──────────────────────────────────────────────────────────────── */
-function Favicon({ domain, size = 20 }: { domain: string; size?: number }) {
+function Favicon({ domain, size = 20, onMissing }: { domain: string; size?: number; onMissing?: (missing: boolean) => void }) {
   const [src, setSrc] = useState('');
   const [failed, setFailed] = useState(false);
   const containerRef = useRef<HTMLSpanElement>(null);
@@ -69,6 +69,14 @@ function Favicon({ domain, size = 20 }: { domain: string; size?: number }) {
     return () => { cancelled = true; observer.disconnect(); };
   }, [url]);
 
+  // Tell a chip that wraps this box when there is no icon to show (no
+  // domain, favicons off, a failed fetch, the demo's offline mode), so it can
+  // draw its own themed placeholder instead of the grey globe on a light tile.
+  const missing = !url || failed;
+  useEffect(() => {
+    onMissing?.(missing);
+  }, [missing, onMissing]);
+
   // ONE box in every state - icon, still loading, globe fallback - and the
   // observed element is that box, so the ref NEVER detaches. The <img> used
   // to replace the ref'd span outright, which made React null the ref: after
@@ -95,6 +103,23 @@ function Favicon({ domain, size = 20 }: { domain: string; size?: number }) {
         <Globe size={size} />
       ) : null}
     </span>
+  );
+}
+
+/** The login's tile in its detail view: the site icon on the light tile, or,
+ *  while there is none, a lock on the themed tile the card and SSH key views
+ *  use, as the list row does. The Favicon stays mounted (hidden) so it can
+ *  still load and report back. */
+function LoginTile({ domain }: { domain: string }) {
+  const [missing, setMissing] = useState(false);
+  const onMissing = useCallback((m: boolean) => setMissing(m), []);
+  return (
+    <DetailTile light={!missing}>
+      <span className={missing ? 'hidden' : 'contents'}>
+        <Favicon domain={domain} size={32} onMissing={onMissing} />
+      </span>
+      {missing && <Lock size={24} />}
+    </DetailTile>
   );
 }
 
@@ -353,7 +378,7 @@ function LoginViewMode({ note, onEdit, copy, copied, isPro, onOpenUpgrade }: {
   return (
     <div className={`flex-1 p-6 ${DETAIL_COLUMN}`}>
       <DetailHero
-        tile={<DetailTile light><Favicon domain={domain} size={32} /></DetailTile>}
+        tile={<LoginTile domain={domain} />}
         title={note.title || t('vaultItem.untitledLogin')}
         subtitle={<TypeBadge type="login" />}
         onEdit={onEdit}
@@ -545,7 +570,15 @@ function SshKeyViewMode({ note, onEdit, copy, copied }: {
   const data = parseSshKeyBody(note.body);
   const [showPrivate, setShowPrivate] = useState(false);
   const [showPassphrase, setShowPassphrase] = useState(false);
+  const [downloadError, setDownloadError] = useState(false);
   const copyTip = useCopyTip(copied);
+
+  const download = async (which: 'private' | 'public') => {
+    setDownloadError(false);
+    const { downloadSshKey } = await import('./sshKeyFile');
+    const saved = await downloadSshKey(which, data);
+    if (!saved.ok && saved.reason === 'failed') setDownloadError(true);
+  };
 
   // Truncate public key for display.
   const pubShort = data.publicKey.length > 40
@@ -570,7 +603,14 @@ function SshKeyViewMode({ note, onEdit, copy, copied }: {
         )}
 
         {data.publicKey && (
-          <DetailRow label={t('vaultItem.fieldPublic')} icon={<Key size={13} />} actions={<DetailCopyAction value={data.publicKey} id="publicKey" copied={copied} onCopy={copy} label={copyTip('publicKey')} />}>
+          <DetailRow label={t('vaultItem.fieldPublic')} icon={<Key size={13} />} actions={
+            <>
+              <DetailCopyAction value={data.publicKey} id="publicKey" copied={copied} onCopy={copy} label={copyTip('publicKey')} />
+              <DetailAction label={t('common:sshKeyForm.downloadPublicKey')} onClick={() => void download('public')}>
+                <Download size={15} />
+              </DetailAction>
+            </>
+          }>
             <span dir="ltr" className="font-mono text-xs text-pn-muted break-all" /* rtl-ok: a key, never reordered */>{pubShort}</span>
           </DetailRow>
         )}
@@ -583,6 +623,9 @@ function SshKeyViewMode({ note, onEdit, copy, copied }: {
               <>
                 <RevealAction shown={showPrivate} onToggle={() => setShowPrivate(!showPrivate)} />
                 <DetailCopyAction value={data.privateKey} id="privateKey" copied={copied} onCopy={copy} label={copyTip('privateKey')} />
+                <DetailAction label={t('common:sshKeyForm.downloadPrivateKey')} onClick={() => void download('private')}>
+                  <Download size={15} />
+                </DetailAction>
               </>
             }
           >
@@ -590,6 +633,12 @@ function SshKeyViewMode({ note, onEdit, copy, copied }: {
               {showPrivate ? data.privateKey.slice(0, 30) + '...' : '•'.repeat(16)}
             </span>
           </DetailRow>
+        )}
+        {data.privateKey && (
+          <p className="text-[11px] text-pn-muted mt-2">{t('common:sshKeyForm.downloadHint')}</p>
+        )}
+        {downloadError && (
+          <p className="text-[11px] text-danger mt-1">{t('common:sshKeyForm.downloadFailed')}</p>
         )}
 
         {data.passphrase && (

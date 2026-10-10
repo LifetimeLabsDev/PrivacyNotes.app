@@ -32,6 +32,7 @@ import { signInStamp, type SignInStamp } from './liveSignIn';
 import { ensureLevel2, MfaCancelledError, mfaSessionIdentity } from './mfaStep';
 import { consumeOAuthPending, markOAuthPending } from './oauthPending';
 import { exchangeAccountOAuth, type AccountOAuthProvider } from './accountOAuth';
+import { parseShortcut } from './noteShortcut';
 import type { AuthState, AuthMethod, OAuthProvider } from './auth';
 
 /**
@@ -934,11 +935,13 @@ export function useOAuthFlows({
         if (initialUrl && !hasStoredPhrase()) {
           await handleNativeOAuthCallback(initialUrl);
         }
+        // A shortcut is never a sign-in return: useShortcutDeepLinks takes it,
+        // and passing it on would only log a refusal.
         const un = await onOpenUrl((urls) => {
           const url = urls?.[0];
           if (!url) return;
           seen = url;
-          void handleNativeOAuthCallback(url);
+          if (!parseShortcut(url)) void handleNativeOAuthCallback(url);
         });
         if (cancelled) un();
         else unlisten = un;
@@ -962,7 +965,7 @@ export function useOAuthFlows({
               const url = cur?.[0];
               if (!url || url === seen) return;
               seen = url;
-              await handleNativeOAuthCallback(url);
+              if (!parseShortcut(url)) await handleNativeOAuthCallback(url);
             } catch {
               // Transient plugin/IPC failure: the next resume tries again.
             }

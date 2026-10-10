@@ -1,11 +1,27 @@
 {
-  "fill" : "automatic",
+  "fill-specializations" : [
+    {
+      "value" : {
+        "solid" : "extended-srgb:0.11765,0.25098,0.68627,1.00000"
+      }
+    },
+    {
+      "appearance" : "dark",
+      "value" : {
+        "solid" : "extended-srgb:0.11765,0.25098,0.68627,1.00000"
+      }
+    }
+  ],
   "groups" : [
     {
       "layers" : [
         {
           "image-name" : "glyph.png",
           "name" : "glyph"
+        },
+        {
+          "image-name" : "fold.png",
+          "name" : "fold"
         }
       ],
       "shadow" : {
@@ -14,7 +30,7 @@
       },
       "specular" : true,
       "translucency" : {
-        "enabled" : true,
+        "enabled" : false,
         "value" : 0.5
       }
     }

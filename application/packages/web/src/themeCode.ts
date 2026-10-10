@@ -5,10 +5,15 @@
  * needs from those six, and the person can override each suggestion. A
  * theme travels as one line of text, the theme code:
  *
- *   pn1:<name>:<background>,<sidebar>,<border>,<text>,<muted>,<accent>[:<key>=<hex>,...]
+ *   pn1:<name>:<background>,<sidebar>,<border>,<text>,<muted>,<accent>[:<key>=<hex>,...][,logo=original][,by=<username>]
  *
  * Every hex value is exactly six hex digits, and nothing else is accepted,
- * so no pasted text can reach CSS. The name is plain text that cannot hold
+ * so no pasted text can reach CSS. A well-formed pair with a key this
+ * version does not know is kept as text and never painted, so a code from a
+ * later version still pastes and its new keys travel on when it is copied. `by` credits the person who made the
+ * theme: a GitHub username, shown as text and never as a color.
+ * `logo=original` keeps the logo in its original colors; without it the logo
+ * takes the accent. The name is plain text that cannot hold
  * ":" or ",". The `pn1` prefix freezes the grammar, the rules that derive
  * the suggested values and the rule that reads the mode: a code pasted in a
  * later version paints the same colors. A change to any of them is `pn2`.
@@ -20,6 +25,9 @@
 
 const PREFIX = 'pn1';
 const THEME_NAME_MAX = 32;
+/** The longest name the builder lets a person type, so a card keeps its
+ *  layout. A code from elsewhere may still carry up to THEME_NAME_MAX. */
+export const THEME_NAME_INPUT_MAX = 20;
 /** The longest code the parser reads, and the register size in the blob. */
 const THEME_CODE_MAX = 512;
 
@@ -27,7 +35,7 @@ export const SEED_KEYS = ['background', 'sidebar', 'border', 'text', 'muted', 'a
 export type SeedKey = (typeof SEED_KEYS)[number];
 
 /** The values the app suggests, in the order a code writes them. */
-export const MORE_KEYS = ['list', 'well', 'soft', 'hover', 'fill', 'fillhover', 'danger', 'warning', 'success'] as const;
+export const MORE_KEYS = ['list', 'paper', 'well', 'soft', 'hover', 'fill', 'fillhover', 'danger', 'warning', 'success', 'label'] as const;
 export type MoreKey = (typeof MORE_KEYS)[number];
 
 /** A color as `#RRGGBB`, upper case. */
@@ -38,7 +46,21 @@ export interface CustomTheme {
   name: string;
   seeds: Record<SeedKey, Hex>;
   overrides: Partial<Record<MoreKey, Hex>>;
+  /** The GitHub username of the person who made it. A change of any color
+   *  drops it, so a credit always names the colors its author picked. */
+  author?: string;
+  /** Set when the logo keeps its original colors; absent, it takes the
+   *  accent, as in every built-in palette but Default. */
+  logo?: ThemeLogo;
+  /** Pairs a later version added (`key=value`), in the order the code had
+   *  them. Never painted; kept so a copy passes them on. */
+  extra?: string[];
 }
+
+export type ThemeLogo = 'original';
+
+/** A GitHub username: letters, digits and single hyphens inside, up to 39. */
+export const AUTHOR = /^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$/;
 
 /** The `--pn-*` tokens a custom theme sets. Every other token is the mode's. */
 export const TOKEN_KEYS = [
@@ -54,11 +76,17 @@ export interface ResolvedTheme {
   colors: Record<TokenKey, Hex>;
   /** What the app suggests for each value it derives, before an override. */
   suggested: Record<MoreKey, Hex>;
+  /** The ink of a folder or tag with no color of its own, and of the Jump to
+   *  hover: the code's `label`, or the suggestion. */
+  label: Hex;
+  /** The writing area: the code's `paper`, or the background. */
+  paper: Hex;
 }
 
 // ---------------------------------------------------------------- parsing
 
 const HEX6 = /^[0-9A-Fa-f]{6}$/;
+const EXTRA_PAIR = /^[a-z]{1,12}=[0-9A-Za-z-]{1,40}$/;
 // Characters that draw nothing and can disguise a name, so two names that look
 // alike stay different and a name can look empty. Refused: every format
 // character, the letters and marks that draw nothing (the Hangul fillers, the
@@ -128,25 +156,56 @@ export function parseThemeCode(input: string): CustomTheme | null {
   SEED_KEYS.forEach((k, i) => { seeds[k] = `#${seedValues[i]!.toUpperCase()}`; });
 
   const overrides: Partial<Record<MoreKey, Hex>> = {};
+  let author: string | undefined;
+  let logo: ThemeLogo | undefined;
+  const extra: string[] = [];
+  const seen = new Set<string>();
   if (morePart !== undefined) {
     if (morePart === '') return null;
     for (const pair of morePart.split(',')) {
-      const m = /^([a-z]+)=([0-9A-Fa-f]{6})$/.exec(pair);
-      if (!m || !(MORE_KEYS as readonly string[]).includes(m[1]!)) return null;
-      const key = m[1] as MoreKey;
-      if (overrides[key] !== undefined) return null;
-      overrides[key] = `#${m[2]!.toUpperCase()}`;
+      const key = pair.slice(0, pair.indexOf('='));
+      if (seen.has(key)) return null;
+      seen.add(key);
+      if (pair.startsWith('by=')) {
+        const by = pair.slice(3);
+        if (author !== undefined || !AUTHOR.test(by)) return null;
+        author = by;
+        continue;
+      }
+      if (pair.startsWith('logo=')) {
+        const value = pair.slice(5);
+        if (logo !== undefined || value !== 'original') return null;
+        logo = value;
+        continue;
+      }
+      if ((MORE_KEYS as readonly string[]).includes(key)) {
+        const m = /^[a-z]+=([0-9A-Fa-f]{6})$/.exec(pair);
+        if (!m) return null;
+        overrides[key as MoreKey] = `#${m[1]!.toUpperCase()}`;
+        continue;
+      }
+      // A key from a later version: kept, never painted. Its value cannot
+      // hold ":" or ",", so it cannot change how the rest of the code reads.
+      if (!EXTRA_PAIR.test(pair)) return null;
+      extra.push(pair);
     }
   }
-  return { name, seeds, overrides };
+  return {
+    name, seeds, overrides,
+    ...(logo ? { logo } : {}),
+    ...(author === undefined ? {} : { author }),
+    ...(extra.length ? { extra } : {}),
+  };
 }
 
 /** The one canonical code for a theme: upper-case hex, overrides in key order. */
 export function serializeThemeCode(theme: CustomTheme): string {
   const seeds = SEED_KEYS.map((k) => theme.seeds[k].slice(1)).join(',');
-  const more = MORE_KEYS.filter((k) => theme.overrides[k])
-    .map((k) => `${k}=${theme.overrides[k]!.slice(1)}`)
-    .join(',');
+  const pairs = MORE_KEYS.filter((k) => theme.overrides[k]).map((k) => `${k}=${theme.overrides[k]!.slice(1)}`);
+  if (theme.logo) pairs.push(`logo=${theme.logo}`);
+  if (theme.extra) pairs.push(...theme.extra);
+  if (theme.author) pairs.push(`by=${theme.author}`);
+  const more = pairs.join(',');
   return `${PREFIX}:${theme.name}:${seeds}${more ? `:${more}` : ''}`;
 }
 
@@ -201,6 +260,10 @@ const STATUS = {
   dark: { danger: fromChannels(STATUS_CHANNELS.dark.danger), warning: fromChannels(STATUS_CHANNELS.dark.warning), success: fromChannels(STATUS_CHANNELS.dark.success) },
 };
 const PRO: Record<ThemeMode, Hex> = { light: fromChannels(PRO_CHANNELS.light), dark: fromChannels(PRO_CHANNELS.dark) };
+// The folder and tag ink follows the accent, the color of the sidebar's own
+// icons, so a theme starts calm with one color; a person colors a single
+// folder or tag in its look, and a theme code may still set `label=`. The
+// built-in palettes point --pn-label at --pn-accent in index.css.
 /** Folder and tag colors: the glyph ink, and the tint of a note (rgb, alpha). */
 const LABEL_INKS: Record<ThemeMode, Hex[]> = {
   light: ['#5A6168', '#BA1C1C', '#A43F08', '#8D5200', '#206D2F', '#096878', '#1661A7', '#653AE6', '#B52356'],
@@ -238,15 +301,19 @@ interface Grounds {
 
 function grounds(theme: CustomTheme, mode: ThemeMode, list: Hex, well: Hex): Grounds {
   const s = theme.seeds;
+  // The writing area is a surface like the others, and a note's tint lies on
+  // it as well as on the background.
+  const paper = theme.overrides.paper ?? s.background;
+  const tinted = paper === s.background ? [s.background] : [s.background, paper];
   // The strongest accent tint that text sits on at rest, on any pane: a
   // selected row, chip or toolbar button. Hover tints go deeper; neither
   // these checks nor the audit of the built-in palettes measure them.
   const level = mode === 'dark' ? 0.2 : 0.15;
   return {
-    surfaces: [s.sidebar, list, s.background, well],
+    surfaces: [s.sidebar, list, s.background, well, ...(paper === s.background ? [] : [paper])],
     selectedRow: mix(s.sidebar, s.accent, level),
-    accentTints: [s.sidebar, list, s.background].map((pane) => mix(pane, s.accent, level)),
-    tints: TINT_RGB.map((c, i) => mix(s.background, c, TINT_ALPHA[mode][i]!)),
+    accentTints: [s.sidebar, list, ...tinted].map((pane) => mix(pane, s.accent, level)),
+    tints: tinted.flatMap((ground) => TINT_RGB.map((c, i) => mix(ground, c, TINT_ALPHA[mode][i]!))),
   };
 }
 
@@ -285,9 +352,13 @@ export function resolveTheme(theme: CustomTheme): ResolvedTheme {
   const fill = o.fill ?? suggestedFill;
   const suggestedFillHover = mix(fill, BLACK, 0.14);
   const status = (k: 'danger' | 'warning' | 'success') => walk(STATUS[mode][k], away, passes);
+  // The accent already reads as text; the walk only matters for a code
+  // whose accent was set by hand below that.
+  const suggestedLabel = walk(s.accent, s.text, (c) => worstOn(c, g.surfaces) >= 3.2);
 
   const suggested: Record<MoreKey, Hex> = {
     list: suggestedList,
+    paper: s.background,
     well: suggestedWell,
     soft: suggestedSoft,
     hover: suggestedHover,
@@ -296,11 +367,14 @@ export function resolveTheme(theme: CustomTheme): ResolvedTheme {
     danger: status('danger'),
     warning: status('warning'),
     success: status('success'),
+    label: suggestedLabel,
   };
   const v = (k: MoreKey) => o[k] ?? suggested[k];
   return {
     mode,
     suggested,
+    label: o.label ?? suggestedLabel,
+    paper: o.paper ?? s.background,
     colors: {
       'surface-0': s.sidebar,
       'surface-1': list,
@@ -325,7 +399,7 @@ export function resolveTheme(theme: CustomTheme): ResolvedTheme {
 
 export type CheckId =
   | 'sides' | 'text' | 'soft' | 'muted' | 'accent' | 'hover' | 'accent-tint' | 'selected'
-  | 'fill' | 'fill-hover' | 'danger' | 'warning' | 'success' | 'tinted-notes' | 'labels' | 'pro';
+  | 'fill' | 'fill-hover' | 'danger' | 'warning' | 'success' | 'tinted-notes' | 'labels' | 'label' | 'pro';
 
 export interface ThemeCheck {
   id: CheckId;
@@ -364,6 +438,9 @@ export function checkTheme(theme: CustomTheme): ThemeCheck[] {
   const datesPass = worstOn(c['text-muted'], g.tints) >= 3;
   const inkRatio = Math.min(...LABEL_INKS[r.mode].map((ink) => worstOn(ink, g.surfaces)));
   const proRatio = worstOn(PRO[r.mode], g.surfaces);
+  // The folder and tag ink on every surface, and the active one (the accent)
+  // on the selected row it sits on.
+  const labelRatio = Math.min(worstOn(r.label, g.surfaces), contrast(c.accent, g.selectedRow));
 
   return [
     { id: 'sides', ratio: null, min: 0, pass: sameSide, fix: null },
@@ -381,6 +458,7 @@ export function checkTheme(theme: CustomTheme): ThemeCheck[] {
     text('success', c.success, 'success'),
     { id: 'tinted-notes', ratio: noteRatio, min: 4.5, pass: noteRatio >= 4.5 && datesPass, fix: dark ? 'text' : 'soft' },
     { id: 'labels', ratio: inkRatio, min: 3, pass: inkRatio >= 3, fix: null },
+    { id: 'label', ratio: labelRatio, min: 3, pass: labelRatio >= 3, fix: 'label' },
     { id: 'pro', ratio: proRatio, min: 3, pass: proRatio >= 3, fix: null },
   ];
 }
@@ -392,11 +470,31 @@ export function themePasses(theme: CustomTheme): boolean {
 
 const isSeed = (k: SeedKey | MoreKey): k is SeedKey => (SEED_KEYS as readonly string[]).includes(k);
 
-/** The theme with one value set: a seed, or an override of a suggestion. */
+/** The theme with no credit. */
+export function withoutAuthor(theme: CustomTheme): CustomTheme {
+  const next = { ...theme };
+  delete next.author;
+  return next;
+}
+
+/** The theme with its logo choice set, or cleared with undefined. A changed
+ *  choice is no longer the author's, so the credit goes. */
+export function withLogo(theme: CustomTheme, logo: ThemeLogo | undefined): CustomTheme {
+  const base = theme.logo === logo ? theme : withoutAuthor(theme);
+  const next = { ...base };
+  if (logo) next.logo = logo;
+  else delete next.logo;
+  return next;
+}
+
+/** The theme with one value set: a seed, or an override of a suggestion. A
+ *  changed color is no longer the author's, so the credit goes. */
 export function withValue(theme: CustomTheme, key: SeedKey | MoreKey, value: Hex): CustomTheme {
+  const same = (isSeed(key) ? theme.seeds[key] : theme.overrides[key]) === value;
+  const base = same ? theme : withoutAuthor(theme);
   return isSeed(key)
-    ? { ...theme, seeds: { ...theme.seeds, [key]: value } }
-    : { ...theme, overrides: { ...theme.overrides, [key]: value } };
+    ? { ...base, seeds: { ...theme.seeds, [key]: value } }
+    : { ...base, overrides: { ...theme.overrides, [key]: value } };
 }
 
 /**
@@ -406,11 +504,11 @@ export function withValue(theme: CustomTheme, key: SeedKey | MoreKey, value: Hex
  */
 export function fixTheme(theme: CustomTheme, key: SeedKey | MoreKey): CustomTheme {
   const r = resolveTheme(theme);
-  const keyToken: Record<MoreKey, TokenKey> = {
+  const keyToken: Record<Exclude<MoreKey, 'label' | 'paper'>, TokenKey> = {
     list: 'surface-1', well: 'track', soft: 'text-soft', hover: 'accent-hover', fill: 'accent-fill',
     fillhover: 'accent-fill-hover', danger: 'danger', warning: 'warning', success: 'success',
   };
-  const start = isSeed(key) ? theme.seeds[key] : r.colors[keyToken[key]];
+  const start = isSeed(key) ? theme.seeds[key] : key === 'label' ? r.label : key === 'paper' ? r.paper : r.colors[keyToken[key]];
   const toward = key === 'fill' || key === 'fillhover' || r.mode === 'light' ? BLACK : WHITE;
   for (let i = 0; i <= 100; i++) {
     const next = withValue(theme, key, mix(start, toward, i / 100));
@@ -453,4 +551,35 @@ export function fixAll(theme: CustomTheme): CustomTheme {
     for (const key of keys) next = fixTheme(next, key);
   }
   return next;
+}
+
+// ---------------------------------------------------------------- suggest from one color
+
+/**
+ * A whole theme from its accent and a mode, for a person with no palette in
+ * mind: the five other seeds are near-neutral, each tinted a little toward
+ * the accent, muted text and the accent move until they read on every
+ * surface, every suggestion is taken as is, and Fix all clears what is left.
+ * The name stays; the credit goes, because the colors are new.
+ */
+export function suggestFromAccent(theme: CustomTheme, mode: ThemeMode): CustomTheme {
+  const accent = theme.seeds.accent;
+  const dark = mode === 'dark';
+  const background = dark ? mix('#15161B', accent, 0.06) : mix('#FDFDFE', accent, 0.025);
+  const sidebar = dark ? mix(background, BLACK, 0.18) : mix(mix(background, accent, 0.06), BLACK, 0.03);
+  const border = dark ? mix(background, WHITE, 0.09) : mix(background, '#15161C', 0.13);
+  const text = dark ? mix('#ECEDF1', accent, 0.04) : mix('#15161C', accent, 0.06);
+  // The list sits between sidebar and background, and the well one step off
+  // the background, so these three cover every surface text lands on.
+  const surfaces = [sidebar, background, mix(background, dark ? BLACK : text, dark ? 0.15 : 0.08)];
+  const reads = (c: Hex) => worstOn(c, surfaces) >= AIM;
+  const seeds: Record<SeedKey, Hex> = {
+    background,
+    sidebar,
+    border,
+    text,
+    muted: walk(mix(background, text, 0.5), text, reads),
+    accent: walk(accent, text, reads),
+  };
+  return fixAll({ name: theme.name, seeds, overrides: {} });
 }

@@ -1,19 +1,18 @@
-name: Submit a theme
-description: Share a color theme for privacynotes.app/themes
 title: "[Theme]: "
 labels: [theme]
 body:
   - type: markdown
     attributes:
       value: |
-        Made a color theme you like? Send it here. We look at every theme that comes in. When we
-        add yours, it shows on privacynotes.app/themes with your GitHub username as the credit, and
-        anyone can copy it into the app from there.
+        Made a color theme you like? Share it here. We look at every theme that comes in. When we
+        add yours, it shows in the app's theme gallery and on privacynotes.app/themes with your
+        GitHub username as the credit. This thread stays open, so people can leave feedback.
 
         We may adjust a color so that text stays easy to read in every part of the app.
 
-        To get the code, open the menu on your theme's card in Settings > Appearance > Themes and
-        press Copy code.
+        To get the code, open Settings > Design, open the menu on your theme's card and press
+        Copy code. Put your GitHub username in the theme's Credit field first, and the code
+        carries it.
 
   - type: input
     attributes:
@@ -26,7 +25,7 @@ body:
     attributes:
       label: Theme code
       description: The whole line, as Copy code gives it. It starts with pn1.
-      placeholder: "pn1:My theme:FDF8F8,F2E4E4,E6D3D3,2A1A1F,6B4E57,A33A5A"
+      placeholder: "pn1:My theme:FDF8F8,F2E4E4,E6D3D3,2A1A1F,6B4E57,A33A5A,by=yourname"
     validations:
       required: true
 
@@ -41,7 +40,7 @@ body:
       options:
         - label: I made this theme, or I have the right to share it.
           required: true
-        - label: You may show my GitHub username with the theme on privacynotes.app/themes.
+        - label: You may show my GitHub username with the theme in the app and on privacynotes.app/themes.
           required: true
         - label: You may adjust its colors before you add it.
           required: true

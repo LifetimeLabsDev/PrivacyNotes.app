@@ -80,6 +80,13 @@
     "clearFilters": "Clear filters",
     "filteredAfter": "To display them."
   },
+  "listGroups": {
+    "previous7Days": "Previous 7 days",
+    "previous30Days": "Previous 30 days",
+    "other": "Other",
+    "collapseAll": "Collapse all groups",
+    "expandAll": "Expand all groups"
+  },
   "headerLabel": {
     "allItems": "All",
     "untagged": "Untagged",
@@ -145,7 +152,7 @@
     "exitHover": "Exit Zen mode (Esc)",
     "enterHover": "Enter Zen mode",
     "proHover": "Zen mode (Pro)",
-    "enterAriaShortcut": "Enter Zen mode (⌘⇧F)"
+    "enterAriaShortcut": "Enter Zen mode ({{keys}})"
   },
   "editor": {
     "backToList": "Back to notes list",
@@ -219,7 +226,7 @@
     "journalCalendar": "Journal calendar",
     "words": "Words",
     "zen": "Zen",
-    "appearance": "Appearance",
+    "appearance": "Design",
     "signOut": "Sign out",
     "signingOut": "Signing out…",
     "switchToLight": "Switch to light mode",
@@ -227,20 +234,24 @@
   },
   "settings": {
     "groupYourNotes": "Your notes",
+    "groupPreferences": "Preferences",
     "groupAccount": "Account & data",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "Statistics",
-    "journalsLabel": "Journals",
     "importLabel": "Import & Export",
     "planLabel": "Account",
     "storageLabel": "Storage",
     "imagesLabel": "Images",
     "securityLabel": "Security",
     "accountLabel": "ID & Sync",
-    "appearanceLabel": "Appearance",
+    "appearanceLabel": "Design",
+    "editorLabel": "Editor",
+    "formatBarLabel": "Toolbar",
+    "listsLabel": "Lists",
     "helpLabel": "Help",
     "aboutLabel": "About",
-    "languageLabel": "Date & Language",
+    "languageLabel": "Language",
+    "dateLabel": "Date",
     "languageDesc": "Choose the language PrivacyNotes is shown in."
   },
   "importStore": {

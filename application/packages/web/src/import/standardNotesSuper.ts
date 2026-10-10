@@ -19,7 +19,7 @@ import type { ImportBlob } from './types';
  *   list bullet / number / check         -> - / 1. / - [ ] (nesting kept)
  *   code                                 -> fenced block with its language
  *   table                                -> pipe table, first row as header
- *   collapsible-container                -> a callout, folded when closed
+ *   collapsible-container                -> a Fold callout, folded when closed
  *   link / autolink                      -> [text](url)
  *   hashtag                              -> text kept, and a tag on the note
  *   snbubble (a link to another item)    -> [[Note title]]
@@ -390,7 +390,7 @@ export function superToMarkdown(text: string, ctx: SuperContext): SuperResult | 
         const content = kids(node).find((c) => c.type === 'collapsible-content');
         const titleText = title ? inline(kids(title), 'md').replace(/\s*\\\n\s*/g, ' ') : '';
         const body = content ? blocks(kids(content)) : '';
-        const lines = [`> [!note]${node.open === false ? '-' : '+'} ${titleText}`.trimEnd()];
+        const lines = [`> [!fold]${node.open === false ? '-' : '+'} ${titleText}`.trimEnd()];
         if (body) lines.push(...body.split('\n').map((l) => (l ? `> ${l}` : '>')));
         return lines.join('\n');
       }

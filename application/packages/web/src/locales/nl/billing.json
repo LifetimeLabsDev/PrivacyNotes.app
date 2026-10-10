@@ -4,20 +4,21 @@
     "earlyAdopterBadge": "Early adopter",
     "oneTime": "eenmalig",
     "subscriptionPitch": "Geen abonnement. Geen jaarlijkse kosten. Eén betaling, voor het leven ontgrendeld.",
-    "ctaUnlock": "Alles ontgrendelen",
+    "ctaUnlockPrice": "Ontgrendel alles voor {{price}}",
     "ctaOpening": "Afrekenen openen...",
     "ctaSignUp": "Maak een account aan om te ontgrendelen",
     "intro": {
       "storage": "Meer ruimte is een Pro-functie: 500 MB opslag, 50 MB per bestand en tot 5 GB extra als opslaguitbreiding wanneer je het nodig hebt.",
       "folders": "Mappen zijn een Pro-functie. Orden je notities in submappen, zo diep als je wilt, en houd elk project gescheiden.",
       "looks": "Iconen en kleuren voor mappen en tags zijn een Pro-functie. Geef ze elk een eigen uiterlijk dat je in één oogopslag herkent.",
+      "spaces": "Ruimtes zijn een Pro-functie. {{desc}}",
+      "formatBar": "De opmaakbalk indelen is een Pro-functie. Zet de knoppen die je gebruikt op de balk, verberg de rest en orden het +-menu zoals jij wilt.",
       "lock": "Een notitie vergrendelen is een Pro-functie. Upgrade om notities te beschermen tegen onbedoelde wijzigingen.",
       "protect": "Een notitie met een PIN beveiligen is een Pro-functie. Upgrade om gevoelige notities achter je PIN te zetten.",
       "history": "Notitiegeschiedenis is een Pro-functie. Upgrade om een tijdlijn van elke opgeslagen versie te bewaren.",
       "devices": "Je zit aan de limiet van 2 apparaten. Upgrade voor een onbeperkt aantal apparaten.",
       "zen": "Zen-modus is een Pro-functie. Upgrade voor schrijven zonder afleiding.",
       "theme": "Premium thema's zijn een Pro-functie. Upgrade om elke tint te ontgrendelen.",
-      "callout": "De volledige set aandachtsblokken is een Pro-functie.",
       "totp": "2FA-codes zijn een Pro-functie. Bewaar een authenticator-sleutel bij elke login en je krijgt de wisselende code naast het wachtwoord. De sleutel zelf wordt bij elk plan opgeslagen en gesynchroniseerd.",
       "replace": "Zoeken en vervangen is een Pro-functie. Upgrade om één overeenkomst of alle overeenkomsten in een notitie in één keer te vervangen.",
       "passphrase": "Wachtwoordzinnen zijn een Pro-functie. Genereer een zin van willekeurige woorden die makkelijk te typen en te zeggen is.",
@@ -26,14 +27,14 @@
     "features": {
       "devices": "Synchroniseer onbeperkt veel apparaten, op elk platform",
       "folders": "Submappen, orden per project",
+      "spaces": "Ruimtes: Persoonlijk en Werk, één tegelijk",
       "lock": "Vergrendel elke notitie of beveilig hem met een PIN",
       "history": "Volledige notitiegeschiedenis, herstel wanneer je wilt",
       "themes": "Premium thema's in elke tint",
       "zen": "Zen-modus, schrijven zonder afleiding",
       "storage": "500 MB opslag, tot 5,5 GB met opslaguitbreidingen"
     },
-    "comparisonBeta": "Betaal eenmalig ${{earlyPrice}}. Obsidian Sync kost $48 per jaar, elk jaar. Standard Notes rekent $90 per jaar. Early-adopterprijs, vastgezet voordat hij naar ${{proPrice}} gaat.",
-    "comparison": "Betaal eenmalig ${{proPrice}} en het is voor altijd van jou. Obsidian Sync kost $48 per jaar en Standard Notes $90 per jaar, elk jaar opnieuw."
+    "compareCaption": "{{years}} jaar. Eén betaling tegenover jaarlijkse kosten."
   },
   "purchaseError": {
     "store": "Het afrekenen in de store kon niet worden voltooid en er is niets afgeschreven. Probeer het zo meteen opnieuw.",

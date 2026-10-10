@@ -49,13 +49,7 @@
     "mdDemoScripts": "Sobrescrito, subscrito, sublinhado",
     "mdDemoMath": "Matemática (KaTeX)",
     "mdDemoQuote": "Citação e ligação entre notas",
-    "mdDemoDivider": "Divisor",
-    "hkShowcase": "A lista completa",
-    "hkMac": "Mac",
-    "hkPc": "Windows e Linux",
-    "hkBrowser": "Navegador",
-    "hkDesktop": "App para computador",
-    "hkLayout": "Os atalhos seguem os caracteres que o teu teclado escreve, não a posição das teclas no teclado norte-americano: prime a tecla que escreve o carácter mostrado (num esquema não latino, a tecla na posição norte-americana). Uma tecla que escreve um carácter com AltGr escreve-o sempre."
+    "mdDemoDivider": "Divisor"
   },
   "groups": {
     "gettingStarted": "Primeiros passos",
@@ -100,6 +94,14 @@
       "a": [
         "As notas, os títulos, as etiquetas e os anexos estão sempre encriptados, no teu dispositivo e a caminho do servidor. Na autocustódia, que é o ponto de partida de todas as contas criadas com uma frase, não temos nenhuma chave de desencriptação. Ao criares uma conta com Google, Apple ou GitHub, a app pergunta onde fica a tua chave e começa pela opção «Mantém tudo simples e prático», que guarda a frase no nosso servidor, encriptada com uma chave nossa. Nesse modo, o nosso servidor pode desencriptar a frase e, por isso, as tuas notas. Definições > Conta > Custódia da chave mostra o modo atual e permite mudá-lo.",
         "Podemos ver os dados necessários para manter o serviço a funcionar: quanto armazenamento encriptado usas, quantos dispositivos tens associados e os registos de data e hora da sincronização. Se usas apenas a frase e não ligaste nenhuma conta Google, Apple ou GitHub, não sabemos o teu endereço de e-mail."
+      ]
+    },
+    "app-privacy-label": {
+      "q": "Porque é que o rótulo de privacidade da App Store diz que os meus dados estão associados a mim?",
+      "a": [
+        "Porque a Apple pede um único rótulo que cubra tudo o que pode chegar ao nosso servidor, mesmo quando chega encriptado e mesmo quando só algumas contas o enviam. Associados a ti significa ligados a uma conta, e a conta por trás de um registo com frase é uma chave, não um nome. Nada é usado para rastreamento, e a app não tem análises, anúncios nem relatórios de falhas. Cada linha do rótulo significa uma coisa:",
+        "- **Conteúdo do utilizador**: as tuas notas e ficheiros, encriptados no teu dispositivo. Na autocustódia, não os conseguimos ler.\n- **Identificadores**: uma chave pública derivada da tua frase de recuperação e um hash do dispositivo, calculado no teu dispositivo, que serve apenas para aplicar o limite de dispositivos do plano gratuito.\n- **Informações de contacto**: um endereço de e-mail, apenas se iniciares sessão com Google, Apple ou GitHub.\n- **Compras**: se a tua conta tem Pro. A Apple trata do pagamento, e nunca vemos o teu cartão.",
+        "Para manter essa lista o mais curta possível na tua conta, regista-te com uma frase de recuperação em vez de um início de sessão Google, Apple ou GitHub, e mantém a autocustódia. Definições > Conta > Custódia da chave mostra o modo atual. [O que o PrivacyNotes consegue ver](/pt/help/what-can-you-see/) explica o resto."
       ]
     },
     "phrase-vs-password": {
@@ -400,7 +402,7 @@
     "languages": {
       "q": "Que idiomas é que a app fala?",
       "a": [
-        "Inglês, alemão, francês, italiano, espanhol, neerlandês, polaco, checo, catalão, turco, sueco, ucraniano, russo, japonês, coreano, chinês tradicional, tailandês, árabe e português, nas variantes europeia e do Brasil. A app segue o idioma do sistema por predefinição, ou podes fixar um explicitamente em Definições > Data e Idioma > Idioma em cada dispositivo.",
+        "Inglês, alemão, francês, italiano, espanhol, neerlandês, polaco, checo, catalão, turco, sueco, ucraniano, russo, japonês, coreano, chinês tradicional, tailandês, árabe e português, nas variantes europeia e do Brasil. A app segue o idioma do sistema por predefinição, ou podes fixar um explicitamente em Definições > Idioma em cada dispositivo.",
         "As traduções são grátis para toda a gente, não são uma vantagem Pro. Estão previstos mais idiomas; se o teu está a faltar, diz-nos no [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) ou no [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -458,8 +460,7 @@
       "q": "Que atalhos de teclado existem?",
       "a": [
         "Carrega em ? em qualquer parte da app para veres o guia de referência integrado, também disponível em Definições > Sobre. Os atalhos cobrem navegação, ações sobre notas, formatação e vistas - e no Windows e no Linux, cada Cmd lê-se como Ctrl e Option como Alt.",
-        "O essencial: Cmd+K vai para qualquer item ou definição pelo nome, e a última linha procura no texto da secção aberta; / foca a procura, J e K percorrem a lista, Cmd+[ e Cmd+] recuam e avançam pelos itens que abriste, Alt+Shift+N começa uma nota nova, Cmd+Backspace envia a selecionada para o lixo, Cmd+, abre as Definições. Enquanto escreves: Cmd+B negrito, Cmd+I itálico, Cmd+Shift+K insere um link, Cmd+Shift+9 começa uma lista de tarefas, Cmd+F procura dentro da nota, Cmd+Shift+O mostra ou esconde a estrutura, Cmd+Shift+M passa para a vista Markdown. Cmd+\\ ou Cmd+Shift+D esconde a barra lateral, Cmd+Shift+L troca o tema, Cmd+Shift+F entra no modo Zen (Pro), e Esc recua em quase tudo, incluindo os filtros. Escreve > na procura ou no Cmd+K (ou carrega em > fora de um campo de texto) para encontrares qualquer comando pelo nome e o executares.",
-        "As apps para computador acrescentam as teclas que um navegador reserva para si: Cmd+N para uma nota nova, Cmd+Shift+N para um item novo de qualquer tipo, Cmd+W para fechar um separador, Ctrl+Tab para passar de um separador para outro, Cmd+1 a Cmd+9 para as secções da barra lateral, e Cmd+Shift+P para a lista de comandos."
+        "O [guia de referência para imprimir](/help/keyboard-shortcuts/cheat-sheet) lista todos os atalhos numa única página A4, para Mac ou para Windows e Linux, e para o navegador ou para as apps para computador. É gerado a partir da mesma lista que a app mostra, por isso corresponde sempre à versão que usas."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -638,8 +639,15 @@
     "tags": {
       "q": "Como funcionam as etiquetas?",
       "a": [
-        "Cada nota aberta tem uma linha de etiquetas por baixo do título. Escreve uma palavra e carrega em Enter, vírgula ou #, e a etiqueta passa a ser um chip. A barra lateral lista todas as etiquetas que usas, e um clique filtra a lista para essas notas. Podes mudar o nome de uma etiqueta em todo o lado de uma vez, marcá-la como favorita para ficar no topo, ou apagá-la, com ou sem as notas que a levam.",
+        "Cada nota aberta tem uma linha de etiquetas por baixo do título. Escreve uma palavra e carrega em Enter, vírgula ou #, e a etiqueta passa a ser um chip. A barra lateral lista as etiquetas que a secção aberta usa, e um clique filtra a lista para esses itens. Podes mudar o nome de uma etiqueta em todo o lado de uma vez, marcá-la como favorita para ficar no topo, ou apagá-la, com ou sem as notas que a levam.",
         "Etiquetas e pastas resolvem problemas diferentes: uma nota vive numa pasta mas leva tantas etiquetas quantas quiseres, que é exatamente o que precisas quando algo é ao mesmo tempo \"trabalho\" e \"fatura\". As importações etiquetam por origem, por isso tudo o que vem de outra app chega com a sua própria etiqueta e é fácil de encontrar, ou de limpar mais tarde."
+      ]
+    },
+    "organize": {
+      "q": "Como funcionam em conjunto as secções, pastas, etiquetas e espaços?",
+      "a": [
+        "Tudo o que guardas vive numa única biblioteca. As secções da barra lateral, como Notas, Cofre e Diários, são vistas dessa biblioteca por tipo. Uma pasta é um lugar, por isso uma pasta pode guardar uma nota e o início de sessão que lhe pertence, e a árvore de pastas é a mesma em cada secção. Os números contam o que a secção aberta contém, e uma pasta sem nada dela aparece esbatida. Uma etiqueta é um rótulo, e a barra lateral só lista as etiquetas que a secção aberta usa.",
+        "Os espaços dividem a biblioteca em Pessoal e Trabalho e mostram um de cada vez. Uma pasta de primeiro nível pertence a um espaço, com tudo o que tem dentro, e **Mover para Trabalho** no seu menu passa-a para o outro. Um item sem pasta pertence a Pessoal, por isso tudo o que crias em Trabalho vai para uma pasta de Trabalho. As etiquetas são gratuitas, e as pastas e os espaços precisam de Pro."
       ]
     },
     "note-links": {
@@ -652,8 +660,8 @@
     "appearance": {
       "q": "Posso mudar o aspeto da app?",
       "a": [
-        "Sim, em Definições > Aspeto. O Modo alterna entre Claro, Escuro e Auto, que segue o teu sistema. O Tamanho do texto tem quatro passos e só muda a tua superfície de escrita: a interface à volta fica na mesma. A Vista dispõe os itens em Lista ou Grelha. O Editor decide se as notas abrem no modo Formatado ou como Markdown puro.",
-        "Os temas de cor são a única parte por trás do Pro: o tema predefinido é gratuito e o Pro desbloqueia os restantes, tanto claros como escuros. O modo zen, que esconde tudo menos o teu texto, também é Pro (Cmd+Shift+F). O modo e o tamanho do texto ficam no dispositivo onde os definiste. Todo o resto segue a tua conta para os teus outros dispositivos."
+        "Sim. Definições > Aspeto trata do visual: o **Modo** alterna entre Claro, Escuro e Auto, que segue o teu sistema, e escolhes um tema de cor para o modo claro e outro para o escuro. Definições > Editor trata da escrita: o **Tamanho do texto** tem cinco passos e só muda a tua superfície de escrita, por isso a interface à volta fica na mesma, e o **Editor** decide se as notas abrem no modo Formatado ou como Markdown puro. Definições > Listas dispõe os itens em Lista ou Grelha. Nas apps para computador, o **Tamanho da app** em Definições > Aspeto escala a janela inteira. O botão **Aspeto** no rodapé reúne as definições que mudas mais vezes, com três temas favoritos para cada modo.",
+        "Os temas de cor precisam de Pro: o tema predefinido é gratuito e o Pro desbloqueia os restantes, tanto claros como escuros, além de [temas teus](/pt/help/custom-themes/). O modo zen, que esconde tudo menos o teu texto (Cmd+Shift+F), também é Pro. Mover a [barra de formatação](/pt/help/format-bar/) para o topo ou para o fundo é gratuito, e organizar os seus botões é Pro. O modo, os temas de cor que escolhes e os teus três favoritos, o tamanho do texto, Lista ou Grelha e o tamanho da app ficam no dispositivo onde os definiste. O modo do editor, o espaçamento de linhas, as cores das notas e as definições das listas seguem a tua conta para os teus outros dispositivos."
       ]
     },
     "share-with-someone": {
@@ -761,6 +769,139 @@
       "a": [
         "O teu espaço já está livre. No momento em que a eliminação sincroniza, esses bytes deixam de contar para a tua quota, no servidor tal como neste dispositivo. Se a barra ainda mostrar o número antigo, carrega no ícone de atualizar ao lado: volta a contar a partir do servidor e deixa de fora tudo o que já está em fila para ser eliminado. Um dispositivo que esteve offline mantém a sua última contagem até se pôr em dia.",
         "Os \"poucos dias\" de que a app fala são sobre o ficheiro encriptado em si, não sobre a tua quota, e essa espera é deliberada. Eliminar um ficheiro do armazenamento é definitivo, não há lixo de onde o pescar de volta. Um dispositivo que não acabou de sincronizar tem uma imagem incompleta das tuas notas, por isso podia eliminar uma imagem que outra nota ainda mostra. Um ficheiro espera por isso pelo menos 24 horas, e só um dispositivo com sincronização terminada em condições o remove. Essa paciência não te custa nada, porque o espaço foi creditado no dia em que eliminaste."
+      ]
+    },
+    "spoiler-text": {
+      "q": "Como escondo texto com spoiler numa nota?",
+      "a": [
+        "Seleciona o texto e escolhe **Spoiler** no menu + da barra de formatação, ou escreve-o entre dois pares de barras: `||spoiler||`. O texto fica desfocado de imediato. Enquanto editas, aparece assim que o cursor lhe toca e volta a desfocar quando o cursor sai. Numa nota apenas de leitura, um clique mostra-o.",
+        "A lista de notas e as pré-visualizações mostram `•••` no seu lugar, por isso nem o comprimento o denuncia. A procura continua a encontrar as palavras dentro de um spoiler, uma exportação em HTML mantém-nas desfocadas até o leitor clicar, e uma impressão mostra-as. Uma exportação em Markdown mantém as barras, que outras apps de Markdown mostram como caracteres simples à volta do texto. Os spoilers são gratuitos."
+      ]
+    },
+    "copy-box": {
+      "q": "Como crio texto que se copia com um clique?",
+      "a": [
+        "Adiciona uma caixa de cópia: escolhe **Caixa de cópia** no menu + da barra de formatação e depois escreve ou cola lá dentro o texto, como um comando, um endereço ou um código. O botão no canto põe o texto todo na área de transferência e mostra **Copiado** por um momento. Um bloco de código e uma caixa de cópia convertem-se um no outro, por isso também podes mudar um bloco que já existe.",
+        "O código inline também se copia. Numa nota apenas de leitura, um clique ou um toque no código inline copia-o. Enquanto editas, Cmd-clique num Mac ou Ctrl-clique no Windows e no Linux copia-o, para que um clique simples continue a colocar o cursor. Uma caixa de cópia é guardada como um bloco de código com a linguagem `copy`, que outras apps de Markdown mostram como um bloco de código normal. Ambos são gratuitos."
+      ]
+    },
+    "footnotes": {
+      "q": "Como adiciono notas de rodapé a uma nota?",
+      "a": [
+        "Escolhe **Nota de rodapé** no menu + da barra de formatação. A app acrescenta o número seguinte no cursor, cria uma nota de rodapé vazia por baixo do texto e põe lá o cursor. Também podes escrever `[^1]` logo a seguir a uma palavra e começar uma linha com `[^1]: ` para escrever a própria nota de rodapé. O identificador pode ser uma palavra, e não só um número.",
+        "Clica num número para saltar para a sua nota de rodapé, e a seta de retorno ou o Esc levam-te de volta ao texto. Num computador, pousar o ponteiro sobre um número mostra a nota de rodapé num pequeno cartão. Os números seguem a ordem do texto, e a nota guarda notas de rodapé em Markdown padrão, por isso outras apps de Markdown conseguem lê-las. Uma exportação em HTML, um PDF e uma burn note mantêm-nas como notas de rodapé com ligação. As notas de rodapé são gratuitas."
+      ]
+    },
+    "statistics": {
+      "q": "O que mostram as estatísticas sobre a minha escrita e o meu bem-estar?",
+      "a": [
+        "Abre Definições > Estatísticas, ou clica na contagem de notas e palavras no rodapé. **Resumo** resume a tua semana: a tua sequência de escrita, as palavras escritas, o humor e os dias registados, mais uma grelha das últimas 26 semanas e as horas a que costumas escrever. **Escrita** conta as tuas notas, palavras e etiquetas, mostra a tua sequência atual e a mais longa, e lista os teus marcos. **Bem-estar** mostra em gráfico cada registo do teu diário no intervalo que escolheres, incluindo os registos personalizados.",
+        "Tudo é calculado no teu dispositivo, e nada disso nos é enviado. As palavras e as horas de escrita contam o que escreves nesse dispositivo, por isso cada dispositivo mostra os seus próprios números. Os gráficos, as sequências, o calendário da medicação e **Transferir JSON** são gratuitos. O Pro acrescenta o resumo da semana, o que mexe com o teu humor, a tabela de Padrões, as comparações no mesmo dia e no dia seguinte, um **PDF para o médico** e um prompt de IA pronto a copiar."
+      ]
+    },
+    "drag-to-folder": {
+      "q": "Posso arrastar uma nota para uma pasta ou uma etiqueta?",
+      "a": [
+        "Sim. Arrasta uma nota da lista para uma pasta na barra lateral para a mover para lá, ou para **Sem pasta** para a tirar da pasta. Larga-a numa etiqueta para lhe juntar essa etiqueta, e a nota mantém as etiquetas que já tinha. Tarefas, marcadores, contactos, itens do Cofre e ficheiros carregados em Ficheiros arrastam-se da mesma forma. Deixa um item arrastado parado sobre uma pasta fechada por um momento e ela abre-se, para chegares a uma subpasta.",
+        "Para mover vários de uma vez, faz Cmd-clique num Mac ou Ctrl-clique no Windows e no Linux para os selecionares, Shift-clique para juntar um intervalo, e depois arrasta qualquer item selecionado. Arrastar precisa de um rato, trackpad ou caneta e de uma janela larga o suficiente para mostrar a barra lateral. Num telemóvel, usa antes **Mover para a pasta** no menu \"...\". As etiquetas são gratuitas, e as [pastas](/pt/help/folders/) precisam de Pro."
+      ]
+    },
+    "custom-themes": {
+      "q": "Posso criar o meu próprio tema de cores?",
+      "a": [
+        "Sim, com Pro. Abre Definições > Aspeto e escolhe **Novo tema**. Escolhe seis cores (Fundo, Barra lateral, Contorno, Texto, Texto esbatido e Destaque) e a app sugere as restantes, enquanto a app por trás do painel mostra o teu tema à medida que avanças. Uma verificação de contraste assinala qualquer texto difícil de ler e oferece **Corrigir tudo**. O botão Guardar fica disponível assim que todas as verificações passam.",
+        "O menu de cada cartão de tema tem **Copiar código**, que copia o tema como um código de texto curto que podes enviar a qualquer pessoa, e **Colar código de tema** adiciona um que tenhas recebido. Escolhes um tema para o modo claro e outro para o escuro, **Favorito** no menu de um cartão põe até três temas de cada modo no botão **Aspeto** no rodapé, e os temas que crias sincronizam com todos os teus dispositivos. Encontras mais na [página de temas](https://privacynotes.app/themes), onde também podes submeter o teu. O tema predefinido é gratuito, e todos os outros temas precisam de Pro."
+      ]
+    },
+    "format-bar": {
+      "q": "Posso escolher que botões aparecem na barra de formatação?",
+      "a": [
+        "Sim. Clica na roda dentada no fim da barra de formatação, ou abre Definições > Barra de formatação. Cada botão tem três lugares: **Na barra**, **No menu +** ou **Ocultos**. Arrasta um botão para o mudar de lugar, ou clica nele para veres as opções. Um botão oculto continua a funcionar pelo atalho de teclado e pelo Markdown, por isso esconder um não te tira nada.",
+        "Mover a barra para o topo ou para o fundo é gratuito em todas as contas. Organizar os seus botões faz parte do Pro: numa conta gratuita, Definições > Barra de formatação funciona como uma pré-visualização que podes experimentar, e a tua disposição é guardada assim que tiveres o Pro. A tua disposição segue a tua conta para todos os dispositivos, e **Repor predefinições** traz de volta a barra padrão. Num ecrã tátil, a barra é uma única linha que desliza para o lado, em todas as contas, por isso nenhum botão fica escondido numa segunda linha."
+      ]
+    },
+    "window-zoom": {
+      "q": "Posso aumentar ou diminuir a app para computador inteira?",
+      "a": [
+        "Sim, nas apps para computador para Mac, Windows e Linux. Carrega em Cmd e na tecla mais num Mac, ou em Ctrl e na tecla mais no Windows e no Linux, para aumentar a janela inteira. A tecla menos diminui-a, e o 0 volta ao normal. O mesmo controlo é o **Tamanho da app** em Definições > Aspeto, com passos de 80% a 200%.",
+        "O Tamanho da app escala tudo de uma vez: a barra lateral, a lista, os menus e o teu texto. Para mudar só a tua escrita, usa **Tamanho do texto** em Definições > Editor. O Tamanho da app aplica-se ao dispositivo onde o defines. Num navegador, o zoom do próprio navegador faz o mesmo trabalho."
+      ]
+    },
+    "zen-mode": {
+      "q": "O que é o modo Zen?",
+      "a": [
+        "O modo Zen esconde tudo menos a nota que estás a escrever: a barra lateral, a lista e o rodapé, e a barra de formatação também começa escondida. Os separadores abertos continuam no topo. Carrega em Cmd+Shift+F num Mac ou Ctrl+Shift+F no Windows e no Linux, clica em **Modo Zen** no rodapé, ou clica com o botão direito numa área vazia e escolhe **Modo Zen**.",
+        "Para voltares, carrega em Esc, nas mesmas teclas outra vez, ou em **Sair do Zen** no topo da nota. **Mostrar a barra de formatação** traz a barra de formatação de volta sem saíres do modo Zen. O modo Zen faz parte do Pro, e a [demonstração](https://try.privacynotes.app) deixa-te experimentá-lo sem conta."
+      ]
+    },
+    "date-format": {
+      "q": "Posso mudar o formato das datas?",
+      "a": [
+        "Sim, em Definições > Data. **Formato da data** oferece Automático, Dia primeiro, Mês primeiro e Ano primeiro (ISO), e **Formato da hora** oferece Automático, 24 horas e 12 horas. Automático segue o idioma da app e a região de cada dispositivo, e a tua escolha aplica-se em todos os teus dispositivos.",
+        "As entradas de diário recebem o título a partir da data, e **Títulos do diário** no mesmo sítio oferece formatos prontos no teu formato de data, ou **Padrão personalizado** para construíres o teu a partir de códigos como `YYYY`, `MMMM` e `ddd`, com as palavras entre parênteses retos mantidas tal como as escreves. Um padrão novo aplica-se só a entradas novas. Para inserir a data de hoje em qualquer nota, carrega em Cmd+; num Mac ou Ctrl+; no Windows e no Linux, e junta Shift para incluir também a hora. Tudo isto é gratuito."
+      ]
+    },
+    "checklists": {
+      "q": "Posso limpar, ordenar ou reorganizar uma lista de tarefas?",
+      "a": [
+        "Sim. O menu \"...\" da nota tem **Desmarcar todos os itens** para reutilizar uma lista, **Eliminar itens marcados** para limpar os que estão feitos, e **Ordenar itens por estado** para pôr os itens marcados por baixo dos restantes. Cada um só aparece quando mudaria alguma coisa. Eliminar pede confirmação primeiro, e Ordenar e Desmarcar todos podem ser anulados com Cmd+Z ou Ctrl+Z. O fundo da nota mostra o teu progresso, como \"3 de 6 marcados\".",
+        "Para reordenar à mão, arrasta a pega no fim de um item. Os itens aninhados movem-se com ele, e o Esc cancela o arrasto. A pega aparece quando passas o ponteiro por cima num computador e fica ligeiramente visível num ecrã tátil. Por predefinição, um item marcado desce para baixo dos não marcados na sua lista; desliga isso com **Mover itens marcados para baixo** em Definições > Listas. Tudo isto é gratuito."
+      ]
+    },
+    "quick-switcher": {
+      "q": "O que é a função «Ir para» e o que consegue encontrar?",
+      "a": [
+        "A função «Ir para» salta para qualquer coisa pelo título. Carrega em Cmd+K num Mac ou Ctrl+K no Windows e no Linux (Cmd+P ou Ctrl+P também funciona), ou clica em **Ir para** na barra lateral ou no cabeçalho da lista. Escreve parte de um título para encontrar notas, tarefas, entradas de diário, itens do Cofre, marcadores, contactos, ficheiros anexados e definições. Enter abre o item, e Option+Enter ou Alt+Enter abre-o num separador.",
+        "Escreve > primeiro para executar um comando, como criar uma nota nova ou ir para uma secção. Para encontrar palavras dentro do texto em vez de nos títulos, escolhe a linha **Procurar em tudo**, ou carrega em Cmd+Enter ou Ctrl+Enter a partir de qualquer linha. A correspondência acontece no teu dispositivo, por isso nada do que escreves nos é enviado. A função «Ir para» é gratuita."
+      ]
+    },
+    "find-in-note": {
+      "q": "Como procuro uma palavra dentro de uma nota?",
+      "a": [
+        "Numa nota aberta, carrega em Cmd+F num Mac ou Ctrl+F no Windows e no Linux, ou clica na lupa no canto superior de uma nota longa. Escreve a palavra e carrega em Enter para a correspondência seguinte e em Shift+Enter para a anterior, enquanto a barra conta as correspondências. Para a fechar, carrega nas mesmas teclas outra vez ou clica no X. A procura também funciona em notas apenas de leitura.",
+        "Com Pro também podes substituir: carrega em Option+Cmd+F num Mac ou Ctrl+H no Windows e no Linux, ou escolhe **Procurar e substituir** no menu \"...\" da nota. Substitui uma correspondência ou **Todas** de uma vez, com **Distinguir maiúsculas de minúsculas** quando precisares. As duas barras também funcionam em **Ver markdown**, onde chegam ao texto em bruto, como a linguagem de um bloco de código. Para procurar em todas as tuas notas, usa a procura da lista, que a tecla / ativa. [Todas as procuras correm no teu dispositivo](/pt/help/search-local/)."
+      ]
+    },
+    "screen-capture": {
+      "q": "Posso esconder as minhas notas de capturas de ecrã e da partilha de ecrã?",
+      "a": [
+        "Sim, nas apps para Android, iPhone e iPad, Mac e Windows. Abre Definições > Segurança > Bloqueio e liga **Ocultar nas capturas de ecrã**. As capturas de ecrã, as gravações de ecrã e a partilha de ecrã passam a mostrar uma janela em branco em vez das tuas notas, até onde o dispositivo o permite. Num telemóvel, também esconde as tuas notas no seletor de apps.",
+        "O interruptor está desligado por predefinição, aplica-se só ao dispositivo onde o ligas e é gratuito. Os navegadores e o Linux não dão a uma app forma de bloquear uma captura, por isso o interruptor não aparece aí. Funciona por si só e não precisa de bloqueio da app nem de PIN."
+      ]
+    },
+    "connected-logins": {
+      "q": "Posso ligar mais do que um método de início de sessão à minha conta?",
+      "a": [
+        "Sim. Abre Definições > Conta > Contas e liga o Google, a Apple ou o GitHub para adicionares um método de início de sessão que abre o mesmo cofre. Podes ligar várias contas, até duas do mesmo fornecedor, e a tua frase de recuperação continua a funcionar ao lado delas. Ligar ou desligar uma conta não altera as tuas notas nem a tua encriptação.",
+        "Um método de início de sessão que já pertence a outro cofre não pode ser ligado, porque os cofres nunca são fundidos. **Desligar** pede primeiro as tuas 12 palavras. Se formos nós a guardar a tua frase, a última conta ligada fica até ligares outra ou guardares a tua frase e passares para autocustódia. Com autocustódia, um dispositivo novo continua a pedir as tuas 12 palavras. As contas ligadas estão em beta."
+      ]
+    },
+    "session-expired": {
+      "q": "Porque é que a app diz \"Sessão expirada\"?",
+      "a": [
+        "Significa que o nosso servidor deixou de aceitar a sessão iniciada neste dispositivo, por isso a sincronização para. Uma ligação fraca ou uma falha do servidor nunca a causam: a app confirma com o servidor uma segunda vez antes de mostrar a mensagem. As tuas notas estão seguras neste dispositivo.",
+        "Clica em **Iniciar sessão de novo**. A app pergunta primeiro se guardaste a tua frase de recuperação, porque precisas dela, ou do método de início de sessão com que te registaste, para voltares a entrar. As notas que ainda não sincronizaram ficam no dispositivo e sincronizam assim que iniciares sessão. A mesma janela avisa-te se algum ficheiro ainda não acabou de carregar, porque esses são removidos ao terminar a sessão."
+      ]
+    },
+    "archive": {
+      "q": "O que faz o Arquivo e em que é diferente do Lixo?",
+      "a": [
+        "Arquivar tira um item das tuas listas sem o apagar. Escolhe **Arquivar** no menu \"...\" do item ou no menu do botão direito, ou na barra de seleção para vários itens de uma vez. Os itens arquivados saem de Todos, da sua secção, de Fixados e das contagens de pastas e etiquetas, e esperam na vista **Arquivo** no fundo da barra lateral, que aparece assim que algo é arquivado. Para os manteres em Todos e nas contagens, marca Arquivo na coluna **Todos** de Definições > Listas. **Desarquivar** nos mesmos sítios traz um item de volta.",
+        "O Lixo é para o que queres ver desaparecer: [apaga-o de vez ao fim de 30 dias](/pt/help/trash-auto-delete/), a não ser que desligues isso. O Arquivo nunca apaga nada, e os itens arquivados continuam ao teu alcance, porque uma procura em Todos, a função «Ir para» e as ligações entre notas continuam a encontrá-los. Sincronizam e ficam encriptados como tudo o resto, e continuam a contar para o teu armazenamento. O Arquivo funciona com todos os tipos de item e é gratuito."
+      ]
+    },
+    "share-into-app": {
+      "q": "Posso partilhar texto ou um link de outra app para o PrivacyNotes?",
+      "a": [
+        "Sim, no iPhone, iPad e Android, em beta. Toca no botão de partilha em qualquer app e escolhe o PrivacyNotes. Um link da web torna-se um marcador com o título da página, o texto torna-se uma nota nova, e as imagens e os ficheiros vão para Ficheiros. Um link que já guardaste é mostrado em vez de ser guardado duas vezes. Os itens partilhados chegam sem pasta nem etiqueta, para os organizares quando te der jeito.",
+        "No Android, a app pergunta primeiro: lista o que chegou e só o guarda quando escolhes **Guardar tudo**, ou descarta-o com **Descartar**. No iPhone e no iPad, um cartão confirma **Guardado no PrivacyNotes**. Cada ficheiro segue o teu [limite de carregamento](/pt/help/attachment-limits/), e uma partilha espera até teres sessão iniciada e a app estar desbloqueada."
+      ]
+    },
+    "desktop-updates": {
+      "q": "Como atualizo a app para computador?",
+      "a": [
+        "Não precisas. As apps para Mac e Windows e a AppImage para Linux procuram uma atualização quando arrancam e quando voltas a elas, no máximo a cada 12 horas, e transferem-na em segundo plano. Depois, um aviso diz **Atualização disponível**, com **Reiniciar** para terminar e **Changelog** para veres o que há de novo.",
+        "O pacote .deb para Linux atualiza-se com uma nova transferência: o aviso dele oferece **Transferir**, que abre a [secção de transferências](https://privacynotes.app/pt#downloads), e instalas o pacote novo por cima do antigo. Um .deb demasiado antigo para sincronizar em segurança pausa a sincronização até o fazeres. Se instalaste com o Scoop no Windows, executa `scoop update privacynotes`, e o aviso tem **Copiar comando** para isso. Num Mac, o Homebrew não precisa de comando de atualização, porque a app se atualiza sozinha."
       ]
     }
   }

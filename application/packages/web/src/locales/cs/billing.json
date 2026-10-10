@@ -4,20 +4,21 @@
     "earlyAdopterBadge": "Zaváděcí cena",
     "oneTime": "jednorázově",
     "subscriptionPitch": "Bez předplatného. Bez ročního poplatku. Jedna platba, odemčeno navždy.",
-    "ctaUnlock": "Odemknout vše",
+    "ctaUnlockPrice": "Odemknout vše za {{price}}",
     "ctaOpening": "Otevírání platby...",
     "ctaSignUp": "Zaregistrovat se a odemknout",
     "intro": {
       "storage": "Víc místa je funkce Pro: 500 MB úložiště, 50 MB na soubor a až 5 GB navíc jako rozšíření úložiště, když je budeš potřebovat.",
       "folders": "Složky jsou funkce Pro. Uspořádej si poznámky do vnořených složek, jak hluboko potřebuješ, a drž každý projekt zvlášť.",
       "looks": "Ikony a barvy složek a značek jsou funkce Pro. Dej každé z nich vzhled, který poznáš na první pohled.",
+      "spaces": "Prostory jsou funkce Pro. {{desc}}",
+      "formatBar": "Uspořádání panelu nástrojů je funkce Pro. Dej na lištu tlačítka, která používáš, ostatní skryj a seřaď si nabídku + po svém.",
       "lock": "Zamknutí poznámky je funkce Pro. Přejdi na Pro a ochraň jakoukoli poznámku před nechtěnými úpravami.",
       "protect": "Ochrana poznámky PINem je funkce Pro. Přejdi na Pro a schovej citlivé poznámky za svůj PIN.",
       "history": "Historie poznámek je funkce Pro. Přejdi na Pro a uchovávej si časovou osu každého uložení.",
       "devices": "Jsi na limitu 2 zařízení. Přejdi na Pro a získej neomezený počet zařízení.",
       "zen": "Režim Zen je funkce Pro. Přejdi na Pro a piš bez rozptylování.",
       "theme": "Prémiová témata jsou funkce Pro. Přejdi na Pro a odemkni si každý odstín.",
-      "callout": "Kompletní sada calloutů je funkce Pro.",
       "totp": "Kódy 2FA jsou funkce Pro. Ulož ověřovací klíč k libovolným přihlašovacím údajům a měnící se kód uvidíš hned vedle hesla. Samotný klíč se ukládá a synchronizuje ve všech tarifech.",
       "replace": "Najít a nahradit je funkce Pro. Přejdi na Pro a nahraď jeden výskyt nebo všechny výskyty v poznámce najednou.",
       "passphrase": "Přístupové fráze jsou funkce Pro. Vygeneruj frázi z náhodných slov, která se snadno píše i říká.",
@@ -26,14 +27,14 @@
     "features": {
       "devices": "Synchronizace neomezeného počtu zařízení, na každé platformě",
       "folders": "Vnořené složky, uspořádání podle projektů",
+      "spaces": "Prostory: Osobní a Práce, vždy jen jeden",
       "lock": "Zamykání a ochrana PINem u jakékoli poznámky",
       "history": "Plná historie poznámek, obnovení kdykoli",
       "themes": "Prémiová témata v každém odstínu",
       "zen": "Režim Zen, psaní bez rozptylování",
       "storage": "500 MB úložiště, s rozšířením úložiště až 5,5 GB"
     },
-    "comparisonBeta": "Zaplať jednou {{earlyPrice}} $. Obsidian Sync stojí 48 $/rok, každý rok. Standard Notes si účtuje 90 $/rok. Zaváděcí cena, zamčená ještě předtím, než vzroste na {{proPrice}} $.",
-    "comparison": "Zaplať jednou {{proPrice}} $ a máš to navždy. Obsidian Sync stojí 48 $/rok a Standard Notes 90 $/rok, rok co rok."
+    "compareCaption": "{{years}} let. Jedna platba proti ročním poplatkům."
   },
   "purchaseError": {
     "store": "Nákup v obchodě se nepodařilo dokončit a nic ti nebylo naúčtováno. Zkus to prosím za chvíli znovu.",

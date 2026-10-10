@@ -14,10 +14,10 @@ import { useTranslation } from 'react-i18next';
 import { ListNav } from '../notesView/ListNav';
 import { ListSearchInput } from '../ListSearchInput';
 import { ListPrefsPopover } from '../ListPrefsPopover';
-import NoteRow from '../NoteRow';
-import NoteCard from '../NoteCard';
+import MarkdownItem from './MarkdownItem';
 import { formatBytes } from '../formatBytes';
 import { useProgressiveReveal } from '../useProgressiveReveal';
+import { itemGridClass, routeItemClick, useScrollRestore } from '../itemList';
 import { compareNotes } from '../notesViewUtils';
 import { HoverLabel } from '../HoverLabel';
 import { X, CheckSquare, FileMd, FileTxt, Folder, NotePencil, Question, Trash, FunnelSimple, Lock, Copy, ArrowsClockwise, NEW_GLYPHS, PILLAR_GLYPHS } from '../icons';
@@ -101,8 +101,8 @@ export function MarkdownListPane({
   opened: OpenedMarkdownFile | null;
   onOpened: (file: OpenedMarkdownFile | null) => void;
   /** List or grid, from the shell's one setting - the pillar does not get its
-   *  own toggle. Grid swaps `NoteRow` for `NoteCard`, which is the same swap
-   *  `NotesList` makes; both take `NoteRowProps`, so nothing else changes. */
+   *  own toggle. `MarkdownItem` draws the row or the tile from one item, the
+   *  same pair `NotesList` uses. */
   viewMode: 'list' | 'grid';
   /** Open the reference card behind the `?`. Owned by the shell because the
    *  modal is the shell's to render. Spec: ops/docs/plans/markdown-folder.md (12) */
@@ -128,11 +128,10 @@ export function MarkdownListPane({
   const [busy, setBusy] = useState(false);
   const [filter, setFilter] = useState(initialFilter ?? '');
   const reveal = useProgressiveReveal();
+  // The scroll position across a hide and show of the pane (#186); a new
+  // folder or filter starts at the top.
+  const scroll = useScrollRestore([dir, filter, dirFilter, tagFilter]);
   const gridMode = viewMode === 'grid';
-  /** The same swap `NotesList` makes. Both components take `NoteRowProps`, so
-   *  every handler, the selection gestures and the MD icon override carry over
-   *  unchanged - there is no second row component to keep in sync. */
-  const ItemComponent = gridMode ? NoteCard : NoteRow;
   const [showListPrefs, setShowListPrefs] = useState(false);
   const [showDefaultApp, setShowDefaultApp] = useState(false);
   /**
@@ -603,7 +602,7 @@ export function MarkdownListPane({
                 onClick={() => void handleOpenFolder()}
                 className="inline-flex items-center gap-2 h-8 min-w-0 max-w-full rounded-md border border-divider bg-surface-2 px-2 hover:border-accent transition cursor-pointer"
               >
-                {/* Amber, the same `text-amber-700 dark:text-amber-500/80` the
+                {/* Amber, the same `text-label` the
                     rail gives its folder glyphs - the app's "this is on your own
                     disk" colour. Accent blue here made it read as a control. */}
                 <Folder size={16} className="text-amber-600/90 dark:text-amber-500/90 shrink-0" />
@@ -848,8 +847,10 @@ export function MarkdownListPane({
         </div>
       )}
       <div
+        ref={scroll.ref as React.RefObject<HTMLDivElement>}
         className="flex-1 min-h-0 overflow-y-auto"
         onScroll={(e) => {
+          scroll.onScroll(e.currentTarget);
           reveal.onScroll(e.currentTarget, matches.length);
         }}
       >
@@ -868,9 +869,9 @@ export function MarkdownListPane({
           ) : (
             // A file's tags are its own, so no vault tag lends it a look.
             <LooksContext.Provider value={NO_LOOKS}>
-            <ul className={gridMode ? 'grid content-start gap-3 p-4 pn-notes-grid' : ''}>
+            <ul className={itemGridClass(gridMode)}>
               {matches.slice(0, reveal.visible).map(({ entry, note }) => (
-                <ItemComponent
+                <MarkdownItem
                   key={entry.relPath}
                   note={note}
                   isOpen={opened?.ref.location === entry.ref.location}
@@ -879,25 +880,16 @@ export function MarkdownListPane({
                   // line and an empty date for every unread file.
                   listPrefs={{ ...listPrefs, showPreview: listPrefs.showPreview && tagsScanned, showDate: listPrefs.showDate && tagsScanned }}
                   isNoteLocked={DISK_FILE_LOCKED}
-                  // The routing `useMultiSelect.handleRowClick` does, mirrored:
-                  // shift extends the range once a selection exists, Cmd/Ctrl
-                  // toggles and is the mouse's way INTO selection mode (the
-                  // long-press below is touch-only, so without this the bulk
-                  // verbs were unreachable on a desktop), and a plain click
-                  // opens the file.
-                  onClick={(e) => {
-                    if (e.shiftKey && selectionMode) {
-                      e.preventDefault();
-                      rangeSelect(entry.relPath);
-                      return;
-                    }
-                    if (e.metaKey || e.ctrlKey || selectionMode) {
-                      e.preventDefault();
-                      toggleSelected(entry.relPath);
-                      return;
-                    }
-                    void openRef(entry.ref);
-                  }}
+                  // The list's one routing. Cmd/Ctrl is the mouse's way INTO
+                  // selection mode: the long-press below is touch-only, so
+                  // without it the bulk verbs were unreachable on a desktop.
+                  onClick={(e) =>
+                    routeItemClick(e, selectionMode, {
+                      range: () => rangeSelect(entry.relPath),
+                      toggle: () => toggleSelected(entry.relPath),
+                      open: () => void openRef(entry.ref),
+                    })
+                  }
                   selectionMode={selectionMode}
                   isMultiSelected={selected.has(entry.relPath)}
                   onToggleSelect={(e) => {
@@ -908,21 +900,10 @@ export function MarkdownListPane({
                   onTouchMove={cancelLongPress}
                   onTouchCancel={cancelLongPress}
                   showTypeIcons
-                  sizeLabel={sizeOf(entry) ?? undefined}
+                  size={sizeOf(entry)}
                   onContextMenu={(e) => { e.stopPropagation(); onContextMenu(e, rowMenu(entry)); }}
-                  iconOverride={
-                    // The glyph reports the extension, because that is the one
-                    // thing about a row the filename stem does not say: we strip
-                    // it to make the title, so `notes.md` and `notes.txt` are two
-                    // identical rows without this. Same square either way - it is
-                    // the same pillar, not a second kind of file.
-                    <span className="shrink-0 w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center text-accent-strong">
-                      {isTextFile(entry.ref.name) ? <FileTxt size={18} /> : <FileMd size={18} />}
-                    </span>
-                  }
-                  // Same choice for the mini tile, which draws a bare glyph
-                  // instead of the boxed icon above - see `glyphOverride`.
-                  glyphOverride={isTextFile(entry.ref.name) ? FileTxt : FileMd}
+                  grid={gridMode}
+                  text={isTextFile(entry.ref.name)}
                 />
               ))}
             </ul>

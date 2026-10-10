@@ -2,10 +2,12 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { useTranslation } from 'react-i18next';
 import type { Editor as TipTapEditor } from '@tiptap/react';
 import type { Transaction } from '@tiptap/pm/state';
-import { CaretDown, Check, LinkSimple, ListBullets, X } from './icons';
+import { BracketsSquare, CaretDown, Check, LinkSimple, ListBullets, X } from './icons';
+import { ContextMenu, useContextMenu } from './ContextMenu';
+import { shortcutUrl, isShortcutId } from './noteShortcut';
 import { useCopyToClipboard } from './clipboard';
 import { getWikiLinkCurrentNote } from './NoteLinkSuggestion';
-import { headingsFromDoc } from './noteHeadings';
+import { headingCodeAt, headingsFromDoc } from './noteHeadings';
 import { noteLinkTarget } from './noteLinks';
 import { HoverLabel } from './HoverLabel';
 import { EditorSlotPill } from './EditorSlotPill';
@@ -85,8 +87,8 @@ function elementAt(editor: TipTapEditor, pos: number): Element | null {
 }
 
 // Right-gutter width (px) the OPEN panel asks the editor to keep clear of
-// text. The collapsed pill asks for nothing: it parks in the click row that
-// sits above every note body, so there is no content under it to displace.
+// text. The collapsed pill asks for nothing here: the editor measures the row
+// of corner pills itself and floats the first lines beside it.
 const PANEL_RESERVE = 240;
 
 type Props = {
@@ -96,8 +98,8 @@ type Props = {
   /**
    * Reports the top-right footprint (px) the editor floats content around.
    * Width is the reserved strip, height the panel's measured height, so
-   * content reclaims full width below it. Zero while collapsed - the pill
-   * lives in the editor's top click row, above the body.
+   * content reclaims full width below it. Zero while collapsed - the
+   * editor measures the collapsed pill with the other corner pills.
    */
   onReserve?: (reserve: { width: number; height: number }) => void;
 };
@@ -108,8 +110,9 @@ type Props = {
  * keeps it mutually exclusive with find. Collapsed it is a single toggle
  * button; open it is a Card panel listing the note's headings. Clicking a
  * heading scrolls it into view; a scroll-spy marks the section you're in.
- * A heading row carries a link icon that copies `[[Note#Heading]]`, the
- * note-link that opens this note at that heading. It shows on hover and on
+ * A heading row carries a link icon with two copies: `[[Note#Heading]]`, the
+ * note-link that opens this note at that heading, and the shortcut that
+ * opens it from other apps. It shows on hover and on
  * the active row, and on every row of a touch screen, which has no hover.
  *
  * Renders nothing when the note has no headings - there is nothing to outline.
@@ -123,6 +126,7 @@ export function OutlinePanel({ editor, open, onOpenChange, onReserve }: Props) {
   const [folded, setFolded] = useState<ReadonlySet<number>>(() => new Set());
   const rootRef = useRef<HTMLElement>(null);
   const { copy, copied } = useCopyToClipboard();
+  const linkMenu = useContextMenu();
 
   // Keep the list in sync with the document, but skip the re-render when the
   // set of headings is unchanged (the common case while typing body text).
@@ -196,8 +200,8 @@ export function OutlinePanel({ editor, open, onOpenChange, onReserve }: Props) {
   }, [editor]);
 
   // Tell the editor the footprint to float content around: nothing when there
-  // are no headings or the panel is collapsed (the pill sits in the top click
-  // row, over no content), the panel's width plus its measured height when
+  // are no headings or the panel is collapsed (the editor measures the pill
+  // row itself), the panel's width plus its measured height when
   // open (a ResizeObserver keeps the height current as headings are
   // added/removed). The cleanup resets it when find takes over the slot.
   useLayoutEffect(() => {
@@ -293,15 +297,38 @@ export function OutlinePanel({ editor, open, onOpenChange, onReserve }: Props) {
               {canLink && (
                 <button
                   type="button"
-                  onClick={() => copy(`[[${noteLinkTarget(linkNote.title)}#${noteLinkTarget(h.text)}]]`, String(h.pos))}
+                  onClick={(e) => {
+                    const noteLink = `[[${noteLinkTarget(linkNote.title)}#${noteLinkTarget(h.text)}]]`;
+                    const code = isShortcutId(linkNote.id) ? headingCodeAt(editor.state.doc, linkNote.id, h.pos) : null;
+                    if (!code) {
+                      copy(noteLink, String(h.pos));
+                      return;
+                    }
+                    // Two links to the same heading: the note-link for inside
+                    // the notes, the shortcut for other apps.
+                    // Spec: ops/docs/plans/note-shortcuts.md (4)
+                    const r = e.currentTarget.getBoundingClientRect();
+                    const rtl = document.documentElement.dir === 'rtl';
+                    linkMenu.open(
+                      { clientX: rtl ? r.left : r.right, clientY: r.bottom + 4, preventDefault: () => e.preventDefault(), stopPropagation: () => e.stopPropagation() },
+                      [
+                        { label: t('outline.copyNoteLink'), icon: <BracketsSquare size={14} aria-hidden="true" />, onSelect: () => copy(noteLink, String(h.pos)) },
+                        { label: t('outline.copyHeadingShortcut'), icon: <LinkSimple size={14} aria-hidden="true" />, onSelect: () => copy(shortcutUrl(linkNote.id, code), String(h.pos)) },
+                      ],
+                      e.detail === 0,
+                      undefined,
+                      true,
+                    );
+                  }}
                   aria-label={isCopied ? t('outline.copied') : t('outline.copyHeadingLink')}
-                  title={isCopied ? t('outline.copied') : t('outline.copyHeadingLink')}
                   className={`absolute inset-y-0 end-1 flex w-6 items-center justify-center rounded transition outline-none focus-visible:opacity-100 [@media(hover:none)]:opacity-100 ${
                     isCopied
                       ? 'opacity-100 text-accent'
                       : `text-pn-muted [@media(hover:hover)]:hover:text-accent ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`
                   }`}
                 >
+                  {/* No tip: the list clips any tip that leaves its visible
+                      part, and the menu this icon opens names both links. */}
                   {isCopied
                     ? <Check size={14} weight="bold" aria-hidden="true" />
                     : <LinkSimple size={14} aria-hidden="true" />}
@@ -332,6 +359,7 @@ export function OutlinePanel({ editor, open, onOpenChange, onReserve }: Props) {
           );
         })}
       </ul>
+      <ContextMenu state={linkMenu.state} onClose={linkMenu.close} />
     </nav>
   );
 }

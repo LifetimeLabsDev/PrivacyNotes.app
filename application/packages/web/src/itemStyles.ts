@@ -27,6 +27,9 @@ import { sortTags } from './tagOrder';
 type ItemStyle = RegisterMap;
 export type ItemStyles = Record<string, ItemStyle>;
 export type LookAttr = 'icon' | 'color';
+/** Every register an entry can hold. `space` sits on a root folder only;
+ *  spaces.ts reads it. */
+type StyleAttr = LookAttr | 'space';
 export interface Look {
   icon: string | null;
   color: string | null;
@@ -144,12 +147,12 @@ export function itemStylesEqual(a: ItemStyles, b: ItemStyles): boolean {
 export function setItemLook(
   styles: ItemStyles,
   key: string,
-  patch: Partial<Record<LookAttr, string | null>>,
+  patch: Partial<Record<StyleAttr, string | null>>,
   at?: string,
 ): ItemStyles {
   const entry = styles[key] ?? {};
   let next: ItemStyle | null = null;
-  for (const name of Object.keys(patch) as LookAttr[]) {
+  for (const name of Object.keys(patch) as StyleAttr[]) {
     const v = patch[name];
     if (v === undefined) continue;
     const prev = entry[name];
@@ -222,7 +225,7 @@ export function restoreLooks(styles: ItemStyles, before: Record<string, Look>): 
  * value of its own for that attribute: renaming INTO an existing tag merges
  * the two, and the target keeps what it already shows. The old name is reset.
  */
-export function renameTagLook(styles: ItemStyles, oldTag: string, newTag: string): ItemStyles {
+export function renameTagLook(styles: ItemStyles, oldTag: string, newTag: string, keepOld = false): ItemStyles {
   if (oldTag === newTag) return styles;
   const from = lookOf(styles, tagLookKey(oldTag));
   if (!from.icon && !from.color) return styles;
@@ -231,7 +234,7 @@ export function renameTagLook(styles: ItemStyles, oldTag: string, newTag: string
     icon: to.icon ?? from.icon,
     color: to.color ?? from.color,
   });
-  return setItemLook(moved, tagLookKey(oldTag), { icon: null, color: null });
+  return keepOld ? moved : setItemLook(moved, tagLookKey(oldTag), { icon: null, color: null });
 }
 
 /** Drops the entries of folders that are gone for good. The merge drops them

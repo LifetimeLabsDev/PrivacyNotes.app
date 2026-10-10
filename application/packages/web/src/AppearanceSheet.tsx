@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useEscapeToClose } from './useEscapeToClose';
+import type { FormatBarBoardProps } from './FormatBarBoard';
 import {
   useTheme,
   type Theme,
@@ -25,27 +26,33 @@ import {
   resetStyleAxes,
   resetThemeAxes,
   peekThemeMode,
+  customIdOf,
+  paintedSlot,
   type LineSpacing,
 } from './theme';
-import { APP_ZOOM_LEVELS, appZoomSupported, useAppZoom } from './appZoom';
+import { APP_ZOOM_LEVELS, DEFAULT_APP_ZOOM, appZoomSupported, useAppZoom } from './appZoom';
 import { intlLocale } from './languages';
-import { IconUpgrade } from './UpgradeModal';
+import { IconUpgrade, ProMark, type UpgradeTrigger } from './UpgradeModal';
 import { proUnlocked } from './demo';
-import { X, List, ListBullets, Palette, TextAa, ClockClockwise, SquaresFour, Sparkle, DotsThreeOutlineVertical, CaretDown, CaretRight, Globe, Plus, ClipboardText, ArrowSquareOut, PencilSimple, Copy, PILLAR_GLYPHS, type Icon } from './icons';
+import { ArrowCounterClockwise, Folder, NotePencil, X, List, ListBullets, Palette, Star, Toolbox, ClockClockwise, SquaresFour, Sparkle, DotsThreeOutlineVertical, CaretDown, CaretRight, Globe, Plus, ClipboardText, ArrowSquareOut, PencilSimple, Copy, UserSwitch, TextT, TextAlignJustify, FrameCorners, PencilLine, HouseLine, Layout, MagnifyingGlassPlus, Tabs, Paragraph, ListChecks, CircleHalf, PaintBucket, Sun, Moon, PILLAR_GLYPHS, type Icon } from './icons';
 import type { BUILTIN_THEME_CODES } from './builtinThemeCodes';
 import type { CustomThemes } from './customThemes';
 import type { ThemeGalleryCtx } from './customThemeUI';
 import type { ThemeBuilderTarget } from './notesView/useThemeBuilder';
-import { CardMenuButton, ProCorner } from './ThemeCardMenuButton';
-import { ContextMenu, useContextMenu } from './ContextMenu';
+import { CardMenuButton, ProCorner, QuickCorner, QuickStarButton } from './ThemeCardMenuButton';
+import { QUICK_THEMES_MAX, quickThemesFor, restoreQuickThemes, toggleQuickTheme, useQuickThemeMarks } from './quickThemes';
+import { ContextMenu, useContextMenu, type ContextMenuItem } from './ContextMenu';
 import { siteHref } from './siteLinks';
 
 // The team and custom theme cards and the paste field: a lazy chunk with
 // the theme code module, so none of it is on the boot path.
+import type { MadeBy } from './customThemeUI';
+import { COMMUNITY_SHOWN_PER_MODE } from './communityShown';
 const ExtraThemeCards = lazy(() => import('./customThemeUI').then((m) => ({ default: m.ExtraThemeCards })));
 const ThemePasteField = lazy(() => import('./customThemeUI').then((m) => ({ default: m.ThemePasteField })));
+const FormatBarBoard = lazy(() => import('./FormatBarBoard').then((m) => ({ default: m.FormatBarBoard })));
 import { exemptOpts } from './i18nExempt';
-import { AccentBar, HeadlineRule, SETTINGS_EYEBROW, SETTINGS_HELP, SettingsTabStrip, settingsTabClass } from './settingsUI';
+import { AccentBar, HeadlineRule, ROW_TITLE, RowTitle, SETTINGS_EYEBROW, SETTINGS_HELP } from './settingsUI';
 import { Switch } from './Switch';
 import { useOpenItemsInTabs, useTabsFit } from './notesView/useOpenTabs';
 import { faviconUrl } from './favicon';
@@ -58,7 +65,8 @@ import { NOTE_COLOR_CHOICES, NOTE_COLOR_LABEL, noteColorChoice, type NoteColorCh
 
 type Props = {
   isPro: boolean;
-  onOpenUpgrade: () => void;
+  /** Opens the upgrade window; no trigger means the theme pitch. */
+  onOpenUpgrade: (trigger?: UpgradeTrigger) => void;
   onClose: () => void;
   /** Render inline as a settings pane (no popover chrome, no outside-click). */
   embedded?: boolean;
@@ -68,6 +76,8 @@ type Props = {
   /** Default editor mode for note bodies, and its setter. */
   editorMode: 'formatted' | 'markdown';
   onEditorModeChange: (mode: 'formatted' | 'markdown') => void;
+  /** The Format bar tab's board. Without it the tab is not shown. */
+  formatBar?: FormatBarBoardProps;
   /** Gap between two paragraphs in a note body, and its setter. */
   lineSpacing: LineSpacing;
   onLineSpacingChange: (next: LineSpacing) => void;
@@ -91,11 +101,14 @@ type Props = {
    *  editor and in the Tasks view. */
   sinkCheckedTasks: boolean;
   onSinkCheckedTasksChange: (on: boolean) => void;
-  /** Which tab of the embedded pane to open on. Defaults to Themes. */
-  initialTab?: 'themes' | 'style' | 'lists';
-  /** Popover only: open Settings on the Appearance page, where the rows the
-   *  popover has no room for live. */
-  onOpenAll?: () => void;
+  /** Personal and Work. Spec: ops/docs/plans/spaces.md */
+  spaces: boolean;
+  onSpacesChange: (on: boolean) => void;
+  /** Embedded only: which Settings entry this is. Design is the look,
+   *  Editor is writing, Format bar is its board, Lists is finding things. */
+  pane?: AppearancePane;
+  /** Popover only: open Settings on one of the three panes. */
+  onOpenAll?: (pane: AppearancePane) => void;
   /** The color themes a person made, from the settings blob.
    *  Spec: ops/docs/color-themes.md (section 6) */
   customThemes: CustomThemes;
@@ -225,7 +238,9 @@ const SEG_IDLE = 'text-pn-soft hover:text-pn font-medium';
  */
 const SEG_FILL = 'flex-1 px-3 lg:flex-none';
 
-export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = false, viewMode, onViewModeChange, editorMode, onEditorModeChange, lineSpacing, onLineSpacingChange, hiddenViews, hiddenInAll, archivedInAll, onToggleHidden, startView, onStartViewChange, noteColors, onNoteColorsChange, sinkCheckedTasks, onSinkCheckedTasksChange, initialTab = 'themes', onOpenAll, customThemes, onCustomThemesChange, onOpenThemeBuilder }: Props) {
+export type AppearancePane = 'design' | 'editor' | 'formatBar' | 'lists';
+
+export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = false, viewMode, onViewModeChange, editorMode, onEditorModeChange, formatBar, lineSpacing, onLineSpacingChange, hiddenViews, hiddenInAll, archivedInAll, onToggleHidden, startView, onStartViewChange, noteColors, onNoteColorsChange, sinkCheckedTasks, onSinkCheckedTasksChange, spaces, onSpacesChange, pane = 'design', onOpenAll, customThemes, onCustomThemesChange, onOpenThemeBuilder }: Props) {
   const { t } = useTranslation('settings');
   // The table's row labels are the sidebar's own strings, so the pane and the
   // rail can never disagree in any language.
@@ -234,7 +249,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   // mode, Text and layout (id `style`) is how text and panes are set, Lists
   // is what the lists hold. The footer popover has no tab strip - it renders
   // a subset of the first two. Spec: ops/docs/ui-patterns.md section 36
-  const [tab, setTab] = useState<'themes' | 'style' | 'lists'>(initialTab);
+
   const [startMenuOpen, setStartMenuOpen] = useState(false);
   // The example starts closed: the pane already runs a long column of rows,
   // and a sample that is always open makes one group several times the height
@@ -242,6 +257,9 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   // either control above it opens it, because that click is the moment the
   // reader is asking what the option does.
   const [spacingExampleOpen, setSpacingExampleOpen] = useState(false);
+  // The Note colors example, closed until asked for, like the one above; a
+  // click on an option opens it.
+  const [noteExampleOpen, setNoteExampleOpen] = useState(false);
   // The popover renders no example, so nothing there should arm one: the note
   // is still on screen behind it and is the better demonstration.
   const revealExample = () => {
@@ -324,20 +342,33 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     onClose();
   }
 
-  // Derive mode directly from React state - no stale localStorage reads
-  const isDark = theme === 'dark';
-  const themeOptions = isDark ? DARK_THEMES : LIGHT_THEMES;
-
-  // The palette on screen: the slot of the painted mode. Each slot only
-  // ever holds a palette of its own mode, or Default.
-  const activeCard: ThemeChoice = colorTheme;
   // A free user previewing a Pro palette in either slot.
   const previewing = !themesUnlocked && (!isFreeTheme(lightTheme) || !isFreeTheme(darkTheme));
 
   // The card menus and the paste field. The team and custom cards
   // themselves are ExtraThemeCards, a lazy chunk.
   const themeMenu = useContextMenu();
+  // The themes marked for the quick menu, and the "..." row that marks one.
+  const quickMarks = useQuickThemeMarks();
+  // A fourth star pushes the oldest out; the pane says which, with Undo.
+  const [droppedFav, setDroppedFav] = useState<{ mode: Theme; name: string; before: ThemeChoice[] } | null>(null);
+  const starTheme = (mode: Theme, choice: ThemeChoice) => {
+    const { dropped, before } = toggleQuickTheme(mode, choice);
+    if (!dropped) {
+      setDroppedFav(null);
+      return;
+    }
+    // A custom theme's name is in the card chunk, loaded with the cards.
+    const id = customIdOf(dropped);
+    if (!id) {
+      setDroppedFav({ mode, name: THEME_DISPLAY_NAME[dropped as ColorTheme], before });
+      return;
+    }
+    void import('./customThemeUI').then((m) => setDroppedFav({ mode, name: m.themeNameOf(id, customThemes) ?? '', before }));
+  };
   const [pasteOpen, setPasteOpen] = useState(false);
+  // The gallery's Made by filter, the same one /themes has. Per visit.
+  const [madeBy, setMadeBy] = useState<MadeBy>('all');
   const [copiedName, setCopiedName] = useState<string | null>(null);
   // The built-in palettes' codes, for their card menus: off the boot path like
   // the rest of the theme code, and here long before a menu can open. Loaded
@@ -401,7 +432,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     const code = builtinCodes?.[mode][ct];
     if (!code) return;
     const name = THEME_DISPLAY_NAME[ct];
-    themeMenu.open(e, [
+    openCardMenu(e, [
       {
         label: t('appearance.custom.makeCopy'),
         icon: <PencilSimple size={14} />,
@@ -415,6 +446,15 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     ]);
   }
 
+  /** A card's "..." menu opens beside its button, toward the card's start,
+   *  with its top at the button's top, never under the pointer. */
+  function openCardMenu(e: MouseEvent<HTMLButtonElement>, items: ContextMenuItem[]) {
+    const r = e.currentTarget.getBoundingClientRect();
+    const rtl = document.documentElement.dir === 'rtl';
+    const at = { clientX: rtl ? r.right + 4 : r.left - 4, clientY: r.top, preventDefault: () => e.preventDefault(), stopPropagation: () => e.stopPropagation() };
+    themeMenu.open(at, items, false, undefined, true);
+  }
+
   const galleryCtx: ThemeGalleryCtx = {
     customThemes,
     isPro,
@@ -423,11 +463,13 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     darkTheme,
     painted: theme,
     pick: handleThemeClick,
-    openMenu: themeMenu.open,
+    openMenu: openCardMenu,
     copyName,
     onCopied: showCopied,
     setColorTheme,
     openUpgrade: () => { upgradeHandoffRef.current = true; onOpenUpgrade(); },
+    quickMarks,
+    star: starTheme,
     onChange: onCustomThemesChange,
     openBuilder: onOpenThemeBuilder,
   };
@@ -455,6 +497,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           <span className="flex-1" style={{ backgroundColor: c2 }} />
           <span className="flex-1" style={{ backgroundColor: c3 }} />
           {locked && <ProCorner />}
+          {!compact && !onOpenThemeBuilder && quickMarks[mode].includes(ct) && <QuickCorner />}
         </span>
         <span className={`${compact ? 'text-[10px]' : 'text-[11px]'} font-medium text-pn-muted flex items-center gap-1 max-w-full`}>
           <span className="line-clamp-2 text-center break-words">{THEME_DISPLAY_NAME[ct]}</span>
@@ -463,8 +506,13 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     );
     if (compact || !onOpenThemeBuilder) return card;
     return (
-      <div key={`${mode}-${ct}`} className="relative min-w-0">
+      <div key={`${mode}-${ct}`} className="group/card relative min-w-0">
         {card}
+        <QuickStarButton
+          name={THEME_DISPLAY_NAME[ct]}
+          marked={quickMarks[mode].includes(ct)}
+          onToggle={() => starTheme(mode, ct)}
+        />
         <CardMenuButton name={THEME_DISPLAY_NAME[ct]} onClick={(e) => openBuiltinMenu(e, mode, ct)} />
       </div>
     );
@@ -480,9 +528,10 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
     </button>
   );
 
-  // Each tab resets exactly the rows it shows. The device axes go back in
-  // theme.ts; the synced ones go through the same callbacks their rows use,
-  // so the defaults are read from the settings blob's own and never copied.
+  // Each pane resets exactly the rows it shows. The device axes go back
+  // through their own setters; the synced ones go through the same callbacks
+  // their rows use, so the defaults are read from the settings blob's own
+  // and never copied.
   function resetStyle() {
     const d = defaultSettings();
     resetStyleAxes();
@@ -493,12 +542,14 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   function resetThemes() {
     const d = defaultSettings();
     resetThemeAxes();
+    setAppZoom(DEFAULT_APP_ZOOM);
     onNoteColorsChange(noteColorChoice(d.tintNotes, d.noteColorStyle));
     savedThemesRef.current = { light: 'default', dark: 'default' };
   }
 
   function resetLists() {
     const d = defaultSettings();
+    setFavicons(true);
     onStartViewChange(d.startView);
     onViewModeChange(d.viewMode);
     onSinkCheckedTasksChange(d.sinkCheckedTasks);
@@ -604,7 +655,10 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
   const noteColorButtons = NOTE_COLOR_CHOICES.map((c) => (
     <button
       key={c}
-      onClick={() => onNoteColorsChange(c)}
+      onClick={() => {
+        onNoteColorsChange(c);
+        if (embedded) setNoteExampleOpen(true);
+      }}
       aria-pressed={noteColors === c}
       className={`${embedded ? 'flex-1 lg:flex-none lg:px-3' : 'flex-auto'} inline-flex items-center justify-center py-1.5 rounded text-xs transition ${
         noteColors === c ? SEG_ACTIVE : SEG_IDLE
@@ -650,7 +704,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             switches between the two slots below. */}
         <div data-setting="appearance.mode" className={row}>
           <div className="min-w-0">
-            <p className="text-sm font-medium">{t('appearance.modeTitle')}</p>
+            <RowTitle icon={CircleHalf}>{t('appearance.modeTitle')}</RowTitle>
             <p className={helpExplain}>{t('appearance.modeDesc')}</p>
             {themeMode === 'auto' && theme !== getSystemTheme() && (
               <p className={`${SETTINGS_HELP} mt-1 text-accent-strong`}>
@@ -661,39 +715,12 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           <div className={track}>{modeButtons}</div>
         </div>
 
-        {/* Note colors - how strongly notes and sidebar rows show their
-            color. Beside Mode, because it changes the look of the whole app;
-            the look picker shows the same control. */}
-        <div data-setting="appearance.tintNotes" className={row}>
-          <div className="min-w-0">
-            <p className="text-sm font-medium">{t('appearance.noteColorsTitle')}</p>
-            <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.noteColorsDesc')}</p>
-          </div>
-          <div className={track}>{noteColorButtons}</div>
-        </div>
-
         {/* The pair: one palette per mode, both always shown, so a choice for
             the other mode is made without switching to it. */}
         <div data-setting="appearance.theme" className="py-3 space-y-4">
-          {(['light', 'dark'] as const).map((mode) => (
-            <div key={mode}>
-              <p className="text-sm font-medium">
-                {mode === 'dark' ? t('appearance.darkThemes') : t('appearance.lightThemes')}
-              </p>
-              <p className={`${SETTINGS_HELP} mt-0.5 mb-2`}>
-                {mode === 'dark' ? t('appearance.darkThemesDesc') : t('appearance.lightThemesDesc')}
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {(mode === 'dark' ? DARK_THEMES : LIGHT_THEMES).map((ct) =>
-                  themeCard(mode, ct, (mode === 'dark' ? darkTheme : lightTheme) === ct, false),
-                )}
-                <Suspense fallback={null}>
-                  <ExtraThemeCards mode={mode} compact={false} ctx={galleryCtx} />
-                </Suspense>
-              </div>
-            </div>
-          ))}
-          {/* Your own themes: make one, paste one, or find one. */}
+          {/* Your own themes: make one, paste one, or find one. Above both
+              sections, because a theme made or pasted here can land in
+              either mode. */}
           {onOpenThemeBuilder && (
             <div data-setting="appearance.customThemes">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px]">
@@ -709,20 +736,13 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
                   type="button"
                   onClick={() => setPasteOpen((open) => !open)}
                   aria-expanded={pasteOpen}
-                  className="inline-flex items-center gap-1.5 font-medium text-accent hover:underline"
+                  className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-medium transition ${
+                    pasteOpen ? 'border-accent text-pn' : 'border-divider text-pn-soft hover:text-pn hover:border-pn-muted'
+                  }`}
                 >
                   <ClipboardText size={14} aria-hidden="true" /> {t('appearance.custom.pasteCode')}
                   {!isPro && <IconUpgrade size={12} />}
                 </button>
-                <a
-                  href={siteHref('/themes')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 font-medium text-accent hover:underline"
-                >
-                  <Globe size={14} aria-hidden="true" /> {t('appearance.custom.community')}
-                  <ArrowSquareOut size={12} aria-hidden="true" />
-                </a>
               </div>
               {copiedName && (
                 <p className={`${SETTINGS_HELP} mt-2`} role="status">
@@ -737,42 +757,151 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
               <ContextMenu state={themeMenu.state} onClose={themeMenu.close} />
             </div>
           )}
+          {/* What a star does, and the star a fourth one pushed out. */}
+          <div>
+            <p className={`${SETTINGS_HELP} flex items-center gap-1.5`}>
+              <Star size={13} weight="fill" className="shrink-0 text-pro" aria-hidden="true" />
+              {t('appearance.favoritesHint')}
+            </p>
+            {droppedFav && (
+              <p className={`${SETTINGS_HELP} mt-1 flex flex-wrap items-center gap-x-2`} role="status">
+                {t('appearance.favoriteDropped', { name: droppedFav.name })}
+                <button
+                  type="button"
+                  onClick={() => { restoreQuickThemes(droppedFav.mode, droppedFav.before); setDroppedFav(null); }}
+                  className="font-medium text-accent hover:underline"
+                >
+                  {t('notes:editor.undo')}
+                </button>
+              </p>
+            )}
+          </div>
+          {/* Made by, as on /themes: the built-in palettes count as the team's. */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span className="text-xs text-pn-muted">{t('appearance.madeBy.label')}</span>
+            {/* Wraps, so a long word in any language never clips the last chip. */}
+            <div role="group" aria-label={t('appearance.madeBy.label')} className="flex flex-wrap max-w-full gap-1 rounded-md p-1 bg-track">
+              {(['all', 'community', 'team', 'yours'] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMadeBy(m)}
+                  aria-pressed={madeBy === m}
+                  className={`inline-flex items-center justify-center px-3 py-1 rounded text-xs transition ${madeBy === m ? SEG_ACTIVE : SEG_IDLE}`}
+                >
+                  {t(`appearance.madeBy.${m}`)}
+                </button>
+              ))}
+            </div>
+          </div>
+          {(['light', 'dark'] as const).map((mode) => (
+            <div key={mode}>
+              <RowTitle icon={mode === 'dark' ? Moon : Sun}>
+                {mode === 'dark' ? t('appearance.darkThemes') : t('appearance.lightThemes')}
+              </RowTitle>
+              <p className={`${SETTINGS_HELP} mt-0.5 mb-2`}>
+                {mode === 'dark' ? t('appearance.darkThemesDesc') : t('appearance.lightThemesDesc')}
+              </p>
+              <div className="pn-theme-gallery grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {(madeBy === 'all' || madeBy === 'team') &&
+                  (mode === 'dark' ? DARK_THEMES : LIGHT_THEMES).map((ct) =>
+                    themeCard(mode, ct, (mode === 'dark' ? darkTheme : lightTheme) === ct, false),
+                  )}
+                <Suspense fallback={null}>
+                  <ExtraThemeCards mode={mode} compact={false} ctx={galleryCtx} madeBy={madeBy} />
+                </Suspense>
+              </div>
+              {/* Shown by CSS while the grid above has no card (index.css). */}
+              <p className={`pn-theme-gallery-empty ${SETTINGS_HELP} rounded-lg border border-dashed border-divider px-3 py-4 text-center`}>
+                {madeBy === 'community'
+                  ? t(mode === 'dark' ? 'appearance.madeBy.noDarkCommunity' : 'appearance.madeBy.noLightCommunity')
+                  : t('appearance.madeBy.none')}
+              </p>
+            </div>
+          ))}
+          {/* The app lists the newest community themes; /themes has them all,
+              including any newer than this version. */}
+          <p className={`${SETTINGS_HELP} flex flex-wrap items-center gap-x-2 gap-y-1`}>
+            <span>{t('appearance.custom.communityNote', { count: COMMUNITY_SHOWN_PER_MODE })}</span>
+            <a
+              href={siteHref('/themes')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 font-medium text-accent hover:underline"
+            >
+              <Globe size={14} aria-hidden="true" /> {t('appearance.custom.community')}
+              <ArrowSquareOut size={12} aria-hidden="true" />
+            </a>
+          </p>
           {unlockNudge}
         </div>
-      </>
-    );
 
-    const styleRows = (
-      <>
-        {/* Open items in tabs - a row click opens a tab. First on the tab
-            because it changes how the whole app is used. Device-local, like
-            the tabs themselves. Spec: ops/docs/plans/note-tabs.md */}
-        {tabsFit && (
-          <Switch
-            setting="appearance.openInTabs"
-            label={t('appearance.openInTabsTitle')}
-            description={t('appearance.openInTabsDesc')}
-            checked={openItemsInTabs}
-            onChange={setOpenItemsInTabs}
-            className="gap-x-5 py-3"
-          />
-        )}
-
-        {/* App size - the whole window, which is what the editor text size
-            below deliberately is not. Desktop only: a browser already has
+        {/* App size - the whole window, which is what the Editor pane's text
+            size deliberately is not. Desktop only: a browser already has
             this on the same keys, and the mobile webviews have no equivalent,
             so the row is absent rather than present and dead.
             Spec: ops/docs/design-decisions.md (app zoom) */}
         {appZoomSupported() && (
           <div data-setting="appearance.appZoom" className={row}>
             <div className="min-w-0">
-              <p className="text-sm font-medium">{t('appearance.appZoomTitle')}</p>
+              <RowTitle icon={MagnifyingGlassPlus}>{t('appearance.appZoomTitle')}</RowTitle>
               <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.appZoomDesc')}</p>
             </div>
             <div className={track}>{appZoomButtons}</div>
           </div>
         )}
 
+        {/* Note colors - how strongly notes and sidebar rows show their
+            color. Last in the pane, just above Reset to defaults; the look
+            picker shows the same control. */}
+        <div data-setting="appearance.tintNotes" className={row}>
+          <div className="min-w-0">
+            <RowTitle icon={PaintBucket}>{t('appearance.noteColorsTitle')}</RowTitle>
+            <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.noteColorsDesc')}</p>
+          </div>
+          <div className={track}>{noteColorButtons}</div>
+        </div>
+        {/* A note in a green folder, as each option shows it: the whole row
+            tinted, only its icon, or neither. */}
+        <div className="pb-3">
+          <button
+            type="button"
+            onClick={() => setNoteExampleOpen((v) => !v)}
+            aria-expanded={noteExampleOpen}
+            className="inline-flex items-center gap-1 text-xs text-accent"
+          >
+            <CaretDown size={12} className={`shrink-0 transition-transform ${noteExampleOpen ? '' : '-rotate-90'}`} aria-hidden="true" />
+            {t('appearance.lineSpacingExample')}
+          </button>
+          {noteExampleOpen && (
+            <div className="mt-2 rounded-md bg-track p-2">
+              <div
+                className="flex items-center gap-3 rounded-md bg-surface-1 px-2.5 py-2"
+                style={noteColors === 'background' ? { backgroundImage: 'linear-gradient(var(--pn-label-green-tint), var(--pn-label-green-tint))' } : undefined}
+              >
+                <span
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${noteColors === 'off' ? 'bg-pn/5 text-accent' : ''}`}
+                  style={noteColors === 'off' ? undefined : { background: 'var(--pn-label-green-tint)', color: 'var(--pn-label-green-ink)' }}
+                  aria-hidden="true"
+                >
+                  <NotePencil size={15} />
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate text-[13px] font-semibold text-pn">{t('appearance.noteColorsExampleTitle')}</p>
+                  <p className="flex items-center gap-1 text-[11px] text-pn-muted">
+                    <Folder size={11} weight="fill" style={{ color: 'var(--pn-label-green-ink)' }} aria-hidden="true" />
+                    {t('appearance.noteColorsExampleFolder')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </>
+    );
+
+    const styleRows = (
+      <>
         {/* Text size and Line spacing, one group under one example. They are
             the two knobs that change how a paragraph READS, and the sample
             below shows both at once: it is set in the editor's own body size
@@ -793,14 +922,14 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
         <div>
           <div data-setting="appearance.textSize" className={row}>
             <div className="min-w-0">
-              <p className="text-sm font-medium">{t('appearance.textSizeTitle')}</p>
+              <RowTitle icon={TextT}>{t('appearance.textSizeTitle')}</RowTitle>
               <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.textSizeDesc')}</p>
             </div>
             <div className={track}>{textSizeButtons}</div>
           </div>
           <div data-setting="appearance.lineSpacing" className={`${row} pt-0`}>
             <div className="min-w-0">
-              <p className="text-sm font-medium">{t('appearance.lineSpacingTitle')}</p>
+              <RowTitle icon={TextAlignJustify}>{t('appearance.lineSpacingTitle')}</RowTitle>
               <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.lineSpacingDesc')}</p>
             </div>
             <div className={track}>{lineSpacingButtons}</div>
@@ -831,7 +960,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             default cap, so this row is the way in at every other width. */}
         <div data-setting="appearance.contentWidth" className={row}>
           <div className="min-w-0">
-            <p className="text-sm font-medium">{t('appearance.contentWidthTitle')}</p>
+            <RowTitle icon={FrameCorners}>{t('appearance.contentWidthTitle')}</RowTitle>
             <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.contentWidthDesc')}</p>
           </div>
           <div className={track}>{contentWidthButtons}</div>
@@ -843,7 +972,7 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             Spec: ops/specs/editor-mode-toggle.md */}
         <div data-setting="appearance.editor" className={row}>
           <div className="min-w-0">
-            <p className="text-sm font-medium">{t('appearance.editorTitle')}</p>
+            <RowTitle icon={PencilLine}>{t('appearance.editorTitle')}</RowTitle>
             <p className={helpExplain}>{t('appearance.editorDesc')}</p>
           </div>
           <div className={track}>
@@ -862,13 +991,14 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           </div>
         </div>
 
+
         {/* Copied text - what the plain-text part of a copy holds. Markdown
             keeps today's copy; Plain text drops the `- [ ]` and every other
             formatting character for targets that print them as they are.
             Device-local. Spec: ops/docs/plans/paste-pictures.md (section 3.6) */}
         <div data-setting="appearance.copyFormat" className={row}>
           <div className="min-w-0">
-            <p className="text-sm font-medium">{t('appearance.copyFormatTitle')}</p>
+            <RowTitle icon={Copy}>{t('appearance.copyFormatTitle')}</RowTitle>
             <p className={helpExplain}>{t('appearance.copyFormatDesc')}</p>
           </div>
           <div className={track}>
@@ -896,10 +1026,121 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             Spec: ops/docs/design-decisions.md (the editor corner holds only controls that can hide themselves) */}
         <Switch
           setting="appearance.invisibles"
+          icon={<Paragraph size={14} className="text-accent" />}
+          labelClassName={ROW_TITLE}
           label={t('appearance.invisiblesTitle')}
           description={t('appearance.invisiblesDesc')}
           checked={invisibles}
           onChange={setInvisibles}
+          className="gap-x-5 py-3"
+        />
+
+      </>
+    );
+
+    const listRows = (
+      <>
+        {/* Start in - which view the app opens on. First on the tab because
+            it answers the question a person arrives with, and because a menu
+            here has the whole pane below it to open into. The menu is the one
+            the phone pillar switcher uses, so a pillar added later appears in
+            both without a second list.
+            Spec: ops/docs/plans/start-view.md */}
+        <div data-setting="appearance.startView" className={row}>
+          <div className="min-w-0">
+            <RowTitle icon={HouseLine}>{t('appearance.startViewTitle')}</RowTitle>
+          </div>
+          <button
+            ref={startBtnRef}
+            type="button"
+            onClick={() => setStartMenuOpen((o) => !o)}
+            aria-haspopup="menu"
+            aria-expanded={startMenuOpen}
+            aria-label={`${t('appearance.startViewTitle')}: ${startRow?.label ?? ''}`}
+            className="shrink-0 self-start lg:self-auto inline-flex items-center gap-2 rounded-md bg-track px-3 py-1.5 text-sm font-medium text-pn hover:bg-pn-muted/20 transition"
+          >
+            {startRow && <startRow.icon size={15} className="text-accent shrink-0" aria-hidden="true" />}
+            {startRow?.label}
+            <CaretDown size={12} className={`text-pn-soft transition-transform ${startMenuOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+          </button>
+          {startMenuOpen && (
+            <ViewMenu
+              rows={startRows}
+              current={startView}
+              onPick={onStartViewChange}
+              anchorRef={startBtnRef}
+              onClose={() => setStartMenuOpen(false)}
+              align="end"
+            />
+          )}
+        </div>
+
+        {/* View - list / grid / auto layout. */}
+        <div data-setting="appearance.view" className={row}>
+          <div className="min-w-0">
+            <RowTitle icon={Layout}>{t('appearance.viewTitle')}</RowTitle>
+            <p className={helpExplain}>{t('appearance.viewDesc')}</p>
+          </div>
+          <div className={track}>
+            {(['auto', 'list', 'grid'] as const).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => onViewModeChange(mode)}
+                aria-pressed={viewMode === mode}
+                className={`${SEG_FILL} inline-flex items-center justify-center gap-1.5 text-xs py-1.5 rounded transition ${
+                  viewMode === mode ? SEG_ACTIVE : SEG_IDLE
+                }`}
+              >
+                {mode === 'list' ? <List size={14} /> : mode === 'grid' ? <SquaresFour size={14} /> : <Sparkle size={14} />}
+                {mode === 'list' ? t('appearance.viewList') : mode === 'grid' ? t('appearance.viewGrid') : t('appearance.viewAuto', exemptOpts('settings:appearance.viewAuto'))}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Spaces - Pro. A free account sees the row switched off, and the
+            switch opens the upgrade window, as every Pro row here does.
+            Spec: ops/docs/plans/spaces.md */}
+        <Switch
+          setting="appearance.spaces"
+          icon={<UserSwitch size={14} className="text-accent" />}
+          labelClassName={ROW_TITLE}
+          label={t('appearance.spacesTitle')}
+          description={<>{t('appearance.spacesDesc')}{!isPro && <> <ProMark /></>}</>}
+          checked={spaces && proUnlocked(isPro)}
+          onChange={(on) => {
+            if (!proUnlocked(isPro)) { upgradeHandoffRef.current = true; onOpenUpgrade('spaces'); return; }
+            onSpacesChange(on);
+          }}
+          className="gap-x-5 py-3"
+        />
+
+        {/* Open items in tabs - a row click opens a tab, so it changes what a
+            click in a list does. Device-local, like the tabs themselves.
+            Spec: ops/docs/plans/note-tabs.md */}
+        {tabsFit && (
+          <Switch
+            setting="appearance.openInTabs"
+            icon={<Tabs size={14} className="text-accent" />}
+            labelClassName={ROW_TITLE}
+            label={t('appearance.openInTabsTitle')}
+            description={t('appearance.openInTabsDesc')}
+            checked={openItemsInTabs}
+            onChange={setOpenItemsInTabs}
+            className="gap-x-5 py-3"
+          />
+        )}
+
+        {/* Checked tasks - where a ticked task goes, in a note and in the
+            Tasks view alike. */}
+        <Switch
+          setting="appearance.sinkChecked"
+          icon={<ListChecks size={14} className="text-accent" />}
+          labelClassName={ROW_TITLE}
+          label={t('appearance.sinkCheckedTitle')}
+          description={t('appearance.sinkCheckedDesc')}
+          checked={sinkCheckedTasks}
+          onChange={onSinkCheckedTasksChange}
           className="gap-x-5 py-3"
         />
 
@@ -911,6 +1152,8 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
             Spec: ops/docs/design-decisions.md (Website icons toggle) */}
         <Switch
           setting="appearance.favicons"
+          icon={<Globe size={14} className="text-accent" />}
+          labelClassName={ROW_TITLE}
           label={t('appearance.faviconsTitle')}
           description={
             <>
@@ -944,79 +1187,6 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           }
           checked={favicons}
           onChange={setFavicons}
-          className="gap-x-5 py-3"
-        />
-      </>
-    );
-
-    const listRows = (
-      <>
-        {/* Start in - which view the app opens on. First on the tab because
-            it answers the question a person arrives with, and because a menu
-            here has the whole pane below it to open into. The menu is the one
-            the phone pillar switcher uses, so a pillar added later appears in
-            both without a second list.
-            Spec: ops/docs/plans/start-view.md */}
-        <div data-setting="appearance.startView" className={row}>
-          <div className="min-w-0">
-            <p className="text-sm font-medium">{t('appearance.startViewTitle')}</p>
-          </div>
-          <button
-            ref={startBtnRef}
-            type="button"
-            onClick={() => setStartMenuOpen((o) => !o)}
-            aria-haspopup="menu"
-            aria-expanded={startMenuOpen}
-            aria-label={`${t('appearance.startViewTitle')}: ${startRow?.label ?? ''}`}
-            className="shrink-0 self-start lg:self-auto inline-flex items-center gap-2 rounded-md bg-track px-3 py-1.5 text-sm font-medium text-pn hover:bg-pn-muted/20 transition"
-          >
-            {startRow && <startRow.icon size={15} className="text-accent shrink-0" aria-hidden="true" />}
-            {startRow?.label}
-            <CaretDown size={12} className={`text-pn-soft transition-transform ${startMenuOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
-          </button>
-          {startMenuOpen && (
-            <ViewMenu
-              rows={startRows}
-              current={startView}
-              onPick={onStartViewChange}
-              anchorRef={startBtnRef}
-              onClose={() => setStartMenuOpen(false)}
-              align="end"
-            />
-          )}
-        </div>
-
-        {/* View - list / grid / auto layout. */}
-        <div data-setting="appearance.view" className={row}>
-          <div className="min-w-0">
-            <p className="text-sm font-medium">{t('appearance.viewTitle')}</p>
-            <p className={helpExplain}>{t('appearance.viewDesc')}</p>
-          </div>
-          <div className={track}>
-            {(['auto', 'list', 'grid'] as const).map((mode) => (
-              <button
-                key={mode}
-                onClick={() => onViewModeChange(mode)}
-                aria-pressed={viewMode === mode}
-                className={`${SEG_FILL} inline-flex items-center justify-center gap-1.5 text-xs py-1.5 rounded transition ${
-                  viewMode === mode ? SEG_ACTIVE : SEG_IDLE
-                }`}
-              >
-                {mode === 'list' ? <List size={14} /> : mode === 'grid' ? <SquaresFour size={14} /> : <Sparkle size={14} />}
-                {mode === 'list' ? t('appearance.viewList') : mode === 'grid' ? t('appearance.viewGrid') : t('appearance.viewAuto', exemptOpts('settings:appearance.viewAuto'))}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Checked tasks - where a ticked task goes, in a note and in the
-            Tasks view alike. */}
-        <Switch
-          setting="appearance.sinkChecked"
-          label={t('appearance.sinkCheckedTitle')}
-          description={t('appearance.sinkCheckedDesc')}
-          checked={sinkCheckedTasks}
-          onChange={onSinkCheckedTasksChange}
           className="gap-x-5 py-3"
         />
 
@@ -1131,60 +1301,111 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
       </>
     );
 
+    if (pane === 'formatBar') {
+      return (
+        <div className="flex-1 min-h-0 overflow-y-auto text-pn">
+          {formatBar && (
+            <>
+              <div data-setting="appearance.formatBar" className="px-6 pt-4">
+                <Suspense fallback={null}>
+                  <FormatBarBoard
+                    {...formatBar}
+                    // Under the free bar position, so the Pro mark covers
+                    // only the arranging. Keyed on the plan, not on the
+                    // unlock, so the demo still labels it.
+                    heading={
+                      <div className="flex items-center gap-2.5 pt-3">
+                        <AccentBar />
+                        <h3 className="text-base font-semibold">{t('notes:settings.formatBarLabel')}</h3>
+                        {!isPro && <ProMark />}
+                        <HeadlineRule />
+                      </div>
+                    }
+                  />
+                </Suspense>
+              </div>
+              {/* A free account's draft: Discard takes the place of Reset, and
+                  the upgrade door sits in the same row, so the tab does not
+                  grow. At rest the row carries one quiet invitation.
+                  Spec: ops/docs/plans/format-bar.md (section 5) */}
+              <div className="px-6 pb-4">
+                {formatBar.previewing ? (
+                  <div className="pt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+                    <button
+                      type="button"
+                      onClick={formatBar.onDiscard}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-divider px-3 py-1.5 text-sm font-medium text-pn-soft hover:text-pn transition"
+                    >
+                      <ArrowCounterClockwise size={15} aria-hidden="true" />
+                      {t('editor:formatBar.discard')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={formatBar.onKeep}
+                      // The upgrade window's own button colors, so the door and the
+                      // window read as one action.
+                      className="ms-auto inline-flex items-center gap-1.5 rounded-md bg-amber-700 hover:bg-amber-800 px-3 py-1.5 text-sm font-semibold text-white transition"
+                    >
+                      <IconUpgrade size={15} onFill />
+                      {t('editor:formatBar.keepLayout')}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap items-end gap-x-3 gap-y-2">
+                    <ResetDefaultsButton key="formatBar" onReset={() => formatBar.onUpdate(() => null)} />
+                    {formatBar.locked && <p className="pb-2 text-xs text-pn-muted">{t('editor:formatBar.tryIt')}</p>}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      );
+    }
+    const rows = pane === 'design' ? themeRows : pane === 'editor' ? styleRows : listRows;
     return (
       <div className="flex-1 min-h-0 flex flex-col text-pn">
-        {/* Settings tabs share the Account pane's layout and icon treatment. */}
-        <SettingsTabStrip
-          role="tablist"
-          aria-label={t('appearance.tablistLabel')}
-          className="shrink-0 px-4 sm:px-6"
-        >
-          {([
-            { id: 'themes' as const, setting: 'appearance.themes', label: t('appearance.tabThemes'), icon: <Palette aria-hidden="true" /> },
-            { id: 'style' as const, setting: 'appearance.style', label: t('appearance.tabLayout'), icon: <TextAa aria-hidden="true" /> },
-            { id: 'lists' as const, setting: 'appearance.lists', label: t('appearance.tabLists'), icon: <ListBullets aria-hidden="true" /> },
-          ]).map((tb) => (
-            <button
-              key={tb.id}
-              data-setting={tb.setting}
-              role="tab"
-              aria-selected={tab === tb.id}
-              onClick={() => setTab(tb.id)}
-              className={settingsTabClass(tab === tb.id)}
-            >
-              {tb.icon}
-              <span>{tb.label}</span>
-            </button>
-          ))}
-        </SettingsTabStrip>
-
         <div className="flex-1 min-h-0 overflow-y-auto">
-          <div className="px-6 divide-y divide-divider">
-            {tab === 'themes' ? themeRows : tab === 'style' ? styleRows : listRows}
-          </div>
+          <div className="px-6 divide-y divide-divider">{rows}</div>
           <div className="px-6 pb-4">
-            <ResetDefaultsButton key={tab} onReset={tab === 'themes' ? resetThemes : tab === 'style' ? resetStyle : resetLists} />
+            <ResetDefaultsButton key={pane} onReset={pane === 'design' ? resetThemes : pane === 'editor' ? resetStyle : resetLists} />
           </div>
         </div>
       </div>
     );
   }
 
-  // ---- Popover: the footer quick pass ------------------------------------
-  // The settings reached for mid-session; the rest render only in the
-  // embedded pane above, one click away through the last row. The popover
-  // opens upward from the footer, so the pointer arrives from the bottom: the
-  // rows run in the REVERSE of the full page's order, the most important one
-  // nearest the button that opened it.
+  // ---- Popover: the footer quick menu -------------------------------------
+  // The four settings reached for mid-session, one compact row each, and a
+  // door to each of the three panes the rest live on. No help lines: the
+  // note behind the popover shows every change as it is made.
+  const quickRow = (glyph: Icon, title: string, buttons: ReactNode) => (
+    <div className="px-4 py-2">
+      <RowTitle icon={glyph}>{title}</RowTitle>
+      <div className="mt-1.5 flex gap-1 rounded-md p-1 bg-track">{buttons}</div>
+    </div>
+  );
+  const painted: Theme = theme;
+  const paintedChoice = painted === 'dark' ? darkTheme : lightTheme;
+  // A custom theme's name is the second field of its code.
+  const activeName = customIdOf(paintedChoice)
+    ? (paintedSlot(painted).snapshot?.code.split(':')[1] ?? '')
+    : THEME_DISPLAY_NAME[paintedChoice as ColorTheme];
+  const builtins: readonly ThemeChoice[] = painted === 'dark' ? DARK_THEMES : LIGHT_THEMES;
+  const quickThemes = quickThemesFor(painted, quickMarks, (c) => customIdOf(c) !== null || builtins.includes(c));
+  const doors: { pane: AppearancePane; label: string; glyph: Icon }[] = [
+    { pane: 'design', label: t('notes:settings.appearanceLabel'), glyph: Palette },
+    { pane: 'editor', label: t('notes:settings.editorLabel'), glyph: PencilLine },
+    { pane: 'lists', label: t('notes:settings.listsLabel'), glyph: ListBullets },
+  ];
   return (
     <div
       ref={panelRef}
-      className="fixed bottom-12 end-4 z-50 w-80 bg-surface-2 border border-divider rounded-lg shadow-xl text-pn"
+      className="fixed bottom-12 end-4 z-50 w-80 max-h-[calc(100dvh-4rem)] flex flex-col bg-surface-2 border border-divider rounded-lg shadow-xl text-pn"
     >
-      {/* Header */}
-      <div className="flex items-center gap-2.5 px-4 py-3">
+      <div className="shrink-0 flex items-center gap-2.5 px-4 pt-3 pb-1">
         <AccentBar />
-        <h2 className="text-sm font-semibold">{t('appearance.title')}</h2>
+        <h2 className="text-sm font-semibold">{t('notes:settings.appearanceLabel')}</h2>
         <HeadlineRule />
         <button
           onClick={handleClose}
@@ -1195,109 +1416,94 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
         </button>
       </div>
 
-      {/* Editor width - see the embedded row above for the reasoning. */}
-      <div className="px-6 pb-4">
-        <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
-          {t('appearance.contentWidthTitle')}
-        </p>
-        <p className={`${SETTINGS_HELP} mb-2`}>
-          {t('appearance.contentWidthDesc')}
-        </p>
-        <div className="flex gap-1 rounded-md p-1 bg-track">{contentWidthButtons}</div>
-      </div>
-
-      {/* Line spacing - see the embedded row above for the reasoning. No
-          example block here: this popover opens from the editor footer with
-          the note still on screen behind it, so the note is the example, and
-          a sample would double the height of a panel this narrow. */}
-      <div className="px-6 pb-4">
-        <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
-          {t('appearance.lineSpacingTitle')}
-        </p>
-        <p className={`${SETTINGS_HELP} mb-2`}>
-          {t('appearance.lineSpacingDesc')}
-        </p>
-        <div className="flex gap-1 rounded-md p-1 bg-track">{lineSpacingButtons}</div>
-      </div>
-
-      {/* Text size - the writing surface only. Device-local, never synced
-          (theme.ts explains why). App chrome does not scale: most of it is
-          pinned to literal pixel sizes. */}
-      <div className="px-6 pb-4">
-        <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
-          {t('appearance.textSizeTitle')}
-        </p>
-        <p className={`${SETTINGS_HELP} mb-2`}>
-          {t('appearance.textSizeDesc')}
-        </p>
-        <div className="flex gap-1 rounded-md p-1 bg-track">{textSizeButtons}</div>
-      </div>
-
-      {/* Theme cards: the current mode's palettes in one row, and a link to
-          the Themes tab, which shows both modes. */}
-      <div className="px-6 pb-4">
-        <div className="flex items-baseline justify-between gap-2 mb-2">
-          <p className={SETTINGS_EYEBROW}>
-            {isDark ? t('appearance.darkThemes') : t('appearance.lightThemes')}
-          </p>
-          {onOpenAll && (
-            <button type="button" onClick={onOpenAll} className="text-[11px] font-medium text-accent hover:underline">
-              {t('appearance.allThemes')}
-            </button>
+      {/* The rows scroll between the pinned header and the pinned doors: the
+          panel grows upward from the footer, so a short window would push its
+          top off screen. */}
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain pb-2">
+        {quickRow(TextT, t('appearance.textSizeTitle'), textSizeButtons)}
+        {quickRow(TextAlignJustify, t('appearance.lineSpacingTitle'), lineSpacingButtons)}
+        {quickRow(FrameCorners, t('appearance.contentWidthTitle'), contentWidthButtons)}
+        {/* The favorites of the mode on screen: up to three starred themes,
+            an empty slot for each one missing, and the active theme on a row
+            of its own when it is not one of them. */}
+        <div className="px-4 py-2">
+          <div className="flex items-center gap-2">
+            <RowTitle icon={Star}>{t('appearance.favoriteThemes')}</RowTitle>
+            {onOpenAll && (
+              <button
+                type="button"
+                onClick={() => onOpenAll('design')}
+                className="ms-auto inline-flex items-center gap-0.5 text-xs font-medium text-accent hover:underline"
+              >
+                {t('appearance.allThemes')}
+                <CaretRight size={11} className="rtl:-scale-x-100" aria-hidden="true" />
+              </button>
+            )}
+          </div>
+          <div className="pn-theme-grid mt-1.5 grid grid-cols-3 gap-1.5">
+            {quickThemes.map((choice) => {
+              const id = customIdOf(choice);
+              return id ? (
+                <Suspense key={choice} fallback={null}>
+                  <ExtraThemeCards mode={painted} compact ctx={galleryCtx} only={id} />
+                </Suspense>
+              ) : (
+                themeCard(painted, choice as ColorTheme, paintedChoice === choice, true)
+              );
+            })}
+            {Array.from({ length: QUICK_THEMES_MAX - quickThemes.length }, (_, i) => (
+              <button
+                key={`empty-${i}`}
+                type="button"
+                onClick={() => onOpenAll?.('design')}
+                disabled={!onOpenAll}
+                className="flex min-h-[3.25rem] flex-col items-center justify-center gap-0.5 rounded-lg border border-dashed border-divider text-[10px] font-medium text-pn-muted hover:border-pn-muted hover:text-pn-soft transition"
+              >
+                <Star size={13} aria-hidden="true" />
+                {t('appearance.favoriteEmpty')}
+              </button>
+            ))}
+          </div>
+          {!quickThemes.includes(paintedChoice) && (
+            <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-accent px-2 py-1.5 text-[11px] font-medium">
+              <span className="h-3.5 w-3.5 shrink-0 rounded" style={{ backgroundColor: 'rgb(var(--pn-accent))' }} aria-hidden="true" />
+              <span className="min-w-0 flex-1 truncate" dir="auto">{activeName}</span>
+              <button
+                type="button"
+                onClick={() => starTheme(painted, paintedChoice)}
+                aria-label={t('appearance.favoriteAdd', { name: activeName })}
+                className="inline-flex shrink-0 items-center gap-1 text-accent hover:underline"
+              >
+                <Star size={12} aria-hidden="true" />
+                {t('appearance.favoriteAddShort')}
+              </button>
+            </div>
           )}
+          {unlockNudge}
         </div>
-        <div className="grid grid-cols-4 gap-1.5">
-          {themeOptions.map((ct) => themeCard(isDark ? 'dark' : 'light', ct, activeCard === ct, true))}
-          <Suspense fallback={null}>
-            <ExtraThemeCards mode={isDark ? 'dark' : 'light'} compact ctx={galleryCtx} />
-          </Suspense>
-        </div>
-        {unlockNudge}
+        {/* Mode last: the popover opens upward, so the last row sits nearest
+            the button, and Mode is the one reached for most. */}
+        {quickRow(CircleHalf, t('appearance.modeTitle'), modeButtons)}
       </div>
 
-      {/* Mode - Auto / Light / Dark. Auto follows the OS and re-resolves
-          live when it flips (see watchSystemTheme in theme.ts). */}
-      <div className="px-6 pb-4">
-        <p className={`${SETTINGS_EYEBROW} mb-0.5`}>
-          {t('appearance.modeTitle')}
-        </p>
-        <p className={`${SETTINGS_HELP} mb-2`}>
-          {t('appearance.modeDesc')}
-        </p>
-        <div className="flex gap-1 rounded-md p-1 bg-track">{modeButtons}</div>
-      </div>
-
-      {/* Open items in tabs - the first row of the full page, so the row
-          nearest the pointer here. */}
-      {tabsFit && (
-        <div className="px-6 pb-4">
-          <Switch
-            label={t('appearance.openInTabsTitle')}
-            labelClassName={SETTINGS_EYEBROW}
-            description={t('appearance.openInTabsDesc')}
-            checked={openItemsInTabs}
-            onChange={setOpenItemsInTabs}
-            className="gap-x-4"
-          />
-        </div>
-      )}
-
-      {/* The popover holds the settings reached for mid-session; everything
-          else is one click away on the full page. */}
+      {/* Everything else lives on one of three panes since the split, so the
+          popover opens each of them, not one "all settings" page. */}
       {onOpenAll && (
-        <button
-          type="button"
-          onClick={onOpenAll}
-          className="w-full flex items-center justify-between gap-2 px-6 py-3 border-t border-divider text-sm font-medium text-accent hover:bg-pn/5 transition rounded-b-[inherit]"
-        >
-          {t('appearance.allSettings')}
-          <CaretRight size={14} aria-hidden="true" />
-        </button>
+        <div className="shrink-0 grid grid-cols-3 gap-1 p-1.5 border-t border-divider">
+          {doors.map(({ pane: target, label, glyph: Glyph }) => (
+            <button
+              key={target}
+              type="button"
+              onClick={() => onOpenAll(target)}
+              className="flex flex-col items-center gap-1 rounded-md py-2 text-xs font-medium text-pn-soft hover:text-accent hover:bg-pn/5 transition"
+            >
+              <Glyph size={16} className="text-accent" aria-hidden="true" />
+              {label}
+            </button>
+          ))}
+        </div>
       )}
-
-      {/* Spell check moved to LanguageSheet in v0.300.0 - it is a language
-          setting, not a look-and-feel one, and it sat here only because it
-          shares the device-local storage pattern with Text size. */}
     </div>
   );
+
 }

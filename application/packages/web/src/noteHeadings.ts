@@ -3,6 +3,7 @@ import { noteLinkKey } from './noteLinks';
 import type { NoteType } from '@notes/shared';
 import { hasStructuredBody, stripToPlainText } from './notesViewUtils';
 import { nextFence, type Fence } from './markdownFence';
+import { headingCodes } from './noteShortcut';
 
 /**
  * The headings a note-link can point at (`[[Note#Heading]]`), read two ways
@@ -97,4 +98,19 @@ export function findHeadingPos(doc: PMNode, heading: string): number {
   const pos = find(heading);
   if (pos >= 0 || !heading.includes('#')) return pos;
   return find(heading.slice(heading.lastIndexOf('#') + 1));
+}
+
+/** The shortcut code of the heading at `pos`, or null when it is not a
+ *  target. Spec: ops/docs/plans/note-shortcuts.md (3.3) */
+export function headingCodeAt(doc: PMNode, itemId: string, pos: number): string | null {
+  const list = headingsFromDoc(doc);
+  const i = list.findIndex((h) => h.pos === pos);
+  return i < 0 ? null : headingCodes(itemId, list.map((h) => noteLinkKey(h.text)))[i]!;
+}
+
+/** The position of the heading a shortcut code names, or -1. */
+export function headingPosByCode(doc: PMNode, itemId: string, code: string): number {
+  const list = headingsFromDoc(doc);
+  const i = headingCodes(itemId, list.map((h) => noteLinkKey(h.text))).indexOf(code);
+  return i < 0 ? -1 : list[i]!.pos;
 }

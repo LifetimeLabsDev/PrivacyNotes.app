@@ -334,7 +334,7 @@
     "dataStorageBody": "Krypterade datablock lagrade i Zürich, <flag/> Schweiz.",
     "faviconsHeading": "Webbplatsikoner",
     "faviconsBody1": "Webbplatsikoner (favikoner) kommer från DuckDuckGo och Google och hämtas av vår server åt dig. Din webbläsare kontaktar aldrig någon av dem, så de ser vår server fråga efter en domän och ser aldrig dig.",
-    "faviconsBody2": "Ikoner cachas på din enhet i 90 dagar. Ingen förfrågan innehåller din identitet, och du kan stänga av ikoner under Inställningar > Utseende."
+    "faviconsBody2": "Ikoner cachas på din enhet i 90 dagar. Ingen förfrågan innehåller din identitet, och du kan stänga av ikoner under Inställningar > Listor."
   },
   "feedback": {
     "title": "Skicka feedback",

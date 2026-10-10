@@ -59,13 +59,16 @@ De middelste kolom staat gecentreerd en de laatste rechts. Sleep aan de rand van
 Een aandachtsblok is een gekleurd vak voor iets dat een lezer niet mag missen.
 
 > [!tip]+ Tip
-> Klik op de titel van een aandachtsblok om het dicht te klappen.
+> Klik op het pictogram om het dicht te klappen.
 
 > [!warning]+ Let op
 > Elk soort heeft zijn eigen kleur en icoon.
 
 > [!danger]+ Gevaar
-> Er zijn er negen. Het menu **Invoegen** somt ze op.
+> Er zijn er veel. Het menu **Invoegen** somt ze op.
+
+> [!fold]- Inklapbaar
+> Geen kader en geen kleur: alleen tekst die uit de weg blijft tot je hem openklapt.
 
 ## Citaten
 

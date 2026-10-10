@@ -39,7 +39,9 @@
     "dateTime": "날짜와 시간",
     "footnote": "각주",
     "spoiler": "스포일러",
-    "copyBox": "복사 상자"
+    "copyBox": "복사 상자",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "도구 모음 사용자화"
   },
   "align": {
     "left": "왼쪽 정렬",
@@ -81,7 +83,16 @@
       "bug": "버그",
       "note": "노트",
       "abstract": "요약",
-      "failure": "실패"
+      "failure": "실패",
+      "fold": "접기",
+      "idea": "아이디어",
+      "important": "중요",
+      "caution": "주의",
+      "todo": "할 일",
+      "goal": "목표",
+      "decision": "결정",
+      "definition": "정의",
+      "seealso": "참고"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "서식",
     "insert": "삽입",
     "blocks": "블록",
     "notation": "표기"
@@ -144,6 +156,8 @@
     "hide": "개요 숨기기",
     "hideTitle": "개요 숨기기 (Esc)",
     "copyHeadingLink": "제목 링크 복사",
+    "copyNoteLink": "노트 링크 복사",
+    "copyHeadingShortcut": "제목 바로가기 복사",
     "copied": "복사됨"
   },
   "bodyMenu": {
@@ -236,5 +250,47 @@
     "missing": "각주 내용이 없어요. 클릭해서 추가하세요.",
     "ariaRef": "각주 {{n}}",
     "ariaSection": "각주"
+  },
+  "formatBar": {
+    "tryIt": "직접 해 보세요. 여기서 도구 모음을 배치해 보고 어떤지 느껴 보세요.",
+    "previewOnly": "미리 보기일 뿐이에요. Pro를 쓰는 순간 이 배치가 저장돼요.",
+    "discard": "버리기",
+    "keepLayout": "이 배치 유지하기",
+    "hintDrag": "드래그해서 옮기고, 클릭해서 옵션을 열어요.",
+    "hintTap": "버튼을 탭해서 옵션을 열어요.",
+    "onBar": "도구 모음에",
+    "inMenu": "+ 메뉴에",
+    "menuEmpty": "메뉴가 비어 있어서 + 버튼이 보이지 않아요.",
+    "hidden": "숨김",
+    "hiddenNote": "단축키와 Markdown으로 계속 쓸 수 있어요.",
+    "hiddenDrop": "버튼을 여기에 놓으면 숨겨져요.",
+    "hiddenEmpty": "숨긴 항목이 없어요.",
+    "alwaysVisible": "항상 표시",
+    "pinned": "패널을 열기 때문에 도구 모음에 두거나 숨겨요",
+    "optionsFor": "{{item}} 옵션",
+    "moveUp": "위로 이동",
+    "moveDown": "아래로 이동",
+    "moveLeft": "왼쪽으로 이동",
+    "moveRight": "오른쪽으로 이동",
+    "home": {
+      "bar": "도구 모음에",
+      "menu": "+ 메뉴에",
+      "hidden": "숨김"
+    },
+    "opensPanel": "패널을 열어요",
+    "showsRecording": "녹음을 보여 줘요",
+    "refuse": {
+      "menuNotAllowed": "{{item}}은(는) 도구 모음에 두거나 숨길 수 있지만 + 메뉴에는 넣을 수 없어요.",
+      "lastOnBar": "도구 모음에 버튼을 하나 이상 남겨 두세요."
+    },
+    "items": {
+      "link": "링크",
+      "notelink": "노트 링크",
+      "audio": "녹음"
+    },
+    "positionTitle": "도구 모음 위치",
+    "positionNote": "편집기에서 도구 모음이 놓일 위치를 골라요.",
+    "positionTop": "위",
+    "positionBottom": "아래"
   }
 }

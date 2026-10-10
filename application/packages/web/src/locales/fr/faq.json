@@ -49,13 +49,7 @@
     "mdDemoScripts": "Exposant, indice, souligné",
     "mdDemoMath": "Maths (KaTeX)",
     "mdDemoQuote": "Citation et lien de note",
-    "mdDemoDivider": "Séparateur",
-    "hkShowcase": "La liste complète",
-    "hkMac": "Mac",
-    "hkPc": "Windows et Linux",
-    "hkBrowser": "Navigateur",
-    "hkDesktop": "App de bureau",
-    "hkLayout": "Les raccourcis suivent les caractères que tape ton clavier, pas la position des touches sur un clavier américain : appuie sur la touche qui tape le caractère affiché (sur une disposition non latine, la touche à sa place sur le clavier américain). Une touche qui tape un caractère avec AltGr le tape toujours."
+    "mdDemoDivider": "Séparateur"
   },
   "groups": {
     "gettingStarted": "Premiers pas",
@@ -100,6 +94,14 @@
       "a": [
         "Les notes, titres, étiquettes et pièces jointes sont toujours chiffrés, sur ton appareil et en route vers le serveur. En autoconservation, le mode initial de toute inscription par phrase, nous ne détenons aucune clé de déchiffrement. L’inscription avec Google, Apple ou GitHub te demande où conserver ta clé et présélectionne \"Reste simple et pratique\". Cette option stocke ta phrase sur notre serveur, chiffrée avec une clé que nous détenons. Dans ce mode, notre serveur peut déchiffrer la phrase et donc tes notes. Paramètres > Compte > Gestion des clés affiche ton mode actuel et te permet de le changer.",
         "Nous voyons les informations nécessaires au fonctionnement du service : l’espace de stockage chiffré utilisé, le nombre d’appareils associés et les dates et heures de synchronisation. Si tu utilises uniquement ta phrase et n’as associé aucun compte Google, Apple ou GitHub, nous ne connaissons pas ton adresse e-mail."
+      ]
+    },
+    "app-privacy-label": {
+      "q": "Pourquoi l’étiquette de confidentialité de l’App Store dit-elle que mes données sont liées à moi ?",
+      "a": [
+        "Parce qu’Apple demande une seule étiquette qui couvre tout ce qui peut atteindre notre serveur, même quand ces données arrivent chiffrées et même quand seuls certains comptes les envoient. Liées à toi veut dire rattachées à un compte, et le compte derrière une inscription par phrase est une clé, pas un nom. Rien ne sert au pistage, et l’app ne contient ni statistiques d’usage, ni publicité, ni rapports de plantage. Chaque ligne de l’étiquette désigne une seule chose :",
+        "- **Contenu utilisateur** : tes notes et tes fichiers, chiffrés sur ton appareil. En autoconservation, nous ne pouvons pas les lire.\n- **Identifiants** : une clé publique dérivée de ta phrase de récupération, et une empreinte d’appareil calculée sur ton appareil, qui sert uniquement à appliquer la limite d’appareils du forfait gratuit.\n- **Coordonnées** : une adresse e-mail, seulement si tu te connectes avec Google, Apple ou GitHub.\n- **Achats** : si ton compte a Pro. Apple gère le paiement, et nous ne voyons jamais ta carte.",
+        "Pour garder cette liste aussi courte que possible pour ton compte, inscris-toi avec une phrase de récupération plutôt qu’avec une connexion Google, Apple ou GitHub, et garde l’autoconservation. Paramètres > Compte > Gestion des clés affiche ton mode actuel. [Ce que PrivacyNotes peut voir](/fr/help/what-can-you-see/) explique le reste."
       ]
     },
     "phrase-vs-password": {
@@ -400,7 +402,7 @@
     "languages": {
       "q": "Quelles langues parle l'appli ?",
       "a": [
-        "Anglais, allemand, français, italien, espagnol, néerlandais, polonais, tchèque, catalan, turc, suédois, ukrainien, russe, japonais, coréen, chinois traditionnel, thaï, arabe et portugais, en variantes européenne et brésilienne. L'appli suit ta langue système par défaut, ou tu en fixes une explicitement dans Paramètres > Date et langue > Langue sur chaque appareil.",
+        "Anglais, allemand, français, italien, espagnol, néerlandais, polonais, tchèque, catalan, turc, suédois, ukrainien, russe, japonais, coréen, chinois traditionnel, thaï, arabe et portugais, en variantes européenne et brésilienne. L'appli suit ta langue système par défaut, ou tu en fixes une explicitement dans Paramètres > Langue sur chaque appareil.",
         "Les traductions sont gratuites pour tout le monde, pas un avantage Pro. D'autres langues sont prévues ; si la tienne manque, dis-le-nous sur [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) ou [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -458,8 +460,7 @@
       "q": "Quels raccourcis clavier existe-t-il ?",
       "a": [
         "Appuie sur ? n'importe où dans l'appli pour l'aide-mémoire intégré, aussi disponible sous Paramètres > À propos. Les raccourcis couvrent la navigation, les actions sur les notes, la mise en forme et les vues - et sur Windows et Linux, chaque Cmd se lit comme Ctrl et Option comme Alt.",
-        "L'essentiel : Cmd+K ouvre n'importe quel élément ou paramètre par son nom, et sa dernière ligne cherche dans le texte de la section ouverte ; / place le focus sur la recherche, J et K parcourent la liste, Cmd+[ et Cmd+] reculent et avancent parmi les éléments que tu as ouverts, Alt+Shift+N démarre une nouvelle note, Cmd+Backspace met la note sélectionnée à la corbeille, Cmd+, ouvre Paramètres. Pendant l'écriture : Cmd+B gras, Cmd+I italique, Cmd+Shift+K insère un lien, Cmd+Shift+9 démarre une liste de tâches, Cmd+F cherche dans la note, Cmd+Shift+O bascule le plan, Cmd+Shift+M passe à la vue Markdown. Cmd+\\ ou Cmd+Shift+D masque la barre latérale, Cmd+Shift+L change le thème, Cmd+Shift+F entre en mode zen (Pro), et Esc annule presque tout, filtres compris. Tape > dans la recherche ou dans Cmd+K (ou appuie sur > hors d'un champ de texte) pour trouver n'importe quelle commande par son nom et la lancer.",
-        "Les apps de bureau ajoutent les touches qu'un navigateur garde pour lui : Cmd+N pour une nouvelle note, Cmd+Shift+N pour un nouvel élément de n'importe quel type, Cmd+W pour fermer un onglet, Ctrl+Tab pour passer d'un onglet à l'autre, Cmd+1 à Cmd+9 pour les sections de la barre latérale, et Cmd+Shift+P pour la liste des commandes."
+        "L'[aide-mémoire imprimable](/help/keyboard-shortcuts/cheat-sheet) liste tous les raccourcis sur une seule page A4, pour Mac ou pour Windows et Linux, et pour le navigateur ou les apps de bureau. Il est construit à partir de la même liste que celle de l'app, donc il correspond toujours à la version que tu utilises."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -638,8 +639,15 @@
     "tags": {
       "q": "Comment fonctionnent les étiquettes ?",
       "a": [
-        "Chaque note ouverte a une ligne d'étiquettes sous le titre. Tape un mot puis Entrée, une virgule ou #, et l'étiquette devient une puce. La barre latérale liste chaque étiquette que tu utilises, et un clic filtre la liste sur ces notes. Tu peux renommer une étiquette partout d'un coup, la mettre en favori pour qu'elle reste épinglée en haut, ou la supprimer, avec ou sans les notes qui la portent.",
+        "Chaque note ouverte a une ligne d'étiquettes sous le titre. Tape un mot puis Entrée, une virgule ou #, et l'étiquette devient une puce. La barre latérale liste les étiquettes utilisées dans la section ouverte, et un clic filtre la liste sur ces éléments. Tu peux renommer une étiquette partout d'un coup, la mettre en favori pour qu'elle reste épinglée en haut, ou la supprimer, avec ou sans les notes qui la portent.",
         "Les étiquettes et les dossiers règlent des problèmes différents : une note vit dans un dossier mais porte autant d'étiquettes que tu veux, ce qui est exactement ce qu'il faut quand une chose est à la fois \"travail\" et \"facture\". Les imports étiquettent par source : tout ce qui arrive d'une autre app se pose avec sa propre étiquette, facile à retrouver ou à nettoyer plus tard."
+      ]
+    },
+    "organize": {
+      "q": "Comment les sections, dossiers, étiquettes et espaces fonctionnent-ils ensemble ?",
+      "a": [
+        "Tout ce que tu gardes vit dans une seule bibliothèque. Les sections de la barre latérale, comme Notes, Coffre et Journaux, sont des vues de cette bibliothèque par type. Un dossier est un lieu, donc un même dossier peut contenir une note et l'identifiant qui va avec, et l'arborescence des dossiers est la même dans chaque section. Ses nombres comptent ce que contient la section ouverte, et un dossier qui n'en contient rien apparaît estompé. Une étiquette est un libellé, et la barre latérale ne liste que les étiquettes utilisées par la section ouverte.",
+        "Les espaces séparent la bibliothèque en Personnel et Travail, et en affichent un à la fois. Un dossier de premier niveau appartient à un espace, avec tout ce qu'il contient, et **Déplacer vers Travail** dans son menu le fait passer dans l'autre. Un élément sans dossier appartient à Personnel, donc tout ce que tu crées dans Travail va dans un dossier de Travail. Les étiquettes sont gratuites, les dossiers et les espaces demandent Pro."
       ]
     },
     "note-links": {
@@ -652,8 +660,8 @@
     "appearance": {
       "q": "Puis-je changer l'apparence de l'app ?",
       "a": [
-        "Oui, dans Paramètres > Apparence. Mode bascule entre Clair, Sombre et Auto, qui suit ton système. Taille du texte a quatre crans et n'agrandit que ta surface d'écriture : l'interface autour ne bouge pas. Affichage dispose les éléments en Liste ou en Grille. Éditeur décide si les notes s'ouvrent en Mise en forme ou en Markdown brut.",
-        "Les thèmes de couleur sont la seule partie réservée à Pro : le thème par défaut est gratuit, Pro débloque les autres, en clair comme en sombre. Le mode zen, qui masque tout sauf ton texte, est aussi Pro (Cmd+Shift+F). Le mode et la taille du texte restent sur l'appareil où tu les règles. Tout le reste suit ton compte vers tes autres appareils."
+        "Oui. Paramètres > Apparence regroupe le look : **Mode** bascule entre Clair, Sombre et Auto, qui suit ton système, et tu choisis un thème de couleur pour le mode clair et un pour le mode sombre. Paramètres > Éditeur regroupe ta façon d'écrire : **Taille du texte** a cinq crans et n'agrandit que ta surface d'écriture, l'interface autour ne bouge donc pas, et **Éditeur** décide si les notes s'ouvrent en Mise en forme ou en Markdown brut. Paramètres > Listes dispose les éléments en Liste ou en Grille. Dans les apps de bureau, **Taille de l'app** dans Paramètres > Apparence agrandit toute la fenêtre. Le bouton **Apparence** du pied de page regroupe les réglages que tu changes le plus souvent, avec trois thèmes favoris pour chaque mode.",
+        "Les thèmes de couleur demandent Pro : le thème par défaut est gratuit, Pro débloque les autres, en clair comme en sombre, ainsi que [tes propres thèmes](/fr/help/custom-themes/). Le mode zen, qui masque tout sauf ton texte (Cmd+Maj+F), est aussi Pro. Placer la [barre de mise en forme](/fr/help/format-bar/) en haut ou en bas est gratuit, et organiser ses boutons est Pro. Le mode, les thèmes de couleur que tu choisis et tes trois favoris, la taille du texte, Liste ou Grille et la taille de l'app restent sur l'appareil où tu les règles. Le mode de l'éditeur, l'interligne, les couleurs des notes et tes réglages de listes suivent ton compte vers tes autres appareils."
       ]
     },
     "share-with-someone": {
@@ -761,6 +769,139 @@
       "a": [
         "Ton espace de stockage est déjà libéré. Dès que la suppression est synchronisée, ces octets cessent de compter dans ton quota, sur le serveur comme sur cet appareil. Si la barre affiche encore l'ancien chiffre, appuie sur l'icône d'actualisation à côté : elle recompte depuis le serveur et laisse de côté tout ce qui est déjà en file d'attente de suppression. Un appareil resté hors ligne garde son propre dernier comptage jusqu'à ce qu'il rattrape son retard.",
         "Les \"quelques jours\" dont parle l'app concernent le fichier chiffré lui-même, pas ton quota, et cette attente est délibérée. Supprimer un fichier du stockage est définitif, sans corbeille pour aller le repêcher. Un appareil qui n'a pas fini de se synchroniser n'a qu'une vue incomplète de tes notes : il pourrait supprimer une image qu'une autre note affiche encore. Un fichier attend donc au moins 24 heures, et seul un appareil dont la synchronisation s'est terminée proprement le retire. Cette patience ne te coûte rien, puisque la place a été créditée le jour de la suppression."
+      ]
+    },
+    "spoiler-text": {
+      "q": "Comment masquer un spoiler dans une note ?",
+      "a": [
+        "Sélectionne le texte et choisis **Spoiler** dans le menu + de la barre de mise en forme, ou tape-le entre deux paires de barres : `||spoiler||`. Le texte se floute aussitôt. Pendant que tu modifies la note, il s'affiche dès que ton curseur le touche et se floute de nouveau quand le curseur s'en va. Dans une note en lecture seule, un clic l'affiche.",
+        "La liste des notes et les aperçus affichent `•••` à sa place, si bien que même sa longueur ne trahit rien. La recherche trouve quand même les mots d'un spoiler, un export HTML les garde floutés jusqu'au clic du lecteur, et une impression les montre. Un export Markdown garde les barres, que les autres apps Markdown affichent comme de simples caractères autour du texte. Les spoilers sont gratuits."
+      ]
+    },
+    "copy-box": {
+      "q": "Comment créer un texte qui se copie en un clic ?",
+      "a": [
+        "Ajoute un bloc à copier : choisis **Bloc à copier** dans le menu + de la barre de mise en forme, puis tape ou colle le texte dedans, par exemple une commande, une adresse ou un code. Le bouton dans son coin met tout le texte dans ton presse-papiers et affiche **Copié** un instant. Un bloc de code et un bloc à copier se convertissent l'un en l'autre, tu peux donc aussi transformer un bloc existant.",
+        "Le code en ligne se copie aussi. Dans une note en lecture seule, un clic ou un toucher sur du code en ligne le copie. Pendant que tu modifies la note, Cmd+clic sur Mac ou Ctrl+clic sur Windows et Linux le copie, et un clic simple place toujours le curseur. Un bloc à copier est enregistré comme un bloc de code avec le langage `copy`, que les autres apps Markdown affichent comme un bloc de code normal. Les deux sont gratuits."
+      ]
+    },
+    "footnotes": {
+      "q": "Comment ajouter des notes de bas de page ?",
+      "a": [
+        "Choisis **Note de bas de page** dans le menu + de la barre de mise en forme. L'app ajoute le numéro suivant à l'emplacement du curseur, crée une note de bas de page vide sous le texte et y place ton curseur. Tu peux aussi taper `[^1]` juste après un mot, et commencer une ligne par `[^1]: ` pour écrire la note elle-même. Une étiquette peut être un mot aussi bien qu'un numéro.",
+        "Clique sur un numéro pour aller à sa note, et la flèche de retour ou Esc te ramène au texte. Sur un ordinateur, poser le pointeur sur un numéro affiche la note dans une petite carte. Les numéros suivent l'ordre du texte, et la note enregistre des notes de bas de page Markdown standard, que les autres apps Markdown savent lire. Un export HTML, un PDF et une burn note les gardent comme notes de bas de page liées. Les notes de bas de page sont gratuites."
+      ]
+    },
+    "statistics": {
+      "q": "Que montrent les statistiques sur mon écriture et mon bien-être ?",
+      "a": [
+        "Ouvre Paramètres > Statistiques, ou clique sur le nombre de notes et de mots dans le pied de page. **Vue d'ensemble** résume ta semaine : ta série d'écriture, les mots écrits, l'humeur et les jours notés, avec une grille des 26 dernières semaines et les heures où tu écris le plus. **Écriture** compte tes notes, tes mots et tes étiquettes, montre ta série actuelle et ta plus longue, et liste tes jalons. **Bien-être** trace chaque suivi de ton journal sur la période que tu choisis, suivis personnalisés compris.",
+        "Tout est calculé sur ton appareil, et rien n'en est envoyé chez nous. Les mots et les heures d'écriture comptent ce que tu écris sur cet appareil, donc chaque appareil affiche ses propres chiffres. Les graphiques, les séries, le calendrier de médication et **Télécharger le JSON** sont gratuits. Pro ajoute le bilan de la semaine, ce qui influence ton humeur, le tableau Tendances, les comparaisons du jour même et du lendemain, un **PDF médecin** et un prompt IA prêt à copier."
+      ]
+    },
+    "drag-to-folder": {
+      "q": "Puis-je glisser une note sur un dossier ou une étiquette ?",
+      "a": [
+        "Oui. Glisse une note de la liste sur un dossier de la barre latérale pour l'y déplacer, ou sur **Sans dossier** pour la sortir de son dossier. Dépose-la sur une étiquette pour lui ajouter cette étiquette : la note garde celles qu'elle avait déjà. Les tâches, les signets, les contacts, les éléments du Coffre et les fichiers importés dans Fichiers se glissent de la même façon. Maintiens un élément glissé un instant sur un dossier fermé et il s'ouvre, pour que tu atteignes un sous-dossier.",
+        "Pour en déplacer plusieurs à la fois, sélectionne-les avec Cmd+clic sur Mac ou Ctrl+clic sur Windows et Linux, ajoute une plage avec Maj+clic, puis glisse n'importe quel élément sélectionné. Le glisser-déposer demande une souris, un trackpad ou un stylet et une fenêtre assez large pour afficher la barre latérale. Sur un téléphone, utilise plutôt **Déplacer vers un dossier** dans le menu \"...\". Les étiquettes sont gratuites, et les [dossiers](/fr/help/folders/) demandent Pro."
+      ]
+    },
+    "custom-themes": {
+      "q": "Puis-je créer mon propre thème de couleurs ?",
+      "a": [
+        "Oui, avec Pro. Ouvre Paramètres > Apparence et choisis **Nouveau thème**. Choisis six couleurs (Fond, Barre latérale, Bordure, Texte, Texte atténué et Accent) et l'app propose le reste, pendant que l'app derrière le panneau affiche ton thème au fur et à mesure. Un contrôle de contraste signale tout texte difficile à lire et propose **Tout corriger**. Enregistrer devient possible dès que tous les contrôles passent.",
+        "Le menu de chaque carte de thème propose **Copier le code**, qui copie le thème sous forme d'un court code texte que tu peux envoyer à n'importe qui, et **Coller un code de thème** ajoute un code que tu as reçu. Tu choisis un thème pour le mode clair et un pour le mode sombre, **Favori** dans le menu d'une carte place jusqu'à trois thèmes de chaque mode dans le bouton **Apparence** du pied de page, et les thèmes que tu crées se synchronisent sur tous tes appareils. Tu en trouveras d'autres sur [la page des thèmes](https://privacynotes.app/themes), où tu peux aussi proposer le tien. Le thème Default est gratuit, et tous les autres thèmes demandent Pro."
+      ]
+    },
+    "format-bar": {
+      "q": "Puis-je choisir les boutons de la barre de mise en forme ?",
+      "a": [
+        "Oui. Clique sur l'engrenage au bout de la barre de mise en forme, ou ouvre Paramètres > Barre de mise en forme. Chaque bouton a trois places possibles : **Dans la barre**, **Dans le menu +** ou **Masqués**. Glisse un bouton pour le déplacer, ou clique dessus pour voir ses options. Un bouton masqué fonctionne toujours par son raccourci clavier et sa syntaxe Markdown : en masquer un ne t'enlève donc rien.",
+        "Placer la barre en haut ou en bas est gratuit sur tous les comptes. Organiser ses boutons fait partie de Pro : sur un compte gratuit, Paramètres > Barre de mise en forme sert d'aperçu à essayer, et ta disposition est enregistrée dès que tu as Pro. Cette disposition suit ton compte sur tous tes appareils, et **Rétablir les valeurs par défaut** ramène la barre standard. Sur un écran tactile, la barre tient sur une seule ligne qui défile sur le côté, pour tous les comptes, si bien qu'aucun bouton n'est relégué sur une deuxième ligne."
+      ]
+    },
+    "window-zoom": {
+      "q": "Puis-je agrandir ou réduire toute l'app de bureau ?",
+      "a": [
+        "Oui, dans les apps de bureau pour Mac, Windows et Linux. Appuie sur Cmd et la touche plus sur Mac, ou sur Ctrl et la touche plus sur Windows et Linux, pour agrandir toute la fenêtre. La touche moins la réduit, et 0 la ramène à la normale. Le même réglage s'appelle **Taille de l'app** dans Paramètres > Apparence, avec des crans de 80% à 200%.",
+        "La taille de l'app agrandit tout d'un coup : la barre latérale, la liste, les menus et ton texte. Pour ne changer que ton écriture, utilise **Taille du texte** dans Paramètres > Éditeur. La taille de l'app s'applique à l'appareil où tu la règles. Dans un navigateur, le zoom du navigateur fait le même travail."
+      ]
+    },
+    "zen-mode": {
+      "q": "C'est quoi, le mode Zen ?",
+      "a": [
+        "Le mode Zen masque tout sauf la note que tu écris : la barre latérale, la liste et le pied de page, et la barre de mise en forme démarre masquée elle aussi. Les onglets ouverts restent en haut. Appuie sur Cmd+Maj+F sur Mac ou Ctrl+Maj+F sur Windows et Linux, clique sur **Mode Zen** dans le pied de page, ou fais un clic droit sur une zone vide et choisis **Mode Zen**.",
+        "Appuie sur Esc, sur les mêmes touches, ou sur **Quitter Zen** en haut de la note pour revenir. **Afficher la barre de mise en forme** ramène la barre de mise en forme sans quitter le mode Zen. Le mode Zen fait partie de Pro, et la [démo](https://try.privacynotes.app) te permet de l'essayer sans compte."
+      ]
+    },
+    "date-format": {
+      "q": "Puis-je changer le format des dates ?",
+      "a": [
+        "Oui, dans Paramètres > Date. **Format de date** propose Automatique, Jour en premier, Mois en premier et Année en premier (ISO), et **Format de l'heure** propose Automatique, 24 heures et 12 heures. Automatique suit la langue de l'app et la région de chaque appareil, et ton choix s'applique sur tous tes appareils.",
+        "Les entrées de journal prennent leur titre de la date, et **Titres du journal**, au même endroit, propose des formats tout prêts dans ton format de date, ou **Modèle personnalisé** pour construire le tien à partir de jetons comme `YYYY`, `MMMM` et `ddd`, les mots entre crochets restant tels que tu les tapes. Un nouveau modèle ne s'applique qu'aux nouvelles entrées. Pour insérer la date du jour dans n'importe quelle note, appuie sur Cmd+; sur Mac ou Ctrl+; sur Windows et Linux, et ajoute Maj pour avoir aussi l'heure. Tout cela est gratuit."
+      ]
+    },
+    "checklists": {
+      "q": "Puis-je vider, trier ou réorganiser une liste de tâches ?",
+      "a": [
+        "Oui. Le menu \"...\" de la note propose **Décocher tous les éléments** pour réutiliser une liste, **Supprimer les éléments cochés** pour retirer ce qui est fait, et **Trier les éléments par statut** pour placer les éléments cochés sous les autres. Chacun n'apparaît que s'il changerait quelque chose. Supprimer demande d'abord confirmation, et Trier et Décocher peuvent être annulés avec Cmd+Z ou Ctrl+Z. Le bas de la note compte ta progression, par exemple \"3 sur 6 cochés\".",
+        "Pour réorganiser à la main, glisse la poignée au bout d'un élément. Les éléments imbriqués le suivent, et Esc annule le glisser. La poignée apparaît au survol sur un ordinateur et reste légèrement visible sur un écran tactile. Par défaut, un élément coché descend sous les éléments non cochés de sa liste ; désactive cela avec **Descendre les éléments cochés** dans Paramètres > Listes. Tout cela est gratuit."
+      ]
+    },
+    "quick-switcher": {
+      "q": "À quoi sert la fonction « Aller à », et que peut-elle trouver ?",
+      "a": [
+        "La fonction « Aller à » va directement à n'importe quoi par son titre. Appuie sur Cmd+K sur Mac ou Ctrl+K sur Windows et Linux (Cmd+P ou Ctrl+P marche aussi), ou clique sur **Aller à** dans la barre latérale ou l'en-tête de la liste. Tape une partie d'un titre pour trouver des notes, des tâches, des entrées de journal, des éléments du Coffre, des signets, des contacts, des fichiers joints et des paramètres. Entrée ouvre l'élément, et Option+Entrée ou Alt+Entrée l'ouvre dans un onglet.",
+        "Tape d'abord > pour lancer plutôt une commande, comme créer une note ou aller à une section. Pour chercher des mots dans ton texte plutôt que dans les titres, choisis la ligne **Tout rechercher**, ou appuie sur Cmd+Entrée ou Ctrl+Entrée depuis n'importe quelle ligne. La recherche se fait sur ton appareil, donc rien de ce que tu tapes ne nous est envoyé. La fonction « Aller à » est gratuite."
+      ]
+    },
+    "find-in-note": {
+      "q": "Comment chercher un mot dans une seule note ?",
+      "a": [
+        "Dans une note ouverte, appuie sur Cmd+F sur Mac ou Ctrl+F sur Windows et Linux, ou clique sur la loupe dans le coin supérieur d'une longue note. Tape le mot, puis appuie sur Entrée pour l'occurrence suivante et sur Maj+Entrée pour la précédente, pendant que la barre compte les occurrences. Appuie de nouveau sur les mêmes touches, ou clique sur le X, pour la fermer. La recherche fonctionne aussi dans les notes en lecture seule.",
+        "Avec Pro, tu peux aussi remplacer : appuie sur Option+Cmd+F sur Mac ou Ctrl+H sur Windows et Linux, ou choisis **Rechercher et remplacer** dans le menu \"...\" de la note. Remplace une occurrence ou **Tout** d'un coup, avec **Respecter la casse** quand il le faut. Les deux barres fonctionnent aussi dans **Afficher le markdown**, où elles atteignent le texte brut, comme le langage d'un bloc de code. Pour chercher dans toutes tes notes, utilise plutôt la recherche de la liste, que la touche / active. [Chaque recherche s'exécute sur ton appareil](/fr/help/search-local/)."
+      ]
+    },
+    "screen-capture": {
+      "q": "Puis-je masquer mes notes des captures d'écran et du partage d'écran ?",
+      "a": [
+        "Oui, dans les apps pour Android, iPhone et iPad, Mac et Windows. Ouvre Paramètres > Sécurité > Verrou et active **Masquer lors des captures d'écran**. Les captures d'écran, les enregistrements d'écran et le partage d'écran affichent alors une fenêtre vide au lieu de tes notes, dans la mesure où l'appareil le permet. Sur un téléphone, cela masque aussi tes notes dans le sélecteur d'apps.",
+        "L'interrupteur est désactivé par défaut, ne s'applique qu'à l'appareil sur lequel tu l'actives, et il est gratuit. Les navigateurs et Linux ne donnent à une app aucun moyen de bloquer une capture, donc l'interrupteur n'y apparaît pas. Il fonctionne seul et ne demande ni verrouillage de l'app ni PIN."
+      ]
+    },
+    "connected-logins": {
+      "q": "Puis-je associer plusieurs moyens de connexion à mon compte ?",
+      "a": [
+        "Oui. Ouvre Paramètres > Compte > Comptes et associe Google, Apple ou GitHub pour ajouter un moyen de connexion qui ouvre le même coffre. Tu peux en associer plusieurs, même deux comptes chez le même fournisseur, et ta phrase de récupération continue de fonctionner à côté. Associer ou dissocier un compte ne change ni tes notes ni ton chiffrement.",
+        "Un moyen de connexion qui appartient déjà à un autre coffre ne peut pas être associé, car les coffres ne sont jamais fusionnés. **Dissocier** demande d'abord tes 12 mots. Si nous gardons ta phrase pour toi, le dernier compte associé reste jusqu'à ce que tu en associes un autre ou que tu enregistres ta phrase et passes à l'autoconservation. En autoconservation, un nouvel appareil demande toujours tes 12 mots. Les comptes associés sont en bêta."
+      ]
+    },
+    "session-expired": {
+      "q": "Pourquoi l'app affiche \"Session expirée\" ?",
+      "a": [
+        "Cela veut dire que notre serveur n'accepte plus la connexion de cet appareil, donc la synchronisation s'arrête. Une connexion faible ou une panne du serveur n'en est jamais la cause : l'app vérifie une deuxième fois auprès du serveur avant d'afficher le message. Tes notes sont en sécurité sur cet appareil.",
+        "Clique sur **Se reconnecter**. L'app te demande d'abord si tu as enregistré ta phrase de récupération, car tu en as besoin, ou du moyen de connexion avec lequel tu t'es inscrit, pour revenir. Les notes pas encore synchronisées restent sur l'appareil et se synchronisent une fois que tu es connecté. La même fenêtre te prévient si des fichiers n'ont pas fini d'être envoyés, car ceux-là sont retirés avec la déconnexion."
+      ]
+    },
+    "archive": {
+      "q": "À quoi sert l'archivage, et quelle différence avec la corbeille ?",
+      "a": [
+        "Archiver retire un élément de tes listes sans le supprimer. Choisis **Archiver** dans le menu \"...\" de l'élément ou dans son menu clic droit, ou dans la barre de sélection pour plusieurs éléments à la fois. Les éléments archivés quittent Tout, leur section, Épinglés et les compteurs des dossiers et des étiquettes, et attendent dans la vue **Archives** en bas de la barre latérale, qui apparaît dès qu'un élément est archivé. Pour les garder dans Tout et dans les compteurs, coche Archives dans la colonne **Tout** de Paramètres > Listes. **Désarchiver**, aux mêmes endroits, ramène un élément.",
+        "La corbeille sert à ce dont tu veux te débarrasser : elle [le supprime définitivement après 30 jours](/fr/help/trash-auto-delete/) sauf si tu désactives cela. L'archive ne supprime jamais rien, et les éléments archivés restent à portée de main, car une recherche dans Tout, la fonction « Aller à » et les liens de note les trouvent encore. Ils se synchronisent et restent chiffrés comme tout le reste, et ils comptent toujours dans ton stockage. L'archive fonctionne avec tous les types d'éléments et elle est gratuite."
+      ]
+    },
+    "share-into-app": {
+      "q": "Puis-je partager du texte ou un lien vers PrivacyNotes depuis une autre app ?",
+      "a": [
+        "Oui, sur iPhone, iPad et Android, en bêta. Touche le bouton de partage dans n'importe quelle app et choisis PrivacyNotes. Un lien web devient un signet avec le titre de la page, du texte devient une nouvelle note, et les images et les fichiers vont dans Fichiers. Un lien que tu as déjà enregistré s'affiche au lieu d'être enregistré deux fois. Les éléments partagés arrivent sans dossier ni étiquette, tu les ranges donc quand ça t'arrange.",
+        "Sur Android, l'app demande d'abord : elle liste ce qui est arrivé et ne l'enregistre que si tu choisis **Tout enregistrer**, ou l'écarte avec **Ignorer**. Sur iPhone et iPad, une carte confirme **Enregistré dans PrivacyNotes**. Chaque fichier respecte ta [limite d'envoi](/fr/help/attachment-limits/), et un partage attend que tu sois connecté et que l'app soit déverrouillée."
+      ]
+    },
+    "desktop-updates": {
+      "q": "Comment mettre à jour l'app de bureau ?",
+      "a": [
+        "Tu n'as rien à faire. Les apps pour Mac et Windows et l'AppImage Linux cherchent une mise à jour au démarrage et quand tu y reviens, au plus toutes les 12 heures, et la téléchargent en arrière-plan. Un avis affiche alors **Mise à jour disponible**, avec **Redémarrer** pour terminer et **Changelog** pour voir les nouveautés.",
+        "Le paquet .deb pour Linux se met à jour par un nouveau téléchargement : son avis propose **Télécharger**, qui ouvre la [section des téléchargements](https://privacynotes.app/fr#downloads), et tu installes le nouveau paquet par-dessus l'ancien. Un .deb trop ancien pour synchroniser en toute sécurité met la synchronisation en pause jusqu'à ce que tu le fasses. Si tu as installé l'app avec Scoop sur Windows, lance `scoop update privacynotes`, et l'avis propose **Copier la commande** pour cela. Sur Mac, Homebrew n'a pas besoin de commande de mise à jour, car l'app se met à jour toute seule."
       ]
     }
   }

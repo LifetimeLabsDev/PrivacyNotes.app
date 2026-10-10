@@ -80,12 +80,19 @@
     "clearFilters": "Rimuovi i filtri",
     "filteredAfter": "per visualizzarli."
   },
+  "listGroups": {
+    "previous7Days": "Ultimi 7 giorni",
+    "previous30Days": "Ultimi 30 giorni",
+    "other": "Altro",
+    "collapseAll": "Comprimi tutti i gruppi",
+    "expandAll": "Espandi tutti i gruppi"
+  },
   "headerLabel": {
     "allItems": "Tutti",
     "untagged": "Senza tag",
     "journals": "Diario",
     "vault": "Cassaforte",
-    "pinned": "In evidenza",
+    "pinned": "Fissati",
     "archive": "Archivio",
     "notes": "Note"
   },
@@ -145,7 +152,7 @@
     "exitHover": "Esci dalla modalità Zen (Esc)",
     "enterHover": "Entra in modalità Zen",
     "proHover": "Modalità Zen (Pro)",
-    "enterAriaShortcut": "Entra in modalità Zen (⌘⇧F)"
+    "enterAriaShortcut": "Entra in modalità Zen ({{keys}})"
   },
   "editor": {
     "backToList": "Torna all'elenco note",
@@ -154,8 +161,8 @@
     "titlePlaceholderLogin": "es. GitHub",
     "titlePlaceholderCard": "es. Visa che termina con 4242",
     "titlePlaceholderSshKey": "es. chiave di deploy GitHub",
-    "pin": "Metti in evidenza",
-    "unpin": "Togli dall'evidenza",
+    "pin": "Fissa",
+    "unpin": "Non fissare",
     "restore": "Ripristina",
     "deleteForever": "Elimina per sempre",
     "moveToTrash": "Sposta nel cestino",
@@ -227,10 +234,10 @@
   },
   "settings": {
     "groupYourNotes": "Le tue note",
+    "groupPreferences": "Preferenze",
     "groupAccount": "Account e dati",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "Statistiche",
-    "journalsLabel": "Diario",
     "importLabel": "Importa ed esporta",
     "planLabel": "Account",
     "storageLabel": "Archiviazione",
@@ -238,9 +245,13 @@
     "securityLabel": "Sicurezza",
     "accountLabel": "ID & Sync",
     "appearanceLabel": "Aspetto",
+    "editorLabel": "Editor",
+    "formatBarLabel": "Barra di formattazione",
+    "listsLabel": "Elenchi",
     "helpLabel": "Aiuto",
     "aboutLabel": "Info",
-    "languageLabel": "Data e lingua",
+    "languageLabel": "Lingua",
+    "dateLabel": "Data",
     "languageDesc": "Scegli la lingua in cui viene mostrato PrivacyNotes."
   },
   "importStore": {

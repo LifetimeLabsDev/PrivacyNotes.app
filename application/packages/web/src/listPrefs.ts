@@ -88,6 +88,13 @@ export type ListPrefs = {
    * Spec: ops/docs/plans/issue-batches.md (batch 17)
    */
   showNoteTasks: boolean;
+  /**
+   * Whether the list draws group headers. The sort decides the groups: date
+   * buckets for a date sort, first letters for the title sort, none for size.
+   * Default false. Only the panes that draw groups offer the switch.
+   * Spec: ops/docs/plans/list-groups.md
+   */
+  showGroups: boolean;
 };
 
 /**
@@ -127,6 +134,7 @@ const DEFAULT_PREFS: ListPrefs = {
   showAttachedNotes: true,
   showNoteLinks: false,
   showNoteTasks: true,
+  showGroups: false,
 };
 
 export const DEFAULT_STORE: ListPrefsStore = {
@@ -217,6 +225,7 @@ function hydratePrefs(raw: unknown): ListPrefs {
   if (typeof obj.showAttachedNotes === 'boolean') base.showAttachedNotes = obj.showAttachedNotes;
   if (typeof obj.showNoteLinks === 'boolean') base.showNoteLinks = obj.showNoteLinks;
   if (typeof obj.showNoteTasks === 'boolean') base.showNoteTasks = obj.showNoteTasks;
+  if (typeof obj.showGroups === 'boolean') base.showGroups = obj.showGroups;
   return base;
 }
 

@@ -1,3 +1,4 @@
+import { SignIn } from './icons';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from './auth';
@@ -106,7 +107,7 @@ function RealAccountLoginsPanel({ onOpenCustody, onOpenPhrase, autoFocus }: { on
   const backendUnavailable = account.error === 'account_setup_unavailable';
   return <div ref={root} className="space-y-3">
     {status && (!status.managed || status.wrong_login || status.deleted) ? <>
-      <SectionEyebrow setting="account.connectedAccounts">{t('connectedAccounts.title')}</SectionEyebrow>
+      <SectionEyebrow setting="account.connectedAccounts" icon={SignIn}>{t('connectedAccounts.title')}</SectionEyebrow>
       {!status.managed && signedIn && <>
         <p className={SETTINGS_HELP}>{t('connectedAccounts.description')}</p>
         <div className="divide-y divide-divider rounded-md border border-divider">

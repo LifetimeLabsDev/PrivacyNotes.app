@@ -6,6 +6,7 @@ import { FRONT_MATTER } from '../markdownFolder/adapter';
 import { ATTACHMENT_EXT, isBlobReferenced, mimeFromExt } from './blobImport';
 import { buildFolderTree, commonRootPrefix } from './folderImport';
 import { linkifyMarkdown } from './linkify';
+import { detailsToFold } from './detailsFold';
 import { noteLinkTarget } from '../noteLinks';
 import { isUntitledStem } from '../exportNames';
 import type { ImportedNote, ParsedImport } from './types';
@@ -232,7 +233,7 @@ function parseOneObsidian(
   const updatedAt = meta.updatedAt ?? meta.createdAt ?? fallback;
 
   // Convert Obsidian-specific syntax, then linkify bare URLs.
-  const processedBody = linkifyMarkdown(preprocessObsidianMarkdown(body.trim()));
+  const processedBody = linkifyMarkdown(detailsToFold(preprocessObsidianMarkdown(body.trim())));
 
   return {
     title,

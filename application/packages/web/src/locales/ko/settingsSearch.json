@@ -6,15 +6,18 @@
   "resultCount_other": "결과 {{count}}개",
   "keywords": {
     "section_stats": "통계, 숫자, 연속 기록, 스트릭, 히트맵, 글자 수, 단어 수",
-    "section_journals": "일기, 저널, 제목, 날짜 형식",
     "section_import": "가져오기, 내보내기, 백업, 이전, 옮기기, 다운로드",
     "section_plan": "플랜, 요금제, 구독, pro, 결제, 청구, 기기, 로그아웃",
     "section_storage": "저장 공간, 용량, 할당량, 디스크, 기가바이트, 가득 참",
     "section_images": "이미지, 사진, 그림, 압축, 화질",
     "section_security": "보안, 비밀번호, 암호, 잠금, 개인정보",
     "section_me": "동기화, 계정, 나, 신원, ID",
-    "section_appearance": "모양, 화면, 디자인, 색상, 테마",
+    "section_design": "모양, 외관, 화면, 표시, 디자인, 색상, 색, 테마, theme",
+    "section_editor": "글쓰기, 편집기, 에디터, 텍스트, 글꼴, 폰트, 크기, 글자 크기, 줄 간격, 너비, markdown, 마크다운",
+    "section_formatBar": "도구 모음, 툴바, 서식 막대, 버튼, 배치, 정렬, 더하기 메뉴, + 메뉴",
+    "section_lists": "목록, 리스트, 사이드바, 그리드, 보기, 시작 페이지, 탭, 공간",
     "section_language": "언어, 번역, 로캘",
+    "section_date": "날짜, 시간, 시계, 형식, 일, 월, 연도, 저널, 일기, 항목 제목",
     "section_about": "정보, 버전, 크레딧",
     "section_help": "도움말, 자주 묻는 질문, FAQ, 지원, 질문, 가이드",
     "stats_writing": "단어, 글자 수, 노트 수, 활동, 히트맵",
@@ -27,6 +30,7 @@
     "stats_wellness": "건강, 기분, 수면, 약, 복약, 트래커",
     "stats_wellnessExport": "의사, 병원, 보고서, 리포트, CSV, PDF",
     "journals_suffix": "제목, 일기 이름, 저널 이름, 항목 제목",
+    "journals_titles": "저널, 일기, 항목 제목, 새 항목, 제목 형식",
     "import_export": "다운로드, 저장, 백업, 보관",
     "export_zipBackup": "백업, ZIP, Markdown, 마크다운, 전체 다운로드",
     "import_vault": "비밀번호, 로그인, 비밀번호 관리자",
@@ -66,6 +70,7 @@
     "appearance_startView": "시작 페이지, 홈, 기본 보기, 처음 화면",
     "appearance_view": "그리드, 목록, 카드, 레이아웃",
     "appearance_sinkChecked": "할 일, 체크리스트, 체크박스, 완료, 순서, 아래",
+    "appearance_spaces": "업무, 회사, 개인, 작업 공간, 워크스페이스, 공간, 분리, 전환, 프로필, work",
     "appearance_sidebar": "사이드바, 보기 숨기기, 메뉴, 전체 목록",
     "language_spellCheck": "맞춤법, 맞춤법 검사, 빨간 밑줄, 오타, 사전",
     "language_language": "언어, 번역, 로캘, 한국어, 영어",
@@ -79,6 +84,7 @@
     "about_changelog": "릴리스 노트, 새로운 기능, 업데이트, 변경 사항",
     "about_hotkeys": "키보드 단축키, 단축키, 키, 핫키",
     "about_rating": "리뷰, 평가, 별점, 앱 스토어, App Store",
-    "appearance_openInTabs": "탭, 탭 표시줄, 브라우저, 열기"
+    "appearance_openInTabs": "탭, 탭 표시줄, 브라우저, 열기",
+    "appearance_formatBar": "도구 막대, 서식 막대, 버튼, 사용자화, 정리, 글머리 기호 목록, 취소선, 톱니바퀴"
   }
 }

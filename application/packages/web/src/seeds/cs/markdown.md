@@ -59,13 +59,16 @@ Prostřední sloupec je na střed a poslední zarovnaný doprava. Zatáhni za ok
 Callout je barevná krabička na něco, co čtenář nesmí minout.
 
 > [!tip]+ Tip
-> Klikni na název calloutu a zavře se.
+> Klikni na jeho ikonu a zavře se.
 
 > [!warning]+ Pozor
 > Každý druh má svou barvu a svou ikonu.
 
 > [!danger]+ Nebezpečí
-> Je jich devět. Nabídka **Vložit** je vypisuje.
+> Je jich mnoho. Nabídka **Vložit** je vypisuje.
+
+> [!fold]- Sbalitelné
+> Bez rámečku a bez barvy: jen text, který nepřekáží, dokud ho neotevřeš.
 
 ## Citace
 

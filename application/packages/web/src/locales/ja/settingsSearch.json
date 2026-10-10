@@ -6,15 +6,18 @@
   "resultCount_other": "{{count}}件の結果",
   "keywords": {
     "section_stats": "統計, 数字, 連続記録, ストリーク, ヒートマップ, 文字数, 単語数",
-    "section_journals": "日記, ジャーナル, タイトル, 日付形式, 日付の書式",
     "section_import": "読み込み, インポート, 書き出し, エクスポート, バックアップ, 移行, 引っ越し, ダウンロード",
     "section_plan": "プラン, 契約, サブスクリプション, 定期購入, pro, 支払い, 請求, デバイス, サインアウト, ログアウト",
     "section_storage": "ストレージ, 容量, 空き容量, 上限, ディスク, ギガバイト, いっぱい",
     "section_images": "画像, 写真, 圧縮, 画質",
     "section_security": "セキュリティ, パスワード, ロック, 暗証番号, プライバシー",
     "section_me": "同期, アカウント, 自分, ID",
-    "section_appearance": "外観, 見た目, 表示, デザイン, 色, テーマ",
+    "section_design": "外観, 見た目, 表示, デザイン, 色, カラー, テーマ, theme",
+    "section_editor": "書く, 執筆, エディタ, テキスト, 文字, フォント, サイズ, 文字サイズ, 行間, 幅, markdown, マークダウン",
+    "section_formatBar": "ツールバー, 書式バー, ボタン, 並べ替え, 配置, プラスメニュー, + メニュー",
+    "section_lists": "リスト, 一覧, サイドバー, グリッド, 表示, スタートページ, 開始ページ, タブ, スペース",
     "section_language": "言語, 翻訳, ロケール",
+    "section_date": "日付, 時刻, 時間, 時計, 形式, 書式, 日, 月, 年, ジャーナル, 日記, 記録のタイトル",
     "section_about": "情報, について, バージョン, クレジット",
     "section_help": "ヘルプ, よくある質問, FAQ, サポート, 質問, ガイド, 使い方",
     "stats_writing": "文字数, 単語数, ノート数, 活動, アクティビティ, ヒートマップ",
@@ -27,6 +30,7 @@
     "stats_wellness": "健康, 気分, 睡眠, 服薬, 薬, トラッカー, 記録",
     "stats_wellnessExport": "医師, 病院, レポート, 報告書, CSV, PDF",
     "journals_suffix": "タイトル, 日記の名前, ジャーナル名, エントリのタイトル",
+    "journals_titles": "ジャーナル, 日記, 記録のタイトル, 新しい記録, タイトルの形式",
     "import_export": "ダウンロード, 保存, バックアップ, アーカイブ, エクスポート",
     "export_zipBackup": "バックアップ, ZIP, Markdown, マークダウン, 全部ダウンロード, 一括保存",
     "import_vault": "パスワード, ログイン, パスワードマネージャー, パスワード管理",
@@ -66,6 +70,7 @@
     "appearance_startView": "起動画面, スタートページ, ホーム, 初期表示, 最初に開く",
     "appearance_view": "グリッド, リスト, カード, レイアウト, 表示形式",
     "appearance_sinkChecked": "タスク, チェックリスト, チェックボックス, 完了, 順序, 下",
+    "appearance_spaces": "仕事, 個人, ワークスペース, スペース, 分ける, 切り替え, プロフィール, コンテキスト, work",
     "appearance_sidebar": "サイドバー, ビューを隠す, メニュー, すべてのリスト",
     "language_spellCheck": "スペル, スペルチェック, 綴り, 赤い下線, 誤字, 辞書",
     "language_language": "言語, 翻訳, ロケール, 日本語, 英語",
@@ -79,6 +84,7 @@
     "about_changelog": "リリースノート, 更新履歴, 新機能, アップデート, 変更履歴",
     "about_hotkeys": "キーボードショートカット, ショートカット, キー, ホットキー",
     "about_rating": "レビュー, 評価, 星, App Store",
-    "appearance_openInTabs": "タブ, タブバー, ブラウザ, 開く"
+    "appearance_openInTabs": "タブ, タブバー, ブラウザ, 開く",
+    "appearance_formatBar": "ツールバー, 書式バー, ボタン, カスタマイズ, 並べ替え, 箇条書き, 取り消し線, 歯車"
   }
 }

@@ -39,7 +39,9 @@
     "dateTime": "Datum a čas",
     "footnote": "Poznámka pod čarou",
     "spoiler": "Spoiler",
-    "copyBox": "Pole ke kopírování"
+    "copyBox": "Pole ke kopírování",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Upravit panel nástrojů"
   },
   "align": {
     "left": "Zarovnat vlevo",
@@ -81,7 +83,16 @@
       "bug": "Chyba",
       "note": "Poznámka",
       "abstract": "Souhrn",
-      "failure": "Selhání"
+      "failure": "Selhání",
+      "fold": "Sbalitelné",
+      "idea": "Nápad",
+      "important": "Důležité",
+      "caution": "Pozor",
+      "todo": "Úkol",
+      "goal": "Cíl",
+      "decision": "Rozhodnutí",
+      "definition": "Definice",
+      "seealso": "Viz také"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "Formátování",
     "insert": "Vložit",
     "blocks": "Bloky",
     "notation": "Zápis"
@@ -147,6 +159,8 @@
     "hide": "Skrýt osnovu",
     "hideTitle": "Skrýt osnovu (Esc)",
     "copyHeadingLink": "Kopírovat odkaz na nadpis",
+    "copyNoteLink": "Kopírovat odkaz na poznámku",
+    "copyHeadingShortcut": "Kopírovat zástupce nadpisu",
     "copied": "Zkopírováno"
   },
   "bodyMenu": {
@@ -251,5 +265,47 @@
     "missing": "Poznámka nemá text. Klikni a přidej ho.",
     "ariaRef": "Poznámka {{n}}",
     "ariaSection": "Poznámky pod čarou"
+  },
+  "formatBar": {
+    "tryIt": "Vyzkoušej si to: uspořádej lištu tady a uvidíš, jak ti sedí.",
+    "previewOnly": "Jen náhled. Tvoje rozvržení se uloží, jakmile budeš mít Pro.",
+    "discard": "Zahodit",
+    "keepLayout": "Ponechat toto rozvržení",
+    "hintDrag": "Přetažením přesuneš, kliknutím otevřeš možnosti.",
+    "hintTap": "Klepni na tlačítko a otevři jeho možnosti.",
+    "onBar": "Na liště",
+    "inMenu": "V nabídce +",
+    "menuEmpty": "Nabídka je prázdná, proto se tlačítko + nezobrazuje.",
+    "hidden": "Skryté",
+    "hiddenNote": "Dál fungují přes zkratku a Markdown.",
+    "hiddenDrop": "Přetáhni sem tlačítko a skryješ ho.",
+    "hiddenEmpty": "Nic není skryté.",
+    "alwaysVisible": "Vždy viditelné",
+    "pinned": "Otevírá panel, proto zůstává na liště nebo je skryté",
+    "optionsFor": "Možnosti pro {{item}}",
+    "moveUp": "Posunout nahoru",
+    "moveDown": "Posunout dolů",
+    "moveLeft": "Posunout doleva",
+    "moveRight": "Posunout doprava",
+    "home": {
+      "bar": "Na liště",
+      "menu": "V nabídce +",
+      "hidden": "Skryté"
+    },
+    "opensPanel": "otevírá panel",
+    "showsRecording": "zobrazuje nahrávání",
+    "refuse": {
+      "menuNotAllowed": "{{item}} může být na liště nebo skryté, ne v nabídce +.",
+      "lastOnBar": "Nech na liště aspoň jedno tlačítko."
+    },
+    "items": {
+      "link": "Odkaz",
+      "notelink": "Odkaz na poznámku",
+      "audio": "Nahrávka"
+    },
+    "positionTitle": "Umístění lišty",
+    "positionNote": "Vyber, kde v editoru bude panel nástrojů.",
+    "positionTop": "Nahoře",
+    "positionBottom": "Dole"
   }
 }

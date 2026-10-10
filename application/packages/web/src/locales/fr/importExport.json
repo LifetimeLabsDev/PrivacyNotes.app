@@ -180,7 +180,7 @@
     "both": "{{pictures}} et {{files}}"
   },
   "upload": {
-    "discard": "Retirer",
+    "discard": "Ignorer",
     "completeTitle": "Envoi terminé",
     "failedTitle": "L'envoi a échoué",
     "partialTitle": "{{done}} envoyés, {{failed}} échoués",

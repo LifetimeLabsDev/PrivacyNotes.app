@@ -9,15 +9,18 @@
   "resultCount_other": "{{count}} výsledků",
   "keywords": {
     "section_stats": "statistiky, statistika, čísla, série, heatmapa, tepelná mapa, počet slov",
-    "section_journals": "deník, žurnál, název, formát data",
     "section_import": "import, export, importovat, exportovat, záloha, zálohování, migrace, přesun, stáhnout",
     "section_plan": "plán, tarif, předplatné, pro, platby, fakturace, zařízení, odhlásit se, odhlášení",
     "section_storage": "úložiště, místo, prostor, kvóta, disk, gigabajty, plné",
     "section_images": "obrázky, fotky, fotografie, komprese, kvalita",
     "section_security": "zabezpečení, bezpečnost, heslo, zámek, soukromí",
     "section_me": "synchronizace, sync, účet, identita, id",
-    "section_appearance": "vzhled, zobrazení, design, barvy, motiv",
+    "section_design": "vzhled, zobrazení, design, barvy, téma, motiv",
+    "section_editor": "psaní, editor, text, písmo, velikost, řádkování, šířka, markdown",
+    "section_formatBar": "panel nástrojů, lišta formátování, toolbar, tlačítka, uspořádat, nabídka plus",
+    "section_lists": "seznam, postranní panel, mřížka, zobrazení, úvodní stránka, karty, prostory",
     "section_language": "jazyk, překlad, lokalizace, čeština",
+    "section_date": "datum, čas, hodiny, formát, den, měsíc, rok, deník, záznam, název záznamu",
     "section_about": "o aplikaci, verze, informace, autoři",
     "section_help": "nápověda, pomoc, faq, časté otázky, podpora, otázky, návod",
     "stats_writing": "slova, počet poznámek, aktivita, heatmapa",
@@ -30,6 +33,7 @@
     "stats_wellness": "zdraví, nálada, spánek, léky, sledování",
     "stats_wellnessExport": "lékař, doktor, zpráva, csv, pdf",
     "journals_suffix": "název, název deníku, název záznamu",
+    "journals_titles": "deník, záznam, název záznamu, nový záznam, formát názvu",
     "import_export": "stáhnout, uložit, záloha, archiv",
     "export_zipBackup": "záloha, zip, markdown, stáhnout vše",
     "import_vault": "hesla, přihlašovací údaje, správce hesel",
@@ -69,6 +73,7 @@
     "appearance_startView": "úvodní stránka, domů, výchozí zobrazení, otevřít na",
     "appearance_view": "mřížka, seznam, karty, rozložení",
     "appearance_sinkChecked": "úkoly, kontrolní seznam, zaškrtávací políčko, hotovo, pořadí, dolů",
+    "appearance_spaces": "práce, osobní, pracovní prostor, prostory, oddělit, přepnout, profil, kontext",
     "appearance_sidebar": "postranní panel, skrýt zobrazení, menu, seznam vše",
     "language_spellCheck": "pravopis, kontrola pravopisu, červené podtržení, překlepy, slovník",
     "language_language": "jazyk, překlad, lokalizace, čeština",
@@ -82,6 +87,7 @@
     "about_changelog": "poznámky k vydání, co je nového, novinky, aktualizace",
     "about_hotkeys": "klávesové zkratky, zkratky, klávesy, hotkeys",
     "about_rating": "recenze, hodnocení, ohodnotit, hvězdičky, app store",
-    "appearance_openInTabs": "karty, panel karet, prohlížeč, otevřít, taby"
+    "appearance_openInTabs": "karty, panel karet, prohlížeč, otevřít, taby",
+    "appearance_formatBar": "panel nástrojů, lišta formátování, tlačítka, upravit, uspořádat, odrážkový seznam, přeškrtnutí, ozubené kolo"
   }
 }

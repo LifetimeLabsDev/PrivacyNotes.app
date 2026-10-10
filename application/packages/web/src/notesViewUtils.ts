@@ -5,6 +5,7 @@
 
 import type { NoteType } from '@notes/shared';
 import type { LocalNote } from './db';
+import type { Space } from './spaces';
 import { indexedBodyText, isPhraseQuery } from './search';
 import { textMatcher } from './textMatch';
 import { MARKDOWN_NOTE_TYPES } from './noteTypes';
@@ -12,7 +13,7 @@ export { MARKDOWN_NOTE_TYPES, isKnownNoteType } from './noteTypes';
 import type { ListPrefs } from './listPrefs';
 import { formatBytes } from './formatBytes';
 import i18n from './i18n';
-import { dateLocale, formatInstant, formatPattern, toLocalIso } from './intlFormat';
+import { formatInstant, formatPattern, toLocalIso, writtenDateLocale } from './intlFormat';
 import { parseLinkBody, linkDomain } from './linkBody';
 import { contactDisplayName, contactPhotoBytes, contactSecondLine, parseContactBody } from './contactBody';
 import type { PinGatePurpose } from './ProtectedNoteGate';
@@ -599,9 +600,9 @@ export function compareNotes(
  * storage meter use, so one note cannot read as two different sizes depending
  * on which pillar you are looking at.
  *
- * The Markdown pillar passes its own label instead - a file on disk has a real
- * filesystem size, and an estimate of what it would cost encrypted would be a
- * number about a note that does not exist.
+ * A Markdown file is not measured here: `MarkdownItem` sets its size on disk,
+ * because an estimate of what it would cost encrypted would be a number about
+ * a note that does not exist.
  */
 function deriveNoteSize(n: LocalNote): string {
   const total = noteSizeBytes(n);
@@ -612,15 +613,13 @@ function deriveNoteSize(n: LocalNote): string {
  * The size a list row or grid tile shows, or '' for none. One rule, so the row
  * and the tile cannot drift.
  *
- * `explicit` wins and is never gated - the Markdown pillar passes its file's
- * real size on disk, and a file always shows one. A NOTE shows its size only
+ * A note shows its size only
  * while the list is sorted by size: the rest of the time it is a byte count on
  * every row that nobody asked for, and while it is the sort key it is the only
  * way to see why the rows are in the order they are in.
  * Spec: ops/docs/ui-patterns.md (section 66)
  */
-export function rowSizeLabel(n: LocalNote, sortField: string, explicit?: string): string {
-  if (explicit) return explicit;
+export function rowSizeLabel(n: LocalNote, sortField: string): string {
   return sortField === 'size' ? deriveNoteSize(n) : '';
 }
 
@@ -823,6 +822,52 @@ export function journalEntriesByDay(notes: readonly LocalNote[]): Map<string, st
   return new Map([...newest].map(([day, n]) => [day, n.id]));
 }
 
+/** One entry the calendar offers for a day: its space (null with Spaces
+ *  off) and the title the chooser shows. */
+type DayEntry = { id: string; space: Space | null; title: string };
+
+/** The journal calendar's day map: each day to its newest entry, as
+ *  `journalEntriesByDay`, plus the newest entry of each space on a day. */
+export type JournalDays = ReadonlyMap<string, string> & {
+  entriesOf(day: string): readonly DayEntry[];
+};
+
+/** The day map with the space of each entry. A day with entries in both
+ *  spaces lists the open space first. Spec: ops/docs/plans/spaces.md (section 9) */
+export function journalDaysIndex(
+  notes: readonly LocalNote[],
+  spaces?: { spaceOf: (n: LocalNote) => Space; open: Space; titleOf: (n: LocalNote) => string },
+): JournalDays {
+  const newest = journalEntriesByDay(notes);
+  const bySpace = new Map<string, Map<Space, LocalNote>>();
+  if (spaces) {
+    for (const n of notes) {
+      if (n.type !== 'journal' || n.deleted !== 0 || n.trashed !== 0 || n.archived === 1) continue;
+      const day = entryDayOf(n);
+      const space = spaces.spaceOf(n);
+      const held = bySpace.get(day) ?? new Map<Space, LocalNote>();
+      const prev = held.get(space);
+      if (!prev || n.createdAt > prev.createdAt) held.set(space, n);
+      bySpace.set(day, held);
+    }
+  }
+  const order: Space[] = spaces?.open === 'work' ? ['work', 'personal'] : ['personal', 'work'];
+  return Object.assign(newest, {
+    entriesOf(day: string): readonly DayEntry[] {
+      if (!spaces) {
+        const id = newest.get(day);
+        return id ? [{ id, space: null, title: '' }] : [];
+      }
+      const held = bySpace.get(day);
+      if (!held) return [];
+      return order.flatMap((space) => {
+        const n = held.get(space);
+        return n ? [{ id: n.id, space, title: spaces.titleOf(n) }] : [];
+      });
+    },
+  });
+}
+
 /** Is this the entry the Week in Review card and week reflection attach to? */
 export function isWeekJournal(n: LocalNote): boolean {
   const iso = journalDateOf(n);
@@ -848,13 +893,11 @@ export function isJournalTitleFormat(v: unknown): v is JournalTitleFormat {
   return typeof v === 'string' && (JOURNAL_TITLE_FORMATS as readonly string[]).includes(v);
 }
 
-/** One date in the chosen shape. `locale` is the app language from
- *  `activeLocale()` - never the browser default, which can disagree with
- *  the language the app is being read in. `dateLocale()` adds the device's
- *  region to it, so the order of day and month matches every other date
- *  the app shows, and Arabic keeps Western digits. */
-function formatJournalDate(d: Date, format: JournalTitleFormat, locale: string): string {
-  const loc = dateLocale(locale);
+/** One date in the chosen shape, in the order the date setting names: the
+ *  spelled-out shapes take its resolved tag, the digits its numeric style, so
+ *  every preset agrees with every other date the app shows. */
+function formatJournalDate(d: Date, format: JournalTitleFormat): string {
+  const loc = writtenDateLocale();
   // date-ok: a title is written in the language it is created in, not the one it is read in
   const text = (opts: Intl.DateTimeFormatOptions) => d.toLocaleDateString(loc, opts);
   switch (format) {
@@ -888,7 +931,7 @@ export function journalTitle(
     const custom = formatPattern(d, pattern, locale);
     if ('text' in custom) return custom.text;
   }
-  const date = formatJournalDate(d, format, locale);
+  const date = formatJournalDate(d, format);
   const tail = suffix.trim();
   return tail ? `${date} ${tail}` : date;
 }

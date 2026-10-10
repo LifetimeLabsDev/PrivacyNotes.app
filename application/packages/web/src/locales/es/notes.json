@@ -80,6 +80,13 @@
     "clearFilters": "Quitar los filtros",
     "filteredAfter": "para mostrarlos."
   },
+  "listGroups": {
+    "previous7Days": "Últimos 7 días",
+    "previous30Days": "Últimos 30 días",
+    "other": "Otros",
+    "collapseAll": "Contraer todos los grupos",
+    "expandAll": "Expandir todos los grupos"
+  },
   "headerLabel": {
     "allItems": "Todos",
     "untagged": "Sin etiquetar",
@@ -145,7 +152,7 @@
     "exitHover": "Salir del modo Zen (Esc)",
     "enterHover": "Entrar en modo Zen",
     "proHover": "Modo Zen (Pro)",
-    "enterAriaShortcut": "Entrar en modo Zen (⌘⇧F)"
+    "enterAriaShortcut": "Entrar en modo Zen ({{keys}})"
   },
   "editor": {
     "backToList": "Volver a la lista de notas",
@@ -227,10 +234,10 @@
   },
   "settings": {
     "groupYourNotes": "Tus notas",
+    "groupPreferences": "Preferencias",
     "groupAccount": "Cuenta y datos",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "Estadísticas",
-    "journalsLabel": "Diarios",
     "importLabel": "Importar y exportar",
     "planLabel": "Cuenta",
     "storageLabel": "Almacenamiento",
@@ -238,9 +245,13 @@
     "securityLabel": "Seguridad",
     "accountLabel": "ID & Sync",
     "appearanceLabel": "Apariencia",
+    "editorLabel": "Editor",
+    "formatBarLabel": "Barra de formato",
+    "listsLabel": "Listas",
     "helpLabel": "Ayuda",
     "aboutLabel": "Acerca de",
-    "languageLabel": "Fecha e idioma",
+    "languageLabel": "Idioma",
+    "dateLabel": "Fecha",
     "languageDesc": "Elige el idioma en el que se muestra PrivacyNotes."
   },
   "importStore": {

@@ -455,13 +455,15 @@ export async function appendQuickTask(
   text: string,
   activeNotes: LocalNote[],
   isGated: (n: LocalNote) => boolean,
+  /** The folder a new Quick Tasks note files into, asked only when one is made. */
+  folderForNew: () => string | null = () => null,
 ): Promise<string | null> {
   const clean = text.trim();
   if (!clean) return null;
   const inbox = activeNotes.find(
     (n) => (n.title ?? '').trim() === INBOX_TITLE && takesTaskEdit(n, isGated),
   );
-  const id = inbox?.id ?? (await createNote(INBOX_TITLE, '', [], false, 'task')).id;
+  const id = inbox?.id ?? (await createNote(INBOX_TITLE, '', [], false, 'task', folderForNew())).id;
   const note = await getNote(id);
   if (!note || !takesTaskEdit(note, isGated)) return null;
   return (await updateNote(id, { body: appendTaskToBody(note.body, clean) })) ? id : null;

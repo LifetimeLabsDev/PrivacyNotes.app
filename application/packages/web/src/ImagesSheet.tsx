@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { HelpChip } from './HelpChip';
 import { CONTACT_PHOTO_PX, IMAGE_FIT_PX, IMAGE_JPEG_QUALITY } from './imageProcessing';
-import { SETTINGS_HELP } from './settingsUI';
+import { ROW_TITLE, SETTINGS_HELP } from './settingsUI';
+import { ArrowsIn, MapPinLine, UserCircle, type Icon } from './icons';
 import { Switch } from './Switch';
 import type { ImageSwitch } from './userSettings';
 
@@ -30,12 +31,13 @@ type Props = {
 export function ImagesSheet({ spaceSaver, stripMetadata, contactCeiling, onChange }: Props) {
   const { t } = useTranslation('settings');
 
-  const rows: { field: Field; setting: string; value: ImageSwitch; title: string; desc: string }[] = [
+  const rows: { field: Field; setting: string; value: ImageSwitch; title: string; desc: string; icon: Icon }[] = [
     {
       field: 'imageSpaceSaver',
       setting: 'images.spaceSaver',
       value: spaceSaver,
       title: t('images.spaceSaverTitle'),
+      icon: ArrowsIn,
       desc: t('images.spaceSaverDesc', { px: IMAGE_FIT_PX, quality: Math.round(IMAGE_JPEG_QUALITY * 100) }),
     },
     {
@@ -43,6 +45,7 @@ export function ImagesSheet({ spaceSaver, stripMetadata, contactCeiling, onChang
       setting: 'images.contactPhotos',
       value: contactCeiling,
       title: t('images.contactTitle'),
+      icon: UserCircle,
       desc: t('images.contactDesc', { px: CONTACT_PHOTO_PX }),
     },
     {
@@ -50,6 +53,7 @@ export function ImagesSheet({ spaceSaver, stripMetadata, contactCeiling, onChang
       setting: 'images.removeLocation',
       value: stripMetadata,
       title: t('images.removeLocationTitle'),
+      icon: MapPinLine,
       desc: t('images.removeLocationDesc'),
     },
   ];
@@ -66,6 +70,8 @@ export function ImagesSheet({ spaceSaver, stripMetadata, contactCeiling, onChang
             <Switch
               key={row.field}
               setting={row.setting}
+              icon={<row.icon size={14} className="text-accent" />}
+              labelClassName={ROW_TITLE}
               label={row.title}
               description={row.desc}
               checked={row.value === 'on'}

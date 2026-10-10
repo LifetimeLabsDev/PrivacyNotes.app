@@ -1,12 +1,13 @@
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { createPortal } from 'react-dom';
 import { useEscapeToClose } from './useEscapeToClose';
 import { HoverLabel } from './HoverLabel';
 import { Switch } from './Switch';
-import { ViewModeContext } from './viewMode';
+import { ViewModeContext, setDeviceCompactRows, useCompactRows } from './viewMode';
 import { ViewModeToggle } from './ViewModeToggle';
 import { setJournalCalendarShown, useJournalCalendarShown } from './JournalCalendar';
-import { Article, Calendar, Clock, HardDrive, PencilSimpleSlash, Shield, SortAscending, SortDescending, Tag, TextAlignJustify } from './icons';
+import { X, Question, ArrowsInLineVertical, Article, Calendar, Rows, Clock, HardDrive, PencilSimpleSlash, Shield, SortAscending, SortDescending, Tag, TextAlignJustify } from './icons';
 import {
   resolvePrefs,
   setPillarPrefs,
@@ -68,6 +69,11 @@ type Props = {
    * something their rows never show.
    */
   showSizeToggle?: boolean;
+  /**
+   * Add "Show groups" to the VIEW section. Only the panes that draw group
+   * headers pass it. Spec: ops/docs/plans/list-groups.md
+   */
+  showGroupsToggle?: boolean;
   /** Hide the OTHER toggles section (read-only, protected). */
   hideOtherSection?: boolean;
   /** Label for the title/name sort option. Defaults to "Title". */
@@ -76,6 +82,25 @@ type Props = {
    *  entry is for. Defaults to "Date created". */
   createdLabel?: string;
 };
+
+/** The menu's width (w-72) and its gap to the list pane. */
+const MENU_W = 288;
+const MENU_GAP = 8;
+
+/** Where the menu sits beside its list pane, or null when the window has no
+ *  room there. The end side of the pane: right, or left in a right-to-left
+ *  language. */
+function besideList(anchor: HTMLElement | null): { top: number; left: number } | null {
+  const pane = anchor?.closest<HTMLElement>('.pn-list-panel');
+  if (!anchor || !pane) return null;
+  const a = anchor.getBoundingClientRect();
+  const p = pane.getBoundingClientRect();
+  if (p.width === 0) return null;
+  const rtl = getComputedStyle(pane).direction === 'rtl';
+  const room = rtl ? p.left : window.innerWidth - p.right;
+  if (room < MENU_W + MENU_GAP * 2) return null;
+  return { top: a.top, left: rtl ? p.left - MENU_GAP - MENU_W : p.right + MENU_GAP };
+}
 
 export function ListPrefsPopover({
   store,
@@ -86,6 +111,7 @@ export function ListPrefsPopover({
   hideViewSection = false,
   hideOtherSection = false,
   showSizeToggle = false,
+  showGroupsToggle = false,
   titleLabel,
   createdLabel,
   pillar = 'global',
@@ -97,6 +123,7 @@ export function ListPrefsPopover({
   const resolvedTitleLabel = titleLabel ?? t('listPrefs.title');
 
   const layout = useContext(ViewModeContext);
+  const compactRows = useCompactRows();
   const popoverRef = useRef<HTMLDivElement | null>(null);
 
   // Click-outside to close. Pointerdown beats click so drags don't
@@ -122,6 +149,33 @@ export function ListPrefsPopover({
   // keeps a trigger near the window bottom from opening a menu too short to
   // read, which then overflows the way it always did - the lesser of the two.
   const [maxHeight, setMaxHeight] = useState<number | null>(null);
+
+  // Beside the list, not over it: the menu changes the rows, so it opens at
+  // the list pane's end edge, level with its button, where every switch shows
+  // its effect at once. Without room for it there (a phone, a narrow window)
+  // it hangs off its button inside the pane, as the pane's className says.
+  const [beside, setBeside] = useState<{ top: number; left: number } | null>(() => besideList(anchorRef?.current ?? null));
+  // Measured again after every render as well: a layout switch in this very
+  // menu re-renders it in the commit that moves the pane's edge. The state is
+  // set only when the place changed, so this cannot loop.
+  useLayoutEffect(() => {
+    const next = besideList(anchorRef?.current ?? null);
+    setBeside((cur) => (cur?.top === next?.top && cur?.left === next?.left ? cur : next));
+  });
+  useLayoutEffect(() => {
+    const place = () => setBeside(besideList(anchorRef?.current ?? null));
+    window.addEventListener('resize', place);
+    // The pane moves its edge without a window resize: a switch to the grid
+    // in this very menu widens it, and the menu must step aside with it.
+    const pane = anchorRef?.current?.closest('.pn-list-panel');
+    const ro = pane ? new ResizeObserver(place) : null;
+    if (pane) ro!.observe(pane);
+    return () => {
+      window.removeEventListener('resize', place);
+      ro?.disconnect();
+    };
+  }, [anchorRef]);
+
   useLayoutEffect(() => {
     const el = popoverRef.current;
     if (!el) return;
@@ -132,7 +186,7 @@ export function ListPrefsPopover({
     fit();
     window.addEventListener('resize', fit);
     return () => window.removeEventListener('resize', fit);
-  }, []);
+  }, [beside]);
 
   function update<K extends keyof ListPrefs>(key: K, value: ListPrefs[K]) {
     const nextPrefs: ListPrefs = { ...prefs, [key]: value };
@@ -147,22 +201,46 @@ export function ListPrefsPopover({
     update('sortDir', prefs.sortDir === 'asc' ? 'desc' : 'asc');
   }
 
-  return (
+  const panel = (
     <div
       ref={popoverRef}
       role="dialog"
       aria-label={t('listPrefs.listPreferences')}
-      className={`z-50 w-72 rounded-lg border border-divider bg-surface-2 shadow-lg overflow-y-auto overscroll-contain ${className}`}
-      style={maxHeight === null ? undefined : { maxHeight }}
+      className={`z-50 w-72 rounded-lg border border-divider bg-surface-2 shadow-lg overflow-y-auto overscroll-contain ${beside ? '' : className}`}
+      style={{
+        ...(maxHeight === null ? {} : { maxHeight }),
+        ...(beside ? { position: 'fixed' as const, top: beside.top, left: beside.left } : {}),
+      }}
     >
+      {/* Closing is one click away wherever the menu opens: beside the list it
+          sits far from the button that opened it. Escape and a click outside
+          still close it too. */}
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label={t('common:actions.close')}
+        className="absolute top-2 end-2 z-10 inline-flex items-center justify-center w-7 h-7 rounded-md text-pn-muted hover:text-pn hover:bg-pn/5 transition"
+      >
+        <X size={15} />
+      </button>
       {/* ── LAYOUT ───────────────────────────────────────────────── */}
       {layout && (
       <div className="px-4 pt-3 pb-3 border-b border-divider">
-        <div className="text-[10px] font-semibold tracking-wider text-pn-muted uppercase mb-1.5 mt-1">
+        <div className="text-[10px] font-semibold tracking-wider text-pn-muted uppercase mt-1">
           {t('listPrefs.layout')}
         </div>
+        {/* The note scopes the whole section, so it sits under the heading. */}
+        <div className="mb-2 text-[11.5px] text-pn-muted">{t('listPrefs.layoutDeviceOnly')}</div>
         <ViewModeToggle mode={layout.mode} onChange={layout.set} />
-        <div className="mt-1.5 text-[11.5px] text-pn-muted">{t('listPrefs.layoutDeviceOnly')}</div>
+        <div className="mt-2">
+          <ToggleRow
+            label={t('listPrefs.compactRows')}
+            icon={<ArrowsInLineVertical aria-hidden="true" className="shrink-0" />}
+            hint={<HelpTip text={t('listPrefs.compactRowsHint')} />}
+            checked={compactRows}
+            onChange={setDeviceCompactRows}
+          />
+        </div>
         {/* Device-local like the layout, so it sits here and outside the synced prefs. */}
         {pillar === 'journal' && (
           <div className="mt-2">
@@ -255,6 +333,24 @@ export function ListPrefsPopover({
             checked={prefs.showTags}
             onChange={(v) => update('showTags', v)}
           />
+          {showGroupsToggle && (
+            <ToggleRow
+              label={t('listPrefs.showGroups')}
+              icon={<Rows aria-hidden="true" className="shrink-0" />}
+              // The sort decides the groups; size has none, so the switch
+              // waits for a sort that has some instead of claiming to be on.
+              checked={prefs.showGroups && prefs.sortField !== 'size'}
+              disabled={prefs.sortField === 'size'}
+              description={
+                prefs.sortField === 'size'
+                  ? t('listPrefs.groupsNoneForSize')
+                  : prefs.sortField === 'title'
+                    ? t('listPrefs.groupsByLetter')
+                    : t('listPrefs.groupsByDate')
+              }
+              onChange={(v) => update('showGroups', v)}
+            />
+          )}
         </div>
       </div>
       )}
@@ -283,6 +379,7 @@ export function ListPrefsPopover({
       )}
     </div>
   );
+  return beside ? createPortal(panel, document.body) : panel;
 }
 
 /* ────────────────────────────────────────────────────────────────
@@ -361,22 +458,83 @@ export function SortRow({
   );
 }
 
+/**
+ * A "?" beside a label that shows a short explanation in a tooltip: on hover
+ * with a pointer, and on a tap or click anywhere, which also works on a touch
+ * screen with no hover. The next tap outside closes it; a blur cannot, because
+ * a tapped button takes no focus on iOS. The button's name is the explanation
+ * itself, so a screen reader reads it without opening anything.
+ */
+function HelpTip({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLSpanElement | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: PointerEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    window.addEventListener('pointerdown', close, true);
+    return () => window.removeEventListener('pointerdown', close, true);
+  }, [open]);
+  return (
+    <span ref={ref} className="group/help relative inline-flex">
+      <button
+        type="button"
+        aria-label={text}
+        aria-expanded={open}
+        // Inside the switch's label: the click must not toggle the switch.
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setOpen((o) => !o);
+        }}
+        // A 16px glyph with a 40px touch target, through an invisible ring.
+        // 1px down: the lowercase of the label centers below its line box,
+        // and a glyph centered on the box reads high beside it.
+        className="relative translate-y-px inline-flex items-center justify-center w-4 h-4 rounded-full text-pn-muted hover:text-accent transition before:absolute before:-inset-3 before:content-['']"
+      >
+        <Question size={13} aria-hidden="true" />
+      </button>
+      <span
+        aria-hidden="true"
+        // rtl-ok: centered under the button, the same in both directions
+        // theme-ok: a tooltip is a dark pill in every theme, as HoverLabel's
+        className={`pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-1.5 z-20 w-max max-w-[160px] px-2.5 py-1.5 rounded-md bg-neutral-900 dark:bg-neutral-800 border border-neutral-700 text-[12px] font-normal leading-snug text-neutral-100 transition-opacity duration-75 ${
+          open ? 'opacity-100' : 'opacity-0 [@media(hover:hover)]:group-hover/help:opacity-100'
+        }`}
+      >
+        {text}
+      </span>
+    </span>
+  );
+}
+
 function ToggleRow({
   label,
   icon,
   checked,
+  disabled,
+  description,
+  hint,
   onChange,
 }: {
   label: string;
   icon?: React.ReactNode;
   checked: boolean;
+  disabled?: boolean;
+  description?: string;
+  hint?: React.ReactNode;
   onChange: (v: boolean) => void;
 }) {
   return (
     <Switch
       label={label}
+      hint={hint}
       icon={icon && <span className="inline-flex text-accent">{icon}</span>}
       checked={checked}
+      disabled={disabled}
+      // Indented past the icon, so the hint lines up with the label it explains.
+      description={description && <span className="block ps-5">{description}</span>}
       onChange={onChange}
       className="gap-2 py-1 select-none"
       labelClassName="flex items-center gap-1.5 text-[14px] text-pn"

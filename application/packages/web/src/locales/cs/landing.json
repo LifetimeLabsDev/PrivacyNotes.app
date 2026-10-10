@@ -334,7 +334,7 @@
     "dataStorageBody": "Zašifrované bloby uložené v Curychu, <flag/> Švýcarsko.",
     "faviconsHeading": "Ikony webů",
     "faviconsBody1": "Ikony webů (favikony) pocházejí z DuckDuckGo a Google a stahuje je náš server za tebe. Tvůj prohlížeč se ani s jedním nespojí přímo, takže vidí náš server, jak se ptá na doménu, a tebe nikdy.",
-    "faviconsBody2": "Ikony se ukládají do mezipaměti tvého zařízení na 90 dní. Žádný požadavek neobsahuje tvou identitu a ikony můžeš vypnout v Nastavení > Vzhled."
+    "faviconsBody2": "Ikony se ukládají do mezipaměti tvého zařízení na 90 dní. Žádný požadavek neobsahuje tvou identitu a ikony můžeš vypnout v Nastavení > Seznamy."
   },
   "feedback": {
     "title": "Poslat zpětnou vazbu",

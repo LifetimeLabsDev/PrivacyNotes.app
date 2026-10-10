@@ -80,6 +80,13 @@
     "clearFilters": "필터 해제",
     "filteredAfter": "그러면 다시 보여요."
   },
+  "listGroups": {
+    "previous7Days": "지난 7일",
+    "previous30Days": "지난 30일",
+    "other": "기타",
+    "collapseAll": "모든 그룹 접기",
+    "expandAll": "모든 그룹 펼치기"
+  },
   "headerLabel": {
     "allItems": "전체",
     "untagged": "태그 없음",
@@ -143,7 +150,7 @@
     "exitHover": "Zen 모드 종료 (Esc)",
     "enterHover": "Zen 모드 시작",
     "proHover": "Zen 모드 (Pro)",
-    "enterAriaShortcut": "Zen 모드 시작 (⌘⇧F)"
+    "enterAriaShortcut": "Zen 모드 시작 ({{keys}})"
   },
   "editor": {
     "backToList": "노트 목록으로 돌아가기",
@@ -217,7 +224,7 @@
     "journalCalendar": "저널 캘린더",
     "words": "단어",
     "zen": "Zen 모드",
-    "appearance": "화면",
+    "appearance": "디자인",
     "signOut": "로그아웃",
     "signingOut": "로그아웃 중…",
     "switchToLight": "라이트 모드로 전환",
@@ -225,20 +232,24 @@
   },
   "settings": {
     "groupYourNotes": "내 노트",
+    "groupPreferences": "환경설정",
     "groupAccount": "계정 & 데이터",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "통계",
-    "journalsLabel": "저널",
     "importLabel": "가져오기/내보내기",
     "planLabel": "계정",
     "storageLabel": "저장 공간",
     "imagesLabel": "이미지",
     "securityLabel": "보안",
     "accountLabel": "ID·동기화",
-    "appearanceLabel": "화면",
+    "appearanceLabel": "디자인",
+    "editorLabel": "편집기",
+    "formatBarLabel": "도구 모음",
+    "listsLabel": "목록",
     "helpLabel": "도움말",
     "aboutLabel": "소개",
-    "languageLabel": "날짜 및 언어",
+    "languageLabel": "언어",
+    "dateLabel": "날짜",
     "languageDesc": "PrivacyNotes 표시 언어를 선택하세요."
   },
   "importStore": {

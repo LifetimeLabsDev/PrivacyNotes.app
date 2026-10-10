@@ -273,7 +273,7 @@
       "app": "Notesnook",
       "title": "Vyexportuj si poznámky z Notesnooku",
       "metaTitle": "Export poznámek z Notesnooku - PrivacyNotes",
-      "lead": "Notesnook umí zapsat celý tvůj účet jako složku souborů. Zvol export do HTML a nezůstane nic pozadu: formátování, poznámkové bloky, značky, přílohy i odkazy mezi poznámkami přesun přežijí.",
+      "lead": "Notesnook umí zapsat celý tvůj účet jako složku souborů. Zvol export do HTML a nezůstane nic pozadu: formátování, poznámkové bloky, značky, přílohy i odkazy na poznámky přesun přežijí.",
       "sections": [
         {
           "img": {

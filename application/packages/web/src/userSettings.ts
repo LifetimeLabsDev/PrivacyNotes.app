@@ -97,6 +97,12 @@ import {
   validateCustomThemes,
   type CustomThemes,
 } from './customThemes';
+import {
+  formatBarSettingsEqual,
+  mergeFormatBarSettings,
+  validateFormatBarSetting,
+  type FormatBarSetting,
+} from './formatBar';
 
 // ------------------------------------------------------------------
 // Shape
@@ -189,6 +195,11 @@ export type UserSettings = {
    * in the editor and in the Tasks view alike. On by default.
    */
   sinkCheckedTasks: boolean;
+  /**
+   * Whether the Personal and Work spaces are on (Pro). On by default; off
+   * shows every item and hides the switch. Spec: ops/docs/plans/spaces.md
+   */
+  spaces: boolean;
   /**
    * Legacy field - kept for sync compat but no longer used.
    * PIN-protect is always off on creation; users toggle per-item.
@@ -409,6 +420,12 @@ export type UserSettings = {
    */
   customThemes: CustomThemes;
   /**
+   * Pro: the format bar a person arranged, as one stamped register, merged at
+   * every sync point like the looks. Empty or reset is the stock bar.
+   * Spec: ops/docs/plans/format-bar.md (section 8)
+   */
+  formatBar: FormatBarSetting;
+  /**
    * Whether a note takes its folder or tag color as its background: the open
    * note, its list row and its grid tile. One switch for all notes, synced
    * like the theme.
@@ -553,6 +570,7 @@ export function defaultSettings(): UserSettings {
     listPrefs: DEFAULT_LIST_PREFS_STORE,
     tasksShowDone: false,
     sinkCheckedTasks: true,
+    spaces: true,
     autoProtectLogins: false,
     pinSalt: null,
     pinHash: null,
@@ -587,6 +605,7 @@ export function defaultSettings(): UserSettings {
     itemStyles: {},
     deviceLabels: {},
     customThemes: {},
+    formatBar: {},
     // Spec: ops/docs/plans/folder-tag-icons.md (decision D10, on)
     tintNotes: true,
     // Spec: ops/docs/plans/note-color-style.md (decision N5, accent)
@@ -744,6 +763,9 @@ function hydrate(raw: unknown): UserSettings {
   if (typeof obj.sinkCheckedTasks === 'boolean') {
     base.sinkCheckedTasks = obj.sinkCheckedTasks;
   }
+  if (typeof obj.spaces === 'boolean') {
+    base.spaces = obj.spaces;
+  }
   if (typeof obj.autoProtectLogins === 'boolean') {
     base.autoProtectLogins = obj.autoProtectLogins;
   }
@@ -862,6 +884,9 @@ function hydrate(raw: unknown): UserSettings {
   if (obj.customThemes !== undefined) {
     base.customThemes = validateCustomThemes(obj.customThemes);
   }
+  if (obj.formatBar !== undefined) {
+    base.formatBar = validateFormatBarSetting(obj.formatBar);
+  }
   if (typeof obj.tintNotes === 'boolean') {
     base.tintNotes = obj.tintNotes;
   }
@@ -938,7 +963,7 @@ function hydrate(raw: unknown): UserSettings {
  * stands. A merged collection needs no entry: its merge never reads absence
  * as a reset.
  */
-const NEWER_SCALARS = ['tintNotes', 'noteColorStyle', 'archivedInAll', 'includeSubfolders', 'sinkCheckedTasks', 'dateOrder', 'clock', 'journalTitlePattern'] as const;
+const NEWER_SCALARS = ['tintNotes', 'noteColorStyle', 'archivedInAll', 'includeSubfolders', 'sinkCheckedTasks', 'spaces', 'dateOrder', 'clock', 'journalTitlePattern'] as const;
 
 /**
  * Whether the blob lacks a newer scalar this device holds at a value of its
@@ -1502,11 +1527,11 @@ function mergeTrackerSettings(
 }
 
 /** The fields `mergeAtEverySyncPoint` owns. */
-type EntryMerged = 'folders' | 'foldersDeleted' | 'itemStyles' | 'deviceLabels' | 'customThemes';
+type EntryMerged = 'folders' | 'foldersDeleted' | 'itemStyles' | 'deviceLabels' | 'customThemes' | 'formatBar';
 
 /**
- * The folder tree, the folder and tag looks, the device labels and the
- * custom themes, merged together at every sync point that merges any of
+ * The folder tree, the folder and tag looks, the device labels, the custom
+ * themes and the format bar, merged together at every sync point that merges any of
  * them. One call, so a field
  * can never be merged at three of the four points and replaced wholesale at
  * the fourth, which is the shape of write that cost two accounts their
@@ -1528,6 +1553,7 @@ function mergeAtEverySyncPoint(
     itemStyles: mergeItemStyles(local.itemStyles, remote.itemStyles, deletedFolderIds(tree.deleted)),
     deviceLabels: mergeDeviceLabels(local.deviceLabels, remote.deviceLabels),
     customThemes: mergeCustomThemes(local.customThemes, remote.customThemes),
+    formatBar: mergeFormatBarSettings(local.formatBar, remote.formatBar),
   };
 }
 
@@ -1802,7 +1828,8 @@ export async function syncUserSettings(
         const looksRepaired =
           !itemStylesEqual(pulled.itemStyles, remoteSettings.itemStyles) ||
           !deviceLabelsEqual(pulled.deviceLabels, remoteSettings.deviceLabels) ||
-          !customThemesEqual(pulled.customThemes, remoteSettings.customThemes);
+          !customThemesEqual(pulled.customThemes, remoteSettings.customThemes) ||
+          !formatBarSettingsEqual(pulled.formatBar, remoteSettings.formatBar);
         Object.assign(remoteSettings, pulled);
         if (treeRepaired) {
           logAuthEvent('settings:folders-repaired', {

@@ -334,7 +334,7 @@
     "dataStorageBody": "Verschlüsselte Blobs gespeichert in Zürich, <flag/> Schweiz.",
     "faviconsHeading": "Website-Icons",
     "faviconsBody1": "Website-Icons (Favicons) kommen von DuckDuckGo und Google, von unserem Server in deinem Auftrag geladen. Dein Browser kontaktiert keinen von beiden, sie sehen also unseren Server nach einer Domain fragen und nie dich.",
-    "faviconsBody2": "Icons werden 90 Tage lang auf deinem Gerät zwischengespeichert. Keine Anfrage enthält deine Identität, und du kannst Icons unter Einstellungen > Design & Layout abschalten."
+    "faviconsBody2": "Icons werden 90 Tage lang auf deinem Gerät zwischengespeichert. Keine Anfrage enthält deine Identität, und du kannst Icons unter Einstellungen > Listen abschalten."
   },
   "feedback": {
     "title": "Feedback senden",

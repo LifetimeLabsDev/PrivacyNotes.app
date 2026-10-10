@@ -92,6 +92,7 @@
                 
                 
                 <data android:pathPrefix="/auth/callback" />
+                <data android:pathPrefix="/note" />
                 
             </intent-filter>
             <!-- DEEP LINK PLUGIN. AUTO-GENERATED. DO NOT REMOVE. -->

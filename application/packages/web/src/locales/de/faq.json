@@ -49,13 +49,7 @@
     "mdDemoScripts": "Hochgestellt, tiefgestellt, unterstrichen",
     "mdDemoMath": "Mathe (KaTeX)",
     "mdDemoQuote": "Zitat und Notiz-Link",
-    "mdDemoDivider": "Trennlinie",
-    "hkShowcase": "Die vollständige Liste",
-    "hkMac": "Mac",
-    "hkPc": "Windows und Linux",
-    "hkBrowser": "Im Browser",
-    "hkDesktop": "Desktop-App",
-    "hkLayout": "Tastenkürzel folgen den Zeichen, die deine Tastatur schreibt, nicht den Tastenpositionen einer US-Tastatur: Drücke die Taste, die das angezeigte Zeichen schreibt (bei einem nicht lateinischen Layout die Taste an ihrer US-Position). Eine Taste, die mit AltGr ein Zeichen schreibt, schreibt es immer."
+    "mdDemoDivider": "Trennlinie"
   },
   "groups": {
     "gettingStarted": "Erste Schritte",
@@ -100,6 +94,14 @@
       "a": [
         "Notizen, Titel, Tags und Anhänge sind immer verschlüsselt, auf deinem Gerät und auf dem Weg zum Server. Bei Selbstverwahrung, mit der jedes per Phrase erstellte Konto beginnt, haben wir keinen Entschlüsselungsschlüssel. Bei der Anmeldung mit Google, Apple oder GitHub wirst du gefragt, wo dein Schlüssel liegen soll. Vorausgewählt ist \"Einfach und bequem\": Dabei speichern wir deine Phrase auf unserem Server, verschlüsselt mit einem unserer Schlüssel. In diesem Modus kann unser Server die Phrase und damit auch deine Notizen entschlüsseln. Unter Einstellungen > Konto > Schlüsselverwaltung siehst du deinen aktuellen Modus und kannst ihn ändern.",
         "Wir sehen die Informationen, die wir zum Betrieb des Dienstes brauchen: wie viel verschlüsselten Speicher du nutzt, wie viele Geräte du verknüpft hast und die Zeitpunkte der Synchronisierung. Wenn du nur deine Phrase nutzt und kein Google-, Apple- oder GitHub-Konto verbunden hast, kennen wir deine E-Mail-Adresse nicht."
+      ]
+    },
+    "app-privacy-label": {
+      "q": "Warum steht im App-Store-Datenschutzetikett, dass meine Daten mit mir verknüpft sind?",
+      "a": [
+        "Weil Apple ein einziges Etikett verlangt, das alles abdeckt, was unseren Server erreichen kann, auch wenn es verschlüsselt ankommt und auch wenn nur manche Konten es senden. Mit dir verknüpft heißt: einem Konto zugeordnet, und das Konto hinter einer Anmeldung per Phrase ist ein Schlüssel, kein Name. Nichts wird zum Tracking genutzt, und die App enthält keine Analyse, keine Werbung und keine Absturzberichte. Jede Zeile auf dem Etikett bedeutet eine Sache:",
+        "- **Nutzerinhalte**: deine Notizen und Dateien, verschlüsselt auf deinem Gerät. Bei Selbstverwahrung können wir sie nicht lesen.\n- **Kennungen**: ein öffentlicher Schlüssel, der aus deiner Wiederherstellungsphrase abgeleitet ist, und ein Geräte-Hash, den dein Gerät berechnet und der nur das Gerätelimit des kostenlosen Tarifs durchsetzt.\n- **Kontaktinformationen**: eine E-Mail-Adresse, nur wenn du dich mit Google, Apple oder GitHub anmeldest.\n- **Käufe**: ob dein Konto Pro hat. Apple wickelt die Zahlung ab, und wir sehen deine Karte nie.",
+        "Damit diese Liste für dein eigenes Konto so kurz wie möglich bleibt, registriere dich mit einer Wiederherstellungsphrase statt mit einem Google-, Apple- oder GitHub-Login und behalte die Selbstverwahrung. Unter Einstellungen > Konto > Schlüsselverwaltung siehst du deinen aktuellen Modus. [Was PrivacyNotes sehen kann](/de/help/what-can-you-see/) erklärt den Rest."
       ]
     },
     "phrase-vs-password": {
@@ -400,7 +402,7 @@
     "languages": {
       "q": "Welche Sprachen spricht die App?",
       "a": [
-        "Englisch, Deutsch, Französisch, Italienisch, Spanisch, Niederländisch, Polnisch, Tschechisch, Katalanisch, Türkisch, Schwedisch, Ukrainisch, Russisch, Japanisch, Koreanisch, Traditionelles Chinesisch, Thailändisch, Arabisch und Portugiesisch in europäischer und brasilianischer Variante. Die App folgt standardmäßig deiner Systemsprache, oder du legst unter Einstellungen > Datum & Sprache > Sprache auf jedem Gerät eine fest.",
+        "Englisch, Deutsch, Französisch, Italienisch, Spanisch, Niederländisch, Polnisch, Tschechisch, Katalanisch, Türkisch, Schwedisch, Ukrainisch, Russisch, Japanisch, Koreanisch, Traditionelles Chinesisch, Thailändisch, Arabisch und Portugiesisch in europäischer und brasilianischer Variante. Die App folgt standardmäßig deiner Systemsprache, oder du legst unter Einstellungen > Sprache auf jedem Gerät eine fest.",
         "Übersetzungen sind für alle kostenlos, kein Pro-Vorteil. Weitere Sprachen sind geplant; fehlt deine, sag uns auf [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) oder [Reddit](https://www.reddit.com/r/PrivacyNotes/) Bescheid."
       ]
     },
@@ -458,8 +460,7 @@
       "q": "Welche Tastenkürzel gibt es?",
       "a": [
         "Drücke ? irgendwo in der App für die eingebaute Kurzübersicht, ebenfalls verfügbar unter Einstellungen > Über. Tastenkürzel decken Navigation, Notiz-Aktionen, Formatierung und Ansichten ab - und unter Windows und Linux liest sich jedes Cmd als Ctrl und Option als Alt.",
-        "Die wichtigsten: Cmd+K springt per Name zu jedem Eintrag und jeder Einstellung, und seine letzte Zeile durchsucht den Text des offenen Bereichs; / fokussiert die Suche, J und K bewegen sich durch die Liste, Cmd+[ und Cmd+] springen zurück und vorwärts durch die Einträge, die du geöffnet hast, Alt+Shift+N startet eine neue Notiz, Cmd+Backspace wirft die ausgewählte in den Papierkorb, Cmd+, öffnet die Einstellungen. Beim Schreiben: Cmd+B fett, Cmd+I kursiv, Cmd+Shift+K fügt einen Link ein, Cmd+Shift+9 startet eine Aufgabenliste, Cmd+F sucht in der Notiz, Cmd+Shift+O blendet die Gliederung ein und aus, Cmd+Shift+M wechselt zur Markdown-Ansicht. Cmd+\\ oder Cmd+Shift+D blendet die Seitenleiste aus, Cmd+Shift+L wechselt das Farbschema, Cmd+Shift+F öffnet den Zen-Modus (Pro), und Esc bricht fast alles ab, Filter eingeschlossen. Tippe > in die Suche oder in Cmd+K (oder drücke > außerhalb eines Textfelds), um jeden Befehl über seinen Namen zu finden und auszuführen.",
-        "Die Desktop-Apps ergänzen die Tasten, die ein Browser für sich behält: Cmd+N für eine neue Notiz, Cmd+Shift+N für einen neuen Eintrag beliebigen Typs, Cmd+W zum Schließen eines Tabs, Ctrl+Tab zum Wechseln zwischen Tabs, Cmd+1 bis Cmd+9 für die Abschnitte der Seitenleiste und Cmd+Shift+P für die Liste der Befehle."
+        "Die [druckbare Kurzübersicht](/help/keyboard-shortcuts/cheat-sheet) listet jedes Tastenkürzel auf einer einzigen A4-Seite, für den Mac oder für Windows und Linux, und für den Browser oder die Desktop-Apps. Sie entsteht aus derselben Liste, die die App zeigt, und passt deshalb immer zu der Version, die du nutzt."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -638,8 +639,15 @@
     "tags": {
       "q": "Wie funktionieren Tags?",
       "a": [
-        "Jede geöffnete Notiz hat unter dem Titel eine Tag-Zeile. Tipp ein Wort und drück Enter, Komma oder #, dann wird daraus ein Chip. Die Seitenleiste listet jedes Tag, das du verwendest, und ein Klick darauf filtert die Liste auf diese Notizen. Du kannst ein Tag überall auf einmal umbenennen, es favorisieren, damit es oben angeheftet bleibt, oder es löschen, mit oder ohne die Notizen darunter.",
+        "Jede geöffnete Notiz hat unter dem Titel eine Tag-Zeile. Tipp ein Wort und drück Enter, Komma oder #, dann wird daraus ein Chip. Die Seitenleiste listet die Tags, die im geöffneten Abschnitt verwendet werden, und ein Klick darauf filtert die Liste auf diese Einträge. Du kannst ein Tag überall auf einmal umbenennen, es favorisieren, damit es oben angeheftet bleibt, oder es löschen, mit oder ohne die Notizen darunter.",
         "Tags und Ordner lösen verschiedene Probleme: Eine Notiz liegt in einem Ordner, trägt aber beliebig viele Tags, und genau das willst du, wenn etwas sowohl \"Arbeit\" als auch \"Rechnung\" ist. Importe taggen nach Quelle, alles aus einer anderen App landet also mit einem eigenen Tag und ist leicht wiederzufinden oder später aufzuräumen."
+      ]
+    },
+    "organize": {
+      "q": "Wie hängen Abschnitte, Ordner, Tags und Bereiche zusammen?",
+      "a": [
+        "Alles, was du aufbewahrst, liegt in einer einzigen Bibliothek. Die Abschnitte in der Seitenleiste, etwa Notizen, Tresor und Tagebücher, sind Ansichten dieser Bibliothek nach Typ. Ein Ordner ist ein Ort, also kann ein Ordner eine Notiz und das passende Login zusammen enthalten, und der Ordnerbaum ist in jedem Abschnitt derselbe. Seine Zahlen zählen nur, was der geöffnete Abschnitt enthält, und ein Ordner ohne solche Einträge erscheint abgeblendet. Ein Tag ist ein Etikett, und die Seitenleiste zeigt nur die Tags, die der geöffnete Abschnitt verwendet.",
+        "Bereiche teilen die Bibliothek in Privat und Arbeit und zeigen jeweils einen davon. Ein Ordner der obersten Ebene gehört mit allem darin zu einem Bereich, und **Nach „Arbeit“ verschieben** in seinem Menü verschiebt ihn hinüber. Ein Eintrag ohne Ordner gehört zu Privat, deshalb landet alles, was du in Arbeit anlegst, in einem Ordner von Arbeit. Tags sind kostenlos, Ordner und Bereiche brauchen Pro."
       ]
     },
     "note-links": {
@@ -652,8 +660,8 @@
     "appearance": {
       "q": "Kann ich ändern, wie die App aussieht?",
       "a": [
-        "Ja, unter Einstellungen > Design & Layout. Modus schaltet zwischen Hell, Dunkel und Auto, das deinem System folgt. Textgröße hat vier Stufen und skaliert nur deine Schreibfläche, die Oberfläche drumherum bleibt, wie sie ist. Ansicht ordnet die Einträge als Liste oder Raster. Editor entscheidet, ob Notizen Formatiert oder als reines Markdown öffnen.",
-        "Farbthemen sind der eine Teil hinter Pro: Das Standardthema ist kostenlos, Pro schaltet den Rest frei, hell wie dunkel. Der Zen-Modus, der alles außer deinem Text ausblendet, ist ebenfalls Pro (Cmd+Shift+F). Modus und Textgröße bleiben auf dem Gerät, auf dem du sie einstellst. Alles andere folgt deinem Konto auf deine anderen Geräte."
+        "Ja. Einstellungen > Design bestimmt das Aussehen: **Modus** schaltet zwischen Hell, Dunkel und Auto, das deinem System folgt, und du wählst ein Farbdesign für den hellen und eines für den dunklen Modus. Einstellungen > Editor bestimmt, wie du schreibst: **Textgröße** hat fünf Stufen und skaliert nur deine Schreibfläche, die Oberfläche drumherum bleibt also, wie sie ist, und **Editor** entscheidet, ob Notizen Formatiert oder als reines Markdown öffnen. Einstellungen > Listen ordnet die Einträge als Liste oder Raster an. In den Desktop-Apps skaliert **App-Größe** unter Einstellungen > Design das ganze Fenster. Die Schaltfläche **Design** in der Fußzeile enthält die Einstellungen, die du am häufigsten änderst, mit drei Lieblingsdesigns für jeden Modus.",
+        "Farbdesigns brauchen Pro: Das Standard-Design ist kostenlos, Pro schaltet den Rest frei, hell wie dunkel, dazu [eigene Designs](/de/help/custom-themes/). Der Zen-Modus, der alles außer deinem Text ausblendet (Cmd+Shift+F), ist ebenfalls Pro. Die [Formatleiste](/de/help/format-bar/) nach oben oder unten zu verschieben ist kostenlos, ihre Schaltflächen anzuordnen ist Pro. Modus, die Farbthemen, die du wählst, und deine drei Favoriten, Textgröße, Liste oder Raster und App-Größe bleiben auf dem Gerät, auf dem du sie einstellst. Editormodus, Zeilenabstand, Notizfarben und deine Listeneinstellungen folgen deinem Konto auf deine anderen Geräte."
       ]
     },
     "share-with-someone": {
@@ -761,6 +769,139 @@
       "a": [
         "Dein Platz ist bereits frei. In dem Moment, in dem die Löschung synchronisiert, zählen diese Bytes nicht mehr gegen dein Kontingent, auf dem Server ebenso wie auf diesem Gerät. Zeigt der Balken noch den alten Wert, drück das Aktualisieren-Symbol daneben: Das zählt vom Server neu und lässt alles weg, was schon zum Löschen vorgemerkt ist. Ein Gerät, das offline war, behält seinen eigenen letzten Stand, bis es aufholt.",
         "Die \"wenigen Tage\", von denen die App spricht, betreffen die verschlüsselte Datei selbst und nicht dein Kontingent, und dieses Warten ist Absicht. Eine Datei aus dem Speicher zu löschen ist endgültig, es gibt keinen Papierkorb, aus dem man sie zurückholt. Ein Gerät, das noch nicht fertig synchronisiert hat, kennt deine Notizen nur unvollständig und könnte ein Bild löschen, das eine andere Notiz noch zeigt. Eine Datei wartet deshalb mindestens 24 Stunden, und nur ein Gerät mit sauber abgeschlossenem Sync entfernt sie. Diese Geduld kostet dich nichts, denn der Platz wurde am Tag der Löschung gutgeschrieben."
+      ]
+    },
+    "spoiler-text": {
+      "q": "Wie verstecke ich Spoiler-Text in einer Notiz?",
+      "a": [
+        "Markier den Text und wähl **Spoiler** im +-Menü der Formatleiste, oder schreib ihn zwischen zwei Paare senkrechter Striche: `||spoiler||`. Der Text wird sofort unscharf. Beim Bearbeiten erscheint er, sobald dein Cursor ihn berührt, und verschwimmt wieder, wenn der Cursor weiterwandert. In einer schreibgeschützten Notiz zeigt ihn ein Klick.",
+        "Die Notizliste und die Vorschauen zeigen an seiner Stelle `•••`, so verrät nicht einmal die Länge etwas. Die Suche findet die Wörter in einem Spoiler trotzdem, ein HTML-Export hält sie unscharf, bis der Leser klickt, und ein Ausdruck zeigt sie. Ein Markdown-Export behält die Striche, die andere Markdown-Apps als normale Zeichen um den Text anzeigen. Spoiler sind kostenlos."
+      ]
+    },
+    "copy-box": {
+      "q": "Wie erstelle ich Text, der sich mit einem Klick kopieren lässt?",
+      "a": [
+        "Füg ein Kopierfeld ein: Wähl **Kopierfeld** im +-Menü der Formatleiste und tipp oder füg den Text darin ein, etwa einen Befehl, eine Adresse oder einen Code. Die Schaltfläche in seiner Ecke legt den ganzen Text in deine Zwischenablage und zeigt kurz **Kopiert**. Ein Codeblock und ein Kopierfeld lassen sich ineinander umwandeln, du kannst also auch einen vorhandenen Block umstellen.",
+        "Inline-Code lässt sich ebenfalls kopieren. In einer schreibgeschützten Notiz kopiert ihn ein Klick oder Tippen. Beim Bearbeiten kopiert ihn ein Cmd-Klick auf dem Mac oder ein Ctrl-Klick unter Windows und Linux, so setzt ein normaler Klick weiterhin den Cursor. Ein Kopierfeld wird als Codeblock mit der Sprache `copy` gespeichert, den andere Markdown-Apps als normalen Codeblock anzeigen. Beides ist kostenlos."
+      ]
+    },
+    "footnotes": {
+      "q": "Wie füge ich Fußnoten in eine Notiz ein?",
+      "a": [
+        "Wähl **Fußnote** im +-Menü der Formatleiste. Die App setzt die nächste Nummer an deinen Cursor, legt unter dem Text eine leere Fußnote an und setzt deinen Cursor hinein. Du kannst auch `[^1]` direkt hinter ein Wort tippen und eine Zeile mit `[^1]: ` beginnen, um die Fußnote selbst zu schreiben. Statt einer Zahl geht auch ein Wort als Kennung.",
+        "Klick auf eine Nummer, um zu ihrer Fußnote zu springen, und der Zurück-Pfeil oder Escape bringt dich zurück zum Text. Am Computer zeigt eine kleine Karte die Fußnote, wenn der Mauszeiger auf einer Nummer ruht. Die Nummern folgen der Reihenfolge im Text, und die Notiz speichert Standard-Markdown-Fußnoten, die auch andere Markdown-Apps lesen. Ein HTML-Export, ein PDF und eine Burn Note behalten sie als verlinkte Fußnoten. Fußnoten sind kostenlos."
+      ]
+    },
+    "statistics": {
+      "q": "Was zeigen die Statistiken über mein Schreiben und mein Wohlbefinden?",
+      "a": [
+        "Öffne Einstellungen > Statistiken oder klick in der Fußzeile auf die Notiz- und Wortzahl. **Überblick** fasst deine Woche zusammen: deine Schreibserie, geschriebene Wörter, Stimmung und erfasste Tage, dazu ein Raster der letzten 26 Wochen und die Stunden, in denen du meistens schreibst. **Schreiben** zählt deine Notizen, Wörter und Tags, zeigt deine aktuelle und längste Serie und listet deine Meilensteine. **Wohlbefinden** zeichnet jeden Tracker aus deinem Tagebuch über einen Zeitraum deiner Wahl, eigene Tracker eingeschlossen.",
+        "Alles wird auf deinem Gerät berechnet, und nichts davon wird an uns gesendet. Wörter und Schreibstunden zählen, was du auf dem jeweiligen Gerät schreibst, deshalb zeigt jedes Gerät seine eigenen Zahlen. Die Diagramme, die Serien, der Medikationskalender und **JSON herunterladen** sind kostenlos. Pro ergänzt den Wochenrückblick, was deine Stimmung bewegt, die Muster-Tabelle, die Vergleiche für denselben und den nächsten Tag, ein **Arzt-PDF** und einen fertigen KI-Prompt zum Kopieren."
+      ]
+    },
+    "drag-to-folder": {
+      "q": "Kann ich eine Notiz auf einen Ordner oder ein Tag ziehen?",
+      "a": [
+        "Ja. Zieh eine Notiz aus der Liste auf einen Ordner in der Seitenleiste, um sie dorthin zu verschieben, oder auf **Ohne Ordner**, um sie aus ihrem Ordner zu nehmen. Lass sie auf einem Tag los, um dieses Tag hinzuzufügen, und die Notiz behält die Tags, die sie schon hatte. Aufgaben, Lesezeichen, Kontakte, Tresor-Einträge und hochgeladene Dateien unter Dateien lassen sich genauso ziehen. Halte ein gezogenes Element kurz über einen geschlossenen Ordner, dann öffnet er sich, und du erreichst einen Unterordner.",
+        "Um mehrere auf einmal zu verschieben, wähl sie mit Cmd-Klick auf dem Mac oder Ctrl-Klick unter Windows und Linux aus, füg mit Shift-Klick einen Bereich hinzu und zieh dann ein beliebiges ausgewähltes Element. Zum Ziehen brauchst du eine Maus, ein Trackpad oder einen Stift und ein Fenster, das breit genug für die Seitenleiste ist. Auf einem Telefon nimm stattdessen **In Ordner verschieben** im \"...\"-Menü. Tags sind kostenlos, und [Ordner](/de/help/folders/) brauchen Pro."
+      ]
+    },
+    "custom-themes": {
+      "q": "Kann ich ein eigenes Farbdesign erstellen?",
+      "a": [
+        "Ja, mit Pro. Öffne Einstellungen > Design und wähl **Neues Design**. Such dir sechs Farben aus (Hintergrund, Seitenleiste, Rahmen, Text, Gedämpfter Text und Akzent), und die App schlägt den Rest vor, während die App hinter dem Fenster dein Design laufend zeigt. Eine Kontrastprüfung markiert schwer lesbaren Text und bietet **Alle korrigieren** an. Speichern wird möglich, sobald jede Prüfung bestanden ist.",
+        "Das Menü auf jeder Design-Karte hat **Code kopieren**, das das Design als kurzen Text-Code kopiert, den du an jeden schicken kannst, und **Design-Code einfügen** fügt einen Code hinzu, den du bekommen hast. Du wählst ein Design für den hellen und eines für den dunklen Modus, **Favorit** im Menü einer Karte legt bis zu drei Designs pro Modus in die Schaltfläche **Design** in der Fußzeile, und die Designs, die du erstellst, werden auf alle deine Geräte synchronisiert. Mehr findest du auf [der Designs-Seite](https://privacynotes.app/themes), wo du auch dein eigenes einreichen kannst. Das Design Default ist kostenlos, jedes andere braucht Pro."
+      ]
+    },
+    "format-bar": {
+      "q": "Kann ich auswählen, welche Schaltflächen in der Formatleiste erscheinen?",
+      "a": [
+        "Ja. Klick auf das Zahnrad am Ende der Formatleiste oder öffne Einstellungen > Formatleiste. Jede Schaltfläche hat drei mögliche Plätze: **In der Leiste**, **Im +-Menü** oder **Ausgeblendet**. Zieh eine Schaltfläche, um sie zu verschieben, oder klick sie an, um ihre Optionen zu sehen. Eine ausgeblendete Schaltfläche funktioniert weiter über ihr Tastenkürzel und ihr Markdown, durchs Ausblenden geht also nichts verloren.",
+        "Die Leiste nach oben oder unten zu verschieben ist in jedem Konto kostenlos. Ihre Schaltflächen anzuordnen gehört zu Pro: In einem kostenlosen Konto funktioniert Einstellungen > Formatleiste als Vorschau zum Ausprobieren, und deine Anordnung wird gespeichert, sobald du Pro hast. Deine Anordnung folgt deinem Konto auf jedes Gerät, und **Auf Standard zurücksetzen** holt die Standardleiste zurück. Auf einem Touchscreen ist die Leiste eine einzige Zeile, die seitlich scrollt, in jedem Konto, so verschwindet keine Schaltfläche in einer zweiten Zeile."
+      ]
+    },
+    "window-zoom": {
+      "q": "Kann ich die ganze Desktop-App größer oder kleiner machen?",
+      "a": [
+        "Ja, in den Desktop-Apps für Mac, Windows und Linux. Drück auf dem Mac Cmd und die Plustaste oder unter Windows und Linux Ctrl und die Plustaste, um das ganze Fenster zu vergrößern. Die Minustaste verkleinert es, und 0 setzt es auf die normale Größe zurück. Dieselbe Einstellung heißt **App-Größe** unter Einstellungen > Design, mit Stufen von 80% bis 200%.",
+        "App-Größe skaliert alles auf einmal: die Seitenleiste, die Liste, die Menüs und deinen Text. Um nur dein Geschriebenes zu ändern, nimm **Textgröße** unter Einstellungen > Editor. App-Größe gilt für das Gerät, auf dem du sie einstellst. Im Browser erledigt der Zoom des Browsers dieselbe Aufgabe."
+      ]
+    },
+    "zen-mode": {
+      "q": "Was ist der Zen-Modus?",
+      "a": [
+        "Der Zen-Modus blendet alles außer der Notiz aus, an der du schreibst: die Seitenleiste, die Liste und die Fußzeile, und auch die Formatleiste startet ausgeblendet. Offene Tabs bleiben oben sichtbar. Drück Cmd+Shift+F auf dem Mac oder Ctrl+Shift+F unter Windows und Linux, klick in der Fußzeile auf **Zen-Modus**, oder klick mit rechts auf eine leere Fläche und wähl **Zen-Modus**.",
+        "Drück Escape oder dieselben Tasten noch einmal, oder klick oben in der Notiz auf **Zen verlassen**, um zurückzukommen. **Formatierungsleiste anzeigen** holt die Formatleiste zurück, während du im Zen-Modus bleibst. Der Zen-Modus gehört zu Pro, und in der [Demo](https://try.privacynotes.app) kannst du ihn ohne Konto ausprobieren."
+      ]
+    },
+    "date-format": {
+      "q": "Kann ich das Datumsformat ändern?",
+      "a": [
+        "Ja, unter Einstellungen > Datum. **Datumsformat** bietet Automatisch, Tag zuerst, Monat zuerst und Jahr zuerst (ISO), und **Uhrzeit** bietet Automatisch, 24 Stunden und 12 Stunden. Automatisch folgt der Sprache der App und der Region jedes Geräts, und deine Wahl gilt auf allen deinen Geräten.",
+        "Tagebucheinträge bekommen ihren Titel aus dem Datum, und **Tagebuchtitel** an derselben Stelle bietet fertige Formate in deinem Datumsformat oder **Eigenes Muster**, um dir ein eigenes aus Platzhaltern wie `YYYY`, `MMMM` und `ddd` zu bauen, wobei Wörter in eckigen Klammern so bleiben, wie du sie tippst. Ein neues Muster gilt nur für neue Einträge. Um das heutige Datum in eine beliebige Notiz einzufügen, drück Cmd+; auf dem Mac oder Ctrl+; unter Windows und Linux, und nimm Shift dazu, um auch die Uhrzeit einzufügen. All das ist kostenlos."
+      ]
+    },
+    "checklists": {
+      "q": "Kann ich eine Aufgabenliste zurücksetzen, sortieren oder neu ordnen?",
+      "a": [
+        "Ja. Das \"...\"-Menü der Notiz hat **Alle Einträge abwählen**, um eine Liste wiederzuverwenden, **Abgehakte Einträge löschen**, um die erledigten zu entfernen, und **Einträge nach Status sortieren**, um abgehakte Einträge unter die übrigen zu schieben. Jeder dieser Befehle erscheint nur, wenn er etwas ändern würde. Löschen fragt vorher nach, und Sortieren und Abwählen lassen sich mit Cmd+Z oder Ctrl+Z rückgängig machen. Unten in der Notiz steht dein Fortschritt, etwa \"3 von 6 abgehakt\".",
+        "Um von Hand umzuordnen, zieh den Griff am Ende eines Eintrags. Eingerückte Einträge wandern mit, und Escape bricht das Ziehen ab. Der Griff erscheint am Computer, wenn du mit der Maus darüberfährst, und bleibt auf einem Touchscreen dezent sichtbar. Ein abgehakter Eintrag rutscht standardmäßig unter die nicht abgehakten in seiner Liste; schalte das mit **Abgehakte Einträge nach unten verschieben** unter Einstellungen > Listen aus. All das ist kostenlos."
+      ]
+    },
+    "quick-switcher": {
+      "q": "Was ist die \"Gehe zu\"-Funktion, und was findet sie?",
+      "a": [
+        "Mit der \"Gehe zu\"-Funktion springst du über den Titel zu allem. Drück Cmd+K auf dem Mac oder Ctrl+K unter Windows und Linux (Cmd+P oder Ctrl+P geht auch), oder klick auf **Gehe zu** in der Seitenleiste oder im Kopf der Liste. Tipp einen Teil eines Titels, um Notizen, Aufgaben, Tagebucheinträge, Tresor-Einträge, Lesezeichen, Kontakte, angehängte Dateien und Einstellungen zu finden. Enter öffnet den Eintrag, und Option+Enter oder Alt+Enter öffnet ihn in einem Tab.",
+        "Tipp zuerst >, um stattdessen einen Befehl auszuführen, etwa eine neue Notiz anzulegen oder zu einem Bereich zu wechseln. Um Wörter in deinem Text statt in Titeln zu finden, wähl die Zeile **Alles durchsuchen** oder drück in einer beliebigen Zeile Cmd+Enter oder Ctrl+Enter. Der Abgleich läuft auf deinem Gerät, nichts, was du tippst, wird also an uns gesendet. Die \"Gehe zu\"-Funktion ist kostenlos."
+      ]
+    },
+    "find-in-note": {
+      "q": "Wie suche ich ein Wort in einer einzelnen Notiz?",
+      "a": [
+        "Drück in einer offenen Notiz Cmd+F auf dem Mac oder Ctrl+F unter Windows und Linux, oder klick in einer langen Notiz auf die Lupe oben in der Ecke. Tipp das Wort ein, dann springt Enter zum nächsten Treffer und Shift+Enter zum vorherigen, während die Leiste die Treffer zählt. Drück dieselben Tasten noch einmal oder klick auf das X, um sie zu schließen. Die Suche funktioniert auch in schreibgeschützten Notizen.",
+        "Mit Pro kannst du auch ersetzen: Drück Option+Cmd+F auf dem Mac oder Ctrl+H unter Windows und Linux, oder wähl **Suchen und ersetzen** im \"...\"-Menü der Notiz. Ersetze einen Treffer oder mit **Alle** alle auf einmal, bei Bedarf mit **Groß-/Kleinschreibung beachten**. Beide Leisten funktionieren auch in **Markdown anzeigen**, wo sie den Rohtext erreichen, etwa die Sprache eines Codeblocks. Um stattdessen alle deine Notizen zu durchsuchen, nimm die Listensuche, die du mit der Taste / erreichst. [Jede Suche läuft auf deinem Gerät](/de/help/search-local/)."
+      ]
+    },
+    "screen-capture": {
+      "q": "Kann ich meine Notizen vor Screenshots und Bildschirmfreigabe verbergen?",
+      "a": [
+        "Ja, in den Apps für Android, iPhone und iPad, Mac und Windows. Öffne Einstellungen > Sicherheit > Sperre und schalte **Vor Bildschirmaufnahmen verbergen** ein. Screenshots, Bildschirmaufnahmen und Bildschirmfreigaben zeigen dann ein leeres Fenster statt deiner Notizen, soweit das Gerät es zulässt. Auf einem Telefon verbirgt der Schalter deine Notizen auch im App-Umschalter.",
+        "Der Schalter ist standardmäßig aus, gilt nur für das Gerät, auf dem du ihn einschaltest, und ist kostenlos. Browser und Linux geben einer App keine Möglichkeit, eine Aufnahme zu blockieren, deshalb erscheint der Schalter dort nicht. Er funktioniert für sich allein und braucht weder App-Sperre noch PIN."
+      ]
+    },
+    "connected-logins": {
+      "q": "Kann ich mehrere Anmeldemöglichkeiten mit meinem Konto verbinden?",
+      "a": [
+        "Ja. Öffne Einstellungen > Konto > Konten und verbinde Google, Apple oder GitHub, um eine Anmeldemöglichkeit hinzuzufügen, die denselben Tresor öffnet. Du kannst mehrere verbinden, sogar zwei Konten desselben Anbieters, und deine Wiederherstellungsphrase funktioniert daneben weiter. Ein Konto zu verbinden oder zu trennen lässt deine Notizen und deine Verschlüsselung unverändert.",
+        "Eine Anmeldemöglichkeit, die schon zu einem anderen Tresor gehört, lässt sich nicht verbinden, weil Tresore nie zusammengelegt werden. **Trennen** fragt zuerst nach deinen 12 Wörtern. Wenn wir deine Phrase für dich aufbewahren, bleibt das letzte verbundene Konto bestehen, bis du ein weiteres verbindest oder deine Phrase sicherst und zur Selbstverwahrung wechselst. Mit Selbstverwahrung fragt ein neues Gerät weiterhin nach deinen 12 Wörtern. Verbundene Konten sind in der Beta."
+      ]
+    },
+    "session-expired": {
+      "q": "Warum zeigt die App \"Sitzung abgelaufen\" an?",
+      "a": [
+        "Es bedeutet, dass unser Server die Anmeldung dieses Geräts nicht mehr akzeptiert, deshalb stoppt die Synchronisierung. Eine schwache Verbindung oder ein Serverausfall löst das nie aus: Die App fragt ein zweites Mal beim Server nach, bevor sie die Meldung zeigt. Deine Notizen sind auf diesem Gerät sicher.",
+        "Klick auf **Erneut anmelden**. Die App fragt zuerst, ob du deine Wiederherstellungsphrase gesichert hast, denn um wieder hineinzukommen, brauchst du sie oder die Anmeldemöglichkeit, mit der du dich registriert hast. Notizen, die noch nicht synchronisiert sind, bleiben auf dem Gerät und werden synchronisiert, sobald du angemeldet bist. Dasselbe Fenster warnt dich, falls Dateien noch nicht fertig hochgeladen sind, denn diese werden beim Abmelden entfernt."
+      ]
+    },
+    "archive": {
+      "q": "Was macht Archivieren, und was ist der Unterschied zum Papierkorb?",
+      "a": [
+        "Archivieren nimmt einen Eintrag aus deinen Listen, ohne ihn zu löschen. Wähl **Archivieren** im \"...\"-Menü oder im Rechtsklickmenü des Eintrags, oder in der Auswahlleiste für mehrere Einträge auf einmal. Archivierte Einträge verschwinden aus Alle, ihrem Bereich, Angepinnt und den Zählern der Ordner und Tags und warten in der Ansicht **Archiv** unten in der Seitenleiste, die erscheint, sobald etwas archiviert ist. Damit sie in Alle und in den Zahlen bleiben, hake Archiv in der Spalte **Alle** unter Einstellungen > Listen an. **Archivierung aufheben** an denselben Stellen holt einen Eintrag zurück.",
+        "Der Papierkorb ist für Dinge, die weg sollen: Er [löscht sie nach 30 Tagen endgültig](/de/help/trash-auto-delete/), wenn du das nicht ausschaltest. Das Archiv löscht nie etwas, und archivierte Einträge bleiben erreichbar, denn eine Suche in Alle, die \"Gehe zu\"-Funktion und Notiz-Links finden sie weiterhin. Sie werden synchronisiert und bleiben verschlüsselt wie alles andere, und sie zählen weiter zu deinem Speicher. Archivieren funktioniert mit jeder Art von Eintrag und ist kostenlos."
+      ]
+    },
+    "share-into-app": {
+      "q": "Kann ich Text oder einen Link aus einer anderen App an PrivacyNotes teilen?",
+      "a": [
+        "Ja, auf iPhone, iPad und Android, als Beta. Tipp in einer beliebigen App auf die Teilen-Schaltfläche und wähl PrivacyNotes. Ein Weblink wird zu einem Lesezeichen mit dem Seitentitel, Text wird zu einer neuen Notiz, und Bilder und Dateien landen unter Dateien. Ein Link, den du schon gespeichert hast, wird angezeigt statt doppelt gespeichert. Geteilte Einträge kommen ohne Ordner und ohne Tag an, du sortierst sie also, wann es dir passt.",
+        "Unter Android fragt die App zuerst: Sie listet, was angekommen ist, und speichert es erst, wenn du **Alle speichern** wählst, oder verwirft es mit **Verwerfen**. Auf iPhone und iPad bestätigt eine Karte **In PrivacyNotes gespeichert**. Für jede Datei gilt dein [Upload-Limit](/de/help/attachment-limits/), und ein geteilter Inhalt wartet, bis du angemeldet bist und die App entsperrt ist."
+      ]
+    },
+    "desktop-updates": {
+      "q": "Wie aktualisiere ich die Desktop-App?",
+      "a": [
+        "Gar nicht, das passiert von selbst. Die Apps für Mac und Windows und das Linux-AppImage suchen nach einem Update, wenn sie starten und wenn du zu ihnen zurückkehrst, höchstens alle 12 Stunden, und laden es im Hintergrund herunter. Ein Hinweis meldet dann **Update verfügbar**, mit **Neu starten** zum Abschließen und **Changelog**, um zu sehen, was neu ist.",
+        "Das Linux-Paket .deb aktualisierst du mit einem neuen Download: Sein Hinweis bietet **Herunterladen**, das den [Download-Bereich](https://privacynotes.app/de#downloads) öffnet, und du installierst das neue Paket über das alte. Ein .deb, das zu alt für eine sichere Synchronisierung ist, pausiert die Synchronisierung, bis du das tust. Wenn du unter Windows mit Scoop installiert hast, führ `scoop update privacynotes` aus, und der Hinweis hat dafür **Befehl kopieren**. Auf dem Mac braucht Homebrew keinen Upgrade-Befehl, weil sich die App selbst aktualisiert."
       ]
     }
   }

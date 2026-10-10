@@ -80,6 +80,13 @@
     "clearFilters": "Filter aufheben",
     "filteredAfter": "damit sie wieder erscheinen."
   },
+  "listGroups": {
+    "previous7Days": "Letzte 7 Tage",
+    "previous30Days": "Letzte 30 Tage",
+    "other": "Sonstige",
+    "collapseAll": "Alle Gruppen einklappen",
+    "expandAll": "Alle Gruppen ausklappen"
+  },
   "headerLabel": {
     "allItems": "Alle",
     "untagged": "Ohne Tag",
@@ -108,7 +115,7 @@
     "restoreSummary": "Wiederhergestellt. {{added}} hinzugefügt, {{updated}} aktualisiert, {{unchanged}} bereits aktuell."
   },
   "burn": {
-    "mediaOnly": "Diese Notiz enthält nur Medien und kann nicht per Vernichtungslink geteilt werden.",
+    "mediaOnly": "Diese Notiz enthält nur Medien und kann nicht per Burn-Link geteilt werden.",
     "shareTitle": "Verschlüsselte Notiz"
   },
   "loadError": {
@@ -145,7 +152,7 @@
     "exitHover": "Zen-Modus verlassen (Esc)",
     "enterHover": "Zen-Modus starten",
     "proHover": "Zen-Modus (Pro)",
-    "enterAriaShortcut": "Zen-Modus starten (⌘⇧F)"
+    "enterAriaShortcut": "Zen-Modus starten ({{keys}})"
   },
   "editor": {
     "backToList": "Zurück zur Notizliste",
@@ -227,20 +234,24 @@
   },
   "settings": {
     "groupYourNotes": "Deine Notizen",
+    "groupPreferences": "Präferenzen",
     "groupAccount": "Konto & Daten",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "Statistiken",
-    "journalsLabel": "Tagebücher",
     "importLabel": "Import & Export",
     "planLabel": "Konto",
     "storageLabel": "Speicher",
     "imagesLabel": "Bilder",
     "securityLabel": "Sicherheit",
     "accountLabel": "ID & Sync",
-    "appearanceLabel": "Design & Layout",
+    "appearanceLabel": "Design",
+    "editorLabel": "Editor",
+    "formatBarLabel": "Formatleiste",
+    "listsLabel": "Listen",
     "helpLabel": "Hilfe",
     "aboutLabel": "Über",
-    "languageLabel": "Datum & Sprache",
+    "languageLabel": "Sprache",
+    "dateLabel": "Datum",
     "languageDesc": "Wähle die Sprache, in der PrivacyNotes angezeigt wird."
   },
   "importStore": {

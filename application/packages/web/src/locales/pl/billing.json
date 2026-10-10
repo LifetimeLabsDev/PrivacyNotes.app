@@ -4,20 +4,21 @@
     "earlyAdopterBadge": "Wczesny użytkownik",
     "oneTime": "jednorazowo",
     "subscriptionPitch": "Żadnej subskrypcji. Żadnej opłaty rocznej. Jedna płatność, odblokowane na całe życie.",
-    "ctaUnlock": "Odblokuj wszystko",
+    "ctaUnlockPrice": "Odblokuj wszystko za {{price}}",
     "ctaOpening": "Otwieranie płatności...",
     "ctaSignUp": "Zarejestruj się, aby odblokować",
     "intro": {
       "storage": "Więcej miejsca to funkcja Pro: 500 MB pamięci, 50 MB na plik i do 5 GB więcej jako dodatek, gdy będzie potrzebne.",
       "folders": "Foldery to funkcja Pro. Uporządkuj notatki w zagnieżdżonych folderach, tak głęboko, jak potrzebujesz, i trzymaj każdy projekt osobno.",
       "looks": "Ikony i kolory folderów i tagów to funkcja Pro. Nadaj każdemu wygląd, który rozpoznasz na pierwszy rzut oka.",
+      "spaces": "Przestrzenie to funkcja Pro. {{desc}}",
+      "formatBar": "Układanie paska formatowania to funkcja Pro. Umieść na pasku przyciski, których używasz, ukryj resztę i ułóż menu + po swojemu.",
       "lock": "Blokowanie notatki to funkcja Pro. Przejdź na Pro, aby chronić dowolną notatkę przed przypadkową edycją.",
       "protect": "Ochrona notatki kodem PIN to funkcja Pro. Przejdź na Pro, aby zabezpieczyć wrażliwe notatki swoim PIN-em.",
       "history": "Historia notatki to funkcja Pro. Przejdź na Pro, aby zachować oś czasu każdego zapisu.",
       "devices": "Osiągnięto limit 2 urządzeń. Przejdź na Pro, aby mieć nieograniczoną liczbę urządzeń.",
       "zen": "Tryb Zen to funkcja Pro. Przejdź na Pro, aby pisać bez rozpraszaczy.",
       "theme": "Motywy premium to funkcja Pro. Przejdź na Pro, aby odblokować każdy odcień.",
-      "callout": "Pełny zestaw ramek to funkcja Pro.",
       "totp": "Kody 2FA to funkcja Pro. Zapisz klucz uwierzytelniający przy dowolnym loginie, a zmieniający się kod zobaczysz obok hasła. Sam klucz jest zapisywany i synchronizowany w każdym planie.",
       "replace": "Znajdź i zamień to funkcja Pro. Przejdź na Pro, aby zamienić jedno wystąpienie albo wszystkie wystąpienia w notatce za jednym razem.",
       "passphrase": "Frazy hasłowe to funkcja Pro. Wygeneruj frazę z losowych słów, którą łatwo wpisać i powiedzieć.",
@@ -26,14 +27,14 @@
     "features": {
       "devices": "Synchronizacja nieograniczonej liczby urządzeń, każda platforma",
       "folders": "Zagnieżdżone foldery, porządek według projektów",
+      "spaces": "Przestrzenie: Osobiste i Praca, jedna naraz",
       "lock": "Blokada i ochrona PIN-em dowolnej notatki",
       "history": "Pełna historia notatki, przywracanie w każdej chwili",
       "themes": "Motywy premium w każdym odcieniu",
       "zen": "Tryb Zen, pisanie bez rozpraszaczy",
       "storage": "500 MB pamięci, do 5,5 GB z dodatkami"
     },
-    "comparisonBeta": "Zapłać {{earlyPrice}} $ raz. Obsidian Sync kosztuje 48 $/rok, co roku. Standard Notes liczy sobie 90 $/rok. Cena dla wczesnych użytkowników, zablokowana, zanim wzrośnie do {{proPrice}} $.",
-    "comparison": "Zapłać {{proPrice}} $ raz i miej to na zawsze. Obsidian Sync kosztuje 48 $/rok, a Standard Notes 90 $/rok, każdego roku."
+    "compareCaption": "{{years}} lat. Jedna płatność kontra opłaty roczne."
   },
   "purchaseError": {
     "store": "Nie udało się dokończyć płatności w sklepie i nie zostałeś obciążony. Spróbuj ponownie za chwilę.",

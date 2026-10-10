@@ -8,7 +8,7 @@
     "taskList": "Lista de tarefas",
     "bulletList": "Lista com marcadores",
     "addLink": "Adicionar link ({{keys}})",
-    "noteLink": "Criar note-link para outra nota (ou digite [[)",
+    "noteLink": "Criar link para outra nota (ou digite [[)",
     "numberedList": "Lista numerada",
     "textColor": "Cor do texto",
     "textColorApply": "Cor do texto: {{color}}",
@@ -39,7 +39,9 @@
     "dateTime": "Data e hora",
     "footnote": "Nota de rodapé",
     "spoiler": "Spoiler",
-    "copyBox": "Caixa de cópia"
+    "copyBox": "Caixa de cópia",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Personalizar a barra de formatação"
   },
   "align": {
     "left": "Alinhar à esquerda",
@@ -81,7 +83,16 @@
       "bug": "Bug",
       "note": "Nota",
       "abstract": "Resumo",
-      "failure": "Falha"
+      "failure": "Falha",
+      "fold": "Recolhível",
+      "idea": "Ideia",
+      "important": "Importante",
+      "caution": "Cuidado",
+      "todo": "Tarefa",
+      "goal": "Meta",
+      "decision": "Decisão",
+      "definition": "Definição",
+      "seealso": "Veja também"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "Formatação",
     "insert": "Inserir",
     "blocks": "Blocos",
     "notation": "Notação"
@@ -145,6 +157,8 @@
     "hide": "Ocultar estrutura",
     "hideTitle": "Ocultar estrutura (Esc)",
     "copyHeadingLink": "Copiar link para o título",
+    "copyNoteLink": "Copiar link entre notas",
+    "copyHeadingShortcut": "Copiar atalho para o título",
     "copied": "Copiado"
   },
   "bodyMenu": {
@@ -242,5 +256,47 @@
     "missing": "A nota não tem texto. Clique para adicionar.",
     "ariaRef": "Nota {{n}}",
     "ariaSection": "Notas de rodapé"
+  },
+  "formatBar": {
+    "tryIt": "Experimente: organize a barra aqui e veja como fica.",
+    "previewOnly": "Só uma prévia. Seu layout é salvo assim que você tiver o Pro.",
+    "discard": "Descartar",
+    "keepLayout": "Manter este layout",
+    "hintDrag": "Arraste para mover, clique para ver as opções.",
+    "hintTap": "Toque em um botão para ver as opções.",
+    "onBar": "Na barra",
+    "inMenu": "No menu +",
+    "menuEmpty": "O menu está vazio, então o botão + não aparece.",
+    "hidden": "Ocultos",
+    "hiddenNote": "Eles continuam funcionando por atalho e em Markdown.",
+    "hiddenDrop": "Solte um botão aqui para ocultá-lo.",
+    "hiddenEmpty": "Nada está oculto.",
+    "alwaysVisible": "Sempre visíveis",
+    "pinned": "Abre um painel, então fica na barra ou oculto",
+    "optionsFor": "Opções de {{item}}",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
+    "moveLeft": "Mover para a esquerda",
+    "moveRight": "Mover para a direita",
+    "home": {
+      "bar": "Na barra",
+      "menu": "No menu +",
+      "hidden": "Oculto"
+    },
+    "opensPanel": "abre um painel",
+    "showsRecording": "mostra a gravação",
+    "refuse": {
+      "menuNotAllowed": "{{item}} pode ficar na barra ou oculto, não no menu +.",
+      "lastOnBar": "Deixe pelo menos um botão na barra."
+    },
+    "items": {
+      "link": "Link",
+      "notelink": "Link entre notas",
+      "audio": "Gravação"
+    },
+    "positionTitle": "Posição da barra",
+    "positionNote": "Escolha onde a barra de formatação fica no editor.",
+    "positionTop": "Em cima",
+    "positionBottom": "Embaixo"
   }
 }

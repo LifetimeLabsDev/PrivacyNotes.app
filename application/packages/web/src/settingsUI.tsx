@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState, type HTMLAttributes, type ReactNode } from 'react';
-import { Info } from './icons';
+import { Info, type Icon } from './icons';
 
 /**
  * Settings pane typography tokens - the single source of truth.
@@ -27,6 +27,35 @@ export const SETTINGS_EYEBROW =
 const SETTINGS_EYEBROW_DANGER =
   'text-[11px] font-semibold uppercase tracking-wide text-danger';
 export const SETTINGS_HELP = 'text-xs text-pn-soft';
+
+/** A section heading's glyph: 13px, in the heading's own color. The heading
+ *  takes `EYEBROW_ICON_ROW` so the glyph and the words sit on one line. */
+export const EYEBROW_ICON_ROW = 'flex items-center gap-1.5';
+export function EyebrowGlyph({ icon: Glyph }: { icon: Icon }) {
+  return <Glyph size={13} className="shrink-0" aria-hidden="true" />;
+}
+
+/** A setting row's title with its glyph: a 14px accent icon before the
+ *  words. Every row title in Settings carries one. */
+export const ROW_TITLE = 'text-sm font-medium flex items-center gap-1.5';
+export function RowTitle({ icon: Glyph, children }: { icon: Icon; children: ReactNode }) {
+  return (
+    <p className={ROW_TITLE}>
+      <Glyph size={14} className="text-accent shrink-0" aria-hidden="true" />
+      {children}
+    </p>
+  );
+}
+
+/** A setting row in a pane: label and helper on the left, the control on the
+ *  right from lg up, stacked below lg. The Date pane uses it; the Design,
+ *  Editor and Lists panes build the same row in AppearanceSheet.tsx. */
+export const SETTINGS_ROW =
+  'flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between lg:gap-x-5 lg:gap-y-2 py-3';
+/** A segmented track and its two option states, as in Settings > Design. */
+export const SETTINGS_TRACK = 'flex gap-1 rounded-md p-1 bg-track';
+export const settingsSegClass = (on: boolean) =>
+  `flex-1 lg:flex-none px-3 text-xs py-1.5 rounded transition ${on ? 'bg-surface-2 shadow-sm text-pn font-semibold' : 'text-pn-soft hover:text-pn font-medium'}`;
 
 const SETTINGS_TAB_STRIP = 'pn-tab-strip grid grid-flow-col auto-cols-fr border-b border-divider';
 /** Must match `.pn-tab-strip[data-row] > .pn-tab` in index.css. */
@@ -91,16 +120,24 @@ export function SectionEyebrow({
   className,
   danger = false,
   setting,
+  icon,
 }: {
   children: ReactNode;
+  /** A glyph before the words; every section heading in Settings takes one. */
+  icon?: Icon;
   /** Layout-only classes (spacing), e.g. "mb-2". */
   className?: string;
   danger?: boolean;
   /** The settings search id of the section this header names. */
   setting?: string;
 }) {
-  const base = danger ? SETTINGS_EYEBROW_DANGER : SETTINGS_EYEBROW;
-  return <div data-setting={setting} className={className ? `${base} ${className}` : base}>{children}</div>;
+  const base = `${danger ? SETTINGS_EYEBROW_DANGER : SETTINGS_EYEBROW}${icon ? ` ${EYEBROW_ICON_ROW}` : ''}`;
+  return (
+    <div data-setting={setting} className={className ? `${base} ${className}` : base}>
+      {icon && <EyebrowGlyph icon={icon} />}
+      {children}
+    </div>
+  );
 }
 
 /**

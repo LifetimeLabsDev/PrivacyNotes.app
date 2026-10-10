@@ -110,7 +110,7 @@ export function useOpenTabs(notes: LocalNote[]) {
 }
 
 /**
- * "Open items in tabs": a click on a list row or grid tile opens the item in a
+ * "Open a tab on every click": a click on a list row or grid tile opens the item in a
  * tab instead of beside the strip. Per device like the tabs, and a plain
  * boolean with no cap: the person who turns it on tidies the strip, or turns
  * it off. The settings window can be a second window, so the store listens to

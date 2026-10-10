@@ -4,20 +4,21 @@
     "earlyAdopterBadge": "Adoptant précoce",
     "oneTime": "unique",
     "subscriptionPitch": "Pas d'abonnement. Pas de frais annuels. Un seul paiement, débloqué à vie.",
-    "ctaUnlock": "Tout débloquer",
+    "ctaUnlockPrice": "Tout débloquer pour {{price}}",
     "ctaOpening": "Ouverture du paiement...",
     "ctaSignUp": "Inscris-toi pour débloquer",
     "intro": {
       "storage": "Plus d’espace est une fonction Pro : 500 Mo de stockage, 50 Mo par fichier, et jusqu’à 5 Go de plus avec un module de stockage quand tu en as besoin.",
       "folders": "Les dossiers sont une fonctionnalité Pro. Organise tes notes dans des dossiers imbriqués, aussi profonds que tu veux, et garde chaque projet séparé.",
       "looks": "Les icônes et les couleurs des dossiers et des étiquettes sont une fonctionnalité Pro. Donne à chacun un style reconnaissable au premier coup d'œil.",
+      "spaces": "Les espaces sont une fonctionnalité Pro. {{desc}}",
+      "formatBar": "Organiser la barre d'outils est une fonctionnalité Pro. Mets dans la barre les boutons que tu utilises, masque les autres et range le menu + à ta façon.",
       "lock": "Verrouiller une note est une fonctionnalité Pro. Passe à Pro pour protéger toute note des modifications accidentelles.",
       "protect": "Protéger une note par PIN est une fonctionnalité Pro. Passe à Pro pour protéger les notes sensibles derrière ton PIN.",
       "history": "L'historique des notes est une fonctionnalité Pro. Passe à Pro pour conserver une chronologie de chaque enregistrement.",
       "devices": "Tu as atteint la limite de 2 appareils. Passe à Pro pour un nombre illimité d'appareils.",
       "zen": "Le mode Zen est une fonctionnalité Pro. Passe à Pro pour une écriture sans distraction.",
       "theme": "Les thèmes premium sont une fonctionnalité Pro. Passe à Pro pour débloquer toutes les nuances.",
-      "callout": "L'ensemble complet des encadrés est une fonctionnalité Pro.",
       "totp": "Les codes 2FA sont une fonctionnalité Pro. Enregistre une clé d'authentification avec n'importe quel identifiant et le code rotatif s'affiche à côté du mot de passe. La clé elle-même est enregistrée et synchronisée dans toutes les formules.",
       "replace": "Rechercher et remplacer est une fonctionnalité Pro. Passe à Pro pour remplacer une occurrence ou toutes les occurrences d'une note d'un coup.",
       "passphrase": "Les phrases secrètes sont une fonctionnalité Pro. Génère une phrase de mots aléatoires, facile à taper et à dire.",
@@ -26,14 +27,14 @@
     "features": {
       "devices": "Synchronise un nombre illimité d'appareils, sur toutes les plateformes",
       "folders": "Dossiers imbriqués, organisation par projet",
+      "spaces": "Espaces : Personnel et Travail, un à la fois",
       "lock": "Verrouille et protège par PIN n'importe quelle note",
       "history": "Historique complet des notes, restaure à tout moment",
       "themes": "Thèmes premium dans toutes les nuances",
       "zen": "Mode Zen, écriture sans distraction",
       "storage": "500 Mo de stockage, jusqu’à 5,5 Go avec les modules de stockage"
     },
-    "comparisonBeta": "Paie {{earlyPrice}} $ une fois. Obsidian Sync coûte 48 $/an, chaque année. Standard Notes facture 90 $/an. Prix adoptant précoce, bloqué avant qu'il ne passe à {{proPrice}} $.",
-    "comparison": "Paie {{proPrice}} $ une fois et c'est à toi pour toujours. Obsidian Sync coûte 48 $/an et Standard Notes 90 $/an, chaque année."
+    "compareCaption": "{{years}} ans. Un seul paiement face aux frais annuels."
   },
   "purchaseError": {
     "store": "Le paiement dans le store n'a pas pu aboutir et tu n'as pas été débité. Réessaie dans un instant.",

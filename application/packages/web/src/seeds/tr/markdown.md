@@ -59,13 +59,16 @@ Ortadaki sütun ortalanmış, sonuncusu sağa hizalanmış. Bir sütunun kenarı
 Bilgi kutusu, okuyucunun kaçırmaması gereken bir şey için renkli bir kutudur.
 
 > [!tip]+ İpucu
-> Bir bilgi kutusunu kapatmak için başlığına tıklayın.
+> Kapatmak için simgesine tıklayın.
 
 > [!warning]+ Uyarı
 > Her türün kendi rengi ve kendi simgesi vardır.
 
 > [!danger]+ Tehlike
-> Dokuz tür var. **Ekle** menüsü hepsini listeler.
+> Pek çok tür var. **Ekle** menüsü hepsini listeler.
+
+> [!fold]- Katlanır
+> Kutu yok, renk yok: siz açana kadar yolunuzdan çekilen bir metin.
 
 ## Alıntılar
 

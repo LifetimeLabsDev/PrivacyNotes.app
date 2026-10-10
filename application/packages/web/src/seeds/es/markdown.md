@@ -59,13 +59,16 @@ La columna del medio está centrada y la última alineada a la derecha. Arrastra
 Un aviso es una caja de color para algo que nadie debe pasar por alto.
 
 > [!tip]+ Consejo
-> Haz clic en el título de un aviso para plegarlo.
+> Haz clic en su icono para plegarlo.
 
 > [!warning]+ Advertencia
 > Cada tipo tiene su color y su icono.
 
 > [!danger]+ Peligro
-> Hay nueve tipos. El menú **Insertar** los lista.
+> Hay muchos tipos. El menú **Insertar** los lista.
+
+> [!fold]- Desplegable
+> Sin caja ni color: solo texto que no estorba hasta que lo abres.
 
 ## Citas
 

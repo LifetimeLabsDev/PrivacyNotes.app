@@ -309,7 +309,7 @@
       "rating": "Avaliação"
     },
     "modalTitle": "Sobre",
-    "intro": "O <brand/> guarda as tuas notas, tarefas, diário, palavras-passe, ficheiros, marcadores e contactos num só lugar. Tudo é encriptado no teu dispositivo com uma chave criada a partir das tuas 12 palavras, e continua encriptado nos nossos servidores na <nowrap>Suíça</nowrap>. Funciona offline, e a app é de código aberto.",
+    "intro": "O <brand/> guarda as tuas notas, tarefas, diário, palavras-passe, ficheiros, marcadores e contactos num só lugar. Tudo é encriptado no teu dispositivo com uma chave criada a partir das tuas 12 palavras, e continua encriptado nos nossos servidores na <nowrap>Suíça</nowrap>. Funciona offline, e a app é open source.",
     "versionHeading": "Versão",
     "windowVersion": "Versão {{version}}",
     "windowHelp": "Centro de ajuda",
@@ -327,14 +327,14 @@
     "singleKeysDesc": "Usa J, K, / e ? sem manter premido Cmd ou Ctrl."
   },
   "trust": {
-    "openSourceHeading": "Código Aberto",
+    "openSourceHeading": "Open source",
     "openSourceLink": "Lê o código no GitHub.com",
     "openSourceBody": "A aplicação e a encriptação que traz dentro estão publicadas, por isso qualquer pessoa pode verificar as nossas afirmações de zero conhecimento.",
     "dataStorageHeading": "Armazenamento de Dados",
     "dataStorageBody": "Blobs encriptados guardados em Zurique, <flag/> Suíça.",
     "faviconsHeading": "Ícones dos sites",
     "faviconsBody1": "Os ícones dos sites (favicons) vêm do DuckDuckGo e do Google, obtidos pelo nosso servidor em teu nome. O teu navegador nunca contacta nenhum dos dois, por isso veem o nosso servidor a pedir um domínio e nunca te veem a ti.",
-    "faviconsBody2": "Os ícones ficam em cache no teu dispositivo durante 90 dias. Nenhum pedido inclui a tua identidade e podes desativar os ícones em Definições > Aspeto."
+    "faviconsBody2": "Os ícones ficam em cache no teu dispositivo durante 90 dias. Nenhum pedido inclui a tua identidade e podes desativar os ícones em Definições > Listas."
   },
   "feedback": {
     "title": "Enviar feedback",

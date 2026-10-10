@@ -4,20 +4,21 @@
     "earlyAdopterBadge": "早鳥",
     "oneTime": "一次買斷",
     "subscriptionPitch": "免訂閱、免年費。付款一次，終身解鎖。",
-    "ctaUnlock": "解鎖全部功能",
+    "ctaUnlockPrice": "以 {{price}} 解鎖全部功能",
     "ctaOpening": "正在開啟結帳…",
     "ctaSignUp": "註冊以解鎖",
     "intro": {
       "storage": "更多空間是 Pro 功能：500 MB 儲存空間、每個檔案 50 MB，需要時還能加購最多 5 GB。",
       "folders": "資料夾是 Pro 功能。將筆記整理進巢狀資料夾，要多深就多深，讓每個專案各自分開。",
       "looks": "資料夾與標籤的圖示和顏色是 Pro 功能。為每一個設定一眼就認得出的外觀。",
+      "spaces": "空間是 Pro 功能。{{desc}}",
+      "formatBar": "調整工具列的排列是 Pro 功能。把常用的按鈕放在工具列上，隱藏其餘的，並依你的方式排列 + 選單。",
       "lock": "鎖定筆記是 Pro 功能。升級即可保護任何筆記不被誤改。",
       "protect": "以 PIN 碼保護筆記是 Pro 功能。升級即可把敏感筆記鎖在 PIN 碼之後。",
       "history": "筆記歷史是 Pro 功能。升級即可保留每一次儲存的時間軸。",
       "devices": "你已達到 2 部裝置的上限。升級即可使用無上限裝置。",
       "zen": "Zen 模式是 Pro 功能。升級享受無干擾寫作。",
       "theme": "進階佈景主題是 Pro 功能。升級解鎖所有色調。",
-      "callout": "完整的標註樣式是 Pro 功能。",
       "totp": "2FA 驗證碼是 Pro 功能。在任何登入資訊中儲存驗證金鑰，就能在密碼旁看到不斷更新的驗證碼。金鑰本身在所有方案都會儲存並同步。",
       "replace": "尋找與取代是 Pro 功能。升級後可逐一取代，或一次取代筆記中的全部符合項目。",
       "passphrase": "密碼短語是 Pro 功能。產生一組由隨機單字組成的密碼短語，好輸入也容易念出來。",
@@ -26,14 +27,14 @@
     "features": {
       "devices": "同步無上限裝置，支援所有平台",
       "folders": "巢狀資料夾，依專案整理",
+      "spaces": "空間：個人與工作，一次顯示一個",
       "lock": "鎖定並以 PIN 碼保護任何筆記",
       "history": "完整筆記歷史，隨時還原",
       "themes": "各種色調的進階佈景主題",
       "zen": "Zen 模式，無干擾寫作",
       "storage": "500 MB 儲存空間，加購後最多 5.5 GB"
     },
-    "comparisonBeta": "一次付 ${{earlyPrice}}。Obsidian Sync 每年收 $48，年年都要；Standard Notes 每年收 $90。早鳥價，在漲到 ${{proPrice}} 前先鎖定。",
-    "comparison": "一次付 ${{proPrice}}，永久擁有。Obsidian Sync 每年 $48、Standard Notes 每年 $90，而且年年都要付。"
+    "compareCaption": "{{years}} 年：一次付款，對比年年繳的年費。"
   },
   "purchaseError": {
     "store": "商店結帳未能完成，你並未被扣款。請稍後再試一次。",

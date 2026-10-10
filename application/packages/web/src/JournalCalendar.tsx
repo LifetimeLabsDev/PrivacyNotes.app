@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { Calendar } from './icons';
+import { Briefcase, Calendar, User } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { useEscapeToClose } from './useEscapeToClose';
 import { usePopoverPosition } from './usePopoverPosition';
-import { toLocalIso } from './intlFormat';
-import { MonthGrid } from './MonthGrid';
+import { formatInstant, toLocalIso } from './intlFormat';
+import { MonthGrid, dayAtNoon } from './MonthGrid';
+import type { JournalDays } from './notesViewUtils';
 
 /**
  * Everything the journal calendar does, in one module: the pick rule, the two
@@ -23,8 +24,8 @@ import { MonthGrid } from './MonthGrid';
  * Spec: ops/docs/plans/journal-calendar.md
  */
 type Props = {
-  /** Local ISO day to the id of that day's newest entry. */
-  entries: ReadonlyMap<string, string>;
+  /** Local ISO day to that day's newest entry, and the newest of each space. */
+  entries: JournalDays;
   /** Opens an existing entry. */
   onOpen: (id: string) => void;
   /** Creates an entry for an ISO day (yyyy-mm-dd). Never today's date. */
@@ -45,12 +46,61 @@ type Props = {
 type DayHandlers = Pick<Props, 'entries' | 'onOpen' | 'onPick' | 'onToday'>;
 
 /** One rule for every journal calendar: a dotted day opens its newest entry,
- *  an empty today is an ordinary new entry, any other day a dated one. */
-function pickJournalDay(day: string, { entries, onOpen, onPick, onToday }: DayHandlers) {
-  const id = entries.get(day);
-  if (id) onOpen(id);
+ *  an empty today is an ordinary new entry, any other day a dated one. A day
+ *  with an entry in each space opens nothing and answers 'choose', so the
+ *  calendar can unfold the two. Spec: ops/docs/plans/spaces.md (section 9) */
+export function pickJournalDay(day: string, { entries, onOpen, onPick, onToday }: DayHandlers): 'done' | 'choose' {
+  const found = entries.entriesOf(day);
+  if (found.length > 1) return 'choose';
+  if (found[0]) onOpen(found[0].id);
   else if (day === toLocalIso(new Date())) onToday();
   else onPick(day);
+  return 'done';
+}
+
+/**
+ * A day with an entry in each space, unfolded under the grid: one row per
+ * space, the open space first and focused. Up and Down move, Enter opens,
+ * Escape folds it back. A row shows the stored title only, so an entry
+ * behind a PIN shows nothing from inside it.
+ * Spec: ops/docs/plans/spaces.md (section 9)
+ */
+function DayChooser({ day, entries, onOpen, onFold }: { day: string; entries: JournalDays; onOpen: (id: string) => void; onFold: () => void }) {
+  const { t } = useTranslation(['shell', 'common']);
+  const rows = useRef<(HTMLButtonElement | null)[]>([]);
+  useEffect(() => {
+    rows.current[0]?.focus();
+  }, [day]);
+  useEscapeToClose(onFold);
+  const found = entries.entriesOf(day);
+  function onKeyDown(e: React.KeyboardEvent, i: number) {
+    const next = e.key === 'ArrowDown' ? i + 1 : e.key === 'ArrowUp' ? i - 1 : null;
+    if (next === null) return;
+    e.preventDefault();
+    rows.current[(next + found.length) % found.length]?.focus();
+  }
+  return (
+    <div role="group" aria-label={t('backfillPopover.chooseEntry', { date: formatInstant(dayAtNoon(day), 'date') })} className="mt-2 pt-2 border-t border-divider flex flex-col gap-0.5">
+      {found.map((entry, i) => {
+        const Glyph = entry.space === 'work' ? Briefcase : User;
+        return (
+          <button
+            key={entry.id}
+            ref={(el) => { rows.current[i] = el; }}
+            type="button"
+            onClick={() => onOpen(entry.id)}
+            onKeyDown={(e) => onKeyDown(e, i)}
+            className="flex items-center gap-2 w-full rounded-md px-2 py-1.5 text-[13px] text-pn hover:bg-pn/5 focus-visible:bg-pn/5 outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          >
+            <span aria-hidden="true" className={`shrink-0 w-[5px] h-[5px] ${entry.space === 'work' ? 'rounded-[1px] bg-warning' : 'rounded-full bg-accent'}`} />
+            <Glyph size={14} className="shrink-0 text-pn-muted" />
+            <span className="shrink-0">{t(entry.space === 'work' ? 'spaces.work' : 'spaces.personal')}</span>
+            <span dir="auto" className="ms-auto min-w-0 truncate text-pn-muted">{entry.title || t('common:state.untitled')}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
 const SIZE_KEY = 'privacynotes.journalCalendar';
@@ -107,6 +157,11 @@ function readSize(): 1 | 6 {
  */
 export function JournalCalendarCard({ grid, ...handlers }: DayHandlers & { grid: boolean }) {
   const [weeks, setWeeks] = useState<1 | 6>(readSize);
+  const [choosing, setChoosing] = useState<string | null>(null);
+  function pick(day: string) {
+    const unfold = pickJournalDay(day, handlers) === 'choose' && day !== choosing;
+    setChoosing(unfold ? day : null);
+  }
   function toggle() {
     const next = weeks === 6 ? 1 : 6;
     setWeeks(next);
@@ -126,7 +181,15 @@ export function JournalCalendarCard({ grid, ...handlers }: DayHandlers & { grid:
           : 'px-4 pt-2 pb-3 bg-surface-2 border-b border-divider'
       }
     >
-      <MonthGrid marked={handlers.entries} onPick={(day) => pickJournalDay(day, handlers)} weeks={weeks} onToggleWeeks={toggle} />
+      <MonthGrid marked={handlers.entries} selected={choosing ?? undefined} onPick={pick} weeks={weeks} onToggleWeeks={toggle} />
+      {choosing && (
+        <DayChooser
+          day={choosing}
+          entries={handlers.entries}
+          onOpen={(id) => { setChoosing(null); handlers.onOpen(id); }}
+          onFold={() => setChoosing(null)}
+        />
+      )}
     </li>
   );
 }
@@ -150,9 +213,11 @@ export function JournalCalendarPopover({ entries, onOpen, onPick, onToday, onClo
 
   useEscapeToClose(onClose);
 
+  const [choosing, setChoosing] = useState<string | null>(null);
   function pick(day: string) {
-    pickJournalDay(day, { entries, onOpen, onPick, onToday });
-    onClose();
+    if (pickJournalDay(day, { entries, onOpen, onPick, onToday }) === 'choose' && day !== choosing) setChoosing(day);
+    else if (choosing === day) setChoosing(null);
+    else onClose();
   }
 
   return createPortal(
@@ -164,7 +229,15 @@ export function JournalCalendarPopover({ entries, onOpen, onPick, onToday, onClo
       className="fixed z-50 max-w-[calc(100vw-16px)] max-h-[calc(100dvh-16px)] overflow-y-auto overscroll-contain rounded-md border border-divider bg-surface-2 shadow-lg p-2"
     >
       <div className="w-[240px] max-w-full">
-        <MonthGrid marked={entries} onPick={pick} onToday={todayRow ? () => { onToday(); onClose(); } : undefined} />
+        <MonthGrid marked={entries} selected={choosing ?? undefined} onPick={pick} onToday={todayRow ? () => { onToday(); onClose(); } : undefined} />
+        {choosing && (
+          <DayChooser
+            day={choosing}
+            entries={entries}
+            onOpen={(id) => { onOpen(id); onClose(); }}
+            onFold={() => setChoosing(null)}
+          />
+        )}
       </div>
     </div>,
     document.body,

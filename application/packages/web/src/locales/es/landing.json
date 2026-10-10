@@ -39,8 +39,8 @@
     "openSource": "Open source"
   },
   "announcement": {
-    "ossText": "Ya es código abierto: todo el código del cliente. Web, escritorio y móvil.",
-    "ossTextNarrow": "Ya es código abierto: todo el código del cliente.",
+    "ossText": "Ya es open source: todo el código del cliente. Web, escritorio y móvil.",
+    "ossTextNarrow": "Ya es open source: todo el código del cliente.",
     "ossCta": "Danos una estrella en GitHub",
     "ossCtaNarrow": "GitHub",
     "dismiss": "Descartar el anuncio"
@@ -309,7 +309,7 @@
       "rating": "Valoración"
     },
     "modalTitle": "Acerca de",
-    "intro": "<brand/> reúne tus notas, tareas, diario, contraseñas, archivos, marcadores y contactos en un solo lugar. Todo se cifra en tu dispositivo con una clave creada a partir de tus 12 palabras, y sigue cifrado en nuestros servidores en <nowrap>Suiza</nowrap>. Funciona sin conexión, y la app es de código abierto.",
+    "intro": "<brand/> reúne tus notas, tareas, diario, contraseñas, archivos, marcadores y contactos en un solo lugar. Todo se cifra en tu dispositivo con una clave creada a partir de tus 12 palabras, y sigue cifrado en nuestros servidores en <nowrap>Suiza</nowrap>. Funciona sin conexión, y la app es open source.",
     "versionHeading": "Versión",
     "windowVersion": "Versión {{version}}",
     "windowHelp": "Centro de ayuda",
@@ -327,14 +327,14 @@
     "singleKeysDesc": "Usa J, K, / y ? sin mantener pulsado Cmd o Ctrl."
   },
   "trust": {
-    "openSourceHeading": "Código abierto",
+    "openSourceHeading": "Open source",
     "openSourceLink": "Lee el código en GitHub.com",
     "openSourceBody": "La app y el cifrado que lleva dentro están publicados, así que cualquiera puede comprobar nuestras afirmaciones de cero conocimiento.",
     "dataStorageHeading": "Almacenamiento de datos",
     "dataStorageBody": "Bloques cifrados almacenados en Zúrich, <flag/> Suiza.",
     "faviconsHeading": "Iconos de sitios web",
     "faviconsBody1": "Los iconos de sitios web (favicons) vienen de DuckDuckGo y Google, obtenidos por nuestro servidor en tu nombre. Tu navegador nunca contacta con ninguno de los dos, así que ven a nuestro servidor pidiendo un dominio y nunca te ven a ti.",
-    "faviconsBody2": "Los iconos se guardan en caché en tu dispositivo durante 90 días. Ninguna petición incluye tu identidad, y puedes desactivar los iconos en Ajustes > Apariencia."
+    "faviconsBody2": "Los iconos se guardan en caché en tu dispositivo durante 90 días. Ninguna petición incluye tu identidad, y puedes desactivar los iconos en Ajustes > Listas."
   },
   "feedback": {
     "title": "Enviar comentarios",

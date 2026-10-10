@@ -272,14 +272,14 @@ export function LookPicker({
           <PathGlyph
             paths={previewPaths}
             size={20}
-            className={ownColor ? undefined : 'text-amber-700 dark:text-amber-500/80'}
+            className={ownColor ? undefined : 'text-label'}
             style={inkStyle(ownColor)}
           />
         ) : (
           <DefaultGlyph
             size={20}
             weight={target.kind === 'tag' && target.favorite ? 'fill' : undefined}
-            className={ownColor ? undefined : 'text-amber-700 dark:text-amber-500/80'}
+            className={ownColor ? undefined : 'text-label'}
             style={inkStyle(ownColor)}
             aria-hidden="true"
           />

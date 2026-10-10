@@ -212,9 +212,16 @@ export function clearTableWidths(view: EditorView, tablePos: number): void {
   view.dispatch(setTableWidths(view.state.tr, tablePos, null));
 }
 
+/**
+ * Turns the hover handle on or off. A click moves the caret in the DOM before
+ * the editor reads it, and any transaction in that gap writes the editor's
+ * older caret back over the click, so the pending DOM selection is read first.
+ * `flush` is ProseMirror's own read of the DOM; it is not in the public types.
+ */
 function setHandle(view: EditorView, handle: Handle | null): void {
   const current = resizeKey.getState(view.state)?.handle ?? null;
   if (current?.table === handle?.table && current?.border === handle?.border) return;
+  (view as unknown as { domObserver: { flush(): void } }).domObserver.flush();
   view.dispatch(view.state.tr.setMeta(resizeKey, { handle }));
 }
 

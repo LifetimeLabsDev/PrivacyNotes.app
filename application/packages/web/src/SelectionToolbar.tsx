@@ -1,23 +1,27 @@
 /**
  * Selection toolbar - replaces the NotesView list header while one or
- * more notes are multi-selected. Works in two modes:
+ * more notes are multi-selected, in the list and in the grid alike. Two modes:
  *
- *   - 'normal': bulk Favorite / Archive / Tag / Export / Delete (move to trash)
+ *   - 'normal': bulk Export / Pin / Archive / Tag / Move / Delete (move to trash)
  *   - 'trash':  bulk Restore / Delete Forever
  *
  * Layout matches the header it replaces: h-14 and the same bottom border,
- * so there's no vertical jump when it swaps in. The row is sized to fit
- * LIST_WIDTH_MIN (280 px): 12 px padding, a 32 px exit button, and six
- * 32 px actions 4 px apart need 272 px. Wider buttons or gaps push
- * Delete under the pane's resize strip.
+ * so there's no vertical jump when it swaps in.
+ *
+ * The actions stand in priority order, lowest first. When the pane is too
+ * narrow for all of them, they fold into a "more" menu from the left, so
+ * Delete is always the last to go and every action stays one menu away.
+ * At LIST_WIDTH_MIN (200 px) the row holds the exit X, the menu button,
+ * Move and Delete. Spec: ops/docs/ui-patterns.md (toolbar icon-only buttons)
  */
 
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HoverLabel } from './HoverLabel';
 import { TagPicker } from './TagPicker';
 import { IconUpgrade } from './UpgradeModal';
-import { X, PushPin, Tag, Folder, Download, Trash, ArrowCounterClockwise, iconArchive } from './icons';
+import { ContextMenu, useContextMenu } from './ContextMenu';
+import { X, PushPin, Tag, Folder, Download, Trash, ArrowCounterClockwise, DotsThreeOutlineVertical, iconArchive } from './icons';
 
 type Mode = 'normal' | 'trash';
 
@@ -47,6 +51,32 @@ type Props = {
   allTags?: [string, number][];
 };
 
+type Action = {
+  key: string;
+  label: string;
+  icon: ReactNode;
+  onClick: () => void;
+  tone?: 'default' | 'danger' | 'success';
+  pro?: boolean;
+};
+
+// The row geometry the fold reads: px-3 on each side, the w-8 buttons and the
+// gap-1 between every two of them, the exit X included.
+const PAD = 24;
+const BUTTON = 32;
+const GAP = 4;
+
+/** How many actions stay on the bar, counted from the right, in a row whose
+ *  inner width is `width`. The last action always stays. */
+function fittingCount(width: number, total: number): number {
+  const room = width - PAD - BUTTON - GAP;
+  for (let k = total; k > 1; k--) {
+    const slots = k + (k < total ? 1 : 0);
+    if (slots * BUTTON + (slots - 1) * GAP <= room) return k;
+  }
+  return 1;
+}
+
 export function SelectionToolbar({
   mode,
   allStarred,
@@ -65,9 +95,85 @@ export function SelectionToolbar({
 }: Props) {
   const { t } = useTranslation('shell');
   const [tagOpen, setTagOpen] = useState(false);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLButtonElement>(null);
+  const menu = useContextMenu();
+
+  const actions: Action[] =
+    mode === 'normal'
+      ? [
+          { key: 'export', label: t('selectionToolbar.export'), onClick: onExport, icon: <Download size={16} /> },
+          {
+            key: 'pin',
+            label: allStarred ? t('selectionToolbar.unpin') : t('selectionToolbar.pin'),
+            onClick: onFavorite,
+            icon: <PushPin size={16} weight={allStarred ? 'fill' : 'bold'} />,
+          },
+          {
+            key: 'archive',
+            label: allArchived ? t('selectionToolbar.unarchive') : t('selectionToolbar.archive'),
+            onClick: onArchive,
+            icon: iconArchive(allArchived, 16),
+          },
+          { key: 'tag', label: t('selectionToolbar.tag'), onClick: () => setTagOpen((v) => !v), icon: <Tag size={16} /> },
+          {
+            key: 'folder',
+            label: t('folders.moveTo'),
+            onClick: onMoveToFolder,
+            pro: !foldersUnlocked,
+            icon: <Folder size={16} />,
+          },
+          { key: 'delete', label: t('selectionToolbar.delete'), tone: 'danger', onClick: onDelete, icon: <Trash size={16} /> },
+        ]
+      : [
+          {
+            key: 'restore',
+            label: t('selectionToolbar.restore'),
+            tone: 'success',
+            onClick: onRestore,
+            icon: <ArrowCounterClockwise size={16} />,
+          },
+          {
+            key: 'deleteForever',
+            label: t('selectionToolbar.deleteForever'),
+            tone: 'danger',
+            onClick: onDeleteForever,
+            icon: <Trash size={16} />,
+          },
+        ];
+
+  const [shown, setShown] = useState(actions.length);
+  const total = actions.length;
+  useLayoutEffect(() => {
+    const el = rowRef.current;
+    if (!el) return;
+    const measure = () => setShown(fittingCount(el.clientWidth, total));
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [total]);
+
+  const folded = actions.slice(0, total - shown);
+  const visible = actions.slice(total - shown);
+
+  const openMore = () => {
+    const r = moreRef.current?.getBoundingClientRect();
+    if (!r) return;
+    menu.open(
+      { clientX: r.left, clientY: r.bottom + 4, preventDefault() {}, stopPropagation() {} },
+      folded.map((a) => ({
+        label: a.label,
+        icon: a.icon,
+        pro: a.pro,
+        // The tag picker toggles from the bar; from the menu it only opens.
+        onSelect: a.key === 'tag' ? () => setTagOpen(true) : a.onClick,
+      })),
+    );
+  };
 
   return (
-    <div className="shrink-0 h-14 px-3 border-b border-divider flex items-center justify-between gap-1 bg-accent/5 dark:bg-accent/10">
+    <div ref={rowRef} className="shrink-0 h-14 px-3 border-b border-divider flex items-center justify-between gap-1 bg-accent/5 dark:bg-accent/10">
       <HoverLabel label={t('selectionToolbar.exitSelectionTooltip')} position="below">
       <button
         onClick={onClear}
@@ -79,71 +185,23 @@ export function SelectionToolbar({
       </HoverLabel>
 
       <div className="shrink-0 flex items-center gap-1">
-        {mode === 'normal' ? (
-          <>
-            <ToolbarButton
-              label={allStarred ? t('selectionToolbar.unpin') : t('selectionToolbar.pin')}
-              onClick={onFavorite}
-              icon={
-                <PushPin size={16} weight={allStarred ? 'fill' : 'bold'} />
-              }
-            />
-            <ToolbarButton
-              label={allArchived ? t('selectionToolbar.unarchive') : t('selectionToolbar.archive')}
-              onClick={onArchive}
-              icon={iconArchive(allArchived, 16)}
-            />
-            <ToolbarButton
-              label={t('selectionToolbar.tag')}
-              onClick={() => setTagOpen((v) => !v)}
-              icon={
-                <Tag size={16} />
-              }
-            />
-            <ToolbarButton
-              label={t('folders.moveTo')}
-              onClick={onMoveToFolder}
-              pro={!foldersUnlocked}
-              icon={
-                <Folder size={16} />
-              }
-            />
-            <ToolbarButton
-              label={t('selectionToolbar.export')}
-              onClick={onExport}
-              icon={
-                <Download size={16} />
-              }
-            />
-            <ToolbarButton
-              label={t('selectionToolbar.delete')}
-              tone="danger"
-              onClick={onDelete}
-              icon={
-                <Trash size={16} />
-              }
-            />
-          </>
-        ) : (
-          <>
-            <ToolbarButton
-              label={t('selectionToolbar.restore')}
-              tone="success"
-              onClick={onRestore}
-              icon={
-                <ArrowCounterClockwise size={16} />
-              }
-            />
-            <ToolbarButton
-              label={t('selectionToolbar.deleteForever')}
-              tone="danger"
-              onClick={onDeleteForever}
-              icon={
-                <Trash size={16} />
-              }
-            />
-          </>
+        {folded.length > 0 && (
+          <HoverLabel label={t('selectionToolbar.more')} position="below">
+          <button
+            ref={moreRef}
+            onClick={openMore}
+            aria-label={t('selectionToolbar.more')}
+            aria-haspopup="menu"
+            aria-expanded={!!menu.state}
+            className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-md text-pn-soft hover:bg-pn/5 hover:text-pn transition"
+          >
+            <DotsThreeOutlineVertical size={16} />
+          </button>
+          </HoverLabel>
         )}
+        {visible.map((a) => (
+          <ToolbarButton key={a.key} label={a.label} onClick={a.onClick} icon={a.icon} tone={a.tone} pro={a.pro} />
+        ))}
       </div>
 
       {tagOpen && (
@@ -156,6 +214,7 @@ export function SelectionToolbar({
           onClose={() => setTagOpen(false)}
         />
       )}
+      <ContextMenu state={menu.state} onClose={menu.close} />
     </div>
   );
 }

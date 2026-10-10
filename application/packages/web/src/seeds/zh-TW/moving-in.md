@@ -27,7 +27,7 @@ title: 搬家
 我們的匯入指南在這裡：[privacynotes.app/tw/help](https://privacynotes.app/tw/help)
 
 > [!tip] 舊的匯出檔留一個月
-> 先匯入，用個幾週，再把檔案刪掉。不用急，而且試了也不會弄丟什麼。
+> 先匯入，用個幾週，再把檔案刪除。不用急，而且試了也不會弄丟什麼。
 
 ## 日誌
 
@@ -48,11 +48,11 @@ title: 搬家
 ## 密碼
 
 - [ ] 匯入 Bitwarden 的 `.json` 檔，或瀏覽器的密碼 `.csv`
-- [ ] **匯完之後馬上把那個檔案刪掉**
+- [ ] **匯完之後馬上把那個檔案刪除**
 
 怎麼匯入瀏覽器密碼：[privacynotes.app/tw/help/import/browser-passwords](https://privacynotes.app/tw/help/import/browser-passwords)
 
 > [!warning] 密碼匯出檔是明文
-> 任何人打開那個檔案，就能讀到裡面每一組密碼。匯入之後檢查 **保險庫**，接著刪掉檔案，再把垃圾桶清空。
+> 任何人打開那個檔案，就能讀到裡面每一組密碼。匯入之後檢查 **保險庫**，接著刪除檔案，再把垃圾桶清空。
 
 保險庫放的是登入資料、卡片、SSH 金鑰和 2FA 驗證碼。它用的鎖和你的筆記一樣，[[你的筆記如何受到保護]] 有說明。

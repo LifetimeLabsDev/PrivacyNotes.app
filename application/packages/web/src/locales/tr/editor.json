@@ -39,7 +39,9 @@
     "dateTime": "Tarih ve saat",
     "footnote": "Dipnot",
     "spoiler": "Sürprizbozan",
-    "copyBox": "Kopyalama kutusu"
+    "copyBox": "Kopyalama kutusu",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Araç çubuğunu özelleştir"
   },
   "align": {
     "left": "Sola hizala",
@@ -81,7 +83,16 @@
       "bug": "Hata",
       "note": "Not",
       "abstract": "Özet",
-      "failure": "Başarısız"
+      "failure": "Başarısız",
+      "fold": "Katlanır",
+      "idea": "Fikir",
+      "important": "Önemli",
+      "caution": "Dikkat",
+      "todo": "Yapılacak",
+      "goal": "Hedef",
+      "decision": "Karar",
+      "definition": "Tanım",
+      "seealso": "Ayrıca bkz."
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "Biçimlendirme",
     "insert": "Ekle",
     "blocks": "Bloklar",
     "notation": "Gösterim"
@@ -145,6 +157,8 @@
     "hide": "Ana hattı gizle",
     "hideTitle": "Ana hattı gizle (Esc)",
     "copyHeadingLink": "Başlık bağlantısını kopyala",
+    "copyNoteLink": "Not bağlantısını kopyala",
+    "copyHeadingShortcut": "Başlık kısayolunu kopyala",
     "copied": "Kopyalandı"
   },
   "bodyMenu": {
@@ -241,5 +255,47 @@
     "missing": "Dipnot metni yok. Eklemek için tıklayın.",
     "ariaRef": "Dipnot {{n}}",
     "ariaSection": "Dipnotlar"
+  },
+  "formatBar": {
+    "tryIt": "Deneyin: çubuğu burada düzenleyin ve nasıl olduğunu görün.",
+    "previewOnly": "Yalnızca önizleme. Pro'ya geçtiğiniz anda düzeniniz kaydedilir.",
+    "discard": "Vazgeç",
+    "keepLayout": "Bu düzeni koru",
+    "hintDrag": "Taşımak için sürükleyin, seçenekler için tıklayın.",
+    "hintTap": "Seçenekleri için bir düğmeye dokunun.",
+    "onBar": "Çubukta",
+    "inMenu": "+ menüsünde",
+    "menuEmpty": "Menü boş, bu yüzden + düğmesi gösterilmez.",
+    "hidden": "Gizli",
+    "hiddenNote": "Kısayolları ve Markdown ile çalışmaya devam ederler.",
+    "hiddenDrop": "Gizlemek için bir düğmeyi buraya bırakın.",
+    "hiddenEmpty": "Gizli bir şey yok.",
+    "alwaysVisible": "Her zaman görünür",
+    "pinned": "Bir panel açar, bu yüzden çubukta kalır veya gizlenir",
+    "optionsFor": "{{item}} seçenekleri",
+    "moveUp": "Yukarı taşı",
+    "moveDown": "Aşağı taşı",
+    "moveLeft": "Sola taşı",
+    "moveRight": "Sağa taşı",
+    "home": {
+      "bar": "Çubukta",
+      "menu": "+ menüsünde",
+      "hidden": "Gizli"
+    },
+    "opensPanel": "bir panel açar",
+    "showsRecording": "kaydı gösterir",
+    "refuse": {
+      "menuNotAllowed": "{{item}} çubukta veya gizli olabilir, + menüsünde olamaz.",
+      "lastOnBar": "Çubukta en az bir düğme bırakın."
+    },
+    "items": {
+      "link": "Bağlantı",
+      "notelink": "Not bağlantısı",
+      "audio": "Kayıt"
+    },
+    "positionTitle": "Çubuk konumu",
+    "positionNote": "Araç çubuğunun düzenleyicide nerede duracağını seçin.",
+    "positionTop": "Üst",
+    "positionBottom": "Alt"
   }
 }

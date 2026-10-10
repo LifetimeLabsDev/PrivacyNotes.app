@@ -395,7 +395,7 @@
   if (page === 'help-leaf') initLeafSearch();
   if (page === 'changelog') { initChangelog(); initShots(); }
   if (page === 'brand') { initBrand(); initBrandRail(); }
-  if (page === 'themes') initBrand();
+  if (page === 'themes') { initBrand(); initThemeShots(); }
   if (page === 'landing') initLanding();
   if (page === 'cheatsheet') initCheatSheet();
   if (page === 'auth-desktop') initAuthDesktop();
@@ -406,10 +406,16 @@
   // Every picture is already a link to its file, so without JS a click opens
   // the image. With JS a thumbnail swaps the hero, and the hero or an item's
   // photo chip opens a lightbox that steps through the release's shots.
-  function initShots() {
-    var gals = Array.prototype.slice.call(document.querySelectorAll('.cl-gal[data-shots]'));
-    if (!gals.length) return;
-
+  // The full-screen screenshot viewer of /changelog and /themes (its CSS is
+  // LIGHTBOX_CSS in static-page-chrome.ts). Built once per page; returns
+  // open(shots, i, back), where a shot is { src, dark, alt } and back is the
+  // element focus returns to on close.
+  function shotIcon(d) {
+    return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
+  }
+  var lightboxOpen = null;
+  function lightbox() {
+    if (lightboxOpen) return lightboxOpen;
     function isDark() {
       var t = document.documentElement.getAttribute('data-theme');
       if (t) return t === 'dark';
@@ -417,9 +423,6 @@
     }
     function srcOf(shot) {
       return isDark() && shot.dark ? shot.dark : shot.src;
-    }
-    function icon(d) {
-      return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
     }
 
     var lb = document.createElement('div');
@@ -430,9 +433,9 @@
     lb.setAttribute('aria-label', 'Screenshot');
     lb.innerHTML =
       '<img alt=""><p></p>' +
-      '<button type="button" class="lb-x" aria-label="Close">' + icon('<line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>') + '</button>' +
-      '<button type="button" class="lb-p" aria-label="Previous screenshot">' + icon('<polyline points="15 18 9 12 15 6"/>') + '</button>' +
-      '<button type="button" class="lb-n" aria-label="Next screenshot">' + icon('<polyline points="9 18 15 12 9 6"/>') + '</button>';
+      '<button type="button" class="lb-x" aria-label="Close">' + shotIcon('<line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>') + '</button>' +
+      '<button type="button" class="lb-p" aria-label="Previous screenshot">' + shotIcon('<polyline points="15 18 9 12 15 6"/>') + '</button>' +
+      '<button type="button" class="lb-n" aria-label="Next screenshot">' + shotIcon('<polyline points="9 18 15 12 9 6"/>') + '</button>';
     document.body.appendChild(lb);
     var lbImg = lb.querySelector('img');
     var lbCap = lb.querySelector('p');
@@ -482,6 +485,34 @@
         f[(at + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus();
       }
     });
+    lightboxOpen = open;
+    return open;
+  }
+
+  // /themes: a card's screenshot is a link to its file, so without JS a click
+  // opens the image. With JS it opens the viewer, which steps through the
+  // cards the filters show, in page order.
+  function initThemeShots() {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.shot a[data-shot]'));
+    if (!links.length) return;
+    var open = lightbox();
+    links.forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var shown = links.filter(function (l) { return l.offsetParent !== null; });
+        var shots = shown.map(function (l) {
+          return { src: l.getAttribute('href'), dark: null, alt: l.getAttribute('data-alt') || '' };
+        });
+        open(shots, Math.max(0, shown.indexOf(a)), a);
+      });
+    });
+  }
+
+  function initShots() {
+    var gals = Array.prototype.slice.call(document.querySelectorAll('.cl-gal[data-shots]'));
+    if (!gals.length) return;
+
+    var open = lightbox();
 
     gals.forEach(function (gal) {
       var shots;
@@ -548,7 +579,7 @@
           b.type = 'button';
           b.className = 'cl-step ' + d[0];
           b.setAttribute('aria-label', d[2]);
-          b.innerHTML = icon(d[3]);
+          b.innerHTML = shotIcon(d[3]);
           b.addEventListener('click', function () { step(d[1]); });
           stage.appendChild(b);
         });
@@ -591,9 +622,8 @@
     if (btn) btn.addEventListener('click', function () { window.print(); });
   }
 
-  // The hotkey list on the keyboard-shortcuts leaf and the cheat sheet
-  // render four key sets (Mac or Windows and Linux, browser or desktop app)
-  // and show one through data-hk-os and data-hk-app on their root. The page
+  // The cheat sheet renders four key sets (Mac or Windows and Linux,
+  // browser or desktop app) and shows one through data-hk-os and data-hk-app on their root. The page
   // is complete without this: it opens on the Mac browser set. Here the OS
   // follows the reader's platform, "?app=desktop" (the desktop app's link)
   // opens the desktop set, "?os=pc" or "?os=mac" picks the OS, and the two
@@ -771,7 +801,22 @@
       btn.addEventListener('click', function () {
         var src = document.getElementById(btn.getAttribute('data-copy'));
         if (!src) return;
-        navigator.clipboard.writeText(src.innerText).then(function () {
+        // textContent, because a code inside a closed <details> is not rendered.
+        navigator.clipboard.writeText(btn.hasAttribute('data-copy-icon') ? src.textContent : src.innerText).then(function () {
+          // An icon button (/themes) turns its icon into a check and its
+          // words into "Copied" for two seconds, the app's copy pattern.
+          if (btn.hasAttribute('data-copy-icon')) {
+            var text = btn.querySelector('.cl');
+            var label = btn._pnLabel || (btn._pnLabel = text ? text.textContent : '');
+            if (text) text.textContent = btn.getAttribute('data-label-done') || 'Copied';
+            btn.classList.add('on');
+            clearTimeout(btn._pnCopied);
+            btn._pnCopied = setTimeout(function () {
+              btn.classList.remove('on');
+              if (text) text.textContent = label;
+            }, 2000);
+            return;
+          }
           var old = btn.textContent;
           btn.textContent = 'Copied';
           btn.classList.add('on');
@@ -779,7 +824,8 @@
             btn.textContent = old;
             btn.classList.remove('on');
           }, 900);
-        });
+        // A refused clipboard shows nothing, which is the honest answer.
+        }).catch(function () {});
       });
     });
   }

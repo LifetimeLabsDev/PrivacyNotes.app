@@ -39,7 +39,9 @@
     "dateTime": "Datum und Uhrzeit",
     "footnote": "Fußnote",
     "spoiler": "Spoiler",
-    "copyBox": "Kopierfeld"
+    "copyBox": "Kopierfeld",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Formatleiste anpassen"
   },
   "align": {
     "left": "Linksbündig",
@@ -78,10 +80,19 @@
       "question": "Frage",
       "quote": "Zitat",
       "example": "Beispiel",
-      "bug": "Bug",
+      "bug": "Fehler",
       "note": "Notiz",
       "abstract": "Zusammenfassung",
-      "failure": "Fehler"
+      "failure": "Fehler",
+      "fold": "Aufklappbar",
+      "idea": "Idee",
+      "important": "Wichtig",
+      "caution": "Vorsicht",
+      "todo": "Aufgabe",
+      "goal": "Ziel",
+      "decision": "Entscheidung",
+      "definition": "Definition",
+      "seealso": "Siehe auch"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "Formatierung",
     "insert": "Einfügen",
     "blocks": "Blöcke",
     "notation": "Notation"
@@ -145,6 +157,8 @@
     "hide": "Gliederung ausblenden",
     "hideTitle": "Gliederung ausblenden (Esc)",
     "copyHeadingLink": "Link zur Überschrift kopieren",
+    "copyNoteLink": "Notiz-Link kopieren",
+    "copyHeadingShortcut": "Verknüpfung zur Überschrift kopieren",
     "copied": "Kopiert"
   },
   "bodyMenu": {
@@ -241,5 +255,47 @@
     "missing": "Kein Fußnotentext. Klicke, um ihn hinzuzufügen.",
     "ariaRef": "Fußnote {{n}}",
     "ariaSection": "Fußnoten"
+  },
+  "formatBar": {
+    "tryIt": "Probier es aus: Ordne die Leiste hier an und schau, wie sie sich anfühlt.",
+    "previewOnly": "Nur eine Vorschau. Sobald du Pro hast, wird deine Anordnung gespeichert.",
+    "discard": "Verwerfen",
+    "keepLayout": "Diese Anordnung behalten",
+    "hintDrag": "Zum Verschieben ziehen, zum Öffnen der Optionen klicken.",
+    "hintTap": "Tippe auf eine Schaltfläche, um ihre Optionen zu öffnen.",
+    "onBar": "In der Leiste",
+    "inMenu": "Im +-Menü",
+    "menuEmpty": "Das Menü ist leer, deshalb wird die +-Schaltfläche nicht angezeigt.",
+    "hidden": "Ausgeblendet",
+    "hiddenNote": "Sie funktionieren weiter über Tastenkürzel und Markdown.",
+    "hiddenDrop": "Zieh eine Schaltfläche hierher, um sie auszublenden.",
+    "hiddenEmpty": "Nichts ist ausgeblendet.",
+    "alwaysVisible": "Immer sichtbar",
+    "pinned": "Öffnet ein Fenster, bleibt also in der Leiste oder wird ausgeblendet",
+    "optionsFor": "Optionen für {{item}}",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten",
+    "moveLeft": "Nach links",
+    "moveRight": "Nach rechts",
+    "home": {
+      "bar": "In der Leiste",
+      "menu": "Im +-Menü",
+      "hidden": "Ausgeblendet"
+    },
+    "opensPanel": "öffnet ein Fenster",
+    "showsRecording": "zeigt die Aufnahme",
+    "refuse": {
+      "menuNotAllowed": "{{item}} kann in der Leiste oder ausgeblendet sein, nicht im +-Menü.",
+      "lastOnBar": "Lass mindestens eine Schaltfläche in der Leiste."
+    },
+    "items": {
+      "link": "Link",
+      "notelink": "Notiz-Link",
+      "audio": "Aufnahme"
+    },
+    "positionTitle": "Position der Leiste",
+    "positionNote": "Wähle, wo die Formatleiste im Editor sitzt.",
+    "positionTop": "Oben",
+    "positionBottom": "Unten"
   }
 }

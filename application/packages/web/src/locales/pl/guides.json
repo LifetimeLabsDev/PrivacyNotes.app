@@ -273,7 +273,7 @@
       "app": "Notesnook",
       "title": "Wyeksportuj swoje notatki z Notesnook",
       "metaTitle": "Eksport notatek z Notesnook - PrivacyNotes",
-      "lead": "Notesnook potrafi zapisać całe Twoje konto jako folder plików. Wybierz eksport HTML, a nic nie zostanie w tyle: formatowanie, notesy, tagi, załączniki i linki między notatkami przetrwają przeprowadzkę.",
+      "lead": "Notesnook potrafi zapisać całe Twoje konto jako folder plików. Wybierz eksport HTML, a nic nie zostanie w tyle: formatowanie, notesy, tagi, załączniki i linki do notatek przetrwają przeprowadzkę.",
       "sections": [
         {
           "img": {
@@ -436,7 +436,7 @@
           "h": "Co przechodzi razem z notatkami",
           "p": [
             "Twoje notesy zostają odtworzone jako prawdziwe foldery, zagnieżdżone tak głęboko, jak były w UpNote. Notatka, która żyła w kilku notesach, ląduje w pierwszym z nich, a pozostałe niesie jako tagi.",
-            "Notatki przypięte i te z Quick Access przychodzą jako Przypięte. Notatki z kosza lądują w koszu, szablony importują się jako notatki z tagiem #template, linki między notatkami stają się linkami do notatek, a każda notatka zachowuje swoje oryginalne daty.",
+            "Notatki przypięte i te z Quick Access przychodzą jako Przypięte. Notatki z kosza lądują w koszu, szablony importują się jako notatki z tagiem #template, linki z UpNote stają się linkami do notatek, a każda notatka zachowuje swoje oryginalne daty.",
             "Formatowanie przetrwa: listy zadań, tabele, bloki kodu, matematyka, podkreślenie, indeksy dolne i górne, wyrównanie tekstu i podświetlenia. Sekcje zwijane stają się zwijanymi ramkami i zachowują swój stan otwarty lub zamknięty. Kolory tekstu i kolory podświetlenia są dopasowywane do palety edytora, więc żółte podświetlenie zostaje żółte, a zielone zielone. Każda notatka trafia tu w tej postaci, w jakiej zapisał ją ostatnio UpNote."
           ]
         },

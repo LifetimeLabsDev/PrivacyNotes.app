@@ -14,6 +14,8 @@ import { marketingHomeHref, siteHref } from './siteLinks';
 import { helpPath } from './localeRoutes';
 import { activeLocale } from './languages';
 import { keyText } from './shortcutMatch';
+import { SpaceSwitch } from './SpaceSwitch';
+import type { Space } from './spaces';
 
 interface CollapsedSidebarProps {
   view: View;
@@ -24,6 +26,8 @@ interface CollapsedSidebarProps {
   onNew: () => void;
   /** Opens the quick switcher. */
   onJump: () => void;
+  /** The Personal and Work switch, while spaces are on. */
+  spaces?: { active: Space; onChange: (space: Space) => void; locked?: boolean };
   onExpand: () => void;
   onExpandToTags: () => void;
   /** Expand the sidebar in Folders mode - or open the upsell when free. */
@@ -113,6 +117,7 @@ export function CollapsedSidebar({
   handleSelectTag,
   onNew,
   onJump,
+  spaces,
   onExpand,
   onExpandToTags,
   onExpandToFolders,
@@ -138,9 +143,9 @@ export function CollapsedSidebar({
             type="button"
             onClick={() => handleSelectView('home')}
             aria-label={t('tagsRail.showAllItems')}
-            className="hover:opacity-80 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded"
+            className="pn-logo-host hover:opacity-80 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded"
           >
-            <LogoIcon size={24} className="text-accent" />
+            <LogoIcon size={24} tint />
           </button>
         </HoverLabel>
       </div>
@@ -158,6 +163,8 @@ export function CollapsedSidebar({
           <Lightning size={18} weight="fill" />
         </button>
       </HoverLabel>
+
+      {spaces && <SpaceSwitch active={spaces.active} onChange={spaces.onChange} locked={spaces.locked} vertical />}
 
       {/* New note */}
       <HoverLabel label={t('collapsedSidebar.newNote')}>
@@ -202,7 +209,7 @@ export function CollapsedSidebar({
 
       {/* Folders (Pro) - the 36px rail can't render a tree, so this
           expands the sidebar in Folders mode (or opens the upsell). */}
-      <HoverLabel label={t('browseToggle.folders')}>
+      <HoverLabel label={t('browseToggle.folders')} pro={!isPro}>
         <button
           type="button"
           onClick={onExpandToFolders}

@@ -334,7 +334,7 @@
     "dataStorageBody": "Şifreli veri blokları Zürih, <flag/> İsviçre'de saklanır.",
     "faviconsHeading": "Site simgeleri",
     "faviconsBody1": "Site simgeleri (favicon) DuckDuckGo ve Google'dan gelir ve sizin adınıza sunucumuz tarafından alınır. Tarayıcınız ikisiyle de hiç doğrudan iletişim kurmaz, böylece ikisi de bir alan adı soran sunucumuzu görür, sizi asla görmez.",
-    "faviconsBody2": "Simgeler cihazınızda 90 gün önbelleğe alınır. Hiçbir istek kimliğinizi içermez ve simgeleri Ayarlar > Görünüm altında kapatabilirsiniz."
+    "faviconsBody2": "Simgeler cihazınızda 90 gün önbelleğe alınır. Hiçbir istek kimliğinizi içermez ve simgeleri Ayarlar > Listeler altında kapatabilirsiniz."
   },
   "feedback": {
     "title": "Geri bildirim gönderin",

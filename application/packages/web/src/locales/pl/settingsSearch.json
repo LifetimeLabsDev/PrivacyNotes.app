@@ -9,15 +9,18 @@
   "resultCount_other": "{{count}} wyniku",
   "keywords": {
     "section_stats": "statystyki, liczby, seria, mapa aktywności, heatmap, liczba słów",
-    "section_journals": "dziennik, pamiętnik, tytuł, format daty",
     "section_import": "import, eksport, kopia zapasowa, backup, migracja, przeniesienie, pobieranie",
     "section_plan": "plan, subskrypcja, pro, płatności, rozliczenia, urządzenia, wyloguj",
     "section_storage": "miejsce, przestrzeń, limit, dysk, gigabajty, pełny",
     "section_images": "obrazy, zdjęcia, fotki, kompresja, jakość",
     "section_security": "bezpieczeństwo, hasło, blokada, prywatność",
     "section_me": "synchronizacja, sync, konto, tożsamość, id",
-    "section_appearance": "wygląd, wyświetlanie, design, kolory, motyw",
+    "section_design": "wygląd, wyświetlanie, design, kolory, motyw",
+    "section_editor": "pisanie, edytor, tekst, czcionka, rozmiar, odstępy, szerokość, markdown",
+    "section_formatBar": "pasek formatowania, pasek narzędzi, toolbar, przyciski, układ, menu plus",
+    "section_lists": "lista, pasek boczny, siatka, widoki, strona startowa, karty, przestrzenie",
     "section_language": "język, tłumaczenie, wersja językowa",
+    "section_date": "data, czas, godzina, zegar, format, dzień, miesiąc, rok, dziennik, pamiętnik, tytuł wpisu",
     "section_about": "o aplikacji, wersja, informacje, autorzy",
     "section_help": "pomoc, faq, wsparcie, pytania, poradnik",
     "stats_writing": "słowa, liczba notatek, aktywność, mapa aktywności",
@@ -30,6 +33,7 @@
     "stats_wellness": "zdrowie, nastrój, sen, leki, trackery",
     "stats_wellnessExport": "lekarz, raport, csv, pdf",
     "journals_suffix": "tytuł, nazwa dziennika, tytuł wpisu",
+    "journals_titles": "dziennik, pamiętnik, tytuł wpisu, nowy wpis, format tytułu",
     "import_export": "pobierz, zapisz, kopia zapasowa, archiwum",
     "export_zipBackup": "kopia zapasowa, zip, markdown, pobierz wszystko",
     "import_vault": "hasła, loginy, menedżer haseł",
@@ -69,6 +73,7 @@
     "appearance_startView": "strona startowa, start, domyślny widok, otwieraj na",
     "appearance_view": "siatka, lista, karty, układ",
     "appearance_sinkChecked": "zadania, lista kontrolna, pole wyboru, zrobione, ukończone, kolejność, dół",
+    "appearance_spaces": "praca, osobiste, prywatne, przestrzeń robocza, obszar roboczy, oddzielić, przełącz, profil, kontekst",
     "appearance_sidebar": "pasek boczny, ukryj widoki, menu, lista wszystkie",
     "language_spellCheck": "pisownia, sprawdzanie pisowni, czerwone podkreślenie, literówki, słownik",
     "language_language": "język, tłumaczenie, wersja językowa",
@@ -82,6 +87,7 @@
     "about_changelog": "informacje o wydaniu, co nowego, aktualizacje, lista zmian",
     "about_hotkeys": "skróty klawiszowe, skróty, klawisze",
     "about_rating": "recenzja, oceń, gwiazdki, app store",
-    "appearance_openInTabs": "karty, pasek kart, przeglądarka, otwórz, zakładki"
+    "appearance_openInTabs": "karty, pasek kart, przeglądarka, otwórz, zakładki",
+    "appearance_formatBar": "pasek narzędzi, pasek formatowania, przyciski, dostosuj, ułóż, lista punktowana, przekreślenie, koło zębate"
   }
 }

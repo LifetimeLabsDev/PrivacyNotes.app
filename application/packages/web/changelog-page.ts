@@ -6,7 +6,7 @@ import { THEME_SCRIPT_TAG, THEME_TOGGLE_CSS, themeVarsCss } from './static-page-
 import { SEARCH_CORE_SCRIPT_TAG } from './search-core-script.ts';
 import { foldText } from './src/textFold.ts';
 import { loadShots, type Shot } from './changelog-shots.ts';
-import { brandMark, BUG_ICON, CHROME_CSS, LINK_ICON, OG_IMAGE_TAGS, ogLocaleTag, RSS_ICON, SITE_FOOTER, siteNav, TEXT_ICON } from './static-page-chrome.ts';
+import { LIGHTBOX_CSS, brandMark, BUG_ICON, CHROME_CSS, LINK_ICON, OG_IMAGE_TAGS, ogLocaleTag, RSS_ICON, SITE_FOOTER, siteNav, TEXT_ICON } from './static-page-chrome.ts';
 
 // Pre-renders a static /changelog page from the single source of
 // truth: src/publicChangelog.ts. Emitted as changelog/index.html so
@@ -367,16 +367,7 @@ const PAGE_CSS = `.cl-month{margin:30px 0 4px;scroll-margin-top:16px}
 .shotchip{display:inline-flex;align-items:center;gap:4px;margin-left:8px;padding:1px 8px 1px 6px;border:1px solid var(--line);border-radius:999px;font-size:12px;line-height:18px;font-weight:500;color:var(--muted);text-decoration:none;white-space:nowrap;vertical-align:1px;cursor:zoom-in}
 .shotchip svg{width:13px;height:13px}
 .shotchip:hover{color:var(--accent);border-color:var(--accent)}
-.cl-lb{position:fixed;inset:0;z-index:100;background:rgba(8,10,14,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px}
-.cl-lb[hidden]{display:none}
-.cl-lb img{max-width:min(100%,1600px);max-height:calc(100dvh - 110px);width:auto;height:auto;border-radius:10px;background:var(--bg)}
-.cl-lb p{margin:0;max-width:760px;text-align:center;color:#e7e9ec;font-size:14px;line-height:1.5}
-.cl-lb button{position:absolute;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;border-radius:10px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
-.cl-lb button:hover{background:rgba(255,255,255,.2)}
-.cl-lb .lb-x{top:16px;right:16px}
-.cl-lb .lb-p{left:16px;top:50%;margin-top:-22px}
-.cl-lb .lb-n{right:16px;top:50%;margin-top:-22px}
-.cl-lb button[hidden]{display:none}
+${LIGHTBOX_CSS}
 @media(max-width:860px){
 .rail-extra{margin-top:14px;padding-top:0;border-top:0}
 }

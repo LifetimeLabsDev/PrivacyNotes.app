@@ -32,6 +32,10 @@ src-tauri/gen/android/*
 !src-tauri/gen/android/gradlew
 !src-tauri/gen/android/gradlew.bat
 !src-tauri/gen/android/gradle/
+!src-tauri/gen/android/buildSrc/
+src-tauri/gen/android/buildSrc/*
+!src-tauri/gen/android/buildSrc/build.gradle.kts
+!src-tauri/gen/android/buildSrc/src/
 !src-tauri/gen/android/app/
 src-tauri/gen/android/app/*
 !src-tauri/gen/android/app/build.gradle.kts

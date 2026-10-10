@@ -80,6 +80,13 @@
     "clearFilters": "Zrušit filtry",
     "filteredAfter": "a zobrazit položky."
   },
+  "listGroups": {
+    "previous7Days": "Posledních 7 dní",
+    "previous30Days": "Posledních 30 dní",
+    "other": "Ostatní",
+    "collapseAll": "Sbalit všechny skupiny",
+    "expandAll": "Rozbalit všechny skupiny"
+  },
   "headerLabel": {
     "allItems": "Vše",
     "untagged": "Bez značek",
@@ -149,7 +156,7 @@
     "exitHover": "Ukončit režim Zen (Esc)",
     "enterHover": "Zapnout režim Zen",
     "proHover": "Režim Zen (Pro)",
-    "enterAriaShortcut": "Zapnout režim Zen (⌘⇧F)"
+    "enterAriaShortcut": "Zapnout režim Zen ({{keys}})"
   },
   "editor": {
     "backToList": "Zpět na seznam poznámek",
@@ -231,10 +238,10 @@
   },
   "settings": {
     "groupYourNotes": "Tvoje poznámky",
+    "groupPreferences": "Předvolby",
     "groupAccount": "Účet a data",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "Statistiky",
-    "journalsLabel": "Deníky",
     "importLabel": "Import a export",
     "planLabel": "Účet",
     "storageLabel": "Úložiště",
@@ -242,9 +249,13 @@
     "securityLabel": "Zabezpečení",
     "accountLabel": "ID a synchronizace",
     "appearanceLabel": "Vzhled",
+    "editorLabel": "Editor",
+    "formatBarLabel": "Panel nástrojů",
+    "listsLabel": "Seznamy",
     "helpLabel": "Nápověda",
     "aboutLabel": "O aplikaci",
-    "languageLabel": "Datum a jazyk",
+    "languageLabel": "Jazyk",
+    "dateLabel": "Datum",
     "languageDesc": "Vyber jazyk, ve kterém se PrivacyNotes zobrazuje."
   },
   "importStore": {

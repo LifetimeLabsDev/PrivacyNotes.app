@@ -39,7 +39,9 @@
     "dateTime": "Date et heure",
     "footnote": "Note de bas de page",
     "spoiler": "Spoiler",
-    "copyBox": "Bloc à copier"
+    "copyBox": "Bloc à copier",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Personnaliser la barre de mise en forme"
   },
   "align": {
     "left": "Aligner à gauche",
@@ -81,7 +83,16 @@
       "bug": "Bug",
       "note": "Note",
       "abstract": "Résumé",
-      "failure": "Échec"
+      "failure": "Échec",
+      "fold": "Repliable",
+      "idea": "Idée",
+      "important": "Important",
+      "caution": "Prudence",
+      "todo": "À faire",
+      "goal": "Objectif",
+      "decision": "Décision",
+      "definition": "Définition",
+      "seealso": "Voir aussi"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "Mise en forme",
     "insert": "Insérer",
     "blocks": "Blocs",
     "notation": "Notation"
@@ -145,6 +157,8 @@
     "hide": "Masquer le plan",
     "hideTitle": "Masquer le plan (Échap)",
     "copyHeadingLink": "Copier le lien vers le titre",
+    "copyNoteLink": "Copier le lien de note",
+    "copyHeadingShortcut": "Copier le raccourci vers le titre",
     "copied": "Copié"
   },
   "bodyMenu": {
@@ -242,5 +256,47 @@
     "missing": "Pas de texte de note. Clique pour l’ajouter.",
     "ariaRef": "Note {{n}}",
     "ariaSection": "Notes de bas de page"
+  },
+  "formatBar": {
+    "tryIt": "Essaie : organise la barre ici et vois ce que ça donne.",
+    "previewOnly": "Aperçu seulement. Ta disposition est enregistrée dès que tu as Pro.",
+    "discard": "Ignorer",
+    "keepLayout": "Garder cette disposition",
+    "hintDrag": "Fais glisser pour déplacer, clique pour les options.",
+    "hintTap": "Touche un bouton pour voir ses options.",
+    "onBar": "Dans la barre",
+    "inMenu": "Dans le menu +",
+    "menuEmpty": "Le menu est vide, donc le bouton + n'est pas affiché.",
+    "hidden": "Masqués",
+    "hiddenNote": "Ils fonctionnent toujours par raccourci et en Markdown.",
+    "hiddenDrop": "Dépose un bouton ici pour le masquer.",
+    "hiddenEmpty": "Rien n'est masqué.",
+    "alwaysVisible": "Toujours visibles",
+    "pinned": "Ouvre un panneau, reste donc dans la barre ou masqué",
+    "optionsFor": "Options pour {{item}}",
+    "moveUp": "Monter",
+    "moveDown": "Descendre",
+    "moveLeft": "Déplacer à gauche",
+    "moveRight": "Déplacer à droite",
+    "home": {
+      "bar": "Dans la barre",
+      "menu": "Dans le menu +",
+      "hidden": "Masqué"
+    },
+    "opensPanel": "ouvre un panneau",
+    "showsRecording": "affiche l'enregistrement",
+    "refuse": {
+      "menuNotAllowed": "{{item}} peut être dans la barre ou masqué, pas dans le menu +.",
+      "lastOnBar": "Garde au moins un bouton dans la barre."
+    },
+    "items": {
+      "link": "Lien",
+      "notelink": "Lien de note",
+      "audio": "Enregistrement"
+    },
+    "positionTitle": "Position de la barre",
+    "positionNote": "Choisis où se place la barre de mise en forme dans l’éditeur.",
+    "positionTop": "Haut",
+    "positionBottom": "Bas"
   }
 }

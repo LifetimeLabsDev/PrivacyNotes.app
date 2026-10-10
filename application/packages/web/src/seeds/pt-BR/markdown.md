@@ -59,13 +59,16 @@ A coluna do meio está centralizada e a última alinhada à direita. Arraste a b
 Um aviso é uma caixa colorida para algo que ninguém pode deixar passar.
 
 > [!tip]+ Dica
-> Clique no título de um aviso para fechá-lo.
+> Clique no ícone para fechá-lo.
 
 > [!warning]+ Atenção
 > Cada tipo tem sua cor e seu ícone.
 
 > [!danger]+ Perigo
-> São nove tipos. O menu **Inserir** lista todos.
+> São muitos tipos. O menu **Inserir** lista todos.
+
+> [!fold]- Recolhível
+> Sem caixa e sem cor: só texto que fica fora do caminho até você abrir.
 
 ## Citações
 

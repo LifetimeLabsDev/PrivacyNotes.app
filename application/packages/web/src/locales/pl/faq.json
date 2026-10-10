@@ -49,13 +49,7 @@
     "mdDemoScripts": "Indeks górny, indeks dolny, podkreślenie",
     "mdDemoMath": "Matematyka (KaTeX)",
     "mdDemoQuote": "Cytat i link do notatki",
-    "mdDemoDivider": "Separator",
-    "hkShowcase": "Pełna lista",
-    "hkMac": "Mac",
-    "hkPc": "Windows i Linux",
-    "hkBrowser": "Przeglądarka",
-    "hkDesktop": "Aplikacja na komputer",
-    "hkLayout": "Skróty działają według znaków, które wpisuje twoja klawiatura, a nie według położenia klawiszy w układzie amerykańskim: naciśnij klawisz, który wpisuje pokazany znak (w układzie niełacińskim klawisz w jego amerykańskim miejscu). Klawisz, który wpisuje znak z AltGr, zawsze go wpisuje."
+    "mdDemoDivider": "Separator"
   },
   "groups": {
     "gettingStarted": "Pierwsze kroki",
@@ -100,6 +94,14 @@
       "a": [
         "Notatki, tytuły, tagi i załączniki są zawsze zaszyfrowane, na twoim urządzeniu i w drodze na serwer. Przy samodzielnym przechowywaniu, od którego zaczyna każde konto utworzone za pomocą frazy, po naszej stronie nie ma klucza do odszyfrowania. Przy rejestracji przez Google, Apple lub GitHub aplikacja pyta o miejsce przechowywania klucza i zaczyna od opcji „Prosto i wygodnie”. Zapisuje ona frazę na naszym serwerze, zaszyfrowaną naszym kluczem. W tym trybie nasz serwer może odszyfrować frazę, a więc także twoje notatki. Ustawienia > Konto > Zarządzanie kluczem pokazuje obecny tryb i pozwala go zmienić.",
         "Widzimy informacje potrzebne do działania usługi: ile zaszyfrowanej przestrzeni zajmujesz, ile urządzeń jest połączonych i znaczniki czasu synchronizacji. Jeśli używasz tylko frazy i nie masz połączonego konta Google, Apple ani GitHub, nie znamy twojego adresu e-mail."
+      ]
+    },
+    "app-privacy-label": {
+      "q": "Dlaczego etykieta prywatności w App Store mówi, że moje dane są ze mną powiązane?",
+      "a": [
+        "Ponieważ Apple wymaga jednej etykiety, która obejmuje wszystko, co może trafić na nasz serwer, nawet jeśli dociera zaszyfrowane i nawet jeśli wysyłają to tylko niektóre konta. Powiązane z tobą znaczy przypisane do konta, a konto utworzone za pomocą frazy to klucz, a nie imię i nazwisko. Nic nie służy do śledzenia, a aplikacja nie zawiera analityki, reklam ani raportów o awariach. Każdy wiersz etykiety oznacza jedną rzecz:",
+        "- **Treści użytkownika**: twoje notatki i pliki, zaszyfrowane na twoim urządzeniu. Przy samodzielnym przechowywaniu nie możemy ich odczytać.\n- **Identyfikatory**: klucz publiczny wyprowadzony z twojej frazy odzyskiwania oraz skrót urządzenia obliczany na twoim urządzeniu, który służy wyłącznie do egzekwowania limitu urządzeń w darmowej wersji.\n- **Dane kontaktowe**: adres e-mail, tylko jeśli logujesz się przez Google, Apple lub GitHub.\n- **Zakupy**: czy twoje konto ma Pro. Płatność obsługuje Apple i nigdy nie widzimy twojej karty.",
+        "Aby ta lista była dla twojego konta jak najkrótsza, zarejestruj się za pomocą frazy odzyskiwania zamiast logowania przez Google, Apple lub GitHub i zachowaj samodzielne przechowywanie. Ustawienia > Konto > Zarządzanie kluczem pokazuje obecny tryb. [Co widzi PrivacyNotes](/pl/help/what-can-you-see/) wyjaśnia resztę."
       ]
     },
     "phrase-vs-password": {
@@ -400,7 +402,7 @@
     "languages": {
       "q": "W jakich językach mówi aplikacja?",
       "a": [
-        "Po angielsku, niemiecku, francusku, włosku, hiszpańsku, niderlandzku, polsku, czesku, katalońsku, turecku, szwedzku, ukraińsku, rosyjsku, japońsku, koreańsku, po chińsku tradycyjnym, po tajsku, po arabsku oraz po portugalsku w odmianie europejskiej i brazylijskiej. Aplikacja domyślnie idzie za językiem systemu, albo możesz wybrać jeden na stałe w Ustawienia > Data i język > Język na każdym urządzeniu.",
+        "Po angielsku, niemiecku, francusku, włosku, hiszpańsku, niderlandzku, polsku, czesku, katalońsku, turecku, szwedzku, ukraińsku, rosyjsku, japońsku, koreańsku, po chińsku tradycyjnym, po tajsku, po arabsku oraz po portugalsku w odmianie europejskiej i brazylijskiej. Aplikacja domyślnie idzie za językiem systemu, albo możesz wybrać jeden na stałe w Ustawienia > Język na każdym urządzeniu.",
         "Tłumaczenia są darmowe dla wszystkich, to nie dodatek Pro. Planujemy kolejne języki; jeśli brakuje Twojego, napisz nam na [GitHubie](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) albo [Reddicie](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -458,8 +460,7 @@
       "q": "Jakie są skróty klawiszowe?",
       "a": [
         "Naciśnij ? w dowolnym miejscu aplikacji, aby otworzyć wbudowaną ściągawkę, dostępną też w Ustawienia > O aplikacji. Skróty obejmują nawigację, akcje na notatkach, formatowanie i widoki - a na Windowsie i Linuksie każdy Cmd czyta się jako Ctrl, a Option jako Alt.",
-        "Najważniejsze: Cmd+K przechodzi do dowolnego elementu lub ustawienia po nazwie, a jego ostatni wiersz przeszukuje tekst otwartej sekcji; / ustawia kursor w wyszukiwaniu, J i K przechodzą po liście, Cmd+[ i Cmd+] przechodzą wstecz i dalej po otwartych wcześniej elementach, Alt+Shift+N zaczyna nową notatkę, Cmd+Backspace wyrzuca zaznaczoną do kosza, Cmd+, otwiera Ustawienia. Podczas pisania: Cmd+B pogrubia, Cmd+I pochyla, Cmd+Shift+K wstawia link, Cmd+Shift+9 zaczyna listę zadań, Cmd+F szuka w notatce, Cmd+Shift+O przełącza konspekt, Cmd+Shift+M przełącza na widok Markdown. Cmd+\\ lub Cmd+Shift+D chowa pasek boczny, Cmd+Shift+L zmienia motyw, Cmd+Shift+F włącza tryb Zen (Pro), a Esc wycofuje z niemal wszystkiego, także z filtrów. Wpisz > w wyszukiwaniu lub w Cmd+K (lub naciśnij > poza polem tekstowym), aby znaleźć dowolne polecenie po nazwie i je uruchomić.",
-        "Aplikacje na komputer dodają klawisze, które przeglądarka zostawia dla siebie: Cmd+N tworzy nową notatkę, Cmd+Shift+N nowy element dowolnego typu, Cmd+W zamyka kartę, Ctrl+Tab przełącza między kartami, Cmd+1 do Cmd+9 otwierają sekcje paska bocznego, a Cmd+Shift+P otwiera listę poleceń."
+        "[Ściągawka do druku](/help/keyboard-shortcuts/cheat-sheet) mieści każdy skrót na jednej stronie A4, dla Maca albo dla Windowsa i Linuksa, oraz dla przeglądarki albo aplikacji na komputer. Powstaje z tej samej listy, którą pokazuje aplikacja, więc zawsze pasuje do wersji, której używasz."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -638,8 +639,15 @@
     "tags": {
       "q": "Jak działają tagi?",
       "a": [
-        "Każda otwarta notatka ma pod tytułem wiersz tagów. Wpisz słowo i naciśnij Enter, przecinek albo #, a tag zamieni się w plakietkę. Pasek boczny pokazuje każdy używany tag, a kliknięcie filtruje listę do tych notatek. Możesz zmienić nazwę tagu wszędzie naraz, dodać go do ulubionych, żeby został przypięty na górze, albo go usunąć, z notatkami pod nim lub bez nich.",
+        "Każda otwarta notatka ma pod tytułem wiersz tagów. Wpisz słowo i naciśnij Enter, przecinek albo #, a tag zamieni się w plakietkę. Pasek boczny pokazuje tagi używane w otwartej sekcji, a kliknięcie filtruje listę do tych elementów. Możesz zmienić nazwę tagu wszędzie naraz, dodać go do ulubionych, żeby został przypięty na górze, albo go usunąć, z notatkami pod nim lub bez nich.",
         "Tagi i foldery rozwiązują różne problemy: notatka leży w jednym folderze, ale nosi tyle tagów, ile chcesz, i to jest właśnie to, czego potrzebujesz, gdy chcesz oznaczyć coś jednocześnie tagami „praca” i „faktura”. Importy tagują według źródła, więc wszystko, co przyszło z innej aplikacji, ląduje z własnym tagiem i łatwo je znaleźć albo później uprzątnąć."
+      ]
+    },
+    "organize": {
+      "q": "Jak sekcje, foldery, tagi i przestrzenie działają razem?",
+      "a": [
+        "Wszystko, co przechowujesz, jest w jednej bibliotece. Sekcje na pasku bocznym, takie jak Notatki, Sejf i Dzienniki, to widoki tej biblioteki według typu. Folder to miejsce, więc jeden folder może trzymać notatkę i pasujący do niej login, a drzewo folderów jest takie samo w każdej sekcji. Liczby przy folderze liczą tylko to, co zawiera otwarta sekcja, a folder bez takich elementów jest przyciemniony. Tag to etykieta, a pasek boczny pokazuje tylko tagi używane w otwartej sekcji.",
+        "Przestrzenie dzielą bibliotekę na Osobiste i Praca i pokazują jedną naraz. Folder najwyższego poziomu należy do jednej przestrzeni razem z całą zawartością, a **Przenieś do przestrzeni Praca** w jego menu przenosi go do drugiej. Element bez folderu należy do przestrzeni Osobiste, więc wszystko, co tworzysz w przestrzeni Praca, trafia do jej folderu. Tagi są darmowe, a foldery i przestrzenie wymagają Pro."
       ]
     },
     "note-links": {
@@ -652,8 +660,8 @@
     "appearance": {
       "q": "Czy mogę zmienić wygląd aplikacji?",
       "a": [
-        "Tak, w Ustawienia > Wygląd. Tryb przełącza między Jasny, Ciemny i Auto, który idzie za systemem. Rozmiar tekstu ma cztery stopnie i skaluje tylko powierzchnię pisania, interfejs wokół zostaje na miejscu. Widok układa elementy jako Lista albo Siatka. Edytor decyduje, czy notatki otwierają się Sformatowane, czy jako czysty Markdown.",
-        "Motywy kolorystyczne to jedyna część za Pro: motyw domyślny jest darmowy, a Pro odblokowuje resztę, w jasnym i ciemnym. Tryb zen, który chowa wszystko poza twoim tekstem, też jest w Pro (Cmd+Shift+F). Tryb i rozmiar tekstu zostają na urządzeniu, na którym je ustawisz. Cała reszta idzie za twoim kontem na inne urządzenia."
+        "Tak. Ustawienia > Wygląd odpowiadają za wygląd: **Tryb** przełącza między Jasny, Ciemny i Auto, który idzie za systemem, a do tego wybierasz jeden motyw kolorystyczny do trybu jasnego i jeden do ciemnego. Ustawienia > Edytor odpowiadają za pisanie: **Rozmiar tekstu** ma pięć stopni i skaluje tylko powierzchnię pisania, więc interfejs wokół zostaje na miejscu, a **Edytor** decyduje, czy notatki otwierają się Sformatowane, czy jako czysty Markdown. Ustawienia > Listy układają elementy jako Lista albo Siatka. W aplikacjach na komputer **Rozmiar aplikacji** w Ustawienia > Wygląd skaluje całe okno. Przycisk **Wygląd** w stopce zawiera ustawienia, które zmieniasz najczęściej, z trzema ulubionymi motywami dla każdego trybu.",
+        "Motywy kolorystyczne wymagają Pro: motyw domyślny jest darmowy, a Pro odblokowuje resztę, w jasnym i ciemnym, plus [własne motywy](/pl/help/custom-themes/). Tryb Zen, który chowa wszystko poza Twoim tekstem (Cmd+Shift+F), też jest w Pro. Przenoszenie [paska formatowania](/pl/help/format-bar/) na górę lub na dół jest darmowe, a układanie jego przycisków wymaga Pro. Tryb, wybrane motywy kolorów i trzy ulubione, rozmiar tekstu, Lista albo Siatka oraz rozmiar aplikacji zostają na urządzeniu, na którym je ustawisz. Tryb edytora, interlinia, kolory notatek i ustawienia list idą za Twoim kontem na inne urządzenia."
       ]
     },
     "share-with-someone": {
@@ -761,6 +769,139 @@
       "a": [
         "Twoje miejsce już jest wolne. W chwili, gdy usunięcie się zsynchronizuje, te bajty przestają liczyć się do twojego limitu, na serwerze tak samo jak na tym urządzeniu. Jeśli pasek dalej pokazuje starą liczbę, naciśnij ikonę odświeżania obok: przelicza od nowa z serwera i pomija wszystko, co już czeka w kolejce do usunięcia. Urządzenie, które było offline, trzyma swój ostatni wynik, dopóki nie nadrobi zaległości.",
         "„Kilka dni”, o których mówi aplikacja, dotyczy samego zaszyfrowanego pliku, a nie twojego limitu, i to czekanie jest celowe. Usunięcie pliku z pamięci jest ostateczne, nie ma kosza, z którego dałoby się go wyłowić. Urządzenie, które nie skończyło synchronizacji, ma niepełny obraz twoich notatek, więc mogłoby usunąć obraz, który inna notatka wciąż pokazuje. Dlatego plik czeka co najmniej 24 godziny i usuwa go tylko urządzenie, które zakończyło synchronizację bez błędów. Ta cierpliwość nic cię nie kosztuje, bo miejsce zostało zwolnione w dniu usunięcia."
+      ]
+    },
+    "spoiler-text": {
+      "q": "Jak ukryć spoiler w notatce?",
+      "a": [
+        "Zaznacz tekst i wybierz **Spoiler** w menu + paska formatowania albo wpisz go między dwiema parami pionowych kresek: `||spoiler||`. Tekst od razu się rozmywa. Podczas edycji pojawia się, gdy tylko dotknie go kursor, i znów się rozmywa, gdy kursor przejdzie dalej. W notatce tylko do odczytu pokazuje go kliknięcie.",
+        "Lista notatek i podglądy pokazują w jego miejscu `•••`, więc nawet długość niczego nie zdradza. Wyszukiwanie nadal znajduje słowa w spoilerze, eksport HTML trzyma je rozmyte, dopóki czytelnik nie kliknie, a wydruk je pokazuje. Eksport Markdown zachowuje kreski, które inne aplikacje Markdown pokazują jako zwykłe znaki wokół tekstu. Spoilery są darmowe."
+      ]
+    },
+    "copy-box": {
+      "q": "Jak zrobić tekst, który kopiuje się jednym kliknięciem?",
+      "a": [
+        "Dodaj pole do kopiowania: wybierz **Pole do kopiowania** w menu + paska formatowania, a potem wpisz albo wklej do niego tekst, na przykład polecenie, adres albo kod. Przycisk w jego rogu kopiuje cały tekst do schowka i na chwilę pokazuje **Skopiowano**. Blok kodu i pole do kopiowania można zamieniać jedno w drugie, więc możesz też przełączyć istniejący blok.",
+        "Kod w tekście też da się skopiować. W notatce tylko do odczytu kopiuje go kliknięcie albo dotknięcie. Podczas edycji kopiujesz go, klikając z wciśniętym klawiszem Cmd na Macu albo z wciśniętym klawiszem Ctrl na Windowsie i Linuksie, więc zwykłe kliknięcie nadal ustawia kursor. Pole do kopiowania zapisuje się jako blok kodu z językiem `copy`, który inne aplikacje Markdown pokazują jako zwykły blok kodu. Oba są darmowe."
+      ]
+    },
+    "footnotes": {
+      "q": "Jak dodać przypisy do notatki?",
+      "a": [
+        "Wybierz **Przypis** w menu + paska formatowania. Aplikacja wstawia kolejny numer w miejscu kursora, tworzy pusty przypis pod tekstem i ustawia w nim kursor. Możesz też wpisać `[^1]` tuż po słowie i zacząć wiersz od `[^1]: `, żeby napisać sam przypis. Oznaczeniem może być słowo, a nie tylko liczba.",
+        "Kliknij numer, żeby przejść do jego przypisu, a strzałka powrotu albo Escape zabiera Cię z powrotem do tekstu. Na komputerze przypis pokazuje się w małej karcie, gdy wskaźnik zatrzyma się na numerze. Numery idą w kolejności tekstu, a notatka zapisuje standardowe przypisy Markdown, więc inne aplikacje Markdown je odczytają. Eksport HTML, PDF i notatka do spalenia zachowują je jako przypisy z linkami. Przypisy są darmowe."
+      ]
+    },
+    "statistics": {
+      "q": "Co pokazują statystyki o moim pisaniu i samopoczuciu?",
+      "a": [
+        "Otwórz Ustawienia > Statystyki albo kliknij licznik notatek i słów w stopce. **Przegląd** podsumowuje Twój tydzień: serię pisania, napisane słowa, nastrój i zapisane dni, a do tego siatkę ostatnich 26 tygodni i godziny, w których zwykle piszesz. **Pisanie** liczy Twoje notatki, słowa i tagi, pokazuje aktualną i najdłuższą serię oraz wymienia Twoje kamienie milowe. **Samopoczucie** pokazuje na wykresach każdy tracker z Twojego dziennika w wybranym okresie, także własne trackery.",
+        "Wszystko jest liczone na Twoim urządzeniu i nic z tego nie trafia do nas. Słowa i godziny pisania liczą to, co piszesz na danym urządzeniu, więc każde urządzenie pokazuje własne liczby. Wykresy, serie, kalendarz leków i **Pobierz JSON** są darmowe. Pro dodaje podsumowanie tygodnia, to, co wpływa na Twój nastrój, tabelę Wzorce, porównania z tym samym i następnym dniem, **PDF dla lekarza** oraz gotowy do skopiowania prompt dla AI."
+      ]
+    },
+    "drag-to-folder": {
+      "q": "Czy mogę przeciągnąć notatkę do folderu albo na tag?",
+      "a": [
+        "Tak. Przeciągnij notatkę z listy na folder na pasku bocznym, żeby ją tam przenieść, albo na **Bez folderu**, żeby wyjąć ją z folderu. Upuść ją na tag, żeby dodać ten tag, a notatka zachowa tagi, które już miała. Zadania, zakładki, kontakty, elementy Sejfu i przesłane pliki w Plikach przeciąga się tak samo. Przytrzymaj przeciągany element chwilę nad zamkniętym folderem, a folder się otworzy, więc dotrzesz do podfolderu.",
+        "Żeby przenieść kilka naraz, zaznacz je, klikając z wciśniętym klawiszem Cmd na Macu albo z wciśniętym klawiszem Ctrl na Windowsie i Linuksie, dodaj zakres, klikając z wciśniętym klawiszem Shift, a potem przeciągnij dowolny zaznaczony element. Przeciąganie wymaga myszy, gładzika albo rysika i okna na tyle szerokiego, żeby mieścił się pasek boczny. Na telefonie użyj zamiast tego **Przenieś do folderu** w menu „...”. Tagi są darmowe, a [foldery](/pl/help/folders/) wymagają Pro."
+      ]
+    },
+    "custom-themes": {
+      "q": "Czy mogę stworzyć własny motyw kolorystyczny?",
+      "a": [
+        "Tak, z Pro. Otwórz Ustawienia > Wygląd i wybierz **Nowy motyw**. Wybierz sześć kolorów (Tło, Pasek boczny, Obramowanie, Tekst, Przygaszony tekst i Akcent), a aplikacja zaproponuje resztę, podczas gdy aplikacja za panelem na bieżąco pokazuje Twój motyw. Sprawdzanie kontrastu oznacza tekst, który trudno przeczytać, i proponuje **Napraw wszystko**. Zapisać można, gdy każde sprawdzenie wypadnie pomyślnie.",
+        "Menu na każdej karcie motywu ma **Kopiuj kod**, który kopiuje motyw jako krótki kod tekstowy do wysłania komukolwiek, a **Wklej kod motywu** dodaje kod otrzymany od kogoś innego. Wybierasz jeden motyw do trybu jasnego i jeden do ciemnego, **Ulubiony** w menu karty umieszcza do trzech motywów każdego trybu w przycisku **Wygląd** w stopce, a motywy, które tworzysz, synchronizują się na wszystkie Twoje urządzenia. Więcej znajdziesz na [stronie z motywami](https://privacynotes.app/themes), gdzie możesz też zgłosić własny. Motyw Default jest darmowy, a każdy inny wymaga Pro."
+      ]
+    },
+    "format-bar": {
+      "q": "Czy mogę wybrać, które przyciski są na pasku formatowania?",
+      "a": [
+        "Tak. Kliknij koło zębate na końcu paska formatowania albo otwórz Ustawienia > Pasek formatowania. Każdy przycisk ma trzy miejsca: **Na pasku**, **W menu +** albo **Ukryte**. Przeciągnij przycisk, żeby go przenieść, albo kliknij go, żeby zobaczyć jego opcje. Ukryty przycisk nadal działa przez swój skrót klawiszowy i składnię Markdown, więc ukrycie niczego nie zabiera.",
+        "Przenoszenie paska na górę lub na dół jest darmowe na każdym koncie. Układanie jego przycisków należy do Pro: na koncie darmowym Ustawienia > Pasek formatowania działają jako podgląd, który możesz wypróbować, a Twój układ zapisze się, gdy będziesz mieć Pro. Twój układ idzie za Twoim kontem na każde urządzenie, a **Przywróć domyślne** przywraca standardowy pasek. Na ekranie dotykowym pasek to jeden wiersz przewijany w bok, na każdym koncie, więc żaden przycisk nie chowa się w drugim wierszu."
+      ]
+    },
+    "window-zoom": {
+      "q": "Czy mogę powiększyć albo pomniejszyć całą aplikację na komputer?",
+      "a": [
+        "Tak, w aplikacjach na komputer dla Maca, Windowsa i Linuksa. Naciśnij Cmd i klawisz plus na Macu albo Ctrl i klawisz plus na Windowsie i Linuksie, żeby powiększyć całe okno. Klawisz minus je pomniejsza, a 0 przywraca normalny rozmiar. To samo ustawienie to **Rozmiar aplikacji** w Ustawienia > Wygląd, z krokami od 80% do 200%.",
+        "Rozmiar aplikacji skaluje wszystko naraz: pasek boczny, listę, menu i Twój tekst. Żeby zmienić tylko to, co piszesz, użyj **Rozmiar tekstu** w Ustawienia > Edytor. Rozmiar aplikacji dotyczy urządzenia, na którym go ustawisz. W przeglądarce to samo robi jej własne powiększenie."
+      ]
+    },
+    "zen-mode": {
+      "q": "Co to jest tryb Zen?",
+      "a": [
+        "Tryb Zen chowa wszystko poza notatką, którą piszesz: pasek boczny, listę i stopkę, a pasek formatowania też startuje ukryty. Otwarte karty zostają na górze. Naciśnij Cmd+Shift+F na Macu albo Ctrl+Shift+F na Windowsie i Linuksie, kliknij **Tryb Zen** w stopce albo kliknij prawym przyciskiem puste miejsce i wybierz **Tryb Zen**.",
+        "Naciśnij Escape albo jeszcze raz te same klawisze, albo kliknij **Wyjdź z Zen** u góry notatki, żeby wrócić. **Pokaż pasek formatowania** przywraca pasek formatowania, gdy zostajesz w trybie Zen. Tryb Zen jest częścią Pro, a w [wersji demo](https://try.privacynotes.app) możesz go wypróbować bez konta."
+      ]
+    },
+    "date-format": {
+      "q": "Czy mogę zmienić sposób wyświetlania dat?",
+      "a": [
+        "Tak, w Ustawienia > Data. **Format daty** oferuje Automatycznie, Najpierw dzień, Najpierw miesiąc i Najpierw rok (ISO), a **Format godziny** oferuje Automatycznie, 24-godzinny i 12-godzinny. Automatycznie idzie za językiem aplikacji i regionem każdego urządzenia, a Twój wybór obowiązuje na wszystkich Twoich urządzeniach.",
+        "Wpisy w dzienniku biorą tytuł z daty, a **Tytuły w dzienniku** w tym samym miejscu oferują gotowe formaty w Twoim formacie daty albo **Własny wzorzec**, żeby zbudować własny z tokenów takich jak `YYYY`, `MMMM` i `ddd`, przy czym słowa w nawiasach kwadratowych zostają dokładnie tak, jak je wpiszesz. Nowy wzorzec dotyczy tylko nowych wpisów. Żeby wstawić dzisiejszą datę do dowolnej notatki, naciśnij Cmd+; na Macu albo Ctrl+; na Windowsie i Linuksie, a z dodatkowym Shift wstawisz też godzinę. Wszystko to jest darmowe."
+      ]
+    },
+    "checklists": {
+      "q": "Czy mogę wyczyścić, posortować albo zmienić kolejność listy zadań?",
+      "a": [
+        "Tak. Menu „...” notatki ma **Odznacz wszystkie elementy**, żeby użyć listy ponownie, **Usuń zaznaczone elementy**, żeby usunąć zrobione, i **Sortuj elementy według stanu**, żeby przenieść zaznaczone elementy pod resztę. Każda z tych opcji pojawia się tylko wtedy, gdy coś by zmieniła. Usuwanie najpierw pyta o potwierdzenie, a sortowanie i odznaczanie można cofnąć przez Cmd+Z albo Ctrl+Z. Na dole notatki widać postęp, na przykład „Zaznaczono 3 z 6”.",
+        "Żeby ręcznie zmienić kolejność, przeciągnij uchwyt na końcu elementu. Zagnieżdżone elementy przesuwają się razem z nim, a Escape anuluje przeciąganie. Uchwyt pojawia się po najechaniu kursorem na komputerze, a na ekranie dotykowym jest stale lekko widoczny. Zaznaczony element domyślnie przesuwa się pod niezaznaczone na swojej liście; wyłączysz to opcją **Przenoś zaznaczone elementy w dół** w Ustawienia > Listy. Wszystko to jest darmowe."
+      ]
+    },
+    "quick-switcher": {
+      "q": "Co to jest funkcja „Przejdź do” i co potrafi znaleźć?",
+      "a": [
+        "Funkcja „Przejdź do” przenosi Cię do czegokolwiek po tytule. Naciśnij Cmd+K na Macu albo Ctrl+K na Windowsie i Linuksie (działa też Cmd+P albo Ctrl+P) albo kliknij **Przejdź do** na pasku bocznym lub w nagłówku listy. Wpisz część tytułu, żeby znaleźć notatki, zadania, wpisy w dzienniku, elementy Sejfu, zakładki, kontakty, załączone pliki i ustawienia. Enter otwiera element, a Option+Enter albo Alt+Enter otwiera go w karcie.",
+        "Wpisz najpierw >, żeby zamiast tego uruchomić polecenie, na przykład utworzyć nową notatkę albo przejść do sekcji. Żeby znaleźć słowa w treści zamiast w tytułach, wybierz wiersz **Szukaj wszędzie** albo naciśnij Cmd+Enter lub Ctrl+Enter w dowolnym wierszu. Dopasowywanie odbywa się na Twoim urządzeniu, więc nic, co wpisujesz, nie trafia do nas. Funkcja „Przejdź do” jest darmowa."
+      ]
+    },
+    "find-in-note": {
+      "q": "Jak wyszukać słowo w jednej notatce?",
+      "a": [
+        "Naciśnij Cmd+F na Macu albo Ctrl+F na Windowsie i Linuksie w otwartej notatce albo kliknij lupę w górnym rogu długiej notatki. Wpisz słowo, a potem naciśnij Enter, żeby przejść do następnego wyniku, i Shift+Enter, żeby wrócić do poprzedniego, a pasek liczy wyniki. Naciśnij te same klawisze jeszcze raz albo kliknij X, żeby go zamknąć. Wyszukiwanie działa też w notatkach tylko do odczytu.",
+        "Z Pro możesz też zamieniać: naciśnij Option+Cmd+F na Macu albo Ctrl+H na Windowsie i Linuksie albo wybierz **Znajdź i zamień** w menu „...” notatki. Zamień jeden wynik albo **Wszystkie** naraz, z opcją **Uwzględniaj wielkość liter**, gdy jej potrzebujesz. Oba paski działają też po wybraniu **Pokaż markdown**, gdzie sięgają do surowego tekstu, na przykład do języka bloku kodu. Żeby przeszukać wszystkie notatki, użyj wyszukiwania na liście, do którego przenosi klawisz /. [Każde wyszukiwanie działa na Twoim urządzeniu](/pl/help/search-local/)."
+      ]
+    },
+    "screen-capture": {
+      "q": "Czy mogę ukryć notatki przed zrzutami ekranu i udostępnianiem ekranu?",
+      "a": [
+        "Tak, w aplikacjach na Androida, iPhone'a i iPada, Maca i Windowsa. Otwórz Ustawienia > Bezpieczeństwo > Blokada i włącz **Ukrywaj przed przechwytywaniem ekranu**. Zrzuty ekranu, nagrania ekranu i udostępnianie ekranu pokazują wtedy puste okno zamiast Twoich notatek, na ile pozwala urządzenie. Na telefonie ukrywa to też notatki w przełączniku aplikacji.",
+        "Przełącznik jest domyślnie wyłączony, dotyczy tylko urządzenia, na którym go włączysz, i jest darmowy. Przeglądarki i Linux nie dają aplikacji żadnego sposobu na zablokowanie przechwytywania, więc tam przełącznik się nie pojawia. Działa samodzielnie i nie wymaga blokady aplikacji ani PIN-u."
+      ]
+    },
+    "connected-logins": {
+      "q": "Czy mogę połączyć z kontem więcej niż jedną metodę logowania?",
+      "a": [
+        "Tak. Otwórz Ustawienia > Konto > Konta i połącz Google, Apple albo GitHub, żeby dodać metodę logowania, która otwiera ten sam sejf. Możesz połączyć kilka, nawet dwa konta u jednego dostawcy, a Twoja fraza odzyskiwania dalej działa obok nich. Połączenie albo odłączenie konta nie zmienia Twoich notatek ani szyfrowania.",
+        "Metody logowania, która należy już do innego sejfu, nie da się połączyć, bo sejfy nigdy się nie łączą. **Odłącz** najpierw prosi o Twoje 12 słów. Jeśli przechowujemy Twoją frazę za Ciebie, ostatnie połączone konto zostaje, dopóki nie połączysz innego albo nie zapiszesz frazy i nie przejdziesz na samodzielne przechowywanie. Przy samodzielnym przechowywaniu nowe urządzenie nadal prosi o Twoje 12 słów. Połączone konta są w wersji beta."
+      ]
+    },
+    "session-expired": {
+      "q": "Dlaczego aplikacja pokazuje „Sesja wygasła”?",
+      "a": [
+        "Oznacza to, że nasz serwer nie akceptuje już logowania z tego urządzenia, więc synchronizacja się zatrzymuje. Nigdy nie powoduje tego słabe połączenie ani awaria serwera: zanim aplikacja pokaże komunikat, sprawdza to na serwerze drugi raz. Twoje notatki są bezpieczne na tym urządzeniu.",
+        "Kliknij **Zaloguj się ponownie**. Aplikacja najpierw pyta, czy masz zapisaną frazę odzyskiwania, bo żeby wrócić, potrzebujesz jej albo metody logowania użytej przy rejestracji. Notatki, które jeszcze się nie zsynchronizowały, zostają na urządzeniu i zsynchronizują się, gdy się zalogujesz. To samo okno ostrzega, jeśli jakieś pliki nie skończyły się przesyłać, bo przy wylogowaniu zostaną usunięte."
+      ]
+    },
+    "archive": {
+      "q": "Co robi archiwizacja i czym różni się od kosza?",
+      "a": [
+        "Archiwizacja zabiera element z Twoich list bez usuwania go. Wybierz **Archiwizuj** w menu „...” elementu albo w menu pod prawym przyciskiem myszy, albo na pasku zaznaczenia dla kilku elementów naraz. Zarchiwizowane elementy znikają z widoków Wszystkie i Przypięte, ze swojej sekcji oraz z liczników folderów i tagów, i czekają w widoku **Archiwum** na dole paska bocznego, który pojawia się, gdy coś zostanie zarchiwizowane. Aby zostały we Wszystkie i w licznikach, zaznacz Archiwum w kolumnie **Wszystkie** w Ustawienia > Listy. **Przywróć z archiwum** w tych samych miejscach przywraca element.",
+        "Kosz jest na rzeczy, których chcesz się pozbyć: [usuwa je na zawsze po 30 dniach](/pl/help/trash-auto-delete/), chyba że to wyłączysz. Archiwum nigdy niczego nie usuwa, a zarchiwizowane elementy zostają pod ręką, bo wyszukiwanie w widoku Wszystkie, funkcja „Przejdź do” i linki do notatek nadal je znajdują. Synchronizują się i pozostają zaszyfrowane jak wszystko inne, i nadal liczą się do Twojej pamięci. Archiwizacja działa dla każdego typu elementu i jest darmowa."
+      ]
+    },
+    "share-into-app": {
+      "q": "Czy mogę udostępnić tekst albo link do PrivacyNotes z innej aplikacji?",
+      "a": [
+        "Tak, na iPhonie, iPadzie i Androidzie, w wersji beta. Stuknij przycisk udostępniania w dowolnej aplikacji i wybierz PrivacyNotes. Link do strony staje się zakładką z tytułem strony, tekst staje się nową notatką, a obrazy i pliki trafiają do Plików. Link, który już masz zapisany, zostaje pokazany, zamiast zapisać się drugi raz. Udostępnione elementy przychodzą bez folderu i tagu, więc porządkujesz je, kiedy Ci pasuje.",
+        "Na Androidzie aplikacja najpierw pyta: pokazuje listę tego, co przyszło, i zapisuje to dopiero, gdy wybierzesz **Zapisz wszystko**, albo odrzuca przez **Odrzuć**. Na iPhonie i iPadzie zapis potwierdza karta **Zapisano w PrivacyNotes**. Każdy plik podlega Twojemu [limitowi przesyłania](/pl/help/attachment-limits/), a udostępnienie czeka, aż się zalogujesz i odblokujesz aplikację."
+      ]
+    },
+    "desktop-updates": {
+      "q": "Jak zaktualizować aplikację na komputer?",
+      "a": [
+        "Nie musisz. Aplikacje na Maca i Windowsa oraz linuksowy AppImage szukają aktualizacji przy starcie i gdy do nich wracasz, najczęściej co 12 godzin, i pobierają ją w tle. Potem komunikat mówi **Dostępna aktualizacja**, z przyciskiem **Uruchom ponownie**, żeby dokończyć, i **Changelog**, żeby zobaczyć, co nowego.",
+        "Linuksowy pakiet .deb aktualizuje się przez nowe pobranie: jego komunikat oferuje **Pobierz**, które otwiera [sekcję pobierania](https://privacynotes.app/pl#downloads), a nowy pakiet instalujesz na starym. Pakiet .deb zbyt stary, żeby bezpiecznie synchronizować, wstrzymuje synchronizację, dopóki tego nie zrobisz. Jeśli aplikacja jest zainstalowana przez Scoop na Windowsie, uruchom `scoop update privacynotes`, a komunikat ma do tego **Kopiuj polecenie**. Na Macu Homebrew nie potrzebuje polecenia aktualizacji, bo aplikacja aktualizuje się sama."
       ]
     }
   }

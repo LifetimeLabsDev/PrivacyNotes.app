@@ -6,15 +6,18 @@
   "resultCount_other": "{{count}} 個結果",
   "keywords": {
     "section_stats": "統計, 數字, 連續紀錄, 熱度圖, 字數",
-    "section_journals": "日記, 日誌, 標題, 日期格式",
     "section_import": "匯入, 匯出, 備份, 轉移, 搬家, 下載",
     "section_plan": "方案, 訂閱, pro, 付款, 帳單, 裝置, 登出",
     "section_storage": "儲存空間, 空間, 容量, 配額, 磁碟, GB, 已滿",
     "section_images": "圖片, 照片, 相片, 壓縮, 畫質",
     "section_security": "安全性, 密碼, 鎖定, 隱私",
     "section_me": "同步, 帳號, 帳戶, 身分, ID",
-    "section_appearance": "外觀, 顯示, 設計, 顏色, 主題",
+    "section_design": "外觀, 顯示, 設計, 顏色, 色彩, 佈景主題, 主題, theme",
+    "section_editor": "書寫, 寫作, 編輯器, 文字, 字型, 字體, 大小, 行距, 寬度, markdown",
+    "section_formatBar": "工具列, 格式列, 按鈕, 排列, 加號選單, + 選單",
+    "section_lists": "清單, 列表, 側邊欄, 格狀, 檢視, 起始頁, 分頁, 空間",
     "section_language": "語言, 翻譯, 地區",
+    "section_date": "日期, 時間, 時鐘, 格式, 日, 月, 年, 日誌, 日記, 紀錄標題",
     "section_about": "關於, 版本, 資訊, 致謝",
     "section_help": "說明, 幫助, 常見問題, FAQ, 支援, 問題, 指南",
     "stats_writing": "字數, 筆記數, 活動, 熱度圖",
@@ -27,6 +30,7 @@
     "stats_wellness": "健康, 心情, 睡眠, 用藥, 藥物, 追蹤",
     "stats_wellnessExport": "醫生, 醫師, 報告, CSV, PDF",
     "journals_suffix": "標題, 日記名稱, 日誌名稱, 條目標題",
+    "journals_titles": "日誌, 日記, 紀錄標題, 新紀錄, 標題格式",
     "import_export": "下載, 儲存, 備份, 封存",
     "export_zipBackup": "備份, ZIP, Markdown, 全部下載",
     "import_vault": "密碼, 登入資訊, 密碼管理器",
@@ -66,6 +70,7 @@
     "appearance_startView": "起始頁, 首頁, 預設檢視, 開啟時",
     "appearance_view": "格狀, 網格, 清單, 卡片, 版面",
     "appearance_sinkChecked": "任務, 檢查清單, 核取方塊, 完成, 順序, 下方",
+    "appearance_spaces": "工作, 個人, 工作區, 空間, 分開, 切換, 設定檔, 情境, work",
     "appearance_sidebar": "側邊欄, 隱藏檢視, 選單, 全部清單",
     "language_spellCheck": "拼字, 拼字檢查, 紅色底線, 錯字, 字典",
     "language_language": "語言, 翻譯, 地區, 中文, 英文",
@@ -79,6 +84,7 @@
     "about_changelog": "版本說明, 更新紀錄, 新功能, 更新",
     "about_hotkeys": "鍵盤快速鍵, 快捷鍵, 快速鍵, 按鍵",
     "about_rating": "評論, 評分, 星星, App Store",
-    "appearance_openInTabs": "分頁, 分頁列, 瀏覽器, 開啟"
+    "appearance_openInTabs": "分頁, 分頁列, 瀏覽器, 開啟",
+    "appearance_formatBar": "工具列, 格式列, 按鈕, 自訂, 排列, 項目符號清單, 刪除線, 齒輪"
   }
 }

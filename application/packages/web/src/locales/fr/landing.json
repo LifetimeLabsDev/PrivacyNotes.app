@@ -334,7 +334,7 @@
     "dataStorageBody": "Blobs chiffrés stockés à Zurich, <flag/> Suisse.",
     "faviconsHeading": "Icônes de sites",
     "faviconsBody1": "Les icônes de sites (favicons) proviennent de DuckDuckGo et de Google, récupérées par notre serveur pour toi. Ton navigateur ne contacte jamais ni l'un ni l'autre, donc ils voient notre serveur demander un domaine et ne te voient jamais.",
-    "faviconsBody2": "Les icônes sont mises en cache sur ton appareil pendant 90 jours. Aucune requête n'inclut ton identité, et tu peux désactiver les icônes dans Paramètres > Apparence."
+    "faviconsBody2": "Les icônes sont mises en cache sur ton appareil pendant 90 jours. Aucune requête n'inclut ton identité, et tu peux désactiver les icônes dans Paramètres > Listes."
   },
   "feedback": {
     "title": "Envoyer un retour",

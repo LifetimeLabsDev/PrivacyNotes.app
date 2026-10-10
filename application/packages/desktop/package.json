@@ -8,7 +8,7 @@
     "build": "tauri build",
     "tauri": "tauri",
     "sync-version": "node scripts/sync-version.mjs",
-    "icon": "tauri icon ../web/icon/1024px-750px-whitespace-height.png --ios-color '#ffffff' && bash scripts/apply-desktop-icon.sh && bash scripts/apply-android-icons.sh",
+    "icon": "python3 scripts/make-app-icons.py && bash scripts/apply-desktop-icon.sh && bash scripts/apply-android-icons.sh",
     "ios:init": "tauri ios init",
     "ios:icons": "bash scripts/apply-ios-appearance-icons.sh",
     "ios:dev": "tauri ios dev --host --features devtools",

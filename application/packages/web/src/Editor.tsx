@@ -1,6 +1,7 @@
 import {
   forwardRef,
   useCallback,
+  useContext,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -8,7 +9,9 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { FormatBarContext } from './formatBarContext';
 import { useEditor, EditorContent, type Editor as TipTapEditor, type JSONContent } from '@tiptap/react';
 import { readDocCache, writeDocCache, DOC_CACHE_MIN_BYTES } from './editorDocCache';
 import { perfSpan } from './perf';
@@ -16,7 +19,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from '@tiptap/extension-link';
 import { LinkAddressPill } from './LinkAddressPill';
-import { findHeadingPos } from './noteHeadings';
+import { findHeadingPos, headingPosByCode } from './noteHeadings';
 import TableRow from '@tiptap/extension-table-row';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
@@ -52,10 +55,10 @@ import { LinkSheet } from './LinkSheet';
 import { Callout, CalloutTitle } from './Callout';
 import { Footnotes, carriedSection } from './footnotes';
 import { useIsMobile } from './useIsMobile';
-import { ContextMenu, useContextMenu, isTouchContextMenu, type ContextMenuItem } from './ContextMenu';
+import { ContextMenu, useContextMenu, isTouchContextMenu, isLongPressEcho, type ContextMenuItem } from './ContextMenu';
 import {
   iconCopy, iconEditPencil, iconExternal, iconTrash,
-  Code, Highlighter, Link as LinkGlyph, Scissors, SortAscending, SortDescending, TextB, TextItalic, TextStrikethrough,
+  Code, Highlighter, Link as LinkGlyph, Plus, Scissors, SortAscending, SortDescending, TextB, TextItalic, TextStrikethrough,
 } from './icons';
 import { Spoiler } from './editorSpoiler';
 import { InlineCodeCopy, inlineCodeHint } from './editorCodeCopy';
@@ -72,7 +75,7 @@ import { ReplaceBar } from './ReplaceBar';
 import { OutlinePanel } from './OutlinePanel';
 import { TableControls } from './TableControls';
 import { Toolbar } from './EditorToolbar';
-import { useEditorPanels, EDITOR_TOP_GAP_PX } from './useEditorPanels';
+import { useEditorPanels } from './useEditorPanels';
 import { APP_KEYS, matchesKey } from './shortcutMatch';
 import { useDebouncedMarkdownSave } from './useDebouncedMarkdownSave';
 import {
@@ -115,8 +118,8 @@ type Props = {
   /** Id of the note being edited - enables the synchronous close-flush
    *  stash (flushStash.ts) so a tab closed mid-debounce loses nothing. */
   noteId?: string;
-  /** When true, nothing edits the note: no toolbar, no click row, no
-   *  replace. Find and the outline stay, because they only read it. */
+  /** When true, nothing edits the note: no toolbar, no "Add a line at
+   *  the top" zone, no replace. Find and the outline stay, because they only read it. */
   readOnly?: boolean;
   /**
    * A static rendering: the note history preview. Read-only, and without the
@@ -132,13 +135,14 @@ type Props = {
    * Hide/Show toggle can live on the tag row. Defaults to visible.
    */
   toolbarVisible?: boolean;
-  /** Whether the user has Pro. Gates the Pro-only callout types. */
+  /** Whether the user has Pro. Gates the replace bar. */
   isPro?: boolean;
-  /** Opens the upgrade modal when a locked Pro callout type is picked, or
-   *  when a free account asks for the replace bar. */
-  onOpenUpgrade?: (trigger: 'callout' | 'replace') => void;
+  /** Opens the upgrade modal when a free account asks for the replace bar. */
+  onOpenUpgrade?: (trigger: 'replace') => void;
   /** Hides the encrypted image / attachment / audio group - see Toolbar. */
   hideEncryptedMedia?: boolean;
+  /** Takes the picture and file buttons' files when that group is hidden - see Toolbar. */
+  onInsertFiles?: (files: File[]) => void;
   /**
    * Controls for the BODY, rendered in the top-right slot beside the
    * collapsed outline pill: find, the rich/markdown switch, invisible
@@ -148,6 +152,11 @@ type Props = {
    * itself.
    */
   bodyControls?: ReactNode;
+  /**
+   * Where the format bar goes when it sits at the bottom: a row the pane
+   * keeps under its scrolling column. Nothing is drawn until it exists.
+   */
+  toolbarSlot?: HTMLElement | null;
   /**
    * Called when a file chip in this note is renamed and that note's name
    * lives outside the document too. Only fires for a note holding exactly
@@ -195,6 +204,9 @@ export type EditorHandle = {
   /** Scroll the heading a note-link names to the top and flash it, with the
    *  caret at its start. `onMissing` runs when the note holds no such heading. */
   scrollToHeading: (heading: string, onMissing?: () => void) => void;
+  /** The same for a shortcut's heading code. A code that matches no heading
+   *  leaves the note at its top, without a message. */
+  scrollToHeadingCode: (itemId: string, code: string) => void;
   /** Open the find bar on the first of `candidates` the text holds, hits
    *  marked: the list search following into the open note (GitHub #288). A
    *  no-op in the history preview, which has no bar, and when the text as
@@ -216,8 +228,11 @@ export type EditorHandle = {
   flushPendingSave: () => void;
 };
 
+/** Room under a touch selection for the drag handles Android hangs below it. */
+const TOUCH_HANDLE_HEIGHT = 32;
+
 const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }>(function EditorInner(
-  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, bodyControls, onRenameFile, fileNote = false, preview = false, sinkCheckedTasks = true },
+  { value, onChange, readOnly = false, onFocusChange, toolbarVisible = true, isPro = false, onOpenUpgrade, noteId, cachedDoc, hideEncryptedMedia, onInsertFiles, bodyControls, toolbarSlot, onRenameFile, fileNote = false, preview = false, sinkCheckedTasks = true },
   ref
 ) {
   const { t } = useTranslation('editor');
@@ -242,6 +257,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
 
   const isMobile = useIsMobile();
   const { spellcheck, invisibles, favicons } = useTheme();
+  const barAtBottom = useContext(FormatBarContext).position === 'bottom';
   const rootRef = useRef<HTMLDivElement>(null);
   // Long-press keyboard guard for the body. See the handleDOMEvents block in
   // editorProps; the note title owns a second one in NotesView.
@@ -340,17 +356,28 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
    * `ContextMenu.tsx` states that a link and editable text keep the
    * browser's own menu, and this is a deliberate exception to both halves,
    * for the same reason `NoteLink.tsx` is one: nothing in the platform menu
-   * can take a link off a word. A long press is untouched, because on a
-   * phone the caret route works - the tap opens a sheet, dismissing it
-   * leaves the cursor in the link, and the toolbar then offers Remove.
+   * can take a link off a word. A touch long press on a link opens the
+   * same menu, and keeps the word the long press selected (below).
    */
+  const touchLinkMenuAt = useRef(0);
+  const stopTouchMenuWatch = useRef<(() => void) | null>(null);
+  useEffect(() => {
+    if (!linkMenu.state) stopTouchMenuWatch.current?.();
+  }, [linkMenu.state]);
   const openBodyMenu = (e: React.MouseEvent) => {
     const ed = editorRef.current;
     // Shift + right click always leaves the browser's own menu.
-    if (!ed || readOnly || isTouchContextMenu(e) || e.shiftKey) return;
+    if (!ed || readOnly || e.shiftKey) return;
+    // Android fires the long press twice; only the first carries the finger.
+    if (isLongPressEcho(e.nativeEvent)) {
+      if (touchLinkMenuAt.current > performance.now() - 1500) e.preventDefault();
+      return;
+    }
+    const touch = isTouchContextMenu(e);
     const at = ed.view.posAtCoords({ left: e.clientX, top: e.clientY });
     if (!at) return;
     const href = linkHrefAt(ed.state, at.pos);
+    if (touch && !href) return;
     if (!href) {
       // Only a click inside a selection that existed before it gets the app
       // menu. A caret, an empty line and a word keep the browser menu, with
@@ -364,7 +391,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     }
     // A right click does not move the caret in every browser, and Edit and
     // Remove both act on the mark the caret is in.
-    ed.chain().focus().setTextSelection(at.pos).run();
+    if (touch) touchLinkMenuAt.current = performance.now();
+    else ed.chain().focus().setTextSelection(at.pos).run();
     const items: ContextMenuItem[] = [
       { label: t('link.menuOpen'), onSelect: () => openLinkHref(ed, href), icon: iconExternal() },
       {
@@ -380,7 +408,37 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
         icon: iconTrash(),
       },
     ];
-    linkMenu.open(e, items);
+    if (!touch) {
+      linkMenu.open(e, items);
+      return;
+    }
+    // The long press has already selected the word under the finger, and that
+    // selection is the start of a drag over more text (issue #454), so it
+    // stays. The menu opens clear of the word and the handles that hang below
+    // it, and a drag of either handle closes it.
+    const word = window.getSelection();
+    const band = () => {
+      const now = window.getSelection();
+      const box = (now && now.rangeCount ? now.getRangeAt(0) : null)?.getBoundingClientRect()
+        ?? ed.view.coordsAtPos(at.pos);
+      return { top: box.top, bottom: box.bottom + TOUCH_HANDLE_HEIGHT };
+    };
+    linkMenu.open(e, items, false, band);
+    stopTouchMenuWatch.current?.();
+    const start = word && word.rangeCount ? word.getRangeAt(0).cloneRange() : null;
+    const onChange = () => {
+      const now = window.getSelection();
+      const r = now && now.rangeCount ? now.getRangeAt(0) : null;
+      if (start && r && r.startContainer === start.startContainer && r.startOffset === start.startOffset
+        && r.endContainer === start.endContainer && r.endOffset === start.endOffset) return;
+      stopTouchMenuWatch.current?.();
+      linkMenu.close();
+    };
+    document.addEventListener('selectionchange', onChange);
+    stopTouchMenuWatch.current = () => {
+      document.removeEventListener('selectionchange', onChange);
+      stopTouchMenuWatch.current = null;
+    };
   };
 
   const [audioState, setAudioState] = useState<AudioRecordingState>('idle');
@@ -835,6 +893,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     outlineOpen,
     setOutlineOpen,
     setOutlineReserve,
+    setPillsEl,
     findSeed,
     openFindWith,
     closeSeededFind,
@@ -844,30 +903,35 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
   } = useEditorPanels({ rootRef, editorRef, editor, isMobile, readOnly, preview, toolbarVisible, isPro, onOpenUpgrade });
 
   /**
-   * Put the caret on a line above everything else in the note - the action
-   * behind the click row that sits above the body.
+   * Put a new empty line above everything else in the note and the caret on
+   * it - the action behind the "Add a line at the top" zone above the body.
    *
-   * The row exists because the first block is the one place a note can become
-   * unreachable: a leading image, table or quote leaves no line to click, and
-   * the keyboard escape (ArrowUp into a gap cursor) is neither discoverable
-   * nor, since TipTap 3, available above a quote. A row that is always there
-   * answers that for every note without the editor having to guess which
-   * documents need a paragraph inserted into them.
-   *
-   * Nothing is inserted when the note already starts with an empty paragraph
-   * (the common case) - we just go there, so repeated clicks can't stack blank
-   * lines.
+   * A note that starts with an image, a table, a quote or a list has no line
+   * to click above its first block, and the keyboard way in (ArrowUp into a
+   * gap cursor) is neither discoverable nor, since TipTap 3, available above
+   * a quote. A note that starts with a paragraph or a heading needs no help,
+   * so the zone only shows for the others (needsTopLine).
    */
+  const [needsTopLine, setNeedsTopLine] = useState(false);
+  useEffect(() => {
+    if (!editor) return;
+    const check = () => {
+      const first = editor.state.doc.firstChild?.type.name;
+      setNeedsTopLine(first !== undefined && first !== 'paragraph' && first !== 'heading');
+    };
+    check();
+    editor.on('update', check);
+    return () => { editor.off('update', check); };
+  }, [editor]);
+
+  // The zone needs more room than the body's 16px top gap to hold its label
+  // clear of the line above (pn-top-line-pad in index.css).
+  const showTopLine = !readOnly && !preview && needsTopLine;
+
   const addLineAtTop = useCallback(() => {
     const ed = editorRef.current;
     if (!ed || !ed.isEditable) return;
     const { state, view } = ed;
-    const first = state.doc.firstChild;
-    if (first?.type.name === 'paragraph' && first.content.size === 0) {
-      view.dispatch(state.tr.setSelection(TextSelection.create(state.doc, 1)).scrollIntoView());
-      view.focus();
-      return;
-    }
     const paragraph = state.schema.nodes['paragraph']?.create();
     if (!paragraph) return;
     const tr = state.tr.insert(0, paragraph);
@@ -971,6 +1035,14 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           return pos;
         }, 'start', onMissing);
       },
+      scrollToHeadingCode: (itemId: string, code: string) => {
+        if (!editor) return;
+        revealNode(() => {
+          const pos = headingPosByCode(editor.state.doc, itemId, code);
+          if (pos >= 0) editor.commands.setTextSelection(pos + 1);
+          return pos;
+        }, 'start');
+      },
       startRenameFile: (uuid: string) => {
         // The name is written by the chip inside the live editor, never by
         // rewriting the note body from a list. Centring the chip is a
@@ -1012,10 +1084,8 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
   return (
     <div
       ref={rootRef}
-      // pn-editor-topgapped hands the "start of note" gap to the click row
-      // (or its read-only spacer) below, so the body's own top padding
-      // doesn't stack on top of it.
-      className={`relative flex flex-col min-h-0${preview ? '' : ' pn-editor-topgapped'}`}
+      // pn-editor-topgapped marks a note editor (not the history preview).
+      className={`relative flex flex-col min-h-0${preview ? '' : ' pn-editor-topgapped'}${showTopLine ? ' pn-top-line-pad' : ''}`}
       onMouseDownCapture={notePreClickState}
       onContextMenu={openBodyMenu}
     >
@@ -1025,7 +1095,11 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
       {/* Toolbar visibility is controlled by the parent (NotesView) so the
           Hide/Show toggle can live on the tag row instead of overlapping
           the note body. */}
-      {!readOnly && toolbarVisible && (
+      {!readOnly && toolbarVisible && barAtBottom && toolbarSlot && createPortal(
+        // At the bottom the bar lives outside the scrolling column, so it
+        // never moves with the note: a sticky bar inside the column is left
+        // behind by a trackpad bounce (Firefox) and by the page shift iOS
+        // makes for the keyboard.
         <Toolbar
           editor={editor}
           mobileTabIndex={isMobile ? -1 : undefined}
@@ -1033,9 +1107,21 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           linkBtnRef={linkBtnRef}
           onAudioStateChange={handleAudioStateChange}
           audioStopRef={audioStopRef}
-          isPro={isPro}
-          onOpenUpgrade={onOpenUpgrade}
           hideEncryptedMedia={hideEncryptedMedia}
+          onInsertFiles={onInsertFiles}
+        />,
+        toolbarSlot,
+      )}
+      {!readOnly && toolbarVisible && !barAtBottom && (
+        <Toolbar
+          editor={editor}
+          mobileTabIndex={isMobile ? -1 : undefined}
+          onOpenLinkPopover={askForLink}
+          linkBtnRef={linkBtnRef}
+          onAudioStateChange={handleAudioStateChange}
+          audioStopRef={audioStopRef}
+          hideEncryptedMedia={hideEncryptedMedia}
+          onInsertFiles={onInsertFiles}
         />
       )}
       {/* Where the link panel falls back to when the link button is not on
@@ -1083,16 +1169,20 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           className="sticky z-[5] flex h-0 items-start justify-end gap-1.5 overflow-visible pointer-events-none"
           style={{ top: 'calc(var(--pn-tagrow-h, 0px) + var(--pn-editor-toolbar-h, 0px))' }}
         >
-          {bodyControls}
-          <OutlinePanel
-            editor={editor}
-            open={outlineOpen}
-            onOpenChange={(v) => {
-              setOutlineOpen(v);
-              if (v) setBar('none');
-            }}
-            onReserve={setOutlineReserve}
-          />
+          {/* Measured, so the first lines of the note wrap beside the
+              pills instead of under them. */}
+          <div ref={setPillsEl} className="flex items-start gap-1.5">
+            {bodyControls}
+            <OutlinePanel
+              editor={editor}
+              open={outlineOpen}
+              onOpenChange={(v) => {
+                setOutlineOpen(v);
+                if (v) setBar('none');
+              }}
+              onReserve={setOutlineReserve}
+            />
+          </div>
         </div>
       )}
       {audioState !== 'idle' && (
@@ -1102,27 +1192,31 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
           onStop={() => audioStopRef.current?.()}
         />
       )}
-      {/* The click row above the body, on every note but the history
-          preview: it is both the guaranteed way in above a first block you
-          can't type in front of (image, table, quote) and the collapsed
-          outline pill's own row, which is what stops the pill sitting on the
-          note's first lines. A read-only note keeps the row as an inert
-          spacer, because the pills still park there. onMouseDown is
+      {/* The "Add a line at the top" zone: it covers the body's top padding,
+          only on a note whose first block has no line to click above it,
+          and shows its label on hover. Zero height in the flow, so a hover
+          moves nothing. onMouseDown is
           swallowed so focus never leaves the editor - the handler puts the
           caret where it belongs itself. */}
-      {readOnly && !preview && (
-        <div aria-hidden="true" className="shrink-0" style={{ height: EDITOR_TOP_GAP_PX }} />
-      )}
-      {!readOnly && (
-        <button
-          type="button"
-          tabIndex={isMobile ? -1 : undefined}
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={addLineAtTop}
-          aria-label={t('topRow.add')}
-          style={{ height: EDITOR_TOP_GAP_PX }}
-          className="shrink-0 w-full cursor-text rounded-md transition-colors [@media(hover:hover)]:hover:bg-pn/5"
-        />
+      {showTopLine && (
+        <div className="relative h-0">
+          <button
+            type="button"
+            tabIndex={isMobile ? -1 : undefined}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={addLineAtTop}
+            className="pn-top-line group absolute inset-x-0 top-0 z-[1] h-8 cursor-text outline-none"
+          >
+            <span className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center gap-1.5 opacity-0 transition-opacity [@media(hover:hover)]:group-hover:opacity-100 group-focus-visible:opacity-100">
+              <span className="flex items-center gap-1 text-xs leading-none text-accent">
+                <Plus size={14} aria-hidden="true" />
+                {t('topRow.add')}
+              </span>
+              {/* Ends where the corner pills begin. */}
+              <span className="h-px flex-1 bg-accent/40" style={{ marginInlineEnd: 'var(--pn-outline-fw, 0px)' }} />
+            </span>
+          </button>
+        </div>
       )}
       <EditorContent editor={editor} />
       {/* After the content, so the sticky pill pins to the bottom of the

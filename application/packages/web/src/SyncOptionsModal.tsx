@@ -19,7 +19,7 @@ import {
 } from './devices';
 import { groupDeviceSlots, shortDeviceId, type DeviceSlot } from './deviceSlots';
 import { readPanelCache, writePanelCache } from './accountPanelCache';
-import { ArrowsClockwise, Check, CreditCard, Database, Devices, Key, PencilSimple, SignIn, SignOut, User, X } from './icons';
+import { ArrowsClockwise, Check, CreditCard, Database, Devices, Key, PencilSimple, SignIn, SignOut, User, X, HardDrives } from './icons';
 import { InlineRenameField } from './InlineRenameField';
 import { DEVICE_LABEL_MAX, deviceLabelOf, type DeviceLabels } from './deviceLabels';
 import { HoverLabel } from './HoverLabel';
@@ -680,7 +680,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
                       </p>
                       {(activeStorageSub || isStorageConfigured()) ? (
                           <div>
-                            <SectionEyebrow setting="storage.addon" className="mb-1">
+                            <SectionEyebrow setting="storage.addon" className="mb-1" icon={HardDrives}>
                               {t('storage.addonHeading')}
                             </SectionEyebrow>
                             <SettingsCallout className="mb-4">
@@ -1203,7 +1203,7 @@ export function SyncOptionsModal({ onClose, onOpenUpgrade, onSignOut, onSyncNow,
           <>
             {/* Active devices */}
             <div>
-              <SectionEyebrow setting="plan.devices" className="mb-2">
+              <SectionEyebrow setting="plan.devices" className="mb-2" icon={Devices}>
                 {t('devices.heading')}
               </SectionEyebrow>
               <HelpChip surface={isPro ? 'devicesPro' : 'devices'} className="mb-3" />

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, Fingerprint } from '../icons';
+import { Check, Fingerprint, LockKey } from '../icons';
 import { ConfirmModal } from '../ConfirmModal';
 import {
   canUseBiometric,
@@ -14,7 +14,7 @@ import {
 import { hasPin, markPinUnlocked, verifyPin } from '../pin';
 import { signInStamp } from '../liveSignIn';
 import { PinInput, type PinInputHandle } from '../PinInput';
-import { SectionEyebrow, SETTINGS_HELP, SettingsCallout } from '../settingsUI';
+import { SectionEyebrow, SETTINGS_HELP, SettingsCallout, ROW_TITLE } from '../settingsUI';
 import { Switch } from '../Switch';
 import { isTrustedDevice } from '../trustStorage';
 import { isDemoMode } from '../demo';
@@ -279,8 +279,9 @@ export function BiometricTab({
               that it cannot work is the confusing half of that state. */}
           <Switch
             setting="security.appLock"
+            icon={<LockKey size={14} className="text-accent" />}
             label={t('biometricTab.lockOnOpen')}
-            labelClassName={`text-sm font-medium ${lockReady ? 'text-pn' : 'text-pn-muted'}`}
+            labelClassName={`${ROW_TITLE} ${lockReady ? 'text-pn' : 'text-pn-muted'}`}
             description={
               <>
                 {t('biometricTab.lockOnOpenHint')}
@@ -395,8 +396,8 @@ export function BiometricTab({
 
       {/* Independent of the app lock and of trust: it stores no secret, and it
           is offered only where the platform can honour it. One text for every
-          platform, so it promises no more than the weakest of them, iOS, which
-          covers recordings but cannot refuse a screenshot.
+          platform, so it promises no more than the weakest of them, iOS, whose
+          screenshot block rests on an undocumented layer an update can end.
           Spec: ops/docs/plans/app-switcher-privacy-screen.md (section 14) */}
       {CAPTURE_BLOCK_SUPPORTED && (
         <div className="pt-4 border-t border-divider">

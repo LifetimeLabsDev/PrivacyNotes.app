@@ -1,3 +1,4 @@
+import { SignIn } from './icons';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SETTINGS_HELP, SectionEyebrow, SettingsCallout } from './settingsUI';
@@ -143,7 +144,7 @@ export function ConnectedAccounts({
 
   return (
     <section className="space-y-3">
-      <SectionEyebrow setting="account.connectedAccounts">{t('connectedAccounts.title')}</SectionEyebrow>
+      <SectionEyebrow setting="account.connectedAccounts" icon={SignIn}>{t('connectedAccounts.title')}</SectionEyebrow>
       <p className={SETTINGS_HELP}>{t('connectedAccounts.description')}</p>
       <SettingsCallout>
         <p>{t(isCustodial ? 'connectedAccounts.custodial' : 'connectedAccounts.selfCustody')}</p>

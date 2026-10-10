@@ -14,6 +14,9 @@ import {
   SealCheck,
   Warning,
   WifiSlash,
+  Laptop,
+  IdentificationCard,
+  Pulse,
 } from './icons';
 import { type SupabaseClient } from '@notes/shared';
 import { isDemoMode } from './demo';
@@ -34,7 +37,7 @@ import { db } from './db';
 import { readAuthLog } from './authDiag';
 import { deriveDisplayTitle } from './notesViewUtils';
 import { useVerifyStamp } from './verifyStamp';
-import { SETTINGS_EYEBROW } from './settingsUI';
+import { EYEBROW_ICON_ROW, EyebrowGlyph, SETTINGS_EYEBROW } from './settingsUI';
 import { Switch } from './Switch';
 import { VERSION } from './version';
 import { SwissFlag } from './SwissFlag';
@@ -409,7 +412,7 @@ export function SyncPanel({
       {/* ── Device + data path ── */}
       <div className="grid gap-3 sm:grid-cols-5">
         <div data-setting="me.thisDevice" className="flex flex-col rounded-lg border border-divider px-3.5 py-3 sm:col-span-2">
-          <span className={`${SETTINGS_EYEBROW} block mb-2`}>{t('syncPanel.thisDevice')}</span>
+          <span className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW} mb-2`}><EyebrowGlyph icon={Laptop} />{t('syncPanel.thisDevice')}</span>
           <div className="flex items-center gap-2 text-sm font-medium">
             <span className="relative flex h-2 w-2" aria-hidden="true">
               {state !== 'floor' && state !== 'offline' && state !== 'demo' && (
@@ -449,7 +452,7 @@ export function SyncPanel({
         </div>
 
         <div data-setting="me.where" className="flex flex-col rounded-lg border border-divider px-3.5 py-3 sm:col-span-3">
-          <span className={`${SETTINGS_EYEBROW} block mb-2`}>{t('syncPanel.whereTitle')}</span>
+          <span className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW} mb-2`}><EyebrowGlyph icon={CloudArrowUp} />{t('syncPanel.whereTitle')}</span>
           <div className="flex items-center gap-1.5 flex-wrap text-xs text-pn-soft">
             <span className="rounded-md border border-divider bg-track px-2 py-1 whitespace-nowrap">{t('syncPanel.nodeDevice')}</span>
             <Lock size={12} className="text-pn-muted shrink-0" aria-hidden="true" />
@@ -598,7 +601,7 @@ function AccountIdRow({
     // in a 2-column row beneath (a one-line squeeze truncated the ID to
     // four characters on phones); wide panes keep everything on one line.
     <div data-setting="me.accountId" className="pn-account-id rounded-lg border border-divider px-3.5 py-3">
-      <span className={`${SETTINGS_EYEBROW} block mb-2`}>{t('accountId.heading')}</span>
+      <span className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW} mb-2`}><EyebrowGlyph icon={IdentificationCard} />{t('accountId.heading')}</span>
       <div className="pn-account-id-row">
         <code className="min-w-0 rounded bg-track px-2.5 py-1.5 text-xs font-mono truncate">{pubkey}</code>
         {/* Labels never change - only the icon flips to a check - so the
@@ -658,7 +661,7 @@ function ActivityList({ log }: { log: SyncPassEntry[] }) {
         aria-expanded={open}
         className="w-full flex items-center gap-2 px-3.5 py-2.5 hover:bg-surface-1 transition"
       >
-        <span className={SETTINGS_EYEBROW}>{t('syncPanel.activity')}</span>
+        <span className={`${SETTINGS_EYEBROW} ${EYEBROW_ICON_ROW}`}><EyebrowGlyph icon={Pulse} />{t('syncPanel.activity')}</span>
         <CaretDown size={16} className={`ms-auto text-pn-muted transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (

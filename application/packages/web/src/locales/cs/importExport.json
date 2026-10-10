@@ -49,7 +49,7 @@
     "googleKeep": "Google Takeout .zip (složka Keep) nebo jedna poznámka .json. Zaškrtávací seznamy se importují jako nativní seznamy úkolů.",
     "appleNotes": "Exportuj přes bezplatnou aplikaci Exporter do Markdownu a pak sem přetáhni .zip.",
     "appleJournal": "Exportuj z Deníku na Macu nebo iPhonu, zkomprimuj složku AppleJournalEntries a přetáhni sem .zip. Záznamy se importují jako záznamy v deníku i s fotkami, videi, hlasovými poznámkami a polohami.",
-    "evernote": "Jeden soubor .enex, nebo víc zabalených do zipu. Zachová formátování, štítky, přílohy, odkazy mezi poznámkami a zápisníky. Úkoly Evernote do .enex nedává.",
+    "evernote": "Jeden soubor .enex, nebo víc zabalených do zipu. Zachová formátování, štítky, přílohy, odkazy na poznámky a zápisníky. Úkoly Evernote do .enex nedává.",
     "samsungNotes": "Exportuj jako Word (.docx) nebo text (.txt). Víc souborů zabal do .zip pro hromadný import.",
     "simplenote": "Exportuj ze Simplenote (Settings -> Tools -> Export Notes). Přetáhni sem .zip.",
     "standardNotes": "Dešifrovaná záloha .zip nebo .txt ze Standard Notes (File > Export > Decrypted).",

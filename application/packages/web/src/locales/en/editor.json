@@ -39,7 +39,9 @@
     "dateTime": "Date and time",
     "footnote": "Footnote",
     "spoiler": "Spoiler",
-    "copyBox": "Copy box"
+    "copyBox": "Copy box",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Customize toolbar"
   },
   "align": {
     "left": "Align left",
@@ -81,7 +83,16 @@
       "bug": "Bug",
       "note": "Note",
       "abstract": "Abstract",
-      "failure": "Failure"
+      "failure": "Failure",
+      "fold": "Fold",
+      "idea": "Idea",
+      "important": "Important",
+      "caution": "Caution",
+      "todo": "To-do",
+      "goal": "Goal",
+      "decision": "Decision",
+      "definition": "Definition",
+      "seealso": "See also"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "Formatting",
     "insert": "Insert",
     "blocks": "Blocks",
     "notation": "Notation"
@@ -145,6 +157,8 @@
     "hide": "Hide outline",
     "hideTitle": "Hide outline (Esc)",
     "copyHeadingLink": "Copy link to heading",
+    "copyNoteLink": "Copy note-link",
+    "copyHeadingShortcut": "Copy shortcut to heading",
     "copied": "Copied"
   },
   "bodyMenu": {
@@ -241,5 +255,47 @@
     "missing": "No footnote text. Click to add it.",
     "ariaRef": "Footnote {{n}}",
     "ariaSection": "Footnotes"
+  },
+  "formatBar": {
+    "tryIt": "Try it: arrange the bar here and see how it feels.",
+    "previewOnly": "Preview only. Your layout is saved the moment you have Pro.",
+    "discard": "Discard",
+    "keepLayout": "Keep this layout",
+    "hintDrag": "Drag to move, click for options.",
+    "hintTap": "Tap a button for its options.",
+    "onBar": "On the bar",
+    "inMenu": "In the + menu",
+    "menuEmpty": "The menu is empty, so the + button is not shown.",
+    "hidden": "Hidden",
+    "hiddenNote": "They still work by shortcut and Markdown.",
+    "hiddenDrop": "Drop a button here to hide it.",
+    "hiddenEmpty": "Nothing is hidden.",
+    "alwaysVisible": "Always visible",
+    "pinned": "Opens a panel, so it stays on the bar or is hidden",
+    "optionsFor": "Options for {{item}}",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "moveLeft": "Move left",
+    "moveRight": "Move right",
+    "home": {
+      "bar": "On the bar",
+      "menu": "In the + menu",
+      "hidden": "Hidden"
+    },
+    "opensPanel": "opens a panel",
+    "showsRecording": "shows the recording",
+    "refuse": {
+      "menuNotAllowed": "{{item}} can be on the bar or hidden, not in the + menu.",
+      "lastOnBar": "Keep at least one button on the bar."
+    },
+    "items": {
+      "link": "Link",
+      "notelink": "Note-link",
+      "audio": "Recording"
+    },
+    "positionTitle": "Bar position",
+    "positionNote": "Choose where the toolbar sits in the editor.",
+    "positionTop": "Top",
+    "positionBottom": "Bottom"
   }
 }

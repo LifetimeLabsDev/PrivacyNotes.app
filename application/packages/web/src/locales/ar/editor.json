@@ -39,7 +39,9 @@
     "dateTime": "التاريخ والوقت",
     "footnote": "حاشية سفلية",
     "spoiler": "نص مخفي",
-    "copyBox": "مربع نسخ"
+    "copyBox": "مربع نسخ",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "تخصيص شريط الأدوات"
   },
   "align": {
     "left": "محاذاة لليسار",
@@ -81,7 +83,16 @@
       "bug": "خطأ",
       "note": "ملاحظة",
       "abstract": "ملخص",
-      "failure": "فشل"
+      "failure": "فشل",
+      "fold": "طي",
+      "idea": "فكرة",
+      "important": "مهم",
+      "caution": "حذر",
+      "todo": "مهمة",
+      "goal": "هدف",
+      "decision": "قرار",
+      "definition": "تعريف",
+      "seealso": "انظر أيضًا"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "التنسيق",
     "insert": "إدراج",
     "blocks": "الكتل",
     "notation": "الترميز"
@@ -149,6 +161,8 @@
     "hide": "إخفاء المخطط التفصيلي",
     "hideTitle": "إخفاء المخطط التفصيلي (Esc)",
     "copyHeadingLink": "نسخ رابط العنوان",
+    "copyNoteLink": "نسخ رابط بين الملاحظات",
+    "copyHeadingShortcut": "نسخ اختصار العنوان",
     "copied": "تم النسخ"
   },
   "bodyMenu": {
@@ -261,5 +275,47 @@
     "missing": "لا يوجد نص للحاشية. انقر لإضافته.",
     "ariaRef": "الحاشية {{n}}",
     "ariaSection": "الحواشي السفلية"
+  },
+  "formatBar": {
+    "tryIt": "جرّبه: رتّب الشريط هنا وانظر كيف تجده.",
+    "previewOnly": "معاينة فقط. يُحفظ ترتيبك فور حصولك على Pro.",
+    "discard": "تجاهل",
+    "keepLayout": "الاحتفاظ بهذا الترتيب",
+    "hintDrag": "اسحب للنقل، وانقر لعرض الخيارات.",
+    "hintTap": "المس زرًا لعرض خياراته.",
+    "onBar": "على الشريط",
+    "inMenu": "في القائمة +",
+    "menuEmpty": "القائمة فارغة، لذلك لا يظهر زر +.",
+    "hidden": "المخفية",
+    "hiddenNote": "تبقى تعمل باختصار لوحة المفاتيح وبصيغة Markdown.",
+    "hiddenDrop": "أفلت زرًا هنا لإخفائه.",
+    "hiddenEmpty": "لا شيء مخفي.",
+    "alwaysVisible": "ظاهرة دائمًا",
+    "pinned": "يفتح لوحة، لذلك يبقى على الشريط أو مخفيًا",
+    "optionsFor": "خيارات {{item}}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل",
+    "moveLeft": "نقل لليسار",
+    "moveRight": "نقل لليمين",
+    "home": {
+      "bar": "على الشريط",
+      "menu": "في القائمة +",
+      "hidden": "مخفي"
+    },
+    "opensPanel": "يفتح لوحة",
+    "showsRecording": "يعرض التسجيل",
+    "refuse": {
+      "menuNotAllowed": "يمكن أن يكون {{item}} على الشريط أو مخفيًا، لا في القائمة +.",
+      "lastOnBar": "أبقِ زرًا واحدًا على الأقل على الشريط."
+    },
+    "items": {
+      "link": "رابط",
+      "notelink": "رابط بين الملاحظات",
+      "audio": "تسجيل"
+    },
+    "positionTitle": "موضع الشريط",
+    "positionNote": "اختر موضع شريط الأدوات في المحرر.",
+    "positionTop": "أعلى",
+    "positionBottom": "أسفل"
   }
 }

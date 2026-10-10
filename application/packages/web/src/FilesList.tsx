@@ -18,7 +18,11 @@ import { StorageBar } from './StorageBar';
 import { editedAtOf, mimeToLabel } from './notesViewUtils';
 import { formatInstant, useDateFormatKey } from './intlFormat';
 import { CardGlyph, FileTileIcon, TagChips } from './NoteRow';
-import { iconPin, iconTrash, iconEditPencil, Check, CloudSlash, Folder, Upload, FunnelSimple, PushPin, Shield, PencilSimpleSlash, Files, PILLAR_GLYPHS } from './icons';
+import { ItemFlags, ItemRow, ItemTile, applyCompactRows, type ItemFlag, type ItemRootProps, type ItemState, type ListItem } from './listItem';
+import { noteLookStyle, useNoteLook } from './looks/LookGlyph';
+import { itemGridClass, routeItemClick, useContextTarget, useItemList } from './itemList';
+import { useCompactRows } from './viewMode';
+import { iconPin, iconTrash, iconEditPencil, Check, Folder, LinkSimple, Upload, FunnelSimple, Files, PILLAR_GLYPHS } from './icons';
 import { HoverLabel } from './HoverLabel';
 import { SelectionToolbar } from './SelectionToolbar';
 import { suppressShiftTextSelection } from './useMultiSelect';
@@ -39,6 +43,7 @@ import { useQuotaBlockedUuids } from './usePendingUploads';
 import { unescapeMarkdownText } from './fileNames';
 import { textMatcher } from './textMatch';
 import { setItemDragImage, writeItemDrag } from './itemDrag';
+import { isShortcutId } from './noteShortcut';
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -261,6 +266,8 @@ interface FilesListProps {
    *  mode. The name is only ever written by the chip in the live editor,
    *  so a pending edit there cannot overwrite it. */
   onRenameFile: (noteId: string, fileUuid: string) => void;
+  /** Copy the shortcut to a standalone file item. */
+  onCopyShortcut: (noteId: string) => void;
   onUploadFiles: () => void;
   mobileTabIndex?: number;
   quotaUsedBytes: number;
@@ -441,6 +448,7 @@ export function FilesList({
   onFilterChange: setFilter,
   onOpenNote,
   onRenameFile,
+  onCopyShortcut,
   onUploadFiles,
   mobileTabIndex,
   quotaUsedBytes,
@@ -508,7 +516,7 @@ export function FilesList({
 
   /** Composite key of the file row that was right-clicked - highlighted
    *  while the context menu is open. */
-  const [contextTargetId, setContextTargetId] = useState<string | null>(null);
+  const [contextTargetId, setContextTargetId] = useContextTarget();
   /** Composite key of the last-clicked file - only this file highlights,
    *  not all siblings from the same parent note (#67) or same-content
    *  files across notes (#50). */
@@ -630,15 +638,6 @@ export function FilesList({
     }
   }
   const sortBtnRef = useRef<HTMLButtonElement | null>(null);
-  const listRef = useRef<HTMLDivElement>(null);
-
-  // Clear the context-target highlight on any click (menu close, click elsewhere).
-  useEffect(() => {
-    if (!contextTargetId) return;
-    const clear = () => setContextTargetId(null);
-    window.addEventListener('click', clear, true);
-    return () => window.removeEventListener('click', clear, true);
-  }, [contextTargetId]);
 
   /** Small checkmark icon for active menu items. */
   const checkIcon = (
@@ -703,6 +702,14 @@ export function FilesList({
             onSelect: () => onRenameFile(item.noteId, item.uuid),
           }]
         : []),
+      // A file inside a note is part of that note, which has its own row.
+      ...(item.standalone && isShortcutId(item.noteId)
+        ? [{
+            label: t('shell:shortcut.copyItem'),
+            icon: <LinkSimple size={14} aria-hidden="true" />,
+            onSelect: () => onCopyShortcut(item.noteId),
+          }]
+        : []),
       {
         label: t('filesList.menuMoveToTrash'),
         icon: iconTrash(),
@@ -711,7 +718,7 @@ export function FilesList({
       },
     ];
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, showNote, selectedFileIds, isNoteStarred, onToggleStar, onTrash, onRenameFile]);
+  }, [filter, showNote, selectedFileIds, isNoteStarred, onToggleStar, onTrash, onRenameFile, onCopyShortcut]);
 
   /** Notes the PIN guards right now, and a key that changes when they do. */
   const gatedNow = gatedNoteIds();
@@ -753,6 +760,10 @@ export function FilesList({
     });
     return items;
   }, [visibleItems, filter, search, sortField, sortDir]);
+  // The files arrive in slices of 200; a different list - a new type filter,
+  // search, folder or tag - starts at its top.
+  const list = useItemList([filter, search, activeFolderName, activeTag, showNote], filtered.length);
+  const compactRows = useCompactRows();
 
   /**
    * A standalone file drags its note onto a sidebar folder or tag: the file
@@ -785,7 +796,10 @@ export function FilesList({
      stands beside results. Both step aside while files are selected, for the
      reason the import offer does elsewhere: neither is a selectable item. */
   const showSearchEntry = search.trim().length > 0 && filtered.length === 0;
-  const showFilterEntry = (activeFolderName !== null || activeTag !== null) && selectedFileIds.size === 0;
+  // Held back until the revealed slice covers the whole list, so a long
+  // filtered list never draws it mid-scroll and then pushes it down again.
+  const showFilterEntry =
+    (activeFolderName !== null || activeTag !== null) && selectedFileIds.size === 0 && list.reveal.visible >= filtered.length;
 
   /**
    * A click on a picture or a PDF opens its note, as every file click does,
@@ -984,7 +998,12 @@ export function FilesList({
       </div>
 
       {/* ── File list ─────────────────────────────────────────────── */}
-      <div ref={listRef} className="flex-1 overflow-y-auto" onMouseDown={suppressShiftTextSelection}>
+      <div
+        ref={list.ref as React.RefObject<HTMLDivElement>}
+        onScroll={(e) => list.onScroll(e.currentTarget)}
+        className="flex-1 overflow-y-auto"
+        onMouseDown={suppressShiftTextSelection}
+      >
         {filtered.length === 0 && !search.trim() && (activeFolderName !== null || activeTag !== null) ? (
           /* Filtered down to nothing. The empty state below invites the user
              to upload their first file, which is wrong and alarming for
@@ -1046,14 +1065,8 @@ export function FilesList({
             )}
           </div>
         ) : (
-          <div
-            className={
-              viewMode === 'grid'
-                ? 'grid gap-3 p-4 pn-notes-grid'
-                : ''
-            }
-          >
-            {filtered.map((item, idx) => {
+          <div className={itemGridClass(viewMode === 'grid')}>
+            {filtered.slice(0, list.reveal.visible).map((item, idx) => {
               const fk = fileKey(item);
               const isSelected = selectedFileIds.has(fk);
               const isOpen = activeFileId === fk;
@@ -1072,239 +1085,120 @@ export function FilesList({
               // still guards shows neither, the way the note list hides its
               // preview: its tiles keep the file icon, like any other file.
               const isImageBg = viewMode === 'grid' && !gatedNow.has(item.noteId) && isViewableFileItem(item);
-              // Preview / meta / tags are identical in both layouts, only their
-              // ORDER differs: the grid keeps tags above the meta row so the date
-              // can pin to the tile bottom (margin-top:auto), the list puts tags
-              // last to match NoteRow.
-              const previewEl = listPrefs.showPreview && !gatedNow.has(item.noteId) && (
-                <div className="text-[13px] text-pn-muted truncate mt-0.5">
-                  {/* Type word only for a standalone file. Size belongs on the
-                      meta line for both row kinds: appending it here would put
-                      a standalone row's size and a note-attached row's size in
-                      two different places. */}
-                  {item.standalone ? mimeToLabel(item.mime) : item.noteTitle}
-                </div>
-              );
-              // TagChips rather than a local copy of the same markup: it also
-              // owns the folder chip, so a file row cannot drift from a note row.
-              const tagsEl = listPrefs.showTags && (
-                <TagChips tags={item.tags} folderId={item.folderId} />
-              );
-              // Meta line (Concept D): date, then the status icons beside it -
-              // keeps them off the title row so narrow tiles never crowd, and
-              // anchored to the date rather than the right edge so widening
-              // the pane doesn't strand them (same rule as NoteRow).
-              // Every list row, standalone or note-attached: one list must not
-              // show its sizes in two places, and the preview line carries
-              // none. Grid stays out of the meta line: its tiles carry their
-              // own badge beside the content column, where it costs no title
-              // width. One switch governs every one of them, so turning the
-              // size off in a grid is not a toggle that does nothing.
-              const showRowSize = listPrefs.showSize && viewMode !== 'grid' && item.size > 0;
-              // Same amber chip as the attachment card's meta line (#151):
-              // the blob is kept local because it does not fit the quota.
+              // Same amber chip as the attachment card's meta line (#151): the
+              // blob is kept local because it does not fit the quota.
               const localOnly = quotaBlockedUuids.has(item.uuid);
-              const metaEl = (listPrefs.showDate || showRowSize || localOnly || (item.starred && selectedFileIds.size === 0) || item.pinProtected || item.locked) && (
-                <div className="pn-card-meta flex items-center gap-1.5 mt-0.5">
-                  {listPrefs.showDate && (
-                    <span className="pn-card-date min-w-0 text-[12px] text-pn-muted whitespace-nowrap overflow-hidden text-ellipsis">
-                      {t('noteRow.modified', { ns: 'notes' })} {formatInstant(item.editedAt, 'tile')}
-                    </span>
-                  )}
-                  <span className="pn-card-status shrink-0 flex items-center gap-1.5 text-accent">
-                    {item.starred && selectedFileIds.size === 0 && (
-                      <PushPin size={12} />
-                    )}
-                    {item.pinProtected && (
-                      <Shield size={12} aria-label={t('filesList.pinProtected')} />
-                    )}
-                    {item.locked && (
-                      <PencilSimpleSlash size={12} aria-label={t('filesList.readOnly')} />
-                    )}
-                    {/* Icon-only, like the status icons beside it - the WHY
-                        lives on the attachment card's amber line (#151). */}
-                    {localOnly && (
-                      <CloudSlash size={12} className="text-warning" aria-label={t('attachment.localOnly', { ns: 'media' })} />
-                    )}
-                  </span>
-                  {/* Anchored to the date, like the status icons beside it and
-                      like NoteRow - not `ms-auto`. Off the title row because a
-                      narrow pane made the badge truncate the filename, which is
-                      the one thing the row exists to show; off the right edge
-                      because section 66 of ui-patterns.md is exactly about a
-                      value stranded there when the pane widens. */}
-                  {showRowSize && (
-                    <span className="shrink-0 text-[11px] text-pn-muted font-medium tabular-nums">
-                      {formatBytes(item.size)}
-                    </span>
-                  )}
-                </div>
-              );
-              const selectBox = (
-                <span
-                  role="checkbox"
-                  aria-checked={isSelected}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (e.shiftKey) rangeSelectFiles(item);
-                    else toggleFileSelected(item);
-                  }}
-                  className={`shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center cursor-pointer transition ${
-                    viewMode === 'grid' ? 'mt-0.5' : ''
-                  } ${
-                    isSelected
-                      ? 'bg-accent-fill border-accent-fill text-white'
-                      : 'border-pn-muted/50'
-                  }`}
-                >
-                  {isSelected && (
-                    <Check size={12} />
-                  )}
-                </span>
-              );
-              return (
-                <button
-                  key={rowKey}
-                  type="button"
-                  onClick={(e) => {
-                    // Same gesture set as the notes list (handleRowClick in
-                    // useMultiSelect): shift extends the live selection,
-                    // Cmd/Ctrl toggles one and enters selection mode, a plain
-                    // click toggles while a selection is live and otherwise
-                    // opens the file.
-                    if (e.shiftKey && selectedFileIds.size > 0) {
-                      rangeSelectFiles(item);
-                    } else if (selectedFileIds.size > 0 || e.metaKey || e.ctrlKey) {
-                      toggleFileSelected(item);
-                    } else {
+              const flags: ItemFlag[] = [];
+              if (item.starred && selectedFileIds.size === 0) flags.push('pinned');
+              if (item.pinProtected) flags.push('pinProtected');
+              if (item.locked) flags.push('readOnly');
+              if (localOnly) flags.push('localOnly');
+              const rootProps: ItemRootProps = {
+                type: 'button',
+                onClick: (e) =>
+                  routeItemClick(e, selectedFileIds.size > 0, {
+                    range: () => rangeSelectFiles(item),
+                    toggle: () => toggleFileSelected(item),
+                    open: () => {
                       setActiveFileId(fk);
                       onOpenNote(item.noteId, item.uuid);
                       openViewerAt(item);
-                    }
-                  }}
-                  onContextMenu={(e) => {
-                    setContextTargetId(fk);
-                    onContextMenu(e, buildFileMenu(item));
-                  }}
-                  onTouchStart={() => beginFileLongPress(item)}
-                  onTouchEnd={cancelFileLongPress}
-                  onTouchMove={cancelFileLongPress}
-                  onTouchCancel={cancelFileLongPress}
-                  {...fileDragProps(item)}
-                  tabIndex={mobileTabIndex}
-                  className={
-                    isImageBg
-                      ? `${viewMode === 'grid' ? 'pn-lazy-card' : 'pn-lazy-row'} relative overflow-hidden text-start border transition group ${
-                          viewMode === 'grid' ? 'rounded-xl min-h-[132px]' : 'w-full border-x-0 border-t-0 min-h-[64px]'
-                        } ${
-                          isSelected
-                            ? 'border-accent ring-2 ring-accent z-[1]'
-                            : isOpen
-                              ? 'border-accent ring-2 ring-accent/50 z-[1]'
-                              : contextTargetId === fk
-                                ? 'border-accent/70'
-                                : 'border-divider hover:border-accent/60'
-                        }`
-                      : viewMode === 'grid'
-                        ? `pn-card pn-lazy-card text-start p-3 rounded-xl border transition flex items-start gap-2.5 group ${
-                            isSelected
-                              ? 'bg-accent/15 border-accent dark:bg-accent/20'
-                              : isOpen
-                                ? 'bg-accent/10 border-accent dark:bg-accent/15'
-                                : contextTargetId === fk
-                                  ? 'bg-pn/10 border-divider'
-                                  : 'bg-surface-2 border-divider hover:border-accent/60 dark:hover:bg-pn/5'
-                          }`
-                        : `pn-lazy-row w-full text-start px-4 py-3 transition group border-b border-divider/50 ${
-                            isSelected
-                              ? 'bg-accent/15 hover:bg-accent/20 border-s-2 border-s-accent dark:bg-accent/20 dark:hover:bg-accent/25'
-                              : isOpen
-                                ? 'bg-accent/10 hover:bg-accent/15 border-s-2 border-s-accent dark:bg-accent/15 dark:hover:bg-accent/20'
-                                : contextTargetId === fk
-                                  ? 'bg-pn/10 hover:bg-pn/10'
-                                  : 'hover:bg-pn/5'
-                          }`
-                  }
+                    },
+                  }),
+                onContextMenu: (e) => {
+                  setContextTargetId(fk);
+                  onContextMenu(e, buildFileMenu(item));
+                },
+                onTouchStart: () => beginFileLongPress(item),
+                onTouchEnd: cancelFileLongPress,
+                onTouchMove: cancelFileLongPress,
+                onTouchCancel: cancelFileLongPress,
+                ...fileDragProps(item),
+                tabIndex: mobileTabIndex,
+              };
+              if (!isImageBg) {
+                const gated = gatedNow.has(item.noteId);
+                const listItem: Omit<ListItem, 'look'> = {
+                  icon: <FileTileIcon mime={item.mime} />,
+                  glyph: <CardGlyph type="file" />,
+                  title: item.name,
+                  // The type word only for a standalone file; a file inside a
+                  // note names that note. A note the PIN still guards shows
+                  // neither, the way the note list hides its preview.
+                  preview: listPrefs.showPreview && !gated
+                    ? { text: item.standalone ? mimeToLabel(item.mime) : item.noteTitle, long: false, dir: 'auto' }
+                    : null,
+                  date: listPrefs.showDate
+                    ? { label: t('noteRow.modified', { ns: 'notes' }), row: formatInstant(item.editedAt, 'row'), tile: formatInstant(item.editedAt, 'tile') }
+                    : null,
+                  // One switch governs the size on every row and tile.
+                  size: listPrefs.showSize && item.size > 0 ? formatBytes(item.size) : null,
+                  flags,
+                  chips: listPrefs.showTags ? <TagChips tags={item.tags} folderId={item.folderId} /> : null,
+                  ribbon: false,
+                };
+                return (
+                  <FileEntry
+                    key={rowKey}
+                    item={listItem}
+                    file={item}
+                    grid={viewMode === 'grid'}
+                    compact={compactRows}
+                    state={{ selectionMode: selectedFileIds.size > 0, selected: isSelected, open: isOpen, contextTarget: contextTargetId === fk }}
+                    rootProps={rootProps}
+                    onToggleSelect={(e) => {
+                      if (e.shiftKey) rangeSelectFiles(item);
+                      else toggleFileSelected(item);
+                    }}
+                  />
+                );
+              }
+              // A picture or a PDF in the grid: the first page or the picture
+              // fills the tile, and the name, the flags and the size sit on it.
+              return (
+                <button
+                  key={rowKey}
+                  {...rootProps}
+                  type="button"
+                  className={`pn-lazy-card relative overflow-hidden text-start border transition group rounded-xl min-h-[132px] ${
+                    isSelected
+                      ? 'border-accent ring-2 ring-accent z-[1]'
+                      : isOpen
+                        ? 'border-accent ring-2 ring-accent/50 z-[1]'
+                        : contextTargetId === fk
+                          ? 'border-accent/70'
+                          : 'border-divider hover:border-accent/60'
+                  }`}
                 >
-                  {isImageBg ? (
-                    <>
-                      {isPdfFileItem(item)
-                        ? <LazyPdfCover uuid={item.uuid} />
-                        : <LazyPicture src={fileItemMediaRef(item).src} />}
-                      <div className={`absolute inset-0 pointer-events-none ${viewMode === 'grid' ? 'bg-gradient-to-t from-black/85 via-black/30 to-black/10' : 'bg-gradient-to-r from-black/80 via-black/55 to-black/25'}`} />
-                      <div className={`absolute ${viewMode === 'grid' ? 'inset-x-0 bottom-0 p-2.5' : 'inset-0 px-4 py-2.5 flex flex-col justify-center'}`}>
-                        <div className="text-[13px] font-semibold text-white truncate flex items-center gap-1.5">
-                          {item.starred && selectedFileIds.size === 0 && <PushPin size={11} className="shrink-0" />}
-                          {item.pinProtected && <Shield size={11} className="shrink-0" aria-label={t('filesList.pinProtected')} />}
-                          {item.locked && <PencilSimpleSlash size={11} className="shrink-0" aria-label={t('filesList.readOnly')} />}
-                          {localOnly && <CloudSlash size={11} className="shrink-0 text-amber-400" aria-label={t('attachment.localOnly', { ns: 'media' })} />}
-                          <span data-slot="title" className="truncate" dir="auto">{item.name}</span>
-                        </div>
-                        <div className="flex items-center justify-between gap-2 mt-0.5">
-                          <span className="text-[11px] text-white/85 truncate">{item.standalone ? getFileTypeLabel(item) : item.noteTitle}</span>
-                          {listPrefs.showSize && item.size > 0 && <span className="text-[11px] text-white/85 shrink-0">{formatBytes(item.size)}</span>}
-                        </div>
-                      </div>
-                      {selectedFileIds.size > 0 && (
-                        <span
-                          role="checkbox"
-                          aria-checked={isSelected}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (e.shiftKey) rangeSelectFiles(item);
-                            else toggleFileSelected(item);
-                          }}
-                          className={`absolute start-2 top-2 z-10 w-5 h-5 rounded border-2 flex items-center justify-center cursor-pointer transition ${
-                            isSelected ? 'bg-accent-fill border-accent-fill text-white' : 'border-white/80 bg-black/30'
-                          }`}
-                        >
-                          {isSelected && <Check size={12} />}
-                        </span>
-                      )}
-                    </>
-                  ) : viewMode === 'list' ? (
-                  /* List rows mirror NoteRow: icon + name + size on the title
-                     line, then preview / meta / tags spanning the FULL row
-                     width. Nesting them beside the icon (as the grid tile does)
-                     cost ~90px of text width per line, so previews and dates
-                     truncated far earlier here than in the notes list. */
-                  <>
-                    <div className="flex items-center gap-2.5">
-                      {selectedFileIds.size > 0 ? selectBox : <span data-slot="icon" className="contents"><FileTileIcon mime={item.mime} /></span>}
-                      <div data-slot="title" className="min-w-0 flex-1 text-sm font-semibold truncate text-pn" dir="auto">
-                        {item.name}
-                      </div>
+                  {isPdfFileItem(item)
+                    ? <LazyPdfCover uuid={item.uuid} />
+                    : <LazyPicture src={fileItemMediaRef(item).src} />}
+                  <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
+                  <div className="absolute inset-x-0 bottom-0 p-2.5">
+                    <div className="text-[13px] font-semibold text-white truncate flex items-center gap-1.5">
+                      <ItemFlags flags={flags} size={11} onImage />
+                      <span data-slot="title" className="truncate" dir="auto">{item.name}</span>
                     </div>
-                    {previewEl}
-                    {metaEl}
-                    {tagsEl}
-                  </>
-                  ) : (
-                  <>
-                  {selectedFileIds.size > 0 ? selectBox : (
-                    <span data-slot="icon" className="contents"><FileTileIcon mime={item.mime} className="pn-card-icbox" /></span>
-                  )}
-                  {/* flex-col + self-stretch lets the meta row's margin-top:auto
-                      (grid only, see index.css) pin the date to the tile bottom. */}
-                  <div className="min-w-0 flex-1 flex flex-col self-stretch">
-                    <div className="pn-card-title text-sm font-semibold truncate flex items-center gap-1.5 text-pn">
-                      <CardGlyph type="file" />
-                      <span data-slot="title" className="pn-card-titletext truncate" dir="auto">{item.name}</span>
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <span className="text-[11px] text-white/85 truncate">{item.standalone ? getFileTypeLabel(item) : item.noteTitle}</span>
+                      {listPrefs.showSize && item.size > 0 && <span className="text-[11px] text-white/85 shrink-0">{formatBytes(item.size)}</span>}
                     </div>
-                    {previewEl}
-                    {/* Tags sit above the meta row so the date can pin to the
-                        tile bottom (margin-top:auto). */}
-                    {tagsEl}
-                    {metaEl}
                   </div>
-                  {/* Every tile with a size, the way every row has one. A
-                      standalone file used to be the exception, so the one
-                      pillar whose rows exist to show a size hid it on the
-                      tiles that ARE the files. */}
-                  {listPrefs.showSize && item.size > 0 && (
-                    <span className="pn-file-size shrink-0 text-[11px] text-pn-muted font-medium mt-0.5">{formatBytes(item.size)}</span>
-                  )}
-                  </>
+                  {selectedFileIds.size > 0 && (
+                    <span
+                      role="checkbox"
+                      aria-checked={isSelected}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (e.shiftKey) rangeSelectFiles(item);
+                        else toggleFileSelected(item);
+                      }}
+                      className={`absolute start-2 top-2 z-10 w-5 h-5 rounded border-2 flex items-center justify-center cursor-pointer transition ${
+                        isSelected ? 'bg-accent-fill border-accent-fill text-white' : 'border-white/80 bg-black/30'
+                      }`}
+                    >
+                      {isSelected && <Check size={12} />}
+                    </span>
                   )}
                 </button>
               );
@@ -1331,5 +1225,32 @@ export function FilesList({
         )}
       </div>
     </div>
+  );
+}
+
+/**
+ * A file as a list row or a grid tile: the item the Files pane builds, with
+ * the color of the parent note's tags or folder, which a file shares with it.
+ * Spec: ops/docs/plans/list-grid-parity.md (section 5)
+ */
+function FileEntry({ item, file, grid, compact, state, rootProps, onToggleSelect }: {
+  item: Omit<ListItem, 'look'>;
+  file: FileItem;
+  grid: boolean;
+  compact: boolean;
+  state: ItemState;
+  rootProps: ItemRootProps;
+  onToggleSelect: (e: React.MouseEvent) => void;
+}) {
+  const look = useNoteLook(file.noteId, file.tags, file.folderId);
+  const Layout = grid ? ItemTile : ItemRow;
+  return (
+    <Layout
+      as="button"
+      item={applyCompactRows({ ...item, look: look ? { color: look.color, style: look.style, css: noteLookStyle(look) } : null }, compact)}
+      state={state}
+      rootProps={rootProps}
+      onToggleSelect={onToggleSelect}
+    />
   );
 }

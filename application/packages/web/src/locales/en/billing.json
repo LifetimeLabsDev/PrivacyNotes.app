@@ -4,20 +4,21 @@
     "earlyAdopterBadge": "Early adopter",
     "oneTime": "one-time",
     "subscriptionPitch": "No subscription. No yearly fee. One payment, unlocked for life.",
-    "ctaUnlock": "Unlock everything",
+    "ctaUnlockPrice": "Unlock everything for {{price}}",
     "ctaOpening": "Opening checkout...",
     "ctaSignUp": "Sign up to unlock",
     "intro": {
       "storage": "More space is a Pro feature: 500 MB of storage, 50 MB per file, and up to 5 GB more as an add-on when you need it.",
       "folders": "Folders are a Pro feature. Organize your notes into nested folders, as deep as you need, and keep every project separate.",
       "looks": "Icons and colors for folders and tags are a Pro feature. Give each one a look you spot at a glance.",
+      "spaces": "Spaces is a Pro feature. {{desc}}",
+      "formatBar": "Arranging the toolbar is a Pro feature. Put the buttons you use on the bar, hide the rest, and order the + menu your way.",
       "lock": "Locking a note is a Pro feature. Upgrade to protect any note from accidental edits.",
       "protect": "PIN-protecting a note is a Pro feature. Upgrade to gate sensitive notes behind your PIN.",
       "history": "Note history is a Pro feature. Upgrade to keep a timeline of every save.",
       "devices": "You've hit the 2-device cap. Upgrade for unlimited devices.",
       "zen": "Zen mode is a Pro feature. Upgrade for distraction-free writing.",
       "theme": "Premium themes are a Pro feature. Upgrade to unlock every shade.",
-      "callout": "The complete set of callouts is a Pro feature.",
       "totp": "2FA codes are a Pro feature. Store an authenticator key with any login and get the rotating code next to the password. The key itself is saved and synced on every plan.",
       "replace": "Find and replace is a Pro feature. Upgrade to replace one match or every match in a note at once.",
       "passphrase": "Passphrases are a Pro feature. Generate a phrase of random words that is easy to type and to say.",
@@ -26,14 +27,14 @@
     "features": {
       "devices": "Sync unlimited devices, every platform",
       "folders": "Nested folders, organize by project",
+      "spaces": "Spaces: Personal and Work, one at a time",
       "lock": "Lock & PIN-protect any note",
       "history": "Full note history, restore anytime",
       "themes": "Premium themes in every shade",
       "zen": "Zen mode, distraction-free writing",
       "storage": "500 MB storage, up to 5.5 GB with add-ons"
     },
-    "comparisonBeta": "Pay ${{earlyPrice}} once. Obsidian Sync costs $48/yr, every year. Standard Notes charges $90/yr. Early adopter price, locked in before it rises to ${{proPrice}}.",
-    "comparison": "Pay ${{proPrice}} once and own it forever. Obsidian Sync costs $48/yr and Standard Notes $90/yr, every single year."
+    "compareCaption": "{{years}} years. One payment against yearly fees."
   },
   "purchaseError": {
     "store": "The store checkout could not be completed and you have not been charged. Please try again in a moment.",

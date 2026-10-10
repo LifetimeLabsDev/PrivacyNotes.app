@@ -22,53 +22,28 @@ import { tableWidthFromMarker } from './tableDelimiterRow';
 import { noteLinkDisplayText } from './noteLinks';
 import { orderFootnotes, replaceMarkers, scanFootnotes } from './footnoteScan';
 import { isSameOriginPath } from './sameOriginPath';
+import { CALLOUT_COLORS, canonicalCalloutType, type CalloutType } from './calloutKeywords';
 
-// ─── Obsidian callout types ────────────────────────────────────────────
+// ─── Callout types ──────────────────────────────────────────────────────
 //
 // A blockquote whose first line is `[!type]` renders as a collapsible
-// callout (<details>). Each canonical type has a hex accent color, the
-// same color as an "R G B" triple for the translucent border/background,
-// and a default label used when the callout has no title. Aliases below
-// fold Obsidian's many synonyms down to these nine.
+// callout (<details>). Keywords and colors come from calloutKeywords.ts, the
+// table the editor reads too; the label below is the default title used when
+// a callout has none.
 
-interface CalloutType {
-  hex: string;
-  rgb: string;
-  label: string;
-}
-
-const CALLOUT_TYPES: Record<string, CalloutType> = {
-  info: { hex: '1971c2', rgb: '25,113,194', label: 'Info' },
-  success: { hex: '2f9e44', rgb: '47,158,68', label: 'Success' },
-  warning: { hex: 'e8590c', rgb: '232,89,12', label: 'Warning' },
-  tip: { hex: '0c8599', rgb: '12,133,153', label: 'Tip' },
-  danger: { hex: 'e03131', rgb: '224,49,49', label: 'Danger' },
-  question: { hex: 'f08c00', rgb: '240,140,0', label: 'Question' },
-  quote: { hex: '868e96', rgb: '134,142,150', label: 'Quote' },
-  example: { hex: '7048e8', rgb: '112,72,232', label: 'Example' },
-  bug: { hex: 'c2255c', rgb: '194,37,92', label: 'Bug' },
-  note: { hex: '1971c2', rgb: '25,113,194', label: 'Note' },
-  abstract: { hex: '0c8599', rgb: '12,133,153', label: 'Abstract' },
-  failure: { hex: 'e03131', rgb: '224,49,49', label: 'Failure' },
+const CALLOUT_LABELS: Record<CalloutType, string> = {
+  fold: 'Fold', info: 'Info', note: 'Note', tip: 'Tip', idea: 'Idea', important: 'Important',
+  warning: 'Warning', caution: 'Caution', danger: 'Danger', success: 'Success', failure: 'Failure',
+  bug: 'Bug', todo: 'Todo', goal: 'Goal', decision: 'Decision', quote: 'Quote', example: 'Example',
+  abstract: 'Abstract', question: 'Question', definition: 'Definition', seealso: 'See also',
 };
 
-const CALLOUT_ALIASES: Record<string, string> = {
-  info: 'info', note: 'note', todo: 'info', abstract: 'abstract', summary: 'abstract', tldr: 'abstract',
-  success: 'success', check: 'success', done: 'success',
-  warning: 'warning', caution: 'warning', attention: 'warning',
-  tip: 'tip', hint: 'tip', important: 'tip',
-  danger: 'danger', error: 'danger', failure: 'failure', fail: 'failure', missing: 'failure',
-  question: 'question', help: 'question', faq: 'question',
-  quote: 'quote', cite: 'quote',
-  example: 'example',
-  bug: 'bug',
-};
-
-// Phosphor arrows-in-simple / arrows-out-simple (regular weight, 256 viewBox).
-// The export/print callout summary shows these as the collapse/expand
-// affordance; the details[open] rule in export.ts toggles which is visible.
-const CALLOUT_ARROW_IN = 'M213.66,53.66,163.31,104H192a8,8,0,0,1,0,16H144a8,8,0,0,1-8-8V64a8,8,0,0,1,16,0V92.69l50.34-50.35a8,8,0,0,1,11.32,11.32ZM112,136H64a8,8,0,0,0,0,16H92.69L42.34,202.34a8,8,0,0,0,11.32,11.32L104,163.31V192a8,8,0,0,0,16,0V144A8,8,0,0,0,112,136Z';
-const CALLOUT_ARROW_OUT = 'M216,48V96a8,8,0,0,1-16,0V67.31l-50.34,50.35a8,8,0,0,1-11.32-11.32L188.69,56H160a8,8,0,0,1,0-16h48A8,8,0,0,1,216,48ZM106.34,138.34,56,188.69V160a8,8,0,0,0-16,0v48a8,8,0,0,0,8,8H96a8,8,0,0,0,0-16H67.31l50.35-50.34a8,8,0,0,0-11.32-11.32Z';
+// Phosphor caret-down / caret-right (bold weight, 256 viewBox): the fold
+// control at the start of the exported summary, as in the editor. The
+// :not([open]) rules in export.ts and index.css show the one that fits, and
+// the right caret mirrors in a right-to-left document.
+const CALLOUT_CARET_DOWN = 'M216.49,104.49l-80,80a12,12,0,0,1-17,0l-80-80a12,12,0,0,1,17-17L128,159l71.51-71.52a12,12,0,0,1,17,17Z';
+const CALLOUT_CARET_RIGHT = 'M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z';
 
 export function escapeHtml(s: string): string {
   return s
@@ -1238,38 +1213,32 @@ function renderBlocks(text: string): string {
         buf.push(cur.replace(/^>\s?/, ''));
         i++;
       }
-      const callout = buf[0]?.match(/^\[!(\w+)\]([+-]?)\s?(.*)$/);
+      const callout = buf[0]?.match(/^\[!([\w-]+)\]([+-]?)\s?(.*)$/);
       if (callout) {
-        // Own-property only. A plain object answers every name on
-        // Object.prototype, and `constructor` and `__proto__` are already
-        // lower case, so the toLowerCase above does not save them: the
-        // lookup returned a function, the `?? 'info'` fallback saw a truthy
-        // value, and the type lookup below then read a property off
-        // undefined. `toString` and its siblings survive by accident,
-        // because lowercasing them produces a name nothing defines.
-        const alias = callout[1]!.toLowerCase();
-        const canon = Object.hasOwn(CALLOUT_ALIASES, alias)
-          ? CALLOUT_ALIASES[alias]!
-          : 'info';
-        const t = CALLOUT_TYPES[canon]!;
+        const canon = canonicalCalloutType(callout[1]!);
+        const { color, rgb } = CALLOUT_COLORS[canon];
+        const tint = rgb.replace(/ /g, ',');
         const title = callout[3]!.trim();
-        const titleHtml = title ? renderInline(title) : escapeHtml(t.label);
+        const titleHtml = title ? renderInline(title) : escapeHtml(CALLOUT_LABELS[canon]);
         const bodyMd = buf.slice(1).join('\n');
         const bodyHtml = bodyMd.trim() === '' ? '' : renderMarkdown(bodyMd);
-        const detailsStyle = `margin:1em 0;border:1px solid rgba(${t.rgb},0.35);border-left:3px solid #${t.hex};border-radius:6px;background:rgba(${t.rgb},0.09);overflow:hidden`;
-        const summaryStyle = `cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:0.5em;padding:0.4em 0.85em;font-weight:600;color:#${t.hex}`;
-        const arrows = `<span class="pn-callout-arrows" style="flex-shrink:0;line-height:0" aria-hidden="true"><svg class="pn-arrow-in" viewBox="0 0 256 256" width="15" height="15" fill="currentColor"><path d="${CALLOUT_ARROW_IN}"/></svg><svg class="pn-arrow-out" viewBox="0 0 256 256" width="15" height="15" fill="currentColor" style="display:none"><path d="${CALLOUT_ARROW_OUT}"/></svg></span>`;
+        // Fold has no box and no accent: the caret and the title in the text color.
+        const detailsStyle = canon === 'fold'
+          ? 'margin:1em 0'
+          : `margin:1em 0;border:1px solid rgba(${tint},0.35);border-inline-start:3px solid ${color};border-radius:6px;background:rgba(${tint},0.09);overflow:hidden`;
+        const summaryStyle = `cursor:pointer;list-style:none;display:flex;align-items:center;gap:0.4em;padding:${canon === 'fold' ? '0.15em 0' : '0.4em 0.85em'};font-weight:600${color ? `;color:${color}` : ''}`;
+        const caret = `<span class="pn-callout-caret" style="flex-shrink:0;line-height:0" aria-hidden="true"><svg class="pn-caret-down" viewBox="0 0 256 256" width="14" height="14" fill="currentColor"><path d="${CALLOUT_CARET_DOWN}"/></svg><svg class="pn-caret-right" viewBox="0 0 256 256" width="14" height="14" fill="currentColor" style="display:none"><path d="${CALLOUT_CARET_RIGHT}"/></svg></span>`;
         // The `-` suffix carries the fold state into the export and the burn
         // viewer, the same as the editor: a folded callout starts closed and
-        // the reader clicks it open (the :not([open]) rules swap the arrow).
+        // the reader clicks it open (the :not([open]) rules swap the caret).
         // Print is the exception and handles itself in CSS: the export
         // stylesheet's print block force-shows every callout body, because
         // paper cannot be clicked.
         const folded = callout[2] === '-';
         out.push(
           `<details class="pn-callout pn-callout-${canon}"${folded ? '' : ' open'} style="${detailsStyle}">` +
-            `<summary class="pn-callout-summary" style="${summaryStyle}"><span>${titleHtml}</span>${arrows}</summary>` +
-            `<div class="pn-callout-body" style="padding:0.15em 0.85em 0.55em">${bodyHtml}</div>` +
+            `<summary class="pn-callout-summary" style="${summaryStyle}">${caret}<span>${titleHtml}</span></summary>` +
+            `<div class="pn-callout-body" style="${canon === 'fold' ? 'padding-inline-start:1.4em' : 'padding:0.15em 0.85em 0.55em'}">${bodyHtml}</div>` +
           `</details>`
         );
         continue;

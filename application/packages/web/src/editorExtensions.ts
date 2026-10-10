@@ -1648,9 +1648,9 @@ export const TrailingParagraph = Extension.create({
  * blank one they never typed, which is also why callouts were excluded from it
  * (it would have broken the 1:1 Obsidian round-trip on every `> [!type]` note).
  *
- * Editor.tsx now renders a click row above the body on EVERY note instead, so
- * the insertion point exists whatever the first block is, and the document is
- * only touched when the user actually asks for a line.
+ * Editor.tsx instead draws an "Add a line at the top" zone above any note
+ * whose first block leaves no line to click, and the document is only touched
+ * when the user actually asks for a line.
  */
 
 /**

@@ -14,7 +14,7 @@
 export const BUILTIN_THEME_CODES: Record<'light' | 'dark', Record<string, string>> = {
   light: {
     'default': 'pn1:Default Light:FFFFFF,F5F5F5,E5E5E5,0A0A0A,6A6A6A,1E40AF:list=FAFAF9,well=F5F5F5,soft=404040,hover=1E3A8A,fillhover=1E3A8A',
-    'warm-cream': 'pn1:Cream:F0EBDE,E1D8C4,CBC1A8,2D2416,645944,1840B1:list=E4DCCA,well=E4DCCA,soft=574B38,hover=1E3A8A,fillhover=1E3A8A,danger=C10007',
+    'warm-cream': 'pn1:Cream:F0EBDE,E1D8C4,CBC1A8,2D2416,645944,1840B1:list=E4DCCA,well=E4DCCA,soft=574B38,hover=1E3A8A,fillhover=1E3A8A,danger=B80007',
     'slate': 'pn1:Slate:F0F2F5,DDE1E8,C0C6D1,121524,595E71,4338CA:list=E9ECF1,well=E2E6ED,soft=3D4356,hover=3730A3,fillhover=3730A3',
     'sage': 'pn1:Sage:F6F8F3,E1E7DE,CCD6C7,17201A,55665A,2B6A4D:list=EBF0E8,well=E4EAE0,soft=38463B,hover=1F533B,fillhover=1F533B',
   },

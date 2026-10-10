@@ -59,13 +59,16 @@ La colonna centrale è centrata e l'ultima allineata a destra. Trascina il bordo
 Un riquadro è una scatola colorata per qualcosa che nessuno deve perdersi.
 
 > [!tip]+ Suggerimento
-> Clicca sul titolo di un riquadro per chiuderlo.
+> Clicca sulla sua icona per chiuderlo.
 
 > [!warning]+ Attenzione
 > Ogni tipo ha il suo colore e la sua icona.
 
 > [!danger]+ Pericolo
-> Ce ne sono nove. Il menu **Inserisci** li elenca.
+> Ce ne sono molti. Il menu **Inserisci** li elenca.
+
+> [!fold]- Comprimibile
+> Niente riquadro né colore: solo testo che resta da parte finché non lo apri.
 
 ## Citazioni
 

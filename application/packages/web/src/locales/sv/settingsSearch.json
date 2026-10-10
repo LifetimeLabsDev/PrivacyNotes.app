@@ -7,15 +7,18 @@
   "resultCount_other": "{{count}} resultat",
   "keywords": {
     "section_stats": "statistik, stats, siffror, svit, streak, värmekarta, antal ord",
-    "section_journals": "journal, dagbok, rubrik, titel, datumformat",
     "section_import": "importera, exportera, import, export, säkerhetskopia, backup, migrera, flytta, ladda ner",
     "section_plan": "plan, abonnemang, prenumeration, pro, betalning, fakturering, enheter, logga ut",
     "section_storage": "lagring, utrymme, kvot, disk, gigabyte, fullt",
     "section_images": "bilder, foton, fotografier, komprimering, kvalitet",
     "section_security": "säkerhet, lösenord, lås, integritet, sekretess",
     "section_me": "synk, synkronisering, sync, konto, identitet, id",
-    "section_appearance": "utseende, visning, design, färger, tema",
+    "section_design": "utseende, visning, design, färger, tema",
+    "section_editor": "skriva, redigerare, editor, text, typsnitt, storlek, radavstånd, bredd, markdown",
+    "section_formatBar": "formatfält, verktygsfält, toolbar, knappar, ordna, plusmeny",
+    "section_lists": "lista, sidofält, rutnät, vyer, startsida, flikar, utrymmen",
     "section_language": "språk, översättning, språkinställning, svenska",
+    "section_date": "datum, tid, klocka, format, dag, månad, år, dagbok, journal, inläggstitel",
     "section_about": "om, version, information, medverkande",
     "section_help": "hjälp, faq, vanliga frågor, support, frågor, guide",
     "stats_writing": "ord, antal anteckningar, aktivitet, värmekarta",
@@ -28,6 +31,7 @@
     "stats_wellness": "hälsa, humör, sömn, medicin, mediciner, spårning",
     "stats_wellnessExport": "läkare, doktor, rapport, csv, pdf",
     "journals_suffix": "rubrik, titel, journalnamn, inläggsrubrik",
+    "journals_titles": "dagbok, journal, inläggstitel, nytt inlägg, titelformat",
     "import_export": "ladda ner, spara, säkerhetskopia, backup, arkiv",
     "export_zipBackup": "säkerhetskopia, backup, zip, markdown, ladda ner allt",
     "import_vault": "lösenord, inloggningar, lösenordshanterare",
@@ -67,6 +71,7 @@
     "appearance_startView": "startsida, hem, standardvy, öppna i",
     "appearance_view": "rutnät, lista, kort, layout",
     "appearance_sinkChecked": "uppgifter, checklista, kryssruta, klar, ordning, nederst",
+    "appearance_spaces": "arbete, jobb, privat, personligt, arbetsyta, arbetsytor, separera, växla, profil, sammanhang",
     "appearance_sidebar": "sidofält, dölj vyer, meny, allt-listan",
     "language_spellCheck": "stavning, stavningskontroll, röd understrykning, stavfel, ordlista",
     "language_language": "språk, översättning, språkinställning, svenska",
@@ -80,6 +85,7 @@
     "about_changelog": "versionsinformation, release notes, nyheter, uppdateringar",
     "about_hotkeys": "kortkommandon, snabbkommandon, tangenter, genvägar, hotkeys",
     "about_rating": "recension, betygsätt, betyg, stjärnor, app store",
-    "appearance_openInTabs": "flikar, flikfält, webbläsare, öppna"
+    "appearance_openInTabs": "flikar, flikfält, webbläsare, öppna",
+    "appearance_formatBar": "verktygsfält, formatfält, knappar, anpassa, ordna, punktlista, genomstruken, kugghjul"
   }
 }

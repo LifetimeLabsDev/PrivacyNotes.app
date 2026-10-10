@@ -40,13 +40,15 @@ export function recordingStamp(d: Date): string {
 type Props = {
   editorView: EditorView | null;
   tabIndex?: number;
+  /** 'above' when the button sits at the bottom of the screen, so its labels stay in view. */
+  tipSide?: 'below' | 'above';
   /** Called when recording state changes so the parent can render an inline banner. */
   onStateChange?: (state: AudioRecordingState, duration: number) => void;
   /** Parent-owned ref that receives the stop function so the banner can trigger stop. */
   stopRef?: MutableRefObject<(() => void) | null>;
 };
 
-export function AudioRecorder({ editorView, tabIndex, onStateChange, stopRef }: Props) {
+export function AudioRecorder({ editorView, tabIndex, onStateChange, stopRef, tipSide = 'below' }: Props) {
   const { t } = useTranslation('editor');
   const [state, setState] = useState<AudioRecordingState>('idle');
   const [duration, setDuration] = useState(0);
@@ -162,7 +164,7 @@ export function AudioRecorder({ editorView, tabIndex, onStateChange, stopRef }: 
 
   if (state === 'uploading') {
     return (
-      <HoverLabel label={t('audio.uploadingRecording')} position="below">
+      <HoverLabel label={t('audio.uploadingRecording')} position={tipSide}>
       <span
         className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-accent"
         aria-label={t('audio.uploadingRecording')}
@@ -176,7 +178,7 @@ export function AudioRecorder({ editorView, tabIndex, onStateChange, stopRef }: 
 
   if (state === 'recording') {
     return (
-      <HoverLabel label={t('audio.stopRecording')} position="below">
+      <HoverLabel label={t('audio.stopRecording')} position={tipSide}>
       <button
         type="button"
         tabIndex={tabIndex}
@@ -199,7 +201,7 @@ export function AudioRecorder({ editorView, tabIndex, onStateChange, stopRef }: 
   }
 
   return (
-    <HoverLabel label={t('audio.recordAudio')} position="below-end">
+    <HoverLabel label={t('audio.recordAudio')} position={tipSide === 'above' ? 'above-end' : 'below-end'}>
     <button
       type="button"
       tabIndex={tabIndex}

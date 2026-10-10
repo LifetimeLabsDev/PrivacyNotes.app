@@ -80,6 +80,13 @@
     "clearFilters": "Usuń filtry",
     "filteredAfter": "aby je wyświetlić."
   },
+  "listGroups": {
+    "previous7Days": "Ostatnie 7 dni",
+    "previous30Days": "Ostatnie 30 dni",
+    "other": "Inne",
+    "collapseAll": "Zwiń wszystkie grupy",
+    "expandAll": "Rozwiń wszystkie grupy"
+  },
   "headerLabel": {
     "allItems": "Wszystkie",
     "untagged": "Bez tagów",
@@ -149,7 +156,7 @@
     "exitHover": "Wyjdź z trybu Zen (Esc)",
     "enterHover": "Włącz tryb Zen",
     "proHover": "Tryb Zen (Pro)",
-    "enterAriaShortcut": "Włącz tryb Zen (⌘⇧F)"
+    "enterAriaShortcut": "Włącz tryb Zen ({{keys}})"
   },
   "editor": {
     "backToList": "Wróć do listy notatek",
@@ -231,10 +238,10 @@
   },
   "settings": {
     "groupYourNotes": "Twoje notatki",
+    "groupPreferences": "Preferencje",
     "groupAccount": "Konto i dane",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "Statystyki",
-    "journalsLabel": "Dzienniki",
     "importLabel": "Import i eksport",
     "planLabel": "Konto",
     "storageLabel": "Pamięć",
@@ -242,9 +249,13 @@
     "securityLabel": "Bezpieczeństwo",
     "accountLabel": "ID i synchronizacja",
     "appearanceLabel": "Wygląd",
+    "editorLabel": "Edytor",
+    "formatBarLabel": "Pasek formatowania",
+    "listsLabel": "Listy",
     "helpLabel": "Pomoc",
     "aboutLabel": "O aplikacji",
-    "languageLabel": "Data i język",
+    "languageLabel": "Język",
+    "dateLabel": "Data",
     "languageDesc": "Wybierz język, w którym wyświetla się PrivacyNotes."
   },
   "importStore": {

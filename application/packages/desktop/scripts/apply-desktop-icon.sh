@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # macOS does NOT auto-round app icons (unlike iOS). The .icns must already be the
-# styled rounded "squircle" with padding. `tauri icon` only makes a flat icon, so
-# this rebuilds the desktop icon (icns + the PNG sizes used by the window/other
-# platforms) from the committed styled master.
+# rounded "squircle" with padding. `tauri icon` only makes a flat icon, so this
+# rebuilds icon.icns from the squircle master that scripts/make-app-icons.py writes.
+# The PNG sizes stay as `tauri icon` wrote them: the full tile that Windows and
+# Linux show, where the squircle's grid margin made the icon look small.
 #
 # Runs automatically after `pnpm icon`. macOS only (uses sips + iconutil).
-# To change the macOS look, edit src-tauri/icons/macos-master-1024.png and re-run.
 
 set -euo pipefail
 
@@ -33,11 +33,4 @@ done
 iconutil -c icns "$SET" -o "$ICONS/icon.icns"
 rm -rf "$TMP"
 
-# Styled PNG sizes (window icon / Linux / Windows fallback).
-sips -z 32 32   "$MASTER" --out "$ICONS/32x32.png"       >/dev/null
-sips -z 64 64   "$MASTER" --out "$ICONS/64x64.png"       >/dev/null
-sips -z 128 128 "$MASTER" --out "$ICONS/128x128.png"     >/dev/null
-sips -z 256 256 "$MASTER" --out "$ICONS/128x128@2x.png"  >/dev/null
-sips -z 512 512 "$MASTER" --out "$ICONS/icon.png"        >/dev/null
-
-echo "Desktop icon rebuilt from styled macOS master (icon.icns + PNG sizes)."
+echo "Desktop icon.icns rebuilt from the macOS master."

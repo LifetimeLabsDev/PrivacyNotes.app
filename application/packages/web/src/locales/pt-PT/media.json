@@ -19,7 +19,7 @@
   },
   "attachment": {
     "fallbackName": "Anexo",
-    "rename": "Renomear",
+    "rename": "Mudar o nome",
     "renamePlaceholder": "Nome do ficheiro",
     "saveName": "Guardar o nome",
     "seek": "Posição de reprodução",

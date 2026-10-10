@@ -67,4 +67,4 @@ Rijst kan. Pasta kan. En een kom met een vork, staand, om elf uur 's avonds, kan
 
 ---
 
-*Deze notitie gebruikt een tabel, een aanvinklijstje, genummerde stappen en drie kaders. [[Alles wat markdown hier kan]] laat zien hoe je ze alle maakt.*
+*Deze notitie gebruikt een tabel, een takenlijst, genummerde stappen en drie kaders. [[Alles wat markdown hier kan]] laat zien hoe je ze alle maakt.*

@@ -39,7 +39,9 @@
     "dateTime": "Datum en tijd",
     "footnote": "Voetnoot",
     "spoiler": "Spoiler",
-    "copyBox": "Kopieervak"
+    "copyBox": "Kopieervak",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Opmaakbalk aanpassen"
   },
   "align": {
     "left": "Links uitlijnen",
@@ -81,7 +83,16 @@
       "bug": "Bug",
       "note": "Notitie",
       "abstract": "Samenvatting",
-      "failure": "Mislukt"
+      "failure": "Mislukt",
+      "fold": "Inklapbaar",
+      "idea": "Idee",
+      "important": "Belangrijk",
+      "caution": "Let op",
+      "todo": "Taak",
+      "goal": "Doel",
+      "decision": "Besluit",
+      "definition": "Definitie",
+      "seealso": "Zie ook"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "Opmaak",
     "insert": "Invoegen",
     "blocks": "Blokken",
     "notation": "Notatie"
@@ -145,6 +157,8 @@
     "hide": "Overzicht verbergen",
     "hideTitle": "Overzicht verbergen (Esc)",
     "copyHeadingLink": "Link naar kop kopiëren",
+    "copyNoteLink": "Notitielink kopiëren",
+    "copyHeadingShortcut": "Snelkoppeling naar kop kopiëren",
     "copied": "Gekopieerd"
   },
   "bodyMenu": {
@@ -241,5 +255,47 @@
     "missing": "Geen voetnoottekst. Klik om die toe te voegen.",
     "ariaRef": "Voetnoot {{n}}",
     "ariaSection": "Voetnoten"
+  },
+  "formatBar": {
+    "tryIt": "Probeer het: deel de balk hier in en kijk hoe het voelt.",
+    "previewOnly": "Alleen een voorbeeld. Je indeling wordt opgeslagen zodra je Pro hebt.",
+    "discard": "Weggooien",
+    "keepLayout": "Deze indeling bewaren",
+    "hintDrag": "Sleep om te verplaatsen, klik voor opties.",
+    "hintTap": "Tik op een knop voor de opties.",
+    "onBar": "Op de balk",
+    "inMenu": "In het +-menu",
+    "menuEmpty": "Het menu is leeg, dus de +-knop wordt niet getoond.",
+    "hidden": "Verborgen",
+    "hiddenNote": "Ze werken nog steeds met hun sneltoets en Markdown.",
+    "hiddenDrop": "Zet hier een knop neer om hem te verbergen.",
+    "hiddenEmpty": "Niets is verborgen.",
+    "alwaysVisible": "Altijd zichtbaar",
+    "pinned": "Opent een paneel, blijft dus op de balk of verborgen",
+    "optionsFor": "Opties voor {{item}}",
+    "moveUp": "Omhoog",
+    "moveDown": "Omlaag",
+    "moveLeft": "Naar links",
+    "moveRight": "Naar rechts",
+    "home": {
+      "bar": "Op de balk",
+      "menu": "In het +-menu",
+      "hidden": "Verborgen"
+    },
+    "opensPanel": "opent een paneel",
+    "showsRecording": "toont de opname",
+    "refuse": {
+      "menuNotAllowed": "{{item}} kan op de balk staan of verborgen zijn, niet in het +-menu.",
+      "lastOnBar": "Houd minstens één knop op de balk."
+    },
+    "items": {
+      "link": "Link",
+      "notelink": "Notitielink",
+      "audio": "Opname"
+    },
+    "positionTitle": "Positie van de balk",
+    "positionNote": "Kies waar de opmaakbalk in de editor staat.",
+    "positionTop": "Boven",
+    "positionBottom": "Onder"
   }
 }

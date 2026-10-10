@@ -39,7 +39,9 @@
     "dateTime": "Data e ora",
     "footnote": "Nota a piè di pagina",
     "spoiler": "Spoiler",
-    "copyBox": "Riquadro da copiare"
+    "copyBox": "Riquadro da copiare",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Personalizza la barra di formattazione"
   },
   "align": {
     "left": "Allinea a sinistra",
@@ -81,7 +83,16 @@
       "bug": "Bug",
       "note": "Nota",
       "abstract": "Sintesi",
-      "failure": "Errore"
+      "failure": "Errore",
+      "fold": "Comprimibile",
+      "idea": "Idea",
+      "important": "Importante",
+      "caution": "Attenzione",
+      "todo": "Da fare",
+      "goal": "Obiettivo",
+      "decision": "Decisione",
+      "definition": "Definizione",
+      "seealso": "Vedi anche"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "Formattazione",
     "insert": "Inserisci",
     "blocks": "Blocchi",
     "notation": "Notazione"
@@ -145,6 +157,8 @@
     "hide": "Nascondi struttura",
     "hideTitle": "Nascondi struttura (Esc)",
     "copyHeadingLink": "Copia il link al titolo",
+    "copyNoteLink": "Copia il collegamento fra note",
+    "copyHeadingShortcut": "Copia la scorciatoia al titolo",
     "copied": "Copiato"
   },
   "bodyMenu": {
@@ -242,5 +256,47 @@
     "missing": "Nessun testo per la nota. Fai clic per aggiungerlo.",
     "ariaRef": "Nota {{n}}",
     "ariaSection": "Note a piè di pagina"
+  },
+  "formatBar": {
+    "tryIt": "Provalo: disponi qui la barra e guarda come ti trovi.",
+    "previewOnly": "Solo anteprima. La tua disposizione viene salvata non appena hai Pro.",
+    "discard": "Scarta",
+    "keepLayout": "Mantieni questa disposizione",
+    "hintDrag": "Trascina per spostare, fai clic per le opzioni.",
+    "hintTap": "Tocca un pulsante per le sue opzioni.",
+    "onBar": "Nella barra",
+    "inMenu": "Nel menu +",
+    "menuEmpty": "Il menu è vuoto, quindi il pulsante + non viene mostrato.",
+    "hidden": "Nascosti",
+    "hiddenNote": "Funzionano ancora con la scorciatoia e in Markdown.",
+    "hiddenDrop": "Trascina qui un pulsante per nasconderlo.",
+    "hiddenEmpty": "Niente è nascosto.",
+    "alwaysVisible": "Sempre visibili",
+    "pinned": "Apre un pannello, quindi resta nella barra o nascosto",
+    "optionsFor": "Opzioni per {{item}}",
+    "moveUp": "Sposta su",
+    "moveDown": "Sposta giù",
+    "moveLeft": "Sposta a sinistra",
+    "moveRight": "Sposta a destra",
+    "home": {
+      "bar": "Nella barra",
+      "menu": "Nel menu +",
+      "hidden": "Nascosto"
+    },
+    "opensPanel": "apre un pannello",
+    "showsRecording": "mostra la registrazione",
+    "refuse": {
+      "menuNotAllowed": "{{item}} può stare nella barra o essere nascosto, non nel menu +.",
+      "lastOnBar": "Lascia almeno un pulsante nella barra."
+    },
+    "items": {
+      "link": "Link",
+      "notelink": "Collegamento fra note",
+      "audio": "Registrazione"
+    },
+    "positionTitle": "Posizione della barra",
+    "positionNote": "Scegli dove si trova la barra di formattazione nell’editor.",
+    "positionTop": "In alto",
+    "positionBottom": "In basso"
   }
 }

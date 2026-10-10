@@ -17,3 +17,11 @@ contact_links:
     about: >
       A demo with made-up notes. Nothing is saved and nothing leaves your browser. Handy for
       working out whether a problem is the app itself or just your own copy.
+  - name: Share a color theme
+    url: https://github.com/LifetimeLabsDev/PrivacyNotes.app/discussions/categories/themes
+    about: >
+      Themes live in Discussions, where each one keeps an open thread for feedback.
+  - name: Talk with other users
+    url: https://www.reddit.com/r/PrivacyNotes/
+    about: >
+      Questions, ideas and how you use the app. The community is on Reddit.

@@ -11,6 +11,17 @@ export const BAR_BTN =
   '[@media(hover:hover)]:hover:bg-pn/10 ' +
   'disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition shrink-0 outline-none';
 
+/** Text buttons (Replace, All): the icon button's style at a label's width. */
+export const TEXT_BTN =
+  'flex items-center justify-center h-7 px-2 rounded text-xs font-medium text-pn-soft ' +
+  '[@media(hover:hover)]:hover:bg-pn/10 ' +
+  'disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition shrink-0 outline-none';
+
+/** The search and replacement fields of the replace bars. */
+export const BAR_INPUT =
+  'flex-1 min-w-0 bg-transparent text-sm text-pn ' +
+  'placeholder:text-pn-muted outline-none px-1';
+
 type Props = {
   /** Text in the count slot: "2/7", "0/0", a status line, or nothing. */
   count: string;

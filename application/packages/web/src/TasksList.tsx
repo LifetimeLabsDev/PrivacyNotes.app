@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { itemGridClass, useContextTarget, useScrollRestore } from './itemList';
 import type { LocalNote } from './db';
 import { setPillarPrefs, type ListPrefs, type ListPrefsStore } from './listPrefs';
 import type { UserSettings } from './userSettings';
@@ -22,6 +23,7 @@ import { ImportPromptEntry, importPromptFor, type ImportOffer } from './ImportPr
 import { textMatcher } from './textMatch';
 import { isImeComposing } from './imeComposing';
 import { Switch } from './Switch';
+import { useListGroups } from './ListGroupHeader';
 
 export interface TasksListProps {
   allTasks: TaskItem[];
@@ -150,13 +152,10 @@ export default function TasksList({
   const listPrefsButtonRef = useRef<HTMLButtonElement | null>(null);
 
   /** ID of the note row that was right-clicked - highlighted while context menu is open. */
-  const [contextTargetId, setContextTargetId] = useState<string | null>(null);
-  useEffect(() => {
-    if (!contextTargetId) return;
-    const clear = () => setContextTargetId(null);
-    window.addEventListener('click', clear, true);
-    return () => window.removeEventListener('click', clear, true);
-  }, [contextTargetId]);
+  const [contextTargetId, setContextTargetId] = useContextTarget();
+  // The scroll position across a hide and show of the pane (#186); a new
+  // search or filter starts at the top.
+  const scroll = useScrollRestore([search, activeFolderName, activeTag, viewMode]);
 
   // Parent notes by id. The aggregate groups tasks by note, so it orders
   // and badges each group through the note it came from - same pinned
@@ -326,6 +325,25 @@ export default function TasksList({
       sortAwareDate
     />
   );
+
+  /* Group headers (#448) over the notes that hold tasks, in the grid and in
+     the list's first band. The "All tasks" section stays grouped by note.
+     Spec: ops/docs/plans/list-groups.md */
+  const grouping = useListGroups({
+    notes: taskContainingNotes,
+    listPrefs,
+    search,
+    scope: 'tasks',
+    entryDays: false,
+    selectionMode,
+    selectedId,
+    isNoteLocked,
+    onContextMenu,
+  });
+  const taskNoteItems = (grid: boolean) =>
+    grouping.entries
+      ? grouping.entries.map((e) => (e.kind === 'header' ? grouping.header(e, grid) : renderTaskNoteRow(e.note)))
+      : taskContainingNotes.map(renderTaskNoteRow);
 
   const renderTaskGroup = (g: { noteId: string; noteTitle: string; editedAt: string; tasks: TaskItem[] }) => {
         const groupActive = selectedId === g.noteId;
@@ -519,6 +537,7 @@ export default function TasksList({
             anchorRef={listPrefsButtonRef}
             className="absolute start-3 top-full mt-1"
             pillar="tasks"
+            showGroupsToggle
           />
         )}
       </div>
@@ -559,7 +578,12 @@ export default function TasksList({
       </div>
 
       {/* Content -- the tile grid, or the pane's one list shape */}
-      <div className="flex-1 overflow-y-auto" onMouseDown={suppressShiftTextSelection}>
+      <div
+        ref={scroll.ref as React.RefObject<HTMLDivElement>}
+        onScroll={(e) => scroll.onScroll(e.currentTarget)}
+        className="flex-1 overflow-y-auto"
+        onMouseDown={suppressShiftTextSelection}
+      >
         {viewMode === 'grid' ? (
           <>
             {taskContainingNotes.length === 0 && (filteredEmpty ?? (
@@ -572,8 +596,8 @@ export default function TasksList({
               </div>
             ))}
             {(taskContainingNotes.length > 0 || importEntry || searchEntry || filterEntry) && (
-              <ul className="grid gap-3 p-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
-                {taskContainingNotes.map(renderTaskNoteRow)}
+              <ul className={itemGridClass(true)}>
+                {taskNoteItems(true)}
                 {searchEntry}
                 {filterEntry}
                 {importEntry}
@@ -587,7 +611,7 @@ export default function TasksList({
                 <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wide font-semibold text-pn-muted">
                   {tr('tasksList.itemsWithTasks')}
                 </div>
-                <ul>{taskContainingNotes.map(renderTaskNoteRow)}</ul>
+                <ul>{taskNoteItems(false)}</ul>
               </div>
             )}
             {/* The heading names the groups under it, so it stays away when

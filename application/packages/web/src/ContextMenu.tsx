@@ -24,10 +24,11 @@ import { matchesKey } from './shortcutMatch';
  *
  * On touch a long-press is the platform's own gesture (select + copy) and
  * the app's multi-select gesture on list rows, so it does not open this
- * menu there - see isTouchContextMenu. Touch reaches it two ways: an
+ * menu there - see isTouchContextMenu. Touch reaches it three ways: an
  * explicit button that calls `open` from its click (the "..." a bookmark
- * row wears on touch), and a note-link's long press (NoteLink.tsx), the one
- * place that gesture belongs to the app.
+ * row wears on touch), a note-link's long press (NoteLink.tsx), and a long
+ * press on a URL link in the note body (Editor.tsx), which leaves the
+ * platform's word selection in place.
  *
  * Usage:
  *   const ctx = useContextMenu();
@@ -54,7 +55,8 @@ export type ContextMenuItem =
       pick?: string;
     }
   | { type: 'separator' }
-  | { type: 'header'; label: string };
+  /** `keepCase` shows the label as written, for a name such as a username. */
+  | { type: 'header'; label: string; keepCase?: boolean };
 
 export type ContextMenuState = {
   x: number;
@@ -62,6 +64,14 @@ export type ContextMenuState = {
   items: ContextMenuItem[];
   /** Opened from the keyboard: the first row starts highlighted, so Enter picks it. */
   keyboard?: boolean;
+  /** A band of the viewport the menu must not cover, such as a touch
+   *  selection and its handles. The menu goes below it, or above it when
+   *  there is no room below. Read again when the soft keyboard moves the
+   *  page, so the menu follows the band instead of staying behind the keys. */
+  clear?: () => { top: number; bottom: number };
+  /** The menu's end edge sits at `x` instead of its start edge, for a menu
+   *  opened from a button in a corner that should open beside it. */
+  alignEnd?: boolean;
 } | null;
 
 function isSelectable(it: ContextMenuItem): it is Extract<
@@ -107,12 +117,26 @@ export function shouldUseBrowserDefault(target: EventTarget | null): boolean {
  * menu must stay out of its way. Chromium reports `pointerType` on the
  * event; WebKit and Firefox fire a plain MouseEvent, so fall back to
  * asking whether the device has a pointer that can right-click at all.
+ *
+ * Android's WebView fires a second `contextmenu` after the long press has
+ * selected a word, from its own selection controller, and labels that one
+ * `pointerType: "mouse"` with `button: -1`. A mouse right-click reports
+ * button 2, so on a device that cannot hover the second event is the same
+ * long press. Taking it opened the link menu over the new selection and
+ * cancelled it, so a note of links alone could not be selected (issue #454).
  * Spec: ops/docs/backlog.md #74 (issue #208).
  */
 export function isTouchContextMenu(e: React.MouseEvent): boolean {
+  if (isLongPressEcho(e.nativeEvent)) return true;
   const pointerType = (e.nativeEvent as PointerEvent).pointerType;
   if (pointerType) return pointerType !== 'mouse';
   return typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
+}
+
+/** The second `contextmenu` of an Android long press, described above. */
+export function isLongPressEcho(e: MouseEvent): boolean {
+  return (e as PointerEvent).pointerType === 'mouse' && e.button === -1
+    && typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
 }
 
 /**
@@ -132,11 +156,13 @@ export function useContextMenu() {
     e: { clientX: number; clientY: number; preventDefault: () => void; stopPropagation: () => void },
     items: ContextMenuItem[],
     keyboard = false,
+    clear?: () => { top: number; bottom: number },
+    alignEnd = false,
   ) => {
     if (items.length === 0) return;
     e.preventDefault();
     e.stopPropagation();
-    setState({ x: e.clientX, y: e.clientY, items, keyboard });
+    setState({ x: e.clientX, y: e.clientY, items, keyboard, clear, alignEnd });
   };
   const close = () => setState(null);
   return { state, open, close };
@@ -150,12 +176,35 @@ export function ContextMenu({
   onClose: () => void;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
+  // Outlives the listener effect below, which runs again on every render.
+  const keyboardMovedAt = useRef(-Infinity);
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
   const [activeIdx, setActiveIdx] = useState<number>(-1);
   // On the shared Escape stack, which runs before the app's Escape cascade:
   // a listener of the menu's own would run after it and close the open note
   // as well.
   useEscapeToClose(onClose, !!state);
+
+  const place = (st: NonNullable<ContextMenuState>) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const m = 8;
+    const rtl = document.documentElement.dir === 'rtl';
+    let left = st.alignEnd && !rtl ? st.x - rect.width : st.x;
+    let top = st.y;
+    const band = st.clear?.();
+    if (band) {
+      top = band.bottom;
+      if (top + rect.height > vh - m && band.top - rect.height >= m) top = band.top - rect.height;
+    }
+    if (left + rect.width > vw - m) left = Math.max(m, vw - rect.width - m);
+    if (left < m) left = m;
+    if (top + rect.height > vh - m) top = Math.max(m, vh - rect.height - m);
+    setPos({ top, left });
+  };
 
   // For each new menu: reset the highlighted row + measure/flip near
   // viewport edges. Both jobs stay in one layout effect on purpose:
@@ -168,20 +217,10 @@ export function ContextMenu({
       return;
     }
     setActiveIdx(state.keyboard ? state.items.findIndex((it) => isSelectable(it) && !it.disabled) : -1);
-    const el = ref.current;
-    if (!el) return;
     // Opened from the keyboard, the menu takes the focus, so Enter and the
     // arrows reach it and not the editor behind it.
-    if (state.keyboard) el.focus({ preventScroll: true });
-    const rect = el.getBoundingClientRect();
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const m = 8;
-    let left = state.x;
-    let top = state.y;
-    if (left + rect.width > vw - m) left = Math.max(m, vw - rect.width - m);
-    if (top + rect.height > vh - m) top = Math.max(m, vh - rect.height - m);
-    setPos({ top, left });
+    if (state.keyboard) ref.current?.focus({ preventScroll: true });
+    place(state);
   }, [state]);
 
   // Dismiss on outside mousedown, scroll, resize, or another contextmenu
@@ -193,13 +232,21 @@ export function ContextMenu({
     const onPointerDown = (e: PointerEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) onClose();
     };
+    // The long press that opened the menu fires again on Android.
     const onCtx = (e: MouseEvent) => {
+      if (isLongPressEcho(e)) return;
       if (ref.current && !ref.current.contains(e.target as Node)) onClose();
     };
     // A scroll inside the menu is the menu being read, not the page moving
     // under it: a long menu on a short screen scrolls itself.
+    // The keyboard also scrolls the page to keep the caret in view, just
+    // after it resizes the viewport, and that scroll is the same chrome move.
     const onScroll = (e: Event) => {
       if (ref.current && e.target instanceof Node && ref.current.contains(e.target)) return;
+      if (performance.now() - keyboardMovedAt.current < 600) {
+        if (state.clear) place(state);
+        return;
+      }
       onClose();
     };
     // A soft keyboard sliding in or out changes the viewport height and leaves
@@ -211,7 +258,11 @@ export function ContextMenu({
     // rotation or a real window resize changes the width, and still closes.
     let lastWidth = window.innerWidth;
     const onResize = () => {
-      if (window.innerWidth === lastWidth) return;
+      if (window.innerWidth === lastWidth) {
+        keyboardMovedAt.current = performance.now();
+        if (state.clear) place(state);
+        return;
+      }
       lastWidth = window.innerWidth;
       onClose();
     };
@@ -325,7 +376,7 @@ export function ContextMenu({
           return (
             <div
               key={`hdr-${i}`}
-              className="px-3 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase tracking-wider text-pn-muted"
+              className={`px-3 pt-1.5 pb-0.5 text-[10px] font-semibold tracking-wider text-pn-muted ${it.keepCase ? '' : 'uppercase'}`}
             >
               {it.label}
             </div>

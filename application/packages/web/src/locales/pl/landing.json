@@ -334,7 +334,7 @@
     "dataStorageBody": "Zaszyfrowane bloby przechowywane w Zurychu, <flag/> Szwajcaria.",
     "faviconsHeading": "Ikony stron",
     "faviconsBody1": "Ikony stron (favikony) pochodzą z DuckDuckGo i Google, a pobiera je nasz serwer w Twoim imieniu. Twoja przeglądarka nigdy nie łączy się z żadnym z nich, więc widzą one nasz serwer pytający o domenę, a nigdy Ciebie.",
-    "faviconsBody2": "Ikony są przechowywane w pamięci podręcznej urządzenia przez 90 dni. Żadne zapytanie nie zawiera Twojej tożsamości, a ikony możesz wyłączyć w Ustawienia > Wygląd."
+    "faviconsBody2": "Ikony są przechowywane w pamięci podręcznej urządzenia przez 90 dni. Żadne zapytanie nie zawiera Twojej tożsamości, a ikony możesz wyłączyć w Ustawienia > Listy."
   },
   "feedback": {
     "title": "Wyślij opinię",

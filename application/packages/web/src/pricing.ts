@@ -25,6 +25,18 @@ export const STORAGE_PACKAGES: StoragePackage[] = [
   { gb: 5, pricePerYear: 18.00 }, // $3.60/GB (25% off)
 ];
 
+/**
+ * The yearly fees the upgrade modal charts against the one-time price, over
+ * COMPARE_YEARS. Web and desktop only: a store build shows its own localized
+ * price and has nothing in USD to chart against it.
+ * Spec: ops/docs/design-decisions.md (Pro anchored against subscription competitors)
+ */
+export const COMPARE_YEARS = 5;
+export const COMPETITOR_YEARLY = [
+  { name: 'Obsidian Sync', perYear: 48 },
+  { name: 'Standard Notes', perYear: 90 },
+] as const;
+
 /** Pro full price in cents - used to detect early supporters (amount_cents < this). */
 // Spec: ops/docs/design-decisions.md (Pro full price = $89 = 8900 cents)
 export const PRO_PRICE_CENTS = PRO_PRICE * 100;

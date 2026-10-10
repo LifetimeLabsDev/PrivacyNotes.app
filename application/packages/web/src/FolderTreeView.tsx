@@ -60,6 +60,9 @@ export interface FolderTreeViewProps {
   sortSiblings?: (list: FolderDef[]) => FolderDef[];
   isActive?: (folder: FolderDef) => boolean;
   isDisabled?: (folder: FolderDef) => boolean;
+  /** Drawn in the muted color: a folder that holds nothing the open section
+   *  shows. It stays a full row, a click and a drop target like any other. */
+  isDimmed?: (folder: FolderDef) => boolean;
   onSelect: (folder: FolderDef) => void;
   onContextMenu?: (e: React.MouseEvent, folder: FolderDef) => void;
   /** A click on the folder's own icon, in place of `onSelect`. */
@@ -117,6 +120,7 @@ export function FolderTreeView({
   sortSiblings,
   isActive,
   isDisabled,
+  isDimmed,
   onSelect,
   onContextMenu,
   onGlyphClick,
@@ -377,6 +381,7 @@ export function FolderTreeView({
     const expanded = isExpanded(folder);
     const active = isActive?.(folder) ?? false;
     const disabled = isDisabled?.(folder) ?? false;
+    const dimmed = !disabled && !active && (isDimmed?.(folder) ?? false);
     const dragging = drag?.active && drag.id === folder.id;
     const refusedHere = drag?.active && drag.refused.has(folder.id) && drag.id !== folder.id;
     const target = drag?.active && drag.target?.overId === folder.id ? drag.target : null;
@@ -415,6 +420,7 @@ export function FolderTreeView({
             rail,
             active,
             disabled: disabled || !!refusedHere,
+            dimmed,
             dragging: !!dragging,
             inside: target?.place === 'inside' || (takesItems && itemDrop?.overId === folder.id),
           })}
@@ -465,7 +471,7 @@ export function FolderTreeView({
                 rail ? 'gap-2 py-2 pe-1' : 'gap-2 py-2 pe-1'
               }`}
             >
-              <span className="inline-flex shrink-0 text-amber-700 dark:text-amber-500/80">
+              <span className="inline-flex shrink-0 text-label">
                 <FolderGlyph folderId={folder.id} size={rail ? 16 : 15} />
               </span>
               {renderName?.(folder)}
@@ -496,8 +502,8 @@ export function FolderTreeView({
                 <span
                   data-folder-glyph
                   className={`inline-flex shrink-0 ${
-                    disabled ? '' : active ? 'text-accent' : 'text-amber-700 dark:text-amber-500/80'
-                  }${onGlyphClick ? ' pn-look-glyph' : ''}`}
+                    disabled ? '' : active ? 'text-accent' : 'text-label'
+                  }${dimmed ? ' opacity-60' : ''}${onGlyphClick ? ' pn-look-glyph' : ''}`}
                 >
                   <FolderGlyph folderId={folder.id} size={rail ? 16 : 15} />
                 </span>
@@ -565,12 +571,14 @@ function rowClass({
   rail,
   active,
   disabled,
+  dimmed,
   dragging,
   inside,
 }: {
   rail: boolean;
   active: boolean;
   disabled: boolean;
+  dimmed: boolean;
   dragging: boolean;
   inside: boolean;
 }): string {
@@ -587,7 +595,7 @@ function rowClass({
       ? `${base} pn-on-tint bg-accent/15 text-accent-strong dark:bg-accent/20`
       : `${base} pn-on-tint bg-accent/15 text-accent-strong dark:bg-accent/20 hover:bg-accent/20 dark:hover:bg-accent/25`;
   }
-  return `${base} text-pn hover:bg-pn/5`;
+  return `${base} ${dimmed ? 'text-pn-muted' : 'text-pn'} hover:bg-pn/5`;
 }
 
 /**

@@ -39,7 +39,9 @@
     "dateTime": "日付と時刻",
     "footnote": "脚注",
     "spoiler": "ネタバレ",
-    "copyBox": "コピー用ボックス"
+    "copyBox": "コピー用ボックス",
+    "withHint": "{{label}}（{{hint}}）",
+    "customize": "ツールバーをカスタマイズ"
   },
   "align": {
     "left": "左揃え",
@@ -81,7 +83,16 @@
       "bug": "バグ",
       "note": "メモ",
       "abstract": "要約",
-      "failure": "失敗"
+      "failure": "失敗",
+      "fold": "折りたたみ",
+      "idea": "アイデア",
+      "important": "重要",
+      "caution": "注意",
+      "todo": "ToDo",
+      "goal": "目標",
+      "decision": "決定",
+      "definition": "定義",
+      "seealso": "関連項目"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "書式",
     "insert": "挿入",
     "blocks": "ブロック",
     "notation": "記法"
@@ -144,6 +156,8 @@
     "hide": "アウトラインを隠す",
     "hideTitle": "アウトラインを隠す(Esc)",
     "copyHeadingLink": "見出しへのリンクをコピー",
+    "copyNoteLink": "ノートリンクをコピー",
+    "copyHeadingShortcut": "見出しへのショートカットをコピー",
     "copied": "コピーしました"
   },
   "bodyMenu": {
@@ -236,5 +250,47 @@
     "missing": "脚注のテキストがありません。クリックして追加します。",
     "ariaRef": "脚注 {{n}}",
     "ariaSection": "脚注"
+  },
+  "formatBar": {
+    "tryIt": "試してみましょう。ここでバーを並べ替えて、使い心地を確かめられます。",
+    "previewOnly": "プレビューのみです。Proにした時点で、このレイアウトが保存されます。",
+    "discard": "破棄",
+    "keepLayout": "このレイアウトを残す",
+    "hintDrag": "ドラッグで移動、クリックでオプションを開きます。",
+    "hintTap": "ボタンをタップしてオプションを開きます。",
+    "onBar": "バー",
+    "inMenu": "+ メニュー",
+    "menuEmpty": "メニューが空なので、+ ボタンは表示されません。",
+    "hidden": "非表示",
+    "hiddenNote": "ショートカットとMarkdownで引き続き使えます。",
+    "hiddenDrop": "ボタンをここにドロップすると非表示になります。",
+    "hiddenEmpty": "非表示のものはありません。",
+    "alwaysVisible": "常に表示",
+    "pinned": "パネルを開くため、バーに置くか非表示にします",
+    "optionsFor": "{{item}} のオプション",
+    "moveUp": "上へ移動",
+    "moveDown": "下へ移動",
+    "moveLeft": "左へ移動",
+    "moveRight": "右へ移動",
+    "home": {
+      "bar": "バー",
+      "menu": "+ メニュー",
+      "hidden": "非表示"
+    },
+    "opensPanel": "パネルを開きます",
+    "showsRecording": "録音を表示します",
+    "refuse": {
+      "menuNotAllowed": "{{item}} はバーに置くか非表示にできます。+ メニューには入れられません。",
+      "lastOnBar": "バーに少なくとも1つボタンを残してください。"
+    },
+    "items": {
+      "link": "リンク",
+      "notelink": "ノートリンク",
+      "audio": "録音"
+    },
+    "positionTitle": "バーの位置",
+    "positionNote": "エディタ内のツールバーの位置を選びます。",
+    "positionTop": "上",
+    "positionBottom": "下"
   }
 }

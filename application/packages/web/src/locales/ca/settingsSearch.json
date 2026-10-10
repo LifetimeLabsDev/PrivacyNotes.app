@@ -7,15 +7,18 @@
   "resultCount_other": "{{count}} resultats",
   "keywords": {
     "section_stats": "estadístiques, stats, xifres, ratxa, mapa de calor, recompte de paraules",
-    "section_journals": "diari, dietari, títol, format de data",
     "section_import": "importar, exportar, còpia de seguretat, backup, migrar, moure, descarregar",
     "section_plan": "pla, subscripció, pro, facturació, pagament, dispositius, tancar la sessió, sortir",
     "section_storage": "emmagatzematge, espai, quota, disc, gigues, gigabytes, ple",
     "section_images": "imatges, fotos, fotografies, compressió, qualitat",
     "section_security": "seguretat, contrasenya, bloqueig, privadesa",
     "section_me": "sincronització, sync, compte, identitat, id",
-    "section_appearance": "aspecte, pantalla, disseny, colors, tema",
+    "section_design": "aspecte, aparença, pantalla, disseny, colors, tema",
+    "section_editor": "escriptura, editor, text, lletra, font, mida, espaiat, interlineat, amplada, markdown",
+    "section_formatBar": "barra de format, barra d'eines, toolbar, botons, organitzar, menú més",
+    "section_lists": "llista, barra lateral, graella, vistes, pàgina d'inici, pestanyes, espais",
     "section_language": "idioma, llengua, traducció, configuració regional",
+    "section_date": "data, hora, rellotge, format, dia, mes, any, diari, entrada, títol de l'entrada",
     "section_about": "quant a, versió, informació, crèdits",
     "section_help": "ajuda, preguntes freqüents, faq, suport, preguntes, guia",
     "stats_writing": "paraules, nombre de notes, activitat, mapa de calor",
@@ -28,6 +31,7 @@
     "stats_wellness": "salut, estat d'ànim, son, medicació, seguiment",
     "stats_wellnessExport": "metge, informe, csv, pdf",
     "journals_suffix": "títol, nom del diari, títol de l'entrada",
+    "journals_titles": "diari, títol de l'entrada, entrada nova, format del títol",
     "import_export": "descarregar, desar, còpia de seguretat, backup, arxiu",
     "export_zipBackup": "còpia de seguretat, backup, zip, markdown, descarregar-ho tot",
     "import_vault": "contrasenyes, inicis de sessió, gestor de contrasenyes",
@@ -67,6 +71,7 @@
     "appearance_startView": "pàgina d'inici, inici, vista per defecte, obrir a",
     "appearance_view": "quadrícula, llista, targetes, disseny",
     "appearance_sinkChecked": "tasques, llista de comprovació, casella, fet, completat, ordre, avall",
+    "appearance_spaces": "feina, treball, personal, espai de treball, espais de treball, separar, canviar, perfil, context",
     "appearance_sidebar": "barra lateral, amagar vistes, menú, llista de tot",
     "language_spellCheck": "ortografia, corrector, subratllat vermell, errors, faltes, diccionari",
     "language_language": "idioma, llengua, traducció, configuració regional",
@@ -80,6 +85,7 @@
     "about_changelog": "notes de la versió, novetats, actualitzacions",
     "about_hotkeys": "dreceres de teclat, dreceres, tecles, hotkeys",
     "about_rating": "ressenya, valorar, puntuar, estrelles, app store",
-    "appearance_openInTabs": "pestanyes, barra de pestanyes, navegador, obrir"
+    "appearance_openInTabs": "pestanyes, barra de pestanyes, navegador, obrir",
+    "appearance_formatBar": "barra d'eines, barra de format, botons, personalitzar, organitzar, llista amb pics, ratllat, engranatge"
   }
 }

@@ -49,13 +49,7 @@
     "mdDemoScripts": "Üst simge, alt simge, altı çizili",
     "mdDemoMath": "Matematik (KaTeX)",
     "mdDemoQuote": "Alıntı ve not bağlantısı",
-    "mdDemoDivider": "Ayırıcı",
-    "hkShowcase": "Tam liste",
-    "hkMac": "Mac",
-    "hkPc": "Windows ve Linux",
-    "hkBrowser": "Tarayıcı",
-    "hkDesktop": "Masaüstü uygulaması",
-    "hkLayout": "Kısayollar ABD tuş konumlarını değil, klavyenizin yazdığı karakterleri izler: gösterilen karakteri yazan tuşa basın (Latin olmayan bir düzende, ABD düzenindeki yerinde duran tuşa). AltGr ile bir karakter yazan tuş her zaman o karakteri yazar."
+    "mdDemoDivider": "Ayırıcı"
   },
   "groups": {
     "gettingStarted": "Başlarken",
@@ -100,6 +94,14 @@
       "a": [
         "Notlar, başlıklar, etiketler ve ekler her zaman şifrelidir: cihazınızda da, sunucuya giderken de. İfadeyle açılan her hesabın başlangıç modu olan kendi saklama modunda, bizde şifre çözme anahtarı bulunmaz. Google, Apple veya GitHub ile kayıt olurken anahtarınızın nerede saklanacağını sorarız; başlangıçta \"Basit ve pratik olsun\" seçilidir. Bu seçenek ifadenizi bize ait bir anahtarla şifreleyerek sunucumuzda saklar. Bu modda sunucumuz ifadenizin, dolayısıyla notlarınızın şifresini çözebilir. Ayarlar > Hesap > Anahtar saklama mevcut modunuzu gösterir ve değiştirmenizi sağlar.",
         "Görebildiğimiz bilgiler hizmeti çalıştırmak için gerekenlerdir: ne kadar şifreli depolama kullandığınız, kaç cihaz bağladığınız ve eşitleme zamanları. Yalnızca ifadenizi kullanıyor ve bir Google, Apple veya GitHub hesabı bağlamadıysanız e-posta adresinizi bilmeyiz."
+      ]
+    },
+    "app-privacy-label": {
+      "q": "App Store gizlilik etiketi neden verilerimin benimle bağlantılı olduğunu söylüyor?",
+      "a": [
+        "Çünkü Apple, şifreli ulaşsa ve yalnızca bazı hesaplar gönderse bile sunucumuza ulaşabilecek her şeyi kapsayan tek bir etiket ister. Sizinle bağlantılı, bir hesaba bağlı demektir; ifadeyle açılan bir hesabın arkasında bir isim değil, bir anahtar vardır. Hiçbir şey izleme için kullanılmaz ve uygulamada analiz, reklam veya çökme raporu yoktur. Etiketteki her satır tek bir şeyi ifade eder:",
+        "- **Kullanıcı İçeriği**: notlarınız ve dosyalarınız, cihazınızda şifrelenir. Kendi saklama modunda bunları okuyamayız.\n- **Tanımlayıcılar**: kurtarma ifadenizden türetilen bir açık anahtar ve cihazınızda hesaplanan, yalnızca ücretsiz sürümün cihaz sınırını uygulayan bir cihaz özeti.\n- **İletişim Bilgileri**: bir e-posta adresi, yalnızca Google, Apple veya GitHub ile giriş yaparsanız.\n- **Satın Alımlar**: hesabınızda Pro olup olmadığı. Ödemeyi Apple yürütür ve kartınızı hiçbir zaman görmeyiz.",
+        "Bu listeyi kendi hesabınız için olabildiğince kısa tutmak isterseniz Google, Apple veya GitHub girişi yerine bir kurtarma ifadesiyle kaydolun ve kendi saklama modunda kalın. Ayarlar > Hesap > Anahtar saklama mevcut modunuzu gösterir. [PrivacyNotes neleri görebilir](/tr/help/what-can-you-see/) gerisini anlatır."
       ]
     },
     "phrase-vs-password": {
@@ -400,7 +402,7 @@
     "languages": {
       "q": "Uygulama hangi dilleri konuşuyor?",
       "a": [
-        "İngilizce, Almanca, Fransızca, İtalyanca, İspanyolca, Felemenkçe, Lehçe, Çekçe, Katalanca, Türkçe, İsveççe, Ukraynaca, Rusça, Japonca, Korece, Geleneksel Çince, Tayca, Arapça ve hem Avrupa hem Brezilya varyantıyla Portekizce. Uygulama varsayılan olarak sistem dilinizi izler ya da her cihazda Ayarlar > Tarih ve dil > Dil altında bir dili sabitleyebilirsiniz.",
+        "İngilizce, Almanca, Fransızca, İtalyanca, İspanyolca, Felemenkçe, Lehçe, Çekçe, Katalanca, Türkçe, İsveççe, Ukraynaca, Rusça, Japonca, Korece, Geleneksel Çince, Tayca, Arapça ve hem Avrupa hem Brezilya varyantıyla Portekizce. Uygulama varsayılan olarak sistem dilinizi izler ya da her cihazda Ayarlar > Dil altında bir dili sabitleyebilirsiniz.",
         "Çeviriler bir Pro ayrıcalığı değil, herkes için ücretsiz. Daha fazla dil planlanıyor; sizinki eksikse [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) veya [Reddit](https://www.reddit.com/r/PrivacyNotes/) üzerinden bize söyleyin."
       ]
     },
@@ -458,8 +460,7 @@
       "q": "Hangi klavye kısayolları var?",
       "a": [
         "Uygulamanın herhangi bir yerinde ? tuşuna basın, yerleşik kısayol kartı açılır; Ayarlar > Hakkında altında da bulunur. Kısayollar gezinmeyi, not işlemlerini, biçimlendirmeyi ve görünümleri kapsar - Windows ve Linux'ta her Cmd Ctrl, her Option Alt olarak okunur.",
-        "Temel olanlar: Cmd+K adıyla herhangi bir öğeye veya ayara gider ve son satırı açık bölümün metninde arama yapar; / aramaya odaklanır, J ve K listede gezinir, Cmd+[ ve Cmd+] açtığınız öğeler arasında geri ve ileri gider, Alt+Shift+N yeni not başlatır, Cmd+Backspace seçili notu çöpe atar, Cmd+, Ayarlar'ı açar. Yazarken: Cmd+B kalın, Cmd+I italik, Cmd+Shift+K bağlantı ekler, Cmd+Shift+9 görev listesi başlatır, Cmd+F notta arar, Cmd+Shift+O ana hattı açıp kapatır, Cmd+Shift+M Markdown görünümüne geçer. Cmd+\\ veya Cmd+Shift+D kenar çubuğunu gizler, Cmd+Shift+L temayı değiştirir, Cmd+Shift+F zen moduna girer (Pro) ve Esc, filtreler dahil neredeyse her şeyden geri çıkmanızı sağlar. Herhangi bir komutu adıyla bulup çalıştırmak için aramaya veya Cmd+K'ya > yazın (veya bir metin alanının dışında > tuşuna basın).",
-        "Masaüstü uygulamaları, tarayıcının kendine ayırdığı tuşları da ekler: yeni not için Cmd+N, her türden yeni öğe için Cmd+Shift+N, sekmeyi kapatmak için Cmd+W, sekmeler arasında geçmek için Ctrl+Tab, kenar çubuğunun bölümleri için Cmd+1 ile Cmd+9 arası ve komut listesi için Cmd+Shift+P."
+        "[Yazdırılabilir kısayol kartı](/help/keyboard-shortcuts/cheat-sheet), tüm kısayolları Mac için ya da Windows ve Linux için, tarayıcı ya da masaüstü uygulamaları için tek bir A4 sayfasında listeler. Uygulamanın gösterdiği listenin aynısından üretilir, bu yüzden her zaman kullandığınız sürümle eşleşir."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -638,8 +639,15 @@
     "tags": {
       "q": "Etiketler nasıl çalışır?",
       "a": [
-        "Açık her notun başlığının altında bir etiket satırı vardır. Bir kelime yazıp Enter'a, virgüle ya da # tuşuna basın; etiket bir rozete dönüşür. Kenar çubuğu kullandığınız her etiketi listeler ve birine tıklamak listeyi o notlara indirir. Bir etiketi her yerde tek seferde yeniden adlandırabilir, üstte sabit kalsın diye favorilere ekleyebilir ya da altındaki notlarla birlikte veya onlarsız silebilirsiniz.",
+        "Açık her notun başlığının altında bir etiket satırı vardır. Bir kelime yazıp Enter'a, virgüle ya da # tuşuna basın; etiket bir rozete dönüşür. Kenar çubuğu açık bölümün kullandığı etiketleri listeler ve birine tıklamak listeyi o öğelere indirir. Bir etiketi her yerde tek seferde yeniden adlandırabilir, üstte sabit kalsın diye favorilere ekleyebilir ya da altındaki notlarla birlikte veya onlarsız silebilirsiniz.",
         "Etiketler ve klasörler farklı sorunları çözer: bir not tek klasörde durur ama istediğiniz kadar etiket taşır ve bir şey hem \"iş\" hem \"fatura\" olduğunda ihtiyacınız olan tam da budur. İçe aktarmalar kaynağa göre etiketler, yani başka bir uygulamadan gelen her şey kendi etiketiyle iner; bulması da, sonra temizlemesi de kolaydır."
+      ]
+    },
+    "organize": {
+      "q": "Bölümler, klasörler, etiketler ve alanlar birlikte nasıl çalışır?",
+      "a": [
+        "Sakladığınız her şey tek bir kitaplıkta durur. Kenar çubuğundaki Notlar, Kasa ve Günlükler gibi bölümler, bu kitaplığın türe göre görünümleridir. Klasör bir yerdir; bu yüzden bir klasör, bir notu ve ona ait girişi birlikte tutabilir ve klasör ağacı her bölümde aynıdır. Klasörün yanındaki sayılar yalnızca açık bölümün içeriğini sayar ve o bölümden hiçbir şey içermeyen bir klasör soluk görünür. Etiket bir işarettir ve kenar çubuğu yalnızca açık bölümün kullandığı etiketleri listeler.",
+        "Alanlar kitaplığı Kişisel ve İş olarak ikiye ayırır ve bir seferde birini gösterir. En üst düzeydeki bir klasör, içindeki her şeyle birlikte bir alana aittir ve menüsündeki **İş alanına taşı** onu diğer alana taşır. Klasörde olmayan bir öğe Kişisel alana aittir; bu yüzden İş alanında oluşturduğunuz her şey bir İş klasörüne gider. Etiketler ücretsizdir, klasörler ve alanlar Pro gerektirir."
       ]
     },
     "note-links": {
@@ -652,8 +660,8 @@
     "appearance": {
       "q": "Uygulamanın görünümünü değiştirebilir miyim?",
       "a": [
-        "Evet, Ayarlar > Görünüm altında. Mod, sisteminizi izleyen Auto ile Açık ve Koyu arasında geçiş yapar. Metin boyutunun dört kademesi vardır ve yalnızca yazma yüzeyinizi ölçekler, çevresindeki arayüz yerinde kalır. “Öğeleri şu şekilde göster” ayarı öğeleri Liste ya da Izgara olarak dizer. Düzenleyici, notların Biçimlendirilmiş mi yoksa düz Markdown olarak mı açılacağına karar verir.",
-        "Renk temaları Pro gerektiren tek kısımdır: varsayılan tema ücretsizdir, Pro ise hem açık hem koyu modda diğer temaları açar. Metniniz dışındaki her şeyi gizleyen zen modu da Pro'dadır (Cmd+Shift+F). Mod ve metin boyutu, ayarladığınız cihazda kalır. Geri kalan her şey hesabınızla birlikte diğer cihazlarınıza gider."
+        "Evet. Ayarlar > Görünüm uygulamanın görünüşünü belirler: **Mod**, sisteminizi izleyen Otomatik ile Açık ve Koyu arasında geçiş yapar; ayrıca açık mod için bir, koyu mod için bir renk teması seçersiniz. Ayarlar > Düzenleyici nasıl yazdığınızı belirler: **Metin boyutu** beş kademelidir ve yalnızca yazma yüzeyinizi ölçekler, çevresindeki arayüz yerinde kalır; **Düzenleyici** ise notların Biçimlendirilmiş mi yoksa düz Markdown olarak mı açılacağına karar verir. Ayarlar > Listeler öğeleri Liste ya da Izgara olarak dizer. Masaüstü uygulamalarında Ayarlar > Görünüm altındaki **Uygulama boyutu** pencerenin tamamını ölçekler. Alt bilgideki **Görünüm** düğmesi en sık değiştirdiğiniz ayarları ve her mod için üç favori temayı barındırır.",
+        "Renk temaları Pro gerektirir: varsayılan tema ücretsizdir, Pro ise hem açık hem koyu modda diğer temaların yanı sıra [kendi temalarınızı](/tr/help/custom-themes/) da açar. Metniniz dışındaki her şeyi gizleyen zen modu da Pro'dadır (Cmd+Shift+F). [Araç çubuğunu](/tr/help/format-bar/) üste ya da alta taşımak ücretsizdir, düğmelerini düzenlemek ise Pro'dur. Mod, seçtiğiniz renk temaları ve üç favoriniz, metin boyutu, Liste ya da Izgara ve uygulama boyutu ayarladığınız cihazda kalır. Düzenleyici modu, satır aralığı, not renkleri ve liste ayarlarınız hesabınızla birlikte diğer cihazlarınıza gider."
       ]
     },
     "share-with-someone": {
@@ -761,6 +769,139 @@
       "a": [
         "Yeriniz zaten boşaldı. Silme işlemi eşitlendiği anda o baytlar kotanıza sayılmayı bırakır, bu cihazda olduğu gibi sunucuda da. Çubuk hâlâ eski rakamı gösteriyorsa yanındaki yenileme simgesine basın: sunucudan yeniden sayar ve silinmek üzere sıraya girmiş olan her şeyi dışarıda bırakır. Çevrimdışı kalmış bir cihaz, yetişene kadar kendi son sayımını gösterir.",
         "Uygulamanın söz ettiği \"birkaç gün\" kotanızı değil, şifreli dosyanın kendisini ilgilendirir ve o bekleme bilinçlidir. Bir dosyayı depolamadan silmek geri alınamaz, onu geri çıkaracağınız bir çöp kutusu yoktur. Eşitlemeyi bitirmemiş bir cihaz notlarınızın eksik bir görüntüsüne sahiptir, yani başka bir notun hâlâ gösterdiği bir görseli silebilir. Bu yüzden bir dosya en az 24 saat bekler ve onu yalnızca eşitlemesini temiz biçimde tamamlamış bir cihaz kaldırır. Bu sabır size hiçbir şeye mal olmaz, çünkü söz konusu alan silme işlemini yaptığınız gün depolama kullanımınızdan düşüldü."
+      ]
+    },
+    "spoiler-text": {
+      "q": "Notta spoiler (sürprizbozan) içeren metni nasıl gizlerim?",
+      "a": [
+        "Metni seçin ve araç çubuğunun + menüsünden **Sürprizbozan** seçeneğini seçin ya da metni iki çift dikey çizginin arasına yazın: `||spoiler||`. Metin hemen bulanıklaşır. Düzenleme sırasında imleç metne değdiği anda görünür, imleç uzaklaşınca yeniden bulanıklaşır. Salt okunur bir notta tek tıklama metni gösterir.",
+        "Not listesi ve önizlemeler onun yerine `•••` gösterir, böylece uzunluğu bile bir şey ele vermez. Arama, sürprizbozan içindeki kelimeleri yine bulur; HTML dışa aktarımı onları okuyucu tıklayana kadar bulanık tutar, çıktıda ise görünürler. Markdown dışa aktarımı çizgileri korur; diğer Markdown uygulamaları bunları metnin çevresinde düz karakterler olarak gösterir. Sürprizbozanlar ücretsizdir."
+      ]
+    },
+    "copy-box": {
+      "q": "Tek tıkla kopyalanan metin nasıl oluştururum?",
+      "a": [
+        "Bir kopyalama kutusu ekleyin: araç çubuğunun + menüsünden **Kopyalama kutusu** seçeneğini seçin, ardından içine bir komut, bir adres ya da bir kod gibi metni yazın veya yapıştırın. Köşesindeki düğme metnin tamamını panonuza koyar ve kısa bir süre **Kopyalandı** gösterir. Kod bloğu ile kopyalama kutusu birbirine dönüşebilir, yani mevcut bir bloğu da değiştirebilirsiniz.",
+        "Satır içi kod da kopyalanır. Salt okunur bir notta satır içi koda tıklamak ya da dokunmak onu kopyalar. Düzenleme sırasında Mac'te Cmd-tıklama, Windows ve Linux'ta Ctrl-tıklama onu kopyalar; böylece normal bir tıklama yine imleci yerleştirir. Kopyalama kutusu `copy` dilinde bir kod bloğu olarak kaydedilir ve diğer Markdown uygulamaları onu normal bir kod bloğu olarak gösterir. İkisi de ücretsizdir."
+      ]
+    },
+    "footnotes": {
+      "q": "Nota nasıl dipnot eklerim?",
+      "a": [
+        "Araç çubuğunun + menüsünden **Dipnot** seçeneğini seçin. Uygulama imlecin olduğu yere sıradaki numarayı ekler, metnin altında boş bir dipnot oluşturur ve imleci oraya taşır. Ayrıca bir kelimenin hemen ardından `[^1]` yazabilir, dipnotun kendisini yazmak için de bir satıra `[^1]: ` ile başlayabilirsiniz. Tanımlayıcı bir numara olabileceği gibi bir kelime de olabilir.",
+        "Bir numaraya tıklayarak dipnotuna gidin; geri oku ya da Esc sizi metne geri götürür. Bilgisayarda işaretçiyi bir numaranın üzerinde tutunca dipnot küçük bir kartta görünür. Numaralar metindeki sırayı izler ve not standart Markdown dipnotları kaydeder, böylece diğer Markdown uygulamaları da onları okur. HTML dışa aktarımı, PDF ve Burn note onları bağlantılı dipnotlar olarak korur. Dipnotlar ücretsizdir."
+      ]
+    },
+    "statistics": {
+      "q": "İstatistikler yazma alışkanlığım ve sağlığım hakkında neler gösterir?",
+      "a": [
+        "Ayarlar > İstatistikler bölümünü açın ya da alt bilgideki not ve kelime sayısına tıklayın. **Genel bakış** haftanızı özetler: yazma seriniz, yazılan kelimeler, ruh haliniz ve kaydedilen günler, ayrıca son 26 haftanın ızgarası ve genellikle yazdığınız saatler. **Yazma** notlarınızı, kelimelerinizi ve etiketlerinizi sayar, güncel ve en uzun serinizi gösterir ve kilometre taşlarınızı listeler. **Sağlık**, günlüğünüzdeki her takibi, özel takipler dahil, seçtiğiniz bir aralıkta grafikle gösterir.",
+        "Her şey cihazınızda hesaplanır ve bununla ilgili hiçbir şey bize gönderilmez. Kelimeler ve yazma saatleri o cihazda yazdıklarınızı sayar, bu yüzden her cihaz kendi sayılarını gösterir. Grafikler, seriler, ilaç takvimi ve **JSON indir** ücretsizdir. Pro; haftanın özetini, ruh halinizi neyin etkilediğini, Örüntüler tablosunu, aynı gün ve ertesi gün karşılaştırmalarını, bir **Doktor PDF'i** ve kopyalanmaya hazır bir yapay zekâ istemini ekler."
+      ]
+    },
+    "drag-to-folder": {
+      "q": "Bir notu klasöre veya etikete sürükleyebilir miyim?",
+      "a": [
+        "Evet. Bir notu taşımak için listeden kenar çubuğundaki bir klasörün üzerine, klasöründen çıkarmak için de **Klasörsüz** üzerine sürükleyin. Bir etiketin üzerine bırakırsanız o etiket eklenir ve not mevcut etiketlerini korur. Görevler, yer imleri, kişiler, Kasa öğeleri ve Dosyalar'a yüklenen dosyalar da aynı şekilde sürüklenir. Sürüklediğiniz bir öğeyi kapalı bir klasörün üzerinde kısa bir süre tutarsanız klasör açılır, böylece bir alt klasöre ulaşabilirsiniz.",
+        "Birkaçını aynı anda taşımak için Mac'te Cmd-tıklama, Windows ve Linux'ta Ctrl-tıklama ile seçin, bir aralık eklemek için Shift-tıklama kullanın, ardından seçili öğelerden herhangi birini sürükleyin. Sürükleme için fare, izleme dörtgeni ya da kalem ve kenar çubuğunu gösterecek kadar geniş bir pencere gerekir. Telefonda bunun yerine \"...\" menüsündeki **Klasöre taşı** seçeneğini kullanın. Etiketler ücretsizdir, [klasörler](/tr/help/folders/) ise Pro gerektirir."
+      ]
+    },
+    "custom-themes": {
+      "q": "Kendi renk temamı oluşturabilir miyim?",
+      "a": [
+        "Evet, Pro ile. Ayarlar > Görünüm bölümünü açın ve **Yeni tema** seçeneğini seçin. Altı renk seçin (Arka plan, Kenar çubuğu, Kenarlık, Metin, Soluk metin ve Vurgu), gerisini uygulama önerir; bu sırada panelin arkasındaki uygulama temanızı siz ilerledikçe gösterir. Kontrast denetimi okunması zor her metni işaretler ve **Tümünü düzelt** önerir. Tüm denetimler geçtiğinde Kaydet kullanılabilir hale gelir.",
+        "Her tema kartındaki menüde **Kodu kopyala** bulunur; temayı herkese gönderebileceğiniz kısa bir metin kodu olarak kopyalar. **Tema kodunu yapıştır** ise size gönderilen bir kodu ekler. Açık mod için bir tema, koyu mod için bir tema seçersiniz; bir kartın menüsündeki **Favori**, her moddan en fazla üç temayı alt bilgideki **Görünüm** düğmesine koyar ve oluşturduğunuz temalar tüm cihazlarınıza eşitlenir. Daha fazlasını, kendi temanızı da gönderebileceğiniz [temalar sayfasında](https://privacynotes.app/themes) bulabilirsiniz. Varsayılan tema ücretsizdir, diğer tüm temalar Pro gerektirir."
+      ]
+    },
+    "format-bar": {
+      "q": "Araç çubuğunda hangi düğmelerin görüneceğini seçebilir miyim?",
+      "a": [
+        "Evet. Araç çubuğunun sonundaki dişli simgesine tıklayın ya da Ayarlar > Araç çubuğu bölümünü açın. Her düğmenin üç yeri vardır: **Çubukta**, **+ menüsünde** ya da **Gizli**. Bir düğmeyi taşımak için sürükleyin ya da seçeneklerini görmek için üzerine tıklayın. Gizli bir düğme klavye kısayolu ve Markdown söz dizimiyle çalışmaya devam eder, yani bir düğmeyi gizlemek sizden hiçbir şey eksiltmez.",
+        "Çubuğu üste ya da alta taşımak her hesapta ücretsizdir. Düğmelerini düzenlemek Pro'ya dahildir: ücretsiz bir hesapta Ayarlar > Araç çubuğu deneyebileceğiniz bir önizleme olarak çalışır ve düzeniniz Pro'ya geçtiğinizde kaydedilir. Düzeniniz hesabınızla birlikte tüm cihazlarınıza gelir; **Varsayılanlara sıfırla** standart çubuğu geri getirir. Dokunmatik ekranda çubuk, her hesapta yana kaydırılan tek bir satırdır, böylece hiçbir düğme ikinci bir satırın arkasına saklanmaz."
+      ]
+    },
+    "window-zoom": {
+      "q": "Masaüstü uygulamasının tamamını büyütüp küçültebilir miyim?",
+      "a": [
+        "Evet, Mac, Windows ve Linux masaüstü uygulamalarında. Pencerenin tamamını büyütmek için Mac'te Cmd ile artı tuşuna, Windows ve Linux'ta Ctrl ile artı tuşuna basın. Eksi tuşu küçültür, 0 ise normale döndürür. Aynı ayar, Ayarlar > Görünüm bölümündeki **Uygulama boyutu** seçeneğidir ve %80 ile %200 arasında kademeler sunar.",
+        "Uygulama boyutu her şeyi aynı anda ölçekler: kenar çubuğunu, listeyi, menüleri ve metninizi. Yalnızca yazdıklarınızı değiştirmek için Ayarlar > Düzenleyici bölümündeki **Metin boyutu** ayarını kullanın. Uygulama boyutu, ayarladığınız cihazda geçerlidir. Tarayıcıda aynı işi tarayıcının kendi yakınlaştırması görür."
+      ]
+    },
+    "zen-mode": {
+      "q": "Zen modu nedir?",
+      "a": [
+        "Zen modu, yazdığınız not dışındaki her şeyi gizler: kenar çubuğu, liste ve alt bilgi; araç çubuğu da gizli başlar. Açık sekmeler üstte kalır. Mac'te Cmd+Shift+F, Windows ve Linux'ta Ctrl+Shift+F tuşlarına basın, alt bilgideki **Zen modu** düğmesine tıklayın ya da boş bir alana sağ tıklayıp **Zen modu** seçeneğini seçin.",
+        "Geri dönmek için Esc'ye, aynı tuşlara ya da notun üstündeki **Zen'den çık** düğmesine basın. **Biçimlendirme araç çubuğunu göster**, Zen modunda kalırken araç çubuğunu geri getirir. Zen modu Pro'nun bir parçasıdır ve [demo](https://try.privacynotes.app) hesap olmadan denemenizi sağlar."
+      ]
+    },
+    "date-format": {
+      "q": "Tarihlerin gösterilme biçimini değiştirebilir miyim?",
+      "a": [
+        "Evet, Ayarlar > Tarih bölümünde. **Tarih biçimi** Otomatik, Önce gün, Önce ay ve Önce yıl (ISO) seçeneklerini, **Saat biçimi** ise Otomatik, 24 saat ve 12 saat seçeneklerini sunar. Otomatik, uygulamanın dilini ve her cihazın bölgesini izler; seçiminiz tüm cihazlarınızda geçerli olur.",
+        "Günlük kayıtları başlığını tarihten alır; aynı yerdeki **Günlük başlıkları** tarih biçiminize uygun hazır biçimler sunar, dilerseniz **Özel kalıp** ile `YYYY`, `MMMM` ve `ddd` gibi belirteçlerden kendi kalıbınızı oluşturabilirsiniz, köşeli parantez içindeki kelimeler yazdığınız gibi kalır. Yeni bir kalıp yalnızca yeni kayıtlara uygulanır. Herhangi bir nota bugünün tarihini eklemek için Mac'te Cmd+;, Windows ve Linux'ta Ctrl+; tuşlarına basın; saati de eklemek için Shift'i ekleyin. Bunların hepsi ücretsizdir."
+      ]
+    },
+    "checklists": {
+      "q": "Bir görev listesini temizleyebilir, sıralayabilir veya yeniden düzenleyebilir miyim?",
+      "a": [
+        "Evet. Notun \"...\" menüsünde bir listeyi yeniden kullanmak için **Tüm öğelerin işaretini kaldır**, bitenleri temizlemek için **İşaretli öğeleri sil** ve işaretli öğeleri diğerlerinin altına taşımak için **Öğeleri duruma göre sırala** bulunur. Her biri yalnızca bir şeyi değiştirecekse görünür. Silme önce onay ister; sıralama ve tüm işaretleri kaldırma Cmd+Z ya da Ctrl+Z ile geri alınabilir. Notun alt kısmı ilerlemenizi sayar, örneğin \"6 öğeden 3 tanesi işaretli\".",
+        "Elle yeniden sıralamak için bir öğenin sonundaki tutamacı sürükleyin. İç içe öğeler onunla birlikte taşınır, Esc ise sürüklemeyi iptal eder. Tutamaç bilgisayarda üzerine gelince görünür, dokunmatik ekranda ise hafifçe görünür kalır. İşaretli bir öğe varsayılan olarak listesindeki işaretsiz öğelerin altına iner; bunu Ayarlar > Listeler bölümündeki **İşaretli öğeleri aşağı taşı** ile kapatabilirsiniz. Bunların hepsi ücretsizdir."
+      ]
+    },
+    "quick-switcher": {
+      "q": "Git özelliği nedir ve neleri bulabilir?",
+      "a": [
+        "Git özelliği, başlığına göre her şeye atlar. Mac'te Cmd+K, Windows ve Linux'ta Ctrl+K tuşlarına basın (Cmd+P veya Ctrl+P de çalışır) ya da kenar çubuğunda veya liste başlığında **Git** düğmesine tıklayın. Notları, görevleri, günlük kayıtlarını, Kasa öğelerini, yer imlerini, kişileri, ekli dosyaları ve ayarları bulmak için bir başlığın bir kısmını yazın. Enter öğeyi açar, Option+Enter veya Alt+Enter ise onu bir sekmede açar.",
+        "Bunun yerine bir komut çalıştırmak, örneğin yeni bir not oluşturmak ya da bir bölüme gitmek için önce > yazın. Başlıklar yerine metninizin içindeki kelimeleri bulmak için **Her yerde ara** satırını seçin ya da herhangi bir satırdayken Cmd+Enter veya Ctrl+Enter tuşlarına basın. Eşleştirme cihazınızda yapılır, bu yüzden yazdığınız hiçbir şey bize gönderilmez. Git özelliği ücretsizdir."
+      ]
+    },
+    "find-in-note": {
+      "q": "Tek bir notun içinde bir kelimeyi nasıl ararım?",
+      "a": [
+        "Açık bir notta Mac'te Cmd+F, Windows ve Linux'ta Ctrl+F tuşlarına basın ya da uzun bir notun üst köşesindeki büyütece tıklayın. Kelimeyi yazın, ardından sonraki eşleşme için Enter'a, önceki için Shift+Enter'a basın; bu sırada çubuk eşleşmeleri sayar. Kapatmak için aynı tuşlara yeniden basın ya da X'e tıklayın. Bulma, salt okunur notlarda da çalışır.",
+        "Pro ile değiştirme de yapabilirsiniz: Mac'te Option+Cmd+F, Windows ve Linux'ta Ctrl+H tuşlarına basın ya da notun \"...\" menüsünden **Bul ve değiştir** seçeneğini seçin. Tek bir eşleşmeyi ya da **Tümü** ile hepsini aynı anda değiştirin, gerektiğinde **Büyük/küçük harfe duyarlı** seçeneğini açın. İki çubuk da **Markdown'ı göster** görünümünde çalışır ve bir kod bloğunun dili gibi ham metne ulaşır. Bunun yerine tüm notlarınızda aramak için / tuşunun odakladığı liste aramasını kullanın. [Her arama cihazınızda çalışır](/tr/help/search-local/)."
+      ]
+    },
+    "screen-capture": {
+      "q": "Notlarımı ekran görüntülerinden ve ekran paylaşımından gizleyebilir miyim?",
+      "a": [
+        "Evet, Android, iPhone ve iPad, Mac ve Windows uygulamalarında. Ayarlar > Güvenlik > Kilit bölümünü açın ve **Ekran yakalamada gizle** seçeneğini açın. Bundan sonra ekran görüntüleri, ekran kayıtları ve ekran paylaşımı, cihazın izin verdiği ölçüde notlarınız yerine boş bir pencere gösterir. Telefonda notlarınızı uygulama değiştiricide de gizler.",
+        "Bu seçenek varsayılan olarak kapalıdır, yalnızca açtığınız cihazda geçerlidir ve ücretsizdir. Tarayıcılar ve Linux, bir uygulamaya yakalamayı engelleme olanağı vermez, bu yüzden seçenek orada görünmez. Tek başına çalışır; uygulama kilidi ya da PIN gerektirmez."
+      ]
+    },
+    "connected-logins": {
+      "q": "Hesabıma birden fazla giriş yöntemi bağlayabilir miyim?",
+      "a": [
+        "Evet. Ayarlar > Hesap > Hesaplar bölümünü açın ve aynı kasayı açan bir giriş yöntemi eklemek için Google, Apple ya da GitHub bağlayın. Birkaç tane, hatta aynı sağlayıcıdan iki hesap bağlayabilirsiniz; kurtarma ifadeniz de bunların yanında çalışmaya devam eder. Bir hesabı bağlamak ya da bağlantısını kaldırmak notlarınızı ve şifrelemenizi değiştirmez.",
+        "Başka bir kasaya ait bir giriş yöntemi bağlanamaz, çünkü kasalar hiçbir zaman birleştirilmez. **Bağlantıyı kaldır** önce 12 kelimenizi ister. İfadenizi sizin için biz saklıyorsak, son bağlı hesap siz başka bir hesap bağlayana ya da ifadenizi kaydedip kendi saklamaya geçene kadar kalır. Kendi saklamada yeni bir cihaz yine 12 kelimenizi ister. Bağlı hesaplar beta aşamasındadır."
+      ]
+    },
+    "session-expired": {
+      "q": "Uygulama neden \"Oturum sona erdi\" diyor?",
+      "a": [
+        "Bu, sunucumuzun bu cihazın oturumunu artık kabul etmediği anlamına gelir, bu yüzden eşitleme durur. Zayıf bir bağlantı ya da sunucu kesintisi buna asla yol açmaz: uygulama mesajı göstermeden önce sunucuya ikinci kez danışır. Notlarınız bu cihazda güvendedir.",
+        "**Tekrar giriş yap** düğmesine tıklayın. Uygulama önce kurtarma ifadenizi kaydedip kaydetmediğinizi sorar, çünkü geri girmek için ona ya da kaydolurken kullandığınız giriş yöntemine ihtiyacınız vardır. Henüz eşitlenmemiş notlar cihazda kalır ve giriş yaptığınızda eşitlenir. Yüklemesi bitmemiş dosya varsa aynı pencere sizi uyarır, çünkü bunlar çıkış yapılınca kaldırılır."
+      ]
+    },
+    "archive": {
+      "q": "Arşiv ne işe yarar, Çöp kutusundan farkı nedir?",
+      "a": [
+        "Arşivleme bir öğeyi silmeden listelerinizden çıkarır. Öğenin \"...\" menüsünden ya da sağ tık menüsünden, birden fazla öğe için de seçim araç çubuğundan **Arşivle** seçeneğini seçin. Arşivlenen öğeler Tümü görünümünden, kendi bölümlerinden, Sabitlenmiş'ten ve klasör ile etiket sayılarından çıkar; kenar çubuğunun altında, bir şey arşivlenince beliren **Arşiv** görünümünde bekler. Tümü'nde ve sayılarda kalmalarını istiyorsanız Ayarlar > Listeler'deki **Tümü** sütununda Arşiv'i işaretleyin. Aynı yerlerdeki **Arşivden çıkar** bir öğeyi geri getirir.",
+        "Çöp kutusu, gitmesini istediğiniz şeyler içindir: siz kapatmadıkça [30 gün sonra onları kalıcı olarak siler](/tr/help/trash-auto-delete/). Arşiv hiçbir şeyi silmez ve arşivlenen öğeler elinizin altında kalır, çünkü Tümü'nde yapılan bir arama, Git özelliği ve not bağlantıları onları bulmaya devam eder. Diğer her şey gibi eşitlenir ve şifreli kalırlar, depolama alanınıza da sayılmaya devam ederler. Arşiv tüm öğe türlerinde çalışır ve ücretsizdir."
+      ]
+    },
+    "share-into-app": {
+      "q": "Başka bir uygulamadan PrivacyNotes'a metin veya bağlantı paylaşabilir miyim?",
+      "a": [
+        "Evet, iPhone, iPad ve Android'de, beta olarak. Herhangi bir uygulamada paylaş düğmesine dokunun ve PrivacyNotes'u seçin. Bir web bağlantısı sayfa başlığıyla bir yer imine, metin yeni bir nota dönüşür; görseller ve dosyalar Dosyalar'a gider. Daha önce kaydettiğiniz bir bağlantı ikinci kez kaydedilmek yerine gösterilir. Paylaşılan öğeler klasörsüz ve etiketsiz gelir, böylece onları size uygun olduğunda düzenlersiniz.",
+        "Android'de uygulama önce sorar: gelenleri listeler ve yalnızca **Tümünü kaydet** seçeneğini seçtiğinizde kaydeder ya da **At** ile vazgeçer. iPhone ve iPad'de bir kart **PrivacyNotes'a kaydedildi** diyerek onaylar. Her dosya [yükleme sınırınıza](/tr/help/attachment-limits/) tabidir ve bir paylaşım, siz giriş yapıp uygulamanın kilidini açana kadar bekler."
+      ]
+    },
+    "desktop-updates": {
+      "q": "Masaüstü uygulamasını nasıl güncellerim?",
+      "a": [
+        "Bunu yapmanız gerekmez. Mac ve Windows uygulamaları ile Linux AppImage, açıldıklarında ve onlara geri döndüğünüzde, en fazla 12 saatte bir güncelleme arar ve arka planda indirir. Ardından bir bildirim **Güncelleme mevcut** der; bitirmek için **Yeniden başlat**, yenilikleri görmek için **Changelog** sunar.",
+        "Linux .deb paketi yeni bir indirmeyle güncellenir: bildirimi, [indirme bölümünü](https://privacynotes.app/tr#downloads) açan **İndir** seçeneğini sunar ve yeni paketi eskisinin üzerine kurarsınız. Güvenli eşitleme için fazla eski bir .deb, siz bunu yapana kadar eşitlemeyi duraklatır. Windows'ta Scoop ile kurduysanız `scoop update privacynotes` komutunu çalıştırın; bildirimde bunun için **Komutu kopyala** vardır. Mac'te Homebrew bir yükseltme komutu gerektirmez, çünkü uygulama kendini günceller."
       ]
     }
   }

@@ -210,7 +210,7 @@
     "both": "{{pictures}} и {{files}}"
   },
   "upload": {
-    "discard": "Удалить",
+    "discard": "Отклонить",
     "completeTitle": "Отправка завершена",
     "failedTitle": "Отправка не удалась",
     "partialTitle": "Отправлено: {{done}}, с ошибкой: {{failed}}",

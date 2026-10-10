@@ -8,6 +8,7 @@ import { initAppZoom } from './appZoom';
 import { clearFreshDemoCredentials, isDemoMode } from './demo';
 import { isAppHost } from './hosts';
 import { dropApexPhraseFragment } from './qrSignIn';
+import { captureShortcutFromLocation } from './noteShortcut';
 import { detectPlatform, isLinuxNative } from './devices';
 import { IconDefaults } from './icons';
 import { installAndroidBackBridge } from './androidBack';
@@ -74,6 +75,11 @@ if (isDemoMode() || isAppHost()) {
 // with camera" there reads the paper again. Nothing renders here.
 // Spec: ops/docs/domain-split.md (retirement phase, #phrase forwarder)
 const leavingApex = dropApexPhraseFragment();
+
+// A shortcut (`/note#<id>`) waits in this tab for the vault to open, and the
+// address goes back to `/` before anything reads the path below.
+// Spec: ops/docs/plans/note-shortcuts.md
+captureShortcutFromLocation();
 
 // Vite emits `vite:preloadError` on `window` when a dynamically-imported
 // chunk 404s - almost always because the user had a tab open across a

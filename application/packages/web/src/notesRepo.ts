@@ -710,11 +710,15 @@ export async function bulkAddTag(ids: string[], tag: string): Promise<number> {
  * Each touched note's `updatedAt` bumps and `dirty` gets set so the
  * next sync pushes the change to the server like any other edit.
  *
+ * `inScope` limits this and the two tag writes below to the open space;
+ * without it every note is read. Spec: ops/docs/plans/spaces.md (section 8)
+ *
  * Returns the number of notes modified.
  */
 export async function renameTagEverywhere(
   oldTag: string,
-  newTag: string
+  newTag: string,
+  inScope?: (note: LocalNote) => boolean
 ): Promise<number> {
   let modifiedCount = 0;
   // Full table scan + filter in JS: `tags` isn't a multi-entry index
@@ -724,6 +728,7 @@ export async function renameTagEverywhere(
     const all = await db.notes.toArray();
     for (const note of all) {
       if (!note.tags.includes(oldTag)) continue;
+      if (inScope && !inScope(note)) continue;
       const nextTags: string[] = [];
       for (const t of note.tags) {
         if (t === oldTag) {
@@ -751,7 +756,7 @@ export async function renameTagEverywhere(
  * A read-only note keeps the tag and stays where it is.
  * Returns the number of notes sent to trash.
  */
-export async function trashNotesWithTag(tag: string): Promise<number> {
+export async function trashNotesWithTag(tag: string, inScope?: (note: LocalNote) => boolean): Promise<number> {
   let trashedCount = 0;
   await db.transaction('rw', db.notes, async () => {
     const all = await db.notes.toArray();
@@ -759,6 +764,7 @@ export async function trashNotesWithTag(tag: string): Promise<number> {
       if (note.deleted === 1 || note.trashed === 1) continue;
       if (note.locked === 1) continue;
       if (!note.tags.includes(tag)) continue;
+      if (inScope && !inScope(note)) continue;
       await db.notes.update(note.id, {
         trashed: 1,
         updatedAt: nextStamp(note.updatedAt),
@@ -776,12 +782,13 @@ export async function trashNotesWithTag(tag: string): Promise<number> {
  * delete the notes themselves - they remain, just with one fewer
  * tag. Returns the number of notes modified.
  */
-export async function deleteTagEverywhere(tag: string): Promise<number> {
+export async function deleteTagEverywhere(tag: string, inScope?: (note: LocalNote) => boolean): Promise<number> {
   let modifiedCount = 0;
   await db.transaction('rw', db.notes, async () => {
     const all = await db.notes.toArray();
     for (const note of all) {
       if (!note.tags.includes(tag)) continue;
+      if (inScope && !inScope(note)) continue;
       const nextTags = note.tags.filter((t) => t !== tag);
       await db.notes.update(note.id, {
         tags: nextTags,

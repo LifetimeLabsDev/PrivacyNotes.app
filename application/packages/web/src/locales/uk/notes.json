@@ -80,6 +80,13 @@
     "clearFilters": "Очистити фільтри",
     "filteredAfter": "щоб їх показати."
   },
+  "listGroups": {
+    "previous7Days": "Останні 7 днів",
+    "previous30Days": "Останні 30 днів",
+    "other": "Інше",
+    "collapseAll": "Згорнути всі групи",
+    "expandAll": "Розгорнути всі групи"
+  },
   "headerLabel": {
     "allItems": "Усе",
     "untagged": "Без тегів",
@@ -149,7 +156,7 @@
     "exitHover": "Вийти з режиму дзен (Esc)",
     "enterHover": "Увімкнути режим дзен",
     "proHover": "Режим дзен (Pro)",
-    "enterAriaShortcut": "Увімкнути режим дзен (⌘⇧F)"
+    "enterAriaShortcut": "Увімкнути режим дзен ({{keys}})"
   },
   "editor": {
     "backToList": "Назад до списку нотаток",
@@ -231,10 +238,10 @@
   },
   "settings": {
     "groupYourNotes": "Ваші нотатки",
+    "groupPreferences": "Параметри",
     "groupAccount": "Обліковий запис і дані",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "Статистика",
-    "journalsLabel": "Щоденники",
     "importLabel": "Імпорт і експорт",
     "planLabel": "Обліковий запис",
     "storageLabel": "Сховище",
@@ -242,9 +249,13 @@
     "securityLabel": "Безпека",
     "accountLabel": "ID і синхронізація",
     "appearanceLabel": "Вигляд",
+    "editorLabel": "Редактор",
+    "formatBarLabel": "Панель інструментів",
+    "listsLabel": "Списки",
     "helpLabel": "Довідка",
     "aboutLabel": "Про застосунок",
-    "languageLabel": "Дата й мова",
+    "languageLabel": "Мова",
+    "dateLabel": "Дата",
     "languageDesc": "Виберіть мову інтерфейсу PrivacyNotes."
   },
   "importStore": {

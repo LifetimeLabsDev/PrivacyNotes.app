@@ -49,13 +49,7 @@
     "mdDemoScripts": "Superscript, subscript, underline",
     "mdDemoMath": "Math (KaTeX)",
     "mdDemoQuote": "Quote and note-link",
-    "mdDemoDivider": "Divider",
-    "hkShowcase": "The full list",
-    "hkMac": "Mac",
-    "hkPc": "Windows and Linux",
-    "hkBrowser": "Browser",
-    "hkDesktop": "Desktop app",
-    "hkLayout": "Shortcuts follow the characters your keyboard types, not US key positions: press the key that types the character shown (on a non-Latin layout, the key in its US place). A key that types a character with AltGr always types it."
+    "mdDemoDivider": "Divider"
   },
   "groups": {
     "gettingStarted": "Getting started",
@@ -100,6 +94,14 @@
       "a": [
         "Notes, titles, tags, and attachments are always encrypted, on your device and on the way to the server. Under self-custody, which every phrase sign-up starts with, no decryption key exists on our side. Signing up with Google, Apple, or GitHub asks where your key lives and starts on \"Keep it simple & convenient\", which stores your phrase on our server, encrypted under a key of ours. In that mode, our server can decrypt the phrase and therefore your notes. Settings > Account > Key custody shows your current mode and lets you switch.",
         "What we can see is the information needed to run the service: how much encrypted storage you use, how many devices you have linked, and sync timestamps. If you use only your phrase and have not connected a Google, Apple, or GitHub account, we do not know your email address."
+      ]
+    },
+    "app-privacy-label": {
+      "q": "Why does the App Store privacy label say my data is linked to me?",
+      "a": [
+        "Because Apple asks for one label that covers everything that can reach our server, even when it arrives encrypted and even when only some accounts send it. Linked to you means attached to an account, and the account behind a phrase sign-up is a key, not a name. Nothing is used for tracking, and the app carries no analytics, ads, or crash reporting. Each line on the label means one thing:",
+        "- **User Content**: your notes and files, encrypted on your device. Under self-custody we cannot read them.\n- **Identifiers**: a public key derived from your recovery phrase, and a device hash computed on your device that only enforces the free device limit.\n- **Contact Info**: an email address, only if you sign in with Google, Apple, or GitHub.\n- **Purchases**: whether your account has Pro. Apple handles the payment, and we never see your card.",
+        "To keep that list as short as possible for your own account, sign up with a recovery phrase instead of a Google, Apple, or GitHub login, and keep self-custody. Settings > Account > Key custody shows your current mode. [What PrivacyNotes can see](/help/what-can-you-see/) covers the rest."
       ]
     },
     "phrase-vs-password": {
@@ -400,7 +402,7 @@
     "languages": {
       "q": "Which languages does the app speak?",
       "a": [
-        "English, German, French, Italian, Spanish, Dutch, Polish, Czech, Catalan, Turkish, Swedish, Ukrainian, Russian, Japanese, Korean, Traditional Chinese, Thai, Arabic, and Portuguese in both European and Brazilian variants. The app follows your system language by default, or you can pin one explicitly under Settings > Date & Language > Language on each device.",
+        "English, German, French, Italian, Spanish, Dutch, Polish, Czech, Catalan, Turkish, Swedish, Ukrainian, Russian, Japanese, Korean, Traditional Chinese, Thai, Arabic, and Portuguese in both European and Brazilian variants. The app follows your system language by default, or you can pin one explicitly under Settings > Language on each device.",
         "Translations are free for everyone, not a Pro perk. More languages are planned; if yours is missing, tell us on [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) or [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -458,8 +460,7 @@
       "q": "What keyboard shortcuts are there?",
       "a": [
         "Press ? anywhere in the app for the built-in cheat sheet, also available under Settings > About. Shortcuts cover navigation, note actions, formatting, and views - and on Windows and Linux, every Cmd reads as Ctrl and Option as Alt.",
-        "The essentials: Cmd+K jumps to any item or setting by its name, and its last row searches the text of the open section; / focuses the search, J and K walk the list, Cmd+[ and Cmd+] go back and forward through the items you opened, Alt+Shift+N starts a new note, Cmd+Backspace trashes the selected one, Cmd+, opens Settings. While writing: Cmd+B bold, Cmd+I italic, Cmd+Shift+K inserts a link, Cmd+Shift+9 starts a task list, Cmd+F finds in the note, Cmd+Shift+O toggles the outline, Cmd+Shift+M switches to the Markdown view. Cmd+\\ or Cmd+Shift+D hides the sidebar, Cmd+Shift+L switches the theme, Cmd+Shift+F enters zen mode (Pro), and Esc backs out of almost anything, filters included. Type > in the search or in Cmd+K (or press > outside a text field) to find any command by its name and run it.",
-        "The desktop apps add the keys a browser keeps for itself: Cmd+N for a new note, Cmd+Shift+N for a new item of any type, Cmd+W to close a tab, Ctrl+Tab to move between tabs, Cmd+1 to Cmd+9 for the sections of the sidebar, and Cmd+Shift+P for the list of commands."
+        "The [printable cheat sheet](/help/keyboard-shortcuts/cheat-sheet) lists every shortcut on a single A4 page, for a Mac or for Windows and Linux, and for the browser or the desktop apps. It is built from the same list the app shows, so it always matches the version you run."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -638,8 +639,15 @@
     "tags": {
       "q": "How do tags work?",
       "a": [
-        "Every open note has a tag row under the title. Type a word and press Enter, a comma, or #, and the tag becomes a chip. The sidebar lists every tag you use, and clicking one filters the list to those notes. You can rename a tag everywhere at once, favorite it so it pins to the top, or delete it, with or without the notes under it.",
+        "Every open note has a tag row under the title. Type a word and press Enter, a comma, or #, and the tag becomes a chip. The sidebar lists the tags used in the section you have open, and clicking one filters the list to those items. You can rename a tag everywhere at once, favorite it so it pins to the top, or delete it, with or without the notes under it.",
         "Tags and folders solve different problems: a note sits in one folder but carries as many tags as you like, which is what you want when something is both \"work\" and \"invoice\". Imports tag by source, so everything that arrived from another app lands with its own tag and is easy to find, or to clean up later."
+      ]
+    },
+    "organize": {
+      "q": "How do sections, folders, tags and spaces work together?",
+      "a": [
+        "Everything you keep lives in one library. The sections in the sidebar, such as Notes, Vault and Journals, are views of that library by type. A folder is a place, so one folder can hold a note and the login that belongs with it, and the folder tree is the same in every section. Its numbers count what the open section holds, and a folder with none of it shows dimmed. A tag is a label, and the sidebar lists only the tags the open section uses.",
+        "Spaces split the library into Personal and Work and show one at a time. A top-level folder belongs to one space, with everything inside it, and **Move to Work** in its menu moves it across. An item in no folder belongs to Personal, so anything you create in Work files into a Work folder. Tags are free, and folders and spaces need Pro."
       ]
     },
     "note-links": {
@@ -652,8 +660,8 @@
     "appearance": {
       "q": "Can I change how the app looks?",
       "a": [
-        "Yes, in Settings > Appearance. Mode switches between Light, Dark and Auto, which follows your system. Text size has four steps and scales your writing surface only, so the interface around it stays put. View lays items out as a List or a Grid. Editor decides whether notes open Formatted or as plain Markdown.",
-        "Color themes are the one part behind Pro: the default theme is free and Pro unlocks the rest, in light and dark alike. Zen mode, which hides everything except your text, is Pro too (Cmd+Shift+F). Mode and text size stay on the device you set them on. Everything else follows your account to your other devices."
+        "Yes. Settings > Design holds the look: **Mode** switches between Light, Dark and Auto, which follows your system, and you pick one color theme for light mode and one for dark. Settings > Editor holds how you write: **Text size** has five steps and scales your writing surface only, so the interface around it stays put, and **Editor** decides whether notes open Formatted or as plain Markdown. Settings > Lists lays items out as a List or a Grid. In the desktop apps, **App size** in Settings > Design scales the whole window. The **Design** button in the footer holds the settings you change most, with three favorite themes for each mode.",
+        "Color themes need Pro: the default theme is free and Pro unlocks the rest, in light and dark alike, plus [themes of your own](/help/custom-themes/). Zen mode, which hides everything except your text (Cmd+Shift+F), is Pro too. Moving the [toolbar](/help/format-bar/) to the top or the bottom is free, and arranging its buttons is Pro. Mode, the color themes you pick and your three favorites, text size, List or Grid, and App size stay on the device you set them on. The editor mode, line spacing, note colors and your list settings follow your account to your other devices."
       ]
     },
     "share-with-someone": {
@@ -761,6 +769,139 @@
       "a": [
         "Your space is already free. The moment the delete syncs, those bytes stop counting against your quota, on the server as much as on this device. If the bar still shows the old figure, press the refresh icon beside it: that recounts from the server and leaves out everything queued for deletion. A device that was offline keeps its own last count until it catches up.",
         "The \"few days\" the app mentions is about the encrypted file itself, not about your quota, and that wait is deliberate. Deleting a file from storage is permanent, with no trash to fish it back out of. A device that has not finished syncing holds an incomplete picture of your notes, so it could delete an image that another note still shows. A file therefore waits at least 24 hours, and only a device that has completed a clean sync removes it. The patience costs you nothing, because the space was credited the day you deleted."
+      ]
+    },
+    "spoiler-text": {
+      "q": "How do I hide spoiler text in a note?",
+      "a": [
+        "Select the text and choose **Spoiler** in the + menu of the toolbar, or type it between two pairs of bars: `||spoiler||`. The text blurs at once. While you edit, it shows as soon as your cursor touches it and blurs again when the cursor moves on. In a read-only note, a click shows it.",
+        "The note list and previews show `•••` in its place, so not even the length gives it away. Search still finds the words inside a spoiler, an HTML export keeps them blurred until the reader clicks, and a printout shows them. A Markdown export keeps the bars, which other Markdown apps show as plain characters around the text. Spoilers are free."
+      ]
+    },
+    "copy-box": {
+      "q": "How do I make text that copies with one click?",
+      "a": [
+        "Add a copy box: choose **Copy box** in the + menu of the toolbar, then type or paste the text inside it, such as a command, an address or a code. The button in its corner puts the whole text on your clipboard and shows **Copied** for a moment. A code block and a copy box turn into each other, so you can switch an existing block too.",
+        "Inline code copies as well. In a read-only note, a click or a tap on inline code copies it. While you edit, Cmd-click on a Mac or Ctrl-click on Windows and Linux copies it, so a plain click still places the cursor. A copy box saves as a code block with the language `copy`, which other Markdown apps show as a normal code block. Both are free."
+      ]
+    },
+    "statistics": {
+      "q": "What do the statistics show about my writing and wellness?",
+      "a": [
+        "Open Settings > Statistics, or click the note and word count in the footer. **Overview** sums up your week: your writing streak, words written, mood and days logged, plus a grid of the last 26 weeks and the hours you tend to write in. **Writing** counts your notes, words and tags, shows your current and longest streak, and lists your milestones. **Wellness** charts every tracker from your journal over a range you pick, custom trackers included.",
+        "Everything is computed on your device, and nothing about it is sent to us. Words and writing hours count what you write on that device, so each device shows its own numbers. The charts, the streaks, the medication calendar and **Download JSON** are free. Pro adds the week in review, what moves your mood, the Patterns table, the same-day and next-day comparisons, a **Doctor PDF** and a copy-ready AI prompt."
+      ]
+    },
+    "drag-to-folder": {
+      "q": "Can I drag a note onto a folder or a tag?",
+      "a": [
+        "Yes. Drag a note from the list onto a folder in the sidebar to move it there, or onto **Unfiled** to take it out of its folder. Drop it on a tag to add that tag, and the note keeps the tags it already had. Tasks, bookmarks, contacts, Vault items and uploaded files in Files drag the same way. Rest a dragged item on a closed folder for a moment and it opens, so you can reach a subfolder.",
+        "To move several at once, Cmd-click on a Mac or Ctrl-click on Windows and Linux to select them, Shift-click to add a range, then drag any selected item. Dragging needs a mouse, trackpad or pen and a window wide enough to show the sidebar. On a phone, use **Move to folder** in the \"...\" menu instead. Tags are free, and [folders](/help/folders/) need Pro."
+      ]
+    },
+    "custom-themes": {
+      "q": "Can I make my own color theme?",
+      "a": [
+        "Yes, with Pro. Open Settings > Design and choose **New theme**. Pick six colors (Background, Sidebar, Border, Text, Muted text and Accent) and the app suggests the rest, while the app behind the panel shows your theme as you go. A contrast check flags any text that is hard to read and offers **Fix all**. Save opens once every check passes.",
+        "The menu on each theme card has **Copy code**, which copies the theme as a short text code you can send to anyone, and **Paste theme code** adds one you received. You pick one theme for light mode and one for dark, and **Favorite** in a card's menu puts up to three themes of each mode in the **Design** button in the footer, and the themes you make sync to all your devices. Find more on [the themes page](https://privacynotes.app/themes), where you can also submit your own. The Default theme is free, and every other theme needs Pro."
+      ]
+    },
+    "format-bar": {
+      "q": "Can I choose which buttons show in the toolbar?",
+      "a": [
+        "Yes. Click the gear at the end of the toolbar, or open Settings > Toolbar. Every button has three homes: **On the bar**, **In the + menu** or **Hidden**. Drag a button to move it, or click it for its options. A hidden button still works through its keyboard shortcut and its Markdown, so hiding one takes nothing away.",
+        "Moving the bar to the top or the bottom is free on every account. Arranging its buttons is part of Pro: on a free account, Settings > Toolbar works as a preview you can try, and your layout is saved once you have Pro. Your arrangement follows your account to every device, and **Reset to defaults** brings the standard bar back. On a touch screen the bar is a single row that scrolls sideways, on every account, so no button is tucked away behind a second row."
+      ]
+    },
+    "quick-switcher": {
+      "q": "What is the quick switcher, and what can it find?",
+      "a": [
+        "The quick switcher jumps to anything by its title. Press Cmd+K on a Mac or Ctrl+K on Windows and Linux (Cmd+P or Ctrl+P works too), or click **Jump to** in the sidebar or the list header. Type part of a title to find notes, tasks, journal entries, Vault items, bookmarks, contacts, attached files and settings. Enter opens the item, and Option+Enter or Alt+Enter opens it in a tab.",
+        "Type > first to run a command instead, such as creating a new note or going to a section. To find words inside your text rather than in titles, pick the **Search everything** row, or press Cmd+Enter or Ctrl+Enter from any row. Matching happens on your device, so nothing you type is sent to us. The quick switcher is free."
+      ]
+    },
+    "screen-capture": {
+      "q": "Can I hide my notes from screenshots and screen sharing?",
+      "a": [
+        "Yes, in the apps for Android, iPhone and iPad, Mac and Windows. Open Settings > Security > Lock and turn on **Hide from screen capture**. Screenshots, screen recordings and screen sharing then show a blank window instead of your notes, as far as the device allows. On a phone it also hides your notes in the app switcher.",
+        "The switch is off by default, applies only to the device you turn it on for, and is free. Browsers and Linux give an app no way to block a capture, so the switch does not appear there. It works on its own and needs no app lock or PIN."
+      ]
+    },
+    "archive": {
+      "q": "What does Archive do, and how is it different from Trash?",
+      "a": [
+        "Archive takes an item out of your lists without deleting it. Choose **Archive** in the item's \"...\" menu or its right-click menu, or in the selection toolbar for several items at once. Archived items leave All, their section, Pinned and the folder and tag counts, and wait in the **Archive** view at the bottom of the sidebar, which appears once something is archived. To keep them in All and in the counts, tick Archive in the **All** column of Settings > Lists. **Unarchive** in the same places brings an item back.",
+        "Trash is for things you want gone: it [deletes them for good after 30 days](/help/trash-auto-delete/) unless you turn that off. Archive never deletes anything, and archived items stay within reach, because a search in All, the quick switcher and note-links still find them. They sync and stay encrypted like everything else, and they still count toward your storage. Archive works on every item type and is free."
+      ]
+    },
+    "footnotes": {
+      "q": "How do I add footnotes to a note?",
+      "a": [
+        "Choose **Footnote** in the + menu of the toolbar. The app adds the next number at your cursor, creates an empty footnote below the text and puts your cursor in it. You can also type `[^1]` right after a word, and start a line with `[^1]: ` to write the footnote itself. A label can be a word as well as a number.",
+        "Click a number to jump to its footnote, and the back arrow or Escape takes you back to the text. On a computer, resting the pointer on a number shows the footnote in a small card. Numbers follow the order in the text, and the note saves standard Markdown footnotes, so other Markdown apps read them. An HTML export, a PDF and a burn note keep them as linked footnotes. Footnotes are free."
+      ]
+    },
+    "checklists": {
+      "q": "Can I clear, sort or reorder a checklist?",
+      "a": [
+        "Yes. The note's \"...\" menu has **Uncheck all items** to reuse a list, **Delete checked items** to clear the done ones, and **Sort items by status** to move checked items below the rest. Each one appears only when it would change something. Delete asks first, and Sort and Uncheck all can be undone with Cmd+Z or Ctrl+Z. The bottom of the note counts your progress, such as \"3 of 6 checked\".",
+        "To reorder by hand, drag the grip at the end of an item. Nested items move with it, and Escape cancels the drag. The grip shows when you hover on a computer and stays faintly visible on a touch screen. A checked item moves below the unchecked ones in its list by default; turn that off with **Move checked items down** in Settings > Lists. All of it is free."
+      ]
+    },
+    "find-in-note": {
+      "q": "How do I search for a word inside one note?",
+      "a": [
+        "Press Cmd+F on a Mac or Ctrl+F on Windows and Linux in an open note, or click the magnifier in the top corner of a long note. Type the word, then press Enter for the next match and Shift+Enter for the previous one, while the bar counts the matches. Press the same keys again, or click the X, to close it. Find works in read-only notes too.",
+        "With Pro you can also replace: press Option+Cmd+F on a Mac or Ctrl+H on Windows and Linux, or choose **Find and replace** in the note's \"...\" menu. Replace one match or **All** of them at once, with **Match case** when you need it. Both bars also work in **Show markdown**, where they reach the raw text, such as a code block's language. To search all your notes instead, use the list search, which the / key focuses. [Every search runs on your device](/help/search-local/)."
+      ]
+    },
+    "window-zoom": {
+      "q": "Can I make the whole desktop app bigger or smaller?",
+      "a": [
+        "Yes, in the desktop apps for Mac, Windows and Linux. Press Cmd and the plus key on a Mac, or Ctrl and the plus key on Windows and Linux, to make the whole window bigger. The minus key makes it smaller, and 0 brings it back to normal. The same control is **App size** in Settings > Design, with steps from 80% to 200%.",
+        "App size scales everything at once: the sidebar, the list, the menus and your text. To change only your writing, use **Text size** in Settings > Editor. App size applies to the device you set it on. In a browser, the browser's own zoom does the same job."
+      ]
+    },
+    "share-into-app": {
+      "q": "Can I share text or a link into PrivacyNotes from another app?",
+      "a": [
+        "Yes, on iPhone, iPad and Android, as a beta. Tap the share button in any app and pick PrivacyNotes. A web link becomes a bookmark with the page title, text becomes a new note, and pictures and files go to Files. A link you already saved is shown instead of saved twice. Shared items arrive without a folder or a tag, so you sort them when it suits you.",
+        "On Android the app asks first: it lists what arrived and saves it only when you choose **Save all**, or drops it with **Discard**. On iPhone and iPad a card confirms **Saved to PrivacyNotes**. Each file follows your [upload limit](/help/attachment-limits/), and a share waits until you are signed in and the app is unlocked."
+      ]
+    },
+    "desktop-updates": {
+      "q": "How do I update the desktop app?",
+      "a": [
+        "You do not have to. The apps for Mac and Windows and the Linux AppImage look for an update when they start and when you come back to them, at most every 12 hours, and download it in the background. A notice then says **Update available**, with **Restart** to finish and **Changelog** to see what is new.",
+        "The Linux .deb package updates through a new download: its notice offers **Download**, which opens the [downloads section](https://privacynotes.app/en#downloads), and you install the new package over the old one. A .deb that is too old to sync safely pauses sync until you do. If you installed with Scoop on Windows, run `scoop update privacynotes`, and the notice has **Copy command** for it. On a Mac, Homebrew needs no upgrade command, because the app updates itself."
+      ]
+    },
+    "session-expired": {
+      "q": "Why does the app say \"Session expired\"?",
+      "a": [
+        "It means our server no longer accepts this device's sign-in, so syncing stops. A weak connection or a server outage never causes it: the app checks with the server a second time before it shows the message. Your notes are safe on this device.",
+        "Click **Sign in again**. The app first asks whether you saved your recovery phrase, because you need it, or the login you signed up with, to come back in. Notes that have not synced yet stay on the device and sync once you are signed in. The same window warns you if any files have not finished uploading, because those are removed with the sign-out."
+      ]
+    },
+    "zen-mode": {
+      "q": "What is Zen mode?",
+      "a": [
+        "Zen mode hides everything except the note you are writing: the sidebar, the list and the footer, and the toolbar starts hidden too. Tabs you have open stay at the top. Press Cmd+Shift+F on a Mac or Ctrl+Shift+F on Windows and Linux, click **Zen** in the footer, or right-click an empty area and choose **Zen Mode**.",
+        "Press Escape, the same keys again, or **Exit Zen** at the top of the note to come back. **Show formatting toolbar** brings the toolbar back while you stay in Zen mode. Zen mode is part of Pro, and the [demo](https://try.privacynotes.app) lets you try it without an account."
+      ]
+    },
+    "date-format": {
+      "q": "Can I change how dates are shown?",
+      "a": [
+        "Yes, in Settings > Date. **Date format** offers Automatic, Day first, Month first and Year first (ISO), and **Clock** offers Automatic, 24-hour and 12-hour. Automatic follows the app's language and each device's region, and your choice applies on all your devices.",
+        "Journal entries take their title from the date, and **Journal titles** in the same place offers ready-made formats in your date format, or **Custom pattern** to build your own from tokens such as `YYYY`, `MMMM` and `ddd`, with words in square brackets kept as typed. A new pattern applies to new entries only. To put today's date into any note, press Cmd+; on a Mac or Ctrl+; on Windows and Linux, and add Shift for the time as well. All of it is free."
+      ]
+    },
+    "connected-logins": {
+      "q": "Can I connect more than one login to my account?",
+      "a": [
+        "Yes. Open Settings > Account > Accounts and connect Google, Apple or GitHub to add a login that opens the same vault. You can connect several, even two accounts from one provider, and your recovery phrase keeps working alongside them. Connecting or disconnecting an account leaves your notes and your encryption unchanged.",
+        "A login that already belongs to another vault cannot be connected, because vaults are never merged. **Disconnect** asks for your 12 words first. If we keep your phrase for you, the last connected account stays until you connect another one or save your phrase and switch to self-custody. With self-custody, a new device still asks for your 12 words. Connected accounts are in beta."
       ]
     }
   }

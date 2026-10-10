@@ -176,7 +176,7 @@
     "sortLastActive": "Last Active",
     "noTagsYet": "No tags yet.",
     "tagNamePlaceholder": "Tag name",
-    "createTag": "Create Tag",
+    "createTag": "New tag",
     "untagged": "Untagged",
     "trashTooltip": "Deleted items",
     "trash": "Trash",
@@ -240,8 +240,10 @@
     "readOnly": "Read-only",
     "readOnlyDescription": "No edits until you toggle it off.",
     "protect": "Protect",
-    "convertToJournal": "Convert to journal entry",
-    "convertToNote": "Convert to note",
+    "convertTo": "Convert to",
+    "typeNote": "Note",
+    "typeJournal": "Journal",
+    "typeTask": "Task",
     "unpin": "Unpin",
     "pin": "Pin",
     "archive": "Archive",
@@ -280,6 +282,7 @@
     "delete": "Delete",
     "restore": "Restore",
     "deleteForever": "Delete forever",
+    "more": "More actions",
     "addTagPlaceholder": "Add a tag...",
     "noTagsFound": "No tags found",
     "createTag": "Create #{{tag}}"
@@ -310,11 +313,18 @@
     "asc": "ASC",
     "desc": "DESC",
     "showNoteLinks": "Show links in other items",
-    "showNoteTasks": "Show tasks in other items"
+    "showNoteTasks": "Show tasks in other items",
+    "showGroups": "Show groups",
+    "groupsByDate": "Grouped by date",
+    "groupsByLetter": "Grouped by first letter",
+    "groupsNoneForSize": "Not available when sorted by size",
+    "compactRows": "Compact rows",
+    "compactRowsHint": "No icon, less spacing"
   },
   "backfillPopover": {
     "calendarLabel": "Journal calendar",
-    "today": "Today"
+    "today": "Today",
+    "chooseEntry": "Entries on {{date}}"
   },
   "monthGrid": {
     "previousMonth": "Previous month",
@@ -323,7 +333,9 @@
     "nextWeek": "Next week",
     "showMonth": "{{month}}, show the whole month",
     "showWeek": "{{month}}, show one week",
-    "dayWithEntry": "{{date}}, has an entry"
+    "dayWithEntry": "{{date}}, has an entry",
+    "dayWithEntryIn": "{{date}}, has an entry in {{space}}",
+    "dayWithEntryBoth": "{{date}}, has entries in Personal and Work"
   },
   "contextMenu": {
     "newNote": "New Note",
@@ -639,5 +651,41 @@
     "saved": "Saved to PrivacyNotes",
     "failed": "Could not save to PrivacyNotes",
     "tooLarge": "Too large. Maximum is {{limit}} MB per file."
+  },
+  "shortcut": {
+    "copyNote": "Copy shortcut to note",
+    "copyItem": "Copy shortcut to item",
+    "descNote": "Opens this note from other apps. Only you can open it.",
+    "descItem": "Opens this item from other apps. Only you can open it.",
+    "copiedNote": "Shortcut copied. Paste it in any app to jump back to this note.",
+    "copiedItem": "Shortcut copied. Paste it in any app to jump back to this item.",
+    "copyNoteLink": "Copy note-link",
+    "descNoteLink": "For a link inside your notes.",
+    "copiedNoteLink": "Note-link copied. Paste it into another note.",
+    "notFound": "This item is not here. It may be in the trash, or in another account.",
+    "offerText": "Have the desktop app?",
+    "offerOpen": "Open in app",
+    "offerDismiss": "Dismiss",
+    "cardTitle": "Open your note",
+    "cardBody": "This shortcut opens a note in PrivacyNotes.",
+    "cardOpen": "Open in the desktop app",
+    "cardSignIn": "Sign in here",
+    "cardAfter": "After sign-in, the note opens."
+  },
+  "spaces": {
+    "label": "Space",
+    "personal": "Personal",
+    "work": "Work",
+    "moveToWork": "Move to Work",
+    "moveToPersonal": "Move to Personal",
+    "movedToWork": "{{folder}} moved to Work",
+    "movedToPersonal": "{{folder}} moved to Personal",
+    "itemMovedToWork": "Moved to Work",
+    "itemMovedToPersonal": "Moved to Personal",
+    "switchedToWork": "Switched to Work",
+    "switchedToPersonal": "Switched to Personal",
+    "switchToWork": "Switch to Work",
+    "switchToPersonal": "Switch to Personal",
+    "workEmpty": "Work is empty. In Personal, open the menu of an item or a folder and choose Move to Work."
   }
 }

@@ -30,6 +30,7 @@
   /* The Pro mark (the rocket). Keyed to MODE: burnt amber on every light
      theme, gold on every dark one - see the :root and :root.dark blocks. */
   --color-pro: rgb(var(--pn-pro));
+  --color-label: rgb(var(--pn-label));
 
   --color-warm: rgb(var(--pn-surface-2));
 
@@ -160,18 +161,22 @@
 }
 
 @layer editor {
-  /* Every note renders a click row above the body (Editor.tsx): it is the
-     line you can always reach above a first block you cannot type in front of,
-     and the collapsed outline pill's own row. A read-only note keeps it as an
-     inert spacer. That row IS the start-of-note gap, so the body keeps only a
-     hairline of its own padding - the two stacked read as a crater. Only the
-     history preview has no row and keeps the 16px. */
   /* A colored note takes the color on the whole pane: the title bar, the tag
      row, the toolbar and the body. The tint is translucent, so it is laid on
      the pane and again on every opaque surface inside it: each such surface
      covers the layer below before it adds its own, and the color comes out
      the same everywhere. The sticky tag row and toolbar are nearly opaque, so
      they take the layer too. Spec: ops/docs/plans/folder-tag-icons.md (section 4.5) */
+  /* The editor pane paints the paper. The color utilities read `--color-*`,
+     which <html> computes once from the `--pn-*` channels, so the pane
+     computes the surface ones again from its own.
+     Spec: ops/docs/color-themes.md (section 8) */
+  .pn-editor-pane {
+    --pn-surface-2: var(--pn-paper);
+    --color-surface-2: rgb(var(--pn-surface-2));
+    --color-warm: rgb(var(--pn-surface-2));
+  }
+
   .pn-editor-pane,
   .pn-editor-pane .bg-surface-2,
   .pn-editor-pane .pn-tagrow,
@@ -194,8 +199,23 @@
     color: var(--pn-accent-ink);
   }
 
-  .pn-editor-topgapped .ProseMirror {
-    padding-top: 4px;
+  /* Find hits in the Markdown source view (MarkdownSourceEditor.tsx), painted
+     under the transparent textarea, whose own text stays on top. So the
+     active hit is a lighter amber than the rich editor's, which can switch
+     the ink to dark and this one cannot. */
+  .pn-source-marks .pn-search-hit {
+    background: rgb(250 204 21 / 0.45);
+    border-radius: 2px;
+    color: transparent;
+  }
+  .pn-source-marks .pn-search-hit-current {
+    background: rgb(245 158 11 / 0.65);
+  }
+  :root.dark .pn-source-marks .pn-search-hit {
+    background: rgb(250 204 21 / 0.3);
+  }
+  :root.dark .pn-source-marks .pn-search-hit-current {
+    background: rgb(245 158 11 / 0.55);
   }
 
   .ProseMirror {
@@ -212,10 +232,14 @@
     /* Uniform breathing room between the sticky toolbar and the first
        block, whatever its type. Block top-margins are zeroed on the
        first child (see the first-child rule in the rhythm block), so
-       this padding is the single source of the "start of note" gap.
-       Notes hand that job to the click row above the body instead - see
-       the .pn-editor-topgapped rule after this block. */
+       this padding is the single source of the "start of note" gap. */
     padding-top: 16px;
+    /* A note whose first block has no line above it (an image, a table, a
+       quote) holds the "Add a line at the top" zone in this gap, and its
+       label needs the extra room. Keep in step with h-8 in Editor.tsx. */
+    .pn-top-line-pad & {
+      padding-top: 32px;
+    }
     /* CAUTION: this is NOT the visible body size. The utilities in
        Editor.tsx (text-[15px] + prose-p/li/blockquote:text-[15px]) pin
        body copy to --pn-editor-body and win the cascade. This is the
@@ -491,17 +515,17 @@
     /* ---------------------------------------------------------------
      * Callouts (Callout.tsx). Colored, collapsible boxes. The node view
      * sets --cc (space-separated rgb) and --cs (accent hex) per type, so
-     * the tinting here is generic; the 9 hues live in calloutTypes.ts.
+     * the tinting here is generic; the hues live in calloutTypes.ts.
      * Spec: ops/docs/callouts.md
      * --------------------------------------------------------------- */
     /* The node-view wrapper establishes a BFC (flow-root) so the callout BOX
        wraps beside the outline float like text does - a plain block's border
        box ignores floats (only its line boxes are displaced), which slid the
-       box and its fold button underneath the outline. The wrapper takes over
+       box and its fold control underneath the outline. The wrapper takes over
        the callout's vertical margins so sibling spacing keeps collapsing
        exactly as before (a BFC contains its children's margins). It also
        carries a larger scroll-margin than headings (further below) so an
-       outline jump parks the fold button clear of the collapsed outline pill,
+       outline jump parks the fold control clear of the collapsed outline pill,
        not under it. Spec: ops/docs/callouts.md */
     & .react-renderer.node-callout {
       display: flow-root;
@@ -509,78 +533,6 @@
       scroll-margin-top: calc(
         var(--pn-tagrow-h, 0px) + var(--pn-editor-toolbar-h, 0px) + 48px
       );
-    }
-    & .pn-callout {
-      position: relative;
-      margin: 0;
-      padding: 0.5em 0.9em 0.6em 2.35em;
-      border: 1px solid rgb(var(--cc) / 0.3);
-      border-inline-start: 3px solid var(--cs);
-      border-radius: 6px;
-      background: rgb(var(--cc) / 0.09);
-    }
-    :root.dark & .pn-callout {
-      border-color: rgb(var(--cc) / 0.4);
-      background: rgb(var(--cc) / 0.15);
-    }
-    & .pn-callout-icon {
-      position: absolute;
-      inset-inline-start: 0.7em;
-      top: 0.5em;
-      height: 1.6em;
-      display: inline-flex;
-      align-items: center;
-      color: var(--cs);
-      pointer-events: none;
-    }
-    & .pn-callout-fold {
-      position: absolute;
-      inset-inline-end: 0.45em;
-      top: 0.45em;
-      display: inline-flex;
-      padding: 2px;
-      border: 0;
-      background: none;
-      color: var(--cs);
-      opacity: 0.6;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    & .pn-callout-fold:hover {
-      opacity: 1;
-    }
-    & .pn-callout-content {
-      margin: 0;
-    }
-    /* Title: bold, in the accent color. Descendant (not direct-child) selectors
-       because tiptap's React NodeViewContent inserts an intermediate wrapper div,
-       so the title and body are grandchildren of .pn-callout-content. */
-    & .pn-callout [data-callout-title] {
-      margin: 0 0 0.1em;
-      font-weight: 600;
-      line-height: 1.6;
-      color: var(--cs);
-    }
-    /* Body = the title's following siblings. Tighten spacing so the box is compact. */
-    & .pn-callout [data-callout-title] ~ * {
-      margin: 0.35em 0 0;
-    }
-    /* Placeholder shown while the title is empty (rendered by the node view). */
-    & .pn-callout-placeholder {
-      position: absolute;
-      inset-inline-start: 2.35em;
-      top: 0.5em;
-      line-height: 1.6;
-      color: rgb(var(--cc) / 0.65);
-      font-weight: 600;
-      pointer-events: none;
-    }
-    /* Folded: hide the body (the title's siblings), keep the title line. */
-    & .pn-callout-folded [data-callout-title] ~ * {
-      display: none;
-    }
-    & .pn-callout-folded {
-      padding-bottom: 0.5em;
     }
   }
 }
@@ -609,10 +561,6 @@
       background: transparent;
       box-shadow: 0 0 0 3px rgb(245 158 11 / 0.9);
       color: inherit;
-    }
-    &.dark .ProseMirror .pn-callout {
-      border-color: rgb(var(--cc) / 0.4);
-      background: rgb(var(--cc) / 0.15);
     }
   }
 }
@@ -1463,6 +1411,52 @@
   .pn-copybox .pn-copied {
     color: rgb(22 163 74) !important; /* theme-ok: the same green, darker for the light box */
   }
+  /* A done check that pops once in place of an icon (the theme builder's
+     Save). */
+  .pn-pop {
+    animation: pn-copied-pop 260ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pn-pop {
+      animation: none;
+    }
+  }
+  /* The popover's four-in-a-row theme cards sit in a scrolling box, which
+     clips a centered tip under the first and the last column: those two
+     align the tip with the card's outer edge instead. */
+  .pn-theme-grid > :nth-child(4n + 1) .pn-tip,
+  [dir='rtl'] .pn-theme-grid > :nth-child(4n) .pn-tip {
+    left: 0;
+    right: auto;
+    translate: none;
+  }
+  .pn-theme-grid > :nth-child(4n) .pn-tip,
+  [dir='rtl'] .pn-theme-grid > :nth-child(4n + 1) .pn-tip {
+    left: auto;
+    right: 0;
+    translate: none;
+  }
+  /* The Appearance gallery's empty note, shown while the Made by filter
+     leaves a section without a card. */
+  .pn-theme-gallery-empty {
+    display: none;
+  }
+  .pn-theme-gallery:not(:has(> *)) {
+    display: none;
+  }
+  .pn-theme-gallery:not(:has(> *)) + .pn-theme-gallery-empty {
+    display: block;
+  }
+  /* A tag or folder chip on a list row: a solid tint mixed from the list
+     background, not a see-through one. On a selected row a see-through tint
+     stacked on the row's own and took the chip text under 4.5:1 in several
+     themes; a solid one reads the same on every row (5:1 or better). */
+  .pn-chip {
+    background: color-mix(in srgb, rgb(var(--pn-accent)) 10%, rgb(var(--pn-surface-1)));
+  }
+  .pn-chip-pick:hover {
+    background: color-mix(in srgb, rgb(var(--pn-accent)) 20%, rgb(var(--pn-surface-1)));
+  }
   .pn-tip-shown > .pn-tip {
     opacity: 1;
   }
@@ -1548,17 +1542,17 @@
     /* ---------------------------------------------------------------
      * Callouts (Callout.tsx). Colored, collapsible boxes. The node view
      * sets --cc (space-separated rgb) and --cs (accent hex) per type, so
-     * the tinting here is generic; the 9 hues live in calloutTypes.ts.
+     * the tinting here is generic; the hues live in calloutTypes.ts.
      * Spec: ops/docs/callouts.md
      * --------------------------------------------------------------- */
     /* The node-view wrapper establishes a BFC (flow-root) so the callout BOX
        wraps beside the outline float like text does - a plain block's border
        box ignores floats (only its line boxes are displaced), which slid the
-       box and its fold button underneath the outline. The wrapper takes over
+       box and its fold control underneath the outline. The wrapper takes over
        the callout's vertical margins so sibling spacing keeps collapsing
        exactly as before (a BFC contains its children's margins). It also
        carries a larger scroll-margin than headings (further below) so an
-       outline jump parks the fold button clear of the collapsed outline pill,
+       outline jump parks the fold control clear of the collapsed outline pill,
        not under it. Spec: ops/docs/callouts.md */
     .ProseMirror &.node-callout {
       display: flow-root;
@@ -1710,17 +1704,17 @@
     /* ---------------------------------------------------------------
      * Callouts (Callout.tsx). Colored, collapsible boxes. The node view
      * sets --cc (space-separated rgb) and --cs (accent hex) per type, so
-     * the tinting here is generic; the 9 hues live in calloutTypes.ts.
+     * the tinting here is generic; the hues live in calloutTypes.ts.
      * Spec: ops/docs/callouts.md
      * --------------------------------------------------------------- */
     /* The node-view wrapper establishes a BFC (flow-root) so the callout BOX
        wraps beside the outline float like text does - a plain block's border
        box ignores floats (only its line boxes are displaced), which slid the
-       box and its fold button underneath the outline. The wrapper takes over
+       box and its fold control underneath the outline. The wrapper takes over
        the callout's vertical margins so sibling spacing keeps collapsing
        exactly as before (a BFC contains its children's margins). It also
        carries a larger scroll-margin than headings (further below) so an
-       outline jump parks the fold button clear of the collapsed outline pill,
+       outline jump parks the fold control clear of the collapsed outline pill,
        not under it. Spec: ops/docs/callouts.md */
     .ProseMirror &.react-renderer {
       display: flow-root;
@@ -1737,7 +1731,8 @@
     .ProseMirror & {
       position: relative;
       margin: 0;
-      padding: 0.5em 0.9em 0.6em 2.35em;
+      padding-block: 0.5em 0.6em;
+      padding-inline: 2.35em 0.9em;
       border: 1px solid rgb(var(--cc) / 0.3);
       border-inline-start: 3px solid var(--cs);
       border-radius: 6px;
@@ -1764,37 +1759,74 @@
 }
 
 @layer editor {
-  .pn-callout-icon {
+  /* The fold control IS the type icon: the type shows at rest, open or
+     folded, and the caret replaces it on hover or keyboard focus (down when
+     open, toward the inline end when folded). Spec: ops/docs/callouts.md (fold control) */
+  .pn-callout-toggle {
     .ProseMirror & {
       position: absolute;
-      inset-inline-start: 0.7em;
+      inset-inline-start: 0.6em;
       top: 0.5em;
       height: 1.6em;
       display: inline-flex;
       align-items: center;
+      padding: 0 0.1em;
+      border: 0;
+      border-radius: 4px;
+      background: none;
       color: var(--cs);
-      pointer-events: none;
+      cursor: pointer;
+    }
+    .ProseMirror &:focus-visible {
+      outline: 2px solid rgb(var(--pn-accent));
+      outline-offset: 1px;
+    }
+    .ProseMirror & .pn-callout-caret {
+      display: none;
+    }
+    .ProseMirror &:focus-visible .pn-callout-type-icon {
+      display: none;
+    }
+    .ProseMirror &:focus-visible .pn-callout-caret {
+      display: inline-flex;
+    }
+    @media (hover: hover) {
+      .ProseMirror &:hover .pn-callout-type-icon {
+        display: none;
+      }
+      .ProseMirror &:hover .pn-callout-caret {
+        display: inline-flex;
+      }
     }
   }
 }
 
 @layer editor {
+  /* The Fold type: no box, no tint, the caret and the title in the text
+     color (the node view points --cs at it), the body indented to the
+     title. Direct-child selectors, so a callout nested inside keeps its own
+     look. */
   .pn-callout-fold {
-    .ProseMirror & {
-      position: absolute;
-      inset-inline-end: 0.45em;
-      top: 0.45em;
-      display: inline-flex;
-      padding: 2px;
+    .ProseMirror &.pn-callout,
+    :root.dark .ProseMirror &.pn-callout {
+      padding-block: 0.15em;
+      padding-inline: 1.6em 0;
       border: 0;
+      border-radius: 0;
       background: none;
-      color: var(--cs);
-      opacity: 0.6;
-      cursor: pointer;
-      border-radius: 4px;
     }
-    .ProseMirror &:hover {
-      opacity: 1;
+    .ProseMirror & > .pn-callout-toggle {
+      inset-inline-start: 0;
+      top: 0.15em;
+      color: rgb(var(--pn-text-muted));
+    }
+    .ProseMirror & > .pn-callout-placeholder {
+      inset-inline-start: 1.6em;
+      top: 0.15em;
+      color: rgb(var(--pn-text-muted));
+    }
+    .ProseMirror &.pn-callout-folded {
+      padding-bottom: 0.15em;
     }
   }
 }
@@ -2181,6 +2213,13 @@
  * Color themes: `theme-<name>` class on <html>.
  * ------------------------------------------------------------------ */
 
+  /* The writing area: the editor pane's ground. A theme code's `paper` sets
+     it; without one it is the background.
+     Spec: ops/docs/color-themes.md (section 8) */
+  :root {
+    --pn-paper: var(--pn-surface-2);
+  }
+
   /* === Default light: neutral white ================================= */
   :root {
     /* The wordmark's "Notes" half, and the ONLY thing that reads it. It exists
@@ -2221,6 +2260,11 @@
        themes take gold from the :root.dark block below.
        Spec: ops/docs/design-decisions.md (Pro mark colour) */
     --pn-pro: 180 83 9; /* #B45309 - burnt amber */
+    /* The ink of a folder or tag with no color of its own (`text-label`) and
+       of the Jump to hover: the accent, in every palette, as resolveTheme
+       gives a code without `label=`. A custom theme sets its own value.
+       Spec: ops/docs/color-themes.md (section 6) */
+    --pn-label: var(--pn-accent);
     /* Folder and tag colors, keyed to MODE like the Pro mark: every light theme
        shares these. `ink` draws a glyph on any surface (3:1 or better, gray
        on the cream sidebar the worst at 4.43); `tint` is an open note's background, light
@@ -2295,6 +2339,7 @@
 
   /* === Light: warm-cream (parchment) ================================ */
   :root:not(.dark).theme-warm-cream {
+    --pn-danger: 184 0 7; /* #B80007 - the shared red is 4.53:1 on this sidebar; this is 4.87 */
     --pn-accent: 24 64 177; /* #1840B1 */
     --pn-accent-hover: 30 58 138; /* #1E3A8A */
     --pn-surface-0: 225 216 196; /* #E1D8C4 - sidebar */
@@ -2444,6 +2489,10 @@
   }
   :root.dark .prose.prose-pn {
     --tw-prose-body: rgb(var(--pn-text));
+    /* The body already takes the full text level here, so bold mixes
+       toward white to keep an ink cue on top of its weight.
+       Spec: ops/docs/design-decisions.md (editor heading scale) */
+    --tw-prose-bold: color-mix(in srgb, rgb(var(--pn-text)) 25%, #fff); /* theme-ok: lifts every dark palette's text */
     --tw-prose-pre-code: #d4d4d4; /* theme-ok: the code panel */
     --tw-prose-pre-bg: rgb(0 0 0 / 50%); /* theme-ok: the code panel */
   }
@@ -2531,7 +2580,7 @@
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: rgb(var(--pn-pro) / 0.16);
+    background: rgb(var(--pn-label) / 0.16);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -2540,12 +2589,58 @@
   [dir='rtl'] .pn-jump-charge {
     transform-origin: right;
   }
+  /* The logo and the "Privacy" half of the wordmark take the accent in every
+     palette but Default, and show the real colors while the brand button is
+     hovered. A palette opts in by setting --pn-logo-tint and --pn-logo-ink on
+     the root, scoped to its mode like the palette blocks.
+     Spec: ops/docs/color-themes.md (section 6) */
+  :root:not(.dark):is(.theme-warm-cream, .theme-slate, .theme-sage, .theme-custom-light),
+  :root.dark:is(.theme-soft-dark, .theme-navy-depths, .theme-oled, .theme-custom-dark) {
+    --pn-logo-tint: 1;
+    --pn-logo-ink: var(--pn-accent);
+  }
+  .pn-logo {
+    isolation: isolate;
+  }
+  .pn-logo-tint {
+    position: absolute;
+    inset: 0;
+    background: rgb(var(--pn-accent));
+    mix-blend-mode: color;
+    mask: url('/privacy-notes.webp') center / contain no-repeat;
+    opacity: var(--pn-logo-tint, 0);
+    transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  .pn-logo-host .pn-brand-blue {
+    /* theme-ok: Fold Blue, the wordmark's real color, unless a palette tints it */
+    color: rgb(var(--pn-logo-ink, 79 107 213));
+    transition: color 0.2s;
+  }
+  /* A custom theme whose code says logo=original keeps the real colors in
+     its own mode. */
+  :root:not(.dark).logo-light-original .pn-logo-tint,
+  :root.dark.logo-dark-original .pn-logo-tint {
+    opacity: 0;
+  }
+  :root:not(.dark).logo-light-original .pn-logo-host .pn-brand-blue,
+  :root.dark.logo-dark-original .pn-logo-host .pn-brand-blue {
+    color: #4f6bd5; /* theme-ok: Fold Blue, the wordmark's real color */
+  }
+  @media (hover: hover) {
+    .pn-logo-host:hover .pn-logo-tint {
+      opacity: 0;
+    }
+    .pn-logo-host:hover .pn-brand-blue {
+      color: #4f6bd5; /* theme-ok: Fold Blue, the wordmark's real color */
+    }
+  }
   .pn-jump svg {
     transition: color 0.2s;
   }
   @media (hover: hover) {
     .pn-jump:hover svg {
-      color: rgb(var(--pn-pro));
+      color: rgb(var(--pn-label));
     }
     .pn-jump:hover .pn-jump-charge {
       transform: scaleX(1);
@@ -3165,6 +3260,10 @@
     overflow: visible;
     overflow-wrap: anywhere;
   }
+  /* A compact tile has no glyph, so its title starts at the edge. */
+  .pn-notes-grid .pn-card-title--bare .pn-card-titletext {
+    text-indent: 0;
+  }
   .pn-notes-grid .pn-card-preview {
     -webkit-line-clamp: 2;
   }
@@ -3481,6 +3580,28 @@
    row's box. Which button sits at the end changes with window width, so this
    can't be set per button. Edge-align both end tips instead: the first opens
    to the bottom-right, the last to the bottom-left, both back into the row. */
+/* The sidebar narrows down to SIDEBAR_WIDTH_MIN. Below 230px the extras that
+   only add a hint go - the version badge beside the brand, the shortcut on
+   Jump to, the icons and the Pro mark on the Tags and Folders tabs - so the
+   brand, the Jump to label and the tab names keep their words, and the
+   footer actions name themselves in a tip instead of the expanding pill.
+   Spec: ops/docs/design-decisions.md (pane resize clamps) */
+.pn-sidebar {
+  container: pn-sidebar / inline-size;
+}
+.pn-sb-tip > .pn-tip {
+  display: none;
+}
+@container pn-sidebar (max-width: 229px) {
+  .pn-sb-wide {
+    display: none !important;
+  }
+  /* The footer actions name themselves in a tip here, not in the pill. */
+  .pn-sb-tip > .pn-tip {
+    display: block;
+  }
+}
+
 .pn-format-row > :first-child .pn-tip {
   inset-inline-start: 0;
   inset-inline-end: auto;
@@ -3495,6 +3616,92 @@
   inset-inline-end: 0;
   transform: none;
   translate: none;
+}
+
+/* The bar on the Format bar tab marches its edge, as the Markdown tile on the
+   homepage does (pn-fx-ants): on hover, and once for a moment when the tab
+   opens (`data-intro`), so it reads as the place a button can be dropped.
+   The dashes are a layer of their own on the wrapper, masked to a 1px ring
+   over the bar's border, so they can fade in and out while the solid edge
+   underneath fades the other way; a background swap on the bar itself would
+   jump in one frame. The wrapper is not the scroll container, so the ring is
+   never clipped on touch. One dash period is 8px along the 45deg axis,
+   11.31px across, so the loop is seamless. Only the resting bar marches: a
+   drag swaps in its own edge.
+   Spec: ops/docs/ui-patterns.md section 132 */
+.pn-bar-ants {
+  position: relative;
+}
+.pn-bar-ants > ul {
+  transition: border-color 0.35s ease, background-color 0.35s ease;
+}
+.pn-bar-ants::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: repeating-linear-gradient(45deg, rgb(var(--pn-accent) / 0.8) 0 4px, transparent 4px 8px);
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.pn-bar-ants[data-intro]::before {
+  opacity: 1;
+  animation: pn-bar-ants 0.5s linear infinite;
+}
+.pn-bar-ants[data-intro] > ul {
+  border-color: transparent;
+}
+@media (hover: hover) {
+  .pn-bar-ants:hover::before {
+    opacity: 1;
+    animation: pn-bar-ants 0.5s linear infinite;
+  }
+  .pn-bar-ants:hover > ul {
+    border-color: transparent;
+  }
+}
+@keyframes pn-bar-ants {
+  to { background-position: 11.31px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pn-bar-ants[data-intro]::before,
+  .pn-bar-ants:hover::before {
+    animation: none;
+  }
+}
+
+/* The format row on a touch screen: one strip that scrolls sideways, with no
+   scrollbar, and a fade on each edge that has more to show (`data-fade`, set
+   by the toolbar from the scroll position). The ramps are logical, so the
+   fade follows the reading direction.
+   Spec: ops/docs/plans/format-bar.md (section 7) */
+.pn-format-strip {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  --pn-fade: 24px;
+}
+.pn-format-strip::-webkit-scrollbar {
+  display: none;
+}
+.pn-format-strip[data-fade="end"] {
+  mask-image: linear-gradient(to right, #000 calc(100% - var(--pn-fade)), transparent);
+}
+.pn-format-strip[data-fade="start"] {
+  mask-image: linear-gradient(to right, transparent, #000 var(--pn-fade));
+}
+.pn-format-strip[data-fade="both"] {
+  mask-image: linear-gradient(to right, transparent, #000 var(--pn-fade), #000 calc(100% - var(--pn-fade)), transparent);
+}
+[dir="rtl"] .pn-format-strip[data-fade="end"] {
+  mask-image: linear-gradient(to left, #000 calc(100% - var(--pn-fade)), transparent);
+}
+[dir="rtl"] .pn-format-strip[data-fade="start"] {
+  mask-image: linear-gradient(to left, transparent, #000 var(--pn-fade));
 }
 
 /* Default swatch in the toolbar's Highlight popover. That entry stores NO
@@ -3518,13 +3725,15 @@
   }
 
   /* Burn-viewer callouts: markdownRender emits real <details> (the editor's
-     callout is a React node view, so these selectors never touch it). Same
-     four rules the export stylesheet ships - hide the UA disclosure
-     triangle, and swap the corner arrow when a folded callout is closed.
+     callout is a React node view, so these selectors never touch it). The
+     same rules the export stylesheet ships - hide the UA disclosure
+     triangle, swap the caret when a folded callout is closed, and mirror
+     the closed caret in a right-to-left page.
      Without them a folded burn callout shows a triangle plus the wrong
-     arrow. The export .html carries its own copy in export.ts. */
+     caret. The export .html carries its own copy in export.ts. */
   summary.pn-callout-summary::-webkit-details-marker { display: none; }
   summary.pn-callout-summary { list-style: none; }
-  details.pn-callout:not([open]) > summary .pn-arrow-in { display: none; }
-  details.pn-callout:not([open]) > summary .pn-arrow-out { display: inline !important; }
+  details.pn-callout:not([open]) > summary .pn-caret-down { display: none; }
+  details.pn-callout:not([open]) > summary .pn-caret-right { display: inline !important; }
+  details.pn-callout:dir(rtl) > summary .pn-caret-right { transform: scaleX(-1); }
 }

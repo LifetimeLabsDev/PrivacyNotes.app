@@ -1034,7 +1034,9 @@ class HoverCard {
 const decoKey = new PluginKey<DecorationSet>('footnoteDecorations');
 
 export const Footnotes = Extension.create({
-  name: 'footnotes',
+  // Not 'footnotes': that is the section node's name, and TipTap keys storage
+  // and its duplicate-name check by extension name.
+  name: 'footnoteKit',
 
   addExtensions() {
     return [FootnoteDocument, FootnoteReference, FootnoteSection, FootnoteDefinition];

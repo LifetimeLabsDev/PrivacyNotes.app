@@ -18,6 +18,28 @@ export function writeToolbarPref(visible: boolean) {
   }
 }
 
+// Where the format bar sits on a touch screen: at the top of the note, or at
+// the bottom, above the keyboard. Per device, since a phone and a tablet can
+// want different things. Spec: ops/docs/plans/format-bar.md (section 7)
+const BAR_POSITION_KEY = 'privacynotes.editor.barPosition';
+export type BarPosition = 'top' | 'bottom';
+
+export function readBarPositionPref(): BarPosition {
+  try {
+    return localStorage.getItem(BAR_POSITION_KEY) === 'bottom' ? 'bottom' : 'top';
+  } catch {
+    return 'top';
+  }
+}
+
+export function writeBarPositionPref(position: BarPosition) {
+  try {
+    localStorage.setItem(BAR_POSITION_KEY, position);
+  } catch {
+    /* ignore */
+  }
+}
+
 // Spec: ops/docs/ui-patterns.md (outline panel) - remember the outline open/closed
 // choice across notes and sessions, like the toolbar visibility pref.
 const OUTLINE_PREF_KEY = 'privacynotes.editor.outlineOpen';

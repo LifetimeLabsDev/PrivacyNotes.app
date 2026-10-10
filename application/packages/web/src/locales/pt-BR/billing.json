@@ -4,20 +4,21 @@
     "earlyAdopterBadge": "Adotante inicial",
     "oneTime": "pagamento único",
     "subscriptionPitch": "Sem assinatura. Sem taxa anual. Um pagamento, liberado para a vida toda.",
-    "ctaUnlock": "Liberar tudo",
+    "ctaUnlockPrice": "Libere tudo por {{price}}",
     "ctaOpening": "Abrindo o checkout...",
     "ctaSignUp": "Cadastre-se para liberar",
     "intro": {
       "storage": "Mais espaço é um recurso Pro: 500 MB de armazenamento, 50 MB por arquivo e até 5 GB a mais como complemento de armazenamento quando você precisar.",
       "folders": "As pastas são um recurso Pro. Organize suas notas em pastas aninhadas, na profundidade que você precisar, e mantenha cada projeto separado.",
       "looks": "Ícones e cores para pastas e etiquetas são um recurso Pro. Dê a cada uma um visual que você reconhece de relance.",
+      "spaces": "Os espaços são um recurso Pro. {{desc}}",
+      "formatBar": "Organizar a barra de formatação é um recurso Pro. Coloque na barra os botões que você usa, oculte o resto e ordene o menu + do seu jeito.",
       "lock": "Bloquear uma nota é um recurso Pro. Faça upgrade para proteger qualquer nota contra edições acidentais.",
       "protect": "Proteger uma nota com PIN é um recurso Pro. Faça upgrade para proteger notas sensíveis com seu PIN.",
       "history": "O histórico de notas é um recurso Pro. Faça upgrade para manter uma linha do tempo de cada salvamento.",
       "devices": "Você atingiu o limite de 2 dispositivos. Faça upgrade para ter dispositivos ilimitados.",
       "zen": "O modo zen é um recurso Pro. Faça upgrade para escrever sem distrações.",
       "theme": "Os temas premium são um recurso Pro. Faça upgrade para liberar todos os tons.",
-      "callout": "O conjunto completo de avisos é um recurso Pro.",
       "totp": "Códigos 2FA são um recurso Pro. Guarde uma chave de autenticação em qualquer login e veja o código rotativo ao lado da senha. A chave em si é salva e sincronizada em todos os planos.",
       "replace": "Buscar e substituir é um recurso Pro. Faça upgrade para substituir uma ocorrência ou todas as ocorrências de uma nota de uma vez.",
       "passphrase": "As frases-senha são um recurso Pro. Gere uma frase de palavras aleatórias, fácil de digitar e de falar.",
@@ -26,14 +27,14 @@
     "features": {
       "devices": "Sincronize dispositivos ilimitados, em todas as plataformas",
       "folders": "Pastas aninhadas, organização por projeto",
+      "spaces": "Espaços: Pessoal e Trabalho, um de cada vez",
       "lock": "Bloqueie e proteja qualquer nota com PIN",
       "history": "Histórico completo de notas, restaure quando quiser",
       "themes": "Temas premium em todos os tons",
       "zen": "Modo zen, escrita sem distrações",
       "storage": "500 MB de armazenamento, até 5,5 GB com complementos de armazenamento"
     },
-    "comparisonBeta": "Pague US$ {{earlyPrice}} uma vez. O Obsidian Sync custa US$ 48/ano, todo ano. O Standard Notes cobra US$ 90/ano. Preço de adotante inicial, garantido antes de subir para US$ {{proPrice}}.",
-    "comparison": "Pague US$ {{proPrice}} uma vez e tenha para sempre. O Obsidian Sync custa US$ 48/ano e o Standard Notes US$ 90/ano, todo santo ano."
+    "compareCaption": "{{years}} anos. Um pagamento contra taxas anuais."
   },
   "purchaseError": {
     "store": "Não foi possível concluir a compra na loja e nada foi cobrado de você. Tente novamente em instantes.",

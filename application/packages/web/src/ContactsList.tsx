@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ItemList, useContextTarget, useItemList } from './itemList';
 import type { LocalNote } from './db';
 import type { ListPrefs, ListPrefsStore } from './listPrefs';
 import type { View } from './views';
@@ -126,7 +127,7 @@ export function ContactsList({
   const { t } = useTranslation('shell');
   const [sortOpen, setSortOpen] = useState(false);
   const sortBtnRef = useRef<HTMLButtonElement | null>(null);
-  const [contextTargetId, setContextTargetId] = useState<string | null>(null);
+  const [contextTargetId, setContextTargetId] = useContextTarget();
 
   const q = search.trim().toLowerCase();
   /** The whole selection as note-links, in list order, for a drag. */
@@ -143,10 +144,13 @@ export function ContactsList({
   });
 
   const showSearchEntry = !!q && contacts.length === 0 && !selectionMode;
+  const list = useItemList([search, activeFolderName, activeTag], contacts.length);
   const showFilterEntry =
     !selectionMode &&
     (activeFolderName !== null || activeTag !== null) &&
-    (showSearchEntry || contacts.length > 0);
+    // Held back until the revealed slice covers the whole list, so a long
+    // filtered list never draws it mid-scroll and then pushes it down again.
+    (showSearchEntry || (contacts.length > 0 && list.reveal.visible >= contacts.length));
 
   return (
     <div className="flex flex-col h-full min-h-0">
@@ -246,8 +250,7 @@ export function ContactsList({
         />
       )}
 
-      {/* ── Rows - NotesList's exact list/grid pair (pn-notes-grid) ── */}
-      <ul className={`flex-1 overflow-y-auto list-none m-0 p-0 ${viewMode === 'grid' ? 'grid content-start gap-3 p-4 pn-notes-grid' : ''}`}>
+      <ItemList list={list} grid={viewMode === 'grid'}>
         {empty && !filteredAway ? (
           <li className={`flex flex-col items-center justify-center text-center px-8 py-14 ${viewMode === 'grid' ? 'col-span-full' : ''}`}>
             <PILLAR_GLYPHS.contacts size={34} className="text-pn-muted" weight="duotone" aria-hidden="true" />
@@ -279,7 +282,7 @@ export function ContactsList({
             {!filteredAway && contacts.length === 0 && (
               <li className={`p-6 text-[13px] text-pn-muted text-center ${viewMode === 'grid' ? 'col-span-full' : ''}`}>{t('contacts.noMatches')}</li>
             )}
-            {contacts.map((n) => (
+            {contacts.slice(0, list.reveal.visible).map((n) => (
               viewMode === 'grid' ? (
               <NoteCard
                 key={n.id}
@@ -358,7 +361,7 @@ export function ContactsList({
             )}
           </>
         )}
-      </ul>
+      </ItemList>
     </div>
   );
 }

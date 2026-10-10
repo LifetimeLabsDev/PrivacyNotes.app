@@ -383,7 +383,7 @@ const CONTENT_WIDTH_KEY = 'privacynotes.contentWidth';
  * Painting it on <html> is what lets zen mode, markdown mode, the trash
  * and read-only notes honour the choice: all four hide the tag row that
  * carries the toggle button, and none of them needs React state to obey
- * a CSS variable. Settings > Appearance is the way back in those modes.
+ * a CSS variable. Settings > Editor is the way back in those modes.
  *
  * Device-local, for the text-size reason: a phone never reaches the cap
  * at all, so syncing this would fix one screen and do nothing for the
@@ -646,6 +646,8 @@ export interface CustomSnapshot {
   mode: Theme;
   /** `#RRGGBB` per token, without the `--pn-` prefix. */
   colors: Record<string, string>;
+  /** Set when the theme keeps the logo in its original colors. */
+  logo?: 'original';
 }
 
 export const customChoice = (id: string): CustomChoice => `custom:${id}`;
@@ -684,7 +686,18 @@ function validSnapshot(raw: unknown, mode: Theme): CustomSnapshot | null {
     if (typeof v !== 'string' || !/^#[0-9A-F]{6}$/.test(v)) return null;
     out[key] = v;
   }
-  return { id: r.id, code: r.code, mode, colors: out };
+  // Optional: a snapshot written before the label or the paper key has
+  // neither; the label then keeps the accent and the paper the background.
+  for (const key of ['label', 'paper']) {
+    const v = (colors as Record<string, unknown>)[key];
+    if (v === undefined) continue;
+    if (typeof v !== 'string' || !/^#[0-9A-F]{6}$/.test(v)) return null;
+    out[key] = v;
+  }
+  // Optional too: a theme that tints the logo, as every theme does unless it
+  // says otherwise, has none.
+  if (r.logo !== undefined && r.logo !== 'original') return null;
+  return { id: r.id, code: r.code, mode, colors: out, ...(r.logo ? { logo: r.logo } : {}) };
 }
 
 function readSnapshot(mode: Theme): CustomSnapshot | null {
@@ -749,7 +762,15 @@ function paintCustomRules(): void {
     const snap = slotSnapshot(mode);
     if (!snap) continue;
     const selector = mode === 'dark' ? ':root.dark.theme-custom-dark' : ':root:not(.dark).theme-custom-light';
-    rules.push(`${selector}{${CUSTOM_TOKENS.map((k) => `--pn-${k}:${channels(snap.colors[k]!)}`).join(';')}}`);
+    const decls = CUSTOM_TOKENS.map((k) => `--pn-${k}:${channels(snap.colors[k]!)}`);
+    // The folder and tag ink, which also colors the Jump to hover. A snapshot
+    // from before it existed has none and keeps the mode's value until the
+    // slot is reconciled.
+    const label = snap.colors.label;
+    if (label) decls.push(`--pn-label:${channels(label)}`);
+    // The writing area; without one it is the background.
+    decls.push(`--pn-paper:${channels(snap.colors.paper ?? snap.colors['surface-2']!)}`);
+    rules.push(`${selector}{${decls.join(';')}}`);
   }
   let el = document.getElementById('pn-custom-themes');
   if (rules.length === 0) {
@@ -773,12 +794,16 @@ function paintColorThemes(instant = false): void {
   const wantsCrossfade = !instant && hasAppliedOnce && typeof window !== 'undefined';
   if (wantsCrossfade) root.classList.add('theme-animating');
   // Snapshot first: removing while iterating a live classList skips entries.
-  const toRemove = [...root.classList].filter((c) => c.startsWith('theme-') && c !== 'theme-animating');
+  const toRemove = [...root.classList].filter((c) => (c.startsWith('theme-') && c !== 'theme-animating') || c.startsWith('logo-'));
   toRemove.forEach((c) => root.classList.remove(c));
   for (const mode of ['light', 'dark'] as const) {
     const ct = activeColorThemes[mode];
     if (customIdOf(ct) !== null) {
-      if (slotSnapshot(mode)) root.classList.add(`theme-custom-${mode}`);
+      const snap = slotSnapshot(mode);
+      if (snap) root.classList.add(`theme-custom-${mode}`);
+      // A theme that keeps the logo in its original colors, for its own mode
+      // only (index.css, the logo tint block).
+      if (snap?.logo) root.classList.add(`logo-${mode}-${snap.logo}`);
     } else if (ct !== 'default') {
       root.classList.add(`theme-${ct}`);
     }
@@ -926,7 +951,7 @@ export function resetAppearance(): void {
   emitThemeChange();
 }
 
-/** The device axes that Settings > Appearance > Themes shows. */
+/** The device axes that Settings > Design shows. */
 function applyThemeDefaults(): void {
   applyThemeMode('auto');
   applyColorTheme('light', 'default');
@@ -939,22 +964,25 @@ export function resetThemeAxes(): void {
   emitThemeChange();
 }
 
-/** The device axes that Settings > Appearance > Text and layout shows. */
+/** Every device axis outside the theme pair, for the sign-out wipe. The app
+ *  size emits on its own store, which this function's callers do not reach. */
 function applyStyleDefaults(): void {
   applyTextSize('md');
   applyContentWidth('default');
   applyFavicons(true);
   applyInvisibles(false);
-  // The window scale is on the same tab, so a reset that left it alone
-  // would leave the one axis a reader cannot miss. It emits on its own
-  // store, which this function's callers do not reach.
   applyAppZoom(DEFAULT_APP_ZOOM);
 }
 
-/** The Text and layout tab's "Reset to defaults", for the axes this device
- *  owns. The synced ones on that tab go back through the settings blob. */
+/** The Editor pane's "Reset to defaults", for the axes this device owns.
+ *  Website icons and the app size live on other panes and reset there; the
+ *  synced rows go back through the settings blob. */
 export function resetStyleAxes(): void {
-  try { applyStyleDefaults(); } catch { /* ignore */ }
+  try {
+    applyTextSize('md');
+    applyContentWidth('default');
+    applyInvisibles(false);
+  } catch { /* ignore */ }
   emitThemeChange();
 }
 
@@ -978,6 +1006,7 @@ function emitThemeChange() {
 
 /** Snapshot functions for useSyncExternalStore. */
 function getThemeSnapshot(): Theme { return peekTheme ?? getStoredTheme(); }
+
 function getThemeModeSnapshot(): ThemeMode { return getStoredThemeMode(); }
 function getLightColorThemeSnapshot(): ThemeChoice { return activeColorThemes.light; }
 function getDarkColorThemeSnapshot(): ThemeChoice { return activeColorThemes.dark; }

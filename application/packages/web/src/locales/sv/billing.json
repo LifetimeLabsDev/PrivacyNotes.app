@@ -4,20 +4,21 @@
     "earlyAdopterBadge": "Tidig användare",
     "oneTime": "engångsbetalning",
     "subscriptionPitch": "Ingen prenumeration. Ingen årsavgift. En betalning, upplåst för livet.",
-    "ctaUnlock": "Lås upp allt",
+    "ctaUnlockPrice": "Lås upp allt för {{price}}",
     "ctaOpening": "Öppnar kassan...",
     "ctaSignUp": "Registrera dig för att låsa upp",
     "intro": {
       "storage": "Mer utrymme är en Pro-funktion: 500 MB lagring, 50 MB per fil och upp till 5 GB till som tillägg när du behöver det.",
       "folders": "Mappar är en Pro-funktion. Organisera dina anteckningar i mappar med undermappar, så djupt du vill, och håll varje projekt för sig.",
       "looks": "Ikoner och färger för mappar och taggar är en Pro-funktion. Ge var och en ett eget utseende som du känner igen direkt.",
+      "spaces": "Utrymmen är en Pro-funktion. {{desc}}",
+      "formatBar": "Att ordna formatfältet är en Pro-funktion. Lägg knapparna du använder i fältet, dölj resten och ordna +-menyn som du vill.",
       "lock": "Att låsa en anteckning är en Pro-funktion. Uppgradera för att skydda vilken anteckning som helst mot oavsiktliga ändringar.",
       "protect": "Att PIN-skydda en anteckning är en Pro-funktion. Uppgradera för att lägga känsliga anteckningar bakom din PIN.",
       "history": "Anteckningshistorik är en Pro-funktion. Uppgradera för att få en tidslinje över varje sparad version.",
       "devices": "Du har nått gränsen på 2 enheter. Uppgradera för obegränsat antal enheter.",
       "zen": "Zenläge är en Pro-funktion. Uppgradera för skrivande utan distraktioner.",
       "theme": "Premiumteman är en Pro-funktion. Uppgradera för att låsa upp varje nyans.",
-      "callout": "Hela uppsättningen informationsrutor är en Pro-funktion.",
       "totp": "2FA-koder är en Pro-funktion. Spara en autentiseringsnyckel på vilken inloggning som helst så får du den roterande koden bredvid lösenordet. Själva nyckeln sparas och synkas i alla planer.",
       "replace": "Sök och ersätt är en Pro-funktion. Uppgradera för att ersätta en träff eller alla träffar i en anteckning på en gång.",
       "passphrase": "Lösenfraser är en Pro-funktion. Skapa en fras av slumpmässiga ord som är lätt att skriva och att säga.",
@@ -26,14 +27,14 @@
     "features": {
       "devices": "Synka obegränsat antal enheter, på alla plattformar",
       "folders": "Mappar i flera nivåer, ordna per projekt",
+      "spaces": "Utrymmen: Privat och Arbete, ett i taget",
       "lock": "Lås och PIN-skydda vilken anteckning som helst",
       "history": "Full anteckningshistorik, återställ när du vill",
       "themes": "Premiumteman i varje nyans",
       "zen": "Zenläge, skrivande utan distraktioner",
       "storage": "500 MB lagring, upp till 5,5 GB med tillägg"
     },
-    "comparisonBeta": "Betala ${{earlyPrice}} en gång. Obsidian Sync kostar $48/år, år efter år. Standard Notes tar $90/år. Pris för tidiga användare, låst innan det höjs till ${{proPrice}}.",
-    "comparison": "Betala ${{proPrice}} en gång och äg det för alltid. Obsidian Sync kostar $48/år och Standard Notes $90/år, varenda år."
+    "compareCaption": "{{years}} år. En betalning mot årsavgifter."
   },
   "purchaseError": {
     "store": "Köpet i butiken kunde inte slutföras och du har inte debiterats. Försök igen om en stund.",

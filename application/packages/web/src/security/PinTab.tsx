@@ -1,3 +1,4 @@
+import { Timer } from '../icons';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEscapeToClose } from '../useEscapeToClose';
@@ -344,7 +345,7 @@ export function PinTab({
           time). */}
       <div data-setting="security.reaskAfter" className="pt-3 border-t border-divider">
         <label className="block">
-          <SectionEyebrow className="mb-1.5">
+          <SectionEyebrow className="mb-1.5" icon={Timer}>
             {t('pinTab.reaskAfter')}
           </SectionEyebrow>
           <select

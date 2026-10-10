@@ -27,6 +27,7 @@ import { isDemoMode } from './demo';
 import { detectPlatform, warmAuthEdgeFunctions } from './devices';
 import { isApexHost } from './hosts';
 import { isTouchPointer } from './useIsMobile';
+import { isComputerBrowser, openShortcutInApp, peekPendingShortcut } from './noteShortcut';
 import { localeFromPath } from './localeRoutes';
 import { setLanguage } from './languages';
 import { applyMarketingSeo } from './seo';
@@ -97,6 +98,10 @@ if (hasStoredSession()) {
 } else {
   void import('./Onboarding');
 }
+
+// Loaded only when a shortcut waits for sign-in in a computer browser.
+// Spec: ops/docs/plans/note-shortcuts.md (6.2)
+const ShortcutSignInCard = lazy(() => import('./ShortcutOffer').then((m) => ({ default: m.ShortcutSignInCard })));
 
 export default function App() {
   const { auth, signInWithPhrase, unlockLocally } = useAuth();
@@ -179,6 +184,9 @@ export default function App() {
       // no modifier to say "follow it" with.
       if (!isTouchPointer() && anchor?.closest('[contenteditable="true"]')) return;
       e.preventDefault();
+      // A shortcut to an item of this vault opens in place.
+      // Spec: ops/docs/plans/note-shortcuts.md (5.4)
+      if (openShortcutInApp(href)) return;
       // iOS presents web links in an in-app SFSafariViewController sheet
       // ('inAppBrowser' is built into the opener plugin) instead of
       // switching to the Safari app - the same keep-the-user-in-app rule
@@ -473,6 +481,12 @@ export default function App() {
   // Consume any `#phrase=…` fragment exactly once on mount. This also
   // blanks the fragment out of the address bar immediately - we don't
   // want the master secret sitting in the URL longer than needed.
+  // A shortcut that waits for sign-in offers the desktop app first, in a
+  // computer browser. Spec: ops/docs/plans/note-shortcuts.md (6.2)
+  // Read on every render, so a target the notes view already opened never
+  // shows on a later sign-in screen.
+  const [shortcutCardOpen, setShortcutCardOpen] = useState(isComputerBrowser);
+  const shortcutCard = shortcutCardOpen ? peekPendingShortcut() : null;
   const [pendingSignIn, setPendingSignIn] = useState<string | null>(
     () => consumePhraseFragment()
   );
@@ -601,6 +615,11 @@ export default function App() {
     screen = (
       <>
         <Onboarding />
+        {shortcutCard && !pendingSignIn && (
+          <Suspense fallback={null}>
+            <ShortcutSignInCard target={shortcutCard} onSignIn={() => setShortcutCardOpen(false)} />
+          </Suspense>
+        )}
         {pendingSignIn && (
           <QrSignInPrompt
             phrase={pendingSignIn}

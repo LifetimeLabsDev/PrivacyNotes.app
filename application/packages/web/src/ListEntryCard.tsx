@@ -45,7 +45,7 @@ export function ListEntryCard({
 }) {
   const Tag = as;
   const glyphClass =
-    tone === 'amber' ? 'bg-amber-500/10 text-warning' : 'bg-accent/10 text-accent-strong';
+    tone === 'amber' ? 'bg-warning/10 text-warning' : 'bg-accent/10 text-accent-strong';
   const dismissClass =
     'inline-flex shrink-0 items-center justify-center rounded-md text-pn-muted transition hover:bg-pn/5 hover:text-pn';
 
@@ -53,7 +53,7 @@ export function ListEntryCard({
     return (
       <Tag
         className={`relative flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-divider bg-surface-2/40 p-4 text-center transition ${
-          tone === 'amber' ? 'hover:border-amber-500/60' : 'hover:border-accent/60'
+          tone === 'amber' ? 'hover:border-warning/60' : 'hover:border-accent/60'
         }`}
       >
         <button type="button" onClick={onClick} className="flex flex-col items-center gap-2">

@@ -80,6 +80,13 @@
     "clearFilters": "Filters wissen",
     "filteredAfter": "om ze te tonen."
   },
+  "listGroups": {
+    "previous7Days": "Afgelopen 7 dagen",
+    "previous30Days": "Afgelopen 30 dagen",
+    "other": "Overig",
+    "collapseAll": "Alle groepen inklappen",
+    "expandAll": "Alle groepen uitklappen"
+  },
   "headerLabel": {
     "allItems": "Alles",
     "untagged": "Zonder tag",
@@ -145,7 +152,7 @@
     "exitHover": "Zen-modus verlaten (Esc)",
     "enterHover": "Zen-modus starten",
     "proHover": "Zen-modus (Pro)",
-    "enterAriaShortcut": "Zen-modus starten (⌘⇧F)"
+    "enterAriaShortcut": "Zen-modus starten ({{keys}})"
   },
   "editor": {
     "backToList": "Terug naar notitielijst",
@@ -227,10 +234,10 @@
   },
   "settings": {
     "groupYourNotes": "Je notities",
+    "groupPreferences": "Voorkeuren",
     "groupAccount": "Account & gegevens",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "Statistieken",
-    "journalsLabel": "Dagboeken",
     "importLabel": "Importeren & exporteren",
     "planLabel": "Account",
     "storageLabel": "Opslag",
@@ -238,9 +245,13 @@
     "securityLabel": "Beveiliging",
     "accountLabel": "ID & synchronisatie",
     "appearanceLabel": "Weergave",
+    "editorLabel": "Editor",
+    "formatBarLabel": "Opmaakbalk",
+    "listsLabel": "Lijsten",
     "helpLabel": "Help",
     "aboutLabel": "Over",
-    "languageLabel": "Datum & taal",
+    "languageLabel": "Taal",
+    "dateLabel": "Datum",
     "languageDesc": "Kies de taal waarin PrivacyNotes wordt getoond."
   },
   "importStore": {

@@ -14,15 +14,18 @@
  */
 export type SectionId =
   | 'stats'
-  | 'journals'
   | 'import'
   | 'plan'
   | 'storage'
   | 'images'
   | 'security'
   | 'me'
-  | 'appearance'
+  | 'design'
+  | 'editor'
+  | 'formatBar'
+  | 'lists'
   | 'language'
+  | 'date'
   | 'about'
   | 'help';
 
@@ -43,15 +46,18 @@ export type SettingEntry = {
 /** Each section's name, the key the rail already shows. */
 export const SECTION_LABEL: Record<SectionId, string> = {
   stats: 'notes:settings.statsLabel',
-  journals: 'notes:settings.journalsLabel',
   import: 'notes:settings.importLabel',
   plan: 'notes:settings.planLabel',
   storage: 'notes:settings.storageLabel',
   images: 'notes:settings.imagesLabel',
   security: 'notes:settings.securityLabel',
   me: 'notes:settings.accountLabel',
-  appearance: 'notes:settings.appearanceLabel',
+  design: 'notes:settings.appearanceLabel',
+  editor: 'notes:settings.editorLabel',
+  formatBar: 'notes:settings.formatBarLabel',
+  lists: 'notes:settings.listsLabel',
   language: 'notes:settings.languageLabel',
+  date: 'notes:settings.dateLabel',
   about: 'notes:settings.aboutLabel',
   help: 'notes:settings.helpLabel',
 };
@@ -71,11 +77,6 @@ export const TAB_LABEL: Record<string, string> = {
   'plan/connectedAccounts': 'security:accountTabs.accounts',
   'plan/keyCustody': 'security:accountTabs.keyCustody',
   'plan/overview': 'security:accountTabs.overview',
-  'appearance/themes': 'settings:appearance.tabThemes',
-  'appearance/style': 'settings:appearance.tabLayout',
-  'appearance/lists': 'settings:appearance.tabLists',
-  'language/dateTime': 'settings:language.tabDateTime',
-  'language/language': 'settings:language.tabLanguage',
   'about/about': 'landing:about.tabs.about',
   'about/hotkeys': 'landing:about.tabs.hotkeys',
   'about/rating': 'landing:about.tabs.rating',
@@ -120,7 +121,8 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'stats.wellnessExport', section: 'stats', tab: 'wellness', label: 'stats:wellness.export.heading', keywords: true },
 
   // Journals
-  { id: 'journals.suffix', section: 'journals', label: 'settings:journals.suffixTitle', keywords: true },
+  { id: 'journals.titles', section: 'date', label: 'settings:journals.titlesTitle', keywords: true },
+  { id: 'journals.suffix', section: 'date', label: 'settings:journals.suffixTitle', keywords: true },
 
   // Import & Export
   { id: 'import.import', section: 'import', tab: 'import', label: 'importExport:shell.tabImport' },
@@ -202,33 +204,32 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'me.activity', section: 'me', label: 'settings:syncPanel.activity', keywords: true },
 
   // Appearance
-  { id: 'appearance.themes', section: 'appearance', tab: 'themes', label: 'settings:appearance.tabThemes' },
-  { id: 'appearance.style', section: 'appearance', tab: 'style', label: 'settings:appearance.tabLayout' },
-  { id: 'appearance.openInTabs', section: 'appearance', tab: 'style', label: 'settings:appearance.openInTabsTitle', keywords: true, shownOn: 'paneLayout' },
-  { id: 'appearance.mode', section: 'appearance', tab: 'themes', label: 'settings:appearance.modeTitle', options: ['settings:appearance.modeAuto', 'settings:appearance.light', 'settings:appearance.dark'], keywords: true },
-  { id: 'appearance.tintNotes', section: 'appearance', tab: 'themes', label: 'settings:appearance.noteColorsTitle', options: ['settings:appearance.noteColorsBackground', 'settings:appearance.noteColorsAccent', 'settings:appearance.noteColorsOff'], keywords: true },
-  { id: 'appearance.theme', section: 'appearance', tab: 'themes', label: 'settings:appearance.lightThemes', options: ['settings:appearance.darkThemes'], keywords: true },
-  { id: 'appearance.customThemes', section: 'appearance', tab: 'themes', label: 'settings:appearance.custom.newTheme', options: ['settings:appearance.custom.pasteCode', 'settings:appearance.custom.community'], keywords: true },
-  { id: 'appearance.appZoom', section: 'appearance', tab: 'style', label: 'settings:appearance.appZoomTitle', keywords: true, shownOn: 'desktopApp' },
-  { id: 'appearance.textSize', section: 'appearance', tab: 'style', label: 'settings:appearance.textSizeTitle', options: ['settings:appearance.textSizeSmallest', 'settings:appearance.textSizeSmall', 'settings:appearance.textSizeDefault', 'settings:appearance.textSizeLarge', 'settings:appearance.textSizeLargest'], keywords: true },
-  { id: 'appearance.lineSpacing', section: 'appearance', tab: 'style', label: 'settings:appearance.lineSpacingTitle', options: ['settings:appearance.lineSpacingTight', 'settings:appearance.lineSpacingCompact', 'settings:appearance.lineSpacingNormal'], keywords: true },
-  { id: 'appearance.contentWidth', section: 'appearance', tab: 'style', label: 'settings:appearance.contentWidthTitle', options: ['settings:appearance.contentWidthWide', 'settings:appearance.contentWidthFull'], keywords: true },
-  { id: 'appearance.editor', section: 'appearance', tab: 'style', label: 'settings:appearance.editorTitle', options: ['settings:appearance.editorFormatted', 'settings:appearance.editorMarkdown'], keywords: true },
-  { id: 'appearance.copyFormat', section: 'appearance', tab: 'style', label: 'settings:appearance.copyFormatTitle', options: ['settings:appearance.copyFormatMarkdown', 'settings:appearance.copyFormatPlain'], keywords: true },
-  { id: 'appearance.invisibles', section: 'appearance', tab: 'style', label: 'settings:appearance.invisiblesTitle', keywords: true },
-  { id: 'appearance.favicons', section: 'appearance', tab: 'style', label: 'settings:appearance.faviconsTitle', keywords: true },
-  { id: 'appearance.lists', section: 'appearance', tab: 'lists', label: 'settings:appearance.tabLists' },
-  { id: 'appearance.startView', section: 'appearance', tab: 'lists', label: 'settings:appearance.startViewTitle', keywords: true },
-  { id: 'appearance.view', section: 'appearance', tab: 'lists', label: 'settings:appearance.viewTitle', options: ['settings:appearance.viewList', 'settings:appearance.viewGrid'], keywords: true },
-  { id: 'appearance.sinkChecked', section: 'appearance', tab: 'lists', label: 'settings:appearance.sinkCheckedTitle', keywords: true },
-  { id: 'appearance.sidebar', section: 'appearance', tab: 'lists', label: 'settings:appearance.sidebarTitle', options: ['settings:appearance.colInSidebar', 'settings:appearance.colInAll'], keywords: true },
+  { id: 'appearance.openInTabs', section: 'lists', label: 'settings:appearance.openInTabsTitle', keywords: true, shownOn: 'paneLayout' },
+  { id: 'appearance.mode', section: 'design', label: 'settings:appearance.modeTitle', options: ['settings:appearance.modeAuto', 'settings:appearance.light', 'settings:appearance.dark'], keywords: true },
+  { id: 'appearance.theme', section: 'design', label: 'settings:appearance.lightThemes', options: ['settings:appearance.darkThemes'], keywords: true },
+  { id: 'appearance.customThemes', section: 'design', label: 'settings:appearance.custom.newTheme', options: ['settings:appearance.custom.pasteCode', 'settings:appearance.custom.community'], keywords: true },
+  { id: 'appearance.appZoom', section: 'design', label: 'settings:appearance.appZoomTitle', keywords: true, shownOn: 'desktopApp' },
+  { id: 'appearance.tintNotes', section: 'design', label: 'settings:appearance.noteColorsTitle', options: ['settings:appearance.noteColorsBackground', 'settings:appearance.noteColorsAccent', 'settings:appearance.noteColorsOff'], keywords: true },
+  { id: 'appearance.textSize', section: 'editor', label: 'settings:appearance.textSizeTitle', options: ['settings:appearance.textSizeSmallest', 'settings:appearance.textSizeSmall', 'settings:appearance.textSizeDefault', 'settings:appearance.textSizeLarge', 'settings:appearance.textSizeLargest'], keywords: true },
+  { id: 'appearance.lineSpacing', section: 'editor', label: 'settings:appearance.lineSpacingTitle', options: ['settings:appearance.lineSpacingTight', 'settings:appearance.lineSpacingCompact', 'settings:appearance.lineSpacingNormal'], keywords: true },
+  { id: 'appearance.contentWidth', section: 'editor', label: 'settings:appearance.contentWidthTitle', options: ['settings:appearance.contentWidthWide', 'settings:appearance.contentWidthFull'], keywords: true },
+  { id: 'appearance.editor', section: 'editor', label: 'settings:appearance.editorTitle', options: ['settings:appearance.editorFormatted', 'settings:appearance.editorMarkdown'], keywords: true },
+  { id: 'appearance.copyFormat', section: 'editor', label: 'settings:appearance.copyFormatTitle', options: ['settings:appearance.copyFormatMarkdown', 'settings:appearance.copyFormatPlain'], keywords: true },
+  { id: 'appearance.invisibles', section: 'editor', label: 'settings:appearance.invisiblesTitle', keywords: true },
+  { id: 'appearance.favicons', section: 'lists', label: 'settings:appearance.faviconsTitle', keywords: true },
+  { id: 'appearance.formatBar', section: 'formatBar', label: 'settings:appearance.tabFormatBar', keywords: true },
+  { id: 'appearance.startView', section: 'lists', label: 'settings:appearance.startViewTitle', keywords: true },
+  { id: 'appearance.view', section: 'lists', label: 'settings:appearance.viewTitle', options: ['settings:appearance.viewList', 'settings:appearance.viewGrid'], keywords: true },
+  { id: 'appearance.sinkChecked', section: 'lists', label: 'settings:appearance.sinkCheckedTitle', keywords: true },
+  { id: 'appearance.spaces', section: 'lists', label: 'settings:appearance.spacesTitle', keywords: true },
+  { id: 'appearance.sidebar', section: 'lists', label: 'settings:appearance.sidebarTitle', options: ['settings:appearance.colInSidebar', 'settings:appearance.colInAll'], keywords: true },
 
   // Language
-  { id: 'language.spellCheck', section: 'language', tab: 'language', label: 'settings:appearance.spellCheckTitle', keywords: true },
-  { id: 'language.language', section: 'language', tab: 'language', label: 'settings:appearance.language', keywords: true },
-  { id: 'language.dateFormat', section: 'language', tab: 'dateTime', label: 'settings:language.dateFormat', options: ['settings:language.dayFirst', 'settings:language.monthFirst', 'settings:language.yearFirst'], keywords: true },
-  { id: 'language.clock', section: 'language', tab: 'dateTime', label: 'settings:language.clock', options: ['settings:language.hour24', 'settings:language.hour12'], keywords: true },
-  { id: 'language.reportMistake', section: 'language', tab: 'language', label: 'settings:language.reportMistake' },
+  { id: 'language.spellCheck', section: 'language', label: 'settings:appearance.spellCheckTitle', keywords: true },
+  { id: 'language.language', section: 'language', label: 'settings:appearance.language', keywords: true },
+  { id: 'language.dateFormat', section: 'date', label: 'settings:language.dateFormat', options: ['settings:language.dayFirst', 'settings:language.monthFirst', 'settings:language.yearFirst'], keywords: true },
+  { id: 'language.clock', section: 'date', label: 'settings:language.clock', options: ['settings:language.hour24', 'settings:language.hour12'], keywords: true },
+  { id: 'language.reportMistake', section: 'language', label: 'settings:language.reportMistake' },
 
   // About
   { id: 'about.about', section: 'about', tab: 'about', label: 'landing:about.tabs.about' },

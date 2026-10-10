@@ -62,13 +62,16 @@ The middle column is centred and the last one is right-aligned. Click a column e
 A callout is a coloured box for something a reader must not miss.
 
 > [!tip]+ Tip
-> Click the title of a callout to fold it shut.
+> Click its icon to fold it shut.
 
 > [!warning]+ Warning
 > Each kind has its own colour and its own icon.
 
 > [!danger]+ Danger
-> There are nine kinds. The **Insert** menu lists them.
+> There are many kinds. The **Insert** menu lists them.
+
+> [!fold]- A fold
+> No box and no colour: just text that stays out of the way until you open it.
 
 ## Quotes
 

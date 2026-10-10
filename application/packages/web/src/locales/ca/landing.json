@@ -334,7 +334,7 @@
     "dataStorageBody": "Blobs xifrats emmagatzemats a Zuric, <flag/> Suïssa.",
     "faviconsHeading": "Icones dels llocs web",
     "faviconsBody1": "Les icones dels llocs web (favicons) provenen de DuckDuckGo i de Google, i les recupera el nostre servidor en nom teu. El teu navegador no contacta mai amb cap dels dos, així que veuen el nostre servidor demanant un domini i no et veuen mai a tu.",
-    "faviconsBody2": "Les icones es desen a la memòria cau del teu dispositiu durant 90 dies. Cap petició no inclou la teva identitat, i pots desactivar les icones a Configuració > Aparença."
+    "faviconsBody2": "Les icones es desen a la memòria cau del teu dispositiu durant 90 dies. Cap petició no inclou la teva identitat, i pots desactivar les icones a Configuració > Llistes."
   },
   "feedback": {
     "title": "Envia comentaris",

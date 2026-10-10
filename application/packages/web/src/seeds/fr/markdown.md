@@ -59,13 +59,16 @@ La colonne du milieu est centrée et la dernière alignée à droite. Fais gliss
 Un encadré est une boîte colorée pour ce qu'il ne faut surtout pas rater.
 
 > [!tip]+ Astuce
-> Clique sur le titre d'un encadré pour le replier.
+> Clique sur son icône pour le replier.
 
 > [!warning]+ Avertissement
 > Chaque type a sa couleur et son icône.
 
 > [!danger]+ Danger
-> Il y en a neuf. Le menu **Insérer** les liste.
+> Il y en a beaucoup. Le menu **Insérer** les liste.
+
+> [!fold]- Repliable
+> Ni cadre ni couleur : juste du texte qui reste discret jusqu'à ce que tu l'ouvres.
 
 ## Citations
 

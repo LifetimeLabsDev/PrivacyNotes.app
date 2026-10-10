@@ -18,11 +18,15 @@
  */
 
 import { detectPlatform } from './devices';
+import { openShortcutInApp } from './noteShortcut';
 
 const OPENABLE = /^(https?|tel|sms|mailto):/i;
 
 export function openExternal(url: string): void {
   if (!OPENABLE.test(url)) return;
+  // A shortcut to an item of this vault opens in place.
+  // Spec: ops/docs/plans/note-shortcuts.md (5.4)
+  if (openShortcutInApp(url)) return;
   const platform = detectPlatform();
   if (platform !== 'web') {
     // iOS: in-app SFSafariViewController sheet, mirroring the anchor

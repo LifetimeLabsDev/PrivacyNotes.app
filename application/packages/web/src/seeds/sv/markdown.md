@@ -59,13 +59,16 @@ Mittenkolumnen är centrerad och den sista högerställd. Dra i en kolumnkant f�
 En informationsruta är en färgad ruta för något en läsare inte får missa.
 
 > [!tip]+ Tips
-> Klicka på rubriken i en informationsruta för att fälla ihop den.
+> Klicka på ikonen för att fälla ihop den.
 
 > [!warning]+ Varning
 > Varje sort har sin egen färg och sin egen ikon.
 
 > [!danger]+ Fara
-> Det finns nio sorter. Menyn **Infoga** listar dem.
+> Det finns många sorter. Menyn **Infoga** listar dem.
+
+> [!fold]- Hopfällbar
+> Ingen ruta och ingen färg: bara text som håller sig undan tills du öppnar den.
 
 ## Citat
 

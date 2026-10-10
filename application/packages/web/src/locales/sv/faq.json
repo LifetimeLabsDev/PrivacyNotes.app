@@ -49,13 +49,7 @@
     "mdDemoScripts": "Upphöjt, nedsänkt, understruket",
     "mdDemoMath": "Matematik (KaTeX)",
     "mdDemoQuote": "Citat och anteckningslänk",
-    "mdDemoDivider": "Avdelare",
-    "hkShowcase": "Hela listan",
-    "hkMac": "Mac",
-    "hkPc": "Windows och Linux",
-    "hkBrowser": "Webbläsare",
-    "hkDesktop": "Skrivbordsapp",
-    "hkLayout": "Kortkommandona följer tecknen som ditt tangentbord skriver, inte de amerikanska tangentplaceringarna: tryck på tangenten som skriver tecknet som visas (på en icke-latinsk layout, tangenten på dess amerikanska plats). En tangent som skriver ett tecken med AltGr skriver det alltid."
+    "mdDemoDivider": "Avdelare"
   },
   "groups": {
     "gettingStarted": "Komma igång",
@@ -100,6 +94,14 @@
       "a": [
         "Anteckningar, titlar, taggar och bilagor är alltid krypterade, på din enhet och på väg till servern. Med egen nyckelförvaring, som varje registrering med fras börjar med, har vi ingen dekrypteringsnyckel. Registrerar du dig med Google, Apple eller GitHub får du välja var din nyckel ska förvaras. Förvalet är ”Håll det enkelt och bekvämt”, som lagrar din fras på vår server, krypterad med en nyckel som vi har. I det läget kan vår server dekryptera frasen och därmed dina anteckningar. Inställningar > Konto > Nyckelförvaring visar ditt aktuella läge och låter dig byta.",
         "Vi kan se den information som behövs för att driva tjänsten: hur mycket krypterat lagringsutrymme du använder, hur många enheter du har anslutit och tidsstämplar för synkronisering. Om du bara använder din fras och inte har anslutit ett Google-, Apple- eller GitHub-konto känner vi inte till din e-postadress."
+      ]
+    },
+    "app-privacy-label": {
+      "q": "Varför säger App Store-integritetsetiketten att mina data är länkade till mig?",
+      "a": [
+        "Eftersom Apple kräver en enda etikett som täcker allt som kan nå vår server, även när det kommer fram krypterat och även när bara vissa konton skickar det. Länkade till dig betyder kopplade till ett konto, och kontot bakom en registrering med fras är en nyckel, inte ett namn. Inget används för spårning, och appen innehåller ingen analys, inga annonser och inga kraschrapporter. Varje rad på etiketten betyder en sak:",
+        "- **Användarinnehåll**: dina anteckningar och filer, krypterade på din enhet. Med egen nyckelförvaring kan vi inte läsa dem.\n- **Identifierare**: en publik nyckel som härleds från din återställningsfras, och en enhetshash som din enhet räknar ut och som bara upprätthåller enhetsgränsen i gratisversionen.\n- **Kontaktinformation**: en e-postadress, bara om du loggar in med Google, Apple eller GitHub.\n- **Köp**: om ditt konto har Pro. Apple hanterar betalningen och vi ser aldrig ditt kort.",
+        "För att hålla listan så kort som möjligt för ditt eget konto, registrera dig med en återställningsfras i stället för en inloggning med Google, Apple eller GitHub, och behåll egen nyckelförvaring. Inställningar > Konto > Nyckelförvaring visar ditt aktuella läge. [Vad PrivacyNotes kan se](/sv/help/what-can-you-see/) förklarar resten."
       ]
     },
     "phrase-vs-password": {
@@ -400,7 +402,7 @@
     "languages": {
       "q": "Vilka språk talar appen?",
       "a": [
-        "Engelska, tyska, franska, italienska, spanska, nederländska, polska, tjeckiska, katalanska, turkiska, svenska, ukrainska, ryska, japanska, koreanska, traditionell kinesiska, thailändska, arabiska och portugisiska i både europeisk och brasiliansk variant. Appen följer ditt systemspråk som standard, eller så låser du ett språk uttryckligen under Inställningar > Datum och språk > Språk på varje enhet.",
+        "Engelska, tyska, franska, italienska, spanska, nederländska, polska, tjeckiska, katalanska, turkiska, svenska, ukrainska, ryska, japanska, koreanska, traditionell kinesiska, thailändska, arabiska och portugisiska i både europeisk och brasiliansk variant. Appen följer ditt systemspråk som standard, eller så låser du ett språk uttryckligen under Inställningar > Språk på varje enhet.",
         "Översättningar är gratis för alla, ingen Pro-förmån. Fler språk är på gång; saknas ditt, säg till på [GitHub](https://github.com/LifetimeLabsDev/PrivacyNotes.app/issues) eller [Reddit](https://www.reddit.com/r/PrivacyNotes/)."
       ]
     },
@@ -458,8 +460,7 @@
       "q": "Vilka kortkommandon finns det?",
       "a": [
         "Tryck på ? var som helst i appen för den inbyggda fusklappen, som också finns under Inställningar > Om. Kortkommandona täcker navigering, anteckningsåtgärder, formatering och vyer - och på Windows och Linux läses varje Cmd som Ctrl och Option som Alt.",
-        "Det viktigaste: Cmd+K hoppar till ett objekt eller en inställning via namnet, och dess sista rad söker i texten i den öppna sektionen; / fokuserar sökfältet, J och K går genom listan, Cmd+[ och Cmd+] går bakåt och framåt genom objekten du har öppnat, Alt+Shift+N startar en ny anteckning, Cmd+Backspace slänger den markerade, Cmd+, öppnar Inställningar. Medan du skriver: Cmd+B fet, Cmd+I kursiv, Cmd+Shift+K infogar en länk, Cmd+Shift+9 startar en uppgiftslista, Cmd+F söker i anteckningen, Cmd+Shift+O visar och döljer översikten, Cmd+Shift+M växlar till Markdown-vyn. Cmd+\\ eller Cmd+Shift+D döljer sidofältet, Cmd+Shift+L byter tema, Cmd+Shift+F går in i zenläge (Pro), och Esc backar ut ur nästan allt, även filter. Skriv > i sökfältet eller i Cmd+K (eller tryck > utanför ett textfält) för att hitta valfritt kommando efter namn och köra det.",
-        "Skrivbordsapparna lägger till de tangenter som en webbläsare behåller för sig själv: Cmd+N för en ny anteckning, Cmd+Shift+N för ett nytt objekt av valfri typ, Cmd+W för att stänga en flik, Ctrl+Tab för att flytta mellan flikar, Cmd+1 till Cmd+9 för sidofältets avsnitt och Cmd+Shift+P för kommandolistan."
+        "Den [utskrivbara fusklappen](/help/keyboard-shortcuts/cheat-sheet) listar alla kortkommandon på en enda A4-sida, för Mac eller för Windows och Linux, och för webbläsaren eller skrivbordsapparna. Den byggs från samma lista som appen visar, så den stämmer alltid med versionen du kör."
       ]
     },
     "hotkey-cheat-sheet": {
@@ -638,8 +639,15 @@
     "tags": {
       "q": "Hur fungerar taggar?",
       "a": [
-        "Varje öppnad anteckning har en taggrad under rubriken. Skriv ett ord och tryck Enter, komma eller #, så blir taggen en bricka. Sidofältet listar varje tagg du använder, och ett klick filtrerar listan till de anteckningarna. Du kan byta namn på en tagg överallt på en gång, favoritmarkera den så att den fastnar högst upp, eller radera den, med eller utan anteckningarna under.",
+        "Varje öppnad anteckning har en taggrad under rubriken. Skriv ett ord och tryck Enter, komma eller #, så blir taggen en bricka. Sidofältet listar taggarna som det öppna avsnittet använder, och ett klick filtrerar listan till de objekten. Du kan byta namn på en tagg överallt på en gång, favoritmarkera den så att den fastnar högst upp, eller radera den, med eller utan anteckningarna under.",
         "Taggar och mappar löser olika problem: en anteckning ligger i en mapp men bär hur många taggar du vill, vilket är precis vad du behöver när något är både \"jobb\" och \"faktura\". Importer taggar efter källa, så allt som kom från en annan app landar med sin egen tagg och är lätt att hitta, eller städa bort senare."
+      ]
+    },
+    "organize": {
+      "q": "Hur hänger avsnitt, mappar, taggar och utrymmen ihop?",
+      "a": [
+        "Allt du sparar finns i ett enda bibliotek. Avsnitten i sidofältet, som Anteckningar, Valv och Dagböcker, är vyer av biblioteket efter typ. En mapp är en plats, så en mapp kan rymma en anteckning och inloggningen som hör till den, och mappträdet är detsamma i varje avsnitt. Siffrorna räknar det som det öppna avsnittet innehåller, och en mapp utan något därifrån visas nedtonad. En tagg är en etikett, och sidofältet listar bara de taggar som det öppna avsnittet använder.",
+        "Utrymmen delar biblioteket i Privat och Arbete och visar ett i taget. En mapp på översta nivån hör till ett utrymme, med allt innehåll, och **Flytta till Arbete** i dess meny flyttar över den. Ett objekt utan mapp hör till Privat, så allt du skapar i Arbete hamnar i en mapp i Arbete. Taggar är gratis, mappar och utrymmen kräver Pro."
       ]
     },
     "note-links": {
@@ -652,8 +660,8 @@
     "appearance": {
       "q": "Kan jag ändra hur appen ser ut?",
       "a": [
-        "Ja, under Inställningar > Utseende. Läge växlar mellan Ljust, Mörkt och Auto, som följer systemet. Textstorlek har fyra steg och skalar bara din skrivyta: gränssnittet runt omkring står stilla. Under ”Visa objekt som” väljer du Lista eller Rutnät. Redigerare avgör om anteckningar öppnas i läget Formaterad eller som ren Markdown.",
-        "Färgteman är den enda delen bakom Pro: standardtemat är gratis och Pro låser upp resten, både ljust och mörkt. Zen-läget, som gömmer allt utom din text, är också Pro (Cmd+Shift+F). Läge och textstorlek stannar på enheten där du ställer in dem. Allt annat följer ditt konto till dina andra enheter."
+        "Ja. Inställningar > Utseende styr hur appen ser ut: **Läge** växlar mellan Ljust, Mörkt och Auto, som följer systemet, och du väljer ett färgtema för ljust läge och ett för mörkt. Inställningar > Redigerare styr hur du skriver: **Textstorlek** har fem steg och skalar bara din skrivyta, så gränssnittet runt omkring står stilla, och **Redigerare** avgör om anteckningar öppnas i läget Formaterad eller som ren Markdown. Inställningar > Listor visar objekt som Lista eller Rutnät. I skrivbordsapparna skalar **Appstorlek** under Inställningar > Utseende hela fönstret. Knappen **Utseende** i sidfoten samlar de inställningar du ändrar oftast, med tre favoritteman för varje läge.",
+        "Färgteman kräver Pro: standardtemat är gratis och Pro låser upp resten, både ljust och mörkt, plus [egna teman](/sv/help/custom-themes/). Zenläget, som gömmer allt utom din text (Cmd+Shift+F), är också Pro. Att flytta [formatfältet](/sv/help/format-bar/) till toppen eller botten är gratis, och att ordna dess knappar är Pro. Läge, de färgteman du väljer och dina tre favoriter, textstorlek, Lista eller Rutnät och appstorlek stannar på enheten där du ställer in dem. Redigerarläget, radavståndet, anteckningsfärgerna och dina listinställningar följer ditt konto till dina andra enheter."
       ]
     },
     "share-with-someone": {
@@ -761,6 +769,139 @@
       "a": [
         "Ditt utrymme är redan ledigt. I samma stund raderingen synkar slutar dessa byte räknas mot din lagring, på servern lika väl som på den här enheten. Visar mätaren fortfarande den gamla siffran, tryck på uppdateringsikonen bredvid: den räknar om från servern och utelämnar allt som redan står i kö för radering. En enhet som varit offline håller kvar sin egen senaste räkning tills den kommit ikapp.",
         "De \"några dagar\" appen nämner handlar om själva den krypterade filen, inte om ditt lagringsutrymme, och den väntan är avsiktlig. Att radera en fil ur lagringen är oåterkalleligt, det finns ingen papperskorg att fiska upp den ur. En enhet som inte synkat klart har en ofullständig bild av dina anteckningar och skulle kunna radera en bild som en annan anteckning fortfarande visar. Därför väntar en fil minst 24 timmar, och bara en enhet med en rent avslutad synkning tar bort den. Det tålamodet kostar dig inget, eftersom utrymmet krediterades den dag du raderade."
+      ]
+    },
+    "spoiler-text": {
+      "q": "Hur döljer jag spoilertext i en anteckning?",
+      "a": [
+        "Markera texten och välj **Spoiler** i +-menyn i formatfältet, eller skriv den mellan två par lodstreck: `||spoiler||`. Texten blir suddig direkt. Medan du redigerar syns den så snart markören rör vid den och blir suddig igen när markören går vidare. I en skrivskyddad anteckning visas den med ett klick.",
+        "Anteckningslistan och förhandsvisningarna visar `•••` i stället, så inte ens längden avslöjar något. Sökningen hittar ändå orden i en spoiler, en HTML-export håller dem suddiga tills läsaren klickar, och en utskrift visar dem. En Markdown-export behåller strecken, som andra Markdown-appar visar som vanliga tecken runt texten. Spoilers är gratis."
+      ]
+    },
+    "copy-box": {
+      "q": "Hur gör jag text som kopieras med ett klick?",
+      "a": [
+        "Lägg till en kopieringsruta: välj **Kopieringsruta** i +-menyn i formatfältet och skriv eller klistra in texten i den, till exempel ett kommando, en adress eller en kod. Knappen i hörnet lägger hela texten i urklipp och visar **Kopierad** en kort stund. Ett kodblock och en kopieringsruta kan göras om till varandra, så du kan också byta typ på ett befintligt block.",
+        "Infogad kod går också att kopiera. I en skrivskyddad anteckning kopierar du den med ett klick eller tryck. Medan du redigerar kopierar du den med Cmd-klick på en Mac eller Ctrl-klick på Windows och Linux, så att ett vanligt klick fortfarande placerar markören. En kopieringsruta sparas som ett kodblock med språket `copy`, som andra Markdown-appar visar som ett vanligt kodblock. Båda är gratis."
+      ]
+    },
+    "footnotes": {
+      "q": "Hur lägger jag till fotnoter i en anteckning?",
+      "a": [
+        "Välj **Fotnot** i +-menyn i formatfältet. Appen lägger in nästa nummer vid markören, skapar en tom fotnot under texten och placerar markören i den. Du kan också skriva `[^1]` direkt efter ett ord och börja en rad med `[^1]: ` för att skriva själva fotnoten. Beteckningen kan vara ett ord lika gärna som ett nummer.",
+        "Klicka på ett nummer för att hoppa till dess fotnot, och bakåtpilen eller Escape tar dig tillbaka till texten. På en dator visas fotnoten i ett litet kort när pekaren vilar på ett nummer. Numren följer ordningen i texten, och anteckningen sparar vanliga Markdown-fotnoter, så att andra Markdown-appar kan läsa dem. En HTML-export, en PDF och en burn note behåller dem som länkade fotnoter. Fotnoter är gratis."
+      ]
+    },
+    "statistics": {
+      "q": "Vad visar statistiken om mitt skrivande och mitt välmående?",
+      "a": [
+        "Öppna Inställningar > Statistik, eller klicka på antalet anteckningar och ord i sidfoten. **Översikt** sammanfattar din vecka: din skrivsvit, skrivna ord, humör och loggade dagar, plus ett rutnät över de senaste 26 veckorna och de timmar du brukar skriva. **Skrivande** räknar dina anteckningar, ord och taggar, visar din nuvarande och längsta svit och listar dina milstolpar. **Välmående** visar varje mätvärde från din dagbok i diagram över en period du väljer, egna mätvärden inräknade.",
+        "Allt räknas ut på din enhet, och inget av det skickas till oss. Ord och skrivtimmar räknar det du skriver på den enheten, så varje enhet visar sina egna siffror. Diagrammen, sviterna, medicinkalendern och **Ladda ner JSON** är gratis. Pro lägger till Veckan i återblick, vad som påverkar ditt humör, tabellen Mönster, jämförelserna för samma dag och dagen efter, en **Läkar-PDF** och en AI-prompt som är klar att kopiera."
+      ]
+    },
+    "drag-to-folder": {
+      "q": "Kan jag dra en anteckning till en mapp eller en tagg?",
+      "a": [
+        "Ja. Dra en anteckning från listan till en mapp i sidofältet för att flytta den dit, eller till **Osorterade** för att ta ut den ur sin mapp. Släpp den på en tagg för att lägga till taggen, och anteckningen behåller de taggar den redan hade. Uppgifter, bokmärken, kontakter, objekt i Valv och uppladdade filer i Filer dras på samma sätt. Håll ett draget objekt stilla över en stängd mapp en stund så öppnas den, och du når en undermapp.",
+        "För att flytta flera på en gång markerar du dem med Cmd-klick på en Mac eller Ctrl-klick på Windows och Linux, lägger till ett intervall med Shift-klick och drar sedan valfritt markerat objekt. Att dra kräver en mus, styrplatta eller penna och ett fönster som är brett nog att visa sidofältet. På en telefon använder du **Flytta till mapp** i \"...\"-menyn i stället. Taggar är gratis, och [mappar](/sv/help/folders/) kräver Pro."
+      ]
+    },
+    "custom-themes": {
+      "q": "Kan jag skapa ett eget färgtema?",
+      "a": [
+        "Ja, med Pro. Öppna Inställningar > Utseende och välj **Nytt tema**. Välj sex färger (Bakgrund, Sidofält, Kantlinje, Text, Dämpad text och Accentfärg) så föreslår appen resten, medan appen bakom panelen visar ditt tema medan du arbetar. En kontrastkontroll flaggar text som är svår att läsa och erbjuder **Åtgärda alla**. Spara blir tillgängligt när alla kontroller går igenom.",
+        "Menyn på varje temakort har **Kopiera kod**, som kopierar temat som en kort textkod du kan skicka till vem som helst, och med **Klistra in temakod** lägger du till en kod du har fått. Du väljer ett tema för ljust läge och ett för mörkt, **Favorit** i ett temakorts meny lägger upp till tre teman för varje läge i knappen **Utseende** i sidfoten, och temana du skapar synkas till alla dina enheter. Fler hittar du på [temasidan](https://privacynotes.app/themes), där du också kan skicka in ditt eget. Temat Default är gratis, och alla andra teman kräver Pro."
+      ]
+    },
+    "format-bar": {
+      "q": "Kan jag välja vilka knappar som visas i formatfältet?",
+      "a": [
+        "Ja. Klicka på kugghjulet i slutet av formatfältet, eller öppna Inställningar > Formatfält. Varje knapp har tre platser: **I fältet**, **I +-menyn** eller **Dolda**. Dra en knapp för att flytta den, eller klicka på den för att se dess alternativ. En dold knapp fungerar fortfarande via sitt kortkommando och sin Markdown, så du förlorar inget på att dölja en.",
+        "Att flytta fältet till toppen eller botten är gratis på alla konton. Att ordna dess knappar ingår i Pro: på ett gratiskonto fungerar Inställningar > Formatfält som en förhandsvisning du kan prova, och din uppställning sparas när du har Pro. Din uppställning följer ditt konto till varje enhet, och **Återställ standard** tar tillbaka standardfältet. På en pekskärm är fältet en enda rad som scrollar i sidled, på alla konton, så ingen knapp göms undan på en andra rad."
+      ]
+    },
+    "window-zoom": {
+      "q": "Kan jag göra hela skrivbordsappen större eller mindre?",
+      "a": [
+        "Ja, i skrivbordsapparna för Mac, Windows och Linux. Tryck på Cmd och plustangenten på en Mac, eller Ctrl och plustangenten på Windows och Linux, för att göra hela fönstret större. Minustangenten gör det mindre, och 0 återställer det till normal storlek. Samma inställning heter **Appstorlek** under Inställningar > Utseende, med steg från 80% till 200%.",
+        "Appstorlek skalar allt på en gång: sidofältet, listan, menyerna och din text. Vill du bara ändra din skrivtext använder du **Textstorlek** under Inställningar > Redigerare. Appstorlek gäller den enhet du ställer in den på. I en webbläsare gör webbläsarens egen zoom samma jobb."
+      ]
+    },
+    "zen-mode": {
+      "q": "Vad är zenläge?",
+      "a": [
+        "Zenläget döljer allt utom anteckningen du skriver i: sidofältet, listan och sidfoten, och formatfältet börjar också dolt. Öppna flikar stannar kvar överst. Tryck på Cmd+Shift+F på en Mac eller Ctrl+Shift+F på Windows och Linux, klicka på **Zenläge** i sidfoten, eller högerklicka på en tom yta och välj **Zenläge**.",
+        "Tryck på Escape eller samma tangenter igen, eller klicka på **Avsluta Zen** överst i anteckningen, för att komma tillbaka. **Visa formateringsverktygsfältet** tar tillbaka formatfältet medan du stannar i zenläget. Zenläget ingår i Pro, och i [demon](https://try.privacynotes.app) kan du prova det utan konto."
+      ]
+    },
+    "date-format": {
+      "q": "Kan jag ändra hur datum visas?",
+      "a": [
+        "Ja, under Inställningar > Datum. **Datumformat** erbjuder Automatiskt, Dag först, Månad först och År först (ISO), och **Tidsformat** erbjuder Automatiskt, 24 timmar och 12 timmar. Automatiskt följer appens språk och varje enhets region, och ditt val gäller på alla dina enheter.",
+        "Dagboksinlägg får sin titel från datumet, och **Dagbokstitlar** på samma ställe erbjuder färdiga format i ditt datumformat, eller **Eget mönster** för att bygga ditt eget av tokener som `YYYY`, `MMMM` och `ddd`, där ord inom hakparenteser behålls precis som du skriver dem. Ett nytt mönster gäller bara nya inlägg. För att infoga dagens datum i en anteckning trycker du på Cmd+; på en Mac eller Ctrl+; på Windows och Linux, och lägger till Shift för att få med tiden också. Allt detta är gratis."
+      ]
+    },
+    "checklists": {
+      "q": "Kan jag rensa, sortera eller ordna om en uppgiftslista?",
+      "a": [
+        "Ja. Anteckningens \"...\"-meny har **Avmarkera alla punkter** för att återanvända en lista, **Radera markerade punkter** för att rensa bort de klara, och **Sortera punkter efter status** för att flytta markerade punkter under resten. Varje alternativ visas bara när det skulle ändra något. Radera frågar först, och sortering och avmarkering kan ångras med Cmd+Z eller Ctrl+Z. Längst ner i anteckningen visas hur långt du har kommit, till exempel \"3 av 6 markerade\".",
+        "För att ordna om för hand drar du i greppet i slutet av en punkt. Indragna punkter följer med, och Escape avbryter dragningen. Greppet visas när du hovrar på en dator och syns svagt hela tiden på en pekskärm. En markerad punkt flyttas som standard under de omarkerade i sin lista; stäng av det med **Flytta markerade punkter nedåt** under Inställningar > Listor. Allt detta är gratis."
+      ]
+    },
+    "quick-switcher": {
+      "q": "Vad är funktionen Gå till, och vad kan den hitta?",
+      "a": [
+        "Funktionen Gå till hoppar till vad som helst via titeln. Tryck på Cmd+K på en Mac eller Ctrl+K på Windows och Linux (Cmd+P eller Ctrl+P fungerar också), eller klicka på **Gå till** i sidofältet eller i listans rubrik. Skriv en del av en titel för att hitta anteckningar, uppgifter, dagboksinlägg, objekt i Valv, bokmärken, kontakter, bifogade filer och inställningar. Enter öppnar objektet, och Option+Enter eller Alt+Enter öppnar det i en flik.",
+        "Skriv > först för att köra ett kommando i stället, till exempel skapa en ny anteckning eller gå till en sektion. För att hitta ord i din text i stället för i titlar väljer du raden **Sök överallt**, eller trycker på Cmd+Enter eller Ctrl+Enter från valfri rad. Matchningen sker på din enhet, så inget du skriver skickas till oss. Funktionen Gå till är gratis."
+      ]
+    },
+    "find-in-note": {
+      "q": "Hur söker jag efter ett ord i en enskild anteckning?",
+      "a": [
+        "Tryck på Cmd+F på en Mac eller Ctrl+F på Windows och Linux i en öppen anteckning, eller klicka på förstoringsglaset i det övre hörnet av en lång anteckning. Skriv ordet och tryck sedan på Enter för nästa träff och Shift+Enter för föregående, medan fältet räknar träffarna. Tryck på samma tangenter igen, eller klicka på X, för att stänga det. Sökningen fungerar även i skrivskyddade anteckningar.",
+        "Med Pro kan du också ersätta: tryck på Option+Cmd+F på en Mac eller Ctrl+H på Windows och Linux, eller välj **Sök och ersätt** i anteckningens \"...\"-meny. Ersätt en träff eller **Alla** på en gång, med **Matcha skiftläge** när du behöver det. Båda fälten fungerar även i **Visa markdown**, där de når råtexten, till exempel språket i ett kodblock. För att söka i alla dina anteckningar använder du i stället listsökningen, som tangenten / fokuserar. [Varje sökning körs på din enhet](/sv/help/search-local/)."
+      ]
+    },
+    "screen-capture": {
+      "q": "Kan jag dölja mina anteckningar för skärmdumpar och skärmdelning?",
+      "a": [
+        "Ja, i apparna för Android, iPhone och iPad, Mac och Windows. Öppna Inställningar > Säkerhet > Lås och slå på **Dölj vid skärmfångst**. Skärmdumpar, skärminspelningar och skärmdelning visar då ett tomt fönster i stället för dina anteckningar, så långt enheten tillåter. På en telefon döljer det också dina anteckningar i appväxlaren.",
+        "Reglaget är avstängt som standard, gäller bara den enhet du slår på det på, och är gratis. Webbläsare och Linux ger inte en app något sätt att blockera en skärmfångst, så reglaget visas inte där. Det fungerar på egen hand och kräver varken applås eller PIN."
+      ]
+    },
+    "connected-logins": {
+      "q": "Kan jag ansluta fler än ett inloggningssätt till mitt konto?",
+      "a": [
+        "Ja. Öppna Inställningar > Konto > Konton och anslut Google, Apple eller GitHub för att lägga till ett inloggningssätt som öppnar samma valv. Du kan ansluta flera, till och med två konton från samma leverantör, och din återställningsfras fungerar fortfarande vid sidan av dem. Att ansluta eller koppla bort ett konto lämnar dina anteckningar och din kryptering orörda.",
+        "Ett inloggningssätt som redan hör till ett annat valv kan inte anslutas, eftersom valv aldrig slås ihop. **Koppla bort** ber först om dina 12 ord. Om vi förvarar din fras åt dig stannar det sista anslutna kontot kvar tills du ansluter ett annat eller sparar din fras och byter till egen förvaring. Med egen förvaring ber en ny enhet fortfarande om dina 12 ord. Anslutna konton är i beta."
+      ]
+    },
+    "session-expired": {
+      "q": "Varför säger appen \"Sessionen har gått ut\"?",
+      "a": [
+        "Det betyder att vår server inte längre godkänner den här enhetens inloggning, så synkningen stoppas. En svag anslutning eller ett serveravbrott orsakar det aldrig: appen kontrollerar med servern en andra gång innan meddelandet visas. Dina anteckningar är säkra på den här enheten.",
+        "Klicka på **Logga in igen**. Appen frågar först om du har sparat din återställningsfras, eftersom du behöver den, eller inloggningssättet du registrerade dig med, för att komma in igen. Anteckningar som inte har synkats ännu stannar på enheten och synkas när du är inloggad. Samma fönster varnar dig om några filer inte är färdiguppladdade, eftersom de tas bort vid utloggningen."
+      ]
+    },
+    "archive": {
+      "q": "Vad gör Arkivera, och hur skiljer det sig från papperskorgen?",
+      "a": [
+        "Arkivera tar bort ett objekt från dina listor utan att radera det. Välj **Arkivera** i objektets \"...\"-meny eller högerklicksmeny, eller i markeringsfältet för flera objekt på en gång. Arkiverade objekt försvinner från Alla, sin sektion, Fästa och räknarna för mappar och taggar, och väntar i vyn **Arkiv** längst ner i sidofältet, som visas så fort något är arkiverat. Vill du ha kvar dem i Alla och i antalen, kryssa i Arkiv i kolumnen **Alla** under Inställningar > Listor. **Ta ur arkivet** på samma ställen tar tillbaka ett objekt.",
+        "Papperskorgen är för sådant du vill bli av med: den [raderar det för alltid efter 30 dagar](/sv/help/trash-auto-delete/) om du inte stänger av det. Arkivet raderar aldrig något, och arkiverade objekt finns kvar inom räckhåll, eftersom en sökning i Alla, funktionen Gå till och anteckningslänkar fortfarande hittar dem. De synkas och förblir krypterade som allt annat, och de räknas fortfarande mot din lagring. Arkivera fungerar på alla typer av objekt och är gratis."
+      ]
+    },
+    "share-into-app": {
+      "q": "Kan jag dela text eller en länk till PrivacyNotes från en annan app?",
+      "a": [
+        "Ja, på iPhone, iPad och Android, som beta. Tryck på delningsknappen i valfri app och välj PrivacyNotes. En webblänk blir ett bokmärke med sidans titel, text blir en ny anteckning, och bilder och filer hamnar i Filer. En länk du redan har sparat visas i stället för att sparas två gånger. Delade objekt kommer utan mapp eller tagg, så du sorterar dem när det passar dig.",
+        "På Android frågar appen först: den listar det som kom in och sparar det först när du väljer **Spara alla**, eller kastar det med **Släng**. På iPhone och iPad bekräftar ett kort **Sparat i PrivacyNotes**. Varje fil följer din [uppladdningsgräns](/sv/help/attachment-limits/), och en delning väntar tills du är inloggad och appen är upplåst."
+      ]
+    },
+    "desktop-updates": {
+      "q": "Hur uppdaterar jag skrivbordsappen?",
+      "a": [
+        "Det behöver du inte. Apparna för Mac och Windows och Linux-AppImage letar efter en uppdatering när de startar och när du kommer tillbaka till dem, som mest var 12:e timme, och laddar ner den i bakgrunden. Ett meddelande säger sedan **Uppdatering tillgänglig**, med **Starta om** för att slutföra och **Changelog** för att se vad som är nytt.",
+        "Linux-paketet .deb uppdateras med en ny nedladdning: meddelandet erbjuder **Ladda ner**, som öppnar [nedladdningsavsnittet](https://privacynotes.app/sv#downloads), och du installerar det nya paketet över det gamla. En .deb som är för gammal för att synka säkert pausar synkningen tills du gör det. Om du installerade med Scoop på Windows kör du `scoop update privacynotes`, och meddelandet har **Kopiera kommando** för det. På en Mac behöver Homebrew inget uppgraderingskommando, eftersom appen uppdaterar sig själv."
       ]
     }
   }

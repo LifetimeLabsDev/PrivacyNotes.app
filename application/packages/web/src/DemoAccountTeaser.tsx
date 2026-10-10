@@ -1,3 +1,4 @@
+import { SignIn, Vault, ShieldCheck } from './icons';
 import { useTranslation } from 'react-i18next';
 import { DEMO_APP_URL } from './demo';
 import { withSource } from './campaignSource';
@@ -13,7 +14,7 @@ const PROVIDERS: ConnectedAccountProvider[] = ['google', 'apple', 'github'];
 export function DemoAccountTeaser({ kind }: { kind: 'accounts' | 'keyCustody' | 'twoFactor' }) {
   const { t } = useTranslation('security');
   return <div className="space-y-3">
-    <SectionEyebrow>{t(kind === 'accounts' ? 'connectedAccounts.title' : kind === 'keyCustody' ? 'accountTabs.keyCustody' : 'twoFactor.title')}</SectionEyebrow>
+    <SectionEyebrow icon={kind === 'accounts' ? SignIn : kind === 'keyCustody' ? Vault : ShieldCheck}>{t(kind === 'accounts' ? 'connectedAccounts.title' : kind === 'keyCustody' ? 'accountTabs.keyCustody' : 'twoFactor.title')}</SectionEyebrow>
     {kind === 'accounts' && <>
       <p className={SETTINGS_HELP}>{t('connectedAccounts.description')}</p>
       <div className="divide-y divide-divider rounded-md border border-divider">

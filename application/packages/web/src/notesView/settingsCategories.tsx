@@ -1,3 +1,4 @@
+import type { FormatBarBoardProps } from '../FormatBarBoard';
 import { lazy, Suspense, type ComponentType, type Dispatch, type MutableRefObject, type SetStateAction } from 'react';
 import type { TFunction } from 'i18next';
 import type { AuthState } from '../auth';
@@ -6,12 +7,11 @@ import type { LocalNote } from '../db';
 import { journalOn } from '../notesViewUtils';
 import type { FolderDef } from '../folders';
 import type { ImageStore } from '../imageStore';
-import { AppearanceSheet } from '../AppearanceSheet';
+import { AppearanceSheet, type AppearancePane } from '../AppearanceSheet';
 import { ImagesSheet } from '../ImagesSheet';
-import { JournalsSheet } from '../JournalsSheet';
-import { LanguageSheet } from '../LanguageSheet';
+import { DateSheet, LanguageSheet } from '../LanguageSheet';
 import { exemptOpts } from '../i18nExempt';
-import { Book, ChartBar, CreditCard, Database, Image as ImageIcon, Info, Question, Repeat, Shield, Sun, Translate, User, type Icon } from '../icons';
+import { Calendar, ChartBar, CreditCard, Database, Image as ImageIcon, Info, Question, Repeat, ListBullets, Palette, PencilLine, Shield, Toolbox, Translate, User, type Icon } from '../icons';
 import { activeLocale } from '../languages';
 import { helpPath } from '../localeRoutes';
 import { updateNote } from '../notesRepo';
@@ -25,6 +25,7 @@ import { applyNoteColorChoice, noteColorChoice } from '../itemStyles';
 import type { ViewMode } from '../viewMode';
 import { setDeviceLabel } from '../deviceLabels';
 import type { ThemeBuilderTarget } from './useThemeBuilder';
+import type { UpgradeTrigger } from '../UpgradeModal';
 
 /**
  * Code-split a modal component while keeping its call sites identical.
@@ -66,15 +67,18 @@ type Authed = Extract<AuthState, { status: 'authenticated' }>;
 /** Each section's rail icon. The quick switcher draws it beside a setting. */
 export const SETTINGS_SECTION_ICONS: Record<SectionId, Icon> = {
   stats: ChartBar,
-  journals: Book,
   import: Repeat,
   plan: CreditCard,
   storage: Database,
   images: ImageIcon,
   security: Shield,
   me: User,
-  appearance: Sun,
+  design: Palette,
+  editor: PencilLine,
+  formatBar: Toolbox,
+  lists: ListBullets,
   language: Translate,
+  date: Calendar,
   about: Info,
   help: Question,
 };
@@ -126,6 +130,7 @@ export function buildSettingsCategories({
   runSync,
   saveWeekReflection,
   openThemeBuilder,
+  formatBarBoard,
 }: {
   t: TFunction;
   notes: LocalNote[];
@@ -150,7 +155,7 @@ export function buildSettingsCategories({
   /** ID & Sync's "Open" for a note the last pass could not push. */
   onOpenNote: (id: string) => void;
   setShowSettings: Dispatch<SetStateAction<boolean>>;
-  setShowUpgrade: (next: { trigger: 'theme' | 'storage' | null }) => void;
+  setShowUpgrade: (next: { trigger: UpgradeTrigger }) => void;
   setImportToast: Dispatch<SetStateAction<string | null>>;
   handleSignOutClick: () => void;
   mergeImportedFolders: (
@@ -180,7 +185,42 @@ export function buildSettingsCategories({
   saveWeekReflection: (text: string) => Promise<void>;
   /** Closes Settings and opens the theme builder. */
   openThemeBuilder: (target: ThemeBuilderTarget) => void;
+  formatBarBoard: FormatBarBoardProps;
 }): SettingsCategory[] {
+  // Design, Editor and Lists are three panes of one sheet, one Settings
+  // entry each. Spec: ops/docs/ui-patterns.md (section 135)
+  const appearancePane = (pane: AppearancePane) => (
+    <AppearanceSheet
+      embedded
+      pane={pane}
+      isPro={auth.isPro ?? false}
+      viewMode={viewMode}
+      onViewModeChange={onViewModeChange}
+      editorMode={userSettings.editorMode}
+      onEditorModeChange={onEditorModeChange}
+      formatBar={formatBarBoard}
+      lineSpacing={userSettings.lineSpacing}
+      onLineSpacingChange={(next) => mutateSettings((prev) => ({ ...prev, lineSpacing: next }))}
+      hiddenViews={userSettings.hiddenViews}
+      hiddenInAll={userSettings.hiddenInAll}
+      archivedInAll={userSettings.archivedInAll}
+      onToggleHidden={onToggleHiddenView}
+      startView={userSettings.startView}
+      onStartViewChange={(next) => mutateSettings((prev) => ({ ...prev, startView: next }))}
+      noteColors={noteColorChoice(userSettings.tintNotes, userSettings.noteColorStyle)}
+      onNoteColorsChange={(next) => mutateSettings((prev) => applyNoteColorChoice(prev, next))}
+      sinkCheckedTasks={userSettings.sinkCheckedTasks}
+      onSinkCheckedTasksChange={(on) => mutateSettings((prev) => ({ ...prev, sinkCheckedTasks: on }))}
+      spaces={userSettings.spaces}
+      onSpacesChange={(on) => mutateSettings((prev) => ({ ...prev, spaces: on }))}
+      onOpenUpgrade={(trigger) => { setShowSettings(false); setShowUpgrade({ trigger: trigger ?? 'theme' }); }}
+      onClose={() => setShowSettings(false)}
+      customThemes={userSettings.customThemes}
+      onCustomThemesChange={(update) => mutateSettings((prev) => ({ ...prev, customThemes: update(prev.customThemes) }))}
+      onOpenThemeBuilder={openThemeBuilder}
+    />
+  );
+
   return [
             {
               id: 'stats',
@@ -210,25 +250,6 @@ export function buildSettingsCategories({
                   onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: null }); }}
                   onClose={() => setShowSettings(false)}
                   {...weekReflectionFor(notes, isNoteLocked, (text) => void saveWeekReflection(text))}
-                />
-              ),
-            },
-            {
-              // How new journal entries are titled (GitHub #200). Sits in
-              // "Your notes" rather than Appearance: a title shape is
-              // content, not chrome.
-              id: 'journals',
-              label: t('settings.journalsLabel'),
-              group: t('settings.groupYourNotes'),
-              icon: railIcon('journals'),
-              render: () => (
-                <JournalsSheet
-                  format={userSettings.journalTitleFormat}
-                  onFormatChange={(f) => mutateSettings((prev) => ({ ...prev, journalTitleFormat: f }))}
-                  suffix={userSettings.journalTitleSuffix}
-                  onSuffixChange={(s) => mutateSettings((prev) => ({ ...prev, journalTitleSuffix: s }))}
-                  pattern={userSettings.journalTitlePattern}
-                  onPatternChange={(p) => mutateSettings((prev) => ({ ...prev, journalTitlePattern: p }))}
                 />
               ),
             },
@@ -286,6 +307,57 @@ export function buildSettingsCategories({
               ),
             },
             {
+              id: 'design',
+              label: t('settings.appearanceLabel'),
+              group: t('settings.groupPreferences'),
+              icon: railIcon('design'),
+              render: () => appearancePane('design'),
+            },
+            {
+              id: 'editor',
+              label: t('settings.editorLabel'),
+              group: t('settings.groupPreferences'),
+              icon: railIcon('editor'),
+              render: () => appearancePane('editor'),
+            },
+            {
+              id: 'formatBar',
+              label: t('settings.formatBarLabel'),
+              group: t('settings.groupPreferences'),
+              icon: railIcon('formatBar'),
+              ownHeading: true,
+              render: () => appearancePane('formatBar'),
+            },
+            {
+              id: 'lists',
+              label: t('settings.listsLabel'),
+              group: t('settings.groupPreferences'),
+              icon: railIcon('lists'),
+              render: () => appearancePane('lists'),
+            },
+            {
+              id: 'date',
+              label: t('settings.dateLabel'),
+              group: t('settings.groupPreferences'),
+              icon: railIcon('date'),
+              render: () => (
+                <DateSheet
+                  journal={{
+                    format: userSettings.journalTitleFormat,
+                    onFormatChange: (f) => mutateSettings((prev) => ({ ...prev, journalTitleFormat: f })),
+                    suffix: userSettings.journalTitleSuffix,
+                    onSuffixChange: (sfx) => mutateSettings((prev) => ({ ...prev, journalTitleSuffix: sfx })),
+                    pattern: userSettings.journalTitlePattern,
+                    onPatternChange: (p) => mutateSettings((prev) => ({ ...prev, journalTitlePattern: p })),
+                  }}
+                  dateOrder={userSettings.dateOrder}
+                  onDateOrderChange={(order) => mutateSettings((prev) => ({ ...prev, dateOrder: order }))}
+                  clock={userSettings.clock}
+                  onClockChange={(clock) => mutateSettings((prev) => ({ ...prev, clock }))}
+                />
+              ),
+            },
+            {
               id: 'plan',
               label: t('settings.planLabel'),
               group: t('settings.groupAccount'),
@@ -311,41 +383,6 @@ export function buildSettingsCategories({
                   onClose={() => setShowSettings(false)}
                   onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: null }); }}
                   onSignOut={handleSignOutClick}
-                />
-              ),
-            },
-            {
-              id: 'storage',
-              label: t('settings.storageLabel'),
-              group: t('settings.groupAccount'),
-              icon: railIcon('storage'),
-              render: ({ navigate }) => (
-                <SyncOptionsModal
-                  embedded
-                  tab="storage"
-                  onSyncNow={runSync}
-                  onOpenNote={onOpenNote}
-                  onOpenImageSettings={() => navigate('images')}
-                  onClose={() => setShowSettings(false)}
-                  onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: 'storage' }); }}
-                  onSignOut={handleSignOutClick}
-                />
-              ),
-            },
-            {
-              // The two app-wide image switches. Under Storage on purpose:
-              // the Storage tab is where a full quota bar is stared at, and
-              // it links here. Spec: ops/docs/plans/image-quality-handoff.md (section 9)
-              id: 'images',
-              label: t('settings.imagesLabel'),
-              group: t('settings.groupAccount'),
-              icon: railIcon('images'),
-              render: () => (
-                <ImagesSheet
-                  spaceSaver={userSettings.imageSpaceSaver}
-                  stripMetadata={userSettings.imageStripMetadata}
-                  contactCeiling={userSettings.imageContactCeiling}
-                  onChange={(field, value) => mutateSettings((prev) => ({ ...prev, [field]: value }))}
                 />
               ),
             },
@@ -396,56 +433,37 @@ export function buildSettingsCategories({
               ),
             },
             {
-              id: 'appearance',
-              label: t('settings.appearanceLabel'),
-              group: t('settings.groupBrand'),
-              icon: railIcon('appearance'),
-              render: ({ initialTab }) => (
-                <AppearanceSheet
+              id: 'storage',
+              label: t('settings.storageLabel'),
+              group: t('settings.groupAccount'),
+              icon: railIcon('storage'),
+              render: ({ navigate }) => (
+                <SyncOptionsModal
                   embedded
-                  initialTab={initialTab === 'lists' || initialTab === 'style' ? initialTab : 'themes'}
-                  isPro={auth.isPro ?? false}
-                  viewMode={viewMode}
-                  onViewModeChange={onViewModeChange}
-                  editorMode={userSettings.editorMode}
-                  onEditorModeChange={onEditorModeChange}
-                  lineSpacing={userSettings.lineSpacing}
-                  onLineSpacingChange={(next) => mutateSettings((prev) => ({ ...prev, lineSpacing: next }))}
-                  hiddenViews={userSettings.hiddenViews}
-                  hiddenInAll={userSettings.hiddenInAll}
-                  archivedInAll={userSettings.archivedInAll}
-                  onToggleHidden={onToggleHiddenView}
-                  startView={userSettings.startView}
-                  onStartViewChange={(next) => mutateSettings((prev) => ({ ...prev, startView: next }))}
-                  noteColors={noteColorChoice(userSettings.tintNotes, userSettings.noteColorStyle)}
-                  onNoteColorsChange={(next) => mutateSettings((prev) => applyNoteColorChoice(prev, next))}
-                  sinkCheckedTasks={userSettings.sinkCheckedTasks}
-                  onSinkCheckedTasksChange={(on) => mutateSettings((prev) => ({ ...prev, sinkCheckedTasks: on }))}
-                  onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: 'theme' }); }}
+                  tab="storage"
+                  onSyncNow={runSync}
+                  onOpenNote={onOpenNote}
+                  onOpenImageSettings={() => navigate('images')}
                   onClose={() => setShowSettings(false)}
-                  customThemes={userSettings.customThemes}
-                  onCustomThemesChange={(update) => mutateSettings((prev) => ({ ...prev, customThemes: update(prev.customThemes) }))}
-                  onOpenThemeBuilder={openThemeBuilder}
+                  onOpenUpgrade={() => { setShowSettings(false); setShowUpgrade({ trigger: 'storage' }); }}
+                  onSignOut={handleSignOutClick}
                 />
               ),
             },
             {
-              id: 'language',
-              label: t('settings.languageLabel'),
-              // No shell description: the pane opens on its tabs, and the
-              // language grid's subtitle sits inside LanguageSheet, directly
-              // above the grid it describes.
-              group: t('settings.groupBrand'),
-              icon: railIcon('language'),
-              render: ({ initialTab }) => (
-                <LanguageSheet
-                  embedded
-                  initialTab={initialTab === 'language' ? 'language' : 'dateTime'}
-                  onClose={() => setShowSettings(false)}
-                  dateOrder={userSettings.dateOrder}
-                  onDateOrderChange={(order) => mutateSettings((prev) => ({ ...prev, dateOrder: order }))}
-                  clock={userSettings.clock}
-                  onClockChange={(clock) => mutateSettings((prev) => ({ ...prev, clock }))}
+              // The two app-wide image switches. Under Storage on purpose:
+              // the Storage tab is where a full quota bar is stared at, and
+              // it links here. Spec: ops/docs/plans/image-quality-handoff.md (section 9)
+              id: 'images',
+              label: t('settings.imagesLabel'),
+              group: t('settings.groupAccount'),
+              icon: railIcon('images'),
+              render: () => (
+                <ImagesSheet
+                  spaceSaver={userSettings.imageSpaceSaver}
+                  stripMetadata={userSettings.imageStripMetadata}
+                  contactCeiling={userSettings.imageContactCeiling}
+                  onChange={(field, value) => mutateSettings((prev) => ({ ...prev, [field]: value }))}
                 />
               ),
             },
@@ -471,6 +489,15 @@ export function buildSettingsCategories({
               group: t('settings.groupBrand'),
               icon: railIcon('help'),
               href: siteHref(helpPath(activeLocale())),
+            },
+            {
+              id: 'language',
+              label: t('settings.languageLabel'),
+              // No shell description: the language grid's subtitle sits
+              // inside LanguageSheet, directly above the grid it describes.
+              group: t('settings.groupBrand'),
+              icon: railIcon('language'),
+              render: () => <LanguageSheet embedded onClose={() => setShowSettings(false)} />,
             },
           ] satisfies SettingsCategory[];
 }

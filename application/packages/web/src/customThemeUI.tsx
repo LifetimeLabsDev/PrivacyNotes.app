@@ -1,19 +1,23 @@
+import { toggleQuickTheme } from './quickThemes';
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { parseThemeCode, resolveTheme, serializeThemeCode, themePasses, type CustomTheme } from './themeCode';
-import { deleteCustomTheme, liveCustomThemes, newCustomThemeId, saveCustomTheme, type CustomThemes } from './customThemes';
+import { parseThemeCode, resolveTheme, serializeThemeCode, themePasses, withoutAuthor, type CustomTheme } from './themeCode';
+import { canSaveCustomTheme, CUSTOM_THEME_MAX, deleteCustomTheme, liveCustomThemes, newCustomThemeId, saveCustomTheme, type CustomThemes } from './customThemes';
 import { TEAM_THEMES } from './teamThemes';
+import { COMMUNITY_THEMES } from './communityThemes';
+import { COMMUNITY_SHOWN_PER_MODE } from './communityShown';
 import { customChoice, isFreeTheme, peekThemeMode, previewCustomTheme, type ColorTheme, type CustomSnapshot, type Theme, type ThemeChoice } from './theme';
 import { BUILTIN_THEME_CODES } from './builtinThemeCodes';
 import type { ContextMenuItem } from './ContextMenu';
 import type { ThemeBuilderTarget } from './notesView/useThemeBuilder';
 import { ConfirmModal } from './ConfirmModal';
-import { CardMenuButton, ProCorner } from './ThemeCardMenuButton';
+import { CardMenuButton, CommunityCorner, ProCorner, QuickCorner, QuickStarButton } from './ThemeCardMenuButton';
 import { IconUpgrade } from './UpgradeModal';
 import { Copy, PencilSimple, Trash } from './icons';
+import { HoverLabel } from './HoverLabel';
 
 /**
- * The team and custom theme UI of Settings > Appearance > Themes and of
+ * The team and custom theme UI of Settings > Design and of
  * the footer popover: the extra cards of each gallery with their menus, and
  * the Paste theme code field. A lazy chunk, with the theme code module in it,
  * so none of it is on the boot path: the built-in cards show first and these
@@ -25,22 +29,54 @@ export interface CustomThemeEntry {
   id: string;
   theme: CustomTheme;
   snapshot: CustomSnapshot;
-  /** One of the team's themes; absent on a theme of your own. */
+  /** A theme the app ships (the team's or the community's), which a person
+   *  copies but never edits or deletes; absent on a theme of your own. */
   team?: boolean;
+  /** One of the community themes, credited by its code's `by=`. */
+  community?: boolean;
+  /** A community theme's day of adding (YYYY-MM-DD). */
+  added?: string;
 }
+
+
+
+/** Who made a theme, for the gallery's Made by filter. */
+export type MadeBy = 'all' | 'community' | 'team' | 'yours';
 
 /** What a slot paints for a theme: its resolved colors, under its id. */
 export function snapshotOf(id: string, theme: CustomTheme): CustomSnapshot {
   const resolved = resolveTheme(theme);
-  return { id, code: serializeThemeCode(theme), mode: resolved.mode, colors: { ...resolved.colors } };
+  const colors: Record<string, string> = { ...resolved.colors, label: resolved.label, paper: resolved.paper };
+  return { id, code: serializeThemeCode(theme), mode: resolved.mode, colors, ...(theme.logo ? { logo: theme.logo } : {}) };
 }
 
-/** The team's themes, in the order of their list. */
+/** The themes the app ships: the team's, then the community's, each in the
+ *  order of its list. A build takes in every community theme added before it;
+ *  /themes may list newer ones. An entry is never removed: a slot that names
+ *  a theme this version does not list goes back to Default (reconcileCustomSlots). */
 export function teamThemeEntries(): CustomThemeEntry[] {
-  return TEAM_THEMES.flatMap(({ id, code }) => {
-    const theme = parseThemeCode(code);
-    return theme ? [{ id, theme, snapshot: snapshotOf(id, theme), team: true }] : [];
-  });
+  const read = (list: { id: string; code: string; added?: string }[], community: boolean) =>
+    list.flatMap(({ id, code, added }) => {
+      const theme = parseThemeCode(code);
+      return theme ? [{ id, theme, snapshot: snapshotOf(id, theme), team: true, ...(community ? { community, added } : {}) }] : [];
+    });
+  // Community themes newest first.
+  const community = [...COMMUNITY_THEMES].sort((a, b) => b.added.localeCompare(a.added));
+  return [...read(TEAM_THEMES, false), ...read(community, true)];
+}
+
+/** The name of a custom, team or community theme, by its id. */
+export function themeNameOf(id: string, themes: CustomThemes): string | null {
+  const entry = [...customThemeEntries(themes), ...teamThemeEntries()].find((e) => e.id === id);
+  return entry?.theme.name ?? null;
+}
+
+/** Whether a gallery entry passes the Made by filter. */
+export function madeByShows(entry: CustomThemeEntry, filter: MadeBy): boolean {
+  if (filter === 'all') return true;
+  if (filter === 'yours') return !entry.team;
+  if (filter === 'community') return !!entry.community;
+  return !!entry.team && !entry.community;
 }
 
 /** The listed themes this version can paint, sorted by name. */
@@ -71,19 +107,38 @@ export interface ThemeGalleryCtx {
   onCopied: (name: string) => void;
   setColorTheme: (mode: Theme, choice: ThemeChoice) => void;
   openUpgrade: () => void;
+  /** The themes marked for the Design quick menu, and the menu row's action. */
+  quickMarks: Record<Theme, ThemeChoice[]>;
+  /** The card's star: add the theme to the quick menu or take it out. */
+  star: (mode: Theme, choice: ThemeChoice) => void;
   /** Embedded pane only. */
   onChange?: (update: (prev: CustomThemes) => CustomThemes) => void;
   openBuilder?: (target: ThemeBuilderTarget) => void;
 }
 
 /** The team's themes and your own of one mode, as gallery cards. */
-export function ExtraThemeCards({ mode, compact, ctx }: { mode: Theme; compact: boolean; ctx: ThemeGalleryCtx }) {
+export function ExtraThemeCards({ mode, compact, ctx, madeBy = 'all', only }: {
+  mode: Theme;
+  compact: boolean;
+  ctx: ThemeGalleryCtx;
+  madeBy?: MadeBy;
+  /** One theme by id, for the quick menu; it draws nothing when the theme is gone. */
+  only?: string;
+}) {
   const { t } = useTranslation('settings');
   const team = useMemo(() => teamThemeEntries(), []);
   const own = useMemo(() => customThemeEntries(ctx.customThemes), [ctx.customThemes]);
   const [deleting, setDeleting] = useState<CustomThemeEntry | null>(null);
   const active = mode === 'dark' ? ctx.darkTheme : ctx.lightTheme;
-  const entries = [...team, ...own].filter((e) => e.snapshot.mode === mode);
+  // The newest community themes of this mode, plus the one this slot shows.
+  let communityShown = 0;
+  const entries = [...team, ...own].filter((e) => {
+    if (only !== undefined) return e.id === only;
+    if (e.snapshot.mode !== mode || !madeByShows(e, madeBy)) return false;
+    if (!e.community || active === customChoice(e.id)) return true;
+    communityShown += 1;
+    return communityShown <= COMMUNITY_SHOWN_PER_MODE;
+  });
 
   function copyCode(entry: CustomThemeEntry) {
     void navigator.clipboard?.writeText(entry.snapshot.code).then(() => ctx.onCopied(entry.theme.name));
@@ -102,7 +157,11 @@ export function ExtraThemeCards({ mode, compact, ctx }: { mode: Theme; compact: 
       ctx.openMenu(e, copyItems);
       return;
     }
+    const credit: ContextMenuItem[] = entry.theme.author
+      ? [{ type: 'header', label: t('appearance.custom.madeBy', { author: entry.theme.author }), keepCase: true }]
+      : [];
     ctx.openMenu(e, [
+      ...credit,
       {
         label: t('common:actions.edit'),
         icon: <PencilSimple size={14} />,
@@ -116,6 +175,7 @@ export function ExtraThemeCards({ mode, compact, ctx }: { mode: Theme; compact: 
 
   function remove(entry: CustomThemeEntry) {
     ctx.onChange?.((prev) => deleteCustomTheme(prev, entry.id));
+    if (ctx.quickMarks[mode].includes(customChoice(entry.id))) toggleQuickTheme(mode, customChoice(entry.id));
     if (active === customChoice(entry.id)) ctx.setColorTheme(mode, 'default');
   }
 
@@ -128,6 +188,8 @@ export function ExtraThemeCards({ mode, compact, ctx }: { mode: Theme; compact: 
           active={active === customChoice(entry.id)}
           compact={compact}
           locked={!ctx.isPro}
+          marked={!compact && ctx.quickMarks[mode].includes(customChoice(entry.id))}
+          onStar={!compact && ctx.openBuilder ? () => ctx.star(mode, customChoice(entry.id)) : undefined}
           onPick={() => ctx.pick(mode, customChoice(entry.id), entry.snapshot)}
           onMenu={!compact && ctx.openBuilder ? (e) => openMenu(e, entry) : undefined}
         />
@@ -149,13 +211,16 @@ export function ExtraThemeCards({ mode, compact, ctx }: { mode: Theme; compact: 
 
 /**
  * The card of a team theme or of a theme a person made: the same three
- * stripes as a built-in card, the name, and on your own a "yours" label.
+ * stripes as a built-in card and the name. A theme whose code credits its
+ * author carries a people mark on the swatch and names the author on hover.
  */
 function CustomThemeCard({
   entry,
   active,
   compact,
   locked,
+  marked,
+  onStar,
   onPick,
   onMenu,
 }: {
@@ -164,13 +229,19 @@ function CustomThemeCard({
   compact: boolean;
   /** Pro badge, keyed off isPro like every other card. */
   locked: boolean;
+  /** Shown in the Design quick menu. */
+  marked: boolean;
+  /** The star quick action, in Settings > Design. */
+  onStar?: () => void;
   onPick: () => void;
   onMenu?: (e: MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { t } = useTranslation('settings');
   const c = entry.snapshot.colors;
+  const author = entry.theme.author;
   return (
-    <div className="relative min-w-0">
+    <div className="group/card relative min-w-0">
+      <HoverLabel label={author ? t('appearance.custom.madeBy', { author }) : ''} disabled={!author} position="below">
       <button
         type="button"
         onClick={onPick}
@@ -184,16 +255,15 @@ function CustomThemeCard({
           <span className="flex-1" style={{ backgroundColor: c.accent }} />
           <span className="flex-1" style={{ backgroundColor: c.text }} />
           {locked && <ProCorner />}
+          {author && <CommunityCorner />}
+          {marked && !onStar && <QuickCorner />}
         </span>
         <span className={`${compact ? 'text-[10px]' : 'text-[11px]'} font-medium text-pn-muted flex items-center gap-1 max-w-full`}>
           <span className="line-clamp-2 text-center break-words" dir="auto">{entry.theme.name}</span>
-          {!compact && !entry.team && (
-            <span className="shrink-0 rounded-full bg-pn/10 px-1.5 text-[10px] leading-4 text-pn-soft">
-              {t('appearance.custom.yours')}
-            </span>
-          )}
         </span>
       </button>
+      </HoverLabel>
+      {onStar && <QuickStarButton name={entry.theme.name} marked={marked} onToggle={onStar} />}
       {onMenu && <CardMenuButton name={entry.theme.name} onClick={onMenu} />}
     </div>
   );
@@ -218,6 +288,7 @@ function builtinOf(code: string): { mode: Theme; choice: ColorTheme } | null {
 export function ThemePasteField({ ctx, onClose }: { ctx: ThemeGalleryCtx; onClose: () => void }) {
   const { t } = useTranslation('settings');
   const [text, setText] = useState('');
+  const [full, setFull] = useState(false);
   const idRef = useRef(newCustomThemeId());
   const shown = useRef<CustomSnapshot | null>(null);
   const theme = text.trim() ? parseThemeCode(text) : null;
@@ -263,9 +334,17 @@ export function ThemePasteField({ ctx, onClose }: { ctx: ThemeGalleryCtx; onClos
       onClose();
       return;
     }
+    // The colors decide, not the credit: a shipped theme pasted without its
+    // `by=` (or with another one) is still that theme, credit included.
+    const colorsOf = (th: CustomTheme) => serializeThemeCode(withoutAuthor(th));
     const existing = [...teamThemeEntries(), ...customThemeEntries(ctx.customThemes)].find(
-      (e) => e.snapshot.code === entry.snapshot.code,
+      (e) => colorsOf(e.theme) === colorsOf(entry.theme),
     );
+    if (!existing && !canSaveCustomTheme(ctx.customThemes, entry.id)) {
+      shown.current = painted;
+      setFull(true);
+      return;
+    }
     const target = existing ?? entry;
     if (!existing) ctx.onChange?.((prev) => saveCustomTheme(prev, entry.id, entry.snapshot.code));
     ctx.pick(target.snapshot.mode, customChoice(target.id), target.snapshot);
@@ -291,6 +370,7 @@ export function ThemePasteField({ ctx, onClose }: { ctx: ThemeGalleryCtx; onClos
         className="mt-1 w-full rounded-md border border-divider bg-surface-2 px-2 py-1.5 font-mono text-xs text-pn placeholder:text-pn-muted"
       />
       {text.trim() && !theme && <p className="mt-2 text-xs text-danger">{t('appearance.custom.pasteInvalid')}</p>}
+      {full && <p className="mt-2 text-xs text-danger" role="alert">{t('appearance.custom.themeLimit', { max: CUSTOM_THEME_MAX })}</p>}
       {entry && passes && (
         <p className="mt-2 text-xs text-pn-soft">
           {t(entry.snapshot.mode === 'dark' ? 'appearance.custom.pasteDark' : 'appearance.custom.pasteLight', {

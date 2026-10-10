@@ -80,6 +80,13 @@
     "clearFilters": "Filtreleri temizle",
     "filteredAfter": "ve hepsini görün."
   },
+  "listGroups": {
+    "previous7Days": "Son 7 gün",
+    "previous30Days": "Son 30 gün",
+    "other": "Diğer",
+    "collapseAll": "Tüm grupları daralt",
+    "expandAll": "Tüm grupları genişlet"
+  },
   "headerLabel": {
     "allItems": "Tümü",
     "untagged": "Etiketsiz",
@@ -145,7 +152,7 @@
     "exitHover": "Zen modundan çık (Esc)",
     "enterHover": "Zen moduna gir",
     "proHover": "Zen modu (Pro)",
-    "enterAriaShortcut": "Zen moduna gir (⌘⇧F)"
+    "enterAriaShortcut": "Zen moduna gir ({{keys}})"
   },
   "editor": {
     "backToList": "Not listesine dön",
@@ -227,10 +234,10 @@
   },
   "settings": {
     "groupYourNotes": "Notlarınız",
+    "groupPreferences": "Tercihler",
     "groupAccount": "Hesap ve veriler",
     "groupBrand": "PrivacyNotes",
     "statsLabel": "İstatistikler",
-    "journalsLabel": "Günlükler",
     "importLabel": "İçe ve dışa aktarma",
     "planLabel": "Hesap",
     "storageLabel": "Depolama",
@@ -238,9 +245,13 @@
     "securityLabel": "Güvenlik",
     "accountLabel": "Kimlik ve eşitleme",
     "appearanceLabel": "Görünüm",
+    "editorLabel": "Düzenleyici",
+    "formatBarLabel": "Araç çubuğu",
+    "listsLabel": "Listeler",
     "helpLabel": "Yardım",
     "aboutLabel": "Hakkında",
-    "languageLabel": "Tarih ve dil",
+    "languageLabel": "Dil",
+    "dateLabel": "Tarih",
     "languageDesc": "PrivacyNotes'un gösterileceği dili seçin."
   },
   "importStore": {

@@ -10,7 +10,7 @@ import { HoverLabel } from '../HoverLabel';
 import { SyncStatus } from '../SyncStatus';
 import { IconUpgrade } from '../UpgradeModal';
 import { hotkeyKeys, hotkeyLabel, isMacPlatform } from '../notesViewUtils';
-import { DESKTOP_APP } from '../shortcutMatch';
+import { DESKTOP_APP, keyText } from '../shortcutMatch';
 import { intlLocale } from '../languages';
 
 // Desktop wrapper only (not web, not iOS/Android): the mini footer's lifted
@@ -163,7 +163,7 @@ export function FullFooter({
                   if (!zenUnlocked) { setShowUpgrade({ trigger: 'zen' }); return; }
                   setZenMode((z) => !z);
                 }}
-                aria-label={zenMode ? t('zen.exitHover') : t('zen.enterAriaShortcut')}
+                aria-label={zenMode ? t('zen.exitHover') : t('zen.enterAriaShortcut', { keys: keyText('zen') })}
                 aria-pressed={zenMode}
                 className={`rounded-md inline-flex items-center gap-1.5 px-2 py-1 font-medium transition ${
                   zenMode

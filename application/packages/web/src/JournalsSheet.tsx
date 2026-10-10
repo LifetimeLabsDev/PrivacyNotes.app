@@ -8,9 +8,10 @@ import {
   type JournalTitleFormat,
 } from './notesViewUtils';
 import { formatPattern, PATTERN_TOKENS, type PatternResult } from './intlFormat';
-import { SectionEyebrow, SETTINGS_HELP } from './settingsUI';
+import { RowTitle, SETTINGS_HELP, SETTINGS_ROW } from './settingsUI';
+import { Notebook, Textbox } from './icons';
 
-type Props = {
+export type JournalTitlesProps = {
   /** Date shape new entries are titled with, and its setter. */
   format: JournalTitleFormat;
   onFormatChange: (format: JournalTitleFormat) => void;
@@ -23,7 +24,9 @@ type Props = {
 };
 
 /**
- * Journals settings pane: how new entries are titled.
+ * The "Journal entry titles" section of Settings > Date: how new entries
+ * are titled. The spelled-out shapes and the digits follow the Date format
+ * above it, so the section only chooses a shape, never an order.
  *
  * Every option renders today's date in its own shape, with the suffix
  * applied live, so the picker IS the preview and no shape needs a
@@ -43,7 +46,10 @@ type Props = {
  * GitHub #200. Spec: ops/docs/ui-patterns.md section 36 (settings standard),
  * ops/docs/plans/dates.md (section 3.5)
  */
-export function JournalsSheet({ format, onFormatChange, suffix, onSuffixChange, pattern, onPatternChange }: Props) {
+/** The select's value for the custom pattern, which no preset uses. */
+const CUSTOM = 'custom';
+
+export function JournalTitles({ format, onFormatChange, suffix, onSuffixChange, pattern, onPatternChange }: JournalTitlesProps) {
   const { t } = useTranslation('settings');
   const locale = activeLocale();
   const today = new Date();
@@ -52,12 +58,6 @@ export function JournalsSheet({ format, onFormatChange, suffix, onSuffixChange, 
   const fieldRef = useRef<HTMLInputElement>(null);
   const result: PatternResult | null = pattern.trim() ? formatPattern(today, pattern, locale) : null;
 
-  const rowClass = (active: boolean) =>
-    `rounded-lg border px-3 py-2 text-start text-sm transition ${
-      active
-        ? 'border-accent ring-1 ring-accent/30 text-pn'
-        : 'border-divider text-pn-soft hover:border-pn-muted hover:text-pn'
-    }`;
 
   function pickPreset(f: JournalTitleFormat) {
     onFormatChange(f);
@@ -87,24 +87,28 @@ export function JournalsSheet({ format, onFormatChange, suffix, onSuffixChange, 
   }
 
   return (
-    <div className="flex-1 min-h-0 overflow-y-auto text-pn">
-      {/* No section header on the formats: the pane's own subtitle ("How new
-          entries are titled") already says it, and an eyebrow repeating it
-          reads as filler. The rows speak for themselves. */}
-      <div className="px-6 pt-2 pb-4">
-        <div className="flex flex-col gap-1.5">
-          {JOURNAL_TITLE_FORMATS.map((f) => (
-            <button key={f} onClick={() => pickPreset(f)} aria-pressed={!customOpen && format === f} className={rowClass(!customOpen && format === f)}>
-              {journalTitle(today, f, suffix, locale)}
-            </button>
-          ))}
-          <button onClick={() => setCustomOpen(true)} aria-pressed={customOpen} className={rowClass(customOpen)}>
-            {t('journals.customPattern')}
-            {result && 'text' in result && <span className="ms-2 text-pn-muted">{result.text}</span>}
-          </button>
+    <>
+      <div data-setting="journals.titles" className={SETTINGS_ROW}>
+        <div className="min-w-0">
+          <RowTitle icon={Notebook}>{t('journals.titlesTitle')}</RowTitle>
+          <p className={`${SETTINGS_HELP} mt-0.5`}>{t('journals.titlesDesc')}</p>
         </div>
-        {customOpen && (
-          <div className="mt-3">
+        {/* Each option is today's date in that shape, so the shapes need no
+            names; the preview above adds the suffix. */}
+        <select
+          value={customOpen ? CUSTOM : format}
+          onChange={(e) => (e.target.value === CUSTOM ? setCustomOpen(true) : pickPreset(e.target.value as JournalTitleFormat))}
+          aria-label={t('journals.titlesTitle')}
+          className="rounded-md bg-track border border-divider px-2.5 py-1.5 text-sm text-pn focus:border-accent focus:outline-none"
+        >
+          {JOURNAL_TITLE_FORMATS.map((f) => (
+            <option key={f} value={f}>{journalTitle(today, f, '', locale)}</option>
+          ))}
+          <option value={CUSTOM}>{t('journals.customPattern')}</option>
+        </select>
+      </div>
+      {customOpen && (
+          <div className="pb-3">
             <p className={`${SETTINGS_HELP} mb-2`}>{t('journals.customPatternHelp')}</p>
             <input
               ref={fieldRef}
@@ -142,23 +146,23 @@ export function JournalsSheet({ format, onFormatChange, suffix, onSuffixChange, 
             </div>
           </div>
         )}
-      </div>
 
       {!patternActive && (
-        <div className="px-6 pb-4">
-          <SectionEyebrow setting="journals.suffix" className="mb-0.5">{t('journals.suffixTitle')}</SectionEyebrow>
-          <p className={`${SETTINGS_HELP} mb-2`}>{t('journals.suffixDesc')}</p>
+        <div data-setting="journals.suffix" className={SETTINGS_ROW}>
+          <div className="min-w-0">
+            <RowTitle icon={Textbox}>{t('journals.suffixTitle')}</RowTitle>
+            <p className={`${SETTINGS_HELP} mt-0.5`}>{t('journals.suffixDesc')}</p>
+          </div>
           <input
             type="text"
             value={suffix}
             maxLength={JOURNAL_SUFFIX_MAX}
             onChange={(e) => onSuffixChange(e.target.value)}
             placeholder={t('journals.suffixPlaceholder')}
-            className="w-full rounded-md bg-track border border-divider px-3 py-1.5 text-sm text-pn placeholder:text-pn-muted focus:border-accent focus:outline-none"
+            className="w-full lg:w-48 rounded-md bg-track border border-divider px-3 py-1.5 text-sm text-pn placeholder:text-pn-muted focus:border-accent focus:outline-none"
           />
         </div>
       )}
-      <p className={`${SETTINGS_HELP} px-6 pb-4`}>{t('journals.applyNote')}</p>
-    </div>
+    </>
   );
 }

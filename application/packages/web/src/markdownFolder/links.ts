@@ -3,7 +3,10 @@
  *
  * One rule per syntax, and no guessing between files:
  *   - `[[path/name]]` names a path from the TOP of the folder. The extension
- *     is optional, so `[[sub/bar]]` finds `sub/bar.md`.
+ *     is optional, so `[[sub/bar]]` finds `sub/bar.md`. A bare `[[name]]`
+ *     with no file of that name at the top opens the ONE file of that name
+ *     anywhere in the folder, which is how an Obsidian vault writes links;
+ *     two such files and it opens neither.
  *   - `[text](path.md)` is relative to the file that holds it, which is what
  *     every Markdown renderer does with it, GitHub included.
  * Two files called `bar.md` in different folders therefore never compete: the
@@ -76,7 +79,12 @@ function withExtensions(path: string): string[] {
  */
 export function resolveNoteLinkPath(relPaths: readonly string[], target: string): string | null {
   const path = normalize(target.split('#')[0]!.trim());
-  return path ? findIn(relPaths, withExtensions(path)) : null;
+  if (!path) return null;
+  const top = findIn(relPaths, withExtensions(path));
+  if (top || path.includes('/')) return top;
+  const names = new Set(withExtensions(path).map((n) => n.toLowerCase()));
+  const anywhere = relPaths.filter((p) => names.has(p.slice(p.lastIndexOf('/') + 1).toLowerCase()));
+  return anywhere.length === 1 ? anywhere[0]! : null;
 }
 
 /**

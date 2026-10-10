@@ -39,7 +39,9 @@
     "dateTime": "Datum och tid",
     "footnote": "Fotnot",
     "spoiler": "Spoiler",
-    "copyBox": "Kopieringsruta"
+    "copyBox": "Kopieringsruta",
+    "withHint": "{{label}} ({{hint}})",
+    "customize": "Anpassa formatfältet"
   },
   "align": {
     "left": "Vänsterjustera",
@@ -81,7 +83,16 @@
       "bug": "Bugg",
       "note": "Anteckning",
       "abstract": "Sammanfattning",
-      "failure": "Misslyckades"
+      "failure": "Misslyckades",
+      "fold": "Hopfällbar",
+      "idea": "Idé",
+      "important": "Viktigt",
+      "caution": "Försiktighet",
+      "todo": "Att göra",
+      "goal": "Mål",
+      "decision": "Beslut",
+      "definition": "Definition",
+      "seealso": "Se även"
     }
   },
   "color": {
@@ -100,6 +111,7 @@
     }
   },
   "insertGroup": {
+    "format": "Formatering",
     "insert": "Infoga",
     "blocks": "Block",
     "notation": "Notation"
@@ -145,6 +157,8 @@
     "hide": "Dölj översikt",
     "hideTitle": "Dölj översikt (Esc)",
     "copyHeadingLink": "Kopiera länk till rubriken",
+    "copyNoteLink": "Kopiera anteckningslänk",
+    "copyHeadingShortcut": "Kopiera genväg till rubriken",
     "copied": "Kopierad"
   },
   "bodyMenu": {
@@ -241,5 +255,47 @@
     "missing": "Fotnoten saknar text. Klicka för att lägga till den.",
     "ariaRef": "Fotnot {{n}}",
     "ariaSection": "Fotnoter"
+  },
+  "formatBar": {
+    "tryIt": "Prova: ordna fältet här och känn efter hur det fungerar.",
+    "previewOnly": "Bara en förhandsvisning. Din layout sparas så fort du har Pro.",
+    "discard": "Kasta",
+    "keepLayout": "Behåll den här layouten",
+    "hintDrag": "Dra för att flytta, klicka för alternativ.",
+    "hintTap": "Tryck på en knapp för att se dess alternativ.",
+    "onBar": "I fältet",
+    "inMenu": "I +-menyn",
+    "menuEmpty": "Menyn är tom, så +-knappen visas inte.",
+    "hidden": "Dolda",
+    "hiddenNote": "De fungerar fortfarande med kortkommando och Markdown.",
+    "hiddenDrop": "Släpp en knapp här för att dölja den.",
+    "hiddenEmpty": "Inget är dolt.",
+    "alwaysVisible": "Alltid synliga",
+    "pinned": "Öppnar en panel, så den stannar i fältet eller döljs",
+    "optionsFor": "Alternativ för {{item}}",
+    "moveUp": "Flytta upp",
+    "moveDown": "Flytta ner",
+    "moveLeft": "Flytta åt vänster",
+    "moveRight": "Flytta åt höger",
+    "home": {
+      "bar": "I fältet",
+      "menu": "I +-menyn",
+      "hidden": "Dold"
+    },
+    "opensPanel": "öppnar en panel",
+    "showsRecording": "visar inspelningen",
+    "refuse": {
+      "menuNotAllowed": "{{item}} kan ligga i fältet eller vara dold, inte i +-menyn.",
+      "lastOnBar": "Behåll minst en knapp i fältet."
+    },
+    "items": {
+      "link": "Länk",
+      "notelink": "Anteckningslänk",
+      "audio": "Inspelning"
+    },
+    "positionTitle": "Fältets placering",
+    "positionNote": "Välj var formatfältet sitter i redigeraren.",
+    "positionTop": "Överst",
+    "positionBottom": "Nederst"
   }
 }
