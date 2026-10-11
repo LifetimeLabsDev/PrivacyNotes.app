@@ -31,8 +31,13 @@ body:
 
   - type: textarea
     attributes:
+      label: Screenshot
+      description: Drag an image of the app in your theme here, so people can see it before they paste the code. Optional. We take our own screenshot for the theme gallery.
+
+  - type: textarea
+    attributes:
       label: Anything we should know
-      description: What the theme is for, what inspired it, or a screenshot. Optional.
+      description: What the theme is for, or what inspired it. Optional.
 
   - type: checkboxes
     attributes:
