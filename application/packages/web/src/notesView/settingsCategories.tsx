@@ -11,7 +11,7 @@ import type { ImportTarget } from '../import/destination';
 import type { ImageStore } from '../imageStore';
 import type { AppearancePane } from '../AppearanceSheet';
 import { exemptOpts } from '../i18nExempt';
-import { Calendar, ChartBar, CreditCard, Database, Image as ImageIcon, Info, Question, Repeat, ListBullets, Palette, PencilLine, Shield, Toolbox, Translate, User, PILLAR_GLYPHS, type Icon } from '../icons';
+import { Calendar, ChartBar, CreditCard, Database, Image as ImageIcon, Info, Question, Repeat, ListBullets, Palette, PencilLine, Shield, Toolbox, Translate, User, type Icon } from '../icons';
 import { proUnlocked } from '../demo';
 import { activeLocale } from '../languages';
 import { helpPath } from '../localeRoutes';
@@ -44,6 +44,7 @@ const ImagesSheet = lazyModal(() => import('../ImagesSheet').then((m) => m.Image
 const LanguageSheet = lazyModal(() => import('../LanguageSheet').then((m) => m.LanguageSheet));
 const DateSheet = lazyModal(() => import('../LanguageSheet').then((m) => m.DateSheet));
 const CalendarSettings = lazyModal(() => import('../CalendarSettings').then((m) => m.CalendarSettings));
+const DateTimePane = lazyModal(() => import('../DateTimePane').then((m) => m.DateTimePane));
 
 type Authed = Extract<AuthState, { status: 'authenticated' }>;
 
@@ -62,7 +63,6 @@ export const SETTINGS_SECTION_ICONS: Record<SectionId, Icon> = {
   lists: ListBullets,
   language: Translate,
   date: Calendar,
-  calendar: PILLAR_GLYPHS.calendar,
   about: Info,
   help: Question,
 };
@@ -334,35 +334,34 @@ export function buildSettingsCategories({
               label: t('settings.dateLabel'),
               group: t('settings.groupPreferences'),
               icon: railIcon('date'),
-              render: () => (
-                <DateSheet
-                  journal={{
-                    format: userSettings.journalTitleFormat,
-                    onFormatChange: (f) => mutateSettings((prev) => ({ ...prev, journalTitleFormat: f })),
-                    suffix: userSettings.journalTitleSuffix,
-                    onSuffixChange: (sfx) => mutateSettings((prev) => ({ ...prev, journalTitleSuffix: sfx })),
-                    pattern: userSettings.journalTitlePattern,
-                    onPatternChange: (p) => mutateSettings((prev) => ({ ...prev, journalTitlePattern: p })),
-                  }}
-                  dateOrder={userSettings.dateOrder}
-                  onDateOrderChange={(order) => mutateSettings((prev) => ({ ...prev, dateOrder: order }))}
-                  clock={userSettings.clock}
-                  onClockChange={(clock) => mutateSettings((prev) => ({ ...prev, clock }))}
-                />
-              ),
-            },
-            {
-              id: 'calendar',
-              label: t('settings.calendarLabel'),
-              group: t('settings.groupPreferences'),
-              icon: railIcon('calendar'),
-              render: () => (
-                <CalendarSettings
-                  value={userSettings.calendar}
-                  onChange={(next) => mutateSettings((prev) => ({ ...prev, calendar: next }))}
-                  alertsUnlocked={proUnlocked(auth.isPro)}
-                  showPro={!auth.isPro}
-                  onUpgrade={() => setShowUpgrade({ trigger: 'alerts' })}
+              render: ({ initialTab }) => (
+                <DateTimePane
+                  initialTab={initialTab}
+                  format={
+                    <DateSheet
+                      journal={{
+                        format: userSettings.journalTitleFormat,
+                        onFormatChange: (f) => mutateSettings((prev) => ({ ...prev, journalTitleFormat: f })),
+                        suffix: userSettings.journalTitleSuffix,
+                        onSuffixChange: (sfx) => mutateSettings((prev) => ({ ...prev, journalTitleSuffix: sfx })),
+                        pattern: userSettings.journalTitlePattern,
+                        onPatternChange: (p) => mutateSettings((prev) => ({ ...prev, journalTitlePattern: p })),
+                      }}
+                      dateOrder={userSettings.dateOrder}
+                      onDateOrderChange={(order) => mutateSettings((prev) => ({ ...prev, dateOrder: order }))}
+                      clock={userSettings.clock}
+                      onClockChange={(clock) => mutateSettings((prev) => ({ ...prev, clock }))}
+                    />
+                  }
+                  calendar={
+                    <CalendarSettings
+                      value={userSettings.calendar}
+                      onChange={(next) => mutateSettings((prev) => ({ ...prev, calendar: next }))}
+                      alertsUnlocked={proUnlocked(auth.isPro)}
+                      showPro={!auth.isPro}
+                      onUpgrade={() => setShowUpgrade({ trigger: 'alerts' })}
+                    />
+                  }
                 />
               ),
             },

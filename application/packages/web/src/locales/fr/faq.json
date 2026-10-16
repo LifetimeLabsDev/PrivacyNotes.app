@@ -858,7 +858,7 @@
     "date-format": {
       "q": "Puis-je changer le format des dates ?",
       "a": [
-        "Oui, dans Paramètres > Date. **Format de date** propose Automatique, Jour en premier, Mois en premier et Année en premier (ISO), et **Format de l'heure** propose Automatique, 24 heures et 12 heures. Automatique suit la langue de l'app et la région de chaque appareil, et ton choix s'applique sur tous tes appareils.",
+        "Oui, dans Paramètres > Date et heure. **Format de date** propose Automatique, Jour en premier, Mois en premier et Année en premier (ISO), et **Format de l'heure** propose Automatique, 24 heures et 12 heures. Automatique suit la langue de l'app et la région de chaque appareil, et ton choix s'applique sur tous tes appareils.",
         "Les entrées de journal prennent leur titre de la date, et **Titres du journal**, au même endroit, propose des formats tout prêts dans ton format de date, ou **Modèle personnalisé** pour construire le tien à partir de jetons comme `YYYY`, `MMMM` et `ddd`, les mots entre crochets restant tels que tu les tapes. Un nouveau modèle ne s'applique qu'aux nouvelles entrées. Pour insérer la date du jour dans n'importe quelle note, appuie sur Cmd+; sur Mac ou Ctrl+; sur Windows et Linux, et ajoute Maj pour avoir aussi l'heure. Tout cela est gratuit."
       ]
     },
@@ -908,7 +908,7 @@
       "q": "Les rappels du calendrier fonctionnent-ils quand l'app est fermée ?",
       "a": [
         "Sur un téléphone, oui : jusqu'à 64 alertes, jusqu'à 400 jours à l'avance, sont confiées au téléphone lui-même, elles sonnent donc même quand PrivacyNotes est fermé ; ouvrir et déverrouiller l'app en confie davantage. Dans l'app de bureau, un rappel sonne tant que l'app tourne, et dans un navigateur tant que PrivacyNotes est ouvert dans un onglet. Chaque appareil planifie ses rappels à partir des éléments qu'il contient, donc le serveur n'apprend jamais un titre, une heure ou un jour.",
-        "Ajoute une alerte depuis la ligne Alerte de la vue Planification d'un élément, jusqu'à cinq par élément, et règle les valeurs par défaut dans Paramètres > Calendrier, où se trouve aussi \"Afficher les titres dans les rappels\". Un élément protégé par ton PIN sonne toujours comme \"Rappel\" avec l'heure, tout comme chaque alerte planifiée pendant que le verrouillage de l'app est activé. Une alerte confiée avant l'activation du verrouillage peut garder son titre jusqu'à ce qu'elle sonne. Les rappels font partie de Pro ; le calendrier lui-même est gratuit."
+        "Ajoute une alerte depuis la ligne Alerte de la vue Planification d'un élément, jusqu'à cinq par élément, et règle les valeurs par défaut dans Paramètres > Date et heure > Calendrier, où se trouve aussi \"Afficher les titres dans les rappels\". Un élément protégé par ton PIN sonne toujours comme \"Rappel\" avec l'heure, tout comme chaque alerte planifiée pendant que le verrouillage de l'app est activé. Une alerte confiée avant l'activation du verrouillage peut garder son titre jusqu'à ce qu'elle sonne. Les rappels font partie de Pro ; le calendrier lui-même est gratuit."
       ]
     },
     "calendar-time-zones": {

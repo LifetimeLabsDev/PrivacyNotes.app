@@ -275,7 +275,8 @@
     "helpLabel": "Справка",
     "aboutLabel": "О приложении",
     "languageLabel": "Язык",
-    "dateLabel": "Дата",
+    "dateLabel": "Дата и время",
+    "dateTabFormat": "Формат",
     "languageDesc": "Выберите язык интерфейса PrivacyNotes.",
     "calendarLabel": "Календарь"
   },

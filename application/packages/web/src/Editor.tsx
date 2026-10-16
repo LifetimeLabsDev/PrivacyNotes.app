@@ -921,7 +921,6 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     barFocusTick,
     outlineOpen,
     setOutlineOpen,
-    setOutlineReserve,
     setPillsEl,
     findSeed,
     openFindWith,
@@ -931,7 +930,7 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
     toggleReplace,
     swapBar,
     swapTerm,
-  } = useEditorPanels({ rootRef, editorRef, editor, isMobile, readOnly, preview, toolbarVisible, isPro, onOpenUpgrade });
+  } = useEditorPanels({ rootRef, editorRef, editor, readOnly, preview, toolbarVisible, isPro, onOpenUpgrade });
 
   /**
    * Put a new empty line above everything else in the note and the caret on
@@ -1224,7 +1223,6 @@ const EditorInner = forwardRef<EditorHandle, Props & { cachedDoc?: JSONContent }
                 setOutlineOpen(v);
                 if (v) setBar('none');
               }}
-              onReserve={setOutlineReserve}
             />
           </div>
         </div>

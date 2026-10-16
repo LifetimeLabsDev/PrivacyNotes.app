@@ -2,11 +2,11 @@ import i18n from './i18n';
 import type { Editor as TipTapEditor } from '@tiptap/react';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 import { createLowlight, common } from 'lowlight';
-import { Extension, type NodeViewRendererProps } from '@tiptap/core';
+import { Extension, textblockTypeInputRule, type NodeViewRendererProps } from '@tiptap/core';
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { Plugin, PluginKey, TextSelection } from '@tiptap/pm/state';
 import { getCodeWrap, setCodeWrap, subscribeCodeWrap } from './codeWrap';
-import { codeLanguageLabel, openCodeLanguageMenu } from './codeLanguages';
+import { codeLanguageLabel, lastCodeLanguage, openCodeLanguageMenu, rememberCodeLanguage } from './codeLanguages';
 import { TIP_PILL, positionClasses } from './HoverLabel';
 
 /**
@@ -129,6 +129,12 @@ const FOLD_SHOWN_LINES = 20;
 const unfolders = new WeakMap<Node, () => void>();
 
 export const CodeBlockWithCopy = CodeBlockLowlight.extend({
+  // A fence typed without a language takes the last one picked on this device.
+  addInputRules() {
+    return [/^```([a-z]+)?[\s\n]$/, /^~~~([a-z]+)?[\s\n]$/].map((find) => textblockTypeInputRule({
+      find, type: this.type, getAttributes: (match) => ({ language: match[1] || lastCodeLanguage() }),
+    }));
+  },
   addKeyboardShortcuts() {
     return {
       ...this.parent?.(),
@@ -357,6 +363,7 @@ export const CodeBlockWithCopy = CodeBlockLowlight.extend({
           // re-highlights a block a step's from/to range covers, and an
           // attribute step has none, so the old colours stayed.
           editor.view.dispatch(editor.state.tr.setNodeMarkup(pos, undefined, { ...current.attrs, language }));
+          if (language !== COPY_BOX_LANGUAGE) rememberCodeLanguage(language);
           editor.view.focus();
         });
       });
@@ -476,8 +483,10 @@ export function toggleCodeBlockSmart(editor: TipTapEditor, language: string | nu
     return;
   }
 
-  // Toggle ON. A caret or a selection inside one textblock keeps the stock
+  // Toggle ON. A plain code block takes the last language picked on this
+  // device. A caret or a selection inside one textblock keeps the stock
   // command, which also makes a code block inside a list item.
+  language ??= lastCodeLanguage();
   if ($from.sameParent($to)) {
     editor.chain().focus().toggleCodeBlock(language ? { language } : undefined).run();
     return;

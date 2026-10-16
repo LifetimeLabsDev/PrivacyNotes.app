@@ -831,6 +831,7 @@
     "hoursBefore_other": "{{count}} saat önce",
     "daysBefore_other": "{{count}} gün önce",
     "weeksBefore_other": "{{count}} hafta önce",
+    "onDay": "O gün",
     "onDayAt": "O gün saat {{time}}",
     "daysBeforeAt_other": "{{count}} gün önce saat {{time}}",
     "custom": "Özel",

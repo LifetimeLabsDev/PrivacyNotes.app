@@ -858,7 +858,7 @@
     "date-format": {
       "q": "Puc canviar com es mostren les dates?",
       "a": [
-        "Sí, a Configuració > Data. **Format de data** ofereix Automàtic, Primer el dia, Primer el mes i Primer l'any (ISO), i **Format d'hora** ofereix Automàtic, 24 hores i 12 hores. Automàtic segueix la llengua de l'app i la regió de cada dispositiu, i la teva tria s'aplica a tots els teus dispositius.",
+        "Sí, a Configuració > Data i hora. **Format de data** ofereix Automàtic, Primer el dia, Primer el mes i Primer l'any (ISO), i **Format d'hora** ofereix Automàtic, 24 hores i 12 hores. Automàtic segueix la llengua de l'app i la regió de cada dispositiu, i la teva tria s'aplica a tots els teus dispositius.",
         "Les entrades de diari prenen el títol de la data, i **Títols del diari**, al mateix lloc, ofereix formats ja fets en el teu format de data, o **Patró personalitzat** per crear el teu amb tokens com `YYYY`, `MMMM` i `ddd`, i les paraules entre claudàtors es queden tal com les escrius. Un patró nou només s'aplica a les entrades noves. Per posar la data d'avui en qualsevol nota, prem Cmd+; en un Mac o Ctrl+; a Windows i Linux, i afegeix Maj per incloure-hi també l'hora. Tot és gratuït."
       ]
     },
@@ -908,7 +908,7 @@
       "q": "Els recordatoris del calendari funcionen quan l'app està tancada?",
       "a": [
         "En un telèfon, sí: fins a 64 avisos, fins a 400 dies vista, es lliuren al mateix telèfon, de manera que sonen encara que PrivacyNotes estigui tancat; obrir i desbloquejar l'app en lliura més. A l'app d'escriptori, un recordatori sona mentre l'app s'executa, i en un navegador, mentre PrivacyNotes està obert en una pestanya. Cada dispositiu planifica els seus recordatoris a partir dels elements que conté, de manera que el servidor no coneix mai cap títol, hora ni dia.",
-        "Afegeix un avís des de la fila Avís de la vista Programació d'un element, fins a cinc per element, i defineix els valors per defecte a Configuració > Calendari, on també hi ha \"Mostra els títols als recordatoris\". Un element protegit amb el teu PIN sempre sona com a \"Recordatori\" i l'hora, i també qualsevol avís programat mentre el bloqueig de l'app està activat. Un avís lliurat abans d'activar el bloqueig pot conservar el títol fins que soni. Els recordatoris formen part de Pro; el calendari en si és gratuït."
+        "Afegeix un avís des de la fila Avís de la vista Programació d'un element, fins a cinc per element, i defineix els valors per defecte a Configuració > Data i hora > Calendari, on també hi ha \"Mostra els títols als recordatoris\". Un element protegit amb el teu PIN sempre sona com a \"Recordatori\" i l'hora, i també qualsevol avís programat mentre el bloqueig de l'app està activat. Un avís lliurat abans d'activar el bloqueig pot conservar el títol fins que soni. Els recordatoris formen part de Pro; el calendari en si és gratuït."
       ]
     },
     "calendar-time-zones": {

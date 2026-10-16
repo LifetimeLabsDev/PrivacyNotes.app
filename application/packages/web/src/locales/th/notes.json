@@ -269,7 +269,8 @@
     "helpLabel": "ความช่วยเหลือ",
     "aboutLabel": "เกี่ยวกับ",
     "languageLabel": "ภาษา",
-    "dateLabel": "วันที่",
+    "dateLabel": "วันที่และเวลา",
+    "dateTabFormat": "รูปแบบ",
     "languageDesc": "เลือกภาษาที่ใช้แสดง PrivacyNotes",
     "calendarLabel": "ปฏิทิน"
   },

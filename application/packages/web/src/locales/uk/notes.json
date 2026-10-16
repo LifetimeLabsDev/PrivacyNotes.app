@@ -275,7 +275,8 @@
     "helpLabel": "Довідка",
     "aboutLabel": "Про застосунок",
     "languageLabel": "Мова",
-    "dateLabel": "Дата",
+    "dateLabel": "Дата й час",
+    "dateTabFormat": "Формат",
     "languageDesc": "Виберіть мову інтерфейсу PrivacyNotes.",
     "calendarLabel": "Календар"
   },

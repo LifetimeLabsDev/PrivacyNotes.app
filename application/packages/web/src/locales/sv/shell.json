@@ -831,6 +831,7 @@
     "hoursBefore_other": "{{count}} timmar före",
     "daysBefore_other": "{{count}} dagar före",
     "weeksBefore_other": "{{count}} veckor före",
+    "onDay": "Samma dag",
     "onDayAt": "Samma dag kl. {{time}}",
     "daysBeforeAt_other": "{{count}} dagar före kl. {{time}}",
     "custom": "Anpassad",

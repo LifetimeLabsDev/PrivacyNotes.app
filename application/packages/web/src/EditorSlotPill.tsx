@@ -1,5 +1,10 @@
 import type { ReactNode } from 'react';
 
+/** The collapsed pill's box in px: `w-8` plus its 1px border on each side,
+ *  and `h-8` plus the `mt-1` above it. Keep in step with the classes below. */
+export const SLOT_PILL_WIDTH = 34;
+export const SLOT_PILL_HEIGHT = 36;
+
 /**
  * A control in the editor's top-right slot, the strip that floats over the
  * note body under the toolbar: find, the text switch, invisible characters,

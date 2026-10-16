@@ -275,7 +275,8 @@
     "helpLabel": "Pomoc",
     "aboutLabel": "O aplikacji",
     "languageLabel": "Język",
-    "dateLabel": "Data",
+    "dateLabel": "Data i godzina",
+    "dateTabFormat": "Format",
     "languageDesc": "Wybierz język, w którym wyświetla się PrivacyNotes.",
     "calendarLabel": "Kalendarz"
   },

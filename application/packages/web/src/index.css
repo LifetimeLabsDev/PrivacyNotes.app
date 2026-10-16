@@ -236,9 +236,15 @@
     padding-top: 16px;
     /* A note whose first block has no line above it (an image, a table, a
        quote) holds the "Add a line at the top" zone in this gap, and its
-       label needs the extra room. Keep in step with h-8 in Editor.tsx. */
+       label needs the extra room. Keep in step with h-8 in Editor.tsx.
+       Such a block is a box that cannot wrap beside the closed pills, so
+       the gap also clears them and the spacer below drops to zero height:
+       the box keeps the full width. */
     .pn-top-line-pad & {
-      padding-top: 32px;
+      padding-top: max(32px, calc(var(--pn-pills-clear, 0px) + 8px));
+    }
+    .pn-top-line-pad &::before {
+      height: max(0px, calc(var(--pn-outline-fh, 0px) - var(--pn-pills-clear, 0px)));
     }
     /* CAUTION: this is NOT the visible body size. The utilities in
        Editor.tsx (text-[15px] + prose-p/li/blockquote:text-[15px]) pin
@@ -316,11 +322,11 @@
         var(--pn-tagrow-h, 0px) + var(--pn-editor-toolbar-h, 0px) + 12px
       );
     }
-    /* Outline reserve. Both the collapsed icon and the open panel are floated as
-       a top-right spacer (width x height) so content wraps beside them and the
-       column reclaims full width below, instead of clearing a full-height gutter.
-       The visible icon/panel sits in its own sticky slot and overlays this float
-       (Editor.tsx sets the two vars from the panel's measured footprint).
+    /* Outline reserve. The corner pills are floated as a top-right spacer
+       (width x height) so the first line wraps beside them. The open outline
+       panel reserves only that top row and overlays the note below it. The
+       visible pills and panel sit in their own sticky slot over this float
+       (useEditorPanels.ts sets the two vars from their measured footprint).
        Callout boxes need display:flow-root to respect this float - see the
        callout block below. */
     &::before {
@@ -671,10 +677,11 @@
     }
     /* A note that opens with a heading (or any block) starts flush at the
        top. The section gap above a heading only earns its keep when there
-       is content above it to separate from. Must come after the element
-       rules above - same specificity, later wins. */
-    & > :where(:first-child):not(:where([class~='not-prose'] *)) {
-      margin-top: 0;
+       is content above it to separate from. Important, because a block
+       with its own margin rule (a callout's node view) is more specific
+       than any selector this one could use. */
+    & > :first-child:not(:where([class~='not-prose'] *)) {
+      margin-top: 0 !important;
     }
     /* Per-block direction resolution for mixed-language notes: render-time
        only, nothing stored. Each block reads its own text and resolves LTR

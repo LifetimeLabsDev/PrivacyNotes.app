@@ -175,20 +175,12 @@ export function LanguageSheet({ embedded = false }: Props) {
  *  The preview is the only place a choice shows its result, so no option
  *  needs an example of its own. Spec: ops/docs/plans/dates.md (section 3.3) */
 export function DateSheet({ journal, ...props }: DateProps & { journal: JournalTitlesProps }) {
-  const { t } = useTranslation('settings');
   const now = new Date();
   const prefs = { order: props.dateOrder, clock: props.clock };
-  const today = `${formatInstantWith(prefs, now, 'date')} \u00b7 ${formatInstantWith(prefs, now, 'time')}`;
   return (
     <div className="flex-1 min-h-0 overflow-y-auto text-pn">
-      <div className="px-6 pt-4">
-        <div className="rounded-md bg-accent/10 px-3 py-2 text-sm text-accent-strong">
-          <p>{t('language.previewToday', { date: today })}</p>
-          <p>{t('language.previewJournal', { title: journalTitle(now, journal.format, journal.suffix, activeLocale(), journal.pattern) })}</p>
-        </div>
-      </div>
       <div className="px-6 pb-4 divide-y divide-divider">
-        <DateTimeSection {...props} />
+        <DateTimeSection {...props} today={formatInstantWith(prefs, now, 'date')} now={formatInstantWith(prefs, now, 'time')} />
         <JournalTitles {...journal} />
       </div>
     </div>
@@ -196,13 +188,11 @@ export function DateSheet({ journal, ...props }: DateProps & { journal: JournalT
 }
 
 /**
- * "Date format" and "Clock": synced, so the help line says the choice reaches
- * every device, while Automatic resolves on each one. Every row writes today
- * in its own shape, and a row that writes exactly what Automatic writes here
- * says so, which is the common case for a reader whose region already has
- * that order. Spec: ops/docs/plans/dates.md (section 3.3)
+ * "Date format" and "Clock": synced, while Automatic resolves on each device.
+ * Each row's help line writes today, or now, in the shape the row picks.
+ * Spec: ops/docs/plans/dates.md (section 3.3)
  */
-function DateTimeSection({ dateOrder, onDateOrderChange, clock, onClockChange }: DateProps) {
+function DateTimeSection({ dateOrder, onDateOrderChange, clock, onClockChange, today, now }: DateProps & { today: string; now: string }) {
   const { t } = useTranslation('settings');
   const orders: Array<{ value: DateOrder; label: string }> = [
     { value: 'auto', label: t('language.automatic') },
@@ -220,7 +210,7 @@ function DateTimeSection({ dateOrder, onDateOrderChange, clock, onClockChange }:
       <div data-setting="language.dateFormat" className={SETTINGS_ROW}>
         <div className="min-w-0">
           <RowTitle icon={CalendarBlank}>{t('language.dateFormat')}</RowTitle>
-          <p className={`${SETTINGS_HELP} mt-0.5`}>{t('language.dateTimeHelp')}</p>
+          <p className={`${SETTINGS_HELP} mt-0.5`}>{t('language.exampleDate', { date: today })}</p>
         </div>
         <div className={SETTINGS_TRACK}>
           {orders.map(({ value, label }) => (
@@ -231,7 +221,10 @@ function DateTimeSection({ dateOrder, onDateOrderChange, clock, onClockChange }:
         </div>
       </div>
       <div data-setting="language.clock" className={SETTINGS_ROW}>
-        <RowTitle icon={ClockIcon}>{t('language.clock')}</RowTitle>
+        <div className="min-w-0">
+          <RowTitle icon={ClockIcon}>{t('language.clock')}</RowTitle>
+          <p className={`${SETTINGS_HELP} mt-0.5`}>{t('language.exampleTime', { time: now })}</p>
+        </div>
         <div className={SETTINGS_TRACK}>
           {clocks.map(({ value, label }) => (
             <button key={value} type="button" onClick={() => onClockChange(value)} aria-pressed={clock === value} className={settingsSegClass(clock === value)}>

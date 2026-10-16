@@ -807,6 +807,7 @@
     "hoursBefore_other": "{{count}}시간 전",
     "daysBefore_other": "{{count}}일 전",
     "weeksBefore_other": "{{count}}주 전",
+    "onDay": "당일",
     "onDayAt": "당일 {{time}}",
     "daysBeforeAt_other": "{{count}}일 전 {{time}}",
     "custom": "사용자 지정",

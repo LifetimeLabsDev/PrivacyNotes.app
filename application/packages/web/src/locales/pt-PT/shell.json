@@ -831,6 +831,7 @@
     "hoursBefore_other": "{{count}} horas antes",
     "daysBefore_other": "{{count}} dias antes",
     "weeksBefore_other": "{{count}} semanas antes",
+    "onDay": "No próprio dia",
     "onDayAt": "No próprio dia às {{time}}",
     "daysBeforeAt_other": "{{count}} dias antes às {{time}}",
     "custom": "Personalizado",

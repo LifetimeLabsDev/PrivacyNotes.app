@@ -16,7 +16,6 @@ import { ConfirmModal } from './ConfirmModal';
 import { CardMenuButton, CommunityCorner, ProCorner, QuickCorner, QuickStarButton } from './ThemeCardMenuButton';
 import { IconUpgrade } from './UpgradeModal';
 import { ArrowSquareOut, Copy, PencilSimple, Trash } from './icons';
-import { HoverLabel } from './HoverLabel';
 
 /**
  * The team and custom theme UI of Settings > Design and of
@@ -165,12 +164,17 @@ export function ExtraThemeCards({ mode, compact, ctx, madeBy = 'all', sort = 'ne
       },
       { label: t('appearance.custom.copyCode'), icon: <Copy size={14} />, onSelect: () => copyCode(entry) },
     ];
+    // The credit heads the menu, in the case its author wrote it.
+    const credit: ContextMenuItem[] = entry.theme.author
+      ? [{ type: 'header', label: t('appearance.custom.madeBy', { author: entry.theme.author }), keepCase: true }]
+      : [];
     if (entry.team) {
       const thread = entry.discussion;
       ctx.openMenu(
         e,
         thread
           ? [
+              ...credit,
               ...copyItems,
               { type: 'separator' },
               {
@@ -179,13 +183,10 @@ export function ExtraThemeCards({ mode, compact, ctx, madeBy = 'all', sort = 'ne
                 onSelect: () => openExternal(`${THEME_DISCUSSIONS_URL}/${thread}`),
               },
             ]
-          : copyItems,
+          : [...credit, ...copyItems],
       );
       return;
     }
-    const credit: ContextMenuItem[] = entry.theme.author
-      ? [{ type: 'header', label: t('appearance.custom.madeBy', { author: entry.theme.author }), keepCase: true }]
-      : [];
     ctx.openMenu(e, [
       ...credit,
       {
@@ -267,7 +268,6 @@ function CustomThemeCard({
   const author = entry.theme.author;
   return (
     <div className="group/card relative min-w-0">
-      <HoverLabel label={author ? t('appearance.custom.madeBy', { author }) : ''} disabled={!author} position="below">
       <button
         type="button"
         onClick={onPick}
@@ -288,7 +288,6 @@ function CustomThemeCard({
           <span className="line-clamp-2 text-center break-words" dir="auto">{entry.theme.name}</span>
         </span>
       </button>
-      </HoverLabel>
       {onStar && <QuickStarButton name={entry.theme.name} marked={marked} onToggle={onStar} />}
       {onMenu && <CardMenuButton name={entry.theme.name} onClick={onMenu} />}
     </div>

@@ -914,7 +914,7 @@
     "date-format": {
       "q": "Can I change how dates are shown?",
       "a": [
-        "Yes, in Settings > Date. **Date format** offers Automatic, Day first, Month first and Year first (ISO), and **Clock** offers Automatic, 24-hour and 12-hour. Automatic follows the app's language and each device's region, and your choice applies on all your devices.",
+        "Yes, in Settings > Date & Time. **Date format** offers Automatic, Day first, Month first and Year first (ISO), and **Clock** offers Automatic, 24-hour and 12-hour. Automatic follows the app's language and each device's region, and your choice applies on all your devices.",
         "Journal entries take their title from the date, and **Journal titles** in the same place offers ready-made formats in your date format, or **Custom pattern** to build your own from tokens such as `YYYY`, `MMMM` and `ddd`, with words in square brackets kept as typed. A new pattern applies to new entries only. To put today's date into any note, press Cmd+; on a Mac or Ctrl+; on Windows and Linux, and add Shift for the time as well. All of it is free."
       ]
     },
@@ -936,7 +936,7 @@
       "q": "Do calendar reminders work when the app is closed?",
       "a": [
         "On a phone, yes: up to 64 alerts, up to 400 days ahead, are handed to the phone itself, so they ring while PrivacyNotes is closed; opening and unlocking the app hands over more. In the desktop app a reminder rings while the app runs, and in a browser while PrivacyNotes is open in a tab. Each device plans its reminders from the items it holds, so the server never learns a title, a time or a day.",
-        "Add an alert from the Alert row of an item's Schedule view, up to five per item, and set the defaults under Settings > Calendar, where \"Show titles in reminders\" also lives. An item behind your PIN always rings as \"Reminder\" and the time, and so does every alert scheduled while the app lock is on. One handed over before the lock was on can keep its title until it rings. Reminders are part of Pro; the calendar itself is free."
+        "Add an alert from the Alert row of an item's Schedule view, up to five per item, and set the defaults under Settings > Date & Time > Calendar, where \"Show titles in reminders\" also lives. An item behind your PIN always rings as \"Reminder\" and the time, and so does every alert scheduled while the app lock is on. One handed over before the lock was on can keep its title until it rings. Reminders are part of Pro; the calendar itself is free."
       ]
     },
     "calendar-time-zones": {

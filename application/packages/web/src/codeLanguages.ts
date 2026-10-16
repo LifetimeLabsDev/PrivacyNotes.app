@@ -88,6 +88,21 @@ let closeOpen: (() => void) | null = null;
  * pick from it, and Escape clears the search, then closes the menu.
  * `onPick(null)` means plain text.
  */
+const LAST_LANGUAGE_KEY = 'privacynotes.codeLanguage';
+
+/** The language last picked in a code block's menu, which a new block takes.
+ * Device-local and never synced, like the wrap toggle in codeWrap.ts. */
+export function lastCodeLanguage(): string | null {
+  try { return localStorage.getItem(LAST_LANGUAGE_KEY) || null; } catch { return null; }
+}
+
+export function rememberCodeLanguage(fence: string | null): void {
+  try {
+    if (fence) localStorage.setItem(LAST_LANGUAGE_KEY, fence);
+    else localStorage.removeItem(LAST_LANGUAGE_KEY);
+  } catch { /* the block still changed */ }
+}
+
 export function openCodeLanguageMenu(
   anchor: HTMLElement,
   current: string | null | undefined,

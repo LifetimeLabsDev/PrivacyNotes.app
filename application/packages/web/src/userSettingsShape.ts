@@ -42,7 +42,7 @@ export type CalendarSettings = {
   reminderTitles: boolean;
 };
 
-/** Settings › Calendar as it starts: 10 minutes before a timed item, 09:00 on
+/** Settings › Date & Time › Calendar as it starts: 10 minutes before a timed item, 09:00 on
  *  the day of an all-day one, 09:00 the day before a birthday, no week
  *  numbers, the hours 07:00 to 22:00, titles shown.
  *  Spec: ops/docs/plans/calendar-pillar-spec.md (decision 11) */
@@ -433,7 +433,7 @@ export type UserSettings = {
    */
   importPromptDismissed: boolean;
   /**
-   * Settings › Calendar: the alert a new alert list starts with for a timed
+   * Settings › Date & Time › Calendar: the alert a new alert list starts with for a timed
    * item (minutes before), an all-day item and a birthday (days before, at a
    * time), null for none; the week numbers column; the hours the hour grid
    * opens on; and whether a reminder shows the item's title.

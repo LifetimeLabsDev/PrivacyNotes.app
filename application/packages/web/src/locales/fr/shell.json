@@ -835,6 +835,7 @@
     "daysBefore_other": "{{count}} jours avant",
     "weeksBefore_one": "{{count}} semaine avant",
     "weeksBefore_other": "{{count}} semaines avant",
+    "onDay": "Le jour même",
     "onDayAt": "Le jour même à {{time}}",
     "daysBeforeAt_one": "{{count}} jour avant à {{time}}",
     "daysBeforeAt_other": "{{count}} jours avant à {{time}}",

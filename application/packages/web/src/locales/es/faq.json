@@ -858,7 +858,7 @@
     "date-format": {
       "q": "¿Puedo cambiar cómo se muestran las fechas?",
       "a": [
-        "Sí, en Ajustes > Fecha. **Formato de fecha** ofrece Automático, Primero el día, Primero el mes y Primero el año (ISO), y **Formato de hora** ofrece Automático, 24 horas y 12 horas. Automático sigue el idioma de la app y la región de cada dispositivo, y tu elección se aplica en todos tus dispositivos.",
+        "Sí, en Ajustes > Fecha y hora. **Formato de fecha** ofrece Automático, Primero el día, Primero el mes y Primero el año (ISO), y **Formato de hora** ofrece Automático, 24 horas y 12 horas. Automático sigue el idioma de la app y la región de cada dispositivo, y tu elección se aplica en todos tus dispositivos.",
         "Las entradas del diario toman su título de la fecha, y **Títulos del diario**, en el mismo sitio, ofrece formatos ya hechos en tu formato de fecha, o **Patrón personalizado** para crear el tuyo con tokens como `YYYY`, `MMMM` y `ddd`, y las palabras entre corchetes se quedan tal como las escribes. Un patrón nuevo solo se aplica a las entradas nuevas. Para insertar la fecha de hoy en cualquier nota, pulsa Cmd+; en un Mac o Ctrl+; en Windows y Linux, y añade Shift para incluir también la hora. Todo es gratis."
       ]
     },
@@ -908,7 +908,7 @@
       "q": "¿Funcionan los recordatorios del calendario con la app cerrada?",
       "a": [
         "En un teléfono, sí: hasta 64 alertas, con hasta 400 días de antelación, se entregan al propio teléfono, así que suenan aunque PrivacyNotes esté cerrado; abrir y desbloquear la app entrega más. En la app de escritorio, un recordatorio suena mientras la app se ejecuta, y en un navegador, mientras PrivacyNotes está abierto en una pestaña. Cada dispositivo programa sus recordatorios a partir de los elementos que guarda, así que el servidor nunca conoce un título, una hora ni un día.",
-        "Añade una alerta desde la fila Alerta de la vista Programación de un elemento, hasta cinco por elemento, y define las predeterminadas en Ajustes > Calendario, donde también está \"Mostrar títulos en los recordatorios\". Un elemento protegido con tu PIN siempre suena como \"Recordatorio\" y la hora, igual que toda alerta programada mientras el bloqueo de la app está activado. Una entregada antes de activar el bloqueo puede conservar su título hasta que suene. Los recordatorios forman parte de Pro; el calendario en sí es gratuito."
+        "Añade una alerta desde la fila Alerta de la vista Programación de un elemento, hasta cinco por elemento, y define las predeterminadas en Ajustes > Fecha y hora > Calendario, donde también está \"Mostrar títulos en los recordatorios\". Un elemento protegido con tu PIN siempre suena como \"Recordatorio\" y la hora, igual que toda alerta programada mientras el bloqueo de la app está activado. Una entregada antes de activar el bloqueo puede conservar su título hasta que suene. Los recordatorios forman parte de Pro; el calendario en sí es gratuito."
       ]
     },
     "calendar-time-zones": {

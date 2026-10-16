@@ -831,6 +831,7 @@
     "hoursBefore_other": "{{count}} uur van tevoren",
     "daysBefore_other": "{{count}} dagen van tevoren",
     "weeksBefore_other": "{{count}} weken van tevoren",
+    "onDay": "Op de dag zelf",
     "onDayAt": "Op de dag zelf om {{time}}",
     "daysBeforeAt_other": "{{count}} dagen van tevoren om {{time}}",
     "custom": "Aangepast",

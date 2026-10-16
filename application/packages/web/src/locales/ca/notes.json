@@ -273,7 +273,8 @@
     "helpLabel": "Ajuda",
     "aboutLabel": "Informació",
     "languageLabel": "Llengua",
-    "dateLabel": "Data",
+    "dateLabel": "Data i hora",
+    "dateTabFormat": "Format",
     "languageDesc": "Tria la llengua en què es mostra PrivacyNotes.",
     "calendarLabel": "Calendari"
   },

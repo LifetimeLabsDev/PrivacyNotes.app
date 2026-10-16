@@ -15,6 +15,7 @@ import { editorCommands, insertDateText, registerEditorCommand } from './editorC
 import { readOutlinePref, writeOutlinePref } from './editorPrefs';
 import { proUnlocked } from './demo';
 import { FormatBarContext } from './formatBarContext';
+import { SLOT_PILL_HEIGHT, SLOT_PILL_WIDTH } from './EditorSlotPill';
 
 /**
  * The note body's top padding (`.ProseMirror` in index.css). The corner
@@ -30,7 +31,6 @@ export function useEditorPanels({
   rootRef,
   editorRef,
   editor,
-  isMobile,
   readOnly,
   preview,
   toolbarVisible,
@@ -40,7 +40,6 @@ export function useEditorPanels({
   rootRef: RefObject<HTMLDivElement | null>;
   editorRef: RefObject<TipTapEditor | null>;
   editor: TipTapEditor | null;
-  isMobile: boolean;
   readOnly: boolean;
   /** The note history preview: no bars, no outline, no shortcuts. */
   preview: boolean;
@@ -65,20 +64,22 @@ export function useEditorPanels({
   // Document outline panel. Opened via the top-right toggle or Cmd/Ctrl+Shift+O;
   // shares the top-right slot with the find bar, so only one is open at a time.
   const [outlineOpen, setOutlineOpen] = useState(readOutlinePref);
-  // Footprint the outline reserves so body text floats around it: a thin
-  // square for the collapsed icon, the panel's width + measured height when
-  // open (so text wraps beside it and reclaims full width below).
-  const [outlineReserve, setOutlineReserve] = useState({ width: 0, height: 0 });
-  // The row of corner pills (find, the collapsed outline), measured so the
-  // note's first lines wrap beside it instead of under it.
+  // The row of corner pills (find, the outline), measured so the note's
+  // first lines wrap beside it instead of under it. The footprint is the
+  // collapsed row whether the outline is open or not: the open panel covers
+  // the note below that row, so opening or closing it moves no text.
   const [pillsEl, setPillsEl] = useState<HTMLDivElement | null>(null);
   const [pillsReserve, setPillsReserve] = useState({ width: 0, height: 0 });
   useLayoutEffect(() => {
     if (!pillsEl) { setPillsReserve({ width: 0, height: 0 }); return; }
-    // 8px of air between the text and the pills.
     const report = () => {
-      const width = pillsEl.offsetWidth > 0 ? pillsEl.offsetWidth + 8 : 0;
-      const height = pillsEl.offsetHeight;
+      // Counted, never measured: a pill's label slides out on hover and the
+      // open panel stands where the outline pill was, and neither may move
+      // the text. Each slot is one collapsed pill, plus 8px of air.
+      const slots = [...pillsEl.children].filter((k) => (k as HTMLElement).offsetWidth > 0).length;
+      const gap = parseFloat(getComputedStyle(pillsEl).columnGap) || 0;
+      const width = slots ? slots * SLOT_PILL_WIDTH + (slots - 1) * gap + 8 : 0;
+      const height = slots ? SLOT_PILL_HEIGHT : 0;
       setPillsReserve((r) => (r.width === width && r.height === height ? r : { width, height }));
     };
     report();
@@ -332,30 +333,21 @@ export function useEditorPanels({
     writeOutlinePref(outlineOpen);
   }, [outlineOpen]);
 
-  // Reserve space for the OPEN outline panel on the right of the note body: it
-  // is floated as a top-right spacer (see .ProseMirror::before) sized to its
-  // footprint, so content wraps beside it and the column reclaims full width
-  // below - no full-height gutter. On mobile it overlays the column (no
-  // reflow) rather than crushing it.
-  //
-  // With the panel closed, the pills reserve their own footprint the same
-  // way, so the first line wraps beside them. Both start at the top of the
-  // body's padding, so the float only has to cover what hangs BELOW it.
+  // The pill row's footprint becomes a top-right spacer (see
+  // .ProseMirror::before), so the first line wraps beside it. The spacer
+  // starts at the top of the body's padding, so it only has to cover what
+  // hangs BELOW that.
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    const hasOutline = outlineReserve.width > 0;
-    const overlay = outlineOpen && isMobile;
-    // The open panel's width does not count the find pill beside it.
-    const reserve = !hasOutline
-      ? pillsReserve
-      : overlay
-        ? { width: 0, height: 0 }
-        : { width: Math.max(outlineReserve.width, pillsReserve.width), height: outlineReserve.height };
+    const reserve = pillsReserve;
     const fh = Math.max(0, reserve.height - EDITOR_TOP_PAD_PX);
     root.style.setProperty('--pn-outline-fw', `${fh > 0 ? reserve.width : 0}px`);
     root.style.setProperty('--pn-outline-fh', `${fh}px`);
-  }, [outlineReserve, pillsReserve, outlineOpen, isMobile]);
+    // A note that starts with a box (a callout, a code block) cannot wrap
+    // beside the pills, so it starts below them instead (pn-top-line-pad).
+    root.style.setProperty('--pn-pills-clear', `${reserve.height}px`);
+  }, [pillsReserve]);
 
   // Pin the find and replace bars just below the formatting toolbar. The toolbar height
   // varies (one row, or two when the overflow row is expanded), so measure it
@@ -386,7 +378,6 @@ export function useEditorPanels({
     barFocusTick,
     outlineOpen,
     setOutlineOpen,
-    setOutlineReserve,
     setPillsEl,
     findSeed,
     openFindWith,

@@ -279,7 +279,8 @@
     "helpLabel": "المساعدة",
     "aboutLabel": "حول",
     "languageLabel": "اللغة",
-    "dateLabel": "التاريخ",
+    "dateLabel": "التاريخ والوقت",
+    "dateTabFormat": "التنسيق",
     "languageDesc": "اختر اللغة التي يُعرض بها PrivacyNotes.",
     "calendarLabel": "التقويم"
   },

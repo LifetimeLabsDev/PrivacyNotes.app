@@ -864,6 +864,7 @@
     "hoursBefore_one": "За {{count}} годину",
     "daysBefore_one": "За {{count}} день",
     "weeksBefore_one": "За {{count}} тиждень",
+    "onDay": "У цей день",
     "onDayAt": "У цей день о {{time}}",
     "daysBeforeAt_one": "За {{count}} день о {{time}}",
     "custom": "Власне",

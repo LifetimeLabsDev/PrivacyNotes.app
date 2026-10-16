@@ -1,9 +1,11 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Shield, X } from './icons';
 import { PinInput, type PinInputHandle } from './PinInput';
-import type { MfaPromptRequest } from './mfaStep';
+import { MfaCancelledError, submitMfaCode, dismissMfaPrompt, type MfaPromptRequest } from './mfaStep';
 import { useEscapeToClose } from './useEscapeToClose';
+import { useAccountLogins } from './accountLogins';
+import { accountErrorKey } from './AccountSignInSetup';
 
 /** A backup restores the authenticator. It never goes to an app endpoint. */
 export function MfaRecoveryHelp() {
@@ -19,11 +21,41 @@ export function MfaRecoveryHelp() {
   );
 }
 
+/** The repair swaps the session, which closes the wrong-login prompt and
+ * opens the code prompt of the canonical login. It runs here, outside the
+ * prompt, so that swap cannot unmount it halfway. */
+function WrongLoginRepair({ onEnd }: { onEnd: (error: string | null) => void }) {
+  const account = useAccountLogins();
+  const started = useRef(false);
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    account.activate().then(() => onEnd(null),
+      (error: unknown) => onEnd(error instanceof MfaCancelledError ? null : accountErrorKey(error)));
+  }, [account, onEnd]);
+  return null;
+}
+
+export function MfaPromptLayer({ request }: { request: MfaPromptRequest | null }) {
+  const [repairing, setRepairing] = useState(false);
+  const [repairError, setRepairError] = useState<string | null>(null);
+  const endRepair = useCallback((error: string | null) => { setRepairing(false); setRepairError(error); }, []);
+  return <>
+    {repairing && <WrongLoginRepair onEnd={endRepair} />}
+    {request && <MfaPrompt request={request} onSubmit={submitMfaCode} onDismiss={dismissMfaPrompt}
+      repairing={repairing} repairError={repairError}
+      onRepair={() => { setRepairError(null); setRepairing(true); }} />}
+  </>;
+}
+
 /** Dismissal only cancels the server operation. It never wipes local notes. */
-export function MfaPrompt({ request, onSubmit, onDismiss }: {
+export function MfaPrompt({ request, onSubmit, onDismiss, onRepair, repairing = false, repairError = null }: {
   request: MfaPromptRequest;
   onSubmit: (code: string) => Promise<void>;
   onDismiss: () => void;
+  onRepair?: () => void;
+  repairing?: boolean;
+  repairError?: string | null;
 }) {
   const { t } = useTranslation('security');
   const [code, setCode] = useState('');
@@ -63,7 +95,7 @@ export function MfaPrompt({ request, onSubmit, onDismiss }: {
         <div className="flex items-center justify-between gap-2.5">
           <div className="flex items-center gap-2.5">
             <Shield size={20} className="text-accent shrink-0" aria-hidden="true" />
-            <h2 id={titleId} className="text-lg font-semibold">{t('mfaPrompt.title')}</h2>
+            <h2 id={titleId} className="text-lg font-semibold">{t(request.wrongLogin ? 'mfaPrompt.wrongLoginTitle' : 'mfaPrompt.title')}</h2>
           </div>
           <button type="button" onClick={onDismiss} aria-label={t('common:actions.close')}
             className="text-pn-muted hover:text-pn transition p-1 -m-1">
@@ -71,9 +103,13 @@ export function MfaPrompt({ request, onSubmit, onDismiss }: {
           </button>
         </div>
         {request.wrongLogin ? (
-          <p className="text-sm text-pn-soft leading-relaxed">
-            {t('mfaPrompt.wrongLogin')}
-          </p>
+          <div className="space-y-3">
+            <p className="text-sm text-pn-soft leading-relaxed">{t('mfaPrompt.wrongLogin')}</p>
+            {repairError && <p role="alert" className="text-sm text-danger">{t(repairError)}</p>}
+            <button type="button" onClick={onRepair} disabled={repairing} className="w-full rounded-md bg-accent-fill hover:bg-accent-fill-hover text-white text-sm font-medium px-4 py-2 transition disabled:opacity-40 disabled:cursor-not-allowed">
+              {t(repairing ? 'connectedAccounts.working' : 'mfaPrompt.signInAgain')}
+            </button>
+          </div>
         ) : (
           <form className="space-y-3" onSubmit={(event) => { event.preventDefault(); submit(code); }}>
             <p className="text-sm text-pn-soft">{t('mfaPrompt.enterCode')}</p>
@@ -87,9 +123,9 @@ export function MfaPrompt({ request, onSubmit, onDismiss }: {
             </button>
           </form>
         )}
-        <MfaRecoveryHelp />
+        {!request.wrongLogin && <MfaRecoveryHelp />}
         {request.allowLocalUse && <>
-          <p className="text-sm text-pn-soft">{t('mfaPrompt.localNotes')}</p>
+          {!request.wrongLogin && <p className="text-sm text-pn-soft">{t('mfaPrompt.localNotes')}</p>}
           <button type="button" onClick={onDismiss} className="w-full rounded-md border border-divider text-pn hover:bg-surface-1 px-4 py-2 text-sm transition">
             {t('mfaPrompt.useLocalNotes')}
           </button>

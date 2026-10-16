@@ -858,7 +858,7 @@
     "date-format": {
       "q": "Czy mogę zmienić sposób wyświetlania dat?",
       "a": [
-        "Tak, w Ustawienia > Data. **Format daty** oferuje Automatycznie, Najpierw dzień, Najpierw miesiąc i Najpierw rok (ISO), a **Format godziny** oferuje Automatycznie, 24-godzinny i 12-godzinny. Automatycznie idzie za językiem aplikacji i regionem każdego urządzenia, a Twój wybór obowiązuje na wszystkich Twoich urządzeniach.",
+        "Tak, w Ustawienia > Data i godzina. **Format daty** oferuje Automatycznie, Najpierw dzień, Najpierw miesiąc i Najpierw rok (ISO), a **Format godziny** oferuje Automatycznie, 24-godzinny i 12-godzinny. Automatycznie idzie za językiem aplikacji i regionem każdego urządzenia, a Twój wybór obowiązuje na wszystkich Twoich urządzeniach.",
         "Wpisy w dzienniku biorą tytuł z daty, a **Tytuły w dzienniku** w tym samym miejscu oferują gotowe formaty w Twoim formacie daty albo **Własny wzorzec**, żeby zbudować własny z tokenów takich jak `YYYY`, `MMMM` i `ddd`, przy czym słowa w nawiasach kwadratowych zostają dokładnie tak, jak je wpiszesz. Nowy wzorzec dotyczy tylko nowych wpisów. Żeby wstawić dzisiejszą datę do dowolnej notatki, naciśnij Cmd+; na Macu albo Ctrl+; na Windowsie i Linuksie, a z dodatkowym Shift wstawisz też godzinę. Wszystko to jest darmowe."
       ]
     },
@@ -908,7 +908,7 @@
       "q": "Czy przypomnienia z kalendarza działają, gdy aplikacja jest zamknięta?",
       "a": [
         "Na telefonie tak: do 64 alertów, do 400 dni naprzód, jest przekazywanych samemu telefonowi, więc dzwonią, gdy PrivacyNotes jest zamknięte; otwarcie i odblokowanie aplikacji przekazuje kolejne. W aplikacji na komputer przypomnienie dzwoni, gdy aplikacja działa, a w przeglądarce, gdy PrivacyNotes jest otwarte w karcie. Każde urządzenie planuje swoje przypomnienia na podstawie elementów, które przechowuje, więc serwer nigdy nie poznaje tytułu, godziny ani dnia.",
-        "Dodaj alert w wierszu Alert w widoku Termin elementu, maksymalnie pięć na element, a wartości domyślne ustaw w Ustawienia > Kalendarz, gdzie jest też \"Pokazuj tytuły w przypomnieniach\". Element chroniony PIN-em zawsze dzwoni jako \"Przypomnienie\" z godziną, podobnie jak każdy alert zaplanowany, gdy blokada aplikacji jest włączona. Alert przekazany, zanim blokada została włączona, może zachować tytuł, dopóki nie zadzwoni. Przypomnienia są częścią Pro; sam kalendarz jest darmowy."
+        "Dodaj alert w wierszu Alert w widoku Termin elementu, maksymalnie pięć na element, a wartości domyślne ustaw w Ustawienia > Data i godzina > Kalendarz, gdzie jest też \"Pokazuj tytuły w przypomnieniach\". Element chroniony PIN-em zawsze dzwoni jako \"Przypomnienie\" z godziną, podobnie jak każdy alert zaplanowany, gdy blokada aplikacji jest włączona. Alert przekazany, zanim blokada została włączona, może zachować tytuł, dopóki nie zadzwoni. Przypomnienia są częścią Pro; sam kalendarz jest darmowy."
       ]
     },
     "calendar-time-zones": {

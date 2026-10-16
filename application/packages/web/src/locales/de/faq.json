@@ -858,7 +858,7 @@
     "date-format": {
       "q": "Kann ich das Datumsformat ändern?",
       "a": [
-        "Ja, unter Einstellungen > Datum. **Datumsformat** bietet Automatisch, Tag zuerst, Monat zuerst und Jahr zuerst (ISO), und **Uhrzeit** bietet Automatisch, 24 Stunden und 12 Stunden. Automatisch folgt der Sprache der App und der Region jedes Geräts, und deine Wahl gilt auf allen deinen Geräten.",
+        "Ja, unter Einstellungen > Datum & Uhrzeit. **Datumsformat** bietet Automatisch, Tag zuerst, Monat zuerst und Jahr zuerst (ISO), und **Uhrzeit** bietet Automatisch, 24 Stunden und 12 Stunden. Automatisch folgt der Sprache der App und der Region jedes Geräts, und deine Wahl gilt auf allen deinen Geräten.",
         "Tagebucheinträge bekommen ihren Titel aus dem Datum, und **Tagebuchtitel** an derselben Stelle bietet fertige Formate in deinem Datumsformat oder **Eigenes Muster**, um dir ein eigenes aus Platzhaltern wie `YYYY`, `MMMM` und `ddd` zu bauen, wobei Wörter in eckigen Klammern so bleiben, wie du sie tippst. Ein neues Muster gilt nur für neue Einträge. Um das heutige Datum in eine beliebige Notiz einzufügen, drück Cmd+; auf dem Mac oder Ctrl+; unter Windows und Linux, und nimm Shift dazu, um auch die Uhrzeit einzufügen. All das ist kostenlos."
       ]
     },
@@ -908,7 +908,7 @@
       "q": "Funktionieren Kalender-Erinnerungen, wenn die App geschlossen ist?",
       "a": [
         "Auf einem Handy ja: Bis zu 64 Erinnerungen, bis zu 400 Tage im Voraus, werden an das Handy selbst übergeben, sie melden sich also auch, wenn PrivacyNotes geschlossen ist; wenn du die App öffnest und entsperrst, werden weitere übergeben. In der Desktop-App meldet sich eine Erinnerung, solange die App läuft, und im Browser, solange PrivacyNotes in einem Tab geöffnet ist. Jedes Gerät plant seine Erinnerungen aus den Einträgen, die es hat, deshalb erfährt der Server nie einen Titel, eine Uhrzeit oder einen Tag.",
-        "Füge eine Erinnerung über die Zeile \"Erinnerung\" in der Ansicht \"Zeitplan\" eines Eintrags hinzu, bis zu fünf pro Eintrag, und leg die Standardwerte unter Einstellungen > Kalender fest, wo auch \"Titel in Erinnerungen anzeigen\" liegt. Ein Eintrag hinter deiner PIN meldet sich immer nur als \"Erinnerung\" mit der Uhrzeit, und das gilt auch für jede Erinnerung, die geplant wird, während die App-Sperre aktiv ist. Eine Erinnerung, die übergeben wurde, bevor die Sperre aktiv war, kann ihren Titel behalten, bis sie sich meldet. Erinnerungen gehören zu Pro; der Kalender selbst ist kostenlos."
+        "Füge eine Erinnerung über die Zeile \"Erinnerung\" in der Ansicht \"Zeitplan\" eines Eintrags hinzu, bis zu fünf pro Eintrag, und leg die Standardwerte unter Einstellungen > Datum & Uhrzeit > Kalender fest, wo auch \"Titel in Erinnerungen anzeigen\" liegt. Ein Eintrag hinter deiner PIN meldet sich immer nur als \"Erinnerung\" mit der Uhrzeit, und das gilt auch für jede Erinnerung, die geplant wird, während die App-Sperre aktiv ist. Eine Erinnerung, die übergeben wurde, bevor die Sperre aktiv war, kann ihren Titel behalten, bis sie sich meldet. Erinnerungen gehören zu Pro; der Kalender selbst ist kostenlos."
       ]
     },
     "calendar-time-zones": {

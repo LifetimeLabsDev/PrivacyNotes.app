@@ -26,7 +26,6 @@ export type SectionId =
   | 'lists'
   | 'language'
   | 'date'
-  | 'calendar'
   | 'about'
   | 'help';
 
@@ -59,7 +58,6 @@ export const SECTION_LABEL: Record<SectionId, string> = {
   lists: 'notes:settings.listsLabel',
   language: 'notes:settings.languageLabel',
   date: 'notes:settings.dateLabel',
-  calendar: 'notes:settings.calendarLabel',
   about: 'notes:settings.aboutLabel',
   help: 'notes:settings.helpLabel',
 };
@@ -79,6 +77,8 @@ export const TAB_LABEL: Record<string, string> = {
   'plan/connectedAccounts': 'security:accountTabs.accounts',
   'plan/keyCustody': 'security:accountTabs.keyCustody',
   'plan/overview': 'security:accountTabs.overview',
+  'date/format': 'notes:settings.dateTabFormat',
+  'date/calendar': 'notes:settings.calendarLabel',
   'about/about': 'landing:about.tabs.about',
   'about/hotkeys': 'landing:about.tabs.hotkeys',
   'about/rating': 'landing:about.tabs.rating',
@@ -239,13 +239,13 @@ const ROW_ENTRIES: SettingEntry[] = [
   { id: 'language.reportMistake', section: 'language', label: 'settings:language.reportMistake' },
 
   // Calendar
-  { id: 'calendar.alertTimed', section: 'calendar', label: 'settings:calendar.alertTimed', keywords: true },
-  { id: 'calendar.alertAllDay', section: 'calendar', label: 'settings:calendar.alertAllDay', keywords: true },
-  { id: 'calendar.alertBirthday', section: 'calendar', label: 'settings:calendar.alertBirthday', keywords: true },
-  { id: 'calendar.reminderTitles', section: 'calendar', label: 'settings:calendar.reminderTitles', keywords: true },
-  { id: 'calendar.where', section: 'calendar', label: 'settings:calendar.whereTitle', keywords: true },
-  { id: 'calendar.weekNumbers', section: 'calendar', label: 'settings:calendar.weekNumbers', keywords: true },
-  { id: 'calendar.hours', section: 'calendar', label: 'settings:calendar.hours', keywords: true },
+  { id: 'calendar.alertTimed', section: 'date', tab: 'calendar', label: 'settings:calendar.alertTimed', keywords: true },
+  { id: 'calendar.alertAllDay', section: 'date', tab: 'calendar', label: 'settings:calendar.alertAllDay', keywords: true },
+  { id: 'calendar.alertBirthday', section: 'date', tab: 'calendar', label: 'settings:calendar.alertBirthday', keywords: true },
+  { id: 'calendar.reminderTitles', section: 'date', tab: 'calendar', label: 'settings:calendar.reminderTitles', keywords: true },
+  { id: 'calendar.where', section: 'date', tab: 'calendar', label: 'settings:calendar.whereTitle', keywords: true },
+  { id: 'calendar.weekNumbers', section: 'date', tab: 'calendar', label: 'settings:calendar.weekNumbers', keywords: true },
+  { id: 'calendar.hours', section: 'date', tab: 'calendar', label: 'settings:calendar.hours', keywords: true },
 
   // About
   { id: 'about.about', section: 'about', tab: 'about', label: 'landing:about.tabs.about' },

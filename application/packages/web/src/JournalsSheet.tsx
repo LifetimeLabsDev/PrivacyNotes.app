@@ -9,7 +9,7 @@ import {
 } from './notesViewUtils';
 import { formatPattern, PATTERN_TOKENS, type PatternResult } from './intlFormat';
 import { RowTitle, SETTINGS_HELP, SETTINGS_ROW } from './settingsUI';
-import { Notebook, Textbox } from './icons';
+import { Notebook } from './icons';
 
 export type JournalTitlesProps = {
   /** Date shape new entries are titled with, and its setter. */
@@ -91,10 +91,12 @@ export function JournalTitles({ format, onFormatChange, suffix, onSuffixChange, 
       <div data-setting="journals.titles" className={SETTINGS_ROW}>
         <div className="min-w-0">
           <RowTitle icon={Notebook}>{t('journals.titlesTitle')}</RowTitle>
-          <p className={`${SETTINGS_HELP} mt-0.5`}>{t('journals.titlesDesc')}</p>
+          <p className={`${SETTINGS_HELP} mt-0.5`}>{t('journals.titlesPreview', { title: journalTitle(today, format, suffix, locale, pattern) })}</p>
+          <p className={SETTINGS_HELP}>{t('journals.titlesDesc')}</p>
         </div>
         {/* Each option is today's date in that shape, so the shapes need no
-            names; the preview above adds the suffix. */}
+            names; the line under the title adds the words after it. */}
+        <div className="flex flex-wrap items-center gap-2">
         <select
           value={customOpen ? CUSTOM : format}
           onChange={(e) => (e.target.value === CUSTOM ? setCustomOpen(true) : pickPreset(e.target.value as JournalTitleFormat))}
@@ -106,6 +108,19 @@ export function JournalTitles({ format, onFormatChange, suffix, onSuffixChange, 
           ))}
           <option value={CUSTOM}>{t('journals.customPattern')}</option>
         </select>
+        {!patternActive && (
+          <input
+            data-setting="journals.suffix"
+            type="text"
+            value={suffix}
+            maxLength={JOURNAL_SUFFIX_MAX}
+            onChange={(e) => onSuffixChange(e.target.value)}
+            placeholder={t('journals.suffixPlaceholder')}
+            aria-label={t('journals.suffixTitle')}
+            className="w-44 rounded-md bg-track border border-divider px-3 py-1.5 text-sm text-pn placeholder:text-pn-muted focus:border-accent focus:outline-none"
+          />
+        )}
+        </div>
       </div>
       {customOpen && (
           <div className="pb-3">
@@ -147,22 +162,6 @@ export function JournalTitles({ format, onFormatChange, suffix, onSuffixChange, 
           </div>
         )}
 
-      {!patternActive && (
-        <div data-setting="journals.suffix" className={SETTINGS_ROW}>
-          <div className="min-w-0">
-            <RowTitle icon={Textbox}>{t('journals.suffixTitle')}</RowTitle>
-            <p className={`${SETTINGS_HELP} mt-0.5`}>{t('journals.suffixDesc')}</p>
-          </div>
-          <input
-            type="text"
-            value={suffix}
-            maxLength={JOURNAL_SUFFIX_MAX}
-            onChange={(e) => onSuffixChange(e.target.value)}
-            placeholder={t('journals.suffixPlaceholder')}
-            className="w-full lg:w-48 rounded-md bg-track border border-divider px-3 py-1.5 text-sm text-pn placeholder:text-pn-muted focus:border-accent focus:outline-none"
-          />
-        </div>
-      )}
     </>
   );
 }

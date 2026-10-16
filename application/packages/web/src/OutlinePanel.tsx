@@ -87,22 +87,10 @@ function elementAt(editor: TipTapEditor, pos: number): Element | null {
   return dom?.parentElement ?? null;
 }
 
-// Right-gutter width (px) the OPEN panel asks the editor to keep clear of
-// text. The collapsed pill asks for nothing here: the editor measures the row
-// of corner pills itself and floats the first lines beside it.
-const PANEL_RESERVE = 240;
-
 type Props = {
   editor: TipTapEditor;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /**
-   * Reports the top-right footprint (px) the editor floats content around.
-   * Width is the reserved strip, height the panel's measured height, so
-   * content reclaims full width below it. Zero while collapsed - the
-   * editor measures the collapsed pill with the other corner pills.
-   */
-  onReserve?: (reserve: { width: number; height: number }) => void;
 };
 
 /**
@@ -118,7 +106,7 @@ type Props = {
  *
  * Renders nothing when the note has no headings - there is nothing to outline.
  */
-export function OutlinePanel({ editor, open, onOpenChange, onReserve }: Props) {
+export function OutlinePanel({ editor, open, onOpenChange }: Props) {
   const { t } = useTranslation('editor');
   const [headings, setHeadings] = useState<OutlineItem[]>(() => readHeadings(editor));
   const [activePos, setActivePos] = useState<number>(-1);
@@ -200,24 +188,6 @@ export function OutlinePanel({ editor, open, onOpenChange, onReserve }: Props) {
     setActivePos(pos);
   }, [editor]);
 
-  // Tell the editor the footprint to float content around: nothing when there
-  // are no headings or the panel is collapsed (the editor measures the pill
-  // row itself), the panel's width plus its measured height when
-  // open (a ResizeObserver keeps the height current as headings are
-  // added/removed). The cleanup resets it when find takes over the slot.
-  useLayoutEffect(() => {
-    if (headings.length === 0) { onReserve?.({ width: 0, height: 0 }); return; }
-    if (!open) { onReserve?.({ width: 0, height: 0 }); return; }
-    const el = rootRef.current;
-    if (!el) return;
-    const report = () => onReserve?.({ width: PANEL_RESERVE, height: el.offsetHeight + 8 });
-    report();
-    const ro = new ResizeObserver(report);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [onReserve, headings.length, open]);
-  useLayoutEffect(() => () => onReserve?.({ width: 0, height: 0 }), [onReserve]);
-
   if (headings.length === 0) return null;
   const outline = foldOutline(headings, folded);
   const currentPos = outline.shownAs(activePos);
@@ -252,7 +222,7 @@ export function OutlinePanel({ editor, open, onOpenChange, onReserve }: Props) {
         <span className="text-sm font-medium text-pn-soft">{t('outline.title')}</span>
         <span className="text-xs tabular-nums text-pn-muted">{headings.length}</span>
         <div className="flex-1" />
-        <HoverLabel label={t('outline.hideTitle', { keys: keyText('outline') })} position="below-end">
+        <HoverLabel label={t('outline.hideTitle', { keys: keyText('outline') })} position="start">
           <button
             type="button"
             onClick={() => onOpenChange(false)}

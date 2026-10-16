@@ -807,6 +807,7 @@
     "hoursBefore_other": "ก่อน {{count}} ชั่วโมง",
     "daysBefore_other": "ก่อน {{count}} วัน",
     "weeksBefore_other": "ก่อน {{count}} สัปดาห์",
+    "onDay": "ในวันนั้น",
     "onDayAt": "ในวันนั้น เวลา {{time}}",
     "daysBeforeAt_other": "ก่อน {{count}} วัน เวลา {{time}}",
     "custom": "กำหนดเอง",

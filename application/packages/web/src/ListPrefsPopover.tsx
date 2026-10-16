@@ -2,7 +2,7 @@ import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 import { useEscapeToClose } from './useEscapeToClose';
-import { HoverLabel } from './HoverLabel';
+import { HoverLabel, TIP_SKIN } from './HoverLabel';
 import { Switch } from './Switch';
 import { ViewModeContext, setDeviceCompactRows, useCompactRows } from './viewMode';
 import { ViewModeToggle } from './ViewModeToggle';
@@ -525,8 +525,7 @@ function HelpTip({ text }: { text: string }) {
       <span
         aria-hidden="true"
         // rtl-ok: centered under the button, the same in both directions
-        // theme-ok: a tooltip is a dark pill in every theme, as HoverLabel's
-        className={`pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-1.5 z-20 w-max max-w-[160px] px-2.5 py-1.5 rounded-md bg-neutral-900 dark:bg-neutral-800 border border-neutral-700 text-[12px] font-normal leading-snug text-neutral-100 transition-opacity duration-75 ${
+        className={`pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-1.5 z-20 w-max max-w-[160px] ${TIP_SKIN} font-normal transition-opacity duration-75 ${
           open ? 'opacity-100' : 'opacity-0 [@media(hover:hover)]:group-hover/help:opacity-100'
         }`}
       >

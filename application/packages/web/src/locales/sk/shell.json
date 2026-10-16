@@ -891,6 +891,7 @@
     "weeksBefore_few": "{{count}} týždne vopred",
     "weeksBefore_many": "{{count}} týždňa vopred",
     "weeksBefore_other": "{{count}} týždňov vopred",
+    "onDay": "V daný deň",
     "onDayAt": "V daný deň o {{time}}",
     "daysBeforeAt_one": "{{count}} deň vopred o {{time}}",
     "daysBeforeAt_few": "{{count}} dni vopred o {{time}}",

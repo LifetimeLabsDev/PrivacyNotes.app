@@ -807,6 +807,7 @@
     "hoursBefore_other": "{{count}}時間前",
     "daysBefore_other": "{{count}}日前",
     "weeksBefore_other": "{{count}}週間前",
+    "onDay": "当日",
     "onDayAt": "当日 {{time}}",
     "daysBeforeAt_other": "{{count}}日前 {{time}}",
     "custom": "カスタム",

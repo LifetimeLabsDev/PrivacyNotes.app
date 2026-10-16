@@ -871,6 +871,7 @@
     "weeksBefore_one": "{{count}} týden předem",
     "weeksBefore_few": "{{count}} týdny předem",
     "weeksBefore_other": "{{count}} týdnů předem",
+    "onDay": "Ten den",
     "onDayAt": "Ten den v {{time}}",
     "daysBeforeAt_one": "{{count}} den předem v {{time}}",
     "daysBeforeAt_few": "{{count}} dny předem v {{time}}",

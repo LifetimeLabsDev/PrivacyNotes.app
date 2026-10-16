@@ -51,9 +51,13 @@ type Position = keyof typeof positionClasses;
  * hanging past the screen edge widened the phone shell, after which typing
  * in a field scrolled the whole app sideways.
  */
-const TIP_PILL_LOOK =
+/** The look of every tooltip, shared by the fixed tips (OverflowTip, the
+ *  list options help) so that one line changes them all. */
+export const TIP_SKIN =
   // theme-ok: a tooltip is a dark pill in every theme
-  'pn-tip pointer-events-none px-2.5 py-1.5 rounded-md bg-neutral-900 dark:bg-neutral-800 border border-neutral-700 dark:border-neutral-700 text-[12px] text-neutral-100 z-50 [@media(hover:none)]:hidden';
+  'px-2 py-[3px] rounded-[5px] bg-neutral-900 dark:bg-neutral-800 border border-neutral-800 dark:border-neutral-700 text-[12px] leading-4 text-neutral-100';
+
+const TIP_PILL_LOOK = `pn-tip pointer-events-none ${TIP_SKIN} z-50 [@media(hover:none)]:hidden`;
 
 /**
  * The hover tip: the pill above, placed absolutely against its `group/tip`
@@ -213,7 +217,7 @@ export function HoverLabel({
       {children}
       {!disabled && <Wrapper
         ref={observeTip}
-        className={`${TIP_PILL}${hiddenAtXl ? ' xl:hidden' : ''}${hiddenAtSm ? ' sm:hidden' : ''} ${positionClasses[position]} ${multiline ? 'block w-[260px] whitespace-normal leading-snug text-center' : 'flex items-center gap-2 whitespace-nowrap'}`}
+        className={`${TIP_PILL}${hiddenAtXl ? ' xl:hidden' : ''}${hiddenAtSm ? ' sm:hidden' : ''} ${positionClasses[position]} ${multiline ? 'block w-[260px] whitespace-normal text-center' : 'flex items-center gap-2 whitespace-nowrap'}`}
       >
         <span>{label}</span>
         {count != null && <span /* theme-ok: on the dark tooltip pill */ className="text-neutral-400 tabular-nums">{count}</span>}

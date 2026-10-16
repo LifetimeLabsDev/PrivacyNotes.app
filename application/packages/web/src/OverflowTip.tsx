@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { usePointMenuPosition } from './usePopoverPosition';
+import { TIP_SKIN } from './HoverLabel';
 
 /**
  * Truncation-gated tooltip: reveals the full `text` only when the wrapped
@@ -26,7 +27,8 @@ export function OverflowTip({
 }: {
   text: string;
   /** Show it every time, for content with no visible text, such as an
-   *  icon-only tab inside a strip whose scroll would cut a CSS tip. */
+   *  icon-only tab inside a strip whose scroll would cut a CSS tip. It then
+   *  shows with no delay, like a HoverLabel. */
   always?: boolean;
   className?: string;
   children: ReactNode;
@@ -74,6 +76,7 @@ export function OverflowTip({
       onPointerEnter={(e) => {
         if (e.pointerType !== 'mouse') return;
         if (timer.current !== null) window.clearTimeout(timer.current);
+        if (always) { show(); return; }
         timer.current = window.setTimeout(show, HOVER_DELAY_MS);
       }}
       onPointerLeave={cancel}
@@ -93,8 +96,7 @@ export function OverflowTip({
             left: pos?.left ?? point.x,
             visibility: pos ? 'visible' : 'hidden',
           }}
-          // theme-ok: a tooltip is a dark pill in every theme
-          className="fixed z-[60] pointer-events-none px-2.5 py-1.5 rounded-md bg-neutral-900 dark:bg-neutral-800 border border-neutral-700 text-[12px] text-neutral-100 w-max max-w-[280px] whitespace-normal break-words leading-snug"
+          className={`fixed z-[60] pointer-events-none ${TIP_SKIN} w-max max-w-[280px] whitespace-normal break-words`}
         >
           {text}
         </span>

@@ -27,6 +27,21 @@ export type ChangelogRelease = {
 
 export const PUBLIC_CHANGELOG: ChangelogRelease[] = [
   {
+    version: '0.654',
+    date: '2026-10-16',
+    title: 'Folder clicks keep your tabs, and Date & Time settings',
+    items: [
+      { type: 'improved', text: 'Date & Time in Settings has two tabs: Format for the date, the clock and journal titles, and Calendar for the view, reminders and default alerts. Each row shows an example of its own.' },
+      { type: 'improved', text: 'A code block remembers the last language you picked on this device.' },
+      { type: 'improved', text: '"Show the open item in a tab" changes the tab strip at once when you turn it on or off.' },
+      { type: 'improved', text: 'A callout, code block, table or other block at the top of a note now uses the full width and starts just below the find and outline buttons.' },
+      { type: 'improved', text: 'The outline opens over the note, so opening or closing it no longer moves your text.' },
+      { type: 'improved', text: 'Tooltips are slimmer, and a pinned tab shows its title as soon as you point at it.' },
+      { type: 'fixed', text: 'A click on a folder, a tag or a section in the sidebar no longer opens a new tab. The first item replaces the item in the tab you are on.', issues: [543] },
+      { type: 'fixed', text: 'When a device uses an old sign-in for your vault, the two-factor dialog now says so and gives a "Sign in again" button. Before, it said the sign-in was for a different vault.' },
+    ],
+  },
+  {
     version: '0.653',
     date: '2026-10-16',
     title: 'Calendar: events, repeats and reminders',

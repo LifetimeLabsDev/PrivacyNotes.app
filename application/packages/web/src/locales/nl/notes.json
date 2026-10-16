@@ -271,7 +271,8 @@
     "helpLabel": "Help",
     "aboutLabel": "Over",
     "languageLabel": "Taal",
-    "dateLabel": "Datum",
+    "dateLabel": "Datum en tijd",
+    "dateTabFormat": "Notatie",
     "languageDesc": "Kies de taal waarin PrivacyNotes wordt getoond.",
     "calendarLabel": "Agenda"
   },

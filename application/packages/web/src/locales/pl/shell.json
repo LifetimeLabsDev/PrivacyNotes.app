@@ -864,6 +864,7 @@
     "hoursBefore_one": "{{count}} godzinę wcześniej",
     "daysBefore_one": "{{count}} dzień wcześniej",
     "weeksBefore_one": "{{count}} tydzień wcześniej",
+    "onDay": "Tego dnia",
     "onDayAt": "Tego dnia o {{time}}",
     "daysBeforeAt_one": "{{count}} dzień wcześniej o {{time}}",
     "custom": "Niestandardowy",

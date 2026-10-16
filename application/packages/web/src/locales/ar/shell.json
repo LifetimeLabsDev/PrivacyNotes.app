@@ -947,6 +947,7 @@
     "weeksBefore_few": "قبل {{count}} أسابيع",
     "weeksBefore_many": "قبل {{count}} أسبوعًا",
     "weeksBefore_other": "قبل {{count}} أسبوع",
+    "onDay": "في اليوم نفسه",
     "onDayAt": "في اليوم نفسه الساعة {{time}}",
     "daysBeforeAt_zero": "قبل {{count}} أيام الساعة {{time}}",
     "daysBeforeAt_one": "قبل {{count}} يوم الساعة {{time}}",

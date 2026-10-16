@@ -269,7 +269,8 @@
     "helpLabel": "ヘルプ",
     "aboutLabel": "概要",
     "languageLabel": "言語",
-    "dateLabel": "日付",
+    "dateLabel": "日付と時刻",
+    "dateTabFormat": "形式",
     "languageDesc": "PrivacyNotesの表示言語を選択。",
     "calendarLabel": "カレンダー"
   },

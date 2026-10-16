@@ -368,7 +368,9 @@ function Tab({
       {pinned ? (
         // A pinned tab is its icon alone, as in a browser, in zen too, so
         // both looks share one width; its title shows in the tip every time.
-        <OverflowTip text={title} always className="flex items-center justify-center w-full h-full">
+        // The wrapper covers the tab's 1 px border, so the tip lines up with
+        // the tab's outer edge.
+        <OverflowTip text={title} always className="flex items-center justify-center -mx-px w-[calc(100%+2px)] h-full">
           {glyph}
         </OverflowTip>
       ) : (

@@ -858,7 +858,7 @@
     "date-format": {
       "q": "Kan ik de datumnotatie aanpassen?",
       "a": [
-        "Ja, bij Instellingen > Datum. **Datumnotatie** biedt Automatisch, Dag eerst, Maand eerst en Jaar eerst (ISO), en **Tijdnotatie** biedt Automatisch, 24 uur en 12 uur. Automatisch volgt de taal van de app en de regio van elk apparaat, en je keuze geldt op al je apparaten.",
+        "Ja, bij Instellingen > Datum en tijd. **Datumnotatie** biedt Automatisch, Dag eerst, Maand eerst en Jaar eerst (ISO), en **Tijdnotatie** biedt Automatisch, 24 uur en 12 uur. Automatisch volgt de taal van de app en de regio van elk apparaat, en je keuze geldt op al je apparaten.",
         "Dagboeknotities krijgen hun titel van de datum, en **Dagboektitels** op dezelfde plek biedt kant-en-klare notaties in jouw datumnotatie, of **Eigen patroon** om er zelf een te bouwen uit tokens zoals `YYYY`, `MMMM` en `ddd`, waarbij woorden tussen vierkante haken blijven zoals je ze typt. Een nieuw patroon geldt alleen voor nieuwe notities. Om de datum van vandaag in een notitie te zetten, druk je op Cmd+; op een Mac of Ctrl+; op Windows en Linux, en met Shift erbij komt ook de tijd erin. Dit is allemaal gratis."
       ]
     },
@@ -908,7 +908,7 @@
       "q": "Werken herinneringen uit de agenda als de app gesloten is?",
       "a": [
         "Op een telefoon wel: tot 64 meldingen, tot 400 dagen vooruit, worden aan de telefoon zelf doorgegeven, dus ze gaan af terwijl PrivacyNotes gesloten is; als je de app opent en ontgrendelt, worden er meer doorgegeven. In de desktop-app gaat een herinnering af zolang de app draait, en in een browser zolang PrivacyNotes in een tabblad open is. Elk apparaat plant zijn herinneringen op basis van de items die het bewaart, dus de server komt nooit een titel, een tijd of een dag te weten.",
-        "Voeg een melding toe via de rij Melding in de weergave Planning van een item, tot vijf per item, en stel de standaarden in onder Instellingen > Agenda, waar ook \"Titels tonen in herinneringen\" staat. Een item achter je PIN gaat altijd af als \"Herinnering\" met de tijd, en dat geldt ook voor elke melding die is ingepland terwijl de app-vergrendeling aan staat. Een melding die werd doorgegeven voordat de vergrendeling aan stond, kan haar titel houden tot ze afgaat. Herinneringen horen bij Pro; de agenda zelf is gratis."
+        "Voeg een melding toe via de rij Melding in de weergave Planning van een item, tot vijf per item, en stel de standaarden in onder Instellingen > Datum en tijd > Agenda, waar ook \"Titels tonen in herinneringen\" staat. Een item achter je PIN gaat altijd af als \"Herinnering\" met de tijd, en dat geldt ook voor elke melding die is ingepland terwijl de app-vergrendeling aan staat. Een melding die werd doorgegeven voordat de vergrendeling aan stond, kan haar titel houden tot ze afgaat. Herinneringen horen bij Pro; de agenda zelf is gratis."
       ]
     },
     "calendar-time-zones": {

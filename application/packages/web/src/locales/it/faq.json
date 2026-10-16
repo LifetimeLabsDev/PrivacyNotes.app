@@ -858,7 +858,7 @@
     "date-format": {
       "q": "Posso cambiare il formato delle date?",
       "a": [
-        "Sì, in Impostazioni > Data. **Formato data** offre Automatico, Prima il giorno, Prima il mese e Prima l'anno (ISO), e **Formato ora** offre Automatico, 24 ore e 12 ore. Automatico segue la lingua dell'app e la regione di ciascun dispositivo, e la tua scelta vale su tutti i tuoi dispositivi.",
+        "Sì, in Impostazioni > Data e ora. **Formato data** offre Automatico, Prima il giorno, Prima il mese e Prima l'anno (ISO), e **Formato ora** offre Automatico, 24 ore e 12 ore. Automatico segue la lingua dell'app e la regione di ciascun dispositivo, e la tua scelta vale su tutti i tuoi dispositivi.",
         "Le pagine di diario prendono il titolo dalla data, e **Titoli del diario**, nella stessa sezione, offre formati già pronti nel tuo formato data, oppure **Schema personalizzato** per crearne uno tuo con token come `YYYY`, `MMMM` e `ddd`, mentre le parole fra parentesi quadre restano come le hai scritte. Un nuovo schema vale solo per le nuove pagine. Per inserire la data di oggi in qualsiasi nota, premi Cmd+; su Mac o Ctrl+; su Windows e Linux, e aggiungi Shift per avere anche l'ora. È tutto gratuito."
       ]
     },
@@ -908,7 +908,7 @@
       "q": "I promemoria del calendario funzionano quando l'app è chiusa?",
       "a": [
         "Su un telefono sì: fino a 64 avvisi, fino a 400 giorni in anticipo, vengono affidati al telefono stesso, quindi suonano anche con PrivacyNotes chiuso; aprire e sbloccare l'app ne affida altri. Nell'app desktop un promemoria suona mentre l'app è in esecuzione, e in un browser mentre PrivacyNotes è aperto in una scheda. Ogni dispositivo programma i propri promemoria a partire dagli elementi che contiene, quindi il server non viene mai a sapere un titolo, un'ora o un giorno.",
-        "Aggiungi un avviso dalla riga Avviso della vista Pianificazione di un elemento, fino a cinque per elemento, e imposta i valori predefiniti in Impostazioni > Calendario, dove si trova anche \"Mostra i titoli nei promemoria\". Un elemento protetto dal PIN suona sempre come \"Promemoria\" con l'ora, e così ogni avviso programmato mentre il blocco dell'app è attivo. Un avviso affidato al telefono prima che il blocco fosse attivo può mantenere il suo titolo finché non suona. I promemoria fanno parte di Pro; il calendario in sé è gratuito."
+        "Aggiungi un avviso dalla riga Avviso della vista Pianificazione di un elemento, fino a cinque per elemento, e imposta i valori predefiniti in Impostazioni > Data e ora > Calendario, dove si trova anche \"Mostra i titoli nei promemoria\". Un elemento protetto dal PIN suona sempre come \"Promemoria\" con l'ora, e così ogni avviso programmato mentre il blocco dell'app è attivo. Un avviso affidato al telefono prima che il blocco fosse attivo può mantenere il suo titolo finché non suona. I promemoria fanno parte di Pro; il calendario in sé è gratuito."
       ]
     },
     "calendar-time-zones": {

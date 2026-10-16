@@ -858,7 +858,7 @@
     "date-format": {
       "q": "Posso mudar o formato das datas?",
       "a": [
-        "Sim, em Definições > Data. **Formato da data** oferece Automático, Dia primeiro, Mês primeiro e Ano primeiro (ISO), e **Formato da hora** oferece Automático, 24 horas e 12 horas. Automático segue o idioma da app e a região de cada dispositivo, e a tua escolha aplica-se em todos os teus dispositivos.",
+        "Sim, em Definições > Data e hora. **Formato da data** oferece Automático, Dia primeiro, Mês primeiro e Ano primeiro (ISO), e **Formato da hora** oferece Automático, 24 horas e 12 horas. Automático segue o idioma da app e a região de cada dispositivo, e a tua escolha aplica-se em todos os teus dispositivos.",
         "As entradas de diário recebem o título a partir da data, e **Títulos do diário** no mesmo sítio oferece formatos prontos no teu formato de data, ou **Padrão personalizado** para construíres o teu a partir de códigos como `YYYY`, `MMMM` e `ddd`, com as palavras entre parênteses retos mantidas tal como as escreves. Um padrão novo aplica-se só a entradas novas. Para inserir a data de hoje em qualquer nota, carrega em Cmd+; num Mac ou Ctrl+; no Windows e no Linux, e junta Shift para incluir também a hora. Tudo isto é gratuito."
       ]
     },
@@ -908,7 +908,7 @@
       "q": "Os lembretes do calendário funcionam com a app fechada?",
       "a": [
         "Num telemóvel, sim: até 64 alertas, até 400 dias de antecedência, são entregues ao próprio telemóvel, por isso tocam mesmo com o PrivacyNotes fechado; abrir e desbloquear a app entrega mais. Na app de computador, um lembrete toca enquanto a app está a correr, e num navegador enquanto o PrivacyNotes está aberto num separador. Cada dispositivo planeia os seus lembretes a partir dos itens que guarda, por isso o servidor nunca fica a saber um título, uma hora ou um dia.",
-        "Adiciona um alerta na linha Alerta da vista Agendamento de um item, até cinco por item, e define as predefinições em Definições > Calendário, onde também está \"Mostrar títulos nos lembretes\". Um item protegido pelo teu PIN toca sempre como \"Lembrete\" e a hora, tal como todos os alertas agendados enquanto o bloqueio da app está ativo. Um alerta entregue antes de o bloqueio estar ativo pode manter o título até tocar. Os lembretes fazem parte do Pro; o calendário em si é gratuito."
+        "Adiciona um alerta na linha Alerta da vista Agendamento de um item, até cinco por item, e define as predefinições em Definições > Data e hora > Calendário, onde também está \"Mostrar títulos nos lembretes\". Um item protegido pelo teu PIN toca sempre como \"Lembrete\" e a hora, tal como todos os alertas agendados enquanto o bloqueio da app está ativo. Um alerta entregue antes de o bloqueio estar ativo pode manter o título até tocar. Os lembretes fazem parte do Pro; o calendário em si é gratuito."
       ]
     },
     "calendar-time-zones": {

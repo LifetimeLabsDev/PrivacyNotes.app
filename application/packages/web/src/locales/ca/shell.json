@@ -835,6 +835,7 @@
     "hoursBefore_other": "{{count}} hores abans",
     "daysBefore_other": "{{count}} dies abans",
     "weeksBefore_other": "{{count}} setmanes abans",
+    "onDay": "El mateix dia",
     "onDayAt": "El mateix dia a les {{time}}",
     "daysBeforeAt_other": "{{count}} dies abans a les {{time}}",
     "custom": "Personalitzat",

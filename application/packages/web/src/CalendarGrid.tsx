@@ -26,7 +26,7 @@ type Props = {
   days: readonly string[];
   index: DayIndex;
   hidden: (e: DayEntry) => boolean;
-  /** The hour the grid opens scrolled to (Settings › Calendar). */
+  /** The hour the grid opens scrolled to (Settings › Date & Time › Calendar). */
   firstHour: number;
   /** A kept scroll position, so Back returns to it. */
   scrollRef: { current: number | null };

@@ -104,7 +104,7 @@ export function toLocalIso(d: Date): string {
 
 // ── The date settings ─────────────────────────────────────────────
 //
-// "Date format" and "Clock" in Settings > Date, synced. Automatic is the
+// "Date format" and "Clock" in Settings > Date & Time, synced. Automatic is the
 // app language plus the device region (`dateLocale`), resolved on each device.
 
 export const DATE_ORDERS = ['auto', 'dmy', 'mdy', 'ymd'] as const;

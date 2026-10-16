@@ -914,7 +914,7 @@
     "date-format": {
       "q": "Môžem zmeniť, ako sa zobrazujú dátumy?",
       "a": [
-        "Áno, v časti Nastavenia > Dátum. **Formát dátumu** ponúka Automaticky, Najprv deň, Najprv mesiac a Najprv rok (ISO), a **Hodiny** ponúkajú Automaticky, 24-hodinový a 12-hodinový. Automaticky sa riadi jazykom aplikácie a regiónom každého zariadenia a tvoja voľba platí na všetkých tvojich zariadeniach.",
+        "Áno, v časti Nastavenia > Dátum a čas. **Formát dátumu** ponúka Automaticky, Najprv deň, Najprv mesiac a Najprv rok (ISO), a **Hodiny** ponúkajú Automaticky, 24-hodinový a 12-hodinový. Automaticky sa riadi jazykom aplikácie a regiónom každého zariadenia a tvoja voľba platí na všetkých tvojich zariadeniach.",
         "Záznamy v denníku preberajú názov z dátumu a **Názvy záznamov v denníku** na tom istom mieste ponúkajú hotové formáty v tvojom formáte dátumu, alebo **Vlastný vzor**, v ktorom si zostavíš vlastný z kódov ako `YYYY`, `MMMM` a `ddd`, pričom slová v hranatých zátvorkách zostanú tak, ako ich napíšeš. Nový vzor platí iba pre nové záznamy. Ak chceš vložiť dnešný dátum do ľubovoľnej poznámky, stlač Cmd+; na Macu alebo Ctrl+; vo Windowse a Linuxe, a so Shiftom sa vloží aj čas. Všetko je zadarmo."
       ]
     },
@@ -936,7 +936,7 @@
       "q": "Fungujú pripomienky z kalendára, aj keď je aplikácia zatvorená?",
       "a": [
         "Na telefóne áno: až 64 upozornení na najviac 400 dní dopredu sa odovzdá priamo telefónu, takže zazvonia, aj keď je aplikácia PrivacyNotes zatvorená; otvorením a odomknutím aplikácie sa odovzdajú ďalšie. V desktopovej aplikácii pripomienka zazvoní, kým aplikácia beží, a v prehliadači, kým máš PrivacyNotes otvorené na karte. Každé zariadenie si plánuje pripomienky z položiek, ktoré má, takže server sa nikdy nedozvie názov, čas ani deň.",
-        "Upozornenie pridáš z riadku Upozornenie v zobrazení Termín pri položke, najviac päť na položku, a predvolené hodnoty nastavíš v časti Nastavenia > Kalendár, kde nájdeš aj „Zobrazovať názvy v pripomienkach“. Položka za tvojím PIN-om zazvoní vždy len ako „Pripomienka“ a čas, a rovnako každé upozornenie naplánované, kým je zapnutý zámok aplikácie. Upozornenie odovzdané pred zapnutím zámku si môže ponechať názov, kým nezazvoní. Pripomienky sú súčasťou Pro; samotný kalendár je zadarmo."
+        "Upozornenie pridáš z riadku Upozornenie v zobrazení Termín pri položke, najviac päť na položku, a predvolené hodnoty nastavíš v časti Nastavenia > Dátum a čas > Kalendár, kde nájdeš aj „Zobrazovať názvy v pripomienkach“. Položka za tvojím PIN-om zazvoní vždy len ako „Pripomienka“ a čas, a rovnako každé upozornenie naplánované, kým je zapnutý zámok aplikácie. Upozornenie odovzdané pred zapnutím zámku si môže ponechať názov, kým nezazvoní. Pripomienky sú súčasťou Pro; samotný kalendár je zadarmo."
       ]
     },
     "calendar-time-zones": {

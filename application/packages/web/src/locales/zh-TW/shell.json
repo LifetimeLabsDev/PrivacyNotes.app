@@ -807,6 +807,7 @@
     "hoursBefore_other": "{{count}} 小時前",
     "daysBefore_other": "{{count}} 天前",
     "weeksBefore_other": "{{count}} 週前",
+    "onDay": "當天",
     "onDayAt": "當天 {{time}}",
     "daysBeforeAt_other": "{{count}} 天前的 {{time}}",
     "custom": "自訂",

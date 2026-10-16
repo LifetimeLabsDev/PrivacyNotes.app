@@ -269,7 +269,8 @@
     "helpLabel": "說明",
     "aboutLabel": "關於",
     "languageLabel": "語言",
-    "dateLabel": "日期",
+    "dateLabel": "日期與時間",
+    "dateTabFormat": "格式",
     "languageDesc": "選擇 PrivacyNotes 的顯示語言。",
     "calendarLabel": "日曆"
   },

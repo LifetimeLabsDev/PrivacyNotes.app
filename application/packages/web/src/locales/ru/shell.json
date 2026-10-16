@@ -864,6 +864,7 @@
     "hoursBefore_one": "За {{count}} час",
     "daysBefore_one": "За {{count}} день",
     "weeksBefore_one": "За {{count}} неделю",
+    "onDay": "В тот же день",
     "onDayAt": "В тот же день в {{time}}",
     "daysBeforeAt_one": "За {{count}} день в {{time}}",
     "custom": "Настроить",

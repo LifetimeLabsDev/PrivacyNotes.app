@@ -858,7 +858,7 @@
     "date-format": {
       "q": "Kan jag ändra hur datum visas?",
       "a": [
-        "Ja, under Inställningar > Datum. **Datumformat** erbjuder Automatiskt, Dag först, Månad först och År först (ISO), och **Tidsformat** erbjuder Automatiskt, 24 timmar och 12 timmar. Automatiskt följer appens språk och varje enhets region, och ditt val gäller på alla dina enheter.",
+        "Ja, under Inställningar > Datum och tid. **Datumformat** erbjuder Automatiskt, Dag först, Månad först och År först (ISO), och **Tidsformat** erbjuder Automatiskt, 24 timmar och 12 timmar. Automatiskt följer appens språk och varje enhets region, och ditt val gäller på alla dina enheter.",
         "Dagboksinlägg får sin titel från datumet, och **Dagbokstitlar** på samma ställe erbjuder färdiga format i ditt datumformat, eller **Eget mönster** för att bygga ditt eget av tokener som `YYYY`, `MMMM` och `ddd`, där ord inom hakparenteser behålls precis som du skriver dem. Ett nytt mönster gäller bara nya inlägg. För att infoga dagens datum i en anteckning trycker du på Cmd+; på en Mac eller Ctrl+; på Windows och Linux, och lägger till Shift för att få med tiden också. Allt detta är gratis."
       ]
     },
@@ -908,7 +908,7 @@
       "q": "Fungerar kalenderpåminnelser när appen är stängd?",
       "a": [
         "På en telefon, ja: upp till 64 aviseringar, upp till 400 dagar framåt, lämnas över till själva telefonen, så de ringer även när PrivacyNotes är stängt; när du öppnar och låser upp appen lämnas fler över. I skrivbordsappen ringer en påminnelse medan appen körs, och i en webbläsare medan PrivacyNotes är öppet i en flik. Varje enhet planerar sina påminnelser utifrån de objekt den har, så servern får aldrig veta en titel, en tid eller en dag.",
-        "Lägg till en avisering från raden Avisering i ett objekts Schema-vy, upp till fem per objekt, och ställ in standardvärdena under Inställningar > Kalender, där även ”Visa titlar i påminnelser” finns. Ett objekt bakom din PIN ringer alltid som ”Påminnelse” och tiden, och det gör även varje avisering som schemaläggs medan applåset är på. En avisering som lämnades över innan låset var på kan behålla sin titel tills den ringer. Påminnelser ingår i Pro; själva kalendern är gratis."
+        "Lägg till en avisering från raden Avisering i ett objekts Schema-vy, upp till fem per objekt, och ställ in standardvärdena under Inställningar > Datum och tid > Kalender, där även ”Visa titlar i påminnelser” finns. Ett objekt bakom din PIN ringer alltid som ”Påminnelse” och tiden, och det gör även varje avisering som schemaläggs medan applåset är på. En avisering som lämnades över innan låset var på kan behålla sin titel tills den ringer. Påminnelser ingår i Pro; själva kalendern är gratis."
       ]
     },
     "calendar-time-zones": {

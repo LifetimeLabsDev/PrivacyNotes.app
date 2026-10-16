@@ -275,7 +275,8 @@
     "helpLabel": "Nápověda",
     "aboutLabel": "O aplikaci",
     "languageLabel": "Jazyk",
-    "dateLabel": "Datum",
+    "dateLabel": "Datum a čas",
+    "dateTabFormat": "Formát",
     "languageDesc": "Vyber jazyk, ve kterém se PrivacyNotes zobrazuje.",
     "calendarLabel": "Kalendář"
   },

@@ -734,6 +734,21 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           <div className={track}>{modeButtons}</div>
         </div>
 
+        {/* App size - the whole window, which is what the Editor pane's text
+            size deliberately is not. Desktop only: a browser already has
+            this on the same keys, and the mobile webviews have no equivalent,
+            so the row is absent rather than present and dead.
+            Spec: ops/docs/design-decisions.md (app zoom) */}
+        {appZoomSupported() && (
+          <div data-setting="appearance.appZoom" className={row}>
+            <div className="min-w-0">
+              <RowTitle icon={MagnifyingGlassPlus}>{t('appearance.appZoomTitle')}</RowTitle>
+              <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.appZoomDesc')}</p>
+            </div>
+            <div className={track}>{appZoomButtons}</div>
+          </div>
+        )}
+
         {/* The pair: one palette per mode, both always shown, so a choice for
             the other mode is made without switching to it. */}
         <div data-setting="appearance.theme" className="py-3 space-y-4">
@@ -879,21 +894,6 @@ export function AppearanceSheet({ isPro, onOpenUpgrade, onClose, embedded = fals
           </div>
           {unlockNudge}
         </div>
-
-        {/* App size - the whole window, which is what the Editor pane's text
-            size deliberately is not. Desktop only: a browser already has
-            this on the same keys, and the mobile webviews have no equivalent,
-            so the row is absent rather than present and dead.
-            Spec: ops/docs/design-decisions.md (app zoom) */}
-        {appZoomSupported() && (
-          <div data-setting="appearance.appZoom" className={row}>
-            <div className="min-w-0">
-              <RowTitle icon={MagnifyingGlassPlus}>{t('appearance.appZoomTitle')}</RowTitle>
-              <p className={`${SETTINGS_HELP} mt-0.5`}>{t('appearance.appZoomDesc')}</p>
-            </div>
-            <div className={track}>{appZoomButtons}</div>
-          </div>
-        )}
 
         {/* Note colors - how strongly notes and sidebar rows show their
             color. Last in the pane, just above Reset to defaults; the look

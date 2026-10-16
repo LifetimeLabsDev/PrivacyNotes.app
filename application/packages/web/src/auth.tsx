@@ -40,8 +40,8 @@ import {
 // sign-out and on the owner-mismatch wipe.
 import { clearLocalSettings, clearTabPinWrapCopy, hasUnpushedSettings, loadLocalSettings, saveLocalSettings, syncUserSettings } from './userSettings';
 import { isDemoMode } from './demo';
-import { MfaPrompt } from './MfaPrompt';
-import { ensureLevel2, useMfaPrompt, submitMfaCode, dismissMfaPrompt, mfaSessionChanged, isMfaRefusal, MfaRequiredError, MfaCancelledError, mfaSessionIdentity, withMfaAwareTimeout } from './mfaStep';
+import { MfaPromptLayer } from './MfaPrompt';
+import { ensureLevel2, useMfaPrompt, dismissMfaPrompt, mfaSessionChanged, isMfaRefusal, MfaRequiredError, MfaCancelledError, mfaSessionIdentity, withMfaAwareTimeout } from './mfaStep';
 import { buildDemoAuthState } from './demoAuth';
 import { ConfirmModal } from './ConfirmModal';
 import { seedOnboardingNotes, SEED_MEDICATION } from './welcomeNote';
@@ -2758,9 +2758,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-      {mfaPrompt && (
-        <MfaPrompt request={mfaPrompt} onSubmit={submitMfaCode} onDismiss={dismissMfaPrompt} />
-      )}
+      <MfaPromptLayer request={mfaPrompt} />
       {switchAsk && (
         <ConfirmModal
           title={i18n.t('auth:signIn.switchTitle')}

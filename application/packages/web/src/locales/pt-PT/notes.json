@@ -271,7 +271,8 @@
     "helpLabel": "Ajuda",
     "aboutLabel": "Sobre",
     "languageLabel": "Idioma",
-    "dateLabel": "Data",
+    "dateLabel": "Data e hora",
+    "dateTabFormat": "Formato",
     "languageDesc": "Escolhe o idioma em que o PrivacyNotes é apresentado.",
     "calendarLabel": "Calendário"
   },

@@ -2498,13 +2498,16 @@ function AuthenticatedView({
   // this watches the selection rather than the gestures. A pinned tab keeps
   // its item, so the next one opens in a new tab. An empty draft leaves with
   // its tab, as it would on closing it. The id is followed only once it is in
-  // `notes`: the tab list prunes an id it cannot find there.
+  // `notes`: the tab list prunes an id it cannot find there. A sidebar click
+  // clears the selection before the list picks its first item, so an empty
+  // selection keeps the last followed id: that first item takes over the tab
+  // you were on instead of opening a new one.
   // Spec: ops/docs/plans/note-tabs.md (section 2)
   const tabFollowRef = useRef<string | null>(null);
   useEffect(() => {
     const prev = tabFollowRef.current;
-    if (selectedId === prev) return;
-    if (!openItemsInTabs || !tabsShown || selectedId === null || view === 'trash' || view === 'markdown') {
+    if (selectedId === prev || selectedId === null) return;
+    if (!openItemsInTabs || !tabsShown || view === 'trash' || view === 'markdown') {
       tabFollowRef.current = selectedId;
       return;
     }
@@ -2535,6 +2538,26 @@ function AuthenticatedView({
     refresh,
     runSync,
   });
+
+  // The switch acts on the strip at once, so it reads as on or off. Off
+  // closes every tab that is not pinned; the open item stays on screen. On
+  // gives the open item its tab without waiting for the next one opened.
+  const tabsSettingRef = useRef(openItemsInTabs);
+  useEffect(() => {
+    if (tabsSettingRef.current === openItemsInTabs) return;
+    tabsSettingRef.current = openItemsInTabs;
+    if (!openItemsInTabs) {
+      const ids = openTabs.tabs.filter((n) => !openTabs.pinnedIds.has(n.id)).map((n) => n.id);
+      if (ids.length) closeTabs(ids.filter((id) => id !== selectedId), ids);
+      return;
+    }
+    if (!tabsShown || selectedId === null || view === 'trash' || view === 'markdown' || openTabs.tabIds.has(selectedId)) return;
+    const open = notes.find((n) => n.id === selectedId);
+    if (!open || open.trashed === 1) return;
+    tabFollowRef.current = selectedId;
+    openTabs.followTab(null, selectedId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openItemsInTabs]);
 
   // Pop the Security → Phrase tab once for new OAuth users so they
   // see their recovery phrase and can write it down. The flag is set
@@ -3275,7 +3298,7 @@ function AuthenticatedView({
     }
     if (isCalendar) {
       // An all-day event on the day the calendar shows, with the all-day
-      // default alert of Settings › Calendar where alerts are open.
+      // default alert of Settings › Date & Time › Calendar where alerts are open.
       const alerts = proUnlocked(auth.isPro) ? calendarDefaults.allDay : [];
       await updateNote(note.id, { trackers: { journalDate: calendar.newDay(), ...(alerts.length ? { alerts } : {}) } }, note.updatedAt);
       if (alerts.length) askForRemindersOnce();
@@ -3550,7 +3573,7 @@ function AuthenticatedView({
    * Create what the quick add read: an event by default, or a note, a task
    * list or a journal entry, with its schedule, tags, folder and space. It
    * takes the open folder and tag where the words name none, and a new event
-   * takes the default alert of Settings › Calendar where alerts are open. It
+   * takes the default alert of Settings › Date & Time › Calendar where alerts are open. It
    * opens in place of the calendar there, and in its own pillar elsewhere.
    * Spec: ops/docs/plans/calendar-pillar-spec.md (step 8, decision 7)
    */
@@ -4854,7 +4877,7 @@ function AuthenticatedView({
       else setSelectedId(copyId);
     },
   });
-  // The alert a new alert list starts with (Settings › Calendar).
+  // The alert a new alert list starts with (Settings › Date & Time › Calendar).
   const calendarDefaults = alertDefaults(userSettings);
   // Reminders: this device plans and fires the alerts of the items it holds.
   // Spec: ops/docs/plans/calendar-pillar-spec.md (step 7)

@@ -271,7 +271,8 @@
     "helpLabel": "Yardım",
     "aboutLabel": "Hakkında",
     "languageLabel": "Dil",
-    "dateLabel": "Tarih",
+    "dateLabel": "Tarih ve saat",
+    "dateTabFormat": "Biçim",
     "languageDesc": "PrivacyNotes'un gösterileceği dili seçin.",
     "calendarLabel": "Takvim"
   },

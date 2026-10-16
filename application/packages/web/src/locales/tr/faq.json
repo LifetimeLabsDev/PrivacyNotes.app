@@ -858,7 +858,7 @@
     "date-format": {
       "q": "Tarihlerin gösterilme biçimini değiştirebilir miyim?",
       "a": [
-        "Evet, Ayarlar > Tarih bölümünde. **Tarih biçimi** Otomatik, Önce gün, Önce ay ve Önce yıl (ISO) seçeneklerini, **Saat biçimi** ise Otomatik, 24 saat ve 12 saat seçeneklerini sunar. Otomatik, uygulamanın dilini ve her cihazın bölgesini izler; seçiminiz tüm cihazlarınızda geçerli olur.",
+        "Evet, Ayarlar > Tarih ve saat bölümünde. **Tarih biçimi** Otomatik, Önce gün, Önce ay ve Önce yıl (ISO) seçeneklerini, **Saat biçimi** ise Otomatik, 24 saat ve 12 saat seçeneklerini sunar. Otomatik, uygulamanın dilini ve her cihazın bölgesini izler; seçiminiz tüm cihazlarınızda geçerli olur.",
         "Günlük kayıtları başlığını tarihten alır; aynı yerdeki **Günlük başlıkları** tarih biçiminize uygun hazır biçimler sunar, dilerseniz **Özel kalıp** ile `YYYY`, `MMMM` ve `ddd` gibi belirteçlerden kendi kalıbınızı oluşturabilirsiniz, köşeli parantez içindeki kelimeler yazdığınız gibi kalır. Yeni bir kalıp yalnızca yeni kayıtlara uygulanır. Herhangi bir nota bugünün tarihini eklemek için Mac'te Cmd+;, Windows ve Linux'ta Ctrl+; tuşlarına basın; saati de eklemek için Shift'i ekleyin. Bunların hepsi ücretsizdir."
       ]
     },
@@ -908,7 +908,7 @@
       "q": "Takvim hatırlatıcıları uygulama kapalıyken de çalışır mı?",
       "a": [
         "Telefonda evet: 400 güne kadar ilerisi için en fazla 64 uyarı telefonun kendisine verilir, bu yüzden PrivacyNotes kapalıyken de çalarlar; uygulamayı açıp kilidini açmak daha fazlasını verir. Masaüstü uygulamasında hatırlatıcı uygulama çalışırken, tarayıcıda ise PrivacyNotes bir sekmede açıkken çalar. Her cihaz hatırlatıcılarını kendi üzerindeki öğelerden planlar, bu yüzden sunucu hiçbir başlığı, saati ya da günü öğrenmez.",
-        "Bir öğenin Zamanlama görünümündeki Uyarı satırından, öğe başına en fazla beş uyarı ekleyin; varsayılanları ise \"Hatırlatıcılarda başlıkları göster\" seçeneğinin de bulunduğu Ayarlar > Takvim altında belirleyin. PIN'inizin arkasındaki bir öğe her zaman \"Hatırlatıcı\" ve saatle çalar; uygulama kilidi etkinken zamanlanan her uyarı da öyle. Kilit etkinleştirilmeden önce telefona verilmiş bir uyarı, çalana kadar başlığını koruyabilir. Hatırlatıcılar Pro'nun parçasıdır; takvimin kendisi ücretsizdir."
+        "Bir öğenin Zamanlama görünümündeki Uyarı satırından, öğe başına en fazla beş uyarı ekleyin; varsayılanları ise \"Hatırlatıcılarda başlıkları göster\" seçeneğinin de bulunduğu Ayarlar > Tarih ve saat > Takvim altında belirleyin. PIN'inizin arkasındaki bir öğe her zaman \"Hatırlatıcı\" ve saatle çalar; uygulama kilidi etkinken zamanlanan her uyarı da öyle. Kilit etkinleştirilmeden önce telefona verilmiş bir uyarı, çalana kadar başlığını koruyabilir. Hatırlatıcılar Pro'nun parçasıdır; takvimin kendisi ücretsizdir."
       ]
     },
     "calendar-time-zones": {
